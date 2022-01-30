@@ -51,6 +51,7 @@ INSTALLED_APPS += [  # plugin
 
 INSTALLED_APPS += [  # app
     'account.apps.AccountConfig',
+    'cash.apps.CashConfig',
     'book.apps.BookConfig',
     'company.apps.CompanyConfig',
     'contract.apps.ContractConfig',

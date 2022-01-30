@@ -1,0 +1,242 @@
+{% extends 'rebs/layouts/base.html' %}
+
+{% block title %}Rebs - 입출금 내역 조회{% endblock %}
+
+{% block content %}
+    {% load static humanize widget_tweaks %}
+
+    <!-- Start Content-->
+    <div class="container-fluid">
+
+        <!-- start page title -->
+        {% include 'rebs/partials/content_title.html' with  second_bs="본사 회계 관리" title="입출금 내역 조회" %}
+        <!-- end page title -->
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+
+                        {% with menu_order='2' %}
+                            {% include 'rebs_cash/partials/head_menu_cash.html' %}
+                        {% endwith %}
+
+                        <div class="row col-12">
+                            <form action="." method="GET" class="col-12">
+                                <div class="form-row">
+                                    <div class="form-group col-md-2">
+                                        <label for="{{ form.s_date.id_for_label }}" class="col-form-label">거래 기간</label>
+                                        {{ form.s_date|add_class:"form-control"|attr:"placeholder:시작일"|attr:"data-provide=datepicker data-date-format=yyyy-mm-dd data-date-autoclose=true data-toggle=input-mask data-mask-format=0000-00-00" }}
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label for="{{ form.e_date.id_for_label }}"
+                                               class="d-none d-md-block col-form-label">&nbsp;</label>
+                                        {{ form.e_date|add_class:"form-control"|attr:"placeholder:종료일"|attr:"data-provide=datepicker data-date-format=yyyy-mm-dd data-date-autoclose=true data-toggle=input-mask data-mask-format=0000-00-00" }}
+                                    </div>
+                                    <div class="form-group col-md-1">
+                                        <label for="{{ form.category1.id_for_label }}" class="col-form-label">거래
+                                            구분</label>
+                                        {{ form.category1|add_class:"form-control" }}
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label for="{{ form.category2.id_for_label }}"
+                                               class="d-none d-md-block col-form-label">&nbsp;</label>
+                                        {{ form.category2|add_class:"form-control" }}
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label for="{{ form.bank_account.id_for_label }}" class="col-form-label">계좌
+                                            구분</label>
+                                        {{ form.bank_account|add_class:"form-control" }}
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label for="{{ form.search_word.id_for_label }}"
+                                               class="d-none d-md-block col-form-label">&nbsp;</label>
+                                        {{ form.search_word|add_class:"form-control"|attr:"placeholder:검색어 - 세부계정, 적요, 거래처" }}
+                                    </div>
+
+                                    <div class="form-group col-md-1 pt-1">
+                                        <div class="mb-2">&nbsp;</div>
+                                        <input type="submit" class="btn btn-info btn-sm btn-block" value="검색">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 table-responsive-md">
+                                <div class="text-right mb-1 mr-2">
+                                    <a href="{% url 'excel:cashbooks' %}?s_date={{ request.GET.s_date }}&e_date={{ request.GET.e_date }}&category1={{ request.GET.category1 }}&category2={{ request.GET.category2 }}&bank_account={{ request.GET.bank_account }}&search_word={{ request.GET.search_word }}">
+                                        <i class="mdi mdi-file-excel-box"></i> Excel Export
+                                        <i class="mdi mdi-download ml-1"></i>
+                                    </a>
+                                </div>
+                                <table id="scroll-horizontal-datatable"
+                                       class="table table-hover table-centered table-condensed table-sm w-100 m-0 nowrap"
+                                       style="word-break: keep-all;">
+                                    <thead>
+                                    <tr class="bg-nav-pills">
+                                        <th class="text-center" scope="col"><input type="checkbox" disabled></th>
+                                        <th class="text-center" scope="col">거래 일자</th>
+                                        <th class="text-center" scope="col">구분</th>
+                                        <th class="text-center" scope="col">계정</th>
+                                        <th class="text-center" scope="col">세부 계정 <a href="#" data-toggle="modal"
+                                                                                     data-target="#account-subject-modal"><i
+                                                class="dripicons-gear"></i></a>
+                                        </th>
+                                        {% include 'rebs_cash/partials/account_subject.html' %}
+                                        <th class="text-center" scope="col">적 요</th>
+                                        <th class="text-center" scope="col">거 래 처</th>
+                                        <th class="text-center" scope="col">거래 계좌</th>
+                                        <th class="text-center" scope="col">입금 금액</th>
+                                        <th class="text-center" scope="col">출금 금액</th>
+                                        <th class="text-center" scope="col">증빙 자료</th>
+                                        <th class="text-center" scope="col">
+                                            <a href="javascript: void(0);" class="action-icon"><i
+                                                    class="mdi mdi-pencil"></i></a>
+                                            <a href="javascript: void(0);" class="action-icon"><i
+                                                    class="mdi mdi-delete"></i></a>
+                                        </th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for inout in object_list %}
+                                        <tr>
+                                            <th class="text-center" scope="row"><input type="checkbox" disabled></th>
+                                            <td class="text-center">{{ inout.deal_date|date:"Y-m-d" }}</td>
+                                            <td class="text-center text-primary">
+                                                <span class="text-{% if inout.cash_category1 == '2' %}danger{% elif inout.cash_category1 == '3' %}info{% endif %}">
+                                                    {{ inout.get_cash_category1_display }}
+                                                </span>
+                                            </td>
+                                            <td class="text-center text-primary">
+                                                <span class="text-{% if inout.cash_category2 in '2' %}info{% elif inout.cash_category2 in '5' %}danger{% elif inout.cash_category1 == '3' %}info{% endif %}">
+                                                    {{ inout.get_cash_category2_display }}
+                                                </span>
+                                            </td>
+                                            <td class="text-secondary">{{ inout.account.name|default:"-" }}</td>
+                                            <td>{{ inout.content|truncatechars:12|default:"-" }}</td>
+                                            <td>{{ inout.trader|truncatechars:8|default:"-" }}</td>
+                                            <td>{{ inout.bank_account }}</td>
+                                            <td class="text-right bg-success-lighten">{{ inout.income|floatformat:"0"|intcomma|default:"-" }}</td>
+                                            <td class="text-right bg-info-lighten">{{ inout.outlay|floatformat:"0"|intcomma|default:"-" }}</td>
+                                            <td class="text-center">{{ inout.get_evidence_display }}</td>
+                                            <td class="text-center">
+                                                {# <a href="javascript:auth_chk({% if request.user.staffauth.company_cash == '2' and inout.deal_date >= auth_date or request.user.is_superuser %}1{% else %}0{% endif %}, '{% url 'rebs:cash-inout:update' inout.pk %}', '')"#}
+                                                <a href="javascript:alert('준비중입니다!')"
+                                                   class="action-icon"><i class="mdi mdi-pencil"></i></a>
+                                                <a href="javascript:auth_chk({% if request.user.staffauth.company_cash == '2' and inout.deal_date >= auth_date or request.user.is_superuser %}1{% else %}0{% endif %}, '{% url 'rebs:cash-inout:delete' inout.pk %}', 'del')"
+                                                   class="action-icon"><i class="mdi mdi-delete"></i></a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        {% if is_paginated %}
+
+                            {# to_first_last :: 맨처음 / 맨끝으로 버튼 사용 여부 #}
+                            {# page_class ex:: pagination-rounded pagination-sm pagination-lg justify-content-center justify-content-end #}
+                            {% include 'partials/pagination.html' with to_first_last="ok" page_class="pagination-rounded justify-content-end" %}
+
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> <!-- container -->
+
+{% endblock %}
+
+{% block third_party_js %}
+
+    <script>
+      const category1 = document.getElementById('id_category1')
+      const category2 = document.getElementById('id_category2')
+
+      window.onload = function () {
+        category1.setAttribute('onchange', 'category1_change(this)')
+        category2.setAttribute('onchange', 'category2_change(this)')
+
+        document.getElementById('id_s_date').value = '{{ request.GET.s_date }}'
+        document.getElementById('id_e_date').value = '{{ request.GET.e_date }}'
+        document.getElementById('id_category1').value = '{{ request.GET.category1 }}'
+        document.getElementById('id_category2').value = '{{ request.GET.category2 }}'
+        document.getElementById('id_bank_account').value = '{{ request.GET.bank_account }}'
+        const search_word = document.getElementById('id_search_word')
+        search_word.value = '{{ request.GET.search_word }}'
+        search_word.setAttribute('onclick', 'this.value=\'\'')
+      }
+
+      function category1_change(category1) {
+        if (category1.value === '') {
+          category2.options[0].selected = true
+          category2.length = 7;
+          category2.options[1].text = "자산"
+          category2.options[1].value = "1"
+          category2.options[2].text = "부채"
+          category2.options[2].value = "2"
+          category2.options[3].text = "자본"
+          category2.options[3].value = "3"
+          category2.options[4].text = "수익"
+          category2.options[4].value = "4"
+          category2.options[5].text = "비용"
+          category2.options[5].value = "5"
+          category2.options[6].text = "대체"
+          category2.options[6].value = "6"
+        } else if (category1.value === '1') {
+          category2.length = 5;
+          category2.options[1].text = "자산"
+          category2.options[1].value = "1"
+          category2.options[2].text = "부채"
+          category2.options[2].value = "2"
+          category2.options[3].text = "자본"
+          category2.options[3].value = "3"
+          category2.options[4].text = "수익"
+          category2.options[4].value = "4"
+        } else if (category1.value === '2') {
+          category2.length = 5;
+          category2.options[1].text = "자산"
+          category2.options[1].value = "1"
+          category2.options[2].text = "부채"
+          category2.options[2].value = "2"
+          category2.options[3].text = "자본"
+          category2.options[3].value = "3"
+          category2.options[4].text = "비용"
+          category2.options[4].value = "5"
+        } else if (category1.value === '3') {
+          category2.length = 2;
+          category2.options[1].text = "대체"
+          category2.options[1].value = "6"
+        }
+      }
+
+      function category2_change(category2) {
+        if (category2.value === '4') {
+          category1.options[1].selected = true
+        } else if (category2.value === '5') {
+          category1.options[2].selected = true
+        } else if (category2.value === '6') {
+          category1.options[3].selected = true
+        }
+      }
+
+      function auth_chk(auth, url, del) {
+        if (auth) {
+          if (del) {
+            if (confirm('삭제 후 복구할 수 없습니다.\n\n해당 거래 건을 삭제하시겠습니까?')) {
+              location.href = url
+            }
+          } else {
+            if (confirm('해당 거래 건을 수정하시겠습니까?')) {
+              location.href = url
+            }
+          }
+        } else {
+          alert('권한이 없거나 수정 또는 삭제가능일(10일)이 경과하였습니다.. \n\n수정 또는 삭제하려면 관리자에게 문의하여 주시기 바랍니다.')
+        }
+        return
+      }
+    </script>
+
+{% endblock %}
