@@ -1,0 +1,18 @@
+<ul class="nav nav-tabs mb-5">
+    <li class="nav-item">
+        <a href="{% url 'rebs:docs:pr.general_list' %}{% if request.GET.project %}?project={{ request.GET.project }}{% endif %}"
+           aria-expanded="{% if menu_order == '1' %}true{% else %}false{% endif %}"
+           class="nav-link  {% if menu_order == '1' %}active{% endif %}">
+            <i class="mdi mdi-deskphone d-md-none d-block"></i>
+            <span class="d-none d-md-block">일반 문서 관리</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a href="{% url 'rebs:docs:pr.lawsuit_list' %}{% if request.GET.project %}?project={{ request.GET.project }}{% endif %}"
+           aria-expanded="{% if menu_order == '2' %}true{% else %}false{% endif %}"
+           class="nav-link {% if menu_order == '2' %}active{% endif %}">
+            <i class="mdi mdi-format-list-bulleted d-md-none d-block"></i>
+            <span class="d-none d-md-block">법률 소송 관리</span>
+        </a>
+    </li>
+</ul>
