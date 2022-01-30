@@ -116,7 +116,7 @@ class ContractLV(LoginRequiredMixin, ListView):
 
 class ContractRegisterView(LoginRequiredMixin, FormView):
     form_class = ContractRegisterForm
-    template_name = 'rebs_contract/contract_form.html'
+    template_name = 'contract/contract_form.html'
     PaymentInlineFormSet = forms.models.inlineformset_factory(
         Contract,
         ProjectCashBook,
@@ -381,7 +381,7 @@ class ContractRegisterView(LoginRequiredMixin, FormView):
 
                 return redirect(self.get_back_url())
         else:
-            return render(request, 'rebs_contract/contract_form.html', {'formset': formset})
+            return render(request, 'contract/contract_form.html', {'formset': formset})
 
 
 class ContractorUpdate(LoginRequiredMixin, FormView):
@@ -411,7 +411,7 @@ class ContractorReleaseRegister(LoginRequiredMixin, ListView, FormView):
     model = ContractorRelease
     form_class = ContractorReleaseForm
     paginate_by = 10
-    template_name = 'rebs_contract/release_form.html'
+    template_name = 'contract/release_form.html'
 
     def get_project(self):
         try:
@@ -523,11 +523,11 @@ class ContractorReleaseRegister(LoginRequiredMixin, ListView, FormView):
 
                 return redirect(reverse_lazy('rebs:contract:release') + '?project=' + str(self.get_project().id))
         else:
-            return render(request, 'rebs_contract/release_form.html', {'form': form})
+            return render(request, 'contract/release_form.html', {'form': form})
 
 
 class BuildDashboard(LoginRequiredMixin, TemplateView):
-    template_name = 'rebs_contract/dashboard.html'
+    template_name = 'contract/dashboard.html'
 
     def get_project(self):
         try:
