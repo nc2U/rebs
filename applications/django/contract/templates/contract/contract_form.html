@@ -78,7 +78,7 @@
                                                     <option value="">---------</option>
                                                     {% for obj in order_groups %}
                                                         <option value="{{ obj.id }}"
-                                                                {% ifequal obj.id|stringformat:"s" request.GET.order_group %}selected{% endifequal %}>{{ obj }}</option>
+                                                                {% if obj.id|slugify == request.GET.order_group %}selected{% endif %}>{{ obj }}</option>
                                                     {% endfor %}
                                                 </select>
                                             </div>
@@ -92,7 +92,8 @@
                                                     <option value="">---------</option>
                                                     {% for obj in types %}
                                                         <option value="{{ obj.id }}"
-                                                                {% ifequal obj.id|stringformat:"s" request.GET.type %}selected{% endifequal %}>{{ obj }}</option>
+                                                                {% if obj.id|slugify == request.GET.type %}selected{% endif %}>{{ obj }}</option>
+
                                                     {% endfor %}
                                                 </select>
                                             </div>
@@ -102,16 +103,16 @@
                                                 <select name="contract_unit" id="id_contract_unit"
                                                         class="form-control  select2"
                                                         {% if not request.GET.type %}disabled{% endif %}
-                                                        onchange="{% ifequal this_project.is_unit_set True %}getSelect(this, 3){% else %}submit(){% endifequal %}">
+                                                        onchange="{% if this_project.is_unit_set == True %}getSelect(this, 3){% else %}submit(){% endif %}">
                                                     <option value="">---------</option>
                                                     {% for obj in contract_units %}
                                                         <option value="{{ obj.id }}"
-                                                                {% ifequal obj.id|stringformat:"s" request.GET.contract_unit %}selected{% endifequal %}>{{ obj }}</option>
+                                                                {% if obj.id|slugify == request.GET.contract_unit %}selected{% endif %}>{{ obj }}</option>
                                                     {% endfor %}
                                                 </select>
                                             </div>
 
-                                            {% ifequal this_project.is_unit_set True %}
+                                            {% if this_project.is_unit_set == True %}
                                                 <label for="id_unit_number"
                                                        class="col-4 col-md-2 col-lg-1 col-form-label">동호수</label>
                                                 <div class="col-8 col-md-4 col-lg-2">
@@ -122,11 +123,11 @@
                                                         <option value="">---------</option>
                                                         {% for obj in unit_numbers %}
                                                             <option value="{{ obj.id }}"
-                                                                    {% ifequal obj.id|stringformat:"s" request.GET.unit_number %}selected{% endifequal %}>{{ obj }}</option>
+                                                                    {% if obj.id|slugify == request.GET.unit_number %}selected{% endif %}>{{ obj }}</option>
                                                         {% endfor %}
                                                     </select>
                                                 </div>
-                                            {% endifequal %}
+                                            {% endif %}
                                             <input type="hidden" name="cont_id" value="{{ request.GET.cont_id }}">
                                             <input type="hidden" name="p" value="{{ request.GET.p }}">
                                             <input type="hidden" name="l" value="{{ request.GET.l }}">
@@ -156,9 +157,9 @@
                 {{ form.order_group }}{{ form.order_group.errors }}
                 {{ form.type }}{{ form.type.errors }}
                 {{ form.contract_unit }}{{ form.contract_unit.errors }}
-                {% ifequal this_project.is_unit_set True %}
+                {% if this_project.is_unit_set == True %}
                     {{ form.unit_number }}{{ form.unit_number.errors }}
-                {% endifequal %}
+                {% endif %}
                 {{ form.back_url }}
 
                 {{ form.errors }}
@@ -509,9 +510,9 @@
       const order_group = document.getElementById('id_order_group')
       const type = document.getElementById('id_type')
       const contract_unit = document.getElementById('id_contract_unit')
-      {% ifequal this_project.is_unit_set True %}
+      {% if this_project.is_unit_set == True %}
         const unit_number = document.getElementById('id_unit_number')
-      {% endifequal %}
+      {% endif %}
       const project = document.getElementById('id_project_sel')
 
       window.onload = function () {
@@ -540,11 +541,11 @@
         const type = document.getElementById('id_type')
         const cont_unit = document.getElementById('id_contract_unit')
 
-        {% ifequal this_project.is_unit_set True %}
+        {% if this_project.is_unit_set == True %}
           const unit_number = document.getElementById('id_unit_number')
           unit_number.options[0].selected = true
           unit_number.disabled = true
-        {% endifequal %}
+        {% endif %}
 
         cont_unit.options[0].selected = true
         cont_unit.disabled = true
@@ -568,35 +569,35 @@
               order_group.disabled = true
               type.disabled = true
               contract_unit.disabled = true
-            {% ifequal this_project.is_unit_set True %}
+            {% if this_project.is_unit_set == True %}
               unit_number.options[0].selected = true
               unit_number.disabled = true
-            {% endifequal %}
+            {% endif %}
               break
             case 2:
               type.options[0].selected = true
               contract_unit.options[0].selected = true
               type.disabled = true
               contract_unit.disabled = true
-            {% ifequal this_project.is_unit_set True %}
+            {% if this_project.is_unit_set == True %}
               unit_number.options[0].selected = true
               unit_number.disabled = true
-            {% endifequal %}
+            {% endif %}
               break
             case 3:
               contract_unit.options[0].selected = true
               contract_unit.disabled = true
-            {% ifequal this_project.is_unit_set True %}
+            {% if this_project.is_unit_set == True %}
               unit_number.options[0].selected = true
               unit_number.disabled = true
-            {% endifequal %}
+            {% endif %}
               break
-              {% ifequal this_project.is_unit_set True %}
+              {% if this_project.is_unit_set == True %}
                 case 4:
                   unit_number.options[0].selected = true
                   unit_number.disabled = true
                   break
-              {% endifequal %}
+              {% endif %}
           }
         } else {
           form.submit()
