@@ -43,7 +43,8 @@ class Department(models.Model):
 
 
 class Staff(models.Model):
-    department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True, verbose_name='부서 정보', related_name='staffs')
+    department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True, verbose_name='부서 정보',
+                                   related_name='staffs')
     position = models.CharField('직함', max_length=50, blank=True, default='')
     name = models.CharField('직원 성명', max_length=10)
     birth_date = models.DateField('생년월일')
