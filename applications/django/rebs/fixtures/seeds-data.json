@@ -1,0 +1,2815 @@
+[
+  {
+    "model": "rebs_company.company",
+    "pk": 1,
+    "fields": {
+      "name": "",
+      "tax_number": "",
+      "ceo": "",
+      "org_number": ""
+    }
+  },
+  {
+    "model": "rebs_project.project",
+    "pk": 1,
+    "fields": {
+      "company": 1,
+      "name": "프로젝트명",
+      "start_year": "2000"
+    }
+  },
+  {
+    "model": "rebs.accountsubd1",
+    "pk": 1,
+    "fields": {
+      "code": "100",
+      "name": "자산",
+      "description": "자산 계정과목 기준"
+    }
+  },
+  {
+    "model": "rebs.accountsubd1",
+    "pk": 2,
+    "fields": {
+      "code": "200",
+      "name": "부채",
+      "description": "부채 계정과목 기준"
+    }
+  },
+  {
+    "model": "rebs.accountsubd1",
+    "pk": 3,
+    "fields": {
+      "code": "500",
+      "name": "자본",
+      "description": "자본 계정과목 기준"
+    }
+  },
+  {
+    "model": "rebs.accountsubd1",
+    "pk": 4,
+    "fields": {
+      "code": "700",
+      "name": "수익",
+      "description": "수익 계정과목 기준"
+    }
+  },
+  {
+    "model": "rebs.accountsubd1",
+    "pk": 5,
+    "fields": {
+      "code": "800",
+      "name": "비용",
+      "description": "비용 계정과목 기준"
+    }
+  },
+  {
+    "model": "rebs.accountsubd1",
+    "pk": 6,
+    "fields": {
+      "code": "900",
+      "name": "대체",
+      "description": "계좌간 내부 대체"
+    }
+  },
+  {
+    "model": "rebs.accountsubd2",
+    "pk": 1,
+    "fields": {
+      "d1": 1,
+      "code": "110",
+      "name": "당좌자산",
+      "description": "당좌자산 계정과목 기준"
+    }
+  },
+  {
+    "model": "rebs.accountsubd2",
+    "pk": 2,
+    "fields": {
+      "d1": 1,
+      "code": "130",
+      "name": "재고자산",
+      "description": "재고자산 계정과목 기준"
+    }
+  },
+  {
+    "model": "rebs.accountsubd2",
+    "pk": 3,
+    "fields": {
+      "d1": 1,
+      "code": "150",
+      "name": "투자자산",
+      "description": "투자자산 계정과목 기준"
+    }
+  },
+  {
+    "model": "rebs.accountsubd2",
+    "pk": 4,
+    "fields": {
+      "d1": 1,
+      "code": "160",
+      "name": "유형자산",
+      "description": "유형자산 계정과목 기준"
+    }
+  },
+  {
+    "model": "rebs.accountsubd2",
+    "pk": 5,
+    "fields": {
+      "d1": 1,
+      "code": "170",
+      "name": "무형자산",
+      "description": "무형자산 계정과목 기준"
+    }
+  },
+  {
+    "model": "rebs.accountsubd2",
+    "pk": 6,
+    "fields": {
+      "d1": 1,
+      "code": "180",
+      "name": "기타 비유동자산",
+      "description": "기타 비유동자산자산 계정과목 기준"
+    }
+  },
+  {
+    "model": "rebs.accountsubd2",
+    "pk": 7,
+    "fields": {
+      "d1": 2,
+      "code": "210",
+      "name": "유동부채",
+      "description": "유동부채 계정과목 기준"
+    }
+  },
+  {
+    "model": "rebs.accountsubd2",
+    "pk": 8,
+    "fields": {
+      "d1": 2,
+      "code": "230",
+      "name": "비유동부채",
+      "description": "비유동부채 계정과목 기준"
+    }
+  },
+  {
+    "model": "rebs.accountsubd2",
+    "pk": 9,
+    "fields": {
+      "d1": 3,
+      "code": "510",
+      "name": "자본금",
+      "description": "자본금 계정과목 기준"
+    }
+  },
+  {
+    "model": "rebs.accountsubd2",
+    "pk": 10,
+    "fields": {
+      "d1": 3,
+      "code": "520",
+      "name": "자본잉여금",
+      "description": "자본잉여금 계정과목 기준"
+    }
+  },
+  {
+    "model": "rebs.accountsubd2",
+    "pk": 11,
+    "fields": {
+      "d1": 3,
+      "code": "530",
+      "name": "이익잉여금",
+      "description": "이익잉여금 계정과목 기준"
+    }
+  },
+  {
+    "model": "rebs.accountsubd2",
+    "pk": 12,
+    "fields": {
+      "d1": 3,
+      "code": "540",
+      "name": "자본조정",
+      "description": "자본조정 계정과목 기준"
+    }
+  },
+  {
+    "model": "rebs.accountsubd2",
+    "pk": 13,
+    "fields": {
+      "d1": 3,
+      "code": "550",
+      "name": "기타포괄 손익누계액",
+      "description": "기타포괄 손익누계액 계정과목 기준"
+    }
+  },
+  {
+    "model": "rebs.accountsubd2",
+    "pk": 14,
+    "fields": {
+      "d1": 4,
+      "code": "710",
+      "name": "매출액",
+      "description": "매출액 계정과목 기준"
+    }
+  },
+  {
+    "model": "rebs.accountsubd2",
+    "pk": 15,
+    "fields": {
+      "d1": 4,
+      "code": "720",
+      "name": "영업외수익",
+      "description": "영업외수익 계정과목 기준"
+    }
+  },
+  {
+    "model": "rebs.accountsubd2",
+    "pk": 16,
+    "fields": {
+      "d1": 5,
+      "code": "810",
+      "name": "매출원가",
+      "description": "매출원가 계정과목 기준"
+    }
+  },
+  {
+    "model": "rebs.accountsubd2",
+    "pk": 17,
+    "fields": {
+      "d1": 5,
+      "code": "820",
+      "name": "판매비와 관리비",
+      "description": "판매비와 관리비 계정과목 기준"
+    }
+  },
+  {
+    "model": "rebs.accountsubd2",
+    "pk": 18,
+    "fields": {
+      "d1": 5,
+      "code": "850",
+      "name": "영업외비용",
+      "description": "영업외비용 계정과목 기준"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 1,
+    "fields": {
+      "d2": 1,
+      "code": "111",
+      "name": "현금",
+      "is_special": false,
+      "description": "통화, 자기앞수표, 인방행 당좌수표, 가계수표"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 2,
+    "fields": {
+      "d2": 1,
+      "code": "112",
+      "name": "당좌예금",
+      "is_special": false,
+      "description": "당좌거래와 관련한 예금"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 3,
+    "fields": {
+      "d2": 1,
+      "code": "113",
+      "name": "보통예금",
+      "is_special": false,
+      "description": "보통예금 입/출금"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 4,
+    "fields": {
+      "d2": 1,
+      "code": "114",
+      "name": "유가증권",
+      "is_special": false,
+      "description": "국채, 공채, 지방채 등의 매입 및 처분"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 5,
+    "fields": {
+      "d2": 1,
+      "code": "120",
+      "name": "매출채권",
+      "is_special": false,
+      "description": "상품, 제품 또는 용역을 제공한 대금을 외상으로 한 경우"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 6,
+    "fields": {
+      "d2": 1,
+      "code": "121",
+      "name": "단기대여금",
+      "is_special": false,
+      "description": "타인에게 대여한 대여금(대여기간 1년이내)"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 7,
+    "fields": {
+      "d2": 1,
+      "code": "122",
+      "name": "관계회사 대여금",
+      "is_special": false,
+      "description": "조합 사업비 대여 또는 대지급금"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 8,
+    "fields": {
+      "d2": 1,
+      "code": "123",
+      "name": "미수금",
+      "is_special": false,
+      "description": "고정자산을 매각하고 대금을 외상으로 한 경우"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 9,
+    "fields": {
+      "d2": 1,
+      "code": "124",
+      "name": "선급금",
+      "is_special": false,
+      "description": "물품을 인도받기 전 대금을 미리 지급한 경우"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 10,
+    "fields": {
+      "d2": 1,
+      "code": "125",
+      "name": "선급비용",
+      "is_special": false,
+      "description": "각종 비용을 미리 지급한 것 (미경과 비용)"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 11,
+    "fields": {
+      "d2": 1,
+      "code": "126",
+      "name": "가지급금",
+      "is_special": false,
+      "description": "대표이사에게 일시적으로 돈을 빌려준 것"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 12,
+    "fields": {
+      "d2": 1,
+      "code": "127",
+      "name": "선납세금",
+      "is_special": false,
+      "description": "예금이자에 대한 이자 소득세 등"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 13,
+    "fields": {
+      "d2": 1,
+      "code": "128",
+      "name": "종업원대여금",
+      "is_special": false,
+      "description": "업무와 관련없이 종업원에게 대여하여 준것"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 14,
+    "fields": {
+      "d2": 1,
+      "code": "129",
+      "name": "전도금",
+      "is_special": false,
+      "description": "회사의 업무와 관련하여 경비 확정전 일시 지급한 금액"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 15,
+    "fields": {
+      "d2": 2,
+      "code": "131",
+      "name": "상품",
+      "is_special": false,
+      "description": "상품(도/소매업)"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 16,
+    "fields": {
+      "d2": 2,
+      "code": "132",
+      "name": "제품",
+      "is_special": false,
+      "description": "제조업의 완성제품"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 17,
+    "fields": {
+      "d2": 2,
+      "code": "133",
+      "name": "완성건물",
+      "is_special": false,
+      "description": "건설업의 완성건물"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 18,
+    "fields": {
+      "d2": 2,
+      "code": "134",
+      "name": "원재료",
+      "is_special": false,
+      "description": "제조업의 원재료"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 19,
+    "fields": {
+      "d2": 2,
+      "code": "135",
+      "name": "건설용지",
+      "is_special": false,
+      "description": "건설업의 건설용지"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 20,
+    "fields": {
+      "d2": 2,
+      "code": "136",
+      "name": "가설재",
+      "is_special": false,
+      "description": "가설재(건설업)"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 21,
+    "fields": {
+      "d2": 2,
+      "code": "137",
+      "name": "재공품",
+      "is_special": false,
+      "description": "일정시점에 생산과정에 있는 미완성된 제품의 평가액"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 22,
+    "fields": {
+      "d2": 3,
+      "code": "151",
+      "name": "장기금융상품",
+      "is_special": false,
+      "description": "예치기간이 1년을 초과하는 장기성 예금 또는 사용이 제한되어있는 예금"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 23,
+    "fields": {
+      "d2": 3,
+      "code": "152",
+      "name": "장기투자증권",
+      "is_special": false,
+      "description": "투자를 목적으로 취득한 주식 등"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 24,
+    "fields": {
+      "d2": 3,
+      "code": "153",
+      "name": "장기대여금",
+      "is_special": false,
+      "description": "대여기간이 1년을 초과하여 기업의 자금을 대여한 것"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 25,
+    "fields": {
+      "d2": 3,
+      "code": "154",
+      "name": "투자부동산",
+      "is_special": false,
+      "description": "투자목적으로 취득한 부동산"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 26,
+    "fields": {
+      "d2": 3,
+      "code": "155",
+      "name": "지분법적용투자주식",
+      "is_special": false,
+      "description": "지분법적용 투자주식"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 27,
+    "fields": {
+      "d2": 4,
+      "code": "161",
+      "name": "토지",
+      "is_special": false,
+      "description": "토지"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 28,
+    "fields": {
+      "d2": 4,
+      "code": "162",
+      "name": "건물",
+      "is_special": false,
+      "description": "사무실, 공장, 창고 등 회사소유 건물"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 29,
+    "fields": {
+      "d2": 4,
+      "code": "163",
+      "name": "구축물",
+      "is_special": false,
+      "description": "용수설비 등"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 30,
+    "fields": {
+      "d2": 4,
+      "code": "165",
+      "name": "기계장치",
+      "is_special": false,
+      "description": "각종 기계장치"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 31,
+    "fields": {
+      "d2": 4,
+      "code": "166",
+      "name": "차량운반구",
+      "is_special": false,
+      "description": "화물자동차, 승용자동차, 지게차, 중기 등"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 32,
+    "fields": {
+      "d2": 4,
+      "code": "167",
+      "name": "공구와기구",
+      "is_special": false,
+      "description": "공구, 기구로서 100만원을 초과하는 것(이하:소모품)"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 33,
+    "fields": {
+      "d2": 4,
+      "code": "168",
+      "name": "건설중인자산",
+      "is_special": false,
+      "description": "건설중인 자산의 가액"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 34,
+    "fields": {
+      "d2": 4,
+      "code": "169",
+      "name": "비품",
+      "is_special": false,
+      "description": "책상, 의자, 에어컨, 캐비넷, 컴퓨터, 팩시밀리, 복사기 등"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 35,
+    "fields": {
+      "d2": 5,
+      "code": "171",
+      "name": "영업권",
+      "is_special": false,
+      "description": "영업상의 권리"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 36,
+    "fields": {
+      "d2": 5,
+      "code": "172",
+      "name": "특허권",
+      "is_special": false,
+      "description": "특허와 관련한 권리를 금전적 가치로 계상한 것"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 37,
+    "fields": {
+      "d2": 5,
+      "code": "173",
+      "name": "상표권",
+      "is_special": false,
+      "description": "영업상의 권리"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 38,
+    "fields": {
+      "d2": 5,
+      "code": "174",
+      "name": "개발비",
+      "is_special": false,
+      "description": "개발과 관련하여 지출한 고액비용"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 39,
+    "fields": {
+      "d2": 5,
+      "code": "175",
+      "name": "소프트웨어",
+      "is_special": false,
+      "description": "고가의 소프트웨어 구입비, 개발비"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 40,
+    "fields": {
+      "d2": 6,
+      "code": "181",
+      "name": "임차보증금",
+      "is_special": false,
+      "description": "사무실, 공장 등의 임차보증금"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 41,
+    "fields": {
+      "d2": 6,
+      "code": "182",
+      "name": "기타보증금",
+      "is_special": false,
+      "description": "영업보증금, 보증금 등"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 42,
+    "fields": {
+      "d2": 6,
+      "code": "183",
+      "name": "장기매출채권",
+      "is_special": false,
+      "description": "장기매출채권"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 43,
+    "fields": {
+      "d2": 6,
+      "code": "184",
+      "name": "장기미수금",
+      "is_special": false,
+      "description": "장기미수금"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 44,
+    "fields": {
+      "d2": 6,
+      "code": "185",
+      "name": "이연법인세자산",
+      "is_special": false,
+      "description": "이연법인세자산"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 45,
+    "fields": {
+      "d2": 7,
+      "code": "211",
+      "name": "매입채무",
+      "is_special": false,
+      "description": "물품 등을 구입하고 그 대금을 나중에 지급하기로 한 것"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 46,
+    "fields": {
+      "d2": 7,
+      "code": "212",
+      "name": "단기차입금",
+      "is_special": false,
+      "description": "1년 이내에 상환하여야 하는 차입금"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 47,
+    "fields": {
+      "d2": 7,
+      "code": "213",
+      "name": "미지급금",
+      "is_special": false,
+      "description": "고정자산 등을 구입하고 그 대금을 나중에 지급하기로 한 것"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 48,
+    "fields": {
+      "d2": 7,
+      "code": "214",
+      "name": "예수금",
+      "is_special": false,
+      "description": "갑근세, 국민연금, 건강보험 등을 근로자로부터 미리 받아둔 것"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 49,
+    "fields": {
+      "d2": 7,
+      "code": "215",
+      "name": "부가세예수금",
+      "is_special": false,
+      "description": "매출 시 매입자로부터 받아 둔 부가가치세"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 50,
+    "fields": {
+      "d2": 7,
+      "code": "221",
+      "name": "가수금",
+      "is_special": false,
+      "description": "대표이사로부터 일시 차입한 돈"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 51,
+    "fields": {
+      "d2": 7,
+      "code": "222",
+      "name": "선수금",
+      "is_special": false,
+      "description": "제품을 인도하기 전 그 대금을 미리 받은 것"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 52,
+    "fields": {
+      "d2": 7,
+      "code": "223",
+      "name": "미지급비용",
+      "is_special": false,
+      "description": "비용과 관련하여 그 대금을 나중에 지급하기로 한 것"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 53,
+    "fields": {
+      "d2": 7,
+      "code": "224",
+      "name": "미지급세금",
+      "is_special": false,
+      "description": "법인세 등의 미지급액"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 54,
+    "fields": {
+      "d2": 7,
+      "code": "225",
+      "name": "이연법인세부채",
+      "is_special": false,
+      "description": "이연법인세부채"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 55,
+    "fields": {
+      "d2": 8,
+      "code": "231",
+      "name": "사채",
+      "is_special": false,
+      "description": "1년 이후에 상환예정인 회사채(개인사채가 아님)"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 56,
+    "fields": {
+      "d2": 8,
+      "code": "232",
+      "name": "장기차입금",
+      "is_special": false,
+      "description": "상환기간이 1년을 초과하는 차입금"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 57,
+    "fields": {
+      "d2": 8,
+      "code": "233",
+      "name": "신주인수권부사채",
+      "is_special": true,
+      "description": "신주인수권부사채"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 58,
+    "fields": {
+      "d2": 8,
+      "code": "234",
+      "name": "전환사채",
+      "is_special": false,
+      "description": "전환사채"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 59,
+    "fields": {
+      "d2": 8,
+      "code": "235",
+      "name": "퇴직급여충당부채",
+      "is_special": false,
+      "description": "퇴직급여충당부채"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 60,
+    "fields": {
+      "d2": 9,
+      "code": "511",
+      "name": "보통주자본금",
+      "is_special": false,
+      "description": "법인의 경우 납입자본금(보통주)"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 61,
+    "fields": {
+      "d2": 9,
+      "code": "512",
+      "name": "우선주자본금",
+      "is_special": false,
+      "description": "법인의 경우 납입자본금(우선주)"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 62,
+    "fields": {
+      "d2": 10,
+      "code": "521",
+      "name": "자본잉여금",
+      "is_special": false,
+      "description": "주식발행초과금, 감자이익"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 63,
+    "fields": {
+      "d2": 11,
+      "code": "531",
+      "name": "이익준비금",
+      "is_special": false,
+      "description": "이익잉여금의 처분으로 사내에 유보된 금액"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 64,
+    "fields": {
+      "d2": 11,
+      "code": "532",
+      "name": "기업합리화적립금",
+      "is_special": false,
+      "description": "기업합리화 적립금"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 65,
+    "fields": {
+      "d2": 11,
+      "code": "533",
+      "name": "임의적립금",
+      "is_special": false,
+      "description": "이익잉여금의 처분으로 임의로 사내에 유보한 금액"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 66,
+    "fields": {
+      "d2": 11,
+      "code": "534",
+      "name": "이월이익잉여금",
+      "is_special": false,
+      "description": "다음 사업연도로 이월하는 이익 잉여금"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 67,
+    "fields": {
+      "d2": 11,
+      "code": "535",
+      "name": "미처분이익잉여금",
+      "is_special": false,
+      "description": "미처분이익잉여금"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 68,
+    "fields": {
+      "d2": 11,
+      "code": "536",
+      "name": "미처리결손금",
+      "is_special": false,
+      "description": "미처리결손금"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 69,
+    "fields": {
+      "d2": 12,
+      "code": "541",
+      "name": "주식할인발행차금",
+      "is_special": false,
+      "description": "주식할인발행차금"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 70,
+    "fields": {
+      "d2": 12,
+      "code": "542",
+      "name": "자기주식",
+      "is_special": false,
+      "description": "자기주식"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 71,
+    "fields": {
+      "d2": 12,
+      "code": "543",
+      "name": "주식매수선택권",
+      "is_special": false,
+      "description": "주식매수선택권"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 72,
+    "fields": {
+      "d2": 12,
+      "code": "544",
+      "name": "출자전환채무",
+      "is_special": false,
+      "description": "출자전환채무"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 73,
+    "fields": {
+      "d2": 12,
+      "code": "545",
+      "name": "감자차손",
+      "is_special": false,
+      "description": "감자차손"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 74,
+    "fields": {
+      "d2": 12,
+      "code": "546",
+      "name": "자기주식처분손실",
+      "is_special": false,
+      "description": "자기주식처분손실"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 75,
+    "fields": {
+      "d2": 13,
+      "code": "551",
+      "name": "매도가능증권평가이익",
+      "is_special": false,
+      "description": "매도가능증권평가이익"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 76,
+    "fields": {
+      "d2": 13,
+      "code": "552",
+      "name": "해외사업환산손익",
+      "is_special": false,
+      "description": "해외사업환산손익"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 77,
+    "fields": {
+      "d2": 14,
+      "code": "711",
+      "name": "상품매출",
+      "is_special": false,
+      "description": "상품매출"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 78,
+    "fields": {
+      "d2": 14,
+      "code": "712",
+      "name": "제품매출",
+      "is_special": false,
+      "description": "제품매출"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 79,
+    "fields": {
+      "d2": 14,
+      "code": "713",
+      "name": "매출",
+      "is_special": false,
+      "description": "매출"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 80,
+    "fields": {
+      "d2": 14,
+      "code": "714",
+      "name": "공사수입금",
+      "is_special": false,
+      "description": "공사수입금"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 81,
+    "fields": {
+      "d2": 14,
+      "code": "715",
+      "name": "수임수수료",
+      "is_special": false,
+      "description": "수임수수료"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 82,
+    "fields": {
+      "d2": 15,
+      "code": "721",
+      "name": "이자수익",
+      "is_special": false,
+      "description": "이자 등의 수익"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 83,
+    "fields": {
+      "d2": 15,
+      "code": "722",
+      "name": "유가증권이자",
+      "is_special": false,
+      "description": "유가증권이자"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 84,
+    "fields": {
+      "d2": 15,
+      "code": "723",
+      "name": "배당금수익",
+      "is_special": false,
+      "description": "배당금수익"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 85,
+    "fields": {
+      "d2": 15,
+      "code": "731",
+      "name": "임대료",
+      "is_special": false,
+      "description": "임대료 수익"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 86,
+    "fields": {
+      "d2": 15,
+      "code": "732",
+      "name": "유가증권처분이익",
+      "is_special": false,
+      "description": "유가증권처분이익"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 87,
+    "fields": {
+      "d2": 15,
+      "code": "733",
+      "name": "외환차익",
+      "is_special": false,
+      "description": "외환차익"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 88,
+    "fields": {
+      "d2": 15,
+      "code": "734",
+      "name": "외화환산이익",
+      "is_special": false,
+      "description": "외화환산이익"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 89,
+    "fields": {
+      "d2": 15,
+      "code": "735",
+      "name": "유형자산처분이익",
+      "is_special": false,
+      "description": "유형자산처분이익"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 90,
+    "fields": {
+      "d2": 15,
+      "code": "736",
+      "name": "투자자산처분이익",
+      "is_special": false,
+      "description": "투자자산처분이익"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 91,
+    "fields": {
+      "d2": 15,
+      "code": "737",
+      "name": "잡이익",
+      "is_special": false,
+      "description": "잡이익"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 92,
+    "fields": {
+      "d2": 16,
+      "code": "811",
+      "name": "상품매출원가",
+      "is_special": false,
+      "description": "상품매출원가"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 93,
+    "fields": {
+      "d2": 16,
+      "code": "812",
+      "name": "제품매출원가",
+      "is_special": false,
+      "description": "제품매출원가"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 94,
+    "fields": {
+      "d2": 17,
+      "code": "821",
+      "name": "급여",
+      "is_special": false,
+      "description": "급여"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 95,
+    "fields": {
+      "d2": 17,
+      "code": "822",
+      "name": "상여금",
+      "is_special": false,
+      "description": "상여금"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 96,
+    "fields": {
+      "d2": 17,
+      "code": "823",
+      "name": "잡급",
+      "is_special": false,
+      "description": "잡급"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 97,
+    "fields": {
+      "d2": 17,
+      "code": "824",
+      "name": "복리후생비",
+      "is_special": false,
+      "description": "복리후생비"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 98,
+    "fields": {
+      "d2": 17,
+      "code": "825",
+      "name": "여비교통비",
+      "is_special": false,
+      "description": "여비교통비"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 99,
+    "fields": {
+      "d2": 17,
+      "code": "826",
+      "name": "접대비",
+      "is_special": false,
+      "description": "접대비"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 100,
+    "fields": {
+      "d2": 17,
+      "code": "827",
+      "name": "통신비",
+      "is_special": false,
+      "description": "통신비"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 101,
+    "fields": {
+      "d2": 17,
+      "code": "828",
+      "name": "수도광열비",
+      "is_special": false,
+      "description": "수도광열비"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 102,
+    "fields": {
+      "d2": 17,
+      "code": "831",
+      "name": "세금과공과금",
+      "is_special": false,
+      "description": "세금과공과금"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 103,
+    "fields": {
+      "d2": 17,
+      "code": "832",
+      "name": "감가상각비",
+      "is_special": false,
+      "description": "감가상각비"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 104,
+    "fields": {
+      "d2": 17,
+      "code": "833",
+      "name": "임차료",
+      "is_special": false,
+      "description": "임차료"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 105,
+    "fields": {
+      "d2": 17,
+      "code": "834",
+      "name": "수선비",
+      "is_special": false,
+      "description": "수선비"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 106,
+    "fields": {
+      "d2": 17,
+      "code": "835",
+      "name": "보험료",
+      "is_special": false,
+      "description": "보험료"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 107,
+    "fields": {
+      "d2": 17,
+      "code": "836",
+      "name": "차량유지비",
+      "is_special": false,
+      "description": "차량유지비"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 108,
+    "fields": {
+      "d2": 17,
+      "code": "837",
+      "name": "연구개발비",
+      "is_special": false,
+      "description": "연구개발비"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 109,
+    "fields": {
+      "d2": 17,
+      "code": "838",
+      "name": "운반비",
+      "is_special": false,
+      "description": "운반비"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 110,
+    "fields": {
+      "d2": 17,
+      "code": "839",
+      "name": "교육훈련비",
+      "is_special": false,
+      "description": "교육훈련비"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 111,
+    "fields": {
+      "d2": 17,
+      "code": "841",
+      "name": "도서인쇄비",
+      "is_special": false,
+      "description": "도서인쇄비"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 112,
+    "fields": {
+      "d2": 17,
+      "code": "842",
+      "name": "회의비",
+      "is_special": false,
+      "description": "회의비"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 113,
+    "fields": {
+      "d2": 17,
+      "code": "843",
+      "name": "포장비",
+      "is_special": false,
+      "description": "포장비"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 114,
+    "fields": {
+      "d2": 17,
+      "code": "844",
+      "name": "소모품비",
+      "is_special": false,
+      "description": "소모품비"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 115,
+    "fields": {
+      "d2": 17,
+      "code": "845",
+      "name": "지급수수료",
+      "is_special": false,
+      "description": "지급수수료"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 116,
+    "fields": {
+      "d2": 17,
+      "code": "846",
+      "name": "보관료",
+      "is_special": false,
+      "description": "보관료"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 117,
+    "fields": {
+      "d2": 17,
+      "code": "847",
+      "name": "광고선전비",
+      "is_special": false,
+      "description": "광고선전비"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 118,
+    "fields": {
+      "d2": 17,
+      "code": "848",
+      "name": "판매촉진비",
+      "is_special": false,
+      "description": "판매촉진비"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 119,
+    "fields": {
+      "d2": 18,
+      "code": "851",
+      "name": "이자비",
+      "is_special": false,
+      "description": "이자비"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 120,
+    "fields": {
+      "d2": 18,
+      "code": "852",
+      "name": "외환차손",
+      "is_special": false,
+      "description": "외환차손"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 121,
+    "fields": {
+      "d2": 18,
+      "code": "853",
+      "name": "유가증권처분손실",
+      "is_special": false,
+      "description": "유가증권처분손실"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 122,
+    "fields": {
+      "d2": 18,
+      "code": "854",
+      "name": "재고자산평가손실",
+      "is_special": false,
+      "description": "재고자산평가손실"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 123,
+    "fields": {
+      "d2": 18,
+      "code": "855",
+      "name": "유형자산처분손실",
+      "is_special": false,
+      "description": "유형자산처분손실"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 124,
+    "fields": {
+      "d2": 18,
+      "code": "856",
+      "name": "투자자산처분손실",
+      "is_special": false,
+      "description": "투자자산처분손실"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 125,
+    "fields": {
+      "d2": 18,
+      "code": "857",
+      "name": "잡손실",
+      "is_special": false,
+      "description": "잡손실"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 126,
+    "fields": {
+      "d2": 18,
+      "code": "858",
+      "name": "법인세등",
+      "is_special": false,
+      "description": "법인세등"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 127,
+    "fields": {
+      "d2": 18,
+      "code": "859",
+      "name": "소득세등",
+      "is_special": false,
+      "description": "소득세등"
+    }
+  },
+  {
+    "model": "rebs_cash.bankcode",
+    "pk": 1,
+    "fields": {
+      "code": "002",
+      "name": "산업은행"
+    }
+  },
+  {
+    "model": "rebs_cash.bankcode",
+    "pk": 2,
+    "fields": {
+      "code": "003",
+      "name": "기업은행"
+    }
+  },
+  {
+    "model": "rebs_cash.bankcode",
+    "pk": 3,
+    "fields": {
+      "code": "004",
+      "name": "KB국민은행"
+    }
+  },
+  {
+    "model": "rebs_cash.bankcode",
+    "pk": 4,
+    "fields": {
+      "code": "007",
+      "name": "수협은행"
+    }
+  },
+  {
+    "model": "rebs_cash.bankcode",
+    "pk": 5,
+    "fields": {
+      "code": "011",
+      "name": "NH농협은행"
+    }
+  },
+  {
+    "model": "rebs_cash.bankcode",
+    "pk": 6,
+    "fields": {
+      "code": "012",
+      "name": "지역농축협"
+    }
+  },
+  {
+    "model": "rebs_cash.bankcode",
+    "pk": 7,
+    "fields": {
+      "code": "020",
+      "name": "우리은행"
+    }
+  },
+  {
+    "model": "rebs_cash.bankcode",
+    "pk": 8,
+    "fields": {
+      "code": "023",
+      "name": "SC제일은행"
+    }
+  },
+  {
+    "model": "rebs_cash.bankcode",
+    "pk": 9,
+    "fields": {
+      "code": "027",
+      "name": "한국씨티은행"
+    }
+  },
+  {
+    "model": "rebs_cash.bankcode",
+    "pk": 10,
+    "fields": {
+      "code": "031",
+      "name": "대구은행"
+    }
+  },
+  {
+    "model": "rebs_cash.bankcode",
+    "pk": 11,
+    "fields": {
+      "code": "032",
+      "name": "부산은행"
+    }
+  },
+  {
+    "model": "rebs_cash.bankcode",
+    "pk": 12,
+    "fields": {
+      "code": "034",
+      "name": "광주은행"
+    }
+  },
+  {
+    "model": "rebs_cash.bankcode",
+    "pk": 13,
+    "fields": {
+      "code": "035",
+      "name": "제주은행"
+    }
+  },
+  {
+    "model": "rebs_cash.bankcode",
+    "pk": 14,
+    "fields": {
+      "code": "037",
+      "name": "전북은행"
+    }
+  },
+  {
+    "model": "rebs_cash.bankcode",
+    "pk": 15,
+    "fields": {
+      "code": "039",
+      "name": "경남은행"
+    }
+  },
+  {
+    "model": "rebs_cash.bankcode",
+    "pk": 16,
+    "fields": {
+      "code": "045",
+      "name": "새마을금고"
+    }
+  },
+  {
+    "model": "rebs_cash.bankcode",
+    "pk": 17,
+    "fields": {
+      "code": "048",
+      "name": "신협"
+    }
+  },
+  {
+    "model": "rebs_cash.bankcode",
+    "pk": 18,
+    "fields": {
+      "code": "071",
+      "name": "우체국"
+    }
+  },
+  {
+    "model": "rebs_cash.bankcode",
+    "pk": 19,
+    "fields": {
+      "code": "081",
+      "name": "하나은행"
+    }
+  },
+  {
+    "model": "rebs_cash.bankcode",
+    "pk": 20,
+    "fields": {
+      "code": "088",
+      "name": "신한은행"
+    }
+  },
+  {
+    "model": "rebs_cash.bankcode",
+    "pk": 21,
+    "fields": {
+      "code": "089",
+      "name": "케이뱅크"
+    }
+  },
+  {
+    "model": "rebs_cash.bankcode",
+    "pk": 22,
+    "fields": {
+      "code": "090",
+      "name": "카카오뱅크"
+    }
+  },
+  {
+    "model": "rebs_cash.bankcode",
+    "pk": 23,
+    "fields": {
+      "code": "000",
+      "name": "기타"
+    }
+  },
+  {
+    "model": "rebs_cash.companybankaccount",
+    "pk": 1,
+    "fields": {
+      "company": 1,
+      "division": null,
+      "bankcode": 23,
+      "alias_name": "현금",
+      "number": "",
+      "holder": "",
+      "open_date": null,
+      "note": "",
+      "inactive": false
+    }
+  },
+  {
+    "model": "rebs.projectaccountd1",
+    "pk": 1,
+    "fields": {
+      "sort": "1",
+      "code": "810",
+      "name": "분양수입금",
+      "description": "매출금 - 일반분양 등"
+    }
+  },
+  {
+    "model": "rebs.projectaccountd1",
+    "pk": 2,
+    "fields": {
+      "sort": "1",
+      "code": "820",
+      "name": "분(부)담금",
+      "description": "출자금 (조합 등 형태인 경우)"
+    }
+  },
+  {
+    "model": "rebs.projectaccountd1",
+    "pk": 3,
+    "fields": {
+      "sort": "1",
+      "code": "830",
+      "name": "차입금",
+      "description": "브리지, PF대출, 중도금 등 기타"
+    }
+  },
+  {
+    "model": "rebs.projectaccountd1",
+    "pk": 4,
+    "fields": {
+      "sort": "1",
+      "code": "840",
+      "name": "기타자산회수",
+      "description": "공탁금, 보증금 등 회수"
+    }
+  },
+  {
+    "model": "rebs.projectaccountd1",
+    "pk": 5,
+    "fields": {
+      "sort": "1",
+      "code": "850",
+      "name": "기타잡수입",
+      "description": "사업목적 외 기타 수입, 위약금 수입"
+    }
+  },
+  {
+    "model": "rebs.projectaccountd1",
+    "pk": 6,
+    "fields": {
+      "sort": "2",
+      "code": "310",
+      "name": "토지비",
+      "description": "토지매입비 및  관련 부대비용"
+    }
+  },
+  {
+    "model": "rebs.projectaccountd1",
+    "pk": 7,
+    "fields": {
+      "sort": "2",
+      "code": "320",
+      "name": "건축비",
+      "description": "건축 공사비"
+    }
+  },
+  {
+    "model": "rebs.projectaccountd1",
+    "pk": 8,
+    "fields": {
+      "sort": "2",
+      "code": "330",
+      "name": "판매비",
+      "description": "분양 광고 홍보비 등"
+    }
+  },
+  {
+    "model": "rebs.projectaccountd1",
+    "pk": 9,
+    "fields": {
+      "sort": "2",
+      "code": "340",
+      "name": "부대비",
+      "description": "기타 부대비용"
+    }
+  },
+  {
+    "model": "rebs.projectaccountd1",
+    "pk": 10,
+    "fields": {
+      "sort": "2",
+      "code": "360",
+      "name": "금융비",
+      "description": "대출 수수료, 이자 등"
+    }
+  },
+  {
+    "model": "rebs.projectaccountd1",
+    "pk": 11,
+    "fields": {
+      "sort": "2",
+      "code": "410",
+      "name": "분양금반환",
+      "description": "매출대금 환불"
+    }
+  },
+  {
+    "model": "rebs.projectaccountd1",
+    "pk": 12,
+    "fields": {
+      "sort": "2",
+      "code": "420",
+      "name": "분담금반환",
+      "description": "분담금 반환/환불"
+    }
+  },
+  {
+    "model": "rebs.projectaccountd1",
+    "pk": 13,
+    "fields": {
+      "sort": "2",
+      "code": "430",
+      "name": "차입금상환",
+      "description": "차입금 등 상환(이자비용 외)"
+    }
+  },
+  {
+    "model": "rebs.projectaccountd1",
+    "pk": 14,
+    "fields": {
+      "sort": "2",
+      "code": "440",
+      "name": "기타 자산",
+      "description": "법원 공탁금 및 기타 보증금 등"
+    }
+  },
+  {
+    "model": "rebs.projectaccountd1",
+    "pk": 15,
+    "fields": {
+      "sort": "2",
+      "code": "450",
+      "name": "원천세",
+      "description": "예금 관련 세금"
+    }
+  },
+  {
+    "model": "rebs.projectaccountd1",
+    "pk": 16,
+    "fields": {
+      "sort": "2",
+      "code": "460",
+      "name": "기타 잡손실",
+      "description": "기타 잡손실"
+    }
+  },
+  {
+    "model": "rebs.projectaccountd1",
+    "pk": 17,
+    "fields": {
+      "sort": "3",
+      "code": "900",
+      "name": "대체",
+      "description": "계좌간 이체"
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 1,
+    "fields": {
+      "d1": 1,
+      "code": "811",
+      "sub_title": "",
+      "name": "분양수입금",
+      "description": "매출금 - 일반분양 등"
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 2,
+    "fields": {
+      "d1": 2,
+      "code": "821",
+      "sub_title": "",
+      "name": "분(부)담금",
+      "description": "출자금 (조합 등 형태인 경우)"
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 3,
+    "fields": {
+      "d1": 3,
+      "code": "831",
+      "sub_title": "",
+      "name": "차입금(브리지)",
+      "description": ""
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 4,
+    "fields": {
+      "d1": 3,
+      "code": "832",
+      "sub_title": "",
+      "name": "차입금(PF대출)",
+      "description": ""
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 5,
+    "fields": {
+      "d1": 3,
+      "code": "833",
+      "sub_title": "",
+      "name": "차입금(중도금)",
+      "description": ""
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 6,
+    "fields": {
+      "d1": 3,
+      "code": "834",
+      "sub_title": "",
+      "name": "차입금(기타)",
+      "description": ""
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 7,
+    "fields": {
+      "d1": 4,
+      "code": "841",
+      "sub_title": "",
+      "name": "기타자산회수",
+      "description": "공탁금, 보증금 등 회수"
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 8,
+    "fields": {
+      "d1": 5,
+      "code": "851",
+      "sub_title": "",
+      "name": "기타잡수입",
+      "description": "사업목적 외 기타 수입, 위약금 수입"
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 9,
+    "fields": {
+      "d1": 6,
+      "code": "311",
+      "sub_title": "",
+      "name": "토지매입비",
+      "description": "토지매입대금"
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 10,
+    "fields": {
+      "d1": 6,
+      "code": "312",
+      "sub_title": "",
+      "name": "취등록세",
+      "description": "매입 관련 세금"
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 11,
+    "fields": {
+      "d1": 6,
+      "code": "313",
+      "sub_title": "",
+      "name": "등기대행료(법무사)",
+      "description": "수수료 등"
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 12,
+    "fields": {
+      "d1": 6,
+      "code": "314",
+      "sub_title": "",
+      "name": "매입관련 용역비",
+      "description": "지주작업 용역 등"
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 13,
+    "fields": {
+      "d1": 7,
+      "code": "321",
+      "sub_title": "",
+      "name": "직접공사비",
+      "description": "시공비"
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 14,
+    "fields": {
+      "d1": 7,
+      "code": "322",
+      "sub_title": "간접공사비",
+      "name": "각종 인입비",
+      "description": "난방, 전기, 통신 등"
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 15,
+    "fields": {
+      "d1": 7,
+      "code": "323",
+      "sub_title": "간접공사비",
+      "name": "예술장식품비",
+      "description": ""
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 16,
+    "fields": {
+      "d1": 7,
+      "code": "324",
+      "sub_title": "간접공사비",
+      "name": "상하수도분담금",
+      "description": ""
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 17,
+    "fields": {
+      "d1": 7,
+      "code": "325",
+      "sub_title": "간접공사비",
+      "name": "이주철거비",
+      "description": ""
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 18,
+    "fields": {
+      "d1": 7,
+      "code": "326",
+      "sub_title": "간접공사비",
+      "name": "건축허가조건이행공사비",
+      "description": "진입로, 단지외공사 도로, 공원 등 인허가 조건부"
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 19,
+    "fields": {
+      "d1": 7,
+      "code": "327",
+      "sub_title": "설계감리비",
+      "name": "설계용역비",
+      "description": ""
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 20,
+    "fields": {
+      "d1": 7,
+      "code": "328",
+      "sub_title": "설계감리비",
+      "name": "감리용역비",
+      "description": ""
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 21,
+    "fields": {
+      "d1": 7,
+      "code": "329",
+      "sub_title": "설계감리비",
+      "name": "기타용역비",
+      "description": "지구단위, 지질조사, 측량 감평, 각종 인증 등"
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 22,
+    "fields": {
+      "d1": 8,
+      "code": "331",
+      "sub_title": "",
+      "name": "M/H 부지임차료",
+      "description": ""
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 23,
+    "fields": {
+      "d1": 8,
+      "code": "332",
+      "sub_title": "",
+      "name": "M/H 건립/해체비",
+      "description": ""
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 24,
+    "fields": {
+      "d1": 8,
+      "code": "333",
+      "sub_title": "",
+      "name": "M/H 운영비",
+      "description": ""
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 25,
+    "fields": {
+      "d1": 8,
+      "code": "334",
+      "sub_title": "",
+      "name": "분양보증 수수료(APT)",
+      "description": ""
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 26,
+    "fields": {
+      "d1": 8,
+      "code": "335",
+      "sub_title": "",
+      "name": "분양보증 수수료(기타)",
+      "description": ""
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 27,
+    "fields": {
+      "d1": 8,
+      "code": "336",
+      "sub_title": "",
+      "name": "광고홍보비",
+      "description": ""
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 28,
+    "fields": {
+      "d1": 8,
+      "code": "337",
+      "sub_title": "",
+      "name": "분양수수료",
+      "description": ""
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 29,
+    "fields": {
+      "d1": 8,
+      "code": "338",
+      "sub_title": "",
+      "name": "기타 마케팅 촉진비용",
+      "description": ""
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 30,
+    "fields": {
+      "d1": 9,
+      "code": "341",
+      "sub_title": "일반관리비",
+      "name": "시행자 운영비",
+      "description": ""
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 31,
+    "fields": {
+      "d1": 9,
+      "code": "342",
+      "sub_title": "일반관리비",
+      "name": "신탁수수료",
+      "description": ""
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 32,
+    "fields": {
+      "d1": 9,
+      "code": "343",
+      "sub_title": "일반관리비",
+      "name": "입주관리비",
+      "description": ""
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 33,
+    "fields": {
+      "d1": 9,
+      "code": "344",
+      "sub_title": "일반관리비",
+      "name": "예비비 및 민원처리비",
+      "description": ""
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 34,
+    "fields": {
+      "d1": 9,
+      "code": "345",
+      "sub_title": "일반관리비",
+      "name": "업무대행료",
+      "description": ""
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 35,
+    "fields": {
+      "d1": 9,
+      "code": "351",
+      "sub_title": "제세공과금 등",
+      "name": "보존등기비",
+      "description": "준공/사용 승인 후 소유권 보존 등기비"
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 36,
+    "fields": {
+      "d1": 9,
+      "code": "352",
+      "sub_title": "제세공과금 등",
+      "name": "광역교통시설분담금",
+      "description": ""
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 37,
+    "fields": {
+      "d1": 9,
+      "code": "353",
+      "sub_title": "제세공과금 등",
+      "name": "학교용지분담금",
+      "description": ""
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 38,
+    "fields": {
+      "d1": 9,
+      "code": "354",
+      "sub_title": "제세공과금 등",
+      "name": "재산세(종합토지세)",
+      "description": ""
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 39,
+    "fields": {
+      "d1": 9,
+      "code": "355",
+      "sub_title": "제세공과금 등",
+      "name": "지방교육세",
+      "description": ""
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 40,
+    "fields": {
+      "d1": 9,
+      "code": "356",
+      "sub_title": "제세공과금 등",
+      "name": "과밀부담금",
+      "description": "서울시/업무/판매용 해당"
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 41,
+    "fields": {
+      "d1": 9,
+      "code": "357",
+      "sub_title": "제세공과금 등",
+      "name": "기반시설 설치비용",
+      "description": "기반시설 부담구역 지정 여부 확인"
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 42,
+    "fields": {
+      "d1": 9,
+      "code": "358",
+      "sub_title": "제세공과금 등",
+      "name": "농지(산림)전용 부담금",
+      "description": ""
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 43,
+    "fields": {
+      "d1": 9,
+      "code": "359",
+      "sub_title": "제세공과금 등",
+      "name": "기타 부담금",
+      "description": ""
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 44,
+    "fields": {
+      "d1": 10,
+      "code": "361",
+      "sub_title": "",
+      "name": "브리지 수수료",
+      "description": ""
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 45,
+    "fields": {
+      "d1": 10,
+      "code": "362",
+      "sub_title": "",
+      "name": "브리지 이자",
+      "description": ""
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 46,
+    "fields": {
+      "d1": 10,
+      "code": "363",
+      "sub_title": "",
+      "name": "PF대출 수수료",
+      "description": ""
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 47,
+    "fields": {
+      "d1": 10,
+      "code": "364",
+      "sub_title": "",
+      "name": "PF대출 이자",
+      "description": ""
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 48,
+    "fields": {
+      "d1": 10,
+      "code": "365",
+      "sub_title": "",
+      "name": "중도금 무이자",
+      "description": ""
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 49,
+    "fields": {
+      "d1": 10,
+      "code": "366",
+      "sub_title": "",
+      "name": "중도금 후불제",
+      "description": ""
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 50,
+    "fields": {
+      "d1": 10,
+      "code": "367",
+      "sub_title": "",
+      "name": "기타 금융비",
+      "description": ""
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 51,
+    "fields": {
+      "d1": 11,
+      "code": "411",
+      "sub_title": "",
+      "name": "분양금반환",
+      "description": ""
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 52,
+    "fields": {
+      "d1": 12,
+      "code": "421",
+      "sub_title": "",
+      "name": "분담금반환",
+      "description": ""
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 53,
+    "fields": {
+      "d1": 13,
+      "code": "431",
+      "sub_title": "",
+      "name": "브리지 상환",
+      "description": ""
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 54,
+    "fields": {
+      "d1": 13,
+      "code": "432",
+      "sub_title": "",
+      "name": "PF대출 상환",
+      "description": ""
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 55,
+    "fields": {
+      "d1": 13,
+      "code": "433",
+      "sub_title": "",
+      "name": "중도금 대출상환",
+      "description": ""
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 56,
+    "fields": {
+      "d1": 13,
+      "code": "434",
+      "sub_title": "",
+      "name": "기타 차입금 상환",
+      "description": ""
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 57,
+    "fields": {
+      "d1": 14,
+      "code": "441",
+      "sub_title": "",
+      "name": "법원 공탁금",
+      "description": "회수 예정 공탁금"
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 58,
+    "fields": {
+      "d1": 14,
+      "code": "442",
+      "sub_title": "",
+      "name": "기타 보증금",
+      "description": "회수 예정 보증금"
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 59,
+    "fields": {
+      "d1": 15,
+      "code": "451",
+      "sub_title": "",
+      "name": "원천세",
+      "description": ""
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 60,
+    "fields": {
+      "d1": 16,
+      "code": "461",
+      "sub_title": "",
+      "name": "기타 잡손실",
+      "description": ""
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 61,
+    "fields": {
+      "d1": 17,
+      "code": "911",
+      "sub_title": "",
+      "name": "대체",
+      "description": ""
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 62,
+    "fields": {
+      "d1": 1,
+      "code": "812",
+      "sub_title": "",
+      "name": "분양수입금 - 해지건",
+      "description": "매출금 - 일반분양 등 - 해지(반환/위약)건"
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 63,
+    "fields": {
+      "d1": 2,
+      "code": "822",
+      "sub_title": "",
+      "name": "분(부)담금 - 해지건",
+      "description": "출자금 - 해지(반환/위약)건"
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 64,
+    "fields": {
+      "d1": 1,
+      "code": "813",
+      "sub_title": "",
+      "name": "분양수입금 - 위약금",
+      "description": "매출금 - 일반분양 등 위약금"
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 65,
+    "fields": {
+      "d1": 2,
+      "code": "823",
+      "sub_title": "",
+      "name": "분(부)담금 - 위약금",
+      "description": "출자금 - 위약금"
+    }
+  },
+  {
+    "model": "board.group",
+    "pk": 1,
+    "fields": {
+      "name": "기본그룹"
+    }
+  },
+  {
+    "model": "board.board",
+    "pk": 1,
+    "fields": {
+      "group": 1,
+      "name": "일반 문서 게시판",
+      "order": 1
+    }
+  },
+  {
+    "model": "board.board",
+    "pk": 2,
+    "fields": {
+      "group": 1,
+      "name": "소송 기록 게시판",
+      "order": 2
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 1,
+    "fields": {
+      "board": 1,
+      "name": "발송공문",
+      "order": 1
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 2,
+    "fields": {
+      "board": 1,
+      "name": "수신공문",
+      "order": 2
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 3,
+    "fields": {
+      "board": 1,
+      "name": "회의록/보고서",
+      "order": 3
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 4,
+    "fields": {
+      "board": 1,
+      "name": "계약서/협약서",
+      "order": 4
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 5,
+    "fields": {
+      "board": 1,
+      "name": "내규/서식",
+      "order": 5
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 6,
+    "fields": {
+      "board": 1,
+      "name": "기타",
+      "order": 6
+    }
+  }
+]

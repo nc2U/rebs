@@ -1,0 +1,286 @@
+{% load mathfilters humanize %}
+<table style="width:100%;">
+    <tr>
+        <th style="height:50px; margin:auto; text-align:center; " colspan="2">
+            <h2>{{ bill.project }}</h2>
+        </th>
+    </tr>
+    <tr>
+        <td style="font-size:11px;">{{ bill.zipcode }} {{ bill.address1 }} {{ bill.address2 }} {{ bill.address3 }}</td>
+        <td style="font-size:11px; text-align:right;">Tel. {{ bill.host_tel }}</td>
+    </tr>
+</table>
+
+<table style="width:100%; font-size:12px;">
+    <tr>
+        <td style="border-top: 2px solid #000; width: 60px; padding: 8px 15px 2px;">문서 번호 :</td>
+        <td style="border-top: 2px solid #000;"></td>
+        <td style="border-top: 2px solid #000; width: 60px; padding: 8px 15px 2px; text-align: right;">{{ issue_date }}</td>
+    </tr>
+    <tr>
+        <td style="padding: 5px 15px 2px;">수 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;신 :</td>
+        <td style="padding: 5px 0 2px; font-size:13px;" colspan="2"><strong>{{ data.contract.contractor.name }}
+            님</strong></td>
+    </tr>
+    <tr>
+        <td style="padding: 5px 15px 2px;">참 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;조 :</td>
+        <td colspan="2"></td>
+    </tr>
+    <tr>
+        <td style="padding: 2px 15px  8px; border-bottom: 2px solid #000;">제 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;목 :
+        </td>
+        <td style="padding: 2px 0 8px; font-size:14px; border-bottom: 2px solid #000;" colspan="2">{{ bill.title }}</td>
+    </tr>
+</table>
+
+<table style="width:100%; font-size:12px;">
+    <tr>
+        <td style="padding: 5px 15px 0;">{{ bill.content|linebreaks }}</td>
+    </tr>
+</table>
+
+<table style="margin-top: 10px;">
+    <tr>
+        <td style="font-size: 12px;">■ 계약 내용</td>
+    </tr>
+</table>
+
+<table style="width:100%; font-size:11px; border-collapse:collapse;" cellpadding=0; cellspacing=0;>
+    <tr>
+        <td style="padding: 3px 0px; border:1px solid black; text-align:center;" width="20%;">계약자명</td>
+        <td style="padding: 3px 0px; border:1px solid black; text-align:center;" width="20%;">계 약 일</td>
+        <td style="padding: 3px 0px; border:1px solid black; text-align:center;" width="20%;">
+            {% if data.unit %}동 호수{% else %}조합원번호{% endif %}
+        </td>
+        <td style="padding: 3px 0px; border:1px solid black; text-align:center;" width="20%;">평형(TYPE)</td>
+        <td style="padding: 3px 0px; border:1px solid black; text-align:center;" width="20%;">총 공급가액</td>
+    </tr>
+    <tr>
+        <td style="padding: 3px 0px; border:1px solid black; text-align:center; ">{{ data.contract.contractor.name }}</td>
+        <td style="padding: 3px 0px; border:1px solid black; text-align:center; ">{{ data.contract.contractor.contract_date }}</td>
+        <td style="padding: 3px 0px; border:1px solid black; text-align:center; ">
+            {% if data.unit %}
+                {{ data.contract.contractunit.unitnumber }}
+            {% else %}
+                {{ data.contract.serial_number }}
+            {% endif %}
+        </td>
+        <td style="padding: 3px 0px; border:1px solid black; text-align:center; ">{{ data.contract.contractunit.unit_type }}</td>
+        <td style="padding: 3px 10px; border:1px solid black; text-align:{% if data.unit %}right{% else %}center{% endif %}; ">
+            {% if data.unit %}{{ data.price|intcomma }}{% else %}동호 지정 후 고지{% endif %}</td>
+    </tr>
+</table>
+
+<table style="margin-top: 10px;">
+    <tr>
+        <td style="font-size: 12px;">■ 당회 납부대금 안내</td>
+    </tr>
+</table>
+<table style="width:100%; font-size:11px; border-collapse:collapse;" cellpadding=0; cellspacing=0;>
+    <tr>
+        <td style="padding: 3px 0px; border:1px solid black; text-align:center;" width="16%;">납부 회차</td>
+        <td style="padding: 3px 0px; border:1px solid black; text-align:center;" width="16%;">납부 기한</td>
+        <td style="padding: 3px 10px; border:1px solid black; text-align:center;" width="16%;">약정 금액</td>
+        <td style="padding: 3px 10px; border:1px solid black; text-align:center;" width="16%;">미납 금액</td>
+        <td style="padding: 3px 10px; border:1px solid black; text-align:center;" width="16%;">연체가산금</td>
+        <td style="padding: 3px 10px; border:1px solid black; text-align:center;" width="20%;">납부 금액</td>
+    </tr>
+    {% for un_order in data.unpaid_orders %}
+        {% with summary_late_fee=data.summary_late_fee_list.pop %}
+            <tr>
+                <!--납부 회차-->
+                <td style="padding: 3px 0px; border:1px solid black; text-align:center;">{{ un_order }}</td>
+                <!--납부 기한-->
+                <td style="padding: 3px 0px; border:1px solid black; text-align:center;">
+                    {{ un_order.extra_due_date|default:un_order.pay_due_date }}
+                </td>
+                <!--약정 금액-->
+                <td style="padding: 3px 10px; border:1px solid black; text-align:right;">{{ data.pay_amount|default:"-"|intcomma }}</td>
+                <!--미납 금액-->
+                <td style="padding: 3px 10px; border:1px solid black; text-align:right;">
+                    {% if forloop.first %}
+                        {{ data.pay_amount|add:data.cal_unpaid|default:"-"|intcomma }}
+                    {% else %}
+                        {{ data.pay_amount|default:"-"|intcomma }}
+                    {% endif %}
+                </td>
+                <!--연체가산금-->
+                <td style="padding: 3px 10px; border:1px solid black; text-align:right;">
+                    {{ summary_late_fee|default:"-"|intcomma }}
+                </td>
+                <!--납부 금액-->
+                <td style="padding: 3px 10px; border:1px solid black; text-align:right;">
+                    {% if forloop.first %}
+                        {{ data.pay_amount|add:data.cal_unpaid|add:summary_late_fee|default:"-"|intcomma }}
+                    {% else %}
+                        {{ data.pay_amount|add:summary_late_fee|default:"-"|intcomma }}
+                    {% endif %}
+                </td>
+            </tr>
+        {% endwith %}
+    {% endfor %}
+    <tr>
+        <td style="padding: 3px 0px; border:1px solid black; text-align:center;" colspan="2">합 계</td>
+        <td style="padding: 3px 10px; border:1px solid black; text-align:right;">{{ data.pay_amount_sum|default:"-"|intcomma }}</td>
+        <td style="padding: 3px 10px; border:1px solid black; text-align:right;">{{ data.cal_unpaid_sum|default:"-"|intcomma }}</td>
+        <td style="padding: 3px 10px; border:1px solid black; text-align:right;">{{ data.summary_late_fee_sum|default:"-"|intcomma }}</td>
+        <td style="padding: 3px 10px; border:1px solid black; text-align:right;">{{ data.cal_unpaid_sum|add:data.summary_late_fee_sum|default:"-"|intcomma }}</td>
+    </tr>
+</table>
+
+<table style="margin-top: 10px;">
+    <tr>
+        <td style="font-size: 12px;">■ 계좌번호 안내</td>
+    </tr>
+</table>
+
+<table style="width:100%; font-size:11px; border-collapse:collapse;" cellpadding=0; cellspacing=0;">
+    <tr>
+        <td style="border:1px solid black; padding: 0;">
+            <table style="width:100%; font-size:11px; border-collapse:collapse;" cellpadding=0; cellspacing=0;>
+                <tr>
+                    <td style="padding: 3px 0px; border:1px solid black; text-align:center;" width="20%;">구 분</td>
+                    <td style="padding: 3px 0px; border:1px solid black; text-align:center;" width="20%;">개설은행명</td>
+                    <td style="padding: 3px 0px; border:1px solid black; text-align:center;" width="20%;">계 좌 번 호</td>
+                    <td style="padding: 3px 0px; border:1px solid black; text-align:center;" width="20%;" colspan="2">예
+                        금 주
+                    </td>
+                    <td style="padding: 3px 0px; border:1px solid black; text-align:center;" width="20%;">입금하실 금액</td>
+                </tr>
+                <tr>
+                    <td style="padding: 3px 0px; border:1px solid black; text-align:center;">분 양 대 금</td>
+                    <td style="padding: 3px 0px; border:1px solid black; text-align:center; ">{{ bill.bank_account1 }}</td>
+                    <td style="padding: 3px 0px; border:1px solid black; text-align:center; ">{{ bill.bank_number1 }}</td>
+                    <td style="padding: 3px 0px; border:1px solid black; text-align:center; "
+                        colspan="2">{{ bill.bank_host1 }}</td>
+                    <td style="padding: 3px 10px; border:1px solid black; text-align:right;">{{ data.cal_unpaid_sum|add:data.summary_late_fee_sum|sub:data.pm_cost_sum|default:"-"|intcomma }}</td>
+                </tr>
+                {% if data.pm_cost_sum %}
+                    <tr>
+                        <td style="padding: 3px 0px; border:1px solid black; text-align:center;">{{ 'PM 용역비' }}</td>
+                        <td style="padding: 3px 0px; border:1px solid black; text-align:center; ">{{ bill.bank_account2 }}</td>
+                        <td style="padding: 3px 0px; border:1px solid black; text-align:center; ">{{ bill.bank_number2 }}</td>
+                        <td style="padding: 3px 0px; border:1px solid black; text-align:center; "
+                            colspan="2">{{ bill.bank_host2 }}</td>
+                        <td style="padding: 3px 10px; border:1px solid black; text-align:right;">{{ data.pm_cost_sum|default:"-"|intcomma }}</td>
+                    </tr>
+                {% endif %}
+                <tr>
+                    <td style="padding: 5px 10px; border:1px solid black;"
+                        colspan="{% if data.pm_cost_sum %}4{% else %}6{% endif %}">
+                        ※ 계좌 입금 시 반드시 계약자명과 상기 {% if data.unit %}동 호수{% else %}조합원번호{% endif %}를 병행 표기하여 납부하여 주시기 바랍니다.
+                        <br/> &nbsp;&nbsp;&nbsp;
+                        예) 홍길동{% if data.unit %}{{ data.contract.contractunit.unitnumber }}{% else %}
+                        {{ data.contract.serial_number|truncatechars:7 }}{% endif %}
+                    </td>
+                    {% if data.pm_cost_sum %}
+                        <td style="padding: 3px 0px; border:1px solid black; text-align:center;">합 계</td>
+                        <td style="padding: 3px 10px; border:1px solid black; text-align:right;">{{ data.cal_due_payment|default:"-"|intcomma }}</td>
+                    {% endif %}
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+<table style="margin-top: 10px;">
+    <tr>
+        <td style="font-size: 12px;">■ 납부약정 및 납입내역</td>
+    </tr>
+</table>
+
+<table style="width:100%; font-size:11px; border-collapse:collapse;" cellpadding=0; cellspacing=0;>
+    <tr>
+        <td style="padding: 3px 0px; border:1px solid black; text-align:center; width: 12%;" rowspan="3">구 분</td>
+        <td style="padding: 3px 0px; border:1px solid black; text-align:center; width: 24%;" colspan="2">약 정 사 항</td>
+        <td style="padding: 3px 0px; border:1px solid black; text-align:center; width: 58%;" colspan="5">수 납 사 항</td>
+        <td style="padding: 3px 0px; border:1px solid black; text-align:center; width: 6%;" rowspan="3">비고</td>
+    </tr>
+    <tr>
+        <td style="padding: 3px 0px; border:1px solid black; text-align:center; width: 12%;" rowspan="2">납부기한</td>
+        <td style="padding: 3px 0px; border:1px solid black; text-align:center; width: 12%;" rowspan="2">금 액</td>
+        <td style="padding: 3px 0px; border:1px solid black; text-align:center; width: 24%;" colspan="2">실 수납금액</td>
+        <td style="padding: 3px 0px; border:1px solid black; text-align:center; width: 20%;" colspan="3">선납연체(할인가산)</td>
+    </tr>
+    <tr>
+        <td style="padding: 3px 0px; border:1px solid black; text-align:center; width: 12%;">일자</td>
+        <td style="padding: 3px 0px; border:1px solid black; text-align:center; width: 12%;">금액</td>
+        <td style="padding: 3px 0px; border:1px solid black; text-align:center; width: 12%;">적용 금액</td>
+        <td style="padding: 3px 0px; border:1px solid black; text-align:center; width: 8%;">일수</td>
+        <td style="padding: 3px 0px; border:1px solid black; text-align:center; width: 14%;">할인(-)/가산금</td>
+    </tr>
+    <tr>
+        <td colspan="9" style="padding-bottom: 5px; border-left: solid 1px; border-right: solid 1px;"></td>
+    </tr>
+
+    {% for paid_order in data.paid_orders %}
+        {% with due_date=data.due_date_list.pop paid_date=data.paid_date_list.pop paid_cash=data.payment_list.pop def_pay=data.def_pay_list.pop delay_dates=data.delay_day_list.pop late_fee=data.late_fee_list.pop %}
+            <tr>
+                <td style="text-align:center; border-left: solid 1px;">{{ paid_order.pay_name }}</td>{# 구분 #}
+                <td style="text-align:center;">{{ due_date|date:"Y-m-d" }}</td> {# 납부기한 #}
+                <td style="text-align:right;">{{ data.pay_amount|intcomma }}</td>{# 약정금액 #}
+                <td style="text-align:center; padding-right:1px;">{{ paid_date|date:"Y-m-d" }}</td>{# 실 수납일자 #}
+                <td style="text-align:right;">{{ paid_cash|default:"-"|intcomma }}</td>{# 실 수납금액 #}
+                <td style="padding-right:5px; text-align:right;">{{ def_pay|default:"-"|intcomma }}</td>{# 선납-지연 적용금액 #}
+                <td style="text-align:right;">{{ delay_dates|default:"-"|intcomma }}</td>{# 선납-지연 일수 #}
+                <td style="text-align:right;">{{ late_fee|default:"-"|intcomma }}</td>{# 할인(-)/가산금 #}
+                <td style="border-right: solid 1px"></td>
+            </tr>
+        {% endwith %}
+    {% endfor %}
+
+    {% for i in data.blank_line %}
+        <tr>
+            <td style="border-left: solid 1px; border-right: solid 1px;" colspan="9">&nbsp;</td>
+        </tr>
+    {% endfor %}
+
+    {% for rem_order in data.remaining_orders %}
+        <tr>
+            <td style="text-align:center; border-left: solid 1px;">{{ rem_order.pay_name }}</td>
+            <td style="text-align:center;">{{ rem_order.pay_due_date|date:"Y-m-d" }}</td>
+            <td style="text-align:right;">
+                {% if rem_order.pay_sort == '1' %}{{ data.down|intcomma }}
+                    {% elif rem_order.pay_sort == '2' %}{{ data.medium|intcomma }}
+                    {% else %}{{ data.balance|intcomma }}
+                {% endif %}
+            </td>
+            <td style="border-right: solid 1px;" colspan="6"></td>
+        </tr>
+    {% endfor %}
+
+    <tr>
+        <td colspan="9" style="padding-bottom: 5px; border-left: solid 1px; border-right: solid 1px;"></td>
+    </tr>
+    <tr>
+        <td style="padding: 3px 0px; border:1px solid black; text-align:center;">합 계</td>
+        <td style="padding: 3px 5px; border:1px solid black; text-align:{% if data.unit %}right{% else %}center{% endif %};"
+            colspan="2">{% if data.unit %}{{ data.price|intcomma }}{% else %}동호 지정 후 고지{% endif %}</td>
+        <td style="padding: 3px 5px; border:1px solid black; text-align:right;"
+            colspan="2">{{ data.paid_sum|default:"-"|intcomma }}</td>
+        <td style="padding: 3px 5px; border:1px solid black; text-align:right;">{{ data.def_pay_sum|default:"-"|intcomma }}</td>
+        <td style="padding: 3px 5px; border:1px solid black; text-align:right;">{{ data.delay_day_sum|default:"-"|intcomma }}</td>
+        <td style="padding: 3px 5px; border:1px solid black; text-align:right; ">{{ data.late_fee_sum|default:"-"|intcomma }}</td>
+        <td style="padding: 3px 0px; border:1px solid black; text-align:center;"></td>
+    </tr>
+</table>
+
+<table style="width:100%; font-size:10px;" cellpadding=0; cellspacing=0;>
+    <tr>
+        <td colspan="{% if bill.agency %}5{% else %}3{% endif %}" style="padding-bottom: 5px;">
+            <span style="font-size: 9px;">
+                ※ {% if not data.unit %}<u>총 공급가액 및 전체 약정금액은 동호 지정 이후 고지됩니다.</u>{% endif %}
+                미 도래 납부회차의 납부기한 및 약정금액은 예정사항이며 추후 변동 시 변경고지될 수 있습니다.</span>
+        </td>
+    </tr>
+    <tr>
+        {% if bill.agency %}
+            <td style="padding: 3px 0 0 5px; font-size: 11px;" width="10%">업무대행사</td>
+            <td style="padding: 3px 0px; font-size: 12px; " width="20%">{{ bill.agency }}</td>
+        {% endif %}
+        <td style="padding: 3px 0px; font-size: 12px;" width="10%">문의전화 :</td>
+        <td style="padding: 3px 0px; font-size: 12px; " width="15%">{{ bill.agency_tel|default:bill.host_tel }}</td>
+        <td style="padding: 3px 5px; text-align:right; font-size: 13px; " width="45%">
+            <strong>{{ bill.host_name }}</strong></td>
+    </tr>
+</table>

@@ -1,0 +1,181 @@
+{% load humanize mathfilters %}
+<div class="ba2">
+    <table>
+        <tr>
+            <td style="width:3%">&nbsp;</td>
+            <td style="width:12%"></td>
+            <td style="width:70%"></td>
+            <td style="width:12%"></td>
+            <td style="width:3%"></td>
+        </tr>
+        <tr>
+            <td colspan="2"></td>
+            <td class="center" style="padding: 0; letter-spacing: 1.2em;"><h1>분양대금납부확인서</h1></td>
+            <td class="ba center" style="padding: 0;">직인생략</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td colspan="5">&nbsp;</td>
+        </tr>
+    </table>
+
+    <table>
+        <tr>
+            <td class="title bl bt2 br2 bb" colspan="4">사업명</td>
+            <td class="bt2 bb" colspan="18">{{ contract.project }}</td>
+        </tr>
+        <tr>
+            <td class="title bl br2 bb" colspan="4">동호수</td>
+            <td class="bb" colspan="7">{{ contract.contractunit.unitnumber|default:"미지정" }}</td>
+            <td class="title bl2 br2 bb" colspan="4">계약일</td>
+            <td class="bb" colspan="7">{{ contract.contractor.contract_date }}</td>
+        </tr>
+        <tr>
+            <td class="title bl br2 bb" colspan="4">계약자</td>
+            <td class="bb" colspan="18">{{ contract.contractor }}</td>
+        </tr>
+{#        <tr>#}
+{#            <td class="title bl br2 bb" colspan="4">사업자</td>#}
+{#            <td class="bb" colspan="7"></td>#}
+{#            <td class="title bl2 br2 bb" colspan="4">사업자번호</td>#}
+{#            <td class="bb" colspan="7"></td>#}
+{#        </tr>#}
+{#        <tr>#}
+{#            <td class="title bl br2 bb" colspan="4">업태</td>#}
+{#            <td class="bb" colspan="7"></td>#}
+{#            <td class="title bl2 br2 bb" colspan="4">종목</td>#}
+{#            <td class="bb" colspan="7"></td>#}
+{#        </tr>#}
+        <tr>
+            <td class="title bl br2 bb" colspan="4">분양금</td>
+            <td class="bb" colspan="7">{{ this_price|default:"-"|intcomma }}</td>
+            <td class="title bl2 br2 bb" colspan="4">건물가</td>
+            <td class="bb" colspan="7">{{ this_price.price_build|default:"-"|intcomma }}</td>
+        </tr>
+        <tr>
+            <td class="title bl br2 bb2" colspan="4">대지가</td>
+            <td class="bb2" colspan="7">{{ this_price.price_land|default:"-"|intcomma }}</td>
+            <td class="title bl2 br2 bb2" colspan="4">부가세</td>
+            <td class="bb2" colspan="7">{{ this_price.price_tax|default:"-"|intcomma }}</td>
+        </tr>
+        <tr>
+            <td colspan="22">&nbsp;</td>
+        </tr>
+    </table>
+    <table>
+        <tr>
+            <td class="title center bl bt2 br bb">구분</td>
+            <td class="title center bt2 br bb">약정금액</td>
+            <td class="title center bt2 br bb">실입금액</td>
+            <td class="title center bt2 br bb">납부원금</td>
+            <td class="title center bt2 br bb">미수금</td>
+            <td class="title center bt2 br bb">할인료</td>
+            <td class="title center bt2 br bb">연체료</td>
+        </tr>
+        <tr>
+            <td class="title center bl br bb">분양금</td>
+            <td class="right br bb">{{ this_price|default:"-"|intcomma }}</td>
+            <td class="right br bb">{{ now_payments|default:"-"|intcomma }}</td>
+            <td class="right br bb">{{ due_payments|default:"-"|intcomma }}</td>
+            <td class="right br bb">{{ this_price|sub:now_payments|default:"-"|intcomma }}</td>
+            <td class="right br bb">-</td>
+            <td class="right br bb">-</td>
+        </tr>
+        <tr>
+            <td class="title center bl br bb2">추가납부</td>
+            <td class="right br bb2">-</td>
+            <td class="right br bb2">-</td>
+            <td class="right br bb2">-</td>
+            <td class="right br bb2">-</td>
+            <td class="right br bb2">-</td>
+            <td class="right br bb2">-</td>
+        </tr>
+        <tr>
+            <td colspan="7">&nbsp;</td>
+        </tr>
+    </table>
+    <div style="clear: both; display: block;">
+        <div style="width: 26%; float: left;">
+            <table style="font-size: 10px;">
+                <tr>
+                    <td class="title center bt2 br">차수</td>
+                    <td class="title center bt2 br">약정일자</td>
+                    <td class="title center bt2 br2">약정금액</td>
+                </tr>
+                {% for order in ip_orders %}
+                    <tr>
+                        <td class="bt br center {% if forloop.last %}bb2{% endif %}">{{ order.alias_name|default:order.pay_name }}</td>
+                        <td class="bt br center {% if forloop.last %}bb2{% endif %}">
+                            {% if order.pay_code == 1 %}
+                                {{ contract.contractor.contract_date|date:"Y/m/d" }}
+                            {% elif order.pay_code == 2 %}
+                                {{ second_pay|date:"Y/m/d" }}
+                            {% else %}
+                                {{ order.pay_due_date|date:"Y-m-d"|default:"추후지정통보" }}
+                            {% endif %}
+                        </td>
+                        <td class="bt br2 right {% if forloop.last %}bb2{% endif %}">
+                            {% if order.pay_sort == '1' %}{{ down|default:"-"|intcomma }}
+                            {% elif order.pay_sort == '2' %}{{ medium|default:"-"|intcomma }}
+                            {% else %}{{ balance|default:"-"|intcomma }}{% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <div style="float: left; padding-left: 6px; width: 73%;">
+            <table style="font-size: 10px;">
+                <tr>
+                    <td class="title center bl2 bt2 br">차수</td>
+                    <td class="title center bt2 br">납부일자</td>
+                    <td class="title center bt2 br">실입금액</td>
+                    <td class="title center bt2 br">납부원금</td>
+                    <td class="title center bt2 br">일수</td>
+                    <td class="title center bt2 br">할인료</td>
+                    <td class="title center bt2 br">연체료</td>
+                    <td class="title center bt2 br">추가납부원금</td>
+                    <td class="title center bt2">추가납부연체료</td>
+                </tr>
+                {% for po in paid_orders %}
+                    {% with due_date=due_dates.pop paid_date=due_date_list.pop paid_cash=payments.pop ad_days=adj_days.pop %}
+                        <tr>
+                            <td class="center bl2 br bt {% if forloop.last %}bb2{% else %}bb{% endif %}">{{ po.alias_name|default:po.pay_name }}</td>
+                            <td class="center br bt {% if forloop.last %}bb2{% else %}bb{% endif %}">{{ paid_date|date:"Y/m/d" }}</td>
+                            <td class="right br bt {% if forloop.last %}bb2{% else %}bb{% endif %}">{{ paid_cash|default:"-"|intcomma }}</td>
+                            <td class="right br bt {% if forloop.last %}bb2{% else %}bb{% endif %}">
+                                {% if po.pay_sort == '1' %}{{ down|default:"-"|intcomma }}
+                                {% elif po.pay_sort == '2' %}{{ medium|default:"-"|intcomma }}
+                                {% else %}{{ balance|default:"-"|intcomma }}{% endif %}
+                            </td>
+                            <td class="right br bt {% if forloop.last %}bb2{% else %}bb{% endif %}">{% if not forloop.first %}{{ ad_days|default:"-" }}{% endif %}</td>
+                            <td class="right br bt {% if forloop.last %}bb2{% else %}bb{% endif %}">{% if not forloop.first %}-{% endif %}</td>
+                            <td class="right br bt {% if forloop.last %}bb2{% else %}bb{% endif %}">{% if not forloop.first %}-{% endif %}</td>
+                            <td class="right br bt {% if forloop.last %}bb2{% else %}bb{% endif %}">{% if not forloop.first %}-{% endif %}</td>
+                            <td class="right bt {% if forloop.last %}bb2{% else %}bb{% endif %}">{% if not forloop.first %}-{% endif %}</td>
+                        </tr>
+                    {% endwith %}
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+
+    <table>
+        <tr>
+            <td colspan="22">&nbsp;</td>
+        </tr>
+        <tr>
+            <td style="padding-left: 20px; font-size: 11px;" colspan="22">※ 납입내역 요약의 분양금에 추가납부가 포함됩니다.</td>
+        </tr>
+        {% if not unit %}
+            <tr>
+                <td style="padding-left: 20px; font-size: 11px;" colspan="22">※ 동호수 미지정인 경우 상기 분양가격 등은 타입별 평균가격으로, 동호 지정후 변경됩니다.</td>
+            </tr>
+        {% endif %}
+        <tr>
+            <td style="padding-left: 20px; font-size: 11px;" colspan="22">※ 상기 납입내역은 당시 결산 시점차이 및 부득이한 전산장애 등으로 인하여 정확하지 않을 수 있습니다.</td>
+        </tr>
+        <tr>
+            <td colspan="22">&nbsp;</td>
+        </tr>
+    </table>
+</div>

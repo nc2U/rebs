@@ -1,0 +1,24 @@
+{% for data in data_list %}
+    <!doctype html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport"
+              content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <style>
+          @page {
+            size: Letter; /* Change from the default size of A4 */
+            margin: 1cm 1.5cm 0.5cm; /* Set margin on each page */
+          }
+          body {
+            font-family: 'Nanum Gothic', sans-serif;
+          }
+        </style>
+        <title>분양대금 납부 고지서</title>
+    </head>
+    <body>
+        {% include 'pdf/partials/bill_page.html' %}
+    </body>
+    </html>
+{% endfor %}
