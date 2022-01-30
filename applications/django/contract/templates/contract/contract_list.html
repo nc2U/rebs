@@ -20,7 +20,7 @@
                         <div class="card-body">
 
                             {% with menu_order='1' %}
-                                {% include 'rebs_contract/partials/head_menu.html' %}
+                                {% include 'contract/partials/head_menu.html' %}
                             {% endwith %}
 
                             <div class="row">
@@ -28,7 +28,7 @@
                                 <div class="col-sm-12 col-md-6"></div>
                             </div>
                             <div class="row">
-                                {% include 'rebs_contract/partials/contract_summary.html' %}
+                                {% include 'contract/partials/contract_summary.html' %}
                             </div>
                         </div>
                     </div>
@@ -39,12 +39,12 @@
                         <div class="card-body pb-1">
                             <div class="row mb-3 bg-light">
 
-                                {% include 'rebs_contract/partials/list_search_form.html' %}
+                                {% include 'contract/partials/list_search_form.html' %}
 
                             </div>
 
                             <div class="row">
-                                {% include 'rebs_contract/partials/contract_table.html' %}
+                                {% include 'contract/partials/contract_table.html' %}
                             </div>
 
                             {% if is_paginated %}
@@ -72,7 +72,7 @@
                                              aria-labelledby="headingFive"
                                              data-parent="#custom-accordion-one">
                                             <div class="card-body p-0">
-                                                {% include 'rebs_contract/partials/reservation_table.html' %}
+                                                {% include 'contract/partials/reservation_table.html' %}
                                             </div>
                                         </div>
                                     </div>
