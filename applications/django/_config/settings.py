@@ -45,6 +45,7 @@ INSTALLED_APPS = [
 
 INSTALLED_APPS += [  # plugin
     'import_export',
+    'widget_tweaks',
 ]
 
 INSTALLED_APPS += [  # app
