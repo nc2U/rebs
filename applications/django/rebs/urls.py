@@ -10,8 +10,8 @@ urlpatterns = [
     path('cash/', include('cash.urls')),
     path('company/', include('company.urls')),
     path('project/', include('project.urls')),
-    # path('contract/', include('contract.urls')),
-    # path('notice/', include('notice.urls')),
+    path('contract/', include('contract.urls')),
+    path('notice/', include('notice.urls')),
     # path('docs/', include('document.urls')),
 
     # pdf url
