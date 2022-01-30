@@ -30,6 +30,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+AUTH_USER_MODEL = 'account.User'
 
 # Application definition
 
@@ -40,6 +41,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+]
+
+INSTALLED_APPS += [  # plugin
+    'import_export',
+]
+
+INSTALLED_APPS += [  # app
+    'account.apps.AccountConfig',
 ]
 
 MIDDLEWARE = [
