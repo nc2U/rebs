@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
 ]
 
 INSTALLED_APPS += [  # plugin
@@ -48,6 +49,8 @@ INSTALLED_APPS += [  # plugin
     'django_markdown2',
     'mdeditor',
     'tinymce',
+    'storages',
+    'mathfilters',
 ]
 
 INSTALLED_APPS += [  # app
