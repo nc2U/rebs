@@ -5,8 +5,7 @@ from .models import Project, UnitType, UnitFloorType, Site, SiteOwner, SiteContr
 
 from contract.models import OrderGroup
 
-
-# from cash.models import SalesPriceByGT, InstallmentPaymentOrder, DownPayment
+from cash.models import SalesPriceByGT, InstallmentPaymentOrder, DownPayment
 
 
 class ProjectForm(forms.ModelForm):
@@ -33,17 +32,16 @@ UnitTypeFormSet = modelformset_factory(UnitType,
 UnitFloorTypeFormSet = modelformset_factory(UnitFloorType,
                                             exclude=('project',))
 
+SalesPriceByGTFormSet = modelformset_factory(SalesPriceByGT,
+                                             exclude=('project',),
+                                             widgets={'order_group': forms.HiddenInput(),
+                                                      'unit_type': forms.HiddenInput(),
+                                                      'unit_floor_type': forms.HiddenInput()}, extra=0)
 
-# SalesPriceByGTFormSet = modelformset_factory(SalesPriceByGT,
-#                                              exclude=('project',),
-#                                              widgets={'order_group': forms.HiddenInput(),
-#                                                       'unit_type': forms.HiddenInput(),
-#                                                       'unit_floor_type': forms.HiddenInput()}, extra=0)
-#
-# InstallmentPaymentOrderFormSet = modelformset_factory(InstallmentPaymentOrder,
-#                                                       exclude=('project',))
-#
-# DownPaymentFormSet = modelformset_factory(DownPayment, exclude=('project',))
+InstallmentPaymentOrderFormSet = modelformset_factory(InstallmentPaymentOrder,
+                                                      exclude=('project',))
+
+DownPaymentFormSet = modelformset_factory(DownPayment, exclude=('project',))
 
 
 class SiteForm(forms.ModelForm):

@@ -8,15 +8,14 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, FormView, TemplateView
 
 from project.forms import (ProjectForm, OrderGroupFormSet, UnitTypeFormSet, UnitFloorTypeFormSet,
-    # SalesPriceByGTFormSet, InstallmentPaymentOrderFormSet, DownPaymentFormSet,
+                           SalesPriceByGTFormSet, InstallmentPaymentOrderFormSet, DownPaymentFormSet,
                            SiteForm, SiteOwnerForm, SiteContractForm)
 from company.models import Company
 from project.models import (Project, UnitType, UnitFloorType, Site,
                             SiteOwner, SiteContract, SiteOwnshipRelationship)
 
-
-# from contract.models import OrderGroup
-# from cash.models import SalesPriceByGT, InstallmentPaymentOrder, DownPayment
+from contract.models import OrderGroup
+from cash.models import SalesPriceByGT, InstallmentPaymentOrder, DownPayment
 
 
 class ProjectList(LoginRequiredMixin, ListView):
@@ -244,84 +243,84 @@ class SettingsSalesPrice(LoginRequiredMixin, TemplateView):
         return redirect(reverse_lazy('rebs:project:set-sales-price') + query_string)
 
 
-# class SettingsPaymentOrder(LoginRequiredMixin, FormView):
-#     """납입회차 등록"""
-#     form_class = InstallmentPaymentOrderFormSet
-#     template_name = 'rebs_project/settings_payment_order.html'
-#
-#     def get_project(self):
-#         try:
-#             project = self.request.user.staffauth.assigned_project
-#         except:
-#             project = Project.objects.first()
-#         gp = self.request.GET.get('project')
-#         project = Project.objects.get(pk=gp) if gp else project
-#         return project
-#
-#     def get_context_data(self, **kwargs):
-#         context = super(SettingsPaymentOrder, self).get_context_data(**kwargs)
-#         user = self.request.user
-#         context['project_list'] = Project.objects.all() if user.is_superuser else user.staffauth.allowed_projects.all()
-#         context['this_project'] = self.get_project()
-#         context['formset'] = InstallmentPaymentOrderFormSet(
-#             queryset=InstallmentPaymentOrder.objects.filter(project=self.get_project()))
-#         return context
-#
-#     def post(self, request, *args, **kwargs):
-#         formset = InstallmentPaymentOrderFormSet(request.POST)
-#
-#         if formset.is_valid():
-#
-#             for form in formset:
-#                 try:
-#                     instance = form.save(commit=False)
-#                     instance.project = self.get_project()
-#                     instance.save()
-#                 except IntegrityError:
-#                     pass
-#             project_query = '?project=' + self.request.GET.get('project') if self.request.GET.get('project') else ''
-#             return redirect(reverse_lazy('rebs:project:set-payment-order') + project_query)
-#         return render(request, 'rebs_project/settings_installment_order.html', {'formset': formset})
+class SettingsPaymentOrder(LoginRequiredMixin, FormView):
+    """납입회차 등록"""
+    form_class = InstallmentPaymentOrderFormSet
+    template_name = 'rebs_project/settings_payment_order.html'
+
+    def get_project(self):
+        try:
+            project = self.request.user.staffauth.assigned_project
+        except:
+            project = Project.objects.first()
+        gp = self.request.GET.get('project')
+        project = Project.objects.get(pk=gp) if gp else project
+        return project
+
+    def get_context_data(self, **kwargs):
+        context = super(SettingsPaymentOrder, self).get_context_data(**kwargs)
+        user = self.request.user
+        context['project_list'] = Project.objects.all() if user.is_superuser else user.staffauth.allowed_projects.all()
+        context['this_project'] = self.get_project()
+        context['formset'] = InstallmentPaymentOrderFormSet(
+            queryset=InstallmentPaymentOrder.objects.filter(project=self.get_project()))
+        return context
+
+    def post(self, request, *args, **kwargs):
+        formset = InstallmentPaymentOrderFormSet(request.POST)
+
+        if formset.is_valid():
+
+            for form in formset:
+                try:
+                    instance = form.save(commit=False)
+                    instance.project = self.get_project()
+                    instance.save()
+                except IntegrityError:
+                    pass
+            project_query = '?project=' + self.request.GET.get('project') if self.request.GET.get('project') else ''
+            return redirect(reverse_lazy('rebs:project:set-payment-order') + project_query)
+        return render(request, 'rebs_project/settings_installment_order.html', {'formset': formset})
 
 
-# class SettingsDownPayment(LoginRequiredMixin, TemplateView):
-#     """차수/타입별 계약금 등록"""
-#     template_name = 'rebs_project/settings_down_payment.html'
-#
-#     def get_project(self):
-#         try:
-#             project = self.request.user.staffauth.assigned_project
-#         except:
-#             project = Project.objects.first()
-#         gp = self.request.GET.get('project')
-#         project = Project.objects.get(pk=gp) if gp else project
-#         return project
-#
-#     def get_context_data(self, **kwargs):
-#         context = super(SettingsDownPayment, self).get_context_data(**kwargs)
-#         user = self.request.user
-#         context['project_list'] = Project.objects.all() if user.is_superuser else user.staffauth.allowed_projects.all()
-#         context['this_project'] = self.get_project()
-#         context['formset'] = DownPaymentFormSet(queryset=DownPayment.objects.filter(project=self.get_project()))
-#
-#         return context
-#
-#     def post(self, request, *args, **kwargs):
-#         formset = DownPaymentFormSet(request.POST)
-#
-#         if formset.is_valid():
-#
-#             for form in formset:
-#                 try:
-#                     instance = form.save(commit=False)
-#                     instance.project = self.get_project()
-#                     instance.save()
-#                 except IntegrityError:
-#                     pass
-#
-#         project = self.request.GET.get('project')
-#         query_string = '?project=' + project if project else ''
-#         return redirect(reverse_lazy('rebs:project:set-down-payment') + query_string)
+class SettingsDownPayment(LoginRequiredMixin, TemplateView):
+    """차수/타입별 계약금 등록"""
+    template_name = 'rebs_project/settings_down_payment.html'
+
+    def get_project(self):
+        try:
+            project = self.request.user.staffauth.assigned_project
+        except:
+            project = Project.objects.first()
+        gp = self.request.GET.get('project')
+        project = Project.objects.get(pk=gp) if gp else project
+        return project
+
+    def get_context_data(self, **kwargs):
+        context = super(SettingsDownPayment, self).get_context_data(**kwargs)
+        user = self.request.user
+        context['project_list'] = Project.objects.all() if user.is_superuser else user.staffauth.allowed_projects.all()
+        context['this_project'] = self.get_project()
+        context['formset'] = DownPaymentFormSet(queryset=DownPayment.objects.filter(project=self.get_project()))
+
+        return context
+
+    def post(self, request, *args, **kwargs):
+        formset = DownPaymentFormSet(request.POST)
+
+        if formset.is_valid():
+
+            for form in formset:
+                try:
+                    instance = form.save(commit=False)
+                    instance.project = self.get_project()
+                    instance.save()
+                except IntegrityError:
+                    pass
+
+        project = self.request.GET.get('project')
+        query_string = '?project=' + project if project else ''
+        return redirect(reverse_lazy('rebs:project:set-down-payment') + query_string)
 
 
 class SiteManage(LoginRequiredMixin, ListView, FormView):
