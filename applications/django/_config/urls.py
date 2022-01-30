@@ -19,12 +19,14 @@ from django.views.generic import RedirectView, TemplateView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-
     path('accounts/', include('account.urls')),
 
-    # path('rebs/', include('_rebs.urls')),
     path('', RedirectView.as_view(url='/rebs/dashboard/'), name='home'),
 
     path('book/', include('book.urls')),
     path('rebs/', include('rebs.urls')),
+    path('excel/', include('excel.urls')),
+
+    path('mdeditor/', include('mdeditor.urls')),
+    path('tinymce/', include('tinymce.urls')),
 ]
