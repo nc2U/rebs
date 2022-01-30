@@ -56,7 +56,7 @@ class Subject(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse_lazy('books:subject_detail', args=(self.book_id, self.pk))
+        return reverse_lazy('book:subject_detail', args=(self.book_id, self.pk))
 
     # created_at 기준으로 이전 포스트 반환
     def get_previous_post(self):
