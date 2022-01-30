@@ -1,0 +1,57 @@
+.DS_Store
+node_modules
+backup.*
+
+# local env files
+.env.local
+.env.*.local
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# python cache
+__pycache__
+*.pyc
+*.pyo
+
+# django etc
+migrations
+media
+static
+settings/prod.py
+prod.py
+db.sqlite3
+base-vue.html
+dist
+
+# mysql data
+mysql
+
+# ssl cert
+nginx/ssl/
+nginx/log/
+
+# virtualize
+venv/
+
+docker-compose.yml
+
+package-lock.json
+yarn.lock
+/coverage
+
+/tests/e2e/reports/
+selenium-debug.log
+chromedriver.log
