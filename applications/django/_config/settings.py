@@ -47,10 +47,12 @@ INSTALLED_APPS += [  # plugin
     'widget_tweaks',
     'django_markdown2',
     'mdeditor',
+    'tinymce',
 ]
 
 INSTALLED_APPS += [  # app
     'account.apps.AccountConfig',
+    'board.apps.BoardConfig',
     'cash.apps.CashConfig',
     'book.apps.BookConfig',
     'company.apps.CompanyConfig',

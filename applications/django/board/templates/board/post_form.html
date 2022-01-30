@@ -1,0 +1,54 @@
+{% extends 'rebs_docs/docs_board.html' %}
+
+{% block board %}
+    {% load static %}
+
+    <div class="row">
+        <div class="col-12 border-bottom mb-4">
+            <h4>
+                {% if co %}{% if not object.project %}본사{% else %}{{ object.project }}{% endif %}
+                    {% if not object.category %} <i class="uil-angle-double-right"></i> {% endif %}{% endif %}
+                {{ this_board }}
+            </h4>
+        </div>
+
+        <div class="col-12">
+            {% include 'board/partials/form.html' %}
+        </div>
+    </div>
+
+
+
+{% endblock %}
+
+
+{% block third_party_js %}
+
+    {# tinyMCE load Start #}
+    <script src="{% static 'tinymce/tinymce.min.js' %}" referrerpolicy="origin"></script>
+    <script type="text/javascript">
+      tinymce.init({
+        selector: 'textarea',  // change this value according to your HTML
+        language: 'ko_KR',
+        plugins: 'print preview powerpaste casechange importcss tinydrive searchreplace autolink autosave save directionality advcode visualblocks visualchars fullscreen image link media mediaembed template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists checklist wordcount tinymcespellchecker a11ychecker imagetools textpattern noneditable help formatpainter permanentpen pageembed charmap tinycomments mentions quickbars linkchecker emoticons advtable export',
+        mobile: {
+          plugins: 'print preview powerpaste casechange importcss tinydrive searchreplace autolink autosave save directionality advcode visualblocks visualchars fullscreen image link media mediaembed template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists checklist wordcount tinymcespellchecker a11ychecker textpattern noneditable help formatpainter pageembed charmap mentions quickbars linkchecker emoticons advtable'
+        },
+        menubar: false,
+        toolbar: 'undo redo | bold italic underline strikethrough | formatselect fontsizeselect | forecolor backcolor | alignleft aligncenter alignright alignjustify | outdent indent | numlist bullist checklist | pagebreak | image media codesample | fullscreen  preview save print | charmap emoticons',
+        skin: (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'oxide-dark' : 'oxide'),
+        content_css: (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default'),
+        statusbar: false
+      });
+    </script>
+    {# tinyMCE load End #}
+
+    <script>
+      {% if not co %}
+        window.onload = function () {
+          document.getElementById('id_project_sel').setAttribute('onchange', 'submit()')
+        }
+      {% endif %}
+    </script>
+
+{% endblock %}

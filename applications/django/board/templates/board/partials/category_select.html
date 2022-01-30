@@ -1,0 +1,18 @@
+<ul class="col-12 nav nav-tabs nav-bordered mb-0">
+    <li class="nav-item">
+        <a href="?{% for key, value in request.GET.items %}{% if key != 'category' %}{{ key }}={{ value }}{% endif %}{% endfor %}" data-bs-toggle="tab" aria-expanded="false"
+           class="nav-link {% if not request.GET.category and this_board.pk == 1 %}active{% endif %}">
+            <i class="mdi mdi-home-variant d-md-none d-block"></i>
+            <span class="d-none d-md-block">{% if this_board.pk == 1 %}전 체{% else %}&nbsp;{% endif %}</span>
+        </a>
+    </li>
+    {% for category in categories %}
+        <li class="nav-item">
+            <a href="?{% for key, value in request.GET.items %}{% if key != 'category' %}{{ key }}={{ value }}{% endif %}{% endfor %}&category={{ category.pk }}" data-bs-toggle="tab" aria-expanded="false"
+               class="nav-link {% if request.GET.category == category.pk|slugify %}active{% endif %}">
+                <i class="mdi mdi-home-variant d-md-none d-block"></i>
+                <span class="d-none d-md-block">{{ category }}</span>
+            </a>
+        </li>
+    {% endfor %}
+</ul>

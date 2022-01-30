@@ -1,0 +1,90 @@
+{% extends 'rebs_docs/docs_board.html' %}
+
+{% block board %}
+    {% load static widget_tweaks %}
+
+    <div class="row">
+        <ul class="nav nav-tabs nav-bordered mb-3 col-12">
+            <li class="nav-item">
+                <a href="{% if 'project' in request.path %}{% url 'rebs:docs:pr.lawsuit_list' %}{% if request.GET.project or object.project %}?project={{ request.GET.project|default:object.project.pk }}{% endif %}{% else %}{% url 'rebs:docs:co.lawsuit_list' %}{% endif %}"
+                   data-bs-toggle="tab" aria-expanded="false"
+                   class="nav-link {% if 'case' not in request.path %}active{% endif %}">
+                    <i class="mdi mdi-home-variant d-md-none d-block"></i>
+                    <span class="d-none d-md-block"><h5>{{ this_board|default:"소송 문서 관리" }}</h5></span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{% if 'project' in request.path %}{% url 'rebs:docs:pr.case_list' %}{% if request.GET.project or object.project %}?project={{ request.GET.project|default:object.project.pk }}{% endif %}{% else %}{% url 'rebs:docs:co.case_list' %}{% endif %}"
+                   data-bs-toggle="tab" aria-expanded="true"
+                   class="nav-link {% if 'case' in request.path %}active{% endif %}">
+                    <i class="mdi mdi-account-circle d-md-none d-block"></i>
+                    <span class="d-none d-md-block"><h5>소송 사건 관리</h5></span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="col-12 border-bottom mb-4">
+            <h4>
+                {% if co %}본사{% else %}{{ this_project }}{% endif %} <i class="uil-angle-double-right"></i> 소송 사건
+                {% if 'add' in request.path %}등록{% else %}변경{% endif %}
+            </h4>
+        </div>
+
+        <div class="col-12">
+            <form method="post" class="form-horizontal needs-validation col-12 col-md-8" novalidate>
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="row mb-3">
+                        <label for="{{ field.id_for_label }}" class="col-3 col-form-label">{{ field.label }}</label>
+                        <div class="col-9">
+                            {% if field.field.widget.input_type == 'select' %}
+                                {{ field|add_class:"form-control select2"|attr:"data-toggle:select2" }}
+                            {% elif field.field.widget.input_type == 'checkbox' %}
+                                {{ field|add_class:"form-check-input" }}
+                                    <label class="form-check-label"
+                                           for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            {% elif 'date' in field.name %}
+                                {{ field|add_class:"form-control"|attr:"data-provide=datepicker data-date-format=yyyy-mm-dd data-date-autoclose=true data-toggle=input-mask data-mask-format=0000-00-00" }}
+                            {% elif not field.field.widget.input_type %}
+                                {{ field|add_class:"form-control"|attr:"rows:5" }}
+                            {% else %}
+                                {{ field|add_class:"form-control" }}
+                            {% endif %}
+                            <small class="text-black-50">{{ field.help_text }}</small>
+                            <div class="invalid-feedback">상기 {{ field.label }} 폼을 입력 양식에 맞게 입력(선택)하여 주십시요.</div>
+                            <div class="text-danger">{{ field.errors }}</div>
+                        </div>
+                    </div>
+                {% endfor %}
+                <div class="justify-content-end row">
+                    <div class="col-9">
+                        <button type="button" class="btn btn-secondary" onclick="history.back()">취소</button>
+                        {% if 'update' in request.path %}
+                            <a href="{% if co %}{% url 'rebs:docs:co.case_delete' object.pk %}{% else %}{% url 'rebs:docs:pr.case_delete' object.pk %}{% endif %}">
+                                <button type="button" class="btn btn-danger">삭제하기</button>
+                            </a>
+                        {% endif %}
+                        <button type="submit"
+                                class="btn btn-{% if 'add' in request.path %}primary{% else %}success{% endif %}">
+                            {% if 'add' in request.path %}등록{% else %}변경{% endif %}하기
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}
+
+
+{% block third_party_js %}
+
+    <script>
+      {% if not co %}
+        window.onload = function () {
+          document.getElementById('id_project_sel').setAttribute('onchange', 'submit()')
+        }
+      {% endif %}
+    </script>
+
+{% endblock %}
