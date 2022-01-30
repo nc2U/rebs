@@ -1,0 +1,46 @@
+{% extends 'book/layouts/base.html' %}
+
+{% load widget_tweaks %}
+{% block content %}
+
+    <div style="height: 80px;"></div>
+
+    <div class="page-header">
+        <h4>
+            <svg id="i-book" viewBox="0 0 32 32" width="20" height="20" fill="orange" stroke="currentcolor"
+                 stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                <path d="M16 7 C16 7 9 1 2 6 L2 28 C9 23 16 28 16 28 16 28 23 23 30 28 L30 6 C23 1 16 7 16 7 Z M16 7 L16 28"/>
+            </svg>
+            <a class="" href="{% url 'book:subject_index' book.id %}"> Content</a>
+            <small>/ [등록] / <a class="" href="{{ request.META.HTTP_REFERER }}">{{ book.title }}</a></small>
+        </h4>
+    </div>
+
+    <form name="subject" action="." method="POST" enctype="multipart/form-data" class="form__subject">
+        {% csrf_token %}
+        <div class="row container__subject">
+
+            {% include 'book/subjects/partial/form.html' %}
+
+            <div class="form-group form-row col-12 mt-2 pl-0">
+                <div class="col-6 mb-2">
+                    {{ formset.management_form }}
+                    <fieldset class="forms col-12">
+                        {% for form in formset %}
+                            <fieldset>
+                                {{ form.image|add_class:"form-control mb-2" }}
+                            </fieldset>
+                        {% endfor %}
+                    </fieldset>
+                </div>
+                <div class="col-6 mb-2 text-right">
+                    <button type="submit"
+                            class="btn btn-{% if 'add' in request.path %}primary{% else %}success{% endif %}">
+                        {% if 'add' in request.path %}등록하기{% else %}수정하기{% endif %}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+{% endblock %}

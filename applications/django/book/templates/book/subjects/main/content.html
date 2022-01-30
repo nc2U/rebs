@@ -1,0 +1,13 @@
+<main>
+    {% if object %}
+        <h3>{{ object.title }}</h3>
+        <hr>
+    {% endif %}
+
+    <div class="main_content" v-pre>
+        {% load md2 %}
+        {% with default_html="<div class='text-center text-danger' style='margin: 150px 0;'><p>등록된 단원(내용)이 없습니다.</p></div>" %}
+            {{ object.content|default:default_html|markdown:"tables, fenced-code-blocks, highlightjs-lang, cuddled-lists, break-on-newline, toc, markdown-in-html, strike" }}
+        {% endwith %}
+    </div>
+</main>

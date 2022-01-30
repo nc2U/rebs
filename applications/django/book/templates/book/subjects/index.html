@@ -1,0 +1,116 @@
+{% extends "book/layouts/base.html" %}
+
+{% block extracss %}
+
+    <style>
+        .animate-left {
+            position: relative;
+            animation: animateleft 0.4s
+        }
+
+        @keyframes animateleft {
+            from {
+                left: -300px;
+                opacity: 0
+            }
+            to {
+                left: 0;
+                opacity: 1
+            }
+        }
+
+        #main {
+            transition: margin-left .4s
+        }
+    </style>
+{% endblock %}
+
+
+{% block content %}
+    <!-- side bar -->
+    <aside>
+        {% include "book/subjects/partial/sidebar.html" %}
+    </aside>
+
+    <!-- main page -->
+    <main role="main" style="background: white;">
+        <!-- main page content start -->
+        <div id="main" class="col-sm-12 col-md-9 offset-md-3">
+            {% include 'book/subjects/partial/header/sub-top.html' %}
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+
+            {% if request.GET.q %}
+                {% include 'book/subjects/main/search.html' %}
+            {% elif 'subjects/delete' in request.path %}
+                {% include 'book/subjects/main/subject_confirm_delete.html' %}
+            {% else %}
+                {% include 'book/subjects/main/content.html' %}
+            {% endif %}
+            <!-- main page content end -->
+
+            <!-- main page footer -->
+            {% include 'book/subjects/partial/footer/tail-nav.html' %}
+            {% include 'book/subjects/partial/footer/prev-next.html' %}
+            {% include 'book/subjects/partial/footer/back-to-top.html' %}
+        </div>
+    </main>
+
+{% endblock %}
+
+{% block extrajs %}
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            mySidebar = document.getElementById("mySidebar").classList;
+            main = document.getElementById("main").classList;
+            openNav = document.getElementById("openNav").classList;
+            indicator = document.getElementById('indicator').classList;
+
+            if (typeof (Storage) !== "undefined") {
+                if (localStorage.sidebar == "hidden") {
+                    mySidebar.add('d-none');
+                    main.remove('col-md-9', 'offset-md-3');
+                    openNav.remove('d-none');
+                    indicator.remove('d-none');
+                }
+            }
+        })
+
+        function menuToggle(state) {
+            mySidebar = document.getElementById("mySidebar").classList;
+            main = document.getElementById("main").classList;
+            openNav = document.getElementById("openNav").classList;
+            indicator = document.getElementById('indicator').classList;
+
+            if (state === 'close') { // sidebar close
+                if (typeof (Storage) !== "undefined") {
+                    if (localStorage.sidebar == "show") {
+                        localStorage.sidebar = "hidden";
+                    }
+                } else {
+                    localStorage.sidebar = "hidden";
+                }
+                mySidebar.add('d-none');
+                main.remove('col-md-9', 'offset-md-3');
+                openNav.remove('d-none');
+                indicator.remove('d-none');
+            } else {  // sidebar open
+                if (typeof (Storage) !== "undefined") {
+                    if (localStorage.sidebar == "hidden") {
+                        localStorage.sidebar = "show";
+                    }
+                } else {
+                    localStorage.sidebar = "show";
+                }
+                mySidebar.remove('d-none');
+                main.add('col-md-9', 'offset-md-3');
+                openNav.add('d-none');
+                indicator.add('d-none');
+            }
+        }
+    </script>
+{% endblock %}

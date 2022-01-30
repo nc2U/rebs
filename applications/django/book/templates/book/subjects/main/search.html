@@ -1,0 +1,22 @@
+<main class="search-body">
+    {% if request.GET.q %}
+        {% for result in search_list %}
+            <ul>
+                <li>
+                <span class="media-heading">
+                    <a href="{% url 'book:subject_detail' object.book_id result.id %}">
+                        {{ result.title }}
+                    </a>
+                    <small>
+                        : <u>{{ result.content|slice:':80' }}...</u>
+                    </small>
+                </span>
+                </li>
+            </ul>
+        {% empty %}
+            <div class="text-center text-danger" style="margin: 150px 0;">
+                <p>해당 키워드의 검색 항목이 존재하지 않습니다.</p>
+            </div>
+        {% endfor %}
+    {% endif %}
+</main>

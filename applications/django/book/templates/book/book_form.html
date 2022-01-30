@@ -1,0 +1,80 @@
+{% extends 'book/layouts/base.html' %}
+
+{% block title %}REBS{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <h4>
+            <a href="{% url 'book:index' %}">Documents</a>
+            <small> / Register</small>
+        </h4>
+    </div>
+
+    <div class="row container__book">
+        <div class="col-md-1 sidebar__book"></div>
+
+        <div class="col-md-10 list__book">
+            <form action="." method="POST" enctype="multipart/form-data" class="form__book">
+                {% csrf_token %}
+                {{ form.media }}
+
+                {% load widget_tweaks %}
+                <div class="form-group row">
+                    <label for="title" class="col-sm-2 col-from-label">{{ form.title.label }}</label>
+                    <div class="col-sm-6 {% if form.title.errors %}has-error{% endif %}">
+                        {{ form.title|add_class:'form-control' }}
+                        {% if form.title.errors %}
+                            <span class="form-error">{{ form.title.errors|striptags }}</span>{% endif %}
+                    </div>
+                    <div class="col-sm-4 checkbox">
+                        <label for="is_public">
+                            {{ form.disclosure.label }} {{ form.disclosure|add_class:'js-switch' }}
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="author" class="col-sm-2 col-from-label">{{ form.author.label }}</label>
+                    <div class="col-sm-4 {% if form.author.errors %}has-error{% endif %}">
+                        {{ form.author|add_class:'form-control' }}
+                        {% if form.author.errors %}<span class="form-error">{{ form.author.errors|striptags }}</span>{% endif %}
+                    </div>
+                    <label for="translator" class="col-sm-2 col-from-label">{{ form.translator.label }}</label>
+                    <div class="col-sm-4 {% if form.translator.errors %}has-error{% endif %}">
+                        {{ form.translator|add_class:'form-control' }}
+                        {% if form.translator.errors %}<span class="form-error">{{ form.translator.errors|striptags }}</span>{% endif %}
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="publisher" class="col-sm-2 col-from-label">{{ form.publisher.label }}</label>
+                    <div class="col-sm-4 {% if form.publisher.errors %}has-error{% endif %}">
+                        {{ form.publisher|add_class:'form-control' }}
+                        {% if form.publisher.errors %}<span class="form-error">{{ form.publisher.errors|striptags }}</span>{% endif %}
+                    </div>
+                    <label for="pub_date" class="col-sm-2 col-from-label">{{ form.pub_date.label }}</label>
+                    <div class="col-sm-4 {% if form.pub_date.errors %}has-error{% endif %}">
+                        {{ form.pub_date|attr:'type:date'|add_class:'form-control' }}
+                        {% if form.pub_date.errors %}<span class="form-error">{{ form.pub_date.errors|striptags }}</span>{% endif %}
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="description" class="col-sm-12 col-from-label">{{ form.description.label }}</label>
+                    <div class="col-sm-12 {% if form.description.errors %}has-error{% endif %}">
+                        {{ form.description|add_class:'form-control' }}
+                        {% if form.description.errors %}<span class="form-error">{{ form.description.errors|striptags }}</span>{% endif %}
+                    </div>
+                </div>
+
+                <div class="form-group text-right">
+                    <button type="submit" class="btn btn-{% if 'add' in request.path %}primary{% else %}success{% endif %}">
+                        {% if 'add' in request.path %}등록하기{% else %}수정하기{% endif %}
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="col-md-1 sidebar__book"></div>
+    </div>
+{% endblock %}

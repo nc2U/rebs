@@ -46,10 +46,13 @@ INSTALLED_APPS = [
 INSTALLED_APPS += [  # plugin
     'import_export',
     'widget_tweaks',
+    'django_markdown2',
+    'mdeditor',
 ]
 
 INSTALLED_APPS += [  # app
     'account.apps.AccountConfig',
+    'book.apps.BookConfig',
 ]
 
 MIDDLEWARE = [

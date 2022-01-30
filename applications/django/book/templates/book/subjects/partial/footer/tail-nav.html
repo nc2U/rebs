@@ -1,0 +1,25 @@
+<div class="page-prev-next" style="padding: 8px;">
+    <div class="clearfix">
+        <ul>
+            {% if not request.GET.q %}
+                {% if object.get_previous_post %}
+                    <li>
+                        <strong>이전글</strong> :
+                        <a href="{{ object.get_previous_post.get_absolute_url }}">
+                            {{ object.get_previous_post }}
+                        </a>
+                    </li>
+                {% endif %}
+
+                {% if object.get_next_post %}
+                    <li>
+                        <strong>다음글</strong> :
+                        <a href="{{ object.get_next_post.get_absolute_url }}">
+                            {{ object.get_next_post }}
+                        </a>
+                    </li>
+                {% endif %}
+            {% endif %}
+        </ul>
+    </div>
+</div>

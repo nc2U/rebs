@@ -1,0 +1,67 @@
+<!-- side bar start -->
+<nav class="col-sm-12 col-md-3 sidebar animate-left" style="padding-top: 25px; background: #F7FAFC; overflow-y: auto;"
+     id="mySidebar">
+    <div class="row">
+        <div class="col-9">
+            <a class="nav-link active ellipsis sidebar-heading"
+               href="{% url 'book:subject_index' book.id %}">
+                <svg id="i-book" viewBox="0 0 32 32" width="20" height="20" fill="orange" stroke="currentcolor"
+                     stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                    <path d="M16 7 C16 7 9 1 2 6 L2 28 C9 23 16 28 16 28 16 28 23 23 30 28 L30 6 C23 1 16 7 16 7 Z M16 7 L16 28"/>
+                </svg>
+                {{ book }} <span class="sr-only">(current)</span>
+            </a>
+        </div>
+        <div class="col-3 text-right" style="padding-right: 20px;">
+            <small>
+                <a class="menu_link menu-toggle col-2" onclick="menuToggle('close');" id="closeToggle">
+                    <i class="fa fa-bars"></i>
+                </a>
+            </small>
+        </div>
+    </div>
+
+    <div class="nav nav-sidebar list-group ellipsis">
+        {# Side Index Group #}
+        {% for subject in subjects %}
+            <a href="{% url 'book:subject_detail' book.id subject.id %}"
+               class="{% if subject.id == object.id %}active{% endif %} list-group-item">
+
+                <span style="white-space:nowrap; overflow:hidden; display:block;">
+                    <span class="d{{ subject.level }}">
+                        {{ subject }}
+                        {% if subject.id == object.id %}
+                            <span class="sr-only">(current)</span>
+                        {% endif %}
+                    </span>
+                </span>
+            </a>
+        {% endfor %}
+    </div>
+    <footer class="side_footer row">
+        <div class="col-sm-4">
+            &copy; {% now "Y" %}
+            <a href="{% url "home" %}">REBS</a>
+        </div>
+        <div class="col-sm-8 text-right">
+            {% if user.is_active %}
+                <a href="{% url 'book:subject_add' book.id %}" class="btn btn-sm btn-outline-primary">
+                    <i class="fa fa-plus-circle"></i> 등록
+                </a>
+                {% if object %}
+                    {% if user == book.user or user.is_staff %}
+                        <a href="{% url 'book:subject_edit' book.id object.id %}"
+                           class="btn btn-sm btn-outline-success">
+                            <i class="fa fa-edit"></i> 수정
+                        </a>
+                        <a href="{% url 'book:subject_delete' book.id object.id %}"
+                           class="btn btn-sm btn-outline-danger button__delete">
+                            <i class="fa fa-minus-circle"></i> 삭제
+                        </a>
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+        </div>
+    </footer>
+</nav>
+<!-- side bar end -->

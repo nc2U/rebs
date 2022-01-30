@@ -1,0 +1,87 @@
+{% extends "book/layouts/base.html" %}
+
+
+{% block content %}
+    <div class="page-header">
+        <h4>
+            Documents
+            <small> / List</small>
+        </h4>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="text-right action__book mr-5">
+        <a href="{% url 'book:add' %}" class="btn btn-primary">
+            <i class="fa fa-plus-circle"></i> 책 등록
+        </a>
+
+        <!--정렬 UI-->
+        <div class="btn-group sort__book">
+            <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown">
+                <i class="fa fa-sort"></i> 목록 정렬<span class="caret"></span>
+            </button>
+
+            <ul class="dropdown-menu dropdown-menu-right text-center" role="menu">
+                {#                @foreach(config('settings.sorting') as $column => $text)#}
+                {#                    <li {!! request()->input('sort') == $column ? 'class="active"' : '' !!}>#}
+                {#                        {!! link_for_sort($column, $text) !!}#}
+                {#                    </li>#}
+                {#                @endforeach#}
+                <li>등록순</li>
+                <li>이름순</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="row container__book">
+        <div class="col-md-3 sidebar__book">
+            <aside>
+                {#                {{-- @include('articles.partial.search') --}}#}
+
+                {#                {{-- @include('tags.partial.index') --}}#}
+            </aside>
+        </div>
+
+        <div class="col-md-9 list__book">
+            <article>
+                {% for book in object_list %}
+                    <div class="media">
+                        <div class="media-body">
+                            <span class="media-heading">
+                                <a href="{% url 'book:subject_index' book.id %}">
+                                    {{ book.title }}
+                                </a>
+                            </span>
+
+                            <p class="text-muted meta__article">
+                                <small> •
+                                    {{ book.author }}{% if book.translator %} (번역:
+                                        {{ book.translator }}{% endif %}</small>
+                                <small> • {{ book.publisher }}</small>
+                                <small> {% if book.pub_date %} • {{ book.pub_date }}{% endif %}</small>
+                                <small> [<a href="{% url 'book:detail' book.id %}">M</a>]</small>
+                                <small>{% if book.disclosure %}공개{% else %}비공개{% endif %}</small>
+                            </p>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p class="text-danger" style="padding: 150px">
+                        등록된 책이 없습니다.
+                    </p>
+                {% endfor %}
+            </article>
+
+            {% if is_paginated %}
+                {# to_first_last :: 맨처음 / 맨끝으로 버튼 사용 여부 #}
+                {# page_class ex:: pagination-rounded pagination-sm pagination-lg justify-content-center justify-content-end #}
+                {% include 'partials/pagination.html' with page_class="" to_first_last="" %}
+            {% endif %}
+        </div>
+    </div>
+
+{% endblock %}

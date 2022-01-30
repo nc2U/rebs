@@ -1,0 +1,39 @@
+<nav class="navbar navbar-dark fixed-top bg-dark navbar-expand-md p-0 shadow">
+    <a class="navbar-brand col-10 col-sm-3 mr-0" href="{% url 'book:index' %}"><span data-feather="home"></span>
+        Documents Room</a>
+    <button class="navbar-toggler d-md-none" type="button" data-toggle="collapse" data-target="#sub_navbar"
+            aria-controls="sub_navbar" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="sub_navbar">
+        <ul class="navbar-nav mr-auto w-100">
+            <li class="nav-item w-100">
+                <form action="." method="GET" role="search">
+                    <input type="text" class="form-control form-control-dark" name="q" value="{{ request.GET.q }}" placeholder="Search" aria-label="Search" onclick="this.value=null">
+                </form>
+            </li>
+            <li class="nav-item">
+                <ul class="navbar-nav px-3">
+                    {% if user.is_active %}
+                        <li class="dropdown" style="text-align: right;">
+                            <a class="nav-link ellipsis" href="#" class="dropdown-toggle" data-toggle="dropdown"
+                               role="button" aria-expanded="false">
+                                {% firstof user.get_short_name user.get_username %}
+                                <span class="caret"></span>
+                            </a>
+
+                            <ul class="dropdown-menu dropdown-menu-right" role="menu" style="position:absolute;">
+                                <li style="text-align: center;">
+                                    <a class="dropdown-item" href="{% url 'logout' %}">Sign out</a>
+                                </li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="nav-item text-nowrap"><a class="nav-link" href="{% url 'login' %}">Sign in</a></li>
+                    {% endif %}
+                </ul>
+            </li>
+        </ul>
+    </div>
+</nav>

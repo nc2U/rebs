@@ -22,8 +22,8 @@ urlpatterns = [
 
     path('accounts/', include('account.urls')),
 
-    path('rebs/', include('_rebs.urls')),
+    # path('rebs/', include('_rebs.urls')),
     path('', RedirectView.as_view(url='/rebs/dashboard/'), name='home'),
 
-    path('book/', include('books.urls')),
+    path('book/', include('book.urls')),
 ]

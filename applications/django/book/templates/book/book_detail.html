@@ -1,0 +1,69 @@
+{% extends "book/layouts/base.html" %}
+
+
+{% block content %}
+    <div class="page-header">
+        <h4>
+            <a href="{% url "book:index" %}">Documents</a>
+            <small> / {{ object.title }}</small>
+        </h4>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="row container__article">
+        <div class="col-md-3 sidebar__article">
+            <aside>
+                {#                {{-- @include('articles.partial.search') --}}#}
+
+                {#                {{-- @include('tags.partial.index') --}}#}
+            </aside>
+        </div>
+
+        <div class="col-md-9 show__doc">
+            <article data-id="{{ book.id }}" id="item__doc" style="padding-top: 37px;">
+
+                <div class="media">
+                    <div class="media-body">
+
+                        <span class="media-heading">
+                            <a href="{% url "book:subject_index" book.id %}">
+                                {{ book.title }}
+                            </a>
+                        </span>
+                        <p class="text-muted meta__article">
+                            <small> •
+                                {{ book.author }}{% if book.translator %} (번역: {{ book.translator }}{% endif %}</small>
+                            <small> • {{ book.publisher }}</small>
+                            <small> {% if book.pub_date %} • {{ book.pub_date }}{% endif %}</small>
+                            <small> / [{% if book.disclosure %}공개{% else %}비공개{% endif %}]</small>
+                        </p>
+                    </div>
+                </div>
+                <div class="mr-5 pr-5">
+                    {% load md2 %}
+                    <p>{{ book.description | markdown:"tables, fenced-code-blocks, highlightjs-lang, cuddled-lists, break-on-newline, toc, markdown-in-html, strike" }}</p>
+                </div>
+
+            </article>
+
+            <div class="text-center action__doc mt-5">
+                {% if user == book.user or user.is_staff %}
+                    <a href="{% url 'book:edit' book.id %}" class="btn btn-outline-info">
+                        <i class="fa fa-pencil"></i> 수정
+                    </a>
+                    <a href="{% url 'book:delete' book.id %}" class="btn btn-outline-danger button__delete" id="myBtn">
+                        <i class="fa fa-trash-o"></i> 삭제
+                    </a>
+                {% endif %}
+                <a href="{% url 'book:index' %}" class="btn btn-outline-secondary">
+                    <i class="fa fa-list"></i> 책 목록
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

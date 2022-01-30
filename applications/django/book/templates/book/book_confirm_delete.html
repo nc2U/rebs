@@ -1,0 +1,41 @@
+{% extends "book/layouts/base.html" %}
+
+
+
+
+{% block content %}
+    <div class="page-header">
+        <h4>
+            <a href="{% url "book:index" %}">Documents</a>
+            <small> / {{ object.title }}</small>
+        </h4>
+    </div>
+
+{#        @include('flash::message')#}
+
+    <div class="row container__article">
+        <div class="col-md-6 sidebar__article">
+            <aside>
+{#                                {{-- @include('articles.partial.search') --}}#}
+{##}
+{#                                {{-- @include('tags.partial.index') --}}#}
+            </aside>
+        </div>
+
+        <div class="col-md-9 show__doc">
+
+            <div class="text-center action__doc pt-5">
+
+                <form action="." method="post" name="form1">
+                    {% csrf_token %}
+                    <p> {{ object }} - 정말 삭제하시겠습니까?
+                        <button class="btn btn-danger">
+                            <i class="fa fa-trash-o"></i> 삭제
+                        </button>
+                    </p>
+                </form>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
