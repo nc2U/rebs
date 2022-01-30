@@ -19,10 +19,10 @@
                         <div class="card-body">
 
                             {% with menu_order='2' %}
-                                {% include 'rebs_cash/partials/head_menu_payment.html' %}
+                                {% include 'cash/partials/head_menu_payment.html' %}
                             {% endwith %}
 
-                            {% include 'rebs_cash/partials/payment_form_search_area.html' %}
+                            {% include 'cash/partials/payment_form_search_area.html' %}
                         </div>
                     </div>
                 </div>
@@ -31,7 +31,7 @@
             <div class="col-12">
                 <div class="card {% if this_contract %}bg-info-lighten{% endif %}" style="background: #F3F4F8;">
                     <div class="card-body">
-                        {% include 'rebs_cash/partials/payment_form_info.html' %}
+                        {% include 'cash/partials/payment_form_info.html' %}
                     </div>
                 </div>
             </div>
@@ -39,7 +39,7 @@
             <div class="col-lg-7">
                 <div class="card {% if request.GET.payment_id and not request.GET.contract %}bg-warning-lighten{% endif %}">
                     <div class="card-body">
-                        {% include 'rebs_cash/partials/payment_form_form_table.html' %}
+                        {% include 'cash/partials/payment_form_form_table.html' %}
                     </div>
                 </div>
             </div>
@@ -47,7 +47,7 @@
             <div class="col-lg-5">
                 <div class="card">
                     <div class="card-body">
-                        {% include 'rebs_cash/partials/payment_form_data_table.html' %}
+                        {% include 'cash/partials/payment_form_data_table.html' %}
                     </div>
                 </div>
             </div>

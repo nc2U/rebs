@@ -22,7 +22,7 @@ TODAY = datetime.today().strftime('%Y-%m-%d')
 
 
 class DaylyCashReport(LoginRequiredMixin, TemplateView):
-    template_name = 'rebs_cash/cashbook_report.html'
+    template_name = 'cash/cashbook_report.html'
 
     def get_context_data(self, **kwargs):
         context = super(DaylyCashReport, self).get_context_data(**kwargs)
@@ -206,7 +206,7 @@ def CashInoutDV(request, *args, **kwargs):
 
 
 class ProjectCashReport(LoginRequiredMixin, TemplateView):
-    template_name = 'rebs_cash/projectcashbook_report.html'
+    template_name = 'cash/projectcashbook_report.html'
 
     def get_project(self):
         try:
@@ -519,7 +519,7 @@ def ProjectCashInoutDV(request, *args, **kwargs):
 
 
 class SalesPaymentLV(LoginRequiredMixin, ListView, FormView):
-    template_name = 'rebs_cash/project_payment_list.html'
+    template_name = 'cash/project_payment_list.html'
     form_class = PaymentSearchForm
     paginate_by = 10
 
@@ -602,7 +602,7 @@ class SalesPaymentLV(LoginRequiredMixin, ListView, FormView):
 class SalesPaymentRegister(LoginRequiredMixin, FormView):
     model = ProjectCashBook
     form_class = PaymentForm
-    template_name = 'rebs_cash/project_payment_form.html'
+    template_name = 'cash/project_payment_form.html'
 
     def get_project(self):
         try:
@@ -776,7 +776,7 @@ class SalesPaymentRegister(LoginRequiredMixin, FormView):
             payment.recoder = self.request.user
             payment.save()
             return redirect(self.get_success_url())
-        return render(request, 'rebs_cash/project_payment_form.html', {'form': form})
+        return render(request, 'cash/project_payment_form.html', {'form': form})
 
 
 def paymentDeleteView(request, *args, **kwargs):
