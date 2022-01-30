@@ -49,7 +49,7 @@ class ProjectDelete(LoginRequiredMixin, DeleteView):
 class SettingsOrderGroup(LoginRequiredMixin, FormView):
     """차수 분류 등록"""
     form_class = OrderGroupFormSet
-    template_name = 'rebs_project/settings_order_group.html'
+    template_name = 'project/settings_order_group.html'
 
     def get_project(self):
         try:
@@ -82,13 +82,13 @@ class SettingsOrderGroup(LoginRequiredMixin, FormView):
                     pass
             project_query = '?project=' + self.request.GET.get('project') if self.request.GET.get('project') else ''
             return redirect(reverse_lazy('rebs:project:set-ordergroup') + project_query)
-        return render(request, 'rebs_project/settings_ordergroup.html', {'formset': formset})
+        return render(request, 'project/settings_ordergroup.html', {'formset': formset})
 
 
 class SettingsUnitType(LoginRequiredMixin, FormView):
     """타입 정보 등록"""
     form_class = UnitTypeFormSet
-    template_name = 'rebs_project/settings_unit_type.html'
+    template_name = 'project/settings_unit_type.html'
 
     def get_project(self):
         try:
@@ -121,13 +121,13 @@ class SettingsUnitType(LoginRequiredMixin, FormView):
                     pass
             project_query = '?project=' + self.request.GET.get('project') if self.request.GET.get('project') else ''
             return redirect(reverse_lazy('rebs:project:set-unit-type') + project_query)
-        return render(request, 'rebs_project/settings_unittype.html', {'formset': formset})
+        return render(request, 'project/settings_unittype.html', {'formset': formset})
 
 
 class SettingsFloorType(LoginRequiredMixin, FormView):
     """층별 조건 등록"""
     form_class = UnitFloorTypeFormSet
-    template_name = 'rebs_project/settings_floor_type.html'
+    template_name = 'project/settings_floor_type.html'
 
     def get_project(self):
         try:
@@ -160,12 +160,12 @@ class SettingsFloorType(LoginRequiredMixin, FormView):
                     pass
             project_query = '?project=' + self.request.GET.get('project') if self.request.GET.get('project') else ''
             return redirect(reverse_lazy('rebs:project:set-floor-type') + project_query)
-        return render(request, 'rebs_project/settings_floor.html', {'formset': formset})
+        return render(request, 'project/settings_floor.html', {'formset': formset})
 
 
 class SettingsSalesPrice(LoginRequiredMixin, TemplateView):
     """분양가 등록"""
-    template_name = 'rebs_project/settings_sales_price.html'
+    template_name = 'project/settings_sales_price.html'
 
     def get_project(self):
         try:
@@ -246,7 +246,7 @@ class SettingsSalesPrice(LoginRequiredMixin, TemplateView):
 class SettingsPaymentOrder(LoginRequiredMixin, FormView):
     """납입회차 등록"""
     form_class = InstallmentPaymentOrderFormSet
-    template_name = 'rebs_project/settings_payment_order.html'
+    template_name = 'project/settings_payment_order.html'
 
     def get_project(self):
         try:
@@ -280,12 +280,12 @@ class SettingsPaymentOrder(LoginRequiredMixin, FormView):
                     pass
             project_query = '?project=' + self.request.GET.get('project') if self.request.GET.get('project') else ''
             return redirect(reverse_lazy('rebs:project:set-payment-order') + project_query)
-        return render(request, 'rebs_project/settings_installment_order.html', {'formset': formset})
+        return render(request, 'project/settings_installment_order.html', {'formset': formset})
 
 
 class SettingsDownPayment(LoginRequiredMixin, TemplateView):
     """차수/타입별 계약금 등록"""
-    template_name = 'rebs_project/settings_down_payment.html'
+    template_name = 'project/settings_down_payment.html'
 
     def get_project(self):
         try:
@@ -326,7 +326,7 @@ class SettingsDownPayment(LoginRequiredMixin, TemplateView):
 class SiteManage(LoginRequiredMixin, ListView, FormView):
     model = Site
     form_class = SiteForm
-    template_name = 'rebs_project/site_manage.html'
+    template_name = 'project/site_manage.html'
     paginate_by = 15
 
     def get_project(self):
@@ -378,7 +378,7 @@ class SiteManage(LoginRequiredMixin, ListView, FormView):
             if self.request.GET.get('project'):
                 query_str += 'project=' + self.request.GET.get('project')
             return redirect(reverse_lazy('rebs:project:site') + query_str)
-        return render(request, 'rebs_project/site_manage.html', {'form': form})
+        return render(request, 'project/site_manage.html', {'form': form})
 
 
 def siteDelete(*args, **kwargs):
@@ -391,7 +391,7 @@ def siteDelete(*args, **kwargs):
 class SiteOwnerManage(LoginRequiredMixin, ListView, FormView):
     model = SiteOwner
     form_class = SiteOwnerForm
-    template_name = 'rebs_project/site_owner_manage.html'
+    template_name = 'project/site_owner_manage.html'
     paginate_by = 15
 
     def get_project(self):
@@ -453,7 +453,7 @@ class SiteOwnerManage(LoginRequiredMixin, ListView, FormView):
             if self.request.GET.get('project'):
                 query_str += 'project=' + self.request.GET.get('project')
             return redirect(reverse_lazy('rebs:project:site-owner') + query_str)
-        return render(request, 'rebs_project/site_owner_manage.html', {'form': form})
+        return render(request, 'project/site_owner_manage.html', {'form': form})
 
 
 def siteRelationshipUpdate(request):
@@ -483,7 +483,7 @@ def siteRelationshipDelete(*args, **kwargs):
 class SiteContractManage(LoginRequiredMixin, ListView, FormView):
     model = SiteContract
     form_class = SiteContractForm
-    template_name = 'rebs_project/site_contract_manage.html'
+    template_name = 'project/site_contract_manage.html'
     paginate_by = 15
 
     def get_project(self):
@@ -566,7 +566,7 @@ class SiteContractManage(LoginRequiredMixin, ListView, FormView):
             if self.request.GET.get('project'):
                 query_str += 'project=' + self.request.GET.get('project')
             return redirect(reverse_lazy('rebs:project:site-contract') + query_str)
-        return render(request, 'rebs_project/site_contract_manage.html', {'form': form})
+        return render(request, 'project/site_contract_manage.html', {'form': form})
 
 
 def siteContractDelete(*args, **kwargs):
