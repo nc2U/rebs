@@ -98,7 +98,7 @@
                                             </thead>
                                             <tbody>
                                             {% for ba in bank_accounts %}
-                                                <tr class="{% ifequal forloop.counter 1 %}bg-light-lighten{% endifequal %}">
+                                                <tr class="{% if forloop.counter == 1 %}bg-light-lighten{% endif %}">
                                                     {% if forloop.counter == 1 %}
                                                         <td class="text-center">
                                                             현금
@@ -180,8 +180,8 @@
                                                 <th></th>
                                                 <th></th>
                                                 <th class="text-right">
-                                                    {% ifequal day_inc_sum.income__sum None %}-{% else %}
-                                                    {{ day_inc_sum.income__sum|intcomma|default:"-" }}{% endifequal %}
+                                                    {% if day_inc_sum.income__sum == None %}-{% else %}
+                                                    {{ day_inc_sum.income__sum|intcomma|default:"-" }}{% endif %}
                                                 </th>
                                                 <th></th>
                                                 <th></th>
@@ -239,8 +239,8 @@
                                                 <th></th>
                                                 <th></th>
                                                 <th class="text-right">
-                                                    {% ifequal day_out_sum.outlay__sum None %}-{% else %}
-                                                    {{ day_out_sum.outlay__sum|intcomma|default:"-" }}{% endifequal %}
+                                                    {% if day_out_sum.outlay__sum == None %}-{% else %}
+                                                    {{ day_out_sum.outlay__sum|intcomma|default:"-" }}{% endif %}
                                                 </th>
                                                 <th></th>
                                                 <th></th>
