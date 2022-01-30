@@ -1,0 +1,4 @@
+upstream django_uwsgi {
+    ip_hash;
+    server {{ var "BACKEND_HOST" }} max_fails={{ var "BACKEND_MAX_FAILS" | default "3" }} fail_timeout={{ var "BACKEND_FAIL_TIMEOUT" | default "10s" }};
+}

@@ -1,0 +1,33 @@
+user  nginx;
+worker_processes  {{ var "WORKER_PROCESSES" | default "1" }};
+
+error_log  /var/log/nginx/error.log warn;
+pid        /var/run/nginx.pid;
+
+events {
+    worker_connections  {{ var "WORKER_CONNECTIONS" | default "1024" }};
+}
+
+http {
+    include       /etc/nginx/mime.types;
+    default_type  application/octet-stream;
+
+    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                      '$status $body_bytes_sent "$http_referer" '
+                      '"$http_user_agent" "$http_x_forwarded_for"';
+
+    access_log  /var/log/nginx/access.log  main;
+
+    sendfile        on;
+    #tcp_nopush     on;
+
+    keepalive_timeout  {{ var "KEEPALIVE_TIMEOUT" | default "65" }};
+    client_max_body_size 100M;
+
+    gzip  {{ var "GZIP" | default "on" }};
+
+    include /etc/nginx/conf.d/log.conf;
+    include /etc/nginx/conf.d/upstream.conf;
+    # include /etc/nginx/conf.d/public.ssl.conf;
+    include /etc/nginx/conf.d/public.conf;
+}

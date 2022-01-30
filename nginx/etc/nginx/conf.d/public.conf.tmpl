@@ -1,0 +1,18 @@
+server {
+    listen          {{ var "SERVER_PORT" | default "80" }} default_server;
+    server_name     $host www.$host;
+    charset         utf-8;
+
+    location / {
+        uwsgi_pass  django_uwsgi;
+        include     /etc/nginx/uwsgi_params;
+        proxy_hide_header Access-Control-Allow-Origin;
+        add_header 'Access-Control-Allow-Origin' '*';
+    }
+
+    location /static/ {
+        alias /static/;
+    }
+}
+
+server_tokens off;
