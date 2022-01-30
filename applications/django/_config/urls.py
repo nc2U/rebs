@@ -26,4 +26,5 @@ urlpatterns = [
     path('', RedirectView.as_view(url='/rebs/dashboard/'), name='home'),
 
     path('book/', include('book.urls')),
+    path('rebs/', include('rebs.urls')),
 ]

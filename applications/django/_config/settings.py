@@ -53,6 +53,11 @@ INSTALLED_APPS += [  # plugin
 INSTALLED_APPS += [  # app
     'account.apps.AccountConfig',
     'book.apps.BookConfig',
+    'cash.apps.CashConfig',
+    'company.apps.CompanyConfig',
+    'contract.apps.ContractConfig',
+    'project.apps.ProjectConfig',
+    'rebs.apps.RebsConfig',
 ]
 
 MIDDLEWARE = [
