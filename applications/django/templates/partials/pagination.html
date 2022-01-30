@@ -1,0 +1,54 @@
+<div class="m-3 mt-5">
+    <nav>
+        <ul class="pagination {{ page_class }}">
+            {% if to_first_last %}
+                {% if page_obj.previous_page_number >= 1 %}
+                    <li class="page-item"><a href="?page=1{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" rel="first" aria-label="« 처음"
+                                             class="page-link">&laquo;</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled"><span aria-hidden="true"
+                                                         class="page-link">&laquo;</span></li>
+                {% endif %}
+            {% endif %}
+
+            {% if page_obj.has_previous %}
+                <li class="page-item"><a href="?page={{ page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}"
+                                         rel="prev"
+                                         aria-label="« 이전" class="page-link">‹</a></li>
+            {% else %}
+                <li class="page-item disabled"><span aria-hidden="true"
+                                                     class="page-link">‹</span></li>
+            {% endif %}
+
+            {% for page in page_obj.paginator.page_range %}
+                {% if page <= page_obj.number|add:"4" and page >= page_obj.number|add:"-4" %}
+                <li class="page-item {% if page == page_obj.number %}active{% endif %}">
+                    <a href="?page={{ page }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" class="page-link">{{ page }}</a>
+                </li>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+                <li class="page-item"><a href="?page={{ page_obj.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}"
+                                         rel="next"
+                                         aria-label="다음 »" class="page-link">›</a></li>
+            {% else %}
+                <li class="page-item disabled"><span aria-hidden="true"
+                                                     class="page-link">›</span></li>
+            {% endif %}
+
+
+            {% if to_first_last %}
+                {% if page_obj.next_page_number <= page_obj.paginator.num_pages %}
+                    <li class="page-item"><a href="?page={{ page_obj.paginator.num_pages }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" rel="last"
+                                             aria-label="맨끝 »"
+                                             class="page-link">&raquo;</a></li>
+                {% else %}
+                    <li class="page-item disabled"><span aria-hidden="true"
+                                                         class="page-link">&raquo;</span></li>
+                {% endif %}
+            {% endif %}
+        </ul>
+    </nav>
+</div>
