@@ -53,6 +53,8 @@ INSTALLED_APPS += [  # app
     'account.apps.AccountConfig',
     'book.apps.BookConfig',
     'company.apps.CompanyConfig',
+    'contract.apps.ContractConfig',
+    'project.apps.ProjectConfig',
     'rebs.apps.RebsConfig',
 ]
 

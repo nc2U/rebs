@@ -1,0 +1,26 @@
+<ul class="nav nav-tabs mb-5">
+    <li class="nav-item">
+        <a href="{% url 'rebs:project:index' %}{% if request.GET.project %}?project={{ request.GET.project }}{% endif %}"
+           aria-expanded="{% if menu_order == '1' %}true{% else %}false{% endif %}"
+           class="nav-link  {% if menu_order == '1' %}active{% endif %}">
+            <i class="mdi mdi-deskphone d-md-none d-block"></i>
+            <span class="d-none d-md-block">프로젝트 관리</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a href="{% url 'rebs:project:set-ordergroup' %}{% if request.GET.project %}?project={{ request.GET.project }}{% endif %}"
+           aria-expanded="{% if menu_order == '2' %}true{% else %}false{% endif %}"
+           class="nav-link  {% if menu_order == '2' %}active{% endif %}">
+            <i class="mdi mdi-pencil-box-multiple-outline d-md-none d-block"></i>
+            <span class="d-none d-md-block">세부 정보 관리</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a href="{% url 'rebs:project:site' %}{% if request.GET.project %}?project={{ request.GET.project }}{% endif %}"
+           aria-expanded="{% if menu_order == '3' %}true{% else %}false{% endif %}"
+           class="nav-link  {% if menu_order == '3' %}active{% endif %}">
+            <i class="mdi mdi-format-list-bulleted d-md-none d-block"></i>
+            <span class="d-none d-md-block">사업 부지 관리</span>
+        </a>
+    </li>
+</ul>
