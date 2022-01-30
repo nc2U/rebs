@@ -32,13 +32,13 @@
                             {% if payment_due %}{{ payment_due|default:"-"|intcomma }}{% else %}-{% endif %}
                         </td>
                         <td class="text-right {% if pay_sum_by_order and po.pay_code > 2 and not po.pay_due_date or po.pay_due_date > today %}text-primary{% endif %}">
-                            {% ifequal pay_sum_by_order 0 %}-{% else %}
-                                {{ pay_sum_by_order|intcomma|default:"-" }}{% endifequal %}
+                            {% if pay_sum_by_order == 0 %}-{% else %}
+                                {{ pay_sum_by_order|intcomma|default:"-" }}{% endif %}
                         </td>
                         <td class="text-right {% if pay_sum_by_order > payment_due %}text-primary{% elif pay_sum_by_order < payment_due %}text-danger{% endif %}">
                             {% if po.pay_code <= 2 or po.pay_due_date %}
-                                {% ifequal pay_sum_by_order payment_due %}-{% else %}
-                                    {{ pay_sum_by_order|sub:payment_due|intcomma|default:"-" }}{% endifequal %}
+                                {% if pay_sum_by_order == payment_due %}-{% else %}
+                                    {{ pay_sum_by_order|sub:payment_due|intcomma|default:"-" }}{% endif %}
                             {% else %}-{% endif %}
                         </td>
                     {% endwith %}
