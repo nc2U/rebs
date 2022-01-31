@@ -7,5 +7,4 @@ RUN apt update \
     && pip install --upgrade pip \
     && apt install python3-dev default-libmysqlclient-dev build-essential -y \
     && pip install --trusted-host pypi.python.org -r requirements.txt \
-    && apt remove python3-dev default-libmysqlclient-dev build-essential -y \
     && apt autoremove -y \
