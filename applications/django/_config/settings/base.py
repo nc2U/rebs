@@ -65,7 +65,7 @@ INSTALLED_APPS += [  # plugin
 ]
 
 INSTALLED_APPS += [  # app
-    '_excel.apps.ExcelConfig',
+    'excel.apps.ExcelConfig',
     'account.apps.AccountConfig',
     'cash.apps.CashConfig',
     'book.apps.BookConfig',
