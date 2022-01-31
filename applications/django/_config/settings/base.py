@@ -111,18 +111,41 @@ WSGI_APPLICATION = '_config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': get_environment('DATABASE_NAME'),
+        'USER': get_environment('DATABASE_USER'),
+        'PASSWORD': get_environment('DATABASE_PASSWORD'),
+        "DEFAULT-CHARACTER-SET": 'utf8',
+        'HOST': 'master',
+        'PORT': 3306,
     },
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.mysql',
-    #     'NAME': 'rebs',
-    #     'USER': 'rebs',
-    #     'PASSWORD': 'secret',
-    #     "DEFAULT-CHARACTER-SET": 'utf8',
-    #     'HOST': 'master',
-    #     'PORT': 3306,
-    # },
+    'master': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': get_environment('DATABASE_NAME'),
+        'USER': get_environment('DATABASE_USER'),
+        'PASSWORD': get_environment('DATABASE_PASSWORD'),
+        "DEFAULT-CHARACTER-SET": 'utf8',
+        'HOST': 'master',
+        'PORT': 3306,
+    },
+    'slave1': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': get_environment('DATABASE_NAME'),
+        'USER': get_environment('DATABASE_USER'),
+        'PASSWORD': get_environment('DATABASE_PASSWORD'),
+        "DEFAULT-CHARACTER-SET": 'utf8',
+        'HOST': 'slave',
+        'PORT': 3306,
+    },
+    'slave2': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': get_environment('DATABASE_NAME'),
+        'USER': get_environment('DATABASE_USER'),
+        'PASSWORD': get_environment('DATABASE_PASSWORD'),
+        "DEFAULT-CHARACTER-SET": 'utf8',
+        'HOST': 'slave',
+        'PORT': 3306,
+    }
 }
 
 # Password validation
