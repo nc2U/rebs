@@ -1,6 +1,6 @@
 Django==4.0.1
-uWSGI
-mysqlclient==2.0.3
+uWSGI==2.0.20
+mysqlclient==2.1.0
 django-widget-tweaks==1.4.12
 django-markdown2==0.3.1
 Pillow==8.3.1
@@ -10,5 +10,5 @@ django-import-export==2.7.1
 boto3==1.20.46
 django-storages==1.12.3
 django-mathfilters==1.0.0
-XlsxWriter
+XlsxWriter==3.0.2
 WeasyPrint==52
