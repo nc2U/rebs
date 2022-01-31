@@ -19,7 +19,6 @@ class Company(models.Model):
     class Meta:
         verbose_name = "01. 회사 정보"
         verbose_name_plural = "01. 회사 정보"
-        db_table = 'rebs_company'
 
     def __str__(self):
         return self.name
