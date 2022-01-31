@@ -12,9 +12,20 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from pathlib import Path
 import os, string, random, datetime
+from django.core.exceptions import ImproperlyConfigured
+
+
+def get_environment(var_name):
+    """환경 변수를 가져오거나 예외를 반환한다."""
+    try:
+        return os.environ[var_name]
+    except KeyError:
+        error_msg = "Set the {} environment variable".format(var_name)
+        raise ImproperlyConfigured(error_msg)
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
@@ -102,7 +113,16 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    },
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.mysql',
+    #     'NAME': 'rebs',
+    #     'USER': 'rebs',
+    #     'PASSWORD': 'secret',
+    #     "DEFAULT-CHARACTER-SET": 'utf8',
+    #     'HOST': 'master',
+    #     'PORT': 3306,
+    # },
 }
 
 # Password validation
@@ -137,11 +157,25 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
+AWS_ACCESS_KEY_ID = get_environment('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = get_environment('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = get_environment('AWS_STORAGE_BUCKET_NAME')
+AWS_REGION = 'ap-northeast-2'
+AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.{AWS_REGION}.amazonaws.com'
+AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400', }
+DEFAULT_FILE_STORAGE = '_config.asset_storage.MediaStorage'
+
+AWS_DEFAULT_ACL = 'public-read'
+
 STATIC_URL = 'static/'
 
 STATIC_ROOT = BASE_DIR / 'static'
 
 STATICFILES_DIRS = ('./_assets',)
+
+MEDIA_URL = 'https://%s/media/' % (AWS_S3_CUSTOM_DOMAIN)  # 각 media 파일에 관한 URL prefix
+
+MEDIA_ROOT = BASE_DIR / 'media'  # 업로드된 파일을 저장할 디렉토리 경로
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
@@ -149,13 +183,13 @@ STATICFILES_DIRS = ('./_assets',)
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 APP_ORDER = [
-    # 'rebs_company',
-    # 'rebs_project',
-    # 'rebs_contract',
-    # 'rebs_cash',
-    # 'rebs',
-    # 'board',
-    # 'books',
+    'rebs_company',
+    'rebs_project',
+    'rebs_contract',
+    'rebs_cash',
+    'rebs',
+    'board',
+    'books',
     'account',
 ]
 
