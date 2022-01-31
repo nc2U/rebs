@@ -12,7 +12,7 @@ urlpatterns = [
     path('project/', include('project.urls')),
     path('contract/', include('contract.urls')),
     path('notice/', include('notice.urls')),
-    path('docs/', include('board.urls')),
+    path('docs/', include('document.urls')),
 
     # pdf url
     path('pdf-bill/', PdfExportBill.as_view(), name='pdf-bill'),

@@ -1,0 +1,92 @@
+{% extends 'document/layouts/docs_board.html' %}
+
+{% block board %}
+
+    <div class="row">
+        <ul class="nav nav-tabs nav-bordered mb-3 col-12">
+            <li class="nav-item">
+                <a href="{% if 'project' in request.path %}{% url 'rebs:docs:pr.lawsuit_list' %}{% if request.GET.project %}?project={{ request.GET.project }}{% endif %}{% else %}{% url 'rebs:docs:co.lawsuit_list' %}{% endif %}" data-bs-toggle="tab" aria-expanded="false" class="nav-link {% if 'case' not in request.path %}active{% endif %}">
+                    <i class="mdi mdi-home-variant d-md-none d-block"></i>
+                    <span class="d-none d-md-block"><h5>{{ this_board|default:"소송 문서 관리" }}</h5></span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{% if 'project' in request.path %}{% url 'rebs:docs:pr.case_list' %}{% if request.GET.project %}?project={{ request.GET.project }}{% endif %}{% else %}{% url 'rebs:docs:co.case_list' %}{% endif %}" data-bs-toggle="tab" aria-expanded="true" class="nav-link {% if 'case' in request.path %}active{% endif %}">
+                    <i class="mdi mdi-account-circle d-md-none d-block"></i>
+                    <span class="d-none d-md-block"><h5>소송 사건 관리</h5></span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="row col-12 mt-3">
+            <div class="col-12 col-sm-8 col-lg-6 col-xl-4 mb-2">
+                <select name="" id="" class="form-control select2" data-toggle="select2" onchange="location.href='{{ request.path }}?related='+this.value">
+                    <option value="">---------</option>
+                    {% for case in lawcases %}
+                        <option value="{{ case.pk }}" {% if request.GET.related == case.pk|slugify %}selected{% endif %}>{{ case }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col d-flex align-items-end justify-content-end mb-2 mr-2">
+                <a href="javascript:alert('준비중!')" class="text-dark">
+                    <i class="mdi mdi-file-excel-box"></i> Excel Export
+                    <i class="mdi mdi-download ml-1"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="row table-responsive col-12">
+            <table class="table table-sm table-hover">
+                <thead>
+                <tr class="bg-dragula">
+                    <th>구분</th>
+                    <th>심급</th>
+                    <th>관련사건</th>
+                    <th>사건명</th>
+                    <th>원고/신청인</th>
+                    <th>피고/피신청인</th>
+                    <th>제3채무자</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for object in object_list %}
+                    <tr>
+                        <td>{{ object.get_sort_display }}</td>
+                        <td>{{ object.get_level_display|default:"-" }}</td>
+                        <td {% if object.related_case %}data-toggle="tooltip" data-placement="top" title="" data-original-title="{{ object.related_case }} ({{ object.related_case.get_level_display }})"{% endif %}>
+                            {% if object.related_case %}
+                                <a href="{{ request.path }}?related={{ object.related_case.pk }}">
+                            {% endif %}
+                            {{ object.related_case.case_number|default:"-" }}
+                            {% if object.related_case %}</a>{% endif %}
+                        </td>
+                        <td>
+                            <a href="{% if co %}{% url 'rebs:docs:co.case_update' object.pk %}{% else %}{% url 'rebs:docs:pr.case_update' object.pk %}{% endif %}">
+                                {{ object|truncatechars:32 }}
+                            </a>
+                        </td>
+                        <td>{{ object.plaintiff|default:"-"|truncatechars:10 }}</td>
+                        <td>{{ object.defendant|truncatechars:10 }}</td>
+                        <td>{{ object.related_debtor|default:"-" }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="row col-12 mt-3">
+            <div class="col-12 text-right">
+                <a href="{% if co %}{% url 'rebs:docs:co.case_create' %}{% else %}{% url 'rebs:docs:pr.case_create' %}{% endif %}{% if request.GET.project %}?project={{ this_project.pk }}{% endif %}">
+                    <button type="button" class="btn btn-primary">등록하기</button>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {% if is_paginated %}
+        {# to_first_last :: 맨처음 / 맨끝으로 버튼 사용 여부 #}
+        {# page_class ex:: pagination-rounded pagination-sm pagination-lg justify-content-center justify-content-end #}
+        {% include 'partials/pagination.html' with to_first_last="ok" page_class="pagination-rounded justify-content-end" %}
+    {% endif %}
+
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends 'rebs/layouts/base.html' %}
+
+{% block title %}Rebs - Project - 일반 문서 관리{% endblock %}
+
+{% block content %}
+    {#    {% load humanize mathfilters widget_tweaks %}#}
+
+    <!-- Start Content-->
+    <div class="container-fluid">
+
+        <!-- start page title -->
+        {% include 'rebs/partials/content_title.html' with  second_bs="현장 문서 관리" title="일반 문서 관리" %}
+        <!-- end page title -->
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+
+                        {% with menu_order=menu_order %}
+                            {% if not co %}
+                                {% include 'document/layouts/partials/pr_head_menu.html' %}
+                            {% elif co %}
+                                {% include 'document/layouts/partials/co_head_menu.html' %}
+                            {% endif %}
+                        {% endwith %}
+
+                        {% if not co %}
+                            <form class="form-horizontal p-0 col-12" name="form1" method="get">
+                                <div class="row">
+                                    {% include 'rebs/partials/project_select.html' %}
+                                    <div class="col-sm-12 col-md-6"></div>
+                                </div>
+                            </form>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        {% endif %}
+
+                        {% block board %}{% endblock %}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> <!-- container -->
+
+{% endblock %}
+
+{% block third_party_js %}
+    {% if not co %}
+        <script>
+          window.onload = function () {
+            document.getElementById('id_project_sel').setAttribute('onchange', 'submit()')
+          }
+        </script>
+    {% endif %}
+{% endblock %}

@@ -66,11 +66,11 @@ INSTALLED_APPS += [  # plugin
 
 INSTALLED_APPS += [  # app
     'account.apps.AccountConfig',
-    'board.apps.BoardConfig',
     'cash.apps.CashConfig',
     'book.apps.BookConfig',
     'company.apps.CompanyConfig',
     'contract.apps.ContractConfig',
+    'document.apps.DocumentConfig',
     'notice.apps.NoticeConfig',
     'project.apps.ProjectConfig',
     'rebs.apps.RebsConfig',
@@ -206,13 +206,13 @@ MEDIA_ROOT = BASE_DIR / 'media'  # 업로드된 파일을 저장할 디렉토리
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 APP_ORDER = [
-    'rebs_company',
-    'rebs_project',
-    'rebs_contract',
-    'rebs_cash',
+    'company',
+    'project',
+    'contract',
+    'cash',
     'rebs',
-    'board',
-    'books',
+    'document',
+    'book',
     'account',
 ]
 
