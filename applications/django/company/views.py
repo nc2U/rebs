@@ -40,7 +40,7 @@ class CompanyRegisterView(LoginRequiredMixin, ListView, FormView):
             instance.user = request.user
             instance.save()
             return redirect(reverse_lazy('rebs:company:index'))
-        return render(request, 'rebs_company/company_list.html', {'form': form})
+        return render(request, 'company/company_list.html', {'form': form})
 
 
 class CompanyCV(LoginRequiredMixin, CreateView):
