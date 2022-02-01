@@ -191,7 +191,7 @@
                                         <label for="{{ form.es_date.id_for_label }}"
                                                class="col-3 col-form-label bg-light">설립일자</label>
                                         <div class="col-9">
-                                            <div class="col-form-label text-black-50 pl-3">{{ company.es_date }}</div>
+                                            <div class="col-form-label text-black-50 pl-3">{{ company.es_date|default:"" }}</div>
                                         </div>
                                     </div>
                                 </div>
@@ -229,7 +229,7 @@
                                         <label for="{{ form.op_date.id_for_label }}"
                                                class="col-3 col-form-label bg-light">개업일자</label>
                                         <div class="col-9">
-                                            <div class="col-form-labe text-black-50l pl-3">{{ company.op_date }}</div>
+                                            <div class="col-form-labe text-black-50l pl-3">{{ company.op_date|default:"" }}</div>
                                         </div>
                                     </div>
                                 </div>
