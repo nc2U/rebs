@@ -6,7 +6,7 @@ import {
   SET_USER_INFO,
 } from '@/store/modules/accounts/mutations-types'
 import router from '@/router'
-import { message } from '@/utils/helper'
+import {message} from '@/utils/helper'
 
 declare const Buffer: any
 
@@ -25,17 +25,17 @@ const actions = {
     api
       .post(`/user/`, payload)
       .then(() => {
-        router.push({ name: 'Login' })
+        router.push({name: 'Login'})
         message('info', '', '회원가입이 완료되었습니다.')
       })
       .catch((err) => console.log(err.response.data))
   },
-  login({ commit }: any, payload: { email: string; password: string }) {
-    const { email, password } = payload
+  login({commit}: any, payload: { email: string; password: string }) {
+    const {email, password} = payload
     return api
-      .post('/token/', { email, password })
+      .post('/token/', {email, password})
       .then((res) => {
-        const { token } = res.data
+        const token = res.data.access
         commit(SET_ACCESS_TOKEN, token)
         const id = extractId(token)
         return api.get(`/user/${id}/`)
@@ -49,8 +49,8 @@ const actions = {
         alert('이메일 또는 비밀번호를 확인하세요.')
       })
   },
-
-  loginByToken({ commit }: any, token: string) {
+  
+  loginByToken({commit}: any, token: string) {
     commit(SET_ACCESS_TOKEN, token)
     const id = extractId(token)
     return api
@@ -58,8 +58,8 @@ const actions = {
       .then((res) => commit(SET_USER_INFO, res.data))
       .catch((err) => console.log(err.response.data))
   },
-
-  logout({ commit }: any) {
+  
+  logout({commit}: any) {
     commit(DESTROY_CURRENT_USER)
     commit(DESTROY_ACCESS_TOKEN)
     message('', '', '로그아웃 완료 알림!')
