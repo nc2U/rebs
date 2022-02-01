@@ -200,7 +200,8 @@
                 <span>
                 <span class="account-user-name">{% firstof user.get_full_name user.username %}</span>
                 <span class="account-position">
-                    {% if user.is_superuser %}Super User{% elif user.staffauth.is_staff %}Staff{% else %}Guest{% endif %}
+                    {% if user.is_superuser %}Super User{% elif user.staffauth.is_staff %}Staff{% else %}
+                        Guest{% endif %}
                 </span>
             </span>
             </a>
@@ -235,7 +236,7 @@
                 </a>
 
                 <!-- item-->
-                <a href="{% url 'logout' %}" class="dropdown-item notify-item">
+                <a href="{% url 'admin:logout' %}" class="dropdown-item notify-item">
                     <i class="mdi mdi-logout mr-1"></i>
                     <span>Logout</span>
                 </a>
