@@ -1,4 +1,4 @@
-# Django + Vue (vue-cli + webpack) in Nginx + MariaDB from Docker
+# Django + Vue (vue-cli + webpack) using Nginx + MariaDB made with Docker
 
 ## Requirement in your system
 
@@ -8,13 +8,22 @@
 
 ## Usage
 
-### Copy docker-compose.yml
+### 1. Clone this Repository
+
+```bash
+clone https://github.com/austin-kho/Rebs
+cd Rebs
+```
+
+### 2. Copy docker-compose.yml
 
 ```bash
 cp docker-compose.yml.tmpl docker-compose.yml
 ```
 
-### Write environments in docker-compose.yml
+### 3. Write environments in docker-compose.yml
+
+Check what must be defined in docker-compose.yml file.
 
 - required:
     - MYSQL_DATABASE
@@ -27,7 +36,7 @@ cp docker-compose.yml.tmpl docker-compose.yml
     - DJANGO_SETTINGS_MODULE
     - SERVER_NAME
 
-### docker-compose.yml file environment entry description.
+Enter the actual data for your environment as described in the following items.
 
 - master:
     - MYSQL_DATABASE: my-db-name # **mysql database information**
@@ -39,9 +48,6 @@ cp docker-compose.yml.tmpl docker-compose.yml
     - DATABASE_NAME: my-db-name # **mysql database information**
     - DATABASE_USER: my-db-user # **mysql database information**
     - DATABASE_PASSWORD: my-db-password # **mysql database information**
-    - DISQUS_WEBSITE_SHORTNAME: disqus_website_shortname # **your disqus comment settings**
-    - DISQUS_API_KEY: disqus_api_key # **your disqus comment settings**
-    - DISQUS_API_SECRET: disqus_api_secret # **your About disqus comment settings**
     - AWS_ACCESS_KEY_ID: aws-access-key-id # **your amazon s3 setup information**
     - AWS_SECRET_ACCESS_KEY: aws-secret-access-key # **your amazon s3 setup information**
     - DJANGO_SETTINGS_MODULE: app.settings.prod # **settings mode -> app.settings.prod** or **app.settings.local**
@@ -56,7 +62,7 @@ cp docker-compose.yml.tmpl docker-compose.yml
     - LOG_STDOUT: "true"
     - ADMIN_EMAIL: admin@example.com # **edit with real data**
 
-### Django setting
+### 4. Django setting
 
 To develop in local mode set docker-compose.yml -> web -> DJANGO_SETTINGS_MODULE: app.settings.local
 
