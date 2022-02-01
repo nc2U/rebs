@@ -1,21 +1,21 @@
 [
   {
-    "model": "rebs_company.company",
+    "model": "company.company",
     "pk": 1,
     "fields": {
-      "name": "",
-      "tax_number": "",
-      "ceo": "",
-      "org_number": ""
+      "name": "코리아 주식회사",
+      "tax_number": "111-11-11111",
+      "ceo": "렙스",
+      "org_number": "111111-1111111"
     }
   },
   {
-    "model": "rebs_project.project",
+    "model": "project.project",
     "pk": 1,
     "fields": {
       "company": 1,
-      "name": "프로젝트명",
-      "start_year": "2000"
+      "name": "코리아 프로젝트",
+      "start_year": "2015"
     }
   },
   {
@@ -1650,7 +1650,7 @@
     }
   },
   {
-    "model": "rebs_cash.bankcode",
+    "model": "cash.bankcode",
     "pk": 1,
     "fields": {
       "code": "002",
@@ -1658,7 +1658,7 @@
     }
   },
   {
-    "model": "rebs_cash.bankcode",
+    "model": "cash.bankcode",
     "pk": 2,
     "fields": {
       "code": "003",
@@ -1666,7 +1666,7 @@
     }
   },
   {
-    "model": "rebs_cash.bankcode",
+    "model": "cash.bankcode",
     "pk": 3,
     "fields": {
       "code": "004",
@@ -1674,7 +1674,7 @@
     }
   },
   {
-    "model": "rebs_cash.bankcode",
+    "model": "cash.bankcode",
     "pk": 4,
     "fields": {
       "code": "007",
@@ -1682,7 +1682,7 @@
     }
   },
   {
-    "model": "rebs_cash.bankcode",
+    "model": "cash.bankcode",
     "pk": 5,
     "fields": {
       "code": "011",
@@ -1690,7 +1690,7 @@
     }
   },
   {
-    "model": "rebs_cash.bankcode",
+    "model": "cash.bankcode",
     "pk": 6,
     "fields": {
       "code": "012",
@@ -1698,7 +1698,7 @@
     }
   },
   {
-    "model": "rebs_cash.bankcode",
+    "model": "cash.bankcode",
     "pk": 7,
     "fields": {
       "code": "020",
@@ -1706,7 +1706,7 @@
     }
   },
   {
-    "model": "rebs_cash.bankcode",
+    "model": "cash.bankcode",
     "pk": 8,
     "fields": {
       "code": "023",
@@ -1714,7 +1714,7 @@
     }
   },
   {
-    "model": "rebs_cash.bankcode",
+    "model": "cash.bankcode",
     "pk": 9,
     "fields": {
       "code": "027",
@@ -1722,7 +1722,7 @@
     }
   },
   {
-    "model": "rebs_cash.bankcode",
+    "model": "cash.bankcode",
     "pk": 10,
     "fields": {
       "code": "031",
@@ -1730,7 +1730,7 @@
     }
   },
   {
-    "model": "rebs_cash.bankcode",
+    "model": "cash.bankcode",
     "pk": 11,
     "fields": {
       "code": "032",
@@ -1738,7 +1738,7 @@
     }
   },
   {
-    "model": "rebs_cash.bankcode",
+    "model": "cash.bankcode",
     "pk": 12,
     "fields": {
       "code": "034",
@@ -1746,7 +1746,7 @@
     }
   },
   {
-    "model": "rebs_cash.bankcode",
+    "model": "cash.bankcode",
     "pk": 13,
     "fields": {
       "code": "035",
@@ -1754,7 +1754,7 @@
     }
   },
   {
-    "model": "rebs_cash.bankcode",
+    "model": "cash.bankcode",
     "pk": 14,
     "fields": {
       "code": "037",
@@ -1762,7 +1762,7 @@
     }
   },
   {
-    "model": "rebs_cash.bankcode",
+    "model": "cash.bankcode",
     "pk": 15,
     "fields": {
       "code": "039",
@@ -1770,7 +1770,7 @@
     }
   },
   {
-    "model": "rebs_cash.bankcode",
+    "model": "cash.bankcode",
     "pk": 16,
     "fields": {
       "code": "045",
@@ -1778,7 +1778,7 @@
     }
   },
   {
-    "model": "rebs_cash.bankcode",
+    "model": "cash.bankcode",
     "pk": 17,
     "fields": {
       "code": "048",
@@ -1786,7 +1786,7 @@
     }
   },
   {
-    "model": "rebs_cash.bankcode",
+    "model": "cash.bankcode",
     "pk": 18,
     "fields": {
       "code": "071",
@@ -1794,7 +1794,7 @@
     }
   },
   {
-    "model": "rebs_cash.bankcode",
+    "model": "cash.bankcode",
     "pk": 19,
     "fields": {
       "code": "081",
@@ -1802,7 +1802,7 @@
     }
   },
   {
-    "model": "rebs_cash.bankcode",
+    "model": "cash.bankcode",
     "pk": 20,
     "fields": {
       "code": "088",
@@ -1810,7 +1810,7 @@
     }
   },
   {
-    "model": "rebs_cash.bankcode",
+    "model": "cash.bankcode",
     "pk": 21,
     "fields": {
       "code": "089",
@@ -1818,7 +1818,7 @@
     }
   },
   {
-    "model": "rebs_cash.bankcode",
+    "model": "cash.bankcode",
     "pk": 22,
     "fields": {
       "code": "090",
@@ -1826,7 +1826,7 @@
     }
   },
   {
-    "model": "rebs_cash.bankcode",
+    "model": "cash.bankcode",
     "pk": 23,
     "fields": {
       "code": "000",
@@ -1834,7 +1834,7 @@
     }
   },
   {
-    "model": "rebs_cash.companybankaccount",
+    "model": "cash.companybankaccount",
     "pk": 1,
     "fields": {
       "company": 1,
@@ -2734,14 +2734,14 @@
     }
   },
   {
-    "model": "board.group",
+    "model": "document.group",
     "pk": 1,
     "fields": {
       "name": "기본그룹"
     }
   },
   {
-    "model": "board.board",
+    "model": "document.board",
     "pk": 1,
     "fields": {
       "group": 1,
@@ -2750,7 +2750,7 @@
     }
   },
   {
-    "model": "board.board",
+    "model": "document.board",
     "pk": 2,
     "fields": {
       "group": 1,
@@ -2759,7 +2759,7 @@
     }
   },
   {
-    "model": "board.category",
+    "model": "document.category",
     "pk": 1,
     "fields": {
       "board": 1,
@@ -2768,7 +2768,7 @@
     }
   },
   {
-    "model": "board.category",
+    "model": "document.category",
     "pk": 2,
     "fields": {
       "board": 1,
@@ -2777,7 +2777,7 @@
     }
   },
   {
-    "model": "board.category",
+    "model": "document.category",
     "pk": 3,
     "fields": {
       "board": 1,
@@ -2786,7 +2786,7 @@
     }
   },
   {
-    "model": "board.category",
+    "model": "document.category",
     "pk": 4,
     "fields": {
       "board": 1,
@@ -2795,7 +2795,7 @@
     }
   },
   {
-    "model": "board.category",
+    "model": "document.category",
     "pk": 5,
     "fields": {
       "board": 1,
@@ -2804,7 +2804,7 @@
     }
   },
   {
-    "model": "board.category",
+    "model": "document.category",
     "pk": 6,
     "fields": {
       "board": 1,
