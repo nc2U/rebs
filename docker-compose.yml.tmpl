@@ -30,7 +30,7 @@ services:
         DATABASE_PASSWORD: my-db-password # 실제 데이터로 수정
         AWS_ACCESS_KEY_ID: aws-access-key-id # 실제 데이터로 수정
         AWS_SECRET_ACCESS_KEY: aws-secret-access-key # 실제 데이터로 수정
-        DJANGO_SETTINGS_MODULE: _config.settings.local # Django settings file 모드 지정 (local or prod)
+        DJANGO_SETTINGS_MODULE: _config.settings.local # Django settings 모드 지정 (.local or .prod)
       depends_on:
         - master
 
@@ -51,6 +51,6 @@ services:
         BACKEND_MAX_FAILS: 3
         BACKEND_MAX_TIMEOUT: 10s
         LOG_STDOUT: "true"
-        ADMIN_EMAIL: admin@example.com
+        ADMIN_EMAIL: admin@example.com # 실제 데이터로 수정
       depends_on:
         - web
