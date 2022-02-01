@@ -10,8 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
+import os
+import string
+import random
 from pathlib import Path
-import os, string, random, datetime
+from datetime import timedelta
 from django.core.exceptions import ImproperlyConfigured
 
 
@@ -66,6 +69,7 @@ INSTALLED_APPS += [  # plugin
     'storages',
     'mathfilters',
     'rest_framework',
+    'rest_framework_simplejwt',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -214,6 +218,42 @@ MEDIA_ROOT = BASE_DIR / 'media'  # 업로드된 파일을 저장할 디렉토리
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+LOGIN_REDIRECT_URL = '/'
+
+LOGOUT_REDIRECT_URL = '/'
+
+# ACCOUNT_USER_MODEL_USERNAME_FIELD = None  # username 필드 사용 x
+# ACCOUNT_EMAIL_REQUIRED = True  # email 필드 사용 o
+# ACCOUNT_USERNAME_REQUIRED = False  # username 필드 사용 x
+# ACCOUNT_AUTHENTICATION_METHOD = 'email'
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'api.pagination.LimitOffsetPaginationWithMaxLimit',
+    'PAGE_SIZE': 5,
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    )
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=7),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=28),
+    'ROTATE_REFRESH_TOKENS': False,
+    'UPDATE_LAST_LOGIN': True,
+
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,
+
+    'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
+    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
+    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
+}
+
 APP_ORDER = [
     'company',
     'project',
@@ -224,10 +264,6 @@ APP_ORDER = [
     'book',
     'accounts',
 ]
-
-LOGIN_REDIRECT_URL = '/'
-
-LOGOUT_REDIRECT_URL = '/'
 
 MDEDITOR_CONFIGS = {
     'default': {
