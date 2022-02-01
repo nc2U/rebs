@@ -13,6 +13,7 @@ django-mathfilters==1.0.0
 XlsxWriter==3.0.2
 WeasyPrint==52
 djangorestframework==3.13.1
+django-allauth==0.47.0
 httpie
 django-filter
 django-crispy-forms

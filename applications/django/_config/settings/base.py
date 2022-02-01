@@ -40,6 +40,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+SITE_ID = 1
+
 AUTH_USER_MODEL = 'accounts.User'
 
 # Application definition
@@ -52,6 +54,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
+    'django.contrib.sites',
 ]
 
 INSTALLED_APPS += [  # plugin
@@ -63,6 +66,9 @@ INSTALLED_APPS += [  # plugin
     'storages',
     'mathfilters',
     'rest_framework',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
 ]
 
 INSTALLED_APPS += [  # app
