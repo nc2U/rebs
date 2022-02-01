@@ -62,6 +62,7 @@ INSTALLED_APPS += [  # plugin
     'tinymce',
     'storages',
     'mathfilters',
+    'rest_framework',
 ]
 
 INSTALLED_APPS += [  # app

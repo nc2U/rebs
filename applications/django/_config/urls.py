@@ -19,6 +19,7 @@ from django.views.generic import RedirectView, TemplateView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/', include('api.urls')),
     path('accounts/', include('account.urls')),
 
     path('', RedirectView.as_view(url='/rebs/dashboard/'), name='home'),
