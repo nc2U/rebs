@@ -65,7 +65,7 @@ INSTALLED_APPS += [  # plugin
 ]
 
 INSTALLED_APPS += [  # app
-    'excel.apps.ExcelConfig',
+    'api.apps.ApiConfig',
     'account.apps.AccountConfig',
     'cash.apps.CashConfig',
     'book.apps.BookConfig',
@@ -75,6 +75,7 @@ INSTALLED_APPS += [  # app
     'notice.apps.NoticeConfig',
     'project.apps.ProjectConfig',
     'rebs.apps.RebsConfig',
+    'excel.apps.ExcelConfig',
 ]
 
 MIDDLEWARE = [
