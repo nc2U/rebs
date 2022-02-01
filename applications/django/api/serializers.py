@@ -1,6 +1,6 @@
-from account.models import User, StaffAuth
 from rest_framework import serializers
 
+from account.models import User, StaffAuth
 from book.models import Book, Subject
 from company.models import Company, Department, Staff
 from project.models import (Project, UnitType, UnitFloorType,

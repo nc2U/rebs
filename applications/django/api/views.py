@@ -1,4 +1,3 @@
-from account.models import User
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
@@ -6,6 +5,7 @@ from rest_framework.reverse import reverse
 from .permission import *
 from .serializers import *
 
+from account.models import User
 from book.models import Book, Subject
 from company.models import Company, Department, Staff
 from project.models import (Project, UnitType, UnitFloorType,
