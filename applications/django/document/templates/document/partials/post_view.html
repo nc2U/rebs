@@ -175,12 +175,4 @@
 
         </div>
     </div>
-
-    {% if not object.is_hide_comment %}
-        <div class="col-12">
-            {% load disqus_tags %}
-            {% set_disqus_url post_absolute_url %}
-            {% disqus_show_comments %}
-        </div>
-    {% endif %}
 </div>
