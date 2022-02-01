@@ -20,7 +20,7 @@ from django.views.generic import RedirectView, TemplateView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),
-    path('accounts/', include('account.urls')),
+    path('accounts/', include('accounts.urls')),
 
     path('', RedirectView.as_view(url='/rebs/dashboard/'), name='home'),
     path('vue/', TemplateView.as_view(template_name='index.html')),

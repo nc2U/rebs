@@ -40,7 +40,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-AUTH_USER_MODEL = 'account.User'
+AUTH_USER_MODEL = 'accounts.User'
 
 # Application definition
 
@@ -67,7 +67,7 @@ INSTALLED_APPS += [  # plugin
 
 INSTALLED_APPS += [  # app
     'api.apps.ApiConfig',
-    'account.apps.AccountConfig',
+    'accounts.apps.AccountsConfig',
     'cash.apps.CashConfig',
     'book.apps.BookConfig',
     'company.apps.CompanyConfig',
@@ -216,7 +216,7 @@ APP_ORDER = [
     'rebs',
     'document',
     'book',
-    'account',
+    'accounts',
 ]
 
 LOGIN_REDIRECT_URL = '/'
