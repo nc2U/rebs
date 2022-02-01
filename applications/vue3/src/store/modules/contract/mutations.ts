@@ -1,0 +1,17 @@
+import {
+  FETCH_ORDER_GROUP,
+  FETCH_ORDER_GROUP_LIST,
+} from '@/store/modules/contract/mutations-types'
+import { ContractState, OrderGroup } from '@/store/modules/contract/state'
+
+const mutations = {
+  [FETCH_ORDER_GROUP_LIST]: (state: ContractState, payload: OrderGroup[]) => {
+    state.orderGroupList = payload
+  },
+
+  [FETCH_ORDER_GROUP]: (state: ContractState, payload: OrderGroup) => {
+    state.order_group = payload
+  },
+}
+
+export default mutations

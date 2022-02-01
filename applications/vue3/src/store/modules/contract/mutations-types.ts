@@ -1,0 +1,3 @@
+/* contract */
+export const FETCH_ORDER_GROUP_LIST = 'FETCH_PROJECT_LIST'
+export const FETCH_ORDER_GROUP = 'FETCH_PROJECT'
