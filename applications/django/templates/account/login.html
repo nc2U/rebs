@@ -1,4 +1,4 @@
-{% extends "account/base.html" %}
+{% extends 'layouts/registration-2.html' %}
 
 {% load i18n %}
 {% load account socialaccount %}
@@ -7,40 +7,62 @@
 
 {% block content %}
 
-<h1>{% trans "Sign In" %}</h1>
+    <h1>{% trans "Sign In" %}</h1>
 
-{% get_providers as socialaccount_providers %}
+    {% get_providers as socialaccount_providers %}
 
-{% if socialaccount_providers %}
-<p>{% blocktrans with site.name as site_name %}Please sign in with one
-of your existing third party accounts. Or, <a href="{{ signup_url }}">sign up</a>
-for a {{ site_name }} account and sign in below:{% endblocktrans %}</p>
+    {% if socialaccount_providers %}
+        <p>{% blocktrans with site.name as site_name %}Please sign in with one
+            of your existing third party accounts. Or, <a href="{{ signup_url }}">sign up</a>
+            for a {{ site_name }} account and sign in below:{% endblocktrans %}</p>
 
-<div class="socialaccount_ballot">
+        <div class="socialaccount_ballot">
 
-  <ul class="socialaccount_providers">
-    {% include "socialaccount/snippets/provider_list.html" with process="login" %}
-  </ul>
+            <ul class="socialaccount_providers">
+                {% include "socialaccount/snippets/provider_list.html" with process="login" %}
+            </ul>
 
-  <div class="login-or">{% trans 'or' %}</div>
+            <div class="login-or">{% trans 'or' %}</div>
 
-</div>
+        </div>
 
-{% include "socialaccount/snippets/login_extra.html" %}
+        {% include "socialaccount/snippets/login_extra.html" %}
 
-{% else %}
-<p>{% blocktrans %}If you have not created an account yet, then please
-<a href="{{ signup_url }}">sign up</a> first.{% endblocktrans %}</p>
-{% endif %}
+    {% else %}
+{#        <p>{% blocktrans %}If you have not created an account yet, then please#}
+{#            <a href="{{ signup_url }}">sign up</a> first.{% endblocktrans %}</p>#}
+        <p>{% blocktrans %}아직 계정이 없으신가요?
+            <a href="{{ signup_url }}">회원가입</a> 후 로그인하세요.{% endblocktrans %}</p>
+    {% endif %}
 
-<form class="login" method="POST" action="{% url 'account_login' %}">
-  {% csrf_token %}
-  {{ form.as_p }}
-  {% if redirect_field_value %}
-  <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-  {% endif %}
-  <a class="button secondaryAction" href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
-  <button class="primaryAction" type="submit">{% trans "Sign In" %}</button>
-</form>
+    <form class="login needs-validation" method="POST" action="{% url 'account_login' %}" novalidate>
+        {% csrf_token %}
+
+        {% if next %}
+            <input type="hidden" name="next" value="{{ next }}"/>
+        {% endif %}
+
+        {% for field in form %}
+            <div class="form-group">
+                {% if not field.field.widget.input_type == "checkbox" %}
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    <input class="form-control" type="{{ field.field.widget.input_type }}" id="{{ field.id_for_label }}"
+                           name="{{ field.name }}" placeholder="{{ field.label }}" required>
+                {% else %}
+                    <div class="custom-control custom-checkbox">
+                        <input class="custom-control-input" type="{{ field.field.widget.input_type }}"
+                               id="{{ field.id_for_label }}" checked>
+                        <label class="custom-control-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+
+        {% if redirect_field_value %}
+            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+        {% endif %}
+        <button class="primaryAction btn btn-primary btn-block mb-1" type="submit">{% trans "Sign In" %}</button>
+        <a class="button secondaryAction" href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
+    </form>
 
 {% endblock %}
