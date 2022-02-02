@@ -4,7 +4,7 @@
       <CRow class="justify-content-center">
         <CCol md="6" lg="5" xl="4">
           <CCard class="p-4">
-            <CCardBody v-if="userInfo">
+            <CCardBody v-if="lockedUser">
               <CRow class="mb-3 justify-content-center">
                 <CAvatar
                   color="secondary"
@@ -12,13 +12,13 @@
                   size="xl"
                   status="success"
                 >
-                  {{ userInfo.username.toUpperCase().substring(0, 1) }}
+                  {{ lockedUser.username.substring(0, 1).toUpperCase() }}
                 </CAvatar>
               </CRow>
               <CRow>
                 <CCol class="text-center mb-4">
                   <h1 class="text-medium-emphasis">
-                    {{ userInfo.username.toUpperCase() }}
+                    {{ lockedUser.username.toUpperCase() }}
                   </h1>
                 </CCol>
               </CRow>
@@ -55,7 +55,8 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapState, mapGetters } from 'vuex'
+// import store from '@/store'
 
 export default defineComponent({
   name: 'LockScreen',
@@ -65,20 +66,17 @@ export default defineComponent({
     }
   },
   computed: {
-    ...mapState('accounts', ['userInfo']),
+    ...mapState('accounts', ['lockedUser']),
+    ...mapGetters('accounts', ['isAuthorized']),
   },
-  mounted() {
-    if (!this.userInfo) {
-      this.$router.push({ name: 'Login' })
-    }
-  },
-  async beforeRouteLeave(to, from, next) {
+  beforeRouteLeave(to, from, next) {
     if (
       !this.password ||
       this.password !== '0000' ||
       to.name !== '메인 페이지'
     ) {
       next({ name: 'LockScreen' })
+      if (this.isAuthorized) this.logoutNoMessage()
     } else {
       next()
     }
@@ -87,7 +85,7 @@ export default defineComponent({
     toHome() {
       this.$router.push({ name: '메인 페이지' })
     },
-    ...mapActions('accounts', ['login', 'logout']),
+    ...mapActions('accounts', ['login', 'logoutNoMessage']),
   },
 })
 </script>
