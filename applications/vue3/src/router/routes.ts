@@ -39,7 +39,9 @@ const routes: Array<RouteRecordRaw> = [
         path: 'schedule',
         name: '일정 관리',
         component: () =>
-          import(/* webpackChunkName: "schedule" */ '@/views/Schedules.vue'),
+          import(
+            /* webpackChunkName: "schedule" */ '@/views/_Schedules/index.vue'
+          ),
       },
       contracts,
       payments,
