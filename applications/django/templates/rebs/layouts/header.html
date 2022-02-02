@@ -198,50 +198,71 @@
                 <img src="{% static 'rebs/images/users/avatar-1.jpg' %}" alt="user-image" class="rounded-circle">
               </span>
                 <span>
-                <span class="account-user-name">{% firstof user.get_full_name user.username %}</span>
+                <span class="account-user-name">{{ user.username }}</span>
                 <span class="account-position">
-                    {% if user.is_superuser %}Super User{% elif user.staffauth.is_staff %}Staff{% else %}
-                        Guest{% endif %}
+                    {% if user.is_superuser %}
+                        Super User
+                    {% elif user.staffauth.is_staff or user.is_staff %}
+                        Staff
+                    {% else %}
+                        Guest
+                    {% endif %}
                 </span>
             </span>
             </a>
-            <div class="dropdown-menu dropdown-menu-right dropdown-menu-animated topbar-dropdown-menu profile-dropdown">
-                <!-- item-->
-                <div class=" dropdown-header noti-title">
-                    <h6 class="text-overflow m-0">Welcome !</h6>
+            {% if user.is_authenticated %}
+                <div class="dropdown-menu dropdown-menu-right dropdown-menu-animated topbar-dropdown-menu profile-dropdown">
+                    <!-- item-->
+                    <div class=" dropdown-header noti-title">
+                        <h6 class="text-overflow m-0">Welcome !</h6>
+                    </div>
+
+                    <!-- item-->
+                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                        <i class="mdi mdi-account-circle mr-1"></i>
+                        <span>My Account</span>
+                    </a>
+
+                    <!-- item-->
+                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                        <i class="mdi mdi-account-edit mr-1"></i>
+                        <span>Settings</span>
+                    </a>
+
+                    <!-- item-->
+                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                        <i class="mdi mdi-lifebuoy mr-1"></i>
+                        <span>Support</span>
+                    </a>
+
+                    <!-- item-->
+                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                        <i class="mdi mdi-lock-outline mr-1"></i>
+                        <span>Lock Screen</span>
+                    </a>
+
+                    <!-- item-->
+                    <a href="{% url 'logout' %}" class="dropdown-item notify-item">
+                        <i class="mdi mdi-logout mr-1"></i>
+                        <span>Logout</span>
+                    </a>
+
                 </div>
+            {% else %}
+                <div class="dropdown-menu dropdown-menu-right dropdown-menu-animated topbar-dropdown-menu profile-dropdown">
+                    <!-- item-->
+                    <div class=" dropdown-header noti-title">
+                        <h6 class="text-overflow m-0">로그인 하세요 !</h6>
+                    </div>
 
-                <!-- item-->
-                <a href="javascript:void(0);" class="dropdown-item notify-item">
-                    <i class="mdi mdi-account-circle mr-1"></i>
-                    <span>My Account</span>
-                </a>
+                    <!-- item-->
+                    <a href="{% url 'account_login' %}" class="dropdown-item notify-item">
+                        <i class="mdi mdi-login mr-1"></i>
+                        <span>Login</span>
+                    </a>
 
-                <!-- item-->
-                <a href="javascript:void(0);" class="dropdown-item notify-item">
-                    <i class="mdi mdi-account-edit mr-1"></i>
-                    <span>Settings</span>
-                </a>
-
-                <!-- item-->
-                <a href="javascript:void(0);" class="dropdown-item notify-item">
-                    <i class="mdi mdi-lifebuoy mr-1"></i>
-                    <span>Support</span>
-                </a>
-
-                <!-- item-->
-                <a href="javascript:void(0);" class="dropdown-item notify-item">
-                    <i class="mdi mdi-lock-outline mr-1"></i>
-                    <span>Lock Screen</span>
-                </a>
-
-                <!-- item-->
-                <a href="{% url 'admin:logout' %}" class="dropdown-item notify-item">
-                    <i class="mdi mdi-logout mr-1"></i>
-                    <span>Logout</span>
-                </a>
-
-            </div>
+                </div>
+            {% endif %}
         </li>
 
     </ul>
