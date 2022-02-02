@@ -29,8 +29,8 @@
         {% include "socialaccount/snippets/login_extra.html" %}
 
     {% else %}
-{#        <p>{% blocktrans %}If you have not created an account yet, then please#}
-{#            <a href="{{ signup_url }}">sign up</a> first.{% endblocktrans %}</p>#}
+        {#        <p>{% blocktrans %}If you have not created an account yet, then please#}
+        {#            <a href="{{ signup_url }}">sign up</a> first.{% endblocktrans %}</p>#}
         <p>{% blocktrans %}아직 계정이 없으신가요?
             <a href="{{ signup_url }}">회원가입</a> 후 로그인하세요.{% endblocktrans %}</p>
     {% endif %}
@@ -57,6 +57,21 @@
                 {% endif %}
             </div>
         {% endfor %}
+
+        {% if form.errors %}
+            {% for field in form %}
+                {% for error in field.errors %}
+                    <div class="alert alert-danger">
+                        <strong>{{ error|escape }}</strong>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+                <div class="alert alert-danger">
+                    <strong>{{ error|escape }}</strong>
+                </div>
+            {% endfor %}
+        {% endif %}
 
         {% if redirect_field_value %}
             <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
