@@ -61,7 +61,10 @@
         </CButtonGroup>
       </CHeaderNav>
       <CHeaderNav class="ms-3 me-4">
-        <AppHeaderDropdownAccnt :userInfo="userInfo" v-if="isAuthorized" />
+        <AppHeaderDropdownAccnt
+          :userInfo="userInfo"
+          v-if="isAuthorized && userInfo"
+        />
         <router-link
           v-else
           :to="{ name: 'Login' }"

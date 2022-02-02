@@ -1,24 +1,32 @@
 <template>
   <CDropdown variant="nav-item">
     <CDropdownToggle placement="bottom-end" class="py-0" :caret="false">
-      <CAvatar :src="avatar" size="md" />
+      <CAvatar
+        color="info"
+        text-color="white"
+        size="md"
+        :src="avatarSrc"
+        status="success"
+      >
+        {{ avatarText }}
+      </CAvatar>
     </CDropdownToggle>
     <CDropdownMenu class="pt-0">
       <CDropdownHeader component="h6" class="bg-light fw-semibold py-2">
         Account
       </CDropdownHeader>
-      <CDropdownItem>
-        <CIcon icon="cil-bell" />
-        Updates
-        <CBadge color="info-gradient" class="ms-auto">{{ itemsCount }}</CBadge>
-      </CDropdownItem>
-      <CDropdownItem>
-        <CIcon icon="cil-envelope-open" />
-        Messages
-        <CBadge color="success-gradient" class="ms-auto"
-          >{{ itemsCount }}
-        </CBadge>
-      </CDropdownItem>
+      <!--      <CDropdownItem>-->
+      <!--        <CIcon icon="cil-bell" />-->
+      <!--        Updates-->
+      <!--        <CBadge color="info-gradient" class="ms-auto">{{ itemsCount }}</CBadge>-->
+      <!--      </CDropdownItem>-->
+      <!--      <CDropdownItem>-->
+      <!--        <CIcon icon="cil-envelope-open" />-->
+      <!--        Messages-->
+      <!--        <CBadge color="success-gradient" class="ms-auto"-->
+      <!--          >{{ itemsCount }}-->
+      <!--        </CBadge>-->
+      <!--      </CDropdownItem>-->
       <CDropdownItem>
         <CIcon icon="cil-task" />
         Tasks
@@ -26,13 +34,13 @@
           >{{ itemsCount }}
         </CBadge>
       </CDropdownItem>
-      <CDropdownItem>
-        <CIcon icon="cil-comment-square" />
-        Comments
-        <CBadge color="warning-gradient" class="ms-auto"
-          >{{ itemsCount }}
-        </CBadge>
-      </CDropdownItem>
+      <!--      <CDropdownItem>-->
+      <!--        <CIcon icon="cil-comment-square" />-->
+      <!--        Comments-->
+      <!--        <CBadge color="warning-gradient" class="ms-auto"-->
+      <!--          >{{ itemsCount }}-->
+      <!--        </CBadge>-->
+      <!--      </CDropdownItem>-->
       <CDropdownHeader component="h6" class="bg-light fw-semibold py-2">
         Settings
       </CDropdownHeader>
@@ -40,22 +48,22 @@
         <CIcon icon="cil-user" />
         Profile
       </CDropdownItem>
-      <CDropdownItem>
-        <CIcon icon="cil-settings" />
-        Settings
-      </CDropdownItem>
-      <CDropdownItem>
-        <CIcon icon="cil-dollar" />
-        Payments
-        <CBadge color="secondary" class="ms-auto">{{ itemsCount }}</CBadge>
-      </CDropdownItem>
-      <CDropdownItem>
-        <CIcon icon="cil-file" />
-        Projects
-        <CBadge color="primary-gradient" class="ms-auto"
-          >{{ itemsCount }}
-        </CBadge>
-      </CDropdownItem>
+      <!--      <CDropdownItem>-->
+      <!--        <CIcon icon="cil-settings" />-->
+      <!--        Settings-->
+      <!--      </CDropdownItem>-->
+      <!--      <CDropdownItem>-->
+      <!--        <CIcon icon="cil-dollar" />-->
+      <!--        Payments-->
+      <!--        <CBadge color="secondary" class="ms-auto">{{ itemsCount }}</CBadge>-->
+      <!--      </CDropdownItem>-->
+      <!--      <CDropdownItem>-->
+      <!--        <CIcon icon="cil-file" />-->
+      <!--        Projects-->
+      <!--        <CBadge color="primary-gradient" class="ms-auto">-->
+      <!--          {{ itemsCount }}-->
+      <!--        </CBadge>-->
+      <!--      </CDropdownItem>-->
       <CDropdownDivider />
       <CDropdownItem @click="toLockScreen">
         <CIcon icon="cil-shield-alt" />
@@ -72,20 +80,28 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { mapActions } from 'vuex'
-import avatar from '../../assets/images/avatars/8.jpg'
+import avatar from '../../assets/images/avatars/6.jpg'
 
 export default defineComponent({
   name: 'AppHeaderDropdownAccnt',
   setup() {
     return {
-      avatar: avatar,
-      itemsCount: 42,
+      avatar: '',
+      itemsCount: 0,
     }
   },
   props: {
     userInfo: {
       type: Object,
       required: true,
+    },
+  },
+  computed: {
+    avatarSrc: () => (avatar ? avatar : ''),
+    avatarText() {
+      return this.userInfo
+        ? this.userInfo.username.substring(0, 1).toUpperCase()
+        : 'A'
     },
   },
   methods: {
