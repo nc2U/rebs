@@ -1,13 +1,17 @@
 <template>
   <router-view />
+  <Spinner :loading="$store.state.LoadingStatus" />
 </template>
 
 <script lang="ts">
 import { watch } from 'vue'
 import { useStore } from 'vuex'
+import Spinner from '@/components/Spinner/index.vue'
 
 export default {
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  components: {
+    Spinner,
+  },
   setup() {
     const store = useStore()
 

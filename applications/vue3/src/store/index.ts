@@ -11,6 +11,7 @@ declare interface RootState {
   sidebarVisible: boolean
   sidebarUnfoldable: boolean
   theme: string
+  LoadingStatus: boolean
 }
 
 const state: RootState = {
@@ -18,23 +19,30 @@ const state: RootState = {
   sidebarVisible: true,
   sidebarUnfoldable: false,
   theme: 'default',
+  LoadingStatus: false,
 }
 
 const mutations = {
-  toggleAside(state: any) {
+  toggleAside(state: RootState) {
     state.asideVisible = !state.asideVisible
   },
-  toggleSidebar(state: any) {
+  toggleSidebar(state: RootState) {
     state.sidebarVisible = !state.sidebarVisible
   },
-  toggleTheme(state: any, payload: any) {
+  toggleTheme(state: RootState, payload: any) {
     state.theme = payload.value
   },
-  toggleUnfoldable(state: any) {
+  toggleUnfoldable(state: RootState) {
     state.sidebarUnfoldable = !state.sidebarUnfoldable
   },
-  updateSidebarVisible(state: any, payload: any) {
+  updateSidebarVisible(state: RootState, payload: any) {
     state.sidebarVisible = payload.value
+  },
+  startSpinner(state: RootState) {
+    state.LoadingStatus = true
+  },
+  endSpinner(state: RootState) {
+    state.LoadingStatus = false
   },
 }
 
