@@ -23,7 +23,7 @@
     </CTableHead>
 
     <CTableBody>
-      <CTableRow align="middle" class="text-center">
+      <CTableRow align="middle" class="text-center" v-if="project">
         <CTableHeaderCell rowspan="3"> {{ project.name }}</CTableHeaderCell>
         <CTableDataCell>74</CTableDataCell>
         <CTableDataCell>126세대</CTableDataCell>
