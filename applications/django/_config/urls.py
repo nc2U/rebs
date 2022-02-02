@@ -29,8 +29,8 @@ urlpatterns = [
     path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
-    # path('accounts/', include('allauth.urls')),
-    path('accounts/', include('accounts.urls')),
+    path('accounts/', include('allauth.urls')),
+    # path('accounts/', include('accounts.urls')),
 
     path('', RedirectView.as_view(url='/rebs/dashboard/'), name='home'),
     path('vue/', TemplateView.as_view(template_name='index.html')),
