@@ -71,7 +71,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { mapActions, mapGetters, mapMutations } from 'vuex'
+import { mapActions } from 'vuex'
 import avatar from '../../assets/images/avatars/8.jpg'
 
 export default defineComponent({
@@ -99,7 +99,6 @@ export default defineComponent({
         query: { redirect: this.$route.path },
       })
     },
-    ...mapMutations('accounts', ['SET_LOCKED_USER_INFO']),
     ...mapActions('accounts', ['logout']),
   },
 })

@@ -4,7 +4,7 @@
       <CRow class="justify-content-center">
         <CCol md="6" lg="5" xl="4">
           <CCard class="p-4">
-            <CCardBody v-if="lockedUser">
+            <CCardBody v-if="userInfo">
               <CRow class="mb-3 justify-content-center">
                 <CAvatar
                   color="secondary"
@@ -12,13 +12,13 @@
                   size="xl"
                   status="success"
                 >
-                  {{ lockedUser.username.toUpperCase().substring(0, 1) }}
+                  {{ userInfo.username.toUpperCase().substring(0, 1) }}
                 </CAvatar>
               </CRow>
               <CRow>
                 <CCol class="text-center mb-4">
                   <h1 class="text-medium-emphasis">
-                    {{ lockedUser.username.toUpperCase() }}
+                    {{ userInfo.username.toUpperCase() }}
                   </h1>
                 </CCol>
               </CRow>
@@ -56,7 +56,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { mapActions, mapState } from 'vuex'
-import store from '@/store'
 
 export default defineComponent({
   name: 'LockScreen',
@@ -66,10 +65,10 @@ export default defineComponent({
     }
   },
   computed: {
-    ...mapState('accounts', ['lockedUser']),
+    ...mapState('accounts', ['userInfo']),
   },
   mounted() {
-    if (!this.lockedUser) {
+    if (!this.userInfo) {
       this.$router.push({ name: 'Login' })
     }
   },

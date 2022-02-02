@@ -3,7 +3,6 @@ import {
   DESTROY_ACCESS_TOKEN,
   DESTROY_CURRENT_USER,
   SET_ACCESS_TOKEN,
-  SET_LOCKED_USER_INFO,
   SET_USER_INFO,
 } from '@/store/modules/accounts/mutations-types'
 import router from '@/router'
@@ -43,7 +42,6 @@ const actions = {
       })
       .then((res) => {
         commit(SET_USER_INFO, res.data)
-        commit(SET_LOCKED_USER_INFO, res.data)
         message('info', '', '로그인 성공 알림!')
       })
       .catch((err) => {
@@ -59,7 +57,6 @@ const actions = {
       .get(`/user/${id}/`)
       .then((res) => {
         commit(SET_USER_INFO, res.data)
-        commit(SET_LOCKED_USER_INFO, res.data)
       })
       .catch((err) => console.log(err.response.data))
   },
@@ -67,7 +64,7 @@ const actions = {
   logout({ commit }: any) {
     commit(DESTROY_CURRENT_USER)
     commit(DESTROY_ACCESS_TOKEN)
-    // message('', '', '로그아웃 완료 알림!')
+    message('', '', '로그아웃 완료 알림!')
   },
 }
 

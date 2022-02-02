@@ -32,13 +32,11 @@ export declare interface LockedUser {
 export declare interface AccountsState {
   accessToken: string
   userInfo: User | null
-  lockedUser: LockedUser | null
 }
 
 const state: AccountsState = {
   accessToken: '',
   userInfo: null,
-  lockedUser: null,
 }
 
 export default state
