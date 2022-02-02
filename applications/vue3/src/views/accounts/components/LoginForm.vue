@@ -38,7 +38,7 @@
           <!--          아이디 | 비밀번호 찾기-->
         </CButton>
       </CCol>
-      <CCol xs="6">
+      <CCol class="text-right">
         <CButton
           type="button"
           color="link"
