@@ -1,5 +1,4 @@
 <template>
-  <!--    <CSpinner color="info" visually-hidden-label="asdfasdfasdf" />-->
   <div class="modal" v-if="loading">
     <div class="lds-facebook">
       <div></div>
