@@ -7,7 +7,7 @@
       <CHeaderBrand class="mx-auto d-lg-none" to="/">
         <CIcon :icon="logo" height="48" alt="Logo" />
       </CHeaderBrand>
-      <CHeaderNav class="d-none d-md-flex me-auto">
+      <CHeaderNav class="d-none d-lg-flex me-auto">
         <AppBreadcrumb />
       </CHeaderNav>
       <CHeaderNav class="ms-auto me-4">
