@@ -1,5 +1,5 @@
 <template>
-  <CFooter>
+  <CFooter class="mt-4">
     <div>
       <a href="https://brdnc.co.kr" target="_blank">Rebs</a>
       <span class="ms-1"
