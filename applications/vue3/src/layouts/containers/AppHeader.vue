@@ -8,15 +8,7 @@
         <CIcon :icon="logo" height="48" alt="Logo" />
       </CHeaderBrand>
       <CHeaderNav class="d-none d-md-flex me-auto">
-        <CNavItem>
-          <CNavLink href="#/dashboard">Dashboard</CNavLink>
-        </CNavItem>
-        <CNavItem>
-          <CNavLink href="#">Users</CNavLink>
-        </CNavItem>
-        <CNavItem>
-          <CNavLink href="#">Settings</CNavLink>
-        </CNavItem>
+        <AppBreadcrumb />
       </CHeaderNav>
       <CHeaderNav class="ms-auto me-4">
         <CButtonGroup aria-label="Theme switch">
@@ -82,7 +74,7 @@
     </CContainer>
     <CHeaderDivider />
     <CContainer fluid>
-      <AppBreadcrumb />
+      <!--      <AppBreadcrumb />-->
     </CContainer>
   </CHeader>
 </template>
