@@ -1,5 +1,11 @@
 <template>
   <CTable hover responsive>
+    <colgroup>
+      <col width="25%" />
+      <col width="25%" />
+      <col width="25%" />
+      <col width="25%" />
+    </colgroup>
     <CTableHead color="dark" class="text-center">
       <CTableRow>
         <CTableHeaderCell>등록차수</CTableHeaderCell>
@@ -8,7 +14,7 @@
         <CTableHeaderCell>비 고</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
-    <CTableBody v-if="projectOrderGroup">
+    <CTableBody v-if="projectOrderGroup.length !== 0">
       <CTableRow
         v-for="order in projectOrderGroup"
         :key="order.id"
@@ -23,9 +29,12 @@
         </CTableDataCell>
       </CTableRow>
     </CTableBody>
+
     <CTableBody v-else>
       <CTableRow>
-        <CTableDataCell>등록된 데이터가 없습니다.</CTableDataCell>
+        <CTableDataCell colspan="4" class="text-center p-5 text-danger">
+          등록된 데이터가 없습니다.
+        </CTableDataCell>
       </CTableRow>
     </CTableBody>
   </CTable>
@@ -38,13 +47,15 @@ import project from '@/store/modules/project'
 
 export default defineComponent({
   name: 'OrderForm',
+  components: {},
+
   props: ['project'],
   created() {
     this.fetchOrderGroupList()
   },
   computed: {
     projectOrderGroup() {
-      return this.project ? this.OrderGroupByProject(this.project.id) : null
+      return this.project ? this.OrderGroupByProject(this.project.id) : []
     },
     ...mapState('contract', ['orderGroupList']),
     ...mapGetters('contract', ['OrderGroupByProject']),
