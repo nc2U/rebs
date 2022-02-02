@@ -401,7 +401,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import ConfirmModal from '@/components/ConfirmModal.vue'
+import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import DaumPostcode from '@/components/DaumPostcode/index.vue'
 import addressMixin from '@/components/DaumPostcode/addressMixin'
 import { mapGetters } from 'vuex'
