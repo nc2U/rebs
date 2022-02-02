@@ -1,11 +1,13 @@
 import api from '@/api'
-import { User } from './state'
+import { AccountsState, User } from './state'
 import Cookies from 'js-cookie'
 import {
   DESTROY_ACCESS_TOKEN,
   DESTROY_CURRENT_USER,
+  DESTROY_LOCKED_USER,
   SET_ACCESS_TOKEN,
   SET_USER_INFO,
+  SET_LOCKED_USER_INFO,
 } from '@/store/modules/accounts/mutations-types'
 
 const mutations = {
@@ -21,6 +23,11 @@ const mutations = {
     if (userInfo) state.userInfo = userInfo
   },
 
+  [SET_LOCKED_USER_INFO]: (state: AccountsState, userInfo: User) => {
+    const { id, email, username } = userInfo
+    state.lockedUser = { id, email, username }
+  },
+
   [DESTROY_ACCESS_TOKEN](state: any) {
     state.accessToken = ''
     delete api.defaults.headers.common.Authorization
@@ -29,6 +36,10 @@ const mutations = {
 
   [DESTROY_CURRENT_USER](state: any) {
     state.userInfo = null
+  },
+
+  [DESTROY_LOCKED_USER]: (state: AccountsState) => {
+    state.lockedUser = null
   },
 }
 

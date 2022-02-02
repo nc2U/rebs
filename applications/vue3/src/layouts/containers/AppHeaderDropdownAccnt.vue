@@ -57,7 +57,7 @@
         </CBadge>
       </CDropdownItem>
       <CDropdownDivider />
-      <CDropdownItem>
+      <CDropdownItem @click="toLockScreen">
         <CIcon icon="cil-shield-alt" />
         Lock Account
       </CDropdownItem>
@@ -71,22 +71,27 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters, mapMutations } from 'vuex'
 import avatar from '../../assets/images/avatars/8.jpg'
 
 export default defineComponent({
   name: 'AppHeaderDropdownAccnt',
-  computed: {
-    ...mapGetters(['AuthUser']),
-  },
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   setup() {
     return {
       avatar: avatar,
       itemsCount: 42,
     }
   },
+  props: {
+    userInfo: {
+      type: Object,
+      required: true,
+    },
+  },
   methods: {
+    toLockScreen() {
+      this.$router.push({ name: 'LockScreen' })
+    },
     logOut() {
       this.logout()
       this.$router.push({
@@ -94,6 +99,7 @@ export default defineComponent({
         query: { redirect: this.$route.path },
       })
     },
+    ...mapMutations('accounts', ['SET_LOCKED_USER_INFO']),
     ...mapActions('accounts', ['logout']),
   },
 })

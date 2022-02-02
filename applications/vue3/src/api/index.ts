@@ -11,7 +11,7 @@ api.interceptors.request.use(
     return config
   },
   (error) => {
-    alert('데이터 요청 실패!')
+    // alert('데이터 요청 실패!')
     return Promise.reject(error)
   },
 )
@@ -22,7 +22,7 @@ api.interceptors.response.use(
     return response
   },
   (error) => {
-    alert('데이터 응답 실패!')
+    // alert('데이터 응답 실패!')
     return Promise.reject(error)
   },
 )

@@ -90,6 +90,19 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('@/views/accounts/RegisterCode.vue'),
   },
   {
+    path: '/accounts/lock-screen',
+    name: 'LockScreen',
+    component: () => import('@/views/accounts/LockScreen.vue'),
+    beforeEnter: (to, from, next) => {
+      const isAuthorized = store.getters['accounts/isAuthorized']
+      if (!isAuthorized) {
+        next({ name: 'Login' })
+      } else {
+        next()
+      }
+    },
+  },
+  {
     path: '/:pathMatch(.*)*',
     name: 'not-found',
     redirect: '/',

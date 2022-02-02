@@ -61,7 +61,7 @@
         </CButtonGroup>
       </CHeaderNav>
       <CHeaderNav class="ms-3 me-4">
-        <AppHeaderDropdownAccnt v-if="isAuthorized" />
+        <AppHeaderDropdownAccnt :userInfo="userInfo" v-if="isAuthorized" />
         <router-link
           v-else
           :to="{ name: 'Login' }"
@@ -85,10 +85,10 @@
 </template>
 
 <script lang="ts">
-import { mapGetters } from 'vuex'
 import AppBreadcrumb from './AppBreadcrumb.vue'
 import AppHeaderDropdownAccnt from './AppHeaderDropdownAccnt.vue'
 import { logo } from '@/assets/brand/current-logo'
+import { mapGetters, mapState } from 'vuex'
 
 export default {
   name: 'AppHeader',
@@ -97,6 +97,7 @@ export default {
     AppHeaderDropdownAccnt,
   },
   computed: {
+    ...mapState('accounts', ['userInfo']),
     ...mapGetters('accounts', ['isAuthorized']),
   },
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types

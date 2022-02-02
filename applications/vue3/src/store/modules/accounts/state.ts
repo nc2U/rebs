@@ -23,14 +23,22 @@ export declare interface User {
   staffauth: StaffAuth | null
 }
 
+export declare interface LockedUser {
+  id: number
+  email: string
+  username: string
+}
+
 export declare interface AccountsState {
   accessToken: string
   userInfo: User | null
+  lockedUser: LockedUser | null
 }
 
 const state: AccountsState = {
   accessToken: '',
   userInfo: null,
+  lockedUser: null,
 }
 
 export default state
