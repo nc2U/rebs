@@ -12,6 +12,7 @@ declare interface RootState {
   sidebarUnfoldable: boolean
   theme: string
   LoadingStatus: boolean
+  registerCode: string
 }
 
 const state: RootState = {
@@ -20,6 +21,7 @@ const state: RootState = {
   sidebarUnfoldable: false,
   theme: 'default',
   LoadingStatus: false,
+  registerCode: 'brdnc00',
 }
 
 const mutations = {

@@ -1,4 +1,5 @@
 import store from '@/store'
+import { hashCode } from '@/utils/helper'
 import { RouteRecordRaw } from 'vue-router'
 
 /* Layout Containers */
@@ -70,6 +71,23 @@ const routes: Array<RouteRecordRaw> = [
     path: '/accounts/register',
     name: 'Register',
     component: () => import('@/views/accounts/Register.vue'),
+    beforeEnter: (to, from, next) => {
+      if (
+        from.name === 'RegisterCode' &&
+        to.query.id == hashCode(store.state.registerCode).toString()
+      ) {
+        next()
+      } else {
+        next({
+          name: 'RegisterCode',
+        })
+      }
+    },
+  },
+  {
+    path: '/accounts/register-code',
+    name: 'RegisterCode',
+    component: () => import('@/views/accounts/RegisterCode.vue'),
   },
   {
     path: '/:pathMatch(.*)*',
