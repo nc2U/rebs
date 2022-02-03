@@ -28,11 +28,9 @@ import { defineComponent } from 'vue'
 export default defineComponent({
   name: 'Todo',
   directives: {
-    focus(el, { value }, { context }: any) {
+    focus(el, { value }) {
       if (value) {
-        context.$nextTick(() => {
-          el.focus()
-        })
+        el.focus()
       }
     },
   },
