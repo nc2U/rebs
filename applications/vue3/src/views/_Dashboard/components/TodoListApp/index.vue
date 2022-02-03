@@ -1,5 +1,5 @@
 <template>
-  <section class="todoapp">
+  <section class="todoapp mb-4">
     <!-- header -->
     <header class="header">
       <input
@@ -47,9 +47,14 @@
           </a>
         </li>
       </ul>
-      <!-- <button class="clear-completed" v-show="todos.length > remaining" @click="clearCompleted">
+
+      <button
+        class="clear-completed"
+        v-show="todos.length > remaining"
+        @click="clearCompleted"
+      >
         Clear completed
-      </button> -->
+      </button>
     </footer>
   </section>
 </template>
@@ -80,6 +85,7 @@ const defalutList = [
   { text: 'webpack', done: true },
 ]
 export default defineComponent({
+  name: 'TodoListApp',
   components: { Todo },
   // filters: {
   //   pluralize: (n: any, w: any) => (n === 1 ? w : w + 's'),
