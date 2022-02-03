@@ -6,7 +6,7 @@
         class="new-todo"
         autofocus
         autocomplete="off"
-        placeholder="Todo List"
+        placeholder="나의 할일 목록 관리"
         @keyup.enter="addTodo"
       />
     </header>
@@ -21,7 +21,7 @@
       />
       <label for="toggle-all" />
       <ul class="todo-list">
-        <todo
+        <Todo
           v-for="(todo, index) in filteredTodos"
           :key="index"
           :todo="todo"
@@ -35,15 +35,16 @@
     <footer v-show="todos.length" class="footer">
       <span class="todo-count">
         <strong>{{ remaining }}</strong>
-        {{ remaining | pluralize('item') }} left
+        {{ remaining }} left
       </span>
       <ul class="filters">
         <li v-for="(val, key) in filters" :key="key">
           <a
             :class="{ selected: visibility === key }"
             @click.prevent="visibility = key"
-            >{{ key | capitalize }}</a
           >
+            {{ key }}
+          </a>
         </li>
       </ul>
       <!-- <button class="clear-completed" v-show="todos.length > remaining" @click="clearCompleted">
@@ -53,14 +54,20 @@
   </section>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent } from 'vue'
 import Todo from './Todo.vue'
+
+interface todo {
+  title: string
+  done: boolean
+}
 
 const STORAGE_KEY = 'todos'
 const filters = {
-  all: (todos) => todos,
-  active: (todos) => todos.filter((todo) => !todo.done),
-  completed: (todos) => todos.filter((todo) => todo.done),
+  all: (todos: todo[]) => todos,
+  active: (todos: todo[]) => todos.filter((todo) => !todo.done),
+  completed: (todos: todo[]) => todos.filter((todo) => todo.done),
 }
 const defalutList = [
   { text: 'star this repository', done: false },
@@ -72,36 +79,38 @@ const defalutList = [
   { text: 'axios', done: true },
   { text: 'webpack', done: true },
 ]
-export default {
+export default defineComponent({
   components: { Todo },
-  filters: {
-    pluralize: (n, w) => (n === 1 ? w : w + 's'),
-    capitalize: (s) => s.charAt(0).toUpperCase() + s.slice(1),
-  },
+  // filters: {
+  //   pluralize: (n: any, w: any) => (n === 1 ? w : w + 's'),
+  //   capitalize: (s: any) => s.charAt(0).toUpperCase() + s.slice(1),
+  // },
   data() {
     return {
       visibility: 'all',
       filters,
-      // todos: JSON.parse(window.localStorage.getItem(STORAGE_KEY)) || defalutList
-      todos: defalutList,
+      todos:
+        JSON.parse((window as any).localStorage.getItem(STORAGE_KEY)) ||
+        defalutList,
+      // todos: defalutList,
     }
   },
   computed: {
     allChecked() {
-      return this.todos.every((todo) => todo.done)
+      return (this as any).todos.every((todo: todo) => todo.done)
     },
     filteredTodos() {
-      return filters[this.visibility](this.todos)
+      return filters[this.visibility](this.todos) as todo[]
     },
     remaining() {
-      return this.todos.filter((todo) => !todo.done).length
+      return (this as any).todos.filter((todo: todo) => !todo.done).length
     },
   },
   methods: {
     setLocalStorage() {
       window.localStorage.setItem(STORAGE_KEY, JSON.stringify(this.todos))
     },
-    addTodo(e) {
+    addTodo(e: any) {
       const text = e.target.value
       if (text.trim()) {
         this.todos.push({
@@ -112,15 +121,15 @@ export default {
       }
       e.target.value = ''
     },
-    toggleTodo(val) {
+    toggleTodo(val: any) {
       val.done = !val.done
       this.setLocalStorage()
     },
-    deleteTodo(todo) {
+    deleteTodo(todo: any) {
       this.todos.splice(this.todos.indexOf(todo), 1)
       this.setLocalStorage()
     },
-    editTodo({ todo, value }) {
+    editTodo({ todo, value }: any) {
       todo.text = value
       this.setLocalStorage()
     },
@@ -128,14 +137,14 @@ export default {
       this.todos = this.todos.filter((todo) => !todo.done)
       this.setLocalStorage()
     },
-    toggleAll({ done }) {
+    toggleAll({ done }: any) {
       this.todos.forEach((todo) => {
         todo.done = done
         this.setLocalStorage()
       })
     },
   },
-}
+})
 </script>
 
 <style lang="scss">

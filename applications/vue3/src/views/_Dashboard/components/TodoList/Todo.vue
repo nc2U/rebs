@@ -5,10 +5,10 @@
         :checked="todo.done"
         class="toggle"
         type="checkbox"
-        @change="toggleTodo( todo)"
-      >
+        @change="toggleTodo(todo)"
+      />
       <label @dblclick="editing = true" v-text="todo.text" />
-      <button class="destroy" @click="deleteTodo( todo )" />
+      <button class="destroy" @click="deleteTodo(todo)" />
     </div>
     <input
       v-show="editing"
@@ -18,64 +18,66 @@
       @keyup.enter="doneEdit"
       @keyup.esc="cancelEdit"
       @blur="doneEdit"
-    >
+    />
   </li>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import { defineComponent } from 'vue'
+
+export default defineComponent({
   name: 'Todo',
   directives: {
-    focus(el, { value }, { context }) {
+    focus(el, { value }, { context }: any) {
       if (value) {
         context.$nextTick(() => {
           el.focus()
         })
       }
-    }
+    },
   },
   props: {
     todo: {
       type: Object,
-      default: function() {
+      default: function () {
         return {}
-      }
-    }
+      },
+    },
   },
   data() {
     return {
-      editing: false
+      editing: false,
     }
   },
   methods: {
-    deleteTodo(todo) {
+    deleteTodo(todo: any) {
       this.$emit('deleteTodo', todo)
     },
-    editTodo({ todo, value }) {
+    editTodo({ todo, value }: any) {
       this.$emit('editTodo', { todo, value })
     },
-    toggleTodo(todo) {
+    toggleTodo(todo: any) {
       this.$emit('toggleTodo', todo)
     },
-    doneEdit(e) {
+    doneEdit(e: any) {
       const value = e.target.value.trim()
-      const { todo } = this
+      const { todo }: any = this
       if (!value) {
         this.deleteTodo({
-          todo
+          todo,
         })
       } else if (this.editing) {
         this.editTodo({
           todo,
-          value
+          value,
         })
         this.editing = false
       }
     },
-    cancelEdit(e) {
+    cancelEdit(e: any) {
       e.target.value = this.todo.text
       this.editing = false
-    }
-  }
-}
+    },
+  },
+})
 </script>
