@@ -17,7 +17,7 @@
         :checked="allChecked"
         class="toggle-all"
         type="checkbox"
-        @change="toggleAll({ done: !allChecked })"
+        @change="toggleAll({ completed: !allChecked })"
       />
       <label for="toggle-all" />
       <ul class="todo-list">
@@ -56,6 +56,7 @@
       </button>
     </footer>
   </section>
+  {{ userInfo.todos }}
 </template>
 
 <script lang="ts">
@@ -66,8 +67,10 @@ import { mapState } from 'vuex'
 const STORAGE_KEY = 'todos'
 
 interface todo {
+  id: number
   title: string
-  done: boolean
+  completed: boolean
+  soft_deleted: boolean
 }
 
 type filterType = {
@@ -76,18 +79,28 @@ type filterType = {
 
 const filters: filterType = {
   all: (todos: todo[]) => todos,
-  active: (todos: todo[]) => todos.filter((todo) => !todo.done),
-  completed: (todos: todo[]) => todos.filter((todo) => todo.done),
+  active: (todos: todo[]) => todos.filter((todo) => !todo.completed),
+  completed: (todos: todo[]) => todos.filter((todo) => todo.completed),
 }
 const defalutList = [
-  { text: 'star this repository', done: false },
-  { text: 'fork this repository', done: false },
-  { text: 'follow author', done: false },
-  { text: 'vue-element-admin', done: true },
-  { text: 'vue', done: true },
-  { text: 'element-ui', done: true },
-  { text: 'axios', done: true },
-  { text: 'webpack', done: true },
+  {
+    id: 500,
+    title: 'star this repository',
+    completed: false,
+    soft_deleted: false,
+  },
+  {
+    id: 501,
+    title: 'fork this repository',
+    completed: false,
+    soft_deleted: false,
+  },
+  { id: 502, title: 'follow author', completed: false, soft_deleted: false },
+  { id: 503, title: 'vue-element-admin', completed: true, soft_deleted: false },
+  { id: 504, title: 'vue', completed: true, soft_deleted: false },
+  { id: 505, title: 'element-ui', completed: true, soft_deleted: false },
+  { id: 506, title: 'axios', completed: true, soft_deleted: false },
+  { id: 507, title: 'webpack', completed: true, soft_deleted: false },
 ]
 export default defineComponent({
   name: 'TodoListApp',
@@ -96,20 +109,24 @@ export default defineComponent({
     return {
       visibility: 'all',
       filters,
-      todos:
-        JSON.parse((window as any).localStorage.getItem(STORAGE_KEY)) ||
-        defalutList,
+      // todos:
+      //   JSON.parse((window as any).localStorage.getItem(STORAGE_KEY)) ||
+      //   defalutList,
+      // (this as any).userInfo.todos || defalutList,
     }
   },
   computed: {
+    todos() {
+      return (this as any).userInfo.todos
+    },
     allChecked() {
-      return (this as any).todos.every((todo: todo) => todo.done)
+      return (this as any).todos.every((todo: todo) => todo.completed)
     },
     filteredTodos() {
       return filters[(this as any).visibility]((this as any).todos)
     },
     remaining() {
-      return (this as any).todos.filter((todo: todo) => !todo.done).length
+      return (this as any).todos.filter((todo: todo) => !todo.completed).length
     },
     ...mapState('accounts', ['userInfo']),
   },
@@ -118,18 +135,18 @@ export default defineComponent({
       window.localStorage.setItem(STORAGE_KEY, JSON.stringify(this.todos))
     },
     addTodo(e: any) {
-      const text = e.target.value
-      if (text.trim()) {
+      const title = e.target.value
+      if (title.trim()) {
         this.todos.push({
-          text,
-          done: false,
+          title,
+          completed: false,
         })
         this.setLocalStorage()
       }
       e.target.value = ''
     },
     toggleTodo(val: any) {
-      val.done = !val.done
+      val.completed = !val.completed
       this.setLocalStorage()
     },
     deleteTodo(todo: any) {
@@ -137,16 +154,16 @@ export default defineComponent({
       this.setLocalStorage()
     },
     editTodo({ todo, value }: any) {
-      todo.text = value
+      todo.title = value
       this.setLocalStorage()
     },
     clearCompleted() {
-      this.todos = this.todos.filter((todo: any) => !todo.done)
+      this.todos = this.todos.filter((todo: any) => !todo.completed)
       this.setLocalStorage()
     },
-    toggleAll({ done }: any) {
+    toggleAll({ completed }: any) {
       this.todos.forEach((todo: any) => {
-        todo.done = done
+        todo.completed = completed
         this.setLocalStorage()
       })
     },

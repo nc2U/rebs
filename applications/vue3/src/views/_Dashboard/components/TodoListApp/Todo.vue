@@ -1,19 +1,19 @@
 <template>
-  <li :class="{ completed: todo.done, editing: editing }" class="todo">
+  <li :class="{ completed: todo.completed, editing: editing }" class="todo">
     <div class="view">
       <input
-        :checked="todo.done"
+        :checked="todo.completed"
         class="toggle"
         type="checkbox"
         @change="toggleTodo(todo)"
       />
-      <label @dblclick="editing = true" v-text="todo.text" />
+      <label @dblclick="editing = true" v-text="todo.title" />
       <button class="destroy" @click="deleteTodo(todo)" />
     </div>
     <input
       v-show="editing"
       v-focus="editing"
-      :value="todo.text"
+      :value="todo.title"
       class="edit"
       @keyup.enter="doneEdit"
       @keyup.esc="cancelEdit"
@@ -73,7 +73,7 @@ export default defineComponent({
       }
     },
     cancelEdit(e: any) {
-      e.target.value = (this as any).todo.text
+      e.target.value = (this as any).todo.title
       this.editing = false
     },
   },
