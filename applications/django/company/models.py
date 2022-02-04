@@ -30,7 +30,7 @@ class Department(models.Model):
                                      related_name='sub_departs',
                                      verbose_name='상위부서')
     name = models.CharField('부서명', max_length=20)
-    task = models.CharField('주요 업무', max_length=100)
+    task = models.CharField('주요 업무', max_length=100, blank=True)
 
     def __str__(self):
         return self.name
@@ -46,8 +46,8 @@ class Position(models.Model):
     SORT_CHOICES = (('1', '임원'), ('2', '직원'))
     sort = models.CharField('구분', max_length=1, choices=SORT_CHOICES)
     rank = models.CharField('직급', max_length=20)
-    title = models.CharField('직함', max_length=20, null=True, blank=True)
-    description = models.CharField('설명', max_length=255, null=True, blank=True)
+    title = models.CharField('직함', max_length=20, blank=True)
+    description = models.CharField('설명', max_length=255, blank=True)
 
     class Meta:
         ordering = ['id']
@@ -56,17 +56,18 @@ class Position(models.Model):
 
 
 class Staff(models.Model):
-    user = models.OneToOneField('accounts.User', on_delete=models.DO_NOTHING, null=True, verbose_name='유저 정보')
-    department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True, verbose_name='부서 정보',
+    user = models.OneToOneField('accounts.User', on_delete=models.DO_NOTHING, null=True, blank=True,
+                                verbose_name='유저 정보')
+    department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='부서 정보',
                                    related_name='staffs')
-    position = models.ForeignKey(Position, on_delete=models.SET_NULL, null=True, verbose_name='직책 정보')
+    position = models.ForeignKey(Position, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='직책 정보')
     name = models.CharField('직원 성명', max_length=10)
-    birth_date = models.DateField('생년월일')
+    birth_date = models.DateField('생년월일', null=True, blank=True)
     GENDER_CHOICES = (('M', '남성'), ('F', '여성'))
-    gender = models.CharField('성별', max_length=1, choices=GENDER_CHOICES)
+    gender = models.CharField('성별', max_length=1, choices=GENDER_CHOICES, blank=True)
     entered_date = models.DateField('입사일')
-    personal_phone = models.CharField('휴대전화', max_length=13, blank=True)
-    email = models.EmailField('이메일', null=True, blank=True)
+    personal_phone = models.CharField('휴대전화', max_length=13)
+    email = models.EmailField('이메일')
     STATUS_CHOICES = (('1', '근무 중'), ('2', '정직 중'), ('3', '퇴사신청'), ('4', '퇴사처리'))
     status = models.CharField('상태', max_length=1, choices=STATUS_CHOICES, default='1')
 
