@@ -73,7 +73,7 @@ export default defineComponent({
       }
     },
     cancelEdit(e: any) {
-      e.target.value = this.todo.text
+      e.target.value = (this as any).todo.text
       this.editing = false
     },
   },

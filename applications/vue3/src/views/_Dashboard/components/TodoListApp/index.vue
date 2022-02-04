@@ -3,31 +3,31 @@
     <!-- header -->
     <header class="header">
       <input
-        class="new-todo"
-        autofocus
-        autocomplete="off"
-        placeholder="나의 할일 목록 관리"
-        @keyup.enter="addTodo"
+          class="new-todo"
+          autofocus
+          autocomplete="off"
+          placeholder="나의 할일 목록 관리"
+          @keyup.enter="addTodo"
       />
     </header>
     <!-- main section -->
     <section v-show="todos.length" class="main">
       <input
-        id="toggle-all"
-        :checked="allChecked"
-        class="toggle-all"
-        type="checkbox"
-        @change="toggleAll({ done: !allChecked })"
+          id="toggle-all"
+          :checked="allChecked"
+          class="toggle-all"
+          type="checkbox"
+          @change="toggleAll({ done: !allChecked })"
       />
-      <label for="toggle-all" />
+      <label for="toggle-all"/>
       <ul class="todo-list">
         <Todo
-          v-for="(todo, index) in filteredTodos"
-          :key="index"
-          :todo="todo"
-          @toggleTodo="toggleTodo"
-          @editTodo="editTodo"
-          @deleteTodo="deleteTodo"
+            v-for="(todo, index) in filteredTodos"
+            :key="index"
+            :todo="todo"
+            @toggleTodo="toggleTodo"
+            @editTodo="editTodo"
+            @deleteTodo="deleteTodo"
         />
       </ul>
     </section>
@@ -40,8 +40,8 @@
       <ul class="filters">
         <li v-for="(val, key) in filters" :key="key">
           <a
-            :class="{ selected: visibility === key }"
-            @click.prevent="visibility = key"
+              :class="{ selected: visibility === key }"
+              @click.prevent="visibility = key"
           >
             {{ key }}
           </a>
@@ -49,9 +49,9 @@
       </ul>
 
       <button
-        class="clear-completed"
-        v-show="todos.length > remaining"
-        @click="clearCompleted"
+          class="clear-completed"
+          v-show="todos.length > remaining"
+          @click="clearCompleted"
       >
         Clear completed
       </button>
@@ -60,33 +60,38 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import {defineComponent} from 'vue'
 import Todo from './Todo.vue'
+
+const STORAGE_KEY = 'todos'
 
 interface todo {
   title: string
   done: boolean
 }
 
-const STORAGE_KEY = 'todos'
-const filters = {
+type filterType = {
+  [index: string]: Function
+}
+
+const filters: filterType = {
   all: (todos: todo[]) => todos,
   active: (todos: todo[]) => todos.filter((todo) => !todo.done),
   completed: (todos: todo[]) => todos.filter((todo) => todo.done),
 }
 const defalutList = [
-  { text: 'star this repository', done: false },
-  { text: 'fork this repository', done: false },
-  { text: 'follow author', done: false },
-  { text: 'vue-element-admin', done: true },
-  { text: 'vue', done: true },
-  { text: 'element-ui', done: true },
-  { text: 'axios', done: true },
-  { text: 'webpack', done: true },
+  {text: 'star this repository', done: false},
+  {text: 'fork this repository', done: false},
+  {text: 'follow author', done: false},
+  {text: 'vue-element-admin', done: true},
+  {text: 'vue', done: true},
+  {text: 'element-ui', done: true},
+  {text: 'axios', done: true},
+  {text: 'webpack', done: true},
 ]
 export default defineComponent({
   name: 'TodoListApp',
-  components: { Todo },
+  components: {Todo},
   // filters: {
   //   pluralize: (n: any, w: any) => (n === 1 ? w : w + 's'),
   //   capitalize: (s: any) => s.charAt(0).toUpperCase() + s.slice(1),
@@ -96,8 +101,8 @@ export default defineComponent({
       visibility: 'all',
       filters,
       todos:
-        JSON.parse((window as any).localStorage.getItem(STORAGE_KEY)) ||
-        defalutList,
+          JSON.parse((window as any).localStorage.getItem(STORAGE_KEY)) ||
+          defalutList,
       // todos: defalutList,
     }
   },
@@ -106,7 +111,7 @@ export default defineComponent({
       return (this as any).todos.every((todo: todo) => todo.done)
     },
     filteredTodos() {
-      return filters[(this as any).visibility]((this as any).todos) as todo[]
+      return filters[(<any>this).visibility]((this as any).todos)
     },
     remaining() {
       return (this as any).todos.filter((todo: todo) => !todo.done).length
@@ -135,7 +140,7 @@ export default defineComponent({
       this.todos.splice(this.todos.indexOf(todo), 1)
       this.setLocalStorage()
     },
-    editTodo({ todo, value }: any) {
+    editTodo({todo, value}: any) {
       todo.text = value
       this.setLocalStorage()
     },
@@ -143,7 +148,7 @@ export default defineComponent({
       this.todos = this.todos.filter((todo: any) => !todo.done)
       this.setLocalStorage()
     },
-    toggleAll({ done }: any) {
+    toggleAll({done}: any) {
       this.todos.forEach((todo: any) => {
         todo.done = done
         this.setLocalStorage()
