@@ -60,50 +60,24 @@ class UserSerializer(serializers.ModelSerializer):
         return self.instance
 
 
-class TodoSerializer(serializers.ModelSerializer):
-    url = serializers.HyperlinkedIdentityField(view_name='api:todo-detail')
-    username = serializers.ReadOnlyField(source='user.username', required=False)
-
-    class Meta:
-        model = Todo
-        fields = ('id', 'url', 'user', 'username', 'title', 'completed', 'created_at', 'updated_at', 'soft_deleted')
-
-
-class BookSubjectSerializer(serializers.ModelSerializer):
-    url = serializers.HyperlinkedIdentityField(view_name='api:subject-detail')
+class BookInSubjectsSerializer(serializers.ModelSerializer):
+    user = serializers.ReadOnlyField(source='user.username', required=False)
 
     class Meta:
         model = Subject
-        fields = ('url', 'title')
+        fields = ('id', 'user', 'book', 'seq', 'title', 'level', 'content', 'created_at', 'updated_at')
 
 
 class BookSerializer(serializers.ModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name="api:book-detail")
     user = serializers.ReadOnlyField(source='user.username', required=False)
+    subjects = BookInSubjectsSerializer(many=True)
 
     class Meta:
         model = Book
         fields = (
             'id', 'url', 'user', 'title', 'disclosure', 'author', 'translator', 'publisher', 'pub_date', 'description',
-            'created_at', 'updated_at')
-
-
-class SubjectBookSerializer(serializers.ModelSerializer):
-    url = serializers.HyperlinkedIdentityField(view_name='api:book-detail')
-
-    class Meta:
-        model = Book
-        fields = ('title', 'url')
-
-
-class SubjectSerializer(serializers.ModelSerializer):
-    url = serializers.HyperlinkedIdentityField(view_name="api:subject-detail")
-    user = serializers.ReadOnlyField(source='user.username', required=False)
-    book = SubjectBookSerializer()
-
-    class Meta:
-        model = Subject
-        fields = ('id', 'url', 'user', 'book', 'seq', 'title', 'level', 'content', 'created_at', 'updated_at')
+            'created_at', 'updated_at', 'subjects')
 
 
 class CompanyInDepartsSerializer(serializers.ModelSerializer):

@@ -30,9 +30,7 @@ class ApiIndex(generics.GenericAPIView):
         api = 'api:'
         return Response({
             'user': reverse(api + UserList.name, request=request),
-            'todo': reverse(api + TodoList.name, request=request),
             'book': reverse(api + BookList.name, request=request),
-            'subject': reverse(api + SubjectList.name, request=request),
             'company': reverse(api + CompanyList.name, request=request),
             'department': reverse(api + DepartmentList.name, request=request),
             'staff': reverse(api + StaffList.name, request=request),
@@ -95,21 +93,6 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsOwnSelfOrReadOnly)
 
 
-# T o d o --------------------------------------------------------------------------
-class TodoList(generics.ListCreateAPIView):
-    name = 'todo-list'
-    queryset = Todo.objects.all()
-    serializer_class = TodoSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly)
-
-
-class TodoDetail(generics.RetrieveUpdateDestroyAPIView):
-    name = 'todo-detail'
-    queryset = Todo.objects.all()
-    serializer_class = TodoSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsOwnerOnly)
-
-
 # Book --------------------------------------------------------------------------
 class BookList(generics.ListCreateAPIView):
     name = 'book-list'
@@ -125,23 +108,6 @@ class BookDetail(generics.RetrieveUpdateDestroyAPIView):
     name = 'book-detail'
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly)
-
-
-class SubjectList(generics.ListCreateAPIView):
-    name = 'subject-list'
-    queryset = Subject.objects.all()
-    serializer_class = SubjectSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly)
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
-
-
-class SubjectDetail(generics.RetrieveUpdateDestroyAPIView):
-    name = 'subject-detail'
-    queryset = Subject.objects.all()
-    serializer_class = SubjectSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly)
 
 
