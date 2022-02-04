@@ -29,6 +29,7 @@ class Company(models.Model):
 
 class Department(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='departments')
+    upper_depart = models.ForeignKey('self', on_delete=models.CASCADE, null=True, related_name='sub_departs')
     name = models.CharField('부서명', max_length=20)
     task = models.CharField('주요 업무', max_length=100)
 
