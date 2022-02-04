@@ -13,6 +13,13 @@ export declare interface StaffAuth {
   auth_manage: string
 }
 
+interface Todo {
+  id: number
+  title: string
+  completed: boolean
+  soft_deleted: boolean
+}
+
 export declare interface User {
   id: number
   email: string
@@ -21,6 +28,7 @@ export declare interface User {
   date_joined: string
   is_superuser: boolean
   staffauth: StaffAuth | null
+  todos: Todo[]
 }
 
 export declare interface LockedUser {
