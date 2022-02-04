@@ -42,7 +42,7 @@ class UserSerializer(serializers.ModelSerializer):
         style={'input_type': 'password', 'placeholder': '비밀번호'}
     )
     staffauth = UserInStaffAuthSerializer()
-    todos = UserInTodosSerializer(many=True)
+    todos = UserInTodosSerializer(many=True, read_only=True)
 
     class Meta:
         model = User
