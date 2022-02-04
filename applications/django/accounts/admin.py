@@ -4,7 +4,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.translation import gettext_lazy as _
 
 from .forms import UserCreationForm, UserChangeForm
-from .models import User, StaffAuth, Profile
+from .models import User, StaffAuth, Profile, Todos
 
 
 class StaffAuthInline(admin.StackedInline):
@@ -13,6 +13,10 @@ class StaffAuthInline(admin.StackedInline):
 
 class ProfileInline(admin.StackedInline):
     model = Profile
+
+
+class TodosInline(admin.StackedInline):
+    model = Todos
 
 
 class UserAdmin(ImportExportMixin, BaseUserAdmin):
@@ -41,7 +45,7 @@ class UserAdmin(ImportExportMixin, BaseUserAdmin):
     search_fields = ('email', 'username')
     ordering = ('-date_joined',)
     filter_horizontal = ()
-    inlines = (StaffAuthInline, ProfileInline)
+    inlines = (StaffAuthInline, ProfileInline, TodosInline)
 
 
 # Now register the new UserAdmin...

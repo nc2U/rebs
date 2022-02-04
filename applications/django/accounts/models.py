@@ -114,7 +114,7 @@ class Profile(models.Model):
 
 
 class Todos(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='todos')
     title = models.CharField('할일내용', max_length=50)
     completed = models.BooleanField('완료여부', default=False)
     created_at = models.DateTimeField('등록일', auto_now_add=True)
