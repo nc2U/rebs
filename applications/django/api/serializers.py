@@ -27,6 +27,12 @@ class UserInStaffAuthSerializer(serializers.ModelSerializer):
             'project', 'company_cash', 'company_docs', 'human_resource', 'company_settings', 'auth_manage')
 
 
+class UserInTodosSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Todo
+        fields = ('id', 'title', 'completed', 'soft_deleted')
+
+
 class UserSerializer(serializers.ModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='api:user-detail')
     password = serializers.CharField(
@@ -36,10 +42,13 @@ class UserSerializer(serializers.ModelSerializer):
         style={'input_type': 'password', 'placeholder': '비밀번호'}
     )
     staffauth = UserInStaffAuthSerializer()
+    todos = UserInTodosSerializer(many=True)
 
     class Meta:
         model = User
-        fields = ('id', 'url', 'email', 'username', 'is_active', 'is_superuser', 'date_joined', 'password', 'staffauth')
+        fields = (
+            'id', 'url', 'email', 'username', 'is_active', 'is_superuser', 'date_joined', 'password', 'staffauth',
+            'todos')
 
     def save(self):
         instance = User(email=self.validated_data['email'],
@@ -102,7 +111,7 @@ class CompanyInDepartsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Department
-        fields = ('id', 'url', 'name')
+        fields = ('id', 'url', 'upper_depart', 'name', 'task')
 
 
 class CompanyInPositionsSerializer(serializers.ModelSerializer):
@@ -114,7 +123,7 @@ class CompanyInPositionsSerializer(serializers.ModelSerializer):
 class CompanySerializer(serializers.ModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='api:company-detail')
     departments = CompanyInDepartsSerializer(many=True, read_only=True)
-    positions = CompanyInPositionsSerializer(many=True, read_only=True)
+    positions = CompanyInPositionsSerializer(many=True)
 
     class Meta:
         model = Company
