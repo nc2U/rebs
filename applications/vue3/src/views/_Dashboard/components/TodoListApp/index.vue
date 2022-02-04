@@ -106,7 +106,7 @@ export default defineComponent({
       return (this as any).todos.every((todo: todo) => todo.done)
     },
     filteredTodos() {
-      return filters[this.visibility](this.todos) as todo[]
+      return filters[(this as any).visibility]((this as any).todos) as todo[]
     },
     remaining() {
       return (this as any).todos.filter((todo: todo) => !todo.done).length
@@ -140,11 +140,11 @@ export default defineComponent({
       this.setLocalStorage()
     },
     clearCompleted() {
-      this.todos = this.todos.filter((todo) => !todo.done)
+      this.todos = this.todos.filter((todo: any) => !todo.done)
       this.setLocalStorage()
     },
     toggleAll({ done }: any) {
-      this.todos.forEach((todo) => {
+      this.todos.forEach((todo: any) => {
         todo.done = done
         this.setLocalStorage()
       })
