@@ -4,7 +4,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.translation import gettext_lazy as _
 
 from .forms import UserCreationForm, UserChangeForm
-from .models import User, StaffAuth, Profile, Todos
+from .models import User, StaffAuth, Profile, Todo
 
 
 class StaffAuthInline(admin.StackedInline):
@@ -16,7 +16,7 @@ class ProfileInline(admin.StackedInline):
 
 
 class TodosInline(admin.StackedInline):
-    model = Todos
+    model = Todo
 
 
 class UserAdmin(ImportExportMixin, BaseUserAdmin):

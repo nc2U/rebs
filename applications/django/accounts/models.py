@@ -113,7 +113,7 @@ class Profile(models.Model):
         verbose_name_plural = '사용자 프로필'
 
 
-class Todos(models.Model):
+class Todo(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='todos')
     title = models.CharField('할일내용', max_length=50)
     completed = models.BooleanField('완료여부', default=False)
