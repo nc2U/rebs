@@ -100,9 +100,26 @@ class StaffAuth(models.Model):
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    name = models.CharField(max_length=20, blank=True)
+    name = models.CharField(max_length=20, null=True, blank=True)
     birth_date = models.DateField(null=True, blank=True)
-    cell_phone = models.CharField(max_length=13, blank=True)
+    cell_phone = models.CharField(max_length=13, null=True, blank=True)
+    release_code = models.CharField(max_length=20, null=True, blank=True)
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        verbose_name = '사용자 프로필'
+        verbose_name_plural = '사용자 프로필'
+
+
+class Todos(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    title = models.CharField('할일내용', max_length=50)
+    completed = models.BooleanField('완료여부', default=False)
+    created_at = models.DateTimeField('등록일', auto_now_add=True)
+    updated_at = models.DateTimeField('수정일', auto_now=True)
+    soft_deleted = models.BooleanField('삭제여부', default=False)
+
+    def __str__(self):
+        return self.title
