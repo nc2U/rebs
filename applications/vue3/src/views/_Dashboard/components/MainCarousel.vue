@@ -8,7 +8,7 @@
           <small class="text-muted">Songdo-Central Xi</small>
         </CCardHeader>
         <CCardBody>
-          <CCarousel controls indicators arrows animate>
+          <CCarousel controls indicators transition="crossfade">
             <CCarouselItem>
               <img
                 class="d-block w-100"
