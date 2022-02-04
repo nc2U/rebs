@@ -25,8 +25,8 @@ class DepartmentAdmin(ImportExportMixin, admin.ModelAdmin):
 
 
 class PositionAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'rank', 'title')
-    list_display_links = ('title',)
+    list_display = ('id', 'sort', 'rank', 'title')
+    list_display_links = ('rank',)
 
 
 class StaffAdmin(ImportExportMixin, admin.ModelAdmin):

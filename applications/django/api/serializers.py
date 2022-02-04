@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from accounts.models import User, StaffAuth, Todo
 from book.models import Book, Subject
-from company.models import Company, Department, Staff
+from company.models import Company, Department, Position, Staff
 from project.models import (Project, UnitType, UnitFloorType,
                             ContractUnit, UnitNumber, ProjectBudget,
                             Site, SiteOwner, SiteOwnshipRelationship, SiteContract)
@@ -97,7 +97,7 @@ class SubjectSerializer(serializers.ModelSerializer):
         fields = ('id', 'url', 'user', 'book', 'seq', 'title', 'level', 'content', 'created_at', 'updated_at')
 
 
-class CompanyInDepartsSerializer(serializers.HyperlinkedModelSerializer):
+class CompanyInDepartsSerializer(serializers.ModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='api:depart-detail')
 
     class Meta:
@@ -105,15 +105,22 @@ class CompanyInDepartsSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('id', 'url', 'name')
 
 
+class CompanyInPositionsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Position
+        fields = ('id', 'rank', 'title', 'description')
+
+
 class CompanySerializer(serializers.ModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='api:company-detail')
     departments = CompanyInDepartsSerializer(many=True, read_only=True)
+    positions = CompanyInPositionsSerializer(many=True, read_only=True)
 
     class Meta:
         model = Company
         fields = ('id', 'url', 'name', 'ceo', 'tax_number', 'org_number',
                   'business_cond', 'business_even', 'es_date', 'op_date', 'zipcode',
-                  'address1', 'address2', 'address3', 'departments')
+                  'address1', 'address2', 'address3', 'departments', 'positions')
 
 
 class StaffInDepartmentSerializer(serializers.ModelSerializer):

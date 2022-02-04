@@ -42,13 +42,15 @@ class Department(models.Model):
 
 
 class Position(models.Model):
-    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='positions')
-    RANK_CHOICES = (('1', '임원'), ('2', '직원'))
-    rank = models.CharField('구분', max_length=1, choices=RANK_CHOICES)
-    title = models.CharField('직책', max_length=20)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='positions', verbose_name='회사')
+    SORT_CHOICES = (('1', '임원'), ('2', '직원'))
+    sort = models.CharField('구분', max_length=1, choices=SORT_CHOICES)
+    rank = models.CharField('직급', max_length=20)
+    title = models.CharField('직함', max_length=20, null=True, blank=True)
     description = models.CharField('설명', max_length=255, null=True, blank=True)
 
     class Meta:
+        ordering = ['id']
         verbose_name = "03. 직책 정보"
         verbose_name_plural = "03. 직책 정보"
 
