@@ -3,7 +3,7 @@
     <MainCarousel />
     <CRow>
       <CCol lg="6">
-        <TodoListApp />
+        <!--        <TodoListApp />-->
       </CCol>
       <CCol lg="6">
         <WidgetsStatsA />
@@ -19,7 +19,7 @@
 import { defineComponent } from 'vue'
 
 import MainCarousel from './components/MainCarousel.vue'
-import TodoListApp from './components/TodoListApp/index.vue'
+// import TodoListApp from './components/TodoListApp/index.vue'
 import WidgetsStatsA from './components/widgets/WidgetsStatsTypeA.vue'
 import WidgetsStatsB from './components/widgets/WidgetsStatsTypeB.vue'
 import WidgetsStatsC from './components/widgets/WidgetsStatsTypeC.vue'
@@ -29,7 +29,7 @@ export default defineComponent({
   name: 'Dashboard',
   components: {
     MainCarousel,
-    TodoListApp,
+    // TodoListApp,
     WidgetsStatsA,
     WidgetsStatsB,
     WidgetsStatsC,

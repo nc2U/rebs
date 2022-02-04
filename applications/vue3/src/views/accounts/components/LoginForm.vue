@@ -32,10 +32,10 @@
       />
       <CFormFeedback invalid>비밀번호를 입력하세요.</CFormFeedback>
     </CInputGroup>
-    <CRow class="text-center">
+    <CRow>
       <CCol xs="6">
-        <CButton type="button" color="link" class="px-0">
-          <!--          아이디 | 비밀번호 찾기-->
+        <CButton type="button" color="link" class="px-0" @click="toFindAccount">
+          아이디 | 비밀번호 찾기
         </CButton>
       </CCol>
       <CCol class="text-right">
@@ -64,9 +64,12 @@ export default defineComponent({
     return {
       email: '',
       password: '',
-      redirect: this.$route.query.redirect,
+      redirect: '',
       validated: false,
     }
+  },
+  created() {
+    ;(this as any).redirect = this.$route.query.redirect
   },
   methods: {
     onSubmit(event: any) {
@@ -81,6 +84,9 @@ export default defineComponent({
         this.$emit('onSubmit', { email, password, redirect })
         this.validated = false
       }
+    },
+    toFindAccount() {
+      alert('준비중!')
     },
   },
 })

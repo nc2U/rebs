@@ -27,7 +27,11 @@
               >
                 <CRow class="mb-2">
                   <CCol>
-                    <CFormInput v-model="registerCode" required />
+                    <CFormInput
+                      v-model="registerCode"
+                      type="password"
+                      required
+                    />
                   </CCol>
                 </CRow>
                 <CRow>

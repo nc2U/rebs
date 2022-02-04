@@ -15,20 +15,21 @@
                   <CIcon
                     icon="cib-google"
                     height="25"
-                    class="text-medium-emphasis"
-                  ></CIcon
-                  >&nbsp;
+                    class="text-medium-emphasis mr-2"
+                  >
+                  </CIcon>
                   <CIcon
                     icon="cib-github"
                     height="25"
-                    class="text-medium-emphasis"
-                  ></CIcon
-                  >&nbsp;
+                    class="text-medium-emphasis mr-2"
+                  >
+                  </CIcon>
                   <CIcon
                     icon="cib-facebook"
                     height="25"
                     class="text-medium-emphasis"
-                  ></CIcon>
+                  >
+                  </CIcon>
                 </CCol>
               </CRow>
             </CCardBody>

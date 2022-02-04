@@ -44,7 +44,7 @@ const actions = {
       .then((res) => {
         commit(SET_USER_INFO, res.data)
         commit(SET_LOCKED_USER, res.data)
-        message('info', '', '로그인 성공 알림!')
+        message('', '', '로그인 성공 알림!')
       })
       .catch((err) => {
         console.log(err.response.data)
