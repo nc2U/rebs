@@ -23,13 +23,12 @@ class Company(models.Model):
     def __str__(self):
         return self.name
 
-    def get_absolute_url(self):
-        return reverse('rebs:company:update', args=(self.pk,))
-
 
 class Department(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='departments')
-    upper_depart = models.ForeignKey('self', on_delete=models.CASCADE, null=True, related_name='sub_departs')
+    upper_depart = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True,
+                                     related_name='sub_departs',
+                                     verbose_name='상위부서')
     name = models.CharField('부서명', max_length=20)
     task = models.CharField('주요 업무', max_length=100)
 
@@ -42,10 +41,23 @@ class Department(models.Model):
         verbose_name_plural = '02. 부서 정보'
 
 
+class Position(models.Model):
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='positions')
+    RANK_CHOICES = (('1', '임원'), ('2', '직원'))
+    rank = models.CharField('구분', max_length=1, choices=RANK_CHOICES)
+    title = models.CharField('직책', max_length=20)
+    description = models.CharField('설명', max_length=255, null=True, blank=True)
+
+    class Meta:
+        verbose_name = "03. 직책 정보"
+        verbose_name_plural = "03. 직책 정보"
+
+
 class Staff(models.Model):
+    user = models.OneToOneField('accounts.User', on_delete=models.DO_NOTHING, null=True, verbose_name='유저 정보')
     department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True, verbose_name='부서 정보',
                                    related_name='staffs')
-    position = models.CharField('직함', max_length=50, blank=True, default='')
+    position = models.ForeignKey(Position, on_delete=models.SET_NULL, null=True, verbose_name='직책 정보')
     name = models.CharField('직원 성명', max_length=10)
     birth_date = models.DateField('생년월일')
     GENDER_CHOICES = (('M', '남성'), ('F', '여성'))
@@ -60,5 +72,5 @@ class Staff(models.Model):
         return f'{self.name}({self.birth_date})'
 
     class Meta:
-        verbose_name = '03. 직원 정보'
-        verbose_name_plural = '03. 직원 정보'
+        verbose_name = '04. 직원 정보'
+        verbose_name_plural = '04. 직원 정보'
