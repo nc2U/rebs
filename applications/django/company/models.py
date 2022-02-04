@@ -1,5 +1,4 @@
 from django.db import models
-from django.urls import reverse
 
 
 class Company(models.Model):
@@ -25,11 +24,11 @@ class Company(models.Model):
 
 
 class Department(models.Model):
-    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='departments')
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='departments', verbose_name='회사')
     upper_depart = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True,
                                      related_name='sub_departs',
-                                     verbose_name='상위부서')
-    name = models.CharField('부서명', max_length=20)
+                                     verbose_name='상위 부서')
+    name = models.CharField('부서', max_length=20)
     task = models.CharField('주요 업무', max_length=100, blank=True)
 
     def __str__(self):
@@ -45,9 +44,12 @@ class Position(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='positions', verbose_name='회사')
     SORT_CHOICES = (('1', '임원'), ('2', '직원'))
     sort = models.CharField('구분', max_length=1, choices=SORT_CHOICES)
-    rank = models.CharField('직급', max_length=20)
+    rank = models.CharField('직책', max_length=20)
     title = models.CharField('직함', max_length=20, blank=True)
     description = models.CharField('설명', max_length=255, blank=True)
+
+    def __str__(self):
+        return self.rank
 
     class Meta:
         ordering = ['id']
@@ -75,5 +77,6 @@ class Staff(models.Model):
         return f'{self.name}({self.birth_date})'
 
     class Meta:
+        ordering = ['-entered_date']
         verbose_name = '04. 직원 정보'
         verbose_name_plural = '04. 직원 정보'

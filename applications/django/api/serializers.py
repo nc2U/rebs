@@ -97,7 +97,7 @@ class CompanyInPositionsSerializer(serializers.ModelSerializer):
 class CompanySerializer(serializers.ModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='api:company-detail')
     departments = CompanyInDepartsSerializer(many=True, read_only=True)
-    positions = CompanyInPositionsSerializer(many=True)
+    positions = CompanyInPositionsSerializer(many=True, read_only=True)
 
     class Meta:
         model = Company
@@ -122,6 +122,14 @@ class DepartmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Department
         fields = ('id', 'url', 'company', 'name', 'task', 'staffs')
+
+
+class PositionSerializer(serializers.ModelSerializer):
+    company = serializers.SlugRelatedField(queryset=Company.objects.all(), slug_field='name')
+
+    class Meta:
+        model = Position
+        fields = ('id', 'rank', 'title', 'description')
 
 
 class StaffSerializer(serializers.ModelSerializer):
