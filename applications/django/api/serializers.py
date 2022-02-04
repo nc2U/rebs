@@ -60,6 +60,15 @@ class UserSerializer(serializers.ModelSerializer):
         return self.instance
 
 
+class TodoSerializer(serializers.ModelSerializer):
+    url = serializers.HyperlinkedIdentityField(view_name='api:todo-detail')
+    user = serializers.ReadOnlyField(source='user.username')
+
+    class Meta:
+        model = Todo
+        fields = ('id', 'url', 'user', 'title', 'completed', 'created_at', 'created_at', 'soft_deleted')
+
+
 class BookInSubjectsSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source='user.username', required=False)
 
