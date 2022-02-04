@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from accounts.models import User, StaffAuth
+from accounts.models import User, StaffAuth, Todo
 from book.models import Book, Subject
 from company.models import Company, Department, Staff
 from project.models import (Project, UnitType, UnitFloorType,
@@ -49,6 +49,15 @@ class UserSerializer(serializers.ModelSerializer):
         instance.save()
         self.instance = instance
         return self.instance
+
+
+class TodoSerializer(serializers.ModelSerializer):
+    url = serializers.HyperlinkedIdentityField(view_name='api:todo-detail')
+    username = serializers.ReadOnlyField(source='user.username', required=False)
+
+    class Meta:
+        model = Todo
+        fields = ('id', 'url', 'user', 'username', 'title', 'completed', 'created_at', 'updated_at', 'soft_deleted')
 
 
 class BookSubjectSerializer(serializers.ModelSerializer):

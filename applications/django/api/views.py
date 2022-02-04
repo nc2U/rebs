@@ -5,7 +5,7 @@ from rest_framework.reverse import reverse
 from .permission import *
 from .serializers import *
 
-from accounts.models import User
+from accounts.models import User, Todo
 from book.models import Book, Subject
 from company.models import Company, Department, Staff
 from project.models import (Project, UnitType, UnitFloorType,
@@ -30,6 +30,7 @@ class ApiIndex(generics.GenericAPIView):
         api = 'api:'
         return Response({
             'user': reverse(api + UserList.name, request=request),
+            'todo': reverse(api + TodoList.name, request=request),
             'book': reverse(api + BookList.name, request=request),
             'subject': reverse(api + SubjectList.name, request=request),
             'company': reverse(api + CompanyList.name, request=request),
@@ -92,6 +93,21 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsOwnSelfOrReadOnly)
+
+
+# T o d o --------------------------------------------------------------------------
+class TodoList(generics.ListCreateAPIView):
+    name = 'todo-list'
+    queryset = Todo.objects.all()
+    serializer_class = TodoSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly)
+
+
+class TodoDetail(generics.RetrieveUpdateDestroyAPIView):
+    name = 'todo-detail'
+    queryset = Todo.objects.all()
+    serializer_class = TodoSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsOwnerOnly)
 
 
 # Book --------------------------------------------------------------------------
