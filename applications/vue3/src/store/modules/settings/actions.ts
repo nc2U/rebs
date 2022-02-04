@@ -32,7 +32,14 @@ const actions = {
         dispatch('fetchCompanyList')
         message()
       })
-      .catch((err) => alert(err.response.data.detail))
+      .catch((err) => {
+        console.log(err.response.data)
+        alert(
+          `${Object.keys(err.response.data)[0]} : ${
+            err.response.data[Object.keys(err.response.data)[0]]
+          }`,
+        )
+      })
   },
 
   updateCompany: ({ dispatch }: any, payload: any) => {
@@ -43,7 +50,14 @@ const actions = {
         dispatch('fetchCompanyList')
         message()
       })
-      .catch((err) => alert(err.response.data.detail))
+      .catch((err) => {
+        console.log(err.response.data)
+        alert(
+          `${Object.keys(err.response.data)[0]} : ${
+            err.response.data[Object.keys(err.response.data)[0]]
+          }`,
+        )
+      })
   },
 }
 

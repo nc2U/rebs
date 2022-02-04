@@ -3,6 +3,13 @@ export interface Department {
   task: string
 }
 
+interface Positions {
+  id: number
+  rank: string
+  title: string
+  description: string
+}
+
 export interface Company {
   id: number
   name: string
@@ -18,6 +25,7 @@ export interface Company {
   address2: string
   address3: string
   departments: Department[]
+  positions: Positions[]
 }
 
 export interface CompanyState {
