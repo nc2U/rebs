@@ -101,6 +101,9 @@ class TodoList(generics.ListCreateAPIView):
     serializer_class = TodoSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsOwnerOnly)
 
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
 
 class TodoDetail(generics.RetrieveUpdateDestroyAPIView):
     name = 'todo-detail'
