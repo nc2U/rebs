@@ -66,7 +66,7 @@ class TodoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Todo
-        fields = ('id', 'url', 'user', 'title', 'completed', 'created_at', 'created_at', 'soft_deleted')
+        fields = ('id', 'url', 'user', 'title', 'completed', 'created_at', 'updated_at', 'soft_deleted')
 
 
 class BookInSubjectsSerializer(serializers.ModelSerializer):

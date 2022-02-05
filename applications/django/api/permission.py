@@ -2,12 +2,12 @@ from rest_framework import permissions
 
 
 class IsSuperUserOnly(permissions.BasePermission):
-    def has_object_permission(self, request, view, obj):
+    def has_permission(self, request, view):
         return request.user.is_superuser
 
 
 class IsStaffOnly(permissions.BasePermission):
-    def has_object_permission(self, request, view, obj):
+    def has_permission(self, request, view):
         return request.user.staffauth.is_staff or request.user.is_superuser
 
 
@@ -17,7 +17,7 @@ class IsOwnerOnly(permissions.BasePermission):
 
 
 class IsSuperUserOrReadOnly(permissions.BasePermission):
-    def has_object_permission(self, request, view, obj):
+    def has_permission(self, request, view):
         if request.method in permissions.SAFE_METHODS:
             return True
         else:
@@ -25,7 +25,7 @@ class IsSuperUserOrReadOnly(permissions.BasePermission):
 
 
 class IsStaffOrReadOnly(permissions.BasePermission):
-    def has_object_permission(self, request, view, obj):
+    def has_permission(self, request, view):
         if request.method in permissions.SAFE_METHODS:
             return True
         else:
