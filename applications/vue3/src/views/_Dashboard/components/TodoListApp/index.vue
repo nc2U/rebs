@@ -56,7 +56,6 @@
       </button>
     </footer>
   </section>
-  {{ userInfo.todos }}
 </template>
 
 <script lang="ts">
@@ -156,7 +155,8 @@ export default defineComponent({
     toggleAll({ completed }: any) {
       this.todos.forEach((todo: any) => {
         todo.completed = completed
-        // this.setLocalStorage()
+        const payload = { pk: todo.pk, completed: todo.completed }
+        this.patchTodo(payload)
       })
     },
     pluralize: (n: any, w: any) => (n === 1 ? w : w + 's'),
