@@ -230,8 +230,8 @@ ACCOUNT_AUTHENTICATION_METHOD = 'email'
 # ACCOUNT_USERNAME_REQUIRED = False  # username 필드 사용 x
 
 REST_FRAMEWORK = {
-    'DEFAULT_PAGINATION_CLASS': 'api.pagination.LimitOffsetPaginationWithMaxLimit',
-    'PAGE_SIZE': 5,
+    # 'DEFAULT_PAGINATION_CLASS': 'api.pagination.LimitOffsetPaginationWithMaxLimit',
+    # 'PAGE_SIZE': 5,
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.backends.DjangoFilterBackend',
         'rest_framework.filters.SearchFilter',

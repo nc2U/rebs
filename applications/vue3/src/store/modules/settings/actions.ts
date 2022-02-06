@@ -10,7 +10,7 @@ const actions = {
     api
       .get('/company/')
       .then((res) => {
-        commit(FETCH_COMPANY_LIST, res.data.results)
+        commit(FETCH_COMPANY_LIST, res.data)
       })
       .catch((err) => console.log(err))
   },

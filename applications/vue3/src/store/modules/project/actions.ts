@@ -10,7 +10,7 @@ const actions = {
     api
       .get('/project/')
       .then((res) => {
-        commit(FETCH_PROJECT_LIST, res.data.results)
+        commit(FETCH_PROJECT_LIST, res.data)
       })
       .catch((err) => console.log(err))
   },
@@ -32,7 +32,14 @@ const actions = {
         dispatch('fetchProjectList')
         message()
       })
-      .catch((err) => alert(err.response.data.detail))
+      .catch((err) => {
+        console.log(err.response.data)
+        alert(
+          `${Object.keys(err.response.data)[0]} : ${
+            err.response.data[Object.keys(err.response.data)[0]]
+          }`,
+        )
+      })
   },
 
   updateProject: ({ dispatch }: any, payload: any) => {
@@ -43,7 +50,14 @@ const actions = {
         dispatch('fetchProjectList')
         message()
       })
-      .catch((err) => alert(err.response.data.detail))
+      .catch((err) => {
+        console.log(err.response.data)
+        alert(
+          `${Object.keys(err.response.data)[0]} : ${
+            err.response.data[Object.keys(err.response.data)[0]]
+          }`,
+        )
+      })
   },
 
   deleteProject: ({ dispatch }: any, pk: any) => {

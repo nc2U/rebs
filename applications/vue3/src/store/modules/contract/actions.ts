@@ -9,7 +9,7 @@ const actions = {
     api
       .get('/order-group/')
       .then((res) => {
-        commit(FETCH_ORDER_GROUP_LIST, res.data.results)
+        commit(FETCH_ORDER_GROUP_LIST, res.data)
       })
       .catch((err) => console.log(err))
   },
@@ -30,7 +30,14 @@ const actions = {
         dispatch('fetchOrderGroup', res.data.id)
         dispatch('fetchOrderGroupList')
       })
-      .catch((err) => alert(err.response.data.detail))
+      .catch((err) => {
+        console.log(err.response.data)
+        alert(
+          `${Object.keys(err.response.data)[0]} : ${
+            err.response.data[Object.keys(err.response.data)[0]]
+          }`,
+        )
+      })
   },
 
   updateProject: ({ dispatch }: any, payload: any) => {
@@ -40,7 +47,14 @@ const actions = {
         dispatch('fetchOrderGroup', res.data.id)
         dispatch('fetchOrderGroupList')
       })
-      .catch((err) => alert(err.response.data.detail))
+      .catch((err) => {
+        console.log(err.response.data)
+        alert(
+          `${Object.keys(err.response.data)[0]} : ${
+            err.response.data[Object.keys(err.response.data)[0]]
+          }`,
+        )
+      })
   },
 
   deleteProject: ({ dispatch }: any, id: any) => {
