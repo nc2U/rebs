@@ -142,7 +142,9 @@ export default defineComponent({
     },
     delTodo(todo: any) {
       const { pk } = todo
-      this.deleteTodo(pk)
+      const soft_deleted = new Date()
+      const payload = { pk, soft_deleted }
+      this.patchTodo(payload)
     },
     editTodo({ todo, title }: any) {
       const { pk } = todo
