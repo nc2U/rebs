@@ -49,28 +49,29 @@ export default defineComponent({
   },
   methods: {
     deleteTodo(todo: any) {
-      this.$emit('deleteTodo', todo)
+      // this.$emit('deleteTodo', todo)
+      alert('del - ok!')
     },
-    editTodo({ todo, value }: any) {
-      this.$emit('editTodo', { todo, value })
+    editTodo({ todo, title }: any) {
+      this.$emit('editTodo', { todo, title })
     },
     toggleTodo(todo: any) {
       this.$emit('toggleTodo', todo)
     },
     doneEdit(e: any) {
-      const value = e.target.value.trim()
+      const title = e.target.value.trim()
       const { todo }: any = this
-      if (!value) {
+      if (!title) {
         this.deleteTodo({
           todo,
         })
       } else if (this.editing) {
         this.editTodo({
           todo,
-          value,
+          title,
         })
-        this.editing = false
       }
+      this.editing = false
     },
     cancelEdit(e: any) {
       e.target.value = (this as any).todo.title

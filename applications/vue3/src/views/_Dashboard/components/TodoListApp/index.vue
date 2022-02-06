@@ -144,9 +144,10 @@ export default defineComponent({
       this.todos.splice(this.todos.indexOf(todo), 1)
       // this.setLocalStorage()
     },
-    editTodo({ todo, value }: any) {
-      todo.title = value
-      // this.setLocalStorage()
+    editTodo({ todo, title }: any) {
+      const { pk } = todo
+      const payload = { pk, title }
+      this.patchTodo(payload)
     },
     clearCompleted() {
       this.todos = this.todos.filter((todo: any) => !todo.completed)
