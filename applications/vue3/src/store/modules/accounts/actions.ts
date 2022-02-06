@@ -118,6 +118,23 @@ const actions = {
         )
       })
   },
+
+  deleteTodo: ({ dispatch }: any, pk: any) => {
+    api
+      .delete(`/todo/${pk}/`)
+      .then((res) => {
+        dispatch('fetchTodoList')
+        console.log(res)
+      })
+      .catch((err) => {
+        console.log(err.response.data)
+        alert(
+          `${Object.keys(err.response.data)[0]} : ${
+            err.response.data[Object.keys(err.response.data)[0]]
+          }`,
+        )
+      })
+  },
 }
 
 export default actions

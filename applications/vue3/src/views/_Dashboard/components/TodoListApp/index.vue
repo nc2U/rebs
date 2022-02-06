@@ -27,7 +27,7 @@
           :todo="todo"
           @toggleTodo="toggleTodo"
           @editTodo="editTodo"
-          @deleteTodo="deleteTodo"
+          @delTodo="delTodo"
         />
       </ul>
     </section>
@@ -140,9 +140,9 @@ export default defineComponent({
       const payload = { pk: todo.pk, completed: todo.completed }
       this.patchTodo(payload)
     },
-    deleteTodo(todo: any) {
-      this.todos.splice(this.todos.indexOf(todo), 1)
-      // this.setLocalStorage()
+    delTodo(todo: any) {
+      const { pk } = todo
+      this.deleteTodo(pk)
     },
     editTodo({ todo, title }: any) {
       const { pk } = todo
@@ -162,7 +162,12 @@ export default defineComponent({
     },
     pluralize: (n: any, w: any) => (n === 1 ? w : w + 's'),
     capitalize: (s: any) => s.charAt(0).toUpperCase() + s.slice(1),
-    ...mapActions('accounts', ['fetchTodoList', 'createTodo', 'patchTodo']),
+    ...mapActions('accounts', [
+      'fetchTodoList',
+      'createTodo',
+      'patchTodo',
+      'deleteTodo',
+    ]),
   },
 })
 </script>

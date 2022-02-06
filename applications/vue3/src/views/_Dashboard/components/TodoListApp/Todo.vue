@@ -8,7 +8,7 @@
         @change="toggleTodo(todo)"
       />
       <label @dblclick="editing = true" v-text="todo.title" />
-      <button class="destroy" @click="deleteTodo(todo)" />
+      <button class="destroy" @click="delTodo(todo)" />
     </div>
     <input
       v-show="editing"
@@ -48,9 +48,8 @@ export default defineComponent({
     }
   },
   methods: {
-    deleteTodo(todo: any) {
-      // this.$emit('deleteTodo', todo)
-      alert('del - ok!')
+    delTodo(todo: any) {
+      this.$emit('delTodo', todo)
     },
     editTodo({ todo, title }: any) {
       this.$emit('editTodo', { todo, title })
@@ -62,9 +61,8 @@ export default defineComponent({
       const title = e.target.value.trim()
       const { todo }: any = this
       if (!title) {
-        this.deleteTodo({
-          todo,
-        })
+        // console.log(todo)
+        this.delTodo(todo)
       } else if (this.editing) {
         this.editTodo({
           todo,
