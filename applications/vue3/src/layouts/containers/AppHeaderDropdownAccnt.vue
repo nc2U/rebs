@@ -87,7 +87,6 @@ export default defineComponent({
   setup() {
     return {
       avatar: '',
-      itemsCount: 0,
     }
   },
   props: {
@@ -102,6 +101,9 @@ export default defineComponent({
       return this.userInfo
         ? this.userInfo.username.substring(0, 1).toUpperCase()
         : 'A'
+    },
+    itemsCount() {
+      return (this as any).$store.getters['accounts/myTodos'].length
     },
   },
   methods: {

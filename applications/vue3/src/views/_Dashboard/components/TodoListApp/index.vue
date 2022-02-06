@@ -6,7 +6,7 @@
         class="new-todo"
         autofocus
         autocomplete="off"
-        placeholder="나의 할일 목록 관리"
+        placeholder="해야 할 일이 있나요?"
         @keyup.enter="addTodo"
       />
     </header>
@@ -56,6 +56,11 @@
       </button>
     </footer>
   </section>
+
+  <footer class="info text-center" style="color: #ccc; font-size: 0.875rem">
+    <p class="aa" v-if="todos.length">할 일을 수정하려면 더블클릭 하세요.</p>
+    <p class="aa" v-else>첫 번째 할 일 목록을 메모해 보세요.</p>
+  </footer>
 </template>
 
 <script lang="ts">
