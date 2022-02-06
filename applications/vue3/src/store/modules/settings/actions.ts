@@ -28,7 +28,7 @@ const actions = {
     api
       .post('/company/', payload)
       .then((res) => {
-        dispatch('fetchCompany', res.data.id)
+        dispatch('fetchCompany', res.data.pk)
         dispatch('fetchCompanyList')
         message()
       })
