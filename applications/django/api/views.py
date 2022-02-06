@@ -6,7 +6,6 @@ from .permission import *
 from .serializers import *
 
 from accounts.models import User, Profile, Todo
-from book.models import Book, Subject
 from company.models import Company, Department, Staff
 from project.models import (Project, UnitType, UnitFloorType,
                             ContractUnit, UnitNumber, ProjectBudget,

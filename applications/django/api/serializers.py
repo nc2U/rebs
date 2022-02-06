@@ -1,7 +1,6 @@
 from rest_framework import serializers
 
 from accounts.models import User, StaffAuth, Profile, Todo
-from book.models import Book, Subject
 from company.models import Company, Department, Position, Staff
 from project.models import (Project, UnitType, UnitFloorType,
                             ContractUnit, UnitNumber, ProjectBudget,
@@ -213,7 +212,7 @@ class SiteSerializer(serializers.ModelSerializer):
 
 
 class SiteOwnerSerializer(serializers.ModelSerializer):
-    # project = serializers.SlugRelatedField(queryset=Project.objects.all(), slug_field='name')
+    project = serializers.SlugRelatedField(queryset=Project.objects.all(), slug_field='name')
     own_sort_desc = serializers.CharField(source='get_own_sort_display', read_only=True)
 
     class Meta:
