@@ -72,8 +72,6 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class TodoSerializer(serializers.ModelSerializer):
-    user = serializers.ReadOnlyField(source='user.username')
-
     class Meta:
         model = Todo
         fields = ('pk', 'url', 'user', 'title', 'completed', 'created_at', 'updated_at', 'soft_deleted')
