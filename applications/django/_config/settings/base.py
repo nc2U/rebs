@@ -73,6 +73,8 @@ INSTALLED_APPS += [  # plugin
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'django_filters',
+    'crispy_forms',
 ]
 
 INSTALLED_APPS += [  # app
@@ -230,6 +232,11 @@ ACCOUNT_AUTHENTICATION_METHOD = 'email'
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'api.pagination.LimitOffsetPaginationWithMaxLimit',
     'PAGE_SIZE': 5,
+    'DEFAULT_FILTER_BACKENDS': (
+        'django_filters.rest_framework.backends.DjangoFilterBackend',
+        'rest_framework.filters.SearchFilter',
+        'rest_framework.filters.OrderingFilter',
+    ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
     ),
