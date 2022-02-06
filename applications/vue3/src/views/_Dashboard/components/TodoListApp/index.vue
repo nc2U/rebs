@@ -62,9 +62,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import Todo from './Todo.vue'
-import { mapState } from 'vuex'
-
-const STORAGE_KEY = 'todos'
+import { mapActions, mapGetters, mapState } from 'vuex'
 
 interface todo {
   id: number
@@ -109,15 +107,14 @@ export default defineComponent({
     return {
       visibility: 'all',
       filters,
-      // todos:
-      //   JSON.parse((window as any).localStorage.getItem(STORAGE_KEY)) ||
-      //   defalutList,
-      // (this as any).userInfo.todos || defalutList,
     }
+  },
+  created() {
+    this.fetchTodoList()
   },
   computed: {
     todos() {
-      return (this as any).userInfo.todos
+      return (this as any).myTodos
     },
     allChecked() {
       return (this as any).todos.every((todo: todo) => todo.completed)
@@ -129,46 +126,49 @@ export default defineComponent({
       return (this as any).todos.filter((todo: todo) => !todo.completed).length
     },
     ...mapState('accounts', ['userInfo']),
+    ...mapGetters('accounts', ['myTodos']),
   },
   methods: {
-    setLocalStorage() {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(this.todos))
-    },
+    // setLocalStorage() {
+    //   window.localStorage.setItem(STORAGE_KEY, JSON.stringify(this.todos))
+    // },
     addTodo(e: any) {
       const title = e.target.value
       if (title.trim()) {
-        this.todos.push({
-          title,
-          completed: false,
-        })
-        this.setLocalStorage()
+        // this.todos.push({
+        //   title,
+        //   completed: false,
+        // })
+        // this.setLocalStorage()
+        this.createTodo({ user: this.userInfo.pk, title })
       }
       e.target.value = ''
     },
     toggleTodo(val: any) {
       val.completed = !val.completed
-      this.setLocalStorage()
+      // this.setLocalStorage()
     },
     deleteTodo(todo: any) {
       this.todos.splice(this.todos.indexOf(todo), 1)
-      this.setLocalStorage()
+      // this.setLocalStorage()
     },
     editTodo({ todo, value }: any) {
       todo.title = value
-      this.setLocalStorage()
+      // this.setLocalStorage()
     },
     clearCompleted() {
       this.todos = this.todos.filter((todo: any) => !todo.completed)
-      this.setLocalStorage()
+      // this.setLocalStorage()
     },
     toggleAll({ completed }: any) {
       this.todos.forEach((todo: any) => {
         todo.completed = completed
-        this.setLocalStorage()
+        // this.setLocalStorage()
       })
     },
     pluralize: (n: any, w: any) => (n === 1 ? w : w + 's'),
     capitalize: (s: any) => s.charAt(0).toUpperCase() + s.slice(1),
+    ...mapActions('accounts', ['fetchTodoList', 'createTodo']),
   },
 })
 </script>
