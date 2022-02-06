@@ -13,11 +13,13 @@ export declare interface StaffAuth {
   auth_manage: string
 }
 
-interface Todo {
+export declare interface Todo {
   pk: number
+  url: string
+  user: number
   title: string
   completed: boolean
-  soft_deleted: boolean
+  soft_deleted: Date
 }
 
 export declare interface User {
@@ -40,12 +42,14 @@ export declare interface LockedUser {
 export declare interface AccountsState {
   accessToken: string
   userInfo: User | null
+  todoList: Todo[]
   lockedUser: LockedUser | null
 }
 
 const state: AccountsState = {
   accessToken: '',
   userInfo: null,
+  todoList: [],
   lockedUser: null,
 }
 

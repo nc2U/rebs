@@ -2,6 +2,7 @@ import api from '@/api'
 import {
   DESTROY_ACCESS_TOKEN,
   DESTROY_CURRENT_USER,
+  FETCH_TODO_LIST,
   SET_ACCESS_TOKEN,
   SET_LOCKED_USER,
   SET_USER_INFO,
@@ -73,6 +74,15 @@ const actions = {
   logoutNoMessage({ commit }: any) {
     commit(DESTROY_CURRENT_USER)
     commit(DESTROY_ACCESS_TOKEN)
+  },
+
+  fetchTodoList: ({ commit }: any) => {
+    api
+      .get('/todo/')
+      .then((res) => {
+        commit(FETCH_TODO_LIST, res.data.results)
+      })
+      .catch((err) => console.log(err.response.data))
   },
 }
 

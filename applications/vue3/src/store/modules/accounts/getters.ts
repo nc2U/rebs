@@ -20,6 +20,11 @@ const getters = {
       ? state.userInfo?.staffauth?.assigned_project
       : state.userInfo?.staffauth?.allowed_projects[0]
   },
+  myTodos: (state: AccountsState) => {
+    return state.todoList.filter(
+      (todo) => !todo.soft_deleted && todo.user == state.userInfo?.pk,
+    )
+  },
 }
 
 export default getters
