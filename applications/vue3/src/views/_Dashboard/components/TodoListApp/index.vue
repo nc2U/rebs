@@ -129,24 +129,17 @@ export default defineComponent({
     ...mapGetters('accounts', ['myTodos']),
   },
   methods: {
-    // setLocalStorage() {
-    //   window.localStorage.setItem(STORAGE_KEY, JSON.stringify(this.todos))
-    // },
     addTodo(e: any) {
       const title = e.target.value
       if (title.trim()) {
-        // this.todos.push({
-        //   title,
-        //   completed: false,
-        // })
-        // this.setLocalStorage()
         this.createTodo({ user: this.userInfo.pk, title })
       }
       e.target.value = ''
     },
-    toggleTodo(val: any) {
-      val.completed = !val.completed
-      // this.setLocalStorage()
+    toggleTodo(todo: any) {
+      todo.completed = !todo.completed
+      const payload = { pk: todo.pk, completed: todo.completed }
+      this.patchTodo(payload)
     },
     deleteTodo(todo: any) {
       this.todos.splice(this.todos.indexOf(todo), 1)
@@ -168,7 +161,7 @@ export default defineComponent({
     },
     pluralize: (n: any, w: any) => (n === 1 ? w : w + 's'),
     capitalize: (s: any) => s.charAt(0).toUpperCase() + s.slice(1),
-    ...mapActions('accounts', ['fetchTodoList', 'createTodo']),
+    ...mapActions('accounts', ['fetchTodoList', 'createTodo', 'patchTodo']),
   },
 })
 </script>

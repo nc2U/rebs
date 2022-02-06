@@ -100,6 +100,24 @@ const actions = {
         )
       })
   },
+
+  patchTodo: ({ dispatch }: any, payload: any) => {
+    const { pk } = payload
+    delete payload.pk
+    api
+      .patch(`/todo/${pk}/`, payload)
+      .then((res) => {
+        dispatch('fetchTodoList')
+      })
+      .catch((err) => {
+        console.log(err.response.data)
+        alert(
+          `${Object.keys(err.response.data)[0]} : ${
+            err.response.data[Object.keys(err.response.data)[0]]
+          }`,
+        )
+      })
+  },
 }
 
 export default actions
