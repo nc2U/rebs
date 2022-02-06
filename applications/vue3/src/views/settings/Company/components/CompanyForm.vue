@@ -256,7 +256,7 @@ export default defineComponent({
   directives: { maska },
   data() {
     return {
-      id: '',
+      pk: '',
       form: {
         name: '',
         ceo: '',
@@ -276,7 +276,7 @@ export default defineComponent({
   },
   created() {
     if (this.update && this.company) {
-      this.id = this.company.id
+      this.pk = this.company.pk
       this.form.name = this.company.name
       this.form.ceo = this.company.ceo
       this.form.tax_number = this.company.tax_number
@@ -327,9 +327,9 @@ export default defineComponent({
       }
     },
     modalAction() {
-      const { id } = this
+      const { pk } = this
       if (this.update) {
-        this.$emit('to-update', { ...{ id }, ...this.form })
+        this.$emit('to-update', { ...{ pk }, ...this.form })
       } else {
         this.$emit('to-create', this.form)
       }
