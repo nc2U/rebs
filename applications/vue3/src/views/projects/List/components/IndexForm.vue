@@ -412,7 +412,7 @@ export default defineComponent({
   mixins: [addressMixin],
   data() {
     return {
-      id: null,
+      pk: null,
       form: {
         name: '',
         order: null,
@@ -455,7 +455,7 @@ export default defineComponent({
   },
   created() {
     if (this.update && this.project) {
-      this.id = this.project.id
+      this.pk = this.project.pk
       this.form.name = this.project.name
       this.form.order = this.project.order
       this.form.kind = this.project.kind
@@ -534,9 +534,9 @@ export default defineComponent({
       }
     },
     modalAction() {
-      const { id, company } = this
+      const { pk, company } = this
       if (this.update) {
-        this.$emit('to-update', { ...{ id, company }, ...this.form })
+        this.$emit('to-update', { ...{ pk, company }, ...this.form })
       } else {
         this.$emit('to-create', { ...{ company }, ...this.form })
       }
