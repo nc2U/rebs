@@ -38,8 +38,8 @@ const actions = {
       .then((res) => {
         const token = res.data.access
         commit(SET_ACCESS_TOKEN, token)
-        const id = extractId(token)
-        return api.get(`/user/${id}/`)
+        const pk = extractId(token)
+        return api.get(`/user/${pk}/`)
       })
       .then((res) => {
         commit(SET_USER_INFO, res.data)
@@ -54,9 +54,9 @@ const actions = {
 
   loginByToken({ commit }: any, token: string) {
     commit(SET_ACCESS_TOKEN, token)
-    const id = extractId(token)
+    const pk = extractId(token)
     return api
-      .get(`/user/${id}/`)
+      .get(`/user/${pk}/`)
       .then((res) => {
         commit(SET_USER_INFO, res.data)
         commit(SET_LOCKED_USER, res.data)

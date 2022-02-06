@@ -7,7 +7,7 @@ import {
 import { User } from '@/store/modules/accounts/state'
 
 export interface Project {
-  id: number
+  pk: number
   company: Company
   name: string
   order: number | null
@@ -80,7 +80,7 @@ export interface ProjectBudget {
 }
 
 export interface Site {
-  id: number
+  pk: number
   project: Project
   order: number
   district: string

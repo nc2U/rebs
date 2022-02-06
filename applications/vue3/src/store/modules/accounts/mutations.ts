@@ -24,8 +24,8 @@ const mutations = {
   },
 
   [SET_LOCKED_USER]: (state: AccountsState, payload: any) => {
-    const { id, email, username } = payload
-    state.lockedUser = { id, email, username }
+    const { pk, email, username } = payload
+    state.lockedUser = { pk, email, username }
   },
 
   [DESTROY_ACCESS_TOKEN](state: AccountsState) {

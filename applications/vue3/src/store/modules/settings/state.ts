@@ -4,14 +4,14 @@ export interface Department {
 }
 
 interface Positions {
-  id: number
+  pk: number
   rank: string
   title: string
   description: string
 }
 
 export interface Company {
-  id: number
+  pk: number
   name: string
   ceo: string
   tax_number: string

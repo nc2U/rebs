@@ -15,9 +15,9 @@ const actions = {
       .catch((err) => console.log(err))
   },
 
-  fetchCompany: ({ commit }: any, id: { id: string }) => {
+  fetchCompany: ({ commit }: any, pk: { pk: string }) => {
     api
-      .get(`/company/${id}/`)
+      .get(`/company/${pk}/`)
       .then((res) => {
         commit(FETCH_COMPANY, res.data)
       })
@@ -44,9 +44,9 @@ const actions = {
 
   updateCompany: ({ dispatch }: any, payload: any) => {
     api
-      .put(`/company/${payload.id}/`, payload)
+      .put(`/company/${payload.pk}/`, payload)
       .then((res) => {
-        dispatch('fetchCompany', res.data.id)
+        dispatch('fetchCompany', res.data.pk)
         dispatch('fetchCompanyList')
         message()
       })

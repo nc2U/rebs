@@ -1,5 +1,5 @@
 export declare interface StaffAuth {
-  id: number
+  pk: number
   is_staff: boolean
   assigned_project: number
   allowed_projects: number[]
@@ -14,14 +14,14 @@ export declare interface StaffAuth {
 }
 
 interface Todo {
-  id: number
+  pk: number
   title: string
   completed: boolean
   soft_deleted: boolean
 }
 
 export declare interface User {
-  id: number
+  pk: number
   email: string
   username: string
   is_active: boolean
@@ -32,7 +32,7 @@ export declare interface User {
 }
 
 export declare interface LockedUser {
-  id: number
+  pk: number
   email: string
   username: string
 }

@@ -15,9 +15,9 @@ const actions = {
       .catch((err) => console.log(err))
   },
 
-  fetchProject: ({ commit }: any, id: { id: string }) => {
+  fetchProject: ({ commit }: any, pk: { pk: string }) => {
     api
-      .get(`/project/${id}/`)
+      .get(`/project/${pk}/`)
       .then((res) => {
         commit(FETCH_PROJECT, res.data)
       })
@@ -37,17 +37,17 @@ const actions = {
 
   updateProject: ({ dispatch }: any, payload: any) => {
     api
-      .put(`/project/${payload.id}/`, payload)
+      .put(`/project/${payload.pk}/`, payload)
       .then((res) => {
-        dispatch('fetchProject', res.data.id)
+        dispatch('fetchProject', res.data.pk)
         dispatch('fetchProjectList')
         message()
       })
       .catch((err) => alert(err.response.data.detail))
   },
 
-  deleteProject: ({ dispatch }: any, id: any) => {
-    api.delete(`/project/${id}/`).then((res) => {
+  deleteProject: ({ dispatch }: any, pk: any) => {
+    api.delete(`/project/${pk}/`).then((res) => {
       console.log(res.data)
       dispatch('fetchProjectList')
       message('danger', '알림!', '삭제되었습니다.')
