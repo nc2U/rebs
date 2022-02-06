@@ -80,9 +80,25 @@ const actions = {
     api
       .get('/todo/')
       .then((res) => {
-        commit(FETCH_TODO_LIST, res.data.results)
+        commit(FETCH_TODO_LIST, res.data)
       })
       .catch((err) => console.log(err.response.data))
+  },
+
+  createTodo: ({ dispatch }: any, payload: { user: number; title: string }) => {
+    api
+      .post('/todo/', payload)
+      .then(() => {
+        dispatch('fetchTodoList')
+      })
+      .catch((err) => {
+        console.log(err.response.data)
+        alert(
+          `${Object.keys(err.response.data)[0]} : ${
+            err.response.data[Object.keys(err.response.data)[0]]
+          }`,
+        )
+      })
   },
 }
 

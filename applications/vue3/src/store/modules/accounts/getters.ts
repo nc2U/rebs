@@ -21,8 +21,9 @@ const getters = {
       : state.userInfo?.staffauth?.allowed_projects[0]
   },
   myTodos: (state: AccountsState) => {
+    const pk = state.userInfo?.pk
     return state.todoList.filter(
-      (todo) => !todo.soft_deleted && todo.user == state.userInfo?.pk,
+      (todo) => !todo.soft_deleted && todo.user === pk,
     )
   },
 }
