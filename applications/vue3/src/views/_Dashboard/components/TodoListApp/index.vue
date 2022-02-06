@@ -152,8 +152,12 @@ export default defineComponent({
       this.patchTodo(payload)
     },
     clearCompleted() {
-      this.todos = this.todos.filter((todo: any) => !todo.completed)
-      // this.setLocalStorage()
+      this.todos.forEach((todo: any) => {
+        if (todo.completed === true) {
+          const payload = { pk: todo.pk, soft_deleted: new Date() }
+          this.patchTodo(payload)
+        }
+      })
     },
     toggleAll({ completed }: any) {
       this.todos.forEach((todo: any) => {
@@ -164,12 +168,7 @@ export default defineComponent({
     },
     pluralize: (n: any, w: any) => (n === 1 ? w : w + 's'),
     capitalize: (s: any) => s.charAt(0).toUpperCase() + s.slice(1),
-    ...mapActions('accounts', [
-      'fetchTodoList',
-      'createTodo',
-      'patchTodo',
-      'deleteTodo',
-    ]),
+    ...mapActions('accounts', ['fetchTodoList', 'createTodo', 'patchTodo']),
   },
 })
 </script>
