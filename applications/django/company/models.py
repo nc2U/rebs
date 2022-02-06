@@ -2,7 +2,7 @@ from django.db import models
 
 
 class Company(models.Model):
-    name = models.CharField('회사명', max_length=100)
+    name = models.CharField('회사명', max_length=100, unique=True)
     tax_number = models.CharField('사업자등록번호', max_length=12)
     ceo = models.CharField('대표자명', max_length=30)
     org_number = models.CharField('법인등록번호', max_length=14)

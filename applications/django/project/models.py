@@ -4,7 +4,7 @@ from django.conf import settings
 
 class Project(models.Model):
     company = models.ForeignKey('company.Company', on_delete=models.PROTECT, verbose_name='회사정보')
-    name = models.CharField('프로젝트명', max_length=30)
+    name = models.CharField('프로젝트명', max_length=30, unique=True)
     order = models.PositiveSmallIntegerField('정렬순서', null=True, blank=True)
     KIND_CHOICES = (
         ('1', '공동주택(아파트)'),
@@ -22,12 +22,12 @@ class Project(models.Model):
                                            help_text='본사 직접 운영하는 프로젝트인 경우 체크, 즉 시행대행이나 업무대행이 아닌 경우')
     is_returned_area = models.BooleanField('토지환지여부', default=False, help_text='해당 사업부지가 환지방식 도시개발사업구역인 경우 체크')
     is_unit_set = models.BooleanField('동호지정여부', default=False, help_text='현재 동호수를 지정하지 않는 경우 체크하지 않음')
-    local_zipcode = models.CharField('우편번호', max_length=5, blank=True, null=True)
-    local_address1 = models.CharField('대표부지 주소', max_length=50, null=True, blank=True)
-    local_address2 = models.CharField('상세주소', max_length=25, null=True, blank=True)
-    local_address3 = models.CharField('참고항목', max_length=20, null=True, blank=True)
-    area_usage = models.CharField('용도지역지구', max_length=50, null=True, blank=True)
-    build_size = models.CharField('건축규모', max_length=50, null=True, blank=True)
+    local_zipcode = models.CharField('우편번호', max_length=5, blank=True)
+    local_address1 = models.CharField('대표부지 주소', max_length=50, blank=True)
+    local_address2 = models.CharField('상세주소', max_length=25, blank=True)
+    local_address3 = models.CharField('참고항목', max_length=20, blank=True)
+    area_usage = models.CharField('용도지역지구', max_length=50, blank=True)
+    build_size = models.CharField('건축규모', max_length=50, blank=True)
     num_unit = models.PositiveSmallIntegerField('세대(호/실)수', null=True, blank=True)
     buy_land_extent = models.DecimalField('대지매입면적', max_digits=12, decimal_places=4, null=True, blank=True)
     scheme_land_extent = models.DecimalField('계획대지면적', max_digits=12, decimal_places=4, null=True, blank=True)
