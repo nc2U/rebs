@@ -32,9 +32,10 @@ export default defineComponent({
   },
   computed: {
     comId() {
-      return this.company ? this.company.id : ''
+      return this.company ? this.company.pk : this.initComId
     },
     ...mapGetters('settings', ['comSelect']),
+    ...mapGetters('accounts', ['initComId']),
   },
 
   methods: {

@@ -32,9 +32,10 @@ export default defineComponent({
   },
   computed: {
     projId() {
-      return this.project ? this.project.id : ''
+      return this.project ? this.project.pk : this.initProjId
     },
     ...mapGetters('project', ['projSelect']),
+    ...mapGetters('accounts', ['initProjId']),
   },
 
   methods: {

@@ -12,8 +12,10 @@ const getters = {
   superAuth(state: AccountsState) {
     return state.userInfo?.is_superuser
   },
-  initComId(): number {
-    return 1
+  initComId(state: AccountsState): number {
+    return state.userInfo?.staffauth?.company
+      ? state.userInfo.staffauth.company
+      : 1
   },
   initProjId(state: AccountsState) {
     return state.userInfo?.staffauth?.assigned_project

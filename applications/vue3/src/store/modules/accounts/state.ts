@@ -1,5 +1,6 @@
 export declare interface StaffAuth {
   pk: number
+  company: number
   is_staff: boolean
   assigned_project: number
   allowed_projects: number[]
