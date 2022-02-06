@@ -100,10 +100,10 @@ class StaffAuth(models.Model):
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    name = models.CharField(max_length=20, null=True, blank=True)
-    birth_date = models.DateField(null=True, blank=True)
-    cell_phone = models.CharField(max_length=13, null=True, blank=True)
-    release_code = models.CharField(max_length=20, null=True, blank=True)
+    name = models.CharField('성명', max_length=20, null=True, blank=True)
+    birth_date = models.DateField('생년월일', null=True, blank=True)
+    cell_phone = models.CharField('휴대폰', max_length=13, null=True, blank=True)
+    release_code = models.CharField('Lock 해제비번', max_length=20, null=True, blank=True)
 
     def __str__(self):
         return self.name
