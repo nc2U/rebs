@@ -65,9 +65,9 @@ class ProjectAccountD1(models.Model):
 class ProjectAccountD2(models.Model):
     d1 = models.ForeignKey(ProjectAccountD1, on_delete=models.CASCADE, related_name='acc_d2s')
     code = models.CharField(max_length=3)
-    sub_title = models.CharField(max_length=20, blank=True, default='', help_text='중분류 항목이 존재할 경우 기재')
+    sub_title = models.CharField(max_length=20, blank=True, help_text='중분류 항목이 존재할 경우 기재')
     name = models.CharField(max_length=20)
-    description = models.CharField(max_length=50, blank=True, default='')
+    description = models.CharField(max_length=50, blank=True)
 
     def __str__(self):
         return self.name
@@ -81,7 +81,7 @@ class ProjectAccountD2(models.Model):
 class WiseSaying(models.Model):
     saying_ko = models.CharField(max_length=300)
     saying_en = models.CharField(max_length=300)
-    spoked_by = models.CharField(max_length=50, blank=True, default='')
+    spoked_by = models.CharField(max_length=50, blank=True)
 
     def __str__(self):
         return f'{self.saying_ko} - {self.spoked_by}'

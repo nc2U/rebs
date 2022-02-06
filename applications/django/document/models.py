@@ -19,7 +19,7 @@ class Group(models.Model):
 
 
 class Board(models.Model):
-    group = models.ForeignKey(Group, on_delete=models.CASCADE, verbose_name='그룹')
+    group = models.ForeignKey(Group, on_delete=models.PROTECT, verbose_name='그룹')
     name = models.CharField('이름', max_length=255)
     order = models.PositiveSmallIntegerField('정렬 순서', default=0)
     search_able = models.BooleanField('검색사용', default=True)
@@ -54,8 +54,7 @@ class LawsuitCase(models.Model):
                                 verbose_name='프로젝트')
     sort = models.CharField('유형', max_length=1,
                             choices=(('1', '민사'), ('2', '형사'), ('3', '행정'), ('4', '가사'), ('5', '신청/집행')))
-    level = models.CharField('심급', max_length=1, choices=(('0', '신청/집행'), ('1', '1심'), ('2', '2심'), ('3', '3심')),
-                             null=True, blank=True)
+    level = models.CharField('심급', max_length=1, choices=(('0', '신청/집행'), ('1', '1심'), ('2', '2심'), ('3', '3심')))
     related_case = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='관련사건',
                                      help_text='본안 사건인 경우 이전 심급 사건, 신청/집행 사건인 경우 관련 본안 사건 지정')
     CHOICES = (
@@ -282,17 +281,17 @@ class LawsuitCase(models.Model):
         ('', '------------'),
         ('000110', '법원행정처')
     )
-    court = models.CharField('법원명', max_length=30, choices=CHOICES, null=True, blank=True)
-    other_agency = models.CharField('기타 처리기관', max_length=30, null=True, blank=True,
+    court = models.CharField('법원명', max_length=30, choices=CHOICES, blank=True)
+    other_agency = models.CharField('기타 처리기관', max_length=30, blank=True,
                                     help_text='사건 유형이 기소 전 형사 사건인 경우 해당 수사기관을 기재')
     case_number = models.CharField('사건번호', max_length=20)
     case_name = models.CharField('사건명', max_length=30)
-    plaintiff = models.CharField('원고(신청인)', max_length=20, null=True, blank=True)
+    plaintiff = models.CharField('원고(신청인)', max_length=20, blank=True)
     defendant = models.CharField('피고(피신청인)', max_length=20)
-    related_debtor = models.CharField('제3채무자', max_length=20, null=True, blank=True)
+    related_debtor = models.CharField('제3채무자', max_length=20, blank=True)
     case_start_date = models.DateField('사건개시일', null=True, blank=True)
-    summary = models.TextField('개요 및 경과', null=True, blank=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='등록자')
+    summary = models.TextField('개요 및 경과', blank=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
     created = models.DateTimeField('등록일시', auto_now_add=True)
     updated = models.DateTimeField('수정일시', auto_now=True)
 
@@ -307,7 +306,7 @@ class LawsuitCase(models.Model):
 
 
 class Post(models.Model):
-    board = models.ForeignKey(Board, on_delete=models.CASCADE, verbose_name='게시판')
+    board = models.ForeignKey(Board, on_delete=models.PROTECT, verbose_name='게시판')
     is_notice = models.BooleanField('공지', default=False)
     project = models.ForeignKey('project.Project', on_delete=models.SET_NULL, null=True, blank=True,
                                 verbose_name='프로젝트')
@@ -315,18 +314,18 @@ class Post(models.Model):
     lawsuit = models.ForeignKey(LawsuitCase, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='사건번호')
     title = models.CharField('제목', max_length=255)
     execution_date = models.DateField('문서 시행일자', null=True, blank=True, help_text='문서 발신/수신/시행일자')
-    content = HTMLField('내용', null=True, blank=True)
+    content = HTMLField('내용', blank=True)
     is_hide_comment = models.BooleanField('댓글숨기기', default=False)
     hit = models.PositiveIntegerField('조회수', default=0)
     like = models.PositiveIntegerField('좋아요', default=0)
     dislike = models.PositiveIntegerField('싫어요', default=0)
     blame = models.PositiveSmallIntegerField('신고', default=0)
-    ip = models.GenericIPAddressField('아이피', null=True, blank=True)
-    device = models.CharField('등록기기', max_length=10, null=True, blank=True)
+    ip = models.GenericIPAddressField('아이피')
+    device = models.CharField('등록기기', max_length=10, blank=True)
     secret = models.BooleanField('비밀글', default=False)
-    password = models.CharField('패스워드', max_length=255, null=True, blank=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='등록자')
-    soft_delete = models.DateTimeField('휴지통', null=True, blank=True, default=None)
+    password = models.CharField('패스워드', max_length=255, blank=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
+    soft_delete = models.DateTimeField('휴지통', null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
@@ -386,16 +385,16 @@ class File(models.Model):
 
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, verbose_name='게시물')
-    content = models.TextField('내용', default='')
+    content = models.TextField('내용')
     like = models.PositiveIntegerField('추천', default=0)
     dislike = models.PositiveIntegerField('비추천', default=0)
     blame = models.PositiveSmallIntegerField('신고', default=0)
-    ip = models.GenericIPAddressField('아이피', null=True, blank=True)
-    device = models.CharField('등록기기', max_length=10, null=True, blank=True)
+    ip = models.GenericIPAddressField('아이피')
+    device = models.CharField('등록기기', max_length=10, blank=True)
     secret = models.BooleanField('비밀글', default=False)
-    password = models.CharField('패스워드', max_length=255, null=True, blank=True)
+    password = models.CharField('패스워드', max_length=255, blank=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='등록자')
-    soft_delete = models.DateTimeField('휴지통', null=True, blank=True, default=None)
+    soft_delete = models.DateTimeField('휴지통', null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 

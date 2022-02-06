@@ -100,10 +100,10 @@ class StaffAuth(models.Model):
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    name = models.CharField('성명', max_length=20, null=True, blank=True)
+    name = models.CharField('성명', max_length=20, blank=True)
     birth_date = models.DateField('생년월일', null=True, blank=True)
-    cell_phone = models.CharField('휴대폰', max_length=13, null=True, blank=True)
-    release_code = models.CharField('Lock 해제비번', max_length=20, null=True, blank=True)
+    cell_phone = models.CharField('휴대폰', max_length=13, blank=True)
+    release_code = models.CharField('Lock 해제비번', max_length=20, blank=True)
 
     def __str__(self):
         return self.name
@@ -119,7 +119,7 @@ class Todo(models.Model):
     completed = models.BooleanField('완료여부', default=False)
     created_at = models.DateTimeField('등록일', auto_now_add=True)
     updated_at = models.DateTimeField('수정일', auto_now=True)
-    soft_deleted = models.BooleanField('삭제여부', default=False)
+    soft_deleted = models.DateTimeField('삭제일시', null=True, blank=True)
 
     def __str__(self):
         return self.title

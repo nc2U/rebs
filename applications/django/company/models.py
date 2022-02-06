@@ -43,7 +43,7 @@ class Department(models.Model):
 class Position(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='positions', verbose_name='회사')
     SORT_CHOICES = (('1', '임원'), ('2', '직원'))
-    sort = models.CharField('구분', max_length=1, choices=SORT_CHOICES)
+    sort = models.CharField('구분', max_length=1, choices=SORT_CHOICES, default='1')
     rank = models.CharField('직책', max_length=20)
     title = models.CharField('직함', max_length=20, blank=True)
     description = models.CharField('설명', max_length=255, blank=True)
@@ -66,7 +66,7 @@ class Staff(models.Model):
     name = models.CharField('직원 성명', max_length=10)
     birth_date = models.DateField('생년월일', null=True, blank=True)
     GENDER_CHOICES = (('M', '남성'), ('F', '여성'))
-    gender = models.CharField('성별', max_length=1, choices=GENDER_CHOICES, blank=True)
+    gender = models.CharField('성별', max_length=1, choices=GENDER_CHOICES, default='M')
     entered_date = models.DateField('입사일')
     personal_phone = models.CharField('휴대전화', max_length=13)
     email = models.EmailField('이메일')

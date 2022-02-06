@@ -3,8 +3,8 @@ from django.conf import settings
 
 
 class SalesBillIssue(models.Model):
-    project = models.ForeignKey('project.Project', on_delete=models.PROTECT, verbose_name='프로젝트')
-    now_payment_order = models.ForeignKey('cash.InstallmentPaymentOrder', on_delete=models.PROTECT,
+    project = models.ForeignKey('project.Project', on_delete=models.CASCADE, verbose_name='프로젝트')
+    now_payment_order = models.ForeignKey('cash.InstallmentPaymentOrder', on_delete=models.CASCADE,
                                           verbose_name='현재 발행회차')
     host_name = models.CharField('시행자명', max_length=20)
     host_tel = models.CharField('시행사 전화', max_length=13)
@@ -18,8 +18,8 @@ class SalesBillIssue(models.Model):
     bank_host2 = models.CharField('예금주[2]', max_length=15, blank=True)
     zipcode = models.CharField('우편번호', max_length=5)
     address1 = models.CharField('주소', max_length=50)
-    address2 = models.CharField('상세주소', max_length=30, blank=True, default='')
-    address3 = models.CharField('참고항목', max_length=30, blank=True, default='')
+    address2 = models.CharField('상세주소', max_length=30, blank=True)
+    address3 = models.CharField('참고항목', max_length=30, blank=True)
     title = models.CharField('고지서 제목', max_length=255)
     content = models.TextField('고지서 내용')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')

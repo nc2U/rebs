@@ -3,9 +3,10 @@ from django.conf import settings
 
 
 class Project(models.Model):
-    company = models.ForeignKey('company.Company', on_delete=models.PROTECT, verbose_name='회사정보')
+    company = models.ForeignKey('company.Company', on_delete=models.PROTECT, related_name='projects',
+                                verbose_name='회사정보')
     name = models.CharField('프로젝트명', max_length=30, unique=True)
-    order = models.PositiveSmallIntegerField('정렬순서', null=True, blank=True)
+    order = models.PositiveSmallIntegerField('정렬순서', default=100)
     KIND_CHOICES = (
         ('1', '공동주택(아파트)'),
         ('2', '공동주택(타운하우스)'),
@@ -109,7 +110,7 @@ class UnitNumber(models.Model):
     bldg_line = models.PositiveSmallIntegerField('라인')
     floor_no = models.PositiveSmallIntegerField('층수')
     is_hold = models.BooleanField('홀딩 여부', default=False)
-    hold_reason = models.CharField('홀딩 사유', max_length=100, null=True, blank=True)
+    hold_reason = models.CharField('홀딩 사유', max_length=100, blank=True)
 
     def __str__(self):
         return f'{self.bldg_no}-{self.bldg_unit_no}'
@@ -121,7 +122,7 @@ class UnitNumber(models.Model):
 
 
 class ProjectBudget(models.Model):
-    project = models.ForeignKey('project.Project', on_delete=models.PROTECT, verbose_name='프로젝트')
+    project = models.ForeignKey('project.Project', on_delete=models.CASCADE, verbose_name='프로젝트')
     account_d1 = models.ForeignKey('rebs.ProjectAccountD1', on_delete=models.PROTECT, verbose_name='예산항목1')
     account_d2 = models.ForeignKey('rebs.ProjectAccountD2', on_delete=models.PROTECT, verbose_name='예산항목2')
     budget = models.PositiveBigIntegerField(verbose_name='예산금액')
@@ -140,7 +141,7 @@ class Site(models.Model):
     site_purpose = models.CharField('지목', max_length=10)
     official_area = models.DecimalField('대지면적', max_digits=10, decimal_places=4)
     returned_area = models.DecimalField('환지면적', max_digits=10, decimal_places=4, null=True, blank=True)
-    rights_restrictions = models.TextField('권리제한사항', null=True, blank=True)
+    rights_restrictions = models.TextField('권리제한사항', blank=True)
     dup_issue_date = models.DateField('등본발급일', null=True, blank=True)
     created_at = models.DateTimeField('등록일', auto_now_add=True)
     updated_at = models.DateTimeField('수정일', auto_now=True)
@@ -158,17 +159,17 @@ class SiteOwner(models.Model):
     project = models.ForeignKey('project.Project', on_delete=models.PROTECT, verbose_name='프로젝트')
     owner = models.CharField('소유자', max_length=10)
     date_of_birth = models.DateField('생년월일', null=True, blank=True)
-    phone1 = models.CharField('주연락처', max_length=13, null=True, blank=True)
-    phone2 = models.CharField('비상연락처', max_length=13, null=True, blank=True)
-    zipcode = models.CharField('우편번호', max_length=5, null=True, blank=True)
-    address1 = models.CharField('주소', max_length=50, null=True, blank=True)
-    address2 = models.CharField('상세주소', max_length=25, null=True, blank=True)
-    address3 = models.CharField('참고항목', max_length=25, null=True, blank=True)
+    phone1 = models.CharField('주연락처', max_length=13, blank=True)
+    phone2 = models.CharField('비상연락처', max_length=13, blank=True)
+    zipcode = models.CharField('우편번호', max_length=5, blank=True)
+    address1 = models.CharField('주소', max_length=50, blank=True)
+    address2 = models.CharField('상세주소', max_length=25, blank=True)
+    address3 = models.CharField('참고항목', max_length=25, blank=True)
     OWN_CHOICES = (('1', '개인'), ('2', '법인'), ('3', '국공유지'))
-    own_sort = models.CharField('소유구분', max_length=1, choices=OWN_CHOICES)
+    own_sort = models.CharField('소유구분', max_length=1, choices=OWN_CHOICES, default='1')
     sites = models.ManyToManyField(Site, through='SiteOwnshipRelationship', through_fields=('site_owner', 'site'),
                                    verbose_name='소유부지')
-    counsel_record = models.TextField('상담기록', null=True, blank=True)
+    counsel_record = models.TextField('상담기록', blank=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
     created_at = models.DateTimeField('등록일', auto_now_add=True)
     updated_at = models.DateTimeField('수정일', auto_now=True)
@@ -183,8 +184,8 @@ class SiteOwner(models.Model):
 
 
 class SiteOwnshipRelationship(models.Model):
-    site = models.ForeignKey(Site, on_delete=models.SET_NULL, null=True)
-    site_owner = models.ForeignKey(SiteOwner, on_delete=models.SET_NULL, null=True)
+    site = models.ForeignKey(Site, on_delete=models.CASCADE)
+    site_owner = models.ForeignKey(SiteOwner, on_delete=models.CASCADE)
     ownership_ratio = models.DecimalField('소유지분', max_digits=10, decimal_places=7, null=True, blank=True)
     owned_area = models.DecimalField('소유면적', max_digits=10, decimal_places=4, null=True, blank=True)
     acquisition_date = models.DateField('소유권 취득일', null=True, blank=True)
@@ -221,7 +222,7 @@ class SiteContract(models.Model):
     acc_bank = models.CharField('은행', max_length=20)
     acc_number = models.CharField('계좌번호', max_length=20)
     acc_owner = models.CharField('예금주', max_length=20)
-    note = models.TextField('특이사항', null=True, blank=True)
+    note = models.TextField('특이사항', blank=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
     created_at = models.DateTimeField('등록일', auto_now_add=True)
     updated_at = models.DateTimeField('수정일', auto_now=True)

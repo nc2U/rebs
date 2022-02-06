@@ -3,10 +3,10 @@ from django.conf import settings
 
 
 class OrderGroup(models.Model):
-    project = models.ForeignKey('project.Project', on_delete=models.PROTECT, verbose_name='프로젝트')
+    project = models.ForeignKey('project.Project', on_delete=models.CASCADE, verbose_name='프로젝트')
     order_number = models.PositiveSmallIntegerField('차수')
     SORT_CHOICES = (('1', '일반분양'), ('2', '조합모집'))
-    sort = models.CharField('구분', max_length=1, choices=SORT_CHOICES)
+    sort = models.CharField('구분', max_length=1, choices=SORT_CHOICES, default='1')
     order_group_name = models.CharField('차수명', max_length=20)
 
     def __str__(self):
@@ -41,13 +41,13 @@ class Contractor(models.Model):
     name = models.CharField('계약자명', max_length=20)
     birth_date = models.DateField('생년월일', null=True, blank=True)
     GENDER_CHOICES = (('M', '남자'), ('F', '여자'))
-    gender = models.CharField('성별', max_length=1, choices=GENDER_CHOICES, null=True, blank=True)
-    is_registed = models.BooleanField('인가등록여부', default=False, blank=True)
+    gender = models.CharField('성별', max_length=1, choices=GENDER_CHOICES, blank=True)
+    is_registed = models.BooleanField('인가등록여부', default=False)
     STATUS_CHOICES = (('1', '청약'), ('2', '계약'), ('3', '청약해지'), ('4', '계약해지'))
     status = models.CharField('현재상태', max_length=1, choices=STATUS_CHOICES)
     reservation_date = models.DateField('청약일자', null=True, blank=True)
     contract_date = models.DateField('계약일자', null=True, blank=True)
-    note = models.TextField('비고', null=True, blank=True)
+    note = models.TextField('비고', blank=True)
     created_at = models.DateTimeField('등록일', auto_now_add=True)
     updated_at = models.DateTimeField('수정일', auto_now=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
@@ -61,15 +61,15 @@ class Contractor(models.Model):
 
 
 class ContractorAddress(models.Model):
-    contractor = models.OneToOneField('Contractor', on_delete=models.PROTECT, verbose_name='계약자 정보')
+    contractor = models.OneToOneField('Contractor', on_delete=models.CASCADE, verbose_name='계약자 정보')
     id_zipcode = models.CharField('우편번호', max_length=5)
     id_address1 = models.CharField('주민등록 주소', max_length=50)
-    id_address2 = models.CharField('상세주소', max_length=30, blank=True, default='')
-    id_address3 = models.CharField('참고항목', max_length=30, blank=True, default='')
+    id_address2 = models.CharField('상세주소', max_length=30, blank=True)
+    id_address3 = models.CharField('참고항목', max_length=30, blank=True)
     dm_zipcode = models.CharField('우편번호', max_length=5)
     dm_address1 = models.CharField('우편송부 주소', max_length=50)
-    dm_address2 = models.CharField('상세주소', max_length=30, blank=True, default='')
-    dm_address3 = models.CharField('참고항목', max_length=30, blank=True, default='')
+    dm_address2 = models.CharField('상세주소', max_length=30, blank=True)
+    dm_address3 = models.CharField('참고항목', max_length=30, blank=True)
     created_at = models.DateTimeField('등록일', auto_now_add=True)
     updated_at = models.DateTimeField('수정일', auto_now=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
@@ -83,11 +83,11 @@ class ContractorAddress(models.Model):
 
 
 class ContractorContact(models.Model):
-    contractor = models.OneToOneField('Contractor', on_delete=models.PROTECT, verbose_name='계약자 정보')
+    contractor = models.OneToOneField('Contractor', on_delete=models.CASCADE, verbose_name='계약자 정보')
     cell_phone = models.CharField('휴대전화', max_length=13)
-    home_phone = models.CharField('집 전화', max_length=13, null=True, blank=True)
-    other_phone = models.CharField('기타 전화', max_length=13, null=True, blank=True)
-    email = models.EmailField('이메일', null=True, blank=True)
+    home_phone = models.CharField('집 전화', max_length=13, blank=True)
+    other_phone = models.CharField('기타 전화', max_length=13, blank=True)
+    email = models.EmailField('이메일', blank=True)
     created_at = models.DateTimeField('등록일', auto_now_add=True)
     updated_at = models.DateTimeField('수정일', auto_now=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
@@ -101,17 +101,17 @@ class ContractorContact(models.Model):
 
 
 class ContractorRelease(models.Model):
-    project = models.ForeignKey('project.Project', on_delete=models.PROTECT, verbose_name='프로젝트')
+    project = models.ForeignKey('project.Project', on_delete=models.CASCADE, verbose_name='프로젝트')
     contractor = models.OneToOneField('Contractor', on_delete=models.CASCADE, verbose_name='계약자 정보')
     status = models.CharField('상태', choices=(('0', '신청 취소'), ('3', '신청 중'), ('4', '처리완료'), ('5', '자격상실(제명)')),
                               max_length=1)
     refund_amount = models.PositiveIntegerField('환불(예정)금액', null=True, blank=True)
-    refund_account_bank = models.CharField('환불계좌(은행)', max_length=20, null=True, blank=True)
-    refund_account_number = models.CharField('환불계좌(번호)', max_length=30, null=True, blank=True)
-    refund_account_depositor = models.CharField('환불계좌(예금주)', max_length=30, null=True, blank=True)
+    refund_account_bank = models.CharField('환불계좌(은행)', max_length=20, blank=True)
+    refund_account_number = models.CharField('환불계좌(번호)', max_length=30, blank=True)
+    refund_account_depositor = models.CharField('환불계좌(예금주)', max_length=30, blank=True)
     request_date = models.DateField('해지신청일')
     completion_date = models.DateField('해지(환불)처리일', null=True, blank=True)
-    note = models.TextField('비고', null=True, blank=True)
+    note = models.TextField('비고', blank=True)
     created_at = models.DateTimeField('등록일', auto_now_add=True)
     updated_at = models.DateTimeField('수정일', auto_now=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')

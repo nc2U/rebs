@@ -12,11 +12,11 @@ class Book(models.Model):
     title = models.CharField('제목', max_length=100)
     disclosure = models.BooleanField('공개 허용 여부', default=False)
     author = models.CharField('저자', max_length=50)
-    translator = models.CharField('번역자', max_length=50, null=True, blank=True)
+    translator = models.CharField('번역자', max_length=50, blank=True)
     publisher = models.CharField('출판사', max_length=50)
     pub_date = models.DateField('출간일 (최종)', null=True, blank=True)
     # description = models.TextField(blank=True, null=True)
-    description = MDTextField('책설명', null=True, blank=True)
+    description = MDTextField('책설명', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -43,7 +43,7 @@ class Subject(models.Model):
         _5 = 5
 
     level = models.IntegerField('단원 레벨', choices=SubLevel.choices)
-    content = MDTextField('단원 내용', null=True, blank=True)
+    content = MDTextField('단원 내용', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
