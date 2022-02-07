@@ -11,13 +11,17 @@ export default {
       return !value || value === 0 ? '-' : `${this.numFormat(value, n)} ㎡`
     },
     areaPyFormat(value: number, n = 2) {
-      const toVal = Number(value.toFixed(2))
-      return !value || value === 0 ? '-' : `${this.numFormat(toVal, n)} 평`
+      return !value || value === 0
+        ? '-'
+        : `${this.numFormat(value * 0.3025, n)} 평`
     },
     areaM2PyFormat(value: number, n = 2) {
       return !value || value === 0
         ? '-'
-        : `${this.numFormat(value, 2)} ㎡ (${this.numFormat(value, n)} 평)`
+        : `${this.numFormat(value, n)} ㎡ (${this.numFormat(
+            value * 0.3025,
+            n,
+          )} 평)`
     },
     ratioFormat(value: number, n = 2) {
       return !value || value === 0 ? '-' : `${this.numFormat(value, n)} %`
