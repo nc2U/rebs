@@ -78,7 +78,7 @@ interface todo {
 }
 
 type filterType = {
-  [index: string]: Function
+  [index: string]: (x: todo[]) => ((y: todo) => boolean) | todo[]
 }
 
 const filters: filterType = {
