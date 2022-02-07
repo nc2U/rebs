@@ -190,12 +190,12 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { CTableDataCell } from '@coreui/vue-pro/src/components/table'
+import commonMixin from '@/views/commonMixin'
 import { mapGetters } from 'vuex'
 
 export default defineComponent({
   name: 'ProjectDetail',
-  components: { CTableDataCell },
+  mixins: [commonMixin],
   props: {
     project: {
       type: Object,
@@ -211,5 +211,3 @@ export default defineComponent({
   },
 })
 </script>
-
-<style lang="scss" scoped></style>
