@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework.reverse import reverse
 
 from .permission import *
+from .pagination import *
 from .serializers import *
 
 from accounts.models import User, Profile, Todo
@@ -116,6 +117,7 @@ class TodoList(generics.ListCreateAPIView):
     name = 'todo-list'
     queryset = Todo.objects.all()
     serializer_class = TodoSerializer
+    pagination_class = PageNumberPaginationForTodoList
     permission_classes = (permissions.IsAuthenticated, IsOwnerOnly)
 
     def perform_create(self, serializer):
