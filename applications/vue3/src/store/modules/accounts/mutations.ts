@@ -1,5 +1,5 @@
 import api from '@/api'
-import { AccountsState, Todo, User } from './state'
+import { AccountsState, User } from './state'
 import Cookies from 'js-cookie'
 import {
   DESTROY_ACCESS_TOKEN,
