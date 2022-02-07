@@ -500,6 +500,8 @@ class OrderGroupList(generics.ListCreateAPIView):
     queryset = OrderGroup.objects.all()
     serializer_class = OrderGroupSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    filter_fields = ('project', 'sort')
+    search_fields = ('order_group_name',)
 
 
 class OrderGroupDetail(generics.RetrieveUpdateDestroyAPIView):
