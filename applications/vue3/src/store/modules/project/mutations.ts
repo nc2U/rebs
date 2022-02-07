@@ -5,8 +5,8 @@ import {
 import { Project, ProjectState } from '@/store/modules/project/state'
 
 const mutations = {
-  [FETCH_PROJECT_LIST]: (state: ProjectState, payload: Project[]) => {
-    state.projectList = payload
+  [FETCH_PROJECT_LIST]: (state: ProjectState, payload: any) => {
+    state.projectList = payload.results
   },
 
   [FETCH_PROJECT]: (state: ProjectState, payload: Project) => {

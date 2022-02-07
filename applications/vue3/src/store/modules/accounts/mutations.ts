@@ -43,8 +43,8 @@ const mutations = {
     state.lockedUser = null
   },
 
-  [FETCH_TODO_LIST]: (state: AccountsState, payload: Todo[]) => {
-    state.todoList = payload
+  [FETCH_TODO_LIST]: (state: AccountsState, payload: any) => {
+    state.todoList = payload.results
   },
 }
 

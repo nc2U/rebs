@@ -5,8 +5,8 @@ import {
 import { ContractState, OrderGroup } from '@/store/modules/contract/state'
 
 const mutations = {
-  [FETCH_ORDER_GROUP_LIST]: (state: ContractState, payload: OrderGroup[]) => {
-    state.orderGroupList = payload
+  [FETCH_ORDER_GROUP_LIST]: (state: ContractState, payload: any) => {
+    state.orderGroupList = payload.results
   },
 
   [FETCH_ORDER_GROUP]: (state: ContractState, payload: OrderGroup) => {

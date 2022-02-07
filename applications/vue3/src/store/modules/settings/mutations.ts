@@ -5,8 +5,8 @@ import {
 import { Company, CompanyState } from '@/store/modules/settings/state'
 
 const mutations = {
-  [FETCH_COMPANY_LIST]: (state: CompanyState, payload: Company[]) => {
-    state.companyList = payload
+  [FETCH_COMPANY_LIST]: (state: CompanyState, payload: any) => {
+    state.companyList = payload.results
   },
 
   [FETCH_COMPANY]: (state: CompanyState, payload: Company) => {
