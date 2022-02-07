@@ -95,7 +95,6 @@ export default {
     ...mapState('accounts', ['userInfo']),
     ...mapGetters('accounts', ['isAuthorized']),
   },
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   setup() {
     return {
       logo,
