@@ -76,11 +76,14 @@ const actions = {
     commit(DESTROY_ACCESS_TOKEN)
   },
 
-  fetchTodoList: ({ commit }: any) => {
+  fetchTodoList: (store: any) => {
+    const url = store.state.userInfo
+      ? `/todo/?user=${store.state.userInfo.pk}&soft_deleted=false`
+      : '/todo/'
     api
-      .get('/todo/')
+      .get(url)
       .then((res) => {
-        commit(FETCH_TODO_LIST, res.data)
+        store.commit(FETCH_TODO_LIST, res.data)
       })
       .catch((err) => console.log(err.response.data))
   },

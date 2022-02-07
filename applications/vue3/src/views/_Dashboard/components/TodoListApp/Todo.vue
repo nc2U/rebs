@@ -61,7 +61,6 @@ export default defineComponent({
       const title = e.target.value.trim()
       const { todo }: any = this
       if (!title) {
-        // console.log(todo)
         this.delTodo(todo)
       } else if (this.editing) {
         this.editTodo({

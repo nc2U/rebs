@@ -147,7 +147,7 @@ export default defineComponent({
     },
     delTodo(todo: any) {
       const { pk } = todo
-      const soft_deleted = new Date()
+      const soft_deleted = true
       const payload = { pk, soft_deleted }
       this.patchTodo(payload)
     },
@@ -159,7 +159,7 @@ export default defineComponent({
     clearCompleted() {
       this.todos.forEach((todo: any) => {
         if (todo.completed === true) {
-          const payload = { pk: todo.pk, soft_deleted: new Date() }
+          const payload = { pk: todo.pk, soft_deleted: true }
           this.patchTodo(payload)
         }
       })
