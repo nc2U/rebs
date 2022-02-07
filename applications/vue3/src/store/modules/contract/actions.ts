@@ -5,18 +5,23 @@ import {
 } from '@/store/modules/contract/mutations-types'
 
 const actions = {
-  fetchOrderGroupList: ({ commit }: any) => {
+  fetchOrderGroupList: ({ commit, rootState }: any) => {
+    const projectModule = rootState.project
+    console.log('rootState --> ', projectModule)
+
+    const projId = false // rootState.project.project.pk
+    const url = projId ? `/order-group/?project=${projId}` : '/order-group/'
     api
-      .get('/order-group/')
+      .get(url)
       .then((res) => {
         commit(FETCH_ORDER_GROUP_LIST, res.data)
       })
       .catch((err) => console.log(err))
   },
 
-  fetchOrderGroup: ({ commit }: any, id: { id: string }) => {
+  fetchOrderGroup: ({ commit }: any, pk: { pk: string }) => {
     api
-      .get(`/order-group/${id}/`)
+      .get(`/order-group/${pk}/`)
       .then((res) => {
         commit(FETCH_ORDER_GROUP, res.data)
       })
@@ -57,8 +62,8 @@ const actions = {
       })
   },
 
-  deleteProject: ({ dispatch }: any, id: any) => {
-    api.delete(`/order-group/${id}/`).then((res) => {
+  deleteProject: ({ dispatch }: any, pk: any) => {
+    api.delete(`/order-group/${pk}/`).then((res) => {
       console.log(res.data)
       dispatch('fetchOrderGroupList')
     })

@@ -2,7 +2,7 @@ import { User } from '@/store/modules/accounts/state'
 import { Project } from '@/store/modules/project/state'
 
 export interface Contract {
-  id: number
+  pk: number
   project: Project
   order_group: OrderGroup
   serial_number: string
@@ -13,7 +13,7 @@ export interface Contract {
 }
 
 export interface OrderGroup {
-  id: number
+  pk: number
   project: Project
   order_number: number
   sort: string

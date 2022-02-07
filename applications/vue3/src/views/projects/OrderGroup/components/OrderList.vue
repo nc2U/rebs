@@ -55,7 +55,7 @@ export default defineComponent({
   },
   computed: {
     projectOrderGroup() {
-      return this.project ? this.OrderGroupByProject(this.project.id) : []
+      return this.project ? this.OrderGroupByProject(this.project.pk) : []
     },
     ...mapState('contract', ['orderGroupList']),
     ...mapGetters('contract', ['OrderGroupByProject']),
