@@ -1,7 +1,7 @@
 <template>
   <CRow>
     <CCol md="4">
-      <CFormSelect @change="$emit('on-change', $event)">
+      <CFormSelect @change="$emit('com-select', $event)">
         <option value="">회사선택</option>
         <option
           v-for="com in comSelect"

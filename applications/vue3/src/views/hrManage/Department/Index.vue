@@ -8,7 +8,7 @@
     <CCardBody>
       <HeaderNav :menus="navMenu" />
 
-      <CompanySelect :company="company" @on-change="onChange" />
+      <CompanySelect :company="company" @com-select="comSelect" />
     </CCardBody>
   </CCard>
 
@@ -21,11 +21,11 @@ import HeaderNav from '@/components/HeaderNav.vue'
 import CompanySelect from '@/components/CompanySelect/Index.vue'
 import BlankComponent from '@/components/BlankComponent.vue'
 import Headermixin from '@/views/hrManage/_menu/headermixin'
-import { mapActions, mapGetters, mapState } from 'vuex'
+import CompanyMixin from '@/views/settings/companyMixin'
 
 export default defineComponent({
   name: 'HrManageDepartment',
-  mixins: [Headermixin],
+  mixins: [Headermixin, CompanyMixin],
   components: {
     HeaderNav,
     CompanySelect,
@@ -36,17 +36,5 @@ export default defineComponent({
       compName: 'BlankComponent',
     }
   },
-  created() {
-    this.fetchCompany(this.initComId)
-  },
-  computed: {
-    ...mapState('settings', ['company']),
-    ...mapGetters('accounts', ['initComId']),
-  },
-  methods: {
-    ...mapActions('settings', ['fetchCompany']),
-  },
 })
 </script>
-
-<style lang="scss" scoped></style>

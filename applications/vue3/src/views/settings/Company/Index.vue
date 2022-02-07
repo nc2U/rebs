@@ -7,7 +7,7 @@
 
     <CCardBody>
       <HeaderNav :menus="navMenu" />
-      <CompanySelect :company="company" @on-change="onChange" />
+      <CompanySelect :company="company" @com-select="comSelect" />
     </CCardBody>
   </CCard>
 
@@ -30,12 +30,13 @@ import HeaderNav from '@/components/HeaderNav.vue'
 import CompanySelect from '@/components/CompanySelect/Index.vue'
 import CompanyForm from './components/CompanyForm.vue'
 import CompanyDetail from './components/CompanyDetail.vue'
-import { mapActions, mapGetters, mapState } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 import HeaderMixin from '@/views/settings/_menu/headermixin'
+import CompanyMixin from '@/views/settings/companyMixin'
 
 export default defineComponent({
   name: 'CompanyInfo',
-  mixins: [HeaderMixin],
+  mixins: [HeaderMixin, CompanyMixin],
   components: {
     HeaderNav,
     CompanySelect,
@@ -48,13 +49,8 @@ export default defineComponent({
       update: false,
     }
   },
-  created() {
-    this.fetchCompany(this.initComId)
-  },
   computed: {
-    ...mapState('settings', ['company']),
     ...mapState('accounts', ['userInfo']),
-    ...mapGetters('accounts', ['initComId']),
   },
   watch: {
     company() {
@@ -62,9 +58,6 @@ export default defineComponent({
     },
   },
   methods: {
-    onChange(event: any) {
-      this.fetchCompany(event.target.value)
-    },
     createForm() {
       this.update = false
       this.compName = 'CompanyForm'
@@ -77,17 +70,13 @@ export default defineComponent({
       this.update = false
       this.compName = 'CompanyDetail'
     },
-    async toCreate(payload: any) {
-      await this.createCompany(payload)
+    toCreate(payload: any) {
+      this.createCompany(payload)
     },
-    async toUpdate(payload: any) {
-      await this.updateCompany(payload)
+    toUpdate(payload: any) {
+      this.updateCompany(payload)
     },
-    ...mapActions('settings', [
-      'fetchCompany',
-      'createCompany',
-      'updateCompany',
-    ]),
+    ...mapActions('settings', ['createCompany', 'updateCompany']),
   },
 })
 </script>
