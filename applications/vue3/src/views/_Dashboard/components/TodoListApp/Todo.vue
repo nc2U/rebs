@@ -52,7 +52,8 @@ export default defineComponent({
       this.$emit('delTodo', todo)
     },
     editTodo({ todo, title }: any) {
-      this.$emit('editTodo', { todo, title })
+      if (todo.title !== title) this.$emit('editTodo', { todo, title })
+      else return
     },
     toggleTodo(todo: any) {
       this.$emit('toggleTodo', todo)
