@@ -15,19 +15,11 @@
       </CTableRow>
     </CTableHead>
     <CTableBody v-if="projectOrderGroup.length !== 0">
-      <CTableRow
+      <OrderGroup
         v-for="order in projectOrderGroup"
         :key="order.id"
-        class="text-center"
-      >
-        <CTableDataCell>{{ order.order_number }}</CTableDataCell>
-        <CTableDataCell>{{ order.sort_desc }}</CTableDataCell>
-        <CTableDataCell>{{ order.order_group_name }}</CTableDataCell>
-        <CTableDataCell>
-          <CButton color="success" size="sm">수정</CButton>
-          <CButton color="danger" size="sm">삭제</CButton>
-        </CTableDataCell>
-      </CTableRow>
+        :order="order"
+      />
     </CTableBody>
 
     <CTableBody v-else>
@@ -42,12 +34,13 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import OrderGroup from './OrderGroup.vue'
 import { mapActions, mapGetters, mapState } from 'vuex'
 import project from '@/store/modules/project'
 
 export default defineComponent({
   name: 'OrderForm',
-  components: {},
+  components: { OrderGroup },
 
   props: ['project'],
   created() {
