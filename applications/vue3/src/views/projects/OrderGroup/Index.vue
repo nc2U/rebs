@@ -8,7 +8,7 @@
     <CCardBody>
       <HeaderNav :menus="navMenu" />
 
-      <ProjectSelect :project="project" @on-change="onChange" />
+      <ProjectSelect :project="project" @proj-select="projSelect" />
     </CCardBody>
   </CCard>
 
@@ -31,35 +31,24 @@
 import { defineComponent } from 'vue'
 import HeaderNav from '@/components/HeaderNav.vue'
 import HeaderMixin from '@/views/projects/_menu/headermixin2'
-import ProjectSelect from '@/components/ProjectSelect.vue'
+import ProjectMixin from '@/views/projects/projectMixin'
+import ProjectSelect from '@/components/ProjectSelect/Index.vue'
 import OrderForm from '@/views/projects/OrderGroup/components/OrderForm.vue'
 import OrderList from '@/views/projects/OrderGroup/components/OrderList.vue'
-import { mapActions, mapGetters, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'ProjectsOrderSet',
-  mixins: [HeaderMixin],
+  mixins: [HeaderMixin, ProjectMixin],
   components: {
     HeaderNav,
     ProjectSelect,
     OrderForm,
     OrderList,
   },
-  created() {
-    this.fetchProject(this.initProjId)
-  },
-  computed: {
-    ...mapState('project', ['project']),
-    ...mapGetters('accounts', ['initProjId']),
-  },
   methods: {
-    onChange(event: any) {
-      this.fetchProject(event.target.value)
-    },
     onSubmit(payload: any) {
       console.log(payload)
     },
-    ...mapActions('project', ['fetchProject']),
   },
 })
 </script>

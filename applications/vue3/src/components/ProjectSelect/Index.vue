@@ -1,7 +1,7 @@
 <template>
   <CRow>
     <CCol md="4">
-      <CFormSelect @change="$emit('on-change', $event)">
+      <CFormSelect @change="$emit('proj-select', $event)">
         <option value="">프로젝트선택</option>
         <option
           v-for="proj in projSelect"

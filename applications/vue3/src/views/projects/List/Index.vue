@@ -8,7 +8,7 @@
     <CCardBody>
       <HeaderNav :menus="['프로젝트 관리']" />
 
-      <ProjectSelect :project="project" @on-change="onChange" />
+      <ProjectSelect :project="project" @proj-select="projSelect" />
     </CCardBody>
   </CCard>
 
@@ -28,13 +28,15 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import HeaderNav from '@/components/HeaderNav.vue'
-import ProjectSelect from '@/components/ProjectSelect.vue'
+import ProjectSelect from '@/components/ProjectSelect/Index.vue'
 import IndexForm from '@/views/projects/List/components/IndexForm.vue'
 import IndexDetail from '@/views/projects/List/components/IndexDetail.vue'
-import { mapActions, mapGetters, mapState } from 'vuex'
+import ProjectMixin from '@/views/projects/projectMixin'
+import { mapActions, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'ProjectsIndex',
+  mixins: [ProjectMixin],
   components: {
     HeaderNav,
     ProjectSelect,
@@ -47,12 +49,7 @@ export default defineComponent({
       update: false,
     }
   },
-  created() {
-    this.fetchProject(this.initProjId)
-  },
   computed: {
-    ...mapState('project', ['project']),
-    ...mapGetters('accounts', ['initProjId']),
     ...mapState('accounts', ['userInfo']),
   },
   watch: {
@@ -61,9 +58,6 @@ export default defineComponent({
     },
   },
   methods: {
-    onChange(event: any) {
-      this.fetchProject(event.target.value)
-    },
     createForm() {
       this.update = false
       this.compName = 'IndexForm'
@@ -82,11 +76,7 @@ export default defineComponent({
     toUpdate(payload: any) {
       this.updateProject(payload)
     },
-    ...mapActions('project', [
-      'fetchProject',
-      'createProject',
-      'updateProject',
-    ]),
+    ...mapActions('project', ['createProject', 'updateProject']),
   },
 })
 </script>
