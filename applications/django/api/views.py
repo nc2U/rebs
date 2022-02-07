@@ -1,6 +1,8 @@
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
+from django_filters.rest_framework import FilterSet
+from django_filters import NumberFilter, DateTimeFilter, AllValuesFilter
 
 from .permission import *
 from .pagination import *
@@ -119,6 +121,8 @@ class TodoList(generics.ListCreateAPIView):
     serializer_class = TodoSerializer
     pagination_class = PageNumberPaginationForTodoList
     permission_classes = (permissions.IsAuthenticated, IsOwnerOnly)
+    filter_fields = ('user', 'soft_deleted')
+    search_fields = ('title',)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)

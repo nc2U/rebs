@@ -119,7 +119,7 @@ class Todo(models.Model):
     completed = models.BooleanField('완료여부', default=False)
     created_at = models.DateTimeField('등록일', auto_now_add=True)
     updated_at = models.DateTimeField('수정일', auto_now=True)
-    soft_deleted = models.DateTimeField('삭제일시', null=True, blank=True)
+    soft_deleted = models.BooleanField('삭제여부', default=False)
 
     def __str__(self):
         return self.title
