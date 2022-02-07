@@ -1,4 +1,6 @@
-export default {
+import { defineComponent } from 'vue'
+
+export default defineComponent({
   methods: {
     numFormat(value: number, n?: number) {
       const parts = n
@@ -27,4 +29,4 @@ export default {
       return !value || value === 0 ? '-' : `${this.numFormat(value, n)} %`
     },
   },
-}
+})
