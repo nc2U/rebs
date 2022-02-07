@@ -1,31 +1,26 @@
 export default {
   methods: {
-    numFormat(value: number) {
-      return !value || value === 0
-        ? '-'
-        : value.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')
+    numFormat(value: number, n?: number) {
+      const parts = n
+        ? Number(value).toFixed(n).split('.')
+        : value.toString().split('.')
+      parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+      return !value || value === 0 ? '-' : parts.join('.')
     },
-    twoDecimal(value: number) {
-      return !value || value === 0
-        ? '-'
-        : Number(value)
-            .toFixed(2)
-            .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')
+    areaM2Format(value: number, n = 2) {
+      return !value || value === 0 ? '-' : `${this.numFormat(value, n)} ㎡`
     },
-    areaM2Format(value: number) {
-      return !value || value === 0 ? '-' : `${this.twoDecimal(value)} ㎡`
-    },
-    areaPyFormat(value: number) {
+    areaPyFormat(value: number, n = 2) {
       const toVal = Number(value.toFixed(2))
-      return !value || value === 0 ? '-' : `${this.twoDecimal(toVal)} 평`
+      return !value || value === 0 ? '-' : `${this.numFormat(toVal, n)} 평`
     },
-    areaM2PyFormat(value: number) {
+    areaM2PyFormat(value: number, n = 2) {
       return !value || value === 0
         ? '-'
-        : `${this.twoDecimal(value)} ㎡ (${this.twoDecimal(value)} 평)`
+        : `${this.numFormat(value, 2)} ㎡ (${this.numFormat(value, n)} 평)`
     },
-    ratioFormat(value: number) {
-      return !value || value === 0 ? '-' : `${this.twoDecimal(value)} %`
+    ratioFormat(value: number, n = 2) {
+      return !value || value === 0 ? '-' : `${this.numFormat(value, n)} %`
     },
   },
 }
