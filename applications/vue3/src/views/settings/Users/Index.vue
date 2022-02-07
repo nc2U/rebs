@@ -18,7 +18,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import HeaderNav from '@/components/HeaderNav.vue'
-import CompanySelect from '@/components/CompanySelect.vue'
+import CompanySelect from '@/components/CompanySelect/Index.vue'
 import BlankComponent from '@/components/BlankComponent.vue'
 import HeaderMixin from '@/views/settings/_menu/headermixin'
 import { mapActions, mapGetters, mapState } from 'vuex'
