@@ -198,6 +198,8 @@ class UnitTypeList(generics.ListCreateAPIView):
     queryset = UnitType.objects.all()
     serializer_class = UnitTypeSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    filter_fields = ('project',)
+    search_fields = ('name',)
 
 
 class UnitTypeDetail(generics.RetrieveUpdateDestroyAPIView):
