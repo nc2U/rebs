@@ -18,7 +18,7 @@
       <strong class="pl-1"> {{ $route.name }}</strong>
     </CCardHeader>
 
-    <CCardBody class="blank-body" v-if="project">
+    <CCardBody v-if="project">
       <OrderAddForm
         :selected="selected"
         :projId="project.pk"
