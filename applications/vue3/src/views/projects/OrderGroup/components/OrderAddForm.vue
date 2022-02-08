@@ -43,7 +43,7 @@
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: '',
+  name: 'OrderAddForm',
   data() {
     return {
       sort: [
@@ -54,8 +54,6 @@ export default defineComponent({
       validated: false,
     }
   },
-  props: {},
-  computed: {},
   methods: {
     onSubmit() {
       this.$emit('on-submit', {})

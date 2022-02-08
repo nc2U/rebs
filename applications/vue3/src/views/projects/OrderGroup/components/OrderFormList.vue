@@ -38,7 +38,7 @@ import OrderGroup from './OrderGroup.vue'
 import { mapState } from 'vuex'
 
 export default defineComponent({
-  name: 'OrderForm',
+  name: 'OrderFormList',
   components: { OrderGroup },
   props: ['project'],
   computed: {
