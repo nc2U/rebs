@@ -35,7 +35,7 @@ import ProjectMixin from '@/views/projects/projectMixin'
 import ProjectSelect from '@/components/ProjectSelect/Index.vue'
 import OrderAddForm from '@/views/projects/OrderGroup/components/OrderAddForm.vue'
 import OrderFormList from '@/views/projects/OrderGroup/components/OrderFormList.vue'
-import {mapActions} from "vuex";
+import { mapActions } from 'vuex'
 
 export default defineComponent({
   name: 'ProjectsOrderSet',
@@ -51,7 +51,7 @@ export default defineComponent({
   },
   methods: {
     projSelect(event: any) {
-      (this as any).fetchProject(event.target.value)
+      this.fetchProject(event.target.value)
       this.fetchOrderGroupList(event.target.value)
     },
     onSubmit(payload: any) {

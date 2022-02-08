@@ -35,18 +35,14 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import OrderGroup from './OrderGroup.vue'
-import { mapActions, mapGetters, mapState } from 'vuex'
+import { mapState } from 'vuex'
 
 export default defineComponent({
   name: 'OrderForm',
   components: { OrderGroup },
-
   props: ['project'],
   computed: {
     ...mapState('contract', ['orderGroupList']),
-    // ...mapGetters('contract', ['OrderGroupByProject']),
   },
 })
 </script>
-
-<style lang="scss" scoped></style>
