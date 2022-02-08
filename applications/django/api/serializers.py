@@ -161,8 +161,6 @@ class ProjectSerializer(serializers.ModelSerializer):
 
 
 class UnitTypeSerializer(serializers.ModelSerializer):
-    project = serializers.SlugRelatedField(queryset=Project.objects.all(), slug_field='name')
-
     class Meta:
         model = UnitType
         fields = ('pk', 'url', 'project', 'name', 'color', 'average_price', 'num_unit')
