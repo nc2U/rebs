@@ -2,7 +2,7 @@ import { defineComponent } from 'vue'
 
 export default defineComponent({
   methods: {
-    numFormat(value: number, n?: number) {
+    numFormat(value = 0, n?: number) {
       const parts = n
         ? Number(value).toFixed(n).split('.')
         : value.toString().split('.')
