@@ -1,6 +1,6 @@
 <template>
   <CContainer>
-    <MainCarousel />
+<!--    <MainCarousel />-->
     <CRow>
       <CCol lg="6">
         <TodoListApp />
@@ -18,7 +18,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 
-import MainCarousel from './components/MainCarousel.vue'
+// import MainCarousel from './components/MainCarousel.vue'
 import TodoListApp from './components/TodoListApp/index.vue'
 import WidgetsStatsA from './components/widgets/WidgetsStatsTypeA.vue'
 import WidgetsStatsB from './components/widgets/WidgetsStatsTypeB.vue'
@@ -28,7 +28,7 @@ import WidgetsStatsD from './components/widgets/WidgetsStatsTypeD.vue'
 export default defineComponent({
   name: 'Dashboard',
   components: {
-    MainCarousel,
+    // MainCarousel,
     TodoListApp,
     WidgetsStatsA,
     WidgetsStatsB,

@@ -4,11 +4,10 @@
       <CCard class="mb-4">
         <CCardHeader>
           <CIcon name="cil-justify-center" />
-          <strong> Bootstrap Carousel</strong>
-          <small class="text-muted">Songdo-Central Xi</small>
+          <strong> Bootstrap Carousel</strong> <small class="text-muted">Songdo-Central Xi</small>
         </CCardHeader>
         <CCardBody>
-          <CCarousel controls indicators transition="crossfade">
+          <CCarousel controls indicators>
             <CCarouselItem>
               <img
                 class="d-block w-100"
@@ -88,5 +87,3 @@ export default defineComponent({
   name: 'MainCarousel',
 })
 </script>
-
-<style lang="scss" scoped></style>
