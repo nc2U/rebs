@@ -6,7 +6,7 @@ import actions from './actions'
 const project = {
   namespaced: true,
 
-  state,
+  state: () => (state),
   getters,
   mutations,
   actions,

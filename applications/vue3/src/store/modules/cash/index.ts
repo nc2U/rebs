@@ -6,7 +6,7 @@ import actions from './actions'
 const cash = {
   namespaced: true,
 
-  state,
+  state: () => (state),
   getters,
   mutations,
   actions,
