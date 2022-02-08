@@ -167,6 +167,13 @@ class UnitTypeSerializer(serializers.ModelSerializer):
         extra_kwargs = {'url': {'view_name': 'api:unittype-detail'}, }
 
 
+class UnitFloorTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UnitFloorType
+        fields = ('pk', 'url', 'project', 'start_floor', 'end_floor', 'alias_name')
+        extra_kwargs = {'url': {'view_name': 'api:floortype-detail'}, }
+
+
 class ContractUnitSerializer(serializers.ModelSerializer):
     project = serializers.SlugRelatedField(queryset=Project.objects.all(), slug_field='name')
 

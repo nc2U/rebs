@@ -38,7 +38,8 @@ class ApiIndex(generics.GenericAPIView):
             'department': reverse(api + DepartmentList.name, request=request),
             'staff': reverse(api + StaffList.name, request=request),
             'project': reverse(api + ProjectList.name, request=request),
-            'unit-type': reverse(api + UnitTypeList.name, request=request),
+            'type': reverse(api + UnitTypeList.name, request=request),
+            'floor': reverse(api + UnitFloorTypeList.name, request=request),
             'contract-unit': reverse(api + ContractUnitList.name, request=request),
             'unit-number': reverse(api + UnitNumberList.name, request=request),
             'budget': reverse(api + ProjectBudgetList.name, request=request),
@@ -206,6 +207,22 @@ class UnitTypeDetail(generics.RetrieveUpdateDestroyAPIView):
     name = 'unittype-detail'
     queryset = UnitType.objects.all()
     serializer_class = UnitTypeSerializer
+    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+
+
+class UnitFloorTypeList(generics.ListCreateAPIView):
+    name = 'floortype-list'
+    queryset = UnitFloorType.objects.all()
+    serializer_class = UnitFloorTypeSerializer
+    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    filter_fields = ('project',)
+    search_fields = ('alias_name',)
+
+
+class UnitFloorTypeDetail(generics.RetrieveUpdateDestroyAPIView):
+    name = 'floortype-detail'
+    queryset = UnitFloorType.objects.all()
+    serializer_class = UnitFloorTypeSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
 
