@@ -1,4 +1,5 @@
 import {
+  FETCH_FLOOR_TYPE_LIST,
   FETCH_PROJECT,
   FETCH_PROJECT_LIST,
   FETCH_TYPE_LIST,
@@ -16,6 +17,10 @@ const mutations = {
 
   [FETCH_TYPE_LIST]: (state: ProjectState, payload: any) => {
     state.typeList = payload.results
+  },
+
+  [FETCH_FLOOR_TYPE_LIST]: (state: ProjectState, payload: any) => {
+    state.floorTypeList = payload.results
   },
 }
 
