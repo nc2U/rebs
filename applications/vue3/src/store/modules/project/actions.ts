@@ -9,30 +9,30 @@ const actions = {
   fetchProjectList: ({ commit }: any) => {
     api
       .get('/project/')
-      .then((res) => {
+      .then(res => {
         commit(FETCH_PROJECT_LIST, res.data)
       })
-      .catch((err) => console.log(err))
+      .catch(err => console.log(err))
   },
 
-  fetchProject: ({ commit }: any, pk: { pk: string }) => {
+  fetchProject: ({ commit }: any, pk: number) => {
     api
       .get(`/project/${pk}/`)
-      .then((res) => {
+      .then(res => {
         commit(FETCH_PROJECT, res.data)
       })
-      .catch((err) => console.log(err))
+      .catch(err => console.log(err))
   },
 
   createProject: ({ dispatch }: any, payload: any) => {
     api
       .post('/project/', payload)
-      .then((res) => {
+      .then(res => {
         dispatch('fetchProject', res.data.pk)
         dispatch('fetchProjectList')
         message()
       })
-      .catch((err) => {
+      .catch(err => {
         console.log(err.response.data)
         alert(
           `${Object.keys(err.response.data)[0]} : ${
@@ -45,12 +45,12 @@ const actions = {
   updateProject: ({ dispatch }: any, payload: any) => {
     api
       .put(`/project/${payload.pk}/`, payload)
-      .then((res) => {
+      .then(res => {
         dispatch('fetchProject', res.data.pk)
         dispatch('fetchProjectList')
         message()
       })
-      .catch((err) => {
+      .catch(err => {
         console.log(err.response.data)
         alert(
           `${Object.keys(err.response.data)[0]} : ${
@@ -61,7 +61,7 @@ const actions = {
   },
 
   deleteProject: ({ dispatch }: any, pk: any) => {
-    api.delete(`/project/${pk}/`).then((res) => {
+    api.delete(`/project/${pk}/`).then(res => {
       console.log(res.data)
       dispatch('fetchProjectList')
       message('danger', '알림!', '삭제되었습니다.')
