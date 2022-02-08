@@ -1,5 +1,6 @@
 import api from '@/api'
 import { FETCH_ORDER_GROUP_LIST } from '@/store/modules/contract/mutations-types'
+import router from '@/router'
 import { message } from '@/utils/helper'
 
 const actions = {
@@ -48,10 +49,20 @@ const actions = {
       })
   },
 
-  deleteOrderGroup: ({ dispatch }: any, pk: any) => {
-    api.delete(`/order-group/${pk}/`).then(() => {
-      dispatch('fetchOrderGroupList', 1)
-    })
+  deleteOrderGroup: ({ dispatch }: any, payload: any) => {
+    const { pk, projId } = payload
+    api
+      .delete(`/order-group/${pk}/`)
+      .then(() => {
+        dispatch('fetchOrderGroupList', projId)
+        message('danger', '알림!', '해당 오브젝트가 삭제되었습니다.')
+      })
+      .catch(err => {
+        alert(
+          '해당 그룹에 종속된 계약관련 데이터가 있는 경우 이 그룹을 삭제할 수 없습니다.',
+        )
+        ;(router as any).go()
+      })
   },
 }
 

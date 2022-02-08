@@ -26,6 +26,7 @@
       />
       <OrderFormList
         @on-update="onUpdateOrder"
+        @on-delete="onDeleteOrder"
         :selected="selected"
         :project="project"
       />
@@ -72,13 +73,17 @@ export default defineComponent({
     },
     onUpdateOrder(payload: any) {
       const project = this.project.pk
-      console.log({ ...{ project }, ...payload })
       this.updateOrderGroup({ ...{ project }, ...payload })
+    },
+    onDeleteOrder(pk: number) {
+      const projId = this.project.pk
+      this.deleteOrderGroup({ ...{ pk }, ...{ projId } })
     },
     ...mapActions('contract', [
       'fetchOrderGroupList',
       'createOrderGroup',
       'updateOrderGroup',
+      'deleteOrderGroup',
     ]),
   },
 })

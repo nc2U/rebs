@@ -18,6 +18,7 @@
       <OrderGroup
         v-for="order in orderGroupList"
         @on-update="onUpdateOrder"
+        @on-delete="onDeleteOrder"
         :key="order.id"
         :order="order"
       />
@@ -48,6 +49,9 @@ export default defineComponent({
   methods: {
     onUpdateOrder(payload: any) {
       this.$emit('on-update', payload)
+    },
+    onDeleteOrder(pk: number) {
+      this.$emit('on-delete', pk)
     },
   },
 })
