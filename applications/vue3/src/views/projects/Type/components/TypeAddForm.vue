@@ -83,7 +83,7 @@ export default defineComponent({
       validated: false,
     }
   },
-  props: ['projId', 'selected'],
+  props: ['selected'],
   methods: {
     onSubmit(event: any) {
       const form = event.currentTarget
@@ -97,8 +97,7 @@ export default defineComponent({
       }
     },
     modalAction() {
-      const project = this.projId
-      this.$emit('on-submit', { ...{ project }, ...this.form })
+      this.$emit('on-submit', this.form)
       this.validated = false
       ;(this as any).$refs.confirmModal.visible = false
     },
