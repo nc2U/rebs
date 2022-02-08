@@ -14,9 +14,9 @@
         <CTableHeaderCell>비 고</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
-    <CTableBody v-if="projectOrderGroup.length !== 0">
+    <CTableBody v-if="project && orderGroupList.length !== 0">
       <OrderGroup
-        v-for="order in projectOrderGroup"
+        v-for="order in orderGroupList"
         :key="order.id"
         :order="order"
       />
@@ -36,25 +36,15 @@
 import { defineComponent } from 'vue'
 import OrderGroup from './OrderGroup.vue'
 import { mapActions, mapGetters, mapState } from 'vuex'
-import project from '@/store/modules/project'
 
 export default defineComponent({
   name: 'OrderForm',
   components: { OrderGroup },
 
   props: ['project'],
-  created() {
-    this.fetchOrderGroupList()
-  },
   computed: {
-    projectOrderGroup() {
-      return this.project ? this.OrderGroupByProject(this.project.pk) : []
-    },
     ...mapState('contract', ['orderGroupList']),
-    ...mapGetters('contract', ['OrderGroupByProject']),
-  },
-  methods: {
-    ...mapActions('contract', ['fetchOrderGroupList']),
+    // ...mapGetters('contract', ['OrderGroupByProject']),
   },
 })
 </script>

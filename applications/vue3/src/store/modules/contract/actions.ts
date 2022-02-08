@@ -5,12 +5,8 @@ import {
 } from '@/store/modules/contract/mutations-types'
 
 const actions = {
-  fetchOrderGroupList: ({ commit, rootState }: any) => {
-    const projectModule = rootState.project
-    console.log('rootState --> ', projectModule)
-
-    const projId = false // rootState.project.project.pk
-    const url = projId ? `/order-group/?project=${projId}` : '/order-group/'
+  fetchOrderGroupList: ({ commit }: any, pk?: number) => {
+    const url = pk ? `/order-group/?project=${pk}` : '/order-group/'
     api
       .get(url)
       .then((res) => {
