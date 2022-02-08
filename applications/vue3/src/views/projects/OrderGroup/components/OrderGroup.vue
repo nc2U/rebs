@@ -1,10 +1,22 @@
 <template>
-  <CTableRow class="text-center">
-    <CTableDataCell>{{ order.order_number }}</CTableDataCell>
-    <CTableDataCell>{{ order.sort_desc }}</CTableDataCell>
-    <CTableDataCell>{{ order.order_group_name }}</CTableDataCell>
+  <CTableRow>
     <CTableDataCell>
-      <CButton color="success" size="sm">수정</CButton>
+      <CFormInput type="number" :value="order.order_number" />
+    </CTableDataCell>
+    <CTableDataCell>
+      <CFormSelect
+        :value="order.sort"
+        :options="sort"
+        :selected="sort.value == order.sort"
+      />
+    </CTableDataCell>
+    <CTableDataCell>
+      <CFormInput :value="order.order_group_name" />
+    </CTableDataCell>
+    <CTableDataCell class="text-center">
+      <CButton color="success" size="sm" @click="editing = true">
+        수정
+      </CButton>
       <CButton color="danger" size="sm">삭제</CButton>
     </CTableDataCell>
   </CTableRow>
@@ -15,10 +27,12 @@ import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'OrderGroup',
-  components: {},
   data() {
     return {
-      sample: '',
+      sort: [
+        { label: '일반분양', value: '1' },
+        { label: '조합모집', value: '2' },
+      ],
     }
   },
   props: {
