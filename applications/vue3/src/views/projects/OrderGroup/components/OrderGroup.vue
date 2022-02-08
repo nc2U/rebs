@@ -35,8 +35,8 @@
       삭제 확인!
     </template>
     <template v-slot:default>
-      차수그룹을 삭제하려면 종속된 데이터를 모두 제거한 후 삭제할 수 있습니다.
-      해당 차수그룹을 삭제 하시겠습니까?
+      이 그룹에 종속 데이터가 있는 경우 해당 데이터를 모두 제거한 후 삭제가능
+      합니다. 해당 차수그룹을 삭제 하시겠습니까?
     </template>
     <template v-slot:footer>
       <CButton color="danger" @click="modalAction">삭제</CButton>
@@ -70,10 +70,19 @@ export default defineComponent({
       type: Object,
     },
   },
-  created(this: any) {
-    this.form.order_number = this.order.order_number
-    this.form.sort = this.order.sort
-    this.form.order_group_name = this.order.order_group_name
+  created() {
+    if (this.order) {
+      this.form.order_number = this.order.order_number
+      this.form.sort = this.order.sort
+      this.form.order_group_name = this.order.order_group_name
+    }
+  },
+  watch: {
+    order(this: any) {
+      this.form.order_number = this.order.order_number
+      this.form.sort = this.order.sort
+      this.form.order_group_name = this.order.order_group_name
+    },
   },
   methods: {
     onUpdateOrder(this: any) {
