@@ -18,9 +18,13 @@
       <strong class="pl-1"> {{ $route.name }}</strong>
     </CCardHeader>
 
-    <CCardBody class="blank-body">
-      <OrderAddForm @on-submit="onSubmit" />
-      <OrderFormList :project="project" />
+    <CCardBody class="blank-body" v-if="project">
+      <OrderAddForm
+        :selected="selected"
+        :projId="project.pk"
+        @on-submit="onSubmit"
+      />
+      <OrderFormList :selected="selected" :project="project" />
     </CCardBody>
 
     <!--    <CCardFooter>&nbsp;</CCardFooter>-->
@@ -47,17 +51,22 @@ export default defineComponent({
     OrderFormList,
   },
   created() {
-    this.fetchOrderGroupList()
+    this.fetchOrderGroupList(this.initProjId)
   },
   methods: {
     projSelect(event: any) {
-      this.fetchProject(event.target.value)
-      this.fetchOrderGroupList(event.target.value)
+      if (event.target.value !== '') {
+        this.selected = true
+        this.fetchProject(event.target.value)
+        this.fetchOrderGroupList(event.target.value)
+      } else {
+        this.selected = false
+      }
     },
     onSubmit(payload: any) {
-      console.log(payload)
+      this.createOrderGroup(payload)
     },
-    ...mapActions('contract', ['fetchOrderGroupList']),
+    ...mapActions('contract', ['fetchOrderGroupList', 'createOrderGroup']),
   },
 })
 </script>

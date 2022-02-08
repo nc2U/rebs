@@ -13,11 +13,12 @@
           type="number"
           min="1"
           required
+          :disabled="!selected"
         />
       </CCol>
 
       <CCol md="3" class="mb-2">
-        <CFormSelect v-model="form.sort" required>
+        <CFormSelect v-model="form.sort" required :disabled="!selected">
           <option v-for="(sort, i) in sorts" :value="sort.value" :key="i">
             {{ sort.label }}
           </option>
@@ -29,11 +30,12 @@
           v-model="form.order_group_name"
           placeholder="차수그룹 명칭"
           required
+          :disabled="!selected"
         />
       </CCol>
 
       <CCol md="3" class="d-grid gap-2 d-lg-block mb-3">
-        <CButton color="primary">그룹추가</CButton>
+        <CButton color="primary" :disabled="!selected">그룹추가</CButton>
       </CCol>
     </CRow>
   </CForm>
@@ -71,6 +73,7 @@ export default defineComponent({
       validated: false,
     }
   },
+  props: ['projId', 'selected'],
   methods: {
     onSubmit(event: any) {
       const form = event.currentTarget
@@ -84,8 +87,10 @@ export default defineComponent({
       }
     },
     modalAction() {
-      this.$emit('on-submit', this.form)
+      const project = this.projId
+      this.$emit('on-submit', { ...{ project }, ...this.form })
       this.validated = false
+      ;(this as any).$refs.confirmModal.visible = false
     },
   },
 })

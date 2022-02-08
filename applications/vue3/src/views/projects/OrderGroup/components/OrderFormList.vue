@@ -14,7 +14,7 @@
         <CTableHeaderCell>비 고</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
-    <CTableBody v-if="project && orderGroupList.length !== 0">
+    <CTableBody v-if="selected && orderGroupList.length !== 0">
       <OrderGroup
         v-for="order in orderGroupList"
         :key="order.id"
@@ -40,7 +40,7 @@ import { mapState } from 'vuex'
 export default defineComponent({
   name: 'OrderFormList',
   components: { OrderGroup },
-  props: ['project'],
+  props: ['project', 'selected'],
   computed: {
     ...mapState('contract', ['orderGroupList']),
   },
