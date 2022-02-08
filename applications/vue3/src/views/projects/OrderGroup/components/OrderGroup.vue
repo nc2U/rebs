@@ -7,24 +7,34 @@
         min="1"
         required
         placeholder="등록차수"
-        @keypress.enter="onUpdateOrder"
+        @keypress.enter="formCheck(form.order_number !== order.order_number)"
       />
     </CTableDataCell>
     <CTableDataCell>
       <CFormSelect
         v-model="form.sort"
         :options="sorts"
+        :onchange="onUpdateOrder"
         :selected="sorts.value == form.sort"
       />
     </CTableDataCell>
     <CTableDataCell>
       <CFormInput
         v-model="form.order_group_name"
-        @keypress.enter="onUpdateOrder"
+        @keypress.enter="
+          formCheck(form.order_group_name !== order.order_group_name)
+        "
       />
     </CTableDataCell>
     <CTableDataCell class="text-center">
-      <CButton color="success" size="sm" @click="onUpdateOrder"> 수정</CButton>
+      <CButton
+        color="success"
+        size="sm"
+        @click="onUpdateOrder"
+        :disabled="formsCheck"
+      >
+        수정
+      </CButton>
       <CButton color="danger" size="sm" @click="onDeleteOrder">삭제</CButton>
     </CTableDataCell>
   </CTableRow>
@@ -84,7 +94,19 @@ export default defineComponent({
       this.form.order_group_name = this.order.order_group_name
     },
   },
+  computed: {
+    formsCheck(this: any) {
+      const a = this.form.order_number === this.order.order_number
+      const b = this.form.sort === this.order.sort
+      const c = this.form.order_group_name === this.order.order_group_name
+      return a && b && c
+    },
+  },
   methods: {
+    formCheck(bool: boolean) {
+      if (bool) this.onUpdateOrder()
+      return
+    },
     onUpdateOrder(this: any) {
       const pk = this.order.pk
       this.$emit('on-update', { ...{ pk }, ...this.form })

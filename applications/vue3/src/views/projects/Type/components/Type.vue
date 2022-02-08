@@ -5,7 +5,7 @@
         v-model="form.name"
         placeholder="타입명칭"
         required
-        @keypress.enter="onUpdateType"
+        @keypress.enter="formCheck(form.name !== type.name)"
       />
     </CTableDataCell>
     <CTableDataCell>
@@ -18,7 +18,7 @@
         type="number"
         min="0"
         required
-        @keypress.enter="onUpdateType"
+        @keypress.enter="formCheck(form.average_price !== type.average_price)"
       />
     </CTableDataCell>
     <CTableDataCell>
@@ -28,11 +28,18 @@
         type="number"
         min="0"
         required
-        @keypress.enter="onUpdateType"
+        @keypress.enter="formCheck(form.num_unit !== type.num_unit)"
       />
     </CTableDataCell>
     <CTableDataCell class="text-center">
-      <CButton color="success" size="sm" @click="onUpdateType"> 수정</CButton>
+      <CButton
+        color="success"
+        size="sm"
+        @click="onUpdateType"
+        :disabled="formsCheck"
+      >
+        수정
+      </CButton>
       <CButton color="danger" size="sm" @click="onDeleteType">삭제</CButton>
     </CTableDataCell>
   </CTableRow>
@@ -91,7 +98,20 @@ export default defineComponent({
       this.form.num_unit = this.type.num_unit
     },
   },
+  computed: {
+    formsCheck(this: any) {
+      const a = this.form.name === this.type.name
+      const b = this.form.color === this.type.color
+      const c = this.form.average_price === this.type.average_price
+      const d = this.form.num_unit === this.type.num_unit
+      return a && b && c && d
+    },
+  },
   methods: {
+    formCheck(bool: boolean) {
+      if (bool) this.onUpdateType()
+      return
+    },
     onUpdateType(this: any) {
       const pk = this.type.pk
       this.$emit('on-update', { ...{ pk }, ...this.form })
