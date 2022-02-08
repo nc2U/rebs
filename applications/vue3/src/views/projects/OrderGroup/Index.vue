@@ -19,11 +19,7 @@
     </CCardHeader>
 
     <CCardBody v-if="project">
-      <OrderAddForm
-        :selected="selected"
-        :projId="project.pk"
-        @on-submit="onSubmit"
-      />
+      <OrderAddForm :selected="selected" @on-submit="onSubmit" />
       <OrderFormList
         @on-update="onUpdateOrder"
         @on-delete="onDeleteOrder"
@@ -69,15 +65,16 @@ export default defineComponent({
       }
     },
     onSubmit(payload: any) {
-      this.createOrderGroup(payload)
+      const project = this.project.pk
+      this.createOrderGroup({ ...{ project }, ...payload })
     },
     onUpdateOrder(payload: any) {
       const project = this.project.pk
       this.updateOrderGroup({ ...{ project }, ...payload })
     },
     onDeleteOrder(pk: number) {
-      const projId = this.project.pk
-      this.deleteOrderGroup({ ...{ pk }, ...{ projId } })
+      const project = this.project.pk
+      this.deleteOrderGroup({ ...{ pk }, ...{ project } })
     },
     ...mapActions('contract', [
       'fetchOrderGroupList',
