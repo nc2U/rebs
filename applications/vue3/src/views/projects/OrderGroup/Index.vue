@@ -19,8 +19,8 @@
     </CCardHeader>
 
     <CCardBody class="blank-body">
-      <OrderForm @on-submit="onSubmit" />
-      <OrderList :project="project" />
+      <OrderAddForm @on-submit="onSubmit" />
+      <OrderFormList :project="project" />
     </CCardBody>
 
     <!--    <CCardFooter>&nbsp;</CCardFooter>-->
@@ -33,8 +33,8 @@ import HeaderNav from '@/components/HeaderNav.vue'
 import HeaderMixin from '@/views/projects/_menu/headermixin2'
 import ProjectMixin from '@/views/projects/projectMixin'
 import ProjectSelect from '@/components/ProjectSelect/Index.vue'
-import OrderForm from '@/views/projects/OrderGroup/components/OrderForm.vue'
-import OrderList from '@/views/projects/OrderGroup/components/OrderList.vue'
+import OrderAddForm from '@/views/projects/OrderGroup/components/OrderAddForm.vue'
+import OrderFormList from '@/views/projects/OrderGroup/components/OrderFormList.vue'
 
 export default defineComponent({
   name: 'ProjectsOrderSet',
@@ -42,8 +42,8 @@ export default defineComponent({
   components: {
     HeaderNav,
     ProjectSelect,
-    OrderForm,
-    OrderList,
+    OrderAddForm,
+    OrderFormList,
   },
   methods: {
     onSubmit(payload: any) {
