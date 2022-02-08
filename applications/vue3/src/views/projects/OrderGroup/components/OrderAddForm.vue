@@ -18,10 +18,10 @@
       </CCol>
 
       <CCol md="3" class="mb-2">
-        <CFormSelect v-model="form.sort" required :disabled="!selected">
-          <option v-for="(sort, i) in sorts" :value="sort.value" :key="i">
-            {{ sort.label }}
-          </option>
+        <CFormSelect v-model="form.sort" :disabled="!selected" required>
+          <option value="">구분선택</option>
+          <option value="1">일반분양</option>
+          <option value="2">조합모집</option>
         </CFormSelect>
       </CCol>
 
@@ -60,11 +60,6 @@ export default defineComponent({
   components: { ConfirmModal },
   data() {
     return {
-      sorts: [
-        { label: '구분선택', value: '' },
-        { label: '일반분양', value: '1' },
-        { label: '조합모집', value: '2' },
-      ],
       form: {
         order_number: null,
         sort: '',
