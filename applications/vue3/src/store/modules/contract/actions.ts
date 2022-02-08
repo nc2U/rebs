@@ -1,5 +1,6 @@
 import api from '@/api'
 import { FETCH_ORDER_GROUP_LIST } from '@/store/modules/contract/mutations-types'
+import { message } from '@/utils/helper'
 
 const actions = {
   fetchOrderGroupList: ({ commit }: any, pk?: number) => {
@@ -16,6 +17,7 @@ const actions = {
       .post(`/order-group/`, payload)
       .then(res => {
         dispatch('fetchOrderGroupList', res.data.project)
+        message()
       })
       .catch(err => {
         console.log(err.response.data)
@@ -27,11 +29,14 @@ const actions = {
       })
   },
 
-  updateProject: ({ dispatch }: any, payload: any) => {
+  updateOrderGroup: ({ dispatch }: any, payload: any) => {
+    const { pk } = payload
+    delete payload.pk
     api
-      .put(`/order-group/${payload.id}/`, payload)
+      .put(`/order-group/${pk}/`, payload)
       .then(res => {
         dispatch('fetchOrderGroupList', res.data.project)
+        message()
       })
       .catch(err => {
         console.log(err.response.data)
@@ -43,7 +48,7 @@ const actions = {
       })
   },
 
-  deleteProject: ({ dispatch }: any, pk: any) => {
+  deleteOrderGroup: ({ dispatch }: any, pk: any) => {
     api.delete(`/order-group/${pk}/`).then(() => {
       dispatch('fetchOrderGroupList', 1)
     })

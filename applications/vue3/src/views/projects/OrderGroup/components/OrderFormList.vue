@@ -17,6 +17,7 @@
     <CTableBody v-if="selected && orderGroupList.length !== 0">
       <OrderGroup
         v-for="order in orderGroupList"
+        @on-update="onUpdateOrder"
         :key="order.id"
         :order="order"
       />
@@ -43,6 +44,11 @@ export default defineComponent({
   props: ['project', 'selected'],
   computed: {
     ...mapState('contract', ['orderGroupList']),
+  },
+  methods: {
+    onUpdateOrder(payload: any) {
+      this.$emit('on-update', payload)
+    },
   },
 })
 </script>

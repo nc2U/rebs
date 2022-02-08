@@ -24,7 +24,11 @@
         :projId="project.pk"
         @on-submit="onSubmit"
       />
-      <OrderFormList :selected="selected" :project="project" />
+      <OrderFormList
+        @on-update="onUpdateOrder"
+        :selected="selected"
+        :project="project"
+      />
     </CCardBody>
 
     <!--    <CCardFooter>&nbsp;</CCardFooter>-->
@@ -66,7 +70,16 @@ export default defineComponent({
     onSubmit(payload: any) {
       this.createOrderGroup(payload)
     },
-    ...mapActions('contract', ['fetchOrderGroupList', 'createOrderGroup']),
+    onUpdateOrder(payload: any) {
+      const project = this.project.pk
+      console.log({ ...{ project }, ...payload })
+      this.updateOrderGroup({ ...{ project }, ...payload })
+    },
+    ...mapActions('contract', [
+      'fetchOrderGroupList',
+      'createOrderGroup',
+      'updateOrderGroup',
+    ]),
   },
 })
 </script>
