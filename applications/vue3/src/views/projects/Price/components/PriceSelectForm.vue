@@ -2,15 +2,15 @@
   <CRow class="p-2">
     <CCol md="4" class="mb-2">
       <CRow>
-        <CFormLabel for="colFormLabel" class="col-sm-3 col-form-label">
+        <CFormLabel for="sel1" class="col-sm-3 col-form-label">
           차수선택
         </CFormLabel>
         <CCol sm="9">
-          <CFormSelect @change="onOrderSelect">
+          <CFormSelect id="sel1" v-model="order" @change="onOrderSelect">
             <option value="">차수 선택</option>
-            <!--            <option v-for="order in orders" :key="order.pk" :value="order.pk">-->
-            <!--              {{ order.order_group_name }}-->
-            <!--            </option>-->
+            <option v-for="order in orders" :key="order.pk" :value="order.pk">
+              {{ order.order_group_name }}
+            </option>
           </CFormSelect>
         </CCol>
       </CRow>
@@ -18,15 +18,20 @@
 
     <CCol md="4" class="mb-2">
       <CRow>
-        <CFormLabel for="colFormLabel" class="col-sm-3 col-form-label">
+        <CFormLabel for="sel2" class="col-sm-3 col-form-label">
           타입선택
         </CFormLabel>
         <CCol sm="9">
-          <CFormSelect @change="onTypeSelect">
+          <CFormSelect
+            id="sel2"
+            v-model="type"
+            @change="onTypeSelect"
+            :disabled="order == ''"
+          >
             <option value="">타입 선택</option>
-            <!--            <option v-for="type in types" :key="type.pk" :value="type.pk">-->
-            <!--              {{ type.name }}-->
-            <!--            </option>-->
+            <option v-for="type in types" :key="type.pk" :value="type.pk">
+              {{ type.name }}
+            </option>
           </CFormSelect>
         </CCol>
       </CRow>
@@ -34,15 +39,20 @@
 
     <CCol md="4" class="mb-2">
       <CRow>
-        <CFormLabel for="colFormLabel" class="col-sm-3 col-form-label">
+        <CFormLabel for="sel3" class="col-sm-3 col-form-label">
           층별타입 선택
         </CFormLabel>
         <CCol sm="9">
-          <CFormSelect @change="onFloorSelect">
+          <CFormSelect
+            id="sel3"
+            v-model="floor"
+            @change="onFloorSelect"
+            :disabled="type == ''"
+          >
             <option value="">층별타입 선택</option>
-            <!--            <option v-for="floor in floors" :key="floor.pk" :value="floor.pk">-->
-            <!--              {{ floor.alias_name }}-->
-            <!--            </option>-->
+            <option v-for="floor in floors" :key="floor.pk" :value="floor.pk">
+              {{ floor.alias_name }}
+            </option>
           </CFormSelect>
         </CCol>
       </CRow>
@@ -55,12 +65,22 @@ import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'PriceSelectForm',
-  props: ['selected'],
+  data() {
+    return {
+      order: '',
+      type: '',
+      floor: '',
+    }
+  },
+  props: ['selected', 'orders', 'types', 'floors'],
   methods: {
     onOrderSelect(e: any) {
+      this.type = ''
+      this.floor = ''
       this.$emit('on-order-select', e.target.value)
     },
     onTypeSelect(e: any) {
+      this.floor = ''
       this.$emit('on-type-select', e.target.value)
     },
     onFloorSelect(e: any) {
