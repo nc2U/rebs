@@ -1,7 +1,6 @@
 import api from '@/api'
 import { FETCH_PRICE_LIST } from '@/store/modules/cash/mutations-types'
 import { message } from '@/utils/helper'
-import router from '@/router'
 
 const actions = {
   fetchPriceList: ({ commit }: any, pk?: number) => {
