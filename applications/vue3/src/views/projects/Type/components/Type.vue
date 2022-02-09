@@ -47,7 +47,7 @@
   <ConfirmModal ref="confirmModal">
     <template v-slot:header>
       <CIcon name="cil-warning" />
-      삭제 확인!
+      타입 정보 삭제
     </template>
     <template v-slot:default>
       이 타입에 종속 데이터가 있는 경우 해당 데이터를 모두 제거한 후 삭제가능

@@ -12,13 +12,13 @@
     </CCardBody>
   </CCard>
 
-  <CCard class="mb-4 pb-5">
+  <CCard class="mb-4">
     <CCardHeader>
       <CIcon name="cil-notes" />
       <strong class="pl-1"> {{ $route.name }}</strong>
     </CCardHeader>
 
-    <CCardBody v-if="project">
+    <CCardBody class="pb-5" v-if="project">
       <FloorAddForm :selected="selected" @on-submit="onSubmit" />
       <FloorFormList
         @on-update="onUpdateFloor"
@@ -28,7 +28,7 @@
       />
     </CCardBody>
 
-    <!--    <CCardFooter>&nbsp;</CCardFooter>-->
+    <CCardFooter>&nbsp;</CCardFooter>
   </CCard>
 </template>
 

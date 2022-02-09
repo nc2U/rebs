@@ -43,7 +43,7 @@
   <ConfirmModal ref="confirmModal">
     <template v-slot:header>
       <CIcon name="cil-info" />
-      진행 확인!
+      차수그룹 등록
     </template>
     <template v-slot:default>
       프로젝트의 차수그룹 정보 등록을 진행하시겠습니까?

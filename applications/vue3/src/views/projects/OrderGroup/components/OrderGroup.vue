@@ -42,7 +42,7 @@
   <ConfirmModal ref="confirmModal">
     <template v-slot:header>
       <CIcon name="cil-warning" />
-      삭제 확인!
+      차수그룹 삭제
     </template>
     <template v-slot:default>
       이 그룹에 종속 데이터가 있는 경우 해당 데이터를 모두 제거한 후 삭제가능
