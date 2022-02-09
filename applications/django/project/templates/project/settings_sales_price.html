@@ -51,7 +51,7 @@
                                                     data-toggle="select2">
                                                 {% for order in order_groups %}
                                                     <option value="{{ order.id }}"
-                                                            {% if order.id|slugify is request.GET.group %}
+                                                            {% if order.id|slugify == request.GET.group %}
                                                             selected
                                                             {% endif %}>
                                                         {{ order }}
@@ -72,7 +72,7 @@
                                                 <option value="">---------</option>
                                                 {% for type in types_sel %}
                                                     <option value="{{ type.id }}"
-                                                            {% if type.id|slugify is request.GET.type %}
+                                                            {% if type.id|slugify == request.GET.type %}
                                                             selected
                                                             {% endif %}>
                                                         {{ type }}
