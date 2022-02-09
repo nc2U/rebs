@@ -6,7 +6,15 @@
           차수선택
         </CFormLabel>
         <CCol sm="9">
-          <CFormSelect id="colFormLabel" placeholder="col-form-label">
+          <CFormSelect @change="onOrderSelect">
+            <option value="">차수선택</option>
+            <option
+              v-for="order in orderGroupList"
+              :key="order.pk"
+              :value="order.pk"
+            >
+              {{ order.order_group_name }}
+            </option>
           </CFormSelect>
         </CCol>
       </CRow>
@@ -18,10 +26,12 @@
           타입선택
         </CFormLabel>
         <CCol sm="9">
-          <CFormSelect
-            id="colFormLabel"
-            placeholder="col-form-label"
-          ></CFormSelect>
+          <CFormSelect @change="onTypeSelect">
+            <option value="">타입선택</option>
+            <option v-for="type in typeList" :key="type.pk" :value="type.pk">
+              {{ type.name }}
+            </option>
+          </CFormSelect>
         </CCol>
       </CRow>
     </CCol>
@@ -30,9 +40,28 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { mapActions, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'PriceSelectForm',
-  props: ['selected'],
+  props: ['selected', 'projId'],
+  created() {
+    this.fetchOrderGroupList(this.projId)
+    this.fetchTypeList(this.projId)
+  },
+  computed: {
+    ...mapState('contract', ['orderGroupList']),
+    ...mapState('project', ['typeList']),
+  },
+  methods: {
+    onOrderSelect(e: any) {
+      this.$emit('on-order-select', e.target.value)
+    },
+    onTypeSelect(e: any) {
+      this.$emit('on-type-select', e.target.value)
+    },
+    ...mapActions('contract', ['fetchOrderGroupList']),
+    ...mapActions('project', ['fetchTypeList']),
+  },
 })
 </script>
