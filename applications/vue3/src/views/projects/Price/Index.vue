@@ -33,6 +33,7 @@
         :selected="selected"
         :msg="priceMessage"
         :cond-texts="condTexts"
+        :query-ids="queryIds"
       />
     </CCardBody>
 
@@ -64,6 +65,7 @@ export default defineComponent({
       orderPk: '',
       typePk: '',
       floorPk: '',
+      queryIds: {},
       priceMessage: '공급가격을 입력하기 위해 [차수 정보]를 선택하여 주십시요.',
     }
   },
@@ -111,7 +113,9 @@ export default defineComponent({
       const projId = this.project.pk
       const orderId = this.orderPk
       const typeId = this.typePk
-      this.fetchPriceList({ projId, orderId, typeId })
+      const queryIds = { projId, orderId, typeId }
+      this.queryIds = queryIds
+      this.fetchPriceList(queryIds)
       this.fetchFloorTypeList(projId)
     },
     ...mapActions('contract', ['fetchOrderGroupList']),

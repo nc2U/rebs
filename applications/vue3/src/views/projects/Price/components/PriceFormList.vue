@@ -1,13 +1,14 @@
 <template>
   <CTable hover responsive>
     <colgroup>
-      <col width="15%" />
-      <col width="14%" />
-      <col width="14%" />
-      <col width="14%" />
-      <col width="14%" />
-      <col width="14%" />
-      <col width="15%" />
+      <col width="13%" />
+      <col width="12%" />
+      <col width="12%" />
+      <col width="12%" />
+      <col width="12%" />
+      <col width="12%" />
+      <col width="13%" />
+      <col width="13" />
     </colgroup>
     <CTableHead color="dark" class="text-center">
       <CTableRow>
@@ -18,10 +19,23 @@
         <CTableHeaderCell>대지가(단위:원)</CTableHeaderCell>
         <CTableHeaderCell>부가세(단위:원)</CTableHeaderCell>
         <CTableHeaderCell>분양가격(단위:원)</CTableHeaderCell>
+        <CTableHeaderCell>비고</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
     <CTableBody v-if="selected">
-      <Price :price="priceList" :msg="msg" :cond-texts="condTexts" />
+      <Price
+        v-for="floor in floorTypeList"
+        :key="floor.pk"
+        :cond-texts="condTexts"
+        :query-ids="queryIds"
+        :floor="floor"
+      />
+
+      <CTableRow v-show="msg !== ''">
+        <CTableDataCell :colspan="7" class="text-center p-5 text-info">
+          {{ msg }}
+        </CTableDataCell>
+      </CTableRow>
     </CTableBody>
 
     <CTableBody v-else>
@@ -37,6 +51,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import Price from '@/views/projects/Price/components/Price.vue'
+import { mapState } from 'vuex'
 
 export default defineComponent({
   name: 'PriceFormList',
@@ -54,6 +69,12 @@ export default defineComponent({
     condTexts: {
       type: Object,
     },
+    queryIds: {
+      type: Object,
+    },
+  },
+  computed: {
+    ...mapState('project', ['floorTypeList']),
   },
 })
 </script>
