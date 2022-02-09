@@ -20,8 +20,9 @@
         <CTableHeaderCell>분양가격(단위:원)</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
-    <CTableBody v-if="selected && floorTypeList.length !== 0">
-      <Price />
+    <!--    <CTableBody v-if="selected && floorTypeList.length !== 0">-->
+    <CTableBody v-if="selected">
+      <Price :price="priceList" :order="order" />
     </CTableBody>
 
     <CTableBody v-else>
@@ -37,12 +38,15 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import Price from '@/views/projects/Price/components/Price.vue'
+import { mapState } from 'vuex'
 
 export default defineComponent({
   name: 'PriceFormList',
   components: { Price },
-  props: ['project', 'selected'],
-  computed: {},
+  props: ['project', 'selected', 'order'],
+  computed: {
+    ...mapState('cash', ['priceList']),
+  },
   methods: {},
 })
 </script>

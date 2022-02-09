@@ -19,13 +19,21 @@
     </CCardHeader>
 
     <CCardBody class="pb-5" v-if="project">
-      <PriceSelectForm :selected="selected" @on-submit="onSubmit" />
-      <PriceFormList
-        @on-update="onUpdatePrice"
-        @on-delete="onDeletePrice"
+      <PriceSelectForm
+        @on-order-select="orderSelect"
+        @on-type-select="typeSelect"
         :selected="selected"
-        :project="project"
+        :order="orderGroup"
+        :orders="orderGroupList"
+        :types="typeList"
       />
+      <!--      <PriceFormList-->
+      <!--        @on-update="onUpdatePrice"-->
+      <!--        @on-delete="onDeletePrice"-->
+      <!--        :selected="selected"-->
+      <!--        :project="project"-->
+      <!--        :order="orderGroup"-->
+      <!--      />-->
     </CCardBody>
 
     <CCardFooter>&nbsp;</CCardFooter>
@@ -39,8 +47,8 @@ import ProjectSelect from '@/components/ProjectSelect/Index.vue'
 import HeaderMixin from '@/views/projects/_menu/headermixin2'
 import ProjectMixin from '@/views/projects/projectMixin'
 import PriceSelectForm from '@/views/projects/Price/components/PriceSelectForm.vue'
-import PriceFormList from '@/views/projects/Price/components/PriceFormList.vue'
-import { mapActions } from 'vuex'
+// import PriceFormList from '@/views/projects/Price/components/PriceFormList.vue'
+import { mapActions, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'ProjectsPriceSet',
@@ -49,40 +57,60 @@ export default defineComponent({
     HeaderNav,
     ProjectSelect,
     PriceSelectForm,
-    PriceFormList,
+    // PriceFormList,
   },
   created() {
     this.fetchPriceList(this.initProjId)
+    this.fetchOrderGroupList(this.initProjId)
+    this.fetchTypeList(this.initProjId)
+  },
+  computed: {
+    ...mapState('contract', ['orderGroup', 'orderGroupList']),
+    ...mapState('project', ['typeList']),
   },
   methods: {
     projSelect(event: any) {
       if (event.target.value !== '') {
         this.selected = true
         this.fetchProject(event.target.value)
+        this.fetchOrderGroupList(event.target.value)
+        this.fetchTypeList(event.target.value)
         this.fetchPriceList(event.target.value)
       } else {
         this.selected = false
       }
     },
-    onSubmit(payload: any) {
-      // const project = this.project.pk
-      // this.createPrice({ ...{ project }, ...payload })
-      return
-    },
-    onUpdatePrice(payload: any) {
+    orderSelect(payload: any) {
       const project = this.project.pk
-      this.updatePrice({ ...{ project }, ...payload })
+      const order = payload
+      const type = ''
+      this.fetchOrderGroup(payload)
+      console.log({ project, order, type })
+      // this.fetchOrderGroupList(order)
     },
-    onDeletePrice(pk: number) {
+    typeSelect(payload: any) {
       const project = this.project.pk
-      this.deletePrice({ ...{ pk }, ...{ project } })
+      const order = 1 // this.order.pk
+      const type = payload
+      console.log({ project, order, type })
+      // this.fetchOrderGroupList(type)
     },
+    // onUpdatePrice(payload: any) {
+    //   const project = this.project.pk
+    //   this.updatePrice({ ...{ project }, ...payload })
+    // },
+    // onDeletePrice(pk: number) {
+    //   const project = this.project.pk
+    //   this.deletePrice({ ...{ pk }, ...{ project } })
+    // },
     ...mapActions('cash', [
       'fetchPriceList',
       'createPrice',
       'updatePrice',
       'deletePrice',
     ]),
+    ...mapActions('contract', ['fetchOrderGroupList', 'fetchOrderGroup']),
+    ...mapActions('project', ['fetchTypeList']),
   },
 })
 </script>

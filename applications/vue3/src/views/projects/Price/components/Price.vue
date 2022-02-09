@@ -1,45 +1,26 @@
 <template>
   <CTableRow>
+    <CTableDataCell :rowspan="1" class="text-center">
+      {{ order.order_group_name }}
+    </CTableDataCell>
+    <CTableDataCell :rowspan="1" class="text-center"> 74</CTableDataCell>
+    <CTableDataCell> 21층 이상</CTableDataCell>
     <CTableDataCell>
-      <CFormInput
-        v-model="form.start_floor"
-        placeholder="시작 층"
-        type="number"
-        min="0"
-        required
-        @keypress.enter="formCheck(form.start_floor !== floor.start_floor)"
-      />
+      <CFormInput type="number" min="0" placeholder="건물가" />
     </CTableDataCell>
     <CTableDataCell>
-      <CFormInput
-        v-model="form.end_floor"
-        placeholder="종료 층"
-        type="number"
-        min="0"
-        required
-        @keypress.enter="formCheck(form.end_floor !== form.end_floor)"
-      />
+      <CFormInput type="number" min="0" placeholder="대지가" />
     </CTableDataCell>
     <CTableDataCell>
-      <CFormInput
-        v-model="form.alias_name"
-        placeholder="층별 범위 명칭"
-        required
-        @keypress.enter="formCheck(form.alias_name !== floor.alias_name)"
-      />
+      <CFormInput type="number" min="0" placeholder="부가세" />
     </CTableDataCell>
-    <CTableDataCell class="text-center">
-      <CButton
-        color="success"
-        size="sm"
-        @click="onUpdateFloor"
-        :disabled="formsCheck"
-      >
-        수정
-      </CButton>
-      <CButton color="danger" size="sm" @click="onDeleteFloor">삭제</CButton>
+    <CTableDataCell>
+      <CFormInput type="number" min="0" placeholder="공급가격" />
     </CTableDataCell>
+    {{ order }}
   </CTableRow>
+
+  <!--  {{ orderGroupList }}-->
 
   <ConfirmModal ref="confirmModal">
     <template v-slot:header>
@@ -59,6 +40,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
+import { mapActions, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'Price',
@@ -73,28 +55,33 @@ export default defineComponent({
       validated: false,
     }
   },
-  props: ['floor'],
+  props: ['order', 'price'],
   created(this: any) {
-    if (this.floor) {
-      this.form.start_floor = this.floor.start_floor
-      this.form.end_floor = this.floor.end_floor
-      this.form.alias_name = this.floor.alias_name
+    if (this.price) {
+      // this.form.start_floor = this.price.start_floor
+      // this.form.end_floor = this.price.end_floor
+      // this.form.alias_name = this.price.alias_name
     }
   },
   watch: {
     type(this: any) {
-      this.form.start_floor = this.floor.start_floor
-      this.form.end_floor = this.floor.end_floor
-      this.form.alias_name = this.floor.alias_name
+      // this.form.start_floor = this.price.start_floor
+      // this.form.end_floor = this.price.end_floor
+      // this.form.alias_name = this.price.alias_name
     },
   },
   computed: {
-    formsCheck(this: any) {
-      const a = this.form.start_floor === this.floor.start_floor
-      const b = this.form.end_floor === this.floor.end_floor
-      const c = this.form.alias_name === this.floor.alias_name
-      return a && b && c
+    orders() {
+      return ['1차조합원']
     },
+    // formsCheck(this: any) {
+    // const a = this.form.start_floor === this.price.start_floor
+    // const b = this.form.end_floor === this.price.end_floor
+    // const c = this.form.alias_name === this.price.alias_name
+    // return a && b && c
+    // },
+    ...mapState('contract', ['orderGroupList']),
+    ...mapState('project', ['typeList']),
   },
   methods: {
     formCheck(bool: boolean) {
@@ -102,16 +89,17 @@ export default defineComponent({
       return
     },
     onUpdateFloor(this: any) {
-      const pk = this.floor.pk
+      const pk = this.price.pk
       this.$emit('on-update', { ...{ pk }, ...this.form })
     },
     onDeleteFloor(this: any) {
       this.$refs.confirmModal.callModal()
     },
     modalAction(this: any) {
-      this.$emit('on-delete', this.floor.pk)
+      this.$emit('on-delete', this.price.pk)
       this.$refs.confirmModal.visible = false
     },
+    ...mapActions('contract', ['fetchOrderGroupList']),
   },
 })
 </script>
