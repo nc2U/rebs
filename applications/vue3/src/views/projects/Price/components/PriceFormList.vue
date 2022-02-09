@@ -21,7 +21,7 @@
       </CTableRow>
     </CTableHead>
     <CTableBody v-if="selected">
-      <Price :price="priceList" />
+      <Price :price="priceList" :msg="msg" />
     </CTableBody>
 
     <CTableBody v-else>
@@ -41,6 +41,6 @@ import Price from '@/views/projects/Price/components/Price.vue'
 export default defineComponent({
   name: 'PriceFormList',
   components: { Price },
-  props: ['project', 'selected'],
+  props: ['project', 'selected', 'msg'],
 })
 </script>

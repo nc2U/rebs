@@ -1,5 +1,5 @@
 <template>
-  <CTableRow>
+  <CTableRow v-if="msg == ''">
     <CTableDataCell :rowspan="1" class="text-center">
       1차 조합원
     </CTableDataCell>
@@ -16,6 +16,12 @@
     </CTableDataCell>
     <CTableDataCell>
       <CFormInput type="number" min="0" placeholder="공급가격" />
+    </CTableDataCell>
+  </CTableRow>
+
+  <CTableRow v-else>
+    <CTableDataCell :colspan="7" class="text-center p-5 text-info">
+      {{ msg }}
     </CTableDataCell>
   </CTableRow>
 
@@ -51,6 +57,7 @@ export default defineComponent({
       validated: false,
     }
   },
+  props: ['msg'],
   computed: {},
   methods: {},
 })
