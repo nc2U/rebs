@@ -26,7 +26,6 @@
         :selected="selected"
         :orders="orderGroupList"
         :types="unitTypeList"
-        :floors="floorTypeList"
       />
       <PriceFormList
         @on-update="onUpdatePrice"
@@ -61,13 +60,15 @@ export default defineComponent({
   },
   data() {
     return {
+      orderPk: '',
+      typePk: '',
+      floorPk: '',
       priceMessage: '공급가격을 입력하기 위해 [차수 정보]를 선택하여 주십시요.',
     }
   },
   created() {
     this.fetchOrderGroupList(this.initProjId)
     this.fetchTypeList(this.initProjId)
-    this.fetchFloorTypeList(this.initProjId)
   },
   computed: {
     ...mapState('contract', ['orderGroupList']),
@@ -80,35 +81,31 @@ export default defineComponent({
         this.fetchProject(event.target.value)
         this.fetchOrderGroupList(event.target.value)
         this.fetchTypeList(event.target.value)
-        this.fetchFloorTypeList(event.target.value)
       } else {
         this.selected = false
       }
     },
-    orderSelect(this: any, payload: any) {
-      const project = this.project.pk
-      const order = payload
-      const type = ''
+    orderSelect(payload: any) {
+      this.orderPk = payload
       this.priceMessage =
         payload == ''
           ? '공급가격을 입력하기 위해 [차수 정보]를 선택하여 주십시요.'
           : '공급가격을 입력하기 위해 [타입 정보]를 선택하여 주십시요.'
-      console.log({ project, order, type })
     },
-    typeSelect(this: any, payload: any) {
-      const project = this.project.pk
-      const type = payload
+    typeSelect(payload: any) {
+      this.typePk = payload
       this.priceMessage =
         payload == ''
           ? '공급가격을 입력하기 위해 [타입 정보]를 선택하여 주십시요.'
-          : '공급가격을 입력하기 위해 [층별타입 정보]를 선택하여 주십시요.'
-      console.log({ project, type })
-    },
-    floorSelect() {
-      this.priceMessage = ''
+          : ''
+      const projId = this.project.pk
+      const orderId = this.orderPk
+      const typeId = this.typePk
+      this.fetchPriceList({ projId, orderId, typeId })
     },
     ...mapActions('contract', ['fetchOrderGroupList']),
-    ...mapActions('project', ['fetchTypeList', 'fetchFloorTypeList']),
+    ...mapActions('project', ['fetchTypeList']),
+    ...mapActions('cash', ['fetchPriceList']),
   },
 })
 </script>

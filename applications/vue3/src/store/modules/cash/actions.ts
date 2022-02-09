@@ -3,9 +3,12 @@ import { FETCH_PRICE_LIST } from '@/store/modules/cash/mutations-types'
 import { message } from '@/utils/helper'
 
 const actions = {
-  fetchPriceList: ({ commit }: any, pk?: number) => {
+  fetchPriceList: ({ commit }: any, payload: any) => {
+    const { projId, orderId, typeId } = payload
     api
-      .get(`/price/?project=${pk}`)
+      .get(
+        `/price/?project=${projId}&order_group=${orderId}&unit_type=${typeId}`,
+      )
       .then(res => {
         commit(FETCH_PRICE_LIST, res.data)
       })

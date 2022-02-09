@@ -36,27 +36,6 @@
         </CCol>
       </CRow>
     </CCol>
-
-    <CCol md="4" class="mb-2">
-      <CRow>
-        <CFormLabel for="sel3" class="col-sm-3 col-form-label">
-          층별타입 선택
-        </CFormLabel>
-        <CCol sm="9">
-          <CFormSelect
-            id="sel3"
-            v-model="floor"
-            @change="onFloorSelect"
-            :disabled="type == ''"
-          >
-            <option value="">층별타입 선택</option>
-            <option v-for="floor in floors" :key="floor.pk" :value="floor.pk">
-              {{ floor.alias_name }}
-            </option>
-          </CFormSelect>
-        </CCol>
-      </CRow>
-    </CCol>
   </CRow>
 </template>
 
@@ -69,22 +48,16 @@ export default defineComponent({
     return {
       order: '',
       type: '',
-      floor: '',
     }
   },
-  props: ['selected', 'orders', 'types', 'floors'],
+  props: ['selected', 'orders', 'types'],
   methods: {
     onOrderSelect(e: any) {
       this.type = ''
-      this.floor = ''
       this.$emit('on-order-select', e.target.value)
     },
     onTypeSelect(e: any) {
-      this.floor = ''
       this.$emit('on-type-select', e.target.value)
-    },
-    onFloorSelect(e: any) {
-      this.$emit('on-floor-select', e.target.value)
     },
   },
 })
