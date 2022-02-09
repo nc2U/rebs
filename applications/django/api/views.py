@@ -463,6 +463,7 @@ class SalesPriceList(generics.ListCreateAPIView):
     queryset = SalesPriceByGT.objects.all()
     serializer_class = SalesPriceSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    filter_fields = ('project', 'order_group', 'unit_type')
 
 
 class SalesPriceDetail(generics.RetrieveUpdateDestroyAPIView):
