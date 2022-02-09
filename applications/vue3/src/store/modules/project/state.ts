@@ -151,7 +151,8 @@ export interface SiteContract {
 export interface ProjectState {
   projectList: Project[]
   project: Project | null
-  typeList: UnitType[]
+  unitTypeList: UnitType[]
+  unitType: UnitType | null
   floorTypeList: UnitFloorType[]
   contUnitList: ContractUnit[]
   cont_unit: ContractUnit | null
@@ -172,7 +173,8 @@ export interface ProjectState {
 const state: ProjectState = {
   projectList: [],
   project: null,
-  typeList: [],
+  unitTypeList: [],
+  unitType: null,
   floorTypeList: [],
   contUnitList: [],
   cont_unit: null,

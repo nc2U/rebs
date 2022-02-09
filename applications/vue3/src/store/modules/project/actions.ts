@@ -4,6 +4,7 @@ import {
   FETCH_PROJECT,
   FETCH_PROJECT_LIST,
   FETCH_TYPE_LIST,
+  FETCH_TYPE,
 } from '@/store/modules/project/mutations-types'
 import { message } from '@/utils/helper'
 import router from '@/router'
@@ -76,6 +77,15 @@ const actions = {
       .get(`/type/?project=${pk}`)
       .then(res => {
         commit(FETCH_TYPE_LIST, res.data)
+      })
+      .catch(err => console.log(err))
+  },
+
+  fetchType: ({ commit }: any, pk: number) => {
+    api
+      .get(`/type/${pk}/`)
+      .then(res => {
+        commit(FETCH_TYPE, res.data)
       })
       .catch(err => console.log(err))
   },
