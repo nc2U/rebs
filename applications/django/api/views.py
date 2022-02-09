@@ -214,6 +214,7 @@ class UnitFloorTypeList(generics.ListCreateAPIView):
     name = 'floortype-list'
     queryset = UnitFloorType.objects.all()
     serializer_class = UnitFloorTypeSerializer
+    pagination_class = PageNumberPaginationFifty
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
     filter_fields = ('project',)
     search_fields = ('alias_name',)
