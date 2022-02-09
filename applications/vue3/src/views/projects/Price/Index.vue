@@ -110,7 +110,7 @@ export default defineComponent({
         payload == ''
           ? '공급가격을 입력하기 위해 [타입 정보]를 선택하여 주십시요.'
           : ''
-      const projId = this.project.pk
+      const projId = String(this.project.pk)
       const orderId = this.orderPk
       const typeId = this.typePk
       const queryIds = { projId, orderId, typeId }
