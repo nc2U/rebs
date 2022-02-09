@@ -224,7 +224,7 @@ export default [
           },
           {
             component: 'CNavItem',
-            name: '분양가격 등록',
+            name: '공급가격 등록',
             to: '/project/settings/price',
           },
           {

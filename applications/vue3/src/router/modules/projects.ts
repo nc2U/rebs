@@ -42,7 +42,7 @@ const projects = {
         },
         {
           path: 'price',
-          name: '분양가격 등록',
+          name: '공급가격 등록',
           component: () => import('@/views/projects/Price/Index.vue'),
         },
         {
