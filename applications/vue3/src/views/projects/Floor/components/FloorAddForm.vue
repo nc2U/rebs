@@ -9,7 +9,7 @@
       <CCol md="3" class="mb-2">
         <CFormInput
           v-model="form.start_floor"
-          title="시작 층"
+          placeholder="시작 층"
           type="number"
           min="0"
           required
