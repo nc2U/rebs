@@ -9,5 +9,5 @@ class LimitOffsetPaginationCustomBasic(LimitOffsetPagination):
     max_limit = 100
 
 
-class PageNumberPaginationForTodoList(PageNumberPagination):
+class PageNumberPaginationFifty(PageNumberPagination):
     page_size = 50
