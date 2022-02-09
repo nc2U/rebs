@@ -32,6 +32,7 @@
         @on-delete="onDeletePrice"
         :selected="selected"
         :msg="priceMessage"
+        :cond-texts="condTexts"
       />
     </CCardBody>
 
@@ -40,7 +41,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue'
+import { defineComponent } from 'vue'
 import HeaderNav from '@/components/HeaderNav.vue'
 import ProjectSelect from '@/components/ProjectSelect/Index.vue'
 import HeaderMixin from '@/views/projects/_menu/headermixin2'
@@ -71,6 +72,15 @@ export default defineComponent({
     this.fetchTypeList(this.initProjId)
   },
   computed: {
+    condTexts() {
+      const orderText = this.orderGroupList
+        .filter((o: any) => o.pk == this.orderPk)
+        .map((o: any) => o.order_group_name)[0]
+      const typeText = this.unitTypeList
+        .filter((t: any) => t.pk == this.typePk)
+        .map((t: any) => t.name)[0]
+      return { orderText, typeText }
+    },
     ...mapState('contract', ['orderGroupList']),
     ...mapState('project', ['unitTypeList', 'floorTypeList']),
   },
@@ -102,9 +112,10 @@ export default defineComponent({
       const orderId = this.orderPk
       const typeId = this.typePk
       this.fetchPriceList({ projId, orderId, typeId })
+      this.fetchFloorTypeList(projId)
     },
     ...mapActions('contract', ['fetchOrderGroupList']),
-    ...mapActions('project', ['fetchTypeList']),
+    ...mapActions('project', ['fetchTypeList', 'fetchFloorTypeList']),
     ...mapActions('cash', ['fetchPriceList']),
   },
 })

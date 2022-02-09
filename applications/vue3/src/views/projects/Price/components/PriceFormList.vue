@@ -21,7 +21,7 @@
       </CTableRow>
     </CTableHead>
     <CTableBody v-if="selected">
-      <Price :price="priceList" :msg="msg" />
+      <Price :price="priceList" :msg="msg" :cond-texts="condTexts" />
     </CTableBody>
 
     <CTableBody v-else>
@@ -41,6 +41,19 @@ import Price from '@/views/projects/Price/components/Price.vue'
 export default defineComponent({
   name: 'PriceFormList',
   components: { Price },
-  props: ['project', 'selected', 'msg'],
+  props: {
+    project: {
+      type: Object,
+    },
+    selected: {
+      type: Boolean,
+    },
+    msg: {
+      type: String,
+    },
+    condTexts: {
+      type: Object,
+    },
+  },
 })
 </script>

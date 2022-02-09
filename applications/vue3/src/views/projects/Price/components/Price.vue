@@ -1,29 +1,27 @@
 <template>
-  <CTableRow v-if="msg == ''">
-    <CTableDataCell :colspan="7" class="text-center p-5 text-info">
-      {{ priceList }}
+  <CTableRow v-for="floor in floorTypeList" :key="floor.pk" v-show="msg === ''">
+    <CTableDataCell class="text-center">
+      {{ condTexts.orderText }}
     </CTableDataCell>
-
-    <!--    <CTableDataCell :rowspan="1" class="text-center">-->
-    <!--      1차 조합원-->
-    <!--    </CTableDataCell>-->
-    <!--    <CTableDataCell :rowspan="1" class="text-center"> 74</CTableDataCell>-->
-    <!--    <CTableDataCell> 21층 이상</CTableDataCell>-->
-    <!--    <CTableDataCell>-->
-    <!--      <CFormInput type="number" min="0" placeholder="건물가" />-->
-    <!--    </CTableDataCell>-->
-    <!--    <CTableDataCell>-->
-    <!--      <CFormInput type="number" min="0" placeholder="대지가" />-->
-    <!--    </CTableDataCell>-->
-    <!--    <CTableDataCell>-->
-    <!--      <CFormInput type="number" min="0" placeholder="부가세" />-->
-    <!--    </CTableDataCell>-->
-    <!--    <CTableDataCell>-->
-    <!--      <CFormInput type="number" min="0" placeholder="공급가격" />-->
-    <!--    </CTableDataCell>-->
+    <CTableDataCell class="text-center">
+      {{ condTexts.typeText }}
+    </CTableDataCell>
+    <CTableDataCell> {{ floor.alias_name }}</CTableDataCell>
+    <CTableDataCell>
+      <CFormInput type="number" min="0" placeholder="건물가" />
+    </CTableDataCell>
+    <CTableDataCell>
+      <CFormInput type="number" min="0" placeholder="대지가" />
+    </CTableDataCell>
+    <CTableDataCell>
+      <CFormInput type="number" min="0" placeholder="부가세" />
+    </CTableDataCell>
+    <CTableDataCell>
+      <CFormInput type="number" min="0" placeholder="공급가격" />
+    </CTableDataCell>
   </CTableRow>
 
-  <CTableRow v-else>
+  <CTableRow v-show="msg !== ''">
     <CTableDataCell :colspan="7" class="text-center p-5 text-info">
       {{ msg }}
     </CTableDataCell>
@@ -62,9 +60,17 @@ export default defineComponent({
       validated: false,
     }
   },
-  props: ['msg'],
+  props: {
+    msg: {
+      type: String,
+    },
+    condTexts: {
+      type: Object,
+    },
+  },
   computed: {
     ...mapState('cash', ['priceList']),
+    ...mapState('project', ['floorTypeList']),
   },
   methods: {},
 })
