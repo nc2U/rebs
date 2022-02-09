@@ -12,16 +12,35 @@
     </CCardBody>
   </CCard>
 
-  <component :is="compName" />
+  <CCard class="mb-4 pb-5">
+    <CCardHeader>
+      <CIcon name="cil-notes" />
+      <strong class="pl-1"> {{ $route.name }}</strong>
+    </CCardHeader>
+
+    <CCardBody v-if="project">
+      <FloorAddForm :selected="selected" @on-submit="onSubmit" />
+      <FloorFormList
+        @on-update="onUpdateFloor"
+        @on-delete="onDeleteFloor"
+        :selected="selected"
+        :project="project"
+      />
+    </CCardBody>
+
+    <!--    <CCardFooter>&nbsp;</CCardFooter>-->
+  </CCard>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 import HeaderNav from '@/components/HeaderNav.vue'
 import ProjectSelect from '@/components/ProjectSelect/Index.vue'
-import BlankComponent from '@/components/BlankComponent.vue'
 import HeaderMixin from '@/views/projects/_menu/headermixin2'
 import ProjectMixin from '@/views/projects/projectMixin'
+import FloorAddForm from '@/views/projects/Floor/components/FloorAddForm.vue'
+import { mapActions } from 'vuex'
+import FloorFormList from '@/views/projects/Floor/components/FloorFormList.vue'
 
 export default defineComponent({
   name: 'ProjectsFloorSet',
@@ -29,12 +48,40 @@ export default defineComponent({
   components: {
     HeaderNav,
     ProjectSelect,
-    BlankComponent,
+    FloorAddForm,
+    FloorFormList,
   },
-  data() {
-    return {
-      compName: 'BlankComponent',
-    }
+  created() {
+    this.fetchFloorTypeList(this.initProjId)
+  },
+  methods: {
+    projSelect(event: any) {
+      if (event.target.value !== '') {
+        this.selected = true
+        this.fetchProject(event.target.value)
+        this.fetchFloorTypeList(event.target.value)
+      } else {
+        this.selected = false
+      }
+    },
+    onSubmit(payload: any) {
+      const project = this.project.pk
+      this.createFloorType({ ...{ project }, ...payload })
+    },
+    onUpdateFloor(payload: any) {
+      const project = this.project.pk
+      this.updateFloorType({ ...{ project }, ...payload })
+    },
+    onDeleteFloor(pk: number) {
+      const project = this.project.pk
+      this.deleteFloorType({ ...{ pk }, ...{ project } })
+    },
+    ...mapActions('project', [
+      'fetchFloorTypeList',
+      'createFloorType',
+      'updateFloorType',
+      'deleteFloorType',
+    ]),
   },
 })
 </script>
