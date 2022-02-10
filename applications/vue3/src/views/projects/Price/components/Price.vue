@@ -63,15 +63,12 @@ export default defineComponent({
       },
     }
   },
-  created(this: any) {
-    this.priceRefresh()
-  },
   props: ['floor', 'condTexts', 'queryIds'],
   computed: {
     ...mapState('cash', ['priceList']),
   },
-  methods: {
-    priceRefresh(this: any) {
+  watch: {
+    priceList() {
       const floorId = String(this.floor.pk)
       const { projId, orderId, typeId }: any = this.queryIds
       const price = this.priceList.filter(

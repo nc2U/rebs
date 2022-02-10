@@ -39,14 +39,6 @@
         </CTableDataCell>
       </CTableRow>
     </CTableBody>
-
-    <!--    <CTableBody v-else>-->
-    <!--      <CTableRow>-->
-    <!--        <CTableDataCell colspan="7" class="text-center p-5 text-danger">-->
-    <!--          등록된 데이터가 없습니다.-->
-    <!--        </CTableDataCell>-->
-    <!--      </CTableRow>-->
-    <!--    </CTableBody>-->
   </CTable>
 </template>
 
@@ -58,23 +50,7 @@ import { mapState } from 'vuex'
 export default defineComponent({
   name: 'PriceFormList',
   components: { Price },
-  props: {
-    project: {
-      type: Object,
-    },
-    selected: {
-      type: Boolean,
-    },
-    msg: {
-      type: String,
-    },
-    condTexts: {
-      type: Object,
-    },
-    queryIds: {
-      type: Object,
-    },
-  },
+  props: ['project', 'selected', 'msg', 'condTexts', 'queryIds'],
   computed: {
     ...mapState('project', ['floorTypeList']),
   },

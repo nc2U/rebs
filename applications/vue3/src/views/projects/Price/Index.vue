@@ -117,8 +117,8 @@ export default defineComponent({
       const typeId = this.typePk
       const queryIds = { projId, orderId, typeId }
       this.queryIds = queryIds
-      this.fetchPriceList(queryIds)
       this.fetchFloorTypeList(projId)
+      this.fetchPriceList(queryIds)
     },
     resetPrices(this: any) {
       this.$store.state.project.floorTypeList = []
