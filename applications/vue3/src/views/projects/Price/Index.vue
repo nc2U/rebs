@@ -96,6 +96,7 @@ export default defineComponent({
       } else {
         this.selected = false
       }
+      this.resetPrices()
     },
     orderSelect(payload: any) {
       this.orderPk = payload
@@ -103,6 +104,7 @@ export default defineComponent({
         payload == ''
           ? '공급가격을 입력하기 위해 [차수 정보]를 선택하여 주십시요.'
           : '공급가격을 입력하기 위해 [타입 정보]를 선택하여 주십시요.'
+      this.resetPrices()
     },
     typeSelect(payload: any) {
       this.typePk = payload
@@ -118,9 +120,13 @@ export default defineComponent({
       this.fetchPriceList(queryIds)
       this.fetchFloorTypeList(projId)
     },
+    resetPrices(this: any) {
+      this.$store.state.project.floorTypeList = []
+      this.$store.state.cash.priceList = []
+    },
     ...mapActions('contract', ['fetchOrderGroupList']),
     ...mapActions('project', ['fetchTypeList', 'fetchFloorTypeList']),
-    ...mapActions('cash', ['fetchPriceList']),
+    ...mapActions('cash', ['fetchPriceList', 'fetchPrice']),
   },
 })
 </script>

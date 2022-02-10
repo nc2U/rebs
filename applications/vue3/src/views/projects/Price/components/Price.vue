@@ -66,17 +66,7 @@ export default defineComponent({
   created(this: any) {
     this.priceRefresh()
   },
-  props: {
-    floor: {
-      type: Object,
-    },
-    condTexts: {
-      type: Object,
-    },
-    queryIds: {
-      type: Object,
-    },
-  },
+  props: ['floor', 'condTexts', 'queryIds'],
   computed: {
     ...mapState('cash', ['priceList']),
   },
