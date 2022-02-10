@@ -48,9 +48,10 @@ const actions = {
     const { pk } = payload
     delete payload.pk
     api
-      .patch(`/price/${pk}/`, payload)
-      .then(res => {
-        dispatch('fetchPriceList', res.data.project)
+      .put(`/price/${pk}/`, payload)
+      .then(() => {
+        const { project, order_group, unit_type } = payload
+        dispatch('fetchPriceList', { project, order_group, unit_type })
         message()
       })
       .catch(err => {

@@ -56,7 +56,8 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { mapGetters, mapState } from 'vuex'
+import { mapState } from 'vuex'
+import floor from '@/views/projects/Floor/components/Floor.vue'
 
 export default defineComponent({
   name: 'Price',
@@ -109,7 +110,11 @@ export default defineComponent({
   },
   methods: {
     onStorePrice(this: any) {
-      const payload = this.form
+      const payload = {
+        ...this.queryIds,
+        ...{ unit_floor_type: this.floor.pk },
+        ...this.form,
+      }
       if (!this.price) this.$emit('on-create', payload)
       else {
         const updatePayload = { ...{ pk: this.price.pk }, ...payload }
