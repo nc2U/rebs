@@ -141,8 +141,7 @@ export default defineComponent({
     },
 
     onCreatePrice(payload: any) {
-      alert('create!')
-      console.log(payload)
+      this.createPrice(payload)
     },
     onUpdatePrice(payload: any) {
       this.updatePrice(payload)
