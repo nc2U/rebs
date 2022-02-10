@@ -6,23 +6,24 @@ const api = axios.create({
 })
 
 api.interceptors.request.use(
-  (config) => {
+  config => {
     store.commit('startSpinner')
     return config
   },
-  (error) => {
+  error => {
     // alert('데이터 요청 실패!')
     return Promise.reject(error)
   },
 )
 
 api.interceptors.response.use(
-  (response) => {
+  response => {
     store.commit('endSpinner')
     return response
   },
-  (error) => {
+  error => {
     // alert('데이터 응답 실패!')
+    store.commit('endSpinner')
     return Promise.reject(error)
   },
 )

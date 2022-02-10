@@ -7,7 +7,6 @@ import {
   FETCH_TYPE,
 } from '@/store/modules/project/mutations-types'
 import { message } from '@/utils/helper'
-import router from '@/router'
 
 const actions = {
   fetchProjectList: ({ commit }: any) => {
@@ -138,7 +137,6 @@ const actions = {
         alert(
           '해당 그룹에 종속된 계약관련 데이터가 있는 경우 이 그룹을 삭제할 수 없습니다.',
         )
-        ;(router as any).go()
       })
   },
 
@@ -199,7 +197,6 @@ const actions = {
         alert(
           '해당 그룹에 종속된 분양가 데이터가 있는 경우 이 그룹을 삭제할 수 없습니다.',
         )
-        ;(router as any).go()
       })
   },
 }
