@@ -16,9 +16,9 @@
         <CTableHeaderCell>비 고</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
-    <CTableBody v-if="selected && typeList.length !== 0">
+    <CTableBody v-if="selected && unitTypeList">
       <Type
-        v-for="type in typeList"
+        v-for="type in unitTypeList"
         @on-update="onUpdateType"
         @on-delete="onDeleteType"
         :key="type.pk"
@@ -46,7 +46,7 @@ export default defineComponent({
   components: { Type },
   props: ['project', 'selected'],
   computed: {
-    ...mapState('project', ['typeList']),
+    ...mapState('project', ['unitTypeList']),
   },
   methods: {
     onUpdateType(payload: any) {
