@@ -6,7 +6,12 @@
           차수선택
         </CFormLabel>
         <CCol sm="9">
-          <CFormSelect id="sel1" v-model="order" @change="onOrderSelect">
+          <CFormSelect
+            id="sel1"
+            ref="order"
+            v-model="order"
+            @change="onOrderSelect"
+          >
             <option value="">차수 선택</option>
             <option v-for="order in orders" :key="order.pk" :value="order.pk">
               {{ order.order_group_name }}

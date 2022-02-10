@@ -20,6 +20,7 @@
 
     <CCardBody class="pb-5" v-if="project">
       <PriceSelectForm
+        ref="formSelect"
         @on-order-select="orderSelect"
         @on-type-select="typeSelect"
         @on-floor-select="floorSelect"
@@ -72,6 +73,7 @@ export default defineComponent({
   created() {
     this.fetchOrderGroupList(this.initProjId)
     this.fetchTypeList(this.initProjId)
+    this.fetchFloorTypeList(this.initProjId)
   },
   computed: {
     condTexts() {
@@ -87,16 +89,19 @@ export default defineComponent({
     ...mapState('project', ['unitTypeList', 'floorTypeList']),
   },
   methods: {
-    projSelect(event: any) {
+    projSelect(this: any, event: any) {
       if (event.target.value !== '') {
         this.selected = true
         this.fetchProject(event.target.value)
         this.fetchOrderGroupList(event.target.value)
         this.fetchTypeList(event.target.value)
+        this.fetchFloorTypeList(event.target.value)
       } else {
         this.selected = false
       }
       this.resetPrices()
+      this.$refs.formSelect.order = ''
+      this.$refs.formSelect.type = ''
     },
     orderSelect(payload: any) {
       this.orderPk = payload
@@ -117,11 +122,9 @@ export default defineComponent({
       const typeId = this.typePk
       const queryIds = { projId, orderId, typeId }
       this.queryIds = queryIds
-      this.fetchFloorTypeList(projId)
       this.fetchPriceList(queryIds)
     },
     resetPrices(this: any) {
-      this.$store.state.project.floorTypeList = []
       this.$store.state.cash.priceList = []
     },
     ...mapActions('contract', ['fetchOrderGroupList']),
