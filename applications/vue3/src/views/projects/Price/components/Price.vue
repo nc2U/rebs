@@ -42,12 +42,12 @@
     </CTableDataCell>
     <CTableDataCell class="text-center">
       <CButton
-        :color="btn.color"
+        :color="btnColor"
         size="sm"
         @click="onStorePrice"
         :disabled="formsCheck"
       >
-        {{ btn.text }}
+        {{ btnTitle }}
       </CButton>
       <CButton color="danger" size="sm">삭제</CButton>
     </CTableDataCell>
@@ -70,15 +70,15 @@ export default defineComponent({
         price: null,
       },
       price: {},
-      isData: false,
     }
   },
   props: ['floor', 'condTexts', 'queryIds'],
   computed: {
-    btn() {
-      const color = this.isData ? 'success' : 'primary'
-      const text = this.isData ? '수정' : '등록'
-      return { color, text }
+    btnColor() {
+      return this.price ? 'success' : 'primary'
+    },
+    btnTitle() {
+      return this.price ? '수정' : '등록'
     },
     formsCheck(this: any) {
       if (this.price) {
@@ -86,7 +86,7 @@ export default defineComponent({
         const b = this.form.price_land == this.price.price_land
         const c = this.form.price_tax == this.price.price_tax
         const d = this.form.price == this.price.price
-        return (a && b && c && d) || !this.isData
+        return (a && b && c && d) || !this.price
       } else {
         return (
           !this.form.price_build &&
@@ -110,7 +110,6 @@ export default defineComponent({
           p.unit_floor_type == unit_floor_type,
       )[0]
       this.price = price
-      this.isData = price ? true : false
       this.form.price_build = price ? price.price_build : null
       this.form.price_land = price ? price.price_land : null
       this.form.price_tax = price ? price.price_tax : null
