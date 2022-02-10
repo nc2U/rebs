@@ -7,10 +7,10 @@ import { message } from '@/utils/helper'
 
 const actions = {
   fetchPriceList: ({ commit }: any, payload: any) => {
-    const { projId, orderId, typeId } = payload
+    const { project, order_group, unit_type } = payload
     api
       .get(
-        `/price/?project=${projId}&order_group=${orderId}&unit_type=${typeId}`,
+        `/price/?project=${project}&order_group=${order_group}&unit_type=${unit_type}`,
       )
       .then(res => {
         commit(FETCH_PRICE_LIST, res.data)
@@ -48,7 +48,7 @@ const actions = {
     const { pk } = payload
     delete payload.pk
     api
-      .put(`/price/${pk}/`, payload)
+      .patch(`/price/${pk}/`, payload)
       .then(res => {
         dispatch('fetchPriceList', res.data.project)
         message()
