@@ -81,11 +81,20 @@ export default defineComponent({
       return { color, text }
     },
     formsCheck(this: any) {
-      const a = this.form.price_build == this.price.price_build
-      const b = this.form.price_land == this.price.price_land
-      const c = this.form.price_tax == this.price.price_tax
-      const d = this.form.price == this.price.price
-      return (a && b && c && d) || !this.isData
+      if (this.price) {
+        const a = this.form.price_build == this.price.price_build
+        const b = this.form.price_land == this.price.price_land
+        const c = this.form.price_tax == this.price.price_tax
+        const d = this.form.price == this.price.price
+        return (a && b && c && d) || !this.isData
+      } else {
+        return (
+          !this.form.price_build &&
+          !this.form.price_land &&
+          !this.form.price_tax &&
+          !this.form.price
+        )
+      }
     },
     ...mapState('cash', ['priceList']),
   },
