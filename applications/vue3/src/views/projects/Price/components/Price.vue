@@ -41,7 +41,12 @@
       />
     </CTableDataCell>
     <CTableDataCell class="text-center">
-      <CButton :color="btn.color" size="sm" :disabled="formsCheck">
+      <CButton
+        :color="btn.color"
+        size="sm"
+        @click="onStorePrice"
+        :disabled="formsCheck"
+      >
         {{ btn.text }}
       </CButton>
       <CButton color="danger" size="sm">삭제</CButton>
@@ -51,7 +56,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { mapState } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'Price',
@@ -85,14 +90,14 @@ export default defineComponent({
   },
   watch: {
     priceList() {
-      const floorId = String(this.floor.pk)
-      const { projId, orderId, typeId }: any = this.queryIds
+      const unit_floor_type = String(this.floor.pk)
+      const { project, order_group, unit_type }: any = this.queryIds
       const price = this.priceList.filter(
         (p: any) =>
-          p.project == projId &&
-          p.order_group == orderId &&
-          p.unit_type == typeId &&
-          p.unit_floor_type == floorId,
+          p.project == project &&
+          p.order_group == order_group &&
+          p.unit_type == unit_type &&
+          p.unit_floor_type == unit_floor_type,
       )[0]
       this.price = price
       this.isData = price ? true : false
@@ -100,6 +105,16 @@ export default defineComponent({
       this.form.price_land = price ? price.price_land : null
       this.form.price_tax = price ? price.price_tax : null
       this.form.price = price ? price.price : null
+    },
+  },
+  methods: {
+    onStorePrice(this: any) {
+      const payload = this.form
+      if (!this.price) this.$emit('on-create', payload)
+      else {
+        const updatePayload = { ...{ pk: this.price.pk }, ...payload }
+        this.$emit('on-update', updatePayload)
+      }
     },
   },
 })
