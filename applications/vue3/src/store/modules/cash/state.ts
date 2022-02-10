@@ -1,4 +1,4 @@
-interface Price {
+export interface Price {
   pk: number
   project: number
   order_group: number
@@ -12,10 +12,12 @@ interface Price {
 
 export interface CashState {
   priceList: Price[]
+  price: Price | null
 }
 
 const state: CashState = {
   priceList: [],
+  price: null,
 }
 
 export default state

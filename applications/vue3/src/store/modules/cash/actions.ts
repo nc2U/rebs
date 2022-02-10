@@ -1,5 +1,8 @@
 import api from '@/api'
-import { FETCH_PRICE_LIST } from '@/store/modules/cash/mutations-types'
+import {
+  FETCH_PRICE_LIST,
+  FETCH_PRICE,
+} from '@/store/modules/cash/mutations-types'
 import { message } from '@/utils/helper'
 
 const actions = {
@@ -11,6 +14,15 @@ const actions = {
       )
       .then(res => {
         commit(FETCH_PRICE_LIST, res.data)
+      })
+      .catch(err => console.log(err))
+  },
+
+  fetchPrice: ({ commit }: any, pk: any) => {
+    api
+      .get(`/price/${pk}/`)
+      .then(res => {
+        commit(FETCH_PRICE, res.data)
       })
       .catch(err => console.log(err))
   },
