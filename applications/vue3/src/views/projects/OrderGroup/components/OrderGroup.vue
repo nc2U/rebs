@@ -3,7 +3,7 @@
     <CTableDataCell>
       <CFormInput
         type="number"
-        v-model="form.order_number"
+        v-model.number="form.order_number"
         min="1"
         required
         placeholder="등록차수"
@@ -14,7 +14,6 @@
       <CFormSelect
         v-model="form.sort"
         :options="sorts"
-        :onchange="onUpdateOrder"
         :selected="sorts.value == form.sort"
       />
     </CTableDataCell>
