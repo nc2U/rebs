@@ -22,7 +22,7 @@
         <CTableHeaderCell>비고</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
-    <CTableBody v-if="selected">
+    <CTableBody v-if="selected && msg === ''">
       <Price
         v-for="floor in floorTypeList"
         :key="floor.pk"
@@ -30,21 +30,23 @@
         :query-ids="queryIds"
         :floor="floor"
       />
+    </CTableBody>
 
-      <CTableRow v-show="msg !== ''">
-        <CTableDataCell :colspan="7" class="text-center p-5 text-info">
+    <CTableBody v-else>
+      <CTableRow>
+        <CTableDataCell :colspan="8" class="text-center p-5 text-info">
           {{ msg }}
         </CTableDataCell>
       </CTableRow>
     </CTableBody>
 
-    <CTableBody v-else>
-      <CTableRow>
-        <CTableDataCell colspan="7" class="text-center p-5 text-danger">
-          등록된 데이터가 없습니다.
-        </CTableDataCell>
-      </CTableRow>
-    </CTableBody>
+    <!--    <CTableBody v-else>-->
+    <!--      <CTableRow>-->
+    <!--        <CTableDataCell colspan="7" class="text-center p-5 text-danger">-->
+    <!--          등록된 데이터가 없습니다.-->
+    <!--        </CTableDataCell>-->
+    <!--      </CTableRow>-->
+    <!--    </CTableBody>-->
   </CTable>
 </template>
 
