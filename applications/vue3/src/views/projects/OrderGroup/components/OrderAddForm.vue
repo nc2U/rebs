@@ -88,6 +88,12 @@ export default defineComponent({
       this.$emit('on-submit', this.form)
       this.validated = false
       ;(this as any).$refs.confirmModal.visible = false
+      this.resetForm()
+    },
+    resetForm() {
+      this.form.order_number = null
+      this.form.sort = ''
+      this.form.order_group_name = ''
     },
   },
 })

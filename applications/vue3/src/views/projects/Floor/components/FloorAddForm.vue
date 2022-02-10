@@ -69,14 +69,14 @@ export default defineComponent({
       form: {
         start_floor: '',
         end_floor: '',
-        alias_name: null,
+        alias_name: '',
       },
       validated: false,
     }
   },
   props: ['selected'],
   methods: {
-    onSubmit(event: any) {
+    onSubmit(this: any, event: any) {
       const form = event.currentTarget
       if (form.checkValidity() === false) {
         event.preventDefault()
@@ -84,13 +84,19 @@ export default defineComponent({
 
         this.validated = true
       } else {
-        ;(this as any).$refs.confirmModal.callModal()
+        this.$refs.confirmModal.callModal()
       }
     },
-    modalAction() {
+    modalAction(this: any) {
       this.$emit('on-submit', this.form)
       this.validated = false
-      ;(this as any).$refs.confirmModal.visible = false
+      this.$refs.confirmModal.visible = false
+      this.resetForm()
+    },
+    resetForm() {
+      this.form.start_floor = ''
+      this.form.end_floor = ''
+      this.form.alias_name = ''
     },
   },
 })

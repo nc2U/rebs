@@ -85,7 +85,7 @@ export default defineComponent({
   },
   props: ['selected'],
   methods: {
-    onSubmit(event: any) {
+    onSubmit(this: any, event: any) {
       const form = event.currentTarget
       if (form.checkValidity() === false) {
         event.preventDefault()
@@ -93,13 +93,20 @@ export default defineComponent({
 
         this.validated = true
       } else {
-        ;(this as any).$refs.confirmModal.callModal()
+        this.$refs.confirmModal.callModal()
       }
     },
-    modalAction() {
+    modalAction(this: any) {
       this.$emit('on-submit', this.form)
       this.validated = false
-      ;(this as any).$refs.confirmModal.visible = false
+      this.$refs.confirmModal.visible = false
+      this.resetForm()
+    },
+    resetForm() {
+      this.form.name = ''
+      this.form.color = ''
+      this.form.average_price = null
+      this.form.num_unit = null
     },
   },
 })
