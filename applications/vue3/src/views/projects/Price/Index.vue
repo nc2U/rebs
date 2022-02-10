@@ -96,12 +96,15 @@ export default defineComponent({
         this.fetchOrderGroupList(event.target.value)
         this.fetchTypeList(event.target.value)
         this.fetchFloorTypeList(event.target.value)
+        this.$refs.formSelect.orderDisabled = false
       } else {
         this.selected = false
+        this.$refs.formSelect.orderDisabled = true
       }
       this.resetPrices()
       this.$refs.formSelect.order = ''
       this.$refs.formSelect.type = ''
+      this.orderSelect('')
     },
     orderSelect(payload: any) {
       this.orderPk = payload

@@ -8,9 +8,9 @@
         <CCol sm="9">
           <CFormSelect
             id="sel1"
-            ref="order"
             v-model="order"
             @change="onOrderSelect"
+            :disabled="orderDisabled"
           >
             <option value="">차수 선택</option>
             <option v-for="order in orders" :key="order.pk" :value="order.pk">
@@ -53,6 +53,7 @@ export default defineComponent({
     return {
       order: '',
       type: '',
+      orderDisabled: false,
     }
   },
   props: ['selected', 'orders', 'types'],
