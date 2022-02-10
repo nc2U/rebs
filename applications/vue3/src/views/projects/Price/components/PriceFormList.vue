@@ -29,6 +29,8 @@
         :cond-texts="condTexts"
         :query-ids="queryIds"
         :floor="floor"
+        @on-create="onCreate"
+        @on-update="onUpdate"
       />
     </CTableBody>
 
@@ -53,6 +55,14 @@ export default defineComponent({
   props: ['project', 'selected', 'msg', 'condTexts', 'queryIds'],
   computed: {
     ...mapState('project', ['floorTypeList']),
+  },
+  methods: {
+    onCreate(payload: any) {
+      this.$emit('on-create', payload)
+    },
+    onUpdate(payload: any) {
+      this.$emit('on-update', payload)
+    },
   },
 })
 </script>
