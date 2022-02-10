@@ -2,7 +2,7 @@
   <CTableRow>
     <CTableDataCell>
       <CFormInput
-        v-model="form.start_floor"
+        v-model.number="form.start_floor"
         placeholder="시작 층"
         type="number"
         min="0"
@@ -12,7 +12,7 @@
     </CTableDataCell>
     <CTableDataCell>
       <CFormInput
-        v-model="form.end_floor"
+        v-model.number="form.end_floor"
         placeholder="종료 층"
         type="number"
         min="0"

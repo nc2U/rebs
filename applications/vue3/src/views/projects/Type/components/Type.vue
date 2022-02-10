@@ -13,7 +13,7 @@
     </CTableDataCell>
     <CTableDataCell>
       <CFormInput
-        v-model="form.average_price"
+        v-model.number="form.average_price"
         placeholder="평균가격"
         type="number"
         min="0"
