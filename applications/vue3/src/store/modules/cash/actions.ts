@@ -31,8 +31,9 @@ const actions = {
   createPrice: ({ dispatch }: any, payload: any) => {
     api
       .post(`/price/`, payload)
-      .then(res => {
-        dispatch('fetchPriceList', res.data.project)
+      .then(() => {
+        const { project, order_group, unit_type } = payload
+        dispatch('fetchPriceList', { project, order_group, unit_type })
         message()
       })
       .catch(err => {
