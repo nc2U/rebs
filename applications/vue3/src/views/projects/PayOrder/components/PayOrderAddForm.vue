@@ -7,9 +7,13 @@
   >
     <CRow class="p-2">
       <CCol md="3" class="mb-2">
+        <CFormSelect />
+      </CCol>
+
+      <CCol md="3" class="mb-2">
         <CFormInput
-          v-model="form.start_floor"
-          placeholder="시작 층"
+          v-model.number="form.pay_code"
+          placeholder="납입회차 코드"
           type="number"
           min="0"
           required
@@ -19,10 +23,19 @@
 
       <CCol md="3" class="mb-2">
         <CFormInput
-          v-model="form.end_floor"
-          placeholder="종료 층"
+          v-model.number="form.pay_time"
+          placeholder="납부순서"
           type="number"
           min="0"
+          required
+          :disabled="!selected"
+        />
+      </CCol>
+
+      <CCol md="3" class="mb-2">
+        <CFormInput
+          v-model="form.pay_name"
+          placeholder="납부회차 명"
           required
           :disabled="!selected"
         />
@@ -31,7 +44,34 @@
       <CCol md="3" class="mb-2">
         <CFormInput
           v-model="form.alias_name"
-          placeholder="층별 범위 명칭"
+          placeholder="별칭 이름"
+          required
+          :disabled="!selected"
+        />
+      </CCol>
+
+      <CCol md="3" class="mb-2">
+        <CFormInput
+          v-model="form.alias_name"
+          placeholder="PM용역비 여부"
+          required
+          :disabled="!selected"
+        />
+      </CCol>
+
+      <CCol md="3" class="mb-2">
+        <CFormInput
+          v-model="form.pay_due_date"
+          placeholder="납부기한일"
+          required
+          :disabled="!selected"
+        />
+      </CCol>
+
+      <CCol md="3" class="mb-2">
+        <CFormInput
+          v-model="form.extra_due_date"
+          placeholder="납부유예일"
           required
           :disabled="!selected"
         />
@@ -67,9 +107,14 @@ export default defineComponent({
   data() {
     return {
       form: {
-        start_floor: '',
-        end_floor: '',
+        pay_sort: '',
+        pay_code: '',
+        pay_time: '',
+        pay_name: '',
         alias_name: '',
+        is_pm_cost: '',
+        pay_due_date: '',
+        extra_due_date: '',
       },
       validated: false,
     }
@@ -94,9 +139,14 @@ export default defineComponent({
       this.resetForm()
     },
     resetForm() {
-      this.form.start_floor = ''
-      this.form.end_floor = ''
+      this.form.pay_sort = ''
+      this.form.pay_code = ''
+      this.form.pay_time = ''
+      this.form.pay_name = ''
       this.form.alias_name = ''
+      this.form.is_pm_cost = ''
+      this.form.pay_due_date = ''
+      this.form.extra_due_date = ''
     },
   },
 })
