@@ -1,20 +1,31 @@
 <template>
   <CTable hover responsive>
     <colgroup>
-      <col width="30%" />
-      <col width="30%" />
-      <col width="40%" />
+      <col width="11%" />
+      <col width="11%" />
+      <col width="11%" />
+      <col width="11%" />
+      <col width="11%" />
+      <col width="11%" />
+      <col width="11%" />
+      <col width="11%" />
+      <col width="12%" />
     </colgroup>
     <CTableHead color="dark" class="text-center">
       <CTableRow>
-        <CTableHeaderCell>시작 층</CTableHeaderCell>
-        <CTableHeaderCell>종료 층</CTableHeaderCell>
-        <CTableHeaderCell>층별 범위 명칭</CTableHeaderCell>
-        <CTableHeaderCell>비 고</CTableHeaderCell>
+        <CTableHeaderCell>종류</CTableHeaderCell>
+        <CTableHeaderCell>납입회차 코드</CTableHeaderCell>
+        <CTableHeaderCell>납부순서</CTableHeaderCell>
+        <CTableHeaderCell>납부회차명</CTableHeaderCell>
+        <CTableHeaderCell>회차 별칭</CTableHeaderCell>
+        <CTableHeaderCell>PM용역비 여부</CTableHeaderCell>
+        <CTableHeaderCell>납부기한일</CTableHeaderCell>
+        <CTableHeaderCell>납부유예일</CTableHeaderCell>
+        <CTableHeaderCell>비고</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
     <CTableBody v-if="selected && floorTypeList.length !== 0">
-      <Floor
+      <PayOrder
         v-for="floor in floorTypeList"
         @on-update="onUpdateFloor"
         @on-delete="onDeleteFloor"
@@ -35,15 +46,15 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import Floor from '@/views/projects/Floor/components/Floor.vue'
+import PayOrder from '@/views/projects/PayOrder/components/PayOrder.vue'
 import { mapState } from 'vuex'
 
 export default defineComponent({
-  name: 'FloorFormList',
-  components: { Floor },
+  name: 'PayOrderFormList',
+  components: { PayOrder },
   props: ['project', 'selected'],
   computed: {
-    ...mapState('project', ['floorTypeList']),
+    ...mapState('cash', ['payOrderList']),
   },
   methods: {
     onUpdateFloor(payload: any) {
