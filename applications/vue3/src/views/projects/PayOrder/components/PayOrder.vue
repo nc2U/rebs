@@ -31,7 +31,10 @@
 
     <CTableDataCell>
       <CCol class="pt-2 pl-3">
-        <CFormSwitch v-model="form.is_pm_cost" :checked="false" />
+        <CFormSwitch
+          v-model="form.is_pm_cost"
+          :checked="payOrder.is_pm_cost === true"
+        />
       </CCol>
     </CTableDataCell>
 
