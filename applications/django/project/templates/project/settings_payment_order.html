@@ -54,10 +54,11 @@
                                             <th class="text-center">종류</th>
                                             <th class="text-center">납입회차 코드</th>
                                             <th class="text-center">납부순서</th>
+                                            <th class="text-center">PM용역비 여부</th>
                                             <th class="text-center">납부회차 명</th>
                                             <th class="text-center">별칭 이름</th>
-                                            <th class="text-center">PM용역비 여부</th>
                                             <th class="text-center">납부기한일</th>
+                                            <th class="text-center">납부유예일</th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -79,22 +80,27 @@
                                                     <span class="text-danger">{{ form.pay_time.errors }}</span>
                                                 </td>
                                                 <td class="text-center">
-                                                    {{ form.pay_name|add_class:"form-control"|attr:"placeholder:납부회차 명" }}
-                                                    <span class="text-danger">{{ form.pay_name.errors }}</span>
-                                                </td>
-                                                <td class="text-center">
-                                                    {{ form.alias_name|add_class:"form-control"|attr:"placeholder:별칭 이름" }}
-                                                    <span class="text-danger">{{ form.alias_name.errors }}</span>
-                                                </td>
-                                                <td class="text-center">
                                                     <div class="custom-control custom-switch">
                                                         {{ form.is_pm_cost|add_class:"custom-control-input" }}
                                                         <label class="custom-control-label" for="{{ form.is_pm_cost.id_for_label }}"></label>
                                                     </div>
                                                 </td>
                                                 <td class="text-center">
+                                                    {{ form.pay_name|add_class:"form-control"|attr:"placeholder:납부회차 명" }}
+                                                    <span class="text-danger">{{ form.pay_name.errors }}</span>
+                                                </td>
+                                                <td class="text-center">
+                                                    {{ form.alias_name|add_class:"form-control"|attr:"placeholder:회차 별칭" }}
+                                                    <span class="text-danger">{{ form.alias_name.errors }}</span>
+                                                </td>
+                                                <td class="text-center">
                                                     {{ form.pay_due_date|add_class:"form-control text-center"|attr:"placeholder:납부기한일"|attr:"data-provide=datepicker data-date-format=yyyy-mm-dd data-date-autoclose=true data-toggle=input-mask data-mask-format=0000-00-00" }}
                                                     <span class="text-danger">{{ form.pay_due_date.errors }}</span>
+                                                </td>
+
+                                                <td class="text-center">
+                                                    {{ form.extra_due_date|add_class:"form-control text-center"|attr:"placeholder:납부유예일"|attr:"data-provide=datepicker data-date-format=yyyy-mm-dd data-date-autoclose=true data-toggle=input-mask data-mask-format=0000-00-00" }}
+                                                    <span class="text-danger">{{ form.extra_due_date.errors }}</span>
                                                 </td>
                                             </tr>
                                         {% endfor %}
