@@ -2,6 +2,7 @@ import api from '@/api'
 import {
   FETCH_PRICE_LIST,
   FETCH_PAY_ORDER_LIST,
+  FETCH_DWON_PAYMENT,
 } from '@/store/modules/cash/mutations-types'
 import { message } from '@/utils/helper'
 
@@ -126,6 +127,70 @@ const actions = {
       .delete(`/pay-order/${pk}/`)
       .then(() => {
         dispatch('fetchPayOrderList', project)
+        message('danger', '알림!', '해당 오브젝트가 삭제되었습니다.')
+      })
+      .catch(err => {
+        console.log(err.response.data)
+        alert(
+          `${Object.keys(err.response.data)[0]} : ${
+            err.response.data[Object.keys(err.response.data)[0]]
+          }`,
+        )
+      })
+  },
+
+  fetchDownPayList: ({ commit }: any, pk: any) => {
+    api
+      .get(`/down-payment/?project=${pk}`)
+      .then(res => {
+        commit(FETCH_DWON_PAYMENT, res.data)
+      })
+      .catch(err => console.log(err))
+  },
+
+  createDownPay: ({ dispatch }: any, payload: any) => {
+    api
+      .post(`/down-payment/`, payload)
+      .then(res => {
+        dispatch('fetchDownPayList', res.data.project)
+        message()
+      })
+      .catch(err => {
+        console.log(err.response.data)
+        alert(
+          `${Object.keys(err.response.data)[0]} : ${
+            err.response.data[Object.keys(err.response.data)[0]]
+          }`,
+        )
+      })
+  },
+
+  updateDownPay: ({ dispatch }: any, payload: any) => {
+    const { pk } = payload
+    delete payload.pk
+    api
+      .put(`/down-payment/${pk}/`, payload)
+      .then(() => {
+        const { project } = payload
+        dispatch('fetchDownPayList', { project })
+        message()
+      })
+      .catch(err => {
+        console.log(err.response.data)
+        alert(
+          `${Object.keys(err.response.data)[0]} : ${
+            err.response.data[Object.keys(err.response.data)[0]]
+          }`,
+        )
+      })
+  },
+
+  deleteDownPay: ({ dispatch }: any, payload: any) => {
+    const { pk, project } = payload
+    api
+      .delete(`/down-payment/${pk}/`)
+      .then(() => {
+        dispatch('fetchDownPayList', project)
         message('danger', '알림!', '해당 오브젝트가 삭제되었습니다.')
       })
       .catch(err => {

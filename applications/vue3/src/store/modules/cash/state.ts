@@ -34,16 +34,14 @@ interface DownPay {
 
 export interface CashState {
   priceList: Price[]
-  // price: Price | null
   payOrderList: PayOrder[]
-  DownPayList: DownPay[]
+  downPayList: DownPay[]
 }
 
 const state: CashState = {
   priceList: [],
-  // price: null,
   payOrderList: [],
-  DownPayList: [],
+  downPayList: [],
 }
 
 export default state
