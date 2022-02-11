@@ -24,7 +24,7 @@
         <CTableHeaderCell>비고</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
-    <CTableBody v-if="selected && payOrderList">
+    <CTableBody v-if="selected && payOrderList.length !== 0">
       <PayOrder
         v-for="payOrder in payOrderList"
         @on-update="onUpdateFloor"
@@ -36,7 +36,7 @@
 
     <CTableBody v-else>
       <CTableRow>
-        <CTableDataCell colspan="4" class="text-center p-5 text-danger">
+        <CTableDataCell colspan="9" class="text-center p-5 text-danger">
           등록된 데이터가 없습니다.
         </CTableDataCell>
       </CTableRow>
