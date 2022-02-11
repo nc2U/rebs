@@ -53,7 +53,7 @@ const projects = {
         {
           path: 'down-payment',
           name: '계약조건 등록',
-          component: () => import('@/views/projects/DownPayment/Index.vue'),
+          component: () => import('@/views/projects/DownPay/Index.vue'),
         },
       ],
     },
