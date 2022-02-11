@@ -84,6 +84,7 @@
           <CCol md="3" class="mb-2">
             <CFormInput
               v-model="form.pay_due_date"
+              v-maska="'####-##-##'"
               placeholder="납부기한일"
               :disabled="!selected"
             />
@@ -92,6 +93,7 @@
           <CCol md="3" class="mb-2">
             <CFormInput
               v-model="form.extra_due_date"
+              v-maska="'####-##-##'"
               placeholder="납부유예일"
               :disabled="!selected"
             />
@@ -130,9 +132,11 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
+import { maska } from 'maska'
 
 export default defineComponent({
   name: 'FloorAddForm',
+  directives: { maska },
   components: { ConfirmModal },
   data() {
     return {

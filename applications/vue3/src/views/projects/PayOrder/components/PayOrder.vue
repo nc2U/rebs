@@ -59,6 +59,7 @@
     <CTableDataCell>
       <CFormInput
         v-model="form.pay_due_date"
+        v-maska="'####-##-##'"
         placeholder="납부기한일"
         required
         @keypress.enter="formCheck(form.pay_due_date !== payOrder.pay_due_date)"
@@ -68,6 +69,7 @@
     <CTableDataCell>
       <CFormInput
         v-model="form.extra_due_date"
+        v-maska="'####-##-##'"
         placeholder="납부유예일"
         required
         @keypress.enter="
@@ -107,9 +109,11 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
+import { maska } from 'maska'
 
 export default defineComponent({
   name: 'PayOrder',
+  directives: { maska },
   components: { ConfirmModal },
   data() {
     return {
@@ -139,18 +143,6 @@ export default defineComponent({
       this.form.extra_due_date = this.payOrder.extra_due_date
     }
   },
-  // watch: {
-  //   type(this: any) {
-  //     this.form.pay_sort = this.payOrder.pay_sort
-  //     this.form.pay_code = this.payOrder.pay_code
-  //     this.form.pay_time = this.payOrder.pay_time
-  //     this.form.pay_name = this.payOrder.pay_name
-  //     this.form.alias_name = this.payOrder.alias_name
-  //     this.form.is_pm_cost = this.payOrder.is_pm_cost
-  //     this.form.pay_due_date = this.payOrder.pay_due_date
-  //     this.form.extra_due_date = this.payOrder.extra_due_date
-  //   },
-  // },
   computed: {
     formsCheck(this: any) {
       const a = this.form.pay_sort === this.payOrder.pay_sort
