@@ -1,33 +1,78 @@
 <template>
   <CTableRow>
     <CTableDataCell>
+      <CFormSelect v-model.number="form.pay_sort" required>
+        <option value="">종류선택</option>
+        <option value="1">계약금</option>
+        <option value="2">중도금</option>
+        <option value="3">잔금</option>
+      </CFormSelect>
+    </CTableDataCell>
+    <CTableDataCell>
       <CFormInput
-        v-model.number="form.start_floor"
-        placeholder="시작 층"
+        v-model.number="form.pay_code"
+        placeholder="납입회차 코드"
         type="number"
         min="0"
         required
-        @keypress.enter="formCheck(form.start_floor !== floor.start_floor)"
+        @keypress.enter="formCheck(form.pay_code !== payOrder.pay_code)"
       />
     </CTableDataCell>
     <CTableDataCell>
       <CFormInput
-        v-model.number="form.end_floor"
-        placeholder="종료 층"
+        v-model.number="form.pay_time"
+        placeholder="납부순서"
         type="number"
         min="0"
         required
-        @keypress.enter="formCheck(form.end_floor !== form.end_floor)"
+        @keypress.enter="formCheck(form.pay_time !== payOrder.pay_time)"
       />
     </CTableDataCell>
+
+    <CTableDataCell>
+      <CCol class="pt-2 pl-3">
+        <CFormSwitch v-model="form.is_pm_cost" :checked="false" />
+      </CCol>
+    </CTableDataCell>
+
+    <CTableDataCell>
+      <CFormInput
+        v-model="form.pay_name"
+        placeholder="납부회차 명"
+        required
+        @keypress.enter="formCheck(form.pay_name !== payOrder.pay_name)"
+      />
+    </CTableDataCell>
+
     <CTableDataCell>
       <CFormInput
         v-model="form.alias_name"
-        placeholder="층별 범위 명칭"
+        placeholder="회차 별칭"
         required
-        @keypress.enter="formCheck(form.alias_name !== floor.alias_name)"
+        @keypress.enter="formCheck(form.alias_name !== payOrder.alias_name)"
       />
     </CTableDataCell>
+
+    <CTableDataCell>
+      <CFormInput
+        v-model="form.pay_due_date"
+        placeholder="납부기한일"
+        required
+        @keypress.enter="formCheck(form.pay_due_date !== payOrder.pay_due_date)"
+      />
+    </CTableDataCell>
+
+    <CTableDataCell>
+      <CFormInput
+        v-model="form.extra_due_date"
+        placeholder="납부유예일"
+        required
+        @keypress.enter="
+          formCheck(form.extra_due_date !== payOrder.extra_due_date)
+        "
+      />
+    </CTableDataCell>
+
     <CTableDataCell class="text-center">
       <CButton
         color="success"
@@ -61,39 +106,59 @@ import { defineComponent } from 'vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
 export default defineComponent({
-  name: 'UnitType',
+  name: 'PayOrder',
   components: { ConfirmModal },
   data() {
     return {
       form: {
-        start_floor: null,
-        end_floor: null,
+        pay_sort: '',
+        pay_code: null,
+        pay_time: null,
+        pay_name: '',
         alias_name: '',
+        is_pm_cost: false,
+        pay_due_date: '',
+        extra_due_date: '',
       },
       validated: false,
     }
   },
-  props: ['floor'],
+  props: ['payOrder'],
   created(this: any) {
-    if (this.floor) {
-      this.form.start_floor = this.floor.start_floor
-      this.form.end_floor = this.floor.end_floor
-      this.form.alias_name = this.floor.alias_name
+    if (this.payOrder) {
+      this.form.pay_sort = this.payOrder.pay_sort
+      this.form.pay_code = this.payOrder.pay_code
+      this.form.pay_time = this.payOrder.pay_time
+      this.form.pay_name = this.payOrder.pay_name
+      this.form.alias_name = this.payOrder.alias_name
+      this.form.is_pm_cost = this.payOrder.is_pm_cost
+      this.form.pay_due_date = this.payOrder.pay_due_date
+      this.form.extra_due_date = this.payOrder.extra_due_date
     }
   },
-  watch: {
-    type(this: any) {
-      this.form.start_floor = this.floor.start_floor
-      this.form.end_floor = this.floor.end_floor
-      this.form.alias_name = this.floor.alias_name
-    },
-  },
+  // watch: {
+  //   type(this: any) {
+  //     this.form.pay_sort = this.payOrder.pay_sort
+  //     this.form.pay_code = this.payOrder.pay_code
+  //     this.form.pay_time = this.payOrder.pay_time
+  //     this.form.pay_name = this.payOrder.pay_name
+  //     this.form.alias_name = this.payOrder.alias_name
+  //     this.form.is_pm_cost = this.payOrder.is_pm_cost
+  //     this.form.pay_due_date = this.payOrder.pay_due_date
+  //     this.form.extra_due_date = this.payOrder.extra_due_date
+  //   },
+  // },
   computed: {
     formsCheck(this: any) {
-      const a = this.form.start_floor === this.floor.start_floor
-      const b = this.form.end_floor === this.floor.end_floor
-      const c = this.form.alias_name === this.floor.alias_name
-      return a && b && c
+      const a = this.form.pay_sort === this.payOrder.pay_sort
+      const b = this.form.pay_code === this.payOrder.pay_code
+      const c = this.form.pay_time === this.payOrder.pay_time
+      const d = this.form.pay_name === this.payOrder.pay_name
+      const e = this.form.alias_name === this.payOrder.alias_name
+      const f = this.form.is_pm_cost === this.payOrder.is_pm_cost
+      const g = this.form.pay_due_date === this.payOrder.pay_due_date
+      const h = this.form.extra_due_date === this.payOrder.extra_due_date
+      return a && b && c && d && e && f && g && h
     },
   },
   methods: {

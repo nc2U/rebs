@@ -16,21 +16,21 @@
         <CTableHeaderCell>종류</CTableHeaderCell>
         <CTableHeaderCell>납입회차 코드</CTableHeaderCell>
         <CTableHeaderCell>납부순서</CTableHeaderCell>
+        <CTableHeaderCell>PM용역비 여부</CTableHeaderCell>
         <CTableHeaderCell>납부회차명</CTableHeaderCell>
         <CTableHeaderCell>회차 별칭</CTableHeaderCell>
-        <CTableHeaderCell>PM용역비 여부</CTableHeaderCell>
         <CTableHeaderCell>납부기한일</CTableHeaderCell>
         <CTableHeaderCell>납부유예일</CTableHeaderCell>
         <CTableHeaderCell>비고</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
-    <CTableBody v-if="selected && floorTypeList.length !== 0">
+    <CTableBody v-if="selected && payOrderList">
       <PayOrder
-        v-for="floor in floorTypeList"
+        v-for="payOrder in payOrderList"
         @on-update="onUpdateFloor"
         @on-delete="onDeleteFloor"
-        :key="floor.pk"
-        :floor="floor"
+        :key="payOrder.pk"
+        :pay-order="payOrder"
       />
     </CTableBody>
 
