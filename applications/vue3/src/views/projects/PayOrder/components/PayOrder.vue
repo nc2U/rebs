@@ -1,7 +1,7 @@
 <template>
   <CTableRow>
     <CTableDataCell>
-      <CFormSelect v-model.number="form.pay_sort" required>
+      <CFormSelect v-model="form.pay_sort" required>
         <option value="">종류선택</option>
         <option value="1">계약금</option>
         <option value="2">중도금</option>

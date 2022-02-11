@@ -27,7 +27,7 @@
 
       <CCol md="3" class="mb-2">
         <CFormInput
-          v-model="form.average_price"
+          v-model.number="form.average_price"
           placeholder="평균가격"
           type="number"
           required
@@ -37,7 +37,7 @@
 
       <CCol md="3" class="mb-2">
         <CFormInput
-          v-model="form.num_unit"
+          v-model.number="form.num_unit"
           placeholder="세대수"
           type="number"
           required

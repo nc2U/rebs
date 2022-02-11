@@ -28,7 +28,7 @@
           <CFormLabel class="col-md-2 col-form-label"> 정렬순서</CFormLabel>
           <CCol md="10" lg="4">
             <CFormInput
-              v-model="form.order"
+              v-model.number="form.order"
               type="number"
               min="0"
               placeholder="프로젝트 정력순서를 입력하세요"
@@ -57,7 +57,7 @@
           <CFormLabel class="col-md-2 col-form-label"> 사업개시년도</CFormLabel>
           <CCol md="10" lg="4">
             <CFormInput
-              v-model="form.start_year"
+              v-model.number="form.start_year"
               type="number"
               min="1990"
               placeholder="사업개시년도를 입력하세요"
@@ -192,7 +192,7 @@
           </CFormLabel>
           <CCol md="10" lg="4" class="mb-md-3 mb-lg-0">
             <CFormInput
-              v-model="form.num_unit"
+              v-model.number="form.num_unit"
               type="number"
               min="0"
               placeholder="세대(호/실)수를 입력하세요"
@@ -202,7 +202,7 @@
           <CFormLabel class="col-md-2 col-form-label"> 대지매입면적</CFormLabel>
           <CCol md="10" lg="4">
             <CFormInput
-              v-model="form.buy_land_extent"
+              v-model.number="form.buy_land_extent"
               type="number"
               min="0"
               step="0.0001"
@@ -218,7 +218,7 @@
           <CFormLabel class="col-md-2 col-form-label"> 계획대지면적</CFormLabel>
           <CCol md="10" lg="4" class="mb-md-3 mb-lg-0">
             <CFormInput
-              v-model="form.scheme_land_extent"
+              v-model.number="form.scheme_land_extent"
               type="number"
               min="0"
               step="0.0001"
@@ -232,7 +232,7 @@
           <CFormLabel class="col-md-2 col-form-label"> 기부채납면적</CFormLabel>
           <CCol md="10" lg="4">
             <CFormInput
-              v-model="form.donation_land_extent"
+              v-model.number="form.donation_land_extent"
               type="number"
               min="0"
               step="0.0001"
@@ -248,7 +248,7 @@
           <CFormLabel class="col-md-2 col-form-label"> 지상연면적</CFormLabel>
           <CCol md="10" lg="4" class="mb-md-3 mb-lg-0">
             <CFormInput
-              v-model="form.on_floor_area"
+              v-model.number="form.on_floor_area"
               type="number"
               min="0"
               step="0.0001"
@@ -262,7 +262,7 @@
           <CFormLabel class="col-md-2 col-form-label"> 지하연면적</CFormLabel>
           <CCol md="10" lg="4">
             <CFormInput
-              v-model="form.under_floor_area"
+              v-model.number="form.under_floor_area"
               type="number"
               min="0"
               step="0.0001"
@@ -278,7 +278,7 @@
           <CFormLabel class="col-md-2 col-form-label"> 총 연면적</CFormLabel>
           <CCol md="10" lg="4" class="mb-md-3 mb-lg-0">
             <CFormInput
-              v-model="form.total_floor_area"
+              v-model.number="form.total_floor_area"
               type="number"
               min="0"
               step="0.0001"
@@ -292,7 +292,7 @@
           <CFormLabel class="col-md-2 col-form-label"> 건축면적</CFormLabel>
           <CCol md="10" lg="4">
             <CFormInput
-              v-model="form.build_area"
+              v-model.number="form.build_area"
               type="number"
               min="0"
               step="0.0001"
@@ -308,7 +308,7 @@
           <CFormLabel class="col-md-2 col-form-label"> 용적율(%)</CFormLabel>
           <CCol md="10" lg="4" class="mb-md-3 mb-lg-0">
             <CFormInput
-              v-model="form.floor_area_ratio"
+              v-model.number="form.floor_area_ratio"
               type="number"
               min="0"
               step="0.0001"
@@ -321,7 +321,7 @@
           <CFormLabel class="col-md-2 col-form-label"> 건폐율(%)</CFormLabel>
           <CCol md="10" lg="4">
             <CFormInput
-              v-model="form.build_to_land_ratio"
+              v-model.number="form.build_to_land_ratio"
               type="number"
               min="0"
               step="0.0001"
@@ -337,7 +337,7 @@
           <CFormLabel class="col-md-2 col-form-label"> 법정주차대수</CFormLabel>
           <CCol md="10" lg="4" class="mb-md-3 mb-lg-0">
             <CFormInput
-              v-model="form.num_legal_parking"
+              v-model.number="form.num_legal_parking"
               type="number"
               min="0"
               placeholder="법정주차대수를 입력하세요"
@@ -348,7 +348,7 @@
           <CFormLabel class="col-md-2 col-form-label"> 계획주차대수</CFormLabel>
           <CCol md="10" lg="4">
             <CFormInput
-              v-model="form.num_planed_parking"
+              v-model.number="form.num_planed_parking"
               type="number"
               min="0"
               placeholder="계획주차대수를 입력하세요"

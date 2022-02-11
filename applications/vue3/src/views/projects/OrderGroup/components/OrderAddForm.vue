@@ -8,7 +8,7 @@
     <CRow class="p-2" color="success">
       <CCol md="3" class="mb-2">
         <CFormInput
-          v-model="form.order_number"
+          v-model.number="form.order_number"
           placeholder="등록차수"
           type="number"
           min="1"

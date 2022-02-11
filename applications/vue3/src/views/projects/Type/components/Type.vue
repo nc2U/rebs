@@ -23,7 +23,7 @@
     </CTableDataCell>
     <CTableDataCell>
       <CFormInput
-        v-model="form.num_unit"
+        v-model.number="form.num_unit"
         placeholder="세대수"
         type="number"
         min="0"
