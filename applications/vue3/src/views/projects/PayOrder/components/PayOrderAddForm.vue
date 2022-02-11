@@ -147,8 +147,8 @@ export default defineComponent({
         pay_name: '',
         alias_name: '',
         is_pm_cost: false,
-        pay_due_date: '',
-        extra_due_date: '',
+        pay_due_date: null,
+        extra_due_date: null,
       },
       validated: false,
     }
@@ -179,8 +179,8 @@ export default defineComponent({
       this.form.pay_name = ''
       this.form.alias_name = ''
       this.form.is_pm_cost = false
-      this.form.pay_due_date = ''
-      this.form.extra_due_date = ''
+      this.form.pay_due_date = null
+      this.form.extra_due_date = null
     },
   },
 })

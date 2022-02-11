@@ -124,8 +124,8 @@ export default defineComponent({
         pay_name: '',
         alias_name: '',
         is_pm_cost: false,
-        pay_due_date: '',
-        extra_due_date: '',
+        pay_due_date: null,
+        extra_due_date: null,
       },
       validated: false,
     }
