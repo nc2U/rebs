@@ -23,16 +23,27 @@ export interface PayOrder {
   extra_due_date: Date
 }
 
+interface DownPay {
+  pk: number
+  project: number
+  order_group: number
+  unit_type: number
+  number_payments: number
+  payment_amount: number
+}
+
 export interface CashState {
   priceList: Price[]
-  price: Price | null
+  // price: Price | null
   payOrderList: PayOrder[]
+  DownPayList: DownPay[]
 }
 
 const state: CashState = {
   priceList: [],
-  price: null,
+  // price: null,
   payOrderList: [],
+  DownPayList: [],
 }
 
 export default state
