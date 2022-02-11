@@ -48,7 +48,7 @@ const projects = {
         {
           path: 'payment-order',
           name: '납부회차 등록',
-          component: () => import('@/views/projects/PaymentOrder/Index.vue'),
+          component: () => import('@/views/projects/PayOrder/Index.vue'),
         },
         {
           path: 'down-payment',
