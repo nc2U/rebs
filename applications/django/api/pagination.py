@@ -11,3 +11,7 @@ class LimitOffsetPaginationCustomBasic(LimitOffsetPagination):
 
 class PageNumberPaginationFifty(PageNumberPagination):
     page_size = 50
+
+
+class PageNumberPaginationTwenty(PageNumberPagination):
+    page_size = 20

@@ -480,6 +480,7 @@ class InstallmentOrderList(generics.ListCreateAPIView):
     queryset = InstallmentPaymentOrder.objects.all()
     serializer_class = InstallmentOrderSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    pagination_class = PageNumberPaginationTwenty
     filter_fields = ('project', 'pay_sort', 'is_pm_cost')
     search_fields = ('pay_name', 'alias_name')
 
