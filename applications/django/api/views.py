@@ -58,7 +58,7 @@ class ApiIndex(generics.GenericAPIView):
             'project-bank': reverse(api + ProjectBankAccountList.name, request=request),
             'project-cashbook': reverse(api + ProjectCashBookList.name, request=request),
             'price': reverse(api + SalesPriceList.name, request=request),
-            'install-order': reverse(api + InstallmentOrderList.name, request=request),
+            'pay-order': reverse(api + InstallmentOrderList.name, request=request),
             'down-payment': reverse(api + DownPaymentList.name, request=request),
             'over-due-rule': reverse(api + OverDueRuleList.name, request=request),
             'order-group': reverse(api + OrderGroupList.name, request=request),
