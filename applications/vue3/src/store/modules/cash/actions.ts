@@ -84,10 +84,9 @@ const actions = {
       })
   },
 
-  fetchPayOrderList: ({ commit }: any, payload: any) => {
-    const { project } = payload
+  fetchPayOrderList: ({ commit }: any, pk: any) => {
     api
-      .get(`/pay-order/?project=${project}`)
+      .get(`/pay-order/?project=${pk}`)
       .then(res => {
         commit(FETCH_PAY_ORDER_LIST, res.data)
       })
