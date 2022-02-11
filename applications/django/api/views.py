@@ -497,6 +497,8 @@ class DownPaymentList(generics.ListCreateAPIView):
     queryset = DownPayment.objects.all()
     serializer_class = DownPaymentSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    pagination_class = PageNumberPaginationTwenty
+    filter_fields = ('project', 'order_group', 'unit_type')
 
 
 class DownPaymentDetail(generics.RetrieveUpdateDestroyAPIView):
