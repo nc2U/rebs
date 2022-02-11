@@ -68,11 +68,11 @@ export default defineComponent({
       const project = this.project.pk
       this.createPayOrder({ ...{ project }, ...payload })
     },
-    onUpdateFloor(payload: any) {
+    onUpdatePayOrder(payload: any) {
       const project = this.project.pk
       this.updatePayOrder({ ...{ project }, ...payload })
     },
-    onDeleteFloor(pk: number) {
+    onDeletePayOrder(pk: number) {
       const project = this.project.pk
       this.deletePayOrder({ ...{ pk }, ...{ project } })
     },

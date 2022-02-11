@@ -131,11 +131,11 @@ const actions = {
   },
 
   deletePayOrder: ({ dispatch }: any, payload: any) => {
-    const { pk, projId } = payload
+    const { pk, project } = payload
     api
       .delete(`/pay-order/${pk}/`)
       .then(() => {
-        dispatch('fetchPayOrderList', projId)
+        dispatch('fetchPayOrderList', project)
         message('danger', '알림!', '해당 오브젝트가 삭제되었습니다.')
       })
       .catch(err => {

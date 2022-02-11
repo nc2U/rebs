@@ -82,12 +82,12 @@
       <CButton
         color="success"
         size="sm"
-        @click="onUpdateFloor"
+        @click="onUpdatePayOrder"
         :disabled="formsCheck"
       >
         수정
       </CButton>
-      <CButton color="danger" size="sm" @click="onDeleteFloor">삭제</CButton>
+      <CButton color="danger" size="sm" @click="onDeletePayOrder">삭제</CButton>
     </CTableDataCell>
   </CTableRow>
 
@@ -158,18 +158,18 @@ export default defineComponent({
   },
   methods: {
     formCheck(bool: boolean) {
-      if (bool) this.onUpdateFloor()
+      if (bool) this.onUpdatePayOrder()
       return
     },
-    onUpdateFloor(this: any) {
-      const pk = this.floor.pk
+    onUpdatePayOrder(this: any) {
+      const pk = this.payOrder.pk
       this.$emit('on-update', { ...{ pk }, ...this.form })
     },
-    onDeleteFloor(this: any) {
+    onDeletePayOrder(this: any) {
       this.$refs.confirmModal.callModal()
     },
     modalAction(this: any) {
-      this.$emit('on-delete', this.floor.pk)
+      this.$emit('on-delete', this.payOrder.pk)
       this.$refs.confirmModal.visible = false
     },
   },

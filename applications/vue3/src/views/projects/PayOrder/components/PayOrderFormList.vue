@@ -27,8 +27,8 @@
     <CTableBody v-if="selected && payOrderList.length !== 0">
       <PayOrder
         v-for="payOrder in payOrderList"
-        @on-update="onUpdateFloor"
-        @on-delete="onDeleteFloor"
+        @on-update="onUpdatePayOrder"
+        @on-delete="onDeletePayOrder"
         :key="payOrder.pk"
         :pay-order="payOrder"
       />
@@ -57,10 +57,10 @@ export default defineComponent({
     ...mapState('cash', ['payOrderList']),
   },
   methods: {
-    onUpdateFloor(payload: any) {
+    onUpdatePayOrder(payload: any) {
       this.$emit('on-update', payload)
     },
-    onDeleteFloor(pk: number) {
+    onDeletePayOrder(pk: number) {
       this.$emit('on-delete', pk)
     },
   },
