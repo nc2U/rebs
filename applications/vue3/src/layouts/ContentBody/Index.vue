@@ -8,7 +8,7 @@
     </slot>
 
     <slot>
-      <CCardBody class="pb-5"> Content here... </CCardBody>
+      <CCardBody class="pb-5"> This page is under construction.</CCardBody>
 
       <CCardFooter>&nbsp;</CCardFooter>
     </slot>
