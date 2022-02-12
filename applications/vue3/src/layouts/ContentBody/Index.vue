@@ -1,15 +1,19 @@
 <template>
   <CCard class="mb-4">
     <CCardHeader>
-      <CIcon name="cil-notes" />
-      <strong class="pl-1"> {{ $route.name }}</strong>
+      <slot name="header">
+        <CIcon name="cil-notes" />
+        <strong class="pl-1"> {{ $route.name }}</strong>
+      </slot>
     </CCardHeader>
 
     <CCardBody class="pb-5">
       <slot />
     </CCardBody>
 
-    <CCardFooter />&nbsp;
+    <CCardFooter>
+      <slot name="footer"> &nbsp; </slot>
+    </CCardFooter>
   </CCard>
 </template>
 
