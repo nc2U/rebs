@@ -4,7 +4,7 @@
     :nav-menu="['현장 일반문서']"
     :selector="'ProjectSelect'"
   />
-  <ContentBody> Contents Here ...</ContentBody>
+  <ContentBody></ContentBody>
 </template>
 
 <script lang="ts">

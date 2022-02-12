@@ -3,7 +3,7 @@
     <IndexSummary :project="project" />
   </ContentHeader>
 
-  <ContentBody> Hello world!</ContentBody>
+  <ContentBody></ContentBody>
 </template>
 
 <script lang="ts">

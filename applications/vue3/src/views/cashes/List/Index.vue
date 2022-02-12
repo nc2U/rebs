@@ -4,7 +4,7 @@
     :nav-menu="navMenu"
     :selector="'CompanySelect'"
   />
-  <ContentBody> Contents Here ...</ContentBody>
+  <ContentBody></ContentBody>
 </template>
 
 <script lang="ts">
@@ -22,7 +22,7 @@ export default defineComponent({
     ContentBody,
   },
   computed: {
-    ...mapState('company', ['company']),
+    ...mapState('settings', ['company']),
   },
 })
 </script>

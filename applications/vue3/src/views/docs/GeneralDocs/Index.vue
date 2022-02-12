@@ -4,7 +4,7 @@
     :nav-menu="['본사 일반문서']"
     :selector="'CompanySelect'"
   />
-  <ContentBody> Contents Here ...</ContentBody>
+  <ContentBody></ContentBody>
 </template>
 
 <script lang="ts">
@@ -20,7 +20,7 @@ export default defineComponent({
     ContentBody,
   },
   computed: {
-    ...mapState('company', ['company']),
+    ...mapState('settings', ['company']),
   },
 })
 </script>

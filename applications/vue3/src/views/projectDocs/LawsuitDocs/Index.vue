@@ -1,7 +1,7 @@
 <template>
   <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
 
-  <ContentBody> Contents Here ...</ContentBody>
+  <ContentBody></ContentBody>
 </template>
 
 <script lang="ts">
