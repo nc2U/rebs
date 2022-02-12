@@ -1,5 +1,5 @@
 <template>
-  <CCallout color="secondary">
+  <CCallout color="warning" class="pb-2 mb-4">
     <CRow class="p-2">
       <CCol md="4" class="mb-2">
         <CRow>
