@@ -7,7 +7,7 @@
 
   <ContentBody>
     <CCardBody class="pb-5">
-      <OrderAddForm @on-submit="onSubmit" />
+      <OrderAddForm :disabled="!project" @on-submit="onSubmit" />
       <OrderFormList
         @on-update="onUpdateOrder"
         @on-delete="onDeleteOrder"

@@ -13,12 +13,12 @@
           type="number"
           min="1"
           required
-          :disabled="!project"
+          :disabled="!disabled"
         />
       </CCol>
 
       <CCol md="3" class="mb-2">
-        <CFormSelect v-model="form.sort" :disabled="!project" required>
+        <CFormSelect v-model="form.sort" :disabled="!disabled" required>
           <option value="">구분선택</option>
           <option value="1">일반분양</option>
           <option value="2">조합모집</option>
@@ -30,12 +30,12 @@
           v-model="form.order_group_name"
           placeholder="차수그룹명"
           required
-          :disabled="!project"
+          :disabled="!disabled"
         />
       </CCol>
 
       <CCol md="3" class="d-grid gap-2 d-lg-block mb-3">
-        <CButton color="primary" :disabled="!project">그룹추가</CButton>
+        <CButton color="primary" :disabled="!disabled">그룹추가</CButton>
       </CCol>
     </CRow>
   </CForm>
@@ -57,7 +57,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
-import { mapState } from 'vuex'
 
 export default defineComponent({
   name: 'OrderAddForm',
@@ -72,7 +71,7 @@ export default defineComponent({
       validated: false,
     }
   },
-  computed: mapState('project', ['project']),
+  props: ['disabled'],
   methods: {
     onSubmit(event: any) {
       const form = event.currentTarget
