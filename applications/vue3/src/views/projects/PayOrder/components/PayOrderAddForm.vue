@@ -9,7 +9,7 @@
       <CCol md="5">
         <CRow>
           <CCol md="3" class="mb-2">
-            <CFormSelect v-model="form.pay_sort" :disabled="!selected" required>
+            <CFormSelect v-model="form.pay_sort" :disabled="disabled" required>
               <option value="">종류선택</option>
               <option value="1">계약금</option>
               <option value="2">중도금</option>
@@ -24,7 +24,7 @@
               type="number"
               min="0"
               required
-              :disabled="!selected"
+              :disabled="disabled"
             />
             <!--        <CFormText>-->
             <!--          프로젝트 내에서 모든 납부회차를 고유 순서대로 숫자로 부여한다.'-->
@@ -38,7 +38,7 @@
               type="number"
               min="0"
               required
-              :disabled="!selected"
+              :disabled="disabled"
             />
             <!--        <CFormText-->
             <!--          >동일 납부회차에 2가지 항목을 별도로 납부하여야 하는 경우(ex: 분담금 +-->
@@ -55,7 +55,7 @@
                 <CFormSwitch
                   v-model="form.is_pm_cost"
                   :checked="false"
-                  :disabled="!selected"
+                  :disabled="disabled"
                 />
               </CCol>
             </CRow>
@@ -70,14 +70,14 @@
               v-model="form.pay_name"
               placeholder="납부회차 명"
               required
-              :disabled="!selected"
+              :disabled="disabled"
             />
           </CCol>
           <CCol md="3" class="mb-2">
             <CFormInput
               v-model="form.alias_name"
               placeholder="별칭 이름"
-              :disabled="!selected"
+              :disabled="disabled"
             />
           </CCol>
 
@@ -86,7 +86,7 @@
               v-model="form.pay_due_date"
               v-maska="'####-##-##'"
               placeholder="납부기한일"
-              :disabled="!selected"
+              :disabled="disabled"
             />
           </CCol>
 
@@ -95,7 +95,7 @@
               v-model="form.extra_due_date"
               v-maska="'####-##-##'"
               placeholder="납부유예일"
-              :disabled="!selected"
+              :disabled="disabled"
             />
             <!--        <CFormText>-->
             <!--          연체료 계산 기준은 납부기한일이 원칙이나 이 값이 있는 경우-->
@@ -108,7 +108,7 @@
       <CCol md="2">
         <CRow>
           <CCol md="12" class="d-grid gap-2 d-lg-block mb-3">
-            <CButton color="primary" :disabled="!selected">회차추가</CButton>
+            <CButton color="primary" :disabled="disabled">회차추가</CButton>
           </CCol>
         </CRow>
       </CCol>
@@ -153,7 +153,7 @@ export default defineComponent({
       validated: false,
     }
   },
-  props: ['selected'],
+  props: ['disabled'],
   methods: {
     onSubmit(this: any, event: any) {
       const form = event.currentTarget

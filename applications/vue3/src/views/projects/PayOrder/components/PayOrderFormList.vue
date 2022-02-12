@@ -24,7 +24,7 @@
         <CTableHeaderCell>비고</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
-    <CTableBody v-if="selected && payOrderList.length !== 0">
+    <CTableBody v-if="payOrderList.length > 0">
       <PayOrder
         v-for="payOrder in payOrderList"
         @on-update="onUpdatePayOrder"
@@ -52,7 +52,7 @@ import { mapState } from 'vuex'
 export default defineComponent({
   name: 'PayOrderFormList',
   components: { PayOrder },
-  props: ['project', 'selected'],
+  props: ['project'],
   computed: {
     ...mapState('cash', ['payOrderList']),
   },

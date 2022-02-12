@@ -1,68 +1,53 @@
 <template>
-  <CCard class="mb-4">
-    <CCardHeader>
-      <CIcon name="cil-justify-center" />
-      <strong class="pl-1"> {{ pageTitle }}</strong>
-    </CCardHeader>
+  <ContentHeader
+    :page-title="pageTitle"
+    :nav-menu="navMenu"
+    @header-select="onSelectAdd"
+  />
 
-    <CCardBody>
-      <HeaderNav :menus="navMenu" />
-
-      <ProjectSelect :project="project" @proj-select="projSelect" />
-    </CCardBody>
-  </CCard>
-
-  <CCard class="mb-4">
-    <CCardHeader>
-      <CIcon name="cil-notes" />
-      <strong class="pl-1"> {{ $route.name }}</strong>
-    </CCardHeader>
-
-    <CCardBody class="pb-5" v-if="project">
-      <PayOrderAddForm :selected="selected" @on-submit="onSubmit" />
+  <ContentBody>
+    <CCardBody class="pb-5">
+      <PayOrderAddForm :disabled="!project" @on-submit="onSubmit" />
       <PayOrderFormList
         @on-update="onUpdatePayOrder"
         @on-delete="onDeletePayOrder"
-        :selected="selected"
         :project="project"
       />
     </CCardBody>
 
     <CCardFooter>&nbsp;</CCardFooter>
-  </CCard>
+  </ContentBody>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import HeaderNav from '@/components/HeaderNav.vue'
-import ProjectSelect from '@/layouts/ContentHeader/ProjectSelect/Index.vue'
 import HeaderMixin from '@/views/projects/_menu/headermixin2'
-import ProjectMixin from '@/views/projects/projectMixin'
+import ContentHeader from '@/layouts/ContentHeader/Index.vue'
+import ContentBody from '@/layouts/ContentBody/Index.vue'
 import PayOrderAddForm from '@/views/projects/PayOrder/components/PayOrderAddForm.vue'
 import PayOrderFormList from '@/views/projects/PayOrder/components/PayOrderFormList.vue'
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'ProjectsPayOrderSet',
-  mixins: [HeaderMixin, ProjectMixin],
+  mixins: [HeaderMixin],
   components: {
-    HeaderNav,
-    ProjectSelect,
+    ContentHeader,
+    ContentBody,
     PayOrderAddForm,
     PayOrderFormList,
   },
   created() {
     this.fetchPayOrderList(this.initProjId)
   },
+  computed: {
+    ...mapState('project', ['project']),
+    ...mapGetters('accounts', ['initProjId']),
+  },
   methods: {
-    projSelect(event: any) {
-      if (event.target.value !== '') {
-        this.selected = true
-        this.fetchProject(event.target.value)
-        this.fetchPayOrderList(event.target.value)
-      } else {
-        this.selected = false
-      }
+    onSelectAdd(this: any, target: any) {
+      if (target !== '') this.fetchPayOrderList(target)
+      else this.$store.state.cash.payOrderList = []
     },
     onSubmit(payload: any) {
       const project = this.project.pk
