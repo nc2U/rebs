@@ -45,7 +45,7 @@ class ApiIndex(generics.GenericAPIView):
             'budget': reverse(api + ProjectBudgetList.name, request=request),
             'site': reverse(api + SiteList.name, request=request),
             'site-owner': reverse(api + SiteOwnerList.name, request=request),
-            'relation': reverse(api + RelationList.name, request=request),
+            'site-relation': reverse(api + RelationList.name, request=request),
             'site-contract': reverse(api + SiteContractList.name, request=request),
             'account-depth1': reverse(api + AccountSubD1List.name, request=request),
             'account-depth2': reverse(api + AccountSubD2List.name, request=request),
