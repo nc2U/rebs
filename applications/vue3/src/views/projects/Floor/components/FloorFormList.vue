@@ -1,14 +1,17 @@
 <template>
   <CTable hover responsive>
     <colgroup>
-      <col width="30%" />
-      <col width="30%" />
-      <col width="40%" />
+      <col width="23%" />
+      <col width="23%" />
+      <col width="23%" />
+      <col width="23%" />
+      <col width="8%" />
     </colgroup>
     <CTableHead color="dark" class="text-center">
       <CTableRow>
         <CTableHeaderCell>시작 층</CTableHeaderCell>
         <CTableHeaderCell>종료 층</CTableHeaderCell>
+        <CTableHeaderCell>방향/위치(옵션)</CTableHeaderCell>
         <CTableHeaderCell>층별 범위 명칭</CTableHeaderCell>
         <CTableHeaderCell>비 고</CTableHeaderCell>
       </CTableRow>

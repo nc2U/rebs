@@ -20,6 +20,15 @@
         @keypress.enter="formCheck(form.end_floor !== form.end_floor)"
       />
     </CTableDataCell>
+
+    <CTableDataCell>
+      <CFormInput
+        v-model="form.extra_cond"
+        placeholder="방향/위치"
+        @keypress.enter="formCheck(form.extra_cond !== floor.extra_cond)"
+      />
+    </CTableDataCell>
+
     <CTableDataCell>
       <CFormInput
         v-model="form.alias_name"
@@ -68,6 +77,7 @@ export default defineComponent({
       form: {
         start_floor: null,
         end_floor: null,
+        extra_cond: '',
         alias_name: '',
       },
       validated: false,
@@ -78,6 +88,7 @@ export default defineComponent({
     if (this.floor) {
       this.form.start_floor = this.floor.start_floor
       this.form.end_floor = this.floor.end_floor
+      this.form.extra_cond = this.floor.extra_cond
       this.form.alias_name = this.floor.alias_name
     }
   },
@@ -85,8 +96,9 @@ export default defineComponent({
     formsCheck(this: any) {
       const a = this.form.start_floor === this.floor.start_floor
       const b = this.form.end_floor === this.floor.end_floor
-      const c = this.form.alias_name === this.floor.alias_name
-      return a && b && c
+      const c = this.form.extra_cond === this.floor.extra_cond
+      const d = this.form.alias_name === this.floor.alias_name
+      return a && b && c && d
     },
   },
   methods: {

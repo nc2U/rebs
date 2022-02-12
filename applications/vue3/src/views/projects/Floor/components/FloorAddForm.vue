@@ -6,7 +6,7 @@
     @submit.prevent="onSubmit"
   >
     <CRow class="p-2">
-      <CCol md="3" class="mb-2">
+      <CCol md="2" class="mb-2">
         <CFormInput
           v-model.number="form.start_floor"
           placeholder="시작 층"
@@ -17,7 +17,7 @@
         />
       </CCol>
 
-      <CCol md="3" class="mb-2">
+      <CCol md="2" class="mb-2">
         <CFormInput
           v-model.number="form.end_floor"
           placeholder="종료 층"
@@ -28,7 +28,15 @@
         />
       </CCol>
 
-      <CCol md="3" class="mb-2">
+      <CCol md="2" class="mb-2">
+        <CFormInput
+          v-model="form.extra_cond"
+          placeholder="방향/위치(옵션)"
+          :disabled="!selected"
+        />
+      </CCol>
+
+      <CCol md="2" class="mb-2">
         <CFormInput
           v-model="form.alias_name"
           placeholder="층별 범위 명칭"
@@ -69,6 +77,7 @@ export default defineComponent({
       form: {
         start_floor: '',
         end_floor: '',
+        extra_cond: '',
         alias_name: '',
       },
       validated: false,
@@ -96,6 +105,7 @@ export default defineComponent({
     resetForm() {
       this.form.start_floor = ''
       this.form.end_floor = ''
+      this.form.extra_cond = ''
       this.form.alias_name = ''
     },
   },
