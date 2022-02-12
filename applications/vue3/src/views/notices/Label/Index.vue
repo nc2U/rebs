@@ -1,5 +1,5 @@
 <template>
-  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu"></ContentHeader>
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
 
   <ContentBody> Contents Here ...</ContentBody>
 </template>
