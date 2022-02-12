@@ -13,7 +13,7 @@ class OrderGroup(models.Model):
         return self.order_group_name
 
     class Meta:
-        ordering = ['-project', 'order_number', '-id']
+        ordering = ['-project', 'id']
         verbose_name = '01. 차수 (계약그룹)'
         verbose_name_plural = '01. 차수 (계약그룹)'
 
