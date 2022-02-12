@@ -22,7 +22,7 @@
         <CTableHeaderCell>비고</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
-    <CTableBody v-if="selected && !msg">
+    <CTableBody v-if="!msg">
       <Price
         v-for="floor in floorTypeList"
         :key="floor.pk"
@@ -42,7 +42,7 @@
       </CTableRow>
     </CTableBody>
 
-    <CTableBody v-if="selected && !msg && floorTypeList.length === 0">
+    <CTableBody v-if="!msg && floorTypeList.length === 0">
       <CTableRow>
         <CTableDataCell :colspan="8" class="text-center p-5 text-danger">
           <p>
@@ -64,7 +64,7 @@ import { mapState } from 'vuex'
 export default defineComponent({
   name: 'PriceFormList',
   components: { Price },
-  props: ['project', 'selected', 'msg', 'condTexts', 'queryIds'],
+  props: ['msg', 'condTexts', 'queryIds'],
   computed: {
     ...mapState('project', ['floorTypeList']),
   },

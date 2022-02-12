@@ -60,7 +60,7 @@ export default defineComponent({
       orderDisabled: false,
     }
   },
-  props: ['selected', 'orders', 'types'],
+  props: ['orders', 'types'],
   methods: {
     onOrderSelect(e: any) {
       this.type = ''

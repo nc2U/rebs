@@ -1,29 +1,16 @@
 <template>
-  <CCard class="mb-4">
-    <CCardHeader>
-      <CIcon name="cil-justify-center" />
-      <strong class="pl-1"> {{ pageTitle }}</strong>
-    </CCardHeader>
+  <ContentHeader
+    :page-title="pageTitle"
+    :nav-menu="navMenu"
+    @header-select="onSelectAdd"
+  />
 
-    <CCardBody>
-      <HeaderNav :menus="navMenu" />
-
-      <ProjectSelect :project="project" @proj-select="projSelect" />
-    </CCardBody>
-  </CCard>
-
-  <CCard class="mb-4">
-    <CCardHeader>
-      <CIcon name="cil-notes" />
-      <strong class="pl-1"> {{ $route.name }}</strong>
-    </CCardHeader>
-
+  <ContentBody>
     <CCardBody class="pb-5">
       <PriceSelectForm
         ref="formSelect"
         @on-order-select="orderSelect"
         @on-type-select="typeSelect"
-        :selected="selected"
         :orders="orderGroupList"
         :types="unitTypeList"
       />
@@ -31,7 +18,6 @@
         @on-create="onCreatePrice"
         @on-update="onUpdatePrice"
         @on-delete="onDeletePrice"
-        :selected="selected"
         :msg="priceMessage"
         :cond-texts="condTexts"
         :query-ids="queryIds"
@@ -39,25 +25,24 @@
     </CCardBody>
 
     <CCardFooter>&nbsp;</CCardFooter>
-  </CCard>
+  </ContentBody>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import HeaderNav from '@/components/HeaderNav.vue'
-import ProjectSelect from '@/layouts/ContentHeader/ProjectSelect/Index.vue'
 import HeaderMixin from '@/views/projects/_menu/headermixin2'
-import ProjectMixin from '@/views/projects/projectMixin'
+import ContentHeader from '@/layouts/ContentHeader/Index.vue'
+import ContentBody from '@/layouts/ContentBody/Index.vue'
 import PriceSelectForm from '@/views/projects/Price/components/PriceSelectForm.vue'
 import PriceFormList from '@/views/projects/Price/components/PriceFormList.vue'
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'ProjectsPriceSet',
-  mixins: [HeaderMixin, ProjectMixin],
+  mixins: [HeaderMixin],
   components: {
-    HeaderNav,
-    ProjectSelect,
+    ContentHeader,
+    ContentBody,
     PriceSelectForm,
     PriceFormList,
   },
@@ -88,24 +73,18 @@ export default defineComponent({
     },
     // created 훅에서 실행한 fetch 관련 상태 가져오기
     ...mapState('contract', ['orderGroupList']),
-    ...mapState('project', ['unitTypeList', 'floorTypeList']),
+    ...mapState('project', ['project', 'unitTypeList', 'floorTypeList']),
+    ...mapGetters('accounts', ['initProjId']),
   },
   methods: {
-    // projectSelect change 이벤트시 실행 함수
-    projSelect(this: any, event: any) {
-      if (event.target.value !== '') {
-        // 프로젝트 선택시
-        this.selected = true
-        this.fetchProject(event.target.value)
-        this.fetchOrderGroupList(event.target.value)
-        this.fetchTypeList(event.target.value)
-        this.fetchFloorTypeList(event.target.value)
+    onSelectAdd(this: any, target: any) {
+      if (target !== '') {
+        this.fetchOrderGroupList(target)
+        this.fetchTypeList(target)
+        this.fetchFloorTypeList(target)
         this.$refs.formSelect.orderDisabled = false
-      } else {
-        // 프로젝트 선택 해제시
-        this.selected = false
-        this.$refs.formSelect.orderDisabled = true
-      }
+      } else this.$refs.formSelect.orderDisabled = true
+
       // 프로젝트 change 이벤트 발생 시 항상 실행
       this.resetPrices() // 가격 상태 초기화
       this.orderSelect('') // 차수 선택 초기화
@@ -128,7 +107,7 @@ export default defineComponent({
         payload == ''
           ? '공급가격을 입력하기 위해 [타입 정보]를 선택하여 주십시요.'
           : ''
-      const project = String(this.project.pk)
+      const project = this.project.pk
       const order_group = this.order_group
       const unit_type = this.unit_type
       const queryIds = { project, order_group, unit_type }
