@@ -1,40 +1,28 @@
 <template>
-  <CCard class="mb-4">
-    <CCardHeader>
-      <CIcon name="cil-justify-center" />
-      <strong class="pl-1"> {{ pageTitle }}</strong>
-    </CCardHeader>
-
-    <CCardBody>
-      <HeaderNav :menus="navMenu" />
-
-      <CompanySelect :company="company" @com-select="comSelect" />
-    </CCardBody>
-  </CCard>
-
-  <component :is="compName" />
+  <ContentHeader
+    :page-title="pageTitle"
+    :nav-menu="navMenu"
+    :selector="'CompanySelect'"
+  />
+  <ContentBody> Contents Here ...</ContentBody>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import HeaderNav from '@/components/HeaderNav.vue'
-import CompanySelect from '@/layouts/ContentHeader/CompanySelect/Index.vue'
-import BlankComponent from '@/components/BlankComponent.vue'
 import HeaderMixin from '@/views/cashes/_menu/headermixin'
-import CompanyMixin from '@/views/settings/companyMixin'
+import ContentHeader from '@/layouts/ContentHeader/Index.vue'
+import ContentBody from '@/layouts/ContentBody/Index.vue'
+import { mapState } from 'vuex'
 
 export default defineComponent({
   name: 'CashesStatus',
-  mixins: [HeaderMixin, CompanyMixin],
+  mixins: [HeaderMixin],
   components: {
-    HeaderNav,
-    CompanySelect,
-    BlankComponent,
+    ContentHeader,
+    ContentBody,
   },
-  data() {
-    return {
-      compName: 'BlankComponent',
-    }
+  computed: {
+    ...mapState('company', ['company']),
   },
 })
 </script>
