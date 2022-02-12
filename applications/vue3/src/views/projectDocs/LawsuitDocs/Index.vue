@@ -1,40 +1,25 @@
 <template>
-  <CCard class="mb-4">
-    <CCardHeader>
-      <CIcon name="cil-justify-center" />
-      <strong class="pl-1"> {{ pageTitle }}</strong>
-    </CCardHeader>
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
 
-    <CCardBody>
-      <HeaderNav :menus="navMenu" />
-
-      <ProjectSelect :project="project" @proj-select="projSelect" />
-    </CCardBody>
-  </CCard>
-
-  <component :is="compName" />
+  <ContentBody> Contents Here ...</ContentBody>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import HeaderNav from '@/components/HeaderNav.vue'
-import ProjectSelect from '@/layouts/ContentHeader/ProjectSelect/Index.vue'
-import BlankComponent from '@/components/BlankComponent.vue'
 import HeaderMixin from '@/views/projectDocs/_menu/headermixin'
-import ProjectMixin from '@/views/projects/projectMixin'
+import ContentHeader from '@/layouts/ContentHeader/Index.vue'
+import ContentBody from '@/layouts/ContentBody/Index.vue'
+import { mapState } from 'vuex'
 
 export default defineComponent({
-  name: 'ProjectLawsuitDocs',
-  mixins: [HeaderMixin, ProjectMixin],
+  name: 'ProjectDocsLawsuitDocs',
+  mixins: [HeaderMixin],
   components: {
-    HeaderNav,
-    ProjectSelect,
-    BlankComponent,
+    ContentHeader,
+    ContentBody,
   },
-  data() {
-    return {
-      compName: 'BlankComponent',
-    }
+  computed: {
+    ...mapState('project', ['project']),
   },
 })
 </script>
