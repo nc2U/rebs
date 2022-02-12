@@ -72,7 +72,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
-import { mapActions } from 'vuex'
 
 export default defineComponent({
   name: 'DownPay',

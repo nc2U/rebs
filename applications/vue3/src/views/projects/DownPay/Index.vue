@@ -82,9 +82,10 @@ export default defineComponent({
       const project = this.project.pk
       this.createDownPay({ ...{ project }, ...payload })
     },
-    onUpdateDownPay(payload: any) {
+    async onUpdateDownPay(payload: any) {
       const project = this.project.pk
-      this.updateDownPay({ ...{ project }, ...payload })
+      await this.updateDownPay({ ...{ project }, ...payload })
+      this.fetchDownPayList(project)
     },
     onDeleteDownPay(pk: number) {
       const project = this.project.pk
