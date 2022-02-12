@@ -12,7 +12,7 @@ import ContentBody from '@/layouts/ContentBody/Index.vue'
 import { mapState } from 'vuex'
 
 export default defineComponent({
-  name: 'ContractStatus',
+  name: 'ContractRegister',
   mixins: [HeaderMixin],
   components: {
     ContentHeader,
