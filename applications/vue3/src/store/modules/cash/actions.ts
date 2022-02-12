@@ -102,12 +102,12 @@ const actions = {
   },
 
   updatePayOrder: ({ dispatch }: any, payload: any) => {
-    const { pk, project } = payload
+    const { pk } = payload
     delete payload.pk
     api
       .put(`/pay-order/${pk}/`, payload)
-      .then(() => {
-        dispatch('fetchPayOrderList', { project })
+      .then(res => {
+        dispatch('fetchPayOrderList', res.data.project)
         message()
       })
       .catch(err => {
