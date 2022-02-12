@@ -9,9 +9,10 @@ export default defineComponent({
     ...mapGetters('accounts', ['initComId']),
   },
   methods: {
-    comSelect(event: any) {
+    comSelect(this: any, event: any) {
       const target = event.target.value
       if (target !== '') this.fetchCompany(target)
+      else this.$store.state.settings.company = null
 
       this.$emit('header-select', target)
     },

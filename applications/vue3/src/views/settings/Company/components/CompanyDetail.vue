@@ -18,49 +18,65 @@
               <CTableHeaderCell scope="row" color="dark">
                 회사명
               </CTableHeaderCell>
-              <CTableDataCell>{{ company.name }}</CTableDataCell>
+              <CTableDataCell>
+                <span v-if="company">{{ company.name }}</span>
+              </CTableDataCell>
             </CTableRow>
             <CTableRow>
               <CTableHeaderCell scope="row" color="dark">
                 대표자명
               </CTableHeaderCell>
-              <CTableDataCell>{{ company.ceo }}</CTableDataCell>
+              <CTableDataCell>
+                <span v-if="company">{{ company.ceo }}</span>
+              </CTableDataCell>
             </CTableRow>
             <CTableRow>
               <CTableHeaderCell scope="row" color="dark">
                 사업자등록번호
               </CTableHeaderCell>
-              <CTableDataCell>{{ company.tax_number }}</CTableDataCell>
+              <CTableDataCell>
+                <span v-if="company">{{ company.tax_number }}</span>
+              </CTableDataCell>
             </CTableRow>
             <CTableRow>
               <CTableHeaderCell scope="row" color="dark">
                 법인등록번호
               </CTableHeaderCell>
-              <CTableDataCell>{{ company.org_number }}</CTableDataCell>
+              <CTableDataCell>
+                <span v-if="company">{{ company.org_number }}</span>
+              </CTableDataCell>
             </CTableRow>
             <CTableRow>
               <CTableHeaderCell scope="row" color="dark">
                 업태
               </CTableHeaderCell>
-              <CTableDataCell>{{ company.business_cond }}</CTableDataCell>
+              <CTableDataCell>
+                <span v-if="company">{{ company.business_cond }}</span>
+              </CTableDataCell>
             </CTableRow>
             <CTableRow>
               <CTableHeaderCell scope="row" color="dark">
                 종목
               </CTableHeaderCell>
-              <CTableDataCell>{{ company.business_even }}</CTableDataCell>
+              <CTableDataCell>
+                <span v-if="company">{{ company.business_even }}</span>
+              </CTableDataCell>
             </CTableRow>
             <CTableRow>
               <CTableHeaderCell scope="row" color="dark">
                 설립일자
               </CTableHeaderCell>
-              <CTableDataCell>{{ company.es_date }}</CTableDataCell>
+              <CTableDataCell>
+                <span v-if="company">{{ company.es_date }}</span>
+              </CTableDataCell>
             </CTableRow>
             <CTableRow>
               <CTableHeaderCell scope="row" color="dark">
                 개업일자
               </CTableHeaderCell>
-              <CTableDataCell>{{ company.op_date }}</CTableDataCell>
+              <CTableDataCell>
+                <span v-if="company">{{ company.op_date }}</span>
+              </CTableDataCell>
             </CTableRow>
 
             <CTableRow>
@@ -68,9 +84,11 @@
                 회사주소
               </CTableHeaderCell>
               <CTableDataCell>
-                <span v-if="company.zipcode">({{ company.zipcode }})</span>
-                {{ company.address1 }} {{ company.address2 }}
-                {{ company.address3 }}
+                <span v-if="company">
+                  <span v-if="company.zipcode">({{ company.zipcode }})</span>
+                  {{ company.address1 }} {{ company.address2 }}
+                  {{ company.address3 }}
+                </span>
               </CTableDataCell>
             </CTableRow>
           </CTableBody>
@@ -104,12 +122,10 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { CTableDataCell } from '@coreui/vue-pro/src/components/table'
 import { mapGetters } from 'vuex'
 
 export default defineComponent({
   name: 'CompanyDetail',
-  components: { CTableDataCell },
   props: {
     company: {
       type: Object,
