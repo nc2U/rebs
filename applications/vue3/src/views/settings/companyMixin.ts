@@ -1,5 +1,5 @@
 import { defineComponent } from 'vue'
-import { mapActions, mapGetters, mapState } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 
 export default defineComponent({
   data() {
@@ -11,7 +11,6 @@ export default defineComponent({
     this.fetchCompany(this.initComId)
   },
   computed: {
-    ...mapState('settings', ['company']),
     ...mapGetters('accounts', ['initComId']),
   },
   methods: {
