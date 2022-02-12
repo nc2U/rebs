@@ -8,7 +8,6 @@
   <ContentBody>
     <component
       :is="compName"
-      :userInfo="userInfo"
       :company="company"
       :update="update"
       @to-create="toCreate"
@@ -45,7 +44,6 @@ export default defineComponent({
     }
   },
   computed: {
-    ...mapState('accounts', ['userInfo']),
     ...mapState('settings', ['company']),
   },
   watch: {

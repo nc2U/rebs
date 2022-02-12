@@ -1,5 +1,4 @@
 <template>
-  <!--  <CCard>-->
   <CCardBody>
     <CRow>
       <CCol class="pt-2">
@@ -101,7 +100,6 @@
       </CCol>
     </CRow>
   </CCardFooter>
-  <!--  </CCard>-->
 </template>
 
 <script lang="ts">
@@ -114,10 +112,6 @@ export default defineComponent({
   components: { CTableDataCell },
   props: {
     company: {
-      type: Object,
-      required: true,
-    },
-    userInfo: {
       type: Object,
       required: true,
     },

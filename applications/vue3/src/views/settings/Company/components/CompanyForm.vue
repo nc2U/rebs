@@ -292,10 +292,6 @@ export default defineComponent({
       type: Object,
       required: false,
     },
-    userInfo: {
-      type: Object,
-      required: true,
-    },
     update: {
       type: Boolean,
       required: true,
