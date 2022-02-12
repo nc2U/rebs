@@ -10,7 +10,7 @@
       <CTableRow>
         <CTableHeaderCell>등록차수</CTableHeaderCell>
         <CTableHeaderCell>차수구분</CTableHeaderCell>
-        <CTableHeaderCell>차수그룹명칭</CTableHeaderCell>
+        <CTableHeaderCell>차수그룹명</CTableHeaderCell>
         <CTableHeaderCell>비 고</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
@@ -19,7 +19,7 @@
         v-for="order in orderGroupList"
         @on-update="onUpdateOrder"
         @on-delete="onDeleteOrder"
-        :key="order.id"
+        :key="order.pk"
         :order="order"
       />
     </CTableBody>

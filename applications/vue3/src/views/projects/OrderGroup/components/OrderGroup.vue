@@ -20,13 +20,13 @@
     <CTableDataCell>
       <CFormInput
         v-model="form.order_group_name"
+        placeholder="차수그룹명"
         @keypress.enter="
           formCheck(form.order_group_name !== order.order_group_name)
         "
       />
     </CTableDataCell>
     <CTableDataCell class="text-center">
-      <!--      {{ order }}-->
       <CButton
         color="success"
         size="sm"

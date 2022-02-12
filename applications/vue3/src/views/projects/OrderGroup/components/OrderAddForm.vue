@@ -28,7 +28,7 @@
       <CCol md="3" class="mb-2">
         <CFormInput
           v-model="form.order_group_name"
-          placeholder="차수그룹 명칭"
+          placeholder="차수그룹명"
           required
           :disabled="!selected"
         />
