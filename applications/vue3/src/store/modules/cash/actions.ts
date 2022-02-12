@@ -102,12 +102,11 @@ const actions = {
   },
 
   updatePayOrder: ({ dispatch }: any, payload: any) => {
-    const { pk } = payload
+    const { pk, project } = payload
     delete payload.pk
     api
       .put(`/pay-order/${pk}/`, payload)
       .then(() => {
-        const { project } = payload
         dispatch('fetchPayOrderList', { project })
         message()
       })
@@ -166,12 +165,11 @@ const actions = {
   },
 
   updateDownPay: ({ dispatch }: any, payload: any) => {
-    const { pk } = payload
+    const { pk, project } = payload
     delete payload.pk
     api
       .put(`/down-payment/${pk}/`, payload)
       .then(() => {
-        const { project } = payload
         dispatch('fetchDownPayList', { project })
         message()
       })
