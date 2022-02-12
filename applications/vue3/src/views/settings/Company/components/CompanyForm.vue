@@ -1,6 +1,4 @@
 <template>
-  <!--  <CCard>-->
-
   <CForm
     class="needs-validation"
     novalidate
@@ -234,7 +232,6 @@
       <CButton :color="btnClass" @click="modalAction">저장</CButton>
     </template>
   </ConfirmModal>
-  <!--  </CCard>-->
 </template>
 
 <script lang="ts">

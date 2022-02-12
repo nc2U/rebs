@@ -100,7 +100,12 @@
   <CCardFooter>
     <CRow class="justify-content-between">
       <CCol xs="auto">
-        <CButton v-if="staffAuth" type="button" color="success" @click="toEdit">
+        <CButton
+          v-if="staffAuth && company"
+          type="button"
+          color="success"
+          @click="toEdit"
+        >
           <CIcon name="cil-check-circle" />
           수정하기
         </CButton>
