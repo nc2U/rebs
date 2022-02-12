@@ -86,13 +86,6 @@ export default defineComponent({
       this.form.order_group_name = this.order.order_group_name
     }
   },
-  watch: {
-    order(this: any) {
-      this.form.order_number = this.order.order_number
-      this.form.sort = this.order.sort
-      this.form.order_group_name = this.order.order_group_name
-    },
-  },
   computed: {
     formsCheck(this: any) {
       const a = this.form.order_number === this.order.order_number
