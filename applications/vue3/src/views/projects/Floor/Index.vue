@@ -35,7 +35,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import HeaderNav from '@/components/HeaderNav.vue'
-import ProjectSelect from '@/components/ProjectSelect/Index.vue'
+import ProjectSelect from '@/layouts/ContentHeader/ProjectSelect/Index.vue'
 import HeaderMixin from '@/views/projects/_menu/headermixin2'
 import ProjectMixin from '@/views/projects/projectMixin'
 import FloorAddForm from '@/views/projects/Floor/components/FloorAddForm.vue'

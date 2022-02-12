@@ -18,7 +18,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import HeaderNav from '@/components/HeaderNav.vue'
-import CompanySelect from '@/components/CompanySelect/Index.vue'
+import CompanySelect from '@/layouts/ContentHeader/CompanySelect/Index.vue'
 import BlankComponent from '@/components/BlankComponent.vue'
 import Headermixin from '@/views/hrManage/_menu/headermixin'
 import CompanyMixin from '@/views/settings/companyMixin'

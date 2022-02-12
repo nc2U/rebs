@@ -19,7 +19,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import HeaderNav from '@/components/HeaderNav.vue'
-import ProjectSelect from '@/components/ProjectSelect/Index.vue'
+import ProjectSelect from '@/layouts/ContentHeader/ProjectSelect/Index.vue'
 import IndexSummary from './components/IndexSummary.vue'
 import IndexList from './components/IndexList.vue'
 import HeaderMixin from '@/views/contracts/_menu/headermixin1'
