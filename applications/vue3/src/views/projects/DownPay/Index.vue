@@ -1,26 +1,14 @@
 <template>
-  <CCard class="mb-4">
-    <CCardHeader>
-      <CIcon name="cil-justify-center" />
-      <strong class="pl-1"> {{ pageTitle }}</strong>
-    </CCardHeader>
+  <ContentHeader
+    :page-title="pageTitle"
+    :nav-menu="navMenu"
+    @header-select="onSelectAdd"
+  />
 
-    <CCardBody>
-      <HeaderNav :menus="navMenu" />
-
-      <ProjectSelect :project="project" @proj-select="projSelect" />
-    </CCardBody>
-  </CCard>
-
-  <CCard class="mb-4">
-    <CCardHeader>
-      <CIcon name="cil-notes" />
-      <strong class="pl-1"> {{ $route.name }}</strong>
-    </CCardHeader>
-
-    <CCardBody class="pb-5" v-if="project">
+  <ContentBody>
+    <CCardBody class="pb-5">
       <DownPayAddForm
-        :selected="selected"
+        :disabled="!project"
         :orders="orderGroupList"
         :types="unitTypeList"
         @on-submit="onSubmit"
@@ -28,32 +16,30 @@
       <DownPayFormList
         @on-update="onUpdateDownPay"
         @on-delete="onDeleteDownPay"
-        :selected="selected"
         :orders="orderGroupList"
         :types="unitTypeList"
       />
     </CCardBody>
 
     <CCardFooter>&nbsp;</CCardFooter>
-  </CCard>
+  </ContentBody>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import HeaderNav from '@/components/HeaderNav.vue'
-import ProjectSelect from '@/layouts/ContentHeader/ProjectSelect/Index.vue'
 import HeaderMixin from '@/views/projects/_menu/headermixin2'
-import ProjectMixin from '@/views/projects/projectMixin'
+import ContentHeader from '@/layouts/ContentHeader/Index.vue'
+import ContentBody from '@/layouts/ContentBody/Index.vue'
 import DownPayAddForm from '@/views/projects/DownPay/components/DownPayAddForm.vue'
 import DownPayFormList from '@/views/projects/DownPay/components/DownPayFormList.vue'
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'ProjectsDownPaySet',
-  mixins: [HeaderMixin, ProjectMixin],
+  mixins: [HeaderMixin],
   components: {
-    HeaderNav,
-    ProjectSelect,
+    ContentHeader,
+    ContentBody,
     DownPayAddForm,
     DownPayFormList,
   },
@@ -64,19 +50,16 @@ export default defineComponent({
   },
   computed: {
     ...mapState('contract', ['orderGroupList']),
-    ...mapState('project', ['unitTypeList']),
+    ...mapState('project', ['project', 'unitTypeList']),
+    ...mapGetters('accounts', ['initProjId']),
   },
   methods: {
-    projSelect(event: any) {
-      if (event.target.value !== '') {
-        this.selected = true
-        this.fetchProject(event.target.value)
-        this.fetchDownPayList(event.target.value)
-        this.fetchOrderGroupList(event.target.value)
-        this.fetchTypeList(event.target.value)
-      } else {
-        this.selected = false
-      }
+    onSelectAdd(this: any, target: any) {
+      if (target !== '') {
+        this.fetchOrderGroupList(target)
+        this.fetchTypeList(target)
+        this.fetchDownPayList(target)
+      } else this.$store.state.cash.downPayList = []
     },
     onSubmit(payload: any) {
       const project = this.project.pk

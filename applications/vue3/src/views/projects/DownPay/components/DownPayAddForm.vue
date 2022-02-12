@@ -7,7 +7,7 @@
   >
     <CRow class="p-2">
       <CCol md="2" class="mb-2">
-        <CFormSelect v-model="form.order_group" :disabled="!selected" required>
+        <CFormSelect v-model="form.order_group" :disabled="disabled" required>
           <option value="">차수선택</option>
           <option v-for="order in orders" :value="order.pk" :key="order.pk">
             {{ order.order_group_name }}
@@ -16,7 +16,7 @@
       </CCol>
 
       <CCol md="2" class="mb-2">
-        <CFormSelect v-model="form.unit_type" :disabled="!selected" required>
+        <CFormSelect v-model="form.unit_type" :disabled="disabled" required>
           <option value="">타입선택</option>
           <option v-for="type in types" :value="type.pk" :key="type.pk">
             {{ type.name }}
@@ -31,7 +31,7 @@
           type="number"
           min="0"
           required
-          :disabled="!selected"
+          :disabled="disabled"
         />
       </CCol>
 
@@ -42,14 +42,14 @@
           type="number"
           min="0"
           required
-          :disabled="!selected"
+          :disabled="disabled"
         />
       </CCol>
 
       <CCol md="2">
         <CRow>
           <CCol md="12" class="d-grid gap-2 d-lg-block mb-3">
-            <CButton color="primary" :disabled="!selected">계약금 추가</CButton>
+            <CButton color="primary" :disabled="disabled">계약금 추가</CButton>
           </CCol>
         </CRow>
       </CCol>
@@ -90,7 +90,7 @@ export default defineComponent({
       validated: false,
     }
   },
-  props: ['selected', 'orders', 'types'],
+  props: ['disabled', 'orders', 'types'],
   methods: {
     onSubmit(this: any, event: any) {
       const form = event.currentTarget

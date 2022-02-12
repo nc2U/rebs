@@ -15,7 +15,7 @@
         <CTableHeaderCell>비고</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
-    <CTableBody v-if="selected && downPayList.length !== 0">
+    <CTableBody v-if="downPayList.length > 0">
       <DownPay
         v-for="downPay in downPayList"
         @on-update="onUpdateDownPay"
@@ -45,7 +45,7 @@ import { mapState } from 'vuex'
 export default defineComponent({
   name: 'DownPayFormList',
   components: { DownPay },
-  props: ['selected', 'orders', 'types'],
+  props: ['orders', 'types'],
   computed: {
     ...mapState('cash', ['downPayList']),
   },
