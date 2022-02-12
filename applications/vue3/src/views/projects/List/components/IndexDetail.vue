@@ -1,10 +1,5 @@
 <template>
   <CCard>
-    <CCardHeader>
-      <CIcon name="cil-notes" />
-      <strong class="pl-1"> 프로젝트 정보 </strong>
-    </CCardHeader>
-
     <CCardBody>
       <CRow>
         <CCol class="pt-2">
