@@ -170,7 +170,7 @@ class UnitTypeSerializer(serializers.ModelSerializer):
 class UnitFloorTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = UnitFloorType
-        fields = ('pk', 'url', 'project', 'start_floor', 'end_floor', 'alias_name')
+        fields = ('pk', 'url', 'project', 'start_floor', 'end_floor', 'extra_cond', 'alias_name')
         extra_kwargs = {'url': {'view_name': 'api:floortype-detail'}, }
 
 
