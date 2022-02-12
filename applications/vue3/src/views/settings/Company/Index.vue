@@ -1,45 +1,40 @@
 <template>
-  <CCard class="mb-4">
-    <CCardHeader>
-      <CIcon name="cil-justify-center" />
-      <strong class="pl-1"> {{ pageTitle }}</strong>
-    </CCardHeader>
-
-    <CCardBody>
-      <HeaderNav :menus="navMenu" />
-      <CompanySelect :company="company" @com-select="comSelect" />
-    </CCardBody>
-  </CCard>
-
-  <component
-    :is="compName"
-    :userInfo="userInfo"
-    :company="company"
-    :update="update"
-    @to-create="toCreate"
-    @to-update="toUpdate"
-    @reset-form="resetForm"
-    @create-form="createForm"
-    @update-form="updateForm"
+  <ContentHeader
+    :page-title="pageTitle"
+    :nav-menu="navMenu"
+    :selector="'CompanySelect'"
   />
+
+  <ContentBody>
+    <component
+      :is="compName"
+      :userInfo="userInfo"
+      :company="company"
+      :update="update"
+      @to-create="toCreate"
+      @to-update="toUpdate"
+      @reset-form="resetForm"
+      @create-form="createForm"
+      @update-form="updateForm"
+    />
+  </ContentBody>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import HeaderNav from '@/components/HeaderNav.vue'
-import CompanySelect from '@/layouts/ContentHeader/CompanySelect/Index.vue'
+import HeaderMixin from '@/views/settings/_menu/headermixin'
+import ContentHeader from '@/layouts/ContentHeader/Index.vue'
+import ContentBody from '@/layouts/ContentBody/Index.vue'
 import CompanyForm from './components/CompanyForm.vue'
 import CompanyDetail from './components/CompanyDetail.vue'
 import { mapActions, mapState } from 'vuex'
-import HeaderMixin from '@/views/settings/_menu/headermixin'
-import CompanyMixin from '@/views/settings/companyMixin'
 
 export default defineComponent({
   name: 'CompanyInfo',
-  mixins: [HeaderMixin, CompanyMixin],
+  mixins: [HeaderMixin],
   components: {
-    HeaderNav,
-    CompanySelect,
+    ContentHeader,
+    ContentBody,
     CompanyForm,
     CompanyDetail,
   },
@@ -51,6 +46,7 @@ export default defineComponent({
   },
   computed: {
     ...mapState('accounts', ['userInfo']),
+    ...mapState('settings', ['company']),
   },
   watch: {
     company() {
