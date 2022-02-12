@@ -80,18 +80,15 @@ export default defineComponent({
     },
     onSubmit(payload: any) {
       const project = this.project.pk
-      alert('create')
-      // this.createDownPay({ ...{ project }, ...payload })
+      this.createDownPay({ ...{ project }, ...payload })
     },
     onUpdateDownPay(payload: any) {
       const project = this.project.pk
-      alert('update')
-      // this.updateDownPay({ ...{ project }, ...payload })
+      this.updateDownPay({ ...{ project }, ...payload })
     },
     onDeleteDownPay(pk: number) {
       const project = this.project.pk
-      alert('delete')
-      // this.deleteDownPay({ ...{ pk }, ...{ project } })
+      this.deleteDownPay({ ...{ pk }, ...{ project } })
     },
     ...mapActions('cash', [
       'fetchDownPayList',
