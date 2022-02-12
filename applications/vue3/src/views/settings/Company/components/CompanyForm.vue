@@ -324,8 +324,8 @@ export default defineComponent({
       }
       this.validated = false
     },
-    deleteCompany() {
-      ;(this as any).$refs.delModal.callModal()
+    deleteCompany(this: any) {
+      this.$refs.delModal.callModal()
     },
   },
 })

@@ -26,9 +26,3 @@ export default defineComponent({
   methods: {},
 })
 </script>
-
-<style lang="scss" scoped>
-.blank-body {
-  height: 500px;
-}
-</style>

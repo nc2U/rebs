@@ -361,7 +361,7 @@
           v-if="update && superAuth"
           type="button"
           color="danger"
-          @click="deleteCompany"
+          @click="deleteProject"
         >
           삭제
         </CButton>
@@ -491,10 +491,10 @@ export default defineComponent({
     },
   },
   computed: {
-    company() {
+    company(this: any) {
       return this.update
-        ? (this as any).project.company
-        : (this as any).userInfo.staffauth.company
+        ? this.project.company
+        : this.userInfo.staffauth.company
     },
     confirmText() {
       return this.update ? '변경' : '등록'
@@ -537,11 +537,9 @@ export default defineComponent({
       }
       this.validated = false
     },
-    deleteCompany() {
-      ;(this as any).$refs.delModal.callModal()
+    deleteProject(this: any) {
+      this.$refs.delModal.callModal()
     },
   },
 })
 </script>
-
-<style lang="scss" scoped></style>
