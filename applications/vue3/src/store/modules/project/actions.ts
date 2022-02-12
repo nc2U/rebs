@@ -116,11 +116,11 @@ const actions = {
   },
 
   deleteType: ({ dispatch }: any, payload: any) => {
-    const { pk, projId } = payload
+    const { pk, project } = payload
     api
       .delete(`/type/${pk}/`)
       .then(() => {
-        dispatch('fetchTypeList', projId)
+        dispatch('fetchTypeList', project)
         message('danger', '알림!', '해당 오브젝트가 삭제되었습니다.')
       })
       .catch(err => {
@@ -176,11 +176,11 @@ const actions = {
   },
 
   deleteFloorType: ({ dispatch }: any, payload: any) => {
-    const { pk, projId } = payload
+    const { pk, project } = payload
     api
       .delete(`/floor/${pk}/`)
       .then(() => {
-        dispatch('fetchFloorTypeList', projId)
+        dispatch('fetchFloorTypeList', project)
         message('danger', '알림!', '해당 오브젝트가 삭제되었습니다.')
       })
       .catch(() => {
