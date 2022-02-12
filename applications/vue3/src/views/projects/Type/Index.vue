@@ -7,7 +7,7 @@
 
   <ContentBody>
     <CCardBody class="pb-5">
-      <TypeAddForm @on-submit="onSubmit" />
+      <TypeAddForm :disabled="!project" @on-submit="onSubmit" />
       <TypeFormList
         @on-update="onUpdateType"
         @on-delete="onDeleteType"

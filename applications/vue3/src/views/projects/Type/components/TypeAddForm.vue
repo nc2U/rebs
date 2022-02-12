@@ -11,7 +11,7 @@
           v-model="form.name"
           placeholder="타입명칭"
           required
-          :disabled="!project"
+          :disabled="disabled"
         />
       </CCol>
 
@@ -21,7 +21,7 @@
           title="타입색상"
           type="color"
           required
-          :disabled="!project"
+          :disabled="disabled"
         />
       </CCol>
 
@@ -31,7 +31,7 @@
           placeholder="평균가격"
           type="number"
           required
-          :disabled="!project"
+          :disabled="disabled"
         />
       </CCol>
 
@@ -41,12 +41,12 @@
           placeholder="세대수"
           type="number"
           required
-          :disabled="!project"
+          :disabled="disabled"
         />
       </CCol>
 
       <CCol md="2" class="d-grid gap-2 d-lg-block mb-3">
-        <CButton color="primary" :disabled="!project">타입추가</CButton>
+        <CButton color="primary" :disabled="disabled">타입추가</CButton>
       </CCol>
     </CRow>
   </CForm>
@@ -68,7 +68,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
-import { mapState } from 'vuex'
 
 export default defineComponent({
   name: 'TypeAddForm',
@@ -84,7 +83,7 @@ export default defineComponent({
       validated: false,
     }
   },
-  computed: mapState('project', ['project']),
+  props: ['disabled'],
   methods: {
     onSubmit(this: any, event: any) {
       const form = event.currentTarget
