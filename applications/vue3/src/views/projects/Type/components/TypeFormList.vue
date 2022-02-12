@@ -16,7 +16,7 @@
         <CTableHeaderCell>비 고</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
-    <CTableBody v-if="selected && unitTypeList">
+    <CTableBody v-if="selected && unitTypeList.length > 0">
       <Type
         v-for="type in unitTypeList"
         @on-update="onUpdateType"

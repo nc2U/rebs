@@ -90,14 +90,6 @@ export default defineComponent({
       this.form.num_unit = this.type.num_unit
     }
   },
-  watch: {
-    type(this: any) {
-      this.form.name = this.type.name
-      this.form.color = this.type.color
-      this.form.average_price = this.type.average_price
-      this.form.num_unit = this.type.num_unit
-    },
-  },
   computed: {
     formsCheck(this: any) {
       const a = this.form.name === this.type.name
