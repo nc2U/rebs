@@ -76,7 +76,7 @@ import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import { maska } from 'maska'
 
 export default defineComponent({
-  name: 'DownAddForm',
+  name: 'DownPayAddForm',
   directives: { maska },
   components: { ConfirmModal },
   data() {

@@ -135,7 +135,7 @@ import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import { maska } from 'maska'
 
 export default defineComponent({
-  name: 'FloorAddForm',
+  name: 'PayOrderAddForm',
   directives: { maska },
   components: { ConfirmModal },
   data() {

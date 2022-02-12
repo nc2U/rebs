@@ -49,7 +49,7 @@ import DownPayFormList from '@/views/projects/DownPay/components/DownPayFormList
 import { mapActions, mapState } from 'vuex'
 
 export default defineComponent({
-  name: 'DownPayIndex',
+  name: 'ProjectsDownPaySet',
   mixins: [HeaderMixin, ProjectMixin],
   components: {
     HeaderNav,

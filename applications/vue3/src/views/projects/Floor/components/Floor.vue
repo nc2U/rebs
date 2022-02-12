@@ -61,7 +61,7 @@ import { defineComponent } from 'vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
 export default defineComponent({
-  name: 'UnitType',
+  name: 'FloorType',
   components: { ConfirmModal },
   data() {
     return {
