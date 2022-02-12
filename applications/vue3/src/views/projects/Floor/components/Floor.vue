@@ -81,13 +81,6 @@ export default defineComponent({
       this.form.alias_name = this.floor.alias_name
     }
   },
-  watch: {
-    type(this: any) {
-      this.form.start_floor = this.floor.start_floor
-      this.form.end_floor = this.floor.end_floor
-      this.form.alias_name = this.floor.alias_name
-    },
-  },
   computed: {
     formsCheck(this: any) {
       const a = this.form.start_floor === this.floor.start_floor

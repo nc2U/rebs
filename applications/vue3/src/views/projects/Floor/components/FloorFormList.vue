@@ -13,7 +13,7 @@
         <CTableHeaderCell>비 고</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
-    <CTableBody v-if="selected && floorTypeList.length !== 0">
+    <CTableBody v-if="selected && floorTypeList.length > 0">
       <Floor
         v-for="floor in floorTypeList"
         @on-update="onUpdateFloor"
