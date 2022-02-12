@@ -27,7 +27,6 @@
         :orders="orderGroupList"
         :types="unitTypeList"
       />
-      <PriceAddForm :selected="selected" :add-active="addActive" />
       <PriceFormList
         @on-create="onCreatePrice"
         @on-update="onUpdatePrice"
@@ -50,7 +49,6 @@ import ProjectSelect from '@/components/ProjectSelect/Index.vue'
 import HeaderMixin from '@/views/projects/_menu/headermixin2'
 import ProjectMixin from '@/views/projects/projectMixin'
 import PriceSelectForm from '@/views/projects/Price/components/PriceSelectForm.vue'
-import PriceAddForm from '@/views/projects/Price/components/PriceAddForm.vue'
 import PriceFormList from '@/views/projects/Price/components/PriceFormList.vue'
 import { mapActions, mapState } from 'vuex'
 
@@ -61,14 +59,12 @@ export default defineComponent({
     HeaderNav,
     ProjectSelect,
     PriceSelectForm,
-    PriceAddForm,
     PriceFormList,
   },
   data() {
     return {
       order_group: '', // condTexts 함수에 인자로 사용
       unit_type: '',
-      addActive: false,
       queryIds: {},
       priceMessage: '공급가격을 입력하기 위해 [차수 정보]를 선택하여 주십시요.',
     }
@@ -128,7 +124,6 @@ export default defineComponent({
     // 타입 선택 시 실행 함수
     typeSelect(payload: any) {
       this.unit_type = payload // unit_type pk 값 할당
-      this.addActive = payload !== ''
       this.priceMessage =
         payload == ''
           ? '공급가격을 입력하기 위해 [타입 정보]를 선택하여 주십시요.'

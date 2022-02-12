@@ -22,7 +22,7 @@
         <CTableHeaderCell>비고</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
-    <CTableBody v-if="selected && msg === ''">
+    <CTableBody v-if="selected && !msg">
       <Price
         v-for="floor in floorTypeList"
         :key="floor.pk"
@@ -38,6 +38,18 @@
       <CTableRow>
         <CTableDataCell :colspan="8" class="text-center p-5 text-info">
           {{ msg }}
+        </CTableDataCell>
+      </CTableRow>
+    </CTableBody>
+
+    <CTableBody v-if="selected && !msg && floorTypeList.length === 0">
+      <CTableRow>
+        <CTableDataCell :colspan="8" class="text-center p-5 text-danger">
+          <p>
+            <CIcon name="cilWarning" />
+            등록된 [층별조건] 데이터가 없습니다!
+          </p>
+          <p>먼저 [층별조건]을 등록한 후 진행하세요.</p>
         </CTableDataCell>
       </CTableRow>
     </CTableBody>
