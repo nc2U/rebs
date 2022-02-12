@@ -1,68 +1,53 @@
 <template>
-  <CCard class="mb-4">
-    <CCardHeader>
-      <CIcon name="cil-justify-center" />
-      <strong class="pl-1"> {{ pageTitle }}</strong>
-    </CCardHeader>
+  <ContentHeader
+    :page-title="pageTitle"
+    :nav-menu="navMenu"
+    @header-select="onSelectAdd"
+  />
 
-    <CCardBody>
-      <HeaderNav :menus="navMenu" />
-
-      <ProjectSelect :project="project" @proj-select="projSelect" />
-    </CCardBody>
-  </CCard>
-
-  <CCard class="mb-4">
-    <CCardHeader>
-      <CIcon name="cil-notes" />
-      <strong class="pl-1"> {{ $route.name }}</strong>
-    </CCardHeader>
-
-    <CCardBody class="pb-5" v-if="project">
-      <TypeAddForm :selected="selected" @on-submit="onSubmit" />
+  <ContentBody>
+    <CCardBody class="pb-5">
+      <TypeAddForm @on-submit="onSubmit" />
       <TypeFormList
         @on-update="onUpdateType"
         @on-delete="onDeleteType"
-        :selected="selected"
         :project="project"
       />
     </CCardBody>
 
     <CCardFooter>&nbsp;</CCardFooter>
-  </CCard>
+  </ContentBody>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import HeaderNav from '@/components/HeaderNav.vue'
-import ProjectSelect from '@/layouts/ContentHeader/ProjectSelect/Index.vue'
 import HeaderMixin from '@/views/projects/_menu/headermixin2'
-import ProjectMixin from '@/views/projects/projectMixin'
+import ContentHeader from '@/layouts/ContentHeader/Index.vue'
+import ContentBody from '@/layouts/ContentBody/Index.vue'
 import TypeAddForm from '@/views/projects/Type/components/TypeAddForm.vue'
 import TypeFormList from '@/views/projects/Type/components/TypeFormList.vue'
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'ProjectsTypeSet',
-  mixins: [HeaderMixin, ProjectMixin],
+  mixins: [HeaderMixin],
   components: {
-    HeaderNav,
-    ProjectSelect,
+    ContentHeader,
+    ContentBody,
     TypeAddForm,
     TypeFormList,
   },
   created() {
     this.fetchTypeList(this.initProjId)
   },
+  computed: {
+    ...mapState('project', ['project']),
+    ...mapGetters('accounts', ['initProjId']),
+  },
   methods: {
-    projSelect(event: any) {
-      if (event.target.value !== '') {
-        this.selected = true
-        this.fetchProject(event.target.value)
-        this.fetchTypeList(event.target.value)
-      } else {
-        this.selected = false
-      }
+    onSelectAdd(this: any, target: any) {
+      if (target !== '') this.fetchTypeList(target)
+      else this.$store.state.project.unitTypeList = []
     },
     onSubmit(payload: any) {
       const project = this.project.pk
