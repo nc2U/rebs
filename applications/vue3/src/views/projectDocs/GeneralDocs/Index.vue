@@ -3,6 +3,7 @@
     :page-title="'현장 문서관리'"
     :nav-menu="['현장 일반문서']"
     :selector="'ProjectSelect'"
+    @header-select="onSelectAdd"
   />
   <ContentBody></ContentBody>
 </template>

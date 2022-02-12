@@ -3,6 +3,7 @@
     :page-title="'본사 문서관리'"
     :nav-menu="['본사 일반문서']"
     :selector="'CompanySelect'"
+    @header-select="onSelectAdd"
   />
   <ContentBody></ContentBody>
 </template>

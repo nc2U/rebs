@@ -3,6 +3,7 @@
     :page-title="pageTitle"
     :nav-menu="navMenu"
     :selector="'CompanySelect'"
+    @header-select="onSelectAdd"
   />
 
   <ContentBody>
