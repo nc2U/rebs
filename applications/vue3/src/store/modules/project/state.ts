@@ -1,14 +1,6 @@
-import { Company } from '@/store/modules/settings/state'
-import { Contract } from '@/store/modules/contract/state'
-import {
-  ProjectAccountD1,
-  ProjectAccountD2,
-} from '@/store/modules/project_cash/state'
-import { User } from '@/store/modules/accounts/state'
-
 export interface Project {
   pk: number
-  company: Company
+  company: number
   name: string
   order: number | null
   kind: string
@@ -38,7 +30,8 @@ export interface Project {
 }
 
 export interface UnitType {
-  project: Project
+  pk: number
+  project: number
   name: string
   color: string
   average_price: number
@@ -46,26 +39,30 @@ export interface UnitType {
 }
 
 export interface UnitFloorType {
-  project: Project
+  pk: number
+  project: number
   start_floor: number
   end_floor: number
+  extra_cond: string
   alias_name: string
 }
 
 export interface ContractUnit {
-  project: Project
-  unit_type: UnitType
+  pk: number
+  project: number
+  unit_type: number
   unit_code: string
-  contract: Contract
+  contract: number
 }
 
 export interface UnitNumber {
-  project: Project
-  unit_type: UnitType
-  floor_type: UnitFloorType
+  pk: number
+  project: number
+  unit_type: number
+  floor_type: number
   bldg_no: string
   bldg_unit_no: string
-  contract_unit: ContractUnit
+  contract_unit: number
   bldg_line: number
   floor_no: number
   is_hold: boolean
@@ -73,15 +70,16 @@ export interface UnitNumber {
 }
 
 export interface ProjectBudget {
-  project: Project
-  account_d1: ProjectAccountD1
-  account_d2: ProjectAccountD2
+  pk: number
+  project: number
+  account_d1: number
+  account_d2: number
   budget: number
 }
 
 export interface Site {
   pk: number
-  project: Project
+  project: number
   order: number
   district: string
   lot_number: string
@@ -89,14 +87,15 @@ export interface Site {
   official_area: number
   returned_area: number
   rights_restrictions: string
-  dup_issue_date: Date
-  created_at: Date
-  updated_at: Date
+  dup_issue_date: string
+  created_at: string
+  updated_at: string
 }
 
 export interface SiteOwner {
+  pk: number
   owner: string
-  date_of_birth: Date
+  date_of_birth: string | null
   phone1: string
   phone2: string
   zipcode: string
@@ -105,47 +104,44 @@ export interface SiteOwner {
   address3: string
   own_sort: string
   own_sort_desc: string
-  sites: Site[]
+  sites: number[]
   counsel_record: string
-  user: User
-  created_at: Date
-  updated_at: Date
+  user: number
 }
 
 export interface SiteOwnshipRelationship {
-  site: Site
-  site_owner: SiteOwner
-  ownership_ratio: number
-  owned_area: number
-  acquisition_date: Date
+  pk: number
+  site: number
+  site_owner: number
+  ownership_ratio: number | null
+  owned_area: number | null
+  acquisition_date: string | null
 }
 
 export interface SiteContract {
-  project: Project
-  owner: SiteOwner
-  contract_date: Date
+  pk: number
+  project: number
+  owner: number
+  contract_date: string
   total_price: number
   down_pay1: number
   down_pay1_is_paid: boolean
   down_pay2: number
   down_pay2_is_paid: boolean
   inter_pay1: number
-  inter_pay1_date: Date
+  inter_pay1_date: string | null
   inter_pay1_is_paid: boolean
   inter_pay2: number
-  inter_pay2_date: Date
+  inter_pay2_date: string | null
   inter_pay2_is_paid: boolean
   remain_pay: number
-  remain_pay_date: Date
+  remain_pay_date: string | null
   remain_pay_is_paid: boolean
   ownership_completion: boolean
   acc_bank: string
   acc_number: string
   acc_owner: string
   note: string
-  user: User
-  created_at: Date
-  updated_at: Date
 }
 
 export interface ProjectState {
