@@ -165,12 +165,12 @@ const actions = {
   },
 
   updateDownPay: ({ dispatch }: any, payload: any) => {
-    const { pk, project } = payload
+    const { pk } = payload
     delete payload.pk
     api
       .put(`/down-payment/${pk}/`, payload)
-      .then(() => {
-        dispatch('fetchDownPayList', { project })
+      .then(res => {
+        dispatch('fetchDownPayList', res.data.project)
         message()
       })
       .catch(err => {
