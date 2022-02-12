@@ -1,8 +1,5 @@
 import api from '@/api'
-import {
-  FETCH_ORDER_GROUP,
-  FETCH_ORDER_GROUP_LIST,
-} from '@/store/modules/contract/mutations-types'
+import { FETCH_ORDER_GROUP_LIST } from '@/store/modules/contract/mutations-types'
 import router from '@/router'
 import { message } from '@/utils/helper'
 
@@ -12,15 +9,6 @@ const actions = {
       .get(`/order-group/?project=${pk}`)
       .then(res => {
         commit(FETCH_ORDER_GROUP_LIST, res.data)
-      })
-      .catch(err => console.log(err))
-  },
-
-  fetchOrderGroup: ({ commit }: any, pk: number) => {
-    api
-      .get(`/order-group/${pk}/`)
-      .then(res => {
-        commit(FETCH_ORDER_GROUP, res.data)
       })
       .catch(err => console.log(err))
   },

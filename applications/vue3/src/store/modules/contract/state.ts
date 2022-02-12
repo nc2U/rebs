@@ -25,14 +25,12 @@ export interface ContractState {
   contractList: Contract[]
   contract: Contract | null
   orderGroupList: OrderGroup[]
-  orderGroup: OrderGroup | null
 }
 
 const state = {
   contractList: [],
   contract: null,
   orderGroupList: [],
-  orderGroup: null,
 }
 
 export default state
