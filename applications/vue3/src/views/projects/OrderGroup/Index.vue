@@ -1,23 +1,7 @@
 <template>
-  <CCard class="mb-4">
-    <CCardHeader>
-      <CIcon name="cil-justify-center" />
-      <strong class="pl-1"> {{ pageTitle }}</strong>
-    </CCardHeader>
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
 
-    <CCardBody>
-      <HeaderNav :menus="navMenu" />
-
-      <ProjectSelect :project="project" @proj-select="projSelect" />
-    </CCardBody>
-  </CCard>
-
-  <CCard class="mb-4">
-    <CCardHeader>
-      <CIcon name="cil-notes" />
-      <strong class="pl-1"> {{ $route.name }}</strong>
-    </CCardHeader>
-
+  <ContentBody>
     <CCardBody class="pb-5" v-if="project">
       <OrderAddForm :selected="selected" @on-submit="onSubmit" />
       <OrderFormList
@@ -29,30 +13,39 @@
     </CCardBody>
 
     <CCardFooter>&nbsp;</CCardFooter>
-  </CCard>
+  </ContentBody>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import HeaderNav from '@/components/HeaderNav.vue'
 import HeaderMixin from '@/views/projects/_menu/headermixin2'
 import ProjectMixin from '@/views/projects/projectMixin'
-import ProjectSelect from '@/layouts/ContentHeader/ProjectSelect/Index.vue'
 import OrderAddForm from '@/views/projects/OrderGroup/components/OrderAddForm.vue'
 import OrderFormList from '@/views/projects/OrderGroup/components/OrderFormList.vue'
-import { mapActions } from 'vuex'
+import { mapActions, mapState } from 'vuex'
+import ContentHeader from '@/layouts/ContentHeader/Index.vue'
+import ContentBody from '@/layouts/ContentBody/Index.vue'
+import projectMixin from '@/views/projects/projectMixin'
 
 export default defineComponent({
   name: 'ProjectsOrderSet',
-  mixins: [HeaderMixin, ProjectMixin],
+  mixins: [HeaderMixin, projectMixin],
   components: {
-    HeaderNav,
-    ProjectSelect,
+    ContentHeader,
+    ContentBody,
     OrderAddForm,
     OrderFormList,
   },
+  data() {
+    return {
+      selected: true,
+    }
+  },
   created() {
     this.fetchOrderGroupList(this.initProjId)
+  },
+  computed: {
+    ...mapState('project', ['project']),
   },
   methods: {
     projSelect(event: any) {
