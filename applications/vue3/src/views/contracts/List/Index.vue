@@ -13,17 +13,19 @@
     </CCardBody>
   </CCard>
 
-  <component :is="compName" />
+  <ContentBody></ContentBody>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import HeaderMixin from '@/views/contracts/_menu/headermixin1'
+import ProjectMixin from '@/views/projects/projectMixin'
+
 import HeaderNav from '@/components/HeaderNav.vue'
 import ProjectSelect from '@/layouts/ContentHeader/ProjectSelect/Index.vue'
 import IndexSummary from './components/IndexSummary.vue'
-import IndexList from './components/IndexList.vue'
-import HeaderMixin from '@/views/contracts/_menu/headermixin1'
-import ProjectMixin from '@/views/projects/projectMixin'
+import ContentBody from '@/layouts/ContentBody/Index.vue'
+// import IndexList from './components/IndexList.vue'
 
 export default defineComponent({
   name: 'ContractIndex',
@@ -32,12 +34,8 @@ export default defineComponent({
     HeaderNav,
     ProjectSelect,
     IndexSummary,
-    IndexList,
-  },
-  data() {
-    return {
-      compName: 'IndexList',
-    }
+    ContentBody,
+    // IndexList,
   },
 })
 </script>
