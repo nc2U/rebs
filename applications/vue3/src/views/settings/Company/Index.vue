@@ -40,7 +40,7 @@ export default defineComponent({
   },
   data() {
     return {
-      compName: 'CompanyForm',
+      compName: 'CompanyDetail',
       update: false,
     }
   },

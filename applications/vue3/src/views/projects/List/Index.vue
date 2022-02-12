@@ -34,7 +34,7 @@ export default defineComponent({
   },
   data() {
     return {
-      compName: 'IndexForm',
+      compName: 'IndexDetail',
       update: false,
     }
   },
