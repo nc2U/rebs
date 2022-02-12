@@ -13,7 +13,7 @@
           type="number"
           min="0"
           required
-          :disabled="!selected"
+          :disabled="!disabled"
         />
       </CCol>
 
@@ -24,7 +24,7 @@
           type="number"
           min="0"
           required
-          :disabled="!selected"
+          :disabled="!disabled"
         />
       </CCol>
 
@@ -32,7 +32,7 @@
         <CFormInput
           v-model="form.extra_cond"
           placeholder="방향/위치(옵션)"
-          :disabled="!selected"
+          :disabled="!disabled"
         />
       </CCol>
 
@@ -41,12 +41,12 @@
           v-model="form.alias_name"
           placeholder="층별 범위 명칭"
           required
-          :disabled="!selected"
+          :disabled="!disabled"
         />
       </CCol>
 
       <CCol md="2" class="d-grid gap-2 d-lg-block mb-3">
-        <CButton color="primary" :disabled="!selected">층별타입추가</CButton>
+        <CButton color="primary" :disabled="!disabled">층별타입추가</CButton>
       </CCol>
     </CRow>
   </CForm>
@@ -83,7 +83,7 @@ export default defineComponent({
       validated: false,
     }
   },
-  props: ['selected'],
+  props: ['disabled'],
   methods: {
     onSubmit(this: any, event: any) {
       const form = event.currentTarget

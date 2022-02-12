@@ -1,68 +1,53 @@
 <template>
-  <CCard class="mb-4">
-    <CCardHeader>
-      <CIcon name="cil-justify-center" />
-      <strong class="pl-1"> {{ pageTitle }}</strong>
-    </CCardHeader>
+  <ContentHeader
+    :page-title="pageTitle"
+    :nav-menu="navMenu"
+    @header-select="onSelectAdd"
+  />
 
-    <CCardBody>
-      <HeaderNav :menus="navMenu" />
-
-      <ProjectSelect :project="project" @proj-select="projSelect" />
-    </CCardBody>
-  </CCard>
-
-  <CCard class="mb-4">
-    <CCardHeader>
-      <CIcon name="cil-notes" />
-      <strong class="pl-1"> {{ $route.name }}</strong>
-    </CCardHeader>
-
-    <CCardBody class="pb-5" v-if="project">
-      <FloorAddForm :selected="selected" @on-submit="onSubmit" />
+  <ContentBody>
+    <CCardBody class="pb-5">
+      <FloorAddForm :disabled="!project" @on-submit="onSubmit" />
       <FloorFormList
         @on-update="onUpdateFloor"
         @on-delete="onDeleteFloor"
-        :selected="selected"
         :project="project"
       />
     </CCardBody>
 
     <CCardFooter>&nbsp;</CCardFooter>
-  </CCard>
+  </ContentBody>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import HeaderNav from '@/components/HeaderNav.vue'
-import ProjectSelect from '@/layouts/ContentHeader/ProjectSelect/Index.vue'
 import HeaderMixin from '@/views/projects/_menu/headermixin2'
-import ProjectMixin from '@/views/projects/projectMixin'
+import ContentHeader from '@/layouts/ContentHeader/Index.vue'
+import ContentBody from '@/layouts/ContentBody/Index.vue'
 import FloorAddForm from '@/views/projects/Floor/components/FloorAddForm.vue'
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 import FloorFormList from '@/views/projects/Floor/components/FloorFormList.vue'
 
 export default defineComponent({
   name: 'ProjectsFloorSet',
-  mixins: [HeaderMixin, ProjectMixin],
+  mixins: [HeaderMixin],
   components: {
-    HeaderNav,
-    ProjectSelect,
+    ContentHeader,
+    ContentBody,
     FloorAddForm,
     FloorFormList,
   },
   created() {
     this.fetchFloorTypeList(this.initProjId)
   },
+  computed: {
+    ...mapState('project', ['project']),
+    ...mapGetters('accounts', ['initProjId']),
+  },
   methods: {
-    projSelect(event: any) {
-      if (event.target.value !== '') {
-        this.selected = true
-        this.fetchProject(event.target.value)
-        this.fetchFloorTypeList(event.target.value)
-      } else {
-        this.selected = false
-      }
+    onSelectAdd(this: any, target: any) {
+      if (target !== '') this.fetchFloorTypeList(target)
+      else this.$store.state.project.floorTypeList = []
     },
     onSubmit(payload: any) {
       const project = this.project.pk
