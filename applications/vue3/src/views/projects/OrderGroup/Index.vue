@@ -6,12 +6,11 @@
   />
 
   <ContentBody>
-    <CCardBody class="pb-5" v-if="project">
-      <OrderAddForm :selected="selected" @on-submit="onSubmit" />
+    <CCardBody class="pb-5">
+      <OrderAddForm @on-submit="onSubmit" />
       <OrderFormList
         @on-update="onUpdateOrder"
         @on-delete="onDeleteOrder"
-        :selected="selected"
         :project="project"
       />
     </CCardBody>
@@ -38,11 +37,6 @@ export default defineComponent({
     OrderAddForm,
     OrderFormList,
   },
-  data() {
-    return {
-      selected: true,
-    }
-  },
   created() {
     this.fetchOrderGroupList(this.initProjId)
   },
@@ -51,11 +45,9 @@ export default defineComponent({
     ...mapGetters('accounts', ['initProjId']),
   },
   methods: {
-    onSelectAdd(payload: any) {
-      if (payload.target !== '') {
-        this.selected = payload.selected
-        this.fetchOrderGroupList(payload.target)
-      }
+    onSelectAdd(this: any, target: any) {
+      if (target !== '') this.fetchOrderGroupList(target)
+      else this.$store.state.contract.orderGroupList = []
     },
     onSubmit(payload: any) {
       const project = this.project.pk

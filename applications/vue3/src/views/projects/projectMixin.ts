@@ -15,15 +15,12 @@ export default defineComponent({
     ...mapGetters('accounts', ['initProjId']),
   },
   methods: {
-    projSelect(event: any) {
+    projSelect(this: any, event: any) {
       const target = event.target.value
-      if (target !== '') {
-        this.selected = true
-        this.fetchProject(target)
-      } else this.selected = false
+      if (target !== '') this.fetchProject(target)
+      else this.$store.state.project.project = null
 
-      const selected = this.selected
-      this.$emit('header-select', { target, selected })
+      this.$emit('header-select', target)
     },
     ...mapActions('project', ['fetchProject']),
   },
