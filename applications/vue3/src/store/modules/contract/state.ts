@@ -14,7 +14,8 @@ export interface Contract {
 
 export interface OrderGroup {
   pk: number
-  project: Project
+  url: string
+  project: number
   order_number: number
   sort: string
   sort_desc: string

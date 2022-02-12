@@ -2,8 +2,8 @@
   <CTableRow>
     <CTableDataCell>
       <CFormInput
-        type="number"
         v-model.number="form.order_number"
+        type="number"
         min="1"
         required
         placeholder="등록차수"
@@ -11,11 +11,11 @@
       />
     </CTableDataCell>
     <CTableDataCell>
-      <CFormSelect
-        v-model="form.sort"
-        :options="sorts"
-        :selected="sorts.value == form.sort"
-      />
+      <CFormSelect v-model="form.sort">
+        <option value="">구분선택</option>
+        <option value="1">일반분양</option>
+        <option value="2">조합모집</option>
+      </CFormSelect>
     </CTableDataCell>
     <CTableDataCell>
       <CFormInput
@@ -26,6 +26,7 @@
       />
     </CTableDataCell>
     <CTableDataCell class="text-center">
+      <!--      {{ order }}-->
       <CButton
         color="success"
         size="sm"
@@ -62,10 +63,6 @@ export default defineComponent({
   components: { ConfirmModal },
   data() {
     return {
-      sorts: [
-        { label: '일반분양', value: '1' },
-        { label: '조합모집', value: '2' },
-      ],
       form: {
         order_number: null,
         sort: '',
@@ -74,11 +71,7 @@ export default defineComponent({
       validated: false,
     }
   },
-  props: {
-    order: {
-      type: Object,
-    },
-  },
+  props: ['order'],
   created() {
     if (this.order) {
       this.form.order_number = this.order.order_number
