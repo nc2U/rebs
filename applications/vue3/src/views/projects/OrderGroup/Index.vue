@@ -1,5 +1,9 @@
 <template>
-  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
+  <ContentHeader
+    :page-title="pageTitle"
+    :nav-menu="navMenu"
+    @header-select="onSelectAdd"
+  />
 
   <ContentBody>
     <CCardBody class="pb-5" v-if="project">
@@ -19,17 +23,15 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import HeaderMixin from '@/views/projects/_menu/headermixin2'
-import ProjectMixin from '@/views/projects/projectMixin'
-import OrderAddForm from '@/views/projects/OrderGroup/components/OrderAddForm.vue'
-import OrderFormList from '@/views/projects/OrderGroup/components/OrderFormList.vue'
-import { mapActions, mapState } from 'vuex'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
-import projectMixin from '@/views/projects/projectMixin'
+import OrderAddForm from '@/views/projects/OrderGroup/components/OrderAddForm.vue'
+import OrderFormList from '@/views/projects/OrderGroup/components/OrderFormList.vue'
+import { mapActions, mapGetters, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'ProjectsOrderSet',
-  mixins: [HeaderMixin, projectMixin],
+  mixins: [HeaderMixin],
   components: {
     ContentHeader,
     ContentBody,
@@ -46,15 +48,13 @@ export default defineComponent({
   },
   computed: {
     ...mapState('project', ['project']),
+    ...mapGetters('accounts', ['initProjId']),
   },
   methods: {
-    projSelect(event: any) {
-      if (event.target.value !== '') {
-        this.selected = true
-        this.fetchProject(event.target.value)
-        this.fetchOrderGroupList(event.target.value)
-      } else {
-        this.selected = false
+    onSelectAdd(payload: any) {
+      if (payload.target !== '') {
+        this.selected = payload.selected
+        this.fetchOrderGroupList(payload.target)
       }
     },
     onSubmit(payload: any) {

@@ -15,12 +15,14 @@ export default defineComponent({
   },
   methods: {
     comSelect(event: any) {
-      if (event.target.value !== '') {
+      const target = event.target.value
+      if (target !== '') {
         this.selected = true
-        this.fetchCompany(event.target.value)
-      } else {
-        this.selected = false
-      }
+        this.fetchCompany(target)
+      } else this.selected = false
+
+      const selected = this.selected
+      this.$emit('header-select', { target, selected })
     },
     ...mapActions('settings', ['fetchCompany']),
   },

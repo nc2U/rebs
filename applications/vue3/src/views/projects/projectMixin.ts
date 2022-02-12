@@ -16,12 +16,14 @@ export default defineComponent({
   },
   methods: {
     projSelect(event: any) {
-      if (event.target.value !== '') {
+      const target = event.target.value
+      if (target !== '') {
         this.selected = true
-        this.fetchProject(event.target.value)
-      } else {
-        this.selected = false
-      }
+        this.fetchProject(target)
+      } else this.selected = false
+
+      const selected = this.selected
+      this.$emit('header-select', { target, selected })
     },
     ...mapActions('project', ['fetchProject']),
   },
