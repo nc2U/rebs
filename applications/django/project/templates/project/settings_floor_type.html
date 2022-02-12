@@ -53,6 +53,7 @@
                                         <tr class="bg-nav-pills">
                                             <th class="text-center">시작층</th>
                                             <th class="text-center">종료층</th>
+                                            <th class="text-center">방향/위치(옵션)</th>
                                             <th class="text-center">층별 범위 명칭</th>
                                         </tr>
                                         </thead>
@@ -69,6 +70,10 @@
                                                 <td class="text-center">
                                                     {{ form.end_floor|add_class:"form-control text-right"|attr:"placeholder:종료 층" }}
                                                     <span class="text-danger">{{ form.end_floor.errors }}</span>
+                                                </td>
+                                                <td class="text-center">
+                                                    {{ form.extra_cond|add_class:"form-control"|attr:"placeholder:방향/위치" }}
+                                                    <span class="text-danger">{{ form.extra_cond.errors }}</span>
                                                 </td>
                                                 <td class="text-center">
                                                     {{ form.alias_name|add_class:"form-control"|attr:"placeholder:층별 범위 명칭" }}
