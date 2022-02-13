@@ -8,6 +8,7 @@ import { ContractState, Contract } from '@/store/modules/contract/state'
 const mutations = {
   [FETCH_CONTRACT_LIST]: (state: ContractState, payload: any) => {
     state.contractList = payload.results
+    state.contractsCount = payload.count
   },
 
   [FETCH_CONTRACT]: (state: ContractState, payload: Contract) => {

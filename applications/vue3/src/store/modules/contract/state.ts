@@ -56,12 +56,14 @@ export interface OrderGroup {
 
 export interface ContractState {
   contractList: Contract[]
+  contractsCount: number
   contract: Contract | null
   orderGroupList: OrderGroup[]
 }
 
 const state = {
   contractList: [],
+  contractsCount: 0,
   contract: null,
   orderGroupList: [],
 }

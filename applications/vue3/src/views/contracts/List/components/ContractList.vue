@@ -35,14 +35,10 @@
     </CTableBody>
   </CTable>
 
-  <span v-if="project">
-    {{ project.name }}
-  </span>
-
   <CSmartPagination
     :activePage="1"
     :limit="8"
-    :pages="62"
+    :pages="contractPages(10)"
     align="end"
     class="mt-3"
     @active-page-change="pageSelect"
@@ -59,7 +55,7 @@ export default defineComponent({
   components: { Contract },
   props: ['project'],
   computed: {
-    ...mapGetters('contract', ['contractIndex']),
+    ...mapGetters('contract', ['contractIndex', 'contractPages']),
   },
   methods: {
     pageSelect(page: number) {

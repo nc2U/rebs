@@ -18,6 +18,10 @@ const getters = {
       contract_date: c.contractor?.contract_date,
     }))
   },
+
+  contractPages: (state: ContractState) => (itemsPerPage: number) => {
+    return Math.ceil(state.contractsCount / itemsPerPage)
+  },
 }
 
 export default getters

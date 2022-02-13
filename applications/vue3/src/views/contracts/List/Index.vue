@@ -44,7 +44,10 @@ export default defineComponent({
   methods: {
     onSelectAdd(this: any, target: any) {
       if (target !== '') this.fetchContractList({ project: target })
-      else this.$store.state.contract.contractList = []
+      else {
+        this.$store.state.contract.contractList = []
+        this.$store.state.contract.contractsCount = 0
+      }
     },
     pageSelect(page: number) {
       const project = this.project.pk
