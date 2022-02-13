@@ -16,6 +16,7 @@ from notice.models import SalesBillIssue
 from document.models import Group, Board, Category, LawsuitCase, Post, Image, Link, File, Comment, Tag
 
 
+# Accounts --------------------------------------------------------------------------
 class StaffAuthInUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = StaffAuth
@@ -70,7 +71,8 @@ class TodoSerializer(serializers.ModelSerializer):
         extra_kwargs = {'url': {'view_name': 'api:todo-detail'}}
 
 
-class CompanyInDepartsSerializer(serializers.ModelSerializer):
+# Company --------------------------------------------------------------------------
+class DepartsInCompanySerializer(serializers.ModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='api:depart-detail')
 
     class Meta:
@@ -78,7 +80,7 @@ class CompanyInDepartsSerializer(serializers.ModelSerializer):
         fields = ('pk', 'url', 'upper_depart', 'name', 'task')
 
 
-class CompanyInPositionsSerializer(serializers.ModelSerializer):
+class PositionsInCompanySerializer(serializers.ModelSerializer):
     class Meta:
         model = Position
         fields = ('pk', 'rank', 'title', 'description')
@@ -86,8 +88,8 @@ class CompanyInPositionsSerializer(serializers.ModelSerializer):
 
 class CompanySerializer(serializers.ModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='api:company-detail')
-    departments = CompanyInDepartsSerializer(many=True, read_only=True)
-    positions = CompanyInPositionsSerializer(many=True, read_only=True)
+    departments = DepartsInCompanySerializer(many=True, read_only=True)
+    positions = PositionsInCompanySerializer(many=True, read_only=True)
 
     class Meta:
         model = Company
@@ -96,7 +98,7 @@ class CompanySerializer(serializers.ModelSerializer):
                   'address1', 'address2', 'address3', 'departments', 'positions')
 
 
-class StaffInDepartmentSerializer(serializers.ModelSerializer):
+class StaffsInDepartmentSerializer(serializers.ModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='api:staff-detail')
 
     class Meta:
@@ -107,7 +109,7 @@ class StaffInDepartmentSerializer(serializers.ModelSerializer):
 class DepartmentSerializer(serializers.ModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='api:depart-detail')
     company = serializers.SlugRelatedField(queryset=Company.objects.all(), slug_field='name')
-    staffs = StaffInDepartmentSerializer(many=True, read_only=True)
+    staffs = StaffsInDepartmentSerializer(many=True, read_only=True)
 
     class Meta:
         model = Department
@@ -136,6 +138,7 @@ class StaffSerializer(serializers.ModelSerializer):
                   'entered_date', 'personal_phone', 'email', 'status', 'status_desc')
 
 
+# Project --------------------------------------------------------------------------
 class ProjectSerializer(serializers.ModelSerializer):
     kind = serializers.ChoiceField(choices=Project.KIND_CHOICES)
     kind_desc = serializers.CharField(source='get_kind_display', read_only=True)
@@ -166,198 +169,198 @@ class UnitFloorTypeSerializer(serializers.ModelSerializer):
         extra_kwargs = {'url': {'view_name': 'api:floortype-detail'}, }
 
 
-class ContractUnitSerializer(serializers.ModelSerializer):
-    project = serializers.SlugRelatedField(queryset=Project.objects.all(), slug_field='name')
-
-    class Meta:
-        model = ContractUnit
-        fields = ('pk', 'url', 'project', 'unit_type', 'unit_code', 'contract')
-        extra_kwargs = {'url': {'view_name': 'api:contractunit-detail'}}
-
-
-class UnitNumberSerializer(serializers.ModelSerializer):
-    project = serializers.SlugRelatedField(queryset=Project.objects.all(), slug_field='name')
-
-    class Meta:
-        model = UnitNumber
-        fields = ('pk', 'url', 'project', 'unit_type', 'floor_type', 'bldg_no', 'bldg_unit_no',
-                  'contract_unit', 'bldg_line', 'floor_no', 'is_hold', 'hold_reason')
-        extra_kwargs = {'url': {'view_name': 'api:unitnumber-detail'}}
+# class ContractUnitSerializer(serializers.ModelSerializer):
+#     project = serializers.SlugRelatedField(queryset=Project.objects.all(), slug_field='name')
+#
+#     class Meta:
+#         model = ContractUnit
+#         fields = ('pk', 'url', 'project', 'unit_type', 'unit_code', 'contract')
+#         extra_kwargs = {'url': {'view_name': 'api:contractunit-detail'}}
 
 
-class ProjectBudgetSerializer(serializers.ModelSerializer):
-    project = serializers.SlugRelatedField(queryset=Project.objects.all(), slug_field='name')
-    account_d1 = serializers.SlugRelatedField(queryset=ProjectAccountD1.objects.all(), slug_field='name')
-    account_d2 = serializers.SlugRelatedField(queryset=ProjectAccountD2.objects.all(), slug_field='name')
-
-    class Meta:
-        model = ProjectBudget
-        fields = ('pk', 'url', 'project', 'account_d1', 'account_d2', 'budget')
-        extra_kwargs = {'url': {'view_name': 'api:projectbudget-detail'}}
-
-
-class SiteSerializer(serializers.ModelSerializer):
-    project = serializers.SlugRelatedField(queryset=Project.objects.all(), slug_field='name')
-
-    class Meta:
-        model = Site
-        fields = ('pk', 'url', 'project', 'order', 'district', 'lot_number', 'site_purpose',
-                  'official_area', 'returned_area', 'rights_restrictions', 'dup_issue_date')
-        extra_kwargs = {'url': {'view_name': 'api:site-detail'}}
+# class UnitNumberSerializer(serializers.ModelSerializer):
+#     project = serializers.SlugRelatedField(queryset=Project.objects.all(), slug_field='name')
+#
+#     class Meta:
+#         model = UnitNumber
+#         fields = ('pk', 'url', 'project', 'unit_type', 'floor_type', 'bldg_no', 'bldg_unit_no',
+#                   'contract_unit', 'bldg_line', 'floor_no', 'is_hold', 'hold_reason')
+#         extra_kwargs = {'url': {'view_name': 'api:unitnumber-detail'}}
 
 
-class SiteOwnerSerializer(serializers.ModelSerializer):
-    project = serializers.SlugRelatedField(queryset=Project.objects.all(), slug_field='name')
-    own_sort_desc = serializers.CharField(source='get_own_sort_display', read_only=True)
-
-    class Meta:
-        model = SiteOwner
-        fields = ('pk', 'url', 'project', 'owner', 'date_of_birth', 'phone1', 'phone2',
-                  'zipcode', 'address1', 'address2', 'address3', 'own_sort', 'own_sort_desc',
-                  'sites', 'counsel_record', 'user')
-        extra_kwargs = {'url': {'view_name': 'api:siteowner-detail'}}
-
-
-class SiteOwnshipRelationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = SiteOwnshipRelationship
-        fields = ('pk', 'url', 'site', 'site_owner', 'ownership_ratio', 'owned_area', 'acquisition_date')
-        extra_kwargs = {'url': {'view_name': 'api:relation-detail'}}
+# class ProjectBudgetSerializer(serializers.ModelSerializer):
+#     project = serializers.SlugRelatedField(queryset=Project.objects.all(), slug_field='name')
+#     account_d1 = serializers.SlugRelatedField(queryset=ProjectAccountD1.objects.all(), slug_field='name')
+#     account_d2 = serializers.SlugRelatedField(queryset=ProjectAccountD2.objects.all(), slug_field='name')
+#
+#     class Meta:
+#         model = ProjectBudget
+#         fields = ('pk', 'url', 'project', 'account_d1', 'account_d2', 'budget')
+#         extra_kwargs = {'url': {'view_name': 'api:projectbudget-detail'}}
 
 
-class SiteContractSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = SiteContract
-        fields = ('pk', 'url', 'project', 'owner', 'contract_date', 'total_price', 'down_pay1', 'down_pay1_is_paid',
-                  'down_pay2', 'down_pay2_date', 'down_pay2_is_paid', 'inter_pay1', 'inter_pay1_date',
-                  'inter_pay1_is_paid',
-                  'inter_pay2', 'inter_pay2_date', 'inter_pay2_is_paid', 'remain_pay', 'remain_pay_date',
-                  'remain_pay_is_paid',
-                  'ownership_completion', 'acc_bank', 'acc_number', 'acc_owner', 'note')
-        extra_kwargs = {'url': {'view_name': 'api:sitecontract-detail'}}
+# class SiteSerializer(serializers.ModelSerializer):
+#     project = serializers.SlugRelatedField(queryset=Project.objects.all(), slug_field='name')
+#
+#     class Meta:
+#         model = Site
+#         fields = ('pk', 'url', 'project', 'order', 'district', 'lot_number', 'site_purpose',
+#                   'official_area', 'returned_area', 'rights_restrictions', 'dup_issue_date')
+#         extra_kwargs = {'url': {'view_name': 'api:site-detail'}}
 
 
-class InlineAccSubD1Serializer(serializers.ModelSerializer):
-    class Meta:
-        model = AccountSubD1
-        fields = ('pk', 'url', 'name')
-        extra_kwargs = {'url': {'view_name': 'api:acc_d1-detail'}}
+# class SiteOwnerSerializer(serializers.ModelSerializer):
+#     project = serializers.SlugRelatedField(queryset=Project.objects.all(), slug_field='name')
+#     own_sort_desc = serializers.CharField(source='get_own_sort_display', read_only=True)
+#
+#     class Meta:
+#         model = SiteOwner
+#         fields = ('pk', 'url', 'project', 'owner', 'date_of_birth', 'phone1', 'phone2',
+#                   'zipcode', 'address1', 'address2', 'address3', 'own_sort', 'own_sort_desc',
+#                   'sites', 'counsel_record', 'user')
+#         extra_kwargs = {'url': {'view_name': 'api:siteowner-detail'}}
 
 
-class InlineAccSubD2Serializer(serializers.ModelSerializer):
-    class Meta:
-        model = AccountSubD2
-        fields = ('pk', 'url', 'name')
-        extra_kwargs = {'url': {'view_name': 'api:acc_d2-detail'}}
+# class SiteOwnshipRelationSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = SiteOwnshipRelationship
+#         fields = ('pk', 'url', 'site', 'site_owner', 'ownership_ratio', 'owned_area', 'acquisition_date')
+#         extra_kwargs = {'url': {'view_name': 'api:relation-detail'}}
 
 
-class InlineAccSubD3Serializer(serializers.ModelSerializer):
-    class Meta:
-        model = AccountSubD3
-        fields = ('pk', 'url', 'name')
-        extra_kwargs = {'url': {'view_name': 'api:acc_d3-detail'}}
+# class SiteContractSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = SiteContract
+#         fields = ('pk', 'url', 'project', 'owner', 'contract_date', 'total_price', 'down_pay1', 'down_pay1_is_paid',
+#                   'down_pay2', 'down_pay2_date', 'down_pay2_is_paid', 'inter_pay1', 'inter_pay1_date',
+#                   'inter_pay1_is_paid',
+#                   'inter_pay2', 'inter_pay2_date', 'inter_pay2_is_paid', 'remain_pay', 'remain_pay_date',
+#                   'remain_pay_is_paid',
+#                   'ownership_completion', 'acc_bank', 'acc_number', 'acc_owner', 'note')
+#         extra_kwargs = {'url': {'view_name': 'api:sitecontract-detail'}}
 
 
-class AccountSubD1Serializer(serializers.ModelSerializer):
-    acc_d2s = InlineAccSubD2Serializer(many=True, read_only=True)
-
-    class Meta:
-        model = AccountSubD1
-        fields = ('pk', 'url', 'code', 'name', 'description', 'acc_d2s')
-        extra_kwargs = {'url': {'view_name': 'api:acc_d1-detail'}}
+# class InlineAccSubD1Serializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = AccountSubD1
+#         fields = ('pk', 'url', 'name')
+#         extra_kwargs = {'url': {'view_name': 'api:acc_d1-detail'}}
 
 
-class AccountSubD2Serializer(serializers.ModelSerializer):
-    d1 = InlineAccSubD1Serializer(read_only=True)
-    acc_d3s = InlineAccSubD3Serializer(many=True, read_only=True)
-
-    class Meta:
-        model = AccountSubD2
-        fields = ('pk', 'url', 'd1', 'code', 'name', 'description', 'acc_d3s')
-        extra_kwargs = {'url': {'view_name': 'api:acc_d2-detail'}}
+# class InlineAccSubD2Serializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = AccountSubD2
+#         fields = ('pk', 'url', 'name')
+#         extra_kwargs = {'url': {'view_name': 'api:acc_d2-detail'}}
 
 
-class AccountSubD3Serializer(serializers.ModelSerializer):
-    d2 = InlineAccSubD2Serializer(read_only=True)
-
-    class Meta:
-        model = AccountSubD3
-        fields = ('pk', 'url', 'd2', 'code', 'name', 'is_special', 'description')
-        extra_kwargs = {'url': {'view_name': 'api:acc_d3-detail'}}
+# class InlineAccSubD3Serializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = AccountSubD3
+#         fields = ('pk', 'url', 'name')
+#         extra_kwargs = {'url': {'view_name': 'api:acc_d3-detail'}}
 
 
-class InlineProjectAccD1Serializer(serializers.ModelSerializer):
-    class Meta:
-        model = ProjectAccountD1
-        fields = ('pk', 'url', 'name')
-        extra_kwargs = {'url': {'view_name': 'api:project_acc_d1-detail'}}
+# class AccountSubD1Serializer(serializers.ModelSerializer):
+#     acc_d2s = InlineAccSubD2Serializer(many=True, read_only=True)
+#
+#     class Meta:
+#         model = AccountSubD1
+#         fields = ('pk', 'url', 'code', 'name', 'description', 'acc_d2s')
+#         extra_kwargs = {'url': {'view_name': 'api:acc_d1-detail'}}
 
 
-class InlineProjectAccD2Serializer(serializers.ModelSerializer):
-    class Meta:
-        model = ProjectAccountD2
-        fields = ('pk', 'url', 'name')
-        extra_kwargs = {'url': {'view_name': 'api:project_acc_d2-detail'}}
+# class AccountSubD2Serializer(serializers.ModelSerializer):
+#     d1 = InlineAccSubD1Serializer(read_only=True)
+#     acc_d3s = InlineAccSubD3Serializer(many=True, read_only=True)
+#
+#     class Meta:
+#         model = AccountSubD2
+#         fields = ('pk', 'url', 'd1', 'code', 'name', 'description', 'acc_d3s')
+#         extra_kwargs = {'url': {'view_name': 'api:acc_d2-detail'}}
+#
+#
+# class AccountSubD3Serializer(serializers.ModelSerializer):
+#     d2 = InlineAccSubD2Serializer(read_only=True)
+#
+#     class Meta:
+#         model = AccountSubD3
+#         fields = ('pk', 'url', 'd2', 'code', 'name', 'is_special', 'description')
+#         extra_kwargs = {'url': {'view_name': 'api:acc_d3-detail'}}
 
 
-class ProjectAccountD1Serializer(serializers.ModelSerializer):
-    acc_d2s = InlineProjectAccD2Serializer(many=True, read_only=True)
-    sort_desc = serializers.CharField(source='get_sort_display', read_only=True)
-
-    class Meta:
-        model = ProjectAccountD1
-        fields = ('pk', 'url', 'sort', 'sort_desc', 'code', 'name', 'description', 'acc_d2s')
-        extra_kwargs = {'url': {'view_name': 'api:project_acc_d1-detail'}}
-
-
-class ProjectAccountD2Serializer(serializers.ModelSerializer):
-    d1 = InlineProjectAccD1Serializer(read_only=True)
-
-    class Meta:
-        model = ProjectAccountD2
-        fields = ('pk', 'url', 'd1', 'code', 'sub_title', 'name', 'description')
-        extra_kwargs = {'url': {'view_name': 'api:project_acc_d2-detail'}}
-
-
-class BankCodeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = BankCode
-        fields = ('pk', 'code', 'name')
-
-
-class CompanyBankAccountSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CompanyBankAccount
-        fields = ('pk', 'url', 'company', 'division', 'bankcode', 'alias_name', 'number',
-                  'holder', 'open_date', 'note', 'inactive')
-        extra_kwargs = {'url': {'view_name': 'api:com_bank-detail'}}
+# class InlineProjectAccD1Serializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = ProjectAccountD1
+#         fields = ('pk', 'url', 'name')
+#         extra_kwargs = {'url': {'view_name': 'api:project_acc_d1-detail'}}
+#
+#
+# class InlineProjectAccD2Serializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = ProjectAccountD2
+#         fields = ('pk', 'url', 'name')
+#         extra_kwargs = {'url': {'view_name': 'api:project_acc_d2-detail'}}
+#
+#
+# class ProjectAccountD1Serializer(serializers.ModelSerializer):
+#     acc_d2s = InlineProjectAccD2Serializer(many=True, read_only=True)
+#     sort_desc = serializers.CharField(source='get_sort_display', read_only=True)
+#
+#     class Meta:
+#         model = ProjectAccountD1
+#         fields = ('pk', 'url', 'sort', 'sort_desc', 'code', 'name', 'description', 'acc_d2s')
+#         extra_kwargs = {'url': {'view_name': 'api:project_acc_d1-detail'}}
 
 
-class CashBookSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CashBook
-        fields = ('pk', 'url', 'company', 'cash_category1', 'cash_category2', 'account',
-                  'content', 'trader', 'bank_account', 'income', 'outlay', 'evidence',
-                  'note', 'deal_date', 'user', 'created_at', 'updated_at')
-        extra_kwargs = {'url': {'view_name': 'api:cashbook-detail'}}
+# class ProjectAccountD2Serializer(serializers.ModelSerializer):
+#     d1 = InlineProjectAccD1Serializer(read_only=True)
+#
+#     class Meta:
+#         model = ProjectAccountD2
+#         fields = ('pk', 'url', 'd1', 'code', 'sub_title', 'name', 'description')
+#         extra_kwargs = {'url': {'view_name': 'api:project_acc_d2-detail'}}
 
 
-class ProjectBankAccountSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ProjectBankAccount
-        fields = ('pk', 'url', 'project', 'bankcode', 'alias_name', 'number',
-                  'holder', 'open_date', 'note', 'inactive', 'directpay')
-        extra_kwargs = {'url': {'view_name': 'api:project_bank-detail'}}
+# class BankCodeSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = BankCode
+#         fields = ('pk', 'code', 'name')
 
 
-class ProjectCashBookSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ProjectCashBook
-        fields = ('pk', 'url', 'project', 'cash_category1', 'project_account_d1', 'project_account_d2',
-                  'is_record_separate', 'is_contract_payment', 'contract', 'installment_order', 'is_release',
-                  'is_refund_contractor', 'content', 'trader', 'bank_account', 'income', 'outlay', 'evidence',
-                  'note', 'deal_date', 'user', 'created_at', 'updated_at')
-        extra_kwargs = {'url': {'view_name': 'api:project_cashbook-detail'}}
+# class CompanyBankAccountSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = CompanyBankAccount
+#         fields = ('pk', 'url', 'company', 'division', 'bankcode', 'alias_name', 'number',
+#                   'holder', 'open_date', 'note', 'inactive')
+#         extra_kwargs = {'url': {'view_name': 'api:com_bank-detail'}}
+
+
+# class CashBookSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = CashBook
+#         fields = ('pk', 'url', 'company', 'cash_category1', 'cash_category2', 'account',
+#                   'content', 'trader', 'bank_account', 'income', 'outlay', 'evidence',
+#                   'note', 'deal_date', 'user', 'created_at', 'updated_at')
+#         extra_kwargs = {'url': {'view_name': 'api:cashbook-detail'}}
+
+
+# class ProjectBankAccountSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = ProjectBankAccount
+#         fields = ('pk', 'url', 'project', 'bankcode', 'alias_name', 'number',
+#                   'holder', 'open_date', 'note', 'inactive', 'directpay')
+#         extra_kwargs = {'url': {'view_name': 'api:project_bank-detail'}}
+
+
+# class ProjectCashBookSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = ProjectCashBook
+#         fields = ('pk', 'url', 'project', 'cash_category1', 'project_account_d1', 'project_account_d2',
+#                   'is_record_separate', 'is_contract_payment', 'contract', 'installment_order', 'is_release',
+#                   'is_refund_contractor', 'content', 'trader', 'bank_account', 'income', 'outlay', 'evidence',
+#                   'note', 'deal_date', 'user', 'created_at', 'updated_at')
+#         extra_kwargs = {'url': {'view_name': 'api:project_cashbook-detail'}}
 
 
 class SalesPriceSerializer(serializers.ModelSerializer):
@@ -383,11 +386,11 @@ class DownPaymentSerializer(serializers.ModelSerializer):
         extra_kwargs = {'url': {'view_name': 'api:downpay-detail'}}
 
 
-class OverDueRuleSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = OverDueRule
-        fields = ('pk', 'url', 'project', 'term_start', 'term_end', 'rate_year')
-        extra_kwargs = {'url': {'view_name': 'api:over_due_rule-detail'}}
+# class OverDueRuleSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = OverDueRule
+#         fields = ('pk', 'url', 'project', 'term_start', 'term_end', 'rate_year')
+#         extra_kwargs = {'url': {'view_name': 'api:over_due_rule-detail'}}
 
 
 class OrderGroupSerializer(serializers.ModelSerializer):
@@ -399,6 +402,7 @@ class OrderGroupSerializer(serializers.ModelSerializer):
         extra_kwargs = {'url': {'view_name': 'api:order_group-detail'}}
 
 
+# Contract --------------------------------------------------------------------------
 class ContractSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contract
@@ -431,99 +435,100 @@ class ContractorContactSerializer(serializers.ModelSerializer):
         extra_kwargs = {'url': {'view_name': 'api:contact-detail'}}
 
 
-class ContractorReleaseSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ContractorRelease
-        fields = ('pk', 'url', 'project', 'contractor', 'status', 'refund_amount',
-                  'refund_account_bank', 'refund_account_number', 'refund_account_depositor',
-                  'request_date', 'completion_date', 'note', 'user', 'created_at', 'updated_at')
-        extra_kwargs = {'url': {'view_name': 'api:release-detail'}}
+# class ContractorReleaseSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = ContractorRelease
+#         fields = ('pk', 'url', 'project', 'contractor', 'status', 'refund_amount',
+#                   'refund_account_bank', 'refund_account_number', 'refund_account_depositor',
+#                   'request_date', 'completion_date', 'note', 'user', 'created_at', 'updated_at')
+#         extra_kwargs = {'url': {'view_name': 'api:release-detail'}}
 
 
-class SallesBillIssueSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = SalesBillIssue
-        fields = ('pk', 'url', 'project', 'now_payment_order', 'host_name', 'host_tel',
-                  'agency', 'agency_tel', 'bank_account1', 'bank_number1', 'bank_host1',
-                  'bank_account2', 'bank_number2', 'bank_host2', 'zipcode', 'address1', 'address2', 'address3',
-                  'title', 'content', 'user', 'updated_at')
-        extra_kwargs = {'url': {'view_name': 'api:bill_issue-detail'}}
+# class SallesBillIssueSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = SalesBillIssue
+#         fields = ('pk', 'url', 'project', 'now_payment_order', 'host_name', 'host_tel',
+#                   'agency', 'agency_tel', 'bank_account1', 'bank_number1', 'bank_host1',
+#                   'bank_account2', 'bank_number2', 'bank_host2', 'zipcode', 'address1', 'address2', 'address3',
+#                   'title', 'content', 'user', 'updated_at')
+#         extra_kwargs = {'url': {'view_name': 'api:bill_issue-detail'}}
 
 
-class GroupSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Group
-        fields = ('pk', 'url', 'name', 'manager')
-        extra_kwargs = {'url': {'view_name': 'api:group-detail'}}
+# Document --------------------------------------------------------------------------
+# class GroupSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Group
+#         fields = ('pk', 'url', 'name', 'manager')
+#         extra_kwargs = {'url': {'view_name': 'api:group-detail'}}
+#
+#
+# class BoardSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Board
+#         fields = ('pk', 'url', 'group', 'name', 'order', 'search_able', 'manager')
+#         extra_kwargs = {'url': {'view_name': 'api:board-detail'}}
+#
+#
+# class CategorySerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Category
+#         fields = ('pk', 'url', 'board', 'name', 'parent', 'order')
+#         extra_kwargs = {'url': {'view_name': 'api:category-detail'}}
 
 
-class BoardSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Board
-        fields = ('pk', 'url', 'group', 'name', 'order', 'search_able', 'manager')
-        extra_kwargs = {'url': {'view_name': 'api:board-detail'}}
+# class LawSuitCaseSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = LawsuitCase
+#         fields = ('pk', 'url', 'project', 'sort', 'level', 'related_case', 'court',
+#                   'other_agency', 'case_number', 'case_name', 'plaintiff', 'defendant',
+#                   'related_debtor', 'case_start_date', 'summary', 'user', 'created', 'updated')
+#         extra_kwargs = {'url': {'view_name': 'api:suitcase-detail'}}
 
 
-class CategorySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Category
-        fields = ('pk', 'url', 'board', 'name', 'parent', 'order')
-        extra_kwargs = {'url': {'view_name': 'api:category-detail'}}
+# class PostSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Post
+#         fields = ('pk', 'url', 'board', 'is_notice', 'project', 'category', 'lawsuit',
+#                   'title', 'execution_date', 'content', 'is_hide_comment', 'hit', 'like',
+#                   'dislike', 'blame', 'ip', 'device', 'secret', 'password', 'user', 'soft_delete', 'created', 'updated')
+#         extra_kwargs = {'url': {'view_name': 'api:post-detail'}}
 
 
-class LawSuitCaseSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = LawsuitCase
-        fields = ('pk', 'url', 'project', 'sort', 'level', 'related_case', 'court',
-                  'other_agency', 'case_number', 'case_name', 'plaintiff', 'defendant',
-                  'related_debtor', 'case_start_date', 'summary', 'user', 'created', 'updated')
-        extra_kwargs = {'url': {'view_name': 'api:suitcase-detail'}}
+# class ImageSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Image
+#         fields = ('pk', 'url', 'post', 'image', 'created')
+#         extra_kwargs = {'url': {'view_name': 'api:image-detail'}}
 
 
-class PostSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Post
-        fields = ('pk', 'url', 'board', 'is_notice', 'project', 'category', 'lawsuit',
-                  'title', 'execution_date', 'content', 'is_hide_comment', 'hit', 'like',
-                  'dislike', 'blame', 'ip', 'device', 'secret', 'password', 'user', 'soft_delete', 'created', 'updated')
-        extra_kwargs = {'url': {'view_name': 'api:post-detail'}}
+# class LinkSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Link
+#         fields = ('pk', 'url', 'post', 'link', 'hit')
+#         extra_kwargs = {'url': {'view_name': 'api:link-detail'}}
 
 
-class ImageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Image
-        fields = ('pk', 'url', 'post', 'image', 'created')
-        extra_kwargs = {'url': {'view_name': 'api:image-detail'}}
+# class FileSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = File
+#         fields = ('pk', 'url', 'post', 'file', 'hit')
+#         extra_kwargs = {'url': {'view_name': 'api:file-detail'}}
 
 
-class LinkSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Link
-        fields = ('pk', 'url', 'post', 'link', 'hit')
-        extra_kwargs = {'url': {'view_name': 'api:link-detail'}}
+# class CommentSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Comment
+#         fields = (
+#             'pk', 'url', 'post', 'content', 'like', 'dislike', 'blame', 'ip', 'device', 'secret', 'password', 'user',
+#             'soft_delete', 'created', 'updated')
+#         extra_kwargs = {'url': {'view_name': 'api:comment-detail'}}
 
 
-class FileSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = File
-        fields = ('pk', 'url', 'post', 'file', 'hit')
-        extra_kwargs = {'url': {'view_name': 'api:file-detail'}}
-
-
-class CommentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Comment
-        fields = (
-            'pk', 'url', 'post', 'content', 'like', 'dislike', 'blame', 'ip', 'device', 'secret', 'password', 'user',
-            'soft_delete', 'created', 'updated')
-        extra_kwargs = {'url': {'view_name': 'api:comment-detail'}}
-
-
-class TagSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Tag
-        fields = ('pk', 'url', 'board', 'tag', 'post')
-        extra_kwargs = {'url': {'view_name': 'api:tag-detail'}}
+# class TagSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Tag
+#         fields = ('pk', 'url', 'board', 'tag', 'post')
+#         extra_kwargs = {'url': {'view_name': 'api:tag-detail'}}
 
 
 class WiseSaySerializer(serializers.ModelSerializer):
