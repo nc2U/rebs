@@ -45,14 +45,13 @@ class UserSerializer(serializers.ModelSerializer):
     )
     staffauth = StaffAuthInUserSerializer()
     profile = ProfileInUserSerializer()
-    todos_count = serializers.ReadOnlyField(source='todos.count')
 
     class Meta:
         model = User
         fields = (
             'pk', 'url', 'email', 'username', 'is_active',
             'is_superuser', 'date_joined', 'password',
-            'staffauth', 'profile', 'todos_count')
+            'staffauth', 'profile')
 
     def save(self):
         instance = User(email=self.validated_data['email'],
