@@ -43,11 +43,9 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { CTableDataCell } from '@coreui/vue-pro/src/components/table'
 
 export default defineComponent({
-  name: '',
-  components: { CTableDataCell },
+  name: 'ContractSummary',
   data() {
     return {
       sample: '',

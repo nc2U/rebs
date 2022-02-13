@@ -4,18 +4,25 @@
     :nav-menu="navMenu"
     @header-select="onSelectAdd"
   >
-    <IndexSummary :project="project" />
+    <ContractSummary :project="project" />
   </ContentHeader>
 
-  <ContentBody></ContentBody>
+  <ContentBody>
+    <CCardBody class="pb-5">
+      <ContractList />
+    </CCardBody>
+
+    <CCardFooter>&nbsp;</CCardFooter>
+  </ContentBody>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 import HeaderMixin from '@/views/contracts/_menu/headermixin1'
-import IndexSummary from './components/IndexSummary.vue'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
+import ContractSummary from './components/ContractSummary.vue'
+import ContractList from '@/views/contracts/List/components/ContractList.vue'
 import { mapState } from 'vuex'
 
 export default defineComponent({
@@ -23,8 +30,9 @@ export default defineComponent({
   mixins: [HeaderMixin],
   components: {
     ContentHeader,
-    IndexSummary,
     ContentBody,
+    ContractSummary,
+    ContractList,
   },
   computed: {
     ...mapState('project', ['project']),
