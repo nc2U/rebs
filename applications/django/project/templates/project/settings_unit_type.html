@@ -46,10 +46,13 @@
                                 </div>
 
                                 <div class="col-12 bg-nav-pills form-row p-2">
-                                    <div class="col-3 text-center"><strong>타입명칭</strong></div>
-                                    <div class="col-2 text-center"><strong>타입색상</strong></div>
-                                    <div class="col-3 text-center"><strong>평균가격</strong></div>
-                                    <div class="col-4 text-center"><strong>세대 수</strong></div>
+                                    <div class="col-1 text-center"><strong>타입명칭</strong></div>
+                                    <div class="col-1 text-center"><strong>타입색상</strong></div>
+                                    <div class="col-2 text-center"><strong>전용면적(m<sup>2</sup>)</strong></div>
+                                    <div class="col-2 text-center"><strong>공급면적(m<sup>2</sup>)</strong></div>
+                                    <div class="col-2 text-center"><strong>계약면적(m<sup>2</sup>)</strong></div>
+                                    <div class="col-2 text-center"><strong>평균가격</strong></div>
+                                    <div class="col-2 text-center"><strong>세대 수</strong></div>
                                 </div>
 
                                 {{ formset.management_form }}
@@ -58,21 +61,36 @@
                                     <fieldset>
                                         <div class="col-12 p-1">
                                             <div class="form-row col-12">
-                                                <div class="col-3">
+                                                <div class="col-1">
                                                     <input type="text" name="form-__prefix__-name" maxlength="10"
                                                            placeholder="타입명칭" class="form-control"
                                                            id="id_form-__prefix__-name">
                                                 </div>
-                                                <div class="col-2">
+                                                <div class="col-1">
                                                     <input type="color" name="form-__prefix__-color" maxlength="7"
                                                            class="form-control" id="id_form-__prefix__-color">
                                                 </div>
-                                                <div class="col-3">
+                                                <div class="col-2">
+                                                    <input type="number" name="form-__prefix__-actual_area" min="0"
+                                                           placeholder="전용면적" class="form-control text-right"
+                                                           id="id_form-__prefix__-actual_area">
+                                                </div>
+                                                <div class="col-2">
+                                                    <input type="number" name="form-__prefix__-supply_area" min="0"
+                                                           placeholder="공급면적" class="form-control text-right"
+                                                           id="id_form-__prefix__-supply_area">
+                                                </div>
+                                                <div class="col-2">
+                                                    <input type="number" name="form-__prefix__-contract_area" min="0"
+                                                           placeholder="계약면적" class="form-control text-right"
+                                                           id="id_form-__prefix__-contract_area">
+                                                </div>
+                                                <div class="col-2">
                                                     <input type="number" name="form-__prefix__-average_price" min="0"
                                                            placeholder="평균가격" class="form-control text-right"
                                                            id="id_form-__prefix__-average_price">
                                                 </div>
-                                                <div class="col-3">
+                                                <div class="col-1">
                                                     <input type="number" name="form-__prefix__-num_unit" min="0"
                                                            placeholder="세대수" class="form-control text-right"
                                                            id="id_form-__prefix__-num_unit">
@@ -97,19 +115,33 @@
                                         <fieldset>
                                             <div class="col-12 p-1">
                                                 <div class="form-row col-12">
-                                                    <div class="col-3">
+                                                    <div class="col-1">
                                                         {{ form.name|add_class:"form-control"|attr:"placeholder:타입명칭" }}
                                                         <span class="text-danger">{{ form.name.errors }}</span>
                                                     </div>
-                                                    <div class="col-2">
+                                                    <div class="col-1">
                                                         {{ form.color|add_class:"form-control" }}
                                                         <span class="text-danger">{{ form.color.errors }}</span>
                                                     </div>
-                                                    <div class="col-3">
+
+                                                    <div class="col-2">
+                                                        {{ form.actual_area|add_class:"form-control text-right"|attr:"placeholder:전용면적" }}
+                                                        <span class="text-danger">{{ form.average_price.errors }}</span>
+                                                    </div>
+                                                    <div class="col-2">
+                                                        {{ form.supply_area|add_class:"form-control text-right"|attr:"placeholder:공급면적" }}
+                                                        <span class="text-danger">{{ form.average_price.errors }}</span>
+                                                    </div>
+                                                    <div class="col-2">
+                                                        {{ form.contract_area|add_class:"form-control text-right"|attr:"placeholder:계약면적" }}
+                                                        <span class="text-danger">{{ form.average_price.errors }}</span>
+                                                    </div>
+
+                                                    <div class="col-2">
                                                         {{ form.average_price|add_class:"form-control text-right"|attr:"placeholder:평균가격" }}
                                                         <span class="text-danger">{{ form.average_price.errors }}</span>
                                                     </div>
-                                                    <div class="col-3">
+                                                    <div class="col-1">
                                                         {{ form.num_unit|add_class:"form-control text-right"|attr:"placeholder:세대수" }}
                                                         <span class="text-danger">{{ form.num_unit.errors }}</span>
                                                     </div>
