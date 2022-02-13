@@ -34,6 +34,9 @@ export interface UnitType {
   project: number
   name: string
   color: string
+  actual_area: number | null
+  supply_area: number | null
+  contract_area: number | null
   average_price: number
   num_unit: number
 }
