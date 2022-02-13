@@ -559,6 +559,7 @@ class ContractList(generics.ListCreateAPIView):
     queryset = Contract.objects.all()
     serializer_class = ContractSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    filter_fields = ('project', 'order_group', 'activation')
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)

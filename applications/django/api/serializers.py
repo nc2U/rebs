@@ -162,15 +162,17 @@ class UnitFloorTypeSerializer(serializers.ModelSerializer):
 
 class UnitNumberSerializer(serializers.ModelSerializer):
     project = serializers.SlugRelatedField(queryset=Project.objects.all(), slug_field='name')
+    floor_type = serializers.SlugRelatedField(queryset=UnitFloorType.objects.all(), slug_field='alias_name')
 
     class Meta:
         model = UnitNumber
-        fields = ('pk', 'project', 'unit_type', 'floor_type', 'bldg_no', 'bldg_unit_no',
+        fields = ('pk', 'project', 'floor_type', 'bldg_no', 'bldg_unit_no',
                   'contract_unit', 'bldg_line', 'floor_no', 'is_hold', 'hold_reason')
 
 
 class ContractUnitSerializer(serializers.ModelSerializer):
     project = serializers.SlugRelatedField(queryset=Project.objects.all(), slug_field='name')
+    unit_type = serializers.SlugRelatedField(queryset=UnitType.objects.all(), slug_field='name')
     unitnumber = UnitNumberSerializer()
 
     class Meta:
@@ -373,13 +375,13 @@ class ContractorAddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = ContractorAddress
         fields = ('pk', 'contractor', 'id_zipcode', 'id_address1', 'id_address2', 'id_address3',
-                  'dm_zipcode', 'dm_address1', 'dm_address2', 'dm_address3', 'user')
+                  'dm_zipcode', 'dm_address1', 'dm_address2', 'dm_address3')
 
 
 class ContractorContactSerializer(serializers.ModelSerializer):
     class Meta:
         model = ContractorContact
-        fields = ('pk', 'contractor', 'cell_phone', 'home_phone', 'other_phone', 'email', 'user')
+        fields = ('pk', 'contractor', 'cell_phone', 'home_phone', 'other_phone', 'email')
 
 
 class ContractorSerializer(serializers.ModelSerializer):
@@ -390,7 +392,7 @@ class ContractorSerializer(serializers.ModelSerializer):
         model = Contractor
         fields = (
             'pk', 'contract', 'name', 'birth_date', 'gender', 'contractoraddress', 'contractorcontact',
-            'is_registed', 'status', 'reservation_date', 'contract_date', 'note', 'user')
+            'is_registed', 'status', 'reservation_date', 'contract_date', 'note')
 
 
 class ContractSerializer(serializers.ModelSerializer):
@@ -400,9 +402,7 @@ class ContractSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contract
         fields = (
-            'pk', 'project', 'order_group', 'serial_number', 'activation', 'contractunit', 'contractor', 'user',
-            'created_at',
-            'updated_at')
+            'pk', 'project', 'order_group', 'serial_number', 'activation', 'contractunit', 'contractor', 'user')
 
 
 class ContractorReleaseSerializer(serializers.ModelSerializer):
