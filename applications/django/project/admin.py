@@ -19,9 +19,11 @@ class ProjectAdmin(ImportExportMixin, admin.ModelAdmin):
 
 class UnitTypeAdmin(ImportExportMixin, admin.ModelAdmin):
     # form = UnitTypeForm
-    list_display = ('id', 'project', 'name', 'styled_color', 'average_price', 'num_unit')
+    list_display = (
+        'id', 'project', 'name', 'styled_color', 'actual_area', 'supply_area', 'contract_area', 'average_price',
+        'num_unit')
     list_display_links = ('project', 'name',)
-    list_editable = ('average_price', 'num_unit')
+    list_editable = ('actual_area', 'supply_area', 'contract_area', 'average_price', 'num_unit')
 
     def styled_color(self, obj):
         return format_html(f'<div style="width:15px; background:{obj.color};">&nbsp;</div>')

@@ -55,6 +55,9 @@ class UnitType(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE, verbose_name='프로젝트', related_name='types')
     name = models.CharField('타입명칭', max_length=10)
     color = models.CharField('타입색상', max_length=7)
+    actual_area = models.DecimalField('전용면적(㎡)', max_digits=7, decimal_places=4, null=True, blank=True)
+    supply_area = models.DecimalField('공급면적(㎡)', max_digits=7, decimal_places=4, null=True, blank=True)
+    contract_area = models.DecimalField('계약면적(㎡)', max_digits=7, decimal_places=4, null=True, blank=True)
     average_price = models.PositiveIntegerField('평균가격')
     num_unit = models.PositiveSmallIntegerField('세대수')
 
