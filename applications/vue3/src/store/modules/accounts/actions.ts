@@ -30,39 +30,44 @@ const actions = {
         router.push({ name: 'Login' })
         message('info', '', '회원가입이 완료되었습니다.')
       })
-      .catch((err) => console.log(err.response.data))
+      .catch(err => console.log(err.response.data))
   },
-  login({ commit }: any, payload: { email: string; password: string }) {
+  login(
+    { commit, dispatch }: any,
+    payload: { email: string; password: string },
+  ) {
     const { email, password } = payload
     return api
       .post('/token/', { email, password })
-      .then((res) => {
+      .then(res => {
         const token = res.data.access
         commit(SET_ACCESS_TOKEN, token)
         const pk = extractId(token)
         return api.get(`/user/${pk}/`)
       })
-      .then((res) => {
+      .then(res => {
         commit(SET_USER_INFO, res.data)
         commit(SET_LOCKED_USER, res.data)
+        dispatch('fetchTodoList')
         message('', '', '로그인 성공 알림!')
       })
-      .catch((err) => {
+      .catch(err => {
         console.log(err.response.data)
         alert('이메일 또는 비밀번호를 확인하세요.')
       })
   },
 
-  loginByToken({ commit }: any, token: string) {
+  loginByToken({ commit, dispatch }: any, token: string) {
     commit(SET_ACCESS_TOKEN, token)
     const pk = extractId(token)
     return api
       .get(`/user/${pk}/`)
-      .then((res) => {
+      .then(res => {
         commit(SET_USER_INFO, res.data)
         commit(SET_LOCKED_USER, res.data)
+        dispatch('fetchTodoList')
       })
-      .catch((err) => console.log(err.response.data))
+      .catch(err => console.log(err.response.data))
   },
 
   logout({ commit }: any) {
@@ -82,19 +87,28 @@ const actions = {
       : '/todo/'
     api
       .get(url)
-      .then((res) => {
+      .then(res => {
         store.commit(FETCH_TODO_LIST, res.data)
       })
-      .catch((err) => console.log(err.response.data))
+      .catch(err => console.log(err.response.data))
   },
 
-  createTodo: ({ dispatch }: any, payload: { user: number; title: string }) => {
+  createTodo: (
+    { commit, dispatch, state }: any,
+    payload: { user: number; title: string },
+  ) => {
     api
       .post('/todo/', payload)
       .then(() => {
         dispatch('fetchTodoList')
+        return api
+          .get(`/user/${state.userInfo.pk}/`)
+          .then(res => {
+            commit(SET_USER_INFO, res.data)
+          })
+          .catch(err => console.log(err.response.data))
       })
-      .catch((err) => {
+      .catch(err => {
         console.log(err.response.data)
         alert(
           `${Object.keys(err.response.data)[0]} : ${
@@ -109,10 +123,10 @@ const actions = {
     delete payload.pk
     api
       .patch(`/todo/${pk}/`, payload)
-      .then((res) => {
+      .then(() => {
         dispatch('fetchTodoList')
       })
-      .catch((err) => {
+      .catch(err => {
         console.log(err.response.data)
         alert(
           `${Object.keys(err.response.data)[0]} : ${
@@ -122,14 +136,19 @@ const actions = {
       })
   },
 
-  deleteTodo: ({ dispatch }: any, pk: any) => {
+  deleteTodo: ({ commit, dispatch, state }: any, pk: any) => {
     api
       .delete(`/todo/${pk}/`)
-      .then((res) => {
+      .then(() => {
         dispatch('fetchTodoList')
-        console.log(res)
+        return api
+          .get(`/user/${state.userInfo.pk}/`)
+          .then(res => {
+            commit(SET_USER_INFO, res.data)
+          })
+          .catch(err => console.log(err.response.data))
       })
-      .catch((err) => {
+      .catch(err => {
         console.log(err.response.data)
         alert(
           `${Object.keys(err.response.data)[0]} : ${

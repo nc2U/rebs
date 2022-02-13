@@ -24,9 +24,9 @@ const getters = {
   },
   myTodos: (state: AccountsState) => {
     const pk = state.userInfo?.pk
-    return state.todoList.filter(
-      (todo) => !todo.soft_deleted && todo.user === pk,
-    )
+    return pk
+      ? state.todoList.filter(todo => !todo.soft_deleted && todo.user === pk)
+      : []
   },
 }
 
