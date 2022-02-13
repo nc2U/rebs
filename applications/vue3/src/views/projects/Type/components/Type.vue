@@ -11,6 +11,38 @@
     <CTableDataCell>
       <CFormInput v-model="form.color" title="타입색상" type="color" />
     </CTableDataCell>
+
+    <CTableDataCell>
+      <CFormInput
+        v-model.number="form.actual_area"
+        placeholder="전용면적"
+        type="number"
+        min="0"
+        step="0.0001"
+        @keypress.enter="formCheck(form.actual_area !== type.actual_area)"
+      />
+    </CTableDataCell>
+    <CTableDataCell>
+      <CFormInput
+        v-model.number="form.supply_area"
+        placeholder="공급면적"
+        type="number"
+        min="0"
+        step="0.0001"
+        @keypress.enter="formCheck(form.supply_area !== type.supply_area)"
+      />
+    </CTableDataCell>
+    <CTableDataCell>
+      <CFormInput
+        v-model.number="form.contract_area"
+        placeholder="계약면적"
+        type="number"
+        min="0"
+        step="0.0001"
+        @keypress.enter="formCheck(form.contract_area !== type.contract_area)"
+      />
+    </CTableDataCell>
+
     <CTableDataCell>
       <CFormInput
         v-model.number="form.average_price"
@@ -71,6 +103,9 @@ export default defineComponent({
       form: {
         name: '',
         color: '',
+        actual_area: null,
+        supply_area: null,
+        contract_area: null,
         average_price: null,
         num_unit: null,
       },
@@ -86,6 +121,9 @@ export default defineComponent({
     if (this.type) {
       this.form.name = this.type.name
       this.form.color = this.type.color
+      this.form.actual_area = this.type.actual_area
+      this.form.supply_area = this.type.supply_area
+      this.form.contract_area = this.type.contract_area
       this.form.average_price = this.type.average_price
       this.form.num_unit = this.type.num_unit
     }
@@ -94,9 +132,12 @@ export default defineComponent({
     formsCheck(this: any) {
       const a = this.form.name === this.type.name
       const b = this.form.color === this.type.color
-      const c = this.form.average_price === this.type.average_price
-      const d = this.form.num_unit === this.type.num_unit
-      return a && b && c && d
+      const c = this.form.actual_area === this.type.actual_area
+      const d = this.form.supply_area === this.type.supply_area
+      const e = this.form.contract_area === this.type.contract_area
+      const f = this.form.average_price === this.type.average_price
+      const g = this.form.num_unit === this.type.num_unit
+      return a && b && c && d && e && f && g
     },
   },
   methods: {

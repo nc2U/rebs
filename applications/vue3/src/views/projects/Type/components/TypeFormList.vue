@@ -1,16 +1,22 @@
 <template>
   <CTable hover responsive>
     <colgroup>
-      <col width="25%" />
+      <col width="13%" />
       <col width="10%" />
-      <col width="25%" />
-      <col width="25%" />
-      <col width="15%" />
+      <col width="13%" />
+      <col width="13%" />
+      <col width="13%" />
+      <col width="13%" />
+      <col width="13%" />
+      <col width="12%" />
     </colgroup>
     <CTableHead color="dark" class="text-center">
       <CTableRow>
         <CTableHeaderCell>타입명칭</CTableHeaderCell>
         <CTableHeaderCell>타입색상</CTableHeaderCell>
+        <CTableHeaderCell>전용면적(m<sup>2</sup>)</CTableHeaderCell>
+        <CTableHeaderCell>공급면적(m<sup>2</sup>)</CTableHeaderCell>
+        <CTableHeaderCell>계약면적(m<sup>2</sup>)</CTableHeaderCell>
         <CTableHeaderCell>평균가격</CTableHeaderCell>
         <CTableHeaderCell>세대수</CTableHeaderCell>
         <CTableHeaderCell>비 고</CTableHeaderCell>
