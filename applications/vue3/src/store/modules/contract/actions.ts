@@ -1,9 +1,35 @@
 import api from '@/api'
-import { FETCH_ORDER_GROUP_LIST } from '@/store/modules/contract/mutations-types'
+import {
+  FETCH_CONTRACT,
+  FETCH_CONTRACT_LIST,
+  FETCH_ORDER_GROUP_LIST,
+} from '@/store/modules/contract/mutations-types'
 import router from '@/router'
 import { message } from '@/utils/helper'
 
 const actions = {
+  fetchContractList: ({ commit }: any, payload?: any) => {
+    const { project } = payload
+    const order_group = payload.order_group ? payload.order_group : ''
+    api
+      .get(
+        `/contract/?project=${project}&order_group=${order_group}&activation=true`,
+      )
+      .then(res => {
+        commit(FETCH_CONTRACT_LIST, res.data)
+      })
+      .catch(err => console.log(err))
+  },
+
+  fetchContract: ({ commit }: any, pk: number) => {
+    api
+      .get(`/contract/${pk}/`)
+      .then(res => {
+        commit(FETCH_CONTRACT, res.data)
+      })
+      .catch(err => console.log(err))
+  },
+
   fetchOrderGroupList: ({ commit }: any, pk?: number) => {
     api
       .get(`/order-group/?project=${pk}`)
