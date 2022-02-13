@@ -16,7 +16,7 @@ from notice.models import SalesBillIssue
 from document.models import Group, Board, Category, LawsuitCase, Post, Image, Link, File, Comment, Tag
 
 
-class UserInStaffAuthSerializer(serializers.ModelSerializer):
+class StaffAuthInUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = StaffAuth
         fields = (
@@ -26,20 +26,13 @@ class UserInStaffAuthSerializer(serializers.ModelSerializer):
             'project', 'company_cash', 'company_docs', 'human_resource', 'company_settings', 'auth_manage')
 
 
-class UserInProfileSerializer(serializers.ModelSerializer):
+class ProfileInUserSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source='user.username')
 
     class Meta:
         model = Profile
         fields = ('pk', 'url', 'user', 'name', 'birth_date', 'cell_phone', 'release_code')
         extra_kwargs = {'url': {'view_name': 'api:profile-detail'}}
-
-
-class UserInTodosSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Todo
-        fields = ('pk', 'url', 'title', 'completed', 'soft_deleted')
-        extra_kwargs = {'url': {'view_name': 'api:todo-detail'}}
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -50,16 +43,16 @@ class UserSerializer(serializers.ModelSerializer):
         help_text='변경할 필요가 없으면 비워 두십시오.',
         style={'input_type': 'password', 'placeholder': '비밀번호'}
     )
-    staffauth = UserInStaffAuthSerializer()
-    profile = UserInProfileSerializer()
-    todos = UserInTodosSerializer(many=True, read_only=True)
+    staffauth = StaffAuthInUserSerializer()
+    profile = ProfileInUserSerializer()
+    todos_count = serializers.ReadOnlyField(source='todos.count')
 
     class Meta:
         model = User
         fields = (
             'pk', 'url', 'email', 'username', 'is_active',
             'is_superuser', 'date_joined', 'password',
-            'staffauth', 'profile', 'todos')
+            'staffauth', 'profile', 'todos_count')
 
     def save(self):
         instance = User(email=self.validated_data['email'],
