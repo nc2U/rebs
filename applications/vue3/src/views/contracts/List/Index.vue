@@ -9,7 +9,7 @@
 
   <ContentBody>
     <CCardBody class="pb-5">
-      <ContractList />
+      <ContractList :project="project" @page-select="pageSelect" />
     </CCardBody>
 
     <CCardFooter>&nbsp;</CCardFooter>
@@ -23,7 +23,7 @@ import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ContractSummary from './components/ContractSummary.vue'
 import ContractList from '@/views/contracts/List/components/ContractList.vue'
-import { mapState } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'ContractIndex',
@@ -34,8 +34,23 @@ export default defineComponent({
     ContractSummary,
     ContractList,
   },
+  created(this: any) {
+    this.fetchContractList({ project: this.initProjId })
+  },
   computed: {
     ...mapState('project', ['project']),
+    ...mapGetters('accounts', ['initProjId']),
+  },
+  methods: {
+    onSelectAdd(this: any, target: any) {
+      if (target !== '') this.fetchContractList({ project: target })
+      else this.$store.state.contract.contractList = []
+    },
+    pageSelect(page: number) {
+      const project = this.project.pk
+      this.fetchContractList({ project, page })
+    },
+    ...mapActions('contract', ['fetchContractList']),
   },
 })
 </script>

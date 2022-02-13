@@ -11,9 +11,10 @@ const actions = {
   fetchContractList: ({ commit }: any, payload?: any) => {
     const { project } = payload
     const order_group = payload.order_group ? payload.order_group : ''
+    const page = payload.page ? payload.page : 1
     api
       .get(
-        `/contract/?project=${project}&order_group=${order_group}&activation=true`,
+        `/contract/?project=${project}&order_group=${order_group}&activation=true&page=${page}`,
       )
       .then(res => {
         commit(FETCH_CONTRACT_LIST, res.data)

@@ -34,6 +34,19 @@
       />
     </CTableBody>
   </CTable>
+
+  <span v-if="project">
+    {{ project.name }}
+  </span>
+
+  <CSmartPagination
+    :activePage="1"
+    :limit="8"
+    :pages="62"
+    align="end"
+    class="mt-3"
+    @active-page-change="pageSelect"
+  />
 </template>
 
 <script lang="ts">
@@ -44,19 +57,14 @@ import { mapActions, mapGetters } from 'vuex'
 export default defineComponent({
   name: 'ContractList',
   components: { Contract },
-  created() {
-    this.fetchContractList({ project: this.initProjId })
-  },
+  props: ['project'],
   computed: {
     ...mapGetters('contract', ['contractIndex']),
-    ...mapGetters('accounts', ['initProjId']),
   },
   methods: {
-    onSelectAdd(this: any, target: any) {
-      if (target !== '') this.fetchContractList(target)
-      else this.$store.state.contract.contractList = []
+    pageSelect(page: number) {
+      this.$emit('page-select', page)
     },
-    ...mapActions('contract', ['fetchContractList']),
   },
 })
 </script>
