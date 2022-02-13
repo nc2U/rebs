@@ -158,8 +158,9 @@ class ProjectSerializer(serializers.ModelSerializer):
 class UnitTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = UnitType
-        fields = ('pk', 'url', 'project', 'name', 'color', 'average_price', 'num_unit')
-        extra_kwargs = {'url': {'view_name': 'api:unittype-detail'}, }
+        fields = (
+            'pk', 'project', 'name', 'color', 'actual_area',
+            'supply_area', 'contract_area', 'average_price', 'num_unit')
 
 
 class UnitFloorTypeSerializer(serializers.ModelSerializer):
