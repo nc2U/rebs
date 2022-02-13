@@ -39,7 +39,6 @@
     :activePage="1"
     :limit="8"
     :pages="contractPages(10)"
-    align="end"
     class="mt-3"
     @active-page-change="pageSelect"
   />
