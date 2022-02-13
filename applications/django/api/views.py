@@ -64,9 +64,9 @@ class ApiIndex(generics.GenericAPIView):
             # 'over-due-rule': reverse(api + OverDueRuleList.name, request=request),
             'order-group': reverse(api + OrderGroupList.name, request=request),
             'contract': reverse(api + ContractList.name, request=request),
-            'contractor': reverse(api + ContractorList.name, request=request),
-            'contractor-address': reverse(api + ContAddressList.name, request=request),
-            'contractor-contact': reverse(api + ContContactList.name, request=request),
+            # 'contractor': reverse(api + ContractorList.name, request=request),
+            # 'contractor-address': reverse(api + ContAddressList.name, request=request),
+            # 'contractor-contact': reverse(api + ContContactList.name, request=request),
             # 'contractor-release': reverse(api + ContReleaseList.name, request=request),
             # 'sales-bill-issue': reverse(api + BillIssueList.name, request=request),
             # 'group': reverse(api + GroupList.name, request=request),
@@ -557,7 +557,7 @@ class OrderGroupDetail(generics.RetrieveUpdateDestroyAPIView):
 class ContractList(generics.ListCreateAPIView):
     name = 'contract-list'
     queryset = Contract.objects.all()
-    serializer_class = ContractSerializer
+    serializer_class = ContractListSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
     filter_fields = ('project', 'order_group', 'activation')
 
@@ -568,59 +568,59 @@ class ContractList(generics.ListCreateAPIView):
 class ContractDetail(generics.RetrieveUpdateDestroyAPIView):
     name = 'contract-detail'
     queryset = Contract.objects.all()
-    serializer_class = ContractSerializer
+    serializer_class = ContractListSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
 
-class ContractorList(generics.ListCreateAPIView):
-    name = 'contractor-list'
-    queryset = Contractor.objects.all()
-    serializer_class = ContractorSerializer
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
-
-
-class ContractorDetail(generics.RetrieveUpdateDestroyAPIView):
-    name = 'contractor-detail'
-    queryset = Contractor.objects.all()
-    serializer_class = ContractorSerializer
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-
-
-class ContAddressList(generics.ListCreateAPIView):
-    name = 'cont_address-list'
-    queryset = ContractorAddress.objects.all()
-    serializer_class = ContractorAddressSerializer
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
-
-
-class ContAddressDetail(generics.RetrieveUpdateDestroyAPIView):
-    name = 'cont_address-detail'
-    queryset = ContractorAddress.objects.all()
-    serializer_class = ContractorAddressSerializer
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-
-
-class ContContactList(generics.ListCreateAPIView):
-    name = 'contact-list'
-    queryset = ContractorContact.objects.all()
-    serializer_class = ContractorContactSerializer
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
-
-
-class ContContactDetail(generics.RetrieveUpdateDestroyAPIView):
-    name = 'contact-detail'
-    queryset = ContractorContact.objects.all()
-    serializer_class = ContractorContactSerializer
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+# class ContractorList(generics.ListCreateAPIView):
+#     name = 'contractor-list'
+#     queryset = Contractor.objects.all()
+#     serializer_class = ContractorSerializer
+#     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+#
+#     def perform_create(self, serializer):
+#         serializer.save(user=self.request.user)
+#
+#
+# class ContractorDetail(generics.RetrieveUpdateDestroyAPIView):
+#     name = 'contractor-detail'
+#     queryset = Contractor.objects.all()
+#     serializer_class = ContractorSerializer
+#     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+#
+#
+# class ContAddressList(generics.ListCreateAPIView):
+#     name = 'cont_address-list'
+#     queryset = ContractorAddress.objects.all()
+#     serializer_class = ContractorAddressSerializer
+#     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+#
+#     def perform_create(self, serializer):
+#         serializer.save(user=self.request.user)
+#
+#
+# class ContAddressDetail(generics.RetrieveUpdateDestroyAPIView):
+#     name = 'cont_address-detail'
+#     queryset = ContractorAddress.objects.all()
+#     serializer_class = ContractorAddressSerializer
+#     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+#
+#
+# class ContContactList(generics.ListCreateAPIView):
+#     name = 'contact-list'
+#     queryset = ContractorContact.objects.all()
+#     serializer_class = ContractorContactSerializer
+#     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+#
+#     def perform_create(self, serializer):
+#         serializer.save(user=self.request.user)
+#
+#
+# class ContContactDetail(generics.RetrieveUpdateDestroyAPIView):
+#     name = 'contact-detail'
+#     queryset = ContractorContact.objects.all()
+#     serializer_class = ContractorContactSerializer
+#     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
 
 # class ContReleaseList(generics.ListCreateAPIView):
