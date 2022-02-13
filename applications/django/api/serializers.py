@@ -372,11 +372,12 @@ class OrderGroupSerializer(serializers.ModelSerializer):
 
 # Contract --------------------------------------------------------------------------
 class UnitNumberInContractUnitSerializer(serializers.ModelSerializer):
+    unit_type = serializers.SlugRelatedField(queryset=UnitType.objects.all(), slug_field='color')
     floor_type = serializers.SlugRelatedField(queryset=UnitFloorType.objects.all(), slug_field='alias_name')
 
     class Meta:
         model = UnitNumber
-        fields = ('pk', 'floor_type', 'bldg_no', 'bldg_unit_no')
+        fields = ('pk', 'unit_type', 'floor_type', 'bldg_no', 'bldg_unit_no')
 
 
 class ContractUnitInContractListSerializer(serializers.ModelSerializer):
