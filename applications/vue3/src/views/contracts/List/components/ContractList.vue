@@ -1,264 +1,62 @@
 <template>
-  <CSmartTable
-    clickableRows
-    :tableProps="{
-      striped: false,
-      hover: true,
-    }"
-    :tableHeadProps="{
-      color: 'default',
-    }"
-    :activePage="1"
-    header
-    :items="items"
-    :columns="columns"
-    columnFilter
-    tableFilter
-    cleaner
-    itemsPerPageSelect
-    :itemsPerPage="5"
-    columnSorter
-    pagination
-  >
-    <template #status="{ item }">
-      <td>
-        <CBadge :color="getBadge(item.status)">{{ item.status }}</CBadge>
-      </td>
-    </template>
+  <CTable hover responsive>
+    <colgroup>
+      <col width="10%" />
+      <col width="8%" />
+      <col width="8%" />
+      <col width="10%" />
+      <col width="10%" />
+      <col width="8%" />
+      <col width="20%" />
+      <col width="14%" />
+      <col width="12%" />
+    </colgroup>
 
-    <template #show_details="{ item, index }">
-      <td class="py-2">
-        <CButton color="primary" variant="outline" square size="sm">
-          <!--          @click="toggleDetails(item, index)"-->
-          <!--        >-->
-          {{ Boolean(item._toggled) ? 'Hide' : 'Show' }}
-        </CButton>
-      </td>
-    </template>
+    <CTableHead>
+      <CTableRow color="dark">
+        <CTableHeaderCell scope="col">일련번호</CTableHeaderCell>
+        <CTableHeaderCell scope="col">차수</CTableHeaderCell>
+        <CTableHeaderCell scope="col">타입</CTableHeaderCell>
+        <CTableHeaderCell scope="col">동호수</CTableHeaderCell>
+        <CTableHeaderCell scope="col">계약자</CTableHeaderCell>
+        <CTableHeaderCell scope="col">인가 등록여부</CTableHeaderCell>
+        <CTableHeaderCell scope="col">주소</CTableHeaderCell>
+        <CTableHeaderCell scope="col">연락처</CTableHeaderCell>
+        <CTableHeaderCell scope="col">계약일자</CTableHeaderCell>
+      </CTableRow>
+    </CTableHead>
 
-    <!--    <template #details="{ item }">-->
-    <!--      <CCollapse :visible="this.details.includes(item._id)">-->
-    <!--        <CCardBody>-->
-    <!--          <h4>-->
-    <!--            {{ item.username }}-->
-    <!--          </h4>-->
-    <!--          <p class="text-muted">User since: {{ item.registered }}</p>-->
-    <!--          <CButton size="sm" color="info" class=""> User Settings</CButton>-->
-    <!--          <CButton size="sm" color="danger" class="ml-1"> Delete</CButton>-->
-    <!--        </CCardBody>-->
-    <!--      </CCollapse>-->
-    <!--    </template>-->
-  </CSmartTable>
+    <CTableBody>
+      <Contract
+        v-for="contract in contractIndex"
+        :contract="contract"
+        :key="contract.pk"
+      />
+    </CTableBody>
+  </CTable>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import Contract from '@/views/contracts/List/components/Contract.vue'
+import { mapActions, mapGetters } from 'vuex'
 
 export default defineComponent({
   name: 'ContractList',
-  data: () => {
-    return {
-      columns: [
-        {
-          key: 'name',
-          _style: { width: '40%' },
-          _props: { color: 'primary', className: 'fw-semibold' },
-        },
-        'registered',
-        { key: 'role', filter: false, sorter: false, _style: { width: '20%' } },
-        { key: 'status', _style: { width: '20%' } },
-        // {
-        //   key: 'show_details',
-        //   label: '',
-        //   _style: { width: '1%' },
-        //   filter: false,
-        //   sorter: false,
-        //   _props: { color: 'primary', className: 'fw-semibold' },
-        // },
-      ],
-      // details: [],
-      items: [
-        {
-          name: 'John Doe',
-          registered: '2018/01/01',
-          role: 'Guest',
-          status: 'Pending',
-        },
-        {
-          name: 'Samppa Nori',
-          registered: '2018/01/01',
-          role: 'Member',
-          status: 'Active',
-          // _props: { color: 'primary', align: 'middle' },
-        },
-        {
-          name: 'Estavan Lykos',
-          registered: '2018/02/01',
-          role: 'Staff',
-          status: 'Banned',
-          // _cellProps: {
-          // all: { className: 'fw-semibold' },
-          // name: { color: 'info' },
-          // },
-        },
-        {
-          name: 'Chetan Mohamed',
-          registered: '2018/02/01',
-          role: 'Admin',
-          status: 'Inactive',
-        },
-        {
-          name: 'Derick Maximinus',
-          registered: '2018/03/01',
-          role: 'Member',
-          status: 'Pending',
-        },
-        {
-          name: 'Friderik Dávid',
-          registered: '2018/01/21',
-          role: 'Staff',
-          status: 'Active',
-        },
-        {
-          name: 'Yiorgos Avraamu',
-          registered: '2018/01/01',
-          role: 'Member',
-          status: 'Active',
-        },
-        {
-          name: 'Avram Tarasios',
-          registered: '2018/02/01',
-          role: 'Staff',
-          status: 'Banned',
-          // _props: { color: 'warning', align: 'middle' },
-        },
-        {
-          name: 'Quintin Ed',
-          registered: '2018/02/01',
-          role: 'Admin',
-          status: 'Inactive',
-        },
-        {
-          name: 'Enéas Kwadwo',
-          registered: '2018/03/01',
-          role: 'Member',
-          status: 'Pending',
-        },
-        {
-          name: 'Agapetus Tadeáš',
-          registered: '2018/01/21',
-          role: 'Staff',
-          status: 'Active',
-        },
-        {
-          name: 'Carwyn Fachtna',
-          registered: '2018/01/01',
-          role: 'Member',
-          status: 'Active',
-        },
-        {
-          name: 'Nehemiah Tatius',
-          registered: '2018/02/01',
-          role: 'Staff',
-          status: 'Banned',
-        },
-        {
-          name: 'Ebbe Gemariah',
-          registered: '2018/02/01',
-          role: 'Admin',
-          status: 'Inactive',
-        },
-        {
-          name: 'Eustorgios Amulius',
-          registered: '2018/03/01',
-          role: 'Member',
-          status: 'Pending',
-        },
-        {
-          name: 'Leopold Gáspár',
-          registered: '2018/01/21',
-          role: 'Staff',
-          status: 'Active',
-        },
-        {
-          name: 'Pompeius René',
-          registered: '2018/01/01',
-          role: 'Member',
-          status: 'Active',
-        },
-        {
-          name: 'Paĉjo Jadon',
-          registered: '2018/02/01',
-          role: 'Staff',
-          status: 'Banned',
-        },
-        {
-          name: 'Micheal Mercurius',
-          registered: '2018/02/01',
-          role: 'Admin',
-          status: 'Inactive',
-        },
-        {
-          name: 'Ganesha Dubhghall',
-          registered: '2018/03/01',
-          role: 'Member',
-          status: 'Pending',
-        },
-        {
-          name: 'Hiroto Šimun',
-          registered: '2018/01/21',
-          role: 'Staff',
-          status: 'Active',
-        },
-        {
-          name: 'Vishnu Serghei',
-          registered: '2018/01/01',
-          role: 'Member',
-          status: 'Active',
-        },
-        {
-          name: 'Zbyněk Phoibos',
-          registered: '2018/02/01',
-          role: 'Staff',
-          status: 'Banned',
-        },
-        {
-          name: 'Aulus Agmundr',
-          registered: '2018/01/01',
-          role: 'Member',
-          status: 'Pending',
-        },
-        {
-          name: 'Ford Prefect',
-          registered: '2001/05/25',
-          role: 'Alien',
-          status: "Don't panic!",
-        },
-      ],
-    }
+  components: { Contract },
+  created() {
+    this.fetchContractList({ project: this.initProjId })
+  },
+  computed: {
+    ...mapGetters('contract', ['contractIndex']),
+    ...mapGetters('accounts', ['initProjId']),
   },
   methods: {
-    getBadge(status: any) {
-      switch (status) {
-        case 'Active':
-          return 'success'
-        case 'Inactive':
-          return 'secondary'
-        case 'Pending':
-          return 'warning'
-        case 'Banned':
-          return 'danger'
-        default:
-          'primary'
-      }
+    onSelectAdd(this: any, target: any) {
+      if (target !== '') this.fetchContractList(target)
+      else this.$store.state.contract.contractList = []
     },
-    // toggleDetails(item) {
-    //   if (this.details.includes(item._id)) {
-    //     this.details = this.details.filter(_item => _item !== item._id)
-    //     return
-    //   }
-    //   this.details.push(item._id)
-    // },
+    ...mapActions('contract', ['fetchContractList']),
   },
 })
 </script>
