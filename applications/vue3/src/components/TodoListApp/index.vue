@@ -83,8 +83,8 @@ type filterType = {
 
 const filters: filterType = {
   all: (todos: todo[]) => todos,
-  active: (todos: todo[]) => todos.filter((todo) => !todo.completed),
-  completed: (todos: todo[]) => todos.filter((todo) => todo.completed),
+  active: (todos: todo[]) => todos.filter(todo => !todo.completed),
+  completed: (todos: todo[]) => todos.filter(todo => todo.completed),
 }
 const defalutList = [
   {
@@ -181,5 +181,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import './index.scss';
+@import 'index';
 </style>

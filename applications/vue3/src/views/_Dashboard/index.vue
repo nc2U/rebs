@@ -17,9 +17,8 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-
+import TodoListApp from '@/components/TodoListApp/index.vue'
 import MainCarousel from './components/MainCarousel.vue'
-import TodoListApp from './components/TodoListApp/index.vue'
 import WidgetsStatsA from './components/widgets/WidgetsStatsTypeA.vue'
 import WidgetsStatsB from './components/widgets/WidgetsStatsTypeB.vue'
 import WidgetsStatsC from './components/widgets/WidgetsStatsTypeC.vue'

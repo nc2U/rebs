@@ -19,7 +19,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import TodoListApp from '@/views/_Dashboard/components/TodoListApp/index.vue'
+import TodoListApp from '@/components/TodoListApp/index.vue'
 
 export default defineComponent({
   name: 'TodoModal',
