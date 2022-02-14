@@ -250,11 +250,13 @@ class ContractRegisterView(LoginRequiredMixin, FormView):
                 if not cont_id:
                     contract = Contract(project=Project.objects.get(pk=self.request.POST.get('project')),
                                         order_group=OrderGroup.objects.get(pk=self.request.POST.get('order_group')),
+                                        unit_type=UnitType.objects.get(pk=self.request.POST.get('type')),
                                         serial_number=f"{ContractUnit.objects.get(pk=self.request.POST.get('contract_unit')).unit_code}-{self.request.POST.get('order_group')}",
                                         user=self.request.user)
                 else:
                     contract = Contract.objects.get(pk=cont_id)
                     contract.order_group = OrderGroup.objects.get(pk=self.request.POST.get('order_group'))
+                    contract.unit_type = UnitType.objects.get(pk=self.request.POST.get('type'))
                     contract.serial_number = f"{ContractUnit.objects.get(pk=self.request.POST.get('contract_unit')).unit_code}-{self.request.POST.get('order_group')}"
                     contract.user = self.request.user
                 contract.save()
@@ -289,7 +291,7 @@ class ContractRegisterView(LoginRequiredMixin, FormView):
 
                 # 4. 계약자 정보 테이블 입력
                 if not cont_id:
-                    contractor = Contractor(contract=Contract.objects.last(),
+                    contractor = Contractor(contract=contract,
                                             name=form.cleaned_data.get('name'),
                                             birth_date=form.cleaned_data.get('birth_date'),
                                             gender=form.cleaned_data.get('gender'),
