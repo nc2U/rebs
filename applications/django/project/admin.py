@@ -49,10 +49,10 @@ class BuindingNumberAdmin(ImportExportMixin, admin.ModelAdmin):
 
 class UnitNumberAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = (
-        'id', 'project', '__str__', 'contract_unit', 'unit_type', 'floor_type', 'bldg_line', 'floor_no', 'is_hold',
-        'hold_reason')
+        'id', 'project', 'contract_unit', 'unit_type', 'building_number', 'bldg_no',
+        'bldg_unit_no', 'floor_type', 'bldg_line', 'floor_no', 'is_hold', 'hold_reason')
     search_fields = ('bldg_no', 'bldg_unit_no')
-    list_display_links = ('project', '__str__',)
+    list_display_links = ('project', 'contract_unit',)
 
 
 class ProjectBudgetAdmin(ImportExportMixin, admin.ModelAdmin):
