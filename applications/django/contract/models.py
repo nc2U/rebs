@@ -21,6 +21,7 @@ class OrderGroup(models.Model):
 class Contract(models.Model):
     project = models.ForeignKey('project.Project', on_delete=models.PROTECT, verbose_name='프로젝트')
     order_group = models.ForeignKey('OrderGroup', on_delete=models.PROTECT, verbose_name='차수')
+    unit_type = models.ForeignKey('project.UnitType', on_delete=models.PROTECT, verbose_name='타입')
     serial_number = models.CharField('계약 일련 번호', max_length=30, unique=True)
     activation = models.BooleanField('계약 활성 여부', default=True)
     created_at = models.DateTimeField('등록일', auto_now_add=True)
