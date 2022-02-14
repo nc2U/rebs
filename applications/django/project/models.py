@@ -103,12 +103,26 @@ class ContractUnit(models.Model):
         verbose_name_plural = '04. 계약 유닛'
 
 
+class BuildingNumber(models.Model):
+    project = models.ForeignKey('project.Project', on_delete=models.PROTECT, verbose_name='프로젝트')
+    name = models.CharField('동(건물)이름', max_length=20)
+
+    class Meta:
+        ordering = ('-project', 'id')
+        verbose_name = '05. 동수'
+        verbose_name_plural = '05. 동수'
+
+    def __str__(self):
+        return self.name
+
+
 class UnitNumber(models.Model):
     project = models.ForeignKey('project.Project', on_delete=models.PROTECT, verbose_name='프로젝트')
-    unit_type = models.ForeignKey(UnitType, on_delete=models.CASCADE, verbose_name='타입')
+    unit_type = models.ForeignKey(UnitType, on_delete=models.PROTECT, verbose_name='타입')
     floor_type = models.ForeignKey('UnitFloorType', on_delete=models.SET_NULL, null=True, blank=True,
                                    verbose_name='층범위 타입')
-    bldg_no = models.CharField('동', max_length=5, blank=True)
+    building_number = models.ForeignKey('project.BuildingNumber', on_delete=models.PROTECT, verbose_name='동수')
+    bldg_no = models.CharField('동이름', max_length=5, blank=True)
     bldg_unit_no = models.CharField('호수', max_length=5, blank=True)
     contract_unit = models.OneToOneField(ContractUnit, on_delete=models.SET_NULL, null=True, blank=True,
                                          verbose_name='계약유닛')
@@ -122,8 +136,8 @@ class UnitNumber(models.Model):
 
     class Meta:
         ordering = ['bldg_no', '-project']
-        verbose_name = '05. 동별 호수'
-        verbose_name_plural = '05. 동별 호수'
+        verbose_name = '06. 호수'
+        verbose_name_plural = '06. 호수'
 
 
 class ProjectBudget(models.Model):
@@ -134,8 +148,8 @@ class ProjectBudget(models.Model):
 
     class Meta:
         ordering = ('account_d2', '-project')
-        verbose_name = '06. 프로젝트 예산'
-        verbose_name_plural = '06. 프로젝트 예산'
+        verbose_name = '07. 프로젝트 예산'
+        verbose_name_plural = '07. 프로젝트 예산'
 
 
 class Site(models.Model):
@@ -156,8 +170,8 @@ class Site(models.Model):
 
     class Meta:
         ordering = ('order', 'lot_number', '-project')
-        verbose_name = '07. 사업부지 목록'
-        verbose_name_plural = '07. 사업부지 목록'
+        verbose_name = '08. 사업부지 목록'
+        verbose_name_plural = '08. 사업부지 목록'
 
 
 class SiteOwner(models.Model):
@@ -184,8 +198,8 @@ class SiteOwner(models.Model):
 
     class Meta:
         ordering = ('-id',)
-        verbose_name = '08. 사업부지 소유자'
-        verbose_name_plural = '08. 사업부지 소유자'
+        verbose_name = '09. 사업부지 소유자'
+        verbose_name_plural = '09. 사업부지 소유자'
 
 
 class SiteOwnshipRelationship(models.Model):
@@ -200,8 +214,8 @@ class SiteOwnshipRelationship(models.Model):
 
     class Meta:
         ordering = ('id',)
-        verbose_name = '09. 사업부지 소유관계'
-        verbose_name_plural = '09. 사업부지 소유관계'
+        verbose_name = '10. 사업부지 소유관계'
+        verbose_name_plural = '10. 사업부지 소유관계'
 
 
 class SiteContract(models.Model):
@@ -237,5 +251,5 @@ class SiteContract(models.Model):
 
     class Meta:
         ordering = ('-id',)
-        verbose_name = '10. 사업부지 계약현황'
-        verbose_name_plural = '10. 사업부지 계약현황'
+        verbose_name = '11. 사업부지 계약현황'
+        verbose_name_plural = '11. 사업부지 계약현황'

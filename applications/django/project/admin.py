@@ -3,8 +3,8 @@ from django.utils.html import format_html
 from django.contrib.humanize.templatetags.humanize import intcomma
 from import_export.admin import ImportExportMixin
 
-from .models import (Project, UnitType, UnitFloorType,
-                     ContractUnit, UnitNumber, ProjectBudget,
+from .models import (Project, UnitType, UnitFloorType, ContractUnit,
+                     BuildingNumber, UnitNumber, ProjectBudget,
                      Site, SiteOwner, SiteOwnshipRelationship, SiteContract)
 
 
@@ -41,6 +41,10 @@ class ContractUnitAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'project', 'unit_code', 'unit_type', 'contract')
     search_fields = ('unit_code',)
     list_display_links = ('project', 'unit_code',)
+
+
+class BuindingNumberAdmin(ImportExportMixin, admin.ModelAdmin):
+    list_display = ('id', 'project', 'name')
 
 
 class UnitNumberAdmin(ImportExportMixin, admin.ModelAdmin):
@@ -97,6 +101,7 @@ admin.site.register(Project, ProjectAdmin)
 admin.site.register(UnitType, UnitTypeAdmin)
 admin.site.register(UnitFloorType, UnitFloorTypeAdmin)
 admin.site.register(ContractUnit, ContractUnitAdmin)
+admin.site.register(BuildingNumber, BuindingNumberAdmin)
 admin.site.register(UnitNumber, UnitNumberAdmin)
 admin.site.register(ProjectBudget, ProjectBudgetAdmin)
 admin.site.register(Site, SiteAdmin)
