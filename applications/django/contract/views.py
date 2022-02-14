@@ -555,18 +555,19 @@ class BuildDashboard(LoginRequiredMixin, TemplateView):
         context['line'] = []
         context['units'] = []
 
-        dong_list = UnitNumber.objects.order_by().values('bldg_no').distinct()
+        dong_list = list(BuildingNumber.objects.filter(project=self.get_project()).values('name'))
 
         for dong in dong_list:
-            context['dong_list'].append(dong['bldg_no'])
+            context['dong_list'].append(dong['name'])
             lines = UnitNumber.objects.order_by('-bldg_line').values('bldg_line').filter(
-                bldg_no__contains=dong['bldg_no']).distinct()
+                building_number__name__contains=dong['name']).distinct()
             ln = []
             for line in lines:
                 ln.append(line['bldg_line'])
             context['line'].append(ln)
             context['units'].append(
-                UnitNumber.objects.filter(bldg_no__contains=dong['bldg_no']).order_by('-floor_no', 'bldg_line'))
+                UnitNumber.objects.filter(building_number__name__contains=dong['name']).order_by('-floor_no',
+                                                                                                 'bldg_line'))
 
         context['line'] = list(reversed(context['line']))
         context['units'] = list(reversed(context['units']))
