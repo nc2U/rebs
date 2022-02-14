@@ -2,8 +2,7 @@ interface UnitNumber {
   pk: number
   unit_type: string
   floor_type: string
-  bldg_no: string
-  bldg_unit_no: string
+  __str__: string
 }
 
 interface ContractUnit {
@@ -39,6 +38,7 @@ export interface Contract {
   serial_number: string
   activation: boolean
   order_group: number
+  unit_type: string
   contractunit: ContractUnit | null
   contractor: Contractor | null
   user: number
