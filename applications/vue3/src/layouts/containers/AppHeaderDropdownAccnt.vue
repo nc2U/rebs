@@ -13,7 +13,7 @@
     </CDropdownToggle>
     <CDropdownMenu class="pt-0">
       <CDropdownHeader component="h6" class="bg-light fw-semibold py-2">
-        Account - {{ userInfo.username }} 님
+        Account - {{ userInfo.profile.name || userInfo.username }} 님
       </CDropdownHeader>
       <!--      <CDropdownItem>-->
       <!--        <CIcon icon="cil-bell" />-->
@@ -29,7 +29,7 @@
       <!--      </CDropdownItem>-->
       <CDropdownItem>
         <CIcon icon="cil-task" />
-        Tasks
+        할일목록
         <CBadge color="danger-gradient" class="ms-auto">
           {{ itemsCount }}
         </CBadge>
@@ -46,7 +46,7 @@
       </CDropdownHeader>
       <CDropdownItem>
         <CIcon icon="cil-user" />
-        Profile
+        프로필
       </CDropdownItem>
       <!--      <CDropdownItem>-->
       <!--        <CIcon icon="cil-settings" />-->
@@ -65,10 +65,10 @@
       <!--        </CBadge>-->
       <!--      </CDropdownItem>-->
       <CDropdownDivider />
-      <CDropdownItem @click="toLockScreen">
-        <CIcon icon="cil-shield-alt" />
-        Lock Account
-      </CDropdownItem>
+      <!--      <CDropdownItem @click="toLockScreen">-->
+      <!--        <CIcon icon="cil-shield-alt" />-->
+      <!--        Lock Account-->
+      <!--      </CDropdownItem>-->
       <CDropdownItem @click="logOut" style="cursor: pointer">
         <CIcon icon="cil-lock-locked" />
         Logout
