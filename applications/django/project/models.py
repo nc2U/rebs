@@ -122,7 +122,6 @@ class UnitNumber(models.Model):
     floor_type = models.ForeignKey('UnitFloorType', on_delete=models.SET_NULL, null=True, blank=True,
                                    verbose_name='층범위 타입')
     building_number = models.ForeignKey('project.BuildingNumber', on_delete=models.PROTECT, verbose_name='동수')
-    bldg_no = models.CharField('동이름', max_length=5, blank=True)
     bldg_unit_no = models.CharField('호수', max_length=5, blank=True)
     contract_unit = models.OneToOneField(ContractUnit, on_delete=models.SET_NULL, null=True, blank=True,
                                          verbose_name='계약유닛')
@@ -132,10 +131,10 @@ class UnitNumber(models.Model):
     hold_reason = models.CharField('홀딩 사유', max_length=100, blank=True)
 
     def __str__(self):
-        return f'{self.bldg_no}-{self.bldg_unit_no}'
+        return f'{self.building_number}-{self.bldg_unit_no}'
 
     class Meta:
-        ordering = ['bldg_no', '-project']
+        ordering = ['building_number', 'bldg_unit_no', '-project']
         verbose_name = '06. 호수'
         verbose_name_plural = '06. 호수'
 

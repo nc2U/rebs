@@ -10,7 +10,7 @@ from django.views.generic import ListView, FormView, TemplateView
 from .models import (OrderGroup, Contract, Contractor,
                      ContractorAddress, ContractorContact, ContractorRelease)
 from rebs.models import ProjectAccountD1, ProjectAccountD2
-from project.models import Project, UnitType, ContractUnit, UnitNumber
+from project.models import Project, UnitType, ContractUnit, BuildingNumber, UnitNumber
 from cash.models import ProjectBankAccount, ProjectCashBook, InstallmentPaymentOrder
 
 from .forms import ContractRegisterForm, ContractPaymentForm, ContractorReleaseForm
@@ -33,14 +33,14 @@ class ContractLV(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         project = self.get_project()
-        contract = Contract.objects.filter(project=project, contractunit__contract__isnull=False,
+        contract = Contract.objects.filter(project=project,
                                            contractor__status='2').order_by('-created_at')
         if self.request.GET.get('group'):
             contract = contract.filter(order_group=self.request.GET.get('group'))
         if self.request.GET.get('type'):
-            contract = contract.filter(contractunit__unit_type=self.request.GET.get('type'))
+            contract = contract.filter(unit_type=self.request.GET.get('type'))
         if self.request.GET.get('dong'):
-            contract = contract.filter(contractunit__unitnumber__bldg_no=self.request.GET.get('dong'))
+            contract = contract.filter(contractunit__unitnumber__building_number=self.request.GET.get('dong'))
         if self.request.GET.get('status'):
             contract = contract.filter(contractor__contractorrelease__status=self.request.GET.get('status'))
         if self.request.GET.get('register'):
@@ -69,7 +69,7 @@ class ContractLV(LoginRequiredMixin, ListView):
         context['this_project'] = self.get_project()
         context['groups'] = OrderGroup.objects.filter(project=self.get_project())
         context['types'] = UnitType.objects.filter(project=self.get_project())
-        context['dongs'] = UnitNumber.objects.filter(project=self.get_project()).values('bldg_no').distinct()
+        context['dongs'] = BuildingNumber.objects.filter(project=self.get_project())
 
         unit_num = []  # 타입별 세대수
         reserv_num = []  # 타입별 청약건
@@ -81,7 +81,7 @@ class ContractLV(LoginRequiredMixin, ListView):
         ocn = []
 
         for i, type in enumerate(context['types']):
-            units = ContractUnit.objects.filter(unit_type=type).count()  # 타입별 세대수
+            units = UnitNumber.objects.filter(unit_type=type).count()  # 타입별 세대수
             reservs = Contractor.objects.filter(contract__project=self.get_project(),
                                                 contract__contractunit__unit_type=type,
                                                 status='1').count()
