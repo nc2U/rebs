@@ -9,6 +9,7 @@
 
   <ContentBody>
     <CCardBody class="pb-5">
+      <ListController />
       <ContractList :project="project" @page-select="pageSelect" />
     </CCardBody>
 
@@ -22,6 +23,7 @@ import HeaderMixin from '@/views/contracts/_menu/headermixin1'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ContractSummary from './components/ContractSummary.vue'
+import ListController from '@/views/contracts/List/components/ListController.vue'
 import ContractList from '@/views/contracts/List/components/ContractList.vue'
 import { mapActions, mapGetters, mapState } from 'vuex'
 
@@ -32,6 +34,7 @@ export default defineComponent({
     ContentHeader,
     ContentBody,
     ContractSummary,
+    ListController,
     ContractList,
   },
   created(this: any) {
