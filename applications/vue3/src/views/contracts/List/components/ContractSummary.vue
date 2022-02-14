@@ -50,6 +50,19 @@
         <CTableDataCell>{{ numFormat(126) }}</CTableDataCell>
         <CTableDataCell>{{ numFormat(126) }}</CTableDataCell>
       </CTableRow>
+      <CTableRow color="dark" class="text-right">
+        <CTableDataCell colspan="2" class="text-center"> 합계</CTableDataCell>
+        <CTableDataCell>{{ numFormat(126) }}세대</CTableDataCell>
+        <CTableDataCell>{{ numFormat(126) }}</CTableDataCell>
+        <CTableDataCell>{{ numFormat(126) }}</CTableDataCell>
+        <CTableDataCell>{{ numFormat(126) }}</CTableDataCell>
+        <CTableDataCell>{{ numFormat(126) }}</CTableDataCell>
+        <CTableDataCell>{{ numFormat(126) }}</CTableDataCell>
+        <CTableDataCell>{{ numFormat(126) }}</CTableDataCell>
+        <CTableDataCell>{{ numFormat(126) }}</CTableDataCell>
+        <CTableDataCell>{{ numFormat(126) }}</CTableDataCell>
+        <CTableDataCell>{{ numFormat(126) }}</CTableDataCell>
+      </CTableRow>
     </CTableBody>
   </CTable>
 </template>
@@ -61,6 +74,8 @@ import { mapState } from 'vuex'
 
 export default defineComponent({
   name: 'ContractSummary',
+  components: {},
+
   mixins: [commonMixin],
   props: ['project'],
   computed: {
