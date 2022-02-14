@@ -166,7 +166,7 @@ class UnitNumberSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UnitNumber
-        fields = ('pk', 'project', 'floor_type', 'bldg_no', 'bldg_unit_no',
+        fields = ('pk', 'project', 'floor_type', 'building_number', 'bldg_unit_no',
                   'contract_unit', 'bldg_line', 'floor_no', 'is_hold', 'hold_reason')
 
 
@@ -377,11 +377,11 @@ class UnitNumberInContractUnitSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UnitNumber
-        fields = ('pk', 'unit_type', 'floor_type', 'bldg_no', 'bldg_unit_no')
+        fields = ('pk', 'unit_type', 'floor_type', '__str__')
 
 
 class ContractUnitInContractListSerializer(serializers.ModelSerializer):
-    unit_type = serializers.SlugRelatedField(queryset=UnitType.objects.all(), slug_field='name')
+    unit_type = serializers.SlugRelatedField(queryset=UnitType.objects.all(), slug_field='color')
     unitnumber = UnitNumberInContractUnitSerializer()
 
     class Meta:
@@ -414,13 +414,15 @@ class ContractorInContractListSerializer(serializers.ModelSerializer):
 
 class ContractListSerializer(serializers.ModelSerializer):
     order_group = serializers.SlugRelatedField(queryset=OrderGroup.objects.all(), slug_field='order_group_name')
+    unit_type = serializers.SlugField()
     contractunit = ContractUnitInContractListSerializer()
     contractor = ContractorInContractListSerializer()
 
     class Meta:
         model = Contract
         fields = (
-            'pk', 'project', 'serial_number', 'activation', 'order_group', 'contractunit', 'contractor', 'user')
+            'pk', 'project', 'serial_number', 'activation', 'order_group', 'unit_type', 'contractunit', 'contractor',
+            'user')
 
 
 class ContractorReleaseSerializer(serializers.ModelSerializer):
