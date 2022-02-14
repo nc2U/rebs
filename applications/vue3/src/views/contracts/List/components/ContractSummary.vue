@@ -13,29 +13,42 @@
       </CTableRow>
 
       <CTableRow>
-        <CTableHeaderCell>1차조합원</CTableHeaderCell>
-        <CTableHeaderCell>2차조합원</CTableHeaderCell>
-        <CTableHeaderCell>3차조합원</CTableHeaderCell>
-        <CTableHeaderCell>일반분양</CTableHeaderCell>
+        <CTableHeaderCell v-for="order in orderGroupList" :key="order.pk">
+          {{ order.order_group_name }}
+        </CTableHeaderCell>
 
         <CTableHeaderCell>합계</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
 
     <CTableBody>
-      <CTableRow align="middle" class="text-center" v-if="project">
-        <CTableHeaderCell rowspan="3"> {{ project.name }}</CTableHeaderCell>
-        <CTableDataCell>74</CTableDataCell>
-        <CTableDataCell>126세대</CTableDataCell>
-        <CTableDataCell>126</CTableDataCell>
-        <CTableDataCell>126</CTableDataCell>
-        <CTableDataCell>126</CTableDataCell>
-        <CTableDataCell>126</CTableDataCell>
-        <CTableDataCell>126</CTableDataCell>
-        <CTableDataCell>126</CTableDataCell>
-        <CTableDataCell>126</CTableDataCell>
-        <CTableDataCell>126</CTableDataCell>
-        <CTableDataCell>126</CTableDataCell>
+      <CTableRow
+        class="text-right"
+        align="middle"
+        v-for="(type, i) in unitTypeList"
+        :key="i"
+      >
+        <CTableHeaderCell
+          class="text-center"
+          :rowspan="unitTypeList.length"
+          v-if="project && i == 0"
+        >
+          {{ project.name }}
+        </CTableHeaderCell>
+        <CTableDataCell class="text-center">
+          <CIcon name="cibDiscover" :style="'color:' + type.color" size="sm" />
+          {{ type.name }}
+        </CTableDataCell>
+        <CTableDataCell>{{ numFormat(126) }}세대</CTableDataCell>
+        <CTableDataCell>{{ numFormat(126) }}</CTableDataCell>
+        <CTableDataCell>{{ numFormat(126) }}</CTableDataCell>
+        <CTableDataCell>{{ numFormat(126) }}</CTableDataCell>
+        <CTableDataCell>{{ numFormat(126) }}</CTableDataCell>
+        <CTableDataCell>{{ numFormat(126) }}</CTableDataCell>
+        <CTableDataCell>{{ numFormat(126) }}</CTableDataCell>
+        <CTableDataCell>{{ numFormat(126) }}</CTableDataCell>
+        <CTableDataCell>{{ numFormat(126) }}</CTableDataCell>
+        <CTableDataCell>{{ numFormat(126) }}</CTableDataCell>
       </CTableRow>
     </CTableBody>
   </CTable>
@@ -43,20 +56,16 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import commonMixin from '@/views/commonMixin'
+import { mapState } from 'vuex'
 
 export default defineComponent({
   name: 'ContractSummary',
-  data() {
-    return {
-      sample: '',
-    }
+  mixins: [commonMixin],
+  props: ['project'],
+  computed: {
+    ...mapState('contract', ['orderGroupList']),
+    ...mapState('project', ['unitTypeList']),
   },
-  props: {
-    project: {
-      type: Object,
-    },
-  },
-  computed: {},
-  methods: {},
 })
 </script>
