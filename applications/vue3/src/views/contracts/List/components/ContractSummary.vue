@@ -35,7 +35,7 @@
         >
           {{ project.name }}
         </CTableHeaderCell>
-        <CTableDataCell class="text-center">
+        <CTableDataCell class="text-left pl-2">
           <CIcon name="cibDiscover" :style="'color:' + type.color" size="sm" />
           {{ type.name }}
         </CTableDataCell>
