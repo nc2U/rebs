@@ -21,7 +21,7 @@
             <select name="group" class="form-control" id="id_group">
                 <option value="" selected="">---------</option>
                 {% for group in groups %}
-                    <option value="{{ group.id }}" {% if request.GET.group == group.id|stringformat:"s" %}selected{% endif %}>{{ group }}</option>
+                    <option value="{{ group.id }}" {% if request.GET.group == group.id|slugify %}selected{% endif %}>{{ group }}</option>
                 {% endfor %}
             </select>
         </div>
@@ -31,7 +31,7 @@
             <select name="type" class="form-control" id="id_type">
                 <option value="" selected="">---------</option>
                 {% for type in types %}
-                    <option value="{{ type.id }}" {% if request.GET.type == type.id|stringformat:"s" %}selected{% endif %}>{{ type }}</option>
+                    <option value="{{ type.id }}" {% if request.GET.type == type.id|slugify %}selected{% endif %}>{{ type }}</option>
                 {% endfor %}
             </select>
         </div>
@@ -42,9 +42,9 @@
                 <select name="dong" class="form-control" id="id_dong">
                     <option value="" selected="">---------</option>
                     {% for dong in dongs %}
-                        <option value="{{ dong.bldg_no }}"
-                                {% if request.GET.dong == dong.bldg_no %}selected{% endif %}>
-                            {{ dong.bldg_no }} 동
+                        <option value="{{ dong.pk }}"
+                                {% if request.GET.dong == dong.pk|slugify %}selected{% endif %}>
+                            {{ dong.name }} 동
                         </option>
                     {% endfor %}
                 </select>
