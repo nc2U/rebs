@@ -15,32 +15,13 @@
       <CDropdownHeader component="h6" class="bg-light fw-semibold py-2">
         Account - {{ userInfo.profile.name || userInfo.username }} 님
       </CDropdownHeader>
-      <!--      <CDropdownItem>-->
-      <!--        <CIcon icon="cil-bell" />-->
-      <!--        Updates-->
-      <!--        <CBadge color="info-gradient" class="ms-auto">{{ itemsCount }}</CBadge>-->
-      <!--      </CDropdownItem>-->
-      <!--      <CDropdownItem>-->
-      <!--        <CIcon icon="cil-envelope-open" />-->
-      <!--        Messages-->
-      <!--        <CBadge color="success-gradient" class="ms-auto"-->
-      <!--          >{{ itemsCount }}-->
-      <!--        </CBadge>-->
-      <!--      </CDropdownItem>-->
-      <CDropdownItem>
+      <CDropdownItem @click="$refs.todoModal.callModal()">
         <CIcon icon="cil-task" />
         할일목록
         <CBadge color="danger-gradient" class="ms-auto">
           {{ itemsCount }}
         </CBadge>
       </CDropdownItem>
-      <!--      <CDropdownItem>-->
-      <!--        <CIcon icon="cil-comment-square" />-->
-      <!--        Comments-->
-      <!--        <CBadge color="warning-gradient" class="ms-auto"-->
-      <!--          >{{ itemsCount }}-->
-      <!--        </CBadge>-->
-      <!--      </CDropdownItem>-->
       <CDropdownHeader component="h6" class="bg-light fw-semibold py-2">
         Settings
       </CDropdownHeader>
@@ -48,42 +29,26 @@
         <CIcon icon="cil-user" />
         프로필
       </CDropdownItem>
-      <!--      <CDropdownItem>-->
-      <!--        <CIcon icon="cil-settings" />-->
-      <!--        Settings-->
-      <!--      </CDropdownItem>-->
-      <!--      <CDropdownItem>-->
-      <!--        <CIcon icon="cil-dollar" />-->
-      <!--        Payments-->
-      <!--        <CBadge color="secondary" class="ms-auto">{{ itemsCount }}</CBadge>-->
-      <!--      </CDropdownItem>-->
-      <!--      <CDropdownItem>-->
-      <!--        <CIcon icon="cil-file" />-->
-      <!--        Projects-->
-      <!--        <CBadge color="primary-gradient" class="ms-auto">-->
-      <!--          {{ itemsCount }}-->
-      <!--        </CBadge>-->
-      <!--      </CDropdownItem>-->
       <CDropdownDivider />
-      <!--      <CDropdownItem @click="toLockScreen">-->
-      <!--        <CIcon icon="cil-shield-alt" />-->
-      <!--        Lock Account-->
-      <!--      </CDropdownItem>-->
       <CDropdownItem @click="logOut" style="cursor: pointer">
         <CIcon icon="cil-lock-locked" />
         Logout
       </CDropdownItem>
     </CDropdownMenu>
   </CDropdown>
+
+  <TodoModal ref="todoModal" />
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import TodoModal from '@/components/Modals/TodoModal.vue'
 import { mapActions } from 'vuex'
 import avatar from '../../assets/images/avatars/6.jpg'
 
 export default defineComponent({
   name: 'AppHeaderDropdownAccnt',
+  components: { TodoModal },
   setup() {
     return {
       avatar: '',
