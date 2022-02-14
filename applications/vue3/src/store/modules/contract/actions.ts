@@ -19,7 +19,7 @@ const actions = {
       .then(res => {
         commit(FETCH_CONTRACT_LIST, res.data)
       })
-      .catch(err => console.log(err))
+      .catch(err => console.log(err.response.data))
   },
 
   fetchContract: ({ commit }: any, pk: number) => {
