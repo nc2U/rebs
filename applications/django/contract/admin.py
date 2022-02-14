@@ -17,7 +17,6 @@ class ContractAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'project', 'serial_number', 'order_group', 'unit_type', 'user', 'activation')
     list_display_links = ('project', 'serial_number',)
     list_filter = ('activation',)
-    list_editable = ('unit_type',)
     search_fields = ('serial_number',)
     inlines = [ContractorInline]
 
