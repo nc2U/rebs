@@ -14,9 +14,10 @@ class ContractorInline(admin.StackedInline):
 
 
 class ContractAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'project', 'serial_number', 'order_group', 'user', 'activation')
+    list_display = ('id', 'project', 'serial_number', 'order_group', 'unit_type', 'user', 'activation')
     list_display_links = ('project', 'serial_number',)
     list_filter = ('activation',)
+    list_editable = ('unit_type',)
     search_fields = ('serial_number',)
     inlines = [ContractorInline]
 
@@ -41,8 +42,9 @@ class ContactorAdmin(ImportExportMixin, admin.ModelAdmin):
 
 class CAdressAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = (
-    '__str__', 'id_zipcode', 'id_address1', 'id_address2', 'id_address3', 'dm_zipcode', 'dm_address1', 'dm_address2',
-    'dm_address3')
+        '__str__', 'id_zipcode', 'id_address1', 'id_address2', 'id_address3', 'dm_zipcode', 'dm_address1',
+        'dm_address2',
+        'dm_address3')
 
 
 class CContactAdmin(ImportExportMixin, admin.ModelAdmin):
@@ -51,8 +53,9 @@ class CContactAdmin(ImportExportMixin, admin.ModelAdmin):
 
 class ContractorReleaseAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = (
-    'contractor', 'status', 'refund_amount', 'refund_account_bank', 'refund_account_number', 'refund_account_depositor',
-    'request_date', 'completion_date')
+        'contractor', 'status', 'refund_amount', 'refund_account_bank', 'refund_account_number',
+        'refund_account_depositor',
+        'request_date', 'completion_date')
     list_editable = ('request_date', 'completion_date')
 
 
