@@ -1,34 +1,53 @@
 <template>
   <CCallout color="secondary">
     <CRow class="row g-3">
-      <CCol md="2">
-        <CFormLabel for="inputEmail4">차수</CFormLabel>
-        <CFormInput type="text" id="inputEmail4" />
+      <CCol md="9">
+        <CRow>
+          <CCol md="2">
+            <CFormLabel for="inputEmail4">차수</CFormLabel>
+            <CFormSelect id="inputState">
+              <option>---------</option>
+              <option>...</option>
+            </CFormSelect>
+          </CCol>
+          <CCol md="2">
+            <CFormLabel for="inputPassword4">타입</CFormLabel>
+            <CFormSelect id="inputState">
+              <option>---------</option>
+              <option>...</option>
+            </CFormSelect>
+          </CCol>
+          <CCol md="2">
+            <CFormLabel for="inputPassword4">동별</CFormLabel>
+            <CFormSelect id="inputState">
+              <option>---------</option>
+              <option>...</option>
+            </CFormSelect>
+          </CCol>
+          <CCol md="2">
+            <CFormLabel for="inputPassword4">상태</CFormLabel>
+            <CFormSelect id="inputState">
+              <option>---------</option>
+              <option>...</option>
+            </CFormSelect>
+          </CCol>
+          <CCol md="2" class="mb-3">
+            <CFormLabel for="inptState">계약기간</CFormLabel>
+            <CFormInput type="text" id="inputEmail4" />
+          </CCol>
+          <CCol md="2">
+            <CFormLabel class="d-none d-md-block" for="inputZip">
+              &nbsp;
+            </CFormLabel>
+            <CFormInput id="inputZip" />
+          </CCol>
+        </CRow>
       </CCol>
-      <CCol md="2">
-        <CFormLabel for="inputPassword4">타입</CFormLabel>
-        <CFormInput id="inputCity" />
-      </CCol>
-      <CCol md="2">
-        <CFormLabel for="inputCity">정렬순서</CFormLabel>
-        <CFormSelect id="inputState">
-          <option>Choose...</option>
-          <option>...</option>
-        </CFormSelect>
-      </CCol>
-      <CCol md="2">
-        <CFormLabel for="inputState">계약기간</CFormLabel>
-        <CFormInput type="text" id="inputEmail4" />
-      </CCol>
-      <CCol md="2">
-        <CFormLabel for="inputZip">&nbsp;</CFormLabel>
-        <CFormInput id="inputZip" />
-      </CCol>
-      <CCol md="2">
-        <CFormLabel for="inputZip">&nbsp;</CFormLabel>
+      <CCol md="3">
+        <CFormLabel class="d-none d-md-block" for="inputZip">&nbsp;</CFormLabel>
         <CInputGroup class="flex-nowrap">
           <CFormInput
-            placeholder="Username"
+            placeholder="계약자, 일련번호, 비고"
             aria-label="Username"
             aria-describedby="addon-wrapping"
           />
