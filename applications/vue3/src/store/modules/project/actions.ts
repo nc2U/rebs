@@ -1,5 +1,6 @@
 import api from '@/api'
 import {
+  FETCH_BUILDING_LIST,
   FETCH_FLOOR_TYPE_LIST,
   FETCH_PROJECT,
   FETCH_PROJECT_LIST,
@@ -186,6 +187,66 @@ const actions = {
       .catch(() => {
         alert(
           '해당 그룹에 종속된 분양가 데이터가 있는 경우 이 그룹을 삭제할 수 없습니다.',
+        )
+      })
+  },
+
+  fetchBuildingList: ({ commit }: any, pk?: number) => {
+    api
+      .get(`/bldg/?project=${pk}`)
+      .then(res => {
+        commit(FETCH_BUILDING_LIST, res.data)
+      })
+      .catch(err => console.log(err.response.data))
+  },
+
+  createBuilding: ({ dispatch }: any, payload: any) => {
+    api
+      .post(`/bldg/`, payload)
+      .then(res => {
+        dispatch('fetchBuildingList', res.data.project)
+        message()
+      })
+      .catch(err => {
+        console.log(err.response.data)
+        alert(
+          `${Object.keys(err.response.data)[0]} : ${
+            err.response.data[Object.keys(err.response.data)[0]]
+          }`,
+        )
+      })
+  },
+
+  updateBuilding: ({ dispatch }: any, payload: any) => {
+    const { pk } = payload
+    delete payload.pk
+    api
+      .put(`/bldg/${pk}/`, payload)
+      .then(res => {
+        dispatch('fetchBuildingList', res.data.project)
+        message()
+      })
+      .catch(err => {
+        console.log(err.response.data)
+        alert(
+          `${Object.keys(err.response.data)[0]} : ${
+            err.response.data[Object.keys(err.response.data)[0]]
+          }`,
+        )
+      })
+  },
+
+  deleteBuilding: ({ dispatch }: any, payload: any) => {
+    const { pk, project } = payload
+    api
+      .delete(`/bldg/${pk}/`)
+      .then(() => {
+        dispatch('fetchBuildingList', project)
+        message('danger', '알림!', '해당 오브젝트가 삭제되었습니다.')
+      })
+      .catch(() => {
+        alert(
+          '해당 그룹에 종속된 호수(Unit) 관련 데이터가 있는 경우 이 그룹을 삭제할 수 없습니다.',
         )
       })
   },

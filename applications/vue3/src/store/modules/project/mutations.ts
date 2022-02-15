@@ -1,4 +1,5 @@
 import {
+  FETCH_BUILDING_LIST,
   FETCH_FLOOR_TYPE_LIST,
   FETCH_PROJECT,
   FETCH_PROJECT_LIST,
@@ -21,6 +22,10 @@ const mutations = {
 
   [FETCH_FLOOR_TYPE_LIST]: (state: ProjectState, payload: any) => {
     state.floorTypeList = payload.results
+  },
+
+  [FETCH_BUILDING_LIST]: (state: ProjectState, payload: any) => {
+    state.bldgNumberList = payload.results
   },
 }
 

@@ -50,6 +50,12 @@ export interface UnitFloorType {
   alias_name: string
 }
 
+export interface BuildingNumber {
+  pk: number
+  project: number
+  name: string
+}
+
 export interface ContractUnit {
   pk: number
   project: number
@@ -63,7 +69,7 @@ export interface UnitNumber {
   project: number
   unit_type: number
   floor_type: number
-  bldg_no: string
+  building_number: string
   bldg_unit_no: string
   contract_unit: number
   bldg_line: number
@@ -152,6 +158,7 @@ export interface ProjectState {
   project: Project | null
   unitTypeList: UnitType[]
   floorTypeList: UnitFloorType[]
+  bldgNumberList: BuildingNumber[]
   contUnitList: ContractUnit[]
   cont_unit: ContractUnit | null
   unitNumberList: UnitNumber[]
@@ -173,6 +180,7 @@ const state: ProjectState = {
   project: null,
   unitTypeList: [],
   floorTypeList: [],
+  bldgNumberList: [],
   contUnitList: [],
   cont_unit: null,
   unitNumberList: [],
