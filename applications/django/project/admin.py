@@ -38,10 +38,10 @@ class UnitFloorTypeAdmin(ImportExportMixin, admin.ModelAdmin):
 
 
 class ContractUnitAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'project', 'unit_code', 'unit_type', 'contract')
+    list_display = ('id', 'project', 'unit_code', 'contract')
     search_fields = ('unit_code',)
     list_display_links = ('project', 'unit_code',)
-    list_filter = ('project', 'unit_type', 'contract',)
+    list_filter = ('project', 'contract',)
 
 
 class BuindingNumberAdmin(ImportExportMixin, admin.ModelAdmin):

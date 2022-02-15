@@ -71,6 +71,7 @@ class ContractLV(LoginRequiredMixin, ListView):
         context['types'] = UnitType.objects.filter(project=self.get_project())
         context['dongs'] = BuildingNumber.objects.filter(project=self.get_project())
 
+        ### 계약 요약 테이블 데이터
         unit_num = []  # 타입별 세대수
         reserv_num = []  # 타입별 청약건
         contract_num = []
@@ -83,7 +84,8 @@ class ContractLV(LoginRequiredMixin, ListView):
         for i, type in enumerate(context['types']):
             units = UnitNumber.objects.filter(unit_type=type).count()  # 타입별 세대수
             reservs = Contractor.objects.filter(contract__project=self.get_project(),
-                                                contract__contractunit__unit_type=type,
+                                                contract__unit_type=type,
+                                                contract_activation=True,
                                                 status='1').count()
             unit_num.append(units)  # 타입별 세대수
             reserv_num.append(reservs)  # 타입별 청약건
@@ -93,7 +95,8 @@ class ContractLV(LoginRequiredMixin, ListView):
             ocn = []
             for j, og in enumerate(context['groups']):
                 cnum.append(Contract.objects.filter(project=self.get_project(),
-                                                    contractunit__unit_type=type,
+                                                    unit_type=type,
+                                                    activation=True,
                                                     order_group=og).count())
                 ocn.append(Contract.objects.filter(project=self.get_project(),
                                                    order_group=og).count())

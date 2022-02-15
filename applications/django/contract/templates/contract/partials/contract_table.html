@@ -69,7 +69,7 @@
                 </td>
                 <td class="text-center">{{ object.order_group }}</td>
                 <td><i class="mdi mdi-square"
-                       style="color: {{ object.contractunit.unit_type.color }};"></i> {{ object.contractunit.unit_type }}
+                       style="color: {{ object.unit_type.color }};"></i> {{ object.unit_type }}
                 </td>
                 {% if this_project.is_unit_set %}
                     <td class="text-center">{{ object.contractunit.unitnumber }}</td>{% endif %}
