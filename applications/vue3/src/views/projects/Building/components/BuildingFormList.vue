@@ -1,0 +1,58 @@
+<template>
+  <CTable hover responsive>
+    <colgroup>
+      <col width="25%" />
+      <col width="25%" />
+      <col width="25%" />
+      <col width="25%" />
+    </colgroup>
+    <CTableHead color="dark" class="text-center">
+      <CTableRow>
+        <CTableHeaderCell>등록차수</CTableHeaderCell>
+        <CTableHeaderCell>차수구분</CTableHeaderCell>
+        <CTableHeaderCell>차수그룹명</CTableHeaderCell>
+        <CTableHeaderCell>비 고</CTableHeaderCell>
+      </CTableRow>
+    </CTableHead>
+    <!--    <CTableBody v-if="orderGroupList.length > 0">-->
+    <!--      <Building-->
+    <!--        v-for="order in BuindingList"-->
+    <!--        @on-update="onUpdateOrder"-->
+    <!--        @on-delete="onDeleteOrder"-->
+    <!--        :key="order.pk"-->
+    <!--        :order="order"-->
+    <!--      />-->
+    <!--    </CTableBody>-->
+
+    <!--    <CTableBody v-else>-->
+    <CTableRow>
+      <CTableDataCell colspan="4" class="text-center p-5 text-danger">
+        등록된 데이터가 없습니다.
+      </CTableDataCell>
+    </CTableRow>
+    <!--    </CTableBody>-->
+  </CTable>
+</template>
+
+<script lang="ts">
+import { defineComponent } from 'vue'
+// import Building from '@/views/projects/Building/components/Building.vue'
+import { mapState } from 'vuex'
+
+export default defineComponent({
+  name: 'BuildingFormList',
+  // components: { Building },
+  props: ['project'],
+  computed: {
+    // ...mapState('contract', ['orderGroupList']),
+  },
+  methods: {
+    onUpdateOrder(payload: any) {
+      this.$emit('on-update', payload)
+    },
+    onDeleteOrder(pk: number) {
+      this.$emit('on-delete', pk)
+    },
+  },
+})
+</script>
