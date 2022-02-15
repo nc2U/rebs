@@ -46,6 +46,8 @@ class ContractUnitAdmin(ImportExportMixin, admin.ModelAdmin):
 
 class BuindingNumberAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'project', 'name')
+    list_display_links = ('project',)
+    list_editable = ('name',)
 
 
 class UnitNumberAdmin(ImportExportMixin, admin.ModelAdmin):
