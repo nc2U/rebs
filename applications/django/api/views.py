@@ -43,7 +43,7 @@ class ApiIndex(generics.GenericAPIView):
             'floor': reverse(api + UnitFloorTypeList.name, request=request),
             'building': reverse(api + BuildingNumberList.name, request=request),
             # 'contract-unit': reverse(api + ContractUnitList.name, request=request),
-            # 'unit-number': reverse(api + UnitNumberList.name, request=request),
+            'unit-number': reverse(api + UnitNumberList.name, request=request),
             # 'budget': reverse(api + ProjectBudgetList.name, request=request),
             # 'site': reverse(api + SiteList.name, request=request),
             # 'site-owner': reverse(api + SiteOwnerList.name, request=request),
@@ -273,18 +273,21 @@ class BuildingNumberDetail(generics.RetrieveUpdateDestroyAPIView):
 #     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
 
-# class UnitNumberList(generics.ListCreateAPIView):
-#     name = 'unitnumber-list'
-#     queryset = UnitNumber.objects.all()
-#     serializer_class = UnitNumberSerializer
-#     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-#
-#
-# class UnitNumberDetail(generics.RetrieveUpdateDestroyAPIView):
-#     name = 'unitnumber-detail'
-#     queryset = UnitNumber.objects.all()
-#     serializer_class = UnitNumberSerializer
-#     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+class UnitNumberList(generics.ListCreateAPIView):
+    name = 'unit-list'
+    queryset = UnitNumber.objects.all()
+    serializer_class = UnitNumberSerializer
+    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    filter_fields = ('project', 'unit_type', 'floor_type', 'building_number',
+                     'bldg_line', 'floor_no', 'is_hold')
+    search_fields = ('hold_reason',)
+
+
+class UnitNumberDetail(generics.RetrieveUpdateDestroyAPIView):
+    name = 'unit-detail'
+    queryset = UnitNumber.objects.all()
+    serializer_class = UnitNumberSerializer
+    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
 
 # class ProjectBudgetList(generics.ListCreateAPIView):

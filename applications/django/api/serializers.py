@@ -172,7 +172,7 @@ class UnitNumberSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UnitNumber
-        fields = ('pk', 'project', 'floor_type', 'building_number', 'bldg_unit_no',
+        fields = ('pk', 'project', 'unit_type', 'floor_type', 'building_number', 'bldg_unit_no',
                   'contract_unit', 'bldg_line', 'floor_no', 'is_hold', 'hold_reason')
 
 
