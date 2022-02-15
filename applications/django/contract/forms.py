@@ -10,7 +10,7 @@ class ContractRegisterForm(forms.Form):
     order_group = forms.CharField(widget=forms.HiddenInput(attrs={'id': 'order_group'}))
     type = forms.CharField(widget=forms.HiddenInput(attrs={'id': 'type'}))
     key_unit = forms.CharField(widget=forms.HiddenInput(attrs={'id': 'key_unit'}))
-    unit_number = forms.CharField(widget=forms.HiddenInput(attrs={'id': 'unit_number'}), required=False)
+    house_unit = forms.CharField(widget=forms.HiddenInput(attrs={'id': 'house_unit'}), required=False)
     back_url = forms.CharField(widget=forms.HiddenInput(attrs={'id': 'back_url'}), required=False)
 
     # Contractor Model

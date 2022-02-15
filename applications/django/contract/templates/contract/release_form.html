@@ -45,7 +45,7 @@
                                                 {% elif contractor.contractorrelease.status >= '4' %}
                                                 onclick="alert('해지 완료된 계약입니다.')"
                                                 {% else %}
-                                                onclick="location.href='{% url 'rebs:contract:register' %}?project={{ contract.project_id }}&task=2&order_group={{ contract.order_group.id }}&type={{ contract.contractunit.unit_type.id }}&contract_unit={{ contract.contractunit.id }}&unit_number={{ contract.contractunit.unitnumber.id }}&cont_id={{ contract.id }}&p={{ request.GET.page }}'"
+                                                onclick="location.href='{% url 'rebs:contract:register' %}?project={{ contract.project_id }}&task=2&order_group={{ contract.order_group.id }}&type={{ contract.keyunit.unit_type.id }}&contract_unit={{ contract.keyunit.id }}&unit_number={{ contract.keyunit.houseunit.id }}&cont_id={{ contract.id }}&p={{ request.GET.page }}'"
                                                 {% endif %}>
                                             등록 계약 변경
                                         </button>

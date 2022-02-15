@@ -113,17 +113,17 @@
                                             </div>
 
                                             {% if this_project.is_unit_set == True %}
-                                                <label for="id_unit_number"
+                                                <label for="id_house_unit"
                                                        class="col-4 col-md-2 col-lg-1 col-form-label">동호수</label>
                                                 <div class="col-8 col-md-4 col-lg-2">
-                                                    <select name="unit_number" id="id_unit_number"
+                                                    <select name="house_unit" id="id_house_unit"
                                                             class="form-control  select2"
                                                             onchange="submit()"
                                                             {% if not request.GET.key_unit %}disabled{% endif %}>
                                                         <option value="">---------</option>
-                                                        {% for obj in unit_numbers %}
+                                                        {% for obj in house_units %}
                                                             <option value="{{ obj.id }}"
-                                                                    {% if obj.id|slugify == request.GET.unit_number %}selected{% endif %}>{{ obj }}</option>
+                                                                    {% if obj.id|slugify == request.GET.house_unit %}selected{% endif %}>{{ obj }}</option>
                                                         {% endfor %}
                                                     </select>
                                                 </div>
@@ -158,7 +158,7 @@
                 {{ form.type }}{{ form.type.errors }}
                 {{ form.key_unit }}{{ form.key_unit.errors }}
                 {% if this_project.is_unit_set == True %}
-                    {{ form.unit_number }}{{ form.unit_number.errors }}
+                    {{ form.house_unit }}{{ form.house_unit.errors }}
                 {% endif %}
                 {{ form.back_url }}
 
@@ -511,7 +511,7 @@
       const type = document.getElementById('id_type')
       const key_unit = document.getElementById('id_key_unit')
       {% if this_project.is_unit_set == True %}
-        const unit_number = document.getElementById('id_unit_number')
+        const house_unit = document.getElementById('id_house_unit')
       {% endif %}
       const project = document.getElementById('id_project_sel')
 
@@ -542,9 +542,9 @@
         const cont_unit = document.getElementById('id_key_unit')
 
         {% if this_project.is_unit_set == True %}
-          const unit_number = document.getElementById('id_unit_number')
-          unit_number.options[0].selected = true
-          unit_number.disabled = true
+          const house_unit = document.getElementById('id_house_unit')
+          house_unit.options[0].selected = true
+          house_unit.disabled = true
         {% endif %}
 
         cont_unit.options[0].selected = true
@@ -570,8 +570,8 @@
               type.disabled = true
               key_unit.disabled = true
             {% if this_project.is_unit_set == True %}
-              unit_number.options[0].selected = true
-              unit_number.disabled = true
+              house_unit.options[0].selected = true
+              house_unit.disabled = true
             {% endif %}
               break
             case 2:
@@ -580,22 +580,22 @@
               type.disabled = true
               key_unit.disabled = true
             {% if this_project.is_unit_set == True %}
-              unit_number.options[0].selected = true
-              unit_number.disabled = true
+              house_unit.options[0].selected = true
+              house_unit.disabled = true
             {% endif %}
               break
             case 3:
               key_unit.options[0].selected = true
               key_unit.disabled = true
             {% if this_project.is_unit_set == True %}
-              unit_number.options[0].selected = true
-              unit_number.disabled = true
+              house_unit.options[0].selected = true
+              house_unit.disabled = true
             {% endif %}
               break
               {% if this_project.is_unit_set == True %}
                 case 4:
-                  unit_number.options[0].selected = true
-                  unit_number.disabled = true
+                  house_unit.options[0].selected = true
+                  house_unit.disabled = true
                   break
               {% endif %}
           }

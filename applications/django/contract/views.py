@@ -170,7 +170,7 @@ class ContractRegisterView(LoginRequiredMixin, FormView):
             'order_group': self.request.GET.get('order_group'),
             'type': self.request.GET.get('type'),
             'key_unit': self.request.GET.get('key_unit'),
-            'unit_number': self.request.GET.get('unit_number'),
+            'house_unit': self.request.GET.get('house_unit'),
             'back_url': self.get_back_url(),
         }
         if self.request.GET.get('cont_id'):
@@ -215,14 +215,14 @@ class ContractRegisterView(LoginRequiredMixin, FormView):
                                                  unit_type=self.request.GET.get('type'),
                                                  contract__isnull=True))
         context['key_units'] = key_units if cont_id else key_units[:10]
-        context['unit_numbers'] = HouseUnit.objects.filter(project=self.get_project(),
-                                                           unit_type=self.request.GET.get('type'),
-                                                           key_unit__isnull=True)
-        if self.request.GET.get('unit_number'):
-            context['unit_numbers'] = HouseUnit.objects.filter(Q(pk=self.request.GET.get('unit_number')) |
-                                                               Q(project=self.get_project(),
-                                                                 unit_type=self.request.GET.get('type'),
-                                                                 key_unit__isnull=True))
+        context['house_units'] = HouseUnit.objects.filter(project=self.get_project(),
+                                                          unit_type=self.request.GET.get('type'),
+                                                          key_unit__isnull=True)
+        if self.request.GET.get('house_unit'):
+            context['house_units'] = HouseUnit.objects.filter(Q(pk=self.request.GET.get('house_unit')) |
+                                                              Q(project=self.get_project(),
+                                                                unit_type=self.request.GET.get('type'),
+                                                                key_unit__isnull=True))
         context['project_bank_accounts'] = ProjectBankAccount.objects.filter(project=self.get_project())
         pay_code = '4' if cont_id else '2'
         context['installment_orders'] = InstallmentPaymentOrder.objects.filter(project=self.get_project(),
@@ -286,10 +286,10 @@ class ContractRegisterView(LoginRequiredMixin, FormView):
                     keyunit.save()
 
                 # 3. 동호수 연결
-                if self.request.POST.get('unit_number'):
-                    unit_number = HouseUnit.objects.get(pk=self.request.POST.get('unit_number'))
-                    unit_number.key_unit = keyunit
-                    unit_number.save()
+                if self.request.POST.get('house_unit'):
+                    house_unit = HouseUnit.objects.get(pk=self.request.POST.get('house_unit'))
+                    house_unit.key_unit = keyunit
+                    house_unit.save()
 
                 # 4. 계약자 정보 테이블 입력
                 if not cont_id:
@@ -551,7 +551,7 @@ class BuildDashboard(LoginRequiredMixin, TemplateView):
         context['max_floor'] = HouseUnit.objects.aggregate(Max('floor_no'))
         floor_no__max = context['max_floor']['floor_no__max'] if context['max_floor']['floor_no__max'] else 1
         context['max_floor_range'] = range(1, floor_no__max + 1)
-        context['unit_numbers'] = HouseUnit.objects.filter(project=self.get_project())
+        context['house_units'] = HouseUnit.objects.filter(project=self.get_project())
         context['is_hold'] = HouseUnit.objects.filter(project=self.get_project(), is_hold=True)
         context['is_apply'] = Contractor.objects.filter(contract__project=self.get_project(), status='1')
         context['is_contract'] = Contractor.objects.filter(contract__project=self.get_project(), status='2')

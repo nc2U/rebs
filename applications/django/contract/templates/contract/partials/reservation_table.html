@@ -30,16 +30,16 @@
             <tr>
                 <td scope="row"><input type="checkbox" disabled></td>
                 <td class="text-center"><a
-                        href="{% url 'rebs:contract:register' %}?project={{ object.project_id }}&task=1&order_group={{ object.order_group.id }}&type={{ object.contractunit.unit_type.id }}&contract_unit={{ object.contractunit.id }}&unit_number={{ object.contractunit.unitnumber.id }}&cont_id={{ object.id }}&p={{ request.GET.page }}">
+                        href="{% url 'rebs:contract:register' %}?project={{ object.project_id }}&task=1&order_group={{ object.order_group.id }}&type={{ object.keyunit.unit_type.id }}&contract_unit={{ object.keyunit.id }}&house_unit={{ object.keyunit.houseunit.id }}&cont_id={{ object.id }}&p={{ request.GET.page }}">
                     {{ object.contractor.name }}
                 </a>
                 </td>
                 <td class="text-center">{{ object.order_group }}</td>
                 <td class="text-center"><i class="mdi mdi-square"
-                       style="color: {{ object.contractunit.unit_type.color }};"></i> {{ object.contractunit.unit_type }}
+                       style="color: {{ object.keyunit.unit_type.color }};"></i> {{ object.keyunit.unit_type }}
                 </td>
                 {% if this_project.is_unit_set %}
-                    <td class="text-center">{{ object.contractunit.unitnumber }}</td>{% endif %}
+                    <td class="text-center">{{ object.keyunit.houseunit }}</td>{% endif %}
                 <td class="text-right">{{ object.projectcashbook_set.first.income|intcomma }}</td>
                 <td class="text-center">{{ object.contractor.contractorcontact.cell_phone }}</td>
                 <td class="text-center">{{ object.contractor.reservation_date|date:"Y-m-d" }}</td>
