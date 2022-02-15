@@ -1,5 +1,9 @@
 <template>
-  <ContentHeader :page-title="'신규 프로젝트'" :nav-menu="['프로젝트 관리']" />
+  <ContentHeader
+    :page-title="pageTitle"
+    :nav-menu="navMenu"
+    @header-select="onSelectAdd"
+  />
 
   <ContentBody>
     <component
@@ -18,6 +22,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import HeaderMixin from '@/views/projects/_menu/headermixin1'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import IndexForm from '@/views/projects/List/components/IndexForm.vue'
@@ -26,6 +31,7 @@ import { mapActions, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'ProjectsIndex',
+  mixins: [HeaderMixin],
   components: {
     ContentHeader,
     ContentBody,

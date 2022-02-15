@@ -28,12 +28,12 @@ const projects = {
         {
           path: 'bldg',
           name: '동(건물) 등록',
-          component: () => import('@/views/projects/Type/Index.vue'),
+          component: () => import('@/views/projects/Building/Index.vue'),
         },
         {
           path: 'unit',
           name: '호(건물) 등록',
-          component: () => import('@/views/projects/Floor/Index.vue'),
+          component: () => import('@/views/projects/Unit/Index.vue'),
         },
       ],
     },
