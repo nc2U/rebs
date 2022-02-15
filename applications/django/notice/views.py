@@ -200,7 +200,7 @@ class BillManageView(LoginRequiredMixin, ListView, FormView):
         if form.is_valid():
             with transaction.atomic():  # 트랜잭션
 
-                if self.get_bill_issue() == form.cleaned_data.get(
+                if self.get_bill_issue() and form.cleaned_data.get(
                         'now_due_date') != self.get_bill_issue().now_payment_order.pay_due_date:
                     now_due_order = InstallmentPaymentOrder.objects.get(pk=request.POST.get('now_payment_order'))
                     now_due_order.pay_due_date = form.cleaned_data.get('now_due_date')

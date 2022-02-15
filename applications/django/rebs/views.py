@@ -46,19 +46,19 @@ class PdfExportBill(View):
             cont['contract'] = contract = Contract.objects.get(contractor__id=cont_id)  # 해당 계약건
 
             try:  # 동호수
-                cont['unit'] = contract.contractunit.unitnumber
+                cont['unit'] = contract.keyunit.unitnumber
             except Exception:
                 cont['unit'] = None
 
             # 총 공급가액(분양가) 구하기
             group = contract.order_group  # 차수
-            type = contract.contractunit.unit_type  # 타입
+            type = contract.unit_type  # 타입
             # 해당 계약건 분양가 # this_price = '동호 지정 후 고지'
-            this_price = contract.contractunit.unit_type.average_price
+            this_price = contract.keyunit.unit_type.average_price
             prices = SalesPriceByGT.objects.filter(project_id=project, order_group=group, unit_type=type)
 
             if cont['unit']:
-                floor = contract.contractunit.unitnumber.floor_type
+                floor = contract.keyunit.unitnumber.floor_type
                 this_price = prices.get(unit_floor_type=floor).price
             # ---------------------------------------------------------------------------
 
@@ -68,7 +68,7 @@ class PdfExportBill(View):
                 dp = DownPayment.objects.get(
                     project_id=project,
                     order_group=contract.order_group,
-                    unit_type=contract.contractunit.unit_type
+                    unit_type=contract.keyunit.unit_type
                 )
                 down = dp.payment_amount
             except:
@@ -147,10 +147,10 @@ class PdfExportBill(View):
 
                 # 계약일과 최초 계약금 납부일 중 늦은 날을 기점으로 30일
                 reference_date = first_paid_date if first_paid_date and (
-                            first_paid_date > contract.contractor.contract_date) else contract.contractor.contract_date
+                        first_paid_date > contract.contractor.contract_date) else contract.contractor.contract_date
 
                 if ipo.pay_time == 1 or ipo.pay_code == 1:  # 최초 계약금일 때
-                    due_date = contract.contractor.contract_date  # 납부기한
+                    due_date = contract.contractor.contract_date  # 납부기한일
 
                 elif ipo.pay_time == 2 or ipo.pay_code == 2:  # 2차 계약금일 때
                     due_date = reference_date + timedelta(days=30)  # 납부기한 = 기준일 30일 후
@@ -165,8 +165,8 @@ class PdfExportBill(View):
                         due_date = None
 
                 # extra_date 이전의 연체일수를 계산하지 않는다. 즉 extra_date 이후의 연체 발생 건부터 적용한다.
-                extra_date = ipo.extra_due_date
-                if extra_date and extra_date > due_date:
+                extra_date = ipo.extra_due_date  # 납부유예일
+                if extra_date and extra_date > due_date:  # 납부유예일이 있고 납부기한일보다 늦으면
                     due_date = extra_date  # extra_date 가 설정되어 있고 납부기한보다 늦으면 extra_date를 납부기한으로 한다.
 
                 due_date_list.append(due_date)  # 회차별 납부일자
@@ -193,7 +193,7 @@ class PdfExportBill(View):
                         early = next_order.pay_due_date - paid_date
                         early_days = early.days if early.days > 0 else 0
 
-                if extra_date > delay_paid_date:
+                if extra_date and extra_date > delay_paid_date:  # 납부유예일 > 오늘 또는 완납일자
                     delay_days = 0  # 지연일수
                 else:
                     delay = delay_paid_date - extra_date  # 미수 완납일 - 미수 발생일
@@ -309,7 +309,7 @@ class PdfExportBill(View):
                 late_fee = (amount * 0.08 * 29 / 365) + (amount * 0.1 * 60 / 365) + (amount * 0.11 * (delay - 89) / 365)
             else:
                 late_fee = (amount * 0.08 * 29 / 365) + (amount * 0.1 * 60 / 365) + (amount * 0.11 * 90 / 365) + (
-                            amount * 0.12 * (delay - 179) / 365)
+                        amount * 0.12 * (delay - 179) / 365)
 
         return math.floor(late_fee / 1000) * 1000
 
@@ -328,17 +328,17 @@ class PdfExportPayments(View):
 
         # 1. 분양가격 (차수/타입별/동호수별) 및 계약금, 중도금, 잔금 구하기
         group = contract.order_group  # 차수
-        type = contract.contractunit.unit_type  # 타입
+        type = contract.keyunit.unit_type  # 타입
         prices = SalesPriceByGT.objects.filter(project_id=project, order_group=group, unit_type=type)  # 그룹 및 타입별 가격대
-        this_price = int(round(contract.contractunit.unit_type.average_price, -4))
+        this_price = int(round(contract.keyunit.unit_type.average_price, -4))
 
         try:  # 동호수
-            unit = contract.contractunit.unitnumber
+            unit = contract.keyunit.unitnumber
         except Exception:
             unit = None
 
         if unit:
-            floor = contract.contractunit.unitnumber.floor_type
+            floor = contract.keyunit.unitnumber.floor_type
             this_price = prices.get(unit_floor_type=floor).price
 
         context['unit'] = unit
@@ -355,7 +355,7 @@ class PdfExportPayments(View):
         down_num = installment_payment_order.filter(pay_sort='1').count()
         try:
             dp = DownPayment.objects.get(project_id=project, order_group=contract.order_group,
-                                         unit_type=contract.contractunit.unit_type)
+                                         unit_type=contract.keyunit.unit_type)
             context['down'] = dp.payment_amount
         except:
             pn = round(down_num / 2)
