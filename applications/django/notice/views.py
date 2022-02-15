@@ -81,9 +81,9 @@ class BillManageView(LoginRequiredMixin, ListView, FormView):
         if group:
             queryset = queryset.filter(contract__order_group=group)
         if type:
-            queryset = queryset.filter(contract__contractunit__unit_type=type)
+            queryset = queryset.filter(contract__keyunit__unit_type=type)
         if dong:
-            queryset = queryset.filter(contract__contractunit__unitnumber__building_number=dong)
+            queryset = queryset.filter(contract__keyunit__unitnumber__building_number=dong)
         order_list = ['contract_date', '-contract_date', 'contract__serial_number',
                       '-contract__serial_number', 'name', '-name']
         if order:
@@ -121,17 +121,17 @@ class BillManageView(LoginRequiredMixin, ListView, FormView):
                     'income__sum']
             total_pay_by_contract.append(payment_by_cont)  # 계약자별 총 납입액 배열화
             try:  # 동호수 지정여부
-                unit_set = contract.contractunit.unitnumber
+                unit_set = contract.keyunit.unitnumber
             except:
                 unit_set = None
             group = contract.order_group
-            type = contract.contractunit.unit_type
+            type = contract.keyunit.unit_type
 
             prices = SalesPriceByGT.objects.filter(project=self.get_project(), order_group=group,
                                                    unit_type=type)  # 타입별 분양가 그룹
-            price = contract.contractunit.unit_type.average_price  # 동호 미지정시 타입별 평균 분양가
+            price = contract.keyunit.unit_type.average_price  # 동호 미지정시 타입별 평균 분양가
             if unit_set:
-                floor = contract.contractunit.unitnumber.floor_type
+                floor = contract.keyunit.unitnumber.floor_type
                 price = prices.get(unit_floor_type=floor)  # 동호 지정시 해당 동호 분양가
 
             # all_pay = price.installmentpaymentamount_set.all() # 분양가 -> 회차별 납입가 그룹
@@ -152,7 +152,7 @@ class BillManageView(LoginRequiredMixin, ListView, FormView):
                     try:
                         dp = DownPayment.objects.get(project=self.get_project(),
                                                      order_group=contract.order_group,
-                                                     unit_type=contract.contractunit.unit_type)
+                                                     unit_type=contract.keyunit.unit_type)
                         down_payment = dp.payment_amount
                     except:
                         pay_num = all_pay_order.filter(pay_sort='1').count()
