@@ -40,7 +40,7 @@ class ContractLV(LoginRequiredMixin, ListView):
         if self.request.GET.get('type'):
             contract = contract.filter(unit_type=self.request.GET.get('type'))
         if self.request.GET.get('dong'):
-            contract = contract.filter(keyunit__unitnumber__building_number=self.request.GET.get('dong'))
+            contract = contract.filter(keyunit__unitnumber__building_unit=self.request.GET.get('dong'))
         if self.request.GET.get('status'):
             contract = contract.filter(contractor__contractorrelease__status=self.request.GET.get('status'))
         if self.request.GET.get('register'):
@@ -564,14 +564,14 @@ class BuildDashboard(LoginRequiredMixin, TemplateView):
         for dong in dong_list:
             context['dong_list'].append(dong['name'])
             lines = UnitNumber.objects.order_by('-bldg_line').values('bldg_line').filter(
-                building_number__name__contains=dong['name']).distinct()
+                building_unit__name__contains=dong['name']).distinct()
             ln = []
             for line in lines:
                 ln.append(line['bldg_line'])
             context['line'].append(ln)
             context['units'].append(
-                UnitNumber.objects.filter(building_number__name__contains=dong['name']).order_by('-floor_no',
-                                                                                                 'bldg_line'))
+                UnitNumber.objects.filter(building_unit__name__contains=dong['name']).order_by('-floor_no',
+                                                                                               'bldg_line'))
 
         context['line'] = list(reversed(context['line']))
         context['units'] = list(reversed(context['units']))
