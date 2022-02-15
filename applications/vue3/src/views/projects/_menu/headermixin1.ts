@@ -1,5 +1,10 @@
 const pageTitle = '신규 프로젝트'
-const navMenu = ['프로젝트 등록', '동(건물) 등록', '호(건물) 등록']
+const navMenu = [
+  '프로젝트 등록',
+  '차수분류 등록',
+  '타입정보 등록',
+  '층별조건 등록',
+]
 
 export default {
   data() {

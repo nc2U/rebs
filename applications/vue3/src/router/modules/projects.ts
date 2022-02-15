@@ -26,14 +26,19 @@ const projects = {
           component: () => import('@/views/projects/List/Index.vue'),
         },
         {
-          path: 'bldg',
-          name: '동(건물) 등록',
-          component: () => import('@/views/projects/Building/Index.vue'),
+          path: 'order',
+          name: '차수분류 등록',
+          component: () => import('@/views/projects/OrderGroup/Index.vue'),
         },
         {
-          path: 'unit',
-          name: '호(건물) 등록',
-          component: () => import('@/views/projects/Unit/Index.vue'),
+          path: 'type',
+          name: '타입정보 등록',
+          component: () => import('@/views/projects/Type/Index.vue'),
+        },
+        {
+          path: 'floor',
+          name: '층별조건 등록',
+          component: () => import('@/views/projects/Floor/Index.vue'),
         },
       ],
     },
@@ -48,19 +53,14 @@ const projects = {
       },
       children: [
         {
-          path: 'order',
-          name: '차수분류 등록',
-          component: () => import('@/views/projects/OrderGroup/Index.vue'),
+          path: 'bldg',
+          name: '동(건물) 등록',
+          component: () => import('@/views/projects/Building/Index.vue'),
         },
         {
-          path: 'type',
-          name: '타입정보 등록',
-          component: () => import('@/views/projects/Type/Index.vue'),
-        },
-        {
-          path: 'floor',
-          name: '층별조건 등록',
-          component: () => import('@/views/projects/Floor/Index.vue'),
+          path: 'unit',
+          name: '호(건물) 등록',
+          component: () => import('@/views/projects/Unit/Index.vue'),
         },
         {
           path: 'price',

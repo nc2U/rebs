@@ -209,13 +209,18 @@ export default [
           },
           {
             component: 'CNavItem',
-            name: '동(건물) 등록',
-            to: '/project/manage/bldg',
+            name: '차수분류 등록',
+            to: '/project/manage/order',
           },
           {
             component: 'CNavItem',
-            name: '호(건물) 등록',
-            to: '/project/manage/unit',
+            name: '타입정보 등록',
+            to: '/project/manage/type',
+          },
+          {
+            component: 'CNavItem',
+            name: '층별조건 등록',
+            to: '/project/manage/floor',
           },
         ],
       },
@@ -227,18 +232,13 @@ export default [
         items: [
           {
             component: 'CNavItem',
-            name: '차수분류 등록',
-            to: '/project/settings/order',
+            name: '동(건물) 등록',
+            to: '/project/settings/bldg',
           },
           {
             component: 'CNavItem',
-            name: '타입정보 등록',
-            to: '/project/settings/type',
-          },
-          {
-            component: 'CNavItem',
-            name: '층별조건 등록',
-            to: '/project/settings/floor',
+            name: '호(건물) 등록',
+            to: '/project/settings/unit',
           },
           {
             component: 'CNavItem',

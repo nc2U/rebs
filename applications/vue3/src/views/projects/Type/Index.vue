@@ -21,7 +21,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import HeaderMixin from '@/views/projects/_menu/headermixin2'
+import HeaderMixin from '@/views/projects/_menu/headermixin1'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import TypeAddForm from '@/views/projects/Type/components/TypeAddForm.vue'
