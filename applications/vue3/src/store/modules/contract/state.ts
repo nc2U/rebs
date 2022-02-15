@@ -1,25 +1,12 @@
-interface UnitNumber {
+interface ContractorContact {
   pk: number
-  unit_type: string
-  floor_type: string
-  __str__: string
-}
-
-interface ContractUnit {
-  pk: number
-  unit_type: string
-  unitnumber: UnitNumber | null
+  cell_phone: string
+  email: string
 }
 
 interface ContractorAddress {
   pk: number
   dm_address1: string
-}
-
-interface ContractorContact {
-  pk: number
-  cell_phone: string
-  email: string
 }
 
 interface Contractor {
@@ -32,13 +19,28 @@ interface Contractor {
   contract_date: string
 }
 
+interface UnitNumber {
+  pk: number
+  __str__: string
+}
+
+interface ContractUnit {
+  pk: number
+  unitnumber: UnitNumber | null
+}
+
+interface UnitType {
+  name: string
+  color: string
+}
+
 export interface Contract {
   pk: number
   project: number
   serial_number: string
   activation: boolean
   order_group: number
-  unit_type: string
+  unit_type: UnitType
   contractunit: ContractUnit | null
   contractor: Contractor | null
   user: number
