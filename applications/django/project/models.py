@@ -87,7 +87,7 @@ class UnitFloorType(models.Model):  # 층별 타입
         verbose_name_plural = '03. 층별 조건'
 
 
-class ContractUnit(models.Model):
+class KeyUnit(models.Model):
     project = models.ForeignKey(Project, on_delete=models.PROTECT, verbose_name='프로젝트', related_name='units')
     unit_type = models.ForeignKey(UnitType, on_delete=models.PROTECT, verbose_name='타입')
     unit_code = models.CharField('코드번호', max_length=8)
@@ -123,8 +123,8 @@ class UnitNumber(models.Model):
                                    verbose_name='층범위 타입')
     building_number = models.ForeignKey('project.BuildingNumber', on_delete=models.PROTECT, verbose_name='동수')
     bldg_unit_no = models.CharField('호수', max_length=5, blank=True)
-    contract_unit = models.OneToOneField(ContractUnit, on_delete=models.SET_NULL, null=True, blank=True,
-                                         verbose_name='계약유닛')
+    key_unit = models.OneToOneField(KeyUnit, on_delete=models.SET_NULL, null=True, blank=True,
+                                    verbose_name='계약유닛')
     bldg_line = models.PositiveSmallIntegerField('라인')
     floor_no = models.PositiveSmallIntegerField('층수')
     is_hold = models.BooleanField('홀딩 여부', default=False)

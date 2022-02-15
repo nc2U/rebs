@@ -11,7 +11,7 @@ from .serializers import *
 from accounts.models import User, Profile, Todo
 from company.models import Company, Department, Position, Staff
 from project.models import (Project, UnitType, UnitFloorType,
-                            ContractUnit, BuildingNumber, UnitNumber, ProjectBudget,
+                            KeyUnit, BuildingNumber, UnitNumber, ProjectBudget,
                             Site, SiteOwner, SiteOwnshipRelationship, SiteContract)
 from rebs.models import (AccountSubD1, AccountSubD2, AccountSubD3,
                          ProjectAccountD1, ProjectAccountD2, WiseSaying)
@@ -42,7 +42,7 @@ class ApiIndex(generics.GenericAPIView):
             'type': reverse(api + UnitTypeList.name, request=request),
             'floor': reverse(api + UnitFloorTypeList.name, request=request),
             'building': reverse(api + BuildingNumberList.name, request=request),
-            # 'contract-unit': reverse(api + ContractUnitList.name, request=request),
+            # 'key-unit': reverse(api + KeyUnitList.name, request=request),
             'unit-number': reverse(api + UnitNumberList.name, request=request),
             # 'budget': reverse(api + ProjectBudgetList.name, request=request),
             # 'site': reverse(api + SiteList.name, request=request),
@@ -259,17 +259,17 @@ class BuildingNumberDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
 
-# class ContractUnitList(generics.ListCreateAPIView):
-#     name = 'contractunit-list'
-#     queryset = ContractUnit.objects.all()
-#     serializer_class = ContractUnitSerializer
+# class KeyUnitList(generics.ListCreateAPIView):
+#     name = 'key_unit-list'
+#     queryset = KeyUnit.objects.all()
+#     serializer_class = KeyUnitSerializer
 #     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 #
 #
-# class ContractUnitDetail(generics.RetrieveUpdateDestroyAPIView):
-#     name = 'contractunit-detail'
-#     queryset = ContractUnit.objects.all()
-#     serializer_class = ContractUnitSerializer
+# class KeyUnitDetail(generics.RetrieveUpdateDestroyAPIView):
+#     name = 'key_unit-detail'
+#     queryset = KeyUnit.objects.all()
+#     serializer_class = KeyUnitSerializer
 #     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
 

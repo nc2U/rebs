@@ -16,7 +16,7 @@ from django.views.generic import View
 
 from company.models import Company
 from project.models import (Project, Site, SiteOwner, SiteContract,
-                            UnitType, ContractUnit, UnitNumber, ProjectBudget)
+                            UnitType, KeyUnit, UnitNumber, ProjectBudget)
 from contract.models import Contract, Contractor, ContractorRelease
 from cash.models import CashBook, ProjectCashBook
 
@@ -66,9 +66,9 @@ class ExportContracts(View):
                        ['일련번호', 'serial_number', 10],
                        ['인가여부', 'contractor__is_registed', 8],
                        ['차수', 'order_group__order_group_name', 10],
-                       ['타입', 'contractunit__unit_type__name', 7],
-                       ['동', 'contractunit__unitnumber__bldg_no', 7],
-                       ['호수', 'contractunit__unitnumber__bldg_unit_no', 7],
+                       ['타입', 'keyunit__unit_type__name', 7],
+                       ['동', 'keyunit__unitnumber__building_number', 7],
+                       ['호수', 'keyunit__unitnumber__bldg_unit_no', 7],
                        ['계약자', 'contractor__name', 10],
                        ['생년월일', 'contractor__birth_date', 12],
                        ['계약일자', 'contractor__contract_date', 12],
@@ -116,14 +116,14 @@ class ExportContracts(View):
         # 4. Body
         # Get some data to write to the spreadsheet.
         data = Contract.objects.filter(project=project,
-                                       contractunit__contract__isnull=False,
+                                       keyunit__contract__isnull=False,
                                        contractor__status='2').order_by('contractor__contract_date')
         if request.GET.get('group'):
             data = data.filter(order_group=request.GET.get('group'))
         if request.GET.get('type'):
-            data = data.filter(contractunit__unit_type=request.GET.get('type'))
+            data = data.filter(keyunit__unit_type=request.GET.get('type'))
         if self.request.GET.get('dong'):
-            data = data.filter(contractunit__unitnumber__bldg_no=self.request.GET.get('dong'))
+            data = data.filter(keyunit__unitnumber__building_number=self.request.GET.get('dong'))
         if request.GET.get('status'):
             data = data.filter(contractor__status=request.GET.get('status'))
         if request.GET.get('reg'):
@@ -231,7 +231,7 @@ class ExportApplicants(View):
         data_source = [[],
                        ['일련번호', 'serial_number', 10],
                        ['차수', 'order_group__order_group_name', 10],
-                       ['타입', 'contractunit__unit_type__name', 7],
+                       ['타입', 'keyunit__unit_type__name', 7],
                        ['청약자', 'contractor__name', 10],
                        ['청약일자', 'contractor__reservation_date', 12],
                        ['연락처[1]', 'contractor__contractorcontact__cell_phone', 14],
@@ -242,8 +242,8 @@ class ExportApplicants(View):
 
         if project.is_unit_set:
             data_source.append(
-                ['동', 'contractunit__unitnumber__bldg_no', 7],
-                ['호수', 'contractunit__unitnumber__bldg_unit_no', 7]
+                ['동', 'keyunit__unitnumber__building_number', 7],
+                ['호수', 'keyunit__unitnumber__bldg_unit_no', 7]
             )
 
         # 1. Title
@@ -292,7 +292,7 @@ class ExportApplicants(View):
         # 4. Body
         # Get some data to write to the spreadsheet.
         data = Contract.objects.filter(project=project,
-                                       contractunit__contract__isnull=False,
+                                       keyunit__contract__isnull=False,
                                        contractor__status='1')
 
         data = data.values_list(*params)
@@ -514,7 +514,7 @@ class ExportUnitStatus(View):
         floor_no__max = max_floor['floor_no__max'] if max_floor['floor_no__max'] else 1
         max_floor_range = range(0, floor_no__max)
         unit_numbers = UnitNumber.objects.filter(project=project)
-        dong_obj = unit_numbers.order_by().values('bldg_no').distinct()
+        dong_obj = unit_numbers.order_by().values('building_number').distinct()
 
         # 1. Title
         row_num = 0
@@ -532,7 +532,7 @@ class ExportUnitStatus(View):
 
         for dong in dong_obj:
             lines = unit_numbers.order_by('bldg_line').values('bldg_line').filter(
-                bldg_no__contains=dong['bldg_no']).distinct()
+                building_number__contains=dong['building_number']).distinct()
             for line in lines:
                 max_col += 1
             max_col += 1
@@ -561,9 +561,9 @@ class ExportUnitStatus(View):
             col_num = 1
             # 동 수 만큼 반복
             for dong in dong_obj:  # 동호수 표시 라인
-                units = unit_numbers.filter(bldg_no=dong['bldg_no'])
+                units = unit_numbers.filter(building_number=dong['building_number'])
                 lines = unit_numbers.order_by('bldg_line').values('bldg_line').filter(
-                    bldg_no__contains=dong['bldg_no']).distinct()
+                    building_number__contains=dong['building_number']).distinct()
                 for line in lines:
                     try:
                         unit = units.get(floor_no=floor_no, bldg_line=line['bldg_line'])
@@ -605,8 +605,9 @@ class ExportUnitStatus(View):
         # 동 수 만큼 반복
         for dong in dong_obj:  # 호수 상태 표시 라인
             lines = unit_numbers.order_by('-bldg_line').values('bldg_line').filter(
-                bldg_no__contains=dong['bldg_no']).distinct()
-            worksheet.merge_range(row_num, col_num, row_num + 1, col_num + lines.count() - 1, dong['bldg_no'] + '동',
+                building_number__contains=dong['building_number']).distinct()
+            worksheet.merge_range(row_num, col_num, row_num + 1, col_num + lines.count() - 1,
+                                  dong['building_number'] + '동',
                                   dong_title_format)
 
             col_num = col_num + lines.count() + 1
@@ -688,7 +689,7 @@ def export_payments_xls(request):
     resources = [
         ['거래일자', 'deal_date'],
         ['차수', 'contract__order_group__order_group_name'],
-        ['타입', 'contract__contractunit__unit_type__name'],
+        ['타입', 'contract__keyunit__unit_type__name'],
         ['일련번호', 'contract__serial_number'],
         ['계약자', 'contract__contractor__name'],
         ['입금 금액', 'income'],

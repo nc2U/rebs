@@ -3,7 +3,7 @@ from rest_framework import serializers
 from accounts.models import User, StaffAuth, Profile, Todo
 from company.models import Company, Department, Position, Staff
 from project.models import (Project, UnitType, UnitFloorType,
-                            ContractUnit, BuildingNumber, UnitNumber, ProjectBudget,
+                            KeyUnit, BuildingNumber, UnitNumber, ProjectBudget,
                             Site, SiteOwner, SiteOwnshipRelationship, SiteContract)
 from rebs.models import (AccountSubD1, AccountSubD2, AccountSubD3,
                          ProjectAccountD1, ProjectAccountD2, WiseSaying)
@@ -175,13 +175,13 @@ class UnitNumberSerializer(serializers.ModelSerializer):
                   'contract_unit', 'bldg_line', 'floor_no', 'is_hold', 'hold_reason')
 
 
-class ContractUnitSerializer(serializers.ModelSerializer):
+class KeyUnitSerializer(serializers.ModelSerializer):
     project = serializers.SlugRelatedField(queryset=Project.objects.all(), slug_field='name')
     unit_type = serializers.SlugRelatedField(queryset=UnitType.objects.all(), slug_field='name')
     unitnumber = UnitNumberSerializer()
 
     class Meta:
-        model = ContractUnit
+        model = KeyUnit
         fields = ('pk', 'project', 'unit_type', 'unit_code', 'unitnumber', 'contract')
 
 
@@ -382,17 +382,17 @@ class UnitTypeInContractListSerializer(serializers.ModelSerializer):
         fields = ('name', 'color')
 
 
-class UnitNumberInContractUnitSerializer(serializers.ModelSerializer):
+class UnitNumberInKeyUnitSerializer(serializers.ModelSerializer):
     class Meta:
         model = UnitNumber
         fields = ('pk', '__str__')
 
 
-class ContractUnitInContractListSerializer(serializers.ModelSerializer):
-    unitnumber = UnitNumberInContractUnitSerializer()
+class KeyUnitInContractListSerializer(serializers.ModelSerializer):
+    unitnumber = UnitNumberInKeyUnitSerializer()
 
     class Meta:
-        model = ContractUnit
+        model = KeyUnit
         fields = ('pk', 'unitnumber')
 
 
@@ -422,14 +422,14 @@ class ContractorInContractListSerializer(serializers.ModelSerializer):
 class ContractListSerializer(serializers.ModelSerializer):
     order_group = serializers.SlugRelatedField(queryset=OrderGroup.objects.all(), slug_field='order_group_name')
     unit_type = UnitTypeInContractListSerializer()
-    contractunit = ContractUnitInContractListSerializer()
+    key_unit = KeyUnitInContractListSerializer()
     contractor = ContractorInContractListSerializer()
 
     class Meta:
         model = Contract
         fields = (
             'pk', 'project', 'serial_number', 'activation', 'order_group',
-            'unit_type', 'contractunit', 'contractor', 'user')
+            'unit_type', 'key_unit', 'contractor', 'user')
 
 
 class ContractorReleaseSerializer(serializers.ModelSerializer):

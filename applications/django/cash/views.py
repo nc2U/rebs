@@ -15,7 +15,7 @@ from .models import (CompanyBankAccount, ProjectBankAccount, CashBook, ProjectCa
                      SalesPriceByGT, InstallmentPaymentOrder, DownPayment)
 from rebs.models import AccountSubD1, AccountSubD2, AccountSubD3, ProjectAccountD1, ProjectAccountD2
 from company.models import Company
-from project.models import Project, UnitType, ContractUnit, ProjectBudget
+from project.models import Project, UnitType, KeyUnit, ProjectBudget
 from contract.models import OrderGroup, Contract
 
 TODAY = datetime.today().strftime('%Y-%m-%d')
@@ -583,10 +583,10 @@ class SalesPaymentLV(LoginRequiredMixin, ListView, FormView):
         for i, type in enumerate(context['types']):
             total_budget += type.average_price * type.num_unit
             contract_num.append(
-                ContractUnit.objects.filter(project=self.get_project(), unit_type=type, contract__isnull=False).count())
+                KeyUnit.objects.filter(project=self.get_project(), unit_type=type, contract__isnull=False).count())
             total_contract += type.average_price * contract_num[i]
             payment = ProjectCashBook.objects.filter(project=self.get_project(),
-                                                     contract__contractunit__unit_type=type).aggregate(Sum('income'))
+                                                     contract__keyunit__unit_type=type).aggregate(Sum('income'))
             payment_sum = payment.get('income__sum') if payment.get('income__sum') else 0
             payment_type.append(payment_sum)
             total_paid += payment_type[i]
@@ -658,7 +658,7 @@ class SalesPaymentRegister(LoginRequiredMixin, FormView):
         context['today'] = datetime.today().date()
         contracts = Contract.objects.filter(project=self.get_project())
         if self.request.GET.get('type'):
-            contracts = contracts.filter(contractunit__unit_type=self.request.GET.get('type'))
+            contracts = contracts.filter(keyunit__unit_type=self.request.GET.get('type'))
         context['contracts'] = contracts
         context['q_contracts'] = None
         q = self.request.GET.get('q')
@@ -695,7 +695,7 @@ class SalesPaymentRegister(LoginRequiredMixin, FormView):
         # due_payment_by_order logic 구현
         contract = context['this_contract']
         try:
-            unit = contract.contractunit.unitnumber
+            unit = contract.keyunit.unitnumber
         except:
             unit = None
         unit_set = (self.get_project() and self.get_project().is_unit_set and unit)
@@ -706,9 +706,9 @@ class SalesPaymentRegister(LoginRequiredMixin, FormView):
         if contract:
             sales_price = SalesPriceByGT.objects.filter(project=self.get_project(),
                                                         order_group=contract.order_group,
-                                                        unit_type=contract.contractunit.unit_type)
+                                                        unit_type=contract.keyunit.unit_type)
             this_price = sales_price.get(
-                unit_floor_type=contract.contractunit.unitnumber.floor_type).price if unit_set else contract.contractunit.unit_type.average_price
+                unit_floor_type=contract.keyunit.unitnumber.floor_type).price if unit_set else contract.keyunit.unit_type.average_price
 
             # 1. 계약금
             down_order = payment_orders.filter(pay_sort='1')
@@ -716,7 +716,7 @@ class SalesPaymentRegister(LoginRequiredMixin, FormView):
             try:
                 dp = DownPayment.objects.get(project=self.get_project(),
                                              order_group=contract.order_group,
-                                             unit_type=contract.contractunit.unit_type)
+                                             unit_type=contract.keyunit.unit_type)
                 pay_num = dp.number_payments
                 down_payment = dp.payment_amount
             except:

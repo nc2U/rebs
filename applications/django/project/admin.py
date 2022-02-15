@@ -3,7 +3,7 @@ from django.utils.html import format_html
 from django.contrib.humanize.templatetags.humanize import intcomma
 from import_export.admin import ImportExportMixin
 
-from .models import (Project, UnitType, UnitFloorType, ContractUnit,
+from .models import (Project, UnitType, UnitFloorType, KeyUnit,
                      BuildingNumber, UnitNumber, ProjectBudget,
                      Site, SiteOwner, SiteOwnshipRelationship, SiteContract)
 
@@ -37,7 +37,7 @@ class UnitFloorTypeAdmin(ImportExportMixin, admin.ModelAdmin):
     list_editable = ('start_floor', 'end_floor', 'extra_cond', 'alias_name')
 
 
-class ContractUnitAdmin(ImportExportMixin, admin.ModelAdmin):
+class KeyUnitAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'project', 'unit_code', 'unit_type', 'contract')
     search_fields = ('unit_code',)
     list_display_links = ('project', 'unit_code',)
@@ -52,10 +52,10 @@ class BuindingNumberAdmin(ImportExportMixin, admin.ModelAdmin):
 
 class UnitNumberAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = (
-        'id', 'project', 'contract_unit', 'unit_type', 'building_number',
+        'id', 'project', 'key_unit', 'unit_type', 'building_number',
         'bldg_unit_no', 'floor_type', 'bldg_line', 'floor_no', 'is_hold', 'hold_reason')
     search_fields = ('bldg_unit_no',)
-    list_display_links = ('project', 'contract_unit',)
+    list_display_links = ('project', 'key_unit',)
 
 
 class ProjectBudgetAdmin(ImportExportMixin, admin.ModelAdmin):
@@ -103,7 +103,7 @@ class SiteContractAdmin(ImportExportMixin, admin.ModelAdmin):
 admin.site.register(Project, ProjectAdmin)
 admin.site.register(UnitType, UnitTypeAdmin)
 admin.site.register(UnitFloorType, UnitFloorTypeAdmin)
-admin.site.register(ContractUnit, ContractUnitAdmin)
+admin.site.register(KeyUnit, KeyUnitAdmin)
 admin.site.register(BuildingNumber, BuindingNumberAdmin)
 admin.site.register(UnitNumber, UnitNumberAdmin)
 admin.site.register(ProjectBudget, ProjectBudgetAdmin)
