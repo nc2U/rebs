@@ -29,7 +29,7 @@ export interface Project {
   num_planed_parking: number | null
 }
 
-export interface UnitType {
+interface UnitType {
   pk: number
   project: number
   name: string
@@ -41,7 +41,7 @@ export interface UnitType {
   num_unit: number
 }
 
-export interface UnitFloorType {
+interface UnitFloorType {
   pk: number
   project: number
   start_floor: number
@@ -68,10 +68,10 @@ export interface UnitNumber {
   pk: number
   project: number
   unit_type: number
-  floor_type: number
-  building_number: string
+  floor_type: string
+  building_number: number
   bldg_unit_no: string
-  contract_unit: number
+  contract_unit: number | null
   bldg_line: number
   floor_no: number
   is_hold: boolean
