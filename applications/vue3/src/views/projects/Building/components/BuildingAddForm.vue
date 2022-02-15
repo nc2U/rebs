@@ -52,7 +52,7 @@ export default defineComponent({
   },
   props: ['disabled'],
   methods: {
-    onSubmit(event: any) {
+    onSubmit(this: any, event: any) {
       const form = event.currentTarget
       if (form.checkValidity() === false) {
         event.preventDefault()
@@ -60,7 +60,7 @@ export default defineComponent({
 
         this.validated = true
       } else {
-        ;(this as any).$refs.confirmModal.callModal()
+        this.$refs.confirmModal.callModal()
       }
     },
     modalAction() {

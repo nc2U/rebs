@@ -25,7 +25,7 @@ const mutations = {
   },
 
   [FETCH_BUILDING_LIST]: (state: ProjectState, payload: any) => {
-    state.bldgNumberList = payload.results
+    state.buildingList = payload.results
   },
 }
 

@@ -1,5 +1,9 @@
 <template>
-  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
+  <ContentHeader
+    :page-title="pageTitle"
+    :nav-menu="navMenu"
+    @header-select="onSelectAdd"
+  />
 
   <ContentBody>
     <CCardBody class="pb-5">
@@ -34,7 +38,7 @@ export default defineComponent({
     BuildingFormList,
   },
   created() {
-    // this.fetchOrderGroupList(this.initProjId)
+    this.fetchBuildingList(this.initProjId)
   },
   computed: {
     ...mapState('project', ['project']),
@@ -42,27 +46,27 @@ export default defineComponent({
   },
   methods: {
     onSelectAdd(this: any, target: any) {
-      // if (target !== '') this.fetchOrderGroupList(target)
-      // else this.$store.state.contract.orderGroupList = []
+      if (target !== '') this.fetchBuildingList(target)
+      else this.$store.state.project.buildingList = []
     },
     onSubmit(payload: any) {
       const project = this.project.pk
-      // this.createOrderGroup({ ...{ project }, ...payload })
+      this.createBuilding({ ...{ project }, ...payload })
     },
     onUpdateBuilding(payload: any) {
       const project = this.project.pk
-      // this.updateOrderGroup({ ...{ project }, ...payload })
+      this.updateBuilding({ ...{ project }, ...payload })
     },
     onDeleteBuilding(pk: number) {
       const project = this.project.pk
-      // this.deleteOrderGroup({ ...{ pk }, ...{ project } })
+      this.deleteBuilding({ ...{ pk }, ...{ project } })
     },
-    // ...mapActions('contract', [
-    // 'fetchOrderGroupList',
-    // 'createOrderGroup',
-    // 'updateOrderGroup',
-    // 'deleteOrderGroup',
-    // ]),
+    ...mapActions('project', [
+      'fetchBuildingList',
+      'createBuilding',
+      'updateBuilding',
+      'deleteBuilding',
+    ]),
   },
 })
 </script>
