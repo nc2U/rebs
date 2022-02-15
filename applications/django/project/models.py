@@ -89,6 +89,7 @@ class UnitFloorType(models.Model):  # 층별 타입
 
 class ContractUnit(models.Model):
     project = models.ForeignKey(Project, on_delete=models.PROTECT, verbose_name='프로젝트', related_name='units')
+    unit_type = models.ForeignKey(UnitType, on_delete=models.PROTECT, verbose_name='타입')
     unit_code = models.CharField('코드번호', max_length=8)
     contract = models.OneToOneField('contract.Contract', on_delete=models.SET_NULL, null=True, blank=True,
                                     verbose_name='계약')
