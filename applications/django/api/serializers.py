@@ -3,7 +3,7 @@ from rest_framework import serializers
 from accounts.models import User, StaffAuth, Profile, Todo
 from company.models import Company, Department, Position, Staff
 from project.models import (Project, UnitType, UnitFloorType,
-                            KeyUnit, BuildingNumber, UnitNumber, ProjectBudget,
+                            KeyUnit, BuildingUnit, UnitNumber, ProjectBudget,
                             Site, SiteOwner, SiteOwnshipRelationship, SiteContract)
 from rebs.models import (AccountSubD1, AccountSubD2, AccountSubD3,
                          ProjectAccountD1, ProjectAccountD2, WiseSaying)
@@ -160,9 +160,9 @@ class UnitFloorTypeSerializer(serializers.ModelSerializer):
         fields = ('pk', 'project', 'start_floor', 'end_floor', 'extra_cond', 'alias_name')
 
 
-class BuildingNumberSerializer(serializers.ModelSerializer):
+class BuildingUnitSerializer(serializers.ModelSerializer):
     class Meta:
-        model = BuildingNumber
+        model = BuildingUnit
         fields = ('pk', 'project', 'name')
 
 

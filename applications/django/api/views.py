@@ -11,7 +11,7 @@ from .serializers import *
 from accounts.models import User, Profile, Todo
 from company.models import Company, Department, Position, Staff
 from project.models import (Project, UnitType, UnitFloorType,
-                            KeyUnit, BuildingNumber, UnitNumber, ProjectBudget,
+                            KeyUnit, BuildingUnit, UnitNumber, ProjectBudget,
                             Site, SiteOwner, SiteOwnshipRelationship, SiteContract)
 from rebs.models import (AccountSubD1, AccountSubD2, AccountSubD3,
                          ProjectAccountD1, ProjectAccountD2, WiseSaying)
@@ -41,7 +41,7 @@ class ApiIndex(generics.GenericAPIView):
             'project': reverse(api + ProjectList.name, request=request),
             'type': reverse(api + UnitTypeList.name, request=request),
             'floor': reverse(api + UnitFloorTypeList.name, request=request),
-            'building': reverse(api + BuildingNumberList.name, request=request),
+            'building': reverse(api + BuildingUnitList.name, request=request),
             # 'key-unit': reverse(api + KeyUnitList.name, request=request),
             'unit-number': reverse(api + UnitNumberList.name, request=request),
             # 'budget': reverse(api + ProjectBudgetList.name, request=request),
@@ -243,19 +243,19 @@ class UnitFloorTypeDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
 
-class BuildingNumberList(generics.ListCreateAPIView):
+class BuildingUnitList(generics.ListCreateAPIView):
     name = 'bldg-list'
-    queryset = BuildingNumber.objects.all()
-    serializer_class = BuildingNumberSerializer
+    queryset = BuildingUnit.objects.all()
+    serializer_class = BuildingUnitSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
     filter_fields = ('project',)
     search_fields = ('name',)
 
 
-class BuildingNumberDetail(generics.RetrieveUpdateDestroyAPIView):
+class BuildingUnitDetail(generics.RetrieveUpdateDestroyAPIView):
     name = 'bldg-detail'
-    queryset = BuildingNumber.objects.all()
-    serializer_class = BuildingNumberSerializer
+    queryset = BuildingUnit.objects.all()
+    serializer_class = BuildingUnitSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
 

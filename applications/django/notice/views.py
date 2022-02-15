@@ -9,7 +9,7 @@ from django.views.generic import ListView, FormView
 
 from .models import SalesBillIssue
 from .forms import SalesBillIssueForm
-from project.models import Project, UnitType, BuildingNumber, UnitNumber
+from project.models import Project, UnitType, BuildingUnit, UnitNumber
 from contract.models import OrderGroup, Contractor
 from cash.models import ProjectCashBook, SalesPriceByGT, InstallmentPaymentOrder, DownPayment
 
@@ -100,7 +100,7 @@ class BillManageView(LoginRequiredMixin, ListView, FormView):
         context['today'] = TODAY
         context['groups'] = OrderGroup.objects.filter(project=self.get_project())
         context['types'] = UnitType.objects.filter(project=self.get_project())
-        context['dongs'] = BuildingNumber.objects.filter(project=self.get_project())
+        context['dongs'] = BuildingUnit.objects.filter(project=self.get_project())
         context['bill_issue'] = self.get_bill_issue()
 
         # 계약자 별 총 납입금 계산

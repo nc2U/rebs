@@ -10,7 +10,7 @@ from django.views.generic import ListView, FormView, TemplateView
 from .models import (OrderGroup, Contract, Contractor,
                      ContractorAddress, ContractorContact, ContractorRelease)
 from rebs.models import ProjectAccountD1, ProjectAccountD2
-from project.models import Project, UnitType, KeyUnit, BuildingNumber, UnitNumber
+from project.models import Project, UnitType, KeyUnit, BuildingUnit, UnitNumber
 from cash.models import ProjectBankAccount, ProjectCashBook, InstallmentPaymentOrder
 
 from .forms import ContractRegisterForm, ContractPaymentForm, ContractorReleaseForm
@@ -69,7 +69,7 @@ class ContractLV(LoginRequiredMixin, ListView):
         context['this_project'] = self.get_project()
         context['groups'] = OrderGroup.objects.filter(project=self.get_project())
         context['types'] = UnitType.objects.filter(project=self.get_project())
-        context['dongs'] = BuildingNumber.objects.filter(project=self.get_project())
+        context['dongs'] = BuildingUnit.objects.filter(project=self.get_project())
 
         ### 계약 요약 테이블 데이터
         unit_num = []  # 타입별 세대수
@@ -559,7 +559,7 @@ class BuildDashboard(LoginRequiredMixin, TemplateView):
         context['line'] = []
         context['units'] = []
 
-        dong_list = list(BuildingNumber.objects.filter(project=self.get_project()).values('name'))
+        dong_list = list(BuildingUnit.objects.filter(project=self.get_project()).values('name'))
 
         for dong in dong_list:
             context['dong_list'].append(dong['name'])
