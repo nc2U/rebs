@@ -42,9 +42,9 @@
                                         </div>
                                         <div style="width:{{ w }}px; height:{{ h }}px; text-align:center; font-size:{{ f }}px;"
                                              data-toggle="tooltip" title=""
-                                             class="border {% if unit.contract_unit.contract.contractor.status == '1' %}bg-success-lighten{% endif %} {% if unit.contract_unit.contract.contractor.status == '2' %}bg-primary-lighten{% endif %}">
-                                            <a href="{% url 'rebs:contract:register' %}?project={{ this_project.id }}&task={{ unit.contract_unit.contract.contractor.status }}&order_group={{ unit.contract_unit.contract.order_group.id }}&type={{ unit.contract_unit.unit_type.id }}&contract_unit={{ unit.contract_unit.id }}&unit_number={{ unit.contract_unit.unitnumber.id }}&cont_id={{ unit.contract_unit.contract.id }}">
-                                                {{ unit.contract_unit.contract.contractor.name }}
+                                             class="border {% if unit.key_unit.contract.contractor.status == '1' %}bg-success-lighten{% endif %} {% if unit.key_unit.contract.contractor.status == '2' %}bg-primary-lighten{% endif %}">
+                                            <a href="{% url 'rebs:contract:register' %}?project={{ this_project.id }}&task={{ unit.key_unit.contract.contractor.status }}&order_group={{ unit.key_unit.contract.order_group.id }}&type={{ unit.key_unit.unit_type.id }}&key_unit={{ unit.key_unit.id }}&unit_number={{ unit.key_unit.unitnumber.id }}&cont_id={{ unit.key_unit.contract.id }}">
+                                                {{ unit.key_unit.contract.contractor.name }}
                                             </a>
                                         </div>
                                     </div>
