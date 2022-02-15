@@ -253,7 +253,7 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_THROTTLE_RATES': {
         'anon': '5/hour',
-        'user': '1000/hour',
+        'user': '2000/hour',
         # 'special-scope': '30/hour',
     }
 }
@@ -279,6 +279,7 @@ APP_ORDER = [
     'cash',
     'rebs',
     'document',
+    'notice',
     'book',
     'accounts',
 ]
