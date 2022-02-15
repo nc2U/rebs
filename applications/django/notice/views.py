@@ -125,11 +125,11 @@ class BillManageView(LoginRequiredMixin, ListView, FormView):
             except:
                 unit_set = None
             group = contract.order_group
-            type = contract.keyunit.unit_type
+            type = contract.unit_type
 
             prices = SalesPriceByGT.objects.filter(project=self.get_project(), order_group=group,
                                                    unit_type=type)  # 타입별 분양가 그룹
-            price = contract.keyunit.unit_type.average_price  # 동호 미지정시 타입별 평균 분양가
+            price = contract.unit_type.average_price  # 동호 미지정시 타입별 평균 분양가
             if unit_set:
                 floor = contract.keyunit.unitnumber.floor_type
                 price = prices.get(unit_floor_type=floor)  # 동호 지정시 해당 동호 분양가
@@ -152,7 +152,7 @@ class BillManageView(LoginRequiredMixin, ListView, FormView):
                     try:
                         dp = DownPayment.objects.get(project=self.get_project(),
                                                      order_group=contract.order_group,
-                                                     unit_type=contract.keyunit.unit_type)
+                                                     unit_type=contract.unit_type)
                         down_payment = dp.payment_amount
                     except:
                         pay_num = all_pay_order.filter(pay_sort='1').count()
@@ -200,7 +200,8 @@ class BillManageView(LoginRequiredMixin, ListView, FormView):
         if form.is_valid():
             with transaction.atomic():  # 트랜잭션
 
-                if form.cleaned_data.get('now_due_date') != self.get_bill_issue().now_payment_order.pay_due_date:
+                if self.get_bill_issue() == form.cleaned_data.get(
+                        'now_due_date') != self.get_bill_issue().now_payment_order.pay_due_date:
                     now_due_order = InstallmentPaymentOrder.objects.get(pk=request.POST.get('now_payment_order'))
                     now_due_order.pay_due_date = form.cleaned_data.get('now_due_date')
                     now_due_order.save()
@@ -245,7 +246,7 @@ class BillManageView(LoginRequiredMixin, ListView, FormView):
                                                 address3=form.cleaned_data.get('address3'),
                                                 title=form.cleaned_data.get('title'),
                                                 content=form.cleaned_data.get('content'),
-                                                register=request.user)
+                                                user=request.user)
                 bill_issue.save()
                 page = '?page=' + self.request.GET.get('page') if self.request.GET.get('page') else ''
                 return redirect(reverse_lazy('rebs:notice:bill') + page)
