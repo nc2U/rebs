@@ -1,7 +1,6 @@
 from django import forms
 
-from .models import OrderGroup, Contractor, ContractorRelease
-from project.models import UnitType
+from .models import ContractorRelease
 from cash.models import ProjectBankAccount, ProjectCashBook, InstallmentPaymentOrder
 
 
@@ -10,7 +9,7 @@ class ContractRegisterForm(forms.Form):
     task = forms.CharField(widget=forms.HiddenInput(attrs={'id': 'task'}))
     order_group = forms.CharField(widget=forms.HiddenInput(attrs={'id': 'order_group'}))
     type = forms.CharField(widget=forms.HiddenInput(attrs={'id': 'type'}))
-    contract_unit = forms.CharField(widget=forms.HiddenInput(attrs={'id': 'contract_unit'}))
+    key_unit = forms.CharField(widget=forms.HiddenInput(attrs={'id': 'key_unit'}))
     unit_number = forms.CharField(widget=forms.HiddenInput(attrs={'id': 'unit_number'}), required=False)
     back_url = forms.CharField(widget=forms.HiddenInput(attrs={'id': 'back_url'}), required=False)
 

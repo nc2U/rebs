@@ -63,7 +63,7 @@
                 <th scope="row"><input type="checkbox" disabled></th>
                 <td class="text-center" {% if object.contractor.status == '3' %}data-toggle="popover"
                     data-trigger="hover" title="" data-content="해지신청 상태" data-original-title=""{% endif %}>
-                    <a href="{% url 'rebs:contract:register' %}?project={{ object.project_id }}&task=2&order_group={{ object.order_group.id }}&type={{ object.contractunit.unit_type.id }}&contract_unit={{ object.contractunit.id }}&unit_number={{ object.contractunit.unitnumber.id }}&cont_id={{ object.id }}&p={{ request.GET.page }}&l={{ request.GET.limit }}&g={{ request.GET.group }}&t={{ request.GET.type }}&d={{ request.GET.dong }}&s={{ request.GET.status }}&r={{ request.GET.register }}&o={{ request.GET.order }}&sd={{ request.GET.sdate }}&ed={{ request.GET.edate }}&q={{ request.GET.q }}">
+                    <a href="{% url 'rebs:contract:register' %}?project={{ object.project_id }}&task=2&order_group={{ object.order_group.id }}&type={{ object.keyunit.unit_type.id }}&key_unit={{ object.keyunit.id }}&unit_number={{ object.keyunit.unitnumber.id }}&cont_id={{ object.id }}&p={{ request.GET.page }}&l={{ request.GET.limit }}&g={{ request.GET.group }}&t={{ request.GET.type }}&d={{ request.GET.dong }}&s={{ request.GET.status }}&r={{ request.GET.register }}&o={{ request.GET.order }}&sd={{ request.GET.sdate }}&ed={{ request.GET.edate }}&q={{ request.GET.q }}">
                         {{ object.serial_number }}
                     </a>
                 </td>
@@ -72,11 +72,11 @@
                        style="color: {{ object.unit_type.color }};"></i> {{ object.unit_type }}
                 </td>
                 {% if this_project.is_unit_set %}
-                    <td class="text-center">{{ object.contractunit.unitnumber }}</td>{% endif %}
+                    <td class="text-center">{{ object.keyunit.unitnumber }}</td>{% endif %}
                 <td class="text-center"
                     {% if object.contractor.contractorrelease.status == '3' %}data-toggle="popover"
                     data-trigger="hover" title="" data-content="해지신청 상태" data-original-title=""{% endif %}>
-                    <a href="{% url 'rebs:contract:register' %}?project={{ object.project_id }}&task=2&order_group={{ object.order_group.id }}&type={{ object.contractunit.unit_type.id }}&contract_unit={{ object.contractunit.id }}&unit_number={{ object.contractunit.unitnumber.id }}&cont_id={{ object.id }}&p={{ request.GET.page }}&l={{ request.GET.limit }}&g={{ request.GET.group }}&t={{ request.GET.type }}&d={{ request.GET.dong }}&s={{ request.GET.status }}&r={{ request.GET.register }}&o={{ request.GET.order }}&sd={{ request.GET.sdate }}&ed={{ request.GET.edate }}&q={{ request.GET.q }}">
+                    <a href="{% url 'rebs:contract:register' %}?project={{ object.project_id }}&task=2&order_group={{ object.order_group.id }}&type={{ object.keyunit.unit_type.id }}&key_unit={{ object.keyunit.id }}&unit_number={{ object.keyunit.unitnumber.id }}&cont_id={{ object.id }}&p={{ request.GET.page }}&l={{ request.GET.limit }}&g={{ request.GET.group }}&t={{ request.GET.type }}&d={{ request.GET.dong }}&s={{ request.GET.status }}&r={{ request.GET.register }}&o={{ request.GET.order }}&sd={{ request.GET.sdate }}&ed={{ request.GET.edate }}&q={{ request.GET.q }}">
                         {{ object.contractor.name }}
                     </a>
                 </td>

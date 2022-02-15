@@ -40,7 +40,7 @@ class ContractLV(LoginRequiredMixin, ListView):
         if self.request.GET.get('type'):
             contract = contract.filter(unit_type=self.request.GET.get('type'))
         if self.request.GET.get('dong'):
-            contract = contract.filter(contractunit__unitnumber__building_number=self.request.GET.get('dong'))
+            contract = contract.filter(keyunit__unitnumber__building_number=self.request.GET.get('dong'))
         if self.request.GET.get('status'):
             contract = contract.filter(contractor__contractorrelease__status=self.request.GET.get('status'))
         if self.request.GET.get('register'):
@@ -169,7 +169,7 @@ class ContractRegisterView(LoginRequiredMixin, FormView):
             'task': self.request.GET.get('task'),
             'order_group': self.request.GET.get('order_group'),
             'type': self.request.GET.get('type'),
-            'contract_unit': self.request.GET.get('contract_unit'),
+            'key_unit': self.request.GET.get('key_unit'),
             'unit_number': self.request.GET.get('unit_number'),
             'back_url': self.get_back_url(),
         }
@@ -205,24 +205,24 @@ class ContractRegisterView(LoginRequiredMixin, FormView):
         context['this_project'] = self.get_project()
         context['order_groups'] = OrderGroup.objects.filter(project=self.get_project())
         context['types'] = UnitType.objects.filter(project=self.get_project())
-        contract_units = ContractUnit.objects.filter(project=self.get_project(),
-                                                     unit_type=self.request.GET.get('type'),
-                                                     contract__isnull=True)
+        key_units = KeyUnit.objects.filter(project=self.get_project(),
+                                           unit_type=self.request.GET.get('type'),
+                                           contract__isnull=True)
         cont_id = self.request.GET.get('cont_id')
         if cont_id:
-            contract_units = ContractUnit.objects.filter(Q(pk=self.request.GET.get('contract_unit')) |
-                                                         Q(project=self.get_project(),
-                                                           unit_type=self.request.GET.get('type'),
-                                                           contract__isnull=True))
-        context['contract_units'] = contract_units if cont_id else contract_units[:10]
+            key_units = KeyUnit.objects.filter(Q(pk=self.request.GET.get('key_unit')) |
+                                               Q(project=self.get_project(),
+                                                 unit_type=self.request.GET.get('type'),
+                                                 contract__isnull=True))
+        context['key_units'] = key_units if cont_id else key_units[:10]
         context['unit_numbers'] = UnitNumber.objects.filter(project=self.get_project(),
                                                             unit_type=self.request.GET.get('type'),
-                                                            contract_unit__isnull=True)
+                                                            key_unit__isnull=True)
         if self.request.GET.get('unit_number'):
             context['unit_numbers'] = UnitNumber.objects.filter(Q(pk=self.request.GET.get('unit_number')) |
                                                                 Q(project=self.get_project(),
                                                                   unit_type=self.request.GET.get('type'),
-                                                                  contract_unit__isnull=True))
+                                                                  key_unit__isnull=True))
         context['project_bank_accounts'] = ProjectBankAccount.objects.filter(project=self.get_project())
         pay_code = '4' if cont_id else '2'
         context['installment_orders'] = InstallmentPaymentOrder.objects.filter(project=self.get_project(),
@@ -253,42 +253,42 @@ class ContractRegisterView(LoginRequiredMixin, FormView):
                     contract = Contract(project=Project.objects.get(pk=self.request.POST.get('project')),
                                         order_group=OrderGroup.objects.get(pk=self.request.POST.get('order_group')),
                                         unit_type=UnitType.objects.get(pk=self.request.POST.get('type')),
-                                        serial_number=f"{ContractUnit.objects.get(pk=self.request.POST.get('contract_unit')).unit_code}-{self.request.POST.get('order_group')}",
+                                        serial_number=f"{KeyUnit.objects.get(pk=self.request.POST.get('key_unit')).unit_code}-{self.request.POST.get('order_group')}",
                                         user=self.request.user)
                 else:
                     contract = Contract.objects.get(pk=cont_id)
                     contract.order_group = OrderGroup.objects.get(pk=self.request.POST.get('order_group'))
                     contract.unit_type = UnitType.objects.get(pk=self.request.POST.get('type'))
-                    contract.serial_number = f"{ContractUnit.objects.get(pk=self.request.POST.get('contract_unit')).unit_code}-{self.request.POST.get('order_group')}"
+                    contract.serial_number = f"{KeyUnit.objects.get(pk=self.request.POST.get('key_unit')).unit_code}-{self.request.POST.get('order_group')}"
                     contract.user = self.request.user
                 contract.save()
 
                 # 2. 계약 유닛 연결
                 if not cont_id:
-                    contractunit = ContractUnit.objects.get(pk=self.request.POST.get('contract_unit'))
-                    contractunit.contract = contract
-                    contractunit.save()
+                    keyunit = KeyUnit.objects.get(pk=self.request.POST.get('key_unit'))
+                    keyunit.contract = contract
+                    keyunit.save()
                 else:
                     # 1) 종전 동호수 연결 해제
                     try:
-                        pastUN = contract.contractunit.unitnumber
-                        pastUN.contract_unit = None  # 종전 계약의 동호수 삭제
+                        pastUN = contract.keyunit.unitnumber
+                        pastUN.key_unit = None  # 종전 계약의 동호수 삭제
                         pastUN.save()
                     except ObjectDoesNotExist:
                         pass
 
                     # 3. 계약 유닛 연결
-                    pastCU = contract.contractunit
+                    pastCU = contract.keyunit
                     pastCU.contract = None  # 종전 계약의 계약유닛 삭제
                     pastCU.save()
-                    contractunit = ContractUnit.objects.get(pk=self.request.POST.get('contract_unit'))
-                    contractunit.contract = contract
-                    contractunit.save()
+                    keyunit = KeyUnit.objects.get(pk=self.request.POST.get('key_unit'))
+                    keyunit.contract = contract
+                    keyunit.save()
 
                 # 3. 동호수 연결
                 if self.request.POST.get('unit_number'):
                     unit_number = UnitNumber.objects.get(pk=self.request.POST.get('unit_number'))
-                    unit_number.contract_unit = contractunit
+                    unit_number.key_unit = keyunit
                     unit_number.save()
 
                 # 4. 계약자 정보 테이블 입력
@@ -476,7 +476,7 @@ class ContractorReleaseRegister(LoginRequiredMixin, ListView, FormView):
                     # 1. 계약자 정보 현재 상태 변경
                     contractor = Contractor.objects.get(pk=request.POST.get('contractor'))
                     contract = Contract.objects.get(pk=contractor.contract.id)
-                    contractunit = ContractUnit.objects.get(contract__contractor=contractor)
+                    keyunit = KeyUnit.objects.get(contract__contractor=contractor)
 
                     try:
                         released_done = contractor.contractorrelease.status >= '4'
@@ -495,18 +495,18 @@ class ContractorReleaseRegister(LoginRequiredMixin, ListView, FormView):
                         contract.activation = False  # 일련번호 활성 해제
                         contract.save()
                     # 3. 계약유닛 연결 해제
-                    contract.contractunit.unitnumber
+                    contract.keyunit.unitnumber
                     if not released_done:
-                        contractunit.contract = None
-                        contractunit.save()
+                        keyunit.contract = None
+                        keyunit.save()
                     # 4. 동호수 연결 해제
                     if not released_done:
                         try:  # 동호수 존재 여부 확인
-                            unit = contractunit.unitnumber
+                            unit = keyunit.unitnumber
                         except Exception:
                             unit = None
                         if unit:
-                            unit.contract_unit = None
+                            unit.key_unit = None
                             unit.save()
                     # 5. 해당 납부분담금 환불처리
                     projectCash = ProjectCashBook.objects.filter(cash_category1='1', contract=contractor.contract)

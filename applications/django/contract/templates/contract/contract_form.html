@@ -97,17 +97,17 @@
                                                     {% endfor %}
                                                 </select>
                                             </div>
-                                            <label for="id_contract_unit"
+                                            <label for="id_key_unit"
                                                    class="col-4 col-md-2 col-lg-1 col-form-label">계약코드</label>
                                             <div class="col-8 col-md-4 col-lg-2">
-                                                <select name="contract_unit" id="id_contract_unit"
+                                                <select name="key_unit" id="id_key_unit"
                                                         class="form-control  select2"
                                                         {% if not request.GET.type %}disabled{% endif %}
                                                         onchange="{% if this_project.is_unit_set == True %}getSelect(this, 3){% else %}submit(){% endif %}">
                                                     <option value="">---------</option>
-                                                    {% for obj in contract_units %}
+                                                    {% for obj in key_units %}
                                                         <option value="{{ obj.id }}"
-                                                                {% if obj.id|slugify == request.GET.contract_unit %}selected{% endif %}>{{ obj }}</option>
+                                                                {% if obj.id|slugify == request.GET.key_unit %}selected{% endif %}>{{ obj }}</option>
                                                     {% endfor %}
                                                 </select>
                                             </div>
@@ -119,7 +119,7 @@
                                                     <select name="unit_number" id="id_unit_number"
                                                             class="form-control  select2"
                                                             onchange="submit()"
-                                                            {% if not request.GET.contract_unit %}disabled{% endif %}>
+                                                            {% if not request.GET.key_unit %}disabled{% endif %}>
                                                         <option value="">---------</option>
                                                         {% for obj in unit_numbers %}
                                                             <option value="{{ obj.id }}"
@@ -156,7 +156,7 @@
                 {{ form.task }}{{ form.task.errors }}
                 {{ form.order_group }}{{ form.order_group.errors }}
                 {{ form.type }}{{ form.type.errors }}
-                {{ form.contract_unit }}{{ form.contract_unit.errors }}
+                {{ form.key_unit }}{{ form.key_unit.errors }}
                 {% if this_project.is_unit_set == True %}
                     {{ form.unit_number }}{{ form.unit_number.errors }}
                 {% endif %}
@@ -478,7 +478,7 @@
                                 <div class="form-group mb-0 justify-content-end row">
                                     <div class="col-12">
                                         {% if request.user.is_superuser or request.user.staffauth.contract > '1' %}
-                                            {% if request.GET.contract_unit %}
+                                            {% if request.GET.key_unit %}
                                                 <button type="submit"
                                                         class="btn btn-{% if not request.GET.cont_id %}primary{% else %}success{% endif %}">등록하기</button>
                                             {% else %}
@@ -509,7 +509,7 @@
       const form = document.project_form
       const order_group = document.getElementById('id_order_group')
       const type = document.getElementById('id_type')
-      const contract_unit = document.getElementById('id_contract_unit')
+      const key_unit = document.getElementById('id_key_unit')
       {% if this_project.is_unit_set == True %}
         const unit_number = document.getElementById('id_unit_number')
       {% endif %}
@@ -539,7 +539,7 @@
         const task = document.getElementById('id_task')
         const order_group = document.getElementById('id_order_group')
         const type = document.getElementById('id_type')
-        const cont_unit = document.getElementById('id_contract_unit')
+        const cont_unit = document.getElementById('id_key_unit')
 
         {% if this_project.is_unit_set == True %}
           const unit_number = document.getElementById('id_unit_number')
@@ -565,10 +565,10 @@
             case 1:
               order_group.options[0].selected = true
               type.options[0].selected = true
-              contract_unit.options[0].selected = true
+              key_unit.options[0].selected = true
               order_group.disabled = true
               type.disabled = true
-              contract_unit.disabled = true
+              key_unit.disabled = true
             {% if this_project.is_unit_set == True %}
               unit_number.options[0].selected = true
               unit_number.disabled = true
@@ -576,17 +576,17 @@
               break
             case 2:
               type.options[0].selected = true
-              contract_unit.options[0].selected = true
+              key_unit.options[0].selected = true
               type.disabled = true
-              contract_unit.disabled = true
+              key_unit.disabled = true
             {% if this_project.is_unit_set == True %}
               unit_number.options[0].selected = true
               unit_number.disabled = true
             {% endif %}
               break
             case 3:
-              contract_unit.options[0].selected = true
-              contract_unit.disabled = true
+              key_unit.options[0].selected = true
+              key_unit.disabled = true
             {% if this_project.is_unit_set == True %}
               unit_number.options[0].selected = true
               unit_number.disabled = true
@@ -637,7 +637,7 @@
       }
 
       function getValidatioin() {
-        if ('{{ request.GET.task }}' == '' || '{{ request.GET.order_group }}' == '' || '{{ request.GET.type }}' == '' || '{{ request.GET.contract_unit }}' == '') {
+        if ('{{ request.GET.task }}' == '' || '{{ request.GET.order_group }}' == '' || '{{ request.GET.type }}' == '' || '{{ request.GET.key_unit }}' == '') {
           alert('등록할 유니트 정보(차수, 타입, 계약코드)를 모두 선택하여 주세요.')
         }
       }
