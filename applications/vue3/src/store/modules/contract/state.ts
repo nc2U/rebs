@@ -19,14 +19,14 @@ interface Contractor {
   contract_date: string
 }
 
-interface UnitNumber {
+interface HouseUnit {
   pk: number
   __str__: string
 }
 
-interface ContractUnit {
+interface KeyUnit {
   pk: number
-  unitnumber: UnitNumber | null
+  houseunit: HouseUnit | null
 }
 
 interface UnitType {
@@ -41,14 +41,13 @@ export interface Contract {
   activation: boolean
   order_group: number
   unit_type: UnitType
-  contractunit: ContractUnit | null
+  keyunit: KeyUnit | null
   contractor: Contractor | null
   user: number
 }
 
 export interface OrderGroup {
   pk: number
-  url: string
   project: number
   order_number: number
   sort: string

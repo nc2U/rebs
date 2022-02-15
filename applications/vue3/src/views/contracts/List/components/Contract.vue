@@ -12,7 +12,7 @@
       />&nbsp;
       {{ contract.unit_type }}
     </CTableDataCell>
-    <CTableDataCell>{{ contract.unit_number }}</CTableDataCell>
+    <CTableDataCell>{{ contract.house_unit }}</CTableDataCell>
     <CTableDataCell>
       <router-link to="#">{{ contract.contractor }}</router-link>
     </CTableDataCell>
@@ -32,23 +32,11 @@ import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'Contract',
-  components: {},
-
   props: {
     contract: {
       type: Object,
       required: true,
     },
   },
-  setup() {
-    return {}
-  },
-  data() {
-    return {
-      sample: '',
-    }
-  },
-  computed: {},
-  methods: {},
 })
 </script>

@@ -8,7 +8,7 @@ const getters = {
       order_group: c.order_group,
       unit_type: c.unit_type.name,
       type_color: c.unit_type.color,
-      unit_number: c.contractunit?.unitnumber?.__str__ || '',
+      house_unit: c.keyunit?.houseunit?.__str__ || '',
       contractor: c.contractor?.name,
       is_registed: c.contractor?.is_registed,
       address: c.contractor?.contractoraddress?.dm_address1,
