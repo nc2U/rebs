@@ -167,7 +167,6 @@ class BuildingNumberSerializer(serializers.ModelSerializer):
 
 
 class UnitNumberSerializer(serializers.ModelSerializer):
-    project = serializers.SlugRelatedField(queryset=Project.objects.all(), slug_field='name')
     floor_type = serializers.SlugRelatedField(queryset=UnitFloorType.objects.all(), slug_field='alias_name')
 
     class Meta:
