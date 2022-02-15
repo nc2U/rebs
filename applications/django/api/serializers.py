@@ -378,20 +378,17 @@ class UnitTypeInContractListSerializer(serializers.ModelSerializer):
 
 
 class UnitNumberInContractUnitSerializer(serializers.ModelSerializer):
-    floor_type = serializers.SlugRelatedField(queryset=UnitFloorType.objects.all(), slug_field='alias_name')
-
     class Meta:
         model = UnitNumber
-        fields = ('pk', 'floor_type', '__str__')
+        fields = ('pk', '__str__')
 
 
 class ContractUnitInContractListSerializer(serializers.ModelSerializer):
-    unit_type = serializers.SlugRelatedField(queryset=UnitType.objects.all(), slug_field='color')
     unitnumber = UnitNumberInContractUnitSerializer()
 
     class Meta:
         model = ContractUnit
-        fields = ('pk', 'unit_type', 'unitnumber')
+        fields = ('pk', 'unitnumber')
 
 
 class AddressInContractorSerializer(serializers.ModelSerializer):
