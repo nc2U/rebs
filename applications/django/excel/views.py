@@ -16,7 +16,7 @@ from django.views.generic import View
 
 from company.models import Company
 from project.models import (Project, Site, SiteOwner, SiteContract,
-                            UnitType, KeyUnit, UnitNumber, ProjectBudget)
+                            UnitType, KeyUnit, BuildingUnit, UnitNumber, ProjectBudget)
 from contract.models import Contract, Contractor, ContractorRelease
 from cash.models import CashBook, ProjectCashBook
 
@@ -67,7 +67,7 @@ class ExportContracts(View):
                        ['인가여부', 'contractor__is_registed', 8],
                        ['차수', 'order_group__order_group_name', 10],
                        ['타입', 'keyunit__unit_type__name', 7],
-                       ['동', 'keyunit__unitnumber__building_number', 7],
+                       ['동', 'keyunit__unitnumber__building_unit', 7],
                        ['호수', 'keyunit__unitnumber__bldg_unit_no', 7],
                        ['계약자', 'contractor__name', 10],
                        ['생년월일', 'contractor__birth_date', 12],
@@ -123,7 +123,7 @@ class ExportContracts(View):
         if request.GET.get('type'):
             data = data.filter(keyunit__unit_type=request.GET.get('type'))
         if self.request.GET.get('dong'):
-            data = data.filter(keyunit__unitnumber__building_number=self.request.GET.get('dong'))
+            data = data.filter(keyunit__unitnumber__building_unit=self.request.GET.get('dong'))
         if request.GET.get('status'):
             data = data.filter(contractor__status=request.GET.get('status'))
         if request.GET.get('reg'):
@@ -242,7 +242,7 @@ class ExportApplicants(View):
 
         if project.is_unit_set:
             data_source.append(
-                ['동', 'keyunit__unitnumber__building_number', 7],
+                ['동', 'keyunit__unitnumber__building_unit', 7],
                 ['호수', 'keyunit__unitnumber__bldg_unit_no', 7]
             )
 
@@ -514,7 +514,7 @@ class ExportUnitStatus(View):
         floor_no__max = max_floor['floor_no__max'] if max_floor['floor_no__max'] else 1
         max_floor_range = range(0, floor_no__max)
         unit_numbers = UnitNumber.objects.filter(project=project)
-        dong_obj = unit_numbers.order_by().values('building_number').distinct()
+        dong_obj = BuildingUnit.objects.filter(project=project).values('name')
 
         # 1. Title
         row_num = 0
@@ -532,7 +532,7 @@ class ExportUnitStatus(View):
 
         for dong in dong_obj:
             lines = unit_numbers.order_by('bldg_line').values('bldg_line').filter(
-                building_number__contains=dong['building_number']).distinct()
+                building_unit__name__contains=dong['name']).distinct()
             for line in lines:
                 max_col += 1
             max_col += 1
@@ -561,9 +561,9 @@ class ExportUnitStatus(View):
             col_num = 1
             # 동 수 만큼 반복
             for dong in dong_obj:  # 동호수 표시 라인
-                units = unit_numbers.filter(building_number=dong['building_number'])
+                units = unit_numbers.filter(building_unit__name=dong['name'])
                 lines = unit_numbers.order_by('bldg_line').values('bldg_line').filter(
-                    building_number__contains=dong['building_number']).distinct()
+                    building_unit__name__contains=dong['name']).distinct()
                 for line in lines:
                     try:
                         unit = units.get(floor_no=floor_no, bldg_line=line['bldg_line'])
@@ -576,8 +576,8 @@ class ExportUnitStatus(View):
                             worksheet.merge_range(row_num, col_num, row_num + 1, col_num, '', unit_formats)
                         else:
                             worksheet.write(row_num, col_num, int(unit.bldg_unit_no), unit_formats)
-                            if unit.contract_unit:
-                                if int(unit.contract_unit.contract.contractor.status) % 2 == 0:
+                            if unit.key_unit:
+                                if int(unit.key_unit.contract.contractor.status) % 2 == 0:
                                     status_format['bg_color'] = '#85929E'
                                     status_format['font_color'] = 'white'
                                 else:
@@ -585,7 +585,7 @@ class ExportUnitStatus(View):
                                     status_format['font_color'] = 'black'
                             else:
                                 status_format['bg_color'] = 'white'
-                            cont = unit.contract_unit.contract.contractor.name if unit.contract_unit else ''
+                            cont = unit.key_unit.contract.contractor.name if unit.key_unit else ''
                             status_formats = workbook.add_format(status_format)
                             worksheet.write(row_num + 1, col_num, cont, status_formats)
                     col_num += 1
@@ -605,9 +605,9 @@ class ExportUnitStatus(View):
         # 동 수 만큼 반복
         for dong in dong_obj:  # 호수 상태 표시 라인
             lines = unit_numbers.order_by('-bldg_line').values('bldg_line').filter(
-                building_number__contains=dong['building_number']).distinct()
+                building_unit__name__contains=dong['name']).distinct()
             worksheet.merge_range(row_num, col_num, row_num + 1, col_num + lines.count() - 1,
-                                  dong['building_number'] + '동',
+                                  dong['name'] + '동',
                                   dong_title_format)
 
             col_num = col_num + lines.count() + 1
