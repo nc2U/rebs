@@ -85,7 +85,6 @@ class ContractLV(LoginRequiredMixin, ListView):
             units = UnitNumber.objects.filter(unit_type=type).count()  # 타입별 세대수
             reservs = Contractor.objects.filter(contract__project=self.get_project(),
                                                 contract__unit_type=type,
-                                                contract_activation=True,
                                                 status='1').count()
             unit_num.append(units)  # 타입별 세대수
             reserv_num.append(reservs)  # 타입별 청약건
