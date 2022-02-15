@@ -3,7 +3,7 @@ from rest_framework import serializers
 from accounts.models import User, StaffAuth, Profile, Todo
 from company.models import Company, Department, Position, Staff
 from project.models import (Project, UnitType, UnitFloorType,
-                            KeyUnit, BuildingUnit, UnitNumber, ProjectBudget,
+                            KeyUnit, BuildingUnit, HouseUnit, ProjectBudget,
                             Site, SiteOwner, SiteOwnshipRelationship, SiteContract)
 from rebs.models import (AccountSubD1, AccountSubD2, AccountSubD3,
                          ProjectAccountD1, ProjectAccountD2, WiseSaying)
@@ -166,11 +166,11 @@ class BuildingUnitSerializer(serializers.ModelSerializer):
         fields = ('pk', 'project', 'name')
 
 
-class UnitNumberSerializer(serializers.ModelSerializer):
+class HouseUnitSerializer(serializers.ModelSerializer):
     floor_type = serializers.SlugRelatedField(queryset=UnitFloorType.objects.all(), slug_field='alias_name')
 
     class Meta:
-        model = UnitNumber
+        model = HouseUnit
         fields = ('pk', 'project', 'unit_type', 'floor_type', 'building_number', 'bldg_unit_no',
                   'contract_unit', 'bldg_line', 'floor_no', 'is_hold', 'hold_reason')
 
@@ -178,11 +178,11 @@ class UnitNumberSerializer(serializers.ModelSerializer):
 class KeyUnitSerializer(serializers.ModelSerializer):
     project = serializers.SlugRelatedField(queryset=Project.objects.all(), slug_field='name')
     unit_type = serializers.SlugRelatedField(queryset=UnitType.objects.all(), slug_field='name')
-    unitnumber = UnitNumberSerializer()
+    house_unit = HouseUnitSerializer()
 
     class Meta:
         model = KeyUnit
-        fields = ('pk', 'project', 'unit_type', 'unit_code', 'unitnumber', 'contract')
+        fields = ('pk', 'project', 'unit_type', 'unit_code', 'house_unit', 'contract')
 
 
 class ProjectBudgetSerializer(serializers.ModelSerializer):
@@ -382,18 +382,18 @@ class UnitTypeInContractListSerializer(serializers.ModelSerializer):
         fields = ('name', 'color')
 
 
-class UnitNumberInKeyUnitSerializer(serializers.ModelSerializer):
+class HouseUnitInKeyUnitSerializer(serializers.ModelSerializer):
     class Meta:
-        model = UnitNumber
+        model = HouseUnit
         fields = ('pk', '__str__')
 
 
 class KeyUnitInContractListSerializer(serializers.ModelSerializer):
-    unitnumber = UnitNumberInKeyUnitSerializer()
+    house_unit = HouseUnitInKeyUnitSerializer()
 
     class Meta:
         model = KeyUnit
-        fields = ('pk', 'unitnumber')
+        fields = ('pk', 'house_unit')
 
 
 class AddressInContractorSerializer(serializers.ModelSerializer):

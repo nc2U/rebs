@@ -116,7 +116,7 @@ class BuildingUnit(models.Model):
         return self.name
 
 
-class UnitNumber(models.Model):
+class HouseUnit(models.Model):
     project = models.ForeignKey('project.Project', on_delete=models.PROTECT, verbose_name='프로젝트')
     unit_type = models.ForeignKey(UnitType, on_delete=models.PROTECT, verbose_name='타입')
     floor_type = models.ForeignKey('UnitFloorType', on_delete=models.SET_NULL, null=True, blank=True,

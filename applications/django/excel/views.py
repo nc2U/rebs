@@ -16,7 +16,7 @@ from django.views.generic import View
 
 from company.models import Company
 from project.models import (Project, Site, SiteOwner, SiteContract,
-                            UnitType, KeyUnit, BuildingUnit, UnitNumber, ProjectBudget)
+                            UnitType, KeyUnit, BuildingUnit, HouseUnit, ProjectBudget)
 from contract.models import Contract, Contractor, ContractorRelease
 from cash.models import CashBook, ProjectCashBook
 
@@ -67,8 +67,8 @@ class ExportContracts(View):
                        ['인가여부', 'contractor__is_registed', 8],
                        ['차수', 'order_group__order_group_name', 10],
                        ['타입', 'keyunit__unit_type__name', 7],
-                       ['동', 'keyunit__unitnumber__building_unit', 7],
-                       ['호수', 'keyunit__unitnumber__bldg_unit_no', 7],
+                       ['동', 'keyunit__houseunit__building_unit', 7],
+                       ['호수', 'keyunit__houseunit__bldg_unit_no', 7],
                        ['계약자', 'contractor__name', 10],
                        ['생년월일', 'contractor__birth_date', 12],
                        ['계약일자', 'contractor__contract_date', 12],
@@ -123,7 +123,7 @@ class ExportContracts(View):
         if request.GET.get('type'):
             data = data.filter(keyunit__unit_type=request.GET.get('type'))
         if self.request.GET.get('dong'):
-            data = data.filter(keyunit__unitnumber__building_unit=self.request.GET.get('dong'))
+            data = data.filter(keyunit__houseunit__building_unit=self.request.GET.get('dong'))
         if request.GET.get('status'):
             data = data.filter(contractor__status=request.GET.get('status'))
         if request.GET.get('reg'):
@@ -242,8 +242,8 @@ class ExportApplicants(View):
 
         if project.is_unit_set:
             data_source.append(
-                ['동', 'keyunit__unitnumber__building_unit', 7],
-                ['호수', 'keyunit__unitnumber__bldg_unit_no', 7]
+                ['동', 'keyunit__houseunit__building_unit', 7],
+                ['호수', 'keyunit__houseunit__bldg_unit_no', 7]
             )
 
         # 1. Title
@@ -510,10 +510,10 @@ class ExportUnitStatus(View):
 
         ### data start --------------------------------------------- #
         project = Project.objects.get(pk=request.GET.get('project'))
-        max_floor = UnitNumber.objects.aggregate(Max('floor_no'))
+        max_floor = HouseUnit.objects.aggregate(Max('floor_no'))
         floor_no__max = max_floor['floor_no__max'] if max_floor['floor_no__max'] else 1
         max_floor_range = range(0, floor_no__max)
-        unit_numbers = UnitNumber.objects.filter(project=project)
+        unit_numbers = HouseUnit.objects.filter(project=project)
         dong_obj = BuildingUnit.objects.filter(project=project).values('name')
 
         # 1. Title

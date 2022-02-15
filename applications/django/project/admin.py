@@ -4,11 +4,8 @@ from django.contrib.humanize.templatetags.humanize import intcomma
 from import_export.admin import ImportExportMixin
 
 from .models import (Project, UnitType, UnitFloorType, KeyUnit,
-                     BuildingUnit, UnitNumber, ProjectBudget,
+                     BuildingUnit, HouseUnit, ProjectBudget,
                      Site, SiteOwner, SiteOwnshipRelationship, SiteContract)
-
-
-# from .forms import UnitTypeForm
 
 
 class ProjectAdmin(ImportExportMixin, admin.ModelAdmin):
@@ -50,7 +47,7 @@ class BuindingUnitAdmin(ImportExportMixin, admin.ModelAdmin):
     list_editable = ('name',)
 
 
-class UnitNumberAdmin(ImportExportMixin, admin.ModelAdmin):
+class HouseUnitAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = (
         'id', 'project', 'key_unit', 'unit_type', 'building_unit',
         'bldg_unit_no', 'floor_type', 'bldg_line', 'floor_no', 'is_hold', 'hold_reason')
@@ -105,7 +102,7 @@ admin.site.register(UnitType, UnitTypeAdmin)
 admin.site.register(UnitFloorType, UnitFloorTypeAdmin)
 admin.site.register(KeyUnit, KeyUnitAdmin)
 admin.site.register(BuildingUnit, BuindingUnitAdmin)
-admin.site.register(UnitNumber, UnitNumberAdmin)
+admin.site.register(HouseUnit, HouseUnitAdmin)
 admin.site.register(ProjectBudget, ProjectBudgetAdmin)
 admin.site.register(Site, SiteAdmin)
 admin.site.register(SiteOwner, SiteOwnerAdmin)

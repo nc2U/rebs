@@ -9,7 +9,7 @@ from django.views.generic import ListView, FormView
 
 from .models import SalesBillIssue
 from .forms import SalesBillIssueForm
-from project.models import Project, UnitType, BuildingUnit, UnitNumber
+from project.models import Project, UnitType, BuildingUnit, HouseUnit
 from contract.models import OrderGroup, Contractor
 from cash.models import ProjectCashBook, SalesPriceByGT, InstallmentPaymentOrder, DownPayment
 
@@ -83,7 +83,7 @@ class BillManageView(LoginRequiredMixin, ListView, FormView):
         if type:
             queryset = queryset.filter(contract__keyunit__unit_type=type)
         if dong:
-            queryset = queryset.filter(contract__keyunit__unitnumber__building_number=dong)
+            queryset = queryset.filter(contract__keyunit__houseunit__building_number=dong)
         order_list = ['contract_date', '-contract_date', 'contract__serial_number',
                       '-contract__serial_number', 'name', '-name']
         if order:
@@ -121,7 +121,7 @@ class BillManageView(LoginRequiredMixin, ListView, FormView):
                     'income__sum']
             total_pay_by_contract.append(payment_by_cont)  # 계약자별 총 납입액 배열화
             try:  # 동호수 지정여부
-                unit_set = contract.keyunit.unitnumber
+                unit_set = contract.keyunit.houseunit
             except:
                 unit_set = None
             group = contract.order_group
@@ -131,7 +131,7 @@ class BillManageView(LoginRequiredMixin, ListView, FormView):
                                                    unit_type=type)  # 타입별 분양가 그룹
             price = contract.unit_type.average_price  # 동호 미지정시 타입별 평균 분양가
             if unit_set:
-                floor = contract.keyunit.unitnumber.floor_type
+                floor = contract.keyunit.houseunit.floor_type
                 price = prices.get(unit_floor_type=floor)  # 동호 지정시 해당 동호 분양가
 
             # all_pay = price.installmentpaymentamount_set.all() # 분양가 -> 회차별 납입가 그룹

@@ -11,7 +11,7 @@ from .serializers import *
 from accounts.models import User, Profile, Todo
 from company.models import Company, Department, Position, Staff
 from project.models import (Project, UnitType, UnitFloorType,
-                            KeyUnit, BuildingUnit, UnitNumber, ProjectBudget,
+                            KeyUnit, BuildingUnit, HouseUnit, ProjectBudget,
                             Site, SiteOwner, SiteOwnshipRelationship, SiteContract)
 from rebs.models import (AccountSubD1, AccountSubD2, AccountSubD3,
                          ProjectAccountD1, ProjectAccountD2, WiseSaying)
@@ -43,7 +43,7 @@ class ApiIndex(generics.GenericAPIView):
             'floor': reverse(api + UnitFloorTypeList.name, request=request),
             'building': reverse(api + BuildingUnitList.name, request=request),
             # 'key-unit': reverse(api + KeyUnitList.name, request=request),
-            'unit-number': reverse(api + UnitNumberList.name, request=request),
+            'unit-number': reverse(api + HouseUnitList.name, request=request),
             # 'budget': reverse(api + ProjectBudgetList.name, request=request),
             # 'site': reverse(api + SiteList.name, request=request),
             # 'site-owner': reverse(api + SiteOwnerList.name, request=request),
@@ -273,20 +273,20 @@ class BuildingUnitDetail(generics.RetrieveUpdateDestroyAPIView):
 #     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
 
-class UnitNumberList(generics.ListCreateAPIView):
+class HouseUnitList(generics.ListCreateAPIView):
     name = 'unit-list'
-    queryset = UnitNumber.objects.all()
-    serializer_class = UnitNumberSerializer
+    queryset = HouseUnit.objects.all()
+    serializer_class = HouseUnitSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
     filter_fields = ('project', 'unit_type', 'floor_type', 'building_number',
                      'bldg_line', 'floor_no', 'is_hold')
     search_fields = ('hold_reason',)
 
 
-class UnitNumberDetail(generics.RetrieveUpdateDestroyAPIView):
+class HouseUnitDetail(generics.RetrieveUpdateDestroyAPIView):
     name = 'unit-detail'
-    queryset = UnitNumber.objects.all()
-    serializer_class = UnitNumberSerializer
+    queryset = HouseUnit.objects.all()
+    serializer_class = HouseUnitSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
 

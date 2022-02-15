@@ -10,7 +10,7 @@ from django.views.generic import ListView, FormView, TemplateView
 from .models import (OrderGroup, Contract, Contractor,
                      ContractorAddress, ContractorContact, ContractorRelease)
 from rebs.models import ProjectAccountD1, ProjectAccountD2
-from project.models import Project, UnitType, KeyUnit, BuildingUnit, UnitNumber
+from project.models import Project, UnitType, KeyUnit, BuildingUnit, HouseUnit
 from cash.models import ProjectBankAccount, ProjectCashBook, InstallmentPaymentOrder
 
 from .forms import ContractRegisterForm, ContractPaymentForm, ContractorReleaseForm
@@ -40,7 +40,7 @@ class ContractLV(LoginRequiredMixin, ListView):
         if self.request.GET.get('type'):
             contract = contract.filter(unit_type=self.request.GET.get('type'))
         if self.request.GET.get('dong'):
-            contract = contract.filter(keyunit__unitnumber__building_unit=self.request.GET.get('dong'))
+            contract = contract.filter(keyunit__houseunit__building_unit=self.request.GET.get('dong'))
         if self.request.GET.get('status'):
             contract = contract.filter(contractor__contractorrelease__status=self.request.GET.get('status'))
         if self.request.GET.get('register'):
@@ -82,7 +82,7 @@ class ContractLV(LoginRequiredMixin, ListView):
         ocn = []
 
         for i, type in enumerate(context['types']):
-            units = UnitNumber.objects.filter(unit_type=type).count()  # 타입별 세대수
+            units = HouseUnit.objects.filter(unit_type=type).count()  # 타입별 세대수
             reservs = Contractor.objects.filter(contract__project=self.get_project(),
                                                 contract__unit_type=type,
                                                 status='1').count()
@@ -215,14 +215,14 @@ class ContractRegisterView(LoginRequiredMixin, FormView):
                                                  unit_type=self.request.GET.get('type'),
                                                  contract__isnull=True))
         context['key_units'] = key_units if cont_id else key_units[:10]
-        context['unit_numbers'] = UnitNumber.objects.filter(project=self.get_project(),
-                                                            unit_type=self.request.GET.get('type'),
-                                                            key_unit__isnull=True)
+        context['unit_numbers'] = HouseUnit.objects.filter(project=self.get_project(),
+                                                           unit_type=self.request.GET.get('type'),
+                                                           key_unit__isnull=True)
         if self.request.GET.get('unit_number'):
-            context['unit_numbers'] = UnitNumber.objects.filter(Q(pk=self.request.GET.get('unit_number')) |
-                                                                Q(project=self.get_project(),
-                                                                  unit_type=self.request.GET.get('type'),
-                                                                  key_unit__isnull=True))
+            context['unit_numbers'] = HouseUnit.objects.filter(Q(pk=self.request.GET.get('unit_number')) |
+                                                               Q(project=self.get_project(),
+                                                                 unit_type=self.request.GET.get('type'),
+                                                                 key_unit__isnull=True))
         context['project_bank_accounts'] = ProjectBankAccount.objects.filter(project=self.get_project())
         pay_code = '4' if cont_id else '2'
         context['installment_orders'] = InstallmentPaymentOrder.objects.filter(project=self.get_project(),
@@ -271,7 +271,7 @@ class ContractRegisterView(LoginRequiredMixin, FormView):
                 else:
                     # 1) 종전 동호수 연결 해제
                     try:
-                        pastUN = contract.keyunit.unitnumber
+                        pastUN = contract.keyunit.houseunit
                         pastUN.key_unit = None  # 종전 계약의 동호수 삭제
                         pastUN.save()
                     except ObjectDoesNotExist:
@@ -287,7 +287,7 @@ class ContractRegisterView(LoginRequiredMixin, FormView):
 
                 # 3. 동호수 연결
                 if self.request.POST.get('unit_number'):
-                    unit_number = UnitNumber.objects.get(pk=self.request.POST.get('unit_number'))
+                    unit_number = HouseUnit.objects.get(pk=self.request.POST.get('unit_number'))
                     unit_number.key_unit = keyunit
                     unit_number.save()
 
@@ -495,14 +495,14 @@ class ContractorReleaseRegister(LoginRequiredMixin, ListView, FormView):
                         contract.activation = False  # 일련번호 활성 해제
                         contract.save()
                     # 3. 계약유닛 연결 해제
-                    contract.keyunit.unitnumber
+                    contract.keyunit.houseunit
                     if not released_done:
                         keyunit.contract = None
                         keyunit.save()
                     # 4. 동호수 연결 해제
                     if not released_done:
                         try:  # 동호수 존재 여부 확인
-                            unit = keyunit.unitnumber
+                            unit = keyunit.houseunit
                         except Exception:
                             unit = None
                         if unit:
@@ -548,11 +548,11 @@ class BuildDashboard(LoginRequiredMixin, TemplateView):
         context['project_list'] = Project.objects.all() if user.is_superuser else user.staffauth.allowed_projects.all()
         context['this_project'] = self.get_project()
         context['types'] = UnitType.objects.filter(project=self.get_project())
-        context['max_floor'] = UnitNumber.objects.aggregate(Max('floor_no'))
+        context['max_floor'] = HouseUnit.objects.aggregate(Max('floor_no'))
         floor_no__max = context['max_floor']['floor_no__max'] if context['max_floor']['floor_no__max'] else 1
         context['max_floor_range'] = range(1, floor_no__max + 1)
-        context['unit_numbers'] = UnitNumber.objects.filter(project=self.get_project())
-        context['is_hold'] = UnitNumber.objects.filter(project=self.get_project(), is_hold=True)
+        context['unit_numbers'] = HouseUnit.objects.filter(project=self.get_project())
+        context['is_hold'] = HouseUnit.objects.filter(project=self.get_project(), is_hold=True)
         context['is_apply'] = Contractor.objects.filter(contract__project=self.get_project(), status='1')
         context['is_contract'] = Contractor.objects.filter(contract__project=self.get_project(), status='2')
         context['dong_list'] = []
@@ -563,15 +563,15 @@ class BuildDashboard(LoginRequiredMixin, TemplateView):
 
         for dong in dong_list:
             context['dong_list'].append(dong['name'])
-            lines = UnitNumber.objects.order_by('-bldg_line').values('bldg_line').filter(
+            lines = HouseUnit.objects.order_by('-bldg_line').values('bldg_line').filter(
                 building_unit__name__contains=dong['name']).distinct()
             ln = []
             for line in lines:
                 ln.append(line['bldg_line'])
             context['line'].append(ln)
             context['units'].append(
-                UnitNumber.objects.filter(building_unit__name__contains=dong['name']).order_by('-floor_no',
-                                                                                               'bldg_line'))
+                HouseUnit.objects.filter(building_unit__name__contains=dong['name']).order_by('-floor_no',
+                                                                                              'bldg_line'))
 
         context['line'] = list(reversed(context['line']))
         context['units'] = list(reversed(context['units']))
