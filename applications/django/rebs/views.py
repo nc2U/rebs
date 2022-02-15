@@ -165,8 +165,8 @@ class PdfExportBill(View):
                         due_date = None
 
                 # extra_date 이전의 연체일수를 계산하지 않는다. 즉 extra_date 이후의 연체 발생 건부터 적용한다.
-                extra_date = ipo.extra_due_date  # 납부유예일
-                if extra_date and extra_date > due_date:  # 납부유예일이 있고 납부기한일보다 늦으면
+                extra_date = ipo.extra_due_date if ipo.extra_due_date else due_date  # 납부유예일
+                if extra_date > due_date:  # 납부유예일이 있고 납부기한일보다 늦으면
                     due_date = extra_date  # extra_date 가 설정되어 있고 납부기한보다 늦으면 extra_date를 납부기한으로 한다.
 
                 due_date_list.append(due_date)  # 회차별 납부일자
