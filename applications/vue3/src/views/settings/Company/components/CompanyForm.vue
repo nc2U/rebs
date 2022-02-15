@@ -206,6 +206,7 @@
         v-if="this.update ? this.staffAuth : this.superAuth"
         type="submit"
         :color="btnClass"
+        :disabled="formsCheck"
       >
         <CIcon name="cil-check-circle" />
         저장
@@ -300,6 +301,22 @@ export default defineComponent({
     },
     btnClass() {
       return this.update ? 'success' : 'primary'
+    },
+    formsCheck(this: any) {
+      const a = this.form.name === this.company.name
+      const b = this.form.ceo === this.company.ceo
+      const c = this.form.tax_number === this.company.tax_number
+      const d = this.form.org_number === this.company.org_number
+      const e = this.form.business_cond === this.company.business_cond
+      const f = this.form.business_even === this.company.business_even
+      const g = this.form.es_date === this.company.es_date
+      const h = this.form.op_date === this.company.op_date
+      const i = this.form.zipcode === this.company.zipcode
+      const j = this.form.address1 === this.company.address1
+      const k = this.form.address2 === this.company.address2
+      const l = this.form.address3 === this.company.address3
+
+      return a && b && c && d && e && f && g && h && i && j && k && l
     },
     ...mapGetters('accounts', ['staffAuth', 'superAuth']),
   },
