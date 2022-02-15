@@ -29,16 +29,16 @@
             </th>
             <td class="text-center">{{ payment.deal_date|date:"Y-m-d" }}</td>
             <td class="text-center">{{ payment.contract.order_group|default:"-" }}</td>
-            <td class="text-center">{{ payment.contract.contractunit.unit_type|default:"-" }}</td>
+            <td class="text-center">{{ payment.contract.unit_type|default:"-" }}</td>
             <td class="text-center">{{ payment.contract.serial_number|default:"-" }}
             </td>
             <td class="text-center">
-                <a href="{% url 'rebs:cash-inout:payment-register' %}?project={{ this_project.id }}&type={{ payment.contract.contractunit.unit_type.id }}&contract={{ payment.contract.id }}&payment_id={{ payment.id }}">
+                <a href="{% url 'rebs:cash-inout:payment-register' %}?project={{ this_project.id }}&type={{ payment.contract.unit_type.id }}&contract={{ payment.contract.id }}&payment_id={{ payment.id }}">
                     {{ payment.contract.contractor.name|default:"계약정보확인" }}
                 </a>
             </td>
             <td class="text-right bg-success-lighten">
-                <a href="{% url 'rebs:cash-inout:payment-register' %}?project={{ this_project.id }}&type={{ payment.contract.contractunit.unit_type.id }}&contract={{ payment.contract.id }}&payment_id={{ payment.id }}">
+                <a href="{% url 'rebs:cash-inout:payment-register' %}?project={{ this_project.id }}&type={{ payment.contract.unit_type.id }}&contract={{ payment.contract.id }}&payment_id={{ payment.id }}">
                     {{ payment.income|floatformat:"0"|intcomma|default:"-" }}
                 </a>
             </td>
@@ -46,9 +46,9 @@
             <td class="text-center bg-success-lighten">{{ payment.bank_account }}</td>
             <td class="text-center bg-success-lighten">{{ payment.trader|default:"-" }}</td>
             <td class="text-center">
-                <a href="{% url 'rebs:cash-inout:payment-register' %}?project={{ this_project.id }}&type={{ payment.contract.contractunit.unit_type.id }}&contract={{ payment.contract.id }}&payment_id={{ payment.id }}"
+                <a href="{% url 'rebs:cash-inout:payment-register' %}?project={{ this_project.id }}&type={{ payment.contract.unit_type.id }}&contract={{ payment.contract.id }}&payment_id={{ payment.id }}"
                    class="action-icon"><i class="mdi mdi-pencil"></i></a>
-                <a href="{% url 'rebs:cash-inout:payment-register' %}?project={{ this_project.id }}&type={{ payment.contract.contractunit.unit_type.id }}&contract={{ payment.contract.id }}&payment_id={{ payment.id }}&delete=ok"
+                <a href="{% url 'rebs:cash-inout:payment-register' %}?project={{ this_project.id }}&type={{ payment.contract.unit_type.id }}&contract={{ payment.contract.id }}&payment_id={{ payment.id }}&delete=ok"
                    class="action-icon"><i class="mdi mdi-delete"></i></a>
             </td>
         </tr>

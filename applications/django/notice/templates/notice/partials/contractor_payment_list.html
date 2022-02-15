@@ -54,12 +54,12 @@
                        style="color: {{ object.contract.keyunit.unit_type.color }};"></i> {{ object.contract.keyunit.unit_type }}
                 </td>
                 {% if this_project.is_unit_set %}
-                    <td class="text-center">{{ object.contract.keyunit.unitnumber }}</td>
+                    <td class="text-center">{{ object.contract.keyunit.houseunit }}</td>
                 {% endif %}
                 <td class="text-center" data-toggle="tooltip" data-placement="left" title="계약 등록 관리 [{{ object.name }}]"
                     {% if object.contractorrelease.status == '3' %}data-toggle="popover"
                     data-trigger="hover" title="" data-content="해지신청 상태" data-original-title=""{% endif %}>
-                    <a href="{% url 'rebs:contract:register' %}?project={{ this_project.id }}&task=2&order_group={{ object.contract.order_group.id }}&type={{ object.contract.keyunit.unit_type.id }}&contract_unit={{ object.contract.keyunit.id }}&unit_number={{ object.contract.keyunit.unitnumber.id }}&cont_id={{ object.contract.id }}">
+                    <a href="{% url 'rebs:contract:register' %}?project={{ this_project.id }}&task=2&order_group={{ object.contract.order_group.id }}&type={{ object.contract.keyunit.unit_type.id }}&contract_unit={{ object.contract.keyunit.id }}&unit_number={{ object.contract.keyunit.houseunit.id }}&cont_id={{ object.contract.id }}">
                         {{ object.name }}
                     </a>
                 </td>

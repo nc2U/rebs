@@ -19,7 +19,7 @@ TODAY = datetime.today().strftime('%Y-%m-%d')
 class BillManageView(LoginRequiredMixin, ListView, FormView):
     model = Contractor
     form_class = SalesBillIssueForm
-    template_name = 'rebs_notice/contractor_bill_publish.html'
+    template_name = 'notice/contractor_bill_publish.html'
 
     def get_paginate_by(self, queryset):
         return self.request.GET.get('limit') if self.request.GET.get('limit') else 15
@@ -250,4 +250,4 @@ class BillManageView(LoginRequiredMixin, ListView, FormView):
                 page = '?page=' + self.request.GET.get('page') if self.request.GET.get('page') else ''
                 return redirect(reverse_lazy('rebs:notice:bill') + page)
 
-        return render(request, 'rebs_notice/contractor_bill_publish.html', {'form': form})
+        return render(request, 'notice/contractor_bill_publish.html', {'form': form})

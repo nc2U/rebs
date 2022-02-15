@@ -19,7 +19,7 @@
                     <div class="card-body">
 
                         {% with menu_order='1' %}
-                            {% include 'rebs_notice/partials/head_menu.html' %}
+                            {% include 'notice/partials/head_menu.html' %}
                         {% endwith %}
 
                         <form class="form-horizontal p-0 col-12" name="form1" method="get">
@@ -29,7 +29,7 @@
                             </div>
                         </form>
 
-                        {% include 'rebs_notice/partials/bill_issue_form.html' %}
+                        {% include 'notice/partials/bill_issue_form.html' %}
                     </div>
                 </div>
             </div>
@@ -39,10 +39,10 @@
                     <div class="card-body pb-1">
 
                         <div class="row mb-3 bg-light">
-                            {% include 'rebs_notice/partials/contractor_search_form.html' %}
+                            {% include 'notice/partials/contractor_search_form.html' %}
                         </div>
                         <div class="row">
-                            {% include 'rebs_notice/partials/contractor_payment_list.html' %}
+                            {% include 'notice/partials/contractor_payment_list.html' %}
                         </div>
 
                         {% if is_paginated %}
