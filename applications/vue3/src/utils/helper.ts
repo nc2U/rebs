@@ -14,6 +14,7 @@ export const message = (
       type,
       hideProgressBar: true,
       showIcon: true,
+      timeout: 1500,
       transition: 'slide',
       // toastBackgroundColor: '#4DC374',
     },
