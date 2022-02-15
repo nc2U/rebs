@@ -13,7 +13,29 @@ const projects = {
     {
       path: 'manage',
       name: '프로젝트 관리',
-      component: () => import('@/views/projects/List/Index.vue'),
+      redirect: '/project/manage/index',
+      component: {
+        render() {
+          return h(resolveComponent('router-view'))
+        },
+      },
+      children: [
+        {
+          path: 'index',
+          name: '프로젝트 등록',
+          component: () => import('@/views/projects/List/Index.vue'),
+        },
+        {
+          path: 'bldg',
+          name: '동(건물) 등록',
+          component: () => import('@/views/projects/Type/Index.vue'),
+        },
+        {
+          path: 'unit',
+          name: '호(건물) 등록',
+          component: () => import('@/views/projects/Floor/Index.vue'),
+        },
+      ],
     },
     {
       path: 'settings',

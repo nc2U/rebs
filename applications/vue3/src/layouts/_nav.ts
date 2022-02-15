@@ -200,6 +200,24 @@ export default [
         component: 'CNavItem',
         name: '프로젝트 관리',
         to: '/project/manage',
+        icon: 'cilStorage',
+        items: [
+          {
+            component: 'CNavItem',
+            name: '프로젝트 등록',
+            to: '/project/manage/index',
+          },
+          {
+            component: 'CNavItem',
+            name: '동(건물) 등록',
+            to: '/project/manage/bldg',
+          },
+          {
+            component: 'CNavItem',
+            name: '호(건물) 등록',
+            to: '/project/manage/unit',
+          },
+        ],
       },
       {
         component: 'CNavItem',
