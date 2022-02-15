@@ -178,11 +178,11 @@ class HouseUnitSerializer(serializers.ModelSerializer):
 class KeyUnitSerializer(serializers.ModelSerializer):
     project = serializers.SlugRelatedField(queryset=Project.objects.all(), slug_field='name')
     unit_type = serializers.SlugRelatedField(queryset=UnitType.objects.all(), slug_field='name')
-    house_unit = HouseUnitSerializer()
+    houseunit = HouseUnitSerializer()
 
     class Meta:
         model = KeyUnit
-        fields = ('pk', 'project', 'unit_type', 'unit_code', 'house_unit', 'contract')
+        fields = ('pk', 'project', 'unit_type', 'unit_code', 'houseunit', 'contract')
 
 
 class ProjectBudgetSerializer(serializers.ModelSerializer):
@@ -389,11 +389,11 @@ class HouseUnitInKeyUnitSerializer(serializers.ModelSerializer):
 
 
 class KeyUnitInContractListSerializer(serializers.ModelSerializer):
-    house_unit = HouseUnitInKeyUnitSerializer()
+    houseunit = HouseUnitInKeyUnitSerializer()
 
     class Meta:
         model = KeyUnit
-        fields = ('pk', 'house_unit')
+        fields = ('pk', 'houseunit')
 
 
 class AddressInContractorSerializer(serializers.ModelSerializer):
