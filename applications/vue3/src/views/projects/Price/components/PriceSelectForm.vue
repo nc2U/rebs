@@ -1,6 +1,6 @@
 <template>
   <CCallout color="warning" class="pb-2 mb-4">
-    <CRow class="p-2">
+    <CRow>
       <CCol md="4" class="mb-2">
         <CRow>
           <CFormLabel for="sel1" class="col-sm-3 col-form-label">
