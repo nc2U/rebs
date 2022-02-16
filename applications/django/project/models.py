@@ -134,7 +134,7 @@ class HouseUnit(models.Model):
         return f'{self.building_unit}-{self.name}'
 
     class Meta:
-        ordering = ['building_unit', 'name', '-project']
+        ordering = ['-project', 'building_unit', '-floor_no']
         verbose_name = '06. 호수'
         verbose_name_plural = '06. 호수'
 
