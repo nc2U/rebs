@@ -68,7 +68,7 @@ class ExportContracts(View):
                        ['차수', 'order_group__order_group_name', 10],
                        ['타입', 'keyunit__unit_type__name', 7],
                        ['동', 'keyunit__houseunit__building_unit', 7],
-                       ['호수', 'keyunit__houseunit__bldg_unit_no', 7],
+                       ['호수', 'keyunit__houseunit__name', 7],
                        ['계약자', 'contractor__name', 10],
                        ['생년월일', 'contractor__birth_date', 12],
                        ['계약일자', 'contractor__contract_date', 12],
@@ -243,7 +243,7 @@ class ExportApplicants(View):
         if project.is_unit_set:
             data_source.append(
                 ['동', 'keyunit__houseunit__building_unit', 7],
-                ['호수', 'keyunit__houseunit__bldg_unit_no', 7]
+                ['호수', 'keyunit__houseunit__name', 7]
             )
 
         # 1. Title
@@ -575,7 +575,7 @@ class ExportUnitStatus(View):
                         if not unit:
                             worksheet.merge_range(row_num, col_num, row_num + 1, col_num, '', unit_formats)
                         else:
-                            worksheet.write(row_num, col_num, int(unit.bldg_unit_no), unit_formats)
+                            worksheet.write(row_num, col_num, int(unit.name), unit_formats)
                             if unit.key_unit:
                                 if int(unit.key_unit.contract.contractor.status) % 2 == 0:
                                     status_format['bg_color'] = '#85929E'

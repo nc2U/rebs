@@ -131,7 +131,7 @@ class HouseUnit(models.Model):
     hold_reason = models.CharField('홀딩 사유', max_length=100, blank=True)
 
     def __str__(self):
-        return f'{self.building_unit}-{self.bldg_unit_no}'
+        return f'{self.building_unit}-{self.name}'
 
     class Meta:
         ordering = ['building_unit', 'name', '-project']
