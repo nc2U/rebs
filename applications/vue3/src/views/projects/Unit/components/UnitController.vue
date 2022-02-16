@@ -8,7 +8,7 @@
           </CFormLabel>
           <CCol sm="8">
             <CFormSelect
-              v-model="building"
+              v-model="form.building"
               @change="bldgSelect"
               :disabled="!project"
             >
@@ -33,7 +33,7 @@
         <CRow>
           <CFormLabel class="col-sm-4 col-form-label"> 타입선택</CFormLabel>
           <CCol sm="8">
-            <CFormSelect v-model="type" :disabled="building == ''">
+            <CFormSelect v-model="form.type" :disabled="form.building == ''">
               <option value>---------</option>
               <option v-for="type in unitTypeList" :key="type.pk">
                 {{ type.name }}
@@ -47,11 +47,11 @@
           <CFormLabel class="col-sm-4 col-form-label"> 등록라인</CFormLabel>
           <CCol sm="8">
             <CFormInput
-              v-model.number="line"
+              v-model.number="form.line"
               type="number"
               min="0"
               placeholder="등록할 라인 숫자 입력"
-              :disabled="type == ''"
+              :disabled="form.type == ''"
             />
           </CCol>
         </CRow>
@@ -62,10 +62,10 @@
           <CFormLabel class="col-sm-4 col-form-label"> 최저층</CFormLabel>
           <CCol sm="8">
             <CFormInput
-              v-model.number="minFloor"
+              v-model.number="form.minFloor"
               type="number"
               placeholder="최저층(피로티 제외)"
-              :disabled="line == ''"
+              :disabled="form.line == ''"
             />
           </CCol>
         </CRow>
@@ -76,11 +76,11 @@
           <CFormLabel class="col-sm-4 col-form-label"> 최고층</CFormLabel>
           <CCol sm="8">
             <CFormInput
-              v-model.number="maxFloor"
+              v-model.number="form.maxFloor"
               type="number"
               min="0"
               placeholder="해당 라인 최고층"
-              :disabled="minFloor == ''"
+              :disabled="form.minFloor == ''"
             />
           </CCol>
         </CRow>
@@ -88,8 +88,21 @@
     </CRow>
   </CCallout>
 
+  <CAlert color="danger" v-if="warning">
+    <CIcon name="cilWarning" />
+    <strong> 주의</strong> : 해당 라인의 최저층부터 최고층까지 범위의
+    호수(유니트)가 일괄등록됩니다. 해당 동, 타입과 층을 다시한번 확인하고
+    신중하게 진행하십시요.
+  </CAlert>
+
   <CAlert color="secondary" class="text-right">
-    <CButton color="primary">호수등록</CButton>
+    <CButton
+      color="primary"
+      @click="unitRegister"
+      :disabled="form.minFloor === ''"
+    >
+      호수(유니트) 일괄등록
+    </CButton>
   </CAlert>
 </template>
 
@@ -99,23 +112,27 @@ import { mapState } from 'vuex'
 
 export default defineComponent({
   name: 'BuildingSelector',
-  components: {},
   props: ['project'],
   data() {
     return {
-      building: '',
-      type: '',
-      line: '',
-      minFloor: '',
-      maxFloor: '',
+      form: {
+        building: '',
+        type: '',
+        line: '',
+        minFloor: '',
+        maxFloor: '',
+      },
     }
   },
   computed: {
+    warning() {
+      return this.form.maxFloor !== ''
+    },
     ...mapState('project', ['unitTypeList', 'buildingList']),
   },
   watch: {
     project() {
-      this.building = ''
+      this.form.building = ''
     },
     building(val) {
       if (val == '') this.reset(1)
@@ -133,23 +150,26 @@ export default defineComponent({
   methods: {
     reset(n: number): void {
       if (n == 1) {
-        this.type = ''
-        this.line = ''
-        this.minFloor = ''
-        this.maxFloor = ''
+        this.form.type = ''
+        this.form.line = ''
+        this.form.minFloor = ''
+        this.form.maxFloor = ''
       } else if (n == 2) {
-        this.line = ''
-        this.minFloor = ''
-        this.maxFloor = ''
+        this.form.line = ''
+        this.form.minFloor = ''
+        this.form.maxFloor = ''
       } else if (n == 3) {
-        this.minFloor = ''
-        this.maxFloor = ''
+        this.form.minFloor = ''
+        this.form.maxFloor = ''
       } else {
-        this.maxFloor = ''
+        this.form.maxFloor = ''
       }
     },
     bldgSelect(this: any, event: any) {
       this.$emit('bldg-select', event.target.value)
+    },
+    unitRegister() {
+      this.$emit('unit-register', this.form)
     },
   },
 })

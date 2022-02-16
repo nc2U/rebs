@@ -7,7 +7,11 @@
 
   <ContentBody>
     <CCardBody class="pb-5">
-      <BuildingSelector :project="project" @bldg-select="bldgSelect" />
+      <UnitController
+        :project="project"
+        @bldg-select="bldgSelect"
+        @unit-register="unitRegister"
+      />
       <UnitListTable />
     </CCardBody>
 
@@ -20,7 +24,7 @@ import { defineComponent } from 'vue'
 import HeaderMixin from '@/views/projects/_menu/headermixin2'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
-import BuildingSelector from '@/views/projects/Unit/components/BuildingSelector.vue'
+import UnitController from '@/views/projects/Unit/components/UnitController.vue'
 import UnitListTable from '@/views/projects/Unit/components/UnitListTable.vue'
 import { mapActions, mapGetters, mapState } from 'vuex'
 
@@ -30,7 +34,7 @@ export default defineComponent({
   components: {
     ContentHeader,
     ContentBody,
-    BuildingSelector,
+    UnitController,
     UnitListTable,
   },
   created(this: any) {
@@ -56,6 +60,10 @@ export default defineComponent({
     bldgSelect(this: any, bldg: '' | number) {
       if (bldg !== '') this.fetchUnitList({ project: this.project.pk, bldg })
       else this.$store.state.project.houseUnitList = []
+    },
+    unitRegister(payload: any) {
+      console.log(payload)
+      alert('Are you ready?')
     },
     ...mapActions('project', [
       'fetchTypeList',
