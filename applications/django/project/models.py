@@ -122,7 +122,7 @@ class HouseUnit(models.Model):
     floor_type = models.ForeignKey('UnitFloorType', on_delete=models.SET_NULL, null=True, blank=True,
                                    verbose_name='층범위 타입')
     building_unit = models.ForeignKey('project.BuildingUnit', on_delete=models.PROTECT, verbose_name='동수')
-    bldg_unit_no = models.CharField('호수', max_length=5, blank=True)
+    name = models.CharField('호수', max_length=5, blank=True)
     key_unit = models.OneToOneField(KeyUnit, on_delete=models.SET_NULL, null=True, blank=True,
                                     verbose_name='계약유닛')
     bldg_line = models.PositiveSmallIntegerField('라인')
@@ -134,7 +134,7 @@ class HouseUnit(models.Model):
         return f'{self.building_unit}-{self.bldg_unit_no}'
 
     class Meta:
-        ordering = ['building_unit', 'bldg_unit_no', '-project']
+        ordering = ['building_unit', 'name', '-project']
         verbose_name = '06. 호수'
         verbose_name_plural = '06. 호수'
 
