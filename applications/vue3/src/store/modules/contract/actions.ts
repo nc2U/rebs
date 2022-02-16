@@ -58,10 +58,9 @@ const actions = {
   },
 
   updateOrderGroup: ({ dispatch }: any, payload: any) => {
-    const { pk } = payload
-    delete payload.pk
+    const { pk, ...formData } = payload
     api
-      .put(`/order-group/${pk}/`, payload)
+      .put(`/order-group/${pk}/`, formData)
       .then(res => {
         dispatch('fetchOrderGroupList', res.data.project)
         message()

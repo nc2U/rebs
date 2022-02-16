@@ -38,12 +38,11 @@ const actions = {
   },
 
   updatePrice: ({ dispatch }: any, payload: any) => {
-    const { pk } = payload
-    delete payload.pk
+    const { pk, ...formData } = payload
     api
-      .put(`/price/${pk}/`, payload)
+      .put(`/price/${pk}/`, formData)
       .then(() => {
-        const { project, order_group, unit_type } = payload
+        const { project, order_group, unit_type } = formData
         dispatch('fetchPriceList', { project, order_group, unit_type })
         message()
       })
@@ -102,10 +101,9 @@ const actions = {
   },
 
   updatePayOrder: ({ dispatch }: any, payload: any) => {
-    const { pk } = payload
-    delete payload.pk
+    const { pk, ...formData } = payload
     api
-      .put(`/pay-order/${pk}/`, payload)
+      .put(`/pay-order/${pk}/`, formData)
       .then(res => {
         dispatch('fetchPayOrderList', res.data.project)
         message()
@@ -165,10 +163,9 @@ const actions = {
   },
 
   updateDownPay: ({ dispatch }: any, payload: any) => {
-    const { pk } = payload
-    delete payload.pk
+    const { pk, ...formData } = payload
     api
-      .put(`/down-payment/${pk}/`, payload)
+      .put(`/down-payment/${pk}/`, formData)
       .then(res => {
         dispatch('fetchDownPayList', res.data.project)
         message()

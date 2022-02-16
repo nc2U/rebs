@@ -98,10 +98,9 @@ const actions = {
   },
 
   updateType: ({ dispatch }: any, payload: any) => {
-    const { pk } = payload
-    delete payload.pk
+    const { pk, ...formData } = payload
     api
-      .put(`/type/${pk}/`, payload)
+      .put(`/type/${pk}/`, formData)
       .then(res => {
         dispatch('fetchTypeList', res.data.project)
         message()
@@ -158,10 +157,9 @@ const actions = {
   },
 
   updateFloorType: ({ dispatch }: any, payload: any) => {
-    const { pk } = payload
-    delete payload.pk
+    const { pk, ...formData } = payload
     api
-      .put(`/floor/${pk}/`, payload)
+      .put(`/floor/${pk}/`, formData)
       .then(res => {
         dispatch('fetchFloorTypeList', res.data.project)
         message()
@@ -218,10 +216,9 @@ const actions = {
   },
 
   updateBuilding: ({ dispatch }: any, payload: any) => {
-    const { pk } = payload
-    delete payload.pk
+    const { pk, ...formData } = payload
     api
-      .put(`/bldg/${pk}/`, payload)
+      .put(`/bldg/${pk}/`, formData)
       .then(res => {
         dispatch('fetchBuildingList', res.data.project)
         message()
