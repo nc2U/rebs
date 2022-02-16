@@ -154,6 +154,12 @@ class UnitTypeSerializer(serializers.ModelSerializer):
             'supply_area', 'contract_area', 'average_price', 'num_unit')
 
 
+class SimpleUnitTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UnitType
+        fields = ('name', 'color')
+
+
 class UnitFloorTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = UnitFloorType
@@ -167,6 +173,7 @@ class BuildingUnitSerializer(serializers.ModelSerializer):
 
 
 class HouseUnitSerializer(serializers.ModelSerializer):
+    unit_type = SimpleUnitTypeSerializer()
     floor_type = serializers.SlugRelatedField(queryset=UnitFloorType.objects.all(), slug_field='alias_name')
 
     class Meta:
@@ -376,12 +383,6 @@ class OrderGroupSerializer(serializers.ModelSerializer):
 
 
 # Contract --------------------------------------------------------------------------
-class UnitTypeInContractListSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = UnitType
-        fields = ('name', 'color')
-
-
 class HouseUnitInKeyUnitSerializer(serializers.ModelSerializer):
     class Meta:
         model = HouseUnit
@@ -421,7 +422,7 @@ class ContractorInContractListSerializer(serializers.ModelSerializer):
 
 class ContractListSerializer(serializers.ModelSerializer):
     order_group = serializers.SlugRelatedField(queryset=OrderGroup.objects.all(), slug_field='order_group_name')
-    unit_type = UnitTypeInContractListSerializer()
+    unit_type = SimpleUnitTypeSerializer()
     keyunit = KeyUnitInContractListSerializer()
     contractor = ContractorInContractListSerializer()
 
