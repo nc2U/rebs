@@ -41,9 +41,9 @@ class ApiIndex(generics.GenericAPIView):
             'project': reverse(api + ProjectList.name, request=request),
             'type': reverse(api + UnitTypeList.name, request=request),
             'floor': reverse(api + UnitFloorTypeList.name, request=request),
-            'building': reverse(api + BuildingUnitList.name, request=request),
             # 'key-unit': reverse(api + KeyUnitList.name, request=request),
-            'unit-number': reverse(api + HouseUnitList.name, request=request),
+            'bldg-unit': reverse(api + BuildingUnitList.name, request=request),
+            'house-unit': reverse(api + HouseUnitList.name, request=request),
             # 'budget': reverse(api + ProjectBudgetList.name, request=request),
             # 'site': reverse(api + SiteList.name, request=request),
             # 'site-owner': reverse(api + SiteOwnerList.name, request=request),
@@ -278,6 +278,7 @@ class HouseUnitList(generics.ListCreateAPIView):
     queryset = HouseUnit.objects.all()
     serializer_class = HouseUnitSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    pagination_class = PageNumberPaginationTwoHundred
     filter_fields = ('project', 'unit_type', 'floor_type', 'building_unit',
                      'bldg_line', 'floor_no', 'is_hold')
     search_fields = ('hold_reason',)
