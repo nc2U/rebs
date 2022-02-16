@@ -7,20 +7,26 @@
     </CRow>
 
     <CRow v-else>
-      <CCol class="p-5" md="5">
-        <CTable responsive>
-          <CTableBody>
-            <CTableRow v-for="i in maxFloor" :key="i">
-              <Unit
-                v-for="line in lineList"
-                :key="line"
-                :units="unitTable"
-                :floor="maxFloor + 1 - i"
-                :line="line"
-              />
-            </CTableRow>
-          </CTableBody>
-        </CTable>
+      <CCol class="p-5">
+        <CRow v-for="i in maxFloor" :key="i">
+          <Unit
+            v-for="line in lineList"
+            :key="line"
+            :units="unitTable"
+            :floor="maxFloor + 1 - i"
+            :line="line"
+          />
+        </CRow>
+        <CRow v-if="lineList">
+          <div
+            class="text-center build-base"
+            :style="{
+              width: `${60 * lineList.length}px`,
+            }"
+          >
+            901동
+          </div>
+        </CRow>
       </CCol>
     </CRow>
   </CContainer>
@@ -45,3 +51,13 @@ export default defineComponent({
   },
 })
 </script>
+
+<style lang="scss" scoped>
+.build-base {
+  height: 36px;
+  background: #777;
+  color: white;
+  line-height: 36px;
+  vertical-align: middle;
+}
+</style>

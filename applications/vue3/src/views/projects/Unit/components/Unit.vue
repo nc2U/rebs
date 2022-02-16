@@ -1,12 +1,12 @@
 <template>
-  <CTableDataCell
+  <div
     v-if="isBuild"
     class="type84"
     :class="{ boarded: isBuild, piloti: isPiloti }"
     :style="{ background: color }"
   >
     <span v-if="unit">{{ unit.name }}</span>
-  </CTableDataCell>
+  </div>
 </template>
 
 <script lang="ts">
@@ -38,8 +38,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .type84 {
-  width: 150px;
-  height: 16px;
+  width: 60px;
+  height: 20px;
   padding: 0;
   font-size: 10px;
   text-align: center;

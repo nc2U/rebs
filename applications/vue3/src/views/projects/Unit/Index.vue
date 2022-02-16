@@ -54,8 +54,8 @@ export default defineComponent({
       this.$store.state.project.houseUnitList = []
     },
     bldgSelect(this: any, bldg: '' | number) {
-      this.$store.state.project.houseUnitList = []
       if (bldg !== '') this.fetchUnitList({ project: this.project.pk, bldg })
+      else this.$store.state.project.houseUnitList = []
     },
     ...mapActions('project', [
       'fetchTypeList',
