@@ -64,7 +64,9 @@
     </CRow>
   </CCallout>
 
-  <CAlert color="dark"></CAlert>
+  <CAlert color="secondary">
+    <CButton color="primary">호수등록</CButton>
+  </CAlert>
 </template>
 
 <script lang="ts">
