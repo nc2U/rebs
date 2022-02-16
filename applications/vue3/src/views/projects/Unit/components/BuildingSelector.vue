@@ -84,7 +84,7 @@
     </CRow>
   </CCallout>
 
-  <CAlert color="secondary">
+  <CAlert color="secondary" class="text-right">
     <CButton color="primary">호수등록</CButton>
   </CAlert>
 </template>
