@@ -12,7 +12,7 @@
         @bldg-select="bldgSelect"
         @unit-register="unitRegister"
       />
-      <UnitListTable />
+      <UnitListTable :bldg-name="bldgName" />
     </CCardBody>
 
     <CCardFooter>&nbsp;</CCardFooter>
@@ -37,6 +37,11 @@ export default defineComponent({
     UnitController,
     UnitListTable,
   },
+  data() {
+    return {
+      bldgName: '',
+    }
+  },
   created(this: any) {
     this.fetchTypeList(this.initProjId)
     this.fetchBuildingList(this.initProjId)
@@ -57,9 +62,11 @@ export default defineComponent({
       }
       this.$store.state.project.houseUnitList = []
     },
-    bldgSelect(this: any, bldg: '' | number) {
-      if (bldg !== '') this.fetchUnitList({ project: this.project.pk, bldg })
+    bldgSelect(this: any, bldg: any) {
+      if (bldg.pk !== '')
+        this.fetchUnitList({ project: this.project.pk, bldg: bldg.pk })
       else this.$store.state.project.houseUnitList = []
+      this.bldgName = bldg.name
     },
     unitRegister(payload: any) {
       console.log(payload)

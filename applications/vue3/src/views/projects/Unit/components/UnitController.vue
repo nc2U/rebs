@@ -191,7 +191,8 @@ export default defineComponent({
       this.bldgName = this.buildingList.filter(
         (b: any) => b.pk == event.target.value,
       )[0].name
-      this.$emit('bldg-select', event.target.value)
+      const bldg = { pk: event.target.value, name: this.bldgName }
+      this.$emit('bldg-select', bldg)
     },
     unitRegister(this: any) {
       this.$refs.confirmModal.callModal()

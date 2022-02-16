@@ -24,7 +24,7 @@
               width: `${60 * lineList.length}px`,
             }"
           >
-            901동
+            {{ bldgName }}동
           </div>
         </CRow>
       </CCol>
@@ -40,6 +40,7 @@ import { mapGetters } from 'vuex'
 export default defineComponent({
   name: 'UnitListTable',
   components: { Unit },
+  props: ['bldgName'],
   computed: {
     maxFloor(this: any) {
       return Math.max(...this.unitTable.map((u: any) => u.floor))
