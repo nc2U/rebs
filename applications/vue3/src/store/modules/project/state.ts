@@ -67,7 +67,7 @@ export interface BuildingUnit {
 export interface HouseUnit {
   pk: number
   project: number
-  unit_type: number
+  unit_type: { name: string; color: string }
   floor_type: string
   building_number: number
   name: string
