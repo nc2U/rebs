@@ -254,7 +254,7 @@ const actions = {
     payload: { project: number; bldg: number },
   ) => {
     const { project, bldg } = payload
-    const urlStr = `?project=${project}&building_unit=${bldg}`
+    const urlStr = `/unit/?project=${project}&building_unit=${bldg}`
     api
       .get(urlStr)
       .then(res => {
