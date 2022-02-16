@@ -104,14 +104,35 @@
       호수(유니트) 일괄등록
     </CButton>
   </CAlert>
+
+  <ConfirmModal ref="confirmModal">
+    <template v-slot:header>
+      <CIcon name="cilItalic" />
+      호수(유니트) 정보
+    </template>
+    <template v-slot:default>
+      <p class="text-primary">
+        <strong>
+          {{ form.building }}동({{ form.type }} 타입 - {{ form.line }}호 라인)
+          최저층 : {{ form.minFloor }} - 최고층 : {{ form.maxFloor }}
+        </strong>
+      </p>
+      <p>상기 호수(유니트)정보의 일괄등록을 진행하시겠습니까?</p>
+    </template>
+    <template v-slot:footer>
+      <CButton color="primary" @click="modalAction">일괄등록</CButton>
+    </template>
+  </ConfirmModal>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import { mapState } from 'vuex'
 
 export default defineComponent({
   name: 'BuildingSelector',
+  components: { ConfirmModal },
   props: ['project'],
   data() {
     return {
@@ -168,8 +189,12 @@ export default defineComponent({
     bldgSelect(this: any, event: any) {
       this.$emit('bldg-select', event.target.value)
     },
-    unitRegister() {
+    unitRegister(this: any) {
+      this.$refs.confirmModal.callModal()
+    },
+    modalAction(this: any) {
       this.$emit('unit-register', this.form)
+      this.$refs.confirmModal.visible = false
     },
   },
 })
