@@ -237,7 +237,7 @@ export default [
           },
           {
             component: 'CNavItem',
-            name: '호(건물) 등록',
+            name: '호(유닛) 등록',
             to: '/project/settings/unit',
           },
           {

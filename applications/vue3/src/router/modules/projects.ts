@@ -59,7 +59,7 @@ const projects = {
         },
         {
           path: 'unit',
-          name: '호(건물) 등록',
+          name: '호(유닛) 등록',
           component: () => import('@/views/projects/Unit/Index.vue'),
         },
         {
