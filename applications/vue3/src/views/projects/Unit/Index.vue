@@ -7,7 +7,7 @@
 
   <ContentBody>
     <CCardBody class="pb-5">
-      <BuildingSelector :disabled="!project" @on-submit="onSubmit" />
+      <BuildingSelector :project="project" @on-submit="onSubmit" />
       <!--      <TypeFormList-->
       <!--        @on-update="onUpdateType"-->
       <!--        @on-delete="onDeleteType"-->

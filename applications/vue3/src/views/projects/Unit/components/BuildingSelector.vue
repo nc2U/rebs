@@ -7,13 +7,16 @@
             동(건물)선택
           </CFormLabel>
           <CCol sm="8">
-            <CFormSelect v-model="building" :disabled="disabled">
+            <CFormSelect
+              v-model="building"
+              @change="bldgSelect"
+              :disabled="!project"
+            >
               <option value>---------</option>
               <option v-for="building in buildingList" :key="building.pk">
                 {{ building.name }}동
               </option>
             </CFormSelect>
-            <!--            <CFormText>입력할 동을 선택하여 주세요.</CFormText>-->
           </CCol>
         </CRow>
       </CCol>
@@ -26,7 +29,7 @@
         <CRow>
           <CFormLabel class="col-sm-4 col-form-label"> 타입선택</CFormLabel>
           <CCol sm="8">
-            <CFormSelect v-model="type" :disabled="disabled">
+            <CFormSelect v-model="type" :disabled="building == ''">
               <option value>---------</option>
               <option v-for="type in unitTypeList" :key="type.pk">
                 {{ type.name }}
@@ -39,7 +42,13 @@
         <CRow>
           <CFormLabel class="col-sm-4 col-form-label"> 등록라인</CFormLabel>
           <CCol sm="8">
-            <CFormInput type="number" placeholder="등록할 라인 숫자 입력" />
+            <CFormInput
+              v-model.number="line"
+              type="number"
+              min="0"
+              placeholder="등록할 라인 숫자 입력"
+              :disabled="type == ''"
+            />
           </CCol>
         </CRow>
       </CCol>
@@ -48,7 +57,12 @@
         <CRow>
           <CFormLabel class="col-sm-4 col-form-label"> 최저층</CFormLabel>
           <CCol sm="8">
-            <CFormInput type="number" placeholder="최저층(피로티 제외)" />
+            <CFormInput
+              v-model.number="minFloor"
+              type="number"
+              placeholder="최저층(피로티 제외)"
+              :disabled="line == ''"
+            />
           </CCol>
         </CRow>
       </CCol>
@@ -57,7 +71,13 @@
         <CRow>
           <CFormLabel class="col-sm-4 col-form-label"> 최고층</CFormLabel>
           <CCol sm="8">
-            <CFormInput type="number" placeholder="해당 라인 최고층" />
+            <CFormInput
+              v-model.number="maxFloor"
+              type="number"
+              min="0"
+              placeholder="해당 라인 최고층"
+              :disabled="minFloor == ''"
+            />
           </CCol>
         </CRow>
       </CCol>
@@ -76,20 +96,53 @@ import { mapState } from 'vuex'
 export default defineComponent({
   name: 'BuildingSelector',
   components: {},
-
+  props: ['project'],
   data() {
     return {
-      type: '',
       building: '',
-      disabled: false,
+      type: '',
+      line: '',
+      minFloor: '',
+      maxFloor: '',
     }
   },
   computed: {
     ...mapState('project', ['unitTypeList', 'buildingList']),
   },
+  watch: {
+    project() {
+      this.building = ''
+    },
+    building(val) {
+      if (val == '') this.reset(1)
+    },
+    type(val) {
+      if (val == '') this.reset(2)
+    },
+    line(val) {
+      if (val == '') this.reset(3)
+    },
+    minFloor(val) {
+      if (val == '') this.reset(4)
+    },
+  },
   methods: {
-    onBuildingSelect(e: any) {
-      this.$emit('on-select', e.target.value)
+    reset(n: number): void {
+      if (n == 1) {
+        this.type = ''
+        this.line = ''
+        this.minFloor = ''
+        this.maxFloor = ''
+      } else if (n == 2) {
+        this.line = ''
+        this.minFloor = ''
+        this.maxFloor = ''
+      } else if (n == 3) {
+        this.minFloor = ''
+        this.maxFloor = ''
+      } else {
+        this.maxFloor = ''
+      }
     },
   },
 })
