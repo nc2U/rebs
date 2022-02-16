@@ -70,7 +70,7 @@ export interface HouseUnit {
   unit_type: number
   floor_type: string
   building_number: number
-  bldg_unit_no: string
+  name: string
   contract_unit: number | null
   bldg_line: number
   floor_no: number
