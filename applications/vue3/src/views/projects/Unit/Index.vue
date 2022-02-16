@@ -7,8 +7,8 @@
 
   <ContentBody>
     <CCardBody class="pb-5">
-      <BuildingSelector :project="project" @on-submit="onSubmit" />
-      <UnitListTable :project="project" />
+      <BuildingSelector :project="project" @bldg-select="bldgSelect" />
+      <UnitListTable />
     </CCardBody>
 
     <CCardFooter>&nbsp;</CCardFooter>
@@ -51,7 +51,15 @@ export default defineComponent({
         this.$store.state.project.buildingList = []
       }
     },
-    ...mapActions('project', ['fetchTypeList', 'fetchBuildingList']),
+    bldgSelect(this: any, bldg: '' | number) {
+      if (bldg == '') this.$store.state.project.houseUnitList = []
+      else this.fetchUnitList({ project: this.project.pk, bldg })
+    },
+    ...mapActions('project', [
+      'fetchTypeList',
+      'fetchBuildingList',
+      'fetchUnitList',
+    ]),
   },
 })
 </script>

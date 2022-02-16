@@ -13,7 +13,11 @@
               :disabled="!project"
             >
               <option value>---------</option>
-              <option v-for="building in buildingList" :key="building.pk">
+              <option
+                v-for="building in buildingList"
+                :key="building.pk"
+                :value="building.pk"
+              >
                 {{ building.name }}동
               </option>
             </CFormSelect>
@@ -143,6 +147,9 @@ export default defineComponent({
       } else {
         this.maxFloor = ''
       }
+    },
+    bldgSelect(this: any, event: any) {
+      this.$emit('bldg-select', event.target.value)
     },
   },
 })
