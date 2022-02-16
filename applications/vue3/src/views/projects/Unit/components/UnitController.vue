@@ -14,11 +14,11 @@
             >
               <option value>---------</option>
               <option
-                v-for="building in buildingList"
-                :key="building.pk"
-                :value="building.pk"
+                v-for="bldg in buildingList"
+                :key="bldg.pk"
+                :value="bldg.pk"
               >
-                {{ building.name }}동
+                {{ bldg.name }}동
               </option>
             </CFormSelect>
           </CCol>
@@ -113,8 +113,8 @@
     <template v-slot:default>
       <p class="text-primary">
         <strong>
-          {{ form.building }}동({{ form.type }} 타입 - {{ form.line }}호 라인)
-          최저층 : {{ form.minFloor }} - 최고층 : {{ form.maxFloor }}
+          [{{ bldgName }}동] ({{ form.type }} 타입) {{ form.line }}호 라인,
+          층범위 : {{ form.minFloor }}층 - {{ form.maxFloor }}층
         </strong>
       </p>
       <p>상기 호수(유니트)정보의 일괄등록을 진행하시겠습니까?</p>
@@ -136,6 +136,7 @@ export default defineComponent({
   props: ['project'],
   data() {
     return {
+      bldgName: '',
       form: {
         building: '',
         type: '',
@@ -187,6 +188,9 @@ export default defineComponent({
       }
     },
     bldgSelect(this: any, event: any) {
+      this.bldgName = this.buildingList.filter(
+        (b: any) => b.pk == event.target.value,
+      )[0].name
       this.$emit('bldg-select', event.target.value)
     },
     unitRegister(this: any) {
