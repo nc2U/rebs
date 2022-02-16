@@ -2,6 +2,7 @@ import api from '@/api'
 import {
   FETCH_BUILDING_LIST,
   FETCH_FLOOR_TYPE_LIST,
+  FETCH_HOUSE_UNIT_LIST,
   FETCH_PROJECT,
   FETCH_PROJECT_LIST,
   FETCH_TYPE_LIST,
@@ -15,7 +16,7 @@ const actions = {
       .then(res => {
         commit(FETCH_PROJECT_LIST, res.data)
       })
-      .catch(err => console.log(err))
+      .catch(err => console.log(err.response.data))
   },
 
   fetchProject: ({ commit }: any, pk: number) => {
@@ -24,7 +25,7 @@ const actions = {
       .then(res => {
         commit(FETCH_PROJECT, res.data)
       })
-      .catch(err => console.log(err))
+      .catch(err => console.log(err.response.data))
   },
 
   createProject: ({ dispatch }: any, payload: any) => {
@@ -77,7 +78,7 @@ const actions = {
       .then(res => {
         commit(FETCH_TYPE_LIST, res.data)
       })
-      .catch(err => console.log(err))
+      .catch(err => console.log(err.response.data))
   },
 
   createType: ({ dispatch }: any, payload: any) => {
@@ -136,7 +137,7 @@ const actions = {
       .then(res => {
         commit(FETCH_FLOOR_TYPE_LIST, res.data)
       })
-      .catch(err => console.log(err))
+      .catch(err => console.log(err.response.data))
   },
 
   createFloorType: ({ dispatch }: any, payload: any) => {
@@ -244,6 +245,70 @@ const actions = {
       .catch(() => {
         alert(
           '해당 그룹에 종속된 호수(Unit) 관련 데이터가 있는 경우 이 그룹을 삭제할 수 없습니다.',
+        )
+      })
+  },
+
+  fetchUnitList: (
+    { commit }: any,
+    payload: { project: number; bldg: number },
+  ) => {
+    const { project, bldg } = payload
+    const urlStr = `?project=${project}&building_unit=${bldg}`
+    api
+      .get(urlStr)
+      .then(res => {
+        commit(FETCH_HOUSE_UNIT_LIST, res.data)
+      })
+      .catch(err => console.log(err.response.data))
+  },
+
+  createUnit: ({ dispatch }: any, payload: any) => {
+    api
+      .post(`/unit/`, payload)
+      .then(res => {
+        dispatch('fetchUnitList', res.data.project)
+        message()
+      })
+      .catch(err => {
+        console.log(err.response.data)
+        alert(
+          `${Object.keys(err.response.data)[0]} : ${
+            err.response.data[Object.keys(err.response.data)[0]]
+          }`,
+        )
+      })
+  },
+
+  updateUnit: ({ dispatch }: any, payload: any) => {
+    const { pk, ...formData } = payload
+    api
+      .put(`/unit/${pk}/`, formData)
+      .then(res => {
+        dispatch('fetchUnitList', res.data.project)
+        message()
+      })
+      .catch(err => {
+        console.log(err.response.data)
+        alert(
+          `${Object.keys(err.response.data)[0]} : ${
+            err.response.data[Object.keys(err.response.data)[0]]
+          }`,
+        )
+      })
+  },
+
+  deleteUnit: ({ dispatch }: any, payload: any) => {
+    const { pk, project } = payload
+    api
+      .delete(`/unit/${pk}/`)
+      .then(() => {
+        dispatch('fetchUnitList', project)
+        message('danger', '알림!', '해당 오브젝트가 삭제되었습니다.')
+      })
+      .catch(() => {
+        alert(
+          '해당 그룹에 종속된 계약관련 데이터가 있는 경우 이 그룹을 삭제할 수 없습니다.',
         )
       })
   },

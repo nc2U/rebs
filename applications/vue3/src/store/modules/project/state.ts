@@ -50,21 +50,21 @@ interface UnitFloorType {
   alias_name: string
 }
 
-export interface BuildingNumber {
+export interface KeyUnit {
+  pk: number
+  project: number
+  unit_type: number
+  unit_code: string
+  contract: number | null
+}
+
+export interface BuildingUnit {
   pk: number
   project: number
   name: string
 }
 
-export interface ContractUnit {
-  pk: number
-  project: number
-  unit_type: number
-  unit_code: string
-  contract: number
-}
-
-export interface UnitNumber {
+export interface HouseUnit {
   pk: number
   project: number
   unit_type: number
@@ -158,21 +158,14 @@ export interface ProjectState {
   project: Project | null
   unitTypeList: UnitType[]
   floorTypeList: UnitFloorType[]
-  buildingList: BuildingNumber[]
-  contUnitList: ContractUnit[]
-  cont_unit: ContractUnit | null
-  unitNumberList: UnitNumber[]
-  unit_number: UnitNumber | null
+  keyUnitList: KeyUnit[]
+  buildingList: BuildingUnit[]
+  houseUnitList: HouseUnit[]
   projectBudgetList: ProjectBudget[]
-  projectBudget: ProjectBudget | null
   siteList: Site[]
-  site: Site | null
   siteOwnerList: SiteOwner[]
-  site_owner: SiteOwner | null
   siteOwnerRelationList: SiteOwnshipRelationship[]
-  site_owner_relation: SiteOwnshipRelationship | null
   siteContractList: SiteContract[]
-  site_contract: SiteContract | null
 }
 
 const state: ProjectState = {
@@ -180,21 +173,14 @@ const state: ProjectState = {
   project: null,
   unitTypeList: [],
   floorTypeList: [],
+  keyUnitList: [],
   buildingList: [],
-  contUnitList: [],
-  cont_unit: null,
-  unitNumberList: [],
-  unit_number: null,
+  houseUnitList: [],
   projectBudgetList: [],
-  projectBudget: null,
   siteList: [],
-  site: null,
   siteOwnerList: [],
-  site_owner: null,
   siteOwnerRelationList: [],
-  site_owner_relation: null,
   siteContractList: [],
-  site_contract: null,
 }
 
 export default state
