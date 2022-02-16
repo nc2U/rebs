@@ -29,7 +29,12 @@
             </th>
             <td class="text-center">{{ payment.deal_date|date:"Y-m-d" }}</td>
             <td class="text-center">{{ payment.contract.order_group|default:"-" }}</td>
-            <td class="text-center">{{ payment.contract.unit_type|default:"-" }}</td>
+            <td>
+                {% if payment.contract.unit_type %}
+                    <i class="mdi mdi-box-shadow font-17" style="color: {{ payment.contract.unit_type.color }}"></i>
+                {% endif %}
+                {{ payment.contract.unit_type|default:"-" }}
+            </td>
             <td class="text-center">{{ payment.contract.serial_number|default:"-" }}
             </td>
             <td class="text-center">
