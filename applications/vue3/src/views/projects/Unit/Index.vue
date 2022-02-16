@@ -33,9 +33,10 @@ export default defineComponent({
     BuildingSelector,
     UnitListTable,
   },
-  created() {
+  created(this: any) {
     this.fetchTypeList(this.initProjId)
     this.fetchBuildingList(this.initProjId)
+    this.$store.state.project.houseUnitList = []
   },
   computed: {
     ...mapState('project', ['project']),
@@ -50,10 +51,11 @@ export default defineComponent({
         this.$store.state.project.unitTypeList = []
         this.$store.state.project.buildingList = []
       }
+      this.$store.state.project.houseUnitList = []
     },
     bldgSelect(this: any, bldg: '' | number) {
-      if (bldg == '') this.$store.state.project.houseUnitList = []
-      else this.fetchUnitList({ project: this.project.pk, bldg })
+      this.$store.state.project.houseUnitList = []
+      if (bldg !== '') this.fetchUnitList({ project: this.project.pk, bldg })
     },
     ...mapActions('project', [
       'fetchTypeList',
