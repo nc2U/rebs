@@ -2,7 +2,11 @@
   <div
     v-if="isBuild"
     class="type84"
-    :class="{ boarded: isBuild, piloti: isPiloti }"
+    :class="{
+      first: line === 1,
+      rest: line !== 1,
+      piloti: isPiloti,
+    }"
     :style="{ background: color }"
   >
     <span v-if="unit">{{ unit.name }}</span>
@@ -44,14 +48,21 @@ export default defineComponent({
   font-size: 10px;
   text-align: center;
   vertical-align: middle;
-  border: 0;
 }
 
 .piloti {
   background-color: #ccc;
 }
 
-.boarded {
-  border: solid 1px #999;
+.first {
+  border-width: 1px 1px 0 1px;
+  border-style: solid;
+  border-color: #999;
+}
+
+.rest {
+  border-width: 1px 1px 0 0;
+  border-style: solid;
+  border-color: #999;
 }
 </style>
