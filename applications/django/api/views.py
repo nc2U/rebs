@@ -278,7 +278,7 @@ class HouseUnitList(generics.ListCreateAPIView):
     queryset = HouseUnit.objects.all()
     serializer_class = HouseUnitSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-    filter_fields = ('project', 'unit_type', 'floor_type', 'building_number',
+    filter_fields = ('project', 'unit_type', 'floor_type', 'building_unit',
                      'bldg_line', 'floor_no', 'is_hold')
     search_fields = ('hold_reason',)
 
