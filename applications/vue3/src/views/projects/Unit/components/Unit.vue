@@ -1,10 +1,10 @@
 <template>
   <div
     v-if="isBuild"
-    class="type84"
+    class="unit"
     :class="{
-      first: line === 1,
-      rest: line !== 1,
+      firstline: line === 1,
+      restline: line !== 1,
       piloti: isPiloti,
     }"
     :style="{ background: color }"
@@ -41,7 +41,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.type84 {
+.unit {
   width: 60px;
   height: 20px;
   padding: 0;
@@ -54,13 +54,13 @@ export default defineComponent({
   background-color: #ccc;
 }
 
-.first {
+.firstline {
   border-width: 1px 1px 0 1px;
   border-style: solid;
   border-color: #999;
 }
 
-.rest {
+.restline {
   border-width: 1px 1px 0 0;
   border-style: solid;
   border-color: #999;
