@@ -32,7 +32,7 @@
       <CDropdownDivider />
       <CDropdownItem @click="logOut" style="cursor: pointer">
         <CIcon icon="cil-lock-locked" />
-        Logout
+        로그아웃
       </CDropdownItem>
     </CDropdownMenu>
   </CDropdown>
