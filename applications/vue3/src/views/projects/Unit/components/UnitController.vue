@@ -33,7 +33,11 @@
         <CRow>
           <CFormLabel class="col-sm-4 col-form-label"> 타입선택</CFormLabel>
           <CCol sm="8">
-            <CFormSelect v-model="form.type" :disabled="form.building == ''">
+            <CFormSelect
+              v-model="form.type"
+              @change="typeSelect"
+              :disabled="form.building == ''"
+            >
               <option value>---------</option>
               <option
                 v-for="type in unitTypeList"
@@ -132,7 +136,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
-import { mapGetters, mapState } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'BuildingSelector',
@@ -202,6 +206,12 @@ export default defineComponent({
       }
       this.$emit('bldg-select', bldg)
     },
+    typeSelect(event: any) {
+      this.fetchNumUnitByType({
+        project: this.project.pk,
+        unit_type: event.target.value,
+      })
+    },
     unitRegister(this: any) {
       this.$refs.confirmModal.callModal()
     },
@@ -212,6 +222,7 @@ export default defineComponent({
       })
       this.$refs.confirmModal.visible = false
     },
+    ...mapActions('project', ['fetchNumUnitByType']),
   },
 })
 </script>

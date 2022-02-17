@@ -49,7 +49,7 @@ export default defineComponent({
     this.$store.state.project.houseUnitList = []
   },
   computed: {
-    ...mapState('project', ['project']),
+    ...mapState('project', ['project', 'numUnitByType']),
     ...mapGetters('accounts', ['initProjId']),
   },
   methods: {
@@ -88,8 +88,9 @@ export default defineComponent({
         floor_type: payload.floors
           .filter((f: any) => between(i, f.start, f.end))
           .map((f: any) => f.pk)[0],
-        unit_code: 'unit_code', // Todo => 코드 부여 알고리즘 작성
+        unit_code: this.numUnitByType, // Todo => 코드 부여 알고리즘 작성
       }))
+
       console.log({ project, unit_type, building_unit, bldg_line })
       console.log(floors)
     },
