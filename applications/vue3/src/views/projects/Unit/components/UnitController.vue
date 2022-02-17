@@ -35,7 +35,11 @@
           <CCol sm="8">
             <CFormSelect v-model="form.type" :disabled="form.building == ''">
               <option value>---------</option>
-              <option v-for="type in unitTypeList" :key="type.pk">
+              <option
+                v-for="type in unitTypeList"
+                :value="type.pk"
+                :key="type.pk"
+              >
                 {{ type.name }}
               </option>
             </CFormSelect>
