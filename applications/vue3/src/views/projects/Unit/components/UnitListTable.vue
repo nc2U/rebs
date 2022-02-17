@@ -1,6 +1,6 @@
 <template>
   <CContainer>
-    <CRow v-if="unitTable.length === 0">
+    <CRow v-if="simpleUnits.length === 0">
       <CCol class="text-center p-5 text-danger">
         등록된 데이터가 없습니다.
       </CCol>
@@ -12,7 +12,7 @@
           <Unit
             v-for="line in lineList"
             :key="line"
-            :units="unitTable"
+            :units="simpleUnits"
             :floor="maxFloor + 1 - i"
             :line="line"
           />
@@ -43,12 +43,12 @@ export default defineComponent({
   props: ['bldgName'],
   computed: {
     maxFloor(this: any) {
-      return Math.max(...this.unitTable.map((u: any) => u.floor))
+      return Math.max(...this.simpleUnits.map((u: any) => u.floor))
     },
     lineList(this: any) {
-      return [...new Set(this.unitTable.map((u: any) => u.line))].sort()
+      return [...new Set(this.simpleUnits.map((u: any) => u.line))].sort()
     },
-    ...mapGetters('project', ['unitTable']),
+    ...mapGetters('project', ['simpleUnits']),
   },
 })
 </script>
