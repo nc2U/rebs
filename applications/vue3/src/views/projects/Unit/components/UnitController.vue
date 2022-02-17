@@ -155,6 +155,7 @@ export default defineComponent({
   watch: {
     project() {
       this.form.building = ''
+      this.form.type = ''
     },
     building(val) {
       if (val == '') this.reset(1)
