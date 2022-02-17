@@ -161,6 +161,7 @@ export interface ProjectState {
   keyUnitList: KeyUnit[]
   buildingList: BuildingUnit[]
   houseUnitList: HouseUnit[]
+  numUnitByType: number
   projectBudgetList: ProjectBudget[]
   siteList: Site[]
   siteOwnerList: SiteOwner[]
@@ -176,6 +177,7 @@ const state: ProjectState = {
   keyUnitList: [],
   buildingList: [],
   houseUnitList: [],
+  numUnitByType: 0,
   projectBudgetList: [],
   siteList: [],
   siteOwnerList: [],

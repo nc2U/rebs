@@ -2,17 +2,21 @@ import { HouseUnit, Project, ProjectState } from '@/store/modules/project/state'
 
 const getters = {
   projSelect: (state: ProjectState) =>
-    state.projectList.map((proj: Project) => ({
-      value: proj.pk,
-      text: proj.name,
-    })),
+    state.projectList
+      ? state.projectList.map((proj: Project) => ({
+          value: proj.pk,
+          text: proj.name,
+        }))
+      : [],
 
   simpleFloors: (state: ProjectState) =>
-    state.floorTypeList.map((f: any) => ({
-      pk: f.pk,
-      start: f.start_floor,
-      end: f.end_floor,
-    })),
+    state.floorTypeList
+      ? state.floorTypeList.map((f: any) => ({
+          pk: f.pk,
+          start: f.start_floor,
+          end: f.end_floor,
+        }))
+      : [],
 
   simpleUnits: (state: ProjectState) =>
     state.houseUnitList
@@ -23,8 +27,6 @@ const getters = {
           floor: u.floor_no,
         }))
       : [],
-
-  unitCounter: () => '',
 }
 
 export default getters

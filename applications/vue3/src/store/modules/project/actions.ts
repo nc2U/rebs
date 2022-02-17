@@ -3,6 +3,7 @@ import {
   FETCH_BUILDING_LIST,
   FETCH_FLOOR_TYPE_LIST,
   FETCH_HOUSE_UNIT_LIST,
+  FETCH_NUM_UNIT_BY_TYPE,
   FETCH_PROJECT,
   FETCH_PROJECT_LIST,
   FETCH_TYPE_LIST,
@@ -259,6 +260,19 @@ const actions = {
       .get(urlStr)
       .then(res => {
         commit(FETCH_HOUSE_UNIT_LIST, res.data)
+      })
+      .catch(err => console.log(err.response.data))
+  },
+
+  fetchNumUnitByType: (
+    { commit }: any,
+    payload: { project: number; unit_type: number },
+  ) => {
+    const { project, unit_type } = payload
+    api
+      .get(`/unit/?project=${project}&unit_type=${unit_type}`)
+      .then(res => {
+        commit(FETCH_NUM_UNIT_BY_TYPE, res.data.count)
       })
       .catch(err => console.log(err.response.data))
   },

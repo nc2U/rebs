@@ -5,6 +5,7 @@ import {
   FETCH_FLOOR_TYPE_LIST,
   FETCH_BUILDING_LIST,
   FETCH_HOUSE_UNIT_LIST,
+  FETCH_NUM_UNIT_BY_TYPE,
 } from '@/store/modules/project/mutations-types'
 import { Project, ProjectState } from '@/store/modules/project/state'
 
@@ -31,6 +32,10 @@ const mutations = {
 
   [FETCH_HOUSE_UNIT_LIST]: (state: ProjectState, payload: any) => {
     state.houseUnitList = payload.results
+  },
+
+  [FETCH_NUM_UNIT_BY_TYPE]: (state: ProjectState, count: number) => {
+    state.numUnitByType = count
   },
 }
 
