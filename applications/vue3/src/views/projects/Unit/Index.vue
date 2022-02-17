@@ -44,20 +44,23 @@ export default defineComponent({
   },
   created(this: any) {
     this.fetchTypeList(this.initProjId)
+    this.fetchFloorTypeList(this.initProjId)
     this.fetchBuildingList(this.initProjId)
     this.$store.state.project.houseUnitList = []
   },
   computed: {
-    ...mapState('project', ['project']),
+    ...mapState('project', ['project', 'floorTypeList']),
     ...mapGetters('accounts', ['initProjId']),
   },
   methods: {
     onSelectAdd(this: any, target: any) {
       if (target !== '') {
-        this.fetchBuildingList(target)
         this.fetchTypeList(target)
+        this.fetchFloorTypeList(target)
+        this.fetchBuildingList(target)
       } else {
         this.$store.state.project.unitTypeList = []
+        this.$store.state.project.floorTypeList = []
         this.$store.state.project.buildingList = []
       }
       this.$store.state.project.houseUnitList = []
@@ -77,10 +80,14 @@ export default defineComponent({
       const size = payload.maxFloor - payload.minFloor + 1
       const range = (size: number, min: number): number[] =>
         [...Array(size).keys()].map(key => key + min)
+      const between = (x: number, min: number, max: number): boolean =>
+        x >= min && x <= max
       const floors = range(size, payload.minFloor).map(i => ({
         floor_no: i,
         name: `${i}${middleWord}${bldg_line}`,
-        floor_type: 1, // Todo => floor_type 객체 준비 후 순회 현재 floor_no 가 만족하는 키 추출
+        floor_type: this.floorTypeList
+          .filter((f: any) => between(i, f.start_floor, f.end_floor))
+          .map((f: any) => f.pk)[0],
         unit_code: 'unit_code', // Todo => 코드 부여 알고리즘 작성
       }))
       console.log({ project, unit_type, building_unit, bldg_line })
@@ -88,6 +95,7 @@ export default defineComponent({
     },
     ...mapActions('project', [
       'fetchTypeList',
+      'fetchFloorTypeList',
       'fetchBuildingList',
       'fetchUnitList',
     ]),
