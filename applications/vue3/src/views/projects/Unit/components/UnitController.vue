@@ -63,12 +63,12 @@
 
       <CCol md="3" class="mb-2">
         <CRow>
-          <CFormLabel class="col-sm-4 col-form-label"> 최저층</CFormLabel>
+          <CFormLabel class="col-sm-4 col-form-label"> 시작층</CFormLabel>
           <CCol sm="8">
             <CFormInput
               v-model.number="form.minFloor"
               type="number"
-              placeholder="최저층(피로티 제외)"
+              placeholder="시작층(피로티 제외)"
               :disabled="form.line == ''"
             />
           </CCol>
@@ -77,13 +77,13 @@
 
       <CCol md="3" class="mb-2">
         <CRow>
-          <CFormLabel class="col-sm-4 col-form-label"> 최고층</CFormLabel>
+          <CFormLabel class="col-sm-4 col-form-label"> 종료층</CFormLabel>
           <CCol sm="8">
             <CFormInput
               v-model.number="form.maxFloor"
               type="number"
               min="0"
-              placeholder="해당 라인 최고층"
+              placeholder="입력 범위 종료층"
               :disabled="form.minFloor == ''"
             />
           </CCol>
@@ -94,9 +94,9 @@
 
   <CAlert color="danger" v-if="warning">
     <CIcon name="cilWarning" />
-    <strong> 주의</strong> : 해당 라인의 최저층부터 최고층까지 범위의
-    호수(유니트)가 일괄등록됩니다. 해당 동, 타입과 층을 다시한번 확인하고
-    신중하게 진행하십시요.
+    <strong> 주의</strong> : 해당 라인에서 시작층부터 종료층까지 범위의
+    호수(유니트)가 일괄등록됩니다. 해당 동, 타입과 층을 다시 한번 확인하고
+    신중하게 진행하여 주십시요.
   </CAlert>
 
   <CAlert color="secondary" class="text-right">
@@ -161,17 +161,14 @@ export default defineComponent({
       this.form.building = ''
       this.form.type = ''
     },
-    building(val) {
-      if (val == '') this.reset(1)
-    },
-    type(val) {
-      if (val == '') this.reset(2)
-    },
-    line(val) {
-      if (val == '') this.reset(3)
-    },
-    minFloor(val) {
-      if (val == '') this.reset(4)
+    form: {
+      deep: true,
+      handler(val) {
+        if (val.building == '') this.reset(1)
+        else if (val.type == '') this.reset(2)
+        else if (val.line == '') this.reset(3)
+        else if (val.minFloor == '') this.reset(4)
+      },
     },
   },
   methods: {
@@ -193,10 +190,12 @@ export default defineComponent({
       }
     },
     bldgSelect(this: any, event: any) {
-      this.bldgName = this.buildingList.filter(
-        (b: any) => b.pk == event.target.value,
-      )[0].name
-      const bldg = { pk: event.target.value, name: this.bldgName }
+      const bldgName = event.target.value
+        ? this.buildingList.filter((b: any) => b.pk == event.target.value)[0]
+            .name
+        : ''
+      this.bldgName = bldgName
+      const bldg = { pk: event.target.value, name: bldgName }
       this.$emit('bldg-select', bldg)
     },
     unitRegister(this: any) {
