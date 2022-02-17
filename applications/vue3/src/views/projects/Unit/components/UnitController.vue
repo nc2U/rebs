@@ -132,7 +132,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
-import { mapState } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'BuildingSelector',
@@ -155,6 +155,7 @@ export default defineComponent({
       return this.form.maxFloor !== ''
     },
     ...mapState('project', ['unitTypeList', 'buildingList']),
+    ...mapGetters('project', ['simpleFloors']),
   },
   watch: {
     project() {
@@ -195,14 +196,20 @@ export default defineComponent({
             .name
         : ''
       this.bldgName = bldgName
-      const bldg = { pk: event.target.value, name: bldgName }
+      const bldg = {
+        pk: event.target.value,
+        name: bldgName,
+      }
       this.$emit('bldg-select', bldg)
     },
     unitRegister(this: any) {
       this.$refs.confirmModal.callModal()
     },
     modalAction(this: any) {
-      this.$emit('unit-register', this.form)
+      this.$emit('unit-register', {
+        ...this.form,
+        ...{ floors: this.simpleFloors },
+      })
       this.$refs.confirmModal.visible = false
     },
   },

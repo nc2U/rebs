@@ -49,7 +49,7 @@ export default defineComponent({
     this.$store.state.project.houseUnitList = []
   },
   computed: {
-    ...mapState('project', ['project', 'floorTypeList']),
+    ...mapState('project', ['project']),
     ...mapGetters('accounts', ['initProjId']),
   },
   methods: {
@@ -85,8 +85,8 @@ export default defineComponent({
       const floors = range(size, payload.minFloor).map(i => ({
         floor_no: i,
         name: `${i}${middleWord}${bldg_line}`,
-        floor_type: this.floorTypeList
-          .filter((f: any) => between(i, f.start_floor, f.end_floor))
+        floor_type: payload.floors
+          .filter((f: any) => between(i, f.start, f.end))
           .map((f: any) => f.pk)[0],
         unit_code: 'unit_code', // Todo => 코드 부여 알고리즘 작성
       }))

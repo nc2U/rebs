@@ -8,6 +8,13 @@ const getters = {
     }))
   },
 
+  simpleFloors: (state: ProjectState) =>
+    state.floorTypeList.map((f: any) => ({
+      pk: f.pk,
+      start: f.start_floor,
+      end: f.end_floor,
+    })),
+
   unitTable(state: ProjectState) {
     return state.houseUnitList
       ? state.houseUnitList.map((u: HouseUnit) => ({
