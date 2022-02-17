@@ -15,7 +15,6 @@ const getters = {
           name: u.name,
           line: u.bldg_line,
           floor: u.floor_no,
-          is_hold: u.is_hold,
         }))
       : []
   },
