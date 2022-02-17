@@ -69,8 +69,22 @@ export default defineComponent({
       this.bldgName = bldg.name
     },
     unitRegister(payload: any) {
-      console.log(payload)
-      alert('Are you ready?')
+      const project = this.project.pk
+      const unit_type = Number(payload.type)
+      const building_unit = Number(payload.building)
+      const bldg_line = payload.line
+      const middleWord = bldg_line < 10 ? '0' : ''
+      const size = payload.maxFloor - payload.minFloor + 1
+      const range = (size: number, min: number): number[] =>
+        [...Array(size).keys()].map(key => key + min)
+      const floors = range(size, payload.minFloor).map(i => ({
+        floor_no: i,
+        name: `${i}${middleWord}${bldg_line}`,
+        floor_type: 1, // Todo => floor_type 객체 준비 후 순회 현재 floor_no 가 만족하는 키 추출
+        unit_code: 'unit_code', // Todo => 코드 부여 알고리즘 작성
+      }))
+      console.log({ project, unit_type, building_unit, bldg_line })
+      console.log(floors)
     },
     ...mapActions('project', [
       'fetchTypeList',
