@@ -46,7 +46,7 @@ export default defineComponent({
       return Math.max(...this.unitTable.map((u: any) => u.floor))
     },
     lineList(this: any) {
-      return [...new Set(this.unitTable.map((u: any) => u.line))]
+      return [...new Set(this.unitTable.map((u: any) => u.line))].sort()
     },
     ...mapGetters('project', ['unitTable']),
   },
