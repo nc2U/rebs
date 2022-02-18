@@ -87,6 +87,7 @@
               v-model.number="form.maxFloor"
               type="number"
               min="0"
+              @keydown.enter="unitRegister"
               placeholder="입력 범위 종료층"
               :disabled="form.minFloor == ''"
             />
@@ -141,10 +142,16 @@ import { mapActions, mapGetters, mapState } from 'vuex'
 export default defineComponent({
   name: 'BuildingSelector',
   components: { ConfirmModal },
-  props: ['project'],
+  props: {
+    project: {
+      type: Object,
+      required: true,
+    },
+  },
   data() {
     return {
       bldgName: '',
+      typeName: '',
       form: {
         building: '',
         type: '',
@@ -157,6 +164,19 @@ export default defineComponent({
   computed: {
     warning() {
       return this.form.maxFloor !== ''
+    },
+    typeNameLength() {
+      const typeNames = this.unitTypeList
+        .map((t: any) => t.name)
+        .map((t: any) => t.replace(/[^0-9a-zA-Z]/g, ''))
+        .map((t: any) => t.length)
+      return Math.max.apply(null, typeNames)
+    },
+    typeMaxUnits() {
+      return Math.max.apply(
+        null,
+        this.unitTypeList.map((t: any) => t.num_unit),
+      )
     },
     ...mapState('project', ['unitTypeList', 'buildingList']),
     ...mapGetters('project', ['simpleFloors']),
@@ -207,6 +227,11 @@ export default defineComponent({
       this.$emit('bldg-select', bldg)
     },
     typeSelect(event: any) {
+      const typeName = event.target.value
+        ? this.unitTypeList.filter((t: any) => t.pk == event.target.value)[0]
+            .name
+        : ''
+      this.typeName = typeName
       this.fetchNumUnitByType({
         project: this.project.pk,
         unit_type: event.target.value,
@@ -218,6 +243,11 @@ export default defineComponent({
     modalAction(this: any) {
       this.$emit('unit-register', {
         ...this.form,
+        ...{
+          typeName: this.typeName,
+          maxLength: this.typeNameLength,
+          maxUnits: this.typeMaxUnits,
+        },
         ...{ floors: this.simpleFloors },
       })
       this.$refs.confirmModal.visible = false

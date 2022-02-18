@@ -82,13 +82,21 @@ export default defineComponent({
         [...Array(size).keys()].map(key => key + min)
       const between = (x: number, min: number, max: number): boolean =>
         x >= min && x <= max
+      const getCode = (num: number, digit: number) => {
+        const prefix = '0'.repeat(digit - `${num}`.length)
+        const typeStr = payload.typeName.replace(/[^0-9a-zA-Z]/g, '')
+        const typeDigit = payload.maxLength - typeStr.length
+        const suffix = typeDigit >= 1 ? '0'.repeat(typeDigit - 1) + '1' : ''
+        return `${typeStr}${suffix}${prefix}${num}`
+      }
+      let num = this.numUnitByType
       const floors = range(size, payload.minFloor).map(i => ({
         floor_no: i,
         name: `${i}${middleWord}${bldg_line}`,
         floor_type: payload.floors
           .filter((f: any) => between(i, f.start, f.end))
           .map((f: any) => f.pk)[0],
-        unit_code: this.numUnitByType, // Todo => 코드 부여 알고리즘 작성
+        unit_code: getCode((num += 1), `${payload.maxUnits}`.length),
       }))
 
       console.log({ project, unit_type, building_unit, bldg_line })
