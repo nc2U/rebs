@@ -170,11 +170,11 @@ export default defineComponent({
         .map((t: any) => t.name)
         .map((t: any) => t.replace(/[^0-9a-zA-Z]/g, ''))
         .map((t: any) => t.length)
-      return Math.max.apply(null, typeNames)
+      return Math.max.apply({}, typeNames)
     },
     typeMaxUnits() {
       return Math.max.apply(
-        null,
+        {},
         this.unitTypeList.map((t: any) => t.num_unit),
       )
     },
