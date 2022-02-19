@@ -277,34 +277,25 @@ const actions = {
       .catch(err => console.log(err.response.data))
   },
 
-  createUnit: ({ dispatch }: any, payload: any) => {
-    // project, unit_type, unit_code
-    // project, unit_type, floor_type, building_unit, name, bldg_line, floor_no,
+  createUnit: ({ dispatch, getters }: any, payload: any) => {
     const { project, unit_type, ...restPayload } = payload
     const { unit_code, ...unitPayload } = restPayload
-
-    const keyUnits = { project, unit_type, unit_code }
     const houseUnits = { ...{ project, unit_type }, ...unitPayload }
-
-    console.log(keyUnits)
-    console.log(houseUnits)
-
+    const keyUnits = { project, unit_type, unit_code }
     api
-      .post(`/key-unit/`, keyUnits)
-      .then(() => {
+      .post(`/unit/`, houseUnits)
+      .then(res => {
+        dispatch('fetchUnitList', {
+          project: res.data.project,
+          bldg: res.data.building_unit,
+        })
         return api
-          .post(`/unit/`, houseUnits)
-          .then(res => {
-            dispatch('fetchUnitList', {
-              project: res.data.project,
-              bldg: res.data.building_unit,
-            })
-          })
-          .catch(err => {
-            console.log(err.response.data)
-          })
+          .post(`/key-unit/`, keyUnits)
+          .catch(err => console.log(err.response.data))
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => {
+        console.log(err.response.data)
+      })
   },
 
   updateUnit: ({ dispatch }: any, payload: any) => {

@@ -51,6 +51,7 @@ export default defineComponent({
   computed: {
     ...mapState('project', ['project', 'numUnitByType']),
     ...mapGetters('accounts', ['initProjId']),
+    ...mapGetters('project', ['simpleUnits']),
   },
   methods: {
     onSelectAdd(this: any, target: any) {
@@ -90,21 +91,34 @@ export default defineComponent({
         return `${typeStr}${suffix}${prefix}${num}`
       }
       let num = this.numUnitByType
-      const inputUnits = range(size, payload.minFloor).map(i => ({
-        floor_no: i,
-        name: `${i}${midWord}${bldg_line}`,
-        floor_type: payload.floors
-          .filter((f: any) => between(i, f.start, f.end))
-          .map((f: any) => f.pk)[0],
-        unit_code: getCode((num += 1), `${payload.maxUnits}`.length),
-      }))
 
-      inputUnits.forEach(unit => {
-        this.createUnit({
-          ...{ project, unit_type, building_unit, bldg_line },
-          ...unit,
+      const isExist = range(size, payload.minFloor).map(i =>
+        this.simpleUnits
+          .filter((u: any) => u.line === bldg_line)
+          .map((u: any) => u.floor)
+          .includes(i),
+      )
+
+      if (isExist.includes(true)) {
+        alert('해당 범위의 호수 중 이미 등록되어 있는 유니트가 있습니다.')
+        return
+      } else {
+        const inputUnits = range(size, payload.minFloor).map(i => ({
+          floor_no: i,
+          name: `${i}${midWord}${bldg_line}`,
+          floor_type: payload.floors
+            .filter((f: any) => between(i, f.start, f.end))
+            .map((f: any) => f.pk)[0],
+          unit_code: getCode((num += 1), `${payload.maxUnits}`.length),
+        }))
+
+        inputUnits.forEach(unit => {
+          this.createUnit({
+            ...{ project, unit_type, building_unit, bldg_line },
+            ...unit,
+          })
         })
-      })
+      }
     },
     ...mapActions('project', [
       'fetchTypeList',
