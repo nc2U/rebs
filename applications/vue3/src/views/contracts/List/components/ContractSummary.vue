@@ -6,7 +6,9 @@
         <CTableHeaderCell rowspan="2">타입</CTableHeaderCell>
         <CTableHeaderCell rowspan="2">세대수</CTableHeaderCell>
         <CTableHeaderCell rowspan="2">청약건수</CTableHeaderCell>
-        <CTableHeaderCell :colspan="orderGroupList.length + 1">
+        <CTableHeaderCell
+          :colspan="orderGroupList.length === 1 ? 1 : orderGroupList.length + 1"
+        >
           계약건수
         </CTableHeaderCell>
         <CTableHeaderCell rowspan="2">잔여세대</CTableHeaderCell>
@@ -14,12 +16,14 @@
         <CTableHeaderCell rowspan="2">분양율(청약+계약)</CTableHeaderCell>
       </CTableRow>
 
-      <CTableRow>
+      <CTableRow v-if="orderGroupList.length > 1">
         <CTableHeaderCell v-for="order in orderGroupList" :key="order.pk">
           {{ order.order_group_name }}
         </CTableHeaderCell>
 
-        <CTableHeaderCell>합계</CTableHeaderCell>
+        <CTableHeaderCell v-if="orderGroupList.length > 1">
+          합계
+        </CTableHeaderCell>
       </CTableRow>
     </CTableHead>
 
@@ -27,12 +31,12 @@
       <CTableRow
         class="text-right"
         align="middle"
-        v-for="(type, i) in unitTypeList"
+        v-for="(type, i) in simpleTypes"
         :key="i"
       >
         <CTableHeaderCell
           class="text-center"
-          :rowspan="unitTypeList.length"
+          :rowspan="simpleTypes.length"
           v-if="project && i == 0"
         >
           {{ project.name }}
@@ -41,28 +45,39 @@
           <CIcon name="cibDiscover" :style="'color:' + type.color" size="sm" />
           {{ type.name }}
         </CTableDataCell>
+        <!--  타입별 세대수 -->
         <CTableDataCell>{{ numFormat(126) }}세대</CTableDataCell>
-        <CTableDataCell>{{ numFormat(126) }}</CTableDataCell>
-        <CTableDataCell>{{ numFormat(126) }}</CTableDataCell>
-        <CTableDataCell>{{ numFormat(126) }}</CTableDataCell>
-        <CTableDataCell>{{ numFormat(126) }}</CTableDataCell>
-        <CTableDataCell>{{ numFormat(126) }}</CTableDataCell>
-        <CTableDataCell>{{ numFormat(126) }}</CTableDataCell>
+        <!-- 타입별 청약건수-->
+        <CTableDataCell>{{ numFormat(0) }}</CTableDataCell>
+
+        <CTableDataCell v-for="order in orderGroupList" :key="order.pk">
+          {{ numFormat(126) }}
+        </CTableDataCell>
+
+        <!-- 합계 -->
+        <CTableDataCell v-if="orderGroupList.length > 1">
+          {{ numFormat(126) }}
+        </CTableDataCell>
+
         <CTableDataCell>{{ numFormat(126) }}</CTableDataCell>
         <CTableDataCell>{{ numFormat(126) }}</CTableDataCell>
         <CTableDataCell>{{ numFormat(126) }}</CTableDataCell>
       </CTableRow>
+
       <CTableRow color="dark" class="text-right">
         <CTableDataCell class="text-center"> 합계</CTableDataCell>
         <CTableDataCell></CTableDataCell>
         <CTableDataCell>{{ numFormat(126) }}세대</CTableDataCell>
         <CTableDataCell>{{ numFormat(126) }}</CTableDataCell>
 
-        <CTableDataCell v-for="order in orderGroupList" :key="order.pk">
-          {{ numFormat(126) }}
+        <CTableDataCell v-if="orderGroupList.length === 0">-</CTableDataCell>
+        <CTableDataCell v-else v-for="order in orderGroupList" :key="order.pk">
+          {{ numFormat(136) }}
         </CTableDataCell>
 
-        <CTableDataCell>{{ numFormat(526) }}</CTableDataCell>
+        <CTableDataCell v-if="orderGroupList.length > 1">
+          {{ numFormat(526) }}
+        </CTableDataCell>
         <CTableDataCell>{{ numFormat(126) }}</CTableDataCell>
         <CTableDataCell>{{ numFormat(126) }}</CTableDataCell>
         <CTableDataCell>{{ numFormat(126) }}</CTableDataCell>
@@ -74,17 +89,21 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import commonMixin from '@/views/commonMixin'
-import { mapState } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'ContractSummary',
   components: {},
 
   mixins: [commonMixin],
-  props: ['project'],
+  props: {
+    project: {
+      type: Object,
+    },
+  },
   computed: {
     ...mapState('contract', ['orderGroupList']),
-    ...mapState('project', ['unitTypeList']),
+    ...mapGetters('project', ['simpleTypes']),
   },
 })
 </script>
