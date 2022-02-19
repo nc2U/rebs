@@ -8,6 +8,7 @@
   <ContentBody>
     <CCardBody class="pb-5">
       <UnitController
+        ref="controller"
         :project="project"
         @bldg-select="bldgSelect"
         @unit-register="unitRegister"
@@ -27,6 +28,7 @@ import ContentBody from '@/layouts/ContentBody/Index.vue'
 import UnitController from '@/views/projects/Unit/components/UnitController.vue'
 import UnitListTable from '@/views/projects/Unit/components/UnitListTable.vue'
 import { mapActions, mapGetters, mapState } from 'vuex'
+import { message } from '@/utils/helper'
 
 export default defineComponent({
   name: 'UnitIndex',
@@ -72,7 +74,7 @@ export default defineComponent({
       else this.$store.state.project.houseUnitList = []
       this.bldgName = bldg.name
     },
-    unitRegister(payload: any) {
+    unitRegister(this: any, payload: any) {
       const project = this.project.pk
       const unit_type = Number(payload.type)
       const building_unit = Number(payload.building)
@@ -118,6 +120,8 @@ export default defineComponent({
             ...unit,
           })
         })
+        this.$refs.controller.reset(1)
+        message()
       }
     },
     ...mapActions('project', [
