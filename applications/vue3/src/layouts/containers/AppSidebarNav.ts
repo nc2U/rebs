@@ -51,7 +51,7 @@ const isActiveItem = (route: RouteLocation, item: Item): boolean => {
   }
 
   if (item.items) {
-    return item.items.some((child) => isActiveItem(route, child))
+    return item.items.some(child => isActiveItem(route, child))
   }
 
   return false
@@ -79,7 +79,7 @@ const AppSidebarNav = defineComponent({
           CNavGroup,
           {
             ...(firstRender.value && {
-              visible: item.items.some((child) => isActiveItem(route, child)),
+              visible: item.items.some(child => isActiveItem(route, child)),
             }),
           },
           {
@@ -91,7 +91,7 @@ const AppSidebarNav = defineComponent({
               item.name,
             ],
             default: () =>
-              item.items && item.items.map((child) => renderItem(child)),
+              item.items && item.items.map(child => renderItem(child)),
           },
         )
       }
