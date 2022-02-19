@@ -6,27 +6,45 @@
           <CCol md="2">
             <CFormSelect id="inputState">
               <option>차수선택</option>
-              <option>...</option>
+              <option
+                v-for="order in orderGroupList"
+                :value="order.pk"
+                :key="order.pk"
+              >
+                {{ order.order_group_name }}
+              </option>
             </CFormSelect>
           </CCol>
 
           <CCol md="2">
             <CFormSelect id="inputState">
               <option>타입선택</option>
-              <option>...</option>
+              <option
+                v-for="type in simpleTypes"
+                :value="type.pk"
+                :key="type.pk"
+              >
+                {{ type.name }}
+              </option>
             </CFormSelect>
           </CCol>
 
           <CCol md="2">
             <CFormSelect id="inputState">
               <option>동 선택</option>
-              <option>...</option>
+              <option
+                v-for="bldg in buildingList"
+                :value="bldg.pk"
+                :key="bldg.pk"
+              >
+                {{ bldg.name }}동
+              </option>
             </CFormSelect>
           </CCol>
           <CCol md="2">
             <CFormSelect id="inputState">
               <option>계약 상태</option>
-              <option>...</option>
+              <option value="3">해지 신청</option>
             </CFormSelect>
           </CCol>
           <CCol md="2" class="mb-3">
@@ -58,6 +76,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { mapGetters, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'ListController',
@@ -71,7 +90,11 @@ export default defineComponent({
       sample: '',
     }
   },
-  computed: {},
+  computed: {
+    ...mapState('contract', ['orderGroupList']),
+    ...mapState('project', ['buildingList']),
+    ...mapGetters('project', ['simpleTypes']),
+  },
   methods: {},
 })
 </script>
