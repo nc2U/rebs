@@ -76,7 +76,7 @@ export default defineComponent({
       const unit_type = Number(payload.type)
       const building_unit = Number(payload.building)
       const bldg_line = payload.line
-      const middleWord = bldg_line < 10 ? '0' : ''
+      const midWord = bldg_line < 10 ? '0' : ''
       const size = payload.maxFloor - payload.minFloor + 1
       const range = (size: number, min: number): number[] =>
         [...Array(size).keys()].map(key => key + min)
@@ -90,23 +90,28 @@ export default defineComponent({
         return `${typeStr}${suffix}${prefix}${num}`
       }
       let num = this.numUnitByType
-      const floors = range(size, payload.minFloor).map(i => ({
+      const inputUnits = range(size, payload.minFloor).map(i => ({
         floor_no: i,
-        name: `${i}${middleWord}${bldg_line}`,
+        name: `${i}${midWord}${bldg_line}`,
         floor_type: payload.floors
           .filter((f: any) => between(i, f.start, f.end))
           .map((f: any) => f.pk)[0],
         unit_code: getCode((num += 1), `${payload.maxUnits}`.length),
       }))
 
-      console.log({ project, unit_type, building_unit, bldg_line })
-      console.log(floors)
+      inputUnits.forEach(unit => {
+        this.createUnit({
+          ...{ project, unit_type, building_unit, bldg_line },
+          ...unit,
+        })
+      })
     },
     ...mapActions('project', [
       'fetchTypeList',
       'fetchFloorTypeList',
       'fetchBuildingList',
       'fetchUnitList',
+      'createUnit',
     ]),
   },
 })
