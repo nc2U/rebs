@@ -173,7 +173,6 @@ class BuildingUnitSerializer(serializers.ModelSerializer):
 
 
 class KeyUnitSerializer(serializers.ModelSerializer):
-    unit_type = serializers.SlugRelatedField(queryset=UnitType.objects.all(), slug_field='name')
     houseunit = serializers.PrimaryKeyRelatedField(read_only=True)  # HouseUnitSerializer()
 
     class Meta:
@@ -182,9 +181,6 @@ class KeyUnitSerializer(serializers.ModelSerializer):
 
 
 class HouseUnitSerializer(serializers.ModelSerializer):
-    unit_type = SimpleUnitTypeSerializer()
-    floor_type = serializers.SlugRelatedField(queryset=UnitFloorType.objects.all(), slug_field='alias_name')
-
     class Meta:
         model = HouseUnit
         fields = ('pk', 'project', 'unit_type', 'floor_type', 'building_unit', 'name',
