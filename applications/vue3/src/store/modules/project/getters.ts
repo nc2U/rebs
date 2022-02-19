@@ -9,12 +9,22 @@ const getters = {
         }))
       : [],
 
+  simpleTypes: (state: ProjectState) =>
+    state.unitTypeList
+      ? state.unitTypeList.map((u: any) => ({
+          pk: u.pk,
+          name: u.name,
+          color: u.color,
+        }))
+      : [],
+
   simpleFloors: (state: ProjectState) =>
     state.floorTypeList
       ? state.floorTypeList.map((f: any) => ({
           pk: f.pk,
           start: f.start_floor,
           end: f.end_floor,
+          name: f.alias_name,
         }))
       : [],
 
