@@ -31,12 +31,27 @@
     <CRow>
       <CCol md="3" class="mb-2">
         <CRow>
+          <CFormLabel class="col-sm-4 col-form-label"> 등록라인</CFormLabel>
+          <CCol sm="8">
+            <CFormInput
+              v-model.number="form.line"
+              type="number"
+              min="0"
+              placeholder="등록할 라인 숫자 입력"
+              :disabled="form.building == ''"
+            />
+          </CCol>
+        </CRow>
+      </CCol>
+
+      <CCol md="3" class="mb-2">
+        <CRow>
           <CFormLabel class="col-sm-4 col-form-label"> 타입선택</CFormLabel>
           <CCol sm="8">
             <CFormSelect
               v-model="form.type"
               @change="typeSelect"
-              :disabled="form.building == ''"
+              :disabled="form.line == ''"
             >
               <option value>---------</option>
               <option
@@ -50,20 +65,6 @@
           </CCol>
         </CRow>
       </CCol>
-      <CCol md="3" class="mb-2">
-        <CRow>
-          <CFormLabel class="col-sm-4 col-form-label"> 등록라인</CFormLabel>
-          <CCol sm="8">
-            <CFormInput
-              v-model.number="form.line"
-              type="number"
-              min="0"
-              placeholder="등록할 라인 숫자 입력"
-              :disabled="form.type == ''"
-            />
-          </CCol>
-        </CRow>
-      </CCol>
 
       <CCol md="3" class="mb-2">
         <CRow>
@@ -73,7 +74,7 @@
               v-model.number="form.minFloor"
               type="number"
               placeholder="시작층(피로티 제외)"
-              :disabled="form.line == ''"
+              :disabled="form.type == ''"
             />
           </CCol>
         </CRow>
@@ -154,8 +155,8 @@ export default defineComponent({
       typeName: '',
       form: {
         building: '',
-        type: '',
         line: '',
+        type: '',
         minFloor: '',
         maxFloor: '',
       },
@@ -190,8 +191,8 @@ export default defineComponent({
       deep: true,
       handler(val) {
         if (val.building == '') this.reset(1)
-        else if (val.type == '') this.reset(2)
-        else if (val.line == '') this.reset(3)
+        else if (val.line == '') this.reset(2)
+        else if (val.type == '') this.reset(3)
         else if (val.minFloor == '') this.reset(4)
       },
     },
@@ -199,12 +200,12 @@ export default defineComponent({
   methods: {
     reset(n: number): void {
       if (n == 1) {
-        this.form.type = ''
         this.form.line = ''
+        this.form.type = ''
         this.form.minFloor = ''
         this.form.maxFloor = ''
       } else if (n == 2) {
-        this.form.line = ''
+        this.form.type = ''
         this.form.minFloor = ''
         this.form.maxFloor = ''
       } else if (n == 3) {
