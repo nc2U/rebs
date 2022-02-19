@@ -11,10 +11,10 @@ const getters = {
 
   simpleTypes: (state: ProjectState) =>
     state.unitTypeList
-      ? state.unitTypeList.map((u: any) => ({
-          pk: u.pk,
-          name: u.name,
-          color: u.color,
+      ? state.unitTypeList.map((t: any) => ({
+          pk: t.pk,
+          name: t.name,
+          color: t.color,
         }))
       : [],
 
@@ -28,10 +28,12 @@ const getters = {
         }))
       : [],
 
-  simpleUnits: (state: ProjectState) =>
+  simpleUnits: (state: ProjectState, getters: any) =>
     state.houseUnitList
       ? state.houseUnitList.map((u: HouseUnit) => ({
-          color: u.unit_type.color,
+          color: getters.simpleTypes
+            .filter((t: any) => t.pk === u.unit_type)
+            .map((t: any) => t.color)[0],
           name: u.name,
           line: u.bldg_line,
           floor: u.floor_no,
