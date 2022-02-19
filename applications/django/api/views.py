@@ -41,7 +41,7 @@ class ApiIndex(generics.GenericAPIView):
             'project': reverse(api + ProjectList.name, request=request),
             'type': reverse(api + UnitTypeList.name, request=request),
             'floor': reverse(api + UnitFloorTypeList.name, request=request),
-            # 'key-unit': reverse(api + KeyUnitList.name, request=request),
+            'key-unit': reverse(api + KeyUnitList.name, request=request),
             'bldg-unit': reverse(api + BuildingUnitList.name, request=request),
             'house-unit': reverse(api + HouseUnitList.name, request=request),
             # 'budget': reverse(api + ProjectBudgetList.name, request=request),
@@ -84,7 +84,7 @@ class ApiIndex(generics.GenericAPIView):
         })
 
 
-# User --------------------------------------------------------------------------
+# Accounts --------------------------------------------------------------------------
 class UserList(generics.ListCreateAPIView):
     name = 'user-list'
     queryset = User.objects.all()
@@ -99,7 +99,6 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (permissions.IsAuthenticated, IsOwnSelfOrReadOnly)
 
 
-# Profile --------------------------------------------------------------------------
 class ProfileList(generics.ListCreateAPIView):
     name = 'profile-list'
     queryset = Profile.objects.all()
@@ -117,7 +116,6 @@ class ProfileDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (permissions.IsAuthenticated, IsOwnerOnly)
 
 
-# T o d o --------------------------------------------------------------------------
 class TodoList(generics.ListCreateAPIView):
     name = 'todo-list'
     queryset = Todo.objects.all()
@@ -259,18 +257,18 @@ class BuildingUnitDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
 
-# class KeyUnitList(generics.ListCreateAPIView):
-#     name = 'key_unit-list'
-#     queryset = KeyUnit.objects.all()
-#     serializer_class = KeyUnitSerializer
-#     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-#
-#
-# class KeyUnitDetail(generics.RetrieveUpdateDestroyAPIView):
-#     name = 'key_unit-detail'
-#     queryset = KeyUnit.objects.all()
-#     serializer_class = KeyUnitSerializer
-#     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+class KeyUnitList(generics.ListCreateAPIView):
+    name = 'key_unit-list'
+    queryset = KeyUnit.objects.all()
+    serializer_class = KeyUnitSerializer
+    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+
+
+class KeyUnitDetail(generics.RetrieveUpdateDestroyAPIView):
+    name = 'key_unit-detail'
+    queryset = KeyUnit.objects.all()
+    serializer_class = KeyUnitSerializer
+    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
 
 class HouseUnitList(generics.ListCreateAPIView):

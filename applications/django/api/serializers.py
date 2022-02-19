@@ -172,6 +172,15 @@ class BuildingUnitSerializer(serializers.ModelSerializer):
         fields = ('pk', 'project', 'name')
 
 
+class KeyUnitSerializer(serializers.ModelSerializer):
+    unit_type = serializers.SlugRelatedField(queryset=UnitType.objects.all(), slug_field='name')
+    houseunit = serializers.PrimaryKeyRelatedField(read_only=True)  # HouseUnitSerializer()
+
+    class Meta:
+        model = KeyUnit
+        fields = ('pk', 'project', 'unit_type', 'unit_code', 'houseunit', 'contract')
+
+
 class HouseUnitSerializer(serializers.ModelSerializer):
     unit_type = SimpleUnitTypeSerializer()
     floor_type = serializers.SlugRelatedField(queryset=UnitFloorType.objects.all(), slug_field='alias_name')
@@ -180,16 +189,6 @@ class HouseUnitSerializer(serializers.ModelSerializer):
         model = HouseUnit
         fields = ('pk', 'project', 'unit_type', 'floor_type', 'building_unit', 'name',
                   'key_unit', 'bldg_line', 'floor_no', 'is_hold', 'hold_reason')
-
-
-class KeyUnitSerializer(serializers.ModelSerializer):
-    project = serializers.SlugRelatedField(queryset=Project.objects.all(), slug_field='name')
-    unit_type = serializers.SlugRelatedField(queryset=UnitType.objects.all(), slug_field='name')
-    houseunit = HouseUnitSerializer()
-
-    class Meta:
-        model = KeyUnit
-        fields = ('pk', 'project', 'unit_type', 'unit_code', 'houseunit', 'contract')
 
 
 class ProjectBudgetSerializer(serializers.ModelSerializer):
