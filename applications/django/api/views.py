@@ -269,6 +269,7 @@ class KeyUnitDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = KeyUnit.objects.all()
     serializer_class = KeyUnitSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    filter_fields = ('project', 'unit_type')
 
 
 class HouseUnitList(generics.ListCreateAPIView):
