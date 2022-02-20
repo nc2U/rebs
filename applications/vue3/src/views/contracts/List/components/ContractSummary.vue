@@ -85,9 +85,9 @@
         <!-- 타입별 잔여세대 합계-->
         <CTableDataCell>{{ numFormat(126) }}</CTableDataCell>
         <!-- 타입별 계약율 합계-->
-        <CTableDataCell>{{ numFormat(126) }}</CTableDataCell>
+        <CTableDataCell>{{ ratioFormat(98.5) }}</CTableDataCell>
         <!-- 타입별 분양율(청약+계약) 합계-->
-        <CTableDataCell>{{ numFormat(126) }}</CTableDataCell>
+        <CTableDataCell>{{ ratioFormat(98.5) }}</CTableDataCell>
       </CTableRow>
     </CTableBody>
   </CTable>
