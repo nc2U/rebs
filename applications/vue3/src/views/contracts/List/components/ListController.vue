@@ -4,7 +4,7 @@
       <CCol lg="7">
         <CRow>
           <CCol md="6" lg="2" class="mb-3">
-            <CFormSelect v-model="form.status" @change="contFiltering">
+            <CFormSelect v-model="form.status" @change="contFiltering(1)">
               <option value="2">계약 현황</option>
               <option value="1">청약 현황</option>
               <option value="3">해지 신청</option>
@@ -12,7 +12,7 @@
           </CCol>
 
           <CCol md="6" lg="2" class="mb-3">
-            <CFormSelect v-model="form.order_group" @change="contFiltering">
+            <CFormSelect v-model="form.order_group" @change="contFiltering(1)">
               <option value="">차수선택</option>
               <option
                 v-for="order in orderGroupList"
@@ -25,7 +25,7 @@
           </CCol>
 
           <CCol md="6" lg="2" class="mb-3">
-            <CFormSelect v-model="form.unit_type" @change="contFiltering">
+            <CFormSelect v-model="form.unit_type" @change="contFiltering(1)">
               <option value="">타입선택</option>
               <option
                 v-for="type in simpleTypes"
@@ -38,7 +38,7 @@
           </CCol>
 
           <CCol md="6" lg="2" class="mb-3">
-            <CFormSelect v-model="form.building" @change="contFiltering">
+            <CFormSelect v-model="form.building" @change="contFiltering(1)">
               <option value="">동 선택</option>
               <option
                 v-for="bldg in buildingList"
@@ -50,7 +50,7 @@
             </CFormSelect>
           </CCol>
           <CCol md="6" lg="2" class="mb-3">
-            <CFormSelect v-model="form.registed" @change="contFiltering">
+            <CFormSelect v-model="form.registed" @change="contFiltering(1)">
               <option value="">인가 구분</option>
               <option value="true">인가</option>
               <option value="false">미인가</option>
@@ -58,7 +58,7 @@
           </CCol>
 
           <CCol md="6" lg="2" class="mb-3">
-            <CFormSelect v-model="form.ordering" @change="contFiltering">
+            <CFormSelect v-model="form.ordering" @change="contFiltering(1)">
               <option value="-created_at">등록일시 내림차순</option>
               <option value="created_at">등록일시 올림차순</option>
               <option value="-contractor__contract_date">
@@ -80,7 +80,7 @@
           <CCol md="6" lg="3" class="mb-3">
             <CFormInput
               v-model="form.from_date"
-              @keydown.enter="contFiltering"
+              @keydown.enter="contFiltering(1)"
               v-maska="'####-##-##'"
               placeholder="계약일자(From)"
             />
@@ -89,7 +89,7 @@
           <CCol md="6" lg="3" class="mb-3">
             <CFormInput
               v-model="form.to_date"
-              @keydown.enter="contFiltering"
+              @keydown.enter="contFiltering(1)"
               v-maska="'####-##-##'"
               placeholder="계약일자(To)"
             />
@@ -99,12 +99,12 @@
             <CInputGroup class="flex-nowrap">
               <CFormInput
                 v-model="form.search"
-                @keydown.enter="contFiltering"
+                @keydown.enter="contFiltering(1)"
                 placeholder="계약자, 일련번호, 비고"
                 aria-label="Username"
                 aria-describedby="addon-wrapping"
               />
-              <CInputGroupText @click="contFiltering">검색</CInputGroupText>
+              <CInputGroupText @click="contFiltering(1)">검색</CInputGroupText>
             </CInputGroup>
           </CCol>
         </CRow>
@@ -174,9 +174,9 @@ export default defineComponent({
     ...mapGetters('project', ['simpleTypes']),
   },
   methods: {
-    contFiltering() {
+    contFiltering(page = 1) {
       this.$nextTick(() => {
-        this.$emit('cont-filtering', this.form)
+        this.$emit('cont-filtering', { ...{ page }, ...this.form })
       })
     },
     resetForm() {
@@ -189,7 +189,7 @@ export default defineComponent({
       this.form.to_date = ''
       this.form.ordering = '-created_at'
       this.form.search = ''
-      this.contFiltering()
+      this.contFiltering(1)
     },
   },
 })

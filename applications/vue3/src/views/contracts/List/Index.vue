@@ -37,11 +37,6 @@ export default defineComponent({
     ListController,
     ContractList,
   },
-  data() {
-    return {
-      page: 1,
-    }
-  },
   created(this: any) {
     this.fetchOrderGroupList(this.initProjId)
     this.fetchTypeList(this.initProjId)
@@ -70,13 +65,11 @@ export default defineComponent({
       }
     },
     pageSelect(this: any, page: number) {
-      this.page = page
-      this.$refs.contControl.contFiltering()
+      this.$refs.contControl.contFiltering(page)
     },
     onContFiltering(payload: any) {
       const project = this.project.pk
-      const page = this.page
-      this.fetchContractList({ ...{ project, page }, ...payload })
+      this.fetchContractList({ ...{ project }, ...payload })
     },
     ...mapActions('contract', [
       'fetchOrderGroupList',
