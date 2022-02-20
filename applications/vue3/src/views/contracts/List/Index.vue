@@ -42,6 +42,7 @@ export default defineComponent({
     this.fetchTypeList(this.initProjId)
     this.fetchBuildingList(this.initProjId)
     this.fetchContractList({ project: this.initProjId })
+    this.fetchContSummaryList(this.initProjId)
   },
   computed: {
     ...mapState('project', ['project']),
@@ -54,6 +55,7 @@ export default defineComponent({
         this.fetchTypeList(target)
         this.fetchBuildingList(target)
         this.fetchContractList({ project: target })
+        this.fetchContSummaryList(target)
       } else {
         this.$store.state.contract.orderGroupList = []
         this.$store.state.project.unitTypeList = []
@@ -66,7 +68,11 @@ export default defineComponent({
       const project = this.project.pk
       this.fetchContractList({ project, page })
     },
-    ...mapActions('contract', ['fetchOrderGroupList', 'fetchContractList']),
+    ...mapActions('contract', [
+      'fetchOrderGroupList',
+      'fetchContractList',
+      'fetchContSummaryList',
+    ]),
     ...mapActions('project', ['fetchTypeList', 'fetchBuildingList']),
   },
 })
