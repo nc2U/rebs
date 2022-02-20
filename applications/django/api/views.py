@@ -420,6 +420,7 @@ class HouseUnitDetail(generics.RetrieveUpdateDestroyAPIView):
 #     serializer_class = ProjectAccountD2Serializer
 
 
+# # Cash --------------------------------------------------------------------------
 # class BankCodeList(generics.ListAPIView):
 #     name = 'bankcode-list'
 #     queryset = BankCode.objects.all()
@@ -557,6 +558,7 @@ class DownPaymentDetail(generics.RetrieveUpdateDestroyAPIView):
 #     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
 
+# Contract --------------------------------------------------------------------------
 class OrderGroupList(generics.ListCreateAPIView):
     name = 'order_group-list'
     queryset = OrderGroup.objects.all()
@@ -573,13 +575,17 @@ class OrderGroupDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
 
-# Contract --------------------------------------------------------------------------
 class ContractList(generics.ListCreateAPIView):
     name = 'contract-list'
     queryset = Contract.objects.all()
     serializer_class = ContractListSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-    filter_fields = ('project', 'order_group', 'activation')
+    filter_fields = (
+        'project', 'order_group', 'activation', 'unit_type',
+        'keyunit__houseunit__building_unit', 'contractor__status',
+        'contractor__is_registed')
+    search_fields = ('serial_number', 'contractor__name', 'contractor__note')
+    ordering_fields = ('created_at', 'contractor__contract_date', 'serial_number', 'contractor__name')
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -675,9 +681,9 @@ class ContractDetail(generics.RetrieveUpdateDestroyAPIView):
 #     queryset = SalesBillIssue.objects.all()
 #     serializer_class = SallesBillIssueSerializer
 #     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-
-
-# Document --------------------------------------------------------------------------
+#
+#
+# # Document --------------------------------------------------------------------------
 # class GroupList(generics.ListCreateAPIView):
 #     name = 'group-list'
 #     queryset = Group.objects.all()
@@ -827,6 +833,7 @@ class ContractDetail(generics.RetrieveUpdateDestroyAPIView):
 #     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
 
+# Etc --------------------------------------------------------------------------
 class WiseSayList(generics.ListCreateAPIView):
     name = 'wise-say-list'
     queryset = WiseSaying.objects.all()
