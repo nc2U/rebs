@@ -306,6 +306,7 @@ class ProjectAccountD2Serializer(serializers.ModelSerializer):
         fields = ('pk', 'd1', 'code', 'sub_title', 'name', 'description')
 
 
+# Cash --------------------------------------------------------------------------
 class BankCodeSerializer(serializers.ModelSerializer):
     class Meta:
         model = BankCode
@@ -369,6 +370,7 @@ class OverDueRuleSerializer(serializers.ModelSerializer):
         fields = ('pk', 'project', 'term_start', 'term_end', 'rate_year')
 
 
+# Contract --------------------------------------------------------------------------
 class OrderGroupSerializer(serializers.ModelSerializer):
     sort_desc = serializers.CharField(source='get_sort_display', read_only=True)
 
@@ -377,7 +379,6 @@ class OrderGroupSerializer(serializers.ModelSerializer):
         fields = ('pk', 'project', 'order_number', 'sort', 'sort_desc', 'order_group_name')
 
 
-# Contract --------------------------------------------------------------------------
 class HouseUnitInKeyUnitSerializer(serializers.ModelSerializer):
     class Meta:
         model = HouseUnit
@@ -436,6 +437,7 @@ class ContractorReleaseSerializer(serializers.ModelSerializer):
                   'request_date', 'completion_date', 'note', 'user', 'created_at', 'updated_at')
 
 
+# Notice --------------------------------------------------------------------------
 class SallesBillIssueSerializer(serializers.ModelSerializer):
     class Meta:
         model = SalesBillIssue
@@ -512,6 +514,7 @@ class TagSerializer(serializers.ModelSerializer):
         fields = ('pk', 'board', 'tag', 'post')
 
 
+# Etc --------------------------------------------------------------------------
 class WiseSaySerializer(serializers.ModelSerializer):
     class Meta:
         model = WiseSaying
