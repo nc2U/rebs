@@ -17,7 +17,7 @@ const getters = {
     }))
   },
 
-  contractPages: (state: ContractState) => (itemsPerPage: number) => {
+  itemsPerPage: (state: ContractState) => (itemsPerPage: number) => {
     return Math.ceil(state.contractsCount / itemsPerPage)
   },
 
