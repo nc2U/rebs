@@ -1,5 +1,6 @@
 import api from '@/api'
 import {
+  FETCH_CONT_SUMMARY_LIST,
   FETCH_CONTRACT,
   FETCH_CONTRACT_LIST,
   FETCH_ORDER_GROUP_LIST,
@@ -28,7 +29,16 @@ const actions = {
       .then(res => {
         commit(FETCH_CONTRACT, res.data)
       })
-      .catch(err => console.log(err))
+      .catch(console.log)
+  },
+
+  fetchContSummaryList: ({ commit }: any, project?: number) => {
+    api
+      .get(`/cont-summary/?project=${project}`)
+      .then(res => {
+        commit(FETCH_CONT_SUMMARY_LIST, res.data)
+      })
+      .catch(err => console.log(err.response.data))
   },
 
   fetchOrderGroupList: ({ commit }: any, pk?: number) => {

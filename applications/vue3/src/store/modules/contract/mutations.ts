@@ -1,4 +1,5 @@
 import {
+  FETCH_CONT_SUMMARY_LIST,
   FETCH_CONTRACT,
   FETCH_CONTRACT_LIST,
   FETCH_ORDER_GROUP_LIST,
@@ -18,6 +19,9 @@ const mutations = {
   [FETCH_ORDER_GROUP_LIST]: (state: ContractState, payload: any) => {
     state.orderGroupList = payload.results
   },
+
+  [FETCH_CONT_SUMMARY_LIST]: (state: ContractState, payload: any) =>
+    (state.contSummary = payload),
 }
 
 export default mutations
