@@ -1,8 +1,10 @@
+from django import forms
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
-# from django_filters.rest_framework import FilterSet
-# from django_filters import NumberFilter, DateTimeFilter, AllValuesFilter
+from django_filters.rest_framework import FilterSet
+from django_filters import (NumberFilter, CharFilter, ChoiceFilter, ModelChoiceFilter,
+                            DateFilter, BooleanFilter, DateTimeFilter, AllValuesFilter)
 
 from .permission import *
 from .pagination import *
@@ -575,15 +577,26 @@ class OrderGroupDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
 
+class ContractFilter(FilterSet):
+    keyunit__houseunit__building_unit = ModelChoiceFilter(queryset=BuildingUnit.objects.all(), label='동(건물)')
+    contractor__status = ChoiceFilter(field_name='contractor__status', choices=Contractor.STATUS_CHOICES, label='현재상태')
+    contractor__is_registed = BooleanFilter(field_name='contractor__is_registed', label='인가등록여부')
+    from_contract_date = DateFilter(field_name='contractor__contract_date', lookup_expr='gte', label='계약일자부터')
+    to_contract_date = DateFilter(field_name='contractor__contract_date', lookup_expr='lte', label='계약일자까지')
+
+    class Meta:
+        model = Contract
+        fields = ('project', 'order_group', 'activation', 'unit_type',
+                  'keyunit__houseunit__building_unit', 'contractor__status',
+                  'contractor__is_registed', 'from_contract_date', 'to_contract_date')
+
+
 class ContractList(generics.ListCreateAPIView):
     name = 'contract-list'
     queryset = Contract.objects.all()
     serializer_class = ContractListSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-    filter_fields = (
-        'project', 'order_group', 'activation', 'unit_type',
-        'keyunit__houseunit__building_unit', 'contractor__status',
-        'contractor__is_registed')
+    filter_class = ContractFilter
     search_fields = ('serial_number', 'contractor__name', 'contractor__note')
     ordering_fields = ('created_at', 'contractor__contract_date', 'serial_number', 'contractor__name')
 
