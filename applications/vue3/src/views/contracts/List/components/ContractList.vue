@@ -38,7 +38,7 @@
   <CSmartPagination
     :activePage="1"
     :limit="8"
-    :pages="contractPages(10)"
+    :pages="itemsPerPage(10)"
     class="mt-3"
     @active-page-change="pageSelect"
   />
@@ -54,7 +54,7 @@ export default defineComponent({
   components: { Contract },
   props: ['project'],
   computed: {
-    ...mapGetters('contract', ['contractIndex', 'contractPages']),
+    ...mapGetters('contract', ['contractIndex', 'itemsPerPage']),
   },
   methods: {
     pageSelect(page: number) {

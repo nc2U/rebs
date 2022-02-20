@@ -9,7 +9,7 @@
 
   <ContentBody>
     <CCardBody class="pb-5">
-      <ListController @cont-filtering="onContFiltering" />
+      <ListController ref="cont-control" @cont-filtering="onContFiltering" />
       <ContractList :project="project" @page-select="pageSelect" />
     </CCardBody>
 
@@ -36,6 +36,11 @@ export default defineComponent({
     ContractSummary,
     ListController,
     ContractList,
+  },
+  data() {
+    return {
+      page: 1,
+    }
   },
   created(this: any) {
     this.fetchOrderGroupList(this.initProjId)
@@ -64,13 +69,14 @@ export default defineComponent({
         this.$store.state.contract.contractsCount = 0
       }
     },
-    pageSelect(page: number) {
-      const project = this.project.pk
-      this.fetchContractList({ project, page })
+    pageSelect(this: any, page: number) {
+      this.page = page
+      this.$refs.contControl.contFiltering()
     },
     onContFiltering(payload: any) {
       const project = this.project.pk
-      this.fetchContractList({ ...{ project }, ...payload })
+      const page = this.page
+      this.fetchContractList({ ...{ project, page }, ...payload })
     },
     ...mapActions('contract', [
       'fetchOrderGroupList',
