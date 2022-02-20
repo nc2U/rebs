@@ -31,12 +31,12 @@
       <CTableRow
         class="text-right"
         align="middle"
-        v-for="(type, i) in simpleTypes"
+        v-for="(type, i) in unitTypeList"
         :key="i"
       >
         <CTableHeaderCell
           class="text-center"
-          :rowspan="simpleTypes.length"
+          :rowspan="unitTypeList.length"
           v-if="project && i == 0"
         >
           {{ project.name }}
@@ -46,40 +46,47 @@
           {{ type.name }}
         </CTableDataCell>
         <!--  타입별 세대수 -->
-        <CTableDataCell>{{ numFormat(126) }}세대</CTableDataCell>
+        <CTableDataCell>{{ numFormat(type.num_unit) }}세대</CTableDataCell>
         <!-- 타입별 청약건수-->
         <CTableDataCell>{{ numFormat(0) }}</CTableDataCell>
-
+        <!-- 타입별 계약건수-->
         <CTableDataCell v-for="order in orderGroupList" :key="order.pk">
           {{ numFormat(126) }}
         </CTableDataCell>
 
-        <!-- 합계 -->
+        <!-- 차수별 계약건수 합계 -->
         <CTableDataCell v-if="orderGroupList.length > 1">
           {{ numFormat(126) }}
         </CTableDataCell>
-
+        <!--잔여세대-->
         <CTableDataCell>{{ numFormat(126) }}</CTableDataCell>
-        <CTableDataCell>{{ numFormat(126) }}</CTableDataCell>
-        <CTableDataCell>{{ numFormat(126) }}</CTableDataCell>
+        <!-- 계약율-->
+        <CTableDataCell>{{ ratioFormat(98.5) }}</CTableDataCell>
+        <!-- 분양율(청약+계약)-->
+        <CTableDataCell>{{ ratioFormat(98.5) }}</CTableDataCell>
       </CTableRow>
 
       <CTableRow color="dark" class="text-right">
         <CTableDataCell class="text-center"> 합계</CTableDataCell>
         <CTableDataCell></CTableDataCell>
+        <!-- 타입별 세대수 합계-->
         <CTableDataCell>{{ numFormat(126) }}세대</CTableDataCell>
+        <!-- 청약 건수 타입별 합계-->
         <CTableDataCell>{{ numFormat(126) }}</CTableDataCell>
-
+        <!--차수별 계약건수 타입별 합계-->
         <CTableDataCell v-if="orderGroupList.length === 0">-</CTableDataCell>
         <CTableDataCell v-else v-for="order in orderGroupList" :key="order.pk">
           {{ numFormat(136) }}
         </CTableDataCell>
-
+        <!-- 차수별 타입별 계약건수 총계-->
         <CTableDataCell v-if="orderGroupList.length > 1">
           {{ numFormat(526) }}
         </CTableDataCell>
+        <!-- 타입별 잔여세대 합계-->
         <CTableDataCell>{{ numFormat(126) }}</CTableDataCell>
+        <!-- 타입별 계약율 합계-->
         <CTableDataCell>{{ numFormat(126) }}</CTableDataCell>
+        <!-- 타입별 분양율(청약+계약) 합계-->
         <CTableDataCell>{{ numFormat(126) }}</CTableDataCell>
       </CTableRow>
     </CTableBody>
@@ -103,7 +110,7 @@ export default defineComponent({
   },
   computed: {
     ...mapState('contract', ['orderGroupList']),
-    ...mapGetters('project', ['simpleTypes']),
+    ...mapState('project', ['unitTypeList']),
   },
 })
 </script>
