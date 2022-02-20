@@ -20,6 +20,8 @@ const actions = {
     if (payload.registed) url += `&contractor__is_registed=${payload.registed}`
     if (payload.from_date) url += `&from_contract_date=${payload.from_date}`
     if (payload.to_date) url += `&to_contract_date=${payload.to_date}`
+    if (payload.ordering) url += `&ordering=${payload.ordering}`
+    if (payload.search) url += `&search=${payload.search}`
     const page = payload.page ? payload.page : 1
     url += `&page=${page}`
 

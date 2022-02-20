@@ -9,7 +9,7 @@
 
   <ContentBody>
     <CCardBody class="pb-5">
-      <ListController />
+      <ListController @cont-filtering="onContFiltering" />
       <ContractList :project="project" @page-select="pageSelect" />
     </CCardBody>
 
@@ -67,6 +67,10 @@ export default defineComponent({
     pageSelect(page: number) {
       const project = this.project.pk
       this.fetchContractList({ project, page })
+    },
+    onContFiltering(payload: any) {
+      const project = this.project.pk
+      this.fetchContractList({ ...{ project }, ...payload })
     },
     ...mapActions('contract', [
       'fetchOrderGroupList',
