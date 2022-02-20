@@ -56,6 +56,7 @@
               <option value="false">미인가</option>
             </CFormSelect>
           </CCol>
+
           <CCol md="6" lg="2" class="mb-3">
             <CFormSelect v-model="form.ordering" @change="contFiltering">
               <option value="-created_at">등록일시 내림차순</option>
@@ -84,6 +85,7 @@
               placeholder="계약일자(From)"
             />
           </CCol>
+
           <CCol md="6" lg="3" class="mb-3">
             <CFormInput
               v-model="form.to_date"
@@ -92,6 +94,7 @@
               placeholder="계약일자(To)"
             />
           </CCol>
+
           <CCol lg="6" class="mb-3">
             <CInputGroup class="flex-nowrap">
               <CFormInput
@@ -107,12 +110,12 @@
         </CRow>
       </CCol>
     </CRow>
-    <CAlert color="secondary">
+    <CAlert color="default">
       <CRow>
         <CCol v-if="contractsCount > 0" class="pt-1">
           해당 조건 계약 건수 : {{ contractsCount }} 건
         </CCol>
-        <CCol class="text-right p-0">
+        <CCol class="text-right mb-0" v-if="!formsCheck">
           <CButton color="info" @click="resetForm" size="sm" class="m-0">
             검색조건 초기화
           </CButton>
@@ -152,6 +155,20 @@ export default defineComponent({
     }
   },
   computed: {
+    formsCheck(this: any) {
+      const a = this.form.status === '2'
+      const b = this.form.order_group === ''
+      const c = this.form.unit_type === ''
+      const d = this.form.building === ''
+      const e = this.form.registed === ''
+      const f = this.form.from_date === ''
+      const g = this.form.to_date === ''
+      const h = this.form.ordering === '-created_at'
+      const i = this.form.search === ''
+      const groupA = a && b && c && d && e
+      const groupB = f && g && h && i
+      return groupA && groupB
+    },
     ...mapState('contract', ['orderGroupList', 'contractsCount']),
     ...mapState('project', ['buildingList']),
     ...mapGetters('project', ['simpleTypes']),

@@ -9,7 +9,7 @@
 
   <ContentBody>
     <CCardBody class="pb-5">
-      <ListController ref="cont-control" @cont-filtering="onContFiltering" />
+      <ListController ref="contControl" @cont-filtering="onContFiltering" />
       <ContractList :project="project" @page-select="pageSelect" />
     </CCardBody>
 
