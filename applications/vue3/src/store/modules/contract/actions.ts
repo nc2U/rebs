@@ -11,12 +11,20 @@ import { message } from '@/utils/helper'
 const actions = {
   fetchContractList: ({ commit }: any, payload?: any) => {
     const { project } = payload
-    const order_group = payload.order_group ? payload.order_group : ''
+    const status = payload.status ? payload.status : '2'
+    let url = `/contract/?project=${project}&activation=true&contractor__status=${status}`
+    if (payload.order_group) url += `&order_group=${payload.order_group}`
+    if (payload.unit_type) url += `&unit_type=${payload.unit_type}`
+    if (payload.building)
+      url += `&keyunit__houseunit__building_unit=${payload.building}`
+    if (payload.registed) url += `&contractor__is_registed=${payload.registed}`
+    if (payload.from_date) url += `&from_contract_date=${payload.from_date}`
+    if (payload.to_date) url += `&to_contract_date=${payload.to_date}`
     const page = payload.page ? payload.page : 1
+    url += `&page=${page}`
+
     api
-      .get(
-        `/contract/?project=${project}&order_group=${order_group}&activation=true&page=${page}`,
-      )
+      .get(url)
       .then(res => {
         commit(FETCH_CONTRACT_LIST, res.data)
       })
