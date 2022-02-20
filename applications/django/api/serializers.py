@@ -429,6 +429,14 @@ class ContractListSerializer(serializers.ModelSerializer):
             'unit_type', 'keyunit', 'contractor', 'user')
 
 
+class ContractSummarySerializer(serializers.ModelSerializer):
+    contractor = serializers.SlugRelatedField(queryset=Contractor.objects.all(), slug_field='status')
+
+    class Meta:
+        model = Contract
+        fields = ('project', 'order_group', 'unit_type', 'contractor')
+
+
 class ContractorReleaseSerializer(serializers.ModelSerializer):
     class Meta:
         model = ContractorRelease

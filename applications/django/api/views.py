@@ -1,10 +1,8 @@
-from django import forms
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from django_filters.rest_framework import FilterSet
-from django_filters import (NumberFilter, CharFilter, ChoiceFilter, ModelChoiceFilter,
-                            DateFilter, BooleanFilter, DateTimeFilter, AllValuesFilter)
+from django_filters import ChoiceFilter, ModelChoiceFilter, DateFilter, BooleanFilter
 
 from .permission import *
 from .pagination import *
@@ -67,6 +65,7 @@ class ApiIndex(generics.GenericAPIView):
             # 'over-due-rule': reverse(api + OverDueRuleList.name, request=request),
             'order-group': reverse(api + OrderGroupList.name, request=request),
             'contract': reverse(api + ContractList.name, request=request),
+            'cont-summary': reverse(api + ContractSummaryList.name, request=request),
             # 'contractor': reverse(api + ContractorList.name, request=request),
             # 'contractor-address': reverse(api + ContAddressList.name, request=request),
             # 'contractor-contact': reverse(api + ContContactList.name, request=request),
@@ -609,6 +608,15 @@ class ContractDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Contract.objects.all()
     serializer_class = ContractListSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+
+
+class ContractSummaryList(generics.ListAPIView):
+    name = 'contract-summary'
+    queryset = Contract.objects.all()
+    serializer_class = ContractSummarySerializer
+    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    pagination_class = None
+    filter_fields = ('project',)
 
 
 # class ContractorList(generics.ListCreateAPIView):

@@ -89,6 +89,7 @@ urlpatterns = [
     path('order-group/<int:pk>/', OrderGroupDetail.as_view(), name=OrderGroupDetail.name),
     path('contract/', ContractList.as_view(), name=ContractList.name),
     path('contract/<int:pk>/', ContractDetail.as_view(), name=ContractDetail.name),
+    path('cont-summary/', ContractSummaryList.as_view(), name=ContractSummaryList.name),
     # path('contractor/', ContractorList.as_view(), name=ContractorList.name),
     # path('contractor/<int:pk>/', ContractorDetail.as_view(), name=ContractorDetail.name),
     # path('contractor-address/', ContAddressList.as_view(), name=ContAddressList.name),
