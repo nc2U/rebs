@@ -151,8 +151,7 @@ export default defineComponent({
       }
     },
     onDeleteType(this: any) {
-      if (this.superAuth || (this.staffAuth && this.staffAuth.project === '2'))
-        this.$refs.confirmModal.callModal()
+      if (this.superAuth) this.$refs.confirmModal.callModal()
       else {
         this.$refs.alertModal.callModal()
         this.resetForm()
