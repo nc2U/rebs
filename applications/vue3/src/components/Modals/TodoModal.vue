@@ -1,13 +1,5 @@
 <template>
-  <CModal
-    :visible="visible"
-    scrollable
-    @close="
-      () => {
-        visible = false
-      }
-    "
-  >
+  <CModal :visible="visible" scrollable @close="() => (visible = false)">
     <CModalHeader>
       <CModalTitle>할일 목록</CModalTitle>
     </CModalHeader>
