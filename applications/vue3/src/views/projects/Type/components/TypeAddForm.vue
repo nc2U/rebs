@@ -113,15 +113,18 @@
       <CButton color="primary" @click="modalAction">저장</CButton>
     </template>
   </ConfirmModal>
+
+  <AlertModal ref="alertModal" />
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
+import AlertModal from '@/components/Modals/AlertModal.vue'
 
 export default defineComponent({
   name: 'TypeAddForm',
-  components: { ConfirmModal },
+  components: { ConfirmModal, AlertModal },
   data() {
     return {
       form: {
@@ -136,17 +139,25 @@ export default defineComponent({
       validated: false,
     }
   },
-  props: ['disabled'],
+  props: { disabled: Boolean },
   methods: {
     onSubmit(this: any, event: any) {
-      const form = event.currentTarget
-      if (form.checkValidity() === false) {
-        event.preventDefault()
-        event.stopPropagation()
+      if (
+        this.superAuth ||
+        (this.staffAuth && this.staffAuth.project === '2')
+      ) {
+        const form = event.currentTarget
+        if (form.checkValidity() === false) {
+          event.preventDefault()
+          event.stopPropagation()
 
-        this.validated = true
+          this.validated = true
+        } else {
+          this.$refs.confirmModal.callModal()
+        }
       } else {
-        this.$refs.confirmModal.callModal()
+        this.$refs.alertModal.callModal()
+        this.resetForm()
       }
     },
     modalAction(this: any) {

@@ -89,15 +89,18 @@
       <CButton color="danger" @click="modalAction">삭제</CButton>
     </template>
   </ConfirmModal>
+
+  <AlertModal ref="alertModal" />
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
+import AlertModal from '@/components/Modals/AlertModal.vue'
 
 export default defineComponent({
   name: 'UnitType',
-  components: { ConfirmModal },
+  components: { ConfirmModal, AlertModal },
   data() {
     return {
       form: {
@@ -112,21 +115,9 @@ export default defineComponent({
       validated: false,
     }
   },
-  props: {
-    type: {
-      type: Object,
-    },
-  },
+  props: { type: Object },
   created(this: any) {
-    if (this.type) {
-      this.form.name = this.type.name
-      this.form.color = this.type.color
-      this.form.actual_area = this.type.actual_area
-      this.form.supply_area = this.type.supply_area
-      this.form.contract_area = this.type.contract_area
-      this.form.average_price = this.type.average_price
-      this.form.num_unit = this.type.num_unit
-    }
+    if (this.type) this.resetForm()
   },
   computed: {
     formsCheck(this: any) {
@@ -146,15 +137,37 @@ export default defineComponent({
       return
     },
     onUpdateType(this: any) {
-      const pk = this.type.pk
-      this.$emit('on-update', { ...{ pk }, ...this.form })
+      if (
+        this.superAuth ||
+        (this.staffAuth && this.staffAuth.project === '2')
+      ) {
+        const pk = this.type.pk
+        this.$emit('on-update', { ...{ pk }, ...this.form })
+      } else {
+        this.$refs.alertModal.callModal()
+        this.resetForm()
+      }
     },
     onDeleteType(this: any) {
-      this.$refs.confirmModal.callModal()
+      if (this.superAuth || (this.staffAuth && this.staffAuth.project === '2'))
+        this.$refs.confirmModal.callModal()
+      else {
+        this.$refs.alertModal.callModal()
+        this.resetForm()
+      }
     },
     modalAction(this: any) {
       this.$emit('on-delete', this.type.pk)
       this.$refs.confirmModal.visible = false
+    },
+    resetForm(this: any) {
+      this.form.name = this.type.name
+      this.form.color = this.type.color
+      this.form.actual_area = this.type.actual_area
+      this.form.supply_area = this.type.supply_area
+      this.form.contract_area = this.type.contract_area
+      this.form.average_price = this.type.average_price
+      this.form.num_unit = this.type.num_unit
     },
   },
 })
