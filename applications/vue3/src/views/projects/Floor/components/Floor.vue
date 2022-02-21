@@ -63,15 +63,18 @@
       <CButton color="danger" @click="modalAction">삭제</CButton>
     </template>
   </ConfirmModal>
+
+  <AlertModal ref="alertModal" />
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
+import AlertModal from '@/components/Modals/AlertModal.vue'
 
 export default defineComponent({
   name: 'FloorType',
-  components: { ConfirmModal },
+  components: { ConfirmModal, AlertModal },
   data() {
     return {
       form: {
@@ -85,12 +88,7 @@ export default defineComponent({
   },
   props: ['floor'],
   created(this: any) {
-    if (this.floor) {
-      this.form.start_floor = this.floor.start_floor
-      this.form.end_floor = this.floor.end_floor
-      this.form.extra_cond = this.floor.extra_cond
-      this.form.alias_name = this.floor.alias_name
-    }
+    if (this.floor) this.resetForm()
   },
   computed: {
     formsCheck(this: any) {
@@ -107,15 +105,34 @@ export default defineComponent({
       return
     },
     onUpdateFloor(this: any) {
-      const pk = this.floor.pk
-      this.$emit('on-update', { ...{ pk }, ...this.form })
+      if (
+        this.superAuth ||
+        (this.staffAuth && this.staffAuth.project === '2')
+      ) {
+        const pk = this.floor.pk
+        this.$emit('on-update', { ...{ pk }, ...this.form })
+      } else {
+        this.$refs.alertModal.callModal()
+        this.resetForm()
+      }
     },
     onDeleteFloor(this: any) {
-      this.$refs.confirmModal.callModal()
+      if (this.superAuth || (this.staffAuth && this.staffAuth.project === '2'))
+        this.$refs.confirmModal.callModal()
+      else {
+        this.$refs.alertModal.callModal()
+        this.resetForm()
+      }
     },
     modalAction(this: any) {
       this.$emit('on-delete', this.floor.pk)
       this.$refs.confirmModal.visible = false
+    },
+    resetForm() {
+      this.form.start_floor = this.floor.start_floor
+      this.form.end_floor = this.floor.end_floor
+      this.form.extra_cond = this.floor.extra_cond
+      this.form.alias_name = this.floor.alias_name
     },
   },
 })
