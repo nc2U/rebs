@@ -71,6 +71,7 @@
 import { defineComponent } from 'vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
+import { mapGetters } from 'vuex'
 
 export default defineComponent({
   name: 'FloorType',
@@ -86,7 +87,7 @@ export default defineComponent({
       validated: false,
     }
   },
-  props: ['floor'],
+  props: { floor: Object },
   created(this: any) {
     if (this.floor) this.resetForm()
   },
@@ -98,6 +99,7 @@ export default defineComponent({
       const d = this.form.alias_name === this.floor.alias_name
       return a && b && c && d
     },
+    ...mapGetters('accounts', ['staffAuth', 'superAuth']),
   },
   methods: {
     formCheck(bool: boolean) {
@@ -128,7 +130,7 @@ export default defineComponent({
       this.$emit('on-delete', this.floor.pk)
       this.$refs.confirmModal.visible = false
     },
-    resetForm() {
+    resetForm(this: any) {
       this.form.start_floor = this.floor.start_floor
       this.form.end_floor = this.floor.end_floor
       this.form.extra_cond = this.floor.extra_cond
