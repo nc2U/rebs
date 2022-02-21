@@ -192,7 +192,7 @@
       <CRow class="justify-content-between">
         <CCol xs="auto">
           <CButton
-            v-if="staffAuth && project"
+            v-if="superAuth || (staffAuth && staffAuth.project === '2')"
             type="button"
             color="success"
             @click="$emit('update-form')"
@@ -203,7 +203,7 @@
         </CCol>
         <CCol xs="auto">
           <CButton
-            v-if="staffAuth"
+            v-if="superAuth || (staffAuth && staffAuth.project === '2')"
             type="button"
             color="primary"
             @click="$emit('create-form')"

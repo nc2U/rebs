@@ -366,7 +366,7 @@
           삭제
         </CButton>
         <CButton
-          v-if="staffAuth"
+          v-if="superAuth || (staffAuth && staffAuth.project === '2')"
           type="submit"
           :color="btnClass"
           :disabled="formsCheck"
