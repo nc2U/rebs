@@ -18,6 +18,13 @@
     <link href="{% static 'rebs/css/icons.min.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'rebs/css/app.min.css' %}" rel="stylesheet" type="text/css" id="light-style"/>
     <link href="{% static 'rebs/css/app-dark.min.css' %}" rel="stylesheet" type="text/css" id="dark-style"/>
+    <style>
+      .table-responsive th, .table-responsive td {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    </style>
 
 </head>
 
@@ -71,6 +78,7 @@
   function hideDiv() {
     document.getElementById("alert-message").style.display = "none";
   }
+
   self.setTimeout("hideDiv()", 5000); // 초 지정
 </script>
 
