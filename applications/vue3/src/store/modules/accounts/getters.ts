@@ -7,6 +7,8 @@ const getters = {
 
   staffAuth(state: AccountsState) {
     return state.userInfo?.staffauth?.is_staff || state.userInfo?.is_superuser
+      ? state.userInfo.staffauth
+      : null
   },
 
   superAuth(state: AccountsState) {

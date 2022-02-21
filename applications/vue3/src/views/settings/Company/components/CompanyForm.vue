@@ -203,7 +203,11 @@
         삭제
       </CButton>
       <CButton
-        v-if="this.update ? this.staffAuth : this.superAuth"
+        v-if="
+          this.update
+            ? superAuth || (staffAuth && staffAuth.company_settings === '2')
+            : superAuth
+        "
         type="submit"
         :color="btnClass"
         :disabled="formsCheck"
@@ -286,10 +290,7 @@ export default defineComponent({
     }
   },
   props: {
-    company: {
-      type: Object,
-      required: false,
-    },
+    company: Object,
     update: {
       type: Boolean,
       required: true,

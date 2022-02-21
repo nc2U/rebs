@@ -101,7 +101,10 @@
     <CRow class="justify-content-between">
       <CCol xs="auto">
         <CButton
-          v-if="staffAuth && company"
+          v-if="
+            superAuth ||
+            (company && staffAuth && staffAuth.company_settings === '2')
+          "
           type="button"
           color="success"
           @click="toEdit"
