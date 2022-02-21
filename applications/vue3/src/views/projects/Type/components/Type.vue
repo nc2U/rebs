@@ -97,6 +97,7 @@
 import { defineComponent } from 'vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
+import { mapGetters } from 'vuex'
 
 export default defineComponent({
   name: 'UnitType',
@@ -130,6 +131,7 @@ export default defineComponent({
       const g = this.form.num_unit === this.type.num_unit
       return a && b && c && d && e && f && g
     },
+    ...mapGetters('accounts', ['staffAuth', 'superAuth']),
   },
   methods: {
     formCheck(bool: boolean) {
