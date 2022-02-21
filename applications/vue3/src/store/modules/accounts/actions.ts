@@ -57,17 +57,19 @@ const actions = {
       })
   },
 
-  loginByToken({ commit, dispatch }: any, token: string) {
-    commit(SET_ACCESS_TOKEN, token)
-    const pk = extractId(token)
-    return api
-      .get(`/user/${pk}/`)
-      .then(res => {
-        commit(SET_USER_INFO, res.data)
-        commit(SET_LOCKED_USER, res.data)
-        dispatch('fetchTodoList')
-      })
-      .catch(err => console.log(err.response.data))
+  loginByToken({ commit, dispatch }: any, token?: string) {
+    if (token) {
+      commit(SET_ACCESS_TOKEN, token)
+      const pk = extractId(token)
+      return api
+        .get(`/user/${pk}/`)
+        .then(res => {
+          commit(SET_USER_INFO, res.data)
+          commit(SET_LOCKED_USER, res.data)
+          dispatch('fetchTodoList')
+        })
+        .catch(err => console.log(err.response.data))
+    } else return
   },
 
   logout({ commit }: any) {
