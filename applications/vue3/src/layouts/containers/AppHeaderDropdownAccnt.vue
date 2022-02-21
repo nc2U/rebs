@@ -25,7 +25,7 @@
       <CDropdownHeader component="h6" class="bg-light fw-semibold py-2">
         Settings
       </CDropdownHeader>
-      <CDropdownItem>
+      <CDropdownItem @click="$router.push({ name: '프로필 관리' })">
         <CIcon icon="cil-user" />
         프로필
       </CDropdownItem>

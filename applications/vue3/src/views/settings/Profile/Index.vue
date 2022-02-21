@@ -15,7 +15,7 @@ import ContentBody from '@/layouts/ContentBody/Index.vue'
 import { mapState } from 'vuex'
 
 export default defineComponent({
-  name: 'UsersIndex',
+  name: 'ProfileIndex',
   mixins: [HeaderMixin],
   components: {
     ContentHeader,

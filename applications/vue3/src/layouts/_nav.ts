@@ -377,8 +377,8 @@ const settings = {
     },
     {
       component: 'CNavItem',
-      name: '사용자 관리',
-      to: '/settings/users',
+      name: '프로필 관리',
+      to: '/settings/profile',
     },
   ],
 }

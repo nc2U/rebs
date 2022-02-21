@@ -28,9 +28,9 @@ const settings = {
           : import('@/views/_Accounts/NoAuth.vue'),
     },
     {
-      path: 'users',
-      name: '사용자 관리',
-      component: () => import('@/views/settings/Users/Index.vue'),
+      path: 'profile',
+      name: '프로필 관리',
+      component: () => import('@/views/settings/Profile/Index.vue'),
     },
   ],
 }
