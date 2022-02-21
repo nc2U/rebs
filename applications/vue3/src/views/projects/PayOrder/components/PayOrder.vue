@@ -104,17 +104,21 @@
       <CButton color="danger" @click="modalAction">삭제</CButton>
     </template>
   </ConfirmModal>
+
+  <AlertModal ref="alertModal" />
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
+import AlertModal from '@/components/Modals/AlertModal.vue'
 import { maska } from 'maska'
+import { mapGetters } from 'vuex'
 
 export default defineComponent({
   name: 'PayOrder',
   directives: { maska },
-  components: { ConfirmModal },
+  components: { ConfirmModal, AlertModal },
   data() {
     return {
       form: {
@@ -133,14 +137,7 @@ export default defineComponent({
   props: ['payOrder'],
   created(this: any) {
     if (this.payOrder) {
-      this.form.pay_sort = this.payOrder.pay_sort
-      this.form.pay_code = this.payOrder.pay_code
-      this.form.pay_time = this.payOrder.pay_time
-      this.form.pay_name = this.payOrder.pay_name
-      this.form.alias_name = this.payOrder.alias_name
-      this.form.is_pm_cost = this.payOrder.is_pm_cost
-      this.form.pay_due_date = this.payOrder.pay_due_date
-      this.form.extra_due_date = this.payOrder.extra_due_date
+      this.resetForm()
     }
   },
   computed: {
@@ -155,6 +152,7 @@ export default defineComponent({
       const h = this.form.extra_due_date === this.payOrder.extra_due_date
       return a && b && c && d && e && f && g && h
     },
+    ...mapGetters('accounts', ['staffAuth', 'superAuth']),
   },
   methods: {
     formCheck(bool: boolean) {
@@ -162,15 +160,37 @@ export default defineComponent({
       return
     },
     onUpdatePayOrder(this: any) {
-      const pk = this.payOrder.pk
-      this.$emit('on-update', { ...{ pk }, ...this.form })
+      if (
+        this.superAuth ||
+        (this.staffAuth && this.staffAuth.project === '2')
+      ) {
+        const pk = this.payOrder.pk
+        this.$emit('on-update', { ...{ pk }, ...this.form })
+      } else {
+        this.$refs.alertModal.callModal()
+        this.resetForm()
+      }
     },
     onDeletePayOrder(this: any) {
-      this.$refs.confirmModal.callModal()
+      if (this.superAuth) this.$refs.confirmModal.callModal()
+      else {
+        this.$refs.alertModal.callModal()
+        this.resetForm()
+      }
     },
     modalAction(this: any) {
       this.$emit('on-delete', this.payOrder.pk)
       this.$refs.confirmModal.visible = false
+    },
+    resetForm() {
+      this.form.pay_sort = this.payOrder.pay_sort
+      this.form.pay_code = this.payOrder.pay_code
+      this.form.pay_time = this.payOrder.pay_time
+      this.form.pay_name = this.payOrder.pay_name
+      this.form.alias_name = this.payOrder.alias_name
+      this.form.is_pm_cost = this.payOrder.is_pm_cost
+      this.form.pay_due_date = this.payOrder.pay_due_date
+      this.form.extra_due_date = this.payOrder.extra_due_date
     },
   },
 })
