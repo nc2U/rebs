@@ -371,39 +371,42 @@
         </CButton>
       </CCardFooter>
     </CForm>
-
-    <DaumPostcode @addressPut="addressPut" ref="postCode" />
-
-    <ConfirmModal ref="delModal">
-      <template v-slot:header>프로젝트정보 삭제</template>
-      <template v-slot:default>현재 삭제 기능이 구현되지 않았습니다.</template>
-      <template v-slot:footer>
-        <CButton color="danger" disabled="">삭제</CButton>
-      </template>
-    </ConfirmModal>
-
-    <ConfirmModal ref="confirmModal">
-      <template v-slot:header>프로젝트정보</template>
-      <template v-slot:default>
-        프로젝트정보 {{ confirmText }}을 진행하시겠습니까?
-      </template>
-      <template v-slot:footer>
-        <CButton :color="btnClass" @click="modalAction">저장</CButton>
-      </template>
-    </ConfirmModal>
   </CCard>
+
+  <DaumPostcode @addressPut="addressPut" ref="postCode" />
+
+  <ConfirmModal ref="delModal">
+    <template v-slot:header>프로젝트정보 삭제</template>
+    <template v-slot:default>현재 삭제 기능이 구현되지 않았습니다.</template>
+    <template v-slot:footer>
+      <CButton color="danger" disabled="">삭제</CButton>
+    </template>
+  </ConfirmModal>
+
+  <ConfirmModal ref="confirmModal">
+    <template v-slot:header>프로젝트정보</template>
+    <template v-slot:default>
+      프로젝트정보 {{ confirmText }}을 진행하시겠습니까?
+    </template>
+    <template v-slot:footer>
+      <CButton :color="btnClass" @click="modalAction">저장</CButton>
+    </template>
+  </ConfirmModal>
+
+  <AlertModal ref="alertModal" />
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
+import AlertModal from '@/components/Modals/AlertModal.vue'
 import DaumPostcode from '@/components/DaumPostcode/index.vue'
 import addressMixin from '@/components/DaumPostcode/addressMixin'
 import { mapGetters } from 'vuex'
 
 export default defineComponent({
   name: 'IndexForm',
-  components: { ConfirmModal, DaumPostcode },
+  components: { ConfirmModal, AlertModal, DaumPostcode },
   mixins: [addressMixin],
   data() {
     return {
@@ -551,17 +554,19 @@ export default defineComponent({
     },
   },
   methods: {
-    onSubmit(event: any) {
-      const form = event.currentTarget
-      if (form.checkValidity() === false) {
-        event.preventDefault()
-        event.stopPropagation()
+    onSubmit(this: any, event: any) {
+      if (this.superAuth) {
+        const form = event.currentTarget
+        if (form.checkValidity() === false) {
+          event.preventDefault()
+          event.stopPropagation()
 
-        console.log(form.checkValidity())
-        this.validated = true
-      } else {
-        ;(this as any).$refs.confirmModal.callModal()
-      }
+          console.log(form.checkValidity())
+          this.validated = true
+        } else {
+          ;(this as any).$refs.confirmModal.callModal()
+        }
+      } else this.$refs.alertModal.callModal()
     },
     modalAction() {
       const { pk, company } = this
@@ -573,7 +578,8 @@ export default defineComponent({
       this.validated = false
     },
     deleteProject(this: any) {
-      this.$refs.delModal.callModal()
+      if (this.superAuth) this.$refs.delModal.callModal()
+      else this.$refs.alertModal.callModal()
     },
   },
 })

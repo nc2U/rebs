@@ -7,13 +7,13 @@
     <CModalHeader>
       <CModalTitle>
         <CIcon name="cilItalic" />
-        <slot name="header"> 알림 </slot>
+        <slot name="header"> 알림</slot>
       </CModalTitle>
     </CModalHeader>
     <CModalBody>
       <slot>
-        이 페이지에 대한 등록 및 수정 권한이 없습니다. 담당자에게 문의하여
-        주십시요.
+        이 페이지에 대한 등록 및 수정 또는 삭제 권한이 없습니다. 담당자에게
+        문의하여 주십시요.
       </slot>
     </CModalBody>
     <CModalFooter>
