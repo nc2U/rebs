@@ -77,7 +77,7 @@ export default defineComponent({
   },
   props: ['order'],
   created() {
-    if (this.order) this.reset()
+    if (this.order) this.resetForm()
   },
   computed: {
     formsCheck(this: any) {
@@ -94,27 +94,30 @@ export default defineComponent({
       return
     },
     onUpdateOrder(this: any) {
-      if (this.superAuth || (this.staffAuth && this.staffAuth === '2')) {
+      if (
+        this.superAuth ||
+        (this.staffAuth && this.staffAuth.project === '2')
+      ) {
         const pk = this.order.pk
         this.$emit('on-update', { ...{ pk }, ...this.form })
       } else {
         this.$refs.alertModal.callModal()
-        this.reset()
+        this.resetForm()
       }
     },
     onDeleteOrder(this: any) {
-      if (this.superAuth || (this.staffAuth && this.staffAuth === '2'))
+      if (this.superAuth || (this.staffAuth && this.staffAuth.project === '2'))
         this.$refs.confirmModal.callModal()
       else {
         this.$refs.alertModal.callModal()
-        this.reset()
+        this.resetForm()
       }
     },
     modalAction(this: any) {
       this.$emit('on-delete', this.order.pk)
       this.$refs.confirmModal.visible = false
     },
-    reset() {
+    resetForm() {
       this.form.order_number = this.order.order_number
       this.form.sort = this.order.sort
       this.form.order_group_name = this.order.order_group_name

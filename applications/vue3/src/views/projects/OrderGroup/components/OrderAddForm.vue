@@ -83,7 +83,10 @@ export default defineComponent({
   },
   methods: {
     onSubmit(this: any, event: any) {
-      if (this.superAuth || (this.staffAuth && this.staffAuth === '2')) {
+      if (
+        this.superAuth ||
+        (this.staffAuth && this.staffAuth.project === '2')
+      ) {
         const form = event.currentTarget
         if (form.checkValidity() === false) {
           event.preventDefault()
