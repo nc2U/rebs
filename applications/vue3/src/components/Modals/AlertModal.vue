@@ -2,38 +2,22 @@
   <CModal
     alignment="center"
     :visible="visible"
-    @close="
-      () => {
-        visible = false
-      }
-    "
+    @close="() => (visible = false)"
   >
     <CModalHeader>
       <CModalTitle>
-        <slot name="header">Title</slot>
+        <CIcon name="cilItalic" />
+        <slot name="header"> 알림 </slot>
       </CModalTitle>
     </CModalHeader>
     <CModalBody>
       <slot>
-        Cras mattis consectetur purus sit amet fermentum. Cras justo odio,
-        dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac
-        consectetur ac, vestibulum at eros.
+        이 페이지에 대한 등록 및 수정 권한이 없습니다. 담당자에게 문의하여
+        주십시요.
       </slot>
     </CModalBody>
     <CModalFooter>
-      <CButton
-        color="light"
-        @click="
-          () => {
-            visible = false
-          }
-        "
-      >
-        닫기
-      </CButton>
-      <slot name="footer">
-        <CButton color="primary" @click="onAlert">Save changes</CButton>
-      </slot>
+      <CButton color="light" @click="() => (visible = false)"> 닫기</CButton>
     </CModalFooter>
   </CModal>
 </template>
@@ -51,9 +35,6 @@ export default defineComponent({
   methods: {
     callModal() {
       this.visible = true
-    },
-    onAlert() {
-      this.$emit('on-confirm')
     },
   },
 })
