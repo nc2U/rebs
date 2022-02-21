@@ -67,15 +67,19 @@
       <CButton color="danger" @click="modalAction">삭제</CButton>
     </template>
   </ConfirmModal>
+
+  <AlertModal ref="alertModal" />
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
+import AlertModal from '@/components/Modals/AlertModal.vue'
+import { mapGetters } from 'vuex'
 
 export default defineComponent({
   name: 'DownPay',
-  components: { ConfirmModal },
+  components: { ConfirmModal, AlertModal },
   data() {
     return {
       form: {
@@ -87,13 +91,10 @@ export default defineComponent({
       validated: false,
     }
   },
-  props: ['downPay', 'orders', 'types'],
+  props: { downPay: Object, orders: Array, types: Array },
   created(this: any) {
     if (this.downPay) {
-      this.form.order_group = this.downPay.order_group
-      this.form.unit_type = this.downPay.unit_type
-      this.form.number_payments = this.downPay.number_payments
-      this.form.payment_amount = this.downPay.payment_amount
+      this.resetForm()
     }
   },
   computed: {
@@ -104,6 +105,7 @@ export default defineComponent({
       const d = this.form.payment_amount === this.downPay.payment_amount
       return a && b && c && d
     },
+    ...mapGetters('accounts', ['staffAuth', 'superAuth']),
   },
   methods: {
     formCheck(bool: boolean) {
@@ -111,15 +113,33 @@ export default defineComponent({
       return
     },
     onUpdateDownPay(this: any) {
-      const pk = this.downPay.pk
-      this.$emit('on-update', { ...{ pk }, ...this.form })
+      if (
+        this.superAuth ||
+        (this.staffAuth && this.staffAuth.project === '2')
+      ) {
+        const pk = this.downPay.pk
+        this.$emit('on-update', { ...{ pk }, ...this.form })
+      } else {
+        this.$refs.alertModal.callModal()
+        this.resetForm()
+      }
     },
     onDeleteDownPay(this: any) {
-      this.$refs.confirmModal.callModal()
+      if (this.superAuth) this.$refs.confirmModal.callModal()
+      else {
+        this.$refs.alertModal.callModal()
+        this.resetForm()
+      }
     },
     modalAction(this: any) {
       this.$emit('on-delete', this.downPay.pk)
       this.$refs.confirmModal.visible = false
+    },
+    resetForm(this: any) {
+      this.form.order_group = this.downPay.order_group
+      this.form.unit_type = this.downPay.unit_type
+      this.form.number_payments = this.downPay.number_payments
+      this.form.payment_amount = this.downPay.payment_amount
     },
   },
 })
