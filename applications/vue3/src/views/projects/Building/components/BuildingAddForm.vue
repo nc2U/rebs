@@ -41,6 +41,7 @@
 import { defineComponent } from 'vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
+import { mapGetters } from 'vuex'
 
 export default defineComponent({
   name: 'BuildingAddForm',
@@ -54,6 +55,9 @@ export default defineComponent({
     }
   },
   props: { disabled: Boolean },
+  computed: {
+    ...mapGetters('accounts', ['staffAuth', 'superAuth']),
+  },
   methods: {
     onSubmit(this: any, event: any) {
       if (
