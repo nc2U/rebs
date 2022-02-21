@@ -100,40 +100,31 @@
   <CCardFooter>
     <CRow class="justify-content-between">
       <CCol xs="auto">
-        <CButton
-          v-if="
-            superAuth ||
-            (company && staffAuth && staffAuth.company_settings === '2')
-          "
-          type="button"
-          color="success"
-          @click="toEdit"
-        >
+        <CButton type="button" color="success" @click="toEdit">
           <CIcon name="cil-check-circle" />
           수정하기
         </CButton>
       </CCol>
       <CCol xs="auto">
-        <CButton
-          v-if="superAuth"
-          type="button"
-          color="primary"
-          @click="toCreate"
-        >
+        <CButton type="button" color="primary" @click="toCreate">
           <CIcon name="cil-check-circle" />
           등록하기
         </CButton>
       </CCol>
     </CRow>
   </CCardFooter>
+
+  <AlertModal ref="alertModal" />
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import AlertModal from '@/components/Modals/AlertModal.vue'
 import { mapGetters } from 'vuex'
 
 export default defineComponent({
   name: 'CompanyDetail',
+  components: { AlertModal },
   props: {
     company: {
       type: Object,
@@ -144,11 +135,17 @@ export default defineComponent({
     ...mapGetters('accounts', ['staffAuth', 'superAuth']),
   },
   methods: {
-    toEdit() {
-      this.$emit('update-form')
+    toEdit(this: any) {
+      if (
+        this.superAuth ||
+        (this.staffAuth && this.staffAuth.company_settings === '2')
+      )
+        this.$emit('update-form')
+      else this.$refs.alertModal.callModal()
     },
-    toCreate() {
-      this.$emit('create-form')
+    toCreate(this: any) {
+      if (this.superAuth) this.$emit('create-form')
+      else this.$refs.alertModal.callModal()
     },
   },
 })

@@ -195,23 +195,14 @@
         취소
       </CButton>
       <CButton
-        v-if="update && superAuth"
         type="button"
+        v-if="update"
         color="danger"
         @click="deleteCompany"
       >
         삭제
       </CButton>
-      <CButton
-        v-if="
-          this.update
-            ? superAuth || (staffAuth && staffAuth.company_settings === '2')
-            : superAuth
-        "
-        type="submit"
-        :color="btnClass"
-        :disabled="formsCheck"
-      >
+      <CButton type="submit" :color="btnClass" :disabled="formsCheck">
         <CIcon name="cil-check-circle" />
         저장
       </CButton>
@@ -237,19 +228,22 @@
       <CButton :color="btnClass" @click="modalAction">저장</CButton>
     </template>
   </ConfirmModal>
+
+  <AlertModal ref="alertModal" />
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { maska } from 'maska'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
+import AlertModal from '@/components/Modals/AlertModal.vue'
 import DaumPostcode from '@/components/DaumPostcode/index.vue'
 import addressMixin from '@/components/DaumPostcode/addressMixin'
 import { mapGetters } from 'vuex'
 
 export default defineComponent({
   name: 'CompanyForm',
-  components: { DaumPostcode, ConfirmModal },
+  components: { DaumPostcode, ConfirmModal, AlertModal },
   mixins: [addressMixin],
   directives: { maska },
   data() {
@@ -319,18 +313,29 @@ export default defineComponent({
 
       return a && b && c && d && e && f && g && h && i && j && k && l
     },
+    writeAuth() {
+      const create = this.superAuth ? true : false
+      const update =
+        this.superAuth ||
+        (this.staffAuth && this.staffAuth.company_settings === '2')
+      return this.update ? update : create
+    },
     ...mapGetters('accounts', ['staffAuth', 'superAuth']),
   },
   methods: {
-    onSubmit(event: any) {
-      const form = event.currentTarget
-      if (form.checkValidity() === false) {
-        event.preventDefault()
-        event.stopPropagation()
+    onSubmit(this: any, event: any) {
+      if (this.writeAuth) {
+        const form = event.currentTarget
+        if (form.checkValidity() === false) {
+          event.preventDefault()
+          event.stopPropagation()
 
-        this.validated = true
+          this.validated = true
+        } else {
+          this.$refs.confirmModal.callModal()
+        }
       } else {
-        ;(this as any).$refs.confirmModal.callModal()
+        this.$refs.alertModal.callModal()
       }
     },
     modalAction() {
@@ -343,7 +348,8 @@ export default defineComponent({
       this.validated = false
     },
     deleteCompany(this: any) {
-      this.$refs.delModal.callModal()
+      if (this.superAuth) this.$refs.delModal.callModal()
+      else this.$refs.alertModal.callModal()
     },
   },
 })
