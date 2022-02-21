@@ -65,7 +65,7 @@ import { mapState } from 'vuex'
 export default defineComponent({
   name: 'PriceFormList',
   components: { Price },
-  props: ['msg', 'condTexts', 'queryIds'],
+  props: { msg: String, condTexts: Object, queryIds: Object },
   computed: {
     ...mapState('project', ['floorTypeList']),
   },
