@@ -57,11 +57,12 @@ const actions = {
   },
 
   deletePrice: ({ dispatch }: any, payload: any) => {
-    const { pk, projId } = payload
+    const { pk, ...formData } = payload
     api
       .delete(`/price/${pk}/`)
       .then(() => {
-        dispatch('fetchPriceList', projId)
+        const { project, order_group, unit_type } = formData
+        dispatch('fetchPriceList', { project, order_group, unit_type })
         message('danger', '알림!', '해당 오브젝트가 삭제되었습니다.')
       })
       .catch(err => {

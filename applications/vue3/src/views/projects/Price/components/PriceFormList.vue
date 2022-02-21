@@ -31,6 +31,7 @@
         :floor="floor"
         @on-create="onCreate"
         @on-update="onUpdate"
+        @on-delete="onDelete"
       />
     </CTableBody>
 
@@ -74,6 +75,9 @@ export default defineComponent({
     },
     onUpdate(payload: any) {
       this.$emit('on-update', payload)
+    },
+    onDelete(pk: number) {
+      this.$emit('on-delete', pk)
     },
   },
 })

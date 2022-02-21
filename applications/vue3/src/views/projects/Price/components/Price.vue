@@ -49,18 +49,43 @@
       >
         {{ btnTitle }}
       </CButton>
-      <CButton color="danger" size="sm">삭제</CButton>
+      <CButton
+        color="danger"
+        size="sm"
+        @click="deletePrice()"
+        :disabled="disabled"
+      >
+        삭제
+      </CButton>
     </CTableDataCell>
   </CTableRow>
+
+  <ConfirmModal ref="confirmModal">
+    <template v-slot:header>
+      <CIcon name="cil-warning" />
+      공급가격 삭제
+    </template>
+    <template v-slot:default>
+      이 그룹에 종속 데이터가 있는 경우 해당 데이터를 모두 제거한 후 삭제가능
+      합니다. 해당 공급가격을 삭제 하시겠습니까?
+    </template>
+    <template v-slot:footer>
+      <CButton color="danger" @click="modalAction">삭제</CButton>
+    </template>
+  </ConfirmModal>
+
+  <AlertModal ref="alertModal" />
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { mapState } from 'vuex'
-import floor from '@/views/projects/Floor/components/Floor.vue'
+import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
+import AlertModal from '@/components/Modals/AlertModal.vue'
+import { mapGetters, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'Price',
+  components: { ConfirmModal, AlertModal },
   data() {
     return {
       form: {
@@ -72,13 +97,16 @@ export default defineComponent({
       price: {},
     }
   },
-  props: ['floor', 'condTexts', 'queryIds'],
+  props: { floor: Object, condTexts: Object, queryIds: Object },
   computed: {
     btnColor() {
       return this.price ? 'success' : 'primary'
     },
     btnTitle() {
       return this.price ? '수정' : '등록'
+    },
+    disabled() {
+      return !this.price
     },
     formsCheck(this: any) {
       if (this.price) {
@@ -96,10 +124,48 @@ export default defineComponent({
         )
       }
     },
+
     ...mapState('cash', ['priceList']),
+    ...mapGetters('accounts', ['staffAuth', 'superAuth']),
   },
   watch: {
     priceList() {
+      this.resetForm()
+    },
+  },
+  methods: {
+    onStorePrice(this: any) {
+      if (
+        this.superAuth ||
+        (this.staffAuth && this.staffAuth.project === '2')
+      ) {
+        const payload = {
+          ...this.queryIds,
+          ...{ unit_floor_type: this.floor.pk },
+          ...this.form,
+        }
+        if (!this.price) this.$emit('on-create', payload)
+        else {
+          const updatePayload = { ...{ pk: this.price.pk }, ...payload }
+          this.$emit('on-update', updatePayload)
+        }
+      } else {
+        this.$refs.alertModal.callModal()
+        this.resetForm()
+      }
+    },
+    deletePrice(this: any) {
+      if (this.superAuth) this.$refs.confirmModal.callModal()
+      else {
+        this.$refs.alertModal.callModal()
+        this.resetForm()
+      }
+    },
+    modalAction(this: any) {
+      this.$emit('on-delete', this.price.pk)
+      this.$refs.confirmModal.visible = false
+    },
+    resetForm(this: any) {
       const unit_floor_type = String(this.floor.pk)
       const { project, order_group, unit_type }: any = this.queryIds
       const price = this.priceList.filter(
@@ -114,20 +180,6 @@ export default defineComponent({
       this.form.price_land = price ? price.price_land : null
       this.form.price_tax = price ? price.price_tax : null
       this.form.price = price ? price.price : null
-    },
-  },
-  methods: {
-    onStorePrice(this: any) {
-      const payload = {
-        ...this.queryIds,
-        ...{ unit_floor_type: this.floor.pk },
-        ...this.form,
-      }
-      if (!this.price) this.$emit('on-create', payload)
-      else {
-        const updatePayload = { ...{ pk: this.price.pk }, ...payload }
-        this.$emit('on-update', updatePayload)
-      }
     },
   },
 })

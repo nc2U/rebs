@@ -126,7 +126,8 @@ export default defineComponent({
       this.updatePrice(payload)
     },
     onDeletePrice(pk: any) {
-      alert(pk)
+      const project = this.project.pk
+      this.deletePrice({ project, pk, ...this.queryIds })
     },
     ...mapActions('contract', ['fetchOrderGroupList']),
     ...mapActions('project', ['fetchTypeList', 'fetchFloorTypeList']),
@@ -135,6 +136,7 @@ export default defineComponent({
       'fetchPrice',
       'createPrice',
       'updatePrice',
+      'deletePrice',
     ]),
   },
 })
