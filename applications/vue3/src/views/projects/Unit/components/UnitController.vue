@@ -133,16 +133,19 @@
       <CButton color="primary" @click="modalAction">일괄등록</CButton>
     </template>
   </ConfirmModal>
+
+  <AlertModal ref="alertModal" />
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
+import AlertModal from '@/components/Modals/AlertModal.vue'
 import { mapActions, mapGetters, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'BuildingSelector',
-  components: { ConfirmModal },
+  components: { ConfirmModal, AlertModal },
   props: {
     project: {
       type: Object,
@@ -239,7 +242,12 @@ export default defineComponent({
       })
     },
     unitRegister(this: any) {
-      this.$refs.confirmModal.callModal()
+      if (this.superAuth || (this.staffAuth && this.staffAuth.project === '2'))
+        this.$refs.confirmModal.callModal()
+      else {
+        this.$refs.alertModal.callModal()
+        this.reset(1)
+      }
     },
     modalAction(this: any) {
       this.$emit('unit-register', {
