@@ -33,15 +33,18 @@
       <CButton color="danger" @click="modalAction">삭제</CButton>
     </template>
   </ConfirmModal>
+
+  <AlertModal ref="alertModal" />
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
+import AlertModal from '@/components/Modals/AlertModal.vue'
 
 export default defineComponent({
   name: 'Building',
-  components: { ConfirmModal },
+  components: { ConfirmModal, AlertModal },
   data() {
     return {
       form: {
@@ -52,9 +55,7 @@ export default defineComponent({
   },
   props: ['building'],
   created() {
-    if (this.building) {
-      this.form.name = this.building.name
-    }
+    if (this.building) this.resetForm()
   },
   computed: {
     formsCheck(this: any) {
@@ -68,15 +69,31 @@ export default defineComponent({
       return
     },
     onUpdateBuilding(this: any) {
-      const pk = this.building.pk
-      this.$emit('on-update', { ...{ pk }, ...this.form })
+      if (
+        this.superAuth ||
+        (this.staffAuth && this.staffAuth.project === '2')
+      ) {
+        const pk = this.building.pk
+        this.$emit('on-update', { ...{ pk }, ...this.form })
+      } else {
+        this.$refs.alertModal.callModal()
+        this.resetForm()
+      }
     },
     onDeleteBuilding(this: any) {
-      this.$refs.confirmModal.callModal()
+      if (this.superAuth || (this.staffAuth && this.staffAuth.project === '2'))
+        this.$refs.confirmModal.callModal()
+      else {
+        this.$refs.alertModal.callModal()
+        this.resetForm()
+      }
     },
     modalAction(this: any) {
       this.$emit('on-delete', this.building.pk)
       this.$refs.confirmModal.visible = false
+    },
+    resetForm() {
+      this.form.name = this.building.name
     },
   },
 })
