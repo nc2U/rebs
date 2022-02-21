@@ -1,3 +1,4 @@
+import store from '@/store'
 import { h, resolveComponent } from 'vue'
 
 const projectDocs = {
@@ -13,7 +14,10 @@ const projectDocs = {
     {
       path: 'general/docs',
       name: '현장 일반문서',
-      component: () => import('@/views/projectDocs/GeneralDocs/Index.vue'),
+      component: () =>
+        store.state.accounts.userInfo.staffauth.project_docs > '0'
+          ? import('@/views/projectDocs/GeneralDocs/Index.vue')
+          : import('@/views/_Accounts/NoAuth.vue'),
     },
     {
       path: 'lawsuit',
@@ -28,12 +32,18 @@ const projectDocs = {
         {
           path: 'docs',
           name: '현장 소송문서',
-          component: () => import('@/views/projectDocs/LawsuitDocs/Index.vue'),
+          component: () =>
+            store.state.accounts.userInfo.staffauth.project_docs > '0'
+              ? import('@/views/projectDocs/LawsuitDocs/Index.vue')
+              : import('@/views/_Accounts/NoAuth.vue'),
         },
         {
           path: 'case',
           name: '현장 소송사건',
-          component: () => import('@/views/projectDocs/LawsuitCase/Index.vue'),
+          component: () =>
+            store.state.accounts.userInfo.staffauth.project_docs > '0'
+              ? import('@/views/projectDocs/LawsuitCase/Index.vue')
+              : import('@/views/_Accounts/NoAuth.vue'),
         },
       ],
     },

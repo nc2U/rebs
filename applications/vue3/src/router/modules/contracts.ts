@@ -1,3 +1,4 @@
+import store from '@/store'
 import { h, resolveComponent } from 'vue'
 
 const contract = {
@@ -24,14 +25,17 @@ const contract = {
           path: 'index',
           name: '계약내역 조회',
           component: () =>
-            import(
-              /* webpackPrefetch: true */ '@/views/contracts/List/Index.vue'
-            ),
+            store.state.accounts.userInfo.staffauth.contract > '0'
+              ? import('@/views/contracts/List/Index.vue')
+              : import('@/views/_Accounts/NoAuth.vue'),
         },
         {
           path: 'status',
           name: '동호수 현황표',
-          component: () => import('@/views/contracts/Status/Index.vue'),
+          component: () =>
+            store.state.accounts.userInfo.staffauth.contract > '0'
+              ? import('@/views/contracts/Status/Index.vue')
+              : import('@/views/_Accounts/NoAuth.vue'),
         },
       ],
     },
@@ -48,12 +52,18 @@ const contract = {
         {
           path: 'register',
           name: '계약등록 관리',
-          component: () => import('@/views/contracts/Register/Index.vue'),
+          component: () =>
+            store.state.accounts.userInfo.staffauth.contract > '0'
+              ? import('@/views/contracts/Register/Index.vue')
+              : import('@/views/_Accounts/NoAuth.vue'),
         },
         {
           path: 'cancel',
           name: '계약해지 관리',
-          component: () => import('@/views/contracts/Cancel/Index.vue'),
+          component: () =>
+            store.state.accounts.userInfo.staffauth.contract > '0'
+              ? import('@/views/contracts/Cancel/Index.vue')
+              : import('@/views/_Accounts/NoAuth.vue'),
         },
       ],
     },

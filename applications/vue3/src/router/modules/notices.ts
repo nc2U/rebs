@@ -1,3 +1,4 @@
+import store from '@/store'
 import { h, resolveComponent } from 'vue'
 
 const notices = {
@@ -13,27 +14,42 @@ const notices = {
     {
       path: 'bill',
       name: '수납고지서 출력',
-      component: () => import('@/views/notices/Bill/Index.vue'),
+      component: () =>
+        store.state.accounts.userInfo.staffauth.notice > '0'
+          ? import('@/views/notices/Bill/Index.vue')
+          : import('@/views/_Accounts/NoAuth.vue'),
     },
     {
       path: 'sms',
       name: 'SMS 발송관리',
-      component: () => import('@/views/notices/Sms/Index.vue'),
+      component: () =>
+        store.state.accounts.userInfo.staffauth.notice > '0'
+          ? import('@/views/notices/Sms/Index.vue')
+          : import('@/views/_Accounts/NoAuth.vue'),
     },
     {
       path: 'mailing',
       name: 'MAIL 발송관리',
-      component: () => import('@/views/notices/Mailing/Index.vue'),
+      component: () =>
+        store.state.accounts.userInfo.staffauth.notice > '0'
+          ? import('@/views/notices/Mailing/Index.vue')
+          : import('@/views/_Accounts/NoAuth.vue'),
     },
     {
       path: 'post-label',
       name: '우편라벨 관리',
-      component: () => import('@/views/notices/Label/Index.vue'),
+      component: () =>
+        store.state.accounts.userInfo.staffauth.notice > '0'
+          ? import('@/views/notices/Label/Index.vue')
+          : import('@/views/_Accounts/NoAuth.vue'),
     },
     {
       path: 'log',
       name: '발송기록 관리',
-      component: () => import('@/views/notices/Log/Index.vue'),
+      component: () =>
+        store.state.accounts.userInfo.staffauth.notice > '0'
+          ? import('@/views/notices/Log/Index.vue')
+          : import('@/views/_Accounts/NoAuth.vue'),
     },
   ],
 }

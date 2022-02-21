@@ -1,3 +1,4 @@
+import store from '@/store'
 import { h, resolveComponent } from 'vue'
 
 const projectCash = {
@@ -13,17 +14,26 @@ const projectCash = {
     {
       path: 'status',
       name: '현장자금 현황',
-      component: () => import('@/views/projectCash/Status/Index.vue'),
+      component: () =>
+        store.state.accounts.userInfo.staffauth.payment > '0'
+          ? import('@/views/projectCash/Status/Index.vue')
+          : import('@/views/_Accounts/NoAuth.vue'),
     },
     {
       path: 'index',
       name: '현장입출 내역',
-      component: () => import('@/views/projectCash/List/Index.vue'),
+      component: () =>
+        store.state.accounts.userInfo.staffauth.project_cash > '0'
+          ? import('@/views/projectCash/List/Index.vue')
+          : import('@/views/_Accounts/NoAuth.vue'),
     },
     {
       path: 'register',
       name: '현장입출 등록',
-      component: () => import('@/views/projectCash/Register/Index.vue'),
+      component: () =>
+        store.state.accounts.userInfo.staffauth.project_cash > '0'
+          ? import('@/views/projectCash/Register/Index.vue')
+          : import('@/views/_Accounts/NoAuth.vue'),
     },
   ],
 }

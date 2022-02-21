@@ -1,3 +1,4 @@
+import store from '@/store'
 import { h, resolveComponent } from 'vue'
 
 const settings = {
@@ -13,12 +14,18 @@ const settings = {
     {
       path: 'company',
       name: '회사정보 관리',
-      component: () => import('@/views/settings/Company/Index.vue'),
+      component: () =>
+        store.state.accounts.userInfo.staffauth.company_settings > '0'
+          ? import('@/views/settings/Company/Index.vue')
+          : import('@/views/_Accounts/NoAuth.vue'),
     },
     {
       path: 'authorization',
       name: '권한설정 관리',
-      component: () => import('@/views/settings/Authorization/Index.vue'),
+      component: () =>
+        store.state.accounts.userInfo.staffauth.auth_manage > '0'
+          ? import('@/views/settings/Authorization/Index.vue')
+          : import('@/views/_Accounts/NoAuth.vue'),
     },
     {
       path: 'users',
