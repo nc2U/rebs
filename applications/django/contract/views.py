@@ -74,7 +74,7 @@ class ContractLV(LoginRequiredMixin, ListView):
         ### 계약 요약 테이블 데이터
         unit_num = []  # 타입별 세대수
         reserv_num = []  # 타입별 청약건
-        contract_num = []
+        contract_num = []  # 차수별 타입별 계약건
 
         context['total_unit_num'] = 0
         context['total_reserv_num'] = 0
@@ -88,16 +88,19 @@ class ContractLV(LoginRequiredMixin, ListView):
                                                 status='1').count()
             unit_num.append(units)  # 타입별 세대수
             reserv_num.append(reservs)  # 타입별 청약건
-            context['total_unit_num'] += unit_num[i]
-            context['total_reserv_num'] += reserv_num[i]
-            cnum = []
-            ocn = []
-            for j, og in enumerate(context['groups']):
+            context['total_unit_num'] += unit_num[i]  # 타입별 세대수 합계
+            context['total_reserv_num'] += reserv_num[i]  # 타입별 청약건 합계
+            cnum = []  # 차수별 타입별 계약건수
+            ocn = []  # ??
+            for j, og in enumerate(context['groups']):  # 차수
                 cnum.append(Contract.objects.filter(project=self.get_project(),
                                                     unit_type=type,
                                                     activation=True,
+                                                    contractor__status='2',
                                                     order_group=og).count())
                 ocn.append(Contract.objects.filter(project=self.get_project(),
+                                                   activation=True,
+                                                   contractor__status='2',
                                                    order_group=og).count())
 
             contract_num.append(list(reversed(cnum)))
