@@ -69,12 +69,12 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/accounts/login',
     name: 'Login',
-    component: () => import('@/views/accounts/Login.vue'),
+    component: () => import('@/views/_Accounts/Login.vue'),
   },
   {
     path: '/accounts/register',
     name: 'Register',
-    component: () => import('@/views/accounts/Register.vue'),
+    component: () => import('@/views/_Accounts/Register.vue'),
     beforeEnter: (to, from, next) => {
       if (
         from.name === 'RegisterCode' &&
@@ -91,12 +91,12 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/accounts/register-code',
     name: 'RegisterCode',
-    component: () => import('@/views/accounts/RegisterCode.vue'),
+    component: () => import('@/views/_Accounts/RegisterCode.vue'),
   },
   {
     path: '/accounts/lock-screen',
     name: 'LockScreen',
-    component: () => import('@/views/accounts/LockScreen.vue'),
+    component: () => import('@/views/_Accounts/LockScreen.vue'),
     beforeEnter: (to, from, next) => {
       const isAuthorized = store.getters['accounts/isAuthorized']
       if (!isAuthorized) {
