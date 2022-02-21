@@ -52,15 +52,19 @@
       <CButton color="primary" @click="modalAction">저장</CButton>
     </template>
   </ConfirmModal>
+
+  <AlertModal ref="alertModal" />
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
+import AlertModal from '@/components/Modals/AlertModal.vue'
+import { mapGetters } from 'vuex'
 
 export default defineComponent({
   name: 'OrderAddForm',
-  components: { ConfirmModal },
+  components: { ConfirmModal, AlertModal },
   data() {
     return {
       form: {
@@ -71,23 +75,33 @@ export default defineComponent({
       validated: false,
     }
   },
-  props: ['disabled'],
+  props: {
+    disabled: Boolean,
+  },
+  computed: {
+    ...mapGetters('accounts', ['staffAuth', 'superAuth']),
+  },
   methods: {
-    onSubmit(event: any) {
-      const form = event.currentTarget
-      if (form.checkValidity() === false) {
-        event.preventDefault()
-        event.stopPropagation()
+    onSubmit(this: any, event: any) {
+      if (this.superAuth || (this.staffAuth && this.staffAuth === '2')) {
+        const form = event.currentTarget
+        if (form.checkValidity() === false) {
+          event.preventDefault()
+          event.stopPropagation()
 
-        this.validated = true
+          this.validated = true
+        } else {
+          this.$refs.confirmModal.callModal()
+        }
       } else {
-        ;(this as any).$refs.confirmModal.callModal()
+        this.$refs.alertModal.callModal()
+        this.resetForm()
       }
     },
-    modalAction() {
+    modalAction(this: any) {
       this.$emit('on-submit', this.form)
       this.validated = false
-      ;(this as any).$refs.confirmModal.visible = false
+      this.$refs.confirmModal.visible = false
       this.resetForm()
     },
     resetForm() {

@@ -52,15 +52,19 @@
       <CButton color="danger" @click="modalAction">삭제</CButton>
     </template>
   </ConfirmModal>
+
+  <AlertModal ref="alertModal" />
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
+import AlertModal from '@/components/Modals/AlertModal.vue'
+import { mapGetters } from 'vuex'
 
 export default defineComponent({
   name: 'OrderGroup',
-  components: { ConfirmModal },
+  components: { ConfirmModal, AlertModal },
   data() {
     return {
       form: {
@@ -73,11 +77,7 @@ export default defineComponent({
   },
   props: ['order'],
   created() {
-    if (this.order) {
-      this.form.order_number = this.order.order_number
-      this.form.sort = this.order.sort
-      this.form.order_group_name = this.order.order_group_name
-    }
+    if (this.order) this.reset()
   },
   computed: {
     formsCheck(this: any) {
@@ -86,6 +86,7 @@ export default defineComponent({
       const c = this.form.order_group_name === this.order.order_group_name
       return a && b && c
     },
+    ...mapGetters('accounts', ['staffAuth', 'superAuth']),
   },
   methods: {
     formCheck(bool: boolean) {
@@ -93,15 +94,30 @@ export default defineComponent({
       return
     },
     onUpdateOrder(this: any) {
-      const pk = this.order.pk
-      this.$emit('on-update', { ...{ pk }, ...this.form })
+      if (this.superAuth || (this.staffAuth && this.staffAuth === '2')) {
+        const pk = this.order.pk
+        this.$emit('on-update', { ...{ pk }, ...this.form })
+      } else {
+        this.$refs.alertModal.callModal()
+        this.reset()
+      }
     },
     onDeleteOrder(this: any) {
-      this.$refs.confirmModal.callModal()
+      if (this.superAuth || (this.staffAuth && this.staffAuth === '2'))
+        this.$refs.confirmModal.callModal()
+      else {
+        this.$refs.alertModal.callModal()
+        this.reset()
+      }
     },
     modalAction(this: any) {
       this.$emit('on-delete', this.order.pk)
       this.$refs.confirmModal.visible = false
+    },
+    reset() {
+      this.form.order_number = this.order.order_number
+      this.form.sort = this.order.sort
+      this.form.order_group_name = this.order.order_group_name
     },
   },
 })
