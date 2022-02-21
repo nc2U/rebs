@@ -253,7 +253,7 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_THROTTLE_RATES': {
         'anon': '5/hour',
-        'user': '2000/hour',
+        'user': '5000/hour',
         # 'special-scope': '30/hour',
     }
 }
