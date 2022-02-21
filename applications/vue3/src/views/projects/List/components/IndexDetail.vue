@@ -191,23 +191,13 @@
     <CCardFooter>
       <CRow class="justify-content-between">
         <CCol xs="auto">
-          <CButton
-            v-if="superAuth || (staffAuth && staffAuth.project === '2')"
-            type="button"
-            color="success"
-            @click="$emit('update-form')"
-          >
+          <CButton type="button" color="success" @click="toUpdate">
             <CIcon name="cil-check-circle" />
             수정하기
           </CButton>
         </CCol>
         <CCol xs="auto">
-          <CButton
-            v-if="superAuth || (staffAuth && staffAuth.project === '2')"
-            type="button"
-            color="primary"
-            @click="$emit('create-form')"
-          >
+          <CButton type="button" color="primary" @click="toCreate">
             <CIcon name="cil-check-circle" />
             등록하기
           </CButton>
@@ -215,16 +205,20 @@
       </CRow>
     </CCardFooter>
   </CCard>
+
+  <AlertModal ref="alertModal" />
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 import commonMixin from '@/views/commonMixin'
+import AlertModal from '@/components/Modals/AlertModal.vue'
 import { mapGetters } from 'vuex'
 
 export default defineComponent({
   name: 'ProjectDetail',
   mixins: [commonMixin],
+  components: { AlertModal },
   props: {
     project: {
       type: Object,
@@ -237,6 +231,18 @@ export default defineComponent({
   },
   computed: {
     ...mapGetters('accounts', ['staffAuth', 'superAuth']),
+  },
+  methods: {
+    toCreate(this: any) {
+      if (this.superAuth || (this.staffAuth && this.staffAuth.project === '2'))
+        this.$emit('create-form')
+      else this.$refs.alertModal.callModal()
+    },
+    toUpdate(this: any) {
+      if (this.superAuth || (this.staffAuth && this.staffAuth.project === '2'))
+        this.$emit('update-form')
+      else this.$refs.alertModal.callModal()
+    },
   },
 })
 </script>

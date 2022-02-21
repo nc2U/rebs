@@ -358,19 +358,14 @@
           취소
         </CButton>
         <CButton
-          v-if="update && superAuth"
           type="button"
+          v-if="update"
           color="danger"
           @click="deleteProject"
         >
           삭제
         </CButton>
-        <CButton
-          v-if="superAuth || (staffAuth && staffAuth.project === '2')"
-          type="submit"
-          :color="btnClass"
-          :disabled="formsCheck"
-        >
+        <CButton type="submit" :color="btnClass" :disabled="formsCheck">
           <CIcon name="cil-check-circle" />
           저장
         </CButton>
