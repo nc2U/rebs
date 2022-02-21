@@ -15,22 +15,20 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import floor from '@/views/projects/Floor/components/Floor.vue'
 
 export default defineComponent({
   name: 'Unit',
-  components: {},
-  props: ['units', 'floor', 'line'],
+  props: { units: Array, floor: Number, line: Number },
   setup() {
     return {}
   },
   computed: {
-    unit() {
+    unit(this: any) {
       return this.units
         .filter((u: any) => u.line == this.line)
         .filter((u: any) => u.floor == this.floor)[0]
     },
-    isBuild() {
+    isBuild(this: any) {
       return this.unit || this.floor < 3
     },
     color() {

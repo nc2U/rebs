@@ -184,6 +184,7 @@ export default defineComponent({
     },
     ...mapState('project', ['unitTypeList', 'buildingList']),
     ...mapGetters('project', ['simpleFloors']),
+    ...mapGetters('accounts', ['staffAuth', 'superAuth']),
   },
   watch: {
     project() {
