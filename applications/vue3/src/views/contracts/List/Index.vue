@@ -9,7 +9,7 @@
 
   <ContentBody>
     <CCardBody class="pb-5">
-      <ListController ref="contControl" @cont-filtering="onContFiltering" />
+      <ListController ref="listControl" @cont-filtering="onContFiltering" />
       <ContractList :project="project" @page-select="pageSelect" />
     </CCardBody>
 
@@ -65,7 +65,7 @@ export default defineComponent({
       }
     },
     pageSelect(this: any, page: number) {
-      this.$refs.contControl.contFiltering(page)
+      this.$refs.listControl.listFiltering(page)
     },
     onContFiltering(payload: any) {
       const project = this.project.pk
