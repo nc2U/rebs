@@ -21,7 +21,7 @@
   text-overflow: ellipsis;
 }
 
-.input-group > .input-group-text {
+.input-group > .input-group-text, .form-check-input {
   cursor: pointer;
 }
 

@@ -8,7 +8,7 @@
               v-model="form.from_date"
               @keydown.enter="payFiltering(1)"
               v-maska="'####-##-##'"
-              placeholder="수납일자(From)"
+              placeholder="납부일자 (From)"
             />
           </CCol>
 
@@ -17,7 +17,7 @@
               v-model="form.to_date"
               @keydown.enter="payFiltering(1)"
               v-maska="'####-##-##'"
-              placeholder="수납일자(To)"
+              placeholder="납부일자 (To)"
             />
           </CCol>
 
@@ -46,10 +46,10 @@
       </CCol>
       <CCol lg="5">
         <CRow>
-          <CCol md="6" class="mb-3 pl-4 pt-2 text-center">
+          <CCol md="6" class="mb-3 pl-4 pt-2">
             <CFormSwitch
               v-model="form.is_unRegisted"
-              label="미등록 수납대금만 보기"
+              label="미등록 납부대금 건"
             />
           </CCol>
 
@@ -58,7 +58,7 @@
               <CFormInput
                 v-model="form.search"
                 @keydown.enter="payFiltering(1)"
-                placeholder="계약자, 입금자, 비고"
+                placeholder="계약자, 입금자, 적요, 비고"
                 aria-label="Username"
                 aria-describedby="addon-wrapping"
               />
