@@ -38,7 +38,7 @@ export default defineComponent({
     PaymentList,
   },
   created() {
-    this.fetchPaymentList(this.initProjId)
+    this.fetchPaymentList({ project: this.initProjId })
   },
   computed: {
     ...mapState('project', ['project']),
@@ -51,6 +51,10 @@ export default defineComponent({
       } else {
         this.$store.state.cash.paymentList = []
       }
+    },
+    pageSelect(page: number) {
+      const project = this.project.pk
+      this.fetchPaymentList({ ...{ project }, ...{ page } })
     },
     ...mapActions('cash', ['fetchPaymentList']),
   },
