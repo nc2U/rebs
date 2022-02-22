@@ -33,6 +33,8 @@
         v-for="(payment, i) in getPayments"
         :payment="payment"
         :key="i"
+        @on-update="onUpdate"
+        @on-delete="onDelete"
       />
     </CTableBody>
   </CTable>
@@ -61,6 +63,12 @@ export default defineComponent({
   methods: {
     pageSelect(page: number) {
       this.$emit('page-select', page)
+    },
+    onUpdate(payload: any) {
+      this.$emit('on-update', payload)
+    },
+    onDelete(pk: number) {
+      this.$emit('on-delete', pk)
     },
   },
 })

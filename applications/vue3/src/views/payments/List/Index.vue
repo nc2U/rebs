@@ -10,7 +10,12 @@
   <ContentBody>
     <CCardBody class="pb-5">
       <ListController ref="listControl" @payment-filtering="onPayFiltering" />
-      <PaymentList :project="project" @page-select="pageSelect" />
+      <PaymentList
+        :project="project"
+        @page-select="pageSelect"
+        @on-update="onUpdate"
+        @on-delete="onDelete"
+      />
     </CCardBody>
 
     <CCardFooter>&nbsp;</CCardFooter>
@@ -64,6 +69,13 @@ export default defineComponent({
     onPayFiltering(payload: any) {
       const project = this.project.pk
       this.fetchPaymentList({ ...{ project }, ...payload })
+    },
+    onUpdate(payload: any) {
+      alert('a')
+      console.log(payload)
+    },
+    onDelete(pk: number) {
+      alert(pk)
     },
     ...mapActions('cash', [
       'fetchPayOrderList',

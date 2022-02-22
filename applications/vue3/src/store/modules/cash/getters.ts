@@ -4,6 +4,7 @@ const getters = {
   getPayments: (state: CashState) => {
     return state.paymentList
       ? state.paymentList.map((p: any) => ({
+          pk: p.pk,
           deal_date: p.deal_date,
           contract: p.contract,
           order_group: p.contract ? p.contract.order_group : '-',
