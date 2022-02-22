@@ -344,9 +344,18 @@ class ProjectCashBookSerializer(serializers.ModelSerializer):
                   'note', 'deal_date', 'user', 'created_at', 'updated_at')
 
 
+class SimpleContractSerializer(serializers.ModelSerializer):
+    order_group = serializers.SlugRelatedField(queryset=OrderGroup.objects.all(), slug_field='order_group_name')
+    unit_type = serializers.SlugRelatedField(queryset=UnitType.objects.all(), slug_field='name')
+    contractor = serializers.SlugRelatedField(queryset=Contractor.objects.all(), slug_field='name')
+
+    class Meta:
+        model = Contract
+        fields = ('order_group', 'unit_type', 'serial_number', 'contractor')
+
+
 class PaymentSerializer(serializers.ModelSerializer):
-    installment_order = serializers.SlugField()
-    bank_account = serializers.SlugField()
+    contract = SimpleContractSerializer()
 
     class Meta:
         model = ProjectCashBook
