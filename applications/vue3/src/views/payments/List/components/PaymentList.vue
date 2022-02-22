@@ -1,5 +1,5 @@
 <template>
-  <CTable hover responsive>
+  <CTable hover responsive align="middle">
     <colgroup>
       <col width="10%" />
       <col width="9%" />
@@ -30,9 +30,9 @@
 
     <CTableBody>
       <Payment
-        v-for="payment in paymentList"
+        v-for="(payment, i) in getPayments"
         :payment="payment"
-        :key="payment.pk"
+        :key="i"
       />
     </CTableBody>
   </CTable>
@@ -49,15 +49,14 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import Payment from '@/views/payments/List/components/Payment.vue'
-import { mapGetters, mapState } from 'vuex'
+import { mapGetters } from 'vuex'
 
 export default defineComponent({
   name: 'PaymentList',
   components: { Payment },
   props: { project: Object },
   computed: {
-    ...mapState('cash', ['paymentList']),
-    ...mapGetters('cash', ['paymentPages']),
+    ...mapGetters('cash', ['paymentPages', 'getPayments']),
   },
   methods: {
     pageSelect(page: number) {

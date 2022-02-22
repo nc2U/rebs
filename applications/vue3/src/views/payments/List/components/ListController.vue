@@ -50,6 +50,7 @@
             <CFormSwitch
               v-model="form.no_contract"
               label="미등록 납부대금 건"
+              @change="listFiltering(1)"
             />
           </CCol>
 
@@ -81,6 +82,7 @@
     <!--      </CRow>-->
     <!--    </CAlert>-->
   </CCallout>
+  {{ paymentsCount }}
 </template>
 
 <script lang="ts">
@@ -113,13 +115,16 @@ export default defineComponent({
       const f = this.form.search === ''
       return a && b && c && d && e && f
     },
-    ...mapState('cash', ['payOrderList', 'pBankAccountList']),
+    ...mapState('cash', ['payOrderList', 'pBankAccountList', 'paymentsCount']),
   },
   methods: {
     listFiltering(page = 1) {
       this.$nextTick(() =>
         this.$emit('payment-filtering', { ...{ page }, ...this.form }),
       )
+    },
+    aa() {
+      this.$nextTick(() => alert(this.form.no_contract))
     },
     resetForm() {
       this.form.from_date = ''

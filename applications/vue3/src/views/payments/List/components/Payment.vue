@@ -1,19 +1,24 @@
 <template>
-  <CTableRow class="text-center" v-if="payment.contract">
+  <CTableRow
+    class="text-center"
+    v-if="payment"
+    :color="payment.contract ? '' : 'warning'"
+  >
     <CTableDataCell>{{ payment.deal_date }}</CTableDataCell>
-    <CTableDataCell>{{ payment.contract.order_group || '' }}</CTableDataCell>
+    <CTableDataCell>{{ payment.order_group }}</CTableDataCell>
     <CTableDataCell class="text-left">
       <CIcon
+        v-if="payment.contract"
         name="cib-node-js"
-        :style="`color: ${payment.contract.unit_type.color || ''}`"
+        :style="`color: ${payment.type_color}`"
         size="sm"
         class="mr-1"
       />
-      {{ payment.contract.unit_type.name || '' }}
+      {{ payment.type_name }}
     </CTableDataCell>
-    <CTableDataCell>{{ payment.contract.serial_number || '' }}</CTableDataCell>
+    <CTableDataCell>{{ payment.serial_number }}</CTableDataCell>
     <CTableDataCell>
-      <router-link to="#">{{ payment.contract.contractor || '' }}</router-link>
+      <router-link to="#">{{ payment.contractor }}</router-link>
     </CTableDataCell>
     <CTableDataCell class="text-right">
       <router-link to="#">{{ numFormat(payment.income) }}</router-link>
@@ -39,6 +44,11 @@ export default defineComponent({
     payment: {
       type: Object,
       required: true,
+    },
+  },
+  computed: {
+    warning() {
+      return this.payment.order_group === '-'
     },
   },
   methods: {

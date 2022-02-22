@@ -257,8 +257,21 @@ const actions = {
   },
 
   fetchPaymentList: ({ commit }: any, payload: any) => {
+    // ?project=1
+    // &project_account_d1=2
+    // &project_account_d2=1
+    // &is_release=true
+    // &from_deal_date=2020-11-11&to_deal_date=2020-11-11
+    // &installment_order=1&bank_account=1&
+    // is_contract_payment=true&contract=661
     const { project } = payload
     let url = `/payment-list/?project=${project}`
+    if (payload.from_date) url += `&from_deal_date=${payload.from_date}`
+    if (payload.to_date) url += `&to_deal_date=${payload.to_date}`
+    if (payload.pay_order) url += `&installment_order=${payload.pay_order}`
+    if (payload.pay_account) url += `&bank_account=${payload.pay_account}`
+    if (payload.no_contract) url += `&no_contract=${payload.no_contract}`
+    if (payload.search) url += `&search=${payload.search}`
     const page = payload.page ? payload.page : 1
     if (payload.page) url += `&page=${page}`
     api
