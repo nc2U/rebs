@@ -50,12 +50,12 @@ interface ProjectCashBook {
   pk: number
   project: number
   cash_category1: string
-  project_account_d1: number
-  project_account_d2: number
+  project_account_d1: number | null
+  project_account_d2: number | null
   is_record_separate: boolean
   is_contract_payment: boolean
-  contract: number
-  installment_order: number
+  contract: number | null
+  installment_order: number | null
   is_release: boolean
   is_refund_contractor: number | null
   content: string
@@ -66,7 +66,6 @@ interface ProjectCashBook {
   evidence: string
   note: string
   deal_date: string
-  user: number
 }
 
 export interface CashState {
