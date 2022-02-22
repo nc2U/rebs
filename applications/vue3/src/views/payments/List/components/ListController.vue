@@ -6,7 +6,7 @@
           <CCol md="6" lg="3" class="mb-3">
             <CFormInput
               v-model="form.from_date"
-              @keydown.enter="payFiltering(1)"
+              @keydown.enter="listFiltering(1)"
               v-maska="'####-##-##'"
               placeholder="납부일자 (From)"
             />
@@ -15,14 +15,14 @@
           <CCol md="6" lg="3" class="mb-3">
             <CFormInput
               v-model="form.to_date"
-              @keydown.enter="payFiltering(1)"
+              @keydown.enter="listFiltering(1)"
               v-maska="'####-##-##'"
               placeholder="납부일자 (To)"
             />
           </CCol>
 
           <CCol md="6" lg="3" class="mb-3">
-            <CFormSelect v-model="form.pay_order" @change="payFiltering(1)">
+            <CFormSelect v-model="form.pay_order" @change="listFiltering(1)">
               <option value="">납부회차 선택</option>
               <option v-for="po in payOrderList" :value="po.pk" :key="po.pk">
                 {{ po.__str__ }}
@@ -31,7 +31,7 @@
           </CCol>
 
           <CCol md="6" lg="3" class="mb-3">
-            <CFormSelect v-model="form.pay_account" @change="payFiltering(1)">
+            <CFormSelect v-model="form.pay_account" @change="listFiltering(1)">
               <option value="">납부계좌 선택</option>
               <option
                 v-for="ba in pBankAccountList"
@@ -57,12 +57,12 @@
             <CInputGroup class="flex-nowrap">
               <CFormInput
                 v-model="form.search"
-                @keydown.enter="payFiltering(1)"
+                @keydown.enter="listFiltering(1)"
                 placeholder="계약자, 입금자, 적요, 비고"
                 aria-label="Username"
                 aria-describedby="addon-wrapping"
               />
-              <CInputGroupText @click="payFiltering(1)">검색</CInputGroupText>
+              <CInputGroupText @click="listFiltering(1)">검색</CInputGroupText>
             </CInputGroup>
           </CCol>
         </CRow>
@@ -116,10 +116,10 @@ export default defineComponent({
     ...mapState('cash', ['payOrderList', 'pBankAccountList']),
   },
   methods: {
-    payFiltering(page = 1) {
-      this.$nextTick(() => {
-        this.$emit('pay-filtering', { ...{ page }, ...this.form })
-      })
+    listFiltering(page = 1) {
+      this.$nextTick(() =>
+        this.$emit('payment-filtering', { ...{ page }, ...this.form }),
+      )
     },
     resetForm() {
       this.form.from_date = ''
@@ -128,7 +128,7 @@ export default defineComponent({
       this.form.pay_account = ''
       this.form.is_unRegisted = ''
       this.form.search = ''
-      this.payFiltering(1)
+      this.listFiltering(1)
     },
   },
 })

@@ -9,7 +9,7 @@
 
   <ContentBody>
     <CCardBody class="pb-5">
-      <ListController ref="contControl" @cont-filtering="onContFiltering" />
+      <ListController ref="listControl" @payment-filtering="onPayFiltering" />
       <PaymentList :project="project" @page-select="pageSelect" />
     </CCardBody>
 
@@ -58,9 +58,12 @@ export default defineComponent({
         this.$store.state.cash.pBankAccountList = []
       }
     },
-    pageSelect(page: number) {
+    pageSelect(this: any, page: number) {
+      this.$refs.listControl.listFiltering(page)
+    },
+    onPayFiltering(payload: any) {
       const project = this.project.pk
-      this.fetchPaymentList({ ...{ project }, ...{ page } })
+      this.fetchPaymentList({ ...{ project }, ...payload })
     },
     ...mapActions('cash', [
       'fetchPayOrderList',
