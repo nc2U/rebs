@@ -2,115 +2,44 @@
   <CTable hover responsive bordered class="mt-3">
     <CTableHead class="text-center" color="dark">
       <CTableRow align="middle">
-        <CTableHeaderCell rowspan="2">프로젝트명</CTableHeaderCell>
-        <CTableHeaderCell rowspan="2">타입</CTableHeaderCell>
-        <CTableHeaderCell rowspan="2">세대수</CTableHeaderCell>
-        <CTableHeaderCell rowspan="2">청약건수</CTableHeaderCell>
-        <CTableHeaderCell
-          :colspan="orderGroupList.length === 1 ? 1 : orderGroupList.length + 1"
-        >
-          계약건수
-        </CTableHeaderCell>
-        <CTableHeaderCell rowspan="2">잔여세대</CTableHeaderCell>
-        <CTableHeaderCell rowspan="2">계약율</CTableHeaderCell>
-        <CTableHeaderCell rowspan="2">분양율(청약+계약)</CTableHeaderCell>
-      </CTableRow>
-
-      <CTableRow v-if="orderGroupList.length > 1">
-        <CTableHeaderCell v-for="order in orderGroupList" :key="order.pk">
-          {{ order.order_group_name }}
-        </CTableHeaderCell>
-
-        <CTableHeaderCell v-if="orderGroupList.length > 1">
-          합계
-        </CTableHeaderCell>
+        <CTableHeaderCell>프로젝트</CTableHeaderCell>
+        <CTableHeaderCell>총 매출예산(A)</CTableHeaderCell>
+        <CTableHeaderCell>총 분양금액(B)</CTableHeaderCell>
+        <CTableHeaderCell>총 수납금액(C)</CTableHeaderCell>
+        <CTableHeaderCell>미 수납금액(B-C)</CTableHeaderCell>
+        <CTableHeaderCell>미 분양금액(A-B)</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
 
     <CTableBody v-if="project">
-      <CTableRow
-        class="text-right"
-        align="middle"
-        v-for="(type, i) in unitTypeList"
-        :key="i"
-      >
-        <CTableHeaderCell
-          class="text-center"
-          :rowspan="unitTypeList.length"
-          v-if="project && i == 0"
-        >
+      <CTableRow class="text-right" color="light">
+        <CTableHeaderCell class="text-center">
           {{ project.name }}
         </CTableHeaderCell>
-        <CTableDataCell class="text-left pl-2">
-          <CIcon name="cibDiscover" :style="'color:' + type.color" size="sm" />
-          {{ type.name }}
-        </CTableDataCell>
-        <!--  타입별 세대수 -->
-        <CTableDataCell>{{ numFormat(type.num_unit) }}세대</CTableDataCell>
-        <!-- 차수별 타입별 청약건수-->
-        <CTableDataCell>{{ numFormat(getSubs(type.pk)) }}</CTableDataCell>
-        <!-- 차수별 타입별 계약건수-->
-        <CTableDataCell v-for="order in orderGroupList" :key="order.pk">
-          {{ numFormat(getConts(order.pk, type.pk)) }}
-        </CTableDataCell>
-
-        <!-- 차수별 계약건수 합계 -->
-        <CTableDataCell v-if="orderGroupList.length > 1">
-          {{ numFormat(getConts(null, type.pk)) }}
-        </CTableDataCell>
-        <!--잔여세대-->
-        <CTableDataCell>
-          {{
-            numFormat(
-              type.num_unit - getSubs(type.pk) - getConts(null, type.pk),
-            )
-          }}
-        </CTableDataCell>
-        <!-- 계약율-->
-        <CTableDataCell>
-          {{ ratioFormat((getConts(null, type.pk) / type.num_unit) * 100) }}
-        </CTableDataCell>
-        <!-- 분양율(청약+계약)-->
-        <CTableDataCell>
-          {{
-            ratioFormat(
-              ((getSubs(type.pk) + getConts(null, type.pk)) / type.num_unit) *
-                100,
-            )
-          }}
-        </CTableDataCell>
+        <CTableHeaderCell>1</CTableHeaderCell>
+        <CTableHeaderCell>1</CTableHeaderCell>
+        <CTableHeaderCell>1</CTableHeaderCell>
+        <CTableHeaderCell>1</CTableHeaderCell>
+        <CTableHeaderCell>1</CTableHeaderCell>
       </CTableRow>
 
-      <CTableRow color="dark" class="text-right">
-        <CTableDataCell class="text-center"> 합계</CTableDataCell>
-        <CTableDataCell></CTableDataCell>
-        <!-- 타입별 세대수 합계-->
-        <CTableDataCell> {{ numFormat(project.num_unit) }}세대</CTableDataCell>
-        <!-- 청약 건수 타입별 합계-->
-        <CTableDataCell>{{ numFormat(getSubs()) }}</CTableDataCell>
-        <!--차수별 계약건수 타입별 합계-->
-        <CTableDataCell v-if="orderGroupList.length === 0">-</CTableDataCell>
-        <CTableDataCell v-else v-for="order in orderGroupList" :key="order.pk">
-          {{ numFormat(getConts(order.pk)) }}
-        </CTableDataCell>
-        <!-- 차수별 타입별 계약건수 총계-->
-        <CTableDataCell v-if="orderGroupList.length > 1">
-          {{ numFormat(getConts()) }}
-        </CTableDataCell>
-        <!-- 타입별 잔여세대 합계-->
-        <CTableDataCell>
-          {{ numFormat(project.num_unit - getConts() - getSubs()) }}
-        </CTableDataCell>
-        <!-- 타입별 계약율 합계-->
-        <CTableDataCell
-          >{{ ratioFormat((getConts() / project.num_unit) * 100) }}
-        </CTableDataCell>
-        <!-- 타입별 분양율(청약+계약) 합계-->
-        <CTableDataCell
-          >{{
-            ratioFormat(((getConts() + getSubs()) / project.num_unit) * 100)
-          }}
-        </CTableDataCell>
+      <CTableRow class="text-right">
+        <!-- 타입만큼 반복 -->
+        <CTableHeaderCell class="text-center">74</CTableHeaderCell>
+        <CTableDataCell>1</CTableDataCell>
+        <CTableDataCell>1</CTableDataCell>
+        <CTableDataCell>1</CTableDataCell>
+        <CTableDataCell>1</CTableDataCell>
+        <CTableDataCell>1</CTableDataCell>
+      </CTableRow>
+
+      <CTableRow class="text-right" color="light">
+        <CTableHeaderCell class="text-center">근린생활시설</CTableHeaderCell>
+        <CTableDataCell>1</CTableDataCell>
+        <CTableDataCell>1</CTableDataCell>
+        <CTableDataCell>1</CTableDataCell>
+        <CTableDataCell>1</CTableDataCell>
+        <CTableDataCell>1</CTableDataCell>
       </CTableRow>
     </CTableBody>
   </CTable>
