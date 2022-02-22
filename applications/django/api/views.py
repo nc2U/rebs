@@ -58,7 +58,8 @@ class ApiIndex(generics.GenericAPIView):
             # 'com-bank': reverse(api + ComBankAccountList.name, request=request),
             # 'cashbook': reverse(api + CashBookList.name, request=request),
             # 'project-bank': reverse(api + ProjectBankAccountList.name, request=request),
-            # 'project-cashbook': reverse(api + ProjectCashBookList.name, request=request),
+            'project-cashbook': reverse(api + ProjectCashBookList.name, request=request),
+            'payment-list': reverse(api + PaymentList.name, request=request),
             'price': reverse(api + SalesPriceList.name, request=request),
             'pay-order': reverse(api + InstallmentOrderList.name, request=request),
             'down-payment': reverse(api + DownPaymentList.name, request=request),
@@ -479,21 +480,40 @@ class HouseUnitDetail(generics.RetrieveUpdateDestroyAPIView):
 #     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
 
-# class ProjectCashBookList(generics.ListCreateAPIView):
-#     name = 'project_cashbook-list'
-#     queryset = ProjectCashBook.objects.all()
-#     serializer_class = ProjectCashBookSerializer
-#     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-#
-#     def perform_create(self, serializer):
-#         serializer.save(user=self.request.user)
-#
-#
-# class ProjectCashBookDetail(generics.RetrieveUpdateDestroyAPIView):
-#     name = 'project_cashbook-detail'
-#     queryset = ProjectCashBook.objects.all()
-#     serializer_class = ProjectCashBookSerializer
-#     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+class ProjectCashBookFilterSet(FilterSet):
+    from_deal_date = DateFilter(field_name='deal_date', lookup_expr='gte', label='납부일자부터')
+    to_deal_date = DateFilter(field_name='deal_date', lookup_expr='lte', label='납부일자까지')
+
+    class Meta:
+        model = ProjectCashBook
+        fields = ('project', 'project_account_d1', 'project_account_d2',
+                  'is_release', 'from_deal_date', 'to_deal_date', 'installment_order',
+                  'bank_account', 'is_contract_payment', 'contract')
+
+
+class ProjectCashBookList(generics.ListCreateAPIView):
+    name = 'project_cashbook-list'
+    queryset = ProjectCashBook.objects.all()
+    serializer_class = ProjectCashBookSerializer
+    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    filter_class = ProjectCashBookFilterSet
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
+class ProjectCashBookDetail(generics.RetrieveUpdateDestroyAPIView):
+    name = 'project_cashbook-detail'
+    queryset = ProjectCashBook.objects.all()
+    serializer_class = ProjectCashBookSerializer
+    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+
+
+class PaymentList(generics.ListAPIView, ProjectCashBookList):
+    name = 'payment-list'
+
+    def get_queryset(self):
+        return ProjectCashBook.objects.filter(project_account_d2__in=(1, 2), is_release=False)
 
 
 class SalesPriceList(generics.ListCreateAPIView):
