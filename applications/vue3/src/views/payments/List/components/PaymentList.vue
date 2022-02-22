@@ -1,13 +1,13 @@
 <template>
   <CTable hover responsive>
     <colgroup>
-      <col width="9%" />
-      <col width="8%" />
-      <col width="7%" />
-      <col width="8%" />
-      <col width="9%" />
       <col width="10%" />
-      <col width="14%" />
+      <col width="9%" />
+      <col width="7%" />
+      <col width="9%" />
+      <col width="8%" />
+      <col width="9%" />
+      <col width="13%" />
       <col width="13%" />
       <col width="12%" />
       <col width="10%" />
@@ -37,13 +37,13 @@
     </CTableBody>
   </CTable>
 
-  <!--  <CSmartPagination-->
-  <!--    :activePage="1"-->
-  <!--    :limit="8"-->
-  <!--    :pages="itemsPerPage(10)"-->
-  <!--    class="mt-3"-->
-  <!--    @active-page-change="pageSelect"-->
-  <!--  />-->
+  <CSmartPagination
+    :activePage="1"
+    :limit="8"
+    :pages="paymentPages(10)"
+    class="mt-3"
+    @active-page-change="pageSelect"
+  />
 </template>
 
 <script lang="ts">
@@ -57,6 +57,7 @@ export default defineComponent({
   props: { project: Object },
   computed: {
     ...mapState('cash', ['paymentList']),
+    ...mapGetters('cash', ['paymentPages']),
   },
   methods: {
     pageSelect(page: number) {
