@@ -201,18 +201,26 @@ const actions = {
       })
   },
 
-  fetchProjectCashList: ({ commit }: any, project: any) => {
+  fetchProjectCashList: ({ commit }: any, payload: any) => {
+    const { project } = payload
+    let url = `/payment-list/?project=${project}`
+    const page = payload.page ? payload.page : 1
+    if (payload.page) url += `&page=${page}`
     api
-      .get(`/project-cashbook/?project=${project}`)
+      .get(url)
       .then(res => {
         commit(FETCH_P_CASHBOOK_LIST, res.data)
       })
       .catch(err => console.log(err.response.data))
   },
 
-  fetchPaymentList: ({ commit }: any, project: any) => {
+  fetchPaymentList: ({ commit }: any, payload: any) => {
+    const { project } = payload
+    let url = `/payment-list/?project=${project}`
+    const page = payload.page ? payload.page : 1
+    if (payload.page) url += `&page=${page}`
     api
-      .get(`/payment-list/?project=${project}`)
+      .get(url)
       .then(res => {
         commit(FETCH_PAYMENT_LIST, res.data)
       })
