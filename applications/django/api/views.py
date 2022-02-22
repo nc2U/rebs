@@ -57,7 +57,7 @@ class ApiIndex(generics.GenericAPIView):
             # 'bank-code': reverse(api + BankCodeList.name, request=request),
             # 'com-bank': reverse(api + ComBankAccountList.name, request=request),
             # 'cashbook': reverse(api + CashBookList.name, request=request),
-            # 'project-bank': reverse(api + ProjectBankAccountList.name, request=request),
+            'project-bank': reverse(api + ProjectBankAccountList.name, request=request),
             'project-cashbook': reverse(api + ProjectCashBookList.name, request=request),
             'payment-list': reverse(api + PaymentList.name, request=request),
             'price': reverse(api + SalesPriceList.name, request=request),
@@ -466,18 +466,20 @@ class HouseUnitDetail(generics.RetrieveUpdateDestroyAPIView):
 #     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
 
-# class ProjectBankAccountList(generics.ListCreateAPIView):
-#     name = 'project_bank-list'
-#     queryset = ProjectBankAccount.objects.all()
-#     serializer_class = ProjectBankAccountSerializer
-#     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-#
-#
-# class ProjectBankAccountDetail(generics.RetrieveUpdateDestroyAPIView):
-#     name = 'project_bank-detail'
-#     queryset = ProjectBankAccount.objects.all()
-#     serializer_class = ProjectBankAccountSerializer
-#     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+class ProjectBankAccountList(generics.ListCreateAPIView):
+    name = 'project_bank-list'
+    queryset = ProjectBankAccount.objects.all()
+    serializer_class = ProjectBankAccountSerializer
+    pagination_class = PageNumberPaginationFifty
+    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    filter_fields = ('project',)
+
+
+class ProjectBankAccountDetail(generics.RetrieveUpdateDestroyAPIView):
+    name = 'project_bank-detail'
+    queryset = ProjectBankAccount.objects.all()
+    serializer_class = ProjectBankAccountSerializer
+    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
 
 class ProjectCashBookFilterSet(FilterSet):
