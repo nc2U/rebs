@@ -374,7 +374,7 @@ class SalesPriceSerializer(serializers.ModelSerializer):
 class InstallmentOrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = InstallmentPaymentOrder
-        fields = ('pk', 'project', 'pay_sort', 'pay_code', 'pay_time',
+        fields = ('pk', 'project', '__str__', 'pay_sort', 'pay_code', 'pay_time',
                   'pay_name', 'alias_name', 'is_pm_cost', 'pay_due_date', 'extra_due_date')
 
 
