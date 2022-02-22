@@ -485,12 +485,13 @@ class ProjectBankAccountDetail(generics.RetrieveUpdateDestroyAPIView):
 class ProjectCashBookFilterSet(FilterSet):
     from_deal_date = DateFilter(field_name='deal_date', lookup_expr='gte', label='납부일자부터')
     to_deal_date = DateFilter(field_name='deal_date', lookup_expr='lte', label='납부일자까지')
+    no_contract = BooleanFilter(field_name='contract', lookup_expr='isnull', label='미등록')
 
     class Meta:
         model = ProjectCashBook
         fields = ('project', 'project_account_d1', 'project_account_d2',
                   'is_release', 'from_deal_date', 'to_deal_date', 'installment_order',
-                  'bank_account', 'is_contract_payment', 'contract')
+                  'bank_account', 'is_contract_payment', 'contract', 'no_contract')
 
 
 class ProjectCashBookList(generics.ListCreateAPIView):
@@ -517,7 +518,7 @@ class PaymentList(generics.ListAPIView, ProjectCashBookList):
     name = 'payment-list'
 
     def get_queryset(self):
-        return ProjectCashBook.objects.filter(project_account_d2__in=(1, 2), is_contract_payment=True, is_release=False)
+        return ProjectCashBook.objects.filter(project_account_d2__in=(1, 2), is_release=False)
 
 
 class SalesPriceList(generics.ListCreateAPIView):
