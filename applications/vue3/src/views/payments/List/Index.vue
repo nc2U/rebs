@@ -39,6 +39,8 @@ export default defineComponent({
   },
   created() {
     this.fetchPaymentList({ project: this.initProjId })
+    this.fetchPayOrderList(this.initProjId)
+    this.fetchProjectBankAccountList(this.initProjId)
   },
   computed: {
     ...mapState('project', ['project']),
@@ -47,16 +49,24 @@ export default defineComponent({
   methods: {
     onSelectAdd(this: any, target: any) {
       if (target !== '') {
-        this.fetchPaymentList(target)
+        this.fetchPaymentList({ project: target })
+        this.fetchPayOrderList(target)
+        this.fetchProjectBankAccountList(target)
       } else {
         this.$store.state.cash.paymentList = []
+        this.$store.state.cash.payOrderList = []
+        this.$store.state.cash.pBankAccountList = []
       }
     },
     pageSelect(page: number) {
       const project = this.project.pk
       this.fetchPaymentList({ ...{ project }, ...{ page } })
     },
-    ...mapActions('cash', ['fetchPaymentList']),
+    ...mapActions('cash', [
+      'fetchPayOrderList',
+      'fetchPaymentList',
+      'fetchProjectBankAccountList',
+    ]),
   },
 })
 </script>

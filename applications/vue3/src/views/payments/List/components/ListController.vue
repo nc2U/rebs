@@ -24,21 +24,29 @@
           <CCol md="6" lg="3" class="mb-3">
             <CFormSelect v-model="form.pay_order" @change="payFiltering(1)">
               <option value="">납부회차 선택</option>
-              <option>11</option>
+              <option v-for="po in payOrderList" :value="po.pk" :key="po.pk">
+                {{ po.__str__ }}
+              </option>
             </CFormSelect>
           </CCol>
 
           <CCol md="6" lg="3" class="mb-3">
             <CFormSelect v-model="form.pay_account" @change="payFiltering(1)">
               <option value="">납부계좌 선택</option>
-              <option>22</option>
+              <option
+                v-for="ba in pBankAccountList"
+                :value="ba.pk"
+                :key="ba.pk"
+              >
+                {{ ba.alias_name }}
+              </option>
             </CFormSelect>
           </CCol>
         </CRow>
       </CCol>
       <CCol lg="5">
         <CRow>
-          <CCol md="6" class="mb-3 pt-2 text-center">
+          <CCol md="6" class="mb-3 pl-4 pt-2 text-center">
             <CFormSwitch
               v-model="form.is_unRegisted"
               label="미등록 수납대금만 보기"
@@ -78,6 +86,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { maska } from 'maska'
+import { mapState } from 'vuex'
 
 export default defineComponent({
   name: 'ListController',
@@ -104,6 +113,7 @@ export default defineComponent({
       const f = this.form.search === ''
       return a && b && c && d && e && f
     },
+    ...mapState('cash', ['payOrderList', 'pBankAccountList']),
   },
   methods: {
     payFiltering(page = 1) {
