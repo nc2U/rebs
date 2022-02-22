@@ -499,6 +499,7 @@ class ProjectCashBookList(generics.ListCreateAPIView):
     serializer_class = ProjectCashBookSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
     filter_class = ProjectCashBookFilterSet
+    search_fields = ('contract__contractor__name', 'content', 'trader', 'note')
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
