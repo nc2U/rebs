@@ -2,36 +2,34 @@
   <CTable hover responsive>
     <colgroup>
       <col width="10%" />
-      <col width="8%" />
-      <col width="8%" />
       <col width="10%" />
       <col width="10%" />
-      <col width="8%" />
-      <col width="20%" />
-      <col width="14%" />
-      <col width="12%" />
+      <col width="10%" />
+      <col width="10%" />
+      <col width="10%" />
+      <col width="10%" />
+      <col width="10%" />
+      <col width="10%" />
+      <col width="10%" />
     </colgroup>
 
     <CTableHead>
       <CTableRow color="dark">
-        <CTableHeaderCell scope="col">일련번호</CTableHeaderCell>
+        <CTableHeaderCell scope="col">거래일자</CTableHeaderCell>
         <CTableHeaderCell scope="col">차수</CTableHeaderCell>
         <CTableHeaderCell scope="col">타입</CTableHeaderCell>
-        <CTableHeaderCell scope="col">동호수</CTableHeaderCell>
+        <CTableHeaderCell scope="col">일련번호</CTableHeaderCell>
         <CTableHeaderCell scope="col">계약자</CTableHeaderCell>
-        <CTableHeaderCell scope="col">인가 등록여부</CTableHeaderCell>
-        <CTableHeaderCell scope="col">주소</CTableHeaderCell>
-        <CTableHeaderCell scope="col">연락처</CTableHeaderCell>
-        <CTableHeaderCell scope="col">계약일자</CTableHeaderCell>
+        <CTableHeaderCell scope="col">수납금액</CTableHeaderCell>
+        <CTableHeaderCell scope="col">납입회차</CTableHeaderCell>
+        <CTableHeaderCell scope="col">수납계좌</CTableHeaderCell>
+        <CTableHeaderCell scope="col">입금자</CTableHeaderCell>
+        <CTableHeaderCell scope="col">비고</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
 
     <CTableBody>
-      <Contract
-        v-for="contract in contractIndex"
-        :contract="contract"
-        :key="contract.pk"
-      />
+      <Payment />
     </CTableBody>
   </CTable>
 
@@ -46,13 +44,13 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import Contract from '@/views/contracts/List/components/Contract.vue'
+import Payment from '@/views/payments/List/components/Payment.vue'
 import { mapGetters } from 'vuex'
 
 export default defineComponent({
   name: 'ContractList',
-  components: { Contract },
-  props: ['project'],
+  components: { Payment },
+  props: { project: Object },
   computed: {
     ...mapGetters('contract', ['contractIndex', 'itemsPerPage']),
   },
