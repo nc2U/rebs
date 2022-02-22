@@ -1,16 +1,16 @@
 <template>
   <CTable hover responsive>
     <colgroup>
-      <col width="8%"/>
-      <col width="8%"/>
-      <col width="7%"/>
-      <col width="8%"/>
-      <col width="9%"/>
-      <col width="11%"/>
-      <col width="14%"/>
-      <col width="13%"/>
-      <col width="12%"/>
-      <col width="10%"/>
+      <col width="9%" />
+      <col width="8%" />
+      <col width="7%" />
+      <col width="8%" />
+      <col width="9%" />
+      <col width="10%" />
+      <col width="14%" />
+      <col width="13%" />
+      <col width="12%" />
+      <col width="10%" />
     </colgroup>
 
     <CTableHead>
@@ -29,7 +29,11 @@
     </CTableHead>
 
     <CTableBody>
-      <Payment v-for="payment in getPaymentList" :payment="payment" :key="payment.pk"/>
+      <Payment
+        v-for="payment in paymentList"
+        :payment="payment"
+        :key="payment.pk"
+      />
     </CTableBody>
   </CTable>
 
@@ -43,16 +47,16 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from 'vue'
+import { defineComponent } from 'vue'
 import Payment from '@/views/payments/List/components/Payment.vue'
-import {mapGetters} from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'PaymentList',
-  components: {Payment},
-  props: {project: Object},
+  components: { Payment },
+  props: { project: Object },
   computed: {
-    ...mapGetters('cash', ['getPaymentList']),
+    ...mapState('cash', ['paymentList']),
   },
   methods: {
     pageSelect(page: number) {

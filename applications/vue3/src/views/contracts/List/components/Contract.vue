@@ -9,7 +9,8 @@
         name="cibDiscover"
         :style="'color:' + contract.type_color"
         size="sm"
-      />&nbsp;
+        class="mr-1"
+      />
       {{ contract.unit_type }}
     </CTableDataCell>
     <CTableDataCell>{{ contract.house_unit }}</CTableDataCell>

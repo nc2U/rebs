@@ -1,11 +1,19 @@
 <template>
   <CTableRow class="text-center">
     <CTableDataCell>{{ payment.deal_date }}</CTableDataCell>
-    <CTableDataCell>{{ payment.contract }}</CTableDataCell>
-    <CTableDataCell>{{ payment.contract }}</CTableDataCell>
-    <CTableDataCell>{{ payment.contract }}</CTableDataCell>
+    <CTableDataCell>{{ payment.contract.order_group }}</CTableDataCell>
+    <CTableDataCell class="text-left">
+      <CIcon
+        name="cib-node-js"
+        :style="`color: ${payment.contract.unit_type.color}`"
+        size="sm"
+        class="mr-1"
+      />
+      {{ payment.contract.unit_type.name }}
+    </CTableDataCell>
+    <CTableDataCell>{{ payment.contract.serial_number }}</CTableDataCell>
     <CTableDataCell>
-      <router-link to="#">{{ payment.contract }}</router-link>
+      <router-link to="#">{{ payment.contract.contractor }}</router-link>
     </CTableDataCell>
     <CTableDataCell class="text-right">
       <router-link to="#">{{ numFormat(payment.income) }}</router-link>

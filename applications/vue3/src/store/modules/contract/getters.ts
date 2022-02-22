@@ -1,4 +1,4 @@
-import { ContractState, ContractSummary } from '@/store/modules/contract/state'
+import { ContractState } from '@/store/modules/contract/state'
 
 const getters = {
   contractIndex: (state: ContractState) => {

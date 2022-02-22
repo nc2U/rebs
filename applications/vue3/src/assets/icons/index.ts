@@ -1,5 +1,6 @@
 import {
   cibAddthis,
+  cibDelicious,
   cibDiscover,
   cibFacebook,
   cibTwitter,
@@ -229,6 +230,7 @@ export const iconsSet = Object.assign(
   },
   {
     cibAddthis,
+    cibDelicious,
     cibDiscover,
     cibFacebook,
     cibTwitter,
