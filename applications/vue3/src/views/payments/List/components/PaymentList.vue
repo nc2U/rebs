@@ -1,20 +1,20 @@
 <template>
   <CTable hover responsive>
     <colgroup>
-      <col width="10%" />
-      <col width="10%" />
-      <col width="10%" />
-      <col width="10%" />
-      <col width="10%" />
-      <col width="10%" />
-      <col width="10%" />
-      <col width="10%" />
-      <col width="10%" />
+      <col width="8%" />
+      <col width="8%" />
+      <col width="7%" />
+      <col width="8%" />
+      <col width="9%" />
+      <col width="11%" />
+      <col width="14%" />
+      <col width="13%" />
+      <col width="12%" />
       <col width="10%" />
     </colgroup>
 
     <CTableHead>
-      <CTableRow color="dark">
+      <CTableRow color="dark" class="text-center">
         <CTableHeaderCell scope="col">거래일자</CTableHeaderCell>
         <CTableHeaderCell scope="col">차수</CTableHeaderCell>
         <CTableHeaderCell scope="col">타입</CTableHeaderCell>
@@ -33,13 +33,13 @@
     </CTableBody>
   </CTable>
 
-  <CSmartPagination
-    :activePage="1"
-    :limit="8"
-    :pages="itemsPerPage(10)"
-    class="mt-3"
-    @active-page-change="pageSelect"
-  />
+  <!--  <CSmartPagination-->
+  <!--    :activePage="1"-->
+  <!--    :limit="8"-->
+  <!--    :pages="itemsPerPage(10)"-->
+  <!--    class="mt-3"-->
+  <!--    @active-page-change="pageSelect"-->
+  <!--  />-->
 </template>
 
 <script lang="ts">
@@ -48,7 +48,7 @@ import Payment from '@/views/payments/List/components/Payment.vue'
 import { mapGetters } from 'vuex'
 
 export default defineComponent({
-  name: 'ContractList',
+  name: 'PaymentList',
   components: { Payment },
   props: { project: Object },
   computed: {
