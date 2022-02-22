@@ -43,6 +43,7 @@ export default defineComponent({
     PaymentList,
   },
   created() {
+    this.fetchTypeList(this.initProjId)
     this.fetchPaymentList({ project: this.initProjId })
     this.fetchPayOrderList(this.initProjId)
     this.fetchProjectBankAccountList(this.initProjId)
@@ -54,10 +55,12 @@ export default defineComponent({
   methods: {
     onSelectAdd(this: any, target: any) {
       if (target !== '') {
+        this.fetchTypeList(target)
         this.fetchPaymentList({ project: target })
         this.fetchPayOrderList(target)
         this.fetchProjectBankAccountList(target)
       } else {
+        this.$store.state.project.unitTypeList = []
         this.$store.state.cash.paymentList = []
         this.$store.state.cash.payOrderList = []
         this.$store.state.cash.pBankAccountList = []
@@ -77,6 +80,7 @@ export default defineComponent({
     onDelete(pk: number) {
       alert(pk)
     },
+    ...mapActions('project', ['fetchTypeList']),
     ...mapActions('cash', [
       'fetchPayOrderList',
       'fetchPaymentList',

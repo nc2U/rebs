@@ -16,30 +16,37 @@
         <CTableHeaderCell class="text-center">
           {{ project.name }}
         </CTableHeaderCell>
-        <CTableHeaderCell>1</CTableHeaderCell>
-        <CTableHeaderCell>1</CTableHeaderCell>
-        <CTableHeaderCell>1</CTableHeaderCell>
-        <CTableHeaderCell>1</CTableHeaderCell>
-        <CTableHeaderCell>1</CTableHeaderCell>
+        <CTableHeaderCell>{{ numFormat(2000) }}</CTableHeaderCell>
+        <CTableHeaderCell>{{ numFormat(2000) }}</CTableHeaderCell>
+        <CTableHeaderCell>{{ numFormat(2000) }}</CTableHeaderCell>
+        <CTableHeaderCell>{{ numFormat(2000) }}</CTableHeaderCell>
+        <CTableHeaderCell>{{ numFormat(2000) }}</CTableHeaderCell>
       </CTableRow>
 
-      <CTableRow class="text-right">
-        <!-- 타입만큼 반복 -->
-        <CTableHeaderCell class="text-center">74</CTableHeaderCell>
-        <CTableDataCell>1</CTableDataCell>
-        <CTableDataCell>1</CTableDataCell>
-        <CTableDataCell>1</CTableDataCell>
-        <CTableDataCell>1</CTableDataCell>
-        <CTableDataCell>1</CTableDataCell>
+      <CTableRow class="text-right" v-for="type in simpleTypes" :key="type.pk">
+        <CTableHeaderCell class="text-left pl-5">
+          <CIcon
+            name="cib-node-js"
+            :style="{ color: type.color }"
+            size="sm"
+            class="mr-1"
+          />
+          {{ type.name }}
+        </CTableHeaderCell>
+        <CTableDataCell>{{ numFormat(1000) }}</CTableDataCell>
+        <CTableDataCell>{{ numFormat(1000) }}</CTableDataCell>
+        <CTableDataCell>{{ numFormat(1000) }}</CTableDataCell>
+        <CTableDataCell>{{ numFormat(1000) }}</CTableDataCell>
+        <CTableDataCell>{{ numFormat(1000) }}</CTableDataCell>
       </CTableRow>
 
       <CTableRow class="text-right" color="light">
-        <CTableHeaderCell class="text-center">근린생활시설</CTableHeaderCell>
-        <CTableDataCell>1</CTableDataCell>
-        <CTableDataCell>1</CTableDataCell>
-        <CTableDataCell>1</CTableDataCell>
-        <CTableDataCell>1</CTableDataCell>
-        <CTableDataCell>1</CTableDataCell>
+        <CTableHeaderCell class="text-left pl-5">근린생활시설</CTableHeaderCell>
+        <CTableDataCell>{{ numFormat(0) }}</CTableDataCell>
+        <CTableDataCell>{{ numFormat(0) }}</CTableDataCell>
+        <CTableDataCell>{{ numFormat(0) }}</CTableDataCell>
+        <CTableDataCell>{{ numFormat(0) }}</CTableDataCell>
+        <CTableDataCell>{{ numFormat(0) }}</CTableDataCell>
       </CTableRow>
     </CTableBody>
   </CTable>
@@ -48,12 +55,10 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import commonMixin from '@/views/commonMixin'
-import { mapGetters, mapState } from 'vuex'
+import { mapGetters } from 'vuex'
 
 export default defineComponent({
   name: 'ContractSummary',
-  components: {},
-
   mixins: [commonMixin],
   props: {
     project: {
@@ -61,8 +66,7 @@ export default defineComponent({
     },
   },
   computed: {
-    ...mapState('contract', ['orderGroupList']),
-    ...mapState('project', ['unitTypeList']),
+    ...mapGetters('project', ['simpleTypes']),
     ...mapGetters('contract', ['getSubs', 'getConts']),
   },
 })

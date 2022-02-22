@@ -10,7 +10,7 @@
       <CIcon
         v-if="payment.contract"
         name="cib-node-js"
-        :style="`color: ${payment.type_color}`"
+        :style="{ color: payment.type_color }"
         size="sm"
         class="mr-1"
       />
