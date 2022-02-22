@@ -61,6 +61,7 @@ export interface CashState {
   downPayList: DownPay[]
   pCashBookList: ProjectCashBook[]
   paymentList: ProjectCashBook[]
+  paymentsCount: number
 }
 
 const state: CashState = {
@@ -69,6 +70,7 @@ const state: CashState = {
   downPayList: [],
   pCashBookList: [],
   paymentList: [],
+  paymentsCount: 0,
 }
 
 export default state

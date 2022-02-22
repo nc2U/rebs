@@ -7,6 +7,7 @@ import {
 } from '@/store/modules/cash/mutations-types'
 import { CashState } from '@/store/modules/cash/state'
 
+// @ts-ignore
 const mutations = {
   [FETCH_PRICE_LIST]: (state: CashState, payload: any) =>
     (state.priceList = payload.results),
@@ -20,8 +21,10 @@ const mutations = {
   [FETCH_P_CASHBOOK_LIST]: (state: CashState, payload: any) =>
     (state.pCashBookList = payload.results),
 
-  [FETCH_PAYMENT_LIST]: (state: CashState, payload: any) =>
-    (state.paymentList = payload.results),
+  [FETCH_PAYMENT_LIST]: (state: CashState, payload: any) => {
+    state.paymentList = payload.results
+    state.paymentsCount = payload.count
+  },
 }
 
 export default mutations
