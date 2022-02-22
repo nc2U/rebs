@@ -3,6 +3,8 @@ import {
   FETCH_PRICE_LIST,
   FETCH_PAY_ORDER_LIST,
   FETCH_DWON_PAYMENT,
+  FETCH_P_CASHBOOK_LIST,
+  FETCH_PAYMENT_LIST,
 } from '@/store/modules/cash/mutations-types'
 import { message } from '@/utils/helper'
 
@@ -16,7 +18,7 @@ const actions = {
       .then(res => {
         commit(FETCH_PRICE_LIST, res.data)
       })
-      .catch(err => console.log(err))
+      .catch(err => console.log(err.response.data))
   },
 
   createPrice: ({ dispatch }: any, payload: any) => {
@@ -81,7 +83,7 @@ const actions = {
       .then(res => {
         commit(FETCH_PAY_ORDER_LIST, res.data)
       })
-      .catch(err => console.log(err))
+      .catch(err => console.log(err.response.data))
   },
 
   createPayOrder: ({ dispatch }: any, payload: any) => {
@@ -143,7 +145,7 @@ const actions = {
       .then(res => {
         commit(FETCH_DWON_PAYMENT, res.data)
       })
-      .catch(err => console.log(err))
+      .catch(err => console.log(err.response.data))
   },
 
   createDownPay: ({ dispatch }: any, payload: any) => {
@@ -197,6 +199,59 @@ const actions = {
           }`,
         )
       })
+  },
+
+  fetchProjectCashList: ({ commit }: any, project: any) => {
+    api
+      .get(`/project-cashbook/?project=${project}`)
+      .then(res => {
+        commit(FETCH_P_CASHBOOK_LIST, res.data)
+      })
+      .catch(err => console.log(err.response.data))
+  },
+
+  fetchPaymentList: ({ commit }: any, project: any) => {
+    api
+      .get(`/payment-list/?project=${project}`)
+      .then(res => {
+        commit(FETCH_PAYMENT_LIST, res.data)
+      })
+      .catch(err => console.log(err.response.data))
+  },
+
+  createPrCashBook: ({ dispatch }: any, payload: any) => {
+    api
+      .post(`/project-cashbook/`, payload)
+      .then(res => {
+        dispatch('fetchProjectCashList', res.data.project)
+        dispatch('fetchPaymentList', res.data.project)
+        message()
+      })
+      .catch(err => console.log(err.response.data))
+  },
+
+  updatePrCashBook: ({ dispatch }: any, payload: any) => {
+    const { pk, ...formData } = payload
+    api
+      .put(`/project-cashbook/${pk}/`, formData)
+      .then(res => {
+        dispatch('fetchProjectCashList', res.data.project)
+        dispatch('fetchPaymentList', res.data.project)
+        message()
+      })
+      .catch(err => console.log(err.response.data))
+  },
+
+  deletePrCashBook: ({ dispatch }: any, payload: any) => {
+    const { pk, project } = payload
+    api
+      .delete(`/project-cashbook/${pk}/`)
+      .then(() => {
+        dispatch('fetchProjectCashList', project)
+        dispatch('fetchPaymentList', project)
+        message('danger', '알림!', '해당 오브젝트가 삭제되었습니다.')
+      })
+      .catch(err => console.log(err.response.data))
   },
 }
 

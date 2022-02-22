@@ -32,16 +32,43 @@ interface DownPay {
   payment_amount: number
 }
 
+interface ProjectCashBook {
+  pk: number
+  project: number
+  cash_category1: string
+  project_account_d1: number
+  project_account_d2: number
+  is_record_separate: boolean
+  is_contract_payment: boolean
+  contract: number
+  installment_order: number
+  is_release: boolean
+  is_refund_contractor: number | null
+  content: string
+  trader: string
+  bank_account: number
+  income: number | null
+  outlay: number | null
+  evidence: string
+  note: string
+  deal_date: string
+  user: number
+}
+
 export interface CashState {
   priceList: Price[]
   payOrderList: PayOrder[]
   downPayList: DownPay[]
+  pCashBookList: ProjectCashBook[]
+  paymentList: ProjectCashBook[]
 }
 
 const state: CashState = {
   priceList: [],
   payOrderList: [],
   downPayList: [],
+  pCashBookList: [],
+  paymentList: [],
 }
 
 export default state
