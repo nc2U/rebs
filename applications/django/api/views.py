@@ -513,7 +513,7 @@ class PaymentList(generics.ListAPIView, ProjectCashBookList):
     name = 'payment-list'
 
     def get_queryset(self):
-        return ProjectCashBook.objects.filter(project_account_d2__in=(1, 2), is_release=False)
+        return ProjectCashBook.objects.filter(project_account_d2__in=(1, 2), is_contract_payment=True, is_release=False)
 
 
 class SalesPriceList(generics.ListCreateAPIView):

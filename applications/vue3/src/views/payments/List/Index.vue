@@ -25,7 +25,7 @@ import ContentBody from '@/layouts/ContentBody/Index.vue'
 import PaymentSummary from '@/views/payments/List/components/PaymentSummary.vue'
 import ListController from '@/views/payments/List/components/ListController.vue'
 import PaymentList from '@/views/payments/List/components/PaymentList.vue'
-import { mapState } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'PaymentsList',
@@ -37,8 +37,22 @@ export default defineComponent({
     ListController,
     PaymentList,
   },
+  created() {
+    this.fetchPaymentList(this.initProjId)
+  },
   computed: {
     ...mapState('project', ['project']),
+    ...mapGetters('accounts', ['initProjId']),
+  },
+  methods: {
+    onSelectAdd(this: any, target: any) {
+      if (target !== '') {
+        this.fetchPaymentList(target)
+      } else {
+        this.$store.state.cash.paymentList = []
+      }
+    },
+    ...mapActions('cash', ['fetchPaymentList']),
   },
 })
 </script>

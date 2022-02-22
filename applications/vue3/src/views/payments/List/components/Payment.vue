@@ -1,27 +1,29 @@
 <template>
   <CTableRow class="text-center">
-    <CTableDataCell>2020-01-01</CTableDataCell>
-    <CTableDataCell>1차조합원</CTableDataCell>
-    <CTableDataCell>84A</CTableDataCell>
-    <CTableDataCell>841001-1</CTableDataCell>
+    <CTableDataCell>{{ payment.deal_date }}</CTableDataCell>
+    <CTableDataCell>{{ payment.contract }}</CTableDataCell>
+    <CTableDataCell>{{ payment.contract }}</CTableDataCell>
+    <CTableDataCell>{{ payment.contract }}</CTableDataCell>
     <CTableDataCell>
-      <router-link to="#">김백수</router-link>
+      <router-link to="#">{{ payment.contract }}</router-link>
     </CTableDataCell>
     <CTableDataCell class="text-right">
-      <router-link to="#">15,000,000</router-link>
+      <router-link to="#">{{ numFormat(payment.income) }}</router-link>
     </CTableDataCell>
-    <CTableDataCell>[계약금] - 3차계약금</CTableDataCell>
-    <CTableDataCell>무궁화-분담금(국민)</CTableDataCell>
-    <CTableDataCell>김백수906-504</CTableDataCell>
+    <CTableDataCell>{{ payment.installment_order }}</CTableDataCell>
+    <CTableDataCell>{{ payment.bank_account }}</CTableDataCell>
+    <CTableDataCell>{{ payment.trader }}</CTableDataCell>
     <CTableDataCell>수정/삭제</CTableDataCell>
   </CTableRow>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import commonMixin from '@/views/commonMixin'
 
 export default defineComponent({
   name: 'Payment',
+  mixins: [commonMixin],
   props: {
     payment: {
       type: Object,
