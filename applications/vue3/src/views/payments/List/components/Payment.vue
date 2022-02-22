@@ -21,7 +21,10 @@
     <CTableDataCell>{{ payment.installment_order }}</CTableDataCell>
     <CTableDataCell>{{ payment.bank_account }}</CTableDataCell>
     <CTableDataCell>{{ payment.trader }}</CTableDataCell>
-    <CTableDataCell>수정/삭제</CTableDataCell>
+    <CTableDataCell>
+      <CButton color="success" @click="updatePayment" size="sm"> 수정</CButton>
+      <CButton color="danger" @click="deletePayment" size="sm"> 삭제</CButton>
+    </CTableDataCell>
   </CTableRow>
 </template>
 
@@ -36,6 +39,14 @@ export default defineComponent({
     payment: {
       type: Object,
       required: true,
+    },
+  },
+  methods: {
+    updatePayment() {
+      alert('수정 ok..')
+    },
+    deletePayment() {
+      alert('삭제 ok..')
     },
   },
 })
