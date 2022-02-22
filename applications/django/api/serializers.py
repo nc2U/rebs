@@ -344,6 +344,15 @@ class ProjectCashBookSerializer(serializers.ModelSerializer):
                   'note', 'deal_date', 'user', 'created_at', 'updated_at')
 
 
+class PaymentSerializer(serializers.ModelSerializer):
+    installment_order = serializers.SlugField()
+    bank_account = serializers.SlugField()
+
+    class Meta:
+        model = ProjectCashBook
+        fields = ('deal_date', 'contract', 'income', 'installment_order', 'bank_account', 'trader')
+
+
 class SalesPriceSerializer(serializers.ModelSerializer):
     class Meta:
         model = SalesPriceByGT

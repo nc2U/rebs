@@ -510,6 +510,7 @@ class ProjectCashBookDetail(generics.RetrieveUpdateDestroyAPIView):
 
 
 class PaymentList(generics.ListAPIView, ProjectCashBookList):
+    serializer_class = PaymentSerializer
     name = 'payment-list'
 
     def get_queryset(self):
