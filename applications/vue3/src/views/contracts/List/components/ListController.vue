@@ -175,9 +175,7 @@ export default defineComponent({
   },
   methods: {
     contFiltering(page = 1) {
-      this.$nextTick(() => {
-        this.$emit('cont-filtering', { ...{ page }, ...this.form })
-      })
+      this.$emit('cont-filtering', { ...{ page }, ...this.form })
     },
     resetForm() {
       this.form.status = '2'
