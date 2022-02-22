@@ -13,6 +13,7 @@ export interface Price {
 export interface PayOrder {
   pk: number
   project: number
+  __str__: string
   pay_sort: string
   pay_code: number
   pay_time: number
