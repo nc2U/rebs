@@ -48,7 +48,7 @@
         <CRow>
           <CCol md="6" class="mb-3 pl-4 pt-2">
             <CFormSwitch
-              v-model="form.is_unRegisted"
+              v-model="form.no_contract"
               label="미등록 납부대금 건"
             />
           </CCol>
@@ -98,7 +98,7 @@ export default defineComponent({
         to_date: '',
         pay_order: '',
         pay_account: '',
-        is_unRegisted: '',
+        no_contract: '',
         search: '',
       },
     }
@@ -109,7 +109,7 @@ export default defineComponent({
       const b = this.form.to_date === ''
       const c = this.form.pay_order === ''
       const d = this.form.pay_account === ''
-      const e = this.form.is_unRegisted === ''
+      const e = this.form.no_contract === ''
       const f = this.form.search === ''
       return a && b && c && d && e && f
     },
@@ -126,7 +126,7 @@ export default defineComponent({
       this.form.to_date = ''
       this.form.pay_order = ''
       this.form.pay_account = ''
-      this.form.is_unRegisted = ''
+      this.form.no_contract = ''
       this.form.search = ''
       this.listFiltering(1)
     },
