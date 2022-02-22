@@ -41,7 +41,7 @@
                             {% include 'cash/partials/payment_list_search_form.html' %}
 
                             <div class="row">
-                                <div class="col-12 table-responsive-md">
+                                <div class="col-12 table-responsive">
                                     <div class="text-right mb-1 mr-2">
                                         <a href="{% url 'excel:payments' %}?project={{ this_project.id }}&sd={{ request.GET.sd }}&ed={{ request.GET.ed }}&ipo={{ request.GET.ipo }}&ba={{ request.GET.ba }}&up={{ request.GET.up }}&q={{ request.GET.q }}">
                                             <i class="mdi mdi-file-excel-box"></i> Excel Export
