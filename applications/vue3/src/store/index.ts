@@ -6,7 +6,7 @@ import document from '@/store/modules/document'
 import notice from '@/store/modules/notice'
 import payment from '@/store/modules/payment'
 import project from '@/store/modules/project'
-import project_cash from '@/store/modules/project_cash'
+import pCash from '@/store/modules/pCash'
 import settings from '@/store/modules/settings'
 
 declare interface RootState {
@@ -62,7 +62,7 @@ const store: any = createStore({
     notice,
     payment,
     project,
-    project_cash,
+    pCash,
     settings,
   },
 })

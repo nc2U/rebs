@@ -3,13 +3,13 @@ import getters from './getters'
 import mutations from './mutations'
 import actions from './actions'
 
-const cash = {
+const pCash = {
   namespaced: true,
 
-  state: () => (state),
+  state: () => state,
   getters,
   mutations,
   actions,
 }
 
-export default cash
+export default pCash
