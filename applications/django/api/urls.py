@@ -77,9 +77,7 @@ urlpatterns = [
     path('project-bank-account/<int:pk>/', ProjectBankAccountDetail.as_view(), name=ProjectBankAccountDetail.name),
     path('project-cashbook/', ProjectCashBookList.as_view(), name=ProjectCashBookList.name),
     path('project-cashbook/<int:pk>/', ProjectCashBookDetail.as_view(), name=ProjectCashBookDetail.name),
-
     path('payment-list/', PaymentList.as_view(), name=PaymentList.name),
-
     path('price/', SalesPriceList.as_view(), name=SalesPriceList.name),
     path('price/<int:pk>/', SalesPriceDetail.as_view(), name=SalesPriceDetail.name),
     path('pay-order/', InstallmentOrderList.as_view(), name=InstallmentOrderList.name),

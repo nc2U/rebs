@@ -513,7 +513,7 @@ class ProjectCashBookDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
 
-class PaymentList(generics.ListAPIView, ProjectCashBookList):
+class PaymentList(ProjectCashBookList):
     serializer_class = PaymentSerializer
     name = 'payment-list'
 
