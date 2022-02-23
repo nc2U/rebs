@@ -110,18 +110,16 @@
         </CRow>
       </CCol>
     </CRow>
-    <CAlert color="default">
-      <CRow>
-        <CCol v-if="contractsCount > 0" class="pt-1">
-          해당 조건 계약 건수 : {{ contractsCount }} 건
-        </CCol>
-        <CCol class="text-right mb-0" v-if="!formsCheck">
-          <CButton color="info" @click="resetForm" size="sm" class="m-0">
-            검색조건 초기화
-          </CButton>
-        </CCol>
-      </CRow>
-    </CAlert>
+    <CRow>
+      <CCol color="warning" class="p-2 pl-3">
+        <strong>해당 조건 계약 건수 : {{ contractsCount }} 건</strong>
+      </CCol>
+      <CCol class="text-right mb-0" v-if="!formsCheck">
+        <CButton color="info" @click="resetForm" size="sm">
+          검색조건 초기화
+        </CButton>
+      </CCol>
+    </CRow>
   </CCallout>
 </template>
 
