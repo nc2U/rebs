@@ -3,7 +3,7 @@ import getters from './getters'
 import mutations from './mutations'
 import actions from './actions'
 
-const pCash = {
+const prCash = {
   namespaced: true,
 
   state: () => state,
@@ -12,4 +12,4 @@ const pCash = {
   actions,
 }
 
-export default pCash
+export default prCash

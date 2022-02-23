@@ -6,7 +6,7 @@ import {
   FETCH_P_CASHBOOK_LIST,
   FETCH_PAYMENT_LIST,
   FETCH_P_BANK_ACCOUNT_LIST,
-} from '@/store/modules/cash/mutations-types'
+} from '@/store/modules/coCash/mutations-types'
 import { message } from '@/utils/helper'
 
 const actions = {

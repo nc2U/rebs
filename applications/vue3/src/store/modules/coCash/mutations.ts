@@ -5,8 +5,8 @@ import {
   FETCH_P_BANK_ACCOUNT_LIST,
   FETCH_P_CASHBOOK_LIST,
   FETCH_PAYMENT_LIST,
-} from '@/store/modules/cash/mutations-types'
-import { CashState } from '@/store/modules/cash/state'
+} from '@/store/modules/coCash/mutations-types'
+import { CashState } from '@/store/modules/coCash/state'
 
 const mutations = {
   [FETCH_PRICE_LIST]: (state: CashState, payload: any) =>

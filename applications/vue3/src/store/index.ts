@@ -1,12 +1,12 @@
 import { createStore } from 'vuex'
 import accounts from '@/store/modules/accounts'
-import cash from '@/store/modules/cash'
+import coCash from '@/store/modules/coCash'
 import contract from '@/store/modules/contract'
 import document from '@/store/modules/document'
 import notice from '@/store/modules/notice'
 import payment from '@/store/modules/payment'
 import project from '@/store/modules/project'
-import pCash from '@/store/modules/pCash'
+import prCash from '@/store/modules/prCash'
 import settings from '@/store/modules/settings'
 
 declare interface RootState {
@@ -56,13 +56,13 @@ const store: any = createStore({
   mutations,
   modules: {
     accounts,
-    cash,
+    coCash,
     contract,
     document,
     notice,
     payment,
     project,
-    pCash,
+    prCash,
     settings,
   },
 })

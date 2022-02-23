@@ -1,4 +1,4 @@
-import { CashState } from '@/store/modules/cash/state'
+import { CashState } from '@/store/modules/coCash/state'
 
 const getters = {
   getPayments: (state: CashState) => {
