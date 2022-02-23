@@ -3,13 +3,11 @@ import getters from './getters'
 import mutations from './mutations'
 import actions from './actions'
 
-const accounts = {
+export default {
   namespaced: true,
 
-  state: () => (state),
+  state: () => state,
   getters,
   mutations,
   actions,
 }
-
-export default accounts
