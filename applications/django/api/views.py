@@ -1,3 +1,4 @@
+from django.db.models import Sum, Count, F
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
@@ -60,6 +61,7 @@ class ApiIndex(generics.GenericAPIView):
             'project-bank': reverse(api + ProjectBankAccountList.name, request=request),
             'project-cashbook': reverse(api + ProjectCashBookList.name, request=request),
             'payment-list': reverse(api + PaymentList.name, request=request),
+            'payment-sum': reverse(api + PaymentsProjectSum.name, request=request),
             'price': reverse(api + SalesPriceList.name, request=request),
             'pay-order': reverse(api + InstallmentOrderList.name, request=request),
             'down-payment': reverse(api + DownPaymentList.name, request=request),
@@ -519,6 +521,15 @@ class PaymentList(ProjectCashBookList):
 
     def get_queryset(self):
         return ProjectCashBook.objects.filter(project_account_d2__in=(1, 2), is_release=False)
+
+
+class PaymentsProjectSum(generics.ListAPIView):
+    name = 'payment-sum'
+    serializer_class = PaymentsProjectSerializer
+    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+
+    def get_queryset(self):
+        return Project.objects.all()
 
 
 class SalesPriceList(generics.ListCreateAPIView):

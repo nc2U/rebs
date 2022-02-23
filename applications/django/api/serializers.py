@@ -364,6 +364,14 @@ class PaymentSerializer(serializers.ModelSerializer):
         fields = ('pk', 'deal_date', 'contract', 'income', 'installment_order', 'bank_account', 'trader')
 
 
+class PaymentsProjectSerializer(serializers.ModelSerializer):
+    # total_income = serializers.IntegerField(read_only=True)
+
+    class Meta:
+        model = Project
+        fields = ('name',)
+
+
 class SalesPriceSerializer(serializers.ModelSerializer):
     class Meta:
         model = SalesPriceByGT
