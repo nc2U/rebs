@@ -9,11 +9,11 @@ import DefaultLayout from '@/layouts/DefaultLayout.vue'
 import contracts from '@/router/modules/contracts'
 import payments from '@/router/modules/payments'
 import notices from '@/router/modules/notices'
-import projectCash from '@/router/modules/projectCash'
-import projectDocs from '@/router/modules/projectDocs'
+import proCash from '@/router/modules/proCash'
+import proDocs from '@/router/modules/proDocs'
 import projects from '@/router/modules/projects'
-import cashes from '@/router/modules/cashes'
-import docs from '@/router/modules/docs'
+import comCash from '@/router/modules/comCash'
+import comDocs from '@/router/modules/comDocs'
 import hrManage from '@/router/modules/hrManage'
 import settings from '@/router/modules/settings'
 
@@ -46,11 +46,11 @@ const routes: Array<RouteRecordRaw> = [
       contracts,
       payments,
       notices,
-      projectCash,
-      projectDocs,
+      proCash,
+      proDocs,
       projects,
-      cashes,
-      docs,
+      comCash,
+      comDocs,
       hrManage,
       settings,
     ],

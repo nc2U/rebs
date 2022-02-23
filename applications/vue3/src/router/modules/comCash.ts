@@ -1,7 +1,7 @@
 import store from '@/store'
 import { h, resolveComponent } from 'vue'
 
-const cashes = {
+const comCash = {
   path: 'cashes',
   name: '본사회계 관리',
   redirect: '/cashes/status',
@@ -38,4 +38,4 @@ const cashes = {
   ],
 }
 
-export default cashes
+export default comCash

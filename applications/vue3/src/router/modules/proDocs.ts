@@ -1,7 +1,7 @@
 import store from '@/store'
 import { h, resolveComponent } from 'vue'
 
-const projectDocs = {
+const proDocs = {
   path: 'project-docs',
   name: '현장문서 관리',
   redirect: '/project-docs/general/docs',
@@ -50,4 +50,4 @@ const projectDocs = {
   ],
 }
 
-export default projectDocs
+export default proDocs
