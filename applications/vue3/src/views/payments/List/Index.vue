@@ -81,7 +81,7 @@ export default defineComponent({
       alert(pk)
     },
     ...mapActions('project', ['fetchTypeList']),
-    ...mapActions('cash', [
+    ...mapActions('payment', [
       'fetchPayOrderList',
       'fetchPaymentList',
       'fetchProjectBankAccountList',

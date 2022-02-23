@@ -115,7 +115,11 @@ export default defineComponent({
       const f = this.form.search === ''
       return a && b && c && d && e && f
     },
-    ...mapState('cash', ['payOrderList', 'pBankAccountList', 'paymentsCount']),
+    ...mapState('payment', [
+      'payOrderList',
+      'pBankAccountList',
+      'paymentsCount',
+    ]),
   },
   methods: {
     listFiltering(page = 1) {

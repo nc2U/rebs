@@ -58,7 +58,7 @@ export default defineComponent({
   components: { Payment },
   props: { project: Object },
   computed: {
-    ...mapGetters('cash', ['paymentPages', 'getPayments']),
+    ...mapGetters('payment', ['paymentPages', 'getPayments']),
   },
   methods: {
     pageSelect(page: number) {
