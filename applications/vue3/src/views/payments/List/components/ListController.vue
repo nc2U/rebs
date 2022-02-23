@@ -97,7 +97,7 @@ export default defineComponent({
         to_date: '',
         pay_order: '',
         pay_account: '',
-        no_contract: '',
+        no_contract: false,
         search: '',
       },
     }
@@ -108,7 +108,7 @@ export default defineComponent({
       const b = this.form.to_date === ''
       const c = this.form.pay_order === ''
       const d = this.form.pay_account === ''
-      const e = this.form.no_contract === ''
+      const e = !this.form.no_contract
       const f = this.form.search === ''
       return a && b && c && d && e && f
     },
@@ -132,7 +132,7 @@ export default defineComponent({
       this.form.to_date = ''
       this.form.pay_order = ''
       this.form.pay_account = ''
-      this.form.no_contract = ''
+      this.form.no_contract = false
       this.form.search = ''
       this.listFiltering(1)
     },
