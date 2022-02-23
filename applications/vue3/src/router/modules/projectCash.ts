@@ -15,7 +15,7 @@ const projectCash = {
       path: 'status',
       name: '현장자금 현황',
       component: () =>
-        store.state.accounts.userInfo.staffauth.payment > '0'
+        store.state.accounts.userInfo.staffauth.project_cash > '0'
           ? import('@/views/projectCash/Status/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
     },
