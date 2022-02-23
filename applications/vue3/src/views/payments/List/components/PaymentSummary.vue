@@ -16,14 +16,14 @@
         <CTableHeaderCell class="text-center">
           {{ project.name }}
         </CTableHeaderCell>
-        <CTableHeaderCell>{{ numFormat(2000) }}</CTableHeaderCell>
+        <CTableHeaderCell>{{ numFormat(total_budget) }}</CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(2000) }}</CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(2000) }}</CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(2000) }}</CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(2000) }}</CTableHeaderCell>
       </CTableRow>
 
-      <CTableRow class="text-right" v-for="type in simpleTypes" :key="type.pk">
+      <CTableRow class="text-right" v-for="type in unitTypeList" :key="type.pk">
         <CTableHeaderCell class="text-left pl-5">
           <CIcon
             name="cib-node-js"
@@ -33,7 +33,9 @@
           />
           {{ type.name }}
         </CTableHeaderCell>
-        <CTableDataCell>{{ numFormat(1000) }}</CTableDataCell>
+        <CTableDataCell>
+          {{ numFormat(type.average_price * type.num_unit) }}
+        </CTableDataCell>
         <CTableDataCell>{{ numFormat(1000) }}</CTableDataCell>
         <CTableDataCell>{{ numFormat(1000) }}</CTableDataCell>
         <CTableDataCell>{{ numFormat(1000) }}</CTableDataCell>
@@ -55,7 +57,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import commonMixin from '@/views/commonMixin'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'ContractSummary',
@@ -66,7 +68,12 @@ export default defineComponent({
     },
   },
   computed: {
-    ...mapGetters('project', ['simpleTypes']),
+    total_budget() {
+      return this.unitTypeList
+        .map((t: any) => t.average_price * t.num_unit)
+        .reduce((x: number, y: number) => x + y)
+    },
+    ...mapState('project', ['unitTypeList']),
     ...mapGetters('contract', ['getSubs', 'getConts']),
   },
 })
