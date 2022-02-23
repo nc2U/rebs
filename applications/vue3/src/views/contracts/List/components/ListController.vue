@@ -112,7 +112,7 @@
     </CRow>
     <CRow>
       <CCol color="warning" class="p-2 pl-3">
-        <strong>해당 조건 계약 건수 : {{ contractsCount }} 건</strong>
+        <strong>계약 건수 조회 결과 : {{ contractsCount }} 건</strong>
       </CCol>
       <CCol class="text-right mb-0" v-if="!formsCheck">
         <CButton color="info" @click="resetForm" size="sm">
