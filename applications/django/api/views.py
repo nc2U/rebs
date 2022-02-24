@@ -673,8 +673,8 @@ class SubsSummaryList(generics.ListAPIView):
 
     def get_queryset(self):
         return Contract.objects.filter(activation=True, contractor__status=1) \
-            .values('order_group') \
-            .annotate(num_cont=Count('order_group'))
+            .values('unit_type') \
+            .annotate(num_cont=Count('unit_type'))
 
 
 class ContSummaryList(generics.ListAPIView):

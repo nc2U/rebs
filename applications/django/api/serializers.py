@@ -468,12 +468,12 @@ class ContractListSerializer(serializers.ModelSerializer):
 
 
 class SubsSummarySerializer(serializers.ModelSerializer):
-    order_group = serializers.IntegerField()
+    unit_type = serializers.IntegerField()
     num_cont = serializers.IntegerField()
 
     class Meta:
         model = Contract
-        fields = ('order_group', 'num_cont')
+        fields = ('unit_type', 'num_cont')
 
 
 class ContSummarySerializer(serializers.ModelSerializer):
