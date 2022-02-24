@@ -478,11 +478,11 @@ class ContSummarySerializer(serializers.ModelSerializer):
 
 
 class ContractSummarySerializer(serializers.ModelSerializer):
-    contractor = serializers.SlugRelatedField(queryset=Contractor.objects.all(), slug_field='status')
+    status = serializers.CharField()
 
     class Meta:
         model = Contract
-        fields = ('project', 'order_group', 'unit_type', 'contractor')
+        fields = ('project', 'order_group', 'unit_type', 'status')
 
 
 class ContractorReleaseSerializer(serializers.ModelSerializer):

@@ -680,7 +680,7 @@ class ContSummaryList(generics.ListAPIView):
 
 class ContractSummaryList(generics.ListAPIView):
     name = 'contract-summary'
-    queryset = Contract.objects.all()
+    queryset = Contract.objects.all().annotate(status=F('contractor__status'))
     serializer_class = ContractSummarySerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
     pagination_class = None
