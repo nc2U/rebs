@@ -467,6 +467,16 @@ class ContractListSerializer(serializers.ModelSerializer):
             'unit_type', 'keyunit', 'contractor', 'user')
 
 
+class ContSummarySerializer(serializers.ModelSerializer):
+    order_group = serializers.IntegerField()
+    unit_type = serializers.IntegerField()
+    num_cont = serializers.IntegerField()
+
+    class Meta:
+        model = Contract
+        fields = ('order_group', 'unit_type', 'num_cont')
+
+
 class ContractSummarySerializer(serializers.ModelSerializer):
     contractor = serializers.SlugRelatedField(queryset=Contractor.objects.all(), slug_field='status')
 
