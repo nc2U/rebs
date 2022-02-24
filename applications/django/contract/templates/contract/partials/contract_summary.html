@@ -37,7 +37,7 @@
                         <td class="text-right">{{ cnum.pop|default:"-"|intcomma }}</td>
                     {% endfor %}
                     <td class="text-right text-dark">{{ tn|default:"-"|intcomma }}</td>
-                    <td class="text-right text-dark">{{ un|sub:tn|default:"-"|intcomma }}</td>
+                    <td class="text-right text-dark">{{ un|sub:tn|sub:rn|default:"-"|intcomma }}</td>
                     <td class="text-right">{% if tn and un %}{{ tn|div:un|mul:100|floatformat:2|intcomma }}{% else %}-{% endif %} %</td>
                     {% with cr=rn|add:tn %}
                         <td class="text-right">{% if tn and un %}{{ cr|div:un|mul:100|floatformat:2|intcomma }}{% else %}-{% endif %} %</td>
@@ -55,7 +55,7 @@
                 <th class="text-right">{% if ocn %}{{ ocn.pop|default:"-"|intcomma }}{% endif %}</th>
             {% endfor %}
             <th class="text-right">{{ total_tcn|default:"-"|intcomma }}</th>
-            <th class="text-right">{{ total_unit_num|sub:total_tcn|default:"-"|intcomma }}</th>
+            <th class="text-right">{{ total_unit_num|sub:total_tcn|sub:total_reserv_num|default:"-"|intcomma }}</th>
             <th class="text-right">
                 {% if total_unit_num > 0 %}{{ total_tcn|div:total_unit_num|mul:100|floatformat:2|default:"-" }} %{% else %}-{% endif %}
             </th>
