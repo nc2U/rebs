@@ -467,6 +467,15 @@ class ContractListSerializer(serializers.ModelSerializer):
             'unit_type', 'keyunit', 'contractor', 'user')
 
 
+class SubsSummarySerializer(serializers.ModelSerializer):
+    order_group = serializers.IntegerField()
+    num_cont = serializers.IntegerField()
+
+    class Meta:
+        model = Contract
+        fields = ('order_group', 'num_cont')
+
+
 class ContSummarySerializer(serializers.ModelSerializer):
     order_group = serializers.IntegerField()
     unit_type = serializers.IntegerField()
@@ -475,14 +484,6 @@ class ContSummarySerializer(serializers.ModelSerializer):
     class Meta:
         model = Contract
         fields = ('order_group', 'unit_type', 'num_cont')
-
-
-class ContractSummarySerializer(serializers.ModelSerializer):
-    status = serializers.CharField()
-
-    class Meta:
-        model = Contract
-        fields = ('project', 'order_group', 'unit_type', 'status')
 
 
 class ContractorReleaseSerializer(serializers.ModelSerializer):

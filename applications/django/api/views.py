@@ -69,8 +69,8 @@ class ApiIndex(generics.GenericAPIView):
             # 'over-due-rule': reverse(api + OverDueRuleList.name, request=request),
             'order-group': reverse(api + OrderGroupList.name, request=request),
             'contract': reverse(api + ContractList.name, request=request),
+            'subs-sum': reverse(api + SubsSummaryList.name, request=request),
             'cont-sum': reverse(api + ContSummaryList.name, request=request),
-            'cont-summary': reverse(api + ContractSummaryList.name, request=request),
             # 'contractor': reverse(api + ContractorList.name, request=request),
             # 'contractor-address': reverse(api + ContAddressList.name, request=request),
             # 'contractor-contact': reverse(api + ContContactList.name, request=request),
@@ -665,9 +665,20 @@ class ContractDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
 
+class SubsSummaryList(generics.ListAPIView):
+    name = 'subs-summary'
+    serializer_class = SubsSummarySerializer
+    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    filter_fields = ('project',)
+
+    def get_queryset(self):
+        return Contract.objects.filter(activation=True, contractor__status=1) \
+            .values('order_group') \
+            .annotate(num_cont=Count('order_group'))
+
+
 class ContSummaryList(generics.ListAPIView):
     name = 'cont-summary'
-    queryset = Contract.objects.all()
     serializer_class = ContSummarySerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
     filter_fields = ('project',)
@@ -676,15 +687,6 @@ class ContSummaryList(generics.ListAPIView):
         return Contract.objects.filter(activation=True, contractor__status=2) \
             .values('order_group', 'unit_type') \
             .annotate(num_cont=Count('order_group'))
-
-
-class ContractSummaryList(generics.ListAPIView):
-    name = 'contract-summary'
-    queryset = Contract.objects.all().annotate(status=F('contractor__status'))
-    serializer_class = ContractSummarySerializer
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-    pagination_class = None
-    filter_fields = ('project',)
 
 
 # class ContractorList(generics.ListCreateAPIView):
