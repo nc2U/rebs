@@ -11,13 +11,15 @@
       </CTableRow>
     </CTableHead>
 
-    <CTableBody v-if="project && unitTypeList && contNumList && paySumList">
+    <CTableBody v-if="project">
       <CTableRow class="text-right" color="light">
         <CTableHeaderCell class="text-center">
           {{ project.name }}
         </CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(total_budget) }}</CTableHeaderCell>
-        <CTableHeaderCell>{{ numFormat(totalAmount) }}</CTableHeaderCell>
+        <CTableHeaderCell>
+          {{ numFormat(totalAmount) }}
+        </CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(totalPayment) }}</CTableHeaderCell>
         <CTableHeaderCell>
           {{ numFormat(totalAmount - totalPayment) }}
@@ -97,18 +99,16 @@ export default defineComponent({
         : 0
     },
     totalAmount() {
-      const num = this.contNumList
-      const type = this.unitTypeList
-      return type.length !== 0 || num.length !== 0
-        ? type
-            .map((t: any) => ({
-              amount:
-                t.average_price *
-                num.filter((c: any) => c.unit_type === t.pk)[0].num_cont,
-            }))
-            .map((a: any) => a.amount)
-            .reduce((x: number, y: number) => x + y)
-        : 0
+      const types = this.unitTypeList.map((t: any) => t.average_price)
+      const nums = this.contNumList.map((c: any) => c.num_cont)
+
+      let total = 0
+      for (let i = 0; i < types.length; i++) {
+        if (typeof types[i] === 'number' && typeof nums[i] === 'number') {
+          total += types[i] * nums[i]
+        }
+      }
+      return total
     },
     totalPayment() {
       return this.paySumList.length !== 0
@@ -123,16 +123,16 @@ export default defineComponent({
   },
   methods: {
     sellAmount(type: number, price = 0) {
-      const cont_num = this.contNumList.filter(
-        (c: any) => c.unit_type === type,
-      )[0]
-      return cont_num.num_cont ? cont_num * price : 0
+      const nums = this.contNumList
+        .filter((c: any) => c.unit_type === type)
+        .map((c: any) => c.num_cont)
+      const num = typeof nums[0] === 'number' ? nums[0] : 0
+      return num * price
     },
     payByType(type: number) {
-      const payment = this.paySumList.filter(
-        (p: any) => p.unit_type === type,
-      )[0]
-      return payment.type_total ? payment.type_total : 0
+      return this.paySumList
+        .filter((p: any) => p.unit_type === type)
+        .map((p: any) => p.type_total)[0]
     },
   },
 })
