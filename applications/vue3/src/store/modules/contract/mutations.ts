@@ -3,6 +3,7 @@ import {
   FETCH_CONTRACT,
   FETCH_CONTRACT_LIST,
   FETCH_ORDER_GROUP_LIST,
+  FETCH_SUBS_SUMMARY_LIST,
 } from '@/store/modules/contract/mutations-types'
 import { ContractState, Contract } from '@/store/modules/contract/state'
 
@@ -12,16 +13,17 @@ const mutations = {
     state.contractsCount = payload.count
   },
 
-  [FETCH_CONTRACT]: (state: ContractState, payload: Contract) => {
-    state.contract = payload
-  },
+  [FETCH_CONTRACT]: (state: ContractState, payload: Contract) =>
+    (state.contract = payload),
 
-  [FETCH_ORDER_GROUP_LIST]: (state: ContractState, payload: any) => {
-    state.orderGroupList = payload.results
-  },
+  [FETCH_ORDER_GROUP_LIST]: (state: ContractState, payload: any) =>
+    (state.orderGroupList = payload.results),
+
+  [FETCH_SUBS_SUMMARY_LIST]: (state: ContractState, payload: any) =>
+    (state.subsSummaryList = payload.results),
 
   [FETCH_CONT_SUMMARY_LIST]: (state: ContractState, payload: any) =>
-    (state.contSummary = payload.results),
+    (state.contSummaryList = payload.results),
 }
 
 export default mutations

@@ -55,6 +55,11 @@ export interface OrderGroup {
   order_group_name: string
 }
 
+interface SubsSummary {
+  order_group: number
+  num_cont: number
+}
+
 export interface ContractSummary {
   project: number
   order_group: number
@@ -66,7 +71,8 @@ export interface ContractState {
   contractList: Contract[]
   contractsCount: number
   contract: Contract | null
-  contSummary: ContractSummary[]
+  subsSummaryList: SubsSummary[]
+  contSummaryList: ContractSummary[]
   orderGroupList: OrderGroup[]
 }
 
@@ -74,7 +80,8 @@ const state = {
   contractList: [],
   contractsCount: 0,
   contract: null,
-  contSummary: [],
+  subsSummaryList: [],
+  contSummaryList: [],
   orderGroupList: [],
 }
 

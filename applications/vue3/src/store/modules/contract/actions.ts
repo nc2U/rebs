@@ -1,9 +1,10 @@
 import api from '@/api'
 import {
-  FETCH_CONT_SUMMARY_LIST,
   FETCH_CONTRACT,
   FETCH_CONTRACT_LIST,
   FETCH_ORDER_GROUP_LIST,
+  FETCH_SUBS_SUMMARY_LIST,
+  FETCH_CONT_SUMMARY_LIST,
 } from '@/store/modules/contract/mutations-types'
 import router from '@/router'
 import { message } from '@/utils/helper'
@@ -40,6 +41,15 @@ const actions = {
         commit(FETCH_CONTRACT, res.data)
       })
       .catch(console.log)
+  },
+
+  fetchSubsSummaryList: ({ commit }: any, project?: number) => {
+    api
+      .get(`/subs-sum/?project=${project}`)
+      .then(res => {
+        commit(FETCH_SUBS_SUMMARY_LIST, res.data)
+      })
+      .catch(err => console.log(err.response.data))
   },
 
   fetchContSummaryList: ({ commit }: any, project?: number) => {
