@@ -62,6 +62,7 @@ class ApiIndex(generics.GenericAPIView):
             'project-cashbook': reverse(api + ProjectCashBookList.name, request=request),
             'payment-list': reverse(api + PaymentList.name, request=request),
             'payment-sum': reverse(api + PaymentsProjectSum.name, request=request),
+            'cont-count': reverse(api + NumContractByType.name, request=request),
             'price': reverse(api + SalesPriceList.name, request=request),
             'pay-order': reverse(api + InstallmentOrderList.name, request=request),
             'down-payment': reverse(api + DownPaymentList.name, request=request),
@@ -527,9 +528,26 @@ class PaymentsProjectSum(generics.ListAPIView):
     name = 'payment-sum'
     serializer_class = PaymentsProjectSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    filter_fields = ('project',)
 
     def get_queryset(self):
-        return Project.objects.all()
+        return Contract.objects.filter(activation=True, contractor__status=2) \
+            .annotate(income=F('projectcashbook__income')) \
+            .values('unit_type', 'income') \
+            .values('unit_type') \
+            .annotate(type_total=Sum('income'))
+
+
+class NumContractByType(generics.ListAPIView):
+    name = 'cont-count'
+    serializer_class = NumContractByTypeSerializer
+    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    filter_fields = ('project',)
+
+    def get_queryset(self):
+        return Contract.objects.filter(activation=True, contractor__status=2) \
+            .values('unit_type') \
+            .annotate(num_cont=Count('unit_type'))
 
 
 class SalesPriceList(generics.ListCreateAPIView):

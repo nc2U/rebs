@@ -365,11 +365,21 @@ class PaymentSerializer(serializers.ModelSerializer):
 
 
 class PaymentsProjectSerializer(serializers.ModelSerializer):
-    # total_income = serializers.IntegerField(read_only=True)
+    unit_type = serializers.IntegerField()
+    type_total = serializers.IntegerField()
 
     class Meta:
-        model = Project
-        fields = ('name',)
+        model = Contract
+        fields = ('unit_type', 'type_total')
+
+
+class NumContractByTypeSerializer(serializers.ModelSerializer):
+    unit_type = serializers.IntegerField()
+    num_cont = serializers.IntegerField()
+
+    class Meta:
+        model = UnitType
+        fields = ('unit_type', 'num_cont')
 
 
 class SalesPriceSerializer(serializers.ModelSerializer):
