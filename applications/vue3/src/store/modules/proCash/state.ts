@@ -52,7 +52,7 @@ export interface ProjectCashState {
   d1List: ProjectAccountD1[]
   d2List: ProjectAccountD2[]
   pBankAccountList: ProjectBankAccount[]
-  pCashBookList: ProjectCashBook[]
+  proCashBookList: ProjectCashBook[]
   proCashesCount: number
 }
 
@@ -60,7 +60,7 @@ const state = {
   d1List: [],
   d2List: [],
   pBankAccountList: [],
-  pCashBookList: [],
+  proCashBookList: [],
   proCashesCount: 0,
 }
 

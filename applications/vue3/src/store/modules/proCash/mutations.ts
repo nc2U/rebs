@@ -9,7 +9,7 @@ const mutations = {
     (state.pBankAccountList = payload.results),
 
   [FETCH_P_CASHBOOK_LIST]: (state: ProjectCashState, payload: any) => {
-    state.pCashBookList = payload.results
+    state.proCashBookList = payload.results
     state.proCashesCount = payload.count
   },
 }
