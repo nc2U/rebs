@@ -21,7 +21,7 @@ const mutations = {
   },
 
   [FETCH_CONT_SUMMARY_LIST]: (state: ContractState, payload: any) =>
-    (state.contSummary = payload),
+    (state.contSummary = payload.results),
 }
 
 export default mutations

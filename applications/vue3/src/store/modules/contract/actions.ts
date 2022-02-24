@@ -44,7 +44,7 @@ const actions = {
 
   fetchContSummaryList: ({ commit }: any, project?: number) => {
     api
-      .get(`/cont-summary/?project=${project}`)
+      .get(`/cont-sum/?project=${project}`)
       .then(res => {
         commit(FETCH_CONT_SUMMARY_LIST, res.data)
       })
