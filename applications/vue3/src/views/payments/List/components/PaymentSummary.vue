@@ -11,8 +11,8 @@
       </CTableRow>
     </CTableHead>
 
-    <CTableBody v-if="project">
-      <CTableRow class="text-right" color="light">
+    <CTableBody>
+      <CTableRow class="text-right" color="light" v-if="project">
         <CTableHeaderCell class="text-center">
           {{ project.name }}
         </CTableHeaderCell>
@@ -103,10 +103,10 @@ export default defineComponent({
       const nums = this.contNumList.map((c: any) => c.num_cont)
 
       let total = 0
-      for (let i = 0; i < types.length; i++) {
-        if (typeof types[i] === 'number' && typeof nums[i] === 'number') {
-          total += types[i] * nums[i]
-        }
+      for (let i in types) {
+        const type = types[i]
+        if (typeof type === 'number' && typeof nums[i] === 'number')
+          total += type * nums[i]
       }
       return total
     },
