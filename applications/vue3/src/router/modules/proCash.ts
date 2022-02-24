@@ -16,7 +16,7 @@ const proCash = {
       name: '현장자금 현황',
       component: () =>
         store.state.accounts.userInfo.staffauth.project_cash > '0'
-          ? import('@/views/projectCash/Status/Index.vue')
+          ? import('@/views/proCash/Status/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
     },
     {
@@ -24,7 +24,7 @@ const proCash = {
       name: '현장입출 내역',
       component: () =>
         store.state.accounts.userInfo.staffauth.project_cash > '0'
-          ? import('@/views/projectCash/List/Index.vue')
+          ? import('@/views/proCash/List/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
     },
     {
@@ -32,7 +32,7 @@ const proCash = {
       name: '현장입출 등록',
       component: () =>
         store.state.accounts.userInfo.staffauth.project_cash > '0'
-          ? import('@/views/projectCash/Register/Index.vue')
+          ? import('@/views/proCash/Register/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
     },
   ],
