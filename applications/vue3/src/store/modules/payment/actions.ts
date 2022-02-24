@@ -6,6 +6,8 @@ import {
   FETCH_P_CASHBOOK_LIST,
   FETCH_PAYMENT_LIST,
   FETCH_P_BANK_ACCOUNT_LIST,
+  FETCH_PAYMENT_SUM_LIST,
+  FETCH_CONTRACT_NUM_LIST,
 } from '@/store/modules/payment/mutations-types'
 import { message } from '@/utils/helper'
 
@@ -313,6 +315,24 @@ const actions = {
         dispatch('fetchProjectCashList', project)
         dispatch('fetchPaymentList', project)
         message('danger', '알림!', '해당 오브젝트가 삭제되었습니다.')
+      })
+      .catch(err => console.log(err.response.data))
+  },
+
+  fetchPaySumList: ({ commit }: any, project: any) => {
+    api
+      .get(`/payment-sum/?project=${project}`)
+      .then(res => {
+        commit(FETCH_PAYMENT_SUM_LIST, res.data)
+      })
+      .catch(err => console.log(err.response.data))
+  },
+
+  fetchContNumList: ({ commit }: any, project: any) => {
+    api
+      .get(`/cont-num/?project=${project}`)
+      .then(res => {
+        commit(FETCH_CONTRACT_NUM_LIST, res.data)
       })
       .catch(err => console.log(err.response.data))
   },

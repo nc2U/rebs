@@ -5,6 +5,8 @@ import {
   FETCH_P_BANK_ACCOUNT_LIST,
   FETCH_P_CASHBOOK_LIST,
   FETCH_PAYMENT_LIST,
+  FETCH_PAYMENT_SUM_LIST,
+  FETCH_CONTRACT_NUM_LIST,
 } from '@/store/modules/payment/mutations-types'
 import { PaymentState } from '@/store/modules/payment/state'
 
@@ -28,6 +30,12 @@ const mutations = {
     state.paymentList = payload.results
     state.paymentsCount = payload.count
   },
+
+  [FETCH_PAYMENT_SUM_LIST]: (state: PaymentState, paload: any) =>
+    (state.paySumList = paload.results),
+
+  [FETCH_CONTRACT_NUM_LIST]: (state: PaymentState, payload: any) =>
+    (state.contNumList = payload.results),
 }
 
 export default mutations

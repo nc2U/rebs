@@ -68,6 +68,16 @@ interface ProjectCashBook {
   deal_date: string
 }
 
+interface PaySumByType {
+  unit_type: number
+  type_total: number
+}
+
+interface ContractNum {
+  unit_type: number
+  num_cont: number
+}
+
 export interface PaymentState {
   priceList: Price[]
   payOrderList: PayOrder[]
@@ -76,6 +86,8 @@ export interface PaymentState {
   pCashBookList: ProjectCashBook[]
   paymentList: ProjectCashBook[]
   paymentsCount: number
+  paySumList: PaySumByType[]
+  contNumList: ContractNum[]
 }
 
 const state: PaymentState = {
@@ -86,6 +98,8 @@ const state: PaymentState = {
   pCashBookList: [],
   paymentList: [],
   paymentsCount: 0,
+  paySumList: [],
+  contNumList: [],
 }
 
 export default state
