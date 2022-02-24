@@ -67,9 +67,10 @@ export default defineComponent({
         this.$store.state.project.unitTypeList = []
         this.$store.state.payment.paySumList = []
         this.$store.state.payment.contNumList = []
-        this.$store.state.cash.paymentList = []
-        this.$store.state.cash.payOrderList = []
-        this.$store.state.cash.pBankAccountList = []
+        this.$store.state.payment.paymentList = []
+        this.$store.state.payment.paymentsCount = 0
+        this.$store.state.payment.payOrderList = []
+        this.$store.state.payment.pBankAccountList = []
       }
     },
     pageSelect(this: any, page: number) {
