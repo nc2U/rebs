@@ -36,10 +36,27 @@
         <CTableDataCell>
           {{ numFormat(type.average_price * type.num_unit) }}
         </CTableDataCell>
-        <CTableDataCell>{{ numFormat(1000) }}</CTableDataCell>
-        <CTableDataCell>{{ numFormat(1000) }}</CTableDataCell>
-        <CTableDataCell>{{ numFormat(1000) }}</CTableDataCell>
-        <CTableDataCell>{{ numFormat(1000) }}</CTableDataCell>
+        <CTableDataCell>
+          {{ numFormat(sellAmount(type.pk, type.average_price)) }}
+        </CTableDataCell>
+        <CTableDataCell class="text-primary">
+          {{ numFormat(paymentByType(type.pk)) }}
+        </CTableDataCell>
+        <CTableDataCell class="text-danger">
+          {{
+            numFormat(
+              sellAmount(type.pk, type.average_price) - paymentByType(type.pk),
+            )
+          }}
+        </CTableDataCell>
+        <CTableDataCell>
+          {{
+            numFormat(
+              type.average_price * type.num_unit -
+                sellAmount(type.pk, type.average_price),
+            )
+          }}
+        </CTableDataCell>
       </CTableRow>
 
       <CTableRow class="text-right" color="light">
@@ -74,7 +91,21 @@ export default defineComponent({
         .reduce((x: number, y: number) => x + y)
     },
     ...mapState('project', ['unitTypeList']),
+    ...mapState('payment', ['paySumList', 'contNumList']),
     ...mapGetters('contract', ['getSubs', 'getConts']),
+  },
+  methods: {
+    sellAmount(type: number, price = 0) {
+      const cont_num = this.contNumList
+        ? this.contNumList.filter((c: any) => c.unit_type === type)[0].num_cont
+        : 0
+      return cont_num * price
+    },
+    paymentByType(type: number) {
+      return this.paySumList
+        ? this.paySumList.filter((p: any) => p.unit_type === type)[0].type_total
+        : 0
+    },
   },
 })
 </script>
