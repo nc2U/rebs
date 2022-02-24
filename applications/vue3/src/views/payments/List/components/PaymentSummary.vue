@@ -11,16 +11,20 @@
       </CTableRow>
     </CTableHead>
 
-    <CTableBody v-if="project">
+    <CTableBody v-if="project && unitTypeList && contNumList && paySumList">
       <CTableRow class="text-right" color="light">
         <CTableHeaderCell class="text-center">
           {{ project.name }}
         </CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(total_budget) }}</CTableHeaderCell>
-        <CTableHeaderCell>{{ numFormat(2000) }}</CTableHeaderCell>
-        <CTableHeaderCell>{{ numFormat(2000) }}</CTableHeaderCell>
-        <CTableHeaderCell>{{ numFormat(2000) }}</CTableHeaderCell>
-        <CTableHeaderCell>{{ numFormat(2000) }}</CTableHeaderCell>
+        <CTableHeaderCell>{{ numFormat(totalAmount) }}</CTableHeaderCell>
+        <CTableHeaderCell>{{ numFormat(totalPayment) }}</CTableHeaderCell>
+        <CTableHeaderCell>
+          {{ numFormat(totalAmount - totalPayment) }}
+        </CTableHeaderCell>
+        <CTableHeaderCell>
+          {{ numFormat(total_budget - totalAmount) }}
+        </CTableHeaderCell>
       </CTableRow>
 
       <CTableRow class="text-right" v-for="type in unitTypeList" :key="type.pk">
@@ -40,12 +44,12 @@
           {{ numFormat(sellAmount(type.pk, type.average_price)) }}
         </CTableDataCell>
         <CTableDataCell class="text-primary">
-          {{ numFormat(paymentByType(type.pk)) }}
+          {{ numFormat(payByType(type.pk)) }}
         </CTableDataCell>
         <CTableDataCell class="text-danger">
           {{
             numFormat(
-              sellAmount(type.pk, type.average_price) - paymentByType(type.pk),
+              sellAmount(type.pk, type.average_price) - payByType(type.pk),
             )
           }}
         </CTableDataCell>
@@ -86,9 +90,32 @@ export default defineComponent({
   },
   computed: {
     total_budget() {
-      return this.unitTypeList
-        .map((t: any) => t.average_price * t.num_unit)
-        .reduce((x: number, y: number) => x + y)
+      return this.unitTypeList.length !== 0
+        ? this.unitTypeList
+            .map((t: any) => t.average_price * t.num_unit)
+            .reduce((x: number, y: number) => x + y)
+        : 0
+    },
+    totalAmount() {
+      const num = this.contNumList
+      const type = this.unitTypeList
+      return type.length !== 0 || num.length !== 0
+        ? type
+            .map((t: any) => ({
+              amount:
+                t.average_price *
+                num.filter((c: any) => c.unit_type === t.pk)[0].num_cont,
+            }))
+            .map((a: any) => a.amount)
+            .reduce((x: number, y: number) => x + y)
+        : 0
+    },
+    totalPayment() {
+      return this.paySumList.length !== 0
+        ? this.paySumList
+            .map((p: any) => p.type_total)
+            .reduce((x: number, y: number) => x + y)
+        : 0
     },
     ...mapState('project', ['unitTypeList']),
     ...mapState('payment', ['paySumList', 'contNumList']),
@@ -96,15 +123,16 @@ export default defineComponent({
   },
   methods: {
     sellAmount(type: number, price = 0) {
-      const cont_num = this.contNumList
-        ? this.contNumList.filter((c: any) => c.unit_type === type)[0].num_cont
-        : 0
-      return cont_num * price
+      const cont_num = this.contNumList.filter(
+        (c: any) => c.unit_type === type,
+      )[0]
+      return cont_num.num_cont ? cont_num * price : 0
     },
-    paymentByType(type: number) {
-      return this.paySumList
-        ? this.paySumList.filter((p: any) => p.unit_type === type)[0].type_total
-        : 0
+    payByType(type: number) {
+      const payment = this.paySumList.filter(
+        (p: any) => p.unit_type === type,
+      )[0]
+      return payment.type_total ? payment.type_total : 0
     },
   },
 })
