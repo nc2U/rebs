@@ -1,4 +1,5 @@
 <template>
+  {{ contSummary }}
   <CTable hover responsive bordered class="mt-3">
     <CTableHead class="text-center" color="dark">
       <CTableRow align="middle">
@@ -48,36 +49,27 @@
         <!--  타입별 세대수 -->
         <CTableDataCell>{{ numFormat(type.num_unit) }}세대</CTableDataCell>
         <!-- 차수별 타입별 청약건수-->
-        <CTableDataCell>{{ numFormat(getSubs(type.pk)) }}</CTableDataCell>
+        <CTableDataCell>{{ numFormat() }}</CTableDataCell>
         <!-- 차수별 타입별 계약건수-->
         <CTableDataCell v-for="order in orderGroupList" :key="order.pk">
-          {{ numFormat(getConts(order.pk, type.pk)) }}
+          {{ numFormat(contNum(order.pk, type.pk)) }}
         </CTableDataCell>
 
         <!-- 차수별 계약건수 합계 -->
         <CTableDataCell v-if="orderGroupList.length > 1">
-          {{ numFormat(getConts(null, type.pk)) }}
+          {{ numFormat(contNum(null, type.pk)) }}
         </CTableDataCell>
         <!--잔여세대-->
         <CTableDataCell>
-          {{
-            numFormat(
-              type.num_unit - getSubs(type.pk) - getConts(null, type.pk),
-            )
-          }}
+          {{ numFormat(type.num_unit - contNum(null, type.pk)) }}
         </CTableDataCell>
         <!-- 계약율-->
         <CTableDataCell>
-          {{ ratioFormat((getConts(null, type.pk) / type.num_unit) * 100) }}
+          {{ ratioFormat((contNum(null, type.pk) / type.num_unit) * 100) }}
         </CTableDataCell>
         <!-- 분양율(청약+계약)-->
         <CTableDataCell>
-          {{
-            ratioFormat(
-              ((getSubs(type.pk) + getConts(null, type.pk)) / type.num_unit) *
-                100,
-            )
-          }}
+          {{ ratioFormat(type.num_unit * 100) }}
         </CTableDataCell>
       </CTableRow>
 
@@ -87,29 +79,27 @@
         <!-- 타입별 세대수 합계-->
         <CTableDataCell> {{ numFormat(project.num_unit) }}세대</CTableDataCell>
         <!-- 청약 건수 타입별 합계-->
-        <CTableDataCell>{{ numFormat(getSubs()) }}</CTableDataCell>
+        <CTableDataCell>{{ numFormat() }}</CTableDataCell>
         <!--차수별 계약건수 타입별 합계-->
         <CTableDataCell v-if="orderGroupList.length === 0">-</CTableDataCell>
         <CTableDataCell v-else v-for="order in orderGroupList" :key="order.pk">
-          {{ numFormat(getConts(order.pk)) }}
+          {{ numFormat(contNum(order.pk)) }}
         </CTableDataCell>
         <!-- 차수별 타입별 계약건수 총계-->
         <CTableDataCell v-if="orderGroupList.length > 1">
-          {{ numFormat(getConts()) }}
+          {{ numFormat(contNum()) }}
         </CTableDataCell>
         <!-- 타입별 잔여세대 합계-->
         <CTableDataCell>
-          {{ numFormat(project.num_unit - getConts() - getSubs()) }}
+          {{ numFormat(project.num_unit - contNum()) }}
         </CTableDataCell>
         <!-- 타입별 계약율 합계-->
         <CTableDataCell
-          >{{ ratioFormat((getConts() / project.num_unit) * 100) }}
+          >{{ ratioFormat((contNum() / project.num_unit) * 100) }}
         </CTableDataCell>
         <!-- 타입별 분양율(청약+계약) 합계-->
         <CTableDataCell
-          >{{
-            ratioFormat(((getConts() + getSubs()) / project.num_unit) * 100)
-          }}
+          >{{ ratioFormat(project.num_unit * 100) }}
         </CTableDataCell>
       </CTableRow>
     </CTableBody>
@@ -119,7 +109,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import commonMixin from '@/views/commonMixin'
-import { mapGetters, mapState } from 'vuex'
+import { mapState } from 'vuex'
 
 export default defineComponent({
   name: 'ContractSummary',
@@ -132,9 +122,19 @@ export default defineComponent({
     },
   },
   computed: {
-    ...mapState('contract', ['orderGroupList']),
+    ...mapState('contract', ['orderGroupList', 'contSummary']),
     ...mapState('project', ['unitTypeList']),
-    ...mapGetters('contract', ['getSubs', 'getConts']),
+  },
+  methods: {
+    contNum(order: number | null, type?: number) {
+      let cont = this.contSummary
+      cont = order ? cont.filter((c: any) => c.order_group === order) : cont
+      cont = type ? cont.filter((c: any) => c.unit_type === type) : cont
+      cont = cont.map((c: any) => c.num_cont)
+      return cont.length !== 0
+        ? cont.reduce((o: number, n: number) => o + n)
+        : 0
+    },
   },
 })
 </script>
