@@ -93,8 +93,8 @@ export default defineComponent({
       'fetchContNumList',
       'fetchPayOrderList',
       'fetchPaymentList',
-      'fetchProjectBankAccountList',
     ]),
+    ...mapActions('proCash', ['fetchProjectBankAccountList']),
   },
 })
 </script>

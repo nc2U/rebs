@@ -1,3 +1,8 @@
+import {
+  ProjectBankAccount,
+  ProjectCashBook,
+} from '@/store/modules/proCash/state'
+
 export interface Price {
   pk: number
   project: number
@@ -33,41 +38,6 @@ interface DownPay {
   payment_amount: number
 }
 
-interface ProjectBankAccount {
-  pk: number
-  project: number
-  bankcode: number
-  alias_name: string
-  number: string
-  holder: string
-  open_date: string | null
-  note: string
-  inactive: boolean
-  directpay: boolean
-}
-
-interface ProjectCashBook {
-  pk: number
-  project: number
-  cash_category1: string
-  project_account_d1: number | null
-  project_account_d2: number | null
-  is_record_separate: boolean
-  is_contract_payment: boolean
-  contract: number | null
-  installment_order: number | null
-  is_release: boolean
-  is_refund_contractor: number | null
-  content: string
-  trader: string
-  bank_account: number
-  income: number | null
-  outlay: number | null
-  evidence: string
-  note: string
-  deal_date: string
-}
-
 interface PaySumByType {
   unit_type: number
   type_total: number
@@ -82,8 +52,6 @@ export interface PaymentState {
   priceList: Price[]
   payOrderList: PayOrder[]
   downPayList: DownPay[]
-  pBankAccountList: ProjectBankAccount[]
-  pCashBookList: ProjectCashBook[]
   paymentList: ProjectCashBook[]
   paymentsCount: number
   paySumList: PaySumByType[]
@@ -94,8 +62,6 @@ const state: PaymentState = {
   priceList: [],
   payOrderList: [],
   downPayList: [],
-  pBankAccountList: [],
-  pCashBookList: [],
   paymentList: [],
   paymentsCount: 0,
   paySumList: [],

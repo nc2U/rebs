@@ -2,8 +2,6 @@ import {
   FETCH_PRICE_LIST,
   FETCH_PAY_ORDER_LIST,
   FETCH_DWON_PAYMENT,
-  FETCH_P_BANK_ACCOUNT_LIST,
-  FETCH_P_CASHBOOK_LIST,
   FETCH_PAYMENT_LIST,
   FETCH_PAYMENT_SUM_LIST,
   FETCH_CONTRACT_NUM_LIST,
@@ -19,12 +17,6 @@ const mutations = {
 
   [FETCH_DWON_PAYMENT]: (state: PaymentState, payload: any) =>
     (state.downPayList = payload.results),
-
-  [FETCH_P_BANK_ACCOUNT_LIST]: (state: PaymentState, payload: any) =>
-    (state.pBankAccountList = payload.results),
-
-  [FETCH_P_CASHBOOK_LIST]: (state: PaymentState, payload: any) =>
-    (state.pCashBookList = payload.results),
 
   [FETCH_PAYMENT_LIST]: (state: PaymentState, payload: any) => {
     state.paymentList = payload.results
