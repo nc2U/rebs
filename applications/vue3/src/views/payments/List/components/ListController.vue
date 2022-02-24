@@ -1,5 +1,5 @@
 <template>
-  <CCallout color="success" class="pb-0 mb-4">
+  <CCallout color="warning" class="pb-0 mb-4">
     <CRow>
       <CCol lg="7">
         <CRow>
