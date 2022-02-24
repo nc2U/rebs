@@ -23,3 +23,7 @@ class PageNumberPaginationFifty(PageNumberPagination):
 
 class PageNumberPaginationTwenty(PageNumberPagination):
     page_size = 20
+
+
+class PageNumberPaginationFifteen(PageNumberPagination):
+    page_size = 15

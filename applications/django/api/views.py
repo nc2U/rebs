@@ -503,6 +503,7 @@ class ProjectCashBookList(generics.ListCreateAPIView):
     queryset = ProjectCashBook.objects.all()
     serializer_class = ProjectCashBookSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    pagination_class = PageNumberPaginationFifteen
     filter_class = ProjectCashBookFilterSet
     search_fields = ('contract__contractor__name', 'content', 'trader', 'note')
 
