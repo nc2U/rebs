@@ -49,7 +49,7 @@
         <!--  타입별 세대수 -->
         <CTableDataCell>{{ numFormat(type.num_unit) }}세대</CTableDataCell>
         <!-- 차수별 타입별 청약건수-->
-        <CTableDataCell>{{ numFormat() }}</CTableDataCell>
+        <CTableDataCell>{{ numFormat(subsNum(type.pk)) }}</CTableDataCell>
         <!-- 차수별 타입별 계약건수-->
         <CTableDataCell v-for="order in orderGroupList" :key="order.pk">
           {{ numFormat(contNum(order.pk, type.pk)) }}
@@ -61,7 +61,9 @@
         </CTableDataCell>
         <!--잔여세대-->
         <CTableDataCell>
-          {{ numFormat(type.num_unit - contNum(null, type.pk)) }}
+          {{
+            numFormat(type.num_unit - contNum(null, type.pk) - subsNum(type.pk))
+          }}
         </CTableDataCell>
         <!-- 계약율-->
         <CTableDataCell>
@@ -69,7 +71,12 @@
         </CTableDataCell>
         <!-- 분양율(청약+계약)-->
         <CTableDataCell>
-          {{ ratioFormat(type.num_unit * 100) }}
+          {{
+            ratioFormat(
+              ((contNum(null, type.pk) + subsNum(type.pk)) / type.num_unit) *
+                100,
+            )
+          }}
         </CTableDataCell>
       </CTableRow>
 
@@ -79,7 +86,7 @@
         <!-- 타입별 세대수 합계-->
         <CTableDataCell> {{ numFormat(project.num_unit) }}세대</CTableDataCell>
         <!-- 청약 건수 타입별 합계-->
-        <CTableDataCell>{{ numFormat() }}</CTableDataCell>
+        <CTableDataCell>{{ numFormat(subsNum()) }}</CTableDataCell>
         <!--차수별 계약건수 타입별 합계-->
         <CTableDataCell v-if="orderGroupList.length === 0">-</CTableDataCell>
         <CTableDataCell v-else v-for="order in orderGroupList" :key="order.pk">
@@ -91,15 +98,15 @@
         </CTableDataCell>
         <!-- 타입별 잔여세대 합계-->
         <CTableDataCell>
-          {{ numFormat(project.num_unit - contNum()) }}
+          {{ numFormat(project.num_unit - contNum() - subsNum()) }}
         </CTableDataCell>
         <!-- 타입별 계약율 합계-->
         <CTableDataCell
           >{{ ratioFormat((contNum() / project.num_unit) * 100) }}
         </CTableDataCell>
         <!-- 타입별 분양율(청약+계약) 합계-->
-        <CTableDataCell
-          >{{ ratioFormat(project.num_unit * 100) }}
+        <CTableDataCell>
+          {{ ratioFormat(((contNum() + subsNum()) / project.num_unit) * 100) }}
         </CTableDataCell>
       </CTableRow>
     </CTableBody>
@@ -122,12 +129,24 @@ export default defineComponent({
     },
   },
   computed: {
-    ...mapState('contract', ['orderGroupList', 'contSummary']),
+    ...mapState('contract', [
+      'orderGroupList',
+      'subsSummaryList',
+      'contSummaryList',
+    ]),
     ...mapState('project', ['unitTypeList']),
   },
   methods: {
+    subsNum(type?: number) {
+      let subs = this.subsSummaryList
+      subs = type ? subs.filter((s: any) => s.unit_type === type) : subs
+      subs = subs.map((s: any) => s.num_cont)
+      return subs.length !== 0
+        ? subs.reduce((o: number, n: number) => o + n)
+        : 0
+    },
     contNum(order: number | null, type?: number) {
-      let cont = this.contSummary
+      let cont = this.contSummaryList
       cont = order ? cont.filter((c: any) => c.order_group === order) : cont
       cont = type ? cont.filter((c: any) => c.unit_type === type) : cont
       cont = cont.map((c: any) => c.num_cont)
