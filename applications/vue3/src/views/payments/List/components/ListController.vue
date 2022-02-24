@@ -124,9 +124,6 @@ export default defineComponent({
         this.$emit('payment-filtering', { ...{ page }, ...this.form }),
       )
     },
-    aa() {
-      this.$nextTick(() => alert(this.form.no_contract))
-    },
     resetForm() {
       this.form.from_date = ''
       this.form.to_date = ''
