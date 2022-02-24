@@ -8,8 +8,10 @@ const mutations = {
   [FETCH_P_BANK_ACCOUNT_LIST]: (state: ProjectCashState, payload: any) =>
     (state.pBankAccountList = payload.results),
 
-  [FETCH_P_CASHBOOK_LIST]: (state: ProjectCashState, payload: any) =>
-    (state.pCashBookList = payload.results),
+  [FETCH_P_CASHBOOK_LIST]: (state: ProjectCashState, payload: any) => {
+    state.pCashBookList = payload.results
+    state.proCashesCount = payload.count
+  },
 }
 
 export default mutations
