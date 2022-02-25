@@ -33,12 +33,16 @@ class CompanyBankAccount(models.Model):
 
 class CashBook(models.Model):
     company = models.ForeignKey('company.Company', on_delete=models.PROTECT, verbose_name='회사정보')
-    CATEGORY1_CHOICES = (('1', '입금'), ('2', '출금'), ('3', '대체'))
-    cash_category1 = models.CharField('구분', max_length=1, choices=CATEGORY1_CHOICES)
+    SORT_CHOICES = (('1', '입금'), ('2', '출금'), ('3', '대체'))
+    sort = models.CharField('구분', max_length=1, choices=SORT_CHOICES)
+
     CATEGORY2_CHOICES = (('1', '자산'), ('2', '부채'), ('3', '자본'), ('4', '수익'), ('5', '비용'), ('6', '대체'))
+
     cash_category2 = models.CharField('계정', max_length=1, choices=CATEGORY2_CHOICES, blank=True)
+
     account = models.ForeignKey('rebs.AccountSubD3', on_delete=models.SET_NULL, null=True, blank=True,
                                 verbose_name='세부계정')
+
     content = models.CharField('적요', max_length=100)
     trader = models.CharField('거래처', max_length=30, blank=True)
     bank_account = models.ForeignKey(CompanyBankAccount, on_delete=models.PROTECT, verbose_name='거래계좌')
@@ -54,7 +58,7 @@ class CashBook(models.Model):
     updated_at = models.DateTimeField('수정일시', auto_now=True)
 
     def __str__(self):
-        return f'{self.id}. {self.cash_category1}'
+        return f'{self.id}. {self.sort}'
 
     class Meta:
         ordering = ['-deal_date', '-id']
@@ -84,8 +88,8 @@ class ProjectBankAccount(models.Model):
 
 class ProjectCashBook(models.Model):
     project = models.ForeignKey('project.Project', on_delete=models.PROTECT, verbose_name='프로젝트')
-    CATEGORY1_CHOICES = (('1', '입금'), ('2', '출금'), ('3', '대체'))
-    cash_category1 = models.CharField('구분', max_length=1, choices=CATEGORY1_CHOICES)  # icp=True -> 1=수납 or 2=환불
+    SORT_CHOICES = (('1', '입금'), ('2', '출금'), ('3', '대체'))
+    sort = models.CharField('구분', max_length=1, choices=SORT_CHOICES)  # icp=True -> 1=수납 or 2=환불
     project_account_d1 = models.ForeignKey('rebs.ProjectAccountD1', on_delete=models.PROTECT, null=True, blank=True,
                                            verbose_name='현장 계정')
     project_account_d2 = models.ForeignKey('rebs.ProjectAccountD2', on_delete=models.PROTECT, null=True, blank=True,
@@ -118,7 +122,7 @@ class ProjectCashBook(models.Model):
     updated_at = models.DateTimeField('수정일시', auto_now=True)
 
     def __str__(self):
-        return f'{self.id}. {self.cash_category1}'
+        return f'{self.id}. {self.sort}'
 
     class Meta:
         ordering = ['-deal_date', '-id']

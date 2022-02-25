@@ -6,7 +6,7 @@ from rebs.models import ProjectAccountD1, ProjectAccountD2
 
 CashBookFormSet = modelformset_factory(
     CashBook,
-    fields=('cash_category1', 'cash_category2', 'account', 'content', 'trader',
+    fields=('sort', 'cash_category2', 'account', 'content', 'trader',
             'bank_account', 'income', 'outlay', 'evidence', 'note'),
     extra=1
 )
@@ -26,7 +26,7 @@ class CashSearchForm(forms.Form):
 class ProjectCashBookForm(forms.ModelForm):
     class Meta:
         model = ProjectCashBook
-        fields = ('cash_category1', 'project_account_d1', 'project_account_d2',
+        fields = ('sort', 'project_account_d1', 'project_account_d2',
                   'content', 'trader', 'bank_account', 'income', 'outlay', 'note')
 
     def __init__(self, project, *args, **kwargs):
@@ -34,7 +34,7 @@ class ProjectCashBookForm(forms.ModelForm):
         self.fields['bank_account'].queryset = ProjectBankAccount.objects.filter(project=project)
 
 
-ProjectCashBookFormSet = modelformset_factory(model= ProjectCashBook, form=ProjectCashBookForm, extra=1)
+ProjectCashBookFormSet = modelformset_factory(model=ProjectCashBook, form=ProjectCashBookForm, extra=1)
 
 
 class ProjectCashSearchForm(forms.Form):
