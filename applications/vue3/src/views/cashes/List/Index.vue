@@ -47,7 +47,7 @@ export default defineComponent({
     this.fetchAccountD1List()
     this.fetchAccountD2List()
     this.fetchAccountD3List()
-    this.fetchCompanyBankAccountList(this.initProjId)
+    this.fetchCompanyBankAccountList(this.initComId)
     this.fetchCashBookList({ company: this.initComId })
   },
   computed: {
@@ -57,26 +57,28 @@ export default defineComponent({
   methods: {
     onSelectAdd(this: any, target: any) {
       if (target !== '') {
-        this.fetchProjectBankAccountList(target)
-        this.fetchProjectCashList({ company: target })
+        this.fetchCompany(target)
+        this.fetchCompanyBankAccountList(target)
+        this.fetchCashBookList({ company: target })
       } else {
-        this.$store.state.payment.proBankAccountList = []
-        this.$store.state.payment.proCashBookList = []
-        this.$store.state.payment.proCashesCount = 0
+        this.$store.state.settings.company = null
+        this.$store.state.comCash.comBankList = []
+        this.$store.state.comCash.cashBookList = []
+        this.$store.state.comCash.cashBookCount = 0
       }
     },
-    accountD1Select(d1: number | string) {
-      this.fetchAccountD2List(d1)
-    },
-    accountD2Select(d2: number | string) {
-      this.fetchAccountD3List(d2)
-    },
+    // accountD1Select(d1: number | string) {
+    //   this.fetchAccountD2List(d1)
+    // },
+    // accountD2Select(d2: number | string) {
+    //   this.fetchAccountD3List(d2)
+    // },
     pageSelect(this: any, page: number) {
       this.$refs.listControl.listFiltering(page)
     },
     onPayFiltering(payload: any) {
-      const project = 1
-      this.fetchCashBookList({ ...{ project }, ...payload })
+      const company = this.company.pk
+      this.fetchCashBookList({ ...{ company }, ...payload })
     },
     onUpdate(payload: any) {
       console.log(payload)
@@ -84,6 +86,7 @@ export default defineComponent({
     onDelete(pk: number) {
       alert(pk)
     },
+    ...mapActions('settings', ['fetchCompany']),
     ...mapActions('comCash', [
       'fetchAccountD1List',
       'fetchAccountD2List',

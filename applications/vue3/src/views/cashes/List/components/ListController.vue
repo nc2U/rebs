@@ -22,8 +22,8 @@
           </CCol>
 
           <CCol md="6" lg="2" class="mb-3">
-            <CFormSelect v-model="form.sort" @change="listFiltering(1)">
-              <option value="">거래구분</option>
+            <CFormSelect v-model="form.sort1" @change="listFiltering(1)">
+              <option value="">구분</option>
               <option value="1">입금</option>
               <option value="2">출금</option>
               <option value="3">대체</option>
@@ -31,19 +31,19 @@
           </CCol>
 
           <CCol md="6" lg="2" class="mb-3">
-            <CFormSelect v-model="form.accountD1" @change="accountD1Select">
-              <option value="">메인계정</option>
-              <option v-for="d1 in accountD1List" :value="d1.pk" :key="d1.pk">
-                {{ d1.name }}
+            <CFormSelect v-model="form.sort2" @change="accountD1Select">
+              <option value="">분류</option>
+              <option v-for="acc in comAccD1List" :value="acc.pk" :key="acc.pk">
+                {{ acc.name }}
               </option>
             </CFormSelect>
           </CCol>
 
           <CCol md="6" lg="2" class="mb-3">
-            <CFormSelect v-model="form.accountD2" @change="listFiltering(1)">
-              <option value="">세부계정</option>
-              <option v-for="d2 in accountD2List" :value="d2.pk" :key="d2.pk">
-                {{ d2.name }}
+            <CFormSelect v-model="form.account" @change="listFiltering(1)">
+              <option value="">계정과목</option>
+              <option v-for="acc in comAccD3List" :value="acc.pk" :key="acc.pk">
+                {{ acc.name }}
               </option>
             </CFormSelect>
           </CCol>
@@ -51,11 +51,7 @@
           <CCol md="6" lg="2" class="mb-3">
             <CFormSelect v-model="form.bank_account" @change="listFiltering(1)">
               <option value="">거래계좌</option>
-              <option
-                v-for="acc in proBankAccountList"
-                :value="acc.pk"
-                :key="acc.pk"
-              >
+              <option v-for="acc in comBankList" :value="acc.pk" :key="acc.pk">
                 {{ acc.alias_name }}
               </option>
             </CFormSelect>
@@ -83,7 +79,7 @@
     <CRow>
       <CCol color="warning" class="p-2 pl-3">
         <strong>
-          거래 건수 조회 결과 : {{ numFormat(proCashesCount) }} 건
+          거래 건수 조회 결과 : {{ numFormat(cashBookCount) }} 건
         </strong>
       </CCol>
       <CCol class="text-right mb-0" v-if="!formsCheck">
@@ -108,9 +104,9 @@ export default defineComponent({
       form: {
         from_date: '',
         to_date: '',
-        sort: '',
-        accountD1: '',
-        accountD2: '',
+        sort1: '',
+        sort2: '',
+        account: '',
         bank_account: '',
         search: '',
       },
@@ -120,25 +116,26 @@ export default defineComponent({
     formsCheck(this: any) {
       const a = this.form.from_date === ''
       const b = this.form.to_date === ''
-      const c = this.form.sort === ''
-      const d = this.form.accountD1 === ''
-      const e = this.form.accountD2 === ''
+      const c = this.form.sort1 === ''
+      const d = this.form.sort2 === ''
+      const e = this.form.account === ''
       const f = this.form.bank_account === ''
       const g = this.form.search === ''
       return a && b && c && d && e && f && g
     },
-    ...mapState('proCash', [
-      'accountD1List',
-      'accountD2List',
-      'proBankAccountList',
-      'proCashesCount',
+    ...mapState('comCash', [
+      'comAccD1List',
+      'comAccD2List',
+      'comAccD3List',
+      'comBankList',
+      'cashBookCount',
     ]),
   },
   methods: {
-    accountD1Select() {
-      this.listFiltering(1)
-      this.$nextTick(() => this.$emit('d1-select', this.form.accountD1))
-    },
+    // accountD1Select() {
+    //   this.listFiltering(1)
+    //   this.$nextTick(() => this.$emit('d1-select', this.form.accountD1))
+    // },
     listFiltering(page = 1) {
       this.$nextTick(() =>
         this.$emit('payment-filtering', { ...{ page }, ...this.form }),
@@ -147,9 +144,9 @@ export default defineComponent({
     resetForm() {
       this.form.from_date = ''
       this.form.to_date = ''
-      this.form.sort = ''
-      this.form.accountD1 = ''
-      this.form.accountD2 = ''
+      this.form.sort1 = ''
+      this.form.sort2 = ''
+      this.form.account = ''
       this.form.bank_account = ''
       this.form.search = ''
       this.listFiltering(1)
