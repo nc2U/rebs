@@ -15,10 +15,10 @@ CashBookFormSet = modelformset_factory(
 class CashSearchForm(forms.Form):
     s_date = forms.DateField(required=False, label='거래 기간')
     e_date = forms.DateField(required=False)
-    CATEGORY1_CHOICES = (('', '전체'), ('1', '입금'), ('2', '출금'), ('3', '대체'))
-    category1 = forms.ChoiceField(choices=CATEGORY1_CHOICES, required=False, label='구분')
-    CATEGORY2_CHOICES = (('', '전체'), ('1', '자산'), ('2', '부채'), ('3', '자본'), ('4', '수익'), ('5', '비용'), ('6', '대체'))
-    category2 = forms.ChoiceField(choices=CATEGORY2_CHOICES, required=False)
+    SORT_CHOICES = (('', '전체'), ('1', '입금'), ('2', '출금'), ('3', '대체'))
+    sort = forms.ChoiceField(choices=SORT_CHOICES, required=False, label='구분')
+    MAIN_ACCOUNT_CHOICES = (('', '전체'), ('1', '자산'), ('2', '부채'), ('3', '자본'), ('4', '수익'), ('5', '비용'), ('6', '대체'))
+    main_account = forms.ChoiceField(choices=MAIN_ACCOUNT_CHOICES, required=False)
     bank_account = forms.ModelChoiceField(queryset=CompanyBankAccount.objects.all(), required=False)
     search_word = forms.CharField(max_length=20, required=False, label='검색어')
 

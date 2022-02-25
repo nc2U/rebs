@@ -103,16 +103,16 @@
                                             <th class="text-center" scope="row"><input type="checkbox" disabled></th>
                                             <td class="text-center">{{ inout.deal_date|date:"Y-m-d" }}</td>
                                             <td class="text-center text-primary">
-                                                <span class="text-{% if inout.cash_sort == '2' %}danger{% elif inout.cash_sort == '3' %}info{% endif %}">
-                                                    {{ inout.get_cash_sort_display }}
+                                                <span class="text-{% if inout.sort == '2' %}danger{% elif inout.sort == '3' %}info{% endif %}">
+                                                    {{ inout.get_sort_display }}
                                                 </span>
                                             </td>
                                             <td class="text-center text-primary">
-                                                <span class="text-{% if inout.cash_main_account in '2' %}info{% elif inout.cash_main_account in '5' %}danger{% elif inout.cash_sort == '3' %}info{% endif %}">
-                                                    {{ inout.get_cash_main_account_display }}
+                                                <span class="text-{% if inout.main_account.pk == 2 %}info{% elif inout.main_account.pk == 5 %}danger{% elif inout.sort == '3' %}info{% endif %}">
+                                                    {{ inout.main_account.name }}
                                                 </span>
                                             </td>
-                                            <td class="text-secondary">{{ inout.account.name|default:"-" }}</td>
+                                            <td class="text-secondary">{{ inout.sub_account.name|default:"-" }}</td>
                                             <td>{{ inout.content|truncatechars:12|default:"-" }}</td>
                                             <td>{{ inout.trader|truncatechars:8|default:"-" }}</td>
                                             <td>{{ inout.bank_account }}</td>
