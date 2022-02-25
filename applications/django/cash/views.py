@@ -121,7 +121,7 @@ class CashInoutLV(LoginRequiredMixin, ListView, FormView):
             results = results.filter(deal_date__lte=self.request.GET.get('e_date'))
 
         if self.request.GET.get('category1'):
-            results = results.filter(cash_category1__icontains=self.request.GET.get('category1', ''))
+            results = results.filter(sort__icontains=self.request.GET.get('category1', ''))
 
         if self.request.GET.get('category2'):
             results = results.filter(cash_category2__icontains=self.request.GET.get('category2', ''))
@@ -393,7 +393,7 @@ class ProjectCashInoutLV(LoginRequiredMixin, ListView, FormView):
             results = results.filter(deal_date__lte=self.request.GET.get('edate'))
 
         if self.request.GET.get('sort'):
-            results = results.filter(cash_category1__icontains=self.request.GET.get('sort'))
+            results = results.filter(sort__icontains=self.request.GET.get('sort'))
 
         if self.request.GET.get('d1'):
             results = results.filter(project_account_d1__id=self.request.GET.get('d1'))
@@ -771,7 +771,7 @@ class SalesPaymentRegister(LoginRequiredMixin, FormView):
 
         if form.is_valid():
             payment = form.save(commit=False)
-            payment.cash_category1 = '1'
+            payment.sort = '1'
             payment.is_contract_payment = True
             payment.recoder = self.request.user
             payment.save()
