@@ -124,14 +124,14 @@ class CashInoutLV(LoginRequiredMixin, ListView, FormView):
             results = results.filter(sort__icontains=self.request.GET.get('sort', ''))
 
         if self.request.GET.get('main_account'):
-            results = results.filter(main_account__icontains=self.request.GET.get('main_account', ''))
+            results = results.filter(main_account__id=self.request.GET.get('main_account'))
 
         if self.request.GET.get('bank_account'):
             results = results.filter(bank_account__id=self.request.GET.get('bank_account'))
 
         if self.request.GET.get('search_word'):
             results = results.filter(
-                Q(account__name__icontains=self.request.GET.get('search_word', '')) |
+                Q(sub_account__name__icontains=self.request.GET.get('search_word', '')) |
                 Q(content__icontains=self.request.GET.get('search_word', '')) |
                 Q(trader__icontains=self.request.GET.get('search_word', ''))
             )
