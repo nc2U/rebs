@@ -33,6 +33,7 @@ export interface ProjectCashBook {
   pk: number
   project: number
   cash_category1: string
+  cash_category1_desc: string
   project_account_d1: number | null
   project_account_d2: number | null
   is_record_separate: boolean
@@ -47,6 +48,7 @@ export interface ProjectCashBook {
   income: number | null
   outlay: number | null
   evidence: string
+  evidence_desc: string
   note: string
   deal_date: string
 }

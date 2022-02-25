@@ -6,9 +6,17 @@ const getters = {
       ? state.proCashBookList.map((p: any) => ({
           pk: p.pk,
           deal_date: p.deal_date,
-          cash_category1: p.cash_category1,
-          project_account_d1: p.project_account_d1,
-          project_account_d2: p.project_account_d2,
+          cash_category1: p.cash_category1_desc,
+          project_account_d1: state.accountD1List
+            ? state.accountD1List
+                .filter((d: any) => d.pk === p.project_account_d1)
+                .map((d: any) => d.name)[0]
+            : [],
+          project_account_d2: state.accountD2List
+            ? state.accountD2List
+                .filter((d: any) => d.pk === p.project_account_d2)
+                .map((d: any) => d.name)[0]
+            : [],
           content: p.content,
           trader: p.trader,
           bank_account: state.proBankAccountList
@@ -18,7 +26,7 @@ const getters = {
             : [],
           income: p.income ? p.income : 0,
           outlay: p.outlay ? p.outlay : 0,
-          evidence: p.evidence,
+          evidence: p.evidence_desc,
         }))
       : []
   },
