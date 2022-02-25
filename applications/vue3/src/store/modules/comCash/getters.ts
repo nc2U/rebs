@@ -7,7 +7,7 @@ const getters = {
           pk: c.pk,
           deal_date: c.deal_date,
           sort: c.sort_desc,
-          cash_category2: c.cash_category2_desc,
+          main_account: c.main_account_desc,
           account: c.account, //state.comAccD1List
           // ? state.comAccD1List
           //     .filter((d: any) => d.pk === c.project_account_d1)

@@ -40,8 +40,8 @@ interface CashBook {
   company: number
   sort: string
   sort_desc: string
-  cash_category2: string
-  cash_category2_desc: string
+  main_account: string
+  main_account_desc: string
   account: number | null
   content: string
   trader: string

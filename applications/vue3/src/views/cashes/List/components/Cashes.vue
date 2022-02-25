@@ -4,7 +4,7 @@
     <CTableDataCell :class="sortClass">
       {{ cash.sort }}
     </CTableDataCell>
-    <CTableDataCell>{{ cash.cash_category2 }}</CTableDataCell>
+    <CTableDataCell>{{ cash.main_account }}</CTableDataCell>
     <CTableDataCell class="text-left truncate">
       {{ cash.account }}
     </CTableDataCell>
