@@ -31,7 +31,7 @@
           </CCol>
 
           <CCol md="6" lg="2" class="mb-3">
-            <CFormSelect v-model="form.accountD1" @change="listFiltering(1)">
+            <CFormSelect v-model="form.accountD1" @change="accountD1Select">
               <option value="">메인계정</option>
               <option v-for="d1 in accountD1List" :value="d1.pk" :key="d1.pk">
                 {{ d1.name }}
@@ -82,7 +82,9 @@
     </CRow>
     <CRow>
       <CCol color="warning" class="p-2 pl-3">
-        <strong>거래 건수 조회 결과 : {{ proCashesCount }} 건</strong>
+        <strong>
+          거래 건수 조회 결과 : {{ numFormat(proCashesCount) }} 건
+        </strong>
       </CCol>
       <CCol class="text-right mb-0" v-if="!formsCheck">
         <CButton color="info" @click="resetForm" size="sm">
@@ -129,9 +131,14 @@ export default defineComponent({
       'accountD1List',
       'accountD2List',
       'proBankAccountList',
+      'proCashesCount',
     ]),
   },
   methods: {
+    accountD1Select() {
+      this.listFiltering(1)
+      this.$nextTick(() => this.$emit('d1-select', this.form.accountD1))
+    },
     listFiltering(page = 1) {
       this.$nextTick(() =>
         this.$emit('payment-filtering', { ...{ page }, ...this.form }),

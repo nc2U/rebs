@@ -73,6 +73,13 @@ const actions = {
   fetchProjectCashList: ({ commit }: any, payload: any) => {
     const { project } = payload
     let url = `/project-cashbook/?project=${project}`
+    if (payload.from_date) url += `&from_deal_date=${payload.from_date}`
+    if (payload.to_date) url += `&to_deal_date=${payload.to_date}`
+    if (payload.sort) url += `&cash_category1=${payload.sort}`
+    if (payload.accountD1) url += `&project_account_d1=${payload.accountD1}`
+    if (payload.accountD2) url += `&project_account_d2=${payload.accountD2}`
+    if (payload.bank_account) url += `&bank_account=${payload.bank_account}`
+    if (payload.search) url += `&search=${payload.search}`
     const page = payload.page ? payload.page : 1
     if (payload.page) url += `&page=${page}`
     api

@@ -7,7 +7,11 @@
 
   <ContentBody>
     <CCardBody class="pb-5">
-      <ListController ref="listControl" @payment-filtering="onPayFiltering" />
+      <ListController
+        ref="listControl"
+        @d1-select="accountD1Select"
+        @payment-filtering="onPayFiltering"
+      />
       <ProCashList
         :project="project"
         @page-select="pageSelect"
@@ -58,6 +62,9 @@ export default defineComponent({
         this.$store.state.payment.proCashBookList = []
         this.$store.state.payment.proCashesCount = 0
       }
+    },
+    accountD1Select(d1: number | string) {
+      this.fetchProAccountD2List(d1)
     },
     pageSelect(this: any, page: number) {
       this.$refs.listControl.listFiltering(page)
