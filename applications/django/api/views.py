@@ -243,13 +243,14 @@ class StaffDetail(generics.RetrieveUpdateDestroyAPIView):
 class ProjectAccountD1List(generics.ListAPIView):
     name = 'project_acc_d1-list'
     queryset = ProjectAccountD1.objects.all()
-    serializer_class = ProjectAccountD1Serializer
     pagination_class = PageNumberPaginationTwenty
+    serializer_class = ProjectAccountD1Serializer
 
 
 class ProjectAccountD1Detail(generics.RetrieveAPIView):
     name = 'project_acc_d1-detail'
     queryset = ProjectAccountD1.objects.all()
+    pagination_class = PageNumberPaginationTwenty
     serializer_class = ProjectAccountD1Serializer
 
 
