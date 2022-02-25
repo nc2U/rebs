@@ -1,12 +1,15 @@
 export interface ProjectAccountD1 {
+  pk: number
   sort: string
   sort_desc: string
+  code: string
   name: string
   description: string
 }
 
 export interface ProjectAccountD2 {
-  d1: ProjectAccountD1
+  pk: number
+  d1: number
   code: string
   sub_title: string
   name: string
@@ -49,16 +52,16 @@ export interface ProjectCashBook {
 }
 
 export interface ProjectCashState {
-  d1List: ProjectAccountD1[]
-  d2List: ProjectAccountD2[]
+  accountD1List: ProjectAccountD1[]
+  accountD2List: ProjectAccountD2[]
   proBankAccountList: ProjectBankAccount[]
   proCashBookList: ProjectCashBook[]
   proCashesCount: number
 }
 
 const state = {
-  d1List: [],
-  d2List: [],
+  accountD1List: [],
+  accountD2List: [],
   pBankAccountList: [],
   proCashBookList: [],
   proCashesCount: 0,

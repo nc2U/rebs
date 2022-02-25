@@ -1,11 +1,34 @@
 import api from '@/api'
 import {
+  FETCH_ACCOUNT_D1_LIST,
+  FETCH_ACCOUNT_D2_LIST,
   FETCH_P_BANK_ACCOUNT_LIST,
   FETCH_P_CASHBOOK_LIST,
 } from '@/store/modules/proCash/mutations-types'
 import { message } from '@/utils/helper'
 
 const actions = {
+  fetchProAccountD1List: ({ commit }: any) => {
+    api
+      .get(`/project-account-depth1/`)
+      .then(res => {
+        commit(FETCH_ACCOUNT_D1_LIST, res.data)
+      })
+      .catch(err => console.log(err.response.data))
+  },
+
+  fetchProAccountD2List: ({ commit }: any, d1?: string) => {
+    const url = d1
+      ? `/project-account-depth2/?d1=${d1}`
+      : `/project-account-depth2/`
+    api
+      .get(url)
+      .then(res => {
+        commit(FETCH_ACCOUNT_D2_LIST, res.data)
+      })
+      .catch(err => console.log(err.response.data))
+  },
+
   fetchProjectBankAccountList: ({ commit }: any, project: any) => {
     api
       .get(`/project-bank-account/?project=${project}`)
