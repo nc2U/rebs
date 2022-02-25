@@ -248,6 +248,7 @@ class ProjectAccountD1List(generics.ListAPIView):
     queryset = ProjectAccountD1.objects.all()
     pagination_class = PageNumberPaginationTwenty
     serializer_class = ProjectAccountD1Serializer
+    filter_fields = ('sort',)
 
 
 class ProjectAccountD1Detail(generics.RetrieveAPIView):
