@@ -17,7 +17,7 @@
     <CTableDataCell class="text-left"
       >{{ cutString(proCash.bank_account, 9) }}
     </CTableDataCell>
-    <CTableDataCell class="text-right" color="primary">
+    <CTableDataCell class="text-right" color="success">
       {{ numFormat(proCash.income) }}
     </CTableDataCell>
     <CTableDataCell class="text-right" color="danger">

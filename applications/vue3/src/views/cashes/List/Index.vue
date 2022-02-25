@@ -67,12 +67,14 @@ export default defineComponent({
         this.$store.state.comCash.cashBookCount = 0
       }
     },
-    // accountD1Select(d1: number | string) {
-    //   this.fetchAccountD2List(d1)
-    // },
-    // accountD2Select(d2: number | string) {
-    //   this.fetchAccountD3List(d2)
-    // },
+    accountD1Select(d1: number | string) {
+      console.log(d1)
+      // this.fetchAccountD2List(d1)
+    },
+    accountD2Select(d2: number | string) {
+      console.log(d2)
+      // this.fetchAccountD3List(d2)
+    },
     pageSelect(this: any, page: number) {
       this.$refs.listControl.listFiltering(page)
     },

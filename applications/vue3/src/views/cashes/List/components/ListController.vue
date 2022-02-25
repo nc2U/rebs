@@ -1,5 +1,5 @@
 <template>
-  <CCallout color="success" class="pb-0 mb-4">
+  <CCallout color="primary" class="pb-0 mb-4">
     <CRow>
       <CCol lg="9">
         <CRow>
@@ -22,7 +22,7 @@
           </CCol>
 
           <CCol md="6" lg="2" class="mb-3">
-            <CFormSelect v-model="form.sort1" @change="listFiltering(1)">
+            <CFormSelect v-model="form.sort1" @change="accountD1Select">
               <option value="">구분</option>
               <option value="1">입금</option>
               <option value="2">출금</option>
@@ -31,7 +31,7 @@
           </CCol>
 
           <CCol md="6" lg="2" class="mb-3">
-            <CFormSelect v-model="form.sort2" @change="accountD1Select">
+            <CFormSelect v-model="form.sort2" @change="accountD2Select">
               <option value="">분류</option>
               <option v-for="acc in comAccD1List" :value="acc.pk" :key="acc.pk">
                 {{ acc.name }}
@@ -132,10 +132,14 @@ export default defineComponent({
     ]),
   },
   methods: {
-    // accountD1Select() {
-    //   this.listFiltering(1)
-    //   this.$nextTick(() => this.$emit('d1-select', this.form.accountD1))
-    // },
+    accountD1Select() {
+      this.listFiltering(1)
+      // this.$nextTick(() => this.$emit('d1-select', this.form.accountD1))
+    },
+    accountD2Select() {
+      this.listFiltering(1)
+      // --> code write here
+    },
     listFiltering(page = 1) {
       this.$nextTick(() =>
         this.$emit('payment-filtering', { ...{ page }, ...this.form }),
