@@ -232,7 +232,7 @@ class AccountSubD3List(generics.ListAPIView):
     name = 'acc_d3-list'
     queryset = AccountSubD3.objects.all()
     serializer_class = AccountSubD3Serializer
-    filter_fields = ('d2',)
+    filter_fields = ('d2__d1', 'd2')
 
 
 class AccountSubD3Detail(generics.RetrieveAPIView):
