@@ -463,12 +463,24 @@ class ComBankAccountDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
 
+class CashBookFilterSet(FilterSet):
+    from_deal_date = DateFilter(field_name='deal_date', lookup_expr='gte', label='납부일자부터')
+    to_deal_date = DateFilter(field_name='deal_date', lookup_expr='lte', label='납부일자까지')
+
+    class Meta:
+        model = CashBook
+        fields = ('company', 'from_deal_date', 'to_deal_date',
+                  'cash_category1', 'cash_category2', 'account', 'bank_account')
+
+
 class CashBookList(generics.ListCreateAPIView):
     name = 'cashbook-list'
     queryset = CashBook.objects.all()
     serializer_class = CashBookSerializer
     pagination_class = PageNumberPaginationFifteen
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    filter_class = CashBookFilterSet
+    search_fields = ('content', 'trader', 'note')
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
