@@ -36,9 +36,8 @@ class CashBook(models.Model):
     SORT_CHOICES = (('1', '입금'), ('2', '출금'), ('3', '대체'))
     sort = models.CharField('구분', max_length=1, choices=SORT_CHOICES)
 
-    CATEGORY2_CHOICES = (('1', '자산'), ('2', '부채'), ('3', '자본'), ('4', '수익'), ('5', '비용'), ('6', '대체'))
-
-    cash_category2 = models.CharField('계정', max_length=1, choices=CATEGORY2_CHOICES, blank=True)
+    MAIN_ACCOUNT_CHOICES = (('1', '자산'), ('2', '부채'), ('3', '자본'), ('4', '수익'), ('5', '비용'), ('6', '대체'))
+    main_account = models.CharField('계정', max_length=1, choices=MAIN_ACCOUNT_CHOICES, blank=True)
 
     account = models.ForeignKey('rebs.AccountSubD3', on_delete=models.SET_NULL, null=True, blank=True,
                                 verbose_name='세부계정')

@@ -124,7 +124,7 @@ class CashInoutLV(LoginRequiredMixin, ListView, FormView):
             results = results.filter(sort__icontains=self.request.GET.get('category1', ''))
 
         if self.request.GET.get('category2'):
-            results = results.filter(cash_category2__icontains=self.request.GET.get('category2', ''))
+            results = results.filter(main_account__icontains=self.request.GET.get('category2', ''))
 
         if self.request.GET.get('bank_account'):
             results = results.filter(bank_account__id=self.request.GET.get('bank_account'))

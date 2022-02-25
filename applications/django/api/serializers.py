@@ -283,13 +283,13 @@ class CompanyBankAccountSerializer(serializers.ModelSerializer):
 
 class CashBookSerializer(serializers.ModelSerializer):
     sort_desc = serializers.CharField(source='get_sort_display', read_only=True)
-    cash_category2_desc = serializers.CharField(source='get_cash_category2_display', read_only=True)
+    main_account_desc = serializers.CharField(source='get_main_account_display', read_only=True)
     evidence_desc = serializers.CharField(source='get_evidence_display', read_only=True)
 
     class Meta:
         model = CashBook
         fields = (
-            'pk', 'company', 'sort', 'sort_desc', 'cash_category2', 'cash_category2_desc', 'account',
+            'pk', 'company', 'sort', 'sort_desc', 'main_account', 'main_account_desc', 'account',
             'content', 'trader', 'bank_account', 'income', 'outlay', 'evidence', 'evidence_desc',
             'note', 'deal_date', 'user', 'created_at', 'updated_at')
 

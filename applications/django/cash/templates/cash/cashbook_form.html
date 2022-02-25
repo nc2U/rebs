@@ -81,8 +81,8 @@
                                                 </select>
                                             </td>
                                             <td class="text-center">
-                                                <select name="form-__prefix__-cash_category2" class="form-control"
-                                                        id="id_form-__prefix__-cash_category2"
+                                                <select name="form-__prefix__-main_account" class="form-control"
+                                                        id="id_form-__prefix__-main_account"
                                                         onchange="category2_change(this)" disabled="">
                                                     <option value="" selected="">---------</option>
                                                     <option value="1">자산</option>
@@ -158,7 +158,7 @@
                                                 <td class="text-center">
                                                     {{ form.sort|add_class:"form-control"|attr:"required" }}{{ form.sort.errors }}</td>
                                                 <td class="text-center">
-                                                    {{ form.cash_category2|add_class:"form-control" }}{{ form.cash_category2.errors }}</td>
+                                                    {{ form.main_account|add_class:"form-control" }}{{ form.main_account.errors }}</td>
                                                 <td class="text-center">
                                                     {{ form.account|add_class:"form-control" }}{{ form.account.errors }}</td>
                                                 <td class="text-center">
@@ -233,10 +233,10 @@
 
         for (let i = 0; i < num; i++) {
           document.getElementById('id_form-' + i + '-sort').setAttribute('onchange', 'category1_change(this)')
-          document.getElementById('id_form-' + i + '-cash_category2').setAttribute('onchange', 'category2_change(this)')
+          document.getElementById('id_form-' + i + '-main_account').setAttribute('onchange', 'category2_change(this)')
           document.getElementById('id_form-' + i + '-content').setAttribute('onblur', 'sync_transfer(this)')
 
-          document.getElementById('id_form-' + i + '-cash_category2').disabled = true // 계정 대분류
+          document.getElementById('id_form-' + i + '-main_account').disabled = true // 계정 대분류
           document.getElementById('id_form-' + i + '-account').disabled = true        // 계정 과목
           document.getElementById('id_form-' + i + '-content').disabled = true
           document.getElementById('id_form-' + i + '-trader').disabled = true
@@ -250,7 +250,7 @@
 
       function category1_change(object) {
         let i = parseInt(object.name.substr(5, 1))
-        const cash_category2 = document.getElementById('id_form-' + i + '-cash_category2')          // 계정 대분류, --- 필수
+        const main_account = document.getElementById('id_form-' + i + '-main_account')          // 계정 대분류, --- 필수
         const account = document.getElementById('id_form-' + i + '-account')                        // 계정 과목
         const content = document.getElementById('id_form-' + i + '-content')                        // 적요, --- 필수
         const trader = document.getElementById('id_form-' + i + '-trader')                          // 거래처, --- 필수
@@ -261,7 +261,7 @@
         const note = document.getElementById('id_form-' + i + '-note')
 
         const next_category1 = document.getElementById('id_form-' + (i + 1) + '-sort')    // 계정 대분류, --- 필수
-        const next_category2 = document.getElementById('id_form-' + (i + 1) + '-cash_category2')    // 계정 대분류, --- 필수
+        const next_category2 = document.getElementById('id_form-' + (i + 1) + '-main_account')    // 계정 대분류, --- 필수
         const next_account = document.getElementById('id_form-' + (i + 1) + '-account')
         const next_content = document.getElementById('id_form-' + (i + 1) + '-content')
         const next_trader = document.getElementById('id_form-' + (i + 1) + '-trader')
@@ -271,7 +271,7 @@
         const next_note = document.getElementById('id_form-' + (i + 1) + '-note')
         const next_evidence = document.getElementById('id_form-' + (i + 1) + '-evidence')
 
-        cash_category2.disabled = (object.value === '') ? true : false
+        main_account.disabled = (object.value === '') ? true : false
         account.disabled = (object.value === '3' | object.value === '') ? true : false
         content.disabled = (object.value === '') ? true : false
         trader.disabled = (object.value === '3' | object.value === '') ? true : false
@@ -288,20 +288,20 @@
         outlay.required = (object.value === '2' | object.value === '3') ? true : false
 
         if (object.value === '1') { // 입금
-          inc(cash_category2)
+          inc(main_account)
           get_account(account, '4')
         } else if (object.value === '2') { // 출금
-          out(cash_category2)
+          out(main_account)
           get_account(account, '5')
         } else if (object.value == '3') { // 대체일 경우
-          trans(cash_category2)
+          trans(main_account)
           account.options[0].selected = true
 
           // 다음 줄 폼이 없으면 추가하는 로직 작성
           if (next_category1 === null) {
             alert('입출금 내역을 한 칸 더 추가하고 다시 시도하세요!')
-            cash_category2.options[0].selected = true
-            cash_category2.disabled = true
+            main_account.options[0].selected = true
+            main_account.disabled = true
             object.options[0].selected = true
             content.disabled = true
             bank_account.disabled = true
@@ -311,7 +311,7 @@
             internal_transfer(i)
           }
         } else { // '' 값이 없을 때
-          cash_category2.options[0].selected = true
+          main_account.options[0].selected = true
           account.options[0].selected = true
           content.value = ''
           trader.value = ''
@@ -349,7 +349,7 @@
       function internal_transfer(i) { // 대체 시 다음 라인 폼 세팅
         i = parseInt(i)
         const next_category1 = document.getElementById('id_form-' + (i + 1) + '-sort')    // 계정 대분류, --- 필수
-        const next_category2 = document.getElementById('id_form-' + (i + 1) + '-cash_category2')    // 계정 대분류, --- 필수
+        const next_category2 = document.getElementById('id_form-' + (i + 1) + '-main_account')    // 계정 대분류, --- 필수
         const next_account = document.getElementById('id_form-' + (i + 1) + '-account')
         const next_content = document.getElementById('id_form-' + (i + 1) + '-content')
         const next_trader = document.getElementById('id_form-' + (i + 1) + '-trader')
