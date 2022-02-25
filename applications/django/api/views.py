@@ -39,13 +39,11 @@ class ApiIndex(generics.GenericAPIView):
             'department': reverse(api + DepartmentList.name, request=request),
             'position': reverse(api + PositionList.name, request=request),
             'staff': reverse(api + StaffList.name, request=request),
-
-            # 'account-depth1': reverse(api + AccountSubD1List.name, request=request),
-            # 'account-depth2': reverse(api + AccountSubD2List.name, request=request),
-            # 'account-depth3': reverse(api + AccountSubD3List.name, request=request),
+            'account-depth1': reverse(api + AccountSubD1List.name, request=request),
+            'account-depth2': reverse(api + AccountSubD2List.name, request=request),
+            'account-depth3': reverse(api + AccountSubD3List.name, request=request),
             'project-acc-d1': reverse(api + ProjectAccountD1List.name, request=request),
             'project-acc-d2': reverse(api + ProjectAccountD2List.name, request=request),
-
             'project': reverse(api + ProjectList.name, request=request),
             'type': reverse(api + UnitTypeList.name, request=request),
             'floor': reverse(api + UnitFloorTypeList.name, request=request),
@@ -204,40 +202,42 @@ class StaffDetail(generics.RetrieveUpdateDestroyAPIView):
 
 
 # Rebs --------------------------------------------------------------------------
-# class AccountSubD1List(generics.ListAPIView):
-#     name = 'acc_d1-list'
-#     queryset = AccountSubD1.objects.all()
-#     serializer_class = AccountSubD1Serializer
-#
-#
-# class AccountSubD1Detail(generics.RetrieveAPIView):
-#     name = 'acc_d1-detail'
-#     queryset = AccountSubD1.objects.all()
-#     serializer_class = AccountSubD1Serializer
-#
-#
-# class AccountSubD2List(generics.ListAPIView):
-#     name = 'acc_d2-list'
-#     queryset = AccountSubD2.objects.all()
-#     serializer_class = AccountSubD2Serializer
-#
-#
-# class AccountSubD2Detail(generics.RetrieveAPIView):
-#     name = 'acc_d2-detail'
-#     queryset = AccountSubD2.objects.all()
-#     serializer_class = AccountSubD2Serializer
-#
-#
-# class AccountSubD3List(generics.ListAPIView):
-#     name = 'acc_d3-list'
-#     queryset = AccountSubD3.objects.all()
-#     serializer_class = AccountSubD3Serializer
-#
-#
-# class AccountSubD3Detail(generics.RetrieveAPIView):
-#     name = 'acc_d3-detail'
-#     queryset = AccountSubD3.objects.all()
-#     serializer_class = AccountSubD3Serializer
+class AccountSubD1List(generics.ListAPIView):
+    name = 'acc_d1-list'
+    queryset = AccountSubD1.objects.all()
+    serializer_class = AccountSubD1Serializer
+
+
+class AccountSubD1Detail(generics.RetrieveAPIView):
+    name = 'acc_d1-detail'
+    queryset = AccountSubD1.objects.all()
+    serializer_class = AccountSubD1Serializer
+
+
+class AccountSubD2List(generics.ListAPIView):
+    name = 'acc_d2-list'
+    queryset = AccountSubD2.objects.all()
+    serializer_class = AccountSubD2Serializer
+    filter_fields = ('d1',)
+
+
+class AccountSubD2Detail(generics.RetrieveAPIView):
+    name = 'acc_d2-detail'
+    queryset = AccountSubD2.objects.all()
+    serializer_class = AccountSubD2Serializer
+
+
+class AccountSubD3List(generics.ListAPIView):
+    name = 'acc_d3-list'
+    queryset = AccountSubD3.objects.all()
+    serializer_class = AccountSubD3Serializer
+    filter_fields = ('d2',)
+
+
+class AccountSubD3Detail(generics.RetrieveAPIView):
+    name = 'acc_d3-detail'
+    queryset = AccountSubD3.objects.all()
+    serializer_class = AccountSubD3Serializer
 
 
 class ProjectAccountD1List(generics.ListAPIView):
