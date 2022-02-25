@@ -11,7 +11,7 @@ class AccountSubD1(models.Model):
 
     class Meta:
         ordering = ['id']
-        verbose_name = "01. 계정과목 (대분류"
+        verbose_name = "01. 계정과목 (대분류)"
         verbose_name_plural = "01. 계정과목 (대분류)"
 
 

@@ -71,9 +71,9 @@ export default defineComponent({
       console.log(d1)
       // this.fetchAccountD2List(d1)
     },
-    accountD2Select(d2: number | string) {
-      console.log(d2)
-      // this.fetchAccountD3List(d2)
+    accountD2Select(acc: number | string) {
+      console.log(acc)
+      this.fetchAccountD3List(acc)
     },
     pageSelect(this: any, page: number) {
       this.$refs.listControl.listFiltering(page)

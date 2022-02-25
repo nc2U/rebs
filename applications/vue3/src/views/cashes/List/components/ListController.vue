@@ -1,7 +1,7 @@
 <template>
   <CCallout color="primary" class="pb-0 mb-4">
     <CRow>
-      <CCol lg="9">
+      <CCol lg="8">
         <CRow>
           <CCol md="6" lg="2" class="mb-3">
             <CFormInput
@@ -31,6 +31,15 @@
           </CCol>
 
           <CCol md="6" lg="2" class="mb-3">
+            <CFormSelect v-model="form.sort1" @change="accountD1Select">
+              <option value="">구분</option>
+              <option value="1">입금</option>
+              <option value="2">출금</option>
+              <option value="3">대체</option>
+            </CFormSelect>
+          </CCol>
+
+          <CCol md="6" lg="2" class="mb-3">
             <CFormSelect v-model="form.sort2" @change="accountD2Select">
               <option value="">분류</option>
               <option v-for="acc in comAccD1List" :value="acc.pk" :key="acc.pk">
@@ -47,8 +56,12 @@
               </option>
             </CFormSelect>
           </CCol>
+        </CRow>
+      </CCol>
 
-          <CCol md="6" lg="2" class="mb-3">
+      <CCol lg="4">
+        <CRow>
+          <CCol md="6" lg="4" class="mb-3">
             <CFormSelect v-model="form.bank_account" @change="listFiltering(1)">
               <option value="">거래계좌</option>
               <option v-for="acc in comBankList" :value="acc.pk" :key="acc.pk">
@@ -56,12 +69,8 @@
               </option>
             </CFormSelect>
           </CCol>
-        </CRow>
-      </CCol>
 
-      <CCol lg="3">
-        <CRow>
-          <CCol class="mb-3">
+          <CCol md="6" lg="8" class="mb-3">
             <CInputGroup class="flex-nowrap">
               <CFormInput
                 v-model="form.search"
@@ -134,11 +143,14 @@ export default defineComponent({
   methods: {
     accountD1Select() {
       this.listFiltering(1)
+      this.form.sort2 = ''
+      this.form.account = ''
       // this.$nextTick(() => this.$emit('d1-select', this.form.accountD1))
     },
     accountD2Select() {
       this.listFiltering(1)
-      // --> code write here
+      this.form.account = ''
+      this.$nextTick(() => this.$emit('d1-select', this.form.account))
     },
     listFiltering(page = 1) {
       this.$nextTick(() =>
