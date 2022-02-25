@@ -1,23 +1,32 @@
 <template>
-  <CTableRow class="text-center">
+  <CTableRow class="text-center" v-if="proCash">
     <CTableDataCell>{{ proCash.deal_date }}</CTableDataCell>
-    <CTableDataCell :class="`text-${getSort(proCash.cash_category1).cls}`">
-      {{ getSort(proCash.cash_category1).val }}
+    <CTableDataCell :class="sortClass">
+      {{ proCash.cash_category1 }}
     </CTableDataCell>
     <CTableDataCell>{{ proCash.project_account_d1 }}</CTableDataCell>
-    <CTableDataCell>{{ proCash.project_account_d2 }}</CTableDataCell>
-    <CTableDataCell class="text-left">{{ proCash.content }}</CTableDataCell>
-    <CTableDataCell class="text-left">{{ proCash.trader }}</CTableDataCell>
-    <CTableDataCell>{{ proCash.bank_account }}</CTableDataCell>
+    <CTableDataCell class="text-left truncate"
+      >{{ cutString(proCash.project_account_d2, 7) }}
+    </CTableDataCell>
+    <CTableDataCell class="text-left truncate">
+      {{ cutString(proCash.content, 9) }}
+    </CTableDataCell>
+    <CTableDataCell class="text-left truncate">
+      {{ cutString(proCash.trader, 7) }}
+    </CTableDataCell>
+    <CTableDataCell class="text-left"
+      >{{ cutString(proCash.bank_account, 9) }}
+    </CTableDataCell>
     <CTableDataCell class="text-right" color="primary">
       {{ numFormat(proCash.income) }}
     </CTableDataCell>
     <CTableDataCell class="text-right" color="danger">
       {{ numFormat(proCash.outlay) }}
     </CTableDataCell>
-    <CTableDataCell>{{ getEvidence(proCash.evidence) }}</CTableDataCell>
+    <CTableDataCell>{{ proCash.evidence }}</CTableDataCell>
     <CTableDataCell>
       <CButton color="success" @click="updatePayment" size="sm"> 수정</CButton>
+
       <CButton color="danger" @click="deletePayment" size="sm"> 삭제</CButton>
     </CTableDataCell>
   </CTableRow>
@@ -56,29 +65,23 @@ export default defineComponent({
     },
   },
   computed: {
+    sortClass() {
+      const scls = [
+        { text: '입금', cls: 'text-primary' },
+        { text: '출금', cls: 'text-danger' },
+        { text: '대체', cls: 'text-info' },
+      ]
+      return this.proCash.cash_category1
+        ? scls
+            .filter((c: any) => c.text === this.proCash.cash_category1)
+            .map((c: any) => c.cls)[0]
+        : ''
+    },
     ...mapGetters('accounts', ['staffAuth', 'superAuth']),
   },
   methods: {
-    getSort(val: string) {
-      const sort = [
-        { key: '1', val: '입금', cls: 'primary' },
-        { key: '2', val: '출금', cls: 'danger' },
-        { key: '3', val: '대체', cls: 'info' },
-      ]
-      return sort.filter((s: any) => s.key === val)[0]
-    },
-    getEvidence(val: string) {
-      const evidence = [
-        { key: '0', val: '증빙 없음' },
-        { key: '1', val: '세금계산서' },
-        { key: '2', val: '계산서(면세)' },
-        { key: '3', val: '신용카드전표' },
-        { key: '4', val: '현금영수증' },
-        { key: '5', val: '간이영수증' },
-      ]
-      return evidence
-        .filter((e: any) => e.key === val)
-        .map((e: any) => e.val)[0]
+    cutString(str: string, len: number) {
+      return str.length > len ? `${str.substr(0, len)}..` : str
     },
     updatePayment(this: any) {
       if (this.superAuth || (this.staffAuth && this.staffAuth.payment === '2'))
