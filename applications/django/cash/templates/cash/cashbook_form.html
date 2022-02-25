@@ -43,8 +43,10 @@
                                         <thead>
                                         <tr>
                                             <th class="text-center" colspan="2">구분</th>
-                                            <th class="text-center">계정과목 <a href="#" data-toggle="modal" data-target="#account-subject-modal"><i
-                                                class="dripicons-gear"></i></a></th>
+                                            <th class="text-center">계정과목
+                                                <a href="#" data-toggle="modal" data-target="#account-subject-modal">
+                                                    <i class="dripicons-gear"></i></a>
+                                            </th>
                                             {% include 'cash/partials/account_subject.html' %}
                                             <th class="text-center">적요</th>
                                             <th class="text-center">거래처</th>
@@ -251,7 +253,7 @@
       function sort_change(object) {
         let i = parseInt(object.name.substr(5, 1))
         const main_account = document.getElementById('id_form-' + i + '-main_account')          // 계정 대분류, --- 필수
-        const sub_account = document.getElementById('id_form-' + i + '-sub_account')                        // 계정 과목
+        const sub_account = document.getElementById('id_form-' + i + '-sub_account')                // 계정 과목
         const content = document.getElementById('id_form-' + i + '-content')                        // 적요, --- 필수
         const trader = document.getElementById('id_form-' + i + '-trader')                          // 거래처, --- 필수
         const bank_account = document.getElementById('id_form-' + i + '-bank_account')              // 거래계좌, --- 필수
@@ -442,36 +444,36 @@
       function get_sub_account(acc, d1) {
         switch (d1) {
           case '1':
-            acc.length = {{ sub_account_1.count|add:"1" }}
-                {% for data in sub_account_1 %}
+            acc.length = {{ account_1.count|add:"1" }}
+                {% for data in account_1 %}
                   acc.options[{{ forloop.counter }}].value = '{{ data.id }}'
                   acc.options[{{ forloop.counter }}].text = '{{ data }}'
                 {% endfor %}
             break
           case '2':
-            acc.length = {{ sub_account_2.count|add:"1" }}
-                {% for data in sub_account_2 %}
+            acc.length = {{ account_2.count|add:"1" }}
+                {% for data in account_2 %}
                   acc.options[{{ forloop.counter }}].value = '{{ data.id }}'
                   acc.options[{{ forloop.counter }}].text = '{{ data }}'
                 {% endfor %}
             break
           case '3':
-            acc.length = {{ sub_account_3.count|add:"1" }}
-                {% for data in sub_account_3 %}
+            acc.length = {{ account_3.count|add:"1" }}
+                {% for data in account_3 %}
                   acc.options[{{ forloop.counter }}].value = '{{ data.id }}'
                   acc.options[{{ forloop.counter }}].text = '{{ data }}'
                 {% endfor %}
             break
           case '4':
-            acc.length = {{ sub_account_4.count|add:"1" }}
-                {% for data in sub_account_4 %}
+            acc.length = {{ account_4.count|add:"1" }}
+                {% for data in account_4 %}
                   acc.options[{{ forloop.counter }}].value = '{{ data.id }}'
                   acc.options[{{ forloop.counter }}].text = '{{ data }}'
                 {% endfor %}
             break
           case '5':
-            acc.length = {{ sub_account_5.count|add:"1" }}
-                {% for data in sub_account_5 %}
+            acc.length = {{ account_5.count|add:"1" }}
+                {% for data in account_5 %}
                   acc.options[{{ forloop.counter }}].value = '{{ data.id }}'
                   acc.options[{{ forloop.counter }}].text = '{{ data }}'
                 {% endfor %}
