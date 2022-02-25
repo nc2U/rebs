@@ -52,7 +52,7 @@ export default defineComponent({
         this.fetchProjectBankAccountList(target)
         this.fetchProjectCashList({ project: target })
       } else {
-        this.$store.state.payment.pBankAccountList = []
+        this.$store.state.payment.proBankAccountList = []
         this.$store.state.payment.proCashBookList = []
         this.$store.state.payment.proCashesCount = 0
       }
