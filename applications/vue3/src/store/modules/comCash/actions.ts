@@ -82,10 +82,10 @@ const actions = {
     let url = `/cashbook/?company=${company}`
     if (payload.from_date) url += `&from_deal_date=${payload.from_date}`
     if (payload.to_date) url += `&to_deal_date=${payload.to_date}`
-    // if (payload.sort) url += `&cash_category1=${payload.sort}`
-    // if (payload.accountD1) url += `&project_account_d1=${payload.accountD1}`
-    // if (payload.accountD2) url += `&project_account_d2=${payload.accountD2}`
-    // if (payload.bank_account) url += `&bank_account=${payload.bank_account}`
+    if (payload.sort1) url += `&cash_category1=${payload.sort1}`
+    if (payload.sort2) url += `&cash_category2=${payload.sort2}`
+    if (payload.account) url += `&account=${payload.account}`
+    if (payload.bank_account) url += `&bank_account=${payload.bank_account}`
     if (payload.search) url += `&search=${payload.search}`
     const page = payload.page ? payload.page : 1
     if (payload.page) url += `&page=${page}`
