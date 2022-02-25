@@ -1,15 +1,15 @@
 <template>
   <CTableRow class="text-center">
-    <CTableDataCell>2020-01-01</CTableDataCell>
-    <CTableDataCell>출금</CTableDataCell>
-    <CTableDataCell>금융비</CTableDataCell>
-    <CTableDataCell>브리지 이자</CTableDataCell>
-    <CTableDataCell>담보대출 이자</CTableDataCell>
-    <CTableDataCell>동춘1구역9블럭..</CTableDataCell>
-    <CTableDataCell>무궁화-이자1(새마을)</CTableDataCell>
-    <CTableDataCell>-</CTableDataCell>
-    <CTableDataCell>261,736,850</CTableDataCell>
-    <CTableDataCell>증빙없음</CTableDataCell>
+    <CTableDataCell>{{ proCash.deal_date }}</CTableDataCell>
+    <CTableDataCell>{{ proCash.cash_category1 }}</CTableDataCell>
+    <CTableDataCell>{{ proCash.project_account_d1 }}</CTableDataCell>
+    <CTableDataCell>{{ proCash.project_account_d2 }}</CTableDataCell>
+    <CTableDataCell class="text-left">{{ proCash.content }}</CTableDataCell>
+    <CTableDataCell class="text-left">{{ proCash.trader }}</CTableDataCell>
+    <CTableDataCell>{{ proCash.bank_account }}</CTableDataCell>
+    <CTableDataCell>{{ proCash.income }}</CTableDataCell>
+    <CTableDataCell>{{ proCash.outlay }}</CTableDataCell>
+    <CTableDataCell>{{ proCash.evidence }}</CTableDataCell>
     <CTableDataCell>
       <CButton color="success" @click="updatePayment" size="sm"> 수정</CButton>
       <CButton color="danger" @click="deletePayment" size="sm"> 삭제</CButton>
@@ -44,7 +44,7 @@ export default defineComponent({
   mixins: [commonMixin],
   components: { ConfirmModal, AlertModal },
   props: {
-    payment: {
+    proCash: {
       type: Object,
       required: true,
     },
