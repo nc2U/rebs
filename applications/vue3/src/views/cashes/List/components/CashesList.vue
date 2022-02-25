@@ -31,10 +31,10 @@
     </CTableHead>
 
     <CTableBody>
-      <ProCash
-        v-for="proCash in getProCashes"
-        :proCash="proCash"
-        :key="proCash.pk"
+      <Cashes
+        v-for="cash in getCashLogs"
+        :proCash="cash"
+        :key="cash.pk"
         @on-update="onUpdate"
         @on-delete="onDelete"
       />
@@ -44,7 +44,7 @@
   <CSmartPagination
     :activePage="1"
     :limit="8"
-    :pages="proCashPages(15)"
+    :pages="cashesPages(15)"
     class="mt-3"
     @active-page-change="pageSelect"
   />
@@ -52,15 +52,15 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import ProCash from '@/views/proCash/List/components/ProCash.vue'
-import { mapState, mapGetters } from 'vuex'
+import Cashes from '@/views/cashes/List/components/Cashes.vue'
+import { mapGetters } from 'vuex'
 
 export default defineComponent({
-  name: 'ProCashList',
-  components: { ProCash },
-  props: { project: Object },
+  name: 'CashesList',
+  components: { Cashes },
+  props: { company: Object },
   computed: {
-    ...mapGetters('proCash', ['proCashPages', 'getProCashes']),
+    ...mapGetters('comCash', ['cashesPages', 'getCashLogs']),
   },
   methods: {
     pageSelect(page: number) {
