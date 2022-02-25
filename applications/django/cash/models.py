@@ -38,9 +38,12 @@ class CashBook(models.Model):
 
     MAIN_ACCOUNT_CHOICES = (('1', '자산'), ('2', '부채'), ('3', '자본'), ('4', '수익'), ('5', '비용'), ('6', '대체'))
     main_account = models.CharField('계정', max_length=1, choices=MAIN_ACCOUNT_CHOICES, blank=True)
-
-    account = models.ForeignKey('rebs.AccountSubD3', on_delete=models.SET_NULL, null=True, blank=True,
-                                verbose_name='세부계정')
+    # main_account = models.ForeignKey('rebs.AccountSubD1', on_delete=models.SET_NULL, null=True, blank=True,
+    #                                  verbose_name='계정대분류')
+    # middle_account = models.ForeignKey('rebs.AccountSubD2', on_delete=models.SET_NULL, null=True, blank=True,
+    #                                    verbose_name='계정중분류')
+    sub_account = models.ForeignKey('rebs.AccountSubD3', on_delete=models.SET_NULL, null=True, blank=True,
+                                    verbose_name='세부계정')
 
     content = models.CharField('적요', max_length=100)
     trader = models.CharField('거래처', max_length=30, blank=True)

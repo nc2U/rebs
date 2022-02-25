@@ -120,11 +120,11 @@ class CashInoutLV(LoginRequiredMixin, ListView, FormView):
         if self.request.GET.get('e_date'):
             results = results.filter(deal_date__lte=self.request.GET.get('e_date'))
 
-        if self.request.GET.get('category1'):
-            results = results.filter(sort__icontains=self.request.GET.get('category1', ''))
+        if self.request.GET.get('sort'):
+            results = results.filter(sort__icontains=self.request.GET.get('sort', ''))
 
-        if self.request.GET.get('category2'):
-            results = results.filter(main_account__icontains=self.request.GET.get('category2', ''))
+        if self.request.GET.get('main_account'):
+            results = results.filter(main_account__icontains=self.request.GET.get('main_account', ''))
 
         if self.request.GET.get('bank_account'):
             results = results.filter(bank_account__id=self.request.GET.get('bank_account'))

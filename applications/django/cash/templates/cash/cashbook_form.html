@@ -73,7 +73,7 @@
                                                 <select name="form-__prefix__-sort"
                                                         class="form-control"
                                                         id="id_form-__prefix__-sort"
-                                                        onchange="category1_change(this)">
+                                                        onchange="sort_change(this)">
                                                     <option value="" selected="">---------</option>
                                                     <option value="1">입금</option>
                                                     <option value="2">출금</option>
@@ -83,7 +83,7 @@
                                             <td class="text-center">
                                                 <select name="form-__prefix__-main_account" class="form-control"
                                                         id="id_form-__prefix__-main_account"
-                                                        onchange="category2_change(this)" disabled="">
+                                                        onchange="main_account_change(this)" disabled="">
                                                     <option value="" selected="">---------</option>
                                                     <option value="1">자산</option>
                                                     <option value="2">부채</option>
@@ -93,8 +93,8 @@
                                                 </select>
                                             </td>
                                             <td class="text-center">
-                                                <select name="form-__prefix__-account" class="form-control"
-                                                        id="id_form-__prefix__-account" disabled="">
+                                                <select name="form-__prefix__-sub_account" class="form-control"
+                                                        id="id_form-__prefix__-sub_account" disabled="">
                                                     <option value="" selected="">---------</option>
                                                 </select>
                                             </td>
@@ -160,7 +160,7 @@
                                                 <td class="text-center">
                                                     {{ form.main_account|add_class:"form-control" }}{{ form.main_account.errors }}</td>
                                                 <td class="text-center">
-                                                    {{ form.account|add_class:"form-control" }}{{ form.account.errors }}</td>
+                                                    {{ form.sub_account|add_class:"form-control" }}{{ form.sub_account.errors }}</td>
                                                 <td class="text-center">
                                                     {{ form.content|add_class:"form-control"|attr:"placeholder:적요" }}{{ form.content.errors }}</td>
                                                 <td class="text-center">
@@ -232,12 +232,12 @@
         document.getElementById('id_deal_date').value = '{% now "Y-m-d" %}'
 
         for (let i = 0; i < num; i++) {
-          document.getElementById('id_form-' + i + '-sort').setAttribute('onchange', 'category1_change(this)')
-          document.getElementById('id_form-' + i + '-main_account').setAttribute('onchange', 'category2_change(this)')
+          document.getElementById('id_form-' + i + '-sort').setAttribute('onchange', 'sort_change(this)')
+          document.getElementById('id_form-' + i + '-main_account').setAttribute('onchange', 'main_account_change(this)')
           document.getElementById('id_form-' + i + '-content').setAttribute('onblur', 'sync_transfer(this)')
 
           document.getElementById('id_form-' + i + '-main_account').disabled = true // 계정 대분류
-          document.getElementById('id_form-' + i + '-account').disabled = true        // 계정 과목
+          document.getElementById('id_form-' + i + '-sub_account').disabled = true        // 계정 과목
           document.getElementById('id_form-' + i + '-content').disabled = true
           document.getElementById('id_form-' + i + '-trader').disabled = true
           document.getElementById('id_form-' + i + '-bank_account').disabled = true
@@ -248,10 +248,10 @@
         }
       }
 
-      function category1_change(object) {
+      function sort_change(object) {
         let i = parseInt(object.name.substr(5, 1))
         const main_account = document.getElementById('id_form-' + i + '-main_account')          // 계정 대분류, --- 필수
-        const account = document.getElementById('id_form-' + i + '-account')                        // 계정 과목
+        const sub_account = document.getElementById('id_form-' + i + '-sub_account')                        // 계정 과목
         const content = document.getElementById('id_form-' + i + '-content')                        // 적요, --- 필수
         const trader = document.getElementById('id_form-' + i + '-trader')                          // 거래처, --- 필수
         const bank_account = document.getElementById('id_form-' + i + '-bank_account')              // 거래계좌, --- 필수
@@ -260,9 +260,9 @@
         const evidence = document.getElementById('id_form-' + i + '-evidence')
         const note = document.getElementById('id_form-' + i + '-note')
 
-        const next_category1 = document.getElementById('id_form-' + (i + 1) + '-sort')    // 계정 대분류, --- 필수
-        const next_category2 = document.getElementById('id_form-' + (i + 1) + '-main_account')    // 계정 대분류, --- 필수
-        const next_account = document.getElementById('id_form-' + (i + 1) + '-account')
+        const next_sort = document.getElementById('id_form-' + (i + 1) + '-sort')    // 계정 대분류, --- 필수
+        const next_main_account = document.getElementById('id_form-' + (i + 1) + '-main_account')    // 계정 대분류, --- 필수
+        const next_sub_account = document.getElementById('id_form-' + (i + 1) + '-sub_account')
         const next_content = document.getElementById('id_form-' + (i + 1) + '-content')
         const next_trader = document.getElementById('id_form-' + (i + 1) + '-trader')
         const next_bank_account = document.getElementById('id_form-' + (i + 1) + '-bank_account')   // 거래계좌, --- 필수
@@ -272,7 +272,7 @@
         const next_evidence = document.getElementById('id_form-' + (i + 1) + '-evidence')
 
         main_account.disabled = (object.value === '') ? true : false
-        account.disabled = (object.value === '3' | object.value === '') ? true : false
+        sub_account.disabled = (object.value === '3' | object.value === '') ? true : false
         content.disabled = (object.value === '') ? true : false
         trader.disabled = (object.value === '3' | object.value === '') ? true : false
         bank_account.disabled = (object.value === '') ? true : false
@@ -289,16 +289,16 @@
 
         if (object.value === '1') { // 입금
           inc(main_account)
-          get_account(account, '4')
+          get_sub_account(sub_account, '4')
         } else if (object.value === '2') { // 출금
           out(main_account)
-          get_account(account, '5')
+          get_sub_account(sub_account, '5')
         } else if (object.value == '3') { // 대체일 경우
           trans(main_account)
-          account.options[0].selected = true
+          sub_account.options[0].selected = true
 
           // 다음 줄 폼이 없으면 추가하는 로직 작성
-          if (next_category1 === null) {
+          if (next_sort === null) {
             alert('입출금 내역을 한 칸 더 추가하고 다시 시도하세요!')
             main_account.options[0].selected = true
             main_account.disabled = true
@@ -312,7 +312,7 @@
           }
         } else { // '' 값이 없을 때
           main_account.options[0].selected = true
-          account.options[0].selected = true
+          sub_account.options[0].selected = true
           content.value = ''
           trader.value = ''
           bank_account.options[0].selected = true
@@ -320,12 +320,12 @@
           outlay.value = null
           evidence.options[1].selected = true
           note.value = ''
-          if (next_category1) {
-            next_category1.options[0].selected = true
-            next_category2.options[0].selected = true
-            next_category2.disabled = true
-            next_account.options[0].selected = true
-            next_account.disabled = true
+          if (next_sort) {
+            next_sort.options[0].selected = true
+            next_main_account.options[0].selected = true
+            next_main_account.disabled = true
+            next_sub_account.options[0].selected = true
+            next_sub_account.disabled = true
             next_content.value = ''
             next_content.disabled = true
             next_bank_account.options[0].selected = true
@@ -348,9 +348,9 @@
 
       function internal_transfer(i) { // 대체 시 다음 라인 폼 세팅
         i = parseInt(i)
-        const next_category1 = document.getElementById('id_form-' + (i + 1) + '-sort')    // 계정 대분류, --- 필수
-        const next_category2 = document.getElementById('id_form-' + (i + 1) + '-main_account')    // 계정 대분류, --- 필수
-        const next_account = document.getElementById('id_form-' + (i + 1) + '-account')
+        const next_sort = document.getElementById('id_form-' + (i + 1) + '-sort')    // 계정 대분류, --- 필수
+        const next_main_account = document.getElementById('id_form-' + (i + 1) + '-main_account')    // 계정 대분류, --- 필수
+        const next_sub_account = document.getElementById('id_form-' + (i + 1) + '-sub_account')
         const next_content = document.getElementById('id_form-' + (i + 1) + '-content')
         const next_trader = document.getElementById('id_form-' + (i + 1) + '-trader')
         const next_bank_account = document.getElementById('id_form-' + (i + 1) + '-bank_account')   // 거래계좌, --- 필수
@@ -358,17 +358,17 @@
         const next_outlay = document.getElementById('id_form-' + (i + 1) + '-outlay')
         const next_note = document.getElementById('id_form-' + (i + 1) + '-note')
 
-        next_category1.options[3].selected = true
+        next_sort.options[3].selected = true
 
-        next_category2.length = 2;
-        next_category2.options[1].text = '대 체';
-        next_category2.options[1].value = '6';
-        next_category2.options[1].selected = true
-        next_category2.disabled = false
-        next_category2.required = true
+        next_main_account.length = 2;
+        next_main_account.options[1].text = '대 체';
+        next_main_account.options[1].value = '6';
+        next_main_account.options[1].selected = true
+        next_main_account.disabled = false
+        next_main_account.required = true
 
-        next_account.options[0].selected = true
-        next_account.disabled = true // 계정 대분류, --- 필수
+        next_sub_account.options[0].selected = true
+        next_sub_account.disabled = true // 계정 대분류, --- 필수
         next_content.disabled = false
         next_content.required = true
         next_trader.disabled = true
@@ -393,85 +393,85 @@
         }
       }
 
-      function inc(category2) {
-        category2.length = 5;
-        category2.options[1].text = '자 산';   //2-1번째 셀렉트바 텍스트 정의
-        category2.options[1].value = '1';     //2-1번째 셀렉트바 값 정의
-        category2.options[2].text = '부 채';   //2-2번째 셀렉트바 텍스트 정의
-        category2.options[2].value = '2';     //2-2번째 셀렉트바 값 정의
-        category2.options[3].text = '자 본';   //2-3번째 셀렉트바 텍스트 정의
-        category2.options[3].value = '3';     //2-3번째 셀렉트바 값 정의
-        category2.options[4].text = '수 익';   //2-4번째 셀렉트바 텍스트 정의
-        category2.options[4].value = '4';     //2-4번째 셀렉트바 값 정의
-        category2.options[4].selected = true
+      function inc(main_account) {
+        main_account.length = 5;
+        main_account.options[1].text = '자 산';   //2-1번째 셀렉트바 텍스트 정의
+        main_account.options[1].value = '1';     //2-1번째 셀렉트바 값 정의
+        main_account.options[2].text = '부 채';   //2-2번째 셀렉트바 텍스트 정의
+        main_account.options[2].value = '2';     //2-2번째 셀렉트바 값 정의
+        main_account.options[3].text = '자 본';   //2-3번째 셀렉트바 텍스트 정의
+        main_account.options[3].value = '3';     //2-3번째 셀렉트바 값 정의
+        main_account.options[4].text = '수 익';   //2-4번째 셀렉트바 텍스트 정의
+        main_account.options[4].value = '4';     //2-4번째 셀렉트바 값 정의
+        main_account.options[4].selected = true
       }
 
-      function out(category2) {
-        category2.length = 5;
-        category2.options[1].text = '자 산';
-        category2.options[1].value = '1';
-        category2.options[2].text = '부 채';
-        category2.options[2].value = '2';
-        category2.options[3].text = '자 본';
-        category2.options[3].value = '3';
-        category2.options[4].text = '비 용';
-        category2.options[4].value = '5';
-        category2.options[4].selected = true
+      function out(main_account) {
+        main_account.length = 5;
+        main_account.options[1].text = '자 산';
+        main_account.options[1].value = '1';
+        main_account.options[2].text = '부 채';
+        main_account.options[2].value = '2';
+        main_account.options[3].text = '자 본';
+        main_account.options[3].value = '3';
+        main_account.options[4].text = '비 용';
+        main_account.options[4].value = '5';
+        main_account.options[4].selected = true
       }
 
-      function trans(category2) {
-        category2.length = 2;
-        category2.options[1].text = '대 체';
-        category2.options[1].value = '6';
-        category2.options[1].selected = true
+      function trans(main_account) {
+        main_account.length = 2;
+        main_account.options[1].text = '대 체';
+        main_account.options[1].value = '6';
+        main_account.options[1].selected = true
       }
 
-      function category2_change(d1) {                                  // 구분 2 셀 값 변경 시 로직
+      function main_account_change(d1) {                                  // 구분 2 셀 값 변경 시 로직
         const i = d1.name.substr(5, 1)
-        const account = document.getElementById('id_form-' + i + '-account')  // 계정 과목
+        const sub_account = document.getElementById('id_form-' + i + '-sub_account')  // 계정 과목
 
         if (d1.value === '') {
-          account.disabled = true
-          account.options[0].selected = true
+          sub_account.disabled = true
+          sub_account.options[0].selected = true
         } else {
-          account.disabled = false
-          get_account(account, d1.value)
+          sub_account.disabled = false
+          get_sub_account(sub_account, d1.value)
         }
       }
 
-      function get_account(acc, d1) {
+      function get_sub_account(acc, d1) {
         switch (d1) {
           case '1':
-            acc.length = {{ account_1.count|add:"1" }}
-                {% for data in account_1 %}
+            acc.length = {{ sub_account_1.count|add:"1" }}
+                {% for data in sub_account_1 %}
                   acc.options[{{ forloop.counter }}].value = '{{ data.id }}'
                   acc.options[{{ forloop.counter }}].text = '{{ data }}'
                 {% endfor %}
             break
           case '2':
-            acc.length = {{ account_2.count|add:"1" }}
-                {% for data in account_2 %}
+            acc.length = {{ sub_account_2.count|add:"1" }}
+                {% for data in sub_account_2 %}
                   acc.options[{{ forloop.counter }}].value = '{{ data.id }}'
                   acc.options[{{ forloop.counter }}].text = '{{ data }}'
                 {% endfor %}
             break
           case '3':
-            acc.length = {{ account_3.count|add:"1" }}
-                {% for data in account_3 %}
+            acc.length = {{ sub_account_3.count|add:"1" }}
+                {% for data in sub_account_3 %}
                   acc.options[{{ forloop.counter }}].value = '{{ data.id }}'
                   acc.options[{{ forloop.counter }}].text = '{{ data }}'
                 {% endfor %}
             break
           case '4':
-            acc.length = {{ account_4.count|add:"1" }}
-                {% for data in account_4 %}
+            acc.length = {{ sub_account_4.count|add:"1" }}
+                {% for data in sub_account_4 %}
                   acc.options[{{ forloop.counter }}].value = '{{ data.id }}'
                   acc.options[{{ forloop.counter }}].text = '{{ data }}'
                 {% endfor %}
             break
           case '5':
-            acc.length = {{ account_5.count|add:"1" }}
-                {% for data in account_5 %}
+            acc.length = {{ sub_account_5.count|add:"1" }}
+                {% for data in sub_account_5 %}
                   acc.options[{{ forloop.counter }}].value = '{{ data.id }}'
                   acc.options[{{ forloop.counter }}].text = '{{ data }}'
                 {% endfor %}
