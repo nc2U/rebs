@@ -23,29 +23,41 @@
 
           <CCol md="6" lg="2" class="mb-3">
             <CFormSelect v-model="form.sort" @change="listFiltering(1)">
-              <option value="">거래구분 선택</option>
-              <option>....</option>
+              <option value="">거래구분</option>
+              <option value="1">입금</option>
+              <option value="2">출금</option>
+              <option value="3">대체</option>
             </CFormSelect>
           </CCol>
 
           <CCol md="6" lg="2" class="mb-3">
             <CFormSelect v-model="form.accountD1" @change="listFiltering(1)">
-              <option value="">계정 선택</option>
-              <option>....</option>
+              <option value="">메인계정</option>
+              <option v-for="d1 in accountD1List" :value="d1.pk" :key="d1.pk">
+                {{ d1.name }}
+              </option>
             </CFormSelect>
           </CCol>
 
           <CCol md="6" lg="2" class="mb-3">
             <CFormSelect v-model="form.accountD2" @change="listFiltering(1)">
-              <option value="">세부계정 선택</option>
-              <option>....</option>
+              <option value="">세부계정</option>
+              <option v-for="d2 in accountD2List" :value="d2.pk" :key="d2.pk">
+                {{ d2.name }}
+              </option>
             </CFormSelect>
           </CCol>
 
           <CCol md="6" lg="2" class="mb-3">
             <CFormSelect v-model="form.bank_account" @change="listFiltering(1)">
-              <option value="">거래계좌 선택</option>
-              <option>...</option>
+              <option value="">거래계좌</option>
+              <option
+                v-for="acc in proBankAccountList"
+                :value="acc.pk"
+                :key="acc.pk"
+              >
+                {{ acc.alias_name }}
+              </option>
             </CFormSelect>
           </CCol>
         </CRow>
@@ -70,7 +82,7 @@
     </CRow>
     <CRow>
       <CCol color="warning" class="p-2 pl-3">
-        <strong>거래 건수 조회 결과 : 0 건</strong>
+        <strong>거래 건수 조회 결과 : {{ proCashesCount }} 건</strong>
       </CCol>
       <CCol class="text-right mb-0" v-if="!formsCheck">
         <CButton color="info" @click="resetForm" size="sm">
@@ -113,10 +125,10 @@ export default defineComponent({
       const g = this.form.search === ''
       return a && b && c && d && e && f && g
     },
-    ...mapState('payment', [
-      'payOrderList',
-      'pBankAccountList',
-      'paymentsCount',
+    ...mapState('proCash', [
+      'accountD1List',
+      'accountD2List',
+      'proBankAccountList',
     ]),
   },
   methods: {

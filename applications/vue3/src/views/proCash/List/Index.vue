@@ -39,6 +39,8 @@ export default defineComponent({
     ProCashList,
   },
   created() {
+    this.fetchProAccountD1List()
+    this.fetchProAccountD2List()
     this.fetchProjectBankAccountList(this.initProjId)
     this.fetchProjectCashList({ project: this.initProjId })
   },
@@ -71,6 +73,8 @@ export default defineComponent({
       alert(pk)
     },
     ...mapActions('proCash', [
+      'fetchProAccountD1List',
+      'fetchProAccountD2List',
       'fetchProjectBankAccountList',
       'fetchProjectCashList',
     ]),
