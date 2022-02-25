@@ -49,7 +49,7 @@
           </CCol>
 
           <CCol md="6" lg="2" class="mb-3">
-            <CFormSelect v-model="form.account" @change="listFiltering(1)">
+            <CFormSelect v-model="form.sub_account" @change="listFiltering(1)">
               <option value="">계정과목</option>
               <option v-for="acc in comAccD3List" :value="acc.pk" :key="acc.pk">
                 {{ acc.name }}
@@ -115,7 +115,7 @@ export default defineComponent({
         to_date: '',
         sort1: '',
         sort2: '',
-        account: '',
+        sub_account: '',
         bank_account: '',
         search: '',
       },
@@ -127,7 +127,7 @@ export default defineComponent({
       const b = this.form.to_date === ''
       const c = this.form.sort1 === ''
       const d = this.form.sort2 === ''
-      const e = this.form.account === ''
+      const e = this.form.sub_account === ''
       const f = this.form.bank_account === ''
       const g = this.form.search === ''
       return a && b && c && d && e && f && g
@@ -144,13 +144,13 @@ export default defineComponent({
     accountD1Select() {
       this.listFiltering(1)
       this.form.sort2 = ''
-      this.form.account = ''
+      this.form.sub_account = ''
       // this.$nextTick(() => this.$emit('d1-select', this.form.accountD1))
     },
     accountD2Select() {
       this.listFiltering(1)
-      this.form.account = ''
-      this.$nextTick(() => this.$emit('d1-select', this.form.account))
+      this.form.sub_account = ''
+      this.$nextTick(() => this.$emit('d1-select', this.form.sub_account))
     },
     listFiltering(page = 1) {
       this.$nextTick(() =>
@@ -162,7 +162,7 @@ export default defineComponent({
       this.form.to_date = ''
       this.form.sort1 = ''
       this.form.sort2 = ''
-      this.form.account = ''
+      this.form.sub_account = ''
       this.form.bank_account = ''
       this.form.search = ''
       this.listFiltering(1)

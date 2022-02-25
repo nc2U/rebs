@@ -41,8 +41,7 @@ interface CashBook {
   sort: string
   sort_desc: string
   main_account: string
-  main_account_desc: string
-  account: number | null
+  sub_account: number | null
   content: string
   trader: string
   bank_account: number

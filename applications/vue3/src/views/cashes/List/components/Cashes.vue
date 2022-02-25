@@ -6,7 +6,7 @@
     </CTableDataCell>
     <CTableDataCell>{{ cash.main_account }}</CTableDataCell>
     <CTableDataCell class="text-left truncate">
-      {{ cash.account }}
+      {{ cash.sub_account }}
     </CTableDataCell>
     <CTableDataCell class="text-left truncate">
       {{ cutString(cash.content, 9) }}
