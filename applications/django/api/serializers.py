@@ -130,6 +130,79 @@ class StaffSerializer(serializers.ModelSerializer):
                   'entered_date', 'personal_phone', 'email', 'status', 'status_desc')
 
 
+# Rebs --------------------------------------------------------------------------
+class InlineAccSubD1Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = AccountSubD1
+        fields = ('pk', 'name')
+
+
+class InlineAccSubD2Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = AccountSubD2
+        fields = ('pk', 'name')
+
+
+class InlineAccSubD3Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = AccountSubD3
+        fields = ('pk', 'name')
+
+
+class AccountSubD1Serializer(serializers.ModelSerializer):
+    acc_d2s = InlineAccSubD2Serializer(many=True, read_only=True)
+
+    class Meta:
+        model = AccountSubD1
+        fields = ('pk', 'code', 'name', 'description', 'acc_d2s')
+
+
+class AccountSubD2Serializer(serializers.ModelSerializer):
+    d1 = InlineAccSubD1Serializer(read_only=True)
+    acc_d3s = InlineAccSubD3Serializer(many=True, read_only=True)
+
+    class Meta:
+        model = AccountSubD2
+        fields = ('pk', 'd1', 'code', 'name', 'description', 'acc_d3s')
+
+
+class AccountSubD3Serializer(serializers.ModelSerializer):
+    d2 = InlineAccSubD2Serializer(read_only=True)
+
+    class Meta:
+        model = AccountSubD3
+        fields = ('pk', 'd2', 'code', 'name', 'is_special', 'description')
+
+
+class InlineProjectAccD1Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProjectAccountD1
+        fields = ('pk', 'name')
+
+
+class InlineProjectAccD2Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProjectAccountD2
+        fields = ('pk', 'name')
+
+
+class ProjectAccountD1Serializer(serializers.ModelSerializer):
+    acc_d2s = InlineProjectAccD2Serializer(many=True, read_only=True)
+    sort_desc = serializers.CharField(source='get_sort_display', read_only=True)
+
+    class Meta:
+        model = ProjectAccountD1
+        fields = ('pk', 'sort', 'sort_desc', 'code', 'name', 'description', 'acc_d2s')
+
+
+class ProjectAccountD2Serializer(serializers.ModelSerializer):
+    d1 = InlineProjectAccD1Serializer(read_only=True)
+
+    class Meta:
+        model = ProjectAccountD2
+        fields = ('pk', 'd1', 'code', 'sub_title', 'name', 'description')
+
+
 # Project --------------------------------------------------------------------------
 class ProjectSerializer(serializers.ModelSerializer):
     kind = serializers.ChoiceField(choices=Project.KIND_CHOICES)
@@ -234,78 +307,6 @@ class SiteContractSerializer(serializers.ModelSerializer):
                   'ownership_completion', 'acc_bank', 'acc_number', 'acc_owner', 'note')
 
 
-class InlineAccSubD1Serializer(serializers.ModelSerializer):
-    class Meta:
-        model = AccountSubD1
-        fields = ('pk', 'name')
-
-
-class InlineAccSubD2Serializer(serializers.ModelSerializer):
-    class Meta:
-        model = AccountSubD2
-        fields = ('pk', 'name')
-
-
-class InlineAccSubD3Serializer(serializers.ModelSerializer):
-    class Meta:
-        model = AccountSubD3
-        fields = ('pk', 'name')
-
-
-class AccountSubD1Serializer(serializers.ModelSerializer):
-    acc_d2s = InlineAccSubD2Serializer(many=True, read_only=True)
-
-    class Meta:
-        model = AccountSubD1
-        fields = ('pk', 'code', 'name', 'description', 'acc_d2s')
-
-
-class AccountSubD2Serializer(serializers.ModelSerializer):
-    d1 = InlineAccSubD1Serializer(read_only=True)
-    acc_d3s = InlineAccSubD3Serializer(many=True, read_only=True)
-
-    class Meta:
-        model = AccountSubD2
-        fields = ('pk', 'd1', 'code', 'name', 'description', 'acc_d3s')
-
-
-class AccountSubD3Serializer(serializers.ModelSerializer):
-    d2 = InlineAccSubD2Serializer(read_only=True)
-
-    class Meta:
-        model = AccountSubD3
-        fields = ('pk', 'd2', 'code', 'name', 'is_special', 'description')
-
-
-class InlineProjectAccD1Serializer(serializers.ModelSerializer):
-    class Meta:
-        model = ProjectAccountD1
-        fields = ('pk', 'name')
-
-
-class InlineProjectAccD2Serializer(serializers.ModelSerializer):
-    class Meta:
-        model = ProjectAccountD2
-        fields = ('pk', 'name')
-
-
-class ProjectAccountD1Serializer(serializers.ModelSerializer):
-    acc_d2s = InlineProjectAccD2Serializer(many=True, read_only=True)
-    sort_desc = serializers.CharField(source='get_sort_display', read_only=True)
-
-    class Meta:
-        model = ProjectAccountD1
-        fields = ('pk', 'sort', 'sort_desc', 'code', 'name', 'description', 'acc_d2s')
-
-
-class ProjectAccountD2Serializer(serializers.ModelSerializer):
-    d1 = InlineProjectAccD1Serializer(read_only=True)
-
-    class Meta:
-        model = ProjectAccountD2
-        fields = ('pk', 'd1', 'code', 'sub_title', 'name', 'description')
-
-
 # Cash --------------------------------------------------------------------------
 class BankCodeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -364,7 +365,7 @@ class PaymentSerializer(serializers.ModelSerializer):
         fields = ('pk', 'deal_date', 'contract', 'income', 'installment_order', 'bank_account', 'trader')
 
 
-class PaymentsProjectSerializer(serializers.ModelSerializer):
+class PaymentSummarySerializer(serializers.ModelSerializer):
     unit_type = serializers.IntegerField()
     type_total = serializers.IntegerField()
 

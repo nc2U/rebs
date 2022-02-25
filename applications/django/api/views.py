@@ -61,7 +61,7 @@ class ApiIndex(generics.GenericAPIView):
             'project-bank': reverse(api + ProjectBankAccountList.name, request=request),
             'project-cashbook': reverse(api + ProjectCashBookList.name, request=request),
             'payment-list': reverse(api + PaymentList.name, request=request),
-            'payment-sum': reverse(api + PaymentsProjectSum.name, request=request),
+            'payment-sum': reverse(api + PaymentSummary.name, request=request),
             'cont-count': reverse(api + NumContractByType.name, request=request),
             'price': reverse(api + SalesPriceList.name, request=request),
             'pay-order': reverse(api + InstallmentOrderList.name, request=request),
@@ -526,9 +526,9 @@ class PaymentList(ProjectCashBookList):
         return ProjectCashBook.objects.filter(project_account_d2__in=(1, 2), is_release=False)
 
 
-class PaymentsProjectSum(generics.ListAPIView):
+class PaymentSummary(generics.ListAPIView):
     name = 'payment-sum'
-    serializer_class = PaymentsProjectSerializer
+    serializer_class = PaymentSummarySerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
     filter_fields = ('project',)
 
