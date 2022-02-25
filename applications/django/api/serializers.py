@@ -282,11 +282,16 @@ class CompanyBankAccountSerializer(serializers.ModelSerializer):
 
 
 class CashBookSerializer(serializers.ModelSerializer):
+    cash_category1_desc = serializers.CharField(source='get_cash_category1_display', read_only=True)
+    cash_category2_desc = serializers.CharField(source='get_cash_category2_display', read_only=True)
+    evidence_desc = serializers.CharField(source='get_evidence_display', read_only=True)
+
     class Meta:
         model = CashBook
-        fields = ('pk', 'company', 'cash_category1', 'cash_category2', 'account',
-                  'content', 'trader', 'bank_account', 'income', 'outlay', 'evidence',
-                  'note', 'deal_date', 'user', 'created_at', 'updated_at')
+        fields = (
+        'pk', 'company', 'cash_category1', 'cash_category1_desc', 'cash_category2', 'cash_category2_desc', 'account',
+        'content', 'trader', 'bank_account', 'income', 'outlay', 'evidence', 'evidence_desc',
+        'note', 'deal_date', 'user', 'created_at', 'updated_at')
 
 
 class ProjectBankAccountSerializer(serializers.ModelSerializer):

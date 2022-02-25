@@ -58,8 +58,9 @@ class ApiIndex(generics.GenericAPIView):
             # 'site-contract': reverse(api + SiteContractList.name, request=request),
 
             # 'bank-code': reverse(api + BankCodeList.name, request=request),
-            # 'com-bank': reverse(api + ComBankAccountList.name, request=request),
-            # 'cashbook': reverse(api + CashBookList.name, request=request),
+            'com-bank': reverse(api + ComBankAccountList.name, request=request),
+            'cashbook': reverse(api + CashBookList.name, request=request),
+
             'project-bank': reverse(api + ProjectBankAccountList.name, request=request),
             'project-cashbook': reverse(api + ProjectCashBookList.name, request=request),
             'payment-list': reverse(api + PaymentList.name, request=request),
@@ -447,35 +448,37 @@ class HouseUnitDetail(generics.RetrieveUpdateDestroyAPIView):
 #     serializer_class = BankCodeSerializer
 
 
-# class ComBankAccountList(generics.ListCreateAPIView):
-#     name = 'com_bank-list'
-#     queryset = CompanyBankAccount.objects.all()
-#     serializer_class = CompanyBankAccountSerializer
-#     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+class ComBankAccountList(generics.ListCreateAPIView):
+    name = 'com_bank-list'
+    queryset = CompanyBankAccount.objects.all()
+    serializer_class = CompanyBankAccountSerializer
+    pagination_class = PageNumberPaginationFifty
+    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
 
-# class ComBankAccountDetail(generics.RetrieveUpdateDestroyAPIView):
-#     name = 'com_bank-detail'
-#     queryset = CompanyBankAccount.objects.all()
-#     serializer_class = CompanyBankAccountSerializer
-#     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-#
-#
-# class CashBookList(generics.ListCreateAPIView):
-#     name = 'cashbook-list'
-#     queryset = CashBook.objects.all()
-#     serializer_class = CashBookSerializer
-#     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-#
-#     def perform_create(self, serializer):
-#         serializer.save(user=self.request.user)
+class ComBankAccountDetail(generics.RetrieveUpdateDestroyAPIView):
+    name = 'com_bank-detail'
+    queryset = CompanyBankAccount.objects.all()
+    serializer_class = CompanyBankAccountSerializer
+    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
 
-# class CashBookDetail(generics.RetrieveUpdateDestroyAPIView):
-#     name = 'cashbook-detail'
-#     queryset = CashBook.objects.all()
-#     serializer_class = CashBookSerializer
-#     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+class CashBookList(generics.ListCreateAPIView):
+    name = 'cashbook-list'
+    queryset = CashBook.objects.all()
+    serializer_class = CashBookSerializer
+    pagination_class = PageNumberPaginationFifteen
+    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
+class CashBookDetail(generics.RetrieveUpdateDestroyAPIView):
+    name = 'cashbook-detail'
+    queryset = CashBook.objects.all()
+    serializer_class = CashBookSerializer
+    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
 
 class ProjectBankAccountList(generics.ListCreateAPIView):
