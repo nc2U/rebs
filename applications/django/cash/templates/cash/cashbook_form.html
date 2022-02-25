@@ -70,9 +70,9 @@
                                         <tbody class="empty-form" disabled style="display: none;">
                                         <tr>
                                             <td class="text-center">
-                                                <select name="form-__prefix__-cash_category1"
+                                                <select name="form-__prefix__-sort"
                                                         class="form-control"
-                                                        id="id_form-__prefix__-cash_category1"
+                                                        id="id_form-__prefix__-sort"
                                                         onchange="category1_change(this)">
                                                     <option value="" selected="">---------</option>
                                                     <option value="1">입금</option>
@@ -156,7 +156,7 @@
                                             {{ form.errors }}
                                             <tr>
                                                 <td class="text-center">
-                                                    {{ form.cash_category1|add_class:"form-control"|attr:"required" }}{{ form.cash_category1.errors }}</td>
+                                                    {{ form.sort|add_class:"form-control"|attr:"required" }}{{ form.sort.errors }}</td>
                                                 <td class="text-center">
                                                     {{ form.cash_category2|add_class:"form-control" }}{{ form.cash_category2.errors }}</td>
                                                 <td class="text-center">
@@ -232,7 +232,7 @@
         document.getElementById('id_deal_date').value = '{% now "Y-m-d" %}'
 
         for (let i = 0; i < num; i++) {
-          document.getElementById('id_form-' + i + '-cash_category1').setAttribute('onchange', 'category1_change(this)')
+          document.getElementById('id_form-' + i + '-sort').setAttribute('onchange', 'category1_change(this)')
           document.getElementById('id_form-' + i + '-cash_category2').setAttribute('onchange', 'category2_change(this)')
           document.getElementById('id_form-' + i + '-content').setAttribute('onblur', 'sync_transfer(this)')
 
@@ -260,7 +260,7 @@
         const evidence = document.getElementById('id_form-' + i + '-evidence')
         const note = document.getElementById('id_form-' + i + '-note')
 
-        const next_category1 = document.getElementById('id_form-' + (i + 1) + '-cash_category1')    // 계정 대분류, --- 필수
+        const next_category1 = document.getElementById('id_form-' + (i + 1) + '-sort')    // 계정 대분류, --- 필수
         const next_category2 = document.getElementById('id_form-' + (i + 1) + '-cash_category2')    // 계정 대분류, --- 필수
         const next_account = document.getElementById('id_form-' + (i + 1) + '-account')
         const next_content = document.getElementById('id_form-' + (i + 1) + '-content')
@@ -348,7 +348,7 @@
 
       function internal_transfer(i) { // 대체 시 다음 라인 폼 세팅
         i = parseInt(i)
-        const next_category1 = document.getElementById('id_form-' + (i + 1) + '-cash_category1')    // 계정 대분류, --- 필수
+        const next_category1 = document.getElementById('id_form-' + (i + 1) + '-sort')    // 계정 대분류, --- 필수
         const next_category2 = document.getElementById('id_form-' + (i + 1) + '-cash_category2')    // 계정 대분류, --- 필수
         const next_account = document.getElementById('id_form-' + (i + 1) + '-account')
         const next_content = document.getElementById('id_form-' + (i + 1) + '-content')
@@ -384,8 +384,8 @@
 
       function sync_transfer(obj) {
         const i = parseInt(obj.name.substr(5, 1))
-        const currunt = document.getElementById('id_form-' + i + '-cash_category1')
-        const next = document.getElementById('id_form-' + (i + 1) + '-cash_category1')
+        const currunt = document.getElementById('id_form-' + i + '-sort')
+        const next = document.getElementById('id_form-' + (i + 1) + '-sort')
         if (currunt.value === '3' && next.value === '3') {
           document.getElementById('id_form-' + (i + 1) + '-content').value = obj.value
         } else {
