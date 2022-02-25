@@ -6,7 +6,7 @@ const getters = {
       ? state.cashBookList.map((c: any) => ({
           pk: c.pk,
           deal_date: c.deal_date,
-          cash_category1: c.cash_category1_desc,
+          sort: c.sort_desc,
           cash_category2: c.cash_category2_desc,
           account: c.account, //state.comAccD1List
           // ? state.comAccD1List

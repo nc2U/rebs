@@ -2,7 +2,7 @@
   <CTableRow class="text-center" v-if="proCash">
     <CTableDataCell>{{ proCash.deal_date }}</CTableDataCell>
     <CTableDataCell :class="sortClass">
-      {{ proCash.cash_category1 }}
+      {{ proCash.sort }}
     </CTableDataCell>
     <CTableDataCell>{{ proCash.project_account_d1 }}</CTableDataCell>
     <CTableDataCell class="text-left truncate"
@@ -71,9 +71,9 @@ export default defineComponent({
         { text: '출금', cls: 'text-danger' },
         { text: '대체', cls: 'text-info' },
       ]
-      return this.proCash.cash_category1
+      return this.proCash.sort
         ? scls
-            .filter((c: any) => c.text === this.proCash.cash_category1)
+            .filter((c: any) => c.text === this.proCash.sort)
             .map((c: any) => c.cls)[0]
         : ''
     },

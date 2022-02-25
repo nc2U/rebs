@@ -6,7 +6,7 @@ const getters = {
       ? state.proCashBookList.map((p: any) => ({
           pk: p.pk,
           deal_date: p.deal_date,
-          cash_category1: p.cash_category1_desc,
+          sort: p.sort_desc,
           project_account_d1: state.accountD1List
             ? state.accountD1List
                 .filter((d: any) => d.pk === p.project_account_d1)

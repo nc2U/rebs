@@ -38,8 +38,8 @@ interface CompanyBank {
 interface CashBook {
   pk: number
   company: number
-  cash_category1: string
-  cash_category1_desc: string
+  sort: string
+  sort_desc: string
   cash_category2: string
   cash_category2_desc: string
   account: number | null
