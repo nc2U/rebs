@@ -49,7 +49,7 @@ const actions = {
 
   fetchProjectCashList: ({ commit }: any, payload: any) => {
     const { project } = payload
-    let url = `/payment-list/?project=${project}`
+    let url = `/project-cashbook/?project=${project}`
     const page = payload.page ? payload.page : 1
     if (payload.page) url += `&page=${page}`
     api
