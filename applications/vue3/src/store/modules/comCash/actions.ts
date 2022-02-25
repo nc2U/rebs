@@ -18,18 +18,21 @@ const actions = {
       .catch(err => console.log(err.response.data))
   },
 
-  fetchAccountD2List: ({ commit }: any) => {
+  fetchAccountD2List: ({ commit }: any, d1acc?: number) => {
+    const d1 = d1acc ? d1acc : ''
     api
-      .get(`/account-depth2/`)
+      .get(`/account-depth2/?d1=${d1}`)
       .then(res => {
         commit(FETCH_COM_ACC_D2_LIST, res.data)
       })
       .catch(err => console.log(err.response.data))
   },
 
-  fetchAccountD3List: ({ commit }: any) => {
+  fetchAccountD3List: ({ commit }: any, data?: any) => {
+    const d1 = data && data.d1 ? data.d1 : ''
+    const d2 = data && data.d2 ? data.d2 : ''
     api
-      .get(`/account-depth3/`)
+      .get(`/account-depth3/?d2__d1=${d1}&d2=${d2}`)
       .then(res => {
         commit(FETCH_COM_ACC_D3_LIST, res.data)
       })
@@ -82,9 +85,10 @@ const actions = {
     let url = `/cashbook/?company=${company}`
     if (payload.from_date) url += `&from_deal_date=${payload.from_date}`
     if (payload.to_date) url += `&to_deal_date=${payload.to_date}`
-    if (payload.sort1) url += `&cash_category1=${payload.sort1}`
-    if (payload.sort2) url += `&cash_category2=${payload.sort2}`
-    if (payload.account) url += `&account=${payload.account}`
+    if (payload.sort) url += `&sort=${payload.sort}`
+    if (payload.main_account) url += `&main_account=${payload.main_account}`
+    if (payload.mid_account) url += `&middle_account=${payload.mid_account}`
+    if (payload.sub_account) url += `&account=${payload.sub_account}`
     if (payload.bank_account) url += `&bank_account=${payload.bank_account}`
     if (payload.search) url += `&search=${payload.search}`
     const page = payload.page ? payload.page : 1
