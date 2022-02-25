@@ -81,7 +81,8 @@ export default defineComponent({
   },
   methods: {
     cutString(str: string, len: number) {
-      return str.length > len ? `${str.substr(0, len)}..` : str
+      const content = str ? str : ''
+      return content.length > len ? `${content.substr(0, len)}..` : content
     },
     updatePayment(this: any) {
       if (this.superAuth || (this.staffAuth && this.staffAuth.payment === '2'))
