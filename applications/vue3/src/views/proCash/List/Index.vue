@@ -10,6 +10,7 @@
       <ListController
         ref="listControl"
         @d1-select="accountD1Select"
+        @d2-select="accountD2Select"
         @payment-filtering="onPayFiltering"
       />
       <ProCashList
@@ -63,7 +64,10 @@ export default defineComponent({
         this.$store.state.payment.proCashesCount = 0
       }
     },
-    accountD1Select(d1: number | string) {
+    accountD1Select(sort: number | string) {
+      this.fetchProAccountD1List(sort)
+    },
+    accountD2Select(d1: number | string) {
       this.fetchProAccountD2List(d1)
     },
     pageSelect(this: any, page: number) {
