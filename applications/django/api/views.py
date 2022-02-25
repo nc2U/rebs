@@ -250,13 +250,13 @@ class ProjectAccountD1List(generics.ListAPIView):
 class ProjectAccountD1Detail(generics.RetrieveAPIView):
     name = 'project_acc_d1-detail'
     queryset = ProjectAccountD1.objects.all()
-    pagination_class = PageNumberPaginationTwenty
     serializer_class = ProjectAccountD1Serializer
 
 
 class ProjectAccountD2List(generics.ListAPIView):
     name = 'project_acc_d2-list'
     queryset = ProjectAccountD2.objects.all()
+    pagination_class = PageNumberPaginationOneHundred
     serializer_class = ProjectAccountD2Serializer
     filter_fields = ('d1',)
 
