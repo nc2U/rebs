@@ -32,7 +32,7 @@
 
     <CTableBody>
       <ProCash
-        v-for="proCash in proCashBookList"
+        v-for="proCash in getProCashes"
         :proCash="proCash"
         :key="proCash.pk"
         @on-update="onUpdate"
@@ -60,7 +60,6 @@ export default defineComponent({
   components: { ProCash },
   props: { project: Object },
   computed: {
-    ...mapState('proCash', ['proCashBookList']),
     ...mapGetters('proCash', ['proCashPages', 'getProCashes']),
   },
   methods: {

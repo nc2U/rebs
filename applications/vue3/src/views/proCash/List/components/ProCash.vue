@@ -1,15 +1,21 @@
 <template>
   <CTableRow class="text-center">
     <CTableDataCell>{{ proCash.deal_date }}</CTableDataCell>
-    <CTableDataCell>{{ proCash.cash_category1 }}</CTableDataCell>
+    <CTableDataCell :class="`text-${getSort(proCash.cash_category1).cls}`">
+      {{ getSort(proCash.cash_category1).val }}
+    </CTableDataCell>
     <CTableDataCell>{{ proCash.project_account_d1 }}</CTableDataCell>
     <CTableDataCell>{{ proCash.project_account_d2 }}</CTableDataCell>
     <CTableDataCell class="text-left">{{ proCash.content }}</CTableDataCell>
     <CTableDataCell class="text-left">{{ proCash.trader }}</CTableDataCell>
     <CTableDataCell>{{ proCash.bank_account }}</CTableDataCell>
-    <CTableDataCell>{{ proCash.income }}</CTableDataCell>
-    <CTableDataCell>{{ proCash.outlay }}</CTableDataCell>
-    <CTableDataCell>{{ proCash.evidence }}</CTableDataCell>
+    <CTableDataCell class="text-right" color="primary">
+      {{ numFormat(proCash.income) }}
+    </CTableDataCell>
+    <CTableDataCell class="text-right" color="danger">
+      {{ numFormat(proCash.outlay) }}
+    </CTableDataCell>
+    <CTableDataCell>{{ getEvidence(proCash.evidence) }}</CTableDataCell>
     <CTableDataCell>
       <CButton color="success" @click="updatePayment" size="sm"> 수정</CButton>
       <CButton color="danger" @click="deletePayment" size="sm"> 삭제</CButton>
@@ -53,6 +59,27 @@ export default defineComponent({
     ...mapGetters('accounts', ['staffAuth', 'superAuth']),
   },
   methods: {
+    getSort(val: string) {
+      const sort = [
+        { key: '1', val: '입금', cls: 'primary' },
+        { key: '2', val: '출금', cls: 'danger' },
+        { key: '3', val: '대체', cls: 'info' },
+      ]
+      return sort.filter((s: any) => s.key === val)[0]
+    },
+    getEvidence(val: string) {
+      const evidence = [
+        { key: '0', val: '증빙 없음' },
+        { key: '1', val: '세금계산서' },
+        { key: '2', val: '계산서(면세)' },
+        { key: '3', val: '신용카드전표' },
+        { key: '4', val: '현금영수증' },
+        { key: '5', val: '간이영수증' },
+      ]
+      return evidence
+        .filter((e: any) => e.key === val)
+        .map((e: any) => e.val)[0]
+    },
     updatePayment(this: any) {
       if (this.superAuth || (this.staffAuth && this.staffAuth.payment === '2'))
         this.$emit('on-update', { ...{ pk: this.payment.pk }, ...this.form })
