@@ -8,9 +8,12 @@ import {
 import { message } from '@/utils/helper'
 
 const actions = {
-  fetchProAccountD1List: ({ commit }: any) => {
+  fetchProAccountD1List: ({ commit }: any, sort?: string) => {
+    const url = sort
+      ? `/project-account-depth1/?sort=${sort}`
+      : `/project-account-depth1/`
     api
-      .get(`/project-account-depth1/`)
+      .get(url)
       .then(res => {
         commit(FETCH_ACCOUNT_D1_LIST, res.data)
       })
