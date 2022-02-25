@@ -1,29 +1,29 @@
 <template>
-  <CTableRow class="text-center" v-if="proCash">
-    <CTableDataCell>{{ proCash.deal_date }}</CTableDataCell>
+  <CTableRow class="text-center" v-if="cash">
+    <CTableDataCell>{{ cash.deal_date }}</CTableDataCell>
     <CTableDataCell :class="sortClass">
-      {{ proCash.cash_category1 }}
+      {{ cash.cash_category1 }}
     </CTableDataCell>
-    <CTableDataCell>{{ proCash.project_account_d1 }}</CTableDataCell>
-    <CTableDataCell class="text-left truncate"
-      >{{ cutString(proCash.project_account_d2, 7) }}
+    <CTableDataCell>{{ cash.cash_category2 }}</CTableDataCell>
+    <CTableDataCell class="text-left truncate">
+      {{ cash.account }}
     </CTableDataCell>
     <CTableDataCell class="text-left truncate">
-      {{ cutString(proCash.content, 9) }}
+      {{ cutString(cash.content, 9) }}
     </CTableDataCell>
     <CTableDataCell class="text-left truncate">
-      {{ cutString(proCash.trader, 7) }}
+      {{ cutString(cash.trader, 7) }}
     </CTableDataCell>
     <CTableDataCell class="text-left"
-      >{{ cutString(proCash.bank_account, 9) }}
+      >{{ cutString(cash.bank_account, 9) }}
     </CTableDataCell>
     <CTableDataCell class="text-right" color="primary">
-      {{ numFormat(proCash.income) }}
+      {{ numFormat(cash.income) }}
     </CTableDataCell>
     <CTableDataCell class="text-right" color="danger">
-      {{ numFormat(proCash.outlay) }}
+      {{ numFormat(cash.outlay) }}
     </CTableDataCell>
-    <CTableDataCell>{{ proCash.evidence }}</CTableDataCell>
+    <CTableDataCell>{{ cash.evidence }}</CTableDataCell>
     <CTableDataCell>
       <CButton color="success" @click="updatePayment" size="sm"> 수정</CButton>
 
@@ -49,17 +49,15 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import commonMixin from '@/views/commonMixin'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 import { mapGetters } from 'vuex'
 
 export default defineComponent({
-  name: 'ProCash',
-  mixins: [commonMixin],
+  name: 'Cashes',
   components: { ConfirmModal, AlertModal },
   props: {
-    proCash: {
+    cash: {
       type: Object,
       required: true,
     },
@@ -71,9 +69,9 @@ export default defineComponent({
         { text: '출금', cls: 'text-danger' },
         { text: '대체', cls: 'text-info' },
       ]
-      return this.proCash.cash_category1
+      return this.cash.cash_category1
         ? scls
-            .filter((c: any) => c.text === this.proCash.cash_category1)
+            .filter((c: any) => c.text === this.cash.cash_category1)
             .map((c: any) => c.cls)[0]
         : ''
     },

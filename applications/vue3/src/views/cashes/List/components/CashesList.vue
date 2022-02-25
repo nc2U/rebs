@@ -33,7 +33,7 @@
     <CTableBody>
       <Cashes
         v-for="cash in getCashLogs"
-        :proCash="cash"
+        :cash="cash"
         :key="cash.pk"
         @on-update="onUpdate"
         @on-delete="onDelete"
