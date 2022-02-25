@@ -219,6 +219,7 @@ class AccountSubD2List(generics.ListAPIView):
     name = 'acc_d2-list'
     queryset = AccountSubD2.objects.all()
     serializer_class = AccountSubD2Serializer
+    pagination_class = PageNumberPaginationTwenty
     filter_fields = ('d1',)
 
 
@@ -232,6 +233,7 @@ class AccountSubD3List(generics.ListAPIView):
     name = 'acc_d3-list'
     queryset = AccountSubD3.objects.all()
     serializer_class = AccountSubD3Serializer
+    pagination_class = PageNumberPaginationFifty
     filter_fields = ('d2__d1', 'd2')
 
 
