@@ -11,7 +11,11 @@ const getters = {
           project_account_d2: p.project_account_d2,
           content: p.content,
           trader: p.trader,
-          bank_account: p.bank_account,
+          bank_account: state.proBankAccountList
+            ? state.proBankAccountList
+                .filter((b: any) => b.pk === p.bank_account)
+                .map((b: any) => b.alias_name)[0]
+            : [],
           income: p.income ? p.income : 0,
           outlay: p.outlay ? p.outlay : 0,
           evidence: p.evidence,

@@ -51,7 +51,7 @@ export interface ProjectCashBook {
 export interface ProjectCashState {
   d1List: ProjectAccountD1[]
   d2List: ProjectAccountD2[]
-  pBankAccountList: ProjectBankAccount[]
+  proBankAccountList: ProjectBankAccount[]
   proCashBookList: ProjectCashBook[]
   proCashesCount: number
 }
