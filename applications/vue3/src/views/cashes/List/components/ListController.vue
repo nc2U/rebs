@@ -22,7 +22,7 @@
           </CCol>
 
           <CCol md="6" lg="2" class="mb-3">
-            <CFormSelect v-model="form.sort1" @change="accountD1Select">
+            <CFormSelect v-model="form.sort" @change="sortSelect">
               <option value="">구분</option>
               <option value="1">입금</option>
               <option value="2">출금</option>
@@ -31,28 +31,40 @@
           </CCol>
 
           <CCol md="6" lg="2" class="mb-3">
-            <CFormSelect v-model="form.sort1" @change="accountD1Select">
-              <option value="">구분</option>
-              <option value="1">입금</option>
-              <option value="2">출금</option>
-              <option value="3">대체</option>
+            <CFormSelect v-model="form.main_account" @change="accountD1Select">
+              <option value="">계정[대분류]</option>
+              <option
+                v-for="acc1 in comAccD1List"
+                :value="acc1.pk"
+                :key="acc1.pk"
+              >
+                {{ acc1.name }}
+              </option>
             </CFormSelect>
           </CCol>
 
           <CCol md="6" lg="2" class="mb-3">
-            <CFormSelect v-model="form.sort2" @change="accountD2Select">
-              <option value="">분류</option>
-              <option v-for="acc in comAccD1List" :value="acc.pk" :key="acc.pk">
-                {{ acc.name }}
+            <CFormSelect v-model="form.mid_account" @change="accountD2Select">
+              <option value="">계정[중분류]</option>
+              <option
+                v-for="acc2 in comAccD2List"
+                :value="acc2.pk"
+                :key="acc2.pk"
+              >
+                {{ acc2.name }}
               </option>
             </CFormSelect>
           </CCol>
 
           <CCol md="6" lg="2" class="mb-3">
             <CFormSelect v-model="form.sub_account" @change="listFiltering(1)">
-              <option value="">계정과목</option>
-              <option v-for="acc in comAccD3List" :value="acc.pk" :key="acc.pk">
-                {{ acc.name }}
+              <option value="">계정[소분류]</option>
+              <option
+                v-for="acc3 in comAccD3List"
+                :value="acc3.pk"
+                :key="acc3.pk"
+              >
+                {{ acc3.name }}
               </option>
             </CFormSelect>
           </CCol>
@@ -113,8 +125,9 @@ export default defineComponent({
       form: {
         from_date: '',
         to_date: '',
-        sort1: '',
-        sort2: '',
+        sort: '',
+        main_account: '',
+        mid_account: '',
         sub_account: '',
         bank_account: '',
         search: '',
@@ -125,12 +138,13 @@ export default defineComponent({
     formsCheck(this: any) {
       const a = this.form.from_date === ''
       const b = this.form.to_date === ''
-      const c = this.form.sort1 === ''
-      const d = this.form.sort2 === ''
-      const e = this.form.sub_account === ''
-      const f = this.form.bank_account === ''
-      const g = this.form.search === ''
-      return a && b && c && d && e && f && g
+      const c = this.form.sort === ''
+      const d = this.form.main_account === ''
+      const e = this.form.mid_account === ''
+      const f = this.form.sub_account === ''
+      const g = this.form.bank_account === ''
+      const h = this.form.search === ''
+      return a && b && c && d && e && f && g && h
     },
     ...mapState('comCash', [
       'comAccD1List',
@@ -141,27 +155,35 @@ export default defineComponent({
     ]),
   },
   methods: {
+    sortSelect() {
+      this.listFiltering(1)
+      this.form.main_account = ''
+      this.form.mid_account = ''
+      this.form.sub_account = ''
+      this.$nextTick(() => this.$emit('sort-select', this.form.sort))
+    },
     accountD1Select() {
       this.listFiltering(1)
-      this.form.sort2 = ''
+      this.form.mid_account = ''
       this.form.sub_account = ''
-      // this.$nextTick(() => this.$emit('d1-select', this.form.accountD1))
+      this.$nextTick(() => this.$emit('d1-select', this.form.main_account))
     },
     accountD2Select() {
       this.listFiltering(1)
       this.form.sub_account = ''
-      this.$nextTick(() => this.$emit('d1-select', this.form.sub_account))
+      this.$nextTick(() => this.$emit('d2-select', this.form.mid_account))
     },
     listFiltering(page = 1) {
       this.$nextTick(() =>
-        this.$emit('payment-filtering', { ...{ page }, ...this.form }),
+        this.$emit('list-filtering', { ...{ page }, ...this.form }),
       )
     },
     resetForm() {
       this.form.from_date = ''
       this.form.to_date = ''
-      this.form.sort1 = ''
-      this.form.sort2 = ''
+      this.form.sort = ''
+      this.form.main_account = ''
+      this.form.mid_account = ''
       this.form.sub_account = ''
       this.form.bank_account = ''
       this.form.search = ''
