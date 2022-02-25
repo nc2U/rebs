@@ -11,7 +11,7 @@
         ref="listControl"
         @d1-select="accountD1Select"
         @d2-select="accountD2Select"
-        @payment-filtering="onPayFiltering"
+        @list-filtering="listFiltering"
       />
       <ProCashList
         :project="project"
@@ -66,14 +66,15 @@ export default defineComponent({
     },
     accountD1Select(sort: number | string) {
       this.fetchProAccountD1List(sort)
+      this.fetchProAccountD2List({ sort: sort })
     },
     accountD2Select(d1: number | string) {
-      this.fetchProAccountD2List(d1)
+      this.fetchProAccountD2List({ d1: d1 })
     },
     pageSelect(this: any, page: number) {
       this.$refs.listControl.listFiltering(page)
     },
-    onPayFiltering(payload: any) {
+    listFiltering(payload: any) {
       const project = this.project.pk
       this.fetchProjectCashList({ ...{ project }, ...payload })
     },

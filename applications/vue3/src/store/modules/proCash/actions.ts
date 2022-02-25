@@ -20,10 +20,10 @@ const actions = {
       .catch(err => console.log(err.response.data))
   },
 
-  fetchProAccountD2List: ({ commit }: any, d1?: string) => {
-    const url = d1
-      ? `/project-account-depth2/?d1=${d1}`
-      : `/project-account-depth2/`
+  fetchProAccountD2List: ({ commit }: any, payload?: any) => {
+    const d1 = payload && payload.d1 ? payload.d1 : ''
+    const sort = payload && payload.sort ? payload.sort : ''
+    const url = `/project-account-depth2/?d1=${d1}&d1__sort=${sort}`
     api
       .get(url)
       .then(res => {

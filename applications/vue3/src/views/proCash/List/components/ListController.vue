@@ -32,7 +32,7 @@
 
           <CCol md="6" lg="2" class="mb-3">
             <CFormSelect v-model="form.accountD1" @change="accountD2Select">
-              <option value="">메인계정</option>
+              <option value="">상위 항목</option>
               <option v-for="d1 in accountD1List" :value="d1.pk" :key="d1.pk">
                 {{ d1.name }}
               </option>
@@ -41,7 +41,7 @@
 
           <CCol md="6" lg="2" class="mb-3">
             <CFormSelect v-model="form.accountD2" @change="listFiltering(1)">
-              <option value="">세부계정</option>
+              <option value="">하위 항목</option>
               <option v-for="d2 in accountD2List" :value="d2.pk" :key="d2.pk">
                 {{ d2.name }}
               </option>
@@ -148,7 +148,7 @@ export default defineComponent({
     },
     listFiltering(page = 1) {
       this.$nextTick(() =>
-        this.$emit('payment-filtering', { ...{ page }, ...this.form }),
+        this.$emit('list-filtering', { ...{ page }, ...this.form }),
       )
     },
     resetForm() {
