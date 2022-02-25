@@ -10,6 +10,7 @@
       <ListController
         ref="listControl"
         @d1-select="accountD1Select"
+        @d2-select="accountD2Select"
         @payment-filtering="onPayFiltering"
       />
       <CashesList
@@ -43,10 +44,11 @@ export default defineComponent({
     CashesList,
   },
   created() {
-    this.fetchProAccountD1List()
-    this.fetchProAccountD2List()
-    this.fetchProjectBankAccountList(this.initProjId)
-    this.fetchProjectCashList({ project: this.initProjId })
+    this.fetchAccountD1List()
+    this.fetchAccountD2List()
+    this.fetchAccountD3List()
+    this.fetchCompanyBankAccountList(this.initProjId)
+    this.fetchCashBookList({ company: this.initComId })
   },
   computed: {
     ...mapState('settings', ['company']),
@@ -56,7 +58,7 @@ export default defineComponent({
     onSelectAdd(this: any, target: any) {
       if (target !== '') {
         this.fetchProjectBankAccountList(target)
-        this.fetchProjectCashList({ project: target })
+        this.fetchProjectCashList({ company: target })
       } else {
         this.$store.state.payment.proBankAccountList = []
         this.$store.state.payment.proCashBookList = []
@@ -64,14 +66,17 @@ export default defineComponent({
       }
     },
     accountD1Select(d1: number | string) {
-      this.fetchProAccountD2List(d1)
+      this.fetchAccountD2List(d1)
+    },
+    accountD2Select(d2: number | string) {
+      this.fetchAccountD3List(d2)
     },
     pageSelect(this: any, page: number) {
       this.$refs.listControl.listFiltering(page)
     },
     onPayFiltering(payload: any) {
       const project = 1
-      this.fetchProjectCashList({ ...{ project }, ...payload })
+      this.fetchCashBookList({ ...{ project }, ...payload })
     },
     onUpdate(payload: any) {
       console.log(payload)
@@ -79,11 +84,12 @@ export default defineComponent({
     onDelete(pk: number) {
       alert(pk)
     },
-    ...mapActions('proCash', [
-      'fetchProAccountD1List',
-      'fetchProAccountD2List',
-      'fetchProjectBankAccountList',
-      'fetchProjectCashList',
+    ...mapActions('comCash', [
+      'fetchAccountD1List',
+      'fetchAccountD2List',
+      'fetchAccountD3List',
+      'fetchCompanyBankAccountList',
+      'fetchCashBookList',
     ]),
   },
 })
