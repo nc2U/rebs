@@ -1,11 +1,41 @@
 import api from '@/api'
 import {
-  FETCH_CASHBOOK_LIST,
+  FETCH_COM_ACC_D1_LIST,
+  FETCH_COM_ACC_D2_LIST,
+  FETCH_COM_ACC_D3_LIST,
   FETCH_COMPAY_BANK_LIST,
+  FETCH_CASHBOOK_LIST,
 } from '@/store/modules/comCash/mutations-types'
 import { message } from '@/utils/helper'
 
 const actions = {
+  fetchAccountD1List: ({ commit }: any) => {
+    api
+      .get(`/account-depth1/`)
+      .then(res => {
+        commit(FETCH_COM_ACC_D1_LIST, res.data)
+      })
+      .catch(err => console.log(err.response.data))
+  },
+
+  fetchAccountD2List: ({ commit }: any) => {
+    api
+      .get(`/account-depth2/`)
+      .then(res => {
+        commit(FETCH_COM_ACC_D2_LIST, res.data)
+      })
+      .catch(err => console.log(err.response.data))
+  },
+
+  fetchAccountD3List: ({ commit }: any) => {
+    api
+      .get(`/account-depth3/`)
+      .then(res => {
+        commit(FETCH_COM_ACC_D3_LIST, res.data)
+      })
+      .catch(err => console.log(err.response.data))
+  },
+
   fetchCompanyBankAccountList: ({ commit }: any, company: any) => {
     api
       .get(`/company-bank-account/?company=${company}`)
