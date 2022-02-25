@@ -71,11 +71,11 @@ urlpatterns = [
 
     # path('bank-code/', BankCodeList.as_view(), name=BankCodeList.name),
     # path('bank-code/<int:pk>/', BankCodeDetail.as_view(), name=BankCodeDetail.name),
-    path('com-bank-account/', ComBankAccountList.as_view(), name=ComBankAccountList.name),
-    path('com-bank-account/<int:pk>/', ComBankAccountDetail.as_view(), name=ComBankAccountDetail.name),
+    path('company-bank-account/', ComBankAccountList.as_view(), name=ComBankAccountList.name),
+    path('company-bank-account/<int:pk>/', ComBankAccountDetail.as_view(), name=ComBankAccountDetail.name),
     path('cashbook/', CashBookList.as_view(), name=CashBookList.name),
     path('cashbook/<int:pk>/', CashBookDetail.as_view(), name=CashBookDetail.name),
-    
+
     path('project-bank-account/', ProjectBankAccountList.as_view(), name=ProjectBankAccountList.name),
     path('project-bank-account/<int:pk>/', ProjectBankAccountDetail.as_view(), name=ProjectBankAccountDetail.name),
     path('project-cashbook/', ProjectCashBookList.as_view(), name=ProjectCashBookList.name),
