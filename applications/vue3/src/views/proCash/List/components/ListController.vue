@@ -24,9 +24,9 @@
           <CCol md="6" lg="2" class="mb-3">
             <CFormSelect v-model="form.sort" @change="accountD1Select">
               <option value="">거래구분</option>
-              <option value="1">입금</option>
-              <option value="2">출금</option>
-              <option value="3">대체</option>
+              <option v-for="sort in sortList" :value="sort.pk" :key="sort.pk">
+                {{ sort.name }}
+              </option>
             </CFormSelect>
           </CCol>
 
@@ -128,6 +128,7 @@ export default defineComponent({
       return a && b && c && d && e && f && g
     },
     ...mapState('proCash', [
+      'sortList',
       'accountD1List',
       'accountD2List',
       'proBankAccountList',
@@ -139,12 +140,10 @@ export default defineComponent({
       this.listFiltering(1)
       this.form.accountD1 = ''
       this.form.accountD2 = ''
-      this.$nextTick(() => this.$emit('d1-select', this.form.sort))
     },
     accountD2Select() {
       this.listFiltering(1)
       this.form.accountD2 = ''
-      this.$nextTick(() => this.$emit('d2-select', this.form.accountD1))
     },
     listFiltering(page = 1) {
       this.$nextTick(() =>

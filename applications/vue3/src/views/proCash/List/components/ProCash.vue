@@ -5,8 +5,8 @@
       {{ proCash.sort }}
     </CTableDataCell>
     <CTableDataCell>{{ proCash.project_account_d1 }}</CTableDataCell>
-    <CTableDataCell class="text-left truncate"
-      >{{ cutString(proCash.project_account_d2, 7) }}
+    <CTableDataCell class="text-left truncate">
+      {{ cutString(proCash.project_account_d2, 7) }}
     </CTableDataCell>
     <CTableDataCell class="text-left truncate">
       {{ cutString(proCash.content, 9) }}
@@ -14,8 +14,8 @@
     <CTableDataCell class="text-left truncate">
       {{ cutString(proCash.trader, 7) }}
     </CTableDataCell>
-    <CTableDataCell class="text-left"
-      >{{ cutString(proCash.bank_account, 9) }}
+    <CTableDataCell class="text-left">
+      {{ cutString(proCash.bank_account, 9) }}
     </CTableDataCell>
     <CTableDataCell class="text-right" color="success">
       {{ numFormat(proCash.income) }}
@@ -26,7 +26,6 @@
     <CTableDataCell>{{ proCash.evidence }}</CTableDataCell>
     <CTableDataCell>
       <CButton color="success" @click="updatePayment" size="sm"> 수정</CButton>
-
       <CButton color="danger" @click="deletePayment" size="sm"> 삭제</CButton>
     </CTableDataCell>
   </CTableRow>

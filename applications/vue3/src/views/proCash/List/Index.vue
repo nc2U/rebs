@@ -7,12 +7,7 @@
 
   <ContentBody>
     <CCardBody class="pb-5">
-      <ListController
-        ref="listControl"
-        @d1-select="accountD1Select"
-        @d2-select="accountD2Select"
-        @list-filtering="listFiltering"
-      />
+      <ListController ref="listControl" @list-filtering="listFiltering" />
       <ProCashList
         :project="project"
         @page-select="pageSelect"
@@ -44,6 +39,7 @@ export default defineComponent({
     ProCashList,
   },
   created() {
+    this.fetchAccSortList()
     this.fetchProAccountD1List()
     this.fetchProAccountD2List()
     this.fetchProjectBankAccountList(this.initProjId)
@@ -64,18 +60,15 @@ export default defineComponent({
         this.$store.state.payment.proCashesCount = 0
       }
     },
-    accountD1Select(sort: number | string) {
-      this.fetchProAccountD1List(sort)
-      this.fetchProAccountD2List({ sort: sort })
-    },
-    accountD2Select(d1: number | string) {
-      this.fetchProAccountD2List({ d1: d1 })
-    },
     pageSelect(this: any, page: number) {
       this.$refs.listControl.listFiltering(page)
     },
     listFiltering(payload: any) {
       const project = this.project.pk
+      const sort = payload.sort ? payload.sort : ''
+      const d1 = payload.accountD1 ? payload.accountD1 : ''
+      this.fetchProAccountD1List(sort)
+      this.fetchProAccountD2List({ d1, sort })
       this.fetchProjectCashList({ ...{ project }, ...payload })
     },
     onUpdate(payload: any) {
@@ -85,6 +78,7 @@ export default defineComponent({
       alert(pk)
     },
     ...mapActions('proCash', [
+      'fetchAccSortList',
       'fetchProAccountD1List',
       'fetchProAccountD2List',
       'fetchProjectBankAccountList',
