@@ -1,21 +1,23 @@
 <template>
-  <CTableRow class="text-center" v-if="cash">
+  <CTableRow class="text-center">
     <CTableDataCell>{{ cash.deal_date }}</CTableDataCell>
     <CTableDataCell :class="sortClass">
       {{ cash.sort }}
     </CTableDataCell>
-    <CTableDataCell>{{ cash.main_account }}</CTableDataCell>
-    <CTableDataCell class="text-left truncate">
-      {{ cash.sub_account }}
+    <CTableDataCell :class="d1Class">
+      {{ cash.account_d1 }}
     </CTableDataCell>
     <CTableDataCell class="text-left truncate">
-      {{ cutString(cash.content, 9) }}
+      {{ cash.account_d3 }}
     </CTableDataCell>
     <CTableDataCell class="text-left truncate">
-      {{ cutString(cash.trader, 7) }}
+      {{ cutString(cash.content, 10) }}
     </CTableDataCell>
-    <CTableDataCell class="text-left"
-      >{{ cutString(cash.bank_account, 9) }}
+    <CTableDataCell class="text-left truncate">
+      {{ cutString(cash.trader, 8) }}
+    </CTableDataCell>
+    <CTableDataCell class="text-left">
+      {{ cutString(cash.bank_account, 9) }}
     </CTableDataCell>
     <CTableDataCell class="text-right" color="primary">
       {{ numFormat(cash.income) }}
@@ -56,6 +58,11 @@ import { mapGetters } from 'vuex'
 export default defineComponent({
   name: 'Cashes',
   components: { ConfirmModal, AlertModal },
+  data() {
+    return {
+      cls: ['text-primary', 'text-danger', 'text-info'],
+    }
+  },
   props: {
     cash: {
       type: Object,
@@ -63,17 +70,13 @@ export default defineComponent({
     },
   },
   computed: {
-    sortClass() {
-      const scls = [
-        { text: '입금', cls: 'text-primary' },
-        { text: '출금', cls: 'text-danger' },
-        { text: '대체', cls: 'text-info' },
-      ]
-      return this.cash.sort
-        ? scls
-            .filter((c: any) => c.text === this.cash.sort)
-            .map((c: any) => c.cls)[0]
-        : ''
+    sortClass(this: any) {
+      const sort = ['입금', '출금', '대체']
+      return this.cls[sort.indexOf(this.cash.sort)]
+    },
+    d1Class() {
+      const d1 = ['수익', '비용', '대체']
+      return this.cls[d1.indexOf(this.cash.account_d1)]
     },
     ...mapGetters('accounts', ['staffAuth', 'superAuth']),
   },

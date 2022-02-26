@@ -71,9 +71,7 @@ export default defineComponent({
         { text: '대체', cls: 'text-info' },
       ]
       return this.proCash.sort
-        ? scls
-            .filter((c: any) => c.text === this.proCash.sort)
-            .map((c: any) => c.cls)[0]
+        ? scls.filter(c => c.text === this.proCash.sort).map(c => c.cls)[0]
         : ''
     },
     ...mapGetters('accounts', ['staffAuth', 'superAuth']),

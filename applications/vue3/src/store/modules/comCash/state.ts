@@ -4,14 +4,14 @@ export interface AccountSort {
   accounts: number[]
 }
 
-interface AccountD1 {
+export interface AccountD1 {
   pk: number
   code: string
   name: string
   description: string
 }
 
-interface AccountD2 {
+export interface AccountD2 {
   pk: number
   d1: number
   code: string
@@ -19,7 +19,7 @@ interface AccountD2 {
   description: string
 }
 
-interface AccountD3 {
+export interface AccountD3 {
   pk: number
   d2: number
   code: string

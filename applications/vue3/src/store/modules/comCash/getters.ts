@@ -1,4 +1,4 @@
-import { AccountSort, CashesState } from '@/store/modules/comCash/state'
+import { CashesState } from '@/store/modules/comCash/state'
 
 const getters = {
   getCashLogs: (state: CashesState) => {
@@ -6,17 +6,21 @@ const getters = {
       ? state.cashBookList.map((c: any) => ({
           pk: c.pk,
           deal_date: c.deal_date,
-          sort: state.sortList
+          sort: c.sort
             ? state.sortList
-                .filter((s: AccountSort) => s.pk === c.sort)
-                .map((s: AccountSort) => s.name)[0]
+                .filter(sort => sort.pk === c.sort)
+                .map(sort => sort.name)[0]
             : '',
-          account_d1: c.account_d1,
-          account_d3: c.account_d3, //state.comAccD1List
-          // ? state.comAccD1List
-          //     .filter((d: any) => d.pk === c.project_account_d1)
-          //     .map((d: any) => d.name)[0]
-          // : [],
+          account_d1: c.account_d1
+            ? state.comAccD1List
+                .filter(d1 => d1.pk === c.account_d1)
+                .map(d1 => d1.name)[0]
+            : '',
+          account_d3: c.account_d3
+            ? state.comAccD3List
+                .filter(d3 => d3.pk === c.account_d3)
+                .map(d3 => d3.name)[0]
+            : '',
           content: c.content,
           trader: c.trader,
           bank_account: state.comBankList
