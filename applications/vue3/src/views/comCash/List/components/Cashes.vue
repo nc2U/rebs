@@ -149,7 +149,7 @@ export default defineComponent({
     },
 
     deleteObject(this: any) {
-      this.$emit('on-delete', this.cash.pk)
+      this.$emit('on-delete', { company: this.cash.company, pk: this.cash.pk })
       this.$refs.delModal.visible = false
     },
   },

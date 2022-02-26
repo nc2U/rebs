@@ -83,8 +83,8 @@ export default defineComponent({
       alert(payload.pk)
       console.log(payload)
     },
-    onDelete(pk: number) {
-      alert(pk)
+    onDelete(payload: any) {
+      this.deleteCashBook(payload)
     },
     ...mapActions('settings', ['fetchCompany']),
     ...mapActions('comCash', [
@@ -97,6 +97,8 @@ export default defineComponent({
       'fetchAccountD3List',
       'fetchCompanyBankAccountList',
       'fetchCashBookList',
+      'updateCashBook',
+      'deleteCashBook',
     ]),
   },
 })

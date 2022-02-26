@@ -175,11 +175,11 @@ const actions = {
   },
 
   deleteCashBook: ({ dispatch }: any, payload: any) => {
-    const { pk, project } = payload
+    const { pk, company } = payload
     api
       .delete(`/cashbook/${pk}/`)
       .then(() => {
-        dispatch('fetchCashBookList', project)
+        dispatch('fetchCashBookList', { company })
         message('danger', '알림!', '해당 오브젝트가 삭제되었습니다.')
       })
       .catch(err => console.log(err.response.data))
