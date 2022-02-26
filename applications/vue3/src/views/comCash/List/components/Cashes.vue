@@ -2,13 +2,13 @@
   <CTableRow class="text-center">
     <CTableDataCell>{{ cash.deal_date }}</CTableDataCell>
     <CTableDataCell :class="sortClass">
-      {{ cash.sort }}
+      {{ cash.sort_desc }}
     </CTableDataCell>
     <CTableDataCell :class="d1Class">
-      {{ cash.account_d1 }}
+      {{ cash.account_d1_desc }}
     </CTableDataCell>
     <CTableDataCell class="text-left truncate">
-      {{ cash.account_d3 }}
+      {{ cash.account_d3_desc }}
     </CTableDataCell>
     <CTableDataCell class="text-left truncate">
       {{ cutString(cash.content, 10) }}
@@ -17,19 +17,19 @@
       {{ cutString(cash.trader, 8) }}
     </CTableDataCell>
     <CTableDataCell class="text-left">
-      {{ cutString(cash.bank_account, 9) }}
+      {{ cutString(cash.bank_account_desc, 9) }}
     </CTableDataCell>
     <CTableDataCell class="text-right" color="primary">
-      {{ numFormat(cash.income) }}
+      {{ numFormat(cash.income || 0) }}
     </CTableDataCell>
     <CTableDataCell class="text-right" color="danger">
-      {{ numFormat(cash.outlay) }}
+      {{ numFormat(cash.outlay || 0) }}
     </CTableDataCell>
-    <CTableDataCell>{{ cash.evidence }}</CTableDataCell>
+    <CTableDataCell>{{ cash.evidence_desc }}</CTableDataCell>
     <CTableDataCell>
-      <CButton color="success" @click="updatePayment" size="sm"> 수정</CButton>
+      <CButton color="success" @click="updateObject" size="sm"> 수정</CButton>
 
-      <CButton color="danger" @click="deletePayment" size="sm"> 삭제</CButton>
+      <CButton color="danger" @click="deleteObject" size="sm"> 삭제</CButton>
     </CTableDataCell>
   </CTableRow>
 
@@ -58,25 +58,55 @@ import { mapGetters } from 'vuex'
 export default defineComponent({
   name: 'Cashes',
   components: { ConfirmModal, AlertModal },
-  data() {
-    return {
-      cls: ['text-primary', 'text-danger', 'text-info'],
-    }
-  },
   props: {
     cash: {
       type: Object,
       required: true,
     },
   },
+  data() {
+    return {
+      form: {
+        company: '',
+        sort: '',
+        account_d1: '',
+        account_d2: '',
+        account_d3: '',
+        content: '',
+        trader: '',
+        bank_account: '',
+        income: '',
+        outlay: '',
+        evidence: '',
+        note: '',
+        deal_date: '',
+      },
+      cls: ['text-primary', 'text-danger', 'text-info'],
+    }
+  },
+  created(this: any) {
+    if (this.cash) {
+      this.form.company = this.cash.company
+      this.form.sort = this.cash.sort
+      this.form.account_d1 = this.cash.account_d1
+      this.form.account_d2 = this.cash.account_d2
+      this.form.account_d3 = this.cash.account_d3
+      this.form.content = this.cash.content
+      this.form.trader = this.cash.trader
+      this.form.bank_account = this.cash.bank_account
+      this.form.income = this.cash.income
+      this.form.outlay = this.cash.outlay
+      this.form.evidence = this.cash.evidence
+      this.form.note = this.cash.note
+      this.form.deal_date = this.cash.deal_date
+    }
+  },
   computed: {
     sortClass(this: any) {
-      const sort = ['입금', '출금', '대체']
-      return this.cls[sort.indexOf(this.cash.sort)]
+      return this.cls[this.cash.sort - 1]
     },
     d1Class() {
-      const d1 = ['수익', '비용', '대체']
-      return this.cls[d1.indexOf(this.cash.account_d1)]
+      return this.cls[this.cash.account_d1 - 4]
     },
     ...mapGetters('accounts', ['staffAuth', 'superAuth']),
   },
@@ -85,14 +115,20 @@ export default defineComponent({
       const content = str ? str : ''
       return content.length > len ? `${content.substr(0, len)}..` : content
     },
-    updatePayment(this: any) {
-      if (this.superAuth || (this.staffAuth && this.staffAuth.payment === '2'))
-        this.$emit('on-update', { ...{ pk: this.payment.pk }, ...this.form })
+    updateObject(this: any) {
+      if (
+        this.superAuth ||
+        (this.staffAuth && this.staffAuth.company_cash === '2')
+      )
+        this.$emit('on-update', { ...{ pk: this.cash.pk }, ...this.form })
       else this.$refs.alertModal.callModal()
     },
-    deletePayment(this: any) {
-      if (this.superAuth || (this.staffAuth && this.staffAuth.payment === '2'))
-        this.$emit('on-delete', this.payment.pk)
+    deleteObject(this: any) {
+      if (
+        this.superAuth ||
+        (this.staffAuth && this.staffAuth.company_cash === '2')
+      )
+        this.$emit('on-delete', this.cash.pk)
       else this.$refs.alertModal.callModal()
     },
   },

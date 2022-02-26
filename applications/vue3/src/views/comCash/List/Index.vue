@@ -30,7 +30,7 @@ import CashesList from '@/views/comCash/List/components/CashesList.vue'
 import { mapActions, mapGetters, mapState } from 'vuex'
 
 export default defineComponent({
-  name: 'CashesIndex',
+  name: 'comCashIndex',
   mixins: [HeaderMixin],
   components: {
     ContentHeader,
@@ -77,6 +77,7 @@ export default defineComponent({
       this.fetchCashBookList({ ...{ company }, ...payload })
     },
     onUpdate(payload: any) {
+      alert(payload.pk)
       console.log(payload)
     },
     onDelete(pk: number) {
