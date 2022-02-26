@@ -31,7 +31,7 @@
           </CCol>
 
           <CCol md="6" lg="2" class="mb-3">
-            <CFormSelect v-model="form.main_account" @change="accountD1Select">
+            <CFormSelect v-model="form.account_d1" @change="accountD1Select">
               <option value="">계정[대분류]</option>
               <option
                 v-for="acc1 in comAccD1List"
@@ -47,7 +47,7 @@
             <CFormSelect
               v-model="form.mid_account"
               @change="accountD2Select"
-              :disabled="!this.form.main_account"
+              :disabled="!this.form.account_d1"
             >
               <option value="">계정[중분류]</option>
               <option
@@ -64,7 +64,7 @@
             <CFormSelect
               v-model="form.sub_account"
               @change="listFiltering(1)"
-              :disabled="!this.form.main_account"
+              :disabled="!this.form.account_d1"
             >
               <option value="">계정[소분류]</option>
               <option
@@ -134,7 +134,7 @@ export default defineComponent({
         from_date: '',
         to_date: '',
         sort: '',
-        main_account: '',
+        account_d1: '',
         mid_account: '',
         sub_account: '',
         bank_account: '',
@@ -147,7 +147,7 @@ export default defineComponent({
       const a = this.form.from_date === ''
       const b = this.form.to_date === ''
       const c = this.form.sort === ''
-      const d = this.form.main_account === ''
+      const d = this.form.account_d1 === ''
       const e = this.form.mid_account === ''
       const f = this.form.sub_account === ''
       const g = this.form.bank_account === ''
@@ -165,7 +165,7 @@ export default defineComponent({
   methods: {
     sortSelect() {
       this.listFiltering(1)
-      this.form.main_account = ''
+      this.form.account_d1 = ''
       this.form.mid_account = ''
       this.form.sub_account = ''
       this.$nextTick(() => this.$emit('sort-select', this.form.sort))
@@ -174,7 +174,7 @@ export default defineComponent({
       this.listFiltering(1)
       this.form.mid_account = ''
       this.form.sub_account = ''
-      this.$nextTick(() => this.$emit('d1-select', this.form.main_account))
+      this.$nextTick(() => this.$emit('d1-select', this.form.account_d1))
     },
     accountD2Select() {
       this.listFiltering(1)
@@ -190,7 +190,7 @@ export default defineComponent({
       this.form.from_date = ''
       this.form.to_date = ''
       this.form.sort = ''
-      this.form.main_account = ''
+      this.form.account_d1 = ''
       this.form.mid_account = ''
       this.form.sub_account = ''
       this.form.bank_account = ''

@@ -6,7 +6,7 @@ from rebs.models import ProjectAccountD1, ProjectAccountD2
 
 CashBookFormSet = modelformset_factory(
     CashBook,
-    fields=('sort', 'main_account', 'sub_account', 'content', 'trader',
+    fields=('sort', 'account_d1', 'sub_account', 'content', 'trader',
             'bank_account', 'income', 'outlay', 'evidence', 'note'),
     extra=1
 )
@@ -17,8 +17,8 @@ class CashSearchForm(forms.Form):
     e_date = forms.DateField(required=False)
     SORT_CHOICES = (('', '전체'), ('1', '입금'), ('2', '출금'), ('3', '대체'))
     sort = forms.ChoiceField(choices=SORT_CHOICES, required=False, label='구분')
-    MAIN_ACCOUNT_CHOICES = (('', '전체'), ('1', '자산'), ('2', '부채'), ('3', '자본'), ('4', '수익'), ('5', '비용'), ('6', '대체'))
-    main_account = forms.ChoiceField(choices=MAIN_ACCOUNT_CHOICES, required=False)
+    account_d1_CHOICES = (('', '전체'), ('1', '자산'), ('2', '부채'), ('3', '자본'), ('4', '수익'), ('5', '비용'), ('6', '대체'))
+    account_d1 = forms.ChoiceField(choices=account_d1_CHOICES, required=False)
     bank_account = forms.ModelChoiceField(queryset=CompanyBankAccount.objects.all(), required=False)
     search_word = forms.CharField(max_length=20, required=False, label='검색어')
 

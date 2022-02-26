@@ -46,7 +46,7 @@ export interface CashBook {
   company: number
   sort: string
   sort_desc: string
-  main_account: string
+  account_d1: string
   sub_account: number | null
   content: string
   trader: string

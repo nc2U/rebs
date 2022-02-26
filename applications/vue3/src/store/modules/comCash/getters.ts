@@ -11,7 +11,7 @@ const getters = {
                 .filter((s: AccountSort) => s.pk === c.sort)
                 .map((s: AccountSort) => s.name)[0]
             : '',
-          main_account: c.main_account,
+          account_d1: c.account_d1,
           sub_account: c.sub_account, //state.comAccD1List
           // ? state.comAccD1List
           //     .filter((d: any) => d.pk === c.project_account_d1)

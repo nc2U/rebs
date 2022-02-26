@@ -34,8 +34,8 @@ class CompanyBankAccount(models.Model):
 class CashBook(models.Model):
     company = models.ForeignKey('company.Company', on_delete=models.PROTECT, verbose_name='회사정보')
     sort = models.ForeignKey('rebs.AccountSort', on_delete=models.PROTECT, verbose_name='구분')
-    main_account = models.ForeignKey('rebs.AccountSubD1', on_delete=models.SET_NULL, null=True, blank=True,
-                                     verbose_name='계정대분류')
+    account_d1 = models.ForeignKey('rebs.AccountSubD1', on_delete=models.SET_NULL, null=True, blank=True,
+                                   verbose_name='계정대분류')
     middle_account = models.ForeignKey('rebs.AccountSubD2', on_delete=models.SET_NULL, null=True, blank=True,
                                        verbose_name='계정중분류')
     sub_account = models.ForeignKey('rebs.AccountSubD3', on_delete=models.SET_NULL, null=True, blank=True,

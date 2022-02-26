@@ -39,9 +39,9 @@
                                         {{ form.sort|add_class:"form-control" }}
                                     </div>
                                     <div class="form-group col-md-2">
-                                        <label for="{{ form.main_account.id_for_label }}"
+                                        <label for="{{ form.account_d1.id_for_label }}"
                                                class="d-none d-md-block col-form-label">&nbsp;</label>
-                                        {{ form.main_account|add_class:"form-control" }}
+                                        {{ form.account_d1|add_class:"form-control" }}
                                     </div>
                                     <div class="form-group col-md-2">
                                         <label for="{{ form.bank_account.id_for_label }}" class="col-form-label">계좌
@@ -64,7 +64,7 @@
                         <div class="row">
                             <div class="col-12 table-responsive-md">
                                 <div class="text-right mb-1 mr-2">
-                                    <a href="{% url 'excel:cashbooks' %}?s_date={{ request.GET.s_date }}&e_date={{ request.GET.e_date }}&sort={{ request.GET.sort }}&main_account={{ request.GET.main_account }}&bank_account={{ request.GET.bank_account }}&search_word={{ request.GET.search_word }}">
+                                    <a href="{% url 'excel:cashbooks' %}?s_date={{ request.GET.s_date }}&e_date={{ request.GET.e_date }}&sort={{ request.GET.sort }}&account_d1={{ request.GET.account_d1 }}&bank_account={{ request.GET.bank_account }}&search_word={{ request.GET.search_word }}">
                                         <i class="mdi mdi-file-excel-box"></i> Excel Export
                                         <i class="mdi mdi-download ml-1"></i>
                                     </a>
@@ -103,13 +103,13 @@
                                             <th class="text-center" scope="row"><input type="checkbox" disabled></th>
                                             <td class="text-center">{{ inout.deal_date|date:"Y-m-d" }}</td>
                                             <td class="text-center text-primary">
-                                                <span class="text-{% if inout.sort == '2' %}danger{% elif inout.sort == '3' %}info{% endif %}">
-                                                    {{ inout.get_sort_display }}
+                                                <span class="text-{% if inout.sort.pk == 2 %}danger{% elif inout.sort.pk == 3 %}info{% endif %}">
+                                                    {{ inout.sort.name }}
                                                 </span>
                                             </td>
                                             <td class="text-center text-primary">
-                                                <span class="text-{% if inout.main_account.pk == 2 %}info{% elif inout.main_account.pk == 5 %}danger{% elif inout.sort == '3' %}info{% endif %}">
-                                                    {{ inout.main_account.name }}
+                                                <span class="text-{% if inout.account_d1.pk == 2 %}info{% elif inout.account_d1.pk == 5 %}danger{% elif inout.sort.pk == 3 %}info{% endif %}">
+                                                    {{ inout.account_d1.name }}
                                                 </span>
                                             </td>
                                             <td class="text-secondary">{{ inout.sub_account.name|default:"-" }}</td>
@@ -152,16 +152,16 @@
 
     <script>
       const sort = document.getElementById('id_sort')
-      const main_account = document.getElementById('id_main_account')
+      const account_d1 = document.getElementById('id_account_d1')
 
       window.onload = function () {
         sort.setAttribute('onchange', 'sort_change(this)')
-        main_account.setAttribute('onchange', 'main_account_change(this)')
+        account_d1.setAttribute('onchange', 'account_d1_change(this)')
 
         document.getElementById('id_s_date').value = '{{ request.GET.s_date }}'
         document.getElementById('id_e_date').value = '{{ request.GET.e_date }}'
         document.getElementById('id_sort').value = '{{ request.GET.sort }}'
-        document.getElementById('id_main_account').value = '{{ request.GET.main_account }}'
+        document.getElementById('id_account_d1').value = '{{ request.GET.account_d1 }}'
         document.getElementById('id_bank_account').value = '{{ request.GET.bank_account }}'
         const search_word = document.getElementById('id_search_word')
         search_word.value = '{{ request.GET.search_word }}'
@@ -170,53 +170,53 @@
 
       function sort_change(sort) {
         if (sort.value === '') {
-          main_account.options[0].selected = true
-          main_account.length = 7;
-          main_account.options[1].text = "자산"
-          main_account.options[1].value = "1"
-          main_account.options[2].text = "부채"
-          main_account.options[2].value = "2"
-          main_account.options[3].text = "자본"
-          main_account.options[3].value = "3"
-          main_account.options[4].text = "수익"
-          main_account.options[4].value = "4"
-          main_account.options[5].text = "비용"
-          main_account.options[5].value = "5"
-          main_account.options[6].text = "대체"
-          main_account.options[6].value = "6"
+          account_d1.options[0].selected = true
+          account_d1.length = 7;
+          account_d1.options[1].text = "자산"
+          account_d1.options[1].value = "1"
+          account_d1.options[2].text = "부채"
+          account_d1.options[2].value = "2"
+          account_d1.options[3].text = "자본"
+          account_d1.options[3].value = "3"
+          account_d1.options[4].text = "수익"
+          account_d1.options[4].value = "4"
+          account_d1.options[5].text = "비용"
+          account_d1.options[5].value = "5"
+          account_d1.options[6].text = "대체"
+          account_d1.options[6].value = "6"
         } else if (sort.value === '1') {
-          main_account.length = 5;
-          main_account.options[1].text = "자산"
-          main_account.options[1].value = "1"
-          main_account.options[2].text = "부채"
-          main_account.options[2].value = "2"
-          main_account.options[3].text = "자본"
-          main_account.options[3].value = "3"
-          main_account.options[4].text = "수익"
-          main_account.options[4].value = "4"
+          account_d1.length = 5;
+          account_d1.options[1].text = "자산"
+          account_d1.options[1].value = "1"
+          account_d1.options[2].text = "부채"
+          account_d1.options[2].value = "2"
+          account_d1.options[3].text = "자본"
+          account_d1.options[3].value = "3"
+          account_d1.options[4].text = "수익"
+          account_d1.options[4].value = "4"
         } else if (sort.value === '2') {
-          main_account.length = 5;
-          main_account.options[1].text = "자산"
-          main_account.options[1].value = "1"
-          main_account.options[2].text = "부채"
-          main_account.options[2].value = "2"
-          main_account.options[3].text = "자본"
-          main_account.options[3].value = "3"
-          main_account.options[4].text = "비용"
-          main_account.options[4].value = "5"
+          account_d1.length = 5;
+          account_d1.options[1].text = "자산"
+          account_d1.options[1].value = "1"
+          account_d1.options[2].text = "부채"
+          account_d1.options[2].value = "2"
+          account_d1.options[3].text = "자본"
+          account_d1.options[3].value = "3"
+          account_d1.options[4].text = "비용"
+          account_d1.options[4].value = "5"
         } else if (sort.value === '3') {
-          main_account.length = 2;
-          main_account.options[1].text = "대체"
-          main_account.options[1].value = "6"
+          account_d1.length = 2;
+          account_d1.options[1].text = "대체"
+          account_d1.options[1].value = "6"
         }
       }
 
-      function main_account_change(main_account) {
-        if (main_account.value === '4') {
+      function account_d1_change(account_d1) {
+        if (account_d1.value === '4') {
           sort.options[1].selected = true
-        } else if (main_account.value === '5') {
+        } else if (account_d1.value === '5') {
           sort.options[2].selected = true
-        } else if (main_account.value === '6') {
+        } else if (account_d1.value === '6') {
           sort.options[3].selected = true
         }
       }
