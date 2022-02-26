@@ -1,4 +1,4 @@
-import { CashesState } from '@/store/modules/comCash/state'
+import { AccountSort, CashesState } from '@/store/modules/comCash/state'
 
 const getters = {
   getCashLogs: (state: CashesState) => {
@@ -6,7 +6,11 @@ const getters = {
       ? state.cashBookList.map((c: any) => ({
           pk: c.pk,
           deal_date: c.deal_date,
-          sort: c.sort_desc,
+          sort: state.sortList
+            ? state.sortList
+                .filter((s: AccountSort) => s.pk === c.sort)
+                .map((s: AccountSort) => s.name)[0]
+            : '',
           main_account: c.main_account,
           sub_account: c.sub_account, //state.comAccD1List
           // ? state.comAccD1List
