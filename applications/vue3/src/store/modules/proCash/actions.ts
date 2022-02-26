@@ -1,5 +1,6 @@
 import api from '@/api'
 import {
+  FETCH_P_ACC_SORT_LIST,
   FETCH_ACCOUNT_D1_LIST,
   FETCH_ACCOUNT_D2_LIST,
   FETCH_P_BANK_ACCOUNT_LIST,
@@ -8,6 +9,15 @@ import {
 import { message } from '@/utils/helper'
 
 const actions = {
+  fetchAccSortList: ({ commit }: any) => {
+    api
+      .get(`/account-sort/`)
+      .then(res => {
+        commit(FETCH_P_ACC_SORT_LIST, res.data)
+      })
+      .catch(err => console.log(err.response.data))
+  },
+
   fetchProAccountD1List: ({ commit }: any, sort?: string) => {
     const url = sort
       ? `/project-account-depth1/?sort=${sort}`

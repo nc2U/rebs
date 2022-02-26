@@ -1,7 +1,4 @@
-import {
-  ProjectBankAccount,
-  ProjectCashBook,
-} from '@/store/modules/proCash/state'
+import { ProjectCashBook } from '@/store/modules/proCash/state'
 
 export interface Price {
   pk: number

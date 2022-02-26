@@ -1,3 +1,5 @@
+import { AccountSort } from '@/store/modules/comCash/state'
+
 export interface ProjectAccountD1 {
   pk: number
   sort: string
@@ -54,6 +56,7 @@ export interface ProjectCashBook {
 }
 
 export interface ProjectCashState {
+  sortList: AccountSort[]
   accountD1List: ProjectAccountD1[]
   accountD2List: ProjectAccountD2[]
   proBankAccountList: ProjectBankAccount[]
@@ -62,6 +65,7 @@ export interface ProjectCashState {
 }
 
 const state = {
+  sortList: [],
   accountD1List: [],
   accountD2List: [],
   pBankAccountList: [],

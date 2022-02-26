@@ -1,4 +1,4 @@
-interface AccountSort {
+export interface AccountSort {
   pk: number
   name: string
   accounts: number[]
@@ -28,7 +28,7 @@ interface AccountD3 {
   description: string
 }
 
-interface CompanyBank {
+export interface CompanyBank {
   pk: number
   company: number
   division: number | null
@@ -41,7 +41,7 @@ interface CompanyBank {
   inactive: boolean
 }
 
-interface CashBook {
+export interface CashBook {
   pk: number
   company: number
   sort: string

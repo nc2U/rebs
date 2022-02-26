@@ -1,4 +1,5 @@
 import {
+  FETCH_P_ACC_SORT_LIST,
   FETCH_ACCOUNT_D1_LIST,
   FETCH_ACCOUNT_D2_LIST,
   FETCH_P_BANK_ACCOUNT_LIST,
@@ -7,6 +8,9 @@ import {
 import { ProjectCashState } from '@/store/modules/proCash/state'
 
 const mutations = {
+  [FETCH_P_ACC_SORT_LIST]: (state: ProjectCashState, payload: any) =>
+    (state.sortList = payload.results),
+
   [FETCH_ACCOUNT_D1_LIST]: (state: ProjectCashState, payload: any) =>
     (state.accountD1List = payload.results),
 
