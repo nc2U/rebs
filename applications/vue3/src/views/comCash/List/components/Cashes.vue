@@ -27,22 +27,21 @@
     </CTableDataCell>
     <CTableDataCell>{{ cash.evidence_desc }}</CTableDataCell>
     <CTableDataCell>
-      <CButton color="success" @click="updateObject" size="sm"> 수정</CButton>
-
-      <CButton color="danger" @click="deleteConfirm" size="sm"> 삭제</CButton>
+      <CButton color="success" @click="updateConfirm" size="sm">수정</CButton>
+      <CButton color="danger" @click="deleteConfirm" size="sm">삭제</CButton>
     </CTableDataCell>
   </CTableRow>
 
-  <ConfirmModal ref="confirmModal">
+  <ConfirmModal size="lg" ref="cashUpdateModal">
     <template v-slot:header>
       <CIcon name="cil-italic" />
       입출금 거래 건별 수정
     </template>
     <template v-slot:default>
-      해당 입출금거래 정보 수정 등록을 진행하시겠습니까?
+      <CashForm :form="form" />
     </template>
     <template v-slot:footer>
-      <CButton color="primary" @click="modalAction">저장</CButton>
+      <CButton color="success" @click="updateObject">저장</CButton>
     </template>
   </ConfirmModal>
 
@@ -66,11 +65,12 @@
 import { defineComponent } from 'vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
+import CashForm from '@/views/comCash/List/components/CashForm.vue'
 import { mapGetters } from 'vuex'
 
 export default defineComponent({
   name: 'Cashes',
-  components: { ConfirmModal, AlertModal },
+  components: { ConfirmModal, AlertModal, CashForm },
   props: {
     cash: {
       type: Object,
@@ -128,13 +128,16 @@ export default defineComponent({
       const content = str ? str : ''
       return content.length > len ? `${content.substr(0, len)}..` : content
     },
-    updateObject(this: any) {
+    updateConfirm(this: any) {
       if (
         this.superAuth ||
         (this.staffAuth && this.staffAuth.company_cash === '2')
       ) {
-        this.$emit('on-update', { ...{ pk: this.cash.pk }, ...this.form })
+        this.$refs.cashUpdateModal.callModal()
       } else this.$refs.alertModal.callModal()
+    },
+    updateObject() {
+      this.$emit('on-update', { ...{ pk: this.cash.pk }, ...this.form })
     },
     deleteConfirm(this: any) {
       if (
