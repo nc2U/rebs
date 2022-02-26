@@ -96,9 +96,9 @@ const actions = {
     if (payload.from_date) url += `&from_deal_date=${payload.from_date}`
     if (payload.to_date) url += `&to_deal_date=${payload.to_date}`
     if (payload.sort) url += `&sort=${payload.sort}`
-    if (payload.main_account) url += `&main_account=${payload.main_account}`
-    if (payload.mid_account) url += `&middle_account=${payload.mid_account}`
-    if (payload.sub_account) url += `&account=${payload.sub_account}`
+    if (payload.account_d1) url += `&account_d1=${payload.account_d1}`
+    if (payload.account_d2) url += `&account_d2=${payload.account_d2}`
+    if (payload.account_d3) url += `&account_d3=${payload.account_d3}`
     if (payload.bank_account) url += `&bank_account=${payload.bank_account}`
     if (payload.search) url += `&search=${payload.search}`
     const page = payload.page ? payload.page : 1
