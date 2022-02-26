@@ -487,7 +487,7 @@ class CashBookFilterSet(FilterSet):
     class Meta:
         model = CashBook
         fields = ('company', 'from_deal_date', 'to_deal_date', 'sort',
-                  'account_d1', 'middle_account', 'sub_account', 'bank_account')
+                  'account_d1', 'account_d2', 'sub_account', 'bank_account')
 
 
 class CashBookList(generics.ListCreateAPIView):

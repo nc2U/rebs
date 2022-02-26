@@ -36,8 +36,8 @@ class CashBook(models.Model):
     sort = models.ForeignKey('rebs.AccountSort', on_delete=models.PROTECT, verbose_name='구분')
     account_d1 = models.ForeignKey('rebs.AccountSubD1', on_delete=models.SET_NULL, null=True, blank=True,
                                    verbose_name='계정대분류')
-    middle_account = models.ForeignKey('rebs.AccountSubD2', on_delete=models.SET_NULL, null=True, blank=True,
-                                       verbose_name='계정중분류')
+    account_d2 = models.ForeignKey('rebs.AccountSubD2', on_delete=models.SET_NULL, null=True, blank=True,
+                                   verbose_name='계정중분류')
     sub_account = models.ForeignKey('rebs.AccountSubD3', on_delete=models.SET_NULL, null=True, blank=True,
                                     verbose_name='세부계정')
     content = models.CharField('적요', max_length=100)

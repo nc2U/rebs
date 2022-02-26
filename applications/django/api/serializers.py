@@ -293,7 +293,7 @@ class CashBookSerializer(serializers.ModelSerializer):
     class Meta:
         model = CashBook
         fields = (
-            'pk', 'company', 'sort', 'account_d1', 'middle_account', 'sub_account',
+            'pk', 'company', 'sort', 'account_d1', 'account_d2', 'sub_account',
             'content', 'trader', 'bank_account', 'income', 'outlay', 'evidence', 'evidence_desc',
             'note', 'deal_date', 'user', 'created_at', 'updated_at')
 
