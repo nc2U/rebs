@@ -28,11 +28,11 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import HeaderMixin from '@/views/cashes/_menu/headermixin'
+import HeaderMixin from '@/views/comCash/_menu/headermixin'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
-import ListController from '@/views/cashes/List/components/ListController.vue'
-import CashesList from '@/views/cashes/List/components/CashesList.vue'
+import ListController from '@/views/comCash/List/components/ListController.vue'
+import CashesList from '@/views/comCash/List/components/CashesList.vue'
 import { mapActions, mapGetters, mapState } from 'vuex'
 
 export default defineComponent({

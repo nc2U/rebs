@@ -16,7 +16,7 @@ const comCash = {
       name: '본사자금 현황',
       component: () =>
         store.state.accounts.userInfo.staffauth.company_cash > '0'
-          ? import('@/views/cashes/Status/Index.vue')
+          ? import('@/views/comCash/Status/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
     },
     {
@@ -24,7 +24,7 @@ const comCash = {
       name: '본사입출 내역',
       component: () =>
         store.state.accounts.userInfo.staffauth.company_cash > '0'
-          ? import('@/views/cashes/List/Index.vue')
+          ? import('@/views/comCash/List/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
     },
     {
@@ -32,7 +32,7 @@ const comCash = {
       name: '본사입출 등록',
       component: () =>
         store.state.accounts.userInfo.staffauth.company_cash > '0'
-          ? import('@/views/cashes/Register/Index.vue')
+          ? import('@/views/comCash/Register/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
     },
   ],

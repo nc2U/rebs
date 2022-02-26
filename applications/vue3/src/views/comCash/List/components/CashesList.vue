@@ -52,7 +52,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import Cashes from '@/views/cashes/List/components/Cashes.vue'
+import Cashes from '@/views/comCash/List/components/Cashes.vue'
 import { mapGetters } from 'vuex'
 
 export default defineComponent({
