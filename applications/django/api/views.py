@@ -14,7 +14,7 @@ from company.models import Company, Department, Position, Staff
 from project.models import (Project, UnitType, UnitFloorType,
                             KeyUnit, BuildingUnit, HouseUnit, ProjectBudget,
                             Site, SiteOwner, SiteOwnshipRelationship, SiteContract)
-from rebs.models import (AccountSubD1, AccountSubD2, AccountSubD3,
+from rebs.models import (AccountSort, AccountSubD1, AccountSubD2, AccountSubD3,
                          ProjectAccountD1, ProjectAccountD2, WiseSaying)
 from cash.models import (BankCode, CompanyBankAccount, ProjectBankAccount,
                          CashBook, ProjectCashBook, SalesPriceByGT,
@@ -39,6 +39,7 @@ class ApiIndex(generics.GenericAPIView):
             'department': reverse(api + DepartmentList.name, request=request),
             'position': reverse(api + PositionList.name, request=request),
             'staff': reverse(api + StaffList.name, request=request),
+            'account-sort': reverse(api + AccountSortList.name, request=request),
             'account-depth1': reverse(api + AccountSubD1List.name, request=request),
             'account-depth2': reverse(api + AccountSubD2List.name, request=request),
             'account-depth3': reverse(api + AccountSubD3List.name, request=request),
@@ -203,10 +204,23 @@ class StaffDetail(generics.RetrieveUpdateDestroyAPIView):
 
 
 # Rebs --------------------------------------------------------------------------
+class AccountSortList(generics.ListAPIView):
+    name = 'acc_sort-list'
+    queryset = AccountSort.objects.all()
+    serializer_class = AccountSortSerializer
+
+
+class AccountSortDetail(generics.RetrieveAPIView):
+    name = 'acc_sort-detail'
+    queryset = AccountSort.objects.all()
+    serializer_class = AccountSortSerializer
+
+
 class AccountSubD1List(generics.ListAPIView):
     name = 'acc_d1-list'
     queryset = AccountSubD1.objects.all()
     serializer_class = AccountSubD1Serializer
+    filter_fields = ('accountsort',)
 
 
 class AccountSubD1Detail(generics.RetrieveAPIView):
@@ -220,7 +234,7 @@ class AccountSubD2List(generics.ListAPIView):
     queryset = AccountSubD2.objects.all()
     serializer_class = AccountSubD2Serializer
     pagination_class = PageNumberPaginationTwenty
-    filter_fields = ('d1',)
+    filter_fields = ('d1', 'd1__accountsort')
 
 
 class AccountSubD2Detail(generics.RetrieveAPIView):
@@ -234,7 +248,7 @@ class AccountSubD3List(generics.ListAPIView):
     queryset = AccountSubD3.objects.all()
     serializer_class = AccountSubD3Serializer
     pagination_class = PageNumberPaginationFifty
-    filter_fields = ('d2__d1', 'd2')
+    filter_fields = ('d2__d1__accountsort', 'd2__d1', 'd2')
 
 
 class AccountSubD3Detail(generics.RetrieveAPIView):

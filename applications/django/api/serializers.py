@@ -5,7 +5,7 @@ from company.models import Company, Department, Position, Staff
 from project.models import (Project, UnitType, UnitFloorType,
                             KeyUnit, BuildingUnit, HouseUnit, ProjectBudget,
                             Site, SiteOwner, SiteOwnshipRelationship, SiteContract)
-from rebs.models import (AccountSubD1, AccountSubD2, AccountSubD3,
+from rebs.models import (AccountSort, AccountSubD1, AccountSubD2, AccountSubD3,
                          ProjectAccountD1, ProjectAccountD2, WiseSaying)
 from cash.models import (BankCode, CompanyBankAccount, ProjectBankAccount,
                          CashBook, ProjectCashBook, SalesPriceByGT,
@@ -131,6 +131,12 @@ class StaffSerializer(serializers.ModelSerializer):
 
 
 # Rebs --------------------------------------------------------------------------
+class AccountSortSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AccountSort
+        fields = ('pk', 'name', 'accounts')
+
+
 class AccountSubD1Serializer(serializers.ModelSerializer):
     class Meta:
         model = AccountSubD1
