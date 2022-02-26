@@ -1,6 +1,19 @@
 from django.db import models
 
 
+class AccountSort(models.Model):
+    name = models.CharField(max_length=2)
+    accounts = models.ManyToManyField('rebs.AccountSubD1')
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ['id']
+        verbose_name = "00. 구분"
+        verbose_name_plural = "00. 구분"
+
+
 class AccountSubD1(models.Model):
     code = models.CharField(max_length=3)
     name = models.CharField(max_length=10)
