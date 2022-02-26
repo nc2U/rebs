@@ -40,6 +40,9 @@ export default defineComponent({
   },
   created() {
     this.fetchAccSortList()
+    this.fetchAccD1List()
+    this.fetchAccD2List()
+    this.fetchAccD3List()
     this.fetchAccountD1List()
     this.fetchAccountD2List()
     this.fetchAccountD3List()
@@ -86,6 +89,9 @@ export default defineComponent({
     ...mapActions('settings', ['fetchCompany']),
     ...mapActions('comCash', [
       'fetchAccSortList',
+      'fetchAccD1List',
+      'fetchAccD2List',
+      'fetchAccD3List',
       'fetchAccountD1List',
       'fetchAccountD2List',
       'fetchAccountD3List',

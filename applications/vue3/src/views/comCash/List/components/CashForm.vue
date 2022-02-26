@@ -19,7 +19,7 @@
         <CRow>
           <CFormLabel class="col-sm-4 col-form-label">구분</CFormLabel>
           <CCol sm="8">
-            <CFormSelect v-model="form.sort">
+            <CFormSelect v-model="form.sort" @change="callAccount">
               <option value="">구분</option>
               <option value="1">입금</option>
               <option value="2">출금</option>
@@ -34,7 +34,7 @@
           <CCol sm="8">
             <CFormSelect v-model="form.account_d1">
               <option value="">---------</option>
-              <option v-for="d1 in comAccD1List" :value="d1.pk" :key="d1.pk">
+              <option v-for="d1 in formAccD1List" :value="d1.pk" :key="d1.pk">
                 {{ d1.name }}
               </option>
             </CFormSelect>
@@ -50,7 +50,7 @@
           <CCol sm="8">
             <CFormSelect v-model="form.account_d2">
               <option value="">---------</option>
-              <option v-for="d2 in comAccD2List" :value="d2.pk" :key="d2.pk">
+              <option v-for="d2 in formAccD2List" :value="d2.pk" :key="d2.pk">
                 {{ d2.name }}
               </option>
             </CFormSelect>
@@ -63,7 +63,7 @@
           <CCol sm="8">
             <CFormSelect v-model="form.account_d3">
               <option value="">---------</option>
-              <option v-for="d3 in comAccD3List" :value="d3.pk" :key="d3.pk">
+              <option v-for="d3 in formAccD3List" :value="d3.pk" :key="d3.pk">
                 {{ d3.name }}
               </option>
             </CFormSelect>
@@ -96,7 +96,12 @@
         <CRow>
           <CFormLabel class="col-sm-4 col-form-label">거래계좌</CFormLabel>
           <CCol sm="8">
-            <CFormInput v-model="form.bank_account" placeholder="거래계좌" />
+            <CFormSelect v-model="form.bank_account">
+              <option value="">---------</option>
+              <option v-for="ba in comBankList" :value="ba.pk" :key="ba.pk">
+                {{ ba.alias_name }}
+              </option>
+            </CFormSelect>
           </CCol>
         </CRow>
       </CCol>
@@ -126,6 +131,7 @@
               v-model.number="form.income"
               type="number"
               placeholder="입금액"
+              :disabled="form.sort === '2'"
             />
           </CCol>
         </CRow>
@@ -138,6 +144,7 @@
               v-model.number="form.outlay"
               type="number"
               placeholder="출금액"
+              :disabled="form.sort === '1'"
             />
           </CCol>
         </CRow>
@@ -163,7 +170,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { mapState } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'CashForm',
@@ -173,23 +180,36 @@ export default defineComponent({
       required: true,
     },
   },
-  setup() {
-    return {}
-  },
   data() {
     return {
       sample: '',
     }
   },
+  created() {
+    this.callAccount()
+  },
   computed: {
     ...mapState('comCash', [
-      'comAccD1List',
-      'comAccD2List',
-      'comAccD3List',
+      'formAccD1List',
+      'formAccD2List',
+      'formAccD3List',
       'comBankList',
-      'cashBookCount',
     ]),
   },
-  methods: {},
+  methods: {
+    callAccount() {
+      const sort = this.form.sort
+      const d1 = this.form.account_d1
+      const d2 = this.form.account_d2
+      this.fetchAccountD1List({ sort })
+      this.fetchAccountD2List({ sort, d1 })
+      this.fetchAccountD3List({ sort, d1, d2 })
+    },
+    ...mapActions('comCash', [
+      'fetchAccountD1List',
+      'fetchAccountD2List',
+      'fetchAccountD3List',
+    ]),
+  },
 })
 </script>

@@ -1,8 +1,11 @@
 import api from '@/api'
 import {
-  FETCH_COM_ACC_D1_LIST,
-  FETCH_COM_ACC_D2_LIST,
-  FETCH_COM_ACC_D3_LIST,
+  FETCH_ACC_D1_LIST,
+  FETCH_ACC_D2_LIST,
+  FETCH_ACC_D3_LIST,
+  FETCH_FORM_ACC_D1_LIST,
+  FETCH_FORM_ACC_D2_LIST,
+  FETCH_FORM_ACC_D3_LIST,
   FETCH_COMPAY_BANK_LIST,
   FETCH_CASHBOOK_LIST,
   FETCH_ACC_SORT_LIST,
@@ -19,6 +22,36 @@ const actions = {
       .catch(err => console.log(err.response.data))
   },
 
+  fetchAccD1List: ({ commit }: any) => {
+    const url = `/account-depth1/`
+    api
+      .get(url)
+      .then(res => {
+        commit(FETCH_ACC_D1_LIST, res.data)
+      })
+      .catch(err => console.log(err.response.data))
+  },
+
+  fetchAccD2List: ({ commit }: any) => {
+    const url = `/account-depth2/`
+    api
+      .get(url)
+      .then(res => {
+        commit(FETCH_ACC_D2_LIST, res.data)
+      })
+      .catch(err => console.log(err.response.data))
+  },
+
+  fetchAccD3List: ({ commit }: any) => {
+    const url = `/account-depth3/`
+    api
+      .get(url)
+      .then(res => {
+        commit(FETCH_ACC_D3_LIST, res.data)
+      })
+      .catch(err => console.log(err.response.data))
+  },
+
   fetchAccountD1List: ({ commit }: any, data?: any) => {
     let url = `/account-depth1/`
     const sort = data && data.sort ? data.sort : ''
@@ -26,7 +59,7 @@ const actions = {
     api
       .get(url)
       .then(res => {
-        commit(FETCH_COM_ACC_D1_LIST, res.data)
+        commit(FETCH_FORM_ACC_D1_LIST, res.data)
       })
       .catch(err => console.log(err.response.data))
   },
@@ -39,7 +72,7 @@ const actions = {
     api
       .get(url)
       .then(res => {
-        commit(FETCH_COM_ACC_D2_LIST, res.data)
+        commit(FETCH_FORM_ACC_D2_LIST, res.data)
       })
       .catch(err => console.log(err.response.data))
   },
@@ -53,7 +86,7 @@ const actions = {
     api
       .get(url)
       .then(res => {
-        commit(FETCH_COM_ACC_D3_LIST, res.data)
+        commit(FETCH_FORM_ACC_D3_LIST, res.data)
       })
       .catch(err => console.log(err.response.data))
   },

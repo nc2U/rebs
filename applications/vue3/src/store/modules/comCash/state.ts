@@ -64,9 +64,15 @@ export interface CashBook {
 
 export interface CashesState {
   sortList: AccountSort[]
-  comAccD1List: AccountD1[]
-  comAccD2List: AccountD2[]
-  comAccD3List: AccountD3[]
+
+  formAccD1List: AccountD1[]
+  formAccD2List: AccountD2[]
+  formAccD3List: AccountD3[]
+
+  listAccD1List: AccountD1[]
+  listAccD2List: AccountD2[]
+  listAccD3List: AccountD3[]
+
   comBankList: CompanyBank[]
   cashBookList: CashBook[]
   cashBookCount: number
@@ -74,9 +80,15 @@ export interface CashesState {
 
 const state = {
   sortList: [],
-  comAccD1List: [],
-  comAccD2List: [],
-  comAccD3List: [],
+
+  formAccD1List: [],
+  formAccD2List: [],
+  formAccD3List: [],
+
+  listAccD1List: [],
+  listAccD2List: [],
+  listAccD3List: [],
+
   comBankList: [],
   cashBookList: [],
   cashBookCount: 0,

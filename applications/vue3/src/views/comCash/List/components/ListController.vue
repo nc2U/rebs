@@ -34,7 +34,7 @@
             <CFormSelect v-model="form.account_d1" @change="accountD1Select">
               <option value="">계정[대분류]</option>
               <option
-                v-for="acc1 in comAccD1List"
+                v-for="acc1 in formAccD1List"
                 :value="acc1.pk"
                 :key="acc1.pk"
               >
@@ -51,7 +51,7 @@
             >
               <option value="">계정[중분류]</option>
               <option
-                v-for="acc2 in comAccD2List"
+                v-for="acc2 in formAccD2List"
                 :value="acc2.pk"
                 :key="acc2.pk"
               >
@@ -68,7 +68,7 @@
             >
               <option value="">계정[소분류]</option>
               <option
-                v-for="acc3 in comAccD3List"
+                v-for="acc3 in formAccD3List"
                 :value="acc3.pk"
                 :key="acc3.pk"
               >
@@ -155,9 +155,9 @@ export default defineComponent({
       return a && b && c && d && e && f && g && h
     },
     ...mapState('comCash', [
-      'comAccD1List',
-      'comAccD2List',
-      'comAccD3List',
+      'formAccD1List',
+      'formAccD2List',
+      'formAccD3List',
       'comBankList',
       'cashBookCount',
     ]),
