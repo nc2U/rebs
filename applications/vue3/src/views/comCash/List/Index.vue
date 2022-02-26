@@ -7,13 +7,7 @@
   />
   <ContentBody>
     <CCardBody class="pb-5">
-      <ListController
-        ref="listControl"
-        @sort-select="sortSelect"
-        @d1-select="accountD1Select"
-        @d2-select="accountD2Select"
-        @list-filtering="listFiltering"
-      />
+      <ListController ref="listControl" @list-filtering="listFiltering" />
       <CashesList
         :company="company"
         @page-select="pageSelect"
@@ -69,24 +63,17 @@ export default defineComponent({
         this.$store.state.comCash.cashBookCount = 0
       }
     },
-    sortSelect(sort: number) {
-      this.fetchAccountD1List()
-      this.fetchAccountD2List()
-      this.fetchAccountD3List()
-    },
-    accountD1Select(d1: number | string) {
-      this.fetchAccountD2List(d1)
-      this.fetchAccountD3List({ d1: d1 })
-    },
-    accountD2Select(d2: number | string) {
-      this.fetchAccountD3List({ d2: d2 })
-    },
-
     pageSelect(this: any, page: number) {
       this.$refs.listControl.listFiltering(page)
     },
     listFiltering(payload: any) {
       const company = this.company.pk
+      const sort = payload.sort ? payload.sort : ''
+      const d1 = payload.account_d1 ? payload.account_d1 : ''
+      const d2 = payload.account_d2 ? payload.account_d2 : ''
+      this.fetchAccountD1List({ sort })
+      this.fetchAccountD2List({ sort, d1 })
+      this.fetchAccountD3List({ sort, d1, d2 })
       this.fetchCashBookList({ ...{ company }, ...payload })
     },
     onUpdate(payload: any) {

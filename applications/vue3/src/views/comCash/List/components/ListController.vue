@@ -168,18 +168,15 @@ export default defineComponent({
       this.form.account_d1 = ''
       this.form.account_d2 = ''
       this.form.account_d3 = ''
-      this.$nextTick(() => this.$emit('sort-select', this.form.sort))
     },
     accountD1Select() {
       this.listFiltering(1)
       this.form.account_d2 = ''
       this.form.account_d3 = ''
-      this.$nextTick(() => this.$emit('d1-select', this.form.account_d1))
     },
     accountD2Select() {
       this.listFiltering(1)
       this.form.account_d3 = ''
-      this.$nextTick(() => this.$emit('d2-select', this.form.account_d2))
     },
     listFiltering(page = 1) {
       this.$nextTick(() =>

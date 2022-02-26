@@ -234,7 +234,7 @@ class AccountSubD2List(generics.ListAPIView):
     queryset = AccountSubD2.objects.all()
     serializer_class = AccountSubD2Serializer
     pagination_class = PageNumberPaginationTwenty
-    filter_fields = ('d1', 'd1__accountsort')
+    filter_fields = ('d1__accountsort', 'd1')
 
 
 class AccountSubD2Detail(generics.RetrieveAPIView):

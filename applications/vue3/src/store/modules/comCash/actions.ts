@@ -19,19 +19,25 @@ const actions = {
       .catch(err => console.log(err.response.data))
   },
 
-  fetchAccountD1List: ({ commit }: any) => {
+  fetchAccountD1List: ({ commit }: any, data?: any) => {
+    let url = `/account-depth1/`
+    const sort = data && data.sort ? data.sort : ''
+    if (sort) url += `?accountsort=${sort}`
     api
-      .get(`/account-depth1/`)
+      .get(url)
       .then(res => {
         commit(FETCH_COM_ACC_D1_LIST, res.data)
       })
       .catch(err => console.log(err.response.data))
   },
 
-  fetchAccountD2List: ({ commit }: any, d1acc?: number) => {
-    const d1 = d1acc ? d1acc : ''
+  fetchAccountD2List: ({ commit }: any, data?: any) => {
+    const sort = data && data.sort ? data.sort : ''
+    const d1 = data && data.d1 ? data.d1 : ''
+    let url = `/account-depth2/?d1=${d1}`
+    if (sort) url += `&d1__accountsort=${sort}`
     api
-      .get(`/account-depth2/?d1=${d1}`)
+      .get(url)
       .then(res => {
         commit(FETCH_COM_ACC_D2_LIST, res.data)
       })
@@ -39,10 +45,13 @@ const actions = {
   },
 
   fetchAccountD3List: ({ commit }: any, data?: any) => {
+    const sort = data && data.sort ? data.sort : ''
     const d1 = data && data.d1 ? data.d1 : ''
     const d2 = data && data.d2 ? data.d2 : ''
+    let url = `/account-depth3/?d2__d1=${d1}&d2=${d2}`
+    if (sort) url += `&d2__d1__accountsort=${sort}`
     api
-      .get(`/account-depth3/?d2__d1=${d1}&d2=${d2}`)
+      .get(url)
       .then(res => {
         commit(FETCH_COM_ACC_D3_LIST, res.data)
       })
