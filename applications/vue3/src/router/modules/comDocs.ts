@@ -16,7 +16,7 @@ const comDocs = {
       name: '본사 일반문서',
       component: () =>
         store.state.accounts.userInfo.staffauth.company_docs > '0'
-          ? import('@/views/docs/GeneralDocs/Index.vue')
+          ? import('@/views/comDocs/GeneralDocs/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
     },
     {
@@ -34,7 +34,7 @@ const comDocs = {
           name: '본사 소송문서',
           component: () =>
             store.state.accounts.userInfo.staffauth.company_docs > '0'
-              ? import('@/views/docs/LawsuitDocs/Index.vue')
+              ? import('@/views/comDocs/LawsuitDocs/Index.vue')
               : import('@/views/_Accounts/NoAuth.vue'),
         },
         {
@@ -42,7 +42,7 @@ const comDocs = {
           name: '본사 소송사건',
           component: () =>
             store.state.accounts.userInfo.staffauth.company_docs > '0'
-              ? import('@/views/docs/LawsuitCase/Index.vue')
+              ? import('@/views/comDocs/LawsuitCase/Index.vue')
               : import('@/views/_Accounts/NoAuth.vue'),
         },
       ],
