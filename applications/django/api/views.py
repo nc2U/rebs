@@ -247,7 +247,7 @@ class AccountSubD3List(generics.ListAPIView):
     name = 'acc_d3-list'
     queryset = AccountSubD3.objects.all()
     serializer_class = AccountSubD3Serializer
-    pagination_class = PageNumberPaginationFifty
+    pagination_class = PageNumberPaginationTwoHundred
     filter_fields = ('d2__d1__accountsort', 'd2__d1', 'd2')
 
 
