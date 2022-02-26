@@ -1,3 +1,9 @@
+interface AccountSort {
+  pk: number
+  name: string
+  accounts: number[]
+}
+
 interface AccountD1 {
   pk: number
   code: string
@@ -57,6 +63,7 @@ interface CashBook {
 }
 
 export interface CashesState {
+  sortList: AccountSort[]
   comAccD1List: AccountD1[]
   comAccD2List: AccountD2[]
   comAccD3List: AccountD3[]
@@ -66,6 +73,7 @@ export interface CashesState {
 }
 
 const state = {
+  sortList: [],
   comAccD1List: [],
   comAccD2List: [],
   comAccD3List: [],

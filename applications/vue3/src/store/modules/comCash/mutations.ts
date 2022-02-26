@@ -1,4 +1,5 @@
 import {
+  FETCH_ACC_SORT_LIST,
   FETCH_CASHBOOK_LIST,
   FETCH_COM_ACC_D1_LIST,
   FETCH_COM_ACC_D2_LIST,
@@ -8,6 +9,9 @@ import {
 import { CashesState } from '@/store/modules/comCash/state'
 
 const mutations = {
+  [FETCH_ACC_SORT_LIST]: (state: CashesState, payload: any) =>
+    (state.sortList = payload.results),
+
   [FETCH_COM_ACC_D1_LIST]: (state: CashesState, payload: any) =>
     (state.comAccD1List = payload.results),
 

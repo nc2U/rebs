@@ -5,10 +5,20 @@ import {
   FETCH_COM_ACC_D3_LIST,
   FETCH_COMPAY_BANK_LIST,
   FETCH_CASHBOOK_LIST,
+  FETCH_ACC_SORT_LIST,
 } from '@/store/modules/comCash/mutations-types'
 import { message } from '@/utils/helper'
 
 const actions = {
+  fetchAccSortList: ({ commit }: any) => {
+    api
+      .get(`/account-sort/`)
+      .then(res => {
+        commit(FETCH_ACC_SORT_LIST, res.data)
+      })
+      .catch(err => console.log(err.response.data))
+  },
+
   fetchAccountD1List: ({ commit }: any) => {
     api
       .get(`/account-depth1/`)
