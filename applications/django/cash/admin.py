@@ -20,9 +20,9 @@ class ProjectBankAccountAdmin(ImportExportMixin, admin.ModelAdmin):
 
 
 class CashBookAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'deal_date', 'sort', 'account_d1', 'account_d2', 'sub_account',
+    list_display = ('id', 'deal_date', 'sort', 'account_d1', 'account_d2', 'account_d3',
                     'content', 'trader', 'bank_account', 'formatted_income', 'formatted_outlay', 'user')
-    search_fields = ('sub_account', 'content', 'trader', 'note')
+    search_fields = ('account_d3', 'content', 'trader', 'note')
     list_display_links = ('deal_date', 'content')
 
     def formatted_income(self, obj):

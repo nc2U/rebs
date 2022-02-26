@@ -95,8 +95,8 @@
                                                 </select>
                                             </td>
                                             <td class="text-center">
-                                                <select name="form-__prefix__-sub_account" class="form-control"
-                                                        id="id_form-__prefix__-sub_account" disabled="">
+                                                <select name="form-__prefix__-account_d3" class="form-control"
+                                                        id="id_form-__prefix__-account_d3" disabled="">
                                                     <option value="" selected="">---------</option>
                                                 </select>
                                             </td>
@@ -162,7 +162,7 @@
                                                 <td class="text-center">
                                                     {{ form.account_d1|add_class:"form-control" }}{{ form.account_d1.errors }}</td>
                                                 <td class="text-center">
-                                                    {{ form.sub_account|add_class:"form-control" }}{{ form.sub_account.errors }}</td>
+                                                    {{ form.account_d3|add_class:"form-control" }}{{ form.account_d3.errors }}</td>
                                                 <td class="text-center">
                                                     {{ form.content|add_class:"form-control"|attr:"placeholder:적요" }}{{ form.content.errors }}</td>
                                                 <td class="text-center">
@@ -239,7 +239,7 @@
           document.getElementById('id_form-' + i + '-content').setAttribute('onblur', 'sync_transfer(this)')
 
           document.getElementById('id_form-' + i + '-account_d1').disabled = true // 계정 대분류
-          document.getElementById('id_form-' + i + '-sub_account').disabled = true        // 계정 과목
+          document.getElementById('id_form-' + i + '-account_d3').disabled = true        // 계정 과목
           document.getElementById('id_form-' + i + '-content').disabled = true
           document.getElementById('id_form-' + i + '-trader').disabled = true
           document.getElementById('id_form-' + i + '-bank_account').disabled = true
@@ -253,7 +253,7 @@
       function sort_change(object) {
         let i = parseInt(object.name.substr(5, 1))
         const account_d1 = document.getElementById('id_form-' + i + '-account_d1')          // 계정 대분류, --- 필수
-        const sub_account = document.getElementById('id_form-' + i + '-sub_account')                // 계정 과목
+        const account_d3 = document.getElementById('id_form-' + i + '-account_d3')                // 계정 과목
         const content = document.getElementById('id_form-' + i + '-content')                        // 적요, --- 필수
         const trader = document.getElementById('id_form-' + i + '-trader')                          // 거래처, --- 필수
         const bank_account = document.getElementById('id_form-' + i + '-bank_account')              // 거래계좌, --- 필수
@@ -264,7 +264,7 @@
 
         const next_sort = document.getElementById('id_form-' + (i + 1) + '-sort')    // 계정 대분류, --- 필수
         const next_account_d1 = document.getElementById('id_form-' + (i + 1) + '-account_d1')    // 계정 대분류, --- 필수
-        const next_sub_account = document.getElementById('id_form-' + (i + 1) + '-sub_account')
+        const next_account_d3 = document.getElementById('id_form-' + (i + 1) + '-account_d3')
         const next_content = document.getElementById('id_form-' + (i + 1) + '-content')
         const next_trader = document.getElementById('id_form-' + (i + 1) + '-trader')
         const next_bank_account = document.getElementById('id_form-' + (i + 1) + '-bank_account')   // 거래계좌, --- 필수
@@ -274,7 +274,7 @@
         const next_evidence = document.getElementById('id_form-' + (i + 1) + '-evidence')
 
         account_d1.disabled = (object.value === '') ? true : false
-        sub_account.disabled = (object.value === '3' | object.value === '') ? true : false
+        account_d3.disabled = (object.value === '3' | object.value === '') ? true : false
         content.disabled = (object.value === '') ? true : false
         trader.disabled = (object.value === '3' | object.value === '') ? true : false
         bank_account.disabled = (object.value === '') ? true : false
@@ -291,13 +291,13 @@
 
         if (object.value === '1') { // 입금
           inc(account_d1)
-          get_sub_account(sub_account, '4')
+          get_account_d3(account_d3, '4')
         } else if (object.value === '2') { // 출금
           out(account_d1)
-          get_sub_account(sub_account, '5')
+          get_account_d3(account_d3, '5')
         } else if (object.value == '3') { // 대체일 경우
           trans(account_d1)
-          sub_account.options[0].selected = true
+          account_d3.options[0].selected = true
 
           // 다음 줄 폼이 없으면 추가하는 로직 작성
           if (next_sort === null) {
@@ -314,7 +314,7 @@
           }
         } else { // '' 값이 없을 때
           account_d1.options[0].selected = true
-          sub_account.options[0].selected = true
+          account_d3.options[0].selected = true
           content.value = ''
           trader.value = ''
           bank_account.options[0].selected = true
@@ -326,8 +326,8 @@
             next_sort.options[0].selected = true
             next_account_d1.options[0].selected = true
             next_account_d1.disabled = true
-            next_sub_account.options[0].selected = true
-            next_sub_account.disabled = true
+            next_account_d3.options[0].selected = true
+            next_account_d3.disabled = true
             next_content.value = ''
             next_content.disabled = true
             next_bank_account.options[0].selected = true
@@ -352,7 +352,7 @@
         i = parseInt(i)
         const next_sort = document.getElementById('id_form-' + (i + 1) + '-sort')    // 계정 대분류, --- 필수
         const next_account_d1 = document.getElementById('id_form-' + (i + 1) + '-account_d1')    // 계정 대분류, --- 필수
-        const next_sub_account = document.getElementById('id_form-' + (i + 1) + '-sub_account')
+        const next_account_d3 = document.getElementById('id_form-' + (i + 1) + '-account_d3')
         const next_content = document.getElementById('id_form-' + (i + 1) + '-content')
         const next_trader = document.getElementById('id_form-' + (i + 1) + '-trader')
         const next_bank_account = document.getElementById('id_form-' + (i + 1) + '-bank_account')   // 거래계좌, --- 필수
@@ -369,8 +369,8 @@
         next_account_d1.disabled = false
         next_account_d1.required = true
 
-        next_sub_account.options[0].selected = true
-        next_sub_account.disabled = true // 계정 대분류, --- 필수
+        next_account_d3.options[0].selected = true
+        next_account_d3.disabled = true // 계정 대분류, --- 필수
         next_content.disabled = false
         next_content.required = true
         next_trader.disabled = true
@@ -430,18 +430,18 @@
 
       function account_d1_change(d1) {                                  // 구분 2 셀 값 변경 시 로직
         const i = d1.name.substr(5, 1)
-        const sub_account = document.getElementById('id_form-' + i + '-sub_account')  // 계정 과목
+        const account_d3 = document.getElementById('id_form-' + i + '-account_d3')  // 계정 과목
 
         if (d1.value === '') {
-          sub_account.disabled = true
-          sub_account.options[0].selected = true
+          account_d3.disabled = true
+          account_d3.options[0].selected = true
         } else {
-          sub_account.disabled = false
-          get_sub_account(sub_account, d1.value)
+          account_d3.disabled = false
+          get_account_d3(account_d3, d1.value)
         }
       }
 
-      function get_sub_account(acc, d1) {
+      function get_account_d3(acc, d1) {
         switch (d1) {
           case '1':
             acc.length = {{ account_1.count|add:"1" }}

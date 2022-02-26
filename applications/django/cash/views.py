@@ -131,7 +131,7 @@ class CashInoutLV(LoginRequiredMixin, ListView, FormView):
 
         if self.request.GET.get('search_word'):
             results = results.filter(
-                Q(sub_account__name__icontains=self.request.GET.get('search_word', '')) |
+                Q(account_d3__name__icontains=self.request.GET.get('search_word', '')) |
                 Q(content__icontains=self.request.GET.get('search_word', '')) |
                 Q(trader__icontains=self.request.GET.get('search_word', ''))
             )

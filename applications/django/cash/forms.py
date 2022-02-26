@@ -6,7 +6,7 @@ from rebs.models import ProjectAccountD1, ProjectAccountD2
 
 CashBookFormSet = modelformset_factory(
     CashBook,
-    fields=('sort', 'account_d1', 'sub_account', 'content', 'trader',
+    fields=('sort', 'account_d1', 'account_d3', 'content', 'trader',
             'bank_account', 'income', 'outlay', 'evidence', 'note'),
     extra=1
 )
