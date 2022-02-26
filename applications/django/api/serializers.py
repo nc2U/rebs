@@ -288,13 +288,12 @@ class CompanyBankAccountSerializer(serializers.ModelSerializer):
 
 
 class CashBookSerializer(serializers.ModelSerializer):
-    sort_desc = serializers.CharField(source='get_sort_display', read_only=True)
     evidence_desc = serializers.CharField(source='get_evidence_display', read_only=True)
 
     class Meta:
         model = CashBook
         fields = (
-            'pk', 'company', 'sort', 'sort_desc', 'middle_account', 'main_account', 'sub_account',
+            'pk', 'company', 'sort', 'middle_account', 'main_account', 'sub_account',
             'content', 'trader', 'bank_account', 'income', 'outlay', 'evidence', 'evidence_desc',
             'note', 'deal_date', 'user', 'created_at', 'updated_at')
 
@@ -307,12 +306,11 @@ class ProjectBankAccountSerializer(serializers.ModelSerializer):
 
 
 class ProjectCashBookSerializer(serializers.ModelSerializer):
-    sort_desc = serializers.CharField(source='get_sort_display', read_only=True)
     evidence_desc = serializers.CharField(source='get_evidence_display', read_only=True)
 
     class Meta:
         model = ProjectCashBook
-        fields = ('pk', 'project', 'sort', 'sort_desc', 'project_account_d1', 'project_account_d2',
+        fields = ('pk', 'project', 'sort', 'project_account_d1', 'project_account_d2',
                   'is_record_separate', 'is_contract_payment', 'contract', 'installment_order', 'is_release',
                   'is_refund_contractor', 'content', 'trader', 'bank_account', 'income', 'outlay', 'evidence',
                   'evidence_desc', 'note', 'deal_date', 'user', 'created_at', 'updated_at')

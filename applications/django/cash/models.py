@@ -33,8 +33,7 @@ class CompanyBankAccount(models.Model):
 
 class CashBook(models.Model):
     company = models.ForeignKey('company.Company', on_delete=models.PROTECT, verbose_name='회사정보')
-    SORT_CHOICES = (('1', '입금'), ('2', '출금'), ('3', '대체'))
-    sort = models.CharField('구분', max_length=1, choices=SORT_CHOICES)
+    sort = models.ForeignKey('rebs.AccountSort', on_delete=models.PROTECT, verbose_name='구분')
     main_account = models.ForeignKey('rebs.AccountSubD1', on_delete=models.SET_NULL, null=True, blank=True,
                                      verbose_name='계정대분류')
     middle_account = models.ForeignKey('rebs.AccountSubD2', on_delete=models.SET_NULL, null=True, blank=True,
@@ -86,8 +85,8 @@ class ProjectBankAccount(models.Model):
 
 class ProjectCashBook(models.Model):
     project = models.ForeignKey('project.Project', on_delete=models.PROTECT, verbose_name='프로젝트')
-    SORT_CHOICES = (('1', '입금'), ('2', '출금'), ('3', '대체'))
-    sort = models.CharField('구분', max_length=1, choices=SORT_CHOICES)  # icp=True -> 1=수납 or 2=환불
+    sort = models.ForeignKey('rebs.AccountSort', on_delete=models.PROTECT,
+                             verbose_name='구분')  # icp=True -> 1=수납 or 2=환불
     project_account_d1 = models.ForeignKey('rebs.ProjectAccountD1', on_delete=models.PROTECT, null=True, blank=True,
                                            verbose_name='현장 계정')
     project_account_d2 = models.ForeignKey('rebs.ProjectAccountD2', on_delete=models.PROTECT, null=True, blank=True,
