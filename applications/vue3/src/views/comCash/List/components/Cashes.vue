@@ -29,7 +29,7 @@
     <CTableDataCell>
       <CButton color="success" @click="updateObject" size="sm"> 수정</CButton>
 
-      <CButton color="danger" @click="deleteObject" size="sm"> 삭제</CButton>
+      <CButton color="danger" @click="deleteConfirm" size="sm"> 삭제</CButton>
     </CTableDataCell>
   </CTableRow>
 
@@ -43,6 +43,19 @@
     </template>
     <template v-slot:footer>
       <CButton color="primary" @click="modalAction">저장</CButton>
+    </template>
+  </ConfirmModal>
+
+  <ConfirmModal ref="delModal">
+    <template v-slot:header>
+      <CIcon name="cilWarning" />
+      입출금 거래 정보 삭제
+    </template>
+    <template v-slot:default>
+      해당 입출금 거래 건별 정보 삭제를 진행합니다.
+    </template>
+    <template v-slot:footer>
+      <CButton color="danger" @click="deleteObject">삭제</CButton>
     </template>
   </ConfirmModal>
 
@@ -119,17 +132,22 @@ export default defineComponent({
       if (
         this.superAuth ||
         (this.staffAuth && this.staffAuth.company_cash === '2')
-      )
+      ) {
         this.$emit('on-update', { ...{ pk: this.cash.pk }, ...this.form })
-      else this.$refs.alertModal.callModal()
+      } else this.$refs.alertModal.callModal()
     },
-    deleteObject(this: any) {
+    deleteConfirm(this: any) {
       if (
         this.superAuth ||
         (this.staffAuth && this.staffAuth.company_cash === '2')
       )
-        this.$emit('on-delete', this.cash.pk)
+        this.$refs.delModal.callModal()
       else this.$refs.alertModal.callModal()
+    },
+
+    deleteObject(this: any) {
+      this.$emit('on-delete', this.cash.pk)
+      this.$refs.delModal.visible = false
     },
   },
 })
