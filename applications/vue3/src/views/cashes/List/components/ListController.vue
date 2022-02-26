@@ -44,7 +44,11 @@
           </CCol>
 
           <CCol md="6" lg="2" class="mb-3">
-            <CFormSelect v-model="form.mid_account" @change="accountD2Select">
+            <CFormSelect
+              v-model="form.mid_account"
+              @change="accountD2Select"
+              :disabled="!this.form.main_account"
+            >
               <option value="">계정[중분류]</option>
               <option
                 v-for="acc2 in comAccD2List"
@@ -57,7 +61,11 @@
           </CCol>
 
           <CCol md="6" lg="2" class="mb-3">
-            <CFormSelect v-model="form.sub_account" @change="listFiltering(1)">
+            <CFormSelect
+              v-model="form.sub_account"
+              @change="listFiltering(1)"
+              :disabled="!this.form.main_account"
+            >
               <option value="">계정[소분류]</option>
               <option
                 v-for="acc3 in comAccD3List"
