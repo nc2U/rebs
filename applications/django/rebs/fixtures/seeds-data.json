@@ -19,6 +19,42 @@
     }
   },
   {
+    "model": "rebs.accountsort",
+    "pk": 1,
+    "fields": {
+      "name": "입금",
+      "accounts": [
+        1,
+        2,
+        3,
+        4
+      ]
+    }
+  },
+  {
+    "model": "rebs.accountsort",
+    "pk": 2,
+    "fields": {
+      "name": "출금",
+      "accounts": [
+        1,
+        2,
+        3,
+        5
+      ]
+    }
+  },
+  {
+    "model": "rebs.accountsort",
+    "pk": 3,
+    "fields": {
+      "name": "대체",
+      "accounts": [
+        6
+      ]
+    }
+  },
+  {
     "model": "rebs.accountsubd1",
     "pk": 1,
     "fields": {
