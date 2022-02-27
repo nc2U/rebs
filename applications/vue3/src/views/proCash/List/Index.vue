@@ -85,9 +85,8 @@ export default defineComponent({
       // this.updatePrCashBook({ ...{ page }, ...payload })
     },
     onDelete(payload: any) {
-      console.log(payload)
-      // const page = this.page
-      // this.deletePrCashBook({ ...{ page }, ...payload })
+      const page = this.page
+      this.deletePrCashBook({ ...{ page }, ...payload })
     },
     ...mapActions('proCash', [
       'fetchAccSortList',

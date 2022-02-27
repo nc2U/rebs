@@ -127,32 +127,29 @@ const actions = {
     api
       .post(`/project-cashbook/`, payload)
       .then(res => {
-        dispatch('fetchProjectCashList', res.data.project)
-        dispatch('fetchPaymentList', res.data.project)
+        dispatch('fetchProjectCashList', { project: res.data.project })
         message()
       })
       .catch(err => console.log(err.response.data))
   },
 
   updatePrCashBook: ({ dispatch }: any, payload: any) => {
-    const { pk, ...formData } = payload
+    const { pk, page, ...formData } = payload
     api
       .put(`/project-cashbook/${pk}/`, formData)
       .then(res => {
-        dispatch('fetchProjectCashList', res.data.project)
-        dispatch('fetchPaymentList', res.data.project)
+        dispatch('fetchProjectCashList', { project: res.data.project, page })
         message()
       })
       .catch(err => console.log(err.response.data))
   },
 
   deletePrCashBook: ({ dispatch }: any, payload: any) => {
-    const { pk, project } = payload
+    const { pk, page, project } = payload
     api
       .delete(`/project-cashbook/${pk}/`)
       .then(() => {
-        dispatch('fetchProjectCashList', project)
-        dispatch('fetchPaymentList', project)
+        dispatch('fetchProjectCashList', { project, page })
         message('danger', '알림!', '해당 오브젝트가 삭제되었습니다.')
       })
       .catch(err => console.log(err.response.data))

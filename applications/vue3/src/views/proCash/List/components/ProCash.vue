@@ -18,10 +18,10 @@
       {{ cutString(proCash.bank_account, 9) }}
     </CTableDataCell>
     <CTableDataCell class="text-right" color="success">
-      {{ numFormat(proCash.income) }}
+      {{ numFormat(proCash.income || 0) }}
     </CTableDataCell>
     <CTableDataCell class="text-right" color="danger">
-      {{ numFormat(proCash.outlay) }}
+      {{ numFormat(proCash.outlay || 0) }}
     </CTableDataCell>
     <CTableDataCell>{{ proCash.evidence }}</CTableDataCell>
     <CTableDataCell>
@@ -135,7 +135,10 @@ export default defineComponent({
       else this.$refs.alertModal.callModal()
     },
     deleteObject(this: any) {
-      this.$emit('on-delete', this.payment.pk)
+      this.$emit('on-delete', {
+        project: this.proCash.project,
+        pk: this.proCash.pk,
+      })
       this.$refs.delModal.visible = false
     },
   },
