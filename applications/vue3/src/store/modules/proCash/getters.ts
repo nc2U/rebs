@@ -1,7 +1,7 @@
 import { ProjectCashState } from '@/store/modules/proCash/state'
 
 const getters = {
-  getProCashes: (state: ProjectCashState) => {
+  getProCashLogs: (state: ProjectCashState) => {
     return state.proCashBookList
       ? state.proCashBookList.map((p: any) => ({
           pk: p.pk,
@@ -11,14 +11,14 @@ const getters = {
             ? state.sortList.filter(s => s.pk === p.sort).map(s => s.name)[0]
             : '',
           project_account_d1: p.project_account_d1,
-          project_account_d1_desc: state.formAccD1List
-            ? state.formAccD1List
+          project_account_d1_desc: p.project_account_d1
+            ? state.allAccD1List
                 .filter(d => d.pk === p.project_account_d1)
                 .map(d => d.name)[0]
             : '',
           project_account_d2: p.project_account_d2,
-          project_account_d2_desc: state.formAccD2List
-            ? state.formAccD2List
+          project_account_d2_desc: p.project_account_d2
+            ? state.allAccD2List
                 .filter(d => d.pk === p.project_account_d2)
                 .map(d => d.name)[0]
             : '',
