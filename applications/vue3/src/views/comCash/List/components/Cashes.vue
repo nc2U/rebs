@@ -27,8 +27,22 @@
     </CTableDataCell>
     <CTableDataCell>{{ cash.evidence_desc }}</CTableDataCell>
     <CTableDataCell>
-      <CButton color="success" @click="updateConfirm" size="sm">수정</CButton>
-      <CButton color="danger" @click="deleteConfirm" size="sm">삭제</CButton>
+      <CButton
+        color="success"
+        @click="updateConfirm"
+        size="sm"
+        :disabled="!pageManageAuth || !allowedPeriod"
+      >
+        수정
+      </CButton>
+      <CButton
+        color="danger"
+        @click="deleteConfirm"
+        size="sm"
+        :disabled="!pageManageAuth || !allowedPeriod"
+      >
+        삭제
+      </CButton>
     </CTableDataCell>
   </CTableRow>
 
@@ -38,7 +52,7 @@
       입출금 거래 건별 수정
     </template>
     <template v-slot:default>
-      <CashForm :form="form" />
+      <CashForm @on-submit="updateObject" :form="form" />
     </template>
     <template v-slot:footer>
       <CButton color="success" @click="updateObject">저장</CButton>
