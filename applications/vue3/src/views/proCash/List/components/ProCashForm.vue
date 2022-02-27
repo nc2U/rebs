@@ -84,7 +84,15 @@
           <CRow>
             <CFormLabel class="col-sm-4 col-form-label">거래처</CFormLabel>
             <CCol sm="8">
-              <CFormInput v-model="form.trader" placeholder="거래처" />
+              <CFormInput
+                v-model="form.trader"
+                placeholder="거래처"
+                v-c-tooltip="{
+                  content:
+                    '분양대금(분담금) 항목일 경우 반드시 해당 계좌에 기재된 입금자를 기재.',
+                  placement: 'top',
+                }"
+              />
             </CCol>
           </CRow>
         </CCol>
@@ -200,12 +208,6 @@ export default defineComponent({
         sort: '',
         project_account_d1: '',
         project_account_d2: '',
-        // is_record_separate: '',
-        is_contract_payment: '',
-        // contract: '',
-        // installment_order: '',
-        // is_release: '',
-        // is_refund_contractor: '',
         content: '',
         trader: '',
         bank_account: '',
@@ -224,12 +226,6 @@ export default defineComponent({
       this.form.sort = this.proCash.sort
       this.form.project_account_d1 = this.proCash.project_account_d1
       this.form.project_account_d2 = this.proCash.project_account_d2
-      // this.form.is_record_separate = this.proCash.is_record_separate
-      this.form.is_contract_payment = this.proCash.is_contract_payment
-      // this.form.contract = this.proCash.contract
-      // this.form.installment_order = this.proCash.installment_order
-      // this.form.is_release = this.proCash.is_release
-      // this.form.is_refund_contractor = this.proCash.is_refund_contractor
       this.form.content = this.proCash.content
       this.form.trader = this.proCash.trader
       this.form.bank_account = this.proCash.bank_account

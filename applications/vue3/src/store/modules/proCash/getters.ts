@@ -22,7 +22,6 @@ const getters = {
                 .filter(d => d.pk === p.project_account_d2)
                 .map(d => d.name)[0]
             : '',
-          is_contract_payment: p.is_contract_payment,
           content: p.content,
           trader: p.trader,
           bank_account: p.bank_account,
@@ -35,6 +34,7 @@ const getters = {
           outlay: p.outlay,
           evidence: p.evidence,
           evidence_desc: p.evidence_desc,
+          note: p.note,
           deal_date: p.deal_date,
         }))
       : []

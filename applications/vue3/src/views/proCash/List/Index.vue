@@ -80,9 +80,8 @@ export default defineComponent({
       this.fetchProjectCashList({ ...{ project }, ...payload })
     },
     onUpdate(payload: any) {
-      console.log(payload)
-      // const page = this.page
-      // this.updatePrCashBook({ ...{ page }, ...payload })
+      const page = this.page
+      this.updatePrCashBook({ ...{ page }, ...payload })
     },
     onDelete(payload: any) {
       const page = this.page
