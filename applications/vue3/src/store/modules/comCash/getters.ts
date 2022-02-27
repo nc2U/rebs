@@ -13,14 +13,14 @@ const getters = {
                 .filter(sort => sort.pk === c.sort)
                 .map(sort => sort.name)[0]
             : '',
-          account_d1: c.account_d1,
+          account_d1: c.account_d1 === null ? '' : String(c.account_d1),
           account_d1_desc: c.account_d1
             ? state.listAccD1List
                 .filter(d1 => d1.pk === c.account_d1)
                 .map(d1 => d1.name)[0]
             : '',
-          account_d2: c.account_d2,
-          account_d3: c.account_d3,
+          account_d2: c.account_d2 === null ? '' : String(c.account_d2),
+          account_d3: c.account_d3 === null ? '' : String(c.account_d3),
           account_d3_desc: c.account_d3
             ? state.listAccD3List
                 .filter(d3 => d3.pk === c.account_d3)

@@ -6,17 +6,19 @@ const getters = {
       ? state.proCashBookList.map((p: any) => ({
           pk: p.pk,
           project: p.project,
-          sort: p.sort,
+          sort: String(p.sort),
           sort_desc: state.sortList
             ? state.sortList.filter(s => s.pk === p.sort).map(s => s.name)[0]
             : '',
-          project_account_d1: p.project_account_d1,
+          project_account_d1:
+            p.project_account_d1 === null ? '' : String(p.project_account_d1),
           project_account_d1_desc: p.project_account_d1
             ? state.allAccD1List
                 .filter(d => d.pk === p.project_account_d1)
                 .map(d => d.name)[0]
             : '',
-          project_account_d2: p.project_account_d2,
+          project_account_d2:
+            p.project_account_d2 === null ? '' : String(p.project_account_d2),
           project_account_d2_desc: p.project_account_d2
             ? state.allAccD2List
                 .filter(d => d.pk === p.project_account_d2)

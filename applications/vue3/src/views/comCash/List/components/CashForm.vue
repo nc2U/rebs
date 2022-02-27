@@ -27,10 +27,10 @@
             <CFormLabel class="col-sm-4 col-form-label">구분</CFormLabel>
             <CCol sm="8">
               <CFormSelect v-model="form.sort" @change="callAccount">
-                <option value="">구분</option>
-                <option value="1">입금</option>
-                <option value="2">출금</option>
-                <option value="3">대체</option>
+                <option v-show="form.sort === ''" value="">구분</option>
+                <option v-show="form.sort === '1'" value="1">입금</option>
+                <option v-show="form.sort === '2'" value="2">출금</option>
+                <option v-show="form.sort === '3'" value="3">대체</option>
               </CFormSelect>
             </CCol>
           </CRow>
@@ -184,7 +184,7 @@
         닫기
       </CButton>
       <slot name="footer">
-        <CButton color="success">저장</CButton>
+        <CButton color="success" :disabled="formsCheck">저장</CButton>
       </slot>
     </CModalFooter>
   </CForm>
@@ -242,10 +242,24 @@ export default defineComponent({
   },
   computed: {
     formsCheck() {
-      // const a = this.form.dr
-      return true
+      const a = this.form.company === this.cash.company
+      const b = this.form.sort === this.cash.sort
+      const c = this.form.account_d1 === this.cash.account_d1
+      const d = this.form.account_d2 === this.cash.account_d2
+      const e = this.form.account_d3 === this.cash.account_d3
+      const f = this.form.content === this.cash.content
+      const g = this.form.trader === this.cash.trader
+      const h = this.form.bank_account === this.cash.bank_account
+      const i = this.form.income === this.cash.income
+      const j = this.form.outlay === this.cash.outlay
+      const k = this.form.evidence === this.cash.evidence
+      const l = this.form.note === this.cash.note
+      const m = this.form.deal_date === this.cash.deal_date
+
+      return a && b && c && d && e && f && g && h && i && j && k && l && m
     },
     ...mapState('comCash', [
+      'sortList',
       'formAccD1List',
       'formAccD2List',
       'formAccD3List',
@@ -267,20 +281,8 @@ export default defineComponent({
     callAccount() {
       this.$nextTick(() => {
         const sort = this.form.sort
-
-        const is_d1 = this.form.account_d1
-          ? this.formAccD1List.filter(
-              (d1: any) => d1.pk === this.form.account_d1,
-            ).length
-          : 0
-        const is_d2 = this.form.account_d2
-          ? this.formAccD2List.filter(
-              (d2: any) => d2.pk === this.form.account_d2,
-            ).length
-          : 0
-        const d1 = this.form.account_d1 && is_d1 ? this.form.account_d1 : ''
-        const d2 = this.form.account_d2 && is_d2 ? this.form.account_d2 : ''
-
+        const d1 = this.form.account_d1 ? this.form.account_d1 : ''
+        const d2 = this.form.account_d2 ? this.form.account_d2 : ''
         this.fetchAccountD1List({ sort })
         this.fetchAccountD2List({ sort, d1 })
         this.fetchAccountD3List({ sort, d1, d2 })
