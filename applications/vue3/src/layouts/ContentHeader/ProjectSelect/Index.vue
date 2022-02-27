@@ -1,6 +1,6 @@
 <template>
   <CRow>
-    <CCol md="4">
+    <CCol md="3">
       <CFormSelect @change="$emit('proj-select', $event)">
         <option value="">프로젝트선택</option>
         <option

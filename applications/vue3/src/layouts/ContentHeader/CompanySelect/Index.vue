@@ -1,6 +1,6 @@
 <template>
   <CRow>
-    <CCol md="4">
+    <CCol md="3">
       <CFormSelect @change="$emit('com-select', $event)">
         <option value="">회사선택</option>
         <option
