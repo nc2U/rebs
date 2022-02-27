@@ -32,7 +32,7 @@
     </CTableDataCell>
   </CTableRow>
 
-  <ConfirmModal size="lg" ref="cashUpdateModal">
+  <FormModal size="lg" ref="cashUpdateModal">
     <template v-slot:header>
       <CIcon name="cil-italic" />
       입출금 거래 건별 수정
@@ -43,7 +43,7 @@
     <template v-slot:footer>
       <CButton color="success" @click="updateObject">저장</CButton>
     </template>
-  </ConfirmModal>
+  </FormModal>
 
   <ConfirmModal ref="delModal">
     <template v-slot:header>
@@ -63,6 +63,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import FormModal from '@/components/Modals/FormModal.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 import CashForm from '@/views/comCash/List/components/CashForm.vue'
@@ -70,7 +71,7 @@ import { mapGetters } from 'vuex'
 
 export default defineComponent({
   name: 'Cashes',
-  components: { ConfirmModal, AlertModal, CashForm },
+  components: { FormModal, ConfirmModal, AlertModal, CashForm },
   props: {
     cash: {
       type: Object,
