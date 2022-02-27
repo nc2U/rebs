@@ -122,6 +122,15 @@ export default defineComponent({
     d1Class() {
       return this.cls[this.cash.account_d1 - 4]
     },
+    pageManageAuth() {
+      return (
+        this.superAuth ||
+        (this.staffAuth && this.staffAuth.company_cash === '2')
+      )
+    },
+    allowedPeriod() {
+      return this.superAuth || this.diffDate(this.cash.deal_date) <= 30
+    },
     ...mapGetters('accounts', ['staffAuth', 'superAuth']),
   },
   methods: {
@@ -130,12 +139,8 @@ export default defineComponent({
       return content.length > len ? `${content.substr(0, len)}..` : content
     },
     updateConfirm(this: any) {
-      if (
-        this.superAuth ||
-        (this.staffAuth && this.staffAuth.company_cash === '2')
-      ) {
-        if (this.superAuth || this.diffDate(this.cash.deal_date) <= 30)
-          this.$refs.cashUpdateModal.callModal()
+      if (this.pageManageAuth) {
+        if (this.allowedPeriod) this.$refs.cashUpdateModal.callModal()
         else
           this.$refs.alertModal.callModal(
             null,
@@ -147,12 +152,8 @@ export default defineComponent({
       this.$emit('on-update', { ...{ pk: this.cash.pk }, ...this.form })
     },
     deleteConfirm(this: any) {
-      if (
-        this.superAuth ||
-        (this.staffAuth && this.staffAuth.company_cash === '2')
-      )
-        if (this.superAuth || this.diffDate(this.cash.deal_date) <= 30)
-          this.$refs.delModal.callModal()
+      if (this.pageManageAuth)
+        if (this.allowedPeriod) this.$refs.delModal.callModal()
         else
           this.$refs.alertModal.callModal(
             null,
