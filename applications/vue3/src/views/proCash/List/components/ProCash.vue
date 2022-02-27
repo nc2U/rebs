@@ -25,21 +25,43 @@
     </CTableDataCell>
     <CTableDataCell>{{ proCash.evidence }}</CTableDataCell>
     <CTableDataCell>
-      <CButton color="success" @click="updatePayment" size="sm"> 수정</CButton>
-      <CButton color="danger" @click="deletePayment" size="sm"> 삭제</CButton>
+      <CButton color="success" @click="updateConfirm" size="sm"> 수정</CButton>
+      <CButton
+        color="danger"
+        @click="deleteConfirm"
+        size="sm"
+        :disabled="!pageManageAuth || !allowedPeriod"
+      >
+        삭제
+      </CButton>
     </CTableDataCell>
   </CTableRow>
 
-  <ConfirmModal ref="confirmModal">
+  <FormModal size="lg" ref="updateFormModal">
     <template v-slot:header>
       <CIcon name="cil-italic" />
-      입출금 거래 건별 수정
+      프로젝트 입출금 거래 건별 수정
     </template>
     <template v-slot:default>
-      해당 입출금거래 정보 수정 등록을 진행하시겠습니까?
+      <!--      <CashForm-->
+      <!--        @on-submit="updateObject"-->
+      <!--        @close="$refs.cashUpdateModal.visible = false"-->
+      <!--        :cash="cash"-->
+      <!--      />-->
+    </template>
+  </FormModal>
+
+  <ConfirmModal ref="delModal">
+    <template v-slot:header>
+      <CIcon name="cilWarning" />
+      프로젝트 입출금 거래 정보 삭제
+    </template>
+    <template v-slot:default>
+      삭제한 데이터는 복구할 수 없습니다. 해당 입출금 거래 정보를
+      삭제하시겠습니까?
     </template>
     <template v-slot:footer>
-      <CButton color="primary" @click="modalAction">저장</CButton>
+      <CButton color="danger" @click="deleteObject">삭제</CButton>
     </template>
   </ConfirmModal>
 
@@ -49,6 +71,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import commonMixin from '@/views/commonMixin'
+import FormModal from '@/components/Modals/FormModal.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 import { mapGetters } from 'vuex'
@@ -56,7 +79,7 @@ import { mapGetters } from 'vuex'
 export default defineComponent({
   name: 'ProCash',
   mixins: [commonMixin],
-  components: { ConfirmModal, AlertModal },
+  components: { FormModal, ConfirmModal, AlertModal },
   props: {
     proCash: {
       type: Object,
@@ -74,22 +97,45 @@ export default defineComponent({
         ? scls.filter(c => c.text === this.proCash.sort).map(c => c.cls)[0]
         : ''
     },
+    pageManageAuth() {
+      return (
+        this.superAuth ||
+        (this.staffAuth && this.staffAuth.project_cash === '2')
+      )
+    },
+    allowedPeriod(this: any) {
+      return this.superAuth || this.diffDate(this.proCash.deal_date) <= 30
+    },
     ...mapGetters('accounts', ['staffAuth', 'superAuth']),
   },
   methods: {
-    cutString(str: string, len: number) {
-      const content = str ? str : ''
-      return content.length > len ? `${content.substr(0, len)}..` : content
-    },
-    updatePayment(this: any) {
-      if (this.superAuth || (this.staffAuth && this.staffAuth.payment === '2'))
-        this.$emit('on-update', { ...{ pk: this.payment.pk }, ...this.form })
+    updateConfirm(this: any) {
+      if (this.pageManageAuth)
+        if (this.allowedPeriod) this.$refs.updateFormModal.callModal()
+        else
+          this.$refs.alertModal.callModal(
+            null,
+            '작성일로부터 30일이 경과한 기록을 수정할 수 없습니다. 관리자에게 문의하여 주십시요.',
+          )
       else this.$refs.alertModal.callModal()
     },
-    deletePayment(this: any) {
-      if (this.superAuth || (this.staffAuth && this.staffAuth.payment === '2'))
-        this.$emit('on-delete', this.payment.pk)
+    updateObject(this: any, payload: any) {
+      this.$emit('on-update', { ...{ pk: this.proCash.pk }, ...payload })
+      this.$refs.updateFormModal.visible = false
+    },
+    deleteConfirm(this: any) {
+      if (this.pageManageAuth)
+        if (this.allowedPeriod) this.$refs.delModal.callModal()
+        else
+          this.$refs.alertModal.callModal(
+            null,
+            '작성일로부터 30일이 경과한 기록을 삭제할 수 없습니다. 관리자에게 문의하여 주십시요.',
+          )
       else this.$refs.alertModal.callModal()
+    },
+    deleteObject(this: any) {
+      this.$emit('on-delete', this.payment.pk)
+      this.$refs.delModal.visible = false
     },
   },
 })

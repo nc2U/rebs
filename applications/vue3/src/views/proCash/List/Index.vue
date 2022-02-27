@@ -38,6 +38,11 @@ export default defineComponent({
     ListController,
     ProCashList,
   },
+  data() {
+    return {
+      page: 1,
+    }
+  },
   created() {
     this.fetchAccSortList()
     this.fetchProAccountD1List()
@@ -61,6 +66,7 @@ export default defineComponent({
       }
     },
     pageSelect(this: any, page: number) {
+      this.page = page
       this.$refs.listControl.listFiltering(page)
     },
     listFiltering(payload: any) {
@@ -73,9 +79,13 @@ export default defineComponent({
     },
     onUpdate(payload: any) {
       console.log(payload)
+      // const page = this.page
+      // this.updatePrCashBook({ ...{ page }, ...payload })
     },
-    onDelete(pk: number) {
-      alert(pk)
+    onDelete(payload: any) {
+      console.log(payload)
+      // const page = this.page
+      // this.deletePrCashBook({ ...{ page }, ...payload })
     },
     ...mapActions('proCash', [
       'fetchAccSortList',
@@ -83,6 +93,8 @@ export default defineComponent({
       'fetchProAccountD2List',
       'fetchProjectBankAccountList',
       'fetchProjectCashList',
+      'updatePrCashBook',
+      'deletePrCashBook',
     ]),
   },
 })
