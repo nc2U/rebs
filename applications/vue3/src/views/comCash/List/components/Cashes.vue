@@ -39,7 +39,7 @@
     </CTableDataCell>
   </CTableRow>
 
-  <FormModal size="lg" ref="cashUpdateModal">
+  <FormModal size="lg" ref="updateFormModal">
     <template v-slot:header>
       <CIcon name="cil-italic" />
       입출금 거래 건별 수정
@@ -47,7 +47,7 @@
     <template v-slot:default>
       <CashForm
         @on-submit="updateObject"
-        @close="$refs.cashUpdateModal.visible = false"
+        @close="$refs.updateFormModal.visible = false"
         :cash="cash"
       />
     </template>
@@ -113,7 +113,7 @@ export default defineComponent({
   methods: {
     updateConfirm(this: any) {
       if (this.pageManageAuth) {
-        if (this.allowedPeriod) this.$refs.cashUpdateModal.callModal()
+        if (this.allowedPeriod) this.$refs.updateFormModal.callModal()
         else
           this.$refs.alertModal.callModal(
             null,
@@ -123,7 +123,7 @@ export default defineComponent({
     },
     updateObject(this: any, payload: any) {
       this.$emit('on-update', { ...{ pk: this.cash.pk }, ...payload })
-      this.$refs.cashUpdateModal.visible = false
+      this.$refs.updateFormModal.visible = false
     },
     deleteConfirm(this: any) {
       if (this.pageManageAuth)
