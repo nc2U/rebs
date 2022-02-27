@@ -32,7 +32,7 @@
 
     <CTableBody>
       <ProCash
-        v-for="proCash in getProCashes"
+        v-for="proCash in getProCashLogs"
         :proCash="proCash"
         :key="proCash.pk"
         @on-update="onUpdate"
@@ -53,14 +53,14 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import ProCash from '@/views/proCash/List/components/ProCash.vue'
-import { mapState, mapGetters } from 'vuex'
+import { mapGetters } from 'vuex'
 
 export default defineComponent({
   name: 'ProCashList',
   components: { ProCash },
   props: { project: Object },
   computed: {
-    ...mapGetters('proCash', ['proCashPages', 'getProCashes']),
+    ...mapGetters('proCash', ['proCashPages', 'getProCashLogs']),
   },
   methods: {
     pageSelect(page: number) {

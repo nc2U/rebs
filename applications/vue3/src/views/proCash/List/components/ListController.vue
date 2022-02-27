@@ -22,7 +22,7 @@
           </CCol>
 
           <CCol md="6" lg="2" class="mb-3">
-            <CFormSelect v-model="form.sort" @change="accountD1Select">
+            <CFormSelect v-model="form.sort" @change="pro_acc_d1Select">
               <option value="">거래구분</option>
               <option v-for="sort in sortList" :value="sort.pk" :key="sort.pk">
                 {{ sort.name }}
@@ -31,18 +31,18 @@
           </CCol>
 
           <CCol md="6" lg="2" class="mb-3">
-            <CFormSelect v-model="form.accountD1" @change="accountD2Select">
+            <CFormSelect v-model="form.pro_acc_d1" @change="pro_acc_d2Select">
               <option value="">상위 항목</option>
-              <option v-for="d1 in accountD1List" :value="d1.pk" :key="d1.pk">
+              <option v-for="d1 in formAccD1List" :value="d1.pk" :key="d1.pk">
                 {{ d1.name }}
               </option>
             </CFormSelect>
           </CCol>
 
           <CCol md="6" lg="2" class="mb-3">
-            <CFormSelect v-model="form.accountD2" @change="listFiltering(1)">
+            <CFormSelect v-model="form.pro_acc_d2" @change="listFiltering(1)">
               <option value="">하위 항목</option>
-              <option v-for="d2 in accountD2List" :value="d2.pk" :key="d2.pk">
+              <option v-for="d2 in formAccD2List" :value="d2.pk" :key="d2.pk">
                 {{ d2.name }}
               </option>
             </CFormSelect>
@@ -109,8 +109,8 @@ export default defineComponent({
         from_date: '',
         to_date: '',
         sort: '',
-        accountD1: '',
-        accountD2: '',
+        pro_acc_d1: '',
+        pro_acc_d2: '',
         bank_account: '',
         search: '',
       },
@@ -121,8 +121,8 @@ export default defineComponent({
       const a = this.form.from_date === ''
       const b = this.form.to_date === ''
       const c = this.form.sort === ''
-      const d = this.form.accountD1 === ''
-      const e = this.form.accountD2 === ''
+      const d = this.form.pro_acc_d1 === ''
+      const e = this.form.pro_acc_d2 === ''
       const f = this.form.bank_account === ''
       const g = this.form.search === ''
       return a && b && c && d && e && f && g
@@ -136,14 +136,14 @@ export default defineComponent({
     ]),
   },
   methods: {
-    accountD1Select() {
+    pro_acc_d1Select() {
       this.listFiltering(1)
-      this.form.accountD1 = ''
-      this.form.accountD2 = ''
+      this.form.pro_acc_d1 = ''
+      this.form.pro_acc_d2 = ''
     },
-    accountD2Select() {
+    pro_acc_d2Select() {
       this.listFiltering(1)
-      this.form.accountD2 = ''
+      this.form.pro_acc_d2 = ''
     },
     listFiltering(page = 1) {
       this.$nextTick(() =>
@@ -154,8 +154,8 @@ export default defineComponent({
       this.form.from_date = ''
       this.form.to_date = ''
       this.form.sort = ''
-      this.form.accountD1 = ''
-      this.form.accountD2 = ''
+      this.form.pro_acc_d1 = ''
+      this.form.pro_acc_d2 = ''
       this.form.bank_account = ''
       this.form.search = ''
       this.listFiltering(1)

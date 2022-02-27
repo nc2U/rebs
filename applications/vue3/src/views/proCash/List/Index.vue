@@ -74,7 +74,7 @@ export default defineComponent({
     listFiltering(payload: any) {
       const project = this.project.pk
       const sort = payload.sort ? payload.sort : ''
-      const d1 = payload.accountD1 ? payload.accountD1 : ''
+      const d1 = payload.pro_acc_d1 ? payload.pro_acc_d1 : ''
       this.fetchProFormAccD1List(sort)
       this.fetchProFormAccD2List({ d1, sort })
       this.fetchProjectCashList({ ...{ project }, ...payload })
