@@ -113,6 +113,7 @@ export default defineComponent({
       this.form.note = this.cash.note
       this.form.deal_date = this.cash.deal_date
     }
+    console.log(this.diffDate('2022-01-25'))
   },
   computed: {
     sortClass(this: any) {
@@ -133,7 +134,13 @@ export default defineComponent({
         this.superAuth ||
         (this.staffAuth && this.staffAuth.company_cash === '2')
       ) {
-        this.$refs.cashUpdateModal.callModal()
+        if (this.superAuth || this.diffDate(this.cash.deal_date) <= 30)
+          this.$refs.cashUpdateModal.callModal()
+        else
+          this.$refs.alertModal.callModal(
+            null,
+            '작성일로부터 30일이 경과한 기록을 수정할 수 없습니다. 관리자에게 문의하여 주십시요.',
+          )
       } else this.$refs.alertModal.callModal()
     },
     updateObject() {
@@ -144,13 +151,26 @@ export default defineComponent({
         this.superAuth ||
         (this.staffAuth && this.staffAuth.company_cash === '2')
       )
-        this.$refs.delModal.callModal()
+        if (this.superAuth || this.diffDate(this.cash.deal_date) <= 30)
+          this.$refs.delModal.callModal()
+        else
+          this.$refs.alertModal.callModal(
+            null,
+            '작성일로부터 30일이 경과한 기록을 삭제할 수 없습니다. 관리자에게 문의하여 주십시요.',
+          )
       else this.$refs.alertModal.callModal()
     },
 
     deleteObject(this: any) {
       this.$emit('on-delete', { company: this.cash.company, pk: this.cash.pk })
       this.$refs.delModal.visible = false
+    },
+
+    diffDate(date: string) {
+      const now = new Date()
+      const start = new Date(date)
+      const btween = now.getTime() - start.getTime()
+      return btween / 1000 / 60 / 60 / 24
     },
   },
 })

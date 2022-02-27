@@ -7,13 +7,15 @@
     <CModalHeader>
       <CModalTitle>
         <CIcon name="cilItalic" />
-        <slot name="header"> 알림</slot>
+        <slot name="header"> {{ headMessage || ' 알림' }}</slot>
       </CModalTitle>
     </CModalHeader>
     <CModalBody>
       <slot>
-        이 페이지에 대한 등록 및 수정 또는 삭제 권한이 없습니다. 담당자에게
-        문의하여 주십시요.
+        {{
+          bodyMessage ||
+          '이 페이지에 대한 등록 및 수정 또는 삭제 권한이 없습니다. 관리자에게 문의하여 주십시요.'
+        }}
       </slot>
     </CModalBody>
     <CModalFooter>
@@ -29,11 +31,15 @@ export default defineComponent({
   name: 'ConfirmModal',
   data() {
     return {
+      headMessage: '',
+      bodyMessage: '',
       visible: false,
     }
   },
   methods: {
-    callModal() {
+    callModal(this: any, head?: string, body?: string) {
+      if (head) this.headMessage = head
+      if (body) this.bodyMessage = body
       this.visible = true
     },
   },
