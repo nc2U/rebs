@@ -1,18 +1,18 @@
 <template>
   <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    @header-select="onSelectAdd"
+      :page-title="pageTitle"
+      :nav-menu="navMenu"
+      @header-select="onSelectAdd"
   />
 
   <ContentBody>
     <CCardBody class="pb-5">
-      <ListController ref="listControl" @list-filtering="listFiltering" />
+      <ListController ref="listControl" @list-filtering="listFiltering"/>
       <ProCashList
-        :project="project"
-        @page-select="pageSelect"
-        @on-update="onUpdate"
-        @on-delete="onDelete"
+          :project="project"
+          @page-select="pageSelect"
+          @on-update="onUpdate"
+          @on-delete="onDelete"
       />
     </CCardBody>
 
@@ -21,13 +21,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import {defineComponent} from 'vue'
 import HeaderMixin from '@/views/proCash/_menu/headermixin'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from '@/views/proCash/List/components/ListController.vue'
 import ProCashList from '@/views/proCash/List/components/ProCashList.vue'
-import { mapActions, mapGetters, mapState } from 'vuex'
+import {mapActions, mapGetters, mapState} from 'vuex'
 
 export default defineComponent({
   name: 'ProjectCashList',
@@ -49,8 +49,8 @@ export default defineComponent({
     this.fetchProAllAccD2List()
     this.fetchProFormAccD1List()
     this.fetchProFormAccD2List()
-    this.fetchProjectBankAccountList(this.initProjId)
-    this.fetchProjectCashList({ project: this.initProjId })
+    this.fetchProBankAccList(this.initProjId)
+    this.fetchProjectCashList({project: this.initProjId})
   },
   computed: {
     ...mapState('project', ['project']),
@@ -59,8 +59,8 @@ export default defineComponent({
   methods: {
     onSelectAdd(this: any, target: any) {
       if (target !== '') {
-        this.fetchProjectBankAccountList(target)
-        this.fetchProjectCashList({ project: target })
+        this.fetchProBankAccList(target)
+        this.fetchProjectCashList({project: target})
       } else {
         this.$store.state.payment.proBankAccountList = []
         this.$store.state.payment.proCashBookList = []
@@ -76,16 +76,16 @@ export default defineComponent({
       const sort = payload.sort ? payload.sort : ''
       const d1 = payload.pro_acc_d1 ? payload.pro_acc_d1 : ''
       this.fetchProFormAccD1List(sort)
-      this.fetchProFormAccD2List({ d1, sort })
-      this.fetchProjectCashList({ ...{ project }, ...payload })
+      this.fetchProFormAccD2List({d1, sort})
+      this.fetchProjectCashList({...{project}, ...payload})
     },
     onUpdate(payload: any) {
       const page = this.page
-      this.updatePrCashBook({ ...{ page }, ...payload })
+      this.updatePrCashBook({...{page}, ...payload})
     },
     onDelete(payload: any) {
       const page = this.page
-      this.deletePrCashBook({ ...{ page }, ...payload })
+      this.deletePrCashBook({...{page}, ...payload})
     },
     ...mapActions('proCash', [
       'fetchAccSortList',
@@ -93,7 +93,7 @@ export default defineComponent({
       'fetchProAllAccD2List',
       'fetchProFormAccD1List',
       'fetchProFormAccD2List',
-      'fetchProjectBankAccountList',
+      'fetchProBankAccList',
       'fetchProjectCashList',
       'updatePrCashBook',
       'deletePrCashBook',
