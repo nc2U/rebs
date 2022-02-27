@@ -22,7 +22,7 @@ const actions = {
       .catch(err => console.log(err.response.data))
   },
 
-  fetchAccD1List: ({ commit }: any) => {
+  fetchAllAccD1List: ({ commit }: any) => {
     const url = `/account-depth1/`
     api
       .get(url)
@@ -32,7 +32,7 @@ const actions = {
       .catch(err => console.log(err.response.data))
   },
 
-  fetchAccD2List: ({ commit }: any) => {
+  fetchAllAccD2List: ({ commit }: any) => {
     const url = `/account-depth2/`
     api
       .get(url)
@@ -42,7 +42,7 @@ const actions = {
       .catch(err => console.log(err.response.data))
   },
 
-  fetchAccD3List: ({ commit }: any) => {
+  fetchAllAccD3List: ({ commit }: any) => {
     const url = `/account-depth3/`
     api
       .get(url)
@@ -52,7 +52,7 @@ const actions = {
       .catch(err => console.log(err.response.data))
   },
 
-  fetchAccountD1List: ({ commit }: any, data?: any) => {
+  fetchFormAccD1List: ({ commit }: any, data?: any) => {
     let url = `/account-depth1/`
     const sort = data && data.sort ? data.sort : ''
     if (sort) url += `?accountsort=${sort}`
@@ -64,7 +64,7 @@ const actions = {
       .catch(err => console.log(err.response.data))
   },
 
-  fetchAccountD2List: ({ commit }: any, data?: any) => {
+  fetchFormAccD2List: ({ commit }: any, data?: any) => {
     const sort = data && data.sort ? data.sort : ''
     const d1 = data && data.d1 ? data.d1 : ''
     let url = `/account-depth2/?d1=${d1}`
@@ -77,7 +77,7 @@ const actions = {
       .catch(err => console.log(err.response.data))
   },
 
-  fetchAccountD3List: ({ commit }: any, data?: any) => {
+  fetchFormAccD3List: ({ commit }: any, data?: any) => {
     const sort = data && data.sort ? data.sort : ''
     const d1 = data && data.d1 ? data.d1 : ''
     const d2 = data && data.d2 ? data.d2 : ''
