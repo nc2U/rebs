@@ -64,7 +64,7 @@ export default defineComponent({
   },
   data() {
     return {
-      forms: 2,
+      forms: 5,
     }
   },
   computed: {
