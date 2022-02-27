@@ -113,7 +113,6 @@ export default defineComponent({
       this.form.note = this.cash.note
       this.form.deal_date = this.cash.deal_date
     }
-    console.log(this.diffDate('2022-01-25'))
   },
   computed: {
     sortClass(this: any) {
@@ -148,8 +147,9 @@ export default defineComponent({
           )
       } else this.$refs.alertModal.callModal()
     },
-    updateObject() {
+    updateObject(this: any) {
       this.$emit('on-update', { ...{ pk: this.cash.pk }, ...this.form })
+      this.$refs.cashUpdateModal.visible = false
     },
     deleteConfirm(this: any) {
       if (this.pageManageAuth)

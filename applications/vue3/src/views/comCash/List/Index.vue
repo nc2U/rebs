@@ -80,8 +80,7 @@ export default defineComponent({
       this.fetchCashBookList({ ...{ company }, ...payload })
     },
     onUpdate(payload: any) {
-      alert(payload.pk)
-      console.log(payload)
+      this.updateCashBook(payload)
     },
     onDelete(payload: any) {
       this.deleteCashBook(payload)

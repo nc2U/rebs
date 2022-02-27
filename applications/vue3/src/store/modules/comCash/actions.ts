@@ -157,7 +157,7 @@ const actions = {
     api
       .post(`/cashbook/`, payload)
       .then(res => {
-        dispatch('fetchCashBookList', res.data.project)
+        dispatch('fetchCashBookList', res.data.company)
         message()
       })
       .catch(err => console.log(err.response.data))
@@ -168,7 +168,7 @@ const actions = {
     api
       .put(`/cashbook/${pk}/`, formData)
       .then(res => {
-        dispatch('fetchCashBookList', res.data.project)
+        dispatch('fetchCashBookList', res.data.company)
         message()
       })
       .catch(err => console.log(err.response.data))
