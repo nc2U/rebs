@@ -242,11 +242,10 @@ export default defineComponent({
       // const a = this.form.dr
       return true
     },
-    ...mapState('comCash', [
+    ...mapState('proCash', [
       'formAccD1List',
       'formAccD2List',
-      'formAccD3List',
-      'comBankList',
+      'proBankAccountList',
     ]),
   },
   methods: {
@@ -283,10 +282,9 @@ export default defineComponent({
       //   this.fetchAccountD3List({ sort, d1, d2 })
       // })
     },
-    ...mapActions('comCash', [
-      'fetchAccountD1List',
-      'fetchAccountD2List',
-      'fetchAccountD3List',
+    ...mapActions('proCash', [
+      'fetchProFormAccD1List',
+      'fetchProFormAccD2List',
     ]),
   },
 })

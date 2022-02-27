@@ -129,8 +129,8 @@ export default defineComponent({
     },
     ...mapState('proCash', [
       'sortList',
-      'accountD1List',
-      'accountD2List',
+      'formAccD1List',
+      'formAccD2List',
       'proBankAccountList',
       'proCashesCount',
     ]),

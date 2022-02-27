@@ -45,8 +45,10 @@ export default defineComponent({
   },
   created() {
     this.fetchAccSortList()
-    this.fetchProAccountD1List()
-    this.fetchProAccountD2List()
+    this.fetchProAllAccD1List()
+    this.fetchProAllAccD2List()
+    this.fetchProFormAccD1List()
+    this.fetchProFormAccD2List()
     this.fetchProjectBankAccountList(this.initProjId)
     this.fetchProjectCashList({ project: this.initProjId })
   },
@@ -73,8 +75,8 @@ export default defineComponent({
       const project = this.project.pk
       const sort = payload.sort ? payload.sort : ''
       const d1 = payload.accountD1 ? payload.accountD1 : ''
-      this.fetchProAccountD1List(sort)
-      this.fetchProAccountD2List({ d1, sort })
+      this.fetchProFormAccD1List(sort)
+      this.fetchProFormAccD2List({ d1, sort })
       this.fetchProjectCashList({ ...{ project }, ...payload })
     },
     onUpdate(payload: any) {
@@ -89,8 +91,10 @@ export default defineComponent({
     },
     ...mapActions('proCash', [
       'fetchAccSortList',
-      'fetchProAccountD1List',
-      'fetchProAccountD2List',
+      'fetchProAllAccD1List',
+      'fetchProAllAccD2List',
+      'fetchProFormAccD1List',
+      'fetchProFormAccD2List',
       'fetchProjectBankAccountList',
       'fetchProjectCashList',
       'updatePrCashBook',
