@@ -283,15 +283,15 @@ export default defineComponent({
         const sort = this.form.sort
         const d1 = this.form.account_d1 ? this.form.account_d1 : ''
         const d2 = this.form.account_d2 ? this.form.account_d2 : ''
-        this.fetchAccountD1List({ sort })
-        this.fetchAccountD2List({ sort, d1 })
-        this.fetchAccountD3List({ sort, d1, d2 })
+        this.fetchFormAccD1List({ sort })
+        this.fetchFormAccD2List({ sort, d1 })
+        this.fetchFormAccD3List({ sort, d1, d2 })
       })
     },
     ...mapActions('comCash', [
-      'fetchAccountD1List',
-      'fetchAccountD2List',
-      'fetchAccountD3List',
+      'fetchFormAccD1List',
+      'fetchFormAccD2List',
+      'fetchFormAccD3List',
     ]),
   },
 })

@@ -45,12 +45,12 @@ export default defineComponent({
   },
   created() {
     this.fetchAccSortList()
-    this.fetchAccD1List()
-    this.fetchAccD2List()
-    this.fetchAccD3List()
-    this.fetchAccountD1List()
-    this.fetchAccountD2List()
-    this.fetchAccountD3List()
+    this.fetchAllAccD1List()
+    this.fetchAllAccD2List()
+    this.fetchAllAccD3List()
+    this.fetchFormAccD1List()
+    this.fetchFormAccD2List()
+    this.fetchFormAccD3List()
     this.fetchCompanyBankAccountList(this.initComId)
     this.fetchCashBookList({ company: this.initComId })
   },
@@ -80,9 +80,9 @@ export default defineComponent({
       const sort = payload.sort ? payload.sort : ''
       const d1 = payload.account_d1 ? payload.account_d1 : ''
       const d2 = payload.account_d2 ? payload.account_d2 : ''
-      this.fetchAccountD1List({ sort })
-      this.fetchAccountD2List({ sort, d1 })
-      this.fetchAccountD3List({ sort, d1, d2 })
+      this.fetchFormAccD1List({ sort })
+      this.fetchFormAccD2List({ sort, d1 })
+      this.fetchFormAccD3List({ sort, d1, d2 })
       this.fetchCashBookList({ ...{ company }, ...payload })
     },
     onUpdate(payload: any) {
@@ -96,12 +96,12 @@ export default defineComponent({
     ...mapActions('settings', ['fetchCompany']),
     ...mapActions('comCash', [
       'fetchAccSortList',
-      'fetchAccD1List',
-      'fetchAccD2List',
-      'fetchAccD3List',
-      'fetchAccountD1List',
-      'fetchAccountD2List',
-      'fetchAccountD3List',
+      'fetchAllAccD1List',
+      'fetchAllAccD2List',
+      'fetchAllAccD3List',
+      'fetchFormAccD1List',
+      'fetchFormAccD2List',
+      'fetchFormAccD3List',
       'fetchCompanyBankAccountList',
       'fetchCashBookList',
       'updateCashBook',
