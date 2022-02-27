@@ -110,7 +110,7 @@ export default defineComponent({
         else
           this.$refs.alertModal.callModal(
             null,
-            '작성일로부터 30일이 경과한 기록을 수정할 수 없습니다. 관리자에게 문의하여 주십시요.',
+            '거래일로부터 30일이 경과한 건은 수정할 수 없습니다. 관리자에게 문의바랍니다.',
           )
       else this.$refs.alertModal.callModal()
     },
@@ -124,7 +124,7 @@ export default defineComponent({
         else
           this.$refs.alertModal.callModal(
             null,
-            '작성일로부터 30일이 경과한 기록을 삭제할 수 없습니다. 관리자에게 문의하여 주십시요.',
+            '거래일로부터 30일이 경과한 건은 삭제할 수 없습니다. 관리자에게 문의바랍니다.',
           )
       else this.$refs.alertModal.callModal()
     },
