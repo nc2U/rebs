@@ -27,14 +27,7 @@
     </CTableDataCell>
     <CTableDataCell>{{ cash.evidence_desc }}</CTableDataCell>
     <CTableDataCell>
-      <CButton
-        color="success"
-        @click="updateConfirm"
-        size="sm"
-        :disabled="!pageManageAuth || !allowedPeriod"
-      >
-        수정
-      </CButton>
+      <CButton color="success" @click="updateConfirm" size="sm"> 수정</CButton>
       <CButton
         color="danger"
         @click="deleteConfirm"
@@ -66,7 +59,8 @@
       입출금 거래 정보 삭제
     </template>
     <template v-slot:default>
-      해당 입출금 거래 건별 정보 삭제를 진행합니다.
+      삭제한 데이터는 복구할 수 없습니다. 해당 입출금 거래 정보를
+      삭제하시겠습니까?
     </template>
     <template v-slot:footer>
       <CButton color="danger" @click="deleteObject">삭제</CButton>
