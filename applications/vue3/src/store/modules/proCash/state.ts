@@ -57,8 +57,13 @@ export interface ProjectCashBook {
 
 export interface ProjectCashState {
   sortList: AccountSort[]
-  accountD1List: ProjectAccountD1[]
-  accountD2List: ProjectAccountD2[]
+
+  allAccD1List: ProjectAccountD1[]
+  allAccD2List: ProjectAccountD2[]
+
+  formAccD1List: ProjectAccountD1[]
+  formAccD2List: ProjectAccountD2[]
+
   proBankAccountList: ProjectBankAccount[]
   proCashBookList: ProjectCashBook[]
   proCashesCount: number
@@ -66,9 +71,14 @@ export interface ProjectCashState {
 
 const state = {
   sortList: [],
-  accountD1List: [],
-  accountD2List: [],
-  pBankAccountList: [],
+
+  allAccD1List: [],
+  allAccD2List: [],
+
+  formAccD1List: [],
+  formAccD2List: [],
+
+  proBankAccountList: [],
   proCashBookList: [],
   proCashesCount: 0,
 }

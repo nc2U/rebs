@@ -1,8 +1,10 @@
 import api from '@/api'
 import {
   FETCH_P_ACC_SORT_LIST,
-  FETCH_ACCOUNT_D1_LIST,
-  FETCH_ACCOUNT_D2_LIST,
+  FETCH_ALL_ACC_D1_LIST,
+  FETCH_ALL_ACC_D2_LIST,
+  FETCH_FORM_ACC_D1_LIST,
+  FETCH_FORM_ACC_D2_LIST,
   FETCH_P_BANK_ACCOUNT_LIST,
   FETCH_P_CASHBOOK_LIST,
 } from '@/store/modules/proCash/mutations-types'
@@ -18,26 +20,44 @@ const actions = {
       .catch(err => console.log(err.response.data))
   },
 
-  fetchProAccountD1List: ({ commit }: any, sort?: string) => {
+  fetchProAllAccD1List: ({ commit }: any) => {
+    api
+      .get(`/project-account-depth1/`)
+      .then(res => {
+        commit(FETCH_ALL_ACC_D1_LIST, res.data)
+      })
+      .catch(err => console.log(err.response.data))
+  },
+
+  fetchProAllAccD2List: ({ commit }: any) => {
+    api
+      .get(`/project-account-depth2/`)
+      .then(res => {
+        commit(FETCH_ALL_ACC_D2_LIST, res.data)
+      })
+      .catch(err => console.log(err.response.data))
+  },
+
+  fetchProFormAccD1List: ({ commit }: any, sort?: string) => {
     const url = sort
       ? `/project-account-depth1/?sort=${sort}`
       : `/project-account-depth1/`
     api
       .get(url)
       .then(res => {
-        commit(FETCH_ACCOUNT_D1_LIST, res.data)
+        commit(FETCH_FORM_ACC_D1_LIST, res.data)
       })
       .catch(err => console.log(err.response.data))
   },
 
-  fetchProAccountD2List: ({ commit }: any, payload?: any) => {
+  fetchProFormAccD2List: ({ commit }: any, payload?: any) => {
     const d1 = payload && payload.d1 ? payload.d1 : ''
     const sort = payload && payload.sort ? payload.sort : ''
     const url = `/project-account-depth2/?d1=${d1}&d1__sort=${sort}`
     api
       .get(url)
       .then(res => {
-        commit(FETCH_ACCOUNT_D2_LIST, res.data)
+        commit(FETCH_FORM_ACC_D2_LIST, res.data)
       })
       .catch(err => console.log(err.response.data))
   },
