@@ -38,6 +38,11 @@ export default defineComponent({
     ListController,
     CashesList,
   },
+  data() {
+    return {
+      page: 1,
+    }
+  },
   created() {
     this.fetchAccSortList()
     this.fetchAccD1List()
@@ -67,6 +72,7 @@ export default defineComponent({
       }
     },
     pageSelect(this: any, page: number) {
+      this.page = page
       this.$refs.listControl.listFiltering(page)
     },
     listFiltering(payload: any) {
@@ -80,10 +86,12 @@ export default defineComponent({
       this.fetchCashBookList({ ...{ company }, ...payload })
     },
     onUpdate(payload: any) {
-      this.updateCashBook(payload)
+      const page = this.page
+      this.updateCashBook({ ...{ page }, ...payload })
     },
     onDelete(payload: any) {
-      this.deleteCashBook(payload)
+      const page = this.page
+      this.deleteCashBook({ ...{ page }, ...payload })
     },
     ...mapActions('settings', ['fetchCompany']),
     ...mapActions('comCash', [

@@ -164,22 +164,22 @@ const actions = {
   },
 
   updateCashBook: ({ dispatch }: any, payload: any) => {
-    const { pk, ...formData } = payload
+    const { pk, page, ...formData } = payload
     api
       .put(`/cashbook/${pk}/`, formData)
       .then(res => {
-        dispatch('fetchCashBookList', { company: res.data.company })
+        dispatch('fetchCashBookList', { company: res.data.company, page })
         message()
       })
       .catch(err => console.log(err.response.data))
   },
 
   deleteCashBook: ({ dispatch }: any, payload: any) => {
-    const { pk, company } = payload
+    const { pk, page, company } = payload
     api
       .delete(`/cashbook/${pk}/`)
       .then(() => {
-        dispatch('fetchCashBookList', { company })
+        dispatch('fetchCashBookList', { company, page })
         message('danger', '알림!', '해당 오브젝트가 삭제되었습니다.')
       })
       .catch(err => console.log(err.response.data))
