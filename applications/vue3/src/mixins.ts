@@ -12,5 +12,12 @@ export default {
       const content = str ? str : ''
       return content.length > len ? `${content.substr(0, len)}..` : content
     },
+
+    diffDate(date: string) {
+      const now = new Date()
+      const start = new Date(date)
+      const btween = now.getTime() - start.getTime()
+      return btween / 1000 / 60 / 60 / 24
+    },
   },
 }

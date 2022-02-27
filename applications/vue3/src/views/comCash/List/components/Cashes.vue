@@ -105,7 +105,7 @@ export default defineComponent({
         (this.staffAuth && this.staffAuth.company_cash === '2')
       )
     },
-    allowedPeriod() {
+    allowedPeriod(this: any) {
       return this.superAuth || this.diffDate(this.cash.deal_date) <= 30
     },
     ...mapGetters('accounts', ['staffAuth', 'superAuth']),
@@ -139,13 +139,6 @@ export default defineComponent({
     deleteObject(this: any) {
       this.$emit('on-delete', { company: this.cash.company, pk: this.cash.pk })
       this.$refs.delModal.visible = false
-    },
-
-    diffDate(date: string) {
-      const now = new Date()
-      const start = new Date(date)
-      const btween = now.getTime() - start.getTime()
-      return btween / 1000 / 60 / 60 / 24
     },
   },
 })
