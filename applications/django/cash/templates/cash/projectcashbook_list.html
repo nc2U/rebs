@@ -119,8 +119,8 @@
                                                 </th>
                                                 <td class="text-center">{{ inout.deal_date|date:"Y-m-d" }}</td>
                                                 <td class="text-primary">
-                                                    <span class="text-{% if inout.cash_category1 == '2' %}danger{% elif inout.cash_category1 == '3' %}info{% endif %}">
-                                                        {{ inout.get_cash_category1_display|default:"-" }}
+                                                    <span class="text-{% if inout.sort.pk == 2 %}danger{% elif inout.sort.pk == 3 %}info{% endif %}">
+                                                        {{ inout.sort.name|default:"-" }}
                                                     </span>
                                                 </td>
                                                 <td>{{ inout.project_account_d1|default:"-" }}</td>
