@@ -52,10 +52,11 @@
       입출금 거래 건별 수정
     </template>
     <template v-slot:default>
-      <CashForm @on-submit="updateObject" :form="form" />
-    </template>
-    <template v-slot:footer>
-      <CButton color="success" @click="updateObject">저장</CButton>
+      <CashForm
+        @on-submit="updateObject"
+        @close="$refs.cashUpdateModal.visible = false"
+        :cash="cash"
+      />
     </template>
   </FormModal>
 
@@ -94,39 +95,7 @@ export default defineComponent({
   },
   data() {
     return {
-      form: {
-        company: '',
-        sort: '',
-        account_d1: '',
-        account_d2: '',
-        account_d3: '',
-        content: '',
-        trader: '',
-        bank_account: '',
-        income: '',
-        outlay: '',
-        evidence: '',
-        note: '',
-        deal_date: '',
-      },
       cls: ['text-primary', 'text-danger', 'text-info'],
-    }
-  },
-  created(this: any) {
-    if (this.cash) {
-      this.form.company = this.cash.company
-      this.form.sort = this.cash.sort
-      this.form.account_d1 = this.cash.account_d1
-      this.form.account_d2 = this.cash.account_d2
-      this.form.account_d3 = this.cash.account_d3
-      this.form.content = this.cash.content
-      this.form.trader = this.cash.trader
-      this.form.bank_account = this.cash.bank_account
-      this.form.income = this.cash.income
-      this.form.outlay = this.cash.outlay
-      this.form.evidence = this.cash.evidence
-      this.form.note = this.cash.note
-      this.form.deal_date = this.cash.deal_date
     }
   },
   computed: {
@@ -162,8 +131,8 @@ export default defineComponent({
           )
       } else this.$refs.alertModal.callModal()
     },
-    updateObject(this: any) {
-      this.$emit('on-update', { ...{ pk: this.cash.pk }, ...this.form })
+    updateObject(this: any, payload: any) {
+      this.$emit('on-update', { ...{ pk: this.cash.pk }, ...payload })
       this.$refs.cashUpdateModal.visible = false
     },
     deleteConfirm(this: any) {
