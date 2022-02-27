@@ -43,11 +43,11 @@
       프로젝트 입출금 거래 건별 수정
     </template>
     <template v-slot:default>
-      <!--      <CashForm-->
-      <!--        @on-submit="updateObject"-->
-      <!--        @close="$refs.cashUpdateModal.visible = false"-->
-      <!--        :cash="cash"-->
-      <!--      />-->
+      <ProCashForm
+        @on-submit="updateObject"
+        @close="$refs.updateFormModal.visible = false"
+        :cash="cash"
+      />
     </template>
   </FormModal>
 
@@ -74,12 +74,13 @@ import commonMixin from '@/views/commonMixin'
 import FormModal from '@/components/Modals/FormModal.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
+import ProCashForm from '@/views/proCash/List/components/ProCashForm.vue'
 import { mapGetters } from 'vuex'
 
 export default defineComponent({
   name: 'ProCash',
   mixins: [commonMixin],
-  components: { FormModal, ConfirmModal, AlertModal },
+  components: { FormModal, ConfirmModal, AlertModal, ProCashForm },
   props: {
     proCash: {
       type: Object,
