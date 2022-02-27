@@ -111,10 +111,6 @@ export default defineComponent({
     ...mapGetters('accounts', ['staffAuth', 'superAuth']),
   },
   methods: {
-    cutString(str: string, len: number) {
-      const content = str ? str : ''
-      return content.length > len ? `${content.substr(0, len)}..` : content
-    },
     updateConfirm(this: any) {
       if (this.pageManageAuth) {
         if (this.allowedPeriod) this.$refs.cashUpdateModal.callModal()
