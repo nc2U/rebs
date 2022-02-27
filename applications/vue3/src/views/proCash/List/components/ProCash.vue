@@ -2,20 +2,20 @@
   <CTableRow class="text-center" v-if="proCash">
     <CTableDataCell>{{ proCash.deal_date }}</CTableDataCell>
     <CTableDataCell :class="sortClass">
-      {{ proCash.sort }}
+      {{ proCash.sort_desc }}
     </CTableDataCell>
-    <CTableDataCell>{{ proCash.project_account_d1 }}</CTableDataCell>
-    <CTableDataCell class="text-left truncate">
-      {{ cutString(proCash.project_account_d2, 7) }}
+    <CTableDataCell>{{ proCash.project_account_d1_desc }}</CTableDataCell>
+    <CTableDataCell class="text-left">
+      {{ cutString(proCash.project_account_d2_desc, 7) }}
     </CTableDataCell>
-    <CTableDataCell class="text-left truncate">
+    <CTableDataCell class="text-left">
       {{ cutString(proCash.content, 9) }}
     </CTableDataCell>
-    <CTableDataCell class="text-left truncate">
+    <CTableDataCell class="text-left">
       {{ cutString(proCash.trader, 7) }}
     </CTableDataCell>
     <CTableDataCell class="text-left">
-      {{ cutString(proCash.bank_account, 9) }}
+      {{ cutString(proCash.bank_account_desc, 9) }}
     </CTableDataCell>
     <CTableDataCell class="text-right" color="success">
       {{ numFormat(proCash.income || 0) }}
@@ -23,7 +23,7 @@
     <CTableDataCell class="text-right" color="danger">
       {{ numFormat(proCash.outlay || 0) }}
     </CTableDataCell>
-    <CTableDataCell>{{ proCash.evidence }}</CTableDataCell>
+    <CTableDataCell>{{ proCash.evidence_desc }}</CTableDataCell>
     <CTableDataCell>
       <CButton color="success" @click="updateConfirm" size="sm"> 수정</CButton>
       <CButton
@@ -46,7 +46,7 @@
       <ProCashForm
         @on-submit="updateObject"
         @close="$refs.updateFormModal.visible = false"
-        :cash="cash"
+        :pro-cash="proCash"
       />
     </template>
   </FormModal>
@@ -89,14 +89,8 @@ export default defineComponent({
   },
   computed: {
     sortClass() {
-      const scls = [
-        { text: '입금', cls: 'text-primary' },
-        { text: '출금', cls: 'text-danger' },
-        { text: '대체', cls: 'text-info' },
-      ]
-      return this.proCash.sort
-        ? scls.filter(c => c.text === this.proCash.sort).map(c => c.cls)[0]
-        : ''
+      const cls = ['', 'text-primary', 'text-danger', 'text-info']
+      return cls[this.proCash.sort]
     },
     pageManageAuth() {
       return (

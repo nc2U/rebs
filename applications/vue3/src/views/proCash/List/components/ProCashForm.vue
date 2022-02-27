@@ -47,9 +47,9 @@
                 @change="callAccount"
               >
                 <option value="">---------</option>
-                <!--                <option v-for="d2 in formAccD2List" :value="d2.pk" :key="d2.pk">-->
-                <!--                  {{ d2.name }}-->
-                <!--                </option>-->
+                <option v-for="d1 in formAccD1List" :value="d1.pk" :key="d1.pk">
+                  {{ d1.name }}
+                </option>
               </CFormSelect>
             </CCol>
           </CRow>
@@ -62,9 +62,9 @@
             <CCol sm="8">
               <CFormSelect v-model="form.project_account_d2">
                 <option value="">---------</option>
-                <!--                <option v-for="d3 in formAccD3List" :value="d3.pk" :key="d3.pk">-->
-                <!--                  {{ d3.name }}-->
-                <!--                </option>-->
+                <option v-for="d2 in formAccD2List" :value="d2.pk" :key="d2.pk">
+                  {{ d2.name }}
+                </option>
               </CFormSelect>
             </CCol>
           </CRow>
@@ -97,7 +97,11 @@
             <CCol sm="8">
               <CFormSelect v-model="form.bank_account">
                 <option value="">---------</option>
-                <option v-for="ba in comBankList" :value="ba.pk" :key="ba.pk">
+                <option
+                  v-for="ba in proBankAccountList"
+                  :value="ba.pk"
+                  :key="ba.pk"
+                >
                   {{ ba.alias_name }}
                 </option>
               </CFormSelect>
