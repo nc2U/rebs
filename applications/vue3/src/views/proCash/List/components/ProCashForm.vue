@@ -24,7 +24,7 @@
           <CRow>
             <CFormLabel class="col-sm-4 col-form-label">구분</CFormLabel>
             <CCol sm="8">
-              <CFormSelect v-model="form.sort" @change="callAccount">
+              <CFormSelect v-model="form.sort" required @change="callAccount">
                 <option v-show="form.sort === ''" value="">구분</option>
                 <option v-show="form.sort === '1'" value="1">입금</option>
                 <option v-show="form.sort === '2'" value="2">출금</option>
@@ -103,7 +103,7 @@
           <CRow>
             <CFormLabel class="col-sm-4 col-form-label">거래계좌</CFormLabel>
             <CCol sm="8">
-              <CFormSelect v-model="form.bank_account">
+              <CFormSelect v-model="form.bank_account" required>
                 <option value="">---------</option>
                 <option
                   v-for="ba in proBankAccountList"
@@ -141,6 +141,7 @@
               <CFormInput
                 v-model.number="form.income"
                 type="number"
+                min="0"
                 placeholder="입금액"
                 :disabled="form.sort === '2'"
               />
@@ -154,6 +155,7 @@
               <CFormInput
                 v-model.number="form.outlay"
                 type="number"
+                min="0"
                 placeholder="출금액"
                 :disabled="form.sort === '1'"
               />
@@ -167,11 +169,7 @@
           <CRow>
             <CFormLabel class="col-sm-2 col-form-label">비고</CFormLabel>
             <CCol sm="10">
-              <CFormTextarea
-                v-model.number="form.note"
-                type="number"
-                placeholder="비고"
-              />
+              <CFormTextarea v-model.number="form.note" placeholder="비고" />
             </CCol>
           </CRow>
         </CCol>
