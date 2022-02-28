@@ -1,3 +1,5 @@
+import dayjs from 'dayjs'
+
 export default {
   methods: {
     numFormat(value = 0, n?: number) {
@@ -18,6 +20,10 @@ export default {
       const start = new Date(date)
       const btween = now.getTime() - start.getTime()
       return btween / 1000 / 60 / 60 / 24
+    },
+
+    dateFormat(date: Date) {
+      return dayjs(date).format('YYYY-MM-DD')
     },
   },
 }
