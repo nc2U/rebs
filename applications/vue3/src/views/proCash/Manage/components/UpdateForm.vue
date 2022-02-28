@@ -137,10 +137,7 @@
           <CRow>
             <CFormLabel class="col-sm-4 col-form-label">증빙자료</CFormLabel>
             <CCol sm="8">
-              <CFormSelect
-                v-model="form.evidence"
-                :disabled="form.sort !== '2'"
-              >
+              <CFormSelect v-model="form.evidence" :disabled="form.sort === ''">
                 <option value="0">---------</option>
                 <option value="1">세금계산서</option>
                 <option value="2">계산서(면세)</option>
@@ -162,8 +159,8 @@
                 v-model.number="form.income"
                 type="number"
                 min="0"
-                required
                 placeholder="입금액"
+                :required="form.sort === '1'"
                 :disabled="form.sort === '2' || form.sort === ''"
               />
             </CCol>
@@ -177,8 +174,8 @@
                 v-model.number="form.outlay"
                 type="number"
                 min="0"
-                required
                 placeholder="출금액"
+                :required="form.sort === '2'"
                 :disabled="form.sort === '1' || form.sort === ''"
               />
             </CCol>
@@ -235,9 +232,9 @@ export default defineComponent({
         content: '',
         trader: '',
         bank_account: '',
-        income: '',
-        outlay: '',
-        evidence: '',
+        income: null,
+        outlay: null,
+        evidence: '0',
         note: '',
         deal_date: '',
       },
@@ -299,8 +296,8 @@ export default defineComponent({
     sort_change(event: any) {
       this.form.project_account_d1 = ''
       this.form.project_account_d2 = ''
-      if (event.target.value === '1') this.form.outlay = ''
-      if (event.target.value === '2') this.form.income = ''
+      if (event.target.value === '1') this.form.outlay = null
+      if (event.target.value === '2') this.form.income = null
       this.callAccount()
     },
     d1_change() {

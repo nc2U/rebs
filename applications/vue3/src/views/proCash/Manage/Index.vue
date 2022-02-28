@@ -8,7 +8,7 @@
   <ContentBody>
     <CCardBody class="pb-5">
       <ListController ref="listControl" @list-filtering="listFiltering" />
-      <AddProCash />
+      <AddProCash @on-create="onCreate" />
       <ProCashList
         :project="project"
         @page-select="pageSelect"
@@ -82,6 +82,10 @@ export default defineComponent({
       this.fetchProFormAccD2List({ d1, sort })
       this.fetchProjectCashList({ ...{ project }, ...payload })
     },
+    onCreate(payload: any) {
+      const project = this.project.pk
+      this.createPrCashBook({ ...{ project }, ...payload })
+    },
     onUpdate(payload: any) {
       const page = this.page
       this.updatePrCashBook({ ...{ page }, ...payload })
@@ -98,6 +102,7 @@ export default defineComponent({
       'fetchProFormAccD2List',
       'fetchProBankAccList',
       'fetchProjectCashList',
+      'createPrCashBook',
       'updatePrCashBook',
       'deletePrCashBook',
     ]),

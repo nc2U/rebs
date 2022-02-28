@@ -11,11 +11,7 @@
           <CRow>
             <CFormLabel class="col-sm-4 col-form-label">거래일자</CFormLabel>
             <CCol sm="8">
-              <DatePicker
-                v-model="form.deal_date"
-                required
-                placeholder="거래일자"
-              />
+              <DatePicker v-model="form.date" required placeholder="거래일자" />
             </CCol>
           </CRow>
         </CCol>
@@ -114,7 +110,9 @@
       <CRow class="mb-3">
         <CCol sm="6">
           <CRow>
-            <CFormLabel class="col-sm-4 col-form-label">거래계좌</CFormLabel>
+            <CFormLabel class="col-sm-4 col-form-label">
+              {{ form.sort === '3' ? '입금' : '거래' }}계좌
+            </CFormLabel>
             <CCol sm="8">
               <CFormSelect
                 v-model="form.bank_account"
@@ -134,19 +132,35 @@
           </CRow>
         </CCol>
         <CCol sm="6">
-          <CRow>
+          <CRow v-if="form.sort !== '3'">
             <CFormLabel class="col-sm-4 col-form-label">증빙자료</CFormLabel>
             <CCol sm="8">
-              <CFormSelect
-                v-model="form.evidence"
-                :disabled="form.sort !== '2'"
-              >
+              <CFormSelect v-model="form.evidence" :disabled="form.sort === ''">
                 <option value="0">---------</option>
                 <option value="1">세금계산서</option>
                 <option value="2">계산서(면세)</option>
                 <option value="3">신용카드전표</option>
                 <option value="4">현금영수증</option>
                 <option value="5">간이영수증</option>
+              </CFormSelect>
+            </CCol>
+          </CRow>
+          <CRow v-if="form.sort === '3'">
+            <CFormLabel class="col-sm-4 col-form-label">출금계좌</CFormLabel>
+            <CCol sm="8">
+              <CFormSelect
+                v-model="form.bank_account_from"
+                required
+                :disabled="form.sort !== '3'"
+              >
+                <option value="">---------</option>
+                <option
+                  v-for="ba in proBankAccountList"
+                  :value="ba.pk"
+                  :key="ba.pk"
+                >
+                  {{ ba.alias_name }}
+                </option>
               </CFormSelect>
             </CCol>
           </CRow>
@@ -162,8 +176,8 @@
                 v-model.number="form.income"
                 type="number"
                 min="0"
-                required
                 placeholder="입금액"
+                :required="form.sort === '1'"
                 :disabled="form.sort === '2' || form.sort === ''"
               />
             </CCol>
@@ -177,8 +191,8 @@
                 v-model.number="form.outlay"
                 type="number"
                 min="0"
-                required
                 placeholder="출금액"
+                :required="form.sort === '2'"
                 :disabled="form.sort === '1' || form.sort === ''"
               />
             </CCol>
@@ -224,18 +238,18 @@ export default defineComponent({
   data() {
     return {
       form: {
-        // project: '',
         sort: '',
         project_account_d1: '',
         project_account_d2: '',
         content: '',
         trader: '',
         bank_account: '',
-        income: '',
-        outlay: '',
-        evidence: '',
+        bank_account_from: '',
+        income: null,
+        outlay: null,
+        evidence: '0',
         note: '',
-        deal_date: new Date(),
+        date: new Date(),
       },
       validated: false,
     }
@@ -251,7 +265,7 @@ export default defineComponent({
     ]),
   },
   methods: {
-    onSubmit(event: any) {
+    onSubmit(this: any, event: any) {
       const form = event.currentTarget
       if (form.checkValidity() === false) {
         event.preventDefault()
@@ -259,15 +273,16 @@ export default defineComponent({
 
         this.validated = true
       } else {
-        alert('a')
-        this.$emit('on-submit', this.form)
+        const { date, ...formData } = this.form
+        const deal_date = this.dateFormat(date)
+        this.$emit('on-submit', { ...{ deal_date }, ...formData })
       }
     },
     sort_change(event: any) {
       this.form.project_account_d1 = ''
       this.form.project_account_d2 = ''
-      if (event.target.value === '1') this.form.outlay = ''
-      if (event.target.value === '2') this.form.income = ''
+      if (event.target.value === '1') this.form.outlay = null
+      if (event.target.value === '2') this.form.income = null
       this.callAccount()
     },
     d1_change() {

@@ -43,7 +43,7 @@ export default defineComponent({
       else this.$refs.createAlertModal.callModal()
     },
     createObject(this: any, payload: any) {
-      this.$emit('on-create', { ...{ pk: this.proCash.pk }, ...payload })
+      this.$emit('on-create', payload)
       this.$refs.createFormModal.visible = false
     },
   },
