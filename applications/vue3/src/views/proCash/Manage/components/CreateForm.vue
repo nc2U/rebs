@@ -274,14 +274,9 @@ export default defineComponent({
 
         this.validated = true
       } else {
-        if (this.form.sort === '3') {
-          const outData = 1
-          const incData = 2
-        } else {
-          const { date, ...formData } = this.form
-          const deal_date = this.dateFormat(date)
-          this.$emit('on-submit', { ...{ deal_date }, ...formData })
-        }
+        const { date, ...formData } = this.form
+        const deal_date = this.dateFormat(date)
+        this.$emit('on-submit', { ...{ deal_date }, ...formData })
       }
     },
     sort_change(event: any) {
