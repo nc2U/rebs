@@ -1,18 +1,19 @@
 <template>
   <ContentHeader
-      :page-title="pageTitle"
-      :nav-menu="navMenu"
-      :selector="'CompanySelect'"
-      @header-select="onSelectAdd"
+    :page-title="pageTitle"
+    :nav-menu="navMenu"
+    :selector="'CompanySelect'"
+    @header-select="onSelectAdd"
   />
   <ContentBody>
     <CCardBody class="pb-5">
-      <ListController ref="listControl" @list-filtering="listFiltering"/>
+      <ListController ref="listControl" @list-filtering="listFiltering" />
+      <AddCash @on-create="onCreate" />
       <CashesList
-          :company="company"
-          @page-select="pageSelect"
-          @on-update="onUpdate"
-          @on-delete="onDelete"
+        :company="company"
+        @page-select="pageSelect"
+        @on-update="onUpdate"
+        @on-delete="onDelete"
       />
     </CCardBody>
 
@@ -21,13 +22,14 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from 'vue'
+import { defineComponent } from 'vue'
 import HeaderMixin from '@/views/comCash/_menu/headermixin'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from '@/views/comCash/Manage/components/ListController.vue'
+import AddCash from '@/views/comCash/Manage/components/AddCash.vue'
 import CashesList from '@/views/comCash/Manage/components/CashesList.vue'
-import {mapActions, mapGetters, mapState} from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'comCashManage',
@@ -36,6 +38,7 @@ export default defineComponent({
     ContentHeader,
     ContentBody,
     ListController,
+    AddCash,
     CashesList,
   },
   data() {
@@ -51,8 +54,8 @@ export default defineComponent({
     this.fetchFormAccD1List()
     this.fetchFormAccD2List()
     this.fetchFormAccD3List()
-    this.fetchCompanyBankAccountList(this.initComId)
-    this.fetchCashBookList({company: this.initComId})
+    this.fetchComBankAccList(this.initComId)
+    this.fetchCashBookList({ company: this.initComId })
   },
   computed: {
     ...mapState('settings', ['company']),
@@ -62,8 +65,8 @@ export default defineComponent({
     onSelectAdd(this: any, target: any) {
       if (target !== '') {
         this.fetchCompany(target)
-        this.fetchCompanyBankAccountList(target)
-        this.fetchCashBookList({company: target})
+        this.fetchComBankAccList(target)
+        this.fetchCashBookList({ company: target })
       } else {
         this.$store.state.settings.company = null
         this.$store.state.comCash.comBankList = []
@@ -80,18 +83,18 @@ export default defineComponent({
       const sort = payload.sort ? payload.sort : ''
       const d1 = payload.account_d1 ? payload.account_d1 : ''
       const d2 = payload.account_d2 ? payload.account_d2 : ''
-      this.fetchFormAccD1List({sort})
-      this.fetchFormAccD2List({sort, d1})
-      this.fetchFormAccD3List({sort, d1, d2})
-      this.fetchCashBookList({...{company}, ...payload})
+      this.fetchFormAccD1List({ sort })
+      this.fetchFormAccD2List({ sort, d1 })
+      this.fetchFormAccD3List({ sort, d1, d2 })
+      this.fetchCashBookList({ ...{ company }, ...payload })
     },
     onUpdate(payload: any) {
       const page = this.page
-      this.updateCashBook({...{page}, ...payload})
+      this.updateCashBook({ ...{ page }, ...payload })
     },
     onDelete(payload: any) {
       const page = this.page
-      this.deleteCashBook({...{page}, ...payload})
+      this.deleteCashBook({ ...{ page }, ...payload })
     },
     ...mapActions('settings', ['fetchCompany']),
     ...mapActions('comCash', [
@@ -102,8 +105,9 @@ export default defineComponent({
       'fetchFormAccD1List',
       'fetchFormAccD2List',
       'fetchFormAccD3List',
-      'fetchCompanyBankAccountList',
+      'fetchComBankAccList',
       'fetchCashBookList',
+      'createCashBook',
       'updateCashBook',
       'deleteCashBook',
     ]),

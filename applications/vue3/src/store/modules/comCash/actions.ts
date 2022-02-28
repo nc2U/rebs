@@ -91,7 +91,7 @@ const actions = {
       .catch(err => console.log(err.response.data))
   },
 
-  fetchCompanyBankAccountList: ({ commit }: any, company: any) => {
+  fetchComBankAccList: ({ commit }: any, company: any) => {
     api
       .get(`/company-bank-account/?company=${company}`)
       .then(res => {
@@ -104,7 +104,7 @@ const actions = {
     api
       .post(`/company-bank-account/`, payload)
       .then(res => {
-        dispatch('fetchCompanyBankAccountList', res.data.project)
+        dispatch('fetchComBankAccList', res.data.project)
         message()
       })
       .catch(err => console.log(err.response.data))
@@ -115,7 +115,7 @@ const actions = {
     api
       .put(`/company-bank-account/${pk}/`, formData)
       .then(res => {
-        dispatch('fetchCompanyBankAccountList', res.data.project)
+        dispatch('fetchComBankAccList', res.data.project)
         message()
       })
       .catch(err => console.log(err.response.data))
@@ -126,7 +126,7 @@ const actions = {
     api
       .delete(`/company-bank-account/${pk}/`)
       .then(() => {
-        dispatch('fetchCompanyBankAccountList', project)
+        dispatch('fetchComBankAccList', project)
         message('danger', '알림!', '해당 오브젝트가 삭제되었습니다.')
       })
       .catch(err => console.log(err.response.data))
