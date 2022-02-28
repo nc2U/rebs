@@ -29,10 +29,10 @@
     <CTableDataCell>
       <CButton color="success" @click="updateConfirm" size="sm"> 수정</CButton>
       <CButton
-          color="danger"
-          @click="deleteConfirm"
-          size="sm"
-          :disabled="!pageManageAuth || !allowedPeriod"
+        color="danger"
+        @click="deleteConfirm"
+        size="sm"
+        :disabled="!pageManageAuth || !allowedPeriod"
       >
         삭제
       </CButton>
@@ -41,21 +41,21 @@
 
   <FormModal size="lg" ref="updateFormModal">
     <template v-slot:header>
-      <CIcon name="cil-italic"/>
+      <CIcon name="cil-italic" />
       입출금 거래 건별 수정
     </template>
     <template v-slot:default>
-      <CashForm
-          @on-submit="updateObject"
-          @close="$refs.updateFormModal.visible = false"
-          :cash="cash"
+      <UpdateForm
+        @on-submit="updateObject"
+        @close="$refs.updateFormModal.visible = false"
+        :cash="cash"
       />
     </template>
   </FormModal>
 
   <ConfirmModal ref="delModal">
     <template v-slot:header>
-      <CIcon name="cilWarning"/>
+      <CIcon name="cilWarning" />
       입출금 거래 정보 삭제
     </template>
     <template v-slot:default>
@@ -67,20 +67,20 @@
     </template>
   </ConfirmModal>
 
-  <AlertModal ref="alertModal"/>
+  <AlertModal ref="alertModal" />
 </template>
 
 <script lang="ts">
-import {defineComponent} from 'vue'
+import { defineComponent } from 'vue'
 import FormModal from '@/components/Modals/FormModal.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
-import CashForm from '@/views/comCash/Manage/components/CashForm.vue'
-import {mapGetters} from 'vuex'
+import UpdateForm from '@/views/comCash/Manage/components/UpdateForm.vue'
+import { mapGetters } from 'vuex'
 
 export default defineComponent({
   name: 'Cashes',
-  components: {FormModal, ConfirmModal, AlertModal, CashForm},
+  components: { FormModal, ConfirmModal, AlertModal, UpdateForm },
   props: {
     cash: {
       type: Object,
@@ -101,8 +101,8 @@ export default defineComponent({
     },
     pageManageAuth() {
       return (
-          this.superAuth ||
-          (this.staffAuth && this.staffAuth.company_cash === '2')
+        this.superAuth ||
+        (this.staffAuth && this.staffAuth.company_cash === '2')
       )
     },
     allowedPeriod(this: any) {
@@ -116,13 +116,13 @@ export default defineComponent({
         if (this.allowedPeriod) this.$refs.updateFormModal.callModal()
         else
           this.$refs.alertModal.callModal(
-              null,
-              '거래일로부터 30일이 경과한 건은 수정할 수 없습니다. 관리자에게 문의바랍니다.',
+            null,
+            '거래일로부터 30일이 경과한 건은 수정할 수 없습니다. 관리자에게 문의바랍니다.',
           )
       } else this.$refs.alertModal.callModal()
     },
     updateObject(this: any, payload: any) {
-      this.$emit('on-update', {...{pk: this.cash.pk}, ...payload})
+      this.$emit('on-update', { ...{ pk: this.cash.pk }, ...payload })
       this.$refs.updateFormModal.visible = false
     },
     deleteConfirm(this: any) {
@@ -130,14 +130,14 @@ export default defineComponent({
         if (this.allowedPeriod) this.$refs.delModal.callModal()
         else
           this.$refs.alertModal.callModal(
-              null,
-              '거래일로부터 30일이 경과한 건은 삭제할 수 없습니다. 관리자에게 문의바랍니다.',
+            null,
+            '거래일로부터 30일이 경과한 건은 삭제할 수 없습니다. 관리자에게 문의바랍니다.',
           )
       else this.$refs.alertModal.callModal()
     },
 
     deleteObject(this: any) {
-      this.$emit('on-delete', {company: this.cash.company, pk: this.cash.pk})
+      this.$emit('on-delete', { company: this.cash.company, pk: this.cash.pk })
       this.$refs.delModal.visible = false
     },
   },

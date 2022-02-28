@@ -26,11 +26,11 @@
           <CRow>
             <CFormLabel class="col-sm-4 col-form-label">구분</CFormLabel>
             <CCol sm="8">
-              <CFormSelect v-model="form.sort" required @change="callAccount">
-                <option v-show="form.sort === ''" value="">구분</option>
-                <option v-show="form.sort === '1'" value="1">입금</option>
-                <option v-show="form.sort === '2'" value="2">출금</option>
-                <option v-show="form.sort === '3'" value="3">대체</option>
+              <CFormSelect v-model="form.sort" required @change="sort_change">
+                <option value="">구분</option>
+                <option value="1">입금</option>
+                <option value="2">출금</option>
+                <option value="3">대체</option>
               </CFormSelect>
             </CCol>
           </CRow>
@@ -41,7 +41,12 @@
               계정[대분류]
             </CFormLabel>
             <CCol sm="8">
-              <CFormSelect v-model="form.account_d1" @change="callAccount">
+              <CFormSelect
+                v-model="form.account_d1"
+                @change="d1_change"
+                required
+                :disabled="form.sort === ''"
+              >
                 <option value="">---------</option>
                 <option v-for="d1 in formAccD1List" :value="d1.pk" :key="d1.pk">
                   {{ d1.name }}
@@ -59,7 +64,12 @@
               계정[중분류]
             </CFormLabel>
             <CCol sm="8">
-              <CFormSelect v-model="form.account_d2" @change="callAccount">
+              <CFormSelect
+                v-model="form.account_d2"
+                @change="d2_change"
+                required
+                :disabled="form.account_d1 === ''"
+              >
                 <option value="">---------</option>
                 <option v-for="d2 in formAccD2List" :value="d2.pk" :key="d2.pk">
                   {{ d2.name }}
@@ -74,7 +84,11 @@
               계정[소분류]
             </CFormLabel>
             <CCol sm="8">
-              <CFormSelect v-model="form.account_d3">
+              <CFormSelect
+                v-model="form.account_d3"
+                required
+                :disabled="form.account_d2 === ''"
+              >
                 <option value="">---------</option>
                 <option v-for="d3 in formAccD3List" :value="d3.pk" :key="d3.pk">
                   {{ d3.name }}
@@ -90,7 +104,12 @@
           <CRow>
             <CFormLabel class="col-sm-4 col-form-label">적요</CFormLabel>
             <CCol sm="8">
-              <CFormInput v-model="form.content" required placeholder="적요" />
+              <CFormInput
+                v-model="form.content"
+                placeholder="적요"
+                required
+                :disabled="form.sort === ''"
+              />
             </CCol>
           </CRow>
         </CCol>
@@ -98,7 +117,12 @@
           <CRow>
             <CFormLabel class="col-sm-4 col-form-label">거래처</CFormLabel>
             <CCol sm="8">
-              <CFormInput v-model="form.trader" placeholder="거래처" />
+              <CFormInput
+                v-model="form.trader"
+                placeholder="거래처"
+                required
+                :disabled="form.sort === ''"
+              />
             </CCol>
           </CRow>
         </CCol>
@@ -107,9 +131,15 @@
       <CRow class="mb-3">
         <CCol sm="6">
           <CRow>
-            <CFormLabel class="col-sm-4 col-form-label">거래계좌</CFormLabel>
+            <CFormLabel class="col-sm-4 col-form-label">
+              {{ form.sort === '3' ? '출금' : '거래' }}계좌
+            </CFormLabel>
             <CCol sm="8">
-              <CFormSelect v-model="form.bank_account" required>
+              <CFormSelect
+                v-model="form.bank_account"
+                required
+                :disabled="form.sort === ''"
+              >
                 <option value="">---------</option>
                 <option v-for="ba in comBankList" :value="ba.pk" :key="ba.pk">
                   {{ ba.alias_name }}
@@ -119,10 +149,10 @@
           </CRow>
         </CCol>
         <CCol sm="6">
-          <CRow>
+          <CRow v-if="form.sort !== '3'">
             <CFormLabel class="col-sm-4 col-form-label">증빙자료</CFormLabel>
             <CCol sm="8">
-              <CFormSelect v-model="form.evidence">
+              <CFormSelect v-model="form.evidence" :disabled="form.sort === ''">
                 <option value="0">---------</option>
                 <option value="1">세금계산서</option>
                 <option value="2">계산서(면세)</option>
@@ -132,24 +162,25 @@
               </CFormSelect>
             </CCol>
           </CRow>
+          <CRow v-if="form.sort === '3'">
+            <CFormLabel class="col-sm-4 col-form-label">입금계좌</CFormLabel>
+            <CCol sm="8">
+              <CFormSelect
+                v-model="form.bank_account_to"
+                required
+                :disabled="form.sort !== '3'"
+              >
+                <option value="">---------</option>
+                <option v-for="ba in comBankList" :value="ba.pk" :key="ba.pk">
+                  {{ ba.alias_name }}
+                </option>
+              </CFormSelect>
+            </CCol>
+          </CRow>
         </CCol>
       </CRow>
 
       <CRow class="mb-3">
-        <CCol sm="6">
-          <CRow>
-            <CFormLabel class="col-sm-4 col-form-label">입금액</CFormLabel>
-            <CCol sm="8">
-              <CFormInput
-                v-model.number="form.income"
-                type="number"
-                min="0"
-                placeholder="입금액"
-                :disabled="form.sort === '2'"
-              />
-            </CCol>
-          </CRow>
-        </CCol>
         <CCol sm="6">
           <CRow>
             <CFormLabel class="col-sm-4 col-form-label">출금액</CFormLabel>
@@ -159,7 +190,23 @@
                 type="number"
                 min="0"
                 placeholder="출금액"
-                :disabled="form.sort === '1'"
+                :required="form.sort === '2'"
+                :disabled="form.sort === '1' || form.sort === ''"
+              />
+            </CCol>
+          </CRow>
+        </CCol>
+        <CCol sm="6">
+          <CRow>
+            <CFormLabel class="col-sm-4 col-form-label">입금액</CFormLabel>
+            <CCol sm="8">
+              <CFormInput
+                v-model.number="form.income"
+                type="number"
+                min="0"
+                placeholder="입금액"
+                :required="form.sort === '1'"
+                :disabled="form.sort === '2' || form.sort === ''"
               />
             </CCol>
           </CRow>
@@ -171,7 +218,11 @@
           <CRow>
             <CFormLabel class="col-sm-2 col-form-label">비고</CFormLabel>
             <CCol sm="10">
-              <CFormTextarea v-model.number="form.note" placeholder="비고" />
+              <CFormTextarea
+                v-model.number="form.note"
+                placeholder="비고"
+                :disabled="form.sort === ''"
+              />
             </CCol>
           </CRow>
         </CCol>
@@ -193,7 +244,7 @@ import { defineComponent } from 'vue'
 import { mapActions, mapState } from 'vuex'
 
 export default defineComponent({
-  name: 'CashForm',
+  name: 'CashUpdateForm',
   props: {
     cash: {
       type: Object,
@@ -211,8 +262,8 @@ export default defineComponent({
         content: '',
         trader: '',
         bank_account: '',
-        income: '',
-        outlay: '',
+        income: null,
+        outlay: null,
         evidence: '',
         note: '',
         deal_date: '',
@@ -276,11 +327,27 @@ export default defineComponent({
         this.$emit('on-submit', this.form)
       }
     },
+    sort_change(event: any) {
+      this.form.account_d1 = ''
+      this.form.account_d2 = ''
+      if (event.target.value === '1') this.form.outlay = null
+      if (event.target.value === '2') this.form.income = null
+      this.callAccount()
+    },
+    d1_change() {
+      this.form.account_d2 = ''
+      this.form.account_d3 = ''
+      this.callAccount()
+    },
+    d2_change() {
+      this.form.account_d3 = ''
+      this.callAccount()
+    },
     callAccount() {
       this.$nextTick(() => {
         const sort = this.form.sort
-        const d1 = this.form.account_d1 ? this.form.account_d1 : ''
-        const d2 = this.form.account_d2 ? this.form.account_d2 : ''
+        const d1 = this.form.account_d1 ? this.form.account_d1 : null
+        const d2 = this.form.account_d2 ? this.form.account_d2 : null
         this.fetchFormAccD1List({ sort })
         this.fetchFormAccD2List({ sort, d1 })
         this.fetchFormAccD3List({ sort, d1, d2 })

@@ -88,6 +88,21 @@ export default defineComponent({
       this.fetchFormAccD3List({ sort, d1, d2 })
       this.fetchCashBookList({ ...{ company }, ...payload })
     },
+    onCreate(payload: any) {
+      console.log(payload)
+      alert('ok!')
+      // const project = this.project.pk
+      // if (payload.sort === '3' && payload.bank_account_to) {
+      //   const allData = { ...{ project }, ...payload }
+      //   const { bank_account_to, income, ...outData } = allData
+      //   this.createCashBook(outData)
+      //   const { bank_account, outlay, ...incData } = outData
+      //   this.createCashBook({
+      //     ...{ bank_account: bank_account_to, income },
+      //     ...incData,
+      //   })
+      // } else this.createCashBook({ ...{ project }, ...payload })
+    },
     onUpdate(payload: any) {
       const page = this.page
       this.updateCashBook({ ...{ page }, ...payload })
