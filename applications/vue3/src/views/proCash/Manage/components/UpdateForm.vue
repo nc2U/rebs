@@ -153,21 +153,6 @@
       <CRow class="mb-3">
         <CCol sm="6">
           <CRow>
-            <CFormLabel class="col-sm-4 col-form-label">입금액</CFormLabel>
-            <CCol sm="8">
-              <CFormInput
-                v-model.number="form.income"
-                type="number"
-                min="0"
-                placeholder="입금액"
-                :required="form.sort === '1'"
-                :disabled="form.sort === '2' || form.sort === ''"
-              />
-            </CCol>
-          </CRow>
-        </CCol>
-        <CCol sm="6">
-          <CRow>
             <CFormLabel class="col-sm-4 col-form-label">출금액</CFormLabel>
             <CCol sm="8">
               <CFormInput
@@ -177,6 +162,22 @@
                 placeholder="출금액"
                 :required="form.sort === '2'"
                 :disabled="form.sort === '1' || form.sort === ''"
+              />
+            </CCol>
+          </CRow>
+        </CCol>
+
+        <CCol sm="6">
+          <CRow>
+            <CFormLabel class="col-sm-4 col-form-label">입금액</CFormLabel>
+            <CCol sm="8">
+              <CFormInput
+                v-model.number="form.income"
+                type="number"
+                min="0"
+                placeholder="입금액"
+                :required="form.sort === '1'"
+                :disabled="form.sort === '2' || form.sort === ''"
               />
             </CCol>
           </CRow>

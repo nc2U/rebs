@@ -111,7 +111,7 @@
         <CCol sm="6">
           <CRow>
             <CFormLabel class="col-sm-4 col-form-label">
-              {{ form.sort === '3' ? '입금' : '거래' }}계좌
+              {{ form.sort === '3' ? '출금' : '거래' }}계좌
             </CFormLabel>
             <CCol sm="8">
               <CFormSelect
@@ -146,10 +146,10 @@
             </CCol>
           </CRow>
           <CRow v-if="form.sort === '3'">
-            <CFormLabel class="col-sm-4 col-form-label">출금계좌</CFormLabel>
+            <CFormLabel class="col-sm-4 col-form-label">입금계좌</CFormLabel>
             <CCol sm="8">
               <CFormSelect
-                v-model="form.bank_account_from"
+                v-model="form.bank_account_to"
                 required
                 :disabled="form.sort !== '3'"
               >
@@ -170,21 +170,6 @@
       <CRow class="mb-3">
         <CCol sm="6">
           <CRow>
-            <CFormLabel class="col-sm-4 col-form-label">입금액</CFormLabel>
-            <CCol sm="8">
-              <CFormInput
-                v-model.number="form.income"
-                type="number"
-                min="0"
-                placeholder="입금액"
-                :required="form.sort === '1'"
-                :disabled="form.sort === '2' || form.sort === ''"
-              />
-            </CCol>
-          </CRow>
-        </CCol>
-        <CCol sm="6">
-          <CRow>
             <CFormLabel class="col-sm-4 col-form-label">출금액</CFormLabel>
             <CCol sm="8">
               <CFormInput
@@ -194,6 +179,22 @@
                 placeholder="출금액"
                 :required="form.sort === '2'"
                 :disabled="form.sort === '1' || form.sort === ''"
+              />
+            </CCol>
+          </CRow>
+        </CCol>
+
+        <CCol sm="6">
+          <CRow>
+            <CFormLabel class="col-sm-4 col-form-label">입금액</CFormLabel>
+            <CCol sm="8">
+              <CFormInput
+                v-model.number="form.income"
+                type="number"
+                min="0"
+                placeholder="입금액"
+                :required="form.sort === '1'"
+                :disabled="form.sort === '2' || form.sort === ''"
               />
             </CCol>
           </CRow>
@@ -244,7 +245,7 @@ export default defineComponent({
         content: '',
         trader: '',
         bank_account: '',
-        bank_account_from: '',
+        bank_account_to: '',
         income: null,
         outlay: null,
         evidence: '0',
@@ -273,9 +274,14 @@ export default defineComponent({
 
         this.validated = true
       } else {
-        const { date, ...formData } = this.form
-        const deal_date = this.dateFormat(date)
-        this.$emit('on-submit', { ...{ deal_date }, ...formData })
+        if (this.form.sort === '3') {
+          const outData = 1
+          const incData = 2
+        } else {
+          const { date, ...formData } = this.form
+          const deal_date = this.dateFormat(date)
+          this.$emit('on-submit', { ...{ deal_date }, ...formData })
+        }
       }
     },
     sort_change(event: any) {
