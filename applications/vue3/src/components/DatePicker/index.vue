@@ -32,7 +32,10 @@ export default defineComponent({
   computed: {
     textInputOptions() {
       return {
-        format: 'YYYY-MM-DD',
+        enterSubmit: true,
+        tabSubmit: true,
+        openMenu: true,
+        format: 'yyyy-MM-dd',
       }
     },
     dark(this: any) {
