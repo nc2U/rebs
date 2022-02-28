@@ -11,7 +11,7 @@
           <CRow>
             <CFormLabel class="col-sm-4 col-form-label">거래일자</CFormLabel>
             <CCol sm="8">
-              <CFormInput
+              <DatePicker
                 v-model="form.deal_date"
                 required
                 placeholder="거래일자"
@@ -24,11 +24,11 @@
           <CRow>
             <CFormLabel class="col-sm-4 col-form-label">구분</CFormLabel>
             <CCol sm="8">
-              <CFormSelect v-model="form.sort" required @change="callAccount">
-                <option v-show="form.sort === ''" value="">구분</option>
-                <option v-show="form.sort === '1'" value="1">입금</option>
-                <option v-show="form.sort === '2'" value="2">출금</option>
-                <option v-show="form.sort === '3'" value="3">대체</option>
+              <CFormSelect v-model="form.sort" required @change="sort_change">
+                <option value="">구분</option>
+                <option value="1">입금</option>
+                <option value="2">출금</option>
+                <option value="3">대체</option>
               </CFormSelect>
             </CCol>
           </CRow>
@@ -44,7 +44,9 @@
             <CCol sm="8">
               <CFormSelect
                 v-model="form.project_account_d1"
-                @change="callAccount"
+                @change="d1_change"
+                required
+                :disabled="form.sort === ''"
               >
                 <option value="">---------</option>
                 <option v-for="d1 in formAccD1List" :value="d1.pk" :key="d1.pk">
@@ -60,7 +62,11 @@
               계정[하위분류]
             </CFormLabel>
             <CCol sm="8">
-              <CFormSelect v-model="form.project_account_d2">
+              <CFormSelect
+                v-model="form.project_account_d2"
+                required
+                :disabled="form.project_account_d1 === ''"
+              >
                 <option value="">---------</option>
                 <option v-for="d2 in formAccD2List" :value="d2.pk" :key="d2.pk">
                   {{ d2.name }}
@@ -76,7 +82,12 @@
           <CRow>
             <CFormLabel class="col-sm-4 col-form-label">적요</CFormLabel>
             <CCol sm="8">
-              <CFormInput v-model="form.content" placeholder="적요" />
+              <CFormInput
+                v-model="form.content"
+                placeholder="적요"
+                required
+                :disabled="form.sort === ''"
+              />
             </CCol>
           </CRow>
         </CCol>
@@ -86,12 +97,14 @@
             <CCol sm="8">
               <CFormInput
                 v-model="form.trader"
-                placeholder="거래처"
                 v-c-tooltip="{
                   content:
                     '분양대금(분담금) 항목일 경우 반드시 해당 계좌에 기재된 입금자를 기재.',
                   placement: 'top',
                 }"
+                placeholder="거래처"
+                required
+                :disabled="form.sort === ''"
               />
             </CCol>
           </CRow>
@@ -103,7 +116,11 @@
           <CRow>
             <CFormLabel class="col-sm-4 col-form-label">거래계좌</CFormLabel>
             <CCol sm="8">
-              <CFormSelect v-model="form.bank_account" required>
+              <CFormSelect
+                v-model="form.bank_account"
+                required
+                :disabled="form.sort === ''"
+              >
                 <option value="">---------</option>
                 <option
                   v-for="ba in proBankAccountList"
@@ -120,7 +137,10 @@
           <CRow>
             <CFormLabel class="col-sm-4 col-form-label">증빙자료</CFormLabel>
             <CCol sm="8">
-              <CFormSelect v-model="form.evidence">
+              <CFormSelect
+                v-model="form.evidence"
+                :disabled="form.sort !== '2'"
+              >
                 <option value="0">---------</option>
                 <option value="1">세금계산서</option>
                 <option value="2">계산서(면세)</option>
@@ -142,8 +162,9 @@
                 v-model.number="form.income"
                 type="number"
                 min="0"
+                required
                 placeholder="입금액"
-                :disabled="form.sort === '2'"
+                :disabled="form.sort === '2' || form.sort === ''"
               />
             </CCol>
           </CRow>
@@ -156,8 +177,9 @@
                 v-model.number="form.outlay"
                 type="number"
                 min="0"
+                required
                 placeholder="출금액"
-                :disabled="form.sort === '1'"
+                :disabled="form.sort === '1' || form.sort === ''"
               />
             </CCol>
           </CRow>
@@ -169,7 +191,11 @@
           <CRow>
             <CFormLabel class="col-sm-2 col-form-label">비고</CFormLabel>
             <CCol sm="10">
-              <CFormTextarea v-model.number="form.note" placeholder="비고" />
+              <CFormTextarea
+                v-model.number="form.note"
+                placeholder="비고"
+                :disabled="form.sort === ''"
+              />
             </CCol>
           </CRow>
         </CCol>
@@ -181,7 +207,7 @@
         닫기
       </CButton>
       <slot name="footer">
-        <CButton color="success" :disabled="formsCheck">저장</CButton>
+        <CButton color="primary" :disabled="formsCheck">저장</CButton>
       </slot>
     </CModalFooter>
   </CForm>
@@ -189,14 +215,16 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import DatePicker from '@/components/DatePicker/index.vue'
 import { mapActions, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'CreateForm',
+  components: { DatePicker },
   data() {
     return {
       form: {
-        project: '',
+        // project: '',
         sort: '',
         project_account_d1: '',
         project_account_d2: '',
@@ -207,7 +235,7 @@ export default defineComponent({
         outlay: '',
         evidence: '',
         note: '',
-        deal_date: '',
+        deal_date: new Date(),
       },
       validated: false,
     }
@@ -231,15 +259,25 @@ export default defineComponent({
 
         this.validated = true
       } else {
+        alert('a')
         this.$emit('on-submit', this.form)
       }
+    },
+    sort_change(event: any) {
+      this.form.project_account_d1 = ''
+      this.form.project_account_d2 = ''
+      if (event.target.value === '1') this.form.outlay = ''
+      if (event.target.value === '2') this.form.income = ''
+      this.callAccount()
+    },
+    d1_change() {
+      this.form.project_account_d2 = ''
+      this.callAccount()
     },
     callAccount() {
       this.$nextTick(() => {
         const sort = this.form.sort
         const d1 = this.form.project_account_d1
-          ? this.form.project_account_d1
-          : ''
         this.fetchProFormAccD1List(sort)
         this.fetchProFormAccD2List({ sort, d1 })
       })
