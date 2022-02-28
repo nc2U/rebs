@@ -143,13 +143,8 @@ const project_cash = {
     },
     {
       component: 'CNavItem',
-      name: '현장입출 내역',
+      name: '현장출납 기록',
       to: '/project-cash/index',
-    },
-    {
-      component: 'CNavItem',
-      name: '현장입출 등록',
-      to: '/project-cash/register',
     },
   ],
 }

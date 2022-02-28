@@ -21,18 +21,10 @@ const proCash = {
     },
     {
       path: 'index',
-      name: '현장입출 내역',
+      name: '현장출납 기록',
       component: () =>
         store.state.accounts.userInfo.staffauth.project_cash > '0'
           ? import('@/views/proCash/Manage/Index.vue')
-          : import('@/views/_Accounts/NoAuth.vue'),
-    },
-    {
-      path: 'register',
-      name: '현장입출 등록',
-      component: () =>
-        store.state.accounts.userInfo.staffauth.project_cash > '0'
-          ? import('@/views/proCash/Register/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
     },
   ],
