@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib.humanize.templatetags.humanize import intcomma
 from import_export.admin import ImportExportMixin
+from rangefilter.filters import DateRangeFilter, DateTimeRangeFilter
 
 from .models import (CompanyBankAccount, ProjectBankAccount, CashBook, ProjectCashBook,
                      SalesPriceByGT, InstallmentPaymentOrder, DownPayment, OverDueRule)
@@ -24,6 +25,7 @@ class CashBookAdmin(ImportExportMixin, admin.ModelAdmin):
                     'content', 'trader', 'bank_account', 'formatted_income', 'formatted_outlay', 'user')
     search_fields = ('account_d3', 'content', 'trader', 'note')
     list_display_links = ('deal_date', 'content')
+    list_filter = (('deal_date', DateRangeFilter),)
 
     def formatted_income(self, obj):
         return f'{intcomma(obj.income)} 원' if obj.income else '-'

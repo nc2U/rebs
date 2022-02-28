@@ -62,6 +62,7 @@ INSTALLED_APPS = [
 
 INSTALLED_APPS += [  # plugin
     'import_export',
+    'rangefilter',
     'widget_tweaks',
     'django_markdown2',
     'mdeditor',
