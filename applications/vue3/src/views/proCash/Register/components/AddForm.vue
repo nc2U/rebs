@@ -1,7 +1,7 @@
 <template>
   <CTableRow>
     <CTableDataCell>
-      <CFormSelect v-model="form.sort">
+      <CFormSelect v-model="form.sort" @change="sort_change">
         <option value="">---------</option>
         <option value="1">입금</option>
         <option value="2">출금</option>
@@ -9,9 +9,15 @@
       </CFormSelect>
     </CTableDataCell>
     <CTableDataCell>
-      <CFormSelect v-model="form.account_d1">
+      <CFormSelect v-model="form.account_d1" @change="d1_change">
         <option value="">---------</option>
-        <option v-for="d1 in formAccD1List" :value="d1.pk" :key="d1.pk">{{ d1.name }}</option>
+        <option
+            v-for="d1 in formAccD1List"
+            :value="d1.pk"
+            :key="d1.pk"
+        >
+          {{ d1.name }}
+        </option>
       </CFormSelect>
     </CTableDataCell>
     <CTableDataCell>
@@ -81,9 +87,19 @@ export default defineComponent({
     }
   },
   computed: {
-    ...mapState('proCash', ['formAccD1List', 'formAccD2List', 'proBankAccountList']),
+    ...mapState('proCash', [
+      'formAccD1List',
+      'formAccD2List',
+      'proBankAccountList'
+    ]),
   },
   methods: {
+    sort_change() {
+      this.$nextTick(() => this.fetchProFormAccD1List(this.form.sort))
+    },
+    d1_change() {
+      this.$nextTick(() => this.fetchProFormAccD2List({d1: this.form.account_d1, sort: this.form.sort}))
+    },
     ...mapActions('proCash', [
       'fetchProFormAccD1List',
       'fetchProFormAccD2List',
