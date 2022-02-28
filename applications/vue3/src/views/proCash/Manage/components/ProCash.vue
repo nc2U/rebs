@@ -27,10 +27,10 @@
     <CTableDataCell>
       <CButton color="success" @click="updateConfirm" size="sm"> 수정</CButton>
       <CButton
-        color="danger"
-        @click="deleteConfirm"
-        size="sm"
-        :disabled="!pageManageAuth || !allowedPeriod"
+          color="danger"
+          @click="deleteConfirm"
+          size="sm"
+          :disabled="!pageManageAuth || !allowedPeriod"
       >
         삭제
       </CButton>
@@ -39,21 +39,21 @@
 
   <FormModal size="lg" ref="updateFormModal">
     <template v-slot:header>
-      <CIcon name="cil-italic" />
+      <CIcon name="cil-italic"/>
       프로젝트 입출금 거래 건별 수정
     </template>
     <template v-slot:default>
       <ProCashForm
-        @on-submit="updateObject"
-        @close="$refs.updateFormModal.visible = false"
-        :pro-cash="proCash"
+          @on-submit="updateObject"
+          @close="$refs.updateFormModal.visible = false"
+          :pro-cash="proCash"
       />
     </template>
   </FormModal>
 
   <ConfirmModal ref="delModal">
     <template v-slot:header>
-      <CIcon name="cilWarning" />
+      <CIcon name="cilWarning"/>
       프로젝트 입출금 거래 정보 삭제
     </template>
     <template v-slot:default>
@@ -65,22 +65,22 @@
     </template>
   </ConfirmModal>
 
-  <AlertModal ref="alertModal" />
+  <AlertModal ref="alertModal"/>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import {defineComponent} from 'vue'
 import commonMixin from '@/views/commonMixin'
 import FormModal from '@/components/Modals/FormModal.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
-import ProCashForm from '@/views/proCash/List/components/ProCashForm.vue'
-import { mapGetters } from 'vuex'
+import ProCashForm from '@/views/proCash/Manage/components/ProCashForm.vue'
+import {mapGetters} from 'vuex'
 
 export default defineComponent({
   name: 'ProCash',
   mixins: [commonMixin],
-  components: { FormModal, ConfirmModal, AlertModal, ProCashForm },
+  components: {FormModal, ConfirmModal, AlertModal, ProCashForm},
   props: {
     proCash: {
       type: Object,
@@ -94,8 +94,8 @@ export default defineComponent({
     },
     pageManageAuth() {
       return (
-        this.superAuth ||
-        (this.staffAuth && this.staffAuth.project_cash === '2')
+          this.superAuth ||
+          (this.staffAuth && this.staffAuth.project_cash === '2')
       )
     },
     allowedPeriod(this: any) {
@@ -109,13 +109,13 @@ export default defineComponent({
         if (this.allowedPeriod) this.$refs.updateFormModal.callModal()
         else
           this.$refs.alertModal.callModal(
-            null,
-            '거래일로부터 30일이 경과한 건은 수정할 수 없습니다. 관리자에게 문의바랍니다.',
+              null,
+              '거래일로부터 30일이 경과한 건은 수정할 수 없습니다. 관리자에게 문의바랍니다.',
           )
       else this.$refs.alertModal.callModal()
     },
     updateObject(this: any, payload: any) {
-      this.$emit('on-update', { ...{ pk: this.proCash.pk }, ...payload })
+      this.$emit('on-update', {...{pk: this.proCash.pk}, ...payload})
       this.$refs.updateFormModal.visible = false
     },
     deleteConfirm(this: any) {
@@ -123,8 +123,8 @@ export default defineComponent({
         if (this.allowedPeriod) this.$refs.delModal.callModal()
         else
           this.$refs.alertModal.callModal(
-            null,
-            '거래일로부터 30일이 경과한 건은 삭제할 수 없습니다. 관리자에게 문의바랍니다.',
+              null,
+              '거래일로부터 30일이 경과한 건은 삭제할 수 없습니다. 관리자에게 문의바랍니다.',
           )
       else this.$refs.alertModal.callModal()
     },
