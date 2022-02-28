@@ -21,18 +21,10 @@ const comCash = {
     },
     {
       path: 'index',
-      name: '본사입출 내역',
+      name: '본사출납 기록',
       component: () =>
         store.state.accounts.userInfo.staffauth.company_cash > '0'
           ? import('@/views/comCash/Manage/Index.vue')
-          : import('@/views/_Accounts/NoAuth.vue'),
-    },
-    {
-      path: 'register',
-      name: '본사입출 등록',
-      component: () =>
-        store.state.accounts.userInfo.staffauth.company_cash > '0'
-          ? import('@/views/comCash/Register/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
     },
   ],

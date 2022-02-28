@@ -293,13 +293,8 @@ const company_cash = {
     },
     {
       component: 'CNavItem',
-      name: '본사입출 내역',
+      name: '본사출납 기록',
       to: '/cashes/index',
-    },
-    {
-      component: 'CNavItem',
-      name: '본사입출 등록',
-      to: '/cashes/register',
     },
   ],
 }
