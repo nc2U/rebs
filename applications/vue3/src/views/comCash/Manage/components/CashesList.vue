@@ -1,17 +1,17 @@
 <template>
   <CTable hover responsive align="middle">
     <colgroup>
-      <col width="8%" />
-      <col width="5%" />
-      <col width="5%" />
-      <col width="10%" />
-      <col width="14%" />
-      <col width="11%" />
-      <col width="10%" />
-      <col width="10%" />
-      <col width="10%" />
-      <col width="9%" />
-      <col width="8%" />
+      <col width="8%"/>
+      <col width="5%"/>
+      <col width="5%"/>
+      <col width="10%"/>
+      <col width="14%"/>
+      <col width="11%"/>
+      <col width="10%"/>
+      <col width="10%"/>
+      <col width="10%"/>
+      <col width="9%"/>
+      <col width="8%"/>
     </colgroup>
 
     <CTableHead>
@@ -32,33 +32,33 @@
 
     <CTableBody>
       <Cashes
-        v-for="cash in getCashLogs"
-        :cash="cash"
-        :key="cash.pk"
-        @on-update="onUpdate"
-        @on-delete="onDelete"
+          v-for="cash in getCashLogs"
+          :cash="cash"
+          :key="cash.pk"
+          @on-update="onUpdate"
+          @on-delete="onDelete"
       />
     </CTableBody>
   </CTable>
 
   <CSmartPagination
-    :activePage="1"
-    :limit="8"
-    :pages="cashesPages(15)"
-    class="mt-3"
-    @active-page-change="pageSelect"
+      :activePage="1"
+      :limit="8"
+      :pages="cashesPages(15)"
+      class="mt-3"
+      @active-page-change="pageSelect"
   />
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
-import Cashes from '@/views/comCash/List/components/Cashes.vue'
-import { mapGetters } from 'vuex'
+import {defineComponent} from 'vue'
+import Cashes from '@/views/comCash/Manage/components/Cashes.vue'
+import {mapGetters} from 'vuex'
 
 export default defineComponent({
   name: 'CashesList',
-  components: { Cashes },
-  props: { company: Object },
+  components: {Cashes},
+  props: {company: Object},
   computed: {
     ...mapGetters('comCash', ['cashesPages', 'getCashLogs']),
   },
