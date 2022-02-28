@@ -39,6 +39,7 @@
     "mosha-vue-toastify": "^1.0.23",
     "vue": "^3.2.31",
     "vue-router": "^4.0.12",
+    "vue3-date-time-picker": "^2.7.0",
     "vuex": "^4.0.2"
   },
   "devDependencies": {

@@ -17,6 +17,7 @@ $enable-rtl: true;
 @import "calendar";
 @import "example";
 @import 'mosha-vue-toastify/dist/style';
+@import 'vue3-date-time-picker/src/Vue3DatePicker/style/main.scss';
 
 // If you want to add something do it here
 @import "custom";
