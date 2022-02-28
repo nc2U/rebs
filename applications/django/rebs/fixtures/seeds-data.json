@@ -289,6 +289,16 @@
     }
   },
   {
+    "model": "rebs.accountsubd2",
+    "pk": 19,
+    "fields": {
+      "d1": 6,
+      "code": "910",
+      "name": "대체",
+      "description": "대체"
+    }
+  },
+  {
     "model": "rebs.accountsubd3",
     "pk": 1,
     "fields": {
@@ -1683,6 +1693,17 @@
       "name": "소득세등",
       "is_special": false,
       "description": "소득세등"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 128,
+    "fields": {
+      "d2": 19,
+      "code": "911",
+      "name": "대체",
+      "is_special": false,
+      "description": "대체"
     }
   },
   {
