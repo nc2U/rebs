@@ -1,9 +1,9 @@
 <template>
   <CForm
-    class="needs-validation"
-    novalidate
-    :validated="validated"
-    @submit.prevent="onSubmit"
+      class="needs-validation"
+      novalidate
+      :validated="validated"
+      @submit.prevent="onSubmit"
   >
     <CModalBody class="p-4">
       <CRow class="mb-3">
@@ -12,9 +12,9 @@
             <CFormLabel class="col-sm-4 col-form-label">거래일자</CFormLabel>
             <CCol sm="8">
               <CFormInput
-                v-model="form.deal_date"
-                required
-                placeholder="거래일자"
+                  v-model="form.deal_date"
+                  required
+                  placeholder="거래일자"
               />
             </CCol>
           </CRow>
@@ -43,8 +43,8 @@
             </CFormLabel>
             <CCol sm="8">
               <CFormSelect
-                v-model="form.project_account_d1"
-                @change="callAccount"
+                  v-model="form.project_account_d1"
+                  @change="callAccount"
               >
                 <option value="">---------</option>
                 <option v-for="d1 in formAccD1List" :value="d1.pk" :key="d1.pk">
@@ -76,7 +76,7 @@
           <CRow>
             <CFormLabel class="col-sm-4 col-form-label">적요</CFormLabel>
             <CCol sm="8">
-              <CFormInput v-model="form.content" placeholder="적요" />
+              <CFormInput v-model="form.content" placeholder="적요"/>
             </CCol>
           </CRow>
         </CCol>
@@ -85,9 +85,9 @@
             <CFormLabel class="col-sm-4 col-form-label">거래처</CFormLabel>
             <CCol sm="8">
               <CFormInput
-                v-model="form.trader"
-                placeholder="거래처"
-                v-c-tooltip="{
+                  v-model="form.trader"
+                  placeholder="거래처"
+                  v-c-tooltip="{
                   content:
                     '분양대금(분담금) 항목일 경우 반드시 해당 계좌에 기재된 입금자를 기재.',
                   placement: 'top',
@@ -106,9 +106,9 @@
               <CFormSelect v-model="form.bank_account" required>
                 <option value="">---------</option>
                 <option
-                  v-for="ba in proBankAccountList"
-                  :value="ba.pk"
-                  :key="ba.pk"
+                    v-for="ba in proBankAccountList"
+                    :value="ba.pk"
+                    :key="ba.pk"
                 >
                   {{ ba.alias_name }}
                 </option>
@@ -139,11 +139,11 @@
             <CFormLabel class="col-sm-4 col-form-label">입금액</CFormLabel>
             <CCol sm="8">
               <CFormInput
-                v-model.number="form.income"
-                type="number"
-                min="0"
-                placeholder="입금액"
-                :disabled="form.sort === '2'"
+                  v-model.number="form.income"
+                  type="number"
+                  min="0"
+                  placeholder="입금액"
+                  :disabled="form.sort === '2'"
               />
             </CCol>
           </CRow>
@@ -153,11 +153,11 @@
             <CFormLabel class="col-sm-4 col-form-label">출금액</CFormLabel>
             <CCol sm="8">
               <CFormInput
-                v-model.number="form.outlay"
-                type="number"
-                min="0"
-                placeholder="출금액"
-                :disabled="form.sort === '1'"
+                  v-model.number="form.outlay"
+                  type="number"
+                  min="0"
+                  placeholder="출금액"
+                  :disabled="form.sort === '1'"
               />
             </CCol>
           </CRow>
@@ -169,7 +169,7 @@
           <CRow>
             <CFormLabel class="col-sm-2 col-form-label">비고</CFormLabel>
             <CCol sm="10">
-              <CFormTextarea v-model.number="form.note" placeholder="비고" />
+              <CFormTextarea v-model.number="form.note" placeholder="비고"/>
             </CCol>
           </CRow>
         </CCol>
@@ -188,11 +188,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
-import { mapActions, mapState } from 'vuex'
+import {defineComponent} from 'vue'
+import {mapActions, mapState} from 'vuex'
 
 export default defineComponent({
-  name: 'ProCashForm',
+  name: 'UpdateForm',
   props: {
     proCash: {
       type: Object,
@@ -274,10 +274,10 @@ export default defineComponent({
       this.$nextTick(() => {
         const sort = this.form.sort
         const d1 = this.form.project_account_d1
-          ? this.form.project_account_d1
-          : ''
+            ? this.form.project_account_d1
+            : ''
         this.fetchProFormAccD1List(sort)
-        this.fetchProFormAccD2List({ sort, d1 })
+        this.fetchProFormAccD2List({sort, d1})
       })
     },
     ...mapActions('proCash', [
