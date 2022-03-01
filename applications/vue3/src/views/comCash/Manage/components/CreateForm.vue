@@ -247,7 +247,6 @@ export default defineComponent({
   data() {
     return {
       form: {
-        // company: '',
         sort: '',
         account_d1: '',
         account_d2: '',
@@ -291,10 +290,25 @@ export default defineComponent({
       }
     },
     sort_change(event: any) {
-      this.form.account_d1 = ''
-      this.form.account_d2 = ''
-      if (event.target.value === '1') this.form.outlay = null
-      if (event.target.value === '2') this.form.income = null
+      if (event.target.value === '1') {
+        this.form.account_d1 = '4'
+        this.form.account_d2 = ''
+        this.form.account_d3 = ''
+        this.form.outlay = null
+      } else if (event.target.value === '2') {
+        this.form.account_d1 = '5'
+        this.form.account_d2 = ''
+        this.form.account_d3 = ''
+        this.form.income = null
+      } else if (event.target.value === '3') {
+        this.form.account_d1 = '6'
+        this.form.account_d2 = '19'
+        this.form.account_d3 = '128'
+      } else {
+        this.form.account_d1 = ''
+        this.form.account_d2 = ''
+        this.form.account_d3 = ''
+      }
       this.callAccount()
     },
     d1_change() {
