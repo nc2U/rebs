@@ -9,10 +9,10 @@
       {{ cutString(proCash.project_account_d2_desc, 7) }}
     </CTableDataCell>
     <CTableDataCell class="text-left">
-      {{ cutString(proCash.content, 9) }}
+      {{ cutString(proCash.content, 10) }}
     </CTableDataCell>
     <CTableDataCell class="text-left">
-      {{ cutString(proCash.trader, 7) }}
+      {{ cutString(proCash.trader, 9) }}
     </CTableDataCell>
     <CTableDataCell class="text-left">
       {{ cutString(proCash.bank_account_desc, 9) }}
@@ -25,26 +25,19 @@
     </CTableDataCell>
     <CTableDataCell>{{ proCash.evidence_desc }}</CTableDataCell>
     <CTableDataCell>
-      <CButton color="success" @click="updateConfirm" size="sm"> 수정</CButton>
-      <CButton
-        color="danger"
-        @click="deleteConfirm"
-        size="sm"
-        :disabled="!pageManageAuth || !allowedPeriod"
-      >
-        삭제
-      </CButton>
+      <CButton color="info" @click="showDetail" size="sm">확인</CButton>
     </CTableDataCell>
   </CTableRow>
 
   <FormModal size="lg" ref="updateFormModal">
     <template v-slot:header>
       <CIcon name="cil-italic" />
-      프로젝트 입출금 거래 건별 수정
+      프로젝트 입출금 거래 건별 관리
     </template>
     <template v-slot:default>
-      <UpdateForm
-        @on-submit="updateObject"
+      <ProCashForm
+        @on-submit="updateConfirm"
+        @on-delete="deleteConfirm"
         @close="$refs.updateFormModal.visible = false"
         :pro-cash="proCash"
       />
@@ -74,13 +67,13 @@ import commonMixin from '@/views/commonMixin'
 import FormModal from '@/components/Modals/FormModal.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
-import UpdateForm from '@/views/proCash/Manage/components/UpdateForm.vue'
+import ProCashForm from '@/views/proCash/Manage/components/ProCashForm.vue'
 import { mapGetters } from 'vuex'
 
 export default defineComponent({
   name: 'ProCash',
   mixins: [commonMixin],
-  components: { FormModal, ConfirmModal, AlertModal, UpdateForm },
+  components: { FormModal, ConfirmModal, AlertModal, ProCashForm },
   props: {
     proCash: {
       type: Object,
@@ -104,9 +97,12 @@ export default defineComponent({
     ...mapGetters('accounts', ['staffAuth', 'superAuth']),
   },
   methods: {
+    showDetail(this: any) {
+      this.$refs.updateFormModal.callModal()
+    },
     updateConfirm(this: any) {
       if (this.pageManageAuth)
-        if (this.allowedPeriod) this.$refs.updateFormModal.callModal()
+        if (this.allowedPeriod) this.updateObject()
         else
           this.$refs.alertModal.callModal(
             null,

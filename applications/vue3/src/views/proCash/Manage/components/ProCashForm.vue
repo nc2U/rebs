@@ -95,7 +95,7 @@
                 v-model="form.trader"
                 v-c-tooltip="{
                   content:
-                    '분양대금(분담금) 항목일 경우 반드시 해당 계좌에 기재된 입금자를 기재.',
+                    '분양대금(분담금)수납 항목일 경우 반드시 해당 계좌에 기재된 사항을 기재.',
                   placement: 'top',
                 }"
                 placeholder="거래처"
@@ -110,7 +110,9 @@
       <CRow class="mb-3">
         <CCol sm="6">
           <CRow>
-            <CFormLabel class="col-sm-4 col-form-label">거래계좌</CFormLabel>
+            <CFormLabel class="col-sm-4 col-form-label">
+              {{ !proCash && form.sort === '3' ? '출금' : '거래' }}계좌
+            </CFormLabel>
             <CCol sm="8">
               <CFormSelect
                 v-model="form.bank_account"
@@ -129,8 +131,9 @@
             </CCol>
           </CRow>
         </CCol>
+
         <CCol sm="6">
-          <CRow>
+          <CRow v-if="proCash || form.sort !== '3'">
             <CFormLabel class="col-sm-4 col-form-label">증빙자료</CFormLabel>
             <CCol sm="8">
               <CFormSelect v-model="form.evidence" :disabled="form.sort === ''">
@@ -140,6 +143,26 @@
                 <option value="3">신용카드전표</option>
                 <option value="4">현금영수증</option>
                 <option value="5">간이영수증</option>
+              </CFormSelect>
+            </CCol>
+          </CRow>
+
+          <CRow v-if="!proCash && form.sort === '3'">
+            <CFormLabel class="col-sm-4 col-form-label">입금계좌</CFormLabel>
+            <CCol sm="8">
+              <CFormSelect
+                v-model="form.bank_account_to"
+                required
+                :disabled="form.sort !== '3'"
+              >
+                <option value="">---------</option>
+                <option
+                  v-for="ba in proBankAccountList"
+                  :value="ba.pk"
+                  :key="ba.pk"
+                >
+                  {{ ba.alias_name }}
+                </option>
               </CFormSelect>
             </CCol>
           </CRow>
@@ -201,7 +224,20 @@
         닫기
       </CButton>
       <slot name="footer">
-        <CButton color="success" :disabled="formsCheck">저장</CButton>
+        <CButton
+          :color="proCash ? 'success' : 'primary'"
+          :disabled="formsCheck"
+        >
+          저장
+        </CButton>
+        <CButton
+          v-if="proCash"
+          type="button"
+          color="danger"
+          @click="$emit('on-delete')"
+        >
+          삭제
+        </CButton>
       </slot>
     </CModalFooter>
   </CForm>
@@ -213,7 +249,7 @@ import DatePicker from '@/components/DatePicker/index.vue'
 import { mapActions, mapState } from 'vuex'
 
 export default defineComponent({
-  name: 'UpdateForm',
+  name: 'ProCashForm',
   components: { DatePicker },
   props: {
     proCash: {
@@ -259,22 +295,26 @@ export default defineComponent({
   },
   computed: {
     formsCheck() {
-      const a = this.form.project === this.proCash.project
-      const b = this.form.sort === this.proCash.sort
-      const c = this.form.project_account_d1 === this.proCash.project_account_d1
-      const d = this.form.project_account_d2 === this.proCash.project_account_d2
-      const e = this.form.content === this.proCash.content
-      const f = this.form.trader === this.proCash.trader
-      const g = this.form.bank_account === this.proCash.bank_account
-      const h = this.form.income === this.proCash.income
-      const i = this.form.outlay === this.proCash.outlay
-      const j = this.form.evidence === this.proCash.evidence
-      const k = this.form.note === this.proCash.note
-      const l =
-        this.form.date.toString() ===
-        new Date(this.proCash.deal_date).toString()
+      if (this.proCash) {
+        const a = this.form.project === this.proCash.project
+        const b = this.form.sort === this.proCash.sort
+        const c =
+          this.form.project_account_d1 === this.proCash.project_account_d1
+        const d =
+          this.form.project_account_d2 === this.proCash.project_account_d2
+        const e = this.form.content === this.proCash.content
+        const f = this.form.trader === this.proCash.trader
+        const g = this.form.bank_account === this.proCash.bank_account
+        const h = this.form.income === this.proCash.income
+        const i = this.form.outlay === this.proCash.outlay
+        const j = this.form.evidence === this.proCash.evidence
+        const k = this.form.note === this.proCash.note
+        const l =
+          this.form.date.toString() ===
+          new Date(this.proCash.deal_date).toString()
 
-      return a && b && c && d && e && f && g && h && i && j && k && l
+        return a && b && c && d && e && f && g && h && i && j && k && l
+      } else return false
     },
     ...mapState('proCash', [
       'formAccD1List',

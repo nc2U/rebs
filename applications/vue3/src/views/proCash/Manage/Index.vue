@@ -83,18 +83,16 @@ export default defineComponent({
       this.fetchProjectCashList({ ...{ project }, ...payload })
     },
     onCreate(payload: any) {
-      const project = this.project.pk
-
+      payload.project = this.project.pk
       if (payload.sort === '3' && payload.bank_account_to) {
-        const allData = { ...{ project }, ...payload }
-        const { bank_account_to, income, ...outData } = allData
+        const { bank_account_to, income, ...outData } = payload
         this.createPrCashBook(outData)
         const { bank_account, outlay, ...incData } = outData
         this.createPrCashBook({
           ...{ bank_account: bank_account_to, income },
           ...incData,
         })
-      } else this.createPrCashBook({ ...{ project }, ...payload })
+      } else this.createPrCashBook(payload)
     },
     onUpdate(payload: any) {
       const page = this.page
