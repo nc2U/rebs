@@ -247,7 +247,7 @@ export default defineComponent({
   data() {
     return {
       form: {
-        company: '',
+        // company: '',
         sort: '',
         account_d1: '',
         account_d2: '',
@@ -255,11 +255,12 @@ export default defineComponent({
         content: '',
         trader: '',
         bank_account: '',
+        bank_account_to: '',
         income: null,
         outlay: null,
-        evidence: '',
+        evidence: '0',
         note: '',
-        date: '',
+        date: new Date(),
       },
       validated: false,
     }
@@ -269,7 +270,6 @@ export default defineComponent({
   },
   computed: {
     ...mapState('comCash', [
-      'sortList',
       'formAccD1List',
       'formAccD2List',
       'formAccD3List',
@@ -277,7 +277,7 @@ export default defineComponent({
     ]),
   },
   methods: {
-    onSubmit(event: any) {
+    onSubmit(this: any, event: any) {
       const form = event.currentTarget
       if (form.checkValidity() === false) {
         event.preventDefault()
@@ -285,7 +285,9 @@ export default defineComponent({
 
         this.validated = true
       } else {
-        this.$emit('on-submit', this.form)
+        const { date, ...formData } = this.form
+        const deal_date = this.dateFormat(date)
+        this.$emit('on-submit', { ...{ deal_date }, ...formData })
       }
     },
     sort_change(event: any) {
