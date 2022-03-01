@@ -89,18 +89,16 @@ export default defineComponent({
       this.fetchCashBookList({ ...{ company }, ...payload })
     },
     onCreate(payload: any) {
-      console.log(payload)
-      const company = this.company.pk
+      payload.company = this.company.pk
       if (payload.sort === '3' && payload.bank_account_to) {
-        const allData = { ...{ company }, ...payload }
-        const { bank_account_to, income, ...outData } = allData
+        const { bank_account_to, income, ...outData } = payload
         this.createCashBook(outData)
         const { bank_account, outlay, ...incData } = outData
         this.createCashBook({
           ...{ bank_account: bank_account_to, income },
           ...incData,
         })
-      } else this.createCashBook({ ...{ company }, ...payload })
+      } else this.createCashBook(payload)
     },
     onUpdate(payload: any) {
       const page = this.page

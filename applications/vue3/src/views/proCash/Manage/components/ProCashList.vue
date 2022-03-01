@@ -25,7 +25,7 @@
         <CTableHeaderCell scope="col">거래계좌</CTableHeaderCell>
         <CTableHeaderCell scope="col">입금액</CTableHeaderCell>
         <CTableHeaderCell scope="col">출금액</CTableHeaderCell>
-        <CTableHeaderCell scope="col">증빙자료</CTableHeaderCell>
+        <CTableHeaderCell scope="col">지출증빙</CTableHeaderCell>
         <CTableHeaderCell scope="col">비고</CTableHeaderCell>
       </CTableRow>
     </CTableHead>

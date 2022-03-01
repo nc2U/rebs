@@ -1,17 +1,17 @@
 <template>
   <CTable hover responsive align="middle">
     <colgroup>
-      <col width="8%"/>
-      <col width="5%"/>
-      <col width="5%"/>
-      <col width="10%"/>
-      <col width="14%"/>
-      <col width="11%"/>
-      <col width="10%"/>
-      <col width="10%"/>
-      <col width="10%"/>
-      <col width="9%"/>
-      <col width="8%"/>
+      <col width="8%" />
+      <col width="5%" />
+      <col width="5%" />
+      <col width="10%" />
+      <col width="14%" />
+      <col width="11%" />
+      <col width="10%" />
+      <col width="10%" />
+      <col width="10%" />
+      <col width="9%" />
+      <col width="8%" />
     </colgroup>
 
     <CTableHead>
@@ -25,40 +25,40 @@
         <CTableHeaderCell scope="col">거래계좌</CTableHeaderCell>
         <CTableHeaderCell scope="col">입금액</CTableHeaderCell>
         <CTableHeaderCell scope="col">출금액</CTableHeaderCell>
-        <CTableHeaderCell scope="col">증빙자료</CTableHeaderCell>
+        <CTableHeaderCell scope="col">지출증빙</CTableHeaderCell>
         <CTableHeaderCell scope="col">비고</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
 
     <CTableBody>
       <Cashes
-          v-for="cash in getCashLogs"
-          :cash="cash"
-          :key="cash.pk"
-          @on-update="onUpdate"
-          @on-delete="onDelete"
+        v-for="cash in getCashLogs"
+        :cash="cash"
+        :key="cash.pk"
+        @on-update="onUpdate"
+        @on-delete="onDelete"
       />
     </CTableBody>
   </CTable>
 
   <CSmartPagination
-      :activePage="1"
-      :limit="8"
-      :pages="cashesPages(15)"
-      class="mt-3"
-      @active-page-change="pageSelect"
+    :activePage="1"
+    :limit="8"
+    :pages="cashesPages(15)"
+    class="mt-3"
+    @active-page-change="pageSelect"
   />
 </template>
 
 <script lang="ts">
-import {defineComponent} from 'vue'
+import { defineComponent } from 'vue'
 import Cashes from '@/views/comCash/Manage/components/Cashes.vue'
-import {mapGetters} from 'vuex'
+import { mapGetters } from 'vuex'
 
 export default defineComponent({
   name: 'CashesList',
-  components: {Cashes},
-  props: {company: Object},
+  components: { Cashes },
+  props: { company: Object },
   computed: {
     ...mapGetters('comCash', ['cashesPages', 'getCashLogs']),
   },

@@ -9,7 +9,7 @@
       입출금 거래 건별 등록
     </template>
     <template v-slot:default>
-      <CreateForm
+      <CashForm
         @on-submit="createObject"
         @close="$refs.createFormModal.visible = false"
       />
@@ -22,12 +22,12 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import FormModal from '@/components/Modals/FormModal.vue'
-import CreateForm from '@/views/comCash/Manage/components/CreateForm.vue'
+import CashForm from '@/views/comCash/Manage/components/CashForm.vue'
 import { mapGetters } from 'vuex'
 
 export default defineComponent({
   name: 'AddCash',
-  components: { FormModal, CreateForm },
+  components: { FormModal, CashForm },
   computed: {
     pageManageAuth() {
       return (
