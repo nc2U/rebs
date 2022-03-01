@@ -140,9 +140,11 @@
                 <option value="0">증빙 없음</option>
                 <option value="1">세금계산서</option>
                 <option value="2">계산서(면세)</option>
-                <option value="3">신용카드전표</option>
-                <option value="4">현금영수증</option>
-                <option value="5">간이영수증</option>
+                <option value="3">카드전표/현금영수증</option>
+                <option value="4">간이영수증</option>
+                <option value="5">거래명세서</option>
+                <option value="6">입금표</option>
+                <option value="7">지출결의서</option>
               </CFormSelect>
             </CCol>
           </CRow>
