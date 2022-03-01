@@ -4,14 +4,14 @@
       <col width="8%" />
       <col width="5%" />
       <col width="5%" />
-      <col width="10%" />
-      <col width="14%" />
+      <col width="9%" />
+      <col width="15%" />
       <col width="11%" />
       <col width="10%" />
       <col width="10%" />
       <col width="10%" />
-      <col width="9%" />
-      <col width="8%" />
+      <col width="11%" />
+      <col width="6%" />
     </colgroup>
 
     <CTableHead>

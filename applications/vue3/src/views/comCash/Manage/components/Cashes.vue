@@ -11,13 +11,13 @@
       {{ cash.account_d3_desc }}
     </CTableDataCell>
     <CTableDataCell class="text-left truncate">
-      {{ cutString(cash.content, 10) }}
+      {{ cutString(cash.content, 15) }}
     </CTableDataCell>
     <CTableDataCell class="text-left truncate">
       {{ cutString(cash.trader, 8) }}
     </CTableDataCell>
     <CTableDataCell class="text-left">
-      {{ cutString(cash.bank_account_desc, 9) }}
+      {{ cutString(cash.bank_account_desc, 10) }}
     </CTableDataCell>
     <CTableDataCell class="text-right" color="primary">
       {{ numFormat(cash.income || 0) }}
