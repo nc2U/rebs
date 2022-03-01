@@ -301,7 +301,8 @@ export default defineComponent({
       const j = this.form.outlay === this.cash.outlay
       const k = this.form.evidence === this.cash.evidence
       const l = this.form.note === this.cash.note
-      const m = this.form.date === new Date(this.cash.deal_date)
+      const m =
+        this.form.date.toString() === new Date(this.cash.deal_date).toString()
 
       return a && b && c && d && e && f && g && h && i && j && k && l && m
     },
