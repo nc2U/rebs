@@ -95,7 +95,7 @@
                 v-model="form.trader"
                 v-c-tooltip="{
                   content:
-                    '분양대금(분담금)수납 항목일 경우 반드시 해당 계좌에 기재된 사항을 기재.',
+                    '분양대금(분담금) 수납 건인 경우 반드시 해당 계좌에 기재된 입금자를 기재',
                   placement: 'top',
                 }"
                 placeholder="거래처"

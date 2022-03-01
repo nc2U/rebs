@@ -104,7 +104,7 @@ class ProjectCashBook(models.Model):
                                              help_text='이 건 거래가 환불금 출금인 경우 이 건을 납부한 계약자를 선택')  # 환불 종결 여부
     content = models.CharField('적요', max_length=100, blank=True)
     trader = models.CharField('거래처', max_length=30, blank=True,
-                              help_text='분양대금(분담금)일 경우 반드시 해당 계좌에 기재된 입금자를 기재')  # icp=True -> 분양대금 납입자
+                              help_text='분양대금(분담금) 수납 건인 경우 반드시 해당 계좌에 기재된 입금자를 기재')  # icp=True -> 분양대금 납입자
     bank_account = models.ForeignKey(ProjectBankAccount, on_delete=models.PROTECT,
                                      verbose_name='거래계좌')  # icp=True -> 분양대금 납입계좌
     income = models.PositiveBigIntegerField('입금액', null=True, blank=True)  # icp=True -> 분양대금 납입금액
