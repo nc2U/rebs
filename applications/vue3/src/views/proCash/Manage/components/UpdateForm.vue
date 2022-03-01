@@ -297,10 +297,15 @@ export default defineComponent({
       }
     },
     sort_change(event: any) {
-      this.form.project_account_d1 = ''
-      this.form.project_account_d2 = ''
       if (event.target.value === '1') this.form.outlay = null
       if (event.target.value === '2') this.form.income = null
+      if (event.target.value === '3') {
+        this.form.project_account_d1 = '17'
+        this.form.project_account_d2 = '61'
+      } else {
+        this.form.project_account_d1 = ''
+        this.form.project_account_d2 = ''
+      }
       this.callAccount()
     },
     d1_change() {
