@@ -46,8 +46,10 @@ class CashBook(models.Model):
     income = models.PositiveBigIntegerField('입금액', null=True, blank=True)
     outlay = models.PositiveBigIntegerField('출금액', null=True, blank=True)
     EVIDENCE_CHOICES = (
-        ('0', '증빙 없음'), ('1', '세금계산서'), ('2', '계산서(면세)'), ('3', '신용카드전표'), ('4', '현금영수증'), ('5', '간이영수증'))
-    evidence = models.CharField('증빙 자료', max_length=1, choices=EVIDENCE_CHOICES, blank=True)
+        ('0', '증빙 없음'), ('1', '세금계산서'), ('2', '계산서(면세)'),
+        ('3', '신용카드전표/현금영수증'), ('4', '간이영수증'), ('5', '거래명세서'),
+        ('6', '입금표'), ('7', '지출결의서'))
+    evidence = models.CharField('지출증빙', max_length=1, choices=EVIDENCE_CHOICES, blank=True)
     note = models.CharField('비고', max_length=255, blank=True)
     deal_date = models.DateField('거래일자')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
@@ -110,8 +112,10 @@ class ProjectCashBook(models.Model):
     income = models.PositiveBigIntegerField('입금액', null=True, blank=True)  # icp=True -> 분양대금 납입금액
     outlay = models.PositiveBigIntegerField('출금액', null=True, blank=True)  # icp=True -> 분양대금 환불금액
     EVIDENCE_CHOICES = (
-        ('0', '증빙 없음'), ('1', '세금계산서'), ('2', '계산서(면세)'), ('3', '신용카드전표'), ('4', '현금영수증'), ('5', '간이영수증'))
-    evidence = models.CharField('증빙 자료', max_length=1, choices=EVIDENCE_CHOICES, blank=True)
+        ('0', '증빙 없음'), ('1', '세금계산서'), ('2', '계산서(면세)'),
+        ('3', '신용카드전표/현금영수증'), ('4', '간이영수증'), ('5', '거래명세서'),
+        ('6', '입금표'), ('7', '지출결의서'))
+    evidence = models.CharField('지출증빙', max_length=1, choices=EVIDENCE_CHOICES, blank=True)
     note = models.TextField('비고', blank=True)
     deal_date = models.DateField('거래일자')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
