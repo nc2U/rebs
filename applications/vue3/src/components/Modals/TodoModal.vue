@@ -1,7 +1,10 @@
 <template>
   <CModal :visible="visible" scrollable @close="() => (visible = false)">
     <CModalHeader>
-      <CModalTitle>할일 목록</CModalTitle>
+      <CModalTitle>
+        <CIcon name="cilCalendarCheck" class="mr-2" />
+        할 일 목록
+      </CModalTitle>
     </CModalHeader>
     <CModalBody>
       <TodoListApp />
