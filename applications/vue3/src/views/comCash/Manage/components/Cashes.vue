@@ -27,15 +27,7 @@
     </CTableDataCell>
     <CTableDataCell>{{ cash.evidence_desc }}</CTableDataCell>
     <CTableDataCell>
-      <CButton color="success" @click="updateConfirm" size="sm"> 수정</CButton>
-      <CButton
-        color="danger"
-        @click="deleteConfirm"
-        size="sm"
-        :disabled="!pageManageAuth || !allowedPeriod"
-      >
-        삭제
-      </CButton>
+      <CButton color="info" @click="showDetail" size="sm">확인</CButton>
     </CTableDataCell>
   </CTableRow>
 
@@ -45,8 +37,9 @@
       입출금 거래 건별 수정
     </template>
     <template v-slot:default>
-      <UpdateForm
-        @on-submit="updateObject"
+      <CashForm
+        @on-submit="updateConfirm"
+        @on-delete="deleteConfirm"
         @close="$refs.updateFormModal.visible = false"
         :cash="cash"
       />
@@ -75,12 +68,12 @@ import { defineComponent } from 'vue'
 import FormModal from '@/components/Modals/FormModal.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
-import UpdateForm from '@/views/comCash/Manage/components/UpdateForm.vue'
+import CashForm from '@/views/comCash/Manage/components/CashForm.vue'
 import { mapGetters } from 'vuex'
 
 export default defineComponent({
   name: 'Cashes',
-  components: { FormModal, ConfirmModal, AlertModal, UpdateForm },
+  components: { FormModal, ConfirmModal, AlertModal, CashForm },
   props: {
     cash: {
       type: Object,
@@ -111,9 +104,12 @@ export default defineComponent({
     ...mapGetters('accounts', ['staffAuth', 'superAuth']),
   },
   methods: {
-    updateConfirm(this: any) {
+    showDetail(this: any) {
+      this.$refs.updateFormModal.callModal()
+    },
+    updateConfirm(this: any, payload: any) {
       if (this.pageManageAuth) {
-        if (this.allowedPeriod) this.$refs.updateFormModal.callModal()
+        if (this.allowedPeriod) this.updateObject(payload)
         else
           this.$refs.alertModal.callModal(
             null,

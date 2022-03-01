@@ -116,7 +116,6 @@
               <CFormInput
                 v-model="form.trader"
                 placeholder="거래처"
-                required
                 :disabled="form.sort === ''"
               />
             </CCol>
@@ -128,7 +127,7 @@
         <CCol sm="6">
           <CRow>
             <CFormLabel class="col-sm-4 col-form-label">
-              {{ form.sort === '3' ? '출금' : '거래' }}계좌
+              {{ !cash && form.sort === '3' ? '출금' : '거래' }}계좌
             </CFormLabel>
             <CCol sm="8">
               <CFormSelect
@@ -144,8 +143,9 @@
             </CCol>
           </CRow>
         </CCol>
+
         <CCol sm="6">
-          <CRow v-if="form.sort !== '3'">
+          <CRow v-if="cash || form.sort !== '3'">
             <CFormLabel class="col-sm-4 col-form-label">증빙자료</CFormLabel>
             <CCol sm="8">
               <CFormSelect v-model="form.evidence" :disabled="form.sort === ''">
@@ -158,7 +158,8 @@
               </CFormSelect>
             </CCol>
           </CRow>
-          <CRow v-if="form.sort === '3'">
+
+          <CRow v-if="!cash && form.sort === '3'">
             <CFormLabel class="col-sm-4 col-form-label">입금계좌</CFormLabel>
             <CCol sm="8">
               <CFormSelect
@@ -224,12 +225,23 @@
         </CCol>
       </CRow>
     </CModalBody>
+
     <CModalFooter>
       <CButton type="button" color="light" @click="$emit('close')">
         닫기
       </CButton>
       <slot name="footer">
-        <CButton color="success" :disabled="formsCheck">저장</CButton>
+        <CButton :color="cash ? 'success' : 'primary'" :disabled="formsCheck">
+          저장
+        </CButton>
+        <CButton
+          v-if="cash"
+          type="button"
+          color="danger"
+          @click="$emit('on-delete')"
+        >
+          삭제
+        </CButton>
       </slot>
     </CModalFooter>
   </CForm>
@@ -241,7 +253,7 @@ import DatePicker from '@/components/DatePicker/index.vue'
 import { mapActions, mapState } from 'vuex'
 
 export default defineComponent({
-  name: 'CashUpdateForm',
+  name: 'CashForm',
   components: { DatePicker },
   props: {
     cash: {
@@ -289,22 +301,24 @@ export default defineComponent({
   },
   computed: {
     formsCheck() {
-      const a = this.form.company === this.cash.company
-      const b = this.form.sort === this.cash.sort
-      const c = this.form.account_d1 === this.cash.account_d1
-      const d = this.form.account_d2 === this.cash.account_d2
-      const e = this.form.account_d3 === this.cash.account_d3
-      const f = this.form.content === this.cash.content
-      const g = this.form.trader === this.cash.trader
-      const h = this.form.bank_account === this.cash.bank_account
-      const i = this.form.income === this.cash.income
-      const j = this.form.outlay === this.cash.outlay
-      const k = this.form.evidence === this.cash.evidence
-      const l = this.form.note === this.cash.note
-      const m =
-        this.form.date.toString() === new Date(this.cash.deal_date).toString()
+      if (this.cash) {
+        const a = this.form.company === this.cash.company
+        const b = this.form.sort === this.cash.sort
+        const c = this.form.account_d1 === this.cash.account_d1
+        const d = this.form.account_d2 === this.cash.account_d2
+        const e = this.form.account_d3 === this.cash.account_d3
+        const f = this.form.content === this.cash.content
+        const g = this.form.trader === this.cash.trader
+        const h = this.form.bank_account === this.cash.bank_account
+        const i = this.form.income === this.cash.income
+        const j = this.form.outlay === this.cash.outlay
+        const k = this.form.evidence === this.cash.evidence
+        const l = this.form.note === this.cash.note
+        const m =
+          this.form.date.toString() === new Date(this.cash.deal_date).toString()
 
-      return a && b && c && d && e && f && g && h && i && j && k && l && m
+        return a && b && c && d && e && f && g && h && i && j && k && l && m
+      } else return false
     },
     ...mapState('comCash', [
       'formAccD1List',

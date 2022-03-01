@@ -99,7 +99,6 @@
                   placement: 'top',
                 }"
                 placeholder="거래처"
-                required
                 :disabled="form.sort === ''"
               />
             </CCol>
