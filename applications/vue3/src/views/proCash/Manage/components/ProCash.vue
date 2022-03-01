@@ -100,9 +100,9 @@ export default defineComponent({
     showDetail(this: any) {
       this.$refs.updateFormModal.callModal()
     },
-    updateConfirm(this: any) {
+    updateConfirm(this: any, payload: any) {
       if (this.pageManageAuth)
-        if (this.allowedPeriod) this.updateObject()
+        if (this.allowedPeriod) this.updateObject(payload)
         else
           this.$refs.alertModal.callModal(
             null,
