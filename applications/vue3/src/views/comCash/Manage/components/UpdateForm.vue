@@ -11,11 +11,7 @@
           <CRow>
             <CFormLabel class="col-sm-4 col-form-label">거래일자</CFormLabel>
             <CCol sm="8">
-              <CFormInput
-                v-model="form.deal_date"
-                required
-                placeholder="거래일자"
-              />
+              <DatePicker v-model="form.date" required placeholder="거래일자" />
             </CCol>
           </CRow>
         </CCol>
@@ -241,10 +237,12 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import DatePicker from '@/components/DatePicker/index.vue'
 import { mapActions, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'CashUpdateForm',
+  components: { DatePicker },
   props: {
     cash: {
       type: Object,
@@ -266,7 +264,7 @@ export default defineComponent({
         outlay: null,
         evidence: '',
         note: '',
-        deal_date: '',
+        date: new Date(),
       },
       validated: false,
     }
@@ -285,7 +283,7 @@ export default defineComponent({
       this.form.outlay = this.cash.outlay
       this.form.evidence = this.cash.evidence
       this.form.note = this.cash.note
-      this.form.deal_date = this.cash.deal_date
+      this.form.date = new Date(this.cash.deal_date)
     }
     this.callAccount()
   },
@@ -303,12 +301,11 @@ export default defineComponent({
       const j = this.form.outlay === this.cash.outlay
       const k = this.form.evidence === this.cash.evidence
       const l = this.form.note === this.cash.note
-      const m = this.form.deal_date === this.cash.deal_date
+      const m = this.form.date === new Date(this.cash.deal_date)
 
       return a && b && c && d && e && f && g && h && i && j && k && l && m
     },
     ...mapState('comCash', [
-      'sortList',
       'formAccD1List',
       'formAccD2List',
       'formAccD3List',
@@ -316,7 +313,7 @@ export default defineComponent({
     ]),
   },
   methods: {
-    onSubmit(event: any) {
+    onSubmit(this: any, event: any) {
       const form = event.currentTarget
       if (form.checkValidity() === false) {
         event.preventDefault()
@@ -324,7 +321,9 @@ export default defineComponent({
 
         this.validated = true
       } else {
-        this.$emit('on-submit', this.form)
+        const { date, ...formData } = this.form
+        const deal_date = this.dateFormat(date)
+        this.$emit('on-submit', { ...{ deal_date }, ...formData })
       }
     },
     sort_change(event: any) {
