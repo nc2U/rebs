@@ -194,7 +194,7 @@ export default defineComponent({
       this.$nextTick(() => {
         this.from_date = this.from_date ? this.dateFormat(this.from_date) : ''
         this.to_date = this.to_date ? this.dateFormat(this.to_date) : ''
-        return this.$emit('list-filtering', { ...{ page }, ...this })
+        this.$emit('list-filtering', { ...{ page }, ...this })
       })
     },
     resetForm() {
