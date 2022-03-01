@@ -11,6 +11,7 @@
     v-maska="'####-##-##'"
     teleport="#app"
     :dark="dark"
+    locale="ko"
     required
   />
 </template>
