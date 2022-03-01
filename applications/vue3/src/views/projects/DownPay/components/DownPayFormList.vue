@@ -47,7 +47,7 @@ export default defineComponent({
   components: { DownPay },
   props: ['orders', 'types'],
   computed: {
-    ...mapState('cash', ['downPayList']),
+    ...mapState('payment', ['downPayList']),
   },
   methods: {
     onUpdateDownPay(payload: any) {

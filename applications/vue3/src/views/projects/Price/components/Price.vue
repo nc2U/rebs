@@ -125,7 +125,7 @@ export default defineComponent({
       }
     },
 
-    ...mapState('cash', ['priceList']),
+    ...mapState('payment', ['priceList']),
     ...mapGetters('accounts', ['staffAuth', 'superAuth']),
   },
   watch: {

@@ -47,7 +47,7 @@ export default defineComponent({
   methods: {
     onSelectAdd(this: any, target: any) {
       if (target !== '') this.fetchPayOrderList(target)
-      else this.$store.state.cash.payOrderList = []
+      else this.$store.state.payment.payOrderList = []
     },
     onSubmit(payload: any) {
       const project = this.project.pk
@@ -61,7 +61,7 @@ export default defineComponent({
       const project = this.project.pk
       this.deletePayOrder({ ...{ pk }, ...{ project } })
     },
-    ...mapActions('cash', [
+    ...mapActions('payment', [
       'fetchPayOrderList',
       'createPayOrder',
       'updatePayOrder',

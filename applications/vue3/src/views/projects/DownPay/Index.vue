@@ -59,7 +59,7 @@ export default defineComponent({
         this.fetchOrderGroupList(target)
         this.fetchTypeList(target)
         this.fetchDownPayList(target)
-      } else this.$store.state.cash.downPayList = []
+      } else this.$store.state.payment.downPayList = []
     },
     onSubmit(payload: any) {
       const project = this.project.pk
@@ -73,7 +73,7 @@ export default defineComponent({
       const project = this.project.pk
       this.deleteDownPay({ ...{ pk }, ...{ project } })
     },
-    ...mapActions('cash', [
+    ...mapActions('payment', [
       'fetchDownPayList',
       'createDownPay',
       'updateDownPay',

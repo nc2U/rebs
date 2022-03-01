@@ -116,7 +116,7 @@ export default defineComponent({
     },
     // 프로젝트 또는 차수 선택 변경 시 가격 데이터 초기화
     resetPrices(this: any) {
-      this.$store.state.cash.priceList = []
+      this.$store.state.payment.priceList = []
     },
 
     onCreatePrice(payload: any) {
@@ -131,9 +131,8 @@ export default defineComponent({
     },
     ...mapActions('contract', ['fetchOrderGroupList']),
     ...mapActions('project', ['fetchTypeList', 'fetchFloorTypeList']),
-    ...mapActions('cash', [
+    ...mapActions('payment', [
       'fetchPriceList',
-      'fetchPrice',
       'createPrice',
       'updatePrice',
       'deletePrice',

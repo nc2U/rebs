@@ -54,7 +54,7 @@ export default defineComponent({
   components: { PayOrder },
   props: ['project'],
   computed: {
-    ...mapState('cash', ['payOrderList']),
+    ...mapState('payment', ['payOrderList']),
   },
   methods: {
     onUpdatePayOrder(payload: any) {
