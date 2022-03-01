@@ -148,8 +148,9 @@
           <CRow v-if="form.sort === '2'">
             <CFormLabel class="col-sm-4 col-form-label">지출증빙</CFormLabel>
             <CCol sm="8">
-              <CFormSelect v-model="form.evidence" :disabled="form.sort === ''">
-                <option value="0">---------</option>
+              <CFormSelect v-model="form.evidence" required>
+                <option value="">---------</option>
+                <option value="0">증빙 없음</option>
                 <option value="1">세금계산서</option>
                 <option value="2">계산서(면세)</option>
                 <option value="3">신용카드전표</option>
@@ -293,7 +294,7 @@ export default defineComponent({
       this.form.bank_account = this.cash.bank_account
       this.form.income = this.cash.income
       this.form.outlay = this.cash.outlay
-      this.form.evidence = this.cash.evidence
+      this.form.evidence = this.cash.evidence // ? this.cash.evidence : '0'
       this.form.note = this.cash.note
       this.form.date = new Date(this.cash.deal_date)
     }
