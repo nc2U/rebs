@@ -103,7 +103,7 @@
           설립일자
         </CFormLabel>
         <CCol md="4">
-          <CFormInput
+          <DatePicker
             type="text"
             v-model="form.es_date"
             maxlength="10"
@@ -117,7 +117,7 @@
           개업일자
         </CFormLabel>
         <CCol md="4">
-          <CFormInput
+          <DatePicker
             type="text"
             v-model="form.op_date"
             maxlength="10"
@@ -234,16 +234,17 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { maska } from 'maska'
+import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 import DaumPostcode from '@/components/DaumPostcode/index.vue'
 import addressMixin from '@/components/DaumPostcode/addressMixin'
 import { mapGetters } from 'vuex'
+import { maska } from 'maska'
 
 export default defineComponent({
   name: 'CompanyForm',
-  components: { DaumPostcode, ConfirmModal, AlertModal },
+  components: { DatePicker, DaumPostcode, ConfirmModal, AlertModal },
   mixins: [addressMixin],
   directives: { maska },
   data() {
@@ -256,8 +257,8 @@ export default defineComponent({
         org_number: '',
         business_cond: '',
         business_even: '',
-        es_date: '',
-        op_date: '',
+        es_date: new Date(),
+        op_date: new Date(),
         zipcode: '',
         address1: '',
         address2: '',
@@ -275,8 +276,8 @@ export default defineComponent({
       this.form.org_number = this.company.org_number
       this.form.business_cond = this.company.business_cond
       this.form.business_even = this.company.business_even
-      this.form.es_date = this.company.es_date
-      this.form.op_date = this.company.op_date
+      this.form.es_date = new Date(this.company.es_date)
+      this.form.op_date = new Date(this.company.op_date)
       this.form.zipcode = this.company.zipcode
       this.form.address1 = this.company.address1
       this.form.address2 = this.company.address2
@@ -304,8 +305,12 @@ export default defineComponent({
       const d = this.form.org_number === this.company.org_number
       const e = this.form.business_cond === this.company.business_cond
       const f = this.form.business_even === this.company.business_even
-      const g = this.form.es_date === this.company.es_date
-      const h = this.form.op_date === this.company.op_date
+      const g =
+        new Date(this.form.es_date).toString() ===
+        new Date(this.company.es_date).toString()
+      const h =
+        new Date(this.form.op_date).toString() ===
+        new Date(this.company.op_date).toString()
       const i = this.form.zipcode === this.company.zipcode
       const j = this.form.address1 === this.company.address1
       const k = this.form.address2 === this.company.address2
@@ -338,8 +343,10 @@ export default defineComponent({
         this.$refs.alertModal.callModal()
       }
     },
-    modalAction() {
+    modalAction(this: any) {
       const { pk } = this
+      this.form.es_date = this.dateFormat(this.form.es_date)
+      this.form.op_date = this.dateFormat(this.form.op_date)
       if (this.update) {
         this.$emit('to-update', { ...{ pk }, ...this.form })
       } else {
