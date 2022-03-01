@@ -34,7 +34,7 @@
             <CFormSelect v-model="pay_account" @change="listFiltering(1)">
               <option value="">납부계좌 선택</option>
               <option
-                v-for="ba in pBankAccountList"
+                v-for="ba in proBankAccountList"
                 :value="ba.pk"
                 :key="ba.pk"
               >
@@ -112,11 +112,8 @@ export default defineComponent({
       const f = this.search === ''
       return a && b && c && d && e && f
     },
-    ...mapState('payment', [
-      'payOrderList',
-      'pBankAccountList',
-      'paymentsCount',
-    ]),
+    ...mapState('payment', ['payOrderList', 'paymentsCount']),
+    ...mapState('proCash', ['proBankAccountList']),
   },
   watch: {
     from_date() {

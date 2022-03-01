@@ -48,7 +48,7 @@ export default defineComponent({
     this.fetchContNumList(this.initProjId)
     this.fetchPaymentList({ project: this.initProjId })
     this.fetchPayOrderList(this.initProjId)
-    this.fetchProjectBankAccountList(this.initProjId)
+    this.fetchProBankAccList(this.initProjId)
   },
   computed: {
     ...mapState('project', ['project']),
@@ -62,7 +62,7 @@ export default defineComponent({
         this.fetchContNumList(target)
         this.fetchPaymentList({ project: target })
         this.fetchPayOrderList(target)
-        this.fetchProjectBankAccountList(target)
+        this.fetchProBankAccList(target)
       } else {
         this.$store.state.project.unitTypeList = []
         this.$store.state.payment.paySumList = []
@@ -70,7 +70,7 @@ export default defineComponent({
         this.$store.state.payment.paymentList = []
         this.$store.state.payment.paymentsCount = 0
         this.$store.state.payment.payOrderList = []
-        this.$store.state.payment.pBankAccountList = []
+        this.$store.state.proCash.proBankAccountList = []
       }
     },
     pageSelect(this: any, page: number) {
@@ -94,7 +94,7 @@ export default defineComponent({
       'fetchPayOrderList',
       'fetchPaymentList',
     ]),
-    ...mapActions('proCash', ['fetchProjectBankAccountList']),
+    ...mapActions('proCash', ['fetchProBankAccList']),
   },
 })
 </script>
