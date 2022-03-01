@@ -21,7 +21,7 @@
             <CFormLabel class="col-sm-4 col-form-label">구분</CFormLabel>
             <CCol sm="8">
               <CFormSelect v-model="form.sort" required @change="sort_change">
-                <option value="">구분</option>
+                <option value="">---------</option>
                 <option value="1">입금</option>
                 <option value="2">출금</option>
                 <option value="3">대체</option>
@@ -80,7 +80,7 @@
             <CCol sm="8">
               <CFormInput
                 v-model="form.content"
-                placeholder="적요"
+                placeholder="거래 내용"
                 required
                 :disabled="form.sort === ''"
               />
@@ -98,7 +98,7 @@
                     '분양대금(분담금) 수납 건인 경우 반드시 해당 계좌에 기재된 입금자를 기재',
                   placement: 'top',
                 }"
-                placeholder="거래처"
+                placeholder="거래처 (수납자)"
                 :disabled="form.sort === ''"
               />
             </CCol>
@@ -132,8 +132,8 @@
         </CCol>
 
         <CCol sm="6">
-          <CRow v-if="proCash || form.sort !== '3'">
-            <CFormLabel class="col-sm-4 col-form-label">증빙자료</CFormLabel>
+          <CRow v-if="form.sort === '2'">
+            <CFormLabel class="col-sm-4 col-form-label">지출증빙</CFormLabel>
             <CCol sm="8">
               <CFormSelect v-model="form.evidence" :disabled="form.sort === ''">
                 <option value="0">---------</option>
@@ -177,7 +177,7 @@
                 v-model.number="form.outlay"
                 type="number"
                 min="0"
-                placeholder="출금액"
+                placeholder="출금 금액"
                 :required="form.sort === '2'"
                 :disabled="form.sort === '1' || form.sort === ''"
               />
@@ -193,7 +193,7 @@
                 v-model.number="form.income"
                 type="number"
                 min="0"
-                placeholder="입금액"
+                placeholder="입금 금액"
                 :required="form.sort === '1'"
                 :disabled="form.sort === '2' || form.sort === ''"
               />
@@ -209,7 +209,7 @@
             <CCol sm="10">
               <CFormTextarea
                 v-model.number="form.note"
-                placeholder="비고"
+                placeholder="특이사항"
                 :disabled="form.sort === ''"
               />
             </CCol>
