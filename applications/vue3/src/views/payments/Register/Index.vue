@@ -9,11 +9,11 @@
     <CCardBody class="pb-5">
       <ContChoicer ref="listControl" @payment-filtering="onPayFiltering" />
       <CRow>
-        <CCol md="7">
+        <CCol lg="6">
           <PayList />
           <PayForm />
         </CCol>
-        <CCol md="5">
+        <CCol lg="6">
           <PayBoard />
         </CCol>
       </CRow>
@@ -32,7 +32,7 @@ import ContChoicer from '@/views/payments/Register/components/ContChoicer.vue'
 import PayList from '@/views/payments/Register/components/PayList.vue'
 import PayForm from '@/views/payments/Register/components/PayForm.vue'
 import PayBoard from '@/views/payments/Register/components/PayBoard.vue'
-import { mapState } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'PaymentsRegister',
@@ -45,8 +45,15 @@ export default defineComponent({
     PayForm,
     PayBoard,
   },
+  created() {
+    this.fetchTypeList(this.initProjId)
+  },
   computed: {
     ...mapState('project', ['project']),
+    ...mapGetters('accounts', ['initProjId']),
+  },
+  methods: {
+    ...mapActions('project', ['fetchTypeList']),
   },
 })
 </script>
