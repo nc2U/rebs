@@ -3,7 +3,7 @@
     <CTableDataCell>
       <router-link to="#">{{ contract.serial_number }}</router-link>
     </CTableDataCell>
-    <CTableDataCell>{{ contract.order_group }}</CTableDataCell>
+    <CTableDataCell>{{ contract.order_group.order_group_name }}</CTableDataCell>
     <CTableDataCell>
       <CIcon
         name="cibDiscover"
