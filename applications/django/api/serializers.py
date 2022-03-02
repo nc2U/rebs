@@ -196,7 +196,7 @@ class UnitTypeSerializer(serializers.ModelSerializer):
 class SimpleUnitTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = UnitType
-        fields = ('pk', 'name', 'color')
+        fields = ('pk', 'name', 'color', 'average_price')
 
 
 class UnitFloorTypeSerializer(serializers.ModelSerializer):
@@ -398,7 +398,7 @@ class SimpleOrderGroupSerializer(serializers.ModelSerializer):
 class HouseUnitInKeyUnitSerializer(serializers.ModelSerializer):
     class Meta:
         model = HouseUnit
-        fields = ('pk', '__str__')
+        fields = ('pk', '__str__', 'floor_type')
 
 
 class KeyUnitInContractListSerializer(serializers.ModelSerializer):

@@ -1,11 +1,11 @@
 <template>
   <CTable hover responsive>
     <colgroup>
-      <col width="20%"/>
-      <col width="20%"/>
-      <col width="20%"/>
-      <col width="20%"/>
-      <col width="20%"/>
+      <col width="20%" />
+      <col width="20%" />
+      <col width="20%" />
+      <col width="20%" />
+      <col width="20%" />
     </colgroup>
 
     <CTableHead color="dark" class="text-center">
@@ -19,10 +19,21 @@
     </CTableHead>
 
     <CTableBody v-if="contract">
-      <CTableRow class="text-right" v-for="i in 11">
-        <CTableDataCell class="text-center">2022-03-02</CTableDataCell>
-        <CTableDataCell class="text-center">{{ i }}차계약금</CTableDataCell>
-        <CTableDataCell>16,800,000</CTableDataCell>
+      <CTableRow class="text-right" v-for="po in payOrderList" :key="po.pk">
+        <CTableDataCell class="text-center">
+          {{ po.extra_due_date || po.pay_due_date || '-' }}
+        </CTableDataCell>
+        <CTableDataCell class="text-center">{{ po.pay_name }}</CTableDataCell>
+        <CTableDataCell>
+          {{
+            numFormat(
+              downPayList
+                .filter(d => d.order_group === this.contract.order_group.pk)
+                .filter(d => d.unit_type === this.contract.unit_type.pk)
+                .map(d => d.payment_amount)[0],
+            )
+          }}
+        </CTableDataCell>
         <CTableDataCell>24,150,000</CTableDataCell>
         <CTableDataCell>-2,650,000</CTableDataCell>
       </CTableRow>
@@ -43,13 +54,14 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from 'vue'
+import { defineComponent } from 'vue'
+import { mapState } from 'vuex'
 
 export default defineComponent({
   name: 'PayBoard',
   components: {},
 
-  props: {contract: Object},
+  props: { contract: Object },
   setup() {
     return {}
   },
@@ -58,7 +70,9 @@ export default defineComponent({
       sample: '',
     }
   },
-  computed: {},
+  computed: {
+    ...mapState('payment', ['payOrderList', 'downPayList']),
+  },
   methods: {},
 })
 </script>
