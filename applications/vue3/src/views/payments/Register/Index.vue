@@ -19,7 +19,7 @@
           <PayForm />
         </CCol>
         <CCol lg="5">
-          <PayBoard :contract="contract" />
+          <PayOrders :contract="contract" />
         </CCol>
       </CRow>
     </CCardBody>
@@ -36,7 +36,7 @@ import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ContChoicer from '@/views/payments/Register/components/ContChoicer.vue'
 import PayList from '@/views/payments/Register/components/PayList.vue'
 import PayForm from '@/views/payments/Register/components/PayForm.vue'
-import PayBoard from '@/views/payments/Register/components/PayBoard.vue'
+import PayOrders from '@/views/payments/Register/components/PayOrders.vue'
 import { mapActions, mapGetters, mapState } from 'vuex'
 
 export default defineComponent({
@@ -48,11 +48,11 @@ export default defineComponent({
     ContChoicer,
     PayList,
     PayForm,
-    PayBoard,
+    PayOrders,
   },
   created(this: any) {
     this.fetchTypeList(this.initProjId)
-    console.log(this.$route.query.contract, this.$route.query.payment)
+    this.fetchPayOrderList(this.initProjId)
     if (this.$route.query.contract) {
       this.$router.push({ name: '건별수납 관리' })
       this.getContract(this.$route.query.contract)
@@ -66,17 +66,49 @@ export default defineComponent({
     ...mapGetters('accounts', ['initProjId']),
     ...mapState('contract', ['contract']),
   },
+  watch: {
+    contract(this: any, newVal) {
+      if (newVal) {
+        const project = this.project.pk
+        const order_group = newVal.order_group.pk
+        const unit_type = newVal.unit_type.pk
+        this.fetchPriceList({ project, order_group, unit_type })
+        this.fetchDownPayList({ project, order_group, unit_type })
+      } else {
+        this.$store.state.payment.priceList = []
+        this.$store.state.payment.downPayList = []
+      }
+    },
+  },
   methods: {
+    onSelectAdd(this: any, target: any) {
+      if (target !== '') {
+        this.fetchTypeList(target)
+        this.fetchPayOrderList(target)
+      } else {
+        this.$store.state.contract.contract = null
+        this.$store.state.contract.contractList = []
+        this.$store.state.project.unitTypeList = []
+        this.$store.state.payment.paymentList = []
+        this.$store.state.payment.payOrderList = []
+      }
+    },
     onContFiltering(payload: any) {
       const project = this.project.pk
       this.fetchContractList({ ...{ project }, ...payload })
     },
     getContract(cont: number) {
+      const project = this.project.pk
       this.fetchContract(cont)
-      this.fetchPaymentList({ project: this.project.pk, contract: cont })
+      this.fetchPaymentList({ project, contract: cont })
     },
     ...mapActions('project', ['fetchTypeList']),
-    ...mapActions('payment', ['fetchPaymentList']),
+    ...mapActions('payment', [
+      'fetchPaymentList',
+      'fetchPayOrderList',
+      'fetchDownPayList',
+      'fetchPriceList',
+    ]),
     ...mapActions('contract', ['fetchContractList', 'fetchContract']),
   },
 })

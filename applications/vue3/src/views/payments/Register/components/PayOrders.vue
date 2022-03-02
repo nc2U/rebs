@@ -20,22 +20,7 @@
 
     <CTableBody v-if="contract">
       <CTableRow class="text-right" v-for="po in payOrderList" :key="po.pk">
-        <CTableDataCell class="text-center">
-          {{ po.extra_due_date || po.pay_due_date || '-' }}
-        </CTableDataCell>
-        <CTableDataCell class="text-center">{{ po.pay_name }}</CTableDataCell>
-        <CTableDataCell>
-          {{
-            numFormat(
-              downPayList
-                .filter(d => d.order_group === this.contract.order_group.pk)
-                .filter(d => d.unit_type === this.contract.unit_type.pk)
-                .map(d => d.payment_amount)[0],
-            )
-          }}
-        </CTableDataCell>
-        <CTableDataCell>24,150,000</CTableDataCell>
-        <CTableDataCell>-2,650,000</CTableDataCell>
+        <Order :contract="contract" :price="thisPrice" :order="po" />
       </CTableRow>
     </CTableBody>
 
@@ -45,9 +30,9 @@
           합계
         </CTableHeaderCell>
         <CTableHeaderCell></CTableHeaderCell>
-        <CTableHeaderCell> 385,985,924</CTableHeaderCell>
-        <CTableHeaderCell>56,600,000</CTableHeaderCell>
-        <CTableHeaderCell>6,200,000</CTableHeaderCell>
+        <CTableHeaderCell>{{ numFormat(thisPrice || 0) }}</CTableHeaderCell>
+        <CTableHeaderCell>실납부총액</CTableHeaderCell>
+        <CTableHeaderCell>현재까지미과오납</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
   </CTable>
@@ -55,11 +40,12 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import Order from '@/views/payments/Register/components/Order.vue'
 import { mapState } from 'vuex'
 
 export default defineComponent({
-  name: 'PayBoard',
-  components: {},
+  name: 'PayOrders',
+  components: { Order },
 
   props: { contract: Object },
   setup() {
@@ -71,7 +57,21 @@ export default defineComponent({
     }
   },
   computed: {
-    ...mapState('payment', ['payOrderList', 'downPayList']),
+    thisPrice(this: any) {
+      if (this.contract) {
+        return this.contract.keyunit.houseunit
+          ? this.priceList
+              .filter(
+                (p: any) =>
+                  p.unit_floor_type ===
+                  this.contract.keyunit.houseunit.floor_type,
+              )
+              .map((p: any) => p.price)[0]
+          : this.contract.unit_type.average_price
+      }
+      return 0
+    },
+    ...mapState('payment', ['payOrderList', 'priceList']),
   },
   methods: {},
 })
