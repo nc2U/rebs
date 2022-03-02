@@ -20,7 +20,13 @@
 
     <CTableBody v-if="contract">
       <CTableRow class="text-right" v-for="po in payOrderList" :key="po.pk">
-        <Order :contract="contract" :price="thisPrice" :order="po" />
+        <Order
+          :contract="contract"
+          :price="thisPrice"
+          :order="po"
+          :num-down="numDown"
+          :num-mid="numMid"
+        />
       </CTableRow>
     </CTableBody>
 
@@ -70,6 +76,12 @@ export default defineComponent({
           : this.contract.unit_type.average_price
       }
       return 0
+    },
+    numDown() {
+      return this.payOrderList.filter((o: any) => o.pay_sort === '1').length
+    },
+    numMid() {
+      return this.payOrderList.filter((o: any) => o.pay_sort === '2').length
     },
     ...mapState('payment', ['payOrderList', 'priceList']),
   },
