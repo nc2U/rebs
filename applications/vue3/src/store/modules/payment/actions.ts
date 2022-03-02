@@ -140,9 +140,12 @@ const actions = {
       })
   },
 
-  fetchDownPayList: ({ commit }: any, pk: any) => {
+  fetchDownPayList: ({ commit }: any, payload: any) => {
+    let url = `/down-payment/?project=${payload.project}`
+    if (payload.order_group) url += `&order_group=${payload.order_group}`
+    if (payload.unit_type) url += `&unit_type=${payload.unit_type}`
     api
-      .get(`/down-payment/?project=${pk}`)
+      .get(url)
       .then(res => {
         commit(FETCH_DWON_PAYMENT, res.data)
       })
