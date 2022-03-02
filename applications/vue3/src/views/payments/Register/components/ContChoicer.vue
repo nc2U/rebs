@@ -90,14 +90,13 @@ export default defineComponent({
   methods: {
     listFiltering(this: any, page = 1) {
       this.$nextTick(() => {
-        if (this.form.search === '')
-          this.$store.state.contract.contractList = []
+        if (this.form.search === '') this.pageInit()
         else this.$emit('list-filtering', { ...{ page }, ...this.form })
-        if (this.contractIndex.length === 0) {
-          this.msg = '해당 계약 건이 없습니다.'
-          this.textClass = 'text-danger'
-        }
       })
+      if (this.contractIndex.length === 0) {
+        this.msg = `해당 검색어로 등록된 데이터가 없습니다.`
+        this.textClass = 'text-danger'
+      }
     },
     getContract(cont: number) {
       this.$emit('get-contract', cont)

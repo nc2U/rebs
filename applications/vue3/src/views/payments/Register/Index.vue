@@ -73,8 +73,10 @@ export default defineComponent({
     },
     getContract(cont: number) {
       this.fetchContract(cont)
+      this.fetchPaymentList({ project: this.project.pk, contract: cont })
     },
     ...mapActions('project', ['fetchTypeList']),
+    ...mapActions('payment', ['fetchPaymentList']),
     ...mapActions('contract', ['fetchContractList', 'fetchContract']),
   },
 })

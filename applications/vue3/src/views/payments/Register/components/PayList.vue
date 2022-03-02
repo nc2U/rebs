@@ -21,12 +21,14 @@
     </CTableHead>
 
     <CTableBody v-if="contract">
-      <CTableRow class="text-center" v-for="i in 3" :key="i">
-        <CTableDataCell>2022-03-02</CTableDataCell>
-        <CTableDataCell>[계약금] - 1차계약금</CTableDataCell>
-        <CTableDataCell class="text-right">25,000,000</CTableDataCell>
-        <CTableDataCell>국제신탁-분담금(국민)</CTableDataCell>
-        <CTableDataCell>김광수902동140</CTableDataCell>
+      <CTableRow class="text-center" v-for="pay in paymentList" :key="pay.pk">
+        <CTableDataCell>{{ pay.deal_date }}</CTableDataCell>
+        <CTableDataCell>{{ pay.installment_order }}</CTableDataCell>
+        <CTableDataCell class="text-right">
+          {{ numFormat(pay.income) }}
+        </CTableDataCell>
+        <CTableDataCell>{{ pay.bank_account }}</CTableDataCell>
+        <CTableDataCell>{{ pay.trader }}</CTableDataCell>
         <CTableDataCell>
           <CButton type="button" color="info" size="sm">보기</CButton>
         </CTableDataCell>
@@ -39,7 +41,9 @@
           합계
         </CTableHeaderCell>
         <CTableHeaderCell></CTableHeaderCell>
-        <CTableHeaderCell>150,000,000</CTableHeaderCell>
+        <CTableHeaderCell>
+          {{ numFormat(paymentSum) }}
+        </CTableHeaderCell>
         <CTableHeaderCell></CTableHeaderCell>
         <CTableHeaderCell></CTableHeaderCell>
         <CTableHeaderCell></CTableHeaderCell>
@@ -50,6 +54,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { mapState } from 'vuex'
 
 export default defineComponent({
   name: 'PayList',
@@ -63,7 +68,16 @@ export default defineComponent({
       sample: '',
     }
   },
-  computed: {},
+  computed: {
+    paymentSum() {
+      return this.paymentList.length !== 0
+        ? this.paymentList
+            .map((p: any) => p.income)
+            .reduce((x: any, y: any) => x + y)
+        : 0
+    },
+    ...mapState('payment', ['paymentList']),
+  },
   methods: {},
 })
 </script>

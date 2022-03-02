@@ -209,6 +209,7 @@ const actions = {
     if (payload.to_date) url += `&to_deal_date=${payload.to_date}`
     if (payload.pay_order) url += `&installment_order=${payload.pay_order}`
     if (payload.pay_account) url += `&bank_account=${payload.pay_account}`
+    if (payload.contract) url += `&contract=${payload.contract}`
     if (payload.no_contract) url += `&no_contract=${payload.no_contract}`
     if (payload.search) url += `&search=${payload.search}`
     const page = payload.page ? payload.page : 1
