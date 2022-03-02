@@ -18,10 +18,35 @@
     </CTableDataCell>
     <CTableDataCell>{{ payment.serial_number }}</CTableDataCell>
     <CTableDataCell>
-      <router-link to="#">{{ payment.contractor }}</router-link>
+      <router-link
+        :to="
+          payment.contract
+            ? {
+                name: '건별수납 관리',
+                query: { contract: payment.contract.pk, payment: payment.pk },
+              }
+            : { name: '건별수납 관리', query: { payment: payment.pk } }
+        "
+      >
+        {{ payment.contract ? payment.contractor : '계약정보 확인' }}
+      </router-link>
     </CTableDataCell>
     <CTableDataCell class="text-right">
-      <router-link to="#">{{ numFormat(payment.income) }}</router-link>
+      <router-link
+        :to="
+          payment.contract
+            ? {
+                name: '건별수납 관리',
+                query: { contract: payment.contract.pk, payment: payment.pk },
+              }
+            : {
+                name: '건별수납 관리',
+                query: { payment: payment.pk },
+              }
+        "
+      >
+        {{ numFormat(payment.income) }}
+      </router-link>
     </CTableDataCell>
     <CTableDataCell>{{ payment.installment_order }}</CTableDataCell>
     <CTableDataCell>{{ payment.bank_account }}</CTableDataCell>
