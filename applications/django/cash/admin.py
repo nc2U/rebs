@@ -67,8 +67,8 @@ class SalesPriceByGTAdmin(ImportExportMixin, admin.ModelAdmin):
 
 class InstallmentPaymentOrderAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = (
-        'id', 'project', 'pay_name', 'pay_sort', 'pay_code', 'pay_time', 'alias_name', 'is_pm_cost', 'pay_due_date',
-        'extra_due_date')
+        'id', 'project', 'pay_name', 'pay_sort', 'pay_code', 'pay_time',
+        'pay_ratio', 'alias_name', 'is_pm_cost', 'pay_due_date', 'extra_due_date')
     search_fields = ('pay_name', 'alias_name',)
     list_editable = ('alias_name', 'is_pm_cost', 'pay_due_date', 'extra_due_date')
     list_display_links = ('project', 'pay_name',)
