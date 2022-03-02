@@ -1,25 +1,25 @@
 <template>
   <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    @header-select="onSelectAdd"
+      :page-title="pageTitle"
+      :nav-menu="navMenu"
+      @header-select="onSelectAdd"
   />
 
   <ContentBody>
     <CCardBody class="pb-5">
       <ContChoicer
-        ref="listControl"
-        :contract="contract"
-        @list-filtering="onContFiltering"
-        @get-contract="getContract"
+          ref="listControl"
+          :contract="contract"
+          @list-filtering="onContFiltering"
+          @get-contract="getContract"
       />
       <CRow>
-        <CCol lg="6">
-          <PayList />
-          <PayForm />
+        <CCol lg="7">
+          <PayList :contract="contract"/>
+          <PayForm/>
         </CCol>
-        <CCol lg="6">
-          <PayBoard />
+        <CCol lg="5">
+          <PayBoard :contract="contract"/>
         </CCol>
       </CRow>
     </CCardBody>
@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import {defineComponent} from 'vue'
 import HeaderMixin from '@/views/payments/_menu/headermixin'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
@@ -37,7 +37,7 @@ import ContChoicer from '@/views/payments/Register/components/ContChoicer.vue'
 import PayList from '@/views/payments/Register/components/PayList.vue'
 import PayForm from '@/views/payments/Register/components/PayForm.vue'
 import PayBoard from '@/views/payments/Register/components/PayBoard.vue'
-import { mapActions, mapGetters, mapState } from 'vuex'
+import {mapActions, mapGetters, mapState} from 'vuex'
 
 export default defineComponent({
   name: 'PaymentsRegister',
@@ -61,7 +61,7 @@ export default defineComponent({
   methods: {
     onContFiltering(payload: any) {
       const project = this.project.pk
-      this.fetchContractList({ ...{ project }, ...payload })
+      this.fetchContractList({...{project}, ...payload})
     },
     getContract(cont: number) {
       this.fetchContract(cont)
