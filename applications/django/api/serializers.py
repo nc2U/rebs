@@ -323,7 +323,7 @@ class SimpleContractSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Contract
-        fields = ('order_group', 'unit_type', 'serial_number', 'contractor')
+        fields = ('pk', 'order_group', 'unit_type', 'serial_number', 'contractor')
 
 
 class PaymentSerializer(serializers.ModelSerializer):
