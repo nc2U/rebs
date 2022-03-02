@@ -110,6 +110,7 @@ export default defineComponent({
     },
     removeContract(this: any) {
       this.$store.state.contract.contract = null
+      this.$store.state.payment.paymentList = []
     },
   },
 })
