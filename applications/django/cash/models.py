@@ -157,6 +157,8 @@ class InstallmentPaymentOrder(models.Model):  # 분할 납부 차수 등록
     pay_code = models.PositiveSmallIntegerField('납입회차 코드', help_text='프로젝트 내에서 모든 납부회차를 고유 순서대로 숫자로 부여한다.')
     pay_time = models.PositiveSmallIntegerField('납부순서',
                                                 help_text='동일 납부회차에 2가지 항목을 별도로 납부하여야 하는 경우(ex: 분담금 + 업무대행료) 하나의 납입회차 코드(ex: 1)에 2개의 납부순서(ex: 1, 2)를 등록한다.')
+    pay_ratio = models.DecimalField('회당 납부비율(%)', max_digits=7, decimal_places=4, null=True, blank=True,
+                                    help_text='분양가 대비 납부비율, 계약금 항목인 경우 Downpamy 테이블 데이터 우선, 잔금 항목인 경우 분양가와 비교 차액 데이터 우선')
     pay_name = models.CharField('납부회차 명', max_length=20)
     alias_name = models.CharField('회차 별칭', max_length=20, blank=True)
     is_pm_cost = models.BooleanField('PM용역비 여부', default=False)
@@ -178,7 +180,7 @@ class DownPayment(models.Model):
     order_group = models.ForeignKey('contract.OrderGroup', on_delete=models.CASCADE, verbose_name='차수정보')
     unit_type = models.ForeignKey('project.UnitType', on_delete=models.CASCADE, verbose_name='타입정보')
     number_payments = models.PositiveSmallIntegerField('분할 납부회수')
-    payment_amount = models.PositiveIntegerField('납부 계약금액')
+    payment_amount = models.PositiveIntegerField('회별 납부금액')
 
     def __str__(self):
         return f'{self.payment_amount}'
