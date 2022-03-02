@@ -3,101 +3,99 @@
     <CRow>
       <CCol>
         <CRow>
-          <CFormLabel class="col-sm-1 col-form-label">타입</CFormLabel>
-          <CCol md="6" lg="3" class="mb-3">
-            <CMultiSelect
-              v-model="unitType"
-              @change="listFiltering(1)"
-              :options="unitTypes"
-            />
-          </CCol>
-
-          <CFormLabel class="col-sm-1 col-form-label">계약자</CFormLabel>
-          <CCol md="6" lg="3" class="mb-3">
-            <CMultiSelect
-              v-model="contract"
-              @change="listFiltering(1)"
-              :multiple="false"
-              placeholder="계약자 선택"
-            />
-          </CCol>
-
-          <CFormLabel class="col-sm-1 col-form-label">검색</CFormLabel>
-          <CCol md="3" class="mb-3">
+          <CCol md="4" class="mb-3">
             <CInputGroup class="flex-nowrap">
               <CFormInput
-                v-model="search"
+                v-model="form.search"
+                placeholder="일련번호, 계약자, 입금자, 적요, 비고"
                 @keydown.enter="listFiltering(1)"
-                placeholder="계약자, 입금자, 적요, 비고"
-                aria-label="Username"
+                aria-label="Search"
                 aria-describedby="addon-wrapping"
               />
-              <CInputGroupText @click="listFiltering(1)">검색</CInputGroupText>
+              <CInputGroupText @click="listFiltering(1)">
+                계약 건 찾기
+              </CInputGroupText>
             </CInputGroup>
           </CCol>
         </CRow>
       </CCol>
     </CRow>
     <CRow>
-      <CCol color="warning" class="p-2 pl-3">
-        <strong>납부 건수 조회 결과 : 0건</strong>
+      <CCol color="warning" class="p-2 pl-3" v-if="contractIndex.length !== 0">
+        <CButton
+          type="button"
+          color="dark"
+          v-for="cont in contractIndex"
+          :key="cont.pk"
+          @click="getContract(cont.pk)"
+          variant="outline"
+          size="sm"
+        >
+          {{ `${cont.contractor}(${cont.serial_number})` }}
+        </CButton>
       </CCol>
-      <!--      <CCol class="text-right mb-0" v-if="!formsCheck">-->
-      <!--        <CButton color="info" @click="resetForm" size="sm">-->
-      <!--          검색조건 초기화-->
-      <!--        </CButton>-->
-      <!--      </CCol>-->
+      <CCol v-else class="mt-3 m-2" :class="textClass">
+        {{ msg }}
+      </CCol>
     </CRow>
   </CCallout>
 
-  <CAlert color="info"></CAlert>
+  <CAlert :color="contract ? 'info' : 'secondary'">
+    <strong v-if="contract">
+      [일련번호 : {{ contract.serial_number }}] (타입 :
+      {{ contract.unit_type.name }} {{ contract.keyunit.houseunit.__str__ }} |
+      계약자 : {{ contract.contractor.name }}) (
+      <router-link to="">납부내역서 출력</router-link>
+      )
+    </strong>
+  </CAlert>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { maska } from 'maska'
-import { mapState } from 'vuex'
+import { mapGetters } from 'vuex'
 
 export default defineComponent({
-  name: 'ListController',
+  name: 'ContChoicer',
   directives: { maska },
+  props: { contract: Object },
   data() {
     return {
-      unitType: '',
-      contract: '',
-      search: '',
+      form: {
+        search: '',
+      },
+      msg: '',
+      textClass: '',
     }
   },
+  created() {
+    this.pageInit()
+  },
   computed: {
-    unitTypes(this: any) {
-      return this.unitTypeList.map((t: any) => ({
-        value: t.pk,
-        label: t.name,
-        text: t.name,
-      }))
-    },
-    contracts(this: any) {
-      return []
-    },
-    formsCheck(this: any) {
-      const a = this.unitType === ''
-      const b = this.contract === ''
-      const c = this.search === ''
-      return a && b && c
-    },
-    ...mapState('project', ['unitTypeList']),
+    ...mapGetters('contract', ['contractIndex']),
   },
   methods: {
-    listFiltering(page = 1) {
-      this.$nextTick(() =>
-        this.$emit('payment-filtering', { ...{ page }, ...this }),
-      )
+    listFiltering(this: any, page = 1) {
+      this.$nextTick(() => {
+        if (this.form.search === '')
+          this.$store.state.contract.contractList = []
+        else this.$emit('list-filtering', { ...{ page }, ...this.form })
+        if (this.contractIndex.length === 0) {
+          this.msg = '해당 계약 건이 없습니다.'
+          this.textClass = 'text-danger'
+        }
+      })
     },
-    resetForm() {
-      this.unitType = ''
-      this.contract = ''
-      this.search = ''
-      this.listFiltering(1)
+    getContract(cont: number) {
+      this.$emit('get-contract', cont)
+      this.pageInit()
+    },
+    pageInit(this: any) {
+      this.form.search = ''
+      this.textClass = 'text-medium-emphasis'
+      this.msg = '계약자, 입금자성명 또는 계약 일련변호를 입력하세요.'
+      this.$store.state.contract.contractList = []
     },
   },
 })

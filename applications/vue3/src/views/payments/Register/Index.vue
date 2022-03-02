@@ -7,7 +7,12 @@
 
   <ContentBody>
     <CCardBody class="pb-5">
-      <ContChoicer ref="listControl" @payment-filtering="onPayFiltering" />
+      <ContChoicer
+        ref="listControl"
+        :contract="contract"
+        @list-filtering="onContFiltering"
+        @get-contract="getContract"
+      />
       <CRow>
         <CCol lg="6">
           <PayList />
@@ -51,9 +56,18 @@ export default defineComponent({
   computed: {
     ...mapState('project', ['project']),
     ...mapGetters('accounts', ['initProjId']),
+    ...mapState('contract', ['contract']),
   },
   methods: {
+    onContFiltering(payload: any) {
+      const project = this.project.pk
+      this.fetchContractList({ ...{ project }, ...payload })
+    },
+    getContract(cont: number) {
+      this.fetchContract(cont)
+    },
     ...mapActions('project', ['fetchTypeList']),
+    ...mapActions('contract', ['fetchContractList', 'fetchContract']),
   },
 })
 </script>
