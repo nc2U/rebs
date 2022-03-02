@@ -196,7 +196,7 @@ class UnitTypeSerializer(serializers.ModelSerializer):
 class SimpleUnitTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = UnitType
-        fields = ('name', 'color')
+        fields = ('pk', 'name', 'color')
 
 
 class UnitFloorTypeSerializer(serializers.ModelSerializer):
@@ -389,6 +389,12 @@ class OrderGroupSerializer(serializers.ModelSerializer):
         fields = ('pk', 'project', 'order_number', 'sort', 'sort_desc', 'order_group_name')
 
 
+class SimpleOrderGroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrderGroup
+        fields = ('pk', 'order_group_name')
+
+
 class HouseUnitInKeyUnitSerializer(serializers.ModelSerializer):
     class Meta:
         model = HouseUnit
@@ -427,7 +433,7 @@ class ContractorInContractListSerializer(serializers.ModelSerializer):
 
 
 class ContractListSerializer(serializers.ModelSerializer):
-    order_group = serializers.SlugRelatedField(queryset=OrderGroup.objects.all(), slug_field='order_group_name')
+    order_group = SimpleOrderGroupSerializer()
     unit_type = SimpleUnitTypeSerializer()
     keyunit = KeyUnitInContractListSerializer()
     contractor = ContractorInContractListSerializer()
