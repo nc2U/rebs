@@ -1,12 +1,12 @@
 <template>
   <CTable hover responsive align="middle">
     <colgroup>
-      <col width="16%"/>
-      <col width="18%"/>
-      <col width="16%"/>
-      <col width="22%"/>
-      <col width="18%"/>
-      <col width="10%"/>
+      <col width="16%" />
+      <col width="18%" />
+      <col width="16%" />
+      <col width="22%" />
+      <col width="18%" />
+      <col width="10%" />
     </colgroup>
 
     <CTableHead color="dark">
@@ -35,11 +35,12 @@
 
     <CTableHead>
       <CTableRow class="text-right">
-        <CTableHeaderCell color="dark" class="text-center"
-        >합계
+        <CTableHeaderCell color="dark" class="text-center">
+          합계
         </CTableHeaderCell>
         <CTableHeaderCell></CTableHeaderCell>
         <CTableHeaderCell>150,000,000</CTableHeaderCell>
+        <CTableHeaderCell></CTableHeaderCell>
         <CTableHeaderCell></CTableHeaderCell>
         <CTableHeaderCell></CTableHeaderCell>
       </CTableRow>
@@ -48,12 +49,12 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from 'vue'
+import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'PayList',
   components: {},
-  props: {contract: Object},
+  props: { contract: Object },
   setup() {
     return {}
   },
