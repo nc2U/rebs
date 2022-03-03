@@ -21,23 +21,7 @@
     </CTableHead>
 
     <CTableBody v-if="contract">
-      <CTableRow
-        class="text-center"
-        v-for="pay in paymentList"
-        :key="pay.pk"
-        :color="pay.pk === paymentId ? 'warning' : ''"
-      >
-        <CTableDataCell>{{ pay.deal_date }}</CTableDataCell>
-        <CTableDataCell>{{ pay.installment_order }}</CTableDataCell>
-        <CTableDataCell class="text-right">
-          {{ numFormat(pay.income) }}
-        </CTableDataCell>
-        <CTableDataCell>{{ pay.bank_account }}</CTableDataCell>
-        <CTableDataCell>{{ pay.trader }}</CTableDataCell>
-        <CTableDataCell>
-          <CButton type="button" color="info" size="sm">보기</CButton>
-        </CTableDataCell>
-      </CTableRow>
+      <Payment v-for="pay in paymentList" :payment="pay" :key="pay.pk" />
     </CTableBody>
 
     <CTableHead>
@@ -59,11 +43,11 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { mapState } from 'vuex'
+import Payment from '@/views/payments/Register/components/Payment.vue'
 
 export default defineComponent({
   name: 'PayList',
-  components: {},
+  components: { Payment },
   props: { contract: Object, paymentList: Array },
   computed: {
     paymentSum(this: any) {
@@ -73,8 +57,6 @@ export default defineComponent({
             .reduce((x: any, y: any) => x + y)
         : 0
     },
-    ...mapState('payment', ['paymentId']),
   },
-  methods: {},
 })
 </script>

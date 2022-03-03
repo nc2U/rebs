@@ -15,8 +15,11 @@
       />
       <CRow>
         <CCol lg="7">
-          <PayList :contract="contract" :payment-list="paymentList" />
-          <PayForm />
+          <PaymentList :contract="contract" :payment-list="paymentList" />
+
+          <CAlert color="secondary" class="text-right">
+            <CButton type="button" color="primary">신규납부 등록</CButton>
+          </CAlert>
         </CCol>
         <CCol lg="5">
           <OrdersBoard :contract="contract" :payment-list="paymentList" />
@@ -34,11 +37,10 @@ import HeaderMixin from '@/views/payments/_menu/headermixin'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ContChoicer from '@/views/payments/Register/components/ContChoicer.vue'
-import PayList from '@/views/payments/Register/components/PayList.vue'
-import PayForm from '@/views/payments/Register/components/PayForm.vue'
+import PaymentList from '@/views/payments/Register/components/PaymentList.vue'
+import PayForm from '@/views/payments/Register/components/PaymentForm.vue'
 import OrdersBoard from '@/views/payments/Register/components/OrdersBoard.vue'
 import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
-import { FETCH_PAYMENT_ID } from '@/store/modules/payment/mutations-types'
 
 export default defineComponent({
   name: 'PaymentsRegister',
@@ -47,7 +49,7 @@ export default defineComponent({
     ContentHeader,
     ContentBody,
     ContChoicer,
-    PayList,
+    PaymentList,
     PayForm,
     OrdersBoard,
   },
@@ -91,12 +93,14 @@ export default defineComponent({
       if (target !== '') {
         this.fetchTypeList(target)
         this.fetchPayOrderList(target)
+        this.proBankAccountList(target)
       } else {
         this.$store.state.contract.contract = null
         this.$store.state.contract.contractList = []
         this.$store.state.project.unitTypeList = []
         this.$store.state.payment.paymentList = []
         this.$store.state.payment.payOrderList = []
+        this.$store.state.proCash.proBankAccountList = []
       }
     },
     onContFiltering(payload: any) {
@@ -119,6 +123,7 @@ export default defineComponent({
       'fetchPriceList',
     ]),
     ...mapMutations('payment', ['FETCH_PAYMENT_ID']),
+    ...mapActions('proCash', ['proBankAccountList']),
     ...mapActions('contract', ['fetchContractList', 'fetchContract']),
   },
 })
