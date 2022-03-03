@@ -40,7 +40,9 @@
         <CTableHeaderCell></CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(thisPrice || 0) }}</CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(paidTotal) }}</CTableHeaderCell>
-        <CTableHeaderCell>
+        <CTableHeaderCell
+          :class="paidTotal - dueTotal < 0 ? 'text-danger' : ''"
+        >
           {{ numFormat(paidTotal - dueTotal) }}
         </CTableHeaderCell>
       </CTableRow>
@@ -117,7 +119,7 @@ export default defineComponent({
 
       const payByOrder = order.pay_ratio
         ? this.thisPrice * order.pay_ratio
-        : this.thisPrice * 0.1 // 1. payByOrder === '중도금'
+        : this.thisPrice * 0.1 // 1. payByOrder === '중도금' (지정된 비율이 없으면 회당 10%)
       const downPay = down ? down : payByOrder
       const balace = this.thisPrice - downPay * numDown - payByOrder * numMid // 분양가 - (계약금 + 중도금), 2. payByOrder
       const balacePay = balace ? balace : payByOrder * order.pay_ratio

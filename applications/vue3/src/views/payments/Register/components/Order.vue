@@ -2,7 +2,7 @@
   <CTableDataCell class="text-center">
     {{ dueDate }}
   </CTableDataCell>
-  <CTableDataCell class="text-center" :class="orderClass">
+  <CTableDataCell class="text-center">
     {{ order.pay_name }}
   </CTableDataCell>
   <CTableDataCell>
@@ -45,11 +45,6 @@ export default defineComponent({
       const today = this.dateFormat(new Date())
       const duePay = this.paidByOrder - this.commit
       return this.dueDate !== '-' && this.dueDate <= today ? duePay : 0
-    },
-    orderClass(this: any) {
-      const today = this.dateFormat(new Date())
-      const orderClass = 'text-primary'
-      return this.dueDate !== '-' && this.dueDate <= today ? orderClass : ''
     },
     calcClass() {
       let calc = this.calculated > 0 ? 'text-primary' : 'text-danger'
