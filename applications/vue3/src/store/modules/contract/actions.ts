@@ -25,7 +25,7 @@ const actions = {
     if (payload.search) url += `&search=${payload.search}`
     const page = payload.page ? payload.page : 1
     url += `&page=${page}`
-    console.log(url)
+    console.log(url, payload)
     api
       .get(url)
       .then(res => {
