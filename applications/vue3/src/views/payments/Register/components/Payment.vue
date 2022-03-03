@@ -13,8 +13,8 @@
     <CTableDataCell>{{ payment.bank_account }}</CTableDataCell>
     <CTableDataCell>{{ payment.trader }}</CTableDataCell>
     <CTableDataCell>
-      <CButton type="button" color="info" size="sm" @click="showDetail"
-        >보기
+      <CButton type="button" color="info" size="sm" @click="showDetail">
+        보기
       </CButton>
     </CTableDataCell>
   </CTableRow>
@@ -45,6 +45,11 @@ export default defineComponent({
   name: 'Payment',
   components: { FormModal, PaymentForm },
   props: { payment: Object },
+  mounted(this: any) {
+    if (this.paymentId === this.payment.pk) {
+      this.showDetail()
+    }
+  },
   computed: {
     ...mapState('payment', ['paymentId']),
   },
