@@ -22,7 +22,7 @@
           </CCol>
 
           <CCol md="6" lg="2" class="mb-3">
-            <CFormSelect v-model="sort" @change="pro_acc_d1Select">
+            <CFormSelect v-model="form.sort" @change="pro_acc_d1Select">
               <option value="">거래구분</option>
               <option v-for="sort in sortList" :value="sort.pk" :key="sort.pk">
                 {{ sort.name }}
@@ -31,7 +31,7 @@
           </CCol>
 
           <CCol md="6" lg="2" class="mb-3">
-            <CFormSelect v-model="pro_acc_d1" @change="pro_acc_d2Select">
+            <CFormSelect v-model="form.pro_acc_d1" @change="pro_acc_d2Select">
               <option value="">상위 항목</option>
               <option v-for="d1 in formAccD1List" :value="d1.pk" :key="d1.pk">
                 {{ d1.name }}
@@ -40,7 +40,7 @@
           </CCol>
 
           <CCol md="6" lg="2" class="mb-3">
-            <CFormSelect v-model="pro_acc_d2" @change="listFiltering(1)">
+            <CFormSelect v-model="form.pro_acc_d2" @change="listFiltering(1)">
               <option value="">하위 항목</option>
               <option v-for="d2 in formAccD2List" :value="d2.pk" :key="d2.pk">
                 {{ d2.name }}
@@ -49,7 +49,7 @@
           </CCol>
 
           <CCol md="6" lg="2" class="mb-3">
-            <CFormSelect v-model="bank_account" @change="listFiltering(1)">
+            <CFormSelect v-model="form.bank_account" @change="listFiltering(1)">
               <option value="">거래계좌</option>
               <option
                 v-for="acc in proBankAccountList"
@@ -68,7 +68,7 @@
           <CCol class="mb-3">
             <CInputGroup class="flex-nowrap">
               <CFormInput
-                v-model="search"
+                v-model="form.search"
                 @keydown.enter="listFiltering(1)"
                 placeholder="적요, 거래처 검색"
                 aria-label="Username"
@@ -109,22 +109,24 @@ export default defineComponent({
     return {
       from_date: '',
       to_date: '',
-      sort: '',
-      pro_acc_d1: '',
-      pro_acc_d2: '',
-      bank_account: '',
-      search: '',
+      form: {
+        sort: '',
+        pro_acc_d1: '',
+        pro_acc_d2: '',
+        bank_account: '',
+        search: '',
+      },
     }
   },
   computed: {
     formsCheck(this: any) {
       const a = this.from_date === ''
       const b = this.to_date === ''
-      const c = this.sort === ''
-      const d = this.pro_acc_d1 === ''
-      const e = this.pro_acc_d2 === ''
-      const f = this.bank_account === ''
-      const g = this.search === ''
+      const c = this.form.sort === ''
+      const d = this.form.pro_acc_d1 === ''
+      const e = this.form.pro_acc_d2 === ''
+      const f = this.form.bank_account === ''
+      const g = this.form.search === ''
       return a && b && c && d && e && f && g
     },
     ...mapState('proCash', [
@@ -146,28 +148,31 @@ export default defineComponent({
   methods: {
     pro_acc_d1Select() {
       this.listFiltering(1)
-      this.pro_acc_d1 = ''
-      this.pro_acc_d2 = ''
+      this.form.pro_acc_d1 = ''
+      this.form.pro_acc_d2 = ''
     },
     pro_acc_d2Select() {
       this.listFiltering(1)
-      this.pro_acc_d2 = ''
+      this.form.pro_acc_d2 = ''
     },
     listFiltering(this: any, page = 1) {
       this.$nextTick(() => {
-        this.from_date = this.from_date ? this.dateFormat(this.from_date) : ''
-        this.to_date = this.to_date ? this.dateFormat(this.to_date) : ''
-        this.$emit('list-filtering', { ...{ page }, ...this })
+        const from_date = this.from_date ? this.dateFormat(this.from_date) : ''
+        const to_date = this.to_date ? this.dateFormat(this.to_date) : ''
+        this.$emit('list-filtering', {
+          ...{ page, from_date, to_date },
+          ...this.form,
+        })
       })
     },
     resetForm() {
       this.from_date = ''
       this.to_date = ''
-      this.sort = ''
-      this.pro_acc_d1 = ''
-      this.pro_acc_d2 = ''
-      this.bank_account = ''
-      this.search = ''
+      this.form.sort = ''
+      this.form.pro_acc_d1 = ''
+      this.form.pro_acc_d2 = ''
+      this.form.bank_account = ''
+      this.form.search = ''
       this.listFiltering(1)
     },
   },
