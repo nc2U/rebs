@@ -208,7 +208,7 @@ const actions = {
 
   fetchPaymentList: ({ commit }: any, payload: any) => {
     const { project } = payload
-    let url = `/payment-list/?project=${project}`
+    let url = `/payment/?project=${project}`
     if (payload.from_date) url += `&from_deal_date=${payload.from_date}`
     if (payload.to_date) url += `&to_deal_date=${payload.to_date}`
     if (payload.pay_order) url += `&installment_order=${payload.pay_order}`
@@ -228,7 +228,7 @@ const actions = {
 
   fetchPayment: ({ commit }: any, pk: any) => {
     api
-      .get(`/payment-list/${pk}/`)
+      .get(`/payment/${pk}/`)
       .then(res => {
         commit(FETCH_PAYMENT, res.data)
       })
