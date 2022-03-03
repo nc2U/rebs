@@ -22,7 +22,7 @@
           </CCol>
 
           <CCol md="6" lg="3" class="mb-3">
-            <CFormSelect v-model="pay_order" @change="listFiltering(1)">
+            <CFormSelect v-model="form.pay_order" @change="listFiltering(1)">
               <option value="">납부회차 선택</option>
               <option v-for="po in payOrderList" :value="po.pk" :key="po.pk">
                 {{ po.__str__ }}
@@ -31,7 +31,7 @@
           </CCol>
 
           <CCol md="6" lg="3" class="mb-3">
-            <CFormSelect v-model="pay_account" @change="listFiltering(1)">
+            <CFormSelect v-model="form.pay_account" @change="listFiltering(1)">
               <option value="">납부계좌 선택</option>
               <option
                 v-for="ba in proBankAccountList"
@@ -48,7 +48,7 @@
         <CRow>
           <CCol md="6" class="mb-3 pl-4 pt-2">
             <CFormSwitch
-              v-model="no_contract"
+              v-model="form.no_contract"
               label="미등록 납부대금 건"
               @change="listFiltering(1)"
             />
@@ -57,7 +57,7 @@
           <CCol md="6" class="mb-3">
             <CInputGroup class="flex-nowrap">
               <CFormInput
-                v-model="search"
+                v-model="form.search"
                 @keydown.enter="listFiltering(1)"
                 placeholder="계약자, 입금자, 적요, 비고"
                 aria-label="Username"
@@ -96,20 +96,22 @@ export default defineComponent({
     return {
       from_date: '',
       to_date: '',
-      pay_order: '',
-      pay_account: '',
-      no_contract: false,
-      search: '',
+      form: {
+        pay_order: '',
+        pay_account: '',
+        no_contract: false,
+        search: '',
+      },
     }
   },
   computed: {
     formsCheck(this: any) {
       const a = this.from_date === ''
       const b = this.to_date === ''
-      const c = this.pay_order === ''
-      const d = this.pay_account === ''
-      const e = !this.no_contract
-      const f = this.search === ''
+      const c = this.form.pay_order === ''
+      const d = this.form.pay_account === ''
+      const e = !this.form.no_contract
+      const f = this.form.search === ''
       return a && b && c && d && e && f
     },
     ...mapState('payment', ['payOrderList', 'paymentsCount']),
@@ -126,18 +128,21 @@ export default defineComponent({
   methods: {
     listFiltering(this: any, page = 1) {
       this.$nextTick(() => {
-        this.from_date = this.from_date ? this.dateFormat(this.from_date) : ''
-        this.to_date = this.to_date ? this.dateFormat(this.to_date) : ''
-        this.$emit('payment-filtering', { ...{ page }, ...this })
+        const from_date = this.from_date ? this.dateFormat(this.from_date) : ''
+        const to_date = this.to_date ? this.dateFormat(this.to_date) : ''
+        this.$emit('payment-filtering', {
+          ...{ page, from_date, to_date },
+          ...this.form,
+        })
       })
     },
     resetForm() {
       this.from_date = ''
       this.to_date = ''
-      this.pay_order = ''
-      this.pay_account = ''
-      this.no_contract = false
-      this.search = ''
+      this.form.pay_order = ''
+      this.form.pay_account = ''
+      this.form.no_contract = false
+      this.form.search = ''
       this.listFiltering(1)
     },
   },
