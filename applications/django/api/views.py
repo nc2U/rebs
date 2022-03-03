@@ -51,17 +51,14 @@ class ApiIndex(generics.GenericAPIView):
             'key-unit': reverse(api + KeyUnitList.name, request=request),
             'bldg-unit': reverse(api + BuildingUnitList.name, request=request),
             'house-unit': reverse(api + HouseUnitList.name, request=request),
-
             # 'budget': reverse(api + ProjectBudgetList.name, request=request),
             # 'site': reverse(api + SiteList.name, request=request),
             # 'site-owner': reverse(api + SiteOwnerList.name, request=request),
             # 'site-relation': reverse(api + RelationList.name, request=request),
             # 'site-contract': reverse(api + SiteContractList.name, request=request),
-
             # 'bank-code': reverse(api + BankCodeList.name, request=request),
             'com-bank': reverse(api + ComBankAccountList.name, request=request),
             'cashbook': reverse(api + CashBookList.name, request=request),
-
             'project-bank': reverse(api + ProjectBankAccountList.name, request=request),
             'project-cashbook': reverse(api + ProjectCashBookList.name, request=request),
             'payment-list': reverse(api + PaymentList.name, request=request),
@@ -559,11 +556,16 @@ class ProjectCashBookDetail(generics.RetrieveUpdateDestroyAPIView):
 
 
 class PaymentList(ProjectCashBookList):
-    serializer_class = PaymentSerializer
     name = 'payment-list'
+    serializer_class = PaymentSerializer
 
     def get_queryset(self):
         return ProjectCashBook.objects.filter(project_account_d2__in=(1, 2), is_release=False)
+
+
+class PaymentDetail(ProjectCashBookDetail):
+    name = 'payment-detail'
+    serializer_class = PaymentSerializer
 
 
 class PaymentSummary(generics.ListAPIView):
