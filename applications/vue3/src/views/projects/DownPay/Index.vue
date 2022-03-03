@@ -44,7 +44,7 @@ export default defineComponent({
     DownPayFormList,
   },
   created() {
-    this.fetchDownPayList(this.initProjId)
+    this.fetchDownPayList({ project: this.initProjId })
     this.fetchOrderGroupList(this.initProjId)
     this.fetchTypeList(this.initProjId)
   },
@@ -58,7 +58,7 @@ export default defineComponent({
       if (target !== '') {
         this.fetchOrderGroupList(target)
         this.fetchTypeList(target)
-        this.fetchDownPayList(target)
+        this.fetchDownPayList({ project: target })
       } else this.$store.state.payment.downPayList = []
     },
     onSubmit(payload: any) {
