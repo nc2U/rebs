@@ -1,25 +1,25 @@
 <template>
   <ContentHeader
-      :page-title="pageTitle"
-      :nav-menu="navMenu"
-      @header-select="onSelectAdd"
+    :page-title="pageTitle"
+    :nav-menu="navMenu"
+    @header-select="onSelectAdd"
   />
 
   <ContentBody>
     <CCardBody class="pb-5">
       <ContChoicer
-          ref="listControl"
-          :contract="contract"
-          @list-filtering="onContFiltering"
-          @get-contract="getContract"
+        ref="listControl"
+        :contract="contract"
+        @list-filtering="onContFiltering"
+        @get-contract="getContract"
       />
       <CRow>
         <CCol lg="7">
-          <PayList :contract="contract" :payment-list="paymentList"/>
-          <PayForm/>
+          <PayList :contract="contract" :payment-list="paymentList" />
+          <PayForm />
         </CCol>
         <CCol lg="5">
-          <OrdersBoard :contract="contract" :payment-list="paymentList"/>
+          <OrdersBoard :contract="contract" :payment-list="paymentList" />
         </CCol>
       </CRow>
     </CCardBody>
@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from 'vue'
+import { defineComponent } from 'vue'
 import HeaderMixin from '@/views/payments/_menu/headermixin'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
@@ -37,7 +37,8 @@ import ContChoicer from '@/views/payments/Register/components/ContChoicer.vue'
 import PayList from '@/views/payments/Register/components/PayList.vue'
 import PayForm from '@/views/payments/Register/components/PayForm.vue'
 import OrdersBoard from '@/views/payments/Register/components/OrdersBoard.vue'
-import {mapActions, mapGetters, mapState} from 'vuex'
+import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
+import { FETCH_PAYMENT_ID } from '@/store/modules/payment/mutations-types'
 
 export default defineComponent({
   name: 'PaymentsRegister',
@@ -54,8 +55,12 @@ export default defineComponent({
     this.fetchTypeList(this.initProjId)
     this.fetchPayOrderList(this.initProjId)
     if (this.$route.query.contract) {
-      this.$router.push({name: '건별수납 관리'})
+      this.$router.push({ name: '건별수납 관리' })
       this.getContract(this.$route.query.contract)
+    }
+    if (this.$route.query.payment) {
+      this.$router.push({ name: '건별수납 관리' })
+      this.getPayment(this.$route.query.payment)
     }
   },
   beforeRouteLeave(this: any) {
@@ -73,8 +78,8 @@ export default defineComponent({
         const project = this.project.pk
         const order_group = newVal.order_group.pk
         const unit_type = newVal.unit_type.pk
-        this.fetchPriceList({project, order_group, unit_type})
-        this.fetchDownPayList({project, order_group, unit_type})
+        this.fetchPriceList({ project, order_group, unit_type })
+        this.fetchDownPayList({ project, order_group, unit_type })
       } else {
         this.$store.state.payment.priceList = []
         this.$store.state.payment.downPayList = []
@@ -96,12 +101,15 @@ export default defineComponent({
     },
     onContFiltering(payload: any) {
       const project = this.project.pk
-      this.fetchContractList({...{project}, ...payload})
+      this.fetchContractList({ ...{ project }, ...payload })
     },
     getContract(cont: number) {
       const project = this.project.pk
       this.fetchContract(cont)
-      this.fetchPaymentList({project, contract: cont})
+      this.fetchPaymentList({ project, contract: cont, ordering: 'deal_date' })
+    },
+    getPayment(this: any, pk: string) {
+      this.FETCH_PAYMENT_ID(Number(pk))
     },
     ...mapActions('project', ['fetchTypeList']),
     ...mapActions('payment', [
@@ -110,6 +118,7 @@ export default defineComponent({
       'fetchDownPayList',
       'fetchPriceList',
     ]),
+    ...mapMutations('payment', ['FETCH_PAYMENT_ID']),
     ...mapActions('contract', ['fetchContractList', 'fetchContract']),
   },
 })

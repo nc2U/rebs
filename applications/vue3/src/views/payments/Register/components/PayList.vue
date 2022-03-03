@@ -21,7 +21,12 @@
     </CTableHead>
 
     <CTableBody v-if="contract">
-      <CTableRow class="text-center" v-for="pay in paymentList" :key="pay.pk">
+      <CTableRow
+        class="text-center"
+        v-for="pay in paymentList"
+        :key="pay.pk"
+        :color="pay.pk === paymentId ? 'warning' : ''"
+      >
         <CTableDataCell>{{ pay.deal_date }}</CTableDataCell>
         <CTableDataCell>{{ pay.installment_order }}</CTableDataCell>
         <CTableDataCell class="text-right">
@@ -54,6 +59,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { mapState } from 'vuex'
 
 export default defineComponent({
   name: 'PayList',
@@ -67,6 +73,7 @@ export default defineComponent({
             .reduce((x: any, y: any) => x + y)
         : 0
     },
+    ...mapState('payment', ['paymentId']),
   },
   methods: {},
 })
