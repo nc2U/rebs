@@ -47,7 +47,9 @@
           [일련번호 : {{ contract.serial_number }}] (타입 :
           {{ contract.unit_type.name }}
           {{
-            contract.keyunit.houseunit ? contract.keyunit.houseunit.__str__ : ''
+            contract.keyunit.houseunit
+              ? contract.keyunit.houseunit.__str__
+              : '--- 동호수 현재 미정 ---'
           }}
           | 계약자 : {{ contract.contractor.name }})
         </strong>

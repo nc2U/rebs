@@ -24,6 +24,7 @@
           :contract="contract"
           :price="thisPrice"
           :order="po"
+          :commit="commit(po.pay_time)"
           :num-down="numDown"
           :num-mid="numMid"
           :payment-list="paymentList"
@@ -39,7 +40,9 @@
         <CTableHeaderCell></CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(thisPrice || 0) }}</CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(paidTotal) }}</CTableHeaderCell>
-        <CTableHeaderCell>현재까지미과오납</CTableHeaderCell>
+        <CTableHeaderCell>
+          {{ numFormat(paidTotal - dueTotal) }}
+        </CTableHeaderCell>
       </CTableRow>
     </CTableHead>
   </CTable>
@@ -53,16 +56,7 @@ import { mapState } from 'vuex'
 export default defineComponent({
   name: 'PayOrders',
   components: { Order },
-
   props: { contract: Object, paymentList: Array },
-  setup() {
-    return {}
-  },
-  data() {
-    return {
-      sample: '',
-    }
-  },
   computed: {
     thisPrice(this: any) {
       if (this.contract) {
@@ -90,12 +84,52 @@ export default defineComponent({
         ? 0
         : paid.reduce((x: number, y: number) => x + y)
     },
-    calcTotal() {
-      const dueTotal = this.payOrderList
-      return 1
+    dueTotal(this: any) {
+      let commitment: number[] = []
+      const today = this.dateFormat(new Date())
+      const dueOrder = this.payOrderList
+        .filter(
+          (o: any) =>
+            (o.pay_due_date <= today && !o.extra_due_date) ||
+            o.extra_due_date <= today,
+        )
+        .map((o: any) => o.pay_time)
+      dueOrder.forEach((el: number) => {
+        commitment.push(this.getCommits(el))
+      })
+      return commitment.length !== 0 ? commitment.reduce((x, y) => x + y) : 0
     },
-    ...mapState('payment', ['payOrderList', 'priceList']),
+    ...mapState('payment', ['payOrderList', 'priceList', 'downPayList']),
   },
-  methods: {},
+  methods: {
+    commit(pay_tyme: number) {
+      return this.getCommits(pay_tyme)
+    },
+    getCommits(this: any, el: number) {
+      const numDown = this.numDown // 계약금 납부회수
+      const numMid = this.numMid // 중도금 납부회수
+      const down = this.downPayList
+        .filter((d: any) => d.order_group === this.contract.order_group.pk)
+        .filter((d: any) => d.unit_type === this.contract.unit_type.pk)
+        .map((d: any) => d.payment_amount)[0] // 1. downPayList, 2. payByOrder, 3. 분양가 / 총회차수
+
+      const order = this.payOrderList.find((o: any) => o.pay_time === el)
+
+      const payByOrder = order.pay_ratio
+        ? this.thisPrice * order.pay_ratio
+        : this.thisPrice * 0.1 // 1. payByOrder === '중도금'
+      const downPay = down ? down : payByOrder
+      const balace = this.thisPrice - downPay * numDown - payByOrder * numMid // 분양가 - (계약금 + 중도금), 2. payByOrder
+      const balacePay = balace ? balace : payByOrder * order.pay_ratio
+
+      if (order.pay_sort === '1') {
+        return downPay // 계약금
+      } else if (order.pay_sort === '2') {
+        return payByOrder // 중도금
+      } else if (order.pay_sort === '3') {
+        return balacePay // 잔금
+      } else return 0
+    },
+  },
 })
 </script>
