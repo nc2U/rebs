@@ -6,7 +6,9 @@
     <CTableDataCell>{{ payment.deal_date }}</CTableDataCell>
     <CTableDataCell>{{ payment.installment_order }}</CTableDataCell>
     <CTableDataCell class="text-right">
-      {{ numFormat(payment.income) }}
+      <router-link to="" @click="showDetail">
+        {{ numFormat(payment.income) }}
+      </router-link>
     </CTableDataCell>
     <CTableDataCell>{{ payment.bank_account }}</CTableDataCell>
     <CTableDataCell>{{ payment.trader }}</CTableDataCell>

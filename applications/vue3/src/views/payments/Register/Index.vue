@@ -18,7 +18,12 @@
           <PaymentList :contract="contract" :payment-list="paymentList" />
 
           <CAlert color="secondary" class="text-right">
-            <CButton type="button" color="primary" :disabled="!contract">
+            <CButton
+              type="button"
+              color="primary"
+              @click="showDetail"
+              :disabled="!contract"
+            >
               신규납부 등록
             </CButton>
           </CAlert>
@@ -31,6 +36,21 @@
 
     <CCardFooter>&nbsp;</CCardFooter>
   </ContentBody>
+
+  <FormModal size="lg" ref="updateFormModal">
+    <template v-slot:header>
+      <CIcon name="cil-italic" />
+      건별 수납 관리 [신규 납부등록]
+    </template>
+    <template v-slot:default>
+      <PaymentForm
+        @on-submit="updateConfirm"
+        @on-delete="deleteConfirm"
+        @close="$refs.updateFormModal.visible = false"
+        :payment="payment"
+      />
+    </template>
+  </FormModal>
 </template>
 
 <script lang="ts">
@@ -40,8 +60,9 @@ import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ContChoicer from '@/views/payments/Register/components/ContChoicer.vue'
 import PaymentList from '@/views/payments/Register/components/PaymentList.vue'
-import PayForm from '@/views/payments/Register/components/PaymentForm.vue'
 import OrdersBoard from '@/views/payments/Register/components/OrdersBoard.vue'
+import FormModal from '@/components/Modals/FormModal.vue'
+import PaymentForm from '@/views/payments/Register/components/PaymentForm.vue'
 import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
 
 export default defineComponent({
@@ -52,8 +73,9 @@ export default defineComponent({
     ContentBody,
     ContChoicer,
     PaymentList,
-    PayForm,
     OrdersBoard,
+    FormModal,
+    PaymentForm,
   },
   created(this: any) {
     this.fetchTypeList(this.initProjId)
@@ -104,6 +126,9 @@ export default defineComponent({
         this.$store.state.payment.payOrderList = []
         this.$store.state.proCash.proBankAccountList = []
       }
+    },
+    showDetail(this: any) {
+      this.$refs.updateFormModal.callModal()
     },
     onContFiltering(payload: any) {
       const project = this.project.pk
