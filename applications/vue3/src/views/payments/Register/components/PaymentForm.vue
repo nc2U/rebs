@@ -28,7 +28,7 @@
             <CCol sm="8">
               <CFormSelect v-model="form.installment_order" required>
                 <option value="">---------</option>
-                <option v-for="po in payOrderList" :value="po.pk" :key="po.pk">
+                <option v-for="po in payOrderList" :key="po.pk">
                   {{ po.__str__ }}
                 </option>
               </CFormSelect>
@@ -57,11 +57,7 @@
             <CCol sm="8">
               <CFormSelect v-model="form.bank_account" required>
                 <option value="">---------</option>
-                <option
-                  v-for="pb in proBankAccountList"
-                  :value="pb.pk"
-                  :key="pb.pk"
-                >
+                <option v-for="pb in proBankAccountList" :key="pb.pk">
                   {{ pb.alias_name }}
                 </option>
               </CFormSelect>
