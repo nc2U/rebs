@@ -558,6 +558,7 @@ class ProjectCashBookDetail(generics.RetrieveUpdateDestroyAPIView):
 class PaymentList(ProjectCashBookList):
     name = 'payment-list'
     serializer_class = PaymentSerializer
+    pagination_class = PageNumberPaginationTen
 
     def get_queryset(self):
         return ProjectCashBook.objects.filter(project_account_d2__in=(1, 2), is_release=False)
