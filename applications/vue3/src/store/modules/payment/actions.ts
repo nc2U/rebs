@@ -4,7 +4,6 @@ import {
   FETCH_PAY_ORDER_LIST,
   FETCH_DWON_PAYMENT,
   FETCH_PAYMENT_LIST,
-  FETCH_PAYMENT,
   FETCH_PAYMENT_SUM_LIST,
   FETCH_CONTRACT_NUM_LIST,
 } from '@/store/modules/payment/mutations-types'
@@ -215,6 +214,7 @@ const actions = {
     if (payload.pay_account) url += `&bank_account=${payload.pay_account}`
     if (payload.contract) url += `&contract=${payload.contract}`
     if (payload.no_contract) url += `&no_contract=${payload.no_contract}`
+    if (payload.ordering) url += `&ordering=${payload.ordering}`
     if (payload.search) url += `&search=${payload.search}`
     const page = payload.page ? payload.page : 1
     if (payload.page) url += `&page=${page}`
@@ -222,15 +222,6 @@ const actions = {
       .get(url)
       .then(res => {
         commit(FETCH_PAYMENT_LIST, res.data)
-      })
-      .catch(err => console.log(err.response.data))
-  },
-
-  fetchPayment: ({ commit }: any, pk: any) => {
-    api
-      .get(`/payment/${pk}/`)
-      .then(res => {
-        commit(FETCH_PAYMENT, res.data)
       })
       .catch(err => console.log(err.response.data))
   },
