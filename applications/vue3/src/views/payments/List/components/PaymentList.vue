@@ -42,7 +42,7 @@
   <CSmartPagination
     :activePage="1"
     :limit="8"
-    :pages="paymentPages(15)"
+    :pages="paymentPages(10)"
     class="mt-3"
     @active-page-change="pageSelect"
   />
