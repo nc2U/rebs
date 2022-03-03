@@ -18,7 +18,9 @@
           <PaymentList :contract="contract" :payment-list="paymentList" />
 
           <CAlert color="secondary" class="text-right">
-            <CButton type="button" color="primary">신규납부 등록</CButton>
+            <CButton type="button" color="primary" :disabled="!contract">
+              신규납부 등록
+            </CButton>
           </CAlert>
         </CCol>
         <CCol lg="5">
