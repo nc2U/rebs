@@ -54,29 +54,19 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { mapState } from 'vuex'
 
 export default defineComponent({
   name: 'PayList',
   components: {},
-  props: { contract: Object },
-  setup() {
-    return {}
-  },
-  data() {
-    return {
-      sample: '',
-    }
-  },
+  props: { contract: Object, paymentList: Array },
   computed: {
-    paymentSum() {
+    paymentSum(this: any) {
       return this.paymentList.length !== 0
         ? this.paymentList
             .map((p: any) => p.income)
             .reduce((x: any, y: any) => x + y)
         : 0
     },
-    ...mapState('payment', ['paymentList']),
   },
   methods: {},
 })

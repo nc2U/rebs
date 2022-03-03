@@ -1,13 +1,17 @@
 <template>
   <CTableDataCell class="text-center">
-    {{ order.extra_due_date || order.pay_due_date || '-' }}
+    {{ dueDate }}
   </CTableDataCell>
   <CTableDataCell class="text-center">{{ order.pay_name }}</CTableDataCell>
   <CTableDataCell>
-    {{ numFormat(commitment) }}
+    {{ numFormat(Math.ceil(commitment)) }}
   </CTableDataCell>
-  <CTableDataCell class="text-danger">24,150,000</CTableDataCell>
-  <CTableDataCell class="text-danger">-2,650,000</CTableDataCell>
+  <CTableDataCell :class="paidByOrder > 0 ? 'text-primary' : ''">
+    {{ numFormat(paidByOrder) }}
+  </CTableDataCell>
+  <CTableDataCell :class="calcClass">
+    {{ numFormat(calculated) }}
+  </CTableDataCell>
 </template>
 
 <script lang="ts">
@@ -23,16 +27,12 @@ export default defineComponent({
     price: Number,
     numDown: Number,
     numMid: Number,
-  },
-  setup() {
-    return {}
-  },
-  data() {
-    return {
-      sample: '',
-    }
+    paymentList: Array,
   },
   computed: {
+    dueDate(this: any) {
+      return this.order.extra_due_date || this.order.pay_due_date || '-'
+    },
     commitment(this: any) {
       const down = this.downPayList
         .filter((d: any) => d.order_group === this.contract.order_group.pk)
@@ -54,6 +54,21 @@ export default defineComponent({
       } else if (this.order.pay_sort === '3') {
         return balacePay // 잔금
       } else return 0
+    },
+    paidByOrder(this: any) {
+      const paid = this.paymentList
+        .filter((p: any) => p.installment_order === this.order.__str__)
+        .map((p: any) => p.income)
+      return paid.length === 0 ? 0 : paid.reduce((x: any, y: any) => x + y)
+    },
+    calculated(this: any) {
+      const today = this.dateFormat(new Date())
+      const duePay = this.commitment - this.paidByOrder
+      return this.dueDate !== '-' && this.dueDate <= today ? duePay : 0
+    },
+    calcClass() {
+      let calc = this.calculated > 0 ? 'text-primary' : 'text-danger'
+      return this.calculated === 0 ? '' : calc
     },
     ...mapState('payment', ['downPayList']),
   },

@@ -26,6 +26,7 @@
           :order="po"
           :num-down="numDown"
           :num-mid="numMid"
+          :payment-list="paymentList"
         />
       </CTableRow>
     </CTableBody>
@@ -37,7 +38,7 @@
         </CTableHeaderCell>
         <CTableHeaderCell></CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(thisPrice || 0) }}</CTableHeaderCell>
-        <CTableHeaderCell>실납부총액</CTableHeaderCell>
+        <CTableHeaderCell>{{ numFormat(paidTotal) }}</CTableHeaderCell>
         <CTableHeaderCell>현재까지미과오납</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
@@ -53,7 +54,7 @@ export default defineComponent({
   name: 'PayOrders',
   components: { Order },
 
-  props: { contract: Object },
+  props: { contract: Object, paymentList: Array },
   setup() {
     return {}
   },
@@ -73,7 +74,7 @@ export default defineComponent({
                   this.contract.keyunit.houseunit.floor_type,
               )
               .map((p: any) => p.price)[0]
-          : this.contract.unit_type.average_price
+          : Math.ceil(this.contract.unit_type.average_price / 10000) * 10000
       }
       return 0
     },
@@ -82,6 +83,16 @@ export default defineComponent({
     },
     numMid() {
       return this.payOrderList.filter((o: any) => o.pay_sort === '2').length
+    },
+    paidTotal(this: any) {
+      const paid = this.paymentList.map((p: any) => p.income)
+      return paid.length === 0
+        ? 0
+        : paid.reduce((x: number, y: number) => x + y)
+    },
+    calcTotal() {
+      const dueTotal = this.payOrderList
+      return 1
     },
     ...mapState('payment', ['payOrderList', 'priceList']),
   },
