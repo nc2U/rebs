@@ -80,7 +80,7 @@
         <CRow>
           <CCol md="6" class="mb-3">
             <DatePicker
-              v-model="form.from_date"
+              v-model="from_date"
               @keydown.enter="listFiltering(1)"
               v-maska="'####-##-##'"
               placeholder="계약일 (From)"
@@ -89,7 +89,7 @@
 
           <CCol md="6" class="mb-3">
             <DatePicker
-              v-model="form.to_date"
+              v-model="to_date"
               @keydown.enter="listFiltering(1)"
               v-maska="'####-##-##'"
               placeholder="계약일 (To)"
@@ -146,11 +146,11 @@ export default defineComponent({
         unit_type: '',
         building: '',
         registed: '',
-        from_date: '',
-        to_date: '',
         ordering: '-created_at',
         search: '',
       },
+      from_date: '',
+      to_date: '',
     }
   },
   computed: {
@@ -160,8 +160,8 @@ export default defineComponent({
       const c = this.form.unit_type === ''
       const d = this.form.building === ''
       const e = this.form.registed === ''
-      const f = this.form.from_date === ''
-      const g = this.form.to_date === ''
+      const f = this.from_date === ''
+      const g = this.to_date === ''
       const h = this.form.ordering === '-created_at'
       const i = this.form.search === ''
       const groupA = a && b && c && d && e
@@ -172,16 +172,23 @@ export default defineComponent({
     ...mapState('project', ['buildingList']),
     ...mapGetters('project', ['simpleTypes']),
   },
+  watch: {
+    from_date() {
+      this.listFiltering(1)
+    },
+    to_date() {
+      this.listFiltering(1)
+    },
+  },
   methods: {
     listFiltering(this: any, page = 1) {
       this.$nextTick(() => {
-        this.form.from_date = this.form.from_date
-          ? this.dateFormat(this.form.from_date)
-          : ''
-        this.form.to_date = this.form.to_date
-          ? this.dateFormat(this.form.to_date)
-          : ''
-        this.$emit('cont-filtering', { ...{ page }, ...this.form })
+        const from_date = this.from_date ? this.dateFormat(this.from_date) : ''
+        const to_date = this.to_date ? this.dateFormat(this.to_date) : ''
+        this.$emit('cont-filtering', {
+          ...{ page, from_date, to_date },
+          ...this.form,
+        })
       })
     },
     resetForm() {
@@ -190,8 +197,8 @@ export default defineComponent({
       this.form.unit_type = ''
       this.form.building = ''
       this.form.registed = ''
-      this.form.from_date = ''
-      this.form.to_date = ''
+      this.from_date = ''
+      this.to_date = ''
       this.form.ordering = '-created_at'
       this.form.search = ''
       this.listFiltering(1)
