@@ -316,8 +316,14 @@ class ProjectCashBookSerializer(serializers.ModelSerializer):
                   'evidence_desc', 'note', 'deal_date', 'user', 'created_at', 'updated_at')
 
 
+class SimpleOrderGroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrderGroup
+        fields = ('pk', 'sort', 'order_group_name')
+
+
 class SimpleContractSerializer(serializers.ModelSerializer):
-    order_group = serializers.SlugRelatedField(queryset=OrderGroup.objects.all(), slug_field='order_group_name')
+    order_group = SimpleOrderGroupSerializer()
     unit_type = SimpleUnitTypeSerializer()
     contractor = serializers.SlugRelatedField(queryset=Contractor.objects.all(), slug_field='name')
 
@@ -387,12 +393,6 @@ class OrderGroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderGroup
         fields = ('pk', 'project', 'order_number', 'sort', 'sort_desc', 'order_group_name')
-
-
-class SimpleOrderGroupSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = OrderGroup
-        fields = ('pk', 'order_group_name')
 
 
 class HouseUnitInKeyUnitSerializer(serializers.ModelSerializer):
