@@ -122,7 +122,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import DatePicker from '@/components/DatePicker/index.vue'
-import { mapGetters, mapState } from 'vuex'
+import { mapState } from 'vuex'
 
 export default defineComponent({
   name: 'PayForm',
@@ -187,8 +187,8 @@ export default defineComponent({
 
         this.validated = true
       } else {
-        const deal_date = this.dateFormat(this.form.deal_date)
-        this.$emit('on-submit', { ...{ deal_date }, ...this.form })
+        this.form.deal_date = this.dateFormat(this.form.deal_date)
+        this.$emit('on-submit', this.form)
       }
     },
   },

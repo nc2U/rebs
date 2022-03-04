@@ -120,17 +120,19 @@ export default defineComponent({
       this.FETCH_PAYMENT_ID(Number(pk))
     },
     onCreate(payload: any) {
-      const project = this.project.pk
+      payload.project = this.project.pk
       console.log(payload)
-      alert(`create --> ${project}`)
+      alert(`create --> ${payload.project}`)
     },
     onUpdate(payload: any) {
-      const project = this.project.pk
+      payload.project = this.project.pk
       console.log(payload)
-      alert(`update --> ${project}`)
+      alert(`update --> ${payload.project}`)
     },
     onDelete(pk: number) {
-      alert(`delete - ${pk}`)
+      const project = this.project.pk
+      const contract = this.contract.pk
+      this.deletePrCashBook({ project, pk, contract })
     },
     ...mapActions('project', ['fetchTypeList']),
     ...mapActions('payment', [
@@ -140,7 +142,12 @@ export default defineComponent({
       'fetchPriceList',
     ]),
     ...mapMutations('payment', ['FETCH_PAYMENT_ID']),
-    ...mapActions('proCash', ['fetchProBankAccList']),
+    ...mapActions('proCash', [
+      'fetchProBankAccList',
+      'createPrCashBook',
+      'updatePrCashBook',
+      'deletePrCashBook',
+    ]),
     ...mapActions('contract', ['fetchContractList', 'fetchContract']),
   },
 })

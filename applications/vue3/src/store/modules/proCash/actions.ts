@@ -8,10 +8,10 @@ import {
   FETCH_P_BANK_ACCOUNT_LIST,
   FETCH_P_CASHBOOK_LIST,
 } from '@/store/modules/proCash/mutations-types'
-import {message} from '@/utils/helper'
+import { message } from '@/utils/helper'
 
 const actions = {
-  fetchAccSortList: ({commit}: any) => {
+  fetchAccSortList: ({ commit }: any) => {
     api
       .get(`/account-sort/`)
       .then(res => {
@@ -19,8 +19,8 @@ const actions = {
       })
       .catch(err => console.log(err.response.data))
   },
-  
-  fetchProAllAccD1List: ({commit}: any) => {
+
+  fetchProAllAccD1List: ({ commit }: any) => {
     api
       .get(`/project-account-depth1/`)
       .then(res => {
@@ -28,8 +28,8 @@ const actions = {
       })
       .catch(err => console.log(err.response.data))
   },
-  
-  fetchProAllAccD2List: ({commit}: any) => {
+
+  fetchProAllAccD2List: ({ commit }: any) => {
     api
       .get(`/project-account-depth2/`)
       .then(res => {
@@ -37,8 +37,8 @@ const actions = {
       })
       .catch(err => console.log(err.response.data))
   },
-  
-  fetchProFormAccD1List: ({commit}: any, sort?: string) => {
+
+  fetchProFormAccD1List: ({ commit }: any, sort?: string) => {
     const url = sort
       ? `/project-account-depth1/?sort=${sort}`
       : `/project-account-depth1/`
@@ -49,8 +49,8 @@ const actions = {
       })
       .catch(err => console.log(err.response.data))
   },
-  
-  fetchProFormAccD2List: ({commit}: any, payload?: any) => {
+
+  fetchProFormAccD2List: ({ commit }: any, payload?: any) => {
     const d1 = payload && payload.d1 ? payload.d1 : ''
     const sort = payload && payload.sort ? payload.sort : ''
     const url = `/project-account-depth2/?d1=${d1}&d1__sort=${sort}`
@@ -61,8 +61,8 @@ const actions = {
       })
       .catch(err => console.log(err.response.data))
   },
-  
-  fetchProBankAccList: ({commit}: any, project: any) => {
+
+  fetchProBankAccList: ({ commit }: any, project: any) => {
     api
       .get(`/project-bank-account/?project=${project}`)
       .then(res => {
@@ -70,8 +70,8 @@ const actions = {
       })
       .catch(err => console.log(err.response.data))
   },
-  
-  createProBankAcc: ({dispatch}: any, payload: any) => {
+
+  createProBankAcc: ({ dispatch }: any, payload: any) => {
     api
       .post(`/project-bank-account/`, payload)
       .then(res => {
@@ -80,9 +80,9 @@ const actions = {
       })
       .catch(err => console.log(err.response.data))
   },
-  
-  updateProBankAcc: ({dispatch}: any, payload: any) => {
-    const {pk, ...formData} = payload
+
+  updateProBankAcc: ({ dispatch }: any, payload: any) => {
+    const { pk, ...formData } = payload
     api
       .put(`/project-bank-account/${pk}/`, formData)
       .then(res => {
@@ -91,9 +91,9 @@ const actions = {
       })
       .catch(err => console.log(err.response.data))
   },
-  
-  deleteProBankAcc: ({dispatch}: any, payload: any) => {
-    const {pk, project} = payload
+
+  deleteProBankAcc: ({ dispatch }: any, payload: any) => {
+    const { pk, project } = payload
     api
       .delete(`/project-bank-account/${pk}/`)
       .then(() => {
@@ -102,9 +102,9 @@ const actions = {
       })
       .catch(err => console.log(err.response.data))
   },
-  
-  fetchProjectCashList: ({commit}: any, payload: any) => {
-    const {project} = payload
+
+  fetchProjectCashList: ({ commit }: any, payload: any) => {
+    const { project } = payload
     let url = `/project-cashbook/?project=${project}`
     if (payload.from_date) url += `&from_deal_date=${payload.from_date}`
     if (payload.to_date) url += `&to_deal_date=${payload.to_date}`
@@ -122,34 +122,49 @@ const actions = {
       })
       .catch(err => console.log(err.response.data))
   },
-  
-  createPrCashBook: ({dispatch}: any, payload: any) => {
+
+  createPrCashBook: ({ dispatch }: any, payload: any) => {
     api
       .post(`/project-cashbook/`, payload)
       .then(res => {
-        dispatch('fetchProjectCashList', {project: res.data.project})
+        dispatch('fetchProjectCashList', { project: res.data.project })
         message()
       })
       .catch(err => console.log(err.response.data))
   },
-  
-  updatePrCashBook: ({dispatch}: any, payload: any) => {
-    const {pk, page, ...formData} = payload
+
+  updatePrCashBook: ({ dispatch }: any, payload: any) => {
+    const { pk, ...formData } = payload
+    const page = payload.page ? payload.page : 1
     api
       .put(`/project-cashbook/${pk}/`, formData)
       .then(res => {
-        dispatch('fetchProjectCashList', {project: res.data.project, page})
+        dispatch('fetchProjectCashList', { project: res.data.project, page })
+        dispatch(
+          'payment/fetchPaymentList',
+          {
+            project: res.data.project,
+            contract: res.data.contract,
+            ordering: 'deal_date',
+          },
+          { root: true },
+        )
         message()
       })
       .catch(err => console.log(err.response.data))
   },
-  
-  deletePrCashBook: ({dispatch}: any, payload: any) => {
-    const {pk, page, project} = payload
+
+  deletePrCashBook: ({ dispatch }: any, payload: any) => {
+    const { pk, project, page, contract, ordering } = payload
     api
       .delete(`/project-cashbook/${pk}/`)
       .then(() => {
-        dispatch('fetchProjectCashList', {project, page})
+        dispatch('fetchProjectCashList', { project, page })
+        dispatch(
+          'payment/fetchPaymentList',
+          { project, contract, ordering: 'deal_date' },
+          { root: true },
+        )
         message('danger', '알림!', '해당 오브젝트가 삭제되었습니다.')
       })
       .catch(err => console.log(err.response.data))

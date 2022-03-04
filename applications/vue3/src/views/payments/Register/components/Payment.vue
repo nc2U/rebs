@@ -90,7 +90,7 @@ export default defineComponent({
         else
           this.$refs.alertModal.callModal(
             null,
-            '거래일로부터 90일이 경과한 건은 수정할 수 없습니다. 관리자에게 문의바랍니다.',
+            '수납일로부터 90일이 경과한 건은 수정할 수 없습니다. 관리자에게 문의바랍니다.',
           )
       else this.$refs.alertModal.callModal()
     },
@@ -104,7 +104,7 @@ export default defineComponent({
         else
           this.$refs.alertModal.callModal(
             null,
-            '거래일로부터 90일이 경과한 건은 삭제할 수 없습니다. 관리자에게 문의바랍니다.',
+            '수납일로부터 90일이 경과한 건은 삭제할 수 없습니다. 관리자에게 문의바랍니다.',
           )
       else this.$refs.alertModal.callModal()
     },
