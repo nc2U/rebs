@@ -128,6 +128,15 @@ const actions = {
       .post(`/project-cashbook/`, payload)
       .then(res => {
         dispatch('fetchProjectCashList', { project: res.data.project })
+        dispatch(
+          'payment/fetchPaymentList',
+          {
+            project: res.data.project,
+            contract: res.data.contract,
+            ordering: 'deal_date',
+          },
+          { root: true },
+        )
         message()
       })
       .catch(err => console.log(err.response.data))

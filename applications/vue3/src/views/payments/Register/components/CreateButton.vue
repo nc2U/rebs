@@ -4,7 +4,7 @@
       type="button"
       color="primary"
       @click="showDetail"
-      :disabled="!contract"
+      :disabled="btnActive"
     >
       신규납부 등록
     </CButton>
@@ -17,8 +17,8 @@
     </template>
     <template v-slot:default>
       <PaymentForm
+        :contract="contract"
         @on-submit="createConfirm"
-        @on-delete="deleteConfirm"
         @close="$refs.createFormModal.visible = false"
       />
     </template>
@@ -40,6 +40,9 @@ export default defineComponent({
       return (
         this.superAuth || (this.staffAuth && this.staffAuth.payment === '2')
       )
+    },
+    btnActive() {
+      return !this.contract
     },
     ...mapGetters('accounts', ['staffAuth', 'superAuth']),
   },

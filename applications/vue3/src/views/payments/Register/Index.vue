@@ -121,13 +121,11 @@ export default defineComponent({
     },
     onCreate(payload: any) {
       payload.project = this.project.pk
-      console.log(payload)
-      alert(`create --> ${payload.project}`)
+      this.createPrCashBook(payload)
     },
     onUpdate(payload: any) {
       payload.project = this.project.pk
-      console.log(payload)
-      alert(`update --> ${payload.project}`)
+      this.updatePrCashBook(payload)
     },
     onDelete(pk: number) {
       const project = this.project.pk

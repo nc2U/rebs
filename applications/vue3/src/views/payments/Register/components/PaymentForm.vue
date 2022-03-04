@@ -162,6 +162,10 @@ export default defineComponent({
       this.form.note = this.payment.note
       this.form.deal_date = new Date(this.payment.deal_date)
     }
+    this.form.project_account_d1 = this.contract.order_group.sort
+    this.form.project_account_d2 = this.contract.order_group.sort
+    this.form.contract = this.contract.pk
+    this.form.content = `${this.contract.serial_number}[${this.contract.contractor.name}] 대금납부`
   },
   computed: {
     formsCheck() {
@@ -181,14 +185,6 @@ export default defineComponent({
     },
     ...mapState('payment', ['payOrderList']),
     ...mapState('proCash', ['proBankAccountList']),
-  },
-  watch: {
-    contract(newVal) {
-      this.form.project_account_d1 = newVal.order_group.sort
-      this.form.project_account_d2 = newVal.order_group.sort
-      this.form.contract = newVal.pk
-      this.form.content = `${newVal.serial_number}[${newVal.constructor}] 대금납부`
-    },
   },
   methods: {
     onSubmit(this: any, event: any) {

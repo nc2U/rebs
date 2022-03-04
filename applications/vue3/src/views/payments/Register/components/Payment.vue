@@ -26,6 +26,7 @@
     </template>
     <template v-slot:default>
       <PaymentForm
+        :contract="contract"
         @on-submit="updateConfirm"
         @on-delete="deleteConfirm"
         @close="$refs.updateFormModal.visible = false"
@@ -62,7 +63,7 @@ import { mapGetters, mapState } from 'vuex'
 export default defineComponent({
   name: 'Payment',
   components: { FormModal, PaymentForm, ConfirmModal, AlertModal },
-  props: { payment: Object },
+  props: { payment: Object, contract: Object },
   mounted(this: any) {
     if (this.paymentId === this.payment.pk) {
       this.showDetail()

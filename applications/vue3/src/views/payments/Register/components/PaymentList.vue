@@ -23,6 +23,7 @@
     <CTableBody v-if="contract">
       <Payment
         v-for="pay in paymentList"
+        :contract="contract"
         :payment="pay"
         :key="pay.pk"
         @on-update="onUpdate"
