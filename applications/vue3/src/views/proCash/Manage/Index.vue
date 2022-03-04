@@ -44,6 +44,7 @@ export default defineComponent({
   data() {
     return {
       page: 1,
+      search: '',
     }
   },
   created() {
@@ -78,6 +79,7 @@ export default defineComponent({
       const project = this.project.pk
       const sort = payload.sort ? payload.sort : ''
       const d1 = payload.pro_acc_d1 ? payload.pro_acc_d1 : ''
+      this.search = payload.search
       this.fetchProFormAccD1List(sort)
       this.fetchProFormAccD2List({ d1, sort })
       this.fetchProjectCashList({ ...{ project }, ...payload })
@@ -96,7 +98,8 @@ export default defineComponent({
     },
     onUpdate(payload: any) {
       const page = this.page
-      this.updatePrCashBook({ ...{ page }, ...payload })
+      const search = this.search
+      this.updatePrCashBook({ ...{ page, search }, ...payload })
     },
     onDelete(payload: any) {
       const page = this.page

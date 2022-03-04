@@ -143,12 +143,16 @@ const actions = {
   },
 
   updatePrCashBook: ({ dispatch }: any, payload: any) => {
-    const { pk, ...formData } = payload
+    const { pk, search, ...formData } = payload
     const page = payload.page ? payload.page : 1
     api
       .put(`/project-cashbook/${pk}/`, formData)
       .then(res => {
-        dispatch('fetchProjectCashList', { project: res.data.project, page })
+        dispatch('fetchProjectCashList', {
+          project: res.data.project,
+          page,
+          search,
+        })
         dispatch(
           'payment/fetchPaymentList',
           {

@@ -164,11 +164,15 @@ const actions = {
   },
 
   updateCashBook: ({ dispatch }: any, payload: any) => {
-    const { pk, page, ...formData } = payload
+    const { pk, page, search, ...formData } = payload
     api
       .put(`/cashbook/${pk}/`, formData)
       .then(res => {
-        dispatch('fetchCashBookList', { company: res.data.company, page })
+        dispatch('fetchCashBookList', {
+          company: res.data.company,
+          page,
+          search,
+        })
         message()
       })
       .catch(err => console.log(err.response.data))
