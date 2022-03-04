@@ -332,10 +332,22 @@ class SimpleContractSerializer(serializers.ModelSerializer):
         fields = ('pk', 'order_group', 'unit_type', 'serial_number', 'contractor')
 
 
+class SimpleInstallmentOrderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = InstallmentPaymentOrder
+        fields = ('pk', '__str__')
+
+
+class SimpleProjectBankAccountSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProjectBankAccount
+        fields = ('pk', 'alias_name')
+
+
 class PaymentSerializer(serializers.ModelSerializer):
     contract = SimpleContractSerializer()
-    installment_order = serializers.SlugField()
-    bank_account = serializers.SlugField()
+    installment_order = SimpleInstallmentOrderSerializer()
+    bank_account = SimpleProjectBankAccountSerializer()
 
     class Meta:
         model = ProjectCashBook
