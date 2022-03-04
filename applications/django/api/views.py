@@ -695,12 +695,9 @@ class ContractList(generics.ListCreateAPIView):
     serializer_class = ContractListSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
     filter_class = ContractFilter
-    search_fields = (
-        'serial_number', 'contractor__name', 'contractor__note',
-        'projectcashbook__content', 'projectcashbook__trader')
+    search_fields = ('serial_number', 'contractor__name', 'projectcashbook__trader')
     ordering_fields = (
-        'created_at', 'contractor__contract_date', 'serial_number',
-        'contractor__name', 'projectcashbook__trader')
+        'created_at', 'contractor__contract_date', 'serial_number', 'contractor__name')
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
