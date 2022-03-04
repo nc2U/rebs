@@ -80,6 +80,7 @@ export default defineComponent({
   created(this: any) {
     this.fetchTypeList(this.initProjId)
     this.fetchPayOrderList(this.initProjId)
+    this.fetchProBankAccList(this.initProjId)
     if (this.$route.query.contract) {
       this.$router.push({ name: '건별수납 관리' })
       this.getContract(this.$route.query.contract)
@@ -117,7 +118,7 @@ export default defineComponent({
       if (target !== '') {
         this.fetchTypeList(target)
         this.fetchPayOrderList(target)
-        this.proBankAccountList(target)
+        this.fetchProBankAccList(target)
       } else {
         this.$store.state.contract.contract = null
         this.$store.state.contract.contractList = []
@@ -156,7 +157,7 @@ export default defineComponent({
       'fetchPriceList',
     ]),
     ...mapMutations('payment', ['FETCH_PAYMENT_ID']),
-    ...mapActions('proCash', ['proBankAccountList']),
+    ...mapActions('proCash', ['fetchProBankAccList']),
     ...mapActions('contract', ['fetchContractList', 'fetchContract']),
   },
 })
