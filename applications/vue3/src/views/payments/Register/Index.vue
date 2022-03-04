@@ -142,6 +142,12 @@ export default defineComponent({
     getPayment(this: any, pk: string) {
       this.FETCH_PAYMENT_ID(Number(pk))
     },
+    onCreate() {
+      const project = this.project.pk
+    },
+    onUpdate() {
+      const project = this.project.pk
+    },
     ...mapActions('project', ['fetchTypeList']),
     ...mapActions('payment', [
       'fetchPaymentList',

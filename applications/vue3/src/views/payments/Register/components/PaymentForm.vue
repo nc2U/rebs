@@ -131,14 +131,15 @@ export default defineComponent({
   data(this: any) {
     return {
       form: {
-        project: '',
-        sort: 1,
-        project_account_d1: '',
-        project_account_d2: '',
-        is_contract_payment: true,
-        contract: 1,
+        project: '', // hidden -> index에서 처리
+        sort: 1, // hidden -> always
+        project_account_d1: '', // hidden
+        project_account_d2: '', // hidden
+        is_contract_payment: true, // hidden -> always
+        contract: 1, // this.contract.pk, // hidden -> 예외 및 신규 매칭 시 코드 확인
+        content: '', //`${this.contract.serial_number}-${this.contract.contractor.name} 대금 수납`, // hidden
+
         installment_order: '',
-        content: '841012-1 공급대금 수납',
         trader: '',
         bank_account: '',
         income: null,
@@ -150,16 +151,9 @@ export default defineComponent({
   },
   created() {
     if (this.payment) {
-      this.form.project = this.payment.project
-      this.form.sort = this.payment.sort
-      this.form.project_account_d1 = this.payment.project_account_d1
-      this.form.project_account_d2 = this.payment.project_account_d2
-      this.form.is_contract_payment = this.payment.is_contract_payment
-      this.form.contract = this.payment.contract
-      this.form.installment_order = this.payment.installment_order
-      this.form.content = this.payment.content
+      this.form.installment_order = this.payment.installment_order // slug to id ?
       this.form.trader = this.payment.trader
-      this.form.bank_account = this.payment.bank_account
+      this.form.bank_account = this.payment.bank_account // slug to id ?
       this.form.income = this.payment.income
       this.form.note = this.payment.note
       this.form.deal_date = new Date(this.payment.deal_date)
