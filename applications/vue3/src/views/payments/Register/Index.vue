@@ -17,6 +17,7 @@
         <CCol lg="7">
           <PaymentList
             :contract="contract"
+            :payment-id="paymentId"
             :payment-list="paymentList"
             @on-update="onUpdate"
             @on-delete="onDelete"
@@ -56,18 +57,23 @@ export default defineComponent({
     CreateButton,
     OrdersBoard,
   },
+  data() {
+    return {
+      paymentId: null,
+    }
+  },
   created(this: any) {
-    this.fetchTypeList(this.initProjId)
-    this.fetchPayOrderList(this.initProjId)
-    this.fetchProBankAccList(this.initProjId)
     if (this.$route.query.contract) {
       this.$router.push({ name: '건별수납 관리' })
       this.getContract(this.$route.query.contract)
     }
     if (this.$route.query.payment) {
       this.$router.push({ name: '건별수납 관리' })
-      this.getPayment(this.$route.query.payment)
+      this.paymentId = this.$route.query.payment
     }
+    this.fetchTypeList(this.initProjId)
+    this.fetchPayOrderList(this.initProjId)
+    this.fetchProBankAccList(this.initProjId)
   },
   beforeRouteLeave(this: any) {
     this.$store.state.contract.contract = null
@@ -86,9 +92,15 @@ export default defineComponent({
         const unit_type = newVal.unit_type.pk
         this.fetchPriceList({ project, order_group, unit_type })
         this.fetchDownPayList({ project, order_group, unit_type })
+        this.fetchPaymentList({
+          project,
+          contract: newVal.pk,
+          ordering: 'deal_date',
+        })
       } else {
         this.$store.state.payment.priceList = []
         this.$store.state.payment.downPayList = []
+        this.$store.state.payment.paymentList = []
       }
     },
   },
@@ -112,12 +124,7 @@ export default defineComponent({
       this.fetchContractList({ ...{ project }, ...payload })
     },
     getContract(cont: number) {
-      const project = this.project.pk
       this.fetchContract(cont)
-      this.fetchPaymentList({ project, contract: cont, ordering: 'deal_date' })
-    },
-    getPayment(this: any, pk: string) {
-      this.FETCH_PAYMENT_ID(Number(pk))
     },
     onCreate(payload: any) {
       payload.project = this.project.pk

@@ -24,6 +24,7 @@
       <Payment
         v-for="pay in paymentList"
         :contract="contract"
+        :payment-id="paymentId"
         :payment="pay"
         :key="pay.pk"
         @on-update="onUpdate"
@@ -55,7 +56,7 @@ import Payment from '@/views/payments/Register/components/Payment.vue'
 export default defineComponent({
   name: 'PayList',
   components: { Payment },
-  props: { contract: Object, paymentList: Array },
+  props: { contract: Object, paymentList: Array, paymentId: String },
   computed: {
     paymentSum(this: any) {
       return this.paymentList.length !== 0

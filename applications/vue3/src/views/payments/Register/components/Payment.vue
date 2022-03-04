@@ -1,7 +1,7 @@
 <template>
   <CTableRow
     class="text-center"
-    :color="payment.pk === paymentId ? 'warning' : ''"
+    :color="payment.pk.toString() === paymentId ? 'warning' : ''"
   >
     <CTableDataCell>{{ payment.deal_date }}</CTableDataCell>
     <CTableDataCell>{{ payment.installment_order.__str__ }}</CTableDataCell>
@@ -58,12 +58,12 @@ import FormModal from '@/components/Modals/FormModal.vue'
 import PaymentForm from '@/views/payments/Register/components/PaymentForm.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
-import { mapGetters, mapState } from 'vuex'
+import { mapGetters } from 'vuex'
 
 export default defineComponent({
   name: 'Payment',
   components: { FormModal, PaymentForm, ConfirmModal, AlertModal },
-  props: { payment: Object, contract: Object },
+  props: { payment: Object, paymentId: String, contract: Object },
   mounted(this: any) {
     if (this.paymentId === this.payment.pk) {
       this.showDetail()
@@ -78,7 +78,6 @@ export default defineComponent({
     allowedPeriod(this: any) {
       return this.superAuth || this.diffDate(this.payment.deal_date) <= 90
     },
-    ...mapState('payment', ['paymentId']),
     ...mapGetters('accounts', ['staffAuth', 'superAuth']),
   },
   methods: {

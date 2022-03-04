@@ -3,7 +3,6 @@ import {
   FETCH_PAY_ORDER_LIST,
   FETCH_DWON_PAYMENT,
   FETCH_PAYMENT_LIST,
-  FETCH_PAYMENT_ID,
   FETCH_PAYMENT_SUM_LIST,
   FETCH_CONTRACT_NUM_LIST,
 } from '@/store/modules/payment/mutations-types'
@@ -23,9 +22,6 @@ const mutations = {
     state.paymentList = payload.results
     state.paymentsCount = payload.count
   },
-
-  [FETCH_PAYMENT_ID]: (state: PaymentState, id: number) =>
-    (state.paymentId = id),
 
   [FETCH_PAYMENT_SUM_LIST]: (state: PaymentState, paload: any) =>
     (state.paySumList = paload.results),
