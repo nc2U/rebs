@@ -7,7 +7,7 @@
             <CInputGroup class="flex-nowrap">
               <CFormInput
                 v-model="form.search"
-                placeholder="일련번호, 계약자, 입금자, 적요, 비고"
+                placeholder="계약자, 비고, 계약 일련번호"
                 @keydown.enter="listFiltering(1)"
                 aria-label="Search"
                 aria-describedby="addon-wrapping"
@@ -107,7 +107,7 @@ export default defineComponent({
     pageInit(this: any) {
       this.form.search = ''
       this.textClass = 'text-medium-emphasis'
-      this.msg = '계약자, 입금자성명 또는 계약 일련변호를 입력하세요.'
+      this.msg = '계약자 관련정보 또는 계약 일련변호를 입력하세요.'
       this.$store.state.contract.contractList = []
     },
     removeContract(this: any) {

@@ -695,7 +695,7 @@ class ContractList(generics.ListCreateAPIView):
     serializer_class = ContractListSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
     filter_class = ContractFilter
-    search_fields = ('serial_number', 'contractor__name', 'projectcashbook__trader')
+    search_fields = ('serial_number', 'contractor__name', 'contractor__note')
     ordering_fields = (
         'created_at', 'contractor__contract_date', 'serial_number', 'contractor__name')
 
