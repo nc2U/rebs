@@ -5,7 +5,7 @@
     :color="payment.contract ? '' : 'warning'"
   >
     <CTableDataCell>{{ payment.deal_date }}</CTableDataCell>
-    <CTableDataCell>{{ payment.order_group }}</CTableDataCell>
+    <CTableDataCell>{{ payment.order_group.order_group_name }}</CTableDataCell>
     <CTableDataCell class="text-left">
       <CIcon
         v-if="payment.contract"
