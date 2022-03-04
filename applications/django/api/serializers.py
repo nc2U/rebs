@@ -339,7 +339,7 @@ class PaymentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProjectCashBook
-        fields = ('pk', 'deal_date', 'contract', 'income', 'installment_order', 'bank_account', 'trader')
+        fields = ('pk', 'deal_date', 'contract', 'income', 'installment_order', 'bank_account', 'trader', 'note')
 
 
 class PaymentSummarySerializer(serializers.ModelSerializer):
