@@ -19,13 +19,14 @@
     <CTableDataCell>{{ payment.serial_number }}</CTableDataCell>
     <CTableDataCell>
       <router-link
+        @click="contMatching"
         :to="
           payment.contract
             ? {
                 name: '건별수납 관리',
                 query: { contract: payment.contract.pk, payment: payment.pk },
               }
-            : { name: '건별수납 관리', query: { payment: payment.pk } }
+            : ''
         "
       >
         {{ payment.contract ? payment.contractor : '계약정보 확인' }}
@@ -33,16 +34,14 @@
     </CTableDataCell>
     <CTableDataCell class="text-right">
       <router-link
+        @click="contMatching"
         :to="
           payment.contract
             ? {
                 name: '건별수납 관리',
                 query: { contract: payment.contract.pk, payment: payment.pk },
               }
-            : {
-                name: '건별수납 관리',
-                query: { payment: payment.pk },
-              }
+            : ''
         "
       >
         {{ numFormat(payment.income) }}
@@ -59,18 +58,15 @@
     </CTableDataCell>
   </CTableRow>
 
-  <ConfirmModal ref="confirmModal">
+  <FormModal size="lg" ref="contMatchingModal">
     <template v-slot:header>
       <CIcon name="cil-italic" />
-      납입대금 건별 수정
+      수납 건별 계약 건 매칭
     </template>
-    <template v-slot:default>
-      해당 납입대금 정보 수정 등록을 진행하시겠습니까?
+    <template v-slot:default class="p-5">
+      <ContChoicer @close="$refs.contMatchingModal.visible = false" />
     </template>
-    <template v-slot:footer>
-      <CButton color="primary" @click="modalAction">저장</CButton>
-    </template>
-  </ConfirmModal>
+  </FormModal>
 
   <AlertModal ref="alertModal" />
 </template>
@@ -78,14 +74,15 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import commonMixin from '@/views/commonMixin'
-import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
+import FormModal from '@/components/Modals/FormModal.vue'
+import ContChoicer from '@/views/payments/List/components/ContChoicer.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 import { mapGetters } from 'vuex'
 
 export default defineComponent({
   name: 'Payment',
   mixins: [commonMixin],
-  components: { ConfirmModal, AlertModal },
+  components: { FormModal, ContChoicer, AlertModal },
   props: {
     payment: {
       type: Object,
@@ -96,6 +93,10 @@ export default defineComponent({
     ...mapGetters('accounts', ['staffAuth', 'superAuth']),
   },
   methods: {
+    contMatching(this: any) {
+      if (!this.payment.contract) this.$refs.contMatchingModal.callModal()
+      return
+    },
     updatePayment(this: any) {
       if (this.superAuth || (this.staffAuth && this.staffAuth.payment === '2'))
         this.$emit('on-update', { ...{ pk: this.payment.pk }, ...this.form })
