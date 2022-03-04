@@ -54,6 +54,10 @@ export default defineComponent({
     ...mapState('project', ['project']),
     ...mapGetters('accounts', ['initProjId']),
   },
+  beforeRouteLeave(this: any) {
+    this.$store.state.payment.paymentList = []
+    this.$store.state.payment.paymentsCount = 0
+  },
   methods: {
     onSelectAdd(this: any, target: any) {
       if (target !== '') {
