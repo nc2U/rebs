@@ -33,17 +33,35 @@
       />
     </template>
   </FormModal>
+
+  <ConfirmModal ref="delModal">
+    <template v-slot:header>
+      <CIcon name="cilWarning" />
+      건별 수납 정보 삭제
+    </template>
+    <template v-slot:default>
+      삭제한 데이터는 복구할 수 없습니다. 해당 건별 수납 정보를
+      삭제하시겠습니까?
+    </template>
+    <template v-slot:footer>
+      <CButton color="danger" @click="deleteObject">삭제</CButton>
+    </template>
+  </ConfirmModal>
+
+  <AlertModal ref="alertModal" />
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 import FormModal from '@/components/Modals/FormModal.vue'
 import PaymentForm from '@/views/payments/Register/components/PaymentForm.vue'
-import { mapState } from 'vuex'
+import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
+import AlertModal from '@/components/Modals/AlertModal.vue'
+import { mapGetters, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'Payment',
-  components: { FormModal, PaymentForm },
+  components: { FormModal, PaymentForm, ConfirmModal, AlertModal },
   props: { payment: Object },
   mounted(this: any) {
     if (this.paymentId === this.payment.pk) {
@@ -51,11 +69,48 @@ export default defineComponent({
     }
   },
   computed: {
+    pageManageAuth() {
+      return (
+        this.superAuth || (this.staffAuth && this.staffAuth.payment === '2')
+      )
+    },
+    allowedPeriod(this: any) {
+      return this.superAuth || this.diffDate(this.payment.deal_date) <= 90
+    },
     ...mapState('payment', ['paymentId']),
+    ...mapGetters('accounts', ['staffAuth', 'superAuth']),
   },
   methods: {
     showDetail(this: any) {
       this.$refs.updateFormModal.callModal()
+    },
+    updateConfirm(this: any, payload: any) {
+      if (this.pageManageAuth)
+        if (this.allowedPeriod) this.updateObject(payload)
+        else
+          this.$refs.alertModal.callModal(
+            null,
+            '거래일로부터 90일이 경과한 건은 수정할 수 없습니다. 관리자에게 문의바랍니다.',
+          )
+      else this.$refs.alertModal.callModal()
+    },
+    updateObject(this: any, payload: any) {
+      this.$emit('on-update', { ...{ pk: this.payment.pk }, ...payload })
+      this.$refs.updateFormModal.visible = false
+    },
+    deleteConfirm(this: any) {
+      if (this.pageManageAuth)
+        if (this.allowedPeriod) this.$refs.delModal.callModal()
+        else
+          this.$refs.alertModal.callModal(
+            null,
+            '거래일로부터 90일이 경과한 건은 삭제할 수 없습니다. 관리자에게 문의바랍니다.',
+          )
+      else this.$refs.alertModal.callModal()
+    },
+    deleteObject(this: any) {
+      this.$emit('on-delete', this.payment.pk)
+      this.$refs.delModal.visible = false
     },
   },
 })

@@ -15,18 +15,14 @@
       />
       <CRow>
         <CCol lg="7">
-          <PaymentList :contract="contract" :payment-list="paymentList" />
+          <PaymentList
+            :contract="contract"
+            :payment-list="paymentList"
+            @on-update="onUpdate"
+            @on-delete="onDelete"
+          />
 
-          <CAlert color="secondary" class="text-right">
-            <CButton
-              type="button"
-              color="primary"
-              @click="showDetail"
-              :disabled="!contract"
-            >
-              신규납부 등록
-            </CButton>
-          </CAlert>
+          <CreateButton :contract="contract" @on-create="onCreate" />
         </CCol>
         <CCol lg="5">
           <OrdersBoard :contract="contract" :payment-list="paymentList" />
@@ -36,21 +32,6 @@
 
     <CCardFooter>&nbsp;</CCardFooter>
   </ContentBody>
-
-  <FormModal size="lg" ref="updateFormModal">
-    <template v-slot:header>
-      <CIcon name="cil-italic" />
-      건별 수납 관리 [신규 납부등록]
-    </template>
-    <template v-slot:default>
-      <PaymentForm
-        @on-submit="updateConfirm"
-        @on-delete="deleteConfirm"
-        @close="$refs.updateFormModal.visible = false"
-        :payment="payment"
-      />
-    </template>
-  </FormModal>
 </template>
 
 <script lang="ts">
@@ -61,8 +42,7 @@ import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ContChoicer from '@/views/payments/Register/components/ContChoicer.vue'
 import PaymentList from '@/views/payments/Register/components/PaymentList.vue'
 import OrdersBoard from '@/views/payments/Register/components/OrdersBoard.vue'
-import FormModal from '@/components/Modals/FormModal.vue'
-import PaymentForm from '@/views/payments/Register/components/PaymentForm.vue'
+import CreateButton from '@/views/payments/Register/components/CreateButton.vue'
 import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
 
 export default defineComponent({
@@ -73,9 +53,8 @@ export default defineComponent({
     ContentBody,
     ContChoicer,
     PaymentList,
+    CreateButton,
     OrdersBoard,
-    FormModal,
-    PaymentForm,
   },
   created(this: any) {
     this.fetchTypeList(this.initProjId)
@@ -128,9 +107,6 @@ export default defineComponent({
         this.$store.state.proCash.proBankAccountList = []
       }
     },
-    showDetail(this: any) {
-      this.$refs.updateFormModal.callModal()
-    },
     onContFiltering(payload: any) {
       const project = this.project.pk
       this.fetchContractList({ ...{ project }, ...payload })
@@ -143,11 +119,18 @@ export default defineComponent({
     getPayment(this: any, pk: string) {
       this.FETCH_PAYMENT_ID(Number(pk))
     },
-    onCreate() {
+    onCreate(payload: any) {
       const project = this.project.pk
+      console.log(payload)
+      alert(`create --> ${project}`)
     },
-    onUpdate() {
+    onUpdate(payload: any) {
       const project = this.project.pk
+      console.log(payload)
+      alert(`update --> ${project}`)
+    },
+    onDelete(pk: number) {
+      alert(`delete - ${pk}`)
     },
     ...mapActions('project', ['fetchTypeList']),
     ...mapActions('payment', [

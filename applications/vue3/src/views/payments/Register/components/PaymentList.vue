@@ -21,7 +21,13 @@
     </CTableHead>
 
     <CTableBody v-if="contract">
-      <Payment v-for="pay in paymentList" :payment="pay" :key="pay.pk" />
+      <Payment
+        v-for="pay in paymentList"
+        :payment="pay"
+        :key="pay.pk"
+        @on-update="onUpdate"
+        @on-delete="onDelete"
+      />
     </CTableBody>
 
     <CTableHead>
@@ -56,6 +62,14 @@ export default defineComponent({
             .map((p: any) => p.income)
             .reduce((x: any, y: any) => x + y)
         : 0
+    },
+  },
+  methods: {
+    onUpdate(payload: any) {
+      this.$emit('on-update', payload)
+    },
+    onDelete(pk: number) {
+      this.$emit('on-delete', pk)
     },
   },
 })

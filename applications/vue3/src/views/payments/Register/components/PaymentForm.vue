@@ -122,7 +122,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import DatePicker from '@/components/DatePicker/index.vue'
-import { mapState } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'PayForm',
