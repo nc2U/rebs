@@ -65,7 +65,7 @@ export default defineComponent({
   components: { FormModal, PaymentForm, ConfirmModal, AlertModal },
   props: { payment: Object, paymentId: String, contract: Object },
   mounted(this: any) {
-    if (this.paymentId === this.payment.pk) {
+    if (this.paymentId === this.payment.pk.toString()) {
       this.showDetail()
     }
   },
