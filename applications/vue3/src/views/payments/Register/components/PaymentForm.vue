@@ -28,7 +28,7 @@
             <CCol sm="8">
               <CFormSelect v-model="form.installment_order" required>
                 <option value="">---------</option>
-                <option v-for="po in payOrderList" :key="po.pk">
+                <option v-for="po in payOrderList" :value="po.pk" :key="po.pk">
                   {{ po.__str__ }}
                 </option>
               </CFormSelect>
@@ -57,7 +57,11 @@
             <CCol sm="8">
               <CFormSelect v-model="form.bank_account" required>
                 <option value="">---------</option>
-                <option v-for="pb in proBankAccountList" :key="pb.pk">
+                <option
+                  v-for="pb in proBankAccountList"
+                  :value="pb.pk"
+                  :key="pb.pk"
+                >
                   {{ pb.alias_name }}
                 </option>
               </CFormSelect>
@@ -136,8 +140,8 @@ export default defineComponent({
         project_account_d1: '', // hidden
         project_account_d2: '', // hidden
         is_contract_payment: true, // hidden -> always
-        contract: 1, // this.contract.pk, // hidden -> 예외 및 신규 매칭 시 코드 확인
-        content: '', //`${this.contract.serial_number}-${this.contract.contractor.name} 대금 수납`, // hidden
+        contract: null, //  hidden -> 예외 및 신규 매칭 시 코드 확인
+        content: '', // hidden
 
         installment_order: '',
         trader: '',
@@ -149,11 +153,11 @@ export default defineComponent({
       validated: false,
     }
   },
-  created() {
+  mounted(this: any) {
     if (this.payment) {
-      this.form.installment_order = this.payment.installment_order // slug to id ?
+      this.form.installment_order = this.payment.installment_order.pk
       this.form.trader = this.payment.trader
-      this.form.bank_account = this.payment.bank_account // slug to id ?
+      this.form.bank_account = this.payment.bank_account.pk
       this.form.income = this.payment.income
       this.form.note = this.payment.note
       this.form.deal_date = new Date(this.payment.deal_date)
@@ -162,21 +166,29 @@ export default defineComponent({
   computed: {
     formsCheck() {
       if (this.payment) {
-        const a = this.form.project === this.payment.project
-        const b = this.form.content === this.payment.content
-        const c = this.form.trader === this.payment.trader
-        const d = this.form.bank_account === this.payment.bank_account
-        const e = this.form.income === this.payment.income
-        const f = this.form.note === this.payment.note
-        const g =
+        const a =
+          this.form.installment_order === this.payment.installment_order.pk
+        const b = this.form.trader === this.payment.trader
+        const c = this.form.bank_account === this.payment.bank_account.pk
+        const d = this.form.income === this.payment.income
+        const e = this.form.note === this.payment.note
+        const f =
           this.form.deal_date.toString() ===
           new Date(this.payment.deal_date).toString()
 
-        return a && b && c && d && e && f && g
+        return a && b && c && d && e && f
       } else return false
     },
     ...mapState('payment', ['payOrderList']),
     ...mapState('proCash', ['proBankAccountList']),
+  },
+  watch: {
+    contract(newVal) {
+      this.form.project_account_d1 = newVal.order_group.sort
+      this.form.project_account_d2 = newVal.order_group.sort
+      this.form.contract = newVal.pk
+      this.form.content = `${newVal.serial_number}[${newVal.constructor}] 대금납부`
+    },
   },
   methods: {
     onSubmit(this: any, event: any) {
@@ -188,7 +200,10 @@ export default defineComponent({
         this.validated = true
       } else {
         this.form.deal_date = this.dateFormat(this.form.deal_date)
-        this.$emit('on-submit', this.form)
+        const payload = this.payment
+          ? { ...{ pk: this.payment.pk }, ...this.form }
+          : this.form
+        this.$emit('on-submit', payload)
       }
     },
   },

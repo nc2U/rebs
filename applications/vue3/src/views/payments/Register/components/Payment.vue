@@ -4,13 +4,13 @@
     :color="payment.pk === paymentId ? 'warning' : ''"
   >
     <CTableDataCell>{{ payment.deal_date }}</CTableDataCell>
-    <CTableDataCell>{{ payment.installment_order }}</CTableDataCell>
+    <CTableDataCell>{{ payment.installment_order.__str__ }}</CTableDataCell>
     <CTableDataCell class="text-right">
       <router-link to="" @click="showDetail">
         {{ numFormat(payment.income) }}
       </router-link>
     </CTableDataCell>
-    <CTableDataCell>{{ payment.bank_account }}</CTableDataCell>
+    <CTableDataCell>{{ payment.bank_account.alias_name }}</CTableDataCell>
     <CTableDataCell>{{ payment.trader }}</CTableDataCell>
     <CTableDataCell>
       <CButton type="button" color="info" size="sm" @click="showDetail">
