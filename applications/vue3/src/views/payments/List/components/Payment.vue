@@ -5,7 +5,7 @@
     :color="payment.contract ? '' : 'warning'"
   >
     <CTableDataCell>{{ payment.deal_date }}</CTableDataCell>
-    <CTableDataCell>{{ payment.order_group.order_group_name }}</CTableDataCell>
+    <CTableDataCell>{{ payment.order_group }}</CTableDataCell>
     <CTableDataCell class="text-left">
       <CIcon
         v-if="payment.contract"
@@ -48,7 +48,9 @@
         {{ numFormat(payment.income) }}
       </router-link>
     </CTableDataCell>
-    <CTableDataCell>{{ payment.installment_order }}</CTableDataCell>
+    <CTableDataCell>
+      {{ payment.installment_order }}
+    </CTableDataCell>
     <CTableDataCell>{{ payment.bank_account }}</CTableDataCell>
     <CTableDataCell>{{ payment.trader }}</CTableDataCell>
     <CTableDataCell>
