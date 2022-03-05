@@ -89,11 +89,11 @@ export default defineComponent({
       this.$refs.listControl.listFiltering(page)
     },
     listFiltering(payload: any) {
+      this.dataFilter = payload
       const company = this.company.pk
       const sort = payload.sort ? payload.sort : ''
       const d1 = payload.account_d1 ? payload.account_d1 : ''
       const d2 = payload.account_d2 ? payload.account_d2 : ''
-      this.dataFilter.search = payload.search
       this.fetchFormAccD1List({ sort })
       this.fetchFormAccD2List({ sort, d1 })
       this.fetchFormAccD3List({ sort, d1, d2 })
