@@ -33,7 +33,7 @@
               color="dark"
               v-for="cont in contractIndex"
               :key="cont.pk"
-              @click="contMatching(cont.pk)"
+              @click="contMatching(cont)"
               variant="outline"
               size="sm"
             >
@@ -51,7 +51,8 @@
         v-if="contractIndex.length !== 0"
         class="pt-0 pb-0"
       >
-        해당 수납 건을 매칭 등록할 계약 건을 클릭하여 주십시요.
+        상기 계약 건 중 아래 수납 항목을 매칭 등록할 계약 건을 클릭하여
+        주십시요.
       </CAlert>
 
       <CAlert color="info">
@@ -68,23 +69,37 @@
     </CCol>
   </CRow>
 
+  <ConfirmModal ref="confirmModal">
+    <template v-slot:header>건별 수납 매칭</template>
+    <template v-slot:default>
+      해당 수납 항목을 이 계약 건 &lt;&lt;{{
+        `${cont.contractor}(${cont.serial_number})`
+      }}&gt;&gt; 에 등록하시겠습니까?
+    </template>
+    <template v-slot:footer>
+      <CButton color="primary" @click="modalAction">저장</CButton>
+    </template>
+  </ConfirmModal>
+
   <AlertModal ref="alertModal" />
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 import { mapActions, mapGetters, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'ContChoicer',
-  components: { AlertModal },
+  components: { ConfirmModal, AlertModal },
   props: { payment: Object },
   data() {
     return {
       form: {
         search: '',
       },
+      cont: {},
       msg: '',
       textClass: '',
     }
@@ -118,12 +133,19 @@ export default defineComponent({
     },
     contMatching(this: any, cont: number) {
       if (this.pageManageAuth) {
-        if (confirm(`해당 수납 건을 계약 건(${cont})에 등록하시겠습니까?`)) {
-          alert('ok registed!')
-          this.pageInit()
-          this.$emit('close')
-        }
+        this.cont = cont
+        this.$refs.confirmModal.callModal()
       } else this.$refs.alertModal.callModal()
+    },
+    modalAction(this: any) {
+      const pk = this.payment.pk
+      const is_contract_payment = true
+      const contract = this.cont.pk
+      const content = `${this.cont.serial_number}[${this.cont.contractor}] 대금납부`
+      console.log()
+      this.patchPrCashBook({ pk, is_contract_payment, contract, content })
+      this.pageInit()
+      this.$emit('close')
     },
     pageInit(this: any) {
       this.form.search = ''
@@ -132,6 +154,7 @@ export default defineComponent({
       this.$store.state.contract.contractList = []
     },
     ...mapActions('contract', ['fetchContractList']),
+    ...mapActions('proCash', ['patchPrCashBook']),
   },
 })
 </script>
