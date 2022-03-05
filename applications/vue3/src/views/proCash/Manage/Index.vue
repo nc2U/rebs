@@ -80,7 +80,7 @@ export default defineComponent({
       }
     },
     pageSelect(this: any, page: number) {
-      this.page = page
+      this.dataFilter.page = page
       this.$refs.listControl.listFiltering(page)
     },
     listFiltering(payload: any) {
