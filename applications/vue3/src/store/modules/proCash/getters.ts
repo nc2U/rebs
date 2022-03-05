@@ -38,6 +38,7 @@ const getters = {
           evidence_desc: p.evidence_desc,
           note: p.note,
           deal_date: p.deal_date,
+          contract: p.contract,
           is_separate: p.is_separate,
           separated: p.separated,
         }))

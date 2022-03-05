@@ -1,5 +1,5 @@
 <template>
-  <CTableRow class="text-center" v-if="proCash">
+  <CTableRow class="text-center" :color="rowColor" v-if="proCash">
     <CTableDataCell>{{ proCash.deal_date }}</CTableDataCell>
     <CTableDataCell :class="sortClass">
       {{ proCash.sort_desc }}
@@ -84,6 +84,12 @@ export default defineComponent({
     sortClass() {
       const cls = ['', 'text-primary', 'text-danger', 'text-info']
       return cls[this.proCash.sort]
+    },
+    rowColor() {
+      let color = ''
+      color = this.proCash.contract ? 'info' : color
+      color = this.proCash.is_separate ? 'secondary' : color
+      return color
     },
     pageManageAuth() {
       return (
