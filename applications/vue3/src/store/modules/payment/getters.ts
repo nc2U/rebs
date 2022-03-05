@@ -15,7 +15,10 @@ const getters = {
           serial_number: p.contract ? p.contract.serial_number : '-',
           contractor: p.contract ? p.contract.contractor : '-',
           income: p.income,
-          installment_order: p.contract ? p.installment_order.__str__ : '-',
+          installment_order:
+            p.contract && p.installment_order
+              ? p.installment_order.__str__
+              : '-',
           bank_account: p.bank_account.alias_name,
           trader: p.trader,
         }))

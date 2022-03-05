@@ -166,6 +166,30 @@ const actions = {
       })
       .catch(err => console.log(err.response.data))
   },
+  patchPrCashBook: ({ dispatch }: any, payload: any) => {
+    const { pk, search, ...formData } = payload
+    const page = payload.page ? payload.page : 1
+    api
+      .patch(`/project-cashbook/${pk}/`, formData)
+      .then(res => {
+        dispatch('fetchProjectCashList', {
+          project: res.data.project,
+          page,
+          search,
+        })
+        dispatch(
+          'payment/fetchPaymentList',
+          {
+            project: res.data.project,
+            contract: res.data.contract,
+            ordering: 'deal_date',
+          },
+          { root: true },
+        )
+        message()
+      })
+      .catch(err => console.log(err.response.data))
+  },
 
   deletePrCashBook: ({ dispatch }: any, payload: any) => {
     const { pk, project, page, contract, ordering } = payload
