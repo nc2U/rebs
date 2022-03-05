@@ -41,8 +41,8 @@
               <CFormSelect
                 v-model="form.project_account_d1"
                 @change="d1_change"
-                required
-                :disabled="form.sort === ''"
+                :required="!form.is_separate"
+                :disabled="form.sort === '' || form.is_separate"
               >
                 <option value="">---------</option>
                 <option v-for="d1 in formAccD1List" :value="d1.pk" :key="d1.pk">
@@ -60,8 +60,8 @@
             <CCol sm="8">
               <CFormSelect
                 v-model="form.project_account_d2"
-                required
-                :disabled="form.project_account_d1 === ''"
+                :required="!form.is_separate"
+                :disabled="form.project_account_d1 === '' || form.is_separate"
               >
                 <option value="">---------</option>
                 <option v-for="d2 in formAccD2List" :value="d2.pk" :key="d2.pk">
@@ -219,6 +219,14 @@
           </CRow>
         </CCol>
       </CRow>
+      <CRow>
+        <CCol class="text-medium-emphasis">
+          <CFormCheck
+            v-model="form.is_separate"
+            label="별도 분리기록 거래 건 - 여러 계정이 1회에 입 / 출금된 거래인 경우 선택하세요."
+          />
+        </CCol>
+      </CRow>
     </CModalBody>
 
     <CModalFooter>
@@ -274,6 +282,8 @@ export default defineComponent({
         evidence: '',
         note: '',
         date: new Date(),
+        is_separate: false,
+        separated: null,
       },
       validated: false,
     }
@@ -289,9 +299,11 @@ export default defineComponent({
       this.form.bank_account = this.proCash.bank_account
       this.form.income = this.proCash.income
       this.form.outlay = this.proCash.outlay
-      this.form.evidence = this.proCash.evidence // ? this.proCash.evidence : '0'
+      this.form.evidence = this.proCash.evidence
       this.form.note = this.proCash.note
       this.form.date = new Date(this.proCash.deal_date)
+      this.form.is_separate = this.proCash.is_separate
+      this.form.separated = this.proCash.separated
     }
     this.callAccount()
   },
@@ -314,8 +326,9 @@ export default defineComponent({
         const l =
           this.form.date.toString() ===
           new Date(this.proCash.deal_date).toString()
+        const m = this.form.is_separate === this.proCash.is_separate
 
-        return a && b && c && d && e && f && g && h && i && j && k && l
+        return a && b && c && d && e && f && g && h && i && j && k && l && m
       } else return false
     },
     ...mapState('proCash', [
