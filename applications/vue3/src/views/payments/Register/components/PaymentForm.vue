@@ -114,23 +114,26 @@
           v-if="payment"
           type="button"
           color="danger"
-          @click="$emit('on-delete')"
+          @click="deleteObject"
         >
           삭제
         </CButton>
       </slot>
     </CModalFooter>
   </CForm>
+
+  <AlertModal ref="alertModal" />
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 import DatePicker from '@/components/DatePicker/index.vue'
-import { mapState } from 'vuex'
+import AlertModal from '@/components/Modals/AlertModal.vue'
+import { mapGetters, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'PayForm',
-  components: { DatePicker },
+  components: { DatePicker, AlertModal },
   props: { contract: Object, payment: Object },
   data(this: any) {
     return {
@@ -183,24 +186,52 @@ export default defineComponent({
         return a && b && c && d && e && f
       } else return false
     },
+    pageManageAuth() {
+      return (
+        this.superAuth || (this.staffAuth && this.staffAuth.payment === '2')
+      )
+    },
+    allowedPeriod(this: any) {
+      return this.superAuth || this.diffDate(this.payment.deal_date) <= 90
+    },
     ...mapState('payment', ['payOrderList']),
     ...mapState('proCash', ['proBankAccountList']),
+    ...mapGetters('accounts', ['staffAuth', 'superAuth']),
   },
   methods: {
     onSubmit(this: any, event: any) {
-      const form = event.currentTarget
-      if (form.checkValidity() === false) {
-        event.preventDefault()
-        event.stopPropagation()
+      if (this.pageManageAuth) {
+        if (this.allowedPeriod) {
+          const form = event.currentTarget
+          if (form.checkValidity() === false) {
+            event.preventDefault()
+            event.stopPropagation()
 
-        this.validated = true
-      } else {
-        this.form.deal_date = this.dateFormat(this.form.deal_date)
-        const payload = this.payment
-          ? { ...{ pk: this.payment.pk }, ...this.form }
-          : this.form
-        this.$emit('on-submit', payload)
-      }
+            this.validated = true
+          } else {
+            this.form.deal_date = this.dateFormat(this.form.deal_date)
+            const payload = this.payment
+              ? { ...{ pk: this.payment.pk }, ...this.form }
+              : this.form
+            this.$emit('on-submit', payload)
+          }
+        } else
+          this.$refs.alertModal.callModal(
+            null,
+            '수납일로부터 90일이 경과한 건은 수정할 수 없습니다. 관리자에게 문의바랍니다.',
+          )
+      } else this.$refs.alertModal.callModal()
+    },
+    deleteObject(this: any) {
+      if (this.pageManageAuth) {
+        if (this.allowedPeriod) {
+          this.$emit('on-delete')
+        } else
+          this.$refs.alertModal.callModal(
+            null,
+            '수납일로부터 90일이 경과한 건은 삭제할 수 없습니다. 관리자에게 문의바랍니다.',
+          )
+      } else this.$refs.alertModal.callModal()
     },
   },
 })

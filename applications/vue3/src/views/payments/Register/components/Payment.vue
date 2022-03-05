@@ -27,8 +27,8 @@
     <template v-slot:default>
       <PaymentForm
         :contract="contract"
-        @on-submit="updateConfirm"
-        @on-delete="deleteConfirm"
+        @on-submit="updateObject"
+        @on-delete="deleteObject"
         @close="$refs.updateFormModal.visible = false"
         :payment="payment"
       />
@@ -70,43 +70,15 @@ export default defineComponent({
     }
   },
   computed: {
-    pageManageAuth() {
-      return (
-        this.superAuth || (this.staffAuth && this.staffAuth.payment === '2')
-      )
-    },
-    allowedPeriod(this: any) {
-      return this.superAuth || this.diffDate(this.payment.deal_date) <= 90
-    },
     ...mapGetters('accounts', ['staffAuth', 'superAuth']),
   },
   methods: {
     showDetail(this: any) {
       this.$refs.updateFormModal.callModal()
     },
-    updateConfirm(this: any, payload: any) {
-      if (this.pageManageAuth)
-        if (this.allowedPeriod) this.updateObject(payload)
-        else
-          this.$refs.alertModal.callModal(
-            null,
-            '수납일로부터 90일이 경과한 건은 수정할 수 없습니다. 관리자에게 문의바랍니다.',
-          )
-      else this.$refs.alertModal.callModal()
-    },
     updateObject(this: any, payload: any) {
       this.$emit('on-update', { ...{ pk: this.payment.pk }, ...payload })
       this.$refs.updateFormModal.visible = false
-    },
-    deleteConfirm(this: any) {
-      if (this.pageManageAuth)
-        if (this.allowedPeriod) this.$refs.delModal.callModal()
-        else
-          this.$refs.alertModal.callModal(
-            null,
-            '수납일로부터 90일이 경과한 건은 삭제할 수 없습니다. 관리자에게 문의바랍니다.',
-          )
-      else this.$refs.alertModal.callModal()
     },
     deleteObject(this: any) {
       this.$emit('on-delete', this.payment.pk)

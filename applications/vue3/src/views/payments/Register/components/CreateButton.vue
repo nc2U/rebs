@@ -18,7 +18,7 @@
     <template v-slot:default>
       <PaymentForm
         :contract="contract"
-        @on-submit="createConfirm"
+        @on-submit="createObject"
         @close="$refs.createFormModal.visible = false"
       />
     </template>
@@ -36,11 +36,6 @@ export default defineComponent({
   components: { FormModal, PaymentForm },
   props: { contract: Object },
   computed: {
-    pageManageAuth() {
-      return (
-        this.superAuth || (this.staffAuth && this.staffAuth.payment === '2')
-      )
-    },
     btnActive() {
       return !this.contract
     },
@@ -49,10 +44,6 @@ export default defineComponent({
   methods: {
     showDetail(this: any) {
       this.$refs.createFormModal.callModal()
-    },
-    createConfirm(this: any, payload: any) {
-      if (this.pageManageAuth) this.createObject(payload)
-      else this.$refs.alertModal.callModal()
     },
     createObject(this: any, payload: any) {
       this.$emit('on-create', payload)
