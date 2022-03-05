@@ -43,8 +43,17 @@ export default defineComponent({
   },
   data() {
     return {
-      page: 1,
-      search: '',
+      dataFilter: {
+        page: 1,
+        from_date: '',
+        to_date: '',
+        sort: '',
+        account_d1: '',
+        account_d2: '',
+        account_d3: '',
+        bank_account: '2',
+        search: '',
+      },
     }
   },
   created() {
@@ -76,7 +85,7 @@ export default defineComponent({
       }
     },
     pageSelect(this: any, page: number) {
-      this.page = page
+      this.dataFilter.page = page
       this.$refs.listControl.listFiltering(page)
     },
     listFiltering(payload: any) {
@@ -84,7 +93,7 @@ export default defineComponent({
       const sort = payload.sort ? payload.sort : ''
       const d1 = payload.account_d1 ? payload.account_d1 : ''
       const d2 = payload.account_d2 ? payload.account_d2 : ''
-      this.search = payload.search
+      this.dataFilter.search = payload.search
       this.fetchFormAccD1List({ sort })
       this.fetchFormAccD2List({ sort, d1 })
       this.fetchFormAccD3List({ sort, d1, d2 })
@@ -103,13 +112,10 @@ export default defineComponent({
       } else this.createCashBook(payload)
     },
     onUpdate(payload: any) {
-      const page = this.page
-      const search = this.search
-      this.updateCashBook({ ...{ page, search }, ...payload })
+      this.updateCashBook({ ...{ filters: this.dataFilter }, ...payload })
     },
     onDelete(payload: any) {
-      const page = this.page
-      this.deleteCashBook({ ...{ page }, ...payload })
+      this.deleteCashBook({ ...{ filters: this.dataFilter }, ...payload })
     },
     ...mapActions('settings', ['fetchCompany']),
     ...mapActions('comCash', [
