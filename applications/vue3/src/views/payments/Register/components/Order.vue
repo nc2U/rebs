@@ -37,6 +37,7 @@ export default defineComponent({
     },
     paidByOrder(this: any) {
       const paid = this.paymentList
+        .filter((p: any) => p.installment_order !== null)
         .filter((p: any) => p.installment_order.pk === this.order.pk)
         .map((p: any) => p.income)
       return paid.length === 0 ? 0 : paid.reduce((x: any, y: any) => x + y)

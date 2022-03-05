@@ -172,7 +172,10 @@ export default defineComponent({
   },
   mounted(this: any) {
     if (this.payment) {
-      this.form.installment_order = this.payment.installment_order.pk
+      const io = this.payment.installment_order
+        ? this.payment.installment_order.pk
+        : null
+      this.form.installment_order = io
       this.form.trader = this.payment.trader
       this.form.bank_account = this.payment.bank_account.pk
       this.form.income = this.payment.income
@@ -187,8 +190,10 @@ export default defineComponent({
   computed: {
     formsCheck() {
       if (this.payment) {
-        const a =
-          this.form.installment_order === this.payment.installment_order.pk
+        const io = this.payment.installment_order
+          ? this.payment.installment_order.pk
+          : null
+        const a = this.form.installment_order === io
         const b = this.form.trader === this.payment.trader
         const c = this.form.bank_account === this.payment.bank_account.pk
         const d = this.form.income === this.payment.income

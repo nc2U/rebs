@@ -4,7 +4,9 @@
     :color="payment.pk.toString() === paymentId ? 'warning' : ''"
   >
     <CTableDataCell>{{ payment.deal_date }}</CTableDataCell>
-    <CTableDataCell>{{ payment.installment_order.__str__ }}</CTableDataCell>
+    <CTableDataCell>
+      {{ payment.installment_order ? payment.installment_order.__str__ : '-' }}
+    </CTableDataCell>
     <CTableDataCell class="text-right">
       <router-link to="" @click="showDetail">
         {{ numFormat(payment.income) }}
