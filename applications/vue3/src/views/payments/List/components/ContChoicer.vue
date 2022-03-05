@@ -67,14 +67,18 @@
       </CAlert>
     </CCol>
   </CRow>
+
+  <AlertModal ref="alertModal" />
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import AlertModal from '@/components/Modals/AlertModal.vue'
 import { mapActions, mapGetters, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'ContChoicer',
+  components: { AlertModal },
   props: { payment: Object },
   data() {
     return {
@@ -89,8 +93,14 @@ export default defineComponent({
     this.pageInit()
   },
   computed: {
+    pageManageAuth() {
+      return (
+        this.superAuth || (this.staffAuth && this.staffAuth.payment === '2')
+      )
+    },
     ...mapState('project', ['project']),
     ...mapGetters('contract', ['contractIndex']),
+    ...mapGetters('accounts', ['staffAuth', 'superAuth']),
   },
   methods: {
     listFiltering(this: any) {
@@ -106,12 +116,14 @@ export default defineComponent({
         this.textClass = 'text-danger'
       }
     },
-    contMatching(cont: number) {
-      if (confirm(`해당 수납 건을 계약 건(${cont})에 등록하시겠습니까?`)) {
-        alert('ok registed!')
-        this.pageInit()
-        this.$emit('close')
-      }
+    contMatching(this: any, cont: number) {
+      if (this.pageManageAuth) {
+        if (confirm(`해당 수납 건을 계약 건(${cont})에 등록하시겠습니까?`)) {
+          alert('ok registed!')
+          this.pageInit()
+          this.$emit('close')
+        }
+      } else this.$refs.alertModal.callModal()
     },
     pageInit(this: any) {
       this.form.search = ''

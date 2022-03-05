@@ -71,7 +71,7 @@
     </template>
   </FormModal>
 
-  <AlertModal ref="alertModal" />
+  <!--  <AlertModal ref="alertModal" />-->
 </template>
 
 <script lang="ts">
@@ -79,21 +79,17 @@ import { defineComponent } from 'vue'
 import commonMixin from '@/views/commonMixin'
 import FormModal from '@/components/Modals/FormModal.vue'
 import ContChoicer from '@/views/payments/List/components/ContChoicer.vue'
-import AlertModal from '@/components/Modals/AlertModal.vue'
-import { mapGetters } from 'vuex'
+// import AlertModal from '@/components/Modals/AlertModal.vue'
 
 export default defineComponent({
   name: 'Payment',
   mixins: [commonMixin],
-  components: { FormModal, ContChoicer, AlertModal },
+  components: { FormModal, ContChoicer },
   props: {
     payment: {
       type: Object,
       required: true,
     },
-  },
-  computed: {
-    ...mapGetters('accounts', ['staffAuth', 'superAuth']),
   },
   methods: {
     contMatching(this: any) {
@@ -101,14 +97,10 @@ export default defineComponent({
       return
     },
     updatePayment(this: any) {
-      if (this.superAuth || (this.staffAuth && this.staffAuth.payment === '2'))
-        this.$emit('on-update', { ...{ pk: this.payment.pk }, ...this.form })
-      else this.$refs.alertModal.callModal()
+      this.$emit('on-update', { ...{ pk: this.payment.pk }, ...this.form })
     },
     deletePayment(this: any) {
-      if (this.superAuth || (this.staffAuth && this.staffAuth.payment === '2'))
-        this.$emit('on-delete', this.payment.pk)
-      else this.$refs.alertModal.callModal()
+      this.$emit('on-delete', this.payment.pk)
     },
   },
 })
