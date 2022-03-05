@@ -1,0 +1,125 @@
+<template>
+  <CRow>
+    <CCol class="pl-4 pr-4">
+      <CCallout color="warning" class="pb-1 mb-4">
+        <CRow>
+          <CCol>
+            <CRow>
+              <CCol md="5" class="mb-3">
+                <CInputGroup class="flex-nowrap">
+                  <CFormInput
+                    v-model="form.search"
+                    placeholder="계약자, 비고, 계약 일련번호"
+                    @keydown.enter="listFiltering(1)"
+                    aria-label="Search"
+                    aria-describedby="addon-wrapping"
+                  />
+                  <CInputGroupText @click="listFiltering(1)">
+                    계약 건 찾기
+                  </CInputGroupText>
+                </CInputGroup>
+              </CCol>
+            </CRow>
+          </CCol>
+        </CRow>
+        <CRow>
+          <CCol
+            color="warning"
+            class="p-2 pl-3"
+            v-if="contractIndex.length !== 0"
+          >
+            <CButton
+              type="button"
+              color="dark"
+              v-for="cont in contractIndex"
+              :key="cont.pk"
+              @click="contMatching(cont.pk)"
+              variant="outline"
+              size="sm"
+            >
+              {{ `${cont.contractor}(${cont.serial_number})` }}
+            </CButton>
+          </CCol>
+          <CCol v-else class="mt-3 m-2" :class="textClass">
+            {{ msg }}
+          </CCol>
+        </CRow>
+      </CCallout>
+
+      <CAlert
+        color="default"
+        v-if="contractIndex.length !== 0"
+        class="pt-0 pb-0"
+      >
+        해당 수납 건을 매칭 등록할 계약 건을 클릭하여 주십시요.
+      </CAlert>
+
+      <CAlert color="info">
+        <span>
+          {{
+            `[입금자] : ${payment.trader}  | [입금액] : ${numFormat(
+              payment.income,
+            )} | [입금계좌] : ${payment.bank_account} | [입금일] : ${
+              payment.deal_date
+            }`
+          }}
+        </span>
+      </CAlert>
+    </CCol>
+  </CRow>
+</template>
+
+<script lang="ts">
+import { defineComponent } from 'vue'
+import { mapActions, mapGetters, mapState } from 'vuex'
+
+export default defineComponent({
+  name: 'ContChoicer',
+  props: { payment: Object },
+  data() {
+    return {
+      form: {
+        search: '',
+      },
+      msg: '',
+      textClass: '',
+    }
+  },
+  created() {
+    this.pageInit()
+  },
+  computed: {
+    ...mapState('project', ['project']),
+    ...mapGetters('contract', ['contractIndex']),
+  },
+  methods: {
+    listFiltering(this: any) {
+      this.$nextTick(() => {
+        if (this.form.search === '') this.pageInit()
+        else {
+          const project = this.project.pk
+          this.fetchContractList({ ...{ project }, ...this.form })
+        }
+      })
+      if (this.contractIndex.length === 0) {
+        this.msg = `해당 검색어로 등록된 데이터가 없습니다.`
+        this.textClass = 'text-danger'
+      }
+    },
+    contMatching(cont: number) {
+      if (confirm(`해당 수납 건을 계약 건(${cont})에 등록하시겠습니까?`)) {
+        alert('ok registed!')
+        this.pageInit()
+        this.$emit('close')
+      }
+    },
+    pageInit(this: any) {
+      this.form.search = ''
+      this.textClass = 'text-medium-emphasis'
+      this.msg = '계약자 관련정보 또는 계약 일련변호를 입력하세요.'
+      this.$store.state.contract.contractList = []
+    },
+    ...mapActions('contract', ['fetchContractList']),
+  },
+})
+</script>

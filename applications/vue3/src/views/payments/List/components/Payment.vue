@@ -64,7 +64,10 @@
       수납 건별 계약 건 매칭
     </template>
     <template v-slot:default class="p-5">
-      <ContChoicer @close="$refs.contMatchingModal.visible = false" />
+      <ContChoicer
+        :payment="payment"
+        @close="$refs.contMatchingModal.visible = false"
+      />
     </template>
   </FormModal>
 
