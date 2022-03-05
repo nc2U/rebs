@@ -114,7 +114,7 @@
           v-if="payment"
           type="button"
           color="danger"
-          @click="deleteObject"
+          @click="deleteConfirm"
         >
           삭제
         </CButton>
@@ -122,18 +122,32 @@
     </CModalFooter>
   </CForm>
 
+  <ConfirmModal ref="confirmModal">
+    <template v-slot:header>
+      <CIcon name="cil-warning" />
+      건별 수납 정보 - [삭제]
+    </template>
+    <template v-slot:default>
+      삭제 후 복구할 수 없습니다. 해당 건별 수납 정보 삭제를 진행하시겠습니까?
+    </template>
+    <template v-slot:footer>
+      <CButton color="danger" @click="modalAction">삭제</CButton>
+    </template>
+  </ConfirmModal>
+
   <AlertModal ref="alertModal" />
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 import DatePicker from '@/components/DatePicker/index.vue'
+import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 import { mapGetters, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'PayForm',
-  components: { DatePicker, AlertModal },
+  components: { DatePicker, ConfirmModal, AlertModal },
   props: { contract: Object, payment: Object },
   data(this: any) {
     return {
@@ -192,7 +206,9 @@ export default defineComponent({
       )
     },
     allowedPeriod(this: any) {
-      return this.superAuth || this.diffDate(this.payment.deal_date) <= 90
+      return this.payment
+        ? this.superAuth || this.diffDate(this.payment.deal_date) <= 90
+        : true
     },
     ...mapState('payment', ['payOrderList']),
     ...mapState('proCash', ['proBankAccountList']),
@@ -222,16 +238,19 @@ export default defineComponent({
           )
       } else this.$refs.alertModal.callModal()
     },
-    deleteObject(this: any) {
+    deleteConfirm(this: any) {
       if (this.pageManageAuth) {
         if (this.allowedPeriod) {
-          this.$emit('on-delete')
+          this.$refs.confirmModal.callModal()
         } else
           this.$refs.alertModal.callModal(
             null,
             '수납일로부터 90일이 경과한 건은 삭제할 수 없습니다. 관리자에게 문의바랍니다.',
           )
       } else this.$refs.alertModal.callModal()
+    },
+    modalAction() {
+      this.$emit('on-delete')
     },
   },
 })
