@@ -93,8 +93,9 @@ class ProjectCashBook(models.Model):
                                            verbose_name='현장 계정')
     project_account_d2 = models.ForeignKey('rebs.ProjectAccountD2', on_delete=models.PROTECT, null=True, blank=True,
                                            verbose_name='현장 세부계정')
-    is_record_separate = models.BooleanField('상세 분리기록 등록', default=False,
-                                             help_text='각기 다른 계정 항목이 1회에 같이 입/출금된 경우 이 항목을 체크')
+    is_separate = models.BooleanField('상세 분리기록 등록', default=False,
+                                      help_text='각기 다른 계정 항목이 1회에 같이 출금된 경우 이 항목을 체크')
+    separated = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, verbose_name='분할 계정')
     is_contract_payment = models.BooleanField('분양/분담금 여부', default=False)  # 분양대금여부(납입, 환불 모두 True)
     contract = models.ForeignKey('contract.Contract', on_delete=models.SET_NULL, null=True, blank=True,
                                  verbose_name='계약일련번호')  # 계약일련번호  (프로젝트 귀속)

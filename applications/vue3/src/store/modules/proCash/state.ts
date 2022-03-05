@@ -38,7 +38,8 @@ export interface ProjectCashBook {
   sort_desc: string
   project_account_d1: number | null
   project_account_d2: number | null
-  is_record_separate: boolean
+  is_separate: boolean
+  separated: number
   is_contract_payment: boolean
   contract: number | null
   installment_order: number | null
