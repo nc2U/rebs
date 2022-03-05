@@ -34,13 +34,13 @@ urlpatterns = [
     # path('accounts/', include('accounts.urls')),
     path('', include('django.contrib.auth.urls')),
 
-    path('', RedirectView.as_view(url='/rebs/dashboard/'), name='home'),
-    path('vue/', TemplateView.as_view(template_name='index.html')),
+    path('', TemplateView.as_view(template_name='index.html')),
 
-    path('book/', include('book.urls')),
+    path('rebs/', RedirectView.as_view(url='/rebs/dashboard/'), name='home'),
     path('rebs/', include('rebs.urls')),
-    path('excel/', include('excel.urls')),
+    path('book/', include('book.urls')),
 
+    path('excel/', include('excel.urls')),
     path('mdeditor/', include('mdeditor.urls')),
     path('tinymce/', include('tinymce.urls')),
 ]
