@@ -143,15 +143,15 @@ const actions = {
   },
 
   updatePrCashBook: ({ dispatch }: any, payload: any) => {
-    const { pk, search, ...formData } = payload
-    const page = payload.page ? payload.page : 1
+    const { pk, filters, ...formData } = payload
+    const page = filters.page ? filters.page : 1
     api
       .put(`/project-cashbook/${pk}/`, formData)
       .then(res => {
         dispatch('fetchProjectCashList', {
           project: res.data.project,
           page,
-          search,
+          ...filters,
         })
         dispatch(
           'payment/fetchPaymentList',
@@ -167,15 +167,15 @@ const actions = {
       .catch(err => console.log(err.response.data))
   },
   patchPrCashBook: ({ dispatch }: any, payload: any) => {
-    const { pk, search, ...formData } = payload
-    const page = payload.page ? payload.page : 1
+    const { pk, filters, ...formData } = payload
+    const page = payload.filters.page ? payload.filters.page : 1
     api
       .patch(`/project-cashbook/${pk}/`, formData)
       .then(res => {
         dispatch('fetchProjectCashList', {
           project: res.data.project,
           page,
-          search,
+          ...filters,
         })
         dispatch(
           'payment/fetchPaymentList',
@@ -192,11 +192,15 @@ const actions = {
   },
 
   deletePrCashBook: ({ dispatch }: any, payload: any) => {
-    const { pk, project, page, contract, ordering } = payload
+    const { pk, project, filters, contract } = payload
+
     api
       .delete(`/project-cashbook/${pk}/`)
       .then(() => {
-        dispatch('fetchProjectCashList', { project, page })
+        dispatch('fetchProjectCashList', {
+          project,
+          ...filters,
+        })
         dispatch(
           'payment/fetchPaymentList',
           { project, contract, ordering: 'deal_date' },

@@ -43,8 +43,16 @@ export default defineComponent({
   },
   data() {
     return {
-      page: 1,
-      search: '',
+      dataFilter: {
+        page: 1,
+        from_date: '',
+        to_date: '',
+        sort: '',
+        pro_acc_d1: '',
+        pro_acc_d2: '',
+        bank_account: '2',
+        search: '',
+      },
     }
   },
   created() {
@@ -76,10 +84,10 @@ export default defineComponent({
       this.$refs.listControl.listFiltering(page)
     },
     listFiltering(payload: any) {
+      this.dataFilter = payload
       const project = this.project.pk
       const sort = payload.sort ? payload.sort : ''
       const d1 = payload.pro_acc_d1 ? payload.pro_acc_d1 : ''
-      this.search = payload.search
       this.fetchProFormAccD1List(sort)
       this.fetchProFormAccD2List({ d1, sort })
       this.fetchProjectCashList({ ...{ project }, ...payload })
@@ -97,13 +105,10 @@ export default defineComponent({
       } else this.createPrCashBook(payload)
     },
     onUpdate(payload: any) {
-      const page = this.page
-      const search = this.search
-      this.updatePrCashBook({ ...{ page, search }, ...payload })
+      this.updatePrCashBook({ ...{ filters: this.dataFilter }, ...payload })
     },
     onDelete(payload: any) {
-      const page = this.page
-      this.deletePrCashBook({ ...{ page }, ...payload })
+      this.deletePrCashBook({ ...{ filters: this.dataFilter }, ...payload })
     },
     ...mapActions('proCash', [
       'fetchAccSortList',
