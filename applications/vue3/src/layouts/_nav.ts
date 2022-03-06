@@ -12,6 +12,10 @@ const dashboard = {
 const schedule = {
   component: 'CNavItem',
   name: '일 정 관 리',
+  badge: {
+    color: 'warning',
+    text: 'u.c',
+  },
   to: '/schedule',
   icon: 'cil-calendar',
 }
@@ -31,11 +35,19 @@ const contract = {
         {
           component: 'CNavItem',
           name: '계약내역 조회',
+          badge: {
+            color: 'success',
+            text: 'ok',
+          },
           to: '/contracts/info/index',
         },
         {
           component: 'CNavItem',
           name: '동호수 현황표',
+          badge: {
+            color: 'warning',
+            text: 'u.c',
+          },
           to: '/contracts/info/status',
         },
       ],
@@ -49,11 +61,19 @@ const contract = {
         {
           component: 'CNavItem',
           name: '계약등록 관리',
+          badge: {
+            color: 'warning',
+            text: 'u.c',
+          },
           to: '/contracts/manage/register',
         },
         {
           component: 'CNavItem',
           name: '계약해지 관리',
+          badge: {
+            color: 'warning',
+            text: 'u.c',
+          },
           to: '/contracts/manage/cancel',
         },
       ],
@@ -70,11 +90,19 @@ const payment = {
     {
       component: 'CNavItem',
       name: '분양수납 내역',
+      badge: {
+        color: 'success',
+        text: 'ok',
+      },
       to: '/payments/index',
     },
     {
       component: 'CNavItem',
       name: '건별수납 관리',
+      badge: {
+        color: 'success',
+        text: 'ok',
+      },
       to: '/payments/manage',
     },
   ],
@@ -89,6 +117,10 @@ const notice = {
     {
       component: 'CNavItem',
       name: '수납고지서 출력',
+      badge: {
+        color: 'warning',
+        text: 'u.c',
+      },
       to: '/notices/bill',
     },
     {
@@ -139,11 +171,19 @@ const project_cash = {
     {
       component: 'CNavItem',
       name: '현장자금 현황',
+      badge: {
+        color: 'warning',
+        text: 'u.c',
+      },
       to: '/project-cash/status',
     },
     {
       component: 'CNavItem',
       name: '현장출납 기록',
+      badge: {
+        color: 'success',
+        text: 'ok',
+      },
       to: '/project-cash/index',
     },
   ],
@@ -158,6 +198,10 @@ const project_docs = {
     {
       component: 'CNavItem',
       name: '현장 일반문서',
+      badge: {
+        color: 'warning',
+        text: 'u.c',
+      },
       to: '/project-docs/general/docs',
       icon: 'cil-layers',
     },
@@ -170,11 +214,19 @@ const project_docs = {
         {
           component: 'CNavItem',
           name: '현장 소송문서',
+          badge: {
+            color: 'warning',
+            text: 'u.c',
+          },
           to: '/project-docs/lawsuit/docs',
         },
         {
           component: 'CNavItem',
           name: '현장 소송사건',
+          badge: {
+            color: 'warning',
+            text: 'u.c',
+          },
           to: '/project-docs/lawsuit/case',
         },
       ],
@@ -197,21 +249,37 @@ const project = {
         {
           component: 'CNavItem',
           name: '프로젝트 등록',
+          badge: {
+            color: 'success',
+            text: 'ok',
+          },
           to: '/project/manage/index',
         },
         {
           component: 'CNavItem',
           name: '차수분류 등록',
+          badge: {
+            color: 'success',
+            text: 'ok',
+          },
           to: '/project/manage/order',
         },
         {
           component: 'CNavItem',
           name: '타입정보 등록',
+          badge: {
+            color: 'success',
+            text: 'ok',
+          },
           to: '/project/manage/type',
         },
         {
           component: 'CNavItem',
           name: '층별조건 등록',
+          badge: {
+            color: 'success',
+            text: 'ok',
+          },
           to: '/project/manage/floor',
         },
       ],
@@ -225,26 +293,46 @@ const project = {
         {
           component: 'CNavItem',
           name: '동(건물) 등록',
+          badge: {
+            color: 'success',
+            text: 'ok',
+          },
           to: '/project/settings/bldg',
         },
         {
           component: 'CNavItem',
           name: '호(유닛) 등록',
+          badge: {
+            color: 'success',
+            text: 'ok',
+          },
           to: '/project/settings/unit',
         },
         {
           component: 'CNavItem',
           name: '공급가격 등록',
+          badge: {
+            color: 'success',
+            text: 'ok',
+          },
           to: '/project/settings/price',
         },
         {
           component: 'CNavItem',
           name: '납부회차 등록',
+          badge: {
+            color: 'success',
+            text: 'ok',
+          },
           to: '/project/settings/payment-order',
         },
         {
           component: 'CNavItem',
           name: '계약조건 등록',
+          badge: {
+            color: 'success',
+            text: 'ok',
+          },
           to: '/project/settings/down-payment',
         },
       ],
@@ -258,16 +346,28 @@ const project = {
         {
           component: 'CNavItem',
           name: '지번목록 관리',
+          badge: {
+            color: 'warning',
+            text: 'u.c',
+          },
           to: '/project/site/index',
         },
         {
           component: 'CNavItem',
           name: '소유자별 관리',
+          badge: {
+            color: 'warning',
+            text: 'u.c',
+          },
           to: '/project/site/owner',
         },
         {
           component: 'CNavItem',
           name: '매입계약 관리',
+          badge: {
+            color: 'warning',
+            text: 'u.c',
+          },
           to: '/project/site/contract',
         },
       ],
@@ -284,11 +384,19 @@ const company_cash = {
     {
       component: 'CNavItem',
       name: '본사자금 현황',
+      badge: {
+        color: 'warning',
+        text: 'u.c',
+      },
       to: '/cashes/status',
     },
     {
       component: 'CNavItem',
       name: '본사출납 기록',
+      badge: {
+        color: 'success',
+        text: 'ok',
+      },
       to: '/cashes/index',
     },
   ],
@@ -303,6 +411,10 @@ const company_docs = {
     {
       component: 'CNavItem',
       name: '본사 일반문서',
+      badge: {
+        color: 'warning',
+        text: 'u.c',
+      },
       to: '/docs/general/docs',
     },
     {
@@ -314,11 +426,19 @@ const company_docs = {
         {
           component: 'CNavItem',
           name: '본사 소송문서',
+          badge: {
+            color: 'warning',
+            text: 'u.c',
+          },
           to: '/docs/lawsuit/docs',
         },
         {
           component: 'CNavItem',
           name: '본사 소송사건',
+          badge: {
+            color: 'warning',
+            text: 'u.c',
+          },
           to: '/docs/lawsuit/case',
         },
       ],
@@ -335,11 +455,19 @@ const human_resource = {
     {
       component: 'CNavItem',
       name: '직원정보 관리',
+      badge: {
+        color: 'warning',
+        text: 'u.c',
+      },
       to: '/hr-manage/employee',
     },
     {
       component: 'CNavItem',
       name: '부서정보 관리',
+      badge: {
+        color: 'warning',
+        text: 'u.c',
+      },
       to: '/hr-manage/department',
     },
     // {
@@ -358,16 +486,28 @@ const settings = {
     {
       component: 'CNavItem',
       name: '회사정보 관리',
+      badge: {
+        color: 'success',
+        text: 'ok',
+      },
       to: '/settings/company',
     },
     {
       component: 'CNavItem',
       name: '권한설정 관리',
+      badge: {
+        color: 'warning',
+        text: 'u.c',
+      },
       to: '/settings/authorization',
     },
     {
       component: 'CNavItem',
       name: '프로필 관리',
+      badge: {
+        color: 'warning',
+        text: 'u.c',
+      },
       to: '/settings/profile',
     },
   ],
