@@ -125,7 +125,10 @@ export default defineComponent({
       else this.$refs.alertModal.callModal()
     },
     updateObject(this: any, payload: any) {
-      this.$emit('on-update', { ...{ pk: this.proCash.pk }, ...payload })
+      const formData = this.proCash
+        ? { ...{ pk: this.proCash.pk }, ...payload }
+        : payload
+      this.$emit('on-update', formData)
       this.$refs.updateFormModal.visible = false
     },
     deleteConfirm(this: any) {

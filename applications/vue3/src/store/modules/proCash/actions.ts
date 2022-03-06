@@ -124,10 +124,14 @@ const actions = {
   },
 
   createPrCashBook: ({ dispatch }: any, payload: any) => {
+    const { filters, ...formData } = payload
     api
-      .post(`/project-cashbook/`, payload)
+      .post(`/project-cashbook/`, formData)
       .then(res => {
-        dispatch('fetchProjectCashList', { project: res.data.project })
+        dispatch('fetchProjectCashList', {
+          project: res.data.project,
+          ...filters,
+        })
         dispatch(
           'payment/fetchPaymentList',
           {

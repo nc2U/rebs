@@ -238,11 +238,7 @@
             <CFormCheck
               v-model="form.is_separate"
               label="별도 분리기록 거래 건 - 여러 계정 항목이 1회에 입·출금되어 별도 분리 기록이 필요한 거래인 경우."
-              :disabled="
-                form.project_account_d1 !== '' ||
-                form.project_account_d2 !== '' ||
-                proCash.sepItems.length > 0
-              "
+              :disabled="sepDisabled"
             />
           </CCol>
         </CRow>
@@ -288,7 +284,7 @@
                   <CCol sm="8">
                     <CFormSelect
                       v-model="sepItem.project_account_d1"
-                      @change="d1_change"
+                      @change="sepD1_change"
                       required
                     >
                       <option value="">---------</option>
@@ -486,7 +482,7 @@
       <slot name="footer">
         <CButton
           :color="proCash ? 'success' : 'primary'"
-          :disabled="formsCheck"
+          :disabled="formsCheck && requireItem"
         >
           저장
         </CButton>
@@ -593,15 +589,27 @@ export default defineComponent({
     this.callAccount()
   },
   computed: {
+    requireItem() {
+      return (
+        this.form.project_account_d1 !== '' &&
+        this.form.project_account_d2 !== ''
+      )
+    },
+    sepDisabled() {
+      const disabled =
+        this.form.project_account_d1 !== '' ||
+        this.form.project_account_d2 !== ''
+      return this.proCash
+        ? disabled || this.proCash.sepItems.length > 0
+        : disabled
+    },
     formsCheck() {
       if (this.proCash) {
         const a = this.form.project === this.proCash.project
         const b = this.form.sort === this.proCash.sort
         const c =
-          this.form.project_account_d1 !== '' &&
           this.form.project_account_d1 === this.proCash.project_account_d1
         const d =
-          this.form.project_account_d2 !== '' &&
           this.form.project_account_d2 === this.proCash.project_account_d2
         const e = this.form.content === this.proCash.content
         const f = this.form.trader === this.proCash.trader
@@ -648,11 +656,12 @@ export default defineComponent({
 
         this.validated = true
       } else {
-        this.form.deal_date = this.dateFormat(this.form.deal_date)
-        const payload = !this.form.is_separate
-          ? this.form
-          : { ...this.form, ...{ sepItem: this.sepItem } }
-        this.$emit('on-submit', payload)
+        if (!this.form.is_separate || !this.formsCheck) {
+          this.form.deal_date = this.dateFormat(this.form.deal_date)
+          this.$emit('on-submit', this.form)
+        }
+        if (this.form.is_separate)
+          this.$emit('on-submit', { create: this.sepItem })
       }
     },
     sort_change(event: any) {
@@ -670,6 +679,9 @@ export default defineComponent({
     d1_change() {
       this.form.project_account_d2 = ''
       this.callAccount()
+    },
+    sepD1_change() {
+      this.sepItem.project_account_d2 = ''
     },
     callAccount() {
       this.$nextTick(() => {

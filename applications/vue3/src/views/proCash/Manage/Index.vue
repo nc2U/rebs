@@ -50,7 +50,7 @@ export default defineComponent({
         sort: '',
         pro_acc_d1: '',
         pro_acc_d2: '',
-        bank_account: '2',
+        bank_account: '',
         search: '',
       },
     }
@@ -105,9 +105,10 @@ export default defineComponent({
       } else this.createPrCashBook(payload)
     },
     onUpdate(payload: any) {
-      const { sepItem, ...orignData } = payload
-      if (sepItem) this.onCreate(sepItem)
-      this.updatePrCashBook({ ...{ filters: this.dataFilter }, ...orignData })
+      const { create, ...formData } = payload
+      if (create) this.onCreate({ ...{ filters: this.dataFilter }, ...create })
+      if (formData)
+        this.updatePrCashBook({ ...{ filters: this.dataFilter }, ...formData })
     },
     onDelete(payload: any) {
       this.deletePrCashBook({ ...{ filters: this.dataFilter }, ...payload })
