@@ -246,229 +246,208 @@
         </CRow>
       </div>
 
-      <div v-if="form.is_separate">
-        <div v-for="(sep, index) in separateItems" :key="index">
-          <hr />
-          <CRow class="mb-3">
-            <CCol sm="1">
-              <CButton
-                type="button"
-                @click="separateItems.pop()"
-                color="danger"
-                size="sm"
-                v-if="index + 1 > 1 && index + 1 === separateItems.length"
-              >
-                -
-              </CButton>
-            </CCol>
-            <CCol sm="11">
-              <CRow>
-                <CCol sm="6">
-                  <CRow>
-                    <CFormLabel class="col-sm-4 col-form-label">
-                      계정[상위분류]
-                    </CFormLabel>
-                    <CCol sm="8">
-                      <CFormSelect
-                        v-model="sep.project_account_d1"
-                        @change="d1_change"
-                        required
+      <div v-if="form.is_separate && proCash">
+        <hr />
+        <CRow class="mb-3">
+          <CCol sm="1"></CCol>
+          <CCol sm="11">
+            <CRow>
+              <CCol sm="6">
+                <CRow>
+                  <CFormLabel class="col-sm-4 col-form-label">
+                    계정[상위분류]
+                  </CFormLabel>
+                  <CCol sm="8">
+                    <CFormSelect
+                      v-model="sepItem.project_account_d1"
+                      @change="d1_change"
+                      required
+                    >
+                      <option value="">---------</option>
+                      <option
+                        v-for="d1 in formAccD1List"
+                        :value="d1.pk"
+                        :key="d1.pk"
                       >
-                        <option value="">---------</option>
-                        <option
-                          v-for="d1 in formAccD1List"
-                          :value="d1.pk"
-                          :key="d1.pk"
-                        >
-                          {{ d1.name }}
-                        </option>
-                      </CFormSelect>
-                    </CCol>
-                  </CRow>
-                </CCol>
-                <CCol sm="6">
-                  <CRow>
-                    <CFormLabel class="col-sm-4 col-form-label">
-                      계정[하위분류]
-                    </CFormLabel>
-                    <CCol sm="8">
-                      <CFormSelect
-                        v-model="sep.project_account_d2"
-                        :disabled="sep.project_account_d1 === ''"
-                        required
+                        {{ d1.name }}
+                      </option>
+                    </CFormSelect>
+                  </CCol>
+                </CRow>
+              </CCol>
+              <CCol sm="6">
+                <CRow>
+                  <CFormLabel class="col-sm-4 col-form-label">
+                    계정[하위분류]
+                  </CFormLabel>
+                  <CCol sm="8">
+                    <CFormSelect
+                      v-model="sepItem.project_account_d2"
+                      :disabled="sepItem.project_account_d1 === ''"
+                      required
+                    >
+                      <option value="">---------</option>
+                      <option
+                        v-for="d2 in formAccD2List"
+                        :value="d2.pk"
+                        :key="d2.pk"
                       >
-                        <option value="">---------</option>
-                        <option
-                          v-for="d2 in formAccD2List"
-                          :value="d2.pk"
-                          :key="d2.pk"
-                        >
-                          {{ d2.name }}
-                        </option>
-                      </CFormSelect>
-                    </CCol>
-                  </CRow>
-                </CCol>
-              </CRow>
-            </CCol>
-          </CRow>
-          <CRow class="mb-3">
-            <CCol sm="1"></CCol>
-            <CCol sm="11">
-              <CRow>
-                <CCol sm="6">
-                  <CRow>
-                    <CFormLabel class="col-sm-4 col-form-label">
-                      적요
-                    </CFormLabel>
-                    <CCol sm="8">
-                      <CFormInput
-                        v-model="sep.content"
-                        placeholder="거래 내용"
-                      />
-                    </CCol>
-                  </CRow>
-                </CCol>
-                <CCol sm="6">
-                  <CRow>
-                    <CFormLabel class="col-sm-4 col-form-label">
-                      거래처
-                    </CFormLabel>
-                    <CCol sm="8">
-                      <CFormInput
-                        v-model="sep.trader"
-                        v-c-tooltip="{
-                          content:
-                            '분양대금(분담금) 수납 건인 경우 반드시 해당 계좌에 기재된 입금자를 기재',
-                          placement: 'top',
-                        }"
-                        placeholder="거래처 (수납자)"
-                        required
-                      />
-                    </CCol>
-                  </CRow>
-                </CCol>
-              </CRow>
-            </CCol>
-          </CRow>
+                        {{ d2.name }}
+                      </option>
+                    </CFormSelect>
+                  </CCol>
+                </CRow>
+              </CCol>
+            </CRow>
+          </CCol>
+        </CRow>
+        <CRow class="mb-3">
+          <CCol sm="1"></CCol>
+          <CCol sm="11">
+            <CRow>
+              <CCol sm="6">
+                <CRow>
+                  <CFormLabel class="col-sm-4 col-form-label">
+                    적요
+                  </CFormLabel>
+                  <CCol sm="8">
+                    <CFormInput
+                      v-model="sepItem.content"
+                      placeholder="거래 내용"
+                    />
+                  </CCol>
+                </CRow>
+              </CCol>
+              <CCol sm="6">
+                <CRow>
+                  <CFormLabel class="col-sm-4 col-form-label">
+                    거래처
+                  </CFormLabel>
+                  <CCol sm="8">
+                    <CFormInput
+                      v-model="sepItem.trader"
+                      v-c-tooltip="{
+                        content:
+                          '분양대금(분담금) 수납 건인 경우 반드시 해당 계좌에 기재된 입금자를 기재',
+                        placement: 'top',
+                      }"
+                      placeholder="거래처 (수납자)"
+                      required
+                    />
+                  </CCol>
+                </CRow>
+              </CCol>
+            </CRow>
+          </CCol>
+        </CRow>
 
-          <CRow class="mb-3">
-            <CCol sm="1"></CCol>
-            <CCol sm="11">
-              <CRow>
-                <CCol sm="6">
-                  <CRow>
-                    <CFormLabel class="col-sm-4 col-form-label">
-                      거래계좌
-                    </CFormLabel>
-                    <CCol sm="8">
-                      <CFormSelect
-                        v-model="sep.bank_account"
-                        :value="form.bank_account"
-                        readonly
-                        required
+        <CRow class="mb-3">
+          <CCol sm="1"></CCol>
+          <CCol sm="11">
+            <CRow>
+              <CCol sm="6">
+                <CRow>
+                  <CFormLabel class="col-sm-4 col-form-label">
+                    거래계좌
+                  </CFormLabel>
+                  <CCol sm="8">
+                    <CFormSelect
+                      v-model="sepItem.bank_account"
+                      :value="form.bank_account"
+                      readonly
+                      required
+                    >
+                      <option value="">---------</option>
+                      <option
+                        v-for="ba in proBankAccountList"
+                        :value="ba.pk"
+                        :key="ba.pk"
                       >
-                        <option value="">---------</option>
-                        <option
-                          v-for="ba in proBankAccountList"
-                          :value="ba.pk"
-                          :key="ba.pk"
-                        >
-                          {{ ba.alias_name }}
-                        </option>
-                      </CFormSelect>
-                    </CCol>
-                  </CRow>
-                </CCol>
+                        {{ ba.alias_name }}
+                      </option>
+                    </CFormSelect>
+                  </CCol>
+                </CRow>
+              </CCol>
 
-                <CCol sm="6">
-                  <CRow v-if="form.sort === '2'">
-                    <CFormLabel class="col-sm-4 col-form-label">
-                      지출증빙
-                    </CFormLabel>
-                    <CCol sm="8">
-                      <CFormSelect v-model="sep.evidence" required>
-                        <option value="">---------</option>
-                        <option value="0">증빙 없음</option>
-                        <option value="1">세금계산서</option>
-                        <option value="2">계산서(면세)</option>
-                        <option value="3">카드전표/현금영수증</option>
-                        <option value="4">간이영수증</option>
-                        <option value="5">거래명세서</option>
-                        <option value="6">입금표</option>
-                        <option value="7">지출결의서</option>
-                      </CFormSelect>
-                    </CCol>
-                  </CRow>
-                </CCol>
-              </CRow>
-            </CCol>
-          </CRow>
+              <CCol sm="6">
+                <CRow v-if="form.sort === '2'">
+                  <CFormLabel class="col-sm-4 col-form-label">
+                    지출증빙
+                  </CFormLabel>
+                  <CCol sm="8">
+                    <CFormSelect v-model="sepItem.evidence" required>
+                      <option value="">---------</option>
+                      <option value="0">증빙 없음</option>
+                      <option value="1">세금계산서</option>
+                      <option value="2">계산서(면세)</option>
+                      <option value="3">카드전표/현금영수증</option>
+                      <option value="4">간이영수증</option>
+                      <option value="5">거래명세서</option>
+                      <option value="6">입금표</option>
+                      <option value="7">지출결의서</option>
+                    </CFormSelect>
+                  </CCol>
+                </CRow>
+              </CCol>
+            </CRow>
+          </CCol>
+        </CRow>
 
-          <CRow class="mb-3">
-            <CCol sm="1"></CCol>
-            <CCol sm="11">
-              <CRow>
-                <CCol sm="6">
-                  <CRow>
-                    <CFormLabel class="col-sm-4 col-form-label">
-                      출금액
-                    </CFormLabel>
-                    <CCol sm="8">
-                      <CFormInput
-                        v-model="sep.outlay"
-                        type="number"
-                        min="0"
-                        placeholder="출금 금액"
-                        :required="form.sort === '2'"
-                        :disabled="form.sort !== '2'"
-                      />
-                    </CCol>
-                  </CRow>
-                </CCol>
+        <CRow class="mb-3">
+          <CCol sm="1"></CCol>
+          <CCol sm="11">
+            <CRow>
+              <CCol sm="6">
+                <CRow>
+                  <CFormLabel class="col-sm-4 col-form-label">
+                    출금액
+                  </CFormLabel>
+                  <CCol sm="8">
+                    <CFormInput
+                      v-model="sepItem.outlay"
+                      type="number"
+                      min="0"
+                      placeholder="출금 금액"
+                      :required="form.sort === '2'"
+                      :disabled="form.sort !== '2'"
+                    />
+                  </CCol>
+                </CRow>
+              </CCol>
 
-                <CCol sm="6">
-                  <CRow>
-                    <CFormLabel class="col-sm-4 col-form-label">
-                      입금액
-                    </CFormLabel>
-                    <CCol sm="8">
-                      <CFormInput
-                        v-model="sep.income"
-                        type="number"
-                        min="0"
-                        placeholder="입금 금액"
-                        :required="form.sort === '1'"
-                        :disabled="form.sort !== '1'"
-                      />
-                    </CCol>
-                  </CRow>
-                </CCol>
-              </CRow>
-            </CCol>
-          </CRow>
+              <CCol sm="6">
+                <CRow>
+                  <CFormLabel class="col-sm-4 col-form-label">
+                    입금액
+                  </CFormLabel>
+                  <CCol sm="8">
+                    <CFormInput
+                      v-model="sepItem.income"
+                      type="number"
+                      min="0"
+                      placeholder="입금 금액"
+                      :required="form.sort === '1'"
+                      :disabled="form.sort !== '1'"
+                    />
+                  </CCol>
+                </CRow>
+              </CCol>
+            </CRow>
+          </CCol>
+        </CRow>
 
-          <CRow class="mb-3">
-            <CCol sm="1">
-              <CButton
-                type="button"
-                @click="separateItems.push(this.sepItem)"
-                color="primary"
-                size="sm"
-                v-if="index + 1 === separateItems.length"
-                >+
-              </CButton>
-            </CCol>
-            <CCol sm="11">
-              <CRow>
-                <CFormLabel class="col-sm-2 col-form-label">비고</CFormLabel>
-                <CCol sm="10">
-                  <CFormTextarea v-model="sep.note" placeholder="특이사항" />
-                </CCol>
-              </CRow>
-            </CCol>
-          </CRow>
-        </div>
+        <CRow class="mb-3">
+          <CCol sm="1"></CCol>
+          <CCol sm="11">
+            <CRow>
+              <CFormLabel class="col-sm-2 col-form-label">비고</CFormLabel>
+              <CCol sm="10">
+                <CFormTextarea v-model="sepItem.note" placeholder="특이사항" />
+              </CCol>
+            </CRow>
+          </CCol>
+        </CRow>
       </div>
     </CModalBody>
 
@@ -511,7 +490,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    let sepItem = {
+    let sepItem = reactive({
       project: '',
       sort: '',
       project_account_d1: '',
@@ -523,23 +502,26 @@ export default defineComponent({
       outlay: null,
       evidence: '',
       note: '',
-      date: new Date(),
+      deal_date: '',
       is_separate: false,
       separated: null,
-    }
+    })
+
     if (props.proCash) {
       // eslint-disable-next-line vue/no-setup-props-destructure
       sepItem.project = props.proCash.project
       // eslint-disable-next-line vue/no-setup-props-destructure
       sepItem.sort = props.proCash.sort
       // eslint-disable-next-line vue/no-setup-props-destructure
+      sepItem.bank_account = props.proCash.bank_account
+      // eslint-disable-next-line vue/no-setup-props-destructure
+      sepItem.deal_date = props.proCash.deal_date
+      // eslint-disable-next-line vue/no-setup-props-destructure
       sepItem.separated = props.proCash.pk
     }
-    const separateItems = reactive([sepItem])
 
     return {
       sepItem,
-      separateItems,
     }
   },
   data() {
@@ -588,8 +570,10 @@ export default defineComponent({
         const a = this.form.project === this.proCash.project
         const b = this.form.sort === this.proCash.sort
         const c =
+          this.form.project_account_d1 !== '' &&
           this.form.project_account_d1 === this.proCash.project_account_d1
         const d =
+          this.form.project_account_d2 !== '' &&
           this.form.project_account_d2 === this.proCash.project_account_d2
         const e = this.form.content === this.proCash.content
         const f = this.form.trader === this.proCash.trader
@@ -624,7 +608,7 @@ export default defineComponent({
         this.form.deal_date = this.dateFormat(this.form.deal_date)
         const payload = !this.form.is_separate
           ? this.form
-          : { ...this.form, ...this.separateItems }
+          : { ...this.form, ...{ sepItem: this.sepItem } }
         this.$emit('on-submit', payload)
       }
     },
