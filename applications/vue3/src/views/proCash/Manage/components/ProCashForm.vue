@@ -695,6 +695,12 @@ export default defineComponent({
     },
     sepD1_change() {
       this.sepItem.project_account_d2 = ''
+      this.$nextTick(() => {
+        const sort = this.form.sort
+        const d1 = this.sepItem.project_account_d1
+        this.fetchProFormAccD1List(sort)
+        this.fetchProFormAccD2List({ sort, d1 })
+      })
     },
     callAccount() {
       this.$nextTick(() => {
