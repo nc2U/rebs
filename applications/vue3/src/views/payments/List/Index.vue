@@ -9,11 +9,12 @@
 
   <ContentBody>
     <CCardBody class="pb-5">
-      <ListController ref="listControl" @payment-filtering="onPayFiltering" />
+      <ListController ref="listControl" @payment-filtering="listFiltering" />
       <PaymentList
         :project="project"
         @page-select="pageSelect"
         @on-update="onUpdate"
+        @on-patch="onPatch"
         @on-delete="onDelete"
       />
     </CCardBody>
@@ -41,6 +42,19 @@ export default defineComponent({
     PaymentSummary,
     ListController,
     PaymentList,
+  },
+  data() {
+    return {
+      dataFilter: {
+        page: 1,
+        from_date: '',
+        to_date: '',
+        pay_order: '',
+        pay_account: '',
+        no_contract: false,
+        search: '',
+      },
+    }
   },
   created() {
     this.fetchTypeList(this.initProjId)
@@ -78,15 +92,20 @@ export default defineComponent({
       }
     },
     pageSelect(this: any, page: number) {
+      this.dataFilter.page = page
       this.$refs.listControl.listFiltering(page)
     },
-    onPayFiltering(payload: any) {
+    listFiltering(payload: any) {
+      this.dataFilter = payload
       const project = this.project.pk
       this.fetchPaymentList({ ...{ project }, ...payload })
     },
     onUpdate(payload: any) {
       alert('a')
       console.log(payload)
+    },
+    onPatch(payload: any) {
+      this.patchPrCashBook({ ...{ filters: this.dataFilter }, ...payload })
     },
     onDelete(pk: number) {
       alert(pk)
@@ -98,7 +117,7 @@ export default defineComponent({
       'fetchPayOrderList',
       'fetchPaymentList',
     ]),
-    ...mapActions('proCash', ['fetchProBankAccList']),
+    ...mapActions('proCash', ['fetchProBankAccList', 'patchPrCashBook']),
   },
 })
 </script>

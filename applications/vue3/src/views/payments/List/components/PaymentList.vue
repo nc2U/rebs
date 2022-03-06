@@ -1,16 +1,16 @@
 <template>
   <CTable hover responsive align="middle">
     <colgroup>
-      <col width="10%" />
-      <col width="9%" />
-      <col width="7%" />
-      <col width="9%" />
-      <col width="8%" />
-      <col width="9%" />
-      <col width="13%" />
-      <col width="13%" />
-      <col width="12%" />
-      <col width="10%" />
+      <col width="10%"/>
+      <col width="9%"/>
+      <col width="7%"/>
+      <col width="9%"/>
+      <col width="8%"/>
+      <col width="9%"/>
+      <col width="13%"/>
+      <col width="13%"/>
+      <col width="12%"/>
+      <col width="10%"/>
     </colgroup>
 
     <CTableHead>
@@ -30,33 +30,34 @@
 
     <CTableBody>
       <Payment
-        v-for="(payment, i) in getPayments"
-        :payment="payment"
-        :key="i"
-        @on-update="onUpdate"
-        @on-delete="onDelete"
+          v-for="(payment, i) in getPayments"
+          :payment="payment"
+          :key="i"
+          @on-update="onUpdate"
+          @on-patch="onPatch"
+          @on-delete="onDelete"
       />
     </CTableBody>
   </CTable>
 
   <CSmartPagination
-    :activePage="1"
-    :limit="8"
-    :pages="paymentPages(10)"
-    class="mt-3"
-    @active-page-change="pageSelect"
+      :activePage="1"
+      :limit="8"
+      :pages="paymentPages(10)"
+      class="mt-3"
+      @active-page-change="pageSelect"
   />
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import {defineComponent} from 'vue'
 import Payment from '@/views/payments/List/components/Payment.vue'
-import { mapGetters } from 'vuex'
+import {mapGetters} from 'vuex'
 
 export default defineComponent({
   name: 'PaymentList',
-  components: { Payment },
-  props: { project: Object },
+  components: {Payment},
+  props: {project: Object},
   computed: {
     ...mapGetters('payment', ['paymentPages', 'getPayments']),
   },
@@ -66,6 +67,9 @@ export default defineComponent({
     },
     onUpdate(payload: any) {
       this.$emit('on-update', payload)
+    },
+    onPatch(payload: any) {
+      this.$emit('on-patch', payload)
     },
     onDelete(pk: number) {
       this.$emit('on-delete', pk)
