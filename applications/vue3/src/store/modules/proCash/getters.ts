@@ -41,6 +41,7 @@ const getters = {
           contract: p.contract,
           is_separate: p.is_separate,
           separated: p.separated,
+          sepItems: p.sepItems,
         }))
       : []
   },

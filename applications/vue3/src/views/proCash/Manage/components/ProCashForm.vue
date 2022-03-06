@@ -239,7 +239,9 @@
               v-model="form.is_separate"
               label="별도 분리기록 거래 건 - 여러 계정 항목이 1회에 입·출금되어 별도 분리 기록이 필요한 거래인 경우."
               :disabled="
-                form.project_account_d1 !== '' || form.project_account_d2 !== ''
+                form.project_account_d1 !== '' ||
+                form.project_account_d2 !== '' ||
+                proCash.sepItems.length > 0
               "
             />
           </CCol>
@@ -247,6 +249,32 @@
       </div>
 
       <div v-if="form.is_separate && proCash">
+        <hr v-if="proCash.sepItems.length > 0" />
+        <CRow class="mb-3" v-if="proCash.sepItems.length > 0">
+          <CCol>
+            <strong>
+              <CIcon name="cilLibrary" />
+              {{
+                sepSummary[0] ? `입금액 합계 : ${numFormat(sepSummary[0])}` : ''
+              }}
+              {{
+                sepSummary[1] ? `출금액 합계 : ${numFormat(sepSummary[1])}` : ''
+              }}
+            </strong>
+          </CCol>
+        </CRow>
+
+        <CRow v-for="(sep, i) in proCash.sepItems" :key="sep.pk" class="mb-1">
+          <CCol sm="1">{{ i + 1 }}</CCol>
+          <CCol sm="2">{{ sep.trader }}</CCol>
+          <CCol sm="5">{{ cutString(sep.content, 20) }}</CCol>
+          <CCol sm="2" class="text-right">
+            {{ sep.income ? numFormat(sep.income) : numFormat(sep.outlay) }}
+          </CCol>
+          <CCol sm="2" class="text-right">
+            <CButton type="button" color="success" size="sm">수정</CButton>
+          </CCol>
+        </CRow>
         <hr />
         <CRow class="mb-3">
           <CCol sm="1"></CCol>
@@ -589,6 +617,21 @@ export default defineComponent({
 
         return a && b && c && d && e && f && g && h && i && j && k && l && m
       } else return false
+    },
+    sepSummary() {
+      const inc =
+        this.proCash.sepItems.length !== 0
+          ? this.proCash.sepItems
+              .map((s: any) => s.income)
+              .reduce((res: any, el: any) => res + el)
+          : 0
+      const out =
+        this.proCash.sepItems.length !== 0
+          ? this.proCash.sepItems
+              .map((s: any) => s.outlay)
+              .reduce((res: any, el: any) => res + el)
+          : 0
+      return [inc, out]
     },
     ...mapState('proCash', [
       'formAccD1List',
