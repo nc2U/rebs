@@ -144,13 +144,11 @@ const actions = {
 
   updatePrCashBook: ({ dispatch }: any, payload: any) => {
     const { pk, filters, ...formData } = payload
-    const page = filters.page ? filters.page : 1
     api
       .put(`/project-cashbook/${pk}/`, formData)
       .then(res => {
         dispatch('fetchProjectCashList', {
           project: res.data.project,
-          page,
           ...filters,
         })
         dispatch(
@@ -168,13 +166,11 @@ const actions = {
   },
   patchPrCashBook: ({ dispatch }: any, payload: any) => {
     const { pk, filters, ...formData } = payload
-    const page = payload.filters.page ? payload.filters.page : 1
     api
       .patch(`/project-cashbook/${pk}/`, formData)
       .then(res => {
         dispatch('fetchProjectCashList', {
           project: res.data.project,
-          page,
           ...filters,
         })
         dispatch(
@@ -182,7 +178,6 @@ const actions = {
           {
             project: res.data.project,
             contract: res.data.contract,
-            ordering: 'deal_date',
           },
           { root: true },
         )
