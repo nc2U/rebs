@@ -268,7 +268,14 @@
             {{ sep.income ? numFormat(sep.income) : numFormat(sep.outlay) }}
           </CCol>
           <CCol sm="2" class="text-right">
-            <CButton type="button" color="success" size="sm">수정</CButton>
+            <CButton
+              @click="sepUpdate(sep)"
+              type="button"
+              color="success"
+              size="sm"
+            >
+              수정
+            </CButton>
           </CCol>
         </CRow>
         <hr />
@@ -648,6 +655,12 @@ export default defineComponent({
     ]),
   },
   methods: {
+    sepUpdate(sep: any) {
+      const { pk, ...data } = sep
+      this.sepItem = data
+      alert('준비중...')
+      console.log({ ...{ pk }, ...this.sepItem })
+    },
     onSubmit(this: any, event: any) {
       const form = event.currentTarget
       if (form.checkValidity() === false) {
