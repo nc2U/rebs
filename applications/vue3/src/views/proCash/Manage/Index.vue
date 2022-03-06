@@ -105,7 +105,9 @@ export default defineComponent({
       } else this.createPrCashBook(payload)
     },
     onUpdate(payload: any) {
-      this.updatePrCashBook({ ...{ filters: this.dataFilter }, ...payload })
+      const { sepItem, ...orignData } = payload
+      if (sepItem) this.onCreate(sepItem)
+      this.updatePrCashBook({ ...{ filters: this.dataFilter }, ...orignData })
     },
     onDelete(payload: any) {
       this.deletePrCashBook({ ...{ filters: this.dataFilter }, ...payload })

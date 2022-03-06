@@ -1,10 +1,17 @@
 <template>
-  <CTableRow class="text-center" :color="rowColor" v-if="proCash">
+  <CTableRow
+    class="text-center"
+    :color="rowColor"
+    v-if="proCash"
+    :style="proCash.is_separate ? 'font-weight: bold;' : ''"
+  >
     <CTableDataCell>{{ proCash.deal_date }}</CTableDataCell>
     <CTableDataCell :class="sortClass">
       {{ proCash.sort_desc }}
     </CTableDataCell>
-    <CTableDataCell>{{ proCash.project_account_d1_desc }}</CTableDataCell>
+    <CTableDataCell class="text-left">
+      {{ proCash.project_account_d1_desc }}
+    </CTableDataCell>
     <CTableDataCell class="text-left">
       {{ cutString(proCash.project_account_d2_desc, 7) }}
     </CTableDataCell>
@@ -88,7 +95,8 @@ export default defineComponent({
     rowColor() {
       let color = ''
       color = this.proCash.contract ? 'info' : color
-      color = this.proCash.is_separate ? 'secondary' : color
+      color = this.proCash.is_separate ? 'dark' : color
+      color = this.proCash.separated ? 'primary' : color
       return color
     },
     pageManageAuth() {
