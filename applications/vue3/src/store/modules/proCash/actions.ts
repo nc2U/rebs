@@ -155,6 +155,14 @@ const actions = {
           'payment/fetchPaymentList',
           {
             project: res.data.project,
+            ...filters,
+          },
+          { root: true },
+        )
+        dispatch(
+          'payment/fetchAllPaymentList',
+          {
+            project: res.data.project,
             contract: res.data.contract,
             ordering: 'deal_date',
           },
