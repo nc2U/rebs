@@ -1,7 +1,7 @@
 <template>
   <CTableRow
     class="text-center"
-    :color="payment.pk.toString() === paymentId ? 'warning' : ''"
+    :color="payment.pk.toString() === paymentId ? 'secondary' : ''"
   >
     <CTableDataCell>{{ payment.deal_date }}</CTableDataCell>
     <CTableDataCell>
