@@ -28,7 +28,7 @@ import {
   cibCcApplePay,
   cibCcAmex,
 } from '@coreui/icons'
-import {cifUs, cifBr, cifIn, cifFr, cifEs, cifPl} from '@coreui/icons'
+import { cifUs, cifBr, cifIn, cifFr, cifEs, cifPl } from '@coreui/icons'
 import {
   cilAlignCenter,
   cilAlignLeft,
@@ -63,6 +63,7 @@ import {
   cilCog,
   cilCommentSquare,
   cilCursor,
+  cilDescription,
   cilDrop,
   cilDollar,
   cilEnvelopeClosed,
@@ -165,6 +166,7 @@ export const iconsSet = Object.assign(
     cilCog,
     cilCommentSquare,
     cilCursor,
+    cilDescription,
     cilDrop,
     cilDollar,
     cilEnvelopeClosed,

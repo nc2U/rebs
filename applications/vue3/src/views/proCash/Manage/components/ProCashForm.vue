@@ -249,7 +249,7 @@
         <CRow class="mb-3" v-if="proCash.sepItems.length > 0">
           <CCol>
             <strong>
-              <CIcon name="cilLibrary" />
+              <CIcon name="cilDescription" class="mr-2" />
               {{
                 sepSummary[0] ? `입금액 합계 : ${numFormat(sepSummary[0])}` : ''
               }}
