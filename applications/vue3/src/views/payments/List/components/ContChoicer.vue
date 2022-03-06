@@ -72,9 +72,9 @@
   <ConfirmModal ref="confirmModal">
     <template v-slot:header>건별 수납 매칭</template>
     <template v-slot:default>
-      해당 수납 항목을 이 계약 건 &lt;&lt;{{
+      해당 수납 항목을 이 계약 건 &lt;{{
         `${cont.contractor}(${cont.serial_number})`
-      }}&gt;&gt; 에 등록하시겠습니까?
+      }}&gt; 에 등록하시겠습니까?
     </template>
     <template v-slot:footer>
       <CButton color="primary" @click="modalAction">저장</CButton>
