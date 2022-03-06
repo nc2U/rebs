@@ -185,7 +185,7 @@ export default defineComponent({
     this.form.project_account_d1 = this.contract.order_group.sort
     this.form.project_account_d2 = this.contract.order_group.sort
     this.form.contract = this.contract.pk
-    this.form.content = `${this.contract.serial_number}[${this.contract.contractor.name}] 대금납부`
+    this.form.content = `${this.contract.contractor.name}[${this.contract.serial_number}] 대금납부`
   },
   computed: {
     formsCheck() {

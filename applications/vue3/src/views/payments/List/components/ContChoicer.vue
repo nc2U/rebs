@@ -8,11 +8,11 @@
               <CCol md="5" class="mb-3">
                 <CInputGroup class="flex-nowrap">
                   <CFormInput
-                      v-model="form.search"
-                      placeholder="계약자, 비고, 계약 일련번호"
-                      @keydown.enter="listFiltering(1)"
-                      aria-label="Search"
-                      aria-describedby="addon-wrapping"
+                    v-model="form.search"
+                    placeholder="계약자, 비고, 계약 일련번호"
+                    @keydown.enter="listFiltering(1)"
+                    aria-label="Search"
+                    aria-describedby="addon-wrapping"
                   />
                   <CInputGroupText @click="listFiltering(1)">
                     계약 건 찾기
@@ -24,18 +24,18 @@
         </CRow>
         <CRow>
           <CCol
-              color="warning"
-              class="p-2 pl-3"
-              v-if="contractIndex.length !== 0"
+            color="warning"
+            class="p-2 pl-3"
+            v-if="contractIndex.length !== 0"
           >
             <CButton
-                type="button"
-                color="dark"
-                v-for="cont in contractIndex"
-                :key="cont.pk"
-                @click="contMatching(cont)"
-                variant="outline"
-                size="sm"
+              type="button"
+              color="dark"
+              v-for="cont in contractIndex"
+              :key="cont.pk"
+              @click="contMatching(cont)"
+              variant="outline"
+              size="sm"
             >
               {{ `${cont.contractor}(${cont.serial_number})` }}
             </CButton>
@@ -47,9 +47,9 @@
       </CCallout>
 
       <CAlert
-          color="default"
-          v-if="contractIndex.length !== 0"
-          class="pt-0 pb-0"
+        color="default"
+        v-if="contractIndex.length !== 0"
+        class="pt-0 pb-0"
       >
         상기 계약 건 중 아래 수납 항목을 매칭 등록할 계약 건을 클릭하여
         주십시요.
@@ -59,9 +59,9 @@
         <span>
           {{
             `[입금자] : ${payment.trader}  | [입금액] : ${numFormat(
-                payment.income,
+              payment.income,
             )} | [입금계좌] : ${payment.bank_account} | [입금일] : ${
-                payment.deal_date
+              payment.deal_date
             }`
           }}
         </span>
@@ -81,19 +81,19 @@
     </template>
   </ConfirmModal>
 
-  <AlertModal ref="alertModal"/>
+  <AlertModal ref="alertModal" />
 </template>
 
 <script lang="ts">
-import {defineComponent} from 'vue'
+import { defineComponent } from 'vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
-import {mapActions, mapGetters, mapState} from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'ContChoicer',
-  components: {ConfirmModal, AlertModal},
-  props: {payment: Object},
+  components: { ConfirmModal, AlertModal },
+  props: { payment: Object },
   data() {
     return {
       form: {
@@ -110,7 +110,7 @@ export default defineComponent({
   computed: {
     pageManageAuth() {
       return (
-          this.superAuth || (this.staffAuth && this.staffAuth.payment === '2')
+        this.superAuth || (this.staffAuth && this.staffAuth.payment === '2')
       )
     },
     ...mapState('project', ['project']),
@@ -123,7 +123,7 @@ export default defineComponent({
         if (this.form.search === '') this.pageInit()
         else {
           const project = this.project.pk
-          this.fetchContractList({...{project}, ...this.form})
+          this.fetchContractList({ ...{ project }, ...this.form })
         }
       })
       if (this.contractIndex.length === 0) {
@@ -141,8 +141,8 @@ export default defineComponent({
       const pk = this.payment.pk
       const is_contract_payment = true
       const contract = this.cont.pk
-      const content = `${this.cont.serial_number}[${this.cont.contractor}] 대금납부`
-      this.$emit('on-patch', {pk, is_contract_payment, contract, content})
+      const content = `${this.cont.contractor}[${this.cont.serial_number}] 대금납부`
+      this.$emit('on-patch', { pk, is_contract_payment, contract, content })
       this.pageInit()
       this.$emit('close')
     },
