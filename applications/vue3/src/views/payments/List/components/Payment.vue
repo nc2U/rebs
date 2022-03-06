@@ -14,32 +14,12 @@
     </CTableDataCell>
     <CTableDataCell>{{ payment.serial_number }}</CTableDataCell>
     <CTableDataCell>
-      <router-link
-        @click="contMatching"
-        :to="
-          payment.contract
-            ? {
-                name: '건별수납 관리',
-                query: { contract: payment.contract.pk, payment: payment.pk },
-              }
-            : ''
-        "
-      >
+      <router-link @click="toManage" to="">
         {{ payment.contract ? payment.contractor : '계약정보 확인' }}
       </router-link>
     </CTableDataCell>
     <CTableDataCell class="text-right">
-      <router-link
-        @click="contMatching"
-        :to="
-          payment.contract
-            ? {
-                name: '건별수납 관리',
-                query: { contract: payment.contract.pk, payment: payment.pk },
-              }
-            : ''
-        "
-      >
+      <router-link @click="toManage" to="">
         {{ numFormat(payment.income) }}
       </router-link>
     </CTableDataCell>
@@ -59,8 +39,9 @@
     <CTableDataCell>{{ payment.bank_account }}</CTableDataCell>
     <CTableDataCell>{{ payment.trader }}</CTableDataCell>
     <CTableDataCell>
-      <CButton color="success" @click="onUpdate" size="sm"> 수정</CButton>
-      <CButton color="danger" @click="onDelete" size="sm"> 삭제</CButton>
+      <CButton type="button" color="info" @click="toManage" size="sm">
+        확인
+      </CButton>
     </CTableDataCell>
   </CTableRow>
 
@@ -77,8 +58,6 @@
       />
     </template>
   </FormModal>
-
-  <!--  <AlertModal ref="alertModal" />-->
 </template>
 
 <script lang="ts">
@@ -86,7 +65,6 @@ import { defineComponent } from 'vue'
 import commonMixin from '@/views/commonMixin'
 import FormModal from '@/components/Modals/FormModal.vue'
 import ContChoicer from '@/views/payments/List/components/ContChoicer.vue'
-// import AlertModal from '@/components/Modals/AlertModal.vue'
 
 export default defineComponent({
   name: 'Payment',
@@ -110,18 +88,21 @@ export default defineComponent({
     },
   },
   methods: {
+    toManage() {
+      return this.payment.contract ? this.toRegister() : this.contMatching()
+    },
+    toRegister() {
+      this.$router.push({
+        name: '건별수납 관리',
+        query: { contract: this.payment.contract.pk, payment: this.payment.pk },
+      })
+    },
     contMatching(this: any) {
       if (!this.payment.contract) this.$refs.contMatchingModal.callModal()
       return
     },
-    onUpdate(this: any) {
-      this.$emit('on-update', { ...{ pk: this.payment.pk }, ...this.form })
-    },
     onPatch(this: any, payload: any) {
       this.$emit('on-patch', payload)
-    },
-    onDelete(this: any) {
-      this.$emit('on-delete', this.payment.pk)
     },
   },
 })
