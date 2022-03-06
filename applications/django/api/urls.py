@@ -83,7 +83,8 @@ urlpatterns = [
     path('project-cashbook/', ProjectCashBookList.as_view(), name=ProjectCashBookList.name),
     path('project-cashbook/<int:pk>/', ProjectCashBookDetail.as_view(), name=ProjectCashBookDetail.name),
     path('payment/', PaymentList.as_view(), name=PaymentList.name),
-    path('payment/<int:pk>/', PaymentDetail.as_view(), name=PaymentDetail.name),
+    path('all-payment/', AllPaymentList.as_view(), name=AllPaymentList.name),
+
     path('payment-sum/', PaymentSummary.as_view(), name=PaymentSummary.name),
     path('contract-num/', NumContractByType.as_view(), name=NumContractByType.name),
     path('price/', SalesPriceList.as_view(), name=SalesPriceList.name),
