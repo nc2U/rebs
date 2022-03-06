@@ -11,7 +11,11 @@
           <CRow>
             <CFormLabel class="col-sm-4 col-form-label">거래일자</CFormLabel>
             <CCol sm="8">
-              <DatePicker v-model="form.date" required placeholder="거래일자" />
+              <DatePicker
+                v-model="form.deal_date"
+                required
+                placeholder="거래일자"
+              />
             </CCol>
           </CRow>
         </CCol>
@@ -279,7 +283,7 @@ export default defineComponent({
         outlay: null,
         evidence: '',
         note: '',
-        date: new Date(),
+        deal_date: new Date(),
       },
       validated: false,
     }
@@ -298,7 +302,7 @@ export default defineComponent({
       this.form.outlay = this.cash.outlay
       this.form.evidence = this.cash.evidence // ? this.cash.evidence : '0'
       this.form.note = this.cash.note
-      this.form.date = new Date(this.cash.deal_date)
+      this.form.deal_date = new Date(this.cash.deal_date)
     }
     this.callAccount()
   },
@@ -318,7 +322,8 @@ export default defineComponent({
         const k = this.form.evidence === this.cash.evidence
         const l = this.form.note === this.cash.note
         const m =
-          this.form.date.toString() === new Date(this.cash.deal_date).toString()
+          this.form.deal_date.toString() ===
+          new Date(this.cash.deal_date).toString()
 
         return a && b && c && d && e && f && g && h && i && j && k && l && m
       } else return false
@@ -339,9 +344,8 @@ export default defineComponent({
 
         this.validated = true
       } else {
-        const { date, ...formData } = this.form
-        const deal_date = this.dateFormat(date)
-        this.$emit('on-submit', { ...{ deal_date }, ...formData })
+        this.form.deal_date = this.dateFormat(this.form.deal_date)
+        this.$emit('on-submit', this.form)
       }
     },
     sort_change(event: any) {

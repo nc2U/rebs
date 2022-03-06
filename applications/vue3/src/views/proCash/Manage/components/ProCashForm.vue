@@ -13,7 +13,7 @@
               <CFormLabel class="col-sm-4 col-form-label">거래일자</CFormLabel>
               <CCol sm="8">
                 <DatePicker
-                  v-model="form.date"
+                  v-model="form.deal_date"
                   required
                   placeholder="거래일자"
                 />
@@ -362,7 +362,12 @@
                       거래계좌
                     </CFormLabel>
                     <CCol sm="8">
-                      <CFormSelect v-model="sep.bank_account" required>
+                      <CFormSelect
+                        v-model="sep.bank_account"
+                        :value="form.bank_account"
+                        readonly
+                        required
+                      >
                         <option value="">---------</option>
                         <option
                           v-for="ba in proBankAccountList"
@@ -527,6 +532,8 @@ export default defineComponent({
       sepItem.project = props.proCash.project
       // eslint-disable-next-line vue/no-setup-props-destructure
       sepItem.sort = props.proCash.sort
+      // eslint-disable-next-line vue/no-setup-props-destructure
+      sepItem.separated = props.proCash.pk
     }
     const separateItems = reactive([sepItem])
 
@@ -549,7 +556,7 @@ export default defineComponent({
         outlay: null,
         evidence: '',
         note: '',
-        date: new Date(),
+        deal_date: new Date(),
         is_separate: false,
         separated: null,
       },
@@ -569,7 +576,7 @@ export default defineComponent({
       this.form.outlay = this.proCash.outlay
       this.form.evidence = this.proCash.evidence
       this.form.note = this.proCash.note
-      this.form.date = new Date(this.proCash.deal_date)
+      this.form.deal_date = new Date(this.proCash.deal_date)
       this.form.is_separate = this.proCash.is_separate
       this.form.separated = this.proCash.separated
     }
@@ -592,7 +599,7 @@ export default defineComponent({
         const j = this.form.evidence === this.proCash.evidence
         const k = this.form.note === this.proCash.note
         const l =
-          this.form.date.toString() ===
+          this.form.deal_date.toString() ===
           new Date(this.proCash.deal_date).toString()
         const m = this.form.is_separate === this.proCash.is_separate
 
@@ -614,9 +621,11 @@ export default defineComponent({
 
         this.validated = true
       } else {
-        const { date, ...formData } = this.form
-        const deal_date = this.dateFormat(date)
-        this.$emit('on-submit', { ...{ deal_date }, ...formData })
+        this.form.deal_date = this.dateFormat(this.form.deal_date)
+        const payload = !this.form.is_separate
+          ? this.form
+          : { ...this.form, ...this.separateItems }
+        this.$emit('on-submit', payload)
       }
     },
     sort_change(event: any) {
