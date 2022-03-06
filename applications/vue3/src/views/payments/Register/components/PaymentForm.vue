@@ -193,10 +193,13 @@ export default defineComponent({
         const io = this.payment.installment_order
           ? this.payment.installment_order.pk
           : null
-        const a = this.form.installment_order === io
-        const b = this.form.trader === this.payment.trader
-        const c = this.form.bank_account === this.payment.bank_account.pk
-        const d = this.form.income === this.payment.income
+        const a =
+          this.form.installment_order && this.form.installment_order === io
+        const b = this.form.trader && this.form.trader === this.payment.trader
+        const c =
+          this.form.bank_account &&
+          this.form.bank_account === this.payment.bank_account.pk
+        const d = this.form.income && this.form.income === this.payment.income
         const e = this.form.note === this.payment.note
         const f =
           this.form.deal_date.toString() ===

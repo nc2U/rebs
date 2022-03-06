@@ -1,26 +1,22 @@
 <template>
-  <CTableRow
-      class="text-center"
-      v-if="payment"
-      :color="payment.contract ? '' : 'warning'"
-  >
+  <CTableRow class="text-center" v-if="payment" :color="rowClass">
     <CTableDataCell>{{ payment.deal_date }}</CTableDataCell>
     <CTableDataCell>{{ payment.order_group }}</CTableDataCell>
     <CTableDataCell class="text-left">
       <CIcon
-          v-if="payment.contract"
-          name="cib-node-js"
-          :style="{ color: payment.type_color }"
-          size="sm"
-          class="mr-1"
+        v-if="payment.contract"
+        name="cib-node-js"
+        :style="{ color: payment.type_color }"
+        size="sm"
+        class="mr-1"
       />
       {{ payment.type_name }}
     </CTableDataCell>
     <CTableDataCell>{{ payment.serial_number }}</CTableDataCell>
     <CTableDataCell>
       <router-link
-          @click="contMatching"
-          :to="
+        @click="contMatching"
+        :to="
           payment.contract
             ? {
                 name: '건별수납 관리',
@@ -34,8 +30,8 @@
     </CTableDataCell>
     <CTableDataCell class="text-right">
       <router-link
-          @click="contMatching"
-          :to="
+        @click="contMatching"
+        :to="
           payment.contract
             ? {
                 name: '건별수납 관리',
@@ -47,8 +43,18 @@
         {{ numFormat(payment.income) }}
       </router-link>
     </CTableDataCell>
-    <CTableDataCell>
-      {{ payment.installment_order }}
+    <CTableDataCell
+      :class="
+        payment.contract && payment.installment_order === '-'
+          ? 'text-danger'
+          : ''
+      "
+    >
+      {{
+        payment.contract && payment.installment_order === '-'
+          ? '납입회차 확인'
+          : payment.installment_order
+      }}
     </CTableDataCell>
     <CTableDataCell>{{ payment.bank_account }}</CTableDataCell>
     <CTableDataCell>{{ payment.trader }}</CTableDataCell>
@@ -60,14 +66,14 @@
 
   <FormModal size="lg" ref="contMatchingModal">
     <template v-slot:header>
-      <CIcon name="cil-italic"/>
+      <CIcon name="cil-italic" />
       수납 건별 계약 건 매칭
     </template>
     <template v-slot:default class="p-5">
       <ContChoicer
-          :payment="payment"
-          @on-patch="onPatch"
-          @close="$refs.contMatchingModal.visible = false"
+        :payment="payment"
+        @on-patch="onPatch"
+        @close="$refs.contMatchingModal.visible = false"
       />
     </template>
   </FormModal>
@@ -76,7 +82,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from 'vue'
+import { defineComponent } from 'vue'
 import commonMixin from '@/views/commonMixin'
 import FormModal from '@/components/Modals/FormModal.vue'
 import ContChoicer from '@/views/payments/List/components/ContChoicer.vue'
@@ -85,11 +91,22 @@ import ContChoicer from '@/views/payments/List/components/ContChoicer.vue'
 export default defineComponent({
   name: 'Payment',
   mixins: [commonMixin],
-  components: {FormModal, ContChoicer},
+  components: { FormModal, ContChoicer },
   props: {
     payment: {
       type: Object,
       required: true,
+    },
+  },
+  computed: {
+    rowClass() {
+      let cls = ''
+      cls =
+        this.payment.contract && this.payment.installment_order === '-'
+          ? 'danger'
+          : cls
+      cls = !this.payment.contract ? 'warning' : cls
+      return cls
     },
   },
   methods: {
@@ -98,7 +115,7 @@ export default defineComponent({
       return
     },
     onUpdate(this: any) {
-      this.$emit('on-update', {...{pk: this.payment.pk}, ...this.form})
+      this.$emit('on-update', { ...{ pk: this.payment.pk }, ...this.form })
     },
     onPatch(this: any, payload: any) {
       this.$emit('on-patch', payload)

@@ -105,7 +105,7 @@ export default defineComponent({
       console.log(payload)
     },
     onPatch(payload: any) {
-      this.patchPrCashBook({ ...{ filters: this.dataFilter }, ...payload })
+      this.patchPrCashBook(payload)
     },
     onDelete(pk: number) {
       alert(pk)
