@@ -242,22 +242,26 @@ class ProjectCashReport(LoginRequiredMixin, TemplateView):
             # 어제까지의 토탈 income, outlay
             ba_yi = ProjectCashBook.objects.filter(
                 project=self.get_project(),
+                is_separate=False,
                 bank_account=ba, deal_date__lte=context['yesterday']).aggregate(Sum('income'))
             ba_uy_inc = ba_yi['income__sum'] if ba_yi['income__sum'] else 0  # 입금 내역이 없으면 0
 
             ba_yo = ProjectCashBook.objects.filter(
                 project=self.get_project(),
+                is_separate=False,
                 bank_account=ba, deal_date__lte=context['yesterday']).aggregate(Sum('outlay'))
             ba_uy_out = ba_yo['outlay__sum'] if ba_yo['outlay__sum'] else 0  # 출금 내역이 없으면 0
 
             # 기준일자 토탈 income, outlay
             ba_ti = ProjectCashBook.objects.filter(
                 project=self.get_project(),
+                is_separate=False,
                 bank_account=ba,
                 deal_date__exact=context['confirm_date']).aggregate(Sum('income'))
 
             ba_to = ProjectCashBook.objects.filter(
                 project=self.get_project(),
+                is_separate=False,
                 bank_account=ba,
                 deal_date__exact=context['confirm_date']).aggregate(Sum('outlay'))
 
@@ -291,14 +295,18 @@ class ProjectCashReport(LoginRequiredMixin, TemplateView):
         context['ba_totay_balance_sum'] = ba_totay_balance_sum if ba_totay_balance_sum != 0 else "-"
 
         # 당일 입출금 데이터
-        context['day_inc_list'] = ProjectCashBook.objects.filter(project=self.get_project(), income__isnull=False,
+        context['day_inc_list'] = ProjectCashBook.objects.filter(project=self.get_project(), is_separate=False,
+                                                                 income__isnull=False,
                                                                  deal_date__exact=context['confirm_date'])
-        context['day_out_list'] = ProjectCashBook.objects.filter(project=self.get_project(), outlay__isnull=False,
+        context['day_out_list'] = ProjectCashBook.objects.filter(project=self.get_project(), is_separate=False,
+                                                                 outlay__isnull=False,
                                                                  deal_date__exact=context['confirm_date'])
-        context['day_inc_sum'] = ProjectCashBook.objects.filter(project=self.get_project(), income__isnull=False,
+        context['day_inc_sum'] = ProjectCashBook.objects.filter(project=self.get_project(), is_separate=False,
+                                                                income__isnull=False,
                                                                 deal_date__exact=context['confirm_date']).aggregate(
             Sum('income'))
-        context['day_out_sum'] = ProjectCashBook.objects.filter(project=self.get_project(), outlay__isnull=False,
+        context['day_out_sum'] = ProjectCashBook.objects.filter(project=self.get_project(), is_separate=False,
+                                                                outlay__isnull=False,
                                                                 deal_date__exact=context['confirm_date']).aggregate(
             Sum('outlay'))
         # 예산관련 데이터(수입)
@@ -325,6 +333,7 @@ class ProjectCashReport(LoginRequiredMixin, TemplateView):
         for budget in context['project_budgets']:
             # 예산항목별 출금액
             pcash_budget_data = ProjectCashBook.objects.filter(project=self.get_project(),
+                                                               is_separate=False,
                                                                project_account_d2=budget.account_d2,
                                                                deal_date__lte=context['confirm_date'])
             pcash_budget_month = pcash_budget_data.filter(deal_date__gte=context['confirm_date'][:8] + '01').aggregate(
