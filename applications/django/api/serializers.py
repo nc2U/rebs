@@ -305,14 +305,23 @@ class ProjectBankAccountSerializer(serializers.ModelSerializer):
                   'holder', 'open_date', 'note', 'inactive', 'directpay')
 
 
+class SeparatedItemsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProjectCashBook
+        fields = ('pk', 'project', 'project_account_d1', 'project_account_d2', 'separated',
+                  'content', 'trader', 'income', 'outlay', 'evidence', 'note',)
+
+
 class ProjectCashBookSerializer(serializers.ModelSerializer):
     evidence_desc = serializers.CharField(source='get_evidence_display', read_only=True)
+    sepItems = SeparatedItemsSerializer(many=True, read_only=True)
 
     class Meta:
         model = ProjectCashBook
         fields = ('pk', 'project', 'sort', 'project_account_d1', 'project_account_d2',
-                  'is_separate', 'separated', 'is_contract_payment', 'contract', 'installment_order', 'is_release',
-                  'is_refund_contractor', 'content', 'trader', 'bank_account', 'income', 'outlay', 'evidence',
+                  'is_separate', 'separated', 'sepItems', 'is_contract_payment', 'contract',
+                  'installment_order', 'is_release', 'is_refund_contractor',
+                  'content', 'trader', 'bank_account', 'income', 'outlay', 'evidence',
                   'evidence_desc', 'note', 'deal_date', 'user', 'created_at', 'updated_at')
 
 
