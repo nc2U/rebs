@@ -505,8 +505,8 @@ export default defineComponent({
       required: true,
     },
   },
-  setup() {
-    const sepItem = reactive({
+  setup(props) {
+    let sepItem = {
       project: '',
       sort: '',
       project_account_d1: '',
@@ -521,7 +521,13 @@ export default defineComponent({
       date: new Date(),
       is_separate: false,
       separated: null,
-    })
+    }
+    if (props.proCash) {
+      // eslint-disable-next-line vue/no-setup-props-destructure
+      sepItem.project = props.proCash.project
+      // eslint-disable-next-line vue/no-setup-props-destructure
+      sepItem.sort = props.proCash.sort
+    }
     const separateItems = reactive([sepItem])
 
     return {
