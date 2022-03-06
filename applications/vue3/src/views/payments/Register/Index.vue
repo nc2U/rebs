@@ -15,10 +15,10 @@
       />
       <CRow>
         <CCol lg="7">
-          <PaymentList
+          <AllPaymentList
             :contract="contract"
             :payment-id="paymentId"
-            :payment-list="paymentList"
+            :payment-list="AllPaymentList"
             @on-update="onUpdate"
             @on-delete="onDelete"
           />
@@ -26,7 +26,7 @@
           <CreateButton :contract="contract" @on-create="onCreate" />
         </CCol>
         <CCol lg="5">
-          <OrdersBoard :contract="contract" :payment-list="paymentList" />
+          <OrdersBoard :contract="contract" :payment-list="AllPaymentList" />
         </CCol>
       </CRow>
     </CCardBody>
@@ -41,7 +41,7 @@ import HeaderMixin from '@/views/payments/_menu/headermixin'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ContChoicer from '@/views/payments/Register/components/ContChoicer.vue'
-import PaymentList from '@/views/payments/Register/components/PaymentList.vue'
+import AllPaymentList from '@/views/payments/Register/components/AllPaymentList.vue'
 import OrdersBoard from '@/views/payments/Register/components/OrdersBoard.vue'
 import CreateButton from '@/views/payments/Register/components/CreateButton.vue'
 import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
@@ -53,7 +53,7 @@ export default defineComponent({
     ContentHeader,
     ContentBody,
     ContChoicer,
-    PaymentList,
+    AllPaymentList,
     CreateButton,
     OrdersBoard,
   },
@@ -82,7 +82,7 @@ export default defineComponent({
     ...mapState('project', ['project']),
     ...mapGetters('accounts', ['initProjId']),
     ...mapState('contract', ['contract']),
-    ...mapState('payment', ['paymentList']),
+    ...mapState('payment', ['AllPaymentList']),
   },
   watch: {
     contract(this: any, newVal) {
@@ -92,7 +92,7 @@ export default defineComponent({
         const unit_type = newVal.unit_type.pk
         this.fetchPriceList({ project, order_group, unit_type })
         this.fetchDownPayList({ project, order_group, unit_type })
-        this.fetchPaymentList({
+        this.fetchAllPaymentList({
           project,
           contract: newVal.pk,
           ordering: 'deal_date',
@@ -100,7 +100,7 @@ export default defineComponent({
       } else {
         this.$store.state.payment.priceList = []
         this.$store.state.payment.downPayList = []
-        this.$store.state.payment.paymentList = []
+        this.$store.state.payment.AllPaymentList = []
       }
     },
   },
@@ -114,7 +114,7 @@ export default defineComponent({
         this.$store.state.contract.contract = null
         this.$store.state.contract.contractList = []
         this.$store.state.project.unitTypeList = []
-        this.$store.state.payment.paymentList = []
+        this.$store.state.payment.AllPaymentList = []
         this.$store.state.payment.payOrderList = []
         this.$store.state.proCash.proBankAccountList = []
       }
@@ -141,7 +141,7 @@ export default defineComponent({
     },
     ...mapActions('project', ['fetchTypeList']),
     ...mapActions('payment', [
-      'fetchPaymentList',
+      'fetchAllPaymentList',
       'fetchPayOrderList',
       'fetchDownPayList',
       'fetchPriceList',

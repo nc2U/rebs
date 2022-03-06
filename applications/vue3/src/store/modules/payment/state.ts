@@ -50,6 +50,7 @@ export interface PaymentState {
   payOrderList: PayOrder[]
   downPayList: DownPay[]
   paymentList: ProjectCashBook[]
+  AllPaymentList: ProjectCashBook[]
   paymentsCount: number
   paySumList: PaySumByType[]
   contNumList: ContractNum[]
@@ -60,6 +61,7 @@ const state: PaymentState = {
   payOrderList: [],
   downPayList: [],
   paymentList: [],
+  AllPaymentList: [],
   paymentsCount: 0,
   paySumList: [],
   contNumList: [],

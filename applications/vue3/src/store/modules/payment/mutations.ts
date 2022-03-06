@@ -3,6 +3,7 @@ import {
   FETCH_PAY_ORDER_LIST,
   FETCH_DWON_PAYMENT,
   FETCH_PAYMENT_LIST,
+  FETCH_ALL_PAYMENT_LIST,
   FETCH_PAYMENT_SUM_LIST,
   FETCH_CONTRACT_NUM_LIST,
 } from '@/store/modules/payment/mutations-types'
@@ -21,6 +22,10 @@ const mutations = {
   [FETCH_PAYMENT_LIST]: (state: PaymentState, payload: any) => {
     state.paymentList = payload.results
     state.paymentsCount = payload.count
+  },
+
+  [FETCH_ALL_PAYMENT_LIST]: (state: PaymentState, payload: any) => {
+    state.AllPaymentList = payload.results
   },
 
   [FETCH_PAYMENT_SUM_LIST]: (state: PaymentState, paload: any) =>

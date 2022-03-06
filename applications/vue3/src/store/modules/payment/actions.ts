@@ -4,6 +4,7 @@ import {
   FETCH_PAY_ORDER_LIST,
   FETCH_DWON_PAYMENT,
   FETCH_PAYMENT_LIST,
+  FETCH_ALL_PAYMENT_LIST,
   FETCH_PAYMENT_SUM_LIST,
   FETCH_CONTRACT_NUM_LIST,
 } from '@/store/modules/payment/mutations-types'
@@ -222,6 +223,19 @@ const actions = {
       .get(url)
       .then(res => {
         commit(FETCH_PAYMENT_LIST, res.data)
+      })
+      .catch(err => console.log(err.response.data))
+  },
+
+  fetchAllPaymentList: ({ commit }: any, payload: any) => {
+    const { project } = payload
+    let url = `/all-payment/?project=${project}`
+    if (payload.contract) url += `&contract=${payload.contract}`
+    if (payload.ordering) url += `&ordering=${payload.ordering}`
+    api
+      .get(url)
+      .then(res => {
+        commit(FETCH_ALL_PAYMENT_LIST, res.data)
       })
       .catch(err => console.log(err.response.data))
   },

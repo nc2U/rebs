@@ -54,7 +54,7 @@ import { defineComponent } from 'vue'
 import Payment from '@/views/payments/Register/components/Payment.vue'
 
 export default defineComponent({
-  name: 'PayList',
+  name: 'AllPaymentList',
   components: { Payment },
   props: { contract: Object, paymentList: Array, paymentId: String },
   computed: {
