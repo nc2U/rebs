@@ -43,8 +43,7 @@
     </template>
     <template v-slot:default>
       <ProCashForm
-        @on-create="onCreate"
-        @on-update="onUpdate"
+        @multi-submit="multiSubmit"
         @on-delete="onDelete"
         @close="$refs.updateFormModal.visible = false"
         :pro-cash="proCash"
@@ -89,11 +88,14 @@ export default defineComponent({
     showDetail(this: any) {
       this.$refs.updateFormModal.callModal()
     },
-    onCreate(payload: any) {
-      this.$emit('on-create', payload)
-    },
-    onUpdate(payload: any) {
-      this.$emit('on-update', payload)
+    // onCreate(payload: any) {
+    //   this.$emit('on-create', payload)
+    // },
+    // onUpdate(payload: any) {
+    //   this.$emit('on-update', payload)
+    // },
+    multiSubmit(payload: any) {
+      this.$emit('multi-submit', payload)
     },
     onDelete(payload: any) {
       this.$emit('on-delete', payload)

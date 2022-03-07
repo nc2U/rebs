@@ -10,7 +10,7 @@
     </template>
     <template v-slot:default>
       <ProCashForm
-        @on-create="onCreate"
+        @multi-submit="multiSubmit"
         @close="$refs.createFormModal.visible = false"
       />
     </template>
@@ -42,8 +42,8 @@ export default defineComponent({
       if (this.pageManageAuth) this.$refs.createFormModal.callModal()
       else this.$refs.createAlertModal.callModal()
     },
-    onCreate(payload: any) {
-      this.$emit('on-create', payload)
+    multiSubmit(payload: any) {
+      this.$emit('multi-submit', payload)
     },
   },
 })

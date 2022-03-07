@@ -396,7 +396,6 @@
                   <CCol sm="8">
                     <CFormSelect
                       v-model="sepItem.bank_account"
-                      :value="form.bank_account"
                       readonly
                       required
                     >
@@ -736,19 +735,18 @@ export default defineComponent({
       this.sepItem.project_account_d2 = sep.project_account_d2
       this.sepItem.content = sep.content
       this.sepItem.trader = sep.trader
-      this.sepItem.bank_account = sep.bank_account
       this.sepItem.evidence = sep.evidence
       this.sepItem.outlay = sep.outlay
       this.sepItem.income = sep.income
       this.sepItem.note = sep.note
     },
     createConfirm(this: any, payload: any) {
-      if (this.pageManageAuth) this.createObject(payload)
+      if (this.pageManageAuth) this.multiSubmit(payload)
       else this.$refs.alertModal.callModal()
     },
     updateConfirm(this: any, payload: any) {
       if (this.pageManageAuth)
-        if (this.allowedPeriod) this.updateObject(payload)
+        if (this.allowedPeriod) this.multiSubmit(payload)
         else
           this.$refs.alertModal.callModal(
             null,
@@ -774,24 +772,26 @@ export default defineComponent({
 
         this.validated = true
       } else {
-        if (!this.form.is_separate || !this.formsCheck) {
+        let formData = {}
+        if (!this.formsCheck) {
           this.form.deal_date = this.dateFormat(this.form.deal_date)
-          if (!this.proCash) this.createConfirm(this.form)
-          else this.updateConfirm({ ...{ pk: this.proCash.pk }, ...this.form })
+          if (!this.proCash) formData = { ...this.form }
+          // this.createConfirm(this.form)
+          else formData = { ...{ ...{ pk: this.proCash.pk }, ...this.form } } //this.updateConfirm({ ...{ pk: this.proCash.pk }, ...this.form })
         }
+        let sepData = {}
         if (this.form.is_separate) {
-          if (!this.sepPk)
-            this.createConfirm({ ...{ pk: this.sepPk }, ...this.sepItem })
-          else this.updateConfirm(this.sepItem)
+          if (!this.sepPk) sepData = { ...this.sepItem }
+          // this.createConfirm(this.sepItem)
+          else sepData = { ...{ ...{ pk: this.sepPk }, ...this.sepItem } } // this.updateConfirm({ ...{ pk: this.sepPk }, ...this.sepItem })
         }
+        if (this.proCash || this.sepPk)
+          this.updateConfirm({ formData, sepData })
+        else this.createConfirm({ formData, sepData })
       }
     },
-    createObject(payload: any) {
-      this.$emit('on-create', payload)
-      this.$emit('close')
-    },
-    updateObject(payload: any) {
-      this.$emit('on-update', payload)
+    multiSubmit(multiPayload: any) {
+      this.$emit('multi-submit', multiPayload)
       this.$emit('close')
     },
     deleteObject(this: any) {

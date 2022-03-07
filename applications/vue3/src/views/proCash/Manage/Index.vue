@@ -8,11 +8,11 @@
   <ContentBody>
     <CCardBody class="pb-5">
       <ListController ref="listControl" @list-filtering="listFiltering" />
-      <AddProCash @on-create="onCreate" />
+      <AddProCash @multi-submit="multiSubmit" />
       <ProCashList
         :project="project"
         @page-select="pageSelect"
-        @on-update="onUpdate"
+        @multi-submit="multiSubmit"
         @on-delete="onDelete"
       />
     </CCardBody>
@@ -106,6 +106,18 @@ export default defineComponent({
     },
     onUpdate(payload: any) {
       this.updatePrCashBook({ ...{ filters: this.dataFilter }, ...payload })
+    },
+    multiSubmit(payload: any) {
+      const { formData, sepData } = payload
+      console.log(formData, sepData)
+      if (formData.sort) {
+        if (formData.pk) this.onUpdate(formData)
+        else this.onCreate(formData)
+      }
+      if (sepData.sort) {
+        if (sepData.pk) this.onUpdate(sepData)
+        else this.onCreate({ ...{ filters: this.dataFilter }, ...sepData })
+      }
     },
     onDelete(payload: any) {
       this.deletePrCashBook({ ...{ filters: this.dataFilter }, ...payload })

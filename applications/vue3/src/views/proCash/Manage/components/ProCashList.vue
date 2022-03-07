@@ -35,8 +35,7 @@
         v-for="proCash in getProCashLogs"
         :proCash="proCash"
         :key="proCash.pk"
-        @on-create="onCreate"
-        @on-update="onUpdate"
+        @multi-submit="multiSubmit"
         @on-delete="onDelete"
       />
     </CTableBody>
@@ -72,6 +71,9 @@ export default defineComponent({
     },
     onUpdate(payload: any) {
       this.$emit('on-update', payload)
+    },
+    multiSubmit(payload: any) {
+      this.$emit('multi-submit', payload)
     },
     onDelete(pk: number) {
       this.$emit('on-delete', pk)
