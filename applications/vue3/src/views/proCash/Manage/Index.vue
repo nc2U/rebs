@@ -105,10 +105,7 @@ export default defineComponent({
       } else this.createPrCashBook(payload)
     },
     onUpdate(payload: any) {
-      const { create, ...formData } = payload
-      if (create) this.onCreate({ ...{ filters: this.dataFilter }, ...create })
-      if (formData)
-        this.updatePrCashBook({ ...{ filters: this.dataFilter }, ...formData })
+      this.updatePrCashBook({ ...{ filters: this.dataFilter }, ...payload })
     },
     onDelete(payload: any) {
       this.deletePrCashBook({ ...{ filters: this.dataFilter }, ...payload })

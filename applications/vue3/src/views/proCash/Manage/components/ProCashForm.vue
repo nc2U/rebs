@@ -265,7 +265,14 @@
           </CCol>
         </CRow>
 
-        <CRow v-for="(sep, i) in proCash.sepItems" :key="sep.pk" class="mb-1">
+        <CRow
+          v-for="(sep, i) in proCash.sepItems"
+          :key="sep.pk"
+          class="mb-1"
+          :class="
+            sep.pk === sepPk ? 'text-success text-decoration-underline' : ''
+          "
+        >
           <CCol sm="1">{{ i + 1 }}</CCol>
           <CCol sm="2">{{ sep.trader }}</CCol>
           <CCol sm="5">{{ cutString(sep.content, 20) }}</CCol>
@@ -502,23 +509,41 @@
           v-if="proCash"
           type="button"
           color="danger"
-          @click="$emit('on-delete')"
+          @click="deleteConfirm"
         >
           삭제
         </CButton>
       </slot>
     </CModalFooter>
   </CForm>
+
+  <ConfirmModal ref="delModal">
+    <template v-slot:header>
+      <CIcon name="cilWarning" />
+      프로젝트 입출금 거래 정보 삭제
+    </template>
+    <template v-slot:default>
+      삭제한 데이터는 복구할 수 없습니다. 해당 입출금 거래 정보를
+      삭제하시겠습니까?
+    </template>
+    <template v-slot:footer>
+      <CButton color="danger" @click="deleteObject">삭제</CButton>
+    </template>
+  </ConfirmModal>
+
+  <AlertModal ref="alertModal" />
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, reactive } from 'vue'
 import DatePicker from '@/components/DatePicker/index.vue'
-import { mapActions, mapState } from 'vuex'
+import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
+import AlertModal from '@/components/Modals/AlertModal.vue'
+import { mapActions, mapGetters, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'ProCashForm',
-  components: { DatePicker },
+  components: { DatePicker, ConfirmModal, AlertModal },
   props: {
     proCash: {
       type: Object,
@@ -526,6 +551,7 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const sepPk = ref(null)
     let sepItem = reactive({
       project: '',
       sort: '',
@@ -557,6 +583,7 @@ export default defineComponent({
     }
 
     return {
+      sepPk,
       sepItem,
     }
   },
@@ -653,42 +680,23 @@ export default defineComponent({
           : 0
       return [inc, out]
     },
+    pageManageAuth() {
+      return (
+        this.superAuth ||
+        (this.staffAuth && this.staffAuth.project_cash === '2')
+      )
+    },
+    allowedPeriod(this: any) {
+      return this.superAuth || this.diffDate(this.proCash.deal_date) <= 30
+    },
     ...mapState('proCash', [
       'formAccD1List',
       'formAccD2List',
       'proBankAccountList',
     ]),
+    ...mapGetters('accounts', ['staffAuth', 'superAuth']),
   },
   methods: {
-    sepUpdate(sep: any) {
-      // const { pk, ...data } = sep
-      // this.sepItem.project_account_d1 = data.project_account_d1
-      // this.sepItem.project_account_d2 = data.project_account_d2
-      // this.sepItem.content = data.content
-      // this.sepItem.trader = data.trader
-      // this.sepItem.bank_account = data.bank_account
-      // this.sepItem.evidence = data.evidence
-      // this.sepItem.note = data.note
-      // this.sepItem.income = data.income
-      // this.sepItem.outlay = data.outlay
-      // console.log({ ...{ pk }, ...this.sepItem })
-    },
-    onSubmit(this: any, event: any) {
-      const form = event.currentTarget
-      if (form.checkValidity() === false) {
-        event.preventDefault()
-        event.stopPropagation()
-
-        this.validated = true
-      } else {
-        if (!this.form.is_separate || !this.formsCheck) {
-          this.form.deal_date = this.dateFormat(this.form.deal_date)
-          this.$emit('on-submit', this.form)
-        }
-        if (this.form.is_separate)
-          this.$emit('on-submit', { create: this.sepItem })
-      }
-    },
     sort_change(event: any) {
       if (event.target.value === '1') this.form.outlay = null
       if (event.target.value === '2') this.form.income = null
@@ -721,6 +729,78 @@ export default defineComponent({
         this.fetchProFormAccD1List(sort)
         this.fetchProFormAccD2List({ sort, d1 })
       })
+    },
+    sepUpdate(sep: any) {
+      this.sepPk = sep.pk
+      this.sepItem.project_account_d1 = sep.project_account_d1
+      this.sepItem.project_account_d2 = sep.project_account_d2
+      this.sepItem.content = sep.content
+      this.sepItem.trader = sep.trader
+      this.sepItem.bank_account = sep.bank_account
+      this.sepItem.evidence = sep.evidence
+      this.sepItem.outlay = sep.outlay
+      this.sepItem.income = sep.income
+      this.sepItem.note = sep.note
+    },
+    createConfirm(this: any, payload: any) {
+      if (this.pageManageAuth) this.createObject(payload)
+      else this.$refs.alertModal.callModal()
+    },
+    updateConfirm(this: any, payload: any) {
+      if (this.pageManageAuth)
+        if (this.allowedPeriod) this.updateObject(payload)
+        else
+          this.$refs.alertModal.callModal(
+            null,
+            '거래일로부터 30일이 경과한 건은 수정할 수 없습니다. 관리자에게 문의바랍니다.',
+          )
+      else this.$refs.alertModal.callModal()
+    },
+    deleteConfirm(this: any) {
+      if (this.pageManageAuth)
+        if (this.allowedPeriod) this.$refs.delModal.callModal()
+        else
+          this.$refs.alertModal.callModal(
+            null,
+            '거래일로부터 30일이 경과한 건은 삭제할 수 없습니다. 관리자에게 문의바랍니다.',
+          )
+      else this.$refs.alertModal.callModal()
+    },
+    onSubmit(this: any, event: any) {
+      const form = event.currentTarget
+      if (form.checkValidity() === false) {
+        event.preventDefault()
+        event.stopPropagation()
+
+        this.validated = true
+      } else {
+        if (!this.form.is_separate || !this.formsCheck) {
+          this.form.deal_date = this.dateFormat(this.form.deal_date)
+          if (!this.proCash) this.createConfirm(this.form)
+          else this.updateConfirm({ ...{ pk: this.proCash.pk }, ...this.form })
+        }
+        if (this.form.is_separate) {
+          if (!this.sepPk)
+            this.createConfirm({ ...{ pk: this.sepPk }, ...this.sepItem })
+          else this.updateConfirm(this.sepItem)
+        }
+      }
+    },
+    createObject(payload: any) {
+      this.$emit('on-create', payload)
+      this.$emit('close')
+    },
+    updateObject(payload: any) {
+      this.$emit('on-update', payload)
+      this.$emit('close')
+    },
+    deleteObject(this: any) {
+      this.$emit('on-delete', {
+        project: this.proCash.project,
+        pk: this.proCash.pk,
+      })
+      this.$refs.delModal.visible = false
+      this.$emit('close')
     },
     ...mapActions('proCash', [
       'fetchProFormAccD1List',

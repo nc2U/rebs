@@ -35,6 +35,7 @@
         v-for="proCash in getProCashLogs"
         :proCash="proCash"
         :key="proCash.pk"
+        @on-create="onCreate"
         @on-update="onUpdate"
         @on-delete="onDelete"
       />
@@ -65,6 +66,9 @@ export default defineComponent({
   methods: {
     pageSelect(page: number) {
       this.$emit('page-select', page)
+    },
+    onCreate(payload: any) {
+      this.$emit('on-create', payload)
     },
     onUpdate(payload: any) {
       this.$emit('on-update', payload)
