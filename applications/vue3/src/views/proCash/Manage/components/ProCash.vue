@@ -13,7 +13,7 @@
       {{ proCash.project_account_d1_desc }}
     </CTableDataCell>
     <CTableDataCell class="text-left">
-      {{ cutString(proCash.project_account_d2_desc, 7) }}
+      {{ cutString(proCash.project_account_d2_desc, 9) }}
     </CTableDataCell>
     <CTableDataCell class="text-left">
       {{ cutString(proCash.content, 10) }}
