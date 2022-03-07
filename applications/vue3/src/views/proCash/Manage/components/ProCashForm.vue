@@ -29,7 +29,7 @@
                   v-model="form.sort"
                   required
                   @change="sort_change"
-                  :disabled="proCash.sort !== ''"
+                  :disabled="proCash && proCash.sort !== ''"
                 >
                   <option value="">---------</option>
                   <option value="1">입금</option>
@@ -661,10 +661,17 @@ export default defineComponent({
   },
   methods: {
     sepUpdate(sep: any) {
-      const { pk, ...data } = sep
-      this.sepItem = data
-      alert('준비중...')
-      console.log({ ...{ pk }, ...this.sepItem })
+      // const { pk, ...data } = sep
+      // this.sepItem.project_account_d1 = data.project_account_d1
+      // this.sepItem.project_account_d2 = data.project_account_d2
+      // this.sepItem.content = data.content
+      // this.sepItem.trader = data.trader
+      // this.sepItem.bank_account = data.bank_account
+      // this.sepItem.evidence = data.evidence
+      // this.sepItem.note = data.note
+      // this.sepItem.income = data.income
+      // this.sepItem.outlay = data.outlay
+      // console.log({ ...{ pk }, ...this.sepItem })
     },
     onSubmit(this: any, event: any) {
       const form = event.currentTarget
