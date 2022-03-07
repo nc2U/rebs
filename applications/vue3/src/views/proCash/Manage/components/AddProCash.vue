@@ -10,7 +10,7 @@
     </template>
     <template v-slot:default>
       <ProCashForm
-        @on-submit="createObject"
+        @on-create="onCreate"
         @close="$refs.createFormModal.visible = false"
       />
     </template>
@@ -29,7 +29,7 @@ export default defineComponent({
   name: 'AddProCash',
   components: { FormModal, ProCashForm },
   computed: {
-    pageManageAuth() {
+    pageManageAuth(this: any) {
       return (
         this.superAuth ||
         (this.staffAuth && this.staffAuth.project_cash === '2')
@@ -42,9 +42,8 @@ export default defineComponent({
       if (this.pageManageAuth) this.$refs.createFormModal.callModal()
       else this.$refs.createAlertModal.callModal()
     },
-    createObject(this: any, payload: any) {
+    onCreate(payload: any) {
       this.$emit('on-create', payload)
-      this.$refs.createFormModal.visible = false
     },
   },
 })
