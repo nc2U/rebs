@@ -13,7 +13,7 @@
           </CFormLabel>
           <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
             <CFormSelect v-model="contorForm.status" required>
-              <option>---------</option>
+              <option value="">---------</option>
               <option value="1">청약</option>
               <option value="2">계약</option>
             </CFormSelect>
@@ -26,38 +26,56 @@
             차수
           </CFormLabel>
           <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
-            <CFormSelect v-model="contForm.order_group" required>
+            <CFormSelect
+              v-model="contForm.order_group"
+              required
+              :disabled="noStatus"
+            >
               <option value="">---------</option>
+              <option value="1">a</option>
             </CFormSelect>
-            <CFormFeedback invalid>계약 차수를 선택하세요.</CFormFeedback>
+            <CFormFeedback invalid>차수그룹을 선택하세요.</CFormFeedback>
           </CCol>
 
           <CFormLabel class="col-md-2 col-lg-1 col-form-label">
             타입
           </CFormLabel>
           <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
-            <CFormSelect v-model="contForm.unit_type" required>
+            <CFormSelect
+              v-model="contForm.unit_type"
+              required
+              :disabled="contForm.order_group === ''"
+            >
               <option value="">---------</option>
+              <option value="1">a</option>
             </CFormSelect>
-            <CFormFeedback invalid>타입을 선택하세요.</CFormFeedback>
+            <CFormFeedback invalid>유니트 타입을 선택하세요.</CFormFeedback>
           </CCol>
 
           <CFormLabel class="col-md-2 col-lg-1 col-form-label">
-            계약코드
+            {{ contLabel }}코드
           </CFormLabel>
           <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
-            <CFormSelect v-model="contForm.serial_number" required>
-              <option>---------</option>
+            <CFormSelect
+              v-model="contForm.serial_number"
+              required
+              :disabled="contForm.unit_type === ''"
+            >
+              <option value="">---------</option>
+              <option value="1">a</option>
             </CFormSelect>
-            <CFormFeedback invalid>계약코드를 선택하세요.</CFormFeedback>
+            <CFormFeedback invalid>
+              {{ contLabel }}코드를 선택하세요.
+            </CFormFeedback>
           </CCol>
 
           <CFormLabel class="col-md-2 col-lg-1 col-form-label">
             동호수
           </CFormLabel>
           <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
-            <CFormSelect required>
+            <CFormSelect required :disabled="contForm.serial_number === ''">
               <option value="">---------</option>
+              <option value="1">a</option>
             </CFormSelect>
             <CFormFeedback invalid>동호수를 선택하세요.</CFormFeedback>
           </CCol>
@@ -67,36 +85,42 @@
 
         <CRow class="mb-3">
           <CFormLabel class="col-md-2 col-lg-1 col-form-label">
-            계약일자
+            {{ contLabel }}일자
           </CFormLabel>
           <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
             <DatePicker
               v-show="contorForm.status === '1'"
               v-model="contorForm.reservation_date"
+              v-maska="'####-##-##'"
               placeholder="청약일자"
-              required
+              :required="contorForm.status === '1'"
+              :disabled="noStatus"
             />
             <DatePicker
               v-show="contorForm.status !== '1'"
               v-model="contorForm.contract_date"
+              v-maska="'####-##-##'"
               placeholder="계약일자"
-              required
+              :required="isContract"
+              :disabled="noStatus"
             />
-            <CFormFeedback invalid>계약일자를 입력하세요.</CFormFeedback>
           </CCol>
 
           <CFormLabel class="col-md-2 col-lg-1 col-form-label">
-            계약자명
+            {{ contLabel }}자명
           </CFormLabel>
           <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
             <CFormInput
               v-model="contorForm.name"
               type="text"
-              maxlength="50"
-              placeholder="계약자명을 입력하세요"
+              maxlength="20"
+              :placeholder="`${contLabel}자명을 입력하세요`"
               required
+              :disabled="noStatus"
             />
-            <CFormFeedback invalid>계약자명을 입력하세요.</CFormFeedback>
+            <CFormFeedback invalid>
+              {{ contLabel }}자명을 입력하세요.
+            </CFormFeedback>
           </CCol>
 
           <CFormLabel class="col-md-2 col-lg-1 col-form-label">
@@ -106,9 +130,11 @@
             <DatePicker
               v-model="contorForm.birth_date"
               placeholder="생년월일"
-              required
+              v-maska="'####-##-##'"
+              :required="isContract"
+              :disabled="noStatus"
             />
-            <CFormFeedback invalid>계약일자를 입력하세요.</CFormFeedback>
+            <CFormFeedback invalid>생년월일 입력하세요.</CFormFeedback>
           </CCol>
 
           <CCol xs="5" lg="1" class="pt-2 p-0 text-center">
@@ -120,7 +146,8 @@
                 type="radio"
                 value="M"
                 name="gender"
-                required
+                :required="isContract"
+                :disabled="!isContract"
               />
               <label class="form-check-label" for="male">남</label>
             </div>
@@ -132,6 +159,7 @@
                 type="radio"
                 value="F"
                 name="gender"
+                :disabled="!isContract"
               />
               <label class="form-check-label" for="female">여</label>
             </div>
@@ -143,6 +171,7 @@
               v-model="contorForm.is_registed"
               id="is_registed"
               label="인가등록여부"
+              :disabled="!isContract"
             />
           </CCol>
         </CRow>
@@ -154,10 +183,12 @@
           <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
             <CFormInput
               v-model="contact.cell_phone"
+              v-maska="['###-###-####', '###-####-####']"
               type="text"
-              maxlength="50"
+              maxlength="13"
               placeholder="휴대전화번호를 선택하세요"
               required
+              :disabled="noStatus"
             />
             <CFormFeedback invalid>휴대전화번호를 입력하세요.</CFormFeedback>
           </CCol>
@@ -168,12 +199,12 @@
           <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
             <CFormInput
               v-model="contact.home_phone"
+              v-maska="['###-###-####', '###-####-####']"
               type="text"
-              maxlength="50"
+              maxlength="13"
               placeholder="집전화번호를 선택하세요"
-              required
+              :disabled="noStatus"
             />
-            <CFormFeedback invalid>집전화번호를 입력하세요.</CFormFeedback>
           </CCol>
 
           <CFormLabel class="col-md-2 col-lg-1 col-form-label">
@@ -182,12 +213,12 @@
           <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
             <CFormInput
               v-model="contact.other_phone"
+              v-maska="['###-###-####', '###-####-####']"
               type="text"
-              maxlength="50"
+              maxlength="13"
               placeholder="기타 연락처를 입력하세요."
-              required
+              :disabled="noStatus"
             />
-            <CFormFeedback invalid>기타 연락처를 입력하세요.</CFormFeedback>
           </CCol>
 
           <CFormLabel class="col-md-2 col-lg-1 col-form-label">
@@ -199,21 +230,27 @@
               type="email"
               maxlength="50"
               placeholder="이메일 주소를 입력하세요."
-              required
+              :disabled="noStatus"
             />
-            <CFormFeedback invalid>이메일 주소를 입력하세요.</CFormFeedback>
           </CCol>
         </CRow>
 
         <CRow class="mb-0">
-          <CAlert :color="$store.theme === 'dark' ? 'default' : 'secondary'">
+          <CAlert
+            :color="$store.state.theme === 'dark' ? 'default' : 'secondary'"
+            class="pb-0"
+          >
             <CRow>
               <CFormLabel class="col-md-2 col-lg-1 col-form-label">
-                계약금
+                {{ contLabel }}금
               </CFormLabel>
               <CCol md="10" lg="2" class="mb-3 mb-lg-0">
-                <DatePicker placeholder="입금일자" required />
-                <CFormFeedback invalid>계약일자를 입력하세요.</CFormFeedback>
+                <DatePicker
+                  placeholder="입금일자"
+                  v-maska="'####-##-##'"
+                  required
+                  :disabled="noStatus"
+                />
               </CCol>
 
               <CCol md="2" class="d-none d-md-block d-lg-none"></CCol>
@@ -224,12 +261,13 @@
                   min="0"
                   placeholder="입금액"
                   required
+                  :disabled="noStatus"
                 />
                 <CFormFeedback invalid>입금액을 입력하세요.</CFormFeedback>
               </CCol>
 
               <CCol md="5" lg="2" class="mb-3 mb-lg-0">
-                <CFormSelect required>
+                <CFormSelect required :disabled="noStatus">
                   <option value="">납부계좌 선택</option>
                 </CFormSelect>
                 <CFormFeedback invalid>납부계좌를 선택하세요.</CFormFeedback>
@@ -240,14 +278,15 @@
               <CCol md="5" lg="2" class="mb-3 mb-lg-0">
                 <CFormInput
                   type="text"
-                  maxlength="50"
+                  maxlength="20"
                   placeholder="입금자명을 입력하세요"
                   required
+                  :disabled="noStatus"
                 />
                 <CFormFeedback invalid>입금자명을 입력하세요.</CFormFeedback>
               </CCol>
               <CCol md="5" lg="2" class="mb-md-3 mb-lg-0">
-                <CFormSelect required>
+                <CFormSelect required :disabled="noStatus">
                   <option value="">납부회차 선택</option>
                 </CFormSelect>
                 <CFormFeedback invalid>납부회차를 선택하세요.</CFormFeedback>
@@ -273,10 +312,13 @@
               </CInputGroupText>
               <CFormInput
                 v-model="address.id_zipcode"
+                v-maska="'#####'"
                 type="text"
                 maxlength="5"
                 placeholder="우편번호"
                 @focus="$refs.postCode.initiate()"
+                :required="isContract"
+                :disabled="!isContract"
               />
               <CFormFeedback invalid>우편번호를 입력하세요.</CFormFeedback>
             </CInputGroup>
@@ -289,6 +331,8 @@
               maxlength="50"
               placeholder="주민등록 주소를 입력하세요"
               @focus="$refs.postCode.initiate()"
+              :required="isContract"
+              :disabled="!isContract"
             />
             <CFormFeedback invalid>주민등록 주소를 입력하세요.</CFormFeedback>
           </CCol>
@@ -300,8 +344,10 @@
               v-model="address.id_address2"
               ref="address2"
               type="text"
-              maxlength="25"
+              maxlength="30"
               placeholder="상세주소를 입력하세요"
+              :required="isContract"
+              :disabled="!isContract"
             />
             <CFormFeedback invalid>상세주소를 입력하세요.</CFormFeedback>
           </CCol>
@@ -309,10 +355,10 @@
             <CFormInput
               v-model="address.id_address3"
               type="text"
-              maxlength="20"
+              maxlength="30"
               placeholder="참고항목을 입력하세요"
+              :disabled="!isContract"
             />
-            <CFormFeedback invalid>참고항목을 입력하세요.</CFormFeedback>
           </CCol>
         </CRow>
 
@@ -327,10 +373,13 @@
               </CInputGroupText>
               <CFormInput
                 v-model="address.dm_zipcode"
+                v-maska="'#####'"
                 type="text"
                 maxlength="5"
                 placeholder="우편번호"
                 @focus="$refs.postCode.initiate()"
+                :required="isContract"
+                :disabled="!isContract"
               />
               <CFormFeedback invalid>우편번호를 입력하세요.</CFormFeedback>
             </CInputGroup>
@@ -343,6 +392,8 @@
               maxlength="50"
               placeholder="우편물 수령 주소를 입력하세요"
               @focus="$refs.postCode.initiate()"
+              :required="isContract"
+              :disabled="!isContract"
             />
             <CFormFeedback invalid>
               우편물 수령 주소를 입력하세요.
@@ -356,8 +407,10 @@
               v-model="address.dm_address2"
               ref="address2"
               type="text"
-              maxlength="25"
+              maxlength="30"
               placeholder="상세주소를 입력하세요"
+              :required="isContract"
+              :disabled="!isContract"
             />
             <CFormFeedback invalid>상세주소를 입력하세요.</CFormFeedback>
           </CCol>
@@ -365,16 +418,16 @@
             <CFormInput
               v-model="address.dm_address3"
               type="text"
-              maxlength="20"
+              maxlength="30"
               placeholder="참고항목을 입력하세요"
+              :disabled="!isContract"
             />
-            <CFormFeedback invalid>참고항목을 입력하세요.</CFormFeedback>
           </CCol>
 
           <CCol md="2" class="d-none d-md-block d-lg-none"></CCol>
 
           <CCol md="10" lg="1" class="pt-2 mb-3">
-            <CFormCheck id="to-same" label="상동" />
+            <CFormCheck id="to-same" label="상동" :disabled="!isContract" />
           </CCol>
         </CRow>
 
@@ -386,8 +439,8 @@
             <CFormTextarea
               v-model.number="contorForm.note"
               placeholder="기타 특이사항"
+              :disabled="noStatus"
             />
-            <CFormFeedback invalid>기타 특이사항을 입력하세요.</CFormFeedback>
           </CCol>
         </CRow>
       </CCardBody>
@@ -442,6 +495,7 @@ import AlertModal from '@/components/Modals/AlertModal.vue'
 import DatePicker from '@/components/DatePicker/index.vue'
 import DaumPostcode from '@/components/DaumPostcode/index.vue'
 import addressMixin from '@/components/DaumPostcode/addressMixin'
+import { maska } from 'maska'
 
 export default defineComponent({
   name: 'IndexForm',
@@ -452,12 +506,13 @@ export default defineComponent({
     DaumPostcode,
   },
   mixins: [addressMixin],
+  directives: { maska },
   data() {
     return {
       contPk: null,
       contForm: {
         project: null,
-        order_group: null,
+        order_group: '',
         unit_type: '',
         serial_number: '',
         activation: false,
@@ -508,6 +563,15 @@ export default defineComponent({
     },
   },
   computed: {
+    contLabel() {
+      return this.contorForm.status !== '1' ? '계약' : '청약'
+    },
+    isContract() {
+      return this.contorForm.status === '2'
+    },
+    noStatus() {
+      return this.contorForm.status === ''
+    },
     // formsCheck(this: any) {
     //   const a = this.form.name === this.project.name
     //   const b = this.form.order === this.project.order
