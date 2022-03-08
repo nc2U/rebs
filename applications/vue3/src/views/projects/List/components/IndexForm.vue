@@ -65,43 +65,49 @@
         </CRow>
 
         <CRow class="mb-3">
-          <CFormLabel class="col-md-2 col-form-label"> 직영운영여부</CFormLabel>
+          <CFormLabel class="col-md-2 col-form-label"></CFormLabel>
           <CCol md="8" lg="5">
             <CFormSwitch
               v-model="form.is_direct_manage"
+              id="is_direct_manage"
+              label="직영운영여부"
               :checked="update && project.is_direct_manage"
             />
+            <CFormText class="text-secondary">
+              본사 직접 운영하는 프로젝트인 경우 체크, 즉 시행대행이나
+              업무대행이 아닌 경우
+            </CFormText>
           </CCol>
-          <CFormText class="text-secondary">
-            본사 직접 운영하는 프로젝트인 경우 체크, 즉 시행대행이나 업무대행이
-            아닌 경우
-          </CFormText>
         </CRow>
 
         <CRow class="mb-3">
-          <CFormLabel class="col-md-2 col-form-label"> 토지환지여부</CFormLabel>
+          <CFormLabel class="col-md-2 col-form-label"></CFormLabel>
           <CCol md="8" lg="5">
             <CFormSwitch
               v-model="form.is_returned_area"
+              id="is_returned_area"
+              label="토지환지여부"
               :checked="update && project.is_returned_area"
             />
+            <CFormText class="text-secondary">
+              해당 사업부지가 환지방식 도시개발사업구역인 경우 체크
+            </CFormText>
           </CCol>
-          <CFormText class="text-secondary">
-            해당 사업부지가 환지방식 도시개발사업구역인 경우 체크
-          </CFormText>
         </CRow>
 
         <CRow class="mb-3">
-          <CFormLabel class="col-md-2 col-form-label"> 동호지정여부</CFormLabel>
+          <CFormLabel class="col-md-2 col-form-label"></CFormLabel>
           <CCol md="8" lg="5">
             <CFormSwitch
               v-model="form.is_unit_set"
+              id="is_unit_set"
+              label="동호지정여부"
               :checked="update && project.is_unit_set"
             />
+            <CFormText class="text-secondary">
+              현재 동호수를 지정하지 않는 경우 체크하지 않음
+            </CFormText>
           </CCol>
-          <CFormText class="text-secondary">
-            현재 동호수를 지정하지 않는 경우 체크하지 않음
-          </CFormText>
         </CRow>
         <CRow class="mb-3">
           <CFormLabel class="col-md-2 col-form-label"> 우편번호</CFormLabel>

@@ -49,6 +49,7 @@
           <CCol md="6" class="mb-3 pl-4 pt-2">
             <CFormSwitch
               v-model="form.no_contract"
+              id="no_contract"
               label="미등록 납부대금 건"
               @change="listFiltering(1)"
             />
