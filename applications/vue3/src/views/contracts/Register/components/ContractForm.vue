@@ -8,7 +8,9 @@
     >
       <CCardBody>
         <CRow class="mb-3">
-          <CFormLabel class="col-md-1 col-form-label"> 구분</CFormLabel>
+          <CFormLabel class="col-md-2 col-lg-1 col-form-label">
+            구분
+          </CFormLabel>
           <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
             <CFormSelect v-model="contorForm.status" required>
               <option>---------</option>
@@ -20,7 +22,9 @@
         </CRow>
 
         <CRow class="mb-3">
-          <CFormLabel class="col-md-1 col-form-label"> 차수</CFormLabel>
+          <CFormLabel class="col-md-2 col-lg-1 col-form-label">
+            차수
+          </CFormLabel>
           <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
             <CFormSelect v-model="contForm.order_group" required>
               <option value="">---------</option>
@@ -28,15 +32,19 @@
             <CFormFeedback invalid>계약 차수를 선택하세요.</CFormFeedback>
           </CCol>
 
-          <CFormLabel class="col-md-1 col-form-label"> 타입</CFormLabel>
-          <CCol md="10" lg="2">
+          <CFormLabel class="col-md-2 col-lg-1 col-form-label">
+            타입
+          </CFormLabel>
+          <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
             <CFormSelect v-model="contForm.unit_type" required>
               <option value="">---------</option>
             </CFormSelect>
             <CFormFeedback invalid>타입을 선택하세요.</CFormFeedback>
           </CCol>
 
-          <CFormLabel class="col-md-1 col-form-label"> 계약코드</CFormLabel>
+          <CFormLabel class="col-md-2 col-lg-1 col-form-label">
+            계약코드
+          </CFormLabel>
           <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
             <CFormSelect v-model="contForm.serial_number" required>
               <option>---------</option>
@@ -44,7 +52,9 @@
             <CFormFeedback invalid>계약코드를 선택하세요.</CFormFeedback>
           </CCol>
 
-          <CFormLabel class="col-md-1 col-form-label"> 동호수</CFormLabel>
+          <CFormLabel class="col-md-2 col-lg-1 col-form-label">
+            동호수
+          </CFormLabel>
           <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
             <CFormSelect required>
               <option value="">---------</option>
@@ -56,7 +66,9 @@
         <hr />
 
         <CRow class="mb-3">
-          <CFormLabel class="col-md-1 col-form-label"> 계약일자</CFormLabel>
+          <CFormLabel class="col-md-2 col-lg-1 col-form-label">
+            계약일자
+          </CFormLabel>
           <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
             <DatePicker
               v-show="contorForm.status === '1'"
@@ -73,7 +85,9 @@
             <CFormFeedback invalid>계약일자를 입력하세요.</CFormFeedback>
           </CCol>
 
-          <CFormLabel class="col-md-1 col-form-label"> 계약자명</CFormLabel>
+          <CFormLabel class="col-md-2 col-lg-1 col-form-label">
+            계약자명
+          </CFormLabel>
           <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
             <CFormInput
               v-model="contorForm.name"
@@ -85,7 +99,9 @@
             <CFormFeedback invalid>계약자명을 입력하세요.</CFormFeedback>
           </CCol>
 
-          <CFormLabel class="col-md-1 col-form-label"> 생년월일</CFormLabel>
+          <CFormLabel class="col-md-2 col-lg-1 col-form-label">
+            생년월일
+          </CFormLabel>
           <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
             <DatePicker
               v-model="contorForm.birth_date"
@@ -95,7 +111,7 @@
             <CFormFeedback invalid>계약일자를 입력하세요.</CFormFeedback>
           </CCol>
 
-          <CCol md="5" lg="1" class="pt-2 p-0">
+          <CCol xs="5" lg="1" class="pt-2 p-0 text-center">
             <div class="form-check form-check-inline">
               <input
                 v-model="contorForm.gender"
@@ -122,7 +138,7 @@
             <CFormFeedback invalid>성별을 선택하세요.</CFormFeedback>
           </CCol>
 
-          <CCol md="5" lg="2" class="pt-2 p-0">
+          <CCol xs="6" lg="2" class="pt-2 p-0">
             <CFormSwitch
               v-model="contorForm.is_registed"
               id="is_registed"
@@ -132,7 +148,9 @@
         </CRow>
 
         <CRow class="mb-3">
-          <CFormLabel class="col-md-1 col-form-label"> 휴대전화</CFormLabel>
+          <CFormLabel class="col-md-2 col-lg-1 col-form-label">
+            휴대전화
+          </CFormLabel>
           <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
             <CFormInput
               v-model="contact.cell_phone"
@@ -144,7 +162,9 @@
             <CFormFeedback invalid>휴대전화번호를 입력하세요.</CFormFeedback>
           </CCol>
 
-          <CFormLabel class="col-md-1 col-form-label"> 집전화</CFormLabel>
+          <CFormLabel class="col-md-2 col-lg-1 col-form-label">
+            집전화
+          </CFormLabel>
           <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
             <CFormInput
               v-model="contact.home_phone"
@@ -156,7 +176,9 @@
             <CFormFeedback invalid>집전화번호를 입력하세요.</CFormFeedback>
           </CCol>
 
-          <CFormLabel class="col-md-1 col-form-label"> 기타 연락처</CFormLabel>
+          <CFormLabel class="col-md-2 col-lg-1 col-form-label">
+            기타 연락처
+          </CFormLabel>
           <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
             <CFormInput
               v-model="contact.other_phone"
@@ -168,7 +190,9 @@
             <CFormFeedback invalid>기타 연락처를 입력하세요.</CFormFeedback>
           </CCol>
 
-          <CFormLabel class="col-md-1 col-form-label"> 이메일</CFormLabel>
+          <CFormLabel class="col-md-2 col-lg-1 col-form-label">
+            이메일
+          </CFormLabel>
           <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
             <CFormInput
               v-model="contact.email"
@@ -184,13 +208,17 @@
         <CRow class="mb-0">
           <CAlert :color="$store.theme === 'dark' ? 'default' : 'secondary'">
             <CRow>
-              <CFormLabel class="col-md-1 col-form-label"> 계약금</CFormLabel>
-              <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
+              <CFormLabel class="col-md-2 col-lg-1 col-form-label">
+                계약금
+              </CFormLabel>
+              <CCol md="10" lg="2" class="mb-3 mb-lg-0">
                 <DatePicker placeholder="입금일자" required />
                 <CFormFeedback invalid>계약일자를 입력하세요.</CFormFeedback>
               </CCol>
 
-              <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
+              <CCol md="2" class="d-none d-md-block d-lg-none"></CCol>
+
+              <CCol md="5" lg="2" class="mb-3 mb-lg-0">
                 <CFormInput
                   type="number"
                   min="0"
@@ -200,14 +228,16 @@
                 <CFormFeedback invalid>입금액을 입력하세요.</CFormFeedback>
               </CCol>
 
-              <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
+              <CCol md="5" lg="2" class="mb-3 mb-lg-0">
                 <CFormSelect required>
                   <option value="">납부계좌 선택</option>
                 </CFormSelect>
                 <CFormFeedback invalid>납부계좌를 선택하세요.</CFormFeedback>
               </CCol>
 
-              <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
+              <CCol md="2" class="d-none d-md-block d-lg-none"></CCol>
+
+              <CCol md="5" lg="2" class="mb-3 mb-lg-0">
                 <CFormInput
                   type="text"
                   maxlength="50"
@@ -216,24 +246,27 @@
                 />
                 <CFormFeedback invalid>입금자명을 입력하세요.</CFormFeedback>
               </CCol>
-              <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
+              <CCol md="5" lg="2" class="mb-md-3 mb-lg-0">
                 <CFormSelect required>
                   <option value="">납부회차 선택</option>
                 </CFormSelect>
                 <CFormFeedback invalid>납부회차를 선택하세요.</CFormFeedback>
               </CCol>
-              <CCol class="pt-2">
-                <router-link to="">> 입금등록</router-link>
+
+              <CCol md="2" class="d-none d-md-block d-lg-none"></CCol>
+
+              <CCol xs="3" md="2" lg="1" class="pt-2 text-center">
+                <router-link to="">입금등록</router-link>
               </CCol>
             </CRow>
           </CAlert>
         </CRow>
 
         <CRow class="mb-0">
-          <CFormLabel class="col-md-1 col-form-label">
+          <CFormLabel class="col-md-2 col-lg-1 col-form-label">
             주민등록 주소
           </CFormLabel>
-          <CCol md="3" lg="2">
+          <CCol md="5" lg="2" class="mb-3 mb-lg-0">
             <CInputGroup>
               <CInputGroupText @click="$refs.postCode.initiate()">
                 우편번호
@@ -249,7 +282,7 @@
             </CInputGroup>
           </CCol>
 
-          <CCol md="7" lg="4" class="mb-3 mb-lg-0">
+          <CCol md="5" lg="4" class="mb-3 mb-lg-0">
             <CFormInput
               v-model="address.id_address1"
               type="text"
@@ -284,10 +317,10 @@
         </CRow>
 
         <CRow class="mb-0">
-          <CFormLabel class="col-md-1 col-form-label">
+          <CFormLabel class="col-md-2 col-lg-1 col-form-label">
             우편수령 주소
           </CFormLabel>
-          <CCol md="3" lg="2" class="mb-3 mb-lg-0">
+          <CCol md="5" lg="2" class="mb-3 mb-lg-0">
             <CInputGroup>
               <CInputGroupText @click="$refs.postCode.initiate()">
                 우편번호
@@ -303,7 +336,7 @@
             </CInputGroup>
           </CCol>
 
-          <CCol md="7" lg="4" class="mb-3 mb-lg-0">
+          <CCol md="5" lg="4" class="mb-3 mb-lg-0">
             <CFormInput
               v-model="address.dm_address1"
               type="text"
@@ -337,14 +370,19 @@
             />
             <CFormFeedback invalid>참고항목을 입력하세요.</CFormFeedback>
           </CCol>
-          <CCol md="1" class="pt-2">
-            <CFormCheck label="상동" />
+
+          <CCol md="2" class="d-none d-md-block d-lg-none"></CCol>
+
+          <CCol md="10" lg="1" class="pt-2 mb-3">
+            <CFormCheck id="to-same" label="상동" />
           </CCol>
         </CRow>
 
         <CRow class="mb-3">
-          <CFormLabel class="col-md-1 col-form-label"> 비고</CFormLabel>
-          <CCol md="11" class="mb-md-3 mb-lg-0">
+          <CFormLabel class="col-md-2 col-lg-1 col-form-label">
+            비고
+          </CFormLabel>
+          <CCol md="10" lg="11" class="mb-md-3 mb-lg-0">
             <CFormTextarea
               v-model.number="contorForm.note"
               placeholder="기타 특이사항"
