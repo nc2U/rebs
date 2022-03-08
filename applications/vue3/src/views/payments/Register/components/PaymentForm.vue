@@ -259,6 +259,7 @@ export default defineComponent({
     },
     modalAction() {
       this.$emit('on-delete')
+      this.$emit('close')
     },
   },
 })

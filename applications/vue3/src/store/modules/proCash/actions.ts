@@ -193,6 +193,15 @@ const actions = {
           },
           { root: true },
         )
+        dispatch(
+          'payment/fetchAllPaymentList',
+          {
+            project: res.data.project,
+            contract: res.data.contract,
+            ordering: 'deal_date',
+          },
+          { root: true },
+        )
         message()
       })
       .catch(err => console.log(err.response.data))
@@ -210,6 +219,11 @@ const actions = {
         })
         dispatch(
           'payment/fetchPaymentList',
+          { project, contract },
+          { root: true },
+        )
+        dispatch(
+          'payment/fetchAllPaymentList',
           { project, contract, ordering: 'deal_date' },
           { root: true },
         )

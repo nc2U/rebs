@@ -36,35 +36,17 @@
       />
     </template>
   </FormModal>
-
-  <ConfirmModal ref="delModal">
-    <template v-slot:header>
-      <CIcon name="cilWarning" />
-      건별 수납 정보 삭제
-    </template>
-    <template v-slot:default>
-      삭제한 데이터는 복구할 수 없습니다. 해당 건별 수납 정보를
-      삭제하시겠습니까?
-    </template>
-    <template v-slot:footer>
-      <CButton color="danger" @click="deleteObject">삭제</CButton>
-    </template>
-  </ConfirmModal>
-
-  <AlertModal ref="alertModal" />
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 import FormModal from '@/components/Modals/FormModal.vue'
 import PaymentForm from '@/views/payments/Register/components/PaymentForm.vue'
-import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
-import AlertModal from '@/components/Modals/AlertModal.vue'
 import { mapGetters } from 'vuex'
 
 export default defineComponent({
   name: 'Payment',
-  components: { FormModal, PaymentForm, ConfirmModal, AlertModal },
+  components: { FormModal, PaymentForm },
   props: { payment: Object, paymentId: String, contract: Object },
   mounted(this: any) {
     if (this.paymentId === this.payment.pk.toString()) {
@@ -84,7 +66,6 @@ export default defineComponent({
     },
     deleteObject(this: any) {
       this.$emit('on-delete', this.payment.pk)
-      this.$refs.delModal.visible = false
     },
   },
 })
