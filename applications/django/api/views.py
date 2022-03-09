@@ -347,12 +347,20 @@ class BuildingUnitDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
 
+class KeyUnitListFilterSet(FilterSet):
+    no_contract = BooleanFilter(field_name='contract', lookup_expr='isnull', label='계약가능유닛')
+
+    class Meta:
+        model = KeyUnit
+        fields = ('project', 'unit_type', 'no_contract')
+
+
 class KeyUnitList(generics.ListCreateAPIView):
     name = 'key_unit-list'
     queryset = KeyUnit.objects.all()
     serializer_class = KeyUnitSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-    filter_fields = ('project', 'unit_type')
+    filter_class = KeyUnitListFilterSet
 
 
 class KeyUnitDetail(generics.RetrieveUpdateDestroyAPIView):
