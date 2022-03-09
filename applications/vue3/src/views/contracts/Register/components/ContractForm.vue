@@ -94,10 +94,10 @@
             </CFormFeedback>
           </CCol>
 
-          <CFormLabel class="col-md-2 col-lg-1 col-form-label">
+          <CFormLabel class="col-md-2 col-lg-1 col-form-label" v-if="unitSet">
             동호수
           </CFormLabel>
-          <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
+          <CCol md="10" lg="2" class="mb-md-3 mb-lg-0" v-if="unitSet">
             <CFormSelect
               v-model="contForm.houseunit"
               required
@@ -201,7 +201,7 @@
             <CFormFeedback invalid>성별을 선택하세요.</CFormFeedback>
           </CCol>
 
-          <CCol xs="6" lg="2" class="pt-2 p-0" v-show="isContract">
+          <CCol xs="6" lg="2" class="pt-2 p-0" v-show="isContract && isUnion">
             <CFormSwitch
               v-model="contorForm.is_registed"
               id="is_registed"
@@ -588,16 +588,18 @@ export default defineComponent({
     }
   },
   props: {
-    userInfo: {
-      type: Object,
-    },
-    update: {
-      type: Boolean,
-      required: true,
-    },
-    contract: {
-      type: Object,
-    },
+    unitSet: Boolean,
+    isUnion: Boolean,
+    // userInfo: {
+    //   type: Object,
+    // },
+    // update: {
+    //   type: Boolean,
+    //   required: true,
+    // },
+    // contract: {
+    //   type: Object,
+    // },
   },
   computed: {
     contLabel() {

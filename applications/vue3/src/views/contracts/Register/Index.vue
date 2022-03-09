@@ -6,7 +6,11 @@
   />
 
   <ContentBody>
-    <ContractForm @type-select="typeSelect" />
+    <ContractForm
+      :unit-set="unitSet"
+      :is-union="isUnion"
+      @type-select="typeSelect"
+    />
   </ContentBody>
 </template>
 
@@ -29,10 +33,16 @@ export default defineComponent({
   created() {
     this.fetchOrderGroupList(this.initProjId)
     this.fetchTypeList(this.initProjId)
-    this.fetchKeyUnitList({ projct: this.initProjId })
+    this.fetchKeyUnitList({ project: this.initProjId })
     this.fetchHouseUnitList({ project: this.initProjId })
   },
   computed: {
+    unitSet() {
+      return this.project ? this.project.is_unit_set : false
+    },
+    isUnion() {
+      return this.project ? !this.project.is_direct_manage : false
+    },
     ...mapState('project', ['project']),
     ...mapGetters('accounts', ['initProjId']),
   },
