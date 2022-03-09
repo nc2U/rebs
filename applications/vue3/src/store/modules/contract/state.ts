@@ -74,6 +74,7 @@ export interface ContractState {
   subsSummaryList: SubsSummary[]
   contSummaryList: ContractSummary[]
   orderGroupList: OrderGroup[]
+  keyUnitList: KeyUnit[]
 }
 
 const state = {
@@ -83,6 +84,7 @@ const state = {
   subsSummaryList: [],
   contSummaryList: [],
   orderGroupList: [],
+  keyUnitList: [],
 }
 
 export default state
