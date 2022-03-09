@@ -6,6 +6,7 @@ import {
   FETCH_SUBS_SUMMARY_LIST,
   FETCH_CONT_SUMMARY_LIST,
   FETCH_KEY_UNIT_LIST,
+  FETCH_HOUSE_UNIT_LIST,
 } from '@/store/modules/contract/mutations-types'
 import router from '@/router'
 import { message } from '@/utils/helper'
@@ -129,6 +130,18 @@ const actions = {
       )
       .then(res => {
         commit(FETCH_KEY_UNIT_LIST, res.data)
+      })
+      .catch(err => console.log(err.response.data))
+  },
+
+  fetchHouseUnitList: ({ commit }: any, payload?: any) => {
+    const { project, unit_type, no_keyunit } = payload
+    api
+      .get(
+        `/key-unit/?project=${project}&unit_type=${unit_type}&no_contract=${no_keyunit}`,
+      )
+      .then(res => {
+        commit(FETCH_HOUSE_UNIT_LIST, res.data)
       })
       .catch(err => console.log(err.response.data))
   },

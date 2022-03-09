@@ -19,6 +19,20 @@ interface Contractor {
   contract_date: string
 }
 
+export interface OrderGroup {
+  pk: number
+  project: number
+  order_number: number
+  sort: string
+  sort_desc: string
+  order_group_name: string
+}
+
+interface UnitType {
+  name: string
+  color: string
+}
+
 interface HouseUnit {
   pk: number
   __str__: string
@@ -27,11 +41,6 @@ interface HouseUnit {
 interface KeyUnit {
   pk: number
   houseunit: HouseUnit | null
-}
-
-interface UnitType {
-  name: string
-  color: string
 }
 
 export interface Contract {
@@ -44,15 +53,6 @@ export interface Contract {
   keyunit: KeyUnit | null
   contractor: Contractor | null
   user: number
-}
-
-export interface OrderGroup {
-  pk: number
-  project: number
-  order_number: number
-  sort: string
-  sort_desc: string
-  order_group_name: string
 }
 
 interface SubsSummary {
@@ -75,6 +75,7 @@ export interface ContractState {
   contSummaryList: ContractSummary[]
   orderGroupList: OrderGroup[]
   keyUnitList: KeyUnit[]
+  houseUnitList: HouseUnit[]
 }
 
 const state = {
@@ -85,6 +86,7 @@ const state = {
   contSummaryList: [],
   orderGroupList: [],
   keyUnitList: [],
+  houseUnitList: [],
 }
 
 export default state
