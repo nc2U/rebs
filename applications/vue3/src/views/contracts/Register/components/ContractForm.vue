@@ -304,6 +304,13 @@
               <CCol md="5" lg="2" class="mb-3 mb-lg-0">
                 <CFormSelect required :disabled="noStatus">
                   <option value="">납부계좌 선택</option>
+                  <option
+                    v-for="pb in proBankAccountList"
+                    :value="pb.pk"
+                    :key="pb.pk"
+                  >
+                    {{ pb.alias_name }}
+                  </option>
                 </CFormSelect>
                 <CFormFeedback invalid>납부계좌를 선택하세요.</CFormFeedback>
               </CCol>
@@ -323,6 +330,13 @@
               <CCol md="5" lg="2" class="mb-md-3 mb-lg-0">
                 <CFormSelect required :disabled="noStatus">
                   <option value="">납부회차 선택</option>
+                  <option
+                    v-for="po in downPayOrder"
+                    :value="po.pk"
+                    :key="po.pk"
+                  >
+                    {{ po.__str__ }}
+                  </option>
                 </CFormSelect>
                 <CFormFeedback invalid>납부회차를 선택하세요.</CFormFeedback>
               </CCol>
@@ -511,9 +525,9 @@
   </ConfirmModal>
 
   <ConfirmModal ref="confirmModal">
-    <template v-slot:header>프로젝트정보</template>
+    <template v-slot:header>계약 정보 등록</template>
     <template v-slot:default>
-      프로젝트정보 {{ confirmText }}을 진행하시겠습니까?
+      계약 정보 {{ confirmText }}을 진행하시겠습니까?
     </template>
     <template v-slot:footer>
       <CButton :color="btnClass" @click="modalAction">저장</CButton>
@@ -611,6 +625,9 @@ export default defineComponent({
     noStatus() {
       return this.contorForm.status === ''
     },
+    downPayOrder() {
+      return this.payOrderList.filter((po: any) => po.pay_time <= '1')
+    },
     // formsCheck(this: any) {
     //   const a = this.form.name === this.project.name
     //   const b = this.form.order === this.project.order
@@ -649,6 +666,8 @@ export default defineComponent({
     // ...mapGetters('accounts', ['staffAuth', 'superAuth']),
     ...mapState('contract', ['orderGroupList', 'keyUnitList', 'houseUnitList']),
     ...mapState('project', ['unitTypeList']),
+    ...mapState('proCash', ['proBankAccountList']),
+    ...mapState('payment', ['payOrderList']),
   },
   methods: {
     onSubmit(this: any, event: any) {
@@ -659,9 +678,7 @@ export default defineComponent({
 
         console.log(form.checkValidity())
         this.validated = true
-      } else {
-        ;(this as any).$refs.confirmModal.callModal()
-      }
+      } else this.$refs.confirmModal.callModal()
     },
     unitReset(event: any) {
       if (event.target.value === '') {

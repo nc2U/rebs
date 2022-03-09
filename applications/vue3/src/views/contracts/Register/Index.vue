@@ -35,6 +35,8 @@ export default defineComponent({
     this.fetchTypeList(this.initProjId)
     this.fetchKeyUnitList({ project: this.initProjId })
     this.fetchHouseUnitList({ project: this.initProjId })
+    this.fetchProBankAccList(this.initProjId)
+    this.fetchPayOrderList(this.initProjId)
   },
   computed: {
     unitSet() {
@@ -53,11 +55,15 @@ export default defineComponent({
         this.fetchTypeList(target)
         this.fetchKeyUnitList({ project: target })
         this.fetchHouseUnitList({ project: target })
+        this.fetchProBankAccList(target)
+        this.fetchPayOrderList(target)
       } else {
         this.FETCH_ORDER_GROUP_LIST([])
         this.FETCH_TYPE_LIST([])
         this.FETCH_KEY_UNIT_LIST([])
         this.FETCH_HOUSE_UNIT_LIST([])
+        this.FETCH_P_BANK_ACCOUNT_LIST([])
+        this.FETCH_PAY_ORDER_LIST([])
       }
     },
     typeSelect(type: number) {
@@ -72,12 +78,16 @@ export default defineComponent({
       'fetchHouseUnitList',
     ]),
     ...mapActions('project', ['fetchTypeList']),
+    ...mapActions('proCash', ['fetchProBankAccList']),
+    ...mapActions('payment', ['fetchPayOrderList']),
     ...mapMutations('contract', [
       'FETCH_ORDER_GROUP_LIST',
       'FETCH_KEY_UNIT_LIST',
       'FETCH_HOUSE_UNIT_LIST',
     ]),
+    ...mapMutations('proCash', ['FETCH_P_BANK_ACCOUNT_LIST']),
     ...mapMutations('project', ['FETCH_TYPE_LIST']),
+    ...mapMutations('payment', ['FETCH_PAY_ORDER_LIST']),
   },
 })
 </script>
