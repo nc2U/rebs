@@ -12,7 +12,11 @@
             구분
           </CFormLabel>
           <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
-            <CFormSelect v-model="contorForm.status" required>
+            <CFormSelect
+              v-model="contorForm.status"
+              @change="unitReset"
+              required
+            >
               <option value="">---------</option>
               <option value="1">청약</option>
               <option value="2">계약</option>
@@ -28,6 +32,7 @@
           <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
             <CFormSelect
               v-model="contForm.order_group"
+              @change="unitReset"
               required
               :disabled="noStatus"
             >
@@ -71,6 +76,7 @@
           <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
             <CFormSelect
               v-model="contForm.serial_number"
+              @change="contForm.houseunit = ''"
               required
               :disabled="contForm.unit_type === ''"
             >
@@ -92,7 +98,11 @@
             동호수
           </CFormLabel>
           <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
-            <CFormSelect required :disabled="contForm.serial_number === ''">
+            <CFormSelect
+              v-model="contForm.houseunit"
+              required
+              :disabled="contForm.serial_number === ''"
+            >
               <option value="">---------</option>
               <option
                 v-for="house in houseUnitList"
@@ -541,6 +551,7 @@ export default defineComponent({
         order_group: '',
         unit_type: '',
         serial_number: '',
+        houseunit: '',
         activation: false,
       },
       contorForm: {
@@ -650,8 +661,18 @@ export default defineComponent({
         ;(this as any).$refs.confirmModal.callModal()
       }
     },
+    unitReset(event: any) {
+      if (event.target.value === '') {
+        this.contForm.order_group = ''
+        this.contForm.unit_type = ''
+        this.contForm.serial_number = ''
+        this.contForm.houseunit = ''
+      }
+    },
     typeSelect(event: any) {
       this.$emit('type-select', event.target.value)
+      this.contForm.serial_number = ''
+      this.contForm.houseunit = ''
     },
     // modalAction() {
     //   const { pk, company } = this
