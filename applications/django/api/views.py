@@ -370,14 +370,22 @@ class KeyUnitDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
 
+class HouseUnitListFilterSet(FilterSet):
+    no_keyunit = BooleanFilter(field_name='key_unit', lookup_expr='isnull', label='계약가능호수')
+
+    class Meta:
+        model = HouseUnit
+        fields = ('project', 'unit_type', 'floor_type', 'building_unit',
+                  'bldg_line', 'floor_no', 'is_hold', 'no_keyunit')
+
+
 class HouseUnitList(generics.ListCreateAPIView):
     name = 'unit-list'
     queryset = HouseUnit.objects.all()
     serializer_class = HouseUnitSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
     pagination_class = PageNumberPaginationTwoHundred
-    filter_fields = ('project', 'unit_type', 'floor_type', 'building_unit',
-                     'bldg_line', 'floor_no', 'is_hold')
+    filter_class = HouseUnitListFilterSet
     search_fields = ('hold_reason',)
 
 
