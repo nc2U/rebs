@@ -49,6 +49,7 @@
           <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
             <CFormSelect
               v-model="contForm.unit_type"
+              @change="getKeyUnit"
               required
               :disabled="contForm.order_group === ''"
             >
@@ -74,7 +75,13 @@
               :disabled="contForm.unit_type === ''"
             >
               <option value="">---------</option>
-              <option value="1">a</option>
+              <option
+                v-for="unit in keyUnitList"
+                :value="unit.pk"
+                :key="unit.pk"
+              >
+                {{ unit.unit_code }}
+              </option>
             </CFormSelect>
             <CFormFeedback invalid>
               {{ contLabel }}코드를 선택하세요.
@@ -621,7 +628,7 @@ export default defineComponent({
     //   return group1 && group2 && group3
     // },
     // ...mapGetters('accounts', ['staffAuth', 'superAuth']),
-    ...mapState('contract', ['orderGroupList']),
+    ...mapState('contract', ['orderGroupList', 'keyUnitList']),
     ...mapState('project', ['unitTypeList']),
   },
   methods: {
@@ -636,6 +643,9 @@ export default defineComponent({
       } else {
         ;(this as any).$refs.confirmModal.callModal()
       }
+    },
+    getKeyUnit(event: any) {
+      this.$emit('get-key-unit', event.target.value)
     },
     // modalAction() {
     //   const { pk, company } = this
