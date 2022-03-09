@@ -32,7 +32,13 @@
               :disabled="noStatus"
             >
               <option value="">---------</option>
-              <option value="1">a</option>
+              <option
+                v-for="order in orderGroupList"
+                :value="order.pk"
+                :key="order.pk"
+              >
+                {{ order.order_group_name }}
+              </option>
             </CFormSelect>
             <CFormFeedback invalid>차수그룹을 선택하세요.</CFormFeedback>
           </CCol>
@@ -47,7 +53,13 @@
               :disabled="contForm.order_group === ''"
             >
               <option value="">---------</option>
-              <option value="1">a</option>
+              <option
+                v-for="type in unitTypeList"
+                :value="type.pk"
+                :key="type.pk"
+              >
+                {{ type.name }}
+              </option>
             </CFormSelect>
             <CFormFeedback invalid>유니트 타입을 선택하세요.</CFormFeedback>
           </CCol>
@@ -496,6 +508,7 @@ import DatePicker from '@/components/DatePicker/index.vue'
 import DaumPostcode from '@/components/DaumPostcode/index.vue'
 import addressMixin from '@/components/DaumPostcode/addressMixin'
 import { maska } from 'maska'
+import { mapState } from 'vuex'
 
 export default defineComponent({
   name: 'IndexForm',
@@ -608,6 +621,8 @@ export default defineComponent({
     //   return group1 && group2 && group3
     // },
     // ...mapGetters('accounts', ['staffAuth', 'superAuth']),
+    ...mapState('contract', ['orderGroupList']),
+    ...mapState('project', ['unitTypeList']),
   },
   methods: {
     onSubmit(this: any, event: any) {
