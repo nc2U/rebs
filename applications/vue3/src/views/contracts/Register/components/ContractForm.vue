@@ -137,7 +137,7 @@
             <CFormFeedback invalid>생년월일 입력하세요.</CFormFeedback>
           </CCol>
 
-          <CCol xs="5" lg="1" class="pt-2 p-0 text-center">
+          <CCol xs="5" lg="1" class="pt-2 p-0 text-center" v-show="isContract">
             <div class="form-check form-check-inline">
               <input
                 v-model="contorForm.gender"
@@ -166,7 +166,7 @@
             <CFormFeedback invalid>성별을 선택하세요.</CFormFeedback>
           </CCol>
 
-          <CCol xs="6" lg="2" class="pt-2 p-0">
+          <CCol xs="6" lg="2" class="pt-2 p-0" v-show="isContract">
             <CFormSwitch
               v-model="contorForm.is_registed"
               id="is_registed"
@@ -294,18 +294,18 @@
 
               <CCol md="2" class="d-none d-md-block d-lg-none"></CCol>
 
-              <CCol xs="3" md="2" lg="1" class="pt-2 text-center">
+              <CCol xs="3" md="2" lg="1" class="pt-2 mb-3 text-center">
                 <router-link to="">입금등록</router-link>
               </CCol>
             </CRow>
           </CAlert>
         </CRow>
 
-        <CRow class="mb-0">
+        <CRow class="mb-0" v-show="isContract">
           <CFormLabel class="col-md-2 col-lg-1 col-form-label">
             주민등록 주소
           </CFormLabel>
-          <CCol md="5" lg="2" class="mb-3 mb-lg-0">
+          <CCol md="3" lg="2" class="mb-3 mb-lg-0">
             <CInputGroup>
               <CInputGroupText @click="$refs.postCode.initiate()">
                 우편번호
@@ -324,7 +324,7 @@
             </CInputGroup>
           </CCol>
 
-          <CCol md="5" lg="4" class="mb-3 mb-lg-0">
+          <CCol md="7" lg="4" class="mb-3 mb-lg-0">
             <CFormInput
               v-model="address.id_address1"
               type="text"
@@ -339,7 +339,7 @@
 
           <CCol md="2" class="d-none d-md-block d-lg-none"></CCol>
 
-          <CCol md="5" lg="2" class="mb-3 mb-lg-0">
+          <CCol md="6" lg="2" class="mb-3 mb-lg-0">
             <CFormInput
               v-model="address.id_address2"
               ref="address2"
@@ -351,7 +351,7 @@
             />
             <CFormFeedback invalid>상세주소를 입력하세요.</CFormFeedback>
           </CCol>
-          <CCol md="5" lg="2">
+          <CCol md="4" lg="2">
             <CFormInput
               v-model="address.id_address3"
               type="text"
@@ -362,11 +362,11 @@
           </CCol>
         </CRow>
 
-        <CRow class="mb-0">
+        <CRow class="mb-0" v-show="isContract">
           <CFormLabel class="col-md-2 col-lg-1 col-form-label">
             우편수령 주소
           </CFormLabel>
-          <CCol md="5" lg="2" class="mb-3 mb-lg-0">
+          <CCol md="3" lg="2" class="mb-3 mb-lg-0">
             <CInputGroup>
               <CInputGroupText @click="$refs.postCode.initiate()">
                 우편번호
@@ -385,7 +385,7 @@
             </CInputGroup>
           </CCol>
 
-          <CCol md="5" lg="4" class="mb-3 mb-lg-0">
+          <CCol md="7" lg="4" class="mb-3 mb-lg-0">
             <CFormInput
               v-model="address.dm_address1"
               type="text"
@@ -402,7 +402,7 @@
 
           <CCol md="2" class="d-none d-md-block d-lg-none"></CCol>
 
-          <CCol md="5" lg="2" class="mb-3 mb-lg-0">
+          <CCol md="6" lg="2" class="mb-3 mb-lg-0">
             <CFormInput
               v-model="address.dm_address2"
               ref="address2"
@@ -414,7 +414,7 @@
             />
             <CFormFeedback invalid>상세주소를 입력하세요.</CFormFeedback>
           </CCol>
-          <CCol md="5" lg="2">
+          <CCol md="4" lg="2">
             <CFormInput
               v-model="address.dm_address3"
               type="text"
