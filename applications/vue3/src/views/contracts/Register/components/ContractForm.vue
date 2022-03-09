@@ -49,7 +49,7 @@
           <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
             <CFormSelect
               v-model="contForm.unit_type"
-              @change="getKeyUnit"
+              @change="typeSelect"
               required
               :disabled="contForm.order_group === ''"
             >
@@ -94,7 +94,13 @@
           <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
             <CFormSelect required :disabled="contForm.serial_number === ''">
               <option value="">---------</option>
-              <option value="1">a</option>
+              <option
+                v-for="house in houseUnitList"
+                :value="house.pk"
+                :key="house.pk"
+              >
+                {{ house.__str__ }}
+              </option>
             </CFormSelect>
             <CFormFeedback invalid>동호수를 선택하세요.</CFormFeedback>
           </CCol>
@@ -628,7 +634,7 @@ export default defineComponent({
     //   return group1 && group2 && group3
     // },
     // ...mapGetters('accounts', ['staffAuth', 'superAuth']),
-    ...mapState('contract', ['orderGroupList', 'keyUnitList']),
+    ...mapState('contract', ['orderGroupList', 'keyUnitList', 'houseUnitList']),
     ...mapState('project', ['unitTypeList']),
   },
   methods: {
@@ -644,8 +650,8 @@ export default defineComponent({
         ;(this as any).$refs.confirmModal.callModal()
       }
     },
-    getKeyUnit(event: any) {
-      this.$emit('get-key-unit', event.target.value)
+    typeSelect(event: any) {
+      this.$emit('type-select', event.target.value)
     },
     // modalAction() {
     //   const { pk, company } = this
