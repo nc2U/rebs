@@ -495,9 +495,7 @@
       </CCardBody>
 
       <CCardFooter class="text-right">
-        <CButton type="button" color="light" @click="this.$emit('reset-form')">
-          취소
-        </CButton>
+        <CButton type="button" color="light" @click="formReset"> 취소</CButton>
         <CButton
           type="button"
           v-if="update"
@@ -604,16 +602,6 @@ export default defineComponent({
   props: {
     unitSet: Boolean,
     isUnion: Boolean,
-    // userInfo: {
-    //   type: Object,
-    // },
-    // update: {
-    //   type: Boolean,
-    //   required: true,
-    // },
-    // contract: {
-    //   type: Object,
-    // },
   },
   computed: {
     contLabel() {
@@ -632,36 +620,8 @@ export default defineComponent({
     //   const a = this.form.name === this.project.name
     //   const b = this.form.order === this.project.order
     //   const c = this.form.kind === this.project.kind
-    //   const d = this.form.start_year === this.project.start_year
-    //   const e = this.form.is_direct_manage === this.project.is_direct_manage
-    //   const f = this.form.is_returned_area === this.project.is_returned_area
-    //   const g = this.form.is_unit_set === this.project.is_unit_set
-    //   const h = this.form.local_zipcode === this.project.local_zipcode
-    //   const i = this.form.local_address1 === this.project.local_address1
-    //   const j = this.form.local_address2 === this.project.local_address2
-    //   const k = this.form.local_address3 === this.project.local_address3
-    //   const l = this.form.area_usage === this.project.area_usage
-    //   const m = this.form.build_size === this.project.build_size
-    //   const n = this.form.num_unit === this.project.num_unit
-    //   const o = this.form.buy_land_extent === this.project.buy_land_extent
-    //   const p = this.form.scheme_land_extent === this.project.scheme_land_extent
-    //   const q =
-    //     this.form.donation_land_extent === this.project.donation_land_extent
-    //   const r = this.form.on_floor_area === this.project.on_floor_area
-    //   const s = this.form.under_floor_area === this.project.under_floor_area
-    //   const t = this.form.total_floor_area === this.project.total_floor_area
-    //   const u = this.form.build_area === this.project.build_area
-    //   const v = this.form.floor_area_ratio === this.project.floor_area_ratio
-    //   const w =
-    //     this.form.build_to_land_ratio === this.project.build_to_land_ratio
-    //   const x = this.form.num_legal_parking === this.project.num_legal_parking
-    //   const y = this.form.num_planed_parking === this.project.num_planed_parking
     //
-    //   const group1 = a && b && c && d && e && f && g && h
-    //   const group2 = i && j && k && l && m && n && o && p
-    //   const group3 = q && r && s && t && u && v && w && x && y
-    //
-    //   return group1 && group2 && group3
+    //   return a && b && c
     // },
     // ...mapGetters('accounts', ['staffAuth', 'superAuth']),
     ...mapState('contract', ['orderGroupList', 'keyUnitList', 'houseUnitList']),
@@ -681,17 +641,44 @@ export default defineComponent({
       } else this.$refs.confirmModal.callModal()
     },
     unitReset(event: any) {
-      if (event.target.value === '') {
-        this.contForm.order_group = ''
-        this.contForm.unit_type = ''
-        this.contForm.serial_number = ''
-        this.contForm.houseunit = ''
-      }
+      if (event.target.value === '') this.formReset()
     },
     typeSelect(event: any) {
       this.$emit('type-select', event.target.value)
       this.contForm.serial_number = ''
       this.contForm.houseunit = ''
+    },
+    formReset() {
+      this.contForm.project = null
+      this.contForm.order_group = ''
+      this.contForm.unit_type = ''
+      this.contForm.serial_number = ''
+      this.contForm.houseunit = ''
+      this.contForm.activation = false
+      this.contorForm.contract = null
+      this.contorForm.name = ''
+      this.contorForm.birth_date = ''
+      this.contorForm.gender = ''
+      this.contorForm.is_registed = false
+      this.contorForm.status = ''
+      this.contorForm.cont_date = ''
+      this.contorForm.reservation_date = ''
+      this.contorForm.contract_date = ''
+      this.contorForm.note = ''
+      this.address.contractor = null
+      this.address.id_zipcode = ''
+      this.address.id_address1 = ''
+      this.address.id_address2 = ''
+      this.address.id_address3 = ''
+      this.address.dm_zipcode = ''
+      this.address.dm_address1 = ''
+      this.address.dm_address2 = ''
+      this.address.dm_address3 = ''
+      this.contact.contractor = null
+      this.contact.cell_phone = ''
+      this.contact.home_phone = ''
+      this.contact.other_phone = ''
+      this.contact.email = ''
     },
     // modalAction() {
     //   const { pk, company } = this
