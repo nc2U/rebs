@@ -671,20 +671,17 @@ export default defineComponent({
       this.contForm.houseunit = ''
     },
     toSame() {
-      alert(this.sameAddr)
-      this.$nextTick(() => {
-        // if (this.sameAddr === true) {
-        //   this.address.dm_zipcode = this.address.id_zipcode
-        //   this.address.dm_address1 = this.address.id_address1
-        //   this.address.dm_address2 = this.address.id_address2
-        //   this.address.dm_address3 = this.address.id_address3
-        // } else {
-        //   this.address.dm_zipcode = ''
-        //   this.address.dm_address1 = ''
-        //   this.address.dm_address2 = ''
-        //   this.address.dm_address3 = ''
-        // }
-      })
+      if (!this.sameAddr) {
+        this.address.dm_zipcode = this.address.id_zipcode
+        this.address.dm_address1 = this.address.id_address1
+        this.address.dm_address2 = this.address.id_address2
+        this.address.dm_address3 = this.address.id_address3
+      } else {
+        this.address.dm_zipcode = ''
+        this.address.dm_address1 = ''
+        this.address.dm_address2 = ''
+        this.address.dm_address3 = ''
+      }
     },
     formReset() {
       this.contForm.project = null
