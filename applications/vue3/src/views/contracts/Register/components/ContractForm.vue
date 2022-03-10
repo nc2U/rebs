@@ -680,15 +680,21 @@ export default defineComponent({
       this.contact.other_phone = ''
       this.contact.email = ''
     },
-    // modalAction() {
-    //   const { pk, company } = this
-    //   if (this.update) {
-    //     this.$emit('to-update', { ...{ pk, company }, ...this.form })
-    //   } else {
-    //     this.$emit('to-create', { ...{ company }, ...this.form })
-    //   }
-    //   this.validated = false
-    // },
+    modalAction(this: any) {
+      const { pk } = this
+      this.contorForm.reservation_date = this.dateFormat(
+        this.contorForm.reservation_date,
+      )
+      this.contorForm.cont_date = this.dateFormat(this.contorForm.cont_date)
+      this.$emit('on-submit', {
+        ...{ pk },
+        ...this.contForm,
+        ...this.contorForm,
+        ...this.address,
+        ...this.contact,
+      })
+      this.validated = false
+    },
     // deleteProject(this: any) {
     //   if (this.superAuth) this.$refs.delModal.callModal()
     //   else this.$refs.alertModal.callModal()

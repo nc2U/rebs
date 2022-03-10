@@ -10,6 +10,7 @@
       :unit-set="unitSet"
       :is-union="isUnion"
       @type-select="typeSelect"
+      @on-submit="onSubmit"
     />
   </ContentBody>
 </template>
@@ -71,6 +72,9 @@ export default defineComponent({
       const unit_type = type
       this.fetchKeyUnitList({ project, unit_type })
       this.fetchHouseUnitList({ project, unit_type })
+    },
+    onSubmit(payload: any) {
+      console.log(payload)
     },
     ...mapActions('contract', [
       'fetchOrderGroupList',
