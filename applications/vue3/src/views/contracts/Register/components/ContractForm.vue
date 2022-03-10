@@ -356,7 +356,7 @@
           </CFormLabel>
           <CCol md="3" lg="2" class="mb-3 mb-lg-0">
             <CInputGroup>
-              <CInputGroupText @click="$refs.postCode.initiate()">
+              <CInputGroupText @click="$refs.postCode.initiate(2)">
                 우편번호
               </CInputGroupText>
               <CFormInput
@@ -365,7 +365,7 @@
                 type="text"
                 maxlength="5"
                 placeholder="우편번호"
-                @focus="$refs.postCode.initiate()"
+                @focus="$refs.postCode.initiate(2)"
                 :required="isContract"
                 :disabled="!isContract"
               />
@@ -379,7 +379,7 @@
               type="text"
               maxlength="50"
               placeholder="주민등록 주소를 입력하세요"
-              @focus="$refs.postCode.initiate()"
+              @focus="$refs.postCode.initiate(2)"
               :required="isContract"
               :disabled="!isContract"
             />
@@ -391,7 +391,7 @@
           <CCol md="6" lg="2" class="mb-3 mb-lg-0">
             <CFormInput
               v-model="address.id_address2"
-              ref="address2"
+              ref="address21"
               type="text"
               maxlength="30"
               placeholder="상세주소를 입력하세요"
@@ -417,7 +417,7 @@
           </CFormLabel>
           <CCol md="3" lg="2" class="mb-3 mb-lg-0">
             <CInputGroup>
-              <CInputGroupText @click="$refs.postCode.initiate()">
+              <CInputGroupText @click="$refs.postCode.initiate(3)">
                 우편번호
               </CInputGroupText>
               <CFormInput
@@ -426,7 +426,7 @@
                 type="text"
                 maxlength="5"
                 placeholder="우편번호"
-                @focus="$refs.postCode.initiate()"
+                @focus="$refs.postCode.initiate(3)"
                 :required="isContract"
                 :disabled="!isContract"
               />
@@ -440,7 +440,7 @@
               type="text"
               maxlength="50"
               placeholder="우편물 수령 주소를 입력하세요"
-              @focus="$refs.postCode.initiate()"
+              @focus="$refs.postCode.initiate(3)"
               :required="isContract"
               :disabled="!isContract"
             />
@@ -454,7 +454,7 @@
           <CCol md="6" lg="2" class="mb-3 mb-lg-0">
             <CFormInput
               v-model="address.dm_address2"
-              ref="address2"
+              ref="address22"
               type="text"
               maxlength="30"
               placeholder="상세주소를 입력하세요"
@@ -476,7 +476,13 @@
           <CCol md="2" class="d-none d-md-block d-lg-none"></CCol>
 
           <CCol md="10" lg="1" class="pt-2 mb-3">
-            <CFormCheck id="to-same" label="상동" :disabled="!isContract" />
+            <CFormCheck
+              @click="toSame"
+              v-model="sameAddr"
+              id="to-same"
+              label="상동"
+              :disabled="!isContract"
+            />
           </CCol>
         </CRow>
 
@@ -596,6 +602,7 @@ export default defineComponent({
         other_phone: '',
         email: '',
       },
+      sameAddr: false,
       validated: false,
     }
   },
@@ -629,6 +636,21 @@ export default defineComponent({
     ...mapState('proCash', ['proBankAccountList']),
     ...mapState('payment', ['payOrderList']),
   },
+  watch: {
+    addrForm(this: any, newVal: number) {
+      if (newVal === 2) {
+        this.address.id_zipcode = this.zipcode // 우편번호와 주소 정보를 해당 필드에 넣는다.
+        this.address.id_address1 = this.address1
+        this.address.id_address3 = this.address3 // 조합된 참고항목을 해당 필드에 넣는다.
+        this.$refs.address21.$el.focus() // 커서를 상세주소 필드로 이동한다.
+      } else if (newVal === 3) {
+        this.address.dm_zipcode = this.zipcode // 우편번호와 주소 정보를 해당 필드에 넣는다.
+        this.address.dm_address1 = this.address1
+        this.address.dm_address3 = this.address3 // 조합된 참고항목을 해당 필드에 넣는다.
+        this.$refs.address22.$el.focus() // 커서를 상세주소 필드로 이동한다.
+      }
+    },
+  },
   methods: {
     onSubmit(this: any, event: any) {
       const form = event.currentTarget
@@ -647,6 +669,22 @@ export default defineComponent({
       this.$emit('type-select', event.target.value)
       this.contForm.serial_number = ''
       this.contForm.houseunit = ''
+    },
+    toSame() {
+      alert(this.sameAddr)
+      this.$nextTick(() => {
+        // if (this.sameAddr === true) {
+        //   this.address.dm_zipcode = this.address.id_zipcode
+        //   this.address.dm_address1 = this.address.id_address1
+        //   this.address.dm_address2 = this.address.id_address2
+        //   this.address.dm_address3 = this.address.id_address3
+        // } else {
+        //   this.address.dm_zipcode = ''
+        //   this.address.dm_address1 = ''
+        //   this.address.dm_address2 = ''
+        //   this.address.dm_address3 = ''
+        // }
+      })
     },
     formReset() {
       this.contForm.project = null
