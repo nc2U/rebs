@@ -81,13 +81,13 @@ export default defineComponent({
     }
   },
   methods: {
-    initiate() {
+    initiate(formNum = 1) {
       // eslint-disable-next-line @typescript-eslint/no-this-alias
       const vm: any = this
       ;(window as any).daum.postcode.load(() => {
         new (window as any).daum.Postcode({
           oncomplete: function oncomplete(data: any) {
-            vm.$emit('addressPut', data)
+            vm.$emit('addressPut', { ...{ formNum }, ...data })
             vm.dispalyVal = 'none'
           },
           alwaysShowEngAddr: vm.alwaysShowEngAddr,

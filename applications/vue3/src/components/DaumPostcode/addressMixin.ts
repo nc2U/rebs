@@ -1,13 +1,14 @@
 const addressMixin = {
   data() {
     return {
+      addrForm: null,
       zipcode: '',
       address1: '',
       address3: '',
     }
   },
   methods: {
-    addressPut(data: any) {
+    addressPut(this: any, data: any) {
       // 각 주소의 노출 규칙에 따라 주소를 조합한다. 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
       let mainAddr = '' // 주소 변수
       let extraAddr = '' // 참고항목 변수
@@ -36,13 +37,20 @@ const addressMixin = {
         }
       }
 
-      ;(this as any).zipcode = data.zonecode // 우편번호와 주소 정보를 해당 필드에 넣는다.
-      ;(this as any).address1 = mainAddr
-      ;(this as any).address3 = extraAddr // 조합된 참고항목을 해당 필드에 넣는다.
-      ;(this as any).form.zipcode = data.zonecode // 우편번호와 주소 정보를 해당 필드에 넣는다.
-      ;(this as any).form.address1 = mainAddr
-      ;(this as any).form.address3 = extraAddr // 조합된 참고항목을 해당 필드에 넣는다.
-      ;(this as any).$refs.address2.$el.focus() // 커서를 상세주소 필드로 이동한다.
+      this.addrForm = data.formNum
+      this.zipcode = data.zonecode // 우편번호와 주소 정보를 해당 필드에 넣는다.
+      this.address1 = mainAddr
+      this.address3 = extraAddr // 조합된 참고항목을 해당 필드에 넣는다.
+    },
+  },
+  watch: {
+    addrForm(this: any, newVal: number) {
+      if (newVal === 1) {
+        this.form.zipcode = this.zipcode // 우편번호와 주소 정보를 해당 필드에 넣는다.
+        this.form.address1 = this.address1
+        this.form.address3 = this.address3 // 조합된 참고항목을 해당 필드에 넣는다.
+        this.$refs.address2.$el.focus() // 커서를 상세주소 필드로 이동한다.
+      }
     },
   },
 }
