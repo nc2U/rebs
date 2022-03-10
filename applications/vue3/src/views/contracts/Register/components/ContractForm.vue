@@ -12,11 +12,7 @@
             구분
           </CFormLabel>
           <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
-            <CFormSelect
-              v-model="contorForm.status"
-              @change="unitReset"
-              required
-            >
+            <CFormSelect v-model="form.status" @change="unitReset" required>
               <option value="">---------</option>
               <option value="1">청약</option>
               <option value="2">계약</option>
@@ -31,7 +27,7 @@
           </CFormLabel>
           <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
             <CFormSelect
-              v-model="contForm.order_group"
+              v-model="form.order_group"
               @change="unitReset"
               required
               :disabled="noStatus"
@@ -53,10 +49,10 @@
           </CFormLabel>
           <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
             <CFormSelect
-              v-model="contForm.unit_type"
+              v-model="form.unit_type"
               @change="typeSelect"
               required
-              :disabled="contForm.order_group === ''"
+              :disabled="form.order_group === ''"
             >
               <option value="">---------</option>
               <option
@@ -75,10 +71,10 @@
           </CFormLabel>
           <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
             <CFormSelect
-              v-model="contForm.serial_number"
-              @change="contForm.houseunit = ''"
+              v-model="form.serial_number"
+              @change="form.houseunit = ''"
               required
-              :disabled="contForm.unit_type === ''"
+              :disabled="form.unit_type === ''"
             >
               <option value="">---------</option>
               <option
@@ -99,9 +95,9 @@
           </CFormLabel>
           <CCol md="10" lg="2" class="mb-md-3 mb-lg-0" v-if="unitSet">
             <CFormSelect
-              v-model="contForm.houseunit"
+              v-model="form.houseunit"
               required
-              :disabled="contForm.serial_number === ''"
+              :disabled="form.serial_number === ''"
             >
               <option value="">---------</option>
               <option
@@ -124,16 +120,16 @@
           </CFormLabel>
           <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
             <DatePicker
-              v-show="contorForm.status === '1'"
-              v-model="contorForm.reservation_date"
+              v-show="form.status === '1'"
+              v-model="form.reservation_date"
               v-maska="'####-##-##'"
               placeholder="청약일자"
-              :required="contorForm.status === '1'"
+              :required="form.status === '1'"
               :disabled="noStatus"
             />
             <DatePicker
-              v-show="contorForm.status !== '1'"
-              v-model="contorForm.contract_date"
+              v-show="form.status !== '1'"
+              v-model="form.contract_date"
               v-maska="'####-##-##'"
               placeholder="계약일자"
               :required="isContract"
@@ -146,7 +142,7 @@
           </CFormLabel>
           <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
             <CFormInput
-              v-model="contorForm.name"
+              v-model="form.name"
               type="text"
               maxlength="20"
               :placeholder="`${contLabel}자명을 입력하세요`"
@@ -163,7 +159,7 @@
           </CFormLabel>
           <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
             <DatePicker
-              v-model="contorForm.birth_date"
+              v-model="form.birth_date"
               placeholder="생년월일"
               v-maska="'####-##-##'"
               :required="isContract"
@@ -175,7 +171,7 @@
           <CCol xs="5" lg="1" class="pt-2 p-0 text-center" v-show="isContract">
             <div class="form-check form-check-inline">
               <input
-                v-model="contorForm.gender"
+                v-model="form.gender"
                 class="form-check-input"
                 id="male"
                 type="radio"
@@ -188,7 +184,7 @@
             </div>
             <div class="form-check form-check-inline">
               <input
-                v-model="contorForm.gender"
+                v-model="form.gender"
                 class="form-check-input"
                 id="female"
                 type="radio"
@@ -203,7 +199,7 @@
 
           <CCol xs="6" lg="2" class="pt-2 p-0" v-show="isContract && isUnion">
             <CFormSwitch
-              v-model="contorForm.is_registed"
+              v-model="form.is_registed"
               id="is_registed"
               label="인가등록여부"
               :disabled="!isContract"
@@ -217,7 +213,7 @@
           </CFormLabel>
           <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
             <CFormInput
-              v-model="contact.cell_phone"
+              v-model="form.cell_phone"
               v-maska="['###-###-####', '###-####-####']"
               type="text"
               maxlength="13"
@@ -233,7 +229,7 @@
           </CFormLabel>
           <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
             <CFormInput
-              v-model="contact.home_phone"
+              v-model="form.home_phone"
               v-maska="['###-###-####', '###-####-####']"
               type="text"
               maxlength="13"
@@ -247,7 +243,7 @@
           </CFormLabel>
           <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
             <CFormInput
-              v-model="contact.other_phone"
+              v-model="form.other_phone"
               v-maska="['###-###-####', '###-####-####']"
               type="text"
               maxlength="13"
@@ -261,7 +257,7 @@
           </CFormLabel>
           <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
             <CFormInput
-              v-model="contact.email"
+              v-model="form.email"
               type="email"
               maxlength="50"
               placeholder="이메일 주소를 입력하세요."
@@ -281,6 +277,7 @@
               </CFormLabel>
               <CCol md="10" lg="2" class="mb-3 mb-lg-0">
                 <DatePicker
+                  v-model="form.deal_date"
                   placeholder="입금일자"
                   v-maska="'####-##-##'"
                   required
@@ -292,6 +289,7 @@
 
               <CCol md="5" lg="2" class="mb-3 mb-lg-0">
                 <CFormInput
+                  v-model="form.income"
                   type="number"
                   min="0"
                   placeholder="입금액"
@@ -302,7 +300,11 @@
               </CCol>
 
               <CCol md="5" lg="2" class="mb-3 mb-lg-0">
-                <CFormSelect required :disabled="noStatus">
+                <CFormSelect
+                  v-model="form.bank_account"
+                  required
+                  :disabled="noStatus"
+                >
                   <option value="">납부계좌 선택</option>
                   <option
                     v-for="pb in proBankAccountList"
@@ -319,7 +321,7 @@
 
               <CCol md="5" lg="2" class="mb-3 mb-lg-0">
                 <CFormInput
-                  type="text"
+                  v-model="form.trader"
                   maxlength="20"
                   placeholder="입금자명을 입력하세요"
                   required
@@ -328,7 +330,11 @@
                 <CFormFeedback invalid>입금자명을 입력하세요.</CFormFeedback>
               </CCol>
               <CCol md="5" lg="2" class="mb-md-3 mb-lg-0">
-                <CFormSelect required :disabled="noStatus">
+                <CFormSelect
+                  v-model="form.installment_order"
+                  required
+                  :disabled="noStatus"
+                >
                   <option value="">납부회차 선택</option>
                   <option
                     v-for="po in downPayOrder"
@@ -360,7 +366,7 @@
                 우편번호
               </CInputGroupText>
               <CFormInput
-                v-model="address.id_zipcode"
+                v-model="form.id_zipcode"
                 v-maska="'#####'"
                 type="text"
                 maxlength="5"
@@ -375,7 +381,7 @@
 
           <CCol md="7" lg="4" class="mb-3 mb-lg-0">
             <CFormInput
-              v-model="address.id_address1"
+              v-model="form.id_address1"
               type="text"
               maxlength="50"
               placeholder="주민등록 주소를 입력하세요"
@@ -390,7 +396,7 @@
 
           <CCol md="6" lg="2" class="mb-3 mb-lg-0">
             <CFormInput
-              v-model="address.id_address2"
+              v-model="form.id_address2"
               ref="address21"
               type="text"
               maxlength="30"
@@ -402,7 +408,7 @@
           </CCol>
           <CCol md="4" lg="2">
             <CFormInput
-              v-model="address.id_address3"
+              v-model="form.id_address3"
               type="text"
               maxlength="30"
               placeholder="참고항목을 입력하세요"
@@ -421,7 +427,7 @@
                 우편번호
               </CInputGroupText>
               <CFormInput
-                v-model="address.dm_zipcode"
+                v-model="form.dm_zipcode"
                 v-maska="'#####'"
                 type="text"
                 maxlength="5"
@@ -436,7 +442,7 @@
 
           <CCol md="7" lg="4" class="mb-3 mb-lg-0">
             <CFormInput
-              v-model="address.dm_address1"
+              v-model="form.dm_address1"
               type="text"
               maxlength="50"
               placeholder="우편물 수령 주소를 입력하세요"
@@ -453,7 +459,7 @@
 
           <CCol md="6" lg="2" class="mb-3 mb-lg-0">
             <CFormInput
-              v-model="address.dm_address2"
+              v-model="form.dm_address2"
               ref="address22"
               type="text"
               maxlength="30"
@@ -465,7 +471,7 @@
           </CCol>
           <CCol md="4" lg="2">
             <CFormInput
-              v-model="address.dm_address3"
+              v-model="form.dm_address3"
               type="text"
               maxlength="30"
               placeholder="참고항목을 입력하세요"
@@ -492,7 +498,7 @@
           </CFormLabel>
           <CCol md="10" lg="11" class="mb-md-3 mb-lg-0">
             <CFormTextarea
-              v-model.number="contorForm.note"
+              v-model.number="form.note"
               placeholder="기타 특이사항"
               :disabled="noStatus"
             />
@@ -563,44 +569,42 @@ export default defineComponent({
   directives: { maska },
   data() {
     return {
-      contPk: null,
-      contForm: {
-        project: null,
-        order_group: '',
-        unit_type: '',
-        serial_number: '',
-        houseunit: '',
-        activation: false,
-      },
-      contorForm: {
-        contract: null,
-        name: '',
-        birth_date: '',
-        gender: '',
-        is_registed: false,
-        status: '',
-        cont_date: '',
-        reservation_date: '',
-        contract_date: '',
-        note: '',
-      },
-      address: {
-        contractor: null,
-        id_zipcode: '',
-        id_address1: '',
-        id_address2: '',
-        id_address3: '',
-        dm_zipcode: '',
-        dm_address1: '',
-        dm_address2: '',
-        dm_address3: '',
-      },
-      contact: {
-        contractor: null,
-        cell_phone: '',
-        home_phone: '',
-        other_phone: '',
-        email: '',
+      form: {
+        // contract
+        order_group: '', // 2
+        unit_type: '', // 3
+        serial_number: '', // 4
+        houseunit: '', // 5
+        // contractor
+        // activation: false,
+        name: '', // 7
+        birth_date: '', // 8
+        gender: '', // 9
+        is_registed: false, // 10
+        status: '', // 1
+        reservation_date: '', // 6-1
+        contract_date: '', // 6-2
+        note: '', // 28
+        // proCash
+        deal_date: '', // 15
+        income: '', // 16
+        bank_account: '', // 17
+        trader: '', // 18
+        installment_order: '', // 19
+        // address
+        id_zipcode: '', // 20
+        id_address1: '', // 21
+        id_address2: '', // 22
+        id_address3: '', // 23
+        dm_zipcode: '', // 24
+        dm_address1: '', // 25
+        dm_address2: '', // 26
+        dm_address3: '', // 27
+        // contact
+        cell_phone: '', // 11
+        home_phone: '', // 12
+        other_phone: '', // 13
+        email: '', // 14
       },
       sameAddr: false,
       validated: false,
@@ -612,23 +616,21 @@ export default defineComponent({
   },
   computed: {
     contLabel() {
-      return this.contorForm.status !== '1' ? '계약' : '청약'
+      return this.form.status !== '1' ? '계약' : '청약'
     },
     isContract() {
-      return this.contorForm.status === '2'
+      return this.form.status === '2'
     },
     noStatus() {
-      return this.contorForm.status === ''
+      return this.form.status === ''
     },
     downPayOrder() {
       return this.payOrderList.filter((po: any) => po.pay_time <= '1')
     },
     // formsCheck(this: any) {
     //   const a = this.form.name === this.project.name
-    //   const b = this.form.order === this.project.order
-    //   const c = this.form.kind === this.project.kind
     //
-    //   return a && b && c
+    //   return a
     // },
     // ...mapGetters('accounts', ['staffAuth', 'superAuth']),
     ...mapState('contract', ['orderGroupList', 'keyUnitList', 'houseUnitList']),
@@ -639,14 +641,14 @@ export default defineComponent({
   watch: {
     addrForm(this: any, newVal: number) {
       if (newVal === 2) {
-        this.address.id_zipcode = this.zipcode // 우편번호와 주소 정보를 해당 필드에 넣는다.
-        this.address.id_address1 = this.address1
-        this.address.id_address3 = this.address3 // 조합된 참고항목을 해당 필드에 넣는다.
+        this.form.id_zipcode = this.zipcode // 우편번호와 주소 정보를 해당 필드에 넣는다.
+        this.form.id_address1 = this.address1
+        this.form.id_address3 = this.address3 // 조합된 참고항목을 해당 필드에 넣는다.
         this.$refs.address21.$el.focus() // 커서를 상세주소 필드로 이동한다.
       } else if (newVal === 3) {
-        this.address.dm_zipcode = this.zipcode // 우편번호와 주소 정보를 해당 필드에 넣는다.
-        this.address.dm_address1 = this.address1
-        this.address.dm_address3 = this.address3 // 조합된 참고항목을 해당 필드에 넣는다.
+        this.form.dm_zipcode = this.zipcode // 우편번호와 주소 정보를 해당 필드에 넣는다.
+        this.form.dm_address1 = this.address1
+        this.form.dm_address3 = this.address3 // 조합된 참고항목을 해당 필드에 넣는다.
         this.$refs.address22.$el.focus() // 커서를 상세주소 필드로 이동한다.
       }
     },
@@ -667,68 +669,75 @@ export default defineComponent({
     },
     typeSelect(event: any) {
       this.$emit('type-select', event.target.value)
-      this.contForm.serial_number = ''
-      this.contForm.houseunit = ''
+      this.form.serial_number = ''
+      this.form.houseunit = ''
     },
     toSame() {
       if (!this.sameAddr) {
-        this.address.dm_zipcode = this.address.id_zipcode
-        this.address.dm_address1 = this.address.id_address1
-        this.address.dm_address2 = this.address.id_address2
-        this.address.dm_address3 = this.address.id_address3
+        this.form.dm_zipcode = this.form.id_zipcode
+        this.form.dm_address1 = this.form.id_address1
+        this.form.dm_address2 = this.form.id_address2
+        this.form.dm_address3 = this.form.id_address3
       } else {
-        this.address.dm_zipcode = ''
-        this.address.dm_address1 = ''
-        this.address.dm_address2 = ''
-        this.address.dm_address3 = ''
+        this.form.dm_zipcode = ''
+        this.form.dm_address1 = ''
+        this.form.dm_address2 = ''
+        this.form.dm_address3 = ''
       }
     },
     formReset() {
-      this.contForm.project = null
-      this.contForm.order_group = ''
-      this.contForm.unit_type = ''
-      this.contForm.serial_number = ''
-      this.contForm.houseunit = ''
-      this.contForm.activation = false
-      this.contorForm.contract = null
-      this.contorForm.name = ''
-      this.contorForm.birth_date = ''
-      this.contorForm.gender = ''
-      this.contorForm.is_registed = false
-      this.contorForm.status = ''
-      this.contorForm.cont_date = ''
-      this.contorForm.reservation_date = ''
-      this.contorForm.contract_date = ''
-      this.contorForm.note = ''
-      this.address.contractor = null
-      this.address.id_zipcode = ''
-      this.address.id_address1 = ''
-      this.address.id_address2 = ''
-      this.address.id_address3 = ''
-      this.address.dm_zipcode = ''
-      this.address.dm_address1 = ''
-      this.address.dm_address2 = ''
-      this.address.dm_address3 = ''
-      this.contact.contractor = null
-      this.contact.cell_phone = ''
-      this.contact.home_phone = ''
-      this.contact.other_phone = ''
-      this.contact.email = ''
+      this.form.order_group = ''
+      this.form.unit_type = ''
+      this.form.serial_number = ''
+      this.form.houseunit = ''
+
+      // this.form.contractor_pk = null
+      this.form.name = ''
+      this.form.birth_date = ''
+      this.form.gender = ''
+      this.form.is_registed = false
+      this.form.status = ''
+      this.form.reservation_date = ''
+      this.form.contract_date = ''
+      this.form.note = ''
+
+      this.form.deal_date = ''
+      this.form.income = ''
+      this.form.bank_account = ''
+      this.form.trader = ''
+      this.form.installment_order = ''
+
+      this.form.id_zipcode = ''
+      this.form.id_address1 = ''
+      this.form.id_address2 = ''
+      this.form.id_address3 = ''
+      this.form.dm_zipcode = ''
+      this.form.dm_address1 = ''
+      this.form.dm_address2 = ''
+      this.form.dm_address3 = ''
+
+      this.form.cell_phone = ''
+      this.form.home_phone = ''
+      this.form.other_phone = ''
+      this.form.email = ''
     },
     modalAction(this: any) {
-      const { pk } = this
-      this.contorForm.reservation_date = this.dateFormat(
-        this.contorForm.reservation_date,
-      )
-      this.contorForm.cont_date = this.dateFormat(this.contorForm.cont_date)
-      this.$emit('on-submit', {
-        ...{ pk },
-        ...this.contForm,
-        ...this.contorForm,
-        ...this.address,
-        ...this.contact,
-      })
+      this.form.birth_date = this.form.birth_date
+        ? this.dateFormat(this.form.birth_date)
+        : ''
+      this.form.reservation_date = this.form.reservation_date
+        ? this.dateFormat(this.form.reservation_date)
+        : ''
+      this.form.contract_date = this.form.contract_date
+        ? this.dateFormat(this.form.contract_date)
+        : ''
+      this.form.deal_date = this.form.deal_date
+        ? this.dateFormat(this.form.deal_date)
+        : ''
+      this.$emit('on-submit', { ...{ activation: true }, ...this.form })
       this.validated = false
+      this.formReset()
+      this.$refs.confirmModal.visible = false
     },
     // deleteProject(this: any) {
     //   if (this.superAuth) this.$refs.delModal.callModal()
