@@ -485,6 +485,26 @@ class ContSummarySerializer(serializers.ModelSerializer):
         fields = ('order_group', 'unit_type', 'num_cont')
 
 
+class ContractorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Contractor
+        fields = ('pk', 'contract', 'name', 'birth_date', 'gender', 'is_registed',
+                  'status', 'reservation_date', 'contract_date', 'note')
+
+
+class ContractorAddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ContractorAddress
+        fields = ('pk', 'contractor', 'id_zipcode', 'id_address1', 'id_address2', 'id_address3',
+                  'dm_zipcode', 'dm_address1', 'dm_address2', 'dm_address3')
+
+
+class ContractorContactSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ContractorContact
+        fields = ('pk', 'contractor', 'cell_phone', 'home_phone', 'other_phone', 'email')
+
+
 class ContractorReleaseSerializer(serializers.ModelSerializer):
     class Meta:
         model = ContractorRelease
