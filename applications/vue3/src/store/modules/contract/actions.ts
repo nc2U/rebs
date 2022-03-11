@@ -44,6 +44,154 @@ const actions = {
       .catch(console.log)
   },
 
+  createContract: async (payload: any) => {
+    // 1. 계약 생성
+    api
+      .post(`/contract/`, payload)
+      .then(res => console.log(res.data))
+      .catch(err => console.log(err.response.data))
+  },
+
+  patchKeyUnit: (payload: any) => {
+    // 2. keyunit
+    api
+      .patch(`key-unit/${payload.keyUnitPk}/`, payload.contPk)
+      .then(res => console.log(res.data))
+      .catch(err => console.log(err.response.data))
+  },
+
+  patchHouseUnit: (payload: any) => {
+    // 3. houseunit
+    api
+      .patch(`/house-unit/${payload.houseUnitPk}`, payload.keyUnitPk)
+      .then(res => console.log(res.data))
+      .catch(err => console.log(err.response.data))
+  },
+
+  createContractor: (payload: any) => {
+    // 4. contractor
+    api
+      .post(`/contractor/`, payload)
+      .then(res => console.log(res.data))
+      .catch(err => console.log(err.response.data))
+  },
+
+  createAddress: (payload: any) => {
+    // 5. address
+    api
+      .post(`/contractor-address/`, payload)
+      .then(res => console.log(res.data))
+      .catch(err => console.log(err.response.data))
+  },
+
+  createContact: (payload: any) => {
+    // 6. contact
+    api
+      .post(`/contractor-contact/`, payload)
+      .then(res => console.log(res.data))
+      .catch(err => console.log(err.response.data))
+  },
+
+  createContractSet: async ({ dispatch }: any, payload: any) => {
+    // 1. contract 생성
+    const { project, order_group, unit_type, key_unit, ...rest1 } = payload
+    const unit = key_unit.split(',')
+    const serial_number = `${unit[1]}-${order_group}`
+    const contractObj = await dispatch('createContract', {
+      project,
+      order_group,
+      unit_type,
+      serial_number,
+    })
+
+    // 2. 계약 유닛 연결 ( keyunit -> contract.pk)
+    const keyUnitPk = key_unit[0]
+    const contPk = contractObj.data.pk
+    const keyunitObj = await dispatch('patchKeyUnit', { keyUnitPk, contPk })
+
+    // 3. 동호수 연결
+    const { houseunit, ...rest3 } = rest1
+    const houseUnitPk = houseunit
+    const houseunitObj = await dispatch('patchHouseUnit', {
+      houseUnitPk,
+      keyUnitPk,
+    })
+
+    // 4. 계약자 정보 테이블 입력
+    const {
+      name,
+      birth_date,
+      gender,
+      is_registed,
+      status,
+      reservation_date,
+      contract_date,
+      note,
+      ...rest4
+    } = rest3
+    const contractorObj = await dispatch('createContractor', {
+      contract: contPk,
+      name,
+      birth_date,
+      gender,
+      is_registed,
+      status,
+      reservation_date,
+      contract_date,
+      note,
+    })
+
+    // 5. 계약자 주소 테이블 입력
+    const contractor = contractorObj.data.pk
+    const {
+      id_zipcode,
+      id_address1,
+      id_address2,
+      id_address3,
+      dm_zipcode,
+      dm_address1,
+      dm_address2,
+      dm_address3,
+      ...rest5
+    } = rest4
+    const addressObj = await dispatch('createAddress', {
+      contractor,
+      id_zipcode,
+      id_address1,
+      id_address2,
+      id_address3,
+      dm_zipcode,
+      dm_address1,
+      dm_address2,
+      dm_address3,
+    })
+
+    // 6. 계약자 연락처 테이블 입력
+    const { cell_phone, home_phone, other_phone, email, ...rest6 } = rest5
+    const contactObj = await dispatch('createContact', {
+      contractor,
+      cell_phone,
+      home_phone,
+      other_phone,
+      email,
+    })
+
+    // 7. 계약금 - 수납 정보 테이블 입력
+    const proCashObj = await dispatch('proCash/createPrCashBook', rest6, {
+      root: true,
+    })
+
+    return {
+      contractObj,
+      keyunitObj,
+      houseunitObj,
+      contractorObj,
+      addressObj,
+      contactObj,
+      proCashObj,
+    }
+  },
+
   fetchSubsSummaryList: ({ commit }: any, project?: number) => {
     api
       .get(`/subs-sum/?project=${project}`)
@@ -140,7 +288,7 @@ const actions = {
     const unit_type = payload.unit_type ? payload.unit_type : ''
     api
       .get(
-        `/unit/?project=${project}&unit_type=${unit_type}&is_hold=false&no_keyunit=true`,
+        `/house-unit/?project=${project}&unit_type=${unit_type}&is_hold=false&no_keyunit=true`,
       )
       .then(res => {
         commit(FETCH_HOUSE_UNIT_LIST, res.data)
