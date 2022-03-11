@@ -71,7 +71,7 @@
           </CFormLabel>
           <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
             <CFormSelect
-              v-model="form.serial_number"
+              v-model="form.key_unit"
               @change="form.houseunit = ''"
               required
               :disabled="form.unit_type === ''"
@@ -79,7 +79,7 @@
               <option value="">---------</option>
               <option
                 v-for="unit in keyUnitList"
-                :value="unit.pk"
+                :value="[unit.pk, unit.unit_code]"
                 :key="unit.pk"
               >
                 {{ unit.unit_code }}
@@ -97,7 +97,7 @@
             <CFormSelect
               v-model="form.houseunit"
               required
-              :disabled="form.serial_number === ''"
+              :disabled="form.key_unit === ''"
             >
               <option value="">---------</option>
               <option
@@ -573,7 +573,7 @@ export default defineComponent({
         // contract
         order_group: '', // 2
         unit_type: '', // 3
-        serial_number: '', // 4
+        key_unit: '', // 4
         houseunit: '', // 5
         // contractor
         // activation: false,
@@ -669,7 +669,7 @@ export default defineComponent({
     },
     typeSelect(event: any) {
       this.$emit('type-select', event.target.value)
-      this.form.serial_number = ''
+      this.form.key_unit = ''
       this.form.houseunit = ''
     },
     toSame() {
@@ -688,7 +688,7 @@ export default defineComponent({
     formReset() {
       this.form.order_group = ''
       this.form.unit_type = ''
-      this.form.serial_number = ''
+      this.form.key_unit = ''
       this.form.houseunit = ''
 
       // this.form.contractor_pk = null
@@ -734,7 +734,7 @@ export default defineComponent({
       this.form.deal_date = this.form.deal_date
         ? this.dateFormat(this.form.deal_date)
         : ''
-      this.$emit('on-submit', { ...{ activation: true }, ...this.form })
+      this.$emit('on-submit', this.form)
       this.validated = false
       this.formReset()
       this.$refs.confirmModal.visible = false

@@ -74,12 +74,14 @@ export default defineComponent({
       this.fetchHouseUnitList({ project, unit_type })
     },
     onSubmit(payload: any) {
-      console.log(payload)
+      const project = this.project.pk
+      this.createContractSet({ project, ...payload })
     },
     ...mapActions('contract', [
       'fetchOrderGroupList',
       'fetchKeyUnitList',
       'fetchHouseUnitList',
+      'createContractSet',
     ]),
     ...mapActions('project', ['fetchTypeList']),
     ...mapActions('proCash', ['fetchProBankAccList']),
