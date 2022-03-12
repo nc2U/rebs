@@ -733,9 +733,9 @@ class ContractCustomList(ContractList):
     serializer_class = ContractCustomListSerializer
 
 
-# class ContractCustomDetail(ContractDetail):
-#     name = 'contract-custom-detail'
-#     serializer_class = ContractCustomListSerializer
+class ContractCustomDetail(ContractDetail):
+    name = 'contract-custom-detail'
+    serializer_class = ContractCustomListSerializer
 
 
 class SubsSummaryList(generics.ListAPIView):
