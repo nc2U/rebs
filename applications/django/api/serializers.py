@@ -454,6 +454,12 @@ class ContractorInContractListSerializer(serializers.ModelSerializer):
 
 
 class ContractListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Contract
+        fields = ('pk', 'project', 'order_group', 'unit_type', 'serial_number', 'activation')
+
+
+class ContractCustomListSerializer(serializers.ModelSerializer):
     order_group = SimpleOrderGroupSerializer()
     unit_type = SimpleUnitTypeSerializer()
     keyunit = KeyUnitInContractListSerializer()

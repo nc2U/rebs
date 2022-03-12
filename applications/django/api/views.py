@@ -71,6 +71,7 @@ class ApiIndex(generics.GenericAPIView):
             # 'over-due-rule': reverse(api + OverDueRuleList.name, request=request),
             'order-group': reverse(api + OrderGroupList.name, request=request),
             'contract': reverse(api + ContractList.name, request=request),
+            'contract-custom-list': reverse(api + ContractCustomList.name, request=request),
             'subs-sum': reverse(api + SubsSummaryList.name, request=request),
             'cont-sum': reverse(api + ContSummaryList.name, request=request),
             'contractor': reverse(api + ContractorList.name, request=request),
@@ -725,6 +726,16 @@ class ContractDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Contract.objects.all()
     serializer_class = ContractListSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+
+
+class ContractCustomList(ContractList):
+    name = 'contract-cumstom-list'
+    serializer_class = ContractCustomListSerializer
+
+
+# class ContractCustomDetail(ContractDetail):
+#     name = 'contract-custom-detail'
+#     serializer_class = ContractCustomListSerializer
 
 
 class SubsSummaryList(generics.ListAPIView):
