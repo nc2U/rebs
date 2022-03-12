@@ -76,6 +76,7 @@ export default defineComponent({
     onSubmit(payload: any) {
       const project = this.project.pk
       this.createContractSet({ project, ...payload })
+      this.$router.push({ name: '계약내역 조회' })
     },
     ...mapActions('contract', [
       'fetchOrderGroupList',

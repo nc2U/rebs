@@ -35,7 +35,7 @@
               <option value="">---------</option>
               <option
                 v-for="order in orderGroupList"
-                :value="order.pk"
+                :value="[order.pk, order.sort]"
                 :key="order.pk"
               >
                 {{ order.order_group_name }}
@@ -516,7 +516,7 @@
         >
           삭제
         </CButton>
-        <CButton type="submit" :color="'primary'" :disabled="formsCheck">
+        <CButton type="submit" color="primary" :disabled="formsCheck">
           <CIcon name="cil-check-circle" />
           저장
         </CButton>
@@ -540,7 +540,7 @@
       계약 정보 {{ confirmText }}을 진행하시겠습니까?
     </template>
     <template v-slot:footer>
-      <CButton :color="btnClass" @click="modalAction">저장</CButton>
+      <CButton color="primary" @click="modalAction">저장</CButton>
     </template>
   </ConfirmModal>
 
@@ -578,15 +578,15 @@ export default defineComponent({
         // contractor
         // activation: false,
         name: '', // 7
-        birth_date: '', // 8
+        birth_date: null, // 8
         gender: '', // 9
         is_registed: false, // 10
         status: '', // 1
-        reservation_date: '', // 6-1
-        contract_date: '', // 6-2
+        reservation_date: null, // 6-1
+        contract_date: null, // 6-2
         note: '', // 28
         // proCash
-        deal_date: '', // 15
+        deal_date: null, // 15
         income: '', // 16
         bank_account: '', // 17
         trader: '', // 18
@@ -693,15 +693,15 @@ export default defineComponent({
 
       // this.form.contractor_pk = null
       this.form.name = ''
-      this.form.birth_date = ''
+      this.form.birth_date = null
       this.form.gender = ''
       this.form.is_registed = false
       this.form.status = ''
-      this.form.reservation_date = ''
-      this.form.contract_date = ''
+      this.form.reservation_date = null
+      this.form.contract_date = null
       this.form.note = ''
 
-      this.form.deal_date = ''
+      this.form.deal_date = null
       this.form.income = ''
       this.form.bank_account = ''
       this.form.trader = ''
@@ -724,16 +724,16 @@ export default defineComponent({
     modalAction(this: any) {
       this.form.birth_date = this.form.birth_date
         ? this.dateFormat(this.form.birth_date)
-        : ''
+        : null
       this.form.reservation_date = this.form.reservation_date
         ? this.dateFormat(this.form.reservation_date)
-        : ''
+        : null
       this.form.contract_date = this.form.contract_date
         ? this.dateFormat(this.form.contract_date)
-        : ''
+        : null
       this.form.deal_date = this.form.deal_date
         ? this.dateFormat(this.form.deal_date)
-        : ''
+        : null
       this.$emit('on-submit', this.form)
       this.validated = false
       this.formReset()
