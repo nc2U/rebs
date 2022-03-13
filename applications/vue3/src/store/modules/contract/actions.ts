@@ -206,7 +206,7 @@ const actions = {
       console.log(err.response.data)
     }
 
-    dispatch('fetchContractList', { project })
+    dispatch('fetchContractList', { project, status })
     message()
   },
 
