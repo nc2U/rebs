@@ -433,13 +433,14 @@ class KeyUnitInContractListSerializer(serializers.ModelSerializer):
 class AddressInContractorSerializer(serializers.ModelSerializer):
     class Meta:
         model = ContractorAddress
-        fields = ('pk', 'dm_address1')
+        fields = ('pk', 'id_zipcode', 'id_address1', 'id_address2', 'id_address3',
+                  'dm_zipcode', 'dm_address1', 'dm_address2', 'dm_address3')
 
 
 class ContactInContractorSerializer(serializers.ModelSerializer):
     class Meta:
         model = ContractorContact
-        fields = ('pk', 'cell_phone', 'email')
+        fields = ('pk', 'cell_phone', 'home_phone', 'other_phone', 'email')
 
 
 class ContractorInContractListSerializer(serializers.ModelSerializer):
@@ -449,7 +450,7 @@ class ContractorInContractListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contractor
         fields = (
-            'pk', 'name', 'is_registed', 'contractoraddress', 'contractorcontact',
+            'pk', 'name', 'birth_date', 'gender', 'is_registed', 'contractoraddress', 'contractorcontact',
             'status', 'reservation_date', 'contract_date')
 
 
