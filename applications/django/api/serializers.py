@@ -427,7 +427,7 @@ class KeyUnitInContractListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = KeyUnit
-        fields = ('pk', 'houseunit')
+        fields = ('pk', 'unit_code', 'houseunit')
 
 
 class AddressInContractorSerializer(serializers.ModelSerializer):
@@ -450,7 +450,7 @@ class ContractorInContractListSerializer(serializers.ModelSerializer):
         model = Contractor
         fields = (
             'pk', 'name', 'is_registed', 'contractoraddress', 'contractorcontact',
-            'status', 'contract_date')
+            'status', 'reservation_date', 'contract_date')
 
 
 class ContractListSerializer(serializers.ModelSerializer):

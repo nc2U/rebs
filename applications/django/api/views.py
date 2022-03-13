@@ -353,7 +353,7 @@ class KeyUnitListFilterSet(FilterSet):
 
     class Meta:
         model = KeyUnit
-        fields = ('project', 'unit_type', 'no_contract')
+        fields = ('project', 'unit_type', 'contract', 'no_contract')
 
 
 class KeyUnitList(generics.ListCreateAPIView):
@@ -377,7 +377,7 @@ class HouseUnitListFilterSet(FilterSet):
     class Meta:
         model = HouseUnit
         fields = ('project', 'unit_type', 'floor_type', 'building_unit',
-                  'bldg_line', 'floor_no', 'is_hold', 'no_keyunit')
+                  'key_unit__contract', 'bldg_line', 'floor_no', 'is_hold', 'no_keyunit')
 
 
 class HouseUnitList(generics.ListCreateAPIView):
