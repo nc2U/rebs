@@ -7,6 +7,7 @@
 
   <ContentBody>
     <ContractForm
+      :contract="contract"
       :unit-set="unitSet"
       :is-union="isUnion"
       @type-select="typeSelect"
@@ -17,7 +18,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import HeaderMixin from '@/views/contracts/_menu/headermixin2'
+import HeaderMixin from '@/views/contracts/_menu/headermixin'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ContractForm from '@/views/contracts/Register/components/ContractForm.vue'
@@ -31,13 +32,21 @@ export default defineComponent({
     ContentBody,
     ContractForm,
   },
-  created() {
+  created(this: any) {
     this.fetchOrderGroupList(this.initProjId)
     this.fetchTypeList(this.initProjId)
-    this.fetchKeyUnitList({ project: this.initProjId })
-    this.fetchHouseUnitList({ project: this.initProjId })
+
     this.fetchProBankAccList(this.initProjId)
     this.fetchPayOrderList(this.initProjId)
+    if (this.$route.query.contract) {
+      this.getContract(this.$route.query.contract)
+      this.$router.push({ name: '계약등록 관리' })
+      this.fetchKeyUnitList({ project: this.initProjId, no_contract: false })
+      this.fetchHouseUnitList({ project: this.initProjId, no_contract: false })
+    } else {
+      this.fetchKeyUnitList({ project: this.initProjId })
+      this.fetchHouseUnitList({ project: this.initProjId })
+    }
   },
   computed: {
     unitSet() {
@@ -46,6 +55,7 @@ export default defineComponent({
     isUnion() {
       return this.project ? !this.project.is_direct_manage : false
     },
+    ...mapState('contract', ['contract']),
     ...mapState('project', ['project']),
     ...mapGetters('accounts', ['initProjId']),
   },
@@ -73,6 +83,9 @@ export default defineComponent({
       this.fetchKeyUnitList({ project, unit_type })
       this.fetchHouseUnitList({ project, unit_type })
     },
+    getContract(cont: number) {
+      this.fetchContract(cont)
+    },
     onSubmit(payload: any) {
       const project = this.project.pk
       this.createContractSet({ project, ...payload })
@@ -83,6 +96,7 @@ export default defineComponent({
       'fetchKeyUnitList',
       'fetchHouseUnitList',
       'createContractSet',
+      'fetchContract',
     ]),
     ...mapActions('project', ['fetchTypeList']),
     ...mapActions('proCash', ['fetchProBankAccList']),

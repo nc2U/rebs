@@ -52,7 +52,7 @@
               v-model="form.unit_type"
               @change="typeSelect"
               required
-              :disabled="form.order_group === ''"
+              :disabled="form.order_group === '' && !contract"
             >
               <option value="">---------</option>
               <option
@@ -74,7 +74,7 @@
               v-model="form.key_unit"
               @change="form.houseunit = ''"
               required
-              :disabled="form.unit_type === ''"
+              :disabled="form.unit_type === '' && !contract"
             >
               <option value="">---------</option>
               <option
@@ -97,7 +97,7 @@
             <CFormSelect
               v-model="form.houseunit"
               required
-              :disabled="form.key_unit === ''"
+              :disabled="form.key_unit === '' && !contract"
             >
               <option value="">---------</option>
               <option
@@ -504,6 +504,7 @@
             />
           </CCol>
         </CRow>
+        |{{ form.status }} |{{ contract }}|
       </CCardBody>
 
       <CCardFooter class="text-right">
@@ -567,6 +568,11 @@ export default defineComponent({
   },
   mixins: [addressMixin],
   directives: { maska },
+  props: {
+    contract: Object,
+    unitSet: Boolean,
+    isUnion: Boolean,
+  },
   data() {
     return {
       form: {
@@ -610,9 +616,59 @@ export default defineComponent({
       validated: false,
     }
   },
-  props: {
-    unitSet: Boolean,
-    isUnion: Boolean,
+  created(this: any) {
+    if (this.contract) {
+      // contract
+      this.form.order_group = [
+        this.contract.order_group.pk,
+        this.contract.order_group.sort,
+      ]
+      this.form.unit_type = this.contract.unit_type.pk
+      // this.form.key_unit = [
+      //   this.contract.keyunit.pk,
+      //   this.contract.keyunit.unit_code,
+      // ]
+      // this.form.houseunit = this.contract.keyunit.houseunit.pk
+      //
+      // // contractor
+      // // activation = false
+      // this.form.name = this.contract.contractor.name
+      //
+      // this.form.birth_date = new Date(this.contract.constructor.birth_date) // 8
+      // this.form.gender = this.contract.constructor.gender // 9
+      // this.form.is_registed = false // 10
+      this.form.status = this.contract.contractor.status
+      //
+      // this.form.reservation_date =
+      //   this.contract.constructor.reservation_date === null
+      //     ? null
+      //     : new Date(this.contract.constructor.reservation_date)
+      // this.form.contract_date =
+      //   this.contract.constructor.contract_date === null
+      //     ? null
+      //     : new Date(this.contract.constructor.contract_date)
+      // this.form.note = this.contract.note
+      // // proCash
+      // this.form.deal_date = null // 15
+      // this.form.income = '' // 16
+      // this.form.bank_account = '' // 17
+      // this.form.trader = '' // 18
+      // this.form.installment_order = '' // 19
+      // // address
+      // this.form.id_zipcode = '' // 20
+      // this.form.id_address1 = '' // 21
+      // this.form.id_address2 = '' // 22
+      // this.form.id_address3 = '' // 23
+      // this.form.dm_zipcode = '' // 24
+      // this.form.dm_address1 = '' // 25
+      // this.form.dm_address2 = '' // 26
+      // this.form.dm_address3 = '' // 27
+      // // contact
+      // this.form.cell_phone = ''
+      // this.form.home_phone = '' // 11 // 12
+      // this.form.other_phone = '' // 13
+      // this.form.email = '' // 14
+    }
   },
   computed: {
     contLabel() {
@@ -622,7 +678,7 @@ export default defineComponent({
       return this.form.status === '2'
     },
     noStatus() {
-      return this.form.status === ''
+      return this.form.status === '' && !this.contract
     },
     downPayOrder() {
       return this.payOrderList.filter((po: any) => po.pay_time <= '1')

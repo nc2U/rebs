@@ -28,55 +28,39 @@ const contract = {
   items: [
     {
       component: 'CNavItem',
-      name: '계약현황 조회',
-      to: '/contracts/info',
-      icon: 'cil-list',
-      items: [
-        {
-          component: 'CNavItem',
-          name: '계약내역 조회',
-          badge: {
-            color: 'success',
-            text: 'ok',
-          },
-          to: '/contracts/info/index',
-        },
-        {
-          component: 'CNavItem',
-          name: '동호수 현황표',
-          badge: {
-            color: 'warning',
-            text: 'u.c',
-          },
-          to: '/contracts/info/status',
-        },
-      ],
+      name: '계약내역 조회',
+      badge: {
+        color: 'success',
+        text: 'ok',
+      },
+      to: '/contracts/index',
     },
     {
       component: 'CNavItem',
-      name: '계약정보 관리',
-      to: '/contracts/manage',
-      icon: 'cil-pencil',
-      items: [
-        {
-          component: 'CNavItem',
-          name: '계약등록 관리',
-          badge: {
-            color: 'warning',
-            text: 'u.c',
-          },
-          to: '/contracts/manage/register',
-        },
-        {
-          component: 'CNavItem',
-          name: '계약해지 관리',
-          badge: {
-            color: 'warning',
-            text: 'u.c',
-          },
-          to: '/contracts/manage/cancel',
-        },
-      ],
+      name: '계약등록 관리',
+      badge: {
+        color: 'warning',
+        text: 'u.c',
+      },
+      to: '/contracts/register',
+    },
+    {
+      component: 'CNavItem',
+      name: '계약해지 관리',
+      badge: {
+        color: 'warning',
+        text: 'u.c',
+      },
+      to: '/contracts/cancel',
+    },
+    {
+      component: 'CNavItem',
+      name: '동호수 현황표',
+      badge: {
+        color: 'warning',
+        text: 'u.c',
+      },
+      to: '/contracts/status',
     },
   ],
 }

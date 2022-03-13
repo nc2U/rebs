@@ -19,7 +19,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import HeaderMixin from '@/views/contracts/_menu/headermixin1'
+import HeaderMixin from '@/views/contracts/_menu/headermixin'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ContractSummary from './components/ContractSummary.vue'

@@ -1,7 +1,11 @@
 <template>
   <CTableRow v-if="contract">
     <CTableDataCell>
-      <router-link to="">{{ contract.serial_number }}</router-link>
+      <router-link
+        :to="{ name: '계약등록 관리', query: { contract: contract.pk } }"
+      >
+        {{ contract.serial_number }}
+      </router-link>
     </CTableDataCell>
     <CTableDataCell>{{ contract.order_group.order_group_name }}</CTableDataCell>
     <CTableDataCell>
@@ -15,7 +19,11 @@
     </CTableDataCell>
     <CTableDataCell>{{ contract.house_unit }}</CTableDataCell>
     <CTableDataCell>
-      <router-link to="">{{ contract.contractor }}</router-link>
+      <router-link
+        :to="{ name: '계약등록 관리', query: { contract: contract.pk } }"
+      >
+        {{ contract.contractor }}
+      </router-link>
     </CTableDataCell>
     <CTableDataCell>
       <CBadge :color="contract.is_registed ? 'success' : 'danger'">
