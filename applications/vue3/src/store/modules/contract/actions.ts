@@ -295,7 +295,7 @@ const actions = {
   fetchKeyUnitList: ({ commit }: any, payload?: any) => {
     const { project } = payload
     const unit_type = payload.unit_type ? payload.unit_type : ''
-    const contract = payload.contract
+    const contract = payload.contract ? payload.contract : ''
     const no_contract = payload.no_contract ? payload.no_contract : 'true'
     api
       .get(
@@ -310,11 +310,10 @@ const actions = {
   fetchHouseUnitList: ({ commit }: any, payload?: any) => {
     const { project } = payload
     const unit_type = payload.unit_type ? payload.unit_type : ''
-    const contract = payload.contract
-    const no_keyunit = payload.no_keyunit ? payload.no_keyunit : 'true'
+    const contract = payload.contract ? payload.contract : ''
     api
       .get(
-        `/house-unit/?project=${project}&unit_type=${unit_type}&key_unit__contract=${contract}&is_hold=false&no_keyunit=${no_keyunit}`,
+        `/house-unit/?project=${project}&unit_type=${unit_type}&key_unit__contract=${contract}&is_hold=false&no_keyunit=true`,
       )
       .then(res => {
         commit(FETCH_HOUSE_UNIT_LIST, res.data)

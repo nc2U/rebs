@@ -45,10 +45,16 @@ export default defineComponent({
         contract: this.$route.query.contract,
         no_contract: 'false',
       })
+      const cont =
+        this.contract && this.contract.keyunit.houseunit ? this.contract : ''
+      const type =
+        this.contract && this.contract.unit_type
+          ? this.contract.unit_type.pk
+          : ''
       this.fetchHouseUnitList({
         project: this.initProjId,
-        contract: this.$route.query.contract,
-        no_keyunit: 'false',
+        unit_type: type,
+        contract: cont,
       })
     } else {
       this.fetchKeyUnitList({ project: this.initProjId })

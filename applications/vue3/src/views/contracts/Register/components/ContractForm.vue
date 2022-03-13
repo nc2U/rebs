@@ -504,6 +504,7 @@
             />
           </CCol>
         </CRow>
+        <span v-if="contract">{{ contract.keyunit.houseunit }}</span>
       </CCardBody>
 
       <CCardFooter class="text-right">
@@ -618,70 +619,7 @@ export default defineComponent({
       validated: false,
     }
   },
-  created(this: any) {
-    if (this.contract) {
-      // contract
-      this.form.order_group = [
-        this.contract.order_group.pk,
-        this.contract.order_group.sort,
-      ]
-      this.form.unit_type = this.contract.unit_type.pk
-      this.form.key_unit = [
-        this.contract.keyunit.pk,
-        this.contract.keyunit.unit_code,
-      ]
-      this.form.houseunit = this.contract.keyunit.houseunit.pk
-
-      // contractor
-      this.form.name = this.contract.contractor.name
-      this.form.birth_date = new Date(this.contract.contractor.birth_date)
-      this.form.gender = this.contract.contractor.gender // 9
-      this.form.is_registed = this.contract.contractor.is_registed // 10
-      this.form.status = this.contract.contractor.status
-      this.form.reservation_date =
-        this.contract.contractor.reservation_date === null
-          ? null
-          : new Date(this.contract.contractor.reservation_date)
-      this.form.contract_date =
-        this.contract.contractor.contract_date === null
-          ? null
-          : new Date(this.contract.contractor.contract_date)
-      this.form.note = this.contract.note
-
-      // // proCash
-      // this.form.deal_date = null // 15
-      // this.form.income = '' // 16
-      // this.form.bank_account = '' // 17
-      // this.form.trader = '' // 18
-      // this.form.installment_order = '' // 19
-
-      // address
-      this.form.id_zipcode =
-        this.contract.contractor.contractoraddress.id_zipcode // 20
-      this.form.id_address1 =
-        this.contract.contractor.contractoraddress.id_address1 // 21
-      this.form.id_address2 =
-        this.contract.contractor.contractoraddress.id_address2 // 22
-      this.form.id_address3 =
-        this.contract.contractor.contractoraddress.id_address3 // 23
-      this.form.dm_zipcode =
-        this.contract.contractor.contractoraddress.dm_zipcode // 24
-      this.form.dm_address1 =
-        this.contract.contractor.contractoraddress.dm_address1
-      this.form.dm_address2 =
-        this.contract.contractor.contractoraddress.dm_address2 // 26
-      this.form.dm_address3 =
-        this.contract.contractor.contractoraddress.dm_address3 // 27
-      // contact
-      this.form.cell_phone =
-        this.contract.contractor.contractorcontact.cell_phone
-      this.form.home_phone =
-        this.contract.contractor.contractorcontact.home_phone // 11 // 12
-      this.form.other_phone =
-        this.contract.contractor.contractorcontact.other_phone // 13
-      this.form.email = this.contract.contractor.contractorcontact.email // 14
-    }
-  },
+  created(this: any) {},
   computed: {
     contLabel() {
       return this.form.status !== '1' ? '계약' : '청약'
@@ -718,6 +656,72 @@ export default defineComponent({
         this.form.dm_address1 = this.address1
         this.form.dm_address3 = this.address3 // 조합된 참고항목을 해당 필드에 넣는다.
         this.$refs.address22.$el.focus() // 커서를 상세주소 필드로 이동한다.
+      }
+    },
+    contract(this: any) {
+      if (this.contract) {
+        // contract
+        this.form.order_group = [
+          this.contract.order_group.pk,
+          this.contract.order_group.sort,
+        ]
+        this.form.unit_type = this.contract.unit_type.pk
+        this.form.key_unit = [
+          this.contract.keyunit.pk,
+          this.contract.keyunit.unit_code,
+        ]
+        this.form.houseunit = this.contract.keyunit.houseunit
+          ? this.contract.keyunit.houseunit.pk
+          : ''
+
+        // contractor
+        this.form.name = this.contract.contractor.name
+        this.form.birth_date = new Date(this.contract.contractor.birth_date)
+        this.form.gender = this.contract.contractor.gender // 9
+        this.form.is_registed = this.contract.contractor.is_registed // 10
+        this.form.status = this.contract.contractor.status
+        this.form.reservation_date =
+          this.contract.contractor.reservation_date === null
+            ? null
+            : new Date(this.contract.contractor.reservation_date)
+        this.form.contract_date =
+          this.contract.contractor.contract_date === null
+            ? null
+            : new Date(this.contract.contractor.contract_date)
+        this.form.note = this.contract.note
+
+        // // proCash
+        // this.form.deal_date = null // 15
+        // this.form.income = '' // 16
+        // this.form.bank_account = '' // 17
+        // this.form.trader = '' // 18
+        // this.form.installment_order = '' // 19
+
+        // address
+        this.form.id_zipcode =
+          this.contract.contractor.contractoraddress.id_zipcode // 20
+        this.form.id_address1 =
+          this.contract.contractor.contractoraddress.id_address1 // 21
+        this.form.id_address2 =
+          this.contract.contractor.contractoraddress.id_address2 // 22
+        this.form.id_address3 =
+          this.contract.contractor.contractoraddress.id_address3 // 23
+        this.form.dm_zipcode =
+          this.contract.contractor.contractoraddress.dm_zipcode // 24
+        this.form.dm_address1 =
+          this.contract.contractor.contractoraddress.dm_address1
+        this.form.dm_address2 =
+          this.contract.contractor.contractoraddress.dm_address2 // 26
+        this.form.dm_address3 =
+          this.contract.contractor.contractoraddress.dm_address3 // 27
+        // contact
+        this.form.cell_phone =
+          this.contract.contractor.contractorcontact.cell_phone
+        this.form.home_phone =
+          this.contract.contractor.contractorcontact.home_phone // 11 // 12
+        this.form.other_phone =
+          this.contract.contractor.contractorcontact.other_phone // 13
+        this.form.email = this.contract.contractor.contractorcontact.email // 14
       }
     },
   },
