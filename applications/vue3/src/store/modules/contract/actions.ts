@@ -127,7 +127,7 @@ const actions = {
     const houseUnitPk = houseunit
     const houseUnitData = { pk: houseUnitPk, key_unit: keyUnitPk }
 
-    await dispatch('patchHouseUnit', houseUnitData)
+    if (houseunit) await dispatch('patchHouseUnit', houseUnitData)
 
     // 4. 계약자 정보 테이블 입력
     const {
@@ -166,27 +166,29 @@ const actions = {
       dm_address3,
       ...rest5
     } = rest4
-    await dispatch('createAddress', {
-      contractor,
-      id_zipcode,
-      id_address1,
-      id_address2,
-      id_address3,
-      dm_zipcode,
-      dm_address1,
-      dm_address2,
-      dm_address3,
-    })
+    if (id_zipcode || dm_zipcode)
+      await dispatch('createAddress', {
+        contractor,
+        id_zipcode,
+        id_address1,
+        id_address2,
+        id_address3,
+        dm_zipcode,
+        dm_address1,
+        dm_address2,
+        dm_address3,
+      })
 
     // 6. 계약자 연락처 테이블 입력
     const { cell_phone, home_phone, other_phone, email, ...rest6 } = rest5
-    await dispatch('createContact', {
-      contractor,
-      cell_phone,
-      home_phone,
-      other_phone,
-      email,
-    })
+    if (cell_phone)
+      await dispatch('createContact', {
+        contractor,
+        cell_phone,
+        home_phone,
+        other_phone,
+        email,
+      })
 
     // 7. 계약금 - 수납 정보 테이블 입력
     const cashData = {
@@ -207,6 +209,10 @@ const actions = {
     dispatch('fetchContractList', { project })
     message()
   },
+
+  // updateContractSet: async ({dispatch}: any, payload: any) = {
+  //   await return 1
+  // },
 
   fetchSubsSummaryList: ({ commit }: any, project?: number) => {
     api

@@ -665,6 +665,8 @@ export default defineComponent({
       } else this.$refs.confirmModal.callModal()
     },
     unitReset(event: any) {
+      this.form.reservation_date = null
+      this.form.contract_date = null
       if (event.target.value === '') this.formReset()
     },
     typeSelect(event: any) {
