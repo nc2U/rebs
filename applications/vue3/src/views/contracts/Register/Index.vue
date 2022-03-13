@@ -40,9 +40,16 @@ export default defineComponent({
     this.fetchPayOrderList(this.initProjId)
     if (this.$route.query.contract) {
       this.getContract(this.$route.query.contract)
-      this.$router.push({ name: '계약등록 관리' })
-      this.fetchKeyUnitList({ project: this.initProjId, no_contract: false })
-      this.fetchHouseUnitList({ project: this.initProjId, no_contract: false })
+      this.fetchKeyUnitList({
+        project: this.initProjId,
+        contract: this.$route.query.contract,
+        no_contract: 'false',
+      })
+      this.fetchHouseUnitList({
+        project: this.initProjId,
+        contract: this.$route.query.contract,
+        no_keyunit: 'false',
+      })
     } else {
       this.fetchKeyUnitList({ project: this.initProjId })
       this.fetchHouseUnitList({ project: this.initProjId })

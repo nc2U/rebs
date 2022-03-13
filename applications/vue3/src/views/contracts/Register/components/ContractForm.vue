@@ -487,7 +487,7 @@
               v-model="sameAddr"
               id="to-same"
               label="상동"
-              :disabled="!isContract"
+              :disabled="!isContract || !form.id_zipcode"
             />
           </CCol>
         </CRow>
@@ -504,7 +504,6 @@
             />
           </CCol>
         </CRow>
-        |{{ form.status }} |{{ contract }}|
       </CCardBody>
 
       <CCardFooter class="text-right">
@@ -517,7 +516,11 @@
         >
           삭제
         </CButton>
-        <CButton type="submit" color="primary" :disabled="formsCheck">
+        <CButton
+          type="submit"
+          :color="contract ? 'success' : 'primary'"
+          :disabled="formsCheck"
+        >
           <CIcon name="cil-check-circle" />
           저장
         </CButton>
@@ -582,7 +585,6 @@ export default defineComponent({
         key_unit: '', // 4
         houseunit: '', // 5
         // contractor
-        // activation: false,
         name: '', // 7
         birth_date: null, // 8
         gender: '', // 9
@@ -624,50 +626,60 @@ export default defineComponent({
         this.contract.order_group.sort,
       ]
       this.form.unit_type = this.contract.unit_type.pk
-      // this.form.key_unit = [
-      //   this.contract.keyunit.pk,
-      //   this.contract.keyunit.unit_code,
-      // ]
-      // this.form.houseunit = this.contract.keyunit.houseunit.pk
-      //
-      // // contractor
-      // // activation = false
-      // this.form.name = this.contract.contractor.name
-      //
-      // this.form.birth_date = new Date(this.contract.constructor.birth_date) // 8
-      // this.form.gender = this.contract.constructor.gender // 9
-      // this.form.is_registed = false // 10
+      this.form.key_unit = [
+        this.contract.keyunit.pk,
+        this.contract.keyunit.unit_code,
+      ]
+      this.form.houseunit = this.contract.keyunit.houseunit.pk
+
+      // contractor
+      this.form.name = this.contract.contractor.name
+      this.form.birth_date = new Date(this.contract.contractor.birth_date)
+      this.form.gender = this.contract.contractor.gender // 9
+      this.form.is_registed = this.contract.contractor.is_registed // 10
       this.form.status = this.contract.contractor.status
-      //
-      // this.form.reservation_date =
-      //   this.contract.constructor.reservation_date === null
-      //     ? null
-      //     : new Date(this.contract.constructor.reservation_date)
-      // this.form.contract_date =
-      //   this.contract.constructor.contract_date === null
-      //     ? null
-      //     : new Date(this.contract.constructor.contract_date)
-      // this.form.note = this.contract.note
+      this.form.reservation_date =
+        this.contract.contractor.reservation_date === null
+          ? null
+          : new Date(this.contract.contractor.reservation_date)
+      this.form.contract_date =
+        this.contract.contractor.contract_date === null
+          ? null
+          : new Date(this.contract.contractor.contract_date)
+      this.form.note = this.contract.note
+
       // // proCash
       // this.form.deal_date = null // 15
       // this.form.income = '' // 16
       // this.form.bank_account = '' // 17
       // this.form.trader = '' // 18
       // this.form.installment_order = '' // 19
-      // // address
-      // this.form.id_zipcode = '' // 20
-      // this.form.id_address1 = '' // 21
-      // this.form.id_address2 = '' // 22
-      // this.form.id_address3 = '' // 23
-      // this.form.dm_zipcode = '' // 24
-      // this.form.dm_address1 = '' // 25
-      // this.form.dm_address2 = '' // 26
-      // this.form.dm_address3 = '' // 27
-      // // contact
-      // this.form.cell_phone = ''
-      // this.form.home_phone = '' // 11 // 12
-      // this.form.other_phone = '' // 13
-      // this.form.email = '' // 14
+
+      // address
+      this.form.id_zipcode =
+        this.contract.contractor.contractoraddress.id_zipcode // 20
+      this.form.id_address1 =
+        this.contract.contractor.contractoraddress.id_address1 // 21
+      this.form.id_address2 =
+        this.contract.contractor.contractoraddress.id_address2 // 22
+      this.form.id_address3 =
+        this.contract.contractor.contractoraddress.id_address3 // 23
+      this.form.dm_zipcode =
+        this.contract.contractor.contractoraddress.dm_zipcode // 24
+      this.form.dm_address1 =
+        this.contract.contractor.contractoraddress.dm_address1
+      this.form.dm_address2 =
+        this.contract.contractor.contractoraddress.dm_address2 // 26
+      this.form.dm_address3 =
+        this.contract.contractor.contractoraddress.dm_address3 // 27
+      // contact
+      this.form.cell_phone =
+        this.contract.contractor.contractorcontact.cell_phone
+      this.form.home_phone =
+        this.contract.contractor.contractorcontact.home_phone // 11 // 12
+      this.form.other_phone =
+        this.contract.contractor.contractorcontact.other_phone // 13
+      this.form.email = this.contract.contractor.contractorcontact.email // 14
     }
   },
   computed: {
