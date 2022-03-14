@@ -193,11 +193,12 @@ const actions = {
     // 7. 계약금 - 수납 정보 테이블 입력
     const cashData = {
       project,
-      sort: 2,
+      sort: 1,
       project_account_d1: ordergroup[1],
       project_account_d2: ordergroup[1],
-      content: `${name}[${serial_number} 대금납부]`,
+      is_contract_payment: true,
       contract: contPk,
+      content: `${name}[${serial_number} 대금납부]`,
       ...rest6,
     }
     try {
