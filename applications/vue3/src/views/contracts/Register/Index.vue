@@ -11,7 +11,8 @@
       :unit-set="unitSet"
       :is-union="isUnion"
       @type-select="typeSelect"
-      @on-submit="onSubmit"
+      @on-create="onCreate"
+      @on-update="onUpdate"
     />
   </ContentBody>
 </template>
@@ -110,10 +111,14 @@ export default defineComponent({
     getContract(cont: number) {
       this.fetchContract(cont)
     },
-    onSubmit(payload: any) {
+    onCreate(payload: any) {
       const project = this.project.pk
       this.createContractSet({ project, ...payload })
       this.$router.push({ name: '계약내역 조회' })
+    },
+    onUpdate(payload: any) {
+      alert('ok! - update!')
+      console.log(payload)
     },
     ...mapActions('contract', [
       'fetchOrderGroupList',

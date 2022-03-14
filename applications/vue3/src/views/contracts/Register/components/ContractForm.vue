@@ -504,16 +504,15 @@
             />
           </CCol>
         </CRow>
-        <span v-if="contract">{{ contract.keyunit.houseunit }}</span>
       </CCardBody>
 
       <CCardFooter class="text-right">
         <CButton type="button" color="light" @click="formReset"> 취소</CButton>
         <CButton
           type="button"
-          v-if="update"
+          v-if="contract"
           color="danger"
-          @click="deleteProject"
+          @click="deleteContract"
         >
           삭제
         </CButton>
@@ -540,12 +539,17 @@
   </ConfirmModal>
 
   <ConfirmModal ref="confirmModal">
-    <template v-slot:header>계약 정보 등록</template>
+    <template v-slot:header>
+      <CIcon name="cilItalic" />
+      계약 정보 등록
+    </template>
     <template v-slot:default>
-      계약 정보 {{ confirmText }}을 진행하시겠습니까?
+      계약 정보 {{ contract ? '수정등록' : '신규등록' }}을 진행하시겠습니까?
     </template>
     <template v-slot:footer>
-      <CButton color="primary" @click="modalAction">저장</CButton>
+      <CButton :color="contract ? 'success' : 'primary'" @click="modalAction"
+        >저장
+      </CButton>
     </template>
   </ConfirmModal>
 
@@ -560,7 +564,7 @@ import DatePicker from '@/components/DatePicker/index.vue'
 import DaumPostcode from '@/components/DaumPostcode/index.vue'
 import addressMixin from '@/components/DaumPostcode/addressMixin'
 import { maska } from 'maska'
-import { mapState } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'IndexForm',
@@ -642,6 +646,7 @@ export default defineComponent({
     ...mapState('project', ['unitTypeList']),
     ...mapState('proCash', ['proBankAccountList']),
     ...mapState('payment', ['payOrderList']),
+    ...mapGetters('accounts', ['staffAuth', 'superAuth']),
   },
   watch: {
     addrForm(this: any, newVal: number) {
@@ -807,15 +812,16 @@ export default defineComponent({
       this.form.deal_date = this.form.deal_date
         ? this.dateFormat(this.form.deal_date)
         : null
-      this.$emit('on-submit', this.form)
+      if (!this.contract) this.$emit('on-create', this.form)
+      else this.$emit('on-update', this.form)
       this.validated = false
       this.formReset()
       this.$refs.confirmModal.visible = false
     },
-    // deleteProject(this: any) {
-    //   if (this.superAuth) this.$refs.delModal.callModal()
-    //   else this.$refs.alertModal.callModal()
-    // },
+    deleteContract(this: any) {
+      if (this.superAuth) this.$refs.delModal.callModal()
+      else this.$refs.alertModal.callModal()
+    },
   },
 })
 </script>
