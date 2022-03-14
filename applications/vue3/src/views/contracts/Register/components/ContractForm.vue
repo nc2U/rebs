@@ -619,7 +619,6 @@ export default defineComponent({
       validated: false,
     }
   },
-  created(this: any) {},
   computed: {
     contLabel() {
       return this.form.status !== '1' ? '계약' : '청약'

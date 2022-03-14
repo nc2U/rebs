@@ -38,27 +38,12 @@ export default defineComponent({
 
     this.fetchProBankAccList(this.initProjId)
     this.fetchPayOrderList(this.initProjId)
+
+    this.fetchKeyUnitList({ project: this.initProjId })
+    this.fetchHouseUnitList({ project: this.initProjId })
+
     if (this.$route.query.contract) {
       this.getContract(this.$route.query.contract)
-      this.fetchKeyUnitList({
-        project: this.initProjId,
-        contract: this.$route.query.contract,
-        no_contract: 'false',
-      })
-      const cont =
-        this.contract && this.contract.keyunit.houseunit ? this.contract : ''
-      const type =
-        this.contract && this.contract.unit_type
-          ? this.contract.unit_type.pk
-          : ''
-      this.fetchHouseUnitList({
-        project: this.initProjId,
-        unit_type: type,
-        contract: cont,
-      })
-    } else {
-      this.fetchKeyUnitList({ project: this.initProjId })
-      this.fetchHouseUnitList({ project: this.initProjId })
     }
   },
   computed: {
@@ -71,6 +56,32 @@ export default defineComponent({
     ...mapState('contract', ['contract']),
     ...mapState('project', ['project']),
     ...mapGetters('accounts', ['initProjId']),
+  },
+  watch: {
+    contract(newVal) {
+      if (this.contract) {
+        this.fetchKeyUnitList({
+          project: this.project ? this.project.pk : this.initProjId,
+          unit_type: newVal.unit_type.pk,
+          contract: this.$route.query.contract,
+          no_contract: 'false',
+        })
+
+        if (this.contract.keyunit.houseunit) {
+          this.fetchHouseUnitList({
+            project: this.project ? this.project.pk : this.initProjId,
+            unit_type: newVal.unit_type.pk,
+            contract: this.$route.query.contract,
+            no_keyunit: 'false',
+          })
+        } else {
+          this.fetchHouseUnitList({
+            project: this.project ? this.project.pk : this.initProjId,
+            unit_type: newVal.unit_type.pk,
+          })
+        }
+      }
+    },
   },
   methods: {
     onSelectAdd(this: any, target: any) {
