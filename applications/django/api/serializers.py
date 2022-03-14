@@ -451,7 +451,7 @@ class ContractorInContractListSerializer(serializers.ModelSerializer):
         model = Contractor
         fields = (
             'pk', 'name', 'birth_date', 'gender', 'is_registed', 'contractoraddress', 'contractorcontact',
-            'status', 'reservation_date', 'contract_date')
+            'status', 'reservation_date', 'contract_date', 'note')
 
 
 class ContractListSerializer(serializers.ModelSerializer):
