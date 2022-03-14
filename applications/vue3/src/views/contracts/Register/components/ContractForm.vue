@@ -271,9 +271,54 @@
             :color="$store.state.theme === 'dark' ? 'default' : 'secondary'"
             class="pb-0"
           >
+            <CRow v-if="contract" class="mb-3">
+              <CCol>
+                <CRow
+                  v-for="(payment, i) in contract.payments"
+                  :key="payment.pk"
+                  class="text-center mb-1"
+                  :class="
+                    paymentPk === payment.pk
+                      ? 'text-success text-decoration-underline'
+                      : ''
+                  "
+                >
+                  <CCol>계약금 납부내역 [{{ i + 1 }}]</CCol>
+                  <CCol class="text-right">{{ payment.deal_date }}</CCol>
+                  <CCol class="text-right">
+                    {{ numFormat(payment.income) }}
+                  </CCol>
+                  <CCol>
+                    {{
+                      proBankAccountList
+                        .filter(b => b.pk === payment.bank_account)
+                        .map(b => b.alias_name)[0]
+                    }}
+                  </CCol>
+                  <CCol>{{ payment.trader }}</CCol>
+                  <CCol>
+                    {{
+                      downPayOrder
+                        .filter(o => o.pk === payment.installment_order)
+                        .map(o => o.__str__)[0]
+                    }}
+                  </CCol>
+                  <CCol>
+                    <CButton
+                      type="button"
+                      color="success"
+                      size="sm"
+                      @click="payUpdate(payment)"
+                    >
+                      수정
+                    </CButton>
+                  </CCol>
+                </CRow>
+              </CCol>
+            </CRow>
             <CRow>
               <CFormLabel class="col-md-2 col-lg-1 col-form-label">
-                {{ contLabel }}금
+                {{ contLabel }}금 {{ !paymentPk ? '등록' : '수정' }}
               </CFormLabel>
               <CCol md="10" lg="2" class="mb-3 mb-lg-0">
                 <DatePicker
@@ -349,8 +394,8 @@
 
               <CCol md="2" class="d-none d-md-block d-lg-none"></CCol>
 
-              <CCol xs="3" md="2" lg="1" class="pt-2 mb-3 text-center">
-                <router-link to="">입금등록</router-link>
+              <CCol v-if="paymentPk" xs="3" md="2" lg="1" class="pt-2 mb-3">
+                <router-link to="" @click="payReset">Reset</router-link>
               </CCol>
             </CRow>
           </CAlert>
@@ -547,8 +592,8 @@
       계약 정보 {{ contract ? '수정등록' : '신규등록' }}을 진행하시겠습니까?
     </template>
     <template v-slot:footer>
-      <CButton :color="contract ? 'success' : 'primary'" @click="modalAction"
-        >저장
+      <CButton :color="contract ? 'success' : 'primary'" @click="modalAction">
+        저장
       </CButton>
     </template>
   </ConfirmModal>
@@ -620,6 +665,7 @@ export default defineComponent({
         email: '', // 14
       },
       sameAddr: false,
+      paymentPk: null,
       validated: false,
     }
   },
@@ -692,7 +738,7 @@ export default defineComponent({
           this.contract.contractor.contract_date === null
             ? null
             : new Date(this.contract.contractor.contract_date)
-        this.form.note = this.contract.note
+        this.form.note = this.contract.contractor.note
 
         // // proCash
         // this.form.deal_date = null // 15
@@ -739,6 +785,22 @@ export default defineComponent({
         console.log(form.checkValidity())
         this.validated = true
       } else this.$refs.confirmModal.callModal()
+    },
+    payUpdate(this: any, payment: any) {
+      this.form.deal_date = new Date(payment.deal_date)
+      this.form.income = payment.income
+      this.form.bank_account = payment.bank_account
+      this.form.trader = payment.trader
+      this.form.installment_order = payment.installment_order
+      this.paymentPk = payment.pk
+    },
+    payReset() {
+      this.form.deal_date = null
+      this.form.income = ''
+      this.form.bank_account = ''
+      this.form.trader = ''
+      this.form.installment_order = ''
+      this.paymentPk = null
     },
     unitReset(event: any) {
       this.form.reservation_date = null
@@ -813,7 +875,11 @@ export default defineComponent({
         ? this.dateFormat(this.form.deal_date)
         : null
       if (!this.contract) this.$emit('on-create', this.form)
-      else this.$emit('on-update', this.form)
+      else
+        this.$emit('on-update', {
+          ...{ paymentPk: this.paymentPk },
+          ...this.form,
+        })
       this.validated = false
       this.formReset()
       this.$refs.confirmModal.visible = false
