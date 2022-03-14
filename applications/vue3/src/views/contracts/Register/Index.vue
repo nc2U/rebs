@@ -117,15 +117,16 @@ export default defineComponent({
       this.$router.push({ name: '계약내역 조회' })
     },
     onUpdate(payload: any) {
-      alert('ok! - update!')
-      console.log(payload)
+      const project = this.project.pk
+      this.updateContractSet({ project, ...payload })
     },
     ...mapActions('contract', [
+      'fetchContract',
       'fetchOrderGroupList',
       'fetchKeyUnitList',
       'fetchHouseUnitList',
       'createContractSet',
-      'fetchContract',
+      'updateContractSet',
     ]),
     ...mapActions('project', ['fetchTypeList']),
     ...mapActions('proCash', ['fetchProBankAccList']),

@@ -36,7 +36,7 @@ const actions = {
   },
 
   fetchContract: ({ commit }: any, pk: number) => {
-    api
+    return api
       .get(`/contract-custom-list/${pk}/`)
       .then(res => {
         commit(FETCH_CONTRACT, res.data)
@@ -48,6 +48,14 @@ const actions = {
     // 1. 계약 생성
     try {
       return await api.post(`/contract/`, payload)
+    } catch (err: any) {
+      console.log(err.response.data)
+    }
+  },
+  updateContract: async ({ dispatch }: any, payload: any) => {
+    const { pk, ...formData } = payload
+    try {
+      return await api.put(`/contract/${pk}/`, formData)
     } catch (err: any) {
       console.log(err.response.data)
     }
@@ -82,6 +90,16 @@ const actions = {
     }
   },
 
+  updateContractor: async ({ dispatch }: any, payload: any) => {
+    // 4. contractor
+    const { pk, ...data } = payload
+    try {
+      return await api.put(`/contractor/${pk}/`, data)
+    } catch (err: any) {
+      console.log(err.response.data)
+    }
+  },
+
   createAddress: async ({ dispatch }: any, payload: any) => {
     // 5. address
     try {
@@ -91,10 +109,30 @@ const actions = {
     }
   },
 
+  updateAddress: async ({ dispatch }: any, payload: any) => {
+    // 5. address
+    const { pk, ...data } = payload
+    try {
+      await api.put(`/contractor-address/${pk}/`, data)
+    } catch (err: any) {
+      console.log(err.response.data)
+    }
+  },
+
   createContact: async ({ dispatch }: any, payload: any) => {
     // 6. contact
     try {
       await api.post(`/contractor-contact/`, payload)
+    } catch (err: any) {
+      console.log(err.response.data)
+    }
+  },
+
+  updateContact: async ({ dispatch }: any, payload: any) => {
+    // 6. contact
+    const { pk, ...data } = payload
+    try {
+      await api.put(`/contractor-contact/${pk}/`, data)
     } catch (err: any) {
       console.log(err.response.data)
     }
@@ -211,9 +249,148 @@ const actions = {
     message()
   },
 
-  // updateContractSet: async ({dispatch}: any, payload: any) = {
-  //   await return 1
-  // },
+  updateContractSet: async ({ dispatch }: any, payload: any) => {
+    // 1. contract 업데이트
+    const { pk, project, order_group, unit_type, key_unit, ...rest1 } = payload
+    const ordergroup = order_group.split(',')
+    const keyunit = key_unit.split(',')
+    const serial_number = `${keyunit[1]}-${ordergroup[0]}`
+    const contractPayload = {
+      pk,
+      project,
+      order_group: ordergroup[0],
+      unit_type,
+      serial_number,
+    }
+
+    const contractObj = await dispatch('updateContract', contractPayload)
+
+    // 2. 계약 유닛 연결 ( keyunit -> contract.pk)
+    // --> 1) 종전 동호수 연결 해제
+    // -----> 동호수가 연결되어 있는지 확인 -> true 면 실행
+
+    const cont = await dispatch('fetchContract', contractObj.data.pk)
+
+    console.log('--->', cont)
+    // if (cont.keyunit.houseunit)
+    //   await dispatch('patchHouseUnit', {
+    //     pk: cont.keyunit.houseunit.pk,
+    //     key_unit: null,
+    //   })
+    // // --> 2) 종전 계약 유닛 연결 해제
+    // if (cont.keyunit)
+    //   await dispatch('patchKeyUnit', { pk: cont.keyunit.pk, contract: null })
+    //
+    // // --> 3) 계약 유닛 재연결
+    // const keyUnitPk = keyunit[0]
+    // const contPk = contractObj.data.pk
+    // const keyunitPayload = { pk: keyUnitPk, contract: contPk }
+    // await dispatch('patchKeyUnit', keyunitPayload)
+    //
+    // // 3. 동호수 연결
+    const { houseunit, ...rest3 } = rest1
+    // const houseUnitData = { pk: houseunit, key_unit: keyunit[0] }
+    // if (houseunit) await dispatch('patchHouseUnit', houseUnitData)
+
+    // 4. 계약자 정보 테이블 입력
+    const {
+      contractorPk,
+      name,
+      birth_date,
+      gender,
+      is_registed,
+      status,
+      reservation_date,
+      contract_date,
+      note,
+      ...rest4
+    } = rest3
+    const contractorObj = await dispatch('updateContractor', {
+      pk: contractorPk,
+      contract: contractObj.data.pk,
+      name,
+      birth_date,
+      gender,
+      is_registed,
+      status,
+      reservation_date,
+      contract_date,
+      note,
+    })
+
+    // 5. 계약자 주소 테이블 입력
+    const contractor = contractorObj.data.pk
+    const {
+      addressPk,
+      id_zipcode,
+      id_address1,
+      id_address2,
+      id_address3,
+      dm_zipcode,
+      dm_address1,
+      dm_address2,
+      dm_address3,
+      ...rest5
+    } = rest4
+    if (id_zipcode || dm_zipcode)
+      await dispatch('updateAddress', {
+        pk: addressPk,
+        contractor,
+        id_zipcode,
+        id_address1,
+        id_address2,
+        id_address3,
+        dm_zipcode,
+        dm_address1,
+        dm_address2,
+        dm_address3,
+      })
+
+    // 6. 계약자 연락처 테이블 입력
+    const { contactPk, cell_phone, home_phone, other_phone, email, ...rest6 } =
+      rest5
+    if (cell_phone)
+      await dispatch('updateContact', {
+        pk: contactPk,
+        contractor,
+        cell_phone,
+        home_phone,
+        other_phone,
+        email,
+      })
+
+    // 7. 계약금 - 수납 정보 테이블 입력
+    const { paymentPk, ...data } = rest6
+    const cashData = {
+      project,
+      sort: 1,
+      project_account_d1: ordergroup[1],
+      project_account_d2: ordergroup[1],
+      is_contract_payment: true,
+      contract: contractObj.data.pk,
+      content: `${name}[${serial_number} 대금납부]`,
+      ...data,
+    }
+    if (cashData.deal_date) {
+      if (!paymentPk) {
+        try {
+          await api.post(`/project-cashbook/`, cashData)
+        } catch (err: any) {
+          console.log(err.response.data)
+        }
+      } else {
+        try {
+          await api.put(`/project-cashbook/${paymentPk}/`, cashData)
+        } catch (err: any) {
+          console.log(err.response.data)
+        }
+      }
+    }
+
+    // dispatch('fetchContractList', { status })
+    dispatch('fetchContract', contractObj.data.pk)
+    message()
+  },
 
   fetchSubsSummaryList: ({ commit }: any, project?: number) => {
     api

@@ -35,7 +35,7 @@
               <option value="">---------</option>
               <option
                 v-for="order in orderGroupList"
-                :value="[order.pk, order.sort]"
+                :value="`${order.pk},${order.sort}`"
                 :key="order.pk"
               >
                 {{ order.order_group_name }}
@@ -79,7 +79,7 @@
               <option value="">---------</option>
               <option
                 v-for="unit in keyUnitList"
-                :value="[unit.pk, unit.unit_code]"
+                :value="`${unit.pk},${unit.unit_code}`"
                 :key="unit.pk"
               >
                 {{ unit.unit_code }}
@@ -325,7 +325,7 @@
                   v-model="form.deal_date"
                   placeholder="입금일자"
                   v-maska="'####-##-##'"
-                  required
+                  :required="!contract"
                   :disabled="noStatus"
                 />
               </CCol>
@@ -338,7 +338,7 @@
                   type="number"
                   min="0"
                   placeholder="입금액"
-                  required
+                  :required="!contract"
                   :disabled="noStatus"
                 />
                 <CFormFeedback invalid>입금액을 입력하세요.</CFormFeedback>
@@ -347,7 +347,7 @@
               <CCol md="5" lg="2" class="mb-3 mb-lg-0">
                 <CFormSelect
                   v-model="form.bank_account"
-                  required
+                  :required="!contract"
                   :disabled="noStatus"
                 >
                   <option value="">납부계좌 선택</option>
@@ -369,7 +369,7 @@
                   v-model="form.trader"
                   maxlength="20"
                   placeholder="입금자명을 입력하세요"
-                  required
+                  :required="!contract"
                   :disabled="noStatus"
                 />
                 <CFormFeedback invalid>입금자명을 입력하세요.</CFormFeedback>
@@ -377,7 +377,7 @@
               <CCol md="5" lg="2" class="mb-md-3 mb-lg-0">
                 <CFormSelect
                   v-model="form.installment_order"
-                  required
+                  :required="!contract"
                   :disabled="noStatus"
                 >
                   <option value="">납부회차 선택</option>
@@ -549,6 +549,7 @@
             />
           </CCol>
         </CRow>
+        {{ contract }}
       </CCardBody>
 
       <CCardFooter class="text-right">
@@ -628,6 +629,7 @@ export default defineComponent({
   },
   data() {
     return {
+      pk: null,
       form: {
         // contract
         order_group: '', // 2
@@ -635,6 +637,7 @@ export default defineComponent({
         key_unit: '', // 4
         houseunit: '', // 5
         // contractor
+        contractorPk: null,
         name: '', // 7
         birth_date: null, // 8
         gender: '', // 9
@@ -650,6 +653,7 @@ export default defineComponent({
         trader: '', // 18
         installment_order: '', // 19
         // address
+        addressPk: null,
         id_zipcode: '', // 20
         id_address1: '', // 21
         id_address2: '', // 22
@@ -659,6 +663,7 @@ export default defineComponent({
         dm_address2: '', // 26
         dm_address3: '', // 27
         // contact
+        contactPk: null,
         cell_phone: '', // 11
         home_phone: '', // 12
         other_phone: '', // 13
@@ -711,20 +716,16 @@ export default defineComponent({
     contract(this: any) {
       if (this.contract) {
         // contract
-        this.form.order_group = [
-          this.contract.order_group.pk,
-          this.contract.order_group.sort,
-        ]
+        this.pk = this.contract.pk
+        this.form.order_group = `${this.contract.order_group.pk},${this.contract.order_group.sort}`
         this.form.unit_type = this.contract.unit_type.pk
-        this.form.key_unit = [
-          this.contract.keyunit.pk,
-          this.contract.keyunit.unit_code,
-        ]
+        this.form.key_unit = `${this.contract.keyunit.pk},${this.contract.keyunit.unit_code}`
         this.form.houseunit = this.contract.keyunit.houseunit
           ? this.contract.keyunit.houseunit.pk
           : ''
 
         // contractor
+        this.form.contractorPk = this.contract.contractor.pk
         this.form.name = this.contract.contractor.name
         this.form.birth_date = new Date(this.contract.contractor.birth_date)
         this.form.gender = this.contract.contractor.gender // 9
@@ -748,6 +749,7 @@ export default defineComponent({
         // this.form.installment_order = '' // 19
 
         // address
+        this.form.addressPk = this.contract.contractor.contractoraddress.pk
         this.form.id_zipcode =
           this.contract.contractor.contractoraddress.id_zipcode // 20
         this.form.id_address1 =
@@ -765,6 +767,7 @@ export default defineComponent({
         this.form.dm_address3 =
           this.contract.contractor.contractoraddress.dm_address3 // 27
         // contact
+        this.form.contactPk = this.contract.contractor.contractorcontact.pk //
         this.form.cell_phone =
           this.contract.contractor.contractorcontact.cell_phone
         this.form.home_phone =
@@ -877,6 +880,7 @@ export default defineComponent({
       if (!this.contract) this.$emit('on-create', this.form)
       else
         this.$emit('on-update', {
+          ...{ pk: this.pk },
           ...{ paymentPk: this.paymentPk },
           ...this.form,
         })
