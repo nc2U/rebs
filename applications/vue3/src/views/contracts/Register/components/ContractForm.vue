@@ -883,6 +883,7 @@ export default defineComponent({
           ...{ paymentPk: this.paymentPk },
           ...this.form,
         })
+      this.paymentPk = null
       this.validated = false
       this.formReset()
       this.$refs.confirmModal.visible = false
