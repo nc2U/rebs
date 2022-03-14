@@ -549,7 +549,6 @@
             />
           </CCol>
         </CRow>
-        {{ contract }}
       </CCardBody>
 
       <CCardFooter class="text-right">
