@@ -460,17 +460,24 @@ class ContractListSerializer(serializers.ModelSerializer):
         fields = ('pk', 'project', 'order_group', 'unit_type', 'serial_number', 'activation')
 
 
+class ProjectCashBookInContractListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProjectCashBook
+        fields = ('pk', 'deal_date', 'income', 'bank_account', 'trader', 'installment_order')
+
+
 class ContractCustomListSerializer(serializers.ModelSerializer):
     order_group = SimpleOrderGroupSerializer()
     unit_type = SimpleUnitTypeSerializer()
     keyunit = KeyUnitInContractListSerializer()
     contractor = ContractorInContractListSerializer()
+    payments = ProjectCashBookInContractListSerializer(many=True, read_only=True)
 
     class Meta:
         model = Contract
         fields = (
             'pk', 'project', 'serial_number', 'activation', 'order_group',
-            'unit_type', 'keyunit', 'contractor', 'user')
+            'unit_type', 'keyunit', 'payments', 'contractor')
 
 
 class SubsSummarySerializer(serializers.ModelSerializer):

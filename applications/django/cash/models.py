@@ -99,7 +99,7 @@ class ProjectCashBook(models.Model):
                                   verbose_name='분할 계정')
     is_contract_payment = models.BooleanField('분양/분담금 여부', default=False)  # 분양대금여부(납입, 환불 모두 True)
     contract = models.ForeignKey('contract.Contract', on_delete=models.SET_NULL, null=True, blank=True,
-                                 verbose_name='계약일련번호')  # 계약일련번호  (프로젝트 귀속)
+                                 related_name='payments', verbose_name='계약일련번호')  # 계약일련번호  (프로젝트 귀속)
     installment_order = models.ForeignKey('InstallmentPaymentOrder', on_delete=models.CASCADE, null=True, blank=True,
                                           verbose_name='납부회차')  # 분할납부차수  (프로젝트 귀속)
     is_release = models.BooleanField('해지/환불 완료여부', default=False)
