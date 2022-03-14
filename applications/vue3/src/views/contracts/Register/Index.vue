@@ -64,7 +64,7 @@ export default defineComponent({
           project: this.project ? this.project.pk : this.initProjId,
           unit_type: newVal.unit_type.pk,
           contract: this.$route.query.contract,
-          no_contract: 'false',
+          available: 'false',
         })
 
         if (this.contract.keyunit.houseunit) {
@@ -72,7 +72,7 @@ export default defineComponent({
             project: this.project ? this.project.pk : this.initProjId,
             unit_type: newVal.unit_type.pk,
             contract: this.$route.query.contract,
-            no_keyunit: 'false',
+            available: 'false',
           })
         } else {
           this.fetchHouseUnitList({

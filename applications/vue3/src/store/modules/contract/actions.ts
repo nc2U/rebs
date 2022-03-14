@@ -296,10 +296,10 @@ const actions = {
     const { project } = payload
     const unit_type = payload.unit_type ? payload.unit_type : ''
     const contract = payload.contract ? payload.contract : ''
-    const no_contract = payload.no_contract ? payload.no_contract : 'true'
+    const available = payload.available ? payload.available : 'true'
     api
       .get(
-        `/key-unit/?project=${project}&unit_type=${unit_type}&contract=${contract}&no_contract=${no_contract}`,
+        `/key-unit/?project=${project}&unit_type=${unit_type}&contract=${contract}&available=${available}`,
       )
       .then(res => {
         commit(FETCH_KEY_UNIT_LIST, res.data)
@@ -311,10 +311,10 @@ const actions = {
     const { project } = payload
     const unit_type = payload.unit_type ? payload.unit_type : ''
     const contract = payload.contract ? payload.contract : ''
-    const no = payload.no_keyunit ? payload.no_keyunit : 'true'
+    const available = payload.available ? payload.available : 'true'
     api
       .get(
-        `/house-unit/?project=${project}&unit_type=${unit_type}&key_unit__contract=${contract}&is_hold=false&no_keyunit=${no}`,
+        `/house-unit/?project=${project}&unit_type=${unit_type}&contract=${contract}&is_hold=false&available=${available}`,
       )
       .then(res => {
         commit(FETCH_HOUSE_UNIT_LIST, res.data)

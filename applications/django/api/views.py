@@ -349,11 +349,11 @@ class BuildingUnitDetail(generics.RetrieveUpdateDestroyAPIView):
 
 
 class KeyUnitListFilterSet(FilterSet):
-    no_contract = BooleanFilter(field_name='contract', lookup_expr='isnull', label='계약가능유닛')
+    available = BooleanFilter(field_name='contract', lookup_expr='isnull', label='계약가능유닛')
 
     class Meta:
         model = KeyUnit
-        fields = ('project', 'unit_type', 'contract', 'no_contract')
+        fields = ('project', 'unit_type', 'contract', 'available')
 
 
 class KeyUnitList(generics.ListCreateAPIView):
@@ -372,12 +372,13 @@ class KeyUnitDetail(generics.RetrieveUpdateDestroyAPIView):
 
 
 class HouseUnitListFilterSet(FilterSet):
-    no_keyunit = BooleanFilter(field_name='key_unit', lookup_expr='isnull', label='계약가능호수')
+    available = BooleanFilter(field_name='key_unit', lookup_expr='isnull', label='계약가능호수')
+    contract = ModelChoiceFilter(field_name='key_unit__contract', queryset=Contract.objects.all(), label='계약')
 
     class Meta:
         model = HouseUnit
         fields = ('project', 'unit_type', 'floor_type', 'building_unit',
-                  'key_unit__contract', 'bldg_line', 'floor_no', 'is_hold', 'no_keyunit')
+                  'contract', 'bldg_line', 'floor_no', 'is_hold', 'available')
 
 
 class HouseUnitList(generics.ListCreateAPIView):
