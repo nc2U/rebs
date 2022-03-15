@@ -39,8 +39,8 @@ const contract = {
       component: 'CNavItem',
       name: '계약등록 관리',
       badge: {
-        color: 'warning',
-        text: 'u.c',
+        color: 'success',
+        text: 'ok',
       },
       to: '/contracts/register',
     },
