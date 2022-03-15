@@ -24,6 +24,7 @@ import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ContractForm from '@/views/contracts/Register/components/ContractForm.vue'
 import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
+import { FETCH_CONTRACT } from '@/store/modules/contract/mutations-types'
 
 export default defineComponent({
   name: 'ContractRegister',
@@ -46,6 +47,9 @@ export default defineComponent({
     if (this.$route.query.contract) {
       this.getContract(this.$route.query.contract)
     }
+  },
+  beforeRouteLeave() {
+    this.FETCH_CONTRACT(null)
   },
   computed: {
     unitSet() {
@@ -132,6 +136,7 @@ export default defineComponent({
     ...mapActions('proCash', ['fetchProBankAccList']),
     ...mapActions('payment', ['fetchPayOrderList']),
     ...mapMutations('contract', [
+      'FETCH_CONTRACT',
       'FETCH_ORDER_GROUP_LIST',
       'FETCH_KEY_UNIT_LIST',
       'FETCH_HOUSE_UNIT_LIST',
