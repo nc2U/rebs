@@ -344,7 +344,7 @@ class SimpleContractSerializer(serializers.ModelSerializer):
 class SimpleInstallmentOrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = InstallmentPaymentOrder
-        fields = ('pk', '__str__')
+        fields = ('pk', 'pay_time', '__str__')
 
 
 class SimpleProjectBankAccountSerializer(serializers.ModelSerializer):
@@ -461,6 +461,8 @@ class ContractListSerializer(serializers.ModelSerializer):
 
 
 class ProjectCashBookInContractListSerializer(serializers.ModelSerializer):
+    installment_order = SimpleInstallmentOrderSerializer()
+
     class Meta:
         model = ProjectCashBook
         fields = ('pk', 'deal_date', 'income', 'bank_account', 'trader', 'installment_order')
@@ -480,7 +482,7 @@ class ContractCustomListSerializer(serializers.ModelSerializer):
             'unit_type', 'keyunit', 'payments', 'contractor')
 
     def get_payments(self, instance):
-        payments = instance.payments.filter(installment_order__pay_time=1).order_by('deal_date', 'id')
+        payments = instance.payments.all().order_by('deal_date', 'id')
         return ProjectCashBookInContractListSerializer(payments, many=True, read_only=True).data
 
 
