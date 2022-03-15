@@ -9,7 +9,7 @@ from django.views.generic import ListView, FormView, TemplateView
 
 from .models import (OrderGroup, Contract, Contractor,
                      ContractorAddress, ContractorContact, ContractorRelease)
-from rebs.models import ProjectAccountD1, ProjectAccountD2
+from rebs.models import AccountSort, ProjectAccountD1, ProjectAccountD2
 from project.models import Project, UnitType, KeyUnit, BuildingUnit, HouseUnit
 from cash.models import ProjectBankAccount, ProjectCashBook, InstallmentPaymentOrder
 
@@ -375,7 +375,7 @@ class ContractRegisterView(LoginRequiredMixin, FormView):
                     for form in formset:
                         pCashbook = form.save(commit=False)
                         pCashbook.project = Project.objects.get(pk=self.request.POST.get('project'))
-                        pCashbook.sort = 1
+                        pCashbook.sort = AccountSort.objects.get(pk=1)
                         dSort = int(contract.order_group.sort)
                         pCashbook.project_account_d1 = ProjectAccountD1.objects.get(pk=dSort)
                         pCashbook.project_account_d2 = ProjectAccountD2.objects.get(pk=dSort)
