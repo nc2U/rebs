@@ -789,7 +789,7 @@ export default defineComponent({
       this.form.income = payment.income
       this.form.bank_account = payment.bank_account
       this.form.trader = payment.trader
-      this.form.installment_order = payment.installment_order
+      this.form.installment_order = payment.installment_order.pk
       this.paymentPk = payment.pk
     },
     payReset() {
