@@ -274,7 +274,7 @@
             <CRow v-if="contract" class="mb-3">
               <CCol>
                 <CRow
-                  v-for="(payment, i) in contract.payments"
+                  v-for="(payment, i) in downPayments"
                   :key="payment.pk"
                   class="text-center mb-1"
                   :class="
@@ -297,11 +297,7 @@
                   </CCol>
                   <CCol>{{ payment.trader }}</CCol>
                   <CCol>
-                    {{
-                      downPayOrder
-                        .filter(o => o.pk === payment.installment_order)
-                        .map(o => o.__str__)[0]
-                    }}
+                    {{ payment.installment_order.__str__ }}
                   </CCol>
                   <CCol>
                     <CButton
@@ -692,6 +688,13 @@ export default defineComponent({
     //   return a
     // },
     // ...mapGetters('accounts', ['staffAuth', 'superAuth']),
+    downPayments(this: any) {
+      return this.contract.payments
+        ? this.contract.payments.filter(
+            (p: any) => p.installment_order.pay_time === 1,
+          )
+        : []
+    },
     ...mapState('contract', ['orderGroupList', 'keyUnitList', 'houseUnitList']),
     ...mapState('project', ['unitTypeList']),
     ...mapState('proCash', ['proBankAccountList']),
@@ -739,13 +742,6 @@ export default defineComponent({
             ? null
             : new Date(this.contract.contractor.contract_date)
         this.form.note = this.contract.contractor.note
-
-        // // proCash
-        // this.form.deal_date = null // 15
-        // this.form.income = '' // 16
-        // this.form.bank_account = '' // 17
-        // this.form.trader = '' // 18
-        // this.form.installment_order = '' // 19
 
         // address
         this.form.addressPk = this.contract.contractor.contractoraddress.pk
