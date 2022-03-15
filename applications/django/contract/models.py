@@ -32,7 +32,7 @@ class Contract(models.Model):
         return f'[{self.project.id}] {self.serial_number}'
 
     class Meta:
-        ordering = ('-project', '-id')
+        ordering = ('-project', '-created_at')
         verbose_name = '02. 계약 정보'
         verbose_name_plural = '02. 계약 정보'
 
