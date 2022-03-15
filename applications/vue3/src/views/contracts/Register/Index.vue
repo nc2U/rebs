@@ -76,7 +76,6 @@ export default defineComponent({
             project: this.project ? this.project.pk : this.initProjId,
             unit_type: newVal.unit_type.pk,
             contract: this.$route.query.contract,
-            available: 'false',
           })
         } else {
           this.fetchHouseUnitList({

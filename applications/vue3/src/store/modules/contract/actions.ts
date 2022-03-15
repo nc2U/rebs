@@ -394,8 +394,16 @@ const actions = {
       }
     }
 
-    // dispatch('fetchContractList', { status })
+    router.push({
+      name: '계약등록 관리',
+      query: { contract: contractObj.data.pk },
+    })
     dispatch('fetchContract', contractObj.data.pk)
+    dispatch('fetchHouseUnitList', {
+      project,
+      unit_type,
+      contract: contractObj.data.pk,
+    })
     message()
   },
 
@@ -494,13 +502,11 @@ const actions = {
 
   fetchHouseUnitList: ({ commit }: any, payload?: any) => {
     const { project } = payload
-    const unit_type = payload.unit_type ? payload.unit_type : ''
-    const contract = payload.contract ? payload.contract : ''
-    const available = payload.available ? payload.available : 'true'
+    let url = `/house-unit/?project=${project}`
+    if (payload.unit_type) url += `&unit_type=${payload.unit_type}`
+    if (payload.contract) url += `&contract=${payload.contract}`
     api
-      .get(
-        `/house-unit/?project=${project}&unit_type=${unit_type}&contract=${contract}&is_hold=false&available=${available}`,
-      )
+      .get(url)
       .then(res => {
         commit(FETCH_HOUSE_UNIT_LIST, res.data)
       })
