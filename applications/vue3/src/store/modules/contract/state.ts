@@ -43,6 +43,21 @@ interface KeyUnit {
   houseunit: HouseUnit | null
 }
 
+interface InstallmentOrder {
+  pk: number
+  pay_time: number
+  __str__: string
+}
+
+interface Payment {
+  pk: number
+  deal_date: string
+  income: number
+  bank_account: number
+  trader: string
+  installment_order: InstallmentOrder
+}
+
 export interface Contract {
   pk: number
   project: number
@@ -51,6 +66,7 @@ export interface Contract {
   order_group: number
   unit_type: UnitType
   keyunit: KeyUnit | null
+  payments: Payment[]
   contractor: Contractor | null
   user: number
 }
