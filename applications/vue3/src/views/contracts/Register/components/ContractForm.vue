@@ -271,14 +271,14 @@
             :color="$store.state.theme === 'dark' ? 'default' : 'secondary'"
             class="pb-0"
           >
-            <CRow v-if="contract" class="mb-3">
+            <CRow v-if="downPayments.length !== 0" class="mb-3">
               <CCol>
                 <CRow
                   v-for="(payment, i) in downPayments"
                   :key="payment.pk"
                   class="text-center mb-1"
                   :class="
-                    paymentPk === payment.pk
+                    form.paymentPk === payment.pk
                       ? 'text-success text-decoration-underline'
                       : ''
                   "
@@ -314,7 +314,7 @@
             </CRow>
             <CRow>
               <CFormLabel class="col-md-2 col-lg-1 col-form-label">
-                {{ contLabel }}금 {{ !paymentPk ? '등록' : '수정' }}
+                {{ contLabel }}금 {{ !form.paymentPk ? '등록' : '수정' }}
               </CFormLabel>
               <CCol md="10" lg="2" class="mb-3 mb-lg-0">
                 <DatePicker
@@ -390,7 +390,13 @@
 
               <CCol md="2" class="d-none d-md-block d-lg-none"></CCol>
 
-              <CCol v-if="paymentPk" xs="3" md="2" lg="1" class="pt-2 mb-3">
+              <CCol
+                v-if="form.paymentPk"
+                xs="3"
+                md="2"
+                lg="1"
+                class="pt-2 mb-3"
+              >
                 <router-link to="" @click="payReset">Reset</router-link>
               </CCol>
             </CRow>
@@ -605,10 +611,10 @@ import DatePicker from '@/components/DatePicker/index.vue'
 import DaumPostcode from '@/components/DaumPostcode/index.vue'
 import addressMixin from '@/components/DaumPostcode/addressMixin'
 import { maska } from 'maska'
-import { mapGetters, mapState } from 'vuex'
+import { mapGetters, mapMutations, mapState } from 'vuex'
 
 export default defineComponent({
-  name: 'IndexForm',
+  name: 'ContractForm',
   components: {
     ConfirmModal,
     AlertModal,
@@ -642,6 +648,7 @@ export default defineComponent({
         contract_date: null, // 6-2
         note: '', // 28
         // proCash
+        paymentPk: null,
         deal_date: null, // 15
         income: '', // 16
         bank_account: '', // 17
@@ -665,7 +672,6 @@ export default defineComponent({
         email: '', // 14
       },
       sameAddr: false,
-      paymentPk: null,
       validated: false,
     }
   },
@@ -689,7 +695,7 @@ export default defineComponent({
     // },
     // ...mapGetters('accounts', ['staffAuth', 'superAuth']),
     downPayments(this: any) {
-      return this.contract.payments
+      return this.contract && this.contract.payments.length > 0
         ? this.contract.payments.filter(
             (p: any) => p.installment_order.pay_time === 1,
           )
@@ -715,8 +721,8 @@ export default defineComponent({
         this.$refs.address22.$el.focus() // 커서를 상세주소 필드로 이동한다.
       }
     },
-    contract(this: any) {
-      if (this.contract) {
+    contract(this: any, newVal) {
+      if (this.contract && newVal) {
         // contract
         this.pk = this.contract.pk
         this.form.order_group = `${this.contract.order_group.pk},${this.contract.order_group.sort}`
@@ -744,23 +750,25 @@ export default defineComponent({
         this.form.note = this.contract.contractor.note
 
         // address
-        this.form.addressPk = this.contract.contractor.contractoraddress.pk
-        this.form.id_zipcode =
-          this.contract.contractor.contractoraddress.id_zipcode // 20
-        this.form.id_address1 =
-          this.contract.contractor.contractoraddress.id_address1 // 21
-        this.form.id_address2 =
-          this.contract.contractor.contractoraddress.id_address2 // 22
-        this.form.id_address3 =
-          this.contract.contractor.contractoraddress.id_address3 // 23
-        this.form.dm_zipcode =
-          this.contract.contractor.contractoraddress.dm_zipcode // 24
-        this.form.dm_address1 =
-          this.contract.contractor.contractoraddress.dm_address1
-        this.form.dm_address2 =
-          this.contract.contractor.contractoraddress.dm_address2 // 26
-        this.form.dm_address3 =
-          this.contract.contractor.contractoraddress.dm_address3 // 27
+        if (newVal.contractor.status === '2') {
+          this.form.addressPk = this.contract.contractor.contractoraddress.pk
+          this.form.id_zipcode =
+            this.contract.contractor.contractoraddress.id_zipcode // 20
+          this.form.id_address1 =
+            this.contract.contractor.contractoraddress.id_address1 // 21
+          this.form.id_address2 =
+            this.contract.contractor.contractoraddress.id_address2 // 22
+          this.form.id_address3 =
+            this.contract.contractor.contractoraddress.id_address3 // 23
+          this.form.dm_zipcode =
+            this.contract.contractor.contractoraddress.dm_zipcode // 24
+          this.form.dm_address1 =
+            this.contract.contractor.contractoraddress.dm_address1
+          this.form.dm_address2 =
+            this.contract.contractor.contractoraddress.dm_address2 // 26
+          this.form.dm_address3 =
+            this.contract.contractor.contractoraddress.dm_address3 // 27
+        }
         // contact
         this.form.contactPk = this.contract.contractor.contractorcontact.pk //
         this.form.cell_phone =
@@ -785,20 +793,20 @@ export default defineComponent({
       } else this.$refs.confirmModal.callModal()
     },
     payUpdate(this: any, payment: any) {
+      this.form.paymentPk = payment.pk
       this.form.deal_date = new Date(payment.deal_date)
       this.form.income = payment.income
       this.form.bank_account = payment.bank_account
       this.form.trader = payment.trader
       this.form.installment_order = payment.installment_order.pk
-      this.paymentPk = payment.pk
     },
     payReset() {
+      this.form.paymentPk = null
       this.form.deal_date = null
       this.form.income = ''
       this.form.bank_account = ''
       this.form.trader = ''
       this.form.installment_order = ''
-      this.paymentPk = null
     },
     unitReset(event: any) {
       this.form.reservation_date = null
@@ -824,12 +832,13 @@ export default defineComponent({
       }
     },
     formReset() {
+      this.pk = null
       this.form.order_group = ''
       this.form.unit_type = ''
       this.form.key_unit = ''
       this.form.houseunit = ''
 
-      // this.form.contractor_pk = null
+      this.form.contractorPk = null
       this.form.name = ''
       this.form.birth_date = null
       this.form.gender = ''
@@ -839,12 +848,14 @@ export default defineComponent({
       this.form.contract_date = null
       this.form.note = ''
 
+      this.form.paymentPk = null
       this.form.deal_date = null
       this.form.income = ''
       this.form.bank_account = ''
       this.form.trader = ''
       this.form.installment_order = ''
 
+      this.form.addressPk = null
       this.form.id_zipcode = ''
       this.form.id_address1 = ''
       this.form.id_address2 = ''
@@ -854,10 +865,13 @@ export default defineComponent({
       this.form.dm_address2 = ''
       this.form.dm_address3 = ''
 
+      this.form.contactPk = null
       this.form.cell_phone = ''
       this.form.home_phone = ''
       this.form.other_phone = ''
       this.form.email = ''
+      this.FETCH_CONTRACT(null)
+      this.$router.push({ name: '계약등록 관리' })
     },
     modalAction(this: any) {
       this.form.birth_date = this.form.birth_date
@@ -876,10 +890,8 @@ export default defineComponent({
       else
         this.$emit('on-update', {
           ...{ pk: this.pk },
-          ...{ paymentPk: this.paymentPk },
           ...this.form,
         })
-      this.paymentPk = null
       this.validated = false
       this.formReset()
       this.$refs.confirmModal.visible = false
@@ -888,6 +900,7 @@ export default defineComponent({
       if (this.superAuth) this.$refs.delModal.callModal()
       else this.$refs.alertModal.callModal()
     },
+    ...mapMutations('contract', ['FETCH_CONTRACT']),
   },
 })
 </script>

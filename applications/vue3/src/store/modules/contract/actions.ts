@@ -332,19 +332,21 @@ const actions = {
       dm_address3,
       ...rest5
     } = rest4
+    const addressPayload = {
+      pk: addressPk,
+      contractor,
+      id_zipcode,
+      id_address1,
+      id_address2,
+      id_address3,
+      dm_zipcode,
+      dm_address1,
+      dm_address2,
+      dm_address3,
+    }
     if (id_zipcode || dm_zipcode)
-      await dispatch('updateAddress', {
-        pk: addressPk,
-        contractor,
-        id_zipcode,
-        id_address1,
-        id_address2,
-        id_address3,
-        dm_zipcode,
-        dm_address1,
-        dm_address2,
-        dm_address3,
-      })
+      if (addressPk) await dispatch('updateAddress', addressPayload)
+      else await dispatch('createAddress', addressPayload)
 
     // 6. 계약자 연락처 테이블 입력
     const { contactPk, cell_phone, home_phone, other_phone, email, ...rest6 } =
