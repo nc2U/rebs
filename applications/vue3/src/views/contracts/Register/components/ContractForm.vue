@@ -96,7 +96,6 @@
           <CCol md="10" lg="2" class="mb-md-3 mb-lg-0" v-if="unitSet">
             <CFormSelect
               v-model="form.houseunit"
-              required
               :disabled="form.key_unit === '' && !contract"
             >
               <option value="">---------</option>
