@@ -594,7 +594,11 @@
       계약 정보 {{ contract ? '수정등록' : '신규등록' }}을 진행하시겠습니까?
     </template>
     <template v-slot:footer>
-      <CButton :color="contract ? 'success' : 'primary'" @click="modalAction">
+      <CButton
+        :color="contract ? 'success' : 'primary'"
+        @click="modalAction"
+        :disabled="formsCheck"
+      >
         저장
       </CButton>
     </template>
@@ -672,6 +676,7 @@ export default defineComponent({
         email: '', // 14
       },
       sameAddr: false,
+      formsCheck: true,
       validated: false,
     }
   },
@@ -688,12 +693,7 @@ export default defineComponent({
     downPayOrder() {
       return this.payOrderList.filter((po: any) => po.pay_time <= '1')
     },
-    // formsCheck(this: any) {
-    //   const a = this.form.name === this.project.name
-    //
-    //   return a
-    // },
-    // ...mapGetters('accounts', ['staffAuth', 'superAuth']),
+    ...mapGetters('accounts', ['staffAuth', 'superAuth']),
     downPayments(this: any) {
       return this.contract && this.contract.payments.length > 0
         ? this.contract.payments.filter(
@@ -779,6 +779,13 @@ export default defineComponent({
           this.contract.contractor.contractorcontact.other_phone // 13
         this.form.email = this.contract.contractor.contractorcontact.email // 14
       }
+      this.$nextTick(() => (this.formsCheck = true))
+    },
+    form: {
+      deep: true,
+      handler() {
+        this.formsCheck = false
+      },
     },
   },
   methods: {
@@ -872,6 +879,7 @@ export default defineComponent({
       this.form.email = ''
       this.FETCH_CONTRACT(null)
       this.$router.push({ name: '계약등록 관리' })
+      this.$nextTick(() => (this.formsCheck = true))
     },
     modalAction(this: any) {
       this.form.birth_date = this.form.birth_date
