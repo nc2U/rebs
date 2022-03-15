@@ -17,7 +17,12 @@
       />
       {{ contract.unit_type }}
     </CTableDataCell>
-    <CTableDataCell class="text-left">{{ contract.house_unit }}</CTableDataCell>
+    <CTableDataCell
+      class="text-left"
+      :class="contract.house_unit === '[미정]' ? 'text-danger' : ''"
+    >
+      {{ contract.house_unit }}
+    </CTableDataCell>
     <CTableDataCell>
       <router-link
         :to="{ name: '계약등록 관리', query: { contract: contract.pk } }"
