@@ -24,7 +24,6 @@ import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ContractForm from '@/views/contracts/Register/components/ContractForm.vue'
 import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
-import { FETCH_CONTRACT } from '@/store/modules/contract/mutations-types'
 
 export default defineComponent({
   name: 'ContractRegister',

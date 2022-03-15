@@ -641,6 +641,8 @@ export default defineComponent({
         unit_type: '', // 3
         key_unit: '', // 4
         houseunit: '', // 5
+        cont_keyunit: '', // 디비 계약 유닛
+        cont_houseunit: '', // 디비 동호 유닛
         // contractor
         contractorPk: null,
         name: '', // 7
@@ -729,6 +731,10 @@ export default defineComponent({
         this.form.unit_type = this.contract.unit_type.pk
         this.form.key_unit = `${this.contract.keyunit.pk},${this.contract.keyunit.unit_code}`
         this.form.houseunit = this.contract.keyunit.houseunit
+          ? this.contract.keyunit.houseunit.pk
+          : ''
+        this.form.cont_keyunit = this.contract.keyunit.pk
+        this.form.cont_houseunit = this.contract.keyunit.houseunit
           ? this.contract.keyunit.houseunit.pk
           : ''
 
