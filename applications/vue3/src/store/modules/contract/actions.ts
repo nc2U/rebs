@@ -268,29 +268,34 @@ const actions = {
     // 2. 계약 유닛 연결 ( keyunit -> contract.pk)
     // --> 1) 종전 동호수 연결 해제
     // -----> 동호수가 연결되어 있는지 확인 -> true 면 실행
+    const { cont_keyunit, cont_houseunit, houseunit, ...rest2 } = rest1
 
-    const cont = await dispatch('fetchContract', contractObj.data.pk)
+    if (keyunit[0] !== cont_keyunit) {
+      // 계약 유닛 변경 시
+      if (cont_houseunit !== '')
+        // 기존에 디비에 저장되어 있는 동호유닛이 있으면
+        await dispatch('patchHouseUnit', {
+          // 기존 동호 삭제
+          pk: cont_houseunit,
+          key_unit: null,
+        })
+      // --> 2) 종전 계약 유닛 삭제
+      if (cont_keyunit)
+        await dispatch('patchKeyUnit', { pk: cont_keyunit, contract: null })
 
-    console.log('--->', cont)
-    // if (cont.keyunit.houseunit)
-    //   await dispatch('patchHouseUnit', {
-    //     pk: cont.keyunit.houseunit.pk,
-    //     key_unit: null,
-    //   })
-    // // --> 2) 종전 계약 유닛 연결 해제
-    // if (cont.keyunit)
-    //   await dispatch('patchKeyUnit', { pk: cont.keyunit.pk, contract: null })
-    //
-    // // --> 3) 계약 유닛 재연결
-    // const keyUnitPk = keyunit[0]
-    // const contPk = contractObj.data.pk
-    // const keyunitPayload = { pk: keyUnitPk, contract: contPk }
-    // await dispatch('patchKeyUnit', keyunitPayload)
-    //
-    // // 3. 동호수 연결
-    const { houseunit, ...rest3 } = rest1
-    // const houseUnitData = { pk: houseunit, key_unit: keyunit[0] }
-    // if (houseunit) await dispatch('patchHouseUnit', houseUnitData)
+      // --> 3) 변경 계약 유닛 입력
+      const keyUnitPk = keyunit[0]
+      const contPk = contractObj.data.pk
+      const keyunitPayload = { pk: keyUnitPk, contract: contPk }
+      await dispatch('patchKeyUnit', keyunitPayload)
+    }
+
+    // 3. 동호수 연결
+    if (keyunit[0] !== cont_keyunit || houseunit !== cont_houseunit) {
+      // 계약유닛 변경 or 동호유닛 변경 시
+      const houseUnitData = { pk: houseunit, key_unit: keyunit[0] }
+      if (houseunit) await dispatch('patchHouseUnit', houseUnitData)
+    }
 
     // 4. 계약자 정보 테이블 입력
     const {
@@ -304,7 +309,7 @@ const actions = {
       contract_date,
       note,
       ...rest4
-    } = rest3
+    } = rest2
     const contractorObj = await dispatch('updateContractor', {
       pk: contractorPk,
       contract: contractObj.data.pk,
