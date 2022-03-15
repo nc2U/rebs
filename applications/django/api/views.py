@@ -1,4 +1,4 @@
-from django.db.models import Sum, Count, F
+from django.db.models import Sum, Count, F, Q
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
@@ -371,24 +371,29 @@ class KeyUnitDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
 
-class HouseUnitListFilterSet(FilterSet):
-    available = BooleanFilter(field_name='key_unit', lookup_expr='isnull', label='계약가능호수')
-    contract = ModelChoiceFilter(field_name='key_unit__contract', queryset=Contract.objects.all(), label='계약')
-
-    class Meta:
-        model = HouseUnit
-        fields = ('project', 'unit_type', 'floor_type', 'building_unit',
-                  'contract', 'bldg_line', 'floor_no', 'is_hold', 'available')
-
-
 class HouseUnitList(generics.ListCreateAPIView):
     name = 'unit-list'
-    queryset = HouseUnit.objects.all()
     serializer_class = HouseUnitSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
     pagination_class = PageNumberPaginationTwoHundred
-    filter_class = HouseUnitListFilterSet
     search_fields = ('hold_reason',)
+
+    def get_queryset(self):
+        houseunit = HouseUnit.objects.all()
+        queryset = houseunit
+
+        project = self.request.query_params.get('project', None)
+        unit_type = self.request.query_params.get('unit_type', None)
+
+        if project and unit_type:
+            queryset = houseunit.filter(project=project, unit_type=unit_type, key_unit__isnull=True)
+
+        contract = self.request.query_params.get('contract', None)
+        if contract is not None:
+            queryset = houseunit.filter(
+                Q(project=project, unit_type=unit_type, key_unit__isnull=True) |
+                Q(key_unit__contract=contract))
+        return queryset
 
 
 class HouseUnitDetail(generics.RetrieveUpdateDestroyAPIView):
