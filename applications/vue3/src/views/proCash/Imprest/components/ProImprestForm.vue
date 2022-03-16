@@ -29,7 +29,7 @@
                   v-model="form.sort"
                   required
                   @change="sort_change"
-                  :disabled="proCash && proCash.sort !== ''"
+                  :disabled="imprest && imprest.sort !== ''"
                 >
                   <option value="">---------</option>
                   <option value="1">입금</option>
@@ -128,7 +128,7 @@
           <CCol sm="6">
             <CRow>
               <CFormLabel class="col-sm-4 col-form-label">
-                {{ !proCash && form.sort === '3' ? '출금' : '거래' }}계좌
+                {{ !imprest && form.sort === '3' ? '출금' : '거래' }}계좌
               </CFormLabel>
               <CCol sm="8">
                 <CFormSelect
@@ -167,7 +167,7 @@
               </CCol>
             </CRow>
 
-            <CRow v-if="!proCash && form.sort === '3'">
+            <CRow v-if="!imprest && form.sort === '3'">
               <CFormLabel class="col-sm-4 col-form-label">입금계좌</CFormLabel>
               <CCol sm="8">
                 <CFormSelect
@@ -249,9 +249,9 @@
         </CRow>
       </div>
 
-      <div v-if="form.is_separate && proCash">
-        <hr v-if="proCash.sepItems.length > 0" />
-        <CRow class="mb-3" v-if="proCash.sepItems.length > 0">
+      <div v-if="form.is_separate && imprest">
+        <hr v-if="imprest.sepItems.length > 0" />
+        <CRow class="mb-3" v-if="imprest.sepItems.length > 0">
           <CCol>
             <strong>
               <CIcon name="cilDescription" class="mr-2" />
@@ -266,7 +266,7 @@
         </CRow>
 
         <CRow
-          v-for="(sep, i) in proCash.sepItems"
+          v-for="(sep, i) in imprest.sepItems"
           :key="sep.pk"
           class="mb-1"
           :class="
@@ -499,13 +499,13 @@
       </CButton>
       <slot name="footer">
         <CButton
-          :color="proCash ? 'success' : 'primary'"
+          :color="imprest ? 'success' : 'primary'"
           :disabled="formsCheck && requireItem"
         >
           저장
         </CButton>
         <CButton
-          v-if="proCash"
+          v-if="imprest"
           type="button"
           color="danger"
           @click="deleteConfirm"
@@ -541,10 +541,10 @@ import AlertModal from '@/components/Modals/AlertModal.vue'
 import { mapActions, mapGetters, mapState } from 'vuex'
 
 export default defineComponent({
-  name: 'ProCashForm',
+  name: 'ProImprestForm',
   components: { DatePicker, ConfirmModal, AlertModal },
   props: {
-    proCash: {
+    imprest: {
       type: Object,
       required: true,
     },
@@ -568,17 +568,17 @@ export default defineComponent({
       separated: null,
     })
 
-    if (props.proCash) {
+    if (props.imprest) {
       // eslint-disable-next-line vue/no-setup-props-destructure
-      sepItem.project = props.proCash.project
+      sepItem.project = props.imprest.project
       // eslint-disable-next-line vue/no-setup-props-destructure
-      sepItem.sort = props.proCash.sort
+      sepItem.sort = props.imprest.sort
       // eslint-disable-next-line vue/no-setup-props-destructure
-      sepItem.bank_account = props.proCash.bank_account
+      sepItem.bank_account = props.imprest.bank_account
       // eslint-disable-next-line vue/no-setup-props-destructure
-      sepItem.deal_date = props.proCash.deal_date
+      sepItem.deal_date = props.imprest.deal_date
       // eslint-disable-next-line vue/no-setup-props-destructure
-      sepItem.separated = props.proCash.pk
+      sepItem.separated = props.imprest.pk
     }
 
     return {
@@ -609,21 +609,21 @@ export default defineComponent({
     }
   },
   created() {
-    if (this.proCash) {
-      this.form.project = this.proCash.project
-      this.form.sort = this.proCash.sort
-      this.form.project_account_d1 = this.proCash.project_account_d1
-      this.form.project_account_d2 = this.proCash.project_account_d2
-      this.form.content = this.proCash.content
-      this.form.trader = this.proCash.trader
-      this.form.bank_account = this.proCash.bank_account
-      this.form.income = this.proCash.income
-      this.form.outlay = this.proCash.outlay
-      this.form.evidence = this.proCash.evidence
-      this.form.note = this.proCash.note
-      this.form.deal_date = new Date(this.proCash.deal_date)
-      this.form.is_separate = this.proCash.is_separate
-      this.form.separated = this.proCash.separated
+    if (this.imprest) {
+      this.form.project = this.imprest.project
+      this.form.sort = this.imprest.sort
+      this.form.project_account_d1 = this.imprest.project_account_d1
+      this.form.project_account_d2 = this.imprest.project_account_d2
+      this.form.content = this.imprest.content
+      this.form.trader = this.imprest.trader
+      this.form.bank_account = this.imprest.bank_account
+      this.form.income = this.imprest.income
+      this.form.outlay = this.imprest.outlay
+      this.form.evidence = this.imprest.evidence
+      this.form.note = this.imprest.note
+      this.form.deal_date = new Date(this.imprest.deal_date)
+      this.form.is_separate = this.imprest.is_separate
+      this.form.separated = this.imprest.separated
     }
     this.callAccount()
   },
@@ -638,43 +638,43 @@ export default defineComponent({
       const disabled =
         this.form.project_account_d1 !== '' ||
         this.form.project_account_d2 !== ''
-      return this.proCash
-        ? disabled || this.proCash.sepItems.length > 0
+      return this.imprest
+        ? disabled || this.imprest.sepItems.length > 0
         : disabled
     },
     formsCheck() {
-      if (this.proCash) {
-        const a = this.form.project === this.proCash.project
-        const b = this.form.sort === this.proCash.sort
+      if (this.imprest) {
+        const a = this.form.project === this.imprest.project
+        const b = this.form.sort === this.imprest.sort
         const c =
-          this.form.project_account_d1 === this.proCash.project_account_d1
+          this.form.project_account_d1 === this.imprest.project_account_d1
         const d =
-          this.form.project_account_d2 === this.proCash.project_account_d2
-        const e = this.form.content === this.proCash.content
-        const f = this.form.trader === this.proCash.trader
-        const g = this.form.bank_account === this.proCash.bank_account
-        const h = this.form.income === this.proCash.income
-        const i = this.form.outlay === this.proCash.outlay
-        const j = this.form.evidence === this.proCash.evidence
-        const k = this.form.note === this.proCash.note
+          this.form.project_account_d2 === this.imprest.project_account_d2
+        const e = this.form.content === this.imprest.content
+        const f = this.form.trader === this.imprest.trader
+        const g = this.form.bank_account === this.imprest.bank_account
+        const h = this.form.income === this.imprest.income
+        const i = this.form.outlay === this.imprest.outlay
+        const j = this.form.evidence === this.imprest.evidence
+        const k = this.form.note === this.imprest.note
         const l =
           this.form.deal_date.toString() ===
-          new Date(this.proCash.deal_date).toString()
-        const m = this.form.is_separate === this.proCash.is_separate
+          new Date(this.imprest.deal_date).toString()
+        const m = this.form.is_separate === this.imprest.is_separate
 
         return a && b && c && d && e && f && g && h && i && j && k && l && m
       } else return false
     },
     sepSummary() {
       const inc =
-        this.proCash.sepItems.length !== 0
-          ? this.proCash.sepItems
+        this.imprest.sepItems.length !== 0
+          ? this.imprest.sepItems
               .map((s: any) => s.income)
               .reduce((res: any, el: any) => res + el)
           : 0
       const out =
-        this.proCash.sepItems.length !== 0
-          ? this.proCash.sepItems
+        this.imprest.sepItems.length !== 0
+          ? this.imprest.sepItems
               .map((s: any) => s.outlay)
               .reduce((res: any, el: any) => res + el)
           : 0
@@ -687,7 +687,7 @@ export default defineComponent({
       )
     },
     allowedPeriod(this: any) {
-      return this.superAuth || this.diffDate(this.proCash.deal_date) <= 30
+      return this.superAuth || this.diffDate(this.imprest.deal_date) <= 30
     },
     ...mapState('proCash', ['formAccD1List', 'formAccD2List']),
     ...mapGetters('proCash', ['imprestBAccount']),
@@ -773,17 +773,15 @@ export default defineComponent({
         let formData = {}
         if (!this.formsCheck) {
           this.form.deal_date = this.dateFormat(this.form.deal_date)
-          if (!this.proCash) formData = { ...this.form }
-          // this.createConfirm(this.form)
-          else formData = { ...{ ...{ pk: this.proCash.pk }, ...this.form } } //this.updateConfirm({ ...{ pk: this.proCash.pk }, ...this.form })
+          if (!this.imprest) formData = { ...this.form }
+          else formData = { ...{ ...{ pk: this.imprest.pk }, ...this.form } }
         }
         let sepData = {}
         if (this.form.is_separate) {
           if (!this.sepPk) sepData = { ...this.sepItem }
-          // this.createConfirm(this.sepItem)
-          else sepData = { ...{ ...{ pk: this.sepPk }, ...this.sepItem } } // this.updateConfirm({ ...{ pk: this.sepPk }, ...this.sepItem })
+          else sepData = { ...{ ...{ pk: this.sepPk }, ...this.sepItem } }
         }
-        if (this.proCash || this.sepPk)
+        if (this.imprest || this.sepPk)
           this.updateConfirm({ formData, sepData })
         else this.createConfirm({ formData, sepData })
       }
@@ -794,8 +792,8 @@ export default defineComponent({
     },
     deleteObject(this: any) {
       this.$emit('on-delete', {
-        project: this.proCash.project,
-        pk: this.proCash.pk,
+        project: this.imprest.project,
+        pk: this.imprest.pk,
       })
       this.$refs.delModal.visible = false
       this.$emit('close')
