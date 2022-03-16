@@ -301,8 +301,8 @@ class CashBookSerializer(serializers.ModelSerializer):
 class ProjectBankAccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectBankAccount
-        fields = ('pk', 'project', 'bankcode', 'alias_name', 'number',
-                  'holder', 'open_date', 'note', 'inactive', 'directpay')
+        fields = ('pk', 'project', 'bankcode', 'alias_name', 'number', 'holder',
+                  'open_date', 'note', 'inactive', 'directpay', 'is_imprest')
 
 
 class SeparatedItemsSerializer(serializers.ModelSerializer):
