@@ -96,6 +96,10 @@ const getters = {
 
   proImprestPages: (state: ProjectCashState) => (itemsPerPage: number) =>
     Math.ceil(state.proImprestCount / itemsPerPage),
+
+  imprestBAccount: (state: ProjectCashState) => {
+    return state.proBankAccountList.filter(b => b.is_imprest)
+  },
 }
 
 export default getters

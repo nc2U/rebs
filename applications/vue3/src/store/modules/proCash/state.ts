@@ -29,6 +29,7 @@ export interface ProjectBankAccount {
   note: string
   inactive: boolean
   directpay: boolean
+  is_imprest: boolean
 }
 
 export interface ProjectCashBook {
