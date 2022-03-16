@@ -30,7 +30,13 @@
         {{ contract.contractor }}
       </router-link>
     </CTableDataCell>
-    <CTableDataCell>{{ contract.last_paid_order }}</CTableDataCell>
+    <CTableDataCell>
+      {{
+        contract.last_paid_order === '-'
+          ? '-'
+          : contract.last_paid_order.__str__
+      }}
+    </CTableDataCell>
     <CTableDataCell class="text-right">
       {{ numFormat(contract.total_paid) }}
     </CTableDataCell>
