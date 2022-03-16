@@ -282,10 +282,30 @@
                       : ''
                   "
                 >
-                  <CCol>계약금 납부내역 [{{ i + 1 }}]</CCol>
+                  <CCol>
+                    계약금
+                    <router-link
+                      :to="{
+                        name: '건별수납 관리',
+                        query: { contract: contract.pk },
+                      }"
+                      v-c-tooltip="'전체 건별수납 관리'"
+                    >
+                      납부내역
+                    </router-link>
+                    [{{ i + 1 }}]
+                  </CCol>
                   <CCol class="text-right">{{ payment.deal_date }}</CCol>
                   <CCol class="text-right">
-                    {{ numFormat(payment.income) }}
+                    <router-link
+                      :to="{
+                        name: '건별수납 관리',
+                        query: { contract: contract.pk },
+                      }"
+                      v-c-tooltip="'전체 건별수납 관리'"
+                    >
+                      {{ numFormat(payment.income) }}
+                    </router-link>
                   </CCol>
                   <CCol>
                     {{
