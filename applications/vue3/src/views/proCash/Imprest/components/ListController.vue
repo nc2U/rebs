@@ -52,7 +52,7 @@
             <CFormSelect v-model="form.bank_account" @change="listFiltering(1)">
               <option value="">거래계좌</option>
               <option
-                v-for="acc in proBankAccountList"
+                v-for="acc in imprestBAccount"
                 :value="acc.pk"
                 :key="acc.pk"
               >
@@ -99,7 +99,7 @@
 import { defineComponent } from 'vue'
 import DatePicker from '@/components/DatePicker/index.vue'
 import { maska } from 'maska'
-import { mapState } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'ListController',
@@ -133,9 +133,9 @@ export default defineComponent({
       'sortList',
       'formAccD1List',
       'formAccD2List',
-      'proBankAccountList',
       'proImprestCount',
     ]),
+    ...mapGetters('proCash', ['imprestBAccount']),
   },
   watch: {
     from_date() {

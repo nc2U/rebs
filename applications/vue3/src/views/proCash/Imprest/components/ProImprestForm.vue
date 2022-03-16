@@ -138,7 +138,7 @@
                 >
                   <option value="">---------</option>
                   <option
-                    v-for="ba in proBankAccountList"
+                    v-for="ba in imprestBAccount"
                     :value="ba.pk"
                     :key="ba.pk"
                   >
@@ -177,7 +177,7 @@
                 >
                   <option value="">---------</option>
                   <option
-                    v-for="ba in proBankAccountList"
+                    v-for="ba in imprestBAccount"
                     :value="ba.pk"
                     :key="ba.pk"
                   >
@@ -401,7 +401,7 @@
                     >
                       <option value="">---------</option>
                       <option
-                        v-for="ba in proBankAccountList"
+                        v-for="ba in imprestBAccount"
                         :value="ba.pk"
                         :key="ba.pk"
                       >
@@ -603,6 +603,7 @@ export default defineComponent({
         deal_date: new Date(),
         is_separate: false,
         separated: null,
+        is_imprest: true,
       },
       validated: false,
     }
@@ -688,11 +689,8 @@ export default defineComponent({
     allowedPeriod(this: any) {
       return this.superAuth || this.diffDate(this.proCash.deal_date) <= 30
     },
-    ...mapState('proCash', [
-      'formAccD1List',
-      'formAccD2List',
-      'proBankAccountList',
-    ]),
+    ...mapState('proCash', ['formAccD1List', 'formAccD2List']),
+    ...mapGetters('proCash', ['imprestBAccount']),
     ...mapGetters('accounts', ['staffAuth', 'superAuth']),
   },
   methods: {
