@@ -1,5 +1,5 @@
 import store from '@/store'
-import {h, resolveComponent} from 'vue'
+import { h, resolveComponent } from 'vue'
 
 const proCash = {
   path: 'project-cash',
@@ -25,6 +25,14 @@ const proCash = {
       component: () =>
         store.state.accounts.userInfo.staffauth.project_cash > '0'
           ? import('@/views/proCash/Manage/Index.vue')
+          : import('@/views/_Accounts/NoAuth.vue'),
+    },
+    {
+      path: 'imprest',
+      name: '현장운영비 관리',
+      component: () =>
+        store.state.accounts.userInfo.staffauth.project_cash > '0'
+          ? import('@/views/proCash/Imprest/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
     },
   ],

@@ -170,6 +170,15 @@ const project_cash = {
       },
       to: '/project-cash/index',
     },
+    {
+      component: 'CNavItem',
+      name: '현장운영비 관리',
+      badge: {
+        color: 'warning',
+        text: 'u.c',
+      },
+      to: '/project-cash/imprest',
+    },
   ],
 }
 
