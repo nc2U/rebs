@@ -714,13 +714,24 @@ export default defineComponent({
     downPayOrder() {
       return this.payOrderList.filter((po: any) => po.pay_time <= '1')
     },
-    ...mapGetters('accounts', ['staffAuth', 'superAuth']),
     downPayments(this: any) {
       return this.contract && this.contract.payments.length > 0
         ? this.contract.payments.filter(
             (p: any) => p.installment_order.pay_time === 1,
           )
         : []
+    },
+    pageManageAuth() {
+      return (
+        this.superAuth || (this.staffAuth && this.staffAuth.contract === '2')
+      )
+    },
+    allowedPeriod(this: any) {
+      return (
+        this.superAuth ||
+        this.form.paymentPk === null ||
+        this.diffDate(this.form.deal_date) <= 90
+      )
     },
     ...mapState('contract', ['orderGroupList', 'keyUnitList', 'houseUnitList']),
     ...mapState('project', ['unitTypeList']),
@@ -822,7 +833,16 @@ export default defineComponent({
 
         console.log(form.checkValidity())
         this.validated = true
-      } else this.$refs.confirmModal.callModal()
+      } else {
+        if (this.pageManageAuth)
+          if (this.allowedPeriod) this.$refs.confirmModal.callModal()
+          else
+            this.$refs.alertModal.callModal(
+              null,
+              '거래일로부터 90일이 경과한 건은 수정할 수 없습니다. 관리자에게 문의바랍니다.',
+            )
+        else this.$refs.alertModal.callModal()
+      }
     },
     payUpdate(this: any, payment: any) {
       this.form.paymentPk = payment.pk
