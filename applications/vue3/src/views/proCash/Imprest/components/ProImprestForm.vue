@@ -519,7 +519,7 @@
   <ConfirmModal ref="delModal">
     <template v-slot:header>
       <CIcon name="cilWarning" />
-      프로젝트 입출금 거래 정보 삭제
+      운영비(전도금) 거래 정보 삭제
     </template>
     <template v-slot:default>
       삭제한 데이터는 복구할 수 없습니다. 해당 입출금 거래 정보를

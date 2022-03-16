@@ -6,7 +6,7 @@
   <FormModal size="lg" ref="createFormModal">
     <template v-slot:header>
       <CIcon name="cil-italic" />
-      프로젝트 입출금 거래 건별 등록
+      운영비(전도금) 거래 건별 등록
     </template>
     <template v-slot:default>
       <ProImprestForm
