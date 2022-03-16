@@ -163,7 +163,7 @@ const project_cash = {
     },
     {
       component: 'CNavItem',
-      name: '현장출납 기록',
+      name: '현장출납 관리',
       badge: {
         color: 'success',
         text: 'ok',
@@ -172,7 +172,7 @@ const project_cash = {
     },
     {
       component: 'CNavItem',
-      name: '현장운영비 관리',
+      name: '운영비용 관리',
       badge: {
         color: 'warning',
         text: 'u.c',
@@ -385,7 +385,7 @@ const company_cash = {
     },
     {
       component: 'CNavItem',
-      name: '본사출납 기록',
+      name: '본사출납 관리',
       badge: {
         color: 'success',
         text: 'ok',

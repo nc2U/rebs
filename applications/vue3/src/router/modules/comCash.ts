@@ -1,5 +1,5 @@
 import store from '@/store'
-import {h, resolveComponent} from 'vue'
+import { h, resolveComponent } from 'vue'
 
 const comCash = {
   path: 'cashes',
@@ -21,7 +21,7 @@ const comCash = {
     },
     {
       path: 'index',
-      name: '본사출납 기록',
+      name: '본사출납 관리',
       component: () =>
         store.state.accounts.userInfo.staffauth.company_cash > '0'
           ? import('@/views/comCash/Manage/Index.vue')

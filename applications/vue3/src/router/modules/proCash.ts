@@ -21,7 +21,7 @@ const proCash = {
     },
     {
       path: 'index',
-      name: '현장출납 기록',
+      name: '현장출납 관리',
       component: () =>
         store.state.accounts.userInfo.staffauth.project_cash > '0'
           ? import('@/views/proCash/Manage/Index.vue')
@@ -29,7 +29,7 @@ const proCash = {
     },
     {
       path: 'imprest',
-      name: '현장운영비 관리',
+      name: '운영비용 관리',
       component: () =>
         store.state.accounts.userInfo.staffauth.project_cash > '0'
           ? import('@/views/proCash/Imprest/Index.vue')
