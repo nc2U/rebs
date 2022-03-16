@@ -12,7 +12,10 @@ const getters = {
       contractor: c.contractor?.name,
       last_paid_order:
         c.payments.length !== 0
-          ? c.payments.map(p => p.installment_order).pop()
+          ? c.payments
+              .filter(p => p.installment_order !== null)
+              .map(p => p.installment_order)
+              .pop()
           : '-',
       total_paid:
         c.payments.length !== 0

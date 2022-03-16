@@ -717,7 +717,9 @@ export default defineComponent({
     downPayments(this: any) {
       return this.contract && this.contract.payments.length > 0
         ? this.contract.payments.filter(
-            (p: any) => p.installment_order.pay_time === 1,
+            (p: any) =>
+              p.installment_order !== null &&
+              p.installment_order.pay_time === 1,
           )
         : []
     },
