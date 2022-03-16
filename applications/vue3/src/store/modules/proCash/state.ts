@@ -65,6 +65,8 @@ export interface ProjectCashState {
   proBankAccountList: ProjectBankAccount[]
   proCashBookList: ProjectCashBook[]
   proCashesCount: number
+  proImprestList: ProjectCashBook[]
+  proImprestCount: number
 }
 
 const state = {
@@ -76,6 +78,8 @@ const state = {
   proBankAccountList: [],
   proCashBookList: [],
   proCashesCount: 0,
+  proImprestList: [],
+  proImprestCount: 0,
 }
 
 export default state

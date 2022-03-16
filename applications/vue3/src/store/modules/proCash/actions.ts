@@ -7,6 +7,7 @@ import {
   FETCH_FORM_ACC_D2_LIST,
   FETCH_P_BANK_ACCOUNT_LIST,
   FETCH_P_CASHBOOK_LIST,
+  FETCH_P_IMPREST_LIST,
 } from '@/store/modules/proCash/mutations-types'
 import { message } from '@/utils/helper'
 
@@ -119,6 +120,26 @@ const actions = {
       .get(url)
       .then(res => {
         commit(FETCH_P_CASHBOOK_LIST, res.data)
+      })
+      .catch(err => console.log(err.response.data))
+  },
+
+  fetchProjectImprestList: ({ commit }: any, payload: any) => {
+    const { project } = payload
+    let url = `/project-imprest/?project=${project}`
+    if (payload.from_date) url += `&from_deal_date=${payload.from_date}`
+    if (payload.to_date) url += `&to_deal_date=${payload.to_date}`
+    if (payload.sort) url += `&sort=${payload.sort}`
+    if (payload.pro_acc_d1) url += `&project_account_d1=${payload.pro_acc_d1}`
+    if (payload.pro_acc_d2) url += `&project_account_d2=${payload.pro_acc_d2}`
+    if (payload.bank_account) url += `&bank_account=${payload.bank_account}`
+    if (payload.search) url += `&search=${payload.search}`
+    const page = payload.page ? payload.page : 1
+    if (payload.page) url += `&page=${page}`
+    api
+      .get(url)
+      .then(res => {
+        commit(FETCH_P_IMPREST_LIST, res.data)
       })
       .catch(err => console.log(err.response.data))
   },
