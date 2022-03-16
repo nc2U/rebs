@@ -38,7 +38,7 @@
         </CCol>
       </CRow>
 
-      <CRow class="mb-4">
+      <CRow class="mb-3">
         <CFormLabel for="taxNumber" class="col-md-2 col-form-label">
           사업자등록번호
         </CFormLabel>
@@ -98,7 +98,7 @@
         </CCol>
       </CRow>
 
-      <CRow class="mb-4">
+      <CRow class="mb-3">
         <CFormLabel for="esDate" class="col-md-2 col-form-label">
           설립일자
         </CFormLabel>
@@ -135,10 +135,7 @@
         <CFormLabel for="zipcode" class="col-md-2 col-form-label">
           회사주소
         </CFormLabel>
-      </CRow>
-
-      <CRow>
-        <CCol md="4" lg="3" xl="2" class="mb-3">
+        <CCol md="4" xl="2" class="mb-3">
           <CInputGroup>
             <CFormInput
               type="text"
@@ -156,7 +153,8 @@
         </CCol>
       </CRow>
       <CRow>
-        <CCol md="12" lg="6" class="mb-3">
+        <CCol sm="2"></CCol>
+        <CCol md="10" lg="4" class="mb-3">
           <CFormInput
             type="text"
             v-model="form.address1"
@@ -167,7 +165,8 @@
           />
           <CFormFeedback invalid>회사주소를 입력하세요.</CFormFeedback>
         </CCol>
-        <CCol md="6" lg="3" class="mb-3">
+        <CCol xs="2" class="d-none d-md-block d-lg-none"></CCol>
+        <CCol md="5" lg="3" class="mb-3">
           <CFormInput
             type="text"
             v-model="form.address2"
@@ -178,7 +177,7 @@
           />
           <CFormFeedback invalid>상세주소를 입력하세요.</CFormFeedback>
         </CCol>
-        <CCol md="6" lg="3" class="mb-3">
+        <CCol md="5" lg="3" class="mb-3">
           <CFormInput
             type="text"
             v-model="form.address3"
