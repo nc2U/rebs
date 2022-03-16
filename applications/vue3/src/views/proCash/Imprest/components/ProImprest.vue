@@ -2,35 +2,35 @@
   <CTableRow
     class="text-center"
     :color="rowColor"
-    v-if="proCash"
-    :style="proCash.is_separate ? 'font-weight: bold;' : ''"
+    v-if="imprest"
+    :style="imprest.is_separate ? 'font-weight: bold;' : ''"
   >
-    <CTableDataCell>{{ proCash.deal_date }}</CTableDataCell>
+    <CTableDataCell>{{ imprest.deal_date }}</CTableDataCell>
     <CTableDataCell :class="sortClass">
-      {{ proCash.sort_desc }}
+      {{ imprest.sort_desc }}
     </CTableDataCell>
     <CTableDataCell class="text-left">
-      {{ proCash.project_account_d1_desc }}
+      {{ imprest.project_account_d1_desc }}
     </CTableDataCell>
     <CTableDataCell class="text-left">
-      {{ cutString(proCash.project_account_d2_desc, 9) }}
+      {{ cutString(imprest.project_account_d2_desc, 9) }}
     </CTableDataCell>
     <CTableDataCell class="text-left">
-      {{ cutString(proCash.content, 10) }}
+      {{ cutString(imprest.content, 10) }}
     </CTableDataCell>
     <CTableDataCell class="text-left">
-      {{ cutString(proCash.trader, 9) }}
+      {{ cutString(imprest.trader, 9) }}
     </CTableDataCell>
     <CTableDataCell class="text-left">
-      {{ cutString(proCash.bank_account_desc, 9) }}
+      {{ cutString(imprest.bank_account_desc, 9) }}
     </CTableDataCell>
     <CTableDataCell class="text-right" color="success">
-      {{ numFormat(proCash.income || 0) }}
+      {{ numFormat(imprest.income || 0) }}
     </CTableDataCell>
     <CTableDataCell class="text-right" color="danger">
-      {{ numFormat(proCash.outlay || 0) }}
+      {{ numFormat(imprest.outlay || 0) }}
     </CTableDataCell>
-    <CTableDataCell>{{ proCash.evidence_desc }}</CTableDataCell>
+    <CTableDataCell>{{ imprest.evidence_desc }}</CTableDataCell>
     <CTableDataCell>
       <CButton color="info" @click="showDetail" size="sm">확인</CButton>
     </CTableDataCell>
@@ -42,11 +42,11 @@
       프로젝트 입출금 거래 건별 관리
     </template>
     <template v-slot:default>
-      <ProCashForm
+      <ProImprestForm
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
         @close="$refs.updateFormModal.visible = false"
-        :pro-cash="proCash"
+        :pro-cash="imprest"
       />
     </template>
   </FormModal>
@@ -56,14 +56,14 @@
 import { defineComponent } from 'vue'
 import commonMixin from '@/views/commonMixin'
 import FormModal from '@/components/Modals/FormModal.vue'
-import ProCashForm from '@/views/proCash/Manage/components/ProCashForm.vue'
+import ProImprestForm from '@/views/proCash/Imprest/components/ProImprestForm.vue'
 
 export default defineComponent({
-  name: 'ProCash',
+  name: 'ProImprest',
   mixins: [commonMixin],
-  components: { FormModal, ProCashForm },
+  components: { FormModal, ProImprestForm },
   props: {
-    proCash: {
+    imprest: {
       type: Object,
       required: true,
     },
@@ -71,16 +71,16 @@ export default defineComponent({
   computed: {
     sortClass() {
       const cls = ['', 'text-primary', 'text-danger', 'text-info']
-      return cls[this.proCash.sort]
+      return cls[this.imprest.sort]
     },
     rowColor() {
       let color = ''
       color =
-        this.proCash.contract && this.proCash.project_account_d2 <= '2'
+        this.imprest.contract && this.imprest.project_account_d2 <= '2'
           ? 'info'
           : color
-      color = this.proCash.is_separate ? 'dark' : color
-      color = this.proCash.separated ? 'primary' : color
+      color = this.imprest.is_separate ? 'dark' : color
+      color = this.imprest.separated ? 'primary' : color
       return color
     },
   },

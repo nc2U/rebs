@@ -31,10 +31,10 @@
     </CTableHead>
 
     <CTableBody>
-      <ProCash
-        v-for="proCash in getProCashLogs"
-        :proCash="proCash"
-        :key="proCash.pk"
+      <ProImprest
+        v-for="imprest in getProImprestLogs"
+        :imprest="imprest"
+        :key="imprest.pk"
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
       />
@@ -44,7 +44,7 @@
   <CSmartPagination
     :activePage="1"
     :limit="8"
-    :pages="proCashPages(15)"
+    :pages="proImprestPages(15)"
     class="mt-3"
     @active-page-change="pageSelect"
   />
@@ -52,15 +52,15 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import ProCash from '@/views/proCash/Manage/components/ProCash.vue'
+import ProImprest from '@/views/proCash/Imprest/components/ProImprest.vue'
 import { mapGetters } from 'vuex'
 
 export default defineComponent({
-  name: 'ProCashList',
-  components: { ProCash },
+  name: 'ProImprestList',
+  components: { ProImprest },
   props: { project: Object },
   computed: {
-    ...mapGetters('proCash', ['proCashPages', 'getProCashLogs']),
+    ...mapGetters('proCash', ['proImprestPages', 'getProImprestLogs']),
   },
   methods: {
     pageSelect(page: number) {

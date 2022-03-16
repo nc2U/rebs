@@ -8,8 +8,8 @@
   <ContentBody>
     <CCardBody class="pb-5">
       <ListController ref="listControl" @list-filtering="listFiltering" />
-      <AddProCash @multi-submit="multiSubmit" />
-      <ProCashList
+      <AddProImprest @multi-submit="multiSubmit" />
+      <ProImprestList
         :project="project"
         @page-select="pageSelect"
         @multi-submit="multiSubmit"
@@ -26,20 +26,20 @@ import { defineComponent } from 'vue'
 import HeaderMixin from '@/views/proCash/_menu/headermixin'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
-import ListController from '@/views/proCash/Manage/components/ListController.vue'
-import AddProCash from '@/views/proCash/Manage/components/AddProCash.vue'
-import ProCashList from '@/views/proCash/Manage/components/ProCashList.vue'
-import { mapActions, mapGetters, mapState } from 'vuex'
+import ListController from '@/views/proCash/Imprest/components/ListController.vue'
+import AddProImprest from '@/views/proCash/Imprest/components/AddProImprest.vue'
+import ProImprestList from '@/views/proCash/Imprest/components/ProImprestList.vue'
+import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
 
 export default defineComponent({
-  name: 'ProjectCashImprest',
+  name: 'ProjectImprestIndex',
   mixins: [HeaderMixin],
   components: {
     ContentHeader,
     ContentBody,
     ListController,
-    AddProCash,
-    ProCashList,
+    AddProImprest,
+    ProImprestList,
   },
   data() {
     return {
@@ -62,7 +62,7 @@ export default defineComponent({
     this.fetchProFormAccD1List()
     this.fetchProFormAccD2List()
     this.fetchProBankAccList(this.initProjId)
-    this.fetchProjectCashList({ project: this.initProjId })
+    this.fetchProjectImprestList({ project: this.initProjId })
   },
   computed: {
     ...mapState('project', ['project']),
@@ -72,11 +72,10 @@ export default defineComponent({
     onSelectAdd(this: any, target: any) {
       if (target !== '') {
         this.fetchProBankAccList(target)
-        this.fetchProjectCashList({ project: target })
+        this.fetchProjectImprestList({ project: target })
       } else {
-        this.$store.state.payment.proBankAccountList = []
-        this.$store.state.payment.proCashBookList = []
-        this.$store.state.payment.proCashesCount = 0
+        this.FETCH_P_BANK_ACCOUNT_LIST([])
+        this.FETCH_P_IMPREST_LIST({ results: [], count: 0 })
       }
     },
     pageSelect(this: any, page: number) {
@@ -90,7 +89,7 @@ export default defineComponent({
       const d1 = payload.pro_acc_d1 ? payload.pro_acc_d1 : ''
       this.fetchProFormAccD1List(sort)
       this.fetchProFormAccD2List({ d1, sort })
-      this.fetchProjectCashList({ ...{ project }, ...payload })
+      this.fetchProjectImprestList({ ...{ project }, ...payload })
     },
     onCreate(payload: any) {
       payload.project = this.project.pk
@@ -129,10 +128,14 @@ export default defineComponent({
       'fetchProFormAccD1List',
       'fetchProFormAccD2List',
       'fetchProBankAccList',
-      'fetchProjectCashList',
+      'fetchProjectImprestList',
       'createPrCashBook',
       'updatePrCashBook',
       'deletePrCashBook',
+    ]),
+    ...mapMutations('proCash', [
+      'FETCH_P_BANK_ACCOUNT_LIST',
+      'FETCH_P_IMPREST_LIST',
     ]),
   },
 })

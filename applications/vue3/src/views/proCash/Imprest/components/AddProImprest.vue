@@ -9,7 +9,7 @@
       프로젝트 입출금 거래 건별 등록
     </template>
     <template v-slot:default>
-      <ProCashForm
+      <ProImprestForm
         @multi-submit="multiSubmit"
         @close="$refs.createFormModal.visible = false"
       />
@@ -22,12 +22,12 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import FormModal from '@/components/Modals/FormModal.vue'
-import ProCashForm from '@/views/proCash/Manage/components/ProCashForm.vue'
+import ProImprestForm from '@/views/proCash/Imprest/components/ProImprestForm.vue'
 import { mapGetters } from 'vuex'
 
 export default defineComponent({
-  name: 'AddProCash',
-  components: { FormModal, ProCashForm },
+  name: 'AddProImprest',
+  components: { FormModal, ProImprestForm },
   computed: {
     pageManageAuth(this: any) {
       return (

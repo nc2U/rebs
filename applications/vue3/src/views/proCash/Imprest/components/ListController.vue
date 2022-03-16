@@ -83,7 +83,7 @@
     <CRow>
       <CCol color="warning" class="p-2 pl-3">
         <strong>
-          거래 건수 조회 결과 : {{ numFormat(proCashesCount) }} 건
+          거래 건수 조회 결과 : {{ numFormat(proImprestCount) }} 건
         </strong>
       </CCol>
       <CCol class="text-right mb-0" v-if="!formsCheck">
@@ -134,7 +134,7 @@ export default defineComponent({
       'formAccD1List',
       'formAccD2List',
       'proBankAccountList',
-      'proCashesCount',
+      'proImprestCount',
     ]),
   },
   watch: {
