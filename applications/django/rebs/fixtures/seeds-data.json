@@ -2743,12 +2743,23 @@
       "code": "911",
       "sub_title": "",
       "name": "대체",
-      "description": ""
+      "description": "일반 계좌간 이체"
     }
   },
   {
     "model": "rebs.projectaccountd2",
     "pk": 62,
+    "fields": {
+      "d1": 17,
+      "code": "912",
+      "sub_title": "",
+      "name": "대체(운영비 전도금)",
+      "description": "운영비 전도금 이체"
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 63,
     "fields": {
       "d1": 1,
       "code": "812",
@@ -2759,7 +2770,7 @@
   },
   {
     "model": "rebs.projectaccountd2",
-    "pk": 63,
+    "pk": 64,
     "fields": {
       "d1": 2,
       "code": "822",
@@ -2770,7 +2781,7 @@
   },
   {
     "model": "rebs.projectaccountd2",
-    "pk": 64,
+    "pk": 65,
     "fields": {
       "d1": 1,
       "code": "813",
@@ -2781,7 +2792,7 @@
   },
   {
     "model": "rebs.projectaccountd2",
-    "pk": 65,
+    "pk": 66,
     "fields": {
       "d1": 2,
       "code": "823",
