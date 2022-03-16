@@ -75,6 +75,7 @@ class ProjectBankAccount(models.Model):
     note = models.CharField('비고', max_length=50, blank=True)
     inactive = models.BooleanField('비활성 여부', default=False)
     directpay = models.BooleanField('용역비 직불 여부', default=False)
+    is_imprest = models.BooleanField('운영비 계좌 여부', default=False)
 
     def __str__(self):
         return self.alias_name
@@ -97,6 +98,7 @@ class ProjectCashBook(models.Model):
                                       help_text='각기 다른 계정 항목이 1회에 같이 출금된 경우 이 항목을 체크')
     separated = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='sepItems',
                                   verbose_name='분할 계정')
+    is_imprest = models.BooleanField('운영비 항목 여부', default=False, help_text='전도금 대체 후 해당 전도금(운영비) 항목을 상세 기록하는 경우 이 항목')
     is_contract_payment = models.BooleanField('분양/분담금 여부', default=False)  # 분양대금여부(납입, 환불 모두 True)
     contract = models.ForeignKey('contract.Contract', on_delete=models.SET_NULL, null=True, blank=True,
                                  related_name='payments', verbose_name='계약일련번호')  # 계약일련번호  (프로젝트 귀속)
