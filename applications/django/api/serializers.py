@@ -319,7 +319,7 @@ class ProjectCashBookSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectCashBook
         fields = ('pk', 'project', 'sort', 'project_account_d1', 'project_account_d2',
-                  'is_separate', 'separated', 'sepItems', 'is_contract_payment', 'contract',
+                  'is_separate', 'separated', 'is_imprest', 'sepItems', 'is_contract_payment', 'contract',
                   'installment_order', 'is_release', 'is_refund_contractor',
                   'content', 'trader', 'bank_account', 'income', 'outlay', 'evidence',
                   'evidence_desc', 'note', 'deal_date', 'user', 'created_at', 'updated_at')

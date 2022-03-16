@@ -603,6 +603,7 @@ export default defineComponent({
         deal_date: new Date(),
         is_separate: false,
         separated: null,
+        is_imprest: false,
       },
       validated: false,
     }
@@ -695,6 +696,15 @@ export default defineComponent({
     ]),
     ...mapGetters('accounts', ['staffAuth', 'superAuth']),
   },
+  watch: {
+    form: {
+      deep: true,
+      handler(val) {
+        if (val.project_account_d2 === '62') this.form.is_imprest = true
+        else this.form.is_imprest = false
+      },
+    },
+  },
   methods: {
     sort_change(event: any) {
       if (event.target.value === '1') this.form.outlay = null
@@ -776,14 +786,12 @@ export default defineComponent({
         if (!this.formsCheck) {
           this.form.deal_date = this.dateFormat(this.form.deal_date)
           if (!this.proCash) formData = { ...this.form }
-          // this.createConfirm(this.form)
-          else formData = { ...{ ...{ pk: this.proCash.pk }, ...this.form } } //this.updateConfirm({ ...{ pk: this.proCash.pk }, ...this.form })
+          else formData = { ...{ ...{ pk: this.proCash.pk }, ...this.form } }
         }
         let sepData = {}
         if (this.form.is_separate) {
           if (!this.sepPk) sepData = { ...this.sepItem }
-          // this.createConfirm(this.sepItem)
-          else sepData = { ...{ ...{ pk: this.sepPk }, ...this.sepItem } } // this.updateConfirm({ ...{ pk: this.sepPk }, ...this.sepItem })
+          else sepData = { ...{ ...{ pk: this.sepPk }, ...this.sepItem } }
         }
         if (this.proCash || this.sepPk)
           this.updateConfirm({ formData, sepData })
