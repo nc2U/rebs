@@ -44,14 +44,27 @@
     <CRow>
       <CCol xs="10">
         <strong v-if="contract">
-          [일련번호 : {{ contract.serial_number }}] (타입 :
+          [일련번호 :
+          <router-link
+            :to="{ name: '계약등록 관리', query: { contract: contract.pk } }"
+            v-c-tooltip="'계약등록 관리'"
+          >
+            {{ contract.serial_number }}
+          </router-link>
+          ] (타입 :
           {{ contract.unit_type.name }}
           {{
             contract.keyunit.houseunit
               ? contract.keyunit.houseunit.__str__
               : '--- 동호수 현재 미정 ---'
           }}
-          | 계약자 : {{ contract.contractor.name }})
+          |
+          <router-link
+            :to="{ name: '계약등록 관리', query: { contract: contract.pk } }"
+            v-c-tooltip="'계약등록 관리'"
+          >
+            계약자 : {{ contract.contractor.name }})
+          </router-link>
         </strong>
       </CCol>
       <CCol class="text-right" v-if="contract">
