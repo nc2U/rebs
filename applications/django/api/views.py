@@ -61,6 +61,7 @@ class ApiIndex(generics.GenericAPIView):
             'cashbook': reverse(api + CashBookList.name, request=request),
             'project-bank': reverse(api + ProjectBankAccountList.name, request=request),
             'project-cashbook': reverse(api + ProjectCashBookList.name, request=request),
+            'project-imprest': reverse(api + ProjectImprestList.name, request=request),
             'payment-list': reverse(api + PaymentList.name, request=request),
             'all-payment-list': reverse(api + AllPaymentList.name, request=request),
             'payment-sum': reverse(api + PaymentSummary.name, request=request),
@@ -561,7 +562,7 @@ class ProjectCashBookFilterSet(FilterSet):
 
 class ProjectCashBookList(generics.ListCreateAPIView):
     name = 'project_cashbook-list'
-    queryset = ProjectCashBook.objects.all()
+    queryset = ProjectCashBook.objects.filter(Q(is_imprest=False) | Q(project_account_d2=62, income__isnull=True))
     serializer_class = ProjectCashBookSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
     pagination_class = PageNumberPaginationFifteen
@@ -570,6 +571,11 @@ class ProjectCashBookList(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+
+class ProjectImprestList(ProjectCashBookList):
+    name = 'project-imprest-list'
+    queryset = ProjectCashBook.objects.filter(is_imprest=True).exclude(project_account_d2=62, income__isnull=True)
 
 
 class ProjectCashBookDetail(generics.RetrieveUpdateDestroyAPIView):
