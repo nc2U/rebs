@@ -46,7 +46,7 @@
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
         @close="$refs.updateFormModal.visible = false"
-        :pro-cash="imprest"
+        :imprest="imprest"
       />
     </template>
   </FormModal>

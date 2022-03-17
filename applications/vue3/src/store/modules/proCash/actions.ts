@@ -153,6 +153,10 @@ const actions = {
           project: res.data.project,
           ...filters,
         })
+        dispatch('fetchProjectImprestList', {
+          project: res.data.project,
+          ...filters,
+        })
         dispatch(
           'payment/fetchPaymentList',
           {
@@ -173,6 +177,10 @@ const actions = {
       .put(`/project-cashbook/${pk}/`, formData)
       .then(res => {
         dispatch('fetchProjectCashList', {
+          project: res.data.project,
+          ...filters,
+        })
+        dispatch('fetchProjectImprestList', {
           project: res.data.project,
           ...filters,
         })
