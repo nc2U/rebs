@@ -18,11 +18,26 @@
       <CTableRow color="dark" class="text-center">
         <CTableHeaderCell scope="col">거래일자</CTableHeaderCell>
         <CTableHeaderCell scope="col">구분</CTableHeaderCell>
-        <CTableHeaderCell scope="col">계정</CTableHeaderCell>
-        <CTableHeaderCell scope="col">세부계정</CTableHeaderCell>
+        <CTableHeaderCell scope="col">
+          계정
+          <router-link to="" @click="showD1">
+            <CIcon name="cilDescription" />
+          </router-link>
+        </CTableHeaderCell>
+        <CTableHeaderCell scope="col">
+          세부계정
+          <router-link to="" @click="showD1">
+            <CIcon name="cilDescription" />
+          </router-link>
+        </CTableHeaderCell>
         <CTableHeaderCell scope="col">적요</CTableHeaderCell>
         <CTableHeaderCell scope="col">거래처</CTableHeaderCell>
-        <CTableHeaderCell scope="col">거래계좌</CTableHeaderCell>
+        <CTableHeaderCell scope="col">
+          거래계좌
+          <!--          <router-link to="" @click="showD1">-->
+          <CIcon name="cilCog" />
+          <!--          </router-link>-->
+        </CTableHeaderCell>
         <CTableHeaderCell scope="col">입금액</CTableHeaderCell>
         <CTableHeaderCell scope="col">출금액</CTableHeaderCell>
         <CTableHeaderCell scope="col">지출증빙</CTableHeaderCell>
