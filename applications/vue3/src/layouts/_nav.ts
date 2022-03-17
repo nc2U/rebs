@@ -174,8 +174,8 @@ const project_cash = {
       component: 'CNavItem',
       name: '운영비용 관리',
       badge: {
-        color: 'warning',
-        text: 'u.c',
+        color: 'success',
+        text: 'ok',
       },
       to: '/project-cash/imprest',
     },
