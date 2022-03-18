@@ -1906,6 +1906,52 @@
     }
   },
   {
+    "model": "rebs.projectaccountsort",
+    "pk": 1,
+    "fields": {
+      "name": "입금",
+      "accounts": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        18
+      ]
+    }
+  },
+  {
+    "model": "rebs.projectaccountsort",
+    "pk": 2,
+    "fields": {
+      "name": "출금",
+      "accounts": [
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        18
+      ]
+    }
+  },
+  {
+    "model": "rebs.projectaccountsort",
+    "pk": 3,
+    "fields": {
+      "name": "대체",
+      "accounts": [
+        17
+      ]
+    }
+  },
+  {
     "model": "rebs.projectaccountd1",
     "pk": 1,
     "fields": {
@@ -2070,7 +2116,7 @@
     "pk": 17,
     "fields": {
       "sort": "3",
-      "code": "900",
+      "code": "700",
       "name": "대체",
       "description": "계좌간 이체"
     }
@@ -2709,13 +2755,24 @@
       "d1": 14,
       "code": "442",
       "sub_title": "",
-      "name": "기타 보증금",
-      "description": "회수 예정 보증금"
+      "name": "보증/예치금 등",
+      "description": "회수 예정 보증금 / 예치금"
     }
   },
   {
     "model": "rebs.projectaccountd2",
     "pk": 59,
+    "fields": {
+      "d1": 14,
+      "code": "443",
+      "sub_title": "",
+      "name": "기타 대여금",
+      "description": "회수 예정 대여금 / 가지급금"
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 60,
     "fields": {
       "d1": 15,
       "code": "451",
@@ -2726,24 +2783,13 @@
   },
   {
     "model": "rebs.projectaccountd2",
-    "pk": 60,
+    "pk": 61,
     "fields": {
       "d1": 16,
       "code": "461",
       "sub_title": "",
       "name": "기타 잡손실",
-      "description": ""
-    }
-  },
-  {
-    "model": "rebs.projectaccountd2",
-    "pk": 61,
-    "fields": {
-      "d1": 17,
-      "code": "911",
-      "sub_title": "",
-      "name": "대체",
-      "description": "일반 계좌간 이체"
+      "description": "기타 잡손실"
     }
   },
   {
@@ -2751,7 +2797,18 @@
     "pk": 62,
     "fields": {
       "d1": 17,
-      "code": "912",
+      "code": "711",
+      "sub_title": "",
+      "name": "대체",
+      "description": "일반 계좌간 이체"
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 63,
+    "fields": {
+      "d1": 17,
+      "code": "712",
       "sub_title": "",
       "name": "대체(운영비 전도금)",
       "description": "운영비 전도금 이체"
@@ -2759,7 +2816,7 @@
   },
   {
     "model": "rebs.projectaccountd2",
-    "pk": 63,
+    "pk": 64,
     "fields": {
       "d1": 1,
       "code": "812",
@@ -2770,7 +2827,7 @@
   },
   {
     "model": "rebs.projectaccountd2",
-    "pk": 64,
+    "pk": 65,
     "fields": {
       "d1": 2,
       "code": "822",
@@ -2781,7 +2838,7 @@
   },
   {
     "model": "rebs.projectaccountd2",
-    "pk": 65,
+    "pk": 66,
     "fields": {
       "d1": 1,
       "code": "813",
@@ -2792,13 +2849,24 @@
   },
   {
     "model": "rebs.projectaccountd2",
-    "pk": 66,
+    "pk": 67,
     "fields": {
       "d1": 2,
       "code": "823",
       "sub_title": "",
       "name": "분(부)담금 - 위약금",
       "description": "출자금 - 위약금 수익"
+    }
+  },
+   {
+    "model": "rebs.projectaccountd2",
+    "pk": 68,
+    "fields": {
+      "d1": 2,
+      "code": "911",
+      "sub_title": "",
+      "name": "거래취소",
+      "description": "거래 취소로 인한 출금 및 입금거래"
     }
   },
   {
