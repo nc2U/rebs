@@ -15,7 +15,7 @@ from project.models import (Project, UnitType, UnitFloorType,
                             KeyUnit, BuildingUnit, HouseUnit, ProjectBudget,
                             Site, SiteOwner, SiteOwnshipRelationship, SiteContract)
 from rebs.models import (AccountSort, AccountSubD1, AccountSubD2, AccountSubD3,
-                         ProjectAccountD1, ProjectAccountD2, WiseSaying)
+                         ProjectAccountSort, ProjectAccountD1, ProjectAccountD2, WiseSaying)
 from cash.models import (BankCode, CompanyBankAccount, ProjectBankAccount,
                          CashBook, ProjectCashBook, SalesPriceByGT,
                          InstallmentPaymentOrder, DownPayment, OverDueRule)
@@ -43,6 +43,7 @@ class ApiIndex(generics.GenericAPIView):
             'account-depth1': reverse(api + AccountSubD1List.name, request=request),
             'account-depth2': reverse(api + AccountSubD2List.name, request=request),
             'account-depth3': reverse(api + AccountSubD3List.name, request=request),
+            'project-acc-sort': reverse(api + ProjectAccountSortList.name, request=request),
             'project-acc-d1': reverse(api + ProjectAccountD1List.name, request=request),
             'project-acc-d2': reverse(api + ProjectAccountD2List.name, request=request),
             'project': reverse(api + ProjectList.name, request=request),
@@ -210,23 +211,11 @@ class AccountSortList(generics.ListAPIView):
     serializer_class = AccountSortSerializer
 
 
-class AccountSortDetail(generics.RetrieveAPIView):
-    name = 'acc_sort-detail'
-    queryset = AccountSort.objects.all()
-    serializer_class = AccountSortSerializer
-
-
 class AccountSubD1List(generics.ListAPIView):
     name = 'acc_d1-list'
     queryset = AccountSubD1.objects.all()
     serializer_class = AccountSubD1Serializer
     filter_fields = ('accountsort',)
-
-
-class AccountSubD1Detail(generics.RetrieveAPIView):
-    name = 'acc_d1-detail'
-    queryset = AccountSubD1.objects.all()
-    serializer_class = AccountSubD1Serializer
 
 
 class AccountSubD2List(generics.ListAPIView):
@@ -237,12 +226,6 @@ class AccountSubD2List(generics.ListAPIView):
     filter_fields = ('d1__accountsort', 'd1')
 
 
-class AccountSubD2Detail(generics.RetrieveAPIView):
-    name = 'acc_d2-detail'
-    queryset = AccountSubD2.objects.all()
-    serializer_class = AccountSubD2Serializer
-
-
 class AccountSubD3List(generics.ListAPIView):
     name = 'acc_d3-list'
     queryset = AccountSubD3.objects.all()
@@ -251,10 +234,10 @@ class AccountSubD3List(generics.ListAPIView):
     filter_fields = ('d2__d1__accountsort', 'd2__d1', 'd2')
 
 
-class AccountSubD3Detail(generics.RetrieveAPIView):
-    name = 'acc_d3-detail'
-    queryset = AccountSubD3.objects.all()
-    serializer_class = AccountSubD3Serializer
+class ProjectAccountSortList(generics.ListAPIView):
+    name = 'pro-acc_sort-list'
+    queryset = ProjectAccountSort.objects.all()
+    serializer_class = AccountSortSerializer
 
 
 class ProjectAccountD1List(generics.ListAPIView):
@@ -262,13 +245,7 @@ class ProjectAccountD1List(generics.ListAPIView):
     queryset = ProjectAccountD1.objects.all()
     pagination_class = PageNumberPaginationTwenty
     serializer_class = ProjectAccountD1Serializer
-    filter_fields = ('sort',)
-
-
-class ProjectAccountD1Detail(generics.RetrieveAPIView):
-    name = 'project_acc_d1-detail'
-    queryset = ProjectAccountD1.objects.all()
-    serializer_class = ProjectAccountD1Serializer
+    filter_fields = ('projectaccountsort',)
 
 
 class ProjectAccountD2List(generics.ListAPIView):
@@ -276,13 +253,7 @@ class ProjectAccountD2List(generics.ListAPIView):
     queryset = ProjectAccountD2.objects.all()
     pagination_class = PageNumberPaginationOneHundred
     serializer_class = ProjectAccountD2Serializer
-    filter_fields = ('d1', 'd1__sort')
-
-
-class ProjectAccountD2Detail(generics.RetrieveAPIView):
-    name = 'project_acc_d2-detail'
-    queryset = ProjectAccountD2.objects.all()
-    serializer_class = ProjectAccountD2Serializer
+    filter_fields = ('d1', 'd1__projectaccountsort')
 
 
 # Project --------------------------------------------------------------------------
