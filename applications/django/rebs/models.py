@@ -10,8 +10,8 @@ class AccountSort(models.Model):
 
     class Meta:
         ordering = ['id']
-        verbose_name = "00. 구분"
-        verbose_name_plural = "00. 구분"
+        verbose_name = "00. 본사계정 구분"
+        verbose_name_plural = "00. 본사계정 구분"
 
 
 class AccountSubD1(models.Model):
@@ -59,9 +59,20 @@ class AccountSubD3(models.Model):
         verbose_name_plural = "03. 계정과목 (소분류)"
 
 
+class ProjectAccountSort(models.Model):
+    name = models.CharField(max_length=2)
+    accounts = models.ManyToManyField('rebs.ProjectAccountD1')
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ['id']
+        verbose_name = "04. 현장계정 구분"
+        verbose_name_plural = "04. 현장계정 구분"
+
+
 class ProjectAccountD1(models.Model):
-    SORT_CHOICES = (('1', '입금'), ('2', '출금'), ('3', '대체'))
-    sort = models.CharField('구분', max_length=1, choices=SORT_CHOICES)
     code = models.CharField(max_length=3)
     name = models.CharField(max_length=20)
     description = models.CharField(max_length=50, blank=True)
@@ -71,8 +82,8 @@ class ProjectAccountD1(models.Model):
 
     class Meta:
         ordering = ('id',)
-        verbose_name = "A. 프로젝트 계정"
-        verbose_name_plural = "A. 프로젝트 계정"
+        verbose_name = "05. 프로젝트 계정"
+        verbose_name_plural = "05. 프로젝트 계정"
 
 
 class ProjectAccountD2(models.Model):
@@ -87,8 +98,8 @@ class ProjectAccountD2(models.Model):
 
     class Meta:
         ordering = ('id',)
-        verbose_name = "B. 프로젝트 세부계정"
-        verbose_name_plural = "B. 프로젝트 세부계정"
+        verbose_name = "06. 프로젝트 세부계정"
+        verbose_name_plural = "06. 프로젝트 세부계정"
 
 
 class WiseSaying(models.Model):
