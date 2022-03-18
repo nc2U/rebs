@@ -39,16 +39,14 @@ class CashBookAdmin(ImportExportMixin, admin.ModelAdmin):
 
 class ProjectCashBookAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = (
-        'id', 'project', 'deal_date', 'sort', 'project_account_d1', 'project_account_d2', 'contract',
-        'installment_order', 'content', 'trader', 'bank_account', 'formatted_income', 'formatted_outlay', 'created_at',
-        'updated_at', 'user')
+        'id', 'project', 'deal_date', 'sort', 'project_account_d1', 'project_account_d2', 'is_imprest', 'contract',
+        'installment_order', 'content', 'trader', 'bank_account', 'formatted_income', 'formatted_outlay', 'evidence', 'user')
+    list_editable = ('evidence',)
     search_fields = ('content', 'trader', 'note')
     list_display_links = ('project', 'deal_date')
     list_filter = (
         'sort', ('deal_date', DateRangeFilter), 'project_account_d1', 'project_account_d2',
-        'is_contract_payment',
-        'bank_account',
-    )
+        'is_imprest', 'is_contract_payment', 'bank_account')
 
     def formatted_income(self, obj):
         return f'{intcomma(obj.income)} 원' if obj.income else '-'
