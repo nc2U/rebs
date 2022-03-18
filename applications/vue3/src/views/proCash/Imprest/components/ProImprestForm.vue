@@ -25,12 +25,8 @@
             <CRow>
               <CFormLabel class="col-sm-4 col-form-label">구분</CFormLabel>
               <CCol sm="8">
-                <CFormSelect
-                  v-model="form.sort"
-                  required
-                  @change="sort_change"
-                  :disabled="imprest.sort !== ''"
-                >
+                <CFormSelect v-model="form.sort" required @change="sort_change">
+                  <!--                  :disabled="imprest && imprest.sort !== ''"-->
                   <option value="">---------</option>
                   <option value="1">입금</option>
                   <option value="2">출금</option>
