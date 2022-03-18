@@ -562,6 +562,7 @@ export default defineComponent({
       deal_date: '',
       is_separate: false,
       separated: null,
+      is_imprest: true,
     })
 
     if (props.imprest) {
