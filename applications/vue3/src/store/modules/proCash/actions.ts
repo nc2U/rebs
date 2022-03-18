@@ -214,6 +214,10 @@ const actions = {
           project: res.data.project,
           ...filters,
         })
+        dispatch('fetchProjectImprestList', {
+          project: res.data.project,
+          ...filters,
+        })
         dispatch(
           'payment/fetchPaymentList',
           {
@@ -243,6 +247,10 @@ const actions = {
       .delete(`/project-cashbook/${pk}/`)
       .then(() => {
         dispatch('fetchProjectCashList', {
+          project,
+          ...filters,
+        })
+        dispatch('fetchProjectImprestList', {
           project,
           ...filters,
         })
