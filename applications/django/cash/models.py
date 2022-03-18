@@ -88,7 +88,7 @@ class ProjectBankAccount(models.Model):
 
 class ProjectCashBook(models.Model):
     project = models.ForeignKey('project.Project', on_delete=models.PROTECT, verbose_name='프로젝트')
-    sort = models.ForeignKey('rebs.AccountSort', on_delete=models.PROTECT,
+    sort = models.ForeignKey('rebs.ProjectAccountSort', on_delete=models.PROTECT,
                              verbose_name='구분')  # icp=True -> 1=수납 or 2=환불
     project_account_d1 = models.ForeignKey('rebs.ProjectAccountD1', on_delete=models.PROTECT, null=True, blank=True,
                                            verbose_name='현장 계정')

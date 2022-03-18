@@ -315,7 +315,7 @@ class ProjectCashReport(LoginRequiredMixin, TemplateView):
 
         # 예산관련 데이터(집행)
         context['project_budgets'] = bg = ProjectBudget.objects.filter(project=self.get_project(),
-                                                                       account_d2__d1__sort='2',
+                                                                       account_d2__d1__projectaccountsort=2,
                                                                        account_d2__d1__code__startswith="3")
         context['rsp1'] = bg.filter(account_d2__code__range=('322', '326')).count()  # 간접공사비
         context['rsp2'] = bg.filter(account_d2__code__range=('327', '329')).count()  # 설계용역비
@@ -379,10 +379,10 @@ class ProjectCashInoutLV(LoginRequiredMixin, ListView, FormView):
         user = self.request.user
         context['project_list'] = Project.objects.all() if user.is_superuser else user.staffauth.allowed_projects.all()
         context['this_project'] = self.get_project()
-        context['pa_d1'] = ProjectAccountD1.objects.filter(sort__icontains=self.request.GET.get('sort', ''))
-        context['pa_d1_inc'] = ProjectAccountD1.objects.filter(sort='1')
-        context['pa_d1_out'] = ProjectAccountD1.objects.filter(sort='2')
-        context['pa_d1_trans'] = ProjectAccountD1.objects.filter(sort='3')
+        context['pa_d1'] = ProjectAccountD1.objects.all() if self.request.GET.get('sort', None) is None else ProjectAccountD1.objects.filter(projectaccountsort=self.request.GET.get('sort', None))
+        context['pa_d1_inc'] = ProjectAccountD1.objects.filter(projectaccountsort=1)
+        context['pa_d1_out'] = ProjectAccountD1.objects.filter(projectaccountsort=2)
+        context['pa_d1_trans'] = ProjectAccountD1.objects.filter(projectaccountsort=3)
         pa_d2 = ProjectAccountD2.objects.all()
         if self.request.GET.get('d1'):
             pa_d2 = pa_d2.filter(d1_id__exact=int(self.request.GET.get('d1')))
@@ -402,7 +402,7 @@ class ProjectCashInoutLV(LoginRequiredMixin, ListView, FormView):
             results = results.filter(deal_date__lte=self.request.GET.get('edate'))
 
         if self.request.GET.get('sort'):
-            results = results.filter(sort__icontains=self.request.GET.get('sort'))
+            results = results.filter(sort=self.request.GET.get('sort'))
 
         if self.request.GET.get('d1'):
             results = results.filter(project_account_d1__id=self.request.GET.get('d1'))
@@ -444,12 +444,12 @@ class ProjectCashInoutCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
         user = self.request.user
         context['project_list'] = Project.objects.all() if user.is_superuser else user.staffauth.allowed_projects.all()
         context['this_project'] = self.get_project()
-        context['pa_d1_inc'] = ProjectAccountD1.objects.filter(sort=1)
-        context['pa_d1_out'] = ProjectAccountD1.objects.filter(sort=2)
-        context['pa_d1_trans'] = ProjectAccountD1.objects.filter(sort=3)
-        context['pa_d2_inc'] = ProjectAccountD2.objects.filter(d1__sort=1)
-        context['pa_d2_out'] = ProjectAccountD2.objects.filter(d1__sort=2)
-        context['pa_d2_trans'] = ProjectAccountD2.objects.filter(d1__sort=3)
+        context['pa_d1_inc'] = ProjectAccountD1.objects.filter(projectaccountsort=1)
+        context['pa_d1_out'] = ProjectAccountD1.objects.filter(projectaccountsort=2)
+        context['pa_d1_trans'] = ProjectAccountD1.objects.filter(projectaccountsort=3)
+        context['pa_d2_inc'] = ProjectAccountD2.objects.filter(d1__projectaccountsort=1)
+        context['pa_d2_out'] = ProjectAccountD2.objects.filter(d1__projectaccountsort=2)
+        context['pa_d2_trans'] = ProjectAccountD2.objects.filter(d1__projectaccountsort=3)
         context['d1s'] = ProjectAccountD1.objects.all()
         for d1 in context['d1s']:
             context['d2_' + str(d1.id)] = ProjectAccountD2.objects.filter(d1=d1.id)
@@ -494,12 +494,12 @@ class ProjectCashInoutUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
         user = self.request.user
         context['project_list'] = Project.objects.all() if user.is_superuser else user.staffauth.allowed_projects.all()
         context['this_project'] = self.get_project()
-        context['pa_d1_inc'] = ProjectAccountD1.objects.filter(sort=1)
-        context['pa_d1_out'] = ProjectAccountD1.objects.filter(sort=2)
-        context['pa_d1_trans'] = ProjectAccountD1.objects.filter(sort=3)
-        context['pa_d2_inc'] = ProjectAccountD2.objects.filter(d1__sort=1)
-        context['pa_d2_out'] = ProjectAccountD2.objects.filter(d1__sort=2)
-        context['pa_d2_trans'] = ProjectAccountD2.objects.filter(d1__sort=3)
+        context['pa_d1_inc'] = ProjectAccountD1.objects.filter(projectaccountsort=1)
+        context['pa_d1_out'] = ProjectAccountD1.objects.filter(projectaccountsort=2)
+        context['pa_d1_trans'] = ProjectAccountD1.objects.filter(projectaccountsort=3)
+        context['pa_d2_inc'] = ProjectAccountD2.objects.filter(d1__projectaccountsort=1)
+        context['pa_d2_out'] = ProjectAccountD2.objects.filter(d1__projectaccountsort=2)
+        context['pa_d2_trans'] = ProjectAccountD2.objects.filter(d1__projectaccountsort=3)
         context['d1s'] = ProjectAccountD1.objects.all()
         for d1 in context['d1s']:
             context['d2_' + str(d1.id)] = ProjectAccountD2.objects.filter(d1=d1.id)
