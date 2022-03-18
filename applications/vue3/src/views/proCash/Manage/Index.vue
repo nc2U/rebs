@@ -56,7 +56,7 @@ export default defineComponent({
     }
   },
   created() {
-    this.fetchAccSortList()
+    this.fetchProAccSortList()
     this.fetchProAllAccD1List()
     this.fetchProAllAccD2List()
     this.fetchProFormAccD1List()
@@ -123,7 +123,7 @@ export default defineComponent({
       this.deletePrCashBook({ ...{ filters: this.dataFilter }, ...payload })
     },
     ...mapActions('proCash', [
-      'fetchAccSortList',
+      'fetchProAccSortList',
       'fetchProAllAccD1List',
       'fetchProAllAccD2List',
       'fetchProFormAccD1List',

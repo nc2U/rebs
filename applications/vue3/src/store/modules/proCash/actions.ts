@@ -12,9 +12,9 @@ import {
 import { message } from '@/utils/helper'
 
 const actions = {
-  fetchAccSortList: ({ commit }: any) => {
+  fetchProAccSortList: ({ commit }: any) => {
     api
-      .get(`/account-sort/`)
+      .get(`/project-acc-sort/`)
       .then(res => {
         commit(FETCH_P_ACC_SORT_LIST, res.data)
       })
