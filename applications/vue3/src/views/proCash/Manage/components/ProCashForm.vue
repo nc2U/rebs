@@ -696,7 +696,7 @@ export default defineComponent({
     form: {
       deep: true,
       handler(val) {
-        if (val.project_account_d2 === '62') this.form.is_imprest = true
+        if (val.project_account_d2 === '63') this.form.is_imprest = true
         else this.form.is_imprest = false
       },
     },
@@ -707,7 +707,7 @@ export default defineComponent({
       if (event.target.value === '2') this.form.income = null
       if (event.target.value === '3') {
         this.form.project_account_d1 = '17'
-        this.form.project_account_d2 = '61'
+        this.form.project_account_d2 = '62'
       } else {
         this.form.project_account_d1 = ''
         this.form.project_account_d2 = ''
