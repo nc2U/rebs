@@ -1955,7 +1955,6 @@
     "model": "rebs.projectaccountd1",
     "pk": 1,
     "fields": {
-      "sort": "1",
       "code": "810",
       "name": "분양수입금",
       "description": "매출금 - 일반분양 등"
@@ -1965,7 +1964,6 @@
     "model": "rebs.projectaccountd1",
     "pk": 2,
     "fields": {
-      "sort": "1",
       "code": "820",
       "name": "분(부)담금",
       "description": "출자금 (조합 등 형태인 경우)"
@@ -1975,7 +1973,6 @@
     "model": "rebs.projectaccountd1",
     "pk": 3,
     "fields": {
-      "sort": "1",
       "code": "830",
       "name": "차입금",
       "description": "브리지, PF대출, 중도금 등 기타"
@@ -1985,7 +1982,6 @@
     "model": "rebs.projectaccountd1",
     "pk": 4,
     "fields": {
-      "sort": "1",
       "code": "840",
       "name": "기타자산회수",
       "description": "공탁금, 보증금 등 회수"
@@ -1995,7 +1991,6 @@
     "model": "rebs.projectaccountd1",
     "pk": 5,
     "fields": {
-      "sort": "1",
       "code": "850",
       "name": "기타잡수입",
       "description": "사업목적 외 기타 수입, 위약금 수입"
@@ -2005,7 +2000,6 @@
     "model": "rebs.projectaccountd1",
     "pk": 6,
     "fields": {
-      "sort": "2",
       "code": "310",
       "name": "토지비",
       "description": "토지매입비 및  관련 부대비용"
@@ -2015,7 +2009,6 @@
     "model": "rebs.projectaccountd1",
     "pk": 7,
     "fields": {
-      "sort": "2",
       "code": "320",
       "name": "건축비",
       "description": "건축 공사비"
@@ -2025,7 +2018,6 @@
     "model": "rebs.projectaccountd1",
     "pk": 8,
     "fields": {
-      "sort": "2",
       "code": "330",
       "name": "판매비",
       "description": "분양 광고 홍보비 등"
@@ -2035,7 +2027,6 @@
     "model": "rebs.projectaccountd1",
     "pk": 9,
     "fields": {
-      "sort": "2",
       "code": "340",
       "name": "부대비",
       "description": "기타 부대비용"
@@ -2045,7 +2036,6 @@
     "model": "rebs.projectaccountd1",
     "pk": 10,
     "fields": {
-      "sort": "2",
       "code": "360",
       "name": "금융비",
       "description": "대출 수수료, 이자 등"
@@ -2055,7 +2045,6 @@
     "model": "rebs.projectaccountd1",
     "pk": 11,
     "fields": {
-      "sort": "2",
       "code": "410",
       "name": "분양금반환",
       "description": "매출대금 환불"
@@ -2065,7 +2054,6 @@
     "model": "rebs.projectaccountd1",
     "pk": 12,
     "fields": {
-      "sort": "2",
       "code": "420",
       "name": "분담금반환",
       "description": "분담금 반환/환불"
@@ -2075,7 +2063,6 @@
     "model": "rebs.projectaccountd1",
     "pk": 13,
     "fields": {
-      "sort": "2",
       "code": "430",
       "name": "차입금상환",
       "description": "차입금 등 상환(이자비용 외)"
@@ -2085,7 +2072,6 @@
     "model": "rebs.projectaccountd1",
     "pk": 14,
     "fields": {
-      "sort": "2",
       "code": "440",
       "name": "기타 자산",
       "description": "법원 공탁금 및 기타 보증금 등"
@@ -2095,7 +2081,6 @@
     "model": "rebs.projectaccountd1",
     "pk": 15,
     "fields": {
-      "sort": "2",
       "code": "450",
       "name": "원천세",
       "description": "예금 관련 세금"
@@ -2105,7 +2090,6 @@
     "model": "rebs.projectaccountd1",
     "pk": 16,
     "fields": {
-      "sort": "2",
       "code": "460",
       "name": "기타 잡손실",
       "description": "기타 잡손실"
@@ -2115,10 +2099,18 @@
     "model": "rebs.projectaccountd1",
     "pk": 17,
     "fields": {
-      "sort": "3",
       "code": "700",
       "name": "대체",
       "description": "계좌간 이체"
+    }
+  },
+  {
+    "model": "rebs.projectaccountd1",
+    "pk": 18,
+    "fields": {
+      "code": "910",
+      "name": "거래취소",
+      "description": "거래 취소로 인한 출금 및 입금거래"
     }
   },
   {
@@ -2862,7 +2854,7 @@
     "model": "rebs.projectaccountd2",
     "pk": 68,
     "fields": {
-      "d1": 2,
+      "d1": 18,
       "code": "911",
       "sub_title": "",
       "name": "거래취소",
