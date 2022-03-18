@@ -60,7 +60,7 @@ class AccountSubD3(models.Model):
 
 
 class ProjectAccountD1(models.Model):
-    SORT_CHOICES = (('1', '수입'), ('2', '지출'), ('3', '대체'))
+    SORT_CHOICES = (('1', '입금'), ('2', '출금'), ('3', '대체'))
     sort = models.CharField('구분', max_length=1, choices=SORT_CHOICES)
     code = models.CharField(max_length=3)
     name = models.CharField(max_length=20)
