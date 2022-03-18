@@ -29,7 +29,7 @@
                   v-model="form.sort"
                   required
                   @change="sort_change"
-                  :disabled="imprest && imprest.sort !== ''"
+                  :disabled="imprest.sort !== ''"
                 >
                   <option value="">---------</option>
                   <option value="1">입금</option>
