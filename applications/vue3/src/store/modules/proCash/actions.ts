@@ -41,7 +41,7 @@ const actions = {
 
   fetchProFormAccD1List: ({ commit }: any, sort?: string) => {
     const url = sort
-      ? `/project-account-depth1/?sort=${sort}`
+      ? `/project-account-depth1/?projectaccountsort=${sort}`
       : `/project-account-depth1/`
     api
       .get(url)
@@ -54,7 +54,7 @@ const actions = {
   fetchProFormAccD2List: ({ commit }: any, payload?: any) => {
     const d1 = payload && payload.d1 ? payload.d1 : ''
     const sort = payload && payload.sort ? payload.sort : ''
-    const url = `/project-account-depth2/?d1=${d1}&d1__sort=${sort}`
+    const url = `/project-account-depth2/?d1=${d1}&d1__projectaccountsort=${sort}`
     api
       .get(url)
       .then(res => {

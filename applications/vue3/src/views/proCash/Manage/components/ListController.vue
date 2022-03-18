@@ -22,7 +22,7 @@
           </CCol>
 
           <CCol md="6" lg="2" class="mb-3">
-            <CFormSelect v-model="form.sort" @change="pro_acc_d1Select">
+            <CFormSelect v-model="form.sort" @change="sortSelect">
               <option value="">거래구분</option>
               <option v-for="sort in sortList" :value="sort.pk" :key="sort.pk">
                 {{ sort.name }}
@@ -31,7 +31,7 @@
           </CCol>
 
           <CCol md="6" lg="2" class="mb-3">
-            <CFormSelect v-model="form.pro_acc_d1" @change="pro_acc_d2Select">
+            <CFormSelect v-model="form.pro_acc_d1" @change="proAccD1Select">
               <option value="">상위 항목</option>
               <option v-for="d1 in formAccD1List" :value="d1.pk" :key="d1.pk">
                 {{ d1.name }}
@@ -146,12 +146,12 @@ export default defineComponent({
     },
   },
   methods: {
-    pro_acc_d1Select() {
+    sortSelect() {
       this.listFiltering(1)
       this.form.pro_acc_d1 = ''
       this.form.pro_acc_d2 = ''
     },
-    pro_acc_d2Select() {
+    proAccD1Select() {
       this.listFiltering(1)
       this.form.pro_acc_d2 = ''
     },
