@@ -2109,7 +2109,7 @@
     "pk": 18,
     "fields": {
       "code": "910",
-      "name": "거래취소",
+      "name": "취소",
       "description": "거래 취소로 인한 출금 및 입금거래"
     }
   },
@@ -2850,7 +2850,7 @@
       "description": "출자금 - 위약금 수익"
     }
   },
-   {
+  {
     "model": "rebs.projectaccountd2",
     "pk": 68,
     "fields": {
