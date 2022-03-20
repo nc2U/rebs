@@ -11,6 +11,10 @@
 
       <TabSelect @tab-select="showTab" />
 
+      <CRow class="text-right mb-2">
+        <CCol>Excel Export</CCol>
+      </CRow>
+
       <component :is="compName" />
     </CCardBody>
 

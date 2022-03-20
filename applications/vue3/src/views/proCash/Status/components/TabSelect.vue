@@ -1,5 +1,5 @@
 <template>
-  <CRow class="mb-3">
+  <CRow class="mb-4">
     <CCol md="8" lg="6" xl="5">
       <CNav variant="underline" layout="justified">
         <CNavItem>
