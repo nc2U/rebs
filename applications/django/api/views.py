@@ -61,6 +61,7 @@ class ApiIndex(generics.GenericAPIView):
             'com-bank': reverse(api + ComBankAccountList.name, request=request),
             'cashbook': reverse(api + CashBookList.name, request=request),
             'project-bank': reverse(api + ProjectBankAccountList.name, request=request),
+            'prcash-sum-by-account': reverse(api + PrCashByAccountSummaryList.name, request=request),
             'project-cashbook': reverse(api + ProjectCashBookList.name, request=request),
             'project-imprest': reverse(api + ProjectImprestList.name, request=request),
             'payment-list': reverse(api + PaymentList.name, request=request),
@@ -517,6 +518,29 @@ class ProjectBankAccountDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = ProjectBankAccount.objects.all()
     serializer_class = ProjectBankAccountSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+
+
+class PrCashSummaryFilterSet(FilterSet):
+    date_lte = DateFilter(field_name='deal_date', lookup_expr='lte', label='당일누계')
+
+    class Meta:
+        model = ProjectCashBook
+        fields = ('project', 'date_lte')
+
+
+class PrCashByAccountSummaryList(generics.ListAPIView):
+    name = 'pr-cash-by-account-summary'
+    serializer_class = PrCashByAccountSummarySerializer
+    pagination_class = PageNumberPaginationOneHundred
+    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    filter_class = PrCashSummaryFilterSet
+
+    def get_queryset(self):
+        date_lte = self.request.query_params.get('date_lte')
+        return ProjectCashBook.objects.filter(is_separate=False) \
+            .annotate(bank_acc=F('bank_account__alias_name')) \
+            .values('bank_acc') \
+            .annotate(inc_sum=Sum('income'), out_sum=Sum('outlay'))
 
 
 class ProjectCashBookFilterSet(FilterSet):

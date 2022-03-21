@@ -312,6 +312,16 @@ class SeparatedItemsSerializer(serializers.ModelSerializer):
                   'content', 'trader', 'income', 'outlay', 'evidence', 'note',)
 
 
+class PrCashByAccountSummarySerializer(serializers.ModelSerializer):
+    bank_acc = serializers.CharField()
+    inc_sum = serializers.IntegerField()
+    out_sum = serializers.IntegerField()
+
+    class Meta:
+        model = ProjectCashBook
+        fields = ('bank_acc', 'inc_sum', 'out_sum')
+
+
 class ProjectCashBookSerializer(serializers.ModelSerializer):
     evidence_desc = serializers.CharField(source='get_evidence_display', read_only=True)
     sepItems = SeparatedItemsSerializer(many=True, read_only=True)
