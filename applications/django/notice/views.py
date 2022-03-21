@@ -200,12 +200,11 @@ class BillManageView(LoginRequiredMixin, ListView, FormView):
         if form.is_valid():
             with transaction.atomic():  # 트랜잭션
 
-                if form.cleaned_data.get('now_due_date') != self.get_bill_issue().now_payment_order.pay_due_date:
-                    now_due_order = InstallmentPaymentOrder.objects.get(pk=request.POST.get('now_payment_order'))
-                    now_due_order.pay_due_date = form.cleaned_data.get('now_due_date')
-                    now_due_order.save()
-
                 if self.get_bill_issue():
+                    if form.cleaned_data.get('now_due_date') != self.get_bill_issue().now_payment_order.pay_due_date:
+                        now_due_order = InstallmentPaymentOrder.objects.get(pk=request.POST.get('now_payment_order'))
+                        now_due_order.pay_due_date = form.cleaned_data.get('now_due_date')
+                        now_due_order.save()
                     bill_issue = SalesBillIssue.objects.get(project=self.get_project())
                     bill_issue.project = self.get_project()
                     bill_issue.now_payment_order = form.cleaned_data.get('now_payment_order')
@@ -227,6 +226,9 @@ class BillManageView(LoginRequiredMixin, ListView, FormView):
                     bill_issue.content = form.cleaned_data.get('content')
                     bill_issue.register = request.user
                 else:
+                    now_due_order = InstallmentPaymentOrder.objects.get(pk=request.POST.get('now_payment_order'))
+                    now_due_order.pay_due_date = form.cleaned_data.get('now_due_date')
+                    now_due_order.save()
                     bill_issue = SalesBillIssue(project=self.get_project(),
                                                 now_payment_order=form.cleaned_data.get('now_payment_order'),
                                                 host_name=form.cleaned_data.get('host_name'),
