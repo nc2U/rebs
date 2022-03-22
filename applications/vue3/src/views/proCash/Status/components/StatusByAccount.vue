@@ -15,7 +15,7 @@
             <CIcon name="cilFolderOpen" />
             프로젝트 계좌별 자금현황
           </strong>
-          <small>(2022-03-20) 현재</small>
+          <small>({{ dateFormat(date) }}) 현재</small>
         </CTableDataCell>
         <CTableDataCell class="text-right">(단위: 원)</CTableDataCell>
       </CTableRow>
@@ -29,15 +29,27 @@
     </CTableHead>
 
     <CTableBody>
-      <CTableRow class="text-right" v-for="i in 20" :key="i">
-        <CTableDataCell class="text-center" rowspan="20" v-if="i === 1">
+      <CTableRow
+        class="text-right"
+        v-for="(bal, i) in balanceByAccList"
+        :key="i"
+      >
+        <CTableDataCell
+          class="text-center"
+          :rowspan="balanceByAccList.length"
+          v-if="i === 0"
+        >
           보통예금
         </CTableDataCell>
-        <CTableDataCell class="text-left">아시아-신청금(외환)</CTableDataCell>
-        <CTableDataCell>37,893,237</CTableDataCell>
+        <CTableDataCell class="text-left">{{ bal.bank_acc }}</CTableDataCell>
+        <CTableDataCell>
+          {{ numFormat(bal.inc_sum - bal.out_sum) }}
+        </CTableDataCell>
         <CTableDataCell>-</CTableDataCell>
         <CTableDataCell>-</CTableDataCell>
-        <CTableDataCell>37,893,237</CTableDataCell>
+        <CTableDataCell>
+          {{ numFormat(bal.inc_sum - bal.out_sum) }}
+        </CTableDataCell>
       </CTableRow>
 
       <CTableRow color="dark" class="text-right">
@@ -55,11 +67,12 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { mapState } from 'vuex'
 
 export default defineComponent({
   name: 'StatusByAccount',
   components: {},
-  props: {},
+  props: { date: String },
   setup() {
     return {}
   },
@@ -68,7 +81,9 @@ export default defineComponent({
       sample: '',
     }
   },
-  computed: {},
+  computed: {
+    ...mapState('proCash', ['balanceByAccList']),
+  },
   methods: {},
 })
 </script>
