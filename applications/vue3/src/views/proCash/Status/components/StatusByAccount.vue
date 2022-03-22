@@ -59,7 +59,7 @@
         <CTableHeaderCell>9,282,316,408</CTableHeaderCell>
         <CTableHeaderCell>-</CTableHeaderCell>
         <CTableHeaderCell>-</CTableHeaderCell>
-        <CTableHeaderCell>9,282,316,408</CTableHeaderCell>
+        <CTableHeaderCell>{{ numFormat(dateTotal) }}</CTableHeaderCell>
       </CTableRow>
     </CTableBody>
   </CTable>
@@ -82,6 +82,17 @@ export default defineComponent({
     }
   },
   computed: {
+    dateTotal() {
+      const incTotal = this.balanceByAccList
+        .filter((i: any) => i.inc_sum !== 0)
+        .map((i: any) => i.inc_sum)
+      // .reduce((x: number, y: number) => x + y)
+      const outTotal = this.balanceByAccList
+        .filter((o: any) => o.out_sum !== 0)
+        .map((o: any) => o.out_sum)
+      // .reduce((x: number, y: number) => x + y)
+      return 0
+    },
     ...mapState('proCash', ['balanceByAccList']),
   },
   methods: {},
