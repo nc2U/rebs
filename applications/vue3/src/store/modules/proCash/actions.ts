@@ -105,9 +105,10 @@ const actions = {
       .catch(err => console.log(err.response.data))
   },
 
-  fetchBalanceByAccList: ({ commit }: any) => {
+  fetchBalanceByAccList: ({ commit }: any, date?: string) => {
+    const url = date ? `/pcash-by-acc/?date_lte=${date}` : `/pcash-by-acc/`
     api
-      .get(`/pcash-by-acc/`)
+      .get(url)
       .then(res => {
         commit(FETCH_BALANCE_BY_ACC_LIST, res.data)
       })
