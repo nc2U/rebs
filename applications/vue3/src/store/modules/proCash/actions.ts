@@ -8,6 +8,7 @@ import {
   FETCH_P_BANK_ACCOUNT_LIST,
   FETCH_P_CASHBOOK_LIST,
   FETCH_P_IMPREST_LIST,
+  FETCH_BALANCE_BY_ACC_LIST,
 } from '@/store/modules/proCash/mutations-types'
 import { message } from '@/utils/helper'
 
@@ -100,6 +101,15 @@ const actions = {
       .then(() => {
         dispatch('fetchProBankAccList', project)
         message('danger', '알림!', '해당 오브젝트가 삭제되었습니다.')
+      })
+      .catch(err => console.log(err.response.data))
+  },
+
+  fetchBalanceByAccList: ({ commit }: any) => {
+    api
+      .get(`/pcash-by-acc/`)
+      .then(res => {
+        commit(FETCH_BALANCE_BY_ACC_LIST, res.data)
       })
       .catch(err => console.log(err.response.data))
   },
