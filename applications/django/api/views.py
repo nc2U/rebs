@@ -530,14 +530,19 @@ class PrCashByAccountSummaryList(generics.ListAPIView):
 
     def get_queryset(self):
         TODAY = datetime.today().strftime('%Y-%m-%d')
-        date = self.request.query_params.get('date_lte')
-        date = date if date else TODAY
-        a = ProjectCashBook.objects.filter(is_separate=False, deal_date__lte=date) \
-            .annotate(bank_acc=F('bank_account__alias_name')) \
+        date_lte = self.request.query_params.get('date_lte')
+        date = date_lte if date_lte else TODAY
+
+        queryset = ProjectCashBook.objects.all() \
+            .order_by('bank_account') \
+            .filter(is_separate=False,
+                    bank_account__directpay=False,
+                    deal_date__lte=date)
+
+        return queryset.annotate(bank_acc=F('bank_account__alias_name')) \
             .values('bank_acc') \
-            .annotate(inc_sum=Sum('income'), out_sum=Sum('outlay'))
-        b = a.filter(deal_date=date).annotate(inc_date=Sum('income'), out_date=Sum('outlay'))
-        return a
+            .annotate(inc_sum=Sum('income'),
+                      out_sum=Sum('outlay'))
 
 
 class ProjectCashBookFilterSet(FilterSet):
