@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.db.models import Sum, Count, F, Q
 from rest_framework import generics
 from rest_framework.response import Response
@@ -520,27 +521,23 @@ class ProjectBankAccountDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
 
-class PrCashSummaryFilterSet(FilterSet):
-    date_lte = DateFilter(field_name='deal_date', lookup_expr='lte', label='당일누계')
-
-    class Meta:
-        model = ProjectCashBook
-        fields = ('project', 'date_lte')
-
-
 class PrCashByAccountSummaryList(generics.ListAPIView):
     name = 'pr-cash-by-account-summary'
     serializer_class = PrCashByAccountSummarySerializer
     pagination_class = PageNumberPaginationOneHundred
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-    filter_class = PrCashSummaryFilterSet
+    filter_fields = ('project',)
 
     def get_queryset(self):
-        date_lte = self.request.query_params.get('date_lte')
-        return ProjectCashBook.objects.filter(is_separate=False) \
+        TODAY = datetime.today().strftime('%Y-%m-%d')
+        date = self.request.query_params.get('date_lte')
+        date = date if date else TODAY
+        a = ProjectCashBook.objects.filter(is_separate=False, deal_date__lte=date) \
             .annotate(bank_acc=F('bank_account__alias_name')) \
             .values('bank_acc') \
             .annotate(inc_sum=Sum('income'), out_sum=Sum('outlay'))
+        b = a.filter(deal_date=date).annotate(inc_date=Sum('income'), out_date=Sum('outlay'))
+        return a
 
 
 class ProjectCashBookFilterSet(FilterSet):
