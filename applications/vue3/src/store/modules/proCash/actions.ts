@@ -6,6 +6,7 @@ import {
   FETCH_FORM_ACC_D1_LIST,
   FETCH_FORM_ACC_D2_LIST,
   FETCH_P_BANK_ACCOUNT_LIST,
+  FETCH_P_DATE_CASHBOOK,
   FETCH_P_CASHBOOK_LIST,
   FETCH_P_IMPREST_LIST,
   FETCH_BALANCE_BY_ACC_LIST,
@@ -111,6 +112,15 @@ const actions = {
       .get(url)
       .then(res => {
         commit(FETCH_BALANCE_BY_ACC_LIST, res.data)
+      })
+      .catch(err => console.log(err.response.data))
+  },
+
+  fetchDateCashBookList: ({ commit }: any, date: string) => {
+    api
+      .get(`/pr-date-cashbook/?date=${date}`)
+      .then(res => {
+        commit(FETCH_P_DATE_CASHBOOK, res.data)
       })
       .catch(err => console.log(err.response.data))
   },

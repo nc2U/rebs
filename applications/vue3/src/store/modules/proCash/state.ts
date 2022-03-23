@@ -71,6 +71,7 @@ export interface ProjectCashState {
   formAccD2List: ProjectAccountD2[]
   proBankAccountList: ProjectBankAccount[]
   balanceByAccList: BalanceByAccount[]
+  proDateCashBook: ProjectCashBook[]
   proCashBookList: ProjectCashBook[]
   proCashesCount: number
   proImprestList: ProjectCashBook[]
@@ -85,6 +86,7 @@ const state = {
   formAccD2List: [],
   proBankAccountList: [],
   balanceByAccList: [],
+  proDateCashBook: [],
   proCashBookList: [],
   proCashesCount: 0,
   proImprestList: [],

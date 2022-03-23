@@ -5,6 +5,7 @@ import {
   FETCH_FORM_ACC_D1_LIST,
   FETCH_FORM_ACC_D2_LIST,
   FETCH_P_BANK_ACCOUNT_LIST,
+  FETCH_P_DATE_CASHBOOK,
   FETCH_P_CASHBOOK_LIST,
   FETCH_P_IMPREST_LIST,
   FETCH_BALANCE_BY_ACC_LIST,
@@ -32,6 +33,9 @@ const mutations = {
 
   [FETCH_BALANCE_BY_ACC_LIST]: (state: ProjectCashState, payload: any) =>
     (state.balanceByAccList = payload.results),
+
+  [FETCH_P_DATE_CASHBOOK]: (state: ProjectCashState, payload: any) =>
+    (state.proDateCashBook = payload.results),
 
   [FETCH_P_CASHBOOK_LIST]: (state: ProjectCashState, payload: any) => {
     state.proCashBookList = payload.results
