@@ -111,7 +111,7 @@ const actions = {
   fetchBalanceByAccList: ({ commit }: any, payload: any) => {
     const { project, date } = payload
     let url = `/pcash-by-acc/?project=${project}`
-    if (date) url += `&date_lte=${date}`
+    if (date) url += `&date=${date}`
     api
       .get(url)
       .then(res => {
@@ -140,9 +140,12 @@ const actions = {
       .catch(err => console.log(err.response.data))
   },
 
-  fetchExecAmountList: ({ commit }: any, pk: number) => {
+  fetchExecAmountList: ({ commit }: any, payload: any) => {
+    const { project, date } = payload
+    let url = `/budget/?project=${project}`
+    if (date) url += `&date=${date}`
     api
-      .get(`/exec-amount/?project=${pk}`)
+      .get(url)
       .then(res => {
         commit(FETCH_EXEC_AMOUNT_LIST, res.data)
       })

@@ -397,9 +397,11 @@ class ExecAmountToBudgetList(generics.ListAPIView):
 
     def get_queryset(self):
         TODAY = datetime.today().strftime('%Y-%m-%d')
-        date_lte = self.request.query_params.get('date_lte')
-        date = date_lte if date_lte else TODAY
-        month_first = datetime(datetime.strptime(date, '%Y-%m-%d').year, datetime.strptime(date, '%Y-%m-%d').month, 1)
+        date = self.request.query_params.get('date')
+        date = date if date else TODAY
+        month_first = datetime(datetime.strptime(date, '%Y-%m-%d').year,
+                               datetime.strptime(date, '%Y-%m-%d').month,
+                               1).strftime('%Y-%m-%d')
 
         queryset = ProjectCashBook.objects.all() \
             .order_by('project_account_d2') \
@@ -564,8 +566,8 @@ class PrCashByAccountSummaryList(generics.ListAPIView):
 
     def get_queryset(self):
         TODAY = datetime.today().strftime('%Y-%m-%d')
-        date_lte = self.request.query_params.get('date_lte')
-        date = date_lte if date_lte else TODAY
+        date = self.request.query_params.get('date')
+        date = date if date else TODAY
 
         queryset = ProjectCashBook.objects.all() \
             .order_by('bank_account') \
@@ -601,7 +603,7 @@ class ProjectCashBookFilterSet(FilterSet):
 
 class ProjectCashBookList(generics.ListCreateAPIView):
     name = 'project_cashbook-list'
-    queryset = ProjectCashBook.objects.filter(Q(is_imprest=False) | Q(project_account_d2=62, income__isnull=True))
+    queryset = ProjectCashBook.objects.filter(Q(is_imprest=False) | Q(project_account_d2=63, income__isnull=True))
     serializer_class = ProjectCashBookSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
     pagination_class = PageNumberPaginationFifteen
@@ -619,7 +621,7 @@ class ProjectDateCashBookList(ProjectCashBookList):
 
 class ProjectImprestList(ProjectCashBookList):
     name = 'project-imprest-list'
-    queryset = ProjectCashBook.objects.filter(is_imprest=True).exclude(project_account_d2=62, income__isnull=True)
+    queryset = ProjectCashBook.objects.filter(is_imprest=True).exclude(project_account_d2=63, income__isnull=True)
 
 
 class ProjectCashBookDetail(generics.RetrieveUpdateDestroyAPIView):
