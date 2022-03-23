@@ -43,10 +43,12 @@
         </CTableDataCell>
         <CTableDataCell class="text-left">{{ bal.bank_acc }}</CTableDataCell>
         <CTableDataCell>
-          {{ numFormat(bal.inc_sum - bal.out_sum) }}
+          {{
+            numFormat(bal.inc_sum - bal.out_sum - (bal.date_inc - bal.date_out))
+          }}
         </CTableDataCell>
-        <CTableDataCell>-</CTableDataCell>
-        <CTableDataCell>-</CTableDataCell>
+        <CTableDataCell>{{ numFormat(bal.date_inc) }}</CTableDataCell>
+        <CTableDataCell>{{ numFormat(bal.date_out) }}</CTableDataCell>
         <CTableDataCell>
           {{ numFormat(bal.inc_sum - bal.out_sum) }}
         </CTableDataCell>
@@ -56,10 +58,10 @@
         <CTableHeaderCell colspan="2" class="text-center">
           현금성 자산 계
         </CTableHeaderCell>
-        <CTableHeaderCell>9,282,316,408</CTableHeaderCell>
-        <CTableHeaderCell>-</CTableHeaderCell>
-        <CTableHeaderCell>-</CTableHeaderCell>
-        <CTableHeaderCell>{{ numFormat(dateTotal) }}</CTableHeaderCell>
+        <CTableHeaderCell>{{ numFormat(preBalance) }}</CTableHeaderCell>
+        <CTableHeaderCell>{{ numFormat(dateIncSum) }}</CTableHeaderCell>
+        <CTableHeaderCell>{{ numFormat(dateOutSum) }}</CTableHeaderCell>
+        <CTableHeaderCell>{{ numFormat(dateBalance) }}</CTableHeaderCell>
       </CTableRow>
     </CTableBody>
   </CTable>
@@ -73,28 +75,38 @@ export default defineComponent({
   name: 'StatusByAccount',
   components: {},
   props: { date: String },
-  setup() {
-    return {}
-  },
   data() {
     return {
-      sample: '',
+      preBalance: 0,
+      dateIncSum: 0,
+      dateOutSum: 0,
+      dateBalance: 0,
     }
   },
   computed: {
-    dateTotal() {
-      const incTotal = this.balanceByAccList
-        .filter((i: any) => i.inc_sum !== 0)
-        .map((i: any) => i.inc_sum)
-      // .reduce((x: number, y: number) => x + y)
-      const outTotal = this.balanceByAccList
-        .filter((o: any) => o.out_sum !== 0)
-        .map((o: any) => o.out_sum)
-      // .reduce((x: number, y: number) => x + y)
-      return 0
-    },
     ...mapState('proCash', ['balanceByAccList']),
   },
-  methods: {},
+  watch: {
+    balanceByAccList(val: any) {
+      const dateIncSum = val
+        .map((i: any) => i.date_inc)
+        .reduce((x: number, y: number) => x + y)
+      const dateOutSum = val
+        .map((o: any) => o.date_out)
+        .reduce((x: number, y: number) => x + y)
+      const dateIncTotal = val
+        .filter((i: any) => i.inc_sum !== null)
+        .map((i: any) => i.inc_sum)
+        .reduce((x: number, y: number) => x + y)
+      const dateOutTotal = val
+        .filter((o: any) => o.out_sum !== null)
+        .map((o: any) => o.out_sum)
+        .reduce((x: number, y: number) => x + y)
+      this.dateIncSum = dateIncSum
+      this.dateOutSum = dateOutSum
+      this.dateBalance = dateIncTotal - dateOutTotal
+      this.preBalance = dateIncTotal - dateOutTotal - (dateIncSum - dateOutSum)
+    },
+  },
 })
 </script>
