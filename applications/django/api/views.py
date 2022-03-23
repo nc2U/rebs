@@ -384,6 +384,7 @@ class ProjectBudgetList(generics.ListCreateAPIView):
     serializer_class = ProjectBudgetSerializer
     pagination_class = PageNumberPaginationFifty
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    filter_fields = ('project',)
 
 
 class ProjectBudgetDetail(generics.ListCreateAPIView):

@@ -229,7 +229,7 @@ class HouseUnitSerializer(serializers.ModelSerializer):
 class ProjectBudgetSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectBudget
-        fields = ('pk', 'project', 'account_d1', 'account_d2', 'budget')
+        fields = ('pk', 'account_d1', 'account_d2', 'budget')
 
 
 class SiteSerializer(serializers.ModelSerializer):
