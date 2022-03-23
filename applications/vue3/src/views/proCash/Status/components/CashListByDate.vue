@@ -144,6 +144,9 @@ export default defineComponent({
       dateOutTotal: 0,
     }
   },
+  created(this: any) {
+    this.setData()
+  },
   computed: {
     ...mapState('proCash', [
       'allAccD1List',
@@ -153,15 +156,8 @@ export default defineComponent({
     ]),
   },
   watch: {
-    proDateCashBook(this: any, val: any) {
-      this.dateIncSet = val.filter((i: any) => i.income > 0 && !i.outlay)
-      this.dateOutSet = val.filter((o: any) => o.outlay > 0 && !o.income)
-      this.dateIncTotal = this.dateIncSet
-        .map((i: any) => i.income)
-        .reduce((x: number, y: number) => x + y)
-      this.dateOutTotal = this.dateOutSet
-        .map((o: any) => o.outlay)
-        .reduce((x: number, y: number) => x + y)
+    proDateCashBook() {
+      this.setData()
     },
   },
   methods: {
@@ -179,6 +175,20 @@ export default defineComponent({
       return this.proBankAccountList
         .filter((b: any) => b.pk === num)
         .map((b: any) => b.alias_name)[0]
+    },
+    setData(this: any) {
+      this.dateIncSet = this.proDateCashBook.filter(
+        (i: any) => i.income > 0 && !i.outlay,
+      )
+      this.dateOutSet = this.proDateCashBook.filter(
+        (o: any) => o.outlay > 0 && !o.income,
+      )
+      this.dateIncTotal = this.dateIncSet
+        .map((i: any) => i.income)
+        .reduce((x: number, y: number) => x + y)
+      this.dateOutTotal = this.dateOutSet
+        .map((o: any) => o.outlay)
+        .reduce((x: number, y: number) => x + y)
     },
   },
 })

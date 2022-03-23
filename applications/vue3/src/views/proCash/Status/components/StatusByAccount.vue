@@ -83,41 +83,56 @@ export default defineComponent({
       dateBalance: 0,
     }
   },
+  created() {
+    const { dateIncSum, dateOutSum, dateIncTotal, dateOutTotal } =
+      this.getSumTotal()
+    this.dateIncSum = dateIncSum
+    this.dateOutSum = dateOutSum
+    this.dateBalance = dateIncTotal - dateOutTotal
+    this.preBalance = dateIncTotal - dateOutTotal - (dateIncSum - dateOutSum)
+  },
   computed: {
     ...mapState('proCash', ['balanceByAccList']),
   },
   watch: {
-    balanceByAccList(val: any) {
+    balanceByAccList() {
+      const { dateIncSum, dateOutSum, dateIncTotal, dateOutTotal } =
+        this.getSumTotal()
+      this.dateIncSum = dateIncSum
+      this.dateOutSum = dateOutSum
+      this.dateBalance = dateIncTotal - dateOutTotal
+      this.preBalance = dateIncTotal - dateOutTotal - (dateIncSum - dateOutSum)
+    },
+  },
+  methods: {
+    getSumTotal() {
       const dateIncSum =
-        val.length !== 0
-          ? val
+        this.balanceByAccList.length !== 0
+          ? this.balanceByAccList
               .map((i: any) => i.date_inc)
               .reduce((x: number, y: number) => x + y)
           : 0
       const dateOutSum =
-        val.length !== 0
-          ? val
+        this.balanceByAccList.length !== 0
+          ? this.balanceByAccList
               .map((o: any) => o.date_out)
               .reduce((x: number, y: number) => x + y)
           : 0
       const dateIncTotal =
-        val.length !== 0
-          ? val
+        this.balanceByAccList.length !== 0
+          ? this.balanceByAccList
               .filter((i: any) => i.inc_sum !== null)
               .map((i: any) => i.inc_sum)
               .reduce((x: number, y: number) => x + y)
           : 0
       const dateOutTotal =
-        val.length !== 0
-          ? val
+        this.balanceByAccList.length !== 0
+          ? this.balanceByAccList
               .filter((o: any) => o.out_sum !== null)
               .map((o: any) => o.out_sum)
               .reduce((x: number, y: number) => x + y)
           : 0
-      this.dateIncSum = dateIncSum
-      this.dateOutSum = dateOutSum
-      this.dateBalance = dateIncTotal - dateOutTotal
-      this.preBalance = dateIncTotal - dateOutTotal - (dateIncSum - dateOutSum)
+      return { dateIncSum, dateOutSum, dateIncTotal, dateOutTotal }
     },
   },
 })
