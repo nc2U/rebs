@@ -248,13 +248,13 @@ class ProjectBudgetSerializer(serializers.ModelSerializer):
 
 
 class ExecAmountToBudget(serializers.ModelSerializer):
-    d2 = serializers.CharField()
+    acc_d2 = serializers.IntegerField()
     all_sum = serializers.IntegerField()
     month_sum = serializers.IntegerField()
 
     class Meta:
         model = ProjectCashBook
-        fields = ('d2', 'all_sum', 'month_sum')
+        fields = ('acc_d2', 'all_sum', 'month_sum')
 
 
 class SiteSerializer(serializers.ModelSerializer):
