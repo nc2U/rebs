@@ -95,10 +95,10 @@
           합계
         </CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(totalBudget) }}</CTableHeaderCell>
-        <CTableHeaderCell>-</CTableHeaderCell>
-        <CTableHeaderCell>-</CTableHeaderCell>
-        <CTableHeaderCell>-</CTableHeaderCell>
-        <CTableHeaderCell>-</CTableHeaderCell>
+        <CTableHeaderCell>{{ numFormat(preExecAmt) }}</CTableHeaderCell>
+        <CTableHeaderCell>{{ numFormat(monthExecAmt) }}</CTableHeaderCell>
+        <CTableHeaderCell>{{ numFormat(totalExecAmt) }}</CTableHeaderCell>
+        <CTableHeaderCell>{{ numFormat(availableBudget) }}</CTableHeaderCell>
       </CTableRow>
     </CTableBody>
   </CTable>
@@ -113,25 +113,24 @@ export default defineComponent({
   props: { date: String },
   data() {
     return {
-      totalBudget: 1,
+      totalBudget: 0,
+      preExecAmt: 0,
+      monthExecAmt: 0,
+      totalExecAmt: 0,
+      availableBudget: 0,
     }
   },
-  // created() {
-  //   alert('a')
-  // },
+  created() {
+    this.getSumTotal()
+  },
   computed: {
     ...mapState('contract', ['orderGroupList']),
     ...mapState('project', ['unitTypeList']),
     ...mapState('proCash', ['proBudgetList', 'execAmountList']),
   },
   watch: {
-    proBudgetList(val: any) {
-      console.log(val)
-      this.totalBudget = val.length // !== 0
-      // ? 100 // val
-      // : // .map((b: any) => b.budget)
-      // .reduce((x: number, y: number) => x + y)
-      // 10
+    proBudgetList() {
+      this.getSumTotal()
     },
   },
   methods: {
@@ -161,6 +160,23 @@ export default defineComponent({
     },
     getEAMonth(d2: number) {
       return this.getExecAmount(d2).map((e: any) => e.month_sum)[0]
+    },
+    getSumTotal() {
+      const totalBudget = this.proBudgetList
+        .map((b: any) => b.budget)
+        .reduce((res: number, val: number) => res + val, 0)
+      const monthExecAmt = this.execAmountList
+        .map((a: any) => a.month_sum)
+        .reduce((r: number, v: number) => r + v, 0)
+      const totalExecAmt = this.execAmountList
+        .map((a: any) => a.all_sum)
+        .reduce((r: number, v: number) => r + v, 0)
+
+      this.totalBudget = totalBudget
+      this.preExecAmt = totalExecAmt - monthExecAmt
+      this.monthExecAmt = monthExecAmt
+      this.totalExecAmt = totalExecAmt
+      this.availableBudget = totalBudget - totalExecAmt
     },
   },
 })
