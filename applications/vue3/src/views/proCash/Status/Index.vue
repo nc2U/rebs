@@ -65,7 +65,7 @@ export default defineComponent({
       project: this.initProjId,
       date: this.dateFormat(this.date),
     })
-    this.fetchExecAmountList(this.initProjId)
+    this.fetchExecAmountList({ project: this.initProjId })
   },
   computed: {
     ...mapState('project', ['project']),
@@ -83,7 +83,7 @@ export default defineComponent({
           project: target,
           date: this.dateFormat(this.date),
         })
-        this.fetchExecAmountList(target)
+        this.fetchExecAmountList({ project: target })
       } else {
         this.FETCH_ORDER_GROUP_LIST([])
         this.FETCH_TYPE_LIST([])
@@ -104,6 +104,7 @@ export default defineComponent({
       const project = this.project.pk
       this.fetchBalanceByAccList({ project, date: this.dateFormat(date) })
       this.fetchDateCashBookList({ project, date: this.dateFormat(date) })
+      this.fetchExecAmountList({ project, date: this.dateFormat(date) })
     },
     ...mapActions('proCash', [
       'fetchProAllAccD1List',
