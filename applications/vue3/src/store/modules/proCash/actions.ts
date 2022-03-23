@@ -57,8 +57,12 @@ const actions = {
 
   fetchProFormAccD2List: ({ commit }: any, payload?: any) => {
     const d1 = payload && payload.d1 ? payload.d1 : ''
-    const sort = payload && payload.sort ? payload.sort : ''
-    const url = `/project-account-depth2/?d1=${d1}&d1__projectaccountsort=${sort}`
+    let url = `/project-account-depth2/?d1=${d1}`
+    const sort =
+      payload && payload.sort
+        ? `&d1__projectaccountsort=${payload.sort}`
+        : '&d1__projectaccountsort=1&d1__projectaccountsort=2&d1__projectaccountsort=3'
+    url = `${url}${sort}`
     api
       .get(url)
       .then(res => {
