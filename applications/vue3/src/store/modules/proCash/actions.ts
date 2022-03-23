@@ -122,7 +122,7 @@ const actions = {
 
   fetchDateCashBookList: ({ commit }: any, payload: any) => {
     const { project, date } = payload
-    const url = `/pr-date-cashbook/?project=${project}&deal_date=${date}`
+    const url = `/pr-date-cashbook/?project=${project}&date=${date}`
     api
       .get(url)
       .then(res => {
@@ -142,7 +142,7 @@ const actions = {
 
   fetchExecAmountList: ({ commit }: any, payload: any) => {
     const { project, date } = payload
-    let url = `/budget/?project=${project}`
+    let url = `/exec-amount/?project=${project}`
     if (date) url += `&date=${date}`
     api
       .get(url)
