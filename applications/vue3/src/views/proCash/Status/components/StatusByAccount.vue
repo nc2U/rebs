@@ -88,20 +88,32 @@ export default defineComponent({
   },
   watch: {
     balanceByAccList(val: any) {
-      const dateIncSum = val
-        .map((i: any) => i.date_inc)
-        .reduce((x: number, y: number) => x + y)
-      const dateOutSum = val
-        .map((o: any) => o.date_out)
-        .reduce((x: number, y: number) => x + y)
-      const dateIncTotal = val
-        .filter((i: any) => i.inc_sum !== null)
-        .map((i: any) => i.inc_sum)
-        .reduce((x: number, y: number) => x + y)
-      const dateOutTotal = val
-        .filter((o: any) => o.out_sum !== null)
-        .map((o: any) => o.out_sum)
-        .reduce((x: number, y: number) => x + y)
+      const dateIncSum =
+        val.length !== 0
+          ? val
+              .map((i: any) => i.date_inc)
+              .reduce((x: number, y: number) => x + y)
+          : 0
+      const dateOutSum =
+        val.length !== 0
+          ? val
+              .map((o: any) => o.date_out)
+              .reduce((x: number, y: number) => x + y)
+          : 0
+      const dateIncTotal =
+        val.length !== 0
+          ? val
+              .filter((i: any) => i.inc_sum !== null)
+              .map((i: any) => i.inc_sum)
+              .reduce((x: number, y: number) => x + y)
+          : 0
+      const dateOutTotal =
+        val.length !== 0
+          ? val
+              .filter((o: any) => o.out_sum !== null)
+              .map((o: any) => o.out_sum)
+              .reduce((x: number, y: number) => x + y)
+          : 0
       this.dateIncSum = dateIncSum
       this.dateOutSum = dateOutSum
       this.dateBalance = dateIncTotal - dateOutTotal
