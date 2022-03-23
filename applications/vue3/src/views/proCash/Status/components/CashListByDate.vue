@@ -185,10 +185,10 @@ export default defineComponent({
       )
       this.dateIncTotal = this.dateIncSet
         .map((i: any) => i.income)
-        .reduce((x: number, y: number) => x + y)
+        .reduce((x: number, y: number) => x + y, 0)
       this.dateOutTotal = this.dateOutSet
         .map((o: any) => o.outlay)
-        .reduce((x: number, y: number) => x + y)
+        .reduce((x: number, y: number) => x + y, 0)
     },
   },
 })
