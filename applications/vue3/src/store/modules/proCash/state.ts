@@ -38,6 +38,14 @@ interface BalanceByAccount {
   out_sum: number | null
 }
 
+interface ProjectBudget {
+  pk: number
+  project: number
+  account_d1: number
+  account_d2: number
+  budget: number
+}
+
 export interface ProjectCashBook {
   pk: number
   project: number
@@ -72,6 +80,7 @@ export interface ProjectCashState {
   proBankAccountList: ProjectBankAccount[]
   balanceByAccList: BalanceByAccount[]
   proDateCashBook: ProjectCashBook[]
+  proBudgetList: ProjectBudget[]
   proCashBookList: ProjectCashBook[]
   proCashesCount: number
   proImprestList: ProjectCashBook[]
@@ -87,6 +96,7 @@ const state = {
   proBankAccountList: [],
   balanceByAccList: [],
   proDateCashBook: [],
+  proBudgetList: [],
   proCashBookList: [],
   proCashesCount: 0,
   proImprestList: [],

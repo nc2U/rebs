@@ -10,6 +10,7 @@ import {
   FETCH_P_CASHBOOK_LIST,
   FETCH_P_IMPREST_LIST,
   FETCH_BALANCE_BY_ACC_LIST,
+  FETCH_P_BUDGET_LIST,
 } from '@/store/modules/proCash/mutations-types'
 import { message } from '@/utils/helper'
 
@@ -125,6 +126,15 @@ const actions = {
       .get(url)
       .then(res => {
         commit(FETCH_P_DATE_CASHBOOK, res.data)
+      })
+      .catch(err => console.log(err.response.data))
+  },
+
+  fetchProjectBudgetList: ({ commit }: any, pk: number) => {
+    api
+      .get(`/budget/?project=${pk}`)
+      .then(res => {
+        commit(FETCH_P_BUDGET_LIST, res.data)
       })
       .catch(err => console.log(err.response.data))
   },
