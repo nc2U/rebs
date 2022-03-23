@@ -10,6 +10,7 @@ import {
   FETCH_P_IMPREST_LIST,
   FETCH_BALANCE_BY_ACC_LIST,
   FETCH_P_BUDGET_LIST,
+  FETCH_EXEC_AMOUNT_LIST,
 } from '@/store/modules/proCash/mutations-types'
 import { ProjectCashState } from '@/store/modules/proCash/state'
 
@@ -40,6 +41,9 @@ const mutations = {
 
   [FETCH_P_BUDGET_LIST]: (state: ProjectCashState, payload: any) =>
     (state.proBudgetList = payload.results),
+
+  [FETCH_EXEC_AMOUNT_LIST]: (state: ProjectCashState, payload: any) =>
+    (state.execAmountList = payload.results),
 
   [FETCH_P_CASHBOOK_LIST]: (state: ProjectCashState, payload: any) => {
     state.proCashBookList = payload.results
