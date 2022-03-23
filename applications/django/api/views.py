@@ -53,7 +53,7 @@ class ApiIndex(generics.GenericAPIView):
             'key-unit': reverse(api + KeyUnitList.name, request=request),
             'bldg-unit': reverse(api + BuildingUnitList.name, request=request),
             'house-unit': reverse(api + HouseUnitList.name, request=request),
-            # 'budget': reverse(api + ProjectBudgetList.name, request=request),
+            'budget': reverse(api + ProjectBudgetList.name, request=request),
             # 'site': reverse(api + SiteList.name, request=request),
             # 'site-owner': reverse(api + SiteOwnerList.name, request=request),
             # 'site-relation': reverse(api + RelationList.name, request=request),
@@ -378,18 +378,19 @@ class HouseUnitDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
 
-# class ProjectBudgetList(generics.ListCreateAPIView):
-#     name = 'projectbudget-list'
-#     queryset = ProjectBudget.objects.all()
-#     serializer_class = ProjectBudgetSerializer
-#     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-#
-#
-# class ProjectBudgetDetail(generics.ListCreateAPIView):
-#     name = 'projectbudget-detail'
-#     queryset = ProjectBudget.objects.all()
-#     serializer_class = ProjectBudgetSerializer
-#     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+class ProjectBudgetList(generics.ListCreateAPIView):
+    name = 'projectbudget-list'
+    queryset = ProjectBudget.objects.all()
+    serializer_class = ProjectBudgetSerializer
+    pagination_class = PageNumberPaginationFifty
+    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+
+
+class ProjectBudgetDetail(generics.ListCreateAPIView):
+    name = 'projectbudget-detail'
+    queryset = ProjectBudget.objects.all()
+    serializer_class = ProjectBudgetSerializer
+    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
 
 # class SiteList(generics.ListCreateAPIView):

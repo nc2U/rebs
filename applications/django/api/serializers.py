@@ -227,10 +227,6 @@ class HouseUnitSerializer(serializers.ModelSerializer):
 
 
 class ProjectBudgetSerializer(serializers.ModelSerializer):
-    project = serializers.SlugRelatedField(queryset=Project.objects.all(), slug_field='name')
-    account_d1 = serializers.SlugRelatedField(queryset=ProjectAccountD1.objects.all(), slug_field='name')
-    account_d2 = serializers.SlugRelatedField(queryset=ProjectAccountD2.objects.all(), slug_field='name')
-
     class Meta:
         model = ProjectBudget
         fields = ('pk', 'project', 'account_d1', 'account_d2', 'budget')
