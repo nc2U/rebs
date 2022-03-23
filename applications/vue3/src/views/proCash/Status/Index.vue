@@ -32,7 +32,7 @@ import TabSelect from '@/views/proCash/Status/components/TabSelect.vue'
 import StatusByAccount from '@/views/proCash/Status/components/StatusByAccount.vue'
 import CashListByDate from '@/views/proCash/Status/components/CashListByDate.vue'
 import SummaryForBudget from '@/views/proCash/Status/components/SummaryForBudget.vue'
-import { mapActions, mapMutations, mapState } from 'vuex'
+import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'ProjectCashStatus',
@@ -52,18 +52,33 @@ export default defineComponent({
       date: new Date(),
     }
   },
-  created() {
-    this.fetchBalanceByAccList()
+  created(this: any) {
+    this.fetchProAllAccD1List()
+    this.fetchProAllAccD2List()
+    this.fetchProBankAccList(this.initProjId)
+    this.fetchBalanceByAccList({ project: this.initProjId })
+    this.fetchDateCashBookList({
+      project: this.initProjId,
+      date: this.dateFormat(this.date),
+    })
   },
   computed: {
     ...mapState('project', ['project']),
+    ...mapGetters('accounts', ['initProjId']),
   },
   methods: {
     onSelectAdd(this: any, target: any) {
       if (target !== '') {
-        this.fetchBalanceByAccList()
+        this.fetchProBankAccList(target)
+        this.fetchBalanceByAccList({ project: target })
+        this.fetchDateCashBookList({
+          project: target,
+          date: this.dateFormat(this.date),
+        })
       } else {
+        this.FETCH_P_BANK_ACCOUNT_LIST([])
         this.FETCH_BALANCE_BY_ACC_LIST([])
+        this.FETCH_P_DATE_CASHBOOK([])
       }
     },
     showTab(num: number) {
@@ -73,10 +88,22 @@ export default defineComponent({
     },
     setDate(this: any, date: string) {
       this.date = date
-      this.fetchBalanceByAccList(date)
+      const project = this.project.pk
+      this.fetchBalanceByAccList({ project, date: this.dateFormat(date) })
+      this.fetchDateCashBookList({ project, date: this.dateFormat(date) })
     },
-    ...mapActions('proCash', ['fetchBalanceByAccList']),
-    ...mapMutations('proCash', ['FETCH_BALANCE_BY_ACC_LIST']),
+    ...mapActions('proCash', [
+      'fetchProAllAccD1List',
+      'fetchProAllAccD2List',
+      'fetchProBankAccList',
+      'fetchBalanceByAccList',
+      'fetchDateCashBookList',
+    ]),
+    ...mapMutations('proCash', [
+      'FETCH_P_BANK_ACCOUNT_LIST',
+      'FETCH_BALANCE_BY_ACC_LIST',
+      'FETCH_P_DATE_CASHBOOK',
+    ]),
   },
 })
 </script>
