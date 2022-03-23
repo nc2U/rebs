@@ -33,7 +33,6 @@ import StatusByAccount from '@/views/proCash/Status/components/StatusByAccount.v
 import CashListByDate from '@/views/proCash/Status/components/CashListByDate.vue'
 import SummaryForBudget from '@/views/proCash/Status/components/SummaryForBudget.vue'
 import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
-import { FETCH_EXEC_AMOUNT_LIST } from '@/store/modules/proCash/mutations-types'
 
 export default defineComponent({
   name: 'ProjectCashStatus',
@@ -56,15 +55,13 @@ export default defineComponent({
   created(this: any) {
     this.fetchProAllAccD1List()
     this.fetchProAllAccD2List()
-    this.fetchOrderGroupList(this.initProjId)
-    this.fetchTypeList(this.initProjId)
     this.fetchProBankAccList(this.initProjId)
-    this.fetchProjectBudgetList(this.initProjId)
     this.fetchBalanceByAccList({ project: this.initProjId })
     this.fetchDateCashBookList({
       project: this.initProjId,
       date: this.dateFormat(this.date),
     })
+    this.fetchProjectBudgetList(this.initProjId)
     this.fetchExecAmountList({ project: this.initProjId })
   },
   computed: {
@@ -74,19 +71,15 @@ export default defineComponent({
   methods: {
     onSelectAdd(this: any, target: any) {
       if (target !== '') {
-        this.fetchOrderGroupList(target)
-        this.fetchTypeList(target)
         this.fetchProBankAccList(target)
-        this.fetchProjectBudgetList(target)
         this.fetchBalanceByAccList({ project: target })
         this.fetchDateCashBookList({
           project: target,
           date: this.dateFormat(this.date),
         })
+        this.fetchProjectBudgetList(target)
         this.fetchExecAmountList({ project: target })
       } else {
-        this.FETCH_ORDER_GROUP_LIST([])
-        this.FETCH_TYPE_LIST([])
         this.FETCH_P_BANK_ACCOUNT_LIST([])
         this.FETCH_BALANCE_BY_ACC_LIST([])
         this.FETCH_P_DATE_CASHBOOK([])
@@ -104,6 +97,7 @@ export default defineComponent({
       const project = this.project.pk
       this.fetchBalanceByAccList({ project, date: this.dateFormat(date) })
       this.fetchDateCashBookList({ project, date: this.dateFormat(date) })
+      this.fetchProjectBudgetList(project)
       this.fetchExecAmountList({ project, date: this.dateFormat(date) })
     },
     ...mapActions('proCash', [
@@ -111,12 +105,10 @@ export default defineComponent({
       'fetchProAllAccD2List',
       'fetchProBankAccList',
       'fetchBalanceByAccList',
-      'fetchProjectBudgetList',
       'fetchDateCashBookList',
+      'fetchProjectBudgetList',
       'fetchExecAmountList',
     ]),
-    ...mapActions('contract', ['fetchOrderGroupList']),
-    ...mapActions('project', ['fetchTypeList']),
     ...mapMutations('proCash', [
       'FETCH_P_BANK_ACCOUNT_LIST',
       'FETCH_BALANCE_BY_ACC_LIST',
@@ -124,8 +116,6 @@ export default defineComponent({
       'FETCH_P_BUDGET_LIST',
       'FETCH_EXEC_AMOUNT_LIST',
     ]),
-    ...mapMutations('contract', ['FETCH_ORDER_GROUP_LIST']),
-    ...mapMutations('project', ['FETCH_TYPE_LIST']),
   },
 })
 </script>

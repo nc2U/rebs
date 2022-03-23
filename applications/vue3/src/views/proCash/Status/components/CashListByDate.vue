@@ -96,7 +96,7 @@
       <CTableRow class="text-center" v-for="out in dateOutSet" :key="out.pk">
         <CTableDataCell>{{ getD1Text(out.project_account_d1) }}</CTableDataCell>
         <CTableDataCell>{{ getD2Text(out.project_account_d2) }}</CTableDataCell>
-        <CTableDataCell class="text-right" color="success">
+        <CTableDataCell class="text-right" color="danger">
           {{ numFormat(out.outlay) }}
         </CTableDataCell>
         <CTableDataCell>{{ getBankAcc(out.bank_account) }}</CTableDataCell>
@@ -153,9 +153,15 @@ export default defineComponent({
     ]),
   },
   watch: {
-    proDateCashBook(val: any) {
+    proDateCashBook(this: any, val: any) {
       this.dateIncSet = val.filter((i: any) => i.income > 0 && !i.outlay)
       this.dateOutSet = val.filter((o: any) => o.outlay > 0 && !o.income)
+      this.dateIncTotal = this.dateIncSet
+        .map((i: any) => i.income)
+        .reduce((x: number, y: number) => x + y)
+      this.dateOutTotal = this.dateOutSet
+        .map((o: any) => o.outlay)
+        .reduce((x: number, y: number) => x + y)
     },
   },
   methods: {

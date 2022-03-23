@@ -116,6 +116,9 @@ export default defineComponent({
       totalBudget: 1,
     }
   },
+  // created() {
+  //   alert('a')
+  // },
   computed: {
     ...mapState('contract', ['orderGroupList']),
     ...mapState('project', ['unitTypeList']),
