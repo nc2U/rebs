@@ -106,8 +106,10 @@ const actions = {
       .catch(err => console.log(err.response.data))
   },
 
-  fetchBalanceByAccList: ({ commit }: any, date?: string) => {
-    const url = date ? `/pcash-by-acc/?date_lte=${date}` : `/pcash-by-acc/`
+  fetchBalanceByAccList: ({ commit }: any, payload: any) => {
+    const { project, date } = payload
+    let url = `/pcash-by-acc/?project=${project}`
+    if (date) url += `&date_lte=${date}`
     api
       .get(url)
       .then(res => {
@@ -116,9 +118,11 @@ const actions = {
       .catch(err => console.log(err.response.data))
   },
 
-  fetchDateCashBookList: ({ commit }: any, date: string) => {
+  fetchDateCashBookList: ({ commit }: any, payload: any) => {
+    const { project, date } = payload
+    const url = `/pr-date-cashbook/?project=${project}&deal_date=${date}`
     api
-      .get(`/pr-date-cashbook/?date=${date}`)
+      .get(url)
       .then(res => {
         commit(FETCH_P_DATE_CASHBOOK, res.data)
       })
