@@ -156,8 +156,8 @@ const project_cash = {
       component: 'CNavItem',
       name: '현장자금 현황',
       badge: {
-        color: 'warning',
-        text: 'u.c',
+        color: 'success',
+        text: 'ok',
       },
       to: '/project-cash/status',
     },
