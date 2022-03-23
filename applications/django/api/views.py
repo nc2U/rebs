@@ -1,5 +1,5 @@
 from datetime import datetime
-from django.db.models import Sum, Count, F, Q
+from django.db.models import Sum, Count, F, Q, Case, When
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
@@ -542,7 +542,15 @@ class PrCashByAccountSummaryList(generics.ListAPIView):
         return queryset.annotate(bank_acc=F('bank_account__alias_name')) \
             .values('bank_acc') \
             .annotate(inc_sum=Sum('income'),
-                      out_sum=Sum('outlay'))
+                      out_sum=Sum('outlay'),
+                      date_inc=Sum(Case(
+                          When(deal_date=date, then=F('income')),
+                          default=0
+                      )),
+                      date_out=Sum(Case(
+                          When(deal_date=date, then=F('outlay')),
+                          default=0
+                      )))
 
 
 class ProjectCashBookFilterSet(FilterSet):

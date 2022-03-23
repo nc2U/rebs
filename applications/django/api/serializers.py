@@ -314,12 +314,14 @@ class SeparatedItemsSerializer(serializers.ModelSerializer):
 
 class PrCashByAccountSummarySerializer(serializers.ModelSerializer):
     bank_acc = serializers.CharField()
+    date_inc = serializers.IntegerField()
+    date_out = serializers.IntegerField()
     inc_sum = serializers.IntegerField()
     out_sum = serializers.IntegerField()
 
     class Meta:
         model = ProjectCashBook
-        fields = ('bank_acc', 'inc_sum', 'out_sum')
+        fields = ('bank_acc', 'date_inc', 'date_out', 'inc_sum', 'out_sum')
 
 
 class ProjectCashBookSerializer(serializers.ModelSerializer):
