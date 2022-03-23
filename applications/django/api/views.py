@@ -618,6 +618,12 @@ class ProjectDateCashBookList(ProjectCashBookList):
     name = 'pr-date-cashbook'
     pagination_class = PageNumberPaginationTwoHundred
 
+    def get_queryset(self):
+        TODAY = datetime.today().strftime('%Y-%m-%d')
+        date = self.request.query_params.get('date')
+        date = date if date else TODAY
+        return ProjectCashBook.objects.filter(is_separate=False, deal_date__exact=date)
+
 
 class ProjectImprestList(ProjectCashBookList):
     name = 'project-imprest-list'
