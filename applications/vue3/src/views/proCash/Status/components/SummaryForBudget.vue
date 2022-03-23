@@ -18,7 +18,9 @@
             <CIcon name="cilFolderOpen" />
             사업예산 및 집행현황
           </strong>
-          <small>({{ dateFormat(date) }}) 기준</small>
+          <small class="text-medium-emphasis">
+            ({{ dateFormat(date) }}) 기준
+          </small>
         </CTableDataCell>
         <CTableDataCell class="text-right">(단위: 원)</CTableDataCell>
       </CTableRow>

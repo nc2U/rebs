@@ -15,7 +15,9 @@
             <CIcon name="cilFolderOpen" />
             프로젝트 계좌별 자금현황
           </strong>
-          <small>({{ dateFormat(date) }}) 현재</small>
+          <small class="text-medium-emphasis">
+            ({{ dateFormat(date) }}) 현재
+          </small>
         </CTableDataCell>
         <CTableDataCell class="text-right">(단위: 원)</CTableDataCell>
       </CTableRow>
