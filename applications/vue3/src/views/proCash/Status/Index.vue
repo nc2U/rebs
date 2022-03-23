@@ -33,7 +33,7 @@ import StatusByAccount from '@/views/proCash/Status/components/StatusByAccount.v
 import CashListByDate from '@/views/proCash/Status/components/CashListByDate.vue'
 import SummaryForBudget from '@/views/proCash/Status/components/SummaryForBudget.vue'
 import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
-import { FETCH_P_BUDGET_LIST } from '@/store/modules/proCash/mutations-types'
+import { FETCH_EXEC_AMOUNT_LIST } from '@/store/modules/proCash/mutations-types'
 
 export default defineComponent({
   name: 'ProjectCashStatus',
@@ -65,6 +65,7 @@ export default defineComponent({
       project: this.initProjId,
       date: this.dateFormat(this.date),
     })
+    this.fetchExecAmountList(this.initProjId)
   },
   computed: {
     ...mapState('project', ['project']),
@@ -82,6 +83,7 @@ export default defineComponent({
           project: target,
           date: this.dateFormat(this.date),
         })
+        this.fetchExecAmountList(target)
       } else {
         this.FETCH_ORDER_GROUP_LIST([])
         this.FETCH_TYPE_LIST([])
@@ -89,6 +91,7 @@ export default defineComponent({
         this.FETCH_BALANCE_BY_ACC_LIST([])
         this.FETCH_P_DATE_CASHBOOK([])
         this.FETCH_P_BUDGET_LIST([])
+        this.FETCH_EXEC_AMOUNT_LIST([])
       }
     },
     showTab(num: number) {
@@ -109,6 +112,7 @@ export default defineComponent({
       'fetchBalanceByAccList',
       'fetchProjectBudgetList',
       'fetchDateCashBookList',
+      'fetchExecAmountList',
     ]),
     ...mapActions('contract', ['fetchOrderGroupList']),
     ...mapActions('project', ['fetchTypeList']),
@@ -117,6 +121,7 @@ export default defineComponent({
       'FETCH_BALANCE_BY_ACC_LIST',
       'FETCH_P_DATE_CASHBOOK',
       'FETCH_P_BUDGET_LIST',
+      'FETCH_EXEC_AMOUNT_LIST',
     ]),
     ...mapMutations('contract', ['FETCH_ORDER_GROUP_LIST']),
     ...mapMutations('project', ['FETCH_TYPE_LIST']),

@@ -70,10 +70,24 @@
           {{ bdj.account_d2.name }}
         </CTableDataCell>
         <CTableDataCell>{{ numFormat(bdj.budget) }}</CTableDataCell>
-        <CTableDataCell>{{ numFormat(0) }}</CTableDataCell>
-        <CTableDataCell>{{ numFormat(0) }}</CTableDataCell>
-        <CTableDataCell>{{ numFormat(0) }}</CTableDataCell>
-        <CTableDataCell>{{ numFormat(bdj.budget - 0) }}</CTableDataCell>
+        <CTableDataCell>
+          {{
+            numFormat(
+              getEASum(bdj.account_d2.pk) - getEAMonth(bdj.account_d2.pk),
+            )
+          }}
+        </CTableDataCell>
+        <CTableDataCell>
+          {{ numFormat(getEAMonth(bdj.account_d2.pk) || 0) }}
+        </CTableDataCell>
+        <CTableDataCell>
+          {{ numFormat(getEASum(bdj.account_d2.pk) || 0) }}
+        </CTableDataCell>
+        <CTableDataCell
+          :class="bdj.budget < getEASum(bdj.account_d2.pk) ? 'text-danger' : ''"
+        >
+          {{ numFormat(bdj.budget - (getEASum(bdj.account_d2.pk) || 0)) }}
+        </CTableDataCell>
       </CTableRow>
 
       <CTableRow color="dark" class="text-right">
@@ -105,7 +119,7 @@ export default defineComponent({
   computed: {
     ...mapState('contract', ['orderGroupList']),
     ...mapState('project', ['unitTypeList']),
-    ...mapState('proCash', ['proBudgetList']),
+    ...mapState('proCash', ['proBudgetList', 'execAmountList']),
   },
   watch: {
     proBudgetList(val: any) {
@@ -135,6 +149,15 @@ export default defineComponent({
             .filter((b: any) => b.account_d2.sub_title === sub)
             .map((b: any) => b.pk)
         : []
+    },
+    getExecAmount(d2: number) {
+      return this.execAmountList.filter((e: any) => e.acc_d2 === d2)
+    },
+    getEASum(d2: number) {
+      return this.getExecAmount(d2).map((e: any) => e.all_sum)[0]
+    },
+    getEAMonth(d2: number) {
+      return this.getExecAmount(d2).map((e: any) => e.month_sum)[0]
     },
   },
 })
