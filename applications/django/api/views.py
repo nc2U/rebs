@@ -63,6 +63,7 @@ class ApiIndex(generics.GenericAPIView):
             'cashbook': reverse(api + CashBookList.name, request=request),
             'project-bank': reverse(api + ProjectBankAccountList.name, request=request),
             'prcash-sum-by-account': reverse(api + PrCashByAccountSummaryList.name, request=request),
+            'pr-date-cashbook': reverse(api + ProjectDateCashBookList.name, request=request),
             'project-cashbook': reverse(api + ProjectCashBookList.name, request=request),
             'project-imprest': reverse(api + ProjectImprestList.name, request=request),
             'payment-list': reverse(api + PaymentList.name, request=request),
@@ -561,7 +562,7 @@ class ProjectCashBookFilterSet(FilterSet):
     class Meta:
         model = ProjectCashBook
         fields = ('project', 'sort', 'project_account_d1', 'project_account_d2',
-                  'is_release', 'from_deal_date', 'to_deal_date', 'installment_order',
+                  'is_release', 'from_deal_date', 'to_deal_date', 'deal_date', 'installment_order',
                   'bank_account', 'is_contract_payment', 'contract', 'no_contract')
 
 
@@ -576,6 +577,11 @@ class ProjectCashBookList(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+
+class ProjectDateCashBookList(ProjectCashBookList):
+    name = 'pr-date-cashbook'
+    pagination_class = PageNumberPaginationTwoHundred
 
 
 class ProjectImprestList(ProjectCashBookList):
