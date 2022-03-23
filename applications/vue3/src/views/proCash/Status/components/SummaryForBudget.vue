@@ -18,7 +18,7 @@
             <CIcon name="cilFolderOpen" />
             사업예산 및 집행현황
           </strong>
-          <small>(2022-03-20) 기준</small>
+          <small>({{ dateFormat(date) }}) 기준</small>
         </CTableDataCell>
         <CTableDataCell class="text-right">(단위: 원)</CTableDataCell>
       </CTableRow>
@@ -33,19 +33,43 @@
     </CTableHead>
 
     <CTableBody>
-      <CTableRow class="text-right" v-for="i in 20" :key="i">
+      <CTableRow
+        class="text-right"
+        v-for="(bdj, i) in proBudgetList"
+        :key="bdj.pk"
+      >
         <CTableDataCell
           color="info"
           class="text-center"
-          rowspan="20"
-          v-if="i === 1"
+          :rowspan="proBudgetList.length"
+          v-if="i === 0"
         >
           사업비
         </CTableDataCell>
-        <CTableDataCell class="text-center">건축비</CTableDataCell>
-        <CTableDataCell class="text-left">간접공사비</CTableDataCell>
-        <CTableDataCell class="text-left">각종 인입비</CTableDataCell>
-        <CTableDataCell>911,876,000</CTableDataCell>
+        <CTableDataCell
+          class="text-center"
+          :rowspan="getLength(bdj.account_d1.acc_d2s)"
+          v-if="getFirst(bdj.account_d1.acc_d2s) === bdj.account_d2.pk"
+        >
+          {{ bdj.account_d1.name }}
+        </CTableDataCell>
+        <CTableDataCell
+          class="text-left"
+          :rowspan="getSubTitle(bdj.account_d2.sub_title).length"
+          v-if="
+            bdj.account_d2.sub_title &&
+            bdj.pk === getSubTitle(bdj.account_d2.sub_title)[0]
+          "
+        >
+          {{ bdj.account_d2.sub_title }}
+        </CTableDataCell>
+        <CTableDataCell
+          class="text-left"
+          :colspan="bdj.account_d2.sub_title ? 1 : 2"
+        >
+          {{ bdj.account_d2.name }}
+        </CTableDataCell>
+        <CTableDataCell>{{ numFormat(bdj.budget) }}</CTableDataCell>
         <CTableDataCell>-</CTableDataCell>
         <CTableDataCell>-</CTableDataCell>
         <CTableDataCell>-</CTableDataCell>
@@ -56,7 +80,7 @@
         <CTableHeaderCell colspan="4" class="text-center">
           합계
         </CTableHeaderCell>
-        <CTableHeaderCell>911,876,000</CTableHeaderCell>
+        <CTableHeaderCell>{{ numFormat(totalBudget) }}</CTableHeaderCell>
         <CTableHeaderCell>-</CTableHeaderCell>
         <CTableHeaderCell>-</CTableHeaderCell>
         <CTableHeaderCell>-</CTableHeaderCell>
@@ -68,19 +92,50 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { mapState } from 'vuex'
 
 export default defineComponent({
   name: 'SummaryForBudget',
-  props: {},
-  setup() {
-    return {}
-  },
+  props: { date: String },
   data() {
     return {
-      sample: '',
+      totalBudget: 1,
     }
   },
-  computed: {},
-  methods: {},
+  computed: {
+    ...mapState('contract', ['orderGroupList']),
+    ...mapState('project', ['unitTypeList']),
+    ...mapState('proCash', ['proBudgetList']),
+  },
+  watch: {
+    proBudgetList(val: any) {
+      console.log(val)
+      this.totalBudget = val.length // !== 0
+      // ? 100 // val
+      // : // .map((b: any) => b.budget)
+      // .reduce((x: number, y: number) => x + y)
+      // 10
+    },
+  },
+  methods: {
+    getD2sInter(arr: number[]) {
+      const d2s = this.proBudgetList.map((b: any) => b.account_d2.pk)
+      const d2Inters = arr.filter(x => d2s.includes(x))
+      return d2Inters
+    },
+    getLength(arr: number[]) {
+      return this.getD2sInter(arr).length
+    },
+    getFirst(arr: number[]) {
+      return this.getD2sInter(arr)[0]
+    },
+    getSubTitle(sub: string) {
+      return sub !== ''
+        ? this.proBudgetList
+            .filter((b: any) => b.account_d2.sub_title === sub)
+            .map((b: any) => b.pk)
+        : []
+    },
+  },
 })
 </script>
