@@ -226,10 +226,26 @@ class HouseUnitSerializer(serializers.ModelSerializer):
                   'key_unit', 'bldg_line', 'floor_no', 'is_hold', 'hold_reason')
 
 
+class ProAccoD2InD2Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProjectAccountD2
+        fields = ('name', 'sub_title')
+
+
+class ProAccoD1InBudgetSerializer(serializers.ModelSerializer):
+    acc_d2s = ProAccoD2InD2Serializer(many=True, read_only=True)
+
+    class Meta:
+        model = ProjectAccountD1
+        fields = ('name', 'acc_d2s')
+
+
 class ProjectBudgetSerializer(serializers.ModelSerializer):
+    account_d1 = ProAccoD1InBudgetSerializer()
+
     class Meta:
         model = ProjectBudget
-        fields = ('pk', 'account_d1', 'account_d2', 'budget')
+        fields = ('pk', 'account_d1', 'budget')
 
 
 class SiteSerializer(serializers.ModelSerializer):
