@@ -247,6 +247,16 @@ class ProjectBudgetSerializer(serializers.ModelSerializer):
         fields = ('pk', 'account_d1', 'account_d2', 'budget')
 
 
+class ExecAmountToBudget(serializers.ModelSerializer):
+    d2 = serializers.CharField()
+    all_sum = serializers.IntegerField()
+    month_sum = serializers.IntegerField()
+
+    class Meta:
+        model = ProjectCashBook
+        fields = ('d2', 'all_sum', 'month_sum')
+
+
 class SiteSerializer(serializers.ModelSerializer):
     project = serializers.SlugRelatedField(queryset=Project.objects.all(), slug_field='name')
 

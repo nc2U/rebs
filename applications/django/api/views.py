@@ -54,6 +54,7 @@ class ApiIndex(generics.GenericAPIView):
             'bldg-unit': reverse(api + BuildingUnitList.name, request=request),
             'house-unit': reverse(api + HouseUnitList.name, request=request),
             'budget': reverse(api + ProjectBudgetList.name, request=request),
+            'exec-amount': reverse(api + ExecAmountToBudgetList.name, request=request),
             # 'site': reverse(api + SiteList.name, request=request),
             # 'site-owner': reverse(api + SiteOwnerList.name, request=request),
             # 'site-relation': reverse(api + RelationList.name, request=request),
@@ -387,11 +388,39 @@ class ProjectBudgetList(generics.ListCreateAPIView):
     filter_fields = ('project',)
 
 
-class ProjectBudgetDetail(generics.ListCreateAPIView):
-    name = 'projectbudget-detail'
-    queryset = ProjectBudget.objects.all()
-    serializer_class = ProjectBudgetSerializer
+class ExecAmountToBudgetList(generics.ListAPIView):
+    name = 'execution-amount'
+    serializer_class = ExecAmountToBudget
+    pagination_class = PageNumberPaginationFifty
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    filter_fields = ('project',)
+
+    def get_queryset(self):
+        TODAY = datetime.today().strftime('%Y-%m-%d')
+        date_lte = self.request.query_params.get('date_lte')
+        date = date_lte if date_lte else TODAY
+        month_first = datetime(datetime.strptime(date, '%Y-%m-%d').year, datetime.strptime(date, '%Y-%m-%d').month, 1)
+
+        queryset = ProjectCashBook.objects.all() \
+            .order_by('project_account_d2') \
+            .filter(is_separate=False,
+                    bank_account__directpay=False,
+                    deal_date__lte=date)
+
+        return queryset.annotate(d2=F('project_account_d2__name')) \
+            .values('d2') \
+            .annotate(all_sum=Sum('outlay'),
+                      month_sum=Sum(Case(
+                          When(deal_date__gte=month_first, then=F('outlay')),
+                          default=0
+                      )))
+
+
+# class ProjectBudgetDetail(generics.ListCreateAPIView):
+#     name = 'projectbudget-detail'
+#     queryset = ProjectBudget.objects.all()
+#     serializer_class = ProjectBudgetSerializer
+#     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
 
 # class SiteList(generics.ListCreateAPIView):
