@@ -24,11 +24,11 @@
       </CTableRow>
       <CTableRow color="dark" class="text-center">
         <CTableHeaderCell colspan="4">구분</CTableHeaderCell>
-        <CTableHeaderCell>예산</CTableHeaderCell>
-        <CTableHeaderCell>전월 인출금액 누계</CTableHeaderCell>
-        <CTableHeaderCell>당월 인출금액</CTableHeaderCell>
-        <CTableHeaderCell>인출금액 합계</CTableHeaderCell>
-        <CTableHeaderCell>가용 예산합계</CTableHeaderCell>
+        <CTableHeaderCell>예산액</CTableHeaderCell>
+        <CTableHeaderCell>전월 집행금액 누계</CTableHeaderCell>
+        <CTableHeaderCell>당월 집행금액</CTableHeaderCell>
+        <CTableHeaderCell>집행금액 합계</CTableHeaderCell>
+        <CTableHeaderCell>가용(잔여) 예산합계</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
 
@@ -70,10 +70,10 @@
           {{ bdj.account_d2.name }}
         </CTableDataCell>
         <CTableDataCell>{{ numFormat(bdj.budget) }}</CTableDataCell>
-        <CTableDataCell>-</CTableDataCell>
-        <CTableDataCell>-</CTableDataCell>
-        <CTableDataCell>-</CTableDataCell>
-        <CTableDataCell>-</CTableDataCell>
+        <CTableDataCell>{{ numFormat(0) }}</CTableDataCell>
+        <CTableDataCell>{{ numFormat(0) }}</CTableDataCell>
+        <CTableDataCell>{{ numFormat(0) }}</CTableDataCell>
+        <CTableDataCell>{{ numFormat(bdj.budget - 0) }}</CTableDataCell>
       </CTableRow>
 
       <CTableRow color="dark" class="text-right">
