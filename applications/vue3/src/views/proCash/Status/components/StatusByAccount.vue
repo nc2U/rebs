@@ -86,24 +86,14 @@ export default defineComponent({
     }
   },
   created() {
-    const { dateIncSum, dateOutSum, dateIncTotal, dateOutTotal } =
-      this.getSumTotal()
-    this.dateIncSum = dateIncSum
-    this.dateOutSum = dateOutSum
-    this.dateBalance = dateIncTotal - dateOutTotal
-    this.preBalance = dateIncTotal - dateOutTotal - (dateIncSum - dateOutSum)
+    this.getSumTotal()
   },
   computed: {
     ...mapState('proCash', ['balanceByAccList']),
   },
   watch: {
     balanceByAccList() {
-      const { dateIncSum, dateOutSum, dateIncTotal, dateOutTotal } =
-        this.getSumTotal()
-      this.dateIncSum = dateIncSum
-      this.dateOutSum = dateOutSum
-      this.dateBalance = dateIncTotal - dateOutTotal
-      this.preBalance = dateIncTotal - dateOutTotal - (dateIncSum - dateOutSum)
+      this.getSumTotal()
     },
   },
   methods: {
@@ -134,7 +124,10 @@ export default defineComponent({
               .map((o: any) => o.out_sum)
               .reduce((x: number, y: number) => x + y)
           : 0
-      return { dateIncSum, dateOutSum, dateIncTotal, dateOutTotal }
+      this.dateIncSum = dateIncSum
+      this.dateOutSum = dateOutSum
+      this.dateBalance = dateIncTotal - dateOutTotal
+      this.preBalance = dateIncTotal - dateOutTotal - (dateIncSum - dateOutSum)
     },
   },
 })
