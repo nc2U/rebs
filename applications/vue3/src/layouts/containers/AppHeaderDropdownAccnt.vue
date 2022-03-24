@@ -13,7 +13,13 @@
     </CDropdownToggle>
     <CDropdownMenu class="pt-0">
       <CDropdownHeader component="h6" class="bg-light fw-semibold py-2">
-        Account - {{ userInfo.profile.name || userInfo.username }} 님
+        Account -
+        {{
+          userInfo.profile && userInfo.profile.name
+            ? userInfo.profile.name
+            : userInfo.username
+        }}
+        님
       </CDropdownHeader>
       <CDropdownItem @click="$refs.todoModal.callModal()">
         <CIcon icon="cil-task" />
