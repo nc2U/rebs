@@ -64,7 +64,7 @@ class ApiIndex(generics.GenericAPIView):
             'balance-by-acc': reverse(api + BalanceByAccountList.name, request=request),
             'cashbook': reverse(api + CashBookList.name, request=request),
             'project-bank': reverse(api + ProjectBankAccountList.name, request=request),
-            'prcash-by-acc-sum': reverse(api + PrCashByAccountSummaryList.name, request=request),
+            'pr-balance-by-acc': reverse(api + PrBalanceByAccountList.name, request=request),
             'pr-date-cashbook': reverse(api + ProjectDateCashBookList.name, request=request),
             'project-cashbook': reverse(api + ProjectCashBookList.name, request=request),
             'project-imprest': reverse(api + ProjectImprestList.name, request=request),
@@ -588,9 +588,9 @@ class ProjectBankAccountDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
 
-class PrCashByAccountSummaryList(generics.ListAPIView):
-    name = 'pr-cash-by-account-summary'
-    serializer_class = PrCashByAccountSummarySerializer
+class PrBalanceByAccountList(generics.ListAPIView):
+    name = 'pr-balance-by-acc'
+    serializer_class = PrBalanceByAccountSerializer
     pagination_class = PageNumberPaginationOneHundred
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
     filter_fields = ('project',)

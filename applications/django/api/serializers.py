@@ -345,7 +345,7 @@ class SeparatedItemsSerializer(serializers.ModelSerializer):
                   'content', 'trader', 'income', 'outlay', 'evidence', 'note',)
 
 
-class PrCashByAccountSummarySerializer(serializers.ModelSerializer):
+class PrBalanceByAccountSerializer(serializers.ModelSerializer):
     bank_acc = serializers.CharField()
     date_inc = serializers.IntegerField()
     date_out = serializers.IntegerField()
