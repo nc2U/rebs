@@ -1,6 +1,6 @@
 <template>
-  <CRow class="mb-4">
-    <CCol md="8" lg="6" xl="5">
+  <CRow class="mb-3">
+    <CCol md="8" lg="6" xl="3">
       <CNav variant="underline" layout="justified">
         <CNavItem>
           <CNavLink
