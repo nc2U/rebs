@@ -51,8 +51,9 @@ export default defineComponent({
     }
   },
   created(this: any) {
-    // this.fetchProAllAccD1List()
-    // this.fetchProAllAccD2List()
+    this.fetchAllAccD1List()
+    this.fetchAllAccD2List()
+    this.fetchAllAccD3List()
     this.fetchComBankAccList(this.initComId)
     this.fetchComBalanceByAccList({ company: this.initComId })
     this.fetchDateCashBookList({
@@ -90,8 +91,9 @@ export default defineComponent({
       this.fetchDateCashBookList({ company, date: this.dateFormat(date) })
     },
     ...mapActions('comCash', [
-      //   'fetchProAllAccD1List',
-      //   'fetchProAllAccD2List',
+      'fetchAllAccD1List',
+      'fetchAllAccD2List',
+      'fetchAllAccD3List',
       'fetchComBankAccList',
       'fetchComBalanceByAccList',
       'fetchDateCashBookList',

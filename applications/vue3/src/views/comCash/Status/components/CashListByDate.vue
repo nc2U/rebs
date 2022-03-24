@@ -35,9 +35,15 @@
 
     <CTableBody>
       <CTableRow class="text-center" v-for="inc in dateIncSet" :key="inc.pk">
-        <CTableDataCell>{{ getD1Text(inc.project_account_d1) }}</CTableDataCell>
-        <CTableDataCell></CTableDataCell>
-        <CTableDataCell>{{ getD2Text(inc.project_account_d2) }}</CTableDataCell>
+        <CTableDataCell>
+          {{ getDAccText(inc.account_d1, listAccD1List) }}
+        </CTableDataCell>
+        <CTableDataCell>
+          {{ getDAccText(inc.account_d2, listAccD2List) }}
+        </CTableDataCell>
+        <CTableDataCell>
+          {{ getDAccText(inc.account_d3, listAccD3List) }}
+        </CTableDataCell>
         <CTableDataCell class="text-right" color="success">
           {{ numFormat(inc.income) }}
         </CTableDataCell>
@@ -104,9 +110,15 @@
 
     <CTableBody>
       <CTableRow class="text-center" v-for="out in dateOutSet" :key="out.pk">
-        <CTableDataCell>11</CTableDataCell>
-        <CTableDataCell>22</CTableDataCell>
-        <CTableDataCell>{{ getD2Text(out.project_account_d2) }}</CTableDataCell>
+        <CTableDataCell>
+          {{ getDAccText(out.account_d1, listAccD1List) }}
+        </CTableDataCell>
+        <CTableDataCell>
+          {{ getDAccText(out.account_d2, listAccD2List) }}
+        </CTableDataCell>
+        <CTableDataCell>
+          {{ getDAccText(out.account_d3, listAccD3List) }}
+        </CTableDataCell>
         <CTableDataCell class="text-right" color="danger">
           {{ numFormat(out.outlay) }}
         </CTableDataCell>
@@ -169,31 +181,24 @@ export default defineComponent({
     ]),
   },
   watch: {
-    proDateCashBook() {
+    dateCashBook() {
       this.setData()
     },
   },
   methods: {
-    getD1Text(num: number) {
-      return this.allAccD1List
-        .filter((d: any) => d.pk === num)
-        .map((d: any) => d.name)[0]
-    },
-    getD2Text(num: number) {
-      return this.allAccD2List
-        .filter((d: any) => d.pk === num)
-        .map((d: any) => d.name)[0]
+    getDAccText(num: number, acc: any) {
+      return acc.filter((d: any) => d.pk === num).map((d: any) => d.name)[0]
     },
     getBankAcc(num: number) {
-      return this.proBankAccountList
+      return this.comBankList
         .filter((b: any) => b.pk === num)
         .map((b: any) => b.alias_name)[0]
     },
     setData(this: any) {
-      this.dateIncSet = this.proDateCashBook.filter(
+      this.dateIncSet = this.dateCashBook.filter(
         (i: any) => i.income > 0 && !i.outlay,
       )
-      this.dateOutSet = this.proDateCashBook.filter(
+      this.dateOutSet = this.dateCashBook.filter(
         (o: any) => o.outlay > 0 && !o.income,
       )
       this.dateIncTotal = this.dateIncSet
