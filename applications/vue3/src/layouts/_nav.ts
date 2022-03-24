@@ -313,10 +313,6 @@ const company_cash = {
     {
       component: 'CNavItem',
       name: '본사자금 현황',
-      badge: {
-        color: 'danger',
-        text: 'u.c',
-      },
       to: '/cashes/status',
     },
     {
