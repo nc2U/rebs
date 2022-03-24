@@ -160,11 +160,12 @@ export default defineComponent({
     this.setData()
   },
   computed: {
-    ...mapState('proCash', [
-      'allAccD1List',
-      'allAccD2List',
-      'proBankAccountList',
-      'proDateCashBook',
+    ...mapState('comCash', [
+      'listAccD1List',
+      'listAccD2List',
+      'listAccD3List',
+      'comBankList',
+      'dateCashBook',
     ]),
   },
   watch: {

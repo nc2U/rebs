@@ -55,10 +55,10 @@ export default defineComponent({
     // this.fetchProAllAccD2List()
     this.fetchComBankAccList(this.initComId)
     this.fetchComBalanceByAccList({ company: this.initComId })
-    // this.fetchDateCashBookList({
-    //   project: this.initProjId,
-    //   date: this.dateFormat(this.date),
-    // })
+    this.fetchDateCashBookList({
+      company: this.initComId,
+      date: this.dateFormat(this.date),
+    })
   },
   computed: {
     ...mapState('settings', ['company']),
@@ -69,14 +69,14 @@ export default defineComponent({
       if (target !== '') {
         this.fetchComBankAccList(target)
         this.fetchComBalanceByAccList({ company: target })
-        // this.fetchDateCashBookList({
-        //   project: target,
-        //   date: this.dateFormat(this.date),
-        // })
+        this.fetchDateCashBookList({
+          company: target,
+          date: this.dateFormat(this.date),
+        })
       } else {
         this.FETCH_COMPAY_BANK_LIST([])
         this.FETCH_BALANCE_BY_ACC_LIST([])
-        // this.FETCH_P_DATE_CASHBOOK([])
+        this.FETCH_DATE_CASHBOOK([])
       }
     },
     showTab(num: number) {
@@ -87,19 +87,19 @@ export default defineComponent({
       this.date = date
       const company = this.company.pk
       this.fetchComBalanceByAccList({ company, date: this.dateFormat(date) })
-      // this.fetchDateCashBookList({ project, date: this.dateFormat(date) })
+      this.fetchDateCashBookList({ company, date: this.dateFormat(date) })
     },
     ...mapActions('comCash', [
       //   'fetchProAllAccD1List',
       //   'fetchProAllAccD2List',
       'fetchComBankAccList',
       'fetchComBalanceByAccList',
-      //   'fetchDateCashBookList',
+      'fetchDateCashBookList',
     ]),
     ...mapMutations('comCash', [
       'FETCH_COMPAY_BANK_LIST',
       'FETCH_BALANCE_BY_ACC_LIST',
-      //   'FETCH_P_DATE_CASHBOOK',
+      'FETCH_DATE_CASHBOOK',
     ]),
   },
 })
