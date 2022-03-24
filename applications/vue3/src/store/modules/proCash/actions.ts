@@ -114,7 +114,7 @@ const actions = {
 
   fetchBalanceByAccList: ({ commit }: any, payload: any) => {
     const { project, date } = payload
-    let url = `/pcash-by-acc/?project=${project}`
+    let url = `/pr-balance-by-acc/?project=${project}`
     if (date) url += `&date=${date}`
     api
       .get(url)
