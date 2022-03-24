@@ -7,6 +7,7 @@ import {
   FETCH_FORM_ACC_D2_LIST,
   FETCH_FORM_ACC_D3_LIST,
   FETCH_COMPAY_BANK_LIST,
+  FETCH_BALANCE_BY_ACC_LIST,
   FETCH_CASHBOOK_LIST,
   FETCH_ACC_SORT_LIST,
 } from '@/store/modules/comCash/mutations-types'
@@ -128,6 +129,18 @@ const actions = {
       .then(() => {
         dispatch('fetchComBankAccList', project)
         message('danger', '알림!', '해당 오브젝트가 삭제되었습니다.')
+      })
+      .catch(err => console.log(err.response.data))
+  },
+
+  fetchComBalanceByAccList: ({ commit }: any, payload: any) => {
+    const { company, date } = payload
+    let url = `/balance-by-acc/?company=${company}`
+    if (date) url += `&date=${date}`
+    api
+      .get(url)
+      .then(res => {
+        commit(FETCH_BALANCE_BY_ACC_LIST, res.data)
       })
       .catch(err => console.log(err.response.data))
   },

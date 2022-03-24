@@ -41,6 +41,14 @@ export interface CompanyBank {
   inactive: boolean
 }
 
+interface BalanceByAccount {
+  bank_acc: string
+  date_inc: number
+  date_out: number
+  inc_sum: number | null
+  out_sum: number | null
+}
+
 export interface CashBook {
   pk: number
   company: number
@@ -64,32 +72,28 @@ export interface CashBook {
 
 export interface CashesState {
   sortList: AccountSort[]
-
   formAccD1List: AccountD1[]
   formAccD2List: AccountD2[]
   formAccD3List: AccountD3[]
-
   listAccD1List: AccountD1[]
   listAccD2List: AccountD2[]
   listAccD3List: AccountD3[]
-
   comBankList: CompanyBank[]
+  comBalanceByAccList: BalanceByAccount[]
   cashBookList: CashBook[]
   cashBookCount: number
 }
 
 const state = {
   sortList: [],
-
   formAccD1List: [],
   formAccD2List: [],
   formAccD3List: [],
-
   listAccD1List: [],
   listAccD2List: [],
   listAccD3List: [],
-
   comBankList: [],
+  comBalanceByAccList: [],
   cashBookList: [],
   cashBookCount: 0,
 }
