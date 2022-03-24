@@ -53,8 +53,8 @@ export default defineComponent({
   created(this: any) {
     // this.fetchProAllAccD1List()
     // this.fetchProAllAccD2List()
-    // this.fetchProBankAccList(this.initProjId)
-    // this.fetchBalanceByAccList({ project: this.initProjId })
+    this.fetchComBankAccList(this.initComId)
+    this.fetchComBalanceByAccList({ company: this.initComId })
     // this.fetchDateCashBookList({
     //   project: this.initProjId,
     //   date: this.dateFormat(this.date),
@@ -64,27 +64,27 @@ export default defineComponent({
   },
   computed: {
     ...mapState('project', ['project']),
-    ...mapGetters('accounts', ['initProjId']),
+    ...mapGetters('accounts', ['initComId']),
   },
   methods: {
-    // onSelectAdd(this: any, target: any) {
-    //   if (target !== '') {
-    //     // this.fetchProBankAccList(target)
-    //     // this.fetchBalanceByAccList({ project: target })
-    //     // this.fetchDateCashBookList({
-    //     //   project: target,
-    //     //   date: this.dateFormat(this.date),
-    //     // })
-    //     // this.fetchProjectBudgetList(target)
-    //     // this.fetchExecAmountList({ project: target })
-    //   } else {
-    //     // this.FETCH_P_BANK_ACCOUNT_LIST([])
-    //     // this.FETCH_BALANCE_BY_ACC_LIST([])
-    //     // this.FETCH_P_DATE_CASHBOOK([])
-    //     // this.FETCH_P_BUDGET_LIST([])
-    //     // this.FETCH_EXEC_AMOUNT_LIST([])
-    //   }
-    // },
+    onSelectAdd(this: any, target: any) {
+      if (target !== '') {
+        this.fetchComBankAccList(target)
+        this.fetchComBalanceByAccList({ company: target })
+        // this.fetchDateCashBookList({
+        //   project: target,
+        //   date: this.dateFormat(this.date),
+        // })
+        // this.fetchProjectBudgetList(target)
+        // this.fetchExecAmountList({ project: target })
+      } else {
+        this.FETCH_COMPAY_BANK_LIST([])
+        this.FETCH_BALANCE_BY_ACC_LIST([])
+        // this.FETCH_P_DATE_CASHBOOK([])
+        // this.FETCH_P_BUDGET_LIST([])
+        // this.FETCH_EXEC_AMOUNT_LIST([])
+      }
+    },
     showTab(num: number) {
       if (num === 1) this.compName = 'StatusByAccount'
       else if (num === 2) this.compName = 'CashListByDate'
@@ -97,22 +97,22 @@ export default defineComponent({
       // this.fetchProjectBudgetList(project)
       // this.fetchExecAmountList({ project, date: this.dateFormat(date) })
     },
-    // ...mapActions('proCash', [
-    //   'fetchProAllAccD1List',
-    //   'fetchProAllAccD2List',
-    //   'fetchProBankAccList',
-    //   'fetchBalanceByAccList',
-    //   'fetchDateCashBookList',
-    //   'fetchProjectBudgetList',
-    //   'fetchExecAmountList',
-    // ]),
-    // ...mapMutations('proCash', [
-    //   'FETCH_P_BANK_ACCOUNT_LIST',
-    //   'FETCH_BALANCE_BY_ACC_LIST',
-    //   'FETCH_P_DATE_CASHBOOK',
-    //   'FETCH_P_BUDGET_LIST',
-    //   'FETCH_EXEC_AMOUNT_LIST',
-    // ]),
+    ...mapActions('comCash', [
+      //   'fetchProAllAccD1List',
+      //   'fetchProAllAccD2List',
+      'fetchComBankAccList',
+      'fetchComBalanceByAccList',
+      //   'fetchDateCashBookList',
+      //   'fetchProjectBudgetList',
+      //   'fetchExecAmountList',
+    ]),
+    ...mapMutations('comCash', [
+      'FETCH_COMPAY_BANK_LIST',
+      'FETCH_BALANCE_BY_ACC_LIST',
+      //   'FETCH_P_DATE_CASHBOOK',
+      //   'FETCH_P_BUDGET_LIST',
+      //   'FETCH_EXEC_AMOUNT_LIST',
+    ]),
   },
 })
 </script>

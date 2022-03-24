@@ -33,12 +33,12 @@
     <CTableBody>
       <CTableRow
         class="text-right"
-        v-for="(bal, i) in balanceByAccList"
+        v-for="(bal, i) in comBalanceByAccList"
         :key="i"
       >
         <CTableDataCell
           class="text-center"
-          :rowspan="balanceByAccList.length"
+          :rowspan="comBalanceByAccList.length"
           v-if="i === 0"
         >
           보통예금
@@ -86,55 +86,48 @@ export default defineComponent({
     }
   },
   created() {
-    const { dateIncSum, dateOutSum, dateIncTotal, dateOutTotal } =
-      this.getSumTotal()
-    this.dateIncSum = dateIncSum
-    this.dateOutSum = dateOutSum
-    this.dateBalance = dateIncTotal - dateOutTotal
-    this.preBalance = dateIncTotal - dateOutTotal - (dateIncSum - dateOutSum)
+    this.getSumTotal()
   },
   computed: {
-    ...mapState('proCash', ['balanceByAccList']),
+    ...mapState('comCash', ['comBalanceByAccList']),
   },
   watch: {
     balanceByAccList() {
-      const { dateIncSum, dateOutSum, dateIncTotal, dateOutTotal } =
-        this.getSumTotal()
-      this.dateIncSum = dateIncSum
-      this.dateOutSum = dateOutSum
-      this.dateBalance = dateIncTotal - dateOutTotal
-      this.preBalance = dateIncTotal - dateOutTotal - (dateIncSum - dateOutSum)
+      this.getSumTotal()
     },
   },
   methods: {
     getSumTotal() {
       const dateIncSum =
-        this.balanceByAccList.length !== 0
-          ? this.balanceByAccList
+        this.comBalanceByAccList.length !== 0
+          ? this.comBalanceByAccList
               .map((i: any) => i.date_inc)
               .reduce((x: number, y: number) => x + y)
           : 0
       const dateOutSum =
-        this.balanceByAccList.length !== 0
-          ? this.balanceByAccList
+        this.comBalanceByAccList.length !== 0
+          ? this.comBalanceByAccList
               .map((o: any) => o.date_out)
               .reduce((x: number, y: number) => x + y)
           : 0
       const dateIncTotal =
-        this.balanceByAccList.length !== 0
-          ? this.balanceByAccList
+        this.comBalanceByAccList.length !== 0
+          ? this.comBalanceByAccList
               .filter((i: any) => i.inc_sum !== null)
               .map((i: any) => i.inc_sum)
               .reduce((x: number, y: number) => x + y)
           : 0
       const dateOutTotal =
-        this.balanceByAccList.length !== 0
-          ? this.balanceByAccList
+        this.comBalanceByAccList.length !== 0
+          ? this.comBalanceByAccList
               .filter((o: any) => o.out_sum !== null)
               .map((o: any) => o.out_sum)
               .reduce((x: number, y: number) => x + y)
           : 0
-      return { dateIncSum, dateOutSum, dateIncTotal, dateOutTotal }
+      this.dateIncSum = dateIncSum
+      this.dateOutSum = dateOutSum
+      this.dateBalance = dateIncTotal - dateOutTotal
+      this.preBalance = dateIncTotal - dateOutTotal - (dateIncSum - dateOutSum)
     },
   },
 })
