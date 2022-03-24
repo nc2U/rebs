@@ -72,9 +72,9 @@ urlpatterns = [
     # path('bank-code/<int:pk>/', BankCodeDetail.as_view(), name=BankCodeDetail.name),
     path('company-bank-account/', ComBankAccountList.as_view(), name=ComBankAccountList.name),
     path('company-bank-account/<int:pk>/', ComBankAccountDetail.as_view(), name=ComBankAccountDetail.name),
+    path('balance-by-acc/', BalanceByAccountList.as_view(), name=BalanceByAccountList.name),
     path('cashbook/', CashBookList.as_view(), name=CashBookList.name),
     path('cashbook/<int:pk>/', CashBookDetail.as_view(), name=CashBookDetail.name),
-
     path('project-bank-account/', ProjectBankAccountList.as_view(), name=ProjectBankAccountList.name),
     path('project-bank-account/<int:pk>/', ProjectBankAccountDetail.as_view(), name=ProjectBankAccountDetail.name),
     path('pcash-by-acc/', PrCashByAccountSummaryList.as_view(), name=PrCashByAccountSummaryList.name),

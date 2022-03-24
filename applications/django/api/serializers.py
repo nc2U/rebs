@@ -308,6 +308,18 @@ class CompanyBankAccountSerializer(serializers.ModelSerializer):
                   'holder', 'open_date', 'note', 'inactive')
 
 
+class BalanceByAccountSerializer(serializers.ModelSerializer):
+    bank_acc = serializers.CharField()
+    date_inc = serializers.IntegerField()
+    date_out = serializers.IntegerField()
+    inc_sum = serializers.IntegerField()
+    out_sum = serializers.IntegerField()
+
+    class Meta:
+        model = ProjectCashBook
+        fields = ('bank_acc', 'date_inc', 'date_out', 'inc_sum', 'out_sum')
+
+
 class CashBookSerializer(serializers.ModelSerializer):
     evidence_desc = serializers.CharField(source='get_evidence_display', read_only=True)
 

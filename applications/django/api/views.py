@@ -61,9 +61,10 @@ class ApiIndex(generics.GenericAPIView):
             # 'site-contract': reverse(api + SiteContractList.name, request=request),
             # 'bank-code': reverse(api + BankCodeList.name, request=request),
             'com-bank': reverse(api + ComBankAccountList.name, request=request),
+            'balance-by-acc': reverse(api + BalanceByAccountList.name, request=request),
             'cashbook': reverse(api + CashBookList.name, request=request),
             'project-bank': reverse(api + ProjectBankAccountList.name, request=request),
-            'prcash-sum-by-account': reverse(api + PrCashByAccountSummaryList.name, request=request),
+            'prcash-by-acc-sum': reverse(api + PrCashByAccountSummaryList.name, request=request),
             'pr-date-cashbook': reverse(api + ProjectDateCashBookList.name, request=request),
             'project-cashbook': reverse(api + ProjectCashBookList.name, request=request),
             'project-imprest': reverse(api + ProjectImprestList.name, request=request),
@@ -509,6 +510,36 @@ class ComBankAccountDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = CompanyBankAccount.objects.all()
     serializer_class = CompanyBankAccountSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+
+
+class BalanceByAccountList(generics.ListAPIView):
+    name = 'balance-by-acc'
+    serializer_class = BalanceByAccountSerializer
+    pagination_class = PageNumberPaginationOneHundred
+    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    filter_fields = ('company',)
+
+    def get_queryset(self):
+        TODAY = datetime.today().strftime('%Y-%m-%d')
+        date = self.request.query_params.get('date')
+        date = date if date else TODAY
+
+        queryset = CashBook.objects.all() \
+            .order_by('bank_account') \
+            .filter(deal_date__lte=date)
+
+        return queryset.annotate(bank_acc=F('bank_account__alias_name')) \
+            .values('bank_acc') \
+            .annotate(inc_sum=Sum('income'),
+                      out_sum=Sum('outlay'),
+                      date_inc=Sum(Case(
+                          When(deal_date=date, then=F('income')),
+                          default=0
+                      )),
+                      date_out=Sum(Case(
+                          When(deal_date=date, then=F('outlay')),
+                          default=0
+                      )))
 
 
 class CashBookFilterSet(FilterSet):
