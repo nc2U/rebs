@@ -15,8 +15,8 @@ const comDocs = {
       path: 'general/docs',
       name: '본사 일반문서',
       component: () =>
-        store.state.accounts.userInfo.staffauth &&
-        store.state.accounts.userInfo.staffauth.company_docs > '0'
+        store.state.accounts.userInfo.is_superuser ||
+        store.state.accounts.userInfo.staffauth?.company_docs > '0'
           ? import('@/views/comDocs/GeneralDocs/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
     },
@@ -34,8 +34,8 @@ const comDocs = {
           path: 'docs',
           name: '본사 소송문서',
           component: () =>
-            store.state.accounts.userInfo.staffauth &&
-            store.state.accounts.userInfo.staffauth.company_docs > '0'
+            store.state.accounts.userInfo.is_superuser ||
+            store.state.accounts.userInfo.staffauth?.company_docs > '0'
               ? import('@/views/comDocs/LawsuitDocs/Index.vue')
               : import('@/views/_Accounts/NoAuth.vue'),
         },
@@ -43,8 +43,8 @@ const comDocs = {
           path: 'case',
           name: '본사 소송사건',
           component: () =>
-            store.state.accounts.userInfo.staffauth &&
-            store.state.accounts.userInfo.staffauth.company_docs > '0'
+            store.state.accounts.userInfo.is_superuser ||
+            store.state.accounts.userInfo.staffauth?.company_docs > '0'
               ? import('@/views/comDocs/LawsuitCase/Index.vue')
               : import('@/views/_Accounts/NoAuth.vue'),
         },

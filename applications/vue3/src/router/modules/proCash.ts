@@ -15,8 +15,8 @@ const proCash = {
       path: 'status',
       name: '현장자금 현황',
       component: () =>
-        store.state.accounts.userInfo.staffauth &&
-        store.state.accounts.userInfo.staffauth.project_cash > '0'
+        store.state.accounts.userInfo.is_superuser ||
+        store.state.accounts.userInfo.staffauth?.project_cash > '0'
           ? import('@/views/proCash/Status/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
     },
@@ -24,8 +24,8 @@ const proCash = {
       path: 'index',
       name: '현장출납 관리',
       component: () =>
-        store.state.accounts.userInfo.staffauth &&
-        store.state.accounts.userInfo.staffauth.project_cash > '0'
+        store.state.accounts.userInfo.is_superuser ||
+        store.state.accounts.userInfo.staffauth?.project_cash > '0'
           ? import('@/views/proCash/Manage/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
     },
@@ -33,8 +33,8 @@ const proCash = {
       path: 'imprest',
       name: '운영비용 관리',
       component: () =>
-        store.state.accounts.userInfo.staffauth &&
-        store.state.accounts.userInfo.staffauth.project_cash > '0'
+        store.state.accounts.userInfo.is_superuser ||
+        store.state.accounts.userInfo.staffauth?.project_cash > '0'
           ? import('@/views/proCash/Imprest/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
     },

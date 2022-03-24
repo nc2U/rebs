@@ -15,8 +15,8 @@ const settings = {
       path: 'company',
       name: '회사정보 관리',
       component: () =>
-        store.state.accounts.userInfo.staffauth &&
-        store.state.accounts.userInfo.staffauth.company_settings > '0'
+        store.state.accounts.userInfo.is_superuser ||
+        store.state.accounts.userInfo.staffauth?.company_settings > '0'
           ? import('@/views/settings/Company/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
     },
@@ -24,8 +24,8 @@ const settings = {
       path: 'authorization',
       name: '권한설정 관리',
       component: () =>
-        store.state.accounts.userInfo.staffauth &&
-        store.state.accounts.userInfo.staffauth.auth_manage > '0'
+        store.state.accounts.userInfo.is_superuser ||
+        store.state.accounts.userInfo.staffauth?.auth_manage > '0'
           ? import('@/views/settings/Authorization/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
     },

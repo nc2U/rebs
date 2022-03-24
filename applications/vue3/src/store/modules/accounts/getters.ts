@@ -1,18 +1,14 @@
 import { AccountsState } from './state'
 
 const getters = {
-  isAuthorized(state: AccountsState) {
-    return state.accessToken.length && !!state.userInfo
-  },
-
-  staffAuth(state: AccountsState) {
-    return state.userInfo?.staffauth?.is_staff || state.userInfo?.is_superuser
-      ? state.userInfo.staffauth
-      : null
-  },
-
   superAuth(state: AccountsState) {
     return state.userInfo?.is_superuser
+  },
+  staffAuth(state: AccountsState) {
+    return state.userInfo?.staffauth ? state.userInfo.staffauth : null
+  },
+  isAuthorized(state: AccountsState) {
+    return state.accessToken.length && !!state.userInfo
   },
   initComId(state: AccountsState): number {
     return state.userInfo?.staffauth?.company
