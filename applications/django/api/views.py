@@ -63,6 +63,7 @@ class ApiIndex(generics.GenericAPIView):
             'com-bank': reverse(api + ComBankAccountList.name, request=request),
             'balance-by-acc': reverse(api + BalanceByAccountList.name, request=request),
             'cashbook': reverse(api + CashBookList.name, request=request),
+            'date-cashbook': reverse(api + DateCashBookList.name, request=request),
             'project-bank': reverse(api + ProjectBankAccountList.name, request=request),
             'pr-balance-by-acc': reverse(api + PrBalanceByAccountList.name, request=request),
             'pr-date-cashbook': reverse(api + ProjectDateCashBookList.name, request=request),
@@ -563,6 +564,17 @@ class CashBookList(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+
+class DateCashBookList(CashBookList):
+    name = 'date-cashbook'
+    pagination_class = PageNumberPaginationTwoHundred
+
+    def get_queryset(self):
+        TODAY = datetime.today().strftime('%Y-%m-%d')
+        date = self.request.query_params.get('date')
+        date = date if date else TODAY
+        return CashBook.objects.filter(deal_date__exact=date)
 
 
 class CashBookDetail(generics.RetrieveUpdateDestroyAPIView):
