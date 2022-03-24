@@ -1,5 +1,6 @@
 import api from '@/api'
 import {
+  FETCH_ACC_SORT_LIST,
   FETCH_ACC_D1_LIST,
   FETCH_ACC_D2_LIST,
   FETCH_ACC_D3_LIST,
@@ -8,8 +9,8 @@ import {
   FETCH_FORM_ACC_D3_LIST,
   FETCH_COMPAY_BANK_LIST,
   FETCH_BALANCE_BY_ACC_LIST,
+  FETCH_DATE_CASHBOOK,
   FETCH_CASHBOOK_LIST,
-  FETCH_ACC_SORT_LIST,
 } from '@/store/modules/comCash/mutations-types'
 import { message } from '@/utils/helper'
 
@@ -141,6 +142,17 @@ const actions = {
       .get(url)
       .then(res => {
         commit(FETCH_BALANCE_BY_ACC_LIST, res.data)
+      })
+      .catch(err => console.log(err.response.data))
+  },
+
+  fetchDateCashBookList: ({ commit }: any, payload: any) => {
+    const { company, date } = payload
+    const url = `/date-cashbook/?company=${company}&date=${date}`
+    api
+      .get(url)
+      .then(res => {
+        commit(FETCH_DATE_CASHBOOK, res.data)
       })
       .catch(err => console.log(err.response.data))
   },

@@ -80,6 +80,7 @@ export interface CashesState {
   listAccD3List: AccountD3[]
   comBankList: CompanyBank[]
   comBalanceByAccList: BalanceByAccount[]
+  dateCashBook: CashBook[]
   cashBookList: CashBook[]
   cashBookCount: number
 }
@@ -94,6 +95,7 @@ const state = {
   listAccD3List: [],
   comBankList: [],
   comBalanceByAccList: [],
+  dateCashBook: [],
   cashBookList: [],
   cashBookCount: 0,
 }

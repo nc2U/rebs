@@ -9,6 +9,7 @@ import {
   FETCH_ACC_D3_LIST,
   FETCH_COMPAY_BANK_LIST,
   FETCH_BALANCE_BY_ACC_LIST,
+  FETCH_DATE_CASHBOOK,
 } from '@/store/modules/comCash/mutations-types'
 import { CashesState } from '@/store/modules/comCash/state'
 
@@ -39,6 +40,9 @@ const mutations = {
 
   [FETCH_BALANCE_BY_ACC_LIST]: (state: CashesState, payload: any) =>
     (state.comBalanceByAccList = payload.results),
+
+  [FETCH_DATE_CASHBOOK]: (state: CashesState, payload: any) =>
+    (state.dateCashBook = payload.results),
 
   [FETCH_CASHBOOK_LIST]: (state: CashesState, payload: any) => {
     state.cashBookList = payload.results
