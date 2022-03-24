@@ -15,6 +15,7 @@ const payments = {
       path: 'index',
       name: '분양수납 내역',
       component: () =>
+        store.state.accounts.userInfo.staffauth &&
         store.state.accounts.userInfo.staffauth.payment > '0'
           ? import('@/views/payments/List/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
@@ -23,6 +24,7 @@ const payments = {
       path: 'manage',
       name: '건별수납 관리',
       component: () =>
+        store.state.accounts.userInfo.staffauth &&
         store.state.accounts.userInfo.staffauth.payment > '0'
           ? import('@/views/payments/Register/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),

@@ -15,6 +15,7 @@ const contract = {
       path: 'index',
       name: '계약내역 조회',
       component: () =>
+        store.state.accounts.userInfo.staffauth &&
         store.state.accounts.userInfo.staffauth.contract > '0'
           ? import('@/views/contracts/List/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
@@ -23,6 +24,7 @@ const contract = {
       path: 'register',
       name: '계약등록 관리',
       component: () =>
+        store.state.accounts.userInfo.staffauth &&
         store.state.accounts.userInfo.staffauth.contract > '0'
           ? import('@/views/contracts/Register/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
@@ -31,6 +33,7 @@ const contract = {
       path: 'cancel',
       name: '계약해지 관리',
       component: () =>
+        store.state.accounts.userInfo.staffauth &&
         store.state.accounts.userInfo.staffauth.contract > '0'
           ? import('@/views/contracts/Cancel/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
@@ -39,6 +42,7 @@ const contract = {
       path: 'status',
       name: '동호수 현황표',
       component: () =>
+        store.state.accounts.userInfo.staffauth &&
         store.state.accounts.userInfo.staffauth.contract > '0'
           ? import('@/views/contracts/Status/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),

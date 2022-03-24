@@ -15,6 +15,7 @@ const hrManage = {
       path: 'employee',
       name: '직원정보 관리',
       component: () =>
+        store.state.accounts.userInfo.staffauth &&
         store.state.accounts.userInfo.staffauth.human_resource > '0'
           ? import('@/views/hrManage/Employee/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
@@ -23,6 +24,7 @@ const hrManage = {
       path: 'department',
       name: '부서정보 관리',
       component: () =>
+        store.state.accounts.userInfo.staffauth &&
         store.state.accounts.userInfo.staffauth.human_resource > '0'
           ? import('@/views/hrManage/Department/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),

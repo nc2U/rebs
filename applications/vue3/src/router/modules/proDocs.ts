@@ -15,6 +15,7 @@ const proDocs = {
       path: 'general/docs',
       name: '현장 일반문서',
       component: () =>
+        store.state.accounts.userInfo.staffauth &&
         store.state.accounts.userInfo.staffauth.project_docs > '0'
           ? import('@/views/proDocs/GeneralDocs/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
@@ -33,6 +34,7 @@ const proDocs = {
           path: 'docs',
           name: '현장 소송문서',
           component: () =>
+            store.state.accounts.userInfo.staffauth &&
             store.state.accounts.userInfo.staffauth.project_docs > '0'
               ? import('@/views/proDocs/LawsuitDocs/Index.vue')
               : import('@/views/_Accounts/NoAuth.vue'),
@@ -41,6 +43,7 @@ const proDocs = {
           path: 'case',
           name: '현장 소송사건',
           component: () =>
+            store.state.accounts.userInfo.staffauth &&
             store.state.accounts.userInfo.staffauth.project_docs > '0'
               ? import('@/views/proDocs/LawsuitCase/Index.vue')
               : import('@/views/_Accounts/NoAuth.vue'),
