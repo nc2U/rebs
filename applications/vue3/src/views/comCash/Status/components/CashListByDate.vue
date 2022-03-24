@@ -1,16 +1,17 @@
 <template>
   <CTable hover responsive bordered align="middle">
     <colgroup>
+      <col width="12%" />
+      <col width="12%" />
+      <col width="12%" />
+      <col width="14%" />
       <col width="15%" />
       <col width="15%" />
-      <col width="15%" />
-      <col width="15%" />
-      <col width="15%" />
-      <col width="25%" />
+      <col width="20%" />
     </colgroup>
     <CTableHead>
       <CTableRow>
-        <CTableDataCell colspan="5">
+        <CTableDataCell colspan="6">
           <strong>
             <CIcon name="cilFolderOpen" />
             본사 당일 입금내역
@@ -22,8 +23,9 @@
         <CTableDataCell class="text-right">(단위: 원)</CTableDataCell>
       </CTableRow>
       <CTableRow color="dark" class="text-center">
-        <CTableHeaderCell>항목</CTableHeaderCell>
-        <CTableHeaderCell>세부 항목</CTableHeaderCell>
+        <CTableHeaderCell>구분</CTableHeaderCell>
+        <CTableHeaderCell>계정</CTableHeaderCell>
+        <CTableHeaderCell>세부 계정</CTableHeaderCell>
         <CTableHeaderCell>입금 금액</CTableHeaderCell>
         <CTableHeaderCell>거래 계좌</CTableHeaderCell>
         <CTableHeaderCell>거래처</CTableHeaderCell>
@@ -34,6 +36,7 @@
     <CTableBody>
       <CTableRow class="text-center" v-for="inc in dateIncSet" :key="inc.pk">
         <CTableDataCell>{{ getD1Text(inc.project_account_d1) }}</CTableDataCell>
+        <CTableDataCell></CTableDataCell>
         <CTableDataCell>{{ getD2Text(inc.project_account_d2) }}</CTableDataCell>
         <CTableDataCell class="text-right" color="success">
           {{ numFormat(inc.income) }}
@@ -46,6 +49,7 @@
       <CTableRow class="text-center">
         <CTableDataCell>&nbsp;</CTableDataCell>
         <CTableDataCell></CTableDataCell>
+        <CTableDataCell></CTableDataCell>
         <CTableDataCell color="success"></CTableDataCell>
         <CTableDataCell></CTableDataCell>
         <CTableDataCell></CTableDataCell>
@@ -53,7 +57,7 @@
       </CTableRow>
 
       <CTableRow color="dark" class="text-right">
-        <CTableHeaderCell colspan="2" class="text-center">
+        <CTableHeaderCell colspan="3" class="text-center">
           합계
         </CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(dateIncTotal) }}</CTableHeaderCell>
@@ -66,16 +70,17 @@
 
   <CTable hover responsive bordered align="middle">
     <colgroup>
+      <col width="12%" />
+      <col width="12%" />
+      <col width="12%" />
+      <col width="14%" />
       <col width="15%" />
       <col width="15%" />
-      <col width="15%" />
-      <col width="15%" />
-      <col width="15%" />
-      <col width="25%" />
+      <col width="20%" />
     </colgroup>
     <CTableHead>
       <CTableRow>
-        <CTableDataCell colspan="5">
+        <CTableDataCell colspan="6">
           <strong>
             <CIcon name="cilFolderOpen" />
             본사 당일 출금내역
@@ -87,8 +92,9 @@
         <CTableDataCell class="text-right">(단위: 원)</CTableDataCell>
       </CTableRow>
       <CTableRow color="dark" class="text-center">
-        <CTableHeaderCell>항목</CTableHeaderCell>
-        <CTableHeaderCell>세부 항목</CTableHeaderCell>
+        <CTableHeaderCell>구분</CTableHeaderCell>
+        <CTableHeaderCell>계정</CTableHeaderCell>
+        <CTableHeaderCell>세부 계정</CTableHeaderCell>
         <CTableHeaderCell>출금 금액</CTableHeaderCell>
         <CTableHeaderCell>거래 계좌</CTableHeaderCell>
         <CTableHeaderCell>거래처</CTableHeaderCell>
@@ -98,7 +104,8 @@
 
     <CTableBody>
       <CTableRow class="text-center" v-for="out in dateOutSet" :key="out.pk">
-        <CTableDataCell>{{ getD1Text(out.project_account_d1) }}</CTableDataCell>
+        <CTableDataCell>11</CTableDataCell>
+        <CTableDataCell>22</CTableDataCell>
         <CTableDataCell>{{ getD2Text(out.project_account_d2) }}</CTableDataCell>
         <CTableDataCell class="text-right" color="danger">
           {{ numFormat(out.outlay) }}
@@ -110,6 +117,7 @@
       <CTableRow class="text-center">
         <CTableDataCell>&nbsp;</CTableDataCell>
         <CTableDataCell></CTableDataCell>
+        <CTableDataCell></CTableDataCell>
         <CTableDataCell color="danger"></CTableDataCell>
         <CTableDataCell></CTableDataCell>
         <CTableDataCell></CTableDataCell>
@@ -117,7 +125,7 @@
       </CTableRow>
 
       <CTableRow color="dark" class="text-right">
-        <CTableHeaderCell colspan="2" class="text-center">
+        <CTableHeaderCell colspan="3" class="text-center">
           합계
         </CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(dateOutTotal) }}</CTableHeaderCell>

@@ -59,11 +59,9 @@ export default defineComponent({
     //   project: this.initProjId,
     //   date: this.dateFormat(this.date),
     // })
-    // this.fetchProjectBudgetList(this.initProjId)
-    // this.fetchExecAmountList({ project: this.initProjId })
   },
   computed: {
-    ...mapState('project', ['project']),
+    ...mapState('settings', ['company']),
     ...mapGetters('accounts', ['initComId']),
   },
   methods: {
@@ -75,14 +73,10 @@ export default defineComponent({
         //   project: target,
         //   date: this.dateFormat(this.date),
         // })
-        // this.fetchProjectBudgetList(target)
-        // this.fetchExecAmountList({ project: target })
       } else {
         this.FETCH_COMPAY_BANK_LIST([])
         this.FETCH_BALANCE_BY_ACC_LIST([])
         // this.FETCH_P_DATE_CASHBOOK([])
-        // this.FETCH_P_BUDGET_LIST([])
-        // this.FETCH_EXEC_AMOUNT_LIST([])
       }
     },
     showTab(num: number) {
@@ -91,11 +85,9 @@ export default defineComponent({
     },
     setDate(this: any, date: string) {
       this.date = date
-      const project = this.project.pk
-      // this.fetchBalanceByAccList({ project, date: this.dateFormat(date) })
+      const company = this.company.pk
+      this.fetchComBalanceByAccList({ company, date: this.dateFormat(date) })
       // this.fetchDateCashBookList({ project, date: this.dateFormat(date) })
-      // this.fetchProjectBudgetList(project)
-      // this.fetchExecAmountList({ project, date: this.dateFormat(date) })
     },
     ...mapActions('comCash', [
       //   'fetchProAllAccD1List',
@@ -103,15 +95,11 @@ export default defineComponent({
       'fetchComBankAccList',
       'fetchComBalanceByAccList',
       //   'fetchDateCashBookList',
-      //   'fetchProjectBudgetList',
-      //   'fetchExecAmountList',
     ]),
     ...mapMutations('comCash', [
       'FETCH_COMPAY_BANK_LIST',
       'FETCH_BALANCE_BY_ACC_LIST',
       //   'FETCH_P_DATE_CASHBOOK',
-      //   'FETCH_P_BUDGET_LIST',
-      //   'FETCH_EXEC_AMOUNT_LIST',
     ]),
   },
 })

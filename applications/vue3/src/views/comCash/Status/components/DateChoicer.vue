@@ -1,5 +1,5 @@
 <template>
-  <CCallout color="success">
+  <CCallout color="primary">
     <CRow>
       <CFormLabel class="col-lg-1 col-form-label">기준일자</CFormLabel>
       <CCol md="6" lg="3">
