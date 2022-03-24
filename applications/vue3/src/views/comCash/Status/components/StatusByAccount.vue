@@ -92,7 +92,7 @@ export default defineComponent({
     ...mapState('comCash', ['comBalanceByAccList']),
   },
   watch: {
-    balanceByAccList() {
+    comBalanceByAccList() {
       this.getSumTotal()
     },
   },
