@@ -154,12 +154,10 @@
         </CCol>
 
         <CCol sm="6">
-          <!--          <CRow v-if="form.sort === '2'">-->
-          <CRow>
+          <CRow v-if="form.sort === '2'">
             <CFormLabel class="col-sm-4 col-form-label">지출증빙</CFormLabel>
             <CCol sm="8">
-              <!--              <CFormSelect v-model="form.evidence" required>-->
-              <CFormSelect v-model="form.evidence">
+              <CFormSelect v-model="form.evidence" required>
                 <option value="">---------</option>
                 <option value="0">증빙 없음</option>
                 <option value="1">세금계산서</option>
