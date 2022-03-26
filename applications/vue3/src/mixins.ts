@@ -2,8 +2,8 @@ import dayjs from 'dayjs'
 
 export default {
   methods: {
-    numFormat(val: number | null, n?: number) {
-      const value = val === null ? 0 : val
+    numFormat(val = 0, n?: number) {
+      const value = !val ? 0 : val
       const parts = n
         ? Number(value).toFixed(n).split('.')
         : value.toString().split('.')
