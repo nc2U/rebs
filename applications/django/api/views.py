@@ -377,7 +377,7 @@ class HouseUnitList(generics.ListCreateAPIView):
 class AllHouseUnitList(HouseUnitList):
     name = 'all-house-unit'
     queryset = HouseUnit.objects.all()
-    pagination_class = PageNumberPaginationTwoHundred
+    pagination_class = PageNumberPaginationThreeThousand
     filter_fields = ('project', 'building_unit')
 
 

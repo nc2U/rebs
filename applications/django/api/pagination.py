@@ -2,11 +2,15 @@ from rest_framework.pagination import PageNumberPagination, LimitOffsetPaginatio
 
 
 class PageNumberPaginationCustomBasic(PageNumberPagination):
-    max_page_size = 500
+    max_page_size = 5000
 
 
 class LimitOffsetPaginationCustomBasic(LimitOffsetPagination):
     max_limit = 500
+
+
+class PageNumberPaginationThreeThousand(PageNumberPagination):
+    page_size = 3000
 
 
 class PageNumberPaginationTwoHundred(PageNumberPagination):
