@@ -701,9 +701,9 @@ class PaymentSummary(generics.ListAPIView):
     filter_fields = ('project',)
 
     def get_queryset(self):
-        return Contract.objects.filter(activation=True, contractor__status=2) \
-            .annotate(income=F('projectcashbook__income')) \
-            .values('unit_type', 'income') \
+        return ProjectCashBook.objects.filter(contract__activation=True, contract__contractor__status=2) \
+            .order_by('contract__unit_type') \
+            .annotate(unit_type=F('contract__unit_type')) \
             .values('unit_type') \
             .annotate(type_total=Sum('income'))
 
