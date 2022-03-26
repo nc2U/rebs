@@ -21,10 +21,9 @@ class StaffAuthInUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = StaffAuth
         fields = (
-            'pk', 'company', 'is_staff', 'assigned_project', 'allowed_projects', 'contract', 'payment', 'notice',
-            'project_cash',
-            'project_docs',
-            'project', 'company_cash', 'company_docs', 'human_resource', 'company_settings', 'auth_manage')
+            'pk', 'company', 'is_staff', 'assigned_project', 'allowed_projects',
+            'contract', 'payment', 'notice', 'project_cash', 'project_docs', 'project',
+            'company_cash', 'company_docs', 'human_resource', 'company_settings', 'auth_manage')
 
 
 class ProfileInUserSerializer(serializers.ModelSerializer):
@@ -37,7 +36,6 @@ class ProfileInUserSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    url = serializers.HyperlinkedIdentityField(view_name='api:user-detail')
     password = serializers.CharField(
         write_only=True,
         required=True,
@@ -45,14 +43,13 @@ class UserSerializer(serializers.ModelSerializer):
         style={'input_type': 'password', 'placeholder': '비밀번호'}
     )
     staffauth = StaffAuthInUserSerializer()
-    profile = ProfileInUserSerializer()
+    profile = ProfileInUserSerializer(read_only=True)
 
     class Meta:
         model = User
         fields = (
-            'pk', 'url', 'email', 'username', 'is_active',
-            'is_superuser', 'date_joined', 'password',
-            'staffauth', 'profile')
+            'pk', 'email', 'username', 'is_active', 'is_superuser',
+            'date_joined', 'password', 'staffauth', 'profile')
 
     def save(self):
         instance = User(email=self.validated_data['email'],
