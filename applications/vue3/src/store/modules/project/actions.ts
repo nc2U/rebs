@@ -250,12 +250,12 @@ const actions = {
       })
   },
 
-  fetchUnitList: (
+  fetchHouseUnitList: (
     { commit }: any,
     payload: { project: number; bldg: number },
   ) => {
     const { project, bldg } = payload
-    const urlStr = `/unit/?project=${project}&building_unit=${bldg}`
+    const urlStr = `/all-house-unit/?project=${project}&building_unit=${bldg}`
     api
       .get(urlStr)
       .then(res => {
@@ -270,7 +270,7 @@ const actions = {
   ) => {
     const { project, unit_type } = payload
     api
-      .get(`/unit/?project=${project}&unit_type=${unit_type}`)
+      .get(`/house-unit/?project=${project}&unit_type=${unit_type}`)
       .then(res => {
         commit(FETCH_NUM_UNIT_BY_TYPE, res.data.count)
       })
@@ -283,9 +283,9 @@ const actions = {
     const houseUnits = { ...{ project, unit_type }, ...unitPayload }
     const keyUnits = { project, unit_type, unit_code }
     api
-      .post(`/unit/`, houseUnits)
+      .post(`/house-unit/`, houseUnits)
       .then(res => {
-        dispatch('fetchUnitList', {
+        dispatch('fetchNumUnitByType', {
           project: res.data.project,
           bldg: res.data.building_unit,
         })
@@ -301,9 +301,9 @@ const actions = {
   updateUnit: ({ dispatch }: any, payload: any) => {
     const { pk, ...formData } = payload
     api
-      .put(`/unit/${pk}/`, formData)
+      .put(`/house-unit/${pk}/`, formData)
       .then(res => {
-        dispatch('fetchUnitList', {
+        dispatch('fetchNumUnitByType', {
           project: res.data.project,
           bldg: res.data.building_unit,
         })
@@ -322,9 +322,9 @@ const actions = {
   deleteUnit: ({ dispatch }: any, payload: any) => {
     const { pk, project } = payload
     api
-      .delete(`/unit/${pk}/`)
+      .delete(`/house-unit/${pk}/`)
       .then(() => {
-        dispatch('fetchUnitList', project)
+        dispatch('fetchNumUnitByType', project)
         message('danger', '알림!', '해당 오브젝트가 삭제되었습니다.')
       })
       .catch(() => {

@@ -70,7 +70,7 @@ export default defineComponent({
     },
     bldgSelect(this: any, bldg: any) {
       if (bldg.pk !== '')
-        this.fetchUnitList({ project: this.project.pk, bldg: bldg.pk })
+        this.fetchHouseUnitList({ project: this.project.pk, bldg: bldg.pk })
       else this.$store.state.project.houseUnitList = []
       this.bldgName = bldg.name
     },
@@ -128,7 +128,7 @@ export default defineComponent({
       'fetchTypeList',
       'fetchFloorTypeList',
       'fetchBuildingList',
-      'fetchUnitList',
+      'fetchHouseUnitList',
       'createUnit',
     ]),
   },
