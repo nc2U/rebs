@@ -15,8 +15,8 @@ const notices = {
       path: 'bill',
       name: '수납고지서 출력',
       component: () =>
-        store.state.accounts.userInfo.staffauth &&
-        store.state.accounts.userInfo.staffauth.notice > '0'
+        store.state.accounts.userInfo.is_superuser ||
+        store.state.accounts.userInfo.staffauth?.notice > '0'
           ? import('@/views/notices/Bill/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
     },
