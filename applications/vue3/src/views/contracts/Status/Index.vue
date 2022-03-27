@@ -38,6 +38,7 @@ export default defineComponent({
   },
   created() {
     this.fetchTypeList(this.initProjId)
+    this.fetchBuildingList(this.initProjId)
     this.fetchHouseUnitList({ project: this.initProjId })
   },
   computed: {
@@ -48,18 +49,24 @@ export default defineComponent({
     onSelectAdd(this: any, target: any) {
       if (target !== '') {
         this.fetchTypeList(target)
+        this.fetchBuildingList(target)
         this.fetchHouseUnitList({ project: target })
-        // this.fetchProBankAccList(target)
-        // this.fetchPayOrderList(target)
       } else {
         this.FETCH_TYPE_LIST([])
+        this.FETCH_BUILDING_LIST([])
         this.FETCH_HOUSE_UNIT_LIST([])
-        // this.FETCH_P_BANK_ACCOUNT_LIST([])
-        // this.FETCH_PAY_ORDER_LIST([])
       }
     },
-    ...mapActions('project', ['fetchTypeList', 'fetchHouseUnitList']),
-    ...mapGetters('project', ['FETCH_TYPE_LIST', 'FETCH_HOUSE_UNIT_LIST']),
+    ...mapActions('project', [
+      'fetchTypeList',
+      'fetchBuildingList',
+      'fetchHouseUnitList',
+    ]),
+    ...mapGetters('project', [
+      'FETCH_TYPE_LIST',
+      'FETCH_BUILDING_LIST',
+      'FETCH_HOUSE_UNIT_LIST',
+    ]),
   },
 })
 </script>

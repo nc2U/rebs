@@ -32,12 +32,18 @@
         </CTableBody>
       </CTable>
     </CCol>
-    <CCol lg="6">74 84A 84B</CCol>
+    <CCol lg="6">
+      <span v-for="type in simpleTypes" :key="type.pk" class="mr-3">
+        <div class="cube mr-1" :style="`background-color: ${type.color};`" />
+        {{ type.name }}
+      </span>
+    </CCol>
   </CRow>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { mapGetters } from 'vuex'
 
 export default defineComponent({
   name: 'ContSummary',
@@ -51,7 +57,17 @@ export default defineComponent({
       sample: '',
     }
   },
-  computed: {},
+  computed: {
+    ...mapGetters('project', ['simpleTypes']),
+  },
   methods: {},
 })
 </script>
+
+<style lang="scss" scoped>
+.cube {
+  width: 12px;
+  height: 12px;
+  display: inline-block;
+}
+</style>

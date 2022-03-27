@@ -16,7 +16,7 @@
           width: `${40 * lineList.length}px`,
         }"
       >
-        {{ bldg }}동
+        <strong>{{ bldgName(bldg) }} 동</strong>
       </div>
     </CRow>
   </CCol>
@@ -25,6 +25,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import Unit from '@/views/contracts/Status/components/Unit.vue'
+import { mapState } from 'vuex'
 
 export default defineComponent({
   name: 'Building',
@@ -42,8 +43,16 @@ export default defineComponent({
     lineList(this: any) {
       return [...new Set(this.units.map((u: any) => u.line))].sort()
     },
+
+    ...mapState('project', ['buildingList']),
   },
-  methods: {},
+  methods: {
+    bldgName(bldg: number) {
+      return this.buildingList
+        .filter((b: any) => b.pk === bldg)
+        .map((b: any) => b.name)[0]
+    },
+  },
 })
 </script>
 
@@ -54,5 +63,6 @@ export default defineComponent({
   color: white;
   line-height: 36px;
   vertical-align: middle;
+  border: solid #555 1px;
 }
 </style>

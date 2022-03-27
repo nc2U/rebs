@@ -1,14 +1,27 @@
 <template>
-  <div
-    class="unit"
-    :class="{
-      firstline: unit && line === 1,
-      restline: unit && line !== 1,
-      piloti: isPiloti,
-    }"
-    :style="`background-color: ${unit ? unit.color : ''}`"
-  >
-    <span v-if="unit">{{ unit.name }}</span>
+  <div class="unit">
+    <div
+      class="unit-name"
+      :class="{
+        firstline: (isPiloti || unit) && line === 1,
+        restline: (isPiloti || unit) && line !== 1,
+        piloti: isPiloti,
+      }"
+      :style="`background-color: ${unit ? unit.color : ''}`"
+    >
+      <span v-if="unit">{{ unit.name }}</span>
+    </div>
+
+    <div
+      class="status"
+      :class="{
+        firstline: unit && line === 1,
+        restline: unit && line !== 1,
+        firstPiloti: isPiloti && line === 1,
+        restPiloti: isPiloti && line !== 1,
+        piloti: isPiloti,
+      }"
+    ></div>
   </div>
 </template>
 
@@ -34,16 +47,33 @@ export default defineComponent({
 <style lang="scss" scoped>
 .unit {
   width: 40px;
-  height: 20px;
-  line-height: 20px;
+  height: 40px;
   padding: 0;
   font-size: 10px;
   text-align: center;
   vertical-align: middle;
 }
 
+.unit-name {
+  height: 20px;
+  line-height: 20px;
+  padding: 0;
+}
+
+.status {
+  height: 20px;
+  line-height: 20px;
+  padding: 0;
+}
+
 .firstline {
   border-width: 1px 1px 0 1px;
+  border-style: solid;
+  border-color: #999;
+}
+
+.firstPiloti {
+  border-width: 0 1px 0 1px;
   border-style: solid;
   border-color: #999;
 }
@@ -54,7 +84,14 @@ export default defineComponent({
   border-color: #999;
 }
 
+.restPiloti {
+  border-width: 0 1px 0 0;
+  border-style: solid;
+  border-color: #999;
+}
+
 .piloti {
-  background-color: #999;
+  background-color: #ccc;
+  border-color: #999;
 }
 </style>
