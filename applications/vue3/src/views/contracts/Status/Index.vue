@@ -9,6 +9,7 @@
     <CCardBody class="pb-5">
       <ContSummary />
       <ExcelExport />
+      <hr />
       <ContractBoard />
     </CCardBody>
 
