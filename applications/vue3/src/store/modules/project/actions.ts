@@ -252,10 +252,11 @@ const actions = {
 
   fetchHouseUnitList: (
     { commit }: any,
-    payload: { project: number; bldg: number },
+    payload: { project: number; bldg?: number },
   ) => {
     const { project, bldg } = payload
-    const urlStr = `/house-unit/?project=${project}&building_unit=${bldg}`
+    let urlStr = `/house-unit/?project=${project}`
+    if (bldg) urlStr += `&building_unit=${bldg}`
     api
       .get(urlStr)
       .then(res => {

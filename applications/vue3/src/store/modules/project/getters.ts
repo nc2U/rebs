@@ -31,6 +31,7 @@ const getters = {
   simpleUnits: (state: ProjectState, getters: any) =>
     state.houseUnitList
       ? state.houseUnitList.map((u: HouseUnit) => ({
+          bldg: u.building_unit,
           color: getters.simpleTypes
             .filter((t: any) => t.pk === u.unit_type)
             .map((t: any) => t.color)[0],

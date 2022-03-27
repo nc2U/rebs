@@ -67,11 +67,12 @@ export interface BuildingUnit {
 export interface HouseUnit {
   pk: number
   project: number
-  unit_type: { name: string; color: string }
-  floor_type: string
-  building_number: number
+  unit_type: number
+  floor_type: number
+  __str__: string
+  building_unit: number
   name: string
-  contract_unit: number | null
+  key_unit: number
   bldg_line: number
   floor_no: number
   is_hold: boolean
