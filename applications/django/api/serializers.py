@@ -223,6 +223,14 @@ class HouseUnitSerializer(serializers.ModelSerializer):
                   'key_unit', 'bldg_line', 'floor_no', 'is_hold', 'hold_reason')
 
 
+class HouseUnitSummarySerializer(serializers.ModelSerializer):
+    # hold_unit_num = serializers.IntegerField()
+
+    class Meta:
+        model = HouseUnit
+        fields = ('pk',)
+
+
 class ProAccoD2InBudgetSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectAccountD2
