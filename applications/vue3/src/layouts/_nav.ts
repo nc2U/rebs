@@ -48,10 +48,6 @@ const contract = {
     {
       component: 'CNavItem',
       name: '동호수 현황표',
-      badge: {
-        color: 'danger',
-        text: 'u.c',
-      },
       to: '/contracts/status',
     },
   ],
