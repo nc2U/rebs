@@ -2,12 +2,11 @@
   <div
     class="unit"
     :class="{
-      noneUnit: !unit,
-      firstline: line === 1,
-      restline: line !== 1,
+      firstline: unit && line === 1,
+      restline: unit && line !== 1,
       piloti: isPiloti,
     }"
-    :style="{ background: color }"
+    :style="`background-color: ${unit ? unit.color : ''}`"
   >
     <span v-if="unit">{{ unit.name }}</span>
   </div>
@@ -19,20 +18,14 @@ import { defineComponent } from 'vue'
 export default defineComponent({
   name: 'Unit',
   props: { units: Array, floor: Number, line: Number },
-  setup() {
-    return {}
-  },
   computed: {
     unit(this: any) {
       return this.units
         .filter((u: any) => u.line == this.line)
         .filter((u: any) => u.floor == this.floor)[0]
     },
-    // isBuild(this: any) {
-    //   return this.unit || this.floor < 3
-    // },
-    color() {
-      return this.unit ? this.unit.color : '#999'
+    isPiloti(this: any) {
+      return !this.unit && this.floor < 3
     },
   },
 })
@@ -42,14 +35,11 @@ export default defineComponent({
 .unit {
   width: 40px;
   height: 20px;
+  line-height: 20px;
   padding: 0;
   font-size: 10px;
   text-align: center;
   vertical-align: middle;
-}
-
-.noneUnit {
-  background-color: white;
 }
 
 .firstline {
@@ -65,6 +55,6 @@ export default defineComponent({
 }
 
 .piloti {
-  background-color: #ccc;
+  background-color: #999;
 }
 </style>

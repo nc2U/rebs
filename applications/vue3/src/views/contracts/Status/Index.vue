@@ -37,6 +37,7 @@ export default defineComponent({
     ContractBoard,
   },
   created() {
+    this.fetchTypeList(this.initProjId)
     this.fetchHouseUnitList({ project: this.initProjId })
   },
   computed: {
@@ -46,22 +47,19 @@ export default defineComponent({
   methods: {
     onSelectAdd(this: any, target: any) {
       if (target !== '') {
-        // this.fetchOrderGroupList(target)
-        // this.fetchTypeList(target)
-        // this.fetchKeyUnitList({ project: target })
-        // this.fetchHouseUnitList({ project: target })
+        this.fetchTypeList(target)
+        this.fetchHouseUnitList({ project: target })
         // this.fetchProBankAccList(target)
         // this.fetchPayOrderList(target)
       } else {
-        // this.FETCH_ORDER_GROUP_LIST([])
-        // this.FETCH_TYPE_LIST([])
-        // this.FETCH_KEY_UNIT_LIST([])
-        // this.FETCH_HOUSE_UNIT_LIST([])
+        this.FETCH_TYPE_LIST([])
+        this.FETCH_HOUSE_UNIT_LIST([])
         // this.FETCH_P_BANK_ACCOUNT_LIST([])
         // this.FETCH_PAY_ORDER_LIST([])
       }
     },
-    ...mapActions('project', ['fetchHouseUnitList']),
+    ...mapActions('project', ['fetchTypeList', 'fetchHouseUnitList']),
+    ...mapGetters('project', ['FETCH_TYPE_LIST', 'FETCH_HOUSE_UNIT_LIST']),
   },
 })
 </script>
