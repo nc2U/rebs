@@ -502,7 +502,7 @@ const actions = {
 
   fetchHouseUnitList: ({ commit }: any, payload?: any) => {
     const { project } = payload
-    let url = `/house-unit/?project=${project}`
+    let url = `/available-house-unit/?project=${project}`
     if (payload.unit_type) url += `&unit_type=${payload.unit_type}`
     if (payload.contract) url += `&contract=${payload.contract}`
     api
