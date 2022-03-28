@@ -209,14 +209,14 @@ class BuildingUnitSerializer(serializers.ModelSerializer):
 
 
 class KeyUnitSerializer(serializers.ModelSerializer):
-    houseunit = serializers.PrimaryKeyRelatedField(read_only=True)  # HouseUnitSerializer()
-
     class Meta:
         model = KeyUnit
-        fields = ('pk', 'project', 'unit_type', 'unit_code', 'houseunit', 'contract')
+        fields = ('pk', 'contract')
 
 
 class HouseUnitSerializer(serializers.ModelSerializer):
+    key_unit = KeyUnitSerializer()
+
     class Meta:
         model = HouseUnit
         fields = ('pk', 'project', 'unit_type', 'floor_type', '__str__', 'building_unit', 'name',
