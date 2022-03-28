@@ -223,11 +223,35 @@ class HouseUnitSerializer(serializers.ModelSerializer):
                   'key_unit', 'bldg_line', 'floor_no', 'is_hold', 'hold_reason')
 
 
+class ContractorInContractSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Contractor
+        fields = ('status', 'name')
+
+
+class ContractInKeyUnitSerializer(serializers.ModelSerializer):
+    contractor = ContractorInContractSerializer()
+
+    class Meta:
+        model = Contract
+        fields = ('pk', 'contractor')
+
+
+class KeyUnitInHouseUnitSerializer(serializers.ModelSerializer):
+    contract = ContractInKeyUnitSerializer()
+
+    class Meta:
+        model = KeyUnit
+        fields = ('pk', 'contract')
+
+
 class AllHouseUnitSerializer(serializers.ModelSerializer):
+    key_unit = KeyUnitInHouseUnitSerializer()
+
     class Meta:
         model = HouseUnit
-        fields = ('pk', 'project', 'unit_type', 'floor_type', '__str__', 'building_unit', 'name',
-                  'key_unit', 'bldg_line', 'floor_no', 'is_hold', 'hold_reason')
+        fields = ('pk', 'unit_type', 'building_unit', 'name',
+                  'key_unit', 'bldg_line', 'floor_no', 'is_hold')
 
 
 class ProAccoD2InBudgetSerializer(serializers.ModelSerializer):

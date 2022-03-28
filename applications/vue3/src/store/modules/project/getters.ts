@@ -39,6 +39,7 @@ const getters = {
           key_unit: u.key_unit,
           line: u.bldg_line,
           floor: u.floor_no,
+          is_hold: u.is_hold,
         }))
       : [],
 }
