@@ -246,6 +246,13 @@ const actions = {
     }
 
     dispatch('fetchContractList', { project, status })
+    dispatch(
+      'project/fetchHouseUnitList',
+      {
+        project,
+      },
+      { root: true },
+    )
     message()
   },
 
@@ -404,6 +411,13 @@ const actions = {
       unit_type,
       contract: contractObj.data.pk,
     })
+    dispatch(
+      'project/fetchHouseUnitList',
+      {
+        project,
+      },
+      { root: true },
+    )
     message()
   },
 
