@@ -607,10 +607,11 @@
   <ConfirmModal ref="confirmModal">
     <template v-slot:header>
       <CIcon name="cilItalic" />
-      계약 정보 등록
+      {{ contLabel }} 정보 등록
     </template>
     <template v-slot:default>
-      계약 정보 {{ contract ? '수정등록' : '신규등록' }}을 진행하시겠습니까?
+      {{ contLabel }} 정보 {{ contract ? '수정등록' : '신규등록' }}을
+      진행하시겠습니까?
     </template>
     <template v-slot:footer>
       <CButton
