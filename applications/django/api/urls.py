@@ -57,7 +57,6 @@ urlpatterns = [
     path('house-unit/', HouseUnitList.as_view(), name=HouseUnitList.name),
     path('house-unit/<int:pk>/', HouseUnitDetail.as_view(), name=HouseUnitDetail.name),
     path('available-house-unit/', AvailableHouseUnitList.as_view(), name=AvailableHouseUnitList.name),
-    # path('unit-summary/', HouseUnitSummary.as_view(), name=HouseUnitSummary.name),
     path('budget/', ProjectBudgetList.as_view(), name=ProjectBudgetList.name),
     # path('budget/<int:pk>/', ProjectBudgetDetail.as_view(), name=ProjectBudgetDetail.name),
     path('exec-amount/', ExecAmountToBudgetList.as_view(), name=ExecAmountToBudgetList.name),

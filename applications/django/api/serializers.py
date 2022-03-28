@@ -208,45 +208,19 @@ class BuildingUnitSerializer(serializers.ModelSerializer):
         fields = ('pk', 'project', 'name')
 
 
-class ContractorInContractSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Contractor
-        fields = ('status', 'name')
-
-
-class ContractInKeyUnitSerializer(serializers.ModelSerializer):
-    contractor = ContractorInContractSerializer()
-
-    class Meta:
-        model = Contract
-        fields = ('pk', 'contractor')
-
-
 class KeyUnitSerializer(serializers.ModelSerializer):
-    contract = ContractInKeyUnitSerializer()
+    houseunit = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = KeyUnit
-        fields = ('pk', 'unit_code', 'contract')
+        fields = ('pk', 'project', 'unit_type', 'unit_code', 'houseunit', 'contract')
 
 
 class HouseUnitSerializer(serializers.ModelSerializer):
-    key_unit = KeyUnitSerializer()
-
     class Meta:
         model = HouseUnit
         fields = ('pk', 'project', 'unit_type', 'floor_type', '__str__', 'building_unit', 'name',
                   'key_unit', 'bldg_line', 'floor_no', 'is_hold', 'hold_reason')
-
-
-# class HouseUnitSummarySerializer(serializers.ModelSerializer):
-#     # all_count = serializers.IntegerField()
-#
-#     hold_count = serializers.IntegerField()
-#
-#     class Meta:
-#         model = HouseUnit
-#         fields = ('hold_count',)
 
 
 class ProAccoD2InBudgetSerializer(serializers.ModelSerializer):

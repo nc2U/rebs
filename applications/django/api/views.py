@@ -54,7 +54,6 @@ class ApiIndex(generics.GenericAPIView):
             'bldg-unit': reverse(api + BuildingUnitList.name, request=request),
             'house-unit': reverse(api + HouseUnitList.name, request=request),
             'available-house-unit': reverse(api + AvailableHouseUnitList.name, request=request),
-            # 'unit-summary': reverse(api + HouseUnitSummary.name, request=request),
             'budget': reverse(api + ProjectBudgetList.name, request=request),
             'exec-amount-budget': reverse(api + ExecAmountToBudgetList.name, request=request),
             # 'site': reverse(api + SiteList.name, request=request),
@@ -381,20 +380,6 @@ class AvailableHouseUnitList(HouseUnitList):
                 Q(project=project, unit_type=unit_type, key_unit__isnull=True) |
                 Q(key_unit__contract=contract))
         return queryset
-
-
-# class HouseUnitSummary(AvailableHouseUnitList):
-#     name = 'unit-summary'
-#     serializer_class = HouseUnitSummarySerializer
-#
-#     def get_queryset(self):
-#         return HouseUnit.objects.values('key_unit', 'name', 'is_hold') \
-#             .annotate(
-#             hold_count=Count(Case(
-#                 When(is_hold=False, then=F('is_hold')),
-#                 output_field=IntegerField(),
-#                 default=0
-#             )))
 
 
 class HouseUnitDetail(generics.RetrieveUpdateDestroyAPIView):
