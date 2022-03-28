@@ -52,19 +52,22 @@ export default defineComponent({
     isPiloti(this: any) {
       return !this.unit && this.floor < 3
     },
-    // statusColor() {
-    //   const status = this.unit.key_unit?.contract
-    //     ? this.unit.key_unit?.contract?.contractor?.status
-    //     : ''
-    //   let color = ''
-    //   if (status === '1') color = '#D5F1DE'
-    //   if (status === '2') color = '#DDDFE3'
-    //   return color
-    // },
+    isContract() {
+      return !!this.unit.key_unit?.contract
+    },
     contractor() {
-      return this.unit.key_unit?.contract
-        ? this.unit.key_unit.contract.contractor.name
+      return this.isContract ? this.unit.key_unit.contract.contractor.name : ''
+    },
+    status() {
+      return this.isContract
+        ? this.unit.key_unit.contract.contractor.status
         : ''
+    },
+    statusColor() {
+      let color = ''
+      if (this.unit && this.isContract)
+        color = this.status === '1' ? '#D5F1DE' : '#CBC7EC'
+      return color
     },
   },
 })
