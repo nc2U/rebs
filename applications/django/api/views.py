@@ -1,5 +1,5 @@
 from datetime import datetime
-from django.db.models import Sum, Count, F, Q, Case, When
+from django.db.models import Sum, Count, F, Q, Case, When, IntegerField
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
@@ -54,7 +54,7 @@ class ApiIndex(generics.GenericAPIView):
             'bldg-unit': reverse(api + BuildingUnitList.name, request=request),
             'house-unit': reverse(api + HouseUnitList.name, request=request),
             'available-house-unit': reverse(api + AvailableHouseUnitList.name, request=request),
-            'unit-summary': reverse(api + HouseUnitSummary.name, request=request),
+            # 'unit-summary': reverse(api + HouseUnitSummary.name, request=request),
             'budget': reverse(api + ProjectBudgetList.name, request=request),
             'exec-amount-budget': reverse(api + ExecAmountToBudgetList.name, request=request),
             # 'site': reverse(api + SiteList.name, request=request),
@@ -383,16 +383,18 @@ class AvailableHouseUnitList(HouseUnitList):
         return queryset
 
 
-class HouseUnitSummary(AvailableHouseUnitList):
-    name = 'unit-summary'
-    serializer_class = HouseUnitSummarySerializer
-
-    # def get_queryset(self):
-    #     return HouseUnit.objects.values('is_hold').annotate(
-    #         hold_count=Count(Case(
-    #             When(is_hold=True, then=F('hold_count')),
-    #             default=0
-    #         )))
+# class HouseUnitSummary(AvailableHouseUnitList):
+#     name = 'unit-summary'
+#     serializer_class = HouseUnitSummarySerializer
+#
+#     def get_queryset(self):
+#         return HouseUnit.objects.values('key_unit', 'name', 'is_hold') \
+#             .annotate(
+#             hold_count=Count(Case(
+#                 When(is_hold=False, then=F('is_hold')),
+#                 output_field=IntegerField(),
+#                 default=0
+#             )))
 
 
 class HouseUnitDetail(generics.RetrieveUpdateDestroyAPIView):
