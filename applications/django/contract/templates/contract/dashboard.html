@@ -44,7 +44,7 @@
                                     <tr>
                                         <td class="bg-light" style="width: 25%">총세대수</td>
                                         <td class="text-right"
-                                            style="width: 25%">{{ unit_numbers.count|default:"-"|intcomma }}</td>
+                                            style="width: 25%">{{ house_units.count|default:"-"|intcomma }}</td>
                                         <td class="bg-light text-black-50" style="width: 25%">홀딩세대</td>
                                         <td class="text-right"
                                             style="width: 25%">{{ is_hold.count|default:"-"|intcomma }}</td>
@@ -59,7 +59,7 @@
                                         <td class="bg-light">합계</td>
                                         <td class="text-right">{{ is_apply.count|add:is_contract.count|default:"-"|intcomma }}</td>
                                         <td class="bg-light">잔여세대</td>
-                                        <td class="text-right">{{ unit_numbers.count|sub:is_apply.count|sub:is_contract.count|default:"-"|intcomma }}</td>
+                                        <td class="text-right">{{ house_units.count|sub:is_apply.count|sub:is_contract.count|default:"-"|intcomma }}</td>
                                     </tr>
                                     </tbody>
                                 </table>
