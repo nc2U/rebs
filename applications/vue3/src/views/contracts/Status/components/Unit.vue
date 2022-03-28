@@ -63,10 +63,17 @@ export default defineComponent({
         ? this.unit.key_unit.contract.contractor.status
         : ''
     },
+    isHold() {
+      return this.isContract ? this.unit.is_hold : ''
+    },
     statusColor() {
       let color = ''
-      if (this.unit && this.isContract)
-        color = this.status === '1' ? '#D5F1DE' : '#CBC7EC'
+      if (this.unit && this.isContract) {
+        if (this.status === '1') color = '#D5F1DE'
+        if (this.status === '2') color = '#CBC7EC'
+        if (this.isHold) color = '#555'
+      }
+
       return color
     },
   },
