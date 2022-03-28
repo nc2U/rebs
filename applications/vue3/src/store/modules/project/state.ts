@@ -52,9 +52,6 @@ interface UnitFloorType {
 
 export interface KeyUnit {
   pk: number
-  project: number
-  unit_type: number
-  unit_code: string
   contract: number | null
 }
 
@@ -72,7 +69,7 @@ export interface HouseUnit {
   __str__: string
   building_unit: number
   name: string
-  key_unit: number
+  key_unit: KeyUnit
   bldg_line: number
   floor_no: number
   is_hold: boolean
@@ -159,7 +156,6 @@ export interface ProjectState {
   project: Project | null
   unitTypeList: UnitType[]
   floorTypeList: UnitFloorType[]
-  keyUnitList: KeyUnit[]
   buildingList: BuildingUnit[]
   houseUnitList: HouseUnit[]
   numUnitByType: number
@@ -175,7 +171,6 @@ const state: ProjectState = {
   project: null,
   unitTypeList: [],
   floorTypeList: [],
-  keyUnitList: [],
   buildingList: [],
   houseUnitList: [],
   numUnitByType: 0,
