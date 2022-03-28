@@ -21,7 +21,19 @@
         restPiloti: isPiloti && line !== 1,
         piloti: isPiloti,
       }"
-    ></div>
+      :style="`background-color: ${statusColor};`"
+    >
+      <span v-if="unit && unit.key_unit && unit.key_unit.contract">
+        <router-link
+          :to="{
+            name: '계약등록 관리',
+            query: { contract: unit.key_unit.contract.pk },
+          }"
+        >
+          {{ contractor }}
+        </router-link>
+      </span>
+    </div>
   </div>
 </template>
 
@@ -39,6 +51,20 @@ export default defineComponent({
     },
     isPiloti(this: any) {
       return !this.unit && this.floor < 3
+    },
+    // statusColor() {
+    //   const status = this.unit.key_unit?.contract
+    //     ? this.unit.key_unit?.contract?.contractor?.status
+    //     : ''
+    //   let color = ''
+    //   if (status === '1') color = '#D5F1DE'
+    //   if (status === '2') color = '#DDDFE3'
+    //   return color
+    // },
+    contractor() {
+      return this.unit.key_unit?.contract
+        ? this.unit.key_unit.contract.contractor.name
+        : ''
     },
   },
 })

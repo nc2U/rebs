@@ -36,6 +36,7 @@ const getters = {
             .filter((t: any) => t.pk === u.unit_type)
             .map((t: any) => t.color)[0],
           name: u.name,
+          key_unit: u.key_unit,
           line: u.bldg_line,
           floor: u.floor_no,
         }))
