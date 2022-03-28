@@ -208,10 +208,26 @@ class BuildingUnitSerializer(serializers.ModelSerializer):
         fields = ('pk', 'project', 'name')
 
 
+class ContractorInContractSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Contractor
+        fields = ('status', 'name')
+
+
+class ContractInKeyUnitSerializer(serializers.ModelSerializer):
+    contractor = ContractorInContractSerializer()
+
+    class Meta:
+        model = Contract
+        fields = ('pk', 'contractor')
+
+
 class KeyUnitSerializer(serializers.ModelSerializer):
+    contract = ContractInKeyUnitSerializer()
+
     class Meta:
         model = KeyUnit
-        fields = ('pk', 'contract')
+        fields = ('pk', 'unit_code', 'contract')
 
 
 class HouseUnitSerializer(serializers.ModelSerializer):
