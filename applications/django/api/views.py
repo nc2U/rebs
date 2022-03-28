@@ -54,6 +54,7 @@ class ApiIndex(generics.GenericAPIView):
             'bldg-unit': reverse(api + BuildingUnitList.name, request=request),
             'house-unit': reverse(api + HouseUnitList.name, request=request),
             'available-house-unit': reverse(api + AvailableHouseUnitList.name, request=request),
+            'all-house-unit': reverse(api + AllHouseUnitList.name, request=request),
             'budget': reverse(api + ProjectBudgetList.name, request=request),
             'exec-amount-budget': reverse(api + ExecAmountToBudgetList.name, request=request),
             # 'site': reverse(api + SiteList.name, request=request),
@@ -354,7 +355,6 @@ class HouseUnitList(generics.ListCreateAPIView):
     name = 'unit-list'
     queryset = HouseUnit.objects.all()
     serializer_class = HouseUnitSerializer
-    pagination_class = PageNumberPaginationThreeThousand
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
     filter_fields = ('project', 'building_unit')
     search_fields = ('hold_reason',)
@@ -362,7 +362,6 @@ class HouseUnitList(generics.ListCreateAPIView):
 
 class AvailableHouseUnitList(HouseUnitList):
     name = 'all-house-unit'
-    pagination_class = PageNumberPaginationTen
 
     def get_queryset(self):
         houseunit = HouseUnit.objects.all()
@@ -380,6 +379,12 @@ class AvailableHouseUnitList(HouseUnitList):
                 Q(project=project, unit_type=unit_type, key_unit__isnull=True) |
                 Q(key_unit__contract=contract))
         return queryset
+
+
+class AllHouseUnitList(HouseUnitList):
+    name = 'all-unit-list'
+    serializer_class = AllHouseUnitSerializer
+    pagination_class = PageNumberPaginationThreeThousand
 
 
 class HouseUnitDetail(generics.RetrieveUpdateDestroyAPIView):

@@ -223,6 +223,13 @@ class HouseUnitSerializer(serializers.ModelSerializer):
                   'key_unit', 'bldg_line', 'floor_no', 'is_hold', 'hold_reason')
 
 
+class AllHouseUnitSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HouseUnit
+        fields = ('pk', 'project', 'unit_type', 'floor_type', '__str__', 'building_unit', 'name',
+                  'key_unit', 'bldg_line', 'floor_no', 'is_hold', 'hold_reason')
+
+
 class ProAccoD2InBudgetSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectAccountD2
