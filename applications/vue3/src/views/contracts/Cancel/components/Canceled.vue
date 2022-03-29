@@ -1,6 +1,8 @@
 <template>
   <CTableDataCell>
-    {{ cutString(cont.contractor.__str__, 25) }}
+    <router-link to="">
+      {{ cutString(cont.contractor.__str__, 25) }}
+    </router-link>
   </CTableDataCell>
   <CTableDataCell>{{ getStatus(cont.status) }}</CTableDataCell>
   <CTableDataCell class="text-right">
