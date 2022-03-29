@@ -935,7 +935,7 @@ class ContContactDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class ContReleaseList(generics.ListCreateAPIView):
     name = 'release-list'
-    queryset = ContractorRelease.objects.all()
+    queryset = ContractorRelease.objects.all().order_by('-request_date')
     serializer_class = ContractorReleaseSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
     filter_fields = ('project',)

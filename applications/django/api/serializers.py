@@ -598,7 +598,15 @@ class ContractorContactSerializer(serializers.ModelSerializer):
         fields = ('pk', 'contractor', 'cell_phone', 'home_phone', 'other_phone', 'email')
 
 
+class ContractorInReleaseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Contractor
+        fields = ('pk', '__str__')
+
+
 class ContractorReleaseSerializer(serializers.ModelSerializer):
+    contractor = ContractorInReleaseSerializer()
+
     class Meta:
         model = ContractorRelease
         fields = ('pk', 'project', 'contractor', 'status', 'refund_amount',
