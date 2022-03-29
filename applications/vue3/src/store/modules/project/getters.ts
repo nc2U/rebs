@@ -42,6 +42,26 @@ const getters = {
           is_hold: u.is_hold,
         }))
       : [],
+
+  unitSummary: (state: ProjectState) =>
+    state.houseUnitList
+      ? {
+          totalNum: state.houseUnitList.length,
+          holdNum: state.houseUnitList.filter(u => u.is_hold).length,
+          appNum: state.houseUnitList.filter(
+            u =>
+              u.key_unit &&
+              u.key_unit.contract &&
+              u.key_unit.contract.contractor.status === '1',
+          ).length,
+          contNum: state.houseUnitList.filter(
+            u =>
+              u.key_unit &&
+              u.key_unit.contract &&
+              u.key_unit.contract.contractor.status === '2',
+          ).length,
+        }
+      : { totalNum: 0, holdNum: 0, appNum: 0, contNum: 0 },
 }
 
 export default getters

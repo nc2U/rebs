@@ -50,9 +50,17 @@ interface UnitFloorType {
   alias_name: string
 }
 
+interface Contract {
+  pk: number
+  contractor: {
+    status: string
+    name: string
+  }
+}
+
 export interface KeyUnit {
   pk: number
-  contract: number | null
+  contract: Contract | null
 }
 
 export interface BuildingUnit {

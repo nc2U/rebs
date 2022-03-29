@@ -11,23 +11,41 @@
         <CTableBody>
           <CTableRow>
             <CTableHeaderCell color="dark">총세대수</CTableHeaderCell>
-            <CTableDataCell class="text-right">-</CTableDataCell>
+            <CTableDataCell class="text-right">
+              {{ numFormat(unitSummary.totalNum) }}
+            </CTableDataCell>
             <CTableHeaderCell color="dark">홀딩세대</CTableHeaderCell>
-            <CTableDataCell class="text-right">-</CTableDataCell>
+            <CTableDataCell class="text-right">
+              {{ numFormat(unitSummary.holdNum) }}
+            </CTableDataCell>
           </CTableRow>
 
           <CTableRow>
             <CTableHeaderCell color="success">청약세대</CTableHeaderCell>
-            <CTableDataCell class="text-right">-</CTableDataCell>
+            <CTableDataCell class="text-right">
+              {{ numFormat(unitSummary.appNum) }}
+            </CTableDataCell>
             <CTableHeaderCell color="primary">계약세대</CTableHeaderCell>
-            <CTableDataCell class="text-right">-</CTableDataCell>
+            <CTableDataCell class="text-right">
+              {{ numFormat(unitSummary.contNum) }}
+            </CTableDataCell>
           </CTableRow>
 
           <CTableRow>
             <CTableHeaderCell color="dark">합계</CTableHeaderCell>
-            <CTableDataCell class="text-right">-</CTableDataCell>
+            <CTableDataCell class="text-right">
+              {{ numFormat(unitSummary.appNum + unitSummary.contNum) }}
+            </CTableDataCell>
             <CTableHeaderCell color="dark">잔여세대</CTableHeaderCell>
-            <CTableDataCell class="text-right">-</CTableDataCell>
+            <CTableDataCell class="text-right">
+              {{
+                numFormat(
+                  unitSummary.totalNum -
+                    unitSummary.appNum -
+                    unitSummary.contNum,
+                )
+              }}
+            </CTableDataCell>
           </CTableRow>
         </CTableBody>
       </CTable>
@@ -43,24 +61,14 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'ContSummary',
-  components: {},
-  props: {},
-  setup() {
-    return {}
-  },
-  data() {
-    return {
-      sample: '',
-    }
-  },
   computed: {
-    ...mapGetters('project', ['simpleTypes']),
+    ...mapState('project', ['houseUnitNum']),
+    ...mapGetters('project', ['simpleTypes', 'unitSummary']),
   },
-  methods: {},
 })
 </script>
 
