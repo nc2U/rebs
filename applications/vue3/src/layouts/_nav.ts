@@ -38,17 +38,17 @@ const contract = {
     },
     {
       component: 'CNavItem',
+      name: '동호수 현황표',
+      to: '/contracts/status',
+    },
+    {
+      component: 'CNavItem',
       name: '계약해지 관리',
       badge: {
         color: 'danger',
         text: 'u.c',
       },
       to: '/contracts/cancel',
-    },
-    {
-      component: 'CNavItem',
-      name: '동호수 현황표',
-      to: '/contracts/status',
     },
   ],
 }

@@ -30,21 +30,21 @@ const contract = {
           : import('@/views/_Accounts/NoAuth.vue'),
     },
     {
-      path: 'cancel',
-      name: '계약해지 관리',
-      component: () =>
-        store.state.accounts.userInfo.is_superuser ||
-        store.state.accounts.userInfo.staffauth?.contract > '0'
-          ? import('@/views/contracts/Cancel/Index.vue')
-          : import('@/views/_Accounts/NoAuth.vue'),
-    },
-    {
       path: 'status',
       name: '동호수 현황표',
       component: () =>
         store.state.accounts.userInfo.is_superuser ||
         store.state.accounts.userInfo.staffauth?.contract > '0'
           ? import('@/views/contracts/Status/Index.vue')
+          : import('@/views/_Accounts/NoAuth.vue'),
+    },
+    {
+      path: 'cancel',
+      name: '계약해지 관리',
+      component: () =>
+        store.state.accounts.userInfo.is_superuser ||
+        store.state.accounts.userInfo.staffauth?.contract > '0'
+          ? import('@/views/contracts/Cancel/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
     },
   ],
