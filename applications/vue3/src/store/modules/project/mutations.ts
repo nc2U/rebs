@@ -32,6 +32,7 @@ const mutations = {
 
   [FETCH_HOUSE_UNIT_LIST]: (state: ProjectState, payload: any) => {
     state.houseUnitList = payload.results
+    state.houseUnitNum = payload.count
   },
 
   [FETCH_NUM_UNIT_BY_TYPE]: (state: ProjectState, count: number) => {

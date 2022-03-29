@@ -158,6 +158,7 @@ export interface ProjectState {
   floorTypeList: UnitFloorType[]
   buildingList: BuildingUnit[]
   houseUnitList: HouseUnit[]
+  houseUnitNum: number
   numUnitByType: number
   projectBudgetList: ProjectBudget[]
   siteList: Site[]
@@ -173,6 +174,7 @@ const state: ProjectState = {
   floorTypeList: [],
   buildingList: [],
   houseUnitList: [],
+  houseUnitNum: 0,
   numUnitByType: 0,
   projectBudgetList: [],
   siteList: [],
