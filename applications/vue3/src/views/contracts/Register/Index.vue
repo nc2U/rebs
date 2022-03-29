@@ -6,14 +6,19 @@
   />
 
   <ContentBody>
-    <ContractForm
-      :contract="contract"
-      :unit-set="unitSet"
-      :is-union="isUnion"
-      @type-select="typeSelect"
-      @on-create="onCreate"
-      @on-update="onUpdate"
-    />
+    <CCardBody>
+      <ContNavigation v-if="$route.query.contract" />
+      <ContractForm
+        :contract="contract"
+        :unit-set="unitSet"
+        :is-union="isUnion"
+        @type-select="typeSelect"
+        @on-create="onCreate"
+        @on-update="onUpdate"
+      />
+    </CCardBody>
+
+    <CCardFooter>&nbsp;</CCardFooter>
   </ContentBody>
 </template>
 
@@ -22,6 +27,7 @@ import { defineComponent } from 'vue'
 import HeaderMixin from '@/views/contracts/_menu/headermixin'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
+import ContNavigation from '@/views/contracts/Register/components/ContNavigation.vue'
 import ContractForm from '@/views/contracts/Register/components/ContractForm.vue'
 import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
 
@@ -31,6 +37,7 @@ export default defineComponent({
   components: {
     ContentHeader,
     ContentBody,
+    ContNavigation,
     ContractForm,
   },
   created(this: any) {
