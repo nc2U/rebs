@@ -938,6 +938,7 @@ class ContReleaseList(generics.ListCreateAPIView):
     queryset = ContractorRelease.objects.all()
     serializer_class = ContractorReleaseSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    filter_fields = ('project',)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
