@@ -10,7 +10,7 @@
       <ContNavigation />
       <ContController />
       <AddCancelCont />
-      <CanceledList />
+      <CanceledList @page-select="pageSelect" />
     </CCardBody>
 
     <CCardFooter>&nbsp;</CCardFooter>
@@ -26,7 +26,7 @@ import AddCancelCont from '@/views/contracts/Cancel/components/AddCancelCont.vue
 import ContNavigation from '@/views/contracts/Cancel/components/ContNavigation.vue'
 import ContController from '@/views/contracts/Cancel/components/ContController.vue'
 import CanceledList from '@/views/contracts/Cancel/components/CanceledList.vue'
-import { mapGetters, mapState } from 'vuex'
+import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'ContractCancel',
@@ -39,9 +39,27 @@ export default defineComponent({
     AddCancelCont,
     CanceledList,
   },
+  created() {
+    this.fetchContReleaseList({ project: this.initProjId })
+  },
   computed: {
     ...mapState('project', ['project']),
     ...mapGetters('accounts', ['initProjId']),
+  },
+  methods: {
+    onSelectAdd(this: any, target: any) {
+      if (target !== '') {
+        this.fetchContReleaseList({ project: target })
+      } else {
+        this.FETCH_CONT_RELEASE_LIST([])
+      }
+    },
+    pageSelect(page: number) {
+      const project = this.project.pk
+      this.fetchContReleaseList({ project, page })
+    },
+    ...mapActions('contract', ['fetchContReleaseList']),
+    ...mapMutations('contract', ['FETCH_CONT_RELEASE_LIST']),
   },
 })
 </script>

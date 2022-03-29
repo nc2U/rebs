@@ -528,8 +528,10 @@ const actions = {
       .catch(err => console.log(err.response.data))
   },
 
-  fetchContReleaseList: ({ commit }: any, pk?: number) => {
-    const url = `/contractor-release/?project=${pk}`
+  fetchContReleaseList: ({ commit }: any, payload: any) => {
+    const { project } = payload
+    const page = payload.page ? payload.page : 1
+    const url = `/contractor-release/?project=${project}&page=${page}`
     api
       .get(url)
       .then(res => {
