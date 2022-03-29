@@ -3,47 +3,33 @@
 
   <CTable hover responsive align="middle">
     <colgroup>
-      <col width="20%" />
+      <col width="25%" />
       <col width="10%" />
-      <col width="15%" />
+      <col width="12%" />
       <col width="10%" />
-      <col width="15%" />
-      <col width="10%" />
-      <col width="10%" />
-      <col width="10%" />
+      <col width="12%" />
+      <col width="9%" />
+      <col width="9%" />
+      <col width="9%" />
+      <col width="5%" />
     </colgroup>
 
     <CTableHead color="dark" class="text-center">
       <CTableRow>
-        <CTableHeaderCell rowspan="2">계약 해지자</CTableHeaderCell>
-        <CTableHeaderCell rowspan="2">현재상태</CTableHeaderCell>
-        <CTableHeaderCell rowspan="2">환불(예정)금액</CTableHeaderCell>
-        <CTableHeaderCell colspan="3">환불계좌</CTableHeaderCell>
-        <CTableHeaderCell rowspan="2">해지신청일</CTableHeaderCell>
-        <CTableHeaderCell rowspan="2">환불처리일</CTableHeaderCell>
-      </CTableRow>
-      <CTableRow>
-        <CTableHeaderCell>은행명</CTableHeaderCell>
-        <CTableHeaderCell>계좌번호</CTableHeaderCell>
-        <CTableHeaderCell>예금주</CTableHeaderCell>
+        <CTableHeaderCell>계약 해지자</CTableHeaderCell>
+        <CTableHeaderCell>현재상태</CTableHeaderCell>
+        <CTableHeaderCell>환불(예정)금액</CTableHeaderCell>
+        <CTableHeaderCell>(환불)은행명</CTableHeaderCell>
+        <CTableHeaderCell>(환불)계좌번호</CTableHeaderCell>
+        <CTableHeaderCell>(환불)예금주</CTableHeaderCell>
+        <CTableHeaderCell>해지신청일</CTableHeaderCell>
+        <CTableHeaderCell>환불처리일</CTableHeaderCell>
+        <CTableHeaderCell>비고</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
     <CTableBody class="text-center">
       <CTableRow v-for="cont in contReleaseList" :key="cont.pk">
-        <CTableDataCell>{{ cont.contractor }}</CTableDataCell>
-        <CTableDataCell>{{ cont.status }}</CTableDataCell>
-        <CTableDataCell class="text-right">
-          {{ numFormat(cont.refund_amount) }}
-        </CTableDataCell>
-        <CTableDataCell class="text-left">
-          {{ cont.refund_account_bank }}
-        </CTableDataCell>
-        <CTableDataCell class="text-left">
-          {{ cont.refund_account_number }}
-        </CTableDataCell>
-        <CTableDataCell>{{ cont.refund_account_depositor }}</CTableDataCell>
-        <CTableDataCell>{{ cont.request_date }}</CTableDataCell>
-        <CTableDataCell>{{ cont.completion_date }}</CTableDataCell>
+        <Canceled :cont="cont" />
       </CTableRow>
     </CTableBody>
   </CTable>
@@ -59,20 +45,12 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import Canceled from '@/views/contracts/Cancel/components/Canceled.vue'
 import { mapGetters, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'CanceledList',
-  components: {},
-  props: {},
-  setup() {
-    return {}
-  },
-  data() {
-    return {
-      sample: '',
-    }
-  },
+  components: { Canceled },
   computed: {
     ...mapState('contract', ['contReleaseList']),
     ...mapGetters('contract', ['releasePages']),
