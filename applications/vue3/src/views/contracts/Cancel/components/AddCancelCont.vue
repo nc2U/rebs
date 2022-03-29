@@ -1,23 +1,46 @@
 <template>
-  <h3>AddCancelCont!</h3>
+  <CAlert color="secondary">
+    <CButton color="primary" @click="createConfirm">등록하기</CButton>
+  </CAlert>
+
+  <FormModal size="lg" ref="cancelFormModal">
+    <template v-slot:header>
+      <CIcon name="cil-italic" />
+      계약 해지 등록
+    </template>
+    <template v-slot:default>
+      <ContCancelForm
+        @multi-submit="multiSubmit"
+        @close="$refs.cancelFormModal.visible = false"
+      />
+    </template>
+  </FormModal>
+
+  <AlertModal ref="cancelAlertModal" />
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import FormModal from '@/components/Modals/FormModal.vue'
+import ContCancelForm from '@/views/contracts/Cancel/components/ContCancelForm.vue'
+import { mapGetters } from 'vuex'
 
 export default defineComponent({
   name: 'AddCancelCont',
-  components: {},
-  props: {},
-  setup() {
-    return {}
+  components: { FormModal, ContCancelForm },
+  computed: {
+    pageManageAuth(this: any) {
+      return (
+        this.superAuth || (this.staffAuth && this.staffAuth.contract === '2')
+      )
+    },
+    ...mapGetters('accounts', ['staffAuth', 'superAuth']),
   },
-  data() {
-    return {
-      sample: '',
-    }
+  methods: {
+    createConfirm(this: any) {
+      if (this.pageManageAuth) this.$refs.cancelFormModal.callModal()
+      else this.$refs.cancelAlertModal.callModal()
+    },
   },
-  computed: {},
-  methods: {},
 })
 </script>
