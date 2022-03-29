@@ -113,9 +113,8 @@ urlpatterns = [
     path('contractor-address/<int:pk>/', ContAddressDetail.as_view(), name=ContAddressDetail.name),
     path('contractor-contact/', ContContactList.as_view(), name=ContContactList.name),
     path('contractor-contact/<int:pk>/', ContContactDetail.as_view(), name=ContContactDetail.name),
-
-    # path('contractor-release/', ContReleaseList.as_view(), name=ContReleaseList.name),
-    # path('contractor-release/<int:pk>/', ContReleaseDetail.as_view(), name=ContReleaseDetail.name),
+    path('contractor-release/', ContReleaseList.as_view(), name=ContReleaseList.name),
+    path('contractor-release/<int:pk>/', ContReleaseDetail.as_view(), name=ContReleaseDetail.name),
     # path('sales-bill-issue/', BillIssueList.as_view(), name=BillIssueList.name),
     # path('sales-bill-issue/<int:pk>/', BillIssueDetail.as_view(), name=BillIssueDetail.name),
     # path('group/', GroupList.as_view(), name=GroupList.name),

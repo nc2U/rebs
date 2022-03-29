@@ -603,7 +603,7 @@ class ContractorReleaseSerializer(serializers.ModelSerializer):
         model = ContractorRelease
         fields = ('pk', 'project', 'contractor', 'status', 'refund_amount',
                   'refund_account_bank', 'refund_account_number', 'refund_account_depositor',
-                  'request_date', 'completion_date', 'note', 'user', 'created_at', 'updated_at')
+                  'request_date', 'completion_date', 'note')
 
 
 # Notice --------------------------------------------------------------------------

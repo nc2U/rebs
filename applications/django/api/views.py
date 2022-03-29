@@ -87,7 +87,7 @@ class ApiIndex(generics.GenericAPIView):
             'contractor': reverse(api + ContractorList.name, request=request),
             'contractor-address': reverse(api + ContAddressList.name, request=request),
             'contractor-contact': reverse(api + ContContactList.name, request=request),
-            # 'contractor-release': reverse(api + ContReleaseList.name, request=request),
+            'contractor-release': reverse(api + ContReleaseList.name, request=request),
             # 'sales-bill-issue': reverse(api + BillIssueList.name, request=request),
             # 'group': reverse(api + GroupList.name, request=request),
             # 'board': reverse(api + BoardList.name, request=request),
@@ -933,21 +933,21 @@ class ContContactDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
 
-# class ContReleaseList(generics.ListCreateAPIView):
-#     name = 'release-list'
-#     queryset = ContractorRelease.objects.all()
-#     serializer_class = ContractorReleaseSerializer
-#     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-#
-#     def perform_create(self, serializer):
-#         serializer.save(user=self.request.user)
-#
-#
-# class ContReleaseDetail(generics.RetrieveUpdateDestroyAPIView):
-#     name = 'release-detail'
-#     queryset = ContractorRelease.objects.all()
-#     serializer_class = ContractorReleaseSerializer
-#     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+class ContReleaseList(generics.ListCreateAPIView):
+    name = 'release-list'
+    queryset = ContractorRelease.objects.all()
+    serializer_class = ContractorReleaseSerializer
+    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
+class ContReleaseDetail(generics.RetrieveUpdateDestroyAPIView):
+    name = 'release-detail'
+    queryset = ContractorRelease.objects.all()
+    serializer_class = ContractorReleaseSerializer
+    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
 
 # class BillIssueList(generics.ListCreateAPIView):
