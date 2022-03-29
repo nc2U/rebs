@@ -83,6 +83,20 @@ export interface ContractSummary {
   contractor: string
 }
 
+interface ContractRelease {
+  pk: number
+  project: number
+  contractor: number
+  status: string
+  refund_amount: number
+  refund_account_bank: string
+  refund_account_number: string
+  refund_account_depositor: string
+  request_date: string
+  completion_date: string
+  note: string
+}
+
 export interface ContractState {
   contractList: Contract[]
   contractsCount: number
@@ -92,6 +106,8 @@ export interface ContractState {
   orderGroupList: OrderGroup[]
   keyUnitList: KeyUnit[]
   houseUnitList: HouseUnit[]
+  contReleaseList: ContractRelease[]
+  contReleaseCount: number
 }
 
 const state = {
@@ -103,6 +119,8 @@ const state = {
   orderGroupList: [],
   keyUnitList: [],
   houseUnitList: [],
+  contReleaseList: [],
+  contReleaseCount: 0,
 }
 
 export default state
