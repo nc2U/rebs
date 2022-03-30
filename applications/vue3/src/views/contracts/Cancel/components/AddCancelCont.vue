@@ -23,11 +23,12 @@
 import { defineComponent } from 'vue'
 import FormModal from '@/components/Modals/FormModal.vue'
 import ContCancelForm from '@/views/contracts/Cancel/components/ContCancelForm.vue'
+import AlertModal from '@/components/Modals/AlertModal.vue'
 import { mapGetters } from 'vuex'
 
 export default defineComponent({
   name: 'AddCancelCont',
-  components: { FormModal, ContCancelForm },
+  components: { FormModal, ContCancelForm, AlertModal },
   computed: {
     pageManageAuth(this: any) {
       return (

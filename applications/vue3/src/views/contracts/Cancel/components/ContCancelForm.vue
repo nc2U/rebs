@@ -147,14 +147,11 @@
         닫기
       </CButton>
       <slot name="footer">
-        <CButton
-          :color="payment ? 'success' : 'primary'"
-          :disabled="formsCheck"
-        >
+        <CButton :color="cont ? 'success' : 'primary'" :disabled="formsCheck">
           저장
         </CButton>
         <CButton
-          v-if="payment"
+          v-if="cont"
           type="button"
           color="danger"
           @click="deleteConfirm"
@@ -195,7 +192,7 @@ export default defineComponent({
     // ConfirmModal,
     AlertModal,
   },
-  props: {},
+  props: { cont: Object },
   data() {
     return {
       form: {
@@ -210,6 +207,19 @@ export default defineComponent({
         note: '',
       },
       validated: false,
+    }
+  },
+  created(this: any) {
+    if (this.cont) {
+      this.form.contractor = this.cont.constructor
+      this.form.status = this.cont.status
+      this.form.refund_amount = this.cont.refund_amount
+      this.form.refund_account_bank = this.cont.refund_account_bank
+      this.form.refund_account_number = this.cont.refund_account_number
+      this.form.refund_account_depositor = this.cont.refund_account_depositor
+      this.form.request_date = this.cont.request_date
+      this.form.completion_date = this.cont.completion_date
+      this.form.note = this.cont.note
     }
   },
   computed: {
@@ -233,6 +243,9 @@ export default defineComponent({
           this.$emit('on-submit', this.form)
         }
       } else this.$refs.alertModal.callModal()
+    },
+    deleteConfirm() {
+      alert('delete ready!')
     },
   },
 })
