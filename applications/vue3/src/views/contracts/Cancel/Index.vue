@@ -9,7 +9,7 @@
     <CCardBody class="pb-5">
       <ContNavigation />
       <ContController />
-      <AddCancelCont />
+      <AddCancelCont @on-submit="onSubmit" />
       <CanceledList @page-select="pageSelect" />
     </CCardBody>
 
@@ -57,6 +57,10 @@ export default defineComponent({
     pageSelect(page: number) {
       const project = this.project.pk
       this.fetchContReleaseList({ project, page })
+    },
+    onSubmit(payload: any) {
+      alert('ok~~~!')
+      console.log(payload)
     },
     ...mapActions('contract', ['fetchContReleaseList']),
     ...mapMutations('contract', ['FETCH_CONT_RELEASE_LIST']),

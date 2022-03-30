@@ -1,23 +1,239 @@
 <template>
-  <h3>Hello World!</h3>
+  <CForm
+    class="needs-validation"
+    novalidate
+    :validated="validated"
+    @submit.prevent="onSubmit"
+  >
+    <CModalBody class="p-4">
+      <CRow class="mb-2">
+        <CCol xs="6">
+          <CRow>
+            <CFormLabel class="col-sm-4 col-form-label">계약자</CFormLabel>
+            <CCol sm="8">
+              <CFormSelect v-model="form.contractor" required readonly>
+                <option value="">계약자(000000-0)</option>
+              </CFormSelect>
+            </CCol>
+          </CRow>
+        </CCol>
+
+        <CCol xs="6">
+          <CRow>
+            <CFormLabel class="col-sm-4 col-form-label">구분</CFormLabel>
+            <CCol sm="8">
+              <CFormSelect v-model="form.status" required>
+                <option value="">---------</option>
+                <option value="0">신청 취소</option>
+                <option value="3">해지 신청</option>
+                <option value="4">해지 종결</option>
+                <option value="5">자격 상실(제명)</option>
+              </CFormSelect>
+            </CCol>
+          </CRow>
+        </CCol>
+      </CRow>
+
+      <CRow class="mb-2">
+        <CCol xs="6">
+          <CRow>
+            <CFormLabel class="col-sm-4 col-form-label">
+              환불(예정)금액
+            </CFormLabel>
+            <CCol sm="8">
+              <CFormInput
+                v-model="form.refund_amount"
+                type="number"
+                min="0"
+                required
+                placeholder="환불(예정)금액"
+              />
+            </CCol>
+          </CRow>
+        </CCol>
+
+        <CCol xs="6">
+          <CRow>
+            <CFormLabel class="col-sm-4 col-form-label">
+              환불계좌(은행)
+            </CFormLabel>
+            <CCol sm="8">
+              <CFormInput
+                v-model="form.refund_account_bank"
+                required
+                placeholder="환불계좌(은행)"
+              />
+            </CCol>
+          </CRow>
+        </CCol>
+      </CRow>
+
+      <CRow class="mb-2">
+        <CCol xs="6">
+          <CRow>
+            <CFormLabel class="col-sm-4 col-form-label">
+              환불계좌(번호)
+            </CFormLabel>
+            <CCol sm="8">
+              <CFormInput
+                v-model="form.refund_account_number"
+                required
+                placeholder="환불계좌(번호)"
+              />
+            </CCol>
+          </CRow>
+        </CCol>
+
+        <CCol xs="6">
+          <CRow>
+            <CFormLabel class="col-sm-4 col-form-label">
+              환불계좌(예금주)
+            </CFormLabel>
+            <CCol sm="8">
+              <CFormInput
+                v-model="form.refund_account_depositor"
+                required
+                placeholder="환불계좌(예금주)"
+              />
+            </CCol>
+          </CRow>
+        </CCol>
+      </CRow>
+
+      <CRow class="mb-3">
+        <CCol xs="6">
+          <CRow>
+            <CFormLabel class="col-sm-4 col-form-label"> 해지신청일</CFormLabel>
+            <CCol sm="8">
+              <DatePicker
+                v-model="form.request_date"
+                required
+                placeholder="해지신청일"
+              />
+            </CCol>
+          </CRow>
+        </CCol>
+
+        <CCol xs="6">
+          <CRow>
+            <CFormLabel class="col-sm-4 col-form-label">
+              해지(환불)처리일
+            </CFormLabel>
+            <CCol sm="8">
+              <DatePicker
+                v-model="form.completion_date"
+                required
+                placeholder="해지종결일"
+              />
+            </CCol>
+          </CRow>
+        </CCol>
+      </CRow>
+
+      <CRow class="mb-2">
+        <CCol>
+          <CRow>
+            <CFormLabel class="col-sm-2 col-form-label">비고</CFormLabel>
+            <CCol sm="10">
+              <CFormTextarea v-model="form.note" placeholder="기타 특이사항" />
+            </CCol>
+          </CRow>
+        </CCol>
+      </CRow>
+    </CModalBody>
+
+    <CModalFooter>
+      <CButton type="button" color="light" @click="$emit('close')">
+        닫기
+      </CButton>
+      <slot name="footer">
+        <CButton
+          :color="payment ? 'success' : 'primary'"
+          :disabled="formsCheck"
+        >
+          저장
+        </CButton>
+        <CButton
+          v-if="payment"
+          type="button"
+          color="danger"
+          @click="deleteConfirm"
+        >
+          삭제
+        </CButton>
+      </slot>
+    </CModalFooter>
+  </CForm>
+
+  <!--  <ConfirmModal ref="confirmModal">-->
+  <!--    <template v-slot:header>-->
+  <!--      <CIcon name="cil-warning" />-->
+  <!--      건별 수납 정보 - [삭제]-->
+  <!--    </template>-->
+  <!--    <template v-slot:default>-->
+  <!--      삭제 후 복구할 수 없습니다. 해당 건별 수납 정보 삭제를 진행하시겠습니까?-->
+  <!--    </template>-->
+  <!--    <template v-slot:footer>-->
+  <!--      <CButton color="danger" @click="modalAction">삭제</CButton>-->
+  <!--    </template>-->
+  <!--  </ConfirmModal>-->
+
+  <AlertModal ref="alertModal" />
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import DatePicker from '@/components/DatePicker/index.vue'
+// import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
+import AlertModal from '@/components/Modals/AlertModal.vue'
+import { mapGetters, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'ContCancelForm',
-  components: {},
-  props: {},
-  setup() {
-    return {}
+  components: {
+    DatePicker,
+    // ConfirmModal,
+    AlertModal,
   },
+  props: {},
   data() {
     return {
-      sample: '',
+      form: {
+        contractor: '',
+        status: '',
+        refund_amount: '',
+        refund_account_bank: '',
+        refund_account_number: '',
+        refund_account_depositor: '',
+        request_date: '',
+        completion_date: '',
+        note: '',
+      },
+      validated: false,
     }
   },
-  computed: {},
-  methods: {},
+  computed: {
+    pageManageAuth() {
+      return (
+        this.superAuth || (this.staffAuth && this.staffAuth.contract === '2')
+      )
+    },
+    ...mapGetters('accounts', ['staffAuth', 'superAuth']),
+  },
+  methods: {
+    onSubmit(this: any, event: any) {
+      if (this.pageManageAuth) {
+        const form = event.currentTarget
+        if (form.checkValidity() === false) {
+          event.preventDefault()
+          event.stopPropagation()
+
+          this.validated = true
+        } else {
+          this.$emit('on-submit', this.form)
+        }
+      } else this.$refs.alertModal.callModal()
+    },
+  },
 })
 </script>

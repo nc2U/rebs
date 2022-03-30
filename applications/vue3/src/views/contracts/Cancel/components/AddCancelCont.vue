@@ -10,7 +10,7 @@
     </template>
     <template v-slot:default>
       <ContCancelForm
-        @multi-submit="multiSubmit"
+        @on-submit="onSubmit"
         @close="$refs.cancelFormModal.visible = false"
       />
     </template>
@@ -40,6 +40,10 @@ export default defineComponent({
     createConfirm(this: any) {
       if (this.pageManageAuth) this.$refs.cancelFormModal.callModal()
       else this.$refs.cancelAlertModal.callModal()
+    },
+    onSubmit(this: any, payload: any) {
+      this.$emit('on-submit', payload)
+      this.$refs.cancelFormModal.visible = false
     },
   },
 })
