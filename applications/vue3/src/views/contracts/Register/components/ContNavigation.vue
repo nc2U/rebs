@@ -8,7 +8,7 @@
       @click="
         $router.push({
           name: '계약해지 관리',
-          query: { contract: $route.query.contract },
+          query: { contractor },
         })
       "
     >
@@ -22,5 +22,6 @@ import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'ContNavigation',
+  props: { contractor: Number },
 })
 </script>

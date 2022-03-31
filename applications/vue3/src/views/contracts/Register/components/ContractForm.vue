@@ -7,6 +7,8 @@
       @submit.prevent="onSubmit"
     >
       <CCardBody>
+        <ContNavigation v-if="contract" :contractor="contract.contractor.pk" />
+        <hr v-if="contract" />
         <CRow class="mb-3">
           <CFormLabel class="col-md-2 col-lg-1 col-form-label">
             구분
@@ -629,6 +631,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import ContNavigation from './ContNavigation.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 import DatePicker from '@/components/DatePicker/index.vue'
@@ -640,6 +643,7 @@ import { mapGetters, mapMutations, mapState } from 'vuex'
 export default defineComponent({
   name: 'ContractForm',
   components: {
+    ContNavigation,
     ConfirmModal,
     AlertModal,
     DatePicker,
