@@ -1,18 +1,18 @@
 <template>
   <CAlert color="secondary">
     <CButton
-      color="danger"
+      :color="contractor && contractor.status > '2' ? 'secondary' : 'danger'"
       @click="createConfirm"
       :disabled="contractor && contractor.status > '2'"
     >
-      등록하기
+      해지등록
     </CButton>
   </CAlert>
 
   <FormModal size="lg" ref="cancelFormModal">
     <template v-slot:header>
       <CIcon name="cil-italic" />
-      계약 해지 등록
+      계약 해지 신규 등록
     </template>
     <template v-slot:default>
       <ContCancelForm

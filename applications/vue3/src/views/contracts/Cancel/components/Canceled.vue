@@ -1,6 +1,6 @@
 <template>
   <CTableDataCell>
-    <router-link to="">
+    <router-link to="" @click="updateConfirm">
       {{ cutString(release.contractor.__str__, 25) }}
     </router-link>
   </CTableDataCell>
@@ -26,7 +26,7 @@
   <FormModal size="lg" ref="cancelFormModal">
     <template v-slot:header>
       <CIcon name="cil-italic" />
-      계약 해지 등록
+      계약 해지 수정 등록
     </template>
     <template v-slot:default>
       <ContCancelForm

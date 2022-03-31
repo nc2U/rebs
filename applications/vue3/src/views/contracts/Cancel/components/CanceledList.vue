@@ -1,5 +1,11 @@
 <template>
-  <h6>계약해지 현황</h6>
+  <CRow class="m-2">
+    <CCol>
+      <CIcon name="cilCheckCircle" class="mr-2" />
+      <strong>계약해지 현황</strong>
+    </CCol>
+    <CCol class="text-right">Excel Export</CCol>
+  </CRow>
 
   <CTable hover responsive align="middle">
     <colgroup>

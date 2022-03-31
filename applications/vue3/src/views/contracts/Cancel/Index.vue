@@ -10,7 +10,11 @@
       <ContNavigation :contractor="contractor" />
       <ContController />
       <ContractorAlert v-if="contractor" :contractor="contractor" />
-      <AddCancelCont :contractor="contractor" @on-submit="onCreate" />
+      <AddCancelCont
+        v-if="contractor && contractor.status < '3'"
+        :contractor="contractor"
+        @on-submit="onCreate"
+      />
       <CanceledList @page-select="pageSelect" @on-submit="onUpdate" />
     </CCardBody>
 
