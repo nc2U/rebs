@@ -9,7 +9,7 @@
     <CCardBody class="pb-5">
       <ContNavigation :contractor="contractor" />
       <ContController />
-      <CAlert v-if="contractor" color="info">{{ contractor }}</CAlert>
+      <CAlert v-if="contractor" color="danger">{{ contractor }}</CAlert>
       <AddCancelCont :contractor="contractor" @on-submit="onSubmit" />
       <CanceledList @page-select="pageSelect" />
     </CCardBody>
