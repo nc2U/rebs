@@ -1,6 +1,12 @@
 <template>
   <CAlert color="secondary">
-    <CButton color="primary" @click="createConfirm">등록하기</CButton>
+    <CButton
+      color="primary"
+      @click="createConfirm"
+      :disabled="contractor && contractor.status > '2'"
+    >
+      등록하기
+    </CButton>
   </CAlert>
 
   <FormModal size="lg" ref="cancelFormModal">
