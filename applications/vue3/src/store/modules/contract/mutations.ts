@@ -1,6 +1,7 @@
 import {
   FETCH_CONT_SUMMARY_LIST,
   FETCH_CONTRACT,
+  FETCH_CONTRACTOR,
   FETCH_CONTRACT_LIST,
   FETCH_ORDER_GROUP_LIST,
   FETCH_SUBS_SUMMARY_LIST,
@@ -8,7 +9,11 @@ import {
   FETCH_HOUSE_UNIT_LIST,
   FETCH_CONT_RELEASE_LIST,
 } from '@/store/modules/contract/mutations-types'
-import { ContractState, Contract } from '@/store/modules/contract/state'
+import {
+  ContractState,
+  Contract,
+  Contractor,
+} from '@/store/modules/contract/state'
 
 const mutations = {
   [FETCH_CONTRACT_LIST]: (state: ContractState, payload: any) => {
@@ -18,6 +23,9 @@ const mutations = {
 
   [FETCH_CONTRACT]: (state: ContractState, payload: Contract) =>
     (state.contract = payload),
+
+  [FETCH_CONTRACTOR]: (state: ContractState, payload: Contractor) =>
+    (state.contractor = payload),
 
   [FETCH_ORDER_GROUP_LIST]: (state: ContractState, payload: any) =>
     (state.orderGroupList = payload.results),

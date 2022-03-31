@@ -1,6 +1,7 @@
 import api from '@/api'
 import {
   FETCH_CONTRACT,
+  FETCH_CONTRACTOR,
   FETCH_CONTRACT_LIST,
   FETCH_ORDER_GROUP_LIST,
   FETCH_SUBS_SUMMARY_LIST,
@@ -80,6 +81,15 @@ const actions = {
     } catch (err: any) {
       console.log(err.response.data)
     }
+  },
+
+  fetchContractor: ({ commit }: any, pk: number) => {
+    return api
+      .get(`/contractor/${pk}/`)
+      .then(res => {
+        commit(FETCH_CONTRACTOR, res.data)
+      })
+      .catch(console.log)
   },
 
   createContractor: async ({ dispatch }: any, payload: any) => {

@@ -9,14 +9,14 @@ interface ContractorAddress {
   dm_address1: string
 }
 
-interface Contractor {
+interface ContractorInContract {
   pk: number
   name: string
   is_registed: boolean
   contractoraddress: ContractorAddress | null
   contractorcontact: ContractorContact | null
   status: string
-  contract_date: string
+  contract_date: string | null
 }
 
 export interface OrderGroup {
@@ -67,8 +67,21 @@ export interface Contract {
   unit_type: UnitType
   keyunit: KeyUnit | null
   payments: Payment[]
-  contractor: Contractor | null
+  contractor: ContractorInContract | null
   user: number
+}
+
+export interface Contractor {
+  pk: number
+  contract: number
+  name: string
+  birth_date: string
+  gender: string
+  is_registed: boolean
+  status: string
+  reservation_date: string | null
+  contract_date: string | null
+  note: string
 }
 
 interface SubsSummary {
@@ -101,6 +114,7 @@ export interface ContractState {
   contractList: Contract[]
   contractsCount: number
   contract: Contract | null
+  contractor: Contractor | null
   subsSummaryList: SubsSummary[]
   contSummaryList: ContractSummary[]
   orderGroupList: OrderGroup[]
@@ -114,6 +128,7 @@ const state = {
   contractList: [],
   contractsCount: 0,
   contract: null,
+  contractor: null,
   subsSummaryList: [],
   contSummaryList: [],
   orderGroupList: [],
