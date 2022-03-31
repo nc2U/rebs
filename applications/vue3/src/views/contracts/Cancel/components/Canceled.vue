@@ -18,7 +18,7 @@
   <CTableDataCell>{{ release.request_date }}</CTableDataCell>
   <CTableDataCell>{{ release.completion_date }}</CTableDataCell>
   <CTableDataCell>
-    <CButton type="button" color="success" size="sm" @click="updateConfirm">
+    <CButton type="button" color="danger" size="sm" @click="updateConfirm">
       확인
     </CButton>
   </CTableDataCell>
