@@ -10,8 +10,8 @@
       <ContNavigation :contractor="contractor" />
       <ContController />
       <ContractorAlert v-if="contractor" :contractor="contractor" />
-      <AddCancelCont :contractor="contractor" @on-submit="onSubmit" />
-      <CanceledList @page-select="pageSelect" />
+      <AddCancelCont :contractor="contractor" @on-submit="onCreate" />
+      <CanceledList @page-select="pageSelect" @on-submit="onUpdate" />
     </CCardBody>
 
     <CCardFooter>&nbsp;</CCardFooter>
@@ -75,8 +75,12 @@ export default defineComponent({
       const project = this.project.pk
       this.fetchContReleaseList({ project, page })
     },
-    onSubmit(payload: any) {
-      alert('ok~~~!')
+    onCreate(payload: any) {
+      alert('ok~~create~!')
+      console.log(payload)
+    },
+    onUpdate(payload: any) {
+      alert('ok~~update~!')
       console.log(payload)
     },
     ...mapActions('contract', ['fetchContractor', 'fetchContReleaseList']),

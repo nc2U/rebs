@@ -36,29 +36,17 @@
       />
     </template>
   </FormModal>
-
-  <AlertModal ref="cancelAlertModal" />
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 import FormModal from '@/components/Modals/FormModal.vue'
 import ContCancelForm from '@/views/contracts/Cancel/components/ContCancelForm.vue'
-import AlertModal from '@/components/Modals/AlertModal.vue'
-import { mapGetters } from 'vuex'
 
 export default defineComponent({
   name: 'Canceled',
-  components: { FormModal, ContCancelForm, AlertModal },
+  components: { FormModal, ContCancelForm },
   props: { release: Object },
-  computed: {
-    pageManageAuth(this: any) {
-      return (
-        this.superAuth || (this.staffAuth && this.staffAuth.contract === '2')
-      )
-    },
-    ...mapGetters('accounts', ['staffAuth', 'superAuth']),
-  },
   methods: {
     getStatus(num: string) {
       const status = [
@@ -70,12 +58,15 @@ export default defineComponent({
       return status.filter(s => s.code === num).map(s => s.text)[0]
     },
     updateConfirm(this: any) {
-      if (this.pageManageAuth) this.$refs.cancelFormModal.callModal()
-      else this.$refs.cancelAlertModal.callModal()
+      this.$refs.cancelFormModal.callModal()
       this.$router.push({
         name: '계약해지 관리',
         query: { contractor: this.release.contractor.pk },
       })
+    },
+    onSubmit(this: any, payload: any) {
+      this.$emit('on-submit', payload)
+      this.$refs.cancelFormModal.visible = false
     },
   },
 })

@@ -47,7 +47,6 @@
                 v-model="form.refund_amount"
                 type="number"
                 min="0"
-                required
                 placeholder="환불(예정)금액"
               />
             </CCol>
@@ -62,7 +61,6 @@
             <CCol sm="8">
               <CFormInput
                 v-model="form.refund_account_bank"
-                required
                 placeholder="환불계좌(은행)"
               />
             </CCol>
@@ -79,7 +77,6 @@
             <CCol sm="8">
               <CFormInput
                 v-model="form.refund_account_number"
-                required
                 placeholder="환불계좌(번호)"
               />
             </CCol>
@@ -94,7 +91,6 @@
             <CCol sm="8">
               <CFormInput
                 v-model="form.refund_account_depositor"
-                required
                 placeholder="환불계좌(예금주)"
               />
             </CCol>
@@ -124,7 +120,7 @@
             <CCol sm="8">
               <DatePicker
                 v-model="form.completion_date"
-                required
+                :required="false"
                 placeholder="해지종결일"
               />
             </CCol>

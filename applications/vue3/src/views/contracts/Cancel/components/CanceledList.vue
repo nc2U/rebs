@@ -29,7 +29,7 @@
     </CTableHead>
     <CTableBody class="text-center">
       <CTableRow v-for="release in contReleaseList" :key="release.pk">
-        <Canceled :release="release" />
+        <Canceled :release="release" @on-submit="onSubmit" />
       </CTableRow>
     </CTableBody>
   </CTable>
@@ -58,6 +58,9 @@ export default defineComponent({
   methods: {
     pageSelect(page: number) {
       this.$emit('page-select', page)
+    },
+    onSubmit(this: any, payload: any) {
+      this.$emit('on-submit', payload)
     },
   },
 })
