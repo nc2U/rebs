@@ -5,9 +5,10 @@
       @click="
         $router.push({
           name: '계약등록 관리',
-          query: { contract: $route.query.contract },
+          query: { contract: contractor.contract },
         })
       "
+      :disabled="!contractor || contractor.status > '2'"
     >
       등록 계약 변경
     </CButton>
@@ -22,5 +23,6 @@ import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'ContNavigation',
+  props: { contractor: Object },
 })
 </script>

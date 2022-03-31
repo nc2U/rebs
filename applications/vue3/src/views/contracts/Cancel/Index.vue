@@ -7,8 +7,9 @@
 
   <ContentBody>
     <CCardBody class="pb-5">
-      <ContNavigation />
+      <ContNavigation :contractor="contractor" />
       <ContController />
+      <CAlert v-if="contractor" color="info">{{ contractor }}</CAlert>
       <AddCancelCont @on-submit="onSubmit" />
       <CanceledList @page-select="pageSelect" />
     </CCardBody>
@@ -39,18 +40,32 @@ export default defineComponent({
     AddCancelCont,
     CanceledList,
   },
-  created() {
+  created(this: any) {
     this.fetchContReleaseList({ project: this.initProjId })
+    if (this.$route.query.contractor)
+      this.fetchContractor(this.$route.query.contractor)
+    else this.FETCH_CONTRACTOR(null)
+  },
+  beforeRouteLeave() {
+    this.FETCH_CONTRACTOR(null)
   },
   computed: {
     ...mapState('project', ['project']),
+    ...mapState('contract', ['contractor']),
     ...mapGetters('accounts', ['initProjId']),
+  },
+  watch: {
+    $route(val) {
+      if (val.query.contractor) this.fetchContractor(val.query.contractor)
+      else this.FETCH_CONTRACTOR(null)
+    },
   },
   methods: {
     onSelectAdd(this: any, target: any) {
       if (target !== '') {
         this.fetchContReleaseList({ project: target })
       } else {
+        this.FETCH_CONTRACTOR(null)
         this.FETCH_CONT_RELEASE_LIST([])
       }
     },
@@ -62,8 +77,11 @@ export default defineComponent({
       alert('ok~~~!')
       console.log(payload)
     },
-    ...mapActions('contract', ['fetchContReleaseList']),
-    ...mapMutations('contract', ['FETCH_CONT_RELEASE_LIST']),
+    ...mapActions('contract', ['fetchContractor', 'fetchContReleaseList']),
+    ...mapMutations('contract', [
+      'FETCH_CONTRACTOR',
+      'FETCH_CONT_RELEASE_LIST',
+    ]),
   },
 })
 </script>

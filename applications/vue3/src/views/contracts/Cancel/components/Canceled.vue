@@ -19,7 +19,7 @@
   <CTableDataCell>{{ cont.completion_date }}</CTableDataCell>
   <CTableDataCell>
     <CButton type="button" color="success" size="sm" @click="updateConfirm">
-      확인
+      확인 {{ cont.contractor.pk }}
     </CButton>
   </CTableDataCell>
 
@@ -72,6 +72,10 @@ export default defineComponent({
     updateConfirm(this: any) {
       if (this.pageManageAuth) this.$refs.cancelFormModal.callModal()
       else this.$refs.cancelAlertModal.callModal()
+      this.$router.push({
+        name: '계약해지 관리',
+        query: { contractor: this.cont.contractor.pk },
+      })
     },
   },
 })
