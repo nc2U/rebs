@@ -10,6 +10,7 @@
     </template>
     <template v-slot:default>
       <ContCancelForm
+        :contractor="contractor"
         @on-submit="onSubmit"
         @close="$refs.cancelFormModal.visible = false"
       />
@@ -29,6 +30,7 @@ import { mapGetters } from 'vuex'
 export default defineComponent({
   name: 'AddCancelCont',
   components: { FormModal, ContCancelForm, AlertModal },
+  props: { contractor: Object },
   computed: {
     pageManageAuth(this: any) {
       return (

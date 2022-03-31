@@ -13,7 +13,7 @@
             <CCol sm="8">
               <CFormSelect v-model="form.contractor" required readonly>
                 <option>
-                  {{ release.contractor.name || contractor.name }}
+                  {{ contractorName }}
                 </option>
               </CFormSelect>
             </CCol>
@@ -216,7 +216,7 @@ export default defineComponent({
   },
   created(this: any) {
     if (this.release) {
-      this.form.contractor = this.contractor
+      this.form.contractor = this.contractorName
       this.form.status = this.release.status
       this.form.refund_amount = this.release.refund_amount
       this.form.refund_account_bank = this.release.refund_account_bank
@@ -228,9 +228,11 @@ export default defineComponent({
     }
   },
   computed: {
-    contractor(this: any) {
-      if (this.release) return this.release.constructor.name
-      if (this.contractor) return this.constructor.name
+    contractorName(this: any) {
+      let name = ''
+      if (this.release) name = this.release.contractor.name
+      if (this.contractor) name = this.contractor.name
+      return name
     },
     pageManageAuth() {
       return (
