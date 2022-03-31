@@ -9,7 +9,7 @@
     <CCardBody class="pb-5">
       <ContNavigation :contractor="contractor" />
       <ContController />
-      <CAlert v-if="contractor" color="danger">{{ contractor }}</CAlert>
+      <ContractorAlert v-if="contractor" :contractor="contractor" />
       <AddCancelCont :contractor="contractor" @on-submit="onSubmit" />
       <CanceledList @page-select="pageSelect" />
     </CCardBody>
@@ -25,6 +25,7 @@ import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import AddCancelCont from '@/views/contracts/Cancel/components/AddCancelCont.vue'
 import ContNavigation from '@/views/contracts/Cancel/components/ContNavigation.vue'
+import ContractorAlert from '@/views/contracts/Cancel/components/ContractorAlert.vue'
 import ContController from '@/views/contracts/Cancel/components/ContController.vue'
 import CanceledList from '@/views/contracts/Cancel/components/CanceledList.vue'
 import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
@@ -36,6 +37,7 @@ export default defineComponent({
     ContentHeader,
     ContentBody,
     ContNavigation,
+    ContractorAlert,
     ContController,
     AddCancelCont,
     CanceledList,
