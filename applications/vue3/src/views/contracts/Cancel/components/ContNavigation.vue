@@ -14,7 +14,7 @@
     </CButton>
     <CButton color="light" disabled>권리 의무 승계</CButton>
     <CButton color="light" disabled>주소(연락처) 변경</CButton>
-    <CButton color="primary">계약 해지 관리</CButton>
+    <CButton color="danger">계약 해지 관리</CButton>
   </CButtonGroup>
 </template>
 

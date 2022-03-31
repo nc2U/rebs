@@ -1,7 +1,7 @@
 <template>
   <CAlert color="secondary">
     <CButton
-      color="primary"
+      color="danger"
       @click="createConfirm"
       :disabled="contractor && contractor.status > '2'"
     >
