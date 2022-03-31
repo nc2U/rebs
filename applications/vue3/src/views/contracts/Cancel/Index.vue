@@ -74,6 +74,7 @@ export default defineComponent({
         this.FETCH_CONTRACTOR(null)
         this.FETCH_CONT_RELEASE_LIST([])
       }
+      this.$router.push({ name: '계약해지 관리' })
     },
     pageSelect(page: number) {
       const project = this.project.pk
