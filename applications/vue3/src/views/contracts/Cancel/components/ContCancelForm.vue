@@ -12,7 +12,9 @@
             <CFormLabel class="col-sm-4 col-form-label">계약자</CFormLabel>
             <CCol sm="8">
               <CFormSelect v-model="form.contractor" required readonly>
-                <option value="">계약자(000000-0)</option>
+                <option>
+                  {{ release.contractor.name || contractor.name }}
+                </option>
               </CFormSelect>
             </CCol>
           </CRow>
@@ -147,11 +149,14 @@
         닫기
       </CButton>
       <slot name="footer">
-        <CButton :color="cont ? 'success' : 'primary'" :disabled="formsCheck">
+        <CButton
+          :color="release ? 'success' : 'primary'"
+          :disabled="formsCheck"
+        >
           저장
         </CButton>
         <CButton
-          v-if="cont"
+          v-if="release"
           type="button"
           color="danger"
           @click="deleteConfirm"
@@ -183,7 +188,7 @@ import { defineComponent } from 'vue'
 import DatePicker from '@/components/DatePicker/index.vue'
 // import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
-import { mapGetters, mapState } from 'vuex'
+import { mapGetters } from 'vuex'
 
 export default defineComponent({
   name: 'ContCancelForm',
@@ -192,7 +197,7 @@ export default defineComponent({
     // ConfirmModal,
     AlertModal,
   },
-  props: { cont: Object },
+  props: { release: Object, contractor: Object },
   data() {
     return {
       form: {
@@ -210,22 +215,26 @@ export default defineComponent({
     }
   },
   created(this: any) {
-    if (this.cont) {
-      this.form.contractor = this.cont.constructor
-      this.form.status = this.cont.status
-      this.form.refund_amount = this.cont.refund_amount
-      this.form.refund_account_bank = this.cont.refund_account_bank
-      this.form.refund_account_number = this.cont.refund_account_number
-      this.form.refund_account_depositor = this.cont.refund_account_depositor
-      this.form.request_date = this.cont.request_date
-      this.form.completion_date = this.cont.completion_date
-      this.form.note = this.cont.note
+    if (this.release) {
+      this.form.contractor = this.contractor
+      this.form.status = this.release.status
+      this.form.refund_amount = this.release.refund_amount
+      this.form.refund_account_bank = this.release.refund_account_bank
+      this.form.refund_account_number = this.release.refund_account_number
+      this.form.refund_account_depositor = this.release.refund_account_depositor
+      this.form.request_date = this.release.request_date
+      this.form.completion_date = this.release.completion_date
+      this.form.note = this.release.note
     }
   },
   computed: {
+    contractor(this: any) {
+      if (this.release) return this.release.constructor.name
+      if (this.contractor) return this.constructor.name
+    },
     pageManageAuth() {
       return (
-        this.superAuth || (this.staffAuth && this.staffAuth.contract === '2')
+        this.superAuth || (this.staffAuth && this.staffAuth.releaseract === '2')
       )
     },
     ...mapGetters('accounts', ['staffAuth', 'superAuth']),

@@ -10,7 +10,7 @@
       <ContNavigation :contractor="contractor" />
       <ContController />
       <CAlert v-if="contractor" color="info">{{ contractor }}</CAlert>
-      <AddCancelCont @on-submit="onSubmit" />
+      <AddCancelCont :contractor="contractor" @on-submit="onSubmit" />
       <CanceledList @page-select="pageSelect" />
     </CCardBody>
 

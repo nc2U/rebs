@@ -1,25 +1,25 @@
 <template>
   <CTableDataCell>
     <router-link to="">
-      {{ cutString(cont.contractor.__str__, 25) }}
+      {{ cutString(release.contractor.__str__, 25) }}
     </router-link>
   </CTableDataCell>
-  <CTableDataCell>{{ getStatus(cont.status) }}</CTableDataCell>
+  <CTableDataCell>{{ getStatus(release.status) }}</CTableDataCell>
   <CTableDataCell class="text-right">
-    {{ numFormat(cont.refund_amount) }}
+    {{ numFormat(release.refund_amount) }}
   </CTableDataCell>
   <CTableDataCell class="text-left">
-    {{ cont.refund_account_bank }}
+    {{ release.refund_account_bank }}
   </CTableDataCell>
   <CTableDataCell class="text-left">
-    {{ cont.refund_account_number }}
+    {{ release.refund_account_number }}
   </CTableDataCell>
-  <CTableDataCell>{{ cont.refund_account_depositor }}</CTableDataCell>
-  <CTableDataCell>{{ cont.request_date }}</CTableDataCell>
-  <CTableDataCell>{{ cont.completion_date }}</CTableDataCell>
+  <CTableDataCell>{{ release.refund_account_depositor }}</CTableDataCell>
+  <CTableDataCell>{{ release.request_date }}</CTableDataCell>
+  <CTableDataCell>{{ release.completion_date }}</CTableDataCell>
   <CTableDataCell>
     <CButton type="button" color="success" size="sm" @click="updateConfirm">
-      확인 {{ cont.contractor.pk }}
+      확인
     </CButton>
   </CTableDataCell>
 
@@ -30,7 +30,7 @@
     </template>
     <template v-slot:default>
       <ContCancelForm
-        :cont="cont"
+        :release="release"
         @on-submit="onSubmit"
         @close="$refs.cancelFormModal.visible = false"
       />
@@ -50,7 +50,7 @@ import { mapGetters } from 'vuex'
 export default defineComponent({
   name: 'Canceled',
   components: { FormModal, ContCancelForm, AlertModal },
-  props: { cont: Object },
+  props: { release: Object },
   computed: {
     pageManageAuth(this: any) {
       return (
@@ -74,7 +74,7 @@ export default defineComponent({
       else this.$refs.cancelAlertModal.callModal()
       this.$router.push({
         name: '계약해지 관리',
-        query: { contractor: this.cont.contractor.pk },
+        query: { contractor: this.release.contractor.pk },
       })
     },
   },

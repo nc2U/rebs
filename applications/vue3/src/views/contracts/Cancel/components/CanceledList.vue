@@ -28,8 +28,8 @@
       </CTableRow>
     </CTableHead>
     <CTableBody class="text-center">
-      <CTableRow v-for="cont in contReleaseList" :key="cont.pk">
-        <Canceled :cont="cont" />
+      <CTableRow v-for="release in contReleaseList" :key="release.pk">
+        <Canceled :release="release" />
       </CTableRow>
     </CTableBody>
   </CTable>
