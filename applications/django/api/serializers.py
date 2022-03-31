@@ -601,7 +601,7 @@ class ContractorContactSerializer(serializers.ModelSerializer):
 class ContractorInReleaseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contractor
-        fields = ('pk', '__str__')
+        fields = ('pk', 'name', '__str__')
 
 
 class ContractorReleaseSerializer(serializers.ModelSerializer):
