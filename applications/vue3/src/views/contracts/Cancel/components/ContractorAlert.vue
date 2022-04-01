@@ -1,7 +1,11 @@
 <template>
   <CAlert :color="contractor.status < '3' ? 'success' : 'danger'">
-    계약자명 : {{ contractor.name }}({{ contractor.contract.serial_number }})
-    :::::: 현재상태 : [{{ getStatus(contractor.status) }}]
+    <strong>
+      <CIcon name="cilTask" />
+      계약자명 :
+      {{ contractor.name }}({{ contractor.contract.serial_number }}) ::::::
+      현재상태 : [{{ getStatus(contractor.status) }}]
+    </strong>
   </CAlert>
 </template>
 
