@@ -1,5 +1,5 @@
 import store from '@/store'
-import { h, resolveComponent } from 'vue'
+import {h, resolveComponent} from 'vue'
 
 const contract = {
   path: 'contracts',
@@ -44,7 +44,7 @@ const contract = {
       component: () =>
         store.state.accounts.userInfo.is_superuser ||
         store.state.accounts.userInfo.staffauth?.contract > '0'
-          ? import('@/views/contracts/Cancel/Index.vue')
+          ? import('@/views/contracts/Release/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
     },
   ],

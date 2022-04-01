@@ -13,12 +13,12 @@
         @update-confirm="updateConfirm"
       />
       <ContractorAlert v-if="contractor" :contractor="contractor" />
-      <CancelContButton
+      <ReleasetButton
         v-if="contractor"
         :contractor="contractor"
         @on-submit="onCreate"
       />
-      <CanceledList
+      <ReleaseList
         @page-select="pageSelect"
         @update-confirm="updateConfirm"
         @on-submit="onUpdate"
@@ -34,15 +34,15 @@ import { defineComponent } from 'vue'
 import HeaderMixin from '@/views/contracts/_menu/headermixin'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
-import CancelContButton from '@/views/contracts/Cancel/components/CancelContButton.vue'
-import ContNavigation from '@/views/contracts/Cancel/components/ContNavigation.vue'
-import ContractorAlert from '@/views/contracts/Cancel/components/ContractorAlert.vue'
-import ContController from '@/views/contracts/Cancel/components/ContController.vue'
-import CanceledList from '@/views/contracts/Cancel/components/CanceledList.vue'
+import ReleasetButton from '@/views/contracts/Release/components/ReleasetButton.vue'
+import ContNavigation from '@/views/contracts/Release/components/ContNavigation.vue'
+import ContractorAlert from '@/views/contracts/Release/components/ContractorAlert.vue'
+import ContController from '@/views/contracts/Release/components/ContController.vue'
+import ReleaseList from '@/views/contracts/Release/components/ReleaseList.vue'
 import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
 
 export default defineComponent({
-  name: 'ContractCancel',
+  name: 'ReleaseIndex',
   mixins: [HeaderMixin],
   components: {
     ContentHeader,
@@ -50,8 +50,8 @@ export default defineComponent({
     ContNavigation,
     ContractorAlert,
     ContController,
-    CancelContButton,
-    CanceledList,
+    ReleasetButton,
+    ReleaseList,
   },
   created(this: any) {
     this.fetchContReleaseList({ project: this.initProjId })

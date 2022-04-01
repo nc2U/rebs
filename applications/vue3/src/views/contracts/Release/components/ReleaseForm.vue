@@ -189,7 +189,7 @@ import AlertModal from '@/components/Modals/AlertModal.vue'
 import { mapGetters } from 'vuex'
 
 export default defineComponent({
-  name: 'ContCancelForm',
+  name: 'ReleaseForm',
   components: {
     DatePicker,
     // ConfirmModal,

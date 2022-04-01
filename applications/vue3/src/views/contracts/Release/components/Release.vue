@@ -29,7 +29,7 @@
       계약 해지 수정 등록
     </template>
     <template v-slot:default>
-      <ContCancelForm
+      <ReleaseForm
         :release="release"
         @on-submit="onSubmit"
         @close="$refs.cancelFormModal.visible = false"
@@ -41,11 +41,11 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import FormModal from '@/components/Modals/FormModal.vue'
-import ContCancelForm from '@/views/contracts/Cancel/components/ContCancelForm.vue'
+import ReleaseForm from '@/views/contracts/Release/components/ReleaseForm.vue'
 
 export default defineComponent({
-  name: 'Canceled',
-  components: { FormModal, ContCancelForm },
+  name: 'Release',
+  components: { FormModal, ReleaseForm },
   props: { release: Object },
   methods: {
     getStatus(num: string) {

@@ -35,7 +35,7 @@
     </CTableHead>
     <CTableBody class="text-center">
       <CTableRow v-for="release in contReleaseList" :key="release.pk">
-        <Canceled
+        <Release
           :release="release"
           @update-confirm="updateConfirm"
           @on-submit="onSubmit"
@@ -55,12 +55,12 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import Canceled from '@/views/contracts/Cancel/components/Canceled.vue'
+import Release from '@/views/contracts/Release/components/Release.vue'
 import { mapGetters, mapState } from 'vuex'
 
 export default defineComponent({
-  name: 'CanceledList',
-  components: { Canceled },
+  name: 'ReleaseList',
+  components: { Release },
   computed: {
     ...mapState('contract', ['contReleaseList']),
     ...mapGetters('contract', ['releasePages']),
