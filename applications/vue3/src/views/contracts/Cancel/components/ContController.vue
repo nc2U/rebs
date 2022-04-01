@@ -20,14 +20,16 @@
           <CCol
             color="warning"
             class="p-1 pl-3"
-            v-if="contractorList.length > 0"
+            v-if="contractorList && contractorList.length > 0"
           >
             <CButton
               type="button"
               color="dark"
               v-for="contractor in contractorList"
               :key="contractor.pk"
-              @click="setContractor(contractor.pk, contractor.status)"
+              @click="
+                setContractor(contractor.pk, contractor.contractorrelease)
+              "
               variant="outline"
               size="sm"
             >
@@ -60,7 +62,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { mapState } from 'vuex'
+import { mapMutations, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'ContController',
@@ -76,10 +78,18 @@ export default defineComponent({
     searchContractor() {
       this.$emit('search-contractor', this.search)
     },
-    setContractor(pk: number, status: string) {
+    setContractor(pk: number, release: number | null) {
       this.$router.push({ name: '계약해지 관리', query: { contractor: pk } })
-      if (status > '2') alert(status)
+      if (release !== null) this.$emit('update-confirm', release)
+      else this.FETCH_CONT_RELEASE(null)
+
+      this.search = ''
+      this.FETCH_CONTRACTOR_LIST([])
     },
+    ...mapMutations('contract', [
+      'FETCH_CONT_RELEASE',
+      'FETCH_CONTRACTOR_LIST',
+    ]),
   },
 })
 </script>

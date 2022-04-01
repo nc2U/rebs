@@ -58,11 +58,12 @@ export default defineComponent({
       return status.filter(s => s.code === num).map(s => s.text)[0]
     },
     updateConfirm(this: any) {
-      this.$refs.cancelFormModal.callModal()
       this.$router.push({
         name: '계약해지 관리',
         query: { contractor: this.release.contractor.pk },
       })
+      this.$emit('update-confirm', this.release.pk)
+      this.$refs.cancelFormModal.callModal()
     },
     onSubmit(this: any, payload: any) {
       this.$emit('on-submit', payload)

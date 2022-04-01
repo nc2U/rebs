@@ -22,7 +22,7 @@
 
         <CCol xs="6">
           <CRow>
-            <CFormLabel class="col-sm-4 col-form-label"> 구분 </CFormLabel>
+            <CFormLabel class="col-sm-4 col-form-label"> 구분</CFormLabel>
             <CCol sm="8">
               <CFormSelect v-model="form.status" required>
                 <option value="">---------</option>
@@ -213,7 +213,7 @@ export default defineComponent({
     }
   },
   created(this: any) {
-    if (this.release) {
+    if (this.release && this.release.pk) {
       this.form.contractor = this.contractorName
       this.form.status = this.release.status
       this.form.refund_amount = this.release.refund_amount

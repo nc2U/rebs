@@ -1,11 +1,10 @@
 <template>
   <CAlert color="secondary">
     <CButton
-      :color="contractor && contractor.status > '2' ? 'secondary' : 'danger'"
+      :color="contractor && contractor.status > '2' ? 'warning' : 'danger'"
       @click="createConfirm"
-      :disabled="contractor && contractor.status > '2'"
     >
-      해지등록
+      {{ contractor && contractor.status > '2' ? '수정하기' : '등록하기' }}
     </CButton>
   </CAlert>
 
@@ -17,6 +16,7 @@
     <template v-slot:default>
       <ContCancelForm
         :contractor="contractor"
+        :release="contRelease"
         @on-submit="onSubmit"
         @close="$refs.cancelFormModal.visible = false"
       />
@@ -31,18 +31,19 @@ import { defineComponent } from 'vue'
 import FormModal from '@/components/Modals/FormModal.vue'
 import ContCancelForm from '@/views/contracts/Cancel/components/ContCancelForm.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'AddCancelCont',
   components: { FormModal, ContCancelForm, AlertModal },
-  props: { contractor: Object },
+  props: { contractor: Object, release: Object },
   computed: {
     pageManageAuth(this: any) {
       return (
         this.superAuth || (this.staffAuth && this.staffAuth.contract === '2')
       )
     },
+    ...mapState('contract', ['contRelease']),
     ...mapGetters('accounts', ['staffAuth', 'superAuth']),
   },
   methods: {

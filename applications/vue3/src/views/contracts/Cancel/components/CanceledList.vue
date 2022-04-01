@@ -35,7 +35,11 @@
     </CTableHead>
     <CTableBody class="text-center">
       <CTableRow v-for="release in contReleaseList" :key="release.pk">
-        <Canceled :release="release" @on-submit="onSubmit" />
+        <Canceled
+          :release="release"
+          @update-confirm="updateConfirm"
+          @on-submit="onSubmit"
+        />
       </CTableRow>
     </CTableBody>
   </CTable>
@@ -64,6 +68,9 @@ export default defineComponent({
   methods: {
     pageSelect(page: number) {
       this.$emit('page-select', page)
+    },
+    updateConfirm(release: number) {
+      this.$emit('update-confirm', release)
     },
     onSubmit(this: any, payload: any) {
       this.$emit('on-submit', payload)
