@@ -1,10 +1,10 @@
 <template>
   <CAlert color="secondary">
     <CButton
-      :color="contractor && contractor.status > '2' ? 'warning' : 'danger'"
+      :color="contRelease && contRelease.pk ? 'warning' : 'danger'"
       @click="createConfirm"
     >
-      {{ contractor && contractor.status > '2' ? '수정하기' : '등록하기' }}
+      {{ contRelease && contRelease.pk ? '수정하기' : '등록하기' }}
     </CButton>
   </CAlert>
 
@@ -36,7 +36,7 @@ import { mapGetters, mapState } from 'vuex'
 export default defineComponent({
   name: 'ReleaseButton',
   components: { FormModal, ReleaseForm, AlertModal },
-  props: { contractor: Object, release: Object },
+  props: { contractor: Object },
   computed: {
     pageManageAuth(this: any) {
       return (

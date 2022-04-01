@@ -198,6 +198,7 @@ export default defineComponent({
   props: { release: Object, contractor: Object },
   data() {
     return {
+      pk: null,
       form: {
         contractor: '',
         status: '',
@@ -214,6 +215,7 @@ export default defineComponent({
   },
   created(this: any) {
     if (this.release && this.release.pk) {
+      this.pk = this.release.pk
       this.form.contractor = this.contractorName
       this.form.status = this.release.status
       this.form.refund_amount = this.release.refund_amount
@@ -249,7 +251,10 @@ export default defineComponent({
 
           this.validated = true
         } else {
-          this.$emit('on-submit', this.form)
+          this.request_date = this.dateFormat(this.request_date)
+          this.completion_date = this.dateFormat(this.completion_date)
+          const payload = this.pk ? { pk: this.pk, ...this.form } : this.form
+          this.$emit('on-submit', payload)
         }
       } else this.$refs.alertModal.callModal()
     },

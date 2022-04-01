@@ -16,12 +16,12 @@
       <ReleasetButton
         v-if="contractor"
         :contractor="contractor"
-        @on-submit="onCreate"
+        @on-submit="onSubmit"
       />
       <ReleaseList
         @page-select="pageSelect"
         @update-confirm="updateConfirm"
-        @on-submit="onUpdate"
+        @on-submit="onSubmit"
       />
     </CCardBody>
 
@@ -96,12 +96,9 @@ export default defineComponent({
       const project = this.project.pk
       this.fetchContReleaseList({ project, page })
     },
-    onCreate(payload: any) {
-      alert('ok~~create~!')
-      console.log(payload)
-    },
-    onUpdate(payload: any) {
-      alert('ok~~update~!')
+    onSubmit(payload: any) {
+      if (payload.pk) alert('update~~!!')
+      else alert('create~~!!')
       console.log(payload)
     },
     ...mapActions('contract', [
