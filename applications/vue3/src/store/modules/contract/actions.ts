@@ -10,6 +10,7 @@ import {
   FETCH_HOUSE_UNIT_LIST,
   FETCH_CONT_RELEASE_LIST,
   FETCH_CONTRACTOR_LIST,
+  FETCH_CONT_RELEASE,
 } from '@/store/modules/contract/mutations-types'
 import router from '@/router'
 import { message } from '@/utils/helper'
@@ -557,6 +558,15 @@ const actions = {
       .get(url)
       .then(res => {
         commit(FETCH_CONT_RELEASE_LIST, res.data)
+      })
+      .catch(err => console.log(err.response.data))
+  },
+
+  fetchContRelease: ({ commit }: any, pk: number) => {
+    api
+      .get(`/contractor-release/${pk}/`)
+      .then(res => {
+        commit(FETCH_CONT_RELEASE, res.data)
       })
       .catch(err => console.log(err.response.data))
   },

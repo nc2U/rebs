@@ -123,6 +123,7 @@ export interface ContractState {
   houseUnitList: HouseUnit[]
   contReleaseList: ContractRelease[]
   contReleaseCount: number
+  contRelease: ContractRelease | null
 }
 
 const state = {
@@ -138,6 +139,7 @@ const state = {
   houseUnitList: [],
   contReleaseList: [],
   contReleaseCount: 0,
+  contRelease: null,
 }
 
 export default state
