@@ -578,7 +578,15 @@ class ContSummarySerializer(serializers.ModelSerializer):
         fields = ('order_group', 'unit_type', 'num_cont')
 
 
+class ContractInContractorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Contract
+        fields = ('pk', 'serial_number')
+
+
 class ContractorSerializer(serializers.ModelSerializer):
+    contract = ContractInContractorSerializer()
+
     class Meta:
         model = Contractor
         fields = ('pk', 'contract', 'name', 'birth_date', 'gender', 'is_registed',
