@@ -1,7 +1,7 @@
 <template>
   <CAlert :color="contractor.status < '3' ? 'success' : 'danger'">
-    계약자명 : {{ contractor.name }}({{ contractor.birth_date }}) ::::::
-    현재상태 : [{{ getStatus(contractor.status) }}]
+    계약자명 : {{ contractor.name }}({{ contractor.contract.serial_number }})
+    :::::: 현재상태 : [{{ getStatus(contractor.status) }}]
   </CAlert>
 </template>
 

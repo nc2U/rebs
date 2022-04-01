@@ -22,9 +22,7 @@
 
         <CCol xs="6">
           <CRow>
-            <CFormLabel class="col-sm-4 col-form-label"
-              >구분{{ contractor }}
-            </CFormLabel>
+            <CFormLabel class="col-sm-4 col-form-label"> 구분 </CFormLabel>
             <CCol sm="8">
               <CFormSelect v-model="form.status" required>
                 <option value="">---------</option>

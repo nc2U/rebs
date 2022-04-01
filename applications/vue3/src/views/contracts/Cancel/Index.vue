@@ -8,7 +8,7 @@
   <ContentBody>
     <CCardBody class="pb-5">
       <ContNavigation :contractor="contractor" />
-      <ContController />
+      <ContController @search-contractor="searchContractor" />
       <ContractorAlert v-if="contractor" :contractor="contractor" />
       <AddCancelCont
         v-if="contractor && contractor.status < '3'"
@@ -72,9 +72,14 @@ export default defineComponent({
         this.fetchContReleaseList({ project: target })
       } else {
         this.FETCH_CONTRACTOR(null)
+        this.FETCH_CONTRACTOR_LIST([])
         this.FETCH_CONT_RELEASE_LIST([])
       }
       this.$router.push({ name: '계약해지 관리' })
+    },
+    searchContractor(search: string) {
+      const project = this.project.pk
+      this.fetchContractorList({ project, search })
     },
     pageSelect(page: number) {
       const project = this.project.pk
@@ -88,9 +93,14 @@ export default defineComponent({
       alert('ok~~update~!')
       console.log(payload)
     },
-    ...mapActions('contract', ['fetchContractor', 'fetchContReleaseList']),
+    ...mapActions('contract', [
+      'fetchContractor',
+      'fetchContractorList',
+      'fetchContReleaseList',
+    ]),
     ...mapMutations('contract', [
       'FETCH_CONTRACTOR',
+      'FETCH_CONTRACTOR_LIST',
       'FETCH_CONT_RELEASE_LIST',
     ]),
   },

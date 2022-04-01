@@ -5,7 +5,7 @@
       @click="
         $router.push({
           name: '계약등록 관리',
-          query: { contract: contractor.contract },
+          query: { contract: contractor.contract.pk },
         })
       "
       :disabled="!contractor || contractor.status > '2'"

@@ -6,15 +6,33 @@
           <CCol md="4" class="mb-3">
             <CInputGroup class="flex-nowrap">
               <CFormInput
+                v-model="search"
                 placeholder="계약자, 비고, 계약 일련번호"
-                @keydown.enter="listFiltering(1)"
+                @keydown.enter="searchContractor"
                 aria-label="Search"
                 aria-describedby="addon-wrapping"
               />
-              <CInputGroupText @click="listFiltering(1)">
+              <CInputGroupText @click="searchContractor">
                 계약 건 찾기
               </CInputGroupText>
             </CInputGroup>
+          </CCol>
+          <CCol
+            color="warning"
+            class="p-1 pl-3"
+            v-if="contractorList.length > 0"
+          >
+            <CButton
+              type="button"
+              color="dark"
+              v-for="contractor in contractorList"
+              :key="contractor.pk"
+              @click="setContractor(contractor.pk, contractor.status)"
+              variant="outline"
+              size="sm"
+            >
+              {{ `${contractor.name}(${contractor.contract.serial_number})` }}
+            </CButton>
           </CCol>
         </CRow>
       </CCol>
@@ -42,20 +60,26 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { mapState } from 'vuex'
 
 export default defineComponent({
   name: 'ContController',
-  components: {},
-  props: {},
-  setup() {
-    return {}
-  },
   data() {
     return {
-      sample: '',
+      search: '',
     }
   },
-  computed: {},
-  methods: {},
+  computed: {
+    ...mapState('contract', ['contractorList']),
+  },
+  methods: {
+    searchContractor() {
+      this.$emit('search-contractor', this.search)
+    },
+    setContractor(pk: number, status: string) {
+      this.$router.push({ name: '계약해지 관리', query: { contractor: pk } })
+      if (status > '2') alert(status)
+    },
+  },
 })
 </script>
