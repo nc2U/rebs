@@ -586,11 +586,12 @@ class ContractInContractorSerializer(serializers.ModelSerializer):
 
 class ContractorSerializer(serializers.ModelSerializer):
     contract = ContractInContractorSerializer()
+    contractorrelease = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = Contractor
         fields = ('pk', 'contract', 'name', 'birth_date', 'gender', 'is_registed',
-                  'status', 'reservation_date', 'contract_date', 'note')
+                  'status', 'reservation_date', 'contract_date', 'note', 'contractorrelease')
 
 
 class ContractorAddressSerializer(serializers.ModelSerializer):
