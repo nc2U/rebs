@@ -13,7 +13,7 @@
             <CCol sm="8">
               <CFormSelect v-model="form.contractor" required readonly>
                 <option>
-                  {{ contractorName }}
+                  {{ form.contractor }}
                 </option>
               </CFormSelect>
             </CCol>
@@ -216,7 +216,7 @@ export default defineComponent({
   created(this: any) {
     if (this.release && this.release.pk) {
       this.pk = this.release.pk
-      this.form.contractor = this.contractorName
+      this.form.contractor = this.release.contractor.name
       this.form.status = this.release.status
       this.form.refund_amount = this.release.refund_amount
       this.form.refund_account_bank = this.release.refund_account_bank
@@ -225,15 +225,9 @@ export default defineComponent({
       this.form.request_date = this.release.request_date
       this.form.completion_date = this.release.completion_date
       this.form.note = this.release.note
-    }
+    } else this.form.contractor = this.contractor.name
   },
   computed: {
-    contractorName(this: any) {
-      let name = ''
-      if (this.release) name = this.release.contractor.name
-      if (this.contractor) name = this.contractor.name
-      return name
-    },
     pageManageAuth() {
       return (
         this.superAuth || (this.staffAuth && this.staffAuth.releaseract === '2')
@@ -251,8 +245,10 @@ export default defineComponent({
 
           this.validated = true
         } else {
-          this.request_date = this.dateFormat(this.request_date)
-          this.completion_date = this.dateFormat(this.completion_date)
+          this.form.request_date = this.dateFormat(this.form.request_date)
+          this.form.completion_date = this.form.completion_date
+            ? this.dateFormat(this.form.completion_date)
+            : null
           const payload = this.pk ? { pk: this.pk, ...this.form } : this.form
           this.$emit('on-submit', payload)
         }
