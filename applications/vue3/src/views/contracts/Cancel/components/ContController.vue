@@ -19,7 +19,7 @@
           </CCol>
           <CCol
             color="warning"
-            class="p-1 pl-3"
+            class="p-1 pl-3 mb-2"
             v-if="contractorList && contractorList.length > 0"
           >
             <CButton

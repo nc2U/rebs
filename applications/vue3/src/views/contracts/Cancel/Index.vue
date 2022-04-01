@@ -13,7 +13,11 @@
         @update-confirm="updateConfirm"
       />
       <ContractorAlert v-if="contractor" :contractor="contractor" />
-      <CancelContButton :contractor="contractor" @on-submit="onCreate" />
+      <CancelContButton
+        v-if="contractor"
+        :contractor="contractor"
+        @on-submit="onCreate"
+      />
       <CanceledList
         @page-select="pageSelect"
         @update-confirm="updateConfirm"
