@@ -888,7 +888,7 @@ class ContractorList(generics.ListCreateAPIView):
     serializer_class = ContractorSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
     filter_fields = ('gender', 'is_registed', 'status')
-    search_fields = ('name', 'note')
+    search_fields = ('name', 'note', 'contract__serial_number')
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
