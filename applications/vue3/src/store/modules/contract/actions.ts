@@ -9,6 +9,7 @@ import {
   FETCH_KEY_UNIT_LIST,
   FETCH_HOUSE_UNIT_LIST,
   FETCH_CONT_RELEASE_LIST,
+  FETCH_CONTRACTOR_LIST,
 } from '@/store/modules/contract/mutations-types'
 import router from '@/router'
 import { message } from '@/utils/helper'
@@ -81,6 +82,16 @@ const actions = {
     } catch (err: any) {
       console.log(err.response.data)
     }
+  },
+
+  fetchContractorList: ({ commit }: any, payload: any) => {
+    const { project, search } = payload
+    return api
+      .get(`/contractor/?project=${project}&search=${search}`)
+      .then(res => {
+        commit(FETCH_CONTRACTOR_LIST, res.data)
+      })
+      .catch(console.log)
   },
 
   fetchContractor: ({ commit }: any, pk: number) => {

@@ -114,6 +114,7 @@ export interface ContractState {
   contractList: Contract[]
   contractsCount: number
   contract: Contract | null
+  contractorList: Contractor[]
   contractor: Contractor | null
   subsSummaryList: SubsSummary[]
   contSummaryList: ContractSummary[]
@@ -128,6 +129,7 @@ const state = {
   contractList: [],
   contractsCount: 0,
   contract: null,
+  contractorList: [],
   contractor: null,
   subsSummaryList: [],
   contSummaryList: [],
