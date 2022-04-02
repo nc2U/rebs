@@ -590,7 +590,7 @@ class ContractorSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Contractor
-        fields = ('pk', 'contract', 'name', 'birth_date', 'gender', 'is_registed',
+        fields = ('pk', 'contract', 'name', '__str__', 'birth_date', 'gender', 'is_registed',
                   'status', 'reservation_date', 'contract_date', 'note', 'contractorrelease')
 
 
@@ -607,18 +607,10 @@ class ContractorContactSerializer(serializers.ModelSerializer):
         fields = ('pk', 'contractor', 'cell_phone', 'home_phone', 'other_phone', 'email')
 
 
-class ContractorInReleaseSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Contractor
-        fields = ('pk', 'name', '__str__')
-
-
 class ContractorReleaseSerializer(serializers.ModelSerializer):
-    contractor = ContractorInReleaseSerializer()
-
     class Meta:
         model = ContractorRelease
-        fields = ('pk', 'project', 'contractor', 'status', 'refund_amount',
+        fields = ('pk', 'project', 'contractor', '__str__', 'status', 'refund_amount',
                   'refund_account_bank', 'refund_account_number', 'refund_account_depositor',
                   'request_date', 'completion_date', 'note')
 
