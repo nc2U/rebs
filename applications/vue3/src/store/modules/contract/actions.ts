@@ -570,6 +570,79 @@ const actions = {
       })
       .catch(err => console.log(err.response.data))
   },
+
+  createReleaseSet: ({ dispatch }: any, payload: any) => {
+    // pk: 31
+
+    // completion_date: "2022-04-02"
+    // contractor: "윤형율"
+    // note: ""
+    // refund_account_bank: ""
+    // refund_account_depositor: ""
+    // refund_account_number: ""
+    // refund_amount: null
+    // request_date: "2021-10-01"
+    // status: "5"
+
+    // 1. 계약자 상태 변경
+    const contractor = 1
+    const contract = 1
+    const keyunit = 1
+
+    const release_done = true
+
+    // 2. 계약 상태 변경
+    if (release_done) {
+      api
+        .patch(`/contractor/${contractor}/`, {
+          is_registed: false,
+          status: '4',
+        })
+        .then(res => console.log(res.data))
+        .catch(err => console.log(err.response.data))
+    }
+
+    // 3. 계약유닛 연결 해제
+    // 4. 동호수 연결 해제
+    // 5. 분담금 납부 상태 환불처리
+    // 6. 해지 정보 테이블 데이터 생성
+  },
+
+  updateReleaseSet: ({ dispatch }: any, payload: any) => {
+    // pk: 31
+    // completion_date: "2022-04-02"
+    // contractor: "윤형율"
+    // note: ""
+    // refund_account_bank: ""
+    // refund_account_depositor: ""
+    // refund_account_number: ""
+    // refund_amount: null
+    // request_date: "2021-10-01"
+    // status: "5"
+
+    // 1. 계약자 상태 변경
+    const contractor = 1
+    const contract = 1
+    const keyunit = 1
+
+    const release_done = true
+
+    // 2. 계약 상태 변경
+    if (release_done) {
+      api
+        .patch(`/contractor/${contractor}/`, {
+          is_registed: false,
+          status: '4',
+        })
+        .then(res => console.log(res.data))
+        .catch(err => console.log(err.response.data))
+    }
+
+    // 3. 계약유닛 연결 해제
+    // 4. 동호수 연결 해제
+    // 5. 분담금 납부 상태 환불처리
+    // 6. 해지 정보 테이블 데이터 업데이트
+  },
 }
 
 export default actions
