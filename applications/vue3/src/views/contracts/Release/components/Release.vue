@@ -1,7 +1,7 @@
 <template>
   <CTableDataCell>
-    <router-link to="" @click="updateConfirm">
-      {{ cutString(release.contractor.__str__, 25) }}
+    <router-link to="" @click="callFormModal">
+      {{ cutString(release.__str__, 25) }}
     </router-link>
   </CTableDataCell>
   <CTableDataCell>{{ getStatus(release.status) }}</CTableDataCell>
@@ -18,12 +18,12 @@
   <CTableDataCell>{{ release.request_date }}</CTableDataCell>
   <CTableDataCell>{{ release.completion_date }}</CTableDataCell>
   <CTableDataCell>
-    <CButton type="button" color="danger" size="sm" @click="updateConfirm">
+    <CButton type="button" color="danger" size="sm" @click="callFormModal">
       확인
     </CButton>
   </CTableDataCell>
 
-  <FormModal size="lg" ref="cancelFormModal">
+  <FormModal size="lg" ref="releaseFormModal">
     <template v-slot:header>
       <CIcon name="cil-italic" />
       계약 해지 수정 등록
@@ -31,8 +31,9 @@
     <template v-slot:default>
       <ReleaseForm
         :release="release"
+        :contractor="contractor"
         @on-submit="onSubmit"
-        @close="$refs.cancelFormModal.visible = false"
+        @close="$refs.releaseFormModal.visible = false"
       />
     </template>
   </FormModal>
@@ -42,11 +43,15 @@
 import { defineComponent } from 'vue'
 import FormModal from '@/components/Modals/FormModal.vue'
 import ReleaseForm from '@/views/contracts/Release/components/ReleaseForm.vue'
+import { mapState } from 'vuex'
 
 export default defineComponent({
   name: 'Release',
   components: { FormModal, ReleaseForm },
   props: { release: Object },
+  computed: {
+    ...mapState('contract', ['contractor']),
+  },
   methods: {
     getStatus(num: string) {
       const status = [
@@ -57,17 +62,17 @@ export default defineComponent({
       ]
       return status.filter(s => s.code === num).map(s => s.text)[0]
     },
-    updateConfirm(this: any) {
+    callFormModal(this: any) {
+      this.$emit('get-release', this.release.pk)
       this.$router.push({
         name: '계약해지 관리',
-        query: { contractor: this.release.contractor.pk },
+        query: { contractor: this.release.contractor },
       })
-      this.$emit('update-confirm', this.release.pk)
-      this.$refs.cancelFormModal.callModal()
+      this.$refs.releaseFormModal.callModal()
     },
     onSubmit(this: any, payload: any) {
       this.$emit('on-submit', payload)
-      this.$refs.cancelFormModal.visible = false
+      this.$refs.releaseFormModal.visible = false
     },
   },
 })

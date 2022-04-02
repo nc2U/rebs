@@ -12,8 +12,8 @@
             <CFormLabel class="col-sm-4 col-form-label">계약자</CFormLabel>
             <CCol sm="8">
               <CFormSelect v-model="form.contractor" required readonly>
-                <option>
-                  {{ form.contractor }}
+                <option :value="contractor.pk">
+                  {{ contractor.name }}
                 </option>
               </CFormSelect>
             </CCol>
@@ -216,7 +216,7 @@ export default defineComponent({
   created(this: any) {
     if (this.release && this.release.pk) {
       this.pk = this.release.pk
-      this.form.contractor = this.release.contractor.name
+      this.form.contractor = this.release.contractor
       this.form.status = this.release.status
       this.form.refund_amount = this.release.refund_amount
       this.form.refund_account_bank = this.release.refund_account_bank
@@ -225,7 +225,7 @@ export default defineComponent({
       this.form.request_date = this.release.request_date
       this.form.completion_date = this.release.completion_date
       this.form.note = this.release.note
-    } else this.form.contractor = this.contractor.name
+    } else this.form.contractor = this.contractor.pk
   },
   computed: {
     pageManageAuth() {

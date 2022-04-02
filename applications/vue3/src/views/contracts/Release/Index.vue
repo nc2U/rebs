@@ -10,7 +10,7 @@
       <ContNavigation :contractor="contractor" />
       <ContController
         @search-contractor="searchContractor"
-        @update-confirm="updateConfirm"
+        @get-release="getRelease"
       />
       <ContractorAlert v-if="contractor" :contractor="contractor" />
       <ReleasetButton
@@ -20,7 +20,7 @@
       />
       <ReleaseList
         @page-select="pageSelect"
-        @update-confirm="updateConfirm"
+        @get-release="getRelease"
         @on-submit="onSubmit"
       />
     </CCardBody>
@@ -89,7 +89,7 @@ export default defineComponent({
       const project = this.project.pk
       this.fetchContractorList({ project, search })
     },
-    updateConfirm(release: number) {
+    getRelease(release: number) {
       this.fetchContRelease(release)
     },
     pageSelect(page: number) {

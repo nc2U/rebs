@@ -2,7 +2,7 @@
   <CAlert color="secondary">
     <CButton
       :color="contRelease && contRelease.pk ? 'warning' : 'danger'"
-      @click="createConfirm"
+      @click="callFormModal"
     >
       {{ contRelease && contRelease.pk ? '수정하기' : '등록하기' }}
     </CButton>
@@ -47,7 +47,7 @@ export default defineComponent({
     ...mapGetters('accounts', ['staffAuth', 'superAuth']),
   },
   methods: {
-    createConfirm(this: any) {
+    callFormModal(this: any) {
       if (this.pageManageAuth) this.$refs.releaseFormModal.callModal()
       else this.$refs.releaseAlertModal.callModal()
     },

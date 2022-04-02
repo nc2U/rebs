@@ -37,7 +37,7 @@
       <CTableRow v-for="release in contReleaseList" :key="release.pk">
         <Release
           :release="release"
-          @update-confirm="updateConfirm"
+          @get-release="getRelease"
           @on-submit="onSubmit"
         />
       </CTableRow>
@@ -69,8 +69,8 @@ export default defineComponent({
     pageSelect(page: number) {
       this.$emit('page-select', page)
     },
-    updateConfirm(release: number) {
-      this.$emit('update-confirm', release)
+    getRelease(release: number) {
+      this.$emit('get-release', release)
     },
     onSubmit(this: any, payload: any) {
       this.$emit('on-submit', payload)

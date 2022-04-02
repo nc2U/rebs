@@ -80,7 +80,7 @@ export default defineComponent({
     },
     setContractor(pk: number, release: number | null) {
       this.$router.push({ name: '계약해지 관리', query: { contractor: pk } })
-      if (release !== null) this.$emit('update-confirm', release)
+      if (release !== null) this.$emit('get-release', release)
       else this.FETCH_CONT_RELEASE(null)
 
       this.search = ''
