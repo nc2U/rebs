@@ -517,7 +517,6 @@ class ContractorReleaseRegister(LoginRequiredMixin, ListView, FormView):
                         if not released_done:
                             refund_d2 = pc.project_account_d1.id + 63
                             pc.project_account_d2 = ProjectAccountD2.objects.get(pk=refund_d2)
-                            # pc.is_release = True
                             pc.refund_contractor = contractor
                         if form.cleaned_data.get('completion_date'):
                             msg = str(form.cleaned_data.get('completion_date')) + ' 환불건'
