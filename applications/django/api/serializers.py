@@ -579,9 +579,11 @@ class ContSummarySerializer(serializers.ModelSerializer):
 
 
 class ContractInContractorSerializer(serializers.ModelSerializer):
+    keyunit = serializers.PrimaryKeyRelatedField(read_only=True)
+
     class Meta:
         model = Contract
-        fields = ('pk', 'serial_number')
+        fields = ('pk', 'serial_number', 'keyunit')
 
 
 class ContractorSerializer(serializers.ModelSerializer):
