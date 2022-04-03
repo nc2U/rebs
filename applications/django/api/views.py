@@ -653,7 +653,7 @@ class ProjectCashBookFilterSet(FilterSet):
     class Meta:
         model = ProjectCashBook
         fields = ('project', 'sort', 'project_account_d1', 'project_account_d2',
-                  'is_release', 'from_deal_date', 'to_deal_date', 'deal_date', 'installment_order',
+                  'from_deal_date', 'to_deal_date', 'deal_date', 'installment_order',
                   'bank_account', 'is_contract_payment', 'contract', 'no_contract')
 
 
@@ -699,7 +699,7 @@ class PaymentList(ProjectCashBookList):
     pagination_class = PageNumberPaginationTen
 
     def get_queryset(self):
-        return ProjectCashBook.objects.filter(project_account_d2__in=(1, 2), is_release=False)
+        return ProjectCashBook.objects.filter(project_account_d2__in=(1, 2), refund_contractor=None)
 
 
 class AllPaymentList(PaymentList):
