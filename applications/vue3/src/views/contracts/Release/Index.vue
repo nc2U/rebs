@@ -78,7 +78,7 @@ export default defineComponent({
       else this.FETCH_CONTRACTOR(null)
     },
     contractor(val) {
-      if (val.contractorrelease) {
+      if (val && val.contractorrelease) {
         this.fetchContRelease(val.contractorrelease)
       }
     },
