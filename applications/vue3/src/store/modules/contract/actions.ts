@@ -641,8 +641,11 @@ const actions = {
 
   createRelease: async ({ dispatch }: any, payload: any) => {
     // 1. 해지 정보 테이블 데이터 생성
+    const { refund_amount, ...restData } = payload
+    const createData = !refund_amount ? restData : payload
+
     api
-      .post(`/contractor-release/`, payload)
+      .post(`/contractor-release/`, createData)
       .then(res => {
         dispatch('fetchContRelease', res.data.pk)
         dispatch('fetchContReleaseList', { project: payload.project })

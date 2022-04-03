@@ -22,17 +22,26 @@
 
         <CCol xs="6">
           <CRow>
-            <CFormLabel class="col-sm-4 col-form-label"> 구분</CFormLabel>
+            <CFormLabel class="col-sm-4 col-form-label">구분</CFormLabel>
             <CCol sm="8">
               <CFormSelect v-model="form.status" required>
                 <option value="">---------</option>
                 <option value="0" v-if="release && release.status < '4'">
                   신청 취소
                 </option>
-                <option value="3" v-if="!release">해지 신청</option>
+                <option value="3" v-if="release && release.status < '4'">
+                  해지 신청
+                </option>
                 <option value="4">해지 종결</option>
                 <option value="5">자격 상실(제명)</option>
               </CFormSelect>
+              <small
+                v-if="form.status >= '4' && release && release.status < '4'"
+                class="text-danger"
+              >
+                해지 종결, 자격 상실(제명) 처리 건은 해당 데이터를 계약상태로
+                되돌릴 수 없습니다.
+              </small>
             </CCol>
           </CRow>
         </CCol>
