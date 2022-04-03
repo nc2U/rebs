@@ -571,77 +571,114 @@ const actions = {
       .catch(err => console.log(err.response.data))
   },
 
-  createReleaseSet: ({ dispatch }: any, payload: any) => {
-    // pk: 31
+  releaseSet: async ({ dispatch }: any, payload: any) => {
+    const contractorId = payload.contractor
 
-    // completion_date: "2022-04-02"
-    // contractor: "윤형율"
-    // note: ""
-    // refund_account_bank: ""
-    // refund_account_depositor: ""
-    // refund_account_number: ""
-    // refund_amount: null
-    // request_date: "2021-10-01"
-    // status: "5"
+    const contractor = await api
+      .get(`/contractor/${contractorId}/`)
+      .then(res => res.data)
+      .catch(err => console.log(err.response.data))
+
+    const contractId = contractor.contract.pk
+    const keyunitId = contractor.contract.keyunit
 
     // 1. 계약자 상태 변경
-    const contractor = 1
-    const contract = 1
-    const keyunit = 1
-
-    const release_done = true
+    api
+      .patch(`/contractor/${contractorId}/`, {
+        is_registed: false,
+        status: String(Number(contractor.status) + 2),
+      })
+      .then(() => {
+        dispatch('fetchContractor', contractorId)
+      })
+      .catch(err => console.log(err.response.data))
 
     // 2. 계약 상태 변경
-    if (release_done) {
+    api
+      .get(`/contract/${contractId}/`)
+      .then(res => {
+        api
+          .patch(`/contract/${contractId}/`, {
+            serial_number: `${res.data.serial_number}-terminated-${payload.completion_date}`,
+            activation: false,
+          })
+          .then(() => dispatch('fetchContract', contractId))
+          .catch(err => console.log(err.response.data))
+      })
+      .catch(err => console.log(err.response.data))
+
+    // 3. 계약유닛 연결 해제
+    const keyunit = await api
+      .patch(`/key-unit/${keyunitId}/`, { contract: null })
+      .then(res => res.data)
+      .catch(err => console.log(err.response.data))
+
+    // 4. 동호수 연결 해제
+    if (keyunit.houseunit) {
       api
-        .patch(`/contractor/${contractor}/`, {
-          is_registed: false,
-          status: '4',
-        })
-        .then(res => console.log(res.data))
+        .patch(`/house-unit/${keyunit.houseunit}/`, { key_unit: null })
         .catch(err => console.log(err.response.data))
     }
 
-    // 3. 계약유닛 연결 해제
-    // 4. 동호수 연결 해제
-    // 5. 분담금 납부 상태 환불처리
-    // 6. 해지 정보 테이블 데이터 생성
+    // 5. 분담금 납부 상태 환불처리 // release table status -> 4로 입력될 때 1회 실행
+    const payments = await api
+      .get(`/project-cashbook/?contract=${contractId}`)
+      .then(res => res.data)
+      .catch(err => console.log(err.response.data))
+
+    payments.forEach((payment: any) => {
+      const append_txt = payment.note === '' ? '' : ', '
+      const append_msg = payload.completion_date
+        ? `${payload.completion_date} 환불건`
+        : ''
+      api.patch(`/project-cashbook/${payment.pk}`, {
+        project_account_d2: `${payment.project_account_d1 + 63}`,
+        refund_contractor: contractorId,
+        note: `${payment.note}${append_txt}${append_msg}`,
+      })
+    })
   },
 
-  updateReleaseSet: ({ dispatch }: any, payload: any) => {
-    // pk: 31
-    // completion_date: "2022-04-02"
-    // contractor: "윤형율"
-    // note: ""
-    // refund_account_bank: ""
-    // refund_account_depositor: ""
-    // refund_account_number: ""
-    // refund_amount: null
-    // request_date: "2021-10-01"
-    // status: "5"
+  createRelease: async ({ dispatch }: any, payload: any) => {
+    // 1. 해지 정보 테이블 데이터 생성
+    api
+      .post(`/contractor-release/`, payload)
+      .then(res => {
+        dispatch('fetchContRelease', res.data.pk)
+        dispatch('fetchContReleaseList', { project: payload.project })
+      })
+      .catch(err => console.log(err.response.data))
 
-    // 1. 계약자 상태 변경
-    const contractor = 1
-    const contract = 1
-    const keyunit = 1
-
-    const release_done = true
-
-    // 2. 계약 상태 변경
-    if (release_done) {
-      api
-        .patch(`/contractor/${contractor}/`, {
-          is_registed: false,
-          status: '4',
-        })
-        .then(res => console.log(res.data))
-        .catch(err => console.log(err.response.data))
+    if (payload.status >= '4') {
+      dispatch('releaseSet', payload)
     }
+    message()
+  },
 
-    // 3. 계약유닛 연결 해제
-    // 4. 동호수 연결 해제
-    // 5. 분담금 납부 상태 환불처리
-    // 6. 해지 정보 테이블 데이터 업데이트
+  updateRelease: async ({ dispatch }: any, payload: any) => {
+    const { pk, ...updateData } = payload
+
+    api.get(`/contractor-release/${pk}/`).then(res => {
+      const status = res.data.status < '4' && payload.status >= '4'
+      const completion_date =
+        !res.data.completion_date && payload.completion_date
+      if (status || completion_date) {
+        dispatch('releaseSet', payload)
+      }
+
+      // 1. 해지 정보 테이블 데이터 업데이트
+      const page = payload.page
+      const project = payload.project
+      api
+        .put(`/contractor-release/${pk}/`, updateData)
+        .then(res => {
+          dispatch('fetchContRelease', res.data.pk)
+          dispatch('fetchContReleaseList', { project, page })
+        })
+        .catch(err => console.log(err.response.data))
+    })
+
+    message()
   },
 }
 

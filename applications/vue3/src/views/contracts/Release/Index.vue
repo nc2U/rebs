@@ -53,6 +53,11 @@ export default defineComponent({
     ReleasetButton,
     ReleaseList,
   },
+  data() {
+    return {
+      page: 1,
+    }
+  },
   created(this: any) {
     this.fetchContReleaseList({ project: this.initProjId })
     if (this.$route.query.contractor)
@@ -71,6 +76,11 @@ export default defineComponent({
     $route(val) {
       if (val.query.contractor) this.fetchContractor(val.query.contractor)
       else this.FETCH_CONTRACTOR(null)
+    },
+    contractor(val) {
+      if (val.contractorrelease) {
+        this.fetchContRelease(val.contractorrelease)
+      }
     },
   },
   methods: {
@@ -93,20 +103,23 @@ export default defineComponent({
       this.fetchContRelease(release)
     },
     pageSelect(page: number) {
+      this.page = page
       const project = this.project.pk
       this.fetchContReleaseList({ project, page })
     },
     onSubmit(payload: any) {
-      if (payload.pk) this.updateReleaseSet(payload)
-      else this.createReleaseSet(payload)
+      const page = this.page
+      const project = this.project.pk
+      if (payload.pk) this.updateRelease({ project, page, ...payload })
+      else this.createRelease({ project, ...payload })
     },
     ...mapActions('contract', [
       'fetchContractor',
       'fetchContractorList',
       'fetchContRelease',
       'fetchContReleaseList',
-      'createReleaseSet',
-      'updateReleaseSet',
+      'createRelease',
+      'updateRelease',
     ]),
     ...mapMutations('contract', [
       'FETCH_CONTRACTOR',
