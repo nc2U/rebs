@@ -97,15 +97,16 @@ export default defineComponent({
       this.fetchContReleaseList({ project, page })
     },
     onSubmit(payload: any) {
-      if (payload.pk) alert('update~~!!')
-      else alert('create~~!!')
-      console.log(payload)
+      if (payload.pk) this.updateReleaseSet(payload)
+      else this.createReleaseSet(payload)
     },
     ...mapActions('contract', [
       'fetchContractor',
       'fetchContractorList',
       'fetchContRelease',
       'fetchContReleaseList',
+      'createReleaseSet',
+      'updateReleaseSet',
     ]),
     ...mapMutations('contract', [
       'FETCH_CONTRACTOR',

@@ -249,7 +249,9 @@ export default defineComponent({
           this.form.completion_date = this.form.completion_date
             ? this.dateFormat(this.form.completion_date)
             : null
-          const payload = this.pk ? { pk: this.pk, ...this.form } : this.form
+          const payload = this.pk
+            ? { pk: this.pk, ...this.form }
+            : { pk: null, ...this.form }
           this.$emit('on-submit', payload)
         }
       } else this.$refs.alertModal.callModal()
