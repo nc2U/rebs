@@ -12,8 +12,8 @@
             <CFormLabel class="col-sm-4 col-form-label">계약자</CFormLabel>
             <CCol sm="8">
               <CFormSelect v-model="form.contractor" required readonly>
-                <option :value="contractor.pk">
-                  {{ contractor.name }}
+                <option :value="form.contractor">
+                  {{ contractor ? contractor.name : release.__str__ }}
                 </option>
               </CFormSelect>
             </CCol>
