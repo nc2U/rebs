@@ -18,7 +18,7 @@ const getters = {
   initProjId(state: AccountsState) {
     return state.userInfo?.staffauth?.assigned_project
       ? state.userInfo?.staffauth?.assigned_project
-      : state.userInfo?.staffauth?.allowed_projects[0] || 1
+      : state.userInfo?.staffauth?.allowed_projects[0] || 0
   },
   myTodos: (state: AccountsState) => {
     const pk = state.userInfo?.pk

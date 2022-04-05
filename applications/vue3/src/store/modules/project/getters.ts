@@ -1,12 +1,20 @@
 import { HouseUnit, Project, ProjectState } from '@/store/modules/project/state'
 
 const getters = {
-  projSelect: (state: ProjectState) =>
+  allowed_projects: (state: any, getters: any, rootState: any) => {
+    return rootState.accounts.userInfo && rootState.accounts.userInfo.staffauth
+      ? rootState.accounts.userInfo.staffauth.allowed_projects
+      : []
+  },
+
+  projSelect: (state: ProjectState, getters: any) =>
     state.projectList
-      ? state.projectList.map((proj: Project) => ({
-          value: proj.pk,
-          text: proj.name,
-        }))
+      ? state.projectList
+          .filter(x => getters.allowed_projects.includes(x.pk))
+          .map((proj: Project) => ({
+            value: proj.pk,
+            text: proj.name,
+          }))
       : [],
 
   simpleTypes: (state: ProjectState) =>
