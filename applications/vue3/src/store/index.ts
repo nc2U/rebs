@@ -8,6 +8,7 @@ import payment from '@/store/modules/payment'
 import project from '@/store/modules/project'
 import proCash from '@/store/modules/proCash'
 import settings from '@/store/modules/settings'
+import Cookies from 'js-cookie'
 
 declare interface RootState {
   asideVisible: boolean
@@ -20,9 +21,10 @@ declare interface RootState {
 
 const state: RootState = {
   asideVisible: false,
-  sidebarVisible: true,
-  sidebarUnfoldable: false,
-  theme: 'default',
+  sidebarVisible:
+    !Cookies.get('sidebarVisible') || Cookies.get('sidebarVisible') === 'true',
+  sidebarUnfoldable: Cookies.get('sidebarUnfoldable') === 'true',
+  theme: Cookies.get('theme') || 'default',
   LoadingStatus: false,
   registerCode: 'brdnc00',
 }
@@ -32,16 +34,22 @@ const mutations = {
     state.asideVisible = !state.asideVisible
   },
   toggleSidebar(state: RootState) {
-    state.sidebarVisible = !state.sidebarVisible
+    const sidebarVisible = !state.sidebarVisible
+    state.sidebarVisible = sidebarVisible
+    Cookies.set('sidebarVisible', String(sidebarVisible))
   },
   toggleTheme(state: RootState, payload: any) {
     state.theme = payload.value
+    Cookies.set('theme', payload.value)
   },
   toggleUnfoldable(state: RootState) {
-    state.sidebarUnfoldable = !state.sidebarUnfoldable
+    const sidebarUnfoldable = !state.sidebarUnfoldable
+    state.sidebarUnfoldable = sidebarUnfoldable
+    Cookies.set('sidebarUnfoldable', String(sidebarUnfoldable))
   },
   updateSidebarVisible(state: RootState, payload: any) {
     state.sidebarVisible = payload.value
+    Cookies.set('sidebarVisible', payload.value)
   },
   startSpinner(state: RootState) {
     state.LoadingStatus = true
