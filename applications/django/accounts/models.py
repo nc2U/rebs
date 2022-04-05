@@ -1,3 +1,4 @@
+import hashlib
 from django.db import models
 from django.utils import timezone
 from django.core.mail import send_mail
@@ -111,6 +112,17 @@ class Profile(models.Model):
     class Meta:
         verbose_name = '사용자 프로필'
         verbose_name_plural = '사용자 프로필'
+
+
+def get_image_filename(instance, filename):
+    username = instance.profile__user__username
+    hash_value = hashlib.md5().hexdigest()
+    return f"users/{username}_{hash_value}_{filename}"
+
+
+class Avatar(models.Model):
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, default=None)
+    avatar = models.ImageField(upload_to=get_image_filename, verbose_name='Avatar')
 
 
 class Todo(models.Model):
