@@ -9,30 +9,30 @@ const actions = {
   fetchCompanyList: ({ commit }: any) => {
     api
       .get('/company/')
-      .then((res) => {
+      .then(res => {
         commit(FETCH_COMPANY_LIST, res.data)
       })
-      .catch((err) => console.log(err))
+      .catch(err => console.log(err))
   },
 
   fetchCompany: ({ commit }: any, pk: { pk: string }) => {
     api
       .get(`/company/${pk}/`)
-      .then((res) => {
+      .then(res => {
         commit(FETCH_COMPANY, res.data)
       })
-      .catch((err) => console.log(err))
+      .catch(err => console.log(err))
   },
 
   createCompany: ({ dispatch }: any, payload: any) => {
     api
       .post('/company/', payload)
-      .then((res) => {
+      .then(res => {
         dispatch('fetchCompany', res.data.pk)
         dispatch('fetchCompanyList')
         message()
       })
-      .catch((err) => {
+      .catch(err => {
         console.log(err.response.data)
         alert(
           `${Object.keys(err.response.data)[0]} : ${
@@ -45,12 +45,12 @@ const actions = {
   updateCompany: ({ dispatch }: any, payload: any) => {
     api
       .put(`/company/${payload.pk}/`, payload)
-      .then((res) => {
+      .then(res => {
         dispatch('fetchCompany', res.data.pk)
         dispatch('fetchCompanyList')
         message()
       })
-      .catch((err) => {
+      .catch(err => {
         console.log(err.response.data)
         alert(
           `${Object.keys(err.response.data)[0]} : ${

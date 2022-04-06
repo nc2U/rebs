@@ -1,5 +1,5 @@
 import store from '@/store'
-import {h, resolveComponent} from 'vue'
+import { h, resolveComponent } from 'vue'
 
 const contract = {
   path: 'contracts',

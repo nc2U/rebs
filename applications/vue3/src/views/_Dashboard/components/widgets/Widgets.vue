@@ -251,28 +251,44 @@
           <DocsExample href="">
             <CRow>
               <CCol :xs="3">
-                <CWidgetStatsF color="primary-gradient" title="Title" value="$1.999,50">
+                <CWidgetStatsF
+                  color="primary-gradient"
+                  title="Title"
+                  value="$1.999,50"
+                >
                   <template #icon>
                     <CIcon icon="cil-settings" size="xl" />
                   </template>
                 </CWidgetStatsF>
               </CCol>
               <CCol :xs="3">
-                <CWidgetStatsF color="info-gradient" title="Title" value="$1.999,50">
+                <CWidgetStatsF
+                  color="info-gradient"
+                  title="Title"
+                  value="$1.999,50"
+                >
                   <template #icon>
                     <CIcon icon="cil-user" size="xl" />
                   </template>
                 </CWidgetStatsF>
               </CCol>
               <CCol :xs="3">
-                <CWidgetStatsF color="warning-gradient" title="Title" value="$1.999,50">
+                <CWidgetStatsF
+                  color="warning-gradient"
+                  title="Title"
+                  value="$1.999,50"
+                >
                   <template #icon>
                     <CIcon icon="cil-moon" size="xl" />
                   </template>
                 </CWidgetStatsF>
               </CCol>
               <CCol :xs="3">
-                <CWidgetStatsF color="danger-gradient" title="Title" value="$1.999,50">
+                <CWidgetStatsF
+                  color="danger-gradient"
+                  title="Title"
+                  value="$1.999,50"
+                >
                   <template #icon>
                     <CIcon icon="cil-bell" size="xl" />
                   </template>
@@ -283,7 +299,11 @@
           <DocsExample href="">
             <CRow>
               <CCol :xs="3">
-                <CWidgetStatsF color="primary-gradient" title="Title" value="$1.999,50">
+                <CWidgetStatsF
+                  color="primary-gradient"
+                  title="Title"
+                  value="$1.999,50"
+                >
                   <template #icon>
                     <CIcon icon="cil-settings" size="xl" />
                   </template>
@@ -305,7 +325,11 @@
                 </CWidgetStatsF>
               </CCol>
               <CCol :xs="3">
-                <CWidgetStatsF color="info-gradient" title="Title" value="$1.999,50">
+                <CWidgetStatsF
+                  color="info-gradient"
+                  title="Title"
+                  value="$1.999,50"
+                >
                   <template #icon>
                     <CIcon icon="cil-user" size="xl" />
                   </template>
@@ -327,7 +351,11 @@
                 </CWidgetStatsF>
               </CCol>
               <CCol :xs="3">
-                <CWidgetStatsF color="warning-gradient" title="Title" value="$1.999,50">
+                <CWidgetStatsF
+                  color="warning-gradient"
+                  title="Title"
+                  value="$1.999,50"
+                >
                   <template #icon>
                     <CIcon icon="cil-moon" size="xl" />
                   </template>
@@ -349,7 +377,11 @@
                 </CWidgetStatsF>
               </CCol>
               <CCol :xs="3">
-                <CWidgetStatsF color="danger-gradient" title="Title" value="$1.999,50">
+                <CWidgetStatsF
+                  color="danger-gradient"
+                  title="Title"
+                  value="$1.999,50"
+                >
                   <template #icon>
                     <CIcon icon="cil-bell" size="xl" />
                   </template>

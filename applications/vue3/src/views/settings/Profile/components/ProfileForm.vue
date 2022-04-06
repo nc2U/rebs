@@ -166,7 +166,7 @@ export default defineComponent({
     formsCheck(this: any) {
       // const a = this.form.name === this.company.name
       // const b = this.form.ceo === this.company.ceo
-      return //a && b
+      return 1 //a && b
     },
     ...mapGetters('accounts', ['staffAuth', 'superAuth']),
   },

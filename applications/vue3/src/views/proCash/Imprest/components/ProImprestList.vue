@@ -1,17 +1,17 @@
 <template>
   <CTable hover responsive align="middle">
     <colgroup>
-      <col width="8%"/>
-      <col width="6%"/>
-      <col width="7%"/>
-      <col width="10%"/>
-      <col width="12%"/>
-      <col width="11%"/>
-      <col width="11%"/>
-      <col width="10%"/>
-      <col width="10%"/>
-      <col width="9%"/>
-      <col width="6%"/>
+      <col width="8%" />
+      <col width="6%" />
+      <col width="7%" />
+      <col width="10%" />
+      <col width="12%" />
+      <col width="11%" />
+      <col width="11%" />
+      <col width="10%" />
+      <col width="10%" />
+      <col width="9%" />
+      <col width="6%" />
     </colgroup>
 
     <CTableHead>
@@ -22,7 +22,7 @@
         <CTableHeaderCell scope="col">
           세부계정
           <router-link to="" @click="showD1">
-            <CIcon name="cilCog" @click="$refs.DAccount.callModal()"/>
+            <CIcon name="cilCog" @click="$refs.DAccount.callModal()" />
           </router-link>
         </CTableHeaderCell>
         <CTableHeaderCell scope="col">적요</CTableHeaderCell>
@@ -30,7 +30,7 @@
         <CTableHeaderCell scope="col">
           거래계좌
           <!--          <router-link to="" @click="showD1">-->
-          <CIcon name="cilCog"/>
+          <CIcon name="cilCog" />
           <!--          </router-link>-->
         </CTableHeaderCell>
         <CTableHeaderCell scope="col">입금액</CTableHeaderCell>
@@ -42,21 +42,21 @@
 
     <CTableBody>
       <ProImprest
-          v-for="imprest in getProImprestLogs"
-          :imprest="imprest"
-          :key="imprest.pk"
-          @multi-submit="multiSubmit"
-          @on-delete="onDelete"
+        v-for="imprest in getProImprestLogs"
+        :imprest="imprest"
+        :key="imprest.pk"
+        @multi-submit="multiSubmit"
+        @on-delete="onDelete"
       />
     </CTableBody>
   </CTable>
 
   <CSmartPagination
-      :activePage="1"
-      :limit="8"
-      :pages="proImprestPages(15)"
-      class="mt-3"
-      @active-page-change="pageSelect"
+    :activePage="1"
+    :limit="8"
+    :pages="proImprestPages(15)"
+    class="mt-3"
+    @active-page-change="pageSelect"
   />
 
   <AlertModal ref="DAccount" size="lg">
@@ -64,12 +64,14 @@
     <template v-slot:default>
       <CAccordion>
         <CAccordionItem v-for="d1 in allAccD1List" :item-key="d1.pk">
-          <CAccordionHeader>{{ `[${d1.code}] ${d1.name} (${d1.description})` }}</CAccordionHeader>
+          <CAccordionHeader>{{
+            `[${d1.code}] ${d1.name} (${d1.description})`
+          }}</CAccordionHeader>
           <CAccordionBody class="pl-3">
             <CRow
-                v-for="d2 in allAccD2List.filter(d2 => d2.d1 === d1.pk)"
-                :key="d2.pk"
-                class="pl-2 mb-2"
+              v-for="d2 in allAccD2List.filter(d2 => d2.d1 === d1.pk)"
+              :key="d2.pk"
+              class="pl-2 mb-2"
             >
               <CCol>
                 [{{ d2.code }}] {{ d2.name }} ------ ({{ d2.description }})
@@ -84,15 +86,15 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from 'vue'
+import { defineComponent } from 'vue'
 import ProImprest from '@/views/proCash/Imprest/components/ProImprest.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
-import {mapGetters, mapState} from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'ProImprestList',
-  components: {ProImprest, AlertModal},
-  props: {project: Object},
+  components: { ProImprest, AlertModal },
+  props: { project: Object },
   computed: {
     ...mapGetters('proCash', ['proImprestPages', 'getProImprestLogs']),
     ...mapState('proCash', ['allAccD1List', 'allAccD2List']),

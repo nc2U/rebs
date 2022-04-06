@@ -4,7 +4,8 @@
       <CCard class="mb-4">
         <CCardHeader>
           <CIcon name="cil-justify-center" />
-          <strong> Bootstrap Carousel</strong> <small class="text-muted">Songdo-Central Xi</small>
+          <strong> Bootstrap Carousel</strong>
+          <small class="text-muted">Songdo-Central Xi</small>
         </CCardHeader>
         <CCardBody>
           <CCarousel controls indicators>

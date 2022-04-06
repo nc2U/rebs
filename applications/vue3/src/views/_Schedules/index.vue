@@ -4,18 +4,18 @@
       <CCol md="9">
         <CCard>
           <CCardHeader>
-            <CIcon name="cil-calendar"/>
+            <CIcon name="cil-calendar" />
             Calendar
             <CBadge color="danger">Rebs</CBadge>
           </CCardHeader>
           <CCardBody>
-            <div class='demo-app'>
-              <div class='demo-app-main'>
+            <div class="demo-app">
+              <div class="demo-app-main">
                 <FullCalendar
-                    class='demo-app-calendar'
-                    :options='calendarOptions'
+                  class="demo-app-calendar"
+                  :options="calendarOptions"
                 >
-                  <template v-slot:eventContent='arg'>
+                  <template v-slot:eventContent="arg">
                     <b>{{ arg.timeText }}</b>
                     <i>{{ arg.event.title }}</i>
                   </template>
@@ -27,29 +27,31 @@
       </CCol>
 
       <CCol md="3" class="d-none d-md-block">
-        <div class='demo-app-sidebar'>
-          <div class='demo-app-sidebar-section'>
+        <div class="demo-app-sidebar">
+          <div class="demo-app-sidebar-section">
             <h2>Instructions</h2>
             <ul>
-              <li>날짜를 선택하면 새 이벤트를 생성하라는 메시지가 표시됩니다.</li>
+              <li>
+                날짜를 선택하면 새 이벤트를 생성하라는 메시지가 표시됩니다.
+              </li>
               <li>드래그, 드롭 및 크기 조정 이벤트</li>
               <li>이벤트를 삭제하려면 클릭하세요.</li>
             </ul>
           </div>
-          <div class='demo-app-sidebar-section'>
+          <div class="demo-app-sidebar-section">
             <label>
               <input
-                  type='checkbox'
-                  :checked='calendarOptions.weekends'
-                  @change='handleWeekendsToggle'
+                type="checkbox"
+                :checked="calendarOptions.weekends"
+                @change="handleWeekendsToggle"
               />
               주말 표시 여부
             </label>
           </div>
-          <div class='demo-app-sidebar-section'>
+          <div class="demo-app-sidebar-section">
             <h2>전체 이벤트 ({{ currentEvents.length }})</h2>
             <ul>
-              <li v-for='event in currentEvents' :key='event.id'>
+              <li v-for="event in currentEvents" :key="event.id">
                 <b>{{ event.startStr }}</b>
                 <i>{{ event.title }}</i>
               </li>
@@ -62,13 +64,18 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from 'vue'
+import { defineComponent } from 'vue'
 import '@fullcalendar/core/vdom' // solve problem with Vite
-import FullCalendar, {CalendarOptions, EventApi, DateSelectArg, EventClickArg} from '@fullcalendar/vue3'
+import FullCalendar, {
+  CalendarOptions,
+  EventApi,
+  DateSelectArg,
+  EventClickArg,
+} from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
-import {INITIAL_EVENTS, createEventId} from './event-utils'
+import { INITIAL_EVENTS, createEventId } from './event-utils'
 
 export default defineComponent({
   name: 'Schedules',
@@ -81,12 +88,12 @@ export default defineComponent({
         plugins: [
           dayGridPlugin,
           timeGridPlugin,
-          interactionPlugin // needed for dateClick
+          interactionPlugin, // needed for dateClick
         ],
         headerToolbar: {
           left: 'prev,next today',
           center: 'title',
-          right: 'dayGridMonth,timeGridWeek,timeGridDay'
+          right: 'dayGridMonth,timeGridWeek,timeGridDay',
         },
         initialView: 'dayGridMonth',
         initialEvents: INITIAL_EVENTS, // alternatively, use the `events` setting to fetch from a feed
@@ -97,7 +104,7 @@ export default defineComponent({
         weekends: true,
         select: this.handleDateSelect,
         eventClick: this.handleEventClick,
-        eventsSet: this.handleEvents
+        eventsSet: this.handleEvents,
         /* you can update a remote database when these fire:
         eventAdd:
         eventChange:
@@ -121,19 +128,23 @@ export default defineComponent({
           title,
           start: selectInfo.startStr,
           end: selectInfo.endStr,
-          allDay: selectInfo.allDay
+          allDay: selectInfo.allDay,
         })
       }
     },
     handleEventClick(clickInfo: EventClickArg) {
-      if (confirm(`Are you sure you want to delete the event '${clickInfo.event.title}'`)) {
+      if (
+        confirm(
+          `Are you sure you want to delete the event '${clickInfo.event.title}'`,
+        )
+      ) {
         clickInfo.event.remove()
       }
     },
     handleEvents(events: EventApi[]) {
       this.currentEvents = events
     },
-  }
+  },
 })
 </script>
 

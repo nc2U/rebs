@@ -20,7 +20,7 @@
             autoComplete="off"
             :checked="$store.state.theme === 'default'"
             @change="
-              (event) =>
+              event =>
                 $store.commit({
                   type: 'toggleTheme',
                   value: 'default',
@@ -39,7 +39,7 @@
             autoComplete="off"
             :checked="$store.state.theme === 'dark'"
             @change="
-              (event) =>
+              event =>
                 $store.commit({
                   type: 'toggleTheme',
                   value: 'dark',

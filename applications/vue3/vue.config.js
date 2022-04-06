@@ -6,7 +6,7 @@ module.exports = {
   outputDir: '../django/static/dist',
   indexPath: '../../templates/base-vue.html', // relative to outputDir!
 
-  chainWebpack: (config) => {
+  chainWebpack: config => {
     /*
     The arrow function in writeToDisk(...) tells the dev server to write
     only index.html to the disk.
@@ -26,7 +26,7 @@ module.exports = {
       .hotOnly(true)
       .headers({ 'Access-Control-Allow-Origin': '*' })
       .proxy('http://localhost')
-      .writeToDisk((filePath) => filePath.endsWith('index.html'))
+      .writeToDisk(filePath => filePath.endsWith('index.html'))
 
     /* prefetch off */
     config.plugins.delete('prefetch')

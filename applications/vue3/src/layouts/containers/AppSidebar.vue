@@ -5,7 +5,7 @@
     :unfoldable="sidebarUnfoldable"
     :visible="sidebarVisible"
     @visible-change="
-      (event) =>
+      event =>
         $store.commit({
           type: 'updateSidebarVisible',
           value: event,
