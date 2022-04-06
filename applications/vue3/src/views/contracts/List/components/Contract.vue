@@ -70,12 +70,9 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import CashesList from '@/views/comCash/Manage/components/CashesList.vue'
 
 export default defineComponent({
   name: 'Contract',
-  components: { CashesList },
-
   props: {
     contract: {
       type: Object,

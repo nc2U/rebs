@@ -63,10 +63,14 @@
     <template v-slot:header> 프로젝트 계정 분류 보기</template>
     <template v-slot:default>
       <CAccordion>
-        <CAccordionItem v-for="d1 in allAccD1List" :item-key="d1.pk">
-          <CAccordionHeader>{{
-            `[${d1.code}] ${d1.name} (${d1.description})`
-          }}</CAccordionHeader>
+        <CAccordionItem
+          v-for="d1 in allAccD1List"
+          :key="d1.pk"
+          :item-key="d1.pk"
+        >
+          <CAccordionHeader>
+            {{ `[${d1.code}] ${d1.name} (${d1.description})` }}
+          </CAccordionHeader>
           <CAccordionBody class="pl-3">
             <CRow
               v-for="d2 in allAccD2List.filter(d2 => d2.d1 === d1.pk)"
