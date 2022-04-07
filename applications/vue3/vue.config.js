@@ -39,5 +39,5 @@ module.exports = {
       symlinks: false,
     },
   },
-  transpileDependencies: ['@coreui/utils', '@coreui/vue'],
+  transpileDependencies: ['@coreui/utils', '@coreui/vue-pro'],
 }
