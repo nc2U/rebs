@@ -6,88 +6,109 @@
     @submit.prevent="onSubmit"
   >
     <CCardBody>
-      <CRow class="mb-3">
-        <CFormLabel for="companyCeo" class="col-md-2 col-form-label">
-          아 이 디
-        </CFormLabel>
+      <CRow class="flex-md-row flex-column-reverse">
+        <CCol md="6">
+          <CRow class="mb-3">
+            <h6>사용자 계정</h6>
+            <CFormLabel for="companyCeo" class="col-md-4 col-form-label">
+              아 이 디
+            </CFormLabel>
 
-        <CCol md="4">
-          <CFormInput
-            type="text"
-            v-model="form.ceo"
-            placeholder="아이디를 입력하세요"
-            maxlength="20"
-            required
-          />
-          <CFormFeedback invalid>아이디를 입력하세요.</CFormFeedback>
+            <CCol md="8">
+              <CFormInput
+                type="text"
+                v-model="form.ceo"
+                placeholder="아이디를 입력하세요"
+                maxlength="20"
+                required
+              />
+              <CFormFeedback invalid>아이디를 입력하세요.</CFormFeedback>
+            </CCol>
+          </CRow>
+
+          <CRow class="mb-3">
+            <CFormLabel for="companyName" class="col-md-4 col-form-label">
+              이메일 주소
+            </CFormLabel>
+
+            <CCol md="8">
+              <CFormInput
+                type="text"
+                v-model="form.name"
+                placeholder="이메일을 입력하세요"
+                maxlength="20"
+                required
+              />
+              <CFormFeedback invalid>이메일을 입력하세요.</CFormFeedback>
+            </CCol>
+          </CRow>
+
+          <hr />
+          <CRow class="mb-3">
+            <h6>사용자 프로필</h6>
+            <CFormLabel for="companyName" class="col-md-4 col-form-label">
+              성 명
+            </CFormLabel>
+
+            <CCol md="8">
+              <CFormInput
+                type="text"
+                v-model="form.name"
+                placeholder="성명을 입력하세요"
+                maxlength="20"
+                required
+              />
+              <CFormFeedback invalid>성명을 입력하세요.</CFormFeedback>
+            </CCol>
+          </CRow>
+          <CRow class="mb-3">
+            <CFormLabel for="companyCeo" class="col-md-4 col-form-label">
+              생년월일
+            </CFormLabel>
+
+            <CCol md="8">
+              <CFormInput
+                type="text"
+                v-model="form.ceo"
+                placeholder="생년월일을 입력하세요"
+                maxlength="20"
+                required
+              />
+              <CFormFeedback invalid>생년월일을 입력하세요.</CFormFeedback>
+            </CCol>
+          </CRow>
+
+          <CRow class="mb-3">
+            <CFormLabel for="companyCeo" class="col-md-4 col-form-label">
+              휴대전화
+            </CFormLabel>
+
+            <CCol md="8">
+              <CFormInput
+                type="text"
+                v-model="form.ceo"
+                placeholder="휴대전화를 입력하세요"
+                maxlength="20"
+                required
+              />
+              <CFormFeedback invalid>휴대전화를 입력하세요.</CFormFeedback>
+            </CCol>
+          </CRow>
         </CCol>
-      </CRow>
-
-      <CRow class="mb-3">
-        <CFormLabel for="companyName" class="col-md-2 col-form-label">
-          이메일 주소
-        </CFormLabel>
-
-        <CCol md="4">
-          <CFormInput
-            type="text"
-            v-model="form.name"
-            placeholder="이메일을 입력하세요"
-            maxlength="20"
-            required
-          />
-          <CFormFeedback invalid>이메일을 입력하세요.</CFormFeedback>
-        </CCol>
-      </CRow>
-
-      <hr />
-      <CRow class="mb-3">
-        <CFormLabel for="companyName" class="col-md-2 col-form-label">
-          성 명
-        </CFormLabel>
-
-        <CCol md="4">
-          <CFormInput
-            type="text"
-            v-model="form.name"
-            placeholder="성명을 입력하세요"
-            maxlength="20"
-            required
-          />
-          <CFormFeedback invalid>성명을 입력하세요.</CFormFeedback>
-        </CCol>
-      </CRow>
-      <CRow class="mb-3">
-        <CFormLabel for="companyCeo" class="col-md-2 col-form-label">
-          생년월일
-        </CFormLabel>
-
-        <CCol md="4">
-          <CFormInput
-            type="text"
-            v-model="form.ceo"
-            placeholder="생년월일을 입력하세요"
-            maxlength="20"
-            required
-          />
-          <CFormFeedback invalid>생년월일을 입력하세요.</CFormFeedback>
-        </CCol>
-      </CRow>
-
-      <CRow class="mb-3">
-        <CFormLabel for="companyCeo" class="col-md-2 col-form-label">
-          휴대전화
-        </CFormLabel>
-
-        <CCol md="4">
-          <CFormInput
-            type="text"
-            v-model="form.ceo"
-            placeholder="휴대전화를 입력하세요"
-            maxlength="20"
-            required
-          />
-          <CFormFeedback invalid>휴대전화를 입력하세요.</CFormFeedback>
+        <CCol md="6">
+          <CRow class="mb-4">
+            <CCol>
+              <h6>Profile picture</h6>
+              <CImage
+                rounded
+                thumbnail
+                fluid
+                src="https://brdnc-buket.s3.ap-northeast-2.amazonaws.com/users/no-image.jpeg"
+                width="200"
+                height="200"
+              />
+            </CCol>
+          </CRow>
         </CCol>
       </CRow>
     </CCardBody>
@@ -202,3 +223,15 @@ export default defineComponent({
   },
 })
 </script>
+
+<style lang="scss" scoped>
+@media (min-width: 768px) {
+  .flex-md-row {
+    flex-direction: row !important;
+  }
+}
+
+.flex-column-reverse {
+  flex-direction: column-reverse;
+}
+</style>
