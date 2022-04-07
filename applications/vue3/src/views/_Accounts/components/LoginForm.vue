@@ -49,7 +49,7 @@
         </CButton>
       </CCol>
       <CCol xs="12" class="d-grid">
-        <CButton color="primary" class="px-4">로그인</CButton>
+        <CButton color="primary" class="px-4" type="submit">로그인</CButton>
       </CCol>
     </CRow>
   </CForm>
@@ -68,8 +68,8 @@ export default defineComponent({
       validated: false,
     }
   },
-  created() {
-    ;(this as any).redirect = this.$route.query.redirect
+  created(this: any) {
+    this.redirect = this.$route.query.redirect
   },
   methods: {
     onSubmit(event: any) {
