@@ -11,7 +11,7 @@
           <CRow class="mb-3">
             <h6>사용자 계정</h6>
             <CFormLabel for="companyCeo" class="col-md-4 col-form-label">
-              아 이 디
+              아이디
             </CFormLabel>
 
             <CCol md="8">
@@ -47,7 +47,7 @@
           <CRow class="mb-3">
             <h6>사용자 프로필</h6>
             <CFormLabel for="companyName" class="col-md-4 col-form-label">
-              성 명
+              성명
             </CFormLabel>
 
             <CCol md="8">
@@ -233,5 +233,9 @@ export default defineComponent({
 
 .flex-column-reverse {
   flex-direction: column-reverse;
+}
+
+.rounded {
+  border-radius: 100px !important;
 }
 </style>
