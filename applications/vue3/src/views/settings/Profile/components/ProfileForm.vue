@@ -103,7 +103,7 @@
                 rounded
                 thumbnail
                 fluid
-                src="https://brdnc-buket.s3.ap-northeast-2.amazonaws.com/users/no-image.jpeg"
+                src="/static/dist/img/NoImage.jpeg"
                 width="200"
                 height="200"
               />
