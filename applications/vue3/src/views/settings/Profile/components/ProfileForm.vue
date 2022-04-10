@@ -97,8 +97,9 @@
         </CCol>
         <CCol md="6">
           <CRow class="mb-4">
-            <CCol>
+            <CCol v-bind="getRootProps()">
               <h6>Profile picture</h6>
+              <input v-bind="getInputProps()" />
               <CImage
                 rounded
                 thumbnail
@@ -106,7 +107,14 @@
                 src="/static/dist/img/NoImage.jpeg"
                 width="200"
                 height="200"
+                @click="open"
+                style="cursor: pointer"
               />
+
+              <!--              <p v-if="isDragActive">Drop the files here ...</p>-->
+              <!--              <p v-else>-->
+              <!--                Drag 'n' drop some files here, or click to select files-->
+              <!--              </p>-->
             </CCol>
           </CRow>
         </CCol>
@@ -159,6 +167,7 @@
 import { defineComponent } from 'vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
+import { useDropzone } from 'vue3-dropzone'
 import { mapGetters } from 'vuex'
 
 export default defineComponent({
@@ -182,6 +191,20 @@ export default defineComponent({
   },
   props: {
     company: Object,
+  },
+  setup() {
+    function onDrop(acceptFiles: any, rejectReasons: any) {
+      console.log(acceptFiles)
+      console.log(rejectReasons)
+    }
+
+    const { getRootProps, getInputProps, ...rest } = useDropzone({ onDrop })
+
+    return {
+      getRootProps,
+      getInputProps,
+      ...rest,
+    }
   },
   computed: {
     formsCheck(this: any) {
