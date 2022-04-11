@@ -3,6 +3,7 @@
     class="needs-validation"
     novalidate
     :validated="validated"
+    enctype="multipart/form-data"
     @submit.prevent="onSubmit"
   >
     <CCardBody>
@@ -17,7 +18,7 @@
             <CCol md="8">
               <CFormInput
                 type="text"
-                v-model="form.ceo"
+                v-model="form.user"
                 placeholder="아이디를 입력하세요"
                 maxlength="20"
                 required
@@ -44,6 +45,7 @@
           </CRow>
 
           <hr />
+
           <CRow class="mb-3">
             <h6>사용자 프로필</h6>
             <CFormLabel for="companyName" class="col-md-4 col-form-label">
@@ -69,7 +71,7 @@
             <CCol md="8">
               <CFormInput
                 type="text"
-                v-model="form.ceo"
+                v-model="form.birth_date"
                 placeholder="생년월일을 입력하세요"
                 maxlength="20"
                 required
@@ -86,7 +88,7 @@
             <CCol md="8">
               <CFormInput
                 type="text"
-                v-model="form.ceo"
+                v-model="form.cell_phone"
                 placeholder="휴대전화를 입력하세요"
                 maxlength="20"
                 required
@@ -99,17 +101,8 @@
           <CRow class="mb-4">
             <CCol v-bind="getRootProps()">
               <h6>Profile picture</h6>
-              <input v-bind="getInputProps()" />
-              <CImage
-                rounded
-                thumbnail
-                fluid
-                src="/static/dist/img/NoImage.jpeg"
-                width="200"
-                height="200"
-                @click="open"
-                style="cursor: pointer"
-              />
+              <input v-model="form.image" v-bind="getInputProps()" />
+              <CImage rounded thumbnail fluid :src="imgUrl" @click="open" />
 
               <!--              <p v-if="isDragActive">Drop the files here ...</p>-->
               <!--              <p v-else>-->
@@ -173,24 +166,8 @@ import { mapGetters } from 'vuex'
 export default defineComponent({
   name: 'ProfileForm',
   components: { ConfirmModal, AlertModal },
-  data() {
-    return {
-      pk: '',
-      form: {
-        name: '',
-        ceo: '',
-      },
-      validated: false,
-    }
-  },
-  created() {
-    if (this.company) {
-      this.pk = this.company.pk
-      this.form.name = this.company.name
-    }
-  },
   props: {
-    company: Object,
+    userInfo: Object,
   },
   setup() {
     function onDrop(acceptFiles: any, rejectReasons: any) {
@@ -206,14 +183,45 @@ export default defineComponent({
       ...rest,
     }
   },
-  computed: {
-    formsCheck(this: any) {
-      // const a = this.form.name === this.company.name
-      // const b = this.form.ceo === this.company.ceo
-      return 1 //a && b
-    },
-    ...mapGetters('accounts', ['staffAuth', 'superAuth']),
+  data() {
+    return {
+      pk: '',
+      form: {
+        user: '',
+        name: '',
+        birth_date: '',
+        cell_phone: '',
+        image: null,
+      },
+      validated: false,
+    }
   },
+  // created(this: any) {
+  //   if (this.userInfo && this.userInfo.profile) {
+  //     this.pk = this.userInfo.profile.pk
+  //     this.form.name = this.userInfo.profile.name
+  //     this.form.birth_date = this.userInfo.profile.birth_date
+  //     this.form.cell_phone = this.userInfo.profile.cell_phone
+  //     this.form.image = this.userInfo.profile.image
+  //   }
+  // },
+  // computed: {
+  //   formsCheck(this: any) {
+  //     const a = this.form.name === this.userInfo.profile.name
+  //     const b = this.form.birth_date === this.userInfo.profile.birth_date
+  //     const c = this.form.cell_phone === this.userInfo.profile.cell_phone
+  //     const d = this.form.image === this.userInfo.profile.image
+  //     return a && b && c && d
+  //   },
+  //   imgUrl(this: any) {
+  //     return this.userInfo &&
+  //       this.userInfo.profile &&
+  //       this.userInfo.profile.image
+  //       ? this.userInfo.profile.image
+  //       : '/static/dist/img/NoImage.jpeg'
+  //   },
+  //   ...mapGetters('accounts', ['staffAuth', 'superAuth']),
+  // },
   methods: {
     onSubmit(this: any, event: any) {
       if (this.writeAuth) {
@@ -260,5 +268,9 @@ export default defineComponent({
 
 .rounded {
   border-radius: 100px !important;
+  width: 200px;
+  height: 200px;
+  overflow: hidden;
+  cursor: pointer;
 }
 </style>

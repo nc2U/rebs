@@ -5,7 +5,8 @@
     :selector="'CompanySelect'"
   />
   <ContentBody>
-    <ProfileForm />
+    {{ userInfo }}
+    <ProfileForm :profile="userInfo" />
   </ContentBody>
 </template>
 
@@ -27,6 +28,7 @@ export default defineComponent({
   },
   computed: {
     ...mapState('settings', ['company']),
+    ...mapState('accounts', ['userInfo']),
   },
 })
 </script>
