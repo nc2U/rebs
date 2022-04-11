@@ -98,13 +98,18 @@ class StaffAuth(models.Model):
         verbose_name = '스태프 권한'
         verbose_name_plural = '스태프 권한'
 
+def get_image_filename(instance, filename):
+    username = instance.profile__user__username
+    hash_value = hashlib.md5().hexdigest()
+    return f"users/{username}_{hash_value}_{filename}"
+
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     name = models.CharField('성명', max_length=20, blank=True)
     birth_date = models.DateField('생년월일', null=True, blank=True)
     cell_phone = models.CharField('휴대폰', max_length=13, blank=True)
-    release_code = models.CharField('Lock 해제비번', max_length=20, blank=True)
+    image = models.ImageField(upload_to=get_image_filename, null=True, blank=True, verbose_name='image')
 
     def __str__(self):
         return self.name
@@ -112,17 +117,6 @@ class Profile(models.Model):
     class Meta:
         verbose_name = '사용자 프로필'
         verbose_name_plural = '사용자 프로필'
-
-
-def get_image_filename(instance, filename):
-    username = instance.profile__user__username
-    hash_value = hashlib.md5().hexdigest()
-    return f"users/{username}_{hash_value}_{filename}"
-
-
-class Avatar(models.Model):
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, default=None)
-    avatar = models.ImageField(upload_to=get_image_filename, verbose_name='Avatar')
 
 
 class Todo(models.Model):
