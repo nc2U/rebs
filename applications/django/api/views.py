@@ -121,7 +121,7 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
 class ProfileList(generics.ListCreateAPIView):
     name = 'profile-list'
     queryset = Profile.objects.all()
-    serializer_class = ProfileInUserSerializer
+    serializer_class = ProfileSerializer
     permission_classes = (permissions.IsAuthenticated, IsOwnerOnly)
 
     def perform_create(self, serializer):
@@ -131,7 +131,7 @@ class ProfileList(generics.ListCreateAPIView):
 class ProfileDetail(generics.RetrieveUpdateDestroyAPIView):
     name = 'profile-detail'
     queryset = Profile.objects.all()
-    serializer_class = ProfileInUserSerializer
+    serializer_class = ProfileSerializer
     permission_classes = (permissions.IsAuthenticated, IsOwnerOnly)
 
 

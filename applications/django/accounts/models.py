@@ -109,7 +109,7 @@ class Profile(models.Model):
     name = models.CharField('성명', max_length=20, blank=True)
     birth_date = models.DateField('생년월일', null=True, blank=True)
     cell_phone = models.CharField('휴대폰', max_length=13, blank=True)
-    image = models.ImageField(upload_to=get_image_filename, null=True, blank=True, verbose_name='image')
+    image = models.ImageField(upload_to=get_image_filename, null=True, blank=True, verbose_name='프로필 이미지')
 
     def __str__(self):
         return self.name

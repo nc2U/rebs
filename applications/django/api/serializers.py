@@ -27,11 +27,9 @@ class StaffAuthInUserSerializer(serializers.ModelSerializer):
 
 
 class ProfileInUserSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Profile
         fields = ('pk', 'name', 'birth_date', 'cell_phone', 'image')
-        extra_kwargs = {'url': {'view_name': 'api:profile-detail'}}
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -58,6 +56,14 @@ class UserSerializer(serializers.ModelSerializer):
         instance.save()
         self.instance = instance
         return self.instance
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    image = serializers.ImageField(use_url=True)
+
+    class Meta:
+        model = Profile
+        fields = ('pk', 'user', 'name', 'birth_date', 'cell_phone', 'image')
 
 
 class TodoSerializer(serializers.ModelSerializer):
