@@ -98,8 +98,9 @@ class StaffAuth(models.Model):
         verbose_name = '스태프 권한'
         verbose_name_plural = '스태프 권한'
 
+
 def get_image_filename(instance, filename):
-    username = instance.profile__user__username
+    username = instance.user
     hash_value = hashlib.md5().hexdigest()
     return f"users/{username}_{hash_value}_{filename}"
 
