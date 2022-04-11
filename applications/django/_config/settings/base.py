@@ -10,21 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
-import os
 import string
 import random
 from pathlib import Path
 from datetime import timedelta
-from django.core.exceptions import ImproperlyConfigured
-
-
-def get_environment(var_name):
-    """환경 변수를 가져오거나 예외를 반환한다."""
-    try:
-        return os.environ[var_name]
-    except KeyError:
-        error_msg = "Set the {} environment variable".format(var_name)
-        raise ImproperlyConfigured(error_msg)
+from ..helper import get_environment
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.

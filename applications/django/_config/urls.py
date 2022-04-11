@@ -21,8 +21,12 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
 from django.views.generic import RedirectView, TemplateView
+from django.conf import settings
+from django.conf.urls.static import static
+from .helper import get_environment
 
-urlpatterns = [
+
+url = [
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),
     path('api-auth/', include('rest_framework.urls')),
@@ -44,3 +48,6 @@ urlpatterns = [
     path('mdeditor/', include('mdeditor.urls')),
     path('tinymce/', include('tinymce.urls')),
 ]
+
+AWS_STORAGE_BUCKET_NAME = get_environment('AWS_STORAGE_BUCKET_NAME')
+urlpatterns = url  if AWS_STORAGE_BUCKET_NAME else url + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
