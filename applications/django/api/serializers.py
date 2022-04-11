@@ -27,11 +27,10 @@ class StaffAuthInUserSerializer(serializers.ModelSerializer):
 
 
 class ProfileInUserSerializer(serializers.ModelSerializer):
-    user = serializers.ReadOnlyField(source='user.username')
 
     class Meta:
         model = Profile
-        fields = ('pk', 'url', 'user', 'name', 'birth_date', 'cell_phone', 'release_code')
+        fields = ('pk', 'name', 'birth_date', 'cell_phone', 'image')
         extra_kwargs = {'url': {'view_name': 'api:profile-detail'}}
 
 
