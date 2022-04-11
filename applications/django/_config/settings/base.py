@@ -212,7 +212,7 @@ STATIC_ROOT = BASE_DIR / 'static'
 
 STATICFILES_DIRS = ('./_assets',)
 
-MEDIA_URL = 'https://%s/media/' % (AWS_S3_CUSTOM_DOMAIN)  # 각 media 파일에 관한 URL prefix
+MEDIA_URL = 'https://%s/media/' % (AWS_S3_CUSTOM_DOMAIN)  if AWS_STORAGE_BUCKET_NAME else '/media/' # 각 media 파일에 관한 URL prefix
 
 MEDIA_ROOT = BASE_DIR / 'media'  # 업로드된 파일을 저장할 디렉토리 경로
 
