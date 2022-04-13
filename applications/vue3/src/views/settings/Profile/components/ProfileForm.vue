@@ -18,7 +18,7 @@
             <CCol md="8">
               <CFormInput
                 type="text"
-                v-model="form.user"
+                v-model="form.id"
                 placeholder="아이디를 입력하세요"
                 maxlength="20"
                 required
@@ -35,7 +35,7 @@
             <CCol md="8">
               <CFormInput
                 type="text"
-                v-model="form.name"
+                v-model="form.email"
                 placeholder="이메일을 입력하세요"
                 maxlength="20"
                 required
@@ -187,6 +187,8 @@ export default defineComponent({
     return {
       pk: '',
       form: {
+        id: '',
+        email: '',
         user: '',
         name: '',
         birth_date: '',
@@ -196,32 +198,39 @@ export default defineComponent({
       validated: false,
     }
   },
-  // created(this: any) {
-  //   if (this.userInfo && this.userInfo.profile) {
-  //     this.pk = this.userInfo.profile.pk
-  //     this.form.name = this.userInfo.profile.name
-  //     this.form.birth_date = this.userInfo.profile.birth_date
-  //     this.form.cell_phone = this.userInfo.profile.cell_phone
-  //     this.form.image = this.userInfo.profile.image
-  //   }
-  // },
-  // computed: {
-  //   formsCheck(this: any) {
-  //     const a = this.form.name === this.userInfo.profile.name
-  //     const b = this.form.birth_date === this.userInfo.profile.birth_date
-  //     const c = this.form.cell_phone === this.userInfo.profile.cell_phone
-  //     const d = this.form.image === this.userInfo.profile.image
-  //     return a && b && c && d
-  //   },
-  //   imgUrl(this: any) {
-  //     return this.userInfo &&
-  //       this.userInfo.profile &&
-  //       this.userInfo.profile.image
-  //       ? this.userInfo.profile.image
-  //       : '/static/dist/img/NoImage.jpeg'
-  //   },
-  //   ...mapGetters('accounts', ['staffAuth', 'superAuth']),
-  // },
+  created(this: any) {
+    if (this.userInfo) {
+      this.pk = this.userInfo.profile.pk
+      this.form.id = this.userInfo.username
+
+      if (this.userInfo.profile) {
+        this.form.email = this.userInfo.email
+        this.form.name = this.userInfo.profile.name
+        this.form.birth_date = this.userInfo.profile.birth_date
+        this.form.cell_phone = this.userInfo.profile.cell_phone
+        this.form.image = this.userInfo.profile.image
+      }
+    }
+  },
+  computed: {
+    formsCheck(this: any) {
+      const a = this.form.id === this.userInfo.username
+      const b = this.form.email === this.userInfo.email
+      const c = this.form.name === this.userInfo.profile.name
+      const d = this.form.birth_date === this.userInfo.profile.birth_date
+      const e = this.form.cell_phone === this.userInfo.profile.cell_phone
+      const f = this.form.image === this.userInfo.profile.image
+      return a && b && c && d && e && f
+    },
+    imgUrl(this: any) {
+      return this.userInfo &&
+        this.userInfo.profile &&
+        this.userInfo.profile.image
+        ? this.userInfo.profile.image
+        : '/static/dist/img/NoImage.jpeg'
+    },
+    ...mapGetters('accounts', ['staffAuth', 'superAuth']),
+  },
   methods: {
     onSubmit(this: any, event: any) {
       if (this.writeAuth) {

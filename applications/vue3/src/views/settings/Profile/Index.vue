@@ -5,8 +5,7 @@
     :selector="'CompanySelect'"
   />
   <ContentBody>
-    {{ userInfo }}
-    <ProfileForm :profile="userInfo" />
+    <ProfileForm :userInfo="userInfo" />
   </ContentBody>
 </template>
 
