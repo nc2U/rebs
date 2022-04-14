@@ -100,9 +100,9 @@
         <CCol md="6">
           <CRow class="mb-4">
             <CCol v-bind="getRootProps()">
-              <h6>Profile picture</h6>
-              <input v-model="form.image" v-bind="getInputProps()" />
-              <CImage rounded thumbnail fluid :src="imgUrl" @click="open" />
+              <!--              <h6>Profile picture</h6>-->
+              <!--              <input v-model="form.image" v-bind="getInputProps()" />-->
+              <!--              <CImage rounded thumbnail fluid :src="imgUrl" @click="open" />-->
 
               <!--              <p v-if="isDragActive">Drop the files here ...</p>-->
               <!--              <p v-else>-->
