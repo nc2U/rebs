@@ -99,15 +99,10 @@
         </CCol>
         <CCol md="6">
           <CRow class="mb-4">
-            <CCol v-bind="getRootProps()">
-              <!--              <h6>Profile picture</h6>-->
-              <!--              <input v-model="form.image" v-bind="getInputProps()" />-->
-              <!--              <CImage rounded thumbnail fluid :src="imgUrl" @click="open" />-->
-
-              <!--              <p v-if="isDragActive">Drop the files here ...</p>-->
-              <!--              <p v-else>-->
-              <!--                Drag 'n' drop some files here, or click to select files-->
-              <!--              </p>-->
+            <CCol>
+              <h6>Profile picture</h6>
+              <CImage rounded thumbnail fluid :src="imgUrl" @click="open" />
+              <CFormInput type="file" class="mt-3" />
             </CCol>
           </CRow>
         </CCol>
@@ -160,7 +155,6 @@
 import { defineComponent } from 'vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
-import { useDropzone } from 'vue3-dropzone'
 import { mapGetters } from 'vuex'
 
 export default defineComponent({
@@ -168,20 +162,6 @@ export default defineComponent({
   components: { ConfirmModal, AlertModal },
   props: {
     userInfo: Object,
-  },
-  setup() {
-    function onDrop(acceptFiles: any, rejectReasons: any) {
-      console.log(acceptFiles)
-      console.log(rejectReasons)
-    }
-
-    const { getRootProps, getInputProps, ...rest } = useDropzone({ onDrop })
-
-    return {
-      getRootProps,
-      getInputProps,
-      ...rest,
-    }
   },
   data() {
     return {
@@ -280,6 +260,6 @@ export default defineComponent({
   width: 200px;
   height: 200px;
   overflow: hidden;
-  cursor: pointer;
+  //cursor: pointer;
 }
 </style>
