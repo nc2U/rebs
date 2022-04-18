@@ -5,7 +5,7 @@
     :selector="'CompanySelect'"
   />
   <ContentBody>
-    <ProfileForm :userInfo="userInfo" />
+    <ProfileForm :userInfo="userInfo" @on-submit="onSubmit" />
   </ContentBody>
 </template>
 

@@ -238,10 +238,10 @@ export default defineComponent({
       const file = this.$refs.profilefile.files[0]
       const data = { ...file, ...this.form }
       const { pk } = this
-      if (this.update) {
-        this.$emit('to-update', { ...{ pk }, ...data })
+      if (pk) {
+        this.$emit('on-submit', { ...{ pk }, ...data })
       } else {
-        this.$emit('to-create', data)
+        this.$emit('on-submit', data)
       }
       this.validated = false
     },
