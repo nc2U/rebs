@@ -29,5 +29,10 @@ export default defineComponent({
     ...mapState('settings', ['company']),
     ...mapState('accounts', ['userInfo']),
   },
+  methods: {
+    onSubmit(payload: any) {
+      console.log(payload)
+    },
+  },
 })
 </script>

@@ -121,7 +121,7 @@
       >
         삭제
       </CButton>
-      <CButton type="submit" :color="btnClass" :disabled="formsCheck">
+      <CButton type="submit" :color="btnClass" :disabled="pk && formsCheck">
         <CIcon name="cil-check-circle" />
         저장
       </CButton>
@@ -163,13 +163,6 @@ export default defineComponent({
   props: {
     userInfo: Object,
   },
-  // setup() {
-  //   let file = this.$refs.profilefile.files[0]
-  //
-  //   return {
-  //     file,
-  //   }
-  // },
   data() {
     return {
       pk: '',
@@ -216,6 +209,9 @@ export default defineComponent({
         ? this.userInfo.profile.image
         : '/static/dist/img/NoImage.jpeg'
     },
+    btnClass(this: any) {
+      return this.userInfo.profile.pk ? 'success' : 'primary'
+    },
     ...mapGetters('accounts', ['staffAuth', 'superAuth']),
   },
   methods: {
@@ -238,17 +234,14 @@ export default defineComponent({
       const file = this.$refs.profilefile.files[0]
       const data = { ...file, ...this.form }
       const { pk } = this
-      if (pk) {
-        this.$emit('on-submit', { ...{ pk }, ...data })
-      } else {
-        this.$emit('on-submit', data)
-      }
+      const payload = pk ? { ...{ pk }, ...data } : data
+      this.$emit('on-submit', payload)
       this.validated = false
     },
-    deleteCompany(this: any) {
-      if (this.superAuth) this.$refs.delModal.callModal()
-      else this.$refs.alertModal.callModal()
-    },
+    // deleteCompany(this: any) {
+    //   if (this.superAuth) this.$refs.delModal.callModal()
+    //   else this.$refs.alertModal.callModal()
+    // },
   },
 })
 </script>
