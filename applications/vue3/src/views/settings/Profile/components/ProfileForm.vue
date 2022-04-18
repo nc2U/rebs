@@ -16,13 +16,7 @@
             </CFormLabel>
 
             <CCol md="8">
-              <CFormInput
-                type="text"
-                v-model="form.id"
-                placeholder="아이디를 입력하세요"
-                maxlength="20"
-                required
-              />
+              {{ userInfo.username }}
               <CFormFeedback invalid>아이디를 입력하세요.</CFormFeedback>
             </CCol>
           </CRow>
@@ -33,13 +27,7 @@
             </CFormLabel>
 
             <CCol md="8">
-              <CFormInput
-                type="text"
-                v-model="form.email"
-                placeholder="이메일을 입력하세요"
-                maxlength="20"
-                required
-              />
+              {{ userInfo.email }}
               <CFormFeedback invalid>이메일을 입력하세요.</CFormFeedback>
             </CCol>
           </CRow>
@@ -72,8 +60,9 @@
               <CFormInput
                 type="text"
                 v-model="form.birth_date"
+                v-maska="'####-##-##'"
                 placeholder="생년월일을 입력하세요"
-                maxlength="20"
+                maxlength="10"
                 required
               />
               <CFormFeedback invalid>생년월일을 입력하세요.</CFormFeedback>
@@ -89,8 +78,9 @@
               <CFormInput
                 type="text"
                 v-model="form.cell_phone"
+                v-maska="['###-###-####', '###-####-####']"
                 placeholder="휴대전화를 입력하세요"
-                maxlength="20"
+                maxlength="13"
                 required
               />
               <CFormFeedback invalid>휴대전화를 입력하세요.</CFormFeedback>
@@ -102,7 +92,7 @@
             <CCol>
               <h6>Profile picture</h6>
               <CImage rounded thumbnail fluid :src="imgUrl" @click="open" />
-              <CFormInput type="file" ref="profilefile" class="mt-3" />
+              <CFormInput type="file" v-model="form.image" class="mt-3" />
             </CCol>
           </CRow>
         </CCol>
@@ -123,28 +113,20 @@
       </CButton>
       <CButton type="submit" :color="btnClass" :disabled="pk && formsCheck">
         <CIcon name="cil-check-circle" />
-        저장
+        {{ confirmText }}
       </CButton>
     </CCardFooter>
   </CForm>
 
-  <DaumPostcode @addressPut="addressPut" ref="postCode" />
-
-  <ConfirmModal ref="delModal">
-    <template v-slot:header>회사정보</template>
-    <template v-slot:default>현재 삭제 기능이 구현되지 않았습니다.</template>
-    <template v-slot:footer>
-      <CButton color="danger" disabled="">삭제</CButton>
-    </template>
-  </ConfirmModal>
-
   <ConfirmModal ref="confirmModal">
-    <template v-slot:header>회사정보</template>
+    <template v-slot:header>프로필 정보</template>
     <template v-slot:default>
-      회사정보 {{ confirmText }}을 진행하시겠습니까?
+      프로필 정보 {{ confirmText }}을 진행하시겠습니까?
     </template>
     <template v-slot:footer>
-      <CButton :color="btnClass" @click="modalAction">저장</CButton>
+      <CButton :color="btnClass" @click="modalAction">
+        {{ confirmText }}
+      </CButton>
     </template>
   </ConfirmModal>
 
@@ -155,11 +137,13 @@
 import { defineComponent } from 'vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
+import { maska } from 'maska'
 import { mapGetters } from 'vuex'
 
 export default defineComponent({
   name: 'ProfileForm',
   components: { ConfirmModal, AlertModal },
+  directives: { maska },
   props: {
     userInfo: Object,
   },
@@ -167,9 +151,6 @@ export default defineComponent({
     return {
       pk: '',
       form: {
-        id: '',
-        email: '',
-        user: '',
         name: '',
         birth_date: '',
         cell_phone: '',
@@ -181,10 +162,8 @@ export default defineComponent({
   created(this: any) {
     if (this.userInfo) {
       this.pk = this.userInfo.profile.pk
-      this.form.id = this.userInfo.username
 
       if (this.userInfo.profile) {
-        this.form.email = this.userInfo.email
         this.form.name = this.userInfo.profile.name
         this.form.birth_date = this.userInfo.profile.birth_date
         this.form.cell_phone = this.userInfo.profile.cell_phone
@@ -194,13 +173,11 @@ export default defineComponent({
   },
   computed: {
     formsCheck(this: any) {
-      const a = this.form.id === this.userInfo.username
-      const b = this.form.email === this.userInfo.email
-      const c = this.form.name === this.userInfo.profile.name
-      const d = this.form.birth_date === this.userInfo.profile.birth_date
-      const e = this.form.cell_phone === this.userInfo.profile.cell_phone
-      const f = this.form.image === this.userInfo.profile.image
-      return a && b && c && d && e && f
+      const a = this.form.name === this.userInfo.profile.name
+      const b = this.form.birth_date === this.userInfo.profile.birth_date
+      const c = this.form.cell_phone === this.userInfo.profile.cell_phone
+      const d = this.form.image === this.userInfo.profile.image
+      return a && b && c && d
     },
     imgUrl(this: any) {
       return this.userInfo &&
@@ -209,14 +186,17 @@ export default defineComponent({
         ? this.userInfo.profile.image
         : '/static/dist/img/NoImage.jpeg'
     },
+    confirmText(this: any) {
+      return this.userInfo.profile.pk ? '변경' : '등록'
+    },
     btnClass(this: any) {
       return this.userInfo.profile.pk ? 'success' : 'primary'
     },
-    ...mapGetters('accounts', ['staffAuth', 'superAuth']),
+    ...mapGetters('accounts', ['isAuthorized']),
   },
   methods: {
     onSubmit(this: any, event: any) {
-      if (this.writeAuth) {
+      if (this.isAuthorized) {
         const form = event.currentTarget
         if (form.checkValidity() === false) {
           event.preventDefault()
@@ -231,17 +211,12 @@ export default defineComponent({
       }
     },
     modalAction(this: any) {
-      const file = this.$refs.profilefile.files[0]
-      const data = { ...file, ...this.form }
       const { pk } = this
-      const payload = pk ? { ...{ pk }, ...data } : data
+      const payload = pk ? { ...{ pk }, ...this.form } : { ...this.form }
       this.$emit('on-submit', payload)
       this.validated = false
+      this.$refs.confirmModal.visible = false
     },
-    // deleteCompany(this: any) {
-    //   if (this.superAuth) this.$refs.delModal.callModal()
-    //   else this.$refs.alertModal.callModal()
-    // },
   },
 })
 </script>
