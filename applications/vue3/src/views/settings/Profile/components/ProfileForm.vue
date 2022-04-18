@@ -102,7 +102,7 @@
             <CCol>
               <h6>Profile picture</h6>
               <CImage rounded thumbnail fluid :src="imgUrl" @click="open" />
-              <CFormInput type="file" class="mt-3" />
+              <CFormInput type="file" ref="profilefile" class="mt-3" />
             </CCol>
           </CRow>
         </CCol>
@@ -163,6 +163,13 @@ export default defineComponent({
   props: {
     userInfo: Object,
   },
+  // setup() {
+  //   let file = this.$refs.profilefile.files[0]
+  //
+  //   return {
+  //     file,
+  //   }
+  // },
   data() {
     return {
       pk: '',
@@ -228,11 +235,13 @@ export default defineComponent({
       }
     },
     modalAction(this: any) {
+      const file = this.$refs.profilefile.files[0]
+      const data = { ...file, ...this.form }
       const { pk } = this
       if (this.update) {
-        this.$emit('to-update', { ...{ pk }, ...this.form })
+        this.$emit('to-update', { ...{ pk }, ...data })
       } else {
-        this.$emit('to-create', this.form)
+        this.$emit('to-create', data)
       }
       this.validated = false
     },
