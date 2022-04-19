@@ -92,7 +92,7 @@
             <CCol>
               <h6>Profile picture</h6>
               <CImage rounded thumbnail fluid :src="imgUrl" @click="open" />
-              <CFormInput type="file" v-model="form.image" class="mt-3" />
+              <CFormInput type="file" class="mt-3" @change="fileUpload" />
             </CCol>
           </CRow>
         </CCol>
@@ -154,7 +154,6 @@ export default defineComponent({
         name: '',
         birth_date: '',
         cell_phone: '',
-        image: null,
       },
       validated: false,
     }
@@ -167,7 +166,6 @@ export default defineComponent({
         this.form.name = this.userInfo.profile.name
         this.form.birth_date = this.userInfo.profile.birth_date
         this.form.cell_phone = this.userInfo.profile.cell_phone
-        this.form.image = this.userInfo.profile.image
       }
     }
   },
@@ -176,8 +174,7 @@ export default defineComponent({
       const a = this.form.name === this.userInfo.profile.name
       const b = this.form.birth_date === this.userInfo.profile.birth_date
       const c = this.form.cell_phone === this.userInfo.profile.cell_phone
-      const d = this.form.image === this.userInfo.profile.image
-      return a && b && c && d
+      return a && b && c
     },
     imgUrl(this: any) {
       return this.userInfo &&
@@ -195,6 +192,9 @@ export default defineComponent({
     ...mapGetters('accounts', ['isAuthorized']),
   },
   methods: {
+    fileUpload(event: any) {
+      this.$emit('file-upload', event.target.files[0])
+    },
     onSubmit(this: any, event: any) {
       if (this.isAuthorized) {
         const form = event.currentTarget

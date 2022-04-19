@@ -5,7 +5,11 @@
     :selector="'CompanySelect'"
   />
   <ContentBody>
-    <ProfileForm :userInfo="userInfo" @on-submit="onSubmit" />
+    <ProfileForm
+      :userInfo="userInfo"
+      @file-upload="fileUpload"
+      @on-submit="onSubmit"
+    />
   </ContentBody>
 </template>
 
@@ -30,6 +34,9 @@ export default defineComponent({
     ...mapState('accounts', ['userInfo']),
   },
   methods: {
+    fileUpload(file: any) {
+      console.log(file)
+    },
     onSubmit(payload: any) {
       console.log(payload)
     },
