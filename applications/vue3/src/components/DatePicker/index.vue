@@ -18,7 +18,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import Datepicker from 'vue3-date-time-picker'
+import Datepicker from '@vuepic/vue-datepicker'
 import dayjs from 'dayjs'
 import { maska } from 'maska'
 

@@ -31,6 +31,7 @@
     "@fullcalendar/interaction": "^5.11.0",
     "@fullcalendar/timegrid": "^5.11.0",
     "@fullcalendar/vue3": "^5.11.0",
+    "@vuepic/vue-datepicker": "^3.1.1",
     "axios": "^0.24.0",
     "core-js": "^3.22.0",
     "dayjs": "^1.11.1",
@@ -39,7 +40,6 @@
     "mosha-vue-toastify": "^1.0.23",
     "vue": "^3.2.33",
     "vue-router": "^4.0.14",
-    "vue3-date-time-picker": "^2.8.2",
     "vue3-dropzone": "^0.0.7",
     "vuex": "^4.0.2"
   },
