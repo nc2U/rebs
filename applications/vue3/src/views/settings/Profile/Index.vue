@@ -34,8 +34,10 @@ export default defineComponent({
     ...mapState('accounts', ['userInfo']),
   },
   methods: {
-    fileUpload(file: any) {
-      console.log(file)
+    fileUpload(payload: any) {
+      const { pk } = payload
+      if (pk) alert('image change upload!') // this.patchProfile(payload)
+      else alert('create logic here!')
     },
     onSubmit(payload: any) {
       const { pk } = payload

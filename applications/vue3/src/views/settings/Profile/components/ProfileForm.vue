@@ -194,7 +194,13 @@ export default defineComponent({
   },
   methods: {
     fileUpload(event: any) {
-      this.$emit('file-upload', event.target.files[0])
+      let data = new FormData()
+      const image = event.target.files[0]
+      data.append('image', image)
+
+      const { pk } = this
+      const payload = pk ? { ...{ pk }, ...data } : { ...data }
+      this.$emit('file-upload', payload)
     },
     onSubmit(this: any, event: any) {
       if (this.isAuthorized) {
