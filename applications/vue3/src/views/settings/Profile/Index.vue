@@ -19,7 +19,7 @@ import HeaderMixin from '@/views/settings/_menu/headermixin'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ProfileForm from '@/views/settings/Profile/components/ProfileForm.vue'
-import { mapState } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'ProfileIndex',
@@ -38,8 +38,11 @@ export default defineComponent({
       console.log(file)
     },
     onSubmit(payload: any) {
-      console.log(payload)
+      const { pk } = payload
+      if (pk) this.patchProfile(payload)
+      else this.createProfile(payload)
     },
+    ...mapActions('accounts', ['createProfile', 'patchProfile']),
   },
 })
 </script>

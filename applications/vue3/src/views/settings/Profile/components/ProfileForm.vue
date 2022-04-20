@@ -57,13 +57,12 @@
             </CFormLabel>
 
             <CCol md="8">
-              <CFormInput
+              <DatePicker
                 type="text"
                 v-model="form.birth_date"
                 v-maska="'####-##-##'"
                 placeholder="생년월일을 입력하세요"
                 maxlength="10"
-                required
               />
               <CFormFeedback invalid>생년월일을 입력하세요.</CFormFeedback>
             </CCol>
@@ -81,7 +80,6 @@
                 v-maska="['###-###-####', '###-####-####']"
                 placeholder="휴대전화를 입력하세요"
                 maxlength="13"
-                required
               />
               <CFormFeedback invalid>휴대전화를 입력하세요.</CFormFeedback>
             </CCol>
@@ -135,6 +133,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 import { maska } from 'maska'
@@ -142,7 +141,7 @@ import { mapGetters } from 'vuex'
 
 export default defineComponent({
   name: 'ProfileForm',
-  components: { ConfirmModal, AlertModal },
+  components: { DatePicker, ConfirmModal, AlertModal },
   directives: { maska },
   props: {
     userInfo: Object,
@@ -151,6 +150,7 @@ export default defineComponent({
     return {
       pk: '',
       form: {
+        user: '',
         name: '',
         birth_date: '',
         cell_phone: '',
@@ -163,6 +163,7 @@ export default defineComponent({
       this.pk = this.userInfo.profile.pk
 
       if (this.userInfo.profile) {
+        this.form.user = this.userInfo.pk
         this.form.name = this.userInfo.profile.name
         this.form.birth_date = this.userInfo.profile.birth_date
         this.form.cell_phone = this.userInfo.profile.cell_phone
@@ -212,6 +213,7 @@ export default defineComponent({
     },
     modalAction(this: any) {
       const { pk } = this
+      this.form.birth_date = this.dateFormat(this.form.birth_date)
       const payload = pk ? { ...{ pk }, ...this.form } : { ...this.form }
       this.$emit('on-submit', payload)
       this.validated = false
