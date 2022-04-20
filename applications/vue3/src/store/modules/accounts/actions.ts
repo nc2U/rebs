@@ -9,6 +9,7 @@ import {
 } from '@/store/modules/accounts/mutations-types'
 import router from '@/router'
 import { message } from '@/utils/helper'
+import Cookies from 'js-cookie'
 
 declare const Buffer: any
 
@@ -81,6 +82,29 @@ const actions = {
   logoutNoMessage({ commit }: any) {
     commit(DESTROY_CURRENT_USER)
     commit(DESTROY_ACCESS_TOKEN)
+  },
+
+  createProfile: ({ dispatch }: any, payload: any) => {
+    api
+      .post(`/profile/`, payload)
+      .then(() => {
+        const cookedToken = Cookies.get('accessToken')
+        dispatch('loginByToken', cookedToken)
+        message()
+      })
+      .catch(err => console.log(err.response.data))
+  },
+
+  patchProfile: ({ dispatch }: any, payload: any) => {
+    const { pk, ...profileData } = payload
+    api
+      .patch(`/profile/${pk}/`, profileData)
+      .then(() => {
+        const cookedToken = Cookies.get('accessToken')
+        dispatch('loginByToken', cookedToken)
+        message()
+      })
+      .catch(err => console.log(err.response.data))
   },
 
   fetchTodoList: (store: any) => {

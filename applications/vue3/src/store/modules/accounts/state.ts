@@ -16,12 +16,11 @@ export declare interface StaffAuth {
 
 interface Profile {
   pk: number
-  url: string
-  user: string
+  user: number
   name: string
   birth_date: string
   cell_phone: string
-  release_code: string
+  image: string | null
 }
 
 export declare interface Todo {
