@@ -35,9 +35,10 @@ export default defineComponent({
   },
   methods: {
     fileUpload(payload: any) {
-      const { pk } = payload
-      if (pk) alert('image change upload!') // this.patchProfile(payload)
-      else alert('create logic here!')
+      console.log(payload)
+      // const { pk } = payload
+      // if (pk) alert('image change upload!') // this.patchProfile(payload)
+      // else alert('create logic here!')
     },
     onSubmit(payload: any) {
       const { pk } = payload
