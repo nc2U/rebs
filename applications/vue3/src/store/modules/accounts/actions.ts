@@ -85,6 +85,7 @@ const actions = {
   },
 
   createProfile: ({ dispatch }: any, payload: any) => {
+    api.defaults.headers.post['Content-Type'] = 'multipart/form-data'
     api
       .post(`/profile/`, payload)
       .then(() => {
@@ -97,6 +98,7 @@ const actions = {
 
   patchProfile: ({ dispatch }: any, payload: any) => {
     const { pk, ...profileData } = payload
+    api.defaults.headers.patch['Content-Type'] = 'multipart/form-data'
     api
       .patch(`/profile/${pk}/`, profileData)
       .then(() => {
