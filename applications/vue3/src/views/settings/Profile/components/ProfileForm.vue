@@ -86,13 +86,7 @@
           </CRow>
         </CCol>
         <CCol md="6">
-          <CRow class="mb-4">
-            <CCol>
-              <h6>Profile picture</h6>
-              <CImage rounded thumbnail fluid :src="imgUrl" @click="open" />
-              <CFormInput type="file" class="mt-3" @change="fileUpload" />
-            </CCol>
-          </CRow>
+          <AvatarInput v-model="form.image" :default-src="imgUrl" />
         </CCol>
       </CRow>
     </CCardBody>
@@ -134,6 +128,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import DatePicker from '@/components/DatePicker/index.vue'
+import AvatarInput from './AvatarInput.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 import { maska } from 'maska'
@@ -141,7 +136,7 @@ import { mapGetters } from 'vuex'
 
 export default defineComponent({
   name: 'ProfileForm',
-  components: { DatePicker, ConfirmModal, AlertModal },
+  components: { AvatarInput, DatePicker, ConfirmModal, AlertModal },
   directives: { maska },
   props: {
     userInfo: Object,
@@ -193,14 +188,9 @@ export default defineComponent({
     ...mapGetters('accounts', ['isAuthorized']),
   },
   methods: {
-    fileUpload(event: any) {
-      let formdata = new FormData()
-      const image = event.target.files[0]
-      formdata.append('image', image)
-
-      const { pk } = this
-      const payload = pk ? { ...{ pk }, formdata } : { formdata }
-      this.$emit('file-upload', payload)
+    fileUpload(image: any) {
+      alert('aaa')
+      console.log(image)
     },
     onSubmit(this: any, event: any) {
       if (this.isAuthorized) {
@@ -228,23 +218,3 @@ export default defineComponent({
   },
 })
 </script>
-
-<style lang="scss" scoped>
-@media (min-width: 768px) {
-  .flex-md-row {
-    flex-direction: row !important;
-  }
-}
-
-.flex-column-reverse {
-  flex-direction: column-reverse;
-}
-
-.rounded {
-  border-radius: 100px !important;
-  width: 200px;
-  height: 200px;
-  overflow: hidden;
-  //cursor: pointer;
-}
-</style>
