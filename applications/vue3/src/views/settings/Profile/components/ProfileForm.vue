@@ -90,6 +90,7 @@
             v-model="form.image"
             :default-src="imgUrl"
             class="h-40 w-40 rounded-full"
+            @file-upload="fileUpload"
           />
         </CCol>
       </CRow>
@@ -153,6 +154,7 @@ export default defineComponent({
         name: '',
         birth_date: '',
         cell_phone: '',
+        image: null,
       },
       validated: false,
     }
@@ -193,8 +195,7 @@ export default defineComponent({
   },
   methods: {
     fileUpload(image: any) {
-      alert('aaa')
-      console.log(image)
+      this.form.image = image
     },
     onSubmit(this: any, event: any) {
       if (this.isAuthorized) {
