@@ -9,16 +9,25 @@
         style="display: none"
         @change="change"
       />
-      <div class="relative inline-block">
-        <CImage rounded thumbnail fluid :src="imgUrl" />
-
-        <div
+      <CRow class="relative inline-block">
+        <CCol
           class="absolute top-0 h-full w-full bg-black rounded-full bg-opacity-25 flex items-center justify-center"
         >
-          <button type="button" @click="browse">Browse</button>
-          <button type="button" @click="remove" v-if="image">Remove</button>
-        </div>
-      </div>
+          <CImage
+            rounded
+            thumbnail
+            fluid
+            :src="imgUrl"
+            class="h-full w-full rounded-full object-cover"
+          />
+          <button type="button" @click="browse">
+            <CIcon name="cil-camera" />
+          </button>
+          <button type="button" @click="remove" v-if="image">
+            <CIcon name="cil-x" />
+          </button>
+        </CCol>
+      </CRow>
     </CCol>
   </CRow>
 </template>

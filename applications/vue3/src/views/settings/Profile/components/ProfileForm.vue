@@ -86,7 +86,11 @@
           </CRow>
         </CCol>
         <CCol md="6">
-          <AvatarInput v-model="form.image" :default-src="imgUrl" />
+          <AvatarInput
+            v-model="form.image"
+            :default-src="imgUrl"
+            class="h-40 w-40 rounded-full"
+          />
         </CCol>
       </CRow>
     </CCardBody>
