@@ -73,14 +73,11 @@ export default defineComponent({
         ? this.userInfo.username.substring(0, 1).toUpperCase()
         : 'A'
     },
-    itemsCount() {
-      return (this as any).$store.getters['accounts/myTodos'].length
+    itemsCount(this: any) {
+      return this.$store.getters['accounts/myTodos'].length
     },
   },
   methods: {
-    toLockScreen() {
-      this.$router.push({ name: 'LockScreen' })
-    },
     logOut() {
       this.logout()
       this.$router.push({
