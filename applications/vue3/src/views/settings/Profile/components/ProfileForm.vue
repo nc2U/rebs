@@ -154,7 +154,7 @@ export default defineComponent({
         name: '',
         birth_date: '',
         cell_phone: '',
-        image: null,
+        // image: null,
       },
       validated: false,
     }
@@ -176,8 +176,8 @@ export default defineComponent({
       const a = this.form.name === this.userInfo.profile.name
       const b = this.form.birth_date === this.userInfo.profile.birth_date
       const c = this.form.cell_phone === this.userInfo.profile.cell_phone
-      const d = this.form.image === null
-      return a && b && c && d
+      // const d = this.form.image === null
+      return a && b && c // && d
     },
     imgUrl(this: any) {
       return this.userInfo &&
@@ -196,7 +196,9 @@ export default defineComponent({
   },
   methods: {
     fileUpload(image: any) {
-      this.form.image = image
+      // this.form.image = image
+      // console.log(image)
+      this.$emit('file-upload', image)
     },
     onSubmit(this: any, event: any) {
       if (this.isAuthorized) {

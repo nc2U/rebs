@@ -19,6 +19,7 @@ import HeaderMixin from '@/views/settings/_menu/headermixin'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ProfileForm from '@/views/settings/Profile/components/ProfileForm.vue'
+import api from '@/api'
 import { mapActions, mapState } from 'vuex'
 
 export default defineComponent({
@@ -36,6 +37,12 @@ export default defineComponent({
   methods: {
     fileUpload(payload: any) {
       console.log(payload)
+      const form = new FormData()
+      form.append('image', payload)
+      api.defaults.headers.patch['Content-Type'] = 'multipart/form-data'
+      api
+        .patch(`/profile/1/`, form)
+        .catch(err => console.log(err.response.data))
       // const { pk } = payload
       // if (pk) alert('image change upload!') // this.patchProfile(payload)
       // else alert('create logic here!')
