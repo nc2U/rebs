@@ -176,7 +176,8 @@ export default defineComponent({
       const a = this.form.name === this.userInfo.profile.name
       const b = this.form.birth_date === this.userInfo.profile.birth_date
       const c = this.form.cell_phone === this.userInfo.profile.cell_phone
-      return a && b && c
+      const d = this.form.image === null
+      return a && b && c && d
     },
     imgUrl(this: any) {
       return this.userInfo &&
