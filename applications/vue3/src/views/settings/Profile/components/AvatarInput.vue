@@ -3,26 +3,18 @@
     <CCol>
       <h6>Profile picture</h6>
       <CFormInput
+        ref="file"
         type="file"
         accept="image/*"
-        ref="file"
         style="display: none"
         @change="change"
       />
       <CRow class="relative inline-block">
-        <CCol
-          class="absolute top-0 h-full w-full bg-black rounded-full bg-opacity-25 flex items-center justify-center"
-        >
-          <CImage
-            rounded
-            thumbnail
-            fluid
-            :src="imgUrl"
-            class="h-full w-full rounded-full object-cover"
-          />
-          <button type="button" @click="browse">
-            <CIcon name="cil-camera" />
-          </button>
+        <CCol>
+          <CImage rounded thumbnail fluid :src="imgUrl" @click="browse" />
+          <!--          <button type="button" @click="browse">-->
+          <!--            <CIcon name="cil-camera" />-->
+          <!--          </button>-->
           <button type="button" @click="remove" v-if="changeImage">
             <CIcon name="cil-x" />
           </button>
@@ -38,7 +30,6 @@ import { defineComponent } from 'vue'
 export default defineComponent({
   name: 'AvatarInput',
   props: {
-    value: File,
     defaultSrc: String,
   },
   data() {
@@ -52,7 +43,6 @@ export default defineComponent({
       this.$refs.file.$el.click()
     },
     remove() {
-      this.imgUrl = '/static/dist/img/NoImage.jpeg'
       this.changeImage = false
       this.$emit('file-upload', null)
     },

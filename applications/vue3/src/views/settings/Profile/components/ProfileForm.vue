@@ -87,9 +87,8 @@
         </CCol>
         <CCol md="6">
           <AvatarInput
-            v-model="form.image"
-            :default-src="form.image"
-            class="h-40 w-40 rounded-full"
+            ref="avatar"
+            :default-src="image"
             @file-upload="fileUpload"
           />
         </CCol>
@@ -158,8 +157,8 @@ export default defineComponent({
         name: '',
         birth_date: '',
         cell_phone: '',
-        image: null,
       },
+      image: null,
       validated: false,
     }
   },
@@ -171,17 +170,13 @@ export default defineComponent({
         this.form.name = this.userInfo.profile.name
         this.form.birth_date = this.userInfo.profile.birth_date
         this.form.cell_phone = this.userInfo.profile.cell_phone
-        this.form.image = this.userInfo.profile.image
+        this.image = this.userInfo.profile.image
       }
     }
   },
   computed: {
-    formsCheck(this: any) {
-      const a = this.form.name === this.userInfo.profile.name
-      const b = this.form.birth_date === this.userInfo.profile.birth_date
-      const c = this.form.cell_phone === this.userInfo.profile.cell_phone
-      const d = this.form.image === this.userInfo.profile.image
-      return a && b && c && d
+    formsCheck() {
+      return this.isChanged()
     },
     confirmText(this: any) {
       return this.userInfo.profile.pk ? '변경' : '등록'
@@ -192,8 +187,17 @@ export default defineComponent({
     ...mapGetters('accounts', ['isAuthorized']),
   },
   methods: {
+    isChanged(this: any) {
+      const a = this.form.name === this.userInfo.profile.name
+      const b = this.form.birth_date === this.userInfo.profile.birth_date
+      const c = this.form.cell_phone === this.userInfo.profile.cell_phone
+      const d =
+        this.image === null || this.image === this.userInfo.profile.image
+      return a && b && c && d
+    },
     fileUpload(image: any) {
-      this.form.image = image
+      this.image = image
+      this.$emit('file-upload', image)
     },
     onSubmit(this: any, event: any) {
       if (this.isAuthorized) {
