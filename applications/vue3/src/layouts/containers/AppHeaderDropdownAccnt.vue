@@ -1,6 +1,10 @@
 <template>
-  <CDropdown variant="nav-item">
-    <CDropdownToggle placement="bottom-end" class="py-0" :caret="false">
+  <CDropdown>
+    <CDropdownToggle
+      placement="bottom-end"
+      class="py-0 btn-link"
+      :caret="false"
+    >
       <CAvatar
         color="info"
         text-color="white"

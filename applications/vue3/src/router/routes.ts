@@ -93,11 +93,11 @@ const routes: Array<RouteRecordRaw> = [
     name: 'RegisterCode',
     component: () => import('@/views/_Accounts/RegisterCode.vue'),
   },
-  // {
-  //   path: '/:pathMatch(.*)*',
-  //   name: 'not-found',
-  //   redirect: '/',
-  // },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
+    redirect: '/',
+  },
 ]
 
 export default routes
