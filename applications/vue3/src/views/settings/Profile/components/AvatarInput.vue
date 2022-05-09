@@ -23,7 +23,7 @@
           <button type="button" @click="browse">
             <CIcon name="cil-camera" />
           </button>
-          <button type="button" @click="remove" v-if="image">
+          <button type="button" @click="remove" v-if="changeImage">
             <CIcon name="cil-x" />
           </button>
         </CCol>
@@ -43,8 +43,7 @@ export default defineComponent({
   },
   data() {
     return {
-      image: null,
-      imgUrl: this.defaultSrc,
+      imgUrl: this.defaultSrc || '/static/dist/img/NoImage.jpeg',
     }
   },
   methods: {
@@ -52,15 +51,14 @@ export default defineComponent({
       this.$refs.file.$el.click()
     },
     remove() {
-      this.image = null
-      this.imgUrl = this.defaultSrc
-      this.$emit('file-upload', this.image)
+      this.imgUrl = '/static/dist/img/NoImage.jpeg'
+      this.$emit('file-upload', null)
     },
     change(this: any, event: any) {
-      this.image = event.target.files[0]
-      this.$emit('file-upload', this.image)
+      const image = event.target.files[0]
+      this.$emit('file-upload', image)
       let reader = new FileReader()
-      reader.readAsDataURL(this.image)
+      reader.readAsDataURL(image)
       reader.onload = (e: any) => {
         this.imgUrl = e.target.result
       }

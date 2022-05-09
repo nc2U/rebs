@@ -5,11 +5,7 @@
     :selector="'CompanySelect'"
   />
   <ContentBody>
-    <ProfileForm
-      :userInfo="userInfo"
-      @file-upload="fileUpload"
-      @on-submit="onSubmit"
-    />
+    <ProfileForm :userInfo="userInfo" @on-submit="onSubmit" />
   </ContentBody>
 </template>
 
@@ -35,22 +31,11 @@ export default defineComponent({
     ...mapState('accounts', ['userInfo']),
   },
   methods: {
-    fileUpload(payload: any) {
-      console.log(payload)
-      const form = new FormData()
-      form.append('image', payload)
-      api.defaults.headers.patch['Content-Type'] = 'multipart/form-data'
-      api
-        .patch(`/profile/1/`, form)
-        .catch(err => console.log(err.response.data))
-      // const { pk } = payload
-      // if (pk) alert('image change upload!') // this.patchProfile(payload)
-      // else alert('create logic here!')
-    },
     onSubmit(payload: any) {
       const { pk } = payload
-      if (pk) this.patchProfile(payload)
-      else this.createProfile(payload)
+      console.log({ ...payload })
+      if (pk) this.patchProfile({ ...payload })
+      else this.createProfile({ ...payload })
     },
     ...mapActions('accounts', ['createProfile', 'patchProfile']),
   },

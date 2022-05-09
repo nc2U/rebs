@@ -88,7 +88,7 @@
         <CCol md="6">
           <AvatarInput
             v-model="form.image"
-            :default-src="imgUrl"
+            :default-src="form.image"
             class="h-40 w-40 rounded-full"
             @file-upload="fileUpload"
           />
@@ -108,7 +108,11 @@
       >
         삭제
       </CButton>
-      <CButton type="submit" :color="btnClass" :disabled="pk && formsCheck">
+      <CButton
+        type="submit"
+        :color="btnClass"
+        :disabled="form.pk && formsCheck"
+      >
         <CIcon name="cil-check-circle" />
         {{ confirmText }}
       </CButton>
@@ -148,8 +152,8 @@ export default defineComponent({
   },
   data() {
     return {
-      pk: '',
       form: {
+        pk: '',
         user: '',
         name: '',
         birth_date: '',
@@ -161,13 +165,13 @@ export default defineComponent({
   },
   created(this: any) {
     if (this.userInfo) {
-      this.pk = this.userInfo.profile.pk
-
       if (this.userInfo.profile) {
+        this.form.pk = this.userInfo.profile.pk
         this.form.user = this.userInfo.pk
         this.form.name = this.userInfo.profile.name
         this.form.birth_date = this.userInfo.profile.birth_date
         this.form.cell_phone = this.userInfo.profile.cell_phone
+        // this.form.image = this.userInfo.profile.image
       }
     }
   },
@@ -176,15 +180,8 @@ export default defineComponent({
       const a = this.form.name === this.userInfo.profile.name
       const b = this.form.birth_date === this.userInfo.profile.birth_date
       const c = this.form.cell_phone === this.userInfo.profile.cell_phone
-      // const d = this.form.image === null
+      // const d = this.form.image === this.userInfo.profile.image
       return a && b && c // && d
-    },
-    imgUrl(this: any) {
-      return this.userInfo &&
-        this.userInfo.profile &&
-        this.userInfo.profile.image
-        ? this.userInfo.profile.image
-        : '/static/dist/img/NoImage.jpeg'
     },
     confirmText(this: any) {
       return this.userInfo.profile.pk ? '변경' : '등록'
@@ -197,8 +194,7 @@ export default defineComponent({
   methods: {
     fileUpload(image: any) {
       // this.form.image = image
-      // console.log(image)
-      this.$emit('file-upload', image)
+      return
     },
     onSubmit(this: any, event: any) {
       if (this.isAuthorized) {
@@ -216,10 +212,8 @@ export default defineComponent({
       }
     },
     modalAction(this: any) {
-      const { pk } = this
       this.form.birth_date = this.dateFormat(this.form.birth_date)
-      const payload = pk ? { ...{ pk }, ...this.form } : { ...this.form }
-      this.$emit('on-submit', payload)
+      this.$emit('on-submit', this.form)
       this.validated = false
       this.$refs.confirmModal.visible = false
     },
