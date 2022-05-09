@@ -44,6 +44,7 @@ export default defineComponent({
   data() {
     return {
       imgUrl: this.defaultSrc || '/static/dist/img/NoImage.jpeg',
+      changeImage: false,
     }
   },
   methods: {
@@ -52,6 +53,7 @@ export default defineComponent({
     },
     remove() {
       this.imgUrl = '/static/dist/img/NoImage.jpeg'
+      this.changeImage = false
       this.$emit('file-upload', null)
     },
     change(this: any, event: any) {
@@ -61,6 +63,7 @@ export default defineComponent({
       reader.readAsDataURL(image)
       reader.onload = (e: any) => {
         this.imgUrl = e.target.result
+        this.changeImage = true
       }
     },
   },

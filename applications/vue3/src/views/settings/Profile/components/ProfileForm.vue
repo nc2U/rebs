@@ -158,7 +158,7 @@ export default defineComponent({
         name: '',
         birth_date: '',
         cell_phone: '',
-        // image: null,
+        image: null,
       },
       validated: false,
     }
@@ -171,7 +171,7 @@ export default defineComponent({
         this.form.name = this.userInfo.profile.name
         this.form.birth_date = this.userInfo.profile.birth_date
         this.form.cell_phone = this.userInfo.profile.cell_phone
-        // this.form.image = this.userInfo.profile.image
+        this.form.image = this.userInfo.profile.image
       }
     }
   },
@@ -180,8 +180,8 @@ export default defineComponent({
       const a = this.form.name === this.userInfo.profile.name
       const b = this.form.birth_date === this.userInfo.profile.birth_date
       const c = this.form.cell_phone === this.userInfo.profile.cell_phone
-      // const d = this.form.image === this.userInfo.profile.image
-      return a && b && c // && d
+      const d = this.form.image === this.userInfo.profile.image
+      return a && b && c && d
     },
     confirmText(this: any) {
       return this.userInfo.profile.pk ? '변경' : '등록'
@@ -193,8 +193,7 @@ export default defineComponent({
   },
   methods: {
     fileUpload(image: any) {
-      // this.form.image = image
-      return
+      this.form.image = image
     },
     onSubmit(this: any, event: any) {
       if (this.isAuthorized) {

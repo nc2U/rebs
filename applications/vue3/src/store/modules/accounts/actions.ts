@@ -85,9 +85,10 @@ const actions = {
   },
 
   createProfile: ({ dispatch }: any, payload: any) => {
+    const { form } = payload
     api.defaults.headers.post['Content-Type'] = 'multipart/form-data'
     api
-      .post(`/profile/`, payload)
+      .post(`/profile/`, form)
       .then(() => {
         const cookedToken = Cookies.get('accessToken')
         dispatch('loginByToken', cookedToken)
@@ -97,10 +98,10 @@ const actions = {
   },
 
   patchProfile: ({ dispatch }: any, payload: any) => {
-    const { pk, ...profileData } = payload
+    const { pk, form } = payload
     api.defaults.headers.patch['Content-Type'] = 'multipart/form-data'
     api
-      .patch(`/profile/${pk}/`, profileData)
+      .patch(`/profile/${pk}/`, form)
       .then(() => {
         const cookedToken = Cookies.get('accessToken')
         dispatch('loginByToken', cookedToken)
