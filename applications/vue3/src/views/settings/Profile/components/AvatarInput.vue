@@ -11,13 +11,22 @@
       />
       <CRow class="relative inline-block">
         <CCol>
-          <CImage rounded thumbnail fluid :src="imgUrl" @click="browse" />
-          <!--          <button type="button" @click="browse">-->
-          <!--            <CIcon name="cil-camera" />-->
-          <!--          </button>-->
-          <button type="button" @click="remove" v-if="changeImage">
-            <CIcon name="cil-x" />
-          </button>
+          <CDropdown placement="bottom">
+            <CDropdownToggle class="py-0 btn-link" :caret="false">
+              <CImage rounded thumbnail fluid :src="imgUrl" />
+              <!--          <button type="button" @click="browse">-->
+              <!--            <CIcon name="cil-camera" />-->
+              <!--          </button>-->
+              <button type="button" @click="remove" v-if="changeImage">
+                <CIcon name="cil-x" />
+              </button>
+            </CDropdownToggle>
+            <CDropdownMenu class="pt-0">
+              <CDropdownItem @click="browse">
+                <strong>Upload a photo...</strong>
+              </CDropdownItem>
+            </CDropdownMenu>
+          </CDropdown>
         </CCol>
       </CRow>
     </CCol>
@@ -29,6 +38,8 @@ import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'AvatarInput',
+  components: {},
+
   props: {
     defaultSrc: String,
   },
