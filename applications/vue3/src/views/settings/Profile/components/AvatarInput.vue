@@ -20,12 +20,6 @@
                 <CIcon name="cilPencil" />
                 Edit
               </CCol>
-              <!--          <button type="button" @click="browse">-->
-              <!--            <CIcon name="cil-camera" />-->
-              <!--          </button>-->
-              <button type="button" @click="remove" v-if="changeImage">
-                <CIcon name="cil-x" />
-              </button>
             </CDropdownToggle>
             <CDropdownMenu class="ml-2 py-1">
               <CDropdownItem @click="browse"> Upload a photo...</CDropdownItem>
@@ -35,31 +29,37 @@
       </CRow>
     </CCol>
   </CRow>
+
+  <button
+    type="button"
+    class="btn btn-primary"
+    @click="$refs.cropper.callModal"
+  >
+    test
+  </button>
+
+  <CropperModal ref="cropper" :modal-img="modalImg" @modal-img="delModalImg" />
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import CropperModal from './CropperModal.vue'
 
 export default defineComponent({
   name: 'AvatarInput',
-  components: {},
-
+  components: { CropperModal },
   props: {
     defaultSrc: String,
   },
   data() {
     return {
       imgUrl: this.defaultSrc || '/static/dist/img/NoImage.jpeg',
-      changeImage: false,
+      modalImg: null,
     }
   },
   methods: {
     browse(this: any) {
       this.$refs.file.$el.click()
-    },
-    remove() {
-      this.changeImage = false
-      this.$emit('file-upload', null)
     },
     change(this: any, event: any) {
       const image = event.target.files[0]
@@ -67,9 +67,14 @@ export default defineComponent({
       let reader = new FileReader()
       reader.readAsDataURL(image)
       reader.onload = (e: any) => {
-        this.imgUrl = e.target.result
-        this.changeImage = true
+        this.modalImg = e.target.result
+        if (this.modalImg !== null) {
+          this.$refs.cropper.callModal()
+        }
       }
+    },
+    delModalImg() {
+      this.modalImg = null
     },
   },
 })
