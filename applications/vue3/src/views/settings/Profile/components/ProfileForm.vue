@@ -16,7 +16,7 @@
             </CFormLabel>
 
             <CCol md="8">
-              {{ userInfo.username }}
+              {{ userInfo?.username || '' }}
               <CFormFeedback invalid>아이디를 입력하세요.</CFormFeedback>
             </CCol>
           </CRow>
@@ -27,7 +27,7 @@
             </CFormLabel>
 
             <CCol md="8">
-              {{ userInfo.email }}
+              {{ userInfo?.email || '' }}
               <CFormFeedback invalid>이메일을 입력하세요.</CFormFeedback>
             </CCol>
           </CRow>
@@ -179,20 +179,20 @@ export default defineComponent({
       return this.isChanged()
     },
     confirmText(this: any) {
-      return this.userInfo.profile.pk ? '변경' : '등록'
+      return this.userInfo?.profile.pk ? '변경' : '등록'
     },
     btnClass(this: any) {
-      return this.userInfo.profile.pk ? 'success' : 'primary'
+      return this.userInfo?.profile.pk ? 'success' : 'primary'
     },
     ...mapGetters('accounts', ['isAuthorized']),
   },
   methods: {
     isChanged(this: any) {
-      const a = this.form.name === this.userInfo.profile.name
-      const b = this.form.birth_date === this.userInfo.profile.birth_date
-      const c = this.form.cell_phone === this.userInfo.profile.cell_phone
+      const a = this.form.name === this.userInfo?.profile.name
+      const b = this.form.birth_date === this.userInfo?.profile.birth_date
+      const c = this.form.cell_phone === this.userInfo?.profile.cell_phone
       const d =
-        this.image === null || this.image === this.userInfo.profile.image
+        this.image === null || this.image === this.userInfo?.profile.image
       return a && b && c && d
     },
     fileUpload(image: any) {
