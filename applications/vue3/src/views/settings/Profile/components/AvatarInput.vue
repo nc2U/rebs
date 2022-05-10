@@ -11,9 +11,15 @@
       />
       <CRow class="relative inline-block">
         <CCol>
-          <CDropdown placement="bottom">
+          <CDropdown placement="bottom-start">
             <CDropdownToggle class="py-0 btn-link" :caret="false">
               <CImage rounded thumbnail fluid :src="imgUrl" />
+              <CCol
+                class="bg-white text-high-emphasis position-absolute rounded-2 px-2 py-1 left-0 bottom-0 ml-1 mb-1 border"
+              >
+                <CIcon name="cilPencil" />
+                Edit
+              </CCol>
               <!--          <button type="button" @click="browse">-->
               <!--            <CIcon name="cil-camera" />-->
               <!--          </button>-->
@@ -21,10 +27,8 @@
                 <CIcon name="cil-x" />
               </button>
             </CDropdownToggle>
-            <CDropdownMenu class="pt-0">
-              <CDropdownItem @click="browse">
-                <strong>Upload a photo...</strong>
-              </CDropdownItem>
+            <CDropdownMenu class="ml-2 py-1">
+              <CDropdownItem @click="browse"> Upload a photo...</CDropdownItem>
             </CDropdownMenu>
           </CDropdown>
         </CCol>
