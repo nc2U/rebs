@@ -11,6 +11,7 @@
     </CModalHeader>
     <CModalBody>
       <cropper
+        ref="cropper"
         class="cropper"
         :stencil-component="$options.components.CircleStencil"
         :default-size="{
@@ -18,11 +19,10 @@
           height: 1000,
         }"
         :src="modalImg"
-        @change="change"
       />
     </CModalBody>
     <CModalFooter class="d-grid gap-2">
-      <CButton color="success"> Set new profile picture</CButton>
+      <CButton color="success" @click="crop"> Set new profile picture</CButton>
     </CModalFooter>
     <CircleStencil v-if="false" />
   </CModal>
@@ -52,7 +52,7 @@ export default defineComponent({
   watch: {
     visible(val) {
       if (val === false) {
-        this.$emit('modal-img', null)
+        this.$emit('image-del', null)
       }
     },
   },
@@ -60,11 +60,17 @@ export default defineComponent({
     callModal() {
       this.visible = true
     },
-    change({ coordinates, canvas }: any) {
-      console.log(coordinates, canvas)
-    },
     close() {
       this.visible = false
+    },
+    crop(this: any) {
+      const { canvas } = this.$refs.cropper.getResult()
+      if (canvas) {
+        canvas.toBlob((blob: any) => {
+          this.$emit('file-upload', blob)
+        })
+      }
+      this.close()
     },
   },
 })

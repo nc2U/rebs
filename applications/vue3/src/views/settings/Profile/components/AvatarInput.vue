@@ -30,15 +30,12 @@
     </CCol>
   </CRow>
 
-  <button
-    type="button"
-    class="btn btn-primary"
-    @click="$refs.cropper.callModal"
-  >
-    test
-  </button>
-
-  <CropperModal ref="cropper" :modal-img="modalImg" @modal-img="delModalImg" />
+  <CropperModal
+    ref="cropModal"
+    :modal-img="modalImg"
+    @image-del="delModalImg"
+    @file-upload="fileUpload"
+  />
 </template>
 
 <script lang="ts">
@@ -69,9 +66,18 @@ export default defineComponent({
       reader.onload = (e: any) => {
         this.modalImg = e.target.result
         if (this.modalImg !== null) {
-          this.$refs.cropper.callModal()
+          this.$refs.cropModal.callModal()
         }
       }
+    },
+    fileUpload(image: any) {
+      // this.$emit('file-upload', image)
+      let reader = new FileReader()
+      reader.readAsDataURL(image)
+      reader.onload = (e: any) => {
+        this.imgUrl = e.target.result
+      }
+      console.log(image)
     },
     delModalImg() {
       this.modalImg = null
