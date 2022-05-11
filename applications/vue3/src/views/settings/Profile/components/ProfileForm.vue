@@ -99,19 +99,7 @@
       <CButton type="button" color="light" @click="this.$emit('reset-form')">
         취소
       </CButton>
-      <CButton
-        type="button"
-        v-if="update"
-        color="danger"
-        @click="deleteCompany"
-      >
-        삭제
-      </CButton>
-      <CButton
-        type="submit"
-        :color="btnClass"
-        :disabled="form.pk && formsCheck"
-      >
+      <CButton type="submit" :color="btnClass" :disabled="formsCheck">
         <CIcon name="cil-check-circle" />
         {{ confirmText }}
       </CButton>
@@ -176,13 +164,13 @@ export default defineComponent({
   },
   computed: {
     formsCheck() {
-      return this.isChanged()
+      return this.userInfo?.profile?.pk ? this.isChanged() : false
     },
     confirmText(this: any) {
-      return this.userInfo?.profile.pk ? '변경' : '등록'
+      return this.userInfo?.profile?.pk ? '변경' : '등록'
     },
     btnClass(this: any) {
-      return this.userInfo?.profile.pk ? 'success' : 'primary'
+      return this.userInfo?.profile?.pk ? 'success' : 'primary'
     },
     ...mapGetters('accounts', ['isAuthorized']),
   },
