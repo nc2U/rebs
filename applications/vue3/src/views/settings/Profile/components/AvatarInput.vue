@@ -71,13 +71,12 @@ export default defineComponent({
       }
     },
     fileUpload(image: any) {
-      // this.$emit('file-upload', image)
+      this.$emit('file-upload', image)
       let reader = new FileReader()
       reader.readAsDataURL(image)
       reader.onload = (e: any) => {
         this.imgUrl = e.target.result
       }
-      console.log(image)
     },
     delModalImg() {
       this.modalImg = null

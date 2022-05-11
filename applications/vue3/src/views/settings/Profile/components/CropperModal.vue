@@ -67,7 +67,8 @@ export default defineComponent({
       const { canvas } = this.$refs.cropper.getResult()
       if (canvas) {
         canvas.toBlob((blob: any) => {
-          this.$emit('file-upload', blob)
+          const image = new File([blob], 'profile.png', { type: blob.type })
+          this.$emit('file-upload', image)
         })
       }
       this.close()
