@@ -413,10 +413,6 @@ const settings = {
     {
       component: 'CNavItem',
       name: '프로필 관리',
-      badge: {
-        color: 'danger',
-        text: 'u.c',
-      },
       to: '/settings/profile',
     },
   ],
