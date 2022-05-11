@@ -1,8 +1,8 @@
 <template>
   <CForm
+    class="needs-validation"
     novalidate
     :validated="validated"
-    class="needs-validation"
     @submit.prevent="onSubmit"
   >
     <h1>회원가입</h1>
@@ -75,7 +75,7 @@
     </CRow>
 
     <div class="d-grid">
-      <CButton color="primary" class="px-4">회원 가입</CButton>
+      <CButton type="submit" color="primary">회원 가입</CButton>
     </div>
   </CForm>
 </template>

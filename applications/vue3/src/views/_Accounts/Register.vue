@@ -41,7 +41,6 @@
 </template>
 
 <script lang="ts">
-import api from '@/api'
 import { defineComponent } from 'vue'
 import RegisterForm from './components/RegisterForm.vue'
 import { mapActions } from 'vuex'
@@ -56,11 +55,7 @@ export default defineComponent({
       password: string
       staffauth: any
     }) {
-      // const { email, username, password } = payload
       this.signup(payload)
-    },
-    toLogin() {
-      this.$router.push({ name: 'Login' })
     },
     ...mapActions('accounts', ['signup']),
   },
