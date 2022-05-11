@@ -6,7 +6,7 @@
       :caret="false"
     >
       <CAvatar
-        color="info"
+        color="secondary"
         text-color="white"
         size="md"
         :src="avatarSrc"
@@ -71,7 +71,10 @@ export default defineComponent({
     },
   },
   computed: {
-    avatarSrc: () => (avatar ? avatar : ''),
+    avatarSrc(this: any) {
+      const profileImage = this.userInfo?.profile?.image
+      return profileImage ? profileImage : ''
+    },
     avatarText() {
       return this.userInfo
         ? this.userInfo.username.substring(0, 1).toUpperCase()
@@ -93,3 +96,11 @@ export default defineComponent({
   },
 })
 </script>
+
+<style lang="scss" scoped>
+.show,
+.btn-link:hover,
+.btn-link:active {
+  text-decoration: none !important;
+}
+</style>

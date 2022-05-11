@@ -61,7 +61,8 @@
           v-else
           :to="{ name: 'Login' }"
           class="btn btn-outline-primary"
-          >로그인
+        >
+          로그인
         </router-link>
       </CHeaderNav>
       <CHeaderToggler class="px-md-0 me-md-3">
