@@ -152,9 +152,9 @@ export default defineComponent({
   },
   created(this: any) {
     if (this.userInfo) {
+      this.form.user = this.userInfo.pk
       if (this.userInfo.profile) {
         this.form.pk = this.userInfo.profile.pk
-        this.form.user = this.userInfo.pk
         this.form.name = this.userInfo.profile.name
         this.form.birth_date = this.userInfo.profile.birth_date
         this.form.cell_phone = this.userInfo.profile.cell_phone
