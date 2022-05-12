@@ -22,6 +22,13 @@ export const message = (
   )
 }
 
+export const errorHandle = (error: any) => {
+  console.log(error)
+  for (const key in error) {
+    message('danger', `${key} - 에러`, `${error[key]}`, 20000)
+  }
+}
+
 export const hashCode = (s: string) =>
   s.split('').reduce((a, b) => {
     a = (a << 5) - a + b.charCodeAt(0)
