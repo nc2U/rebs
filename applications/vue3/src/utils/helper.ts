@@ -4,6 +4,7 @@ export const message = (
   type: any = 'success',
   title: any = '알림!',
   description: any = '해당 내용이 저장되었습니다!',
+  duration = 2500,
 ) => {
   createToast(
     {
@@ -14,7 +15,7 @@ export const message = (
       type,
       hideProgressBar: true,
       showIcon: true,
-      timeout: 2500,
+      timeout: duration,
       transition: 'slide',
       // toastBackgroundColor: '#4DC374',
     },
