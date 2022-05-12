@@ -8,7 +8,7 @@ import {
   FETCH_PAYMENT_SUM_LIST,
   FETCH_CONTRACT_NUM_LIST,
 } from '@/store/modules/payment/mutations-types'
-import { message } from '@/utils/helper'
+import { message, errorHandle } from '@/utils/helper'
 
 const actions = {
   fetchPriceList: ({ commit }: any, payload: any) => {
@@ -20,7 +20,7 @@ const actions = {
       .then(res => {
         commit(FETCH_PRICE_LIST, res.data)
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
 
   createPrice: ({ dispatch }: any, payload: any) => {
@@ -31,14 +31,7 @@ const actions = {
         dispatch('fetchPriceList', { project, order_group, unit_type })
         message()
       })
-      .catch(err => {
-        console.log(err.response.data)
-        alert(
-          `${Object.keys(err.response.data)[0]} : ${
-            err.response.data[Object.keys(err.response.data)[0]]
-          }`,
-        )
-      })
+      .catch(err => errorHandle(err.response.data))
   },
 
   updatePrice: ({ dispatch }: any, payload: any) => {
@@ -50,14 +43,7 @@ const actions = {
         dispatch('fetchPriceList', { project, order_group, unit_type })
         message()
       })
-      .catch(err => {
-        console.log(err.response.data)
-        alert(
-          `${Object.keys(err.response.data)[0]} : ${
-            err.response.data[Object.keys(err.response.data)[0]]
-          }`,
-        )
-      })
+      .catch(err => errorHandle(err.response.data))
   },
 
   deletePrice: ({ dispatch }: any, payload: any) => {
@@ -69,14 +55,7 @@ const actions = {
         dispatch('fetchPriceList', { project, order_group, unit_type })
         message('danger', '알림!', '해당 오브젝트가 삭제되었습니다.')
       })
-      .catch(err => {
-        console.log(err.response.data)
-        alert(
-          `${Object.keys(err.response.data)[0]} : ${
-            err.response.data[Object.keys(err.response.data)[0]]
-          }`,
-        )
-      })
+      .catch(err => errorHandle(err.response.data))
   },
 
   fetchPayOrderList: ({ commit }: any, pk: any) => {
@@ -85,7 +64,7 @@ const actions = {
       .then(res => {
         commit(FETCH_PAY_ORDER_LIST, res.data)
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
 
   createPayOrder: ({ dispatch }: any, payload: any) => {
@@ -95,14 +74,7 @@ const actions = {
         dispatch('fetchPayOrderList', res.data.project)
         message()
       })
-      .catch(err => {
-        console.log(err.response.data)
-        alert(
-          `${Object.keys(err.response.data)[0]} : ${
-            err.response.data[Object.keys(err.response.data)[0]]
-          }`,
-        )
-      })
+      .catch(err => errorHandle(err.response.data))
   },
 
   updatePayOrder: ({ dispatch }: any, payload: any) => {
@@ -113,14 +85,7 @@ const actions = {
         dispatch('fetchPayOrderList', res.data.project)
         message()
       })
-      .catch(err => {
-        console.log(err.response.data)
-        alert(
-          `${Object.keys(err.response.data)[0]} : ${
-            err.response.data[Object.keys(err.response.data)[0]]
-          }`,
-        )
-      })
+      .catch(err => errorHandle(err.response.data))
   },
 
   deletePayOrder: ({ dispatch }: any, payload: any) => {
@@ -131,14 +96,7 @@ const actions = {
         dispatch('fetchPayOrderList', project)
         message('danger', '알림!', '해당 오브젝트가 삭제되었습니다.')
       })
-      .catch(err => {
-        console.log(err.response.data)
-        alert(
-          `${Object.keys(err.response.data)[0]} : ${
-            err.response.data[Object.keys(err.response.data)[0]]
-          }`,
-        )
-      })
+      .catch(err => errorHandle(err.response.data))
   },
 
   fetchDownPayList: ({ commit }: any, payload: any) => {
@@ -150,7 +108,7 @@ const actions = {
       .then(res => {
         commit(FETCH_DWON_PAYMENT, res.data)
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
 
   createDownPay: ({ dispatch }: any, payload: any) => {
@@ -160,14 +118,7 @@ const actions = {
         dispatch('fetchDownPayList', res.data.project)
         message()
       })
-      .catch(err => {
-        console.log(err.response.data)
-        alert(
-          `${Object.keys(err.response.data)[0]} : ${
-            err.response.data[Object.keys(err.response.data)[0]]
-          }`,
-        )
-      })
+      .catch(err => errorHandle(err.response.data))
   },
 
   updateDownPay: ({ dispatch }: any, payload: any) => {
@@ -178,14 +129,7 @@ const actions = {
         dispatch('fetchDownPayList', res.data.project)
         message()
       })
-      .catch(err => {
-        console.log(err.response.data)
-        alert(
-          `${Object.keys(err.response.data)[0]} : ${
-            err.response.data[Object.keys(err.response.data)[0]]
-          }`,
-        )
-      })
+      .catch(err => errorHandle(err.response.data))
   },
 
   deleteDownPay: ({ dispatch }: any, payload: any) => {
@@ -196,14 +140,7 @@ const actions = {
         dispatch('fetchDownPayList', project)
         message('danger', '알림!', '해당 오브젝트가 삭제되었습니다.')
       })
-      .catch(err => {
-        console.log(err.response.data)
-        alert(
-          `${Object.keys(err.response.data)[0]} : ${
-            err.response.data[Object.keys(err.response.data)[0]]
-          }`,
-        )
-      })
+      .catch(err => errorHandle(err.response.data))
   },
 
   fetchPaymentList: ({ commit }: any, payload: any) => {
@@ -224,7 +161,7 @@ const actions = {
       .then(res => {
         commit(FETCH_PAYMENT_LIST, res.data)
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
 
   fetchAllPaymentList: ({ commit }: any, payload: any) => {
@@ -237,7 +174,7 @@ const actions = {
       .then(res => {
         commit(FETCH_ALL_PAYMENT_LIST, res.data)
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
 
   fetchPaySumList: ({ commit }: any, project: any) => {
@@ -246,7 +183,7 @@ const actions = {
       .then(res => {
         commit(FETCH_PAYMENT_SUM_LIST, res.data)
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
 
   fetchContNumList: ({ commit }: any, project: any) => {
@@ -255,7 +192,7 @@ const actions = {
       .then(res => {
         commit(FETCH_CONTRACT_NUM_LIST, res.data)
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
 }
 

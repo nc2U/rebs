@@ -8,7 +8,7 @@ import {
   FETCH_PROJECT_LIST,
   FETCH_TYPE_LIST,
 } from '@/store/modules/project/mutations-types'
-import { message } from '@/utils/helper'
+import { errorHandle, message } from '@/utils/helper'
 
 const actions = {
   fetchProjectList: ({ commit }: any) => {
@@ -17,7 +17,7 @@ const actions = {
       .then(res => {
         commit(FETCH_PROJECT_LIST, res.data)
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
 
   fetchProject: ({ commit }: any, pk: number) => {
@@ -26,7 +26,7 @@ const actions = {
       .then(res => {
         commit(FETCH_PROJECT, res.data)
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
 
   createProject: ({ dispatch }: any, payload: any) => {
@@ -37,14 +37,7 @@ const actions = {
         dispatch('fetchProjectList')
         message()
       })
-      .catch(err => {
-        console.log(err.response.data)
-        alert(
-          `${Object.keys(err.response.data)[0]} : ${
-            err.response.data[Object.keys(err.response.data)[0]]
-          }`,
-        )
-      })
+      .catch(err => errorHandle(err.response.data))
   },
 
   updateProject: ({ dispatch }: any, payload: any) => {
@@ -55,22 +48,18 @@ const actions = {
         dispatch('fetchProjectList')
         message()
       })
-      .catch(err => {
-        console.log(err.response.data)
-        alert(
-          `${Object.keys(err.response.data)[0]} : ${
-            err.response.data[Object.keys(err.response.data)[0]]
-          }`,
-        )
-      })
+      .catch(err => errorHandle(err.response.data))
   },
 
   deleteProject: ({ dispatch }: any, pk: any) => {
-    api.delete(`/project/${pk}/`).then(res => {
-      console.log(res.data)
-      dispatch('fetchProjectList')
-      message('danger', '알림!', '삭제되었습니다.')
-    })
+    api
+      .delete(`/project/${pk}/`)
+      .then(res => {
+        console.log(res.data)
+        dispatch('fetchProjectList')
+        message('danger', '알림!', '삭제되었습니다.')
+      })
+      .catch(err => errorHandle(err.response.data))
   },
 
   fetchTypeList: ({ commit }: any, pk?: number) => {
@@ -79,7 +68,7 @@ const actions = {
       .then(res => {
         commit(FETCH_TYPE_LIST, res.data)
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
 
   createType: ({ dispatch }: any, payload: any) => {
@@ -89,14 +78,7 @@ const actions = {
         dispatch('fetchTypeList', res.data.project)
         message()
       })
-      .catch(err => {
-        console.log(err.response.data)
-        alert(
-          `${Object.keys(err.response.data)[0]} : ${
-            err.response.data[Object.keys(err.response.data)[0]]
-          }`,
-        )
-      })
+      .catch(err => errorHandle(err.response.data))
   },
 
   updateType: ({ dispatch }: any, payload: any) => {
@@ -107,14 +89,7 @@ const actions = {
         dispatch('fetchTypeList', res.data.project)
         message()
       })
-      .catch(err => {
-        console.log(err.response.data)
-        alert(
-          `${Object.keys(err.response.data)[0]} : ${
-            err.response.data[Object.keys(err.response.data)[0]]
-          }`,
-        )
-      })
+      .catch(err => errorHandle(err.response.data))
   },
 
   deleteType: ({ dispatch }: any, payload: any) => {
@@ -125,11 +100,7 @@ const actions = {
         dispatch('fetchTypeList', project)
         message('danger', '알림!', '해당 오브젝트가 삭제되었습니다.')
       })
-      .catch(err => {
-        alert(
-          '해당 그룹에 종속된 계약관련 데이터가 있는 경우 이 그룹을 삭제할 수 없습니다.',
-        )
-      })
+      .catch(err => errorHandle(err.response.data))
   },
 
   fetchFloorTypeList: ({ commit }: any, pk?: number) => {
@@ -138,7 +109,7 @@ const actions = {
       .then(res => {
         commit(FETCH_FLOOR_TYPE_LIST, res.data)
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
 
   createFloorType: ({ dispatch }: any, payload: any) => {
@@ -148,14 +119,7 @@ const actions = {
         dispatch('fetchFloorTypeList', res.data.project)
         message()
       })
-      .catch(err => {
-        console.log(err.response.data)
-        alert(
-          `${Object.keys(err.response.data)[0]} : ${
-            err.response.data[Object.keys(err.response.data)[0]]
-          }`,
-        )
-      })
+      .catch(err => errorHandle(err.response.data))
   },
 
   updateFloorType: ({ dispatch }: any, payload: any) => {
@@ -166,14 +130,7 @@ const actions = {
         dispatch('fetchFloorTypeList', res.data.project)
         message()
       })
-      .catch(err => {
-        console.log(err.response.data)
-        alert(
-          `${Object.keys(err.response.data)[0]} : ${
-            err.response.data[Object.keys(err.response.data)[0]]
-          }`,
-        )
-      })
+      .catch(err => errorHandle(err.response.data))
   },
 
   deleteFloorType: ({ dispatch }: any, payload: any) => {
@@ -184,11 +141,7 @@ const actions = {
         dispatch('fetchFloorTypeList', project)
         message('danger', '알림!', '해당 오브젝트가 삭제되었습니다.')
       })
-      .catch(() => {
-        alert(
-          '해당 그룹에 종속된 분양가 데이터가 있는 경우 이 그룹을 삭제할 수 없습니다.',
-        )
-      })
+      .catch(err => errorHandle(err.response.data))
   },
 
   fetchBuildingList: ({ commit }: any, pk?: number) => {
@@ -197,7 +150,7 @@ const actions = {
       .then(res => {
         commit(FETCH_BUILDING_LIST, res.data)
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
 
   createBuilding: ({ dispatch }: any, payload: any) => {
@@ -207,14 +160,7 @@ const actions = {
         dispatch('fetchBuildingList', res.data.project)
         message()
       })
-      .catch(err => {
-        console.log(err.response.data)
-        alert(
-          `${Object.keys(err.response.data)[0]} : ${
-            err.response.data[Object.keys(err.response.data)[0]]
-          }`,
-        )
-      })
+      .catch(err => errorHandle(err.response.data))
   },
 
   updateBuilding: ({ dispatch }: any, payload: any) => {
@@ -225,14 +171,7 @@ const actions = {
         dispatch('fetchBuildingList', res.data.project)
         message()
       })
-      .catch(err => {
-        console.log(err.response.data)
-        alert(
-          `${Object.keys(err.response.data)[0]} : ${
-            err.response.data[Object.keys(err.response.data)[0]]
-          }`,
-        )
-      })
+      .catch(err => errorHandle(err.response.data))
   },
 
   deleteBuilding: ({ dispatch }: any, payload: any) => {
@@ -243,11 +182,7 @@ const actions = {
         dispatch('fetchBuildingList', project)
         message('danger', '알림!', '해당 오브젝트가 삭제되었습니다.')
       })
-      .catch(() => {
-        alert(
-          '해당 그룹에 종속된 호수(Unit) 관련 데이터가 있는 경우 이 그룹을 삭제할 수 없습니다.',
-        )
-      })
+      .catch(err => errorHandle(err.response.data))
   },
 
   fetchHouseUnitList: (
@@ -262,7 +197,7 @@ const actions = {
       .then(res => {
         commit(FETCH_HOUSE_UNIT_LIST, res.data)
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
 
   fetchNumUnitByType: (
@@ -275,7 +210,7 @@ const actions = {
       .then(res => {
         commit(FETCH_NUM_UNIT_BY_TYPE, res.data.count)
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
 
   createUnit: ({ dispatch, getters }: any, payload: any) => {
@@ -292,11 +227,9 @@ const actions = {
         })
         return api
           .post(`/key-unit/`, keyUnits)
-          .catch(err => console.log(err.response.data))
+          .catch(err => errorHandle(err.response.data))
       })
-      .catch(err => {
-        console.log(err.response.data)
-      })
+      .catch(err => errorHandle(err.response.data))
   },
 
   updateUnit: ({ dispatch }: any, payload: any) => {
@@ -310,14 +243,7 @@ const actions = {
         })
         message()
       })
-      .catch(err => {
-        console.log(err.response.data)
-        alert(
-          `${Object.keys(err.response.data)[0]} : ${
-            err.response.data[Object.keys(err.response.data)[0]]
-          }`,
-        )
-      })
+      .catch(err => errorHandle(err.response.data))
   },
 
   deleteUnit: ({ dispatch }: any, payload: any) => {
@@ -328,11 +254,7 @@ const actions = {
         dispatch('fetchNumUnitByType', project)
         message('danger', '알림!', '해당 오브젝트가 삭제되었습니다.')
       })
-      .catch(() => {
-        alert(
-          '해당 그룹에 종속된 계약관련 데이터가 있는 경우 이 그룹을 삭제할 수 없습니다.',
-        )
-      })
+      .catch(err => errorHandle(err.response.data))
   },
 }
 

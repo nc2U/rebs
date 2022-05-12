@@ -13,7 +13,7 @@ import {
   FETCH_CONT_RELEASE,
 } from '@/store/modules/contract/mutations-types'
 import router from '@/router'
-import { message } from '@/utils/helper'
+import { errorHandle, message } from '@/utils/helper'
 
 const actions = {
   fetchContractList: ({ commit }: any, payload?: any) => {
@@ -36,7 +36,7 @@ const actions = {
       .then(res => {
         commit(FETCH_CONTRACT_LIST, res.data)
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
 
   fetchContract: ({ commit }: any, pk: number) => {
@@ -45,7 +45,7 @@ const actions = {
       .then(res => {
         commit(FETCH_CONTRACT, res.data)
       })
-      .catch(console.log)
+      .catch(err => errorHandle(err.response.data))
   },
 
   createContract: async ({ dispatch }: any, payload: any) => {
@@ -53,7 +53,7 @@ const actions = {
     try {
       return await api.post(`/contract/`, payload)
     } catch (err: any) {
-      console.log(err.response.data)
+      errorHandle(err.response.data)
     }
   },
   updateContract: async ({ dispatch }: any, payload: any) => {
@@ -61,7 +61,7 @@ const actions = {
     try {
       return await api.put(`/contract/${pk}/`, formData)
     } catch (err: any) {
-      console.log(err.response.data)
+      errorHandle(err.response.data)
     }
   },
 
@@ -71,7 +71,7 @@ const actions = {
     try {
       await api.patch(`key-unit/${pk}/`, data)
     } catch (err: any) {
-      console.log(err.response.data)
+      errorHandle(err.response.data)
     }
   },
 
@@ -81,7 +81,7 @@ const actions = {
     try {
       await api.patch(`/house-unit/${pk}/`, data)
     } catch (err: any) {
-      console.log(err.response.data)
+      errorHandle(err.response.data)
     }
   },
 
@@ -92,7 +92,7 @@ const actions = {
       .then(res => {
         commit(FETCH_CONTRACTOR_LIST, res.data)
       })
-      .catch(console.log)
+      .catch(err => errorHandle(err.response.data))
   },
 
   fetchContractor: ({ commit }: any, pk: number) => {
@@ -101,7 +101,7 @@ const actions = {
       .then(res => {
         commit(FETCH_CONTRACTOR, res.data)
       })
-      .catch(console.log)
+      .catch(err => errorHandle(err.response.data))
   },
 
   createContractor: async ({ dispatch }: any, payload: any) => {
@@ -109,7 +109,7 @@ const actions = {
     try {
       return await api.post(`/contractor/`, payload)
     } catch (err: any) {
-      console.log(err.response.data)
+      errorHandle(err.response.data)
     }
   },
 
@@ -119,7 +119,7 @@ const actions = {
     try {
       return await api.put(`/contractor/${pk}/`, data)
     } catch (err: any) {
-      console.log(err.response.data)
+      errorHandle(err.response.data)
     }
   },
 
@@ -128,7 +128,7 @@ const actions = {
     try {
       await api.post(`/contractor-address/`, payload)
     } catch (err: any) {
-      console.log(err.response.data)
+      errorHandle(err.response.data)
     }
   },
 
@@ -138,7 +138,7 @@ const actions = {
     try {
       await api.put(`/contractor-address/${pk}/`, data)
     } catch (err: any) {
-      console.log(err.response.data)
+      errorHandle(err.response.data)
     }
   },
 
@@ -147,7 +147,7 @@ const actions = {
     try {
       await api.post(`/contractor-contact/`, payload)
     } catch (err: any) {
-      console.log(err.response.data)
+      errorHandle(err.response.data)
     }
   },
 
@@ -157,7 +157,7 @@ const actions = {
     try {
       await api.put(`/contractor-contact/${pk}/`, data)
     } catch (err: any) {
-      console.log(err.response.data)
+      errorHandle(err.response.data)
     }
   },
 
@@ -265,7 +265,7 @@ const actions = {
     try {
       await api.post(`/project-cashbook/`, cashData)
     } catch (err: any) {
-      console.log(err.response.data)
+      errorHandle(err.response.data)
     }
 
     dispatch('fetchContractList', { project, status })
@@ -413,13 +413,13 @@ const actions = {
         try {
           await api.post(`/project-cashbook/`, cashData)
         } catch (err: any) {
-          console.log(err.response.data)
+          errorHandle(err.response.data)
         }
       } else {
         try {
           await api.put(`/project-cashbook/${paymentPk}/`, cashData)
         } catch (err: any) {
-          console.log(err.response.data)
+          errorHandle(err.response.data)
         }
       }
     }
@@ -450,7 +450,7 @@ const actions = {
       .then(res => {
         commit(FETCH_SUBS_SUMMARY_LIST, res.data)
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
 
   fetchContSummaryList: ({ commit }: any, project?: number) => {
@@ -459,7 +459,7 @@ const actions = {
       .then(res => {
         commit(FETCH_CONT_SUMMARY_LIST, res.data)
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
 
   fetchOrderGroupList: ({ commit }: any, pk?: number) => {
@@ -468,7 +468,7 @@ const actions = {
       .then(res => {
         commit(FETCH_ORDER_GROUP_LIST, res.data)
       })
-      .catch(err => console.log(err))
+      .catch(err => errorHandle(err.response.data))
   },
 
   createOrderGroup: ({ dispatch }: any, payload: any) => {
@@ -478,14 +478,7 @@ const actions = {
         dispatch('fetchOrderGroupList', res.data.project)
         message()
       })
-      .catch(err => {
-        console.log(err.response.data)
-        alert(
-          `${Object.keys(err.response.data)[0]} : ${
-            err.response.data[Object.keys(err.response.data)[0]]
-          }`,
-        )
-      })
+      .catch(err => errorHandle(err.response.data))
   },
 
   updateOrderGroup: ({ dispatch }: any, payload: any) => {
@@ -496,14 +489,7 @@ const actions = {
         dispatch('fetchOrderGroupList', res.data.project)
         message()
       })
-      .catch(err => {
-        console.log(err.response.data)
-        alert(
-          `${Object.keys(err.response.data)[0]} : ${
-            err.response.data[Object.keys(err.response.data)[0]]
-          }`,
-        )
-      })
+      .catch(err => errorHandle(err.response.data))
   },
 
   deleteOrderGroup: ({ dispatch }: any, payload: any) => {
@@ -514,12 +500,7 @@ const actions = {
         dispatch('fetchOrderGroupList', projId)
         message('danger', '알림!', '해당 오브젝트가 삭제되었습니다.')
       })
-      .catch(err => {
-        alert(
-          '해당 그룹에 종속된 계약관련 데이터가 있는 경우 이 그룹을 삭제할 수 없습니다.',
-        )
-        ;(router as any).go()
-      })
+      .catch(err => errorHandle(err.response.data))
   },
 
   fetchKeyUnitList: ({ commit }: any, payload?: any) => {
@@ -534,7 +515,7 @@ const actions = {
       .then(res => {
         commit(FETCH_KEY_UNIT_LIST, res.data)
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
 
   fetchHouseUnitList: ({ commit }: any, payload?: any) => {
@@ -547,7 +528,7 @@ const actions = {
       .then(res => {
         commit(FETCH_HOUSE_UNIT_LIST, res.data)
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
 
   fetchContReleaseList: ({ commit }: any, payload: any) => {
@@ -559,7 +540,7 @@ const actions = {
       .then(res => {
         commit(FETCH_CONT_RELEASE_LIST, res.data)
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
 
   fetchContRelease: ({ commit }: any, pk: number) => {
@@ -568,7 +549,7 @@ const actions = {
       .then(res => {
         commit(FETCH_CONT_RELEASE, res.data)
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
 
   releaseSet: async ({ dispatch }: any, payload: any) => {
@@ -577,7 +558,7 @@ const actions = {
     const contractor = await api
       .get(`/contractor/${contractorId}/`)
       .then(res => res.data)
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
 
     const contractId = contractor.contract.pk
     const keyunitId = contractor.contract.keyunit
@@ -591,7 +572,7 @@ const actions = {
       .then(() => {
         dispatch('fetchContractor', contractorId)
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
 
     // 2. 계약 상태 변경
     api
@@ -603,28 +584,28 @@ const actions = {
             activation: false,
           })
           .then(() => dispatch('fetchContract', contractId))
-          .catch(err => console.log(err.response.data))
+          .catch(err => errorHandle(err.response.data))
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
 
     // 3. 계약유닛 연결 해제
     const keyunit = await api
       .patch(`/key-unit/${keyunitId}/`, { contract: null })
       .then(res => res.data)
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
 
     // 4. 동호수 연결 해제
     if (keyunit.houseunit) {
       api
         .patch(`/house-unit/${keyunit.houseunit}/`, { key_unit: null })
-        .catch(err => console.log(err.response.data))
+        .catch(err => errorHandle(err.response.data))
     }
 
     // 5. 분담금 납부 상태 환불처리 // release table status -> 4로 입력될 때 1회 실행
     const payments = await api
       .get(`/project-cashbook/?contract=${contractId}`)
       .then(res => res.data)
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
 
     payments.forEach((payment: any) => {
       const append_txt = payment.note === '' ? '' : ', '
@@ -650,7 +631,7 @@ const actions = {
         dispatch('fetchContRelease', res.data.pk)
         dispatch('fetchContReleaseList', { project: payload.project })
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
 
     if (payload.status >= '4') {
       dispatch('releaseSet', payload)
@@ -678,7 +659,7 @@ const actions = {
           dispatch('fetchContRelease', res.data.pk)
           dispatch('fetchContReleaseList', { project, page })
         })
-        .catch(err => console.log(err.response.data))
+        .catch(err => errorHandle(err.response.data))
     })
 
     message()

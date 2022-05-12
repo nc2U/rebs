@@ -13,7 +13,7 @@ import {
   FETCH_P_BUDGET_LIST,
   FETCH_EXEC_AMOUNT_LIST,
 } from '@/store/modules/proCash/mutations-types'
-import { message } from '@/utils/helper'
+import { message, errorHandle } from '@/utils/helper'
 
 const actions = {
   fetchProAccSortList: ({ commit }: any) => {
@@ -22,7 +22,7 @@ const actions = {
       .then(res => {
         commit(FETCH_P_ACC_SORT_LIST, res.data)
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
 
   fetchProAllAccD1List: ({ commit }: any) => {
@@ -31,7 +31,7 @@ const actions = {
       .then(res => {
         commit(FETCH_ALL_ACC_D1_LIST, res.data)
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
 
   fetchProAllAccD2List: ({ commit }: any) => {
@@ -40,7 +40,7 @@ const actions = {
       .then(res => {
         commit(FETCH_ALL_ACC_D2_LIST, res.data)
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
 
   fetchProFormAccD1List: ({ commit }: any, sort?: string) => {
@@ -52,7 +52,7 @@ const actions = {
       .then(res => {
         commit(FETCH_FORM_ACC_D1_LIST, res.data)
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
 
   fetchProFormAccD2List: ({ commit }: any, payload?: any) => {
@@ -68,7 +68,7 @@ const actions = {
       .then(res => {
         commit(FETCH_FORM_ACC_D2_LIST, res.data)
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
 
   fetchProBankAccList: ({ commit }: any, project: any) => {
@@ -77,7 +77,7 @@ const actions = {
       .then(res => {
         commit(FETCH_P_BANK_ACCOUNT_LIST, res.data)
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
 
   createProBankAcc: ({ dispatch }: any, payload: any) => {
@@ -87,7 +87,7 @@ const actions = {
         dispatch('fetchProBankAccList', res.data.project)
         message()
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
 
   updateProBankAcc: ({ dispatch }: any, payload: any) => {
@@ -98,7 +98,7 @@ const actions = {
         dispatch('fetchProBankAccList', res.data.project)
         message()
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
 
   deleteProBankAcc: ({ dispatch }: any, payload: any) => {
@@ -109,7 +109,7 @@ const actions = {
         dispatch('fetchProBankAccList', project)
         message('danger', '알림!', '해당 오브젝트가 삭제되었습니다.')
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
 
   fetchBalanceByAccList: ({ commit }: any, payload: any) => {
@@ -121,7 +121,7 @@ const actions = {
       .then(res => {
         commit(FETCH_BALANCE_BY_ACC_LIST, res.data)
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
 
   fetchDateCashBookList: ({ commit }: any, payload: any) => {
@@ -132,7 +132,7 @@ const actions = {
       .then(res => {
         commit(FETCH_P_DATE_CASHBOOK, res.data)
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
 
   fetchProjectBudgetList: ({ commit }: any, pk: number) => {
@@ -141,7 +141,7 @@ const actions = {
       .then(res => {
         commit(FETCH_P_BUDGET_LIST, res.data)
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
 
   fetchExecAmountList: ({ commit }: any, payload: any) => {
@@ -153,7 +153,7 @@ const actions = {
       .then(res => {
         commit(FETCH_EXEC_AMOUNT_LIST, res.data)
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
 
   fetchProjectCashList: ({ commit }: any, payload: any) => {
@@ -173,7 +173,7 @@ const actions = {
       .then(res => {
         commit(FETCH_P_CASHBOOK_LIST, res.data)
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
 
   fetchProjectImprestList: ({ commit }: any, payload: any) => {
@@ -193,7 +193,7 @@ const actions = {
       .then(res => {
         commit(FETCH_P_IMPREST_LIST, res.data)
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
 
   createPrCashBook: ({ dispatch }: any, payload: any) => {
@@ -220,7 +220,7 @@ const actions = {
         )
         message()
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
 
   updatePrCashBook: ({ dispatch }: any, payload: any) => {
@@ -255,7 +255,7 @@ const actions = {
         )
         message()
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
   patchPrCashBook: ({ dispatch }: any, payload: any) => {
     const { pk, filters, ...formData } = payload
@@ -289,7 +289,7 @@ const actions = {
         )
         message()
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
 
   deletePrCashBook: ({ dispatch }: any, payload: any) => {
@@ -318,7 +318,7 @@ const actions = {
         )
         message('danger', '알림!', '해당 오브젝트가 삭제되었습니다.')
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
 }
 

@@ -12,7 +12,7 @@ import {
   FETCH_DATE_CASHBOOK,
   FETCH_CASHBOOK_LIST,
 } from '@/store/modules/comCash/mutations-types'
-import { message } from '@/utils/helper'
+import { errorHandle, message } from '@/utils/helper'
 
 const actions = {
   fetchAccSortList: ({ commit }: any) => {
@@ -21,7 +21,7 @@ const actions = {
       .then(res => {
         commit(FETCH_ACC_SORT_LIST, res.data)
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
 
   fetchAllAccD1List: ({ commit }: any) => {
@@ -31,7 +31,7 @@ const actions = {
       .then(res => {
         commit(FETCH_ACC_D1_LIST, res.data)
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
 
   fetchAllAccD2List: ({ commit }: any) => {
@@ -41,7 +41,7 @@ const actions = {
       .then(res => {
         commit(FETCH_ACC_D2_LIST, res.data)
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
 
   fetchAllAccD3List: ({ commit }: any) => {
@@ -51,7 +51,7 @@ const actions = {
       .then(res => {
         commit(FETCH_ACC_D3_LIST, res.data)
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
 
   fetchFormAccD1List: ({ commit }: any, data?: any) => {
@@ -63,7 +63,7 @@ const actions = {
       .then(res => {
         commit(FETCH_FORM_ACC_D1_LIST, res.data)
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
 
   fetchFormAccD2List: ({ commit }: any, data?: any) => {
@@ -76,7 +76,7 @@ const actions = {
       .then(res => {
         commit(FETCH_FORM_ACC_D2_LIST, res.data)
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
 
   fetchFormAccD3List: ({ commit }: any, data?: any) => {
@@ -90,7 +90,7 @@ const actions = {
       .then(res => {
         commit(FETCH_FORM_ACC_D3_LIST, res.data)
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
 
   fetchComBankAccList: ({ commit }: any, company: any) => {
@@ -99,7 +99,7 @@ const actions = {
       .then(res => {
         commit(FETCH_COMPAY_BANK_LIST, res.data)
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
 
   createCompanyBankAccount: ({ dispatch }: any, payload: any) => {
@@ -109,7 +109,7 @@ const actions = {
         dispatch('fetchComBankAccList', res.data.project)
         message()
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
 
   updateCompanyBankAccount: ({ dispatch }: any, payload: any) => {
@@ -120,7 +120,7 @@ const actions = {
         dispatch('fetchComBankAccList', res.data.project)
         message()
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
 
   deleteCompanyBankAccount: ({ dispatch }: any, payload: any) => {
@@ -131,7 +131,7 @@ const actions = {
         dispatch('fetchComBankAccList', project)
         message('danger', '알림!', '해당 오브젝트가 삭제되었습니다.')
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
 
   fetchComBalanceByAccList: ({ commit }: any, payload: any) => {
@@ -143,7 +143,7 @@ const actions = {
       .then(res => {
         commit(FETCH_BALANCE_BY_ACC_LIST, res.data)
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
 
   fetchDateCashBookList: ({ commit }: any, payload: any) => {
@@ -154,7 +154,7 @@ const actions = {
       .then(res => {
         commit(FETCH_DATE_CASHBOOK, res.data)
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
 
   fetchCashBookList: ({ commit }: any, payload: any) => {
@@ -175,7 +175,7 @@ const actions = {
       .then(res => {
         commit(FETCH_CASHBOOK_LIST, res.data)
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
 
   createCashBook: ({ dispatch }: any, payload: any) => {
@@ -185,7 +185,7 @@ const actions = {
         dispatch('fetchCashBookList', { company: res.data.company })
         message()
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
 
   updateCashBook: ({ dispatch }: any, payload: any) => {
@@ -199,7 +199,7 @@ const actions = {
         })
         message()
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
 
   deleteCashBook: ({ dispatch }: any, payload: any) => {
@@ -210,7 +210,7 @@ const actions = {
         dispatch('fetchCashBookList', { company, ...filters })
         message('danger', '알림!', '해당 오브젝트가 삭제되었습니다.')
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
 }
 

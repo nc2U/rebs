@@ -8,7 +8,7 @@ import {
   SET_USER_INFO,
 } from '@/store/modules/accounts/mutations-types'
 import router from '@/router'
-import { message } from '@/utils/helper'
+import { errorHandle, message } from '@/utils/helper'
 import Cookies from 'js-cookie'
 
 declare const Buffer: any
@@ -31,7 +31,7 @@ const actions = {
         router.push({ name: 'Login' })
         message('info', '', '회원가입이 완료되었습니다.')
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
   login(
     { commit, dispatch }: any,
@@ -52,10 +52,7 @@ const actions = {
         dispatch('fetchTodoList')
         message('', '', '로그인 성공 알림!')
       })
-      .catch(err => {
-        console.log(err.response.data)
-        alert('이메일 또는 비밀번호를 확인하세요.')
-      })
+      .catch(err => errorHandle(err.response.data))
   },
 
   loginByToken({ commit, dispatch }: any, token?: string) {
@@ -69,7 +66,7 @@ const actions = {
           commit(SET_LOCKED_USER, res.data)
           dispatch('fetchTodoList')
         })
-        .catch(err => console.log(err.response.data))
+        .catch(err => errorHandle(err.response.data))
     } else return
   },
 
@@ -94,7 +91,7 @@ const actions = {
         dispatch('loginByToken', cookedToken)
         message()
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
 
   patchProfile: ({ dispatch }: any, payload: any) => {
@@ -107,7 +104,7 @@ const actions = {
         dispatch('loginByToken', cookedToken)
         message()
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
 
   fetchTodoList: (store: any) => {
@@ -119,7 +116,7 @@ const actions = {
       .then(res => {
         store.commit(FETCH_TODO_LIST, res.data)
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => errorHandle(err.response.data))
   },
 
   createTodo: (
@@ -135,16 +132,9 @@ const actions = {
           .then(res => {
             commit(SET_USER_INFO, res.data)
           })
-          .catch(err => console.log(err.response.data))
+          .catch(err => errorHandle(err.response.data))
       })
-      .catch(err => {
-        console.log(err.response.data)
-        alert(
-          `${Object.keys(err.response.data)[0]} : ${
-            err.response.data[Object.keys(err.response.data)[0]]
-          }`,
-        )
-      })
+      .catch(err => errorHandle(err.response.data))
   },
 
   patchTodo: ({ dispatch }: any, payload: any) => {
@@ -155,14 +145,7 @@ const actions = {
       .then(() => {
         dispatch('fetchTodoList')
       })
-      .catch(err => {
-        console.log(err.response.data)
-        alert(
-          `${Object.keys(err.response.data)[0]} : ${
-            err.response.data[Object.keys(err.response.data)[0]]
-          }`,
-        )
-      })
+      .catch(err => errorHandle(err.response.data))
   },
 
   deleteTodo: ({ commit, dispatch, state }: any, pk: any) => {
@@ -175,16 +158,9 @@ const actions = {
           .then(res => {
             commit(SET_USER_INFO, res.data)
           })
-          .catch(err => console.log(err.response.data))
+          .catch(err => errorHandle(err.response.data))
       })
-      .catch(err => {
-        console.log(err.response.data)
-        alert(
-          `${Object.keys(err.response.data)[0]} : ${
-            err.response.data[Object.keys(err.response.data)[0]]
-          }`,
-        )
-      })
+      .catch(err => errorHandle(err.response.data))
   },
 }
 
