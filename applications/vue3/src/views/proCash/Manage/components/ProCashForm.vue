@@ -495,6 +495,7 @@
       </CButton>
       <slot name="footer">
         <CButton
+          type="submit"
           :color="proCash ? 'success' : 'primary'"
           :disabled="formsCheck && requireItem"
         >

@@ -157,6 +157,7 @@
       </CButton>
       <slot name="footer">
         <CButton
+          type="submit"
           :color="release ? 'success' : 'primary'"
           :disabled="formsCheck"
         >

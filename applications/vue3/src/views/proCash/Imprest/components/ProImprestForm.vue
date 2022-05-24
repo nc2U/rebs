@@ -495,6 +495,7 @@
       </CButton>
       <slot name="footer">
         <CButton
+          type="submit"
           :color="imprest ? 'success' : 'primary'"
           :disabled="formsCheck && requireItem"
         >
