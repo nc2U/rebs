@@ -13,6 +13,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+import os
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework_simplejwt.views import (
@@ -23,8 +24,6 @@ from rest_framework_simplejwt.views import (
 from django.views.generic import RedirectView, TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
-from .helper import get_environment
-
 
 url = [
     path('admin/', admin.site.urls),
@@ -49,5 +48,5 @@ url = [
     path('tinymce/', include('tinymce.urls')),
 ]
 
-AWS_STORAGE_BUCKET_NAME = get_environment('AWS_STORAGE_BUCKET_NAME')
-urlpatterns = url  if AWS_STORAGE_BUCKET_NAME else url + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
+urlpatterns = url if AWS_STORAGE_BUCKET_NAME else url + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
