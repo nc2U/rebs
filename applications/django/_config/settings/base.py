@@ -10,12 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
+import os
 import string
 import random
 from pathlib import Path
 from datetime import timedelta
-from ..helper import get_environment
-
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -118,36 +117,36 @@ WSGI_APPLICATION = '_config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': get_environment('DATABASE_NAME'),
-        'USER': get_environment('DATABASE_USER'),
-        'PASSWORD': get_environment('DATABASE_PASSWORD'),
+        'NAME': os.getenv('DATABASE_NAME'),
+        'USER': os.getenv('DATABASE_USER'),
+        'PASSWORD': os.getenv('DATABASE_PASSWORD'),
         "DEFAULT-CHARACTER-SET": 'utf8',
         'HOST': 'master',
         'PORT': 3306,
     },
     'master': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': get_environment('DATABASE_NAME'),
-        'USER': get_environment('DATABASE_USER'),
-        'PASSWORD': get_environment('DATABASE_PASSWORD'),
+        'NAME': os.getenv('DATABASE_NAME'),
+        'USER': os.getenv('DATABASE_USER'),
+        'PASSWORD': os.getenv('DATABASE_PASSWORD'),
         "DEFAULT-CHARACTER-SET": 'utf8',
         'HOST': 'master',
         'PORT': 3306,
     },
     'slave1': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': get_environment('DATABASE_NAME'),
-        'USER': get_environment('DATABASE_USER'),
-        'PASSWORD': get_environment('DATABASE_PASSWORD'),
+        'NAME': os.getenv('DATABASE_NAME'),
+        'USER': os.getenv('DATABASE_USER'),
+        'PASSWORD': os.getenv('DATABASE_PASSWORD'),
         "DEFAULT-CHARACTER-SET": 'utf8',
         'HOST': 'slave',
         'PORT': 3306,
     },
     'slave2': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': get_environment('DATABASE_NAME'),
-        'USER': get_environment('DATABASE_USER'),
-        'PASSWORD': get_environment('DATABASE_PASSWORD'),
+        'NAME': os.getenv('DATABASE_NAME'),
+        'USER': os.getenv('DATABASE_USER'),
+        'PASSWORD': os.getenv('DATABASE_PASSWORD'),
         "DEFAULT-CHARACTER-SET": 'utf8',
         'HOST': 'slave',
         'PORT': 3306,
@@ -186,9 +185,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-AWS_ACCESS_KEY_ID = get_environment('AWS_ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY = get_environment('AWS_SECRET_ACCESS_KEY')
-AWS_STORAGE_BUCKET_NAME = get_environment('AWS_STORAGE_BUCKET_NAME')
+AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
 AWS_REGION = 'ap-northeast-2'
 AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.{AWS_REGION}.amazonaws.com'
 AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400', }
@@ -202,7 +201,8 @@ STATIC_ROOT = BASE_DIR / 'static'
 
 STATICFILES_DIRS = ('./_assets',)
 
-MEDIA_URL = 'https://%s/media/' % (AWS_S3_CUSTOM_DOMAIN)  if AWS_STORAGE_BUCKET_NAME else '/media/' # 각 media 파일에 관한 URL prefix
+MEDIA_URL = 'https://%s/media/' % (
+    AWS_S3_CUSTOM_DOMAIN) if AWS_STORAGE_BUCKET_NAME else '/media/'  # 각 media 파일에 관한 URL prefix
 
 MEDIA_ROOT = BASE_DIR / 'media'  # 업로드된 파일을 저장할 디렉토리 경로
 
