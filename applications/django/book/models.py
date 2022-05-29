@@ -21,7 +21,7 @@ class Book(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ('-created_at',)
+        ordering = ('-id',)
         verbose_name = '1. 도서'
         verbose_name_plural = '1. 도서'
 
