@@ -640,7 +640,7 @@ const actions = {
   },
 
   updateRelease: async ({ dispatch }: any, payload: any) => {
-    const { pk, ...updateData } = payload
+    const { pk, refund_amount, ...updateData } = payload
 
     api.get(`/contractor-release/${pk}/`).then(res => {
       const status = res.data.status < '4' && payload.status >= '4'
@@ -653,8 +653,12 @@ const actions = {
       // 1. 해지 정보 테이블 데이터 업데이트
       const page = payload.page
       const project = payload.project
+      const fixedData =
+        refund_amount !== ''
+          ? { refund_amount, ...updateData }
+          : { ...{ refund_amount: null }, ...updateData }
       api
-        .put(`/contractor-release/${pk}/`, updateData)
+        .put(`/contractor-release/${pk}/`, fixedData)
         .then(res => {
           dispatch('fetchContRelease', res.data.pk)
           dispatch('fetchContReleaseList', { project, page })

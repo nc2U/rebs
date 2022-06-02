@@ -133,6 +133,7 @@
                 v-model="form.completion_date"
                 :required="false"
                 placeholder="해지종결일"
+                :disabled="is_complete"
               />
             </CCol>
           </CRow>
@@ -238,6 +239,14 @@ export default defineComponent({
     } else this.form.contractor = this.contractor.pk
   },
   computed: {
+    is_complete() {
+      const refund =
+        this.form.refund_amount &&
+        this.form.refund_account_bank &&
+        this.form.refund_account_number &&
+        this.form.refund_account_depositor
+      return !this.form.completion_date && !refund
+    },
     pageManageAuth() {
       return (
         this.superAuth || (this.staffAuth && this.staffAuth.releaseract === '2')
