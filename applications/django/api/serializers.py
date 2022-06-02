@@ -591,7 +591,7 @@ class ContractInContractorSerializer(serializers.ModelSerializer):
 
 
 class ContractorSerializer(serializers.ModelSerializer):
-    contract = ContractInContractorSerializer()
+    # contract = ContractInContractorSerializer()
     contractorrelease = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
