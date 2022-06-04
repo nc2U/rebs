@@ -2,9 +2,10 @@
   <CRow class="mb-4">
     <CCol>
       <h6>Profile picture</h6>
-      <CFormInput
-        ref="file"
+      <input
         type="file"
+        class="form-control"
+        id="file"
         accept="image/*"
         style="display: none"
         @change="change"
@@ -56,7 +57,8 @@ export default defineComponent({
   },
   methods: {
     browse(this: any) {
-      this.$refs.file.$el.click()
+      let fu = document.getElementById('file')
+      if (fu !== null) fu.click()
     },
     change(this: any, event: any) {
       const image = event.target.files[0]
