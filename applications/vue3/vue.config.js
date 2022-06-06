@@ -3,8 +3,8 @@ module.exports = {
     process.env.NODE_ENV === 'production'
       ? '/static/dist/'
       : 'http://127.0.0.1:8080',
-  outputDir: '../django/static/dist',
-  indexPath: '../../templates/base-vue.html', // relative to outputDir!
+  outputDir: '../static/dist',
+  indexPath: '../../django/templates/base-vue.html', // relative to outputDir!
 
   chainWebpack: config => {
     /*
