@@ -41,7 +41,7 @@ services:
         - "80:80"
         - "443:443"
       volumes:
-        - ./applications/static:/static
+        - ./applications/django/static:/static
       environment:
         SERVER_NAME: example.com # 실제 데이터로 수정
         BACKEND_HOST: web:8000

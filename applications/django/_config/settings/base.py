@@ -197,7 +197,7 @@ AWS_DEFAULT_ACL = 'public-read'
 
 STATIC_URL = 'static/'
 
-STATIC_ROOT = BASE_DIR.parent / 'static'
+STATIC_ROOT = BASE_DIR / 'static'
 
 STATICFILES_DIRS = ('./_assets',)
 
