@@ -243,7 +243,11 @@
         닫기
       </CButton>
       <slot name="footer">
-        <CButton :color="cash ? 'success' : 'primary'" :disabled="formsCheck">
+        <CButton
+          type="submit"
+          :color="cash ? 'success' : 'primary'"
+          :disabled="formsCheck"
+        >
           저장
         </CButton>
         <CButton
