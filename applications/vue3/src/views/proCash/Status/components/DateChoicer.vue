@@ -22,7 +22,8 @@ export default defineComponent({
     }
   },
   watch: {
-    date() {
+    date(val) {
+      if (val === null) this.date = new Date()
       this.setDate()
     },
   },
