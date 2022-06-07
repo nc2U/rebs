@@ -51,7 +51,7 @@ export default defineComponent({
         account_d1: '',
         account_d2: '',
         account_d3: '',
-        bank_account: '2',
+        bank_account: '',
         search: '',
       },
     }
