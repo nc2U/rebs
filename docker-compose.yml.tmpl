@@ -43,7 +43,6 @@ services:
       volumes:
         - ./applications/django/static:/static
       environment:
-        SERVER_NAME: example.com # 실제 데이터로 수정
         BACKEND_HOST: web:8000
         WORKER_PROCESSES: 1
         WORKER_CONNECTIONS: 1024
@@ -51,6 +50,5 @@ services:
         BACKEND_MAX_FAILS: 3
         BACKEND_MAX_TIMEOUT: 10s
         LOG_STDOUT: "true"
-        ADMIN_EMAIL: admin@example.com # 실제 데이터로 수정
       depends_on:
         - web

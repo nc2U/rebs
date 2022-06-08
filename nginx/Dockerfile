@@ -1,7 +1,7 @@
 FROM nginx:1.21.6
 
 RUN apt update
-RUN apt install -y wget letsencrypt vim cron
+RUN apt install -y wget
 RUN wget https://github.com/progrium/entrykit/releases/download/v0.4.0/entrykit_0.4.0_linux_x86_64.tgz
 RUN tar -xvzf entrykit_0.4.0_linux_x86_64.tgz
 RUN rm entrykit_0.4.0_linux_x86_64.tgz
@@ -11,7 +11,6 @@ RUN entrykit --symlink
 RUN rm /etc/nginx/conf.d/*
 COPY etc/nginx/nginx.conf.tmpl /etc/nginx/
 COPY etc/nginx/conf.d/ /etc/nginx/conf.d/
-COPY ./cert-create.sh /usr/local/bin/
 
 ENTRYPOINT [ \
   "render", \
@@ -22,9 +21,6 @@ ENTRYPOINT [ \
       "--", \
   "render", \
       "/etc/nginx/conf.d/public.conf", \
-      "--", \
-  "render", \
-      "/etc/nginx/conf.d/public.ssl.conf", \
       "--" \
 ]
 
