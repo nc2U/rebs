@@ -13,8 +13,8 @@ services:
         MYSQL_ROOT_PASSWORD: my-db-root-password # 실제 데이터로 수정
         TZ: Asia/Seoul
       volumes:
-        - ./mariadb/mysql:/var/lib/mysql
-        - ./mariadb/sql:/docker-entrypoint-initdb.d
+        - ./data-volume/mysql:/var/lib/mysql
+        - ./data-volume/sql:/docker-entrypoint-initdb.d
 
   web:
       build: ./python
