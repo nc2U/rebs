@@ -40,8 +40,8 @@ dist
 mysql
 
 # ssl cert
-nginx/ssl/
-nginx/log/
+deploy/nginx/ssl/
+deploy/nginx/log/
 
 # virtualize
 venv/

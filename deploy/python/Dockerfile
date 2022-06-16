@@ -1,7 +1,7 @@
 FROM python:3.10
 ENV PYTHONUNBUFFERED 1
-RUN mkdir -pv /applications/django
-WORKDIR /applications/django
+RUN mkdir -pv /app/django
+WORKDIR /app/django
 COPY requirements.txt .
 RUN apt update \
     && pip install --upgrade pip \
