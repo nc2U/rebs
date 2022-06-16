@@ -38,6 +38,7 @@ dist
 
 # mysql data
 mysql
+mysql-dev
 
 # ssl cert
 deploy/nginx/ssl/
