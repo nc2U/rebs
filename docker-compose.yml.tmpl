@@ -17,7 +17,7 @@ services:
       - ./volume/sql:/docker-entrypoint-initdb.d
 
   web:
-    build: deploy/python
+    build: deploy/docker/python
     image: dokube/web
     command: uwsgi --socket :8000 --module _config.wsgi --py-autoreload 1 --logto /tmp/mylog.log
     volumes:
@@ -35,7 +35,7 @@ services:
       - master
 
   nginx:
-    build: deploy/nginx
+    build: deploy/docker/nginx
     image: dokube/nginx
     ports:
       - "80:80"

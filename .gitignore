@@ -41,8 +41,8 @@ mysql
 mysql-dev
 
 # ssl cert
-deploy/nginx/ssl/
-deploy/nginx/log/
+deploy/docker/nginx/ssl/
+deploy/docker/nginx/log/
 
 # virtualize
 venv/
