@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 
 global:
-  mode: dev
+  appMode: dev
 
 nameOverride: ""
 fullnameOverride: ""
