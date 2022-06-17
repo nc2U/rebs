@@ -1,37 +1,41 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: {{ include "mariadb.fullname" . }}1-data-nfs-pv
+  { { - if eq .Values.global.mode "prod" } }
+  name: { { include "mariadb.fullname" . } }-data-prod-nfs-pv
+  {{- else if eq .Values.global.mode "dev" }}
+  name: { { include "mariadb.fullname" . } }-data-dev-nfs-pv
+  {{- end }}
 spec:
   storageClassName: mysql-data
   capacity:
-    storage: {{ .Values.volumes.dataPvStorage }}
+    storage: { { .Values.volumes.dataPvStorage } }
   accessModes:
-  {{- range .Values.volumes.dataAccessModes }}
-    - {{ . }}
-  {{- end }}
+  { { - range .Values.volumes.dataAccessModes } }
+  - { { . } }
+  { { - end } }
   mountOptions:
     - hard
     - nfsvers=4.1
   nfs:
     path: /var/lib/jenkins/workspace/Rebs/volume/mysql-dev
-    server: {{ .Values.volumes.nfsServerHost }}
+    server: { { .Values.volumes.nfsServerHost } }
 ---
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: {{ include "mariadb.fullname" . }}1-sql-nfs-pv
+  name: { { include "mariadb.fullname" . } }1-sql-nfs-pv
 spec:
   storageClassName: backup-sql
   capacity:
-    storage: {{ .Values.volumes.sqlPvStorage }}
+    storage: { { .Values.volumes.sqlPvStorage } }
   accessModes:
-  {{- range .Values.volumes.sqlAccessModes }}
-    - {{ . }}
-  {{- end }}
+  { { - range .Values.volumes.sqlAccessModes } }
+  - { { . } }
+  { { - end } }
   mountOptions:
     - hard
     - nfsvers=4.1
   nfs:
     path: /var/lib/jenkins/workspace/Rebs/volume/sql
-    server: {{ .Values.volumes.nfsServerHost }}
+    server: { { .Values.volumes.nfsServerHost } }
