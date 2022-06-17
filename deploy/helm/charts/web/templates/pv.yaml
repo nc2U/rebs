@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ include "web.fullname" . }}-django-nfs-pv
+spec:
+  storageClassName: app
+  capacity:
+    storage: {{ .Values.volumes.djangoPvStorage }}
+  accessModes:
+  {{- range .Values.volumes.djangoAccessModes }}
+  - {{ . }}
+  {{- end }}
+  mountOptions:
+  - hard
+  - nfsvers=4.1
+  nfs:
+    path: /var/lib/jenkins/workspace/Rebs/app/django
+    server: {{ .Values.volumes.nfsServerHost | default "localhost" }}

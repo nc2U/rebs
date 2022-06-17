@@ -1,0 +1,11 @@
+apiVersion: v1
+data:
+  DATABASE_NAME: {{ .Release.Name }}
+  DATABASE_USER: {{ .Release.Name }}
+  AWS_ACCESS_KEY_ID: AKIA4SLCECXTWN6DSMLK
+  AWS_SECRET_ACCESS_KEY: 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
+  AWS_STORAGE_BUCKET_NAME: brdnc-buket
+  DJANGO_SETTINGS_MODULE: _config.settings.local
+kind: ConfigMap
+metadata:
+  name: web-config
