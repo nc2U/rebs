@@ -56,14 +56,14 @@ ingress:
         - path: /
           pathType: ImplementationSpecific
     - host: www.dk-on.com
-        paths:
-            - path: /
-              pathType: ImplementationSpecific
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
   dev-hosts:
     - host: dev.brdnc.co.kr
-        paths:
-            - path: /
-              pathType: ImplementationSpecific
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
   tls:
     - secretName: web-devbox-kr-cert
       prod-hosts:
