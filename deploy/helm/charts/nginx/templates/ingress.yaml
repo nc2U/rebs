@@ -37,7 +37,7 @@ spec:
         {{- else if eq .Values.global.mode "dev" }}
         {{- range .devHosts }}
         - {{ . | quote }}
-        {{ - end }}
+        {{- end }}
         {{- end }}
       secretName: {{ .secretName }}
     {{- end }}
