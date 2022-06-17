@@ -51,7 +51,7 @@ spec:
                 - --version
           volumeMounts:
             - name: applications
-              mountPath: /applications/django
+              mountPath: /app/django
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
