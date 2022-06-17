@@ -12,13 +12,15 @@ metadata:
 spec:
   tls:
   - hosts:
+    {{-if eq .Values.global.mode "prod" }}
     - dk-on.com
-    - dk-on.co.kr
     - www.dk-on.com
-    - www.dk-on.co.kr
+    {{-else if .Values.global.mode "dev" }}
     - dev.brdnc.co.kr
+    {{-end }}
     secretName: web-devbox-kr-cert
   rules:
+  {{-if eq .Values.global.mode "prod" }}
   - host: dk-on.com
     http:
       paths:
@@ -39,26 +41,7 @@ spec:
             name: nginx
             port:
               number: 80
-  - host: dk-on.co.kr
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: nginx
-            port:
-              number: 80
-  - host: www.dk-on.co.kr
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: nginx
-            port:
-              number: 80
+  {{-else if .Values.global.mode "dev" }}
   - host: dev.brdnc.co.kr
     http:
       paths:
@@ -69,3 +52,4 @@ spec:
             name: nginx
             port:
               number: 80
+  {{-end }}
