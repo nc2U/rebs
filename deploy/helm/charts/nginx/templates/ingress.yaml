@@ -31,11 +31,11 @@ spec:
     {{- range .Values.ingress.tls }}
     - hosts:
         {{- if eq .Values.global.mode "prod" }}
-        {{- range .prod-hosts }}
+        {{- range .prodHosts }}
         - {{ . | quote }}
         {{- end }}
         {{- else if eq .Values.global.mode "dev" }}
-        {{ - range .dev-hosts }}
+        {{ - range .devHosts }}
         - { { . | quote }}
         {{ - end }}
         {{- end }}
@@ -44,7 +44,7 @@ spec:
   {{- end }}
   rules:
     {{- if eq .Values.global.mode "prod" }}
-    {{- range .Values.ingress.prod-hosts }}
+    {{- range .Values.ingress.prodHosts }}
     - host: {{ .host | quote }}
       http:
         paths:
@@ -66,7 +66,7 @@ spec:
           {{- end }}
     {{- end }}
     {{- else if eq .Values.global.mode "dev" }}
-    {{- range .Values.ingress.dev-hosts }}
+    {{- range .Values.ingress.devHosts }}
     - host: {{ .host | quote }}
       http:
         paths:

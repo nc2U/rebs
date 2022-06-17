@@ -50,7 +50,7 @@ ingress:
     nginx.ingress.kubernetes.io/rewrite-target: /
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
-  prod-hosts:
+  prodHosts:
     - host: dk-on.com
       paths:
         - path: /
@@ -59,7 +59,7 @@ ingress:
       paths:
         - path: /
           pathType: ImplementationSpecific
-  dev-hosts:
+  devHosts:
     - host: dev.brdnc.co.kr
       paths:
         - path: /
