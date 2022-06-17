@@ -1,20 +1,16 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  { { - if eq .Values.global.mode "prod" } }
-  name: { { include "nginx.fullname" . } }-static-prod-nfs-pv
-  {{- else if eq .Values.global.mode "dev" }}
-  name: { { include "nginx.fullname" . } }-static-dev-nfs-pv
-  {{- end }}
+  name: {{ include "nginx.fullname" . }}-static-{{ .Values.global.mode }}-nfs-pv
 spec:
   storageClassName: static
   capacity:
     storage: 1Gi
   accessModes:
-    - ReadWriteMany
+  - ReadWriteMany
   mountOptions:
-    - hard
-    - nfsvers=4.1
+  - hard
+  - nfsvers=4.1
   nfs:
     path: /var/lib/jenkins/workspace/Rebs/app/django/static
     server: 49.247.26.88
