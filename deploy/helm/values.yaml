@@ -55,7 +55,7 @@ ingress:
           pathType: ImplementationSpecific
   tls:
     - secretName: web-devbox-kr-cert
-      prod-hosts:
+      hosts:
         - brdnc.co.kr
         - www.brdnc.co.kr
 

@@ -51,7 +51,7 @@ ingress:
           pathType: ImplementationSpecific
   tls:
     - secretName: web-devbox-kr-cert
-      devHosts:
+      hosts:
         - dev.brdnc.co.kr
 
 resources: { }
