@@ -1,7 +1,6 @@
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "nginx.fullname" . -}}
 {{- $svcPort := .Values.service.port -}}
-{{- $appMode := .Values.global.appMode -}}
 {{- if and .Values.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
   {{- if not (hasKey .Values.ingress.annotations "kubernetes.io/ingress.class") }}
   {{- $_ := set .Values.ingress.annotations "kubernetes.io/ingress.class" .Values.ingress.className}}
@@ -31,21 +30,14 @@ spec:
   tls:
     {{- range .Values.ingress.tls }}
     - hosts:
-      {{- if eq $appMode "prod" }}
-      {{- range .prodHosts }}
+      {{- range .hosts }}
       - {{ . | quote }}
-      {{- end }}
-      {{- else if eq $appMode "dev" }}
-      {{- range .devHosts }}
-      - {{ . | quote }}
-      {{- end }}
       {{- end }}
       secretName: {{ .secretName }}
     {{- end }}
   {{- end }}
   rules:
-    {{- if eq $appMode "prod" }}
-    {{- range .Values.ingress.prodHosts }}
+    {{- range .Values.ingress.hosts }}
     - host: {{ .host | quote }}
       http:
         paths:
@@ -66,27 +58,4 @@ spec:
               {{- end }}
           {{- end }}
     {{- end }}
-    {{- else if eq $appMode "dev" }}
-    {{- range .Values.ingress.devHosts }}
-    - host: {{ .host | quote }}
-      http:
-        paths:
-          {{- range .paths }}
-          - path: {{ .path }}
-            {{- if and .pathType (semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion) }}
-            pathType: {{ .pathType }}
-            {{- end }}
-            backend:
-              {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
-              service:
-                name: {{ $fullName }}
-                port:
-                  number: {{ $svcPort }}
-              {{- else }}
-              serviceName: {{ $fullName }}
-              servicePort: {{ $svcPort }}
-              {{- end }}
-          {{- end }}
-      {{- end }}
-    {{- end}}
 {{- end }}
