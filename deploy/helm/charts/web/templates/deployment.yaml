@@ -57,7 +57,7 @@ spec:
       volumes:
         - name: applications
           persistentVolumeClaim:
-            claimName: web-django-nfs-pvc
+            claimName: {{ include "web.fullname" . }}-django-{{ .Values.global.appMode }}-nfs-pvc
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

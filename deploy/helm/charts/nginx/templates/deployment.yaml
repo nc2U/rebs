@@ -61,7 +61,7 @@ spec:
       volumes:
       - name: static
         persistentVolumeClaim:
-          claimName: {{ include "nginx.fullname" . }}-static-nfs-pvc
+          claimName: {{ include "nginx.fullname" . }}-static-{{ .Values.global.appMode }}-nfs-pvc
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

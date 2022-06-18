@@ -65,10 +65,10 @@ spec:
       volumes:
         - name: mysql-data
           persistentVolumeClaim:
-            claimName: master-data-nfs-pvc
+            claimName: {{ include "mariadb.fullname" . }}-data-{{ .Values.global.appMode }}-nfs-pvc
         - name: backup-sql
           persistentVolumeClaim:
-            claimName: master-sql-nfs-pvc
+            claimName: {{ include "mariadb.fullname" . }}-sql-{{ .Values.global.appMode }}-nfs-pvc
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
