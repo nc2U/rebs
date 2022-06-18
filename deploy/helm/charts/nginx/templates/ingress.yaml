@@ -32,16 +32,13 @@ spec:
     {{- range .Values.ingress.tls }}
     - hosts:
         {{- if eq $appMode "prod" }}
-        - host: brdnc.co.kr
-        - host: www.brdnc.co.kr
-#        {{- range .prodHosts }}
-#          - {{ . | quote }}
-#        {{- end }}
+        {{- range .prodHosts }}
+          - {{ . | quote }}
+        {{- end }}
         {{- else if eq $appMode "dev" }}
-        - host: dev.brdnc.co.kr
-#        {{- range .devHosts }}
-#          - { { . | quote }}
-#        {{- end }}
+        {{- range .devHosts }}
+          - { { . | quote }}
+        {{- end }}
         {{- end }}
       secretName: {{ .secretName }}
     {{- end }}
