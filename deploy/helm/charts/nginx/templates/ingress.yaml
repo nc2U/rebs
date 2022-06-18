@@ -31,11 +31,11 @@ spec:
   tls:
     {{- range .Values.ingress.tls }}
     - hosts:
-      {{- if eq .Values.global.appMode "prod" }}
+      {{- if eq $appMode "prod" }}
       {{- range .prodHosts }}
         - {{ . | quote }}
       {{- end }}
-      {{ - if eq .Values.global.appMode "dev" }}
+      {{ - if eq $appMode "dev" }}
       {{ - range .devHosts }}
       - {{ . | quote }}
       {{- end }}
