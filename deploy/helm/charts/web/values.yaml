@@ -69,8 +69,8 @@ resources: {}
   #   memory: 128Mi
 
 volumes:
-  djangoPvStorage: 1Gi
-  djangoPvcStorage: 1Gi
+  djangoPvStorage: 2Gi
+  djangoPvcStorage: 2Gi
   nfsServerHost: 49.247.26.88
 
 autoscaling:
