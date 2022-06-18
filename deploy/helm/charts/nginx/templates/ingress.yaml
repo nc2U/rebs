@@ -35,8 +35,8 @@ spec:
       {{- range .prodHosts }}
         - {{ . | quote }}
       {{- end }}
-      {{ - else if eq $appMode "dev" }}
-      {{ - range .devHosts }}
+      {{- else if eq $appMode "dev" }}
+      {{- range .devHosts }}
       - {{ . | quote }}
       {{- end }}
       {{- end }}
