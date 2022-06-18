@@ -37,9 +37,9 @@ spec:
           args: ["-c", "uwsgi --socket :8000 --module _config.wsgi --py-autoreload 1 --logto /tmp/mylog.log"]
           envFrom:
             - configMapRef:
-                name: web-config
+                name: {{ include "web.fullname" . }}-config
             - secretRef:
-                name: web-secret
+                name: {{ include "web.fullname" . }}-db-auth
           ports:
             - name: web
               containerPort: 8000

@@ -8,4 +8,4 @@ data:
   DJANGO_SETTINGS_MODULE: _config.settings.local
 kind: ConfigMap
 metadata:
-  name: web-config
+  name: {{ include "web.fullname" . }}-config
