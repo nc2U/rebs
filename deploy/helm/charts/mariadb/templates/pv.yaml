@@ -14,7 +14,11 @@ spec:
     - hard
     - nfsvers=4.1
   nfs:
+    {{- if eq .Values.global.appMode "prod" }}
+    path: /var/lib/jenkins/workspace/Rebs/volume/mysql
+    {{- else if eq .Values.global.appMode "dev" }}
     path: /var/lib/jenkins/workspace/Rebs/volume/mysql-dev
+    {{- end }}
     server: {{ .Values.volumes.nfsServerHost }}
 ---
 apiVersion: v1
