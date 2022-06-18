@@ -66,10 +66,10 @@ ingress:
           pathType: ImplementationSpecific
   tls:
     - secretName: web-devbox-kr-cert
-      prod-hosts:
+      prodHosts:
         - dk-on.com
         - www.dk-on.com
-      dev-hosts:
+      devHosts:
         - dev.brdnc.co.kr
 
 resources: {}
