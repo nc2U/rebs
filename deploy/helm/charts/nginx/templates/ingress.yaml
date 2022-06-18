@@ -30,11 +30,11 @@ spec:
   tls:
     {{- range .Values.ingress.tls }}
     - hosts:
-        {{- if eq .Values.global.appMode "prod" }}
+        {{- if eq $.Values.global.appMode "prod" }}
         {{- range .prodHosts }}
           - {{ . | quote }}
         {{- end }}
-        {{- else if eq .Values.global.appMode "dev" }}
+        {{- else if eq $.Values.global.appMode "dev" }}
         {{- range .devHosts }}
           - { { . | quote }}
         {{- end }}
