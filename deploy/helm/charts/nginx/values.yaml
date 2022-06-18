@@ -41,11 +41,27 @@ service:
   port: 80
 
 ingress:
+  enabled: true
+  className: ""
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    kubernetes.io/tls-acme: "true"
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
   hosts:
     - host: brdnc.co.kr
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
     - host: www.brdnc.co.kr
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
   tls:
-    - hosts:
+    - secretName: web-devbox-kr-cert
+      hosts:
         - brdnc.co.kr
         - www.brdnc.co.kr
 
