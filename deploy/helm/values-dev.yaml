@@ -5,7 +5,7 @@
 global:
   appMode: dev
 
-nginx:
+dokube-nginx:
   replicaCount: 1
 
 nameOverride: ""
