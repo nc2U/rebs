@@ -94,16 +94,3 @@ spec:
       {{- end }}
     {{- end }}
 {{- end }}
-
-
-#  rules:
-#  - host: dk-on.com
-#    http:
-#      paths:
-#      - path: /
-#        pathType: Prefix
-#        backend:
-#          service:
-#            name: nginx
-#            port:
-#              number: 80
