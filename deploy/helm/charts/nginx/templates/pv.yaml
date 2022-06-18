@@ -3,7 +3,7 @@ kind: PersistentVolume
 metadata:
   name: {{ include "nginx.fullname" . }}-static-{{ .Values.global.appMode }}-nfs-pv
 spec:
-  storageClassName: static
+  storageClassName: {{ include "nginx.fullname" . }}-static
   capacity:
     storage: 1Gi
   accessModes:

@@ -71,8 +71,6 @@ resources: {}
 volumes:
   djangoPvStorage: 1Gi
   djangoPvcStorage: 1Gi
-  djangoAccessModes:
-  - ReadWriteMany
   nfsServerHost: 49.247.26.88
 
 autoscaling:

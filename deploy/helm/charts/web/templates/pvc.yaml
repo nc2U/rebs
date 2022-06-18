@@ -3,11 +3,9 @@ kind: PersistentVolumeClaim
 metadata:
   name: {{ include "web.fullname" . }}-django-{{ .Values.global.appMode }}-nfs-pvc
 spec:
-  storageClassName: app
+  storageClassName: {{ include "web.fullname" . }}-app
   accessModes:
-  {{- range .Values.volumes.djangoAccessModes }}
-  - {{ . }}
-  {{- end }}
+    - ReadWriteMany
   resources:
     requests:
       storage: {{ .Values.volumes.djangoPvcStorage }}

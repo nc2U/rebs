@@ -5,6 +5,9 @@
 global:
   appMode: dev
 
+nginx:
+  replicaCount: 1
+
 nameOverride: ""
 fullnameOverride: ""
 
