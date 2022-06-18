@@ -44,7 +44,8 @@ spec:
     {{- end }}
   {{- end }}
   rules:
-    {{- range .Values.ingress.devHosts }}
+    {{- if eq $appMode "prod" }}
+    {{- range .Values.ingress.prodHosts }}
     - host: {{ .host | quote }}
       http:
         paths:
@@ -65,4 +66,27 @@ spec:
               {{- end }}
           {{- end }}
     {{- end }}
+    {{- else if eq $appMode "dev" }}
+    {{- range .Values.ingress.devHosts }}
+    - host: {{ .host | quote }}
+      http:
+        paths:
+          {{- range .paths }}
+          - path: {{ .path }}
+            {{- if and .pathType (semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion) }}
+            pathType: {{ .pathType }}
+            {{- end }}
+            backend:
+              {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
+              service:
+                name: {{ $fullName }}
+                port:
+                  number: {{ $svcPort }}
+              {{- else }}
+              serviceName: {{ $fullName }}
+              servicePort: {{ $svcPort }}
+              {{- end }}
+          {{- end }}
+      {{- end }}
+    {{- end}}
 {{- end }}
