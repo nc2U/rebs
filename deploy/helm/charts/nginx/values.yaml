@@ -50,27 +50,20 @@ ingress:
     nginx.ingress.kubernetes.io/rewrite-target: /
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
-  prodHosts:
-    - host: dk-on.com
+  hosts:
+    - host: brdnc.co.kr
       paths:
         - path: /
           pathType: ImplementationSpecific
-    - host: www.dk-on.com
-      paths:
-        - path: /
-          pathType: ImplementationSpecific
-  devHosts:
-    - host: dev.brdnc.co.kr
+    - host: www.brdnc.co.kr
       paths:
         - path: /
           pathType: ImplementationSpecific
   tls:
     - secretName: web-devbox-kr-cert
-      prodHosts:
-        - dk-on.com
-        - www.dk-on.com
-      devHosts:
-        - dev.brdnc.co.kr
+      prod-hosts:
+        - brdnc.co.kr
+        - www.brdnc.co.kr
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

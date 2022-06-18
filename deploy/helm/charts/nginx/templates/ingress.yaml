@@ -25,24 +25,14 @@ metadata:
   {{- end }}
 spec:
   {{- if and .Values.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
-  {{- if eq $appMode "prod" }}
-  ingressClassName: {{ .Values.ingress.className }}-prod
-  {{- else if eq $appMode "dev" }}
-  ingressClassName: {{ .Values.ingress.className }}-dev
-  {{- end }}
+  ingressClassName: {{ .Values.ingress.className }}
   {{- end }}
   {{- if .Values.ingress.tls }}
   tls:
     {{- range .Values.ingress.tls }}
     - hosts:
-      {{- if eq $appMode "prod" }}
-      {{- range .prodHosts }}
-        - {{ . | quote }}
-      {{- end }}
-      {{- else if eq $appMode "dev" }}
-      {{- range .devHosts }}
+      {{- range .hosts }}
       - {{ . | quote }}
-      {{- end }}
       {{- end }}
       secretName: {{ .secretName }}
     {{- end }}
