@@ -32,11 +32,11 @@ spec:
     - hosts:
         {{- if eq .Values.global.appMode "prod" }}
         {{- range .prodHosts }}
-        - {{ . | quote }}
+          - {{ . | quote }}
         {{- end }}
         {{- else if eq .Values.global.appMode "dev" }}
         {{- range .devHosts }}
-        - {{ . | quote }}
+          - { { . | quote }}
         {{- end }}
         {{- end }}
       secretName: {{ .secretName }}
