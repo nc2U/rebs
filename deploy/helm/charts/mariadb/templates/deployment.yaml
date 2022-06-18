@@ -56,14 +56,14 @@ spec:
 #              path: /
 #              port: http
           volumeMounts:
-            - name: {{ include "mariadb.fullname" . }}-data
+            - name: mysql-data
               mountPath: /var/lib/mysql
             - name: init-sql
               mountPath: /docker-entrypoint-initdb.d
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
-        - name: {{ include "mariadb.fullname" . }}-data
+        - name: mysql-data
           persistentVolumeClaim:
             claimName: {{ include "mariadb.fullname" . }}-data-{{ .Values.global.appMode }}-nfs-pvc
         - name: init-sql

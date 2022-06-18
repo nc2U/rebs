@@ -26,7 +26,7 @@ kind: PersistentVolume
 metadata:
   name: {{ include "mariadb.fullname" . }}-sql-{{ .Values.global.appMode }}-nfs-pv
 spec:
-  storageClassName: backup-sql
+  storageClassName: init-sql
   capacity:
     storage: {{ .Values.volumes.sqlPvStorage }}
   accessModes:
