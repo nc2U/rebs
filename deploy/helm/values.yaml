@@ -34,6 +34,38 @@ service:
   type: ClusterIP
   port: 80
 
+ingress:
+  enabled: true
+  className: "rebs-ingress"
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    kubernetes.io/tls-acme: "true"
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  prodHosts:
+    - host: dk-on.com
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+    - host: www.dk-on.com
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  devHosts:
+    - host: dev.brdnc.co.kr
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls:
+    - secretName: web-devbox-kr-cert
+      prod-hosts:
+        - dk-on.com
+        - www.dk-on.com
+      dev-hosts:
+        - dev.brdnc.co.kr
+
 resources: { }
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
