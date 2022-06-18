@@ -31,8 +31,14 @@ spec:
   tls:
     {{- range .Values.ingress.tls }}
     - hosts:
+      {{- if eq .Values.global.appMode "prod" }}
       {{- range .prodHosts }}
         - {{ . | quote }}
+      {{- end }}
+      {{ - if eq .Values.global.appMode "dev" }}
+      {{ - range .devHosts }}
+      - {{ . | quote }}
+      {{- end }}
       {{- end }}
       secretName: {{ .secretName }}
     {{- end }}
