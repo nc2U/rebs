@@ -9,12 +9,7 @@ nginx:
         paths:
           - path: /
             pathType: ImplementationSpecific
-      - host: ""
-        paths:
-          - path: /
-            pathType: ImplementationSpecific
     tls:
       - secretName: web-devbox-kr-cert
         hosts:
-          - ""
           - ""
