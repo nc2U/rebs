@@ -3,7 +3,7 @@ kind: PersistentVolume
 metadata:
   name: {{ include "mariadb.fullname" . }}-data-{{ .Values.global.appMode }}-nfs-pv
 spec:
-  storageClassName: mysql-data
+  storageClassName: mysql-data-{{ .Values.global.appMode }}
   capacity:
     storage: {{ .Values.volumes.dataPvStorage }}
   accessModes:
@@ -26,7 +26,7 @@ kind: PersistentVolume
 metadata:
   name: {{ include "mariadb.fullname" . }}-sql-{{ .Values.global.appMode }}-nfs-pv
 spec:
-  storageClassName: init-sql
+  storageClassName: init-sql-{{ .Values.global.appMode }}
   capacity:
     storage: {{ .Values.volumes.sqlPvStorage }}
   accessModes:

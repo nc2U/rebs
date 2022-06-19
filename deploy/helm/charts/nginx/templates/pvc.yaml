@@ -3,7 +3,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: {{ include "nginx.fullname" . }}-static-{{ .Values.global.appMode }}-nfs-pvc
 spec:
-  storageClassName: {{ include "nginx.fullname" . }}-static
+  storageClassName: {{ include "nginx.fullname" . }}-static-{{ .Values.global.appMode }}
   accessModes:
   - ReadWriteMany
   resources:

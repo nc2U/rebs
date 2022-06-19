@@ -3,7 +3,7 @@ kind: PersistentVolume
 metadata:
   name: {{ include "web.fullname" . }}-django-{{ .Values.global.appMode }}-nfs-pv
 spec:
-  storageClassName: {{ include "web.fullname" . }}-app
+  storageClassName: {{ include "web.fullname" . }}-app-{{ .Values.global.appMode }}
   capacity:
     storage: {{ .Values.volumes.djangoPvStorage }}
   accessModes:
