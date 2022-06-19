@@ -4,7 +4,7 @@
 
 global:
   appMode: prod
-  password: "{{ randAlphaNum 5 | b64dec }}"
+  password: "{{ randAlphaNum 5 }}"
 
 nameOverride: ""
 fullnameOverride: ""
