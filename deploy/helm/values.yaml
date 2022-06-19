@@ -29,16 +29,11 @@ nginx:
       nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
       nginx.ingress.kubernetes.io/ssl-redirect: "true"
     hosts:
-      - host: brdnc.co.kr
-        paths:
-          - path: /
-            pathType: ImplementationSpecific
-      - host: www.brdnc.co.kr
+      - host: ""
         paths:
           - path: /
             pathType: ImplementationSpecific
     tls:
       - secretName: web-devbox-kr-cert
         hosts:
-          - brdnc.co.kr
-          - www.brdnc.co.kr
+          - ""
