@@ -12,5 +12,5 @@ spec:
   - hard
   - nfsvers=4.1
   nfs:
-    path: /var/lib/jenkins/workspace/Rebs/app/django/static
+    path: {{ .Values.global.nfsPath }}/app/django/static
     server: 49.247.26.88

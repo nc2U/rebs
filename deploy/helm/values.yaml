@@ -5,6 +5,7 @@
 global:
   appMode: prod
   password: "{{ randAlphaNum 5 }}"
+  nfsPath: "nfs-path" # nfs volume path
 
 nameOverride: ""
 fullnameOverride: ""
@@ -29,11 +30,11 @@ nginx:
       nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
       nginx.ingress.kubernetes.io/ssl-redirect: "true"
     hosts:
-      - host: ""
+      - host: "host-path" # Host address
         paths:
           - path: /
             pathType: ImplementationSpecific
     tls:
       - secretName: web-devbox-kr-cert
         hosts:
-          - ""
+          - "host-path" # Host address

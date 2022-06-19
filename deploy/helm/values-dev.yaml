@@ -7,11 +7,11 @@ nginx:
 
   ingress:
     hosts:
-      - host: ""
+      - host: "host-path" # Host address
         paths:
           - path: /
             pathType: ImplementationSpecific
     tls:
       - secretName: web-devbox-kr-cert
         hosts:
-          - ""
+          - "host-path" # Host address

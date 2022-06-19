@@ -12,5 +12,5 @@ spec:
     - hard
     - nfsvers=4.1
   nfs:
-    path: /var/lib/jenkins/workspace/Rebs/app/django
+    path: {{ .Values.global.nfsPath }}/app/django
     server: {{ .Values.volumes.nfsServerHost | default "localhost" }}
