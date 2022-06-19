@@ -8,12 +8,9 @@ global:
 nameOverride: ""
 fullnameOverride: ""
 
-service:
-  type: ClusterIP
-  port: 80
-
 nginx:
   replicaCount: 1
+
   ingress:
     hosts:
       - host: dev.brdnc.co.kr
