@@ -57,7 +57,7 @@ ingress:
   #      - chart-example.local
 
 volumes:
-  nfsServerHost: 49.247.26.88
+  nfsServerHost: ""
   dataAccessModes:
   - ReadWriteMany
   dataPvStorage: 1Gi

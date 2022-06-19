@@ -9,6 +9,10 @@ global:
 nameOverride: ""
 fullnameOverride: ""
 
+mariadb:
+  volumes:
+    nfsServerHost: ""
+
 nginx:
   service:
     type: NodePort
