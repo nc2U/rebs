@@ -13,15 +13,15 @@ services:
       MYSQL_ROOT_PASSWORD: my-db-root-password # 실제 데이터로 수정
       TZ: Asia/Seoul
     volumes:
-      - ./volume/mysql:/var/lib/mysql
-      - ./volume/sql:/docker-entrypoint-initdb.d
+      - ../volume/mysql:/var/lib/mysql
+      - ../volume/sql:/docker-entrypoint-initdb.d
 
   web:
-    build: deploy/docker/python
+    build: docker/python
     image: dokube/web
     command: uwsgi --socket :8000 --module _config.wsgi --py-autoreload 1 --logto /tmp/mylog.log
     volumes:
-      - ./app:/app
+      - ../app:/app
     expose:
       - "8000"
     environment:
@@ -35,13 +35,13 @@ services:
       - master
 
   nginx:
-    build: deploy/docker/nginx
+    build: docker/nginx
     image: dokube/nginx
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - ./app/django/static:/static
+      - ../app/django/static:/static
     environment:
       BACKEND_HOST: web:8000
       WORKER_PROCESSES: 1
