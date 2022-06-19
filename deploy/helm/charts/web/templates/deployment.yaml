@@ -50,12 +50,12 @@ spec:
                 - python
                 - --version
           volumeMounts:
-            - name: applications
+            - name: django-source
               mountPath: /app/django
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
-        - name: applications
+        - name: django-source
           persistentVolumeClaim:
             claimName: {{ include "web.fullname" . }}-django-{{ .Values.global.appMode }}-nfs-pvc
       {{- with .Values.nodeSelector }}
