@@ -18,6 +18,7 @@ cd Rebs
 ### 2. Copy docker-compose.yml
 
 ```bash
+cd deploy
 cp docker-compose.yml.tmpl docker-compose.yml
 ```
 
@@ -69,7 +70,7 @@ To develop in local mode set docker-compose.yml -> web -> DJANGO_SETTINGS_MODULE
 To develop in production mode, create a prod.py file with the following command:
 
 ```bash
-cd applications/django/app/settings
+cd app/django/app/settings
 cp local.py prod.py
 ```
 
@@ -112,7 +113,8 @@ docker-compose exec web python manage.py collectstatic
 ### Vue (Single Page Application) Development
 
 ```bash
-cd application/vue3
+cd ..
+cd app/vue3
 yarn
 ```
 
