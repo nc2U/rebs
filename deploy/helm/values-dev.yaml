@@ -3,6 +3,7 @@
 # Declare variables to be passed into your templates.
 
 nginx:
+  appMode: dev
   replicaCount: 1
 
   ingress:
