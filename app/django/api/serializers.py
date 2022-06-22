@@ -1,3 +1,4 @@
+from django.db import transaction
 from rest_framework import serializers
 
 from accounts.models import User, StaffAuth, Profile, Todo
@@ -20,10 +21,9 @@ from document.models import Group, Board, Category, LawsuitCase, Post, Image, Li
 class StaffAuthInUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = StaffAuth
-        fields = (
-            'pk', 'company', 'is_staff', 'assigned_project', 'allowed_projects',
-            'contract', 'payment', 'notice', 'project_cash', 'project_docs', 'project',
-            'company_cash', 'company_docs', 'human_resource', 'company_settings', 'auth_manage')
+        fields = ('pk', 'company', 'is_staff', 'assigned_project', 'allowed_projects', 'contract',
+                  'payment', 'notice', 'project_cash', 'project_docs', 'project', 'company_cash',
+                  'company_docs', 'human_resource', 'company_settings', 'auth_manage')
 
 
 class ProfileInUserSerializer(serializers.ModelSerializer):
@@ -44,9 +44,8 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = (
-            'pk', 'email', 'username', 'is_active', 'is_superuser',
-            'date_joined', 'password', 'staffauth', 'profile')
+        fields = ('pk', 'email', 'username', 'is_active', 'is_superuser',
+                  'date_joined', 'password', 'staffauth', 'profile')
 
     def save(self):
         instance = User(email=self.validated_data['email'],
@@ -91,9 +90,9 @@ class CompanySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Company
-        fields = ('pk', 'name', 'ceo', 'tax_number', 'org_number',
-                  'business_cond', 'business_even', 'es_date', 'op_date', 'zipcode',
-                  'address1', 'address2', 'address3', 'departments', 'positions')
+        fields = ('pk', 'name', 'ceo', 'tax_number', 'org_number', 'business_cond',
+                  'business_even', 'es_date', 'op_date', 'zipcode', 'address1',
+                  'address2', 'address3', 'departments', 'positions')
 
 
 class StaffsInDepartmentSerializer(serializers.ModelSerializer):
@@ -179,12 +178,12 @@ class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
         fields = ('pk', 'company', 'name', 'order', 'kind', 'kind_desc', 'start_year',
-                  'is_direct_manage', 'is_returned_area', 'is_unit_set',
-                  'local_zipcode', 'local_address1', 'local_address2', 'local_address3',
-                  'area_usage', 'build_size', 'num_unit', 'buy_land_extent', 'scheme_land_extent',
-                  'donation_land_extent', 'on_floor_area', 'under_floor_area', 'total_floor_area',
-                  'build_area', 'floor_area_ratio', 'build_to_land_ratio',
-                  'num_legal_parking', 'num_planed_parking')
+                  'is_direct_manage', 'is_returned_area', 'is_unit_set', 'local_zipcode',
+                  'local_address1', 'local_address2', 'local_address3', 'area_usage',
+                  'build_size', 'num_unit', 'buy_land_extent', 'scheme_land_extent',
+                  'donation_land_extent', 'on_floor_area', 'under_floor_area',
+                  'total_floor_area', 'build_area', 'floor_area_ratio',
+                  'build_to_land_ratio', 'num_legal_parking', 'num_planed_parking')
 
 
 class UnitTypeSerializer(serializers.ModelSerializer):
@@ -224,8 +223,8 @@ class KeyUnitSerializer(serializers.ModelSerializer):
 class HouseUnitSerializer(serializers.ModelSerializer):
     class Meta:
         model = HouseUnit
-        fields = ('pk', 'project', 'unit_type', 'floor_type', '__str__', 'building_unit', 'name',
-                  'key_unit', 'bldg_line', 'floor_no', 'is_hold', 'hold_reason')
+        fields = ('pk', 'project', 'unit_type', 'floor_type', '__str__', 'building_unit',
+                  'name', 'key_unit', 'bldg_line', 'floor_no', 'is_hold', 'hold_reason')
 
 
 class ContractorInContractSerializer(serializers.ModelSerializer):
@@ -306,8 +305,8 @@ class SiteOwnerSerializer(serializers.ModelSerializer):
     class Meta:
         model = SiteOwner
         fields = ('pk', 'project', 'owner', 'date_of_birth', 'phone1', 'phone2',
-                  'zipcode', 'address1', 'address2', 'address3', 'own_sort', 'own_sort_desc',
-                  'sites', 'counsel_record', 'user')
+                  'zipcode', 'address1', 'address2', 'address3', 'own_sort',
+                  'own_sort_desc', 'sites', 'counsel_record', 'user')
 
 
 class SiteOwnshipRelationSerializer(serializers.ModelSerializer):
@@ -319,12 +318,12 @@ class SiteOwnshipRelationSerializer(serializers.ModelSerializer):
 class SiteContractSerializer(serializers.ModelSerializer):
     class Meta:
         model = SiteContract
-        fields = ('pk', 'project', 'owner', 'contract_date', 'total_price', 'down_pay1', 'down_pay1_is_paid',
-                  'down_pay2', 'down_pay2_date', 'down_pay2_is_paid', 'inter_pay1', 'inter_pay1_date',
-                  'inter_pay1_is_paid',
-                  'inter_pay2', 'inter_pay2_date', 'inter_pay2_is_paid', 'remain_pay', 'remain_pay_date',
-                  'remain_pay_is_paid',
-                  'ownership_completion', 'acc_bank', 'acc_number', 'acc_owner', 'note')
+        fields = ('pk', 'project', 'owner', 'contract_date', 'total_price', 'down_pay1',
+                  'down_pay1_is_paid', 'down_pay2', 'down_pay2_date', 'down_pay2_is_paid',
+                  'inter_pay1', 'inter_pay1_date', 'inter_pay1_is_paid', 'inter_pay2',
+                  'inter_pay2_date', 'inter_pay2_is_paid', 'remain_pay', 'remain_pay_date',
+                  'remain_pay_is_paid', 'ownership_completion', 'acc_bank', 'acc_number',
+                  'acc_owner', 'note')
 
 
 # Cash --------------------------------------------------------------------------
@@ -360,8 +359,8 @@ class CashBookSerializer(serializers.ModelSerializer):
         model = CashBook
         fields = (
             'pk', 'company', 'sort', 'account_d1', 'account_d2', 'account_d3',
-            'content', 'trader', 'bank_account', 'income', 'outlay', 'evidence', 'evidence_desc',
-            'note', 'deal_date', 'user', 'created_at', 'updated_at')
+            'content', 'trader', 'bank_account', 'income', 'outlay', 'evidence',
+            'evidence_desc', 'note', 'deal_date', 'user', 'created_at', 'updated_at')
 
 
 class ProjectBankAccountSerializer(serializers.ModelSerializer):
@@ -437,7 +436,8 @@ class PaymentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProjectCashBook
-        fields = ('pk', 'deal_date', 'contract', 'income', 'installment_order', 'bank_account', 'trader', 'note')
+        fields = ('pk', 'deal_date', 'contract', 'income', 'installment_order',
+                  'bank_account', 'trader', 'note')
 
 
 class PaymentSummarySerializer(serializers.ModelSerializer):
@@ -527,8 +527,8 @@ class ContractorInContractListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contractor
         fields = (
-            'pk', 'name', 'birth_date', 'gender', 'is_registed', 'contractoraddress', 'contractorcontact',
-            'status', 'reservation_date', 'contract_date', 'note')
+            'pk', 'name', 'birth_date', 'gender', 'is_registed', 'contractoraddress',
+            'contractorcontact', 'status', 'reservation_date', 'contract_date', 'note')
 
 
 class ContractListSerializer(serializers.ModelSerializer):
@@ -627,8 +627,8 @@ class SallesBillIssueSerializer(serializers.ModelSerializer):
         model = SalesBillIssue
         fields = ('pk', 'project', 'now_payment_order', 'host_name', 'host_tel',
                   'agency', 'agency_tel', 'bank_account1', 'bank_number1', 'bank_host1',
-                  'bank_account2', 'bank_number2', 'bank_host2', 'zipcode', 'address1', 'address2', 'address3',
-                  'title', 'content', 'user', 'updated_at')
+                  'bank_account2', 'bank_number2', 'bank_host2', 'zipcode', 'address1',
+                  'address2', 'address3', 'title', 'content', 'user', 'updated_at')
 
 
 # Document --------------------------------------------------------------------------
@@ -653,17 +653,17 @@ class CategorySerializer(serializers.ModelSerializer):
 class LawSuitCaseSerializer(serializers.ModelSerializer):
     class Meta:
         model = LawsuitCase
-        fields = ('pk', 'project', 'sort', 'level', 'related_case', 'court',
-                  'other_agency', 'case_number', 'case_name', 'plaintiff', 'defendant',
-                  'related_debtor', 'case_start_date', 'summary', 'user', 'created', 'updated')
+        fields = ('pk', 'project', 'sort', 'level', 'related_case', 'court', 'other_agency',
+                  'case_number', 'case_name', 'plaintiff', 'defendant', 'related_debtor',
+                  'case_start_date', 'summary', 'user', 'created', 'updated')
 
 
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
-        fields = ('pk', 'board', 'is_notice', 'project', 'category', 'lawsuit',
-                  'title', 'execution_date', 'content', 'is_hide_comment', 'hit', 'like',
-                  'dislike', 'blame', 'ip', 'device', 'secret', 'password', 'user', 'soft_delete', 'created', 'updated')
+        fields = ('pk', 'board', 'is_notice', 'project', 'category', 'lawsuit', 'title',
+                  'execution_date', 'content', 'is_hide_comment', 'hit', 'like', 'dislike', 'blame',
+                  'ip', 'device', 'secret', 'password', 'user', 'soft_delete', 'created', 'updated')
 
 
 class ImageSerializer(serializers.ModelSerializer):
@@ -688,8 +688,8 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = (
-            'pk', 'post', 'content', 'like', 'dislike', 'blame', 'ip', 'device', 'secret', 'password', 'user',
-            'soft_delete', 'created', 'updated')
+            'pk', 'post', 'content', 'like', 'dislike', 'blame', 'ip', 'device',
+            'secret', 'password', 'user', 'soft_delete', 'created', 'updated')
 
 
 class TagSerializer(serializers.ModelSerializer):
