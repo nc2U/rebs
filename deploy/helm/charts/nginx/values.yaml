@@ -8,11 +8,19 @@ image:
   repository: dokube/nginx
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: "latest"
 
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: "nginx"
+imageConfigMaps:
+  backendHost: web:8000
+  workerProcesses: "1"
+  workerConnections: "1024"
+  keepaliveTimeout: "65"
+  backendMaxFails: "3"
+  backendMaxTimeout: "10s"
+  logStdout: "true"
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -55,6 +63,12 @@ ingress:
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
+
+volumes:
+  staticAccessModes:
+  - ReadWriteMany
+  staticPvStorage: 1Gi
+  staticPvcStorage: 1Gi
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

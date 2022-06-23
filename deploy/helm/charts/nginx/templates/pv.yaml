@@ -5,12 +5,14 @@ metadata:
 spec:
   storageClassName: {{ include "nginx.fullname" . }}-static-{{ .Values.global.appMode }}
   capacity:
-    storage: 1Gi
+    storage: {{ .Values.volumes.staticPvcStorage}}
   accessModes:
-  - ReadWriteMany
+  {{- range .Values.volumes.staticAccessModes }}
+    - {{ . }}
+  {{- end }}
   mountOptions:
   - hard
   - nfsvers=4.1
   nfs:
     path: {{ .Values.global.nfsPath }}/app/django/static
-    server: 49.247.26.88
+    server: {{ .Values.global.nfsServerHost }}

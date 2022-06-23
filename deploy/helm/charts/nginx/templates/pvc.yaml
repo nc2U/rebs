@@ -5,7 +5,9 @@ metadata:
 spec:
   storageClassName: {{ include "nginx.fullname" . }}-static-{{ .Values.global.appMode }}
   accessModes:
-  - ReadWriteMany
+  {{- range .Values.volumes.staticAccessModes }}
+    - {{ . }}
+  {{- end }}
   resources:
     requests:
-      storage: 1Gi
+      storage: {{ .Values.volumes.staticPvcStorage }}
