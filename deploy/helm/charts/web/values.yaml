@@ -15,7 +15,7 @@ nameOverride: ""
 fullnameOverride: "web"
 
 imageConfigMaps:
-  awsStorageBucketName: brdnc-buket
+  awsStorageBucketName: brdnc-bukets
   djangoSettingsModule: _config.settings.local
 
 imageSecrets:
