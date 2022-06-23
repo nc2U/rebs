@@ -7,7 +7,7 @@ spec:
   capacity:
     storage: {{ .Values.volumes.djangoPvStorage }}
   accessModes:
-    {{-range .Values.volumes.djangoAccessModes }}
+    {{- range .Values.volumes.djangoAccessModes }}
     - {{ . }}
     {{- end}}
   mountOptions:
