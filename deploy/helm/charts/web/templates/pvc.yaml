@@ -5,7 +5,9 @@ metadata:
 spec:
   storageClassName: {{ include "web.fullname" . }}-app-{{ .Values.global.appMode }}
   accessModes:
-    - ReadWriteMany
+  {{- range .Values.volumes.djangoAccessModes }}
+    - {{ . }}
+  {{- end }}
   resources:
     requests:
       storage: {{ .Values.volumes.djangoPvcStorage }}

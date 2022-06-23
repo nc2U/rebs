@@ -8,11 +8,19 @@ image:
   repository: dokube/web
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: "latest"
 
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: "web"
+
+imageConfigMaps:
+  awsStorageBucketName: brdnc-buket
+  djangoSettingsModule: _config.settings.local
+
+imageSecrets:
+  awsAccessKeyId: QUtJQTRTTENFQ1hUV042RFNNTEs=
+  awsSecretAccessKey: eHBIYzR4OGhsYXBkSzBGbGlQVjF6WlZxUXV6cHZyeWlQbjFFU29tOA==
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -56,6 +64,12 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
+volumes:
+  djangoAccessModes:
+    - ReadWriteMany
+  djangoPvStorage: 2Gi
+  djangoPvcStorage: 2Gi
+
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
@@ -67,11 +81,6 @@ resources: {}
   # requests:
   #   cpu: 100m
   #   memory: 128Mi
-
-volumes:
-  djangoPvStorage: 2Gi
-  djangoPvcStorage: 2Gi
-  nfsServerHost: 49.247.26.88
 
 autoscaling:
   enabled: false
