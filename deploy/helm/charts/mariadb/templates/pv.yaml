@@ -37,5 +37,5 @@ spec:
     - hard
     - nfsvers=4.1
   nfs:
-    path: /var/lib/jenkins/workspace/Rebs/volume/sql
-    server: {{ .Values.volumes.nfsServerHost }}
+    path: {{ .Values.global.nfsPath }}/volume/sql
+    server: {{ .Values.global.nfsServerHost }}

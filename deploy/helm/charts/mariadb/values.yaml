@@ -8,11 +8,12 @@ image:
   repository: mariadb
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: "10.8.3"
 
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: "master"
+timeZone: "Asia/Seoul"
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -57,7 +58,6 @@ ingress:
   #      - chart-example.local
 
 volumes:
-  nfsServerHost: ""
   dataAccessModes:
   - ReadWriteMany
   dataPvStorage: 1Gi

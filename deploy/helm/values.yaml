@@ -6,6 +6,7 @@ global:
   appMode: prod
   password: "{{ randAlphaNum 5 }}"
   nfsPath: "nfs-path" # nfs volume path
+  nfsServerHost: "nfs-server-host"
 
 nameOverride: ""
 fullnameOverride: ""
