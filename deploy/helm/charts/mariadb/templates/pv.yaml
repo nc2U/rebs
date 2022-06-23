@@ -19,7 +19,7 @@ spec:
     {{- else if eq .Values.global.appMode "dev" }}
     path: {{ .Values.global.nfsPath }}/volume/mysql-dev
     {{- end }}
-    server: {{ .Values.volumes.nfsServerHost }}
+    server: {{ .Values.global.nfsServerHost }}
 ---
 apiVersion: v1
 kind: PersistentVolume
