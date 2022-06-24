@@ -1,13 +1,13 @@
 apiVersion: v1
 data:
   {{- with .Values.imageConfigMaps }}
-  BACKEND_HOST: {{ .backendHost }}
-  WORKER_PROCESSES: '1' # {{ .workerProcesses }}
-  WORKER_CONNECTIONS: '1024' # {{ .workerConnections }}
-  KEEPALIVE_TIMEOUT: '65' # {{ .keepaliveTimeout }}
-  BACKEND_MAX_FAILS: '3' # {{ .backendMaxFails }}
-  BACKEND_MAX_TIMEOUT: 10s # {{ .backendMaxTimeout }}
-  LOG_STDOUT: "true" # {{ .logStdout }}
+  BACKEND_HOST: {{ .backendHost | quote }}
+  WORKER_PROCESSES: {{ .workerProcesses | quote }}
+  WORKER_CONNECTIONS: {{ .workerConnections | quote }}
+  KEEPALIVE_TIMEOUT: {{ .keepaliveTimeout | quote }}
+  BACKEND_MAX_FAILS: {{ .backendMaxFails | quote }}
+  BACKEND_MAX_TIMEOUT: {{ .backendMaxTimeout }}
+  LOG_STDOUT: {{ .logStdout | quote }}
   {{- end }}
 kind: ConfigMap
 metadata:
