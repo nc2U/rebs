@@ -35,6 +35,7 @@ url = [
 
     path('accounts/', include('allauth.urls')),
     # path('accounts/', include('accounts.urls')),
+    path('robots.txt', TemplateView.as_view(template_name='robots.txt', content_type='text/plain')),
     path('', include('django.contrib.auth.urls')),
 
     path('', TemplateView.as_view(template_name='index.html')),
