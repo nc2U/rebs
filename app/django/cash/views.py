@@ -550,7 +550,7 @@ class SalesPaymentLV(LoginRequiredMixin, ListView, FormView):
 
     def get_queryset(self):
         results = ProjectCashBook.objects.filter(project=self.get_project(), project_account_d2__in=(1, 2),
-                                                 is_release=False).order_by('-deal_date', '-id')
+                                                 refund_contractor=None).order_by('-deal_date', '-id')
 
         if self.request.GET.get('sd'):
             results = results.filter(deal_date__gte=self.request.GET.get('sd'))
