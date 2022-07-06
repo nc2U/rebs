@@ -1,8 +1,9 @@
 from django.db import models
 from django.conf import settings
+from import_export.admin import ImportExportMixin
 
 
-class SalesBillIssue(models.Model):
+class SalesBillIssue(ImportExportMixin, models.Model):
     project = models.ForeignKey('project.Project', on_delete=models.CASCADE, verbose_name='프로젝트')
     now_payment_order = models.ForeignKey('cash.InstallmentPaymentOrder', on_delete=models.CASCADE,
                                           verbose_name='현재 발행회차')
@@ -24,3 +25,11 @@ class SalesBillIssue(models.Model):
     content = models.TextField('고지서 내용')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
     updated_at = models.DateTimeField('최종 변경일', auto_now=True)
+
+    class Meta:
+        ordering = ['id']
+        verbose_name = "01. 프로젝트 고지서 정보"
+        verbose_name_plural = "01. 프로젝트 고지서 정보"
+
+    def __str__(self):
+        return f'{self.project}-고지서 정보'
