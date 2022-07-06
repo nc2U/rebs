@@ -30,20 +30,23 @@ class PdfExportBill(View):
     """고지서 리스트"""
 
     def get(self, request):
-        context = {}
-        context['data_list'] = []
-        project = request.GET.get('project')
-        context['issue_date'] = request.GET.get('date')
-        contractor_list = request.GET.get('seq').split('-')
-        context['bill'] = SalesBillIssue.objects.get(project_id=project)
-        inspay_order = InstallmentPaymentOrder.objects.filter(project_id=project)
-        now_due_order = context['bill'].now_payment_order.pay_code if context['bill'].now_payment_order else 2
+        project = request.GET.get('project')  # 프로젝트 ID
+
+        context = {}  # 전체 데이터 딕셔너리
+        context['data_list'] = []  # 계약 건별 데이터 리스트
+        context['issue_date'] = request.GET.get('date')  # 고지서 발행일
+        context['bill_info'] = SalesBillIssue.objects.get(project_id=project)  # 고지서 일반 정보
+        inspay_order = InstallmentPaymentOrder.objects.filter(project_id=project)  # 전체 납부회차 리스트
+        now_due_order = context['bill_info'].now_payment_order.pay_code \
+            if context['bill_info'].now_payment_order else 2  # 당회 납부 회차
+
+        contractor_list = request.GET.get('seq').split('-')  # 계약 건 ID 리스트
 
         # 해당 계약건에 대한 데이터 정리 --------------------------------------- start
         for cont_id in contractor_list:  # 선택된 계약 건 수만큼 반복
 
-            contract = self.get_contract(project, cont_id, inspay_order, now_due_order)
-            context['data_list'].append(contract)
+            bill_data = self.get_bill_data(project, cont_id, inspay_order, now_due_order)
+            context['data_list'].append(bill_data)
 
         # 해당 계약건에 대한 데이터 정리 --------------------------------------- end
 
@@ -58,61 +61,39 @@ class PdfExportBill(View):
             response['Content-Disposition'] = f'attachment; filename="payment_bill({len(contractor_list)}).pdf"'
             return response
 
-    def get_contract(self, project, cont_id, inspay_order, now_due_order):
-        cont = {}  # 현재 계약 정보 딕셔너리
-        cont['contract'] = contract = Contract.objects.get(contractor__id=cont_id)  # 해당 계약건
+    def get_bill_data(self, project, cont_id, inspay_order, now_due_order):
+        """
+        param =>
+        :project: project
+        :cont_id: cont_id
+        :inspay_order:
+        :now_due_order:
 
-        try:  # 동호수
-            cont['unit'] = contract.keyunit.unitnumber
-        except Exception:
-            cont['unit'] = None
+        return =>
+        """
+        bill_data = {}  # 현재 계약 정보 딕셔너리
 
-        # 총 공급가액(분양가) 구하기
-        group = contract.order_group  # 차수
-        type = contract.unit_type  # 타입
-        # 해당 계약건 분양가 # this_price = '동호 지정 후 고지'
-        this_price = contract.keyunit.unit_type.average_price
-        prices = SalesPriceByGT.objects.filter(project_id=project, order_group=group, unit_type=type)
+        # 1. 계약 건 객체
+        bill_data['contract'] = contract = Contract.objects.get(contractor__id=cont_id)
 
-        if cont['unit']:
-            floor = contract.keyunit.unitnumber.floor_type
-            this_price = prices.get(unit_floor_type=floor).price
-        # ---------------------------------------------------------------------------
-
-        # 계약금 구하기 ----------------------------------------------------------------
-        down_num = inspay_order.filter(pay_sort='1').count()
         try:
-            dp = DownPayment.objects.get(
-                project_id=project,
-                order_group=contract.order_group,
-                unit_type=contract.keyunit.unit_type
-            )
-            down = dp.payment_amount
+            unit = contract.keyunit.unitnumber
         except:
-            pn = round(down_num / 2)
-            down = int(this_price * 0.1 / pn)
-        down_total = down * down_num
-        # ---------------------------------------------------------------------------
+            unit = None
 
-        # 중도금 구하기 ----------------------------------------------------------------
-        med_num = inspay_order.filter(pay_sort='2').count()
-        medium = int(this_price * 0.1)
-        medium_total = medium * med_num
-        # ---------------------------------------------------------------------------
+        # 2. 동호수
+        bill_data['unit'] = unit
 
-        # 잔금 구하기 -----------------------------------------------------------------
-        bal_num = inspay_order.filter(pay_sort='3').count()
-        balance = int((this_price - down_total - medium_total) / bal_num)
-        # ---------------------------------------------------------------------------
+        # 이 계약 건 분양가 (계약금, 중도금, 잔금 약정액)
+        this_price, down, medium, balance = self.get_this_price(project, contract, unit, inspay_order)
 
-        # 완납금액 구하기 --------------------------------------------------------------
-        paid_list = ProjectCashBook.objects.filter(
-            is_contract_payment=True,
-            contract=contract,
-            income__isnull=False
-        ).order_by('installment_order', 'deal_date')  # 해당 계약 건 납부 데이터
-        paid_sum_total = paid_list.aggregate(Sum('income'))['income__sum']  # 완납 총금액
-        # ---------------------------------------------------------------------------
+        # 3, 분양가 ■ 계약 내용---------------------------------------------
+        bill_data['price'] = this_price  # 이 건 분양가격
+        # --------------------------------------------------------------
+
+        # 납부목록, 완납금액 구하기 ------------------------------------------
+        paid_list, paid_sum_total = self.get_paid(contract)
+        # --------------------------------------------------------------
 
         pay_amount_total = 0  # 납부 지정회차까지 약정금액 합계
         pay_amount_paid = 0  # 완납 회차까지 약정액 합계
@@ -133,7 +114,7 @@ class PdfExportBill(View):
         first_paid_date = None  # 최초 계약금 완납일
 
         # --------------------------------------------------------------
-        for ipo in inspay_order:
+        for ipo in inspay_order:  # 납부회차 전체 순회
             pay_amount = 0  # 약정금액
             if ipo.pay_sort == '1':
                 pay_amount = down
@@ -232,76 +213,129 @@ class PdfExportBill(View):
                 break
         # --------------------------------------------------------------
 
-        # ■ 계약 내용------------------------------------------------------
-        cont['price'] = this_price  # 이 건 분양가격
-        # --------------------------------------------------------------
-
         # ■ 당회 납부대금 안내----------------------------------------------
         unpaid_orders_all = inspay_order.filter(pay_code__gt=paid_pay_code)  # 최종 기납부회차 이후 납부회차
-        cont['unpaid_orders'] = unpaid_orders = unpaid_orders_all.filter(
+        bill_data['unpaid_orders'] = unpaid_orders = unpaid_orders_all.filter(
             pay_code__lte=now_due_order)  # 최종 기납부회차 이후부터 납부지정회차 까지 회차그룹
-        cont['second_date'] = contract.contractor.contract_date + timedelta(days=30)
-        cont['pay_amount'] = 0
-        cont['pay_amount_sum'] = 0
+
+        bill_data['second_date'] = contract.contractor.contract_date + timedelta(days=30)  # 2회차 납부일 (계약후 30일)
+        bill_data['pay_amount'] = 0
+        bill_data['pay_amount_sum'] = 0
         summary_late_fee_list = []
-        for i, uo in enumerate(cont['unpaid_orders']):
+        for i, uo in enumerate(unpaid_orders):
             if uo.pay_sort == '1':
-                cont['pay_amount'] = down
+                bill_data['pay_amount'] = down
             elif uo.pay_sort == '2':
-                cont['pay_amount'] = medium
+                bill_data['pay_amount'] = medium
             else:
-                cont['pay_amount'] = balance
-            cont['pay_amount_sum'] += cont['pay_amount']
+                bill_data['pay_amount'] = balance
+            bill_data['pay_amount_sum'] += bill_data['pay_amount']
             if i == 0:
                 summary_late_fee_list.append(sum(past_late_fee_list))
             else:
                 summary_late_fee_list.append(current_late_fee_list[i - 1])
-        cont['cal_unpaid'] = pay_amount_paid - paid_sum_total
-        cont['cal_unpaid_sum'] = pay_amount_total - paid_sum_total  # 미납액 = 약정액 - 납부액
-        cont['summary_late_fee_list'] = list(reversed(summary_late_fee_list))
-        cont['summary_late_fee_sum'] = sum(summary_late_fee_list)
+        bill_data['cal_unpaid'] = pay_amount_paid - paid_sum_total
+        bill_data['cal_unpaid_sum'] = pay_amount_total - paid_sum_total  # 미납액 = 약정액 - 납부액
+        bill_data['summary_late_fee_list'] = list(reversed(summary_late_fee_list))
+        bill_data['summary_late_fee_sum'] = sum(summary_late_fee_list)
         # --------------------------------------------------------------
 
         # ■ 계좌번호 안내--------------------------------------------------
-        # cont['pay_amount_total'] = pay_amount_total
-        cont['pm_cost_sum'] = pm_cost_sum
+        bill_data['pay_amount_total'] = pay_amount_total
+        bill_data['pm_cost_sum'] = pm_cost_sum
         # --------------------------------------------------------------
 
         # ■ 납부약정 및 납입내역--------------------------------------------
-        cont['paid_orders'] = inspay_order.filter(pay_code__lte=now_due_order)  # 지정회차까지 회차
-        cont['due_date_list'] = list(reversed(due_date_list))  # 회차별 납부일자
-        for po in cont['paid_orders']:
+        bill_data['paid_orders'] = inspay_order.filter(pay_code__lte=now_due_order)  # 지정회차까지 회차
+        bill_data['due_date_list'] = list(reversed(due_date_list))  # 회차별 납부일자
+        for po in bill_data['paid_orders']:
             if po.pay_sort == '1':
-                cont['pay_amount'] = down
+                bill_data['pay_amount'] = down
             elif po.pay_sort == '2':
-                cont['pay_amount'] = medium
+                bill_data['pay_amount'] = medium
             else:
-                cont['pay_amount'] = balance
-        cont['paid_date_list'] = list(reversed(paid_date_list))  # 회차별 최종 수납일자
-        cont['payment_list'] = list(reversed(payment_list))  # 회차별 납부금액
-        cont['def_pay_list'] = list(reversed(def_pay_list))  # 회차별 지연금 리스트
-        cont['delay_day_list'] = list(reversed(delay_day_list))  # 회차별 지연일수
-        cont['late_fee_list'] = list(reversed(late_fee_list))  # 연체료 리스트
+                bill_data['pay_amount'] = balance
+        bill_data['paid_date_list'] = list(reversed(paid_date_list))  # 회차별 최종 수납일자
+        bill_data['payment_list'] = list(reversed(payment_list))  # 회차별 납부금액
+        bill_data['def_pay_list'] = list(reversed(def_pay_list))  # 회차별 지연금 리스트
+        bill_data['delay_day_list'] = list(reversed(delay_day_list))  # 회차별 지연일수
+        bill_data['late_fee_list'] = list(reversed(late_fee_list))  # 연체료 리스트
 
         # 잔여 약정 목록
-        cont['remaining_orders'] = remaining_orders = inspay_order.filter(pay_code__gt=now_due_order)
-        if not cont['unit']:
-            cont['remaining_orders'] = remaining_orders.filter(pay_sort='1')
+        bill_data['remaining_orders'] = remaining_orders = inspay_order.filter(pay_code__gt=now_due_order)
+        if not bill_data['unit']:
+            bill_data['remaining_orders'] = remaining_orders.filter(pay_sort='1')
 
         num = unpaid_orders.count() + 1 if pm_cost_sum else unpaid_orders.count()
-        rem_blank = 0 if cont['unit'] else remaining_orders.count()
+        rem_blank = 0 if bill_data['unit'] else remaining_orders.count()
         blank_line = (15 - (num + inspay_order.count())) + rem_blank
-        cont['blank_line'] = '.' * blank_line
+        bill_data['blank_line'] = '.' * blank_line
 
-        cont['paid_sum'] = paid_sum_total  # 납부액 합계
-        cont['def_pay_sum'] = sum(def_pay_list)  # 미납금 합계
-        cont['delay_day_sum'] = sum(delay_day_list)
-        cont['late_fee_sum'] = sum(late_fee_list)  # 연체료 합계
+        bill_data['paid_sum'] = paid_sum_total  # 납부액 합계
+        bill_data['def_pay_sum'] = sum(def_pay_list)  # 미납금 합계
+        bill_data['delay_day_sum'] = sum(delay_day_list)
+        bill_data['late_fee_sum'] = sum(late_fee_list)  # 연체료 합계
         # --------------------------------------------------------------
+        return bill_data
 
-        return cont
+    def get_this_price(self, project, contract, unit, inspay_order):
+        # 총 공급가액(분양가) 구하기
+        group = contract.order_group  # 차수
+        type = contract.unit_type  # 타입
+
+        # 해당 계약건 분양가 # this_price = '동호 지정 후 고지'
+        this_price = contract.keyunit.unit_type.average_price
+
+        prices = SalesPriceByGT.objects.filter(project_id=project, order_group=group, unit_type=type)
+
+        if unit:
+            floor = contract.keyunit.unitnumber.floor_type
+            this_price = prices.get(unit_floor_type=floor).price
+
+        # 계약금 구하기 ----------------------------------------------------------------
+        down_num = inspay_order.filter(pay_sort='1').count()
+        try:
+            dp = DownPayment.objects.get(
+                project_id=project,
+                order_group=contract.order_group,
+                unit_type=contract.keyunit.unit_type
+            )
+            down = dp.payment_amount
+        except:
+            pn = round(down_num / 2)
+            down = int(this_price * 0.1 / pn)
+        down_total = down * down_num
+        # ---------------------------------------------------------------------------
+
+        # 중도금 구하기 ----------------------------------------------------------------
+        med_num = inspay_order.filter(pay_sort='2').count()
+        medium = int(this_price * 0.1)
+        medium_total = medium * med_num
+        # ---------------------------------------------------------------------------
+
+        # 잔금 구하기 -----------------------------------------------------------------
+        bal_num = inspay_order.filter(pay_sort='3').count()
+        balance = int((this_price - down_total - medium_total) / bal_num)
+        # ---------------------------------------------------------------------------
+
+        return this_price, down, medium, balance
+
+    def get_paid(self, contract):
+        paid_list = ProjectCashBook.objects.filter(
+            is_contract_payment=True,
+            contract=contract,
+            income__isnull=False
+        ).order_by('installment_order', 'deal_date')  # 해당 계약 건 납부 데이터
+
+        paid_sum_total = paid_list.aggregate(Sum('income'))['income__sum']  # 완납 총금액
+        return paid_list, paid_sum_total
 
     def get_late_fee(self, amount, delay, early):
+        """
+        param
+        :amount:
+        :delay
+        """
         if amount < 0:
             late_fee = amount * 0.04 * early / 365
         else:

@@ -2,12 +2,12 @@
 <table style="width:100%;">
     <tr>
         <th style="height:50px; margin:auto; text-align:center; " colspan="2">
-            <h2>{{ bill.project }}</h2>
+            <h2>{{ bill_info.project }}</h2>
         </th>
     </tr>
     <tr>
-        <td style="font-size:11px;">{{ bill.zipcode }} {{ bill.address1 }} {{ bill.address2 }} {{ bill.address3 }}</td>
-        <td style="font-size:11px; text-align:right;">Tel. {{ bill.host_tel }}</td>
+        <td style="font-size:11px;">{{ bill_info.zipcode }} {{ bill_info.address1 }} {{ bill_info.address2 }} {{ bill_info.address3 }}</td>
+        <td style="font-size:11px; text-align:right;">Tel. {{ bill_info.host_tel }}</td>
     </tr>
 </table>
 
@@ -29,13 +29,13 @@
     <tr>
         <td style="padding: 2px 15px  8px; border-bottom: 2px solid #000;">제 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;목 :
         </td>
-        <td style="padding: 2px 0 8px; font-size:14px; border-bottom: 2px solid #000;" colspan="2">{{ bill.title }}</td>
+        <td style="padding: 2px 0 8px; font-size:14px; border-bottom: 2px solid #000;" colspan="2">{{ bill_info.title }}</td>
     </tr>
 </table>
 
 <table style="width:100%; height: 140px; font-size:12px;">
     <tr>
-        <td style="padding: 5px 15px 0;">{{ bill.content|linebreaks }}</td>
+        <td style="padding: 5px 15px 0;">{{ bill_info.content|linebreaks }}</td>
     </tr>
 </table>
 
@@ -149,19 +149,19 @@
                 </tr>
                 <tr>
                     <td style="padding: 3px 0px; border:1px solid black; text-align:center;">분 양 대 금</td>
-                    <td style="padding: 3px 0px; border:1px solid black; text-align:center; ">{{ bill.bank_account1 }}</td>
-                    <td style="padding: 3px 0px; border:1px solid black; text-align:center; ">{{ bill.bank_number1 }}</td>
+                    <td style="padding: 3px 0px; border:1px solid black; text-align:center; ">{{ bill_info.bank_account1 }}</td>
+                    <td style="padding: 3px 0px; border:1px solid black; text-align:center; ">{{ bill_info.bank_number1 }}</td>
                     <td style="padding: 3px 0px; border:1px solid black; text-align:center; "
-                        colspan="2">{{ bill.bank_host1 }}</td>
+                        colspan="2">{{ bill_info.bank_host1 }}</td>
                     <td style="padding: 3px 10px; border:1px solid black; text-align:right;">{{ data.cal_unpaid_sum|add:data.summary_late_fee_sum|sub:data.pm_cost_sum|default:"-"|intcomma }}</td>
                 </tr>
                 {% if data.pm_cost_sum %}
                     <tr>
                         <td style="padding: 3px 0px; border:1px solid black; text-align:center;">{{ 'PM 용역비' }}</td>
-                        <td style="padding: 3px 0px; border:1px solid black; text-align:center; ">{{ bill.bank_account2 }}</td>
-                        <td style="padding: 3px 0px; border:1px solid black; text-align:center; ">{{ bill.bank_number2 }}</td>
+                        <td style="padding: 3px 0px; border:1px solid black; text-align:center; ">{{ bill_info.bank_account2 }}</td>
+                        <td style="padding: 3px 0px; border:1px solid black; text-align:center; ">{{ bill_info.bank_number2 }}</td>
                         <td style="padding: 3px 0px; border:1px solid black; text-align:center; "
-                            colspan="2">{{ bill.bank_host2 }}</td>
+                            colspan="2">{{ bill_info.bank_host2 }}</td>
                         <td style="padding: 3px 10px; border:1px solid black; text-align:right;">{{ data.pm_cost_sum|default:"-"|intcomma }}</td>
                     </tr>
                 {% endif %}
@@ -267,20 +267,20 @@
 
 <table style="width:100%; font-size:10px;" cellpadding=0; cellspacing=0;>
     <tr>
-        <td colspan="{% if bill.agency %}5{% else %}3{% endif %}" style="padding-bottom: 5px;">
+        <td colspan="{% if bill_info.agency %}5{% else %}3{% endif %}" style="padding-bottom: 5px;">
             <span style="font-size: 9px;">
                 ※ {% if not data.unit %}<u>총 공급가액 및 전체 약정금액은 동호 지정 이후 고지됩니다.</u>{% endif %}
                 미 도래 납부회차의 납부기한 및 약정금액은 예정사항이며 추후 변동 시 변경고지될 수 있습니다.</span>
         </td>
     </tr>
     <tr>
-        {% if bill.agency %}
+        {% if bill_info.agency %}
             <td style="padding: 3px 0 0 5px; font-size: 11px;" width="10%">업무대행사</td>
-            <td style="padding: 3px 0px; font-size: 12px; " width="20%">{{ bill.agency }}</td>
+            <td style="padding: 3px 0px; font-size: 12px; " width="20%">{{ bill_info.agency }}</td>
         {% endif %}
         <td style="padding: 3px 0px; font-size: 12px;" width="10%">문의전화 :</td>
-        <td style="padding: 3px 0px; font-size: 12px; " width="15%">{{ bill.agency_tel|default:bill.host_tel }}</td>
+        <td style="padding: 3px 0px; font-size: 12px; " width="15%">{{ bill_info.agency_tel|default:bill_info.host_tel }}</td>
         <td style="padding: 3px 5px; text-align:right; font-size: 13px; " width="45%">
-            <strong>{{ bill.host_name }}</strong></td>
+            <strong>{{ bill_info.host_name }}</strong></td>
     </tr>
 </table>
