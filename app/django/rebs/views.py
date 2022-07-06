@@ -95,7 +95,14 @@ class PdfExportBill(View):
         paid_list, paid_sum_total = self.get_paid(contract)
         # --------------------------------------------------------------
 
+        # 해당 계약건의 계약금 중도금 잔금 별 각 납부금액
+        amount = {'1': down, '2': medium, '3': balance}
+        # 회차별 납부금액 리스트
+        pay_amounts_all = [amount[pa.pay_sort] for pa in inspay_order]
+        pay_amounts_due = [amount[pa.pay_sort] for pa in inspay_order if pa.pay_code <= now_due_order]
+
         pay_amount_total = 0  # 납부 지정회차까지 약정금액 합계
+
         pay_amount_paid = 0  # 완납 회차까지 약정액 합계
         paid_pay_code = 0  # 완납회차
         pm_cost_sum = 0  # pm 용역비 누계
@@ -114,14 +121,8 @@ class PdfExportBill(View):
         first_paid_date = None  # 최초 계약금 완납일
 
         # --------------------------------------------------------------
-        for ipo in inspay_order:  # 납부회차 전체 순회
-            pay_amount = 0  # 약정금액
-            if ipo.pay_sort == '1':
-                pay_amount = down
-            if ipo.pay_sort == '2':
-                pay_amount = medium
-            if ipo.pay_sort == '3':
-                pay_amount = balance
+        for i, ipo in enumerate(inspay_order):  # 납부회차 전체 순회
+            pay_amount = pay_amounts_all[i]  # 약정금액
 
             pay_amount_total += pay_amount  # 약정금액 누계
 
