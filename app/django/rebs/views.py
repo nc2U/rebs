@@ -97,9 +97,7 @@ class PdfExportBill(View):
 
         # 해당 계약건의 계약금 중도금 잔금 별 각 납부금액
         amount = {'1': down, '2': medium, '3': balance}
-        # 회차별 납부금액 리스트
-        pay_amounts_all = [amount[pa.pay_sort] for pa in inspay_order]
-        pay_amounts_due = [amount[pa.pay_sort] for pa in inspay_order if pa.pay_code <= now_due_order]
+        pay_amounts_all = [amount[pa.pay_sort] for pa in inspay_order]  # 회차별 납부금액 리스트
 
         pay_amount_total = 0  # 납부 지정회차까지 약정금액 합계
 
