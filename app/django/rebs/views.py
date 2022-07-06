@@ -73,7 +73,7 @@ class PdfExportBill(View):
         """
         bill_data = {}  # 현재 계약 정보 딕셔너리
 
-        # 1. 계약 건 객체
+        # 계약 건 객체
         bill_data['contract'] = contract = Contract.objects.get(contractor__id=cont_id)
 
         try:
@@ -81,15 +81,11 @@ class PdfExportBill(View):
         except:
             unit = None
 
-        # 2. 동호수
+        # 동호수
         bill_data['unit'] = unit
 
         # 이 계약 건 분양가 (계약금, 중도금, 잔금 약정액)
         this_price, down, medium, balance = self.get_this_price(project, contract, unit, inspay_order)
-
-        # 3, 분양가 ■ 계약 내용---------------------------------------------
-        bill_data['price'] = this_price  # 이 건 분양가격
-        # --------------------------------------------------------------
 
         # 납부목록, 완납금액 구하기 ------------------------------------------
         paid_list, paid_sum_total = self.get_paid(contract)
@@ -98,6 +94,16 @@ class PdfExportBill(View):
         # 해당 계약건의 계약금 중도금 잔금 별 각 납부금액
         amount = {'1': down, '2': medium, '3': balance}
         pay_amounts_all = [amount[pa.pay_sort] for pa in inspay_order]  # 회차별 납부금액 리스트
+
+        # ■ 계약 내용 -----------------------------------------------------
+        bill_data['cont_content'] = self.get_cont_content(contract, unit)
+
+        # ■ 당회 납부대금 안내 ----------------------------------------------
+        bill_data['this_pay_info'] = self.get_this_pay_info(inspay_order, now_due_order)
+
+        # 3, 분양가 ■ 계약 내용---------------------------------------------
+        bill_data['price'] = this_price  # 이 건 분양가격
+        # --------------------------------------------------------------
 
         pay_amount_total = 0  # 납부 지정회차까지 약정금액 합계
 
@@ -277,6 +283,47 @@ class PdfExportBill(View):
         # --------------------------------------------------------------
         return bill_data
 
+    def get_cont_content(self, contract, unit):
+        """ ■ 계약 내용
+        return :: 계약자명, 계약일, 계약번호, 평형, 총 공급가격
+        """
+        contractor = contract.contractor.name
+        cont_date = contract.contractor.contract_date
+        cont_no = contract.keyunit.unitnumber if unit else contract.serial_number
+        cont_type = contract.keyunit.unit_type
+        price = self.get_this_price if unit else '동호 지정 후 고지'
+        return {
+            'contractor': contractor,
+            'cont_date': cont_date,
+            'cont_no': cont_no,
+            'cont_type': cont_type,
+            'total_price': price
+        }
+
+    def get_this_pay_info(self, inspay_order, now_due_order):
+        """ ■ 당회 납부대금 안내
+        return :: [{납부회차, 납부 기한, 약정금액, 미납금액, 연체가산금, 납부금액}]
+        """
+        payment_list = []
+
+        # 최종 납부회차 이후 납부회차
+        paid_code = 3  # 최종 기납부 회차 구하기
+        unpaid_orders = inspay_order.filter(pay_code__gt=paid_code,
+                                            pay_code__lte=now_due_order)  # 최종 기납부회차 이후부터 납부지정회차 까지 회차그룹
+
+        for order in unpaid_orders:
+            payment_dict = {
+                'order': order,
+                'due_date': 1,
+                'due_amount': 2,
+                'this_unpaid': 3,
+                'this_penalty': 4,
+                'this_amount': 5
+            }
+            payment_list.append(payment_dict)
+
+        return payment_list
+
     def get_this_price(self, project, contract, unit, inspay_order):
         # 총 공급가액(분양가) 구하기
         group = contract.order_group  # 차수
@@ -328,6 +375,15 @@ class PdfExportBill(View):
 
         paid_sum_total = paid_list.aggregate(Sum('income'))['income__sum']  # 완납 총금액
         return paid_list, paid_sum_total
+
+    def get_orders_info(self, inspay_order):
+        info = {}
+        for order in inspay_order:
+            info['order'] = order  # 회차
+            info['pay_amount'] = 1  # 회당 납부 약정액
+            info['pay_amount_total'] = 2  # 회당 납부 약정액 누계
+
+        return info
 
     def get_late_fee(self, amount, delay, early):
         """

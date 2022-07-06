@@ -50,24 +50,17 @@
         <td style="padding: 3px 0px; border:1px solid black; text-align:center;" width="20%;">계약자명</td>
         <td style="padding: 3px 0px; border:1px solid black; text-align:center;" width="20%;">계 약 일</td>
         <td style="padding: 3px 0px; border:1px solid black; text-align:center;" width="20%;">
-            {% if data.unit %}동 호수{% else %}조합원번호{% endif %}
+            {% if data.unit %}동 호수{% else %}계약 번호{% endif %}
         </td>
         <td style="padding: 3px 0px; border:1px solid black; text-align:center;" width="20%;">평형(TYPE)</td>
         <td style="padding: 3px 0px; border:1px solid black; text-align:center;" width="20%;">총 공급가액</td>
     </tr>
     <tr>
-        <td style="padding: 3px 0px; border:1px solid black; text-align:center; ">{{ data.contract.contractor.name }}</td>
-        <td style="padding: 3px 0px; border:1px solid black; text-align:center; ">{{ data.contract.contractor.contract_date }}</td>
-        <td style="padding: 3px 0px; border:1px solid black; text-align:center; ">
-            {% if data.unit %}
-                {{ data.contract.contractunit.unitnumber }}
-            {% else %}
-                {{ data.contract.serial_number }}
-            {% endif %}
-        </td>
-        <td style="padding: 3px 0px; border:1px solid black; text-align:center; ">{{ data.contract.contractunit.unit_type }}</td>
-        <td style="padding: 3px 10px; border:1px solid black; text-align:{% if data.unit %}right{% else %}center{% endif %}; ">
-            {% if data.unit %}{{ data.price|intcomma }}{% else %}동호 지정 후 고지{% endif %}</td>
+        <td style="padding: 3px 0px; border:1px solid black; text-align:center; ">{{ data.cont_content.contractor }}</td>
+        <td style="padding: 3px 0px; border:1px solid black; text-align:center; ">{{ data.cont_content.cont_date }}</td>
+        <td style="padding: 3px 0px; border:1px solid black; text-align:center; ">{{ data.cont_content.cont_no }}</td>
+        <td style="padding: 3px 0px; border:1px solid black; text-align:center; ">{{ data.cont_content.cont_type }}</td>
+        <td style="padding: 3px 10px; border:1px solid black; text-align:{% if data.unit %}right{% else %}center{% endif %}; ">{{ data.cont_content.total_price|intcomma }}</td>
     </tr>
 </table>
 
@@ -85,6 +78,22 @@
         <td style="padding: 3px 10px; border:1px solid black; text-align:center;" width="16%;">연체가산금</td>
         <td style="padding: 3px 10px; border:1px solid black; text-align:center;" width="20%;">납부 금액</td>
     </tr>
+    {% for order in data.this_pay_info %}
+        <tr>
+            <!--납부 회차-->
+                <td style="padding: 3px 0px; border:1px solid black; text-align:center;">{{ order.order }}</td>
+                <!--납부 기한-->
+                <td style="padding: 3px 0px; border:1px solid black; text-align:center;"></td>
+                <!--약정 금액-->
+                <td style="padding: 3px 10px; border:1px solid black; text-align:right;"></td>
+                <!--미납 금액-->
+                <td style="padding: 3px 10px; border:1px solid black; text-align:right;"></td>
+                <!--연체가산금-->
+                <td style="padding: 3px 10px; border:1px solid black; text-align:right;"></td>
+                <!--납부 금액-->
+                <td style="padding: 3px 10px; border:1px solid black; text-align:right;"></td>
+        </tr>
+    {% endfor %}
     {% for un_order in data.unpaid_orders %}
         {% with summary_late_fee=data.summary_late_fee_list.pop %}
             <tr>
@@ -168,9 +177,9 @@
                 <tr>
                     <td style="padding: 5px 10px; border:1px solid black;"
                         colspan="{% if data.pm_cost_sum %}4{% else %}6{% endif %}">
-                        ※ 계좌 입금 시 반드시 계약자명과 상기 {% if data.unit %}동 호수{% else %}조합원번호{% endif %}를 병행 표기하여 납부하여 주시기 바랍니다.
+                        ※ 계좌 입금 시 반드시 계약자명과 상기 {% if data.unit %}동 호수{% else %}계약번호{% endif %}를 병행 표기하여 납부하여 주시기 바랍니다.
                         <br/> &nbsp;&nbsp;&nbsp;
-                        예) 홍길동{% if data.unit %}{{ data.contract.contractunit.unitnumber }}{% else %}
+                        예) 홍길동{% if data.unit %}{{ data.contract.keyunit.unitnumber }}{% else %}
                         {{ data.contract.serial_number|truncatechars:7 }}{% endif %}
                     </td>
                     {% if data.pm_cost_sum %}
