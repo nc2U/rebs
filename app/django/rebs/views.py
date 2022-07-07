@@ -51,7 +51,6 @@ class PdfExportBill(View):
         # 해당 계약건에 대한 데이터 정리 --------------------------------------- end
 
         html_string = render_to_string('pdf/bill_control.html', context)
-
         html = HTML(string=html_string)
         html.write_pdf(target='/tmp/mypdf.pdf')
 
@@ -96,24 +95,29 @@ class PdfExportBill(View):
         pay_amounts_all = [amount[pa.pay_sort] for pa in inspay_order]  # 회차별 약정액 리스트
 
         # 해당 계약 건의 회차별 관련 정보
-        cont_orders = self.get_orders_info(inspay_order, pay_amounts_all, paid_sum_total)
+        orders_info = self.get_orders_info(inspay_order, pay_amounts_all, paid_sum_total)
 
         # ■ 계약 내용 -----------------------------------------------------
         bill_data['cont_content'] = self.get_cont_content(contract, unit)
 
         # ■ 당회 납부대금 안내 ----------------------------------------------
         bill_data['this_pay_info'] = self.get_this_pay_info(cont_id,
-                                                            cont_orders,
+                                                            orders_info,
                                                             inspay_order,
                                                             now_due_order,
                                                             paid_sum_total)
 
+        # 당회 납부대금 합계
         bill_data['this_pay_sum'] = {
             'amount_sum': sum([pi["amount"] for pi in bill_data['this_pay_info']]),
             'unpaid_sum': sum([pi["unpaid"] for pi in bill_data['this_pay_info']]),
             'penalty_sum': sum([pi["penalty"] for pi in bill_data['this_pay_info']]),
             'amount_total': sum([pi["sum_amount"] for pi in bill_data['this_pay_info']]),
         }
+
+        # ■ 계좌번호 안내 ------------------------------------------------
+        bill_data['bank_accounts'] = self.get_bank_account(
+            bill_data['this_pay_sum']['amount_total'], sum([pm['pm_cost_sum'] for pm in orders_info]))
 
         # 3, 분양가 ■ 계약 내용-------------------------------------------
         bill_data['price'] = this_price  # 이 건 분양가격
@@ -300,25 +304,6 @@ class PdfExportBill(View):
     def get_contract(self, id):
         return Contract.objects.get(contractor__id=id)
 
-    def get_cont_content(self, contract, unit):
-        """ ■ 계약 내용
-        :param contract:
-        :param unit:
-        :return: 계약자명, 계약일, 계약번호, 평형, 총 공급가격
-        """
-        contractor = contract.contractor.name
-        cont_date = contract.contractor.contract_date
-        cont_no = contract.keyunit.unitnumber if unit else contract.serial_number
-        cont_type = contract.keyunit.unit_type
-        price = self.get_this_price if unit else '동호 지정 후 고지'
-        return {
-            'contractor': contractor,
-            'cont_date': cont_date,
-            'cont_no': cont_no,
-            'cont_type': cont_type,
-            'total_price': price
-        }
-
     def get_this_price(self, project, contract, unit, inspay_order):
         # 총 공급가액(분양가) 구하기
         group = contract.order_group  # 차수
@@ -371,19 +356,38 @@ class PdfExportBill(View):
         paid_sum_total = paid_list.aggregate(Sum('income'))['income__sum']  # 완납 총금액
         return paid_list, paid_sum_total
 
-    def get_this_pay_info(self, cont_id, cont_orders, inspay_order, now_due_order, paid_sum_total):
+    def get_cont_content(self, contract, unit):
+        """ ■ 계약 내용
+        :param contract:
+        :param unit:
+        :return: 계약자명, 계약일, 계약번호, 평형, 총 공급가격
+        """
+        contractor = contract.contractor.name
+        cont_date = contract.contractor.contract_date
+        cont_no = contract.keyunit.unitnumber if unit else contract.serial_number
+        cont_type = contract.keyunit.unit_type
+        price = self.get_this_price if unit else '동호 지정 후 고지'
+        return {
+            'contractor': contractor,
+            'cont_date': cont_date,
+            'cont_no': cont_no,
+            'cont_type': cont_type,
+            'total_price': price
+        }
+
+    def get_this_pay_info(self, cont_id, orders_info, inspay_order, now_due_order, paid_sum_total):
         """ ■ 당회 납부대금 안내
-        :param cont_orders:
+        :param orders_info:
         :param now_due_order:
         :return: [{납부회차, 납부 기한, 약정금액, 미납금액, 연체가산금, 납부금액}]
         """
         payment_list = []
         # 최종 납부회차 이후 납부회차
-        paid_code = [c['order'].pay_code for c in cont_orders if paid_sum_total >= c['sum_pay_amount']][-1]
+        paid_code = [c['order'].pay_code for c in orders_info if paid_sum_total >= c['sum_pay_amount']][-1]
         unpaid_orders = inspay_order.filter(pay_code__gt=paid_code,
                                             pay_code__lte=now_due_order)  # 최종 기납부회차 이후부터 납부지정회차 까지 회차그룹
         for order in unpaid_orders:
-            cont_ord = list(filter(lambda o: o['order'] == order, cont_orders))[0]
+            cont_ord = list(filter(lambda o: o['order'] == order, orders_info))[0]
 
             amount = cont_ord['pay_amount']
             unpaid = cont_ord['unpaid_amount']
@@ -401,19 +405,36 @@ class PdfExportBill(View):
 
         return payment_list
 
-    def get_orders_info(self, inspay_order, pay_amounts_all, paid_sum_total):
-        order_info_list = []
+    def get_bank_account(self, amount_total, pm_cost_sum):
+        """ ■ 계좌번호 안내
+        :param contract:
+        :param unit:
+        :return:
+        """
+        return amount_total, pm_cost_sum
 
+    def get_orders_info(self, inspay_order, pay_amounts_all, paid_sum_total):
+        """
+        :param inspay_order:
+        :param pay_amounts_all:
+        :param paid_sum_total:
+        :return:
+        """
+        order_info_list = []
         sum_pay_amount = 0
+        pm_cost_sum = 0
+
         for i, order in enumerate(inspay_order):
             info = {}
             info['order'] = order  # 회차
             pay_amount = pay_amounts_all[i]  # 회당 납부 약정액
             info['pay_amount'] = pay_amount  # 회당 납부 약정액
-            sum_pay_amount += info['pay_amount']  # 회당 납부 약정액 누계
+            sum_pay_amount += pay_amount  # 회당 납부 약정액 누계
             info['sum_pay_amount'] = sum_pay_amount  # 회당 납부 약정액 누계
             unpaid = sum_pay_amount - paid_sum_total  # 약정액 누계 - 총 납부액
             info['unpaid_amount'] = unpaid if unpaid < pay_amount else pay_amount  # 미납액
+            pm_cost_sum += pay_amount if order.is_pm_cost else 0
+            info['pm_cost_sum'] = pm_cost_sum
             order_info_list.append(info)
 
         return order_info_list
