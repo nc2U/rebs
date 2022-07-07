@@ -125,7 +125,7 @@ class PdfExportBill(View):
         # ■ 납부약정 및 납입내역 -------------------------------------------
         bill_data['paid_orders1'] = self.get_paid_orders(contract, orders_info, inspay_order, now_due_order)
 
-        bill_data['remain_orders'] = self.get_remain_orders()
+        bill_data['remain_orders'] = self.get_remain_orders(contract, orders_info, inspay_order, now_due_order)
 
         bill_data['pay_amount_sum'] = self.get_pay_amount_sum()
         # --------------------------------------------------------------
@@ -490,13 +490,32 @@ class PdfExportBill(View):
 
         return paid_amt_list
 
-    def get_remain_orders(self):
+    def get_remain_orders(self, contract, orders_info, inspay_order, now_due_order):
         """
         :: ■ 납부약정 및 납입내역 - 잔여회차
         :param inspay_order:
         :return :
         """
-        return 2
+        remain_amt_list = []
+        remain_orders = inspay_order.filter(pay_code__gt=now_due_order)
+
+        for order in remain_orders:
+            cont_ord = list(filter(lambda o: o['order'] == order, orders_info))[0]
+            amount = cont_ord['pay_amount']
+
+            paid_dict = {
+                'order': order.pay_name,
+                'due_date': self.get_due_date(contract.contractor.pk, order),
+                'amount': amount,
+                'paid_date': '',
+                'paid_amt': 0,
+                'delayed_amt': 0,
+                'penalty_days': 0,
+                'panalty_amt': 0,
+            }
+            remain_amt_list.append(paid_dict)
+
+        return remain_amt_list
 
     def get_pay_amount_sum(self):
         """

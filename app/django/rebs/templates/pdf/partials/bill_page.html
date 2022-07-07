@@ -201,16 +201,11 @@
         </tr>
     {% endfor %}
 
-    {% for rem_order in data.remaining_orders %}
+    {% for rem_order in data.remain_orders %}
         <tr>
-            <td style="text-align:center; border-left: solid 1px;">{{ rem_order.pay_name }}</td>
-            <td style="text-align:center;">{{ rem_order.pay_due_date|date:"Y-m-d" }}</td>
-            <td style="text-align:right;">
-                {% if rem_order.pay_sort == '1' %}{{ data.down|intcomma }}
-                    {% elif rem_order.pay_sort == '2' %}{{ data.medium|intcomma }}
-                    {% else %}{{ data.balance|intcomma }}
-                {% endif %}
-            </td>
+            <td style="text-align:center; border-left: solid 1px;">{{ rem_order.order }}</td>
+            <td style="text-align:center;">{{ rem_order.due_date|date:"Y-m-d" }}</td>
+            <td style="text-align:right;">{{ rem_order.amount|intcomma }}</td>
             <td style="border-right: solid 1px;" colspan="6"></td>
         </tr>
     {% endfor %}
