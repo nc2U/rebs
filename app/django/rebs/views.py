@@ -119,203 +119,27 @@ class PdfExportBill(View):
         }
 
         # ■ 계좌번호 안내 ------------------------------------------------
+        pm_cost_sum = sum([pm['pm_cost_sum'] for pm in orders_info])
         bill_data['bank_accounts'] = (bill_data['this_pay_sum']['amount_total'],
-                                      sum([pm['pm_cost_sum'] for pm in orders_info]))
+                                      pm_cost_sum)
 
         # ■ 납부약정 및 납입내역 -------------------------------------------
         bill_data['paid_orders1'] = self.get_paid_orders(contract, orders_info, inspay_order, now_due_order)
 
         bill_data['remain_orders'] = self.get_remain_orders(contract, orders_info, inspay_order, now_due_order)
 
-        bill_data['pay_amount_sum'] = self.get_pay_amount_sum()
-        # --------------------------------------------------------------
-        # --------------------------------------------------------------
-        # --------------------------------------------------------------
-        # --------------------------------------------------------------
-        # --------------------------------------------------------------
-        # --------------------------------------------------------------
-        # --------------------------------------------------------------
-        # --------------------------------------------------------------
-        # --------------------------------------------------------------
-        # --------------------------------------------------------------
-        # --------------------------------------------------------------
-        # --------------------------------------------------------------
+        bill_data['payment_amount_sum'] = self.get_payment_amount_sum(paid_sum_total)
 
-        pay_amount_total = 0  # 납부 지정회차까지 약정금액 합계
+        # 공백 개수 구하기
+        unpaid_count = len(bill_data['this_pay_info'])
+        rem_count = len(bill_data['remain_orders'])
 
-        pay_amount_paid = 0  # 완납 회차까지 약정액 합계
-        paid_pay_code = 0  # 완납회차
-        pm_cost_sum = 0  # pm 용역비 누계
-        apply_pay = 0  # 가산금 적용액
+        bill_data['blank_line'] = self.get_blank_line(unpaid_count,
+                                                      pm_cost_sum,
+                                                      unit,
+                                                      rem_count,
+                                                      inspay_order.count())
 
-        payment_list = []  # 회차별 납부금액
-        paid_date_list = []  # 회차별 최종 수납일자
-        due_date_list = []  # 회차별 납부기한
-
-        def_pay_list = []  # 회차별 지연금액 리스트
-        delay_day_list = []  # 회차별 지연일수
-        late_fee_list = []  # 연체료 리스트
-        past_late_fee_list = []
-        current_late_fee_list = []
-
-        first_paid_date = None  # 최초 계약금 완납일
-
-        # --------------------------------------------------------------
-        for i, ipo in enumerate(inspay_order):  # 납부회차 전체 순회
-            pay_amount = pay_amounts_all[i]  # 약정금액
-
-            pay_amount_total += pay_amount  # 약정금액 누계
-
-            if paid_sum_total >= pay_amount_total:  # 기 납부총액이 약정액보다 같거나 큰지 검사
-                paid_pay_code = ipo.pay_code  # 완납회차 추출
-                pay_amount_paid += pay_amount  # 완납회차까지 약정액 누계
-
-            if ipo.is_pm_cost:
-                pm_cost_sum += pay_amount  # pm 용역비 누계
-
-            # 회차별 납부 해야할 금액 ----------------------------------------------------------
-            now_payment = paid_list.filter(installment_order=ipo)  # 현재 회차 납부 데이터
-            paid_date = now_payment.latest('deal_date').deal_date if now_payment else None  # 현재회차 최종 납부일
-            now_paied_sum = now_payment.aggregate(Sum('income'))['income__sum']  # 현재 회차 납부액 합계
-            paid_amount = now_paied_sum if now_paied_sum else 0
-
-            if ipo.pay_code == 1:
-                first_paid_date = paid_date  # 계약금 납부일
-            payment_list.append(paid_amount)  # 회차별 납부금액
-            paid_date_list.append(paid_date)  # 회차별 최종 수납일자
-
-            # 계약일과 최초 계약금 납부일 중 늦은 날을 기점으로 30일
-            reference_date = first_paid_date if first_paid_date and (
-                    first_paid_date > contract.contractor.contract_date) else contract.contractor.contract_date
-
-            if ipo.pay_time == 1 or ipo.pay_code == 1:  # 최초 계약금일 때
-                due_date = contract.contractor.contract_date  # 납부기한일
-
-            elif ipo.pay_time == 2 or ipo.pay_code == 2:  # 2차 계약금일 때
-                due_date = reference_date + timedelta(days=30)  # 납부기한 = 기준일 30일 후
-                if ipo.pay_due_date:  # 당회차 납부기한이 설정되어 있을 때 -> 계약후 30일 후와 설정일 중 늦은 날을 납부기한으로 한다.
-                    due_date = due_date if due_date > ipo.pay_due_date else ipo.pay_due_date  # 납부기한
-
-            else:  # 3회차 이후 납부회차인 경우
-                if ipo.pay_due_date:
-                    due_date = ipo.pay_due_date if ipo.pay_due_date > reference_date + timedelta(
-                        days=30) else reference_date + timedelta(days=30)  # 납부기한
-                else:
-                    due_date = None
-
-            # extra_date 이전의 연체일수를 계산하지 않는다. 즉 extra_date 이후의 연체 발생 건부터 적용한다.
-            extra_date = ipo.extra_due_date if ipo.extra_due_date else due_date  # 납부유예일
-            if not ipo.pay_due_date or extra_date > due_date:  # 납부유예일이 있고 납부기한일보다 늦으면
-                due_date = extra_date  # extra_date 가 설정되어 있고 납부기한보다 늦으면 extra_date를 납부기한으로 한다.
-
-            due_date_list.append(due_date)  # 회차별 납부일자
-
-            # 지연일수 및 가산금 구하기
-            unpaid = pay_amount - paid_amount  # 지연금 = 약정 금액 - 납부한 금액
-            def_pay_list.append(unpaid)  # 지연금 리스트
-
-            delay_paid_sum = 0  # 지연금 총 납부액
-            delay_paid_date = date.today()  # 지연 기준일
-
-            early_days = 0
-
-            if unpaid >= 0:
-                delay_paid = paid_list.filter(installment_order__gt=ipo)
-                for dp in delay_paid:
-                    delay_paid_sum += dp.income
-                    if delay_paid_sum > unpaid:
-                        delay_paid_date = dp.deal_date  # 지연금 완납일자
-                        break
-            else:  # 약정금 초과 납부(선납) 시
-                next_order = inspay_order.filter(pay_code__gt=ipo.pay_code).first()
-                if next_order.pay_due_date:
-                    early = next_order.pay_due_date - paid_date
-                    early_days = early.days if early.days > 0 else 0
-
-            if extra_date and extra_date > delay_paid_date:  # 납부유예일 > 오늘 또는 완납일자
-                delay_days = 0  # 지연일수
-            else:
-                delay = 0  # delay_paid_date - extra_date  # 미수 완납일 - 미수 발생일
-                delay_days = 0  # delay.days  # 지연일수
-
-            apply_pay += unpaid
-            late_fee_list.append(self.get_late_fee(apply_pay, delay_days, early_days))
-            if ipo.pay_code <= paid_pay_code + 1:
-                past_late_fee_list.append(self.get_late_fee(apply_pay, delay_days, early_days))
-            else:
-                current_late_fee_list.append(self.get_late_fee(apply_pay, delay_days, early_days))
-
-            if unpaid >= 0:
-                delay_day_list.append(delay_days)  # 회차별 지연일수
-            else:
-                delay_day_list.append(early_days)  # 회차별 선납일수
-
-            if ipo.pay_code == now_due_order:  # 순회 회차가 지정회차와 같으면 순회중단
-                break
-        # --------------------------------------------------------------
-
-        # ■ 당회 납부대금 안내----------------------------------------------
-        unpaid_orders_all = inspay_order.filter(pay_code__gt=paid_pay_code)  # 최종 기납부회차 이후 납부회차
-        bill_data['unpaid_orders'] = unpaid_orders = unpaid_orders_all.filter(
-            pay_code__lte=now_due_order)  # 최종 기납부회차 이후부터 납부지정회차 까지 회차그룹
-
-        bill_data['second_date'] = contract.contractor.contract_date + timedelta(days=30)  # 2회차 납부일 (계약후 30일)
-        bill_data['pay_amount'] = 0
-        bill_data['pay_amount_sum'] = 0
-        summary_late_fee_list = []
-        for i, uo in enumerate(unpaid_orders):
-            if uo.pay_sort == '1':
-                bill_data['pay_amount'] = down
-            elif uo.pay_sort == '2':
-                bill_data['pay_amount'] = medium
-            else:
-                bill_data['pay_amount'] = balance
-            bill_data['pay_amount_sum'] += bill_data['pay_amount']
-            if i == 0:
-                summary_late_fee_list.append(sum(past_late_fee_list))
-            else:
-                summary_late_fee_list.append(current_late_fee_list[i - 1])
-        bill_data['cal_unpaid'] = pay_amount_paid - paid_sum_total
-        bill_data['cal_unpaid_sum'] = pay_amount_total - paid_sum_total  # 미납액 = 약정액 - 납부액
-        bill_data['summary_late_fee_list'] = list(reversed(summary_late_fee_list))
-        bill_data['summary_late_fee_sum'] = sum(summary_late_fee_list)
-        # --------------------------------------------------------------
-
-        # ■ 계좌번호 안내--------------------------------------------------
-        bill_data['pay_amount_total'] = pay_amount_total
-        bill_data['pm_cost_sum'] = pm_cost_sum
-        # --------------------------------------------------------------
-
-        # ■ 납부약정 및 납입내역--------------------------------------------
-        bill_data['paid_orders'] = inspay_order.filter(pay_code__lte=now_due_order)  # 지정회차까지 회차
-        bill_data['due_date_list'] = list(reversed(due_date_list))  # 회차별 납부일자
-        for po in bill_data['paid_orders']:
-            if po.pay_sort == '1':
-                bill_data['pay_amount'] = down
-            elif po.pay_sort == '2':
-                bill_data['pay_amount'] = medium
-            else:
-                bill_data['pay_amount'] = balance
-        bill_data['paid_date_list'] = list(reversed(paid_date_list))  # 회차별 최종 수납일자
-        bill_data['payment_list'] = list(reversed(payment_list))  # 회차별 납부금액
-        bill_data['def_pay_list'] = list(reversed(def_pay_list))  # 회차별 지연금 리스트
-        bill_data['delay_day_list'] = list(reversed(delay_day_list))  # 회차별 지연일수
-        bill_data['late_fee_list'] = list(reversed(late_fee_list))  # 연체료 리스트
-
-        # 잔여 약정 목록
-        bill_data['remaining_orders'] = remaining_orders = inspay_order.filter(pay_code__gt=now_due_order)
-        if not bill_data['unit']:
-            bill_data['remaining_orders'] = remaining_orders.filter(pay_sort='1')
-
-        num = unpaid_orders.count() + 1 if pm_cost_sum else unpaid_orders.count()
-        rem_blank = 0 if bill_data['unit'] else remaining_orders.count()
-        blank_line = (15 - (num + inspay_order.count())) + rem_blank
-        bill_data['blank_line'] = '.' * blank_line
-
-        bill_data['paid_sum'] = paid_sum_total  # 납부액 합계
-        bill_data['def_pay_sum'] = sum(def_pay_list)  # 미납금 합계
-        bill_data['delay_day_sum'] = sum(delay_day_list)
-        bill_data['late_fee_sum'] = sum(late_fee_list)  # 연체료 합계
         # --------------------------------------------------------------
         return bill_data
 
@@ -517,13 +341,13 @@ class PdfExportBill(View):
 
         return remain_amt_list
 
-    def get_pay_amount_sum(self):
+    def get_payment_amount_sum(self, paid_sum_total):
         """
         :: ■ 납부약정 및 납입내역 - 합계 테이블
         :param inspay_order:
         :return :
         """
-        return 3
+        return paid_sum_total
 
     def get_orders_info(self, inspay_order, pay_amounts_all, paid_sum_total):
         """
@@ -593,6 +417,12 @@ class PdfExportBill(View):
                         amount * 0.12 * (delay - 179) / 365)
 
         return math.floor(late_fee / 1000) * 1000
+
+    def get_blank_line(self, unpaid_count, pm, unit, rem_count, total_orders_count):
+        num = unpaid_count + 1 if pm else unpaid_count
+        rem_blank = 0 if unit else rem_count
+        blank_line = (15 - (num + total_orders_count)) + rem_blank
+        return '.' * blank_line
 
 
 class PdfExportPayments(View):
