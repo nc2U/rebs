@@ -74,7 +74,7 @@ class PdfExportBill(View):
         bill_data = {}  # 현재 계약 정보 딕셔너리
 
         # 계약 건 객체
-        bill_data['contract'] = contract = Contract.objects.get(contractor__id=cont_id)
+        bill_data['contract'] = contract = self.get_contract(cont_id)
 
         try:
             unit = contract.keyunit.unitnumber
@@ -95,11 +95,25 @@ class PdfExportBill(View):
         amount = {'1': down, '2': medium, '3': balance}
         pay_amounts_all = [amount[pa.pay_sort] for pa in inspay_order]  # 회차별 약정액 리스트
 
+        # 해당 계약 건의 회차별 관련 정보
+        cont_orders = self.get_orders_info(inspay_order, pay_amounts_all, paid_sum_total)
+
         # ■ 계약 내용 -----------------------------------------------------
         bill_data['cont_content'] = self.get_cont_content(contract, unit)
 
         # ■ 당회 납부대금 안내 ----------------------------------------------
-        bill_data['this_pay_info'] = self.get_this_pay_info(inspay_order, now_due_order, paid_sum_total)
+        bill_data['this_pay_info'] = self.get_this_pay_info(cont_id,
+                                                            cont_orders,
+                                                            inspay_order,
+                                                            now_due_order,
+                                                            paid_sum_total)
+
+        bill_data['this_pay_sum'] = {
+            'amount_sum': sum([pi["amount"] for pi in bill_data['this_pay_info']]),
+            'unpaid_sum': sum([pi["unpaid"] for pi in bill_data['this_pay_info']]),
+            'penalty_sum': sum([pi["penalty"] for pi in bill_data['this_pay_info']]),
+            'amount_total': sum([pi["sum_amount"] for pi in bill_data['this_pay_info']]),
+        }
 
         # 3, 분양가 ■ 계약 내용-------------------------------------------
         bill_data['price'] = this_price  # 이 건 분양가격
@@ -169,7 +183,7 @@ class PdfExportBill(View):
 
             # extra_date 이전의 연체일수를 계산하지 않는다. 즉 extra_date 이후의 연체 발생 건부터 적용한다.
             extra_date = ipo.extra_due_date if ipo.extra_due_date else due_date  # 납부유예일
-            if extra_date > due_date:  # 납부유예일이 있고 납부기한일보다 늦으면
+            if not ipo.pay_due_date or extra_date > due_date:  # 납부유예일이 있고 납부기한일보다 늦으면
                 due_date = extra_date  # extra_date 가 설정되어 있고 납부기한보다 늦으면 extra_date를 납부기한으로 한다.
 
             due_date_list.append(due_date)  # 회차별 납부일자
@@ -283,6 +297,9 @@ class PdfExportBill(View):
         # --------------------------------------------------------------
         return bill_data
 
+    def get_contract(self, id):
+        return Contract.objects.get(contractor__id=id)
+
     def get_cont_content(self, contract, unit):
         """ ■ 계약 내용
         :param contract:
@@ -301,34 +318,6 @@ class PdfExportBill(View):
             'cont_type': cont_type,
             'total_price': price
         }
-
-    def get_this_pay_info(self, inspay_order, now_due_order, paid_sum_total):
-        """ ■ 당회 납부대금 안내
-        :param inspay_order:
-        :param now_due_order:
-        :return: [{납부회차, 납부 기한, 약정금액, 미납금액, 연체가산금, 납부금액}]
-        """
-
-        payment_list = []
-
-        # 최종 납부회차 이후 납부회차
-        paid_sum = 1000
-        paid_code = 3  # 최종 기납부 회차 구하기
-        unpaid_orders = inspay_order.filter(pay_code__gt=paid_code,
-                                            pay_code__lte=now_due_order)  # 최종 기납부회차 이후부터 납부지정회차 까지 회차그룹
-
-        for order in unpaid_orders:
-            payment_dict = {
-                'order': order,
-                'due_date': 1,
-                'due_amount': 2,
-                'this_unpaid': 3,
-                'this_penalty': 4,
-                'this_amount': 5
-            }
-            payment_list.append(payment_dict)
-
-        return payment_list
 
     def get_this_price(self, project, contract, unit, inspay_order):
         # 총 공급가액(분양가) 구하기
@@ -382,17 +371,66 @@ class PdfExportBill(View):
         paid_sum_total = paid_list.aggregate(Sum('income'))['income__sum']  # 완납 총금액
         return paid_list, paid_sum_total
 
-    def get_orders_info(self, inspay_order, pay_amounts_all):
-        order_list = []
+    def get_this_pay_info(self, cont_id, cont_orders, inspay_order, now_due_order, paid_sum_total):
+        """ ■ 당회 납부대금 안내
+        :param cont_orders:
+        :param now_due_order:
+        :return: [{납부회차, 납부 기한, 약정금액, 미납금액, 연체가산금, 납부금액}]
+        """
+        payment_list = []
+        # 최종 납부회차 이후 납부회차
+        paid_code = [c['order'].pay_code for c in cont_orders if paid_sum_total >= c['sum_pay_amount']][-1]
+        unpaid_orders = inspay_order.filter(pay_code__gt=paid_code,
+                                            pay_code__lte=now_due_order)  # 최종 기납부회차 이후부터 납부지정회차 까지 회차그룹
+        for order in unpaid_orders:
+            cont_ord = list(filter(lambda o: o['order'] == order, cont_orders))[0]
 
+            amount = cont_ord['pay_amount']
+            unpaid = cont_ord['unpaid_amount']
+            penalty = 0
+
+            payment_dict = {
+                'order': order,
+                'due_date': self.get_due_date(cont_id, order),
+                'amount': amount,
+                'unpaid': unpaid,
+                'penalty': penalty,
+                'sum_amount': unpaid + penalty
+            }
+            payment_list.append(payment_dict)
+
+        return payment_list
+
+    def get_orders_info(self, inspay_order, pay_amounts_all, paid_sum_total):
+        order_info_list = []
+
+        sum_pay_amount = 0
         for i, order in enumerate(inspay_order):
             info = {}
             info['order'] = order  # 회차
-            info['pay_amount'] = pay_amounts_all[i]  # 회당 납부 약정액
-            info['pay_amount_total'] += info['pay_amount']  # 회당 납부 약정액 누계
-            order_list.append(info)
+            pay_amount = pay_amounts_all[i]  # 회당 납부 약정액
+            info['pay_amount'] = pay_amount  # 회당 납부 약정액
+            sum_pay_amount += info['pay_amount']  # 회당 납부 약정액 누계
+            info['sum_pay_amount'] = sum_pay_amount  # 회당 납부 약정액 누계
+            unpaid = sum_pay_amount - paid_sum_total  # 약정액 누계 - 총 납부액
+            info['unpaid_amount'] = unpaid if unpaid < pay_amount else pay_amount  # 미납액
+            order_info_list.append(info)
 
-        return order_list
+        return order_info_list
+
+    def get_due_date(self, cont_id, order):
+        """
+        -> 납부일자 구하기
+        :param cont_id: 계약자 아이디
+        :param order: 납부회차
+        :return: 납부일자
+        """
+        ref_date = self.get_contract(cont_id).contractor.contract_date
+        due_date = order.extra_due_date if order.extra_due_date else order.pay_due_date
+        due_date = due_date if due_date else TODAY
+        due_date = ref_date if order.pay_time == 1 else due_date
+        due_date = ref_date + timedelta(days=30) if order.pay_time == 2 else due_date
+        return due_date
 
     def get_late_fee(self, amount, delay, early):
         """

@@ -78,62 +78,22 @@
         <td style="padding: 3px 10px; border:1px solid black; text-align:center;" width="16%;">연체가산금</td>
         <td style="padding: 3px 10px; border:1px solid black; text-align:center;" width="20%;">납부 금액</td>
     </tr>
-    {% for order in data.this_pay_info %}
+    {% for this_order in data.this_pay_info %}
         <tr>
-            <!--납부 회차-->
-                <td style="padding: 3px 0px; border:1px solid black; text-align:center;">{{ order.order }}</td>
-                <!--납부 기한-->
-                <td style="padding: 3px 0px; border:1px solid black; text-align:center;"></td>
-                <!--약정 금액-->
-                <td style="padding: 3px 10px; border:1px solid black; text-align:right;"></td>
-                <!--미납 금액-->
-                <td style="padding: 3px 10px; border:1px solid black; text-align:right;"></td>
-                <!--연체가산금-->
-                <td style="padding: 3px 10px; border:1px solid black; text-align:right;"></td>
-                <!--납부 금액-->
-                <td style="padding: 3px 10px; border:1px solid black; text-align:right;"></td>
+            <td style="padding: 3px 0px; border:1px solid black; text-align:center;">{{ this_order.order }}</td>
+            <td style="padding: 3px 0px; border:1px solid black; text-align:center;">{{ this_order.due_date }}</td>
+            <td style="padding: 3px 10px; border:1px solid black; text-align:right;">{{ this_order.amount|default:"-"|intcomma }}</td>
+            <td style="padding: 3px 10px; border:1px solid black; text-align:right;">{{ this_order.unpaid|default:"-"|intcomma }}</td>
+            <td style="padding: 3px 10px; border:1px solid black; text-align:right;">{{ this_order.penalty|default:"-"|intcomma }}</td>
+            <td style="padding: 3px 10px; border:1px solid black; text-align:right;">{{ this_order.sum_amount|default:"-"|intcomma }}</td>
         </tr>
-    {% endfor %}
-    {% for un_order in data.unpaid_orders %}
-        {% with summary_late_fee=data.summary_late_fee_list.pop %}
-            <tr>
-                <!--납부 회차-->
-                <td style="padding: 3px 0px; border:1px solid black; text-align:center;">{{ un_order }}</td>
-                <!--납부 기한-->
-                <td style="padding: 3px 0px; border:1px solid black; text-align:center;">
-                    {{ un_order.extra_due_date|default:un_order.pay_due_date }}
-                </td>
-                <!--약정 금액-->
-                <td style="padding: 3px 10px; border:1px solid black; text-align:right;">{{ data.pay_amount|default:"-"|intcomma }}</td>
-                <!--미납 금액-->
-                <td style="padding: 3px 10px; border:1px solid black; text-align:right;">
-                    {% if forloop.first %}
-                        {{ data.pay_amount|add:data.cal_unpaid|default:"-"|intcomma }}
-                    {% else %}
-                        {{ data.pay_amount|default:"-"|intcomma }}
-                    {% endif %}
-                </td>
-                <!--연체가산금-->
-                <td style="padding: 3px 10px; border:1px solid black; text-align:right;">
-                    {{ summary_late_fee|default:"-"|intcomma }}
-                </td>
-                <!--납부 금액-->
-                <td style="padding: 3px 10px; border:1px solid black; text-align:right;">
-                    {% if forloop.first %}
-                        {{ data.pay_amount|add:data.cal_unpaid|add:summary_late_fee|default:"-"|intcomma }}
-                    {% else %}
-                        {{ data.pay_amount|add:summary_late_fee|default:"-"|intcomma }}
-                    {% endif %}
-                </td>
-            </tr>
-        {% endwith %}
     {% endfor %}
     <tr>
         <td style="padding: 3px 0px; border:1px solid black; text-align:center;" colspan="2">합 계</td>
-        <td style="padding: 3px 10px; border:1px solid black; text-align:right;">{{ data.pay_amount_sum|default:"-"|intcomma }}</td>
-        <td style="padding: 3px 10px; border:1px solid black; text-align:right;">{{ data.cal_unpaid_sum|default:"-"|intcomma }}</td>
-        <td style="padding: 3px 10px; border:1px solid black; text-align:right;">{{ data.summary_late_fee_sum|default:"-"|intcomma }}</td>
-        <td style="padding: 3px 10px; border:1px solid black; text-align:right;">{{ data.cal_unpaid_sum|add:data.summary_late_fee_sum|default:"-"|intcomma }}</td>
+        <td style="padding: 3px 10px; border:1px solid black; text-align:right;">{{ data.this_pay_sum.amount_sum|default:"-"|intcomma }}</td>
+        <td style="padding: 3px 10px; border:1px solid black; text-align:right;">{{ data.this_pay_sum.unpaid_sum|default:"-"|intcomma }}</td>
+        <td style="padding: 3px 10px; border:1px solid black; text-align:right;">{{ data.this_pay_sum.penalty_sum|default:"-"|intcomma }}</td>
+        <td style="padding: 3px 10px; border:1px solid black; text-align:right;">{{ data.this_pay_sum.amount_total|default:"-"|intcomma }}</td>
     </tr>
 </table>
 
