@@ -77,7 +77,7 @@ class PdfExportBill(View):
 
         try:
             unit = contract.keyunit.houseunit
-        except:
+        except Exception:
             unit = None
 
         # 동호수
@@ -123,11 +123,22 @@ class PdfExportBill(View):
                                       sum([pm['pm_cost_sum'] for pm in orders_info]))
 
         # ■ 납부약정 및 납입내역 -------------------------------------------
-        bill_data['paid_orders1'] = self.get_paid_orders(cont_id, orders_info, inspay_order, now_due_order)
+        bill_data['paid_orders1'] = self.get_paid_orders(contract, orders_info, inspay_order, now_due_order)
 
         bill_data['remain_orders'] = self.get_remain_orders()
 
         bill_data['pay_amount_sum'] = self.get_pay_amount_sum()
+        # --------------------------------------------------------------
+        # --------------------------------------------------------------
+        # --------------------------------------------------------------
+        # --------------------------------------------------------------
+        # --------------------------------------------------------------
+        # --------------------------------------------------------------
+        # --------------------------------------------------------------
+        # --------------------------------------------------------------
+        # --------------------------------------------------------------
+        # --------------------------------------------------------------
+        # --------------------------------------------------------------
         # --------------------------------------------------------------
 
         pay_amount_total = 0  # 납부 지정회차까지 약정금액 합계
@@ -374,7 +385,7 @@ class PdfExportBill(View):
             is_contract_payment=True,
             contract=contract,
             income__isnull=False
-        ).order_by('installment_order', 'deal_date')  # 해당 계약 건 납부 데이터
+        ).order_by('-deal_date')  # 해당 계약 건 납부 데이터
 
         paid_sum_total = paid_list.aggregate(Sum('income'))['income__sum']  # 완납 총금액
         return paid_list, paid_sum_total
@@ -432,7 +443,7 @@ class PdfExportBill(View):
 
         return payment_list
 
-    def get_paid_orders(self, cont_id, orders_info, inspay_order, now_due_order):
+    def get_paid_orders(self, contract, orders_info, inspay_order, now_due_order):
         """
         :: ■ 납부약정 및 납입내역 - 납입내역
         :param orders_info:
@@ -441,26 +452,43 @@ class PdfExportBill(View):
         :param paid_sum_total:
         :return list(paid_list):
         """
-        paid_list = []
+        paid_list = [(inc.income, inc.deal_date) for inc in self.get_paid(contract)[0]]
+        paid_date = paid_list[-1][1]
+
+        paid_amt_list = []
         paid_orders = inspay_order.filter(pay_code__lte=now_due_order)
+
+        excess = 0  # 회차별 초과 납부분
 
         for order in paid_orders:
             cont_ord = list(filter(lambda o: o['order'] == order, orders_info))[0]
             amount = cont_ord['pay_amount']
 
+            paid_amt = 0  # 금회 납부금액
+            while True:
+                try:
+                    paid = paid_list.pop()
+                    paid_amt += paid[0]
+                    paid_date = paid[1]
+                    if (paid_amt + excess) >= amount:
+                        excess += (paid_amt + excess - amount)
+                        break
+                except Exception:
+                    break
+
             paid_dict = {
                 'order': order.pay_name,
-                'due_date': self.get_due_date(cont_id, order),
+                'due_date': self.get_due_date(contract.contractor.pk, order),
                 'amount': amount,
-                'paid_date': '',
-                'paid_amt': 0,
+                'paid_date': paid_date if paid_amt else '',
+                'paid_amt': paid_amt,
                 'delayed_amt': 0,
                 'penalty_days': 0,
                 'panalty_amt': 0,
             }
-            paid_list.append(paid_dict)
+            paid_amt_list.append(paid_dict)
 
-        return paid_list
+        return paid_amt_list
 
     def get_remain_orders(self):
         """
