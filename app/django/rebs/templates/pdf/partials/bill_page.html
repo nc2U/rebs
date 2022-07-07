@@ -136,7 +136,7 @@
                         colspan="{% if data.bank_accounts.1 %}4{% else %}6{% endif %}">
                         ※ 계좌 입금 시 반드시 계약자명과 상기 {% if data.unit %}동 호수{% else %}계약번호{% endif %}를 병행 표기하여 납부하여 주시기 바랍니다.
                         <br/> &nbsp;&nbsp;&nbsp;
-                        예) 홍길동{% if data.unit %}{{ data.contract.keyunit.unitnumber }}{% else %}
+                        예) 홍길동{% if data.unit %}{{ data.contract.keyunit.houseunit }}{% else %}
                         {{ data.contract.serial_number|truncatechars:7 }}{% endif %}
                     </td>
 
