@@ -122,7 +122,7 @@ class PdfExportBill(View):
                                       sum([pm['pm_cost_sum'] for pm in orders_info]))
 
         # ■ 납부약정 및 납입내역 -------------------------------------------
-        bill_data['paid_orders'] = self.get_paid_orders(cont_id, orders_info, inspay_order, now_due_order)
+        bill_data['paid_orders1'] = self.get_paid_orders(cont_id, orders_info, inspay_order, now_due_order)
 
         bill_data['remain_orders'] = self.get_remain_orders()
 
@@ -226,8 +226,8 @@ class PdfExportBill(View):
             if extra_date and extra_date > delay_paid_date:  # 납부유예일 > 오늘 또는 완납일자
                 delay_days = 0  # 지연일수
             else:
-                delay = delay_paid_date - extra_date  # 미수 완납일 - 미수 발생일
-                delay_days = delay.days  # 지연일수
+                delay = 0  # delay_paid_date - extra_date  # 미수 완납일 - 미수 발생일
+                delay_days = 0  # delay.days  # 지연일수
 
             apply_pay += unpaid
             late_fee_list.append(self.get_late_fee(apply_pay, delay_days, early_days))
@@ -453,7 +453,7 @@ class PdfExportBill(View):
             amount = cont_ord['pay_amount']
 
             paid_dict = {
-                'order': order,
+                'order': order.pay_name,
                 'due_date': self.get_due_date(cont_id, order),
                 'amount': amount,
                 'paid_date': '',
@@ -518,10 +518,14 @@ class PdfExportBill(View):
         :return str(due_date): 납부일자
         """
         ref_date = self.get_contract(cont_id).contractor.contract_date
-        due_date = order.extra_due_date if order.extra_due_date else order.pay_due_date
-        due_date = due_date if due_date else TODAY
+
+        due_date = ref_date
         due_date = ref_date if order.pay_time == 1 else due_date
         due_date = ref_date + timedelta(days=30) if order.pay_time == 2 else due_date
+
+        due_date = order.pay_due_date if order.pay_due_date else due_date
+
+        due_date = order.extra_due_date if order.extra_due_date else order.pay_due_date
         return due_date
 
     def get_late_fee(self, amount, delay, early):
