@@ -519,9 +519,13 @@ class PdfExportBill(View):
         due_date = ref_date if order.pay_time == 1 else due_date
         due_date = ref_date + timedelta(days=30) if order.pay_time == 2 else due_date
 
-        due_date = order.pay_due_date if order.pay_due_date else due_date
+        # Todo 로직 정리
 
-        due_date = order.extra_due_date if order.extra_due_date else order.pay_due_date
+        due_date = order.pay_due_date
+
+        due_date = order.extra_due_date if order.extra_due_date and \
+                                           (not due_date or
+                                            order.extra_due_date > due_date) else due_date
         return due_date
 
     def get_late_fee(self, amount, delay, early):
