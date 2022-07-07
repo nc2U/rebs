@@ -76,7 +76,7 @@ class PdfExportBill(View):
         bill_data['contract'] = contract = self.get_contract(cont_id)
 
         try:
-            unit = contract.keyunit.unitnumber
+            unit = contract.keyunit.houseunit
         except:
             unit = None
 
@@ -96,6 +96,8 @@ class PdfExportBill(View):
 
         # 해당 계약 건의 회차별 관련 정보
         orders_info = self.get_orders_info(inspay_order, pay_amounts_all, paid_sum_total)
+        # 완납 회차
+        paid_code = self.get_paid_code(orders_info, paid_sum_total)
 
         # ■ 계약 내용 -----------------------------------------------------
         bill_data['cont_content'] = self.get_cont_content(contract, unit)
@@ -105,7 +107,7 @@ class PdfExportBill(View):
                                                             orders_info,
                                                             inspay_order,
                                                             now_due_order,
-                                                            paid_sum_total)
+                                                            paid_code)
 
         # 당회 납부대금 합계
         bill_data['this_pay_sum'] = {
@@ -120,7 +122,11 @@ class PdfExportBill(View):
                                       sum([pm['pm_cost_sum'] for pm in orders_info]))
 
         # ■ 납부약정 및 납입내역 -------------------------------------------
-        bill_data['pay_by_amount'] = self.get_pay_by_amount()
+        bill_data['paid_orders'] = self.get_paid_orders(cont_id, orders_info, inspay_order, now_due_order)
+
+        bill_data['remain_orders'] = self.get_remain_orders()
+
+        bill_data['pay_amount_sum'] = self.get_pay_amount_sum()
 
         # 3, 분양가 ■ 계약 내용-------------------------------------------
         bill_data['price'] = this_price  # 이 건 분양가격
@@ -329,7 +335,7 @@ class PdfExportBill(View):
         prices = SalesPriceByGT.objects.filter(project_id=project, order_group=group, unit_type=type)
 
         if unit:
-            floor = contract.keyunit.unitnumber.floor_type
+            floor = contract.keyunit.houseunit.floor_type
             this_price = prices.get(unit_floor_type=floor).price
 
         # 계약금 구하기 ----------------------------------------------------------------
@@ -384,7 +390,7 @@ class PdfExportBill(View):
         """
         contractor = contract.contractor.name
         cont_date = contract.contractor.contract_date
-        cont_no = contract.keyunit.unitnumber if unit else contract.serial_number
+        cont_no = contract.keyunit.houseunit if unit else contract.serial_number
         cont_type = contract.keyunit.unit_type
         price = self.get_this_price if unit else '동호 지정 후 고지'
         return {
@@ -395,19 +401,20 @@ class PdfExportBill(View):
             'total_price': price
         }
 
-    def get_this_pay_info(self, cont_id, orders_info, inspay_order, now_due_order, paid_sum_total):
+    def get_paid_code(self, orders_info, paid_sum_total):
+        return [c['order'].pay_code for c in orders_info if paid_sum_total >= c['sum_pay_amount']][-1]
+
+    def get_this_pay_info(self, cont_id, orders_info, inspay_order, now_due_order, paid_code):
         """
         :: ■ 당회 납부대금 안내
         :param cont_id: 계약자 아이디
         :param orders_info: 회차별 부가정보
         :param inspay_order: 회차 정보
         :param now_due_order: 당회 납부 회차
-        :param paid_sum_total: 기 납부 총액
+        :param paid_code: 완납 회차
         :return list(dict(납부회차, 납부 기한, 약정금액, 미납금액, 연체가산금, 납부금액)):
         """
         payment_list = []
-        # 최종 납부회차 이후 납부회차
-        paid_code = [c['order'].pay_code for c in orders_info if paid_sum_total >= c['sum_pay_amount']][-1]
         unpaid_orders = inspay_order.filter(pay_code__gt=paid_code,
                                             pay_code__lte=now_due_order)  # 최종 기납부회차 이후부터 납부지정회차 까지 회차그룹
         for order in unpaid_orders:
@@ -429,8 +436,51 @@ class PdfExportBill(View):
 
         return payment_list
 
-    def get_pay_by_amount(self):
-        pass
+    def get_paid_orders(self, cont_id, orders_info, inspay_order, now_due_order):
+        """
+        :: ■ 납부약정 및 납입내역 - 납입내역
+        :param orders_info:
+        :param inspay_order:
+        :param now_due_order:
+        :param paid_sum_total:
+        :return list(paid_list):
+        """
+        paid_list = []
+        paid_orders = inspay_order.filter(pay_code__lte=now_due_order)
+
+        for order in paid_orders:
+            cont_ord = list(filter(lambda o: o['order'] == order, orders_info))[0]
+            amount = cont_ord['pay_amount']
+
+            paid_dict = {
+                'order': order,
+                'due_date': self.get_due_date(cont_id, order),
+                'amount': amount,
+                'paid_date': '',
+                'paid_amt': 0,
+                'delayed_amt': 0,
+                'penalty_days': 0,
+                'panalty_amt': 0,
+            }
+            paid_list.append(paid_dict)
+
+        return paid_list
+
+    def get_remain_orders(self):
+        """
+        :: ■ 납부약정 및 납입내역 - 잔여회차
+        :param inspay_order:
+        :return :
+        """
+        return 2
+
+    def get_pay_amount_sum(self):
+        """
+        :: ■ 납부약정 및 납입내역 - 합계 테이블
+        :param inspay_order:
+        :return :
+        """
+        return 3
 
     def get_orders_info(self, inspay_order, pay_amounts_all, paid_sum_total):
         """
@@ -517,12 +567,12 @@ class PdfExportPayments(View):
         this_price = int(round(contract.keyunit.unit_type.average_price, -4))
 
         try:  # 동호수
-            unit = contract.keyunit.unitnumber
+            unit = contract.keyunit.houseunit
         except Exception:
             unit = None
 
         if unit:
-            floor = contract.keyunit.unitnumber.floor_type
+            floor = contract.keyunit.houseunit.floor_type
             this_price = prices.get(unit_floor_type=floor).price
 
         context['unit'] = unit
