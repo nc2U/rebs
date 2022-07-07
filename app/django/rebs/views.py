@@ -85,6 +85,7 @@ class PdfExportBill(View):
 
         # 이 계약 건 분양가 (계약금, 중도금, 잔금 약정액)
         this_price, down, medium, balance = self.get_this_price(project, contract, unit, inspay_order)
+        bill_data['price'] = this_price if unit else '동호 지정 후 고지'  # 이 건 분양가격
 
         # 납부목록, 완납금액 구하기 ------------------------------------------
         paid_list, paid_sum_total = self.get_paid(contract)
@@ -127,9 +128,6 @@ class PdfExportBill(View):
         bill_data['remain_orders'] = self.get_remain_orders()
 
         bill_data['pay_amount_sum'] = self.get_pay_amount_sum()
-
-        # 3, 분양가 ■ 계약 내용-------------------------------------------
-        bill_data['price'] = this_price  # 이 건 분양가격
         # --------------------------------------------------------------
 
         pay_amount_total = 0  # 납부 지정회차까지 약정금액 합계
@@ -392,13 +390,11 @@ class PdfExportBill(View):
         cont_date = contract.contractor.contract_date
         cont_no = contract.keyunit.houseunit if unit else contract.serial_number
         cont_type = contract.keyunit.unit_type
-        price = price if unit else '동호 지정 후 고지'
         return {
             'contractor': contractor,
             'cont_date': cont_date,
             'cont_no': cont_no,
             'cont_type': cont_type,
-            'total_price': price
         }
 
     def get_paid_code(self, orders_info, paid_sum_total):
