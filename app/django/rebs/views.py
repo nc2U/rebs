@@ -91,17 +91,17 @@ class PdfExportBill(View):
         paid_list, paid_sum_total = self.get_paid(contract)
         # --------------------------------------------------------------
 
-        # 해당 계약건의 계약금 중도금 잔금 별 각 납부금액
+        # 해당 계약 건의 회차별(계약금 중도금 잔금) 약정액 리스트 구하기
         amount = {'1': down, '2': medium, '3': balance}
-        pay_amounts_all = [amount[pa.pay_sort] for pa in inspay_order]  # 회차별 납부금액 리스트
+        pay_amounts_all = [amount[pa.pay_sort] for pa in inspay_order]  # 회차별 약정액 리스트
 
         # ■ 계약 내용 -----------------------------------------------------
         bill_data['cont_content'] = self.get_cont_content(contract, unit)
 
         # ■ 당회 납부대금 안내 ----------------------------------------------
-        bill_data['this_pay_info'] = self.get_this_pay_info(inspay_order, now_due_order)
+        bill_data['this_pay_info'] = self.get_this_pay_info(inspay_order, now_due_order, paid_sum_total)
 
-        # 3, 분양가 ■ 계약 내용---------------------------------------------
+        # 3, 분양가 ■ 계약 내용-------------------------------------------
         bill_data['price'] = this_price  # 이 건 분양가격
         # --------------------------------------------------------------
 
@@ -285,7 +285,9 @@ class PdfExportBill(View):
 
     def get_cont_content(self, contract, unit):
         """ ■ 계약 내용
-        return :: 계약자명, 계약일, 계약번호, 평형, 총 공급가격
+        :param contract:
+        :param unit:
+        :return: 계약자명, 계약일, 계약번호, 평형, 총 공급가격
         """
         contractor = contract.contractor.name
         cont_date = contract.contractor.contract_date
@@ -300,13 +302,17 @@ class PdfExportBill(View):
             'total_price': price
         }
 
-    def get_this_pay_info(self, inspay_order, now_due_order):
+    def get_this_pay_info(self, inspay_order, now_due_order, paid_sum_total):
         """ ■ 당회 납부대금 안내
-        return :: [{납부회차, 납부 기한, 약정금액, 미납금액, 연체가산금, 납부금액}]
+        :param inspay_order:
+        :param now_due_order:
+        :return: [{납부회차, 납부 기한, 약정금액, 미납금액, 연체가산금, 납부금액}]
         """
+
         payment_list = []
 
         # 최종 납부회차 이후 납부회차
+        paid_sum = 1000
         paid_code = 3  # 최종 기납부 회차 구하기
         unpaid_orders = inspay_order.filter(pay_code__gt=paid_code,
                                             pay_code__lte=now_due_order)  # 최종 기납부회차 이후부터 납부지정회차 까지 회차그룹
@@ -376,20 +382,25 @@ class PdfExportBill(View):
         paid_sum_total = paid_list.aggregate(Sum('income'))['income__sum']  # 완납 총금액
         return paid_list, paid_sum_total
 
-    def get_orders_info(self, inspay_order):
-        info = {}
-        for order in inspay_order:
-            info['order'] = order  # 회차
-            info['pay_amount'] = 1  # 회당 납부 약정액
-            info['pay_amount_total'] = 2  # 회당 납부 약정액 누계
+    def get_orders_info(self, inspay_order, pay_amounts_all):
+        order_list = []
 
-        return info
+        for i, order in enumerate(inspay_order):
+            info = {}
+            info['order'] = order  # 회차
+            info['pay_amount'] = pay_amounts_all[i]  # 회당 납부 약정액
+            info['pay_amount_total'] += info['pay_amount']  # 회당 납부 약정액 누계
+            order_list.append(info)
+
+        return order_list
 
     def get_late_fee(self, amount, delay, early):
         """
-        param
-        :amount:
-        :delay
+        -> 회차별 지연 가산금 계산 함수
+        :param amount:
+        :param delay:
+        :param early:
+        :return:
         """
         if amount < 0:
             late_fee = amount * 0.04 * early / 365
