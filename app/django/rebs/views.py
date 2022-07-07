@@ -30,6 +30,11 @@ class PdfExportBill(View):
     """고지서 리스트"""
 
     def get(self, request):
+        """
+        :: PDF 파일 생성 함수
+        :parma request:
+        :return:
+        """
         project = request.GET.get('project')  # 프로젝트 ID
 
         context = {}  # 전체 데이터 딕셔너리
@@ -62,13 +67,12 @@ class PdfExportBill(View):
 
     def get_bill_data(self, project, cont_id, inspay_order, now_due_order):
         """
-        param =>
-        :project: project
-        :cont_id: cont_id
-        :inspay_order:
-        :now_due_order:
-
-        return =>
+        :: 계약 건 당 전달 데이터 생성 함수
+        :param project: 프로젝트
+        :param cont_id: 계약자 아이디
+        :param inspay_order: 전체 납부 회차
+        :param now_due_order: 금회 납부 회차
+        :return dict(bill_data: 계약 건당 데이터):
         """
         bill_data = {}  # 현재 계약 정보 딕셔너리
 
@@ -128,7 +132,7 @@ class PdfExportBill(View):
 
         bill_data['remain_orders'] = self.get_remain_orders(contract, orders_info, inspay_order, now_due_order)
 
-        bill_data['payment_amount_sum'] = self.get_payment_amount_sum(paid_sum_total)
+        bill_data['payment_amount_sum'] = paid_sum_total
 
         # 공백 개수 구하기
         unpaid_count = len(bill_data['this_pay_info'])
@@ -146,7 +150,7 @@ class PdfExportBill(View):
     def get_contract(self, id):
         """ ■ 계약 가져오기
         :param id: 계약자 아이디
-        :return object(contract):
+        :return object(contract: 계약 건):
         """
         return Contract.objects.get(contractor__id=id)
 
@@ -156,7 +160,7 @@ class PdfExportBill(View):
         :param contract: 계약 정보
         :param unit: 동호수 정보
         :param inspay_order: 전체 회차 정보
-        :return int(this_price), int(down), int(medium), int(balance):
+        :return int(this_price: 분양가), int(down: 계약금), int(medium: 중도금), int(balance: 잔금):
         """
         # 총 공급가액(분양가) 구하기
         group = contract.order_group  # 차수
@@ -203,7 +207,7 @@ class PdfExportBill(View):
         """
         :: ■ 기 납부금액 구하기
         :param contract: 계약정보
-        :return list(paid_list), int(paid_sum_total):
+        :return list(paid_list: 납부 건 리스트), int(paid_sum_total: 납부 총액):
         """
         paid_list = ProjectCashBook.objects.filter(
             is_contract_payment=True,
@@ -219,7 +223,7 @@ class PdfExportBill(View):
         :: ■ 계약 내용
         :param contract: 계약정보
         :param unit: 동호수 정보
-        :return dict(계약자명, 계약일, 계약번호, 평형, 총 공급가격):
+        :return dict(contractor: 계약자명, cont_date: 계약일, cont_no: 계약번호, cont_type: 평형):
         """
         contractor = contract.contractor.name
         cont_date = contract.contractor.contract_date
@@ -233,6 +237,12 @@ class PdfExportBill(View):
         }
 
     def get_paid_code(self, orders_info, paid_sum_total):
+        """
+        :: 완납 회차 구하기
+        :param orders_info: 전체 납부 회차
+        :param paid_sum_total: 납부 총액
+        :return 완납회차 객체:
+        """
         return [c['order'].pay_code for c in orders_info if paid_sum_total >= c['sum_pay_amount']][-1]
 
     def get_this_pay_info(self, cont_id, orders_info, inspay_order, now_due_order, paid_code):
@@ -243,7 +253,7 @@ class PdfExportBill(View):
         :param inspay_order: 회차 정보
         :param now_due_order: 당회 납부 회차
         :param paid_code: 완납 회차
-        :return list(dict(납부회차, 납부 기한, 약정금액, 미납금액, 연체가산금, 납부금액)):
+        :return list(dict(order: 납부회차, due_date: 납부기한, amount: 약정금액, unpaid: 미납금액, penalty: 연체가산금, sum_amount: 납부금액)):
         """
         payment_list = []
         unpaid_orders = inspay_order.filter(pay_code__gt=paid_code,
@@ -270,11 +280,11 @@ class PdfExportBill(View):
     def get_paid_orders(self, contract, orders_info, inspay_order, now_due_order):
         """
         :: ■ 납부약정 및 납입내역 - 납입내역
-        :param orders_info:
-        :param inspay_order:
-        :param now_due_order:
-        :param paid_sum_total:
-        :return list(paid_list):
+        :param orders_info: 납부 회차별 부가정보
+        :param inspay_order: 전체 납부회차
+        :param now_due_order: 금회 납부 회차
+        :param paid_sum_total: 기 납부 총액
+        :return list(paid_list: 왼납 회차 목록):
         """
         paid_list = [(inc.income, inc.deal_date) for inc in self.get_paid(contract)[0]]
         paid_date = paid_list[-1][1]
@@ -317,8 +327,11 @@ class PdfExportBill(View):
     def get_remain_orders(self, contract, orders_info, inspay_order, now_due_order):
         """
         :: ■ 납부약정 및 납입내역 - 잔여회차
-        :param inspay_order:
-        :return :
+        :param contract: 계약 건
+        :param orders_info: 납부 회차별 부가정보
+        :param inspay_order: 전체 납부 회차
+        :param now_due_order: 금회 납부 회차
+        :return list(dict(remain_amt_list)): 잔여 회차(dict) 목록:
         """
         remain_amt_list = []
         remain_orders = inspay_order.filter(pay_code__gt=now_due_order)
@@ -340,14 +353,6 @@ class PdfExportBill(View):
             remain_amt_list.append(paid_dict)
 
         return remain_amt_list
-
-    def get_payment_amount_sum(self, paid_sum_total):
-        """
-        :: ■ 납부약정 및 납입내역 - 합계 테이블
-        :param inspay_order:
-        :return :
-        """
-        return paid_sum_total
 
     def get_orders_info(self, inspay_order, pay_amounts_all, paid_sum_total):
         """
@@ -379,10 +384,10 @@ class PdfExportBill(View):
 
     def get_due_date(self, cont_id, order):
         """
-        :: 납부일자 구하기
+        :: 납부 일자 구하기
         :param cont_id: 계약자 아이디
-        :param order: 납부회차
-        :return str(due_date): 납부일자
+        :param order: 납부 회차 객체
+        :return str(due_date): 약정 납부 일자
         """
         ref_date = self.get_contract(cont_id).contractor.contract_date
 
@@ -419,6 +424,15 @@ class PdfExportBill(View):
         return math.floor(late_fee / 1000) * 1000
 
     def get_blank_line(self, unpaid_count, pm, unit, rem_count, total_orders_count):
+        """
+        :: 공백 라인 개수 구하기
+        :param unpaid_count: 미납내역 개수
+        :param pm: pm 용역비 적용여부
+        :param unit: 동호수 지정 여부
+        :param rem_count: 잔여 납부회차 개수
+        :param total_orders_count: 전체 납부회차 개수
+        :return str(. * 공백라인 수):
+        """
         num = unpaid_count + 1 if pm else unpaid_count
         rem_blank = 0 if unit else rem_count
         blank_line = (15 - (num + total_orders_count)) + rem_blank
