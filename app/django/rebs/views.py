@@ -107,14 +107,14 @@ class PdfExportBill(View):
         # ■ 계약 내용 -----------------------------------------------------
         bill_data['cont_content'] = self.get_cont_content(contract, this_price, unit)
 
-        # ■ 당회 납부대금 안내 ----------------------------------------------
+        # ■ 납부대금 안내 ----------------------------------------------
         bill_data['this_pay_info'] = self.get_this_pay_info(cont_id,
                                                             orders_info,
                                                             inspay_order,
                                                             now_due_order,
                                                             paid_code)
 
-        # 당회 납부대금 합계
+        # 납부대금 합계
         bill_data['this_pay_sum'] = {
             'amount_sum': sum([pi["amount"] for pi in bill_data['this_pay_info']]),
             'unpaid_sum': sum([pi["unpaid"] for pi in bill_data['this_pay_info']]),
@@ -122,10 +122,10 @@ class PdfExportBill(View):
             'amount_total': sum([pi["sum_amount"] for pi in bill_data['this_pay_info']]),
         }
 
-        # ■ 계좌번호 안내 ------------------------------------------------
+        # ■ 납부방법 안내 ------------------------------------------------
         pm_cost_sum = sum([pm['pm_cost_sum'] for pm in orders_info])
-        bill_data['bank_accounts'] = (bill_data['this_pay_sum']['amount_total'],
-                                      pm_cost_sum)
+        bill_data['pay_method'] = (bill_data['this_pay_sum']['amount_total'],
+                                   pm_cost_sum)
 
         # ■ 납부약정 및 납입내역 -------------------------------------------
         bill_data['paid_orders1'] = self.get_paid_orders(contract, orders_info, inspay_order, now_due_order)

@@ -66,8 +66,8 @@
 
 <table style="margin-top: 10px; width: 100%;">
     <tr>
-        <td style="font-size: 12px;">■ 당회 납부대금 안내</td>
-        <td style="font-size: 11px; text-align: right;">{{ issue_date }} 현재</td>
+        <td style="font-size: 12px;">■ 납부대금 안내</td>
+        <td style="font-size: 11px; text-align: right;">[{{ issue_date }} 현재]</td>
     </tr>
 </table>
 <table style="width:100%; font-size:11px; border-collapse:collapse;" cellpadding=0; cellspacing=0;>
@@ -100,7 +100,7 @@
 
 <table style="margin-top: 10px;">
     <tr>
-        <td style="font-size: 12px;">■ 계좌번호 안내</td>
+        <td style="font-size: 12px;">■ 납부방법 안내</td>
     </tr>
 </table>
 
@@ -120,29 +120,29 @@
                     <td style="padding: 3px 0px; border:1px solid black; text-align:center; ">{{ bill_info.bank_account1 }}</td>
                     <td style="padding: 3px 0px; border:1px solid black; text-align:center; ">{{ bill_info.bank_number1 }}</td>
                     <td style="padding: 3px 0px; border:1px solid black; text-align:center; " colspan="2">{{ bill_info.bank_host1 }}</td>
-                    <td style="padding: 3px 10px; border:1px solid black; text-align:right;">{{ data.bank_accounts.0|default:"-"|intcomma }}</td>
+                    <td style="padding: 3px 10px; border:1px solid black; text-align:right;">{{ data.pay_method.0|default:"-"|intcomma }}</td>
                 </tr>
-                {% if data.bank_accounts.1 %}
+                {% if data.pay_method.1 %}
                     <tr>
                         <td style="padding: 3px 0px; border:1px solid black; text-align:center;">{{ 'PM 용역비' }}</td>
                         <td style="padding: 3px 0px; border:1px solid black; text-align:center; ">{{ bill_info.bank_account2 }}</td>
                         <td style="padding: 3px 0px; border:1px solid black; text-align:center; ">{{ bill_info.bank_number2 }}</td>
                         <td style="padding: 3px 0px; border:1px solid black; text-align:center; " colspan="2">{{ bill_info.bank_host2 }}</td>
-                        <td style="padding: 3px 10px; border:1px solid black; text-align:right;">{{ data.bank_accounts.1|default:"-"|intcomma }}</td>
+                        <td style="padding: 3px 10px; border:1px solid black; text-align:right;">{{ data.pay_method.1|default:"-"|intcomma }}</td>
                     </tr>
                 {% endif %}
                 <tr>
                     <td style="padding: 5px 10px; border:1px solid black;"
-                        colspan="{% if data.bank_accounts.1 %}4{% else %}6{% endif %}">
+                        colspan="{% if data.pay_method.1 %}4{% else %}6{% endif %}">
                         ※ 계좌 입금 시 반드시 계약자명과 상기 {% if data.unit %}동 호수{% else %}계약번호{% endif %}를 병행 표기하여 납부하여 주시기 바랍니다.
                         <br/> &nbsp;&nbsp;&nbsp;
                         예) 홍길동{% if data.unit %}{{ data.contract.keyunit.houseunit }}{% else %}
                         {{ data.contract.serial_number|truncatechars:7 }}{% endif %}
                     </td>
 
-                    {% if data.bank_accounts.1 %}
+                    {% if data.pay_method.1 %}
                         <td style="padding: 3px 0px; border:1px solid black; text-align:center;">합 계</td>
-                        <td style="padding: 3px 10px; border:1px solid black; text-align:right;">{{ data.bank_accounts.0|add:data.bank_accounts.1|default:"-"|intcomma }}</td>
+                        <td style="padding: 3px 10px; border:1px solid black; text-align:right;">{{ data.pay_method.0|add:data.pay_method.1|default:"-"|intcomma }}</td>
                     {% endif %}
                 </tr>
             </table>
@@ -153,7 +153,7 @@
 <table style="margin-top: 10px; width: 100%">
     <tr>
         <td style="font-size: 12px;">■ 납부약정 및 납입내역</td>
-        <td style="font-size: 11px; text-align: right;">{{ issue_date }} 현재</td>
+        <td style="font-size: 11px; text-align: right;">[{{ issue_date }} 현재]</td>
     </tr>
 </table>
 
