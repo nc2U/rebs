@@ -181,17 +181,17 @@
         <td colspan="9" style="padding-bottom: 5px; border-left: solid 1px; border-right: solid 1px;"></td>
     </tr>
 
-    {% for paid_order in data.paid_orders1 %}
+    {% for paid_order in data.due_orders %}
         <tr>
             <td style="text-align:center; border-left: solid 1px;">{{ paid_order.order }}</td>
             <td style="text-align:center;">{{ paid_order.due_date|date:"Y-m-d" }}</td>
             <td style="text-align:right;">{{ paid_order.amount|intcomma }}</td>
             <td style="text-align:center; padding-right:1px;">{{ paid_order.paid_date|date:"Y-m-d" }}</td>
             <td style="text-align:right;">{{ paid_order.paid_amt|default:"-"|intcomma }}</td>
-            <td style="padding-right:5px; text-align:right;">{{ def_pay|default:"-"|intcomma }}</td>
-            <td style="text-align:right;">{{ delay_dates|default:"-"|intcomma }}</td>
-            <td style="text-align:right;">{{ late_fee|default:"-"|intcomma }}</td>
-            <td style="border-right: solid 1px"></td>
+            <td style="padding-right:5px; text-align:right;">{{ paid_order.apply_amt|default:"-"|intcomma }}</td>
+            <td style="text-align:right;">{{ 0|default:"-"|intcomma }}</td>
+            <td style="text-align:right;">{{ paid_order.result_amt|default:"-"|intcomma }}</td>
+            <td style="text-align: right; border-right: solid 1px">{{ paid_order.note }}</td>
         </tr>
     {% endfor %}
 

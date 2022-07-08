@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.views.generic import View, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 # --------------------------------------------------------
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponse
 from django.template.loader import render_to_string
@@ -128,7 +128,7 @@ class PdfExportBill(View):
                                    pm_cost_sum)
 
         # ■ 납부약정 및 납입내역 -------------------------------------------
-        bill_data['paid_orders1'] = self.get_paid_orders(contract, orders_info, inspay_order, now_due_order)
+        bill_data['due_orders'] = self.get_due_orders(contract, orders_info, inspay_order, now_due_order)
 
         bill_data['remain_orders'] = self.get_remain_orders(contract, orders_info, inspay_order, now_due_order)
 
@@ -277,7 +277,7 @@ class PdfExportBill(View):
 
         return payment_list
 
-    def get_paid_orders(self, contract, orders_info, inspay_order, now_due_order):
+    def get_due_orders(self, contract, orders_info, inspay_order, now_due_order):
         """
         :: ■ 납부약정 및 납입내역 - 납입내역
         :param orders_info: 납부 회차별 부가정보
@@ -295,6 +295,7 @@ class PdfExportBill(View):
         excess = 0  # 회차별 초과 납부분
 
         for order in paid_orders:
+            due_date = self.get_due_date(contract.contractor.pk, order)
             cont_ord = list(filter(lambda o: o['order'] == order, orders_info))[0]
             amount = cont_ord['pay_amount']
 
@@ -310,15 +311,20 @@ class PdfExportBill(View):
                 except Exception:
                     break
 
+            paid_date = paid_date if paid_amt else ''
+
+            late_fee = self.get_late_fee(order, due_date, amount, paid_date, paid_amt)
+
             paid_dict = {
                 'order': order.pay_name,
-                'due_date': self.get_due_date(contract.contractor.pk, order),
+                'due_date': due_date,
                 'amount': amount,
-                'paid_date': paid_date if paid_amt else '',
+                'paid_date': paid_date,
                 'paid_amt': paid_amt,
-                'delayed_amt': 0,
-                'penalty_days': 0,
-                'panalty_amt': 0,
+                'apply_amt': late_fee['apply_amt'],
+                'apply_days': late_fee['apply_days'],
+                'result_amt': late_fee['result_amt'],
+                'note': late_fee['note'],
             }
             paid_amt_list.append(paid_dict)
 
@@ -400,28 +406,33 @@ class PdfExportBill(View):
                                             order.extra_due_date > due_date) else due_date
         return due_date
 
-    def get_late_fee(self, amount, delay, early):
+    def get_late_fee(self, order, due_date, amount, paid_date, paid_amt):
         """
         :: 회차별 지연 가산금 계산 함수
-        :param amount:
-        :param delay:
-        :param early:
-        :return:
+        :param order: 납부회차
+        :param due_date: 납부기한
+        :param amount: 납부 약정액
+        :param paid_date: 완납일자
+        :param paid_amt: 완납금액
+        :return dict('apply_amt'='', 'apply_days'=0, 'result_amt'=0, 'note'=''):
         """
-        if amount < 0:
-            late_fee = amount * 0.04 * early / 365
-        else:
-            if delay < 30:
-                late_fee = amount * 0.08 * delay / 365
-            elif delay < 90:
-                late_fee = (amount * 0.08 * 29 / 365) + (amount * 0.1 * (delay - 29) / 365)
-            elif delay < 180:
-                late_fee = (amount * 0.08 * 29 / 365) + (amount * 0.1 * 60 / 365) + (amount * 0.11 * (delay - 89) / 365)
-            else:
-                late_fee = (amount * 0.08 * 29 / 365) + (amount * 0.1 * 60 / 365) + (amount * 0.11 * 90 / 365) + (
-                        amount * 0.12 * (delay - 179) / 365)
+        late_fee = {
+            'apply_amt': 0,
+            'apply_days': 0,
+            'result_amt': 0,
+            'note': '-'
+        }
+        apply_amt = amount - paid_amt
 
-        return math.floor(late_fee / 1000) * 1000
+        if order.pay_time < 3:
+            return late_fee
+        else:
+            late_fee['apply_amt'] = apply_amt
+            late_fee['apply_days'] = (due_date, paid_date)
+            late_fee['result_amt'] = 1
+            late_fee['note'] = '8%'
+
+        return late_fee
 
     def get_blank_line(self, unpaid_count, pm, unit, rem_count, total_orders_count):
         """
