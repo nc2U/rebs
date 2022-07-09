@@ -305,6 +305,7 @@ class PdfExportBill(View):
 
             paid_amt = 0  # 금회 납부금액
 
+            # Todo - 아래 오류 수식 바로 잡을 것 => 회별 납부 금액 산출
             while True:
                 try:
                     paid = paid_list.pop()  # (income, deal_date) <- 마지막 요소(가장 빠른 납부일자)
@@ -312,16 +313,16 @@ class PdfExportBill(View):
                     paid_date = paid[1]  # 납부일 = deal_date(loop 마지막 납부건 납부일)
 
                     if (excess + paid_amt) >= amount:  # (전회 초과 납부분 + 납부액) >= 약정액 <= loop 탈출 조건
-                        excess += (paid_amt + excess - amount)  # 초과 납부분 += (납부액 + 전회 초과납부분 - 약정액)
+                        excess += (paid_amt + excess - amount)  # 금회 초과 납부분 += (금회 납부액 + 전회 초과납부분 - 약정액)
                         break
                 except Exception:  # .pop() 에러 시 탈출
                     break
 
             paid_date = paid_date if paid_amt else ''
 
-            apply_days = 330
+            apply_days = 0
 
-            late_fee = self.get_late_fee(order, orders_info, now_due_order, apply_days)
+            apply_amt = cont_ord['unpaid_amount'] if order.pay_code >= 3 and order.pay_code != now_due_order else 0
 
             paid_dict = {
                 'order': order.pay_name,
@@ -329,10 +330,10 @@ class PdfExportBill(View):
                 'amount': amount,
                 'paid_date': paid_date,
                 'paid_amt': paid_amt,
-                'apply_amt': late_fee['apply_amt'],
+                'apply_amt': apply_amt,
                 'apply_days': apply_days,
-                'result_amt': late_fee['result_amt'],
-                'note': late_fee['note'],
+                'result_amt': int(cont_ord['unpaid_amount'] * apply_days * 0.10 / 365),
+                'note': '',
             }
             paid_amt_list.append(paid_dict)
 
@@ -388,6 +389,7 @@ class PdfExportBill(View):
             sum_pay_amount += pay_amount  # 회당 납부 약정액 누계
             info['sum_pay_amount'] = sum_pay_amount  # 회당 납부 약정액 누계
             unpaid = sum_pay_amount - paid_sum_total  # 약정액 누계 - 총 납부액
+            unpaid = unpaid if unpaid > 0 else 0  # 음수(초과 납부 시)는 0 으로 설정
             info['unpaid_amount'] = unpaid if unpaid < pay_amount else pay_amount  # 미납액
             pm_cost_sum += pay_amount if order.is_pm_cost else 0  # PM 용역비 합계
             info['pm_cost_sum'] = pm_cost_sum  # PM 용역비 합계
