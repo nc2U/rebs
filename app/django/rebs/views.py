@@ -88,7 +88,8 @@ class PdfExportBill(View):
         bill_data['unit'] = unit
 
         # 이 계약 건 분양가 (계약금, 중도금, 잔금 약정액)
-        this_price, down, medium, balance = self.get_this_price(project, contract, unit, inspay_order)
+        this_price, down, medium, balance = self.get_this_price(project, contract,
+                                                                unit, inspay_order)
         bill_data['price'] = this_price if unit else '동호 지정 후 고지'  # 이 건 분양가격
 
         # 납부목록, 완납금액 구하기 ------------------------------------------
@@ -132,7 +133,8 @@ class PdfExportBill(View):
                                                       inspay_order, now_due_order,
                                                       paid_code, is_late_fee=False)
 
-        bill_data['remain_orders'] = self.get_remain_orders(contract, orders_info, inspay_order, now_due_order)
+        bill_data['remain_orders'] = self.get_remain_orders(contract, orders_info,
+                                                            inspay_order, now_due_order)
 
         bill_data['paid_sum_total'] = paid_sum_total
         bill_data['late_fee_sum'] = self.get_due_orders(contract, orders_info,
@@ -255,7 +257,9 @@ class PdfExportBill(View):
 
         return paid_code
 
-    def get_this_pay_info(self, cont_id, orders_info, inspay_order, now_due_order, paid_code):
+    def get_this_pay_info(self, cont_id,
+                          orders_info, inspay_order,
+                          now_due_order, paid_code):
         """
         :: ■ 납부대금 안내
         :param cont_id: 계약자 아이디
@@ -287,7 +291,9 @@ class PdfExportBill(View):
 
         return payment_list
 
-    def get_due_orders(self, contract, orders_info, inspay_order, now_due_order, paid_code, **kwargs):
+    def get_due_orders(self, contract, orders_info,
+                       inspay_order, now_due_order,
+                       paid_code, **kwargs):
         """
         :: ■ 납부약정 및 납입내역 - 납입내역
         :param orders_info: 납부 회차별 부가정보
@@ -349,7 +355,7 @@ class PdfExportBill(View):
             if order.pay_code > 1 and paid_amt and paid_date > due_date:
                 sum_p_amt = ord_info['sum_pay_amount']  # 금 회차 납부 약정액
                 sum_p_paid = paid_amt_sum - paid_amt
-                delayed_amt = sum_p_amt - sum_p_paid
+                delayed_amt = sum_p_amt - sum_p_paid if sum_p_amt - sum_p_paid > 0 else 0
                 if delayed_amt > 0:
                     delayed_days = (paid_date - due_date).days
 
@@ -426,10 +432,8 @@ class PdfExportBill(View):
             info['pay_amount'] = pay_amount  # 회당 납부 약정액
             sum_pay_amount += pay_amount  # 회당 납부 약정액 누계
             info['sum_pay_amount'] = sum_pay_amount  # 회당 납부 약정액 누계
-
             unpaid = sum_pay_amount - paid_sum_total  # 약정액 누계 - 총 납부액
             unpaid = unpaid if unpaid > 0 else 0  # 음수(초과 납부 시)는 0 으로 설정
-
             info['unpaid_amount'] = unpaid if unpaid < pay_amount else pay_amount  # 미납액
             pm_cost_sum += pay_amount if order.is_pm_cost else 0  # PM 용역비 합계
             info['pm_cost_sum'] = pm_cost_sum  # PM 용역비 합계
