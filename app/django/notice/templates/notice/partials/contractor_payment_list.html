@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-sm"><h5><i class="dripicons-view-apps text-primary"></i> 계약자 데이터</h5></div>
         <div class="col-sm text-right mr-2">
-            <span class="text-black-50 mr-3">총 계약 건수 : {{ contract_count }} 건</span>
+            <span class="text-black-50 mr-3">총 계약자 수 : {{ contractor_count|default:'-'|intcomma }} 건</span>
             <a href="javascript:"
                onclick="alert('준비중입니다!')"
                class="ml-3 text-black-50">

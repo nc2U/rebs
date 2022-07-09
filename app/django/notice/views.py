@@ -103,6 +103,7 @@ class BillManageView(LoginRequiredMixin, ListView, FormView):
         context['types'] = UnitType.objects.filter(project=self.get_project())
         context['dongs'] = BuildingUnit.objects.filter(project=self.get_project())
         context['bill_issue'] = self.get_bill_issue()
+        context['contractor_count'] = self.get_queryset().count()
 
         # 계약자 별 총 납입금 계산
         paginator = Paginator(self.get_queryset(), self.get_paginate_by(self.get_queryset()))
