@@ -188,10 +188,11 @@
             <td style="text-align:right;">{{ paid_order.amount|intcomma }}</td>
             <td style="text-align:center; padding-right:1px;">{{ paid_order.paid_date|date:"Y-m-d" }}</td>
             <td style="text-align:right;">{{ paid_order.paid_amt|default:"-"|intcomma }}</td>
+
             <td style="padding-right:5px; text-align:right;">{{ paid_order.apply_amt|default:"-"|intcomma }}</td>
-            <td style="text-align:right;">{{ 0|default:"-"|intcomma }}</td>
+            <td style="text-align:right;">{{ paid_order.apply_days|default:"-"|intcomma }}</td>
             <td style="text-align:right;">{{ paid_order.result_amt|default:"-"|intcomma }}</td>
-            <td style="text-align: right; border-right: solid 1px">{{ paid_order.note }}</td>
+            <td style="text-align: center; border-right: solid 1px">{{ paid_order.note }}</td>
         </tr>
     {% endfor %}
 

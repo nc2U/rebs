@@ -247,7 +247,7 @@ class PdfExportBill(View):
 
     def get_this_pay_info(self, cont_id, orders_info, inspay_order, now_due_order, paid_code):
         """
-        :: ■ 당회 납부대금 안내
+        :: ■ 납부대금 안내
         :param cont_id: 계약자 아이디
         :param orders_info: 회차별 부가정보
         :param inspay_order: 회차 정보
@@ -313,7 +313,9 @@ class PdfExportBill(View):
 
             paid_date = paid_date if paid_amt else ''
 
-            late_fee = self.get_late_fee(order, due_date, amount, paid_date, paid_amt)
+            apply_days = 330
+
+            late_fee = self.get_late_fee(order, orders_info, now_due_order, apply_days)
 
             paid_dict = {
                 'order': order.pay_name,
@@ -322,7 +324,7 @@ class PdfExportBill(View):
                 'paid_date': paid_date,
                 'paid_amt': paid_amt,
                 'apply_amt': late_fee['apply_amt'],
-                'apply_days': late_fee['apply_days'],
+                'apply_days': apply_days,
                 'result_amt': late_fee['result_amt'],
                 'note': late_fee['note'],
             }
@@ -406,7 +408,7 @@ class PdfExportBill(View):
                                             order.extra_due_date > due_date) else due_date
         return due_date
 
-    def get_late_fee(self, order, due_date, amount, paid_date, paid_amt):
+    def get_late_fee(self, order, orders_info, now_due_order, apply_days):
         """
         :: 회차별 지연 가산금 계산 함수
         :param order: 납부회차
@@ -416,23 +418,18 @@ class PdfExportBill(View):
         :param paid_amt: 완납금액
         :return dict('apply_amt'='', 'apply_days'=0, 'result_amt'=0, 'note'=''):
         """
-        late_fee = {
-            'apply_amt': 0,
-            'apply_days': 0,
-            'result_amt': 0,
-            'note': '-'
-        }
-        apply_amt = amount - paid_amt
+        late_fee = {}
+        late_fee['apply_amt'] = 0
+        late_fee['result_amt'] = 0
+        late_fee['note'] = ''
 
-        if order.pay_time < 3:
+        if order.pay_code < 3 or order.pay_code == now_due_order:
             return late_fee
         else:
-            late_fee['apply_amt'] = apply_amt
-            late_fee['apply_days'] = (due_date, paid_date)
-            late_fee['result_amt'] = 1
-            late_fee['note'] = '8%'
-
-        return late_fee
+            ord_info = list(filter(lambda o: o['order'] == order, orders_info))[0]
+            late_fee['apply_amt'] = ord_info['unpaid_amount']
+            late_fee['result_amt'] = int(ord_info['unpaid_amount'] * apply_days * 0.10 / 365)
+            return late_fee
 
     def get_blank_line(self, unpaid_count, pm, unit, rem_count, total_orders_count):
         """
