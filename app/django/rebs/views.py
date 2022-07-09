@@ -216,6 +216,8 @@ class PdfExportBill(View):
         )  # 해당 계약 건 납부 데이터
 
         paid_sum_total = paid_list.aggregate(Sum('income'))['income__sum']  # 완납 총금액
+        paid_list = paid_list if paid_list else []
+        paid_sum_total = paid_sum_total if paid_sum_total else 0
         return paid_list, paid_sum_total
 
     def get_cont_content(self, contract, price, unit):
@@ -243,7 +245,10 @@ class PdfExportBill(View):
         :param paid_sum_total: 납부 총액
         :return 완납회차 객체:
         """
-        return [c['order'].pay_code for c in orders_info if paid_sum_total >= c['sum_pay_amount']][-1]
+        paid_code = 0
+        if paid_sum_total > 0:
+            paid_code = [c['order'].pay_code for c in orders_info if paid_sum_total >= c['sum_pay_amount']][-1]
+        return paid_code
 
     def get_this_pay_info(self, cont_id, orders_info, inspay_order, now_due_order, paid_code):
         """
@@ -289,7 +294,7 @@ class PdfExportBill(View):
 
         # 해당 계약 건 전체 납부 목록 -> [(income, deal_date), ...]
         paid_list = [(p.income, p.deal_date) for p in self.get_paid(contract)[0]]
-        paid_date = paid_list[-1][1]  # 마지막 요소의 deal_date (납부일)
+        paid_date = paid_list[-1][1] if paid_list else None  # 마지막 요소의 deal_date (납부일)
 
         # 전체 리턴 데이터 목록
         paid_amt_list = []
