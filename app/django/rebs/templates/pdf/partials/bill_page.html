@@ -93,7 +93,9 @@
         <td style="padding: 3px 0px; border:1px solid black; text-align:center;" colspan="2">합 계</td>
         <td style="padding: 3px 10px; border:1px solid black; text-align:right;">{{ data.this_pay_sum.amount_sum|default:"-"|intcomma }}</td>
         <td style="padding: 3px 10px; border:1px solid black; text-align:right;">{{ data.this_pay_sum.unpaid_sum|default:"-"|intcomma }}</td>
-        <td style="padding: 3px 10px; border:1px solid black; text-align:right;">{{ data.this_pay_sum.penalty_sum|default:"-"|intcomma }}</td>
+        <td style="padding: 3px 10px; border:1px solid black; text-align:{% if data.late_fee_sum %}center{% else %}right{% endif %};">
+            {% if data.late_fee_sum %}납부일 확인요{% else %}{{ 0|default:"-"|intcomma }}{% endif %}
+        </td>
         <td style="padding: 3px 10px; border:1px solid black; text-align:right;">{{ data.this_pay_sum.amount_total|default:"-"|intcomma }}</td>
     </tr>
 </table>
@@ -189,10 +191,14 @@
             <td style="text-align:center; padding-right:1px;">{{ paid_order.paid_date|date:"Y-m-d" }}</td>
             <td style="text-align:right;">{{ paid_order.paid_amt|default:"-"|intcomma }}</td>
 
-            <td style="padding-right:5px; text-align:right;">{{ paid_order.apply_amt|default:"-"|intcomma }}</td>
-            <td style="text-align:right;">{{ paid_order.apply_days|default:"-"|intcomma }}</td>
-            <td style="text-align:right;">{{ paid_order.result_amt|default:"-"|intcomma }}</td>
-            <td style="text-align: center; border-right: solid 1px">{{ paid_order.note }}</td>
+            <td style="padding-right:5px; text-align:right;">{{ paid_order.unpaid_amt|default:paid_order.delayed_amt|default:"-"|intcomma }}</td>
+            <td style="text-align:right;">{{ paid_order.unpaid_days|default:paid_order.delayed_days|default:"-"|intcomma }}</td>
+            <td style="text-align:right;">{{ paid_order.unpaid_result.0|add:paid_order.delayed_result.0|default:"-"|intcomma }}</td>
+            <td style="font-size: 9px; text-align: center; border-right: solid 1px">
+                {% if paid_order.unpaid_result.0|add:paid_order.delayed_result.0 %}
+                {{ paid_order.unpaid_result.1|default:paid_order.delayed_result.1|default:"" }}
+                {% endif %}{{ paid_order.note }}
+            </td>
         </tr>
     {% endfor %}
 
@@ -207,7 +213,11 @@
             <td style="text-align:center; border-left: solid 1px;">{{ rem_order.order }}</td>
             <td style="text-align:center;">{{ rem_order.due_date|date:"Y-m-d" }}</td>
             <td style="text-align:right;">{{ rem_order.amount|intcomma }}</td>
-            <td style="border-right: solid 1px;" colspan="6"></td>
+            <td style="text-align: center; border-right: solid 1px;" colspan="6">
+                {% if forloop.last and data.late_fee_sum %}
+                    ※ 지연 납부 시 당일 가산금을 확인(T. {{ bill_info.agency_tel|default:bill_info.host_tel }}) 후 납부하여 주시기 바랍니다.
+                {% endif %}
+            </td>
         </tr>
     {% endfor %}
 
@@ -217,10 +227,10 @@
     <tr>
         <td style="padding: 3px 0px; border:1px solid black; text-align:center;">합 계</td>
         <td style="padding: 3px 5px; border:1px solid black; text-align:{% if data.unit %}right{% else %}center{% endif %};" colspan="2">{{ data.price|intcomma }}</td>
-        <td style="padding: 3px 5px; border:1px solid black; text-align:right;" colspan="2">{{ data.payment_amount_sum|default:"-"|intcomma }}</td>
+        <td style="padding: 3px 5px; border:1px solid black; text-align:right;" colspan="2">{{ data.paid_sum_total|default:"-"|intcomma }}</td>
         <td style="padding: 3px 5px; border:1px solid black; text-align:right;">{{ 0|default:"-"|intcomma }}</td>
         <td style="padding: 3px 5px; border:1px solid black; text-align:right;">{{ 0|default:"-"|intcomma }}</td>
-        <td style="padding: 3px 5px; border:1px solid black; text-align:right; ">{{ 0|default:"-"|intcomma }}</td>
+        <td style="padding: 3px 5px; border:1px solid black; text-align:right; ">{{ data.late_fee_sum|default:"-"|intcomma }}</td>
         <td style="padding: 3px 0px; border:1px solid black; text-align:center;"></td>
     </tr>
 </table>

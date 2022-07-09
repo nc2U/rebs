@@ -128,11 +128,16 @@ class PdfExportBill(View):
                                    pm_cost_sum)
 
         # ■ 납부약정 및 납입내역 -------------------------------------------
-        bill_data['due_orders'] = self.get_due_orders(contract, orders_info, inspay_order, now_due_order)
+        bill_data['due_orders'] = self.get_due_orders(contract, orders_info,
+                                                      inspay_order, now_due_order,
+                                                      paid_code, is_late_fee=False)
 
         bill_data['remain_orders'] = self.get_remain_orders(contract, orders_info, inspay_order, now_due_order)
 
-        bill_data['payment_amount_sum'] = paid_sum_total
+        bill_data['paid_sum_total'] = paid_sum_total
+        bill_data['late_fee_sum'] = self.get_due_orders(contract, orders_info,
+                                                        inspay_order, now_due_order,
+                                                        paid_code, is_late_fee=True)
 
         # 공백 개수 구하기
         unpaid_count = len(bill_data['this_pay_info'])
@@ -282,7 +287,7 @@ class PdfExportBill(View):
 
         return payment_list
 
-    def get_due_orders(self, contract, orders_info, inspay_order, now_due_order):
+    def get_due_orders(self, contract, orders_info, inspay_order, now_due_order, paid_code, **kwargs):
         """
         :: ■ 납부약정 및 납입내역 - 납입내역
         :param orders_info: 납부 회차별 부가정보
@@ -301,6 +306,9 @@ class PdfExportBill(View):
         due_orders = inspay_order.filter(pay_code__lte=now_due_order)  # 금 회차까지 납부 회차
 
         excess = 0  # 회차별 초과 납부분
+        paid_amt_sum = 0  # 실 수납액 누계
+
+        late_fee_sum = 0
 
         for order in due_orders:
             due_date = self.get_due_date(contract.contractor.pk, order)  # 납부기한
@@ -323,12 +331,30 @@ class PdfExportBill(View):
                     break
 
             paid_date = paid_date if paid_amt else ''
+            unpaid_amt = ord_info['unpaid_amount'] if order.pay_code != now_due_order else 0
 
-            # 지연일수 구하기 규칙
-            # 1.
-            apply_days = 0
+            if unpaid_amt == 0 or (order.pay_code == 1 and paid_code >= 1):  # 지연금 없거나 1회차 일때 완납코드가 1 이상이면,
+                unpaid_days = 0
+            else:
+                try:
+                    unpaid_days = (TODAY - due_date).days
+                except:
+                    unpaid_days = 0
 
-            apply_amt = ord_info['unpaid_amount'] if order.pay_code != now_due_order else 0
+            delayed_amt = 0  # 당회 납부 지연 시 납부 전 지연금 계산
+            delayed_days = 0  # 당회 납부 지연 시 납부 전 지연금 지연일 계산
+
+            paid_amt_sum += paid_amt
+
+            if order.pay_code > 1 and paid_amt and paid_date > due_date:
+                sum_p_amt = ord_info['sum_pay_amount']  # 금 회차 납부 약정액
+                sum_p_paid = paid_amt_sum - paid_amt
+                delayed_amt = sum_p_amt - sum_p_paid
+                if delayed_amt > 0:
+                    delayed_days = (paid_date - due_date).days
+
+            late_fee_sum += self.get_late_fee(unpaid_amt, unpaid_days)[0] + \
+                            self.get_late_fee(delayed_amt, delayed_days)[0]
 
             paid_dict = {
                 'order': order.pay_name,
@@ -336,14 +362,20 @@ class PdfExportBill(View):
                 'amount': amount,
                 'paid_date': paid_date,
                 'paid_amt': paid_amt,
-                'apply_amt': apply_amt,
-                'apply_days': apply_days,
-                'result_amt': int(ord_info['unpaid_amount'] * apply_days * 0.10 / 365),
-                'note': '',
+                'unpaid_amt': unpaid_amt,
+                'unpaid_days': unpaid_days,
+                'unpaid_result': self.get_late_fee(unpaid_amt, unpaid_days),
+                'delayed_amt': delayed_amt,
+                'delayed_days': delayed_days,
+                'delayed_result': self.get_late_fee(delayed_amt, delayed_days),
+                'note': f'(+)' if unpaid_days and delayed_days else '',
             }
             paid_amt_list.append(paid_dict)
 
-        return paid_amt_list
+        if kwargs['is_late_fee']:
+            return late_fee_sum
+        else:
+            return paid_amt_list
 
     def get_remain_orders(self, contract, orders_info, inspay_order, now_due_order):
         """
@@ -425,7 +457,7 @@ class PdfExportBill(View):
                 due_date = None if order.pay_code > 2 else due_date
         return due_date
 
-    def get_late_fee(self, order, orders_info, now_due_order, apply_days):
+    def get_late_fee(self, amount, days):
         """
         :: 회차별 지연 가산금 계산 함수
         :param order: 납부회차
@@ -433,20 +465,21 @@ class PdfExportBill(View):
         :param amount: 납부 약정액
         :param paid_date: 완납일자
         :param paid_amt: 완납금액
-        :return dict('apply_amt'='', 'apply_days'=0, 'result_amt'=0, 'note'=''):
+        :return dict('unpaid_amt'='', 'unpaid_days'=0, 'result_amt'=0, 'note'=''):
         """
-        late_fee = {}
-        late_fee['apply_amt'] = 0
-        late_fee['result_amt'] = 0
-        late_fee['note'] = ''
-
-        if order.pay_code < 3 or order.pay_code == now_due_order:
-            return late_fee
+        rate = 0
+        if days < 30:
+            rate = 0.08
+        elif days <= 90:
+            rate = 0.1
+        elif days <= 180:
+            rate = 0.11
         else:
-            ord_info = list(filter(lambda o: o['order'] == order, orders_info))[0]
-            late_fee['apply_amt'] = ord_info['unpaid_amount']
-            late_fee['result_amt'] = int(ord_info['unpaid_amount'] * apply_days * 0.10 / 365)
-            return late_fee
+            rate = 0.12
+
+        floor_fee = int(amount * days * rate / 365000) * 1000
+
+        return floor_fee, f'{int(rate * 100)}%'
 
     def get_blank_line(self, unpaid_count, pm, total_orders_count):
         """
