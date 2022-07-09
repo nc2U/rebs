@@ -326,7 +326,7 @@ class PdfExportBill(View):
 
             apply_days = 0
 
-            apply_amt = ord_info['unpaid_amount'] if order.pay_code >= 3 and order.pay_code != now_due_order else 0
+            apply_amt = ord_info['unpaid_amount'] if order.pay_code != now_due_order else 0
 
             paid_dict = {
                 'order': order.pay_name,
