@@ -259,10 +259,10 @@ class PdfExportBill(View):
         unpaid_orders = inspay_order.filter(pay_code__gt=paid_code,
                                             pay_code__lte=now_due_order)  # 최종 기납부회차 이후부터 납부지정회차 까지 회차그룹
         for order in unpaid_orders:
-            cont_ord = list(filter(lambda o: o['order'] == order, orders_info))[0]
+            ord_info = list(filter(lambda o: o['order'] == order, orders_info))[0]
 
-            amount = cont_ord['pay_amount']
-            unpaid = cont_ord['unpaid_amount']
+            amount = ord_info['pay_amount']
+            unpaid = ord_info['unpaid_amount']
             penalty = 0
 
             payment_dict = {
@@ -299,20 +299,19 @@ class PdfExportBill(View):
 
         for order in due_orders:
             due_date = self.get_due_date(contract.contractor.pk, order)  # 납부기한
-
-            cont_ord = list(filter(lambda o: o['order'] == order, orders_info))[0]  # 금 회차 orders_info
-            amount = cont_ord['pay_amount']  # 금 회차 납부 약정액
+            ord_info = list(filter(lambda o: o['order'] == order, orders_info))[0]  # 금 회차 orders_info
+            amount = ord_info['pay_amount']  # 금 회차 납부 약정액
 
             paid_amt = 0  # 금회 납부금액
 
-            # Todo - 아래 오류 수식 바로 잡을 것 => 회별 납부 금액 산출
-            while True:
+            while True:  # 납입회차별 납입금 구하기
                 try:
                     paid = paid_list.pop()  # (income, deal_date) <- 마지막 요소(가장 빠른 납부일자)
                     paid_amt += paid[0]  # 납부액 += income (loop 동안 income 을 모두 더함)
                     paid_date = paid[1]  # 납부일 = deal_date(loop 마지막 납부건 납부일)
-
-                    if (excess + paid_amt) >= amount:  # (전회 초과 납부분 + 납부액) >= 약정액 <= loop 탈출 조건
+                    is_over_amt = (excess + paid_amt) >= amount
+                    is_last_ord = order.pay_code + 1 == now_due_order
+                    if is_over_amt and not is_last_ord:  # (전회 초과 납부분 + 납부액) >= 약정액 <= loop 탈출 조건
                         excess += (paid_amt + excess - amount)  # 금회 초과 납부분 += (금회 납부액 + 전회 초과납부분 - 약정액)
                         break
                 except Exception:  # .pop() 에러 시 탈출
@@ -322,7 +321,7 @@ class PdfExportBill(View):
 
             apply_days = 0
 
-            apply_amt = cont_ord['unpaid_amount'] if order.pay_code >= 3 and order.pay_code != now_due_order else 0
+            apply_amt = ord_info['unpaid_amount'] if order.pay_code >= 3 and order.pay_code != now_due_order else 0
 
             paid_dict = {
                 'order': order.pay_name,
@@ -332,7 +331,7 @@ class PdfExportBill(View):
                 'paid_amt': paid_amt,
                 'apply_amt': apply_amt,
                 'apply_days': apply_days,
-                'result_amt': int(cont_ord['unpaid_amount'] * apply_days * 0.10 / 365),
+                'result_amt': int(ord_info['unpaid_amount'] * apply_days * 0.10 / 365),
                 'note': '',
             }
             paid_amt_list.append(paid_dict)
@@ -352,8 +351,8 @@ class PdfExportBill(View):
         remain_orders = inspay_order.filter(pay_code__gt=now_due_order)
 
         for order in remain_orders:
-            cont_ord = list(filter(lambda o: o['order'] == order, orders_info))[0]
-            amount = cont_ord['pay_amount']
+            ord_info = list(filter(lambda o: o['order'] == order, orders_info))[0]
+            amount = ord_info['pay_amount']
 
             paid_dict = {
                 'order': order.pay_name,
@@ -388,8 +387,10 @@ class PdfExportBill(View):
             info['pay_amount'] = pay_amount  # 회당 납부 약정액
             sum_pay_amount += pay_amount  # 회당 납부 약정액 누계
             info['sum_pay_amount'] = sum_pay_amount  # 회당 납부 약정액 누계
+
             unpaid = sum_pay_amount - paid_sum_total  # 약정액 누계 - 총 납부액
             unpaid = unpaid if unpaid > 0 else 0  # 음수(초과 납부 시)는 0 으로 설정
+
             info['unpaid_amount'] = unpaid if unpaid < pay_amount else pay_amount  # 미납액
             pm_cost_sum += pay_amount if order.is_pm_cost else 0  # PM 용역비 합계
             info['pm_cost_sum'] = pm_cost_sum  # PM 용역비 합계
