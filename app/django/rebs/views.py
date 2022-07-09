@@ -37,9 +37,10 @@ class PdfExportBill(View):
         """
         project = request.GET.get('project')  # 프로젝트 ID
 
-        context = {}  # 전체 데이터 딕셔너리
-        context['issue_date'] = request.GET.get('date')  # 고지서 발행일
-        context['bill_info'] = SalesBillIssue.objects.get(project_id=project)  # 고지서 일반 정보
+        context = {
+            'issue_date': request.GET.get('date'),
+            'bill_info': SalesBillIssue.objects.get(project_id=project)
+        }  # 전체 데이터 딕셔너리
         inspay_order = InstallmentPaymentOrder.objects.filter(project_id=project)  # 전체 납부회차 리스트
         now_due_order = context['bill_info'].now_payment_order.pay_code \
             if context['bill_info'].now_payment_order else 2  # 당회 납부 회차
