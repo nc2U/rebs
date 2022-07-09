@@ -140,8 +140,6 @@ class PdfExportBill(View):
 
         bill_data['blank_line'] = self.get_blank_line(unpaid_count,
                                                       pm_cost_sum,
-                                                      unit,
-                                                      rem_count,
                                                       inspay_order.count())
 
         # --------------------------------------------------------------
@@ -245,9 +243,11 @@ class PdfExportBill(View):
         :param paid_sum_total: 납부 총액
         :return 완납회차 객체:
         """
-        paid_code = 0
-        if paid_sum_total > 0:
+        try:
             paid_code = [c['order'].pay_code for c in orders_info if paid_sum_total >= c['sum_pay_amount']][-1]
+        except IndexError:  # paid_sum_total 이 1회차에 미치지 못하는 경우 == 계약금 부족 시
+            paid_code = 0
+
         return paid_code
 
     def get_this_pay_info(self, cont_id, orders_info, inspay_order, now_due_order, paid_code):
@@ -445,19 +445,16 @@ class PdfExportBill(View):
             late_fee['result_amt'] = int(ord_info['unpaid_amount'] * apply_days * 0.10 / 365)
             return late_fee
 
-    def get_blank_line(self, unpaid_count, pm, unit, rem_count, total_orders_count):
+    def get_blank_line(self, unpaid_count, pm, total_orders_count):
         """
         :: 공백 라인 개수 구하기
         :param unpaid_count: 미납내역 개수
         :param pm: pm 용역비 적용여부
-        :param unit: 동호수 지정 여부
-        :param rem_count: 잔여 납부회차 개수
         :param total_orders_count: 전체 납부회차 개수
         :return str(. * 공백라인 수):
         """
         num = unpaid_count + 1 if pm else unpaid_count
-        rem_blank = 0 if unit else rem_count
-        blank_line = (15 - (num + total_orders_count)) + rem_blank
+        blank_line = (15 - (num + total_orders_count))
         return '.' * blank_line
 
 
