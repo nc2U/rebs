@@ -309,12 +309,12 @@ class PdfExportBill(View):
                     paid = paid_list.pop()  # (income, deal_date) <- 마지막 요소(가장 빠른 납부일자)
                     paid_amt += paid[0]  # 납부액 += income (loop 동안 income 을 모두 더함)
                     paid_date = paid[1]  # 납부일 = deal_date(loop 마지막 납부건 납부일)
-                    is_over_amt = (excess + paid_amt) >= amount
-                    is_last_ord = order.pay_code + 1 == now_due_order
-                    if is_over_amt and not is_last_ord:  # (전회 초과 납부분 + 납부액) >= 약정액 <= loop 탈출 조건
+                    is_over_amt = (excess + paid_amt) >= amount  # (전회 초과 납부분 + 납부액) >= 약정액
+                    is_last_ord = order.pay_code + 1 == now_due_order  # 현재 회차 == 금회 직전 회차 (이 경우 루프 마지막까지 순회하기 위해서 루프탈출 조건에서 제외)
+                    if is_over_amt and not is_last_ord:  # loop 탈출 조건
                         excess += (paid_amt + excess - amount)  # 금회 초과 납부분 += (금회 납부액 + 전회 초과납부분 - 약정액)
                         break
-                except Exception:  # .pop() 에러 시 탈출
+                except IndexError:  # .pop() 에러 시 탈출
                     break
 
             paid_date = paid_date if paid_amt else ''
