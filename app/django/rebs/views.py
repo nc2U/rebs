@@ -213,7 +213,7 @@ class PdfExportBill(View):
             is_contract_payment=True,
             contract=contract,
             income__isnull=False
-        ).order_by('-deal_date')  # 해당 계약 건 납부 데이터
+        )  # 해당 계약 건 납부 데이터
 
         paid_sum_total = paid_list.aggregate(Sum('income'))['income__sum']  # 완납 총금액
         return paid_list, paid_sum_total
@@ -286,29 +286,35 @@ class PdfExportBill(View):
         :param paid_sum_total: 기 납부 총액
         :return list(paid_list: 왼납 회차 목록):
         """
-        paid_list = [(inc.income, inc.deal_date) for inc in self.get_paid(contract)[0]]
-        paid_date = paid_list[-1][1]
 
+        # 해당 계약 건 전체 납부 목록 -> [(income, deal_date), ...]
+        paid_list = [(p.income, p.deal_date) for p in self.get_paid(contract)[0]]
+        paid_date = paid_list[-1][1]  # 마지막 요소의 deal_date (납부일)
+
+        # 전체 리턴 데이터 목록
         paid_amt_list = []
-        paid_orders = inspay_order.filter(pay_code__lte=now_due_order)
+        due_orders = inspay_order.filter(pay_code__lte=now_due_order)  # 금 회차까지 납부 회차
 
         excess = 0  # 회차별 초과 납부분
 
-        for order in paid_orders:
-            due_date = self.get_due_date(contract.contractor.pk, order)
-            cont_ord = list(filter(lambda o: o['order'] == order, orders_info))[0]
-            amount = cont_ord['pay_amount']
+        for order in due_orders:
+            due_date = self.get_due_date(contract.contractor.pk, order)  # 납부기한
+
+            cont_ord = list(filter(lambda o: o['order'] == order, orders_info))[0]  # 금 회차 orders_info
+            amount = cont_ord['pay_amount']  # 금 회차 납부 약정액
 
             paid_amt = 0  # 금회 납부금액
+
             while True:
                 try:
-                    paid = paid_list.pop()
-                    paid_amt += paid[0]
-                    paid_date = paid[1]
-                    if (paid_amt + excess) >= amount:
-                        excess += (paid_amt + excess - amount)
+                    paid = paid_list.pop()  # (income, deal_date) <- 마지막 요소(가장 빠른 납부일자)
+                    paid_amt += paid[0]  # 납부액 += income (loop 동안 income 을 모두 더함)
+                    paid_date = paid[1]  # 납부일 = deal_date(loop 마지막 납부건 납부일)
+
+                    if (excess + paid_amt) >= amount:  # (전회 초과 납부분 + 납부액) >= 약정액 <= loop 탈출 조건
+                        excess += (paid_amt + excess - amount)  # 초과 납부분 += (납부액 + 전회 초과납부분 - 약정액)
                         break
-                except Exception:
+                except Exception:  # .pop() 에러 시 탈출
                     break
 
             paid_date = paid_date if paid_amt else ''
