@@ -38,7 +38,6 @@ class PdfExportBill(View):
         project = request.GET.get('project')  # 프로젝트 ID
 
         context = {}  # 전체 데이터 딕셔너리
-        context['data_list'] = []  # 계약 건별 데이터 리스트
         context['issue_date'] = request.GET.get('date')  # 고지서 발행일
         context['bill_info'] = SalesBillIssue.objects.get(project_id=project)  # 고지서 일반 정보
         inspay_order = InstallmentPaymentOrder.objects.filter(project_id=project)  # 전체 납부회차 리스트
@@ -48,10 +47,9 @@ class PdfExportBill(View):
         contractor_list = request.GET.get('seq').split('-')  # 계약 건 ID 리스트
 
         # 해당 계약건에 대한 데이터 정리 --------------------------------------- start
-        for cont_id in contractor_list:  # 선택된 계약 건 수만큼 반복
 
-            bill_data = self.get_bill_data(project, cont_id, inspay_order, now_due_order)
-            context['data_list'].append(bill_data)
+        context['data_list'] = (self.get_bill_data(project, cont_id, inspay_order, now_due_order) \
+                                for cont_id in contractor_list)
 
         # 해당 계약건에 대한 데이터 정리 --------------------------------------- end
 
