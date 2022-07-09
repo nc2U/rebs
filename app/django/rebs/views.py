@@ -324,6 +324,8 @@ class PdfExportBill(View):
 
             paid_date = paid_date if paid_amt else ''
 
+            # 지연일수 구하기 규칙
+            # 1.
             apply_days = 0
 
             apply_amt = ord_info['unpaid_amount'] if order.pay_code != now_due_order else 0
@@ -411,15 +413,26 @@ class PdfExportBill(View):
         :param order: 납부 회차 객체
         :return str(due_date): 약정 납부 일자
         """
-        ref_date = self.get_contract(cont_id).contractor.contract_date
+        # ref_date = self.get_contract(cont_id).contractor.contract_date
+        #
+        # due_date = ref_date
+        # due_date = ref_date if order.pay_time == 1 else due_date
+        # due_date = ref_date + timedelta(days=30) if order.pay_time == 2 else due_date
+        # due_date = order.pay_due_date if order.pay_time > 2 else due_date
+        # due_date = order.extra_due_date if order.extra_due_date and \
+        #                                    (not due_date or
+        #                                     order.extra_due_date > due_date) else due_date
 
-        due_date = ref_date
-        due_date = ref_date if order.pay_time == 1 else due_date
-        due_date = ref_date + timedelta(days=30) if order.pay_time == 2 else due_date
-        due_date = order.pay_due_date if order.pay_time > 2 else due_date
-        due_date = order.extra_due_date if order.extra_due_date and \
-                                           (not due_date or
-                                            order.extra_due_date > due_date) else due_date
+        due_date = self.get_contract(cont_id).contractor.contract_date  # 계약일 (default 납부기한)
+
+        if order.pay_code >= 2:
+            due_date = due_date + timedelta(days=30)  # 2회차 이상일 때 -> 30일 후 (default 납부기한)
+            if order.extra_due_date:
+                due_date = order.extra_due_date if order.extra_due_date > due_date else due_date
+            elif order.pay_due_date:
+                due_date = order.pay_due_date if order.pay_due_date > due_date else due_date
+            else:
+                due_date = None if order.pay_code > 2 else due_date
         return due_date
 
     def get_late_fee(self, order, orders_info, now_due_order, apply_days):
