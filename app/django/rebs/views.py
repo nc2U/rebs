@@ -150,12 +150,12 @@ class PdfExportBill(View):
         # --------------------------------------------------------------
         return bill_data
 
-    def get_contract(self, id):
+    def get_contract(self, cont_id):
         """ ■ 계약 가져오기
-        :param id: 계약자 아이디
+        :param cont_id: 계약자 아이디
         :return object(contract: 계약 건):
         """
-        return Contract.objects.get(contractor__id=id)
+        return Contract.objects.get(contractor__id=cont_id)
 
     def get_this_price(self, project, contract, unit, inspay_order):
         """ ■ 해당 계약 건 분양가 구하기
@@ -294,10 +294,11 @@ class PdfExportBill(View):
                        paid_code, **kwargs):
         """
         :: ■ 납부약정 및 납입내역 - 납입내역
+        :param contract: 계약 건
         :param orders_info: 납부 회차별 부가정보
         :param inspay_order: 전체 납부회차
         :param now_due_order: 금회 납부 회차
-        :param paid_sum_total: 기 납부 총액
+        :param paid_code: 완납회차
         :return list(paid_list: 왼납 회차 목록):
         """
 
@@ -327,7 +328,8 @@ class PdfExportBill(View):
                     paid_amt += paid[0]  # 납부액 += income (loop 동안 income 을 모두 더함)
                     paid_date = paid[1]  # 납부일 = deal_date(loop 마지막 납부건 납부일)
                     is_over_amt = (excess + paid_amt) >= amount  # (전회 초과 납부분 + 납부액) >= 약정액
-                    is_last_ord = order.pay_code + 1 == now_due_order  # 현재 회차 == 금회 직전 회차 (이 경우 루프 마지막까지 순회하기 위해서 루프탈출 조건에서 제외)
+                    # 현재 회차 == 금회 직전 회차 (이 경우 루프 마지막까지 순회하기 위해서 루프탈출 조건에서 제외)
+                    is_last_ord = order.pay_code + 1 == now_due_order
                     if is_over_amt and not is_last_ord:  # loop 탈출 조건
                         excess += (paid_amt + excess - amount)  # 금회 초과 납부분 += (금회 납부액 + 전회 초과납부분 - 약정액)
                         break
@@ -424,8 +426,7 @@ class PdfExportBill(View):
         pm_cost_sum = 0  # PM 용역비 합계
 
         for i, order in enumerate(inspay_order):
-            info = {}
-            info['order'] = order  # 회차
+            info = {'order': order}
             pay_amount = pay_amounts_all[i]  # 회당 납부 약정액
             info['pay_amount'] = pay_amount  # 회당 납부 약정액
             sum_pay_amount += pay_amount  # 회당 납부 약정액 누계
@@ -459,15 +460,12 @@ class PdfExportBill(View):
                 due_date = None if order.pay_code > 2 else due_date
         return due_date
 
-    def get_late_fee(self, amount, days):
+    def get_late_fee(self, late_amt, days):
         """
         :: 회차별 지연 가산금 계산 함수
-        :param order: 납부회차
-        :param due_date: 납부기한
-        :param amount: 납부 약정액
-        :param paid_date: 완납일자
-        :param paid_amt: 완납금액
-        :return dict('unpaid_amt'='', 'unpaid_days'=0, 'result_amt'=0, 'note'=''):
+        :param late_amt: 지연금액
+        :param days: 지연일수
+        :return int(floor_fee: 가산금), str(적용 이자율):
         """
         rate = 0
         if days < 30:
@@ -479,11 +477,12 @@ class PdfExportBill(View):
         else:
             rate = 0.12
 
-        floor_fee = int(amount * days * rate / 365000) * 1000
+        floor_fee = int(late_amt * days * rate / 365000) * 1000
 
         return floor_fee, f'{int(rate * 100)}%'
 
-    def get_blank_line(self, unpaid_count, pm, total_orders_count):
+    @staticmethod
+    def get_blank_line(unpaid_count, pm, total_orders_count):
         """
         :: 공백 라인 개수 구하기
         :param unpaid_count: 미납내역 개수
@@ -499,7 +498,7 @@ class PdfExportBill(View):
 class PdfExportPayments(View):
 
     def get(self, request):
-        context = {}
+        context = dict()
         project = request.GET.get('project')
         get_contract = request.GET.get('contract')
         context['contract'] = contract = Contract.objects.get(pk=get_contract)
@@ -619,5 +618,3 @@ class PdfExportPayments(View):
             response = HttpResponse(pdf, content_type='application/pdf')
             response['Content-Disposition'] = f'attachment; filename="payments_contractor.pdf"'
             return response
-
-        return response
