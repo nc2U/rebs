@@ -5,7 +5,15 @@
     :selector="'CompanySelect'"
     @header-select="onSelectAdd"
   />
-  <ContentBody></ContentBody>
+  <ContentBody>
+    <CCardBody class="pb-5">
+      <a href="/rebs/docs/lawsuit/" target="_blank">
+        구) 소송 문서 관리 페이지 바로가기
+      </a>
+    </CCardBody>
+
+    <CCardFooter>&nbsp;</CCardFooter>
+  </ContentBody>
 </template>
 
 <script lang="ts">

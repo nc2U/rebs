@@ -1,7 +1,15 @@
 <template>
   <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
 
-  <ContentBody></ContentBody>
+  <ContentBody>
+    <CCardBody class="pb-5">
+      <a href="/rebs/project/site-contract/" target="_blank">
+        구) 사업부지 - 매매계약 관리 페이지 바로가기
+      </a>
+    </CCardBody>
+
+    <CCardFooter>&nbsp;</CCardFooter>
+  </ContentBody>
 </template>
 
 <script lang="ts">

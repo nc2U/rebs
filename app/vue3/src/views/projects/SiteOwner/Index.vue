@@ -1,7 +1,15 @@
 <template>
   <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
 
-  <ContentBody></ContentBody>
+  <ContentBody>
+    <CCardBody class="pb-5">
+      <a href="/rebs/project/site-owner/" target="_blank">
+        구) 사업부지 - 소유자별 관리 페이지 바로가기
+      </a>
+    </CCardBody>
+
+    <CCardFooter>&nbsp;</CCardFooter>
+  </ContentBody>
 </template>
 
 <script lang="ts">
