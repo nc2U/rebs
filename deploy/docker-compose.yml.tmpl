@@ -18,7 +18,7 @@ services:
 
   web:
     build: docker/python
-    image: dokube/web
+    image: pikube/web
     command: uwsgi --socket :8000 --module _config.wsgi --py-autoreload 1 --logto /tmp/mylog.log
     volumes:
       - ../app:/app
@@ -36,7 +36,7 @@ services:
 
   nginx:
     build: docker/nginx
-    image: dokube/nginx
+    image: pikube/nginx
     ports:
       - "80:80"
       - "443:443"
