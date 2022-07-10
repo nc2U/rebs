@@ -7,7 +7,7 @@
 
   <ContentBody>
     <CCardBody class="pb-5">
-      <a href="/rebs/cash/project-cash/payment/" target="_blank">
+      <a href="/rebs/notice/bill/" target="_blank">
         구) 고지서 관리 페이지 바로가기
       </a>
     </CCardBody>
