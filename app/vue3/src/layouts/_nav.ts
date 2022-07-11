@@ -79,7 +79,7 @@ const notice = {
       name: '수납고지서 출력',
       badge: {
         color: 'warning',
-        text: 'link',
+        text: 'u.c',
       },
       to: '/notices/bill',
     },
