@@ -29,6 +29,10 @@ input[type=number] {
   text-align: right;
 }
 
+.alert .form-label {
+  margin-bottom: 0;
+}
+
 .btn-primary, .btn-secondary, .btn-success, .btn-danger, .btn-warning, .btn-info {
   color: $white;
 
