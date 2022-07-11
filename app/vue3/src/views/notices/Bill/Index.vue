@@ -12,7 +12,7 @@
       </a>
       <SalesBillIssueForm />
       <ListController />
-      <ContractorList />
+      <ContractList />
     </CCardBody>
 
     <CCardFooter>&nbsp;</CCardFooter>
@@ -26,7 +26,7 @@ import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import SalesBillIssueForm from '@/views/notices/Bill/components/SalesBillIssueForm.vue'
 import ListController from '@/views/notices/Bill/components/ListController.vue'
-import ContractorList from '@/views/notices/Bill/components/ContractorList.vue'
+import ContractList from '@/views/notices/Bill/components/ContractList.vue'
 import { mapState } from 'vuex'
 
 export default defineComponent({
@@ -37,7 +37,7 @@ export default defineComponent({
     ContentBody,
     SalesBillIssueForm,
     ListController,
-    ContractorList,
+    ContractList,
   },
   computed: {
     ...mapState('project', ['project']),

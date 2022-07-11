@@ -1,5 +1,5 @@
 <template>
-  <CCallout color="primary">
+  <CCallout color="primary" class="pb-0 mb-4">
     <CRow>
       <CCol lg="8">
         <CRow>

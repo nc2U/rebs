@@ -1,7 +1,7 @@
 <template>
   <CAlert color="info">
     <CRow>
-      <CCol xs="5" sm="6" md="7" lg="9">
+      <CCol xs="6" sm="7" md="8" lg="9" xl="10">
         <CIcon name="cil-library-add" />
         <strong class="title"> 수납 고지서 발행</strong>
       </CCol>
