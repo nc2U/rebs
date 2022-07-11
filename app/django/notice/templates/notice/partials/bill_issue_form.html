@@ -28,25 +28,34 @@
                 {{ form.published_date|add_class:"form-control mb-1 text-primary"|attr:"placeholder:발행일자"|attr:"data-provide=datepicker data-date-format=yyyy-mm-dd data-date-autoclose=true data-toggle=input-mask data-mask-format=0000-00-00"|attr:"style:background: lightyellow" }}
                 {{ form.published_date.errors }}
             </div>
-            <label class="col-sm-4 col-md-2 col-lg-1 m-auto" for="{{ form.now_payment_order.id_for_label }}">
-                {{ form.now_payment_order.label }}
-            </label>
-            <div class="col-sm-8 col-md-4 col-lg-2">
-                {{ form.now_payment_order|add_class:"form-control mb-1 text-primary"|attr:"style:background: lightyellow" }}
-                {{ form.published_date.errors }}
-            </div>
-
-            <label class="col-sm-4 col-md-2 col-lg-1 m-auto" for="{{ form.now_payment_order.id_for_label }}">
-                {{ form.now_due_date.label }}
-            </label>
-            <div class="col-sm-8 col-md-4 col-lg-2">
-                {{ form.now_due_date|add_class:"form-control mb-1 text-primary"|attr:"placeholder:당회 납부기한"|attr:"data-provide=datepicker data-date-format=yyyy-mm-dd data-date-autoclose=true data-toggle=input-mask data-mask-format=0000-00-00"|attr:"style:background: lightyellow" }}
-                {{ form.now_due_date.errors }}
-            </div>
+            <label class="col-sm-4 col-md-2 col-lg-1 m-auto" for=""></label>
+            <div class="col-sm-8 col-md-4 col-lg-2"></div>
+            <label class="col-sm-4 col-md-2 col-lg-1 m-auto" for=""></label>
+            <div class="col-sm-8 col-md-4 col-lg-2"></div>
             <div class="d-none d-md-block col-md-6 col-lg-3"></div>
         </div>
 
         <div class="collapse col-12 form-row pr-0 mr-0 {% if not bill_issue %}show{% endif %}" id="collapseForm">
+            <div class="col-12 form-row">
+                <label class="col-sm-4 col-md-2 col-lg-1 m-auto" for="{{ form.now_payment_order.id_for_label }}">
+                    {{ form.now_payment_order.label }}
+                </label>
+                <div class="col-sm-8 col-md-4 col-lg-2">
+                    {{ form.now_payment_order|add_class:"form-control mb-1 text-primary"|attr:"style:background: lightyellow" }}
+                    {{ form.published_date.errors }}
+                </div>
+                <label class="col-sm-4 col-md-2 col-lg-1 m-auto" for="{{ form.now_payment_order.id_for_label }}">
+                    {{ form.now_due_date.label }}
+                </label>
+                <div class="col-sm-8 col-md-4 col-lg-2">
+                    {{ form.now_due_date|add_class:"form-control mb-1 text-primary"|attr:"placeholder:당회 납부기한"|attr:"data-provide=datepicker data-date-format=yyyy-mm-dd data-date-autoclose=true data-toggle=input-mask data-mask-format=0000-00-00"|attr:"style:background: lightyellow" }}
+                    {{ form.now_due_date.errors }}
+                </div>
+                <label class="col-sm-4 col-md-2 col-lg-1 m-auto" for=""></label>
+                <div class="col-sm-8 col-md-4 col-lg-2"></div>
+                <div class="d-none d-md-block col-md-6 col-lg-3"></div>
+            </div>
+
             <div class="col-12 form-row">
                 <label class="col-sm-4 col-md-2 col-lg-1 m-auto" for="{{ form.host_name.id_for_label }}">
                     {{ form.host_name.label }}
@@ -158,32 +167,30 @@
                     {{ form.address3.errors }}
                 </div>
             </div>
-        </div>
 
-        <div class="col-12 form-row">
-            <label class="col-sm-4 col-md-2 col-lg-1 m-auto" for="{{ form.title.id_for_label }}">
-                {{ form.title.label }}
-            </label>
-            <div class="col-sm-8 col-md-10 col-lg-11">
-                {{ form.title|add_class:"form-control mb-1"|attr:"placeholder:고지서 제목" }}
-                {{ form.title.errors }}
-            </div>
+            <div class="col-12 form-row">
+                <label class="col-sm-4 col-md-2 col-lg-1 m-auto" for="{{ form.title.id_for_label }}">
+                    {{ form.title.label }}
+                </label>
+                <div class="col-sm-8 col-md-10 col-lg-11">
+                    {{ form.title|add_class:"form-control mb-1"|attr:"placeholder:고지서 제목" }}
+                    {{ form.title.errors }}
+                </div>
             <div class="d-none d-md-block col-md-6 d-lg-none"></div>
-        </div>
-
-        <div class="col-12 form-row">
-            <label class="col-sm-4 col-md-2 col-lg-1 m-auto" for="{{ form.content.id_for_label }}">
-                {{ form.content.label }}
-            </label>
-            <div class="col-sm-8 col-md-10 col-lg-11">
-                {{ form.content|add_class:"form-control mb-1"|attr:"placeholder:고지서 내용"|attr:"rows:4" }}
-                {{ form.content.errors }}
             </div>
-            <div class="d-none d-md-block col-md-6 d-lg-none"></div>
-        </div>
-    </div>
 
-    <div class="row mt-2 bg-dragula border-top border-bottom">
+            <div class="col-12 form-row">
+                <label class="col-sm-4 col-md-2 col-lg-1 m-auto" for="{{ form.content.id_for_label }}">
+                    {{ form.content.label }}
+                </label>
+                <div class="col-sm-8 col-md-10 col-lg-11">
+                    {{ form.content|add_class:"form-control mb-1"|attr:"placeholder:고지서 내용"|attr:"rows:4" }}
+                    {{ form.content.errors }}
+                </div>
+                <div class="d-none d-md-block col-md-6 d-lg-none"></div>
+            </div>
+
+            <div class="col-12 row mt-2 bg-dragula border-top border-bottom">
         <div class="col-12 pt-2 pb-2 text-right">
             {% if request.user.is_superuser or request.user.staffauth.notice > '1' %}
                 <button type="submit" class="btn btn-{% if bill_issue %}success{% else %}primary{% endif %}">
@@ -192,6 +199,9 @@
             {% else %}
                 <button type="button" class="btn btn-outline-secondary" onclick="alert('수납 고지서 발행 권한이 없습니다. 관리자에게 문의하여 주십시요.')">조회권한 사용자</button>
             {% endif %}
+        </div>
+    </div>
+
         </div>
     </div>
 </form>
