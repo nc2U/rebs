@@ -76,10 +76,12 @@
     </CRow>
     <CRow>
       <CCol color="warning" class="p-2 pl-3">
-        <strong>계약 건수 조회 결과 : 11건</strong>
+        <strong>계약 건수 조회 결과 : {{ contractsCount }} 건</strong>
       </CCol>
-      <CCol class="text-right mb-0">
-        <CButton color="info" size="sm"> 검색조건 초기화</CButton>
+      <CCol class="text-right mb-0" v-if="!formsCheck">
+        <CButton color="info" @click="resetForm" size="sm">
+          검색조건 초기화
+        </CButton>
       </CCol>
     </CRow>
   </CCallout>
@@ -88,15 +90,11 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { maska } from 'maska'
+import { mapGetters, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'ListController',
   directives: { maska },
-  components: {},
-  props: {},
-  setup() {
-    return {}
-  },
   data() {
     return {
       form: {
@@ -104,12 +102,43 @@ export default defineComponent({
         group: '',
         type: '',
         dong: '',
-        order: '',
+        order: '-created_at',
         q: '',
       },
     }
   },
-  computed: {},
-  methods: {},
+  computed: {
+    formsCheck(this: any) {
+      const a = this.form.limit === ''
+      const b = this.form.group === ''
+      const c = this.form.type === ''
+      const d = this.form.dong === ''
+      const e = this.form.order === '-created_at'
+      const f = this.form.q === ''
+      return a && b && c && d && e && f
+    },
+    ...mapState('contract', ['orderGroupList', 'contractsCount']),
+    ...mapState('project', ['buildingList']),
+    ...mapGetters('project', ['simpleTypes']),
+  },
+  methods: {
+    listFiltering(this: any, page = 1) {
+      this.$nextTick(() => {
+        this.$emit('cont-filtering', {
+          ...{ page },
+          ...this.form,
+        })
+      })
+    },
+    resetForm() {
+      this.form.limit = ''
+      this.form.group = ''
+      this.form.type = ''
+      this.form.dong = ''
+      this.form.order = '-created_at'
+      this.form.q = ''
+      this.listFiltering(1)
+    },
+  },
 })
 </script>

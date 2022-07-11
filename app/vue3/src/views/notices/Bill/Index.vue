@@ -7,12 +7,9 @@
 
   <ContentBody>
     <CCardBody class="pb-5">
-      <!--      <a href="/rebs/notice/bill/" target="_blank">-->
-      <!--        구) 고지서 관리 페이지 바로가기-->
-      <!--      </a>-->
       <SalesBillIssueForm />
-      <ListController />
-      <ContractList />
+      <ListController ref="listControl" @cont-filtering="onContFiltering" />
+      <ContractList :project="project" @page-select="pageSelect" />
     </CCardBody>
 
     <CCardFooter>&nbsp;</CCardFooter>
@@ -27,7 +24,7 @@ import ContentBody from '@/layouts/ContentBody/Index.vue'
 import SalesBillIssueForm from '@/views/notices/Bill/components/SalesBillIssueForm.vue'
 import ListController from '@/views/notices/Bill/components/ListController.vue'
 import ContractList from '@/views/notices/Bill/components/ContractList.vue'
-import { mapState } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'Bill',
@@ -39,8 +36,51 @@ export default defineComponent({
     ListController,
     ContractList,
   },
+  created(this: any) {
+    this.fetchOrderGroupList(this.initProjId)
+    this.fetchTypeList(this.initProjId)
+    this.fetchBuildingList(this.initProjId)
+    this.fetchContractList({ project: this.initProjId })
+    this.fetchSubsSummaryList(this.initProjId)
+    this.fetchContSummaryList(this.initProjId)
+  },
   computed: {
     ...mapState('project', ['project']),
+    ...mapGetters('accounts', ['initProjId']),
+  },
+  methods: {
+    onSelectAdd(this: any, target: any) {
+      if (target !== '') {
+        this.fetchOrderGroupList(target)
+        this.fetchTypeList(target)
+        this.fetchBuildingList(target)
+        this.fetchContractList({ project: target })
+        this.fetchSubsSummaryList(target)
+        this.fetchContSummaryList(target)
+      } else {
+        this.$store.state.contract.orderGroupList = []
+        this.$store.state.project.unitTypeList = []
+        this.$store.state.project.buildingList = []
+        this.$store.state.contract.contractList = []
+        this.$store.state.contract.subsSummaryList = []
+        this.$store.state.contract.contSummaryList = []
+        this.$store.state.contract.contractsCount = 0
+      }
+    },
+    pageSelect(this: any, page: number) {
+      this.$refs.listControl.listFiltering(page)
+    },
+    onContFiltering(payload: any) {
+      const project = this.project.pk
+      this.fetchContractList({ ...{ project }, ...payload })
+    },
+    ...mapActions('contract', [
+      'fetchOrderGroupList',
+      'fetchContractList',
+      'fetchSubsSummaryList',
+      'fetchContSummaryList',
+    ]),
+    ...mapActions('project', ['fetchTypeList', 'fetchBuildingList']),
   },
 })
 </script>
