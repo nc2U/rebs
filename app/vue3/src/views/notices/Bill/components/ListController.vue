@@ -1,7 +1,7 @@
 <template>
   <CCallout color="primary" class="pb-0 mb-4">
     <CRow>
-      <CCol lg="8">
+      <CCol lg="7">
         <CRow>
           <CCol md="6" lg="2" class="mb-3">
             <CFormSelect v-model="form.limit">
@@ -33,7 +33,7 @@
             </CFormSelect>
           </CCol>
 
-          <CCol md="6" lg="2" class="mb-3">
+          <CCol md="6" lg="4" class="mb-3">
             <CFormSelect v-model="form.order">
               <option value="-created_at">등록일시 내림차순</option>
               <option value="created_at">등록일시 올림차순</option>
@@ -52,15 +52,12 @@
         </CRow>
       </CCol>
 
-      <CCol lg="2">
+      <CCol lg="5">
         <CRow>
-          <CCol md="12" class="mb-3"> aaa</CCol>
-        </CRow>
-      </CCol>
-
-      <CCol lg="2">
-        <CRow>
-          <CCol class="mb-3">
+          <CCol md="6" class="pt-1 mb-3 text-primary light-yellow">
+            <span>[계약금] - 4차계약금 </span>
+          </CCol>
+          <CCol md="6" class="mb-3">
             <CInputGroup class="flex-nowrap">
               <CFormInput
                 v-model="form.q"
@@ -142,3 +139,11 @@ export default defineComponent({
   },
 })
 </script>
+
+<style lang="scss" scoped>
+.light-yellow {
+  text-align: center;
+  line-height: 30px;
+  background: lightyellow !important;
+}
+</style>

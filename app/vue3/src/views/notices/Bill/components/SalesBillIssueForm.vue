@@ -300,7 +300,7 @@ export default defineComponent({
   data() {
     return {
       visible: false,
-      published_date: '',
+      published_date: new Date(),
       form: {
         now_payment_order: '',
         now_due_date: '',
