@@ -36,10 +36,10 @@ class PdfExportBill(View):
         """
         project = request.GET.get('project')  # 프로젝트 ID
 
-        ISSUE_DATE = datetime.strptime(request.GET.get('date'), '%Y-%m-%d').date()
+        issue_date = datetime.strptime(request.GET.get('date'), '%Y-%m-%d').date()
 
         context = {
-            'issue_date': ISSUE_DATE,
+            'issue_date': issue_date,
             'bill_info': SalesBillIssue.objects.get(project_id=project)
         }  # 전체 데이터 딕셔너리
         inspay_order = InstallmentPaymentOrder.objects.filter(project_id=project)  # 전체 납부회차 리스트
@@ -50,7 +50,7 @@ class PdfExportBill(View):
 
         # 해당 계약건에 대한 데이터 정리 --------------------------------------- start
 
-        context['data_list'] = (self.get_bill_data(project, cont_id, inspay_order, now_due_order, ISSUE_DATE) \
+        context['data_list'] = (self.get_bill_data(project, cont_id, inspay_order, now_due_order, issue_date) \
                                 for cont_id in contractor_list)
 
         # 해당 계약건에 대한 데이터 정리 --------------------------------------- end
