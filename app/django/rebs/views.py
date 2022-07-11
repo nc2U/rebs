@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.views.generic import View, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 # --------------------------------------------------------
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponse
 from django.template.loader import render_to_string
@@ -36,8 +36,10 @@ class PdfExportBill(View):
         """
         project = request.GET.get('project')  # 프로젝트 ID
 
+        ISSUE_DATE = datetime.strptime(request.GET.get('date'), '%Y-%m-%d').date()
+
         context = {
-            'issue_date': request.GET.get('date'),
+            'issue_date': ISSUE_DATE,
             'bill_info': SalesBillIssue.objects.get(project_id=project)
         }  # 전체 데이터 딕셔너리
         inspay_order = InstallmentPaymentOrder.objects.filter(project_id=project)  # 전체 납부회차 리스트
@@ -48,7 +50,7 @@ class PdfExportBill(View):
 
         # 해당 계약건에 대한 데이터 정리 --------------------------------------- start
 
-        context['data_list'] = (self.get_bill_data(project, cont_id, inspay_order, now_due_order) \
+        context['data_list'] = (self.get_bill_data(project, cont_id, inspay_order, now_due_order, ISSUE_DATE) \
                                 for cont_id in contractor_list)
 
         # 해당 계약건에 대한 데이터 정리 --------------------------------------- end
@@ -63,7 +65,7 @@ class PdfExportBill(View):
             response['Content-Disposition'] = f'attachment; filename="payment_bill({len(contractor_list)}).pdf"'
             return response
 
-    def get_bill_data(self, project, cont_id, inspay_order, now_due_order):
+    def get_bill_data(self, project, cont_id, inspay_order, now_due_order, issue_date):
         """
         :: 계약 건 당 전달 데이터 생성 함수
         :param project: 프로젝트
@@ -129,7 +131,7 @@ class PdfExportBill(View):
         # ■ 납부약정 및 납입내역 -------------------------------------------
         bill_data['due_orders'] = self.get_due_orders(contract, orders_info,
                                                       inspay_order, now_due_order,
-                                                      paid_code, is_late_fee=False)
+                                                      paid_code, issue_date, is_late_fee=False)
 
         bill_data['remain_orders'] = self.get_remain_orders(contract, orders_info,
                                                             inspay_order, now_due_order)
@@ -137,7 +139,7 @@ class PdfExportBill(View):
         bill_data['paid_sum_total'] = paid_sum_total
         bill_data['late_fee_sum'] = self.get_due_orders(contract, orders_info,
                                                         inspay_order, now_due_order,
-                                                        paid_code, is_late_fee=True)
+                                                        paid_code, issue_date, is_late_fee=True)
 
         # 공백 개수 구하기
         unpaid_count = len(bill_data['this_pay_info'])
@@ -291,7 +293,7 @@ class PdfExportBill(View):
 
     def get_due_orders(self, contract, orders_info,
                        inspay_order, now_due_order,
-                       paid_code, **kwargs):
+                       paid_code, issue_date, **kwargs):
         """
         :: ■ 납부약정 및 납입내역 - 납입내역
         :param contract: 계약 건
@@ -343,7 +345,7 @@ class PdfExportBill(View):
                 unpaid_days = 0
             else:
                 try:
-                    unpaid_days = (TODAY - due_date).days
+                    unpaid_days = (issue_date - due_date).days
                 except:
                     unpaid_days = 0
 

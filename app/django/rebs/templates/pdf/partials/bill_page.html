@@ -15,7 +15,7 @@
     <tr>
         <td style="border-top: 2px solid #000; width: 60px; padding: 8px 15px 2px;">문서 번호 :</td>
         <td style="border-top: 2px solid #000;"></td>
-        <td style="border-top: 2px solid #000; width: 60px; padding: 8px 15px 2px; text-align: right; font-size: 11px;">{{ issue_date }}</td>
+        <td style="border-top: 2px solid #000; width: 60px; padding: 8px 15px 2px; text-align: right; font-size: 11px;">{{ issue_date|date:"Y-m-d" }}</td>
     </tr>
     <tr>
         <td style="padding: 5px 15px 2px;">수 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;신 :</td>
@@ -67,7 +67,7 @@
 <table style="margin-top: 10px; width: 100%;">
     <tr>
         <td style="font-size: 12px;">■ 납부대금 안내</td>
-        <td style="font-size: 11px; text-align: right;">[{{ issue_date }} 현재]</td>
+        <td style="font-size: 11px; text-align: right;">[{{ issue_date|date:"Y-m-d" }} 현재]</td>
     </tr>
 </table>
 <table style="width:100%; font-size:11px; border-collapse:collapse;" cellpadding=0; cellspacing=0;>
@@ -155,7 +155,7 @@
 <table style="margin-top: 10px; width: 100%">
     <tr>
         <td style="font-size: 12px;">■ 납부약정 및 납입내역</td>
-        <td style="font-size: 11px; text-align: right;">[{{ issue_date }} 현재]</td>
+        <td style="font-size: 11px; text-align: right;">[{{ issue_date|date:"Y-m-d" }} 현재]</td>
     </tr>
 </table>
 
