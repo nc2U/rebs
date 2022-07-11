@@ -2,9 +2,9 @@
   <CTableRow v-if="contract" class="text-center">
     <CTableDataCell>
       <CFormCheck
-        :id="contract.constructor.pk"
+        :id="contract.ctor_pk"
         name="chk[]"
-        :value="contract.constructor.pk"
+        :value="contract.ctor_pk"
         label="선택"
       />
     </CTableDataCell>

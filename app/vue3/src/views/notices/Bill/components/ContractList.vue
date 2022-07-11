@@ -15,7 +15,7 @@
     <CTableHead>
       <CTableRow class="text-center">
         <CTableHeaderCell scope="col">
-          <CFormCheck :id="checkAll" label="전체" />
+          <CFormCheck id="checkAll" label="전체" />
         </CTableHeaderCell>
         <CTableHeaderCell scope="col">일련번호</CTableHeaderCell>
         <CTableHeaderCell scope="col">차수</CTableHeaderCell>
@@ -30,7 +30,7 @@
 
     <CTableBody>
       <Contract
-        v-for="contract in contractIndex"
+        v-for="contract in contractBill"
         :contract="contract"
         :key="contract.pk"
       />
@@ -56,7 +56,7 @@ export default defineComponent({
   components: { Contract },
   props: ['project'],
   computed: {
-    ...mapGetters('contract', ['contractIndex', 'contractPages']),
+    ...mapGetters('contract', ['contractBill', 'contractPages']),
   },
   methods: {
     pageSelect(page: number) {
