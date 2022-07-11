@@ -23,6 +23,7 @@
     <CCol sm="8" md="4" xl="2">
       <DatePicker
         v-model="published_date"
+        v-maska="'####-##-##'"
         placeholder="발행일자"
         maxlength="10"
         required
@@ -50,6 +51,7 @@
       <CCol sm="8" md="4" xl="2">
         <DatePicker
           v-model="form.now_due_date"
+          v-maska="'####-##-##'"
           placeholder="당회 납부기한"
           maxlength="10"
           required
@@ -74,8 +76,11 @@
         <CFormLabel for="" class="col-form-label">시행자 전화</CFormLabel>
       </CCol>
       <CCol sm="8" md="4" xl="2">
-        <CFormInput
+        <input
+          type="text"
+          class="form-control"
           v-model="form.host_tel"
+          v-maska="['###-###-####', '###-####-####']"
           placeholder="시행자 전화"
           maxlength="13"
           required
@@ -98,8 +103,11 @@
         <CFormLabel for="" class="col-form-label">대행사 전화</CFormLabel>
       </CCol>
       <CCol sm="8" md="4" xl="2">
-        <CFormInput
+        <input
+          type="text"
+          class="form-control"
           v-model="form.agency_tel"
+          v-maska="['###-###-####', '###-####-####']"
           placeholder="대행사 전화"
           maxlength="13"
           required
@@ -195,8 +203,11 @@
       <CCol class="d-none d-sm-block d-md-none" sm="4" />
 
       <CCol xs="8" md="2" xl="1" class="mb-1">
-        <CFormInput
+        <input
+          type="text"
+          class="form-control"
           v-model="form.zipcode"
+          v-maska="'#####'"
           placeholder="우편번호"
           maxlength="5"
           required
