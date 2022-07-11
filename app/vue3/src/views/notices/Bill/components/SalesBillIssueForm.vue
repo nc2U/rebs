@@ -1,5 +1,5 @@
 <template>
-  <CAlert color="primary">
+  <CAlert color="info">
     <CRow>
       <CCol xs="6" sm="7" md="8" lg="9" xl="10">
         <CIcon name="cil-arrow-circle-right" />

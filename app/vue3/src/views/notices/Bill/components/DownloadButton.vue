@@ -1,0 +1,31 @@
+<template>
+  <CAlert color="secondary">
+    <CButton color="primary" :disabled="disabled"
+      >선택 건별 고지서 내려받기</CButton
+    >
+  </CAlert>
+</template>
+
+<script lang="ts">
+import { defineComponent } from 'vue'
+
+export default defineComponent({
+  name: 'DownloadButton',
+  components: {},
+  props: {},
+  setup() {
+    return {}
+  },
+  data() {
+    return {
+      sample: '',
+    }
+  },
+  computed: {
+    disabled() {
+      return true
+    },
+  },
+  methods: {},
+})
+</script>

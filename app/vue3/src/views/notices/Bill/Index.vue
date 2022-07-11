@@ -9,6 +9,7 @@
     <CCardBody class="pb-5">
       <SalesBillIssueForm />
       <ListController ref="listControl" @cont-filtering="onContFiltering" />
+      <DownloadButton />
       <ContractList :project="project" @page-select="pageSelect" />
     </CCardBody>
 
@@ -23,6 +24,7 @@ import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import SalesBillIssueForm from '@/views/notices/Bill/components/SalesBillIssueForm.vue'
 import ListController from '@/views/notices/Bill/components/ListController.vue'
+import DownloadButton from '@/views/notices/Bill/components/DownloadButton.vue'
 import ContractList from '@/views/notices/Bill/components/ContractList.vue'
 import { mapActions, mapGetters, mapState } from 'vuex'
 
@@ -34,6 +36,7 @@ export default defineComponent({
     ContentBody,
     SalesBillIssueForm,
     ListController,
+    DownloadButton,
     ContractList,
   },
   created(this: any) {
