@@ -8,7 +8,7 @@
   <ContentBody>
     <CCardBody class="pb-5">
       <a href="/rebs/notice/bill/" target="_blank">
-        구) 고지서 관리 페이지 바로가기!!!
+        구) 고지서 관리 페이지 바로가기
       </a>
       <SalesBillIssueForm />
       <ListController />
