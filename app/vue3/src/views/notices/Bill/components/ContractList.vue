@@ -15,7 +15,7 @@
     <CTableHead>
       <CTableRow class="text-center">
         <CTableHeaderCell scope="col">
-          <CFormCheck id="checkAll" label="전체" />
+          <CFormCheck id="checkAll" @click="checkAll" label="전체" />
         </CTableHeaderCell>
         <CTableHeaderCell scope="col">일련번호</CTableHeaderCell>
         <CTableHeaderCell scope="col">차수</CTableHeaderCell>
@@ -61,6 +61,9 @@ export default defineComponent({
   methods: {
     pageSelect(page: number) {
       this.$emit('page-select', page)
+    },
+    checkAll() {
+      return
     },
   },
 })

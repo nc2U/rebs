@@ -2,8 +2,8 @@
   <CTableRow v-if="contract" class="text-center">
     <CTableDataCell>
       <CFormCheck
+        v-model="chk"
         :id="contract.ctor_pk"
-        name="chk[]"
         :value="contract.ctor_pk"
         label="선택"
       />
@@ -58,7 +58,11 @@ import { defineComponent } from 'vue'
 export default defineComponent({
   name: 'Contract',
   components: {},
-
+  data() {
+    return {
+      chk: false,
+    }
+  },
   props: {
     contract: {
       type: Object,
