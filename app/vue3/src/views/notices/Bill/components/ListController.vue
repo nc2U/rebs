@@ -55,7 +55,7 @@
       <CCol lg="5">
         <CRow>
           <CCol md="6" class="pt-1 mb-3 text-primary light-yellow">
-            <span>[계약금] - 4차계약금 </span>
+            <strong>[계약금] - 4차계약금 </strong>
           </CCol>
           <CCol md="6" class="mb-3">
             <CInputGroup class="flex-nowrap">
