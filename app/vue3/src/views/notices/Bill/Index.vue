@@ -40,12 +40,11 @@ export default defineComponent({
     ContractList,
   },
   created(this: any) {
+    this.fetchPayOrderList(this.initProjId)
     this.fetchOrderGroupList(this.initProjId)
     this.fetchTypeList(this.initProjId)
     this.fetchBuildingList(this.initProjId)
     this.fetchContractList({ project: this.initProjId })
-    this.fetchSubsSummaryList(this.initProjId)
-    this.fetchContSummaryList(this.initProjId)
   },
   computed: {
     ...mapState('project', ['project']),
@@ -58,15 +57,11 @@ export default defineComponent({
         this.fetchTypeList(target)
         this.fetchBuildingList(target)
         this.fetchContractList({ project: target })
-        this.fetchSubsSummaryList(target)
-        this.fetchContSummaryList(target)
       } else {
         this.$store.state.contract.orderGroupList = []
         this.$store.state.project.unitTypeList = []
         this.$store.state.project.buildingList = []
         this.$store.state.contract.contractList = []
-        this.$store.state.contract.subsSummaryList = []
-        this.$store.state.contract.contSummaryList = []
         this.$store.state.contract.contractsCount = 0
       }
     },
@@ -77,13 +72,9 @@ export default defineComponent({
       const project = this.project.pk
       this.fetchContractList({ ...{ project }, ...payload })
     },
-    ...mapActions('contract', [
-      'fetchOrderGroupList',
-      'fetchContractList',
-      'fetchSubsSummaryList',
-      'fetchContSummaryList',
-    ]),
+    ...mapActions('contract', ['fetchOrderGroupList', 'fetchContractList']),
     ...mapActions('project', ['fetchTypeList', 'fetchBuildingList']),
+    ...mapActions('payment', ['fetchPayOrderList']),
   },
 })
 </script>

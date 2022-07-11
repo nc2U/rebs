@@ -37,12 +37,17 @@
         <CFormLabel for="" class="col-form-label">발행회차</CFormLabel>
       </CCol>
       <CCol sm="8" md="4" xl="2">
-        <CFormInput
+        <CFormSelect
           v-model="form.now_payment_order"
           placeholder="발행회차"
           maxlength="10"
           required
-        />
+        >
+          <option value="">--------</option>
+          <option v-for="po in payOrderList" :value="po.pk" :key="po.pk">
+            {{ po.__str__ }}
+          </option>
+        </CFormSelect>
       </CCol>
 
       <CCol sm="4" md="2" xl="1">
@@ -288,6 +293,7 @@
 import { defineComponent } from 'vue'
 import DatePicker from '@/components/DatePicker/index.vue'
 import { maska } from 'maska'
+import { mapState } from 'vuex'
 
 export default defineComponent({
   name: 'SalesBillIssueForm',
@@ -323,7 +329,9 @@ export default defineComponent({
       },
     }
   },
-  computed: {},
+  computed: {
+    ...mapState('payment', ['payOrderList']),
+  },
   methods: {},
 })
 </script>
