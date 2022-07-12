@@ -18,7 +18,7 @@ const getters = {
         c.payments.length !== 0
           ? c.payments
               .filter(p => p.installment_order !== null)
-              .map(p => p.installment_order.pay_name)
+              .map(p => p.installment_order)
               .pop()
           : '-',
       is_registed: c.contractor?.is_registed,

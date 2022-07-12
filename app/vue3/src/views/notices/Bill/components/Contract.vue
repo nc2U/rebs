@@ -43,11 +43,12 @@
       {{ numFormat(contract.total_paid) }}
     </CTableDataCell>
     <CTableDataCell>
-      {{
+      {{ '완납중' }}
+      ({{
         contract.last_paid_order === '-'
-          ? '-'
-          : contract.last_paid_order.__str__
-      }}
+          ? '계약금미납'
+          : contract.last_paid_order.pay_name
+      }})
     </CTableDataCell>
     <CTableDataCell>{{ contract.contract_date }}</CTableDataCell>
   </CTableRow>

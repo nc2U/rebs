@@ -22,13 +22,13 @@
             label="전체"
           />
         </CTableHeaderCell>
-        <CTableHeaderCell scope="col">일련번호</CTableHeaderCell>
+        <CTableHeaderCell scope="col">계약 일련번호</CTableHeaderCell>
         <CTableHeaderCell scope="col">차수</CTableHeaderCell>
         <CTableHeaderCell scope="col">타입</CTableHeaderCell>
         <CTableHeaderCell scope="col">동호수</CTableHeaderCell>
         <CTableHeaderCell scope="col">계약자</CTableHeaderCell>
         <CTableHeaderCell scope="col">납입금액합계</CTableHeaderCell>
-        <CTableHeaderCell scope="col">최종납입회차</CTableHeaderCell>
+        <CTableHeaderCell scope="col">납입상태 (완납회차)</CTableHeaderCell>
         <CTableHeaderCell scope="col">계약일자</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
