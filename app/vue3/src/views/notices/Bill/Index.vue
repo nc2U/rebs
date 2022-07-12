@@ -15,6 +15,7 @@
         :project="project"
         @on-ctor-chk="onCtorChk"
         @page-select="pageSelect"
+        @all-un-checked="allUnChecked"
       />
     </CCardBody>
 
@@ -79,6 +80,7 @@ export default defineComponent({
       }
     },
     pageSelect(this: any, page: number) {
+      this.ctorPks = []
       this.$refs.listControl.listFiltering(page)
     },
     onContFiltering(payload: any) {
@@ -93,6 +95,9 @@ export default defineComponent({
         let i = ctors.indexOf(payload.pk)
         ctors.splice(i, 1)
       }
+    },
+    allUnChecked() {
+      this.ctorPks = []
     },
     ...mapActions('contract', ['fetchOrderGroupList', 'fetchContractList']),
     ...mapActions('project', ['fetchTypeList', 'fetchBuildingList']),
