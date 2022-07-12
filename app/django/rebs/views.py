@@ -215,6 +215,7 @@ class PdfExportBill(View):
         :return list(paid_list: 납부 건 리스트), int(paid_sum_total: 납부 총액):
         """
         paid_list = ProjectCashBook.objects.filter(
+            project_account_d2__lte=2,
             is_contract_payment=True,
             contract=contract,
             income__isnull=False
