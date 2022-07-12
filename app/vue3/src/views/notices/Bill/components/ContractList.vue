@@ -35,7 +35,7 @@
 
     <CTableBody>
       <Contract
-        v-for="contract in contractBill"
+        v-for="contract in contBillIndex"
         :all-checked="allChecked"
         :contract="contract"
         :key="contract.pk"
@@ -70,7 +70,7 @@ export default defineComponent({
     }
   },
   computed: {
-    ...mapGetters('contract', ['contractBill', 'contractPages']),
+    ...mapGetters('contract', ['contBillIndex', 'contractPages']),
   },
   methods: {
     pageSelect(page: number) {

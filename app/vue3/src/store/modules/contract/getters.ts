@@ -28,9 +28,8 @@ const getters = {
     }))
   },
 
-  contractBill: (state: ContractState) => {
+  contBillIndex: (state: ContractState) => {
     return state.contractList.map(c => ({
-      pk: c.pk,
       ctor_pk: c.contractor?.pk,
       serial_number: c.serial_number,
       order_group: c.order_group,
