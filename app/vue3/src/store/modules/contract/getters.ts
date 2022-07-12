@@ -10,17 +10,17 @@ const getters = {
       type_color: c.unit_type.color,
       house_unit: c.keyunit?.houseunit?.__str__ || '[미정]',
       contractor: c.contractor?.name,
-      last_paid_order:
-        c.payments.length !== 0
-          ? c.payments
-              .filter(p => p.installment_order !== null)
-              .map(p => p.installment_order)
-              .pop()
-          : '-',
       total_paid:
         c.payments.length !== 0
           ? c.payments.map(o => o.income).reduce((res, item) => res + item)
           : 0,
+      last_paid_order:
+        c.payments.length !== 0
+          ? c.payments
+              .filter(p => p.installment_order !== null)
+              .map(p => p.installment_order.pay_name)
+              .pop()
+          : '-',
       is_registed: c.contractor?.is_registed,
       address: c.contractor?.contractoraddress?.dm_address1,
       cell_phone: c.contractor?.contractorcontact?.cell_phone,

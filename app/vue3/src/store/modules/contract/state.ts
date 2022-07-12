@@ -46,6 +46,7 @@ interface KeyUnit {
 interface InstallmentOrder {
   pk: number
   pay_time: number
+  pay_name: string
   __str__: string
 }
 
