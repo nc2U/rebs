@@ -65,7 +65,6 @@
             v-maska="'####-##-##'"
             placeholder="당회 납부기한"
             maxlength="10"
-            required
           />
         </CCol>
       </CRow>
@@ -106,7 +105,6 @@
             v-model="form.agency"
             placeholder="대행사명"
             maxlength="20"
-            required
           />
         </CCol>
 
@@ -121,7 +119,6 @@
             v-maska="['###-###-####', '###-####-####']"
             placeholder="대행사 전화"
             maxlength="13"
-            required
           />
         </CCol>
       </CRow>
@@ -173,7 +170,6 @@
             v-model="form.bank_account2"
             placeholder="수납은행[2]"
             maxlength="20"
-            required
           />
         </CCol>
 
@@ -185,7 +181,6 @@
             v-model="form.bank_number2"
             placeholder="계좌번호[2]"
             maxlength="20"
-            required
           />
         </CCol>
 
@@ -197,7 +192,6 @@
             v-model="form.bank_host2"
             placeholder="예금주[2]"
             maxlength="20"
-            required
           />
         </CCol>
       </CRow>
