@@ -9,8 +9,13 @@
     <CCardBody class="pb-5">
       <SalesBillIssueForm />
       <ListController ref="listControl" @cont-filtering="onContFiltering" />
-      <DownloadButton />
-      <ContractList :project="project" @page-select="pageSelect" />
+      <DownloadButton :disabled="!isChecked" />
+      {{ ctorPks }}
+      <ContractList
+        :project="project"
+        @on-ctor-chk="onCtorChk"
+        @page-select="pageSelect"
+      />
     </CCardBody>
 
     <CCardFooter>&nbsp;</CCardFooter>
@@ -46,7 +51,15 @@ export default defineComponent({
     this.fetchBuildingList(this.initProjId)
     this.fetchContractList({ project: this.initProjId })
   },
+  data() {
+    return {
+      ctorPks: [],
+    }
+  },
   computed: {
+    isChecked() {
+      return !!this.ctorPks.length
+    },
     ...mapState('project', ['project']),
     ...mapGetters('accounts', ['initProjId']),
   },
@@ -71,6 +84,15 @@ export default defineComponent({
     onContFiltering(payload: any) {
       const project = this.project.pk
       this.fetchContractList({ ...{ project }, ...payload })
+    },
+    onCtorChk(payload: { chk: boolean; pk: number }) {
+      let ctors: number[] = this.ctorPks
+      if (payload.chk) {
+        ctors.push(payload.pk)
+      } else {
+        let i = ctors.indexOf(payload.pk)
+        ctors.splice(i, 1)
+      }
     },
     ...mapActions('contract', ['fetchOrderGroupList', 'fetchContractList']),
     ...mapActions('project', ['fetchTypeList', 'fetchBuildingList']),

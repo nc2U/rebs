@@ -2,9 +2,10 @@
   <CTableRow v-if="contract" class="text-center">
     <CTableDataCell>
       <CFormCheck
-        v-model="chk"
-        :id="contract.ctor_pk"
+        v-model="checked"
+        :id="'check_' + contract.ctor_pk"
         :value="contract.ctor_pk"
+        @change="ctorChk(contract.ctor_pk)"
         label="선택"
       />
     </CTableDataCell>
@@ -60,13 +61,23 @@ export default defineComponent({
   components: {},
   data() {
     return {
-      chk: false,
+      checked: false,
     }
   },
   props: {
     contract: {
       type: Object,
       required: true,
+    },
+  },
+  methods: {
+    toggleChk(chk: boolean) {
+      this.checked = chk
+    },
+    ctorChk(ctorPk: string) {
+      this.$nextTick(() => {
+        this.$emit('onCtorChk', { chk: this.checked, pk: ctorPk })
+      })
     },
   },
 })

@@ -1,8 +1,8 @@
 <template>
   <CAlert color="secondary">
-    <CButton color="primary" :disabled="disabled"
-      >선택 건별 고지서 내려받기</CButton
-    >
+    <CButton color="primary" :disabled="disabled">
+      선택 건별 고지서 내려받기
+    </CButton>
   </CAlert>
 </template>
 
@@ -12,7 +12,9 @@ import { defineComponent } from 'vue'
 export default defineComponent({
   name: 'DownloadButton',
   components: {},
-  props: {},
+  props: {
+    disabled: Boolean,
+  },
   setup() {
     return {}
   },
@@ -21,11 +23,7 @@ export default defineComponent({
       sample: '',
     }
   },
-  computed: {
-    disabled() {
-      return true
-    },
-  },
+  computed: {},
   methods: {},
 })
 </script>
