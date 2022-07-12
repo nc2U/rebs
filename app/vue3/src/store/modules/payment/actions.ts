@@ -77,6 +77,17 @@ const actions = {
       .catch(err => errorHandle(err.response.data))
   },
 
+  patchPayOrder: ({ dispatch }: any, payload: any) => {
+    const { pk, ...formData } = payload
+    api
+      .patch(`/pay-order/${pk}/`, formData)
+      .then(res => {
+        dispatch('fetchPayOrderList', res.data.project)
+        message()
+      })
+      .catch(err => errorHandle(err.response.data))
+  },
+
   updatePayOrder: ({ dispatch }: any, payload: any) => {
     const { pk, ...formData } = payload
     api
