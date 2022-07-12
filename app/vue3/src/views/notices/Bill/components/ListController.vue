@@ -4,7 +4,11 @@
       <CCol lg="7">
         <CRow>
           <CCol md="6" lg="2" class="mb-3">
-            <CFormSelect v-model="form.limit" @change="listFiltering(1)">
+            <CFormSelect
+              v-model="form.limit"
+              @change="listFiltering(1)"
+              disabled
+            >
               <option value="">표시 개수</option>
               <option value="5">5 개</option>
               <option value="10">10 개</option>

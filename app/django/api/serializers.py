@@ -559,7 +559,7 @@ class ContractCustomListSerializer(serializers.ModelSerializer):
             'unit_type', 'keyunit', 'payments', 'contractor')
 
     def get_payments(self, instance):
-        payments = instance.payments.all().order_by('deal_date', 'id')
+        payments = instance.payments.filter(project_account_d2__lte=2).order_by('deal_date', 'id')
         return ProjectCashBookInContractListSerializer(payments, many=True, read_only=True).data
 
 
