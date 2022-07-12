@@ -122,14 +122,20 @@ export default defineComponent({
       this.now_order = now_order
     },
     onSubmit(payload: any) {
-      // Todo payload 중 now_due_date 별도로 뽑아서 installment_order 모델 patch 후 나머지 저장
       const { pk, now_payment_order } = payload
       const { now_due_date, ...bill_data } = payload
       if (pk) {
-        this.patchPayOrder({ pk: now_payment_order, now_due_date })
+        this.patchPayOrder({
+          pk: now_payment_order,
+          pay_due_date: now_due_date,
+        })
+        // Todo patchSalesBillIssue 저장 로직 에러 수정
         this.patchSalesBillIssue('update->', bill_data)
       } else {
-        this.patchPayOrder({ pk: now_payment_order, now_due_date })
+        this.patchPayOrder({
+          pk: now_payment_order,
+          pay_due_date: now_due_date,
+        })
         this.createSalesBillIssue('create->', bill_data)
       }
     },

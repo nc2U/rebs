@@ -333,7 +333,7 @@ export default defineComponent({
       pk: '',
       form: {
         now_payment_order: '',
-        now_due_date: '',
+        now_due_date: null,
         host_name: '',
         host_tel: '',
         agency: '',
@@ -447,7 +447,9 @@ export default defineComponent({
     },
     modalAction(this: any) {
       const { pk } = this
-      this.form.now_due_date = this.dateFormat(this.form.now_due_date)
+      this.form.now_due_date = this.form.now_due_date
+        ? this.dateFormat(this.form.now_due_date)
+        : null
       let payload
       if (this.salesbillissue) {
         payload = { ...{ pk }, ...this.form }
