@@ -88,7 +88,7 @@ class ApiIndex(generics.GenericAPIView):
             'contractor-address': reverse(api + ContAddressList.name, request=request),
             'contractor-contact': reverse(api + ContContactList.name, request=request),
             'contractor-release': reverse(api + ContReleaseList.name, request=request),
-            # 'sales-bill-issue': reverse(api + BillIssueList.name, request=request),
+            'sales-bill-issue': reverse(api + BillIssueList.name, request=request),
             # 'group': reverse(api + GroupList.name, request=request),
             # 'board': reverse(api + BoardList.name, request=request),
             # 'category': reverse(api + CategoryList.name, request=request),
@@ -953,23 +953,23 @@ class ContReleaseDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
 
-# class BillIssueList(generics.ListCreateAPIView):
-#     name = 'bill_issue-list'
-#     queryset = SalesBillIssue.objects.all()
-#     serializer_class = SallesBillIssueSerializer
-#     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-#
-#     def perform_create(self, serializer):
-#         serializer.save(user=self.request.user)
-#
-#
-# class BillIssueDetail(generics.RetrieveUpdateDestroyAPIView):
-#     name = 'bill_issue-detail'
-#     queryset = SalesBillIssue.objects.all()
-#     serializer_class = SallesBillIssueSerializer
-#     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-#
-#
+class BillIssueList(generics.ListCreateAPIView):
+    name = 'bill_issue-list'
+    queryset = SalesBillIssue.objects.all()
+    serializer_class = SallesBillIssueSerializer
+    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
+class BillIssueDetail(generics.RetrieveUpdateDestroyAPIView):
+    name = 'bill_issue-detail'
+    queryset = SalesBillIssue.objects.all()
+    serializer_class = SallesBillIssueSerializer
+    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+
+
 # # Document --------------------------------------------------------------------------
 # class GroupList(generics.ListCreateAPIView):
 #     name = 'group-list'
