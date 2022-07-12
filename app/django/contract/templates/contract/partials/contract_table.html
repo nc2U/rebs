@@ -80,8 +80,8 @@
                         {{ object.contractor.name }}
                     </a>
                 </td>
-                <td class="text-center">{{ object.projectcashbook_set.first.installment_order }}</td>
-                <td class="text-right">{{ object.projectcashbook_set.first.income|intcomma }}</td>
+                <td class="text-center">{{ object.payments.first.installment_order }}</td>
+                <td class="text-right">{{ object.payments.first.income|intcomma }}</td>
                 <td class="pl-5">
                     <i class="mdi mdi-circle text-{% if object.contractor.is_registed %}success{% else %}danger{% endif %}"></i>
                     {% if object.contractor.is_registed %}인가{% else %}미인가{% endif %}
