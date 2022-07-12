@@ -63,11 +63,18 @@ export default defineComponent({
       type: Object,
       required: true,
     },
+    allChecked: Boolean,
   },
   data() {
     return {
       checked: false,
     }
+  },
+  watch: {
+    allChecked(val) {
+      this.checked = val
+      this.ctorChk(this.contract.ctor_pk)
+    },
   },
   methods: {
     ctorChk(ctorPk: string) {

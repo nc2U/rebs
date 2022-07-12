@@ -15,12 +15,7 @@
     <CTableHead>
       <CTableRow class="text-center">
         <CTableHeaderCell scope="col">
-          <CFormCheck
-            id="checkAll"
-            v-model="allChecked"
-            @change="checkedAll"
-            label="전체"
-          />
+          <CFormCheck id="checkAll" v-model="allChecked" label="전체" />
         </CTableHeaderCell>
         <CTableHeaderCell scope="col">일련번호</CTableHeaderCell>
         <CTableHeaderCell scope="col">차수</CTableHeaderCell>
@@ -36,6 +31,7 @@
     <CTableBody>
       <Contract
         v-for="contract in contractBill"
+        :all-checked="allChecked"
         :contract="contract"
         :key="contract.pk"
         @on-ctor-chk="onCtorChk"
@@ -75,16 +71,10 @@ export default defineComponent({
     pageSelect(page: number) {
       this.$emit('page-select', page)
     },
-    checkedAll(this: any) {
-      // if (!this.allChecked) {
-      //   this.contractors = this.contractBill.map((c: any) => c.ctor_pk)
-      // } else {
-      //   this.contractors = []
-      // }
-      // this.$nextTick(() => {
-      //   this.$refs.contractor.toggleChk(this.allChecked)
-      // })
-    },
+    // async checkedAll(this: any) {
+    //   await this.$nextTick()
+    //   alert(this.allChecked)
+    // },
 
     onCtorChk(payload: { chk: boolean; pk: number }) {
       this.$emit('on-ctor-chk', payload)
