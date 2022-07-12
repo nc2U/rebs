@@ -91,7 +91,7 @@ export default defineComponent({
     onCtorChk(payload: { chk: boolean; pk: number }) {
       let ctors: number[] = this.ctorPks
       if (payload.chk) {
-        ctors.push(payload.pk)
+        if (!ctors.includes(payload.pk)) ctors.push(payload.pk)
       } else {
         let i = ctors.indexOf(payload.pk)
         ctors.splice(i, 1)

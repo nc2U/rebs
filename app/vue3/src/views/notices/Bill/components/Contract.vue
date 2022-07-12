@@ -79,7 +79,7 @@ export default defineComponent({
   methods: {
     ctorChk(ctorPk: string) {
       this.$nextTick(() => {
-        this.$emit('onCtorChk', { chk: this.checked, pk: ctorPk })
+        this.$emit('on-ctor-chk', { chk: this.checked, pk: ctorPk })
       })
     },
   },
