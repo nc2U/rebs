@@ -171,9 +171,19 @@ class ProjectAccountD2Serializer(serializers.ModelSerializer):
 
 
 # Project --------------------------------------------------------------------------
+class SallesBillInProjectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SalesBillIssue
+        fields = ('pk', 'project', 'now_payment_order', 'host_name', 'host_tel',
+                  'agency', 'agency_tel', 'bank_account1', 'bank_number1', 'bank_host1',
+                  'bank_account2', 'bank_number2', 'bank_host2', 'zipcode', 'address1',
+                  'address2', 'address3', 'title', 'content')
+
+
 class ProjectSerializer(serializers.ModelSerializer):
     kind = serializers.ChoiceField(choices=Project.KIND_CHOICES)
     kind_desc = serializers.CharField(source='get_kind_display', read_only=True)
+    salesbillissue = SallesBillInProjectSerializer(read_only=True)
 
     class Meta:
         model = Project
@@ -182,8 +192,8 @@ class ProjectSerializer(serializers.ModelSerializer):
                   'local_address1', 'local_address2', 'local_address3', 'area_usage',
                   'build_size', 'num_unit', 'buy_land_extent', 'scheme_land_extent',
                   'donation_land_extent', 'on_floor_area', 'under_floor_area',
-                  'total_floor_area', 'build_area', 'floor_area_ratio',
-                  'build_to_land_ratio', 'num_legal_parking', 'num_planed_parking')
+                  'total_floor_area', 'build_area', 'floor_area_ratio', 'build_to_land_ratio',
+                  'num_legal_parking', 'num_planed_parking', 'salesbillissue')
 
 
 class UnitTypeSerializer(serializers.ModelSerializer):
