@@ -3,7 +3,7 @@
     <CRow>
       <CCol xs="6" sm="7" md="8" lg="9" xl="10">
         <CIcon name="cil-arrow-circle-right" />
-        <strong class="title"> 수납 고지서 발행</strong>
+        <strong class="title"> 수납 고지서 발행 {{ '11' }}</strong>
       </CCol>
       <CCol>
         <CFormSwitch
@@ -328,7 +328,7 @@ export default defineComponent({
       },
     }
   },
-  created() {
+  created(this: any) {
     if (this.salesbillissue) {
       this.form.now_payment_order = this.salesbillissue.now_payment_order
       this.form.host_name = this.salesbillissue.host_name
@@ -352,6 +352,18 @@ export default defineComponent({
   computed: {
     ...mapState('payment', ['payOrderList']),
   },
-  methods: {},
+  watch: {
+    salesbillissue(val) {
+      this.display_order(val.now_payment_order)
+    },
+  },
+  methods: {
+    display_order(order: number) {
+      const now_order = this.payOrderList
+        .filter((o: any) => o.pk == order)
+        .map((o: any) => o.__str__)[0]
+      this.$emit('display-order', now_order)
+    },
+  },
 })
 </script>

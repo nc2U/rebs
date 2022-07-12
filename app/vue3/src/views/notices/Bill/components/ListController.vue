@@ -80,7 +80,7 @@
       <CCol lg="5">
         <CRow>
           <CCol md="6" class="pt-1 mb-3 text-primary light-yellow">
-            <strong>[계약금] - 4차계약금 </strong>
+            <strong>{{ now_order }}</strong>
           </CCol>
           <CCol md="6" class="mb-3">
             <CInputGroup class="flex-nowrap">
@@ -118,6 +118,9 @@ import { mapGetters, mapState } from 'vuex'
 export default defineComponent({
   name: 'ListController',
   directives: { maska },
+  props: {
+    now_order: String,
+  },
   data() {
     return {
       form: {

@@ -7,8 +7,15 @@
 
   <ContentBody>
     <CCardBody class="pb-5">
-      <SalesBillIssueForm :salesbillissue="project.salesbillissue" />
-      <ListController ref="listControl" @list-filtering="onListFiltering" />
+      <SalesBillIssueForm
+        :salesbillissue="salesbillissue"
+        @display-order="displayOrder"
+      />
+      <ListController
+        ref="listControl"
+        :now_order="now_order"
+        @list-filtering="onListFiltering"
+      />
       <DownloadButton :disabled="!isChecked" />
       {{ ctorPks }}
       <ContractList
@@ -45,6 +52,13 @@ export default defineComponent({
     DownloadButton,
     ContractList,
   },
+  data() {
+    return {
+      ctorPks: [],
+      salesbillissue: null,
+      now_order: '',
+    }
+  },
   created(this: any) {
     this.fetchPayOrderList(this.initProjId)
     this.fetchOrderGroupList(this.initProjId)
@@ -55,17 +69,17 @@ export default defineComponent({
       ordering: 'contractor__name',
     })
   },
-  data() {
-    return {
-      ctorPks: [],
-    }
-  },
   computed: {
     isChecked() {
       return !!this.ctorPks.length
     },
     ...mapState('project', ['project']),
     ...mapGetters('accounts', ['initProjId']),
+  },
+  watch: {
+    project(val) {
+      this.salesbillissue = val.salesbillissue
+    },
   },
   methods: {
     onSelectAdd(this: any, target: any) {
@@ -102,6 +116,9 @@ export default defineComponent({
     },
     allUnChecked() {
       this.ctorPks = []
+    },
+    displayOrder(now_order: string) {
+      this.now_order = now_order
     },
     ...mapActions('notice', ['createSalesBillIssue', 'patchSalesBillIssue']),
     ...mapActions('contract', ['fetchOrderGroupList', 'fetchContractList']),
