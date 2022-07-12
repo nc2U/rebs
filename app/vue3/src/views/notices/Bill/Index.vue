@@ -51,7 +51,10 @@ export default defineComponent({
     this.fetchOrderGroupList(this.initProjId)
     this.fetchTypeList(this.initProjId)
     this.fetchBuildingList(this.initProjId)
-    this.fetchContractList({ project: this.initProjId })
+    this.fetchContractList({
+      project: this.initProjId,
+      ordering: 'contractor__name',
+    })
   },
   data() {
     return {
