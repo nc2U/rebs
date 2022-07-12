@@ -65,6 +65,7 @@
             v-maska="'####-##-##'"
             placeholder="당회 납부기한"
             maxlength="10"
+            :required="false"
           />
         </CCol>
       </CRow>
@@ -294,9 +295,9 @@
   <DaumPostcode @addressPut="addressPut" ref="postCode" />
 
   <ConfirmModal ref="confirmModal">
-    <template v-slot:header>회사정보</template>
+    <template v-slot:header>수납 고지서 발행 정보</template>
     <template v-slot:default>
-      회사정보 {{ confirmText }}을 진행하시겠습니까?
+      수납 고지서 발행 정보 {{ confirmText }}을 진행하시겠습니까?
     </template>
     <template v-slot:footer>
       <CButton :color="btnClass" @click="modalAction">저장</CButton>
@@ -354,6 +355,12 @@ export default defineComponent({
     }
   },
   computed: {
+    confirmText() {
+      return this.salesbillissue ? '변경' : '등록'
+    },
+    btnClass() {
+      return this.salesbillissue ? 'success' : 'primary'
+    },
     // formsCheck(this: any) {
     //   const a =
     //     this.form.now_payment_order === this.salesbillissue.now_payment_order
@@ -441,12 +448,16 @@ export default defineComponent({
     modalAction(this: any) {
       const { pk } = this
       this.form.now_due_date = this.dateFormat(this.form.now_due_date)
-      if (this.update) {
-        this.$emit('to-update', { ...{ pk }, ...this.form })
+      let payload
+      if (this.salesbillissue) {
+        payload = { ...{ pk }, ...this.form }
       } else {
-        this.$emit('to-create', this.form)
+        payload = this.form
       }
+      this.$emit('on-submit', payload)
+
       this.validated = false
+      this.$refs.confirmModal.visible = false
     },
   },
 })

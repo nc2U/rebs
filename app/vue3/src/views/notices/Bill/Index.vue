@@ -10,6 +10,7 @@
       <SalesBillIssueForm
         :salesbillissue="salesbillissue"
         @display-order="displayOrder"
+        @on-submit="onSubmit"
       />
       <ListController
         ref="listControl"
@@ -119,6 +120,14 @@ export default defineComponent({
     },
     displayOrder(now_order: string) {
       this.now_order = now_order
+    },
+    onSubmit(payload: any) {
+      const { pk } = payload
+      if (pk) {
+        console.log('update->', payload)
+      } else {
+        console.log('create->', payload)
+      }
     },
     ...mapActions('notice', ['createSalesBillIssue', 'patchSalesBillIssue']),
     ...mapActions('contract', ['fetchOrderGroupList', 'fetchContractList']),
