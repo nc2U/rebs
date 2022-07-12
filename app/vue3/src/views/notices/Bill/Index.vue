@@ -7,7 +7,7 @@
 
   <ContentBody>
     <CCardBody class="pb-5">
-      <SalesBillIssueForm />
+      <SalesBillIssueForm :salesbillissue="project.salesbillissue" />
       <ListController ref="listControl" @list-filtering="onListFiltering" />
       <DownloadButton :disabled="!isChecked" />
       {{ ctorPks }}
@@ -46,7 +46,6 @@ export default defineComponent({
     ContractList,
   },
   created(this: any) {
-    this.fetchSalesBillIssueList(this.initProjId)
     this.fetchPayOrderList(this.initProjId)
     this.fetchOrderGroupList(this.initProjId)
     this.fetchTypeList(this.initProjId)
@@ -104,7 +103,7 @@ export default defineComponent({
     allUnChecked() {
       this.ctorPks = []
     },
-    ...mapActions('notice', ['fetchSalesBillIssueList', 'fetchSalesBillIssue']),
+    ...mapActions('notice', ['createSalesBillIssue', 'patchSalesBillIssue']),
     ...mapActions('contract', ['fetchOrderGroupList', 'fetchContractList']),
     ...mapActions('project', ['fetchTypeList', 'fetchBuildingList']),
     ...mapActions('payment', ['fetchPayOrderList']),
