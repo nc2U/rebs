@@ -68,9 +68,6 @@ export default defineComponent({
       allChecked: false,
     }
   },
-  created() {
-    this.allChecked = false
-  },
   computed: {
     ...mapGetters('contract', ['contractBill', 'contractPages']),
   },
@@ -79,11 +76,11 @@ export default defineComponent({
       this.$emit('page-select', page)
     },
     checkedAll(this: any) {
-      if (!this.allChecked) {
-        this.contractors = this.contractBill.map((c: any) => c.ctor_pk)
-      } else {
-        this.contractors = []
-      }
+      // if (!this.allChecked) {
+      //   this.contractors = this.contractBill.map((c: any) => c.ctor_pk)
+      // } else {
+      //   this.contractors = []
+      // }
       // this.$nextTick(() => {
       //   this.$refs.contractor.toggleChk(this.allChecked)
       // })

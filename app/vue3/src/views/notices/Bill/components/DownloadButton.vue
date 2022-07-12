@@ -11,19 +11,9 @@ import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'DownloadButton',
-  components: {},
   props: {
     disabled: Boolean,
   },
-  setup() {
-    return {}
-  },
-  data() {
-    return {
-      sample: '',
-    }
-  },
-  computed: {},
   methods: {},
 })
 </script>

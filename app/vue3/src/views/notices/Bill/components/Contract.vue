@@ -58,22 +58,18 @@ import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'Contract',
-  components: {},
-  data() {
-    return {
-      checked: false,
-    }
-  },
   props: {
     contract: {
       type: Object,
       required: true,
     },
   },
+  data() {
+    return {
+      checked: false,
+    }
+  },
   methods: {
-    toggleChk(chk: boolean) {
-      this.checked = chk
-    },
     ctorChk(ctorPk: string) {
       this.$nextTick(() => {
         this.$emit('onCtorChk', { chk: this.checked, pk: ctorPk })
