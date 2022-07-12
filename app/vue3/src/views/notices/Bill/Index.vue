@@ -123,7 +123,7 @@ export default defineComponent({
     ...mapActions('notice', ['createSalesBillIssue', 'patchSalesBillIssue']),
     ...mapActions('contract', ['fetchOrderGroupList', 'fetchContractList']),
     ...mapActions('project', ['fetchTypeList', 'fetchBuildingList']),
-    ...mapActions('payment', ['fetchPayOrderList']),
+    ...mapActions('payment', ['fetchPayOrderList', 'patchPayOrder']),
   },
 })
 </script>
