@@ -6,9 +6,7 @@ import {
 import { errorHandle } from '@/utils/helper'
 
 const actions = {
-  fetchSalesBillIssueList: ({ commit }: any, payload: any) => {
-    const { project } = payload
-
+  fetchSalesBillIssueList: ({ commit }: any, project: any) => {
     api
       .get(`/sales-bill-issue/?project=${project}`)
       .then(res => {
