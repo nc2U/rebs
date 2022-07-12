@@ -328,33 +328,31 @@ export default defineComponent({
       },
     }
   },
-  created(this: any) {
-    if (this.salesbillissue) {
-      this.form.now_payment_order = this.salesbillissue.now_payment_order
-      this.form.host_name = this.salesbillissue.host_name
-      this.form.host_tel = this.salesbillissue.host_tel
-      this.form.agency = this.salesbillissue.agency
-      this.form.agency_tel = this.salesbillissue.agency_tel
-      this.form.bank_account1 = this.salesbillissue.bank_account1
-      this.form.bank_number1 = this.salesbillissue.bank_number1
-      this.form.bank_host1 = this.salesbillissue.bank_host1
-      this.form.bank_account2 = this.salesbillissue.bank_account2
-      this.form.bank_number2 = this.salesbillissue.bank_number2
-      this.form.bank_host2 = this.salesbillissue.bank_host2
-      this.form.zipcode = this.salesbillissue.zipcode
-      this.form.address1 = this.salesbillissue.address1
-      this.form.address2 = this.salesbillissue.address2
-      this.form.address3 = this.salesbillissue.address3
-      this.form.title = this.salesbillissue.title
-      this.form.content = this.salesbillissue.content
-    }
-  },
   computed: {
     ...mapState('payment', ['payOrderList']),
   },
   watch: {
     salesbillissue(val) {
-      this.display_order(val.now_payment_order)
+      if (val) {
+        this.display_order(val.now_payment_order)
+        this.form.now_payment_order = val.now_payment_order
+        this.form.host_name = val.host_name
+        this.form.host_tel = val.host_tel
+        this.form.agency = val.agency
+        this.form.agency_tel = val.agency_tel
+        this.form.bank_account1 = val.bank_account1
+        this.form.bank_number1 = val.bank_number1
+        this.form.bank_host1 = val.bank_host1
+        this.form.bank_account2 = val.bank_account2
+        this.form.bank_number2 = val.bank_number2
+        this.form.bank_host2 = val.bank_host2
+        this.form.zipcode = val.zipcode
+        this.form.address1 = val.address1
+        this.form.address2 = val.address2
+        this.form.address3 = val.address3
+        this.form.title = val.title
+        this.form.content = val.content
+      }
     },
   },
   methods: {
