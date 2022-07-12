@@ -8,7 +8,7 @@
   <ContentBody>
     <CCardBody class="pb-5">
       <SalesBillIssueForm />
-      <ListController ref="listControl" @cont-filtering="onContFiltering" />
+      <ListController ref="listControl" @list-filtering="onListFiltering" />
       <DownloadButton :disabled="!isChecked" />
       {{ ctorPks }}
       <ContractList
@@ -84,7 +84,7 @@ export default defineComponent({
       this.ctorPks = []
       this.$refs.listControl.listFiltering(page)
     },
-    onContFiltering(payload: any) {
+    onListFiltering(payload: any) {
       const project = this.project.pk
       this.fetchContractList({ ...{ project }, ...payload })
     },

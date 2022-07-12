@@ -4,7 +4,7 @@
       <CCol lg="7">
         <CRow>
           <CCol md="6" lg="2" class="mb-3">
-            <CFormSelect v-model="form.limit">
+            <CFormSelect v-model="form.limit" @change="listFiltering(1)">
               <option value="">표시 개수</option>
               <option value="5">5 개</option>
               <option value="10">10 개</option>
@@ -16,37 +16,58 @@
           </CCol>
 
           <CCol md="6" lg="2" class="mb-3">
-            <CFormSelect v-model="form.group">
+            <CFormSelect v-model="form.group" @change="listFiltering(1)">
               <option value="">차수선택</option>
+              <option
+                v-for="order in orderGroupList"
+                :value="order.pk"
+                :key="order.pk"
+              >
+                {{ order.order_group_name }}
+              </option>
             </CFormSelect>
           </CCol>
 
           <CCol md="6" lg="2" class="mb-3">
-            <CFormSelect v-model="form.type">
+            <CFormSelect v-model="form.type" @change="listFiltering(1)">
               <option value="">타입선택</option>
+              <option
+                v-for="type in simpleTypes"
+                :value="type.pk"
+                :key="type.pk"
+              >
+                {{ type.name }}
+              </option>
             </CFormSelect>
           </CCol>
 
           <CCol md="6" lg="2" class="mb-3">
-            <CFormSelect v-model="form.dong">
+            <CFormSelect v-model="form.dong" @change="listFiltering(1)">
               <option value="">동 선택</option>
+              <option
+                v-for="dong in buildingList"
+                :value="dong.pk"
+                :key="dong.pk"
+              >
+                {{ dong.name }}
+              </option>
             </CFormSelect>
           </CCol>
 
           <CCol md="6" lg="4" class="mb-3">
-            <CFormSelect v-model="form.order">
-              <option value="-created_at">등록일시 내림차순</option>
-              <option value="created_at">등록일시 올림차순</option>
-              <option value="-contractor__contract_date">
-                계약일자 내림차순
-              </option>
+            <CFormSelect v-model="form.order" @change="listFiltering(1)">
+              <option value="contractor__name">계약자명 올림차순</option>
+              <option value="-contractor__name">계약자명 내림차순</option>
               <option value="contractor__contract_date">
                 계약일자 올림차순
               </option>
-              <option value="-serial_number">일련번호 내림차순</option>
+              <option value="-contractor__contract_date">
+                계약일자 내림차순
+              </option>
+              <option value="created_at">등록일시 올림차순</option>
+              <option value="-created_at">등록일시 내림차순</option>
               <option value="serial_number">일련번호 올림차순</option>
-              <option value="-contractor__name">계약자명 내림차순</option>
-              <option value="contractor__name">계약자명 올림차순</option>
+              <option value="-serial_number">일련번호 내림차순</option>
             </CFormSelect>
           </CCol>
         </CRow>
@@ -61,6 +82,7 @@
             <CInputGroup class="flex-nowrap">
               <CFormInput
                 v-model="form.q"
+                @change="listFiltering(1)"
                 placeholder="계약자, 일련번호, 비고"
                 aria-label="Username"
                 aria-describedby="addon-wrapping"
@@ -99,7 +121,7 @@ export default defineComponent({
         group: '',
         type: '',
         dong: '',
-        order: '-created_at',
+        order: 'contractor__name',
         q: '',
       },
     }
@@ -110,18 +132,18 @@ export default defineComponent({
       const b = this.form.group === ''
       const c = this.form.type === ''
       const d = this.form.dong === ''
-      const e = this.form.order === '-created_at'
+      const e = this.form.order === 'contractor__name'
       const f = this.form.q === ''
       return a && b && c && d && e && f
     },
     ...mapState('contract', ['orderGroupList', 'contractsCount']),
-    ...mapState('project', ['buildingList']),
     ...mapGetters('project', ['simpleTypes']),
+    ...mapState('project', ['buildingList']),
   },
   methods: {
     listFiltering(this: any, page = 1) {
       this.$nextTick(() => {
-        this.$emit('cont-filtering', {
+        this.$emit('list-filtering', {
           ...{ page },
           ...this.form,
         })
@@ -132,7 +154,7 @@ export default defineComponent({
       this.form.group = ''
       this.form.type = ''
       this.form.dong = ''
-      this.form.order = '-created_at'
+      this.form.order = 'contractor__name'
       this.form.q = ''
       this.listFiltering(1)
     },
