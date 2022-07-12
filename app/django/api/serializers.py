@@ -420,7 +420,7 @@ class SimpleContractSerializer(serializers.ModelSerializer):
 class SimpleInstallmentOrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = InstallmentPaymentOrder
-        fields = ('pk', 'pay_time', '__str__')
+        fields = ('pk', 'pay_time', 'pay_name', '__str__')
 
 
 class SimpleProjectBankAccountSerializer(serializers.ModelSerializer):
