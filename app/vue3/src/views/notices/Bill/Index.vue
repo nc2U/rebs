@@ -122,11 +122,15 @@ export default defineComponent({
       this.now_order = now_order
     },
     onSubmit(payload: any) {
-      const { pk } = payload
+      // Todo payload 중 now_due_date 별도로 뽑아서 installment_order 모델 patch 후 나머지 저장
+      const { pk, now_payment_order } = payload
+      const { now_due_date, ...bill_data } = payload
       if (pk) {
-        console.log('update->', payload)
+        this.patchPayOrder({ pk: now_payment_order, now_due_date })
+        this.patchSalesBillIssue('update->', bill_data)
       } else {
-        console.log('create->', payload)
+        this.patchPayOrder({ pk: now_payment_order, now_due_date })
+        this.createSalesBillIssue('create->', bill_data)
       }
     },
     ...mapActions('notice', ['createSalesBillIssue', 'patchSalesBillIssue']),
