@@ -129,14 +129,13 @@ export default defineComponent({
           pk: now_payment_order,
           pay_due_date: now_due_date,
         })
-        // Todo patchSalesBillIssue 저장 로직 에러 수정
-        this.patchSalesBillIssue('update->', bill_data)
+        this.patchSalesBillIssue(bill_data)
       } else {
         this.patchPayOrder({
           pk: now_payment_order,
           pay_due_date: now_due_date,
         })
-        this.createSalesBillIssue('create->', bill_data)
+        this.createSalesBillIssue(bill_data)
       }
     },
     ...mapActions('notice', ['createSalesBillIssue', 'patchSalesBillIssue']),
