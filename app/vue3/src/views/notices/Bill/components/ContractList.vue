@@ -37,10 +37,10 @@
       <Contract
         v-for="contract in contBillIndex"
         :all-checked="allChecked"
+        :page="page"
         :contract="contract"
         :key="contract.pk"
         @on-ctor-chk="onCtorChk"
-        ref="contractor"
       />
     </CTableBody>
   </CTable>
@@ -67,14 +67,16 @@ export default defineComponent({
   data() {
     return {
       allChecked: false,
+      page: 1,
     }
   },
   computed: {
     ...mapGetters('contract', ['contBillIndex', 'contractPages']),
   },
   methods: {
-    pageSelect(page: number) {
+    pageSelect(this: any, page: number) {
       this.allChecked = false
+      this.page = page
       this.$emit('page-select', page)
     },
     allUnChecked() {

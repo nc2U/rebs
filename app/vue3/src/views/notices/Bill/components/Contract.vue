@@ -65,6 +65,7 @@ export default defineComponent({
       required: true,
     },
     allChecked: Boolean,
+    page: Number,
   },
   data() {
     return {
@@ -75,6 +76,9 @@ export default defineComponent({
     allChecked(val) {
       this.checked = val
       this.ctorChk(this.contract.ctor_pk)
+    },
+    page(n, o) {
+      if (n !== o) this.checked = false
     },
   },
   methods: {

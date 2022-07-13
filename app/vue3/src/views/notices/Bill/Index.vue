@@ -99,7 +99,6 @@ export default defineComponent({
     },
     onListFiltering(payload: any) {
       const project = this.project.pk
-      console.log(payload)
       this.fetchContractList({ ...{ project }, ...payload })
     },
     onCtorChk(payload: { chk: boolean; pk: number }) {
