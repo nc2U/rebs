@@ -90,8 +90,10 @@ export default defineComponent({
       this.$emit('on-ctor-chk', payload)
     },
     unChk(this: any) {
-      this.allChecked = true
-      this.allChecked = false
+      this.page = 2
+      setTimeout(() => {
+        this.page = 1
+      }, 50)
     },
   },
 })
