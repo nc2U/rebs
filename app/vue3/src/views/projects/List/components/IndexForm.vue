@@ -382,7 +382,10 @@
   <DaumPostcode @addressPut="addressPut" ref="postCode" />
 
   <ConfirmModal ref="delModal">
-    <template v-slot:header>프로젝트정보 삭제</template>
+    <template v-slot:header>
+      <CIcon name="cilChevronCircleRightAlt" />
+      프로젝트정보 삭제
+    </template>
     <template v-slot:default>현재 삭제 기능이 구현되지 않았습니다.</template>
     <template v-slot:footer>
       <CButton color="danger" disabled="">삭제</CButton>
@@ -390,7 +393,10 @@
   </ConfirmModal>
 
   <ConfirmModal ref="confirmModal">
-    <template v-slot:header>프로젝트정보</template>
+    <template v-slot:header>
+      <CIcon name="cilChevronCircleRightAlt" />
+      프로젝트정보
+    </template>
     <template v-slot:default>
       프로젝트정보 {{ confirmText }}을 진행하시겠습니까?
     </template>

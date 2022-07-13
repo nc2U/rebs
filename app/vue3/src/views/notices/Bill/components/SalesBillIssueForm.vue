@@ -2,7 +2,7 @@
   <CAlert color="info">
     <CRow>
       <CCol xs="6" sm="7" md="8" lg="9" xl="10">
-        <CIcon name="cil-arrow-circle-right" />
+        <CIcon name="cibAddthis" />
         <strong class="title"> 수납 고지서 발행</strong>
       </CCol>
       <CCol>
@@ -287,8 +287,8 @@
       </CRow>
 
       <CAlert color="secondary" class="text-right">
-        <CButton type="submit" color="success" :disabled="formsCheck">
-          업데이트
+        <CButton type="submit" :color="btnClass" :disabled="formsCheck">
+          {{ confirmText }}
         </CButton>
       </CAlert>
     </CCollapse>
@@ -297,9 +297,12 @@
   <DaumPostcode @addressPut="addressPut" ref="postCode" />
 
   <ConfirmModal ref="confirmModal">
-    <template v-slot:header>수납 고지서 발행 정보</template>
+    <template v-slot:header>
+      <CIcon name="cilChevronCircleRightAlt" />
+      수납 고지서 발행 정보
+    </template>
     <template v-slot:default>
-      수납 고지서 발행 정보 {{ confirmText }}을 진행하시겠습니까?
+      수납 고지서 발행 정보 {{ confirmText }}을(를) 진행하시겠습니까?
     </template>
     <template v-slot:footer>
       <CButton :color="btnClass" @click="modalAction">저장</CButton>
@@ -380,34 +383,37 @@ export default defineComponent({
   },
   computed: {
     confirmText() {
-      return this.salesbillissue ? '변경' : '등록'
+      return this.salesbillissue ? '업데이트' : '신규등록'
     },
     btnClass() {
       return this.salesbillissue ? 'success' : 'primary'
     },
     formsCheck(this: any) {
-      const a =
-        this.form.now_payment_order === this.salesbillissue.now_payment_order
-      const b = this.form.now_due_date === this.now_order
-      const c = this.form.host_name === this.salesbillissue.host_name
-      const d = this.form.host_tel === this.salesbillissue.host_tel
-      const e = this.form.agency === this.salesbillissue.agency
-      const f = this.form.agency_tel === this.salesbillissue.agency_tel
-      const g = this.form.bank_account1 === this.salesbillissue.bank_account1
-      const h = this.form.bank_number1 === this.salesbillissue.bank_number1
-      const i = this.form.bank_host1 === this.salesbillissue.bank_host1
-      const j = this.form.bank_account2 === this.salesbillissue.bank_account2
-      const k = this.form.bank_number2 === this.salesbillissue.bank_number2
-      const l = this.form.bank_host2 === this.salesbillissue.bank_host2
-      const m = this.form.zipcode === this.salesbillissue.zipcode
-      const n = this.form.address1 === this.salesbillissue.address1
-      const o = this.form.address2 === this.salesbillissue.address2
-      const p = this.form.address3 === this.salesbillissue.address3
-      const q = this.form.title === this.salesbillissue.title
-      const r = this.form.content === this.salesbillissue.content
-      const sky = a && b && c && d && e && f && g && h && i
-      const land = j && k && l && m && n && o && p && q && r
-      return sky && land
+      if (this.salesbillissue) {
+        const a =
+          this.form.now_payment_order === this.salesbillissue.now_payment_order
+        const b = this.form.now_due_date === this.now_order
+        const c = this.form.host_name === this.salesbillissue.host_name
+        const d = this.form.host_tel === this.salesbillissue.host_tel
+        const e = this.form.agency === this.salesbillissue.agency
+        const f = this.form.agency_tel === this.salesbillissue.agency_tel
+        const g = this.form.bank_account1 === this.salesbillissue.bank_account1
+        const h = this.form.bank_number1 === this.salesbillissue.bank_number1
+        const i = this.form.bank_host1 === this.salesbillissue.bank_host1
+        const j = this.form.bank_account2 === this.salesbillissue.bank_account2
+        const k = this.form.bank_number2 === this.salesbillissue.bank_number2
+        const l = this.form.bank_host2 === this.salesbillissue.bank_host2
+        const m = this.form.zipcode === this.salesbillissue.zipcode
+        const n = this.form.address1 === this.salesbillissue.address1
+        const o = this.form.address2 === this.salesbillissue.address2
+        const p = this.form.address3 === this.salesbillissue.address3
+        const q = this.form.title === this.salesbillissue.title
+        const r = this.form.content === this.salesbillissue.content
+        const sky = a && b && c && d && e && f && g && h && i
+        const land = j && k && l && m && n && o && p && q && r
+        return sky && land
+      }
+      return false
     },
     writeAuth() {
       return this.superAuth || (this.staffAuth && this.staffAuth.notice === '2')
