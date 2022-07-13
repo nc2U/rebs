@@ -74,6 +74,7 @@ export default defineComponent({
   },
   methods: {
     pageSelect(page: number) {
+      this.allChecked = false
       this.$emit('page-select', page)
     },
     allUnChecked() {

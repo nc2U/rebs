@@ -328,7 +328,7 @@ export default defineComponent({
   mixins: [addressMixin],
   directives: { maska },
   props: {
-    salesbillissue: Object,
+    bill_issue: Object,
   },
   data() {
     return {
@@ -360,55 +360,55 @@ export default defineComponent({
     }
   },
   mounted() {
-    if (this.salesbillissue) {
-      this.pk = this.salesbillissue.pk
-      this.form.now_payment_order = this.salesbillissue.now_payment_order
-      this.form.host_name = this.salesbillissue.host_name
-      this.form.host_tel = this.salesbillissue.host_tel
-      this.form.agency = this.salesbillissue.agency
-      this.form.agency_tel = this.salesbillissue.agency_tel
-      this.form.bank_account1 = this.salesbillissue.bank_account1
-      this.form.bank_number1 = this.salesbillissue.bank_number1
-      this.form.bank_host1 = this.salesbillissue.bank_host1
-      this.form.bank_account2 = this.salesbillissue.bank_account2
-      this.form.bank_number2 = this.salesbillissue.bank_number2
-      this.form.bank_host2 = this.salesbillissue.bank_host2
-      this.form.zipcode = this.salesbillissue.zipcode
-      this.form.address1 = this.salesbillissue.address1
-      this.form.address2 = this.salesbillissue.address2
-      this.form.address3 = this.salesbillissue.address3
-      this.form.title = this.salesbillissue.title
-      this.form.content = this.salesbillissue.content
+    if (this.bill_issue) {
+      this.pk = this.bill_issue.pk
+      this.form.now_payment_order = this.bill_issue.now_payment_order
+      this.form.host_name = this.bill_issue.host_name
+      this.form.host_tel = this.bill_issue.host_tel
+      this.form.agency = this.bill_issue.agency
+      this.form.agency_tel = this.bill_issue.agency_tel
+      this.form.bank_account1 = this.bill_issue.bank_account1
+      this.form.bank_number1 = this.bill_issue.bank_number1
+      this.form.bank_host1 = this.bill_issue.bank_host1
+      this.form.bank_account2 = this.bill_issue.bank_account2
+      this.form.bank_number2 = this.bill_issue.bank_number2
+      this.form.bank_host2 = this.bill_issue.bank_host2
+      this.form.zipcode = this.bill_issue.zipcode
+      this.form.address1 = this.bill_issue.address1
+      this.form.address2 = this.bill_issue.address2
+      this.form.address3 = this.bill_issue.address3
+      this.form.title = this.bill_issue.title
+      this.form.content = this.bill_issue.content
     }
   },
   computed: {
     confirmText() {
-      return this.salesbillissue ? '업데이트' : '신규등록'
+      return this.bill_issue ? '업데이트' : '신규등록'
     },
     btnClass() {
-      return this.salesbillissue ? 'success' : 'primary'
+      return this.bill_issue ? 'success' : 'primary'
     },
     formsCheck(this: any) {
-      if (this.salesbillissue) {
+      if (this.bill_issue) {
         const a =
-          this.form.now_payment_order === this.salesbillissue.now_payment_order
+          this.form.now_payment_order === this.bill_issue.now_payment_order
         const b = this.form.now_due_date === this.now_order
-        const c = this.form.host_name === this.salesbillissue.host_name
-        const d = this.form.host_tel === this.salesbillissue.host_tel
-        const e = this.form.agency === this.salesbillissue.agency
-        const f = this.form.agency_tel === this.salesbillissue.agency_tel
-        const g = this.form.bank_account1 === this.salesbillissue.bank_account1
-        const h = this.form.bank_number1 === this.salesbillissue.bank_number1
-        const i = this.form.bank_host1 === this.salesbillissue.bank_host1
-        const j = this.form.bank_account2 === this.salesbillissue.bank_account2
-        const k = this.form.bank_number2 === this.salesbillissue.bank_number2
-        const l = this.form.bank_host2 === this.salesbillissue.bank_host2
-        const m = this.form.zipcode === this.salesbillissue.zipcode
-        const n = this.form.address1 === this.salesbillissue.address1
-        const o = this.form.address2 === this.salesbillissue.address2
-        const p = this.form.address3 === this.salesbillissue.address3
-        const q = this.form.title === this.salesbillissue.title
-        const r = this.form.content === this.salesbillissue.content
+        const c = this.form.host_name === this.bill_issue.host_name
+        const d = this.form.host_tel === this.bill_issue.host_tel
+        const e = this.form.agency === this.bill_issue.agency
+        const f = this.form.agency_tel === this.bill_issue.agency_tel
+        const g = this.form.bank_account1 === this.bill_issue.bank_account1
+        const h = this.form.bank_number1 === this.bill_issue.bank_number1
+        const i = this.form.bank_host1 === this.bill_issue.bank_host1
+        const j = this.form.bank_account2 === this.bill_issue.bank_account2
+        const k = this.form.bank_number2 === this.bill_issue.bank_number2
+        const l = this.form.bank_host2 === this.bill_issue.bank_host2
+        const m = this.form.zipcode === this.bill_issue.zipcode
+        const n = this.form.address1 === this.bill_issue.address1
+        const o = this.form.address2 === this.bill_issue.address2
+        const p = this.form.address3 === this.bill_issue.address3
+        const q = this.form.title === this.bill_issue.title
+        const r = this.form.content === this.bill_issue.content
         const sky = a && b && c && d && e && f && g && h && i
         const land = j && k && l && m && n && o && p && q && r
         return sky && land
@@ -422,7 +422,7 @@ export default defineComponent({
     ...mapGetters('accounts', ['staffAuth', 'superAuth']),
   },
   watch: {
-    salesbillissue(val) {
+    bill_issue(val) {
       if (val) {
         this.set_now_order(val.now_payment_order)
 
@@ -481,7 +481,7 @@ export default defineComponent({
         ? this.dateFormat(this.form.now_due_date)
         : null
       let payload
-      if (this.salesbillissue) {
+      if (this.bill_issue) {
         payload = { ...{ pk }, ...this.form }
       } else {
         payload = this.form

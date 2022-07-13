@@ -1,8 +1,9 @@
 <template>
   <CAlert color="secondary">
-    <CButton color="primary" :disabled="disabled">
+    <CButton color="primary" :disabled="!contractors.length">
       선택 건별 고지서 내려받기
     </CButton>
+    {{ contractors }}
   </CAlert>
 </template>
 
@@ -12,7 +13,8 @@ import { defineComponent } from 'vue'
 export default defineComponent({
   name: 'DownloadButton',
   props: {
-    disabled: Boolean,
+    bill_issue: Object,
+    contractors: Array,
   },
   methods: {},
 })

@@ -8,7 +8,7 @@
   <ContentBody>
     <CCardBody class="pb-5">
       <SalesBillIssueForm
-        :salesbillissue="salesbillissue"
+        :bill_issue="bill_issue"
         @display-order="displayOrder"
         @on-submit="onSubmit"
       />
@@ -17,8 +17,7 @@
         :now_order="now_order"
         @list-filtering="onListFiltering"
       />
-      <DownloadButton :disabled="!isChecked" />
-      {{ ctorPks }}
+      <DownloadButton :bill_issue="bill_issue" :contractors="ctor_pk_list" />
       <ContractList
         :project="project"
         @on-ctor-chk="onCtorChk"
@@ -55,8 +54,8 @@ export default defineComponent({
   },
   data() {
     return {
-      ctorPks: [],
-      salesbillissue: null,
+      ctor_pk_list: [],
+      bill_issue: null,
       now_order: '',
     }
   },
@@ -71,15 +70,12 @@ export default defineComponent({
     })
   },
   computed: {
-    isChecked() {
-      return !!this.ctorPks.length
-    },
     ...mapState('project', ['project']),
     ...mapGetters('accounts', ['initProjId']),
   },
   watch: {
     project(val) {
-      this.salesbillissue = val.salesbillissue
+      this.bill_issue = val.salesbillissue
     },
   },
   methods: {
@@ -98,7 +94,7 @@ export default defineComponent({
       }
     },
     pageSelect(this: any, page: number) {
-      this.ctorPks = []
+      this.ctor_pk_list = []
       this.$refs.listControl.listFiltering(page)
     },
     onListFiltering(payload: any) {
@@ -107,7 +103,7 @@ export default defineComponent({
       this.fetchContractList({ ...{ project }, ...payload })
     },
     onCtorChk(payload: { chk: boolean; pk: number }) {
-      let ctors: number[] = this.ctorPks
+      let ctors: number[] = this.ctor_pk_list
       if (payload.chk) {
         if (!ctors.includes(payload.pk)) ctors.push(payload.pk)
       } else {
@@ -116,7 +112,7 @@ export default defineComponent({
       }
     },
     allUnChecked() {
-      this.ctorPks = []
+      this.ctor_pk_list = []
     },
     displayOrder(now_order: string) {
       this.now_order = now_order
