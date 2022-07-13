@@ -851,6 +851,7 @@ class ContractDetail(generics.RetrieveUpdateDestroyAPIView):
 class ContractCustomList(ContractList):
     name = 'contract-cumstom-list'
     serializer_class = ContractCustomListSerializer
+    pagination_class = PageNumberPaginationFifteen
 
 
 class ContractCustomDetail(ContractDetail):
