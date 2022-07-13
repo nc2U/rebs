@@ -49,9 +49,7 @@ const addressMixin = {
         this.form.zipcode = this.zipcode // 우편번호와 주소 정보를 해당 필드에 넣는다.
         this.form.address1 = this.address1
         this.form.address3 = this.address3 // 조합된 참고항목을 해당 필드에 넣는다.
-        // this.$refs.address2.$el.focus() // 커서를 상세주소 필드로 이동한다.
-        // //*[@id="app"]/div[2]/div[2]/div/div[2]/div[2]/form/div[2]/div[5]/div[6]/input
-        console.log(this.$refs.address2, this.$refs.address2.$el)
+        this.$refs.address2.$el.nextElementSibling.focus() // 커서를 상세주소 필드로 이동한다.
       }
     },
   },
