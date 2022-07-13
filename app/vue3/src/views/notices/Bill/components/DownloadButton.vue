@@ -7,7 +7,6 @@
     >
       선택 건별 고지서 내려받기
     </CButton>
-    {{ contractors }} // {{ print_data }}
   </CAlert>
 
   <AlertModal ref="alertModal" />
