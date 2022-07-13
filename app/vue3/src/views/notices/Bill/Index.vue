@@ -57,7 +57,7 @@ export default defineComponent({
     DownloadButton,
     ContractList,
   },
-  data() {
+  data(this: any) {
     return {
       ctor_pk_list: [],
       bill_issue: null,
@@ -65,7 +65,7 @@ export default defineComponent({
       print_data: {
         is_bill_issue: false,
         project: null,
-        pub_date: '',
+        pub_date: this.dateFormat(new Date()),
       },
     }
   },

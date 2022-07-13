@@ -452,7 +452,7 @@ export default defineComponent({
       }
     },
     published_date(this: any, val) {
-      this.$emit('set-pub-date', this.DateFormat(val))
+      this.$emit('set-pub-date', this.dateFormat(val))
     },
   },
   methods: {
