@@ -202,22 +202,22 @@
           <CFormLabel for="" class="col-form-label">시행자 주소</CFormLabel>
         </CCol>
 
-        <CCol xs="4" sm="8" md="2" xl="1" class="mb-1">
-          <CButton color="info">우편번호</CButton>
-        </CCol>
-
-        <CCol class="d-none d-sm-block d-md-none" sm="4" />
-
-        <CCol xs="8" md="2" xl="1" class="mb-1">
-          <input
-            type="text"
-            class="form-control"
-            v-model="form.zipcode"
-            v-maska="'#####'"
-            placeholder="우편번호"
-            maxlength="5"
-            required
-          />
+        <CCol xs="12" sm="8" md="4" xl="2" class="mb-1">
+          <CInputGroup>
+            <CFormInput
+              type="text"
+              v-model="form.zipcode"
+              v-maska="'#####'"
+              placeholder="우편번호"
+              maxlength="5"
+              required
+              @focus="$refs.postCode.initiate()"
+            />
+            <CInputGroupText @click="$refs.postCode.initiate()">
+              우편번호
+            </CInputGroupText>
+            <!--            <CFormFeedback invalid>우편번호를 입력하세요.</CFormFeedback>-->
+          </CInputGroup>
         </CCol>
 
         <CCol class="d-none d-sm-block d-md-none" sm="4" />
@@ -225,6 +225,7 @@
         <CCol sm="8" md="6" xl="4" class="mb-1">
           <CFormInput
             v-model="form.address1"
+            @click="$refs.postCode.initiate()"
             placeholder="메인 주소"
             maxlength="20"
             required
@@ -236,6 +237,7 @@
         <CCol sm="8" md="5" xl="2" class="mb-1">
           <CFormInput
             v-model="form.address2"
+            ref="address2"
             placeholder="상세 주소"
             maxlngth="20"
             required
@@ -354,6 +356,28 @@ export default defineComponent({
       validated: false,
     }
   },
+  mounted() {
+    if (this.salesbillissue) {
+      this.pk = this.salesbillissue.pk
+      this.form.now_payment_order = this.salesbillissue.now_payment_order
+      this.form.host_name = this.salesbillissue.host_name
+      this.form.host_tel = this.salesbillissue.host_tel
+      this.form.agency = this.salesbillissue.agency
+      this.form.agency_tel = this.salesbillissue.agency_tel
+      this.form.bank_account1 = this.salesbillissue.bank_account1
+      this.form.bank_number1 = this.salesbillissue.bank_number1
+      this.form.bank_host1 = this.salesbillissue.bank_host1
+      this.form.bank_account2 = this.salesbillissue.bank_account2
+      this.form.bank_number2 = this.salesbillissue.bank_number2
+      this.form.bank_host2 = this.salesbillissue.bank_host2
+      this.form.zipcode = this.salesbillissue.zipcode
+      this.form.address1 = this.salesbillissue.address1
+      this.form.address2 = this.salesbillissue.address2
+      this.form.address3 = this.salesbillissue.address3
+      this.form.title = this.salesbillissue.title
+      this.form.content = this.salesbillissue.content
+    }
+  },
   computed: {
     confirmText() {
       return this.salesbillissue ? '변경' : '등록'
@@ -361,30 +385,30 @@ export default defineComponent({
     btnClass() {
       return this.salesbillissue ? 'success' : 'primary'
     },
-    // formsCheck(this: any) {
-    //   const a =
-    //     this.form.now_payment_order === this.salesbillissue.now_payment_order
-    //   const b = this.form.now_due_date === this.now_order
-    //   const c = this.form.host_name === this.salesbillissue.host_name
-    //   const d = this.form.host_tel === this.salesbillissue.host_tel
-    //   const e = this.form.agency === this.salesbillissue.agency
-    //   const f = this.form.agency_tel === this.salesbillissue.agency_tel
-    //   const g = this.form.bank_account1 === this.salesbillissue.bank_account1
-    //   const h = this.form.bank_number1 === this.salesbillissue.bank_number1
-    //   const i = this.form.bank_host1 === this.salesbillissue.bank_host1
-    //   const j = this.form.bank_account2 === this.salesbillissue.bank_account2
-    //   const k = this.form.bank_number2 === this.salesbillissue.bank_number2
-    //   const l = this.form.bank_host2 === this.salesbillissue.bank_host2
-    //   const m = this.form.zipcode === this.salesbillissue.zipcode
-    //   const n = this.form.address1 === this.salesbillissue.address1
-    //   const o = this.form.address2 === this.salesbillissue.address2
-    //   const p = this.form.address3 === this.salesbillissue.address3
-    //   const q = this.form.title === this.salesbillissue.title
-    //   const r = this.form.content === this.salesbillissue.content
-    //   const sky = a && b && c && d && e && f && g && h && i
-    //   const land = j && k && l && m && n && o && p && q && r
-    //   return sky && land
-    // },
+    formsCheck(this: any) {
+      const a =
+        this.form.now_payment_order === this.salesbillissue.now_payment_order
+      const b = this.form.now_due_date === this.now_order
+      const c = this.form.host_name === this.salesbillissue.host_name
+      const d = this.form.host_tel === this.salesbillissue.host_tel
+      const e = this.form.agency === this.salesbillissue.agency
+      const f = this.form.agency_tel === this.salesbillissue.agency_tel
+      const g = this.form.bank_account1 === this.salesbillissue.bank_account1
+      const h = this.form.bank_number1 === this.salesbillissue.bank_number1
+      const i = this.form.bank_host1 === this.salesbillissue.bank_host1
+      const j = this.form.bank_account2 === this.salesbillissue.bank_account2
+      const k = this.form.bank_number2 === this.salesbillissue.bank_number2
+      const l = this.form.bank_host2 === this.salesbillissue.bank_host2
+      const m = this.form.zipcode === this.salesbillissue.zipcode
+      const n = this.form.address1 === this.salesbillissue.address1
+      const o = this.form.address2 === this.salesbillissue.address2
+      const p = this.form.address3 === this.salesbillissue.address3
+      const q = this.form.title === this.salesbillissue.title
+      const r = this.form.content === this.salesbillissue.content
+      const sky = a && b && c && d && e && f && g && h && i
+      const land = j && k && l && m && n && o && p && q && r
+      return sky && land
+    },
     writeAuth() {
       return this.superAuth || (this.staffAuth && this.staffAuth.notice === '2')
     },
