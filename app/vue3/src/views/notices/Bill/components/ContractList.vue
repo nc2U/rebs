@@ -89,6 +89,10 @@ export default defineComponent({
     onCtorChk(payload: { chk: boolean; pk: number }) {
       this.$emit('on-ctor-chk', payload)
     },
+    unChk(this: any) {
+      this.allChecked = true
+      this.allChecked = false
+    },
   },
 })
 </script>

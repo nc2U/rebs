@@ -16,7 +16,7 @@
       <ListController
         ref="listControl"
         :now_order="now_order"
-        @list-filtering="onListFiltering"
+        @list-filtering="listFiltering"
       />
       <DownloadButton
         :bill_issue="bill_issue"
@@ -25,6 +25,7 @@
       />
       <ContractList
         :project="project"
+        ref="contractList"
         @on-ctor-chk="onCtorChk"
         @page-select="pageSelect"
         @all-un-checked="allUnChecked"
@@ -45,6 +46,11 @@ import ListController from '@/views/notices/Bill/components/ListController.vue'
 import DownloadButton from '@/views/notices/Bill/components/DownloadButton.vue'
 import ContractList from '@/views/notices/Bill/components/ContractList.vue'
 import { mapActions, mapGetters, mapState } from 'vuex'
+
+// Todo ListController -> order-display reactive update
+// Todo ListController -> resetForm -> Contract -> checkout update
+// Todo Contract -> order -> complete -> checkbox -> disable update
+// Todo Contract -> List view update
 
 export default defineComponent({
   name: 'Bill',
@@ -108,10 +114,12 @@ export default defineComponent({
     pageSelect(this: any, page: number) {
       this.ctor_ids = []
       this.$refs.listControl.listFiltering(page)
+      this.$refs.contractList.unChk()
     },
-    onListFiltering(payload: any) {
+    listFiltering(payload: any) {
       const project = this.project.pk
       this.fetchContractList({ ...{ project }, ...payload })
+      this.$refs.contractList.unChk()
     },
     onCtorChk(payload: { chk: boolean; pk: number }) {
       let ctors: number[] = this.ctor_ids
