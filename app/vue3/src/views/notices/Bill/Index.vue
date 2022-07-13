@@ -21,7 +21,7 @@
       <DownloadButton
         :bill_issue="bill_issue"
         :print_data="print_data"
-        :contractors="ctor_pk_list"
+        :contractors="ctor_ids"
       />
       <ContractList
         :project="project"
@@ -59,7 +59,7 @@ export default defineComponent({
   },
   data(this: any) {
     return {
-      ctor_pk_list: [],
+      ctor_ids: [],
       bill_issue: null,
       now_order: '',
       print_data: {
@@ -106,7 +106,7 @@ export default defineComponent({
       }
     },
     pageSelect(this: any, page: number) {
-      this.ctor_pk_list = []
+      this.ctor_ids = []
       this.$refs.listControl.listFiltering(page)
     },
     onListFiltering(payload: any) {
@@ -114,7 +114,7 @@ export default defineComponent({
       this.fetchContractList({ ...{ project }, ...payload })
     },
     onCtorChk(payload: { chk: boolean; pk: number }) {
-      let ctors: number[] = this.ctor_pk_list
+      let ctors: number[] = this.ctor_ids
       if (payload.chk) {
         if (!ctors.includes(payload.pk)) ctors.push(payload.pk)
       } else {
@@ -123,7 +123,7 @@ export default defineComponent({
       }
     },
     allUnChecked() {
-      this.ctor_pk_list = []
+      this.ctor_ids = []
     },
     displayOrder(now_order: string) {
       this.now_order = now_order
