@@ -10,6 +10,7 @@
       <SalesBillIssueForm
         :bill_issue="bill_issue"
         @display-order="displayOrder"
+        @set-pub-date="setPubDate"
         @on-submit="onSubmit"
       />
       <ListController
@@ -17,7 +18,11 @@
         :now_order="now_order"
         @list-filtering="onListFiltering"
       />
-      <DownloadButton :bill_issue="bill_issue" :contractors="ctor_pk_list" />
+      <DownloadButton
+        :bill_issue="bill_issue"
+        :print_data="print_data"
+        :contractors="ctor_pk_list"
+      />
       <ContractList
         :project="project"
         @on-ctor-chk="onCtorChk"
@@ -57,6 +62,11 @@ export default defineComponent({
       ctor_pk_list: [],
       bill_issue: null,
       now_order: '',
+      print_data: {
+        is_bill_issue: false,
+        project: null,
+        pub_date: '',
+      },
     }
   },
   created(this: any) {
@@ -76,6 +86,8 @@ export default defineComponent({
   watch: {
     project(val) {
       this.bill_issue = val.salesbillissue
+      this.print_data.is_bill_issue = !!val.salesbillissue
+      this.print_data.project = val.pk
     },
   },
   methods: {
@@ -115,6 +127,9 @@ export default defineComponent({
     },
     displayOrder(now_order: string) {
       this.now_order = now_order
+    },
+    setPubDate(payload: any) {
+      this.print_data.pub_date = payload
     },
     onSubmit(payload: any) {
       const { pk, now_payment_order } = payload

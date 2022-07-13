@@ -6,6 +6,7 @@
         :id="'check_' + contract.ctor_pk"
         :value="contract.ctor_pk"
         @change="ctorChk(contract.ctor_pk)"
+        :disabled="isCompleted"
         label="선택"
       />
     </CTableDataCell>
@@ -71,6 +72,11 @@ export default defineComponent({
     return {
       checked: false,
     }
+  },
+  computed: {
+    isCompleted() {
+      return false
+    },
   },
   watch: {
     allChecked(val) {

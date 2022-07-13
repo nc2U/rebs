@@ -7,7 +7,7 @@
     >
       선택 건별 고지서 내려받기
     </CButton>
-    {{ contractors }}
+    {{ contractors }} // {{ print_data }}
   </CAlert>
 
   <AlertModal ref="alertModal" />
@@ -22,6 +22,7 @@ export default defineComponent({
   components: { AlertModal },
   props: {
     bill_issue: Object,
+    print_data: Object,
     contractors: Array,
   },
   methods: {
@@ -38,8 +39,11 @@ export default defineComponent({
             '다운로드(출력)할 계약 건을 선택하여 주십시요.',
           )
         } else {
-          const pub_date = ''
-          location.href = 'https://www.naver.com'
+          const project = '1'
+          const pub_date = '2022-06-07'
+          const seq = this.contractors.join('-')
+          const url = 'rebs/pdf-bill/'
+          location.href = `${url}?project=${project}&date=${pub_date}&seq=${seq}`
         }
       }
     },

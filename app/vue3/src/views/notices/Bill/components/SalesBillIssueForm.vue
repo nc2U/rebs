@@ -204,6 +204,9 @@
 
         <CCol xs="12" sm="8" md="4" xl="2" class="mb-1">
           <CInputGroup>
+            <CInputGroupText @click="$refs.postCode.initiate()">
+              우편번호
+            </CInputGroupText>
             <CFormInput
               type="text"
               v-model="form.zipcode"
@@ -213,9 +216,6 @@
               required
               @focus="$refs.postCode.initiate()"
             />
-            <CInputGroupText @click="$refs.postCode.initiate()">
-              우편번호
-            </CInputGroupText>
             <!--            <CFormFeedback invalid>우편번호를 입력하세요.</CFormFeedback>-->
           </CInputGroup>
         </CCol>
@@ -450,6 +450,9 @@ export default defineComponent({
       if (val) {
         this.form.now_due_date = val.pay_due_date
       }
+    },
+    published_date(this: any, val) {
+      this.$emit('set-pub-date', this.DateFormat(val))
     },
   },
   methods: {
