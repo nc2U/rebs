@@ -87,6 +87,8 @@ export default defineComponent({
       project: this.initProjId,
       ordering: 'contractor__name',
     })
+    this.fetchSalePriceList({ project: this.initProjId })
+    this.fetchDownPayList({ project: this.initProjId })
   },
   computed: {
     ...mapState('project', ['project']),
@@ -94,24 +96,35 @@ export default defineComponent({
   },
   watch: {
     project(val) {
-      this.bill_issue = val.salesbillissue
-      this.print_data.is_bill_issue = !!val.salesbillissue
-      this.print_data.project = val.pk
+      if (val) {
+        this.bill_issue = val.salesbillissue
+        this.print_data.is_bill_issue = !!val.salesbillissue
+        this.print_data.project = val.pk
+      }
     },
   },
   methods: {
     onSelectAdd(this: any, target: any) {
       if (target !== '') {
+        this.fetchPayOrderList(target)
         this.fetchOrderGroupList(target)
         this.fetchTypeList(target)
         this.fetchBuildingList(target)
-        this.fetchContractList({ project: target })
+        this.fetchContractList({
+          project: target,
+          ordering: 'contractor__name',
+        })
+        this.fetchSalePriceList({ project: target })
+        this.fetchDownPayList({ project: target })
       } else {
+        this.$store.state.payment.payOrderList = []
         this.$store.state.contract.orderGroupList = []
         this.$store.state.project.unitTypeList = []
         this.$store.state.project.buildingList = []
         this.$store.state.contract.contractList = []
         this.$store.state.contract.contractsCount = 0
+        this.$store.state.contract.salesPriceList = []
+        this.$store.state.contract.downPayList = []
       }
     },
     pageSelect(this: any, page: number) {
@@ -159,8 +172,13 @@ export default defineComponent({
         this.createSalesBillIssue(bill_data)
       }
     },
+    ...mapActions('contract', [
+      'fetchOrderGroupList',
+      'fetchContractList',
+      'fetchSalePriceList',
+      'fetchDownPayList',
+    ]),
     ...mapActions('notice', ['createSalesBillIssue', 'patchSalesBillIssue']),
-    ...mapActions('contract', ['fetchOrderGroupList', 'fetchContractList']),
     ...mapActions('project', ['fetchTypeList', 'fetchBuildingList']),
     ...mapActions('payment', ['fetchPayOrderList', 'patchPayOrder']),
   },
