@@ -9,7 +9,7 @@
     <CCardBody class="pb-5">
       <SalesBillIssueForm
         :bill_issue="bill_issue"
-        @display-order="displayOrder"
+        @get-now-order="getNowOrder"
         @set-pub-date="setPubDate"
         @on-submit="onSubmit"
       />
@@ -25,6 +25,7 @@
       />
       <ContractList
         :project="project"
+        :now_order="now_order"
         ref="contractList"
         @on-ctor-chk="onCtorChk"
         @page-select="pageSelect"
@@ -66,7 +67,7 @@ export default defineComponent({
     return {
       ctor_ids: [],
       bill_issue: null,
-      now_order: '',
+      now_order: null,
       print_data: {
         is_bill_issue: false,
         project: null,
@@ -132,7 +133,7 @@ export default defineComponent({
     allUnChecked() {
       this.ctor_ids = []
     },
-    displayOrder(now_order: string) {
+    getNowOrder(now_order: string) {
       this.now_order = now_order
     },
     setPubDate(payload: any) {

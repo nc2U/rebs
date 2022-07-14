@@ -63,7 +63,10 @@ import { mapGetters } from 'vuex'
 export default defineComponent({
   name: 'ContractorList',
   components: { Contract },
-  props: ['project'],
+  props: {
+    project: Object,
+    now_order: Object,
+  },
   data() {
     return {
       allChecked: false,

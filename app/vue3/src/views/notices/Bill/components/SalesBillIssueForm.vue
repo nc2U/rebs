@@ -392,7 +392,7 @@ export default defineComponent({
       if (this.bill_issue) {
         const a =
           this.form.now_payment_order === this.bill_issue.now_payment_order
-        const b = this.form.now_due_date === this.now_order
+        const b = this.form.now_due_date === this.now_order.pay_due_date
         const c = this.form.host_name === this.bill_issue.host_name
         const d = this.form.host_tel === this.bill_issue.host_tel
         const e = this.form.agency === this.bill_issue.agency
@@ -424,7 +424,7 @@ export default defineComponent({
   watch: {
     bill_issue(val) {
       if (val) {
-        this.set_now_order(val.now_payment_order)
+        this.get_now_order(val.now_payment_order)
 
         this.pk = val.pk
         this.form.now_payment_order = val.now_payment_order
@@ -456,12 +456,12 @@ export default defineComponent({
     },
   },
   methods: {
-    set_now_order(order: number) {
+    get_now_order(order: number) {
       const now_order = this.payOrderList
         .filter((o: any) => o.pk == order)
         .map((o: any) => o)[0]
       this.now_order = now_order
-      this.$emit('display-order', now_order.__str__)
+      this.$emit('get-now-order', now_order)
     },
     onSubmit(this: any, event: any) {
       if (this.writeAuth) {
