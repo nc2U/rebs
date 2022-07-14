@@ -15,7 +15,7 @@
       />
       <ListController
         ref="listControl"
-        :now_order="now_order"
+        :now_order="now_order.__str__"
         @list-filtering="listFiltering"
       />
       <DownloadButton
@@ -25,7 +25,7 @@
       />
       <ContractList
         :project="project"
-        :now_order="now_order"
+        :now_order="now_order.pk"
         ref="contractList"
         @on-ctor-chk="onCtorChk"
         @page-select="pageSelect"
@@ -67,7 +67,10 @@ export default defineComponent({
     return {
       ctor_ids: [],
       bill_issue: null,
-      now_order: null,
+      now_order: {
+        pk: null,
+        __str__: '',
+      },
       print_data: {
         is_bill_issue: false,
         project: null,
