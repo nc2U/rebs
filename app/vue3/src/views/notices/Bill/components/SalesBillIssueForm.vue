@@ -392,7 +392,7 @@ export default defineComponent({
       if (this.bill_issue) {
         const a =
           this.form.now_payment_order === this.bill_issue.now_payment_order
-        const b = this.form.now_due_date === this.now_order.pay_due_date
+        const b = this.form.now_due_date === this.now_order?.pay_due_date
         const c = this.form.host_name === this.bill_issue.host_name
         const d = this.form.host_tel === this.bill_issue.host_tel
         const e = this.form.agency === this.bill_issue.agency
@@ -448,7 +448,7 @@ export default defineComponent({
     },
     now_order(val) {
       if (val) {
-        this.form.now_due_date = val.pay_due_date
+        this.form.now_due_date = val?.pay_due_date
       }
     },
     published_date(this: any, val) {
