@@ -8,6 +8,8 @@ import {
   FETCH_CONT_SUMMARY_LIST,
   FETCH_KEY_UNIT_LIST,
   FETCH_HOUSE_UNIT_LIST,
+  FETCH_SALES_PRICE_LIST,
+  FETCH_DOWN_PAYMENT_LIST,
   FETCH_CONT_RELEASE_LIST,
   FETCH_CONTRACTOR_LIST,
   FETCH_CONT_RELEASE,
@@ -527,6 +529,36 @@ const actions = {
       .get(url)
       .then(res => {
         commit(FETCH_HOUSE_UNIT_LIST, res.data)
+      })
+      .catch(err => errorHandle(err.response.data))
+  },
+
+  fetchSalePriceList: ({ commit }: any, payload: any) => {
+    const { project } = payload
+
+    let url = `/price/?project=${project}`
+    if (payload.order_group) url += `&order_group=${payload.order_group}`
+    if (payload.unit_type) url += `&unit_type=${payload.unit_type}`
+
+    api
+      .get(url)
+      .then(res => {
+        commit(FETCH_SALES_PRICE_LIST, res.data)
+      })
+      .catch(err => errorHandle(err.response.data))
+  },
+
+  fetchDownPayList: ({ commit }: any, payload: any) => {
+    const { project } = payload
+
+    let url = `/down-payment/?project=${project}`
+    if (payload.order_group) url += `&order_group=${payload.order_group}`
+    if (payload.unit_type) url += `&unit_type=${payload.unit_type}`
+
+    api
+      .get(url)
+      .then(res => {
+        commit(FETCH_DOWN_PAYMENT_LIST, res.data)
       })
       .catch(err => errorHandle(err.response.data))
   },

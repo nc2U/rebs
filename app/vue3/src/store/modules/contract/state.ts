@@ -50,6 +50,27 @@ interface InstallmentOrder {
   __str__: string
 }
 
+interface SalesPrice {
+  pk: number
+  project: number
+  order_group: number
+  unit_type: number
+  unit_floor_type: number
+  price_build: number | null
+  price_land: number | null
+  price_tax: number | null
+  price: number
+}
+
+interface DownPayment {
+  pk: number
+  project: number
+  order_group: number
+  unit_type: number
+  number_payments: number
+  payment_amount: number
+}
+
 interface Payment {
   pk: number
   deal_date: string
@@ -122,6 +143,8 @@ export interface ContractState {
   orderGroupList: OrderGroup[]
   keyUnitList: KeyUnit[]
   houseUnitList: HouseUnit[]
+  salesPriceList: SalesPrice[]
+  downPaymentList: DownPayment[]
   contReleaseList: ContractRelease[]
   contReleaseCount: number
   contRelease: ContractRelease | null
@@ -138,6 +161,8 @@ const state = {
   orderGroupList: [],
   keyUnitList: [],
   houseUnitList: [],
+  salesPriceList: [],
+  downPaymentList: [],
   contReleaseList: [],
   contReleaseCount: 0,
   contRelease: null,

@@ -1,14 +1,16 @@
 import {
   FETCH_CONT_SUMMARY_LIST,
   FETCH_CONTRACT,
-  FETCH_CONTRACTOR,
   FETCH_CONTRACT_LIST,
+  FETCH_CONTRACTOR,
+  FETCH_CONTRACTOR_LIST,
   FETCH_ORDER_GROUP_LIST,
   FETCH_SUBS_SUMMARY_LIST,
   FETCH_KEY_UNIT_LIST,
   FETCH_HOUSE_UNIT_LIST,
+  FETCH_SALES_PRICE_LIST,
+  FETCH_DOWN_PAYMENT_LIST,
   FETCH_CONT_RELEASE_LIST,
-  FETCH_CONTRACTOR_LIST,
   FETCH_CONT_RELEASE,
 } from '@/store/modules/contract/mutations-types'
 import {
@@ -46,6 +48,12 @@ const mutations = {
 
   [FETCH_HOUSE_UNIT_LIST]: (state: ContractState, payload: any) =>
     (state.houseUnitList = payload.results),
+
+  [FETCH_SALES_PRICE_LIST]: (state: ContractState, payload: any) =>
+    (state.salesPriceList = payload.results),
+
+  [FETCH_DOWN_PAYMENT_LIST]: (state: ContractState, payload: any) =>
+    (state.downPaymentList = payload.results),
 
   [FETCH_CONT_RELEASE_LIST]: (state: ContractState, payload: any) => {
     state.contReleaseList = payload.results
