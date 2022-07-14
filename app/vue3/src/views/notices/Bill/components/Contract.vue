@@ -57,6 +57,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { mapState } from 'vuex'
 
 export default defineComponent({
   name: 'Contract',
@@ -80,6 +81,7 @@ export default defineComponent({
       const paid: number = this.contract.last_paid_order.pay_time
       return paid >= due
     },
+    ...mapState('contract', ['salesPriceList', 'downPaymentList']),
   },
   watch: {
     allChecked(val) {
@@ -97,6 +99,9 @@ export default defineComponent({
       this.$nextTick(() => {
         this.$emit('on-ctor-chk', { chk: this.checked, pk: ctorPk })
       })
+    },
+    get_price() {
+      return this.contract.avg_price
     },
   },
 })
