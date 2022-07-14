@@ -29,8 +29,10 @@ export interface OrderGroup {
 }
 
 interface UnitType {
+  pk: number
   name: string
   color: string
+  average_price: number
 }
 
 interface HouseUnit {
