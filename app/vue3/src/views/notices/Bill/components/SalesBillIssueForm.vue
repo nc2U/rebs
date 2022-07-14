@@ -456,12 +456,11 @@ export default defineComponent({
     },
   },
   methods: {
-    get_now_order(order: number) {
-      const now_order = this.payOrderList
-        .filter((o: any) => o.pk == order)
+    get_now_order(np_order: number) {
+      this.now_order = this.payOrderList
+        .filter((o: any) => o.pk == np_order)
         .map((o: any) => o)[0]
-      this.now_order = now_order
-      this.$emit('get-now-order', now_order)
+      this.$emit('get-now-order', this.now_order)
     },
     onSubmit(this: any, event: any) {
       if (this.writeAuth) {

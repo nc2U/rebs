@@ -36,8 +36,9 @@
     <CTableBody>
       <Contract
         v-for="contract in contBillIndex"
-        :all-checked="allChecked"
         :page="page"
+        :now_order="now_order"
+        :all-checked="allChecked"
         :contract="contract"
         :key="contract.pk"
         @on-ctor-chk="onCtorChk"
@@ -65,7 +66,7 @@ export default defineComponent({
   components: { Contract },
   props: {
     project: Object,
-    now_order: Object,
+    now_order: Number,
   },
   data() {
     return {

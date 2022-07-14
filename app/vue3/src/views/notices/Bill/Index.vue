@@ -25,7 +25,7 @@
       />
       <ContractList
         :project="project"
-        :now_order="now_order.pk"
+        :now_order="now_order.pay_time"
         ref="contractList"
         @on-ctor-chk="onCtorChk"
         @page-select="pageSelect"
@@ -68,8 +68,8 @@ export default defineComponent({
       ctor_ids: [],
       bill_issue: null,
       now_order: {
-        pk: null,
         __str__: '',
+        pay_time: 2,
       },
       print_data: {
         is_bill_issue: false,

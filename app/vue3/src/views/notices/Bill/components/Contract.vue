@@ -65,8 +65,9 @@ export default defineComponent({
       type: Object,
       required: true,
     },
-    allChecked: Boolean,
     page: Number,
+    now_order: Number,
+    allChecked: Boolean,
   },
   data() {
     return {
@@ -75,7 +76,9 @@ export default defineComponent({
   },
   computed: {
     paidCompleted() {
-      return false
+      const due: number = this.now_order || 2
+      const paid: number = this.contract.last_paid_order.pay_time
+      return paid >= due
     },
   },
   watch: {
