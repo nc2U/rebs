@@ -33,10 +33,11 @@ const getters = {
       ctor_pk: c.contractor?.pk,
       serial_number: c.serial_number,
       order_group: c.order_group,
+      type_pk: c.unit_type.pk,
       unit_type: c.unit_type.name,
       type_color: c.unit_type.color,
       average_price: c.unit_type.average_price,
-      house_unit: c.keyunit?.houseunit?.__str__ || '[미정]',
+      house_unit: c.keyunit?.houseunit,
       contractor: c.contractor?.name,
       total_paid:
         c.payments.length !== 0

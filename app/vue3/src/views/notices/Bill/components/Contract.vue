@@ -29,9 +29,9 @@
     </CTableDataCell>
     <CTableDataCell
       class="text-left"
-      :class="contract.house_unit === '[미정]' ? 'text-danger' : ''"
+      :class="contract.house_unit.__str__ === '' ? 'text-danger' : ''"
     >
-      {{ contract.house_unit }}
+      {{ contract.house_unit.__str__ || '[미정]' }}
     </CTableDataCell>
     <CTableDataCell>
       <router-link
@@ -101,7 +101,17 @@ export default defineComponent({
       })
     },
     get_price() {
-      return this.contract.avg_price
+      // 해당 건별 분양가 구하기
+      const c = this.contract
+      const unit = c.house_unit
+      return unit
+        ? this.salesPriceList.filter(
+            (s: any) =>
+              s.order_group === c.order_group.pk &&
+              s.unit_type === c.type_pk &&
+              s.unit_floor_type === unit.floor_type,
+          )[0]?.price
+        : this.contract.average_price
     },
   },
 })
