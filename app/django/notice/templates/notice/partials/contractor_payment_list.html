@@ -54,7 +54,7 @@
                        style="color: {{ object.contract.keyunit.unit_type.color }};"></i> {{ object.contract.unit_type }}
                 </td>
                 {% if this_project.is_unit_set %}
-                    <td class="text-center">{{ object.contract.keyunit.houseunit }}</td>
+                    <td class="text-center">{{ object.contract.houseunit }}</td>
                 {% endif %}
                 <td class="text-center" data-toggle="tooltip" data-placement="left" title="계약 등록 관리 [{{ object.name }}]"
                     {% if object.contractorrelease.status == '3' %}data-toggle="popover"
