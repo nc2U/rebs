@@ -457,10 +457,10 @@ export default defineComponent({
   },
   methods: {
     get_now_order(np_order: number) {
-      this.now_order = this.payOrderList
+      const now_order = this.payOrderList
         .filter((o: any) => o.pk == np_order)
         .map((o: any) => o)[0]
-      this.$emit('get-now-order', this.now_order)
+      this.$emit('get-now-order', now_order.pk)
     },
     onSubmit(this: any, event: any) {
       if (this.writeAuth) {
@@ -482,6 +482,9 @@ export default defineComponent({
       this.form.now_due_date = this.form.now_due_date
         ? this.dateFormat(this.form.now_due_date)
         : null
+      if (this.form.now_payment_order) {
+        this.$emit('get-now-order', this.form.now_payment_order)
+      }
       let payload
       if (this.bill_issue) {
         payload = { ...{ pk }, ...this.form }

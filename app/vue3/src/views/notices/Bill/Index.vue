@@ -15,7 +15,7 @@
       />
       <ListController
         ref="listControl"
-        :now_order="now_order.__str__"
+        :now_order="payOrderName"
         @list-filtering="listFiltering"
       />
       <DownloadButton
@@ -25,7 +25,7 @@
       />
       <ContractList
         :project="project"
-        :now_order="now_order.pay_time"
+        :now_order="payOrderTime"
         ref="contractList"
         @on-ctor-chk="onCtorChk"
         @page-select="pageSelect"
@@ -65,10 +65,6 @@ export default defineComponent({
     return {
       ctor_ids: [],
       bill_issue: null,
-      now_order: {
-        __str__: '',
-        pay_time: 2,
-      },
       print_data: {
         is_bill_issue: false,
         project: null,
@@ -87,14 +83,17 @@ export default defineComponent({
     })
     this.fetchSalePriceList({ project: this.initProjId })
     this.fetchDownPayList({ project: this.initProjId })
-    // if (this.$route.query.contract) {
-    //   this.$router.push({ name: '건별수납 관리' })
-    //   this.getContract(this.$route.query.contract)
-    // }
   },
   computed: {
+    payOrderTime() {
+      return this.payOrder ? this.payOrder.pay_time : null
+    },
+    payOrderName() {
+      return this.payOrder ? this.payOrder.__str__ : ''
+    },
     ...mapState('project', ['project']),
     ...mapGetters('accounts', ['initProjId']),
+    ...mapState('payment', ['payOrder']),
   },
   watch: {
     project(val) {
@@ -102,6 +101,7 @@ export default defineComponent({
         this.bill_issue = val.salesbillissue
         this.print_data.is_bill_issue = !!val.salesbillissue
         this.print_data.project = val.pk
+        this.fetchPayOrder(val.salesbillissue.now_payment_order)
       }
     },
   },
@@ -151,8 +151,9 @@ export default defineComponent({
     allUnChecked() {
       this.ctor_ids = []
     },
-    getNowOrder(now_order: string) {
-      this.now_order = now_order
+    getNowOrder(orderPk: string) {
+      console.log('--->>>', orderPk)
+      this.fetchPayOrder(orderPk)
     },
     setPubDate(payload: any) {
       this.print_data.pub_date = payload
@@ -180,9 +181,13 @@ export default defineComponent({
       'fetchSalePriceList',
       'fetchDownPayList',
     ]),
-    ...mapActions('notice', ['createSalesBillIssue', 'patchSalesBillIssue']),
+    ...mapActions('payment', [
+      'patchPayOrder',
+      'fetchPayOrder',
+      'fetchPayOrderList',
+    ]),
     ...mapActions('project', ['fetchTypeList', 'fetchBuildingList']),
-    ...mapActions('payment', ['fetchPayOrderList', 'patchPayOrder']),
+    ...mapActions('notice', ['createSalesBillIssue', 'patchSalesBillIssue']),
   },
 })
 </script>

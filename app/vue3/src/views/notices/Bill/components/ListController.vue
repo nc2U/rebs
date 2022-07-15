@@ -79,7 +79,7 @@
 
       <CCol lg="5">
         <CRow>
-          <CCol md="6" class="pt-1 mb-3 text-primary light-yellow">
+          <CCol md="6" class="mb-3 text-primary light-yellow">
             <strong>{{ now_order }}</strong>
           </CCol>
           <CCol md="6" class="mb-3">
