@@ -9,6 +9,7 @@
         :disabled="paidCompleted"
         label="선택"
       />
+      {{ get_paid_order() }}
     </CTableDataCell>
     <CTableDataCell>
       <router-link
@@ -81,6 +82,36 @@ export default defineComponent({
       const paid: number = this.contract.last_paid_order.pay_time
       return paid >= due
     },
+    price() {
+      // 해당 건별 분양가 구하기
+      const c = this.contract
+      const unit = c.house_unit
+      return unit
+        ? this.salesPriceList.filter(
+            (s: any) =>
+              s.order_group === c.order_group.pk &&
+              s.unit_type === c.type_pk &&
+              s.unit_floor_type === unit.floor_type,
+          )[0]?.price
+        : this.contract.average_price
+    },
+
+    downPay() {
+      // 계약금 구하기
+      const c = this.contract
+      const pay_num = this.payOrderList.filter(
+        (p: any) => p.pay_sort === '1',
+      ).length
+      const ad = Number((this.price * 0.1) / Math.round(pay_num / 2))
+
+      return (
+        this.downPaymentList.filter(
+          (d: any) =>
+            d.order_group === c.order_group.pk && d.unit_type === c.type_pk,
+        )[0].payment_amount || ''
+      )
+    },
+    ...mapState('payment', ['payOrderList']),
     ...mapState('contract', ['salesPriceList', 'downPaymentList']),
   },
   watch: {
@@ -100,18 +131,27 @@ export default defineComponent({
         this.$emit('on-ctor-chk', { chk: this.checked, pk: ctorPk })
       })
     },
-    get_price() {
-      // 해당 건별 분양가 구하기
-      const c = this.contract
-      const unit = c.house_unit
-      return unit
-        ? this.salesPriceList.filter(
-            (s: any) =>
-              s.order_group === c.order_group.pk &&
-              s.unit_type === c.type_pk &&
-              s.unit_floor_type === unit.floor_type,
-          )[0]?.price
-        : this.contract.average_price
+
+    get_paid_order() {
+      let paid_amount = 0
+      // const middle = Number(price * 0.1)
+      // const bal_order_num = this.payOrderList.filter(
+      //   (p: any) => p.pay_sort === '3',
+      // ).length
+      // const balance = Number(this.get_price() - paid_amount) / bal_order_num
+      let paid_orders: any[] = []
+      const total_paid = this.contract.total_paid
+
+      this.payOrderList.forEach((p: any) => {
+        // if (p.pay_sort === '1') paid_amount += this.downPay
+        //   // else if (p.pay_sort === '2') paid_amount += middle
+        //   //   //   else paid_amount += balance
+        //   //   //
+        if (total_paid >= paid_amount) {
+          paid_orders.push(p.pay_time)
+        }
+      })
+      return paid_orders
     },
   },
 })
