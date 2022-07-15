@@ -15,7 +15,7 @@
     </colgroup>
 
     <CTableHead>
-      <CTableRow color="dark" class="text-center">
+      <CTableRow color="secondary" class="text-center">
         <CTableHeaderCell scope="col">거래일자</CTableHeaderCell>
         <CTableHeaderCell scope="col">구분</CTableHeaderCell>
         <CTableHeaderCell scope="col">계정</CTableHeaderCell>

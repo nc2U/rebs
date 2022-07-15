@@ -1,6 +1,6 @@
 <template>
   <CTable hover responsive bordered class="mt-3">
-    <CTableHead class="text-center" color="dark">
+    <CTableHead class="text-center" color="secondary">
       <CTableRow align="middle">
         <CTableHeaderCell>프로젝트</CTableHeaderCell>
         <CTableHeaderCell>총 매출예산(A)</CTableHeaderCell>

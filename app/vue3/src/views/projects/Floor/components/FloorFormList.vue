@@ -7,7 +7,7 @@
       <col width="23%" />
       <col width="8%" />
     </colgroup>
-    <CTableHead color="dark" class="text-center">
+    <CTableHead color="secondary" class="text-center">
       <CTableRow>
         <CTableHeaderCell>시작 층</CTableHeaderCell>
         <CTableHeaderCell>종료 층</CTableHeaderCell>

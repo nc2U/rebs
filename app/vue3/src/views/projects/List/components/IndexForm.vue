@@ -8,7 +8,7 @@
     >
       <CCardBody>
         <CRow class="mb-3">
-          <CFormLabel class="col-md-2 col-form-label"> 프로젝트명</CFormLabel>
+          <CFormLabel class="col-md-2 col-form-label"> 프로젝트명 </CFormLabel>
           <CCol md="10" lg="4" class="mb-md-3 mb-lg-0">
             <CFormInput
               v-model="form.name"

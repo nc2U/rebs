@@ -15,7 +15,7 @@
           </CTableHead>
           <CTableBody>
             <CTableRow>
-              <CTableHeaderCell scope="row" color="dark">
+              <CTableHeaderCell scope="row" color="secondary">
                 회사명
               </CTableHeaderCell>
               <CTableDataCell>
@@ -23,7 +23,7 @@
               </CTableDataCell>
             </CTableRow>
             <CTableRow>
-              <CTableHeaderCell scope="row" color="dark">
+              <CTableHeaderCell scope="row" color="secondary">
                 대표자명
               </CTableHeaderCell>
               <CTableDataCell>
@@ -31,7 +31,7 @@
               </CTableDataCell>
             </CTableRow>
             <CTableRow>
-              <CTableHeaderCell scope="row" color="dark">
+              <CTableHeaderCell scope="row" color="secondary">
                 사업자등록번호
               </CTableHeaderCell>
               <CTableDataCell>
@@ -39,7 +39,7 @@
               </CTableDataCell>
             </CTableRow>
             <CTableRow>
-              <CTableHeaderCell scope="row" color="dark">
+              <CTableHeaderCell scope="row" color="secondary">
                 법인등록번호
               </CTableHeaderCell>
               <CTableDataCell>
@@ -47,7 +47,7 @@
               </CTableDataCell>
             </CTableRow>
             <CTableRow>
-              <CTableHeaderCell scope="row" color="dark">
+              <CTableHeaderCell scope="row" color="secondary">
                 업태
               </CTableHeaderCell>
               <CTableDataCell>
@@ -55,7 +55,7 @@
               </CTableDataCell>
             </CTableRow>
             <CTableRow>
-              <CTableHeaderCell scope="row" color="dark">
+              <CTableHeaderCell scope="row" color="secondary">
                 종목
               </CTableHeaderCell>
               <CTableDataCell>
@@ -63,7 +63,7 @@
               </CTableDataCell>
             </CTableRow>
             <CTableRow>
-              <CTableHeaderCell scope="row" color="dark">
+              <CTableHeaderCell scope="row" color="secondary">
                 설립일자
               </CTableHeaderCell>
               <CTableDataCell>
@@ -71,7 +71,7 @@
               </CTableDataCell>
             </CTableRow>
             <CTableRow>
-              <CTableHeaderCell scope="row" color="dark">
+              <CTableHeaderCell scope="row" color="secondary">
                 개업일자
               </CTableHeaderCell>
               <CTableDataCell>
@@ -80,7 +80,7 @@
             </CTableRow>
 
             <CTableRow>
-              <CTableHeaderCell scope="row" color="dark">
+              <CTableHeaderCell scope="row" color="secondary">
                 회사주소
               </CTableHeaderCell>
               <CTableDataCell>

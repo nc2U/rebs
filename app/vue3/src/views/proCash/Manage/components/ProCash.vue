@@ -79,8 +79,8 @@ export default defineComponent({
         this.proCash.contract && this.proCash.project_account_d2 <= '2'
           ? 'info'
           : color
-      color = this.proCash.is_separate ? 'dark' : color
-      color = this.proCash.separated ? 'primary' : color
+      color = this.proCash.is_separate ? 'primary' : color
+      color = this.proCash.separated ? 'secondary' : color
       return color
     },
   },

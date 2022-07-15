@@ -21,7 +21,7 @@
         </CTableDataCell>
         <CTableDataCell class="text-right">(단위: 원)</CTableDataCell>
       </CTableRow>
-      <CTableRow color="dark" class="text-center">
+      <CTableRow color="secondary" class="text-center">
         <CTableHeaderCell>항목</CTableHeaderCell>
         <CTableHeaderCell>세부 항목</CTableHeaderCell>
         <CTableHeaderCell>입금 금액</CTableHeaderCell>
@@ -52,7 +52,7 @@
         <CTableDataCell></CTableDataCell>
       </CTableRow>
 
-      <CTableRow color="dark" class="text-right">
+      <CTableRow color="secondary" class="text-right">
         <CTableHeaderCell colspan="2" class="text-center">
           합계
         </CTableHeaderCell>
@@ -86,7 +86,7 @@
         </CTableDataCell>
         <CTableDataCell class="text-right">(단위: 원)</CTableDataCell>
       </CTableRow>
-      <CTableRow color="dark" class="text-center">
+      <CTableRow color="secondary" class="text-center">
         <CTableHeaderCell>항목</CTableHeaderCell>
         <CTableHeaderCell>세부 항목</CTableHeaderCell>
         <CTableHeaderCell>출금 금액</CTableHeaderCell>
@@ -116,7 +116,7 @@
         <CTableDataCell></CTableDataCell>
       </CTableRow>
 
-      <CTableRow color="dark" class="text-right">
+      <CTableRow color="secondary" class="text-right">
         <CTableHeaderCell colspan="2" class="text-center">
           합계
         </CTableHeaderCell>

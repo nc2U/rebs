@@ -21,7 +21,7 @@
         </CTableDataCell>
         <CTableDataCell class="text-right">(단위: 원)</CTableDataCell>
       </CTableRow>
-      <CTableRow color="dark" class="text-center">
+      <CTableRow color="secondary" class="text-center">
         <CTableHeaderCell colspan="2">구분</CTableHeaderCell>
         <CTableHeaderCell>전일잔고</CTableHeaderCell>
         <CTableHeaderCell>금일입금(증가)</CTableHeaderCell>
@@ -56,7 +56,7 @@
         </CTableDataCell>
       </CTableRow>
 
-      <CTableRow color="dark" class="text-right">
+      <CTableRow color="secondary" class="text-right">
         <CTableHeaderCell colspan="2" class="text-center">
           현금성 자산 계
         </CTableHeaderCell>

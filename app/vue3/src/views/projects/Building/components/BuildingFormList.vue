@@ -4,7 +4,7 @@
       <col width="50%" />
       <col width="50%" />
     </colgroup>
-    <CTableHead color="dark" class="text-center">
+    <CTableHead color="secondary" class="text-center">
       <CTableRow>
         <CTableHeaderCell>동(건물)이름</CTableHeaderCell>
         <CTableHeaderCell>비 고</CTableHeaderCell>

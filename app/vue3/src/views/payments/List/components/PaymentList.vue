@@ -14,7 +14,7 @@
     </colgroup>
 
     <CTableHead>
-      <CTableRow color="dark" class="text-center">
+      <CTableRow color="secondary" class="text-center">
         <CTableHeaderCell scope="col">거래일자</CTableHeaderCell>
         <CTableHeaderCell scope="col">차수</CTableHeaderCell>
         <CTableHeaderCell scope="col">타입</CTableHeaderCell>

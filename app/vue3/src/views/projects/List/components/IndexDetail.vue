@@ -20,7 +20,7 @@
             </CTableHead>
             <CTableBody>
               <CTableRow>
-                <CTableHeaderCell scope="row" color="dark">
+                <CTableHeaderCell scope="row" color="secondary">
                   프로젝트명
                 </CTableHeaderCell>
                 <CTableDataCell>
@@ -31,7 +31,7 @@
                     </span>
                   </span>
                 </CTableDataCell>
-                <CTableHeaderCell scope="row" color="dark">
+                <CTableHeaderCell scope="row" color="secondary">
                   프로젝트 종류
                 </CTableHeaderCell>
                 <CTableDataCell>
@@ -40,7 +40,7 @@
               </CTableRow>
 
               <CTableRow>
-                <CTableHeaderCell scope="row" color="dark">
+                <CTableHeaderCell scope="row" color="secondary">
                   현장주소(대표지번)
                 </CTableHeaderCell>
                 <CTableDataCell colspan="3">
@@ -51,13 +51,13 @@
                 </CTableDataCell>
               </CTableRow>
               <CTableRow>
-                <CTableHeaderCell scope="row" color="dark">
+                <CTableHeaderCell scope="row" color="secondary">
                   용도지역지구
                 </CTableHeaderCell>
                 <CTableDataCell>
                   <span v-if="project">{{ project.area_usage }}</span>
                 </CTableDataCell>
-                <CTableHeaderCell scope="row" color="dark">
+                <CTableHeaderCell scope="row" color="secondary">
                   건축규모
                 </CTableHeaderCell>
                 <CTableDataCell>
@@ -66,7 +66,7 @@
               </CTableRow>
 
               <CTableRow>
-                <CTableHeaderCell scope="row" color="dark">
+                <CTableHeaderCell scope="row" color="secondary">
                   세대(호/실)수
                 </CTableHeaderCell>
                 <CTableDataCell class="text-right pr-3">
@@ -76,7 +76,7 @@
                   </span>
                 </CTableDataCell>
 
-                <CTableHeaderCell scope="row" color="dark">
+                <CTableHeaderCell scope="row" color="secondary">
                   대지매입면적
                 </CTableHeaderCell>
                 <CTableDataCell class="text-right pr-3">
@@ -87,7 +87,7 @@
               </CTableRow>
 
               <CTableRow>
-                <CTableHeaderCell scope="row" color="dark">
+                <CTableHeaderCell scope="row" color="secondary">
                   계획대지면적
                 </CTableHeaderCell>
                 <CTableDataCell class="text-right pr-3">
@@ -95,7 +95,7 @@
                     areaM2PyFormat(project.scheme_land_extent)
                   }}</span>
                 </CTableDataCell>
-                <CTableHeaderCell scope="row" color="dark">
+                <CTableHeaderCell scope="row" color="secondary">
                   기부채납면적
                 </CTableHeaderCell>
                 <CTableDataCell class="text-right pr-3">
@@ -106,7 +106,7 @@
               </CTableRow>
 
               <CTableRow>
-                <CTableHeaderCell scope="row" color="dark">
+                <CTableHeaderCell scope="row" color="secondary">
                   지상연면적
                 </CTableHeaderCell>
                 <CTableDataCell class="text-right pr-3">
@@ -114,7 +114,7 @@
                     areaM2PyFormat(project.on_floor_area)
                   }}</span>
                 </CTableDataCell>
-                <CTableHeaderCell scope="row" color="dark">
+                <CTableHeaderCell scope="row" color="secondary">
                   지하연면적
                 </CTableHeaderCell>
                 <CTableDataCell class="text-right pr-3">
@@ -125,7 +125,7 @@
               </CTableRow>
 
               <CTableRow>
-                <CTableHeaderCell scope="row" color="dark">
+                <CTableHeaderCell scope="row" color="secondary">
                   총 연면적
                 </CTableHeaderCell>
                 <CTableDataCell class="text-right pr-3">
@@ -133,7 +133,7 @@
                     areaM2PyFormat(project.total_floor_area)
                   }}</span>
                 </CTableDataCell>
-                <CTableHeaderCell scope="row" color="dark">
+                <CTableHeaderCell scope="row" color="secondary">
                   건축면적
                 </CTableHeaderCell>
                 <CTableDataCell class="text-right pr-3">
@@ -144,7 +144,7 @@
               </CTableRow>
 
               <CTableRow>
-                <CTableHeaderCell scope="row" color="dark">
+                <CTableHeaderCell scope="row" color="secondary">
                   용적율
                 </CTableHeaderCell>
                 <CTableDataCell class="text-right pr-3">
@@ -152,7 +152,7 @@
                     ratioFormat(project.floor_area_ratio)
                   }}</span>
                 </CTableDataCell>
-                <CTableHeaderCell scope="row" color="dark">
+                <CTableHeaderCell scope="row" color="secondary">
                   건폐율
                 </CTableHeaderCell>
                 <CTableDataCell class="text-right pr-3">
@@ -163,7 +163,7 @@
               </CTableRow>
 
               <CTableRow>
-                <CTableHeaderCell scope="row" color="dark">
+                <CTableHeaderCell scope="row" color="secondary">
                   법정주차대수
                 </CTableHeaderCell>
                 <CTableDataCell class="text-right pr-3">
@@ -172,7 +172,7 @@
                     <span v-if="project.num_legal_parking">대</span>
                   </span>
                 </CTableDataCell>
-                <CTableHeaderCell scope="row" color="dark">
+                <CTableHeaderCell scope="row" color="secondary">
                   계획주차대수
                 </CTableHeaderCell>
                 <CTableDataCell class="text-right pr-3">

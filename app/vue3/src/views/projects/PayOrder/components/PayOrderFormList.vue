@@ -11,7 +11,7 @@
       <col width="11%" />
       <col width="12%" />
     </colgroup>
-    <CTableHead color="dark" class="text-center">
+    <CTableHead color="secondary" class="text-center">
       <CTableRow>
         <CTableHeaderCell>종류</CTableHeaderCell>
         <CTableHeaderCell>납입회차 코드</CTableHeaderCell>

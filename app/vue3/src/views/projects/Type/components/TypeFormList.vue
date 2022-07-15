@@ -10,7 +10,7 @@
       <col width="13%" />
       <col width="12%" />
     </colgroup>
-    <CTableHead color="dark" class="text-center">
+    <CTableHead color="secondary" class="text-center">
       <CTableRow>
         <CTableHeaderCell>타입명칭</CTableHeaderCell>
         <CTableHeaderCell>타입색상</CTableHeaderCell>

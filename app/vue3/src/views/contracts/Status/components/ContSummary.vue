@@ -10,11 +10,11 @@
         </colgroup>
         <CTableBody>
           <CTableRow>
-            <CTableHeaderCell color="dark">총세대수</CTableHeaderCell>
+            <CTableHeaderCell color="secondary">총세대수</CTableHeaderCell>
             <CTableDataCell class="text-right">
               {{ numFormat(unitSummary.totalNum) }}
             </CTableDataCell>
-            <CTableHeaderCell color="dark">홀딩세대</CTableHeaderCell>
+            <CTableHeaderCell color="secondary">홀딩세대</CTableHeaderCell>
             <CTableDataCell class="text-right">
               {{ numFormat(unitSummary.holdNum) }}
             </CTableDataCell>
@@ -32,11 +32,11 @@
           </CTableRow>
 
           <CTableRow>
-            <CTableHeaderCell color="dark">합계</CTableHeaderCell>
+            <CTableHeaderCell color="secondary">합계</CTableHeaderCell>
             <CTableDataCell class="text-right">
               {{ numFormat(unitSummary.appNum + unitSummary.contNum) }}
             </CTableDataCell>
-            <CTableHeaderCell color="dark">잔여세대</CTableHeaderCell>
+            <CTableHeaderCell color="secondary">잔여세대</CTableHeaderCell>
             <CTableDataCell class="text-right">
               {{
                 numFormat(

@@ -12,7 +12,7 @@
       <col width="12%" />
     </colgroup>
 
-    <CTableHead>
+    <CTableHead color="secondary">
       <CTableRow class="text-center">
         <CTableHeaderCell scope="col">
           <CFormCheck

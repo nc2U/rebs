@@ -1,7 +1,7 @@
 <template>
   {{ contSummary }}
   <CTable hover responsive bordered class="mt-3">
-    <CTableHead class="text-center" color="dark">
+    <CTableHead class="text-center" color="secondary">
       <CTableRow align="middle">
         <CTableHeaderCell rowspan="2">프로젝트명</CTableHeaderCell>
         <CTableHeaderCell rowspan="2">타입</CTableHeaderCell>
@@ -80,7 +80,7 @@
         </CTableDataCell>
       </CTableRow>
 
-      <CTableRow color="dark" class="text-right">
+      <CTableRow class="text-right" color="secondary">
         <CTableDataCell class="text-center"> 합계</CTableDataCell>
         <CTableDataCell></CTableDataCell>
         <!-- 타입별 세대수 합계-->

@@ -20,7 +20,7 @@
       <col width="5%" />
     </colgroup>
 
-    <CTableHead color="dark" class="text-center">
+    <CTableHead color="secondary" class="text-center">
       <CTableRow>
         <CTableHeaderCell>계약 해지자</CTableHeaderCell>
         <CTableHeaderCell>현재상태</CTableHeaderCell>

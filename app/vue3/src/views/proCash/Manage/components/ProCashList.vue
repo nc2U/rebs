@@ -15,7 +15,7 @@
     </colgroup>
 
     <CTableHead>
-      <CTableRow color="dark" class="text-center">
+      <CTableRow color="secondary" class="text-center">
         <CTableHeaderCell scope="col">거래일자</CTableHeaderCell>
         <CTableHeaderCell scope="col">구분</CTableHeaderCell>
         <CTableHeaderCell scope="col">계정</CTableHeaderCell>
@@ -68,9 +68,9 @@
           :item-key="d1.pk"
           :key="d1.pk"
         >
-          <CAccordionHeader>{{
-            `[${d1.code}] ${d1.name} (${d1.description})`
-          }}</CAccordionHeader>
+          <CAccordionHeader
+            >{{ `[${d1.code}] ${d1.name} (${d1.description})` }}
+          </CAccordionHeader>
           <CAccordionBody class="pl-3">
             <CRow
               v-for="d2 in allAccD2List.filter(d2 => d2.d1 === d1.pk)"
