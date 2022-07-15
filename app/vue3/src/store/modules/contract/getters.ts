@@ -8,7 +8,7 @@ const getters = {
       order_group: c.order_group,
       unit_type: c.unit_type.name,
       type_color: c.unit_type.color,
-      house_unit: c.keyunit?.houseunit?.__str__ || '[미정]',
+      house_unit: c.keyunit?.houseunit?.__str__ || '미정',
       contractor: c.contractor?.name,
       total_paid:
         c.payments.length !== 0
@@ -38,6 +38,7 @@ const getters = {
       unit_type: c.unit_type.name,
       type_color: c.unit_type.color,
       average_price: c.unit_type.average_price,
+      house_unit_str: c.keyunit?.houseunit?.__str__,
       house_unit: c.keyunit?.houseunit,
       contractor: c.contractor?.name,
       total_paid:

@@ -25,9 +25,9 @@
     </CTableDataCell>
     <CTableDataCell
       class="text-center"
-      :class="contract.house_unit.__str__ ? '' : 'text-danger'"
+      :class="contract.house_unit_str ? '' : 'text-danger'"
     >
-      {{ contract.house_unit.__str__ || '[미정]' }}
+      {{ contract.house_unit_str || '미정' }}
     </CTableDataCell>
     <CTableDataCell>
       <router-link
