@@ -48,7 +48,6 @@ import DownloadButton from '@/views/notices/Bill/components/DownloadButton.vue'
 import ContractList from '@/views/notices/Bill/components/ContractList.vue'
 import { mapActions, mapGetters, mapState } from 'vuex'
 
-// Todo Contract -> get paidOrder
 // Todo ListController -> order-display reactive update
 // Todo Contract -> List view update
 
