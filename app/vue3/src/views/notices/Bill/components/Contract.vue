@@ -9,7 +9,6 @@
         :disabled="paidCompleted"
         label="선택"
       />
-      {{ get_paid_order() }}
     </CTableDataCell>
     <CTableDataCell>
       <router-link
@@ -45,12 +44,13 @@
       {{ numFormat(contract.total_paid) }}
     </CTableDataCell>
     <CTableDataCell>
-      {{ '완납중' }}
-      ({{
-        contract.last_paid_order === '-'
-          ? '계약금미납'
-          : contract.last_paid_order.pay_name
-      }})
+      <strong>
+        {{
+          contract.last_paid_order === '-'
+            ? '계약금미납'
+            : '완납중 (' + getPayName(get_paid_order()) + ')'
+        }}
+      </strong>
     </CTableDataCell>
     <CTableDataCell>{{ contract.contract_date }}</CTableDataCell>
   </CTableRow>
@@ -74,12 +74,13 @@ export default defineComponent({
   data() {
     return {
       checked: false,
+      orderList: [],
     }
   },
   computed: {
     paidCompleted() {
       const due: number = this.now_order || 2
-      const paid: number = this.contract.last_paid_order.pay_time
+      const paid: number = this.get_paid_order()
       return paid >= due
     },
     price() {
@@ -108,11 +109,14 @@ export default defineComponent({
         this.downPaymentList.filter(
           (d: any) =>
             d.order_group === c.order_group.pk && d.unit_type === c.type_pk,
-        )[0].payment_amount || ''
+        )[0].payment_amount || 0
       )
     },
     ...mapState('payment', ['payOrderList']),
     ...mapState('contract', ['salesPriceList', 'downPaymentList']),
+  },
+  mounted() {
+    this.orderList = this.payOrderList
   },
   watch: {
     allChecked(val) {
@@ -142,8 +146,8 @@ export default defineComponent({
       let paid_orders: any[] = []
       const total_paid = this.contract.total_paid
 
-      this.payOrderList.forEach((p: any) => {
-        // if (p.pay_sort === '1') paid_amount += this.downPay
+      this.orderList.forEach((p: any) => {
+        if (p.pay_sort === '1') paid_amount += this.downPay
         //   // else if (p.pay_sort === '2') paid_amount += middle
         //   //   //   else paid_amount += balance
         //   //   //
@@ -151,7 +155,12 @@ export default defineComponent({
           paid_orders.push(p.pay_time)
         }
       })
-      return paid_orders
+      return paid_orders.pop()
+    },
+    getPayName(pay_time: number) {
+      return this.payOrderList
+        .filter((p: any) => p.pay_time === pay_time)
+        .map((p: any) => p.pay_name)[0]
     },
   },
 })
