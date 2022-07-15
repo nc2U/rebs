@@ -7,6 +7,7 @@ import {
   FETCH_ALL_PAYMENT_LIST,
   FETCH_PAYMENT_SUM_LIST,
   FETCH_CONTRACT_NUM_LIST,
+  FETCH_PAY_ORDER,
 } from '@/store/modules/payment/mutations-types'
 import { message, errorHandle } from '@/utils/helper'
 
@@ -63,6 +64,15 @@ const actions = {
       .get(`/pay-order/?project=${pk}`)
       .then(res => {
         commit(FETCH_PAY_ORDER_LIST, res.data)
+      })
+      .catch(err => errorHandle(err.response.data))
+  },
+
+  fetchPayOrder: ({ commit }: any, pk: number) => {
+    api
+      .get(`/pay-order/${pk}/`)
+      .then(res => {
+        commit(FETCH_PAY_ORDER, res.data)
       })
       .catch(err => errorHandle(err.response.data))
   },

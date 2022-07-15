@@ -48,6 +48,7 @@ interface ContractNum {
 export interface PaymentState {
   priceList: Price[]
   payOrderList: PayOrder[]
+  payOrder: PayOrder | null
   downPayList: DownPay[]
   paymentList: ProjectCashBook[]
   AllPaymentList: ProjectCashBook[]
@@ -59,6 +60,7 @@ export interface PaymentState {
 const state: PaymentState = {
   priceList: [],
   payOrderList: [],
+  payOrder: null,
   downPayList: [],
   paymentList: [],
   AllPaymentList: [],

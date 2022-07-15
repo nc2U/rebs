@@ -1,6 +1,7 @@
 import {
   FETCH_PRICE_LIST,
   FETCH_PAY_ORDER_LIST,
+  FETCH_PAY_ORDER,
   FETCH_DWON_PAYMENT,
   FETCH_PAYMENT_LIST,
   FETCH_ALL_PAYMENT_LIST,
@@ -15,6 +16,9 @@ const mutations = {
 
   [FETCH_PAY_ORDER_LIST]: (state: PaymentState, payload: any) =>
     (state.payOrderList = payload.results),
+
+  [FETCH_PAY_ORDER]: (state: PaymentState, payload: any) =>
+    (state.payOrder = payload),
 
   [FETCH_DWON_PAYMENT]: (state: PaymentState, payload: any) =>
     (state.downPayList = payload.results),
