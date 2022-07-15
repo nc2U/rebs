@@ -49,7 +49,6 @@ import ContractList from '@/views/notices/Bill/components/ContractList.vue'
 import { mapActions, mapGetters, mapState } from 'vuex'
 
 // Todo ListController -> order-display reactive update
-// Todo Contract -> List view update
 
 export default defineComponent({
   name: 'Bill',

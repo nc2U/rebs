@@ -3,10 +3,10 @@
     <colgroup>
       <col width="8%" />
       <col width="10%" />
-      <col width="10%" />
+      <col width="7%" />
+      <col width="12%" />
+      <col width="11%" />
       <col width="8%" />
-      <col width="10%" />
-      <col width="10%" />
       <col width="12%" />
       <col width="20%" />
       <col width="12%" />

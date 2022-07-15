@@ -10,13 +10,6 @@
         label="선택"
       />
     </CTableDataCell>
-    <CTableDataCell>
-      <router-link
-        :to="{ name: '계약등록 관리', query: { contract: contract.pk } }"
-      >
-        {{ contract.serial_number }}
-      </router-link>
-    </CTableDataCell>
     <CTableDataCell>{{ contract.order_group.order_group_name }}</CTableDataCell>
     <CTableDataCell class="text-left">
       <CIcon
@@ -26,6 +19,9 @@
         class="mr-1"
       />
       {{ contract.unit_type }}
+    </CTableDataCell>
+    <CTableDataCell>
+      {{ contract.serial_number }}
     </CTableDataCell>
     <CTableDataCell
       class="text-left"
@@ -41,16 +37,20 @@
       </router-link>
     </CTableDataCell>
     <CTableDataCell class="text-right">
-      {{ numFormat(contract.total_paid) }}
+      <router-link
+        :to="{ name: '건별수납 관리', query: { contract: contract.pk } }"
+      >
+        {{ numFormat(contract.total_paid) }}
+      </router-link>
     </CTableDataCell>
     <CTableDataCell>
-      <strong>
-        {{
-          contract.last_paid_order === '-'
-            ? '계약금미납'
-            : '완납중 (' + getPayName(get_paid_order()) + ')'
-        }}
-      </strong>
+      <span v-if="paidCompleted" class="text-secondary">완납중</span>
+      <span v-else class="text-danger">미납중</span>
+      {{
+        contract.last_paid_order === '-'
+          ? ' (계약금미납)'
+          : ' (' + getPayName(get_paid_order()) + ')'
+      }}
     </CTableDataCell>
     <CTableDataCell>{{ contract.contract_date }}</CTableDataCell>
   </CTableRow>
