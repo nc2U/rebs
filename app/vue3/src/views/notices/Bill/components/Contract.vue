@@ -24,8 +24,8 @@
       {{ contract.serial_number }}
     </CTableDataCell>
     <CTableDataCell
-      class="text-left"
-      :class="contract.house_unit.__str__ === '' ? 'text-danger' : ''"
+      class="text-center"
+      :class="contract.house_unit.__str__ ? '' : 'text-danger'"
     >
       {{ contract.house_unit.__str__ || '[미정]' }}
     </CTableDataCell>
