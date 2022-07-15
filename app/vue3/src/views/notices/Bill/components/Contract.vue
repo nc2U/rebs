@@ -9,6 +9,7 @@
         :disabled="paidCompleted"
         label="선택"
       />
+      {{ lastPayName }}
     </CTableDataCell>
     <CTableDataCell>
       <router-link
@@ -74,7 +75,7 @@ export default defineComponent({
   data() {
     return {
       checked: false,
-      orderList: [],
+      orderList: [{ pay_time: null }],
     }
   },
   computed: {
@@ -114,6 +115,9 @@ export default defineComponent({
 
       return downPay ? downPay.payment_amount : average_downPay
     },
+    lastPayName() {
+      return this.payOrderList[this.payOrderList.length - 1].pay_time
+    },
     ...mapState('payment', ['payOrderList']),
     ...mapState('contract', ['salesPriceList', 'downPaymentList']),
   },
@@ -148,13 +152,12 @@ export default defineComponent({
       this.orderList.forEach((p: any) => {
         if (p.pay_sort === '1') paid_amount += this.downPay
         else if (p.pay_sort === '2') paid_amount += middle
-        else paid_amount += total_paid - paid_amount
 
         if (total_paid >= paid_amount) {
           paid_orders.push(p.pay_time)
         }
       })
-      return paid_orders.pop()
+      return total_paid >= this.price ? this.lastPayName : paid_orders.pop()
     },
     getPayName(pay_time: number) {
       return this.payOrderList
