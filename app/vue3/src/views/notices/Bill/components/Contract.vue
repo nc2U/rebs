@@ -103,14 +103,16 @@ export default defineComponent({
       const pay_num = this.payOrderList.filter(
         (p: any) => p.pay_sort === '1',
       ).length
-      const ad = Number((this.price * 0.1) / Math.round(pay_num / 2))
-
-      return (
-        this.downPaymentList.filter(
-          (d: any) =>
-            d.order_group === c.order_group.pk && d.unit_type === c.type_pk,
-        )[0].payment_amount || 0
+      const average_downPay = Number(
+        (this.price * 0.1) / Math.round(pay_num / 2),
       )
+
+      const downPay = this.downPaymentList.filter(
+        (d: any) =>
+          d.order_group === c.order_group.pk && d.unit_type === c.type_pk,
+      )[0]
+
+      return downPay ? downPay.payment_amount : average_downPay
     },
     ...mapState('payment', ['payOrderList']),
     ...mapState('contract', ['salesPriceList', 'downPaymentList']),
