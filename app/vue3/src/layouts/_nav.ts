@@ -77,10 +77,6 @@ const notice = {
     {
       component: 'CNavItem',
       name: '수납고지서 출력',
-      badge: {
-        color: 'warning',
-        text: 'u.c',
-      },
       to: '/notices/bill',
     },
     {
