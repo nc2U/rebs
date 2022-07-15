@@ -717,9 +717,9 @@ class SalesPaymentRegister(LoginRequiredMixin, FormView):
         if contract:
             sales_price = SalesPriceByGT.objects.filter(project=self.get_project(),
                                                         order_group=contract.order_group,
-                                                        unit_type=contract.keyunit.unit_type)
+                                                        unit_type=contract.unit_type)
             this_price = sales_price.get(
-                unit_floor_type=contract.keyunit.unitnumber.floor_type).price if unit_set else contract.keyunit.unit_type.average_price
+                unit_floor_type=contract.keyunit.houseunit.floor_type).price if unit_set else contract.unit_type.average_price
 
             # 1. 계약금
             down_order = payment_orders.filter(pay_sort='1')
@@ -727,7 +727,7 @@ class SalesPaymentRegister(LoginRequiredMixin, FormView):
             try:
                 dp = DownPayment.objects.get(project=self.get_project(),
                                              order_group=contract.order_group,
-                                             unit_type=contract.keyunit.unit_type)
+                                             unit_type=contract.unit_type)
                 pay_num = dp.number_payments
                 down_payment = dp.payment_amount
             except:
