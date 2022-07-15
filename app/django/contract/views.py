@@ -512,7 +512,7 @@ class ContractorReleaseRegister(LoginRequiredMixin, ListView, FormView):
                             unit.key_unit = None
                             unit.save()
                     # 5. 해당 납부분담금 환불처리
-                    projectCash = ProjectCashBook.objects.filter(cash_category1='1', contract=contractor.contract)
+                    projectCash = ProjectCashBook.objects.filter(sort='1', contract=contractor.contract)
                     for pc in projectCash:
                         if not released_done:
                             refund_d2 = pc.project_account_d1.id + 63
