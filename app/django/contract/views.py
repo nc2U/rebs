@@ -515,7 +515,7 @@ class ContractorReleaseRegister(LoginRequiredMixin, ListView, FormView):
                     projectCash = ProjectCashBook.objects.filter(sort='1', contract=contractor.contract)
                     for pc in projectCash:
                         if not released_done:
-                            refund_d2 = pc.project_account_d1.id + 63
+                            refund_d2 = pc.project_account_d2.id + 63
                             pc.project_account_d2 = ProjectAccountD2.objects.get(pk=refund_d2)
                             pc.refund_contractor = contractor
                         if form.cleaned_data.get('completion_date'):
