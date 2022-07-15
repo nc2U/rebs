@@ -9,7 +9,6 @@
         :disabled="paidCompleted"
         label="선택"
       />
-      {{ lastPayName }}
     </CTableDataCell>
     <CTableDataCell>
       <router-link
