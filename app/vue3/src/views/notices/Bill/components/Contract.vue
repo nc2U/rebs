@@ -140,19 +140,16 @@ export default defineComponent({
 
     get_paid_order() {
       let paid_amount = 0
-      // const middle = Number(price * 0.1)
-      // const bal_order_num = this.payOrderList.filter(
-      //   (p: any) => p.pay_sort === '3',
-      // ).length
-      // const balance = Number(this.get_price() - paid_amount) / bal_order_num
-      let paid_orders: any[] = []
       const total_paid = this.contract.total_paid
+      let paid_orders: any[] = []
+
+      const middle = Number(this.price * 0.1)
 
       this.orderList.forEach((p: any) => {
         if (p.pay_sort === '1') paid_amount += this.downPay
-        //   // else if (p.pay_sort === '2') paid_amount += middle
-        //   //   //   else paid_amount += balance
-        //   //   //
+        else if (p.pay_sort === '2') paid_amount += middle
+        else paid_amount += total_paid - paid_amount
+
         if (total_paid >= paid_amount) {
           paid_orders.push(p.pay_time)
         }

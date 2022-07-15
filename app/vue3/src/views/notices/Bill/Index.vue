@@ -89,10 +89,10 @@ export default defineComponent({
     })
     this.fetchSalePriceList({ project: this.initProjId })
     this.fetchDownPayList({ project: this.initProjId })
-    if (this.$route.query.contract) {
-      this.$router.push({ name: '건별수납 관리' })
-      this.getContract(this.$route.query.contract)
-    }
+    // if (this.$route.query.contract) {
+    //   this.$router.push({ name: '건별수납 관리' })
+    //   this.getContract(this.$route.query.contract)
+    // }
   },
   computed: {
     ...mapState('project', ['project']),
