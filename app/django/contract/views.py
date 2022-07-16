@@ -520,7 +520,7 @@ class ContractorReleaseRegister(LoginRequiredMixin, ListView, FormView):
                             pc.refund_contractor = contractor  # 환불 계약자 등록
                         if form.cleaned_data.get('completion_date'):
                             refund_date = str(form.cleaned_data.get('completion_date'))
-                            msg = f'환불 계약 건 - {pc.contract.serial_number} ({refund_date} 환불)'
+                            msg = f'환불 계약 건 - {pc.contract.serial_number} ({refund_date} 환불완료)'
                             append_note = ', ' + msg if pc.note else msg
                             pc.note = pc.note + append_note
                         pc.save()
