@@ -498,7 +498,7 @@ class ContractorReleaseRegister(LoginRequiredMixin, ListView, FormView):
                         contract.activation = False  # 일련번호 활성 해제
                         contract.save()
                     # 3. 계약유닛 연결 해제
-                    contract.keyunit.houseunit
+                    # contract.keyunit.houseunit
                     if not released_done:
                         keyunit.contract = None
                         keyunit.save()
@@ -515,11 +515,12 @@ class ContractorReleaseRegister(LoginRequiredMixin, ListView, FormView):
                     projectCash = ProjectCashBook.objects.filter(sort='1', contract=contractor.contract)
                     for pc in projectCash:
                         if not released_done:
-                            refund_d2 = pc.project_account_d2.id + 63
+                            refund_d2 = pc.project_account_d2.id + 63  # 분양대금 or 분담금 환불 건
                             pc.project_account_d2 = ProjectAccountD2.objects.get(pk=refund_d2)
-                            pc.refund_contractor = contractor
+                            pc.refund_contractor = contractor  # 환불 계약자 등록
                         if form.cleaned_data.get('completion_date'):
-                            msg = str(form.cleaned_data.get('completion_date')) + ' 환불건'
+                            refund_date = str(form.cleaned_data.get('completion_date'))
+                            msg = f'환불 계약 건 - {pc.contract.serial_number} ({refund_date} 환불)'
                             append_note = ', ' + msg if pc.note else msg
                             pc.note = pc.note + append_note
                         pc.save()
