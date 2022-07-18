@@ -1,5 +1,6 @@
 import axios from 'axios'
 import store from '@/store'
+import router from '@/router'
 
 const api = axios.create({
   baseURL: '/api/',
@@ -22,6 +23,9 @@ api.interceptors.response.use(
     return response
   },
   error => {
+    if (error.response.status == 401) {
+      router.push('Login')
+    }
     // alert('데이터 응답 실패!')
     store.commit('endSpinner')
     return Promise.reject(error)
