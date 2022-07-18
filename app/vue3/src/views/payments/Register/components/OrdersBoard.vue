@@ -8,7 +8,7 @@
       <col width="20%" />
     </colgroup>
 
-    <CTableHead color="dark" class="text-center">
+    <CTableHead color="secondary" class="text-center">
       <CTableRow>
         <CTableHeaderCell>납부기일</CTableHeaderCell>
         <CTableHeaderCell>구분</CTableHeaderCell>
@@ -34,7 +34,7 @@
 
     <CTableHead>
       <CTableRow class="text-right">
-        <CTableHeaderCell color="dark" class="text-center">
+        <CTableHeaderCell color="secondary" class="text-center">
           합계
         </CTableHeaderCell>
         <CTableHeaderCell></CTableHeaderCell>
