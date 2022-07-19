@@ -105,7 +105,7 @@
               <CFormInput
                 v-model="form.search"
                 @keydown.enter="listFiltering(1)"
-                placeholder="계약자, 일련번호, 비고"
+                placeholder="계약자, 전화번호, 일련번호, 비고"
                 aria-label="Username"
                 aria-describedby="addon-wrapping"
               />
