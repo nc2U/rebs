@@ -58,6 +58,7 @@ const actions = {
       errorHandle(err.response.data)
     }
   },
+
   updateContract: async ({ dispatch }: any, payload: any) => {
     const { pk, ...formData } = payload
     try {
