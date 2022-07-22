@@ -37,8 +37,8 @@ export default defineComponent({
             '다운로드(출력)할 계약 건을 선택하여 주십시요.',
           )
         } else {
-          const project = '1'
-          const pub_date = '2022-06-07'
+          const project = this.print_data.project
+          const pub_date = this.print_data.pub_date
           const seq = this.contractors.join('-')
           const url = 'rebs/pdf-bill/'
           location.href = `${url}?project=${project}&date=${pub_date}&seq=${seq}`
