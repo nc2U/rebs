@@ -526,7 +526,7 @@ class PdfExportPayments(View):
         context['now_order'] = self.get_now_order(contract, inspay_orders)
 
         # 2. 간단 차수 정보
-        context['simple_orders'] = self.get_simple_orders(inspay_orders, contract, amount)
+        context['simple_orders'] = simple_orders = self.get_simple_orders(inspay_orders, contract, amount)
 
         # 3. 납부목록, 완납금액 구하기 ------------------------------------------
         paid_list, paid_sum_total = self.get_paid(contract)
@@ -665,16 +665,20 @@ class PdfExportPayments(View):
         return paid_list, paid_sum_total
 
     def get_simple_orders(self, inspay_orders, contract, amount):
-        payment_orders = []
+        simple_orders = []
+        sum_amounts = []
 
+        amount_total = 0
         for ord in inspay_orders:
             ord_info = {
                 'name': ord.alias_name if ord.alias_name else ord.pay_name,
                 'due_date': self.get_due_date(contract.pk, ord),
-                'amount': amount[ord.pay_sort]
+                'amount': amount[ord.pay_sort],
             }
-            payment_orders.append(ord_info)
-        return payment_orders
+            simple_orders.append(ord_info)
+            amount_total += amount[ord.pay_sort]
+            sum_amounts.append(amount_total)
+        return simple_orders, sum_amounts
 
     def get_due_date(self, cont_id, order):
         """
