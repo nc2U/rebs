@@ -13,7 +13,8 @@ from .forms import (CashSearchForm, ProjectCashSearchForm, PaymentSearchForm, Pa
 
 from .models import (CompanyBankAccount, ProjectBankAccount, CashBook, ProjectCashBook,
                      SalesPriceByGT, InstallmentPaymentOrder, DownPayment)
-from rebs.models import AccountSubD1, AccountSubD2, AccountSubD3, ProjectAccountD1, ProjectAccountD2
+from rebs.models import (AccountSort, AccountSubD1, AccountSubD2, AccountSubD3,
+                         ProjectAccountSort, ProjectAccountD1, ProjectAccountD2)
 from company.models import Company
 from project.models import Project, UnitType, KeyUnit, ProjectBudget
 from contract.models import OrderGroup, Contract
@@ -782,7 +783,7 @@ class SalesPaymentRegister(LoginRequiredMixin, FormView):
 
         if form.is_valid():
             payment = form.save(commit=False)
-            payment.sort = '1'
+            payment.sort = ProjectAccountSort.objects.get(pk=1)
             payment.is_contract_payment = True
             payment.recoder = self.request.user
             payment.save()
