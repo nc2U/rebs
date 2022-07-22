@@ -8,7 +8,7 @@ from django.http import HttpResponse
 from django.template.loader import render_to_string
 from weasyprint import HTML
 
-from django.db.models import Sum
+from django.db.models import Q, Sum
 from contract.models import Contract
 from notice.models import SalesBillIssue
 from cash.models import (SalesPriceByGT, ProjectCashBook,
@@ -555,7 +555,10 @@ class PdfExportPayments(View):
         bal_num = inspay_order.filter(pay_sort='3').count()
         context['balance'] = int((this_price - down_total - medium_total) / bal_num)
 
-        set_order1 = ip_orders.filter(pay_due_date__lt=TODAY).latest('pay_due_date')
+        set_order1 = ip_orders.filter(Q(pay_due_date__lte=TODAY) |
+                                      Q(extra_due_date__lte=TODAY)).latest('id',
+                                                                           'pay_due_date',
+                                                                           'extra_due_date')
         due_order = SalesBillIssue.objects.get(project_id=project)
         now_due_order = due_order.now_payment_order.pay_code if due_order.now_payment_order else 2
         set_order2 = ip_orders.filter(pay_time__lte=now_due_order).latest('pay_time')
