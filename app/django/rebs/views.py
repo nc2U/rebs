@@ -665,15 +665,6 @@ class PdfExportPayments(View):
         paid_sum_list = list(accumulate(pay_list))
         paid_dict_list = []
 
-        def dup_val_to_none(arr):
-            rlt = []
-            for val in arr:
-                if val not in rlt:
-                    rlt.append(val)
-                else:
-                    rlt.append(None)
-            return rlt
-
         ord_list = []
         for i, paid in enumerate(paid_list):
             sum = paid_sum_list[i]
