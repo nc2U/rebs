@@ -133,6 +133,7 @@ export default defineComponent({
       this.$refs.contractList.unChk()
     },
     listFiltering(payload: any) {
+      this.ctor_ids = []
       const project = this.project.pk
       this.fetchContractList({ ...{ project }, ...payload })
       this.$refs.contractList.unChk()
