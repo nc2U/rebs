@@ -1,3 +1,4 @@
+from itertools import accumulate
 from django.shortcuts import render
 from django.views.generic import View, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -8,7 +9,7 @@ from django.http import HttpResponse
 from django.template.loader import render_to_string
 from weasyprint import HTML
 
-from django.db.models import Q, Sum
+from django.db.models import Sum
 from contract.models import Contract
 from notice.models import SalesBillIssue
 from cash.models import (SalesPriceByGT, ProjectCashBook,
@@ -529,8 +530,8 @@ class PdfExportPayments(View):
         context['simple_orders'] = simple_orders = self.get_simple_orders(inspay_orders, contract, amount)
 
         # 3. 납부목록, 완납금액 구하기 ------------------------------------------
-        paid_list, paid_sum_total = self.get_paid(contract)
-        context['paid_list'] = paid_list
+        paid_dicts, paid_sum_total = self.get_paid(contract, simple_orders)
+        context['paid_dicts'] = paid_dicts
         context['paid_sum_total'] = paid_sum_total  # paid_list.aggregate(Sum('income'))['income__sum']  # 기 납부총액
         # ----------------------------------------------------------------
 
@@ -646,7 +647,7 @@ class PdfExportPayments(View):
 
         return this_price, down, medium, balance
 
-    def get_paid(self, contract):
+    def get_paid(self, contract, simple_orders):
         """
         :: ■ 기 납부금액 구하기
         :param contract: 계약정보
@@ -659,10 +660,35 @@ class PdfExportPayments(View):
             income__isnull=False
         ).order_by('deal_date', 'id')  # 해당 계약 건 납부 데이터
 
-        paid_sum_total = paid_list.aggregate(Sum('income'))['income__sum']  # 완납 총금액
         paid_list = paid_list if paid_list else []
+        pay_list = [p.income for p in paid_list]
+        paid_sum_list = list(accumulate(pay_list))
+        paid_dict_list = []
+
+        def dup_val_to_none(arr):
+            rlt = []
+            for val in arr:
+                if val not in rlt:
+                    rlt.append(val)
+                else:
+                    rlt.append(None)
+            return rlt
+
+        ord_list = []
+        for i, paid in enumerate(paid_list):
+            sum = paid_sum_list[i]
+            ord = [o['name'] for o in list(filter(lambda o: o['amount_total'] <= sum, simple_orders))]
+            order = ord[len(ord) - 1] if len(ord) > 0 else None
+            order = order if order not in ord_list else None
+            ord_list.append(order)
+            diff = [sum - o['amount_total'] for o in simple_orders if o['amount_total'] <= sum]
+            diff = diff[len(diff) - 1] if len(diff) else 0
+            paid_dict = {'paid': paid, 'sum': sum, 'order': order, 'diff': diff}
+            paid_dict_list.append(paid_dict)
+        paid_sum_total = paid_list.aggregate(Sum('income'))['income__sum']  # 완납 총금액
         paid_sum_total = paid_sum_total if paid_sum_total else 0
-        return paid_list, paid_sum_total
+
+        return paid_dict_list, paid_sum_total
 
     def get_simple_orders(self, inspay_orders, contract, amount):
         simple_orders = []
@@ -670,15 +696,16 @@ class PdfExportPayments(View):
 
         amount_total = 0
         for ord in inspay_orders:
+            amount_total += amount[ord.pay_sort]
             ord_info = {
                 'name': ord.alias_name if ord.alias_name else ord.pay_name,
                 'due_date': self.get_due_date(contract.pk, ord),
                 'amount': amount[ord.pay_sort],
+                'amount_total': amount_total,
             }
             simple_orders.append(ord_info)
-            amount_total += amount[ord.pay_sort]
-            sum_amounts.append(amount_total)
-        return simple_orders, sum_amounts
+
+        return simple_orders
 
     def get_due_date(self, cont_id, order):
         """
