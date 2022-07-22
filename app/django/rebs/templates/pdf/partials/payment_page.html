@@ -52,29 +52,20 @@
     </table>
     <table>
         <tr>
-            <td class="title center bl bt2 br bb">구분</td>
-            <td class="title center bt2 br bb">총 약정금액</td>
-            <td class="title center bt2 br bb">현재 납부 약정금</td>
+            <td class="title center bl bt2 br bb">구 분</td>
+            <td class="title center bt2 br bb">약정금 총액</td>
+            <td class="title center bt2 br bb">약정금 누계 ({{ now_order.1 }})</td>
             <td class="title center bt2 br bb">실 납부총액</td>
-            <td class="title center bt2 br bb">미(과)납 금액</td>
+            <td class="title center bt2 br bb">미납 금액</td>
             <td class="title center bt2 br bb">납부 할인료</td>
             <td class="title center bt2 br bb">납부 연체료</td>
         </tr>
         <tr>
-            <td class="title center bl br bb">분양금</td>
-            <td class="right br bb">{{ price|default:"-"|intcomma }}</td>
-            <td class="right br bb">{{ due_payments|default:"-"|intcomma }}</td>
-            <td class="right br bb">{{ paid_sum_total|default:"-"|intcomma }}</td>
-            <td class="right br bb">{{ due_payments|sub:paid_sum_total|default:"-"|intcomma }}</td>
-            <td class="right br bb">-</td>
-            <td class="right br bb">-</td>
-        </tr>
-        <tr>
-            <td class="title center bl br bb2">추가납부</td>
-            <td class="right br bb2">-</td>
-            <td class="right br bb2">-</td>
-            <td class="right br bb2">-</td>
-            <td class="right br bb2">-</td>
+            <td class="title center bl br bb2">납부현황</td>
+            <td class="right br bb2">{{ price|default:"-"|intcomma }}</td>
+            <td class="right br bb2">{{ due_amount|default:"-"|intcomma }}</td>
+            <td class="right br bb2">{{ paid_sum_total|default:"-"|intcomma }}</td>
+            <td class="right br bb2">{{ due_amount|sub:paid_sum_total|default:"-"|intcomma }}</td>
             <td class="right br bb2">-</td>
             <td class="right br bb2">-</td>
         </tr>
@@ -90,23 +81,11 @@
                     <td class="title center bt2 br">약정일자</td>
                     <td class="title center bt2 br2">약정금액</td>
                 </tr>
-                {% for order in payment_orders %}
+                {% for order in simple_orders %}
                     <tr>
-                        <td class="bt br center {% if forloop.last %}bb2{% endif %}">{{ order.alias_name|default:order.pay_name }}</td>
-                        <td class="bt br center {% if forloop.last %}bb2{% endif %}">
-                            {% if order.pay_code == 1 %}
-                                {{ contract.contractor.contract_date|date:"Y/m/d" }}
-                            {% elif order.pay_code == 2 %}
-                                {{ second_pay|date:"Y/m/d" }}
-                            {% else %}
-                                {{ order.pay_due_date|date:"Y-m-d"|default:"추후지정통보" }}
-                            {% endif %}
-                        </td>
-                        <td class="bt br2 right {% if forloop.last %}bb2{% endif %}">
-                            {% if order.pay_sort == '1' %}{{ down|default:"-"|intcomma }}
-                            {% elif order.pay_sort == '2' %}{{ medium|default:"-"|intcomma }}
-                            {% else %}{{ balance|default:"-"|intcomma }}{% endif %}
-                        </td>
+                        <td class="bt br center {% if forloop.last %}bb2{% endif %}">{{ order.name }}</td>
+                        <td class="bt br center {% if forloop.last %}bb2{% endif %}">{{ order.due_date|default:""|date:"Y/m/d" }}</td>
+                        <td class="bt br2 right {% if forloop.last %}bb2{% endif %}">{{ order.amount|default:"-"|intcomma }}</td>
                     </tr>
                 {% endfor %}
             </table>
