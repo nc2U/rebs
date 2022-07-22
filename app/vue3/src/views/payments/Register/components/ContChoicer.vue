@@ -6,11 +6,11 @@
           <CCol md="4" class="mb-3">
             <CInputGroup class="flex-nowrap">
               <CFormInput
-                v-model="form.search"
-                placeholder="계약자, 비고, 계약 일련번호"
-                @keydown.enter="listFiltering(1)"
-                aria-label="Search"
-                aria-describedby="addon-wrapping"
+                  v-model="form.search"
+                  placeholder="계약자, 비고, 계약 일련번호"
+                  @keydown.enter="listFiltering(1)"
+                  aria-label="Search"
+                  aria-describedby="addon-wrapping"
               />
               <CInputGroupText @click="listFiltering(1)">
                 계약 건 찾기
@@ -23,13 +23,13 @@
     <CRow>
       <CCol color="warning" class="p-2 pl-3" v-if="contractIndex.length !== 0">
         <CButton
-          type="button"
-          color="dark"
-          v-for="cont in contractIndex"
-          :key="cont.pk"
-          @click="getContract(cont.pk)"
-          variant="outline"
-          size="sm"
+            type="button"
+            color="dark"
+            v-for="cont in contractIndex"
+            :key="cont.pk"
+            @click="getContract(cont.pk)"
+            variant="outline"
+            size="sm"
         >
           {{ `${cont.contractor}(${cont.serial_number})` }}
         </CButton>
@@ -46,8 +46,8 @@
         <strong v-if="contract">
           [일련번호 :
           <router-link
-            :to="{ name: '계약등록 관리', query: { contract: contract.pk } }"
-            v-c-tooltip="'계약등록 관리'"
+              :to="{ name: '계약등록 관리', query: { contract: contract.pk } }"
+              v-c-tooltip="'계약등록 관리'"
           >
             {{ contract.serial_number }}
           </router-link>
@@ -55,21 +55,27 @@
           {{ contract.unit_type.name }}
           {{
             contract.keyunit.houseunit
-              ? contract.keyunit.houseunit.__str__
-              : '--- 동호수 현재 미정 ---'
+                ? contract.keyunit.houseunit.__str__
+                : '--- 동호수 현재 미정 ---'
           }}
           |
           <router-link
-            :to="{ name: '계약등록 관리', query: { contract: contract.pk } }"
-            v-c-tooltip="'계약등록 관리'"
+              :to="{ name: '계약등록 관리', query: { contract: contract.pk } }"
+              v-c-tooltip="'계약등록 관리'"
           >
             계약자 : {{ contract.contractor.name }})
           </router-link>
+
+          (
+          <router-link to="" @click="get_print_payment">
+            납부내역서 출력
+          </router-link>
+          )
         </strong>
       </CCol>
       <CCol class="text-right" v-if="contract">
         <router-link to="">
-          <CIcon name="cilX" @click="removeContract" />
+          <CIcon name="cilX" @click="removeContract"/>
         </router-link>
       </CCol>
     </CRow>
@@ -77,16 +83,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
-import { maska } from 'maska'
-import { mapGetters } from 'vuex'
+import {defineComponent} from 'vue'
+import {maska} from 'maska'
+import {mapGetters} from 'vuex'
 
 export default defineComponent({
   name: 'ContChoicer',
   components: {},
 
-  directives: { maska },
-  props: { contract: Object },
+  directives: {maska},
+  props: {project: Object, contract: Object},
   data() {
     return {
       form: {
@@ -106,7 +112,7 @@ export default defineComponent({
     listFiltering(this: any, page = 1) {
       this.$nextTick(() => {
         if (this.form.search === '') this.pageInit()
-        else this.$emit('list-filtering', { ...{ page }, ...this.form })
+        else this.$emit('list-filtering', {...{page}, ...this.form})
       })
       if (this.contractIndex.length === 0) {
         this.msg = `해당 검색어로 등록된 데이터가 없습니다.`
@@ -127,6 +133,12 @@ export default defineComponent({
       this.$store.state.contract.contract = null
       this.$store.state.payment.paymentList = []
     },
+    get_print_payment() {
+      const url = '/rebs/pdf-payments/'
+      const project = this.project ? this.project.pk : ''
+      const contract = this.contract ? this.contract.pk : ''
+      location.href = `${url}?project=${project}&contract=${contract}`
+    }
   },
 })
 </script>

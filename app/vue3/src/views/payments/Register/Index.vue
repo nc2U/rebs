@@ -1,32 +1,33 @@
 <template>
   <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    @header-select="onSelectAdd"
+      :page-title="pageTitle"
+      :nav-menu="navMenu"
+      @header-select="onSelectAdd"
   />
 
   <ContentBody>
     <CCardBody class="pb-5">
       <ContChoicer
-        ref="listControl"
-        :contract="contract"
-        @list-filtering="onContFiltering"
-        @get-contract="getContract"
+          ref="listControl"
+          :project="project"
+          :contract="contract"
+          @list-filtering="onContFiltering"
+          @get-contract="getContract"
       />
       <CRow>
         <CCol lg="7">
           <AllPaymentList
-            :contract="contract"
-            :payment-id="paymentId"
-            :payment-list="AllPaymentList"
-            @on-update="onUpdate"
-            @on-delete="onDelete"
+              :contract="contract"
+              :payment-id="paymentId"
+              :payment-list="AllPaymentList"
+              @on-update="onUpdate"
+              @on-delete="onDelete"
           />
 
-          <CreateButton :contract="contract" @on-create="onCreate" />
+          <CreateButton :contract="contract" @on-create="onCreate"/>
         </CCol>
         <CCol lg="5">
-          <OrdersBoard :contract="contract" :payment-list="AllPaymentList" />
+          <OrdersBoard :contract="contract" :payment-list="AllPaymentList"/>
         </CCol>
       </CRow>
     </CCardBody>
@@ -36,7 +37,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import {defineComponent} from 'vue'
 import HeaderMixin from '@/views/payments/_menu/headermixin'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
@@ -44,7 +45,7 @@ import ContChoicer from '@/views/payments/Register/components/ContChoicer.vue'
 import AllPaymentList from '@/views/payments/Register/components/AllPaymentList.vue'
 import OrdersBoard from '@/views/payments/Register/components/OrdersBoard.vue'
 import CreateButton from '@/views/payments/Register/components/CreateButton.vue'
-import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
+import {mapActions, mapGetters, mapMutations, mapState} from 'vuex'
 
 export default defineComponent({
   name: 'PaymentsRegister',
@@ -64,11 +65,11 @@ export default defineComponent({
   },
   created(this: any) {
     if (this.$route.query.contract) {
-      this.$router.push({ name: '건별수납 관리' })
+      this.$router.push({name: '건별수납 관리'})
       this.getContract(this.$route.query.contract)
     }
     if (this.$route.query.payment) {
-      this.$router.push({ name: '건별수납 관리' })
+      this.$router.push({name: '건별수납 관리'})
       this.paymentId = this.$route.query.payment
     }
     this.fetchTypeList(this.initProjId)
@@ -90,8 +91,8 @@ export default defineComponent({
         const project = this.project.pk
         const order_group = newVal.order_group.pk
         const unit_type = newVal.unit_type.pk
-        this.fetchPriceList({ project, order_group, unit_type })
-        this.fetchDownPayList({ project, order_group, unit_type })
+        this.fetchPriceList({project, order_group, unit_type})
+        this.fetchDownPayList({project, order_group, unit_type})
         this.fetchAllPaymentList({
           project,
           contract: newVal.pk,
@@ -121,7 +122,7 @@ export default defineComponent({
     },
     onContFiltering(payload: any) {
       const project = this.project.pk
-      this.fetchContractList({ ...{ project }, ...payload })
+      this.fetchContractList({...{project}, ...payload})
     },
     getContract(cont: number) {
       this.fetchContract(cont)
@@ -137,7 +138,7 @@ export default defineComponent({
     onDelete(pk: number) {
       const project = this.project.pk
       const contract = this.contract.pk
-      this.deletePrCashBook({ project, pk, contract })
+      this.deletePrCashBook({project, pk, contract})
     },
     ...mapActions('project', ['fetchTypeList']),
     ...mapActions('payment', [
