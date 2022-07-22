@@ -502,41 +502,44 @@ class PdfExportPayments(View):
 
     def get(self, request):
         context = dict()
-        project = request.GET.get('project')
-        get_contract = request.GET.get('contract')
-        context['contract'] = contract = Contract.objects.get(pk=get_contract)
+
+        project = request.GET.get('project')  # 프로젝트 ID
+        inspay_orders = InstallmentPaymentOrder.objects.filter(project=project)  # 전체 납부회차 리스트
+        context['payment_orders'] = self.get_payment_orders(inspay_orders)
+
+        # 계약 건 객체
+        get_cont_id = request.GET.get('contract')
+        context['contract'] = contract = Contract.objects.get(pk=get_cont_id)
         cont_date = contract.contractor.contract_date
-        context['second_pay'] = second_pay = cont_date + timedelta(days=30) if contract else None
-        context['ip_orders'] = ip_orders = InstallmentPaymentOrder.objects.filter(project=project)
-        context['payments'] = ProjectCashBook.objects.filter(project=project, contract=contract)
 
-        # 1. 분양가격 (차수/타입별/동호수별) 및 계약금, 중도금, 잔금 구하기
-        group = contract.order_group  # 차수
-        type = contract.keyunit.unit_type  # 타입
-        prices = SalesPriceByGT.objects.filter(project_id=project, order_group=group, unit_type=type)  # 그룹 및 타입별 가격대
-        this_price = int(round(contract.keyunit.unit_type.average_price, -4))
-
-        try:  # 동호수
+        try:
             unit = contract.keyunit.houseunit
         except Exception:
             unit = None
 
-        if unit:
-            floor = contract.keyunit.houseunit.floor_type
-            this_price = prices.get(unit_floor_type=floor).price
-
+        # 동호수
         context['unit'] = unit
-        context['this_price'] = this_price
-        # --------------------------------------------------------------
 
-        # 2. 실입금액
-        paid_list = ProjectCashBook.objects.filter(contract=contract)
-        context['now_payments'] = paid_list.aggregate(Sum('income'))['income__sum']  # 기 납부총액
+        # 1. 이 계약 건 분양가격 (계약금, 중도금, 잔금 약정액)
+        this_price, down, medium, balance = self.get_this_price(project, contract,
+                                                                unit, inspay_orders)
+        context['price'] = this_price if unit else '동호 지정 후 고지'  # 이 건 분양가격
+
+        # context['second_pay'] = second_pay = cont_date + timedelta(days=30) if contract else None
+        # context['payments'] = ProjectCashBook.objects.filter(project=project, contract=contract)
+        #
+
+        # # --------------------------------------------------------------
+        #
+        # 2. 납부목록, 완납금액 구하기 ------------------------------------------
+        paid_list, paid_sum_total = self.get_paid(contract)
+        context['paid_list'] = paid_list
+        context['paid_sum_total'] = paid_sum_total  # paid_list.aggregate(Sum('income'))['income__sum']  # 기 납부총액
+        # ----------------------------------------------------------------
 
         # 3. 납부원금 (현재 지정회차 + 납부해야할 금액 합계)
         ## 계약금 구하기
-        inspay_order = InstallmentPaymentOrder.objects.filter(project=project)  # 해당 건 전체 약정 회차
-        down_num = inspay_order.filter(pay_sort='1').count()
+        down_num = inspay_orders.filter(pay_sort='1').count()
         try:
             dp = DownPayment.objects.get(project_id=project, order_group=contract.order_group,
                                          unit_type=contract.keyunit.unit_type)
@@ -547,21 +550,21 @@ class PdfExportPayments(View):
         down_total = context['down'] * down_num
 
         ## 중도금 구하기
-        med_num = inspay_order.filter(pay_sort='2').count()
+        med_num = inspay_orders.filter(pay_sort='2').count()
         context['medium'] = int(this_price * 0.1)
         medium_total = context['medium'] * med_num
 
         ## 잔금 구하기
-        bal_num = inspay_order.filter(pay_sort='3').count()
+        bal_num = inspay_orders.filter(pay_sort='3').count()
         context['balance'] = int((this_price - down_total - medium_total) / bal_num)
 
-        set_order1 = ip_orders.filter(Q(pay_due_date__lte=TODAY) |
-                                      Q(extra_due_date__lte=TODAY)).latest('id',
-                                                                           'pay_due_date',
-                                                                           'extra_due_date')
+        set_order1 = inspay_orders.filter(Q(pay_due_date__lte=TODAY) |
+                                          Q(extra_due_date__lte=TODAY)).latest('id',
+                                                                               'pay_due_date',
+                                                                               'extra_due_date')
         due_order = SalesBillIssue.objects.get(project_id=project)
         now_due_order = due_order.now_payment_order.pay_code if due_order.now_payment_order else 2
-        set_order2 = ip_orders.filter(pay_time__lte=now_due_order).latest('pay_time')
+        set_order2 = inspay_orders.filter(pay_time__lte=now_due_order).latest('pay_time')
         set_order = set_order1 if set_order1.pay_time >= set_order2.pay_time else set_order2
         due_installment = InstallmentPaymentOrder.objects.filter(pay_time__lte=set_order.pay_time)
 
@@ -577,42 +580,7 @@ class PdfExportPayments(View):
             pay_amount_total += pay_amount  # 지정회차까지 약정액 합계 (+)
 
         context['due_payments'] = pay_amount_total
-        context['paid_orders'] = paid_orders = inspay_order.filter(
-            pay_code__lte=now_due_order)  # 지정회차까지 회차
-        paid_date_list = []  # 회차별 최종 수납일자
-        payments = []  # 회차별 납부금액
-        adj_days = []  # 회차별 지연일수
-
-        for po in paid_orders:
-            if po.pay_time == 1 or po.pay_code == 1:
-                due_date = cont_date
-            elif po.pay_time == 2 or po.pay_code == 2:
-                if po.pay_due_date:
-                    due_date = second_pay if second_pay > po.pay_due_date else po.pay_due_date
-                else:
-                    due_date = second_pay
-            else:
-                if po.pay_due_date:
-                    due_date = po.pay_due_date if po.pay_due_date > cont_date else cont_date
-                else:
-                    due_date = None
-
-            pl = paid_list.filter(installment_order=po)
-            pld = pl.latest('deal_date').deal_date if pl else None
-            paid_date_list.append(pld)  # 회차별 최종 수납일자
-
-            payments.append(pl.aggregate(Sum('income'))['income__sum'])  # 회차별 납부금액
-
-            ad = pl.latest('deal_date').deal_date - due_date if pl else None
-            if po.pay_time <= 2:
-                add = ad.days if pl and ad.days > 0 else None
-            else:
-                add = ad.days if pl else None
-            adj_days.append(add)  # 회차별 지연일수
-
-        context['paid_date_list'] = list(reversed(paid_date_list))  # 회차별 최종 수납일자
-        context['payments'] = list(reversed(payments))  # 회차별 납부금액
-        context['adj_days'] = list(reversed(adj_days))  # 회차별 지연일수
+        context['paid_orders'] = paid_orders = inspay_orders.filter(pay_code__lte=now_due_order)  # 지정회차까지 회차
 
         html_string = render_to_string('pdf/payments_by_contractor.html', context)
 
@@ -624,3 +592,73 @@ class PdfExportPayments(View):
             response = HttpResponse(pdf, content_type='application/pdf')
             response['Content-Disposition'] = f'attachment; filename="payments_contractor.pdf"'
             return response
+
+    def get_this_price(self, project, contract, unit, inspay_orders):
+        """ ■ 해당 계약 건 분양가 구하기
+        :param project: 프로젝트 정보
+        :param contract: 계약 정보
+        :param unit: 동호수 정보
+        :param inspay_order: 전체 회차 정보
+        :return int(this_price: 분양가), int(down: 계약금), int(medium: 중도금), int(balance: 잔금):
+        """
+        # 총 공급가액(분양가) 구하기
+        group = contract.order_group  # 차수
+        type = contract.unit_type  # 타입
+
+        # 해당 계약건 분양가 # this_price = '동호 지정 후 고지'
+        this_price = contract.keyunit.unit_type.average_price
+
+        prices = SalesPriceByGT.objects.filter(project_id=project, order_group=group, unit_type=type)
+
+        if unit:
+            floor = contract.keyunit.houseunit.floor_type
+            this_price = prices.get(unit_floor_type=floor).price
+
+        # 계약금 구하기 ----------------------------------------------------------------
+        down_num = inspay_orders.filter(pay_sort='1').count()
+        try:
+            dp = DownPayment.objects.get(
+                project_id=project,
+                order_group=contract.order_group,
+                unit_type=contract.keyunit.unit_type
+            )
+            down = dp.payment_amount
+        except:
+            pn = round(down_num / 2)
+            down = int(this_price * 0.1 / pn)
+        down_total = down * down_num
+        # ---------------------------------------------------------------------------
+
+        # 중도금 구하기 ----------------------------------------------------------------
+        med_num = inspay_orders.filter(pay_sort='2').count()
+        medium = int(this_price * 0.1)
+        medium_total = medium * med_num
+        # ---------------------------------------------------------------------------
+
+        # 잔금 구하기 -----------------------------------------------------------------
+        bal_num = inspay_orders.filter(pay_sort='3').count()
+        balance = int((this_price - down_total - medium_total) / bal_num)
+        # ---------------------------------------------------------------------------
+
+        return this_price, down, medium, balance
+
+    def get_paid(self, contract):
+        """
+        :: ■ 기 납부금액 구하기
+        :param contract: 계약정보
+        :return list(paid_list: 납부 건 리스트), int(paid_sum_total: 납부 총액):
+        """
+        paid_list = ProjectCashBook.objects.filter(
+            project_account_d2__lte=2,
+            is_contract_payment=True,
+            contract=contract,
+            income__isnull=False
+        ).order_by('deal_date', 'id')  # 해당 계약 건 납부 데이터
+
+        paid_sum_total = paid_list.aggregate(Sum('income'))['income__sum']  # 완납 총금액
+        paid_list = paid_list if paid_list else []
+        paid_sum_total = paid_sum_total if paid_sum_total else 0
+        return paid_list, paid_sum_total
+
+    def get_payment_orders(self, inspay_orders):
+        return inspay_orders
