@@ -56,3 +56,5 @@ yarn.lock
 /tests/e2e/reports/
 selenium-debug.log
 chromedriver.log
+
+nebs/
