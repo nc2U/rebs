@@ -1,3 +1,5 @@
+import { State } from '@/store'
+
 export declare interface SalesBillIssue {
   pk: number
   project: number
@@ -20,7 +22,7 @@ export declare interface SalesBillIssue {
   content: string
 }
 
-export declare interface NoticeState {
+export declare interface NoticeState extends State {
   billIssueList: SalesBillIssue[]
   billIssue: SalesBillIssue | null
 }

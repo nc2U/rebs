@@ -5,6 +5,12 @@ import {
 } from '@/store/modules/notice/mutations-types'
 
 const mutations = {
+  updateState: (state: NoticeState, payload: any) => {
+    Object.keys(payload).forEach(key => {
+      state[key] = payload[key]
+    })
+  },
+
   [FETCH_SALES_BILL_ISSUE_LIST]: (state: NoticeState, payload: any) =>
     (state.billIssueList = payload.results),
 

@@ -11,6 +11,12 @@ import {
 import { PaymentState } from '@/store/modules/payment/state'
 
 const mutations = {
+  updateState: (state: PaymentState, payload: any) => {
+    Object.keys(payload).forEach(key => {
+      state[key] = payload[key]
+    })
+  },
+
   [FETCH_PRICE_LIST]: (state: PaymentState, payload: any) =>
     (state.priceList = payload.results),
 

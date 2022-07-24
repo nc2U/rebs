@@ -12,6 +12,12 @@ import {
 } from '@/store/modules/accounts/mutations-types'
 
 const mutations = {
+  updateState: (state: AccountsState, payload: any) => {
+    Object.keys(payload).forEach(key => {
+      state[key] = payload[key]
+    })
+  },
+
   [SET_ACCESS_TOKEN]: (state: AccountsState, accessToken: string) => {
     if (accessToken) {
       state.accessToken = accessToken

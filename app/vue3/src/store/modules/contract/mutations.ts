@@ -20,6 +20,12 @@ import {
 } from '@/store/modules/contract/state'
 
 const mutations = {
+  updateState: (state: ContractState, payload: any) => {
+    Object.keys(payload).forEach(key => {
+      state[key] = payload[key]
+    })
+  },
+
   [FETCH_CONTRACT_LIST]: (state: ContractState, payload: any) => {
     state.contractList = payload.results
     state.contractsCount = payload.count

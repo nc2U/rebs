@@ -1,3 +1,5 @@
+import { State } from '@/store'
+
 interface ContractorContact {
   pk: number
   cell_phone: string
@@ -134,7 +136,7 @@ interface ContractRelease {
   note: string
 }
 
-export interface ContractState {
+export interface ContractState extends State {
   contractList: Contract[]
   contractsCount: number
   contract: Contract | null

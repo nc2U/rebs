@@ -1,3 +1,5 @@
+import { State } from '@/store'
+
 export declare interface StaffAuth {
   pk: number
   company: number
@@ -50,7 +52,7 @@ export declare interface LockedUser {
   username: string
 }
 
-export declare interface AccountsState {
+export declare interface AccountsState extends State {
   accessToken: string
   userInfo: User | null
   lockedUser: LockedUser | null

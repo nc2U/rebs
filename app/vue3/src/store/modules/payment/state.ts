@@ -1,3 +1,4 @@
+import { State } from '@/store'
 import { ProjectCashBook } from '@/store/modules/proCash/state'
 
 export interface Price {
@@ -45,7 +46,7 @@ interface ContractNum {
   num_cont: number
 }
 
-export interface PaymentState {
+export interface PaymentState extends State {
   priceList: Price[]
   payOrderList: PayOrder[]
   payOrder: PayOrder | null

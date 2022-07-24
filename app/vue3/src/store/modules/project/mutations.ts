@@ -10,6 +10,11 @@ import {
 import { Project, ProjectState } from '@/store/modules/project/state'
 
 const mutations = {
+  updateState: (state: ProjectState, payload: any) => {
+    Object.keys(payload).forEach(key => {
+      state[key] = payload[key]
+    })
+  },
   [FETCH_PROJECT_LIST]: (state: ProjectState, payload: any) => {
     state.projectList = payload.results
   },

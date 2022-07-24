@@ -14,6 +14,12 @@ import {
 import { CashesState } from '@/store/modules/comCash/state'
 
 const mutations = {
+  updateState: (state: CashesState, payload: any) => {
+    Object.keys(payload).forEach(key => {
+      state[key] = payload[key]
+    })
+  },
+
   [FETCH_ACC_SORT_LIST]: (state: CashesState, payload: any) =>
     (state.sortList = payload.results),
 

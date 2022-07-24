@@ -1,3 +1,4 @@
+import { State } from '@/store'
 import { AccountSort } from '@/store/modules/comCash/state'
 
 export interface ProjectAccountD1 {
@@ -79,7 +80,7 @@ export interface ProjectCashBook {
   deal_date: string
 }
 
-export interface ProjectCashState {
+export interface ProjectCashState extends State {
   sortList: AccountSort[]
   allAccD1List: ProjectAccountD1[]
   allAccD2List: ProjectAccountD2[]

@@ -1,3 +1,5 @@
+import { State } from '@/store'
+
 export interface Project {
   pk: number
   company: number
@@ -159,7 +161,7 @@ export interface SiteContract {
   note: string
 }
 
-export interface ProjectState {
+export interface ProjectState extends State {
   projectList: Project[]
   project: Project | null
   unitTypeList: UnitType[]

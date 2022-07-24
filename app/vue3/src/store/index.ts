@@ -10,7 +10,11 @@ import proCash from '@/store/modules/proCash'
 import settings from '@/store/modules/settings'
 import Cookies from 'js-cookie'
 
-declare interface RootState {
+export interface State {
+  [key: string]: any
+}
+
+declare interface RootState extends State {
   asideVisible: boolean
   sidebarVisible: boolean
   sidebarUnfoldable: boolean
@@ -30,6 +34,11 @@ const state: RootState = {
 }
 
 const mutations = {
+  updateState(state: RootState, payload: any) {
+    Object.keys(payload).forEach(key => {
+      state[key] = payload[key]
+    })
+  },
   toggleAside(state: RootState) {
     state.asideVisible = !state.asideVisible
   },

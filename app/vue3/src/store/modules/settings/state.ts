@@ -1,3 +1,5 @@
+import { State } from '@/store'
+
 export interface Department {
   name: string
   task: string
@@ -28,7 +30,7 @@ export interface Company {
   positions: Positions[]
 }
 
-export interface CompanyState {
+export interface CompanyState extends State {
   companyList: Company[]
   company: Company | null
 }

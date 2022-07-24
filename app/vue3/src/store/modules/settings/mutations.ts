@@ -5,6 +5,12 @@ import {
 import { Company, CompanyState } from '@/store/modules/settings/state'
 
 const mutations = {
+  updateState: (state: CompanyState, payload: any) => {
+    Object.keys(payload).forEach(key => {
+      state[key] = payload[key]
+    })
+  },
+
   [FETCH_COMPANY_LIST]: (state: CompanyState, payload: any) => {
     state.companyList = payload.results
   },

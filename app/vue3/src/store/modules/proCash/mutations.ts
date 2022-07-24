@@ -15,6 +15,12 @@ import {
 import { ProjectCashState } from '@/store/modules/proCash/state'
 
 const mutations = {
+  updateState: (state: ProjectCashState, payload: any) => {
+    Object.keys(payload).forEach(key => {
+      state[key] = payload[key]
+    })
+  },
+
   [FETCH_P_ACC_SORT_LIST]: (state: ProjectCashState, payload: any) =>
     (state.sortList = payload.results),
 

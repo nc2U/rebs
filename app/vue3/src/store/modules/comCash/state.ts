@@ -1,3 +1,5 @@
+import { State } from '@/store'
+
 export interface AccountSort {
   pk: number
   name: string
@@ -70,7 +72,7 @@ export interface CashBook {
   updated_at: string
 }
 
-export interface CashesState {
+export interface CashesState extends State {
   sortList: AccountSort[]
   formAccD1List: AccountD1[]
   formAccD2List: AccountD2[]
