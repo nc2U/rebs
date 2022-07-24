@@ -12,7 +12,7 @@ export default {
     },
 
     cutString(str: string, len: number) {
-      const content = str ? str : ''
+      const content = str || ''
       return content.length > len ? `${content.substr(0, len)}..` : content
     },
 
