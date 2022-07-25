@@ -7,13 +7,11 @@ import Cookies from 'js-cookie'
 import CoreuiVue from '@coreui/vue-pro'
 import { CIcon } from '@coreui/icons-vue'
 import { iconsSet as icons } from '@/assets/icons'
-
 import vuetify from './plugins/vuetify'
 import { loadFonts } from './plugins/webfontloader'
+import '@/styles/style.scss'
 
 loadFonts()
-
-import '@/styles/style.scss'
 
 function init() {
   const cookedToken = Cookies.get('accessToken')
