@@ -1,0 +1,141 @@
+<template>
+  <CTableRow class="text-center">
+    <CTableDataCell>{{ cash.deal_date }}</CTableDataCell>
+    <CTableDataCell :class="sortClass">
+      {{ cash.sort_desc }}
+    </CTableDataCell>
+    <CTableDataCell :class="d1Class">
+      {{ cash.account_d1_desc }}
+    </CTableDataCell>
+    <CTableDataCell class="text-left truncate">
+      {{ cash.account_d3_desc }}
+    </CTableDataCell>
+    <CTableDataCell class="text-left truncate">
+      {{ cutString(cash.content, 15) }}
+    </CTableDataCell>
+    <CTableDataCell class="text-left truncate">
+      {{ cutString(cash.trader, 8) }}
+    </CTableDataCell>
+    <CTableDataCell class="text-left">
+      {{ cutString(cash.bank_account_desc, 10) }}
+    </CTableDataCell>
+    <CTableDataCell class="text-right" color="primary">
+      {{ numFormat(cash.income || 0) }}
+    </CTableDataCell>
+    <CTableDataCell class="text-right" color="danger">
+      {{ numFormat(cash.outlay || 0) }}
+    </CTableDataCell>
+    <CTableDataCell>{{ cash.evidence_desc }}</CTableDataCell>
+    <CTableDataCell>
+      <CButton color="info" @click="showDetail" size="sm">확인</CButton>
+    </CTableDataCell>
+  </CTableRow>
+
+  <FormModal size="lg" ref="updateFormModal">
+    <template v-slot:header>
+      <CIcon name="cil-italic" />
+      입출금 거래 건별 수정
+    </template>
+    <template v-slot:default>
+      <CashForm
+        @on-submit="updateConfirm"
+        @on-delete="deleteConfirm"
+        @close="$refs.updateFormModal.visible = false"
+        :cash="cash"
+      />
+    </template>
+  </FormModal>
+
+  <ConfirmModal ref="delModal">
+    <template v-slot:header>
+      <CIcon name="cilWarning" />
+      입출금 거래 정보 삭제
+    </template>
+    <template v-slot:default>
+      삭제한 데이터는 복구할 수 없습니다. 해당 입출금 거래 정보를
+      삭제하시겠습니까?
+    </template>
+    <template v-slot:footer>
+      <CButton color="danger" @click="deleteObject">삭제</CButton>
+    </template>
+  </ConfirmModal>
+
+  <AlertModal ref="alertModal" />
+</template>
+
+<script lang="ts">
+import { defineComponent } from 'vue'
+import FormModal from '@/components/Modals/FormModal.vue'
+import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
+import AlertModal from '@/components/Modals/AlertModal.vue'
+import CashForm from '@/views/comCash/Manage/components/CashForm.vue'
+import { mapGetters } from 'vuex'
+
+export default defineComponent({
+  name: 'Cashes',
+  components: { FormModal, ConfirmModal, AlertModal, CashForm },
+  props: {
+    cash: {
+      type: Object,
+      required: true,
+    },
+  },
+  data() {
+    return {
+      cls: ['text-primary', 'text-danger', 'text-info'],
+    }
+  },
+  computed: {
+    sortClass(this: any) {
+      return this.cls[this.cash.sort - 1]
+    },
+    d1Class() {
+      return this.cls[this.cash.account_d1 - 4]
+    },
+    pageManageAuth() {
+      return (
+        this.superAuth ||
+        (this.staffAuth && this.staffAuth.company_cash === '2')
+      )
+    },
+    allowedPeriod(this: any) {
+      return this.superAuth || this.diffDate(this.cash.deal_date) <= 30
+    },
+    ...mapGetters('accounts', ['staffAuth', 'superAuth']),
+  },
+  methods: {
+    showDetail(this: any) {
+      this.$refs.updateFormModal.callModal()
+    },
+    updateConfirm(this: any, payload: any) {
+      if (this.pageManageAuth) {
+        if (this.allowedPeriod) this.updateObject(payload)
+        else
+          this.$refs.alertModal.callModal(
+            null,
+            '거래일로부터 30일이 경과한 건은 수정할 수 없습니다. 관리자에게 문의바랍니다.',
+          )
+      } else this.$refs.alertModal.callModal()
+    },
+    updateObject(this: any, payload: any) {
+      this.$emit('on-update', { ...{ pk: this.cash.pk }, ...payload })
+      this.$refs.updateFormModal.visible = false
+    },
+    deleteConfirm(this: any) {
+      if (this.pageManageAuth)
+        if (this.allowedPeriod) this.$refs.delModal.callModal()
+        else
+          this.$refs.alertModal.callModal(
+            null,
+            '거래일로부터 30일이 경과한 건은 삭제할 수 없습니다. 관리자에게 문의바랍니다.',
+          )
+      else this.$refs.alertModal.callModal()
+    },
+
+    deleteObject(this: any) {
+      this.$emit('on-delete', { company: this.cash.company, pk: this.cash.pk })
+      this.$refs.delModal.visible = false
+    },
+  },
+})
+</script>

@@ -21,8 +21,13 @@
     background: transparent;
   }
 
-  & + p {
-    margin-top: 1.5rem
+  & + p,
+  & + h2,
+  & + h3,
+  & + h4,
+  & + h5,
+  & + h6 {
+    margin-top: 1.5rem;
   }
 
   // Components examples

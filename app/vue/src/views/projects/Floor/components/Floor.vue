@@ -1,0 +1,140 @@
+<template>
+  <CTableRow>
+    <CTableDataCell>
+      <CFormInput
+        v-model.number="form.start_floor"
+        placeholder="시작 층"
+        type="number"
+        min="0"
+        required
+        @keypress.enter="formCheck(form.start_floor !== floor.start_floor)"
+      />
+    </CTableDataCell>
+    <CTableDataCell>
+      <CFormInput
+        v-model.number="form.end_floor"
+        placeholder="종료 층"
+        type="number"
+        min="0"
+        required
+        @keypress.enter="formCheck(form.end_floor !== form.end_floor)"
+      />
+    </CTableDataCell>
+
+    <CTableDataCell>
+      <CFormInput
+        v-model="form.extra_cond"
+        placeholder="방향/위치"
+        @keypress.enter="formCheck(form.extra_cond !== floor.extra_cond)"
+      />
+    </CTableDataCell>
+
+    <CTableDataCell>
+      <CFormInput
+        v-model="form.alias_name"
+        placeholder="층별 범위 명칭"
+        required
+        @keypress.enter="formCheck(form.alias_name !== floor.alias_name)"
+      />
+    </CTableDataCell>
+    <CTableDataCell class="text-center">
+      <CButton
+        color="success"
+        size="sm"
+        @click="onUpdateFloor"
+        :disabled="formsCheck"
+      >
+        수정
+      </CButton>
+      <CButton color="danger" size="sm" @click="onDeleteFloor">삭제</CButton>
+    </CTableDataCell>
+  </CTableRow>
+
+  <ConfirmModal ref="confirmModal">
+    <template v-slot:header>
+      <CIcon name="cil-warning" />
+      층별 타입 삭제
+    </template>
+    <template v-slot:default>
+      이 타입에 종속된 분양가 데이터가 있는 경우 해당 데이터를 모두 제거한 후
+      삭제가능 합니다. 해당 층별 타입을 삭제 하시겠습니까?
+    </template>
+    <template v-slot:footer>
+      <CButton color="danger" @click="modalAction">삭제</CButton>
+    </template>
+  </ConfirmModal>
+
+  <AlertModal ref="alertModal" />
+</template>
+
+<script lang="ts">
+import { defineComponent } from 'vue'
+import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
+import AlertModal from '@/components/Modals/AlertModal.vue'
+import { mapGetters } from 'vuex'
+
+export default defineComponent({
+  name: 'FloorType',
+  components: { ConfirmModal, AlertModal },
+  data() {
+    return {
+      form: {
+        start_floor: null,
+        end_floor: null,
+        extra_cond: '',
+        alias_name: '',
+      },
+      validated: false,
+    }
+  },
+  props: { floor: Object },
+  created(this: any) {
+    if (this.floor) this.resetForm()
+  },
+  computed: {
+    formsCheck(this: any) {
+      const a = this.form.start_floor === this.floor.start_floor
+      const b = this.form.end_floor === this.floor.end_floor
+      const c = this.form.extra_cond === this.floor.extra_cond
+      const d = this.form.alias_name === this.floor.alias_name
+      return a && b && c && d
+    },
+    ...mapGetters('accounts', ['staffAuth', 'superAuth']),
+  },
+  methods: {
+    formCheck(bool: boolean) {
+      if (bool) this.onUpdateFloor()
+      return
+    },
+    onUpdateFloor(this: any) {
+      if (
+        this.superAuth ||
+        (this.staffAuth && this.staffAuth.project === '2')
+      ) {
+        const pk = this.floor.pk
+        this.$emit('on-update', { ...{ pk }, ...this.form })
+      } else {
+        this.$refs.alertModal.callModal()
+        this.resetForm()
+      }
+    },
+    onDeleteFloor(this: any) {
+      if (this.superAuth) this.$refs.confirmModal.callModal()
+      else {
+        this.$refs.alertModal.callModal()
+        this.resetForm()
+      }
+    },
+    modalAction(this: any) {
+      this.$emit('on-delete', this.floor.pk)
+      this.$refs.confirmModal.visible = false
+    },
+    resetForm(this: any) {
+      this.form.start_floor = this.floor.start_floor
+      this.form.end_floor = this.floor.end_floor
+      this.form.extra_cond = this.floor.extra_cond
+      this.form.alias_name = this.floor.alias_name
+    },
+  },
+})
+</script>

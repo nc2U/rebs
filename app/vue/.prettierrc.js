@@ -1,7 +1,8 @@
 module.exports = {
-  // jsxBracketSameLine: true,
+  arrowParens: 'avoid', // 화살표 함수 괄호 사용 방식
+  bracketSpacing: true,
   semi: false,
-  trailingComma: "all",
+  trailingComma: 'all',
   singleQuote: true,
-  tabWidth: 2
-};
+  tabWidth: 2,
+}
