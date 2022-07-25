@@ -27,6 +27,21 @@ const routes: Array<RouteRecordRaw> = [
             name: "charts1",
             component: () => import("@/views/AboutView.vue"),
           },
+          {
+            path: "sublink2",
+            name: "charts2",
+            component: () => import("@/views/AboutView.vue"),
+          },
+          {
+            path: "sublink3",
+            name: "charts3",
+            component: () => import("@/views/AboutView.vue"),
+          },
+          {
+            path: "sublink4",
+            name: "charts4",
+            component: () => import("@/views/AboutView.vue"),
+          },
         ],
       },
     ],

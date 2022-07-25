@@ -19,7 +19,6 @@ const menu = ref([
       {
         href: "/charts/sublink1",
         title: "Sub Link1",
-        icon: "fa-solid fa-coffee",
       },
       {
         href: "/charts/sublink2",
@@ -37,7 +36,7 @@ const menu = ref([
   },
 ]);
 const onToggleCollapse = (collapsed: boolean) => !collapsed;
-const onItemClick = (event: Event, item: any) => (event.target.value, item);
+const onItemClick = (event: Event, item: any) => item;
 </script>
 
 <template>
