@@ -11,6 +11,10 @@
 //  }
 //}
 
+input[type=number] {
+  text-align: right;
+}
+
 // DatePicker scss
 .dp__theme_dark {
   --dp-background-color: #2F303A;
@@ -54,6 +58,74 @@
   --dp-danger-color: #ff6f60;
 }
 
-input[type=number] {
-  text-align: right;
+// v-sidebar css
+.v-sidebar-menu {
+}
+
+.v-sidebar-menu.vsm_expanded {
+  background: #36435A;
+}
+
+.v-sidebar-menu.vsm_collapsed {
+}
+
+.v-sidebar-menu.vsm_rtl {
+}
+
+.v-sidebar-menu .vsm--item {
+  background: #36435A;
+}
+
+.v-sidebar-menu .vsm--link {
+}
+
+.v-sidebar-menu .vsm--link_active {
+}
+
+.v-sidebar-menu .vsm--link_open {
+}
+
+.v-sidebar-menu .vsm--link_mobile {
+}
+
+.v-sidebar-menu .vsm--link_level-[n] {
+}
+
+.v-sidebar-menu .vsm--link_disabled {
+}
+
+.v-sidebar-menu .vsm--title {
+}
+
+.v-sidebar-menu .vsm--icon {
+}
+
+.v-sidebar-menu .vsm--arrow {
+}
+
+.v-sidebar-menu .vsm--arrow_open {
+}
+
+.v-sidebar-menu .vsm--badge {
+}
+
+.v-sidebar-menu .vsm--badge_default {
+}
+
+.v-sidebar-menu .vsm--header {
+  height: 65px;
+  background: #1E1F31;
+}
+
+.v-sidebar-menu .vsm--child {
+  background: #1E1F31;
+}
+
+.v-sidebar-menu .vsm--dropdown {
+}
+
+.v-sidebar-menu .vsm--mobile-bg {
+}
+
+.v-sidebar-menu .vsm--toggle-btn {
 }

@@ -8,7 +8,7 @@ const menu = ref([
   },
   {
     href: "/",
-    title: "Dashboard",
+    title: "Dashboard1",
     icon: "fa fa-user",
   },
   {
@@ -17,8 +17,20 @@ const menu = ref([
     icon: "fa fa-chart-area",
     child: [
       {
-        href: "/charts/sublink",
-        title: "Sub Link",
+        href: "/charts/sublink1",
+        title: "Sub Link1",
+      },
+      {
+        href: "/charts/sublink2",
+        title: "Sub Link2",
+      },
+      {
+        href: "/charts/sublink3",
+        title: "Sub Link3",
+      },
+      {
+        href: "/charts/sublink4",
+        title: "Sub Link4",
       },
     ],
   },
@@ -30,7 +42,7 @@ const onItemClick = (event: Event, item: any) => (event.target.value, item);
 <template>
   <SidebarMenu
     :menu="menu"
-    width="290px"
+    width="260px"
     width-collapsed="65px"
     :show-one-child="true"
     :show-child="true"
