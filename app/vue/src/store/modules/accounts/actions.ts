@@ -1,4 +1,5 @@
 import api from '@/api'
+import { Buffer } from 'buffer'
 import {
   DESTROY_ACCESS_TOKEN,
   DESTROY_CURRENT_USER,
@@ -10,8 +11,6 @@ import {
 import router from '@/router'
 import { errorHandle, message } from '@/utils/helper'
 import Cookies from 'js-cookie'
-
-declare const Buffer: any
 
 const extractId = (token: string) => {
   const base64Payload = token.split('.')[1]
