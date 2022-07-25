@@ -90,7 +90,7 @@
 </template>
 
 <script>
-import MainChartExample from '@/views/_Dashboard/components/charts/MainChartExample'
+import MainChartExample from '@/views/_Dashboard/components/charts/MainChartExample.vue'
 
 export default {
   name: 'WidgetsStatsB',
