@@ -13,6 +13,8 @@ import { loadFonts } from './plugins/webfontloader'
 
 loadFonts()
 
+import '@/style.css'
+
 function init() {
   const cookedToken = Cookies.get('accessToken')
   if (cookedToken) {
