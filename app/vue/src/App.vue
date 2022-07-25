@@ -1,8 +1,17 @@
 <template>
-  <router-view />
+  <v-app>
+    <v-main>
+      <router-view />
+    </v-main>
+  </v-app>
 </template>
 
-<style lang="scss">
-// Import Main styles for this application
-@import 'styles/style';
-</style>
+<script>
+export default {
+  name: 'App',
+
+  data: () => ({
+    //
+  }),
+}
+</script>
