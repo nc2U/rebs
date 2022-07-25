@@ -10,36 +10,31 @@ const routes: Array<RouteRecordRaw> = [
     children: [
       {
         path: "dashboard",
-        name: "메인 페이지",
-        // route level code-splitting
-        // this generates a separate chunk (dashboard.[hash].js) for this route
-        // which is lazy-loaded when the route is visited.
-        component: () =>
-          import(/* webpackChunkName: "dashboard" */ "@/views/HomeView.vue"),
+        name: "dashboard",
+        component: () => import("@/views/HomeView.vue"),
       },
       {
         path: "/charts",
         name: "charts",
-        redirect: "/charts/sublink1",
         children: [
           {
             path: "sublink1",
-            name: "charts1",
+            name: "sublink1",
             component: () => import("@/views/AboutView.vue"),
           },
           {
             path: "sublink2",
-            name: "charts2",
+            name: "sublink2",
             component: () => import("@/views/AboutView.vue"),
           },
           {
             path: "sublink3",
-            name: "charts3",
+            name: "sublink3",
             component: () => import("@/views/AboutView.vue"),
           },
           {
             path: "sublink4",
-            name: "charts4",
+            name: "sublink4",
             component: () => import("@/views/AboutView.vue"),
           },
         ],

@@ -9,7 +9,10 @@
         <h1 class="display-2 font-weight-bold mb-3">
           Welcome to Vuetify 3 Beta
         </h1>
-
+        <font-awesome-icon icon="fa-regular fa-alien-8bit" />
+        <font-awesome-icon icon="fa-regular fa-apartment" />
+        <font-awesome-icon icon="fa-regular fa-arrow-right" />
+        <font-awesome-icon icon="fa-solid fa-arrow-right" />
         <h4>Vite Preview</h4>
 
         <p class="subheading font-weight-regular">
