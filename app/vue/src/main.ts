@@ -13,7 +13,7 @@ import { loadFonts } from './plugins/webfontloader'
 
 loadFonts()
 
-import '@/style.css'
+import '@/styles/style.scss'
 
 function init() {
   const cookedToken = Cookies.get('accessToken')
