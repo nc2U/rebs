@@ -9,16 +9,17 @@ const menu = ref([
   {
     href: "/",
     title: "Dashboard1",
-    icon: "fa fa-user",
+    icon: "fa-solid fa-coffee",
   },
   {
     href: "/charts",
     title: "Charts",
-    icon: "fa fa-chart-area",
+    icon: "fa-solid fa-coffee",
     child: [
       {
         href: "/charts/sublink1",
         title: "Sub Link1",
+        icon: "fa-solid fa-coffee",
       },
       {
         href: "/charts/sublink2",
@@ -45,7 +46,7 @@ const onItemClick = (event: Event, item: any) => (event.target.value, item);
     width="260px"
     width-collapsed="65px"
     :show-one-child="true"
-    :show-child="true"
+    :show-child="false"
     :relative="true"
     :hide-toggle="false"
     :disable-hover="true"
