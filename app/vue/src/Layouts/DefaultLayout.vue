@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import AppAside from "@/Layouts/containers/AppSidebar.vue";
+import AppSidebar from "@/Layouts/containers/AppSidebar.vue";
 </script>
 
 <template>
-  <AppAside />
+  <AppSidebar />
 </template>
