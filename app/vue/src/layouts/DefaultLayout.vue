@@ -5,7 +5,7 @@
   >
     <AppHeader />
     <div class="body flex-grow-1 px-3">
-      <CContainer lg>
+      <CContainer fluid>
         <router-view />
       </CContainer>
     </div>
