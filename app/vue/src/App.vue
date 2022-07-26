@@ -17,6 +17,10 @@ store.state.theme === 'dark'
 </script>
 
 <template>
-  <router-view />
-  <Spinner :loading="store.state.LoadingStatus" />
+  <v-app>
+    <v-main>
+      <router-view />
+      <Spinner :loading="store.state.LoadingStatus" />
+    </v-main>
+  </v-app>
 </template>

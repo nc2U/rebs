@@ -1,4 +1,5 @@
 import { createApp } from 'vue'
+import Cookies from 'js-cookie'
 import App from './App.vue'
 import store from './store'
 import router from './router'
@@ -7,8 +8,11 @@ import mixins from '@/mixins'
 import CoreuiVue from '@coreui/vue-pro'
 import { CIcon } from '@coreui/icons-vue'
 import { iconsSet as icons } from '@/assets/icons'
-import Cookies from 'js-cookie'
+import vuetify from './plugins/vuetify'
+import { loadFonts } from './plugins/webfontloader'
 import '@/styles/style.scss'
+
+loadFonts()
 
 function init() {
   const cookedToken = Cookies.get('accessToken')
@@ -23,6 +27,7 @@ init().then(() => {
   const app = createApp(App)
   app.use(store)
   app.use(router)
+  app.use(vuetify)
   app.mixin(mixins)
   app.use(CoreuiVue)
   app.provide('icons', icons)
