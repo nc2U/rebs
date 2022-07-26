@@ -11,13 +11,7 @@ export default defineConfig({
       ? '/static/dist/'
       : 'http://localhost:3000',
   build: {
-    rollupOptions: {
-      output: [
-        {
-          dir: '../django/static/dist',
-        },
-      ],
-    },
+    outDir: '../django/static/dist',
   },
   plugins: [
     vue(),
