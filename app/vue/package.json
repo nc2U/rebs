@@ -64,6 +64,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-vue": "^7.20.0",
     "prettier": "^2.6.2",
+    "rollup-plugin-base-url": "^0.0.2",
     "rollup-plugin-copy-merge": "^0.3.5",
     "sass": "^1.52.2",
     "sass-loader": "^10.2.1",
