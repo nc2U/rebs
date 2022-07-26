@@ -1,0 +1,51 @@
+<template>
+  <CRow class="mb-3">
+    <CCol md="8" lg="6" xl="4">
+      <CNav variant="pills" layout="justified">
+        <CNavItem>
+          <CNavLink
+            href="javascript:void(0);"
+            :active="tabPanePillsActiveKey === 1"
+            @click="showTab(1)"
+          >
+            계좌별 자금현황
+          </CNavLink>
+        </CNavItem>
+        <CNavItem>
+          <CNavLink
+            href="javascript:void(0);"
+            :active="tabPanePillsActiveKey === 2"
+            @click="showTab(2)"
+          >
+            당일 입출금내역
+          </CNavLink>
+        </CNavItem>
+      </CNav>
+    </CCol>
+  </CRow>
+</template>
+
+<script lang="ts">
+import { defineComponent } from 'vue'
+
+export default defineComponent({
+  name: '',
+  components: {},
+  props: {},
+  setup() {
+    return {}
+  },
+  data() {
+    return {
+      tabPanePillsActiveKey: 1,
+    }
+  },
+  computed: {},
+  methods: {
+    showTab(num: number) {
+      this.tabPanePillsActiveKey = num
+      this.$emit('tab-select', num)
+    },
+  },
+})
+</script>
