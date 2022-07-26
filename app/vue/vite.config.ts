@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vuetify from 'vite-plugin-vuetify'
+import copy from 'rollup-plugin-copy'
 
 const path = require('path')
 
@@ -12,6 +13,21 @@ export default defineConfig({
       : 'http://localhost:3000',
   build: {
     outDir: '../django/static/dist',
+    emptyOutDir: true,
+    chunkSizeWarningLimit: 1010,
+    rollupOptions: {
+      plugins: [
+        copy({
+          targets: [
+            {
+              src: '../django/static/dist/index.html',
+              dest: '../django/templates',
+              rename: 'base-vue.html',
+            },
+          ],
+        }),
+      ],
+    },
   },
   plugins: [
     vue(),
@@ -34,17 +50,4 @@ export default defineConfig({
       },
     },
   },
-  /* remove the need to specify .vue files https://vitejs.dev/config/#resolve-extensions
-  resolve: {
-    extensions: [
-      '.js',
-      '.json',
-      '.jsx',
-      '.mjs',
-      '.ts',
-      '.tsx',
-      '.vue',
-    ]
-  },
-  */
 })
