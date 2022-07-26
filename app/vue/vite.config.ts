@@ -1,13 +1,13 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vuetify from 'vite-plugin-vuetify'
-import { baseUrl } from 'rollup-plugin-base-url'
 import copy from 'rollup-plugin-copy-merge'
 
 const path = require('path')
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: '/static/dist/',
   build: {
     rollupOptions: {
       output: {
@@ -20,12 +20,6 @@ export default defineConfig({
     // https://github.com/vuetifyjs/vuetify-loader/tree/next/packages/vite-plugin
     vuetify({
       autoImport: true,
-    }),
-    baseUrl({
-      url: '/static/dist',
-      // the base URL prefix; optional, defaults to /
-      // staticImports: true,
-      // also rebases static `import _ from "…"`; optional, defaults to false
     }),
     copy({
       targets: [
