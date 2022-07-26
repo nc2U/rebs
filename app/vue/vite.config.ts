@@ -1,13 +1,13 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vuetify from 'vite-plugin-vuetify'
-import copy from 'rollup-plugin-copy-merge'
+// import copy from 'rollup-plugin-copy-merge'
 
 const path = require('path')
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: '/static/dist/',
+  base: process.env.NODE_ENV === 'production' ? '/static/dist/' : '/',
   build: {
     rollupOptions: {
       output: {
@@ -21,14 +21,14 @@ export default defineConfig({
     vuetify({
       autoImport: true,
     }),
-    copy({
-      targets: [
-        {
-          src: '../django/static/dist/index.html',
-          file: '../django/templates/base-vue.html',
-        },
-      ],
-    }),
+    // copy({
+    //   targets: [
+    //     {
+    //       src: '../django/static/dist/index.html',
+    //       file: '../django/templates/base-vue.html',
+    //     },
+    //   ],
+    // }),
   ],
   define: { 'process.env': {} },
   resolve: {

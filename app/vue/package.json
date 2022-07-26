@@ -5,7 +5,7 @@
   "author": "The CoreUI Team (https://github.com/orgs/coreui/people)",
   "scripts": {
     "serve": "vite preview",
-    "build": "vite build",
+    "build": "vue-tsc --noEmit && vite build",
     "test:unit": "vue-cli-service test:unit",
     "test:e2e": "vue-cli-service test:e2e",
     "lint": "vue-cli-service lint",
@@ -68,10 +68,11 @@
     "sass": "^1.52.2",
     "sass-loader": "^10.2.1",
     "typescript": "~4.4.4",
-    "vite": "^2.0.0",
+    "vite": "^3.0.3",
     "vite-plugin-vuetify": "^1.0.0-alpha.0",
     "vue-cli-plugin-vuetify": "~2.5.1",
-    "vue-jest": "^5.0.0-alpha.10"
+    "vue-jest": "^5.0.0-alpha.10",
+    "vue-tsc": "^0.39.0"
   },
   "config": {
     "coreui_library_short_version": "4.0"
