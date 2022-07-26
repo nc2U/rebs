@@ -1,3 +1,12 @@
+<script lang="ts" setup>
+import { CContainer } from '@coreui/vue-pro'
+import AppAside from '@/layouts/containers/AppAside.vue'
+import AppFooter from '@/layouts/containers/AppFooter.vue'
+import AppHeader from '@/layouts/containers/AppHeader.vue'
+import AppSidebar from '@/layouts/containers/AppSidebar.vue'
+import BackToTop from '@/components/BackToTop/index.vue'
+</script>
+
 <template>
   <AppSidebar />
   <div
@@ -14,23 +23,3 @@
   </div>
   <AppAside />
 </template>
-<script lang="ts">
-import { CContainer } from '@coreui/vue-pro'
-import AppAside from '@/layouts/containers/AppAside.vue'
-import AppFooter from '@/layouts/containers/AppFooter.vue'
-import AppHeader from '@/layouts/containers/AppHeader.vue'
-import AppSidebar from '@/layouts/containers/AppSidebar.vue'
-import BackToTop from '@/components/BackToTop/index.vue'
-
-export default {
-  name: 'DefaultLayout',
-  components: {
-    AppAside,
-    AppFooter,
-    AppHeader,
-    AppSidebar,
-    CContainer,
-    BackToTop,
-  },
-}
-</script>
