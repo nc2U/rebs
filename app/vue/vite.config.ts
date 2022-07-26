@@ -6,6 +6,19 @@ const path = require('path')
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base:
+    process.env.NODE_ENV === 'production'
+      ? '/static/dist/'
+      : 'http://localhost:3000',
+  build: {
+    rollupOptions: {
+      output: [
+        {
+          dir: '../django/static/dist',
+        },
+      ],
+    },
+  },
   plugins: [
     vue(),
     // https://github.com/vuetifyjs/vuetify-loader/tree/next/packages/vite-plugin
@@ -17,6 +30,14 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
+    },
+  },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost',
+        changeOrigin: true,
+      },
     },
   },
   /* remove the need to specify .vue files https://vitejs.dev/config/#resolve-extensions
