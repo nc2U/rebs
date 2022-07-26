@@ -1,12 +1,16 @@
 <template>
-  <CContainer>
+  <CContainer fluid>
     <MainCarousel />
     <CRow>
-      <CCol lg="6">
-        <TodoListApp />
-      </CCol>
-      <CCol lg="6">
-        <WidgetsStatsA />
+      <CCol :xxl="9">
+        <CRow>
+          <CCol lg="6">
+            <TodoListApp />
+          </CCol>
+          <CCol lg="6">
+            <WidgetsStatsA />
+          </CCol>
+        </CRow>
       </CCol>
     </CRow>
     <WidgetsStatsB />
