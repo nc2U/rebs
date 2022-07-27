@@ -1,10 +1,12 @@
 <script lang="ts" setup>
-const props = defineProps({ url: String, disabled: Boolean })
+const props = defineProps({
+  url: { type: String, default: '' },
+  disabled: Boolean,
+})
 </script>
 
 <template>
   <v-row class="justify-end">
-    <v-row class="justify-end">
     <v-btn
       size="small"
       :href="props.url"

@@ -1,5 +1,8 @@
 <script lang="ts" setup>
-const props = defineProps({ url: String, disabled: Boolean })
+const props = defineProps({
+  url: { type: String, default: '' },
+  disabled: Boolean,
+})
 </script>
 
 <template>
