@@ -13,14 +13,13 @@ $enable-rtl: true;
 
 @import "layout";
 
-// Plugins
-@import "calendar";
-@import "example";
-@import 'mosha-vue-toastify/dist/style';
-@import '@vuepic/vue-datepicker/src/VueDatePicker/style/main.scss';
-
 // If you want to add something do it here
 @import "custom";
 
 // Transition
 @import "transition";
+
+// Plugins
+@import "calendar";
+@import 'mosha-vue-toastify/dist/style';
+@import '@vuepic/vue-datepicker/src/VueDatePicker/style/main.scss';

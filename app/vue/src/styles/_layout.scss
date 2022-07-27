@@ -4,3 +4,7 @@
   will-change: auto;
   @include transition(padding .15s);
 }
+
+.sidebar {
+  --cui-sidebar-bg: #282C3E;
+}
