@@ -11,11 +11,6 @@ const imgSrc = [
   <CRow>
     <CCol :xxl="9">
       <CCard class="mb-4">
-        <CCardHeader>
-          <CIcon name="cil-justify-center" />
-          <strong> Bootstrap Carousel</strong>
-          <small class="text-muted">Songdo-Central Xi</small>
-        </CCardHeader>
         <CCardBody>
           <v-carousel
             cycle
