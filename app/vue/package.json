@@ -34,6 +34,7 @@
     "roboto-fontface": "*",
     "vue": "^3.2.36",
     "vue-advanced-cropper": "^2.8.1",
+    "vue-fullscreen": "^2.6.1",
     "vue-router": "^4.0.15",
     "vuetify": "^3.0.0-beta.0",
     "vuex": "^4.0.2",

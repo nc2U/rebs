@@ -1,3 +1,25 @@
+<script lang="ts" setup>
+import { ref } from 'vue'
+import { useStore } from 'vuex'
+import AppBreadcrumb from './AppBreadcrumb.vue'
+import AppHeaderDropdownAccnt from './AppHeaderDropdownAccnt.vue'
+import { directive as vFullscreen } from 'vue-fullscreen'
+import { logo } from '@/assets/brand/current-logo'
+
+const store = useStore()
+const screenIcon = ref('mdi-fullscreen')
+const screenGuide = ref('전체화면')
+const options = ref({
+  target: '.fullscreen-wrapper',
+  callback(isFullscreen: boolean) {
+    screenIcon.value = !isFullscreen ? 'mdi-fullscreen' : 'mdi-fullscreen-exit'
+    screenGuide.value = !isFullscreen ? '전체화면' : '전체화면 종료'
+  },
+})
+const userInfo = store.state.accounts.userInfo
+const isAuthorized = store.getters['accounts/isAuthorized']
+</script>
+
 <template>
   <CHeader position="sticky" class="mb-4">
     <CContainer fluid>
@@ -11,6 +33,12 @@
         <AppBreadcrumb />
       </CHeaderNav>
       <CHeaderNav class="ms-auto me-4">
+        <CHeaderToggler v-fullscreen.teleport="options">
+          <v-icon large :icon="screenIcon" />
+          <v-tooltip activator="parent" location="bottom">
+            {{ screenGuide }}
+          </v-tooltip>
+        </CHeaderToggler>
         <CButtonGroup aria-label="Theme switch">
           <CFormCheck
             type="radio"
@@ -79,27 +107,3 @@
     </CContainer>
   </CHeader>
 </template>
-
-<script lang="ts">
-import AppBreadcrumb from './AppBreadcrumb.vue'
-import AppHeaderDropdownAccnt from './AppHeaderDropdownAccnt.vue'
-import { logo } from '@/assets/brand/current-logo'
-import { mapGetters, mapState } from 'vuex'
-
-export default {
-  name: 'AppHeader',
-  components: {
-    AppBreadcrumb,
-    AppHeaderDropdownAccnt,
-  },
-  computed: {
-    ...mapState('accounts', ['userInfo']),
-    ...mapGetters('accounts', ['isAuthorized']),
-  },
-  setup() {
-    return {
-      logo,
-    }
-  },
-}
-</script>
