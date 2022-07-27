@@ -8,11 +8,7 @@
   <ContentBody>
     <CCardBody class="pb-5">
       <ContSummary />
-      <v-row>
-        <v-col class="py-0">
-          <ExcelExport v-if="project" :url="excelUrl" />
-        </v-col>
-      </v-row>
+      <ExcelExport v-if="project" :url="excelUrl" />
       <hr />
       <ContractBoard />
     </CCardBody>
