@@ -1,5 +1,9 @@
 <template>
-  <CTableRow v-if="contract" class="text-center">
+  <CTableRow
+    v-if="contract"
+    class="text-center"
+    :color="checked ? 'secondary' : ''"
+  >
     <CTableDataCell>
       <CFormCheck
         v-model="checked"
