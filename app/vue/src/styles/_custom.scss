@@ -1,19 +1,19 @@
 // Here you can add other styles
 
 body:fullscreen {
-  overflow: scroll !important;
+  overflow: auto !important;
 }
 
 body:-ms-fullscreen {
-  overflow: scroll !important;
+  overflow: auto !important;
 }
 
 body:-webkit-full-screen {
-  overflow: scroll !important;
+  overflow: auto !important;
 }
 
 body:-moz-full-screen {
-  overflow: scroll !important;
+  overflow: auto !important;
 }
 
 .sidebar-nav {
