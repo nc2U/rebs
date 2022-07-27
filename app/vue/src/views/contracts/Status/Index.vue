@@ -8,7 +8,11 @@
   <ContentBody>
     <CCardBody class="pb-5">
       <ContSummary />
-      <ExcelExport />
+      <v-row>
+        <v-col class="py-0">
+          <ExcelExport v-if="project" :url="excelUrl" />
+        </v-col>
+      </v-row>
       <hr />
       <ContractBoard />
     </CCardBody>
@@ -23,7 +27,7 @@ import HeaderMixin from '@/views/contracts/_menu/headermixin'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ContSummary from '@/views/contracts/Status/components/ContSummary.vue'
-import ExcelExport from '@/views/contracts/Status/components/ExcelExport.vue'
+import ExcelExport from '@/components/DownLoad/ExcelExport.vue'
 import ContractBoard from '@/views/contracts/Status/components/ContractBoard.vue'
 import { mapActions, mapGetters, mapState } from 'vuex'
 
@@ -43,6 +47,9 @@ export default defineComponent({
     this.fetchHouseUnitList({ project: this.initProjId })
   },
   computed: {
+    excelUrl() {
+      return this.project ? `excel/status/?project=${this.project.pk}` : ''
+    },
     ...mapState('project', ['project']),
     ...mapGetters('accounts', ['initProjId']),
   },
