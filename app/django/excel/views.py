@@ -440,7 +440,7 @@ class ExportReleases(View):
 
         # 4. Body
         # Get some data to write to the spreadsheet.
-        data = ContractorRelease.objects.filter(project=project)
+        data = ContractorRelease.objects.filter(project=project, status__gte='3')
 
         data = data.values_list(*params)
 
@@ -457,6 +457,7 @@ class ExportReleases(View):
         }
 
         # Write header
+        choice = dict(ContractorRelease.STATUS_CHOICES)
         for i, row in enumerate(data):
             row = list(row)
             row_num += 1
@@ -473,7 +474,7 @@ class ExportReleases(View):
                 else:
                     body_format['align'] = 'center'
                 if col_num == 3:
-                    cell_data = {'3': '신청 중', '4': '처리완료'}[cell_data]
+                    cell_data = choice[cell_data]
                 bformat = workbook.add_format(body_format)
                 worksheet.write(row_num, col_num, cell_data, bformat)
 
