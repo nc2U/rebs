@@ -19,4 +19,6 @@ jobs:
       - name: Run a multi-line script
         run: |
           cd app/vue
-          yarn; yarn build; ls -al
+          yarn; yarn build;
+          cd ../django/static/dist; ls -al
+          cd ../../templates; ls -al
