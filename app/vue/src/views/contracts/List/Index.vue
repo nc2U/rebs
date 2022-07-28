@@ -57,10 +57,10 @@ const onSelectAdd = (target: any) => {
   } else {
     contractUpdate({
       orderGroupList: [],
-      contractsCount: 0,
-      contractList: [],
       subsSummaryList: [],
       contSummaryList: [],
+      contractList: [],
+      contractsCount: 0,
     })
     projectUpdate({ unitTypeList: [], buildingList: [] })
   }
