@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { defineProps, computed } from 'vue'
+import { computed } from 'vue'
 import { useStore } from 'vuex'
 import { headerSecondary } from '@/utils/cssMixins'
 import Contract from '@/views/contracts/List/components/Contract.vue'
@@ -7,7 +7,6 @@ import Contract from '@/views/contracts/List/components/Contract.vue'
 const store = useStore()
 
 const emit = defineEmits(['page-select'])
-const props = defineProps({ project: Object })
 
 const contractIndex = computed(() => store.getters['contract/contractIndex'])
 const contractPages = computed(() => store.getters['contract/contractPages'])
