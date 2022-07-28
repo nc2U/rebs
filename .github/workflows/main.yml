@@ -22,5 +22,5 @@ jobs:
           yarn; yarn build;
           cd ../
           ls -alh
-          # cd django/static/dist; ls -al
-          # cd ../../templates; ls -al
+          cd ./django/static/dist; ls -al
+          cd ../../templates; ls -al
