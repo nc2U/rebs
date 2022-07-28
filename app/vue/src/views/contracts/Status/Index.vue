@@ -9,7 +9,7 @@
     <CCardBody class="pb-5">
       <ContSummary />
       <ExcelExport v-if="project" :url="excelUrl" />
-      <hr />
+      <v-divider color="grey" class="my-0" />
       <ContractBoard />
     </CCardBody>
 
@@ -29,7 +29,6 @@ import { mapActions, mapGetters, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'ContractStatus',
-  mixins: [HeaderMixin],
   components: {
     ContentHeader,
     ContentBody,
@@ -37,6 +36,7 @@ export default defineComponent({
     ExcelExport,
     ContractBoard,
   },
+  mixins: [HeaderMixin],
   created() {
     this.fetchTypeList(this.initProjId)
     this.fetchBuildingList(this.initProjId)

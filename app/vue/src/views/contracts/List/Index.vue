@@ -10,6 +10,7 @@
   <ContentBody>
     <CCardBody class="pb-5">
       <ListController ref="listControl" @cont-filtering="onContFiltering" />
+      <ExcelExport v-if="project" url="" disabled />
       <ContractList :project="project" @page-select="pageSelect" />
     </CCardBody>
 
@@ -24,19 +25,21 @@ import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ContractSummary from './components/ContractSummary.vue'
 import ListController from '@/views/contracts/List/components/ListController.vue'
+import ExcelExport from '@/components/DownLoad/ExcelExport.vue'
 import ContractList from '@/views/contracts/List/components/ContractList.vue'
 import { mapActions, mapGetters, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'ContractIndex',
-  mixins: [HeaderMixin],
   components: {
     ContentHeader,
     ContentBody,
     ContractSummary,
     ListController,
+    ExcelExport,
     ContractList,
   },
+  mixins: [HeaderMixin],
   created(this: any) {
     this.fetchOrderGroupList(this.initProjId)
     this.fetchTypeList(this.initProjId)

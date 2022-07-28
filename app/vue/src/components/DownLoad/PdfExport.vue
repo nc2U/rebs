@@ -6,7 +6,7 @@ const props = defineProps({
 </script>
 
 <template>
-  <v-row class="justify-end">
+  <v-row class="justify-end my-1">
     <v-btn
       size="small"
       :href="props.url"
