@@ -558,24 +558,25 @@ class BuildDashboard(LoginRequiredMixin, TemplateView):
         context['is_hold'] = HouseUnit.objects.filter(project=self.get_project(), is_hold=True)
         context['is_apply'] = Contractor.objects.filter(contract__project=self.get_project(), status='1')
         context['is_contract'] = Contractor.objects.filter(contract__project=self.get_project(), status='2')
-        context['dong_list'] = []
-        context['line'] = []
+
+        context['total_lines'] = []
         context['units'] = []
 
-        dong_list = list(BuildingUnit.objects.filter(project=self.get_project()).values('name'))
+        context['dong_list'] = [dong['name'] for dong in
+                                BuildingUnit.objects.filter(project=self.get_project()).values('name')]
 
-        for dong in dong_list:
-            context['dong_list'].append(dong['name'])
+        for dong in context['dong_list']:
             lines = HouseUnit.objects.order_by('-bldg_line').values('bldg_line').filter(
-                building_unit__name__contains=dong['name']).distinct()
-            ln = []
-            for line in lines:
-                ln.append(line['bldg_line'])
-            context['line'].append(ln)
-            context['units'].append(
-                HouseUnit.objects.filter(building_unit__name__contains=dong['name']).order_by('-floor_no',
-                                                                                              'bldg_line'))
+                building_unit__name=dong).distinct()
 
-        context['line'] = list(reversed(context['line']))
+            line_list = []
+            for line in lines:
+                line_list.append(line['bldg_line'])
+            context['total_lines'].append(line_list)
+            context['units'].append(
+                HouseUnit.objects.filter(building_unit__name=dong).order_by('-floor_no',
+                                                                            'bldg_line'))
+
+        context['total_lines'] = list(reversed(context['total_lines']))
         context['units'] = list(reversed(context['units']))
         return context
