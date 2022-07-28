@@ -107,8 +107,10 @@ export default defineComponent({
       this.$router.push({ name: '계약해지 관리' })
     },
     searchContractor(search: string) {
-      const project = this.project.pk
-      this.fetchContractorList({ project, search })
+      if (search !== '') {
+        const project = this.project.pk
+        this.fetchContractorList({ project, search })
+      } else this.FETCH_CONTRACTOR_LIST([])
     },
     getRelease(release: number) {
       this.fetchContRelease(release)
