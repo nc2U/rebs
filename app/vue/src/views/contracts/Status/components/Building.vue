@@ -1,3 +1,28 @@
+<script lang="ts" setup>
+import { computed } from 'vue'
+import { useStore } from 'vuex'
+import Unit from '@/views/contracts/Status/components/Unit.vue'
+
+const store = useStore()
+
+const props = defineProps({
+  bldg: { type: Number, default: null },
+  maxFloor: { type: Number, default: null },
+  units: { type: Object, default: [] },
+})
+
+const lineList = computed(() =>
+  [...new Set(props.units.map((u: any) => u.line))].sort(),
+)
+const buildingList = computed(() => store.state.project.buildingList)
+
+const bldgName = (bldg: number) => {
+  return buildingList.value
+    .filter((b: any) => b.pk === bldg)
+    .map((b: any) => b.name)[0]
+}
+</script>
+
 <template>
   <CCol class="ml-4 mt-5">
     <CRow v-for="i in maxFloor" :key="i">
@@ -21,40 +46,6 @@
     </CRow>
   </CCol>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import Unit from '@/views/contracts/Status/components/Unit.vue'
-import { mapState } from 'vuex'
-
-export default defineComponent({
-  name: 'Building',
-  components: { Unit },
-  props: { bldg: Number, maxFloor: Number, units: Object },
-  setup() {
-    return {}
-  },
-  data() {
-    return {
-      sample: '',
-    }
-  },
-  computed: {
-    lineList(this: any) {
-      return [...new Set(this.units.map((u: any) => u.line))].sort()
-    },
-
-    ...mapState('project', ['buildingList']),
-  },
-  methods: {
-    bldgName(bldg: number) {
-      return this.buildingList
-        .filter((b: any) => b.pk === bldg)
-        .map((b: any) => b.name)[0]
-    },
-  },
-})
-</script>
 
 <style lang="scss" scoped>
 .build-base {

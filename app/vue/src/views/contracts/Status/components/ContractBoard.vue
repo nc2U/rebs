@@ -1,3 +1,35 @@
+<script lang="ts" setup>
+import { computed } from 'vue'
+import { useStore } from 'vuex'
+import Building from '@/views/contracts/Status/components/Building.vue'
+
+import { KeyUnit } from '@/store/modules/project/state'
+
+type UnitType = {
+  bldg: number
+  is_hold: boolean
+  color: string
+  line: number
+  name: string
+  key_unit: KeyUnit
+  floor: number
+}
+
+const store = useStore()
+
+const simpleUnits = computed(() => store.getters['project/simpleUnits'])
+
+const getBldg = computed(() =>
+  [...new Set(simpleUnits.value.map((u: UnitType) => u.bldg))].sort(),
+)
+const maxFloor = computed(() =>
+  Math.max(...simpleUnits.value.map((u: UnitType) => u.floor)),
+)
+
+const getUnits = (bldg: number): UnitType[] =>
+  simpleUnits.value.filter((u: UnitType) => u.bldg === bldg)
+</script>
+
 <template>
   <CContainer>
     <CRow v-if="simpleUnits.length === 0">
@@ -11,35 +43,9 @@
         v-for="bldg in getBldg"
         :key="bldg"
         :bldg="bldg"
-        :maxFloor="maxFloor"
+        :max-floor="maxFloor"
         :units="getUnits(bldg)"
       />
     </CRow>
   </CContainer>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import Building from '@/views/contracts/Status/components/Building.vue'
-import { mapGetters } from 'vuex'
-
-export default defineComponent({
-  name: 'ContractBoard',
-  components: { Building },
-  props: {},
-  computed: {
-    getBldg(this: any) {
-      return [...new Set(this.simpleUnits.map((u: any) => u.bldg))].sort()
-    },
-    maxFloor(this: any) {
-      return Math.max(...this.simpleUnits.map((u: any) => u.floor))
-    },
-    ...mapGetters('project', ['simpleUnits']),
-  },
-  methods: {
-    getUnits(bldg: number) {
-      return this.simpleUnits.filter((u: any) => u.bldg === bldg)
-    },
-  },
-})
-</script>

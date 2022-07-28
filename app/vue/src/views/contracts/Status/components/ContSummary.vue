@@ -1,3 +1,19 @@
+<script lang="ts" setup>
+import { computed } from 'vue'
+import { useStore } from 'vuex'
+import {
+  headerSecondary,
+  headerSuccess,
+  headerPrimary,
+} from '@/utils/cssMixins'
+
+const store = useStore()
+
+const houseUnitNum = computed(() => store.state.project.houseUnitNum)
+const simpleTypes = computed(() => store.getters['project/simpleTypes'])
+const unitSummary = computed(() => store.getters['project/unitSummary'])
+</script>
+
 <template>
   <CRow>
     <CCol lg="6">
@@ -10,33 +26,39 @@
         </colgroup>
         <CTableBody>
           <CTableRow>
-            <CTableHeaderCell color="secondary">총세대수</CTableHeaderCell>
+            <CTableHeaderCell :color="headerSecondary"
+              >총세대수
+            </CTableHeaderCell>
             <CTableDataCell class="text-right">
               {{ numFormat(unitSummary.totalNum) }}
             </CTableDataCell>
-            <CTableHeaderCell color="secondary">홀딩세대</CTableHeaderCell>
+            <CTableHeaderCell :color="headerSecondary"
+              >홀딩세대
+            </CTableHeaderCell>
             <CTableDataCell class="text-right">
               {{ numFormat(unitSummary.holdNum) }}
             </CTableDataCell>
           </CTableRow>
 
           <CTableRow>
-            <CTableHeaderCell color="success">청약세대</CTableHeaderCell>
+            <CTableHeaderCell :color="headerSuccess">청약세대</CTableHeaderCell>
             <CTableDataCell class="text-right">
               {{ numFormat(unitSummary.appNum) }}
             </CTableDataCell>
-            <CTableHeaderCell color="primary">계약세대</CTableHeaderCell>
+            <CTableHeaderCell :color="headerPrimary">계약세대</CTableHeaderCell>
             <CTableDataCell class="text-right">
               {{ numFormat(unitSummary.contNum) }}
             </CTableDataCell>
           </CTableRow>
 
           <CTableRow>
-            <CTableHeaderCell color="secondary">합계</CTableHeaderCell>
+            <CTableHeaderCell :color="headerSecondary">합계</CTableHeaderCell>
             <CTableDataCell class="text-right">
               {{ numFormat(unitSummary.appNum + unitSummary.contNum) }}
             </CTableDataCell>
-            <CTableHeaderCell color="secondary">잔여세대</CTableHeaderCell>
+            <CTableHeaderCell :color="headerSecondary"
+              >잔여세대
+            </CTableHeaderCell>
             <CTableDataCell class="text-right">
               {{
                 numFormat(
@@ -58,19 +80,6 @@
     </CCol>
   </CRow>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import { mapGetters, mapState } from 'vuex'
-
-export default defineComponent({
-  name: 'ContSummary',
-  computed: {
-    ...mapState('project', ['houseUnitNum']),
-    ...mapGetters('project', ['simpleTypes', 'unitSummary']),
-  },
-})
-</script>
 
 <style lang="scss" scoped>
 .cube {
