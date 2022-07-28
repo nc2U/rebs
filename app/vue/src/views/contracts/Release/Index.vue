@@ -18,6 +18,12 @@
         :contractor="contractor"
         @on-submit="onSubmit"
       />
+      <ExcelExport v-if="project" :url="downloadUrl">
+        <CCol>
+          <CIcon name="cilCheckCircle" class="mr-2" />
+          <strong>계약해지 현황</strong>
+        </CCol>
+      </ExcelExport>
       <ReleaseList
         @page-select="pageSelect"
         @get-release="getRelease"
@@ -38,12 +44,12 @@ import ReleasetButton from '@/views/contracts/Release/components/ReleasetButton.
 import ContNavigation from '@/views/contracts/Release/components/ContNavigation.vue'
 import ContractorAlert from '@/views/contracts/Release/components/ContractorAlert.vue'
 import ContController from '@/views/contracts/Release/components/ContController.vue'
+import ExcelExport from '@/components/DownLoad/ExcelExport.vue'
 import ReleaseList from '@/views/contracts/Release/components/ReleaseList.vue'
 import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'ReleaseIndex',
-  mixins: [HeaderMixin],
   components: {
     ContentHeader,
     ContentBody,
@@ -51,7 +57,12 @@ export default defineComponent({
     ContractorAlert,
     ContController,
     ReleasetButton,
+    ExcelExport,
     ReleaseList,
+  },
+  mixins: [HeaderMixin],
+  beforeRouteLeave() {
+    this.FETCH_CONTRACTOR(null)
   },
   data() {
     return {
@@ -64,10 +75,10 @@ export default defineComponent({
       this.fetchContractor(this.$route.query.contractor)
     else this.FETCH_CONTRACTOR(null)
   },
-  beforeRouteLeave() {
-    this.FETCH_CONTRACTOR(null)
-  },
   computed: {
+    downloadUrl() {
+      return `/excel/release/?project=${this.project.pk}`
+    },
     ...mapState('project', ['project']),
     ...mapState('contract', ['contractor']),
     ...mapGetters('accounts', ['initProjId']),

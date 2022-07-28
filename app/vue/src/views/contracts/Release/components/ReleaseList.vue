@@ -1,12 +1,4 @@
 <template>
-  <CRow class="m-2">
-    <CCol>
-      <CIcon name="cilCheckCircle" class="mr-2" />
-      <strong>계약해지 현황</strong>
-    </CCol>
-    <CCol class="text-right">Excel Export</CCol>
-  </CRow>
-
   <CTable hover responsive align="middle">
     <colgroup>
       <col width="25%" />
@@ -45,7 +37,7 @@
   </CTable>
 
   <CSmartPagination
-    :activePage="1"
+    :active-page="1"
     :limit="8"
     :pages="releasePages(10)"
     class="mt-3"
