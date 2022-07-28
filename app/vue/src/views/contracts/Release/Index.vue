@@ -77,7 +77,7 @@ export default defineComponent({
   },
   computed: {
     downloadUrl() {
-      return `/excel/release/?project=${this.project.pk}`
+      return `/excel/releases/?project=${this.project.pk}`
     },
     ...mapState('project', ['project']),
     ...mapState('contract', ['contractor']),
