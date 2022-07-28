@@ -1,3 +1,52 @@
+<script lang="ts" setup>
+import { computed, onMounted } from 'vue'
+import { useStore } from 'vuex'
+import { pageTitle, navMenu } from '@/views/contracts/_menu/headermixin'
+import ContentHeader from '@/layouts/ContentHeader/Index.vue'
+import ContentBody from '@/layouts/ContentBody/Index.vue'
+import ContSummary from '@/views/contracts/Status/components/ContSummary.vue'
+import ExcelExport from '@/components/DownLoad/ExcelExport.vue'
+import ContractBoard from '@/views/contracts/Status/components/ContractBoard.vue'
+
+const store = useStore()
+
+const project = computed(() => store.state.project.project)
+const initProjId = computed(() => store.getters['accounts/initProjId'])
+const excelUrl = computed(() =>
+  project.value ? `excel/status/?project=${project.value.pk}` : '',
+)
+
+const fetchTypeList = (id: number) =>
+  store.dispatch('project/fetchTypeList', id)
+const fetchBuildingList = (id: number) =>
+  store.dispatch('project/fetchBuildingList', id)
+const fetchHouseUnitList = (project: { project: number }) =>
+  store.dispatch('project/fetchHouseUnitList', project)
+
+const projectUpdate = (payload: any) =>
+  store.commit('project/updateState', payload)
+
+onMounted(() => {
+  fetchTypeList(initProjId.value)
+  fetchBuildingList(initProjId.value)
+  fetchHouseUnitList({ project: initProjId.value })
+})
+
+const onSelectAdd = (target: any) => {
+  if (target !== '') {
+    fetchTypeList(target)
+    fetchBuildingList(target)
+    fetchHouseUnitList({ project: target })
+  } else {
+    projectUpdate({
+      unitTypeList: [],
+      buildingList: [],
+      houseUnitList: [],
+    })
+  }
+}
+</script>
+
 <template>
   <ContentHeader
     :page-title="pageTitle"
@@ -16,61 +65,3 @@
     <CCardFooter>&nbsp;</CCardFooter>
   </ContentBody>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import HeaderMixin from '@/views/contracts/_menu/headermixin'
-import ContentHeader from '@/layouts/ContentHeader/Index.vue'
-import ContentBody from '@/layouts/ContentBody/Index.vue'
-import ContSummary from '@/views/contracts/Status/components/ContSummary.vue'
-import ExcelExport from '@/components/DownLoad/ExcelExport.vue'
-import ContractBoard from '@/views/contracts/Status/components/ContractBoard.vue'
-import { mapActions, mapGetters, mapState } from 'vuex'
-
-export default defineComponent({
-  name: 'ContractStatus',
-  components: {
-    ContentHeader,
-    ContentBody,
-    ContSummary,
-    ExcelExport,
-    ContractBoard,
-  },
-  mixins: [HeaderMixin],
-  created() {
-    this.fetchTypeList(this.initProjId)
-    this.fetchBuildingList(this.initProjId)
-    this.fetchHouseUnitList({ project: this.initProjId })
-  },
-  computed: {
-    excelUrl() {
-      return this.project ? `excel/status/?project=${this.project.pk}` : ''
-    },
-    ...mapState('project', ['project']),
-    ...mapGetters('accounts', ['initProjId']),
-  },
-  methods: {
-    onSelectAdd(this: any, target: any) {
-      if (target !== '') {
-        this.fetchTypeList(target)
-        this.fetchBuildingList(target)
-        this.fetchHouseUnitList({ project: target })
-      } else {
-        this.FETCH_TYPE_LIST([])
-        this.FETCH_BUILDING_LIST([])
-        this.FETCH_HOUSE_UNIT_LIST([])
-      }
-    },
-    ...mapActions('project', [
-      'fetchTypeList',
-      'fetchBuildingList',
-      'fetchHouseUnitList',
-    ]),
-    ...mapGetters('project', [
-      'FETCH_TYPE_LIST',
-      'FETCH_BUILDING_LIST',
-      'FETCH_HOUSE_UNIT_LIST',
-    ]),
-  },
-})
-</script>
