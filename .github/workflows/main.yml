@@ -20,6 +20,7 @@ jobs:
         run: |
           cd app/vue
           yarn; yarn build;
-          cd ../ & ls -alh
-          cd django/static/dist; ls -al
-          cd ../../templates; ls -al
+          cd ../
+          ls -alh
+          # cd django/static/dist; ls -al
+          # cd ../../templates; ls -al
