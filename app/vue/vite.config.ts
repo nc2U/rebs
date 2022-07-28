@@ -3,7 +3,7 @@ import vue from '@vitejs/plugin-vue'
 import vuetify from 'vite-plugin-vuetify'
 import copy from 'rollup-plugin-copy'
 
-const path = require('path')
+import path = require('path')
 
 // https://vitejs.dev/config/
 export default defineConfig({
