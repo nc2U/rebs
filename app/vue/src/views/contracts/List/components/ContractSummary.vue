@@ -1,7 +1,38 @@
+<script lang="ts" setup>
+import { computed } from 'vue'
+import { useStore } from 'vuex'
+import { numFormat } from '@/utils/baseMixins'
+import { ratioFormat } from '@/utils/areaMixins'
+import { headerSecondary } from '@/utils/cssMixins'
+
+const store = useStore()
+
+const props = defineProps({ project: { type: Object, default: null } })
+
+const orderGroupList = computed(() => store.state.contract.orderGroupList)
+const subsSummaryList = computed(() => store.state.contract.subsSummaryList)
+const contSummaryList = computed(() => store.state.contract.contSummaryList)
+const unitTypeList = computed(() => store.state.project.unitTypeList)
+
+const subsNum = (type?: number) => {
+  let subs = subsSummaryList.value
+  subs = type ? subs.filter((s: any) => s.unit_type === type) : subs
+  subs = subs.map((s: any) => s.num_cont)
+  return subs.length !== 0 ? subs.reduce((o: number, n: number) => o + n) : 0
+}
+
+const contNum = (order: number | null, type?: number) => {
+  let cont = contSummaryList.value
+  cont = order ? cont.filter((c: any) => c.order_group === order) : cont
+  cont = type ? cont.filter((c: any) => c.unit_type === type) : cont
+  cont = cont.map((c: any) => c.num_cont)
+  return cont.length !== 0 ? cont.reduce((o: number, n: number) => o + n) : 0
+}
+</script>
+
 <template>
-  {{ contSummary }}
   <CTable hover responsive bordered class="mt-3">
-    <CTableHead class="text-center" color="secondary">
+    <CTableHead class="text-center" :color="headerSecondary">
       <CTableRow align="middle">
         <CTableHeaderCell rowspan="2">프로젝트명</CTableHeaderCell>
         <CTableHeaderCell rowspan="2">타입</CTableHeaderCell>
@@ -28,19 +59,19 @@
       </CTableRow>
     </CTableHead>
 
-    <CTableBody v-if="project">
+    <CTableBody v-if="props.project">
       <CTableRow
-        class="text-right"
-        align="middle"
         v-for="(type, i) in unitTypeList"
         :key="i"
+        class="text-right"
+        align="middle"
       >
         <CTableHeaderCell
+          v-if="props.project && i === 0"
           class="text-center"
           :rowspan="unitTypeList.length"
-          v-if="project && i == 0"
         >
-          {{ project.name }}
+          {{ props.project.name }}
         </CTableHeaderCell>
         <CTableDataCell class="text-left pl-2">
           <CIcon name="cibDiscover" :style="'color:' + type.color" size="sm" />
@@ -80,16 +111,18 @@
         </CTableDataCell>
       </CTableRow>
 
-      <CTableRow class="text-right" color="secondary">
+      <CTableRow class="text-right" :color="headerSecondary">
         <CTableDataCell class="text-center"> 합계</CTableDataCell>
         <CTableDataCell></CTableDataCell>
         <!-- 타입별 세대수 합계-->
-        <CTableDataCell> {{ numFormat(project.num_unit) }}세대</CTableDataCell>
+        <CTableDataCell>
+          {{ numFormat(props.project.num_unit) }}세대
+        </CTableDataCell>
         <!-- 청약 건수 타입별 합계-->
         <CTableDataCell>{{ numFormat(subsNum()) }}</CTableDataCell>
         <!--차수별 계약건수 타입별 합계-->
         <CTableDataCell v-if="orderGroupList.length === 0">-</CTableDataCell>
-        <CTableDataCell v-else v-for="order in orderGroupList" :key="order.pk">
+        <CTableDataCell v-for="order in orderGroupList" v-else :key="order.pk">
           {{ numFormat(contNum(order.pk)) }}
         </CTableDataCell>
         <!-- 차수별 타입별 계약건수 총계-->
@@ -98,62 +131,21 @@
         </CTableDataCell>
         <!-- 타입별 잔여세대 합계-->
         <CTableDataCell>
-          {{ numFormat(project.num_unit - contNum() - subsNum()) }}
+          {{ numFormat(props.project.num_unit - contNum() - subsNum()) }}
         </CTableDataCell>
         <!-- 타입별 계약율 합계-->
         <CTableDataCell
-          >{{ ratioFormat((contNum() / project.num_unit) * 100) }}
+          >{{ ratioFormat((contNum() / props.project.num_unit) * 100) }}
         </CTableDataCell>
         <!-- 타입별 분양율(청약+계약) 합계-->
         <CTableDataCell>
-          {{ ratioFormat(((contNum() + subsNum()) / project.num_unit) * 100) }}
+          {{
+            ratioFormat(
+              ((contNum() + subsNum()) / props.project.num_unit) * 100,
+            )
+          }}
         </CTableDataCell>
       </CTableRow>
     </CTableBody>
   </CTable>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import commonMixin from '@/views/commonMixin'
-import { mapState } from 'vuex'
-
-export default defineComponent({
-  name: 'ContractSummary',
-  components: {},
-
-  mixins: [commonMixin],
-  props: {
-    project: {
-      type: Object,
-    },
-  },
-  computed: {
-    ...mapState('contract', [
-      'orderGroupList',
-      'subsSummaryList',
-      'contSummaryList',
-    ]),
-    ...mapState('project', ['unitTypeList']),
-  },
-  methods: {
-    subsNum(type?: number) {
-      let subs = this.subsSummaryList
-      subs = type ? subs.filter((s: any) => s.unit_type === type) : subs
-      subs = subs.map((s: any) => s.num_cont)
-      return subs.length !== 0
-        ? subs.reduce((o: number, n: number) => o + n)
-        : 0
-    },
-    contNum(order: number | null, type?: number) {
-      let cont = this.contSummaryList
-      cont = order ? cont.filter((c: any) => c.order_group === order) : cont
-      cont = type ? cont.filter((c: any) => c.unit_type === type) : cont
-      cont = cont.map((c: any) => c.num_cont)
-      return cont.length !== 0
-        ? cont.reduce((o: number, n: number) => o + n)
-        : 0
-    },
-  },
-})
-</script>

@@ -1,3 +1,20 @@
+<script lang="ts" setup>
+import { defineProps, computed } from 'vue'
+import { useStore } from 'vuex'
+import { headerSecondary } from '@/utils/cssMixins'
+import Contract from '@/views/contracts/List/components/Contract.vue'
+
+const store = useStore()
+
+const emit = defineEmits(['page-select'])
+const props = defineProps({ project: Object })
+
+const contractIndex = computed(() => store.getters['contract/contractIndex'])
+const contractPages = computed(() => store.getters['contract/contractPages'])
+
+const pageSelect = (page: number) => emit('page-select', page)
+</script>
+
 <template>
   <CTable hover responsive align="middle">
     <colgroup>
@@ -16,7 +33,7 @@
     </colgroup>
 
     <CTableHead>
-      <CTableRow color="secondary" class="text-center">
+      <CTableRow :color="headerSecondary" class="text-center">
         <CTableHeaderCell scope="col">일련번호</CTableHeaderCell>
         <CTableHeaderCell scope="col">차수</CTableHeaderCell>
         <CTableHeaderCell scope="col">타입</CTableHeaderCell>
@@ -35,37 +52,17 @@
     <CTableBody>
       <Contract
         v-for="contract in contractIndex"
-        :contract="contract"
         :key="contract.pk"
+        :contract="contract"
       />
     </CTableBody>
   </CTable>
 
   <CSmartPagination
-    :activePage="1"
+    :active-page="1"
     :limit="8"
     :pages="contractPages(10)"
     class="mt-3"
     @active-page-change="pageSelect"
   />
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import Contract from '@/views/contracts/List/components/Contract.vue'
-import { mapGetters } from 'vuex'
-
-export default defineComponent({
-  name: 'ContractList',
-  components: { Contract },
-  props: ['project'],
-  computed: {
-    ...mapGetters('contract', ['contractIndex', 'contractPages']),
-  },
-  methods: {
-    pageSelect(page: number) {
-      this.$emit('page-select', page)
-    },
-  },
-})
-</script>
