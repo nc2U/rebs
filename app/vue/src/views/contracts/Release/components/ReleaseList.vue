@@ -1,3 +1,21 @@
+<script lang="ts" setup>
+import { computed } from 'vue'
+import { useStore } from 'vuex'
+import Release from '@/views/contracts/Release/components/Release.vue'
+import { headerSecondary } from '@/utils/cssMixins'
+
+const store = useStore()
+
+const emit = defineEmits(['page-select', 'get-release', 'on-submit'])
+
+const contReleaseList = computed(() => store.state.contract.contReleaseList)
+const releasePages = computed(() => store.getters['contract/releasePages'])
+
+const pageSelect = (page: number) => emit('page-select', page)
+const getRelease = (release: number) => emit('get-release', release)
+const onSubmit = (payload: any) => emit('on-submit', payload)
+</script>
+
 <template>
   <CTable hover responsive align="middle">
     <colgroup>
@@ -12,7 +30,7 @@
       <col width="5%" />
     </colgroup>
 
-    <CTableHead color="secondary" class="text-center">
+    <CTableHead :color="headerSecondary" class="text-center">
       <CTableRow>
         <CTableHeaderCell>계약 해지자</CTableHeaderCell>
         <CTableHeaderCell>현재상태</CTableHeaderCell>
@@ -44,29 +62,3 @@
     @active-page-change="pageSelect"
   />
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import Release from '@/views/contracts/Release/components/Release.vue'
-import { mapGetters, mapState } from 'vuex'
-
-export default defineComponent({
-  name: 'ReleaseList',
-  components: { Release },
-  computed: {
-    ...mapState('contract', ['contReleaseList']),
-    ...mapGetters('contract', ['releasePages']),
-  },
-  methods: {
-    pageSelect(page: number) {
-      this.$emit('page-select', page)
-    },
-    getRelease(release: number) {
-      this.$emit('get-release', release)
-    },
-    onSubmit(this: any, payload: any) {
-      this.$emit('on-submit', payload)
-    },
-  },
-})
-</script>
