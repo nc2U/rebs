@@ -17,6 +17,6 @@ jobs:
         run: |
           cd app/vue
           yarn && yarn build
-          # cp ../django/static/dist/index.html ../django/templates/base-vue.html
-          ln -s ../static/dist/index.html ../django/template/base-vue.html
-          ls -alh ../django/templates
+          cd ../django/template
+          ln -s ../static/dist/index.html base-vue.html
+          ls -alh
