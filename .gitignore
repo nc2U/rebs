@@ -33,7 +33,6 @@ static
 settings/prod.py
 prod.py
 db.sqlite3
-base-vue.html
 dist
 
 # mysql data
