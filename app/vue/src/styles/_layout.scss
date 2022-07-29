@@ -1,3 +1,19 @@
+body:fullscreen {
+  overflow: auto !important;
+}
+
+body:-ms-fullscreen {
+  overflow: auto !important;
+}
+
+body:-webkit-full-screen {
+  overflow: auto !important;
+}
+
+body:-moz-full-screen {
+  overflow: auto !important;
+}
+
 .wrapper {
   width: 100%;
   @include ltr-rtl("padding-left", var(--cui-sidebar-occupy-start, 0));
@@ -7,4 +23,15 @@
 
 .sidebar {
   --cui-sidebar-bg: #282C3E;
+}
+
+.sidebar-nav {
+  // Firefox
+  overflow: -moz-scrollbars-none;
+  // IE 10+
+  -ms-overflow-style: none;
+  // Chrome, Edge, Safari, Opera
+  &::-webkit-scrollbar {
+    width: 0 !important;
+  }
 }
