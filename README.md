@@ -1,3 +1,5 @@
+[![CodeQL](https://github.com/austin-kho/Rebs/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/austin-kho/Rebs/actions/workflows/codeql-analysis.yml)
+
 # Django + Vue (vue-cli + webpack) using Nginx + MariaDB made with Docker
 
 ## Requirement in your system
