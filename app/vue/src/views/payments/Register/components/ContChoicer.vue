@@ -8,9 +8,9 @@
               <CFormInput
                 v-model="form.search"
                 placeholder="계약자, 비고, 계약 일련번호"
-                @keydown.enter="listFiltering(1)"
                 aria-label="Search"
                 aria-describedby="addon-wrapping"
+                @keydown.enter="listFiltering(1)"
               />
               <CInputGroupText @click="listFiltering(1)">
                 계약 건 찾기
@@ -21,15 +21,15 @@
       </CCol>
     </CRow>
     <CRow>
-      <CCol color="warning" class="p-2 pl-3" v-if="contractIndex.length !== 0">
+      <CCol v-if="contractIndex.length !== 0" color="warning" class="p-2 pl-3">
         <CButton
-          type="button"
-          color="dark"
           v-for="cont in contractIndex"
           :key="cont.pk"
-          @click="getContract(cont.pk)"
+          type="button"
+          color="dark"
           variant="outline"
           size="sm"
+          @click="getContract(cont.pk)"
         >
           {{ `${cont.contractor}(${cont.serial_number})` }}
         </CButton>
@@ -46,8 +46,8 @@
         <strong v-if="contract">
           [일련번호 :
           <router-link
-            :to="{ name: '계약등록 관리', query: { contract: contract.pk } }"
             v-c-tooltip="'계약등록 관리'"
+            :to="{ name: '계약등록 관리', query: { contract: contract.pk } }"
           >
             {{ contract.serial_number }}
           </router-link>
@@ -60,36 +60,35 @@
           }}
           |
           <router-link
-            :to="{ name: '계약등록 관리', query: { contract: contract.pk } }"
             v-c-tooltip="'계약등록 관리'"
+            :to="{ name: '계약등록 관리', query: { contract: contract.pk } }"
           >
             계약자 : {{ contract.contractor.name }})
           </router-link>
-
           (
-          <router-link to="" @click="get_print_payment">
-            납부내역서 출력
-          </router-link>
+          <a :href="paymentUrl"> 납부내역서 출력</a>
           )
         </strong>
       </CCol>
-      <CCol class="text-right" v-if="contract">
+      <CCol v-if="contract" class="text-right">
         <router-link to="">
           <CIcon name="cilX" @click="removeContract" />
         </router-link>
       </CCol>
     </CRow>
   </CAlert>
+  <TableTitleRow v-if="contract" pdf :url="paymentUrl" />
 </template>
 
 <script lang="ts">
+import TableTitleRow from '@/components/TableTitleRow.vue'
 import { defineComponent } from 'vue'
 import { maska } from 'maska'
 import { mapGetters } from 'vuex'
 
 export default defineComponent({
   name: 'ContChoicer',
-  components: {},
+  components: { TableTitleRow },
 
   directives: { maska },
   props: { project: Object, contract: Object },
@@ -106,6 +105,12 @@ export default defineComponent({
     this.pageInit()
   },
   computed: {
+    paymentUrl() {
+      const url = '/rebs/pdf-payments/'
+      const project = this.project ? this.project.pk : ''
+      const contract = this.contract ? this.contract.pk : ''
+      return `${url}?project=${project}&contract=${contract}`
+    },
     ...mapGetters('contract', ['contractIndex']),
   },
   methods: {
@@ -132,12 +137,6 @@ export default defineComponent({
     removeContract(this: any) {
       this.$store.state.contract.contract = null
       this.$store.state.payment.paymentList = []
-    },
-    get_print_payment() {
-      const url = '/rebs/pdf-payments/'
-      const project = this.project ? this.project.pk : ''
-      const contract = this.contract ? this.contract.pk : ''
-      location.href = `${url}?project=${project}&contract=${contract}`
     },
   },
 })
