@@ -99,10 +99,11 @@ const onContFiltering = (payload: any) => {
             size="small"
             rounded="pill"
             flat
-            class="text-blue-accent-4 text-decoration-underline"
+            class="text-blue-accent-4"
+            style="font-size: 1em"
             @click="visible = !visible"
           >
-            엑셀 출력항목 선택
+            [엑셀 출력항목 선택]
           </v-btn>
         </template>
       </ExcelExport>

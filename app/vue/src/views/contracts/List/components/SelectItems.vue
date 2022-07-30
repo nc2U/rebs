@@ -11,7 +11,7 @@ const items = ref(['1', '2', '3', '4', '5', '6', '7', '8', '9', '14'])
 </script>
 
 <template>
-  <v-alert v-show="visible" color="info" variant="tonal">
+  <v-alert v-show="visible" color="info" variant="tonal" class="info-tonal">
     <v-checkbox-btn
       v-model="items"
       label="일련번호"
@@ -121,3 +121,9 @@ const items = ref(['1', '2', '3', '4', '5', '6', '7', '8', '9', '14'])
     />
   </v-alert>
 </template>
+
+<style lang="scss" scoped>
+.info-tonal {
+  color: #0d47a1 !important;
+}
+</style>
