@@ -11,9 +11,7 @@
 
       <TabSelect @tab-select="showTab" />
 
-      <CRow class="text-right mb-2">
-        <CCol>Excel Export</CCol>
-      </CRow>
+      <TableTitleRow excel disabled />
 
       <component :is="compName" :date="date" />
     </CCardBody>
@@ -29,21 +27,23 @@ import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import DateChoicer from '@/views/comCash/Status/components/DateChoicer.vue'
 import TabSelect from '@/views/comCash/Status/components/TabSelect.vue'
+import TableTitleRow from '@/components/TableTitleRow.vue'
 import StatusByAccount from '@/views/comCash/Status/components/StatusByAccount.vue'
 import CashListByDate from '@/views/comCash/Status/components/CashListByDate.vue'
 import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'CashesStatus',
-  mixins: [HeaderMixin],
   components: {
     ContentHeader,
     ContentBody,
     DateChoicer,
     TabSelect,
+    TableTitleRow,
     StatusByAccount,
     CashListByDate,
   },
+  mixins: [HeaderMixin],
   data() {
     return {
       compName: 'StatusByAccount',
