@@ -7,11 +7,13 @@ import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ContractSummary from './components/ContractSummary.vue'
 import ListController from '@/views/contracts/List/components/ListController.vue'
 import ExcelExport from '@/components/DownLoad/ExcelExport.vue'
+import SelectItems from '@/views/contracts/List/components/SelectItems.vue'
 import ContractList from '@/views/contracts/List/components/ContractList.vue'
 
 const store = useStore()
 
 const listControl = ref()
+const visible = ref(false)
 const childListFiltering = (page: number) =>
   listControl.value.listFiltering(page)
 
@@ -84,7 +86,31 @@ const onContFiltering = (payload: any) => {
   <ContentBody>
     <CCardBody class="pb-5">
       <ListController ref="listControl" @cont-filtering="onContFiltering" />
-      <ExcelExport v-if="project" url="" disabled />
+      <ExcelExport v-if="project" url="" disabled>
+        <v-icon
+          icon="mdi-arrow-right-bold-box"
+          rounded="pill"
+          color="dark"
+          class="mr-1"
+        />
+        <strong>계 약 현 황</strong>
+        <template #near class="bg-info">
+          <v-btn
+            size="small"
+            rounded="pill"
+            flat
+            class="text-blue-accent-4 text-decoration-underline"
+            @click="visible = !visible"
+          >
+            엑셀 출력항목 선택
+          </v-btn>
+        </template>
+      </ExcelExport>
+      <SelectItems
+        v-if="project"
+        :project="project.is_unit_set"
+        :visible="visible"
+      />
       <ContractList @page-select="pageSelect" />
     </CCardBody>
     <CCardFooter>&nbsp;</CCardFooter>
