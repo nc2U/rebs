@@ -380,9 +380,10 @@ class ProjectCashInoutLV(LoginRequiredMixin, ListView, FormView):
         user = self.request.user
         context['project_list'] = Project.objects.all() if user.is_superuser else user.staffauth.allowed_projects.all()
         context['this_project'] = self.get_project()
-        context['pa_d1'] = ProjectAccountD1.objects.all() if self.request.GET.get('sort',
-                                                                                  None) is None else ProjectAccountD1.objects.filter(
-            projectaccountsort=self.request.GET.get('sort', None))
+        context['pa_d1'] = ProjectAccountD1.objects.all() \
+            if self.request.GET.get('sort') is '' \
+            else ProjectAccountD1.objects.filter(
+            projectaccountsort=self.request.GET.get('sort'))
         context['pa_d1_inc'] = ProjectAccountD1.objects.filter(projectaccountsort=1)
         context['pa_d1_out'] = ProjectAccountD1.objects.filter(projectaccountsort=2)
         context['pa_d1_trans'] = ProjectAccountD1.objects.filter(projectaccountsort=3)
