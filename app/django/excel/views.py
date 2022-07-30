@@ -994,7 +994,7 @@ def export_project_cash_xls(request):
 
     resources = [
         ['거래일자', 'deal_date'],
-        ['구분', 'sort'],
+        ['구분', 'sort__name'],
         ['현장 계정', 'project_account_d1__name'],
         ['현장 세부계정', 'project_account_d2__name'],
         ['적요', 'content'],
@@ -1002,7 +1002,6 @@ def export_project_cash_xls(request):
         ['거래 계좌', 'bank_account__alias_name'],
         ['입금 금액', 'income'],
         ['출금 금액', 'outlay'],
-        ['증빙 자료', 'evidence'],
         ['비고', 'note']]
 
     columns = []
@@ -1080,21 +1079,6 @@ def export_project_cash_xls(request):
             if '금액' in col:
                 style.num_format_str = '#,##'
                 ws.col(col_num).width = 110 * 30
-
-            if col == '증빙 자료':
-                if row[col_num] == '0':
-                    row[col_num] = '증빙 없음'
-                if row[col_num] == '1':
-                    row[col_num] = '세금계산서'
-                if row[col_num] == '2':
-                    row[col_num] = '계산서(면세)'
-                if row[col_num] == '3':
-                    row[col_num] = '신용카드전표'
-                if row[col_num] == '4':
-                    row[col_num] = '현금영수증'
-                if row[col_num] == '5':
-                    row[col_num] = '간이영수증'
-                ws.col(col_num).width = 100 * 30
 
             if col == '비고':
                 ws.col(col_num).width = 256 * 30
@@ -1293,15 +1277,15 @@ def export_cashbook_xls(request):
 
     resources = [
         ['거래일자', 'deal_date'],
-        ['구분', 'cash_category1'],
-        ['계정', 'cash_category1'],
-        ['세부계정', 'account__name'],
+        ['구분', 'sort__name'],
+        ['계정', 'account_d1__name'],
+        ['중분류', 'account_d2__name'],
+        ['세부계정', 'account_d3__name'],
         ['적요', 'content'],
         ['거래처', 'trader'],
         ['거래계좌', 'bank_account__alias_name'],
         ['입금금액', 'income'],
         ['출금금액', 'outlay'],
-        ['증빙 자료', 'evidence'],
         ['비고', 'note']]
 
     columns = []
