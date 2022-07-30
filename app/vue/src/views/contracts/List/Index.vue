@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useStore } from 'vuex'
 import { pageTitle, navMenu } from '@/views/contracts/_menu/headermixin'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
@@ -15,23 +15,15 @@ const store = useStore()
 const listControl = ref()
 const visible = ref(false)
 const filteredStr = ref('')
-let printItems = ref([
-  '1',
-  '2',
-  '3',
-  '4',
-  '5-6',
-  '7',
-  '8',
-  '9',
-  '10',
-  '18-19-20-21',
-])
+const printItems = ref(['1', '2', '3', '4', '7', '8', '9', '10', '18-19-20-21'])
 
 const childListFiltering = (page: number) =>
   listControl.value.listFiltering(page)
 
 const project = computed(() => store.state.project.project)
+watch(project, pj => {
+  if (pj.is_unit_set) printItems.value.splice(4, 0, '5-6')
+})
 const initProjId = computed(() => store.getters['accounts/initProjId'])
 const excelUrl = computed(() => {
   const pk = project.value ? project.value.pk : ''

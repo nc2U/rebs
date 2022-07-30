@@ -1,28 +1,21 @@
 <script lang="ts" setup>
-import { ref, watch } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 
 const props = defineProps({
   project: { type: Boolean, default: false },
   visible: Boolean,
 })
 
-const items = ref([
-  '1',
-  '2',
-  '3',
-  '4',
-  '5-6',
-  '7',
-  '8',
-  '9',
-  '10',
-  '18-19-20-21',
-])
+const items = ref(['1', '2', '3', '4', '7', '8', '9', '10', '18-19-20-21'])
 
 const emit = defineEmits(['print-items'])
 
 watch(items, newVal => {
   emit('print-items', newVal)
+})
+
+onMounted(() => {
+  if (props.project) items.value.splice(4, 0, '5-6')
 })
 </script>
 
