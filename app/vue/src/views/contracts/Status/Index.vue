@@ -5,7 +5,7 @@ import { pageTitle, navMenu } from '@/views/contracts/_menu/headermixin'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ContSummary from '@/views/contracts/Status/components/ContSummary.vue'
-import ExcelExport from '@/components/DownLoad/ExcelExport.vue'
+import TableTitleRow from '@/components/TableTitleRow.vue'
 import ContractBoard from '@/views/contracts/Status/components/ContractBoard.vue'
 
 const store = useStore()
@@ -57,7 +57,7 @@ const onSelectAdd = (target: any) => {
   <ContentBody>
     <CCardBody class="pb-5">
       <ContSummary />
-      <ExcelExport v-if="project" :url="excelUrl" />
+      <TableTitleRow v-if="project" excel :url="excelUrl" />
       <v-divider color="grey" class="my-0" />
       <ContractBoard />
     </CCardBody>

@@ -18,12 +18,13 @@
         :contractor="contractor"
         @on-submit="onSubmit"
       />
-      <ExcelExport v-if="project" :url="downloadUrl">
-        <CCol>
-          <CIcon name="cilCheckCircle" class="mr-2" />
-          <strong>계약해지 현황</strong>
-        </CCol>
-      </ExcelExport>
+      <TableTitleRow
+        v-if="project"
+        title="계약해지 현황"
+        color="error"
+        excel
+        :url="downloadUrl"
+      />
       <ReleaseList
         @page-select="pageSelect"
         @get-release="getRelease"
@@ -44,7 +45,7 @@ import ReleasetButton from '@/views/contracts/Release/components/ReleasetButton.
 import ContNavigation from '@/views/contracts/Release/components/ContNavigation.vue'
 import ContractorAlert from '@/views/contracts/Release/components/ContractorAlert.vue'
 import ContController from '@/views/contracts/Release/components/ContController.vue'
-import ExcelExport from '@/components/DownLoad/ExcelExport.vue'
+import TableTitleRow from '@/components/TableTitleRow.vue'
 import ReleaseList from '@/views/contracts/Release/components/ReleaseList.vue'
 import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
 
@@ -57,7 +58,7 @@ export default defineComponent({
     ContractorAlert,
     ContController,
     ReleasetButton,
-    ExcelExport,
+    TableTitleRow,
     ReleaseList,
   },
   mixins: [HeaderMixin],
