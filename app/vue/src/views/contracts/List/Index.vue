@@ -82,8 +82,8 @@ const onContFiltering = (payload: any) => {
     to_date,
     search,
   } = payload
-  console.log(payload)
-  filteredStr.value = `&group=${order_group}&type=${unit_type}&dong=${building}&status=${status}&reg=${registed}&sdate=${from_date}&edate=${to_date}&q=${search}`
+  const reg = registed === 'true' ? '1' : ''
+  filteredStr.value = `&group=${order_group}&type=${unit_type}&dong=${building}&status=${status}&reg=${reg}&sdate=${from_date}&edate=${to_date}&q=${search}`
   fetchContractList({ ...{ project: pk }, ...payload })
 }
 const setItems = (arr: string[]) => (printItems.value = arr)

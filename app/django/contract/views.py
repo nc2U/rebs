@@ -34,6 +34,7 @@ class ContractLV(LoginRequiredMixin, ListView):
     def get_queryset(self):
         project = self.get_project()
         contract = Contract.objects.filter(project=project,
+                                           keyunit__contract__isnull=False,
                                            contractor__status='2').order_by('-created_at')
         if self.request.GET.get('group'):
             contract = contract.filter(order_group=self.request.GET.get('group'))

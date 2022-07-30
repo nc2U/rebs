@@ -67,7 +67,7 @@ class ExportContracts(View):
                        ['인가여부', 'contractor__is_registed', 8],
                        ['차수', 'order_group__order_group_name', 10],
                        ['타입', 'keyunit__unit_type__name', 7],
-                       ['동', 'keyunit__houseunit__building_unit', 7],
+                       ['동', 'keyunit__houseunit__building_unit__name', 7],
                        ['호수', 'keyunit__houseunit__name', 7],
                        ['계약자', 'contractor__name', 10],
                        ['생년월일', 'contractor__birth_date', 12],
@@ -90,10 +90,10 @@ class ExportContracts(View):
         params = []
         widths = [7]
 
-        for i in cols:
-            titles.append(data_source[int(i)][0])
-            params.append(data_source[int(i)][1])
-            widths.append(data_source[int(i)][2])
+        for i in cols:  # 요청된 컬럼 개수 만큼 반복 (1-2-3... -> i)
+            titles.append(data_source[int(i)][0])  # 일련번호
+            params.append(data_source[int(i)][1])  # serial_number
+            widths.append(data_source[int(i)][2])  # 10
 
         h_format = workbook.add_format()
         h_format.set_bold()
@@ -103,11 +103,11 @@ class ExportContracts(View):
         h_format.set_bg_color('#eeeeee')
 
         # Adjust the column width.
-        for i, cw in enumerate(widths):
+        for i, cw in enumerate(widths):  # 각 컬럼 넙이 세팅
             worksheet.set_column(i, i, cw)
 
         # Write header
-        for col_num, col in enumerate(titles):
+        for col_num, col in enumerate(titles):  # 헤더 줄 제목 세팅
             if '주소' in col:
                 worksheet.merge_range(row_num, col_num, row_num, col_num + 3, titles[col_num], h_format)
             else:
