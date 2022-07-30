@@ -994,7 +994,7 @@ def export_project_cash_xls(request):
 
     resources = [
         ['거래일자', 'deal_date'],
-        ['구분', 'cash_category1'],
+        ['구분', 'sort'],
         ['현장 계정', 'project_account_d1__name'],
         ['현장 세부계정', 'project_account_d2__name'],
         ['적요', 'content'],
