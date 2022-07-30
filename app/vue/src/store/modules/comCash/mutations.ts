@@ -16,7 +16,7 @@ import { CashesState } from '@/store/modules/comCash/state'
 const mutations = {
   updateState: (state: CashesState, payload: any) => {
     Object.keys(payload).forEach(key => {
-      state[key] = payload[key]
+      if (state.hasOwnProperty(key)) state[key] = payload[key]
     })
   },
 

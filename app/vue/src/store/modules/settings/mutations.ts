@@ -7,7 +7,7 @@ import { Company, CompanyState } from '@/store/modules/settings/state'
 const mutations = {
   updateState: (state: CompanyState, payload: any) => {
     Object.keys(payload).forEach(key => {
-      state[key] = payload[key]
+      if (state.hasOwnProperty(key)) state[key] = payload[key]
     })
   },
 

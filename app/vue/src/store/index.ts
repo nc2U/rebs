@@ -36,7 +36,7 @@ const state: RootState = {
 const mutations = {
   updateState(state: RootState, payload: any) {
     Object.keys(payload).forEach(key => {
-      state[key] = payload[key]
+      if (state.hasOwnProperty(key)) state[key] = payload[key]
     })
   },
   toggleAside(state: RootState) {

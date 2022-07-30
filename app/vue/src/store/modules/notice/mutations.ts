@@ -7,7 +7,7 @@ import {
 const mutations = {
   updateState: (state: NoticeState, payload: any) => {
     Object.keys(payload).forEach(key => {
-      state[key] = payload[key]
+      if (state.hasOwnProperty(key)) state[key] = payload[key]
     })
   },
 

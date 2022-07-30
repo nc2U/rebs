@@ -13,7 +13,7 @@ import { PaymentState } from '@/store/modules/payment/state'
 const mutations = {
   updateState: (state: PaymentState, payload: any) => {
     Object.keys(payload).forEach(key => {
-      state[key] = payload[key]
+      if (state.hasOwnProperty(key)) state[key] = payload[key]
     })
   },
 
