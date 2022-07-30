@@ -15,7 +15,19 @@ const store = useStore()
 const listControl = ref()
 const visible = ref(false)
 const filteredStr = ref('')
-const printItems = ref([])
+let printItems = ref([
+  '1',
+  '2',
+  '3',
+  '4',
+  '5-6',
+  '7',
+  '8',
+  '9',
+  '10',
+  '18-19-20-21',
+])
+
 const childListFiltering = (page: number) =>
   listControl.value.listFiltering(page)
 
@@ -25,7 +37,7 @@ const excelUrl = computed(() => {
   const pk = project.value ? project.value.pk : ''
   const items = printItems.value.join('-')
   return `/excel/contracts/?project=${pk}${filteredStr.value}&col=${items}`
-}) //1-2-3-4-5-6-7-8-9-10-18-19-20-21
+})
 
 const fetchOrderGroupList = (id: number) =>
   store.dispatch('contract/fetchOrderGroupList', id)
@@ -82,6 +94,7 @@ const onContFiltering = (payload: any) => {
   filteredStr.value = `&group=${order_group}&type=${unit_type}&dong=${building}&status=${status}&reg=${registed}&sdate=${from_date}&edate=${to_date}&q=${search}`
   fetchContractList({ ...{ project: pk }, ...payload })
 }
+const setItems = (arr: string[]) => (printItems.value = arr)
 
 onMounted(() => {
   fetchOrderGroupList(initProjId.value)
@@ -105,7 +118,6 @@ onMounted(() => {
   <ContentBody>
     <CCardBody class="pb-5">
       <ListController ref="listControl" @cont-filtering="onContFiltering" />
-      {{ excelUrl }}
       <ExcelExport v-if="project" :url="excelUrl">
         <v-icon
           icon="mdi-arrow-right-bold-box"
@@ -131,6 +143,7 @@ onMounted(() => {
         v-if="project"
         :project="project.is_unit_set"
         :visible="visible"
+        @print-items="setItems"
       />
       <ContractList @page-select="pageSelect" />
     </CCardBody>
