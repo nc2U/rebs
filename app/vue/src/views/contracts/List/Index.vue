@@ -14,11 +14,18 @@ const store = useStore()
 
 const listControl = ref()
 const visible = ref(false)
+const filteredStr = ref('')
+const printItems = ref([])
 const childListFiltering = (page: number) =>
   listControl.value.listFiltering(page)
 
 const project = computed(() => store.state.project.project)
 const initProjId = computed(() => store.getters['accounts/initProjId'])
+const excelUrl = computed(() => {
+  const pk = project.value ? project.value.pk : ''
+  const items = printItems.value.join('-')
+  return `/excel/contracts/?project=${pk}${filteredStr.value}&col=${items}`
+}) //1-2-3-4-5-6-7-8-9-10-18-19-20-21
 
 const fetchOrderGroupList = (id: number) =>
   store.dispatch('contract/fetchOrderGroupList', id)
@@ -38,15 +45,6 @@ const contractUpdate = (payload: any) =>
   store.commit('contract/updateState', payload)
 const projectUpdate = (payload: any) =>
   store.commit('project/updateState', payload)
-
-onMounted(() => {
-  fetchOrderGroupList(initProjId.value)
-  fetchTypeList(initProjId.value)
-  fetchBuildingList(initProjId.value)
-  fetchContractList({ project: initProjId.value })
-  fetchSubsSummaryList(initProjId.value)
-  fetchContSummaryList(initProjId.value)
-})
 
 const onSelectAdd = (target: any) => {
   if (target !== '') {
@@ -69,9 +67,30 @@ const onSelectAdd = (target: any) => {
 }
 const pageSelect = (page: number) => childListFiltering(page)
 const onContFiltering = (payload: any) => {
-  const pk: number = project.value.pk
+  const pk = project.value.pk
+  const {
+    order_group,
+    unit_type,
+    building,
+    status,
+    registed,
+    from_date,
+    to_date,
+    search,
+  } = payload
+  console.log(payload)
+  filteredStr.value = `&group=${order_group}&type=${unit_type}&dong=${building}&status=${status}&reg=${registed}&sdate=${from_date}&edate=${to_date}&q=${search}`
   fetchContractList({ ...{ project: pk }, ...payload })
 }
+
+onMounted(() => {
+  fetchOrderGroupList(initProjId.value)
+  fetchTypeList(initProjId.value)
+  fetchBuildingList(initProjId.value)
+  fetchContractList({ project: initProjId.value })
+  fetchSubsSummaryList(initProjId.value)
+  fetchContSummaryList(initProjId.value)
+})
 </script>
 
 <template>
@@ -86,7 +105,8 @@ const onContFiltering = (payload: any) => {
   <ContentBody>
     <CCardBody class="pb-5">
       <ListController ref="listControl" @cont-filtering="onContFiltering" />
-      <ExcelExport v-if="project" url="" disabled>
+      {{ excelUrl }}
+      <ExcelExport v-if="project" :url="excelUrl">
         <v-icon
           icon="mdi-arrow-right-bold-box"
           rounded="pill"
@@ -100,7 +120,7 @@ const onContFiltering = (payload: any) => {
             rounded="pill"
             flat
             class="text-blue-accent-4"
-            style="font-size: 1em"
+            style="font-size: 0.95em"
             @click="visible = !visible"
           >
             [엑셀 출력항목 선택]
