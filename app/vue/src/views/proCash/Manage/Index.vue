@@ -9,6 +9,12 @@
     <CCardBody class="pb-5">
       <ListController ref="listControl" @list-filtering="listFiltering" />
       <AddProCash @multi-submit="multiSubmit" />
+      <TableTitleRow
+        title="프로젝트 입출금 내역"
+        color="indigo"
+        excel
+        disabled
+      />
       <ProCashList
         :project="project"
         @page-select="pageSelect"
@@ -28,19 +34,21 @@ import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from '@/views/proCash/Manage/components/ListController.vue'
 import AddProCash from '@/views/proCash/Manage/components/AddProCash.vue'
+import TableTitleRow from '@/components/TableTitleRow.vue'
 import ProCashList from '@/views/proCash/Manage/components/ProCashList.vue'
 import { mapActions, mapGetters, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'ProjectCashManage',
-  mixins: [HeaderMixin],
   components: {
     ContentHeader,
     ContentBody,
     ListController,
     AddProCash,
+    TableTitleRow,
     ProCashList,
   },
+  mixins: [HeaderMixin],
   data() {
     return {
       dataFilter: {

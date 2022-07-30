@@ -9,6 +9,7 @@
     <CCardBody class="pb-5">
       <ListController ref="listControl" @list-filtering="listFiltering" />
       <AddCash @on-create="onCreate" />
+      <TableTitleRow title="본사 입출금 관리" color="indigo" excel disabled />
       <CashesList
         :company="company"
         @page-select="pageSelect"
@@ -28,19 +29,21 @@ import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from '@/views/comCash/Manage/components/ListController.vue'
 import AddCash from '@/views/comCash/Manage/components/AddCash.vue'
+import TableTitleRow from '@/components/TableTitleRow.vue'
 import CashesList from '@/views/comCash/Manage/components/CashesList.vue'
 import { mapActions, mapGetters, mapState } from 'vuex'
 
 export default defineComponent({
-  name: 'comCashManage',
-  mixins: [HeaderMixin],
+  name: 'ComCashManage',
   components: {
     ContentHeader,
     ContentBody,
     ListController,
     AddCash,
+    TableTitleRow,
     CashesList,
   },
+  mixins: [HeaderMixin],
   data() {
     return {
       dataFilter: {

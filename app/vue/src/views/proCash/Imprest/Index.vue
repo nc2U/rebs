@@ -9,6 +9,12 @@
     <CCardBody class="pb-5">
       <ListController ref="listControl" @list-filtering="listFiltering" />
       <AddProImprest @multi-submit="multiSubmit" />
+      <TableTitleRow
+        title="프로젝트 전도금 내역"
+        color="success"
+        excel
+        disabled
+      />
       <ProImprestList
         :project="project"
         @page-select="pageSelect"
@@ -28,19 +34,21 @@ import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from '@/views/proCash/Imprest/components/ListController.vue'
 import AddProImprest from '@/views/proCash/Imprest/components/AddProImprest.vue'
+import TableTitleRow from '@/components/TableTitleRow.vue'
 import ProImprestList from '@/views/proCash/Imprest/components/ProImprestList.vue'
 import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'ProjectImprestIndex',
-  mixins: [HeaderMixin],
   components: {
     ContentHeader,
     ContentBody,
     ListController,
     AddProImprest,
+    TableTitleRow,
     ProImprestList,
   },
+  mixins: [HeaderMixin],
   data() {
     return {
       dataFilter: {
