@@ -8,25 +8,16 @@ const imgSrc = [
 ]
 </script>
 <template>
-  <CRow>
-    <CCol :xxl="9">
-      <CCard class="mb-4">
-        <CCardBody>
-          <v-carousel
-            cycle
-            height="400"
-            hide-delimiter-background
-            show-arrows="hover"
-          >
-            <v-carousel-item
-              v-for="(img, i) in imgSrc"
-              :key="i"
-              :src="img"
-              cover
-            />
-          </v-carousel>
-        </CCardBody>
-      </CCard>
-    </CCol>
-  </CRow>
+  <CCard class="mb-4" xxl="9">
+    <CCardBody>
+      <v-carousel
+        cycle
+        height="400"
+        hide-delimiter-background
+        show-arrows="hover"
+      >
+        <v-carousel-item v-for="(img, i) in imgSrc" :key="i" :src="img" cover />
+      </v-carousel>
+    </CCardBody>
+  </CCard>
 </template>

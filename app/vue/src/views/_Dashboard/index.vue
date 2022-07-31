@@ -1,18 +1,21 @@
 <template>
   <CContainer fluid>
-    <MainCarousel />
     <CRow>
-      <CCol :xxl="9">
+      <CCol xxl="9">
+        <MainCarousel />
+      </CCol>
+      <CCol xxl="9">
         <CRow>
-          <CCol lg="6">
+          <CCol md="6">
             <TodoListApp />
           </CCol>
-          <CCol lg="6">
+          <CCol md="6">
             <WidgetsStatsA />
           </CCol>
         </CRow>
       </CCol>
     </CRow>
+
     <WidgetsStatsB />
     <WidgetsStatsD />
     <WidgetsStatsC />
