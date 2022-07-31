@@ -5,7 +5,7 @@ import store from './store'
 import router from './router'
 import mixins from '@/mixins'
 
-import CoreuiVue from '@coreui/vue-pro'
+import CoreuiVue from '@coreui/vue'
 import { CIcon } from '@coreui/icons-vue'
 import { iconsSet as icons } from '@/assets/icons'
 import vuetify from './plugins/vuetify'

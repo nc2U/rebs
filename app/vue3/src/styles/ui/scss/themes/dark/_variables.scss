@@ -1,0 +1,868 @@
+// Color system
+
+// fusv-disable
+$bg-elevation-0: #181924 !default;
+$bg-elevation-1:   rgba(mix(rgba(255, 255, 255, .1), $bg-elevation-0), 1) !default;
+$bg-elevation-2:   rgba(mix(rgba(255, 255, 255, .14), $bg-elevation-0), 1) !default;
+$bg-elevation-3:   rgba(mix(rgba(255, 255, 255, .16), $bg-elevation-0), 1) !default;
+$bg-elevation-4:   rgba(mix(rgba(255, 255, 255, .18), $bg-elevation-0), 1) !default;
+$bg-elevation-6:   rgba(mix(rgba(255, 255, 255, .22), $bg-elevation-0), 1) !default;
+$bg-elevation-8:   rgba(mix(rgba(255, 255, 255, .24), $bg-elevation-0), 1) !default;
+$bg-elevation-12:  rgba(mix(rgba(255, 255, 255, .28), $bg-elevation-0), 1) !default;
+$bg-elevation-16:  rgba(mix(rgba(255, 255, 255, .3), $bg-elevation-0), 1) !default;
+$bg-elevation-24:  rgba(mix(rgba(255, 255, 255, .32), $bg-elevation-0), 1) !default;
+// fusv-enable
+
+$high-emphasis-dt:    rgba($white, .87) !default;
+$medium-emphasis-dt:  rgba($white, .6) !default;
+$disabled-dt:         rgba($white, .38) !default;
+
+$primary-dt:    tint-color(desaturate($primary, 30%), 30) !default;
+$secondary-dt:  desaturate($secondary, 30%) !default;
+$success-dt:    desaturate($success, 30%) !default;
+$info-dt:       desaturate($info, 30%) !default;
+$warning-dt:    desaturate($warning, 30%) !default;
+$danger-dt:     desaturate($danger, 30%) !default;
+$light-dt:      rgba($white, .1) !default;
+$dark-dt:       rgba($black, .1) !default;
+
+// fusv-disable
+$theme-colors-dt: (
+  "primary":    $primary-dt,
+  "secondary":  $secondary-dt,
+  "success":    $success-dt,
+  "info":       $info-dt,
+  "warning":    $warning-dt,
+  "danger":     $danger-dt,
+  "light":      $light-dt,
+  "dark":       $dark-dt
+) !default;
+// fusv-enable
+
+$theme-colors-rgb-dt: map-loop($theme-colors-dt, to-rgb, "$value") !default;
+
+// Gradients
+
+// scss-docs-start theme-gradients
+$primary-gradient-dt: (
+  "start":  desaturate(#321fdb, 20%),
+  "stop":   desaturate(#1f1498, 20%)
+) !default;
+
+$secondary-gradient-dt: (
+  "start":  desaturate(#c8d2dc, 20%),
+  "stop":    desaturate($white, 20%)
+) !default;
+
+$light-gradient-dt: (
+  "start":  desaturate(#e3e8ed, 20%),
+  "stop":    desaturate($white, 20%)
+) !default;
+
+$dark-gradient-dt: (
+  "start":  desaturate(#3c4b64, 20%),
+  "stop":   desaturate(#212333, 20%)
+) !default;
+
+$danger-gradient-dt: (
+  "start":  desaturate(#e55353, 20%),
+  "stop":   desaturate(#d93737, 20%)
+) !default;
+
+$warning-gradient-dt: (
+  "start":  desaturate(#f9b115, 20%),
+  "stop":   desaturate(#f6960b, 20%)
+) !default;
+
+$success-gradient-dt: (
+  "start":  desaturate(#2eb85c, 20%),
+  "stop":   desaturate(#1b9e3e, 20%)
+) !default;
+
+$info-gradient-dt: (
+  "start":  desaturate(#39f, 20%),
+  "stop":   desaturate(#2982cc, 20%)
+) !default;
+
+$theme-gradients-dt: (
+  "primary":    $primary-gradient-dt,
+  "secondary":  $secondary-gradient-dt,
+  "success":    $success-gradient-dt,
+  "info":       $info-gradient-dt,
+  "warning":    $warning-gradient-dt,
+  "danger":     $danger-gradient-dt,
+  "light":      $light-gradient-dt,
+  "dark":       $dark-gradient-dt
+) !default;
+// scss-docs-end theme-gradients
+
+// Body
+//
+// Settings for the `<body>` element.
+
+$body-bg-dt:                   $bg-elevation-0 !default;
+$body-color-dt:                $high-emphasis-dt !default;
+$elevation-base-color-dt:      0, 0, 0 !default;
+
+// Components
+//
+// Define common padding and border radius sizes and more.
+
+$border-color-dt:   rgba(255, 255, 255, .075) !default;
+
+$theme-root-dt: (
+  "body-bg":               $body-bg-dt,
+  "body-color":            $body-color-dt,
+  "elevation-base-color":  $elevation-base-color-dt,
+  "high-emphasis":         $high-emphasis-dt,
+  "medium-emphasis":       $medium-emphasis-dt,
+  "disabled":              $disabled-dt,
+  "border-color":          $border-color-dt
+) !default;
+
+// $component-color-dt:  $body-color-dt !default;
+// $component-bg-dt:     $gray-800-dt !default;
+
+$component-active-color-dt:  $white !default;
+$component-active-bg-dt:     $primary-dt !default;
+
+// Accordion
+
+$accordion-button-color-dt:               $body-color-dt !default;
+$accordion-button-bg-dt:                  transparent !default;
+$accordion-border-color-dt:               rgba($white, .125) !default;
+$accordion-color-dt:                      $high-emphasis-dt !default;
+$accordion-bg-dt:                         transparent !default;
+
+$accordion-button-color-dt:               $body-color-dt !default;
+$accordion-button-bg-dt:                  transparent !default;
+$accordion-border-color-dt:               rgba($white, .125) !default;
+
+$accordion-button-active-bg-dt:           tint-color(rgba($component-active-bg-dt, .5), 5%) !default;
+$accordion-button-active-color-dt:        shade-color($component-active-color-dt, 10%) !default;
+
+$accordion-button-focus-border-color-dt:  rgba($white, .2) !default;
+
+$accordion-icon-color-dt:                 $body-color-dt !default;
+$accordion-icon-active-color-dt:          $body-color-dt !default;
+
+$accordion-button-icon-dt:         url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='#{$accordion-icon-color-dt}'><path fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/></svg>") !default;
+$accordion-button-active-icon-dt:  url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='#{$accordion-icon-active-color-dt}'><path fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/></svg>") !default;
+
+
+$accordion-theme-map: (
+  "accordion-button-color":               $accordion-button-color-dt,
+  "accordion-button-bg":                  $accordion-button-bg-dt,
+  "accordion-bg":                         $accordion-bg-dt,
+  "accordion-color":                      $accordion-color-dt,
+  "accordion-border-color":               $accordion-border-color-dt,
+  "accordion-button-active-bg":           $accordion-button-active-bg-dt,
+  "accordion-button-active-color":        $accordion-button-active-color-dt,
+  "accordion-button-focus-border-color":  $accordion-button-focus-border-color-dt,
+  "accordion-button-icon":                $accordion-button-icon-dt,
+  "accordion-button-active-icon":         $accordion-button-active-icon-dt
+) !default;
+
+// Alert
+
+$alert-variants-dt: (
+  "primary":    alert-color-map($primary),
+  "secondary":  alert-color-map($secondary),
+  "success":    alert-color-map($success),
+  "danger":     alert-color-map($danger),
+  "warning":    alert-color-map($warning),
+  "info":       alert-color-map($info)
+) !default;
+
+// Breadcrumb
+
+$breadcrumb-bg-dt:             null !default;
+$breadcrumb-divider-color-dt:  $body-color-dt !default;
+$breadcrumb-active-color-dt:   $medium-emphasis-dt !default;
+
+$breadcrumb-theme-map: (
+  "breadcrumb-bg":             $breadcrumb-bg-dt,
+  "breadcrumb-divider-color":  $breadcrumb-divider-color-dt,
+  "breadcrumb-active-color":   $breadcrumb-active-color-dt
+) !default;
+
+// Buttons
+
+$button-variants-dt: (
+  "primary":    btn-color-map($primary-dt, $primary-dt),
+  "secondary":  btn-color-map($secondary-dt, $secondary-dt),
+  "success":    btn-color-map($success-dt, $success-dt),
+  "danger":     btn-color-map($danger-dt, $danger-dt),
+  "warning":    btn-color-map($warning-dt, $warning-dt),
+  "info":       btn-color-map($info-dt, $info-dt)
+) !default;
+
+$button-outline-ghost-variants-dt: (
+  "primary":    btn-outline-color-map($primary-dt),
+  "secondary":  btn-outline-color-map($secondary-dt),
+  "success":    btn-outline-color-map($success-dt),
+  "danger":     btn-outline-color-map($danger-dt),
+  "warning":    btn-outline-color-map($warning-dt),
+  "info":       btn-outline-color-map($info-dt)
+) !default;
+
+// Cards
+
+// scss-docs-start card-variables
+$card-bg-dt:            $bg-elevation-1 !default;
+$card-color-dt:         null !default;
+$card-border-color-dt:  $border-color-dt !default;
+$card-cap-bg-dt:        $bg-elevation-2 !default;
+$card-cap-color-dt:     null !default;
+
+$card-theme-map: (
+  "card-bg":            $card-bg-dt,
+  "card-color":         $card-color-dt,
+  "card-border-color":  $card-border-color-dt,
+  "card-cap-bg":        $card-cap-bg-dt,
+  "card-cap-color":     $card-cap-color-dt
+) !default;
+// scss-docs-end card-variables
+
+// Close button
+
+$btn-close-color-dt:  $high-emphasis-dt !default;
+$btn-close-bg-dt:     url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='#{$btn-close-color-dt}'><path d='M.293.293a1 1 0 011.414 0L8 6.586 14.293.293a1 1 0 111.414 1.414L9.414 8l6.293 6.293a1 1 0 01-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 01-1.414-1.414L6.586 8 .293 1.707a1 1 0 010-1.414z'/></svg>") !default;
+
+$close-theme-map: (
+  "btn-close-color":  $btn-close-color-dt,
+  "btn-close-bg":     $btn-close-bg-dt
+) !default;
+
+// Dropdown
+
+$dropdown-color-dt:                $body-color-dt !default;
+$dropdown-bg-dt:                   $bg-elevation-8 !default;
+$dropdown-border-color-dt:         $border-color-dt !default;
+$dropdown-divider-bg-dt:           $border-color-dt !default;
+$dropdown-link-color-dt:           $body-color-dt !default;
+$dropdown-link-hover-color-dt:     $body-color-dt !default;
+$dropdown-link-hover-bg-dt:        $bg-elevation-16 !default;
+$dropdown-link-active-color-dt:    $component-active-color-dt !default;
+$dropdown-link-active-bg-dt:       $component-active-bg-dt !default;
+$dropdown-link-disabled-color-dt:  rgba($body-color-dt, .6) !default;
+$dropdown-header-color-dt:         $body-color-dt !default;
+
+$dropdown-theme-map: (
+  "dropdown-color":                $dropdown-color-dt,
+  "dropdown-border-color":         $dropdown-border-color-dt,
+  "dropdown-bg":                   $dropdown-bg-dt,
+  "dropdown-divider-bg":           $dropdown-divider-bg-dt,
+  "dropdown-link-color":           $dropdown-link-color-dt,
+  "dropdown-link-hover-color":     $dropdown-link-hover-color-dt,
+  "dropdown-link-hover-bg":        $dropdown-link-hover-bg-dt,
+  "dropdown-link-active-color":    $dropdown-link-active-color-dt,
+  "dropdown-link-active-bg":       $dropdown-link-active-bg-dt,
+  "dropdown-link-disabled-color":  $dropdown-link-disabled-color-dt,
+  "dropdown-header-color":         $dropdown-header-color-dt
+) !default;
+
+// Footer
+
+$footer-dark-bg-dt:            $bg-elevation-3 !default;
+$footer-dark-color-dt:         $body-color-dt !default;
+$footer-dark-border-width-dt:  0 !default;
+$footer-dark-border-color-dt:  transparent !default;
+
+$footer-theme-map: (
+  "footer-bg":            $footer-dark-bg-dt,
+  "footer-color":         $footer-dark-color-dt,
+  "footer-border-width":  $footer-dark-border-width-dt,
+  "footer-border-color":  $footer-dark-border-color-dt
+) !default;
+
+// Forms
+
+
+// Buttons + Forms
+//
+// Shared variables that are reassigned to `$input-` and `$btn-` specific variables.
+
+$input-color-dt:                     $body-color-dt !default;
+$input-bg-dt:                        rgba($white, .05) !default;
+$input-border-color-dt:              rgba($white, .09) !default;
+$input-focus-color-dt:               $body-color-dt !default;
+$input-focus-bg-dt:                  rgba($white, .05) !default;
+$input-focus-border-color-dt:        rgba($white, .2) !default;
+$input-disabled-bg-dt:               rgba($black, .1) !default;
+$input-placeholder-color-dt:         $medium-emphasis-dt !default;
+$input-plaintext-color-dt:           $body-color-dt !default;
+
+$form-text-color-dt:                 $medium-emphasis-dt !default;
+
+$input-group-addon-color-dt:         $body-color-dt !default;
+$input-group-addon-bg-dt:            rgba($white, .09) !default;
+$input-group-addon-border-color-dt:  rgba($white, .09) !default;
+
+$form-select-color-dt:               $input-color-dt !default;
+$form-select-bg-dt:                  $input-bg-dt !default;
+$form-select-border-color-dt:        $input-border-color-dt !default;
+$form-select-focus-border-color-dt:        $input-focus-border-color-dt !default;
+// $form-select-disabled-color-dt:         $input-disabled-color-dt !default;
+$form-select-disabled-bg-dt:            $input-disabled-bg-dt !default;
+// $form-select-disabled-border-color-dt:  $input-disabled-border-color-dt !default;
+
+$form-check-input-checked-color-dt:          $component-active-color-dt !default;
+$form-check-input-checked-bg-color-dt:       $component-active-bg-dt !default;
+$form-check-input-checked-border-color-dt:   $form-check-input-checked-bg-color-dt !default;
+
+$form-control-theme-map: (
+  "input-color":                            $input-color-dt,
+  "input-bg":                               $input-bg-dt,
+  "input-border-color":                     $input-border-color-dt,
+  "input-focus-color":                      $input-focus-color-dt,
+  "input-focus-bg":                         $input-focus-bg-dt,
+  "input-focus-border-color":               $input-focus-border-color-dt,
+  "input-disabled-bg":                      $input-disabled-bg-dt,
+  "input-placeholder-color":                $input-placeholder-color-dt,
+  "input-plaintext-color":                  $input-plaintext-color-dt,
+  "form-text-color":                        $form-text-color-dt,
+) !default;
+
+$input-group-theme-map: (
+  "input-group-addon-color":         $input-group-addon-color-dt,
+  "input-group-addon-bg":            $input-group-addon-bg-dt,
+  "input-group-addon-border-color":  $input-group-addon-border-color-dt
+) !default;
+
+$form-check-theme-map: (
+  "form-check-input-checked-color":         $form-check-input-checked-color-dt,
+  "form-check-input-checked-bg-color":      $form-check-input-checked-bg-color-dt,
+  "form-check-input-checked-border-color":  $form-check-input-checked-border-color-dt
+) !default;
+
+$form-select-theme-map: (
+  "form-select-color":                  $form-select-color-dt,
+  "form-select-bg":                     $form-select-bg-dt,
+  "form-select-border-color":           $form-select-border-color-dt,
+  "form-select-focus-border-color":     $form-select-focus-border-color-dt,
+  // "form-select-disabled-color":         $form-select-disabled-color-dt,
+  "form-select-disabled-bg":            $form-select-disabled-bg-dt,
+  // "form-select-disabled-border-color":  $form-select-disabled-border-color-dt,
+) !default;
+
+$form-multi-select-color-dt:               $input-color-dt !default;
+$form-multi-select-bg-dt:                  $input-bg-dt !default;
+$form-multi-select-border-color-dt:        $input-border-color-dt !default;
+
+$form-multi-select-focus-color-dt:         $input-focus-color-dt !default;
+$form-multi-select-focus-bg-dt:            $input-focus-bg-dt !default;
+$form-multi-select-focus-border-color-dt:  $input-focus-border-color-dt !default;
+
+$form-multi-select-disabled-color-dt:      $disabled-dt !default;
+$form-multi-select-disabled-bg-dt:         $input-disabled-bg-dt !default;
+
+$form-multi-select-tag-bg-dt:               $light-dt !default;
+$form-multi-select-tag-border-color-dt:     $input-border-color-dt !default;
+
+$form-multi-select-search-color-dt:         $input-color-dt !default;
+$form-multi-select-search-bg-dt:            transparent !default;
+$form-multi-select-search-border-color-dt:  $input-border-color-dt !default;
+
+$form-multi-select-cleaner-color-dt:         $medium-emphasis-dt !default;
+$form-multi-select-cleaner-bg-dt:            url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='#{$form-multi-select-cleaner-color-dt}'><path d='M.293.293a1 1 0 011.414 0L8 6.586 14.293.293a1 1 0 111.414 1.414L9.414 8l6.293 6.293a1 1 0 01-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 01-1.414-1.414L6.586 8 .293 1.707a1 1 0 010-1.414z'/></svg>") !default;
+$form-multi-select-cleaner-hover-color-dt:   $high-emphasis-dt !default;
+$form-multi-select-cleaner-hover-bg-dt:      url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='#{$form-multi-select-cleaner-hover-color-dt}'><path d='M.293.293a1 1 0 011.414 0L8 6.586 14.293.293a1 1 0 111.414 1.414L9.414 8l6.293 6.293a1 1 0 01-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 01-1.414-1.414L6.586 8 .293 1.707a1 1 0 010-1.414z'/></svg>") !default;
+$form-multi-select-cleaner-focus-color-dt:   $high-emphasis-dt !default;
+$form-multi-select-cleaner-focus-bg-dt:      url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='#{$form-multi-select-cleaner-focus-color-dt}'><path d='M.293.293a1 1 0 011.414 0L8 6.586 14.293.293a1 1 0 111.414 1.414L9.414 8l6.293 6.293a1 1 0 01-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 01-1.414-1.414L6.586 8 .293 1.707a1 1 0 010-1.414z'/></svg>") !default;
+$form-multi-select-cleaner-border-color-dt:  $input-border-color-dt !default;
+
+$form-multi-select-select-all-color-dt:         $medium-emphasis-dt !default;
+$form-multi-select-select-all-bg-dt:            transparent !default;
+$form-multi-select-select-all-hover-color-dt:   $high-emphasis-dt !default;
+$form-multi-select-select-all-hover-bg-dt:      transparent !default;
+$form-multi-select-select-all-border-color-dt:  $input-border-color-dt !default;
+
+$form-multi-select-options-color-dt:         $body-color-dt !default;
+$form-multi-select-options-bg-dt:            $bg-elevation-8 !default;
+$form-multi-select-options-border-color-dt:  $input-border-color-dt !default;
+
+$form-multi-select-option-hover-color-dt:    $body-color-dt !default;
+$form-multi-select-option-hover-bg-dt:       $light-dt !default;
+
+$form-multi-select-option-selected-bg-dt:    $light-dt !default;
+
+$form-multi-select-theme-map: (
+  "form-multi-select-color":                    $form-multi-select-color-dt,
+  "form-multi-select-bg":                       $form-multi-select-bg-dt,
+  "form-multi-select-border-color":             $form-multi-select-border-color-dt,
+  "form-multi-select-disabled-color":           $form-multi-select-disabled-color-dt,
+  "form-multi-select-disabled-bg":              $form-multi-select-disabled-bg-dt,
+  "form-multi-select-focus-color":              $form-multi-select-focus-color-dt,
+  "form-multi-select-focus-bg":                 $form-multi-select-focus-bg-dt,
+  "form-multi-select-focus-border-color":       $form-multi-select-focus-border-color-dt,
+  "form-multi-select-tag-bg":                   $form-multi-select-tag-bg-dt,
+  "form-multi-select-tag-border-color":         $form-multi-select-tag-border-color-dt,
+  "form-multi-select-search-color":             $form-multi-select-search-color-dt,
+  "form-multi-select-search-bg":                $form-multi-select-search-bg-dt,
+  "form-multi-select-search-border-color":      $form-multi-select-search-border-color-dt,
+  "form-multi-select-cleaner-bg":               $form-multi-select-cleaner-bg-dt,
+  "form-multi-select-cleaner-hover-bg":         $form-multi-select-cleaner-hover-bg-dt,
+  "form-multi-select-cleaner-focus-bg":         $form-multi-select-cleaner-focus-bg-dt,
+  "form-multi-select-cleaner-border-color":     $form-multi-select-cleaner-border-color-dt,
+  "form-multi-select-select-all-color":         $form-multi-select-select-all-color-dt,
+  "form-multi-select-select-all-bg":            $form-multi-select-select-all-bg-dt,
+  "form-multi-select-select-all-hover-color":   $form-multi-select-select-all-hover-color-dt,
+  "form-multi-select-select-all-hover-bg":      $form-multi-select-select-all-hover-bg-dt,
+  "form-multi-select-select-all-border-color":  $form-multi-select-select-all-border-color-dt,
+  "form-multi-select-options-color":            $form-multi-select-options-color-dt,
+  "form-multi-select-options-bg":               $form-multi-select-options-bg-dt,
+  "form-multi-select-options-border-color":     $form-multi-select-options-border-color-dt,
+  "form-multi-select-option-hover-color":       $form-multi-select-option-hover-color-dt,
+  "form-multi-select-option-hover-bg":          $form-multi-select-option-hover-bg-dt,
+  "form-multi-select-option-selected-bg":       $form-multi-select-option-selected-bg-dt,
+) !default;
+
+// Header
+
+$header-bg-dt:                     $bg-elevation-3 !default;
+$header-color-dt:                  rgba($white, .75) !default;
+$header-border-dt:                 ( bottom: 0 ) !default;
+$header-hover-color-dt:            rgba($white, .9) !default;
+$header-active-color-dt:           $white !default;
+$header-disabled-color-dt:         rgba($white, .25) !default;
+$header-brand-color-dt:            $header-active-color-dt !default;
+$header-brand-hover-color-dt:      $header-active-color-dt !default;
+$header-toggler-color-dt:          rgba($white, .75) !default;
+$header-toggler-hover-color-dt:    $white !default;
+$header-toggler-icon-bg-dt:        str-replace(url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='#{$header-color-dt}' stroke-width='2.25' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E"), "#", "%23") !default;
+$header-toggler-hover-icon-bg-dt:  str-replace(url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='#{$header-hover-color-dt}' stroke-width='2.25' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E"), "#", "%23") !default;
+$header-toggler-border-color-dt:   rgba($white, .1) !default;
+$header-divider-border-color-dt:   rgba($white, .1) !default;
+
+$header-theme-map: (
+  "header-bg":                     $header-bg-dt,
+  "header-color":                  $header-color-dt,
+  "header-border":                 $header-border-dt,
+  "header-hover-color":            $header-hover-color-dt,
+  "header-active-color":           $header-active-color-dt,
+  "header-disabled-color":         $header-disabled-color-dt,
+  "header-brand-color":            $header-brand-color-dt,
+  "header-brand-hover-color":      $header-brand-hover-color-dt,
+  "header-toggler-color":          $header-toggler-color-dt,
+  "header-toggler-hover-color":    $header-toggler-hover-color-dt,
+  "header-toggler-icon-bg":        $header-toggler-icon-bg-dt,
+  "header-toggler-hover-icon-bg":  $header-toggler-hover-icon-bg-dt,
+  "header-toggler-border-color":   $header-toggler-border-color-dt,
+  "header-divider-border-color":   $header-divider-border-color-dt
+) !default;
+
+// Links
+
+$link-color-dt:                    shift-color($primary-dt, -12) !default;
+$link-hover-color-dt:              shift-color($link-color-dt, -20) !default;
+
+$link-theme-map: (
+  "link-color":        $link-color-dt,
+  "link-hover-color":  $link-hover-color-dt
+) !default;
+
+// Btn link
+
+$btn-link-color-dt:           $link-color-dt !default;
+$btn-link-hover-color-dt:     $link-hover-color-dt !default;
+$btn-link-disabled-color-dt:  $disabled-dt !default;
+
+$btn-link-theme-map: (
+  "btn-link-color":           $btn-link-color-dt,
+  "btn-link-hover-color":     $btn-link-hover-color-dt,
+  "btn-link-disabled-color":  $btn-link-disabled-color-dt
+) !default;
+
+// List group
+
+// scss-docs-start list-group-dark-theme
+$list-group-color-dt:                $body-color-dt !default;
+$list-group-bg-dt:                   transparent !default;
+$list-group-border-color-dt:         $border-color-dt !default;
+$list-group-hover-bg-dt:             rgba($white, .1) !default;
+$list-group-active-color-dt:         $component-active-color-dt !default;
+$list-group-active-bg-dt:            $component-active-bg-dt !default;
+$list-group-active-border-color-dt:  $list-group-active-bg-dt !default;
+$list-group-disabled-color-dt:       rgba($body-color-dt, .5) !default;
+$list-group-disabled-bg-dt:          rgba($border-color-dt, .8) !default;
+$list-group-action-color-dt:         $body-color-dt !default;
+$list-group-action-hover-color-dt:   $body-color-dt !default;
+$list-group-action-active-color-dt:  $body-color-dt !default;
+$list-group-action-active-bg-dt:     $gray-900 !default;
+// scss-docs-end list-group-dark-theme
+
+$list-group-theme-map: (
+  "list-group-color":                $list-group-color-dt,
+  "list-group-bg":                   $list-group-bg-dt,
+  "list-group-border-color":         $list-group-border-color-dt,
+  "list-group-hover-bg":             $list-group-hover-bg-dt,
+  "list-group-active-color":         $list-group-active-color-dt,
+  "list-group-active-bg":            $list-group-active-bg-dt,
+  "list-group-active-border-color":  $list-group-active-border-color-dt,
+  "list-group-disabled-color":       $list-group-disabled-color-dt,
+  "list-group-disabled-bg":          $list-group-disabled-bg-dt,
+  "list-group-action-color":         $list-group-action-color-dt,
+  "list-group-action-hover-color":   $list-group-action-hover-color-dt,
+  "list-group-action-active-color":  $list-group-action-active-color-dt,
+  "list-group-action-active-bg":     $list-group-action-active-bg-dt
+) !default;
+
+$list-group-variants-dt: (
+  "primary":    list-group-color-map($primary-dt),
+  "secondary":  list-group-color-map($secondary-dt),
+  "success":    list-group-color-map($success-dt),
+  "danger":     list-group-color-map($danger-dt),
+  "warning":    list-group-color-map($warning-dt),
+  "info":       list-group-color-map($info-dt)
+) !default;
+
+// Modals
+
+// scss-docs-start modal-dark-theme
+$modal-color-dt:         null !default;
+$modal-bg-dt:            $bg-elevation-24 !default;
+$modal-border-color-dt:  rgba(0, 0, 0, .2) !default;
+$modal-header-border-color-dt:   rgba(0, 0, 0, .2) !default;
+$modal-footer-border-color-dt:   rgba(0, 0, 0, .2) !default;
+// scss-docs-end modal-dark-theme
+
+$modal-theme-map: (
+  "modal-color":                $modal-color-dt,
+  "modal-bg":                   $modal-bg-dt,
+  "modal-border-color":         $modal-border-color-dt,
+  "modal-header-border-color":  $modal-header-border-color-dt,
+  "modal-footer-border-color":  $modal-footer-border-color-dt
+) !default;
+
+
+// Navs
+
+$nav-link-color-dt:                          null !default;
+$nav-link-disabled-color-dt:                 $disabled-dt !default;
+$nav-link-hover-color-dt:                    null !default;
+$nav-pills-link-active-bg-dt:                $component-active-bg-dt !default;
+$nav-pills-link-active-color-dt:             $component-active-color-dt !default;
+$nav-tabs-border-color-dt:                   $border-color-dt !default;
+$nav-tabs-link-active-bg-dt:                 $border-color-dt !default;
+$nav-tabs-link-active-color-dt:              $body-color-dt !default;
+$nav-tabs-link-active-border-color-dt:       transparent !default;
+$nav-tabs-link-hover-border-color-dt:        $border-color-dt $border-color-dt $border-color-dt !default;
+
+$nav-underline-border-color-dt:              $border-color-dt !default;
+$nav-underline-link-color-dt:                $medium-emphasis-dt !default;
+$nav-underline-link-active-color-dt:         $component-active-bg-dt !default;
+$nav-underline-link-active-border-color-dt:  $component-active-bg-dt !default;
+
+
+$nav-theme-map: (
+  "nav-link-color":                          $nav-link-color-dt,
+  "nav-link-disabled-color":                 $nav-link-disabled-color-dt,
+  "nav-link-hover-color":                    $nav-link-hover-color-dt,
+  "nav-pills-link-active-bg":                $nav-pills-link-active-bg-dt,
+  "nav-pills-link-active-color":             $nav-pills-link-active-color-dt,
+  "nav-tabs-border-color":                   $nav-tabs-border-color-dt,
+  "nav-tabs-link-active-bg":                 $nav-tabs-link-active-bg-dt,
+  "nav-tabs-link-active-color":              $nav-tabs-link-active-color-dt,
+  "nav-tabs-link-active-border-color":       $nav-tabs-link-active-border-color-dt,
+  "nav-tabs-link-hover-border-color":        $nav-tabs-link-hover-border-color-dt,
+  "nav-underline-border-color":              $nav-underline-border-color-dt,
+  "nav-underline-link-color":                $nav-underline-link-color-dt,
+  "nav-underline-link-active-color":         $nav-underline-link-active-color-dt,
+  "nav-underline-link-active-border-color":  $nav-underline-link-active-border-color-dt
+) !default;
+
+// Offcanvas
+
+// scss-docs-start offcanvas-dark-theme
+$offcanvas-color-dt:         null !default;
+$offcanvas-bg-color-dt:      $bg-elevation-12 !default;
+$offcanvas-border-color-dt:  transparent !default;
+// scss-docs-end offcanvas-dark-theme
+
+$offcanvas-theme-map: (
+  "offcanvas-color":         $offcanvas-color-dt,
+  "offcanvas-bg-color":      $offcanvas-bg-color-dt,
+  "offcanvas-border-color":  $offcanvas-border-color-dt
+) !default;
+
+
+// Pagination
+
+// scss-docs-start pagination-variables
+$pagination-color-dt:                  $link-color-dt !default;
+$pagination-bg-dt:                     transparent !default;
+$pagination-border-color-dt:           $border-color-dt !default;
+
+$pagination-focus-color-dt:            $link-hover-color-dt !default;
+$pagination-focus-bg-dt:               $border-color-dt !default;
+
+$pagination-hover-color-dt:            $link-hover-color-dt !default;
+$pagination-hover-bg-dt:               $border-color-dt !default;
+$pagination-hover-border-color-dt:     $border-color-dt !default;
+
+$pagination-active-color-dt:           $component-active-color-dt !default;
+$pagination-active-bg-dt:              $component-active-bg-dt !default;
+$pagination-active-border-color-dt:    $pagination-active-bg-dt !default;
+
+$pagination-disabled-color-dt:         $disabled-dt !default;
+$pagination-disabled-bg-dt:            transparent !default;
+$pagination-disabled-border-color-dt:  $border-color-dt !default;
+
+$pagination-theme-map: (
+  "pagination-color":                  $pagination-color-dt,
+  "pagination-bg":                     $pagination-bg-dt,
+  "pagination-border-color":           $pagination-border-color-dt,
+  "pagination-focus-color":            $pagination-focus-color-dt,
+  "pagination-focus-bg":               $pagination-focus-bg-dt,
+  "pagination-hover-color":            $pagination-hover-color-dt,
+  "pagination-hover-bg":               $pagination-hover-bg-dt,
+  "pagination-hover-border-color":     $pagination-hover-border-color-dt,
+  "pagination-active-color":           $pagination-active-color-dt,
+  "pagination-active-bg-dt":           $pagination-active-bg-dt,
+  "pagination-active-border-color":    $pagination-active-border-color-dt,
+  "pagination-disabled-color":         $pagination-disabled-color-dt,
+  "pagination-disabled-bg":            $pagination-disabled-bg-dt,
+  "pagination-disabled-border-color":  $pagination-disabled-border-color-dt
+) !default;
+
+
+// Popovers
+
+// scss-docs-start popover-dark-theme
+$popover-bg-dt:                 $bg-elevation-16 !default;
+$popover-border-color-dt:       $border-color-dt !default;
+$popover-header-bg-dt:          $bg-elevation-16 !default;
+$popover-header-color-dt:       $body-color-dt !default;
+$popover-body-color-dt:         $body-color-dt !default;
+$popover-arrow-color-dt:        $popover-bg-dt !default;
+$popover-arrow-outer-color-dt:  fade-in($popover-border-color-dt, .05) !default;
+// scss-docs-end popover-dark-theme
+
+$popover-theme-map: (
+  "popover-bg":                 $popover-bg-dt,
+  "popover-border-color":       $popover-border-color-dt,
+  "popover-header-bg":          $popover-header-bg-dt,
+  "popover-header-color":       $popover-header-color-dt,
+  "popover-body-color":         $popover-body-color-dt,
+  "popover-arrow-color":        $popover-arrow-color-dt,
+  "popover-arrow-outer-color":  $popover-arrow-outer-color-dt
+) !default;
+
+
+// Progress
+
+$progress-bg-dt:         rgba($white, .2) !default;
+$progress-bar-color-dt:  $white !default;
+$progress-bar-bg-dt:     $primary-dt !default;
+
+$progress-theme-map: (
+  "progress-bg":         $progress-bg-dt,
+  "progress-bar-bg":     $progress-bar-bg-dt,
+  "progress-bar-color":  $progress-bar-color-dt
+) !default;
+
+// Sidebar
+
+$sidebar-color-dt:                    $body-color-dt !default;
+$sidebar-bg-dt:                       $bg-elevation-3 !default;
+$sidebar-border-width-dt:             0 !default;
+$sidebar-border-color-dt:             transparent !default;
+$sidebar-brand-color-dt:              inherit !default;
+$sidebar-brand-bg-dt:                 rgba($black, .2) !default;
+$sidebar-footer-bg-dt:                rgba($black, .2) !default;
+$sidebar-header-bg-dt:                rgba($black, .2) !default;
+$sidebar-toggler-bg-dt:               rgba($black, .2) !default;
+$sidebar-toggler-hover-bg-dt:         rgba($black, .3) !default;
+$sidebar-nav-title-color-dt:                 $medium-emphasis-dt !default;
+$sidebar-nav-link-color-dt:                  $medium-emphasis-dt !default;
+$sidebar-nav-link-bg-dt:                     transparent !default;
+$sidebar-nav-link-icon-color-dt:             $medium-emphasis-dt !default;
+$sidebar-nav-link-hover-color-dt:            $high-emphasis-dt !default;
+$sidebar-nav-link-hover-bg-dt:               rgba($white, .05) !default;
+$sidebar-nav-link-hover-icon-color-dt:       $high-emphasis-dt !default;
+
+$sidebar-nav-link-active-color-dt:           $high-emphasis-dt !default;
+$sidebar-nav-link-active-bg-dt:              rgba($white, .05) !default;
+$sidebar-nav-link-active-icon-color-dt:      $high-emphasis-dt !default;
+
+$sidebar-nav-link-disabled-color-dt:         $disabled-dt !default;
+$sidebar-nav-link-disabled-icon-color-dt:    $sidebar-nav-link-icon-color-dt !default;
+
+$sidebar-nav-group-bg-dt:                    rgba(0, 0, 0, .2) !default;
+$sidebar-nav-group-toggle-show-color-dt:     $sidebar-nav-link-color-dt !default;
+
+$sidebar-nav-group-indicator-color-dt:        $medium-emphasis-dt !default;
+$sidebar-nav-group-indicator-icon-dt:         url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='#{$sidebar-nav-group-indicator-color-dt}'><path fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/></svg>") !default;
+$sidebar-nav-group-indicator-hover-color-dt:  $sidebar-nav-link-hover-color-dt !default;
+$sidebar-nav-group-indicator-hover-icon-dt:   url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='#{$sidebar-nav-group-indicator-hover-color-dt}'><path fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/></svg>") !default;
+
+$sidebar-theme-map: (
+  "sidebar-color":                            $sidebar-color-dt,
+  "sidebar-bg":                               $sidebar-bg-dt,
+  "sidebar-border-width":                     $sidebar-border-width-dt,
+  "sidebar-border-color":                     $sidebar-border-color-dt,
+  "sidebar-brand-color":                      $sidebar-brand-color-dt,
+  "sidebar-brand-bg":                         $sidebar-brand-bg-dt,
+  "sidebar-footer-bg":                        $sidebar-footer-bg-dt,
+  "sidebar-header-bg":                        $sidebar-header-bg-dt,
+  "sidebar-toggler-bg":                       $sidebar-toggler-bg-dt,
+  "sidebar-toggler-hover-bg":                 $sidebar-toggler-hover-bg-dt,
+  "sidebar-nav-title-color":                  $sidebar-nav-title-color-dt,
+  "sidebar-nav-link-color":                   $sidebar-nav-link-color-dt,
+  "sidebar-nav-link-bg":                      $sidebar-nav-link-bg-dt,
+  "sidebar-nav-link-icon-color":              $sidebar-nav-link-icon-color-dt,
+  "sidebar-nav-link-hover-color":             $sidebar-nav-link-hover-color-dt,
+  "sidebar-nav-link-hover-bg":                $sidebar-nav-link-hover-bg-dt,
+  "sidebar-nav-link-hover-icon-color":        $sidebar-nav-link-hover-icon-color-dt,
+  "sidebar-nav-link-active-color":            $sidebar-nav-link-active-color-dt,
+  "sidebar-nav-link-active-bg":               $sidebar-nav-link-active-bg-dt,
+  "sidebar-nav-link-active-icon-color":       $sidebar-nav-link-active-icon-color-dt,
+  "sidebar-nav-link-disabled-color":          $sidebar-nav-link-disabled-color-dt,
+  "sidebar-nav-link-disabled-icon-color":     $sidebar-nav-link-disabled-icon-color-dt,
+  "sidebar-nav-group-bg":                     $sidebar-nav-group-bg-dt,
+  "sidebar-nav-group-toggle-show-color":      $sidebar-nav-group-toggle-show-color-dt,
+  "sidebar-nav-group-indicator-color":        $sidebar-nav-group-indicator-color-dt,
+  "sidebar-nav-group-indicator-icon":         $sidebar-nav-group-indicator-icon-dt,
+  "sidebar-nav-group-indicator-hover-color":  $sidebar-nav-group-indicator-hover-color-dt,
+  "sidebar-nav-group-indicator-hover-icon":   $sidebar-nav-group-indicator-hover-icon-dt,
+) !default;
+
+$table-color-dt:              $body-color-dt !default;
+$table-bg-dt:                 transparent !default;
+$table-border-color-dt:       $border-color-dt !default;
+
+$table-striped-color-dt:      $table-color-dt !default;
+$table-striped-bg-factor-dt:  .05 !default;
+$table-striped-bg-dt:         rgba($white, $table-striped-bg-factor-dt) !default;
+
+$table-active-color-dt:       $table-color-dt !default;
+$table-active-bg-factor-dt:   .1 !default;
+$table-active-bg-dt:          rgba($black, $table-active-bg-factor-dt) !default;
+
+$table-hover-color-dt:        $table-color-dt !default;
+$table-hover-bg-factor-dt:    .075 !default;
+$table-hover-bg-dt:           rgba($black, $table-hover-bg-factor-dt) !default;
+
+$table-theme-map: (
+  "table-color":          $table-color-dt,
+  "table-bg":             $table-bg-dt,
+  "table-border-color":   $table-border-color-dt,
+  "table-striped-color":  $table-striped-color-dt,
+  "table-striped-bg":     $table-striped-bg-dt,
+  "table-active-color":   $table-active-color-dt,
+  "table-active-bg":      $table-active-bg-dt,
+  "table-hover-color":    $table-hover-color-dt,
+  "table-hover-bg":       $table-hover-bg-dt
+) !default;
+
+$table-variants-dt: (
+  "primary":    table-color-map(shift-color($primary-dt, $table-bg-scale)),
+  "secondary":  table-color-map(shift-color($secondary-dt, $table-bg-scale)),
+  "success":    table-color-map(shift-color($success-dt, $table-bg-scale)),
+  "info":       table-color-map(shift-color($info-dt, $table-bg-scale)),
+  "warning":    table-color-map(shift-color($warning-dt, $table-bg-scale)),
+  "danger":     table-color-map(shift-color($danger-dt, $table-bg-scale)),
+  "light":      table-color-map($light-dt, $body-bg-dt),
+  "dark":       table-color-map($dark-dt, $body-bg-dt)
+) !default;
+
+// Toast
+
+$toast-bg-dt:                   $bg-elevation-16 !default;
+$toast-color-dt:                $body-color-dt !default;
+$toast-border-color-dt:         transparent !default;
+
+$toast-header-color-dt:         $body-color-dt !default;
+$toast-header-bg-dt:            $bg-elevation-24 !default;
+$toast-header-border-color-dt:  rgba($black, .2) !default;
+
+$toast-theme-map: (
+  "toast-bg":                   $toast-bg-dt,
+  "toast-color":                $toast-color-dt,
+  "toast-border-color":         $toast-border-color-dt,
+  "toast-header-color":         $toast-header-color-dt,
+  "toast-header-bg":            $toast-header-bg-dt,
+  "toast-header-border-color":  $toast-header-border-color-dt
+) !default;
+
+// Calendar & Date & Time Pickers
+
+$calendar-nav-border-color-dt:               $border-color-dt !default;
+$calendar-nav-date-color-dt:                 $body-color-dt !default;
+$calendar-nav-date-hover-color-dt:           $primary-dt !default;
+$calendar-cell-header-inner-color-dt:        $medium-emphasis-dt !default;
+$calendar-cell-hover-bg-dt:                  rgba($black, .25) !default;
+$calendar-cell-disabled-color-dt:            $disabled-dt !default;
+$calendar-cell-selected-bg-dt:               $primary-dt !default;
+$calendar-cell-range-bg-dt:                  tint-color($primary-dt, 25%) !default;
+$calendar-cell-range-hover-bg-dt:            tint-color($primary-dt, 12.5%) !default;
+$calendar-cell-range-hover-border-color-dt:  $primary-dt !default;
+
+$calendar-theme-map: (
+  "calendar-nav-border":                     $calendar-nav-border-width solid $calendar-nav-border-color-dt,
+  "calendar-nav-date-color":                 $calendar-nav-date-color-dt,
+  "calendar-nav-date-hover-color":           $calendar-nav-date-hover-color-dt,
+  "calendar-cell-header-inner-color":        $calendar-cell-header-inner-color-dt,
+  "calendar-cell-hover-bg":                  $calendar-cell-hover-bg-dt,
+  "calendar-cell-disabled-color":            $calendar-cell-disabled-color-dt,
+  "calendar-cell-selected-bg":               $calendar-cell-selected-bg-dt,
+  "calendar-cell-range-bg":                  $calendar-cell-range-bg-dt,
+  "calendar-cell-range-hover-bg":            $calendar-cell-range-hover-bg-dt,
+  "calendar-cell-range-hover-border-color":  $calendar-cell-range-hover-border-color-dt
+) !default;
+
+$date-picker-timepicker-border-color-dt:  $border-color-dt !default;
+
+$date-picker-theme-map: (
+  "date-picker-timepicker-border-top":  $date-picker-timepicker-border-width solid $date-picker-timepicker-border-color-dt
+) !default;
+
+$picker-footer-border-color-dt:  $border-color-dt !default;
+
+$picker-theme-map: (
+  "input-bg":                        $input-bg-dt,
+  "input-group-addon-border-color":  transparent,
+  "picker-footer-border-top":        $picker-footer-border-width solid $picker-footer-border-color-dt
+) !default;
+
+$time-picker-roll-col-color-dt:     $border-color-dt !default;
+
+$time-picker-theme-map: (
+  "time-picker-roll-col-border":  $time-picker-roll-col-border-width solid $time-picker-roll-col-color-dt
+) !default;
+
+$theme-map: (
+  "root":               map-merge($theme-root-dt, $link-theme-map),
+  "utilities": (
+    "bg":               $theme-colors-dt,
+    "text":             $theme-colors-dt
+  ),
+  "accordion":          $accordion-theme-map,
+  "breadcrumb":         $breadcrumb-theme-map,
+  "btn-close":          $close-theme-map,
+  "btn-link":           $btn-link-theme-map,
+  "calendar":           $calendar-theme-map,
+  "date-picker":        $date-picker-theme-map,
+  "card":               $card-theme-map,
+  "dropdown-menu":      $dropdown-theme-map,
+  "footer":             $footer-theme-map,
+  "form-control":       $form-control-theme-map,
+  "form-check":         $form-check-theme-map,
+  "form-select":        $form-select-theme-map,
+  "form-multi-select":  $form-multi-select-theme-map,
+  "header":             $header-theme-map,
+  "input-group":        $input-group-theme-map,
+  "list-group":         $list-group-theme-map,
+  "modal":              $modal-theme-map,
+  "nav":                $nav-theme-map,
+  "offcanvas":          $offcanvas-theme-map,
+  "pagination":         $pagination-theme-map,
+  "picker":             $picker-theme-map,
+  "popover":            $popover-theme-map,
+  "progress":           $progress-theme-map,
+  "sidebar":            $sidebar-theme-map,
+  "table":              map-merge($table-theme-map, $table-variants-dt),
+  "time-picker":        $time-picker-theme-map,
+  "toast":              $toast-theme-map
+) !default;

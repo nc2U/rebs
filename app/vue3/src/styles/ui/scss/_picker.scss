@@ -1,0 +1,118 @@
+.picker {
+  // scss-docs-start picker-css-vars
+  --#{$prefix}picker-footer-border-top: #{$picker-footer-border-width} solid #{$picker-footer-border-color};
+  --#{$prefix}picker-footer-padding: #{$picker-footer-padding};
+  // scss-docs-end picker-css-vars
+
+  .dropdown-menu {
+    padding: 0;
+  }
+
+  &.show {
+    .input-group {
+      color: var(--#{$prefix}input-focus-color, $input-focus-color);
+      background-color: var(--#{$prefix}input-focus-bg, $input-focus-bg);
+      border-color: var(--#{$prefix}input-focus-border-color, $input-focus-border-color);
+      outline: 0;
+      @if $enable-shadows {
+        @include box-shadow($input-box-shadow, $input-focus-box-shadow);
+      } @else {
+        // Avoid using mixin so we can pass custom focus shadow properly
+        box-shadow: $input-focus-box-shadow;
+      }
+    }
+  }
+}
+
+.picker-input-group {
+  &:hover {
+    .form-control:not(:placeholder-shown) ~ .input-group-text {
+      .picker-input-group-indicator:not(:last-child) {
+        display: none;
+      }
+      .picker-input-group-cleaner {
+        display: initial;
+      }
+    }
+  }
+
+  .form-control {
+    &.hover {
+      color: var(--cui-gray-500);
+    }
+
+    &:focus {
+      border-color: var(--#{$prefix}input-border-color, $input-border-color);
+      outline: 0;
+      box-shadow: none;
+    }
+
+    &:not(:first-child) {
+      @include ltr-rtl("border-left", 0);
+    }
+
+    &:not(:last-child) {
+      @include ltr-rtl("border-right", 0);
+    }
+
+    &[readonly] {
+      background-color: var(--#{$prefix}input-bg, $input-bg);
+    }
+
+    &.form-control:disabled + .input-group-text {
+      background-color: var(--#{$prefix}input-disabled-bg, $input-disabled-bg);
+    }
+  }
+
+  &.input-group {
+    @include border-radius($input-border-radius, 0);
+  }
+
+  &.input-group-lg {
+    @include border-radius($input-border-radius-lg, 0);
+
+    .picker-input-group-icon {
+      width: 1.25rem;
+      height: 1.25rem;
+      font-size: 1.25rem;
+    }
+  }
+
+  &.input-group-sm {
+    @include border-radius($input-border-radius-sm, 0);
+
+    .picker-input-group-icon {
+      width: .875rem;
+      height: .875rem;
+      font-size: .875rem;
+    }
+  }
+
+  .input-group-text {
+    color: var(--cui-gray-400);
+    background-color: var(--#{$prefix}input-bg, $input-bg);
+  }
+}
+
+.picker-input-group-cleaner {
+  display: none;
+}
+
+.picker-input-group-icon {
+  display: block;
+  width: 1rem;
+  height: 1rem;
+  font-size: 1rem;
+  @include transition(background-image .15s ease-in-out);
+}
+
+.picker-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: var(--#{$prefix}picker-footer-padding);
+  border-top: var(--#{$prefix}picker-footer-border-top);
+
+  .btn + .btn {
+    @include ltr-rtl("margin-left", .5rem);
+  }
+}

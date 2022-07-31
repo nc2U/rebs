@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { CContainer } from '@coreui/vue-pro'
+import { CContainer } from '@coreui/vue'
 import AppAside from '@/layouts/containers/AppAside.vue'
 import AppFooter from '@/layouts/containers/AppFooter.vue'
 import AppHeader from '@/layouts/containers/AppHeader.vue'

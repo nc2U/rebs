@@ -1,0 +1,86 @@
+.time-picker {
+  // scss-docs-start time-picker-css-vars
+  --#{$prefix}time-picker-body-padding: #{$time-picker-body-padding};
+  --#{$prefix}time-picker-roll-col-border: #{$time-picker-roll-col-border-width} solid #{$time-picker-roll-col-border-color};
+  // scss-docs-end time-picker-css-vars
+}
+
+.time-picker-body {
+  display: flex;
+  align-items: center;
+  padding: var(--#{$prefix}time-picker-body-padding);
+
+  .form-select {
+    padding-right: 1.25rem;
+    background-position: right .5rem center;
+
+    + .form-select {
+      margin-left: $spacer * .5;
+    }
+
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    scrollbar-width: none;  /* Firefox */
+
+    &::-webkit-scrollbar {
+      width: 10px;
+    }
+  }
+
+  .time-picker-inline-icon {
+    display: block;
+    width: 40px;
+    height: 1.25rem;
+    background-image: escape-svg($time-picker-default-icon);
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+}
+
+.time-picker-cleaner-icon {
+  background-image: escape-svg($time-picker-cleaner-icon);
+
+  &:hover {
+    background-image: escape-svg($time-picker-cleaner-icon-hover);
+  }
+}
+
+.time-picker-input-icon {
+  background-image: escape-svg($time-picker-default-icon);
+}
+
+.time-picker-roll {
+  padding: 0;
+  overflow: hidden;
+  border-radius: inherit; // stylelint-disable-line
+}
+
+.time-picker-roll-col {
+  height: calc(8 * 32px); // stylelint-disable-line
+  overflow: scroll;
+  border-right: var(--#{$prefix}time-picker-roll-col-border);
+
+  -ms-overflow-style: none;  /* Internet Explorer 10+ */
+  scrollbar-width: none;  /* Firefox */
+
+  &::-webkit-scrollbar {
+    display: none;  /* Safari and Chrome */
+  }
+}
+
+.time-picker-roll-cell {
+  width: 50px;
+  height: 32px;
+  padding: 0 $spacer 0 $spacer * .5;
+  line-height: 32px;
+
+  &.selected {
+    color: var(--cui-white);
+    background: var(--cui-primary);
+  }
+
+  &:last-child::after {
+    display: block;
+    height: calc(7 * 32px); // stylelint-disable-line
+    content: "";
+  }
+}

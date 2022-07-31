@@ -1,0 +1,23 @@
+//
+// Loading button
+//
+
+.btn-loading {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-loading-spinner {
+  @include ltr-rtl("margin-right", $spacer);
+  @include ltr-rtl("margin-left", ($spacer * -2));
+  opacity: 0;
+  @include transition(margin .15s, opacity .15s, border .15s);
+}
+
+.btn-loading.is-loading {
+  .btn-loading-spinner {
+    width: 1rem;
+    @include ltr-rtl("margin-left", 0);
+    opacity: 1;
+  }
+}

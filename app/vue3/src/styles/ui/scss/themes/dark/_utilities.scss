@@ -1,0 +1,74 @@
+// Utilities maps
+
+$utilities-colors-dt: $theme-colors-rgb-dt !default;
+$utilities-text-dt: map-merge(
+  $utilities-colors,
+  (
+    "black": to-rgb($black),
+    "white": to-rgb($white),
+    "body": to-rgb($body-color-dt),
+    "high-emphasis": to-rgb($high-emphasis-dt),
+    "medium-emphasis": to-rgb($medium-emphasis-dt),
+    "disabled": to-rgb($disabled-dt)
+  )
+) !default;
+$utilities-text-colors-dt: map-loop($utilities-text-dt, rgba-css-var, "$key", "text") !default;
+$utilities-bg-dt: map-merge(
+  $utilities-colors-dt,
+  (
+    "black": to-rgb($black),
+    "white": to-rgb($white),
+    "body": to-rgb($body-bg-dt)
+  )
+) !default;
+$utilities-bg-colors-dt: map-loop($utilities-bg-dt, rgba-css-var, "$key", "bg") !default;
+
+// stylelint-disable-next-line scss/dollar-variable-default
+$utilities: ();
+// stylelint-disable-next-line scss/dollar-variable-default
+$utilities: map-merge(
+  (
+    "color": (
+      property: color,
+      class: text,
+      values: map-merge(
+        $utilities-text-colors-dt,
+        (
+          "reset": inherit
+        )
+      ),
+      only-vars: true,
+      theme-prefix: true,
+    ),
+    "background-color": (
+      property: background-color,
+      class: bg,
+      local-vars: (
+        "bg-opacity": 1
+      ),
+      values: map-merge(
+        $utilities-bg-colors-dt,
+        (
+          "transparent": transparent
+        )
+      ),
+      vars: true,
+      theme-prefix: true
+    ),
+    "bg-opacity": (
+      css-var: true,
+      class: bg-opacity,
+      values: (
+        10: .1,
+        25: .25,
+        50: .5,
+        75: .75,
+        100: 1
+      ),
+      // only-vars: true,
+      theme-prefix: true,
+    ),
+  ),
+  $utilities
+);
+

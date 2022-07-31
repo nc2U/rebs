@@ -1,0 +1,102 @@
+.date-picker {
+  // scss-docs-start date-picker-css-vars
+  --#{$prefix}date-picker-ranges-width: #{$date-picker-ranges-width};
+  --#{$prefix}date-picker-ranges-padding: #{$date-picker-ranges-padding};
+  --#{$prefix}date-picker-ranges-border: #{$date-picker-ranges-border-width} solid #{$date-picker-ranges-border-color};
+  --#{$prefix}date-picker-timepicker-width: #{$date-picker-timepicker-width};
+  --#{$prefix}date-picker-timepicker-border-top: #{$date-picker-timepicker-border-width} solid #{$date-picker-timepicker-border-color};
+  // scss-docs-end date-picker-css-vars
+
+  .dropdown-menu {
+    width: min-content;
+  }
+}
+
+.date-picker-body {
+  display: grid;
+  grid-template-areas:
+    "ranges calendars"
+    "ranges timepickers";
+  grid-template-rows: auto;
+  grid-template-columns: auto auto;
+
+}
+
+.date-picker-ranges {
+  grid-area: ranges;
+  width: var(--#{$prefix}date-picker-ranges-width);
+  padding: var(--#{$prefix}date-picker-ranges-padding);
+  border-right: var(--#{$prefix}date-picker-ranges-border);
+}
+
+.date-picker-calendars {
+  display: flex;
+  grid-area: calendars;
+
+  .date-picker-calendar {
+    &:not(:last-child) {
+      .calendar-navigation-next {
+        visibility: hidden;
+      }
+    }
+    &:not(:first-child) {
+      .calendar-navigation-prev {
+        visibility: hidden;
+      }
+    }
+  }
+}
+
+.date-picker-arrow-icon {
+  @include ltr-rtl-value-only("background-image", escape-svg($date-picker-separator-icon), escape-svg($date-picker-separator-icon-rtl));
+}
+
+.date-picker-cleaner-icon {
+  background-image: escape-svg($date-picker-cleaner-icon);
+
+  &:hover {
+    background-image: escape-svg($date-picker-cleaner-icon-hover);
+  }
+}
+
+.date-picker-input-icon {
+  background-image: escape-svg($date-picker-default-icon);
+}
+
+.date-picker-timepickers {
+  display: flex;
+  flex-wrap: wrap;
+  grid-area: timepickers;
+  justify-content: space-between;
+  border-top: var(--#{$prefix}date-picker-timepicker-border-top);
+
+  .time-picker {
+    width: var(--#{$prefix}date-picker-timepicker-width);
+
+    .form-select {
+      width: initial;
+      padding-right: .25rem;
+      padding-left: .25rem;
+      text-align: right;
+      background: none;
+      border: 0;
+
+      &:disabled {
+        color: $text-disabled;
+        background-color: transparent;
+      }
+    }
+  }
+
+  @include media-breakpoint-down(md) {
+    display: block;
+
+    .time-picker {
+      width: 100%;
+
+      + .time-picker {
+        border-top: var(--#{$prefix}date-picker-timepicker-border-top);
+      }
+    }
+  }
+}

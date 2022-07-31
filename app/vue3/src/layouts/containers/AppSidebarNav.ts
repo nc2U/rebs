@@ -7,7 +7,7 @@ import {
   CNavItem,
   CSidebarNav,
   CNavTitle,
-} from '@coreui/vue-pro'
+} from '@coreui/vue'
 import { CIcon } from '@coreui/icons-vue'
 import nav from '@/layouts/_nav'
 

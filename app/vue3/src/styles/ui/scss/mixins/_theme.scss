@@ -1,0 +1,52 @@
+@mixin theme-variants($map, $state, $component) {
+  $selector: &;
+  $selector-with-prefix: selector-replace($selector, ".#{$component}", ".#{$theme-prefix}\\:#{$component}");
+  @at-root #{$selector-with-prefix}-#{$state}, &-#{$state}:not([class*="#{$theme-prefix}:"]) {
+    @each $name, $value in $map {
+      @if $value != null {
+        // TODO: find solution
+        @if $name == "border" {
+          $name: "border-color";
+        }
+
+        --#{$prefix}#{$component}-#{$name}: #{$value};
+      }
+    }
+  }
+}
+
+@mixin theme-colors($map, $class) {
+  @each $name, $value in $map {
+    --#{$prefix}#{$class}-#{$name}: #{$value};
+  }
+}
+
+@mixin theme-components($map, $component: null) {
+  @each $name, $value in $map {
+    @if $value != null {
+      @if type-of($value) != "map" {
+        --#{$prefix}#{$name}: #{$value};
+      }
+      @else {
+        @include theme-variants($value, $name, $component);
+      }
+    }
+  }
+}
+
+@mixin theme($map) {
+  @each $name, $value in $map {
+    @if $name == "root" {
+      @include theme-components($value, $name);
+    }
+    @else if $name == "utilities" {
+      @each $class, $variants in $value {
+        @include theme-colors($variants, $class);
+      }
+    } @else {
+      .#{$name} {
+        @include theme-components($value, $name);
+      }
+    }
+  }
+}
