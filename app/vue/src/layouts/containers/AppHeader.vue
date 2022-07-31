@@ -5,6 +5,7 @@ import AppBreadcrumb from './AppBreadcrumb.vue'
 import AppHeaderDropdownAccnt from './AppHeaderDropdownAccnt.vue'
 import { directive as vFullscreen } from 'vue-fullscreen'
 import { logo } from '@/assets/brand/current-logo'
+import TagsView from '@/layouts/containers/TagsView/index.vue'
 
 const store = useStore()
 const screenIcon = ref('mdi-fullscreen')
@@ -21,7 +22,7 @@ const isAuthorized = store.getters['accounts/isAuthorized']
 </script>
 
 <template>
-  <CHeader position="sticky" class="mb-4">
+  <CHeader position="sticky" class="mb-4 pb-0">
     <CContainer fluid>
       <CHeaderToggler class="ps-1" @click="$store.commit('toggleSidebar')">
         <CIcon icon="cil-menu" size="lg" />
@@ -41,11 +42,11 @@ const isAuthorized = store.getters['accounts/isAuthorized']
         </CHeaderToggler>
         <CButtonGroup aria-label="Theme switch">
           <CFormCheck
+            id="btn-light-theme"
             type="radio"
             :button="{ color: 'primary' }"
             name="theme-switch"
-            id="btn-light-theme"
-            autoComplete="off"
+            auto-complete="off"
             :checked="$store.state.theme === 'default'"
             @change="
               event =>
@@ -60,11 +61,11 @@ const isAuthorized = store.getters['accounts/isAuthorized']
             </template>
           </CFormCheck>
           <CFormCheck
+            id="btn-dark-theme"
             type="radio"
             :button="{ color: 'primary' }"
             name="theme-switch"
-            id="btn-dark-theme"
-            autoComplete="off"
+            auto-complete="off"
             :checked="$store.state.theme === 'dark'"
             @change="
               event =>
@@ -82,8 +83,8 @@ const isAuthorized = store.getters['accounts/isAuthorized']
       </CHeaderNav>
       <CHeaderNav class="ms-3 me-4">
         <AppHeaderDropdownAccnt
-          :userInfo="userInfo"
           v-if="isAuthorized && userInfo"
+          :user-info="userInfo"
         />
         <router-link
           v-else
@@ -101,9 +102,9 @@ const isAuthorized = store.getters['accounts/isAuthorized']
         />
       </CHeaderToggler>
     </CContainer>
-    <CHeaderDivider />
-    <CContainer fluid>
-      <!--      <AppBreadcrumb />-->
+    <CHeaderDivider class="mb-0" />
+    <CContainer fluid class="px-3">
+      <TagsView />
     </CContainer>
   </CHeader>
 </template>
