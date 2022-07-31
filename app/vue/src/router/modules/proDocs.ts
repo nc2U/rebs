@@ -19,6 +19,7 @@ const proDocs = {
         store.state.accounts.userInfo.staffauth?.project_docs > '0'
           ? import('@/views/proDocs/GeneralDocs/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
+      meta: { title: '현장 일반문서' },
     },
     {
       path: 'lawsuit',
@@ -38,6 +39,7 @@ const proDocs = {
             store.state.accounts.userInfo.staffauth?.project_docs > '0'
               ? import('@/views/proDocs/LawsuitDocs/Index.vue')
               : import('@/views/_Accounts/NoAuth.vue'),
+          meta: { title: '현장 소송문서' },
         },
         {
           path: 'case',
@@ -47,6 +49,7 @@ const proDocs = {
             store.state.accounts.userInfo.staffauth?.project_docs > '0'
               ? import('@/views/proDocs/LawsuitCase/Index.vue')
               : import('@/views/_Accounts/NoAuth.vue'),
+          meta: { title: '현장 소송사건' },
         },
       ],
     },

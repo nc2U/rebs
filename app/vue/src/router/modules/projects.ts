@@ -29,6 +29,7 @@ const projects = {
             store.state.accounts.userInfo.staffauth?.project > '0'
               ? import('@/views/projects/List/Index.vue')
               : import('@/views/_Accounts/NoAuth.vue'),
+          meta: { title: '프로젝트 등록' },
         },
         {
           path: 'order',
@@ -38,6 +39,7 @@ const projects = {
             store.state.accounts.userInfo.staffauth?.project > '0'
               ? import('@/views/projects/OrderGroup/Index.vue')
               : import('@/views/_Accounts/NoAuth.vue'),
+          meta: { title: '차수분류 등록' },
         },
         {
           path: 'type',
@@ -47,6 +49,7 @@ const projects = {
             store.state.accounts.userInfo.staffauth?.project > '0'
               ? import('@/views/projects/Type/Index.vue')
               : import('@/views/_Accounts/NoAuth.vue'),
+          meta: { title: '타입정보 등록' },
         },
         {
           path: 'floor',
@@ -56,6 +59,7 @@ const projects = {
             store.state.accounts.userInfo.staffauth?.project > '0'
               ? import('@/views/projects/Floor/Index.vue')
               : import('@/views/_Accounts/NoAuth.vue'),
+          meta: { title: '층별조건 등록' },
         },
       ],
     },
@@ -77,6 +81,7 @@ const projects = {
             store.state.accounts.userInfo.staffauth?.project > '0'
               ? import('@/views/projects/Building/Index.vue')
               : import('@/views/_Accounts/NoAuth.vue'),
+          meta: { title: '동(건물) 등록' },
         },
         {
           path: 'unit',
@@ -86,6 +91,7 @@ const projects = {
             store.state.accounts.userInfo.staffauth?.project > '0'
               ? import('@/views/projects/Unit/Index.vue')
               : import('@/views/_Accounts/NoAuth.vue'),
+          meta: { title: '호(유닛) 등록' },
         },
         {
           path: 'price',
@@ -95,6 +101,7 @@ const projects = {
             store.state.accounts.userInfo.staffauth?.project > '0'
               ? import('@/views/projects/Price/Index.vue')
               : import('@/views/_Accounts/NoAuth.vue'),
+          meta: { title: '공급가격 등록' },
         },
         {
           path: 'payment-order',
@@ -104,6 +111,7 @@ const projects = {
             store.state.accounts.userInfo.staffauth?.project > '0'
               ? import('@/views/projects/PayOrder/Index.vue')
               : import('@/views/_Accounts/NoAuth.vue'),
+          meta: { title: '납부회차 등록' },
         },
         {
           path: 'down-payment',
@@ -113,6 +121,7 @@ const projects = {
             store.state.accounts.userInfo.staffauth?.project > '0'
               ? import('@/views/projects/DownPay/Index.vue')
               : import('@/views/_Accounts/NoAuth.vue'),
+          meta: { title: '계약조건 등록' },
         },
       ],
     },
@@ -134,6 +143,7 @@ const projects = {
             store.state.accounts.userInfo.staffauth?.project > '0'
               ? import('@/views/projects/SiteList/Index.vue')
               : import('@/views/_Accounts/NoAuth.vue'),
+          meta: { title: '지번목록 관리' },
         },
         {
           path: 'owner',
@@ -143,6 +153,7 @@ const projects = {
             store.state.accounts.userInfo.staffauth?.project > '0'
               ? import('@/views/projects/SiteOwner/Index.vue')
               : import('@/views/_Accounts/NoAuth.vue'),
+          meta: { title: '소유자별 관리' },
         },
         {
           path: 'contract',
@@ -152,6 +163,7 @@ const projects = {
             store.state.accounts.userInfo.staffauth?.project > '0'
               ? import('@/views/projects/SiteContract/Index.vue')
               : import('@/views/_Accounts/NoAuth.vue'),
+          meta: { title: '매입계약 관리' },
         },
       ],
     },

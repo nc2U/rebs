@@ -19,6 +19,7 @@ const comCash = {
         store.state.accounts.userInfo.staffauth?.company_cash > '0'
           ? import('@/views/comCash/Status/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
+      meta: { title: '본사자금 현황' },
     },
     {
       path: 'index',
@@ -28,6 +29,7 @@ const comCash = {
         store.state.accounts.userInfo.staffauth?.company_cash > '0'
           ? import('@/views/comCash/Manage/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
+      meta: { title: '본사출납 관리' },
     },
   ],
 }

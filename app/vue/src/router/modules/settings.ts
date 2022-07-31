@@ -19,6 +19,7 @@ const settings = {
         store.state.accounts.userInfo.staffauth?.company_settings > '0'
           ? import('@/views/settings/Company/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
+      meta: { title: '회사정보 관리' },
     },
     {
       path: 'authorization',
@@ -28,11 +29,13 @@ const settings = {
         store.state.accounts.userInfo.staffauth?.auth_manage > '0'
           ? import('@/views/settings/Authorization/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
+      meta: { title: '권한설정 관리' },
     },
     {
       path: 'profile',
       name: '프로필 관리',
       component: () => import('@/views/settings/Profile/Index.vue'),
+      meta: { title: '프로필 관리' },
     },
   ],
 }

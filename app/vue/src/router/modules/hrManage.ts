@@ -19,6 +19,7 @@ const hrManage = {
         store.state.accounts.userInfo.staffauth?.human_resource > '0'
           ? import('@/views/hrManage/Employee/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
+      meta: { title: '직원정보 관리' },
     },
     {
       path: 'department',
@@ -28,6 +29,7 @@ const hrManage = {
         store.state.accounts.userInfo.staffauth?.human_resource > '0'
           ? import('@/views/hrManage/Department/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
+      meta: { title: '부서정보 관리' },
     },
     // {
     //   path: 'rank',

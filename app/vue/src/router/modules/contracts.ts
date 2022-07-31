@@ -19,6 +19,7 @@ const contract = {
         store.state.accounts.userInfo.staffauth?.contract > '0'
           ? import('@/views/contracts/List/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
+      meta: { title: '계약내역 조회' },
     },
     {
       path: 'register',
@@ -28,6 +29,7 @@ const contract = {
         store.state.accounts.userInfo.staffauth?.contract > '0'
           ? import('@/views/contracts/Register/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
+      meta: { title: '계약등록 관리' },
     },
     {
       path: 'status',
@@ -37,6 +39,7 @@ const contract = {
         store.state.accounts.userInfo.staffauth?.contract > '0'
           ? import('@/views/contracts/Status/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
+      meta: { title: '동호수 현황표' },
     },
     {
       path: 'cancel',
@@ -46,6 +49,7 @@ const contract = {
         store.state.accounts.userInfo.staffauth?.contract > '0'
           ? import('@/views/contracts/Release/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
+      meta: { title: '계약해지 관리' },
     },
   ],
 }
