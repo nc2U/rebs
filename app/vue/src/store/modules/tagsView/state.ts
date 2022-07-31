@@ -1,15 +1,14 @@
 import { State } from '@/store'
 
-interface VisitedViews {
-  fullPath: string
+interface Meta {
+  title: string
+  affix: boolean
+}
+
+export interface VisitedViews {
   name: string
   path: string
-  title: string
-  meta: {
-    affix: string
-    icon: string
-    title: string
-  }
+  meta: Meta
 }
 
 interface CachedViews {

@@ -34,6 +34,7 @@ const routes: Array<RouteRecordRaw> = [
           import(
             /* webpackChunkName: "dashboard" */ '@/views/_Dashboard/index.vue'
           ),
+        meta: { title: '메인 페이지', affix: true },
       },
       {
         path: 'schedule',
@@ -42,6 +43,7 @@ const routes: Array<RouteRecordRaw> = [
           import(
             /* webpackChunkName: "schedule" */ '@/views/_Schedules/index.vue'
           ),
+        meta: { title: '일정 관리', affix: true },
       },
       contracts,
       payments,
