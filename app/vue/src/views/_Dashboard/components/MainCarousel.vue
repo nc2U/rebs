@@ -13,7 +13,7 @@ const imgSrc = [
       <v-carousel
         cycle
         height="400"
-        hide-delimiter-background
+        delimiter-icon="mdi-square"
         show-arrows="hover"
       >
         <v-carousel-item v-for="(img, i) in imgSrc" :key="i" :src="img" cover />
