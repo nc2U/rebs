@@ -22,7 +22,7 @@
 
 // DatePicker scss
 .dp__theme_dark {
-  --dp-background-color: #2F303A;
+  --dp-background-color: #2F303A !important;
   --dp-text-color: #ffffff;
   --dp-hover-color: #484848;
   --dp-hover-text-color: #ffffff;
@@ -30,8 +30,8 @@
   --dp-primary-color: #005cb2;
   --dp-primary-text-color: #ffffff;
   --dp-secondary-color: #a9a9a9;
-  --dp-border-color: #2d2d2d;
-  --dp-menu-border-color: #2d2d2d;
+  --dp-border-color: #42434C !important;
+  --dp-menu-border-color: #42434C !important;
   --dp-border-color-hover: #aaaeb7;
   --dp-disabled-color: #737373;
   --dp-scroll-bar-background: #212121;
@@ -51,8 +51,8 @@
   --dp-primary-color: #1976d2;
   --dp-primary-text-color: #f8f5f5;
   --dp-secondary-color: #c0c4cc;
-  --dp-border-color: #ddd;
-  --dp-menu-border-color: #ddd;
+  --dp-border-color: #B1B7C1 !important;
+  --dp-menu-border-color: #B1B7C1 !important;
   --dp-border-color-hover: #aaaeb7;
   --dp-disabled-color: #f6f6f6;
   --dp-scroll-bar-background: #f3f3f3;
