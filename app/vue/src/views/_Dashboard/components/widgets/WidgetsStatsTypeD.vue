@@ -9,9 +9,9 @@
           { title: 'feeds', value: '459' },
         ]"
       >
-        <template #icon
-          ><CIcon icon="cib-facebook" height="52" class="my-4 text-white"
-        /></template>
+        <template #icon>
+          <CIcon icon="cib-facebook" height="52" class="my-4 text-white" />
+        </template>
         <template #chart>
           <CChart
             class="position-absolute w-100 h-100"
@@ -51,9 +51,9 @@
           { title: 'tweets', value: '1.792' },
         ]"
       >
-        <template #icon
-          ><CIcon icon="cib-twitter" height="52" class="my-4 text-white"
-        /></template>
+        <template #icon>
+          <CIcon icon="cib-twitter" height="52" class="my-4 text-white" />
+        </template>
         <template #chart>
           <CChart
             class="position-absolute w-100 h-100"
@@ -93,9 +93,9 @@
           { title: 'feeds', value: '1.292' },
         ]"
       >
-        <template #icon
-          ><CIcon icon="cib-linkedin" height="52" class="my-4 text-white"
-        /></template>
+        <template #icon>
+          <CIcon icon="cib-linkedin" height="52" class="my-4 text-white" />
+        </template>
         <template #chart>
           <CChart
             class="position-absolute w-100 h-100"
@@ -129,15 +129,15 @@
     <CCol :sm="6" :lg="3">
       <CWidgetStatsD
         class="mb-4"
-        color="warning-gradient"
+        color="warning"
         :values="[
           { title: 'events', value: '12+' },
           { title: 'meetings', value: '4' },
         ]"
       >
-        <template #icon
-          ><CIcon icon="cil-calendar" height="52" class="my-4 text-white"
-        /></template>
+        <template #icon>
+          <CIcon icon="cil-calendar" height="52" class="my-4 text-white" />
+        </template>
         <template #chart>
           <CChart
             class="position-absolute w-100 h-100"
@@ -173,6 +173,7 @@
 
 <script>
 import { CChart } from '@coreui/vue-chartjs'
+
 export default {
   name: 'WidgetsStatsD',
   components: {

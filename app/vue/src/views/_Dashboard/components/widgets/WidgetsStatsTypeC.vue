@@ -32,8 +32,8 @@
                   <span class="progress-group-text"> Monday </span>
                 </div>
                 <div class="progress-group-bars">
-                  <CProgress thin color="info-gradient" :value="34" />
-                  <CProgress thin color="danger-gradient" :value="78" />
+                  <CProgress thin color="info" :value="34" />
+                  <CProgress thin color="danger" :value="78" />
                 </div>
               </div>
               <div class="progress-group mb-4">
@@ -41,8 +41,8 @@
                   <span class="progress-group-text"> Tuesday </span>
                 </div>
                 <div class="progress-group-bars">
-                  <CProgress thin :value="56" color="info-gradient" />
-                  <CProgress thin :value="94" color="danger-gradient" />
+                  <CProgress thin :value="56" color="info" />
+                  <CProgress thin :value="94" color="danger" />
                 </div>
               </div>
               <div class="progress-group mb-4">
@@ -50,8 +50,8 @@
                   <span class="progress-group-text"> Wednesday </span>
                 </div>
                 <div class="progress-group-bars">
-                  <CProgress thin :value="12" color="info-gradient" />
-                  <CProgress thin :value="67" color="danger-gradient" />
+                  <CProgress thin :value="12" color="info" />
+                  <CProgress thin :value="67" color="danger" />
                 </div>
               </div>
               <div class="progress-group mb-4">
@@ -59,8 +59,8 @@
                   <span class="progress-group-text"> Thursday </span>
                 </div>
                 <div class="progress-group-bars">
-                  <CProgress thin :value="43" color="info-gradient" />
-                  <CProgress thin :value="91" color="danger-gradient" />
+                  <CProgress thin :value="43" color="info" />
+                  <CProgress thin :value="91" color="danger" />
                 </div>
               </div>
               <div class="progress-group mb-4">
@@ -68,8 +68,8 @@
                   <span class="progress-group-text"> Friday </span>
                 </div>
                 <div class="progress-group-bars">
-                  <CProgress thin :value="22" color="info-gradient" />
-                  <CProgress thin :value="73" color="danger-gradient" />
+                  <CProgress thin :value="22" color="info" />
+                  <CProgress thin :value="73" color="danger" />
                 </div>
               </div>
               <div class="progress-group mb-4">
@@ -77,8 +77,8 @@
                   <span class="progress-group-text"> Saturday </span>
                 </div>
                 <div class="progress-group-bars">
-                  <CProgress thin :value="53" color="info-gradient" />
-                  <CProgress thin :value="82" color="danger-gradient" />
+                  <CProgress thin :value="53" color="info" />
+                  <CProgress thin :value="82" color="danger" />
                 </div>
               </div>
               <div class="progress-group mb-4">
@@ -86,8 +86,8 @@
                   <span class="progress-group-text"> Sunday </span>
                 </div>
                 <div class="progress-group-bars">
-                  <CProgress thin :value="9" color="info-gradient" />
-                  <CProgress thin :value="69" color="danger-gradient" />
+                  <CProgress thin :value="9" color="info" />
+                  <CProgress thin :value="69" color="danger" />
                 </div>
               </div>
             </CCol>
@@ -118,7 +118,7 @@
                   <span class="ms-auto font-weight-bold">43%</span>
                 </div>
                 <div class="progress-group-bars">
-                  <CProgress thin :value="43" color="warning-gradient" />
+                  <CProgress thin :value="43" color="warning" />
                 </div>
               </div>
               <div class="progress-group mb-5">
@@ -128,7 +128,7 @@
                   <span class="ms-auto font-weight-bold">37%</span>
                 </div>
                 <div class="progress-group-bars">
-                  <CProgress thin :value="37" color="warning-gradient" />
+                  <CProgress thin :value="37" color="warning" />
                 </div>
               </div>
               <div class="progress-group">
@@ -141,7 +141,7 @@
                   </span>
                 </div>
                 <div class="progress-group-bars">
-                  <CProgress thin :value="56" color="success-gradient" />
+                  <CProgress thin :value="56" color="success" />
                 </div>
               </div>
               <div class="progress-group">
@@ -159,7 +159,7 @@
                   </span>
                 </div>
                 <div class="progress-group-bars">
-                  <CProgress thin :value="15" color="success-gradient" />
+                  <CProgress thin :value="15" color="success" />
                 </div>
               </div>
               <div class="progress-group">
@@ -177,7 +177,7 @@
                   </span>
                 </div>
                 <div class="progress-group-bars">
-                  <CProgress thin :value="11" color="success-gradient" />
+                  <CProgress thin :value="11" color="success" />
                 </div>
               </div>
               <div class="progress-group">
@@ -195,7 +195,7 @@
                   </span>
                 </div>
                 <div class="progress-group-bars">
-                  <CProgress thin :value="8" color="success-gradient" />
+                  <CProgress thin :value="8" color="success" />
                 </div>
               </div>
             </CCol>

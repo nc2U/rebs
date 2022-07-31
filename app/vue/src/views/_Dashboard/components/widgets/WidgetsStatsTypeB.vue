@@ -38,7 +38,7 @@
               <strong>29.703 Users (40%)</strong>
               <CProgress
                 class="mt-2"
-                color="success-gradient"
+                color="success"
                 thin
                 :precision="1"
                 :value="40"
@@ -49,7 +49,7 @@
               <strong>24.093 Users (20%)</strong>
               <CProgress
                 class="mt-2"
-                color="info-gradient"
+                color="info"
                 thin
                 :precision="1"
                 :value="20"
@@ -60,7 +60,7 @@
               <strong>78.706 Views (60%)</strong>
               <CProgress
                 class="mt-2"
-                color="warning-gradient"
+                color="warning"
                 thin
                 :precision="1"
                 :value="60"
@@ -71,7 +71,7 @@
               <strong>22.123 Users (80%)</strong>
               <CProgress
                 class="mt-2"
-                color="danger-gradient"
+                color="danger"
                 thin
                 :precision="1"
                 :value="80"

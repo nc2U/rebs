@@ -2,7 +2,7 @@
   <CCol>
     <CRow>
       <CCol :xs="6">
-        <CWidgetStatsA class="mb-4" color="primary-gradient">
+        <CWidgetStatsA class="mb-4" color="primary">
           <template #value
             >26K
             <span class="fs-6 fw-normal">
@@ -97,7 +97,7 @@
         </CWidgetStatsA>
       </CCol>
       <CCol :xs="6">
-        <CWidgetStatsA class="mb-4" color="info-gradient">
+        <CWidgetStatsA class="mb-4" color="info">
           <template #value
             >$6.200
             <span class="fs-6 fw-normal">
@@ -193,7 +193,7 @@
     </CRow>
     <CRow>
       <CCol :xs="6">
-        <CWidgetStatsA class="mb-4" color="warning-gradient">
+        <CWidgetStatsA class="mb-4" color="warning">
           <template #value
             >2.49%
             <span class="fs-6 fw-normal">
@@ -274,7 +274,7 @@
         </CWidgetStatsA>
       </CCol>
       <CCol :xs="6">
-        <CWidgetStatsA class="mb-4" color="danger-gradient">
+        <CWidgetStatsA class="mb-4" color="danger">
           <template #value
             >44K
             <span class="fs-6 fw-normal">
