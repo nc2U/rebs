@@ -51,7 +51,7 @@ const actions = {
         dispatch('fetchTodoList')
         message('', '', '로그인 성공 알림!')
       })
-      .catch(err => errorHandle(err.response.data))
+      .catch(err => console.log(err.response.data))
   },
 
   loginByToken({ commit, dispatch }: any, token?: string) {
