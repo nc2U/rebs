@@ -1,0 +1,42 @@
+// Place SASS variable overrides here
+// $font-size-root: 18px;
+
+$font-size-base: .875rem !default;
+
+$link-decoration: none !default;
+$link-hover-decoration: underline !default;
+
+$white: #fff !default;
+$high-emphasis-inverse: $white !default;
+$medium-emphasis-inverse: rgba($white, .87) !default;
+$disabled-inverse: rgba($white, .45) !default;
+
+$sidebar-nav-link-transition: background .15s ease, color .3s ease !default;
+//$sidebar-nav-link-active-color: #39f !default;
+
+
+// datepicker variation
+
+// Transitions
+$dp__transition_length: 22px !default; // Passed to the translateX in animation
+$dp__transition_duration: .2s !default; // Transition duration
+
+// Sizing
+$dp__cell_size: 30px !default; // width and height of calendar cell
+$dp__menu_min_width: 230px !default; // Adjust the min width of the menu
+$dp__input_padding: 7px 10px !default; // padding in the input
+
+// Font sizes
+$dp__font_size: .875rem !default; // overall font-size
+$dp__preview_font_size: 0.8rem !default; // font size of the date preview in the action row
+
+// bootstrap
+$spacer: 1rem;
+$spacers: (
+        0: 0,
+        1: $spacer * .25,
+        2: $spacer * .5,
+        3: $spacer,
+        4: $spacer * 1.5,
+        5: $spacer * 3,
+);
