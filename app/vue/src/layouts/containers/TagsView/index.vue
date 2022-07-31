@@ -6,9 +6,6 @@ import { VisitedViews } from '@/store/modules/tagsView/state'
 import routes from '@/router/routes'
 // const routes = computed(() => store.state.permission.routes)
 
-const msg = ref('TagsView')
-const test = () => alert('aa')
-
 const visible = ref(false)
 const top = ref(0)
 const left = ref(0)
@@ -161,7 +158,6 @@ watch(visible, value => {
 onMounted(() => {
   initTags()
   addTags()
-  console.log(scrollPane.value)
 })
 </script>
 
@@ -191,7 +187,7 @@ onMounted(() => {
             size="x-small"
             class="mr-2"
           />
-          {{ tag.name }}
+          {{ tag.title }}
           <v-icon
             v-if="!isAffix(tag)"
             icon="mdi-close"
