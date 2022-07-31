@@ -1,15 +1,15 @@
 <template>
   <CContainer fluid>
     <CRow>
-      <CCol xxl="9">
+      <CCol xl="11" xxl="10">
         <MainCarousel />
       </CCol>
-      <CCol xxl="9">
+      <CCol xl="11" xxl="10">
         <CRow>
-          <CCol md="6">
+          <CCol lg="6">
             <TodoListApp />
           </CCol>
-          <CCol md="6">
+          <CCol lg="6">
             <WidgetsStatsA />
           </CCol>
         </CRow>
