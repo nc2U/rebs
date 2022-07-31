@@ -1,4 +1,5 @@
 import { createStore } from 'vuex'
+import tagsView from '@/store/modules/tagsView'
 import accounts from '@/store/modules/accounts'
 import comCash from '@/store/modules/comCash'
 import contract from '@/store/modules/contract'
@@ -72,6 +73,7 @@ const store: any = createStore({
   state,
   mutations,
   modules: {
+    tagsView,
     accounts,
     comCash,
     contract,
