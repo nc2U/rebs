@@ -1,12 +1,19 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import { useStore } from 'vuex'
 
 const msg = ref('TagsView')
 const test = () => alert('aa')
+
+const store = useStore()
+const dark = computed(() => store.state.theme === 'dark')
+const btnColor = computed(() =>
+  store.state.theme === 'dark' ? 'blue-grey' : '',
+)
 </script>
 
 <template>
-  <v-sheet max-width="100%" class="my-2">
+  <v-sheet max-width="100%" class="my-2" :class="{ dark }">
     <v-slide-group show-arrows>
       <v-slide-group-item
         v-for="n in 9"
@@ -14,11 +21,12 @@ const test = () => alert('aa')
         v-slot="{ isSelected, toggle }"
       >
         <v-btn
-          class="mx-1 my-0 text-gray"
+          class="mx-1 my-0 text-body"
+          :class="{ darkBtn: dark }"
           size="x-small"
           :border="true"
           :rounded="0"
-          :color="isSelected ? 'success' : undefined"
+          :color="isSelected ? 'success' : btnColor"
           @click="toggle"
         >
           <v-icon
@@ -43,5 +51,9 @@ const test = () => alert('aa')
 <style lang="scss" scoped>
 .close:hover {
   background: #ccc;
+}
+
+.dark {
+  background: #181924;
 }
 </style>
