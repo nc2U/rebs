@@ -69,7 +69,7 @@ const mutations = {
   },
 }
 
-const store: any = createStore({
+const store = createStore({
   state,
   mutations,
   modules: {
