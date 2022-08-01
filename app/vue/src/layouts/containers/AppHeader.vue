@@ -104,7 +104,7 @@ const isAuthorized = store.getters['accounts/isAuthorized']
     </CContainer>
     <CHeaderDivider class="mb-0" />
     <CContainer fluid class="px-3">
-      <!--      <TagsView />-->
+      <TagsView />
     </CContainer>
   </CHeader>
 </template>
