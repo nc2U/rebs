@@ -105,10 +105,6 @@ const closeMenu = () => {
   visible.value = false
 }
 
-const handleScroll = () => {
-  closeMenu()
-}
-
 watch(route, () => {
   addTags()
   moveToCurrentTag()
@@ -147,7 +143,7 @@ onMounted(() => {
           :border="true"
           :rounded="0"
           :color="isActive(tag) ? 'success' : btnColor"
-          :to="{ path: tag.path, query: tag.query, fullPath: tag.fullPath }"
+          :to="{ name: tag.name, query: tag.query, fullPath: tag.fullPath }"
         >
           <v-icon
             v-if="isActive(tag)"
