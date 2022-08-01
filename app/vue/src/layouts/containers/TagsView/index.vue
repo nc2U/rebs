@@ -65,7 +65,7 @@ const addTags = () => {
 }
 
 const moveToCurrentTag = () => {
-  const tags = tag.value
+  const tags = currentTag.value
   nextTick(() => {
     for (const tag of tags) {
       // Todo this logic update
