@@ -1,7 +1,20 @@
+<script lang="ts" setup>
+import { ref } from 'vue'
+
+const tabPanePillsActiveKey = ref(1)
+
+const emit = defineEmits(['tab-select'])
+
+const showTab = (num: number) => {
+  tabPanePillsActiveKey.value = num
+  emit('tab-select', num)
+}
+</script>
+
 <template>
   <CRow class="mb-3">
     <CCol md="8" lg="6" xl="5">
-      <CNav variant="underline" layout="justified">
+      <CNav variant="pills" layout="justified">
         <CNavItem>
           <CNavLink
             href="javascript:void(0);"
@@ -33,22 +46,3 @@
     </CCol>
   </CRow>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-
-export default defineComponent({
-  data() {
-    return {
-      tabPanePillsActiveKey: 1,
-    }
-  },
-  computed: {},
-  methods: {
-    showTab(num: number) {
-      this.tabPanePillsActiveKey = num
-      this.$emit('tab-select', num)
-    },
-  },
-})
-</script>
