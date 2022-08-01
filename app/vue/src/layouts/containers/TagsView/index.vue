@@ -48,12 +48,12 @@ const filterAffixTags = (routes: any[]) => {
   return tags
 }
 
-// const initTags = () => {
-//   affixTags = filterAffixTags(routes)
-// affixTags.forEach(tag =>
-//   tag.name ? store.dispatch('tagsView/addVisitedView', tag) : undefined,
-// )
-// }
+const initTags = () => {
+  affixTags = filterAffixTags(routes)
+  affixTags.forEach(tag =>
+    tag.name ? store.dispatch('tagsView/addVisitedView', tag) : undefined,
+  )
+}
 
 const addTags = () => {
   const { name } = route
@@ -155,7 +155,7 @@ watch(visible, value => {
 
 onMounted(() => {
   // initTags()
-  // addTags()
+  addTags()
 })
 </script>
 
