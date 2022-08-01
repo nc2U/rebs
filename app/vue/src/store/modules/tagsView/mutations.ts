@@ -2,7 +2,7 @@ import { TagsViewState } from '@/store/modules/tagsView/state'
 
 const mutations = {
   ADD_VISITED_VIEW: (state: TagsViewState, view: any) => {
-    if (state.visitedViews.some(v => v.path === view.path)) return
+    if (state.visitedViews.some(v => v.name === view.name)) return
     state.visitedViews.push(
       Object.assign({}, view, {
         title: view.meta.title || 'no-name',

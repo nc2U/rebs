@@ -4,7 +4,6 @@ import { useStore } from 'vuex'
 import { useRoute, useRouter } from 'vue-router'
 import { VisitedViews } from '@/store/modules/tagsView/state'
 import routes from '@/router/routes'
-// const routes = computed(() => store.state.permission.routes)
 
 const visible = ref(false)
 const top = ref(0)
@@ -33,17 +32,13 @@ const filterAffixTags = (routes: any[]) => {
   let tags: Array<VisitedViews> = []
   routes.forEach((r: any) => {
     if (r.meta && r.meta.affix) {
-      if (r.name !== route.name) {
-        tags.push({
-          path: r.path,
-          name: r.name,
-          meta: { ...r.meta },
-        })
-      }
-      console.log(r)
-      console.log('-----------------')
-      console.log(route.name)
+      tags.push({
+        path: r.path,
+        name: r.name,
+        meta: { ...r.meta },
+      })
     }
+
     if (r.children) {
       const tempTags = filterAffixTags(r.children)
       if (tempTags.length >= 1) {
@@ -51,7 +46,8 @@ const filterAffixTags = (routes: any[]) => {
       }
     }
   })
-  return tags.filter((v, i) => tags.indexOf(v) == i)
+  console.log(tags)
+  return tags
 }
 
 const initTags = () => {
@@ -211,6 +207,6 @@ onMounted(() => {
 }
 
 .dark {
-  background: #181924;
+  background: #2a2b36;
 }
 </style>
