@@ -31,19 +31,21 @@ const isAffix = (tag: any) => tag.meta && tag.meta.affix
 
 const filterAffixTags = (routes: any[]) => {
   let tags: Array<VisitedViews> = []
-  routes.forEach((route: any) => {
-    if (route.meta && route.meta.affix) {
-      // const visitedNames = visitedViews.value.map((v: any) => v.name)
-      // if (visitedNames.includes(route.name)) {
-      //   tags.push({
-      //     path: route.path,
-      //     name: route.name,
-      //     meta: { ...route.meta },
-      //   })
-      // }
+  routes.forEach((r: any) => {
+    if (r.meta && r.meta.affix) {
+      if (r.name !== route.name) {
+        tags.push({
+          path: r.path,
+          name: r.name,
+          meta: { ...r.meta },
+        })
+      }
+      console.log(r)
+      console.log('-----------------')
+      console.log(route.name)
     }
-    if (route.children) {
-      const tempTags = filterAffixTags(route.children)
+    if (r.children) {
+      const tempTags = filterAffixTags(r.children)
       if (tempTags.length >= 1) {
         tags = [...tags, ...tempTags]
       }
@@ -196,21 +198,6 @@ onMounted(() => {
             @click.prevent.stop="closeSelectedTag(tag)"
           />
         </v-btn>
-        <ul
-          v-show="visible"
-          :style="{ left: left + 'px', top: top + 'px' }"
-          class="contextmenu"
-        >
-          <li @click="refreshSelectedTag(selectedTag)">Refresh</li>
-          <li
-            v-if="!isAffix(selectedTag)"
-            @click="closeSelectedTag(selectedTag)"
-          >
-            Close
-          </li>
-          <li @click="closeOthersTags">Close Others</li>
-          <li @click="closeAllTags(selectedTag)">Close All</li>
-        </ul>
       </v-slide-group-item>
     </v-slide-group>
   </v-sheet>
