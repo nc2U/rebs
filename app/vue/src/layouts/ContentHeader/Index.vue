@@ -1,5 +1,5 @@
 <template>
-  <CCard class="mb-4">
+  <CCard class="mb-4 text-body">
     <CCardHeader>
       <CIcon name="cil-justify-center" />
       <strong class="pl-1"> {{ pageTitle }}</strong>
@@ -31,8 +31,8 @@ import ProjectSelect from '@/layouts/ContentHeader/ProjectSelect/Index.vue'
 
 export default defineComponent({
   name: 'ContentHeader',
-  mixins: [CompanyMixin, ProjectMixin],
   components: { HeaderNav, CompanySelect, ProjectSelect },
+  mixins: [CompanyMixin, ProjectMixin],
   props: {
     pageTitle: {
       type: String,

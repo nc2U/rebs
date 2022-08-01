@@ -1,14 +1,14 @@
 <template>
   <CRow>
-    <CFormLabel class="col-lg-1 col-form-label">회사명</CFormLabel>
+    <CFormLabel class="col-lg-1 col-form-label text-body">회사명</CFormLabel>
     <CCol md="6" lg="3">
       <CFormSelect @change="$emit('com-select', $event)">
         <option value="">회사선택</option>
         <option
           v-for="com in comSelect"
+          :key="com.value"
           :value="com.value"
           :selected="com.value === comId"
-          :key="com.value"
         >
           {{ com.text }}
         </option>
@@ -23,13 +23,13 @@ import { mapActions, mapGetters } from 'vuex'
 
 export default defineComponent({
   name: 'CompanySelect',
-  created() {
-    this.fetchCompanyList()
-  },
   props: {
     company: {
       type: Object,
     },
+  },
+  created() {
+    this.fetchCompanyList()
   },
   computed: {
     comId() {

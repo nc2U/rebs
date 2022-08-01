@@ -23,7 +23,7 @@ onMounted(() => {
 
 <template>
   <CRow class="m-0">
-    <CFormLabel class="col-lg-1 col-form-label">프로젝트</CFormLabel>
+    <CFormLabel class="col-lg-1 col-form-label text-body">프로젝트</CFormLabel>
     <CCol md="6" lg="3">
       <CFormSelect v-model="selected" @change="$emit('proj-select', $event)">
         <option value="">프로젝트선택</option>

@@ -1,5 +1,5 @@
 <template>
-  <CCard class="mb-4">
+  <CCard class="mb-4 text-body">
     <slot name="header">
       <CCardHeader>
         <CIcon name="cil-notes" />
