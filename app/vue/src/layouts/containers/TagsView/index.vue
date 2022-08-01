@@ -68,16 +68,15 @@ const moveToCurrentTag = () => {
   const tags = currentTag.value
   nextTick(() => {
     for (const tag of tags) {
-      // Todo this logic update
       console.log(tag)
-      // if (tag.to.path === route.path) {
-      //   scrollPane.value.moveToTarget(tag)
-      //   // when query is different then update
-      //   if (tag.to.fullPath !== route.fullPath) {
-      //     store.dispatch('tagsView/updateVisitedView', route)
-      //   }
-      //   break
-      // }
+      if (tag.to.path === route.path) {
+        scrollPane.value.moveToTarget(tag)
+        // when query is different then update
+        if (tag.to.fullPath !== route.fullPath) {
+          store.dispatch('tagsView/updateVisitedView', route)
+        }
+        break
+      }
     }
   })
 }
