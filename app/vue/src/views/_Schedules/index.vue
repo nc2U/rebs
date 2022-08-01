@@ -3,19 +3,19 @@
     <CRow>
       <CCol md="9">
         <CCard>
-          <CCardHeader>
+          <CCardHeader class="text-body">
             <CIcon name="cil-calendar" />
             Calendar
             <CBadge color="danger">Rebs</CBadge>
           </CCardHeader>
           <CCardBody>
-            <div class="demo-app">
+            <div class="demo-app text-body">
               <div class="demo-app-main">
                 <FullCalendar
                   class="demo-app-calendar"
                   :options="calendarOptions"
                 >
-                  <template v-slot:eventContent="arg">
+                  <template #eventContent="arg">
                     <b>{{ arg.timeText }}</b>
                     <i>{{ arg.event.title }}</i>
                   </template>
@@ -29,7 +29,10 @@
       <CCol md="3" class="d-none d-md-block">
         <div class="demo-app-sidebar">
           <div class="demo-app-sidebar-section">
-            <h2>Instructions</h2>
+            <h2>
+              <v-icon icon="mdi-alpha-i-circle" size="small" class="mr-2" />
+              Instructions
+            </h2>
             <ul>
               <li>
                 날짜를 선택하면 새 이벤트를 생성하라는 메시지가 표시됩니다.
