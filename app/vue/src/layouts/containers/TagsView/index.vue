@@ -162,43 +162,43 @@ onMounted(() => {
 
 <template>
   <v-sheet max-width="100%" class="my-1" :class="{ dark }">
-    <!--    <v-slide-group ref="scrollPane" show-arrows>-->
-    <!--      <v-slide-group-item-->
-    <!--        v-for="tag in visitedViews"-->
-    <!--        ref="tag"-->
-    <!--        :key="tag.path"-->
-    <!--        tag="span"-->
-    <!--        class="tags-view-item"-->
-    <!--        @click.middle="!isAffix(tag) ? closeSelectedTag(tag) : ''"-->
-    <!--      >-->
-    <!--        <v-btn-->
-    <!--          class="mx-1 my-0 text-body"-->
-    <!--          :class="{ darkBtn: dark }"-->
-    <!--          style="text-decoration: none"-->
-    <!--          size="small"-->
-    <!--          :border="true"-->
-    <!--          :rounded="0"-->
-    <!--          :color="isActive(tag) ? 'success' : btnColor"-->
-    <!--          :to="{ path: tag.path, query: tag.query, fullPath: tag.fullPath }"-->
-    <!--        >-->
-    <!--          <v-icon-->
-    <!--            v-if="isActive(tag)"-->
-    <!--            icon="mdi-circle"-->
-    <!--            size="x-small"-->
-    <!--            class="mr-2"-->
-    <!--          />-->
-    <!--          {{ tag.meta.title }}-->
-    <!--          <v-icon-->
-    <!--            v-if="!isAffix(tag)"-->
-    <!--            icon="mdi-close"-->
-    <!--            size="x-small"-->
-    <!--            class="pa-2 ml-1 close"-->
-    <!--            @click.prevent.stop="closeSelectedTag(tag)"-->
-    <!--          />-->
-    <!--        </v-btn>-->
-    <!--      </v-slide-group-item>-->
-    <!--    </v-slide-group>-->
-    a
+    <v-slide-group ref="scrollPane" show-arrows>
+      <v-slide-group-item
+        v-for="tag in visitedViews"
+        ref="tag"
+        :key="tag.path"
+        tag="span"
+        class="tags-view-item"
+        @click.middle="!isAffix(tag) ? closeSelectedTag(tag) : ''"
+      >
+        a
+        <!--            <v-btn-->
+        <!--              class="mx-1 my-0 text-body"-->
+        <!--              :class="{ darkBtn: dark }"-->
+        <!--              style="text-decoration: none"-->
+        <!--              size="small"-->
+        <!--              :border="true"-->
+        <!--              :rounded="0"-->
+        <!--              :color="isActive(tag) ? 'success' : btnColor"-->
+        <!--              :to="{ path: tag.path, query: tag.query, fullPath: tag.fullPath }"-->
+        <!--            >-->
+        <!--              <v-icon-->
+        <!--                v-if="isActive(tag)"-->
+        <!--                icon="mdi-circle"-->
+        <!--                size="x-small"-->
+        <!--                class="mr-2"-->
+        <!--              />-->
+        <!--              {{ tag.meta.title }}-->
+        <!--              <v-icon-->
+        <!--                v-if="!isAffix(tag)"-->
+        <!--                icon="mdi-close"-->
+        <!--                size="x-small"-->
+        <!--                class="pa-2 ml-1 close"-->
+        <!--                @click.prevent.stop="closeSelectedTag(tag)"-->
+        <!--              />-->
+        <!--            </v-btn>-->
+      </v-slide-group-item>
+    </v-slide-group>
   </v-sheet>
 </template>
 
