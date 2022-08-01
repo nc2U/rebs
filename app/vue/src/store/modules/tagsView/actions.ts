@@ -1,6 +1,6 @@
 const actions = {
   addView({ dispatch }: any, view: any) {
-    dispatch('addVisitedView', view)
+    // dispatch('addVisitedView', view)
     dispatch('addCachedView', view)
   },
 
