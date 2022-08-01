@@ -50,16 +50,16 @@ const filterAffixTags = (routes: any[]) => {
 
 const initTags = () => {
   affixTags = filterAffixTags(routes)
-  affixTags.forEach(tag =>
-    tag.name ? store.dispatch('tagsView/addVisitedView', tag) : undefined,
-  )
+  // affixTags.forEach(tag =>
+  //   tag.name ? store.dispatch('tagsView/addVisitedView', tag) : undefined,
+  // )
 }
 
 const addTags = () => {
   const { name } = route
-  if (name) {
-    store.dispatch('tagsView/addView', route)
-  }
+  // if (name) {
+  //   store.dispatch('tagsView/addView', route)
+  // }
   return false
 }
 
