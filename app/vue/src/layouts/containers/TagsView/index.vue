@@ -162,7 +162,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <v-sheet max-width="100%" class="my-2" :class="{ dark }">
+  <v-sheet max-width="100%" class="my-1" :class="{ dark }">
     <v-slide-group ref="scrollPane" show-arrows>
       <v-slide-group-item
         v-for="tag in visitedViews"
@@ -175,7 +175,8 @@ onMounted(() => {
         <v-btn
           class="mx-1 my-0 text-body"
           :class="{ darkBtn: dark }"
-          size="x-small"
+          style="text-decoration: none"
+          size="small"
           :border="true"
           :rounded="0"
           :color="isActive(tag) ? 'success' : btnColor"
