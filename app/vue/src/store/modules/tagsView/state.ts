@@ -7,9 +7,8 @@ interface Meta {
 
 export interface VisitedViews {
   fullPath: string
-  name: string
   path: string
-  title: string
+  name: string
   meta: Meta
 }
 

@@ -32,6 +32,7 @@ const filterAffixTags = (routes: any[]) => {
   routes.forEach((r: any) => {
     if (r.meta && r.meta.affix) {
       tags.push({
+        fullPath: r.path,
         path: r.path,
         name: r.name,
         meta: { ...r.meta },
