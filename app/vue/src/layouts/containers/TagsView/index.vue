@@ -6,8 +6,6 @@ import { VisitedViews } from '@/store/modules/tagsView/state'
 import routes from '@/router/routes'
 
 const visible = ref(false)
-const top = ref(0)
-const left = ref(0)
 const selectedTag = reactive({})
 let affixTags: any[] = reactive([])
 const tag = ref()
