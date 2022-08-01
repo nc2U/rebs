@@ -13,6 +13,7 @@ const visible = ref(false)
 const selectedTag = reactive({})
 let affixTags: any[] = reactive([])
 
+const currentTag = ref()
 const scrollPane = ref()
 
 const dark = computed(() => store.state.theme === 'dark')
@@ -165,7 +166,7 @@ onMounted(() => {
       <v-slide-group-item
         v-for="tag in visitedViews"
         :key="tag.path"
-        tag="span"
+        ref="currentTag"
         class="tags-view-item"
         @click.middle="!isAffix(tag) ? closeSelectedTag(tag) : ''"
       >
