@@ -3,11 +3,11 @@ import { TagsViewState } from '@/store/modules/tagsView/state'
 const mutations = {
   ADD_VISITED_VIEW: (state: TagsViewState, view: any) => {
     if (state.visitedViews.some(v => v.name === view.name)) return
-    state.visitedViews.push(
-      Object.assign({}, view, {
-        title: view.meta.title || 'no-name',
-      }),
-    )
+    // state.visitedViews.push(
+    //   Object.assign({}, view, {
+    //     title: view.meta.title || 'no-name',
+    //   }),
+    // )
   },
   ADD_CACHED_VIEW: (state: TagsViewState, view: any) => {
     if (state.cachedViews.includes(view.name)) return
