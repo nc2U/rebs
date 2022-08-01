@@ -68,9 +68,7 @@ const moveToCurrentTag = () => {
   const tags = currentTag.value
   nextTick(() => {
     for (const tag of tags) {
-      console.log(tag)
       if (tag.to.path === route.path) {
-        scrollPane.value.moveToTarget(tag)
         // when query is different then update
         if (tag.to.fullPath !== route.fullPath) {
           store.dispatch('tagsView/updateVisitedView', route)
@@ -116,12 +114,12 @@ const closeSelectedTag = (view: any) => {
   })
 }
 
-const closeOthersTags = () => {
-  router.push(selectedTag)
-  store.dispatch('tagsView/delOthersViews', selectedTag).then(() => {
-    moveToCurrentTag()
-  })
-}
+// const closeOthersTags = () => {
+//   router.push(selectedTag)
+//   store.dispatch('tagsView/delOthersViews', selectedTag).then(() => {
+//     moveToCurrentTag()
+//   })
+// }
 
 const closeAllTags = (view: any) => {
   store.dispatch('tagsView/delAllViews').then(({ visitedViews }) => {
@@ -161,15 +159,16 @@ onMounted(() => {
 
 <template>
   <v-sheet max-width="100%" class="my-1" :class="{ dark }">
-    <v-slide-group ref="scrollPane" show-arrows>
+    <v-slide-group show-arrows>
       <v-slide-group-item
         v-for="tag in visitedViews"
         :key="tag.path"
-        ref="currentTag"
+        ref="scrollPane"
         class="tags-view-item"
         @click.middle="!isAffix(tag) ? closeSelectedTag(tag) : ''"
       >
         <v-btn
+          ref="currentTag"
           class="mx-1 my-0 text-body"
           :class="{ darkBtn: dark }"
           style="text-decoration: none"
