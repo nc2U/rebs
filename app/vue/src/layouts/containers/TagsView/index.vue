@@ -5,20 +5,21 @@ import { useRoute, useRouter } from 'vue-router'
 import { VisitedViews } from '@/store/modules/tagsView/state'
 import routes from '@/router/routes'
 
+const store = useStore()
+const route = useRoute()
+const router = useRouter()
+
 const visible = ref(false)
 const selectedTag = reactive({})
 let affixTags: any[] = reactive([])
+
 const tag = ref()
 const scrollPane = ref()
 
-const store = useStore()
 const dark = computed(() => store.state.theme === 'dark')
 const btnColor = computed(() =>
   store.state.theme === 'dark' ? 'blue-grey' : '',
 )
-
-const route = useRoute()
-const router = useRouter()
 
 const visitedViews = computed(() => store.state.tagsView.visitedViews)
 
@@ -44,7 +45,6 @@ const filterAffixTags = (routes: any[]) => {
       }
     }
   })
-  console.log(tags)
   return tags
 }
 
