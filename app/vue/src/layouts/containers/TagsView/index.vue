@@ -155,7 +155,7 @@ watch(visible, value => {
 
 onMounted(() => {
   // initTags()
-  addTags()
+  // addTags()
 })
 </script>
 
