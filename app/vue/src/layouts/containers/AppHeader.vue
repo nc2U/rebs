@@ -5,7 +5,7 @@ import AppBreadcrumb from './AppBreadcrumb.vue'
 import AppHeaderDropdownAccnt from './AppHeaderDropdownAccnt.vue'
 import { directive as vFullscreen } from 'vue-fullscreen'
 import { logo } from '@/assets/brand/current-logo'
-import TagsView from '@/layouts/containers/TagsView/index.vue'
+// import TagsView from '@/layouts/containers/TagsView/index.vue'
 
 const store = useStore()
 const screenIcon = ref('mdi-fullscreen')
@@ -104,7 +104,7 @@ const isAuthorized = store.getters['accounts/isAuthorized']
     </CContainer>
     <CHeaderDivider class="mb-0" />
     <CContainer fluid class="px-3">
-      <TagsView />
+      <!--      <TagsView />-->
     </CContainer>
   </CHeader>
 </template>
