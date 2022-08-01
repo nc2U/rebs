@@ -10,7 +10,6 @@ const route = useRoute()
 const router = useRouter()
 
 const visible = ref(false)
-const selectedTag = reactive({})
 let affixTags: any[] = reactive([])
 
 const currentTag = ref()
@@ -79,17 +78,6 @@ const moveToCurrentTag = () => {
   })
 }
 
-const refreshSelectedTag = (view: any) => {
-  store.dispatch('tagsView/delCachedView', view).then(() => {
-    const { fullPath } = view
-    nextTick(() => {
-      router.replace({
-        path: '/redirect' + fullPath,
-      })
-    })
-  })
-}
-
 const toLastView = (visitedViews: any, view: any) => {
   const latestView = visitedViews.slice(-1)[0]
   if (latestView) {
@@ -113,23 +101,6 @@ const closeSelectedTag = (view: any) => {
     }
   })
 }
-
-// const closeOthersTags = () => {
-//   router.push(selectedTag)
-//   store.dispatch('tagsView/delOthersViews', selectedTag).then(() => {
-//     moveToCurrentTag()
-//   })
-// }
-
-const closeAllTags = (view: any) => {
-  store.dispatch('tagsView/delAllViews').then(({ visitedViews }) => {
-    if (affixTags.some(tag => tag.path === view.path)) {
-      return
-    }
-    toLastView(visitedViews, view)
-  })
-}
-
 const closeMenu = () => {
   visible.value = false
 }
