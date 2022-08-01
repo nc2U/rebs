@@ -24,9 +24,9 @@
         :contractors="ctor_ids"
       />
       <ContractList
+        ref="contractList"
         :project="project"
         :now_order="payOrderTime"
-        ref="contractList"
         @on-ctor-chk="onCtorChk"
         @page-select="pageSelect"
         @all-un-checked="allUnChecked"
@@ -50,7 +50,6 @@ import { mapActions, mapGetters, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'Bill',
-  mixins: [HeaderMixin],
   components: {
     ContentHeader,
     ContentBody,
@@ -59,6 +58,7 @@ export default defineComponent({
     DownloadButton,
     ContractList,
   },
+  mixins: [HeaderMixin],
   data(this: any) {
     return {
       ctor_ids: [],
@@ -151,7 +151,6 @@ export default defineComponent({
       this.ctor_ids = []
     },
     getNowOrder(orderPk: string) {
-      console.log('--->>>', orderPk)
       this.fetchPayOrder(orderPk)
     },
     setPubDate(payload: any) {
