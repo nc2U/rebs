@@ -24,7 +24,7 @@ const router = useRouter()
 
 const visitedViews = computed(() => store.state.tagsView.visitedViews)
 
-const isActive = (currentRoute: any) => currentRoute.path === route.path
+const isActive = (currentRoute: any) => currentRoute.name === route.name
 
 const isAffix = (tag: any) => tag.meta && tag.meta.affix
 
