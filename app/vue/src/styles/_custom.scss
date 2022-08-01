@@ -20,6 +20,12 @@
   background: #FDEBEB;
 }
 
+// NProgress css
+#nprogress .bar {
+  background: #e3caf9;
+  height: 1.2px;
+}
+
 // DatePicker scss
 .dp__theme_dark {
   --dp-background-color: #2F303A !important;
