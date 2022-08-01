@@ -27,41 +27,41 @@ const isActive = (currentRoute: any) => currentRoute.name === route.name
 
 const isAffix = (tag: any) => tag.meta && tag.meta.affix
 
-// const filterAffixTags = (routes: any[]) => {
-//   let tags: Array<VisitedViews> = []
-//   routes.forEach((r: any) => {
-//     if (r.meta && r.meta.affix) {
-//       tags.push({
-//         path: r.path,
-//         name: r.name,
-//         meta: { ...r.meta },
-//       })
-//     }
-//
-//     if (r.children) {
-//       const tempTags = filterAffixTags(r.children)
-//       if (tempTags.length >= 1) {
-//         tags = [...tags, ...tempTags]
-//       }
-//     }
-//   })
-//   return tags
-// }
-//
-// const initTags = () => {
-//   affixTags = filterAffixTags(routes)
-//   affixTags.forEach(tag =>
-//     tag.name ? store.dispatch('tagsView/addVisitedView', tag) : undefined,
-//   )
-// }
-//
-// const addTags = () => {
-//   const { name } = route
-//   if (name) {
-//     store.dispatch('tagsView/addView', route)
-//   }
-//   return false
-// }
+const filterAffixTags = (routes: any[]) => {
+  let tags: Array<VisitedViews> = []
+  routes.forEach((r: any) => {
+    if (r.meta && r.meta.affix) {
+      tags.push({
+        path: r.path,
+        name: r.name,
+        meta: { ...r.meta },
+      })
+    }
+
+    if (r.children) {
+      const tempTags = filterAffixTags(r.children)
+      if (tempTags.length >= 1) {
+        tags = [...tags, ...tempTags]
+      }
+    }
+  })
+  return tags
+}
+
+const initTags = () => {
+  affixTags = filterAffixTags(routes)
+  affixTags.forEach(tag =>
+    tag.name ? store.dispatch('tagsView/addVisitedView', tag) : undefined,
+  )
+}
+
+const addTags = () => {
+  const { name } = route
+  if (name) {
+    store.dispatch('tagsView/addView', route)
+  }
+  return false
+}
 
 // const moveToCurrentTag = () => {
 //   const tags = tag.value
@@ -153,10 +153,10 @@ const isAffix = (tag: any) => tag.meta && tag.meta.affix
 //   }
 // })
 
-// onMounted(() => {
-//   initTags()
-//   addTags()
-// })
+onMounted(() => {
+  initTags()
+  addTags()
+})
 </script>
 
 <template>
