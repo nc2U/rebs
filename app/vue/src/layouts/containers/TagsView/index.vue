@@ -13,7 +13,6 @@ const visible = ref(false)
 const selectedTag = reactive({})
 let affixTags: any[] = reactive([])
 
-const tag = ref()
 const scrollPane = ref()
 
 const dark = computed(() => store.state.theme === 'dark')
@@ -170,32 +169,31 @@ onMounted(() => {
         class="tags-view-item"
         @click.middle="!isAffix(tag) ? closeSelectedTag(tag) : ''"
       >
-        a
-        <!--            <v-btn-->
-        <!--              class="mx-1 my-0 text-body"-->
-        <!--              :class="{ darkBtn: dark }"-->
-        <!--              style="text-decoration: none"-->
-        <!--              size="small"-->
-        <!--              :border="true"-->
-        <!--              :rounded="0"-->
-        <!--              :color="isActive(tag) ? 'success' : btnColor"-->
-        <!--              :to="{ path: tag.path, query: tag.query, fullPath: tag.fullPath }"-->
-        <!--            >-->
-        <!--              <v-icon-->
-        <!--                v-if="isActive(tag)"-->
-        <!--                icon="mdi-circle"-->
-        <!--                size="x-small"-->
-        <!--                class="mr-2"-->
-        <!--              />-->
-        <!--              {{ tag.meta.title }}-->
-        <!--              <v-icon-->
-        <!--                v-if="!isAffix(tag)"-->
-        <!--                icon="mdi-close"-->
-        <!--                size="x-small"-->
-        <!--                class="pa-2 ml-1 close"-->
-        <!--                @click.prevent.stop="closeSelectedTag(tag)"-->
-        <!--              />-->
-        <!--            </v-btn>-->
+        <v-btn
+          class="mx-1 my-0 text-body"
+          :class="{ darkBtn: dark }"
+          style="text-decoration: none"
+          size="small"
+          :border="true"
+          :rounded="0"
+          :color="isActive(tag) ? 'success' : btnColor"
+          :to="{ path: tag.path, query: tag.query, fullPath: tag.fullPath }"
+        >
+          <v-icon
+            v-if="isActive(tag)"
+            icon="mdi-circle"
+            size="x-small"
+            class="mr-2"
+          />
+          {{ tag.meta.title }}
+          <v-icon
+            v-if="!isAffix(tag)"
+            icon="mdi-close"
+            size="x-small"
+            class="pa-2 ml-1 close"
+            @click.prevent.stop="closeSelectedTag(tag)"
+          />
+        </v-btn>
       </v-slide-group-item>
     </v-slide-group>
   </v-sheet>
