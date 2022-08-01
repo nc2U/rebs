@@ -57,9 +57,9 @@ const initTags = () => {
 
 const addTags = () => {
   const { name } = route
-  // if (name) {
-  //   store.dispatch('tagsView/addView', route)
-  // }
+  if (name) {
+    store.dispatch('tagsView/addView', route)
+  }
   return false
 }
 
