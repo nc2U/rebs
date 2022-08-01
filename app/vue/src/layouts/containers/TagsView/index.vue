@@ -187,7 +187,7 @@ onMounted(() => {
             size="x-small"
             class="mr-2"
           />
-          {{ tag.title }}
+          {{ tag.meta.title }}
           <v-icon
             v-if="!isAffix(tag)"
             icon="mdi-close"
