@@ -165,7 +165,6 @@ onMounted(() => {
     <v-slide-group ref="scrollPane" show-arrows>
       <v-slide-group-item
         v-for="tag in visitedViews"
-        ref="tag"
         :key="tag.path"
         tag="span"
         class="tags-view-item"
