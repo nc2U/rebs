@@ -8,7 +8,7 @@
       <col width="20%" />
     </colgroup>
 
-    <CTableHead color="secondary" class="text-center">
+    <CTableHead :color="headerSecondary" class="text-center">
       <CTableRow>
         <CTableHeaderCell>납부기일</CTableHeaderCell>
         <CTableHeaderCell>구분</CTableHeaderCell>
@@ -19,7 +19,7 @@
     </CTableHead>
 
     <CTableBody v-if="contract">
-      <CTableRow class="text-right" v-for="po in payOrderList" :key="po.pk">
+      <CTableRow v-for="po in payOrderList" :key="po.pk" class="text-right">
         <Order
           :contract="contract"
           :price="thisPrice"
@@ -34,7 +34,7 @@
 
     <CTableHead>
       <CTableRow class="text-right">
-        <CTableHeaderCell color="secondary" class="text-center">
+        <CTableHeaderCell :color="headerSecondary" class="text-center">
           합계
         </CTableHeaderCell>
         <CTableHeaderCell></CTableHeaderCell>
@@ -52,6 +52,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { headerSecondary } from '@/utils/cssMixins'
 import Order from '@/views/payments/Register/components/Order.vue'
 import { mapState } from 'vuex'
 
@@ -60,6 +61,9 @@ export default defineComponent({
   components: { Order },
   props: { contract: Object, paymentList: Array },
   computed: {
+    headerSecondary() {
+      return headerSecondary
+    },
     thisPrice(this: any) {
       if (this.contract) {
         return this.contract.keyunit.houseunit

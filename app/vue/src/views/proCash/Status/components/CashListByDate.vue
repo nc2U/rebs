@@ -21,7 +21,7 @@
         </CTableDataCell>
         <CTableDataCell class="text-right">(단위: 원)</CTableDataCell>
       </CTableRow>
-      <CTableRow color="secondary" class="text-center">
+      <CTableRow :color="headerSecondary" class="text-center">
         <CTableHeaderCell>항목</CTableHeaderCell>
         <CTableHeaderCell>세부 항목</CTableHeaderCell>
         <CTableHeaderCell>입금 금액</CTableHeaderCell>
@@ -32,7 +32,7 @@
     </CTableHead>
 
     <CTableBody>
-      <CTableRow class="text-center" v-for="inc in dateIncSet" :key="inc.pk">
+      <CTableRow v-for="inc in dateIncSet" :key="inc.pk" class="text-center">
         <CTableDataCell>{{ getD1Text(inc.project_account_d1) }}</CTableDataCell>
         <CTableDataCell>{{ getD2Text(inc.project_account_d2) }}</CTableDataCell>
         <CTableDataCell class="text-right" color="success">
@@ -52,7 +52,7 @@
         <CTableDataCell></CTableDataCell>
       </CTableRow>
 
-      <CTableRow color="secondary" class="text-right">
+      <CTableRow :color="headerSecondary" class="text-right">
         <CTableHeaderCell colspan="2" class="text-center">
           합계
         </CTableHeaderCell>
@@ -86,7 +86,7 @@
         </CTableDataCell>
         <CTableDataCell class="text-right">(단위: 원)</CTableDataCell>
       </CTableRow>
-      <CTableRow color="secondary" class="text-center">
+      <CTableRow :color="headerSecondary" class="text-center">
         <CTableHeaderCell>항목</CTableHeaderCell>
         <CTableHeaderCell>세부 항목</CTableHeaderCell>
         <CTableHeaderCell>출금 금액</CTableHeaderCell>
@@ -97,7 +97,7 @@
     </CTableHead>
 
     <CTableBody>
-      <CTableRow class="text-center" v-for="out in dateOutSet" :key="out.pk">
+      <CTableRow v-for="out in dateOutSet" :key="out.pk" class="text-center">
         <CTableDataCell>{{ getD1Text(out.project_account_d1) }}</CTableDataCell>
         <CTableDataCell>{{ getD2Text(out.project_account_d2) }}</CTableDataCell>
         <CTableDataCell class="text-right" color="danger">
@@ -116,7 +116,7 @@
         <CTableDataCell></CTableDataCell>
       </CTableRow>
 
-      <CTableRow color="secondary" class="text-right">
+      <CTableRow :color="headerSecondary" class="text-right">
         <CTableHeaderCell colspan="2" class="text-center">
           합계
         </CTableHeaderCell>
@@ -131,6 +131,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { headerSecondary } from '@/utils/cssMixins'
 import { mapState } from 'vuex'
 
 export default defineComponent({
@@ -152,6 +153,9 @@ export default defineComponent({
     this.setData()
   },
   computed: {
+    headerSecondary() {
+      return headerSecondary
+    },
     ...mapState('proCash', [
       'allAccD1List',
       'allAccD2List',

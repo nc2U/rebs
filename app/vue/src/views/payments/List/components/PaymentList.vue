@@ -14,7 +14,7 @@
     </colgroup>
 
     <CTableHead>
-      <CTableRow color="secondary" class="text-center">
+      <CTableRow :color="headerSecondary" class="text-center">
         <CTableHeaderCell scope="col">거래일자</CTableHeaderCell>
         <CTableHeaderCell scope="col">차수</CTableHeaderCell>
         <CTableHeaderCell scope="col">타입</CTableHeaderCell>
@@ -31,8 +31,8 @@
     <CTableBody>
       <Payment
         v-for="(payment, i) in getPayments"
-        :payment="payment"
         :key="i"
+        :payment="payment"
         @on-update="onUpdate"
         @on-patch="onPatch"
         @on-delete="onDelete"
@@ -41,7 +41,7 @@
   </CTable>
 
   <CSmartPagination
-    :activePage="1"
+    :active-page="1"
     :limit="8"
     :pages="paymentPages(10)"
     class="mt-3"
@@ -52,6 +52,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import Payment from '@/views/payments/List/components/Payment.vue'
+import { headerSecondary } from '@/utils/cssMixins'
 import { mapGetters } from 'vuex'
 
 export default defineComponent({
@@ -59,6 +60,9 @@ export default defineComponent({
   components: { Payment },
   props: { project: Object },
   computed: {
+    headerSecondary() {
+      return headerSecondary
+    },
     ...mapGetters('payment', ['paymentPages', 'getPayments']),
   },
   methods: {

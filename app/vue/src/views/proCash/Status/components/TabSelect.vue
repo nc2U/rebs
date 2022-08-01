@@ -38,12 +38,6 @@
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: '',
-  components: {},
-  props: {},
-  setup() {
-    return {}
-  },
   data() {
     return {
       tabPanePillsActiveKey: 1,

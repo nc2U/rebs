@@ -24,7 +24,7 @@
         </CTableDataCell>
         <CTableDataCell class="text-right">(단위: 원)</CTableDataCell>
       </CTableRow>
-      <CTableRow color="secondary" class="text-center">
+      <CTableRow :color="headerSecondary" class="text-center">
         <CTableHeaderCell colspan="4">구분</CTableHeaderCell>
         <CTableHeaderCell>예산액</CTableHeaderCell>
         <CTableHeaderCell>전월 집행금액 누계</CTableHeaderCell>
@@ -36,32 +36,32 @@
 
     <CTableBody>
       <CTableRow
-        class="text-right"
         v-for="(bdj, i) in proBudgetList"
         :key="bdj.pk"
+        class="text-right"
       >
         <CTableDataCell
-          color="info"
+          v-if="i === 0"
+          :color="headerInfo"
           class="text-center"
           :rowspan="proBudgetList.length"
-          v-if="i === 0"
         >
           사업비
         </CTableDataCell>
         <CTableDataCell
+          v-if="getFirst(bdj.account_d1.acc_d2s) === bdj.account_d2.pk"
           class="text-center"
           :rowspan="getLength(bdj.account_d1.acc_d2s)"
-          v-if="getFirst(bdj.account_d1.acc_d2s) === bdj.account_d2.pk"
         >
           {{ bdj.account_d1.name }}
         </CTableDataCell>
         <CTableDataCell
-          class="text-left"
-          :rowspan="getSubTitle(bdj.account_d2.sub_title).length"
           v-if="
             bdj.account_d2.sub_title &&
             bdj.pk === getSubTitle(bdj.account_d2.sub_title)[0]
           "
+          class="text-left"
+          :rowspan="getSubTitle(bdj.account_d2.sub_title).length"
         >
           {{ bdj.account_d2.sub_title }}
         </CTableDataCell>
@@ -92,7 +92,7 @@
         </CTableDataCell>
       </CTableRow>
 
-      <CTableRow color="secondary" class="text-right">
+      <CTableRow :color="headerSecondary" class="text-right">
         <CTableHeaderCell colspan="4" class="text-center">
           합계
         </CTableHeaderCell>
@@ -108,6 +108,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { headerSecondary, headerInfo } from '@/utils/cssMixins'
 import { mapState } from 'vuex'
 
 export default defineComponent({
@@ -126,6 +127,12 @@ export default defineComponent({
     this.getSumTotal()
   },
   computed: {
+    headerSecondary() {
+      return headerSecondary
+    },
+    headerInfo() {
+      return headerInfo
+    },
     ...mapState('contract', ['orderGroupList']),
     ...mapState('project', ['unitTypeList']),
     ...mapState('proCash', ['proBudgetList', 'execAmountList']),

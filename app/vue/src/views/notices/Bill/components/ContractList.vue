@@ -12,14 +12,14 @@
       <col width="12%" />
     </colgroup>
 
-    <CTableHead color="secondary">
+    <CTableHead :color="headerSecondary">
       <CTableRow class="text-center">
         <CTableHeaderCell scope="col">
           <CFormCheck
             id="checkAll"
             v-model="allChecked"
-            @change="allUnChecked"
             label="전체"
+            @change="allUnChecked"
           />
         </CTableHeaderCell>
         <CTableHeaderCell scope="col">계약 일련번호</CTableHeaderCell>
@@ -36,18 +36,18 @@
     <CTableBody>
       <Contract
         v-for="contract in contBillIndex"
+        :key="contract.pk"
         :page="page"
         :now_order="now_order"
         :all-checked="allChecked"
         :contract="contract"
-        :key="contract.pk"
         @on-ctor-chk="onCtorChk"
       />
     </CTableBody>
   </CTable>
 
   <CSmartPagination
-    :activePage="1"
+    :active-page="1"
     :limit="8"
     :pages="contractPages(10)"
     class="mt-3"
@@ -59,6 +59,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import Contract from '@/views/notices/Bill/components/Contract.vue'
+import { headerSecondary } from '@/utils/cssMixins'
 import { mapGetters } from 'vuex'
 
 export default defineComponent({
@@ -75,6 +76,9 @@ export default defineComponent({
     }
   },
   computed: {
+    headerSecondary() {
+      return headerSecondary
+    },
     ...mapGetters('contract', ['contBillIndex', 'contractPages']),
   },
   methods: {

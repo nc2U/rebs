@@ -21,7 +21,7 @@
         </CTableDataCell>
         <CTableDataCell class="text-right">(단위: 원)</CTableDataCell>
       </CTableRow>
-      <CTableRow color="secondary" class="text-center">
+      <CTableRow :color="headerSecondary" class="text-center">
         <CTableHeaderCell colspan="2">구분</CTableHeaderCell>
         <CTableHeaderCell>전일잔고</CTableHeaderCell>
         <CTableHeaderCell>금일입금(증가)</CTableHeaderCell>
@@ -32,14 +32,14 @@
 
     <CTableBody>
       <CTableRow
-        class="text-right"
         v-for="(bal, i) in balanceByAccList"
         :key="i"
+        class="text-right"
       >
         <CTableDataCell
+          v-if="i === 0"
           class="text-center"
           :rowspan="balanceByAccList.length"
-          v-if="i === 0"
         >
           보통예금
         </CTableDataCell>
@@ -56,7 +56,7 @@
         </CTableDataCell>
       </CTableRow>
 
-      <CTableRow color="secondary" class="text-right">
+      <CTableRow :color="headerSecondary" class="text-right">
         <CTableHeaderCell colspan="2" class="text-center">
           현금성 자산 계
         </CTableHeaderCell>
@@ -71,6 +71,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { headerSecondary } from '@/utils/cssMixins'
 import { mapState } from 'vuex'
 
 export default defineComponent({
@@ -89,6 +90,9 @@ export default defineComponent({
     this.getSumTotal()
   },
   computed: {
+    headerSecondary() {
+      return headerSecondary
+    },
     ...mapState('proCash', ['balanceByAccList']),
   },
   watch: {

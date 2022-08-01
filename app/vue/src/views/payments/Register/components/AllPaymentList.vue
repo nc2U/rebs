@@ -9,7 +9,7 @@
       <col width="10%" />
     </colgroup>
 
-    <CTableHead color="secondary">
+    <CTableHead :color="headerSecondary">
       <CTableRow class="text-center">
         <CTableHeaderCell>수납일자</CTableHeaderCell>
         <CTableHeaderCell>납부회차</CTableHeaderCell>
@@ -23,10 +23,10 @@
     <CTableBody v-if="contract">
       <Payment
         v-for="pay in paymentList"
+        :key="pay.pk"
         :contract="contract"
         :payment-id="paymentId"
         :payment="pay"
-        :key="pay.pk"
         @on-update="onUpdate"
         @on-delete="onDelete"
       />
@@ -34,7 +34,7 @@
 
     <CTableHead>
       <CTableRow class="text-right">
-        <CTableHeaderCell color="secondary" class="text-center">
+        <CTableHeaderCell :color="headerSecondary" class="text-center">
           합계
         </CTableHeaderCell>
         <CTableHeaderCell></CTableHeaderCell>
@@ -51,6 +51,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { headerSecondary } from '@/utils/cssMixins'
 import Payment from '@/views/payments/Register/components/Payment.vue'
 
 export default defineComponent({
@@ -58,6 +59,9 @@ export default defineComponent({
   components: { Payment },
   props: { contract: Object, paymentList: Array, paymentId: String },
   computed: {
+    headerSecondary() {
+      return headerSecondary
+    },
     paymentSum(this: any) {
       return this.paymentList.length !== 0
         ? this.paymentList

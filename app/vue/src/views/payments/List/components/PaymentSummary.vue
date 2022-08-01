@@ -1,6 +1,6 @@
 <template>
   <CTable hover responsive bordered class="mt-3">
-    <CTableHead class="text-center" color="secondary">
+    <CTableHead class="text-center" :color="headerSecondary">
       <CTableRow align="middle">
         <CTableHeaderCell>프로젝트</CTableHeaderCell>
         <CTableHeaderCell>총 매출예산(A)</CTableHeaderCell>
@@ -12,7 +12,7 @@
     </CTableHead>
 
     <CTableBody>
-      <CTableRow class="text-right" color="light" v-if="project">
+      <CTableRow v-if="project" class="text-right" color="light">
         <CTableHeaderCell class="text-center">
           {{ project.name }}
         </CTableHeaderCell>
@@ -29,7 +29,7 @@
         </CTableHeaderCell>
       </CTableRow>
 
-      <CTableRow class="text-right" v-for="type in unitTypeList" :key="type.pk">
+      <CTableRow v-for="type in unitTypeList" :key="type.pk" class="text-right">
         <CTableHeaderCell class="text-left pl-5">
           <CIcon
             name="cib-node-js"
@@ -80,6 +80,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import commonMixin from '@/views/commonMixin'
+import { headerSecondary } from '@/utils/cssMixins'
 import { mapGetters, mapState } from 'vuex'
 
 export default defineComponent({
@@ -91,6 +92,9 @@ export default defineComponent({
     },
   },
   computed: {
+    headerSecondary() {
+      return headerSecondary
+    },
     total_budget() {
       return this.unitTypeList.length !== 0
         ? this.unitTypeList
