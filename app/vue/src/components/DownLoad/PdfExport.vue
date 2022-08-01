@@ -13,6 +13,7 @@ const props = defineProps({
     width="160"
     :disabled="props.disabled"
     class="mx-3"
+    style="text-decoration: none"
   >
     <v-icon icon="mdi-file-pdf-box" color="red" class="mr-2" />
     Pdf Export
