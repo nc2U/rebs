@@ -9,12 +9,11 @@ export default defineComponent({
     ...mapGetters('accounts', ['initComId']),
   },
   methods: {
-    comSelect(this: any, event: any) {
-      const target = event.target.value
-      if (target !== '') this.fetchCompany(target)
-      else this.$store.state.settings.company = null
+    comSelect(this: any, com: string) {
+      if (com !== '') this.fetchCompany(com)
+      else this.$store.commit('settings/updateState', { company: null })
 
-      this.$emit('header-select', target)
+      this.$emit('header-select', com)
     },
     ...mapActions('settings', ['fetchCompany']),
   },
