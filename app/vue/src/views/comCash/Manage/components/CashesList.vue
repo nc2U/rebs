@@ -46,7 +46,7 @@
     </CTableBody>
   </CTable>
 
-  <CSmartPagination
+  <Pagination
     :active-page="1"
     :limit="8"
     :pages="cashesPages(15)"
@@ -102,13 +102,14 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import Cashes from '@/views/comCash/Manage/components/Cashes.vue'
+import Pagination from '@/components/Pagination'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 import { headerSecondary } from '@/utils/cssMixins'
 import { mapGetters, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'CashesList',
-  components: { Cashes, AlertModal },
+  components: { Cashes, Pagination, AlertModal },
   props: { company: Object },
   computed: {
     headerSecondary() {

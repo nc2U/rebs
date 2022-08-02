@@ -46,7 +46,7 @@
     </CTableBody>
   </CTable>
 
-  <CSmartPagination
+  <Pagination
     :active-page="1"
     :limit="8"
     :pages="contractPages(10)"
@@ -59,12 +59,13 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import Contract from '@/views/notices/Bill/components/Contract.vue'
+import Pagination from '@/components/Pagination'
 import { headerSecondary } from '@/utils/cssMixins'
 import { mapGetters } from 'vuex'
 
 export default defineComponent({
   name: 'ContractorList',
-  components: { Contract },
+  components: { Contract, Pagination },
   props: {
     project: Object,
     now_order: Number,

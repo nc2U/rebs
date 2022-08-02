@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { useStore } from 'vuex'
 import { headerSecondary } from '@/utils/cssMixins'
+import Pagination from '@/components/Pagination'
 import Contract from '@/views/contracts/List/components/Contract.vue'
 
 const store = useStore()
@@ -57,7 +58,7 @@ const pageSelect = (page: number) => emit('page-select', page)
     </CTableBody>
   </CTable>
 
-  <CSmartPagination
+  <Pagination
     :active-page="1"
     :limit="8"
     :pages="contractPages(10)"

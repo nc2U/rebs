@@ -51,7 +51,7 @@
     </CTableBody>
   </CTable>
 
-  <CSmartPagination
+  <Pagination
     :active-page="1"
     :limit="8"
     :pages="proImprestPages(15)"
@@ -92,13 +92,14 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import ProImprest from '@/views/proCash/Imprest/components/ProImprest.vue'
+import Pagination from '@/components/Pagination'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 import { headerSecondary } from '@/utils/cssMixins'
 import { mapGetters, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'ProImprestList',
-  components: { ProImprest, AlertModal },
+  components: { ProImprest, Pagination, AlertModal },
   props: { project: Object },
   computed: {
     headerSecondary() {

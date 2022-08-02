@@ -40,7 +40,7 @@
     </CTableBody>
   </CTable>
 
-  <CSmartPagination
+  <Pagination
     :active-page="1"
     :limit="8"
     :pages="paymentPages(10)"
@@ -52,12 +52,13 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import Payment from '@/views/payments/List/components/Payment.vue'
+import Pagination from '@/components/Pagination'
 import { headerSecondary } from '@/utils/cssMixins'
 import { mapGetters } from 'vuex'
 
 export default defineComponent({
   name: 'PaymentList',
-  components: { Payment },
+  components: { Payment, Pagination },
   props: { project: Object },
   computed: {
     headerSecondary() {

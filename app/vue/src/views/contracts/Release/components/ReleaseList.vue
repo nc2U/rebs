@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { useStore } from 'vuex'
+import Pagination from '@/components/Pagination'
 import Release from '@/views/contracts/Release/components/Release.vue'
 import { headerSecondary } from '@/utils/cssMixins'
 
@@ -54,7 +55,7 @@ const onSubmit = (payload: any) => emit('on-submit', payload)
     </CTableBody>
   </CTable>
 
-  <CSmartPagination
+  <Pagination
     :active-page="1"
     :limit="8"
     :pages="releasePages(10)"
