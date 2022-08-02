@@ -8,6 +8,7 @@ import { logo } from '@/assets/brand/current-logo'
 import TagsView from '@/layouts/containers/TagsView/index.vue'
 
 const store = useStore()
+
 const screenIcon = ref('mdi-fullscreen')
 const screenGuide = ref('전체화면')
 const options = ref({
@@ -66,10 +67,10 @@ const isAuthorized = store.getters['accounts/isAuthorized']
             :button="{ color: 'primary' }"
             name="theme-switch"
             auto-complete="off"
-            :checked="$store.state.theme === 'dark'"
+            :checked="store.state.theme === 'dark'"
             @change="
               event =>
-                $store.commit({
+                store.commit({
                   type: 'toggleTheme',
                   value: 'dark',
                 })
@@ -81,7 +82,7 @@ const isAuthorized = store.getters['accounts/isAuthorized']
           </CFormCheck>
         </CButtonGroup>
       </CHeaderNav>
-      <CHeaderNav class="ms-3 me-4">
+      <CHeaderNav class="mr-4">
         <AppHeaderDropdownAccnt
           v-if="isAuthorized && userInfo"
           :user-info="userInfo"
@@ -98,7 +99,7 @@ const isAuthorized = store.getters['accounts/isAuthorized']
         <CIcon
           icon="cil-applications-settings"
           size="lg"
-          @click="$store.commit('toggleAside')"
+          @click="store.commit('toggleAside')"
         />
       </CHeaderToggler>
     </CContainer>
@@ -108,3 +109,9 @@ const isAuthorized = store.getters['accounts/isAuthorized']
     </CContainer>
   </CHeader>
 </template>
+
+<style lang="scss" scoped>
+.btn:focus {
+  outline: none !important;
+}
+</style>

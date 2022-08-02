@@ -35,7 +35,8 @@ const headerClass = computed(() =>
   <CDropdown>
     <CDropdownToggle
       placement="bottom-end"
-      class="py-0 btn-link"
+      class="py-0"
+      color="link"
       :caret="false"
     >
       <CAvatar
@@ -96,5 +97,19 @@ const headerClass = computed(() =>
 .btn-link:hover,
 .btn-link:active {
   text-decoration: none !important;
+}
+
+.btn {
+  box-shadow: none !important;
+}
+
+.btn:focus,
+.btn:active:focus,
+.btn.active:focus,
+.btn.focus,
+.btn:active.focus,
+.btn.active.focus {
+  outline: none !important;
+  box-shadow: none !important;
 }
 </style>
