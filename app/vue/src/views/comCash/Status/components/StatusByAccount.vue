@@ -1,3 +1,57 @@
+<script lang="ts" setup>
+import { ref, computed, onMounted, watch } from 'vue'
+import { useStore } from 'vuex'
+import { headerSecondary } from '@/utils/cssMixins'
+
+const store = useStore()
+const props = defineProps({ date: String })
+
+const preBalance = ref(0)
+const dateIncSum = ref(0)
+const dateOutSum = ref(0)
+const dateBalance = ref(0)
+
+const comBalanceByAccList = computed(
+  () => store.state.comCash.comBalanceByAccList,
+)
+
+const getSumTotal = () => {
+  const _dateIncSum =
+    comBalanceByAccList.value.length !== 0
+      ? comBalanceByAccList.value
+          .map((i: any) => i.date_inc)
+          .reduce((x: number, y: number) => x + y)
+      : 0
+  const _dateOutSum =
+    comBalanceByAccList.value.length !== 0
+      ? comBalanceByAccList.value
+          .map((o: any) => o.date_out)
+          .reduce((x: number, y: number) => x + y)
+      : 0
+  const _dateIncTotal =
+    comBalanceByAccList.value.length !== 0
+      ? comBalanceByAccList.value
+          .filter((i: any) => i.inc_sum !== null)
+          .map((i: any) => i.inc_sum)
+          .reduce((x: number, y: number) => x + y)
+      : 0
+  const _dateOutTotal =
+    comBalanceByAccList.value.length !== 0
+      ? comBalanceByAccList.value
+          .filter((o: any) => o.out_sum !== null)
+          .map((o: any) => o.out_sum)
+          .reduce((x: number, y: number) => x + y)
+      : 0
+  dateIncSum.value = _dateIncSum
+  dateOutSum.value = _dateOutSum
+  dateBalance.value = _dateIncTotal - _dateOutTotal
+  preBalance.value = _dateIncTotal - _dateOutTotal - (_dateIncSum - _dateOutSum)
+}
+
+onMounted(() => getSumTotal())
+watch(comBalanceByAccList, () => getSumTotal())
+</script>
+
 <template>
   <CTable hover responsive bordered align="middle">
     <colgroup>
@@ -68,70 +122,3 @@
     </CTableBody>
   </CTable>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import { headerSecondary } from '@/utils/cssMixins'
-import { mapState } from 'vuex'
-
-export default defineComponent({
-  name: 'StatusByAccount',
-  props: { date: String },
-  data() {
-    return {
-      preBalance: 0,
-      dateIncSum: 0,
-      dateOutSum: 0,
-      dateBalance: 0,
-    }
-  },
-  created() {
-    this.getSumTotal()
-  },
-  computed: {
-    headerSecondary() {
-      return headerSecondary
-    },
-    ...mapState('comCash', ['comBalanceByAccList']),
-  },
-  watch: {
-    comBalanceByAccList() {
-      this.getSumTotal()
-    },
-  },
-  methods: {
-    getSumTotal() {
-      const dateIncSum =
-        this.comBalanceByAccList.length !== 0
-          ? this.comBalanceByAccList
-              .map((i: any) => i.date_inc)
-              .reduce((x: number, y: number) => x + y)
-          : 0
-      const dateOutSum =
-        this.comBalanceByAccList.length !== 0
-          ? this.comBalanceByAccList
-              .map((o: any) => o.date_out)
-              .reduce((x: number, y: number) => x + y)
-          : 0
-      const dateIncTotal =
-        this.comBalanceByAccList.length !== 0
-          ? this.comBalanceByAccList
-              .filter((i: any) => i.inc_sum !== null)
-              .map((i: any) => i.inc_sum)
-              .reduce((x: number, y: number) => x + y)
-          : 0
-      const dateOutTotal =
-        this.comBalanceByAccList.length !== 0
-          ? this.comBalanceByAccList
-              .filter((o: any) => o.out_sum !== null)
-              .map((o: any) => o.out_sum)
-              .reduce((x: number, y: number) => x + y)
-          : 0
-      this.dateIncSum = dateIncSum
-      this.dateOutSum = dateOutSum
-      this.dateBalance = dateIncTotal - dateOutTotal
-      this.preBalance = dateIncTotal - dateOutTotal - (dateIncSum - dateOutSum)
-    },
-  },
-})
-</script>
