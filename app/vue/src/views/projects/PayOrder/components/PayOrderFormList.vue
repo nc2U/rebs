@@ -11,7 +11,7 @@
       <col width="11%" />
       <col width="12%" />
     </colgroup>
-    <CTableHead color="secondary" class="text-center">
+    <CTableHead :color="headerSecondary" class="text-center">
       <CTableRow>
         <CTableHeaderCell>종류</CTableHeaderCell>
         <CTableHeaderCell>납입회차 코드</CTableHeaderCell>
@@ -27,10 +27,10 @@
     <CTableBody v-if="payOrderList.length > 0">
       <PayOrder
         v-for="payOrder in payOrderList"
-        @on-update="onUpdatePayOrder"
-        @on-delete="onDeletePayOrder"
         :key="payOrder.pk"
         :pay-order="payOrder"
+        @on-update="onUpdatePayOrder"
+        @on-delete="onDeletePayOrder"
       />
     </CTableBody>
 
@@ -47,6 +47,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import PayOrder from '@/views/projects/PayOrder/components/PayOrder.vue'
+import { headerSecondary } from '@/utils/cssMixins'
 import { mapState } from 'vuex'
 
 export default defineComponent({
@@ -54,6 +55,9 @@ export default defineComponent({
   components: { PayOrder },
   props: ['project'],
   computed: {
+    headerSecondary() {
+      return headerSecondary
+    },
     ...mapState('payment', ['payOrderList']),
   },
   methods: {

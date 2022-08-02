@@ -4,7 +4,7 @@
       <col width="50%" />
       <col width="50%" />
     </colgroup>
-    <CTableHead color="secondary" class="text-center">
+    <CTableHead :color="headerSecondary" class="text-center">
       <CTableRow>
         <CTableHeaderCell>동(건물)이름</CTableHeaderCell>
         <CTableHeaderCell>비 고</CTableHeaderCell>
@@ -13,10 +13,10 @@
     <CTableBody v-if="buildingList.length > 0">
       <Building
         v-for="building in buildingList"
-        @on-update="onUpdateBuilding"
-        @on-delete="onDeleteBuilding"
         :key="building.pk"
         :building="building"
+        @on-update="onUpdateBuilding"
+        @on-delete="onDeleteBuilding"
       />
     </CTableBody>
 
@@ -33,6 +33,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import Building from '@/views/projects/Building/components/Building.vue'
+import { headerSecondary } from '@/utils/cssMixins'
 import { mapState } from 'vuex'
 
 export default defineComponent({
@@ -40,6 +41,9 @@ export default defineComponent({
   components: { Building },
   props: ['project'],
   computed: {
+    headerSecondary() {
+      return headerSecondary
+    },
     ...mapState('project', ['buildingList']),
   },
   methods: {

@@ -10,7 +10,7 @@
       <col width="13%" />
       <col width="13" />
     </colgroup>
-    <CTableHead color="secondary" class="text-center">
+    <CTableHead :color="headerSecondary" class="text-center">
       <CTableRow>
         <CTableHeaderCell>차수</CTableHeaderCell>
         <CTableHeaderCell>타입</CTableHeaderCell>
@@ -60,6 +60,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import Price from '@/views/projects/Price/components/Price.vue'
+import { headerSecondary } from '@/utils/cssMixins'
 import { mapState } from 'vuex'
 
 export default defineComponent({
@@ -67,6 +68,9 @@ export default defineComponent({
   components: { Price },
   props: { msg: String, condTexts: Object, queryIds: Object },
   computed: {
+    headerSecondary() {
+      return headerSecondary
+    },
     ...mapState('project', ['floorTypeList']),
   },
   methods: {

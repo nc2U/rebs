@@ -15,7 +15,7 @@
           </CTableHead>
           <CTableBody>
             <CTableRow>
-              <CTableHeaderCell scope="row" color="secondary">
+              <CTableHeaderCell scope="row" :color="headerSecondary">
                 회사명
               </CTableHeaderCell>
               <CTableDataCell>
@@ -23,7 +23,7 @@
               </CTableDataCell>
             </CTableRow>
             <CTableRow>
-              <CTableHeaderCell scope="row" color="secondary">
+              <CTableHeaderCell scope="row" :color="headerSecondary">
                 대표자명
               </CTableHeaderCell>
               <CTableDataCell>
@@ -31,7 +31,7 @@
               </CTableDataCell>
             </CTableRow>
             <CTableRow>
-              <CTableHeaderCell scope="row" color="secondary">
+              <CTableHeaderCell scope="row" :color="headerSecondary">
                 사업자등록번호
               </CTableHeaderCell>
               <CTableDataCell>
@@ -39,7 +39,7 @@
               </CTableDataCell>
             </CTableRow>
             <CTableRow>
-              <CTableHeaderCell scope="row" color="secondary">
+              <CTableHeaderCell scope="row" :color="headerSecondary">
                 법인등록번호
               </CTableHeaderCell>
               <CTableDataCell>
@@ -47,7 +47,7 @@
               </CTableDataCell>
             </CTableRow>
             <CTableRow>
-              <CTableHeaderCell scope="row" color="secondary">
+              <CTableHeaderCell scope="row" :color="headerSecondary">
                 업태
               </CTableHeaderCell>
               <CTableDataCell>
@@ -55,7 +55,7 @@
               </CTableDataCell>
             </CTableRow>
             <CTableRow>
-              <CTableHeaderCell scope="row" color="secondary">
+              <CTableHeaderCell scope="row" :color="headerSecondary">
                 종목
               </CTableHeaderCell>
               <CTableDataCell>
@@ -63,7 +63,7 @@
               </CTableDataCell>
             </CTableRow>
             <CTableRow>
-              <CTableHeaderCell scope="row" color="secondary">
+              <CTableHeaderCell scope="row" :color="headerSecondary">
                 설립일자
               </CTableHeaderCell>
               <CTableDataCell>
@@ -71,7 +71,7 @@
               </CTableDataCell>
             </CTableRow>
             <CTableRow>
-              <CTableHeaderCell scope="row" color="secondary">
+              <CTableHeaderCell scope="row" :color="headerSecondary">
                 개업일자
               </CTableHeaderCell>
               <CTableDataCell>
@@ -80,7 +80,7 @@
             </CTableRow>
 
             <CTableRow>
-              <CTableHeaderCell scope="row" color="secondary">
+              <CTableHeaderCell scope="row" :color="headerSecondary">
                 회사주소
               </CTableHeaderCell>
               <CTableDataCell>
@@ -120,6 +120,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
+import { headerSecondary } from '@/utils/cssMixins'
 import { mapGetters } from 'vuex'
 
 export default defineComponent({
@@ -132,6 +133,9 @@ export default defineComponent({
     },
   },
   computed: {
+    headerSecondary() {
+      return headerSecondary
+    },
     ...mapGetters('accounts', ['staffAuth', 'superAuth']),
   },
   methods: {

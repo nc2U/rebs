@@ -22,7 +22,7 @@
         </CTableDataCell>
         <CTableDataCell class="text-right">(단위: 원)</CTableDataCell>
       </CTableRow>
-      <CTableRow color="secondary" class="text-center">
+      <CTableRow :color="headerSecondary" class="text-center">
         <CTableHeaderCell>구분</CTableHeaderCell>
         <CTableHeaderCell>계정</CTableHeaderCell>
         <CTableHeaderCell>세부 계정</CTableHeaderCell>
@@ -34,7 +34,7 @@
     </CTableHead>
 
     <CTableBody>
-      <CTableRow class="text-center" v-for="inc in dateIncSet" :key="inc.pk">
+      <CTableRow v-for="inc in dateIncSet" :key="inc.pk" class="text-center">
         <CTableDataCell>
           {{ getDAccText(inc.account_d1, listAccD1List) }}
         </CTableDataCell>
@@ -62,7 +62,7 @@
         <CTableDataCell></CTableDataCell>
       </CTableRow>
 
-      <CTableRow color="secondary" class="text-right">
+      <CTableRow :color="headerSecondary" class="text-right">
         <CTableHeaderCell colspan="3" class="text-center">
           합계
         </CTableHeaderCell>
@@ -97,7 +97,7 @@
         </CTableDataCell>
         <CTableDataCell class="text-right">(단위: 원)</CTableDataCell>
       </CTableRow>
-      <CTableRow color="secondary" class="text-center">
+      <CTableRow :color="headerSecondary" class="text-center">
         <CTableHeaderCell>구분</CTableHeaderCell>
         <CTableHeaderCell>계정</CTableHeaderCell>
         <CTableHeaderCell>세부 계정</CTableHeaderCell>
@@ -109,7 +109,7 @@
     </CTableHead>
 
     <CTableBody>
-      <CTableRow class="text-center" v-for="out in dateOutSet" :key="out.pk">
+      <CTableRow v-for="out in dateOutSet" :key="out.pk" class="text-center">
         <CTableDataCell>
           {{ getDAccText(out.account_d1, listAccD1List) }}
         </CTableDataCell>
@@ -136,7 +136,7 @@
         <CTableDataCell></CTableDataCell>
       </CTableRow>
 
-      <CTableRow color="secondary" class="text-right">
+      <CTableRow :color="headerSecondary" class="text-right">
         <CTableHeaderCell colspan="3" class="text-center">
           합계
         </CTableHeaderCell>
@@ -151,6 +151,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { headerSecondary } from '@/utils/cssMixins'
 import { mapState } from 'vuex'
 
 export default defineComponent({
@@ -172,6 +173,9 @@ export default defineComponent({
     this.setData()
   },
   computed: {
+    headerSecondary() {
+      return headerSecondary
+    },
     ...mapState('comCash', [
       'listAccD1List',
       'listAccD2List',

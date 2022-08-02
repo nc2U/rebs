@@ -6,7 +6,7 @@
       <col width="25%" />
       <col width="25%" />
     </colgroup>
-    <CTableHead color="secondary" class="text-center">
+    <CTableHead :color="headerSecondary" class="text-center">
       <CTableRow>
         <CTableHeaderCell>등록차수</CTableHeaderCell>
         <CTableHeaderCell>차수구분</CTableHeaderCell>
@@ -17,10 +17,10 @@
     <CTableBody v-if="orderGroupList.length > 0">
       <OrderGroup
         v-for="order in orderGroupList"
-        @on-update="onUpdateOrder"
-        @on-delete="onDeleteOrder"
         :key="order.pk"
         :order="order"
+        @on-update="onUpdateOrder"
+        @on-delete="onDeleteOrder"
       />
     </CTableBody>
 
@@ -37,6 +37,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import OrderGroup from './OrderGroup.vue'
+import { headerSecondary } from '@/utils/cssMixins'
 import { mapState } from 'vuex'
 
 export default defineComponent({
@@ -44,6 +45,9 @@ export default defineComponent({
   components: { OrderGroup },
   props: ['project'],
   computed: {
+    headerSecondary() {
+      return headerSecondary
+    },
     ...mapState('contract', ['orderGroupList']),
   },
   methods: {

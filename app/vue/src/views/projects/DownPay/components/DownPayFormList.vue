@@ -6,7 +6,7 @@
       <col width="25%" />
       <col width="25%" />
     </colgroup>
-    <CTableHead color="secondary" class="text-center">
+    <CTableHead :color="headerSecondary" class="text-center">
       <CTableRow>
         <CTableHeaderCell>차수</CTableHeaderCell>
         <CTableHeaderCell>타입</CTableHeaderCell>
@@ -18,12 +18,12 @@
     <CTableBody v-if="downPayList.length > 0">
       <DownPay
         v-for="downPay in downPayList"
-        @on-update="onUpdateDownPay"
-        @on-delete="onDeleteDownPay"
         :key="downPay.pk"
         :down-pay="downPay"
         :orders="orders"
         :types="types"
+        @on-update="onUpdateDownPay"
+        @on-delete="onDeleteDownPay"
       />
     </CTableBody>
 
@@ -40,6 +40,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import DownPay from '@/views/projects/DownPay/components/DownPay.vue'
+import { headerSecondary } from '@/utils/cssMixins'
 import { mapState } from 'vuex'
 
 export default defineComponent({
@@ -47,6 +48,9 @@ export default defineComponent({
   components: { DownPay },
   props: ['orders', 'types'],
   computed: {
+    headerSecondary() {
+      return headerSecondary
+    },
     ...mapState('payment', ['downPayList']),
   },
   methods: {

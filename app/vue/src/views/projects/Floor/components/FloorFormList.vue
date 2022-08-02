@@ -7,7 +7,7 @@
       <col width="23%" />
       <col width="8%" />
     </colgroup>
-    <CTableHead color="secondary" class="text-center">
+    <CTableHead :color="headerSecondary" class="text-center">
       <CTableRow>
         <CTableHeaderCell>시작 층</CTableHeaderCell>
         <CTableHeaderCell>종료 층</CTableHeaderCell>
@@ -19,10 +19,10 @@
     <CTableBody v-if="floorTypeList.length > 0">
       <Floor
         v-for="floor in floorTypeList"
-        @on-update="onUpdateFloor"
-        @on-delete="onDeleteFloor"
         :key="floor.pk"
         :floor="floor"
+        @on-update="onUpdateFloor"
+        @on-delete="onDeleteFloor"
       />
     </CTableBody>
 
@@ -39,6 +39,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import Floor from '@/views/projects/Floor/components/Floor.vue'
+import { headerSecondary } from '@/utils/cssMixins'
 import { mapState } from 'vuex'
 
 export default defineComponent({
@@ -46,6 +47,9 @@ export default defineComponent({
   components: { Floor },
   props: ['project'],
   computed: {
+    headerSecondary() {
+      return headerSecondary
+    },
     ...mapState('project', ['floorTypeList']),
   },
   methods: {

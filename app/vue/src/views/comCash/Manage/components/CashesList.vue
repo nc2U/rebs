@@ -15,7 +15,7 @@
     </colgroup>
 
     <CTableHead>
-      <CTableRow color="secondary" class="text-center">
+      <CTableRow :color="headerSecondary" class="text-center">
         <CTableHeaderCell scope="col">거래일자</CTableHeaderCell>
         <CTableHeaderCell scope="col">구분</CTableHeaderCell>
         <CTableHeaderCell scope="col">계정</CTableHeaderCell>
@@ -38,8 +38,8 @@
     <CTableBody>
       <Cashes
         v-for="cash in getCashLogs"
-        :cash="cash"
         :key="cash.pk"
+        :cash="cash"
         @on-update="onUpdate"
         @on-delete="onDelete"
       />
@@ -47,7 +47,7 @@
   </CTable>
 
   <CSmartPagination
-    :activePage="1"
+    :active-page="1"
     :limit="8"
     :pages="cashesPages(15)"
     class="mt-3"
@@ -55,13 +55,13 @@
   />
 
   <AlertModal ref="DAccount" size="lg">
-    <template v-slot:header> 계정 분류 보기</template>
-    <template v-slot:default>
+    <template #header> 계정 분류 보기</template>
+    <template #default>
       <CAccordion>
         <CAccordionItem
           v-for="d1 in listAccD1List"
-          :item-key="d1.pk"
           :key="d1.pk"
+          :item-key="d1.pk"
         >
           <CAccordionHeader
             >{{ `[${d1.code}] ${d1.name} (${d1.description})` }}
@@ -70,8 +70,8 @@
             <CAccordion>
               <CAccordionItem
                 v-for="d2 in listAccD2List.filter(a => a.d1 === d1.pk)"
-                :item-key="d2.pk"
                 :key="d2.pk"
+                :item-key="d2.pk"
               >
                 <CAccordionHeader
                   >[{{ d2.code }}] {{ d2.name }} ------ ({{ d2.description }})
@@ -95,7 +95,7 @@
         </CAccordionItem>
       </CAccordion>
     </template>
-    <template v-slot:footer></template>
+    <template #footer></template>
   </AlertModal>
 </template>
 
@@ -103,6 +103,7 @@
 import { defineComponent } from 'vue'
 import Cashes from '@/views/comCash/Manage/components/Cashes.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
+import { headerSecondary } from '@/utils/cssMixins'
 import { mapGetters, mapState } from 'vuex'
 
 export default defineComponent({
@@ -110,6 +111,9 @@ export default defineComponent({
   components: { Cashes, AlertModal },
   props: { company: Object },
   computed: {
+    headerSecondary() {
+      return headerSecondary
+    },
     ...mapGetters('comCash', ['cashesPages', 'getCashLogs']),
     ...mapState('comCash', ['listAccD1List', 'listAccD2List', 'listAccD3List']),
   },

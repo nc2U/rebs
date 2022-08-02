@@ -10,7 +10,7 @@
       <col width="13%" />
       <col width="12%" />
     </colgroup>
-    <CTableHead color="secondary" class="text-center">
+    <CTableHead :color="headerSecondary" class="text-center">
       <CTableRow>
         <CTableHeaderCell>타입명칭</CTableHeaderCell>
         <CTableHeaderCell>타입색상</CTableHeaderCell>
@@ -25,10 +25,10 @@
     <CTableBody v-if="unitTypeList.length > 0">
       <Type
         v-for="type in unitTypeList"
-        @on-update="onUpdateType"
-        @on-delete="onDeleteType"
         :key="type.pk"
         :type="type"
+        @on-update="onUpdateType"
+        @on-delete="onDeleteType"
       />
     </CTableBody>
 
@@ -45,6 +45,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import Type from '@/views/projects/Type/components/Type.vue'
+import { headerSecondary } from '@/utils/cssMixins'
 import { mapState } from 'vuex'
 
 export default defineComponent({
@@ -52,6 +53,9 @@ export default defineComponent({
   components: { Type },
   props: ['project'],
   computed: {
+    headerSecondary() {
+      return headerSecondary
+    },
     ...mapState('project', ['unitTypeList']),
   },
   methods: {
