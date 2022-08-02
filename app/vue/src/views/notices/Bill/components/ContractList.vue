@@ -78,7 +78,7 @@ export default defineComponent({
   },
   computed: {
     headerSecondary() {
-      return headerSecondary
+      return headerSecondary.value
     },
     ...mapGetters('contract', ['contBillIndex', 'contractPages']),
   },

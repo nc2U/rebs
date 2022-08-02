@@ -103,7 +103,7 @@ export default defineComponent({
   props: { project: Object },
   computed: {
     headerSecondary() {
-      return headerSecondary
+      return headerSecondary.value
     },
     ...mapGetters('proCash', ['proImprestPages', 'getProImprestLogs']),
     ...mapState('proCash', ['allAccD1List', 'allAccD2List']),

@@ -86,12 +86,9 @@ export default defineComponent({
       dateBalance: 0,
     }
   },
-  created() {
-    this.getSumTotal()
-  },
   computed: {
     headerSecondary() {
-      return headerSecondary
+      return headerSecondary.value
     },
     ...mapState('proCash', ['balanceByAccList']),
   },
@@ -99,6 +96,9 @@ export default defineComponent({
     balanceByAccList() {
       this.getSumTotal()
     },
+  },
+  created() {
+    this.getSumTotal()
   },
   methods: {
     getSumTotal() {

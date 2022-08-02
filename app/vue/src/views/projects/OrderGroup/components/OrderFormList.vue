@@ -46,7 +46,7 @@ export default defineComponent({
   props: ['project'],
   computed: {
     headerSecondary() {
-      return headerSecondary
+      return headerSecondary.value
     },
     ...mapState('contract', ['orderGroupList']),
   },

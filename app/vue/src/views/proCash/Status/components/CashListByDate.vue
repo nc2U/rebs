@@ -149,12 +149,9 @@ export default defineComponent({
       dateOutTotal: 0,
     }
   },
-  created(this: any) {
-    this.setData()
-  },
   computed: {
     headerSecondary() {
-      return headerSecondary
+      return headerSecondary.value
     },
     ...mapState('proCash', [
       'allAccD1List',
@@ -167,6 +164,9 @@ export default defineComponent({
     proDateCashBook() {
       this.setData()
     },
+  },
+  created(this: any) {
+    this.setData()
   },
   methods: {
     getD1Text(num: number) {

@@ -134,7 +134,7 @@ export default defineComponent({
   },
   computed: {
     headerSecondary() {
-      return headerSecondary
+      return headerSecondary.value
     },
     ...mapGetters('accounts', ['staffAuth', 'superAuth']),
   },

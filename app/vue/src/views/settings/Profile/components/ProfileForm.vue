@@ -42,8 +42,8 @@
 
             <CCol md="8">
               <CFormInput
-                type="text"
                 v-model="form.name"
+                type="text"
                 placeholder="성명을 입력하세요"
                 maxlength="20"
                 required
@@ -58,9 +58,9 @@
 
             <CCol md="8">
               <DatePicker
-                type="text"
                 v-model="form.birth_date"
                 v-maska="'####-##-##'"
+                type="text"
                 placeholder="생년월일을 입력하세요"
                 maxlength="10"
               />
@@ -75,9 +75,9 @@
 
             <CCol md="8">
               <CFormInput
-                type="text"
                 v-model="form.cell_phone"
                 v-maska="['###-###-####', '###-####-####']"
+                type="text"
                 placeholder="휴대전화를 입력하세요"
                 maxlength="13"
               />
@@ -96,7 +96,7 @@
     </CCardBody>
 
     <CCardFooter class="text-right">
-      <CButton type="button" color="light" @click="this.$emit('reset-form')">
+      <CButton type="button" color="light" @click="$emit('reset-form')">
         취소
       </CButton>
       <CButton type="submit" :color="btnClass" :disabled="formsCheck">
@@ -107,11 +107,11 @@
   </CForm>
 
   <ConfirmModal ref="confirmModal">
-    <template v-slot:header>프로필 정보</template>
-    <template v-slot:default>
+    <template #header>프로필 정보</template>
+    <template #default>
       프로필 정보 {{ confirmText }}을 진행하시겠습니까?
     </template>
-    <template v-slot:footer>
+    <template #footer>
       <CButton :color="btnClass" @click="modalAction">
         {{ confirmText }}
       </CButton>
@@ -150,18 +150,6 @@ export default defineComponent({
       validated: false,
     }
   },
-  created(this: any) {
-    if (this.userInfo) {
-      this.form.user = this.userInfo.pk
-      if (this.userInfo.profile) {
-        this.form.pk = this.userInfo.profile.pk
-        this.form.name = this.userInfo.profile.name
-        this.form.birth_date = this.userInfo.profile.birth_date
-        this.form.cell_phone = this.userInfo.profile.cell_phone
-        this.image = this.userInfo.profile.image
-      }
-    }
-  },
   computed: {
     formsCheck() {
       return this.userInfo?.profile?.pk ? this.isChanged() : false
@@ -173,6 +161,18 @@ export default defineComponent({
       return this.userInfo?.profile?.pk ? 'success' : 'primary'
     },
     ...mapGetters('accounts', ['isAuthorized']),
+  },
+  created(this: any) {
+    if (this.userInfo) {
+      this.form.user = this.userInfo.pk
+      if (this.userInfo.profile) {
+        this.form.pk = this.userInfo.profile.pk
+        this.form.name = this.userInfo.profile.name
+        this.form.birth_date = this.userInfo.profile.birth_date
+        this.form.cell_phone = this.userInfo.profile.cell_phone
+        this.image = this.userInfo.profile.image
+      }
+    }
   },
   methods: {
     isChanged(this: any) {

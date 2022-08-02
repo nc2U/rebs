@@ -128,10 +128,10 @@ export default defineComponent({
   },
   computed: {
     headerSecondary() {
-      return headerSecondary
+      return headerSecondary.value
     },
     headerInfo() {
-      return headerInfo
+      return headerInfo.value
     },
     ...mapState('contract', ['orderGroupList']),
     ...mapState('project', ['unitTypeList']),

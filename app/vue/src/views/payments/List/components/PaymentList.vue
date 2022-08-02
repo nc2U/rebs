@@ -62,7 +62,7 @@ export default defineComponent({
   props: { project: Object },
   computed: {
     headerSecondary() {
-      return headerSecondary
+      return headerSecondary.value
     },
     ...mapGetters('payment', ['paymentPages', 'getPayments']),
   },

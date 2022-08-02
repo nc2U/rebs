@@ -46,10 +46,13 @@ import { mapState } from 'vuex'
 export default defineComponent({
   name: 'DownPayFormList',
   components: { DownPay },
-  props: ['orders', 'types'],
+  props: {
+    orders: { type: Object, default: null },
+    types: { type: Object, default: null },
+  },
   computed: {
     headerSecondary() {
-      return headerSecondary
+      return headerSecondary.value
     },
     ...mapState('payment', ['downPayList']),
   },

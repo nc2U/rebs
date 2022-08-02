@@ -62,7 +62,7 @@ export default defineComponent({
   props: { contract: Object, paymentList: Array },
   computed: {
     headerSecondary() {
-      return headerSecondary
+      return headerSecondary.value
     },
     thisPrice(this: any) {
       if (this.contract) {

@@ -113,7 +113,7 @@ export default defineComponent({
   props: { company: Object },
   computed: {
     headerSecondary() {
-      return headerSecondary
+      return headerSecondary.value
     },
     ...mapGetters('comCash', ['cashesPages', 'getCashLogs']),
     ...mapState('comCash', ['listAccD1List', 'listAccD2List', 'listAccD3List']),

@@ -69,7 +69,7 @@ export default defineComponent({
   props: { msg: String, condTexts: Object, queryIds: Object },
   computed: {
     headerSecondary() {
-      return headerSecondary
+      return headerSecondary.value
     },
     ...mapState('project', ['floorTypeList']),
   },
