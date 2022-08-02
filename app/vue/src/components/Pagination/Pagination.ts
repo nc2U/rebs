@@ -3,7 +3,7 @@ import { computed, defineComponent, h, ref, watch } from 'vue'
 import { CPagination } from '@coreui/vue'
 import { CPaginationItem } from '@coreui/vue'
 
-const CSmartPagination = defineComponent({
+const Pagination = defineComponent({
   name: 'CSmartPagination',
   props: {
     /**
@@ -360,4 +360,4 @@ const CSmartPagination = defineComponent({
   },
 })
 
-export { CSmartPagination }
+export { Pagination }

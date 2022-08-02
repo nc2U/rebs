@@ -1,3 +1,3 @@
-import { CSmartPagination } from './CSmartPagination'
+import { Pagination } from './Pagination'
 
-export default CSmartPagination
+export default Pagination
