@@ -1,3 +1,36 @@
+<script lang="ts" setup>
+import { computed } from 'vue'
+import { useStore } from 'vuex'
+import { useRouter, useRoute } from 'vue-router'
+import TodoModal from '@/components/Modals/TodoModal.vue'
+
+const store = useStore()
+const router = useRouter()
+const route = useRoute()
+
+const logOut = () => {
+  store.dispatch('accounts/logout')
+  router.push({
+    name: 'Login',
+    query: { redirect: route.path },
+  })
+}
+
+const props = defineProps({ userInfo: { type: Object, required: true } })
+
+const avatarSrc = computed(() => {
+  return props.userInfo?.profile?.image ? props.userInfo?.profile?.image : ''
+})
+const avatarText = computed(() =>
+  props.userInfo ? props.userInfo.username.substring(0, 1).toUpperCase() : 'A',
+)
+
+const itemsCount = store.getters['accounts/myTodos'].length
+const headerClass = computed(() =>
+  store.state.theme === 'dark' ? 'bg-secondary' : 'bg-light',
+)
+</script>
+
 <template>
   <CDropdown>
     <CDropdownToggle
@@ -15,8 +48,12 @@
         {{ avatarText }}
       </CAvatar>
     </CDropdownToggle>
-    <CDropdownMenu class="pt-0">
-      <CDropdownHeader component="h6" class="bg-light fw-semibold py-2">
+    <CDropdownMenu>
+      <CDropdownHeader
+        component="h6"
+        class="fw-semibold py-2"
+        :class="headerClass"
+      >
         Account -
         {{
           userInfo.profile && userInfo.profile.name
@@ -28,11 +65,15 @@
       <CDropdownItem @click="$refs.todoModal.callModal()">
         <CIcon icon="cil-task" />
         할일목록
-        <CBadge color="danger-gradient" class="ms-auto">
+        <CBadge color="danger" size="sm" class="ms-auto">
           {{ itemsCount }}
         </CBadge>
       </CDropdownItem>
-      <CDropdownHeader component="h6" class="bg-light fw-semibold py-2">
+      <CDropdownHeader
+        component="h6"
+        class="fw-semibold py-2"
+        :class="headerClass"
+      >
         Settings
       </CDropdownHeader>
       <CDropdownItem @click="$router.push({ name: '프로필 관리' })">
@@ -40,7 +81,7 @@
         프로필
       </CDropdownItem>
       <CDropdownDivider />
-      <CDropdownItem @click="logOut" style="cursor: pointer">
+      <CDropdownItem style="cursor: pointer" @click="logOut">
         <CIcon icon="cil-lock-locked" />
         로그아웃
       </CDropdownItem>
@@ -49,53 +90,6 @@
 
   <TodoModal ref="todoModal" />
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import TodoModal from '@/components/Modals/TodoModal.vue'
-import { mapActions } from 'vuex'
-import avatar from '../../assets/images/avatars/6.jpg'
-
-export default defineComponent({
-  name: 'AppHeaderDropdownAccnt',
-  components: { TodoModal },
-  setup() {
-    return {
-      avatar: '',
-    }
-  },
-  props: {
-    userInfo: {
-      type: Object,
-      required: true,
-    },
-  },
-  computed: {
-    avatarSrc(this: any) {
-      const profileImage = this.userInfo?.profile?.image
-      return profileImage ? profileImage : ''
-    },
-    avatarText() {
-      return this.userInfo
-        ? this.userInfo.username.substring(0, 1).toUpperCase()
-        : 'A'
-    },
-    itemsCount(this: any) {
-      return this.$store.getters['accounts/myTodos'].length
-    },
-  },
-  methods: {
-    logOut() {
-      this.logout()
-      this.$router.push({
-        name: 'Login',
-        query: { redirect: this.$route.path },
-      })
-    },
-    ...mapActions('accounts', ['logout']),
-  },
-})
-</script>
 
 <style lang="scss" scoped>
 .show,
