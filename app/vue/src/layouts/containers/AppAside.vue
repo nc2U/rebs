@@ -17,11 +17,15 @@ const updateActiveKey = (key: number) => {
 
 const store = useStore()
 
-const isDark = computed(() =>
-  store.state.theme === 'dark' ? 'dark-theme' : 'bg-white',
-)
-const active = (key: number) => key === activeKey.value
+const isDark = computed(() => store.state.theme === 'dark')
+
+const white = computed(() => (isDark.value ? 'dark-theme' : 'bg-white'))
+
+const light = computed(() => (isDark.value ? 'dark-theme' : 'bg-light'))
+
 const asideVisible = computed(() => store.state.asideVisible)
+
+const active = (key: number) => key === activeKey.value
 </script>
 
 <template>
@@ -32,7 +36,7 @@ const asideVisible = computed(() => store.state.asideVisible)
     overlaid
     position="end"
     :visible="asideVisible"
-    :class="isDark"
+    :class="white"
   >
     <CSidebarHeader class="bg-transparent p-0">
       <CNav variant="underline">
@@ -60,7 +64,8 @@ const asideVisible = computed(() => store.state.asideVisible)
       <CTabPane :visible="activeKey == 1">
         <CListGroup flush>
           <CListGroupItem
-            class="list-group-item border-start-4 border-start-secondary bg-light text-center fw-bold text-medium-emphasis text-uppercase small"
+            class="list-group-item border-start-4 border-start-secondary text-center fw-bold text-medium-emphasis text-uppercase small"
+            :class="light"
           >
             Today
           </CListGroupItem>
@@ -89,7 +94,8 @@ const asideVisible = computed(() => store.state.asideVisible)
             </small>
           </CListGroupItem>
           <CListGroupItem
-            class="border-start-4 border-start-secondary bg-light text-center fw-bold text-medium-emphasis text-uppercase small"
+            class="border-start-4 border-start-secondary text-center fw-bold text-medium-emphasis text-uppercase small"
+            :class="light"
           >
             Tomorrow
           </CListGroupItem>
