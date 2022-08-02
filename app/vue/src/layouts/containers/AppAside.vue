@@ -1,11 +1,27 @@
+<script lang="ts" setup>
+import { computed, ref } from 'vue'
+import { useStore } from 'vuex'
+import { CSidebar } from '@coreui/vue'
+
+// const activeKey = ref(1)
+
+// const updateActiveKey = (key: number) => {
+//   activeKey.value = key
+// }
+
+const store = useStore()
+
+const asideVisible = computed(() => store.state.asideVisible)
+</script>
+
 <template>
   <CSidebar
-    colorScheme="light"
-    selfHiding="xxl"
+    self-hiding="xxl"
     size="lg"
     overlaid
-    placement="end"
+    position="end"
     :visible="asideVisible"
+    class="text-body"
   >
     <CSidebarHeader class="bg-transparent p-0">
       <CCloseButton
@@ -13,30 +29,6 @@
         @click="$store.commit('toggleAside')"
       />
     </CSidebarHeader>
+    <span class="text-body">asdasdfasdf</span>
   </CSidebar>
 </template>
-
-<script lang="ts">
-import { computed, ref } from 'vue'
-import { useStore } from 'vuex'
-
-export default {
-  name: 'AppAside',
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  setup() {
-    const activeKey = ref(1)
-
-    const updateActiveKey = (key: number) => {
-      activeKey.value = key
-    }
-
-    const store = useStore()
-
-    return {
-      asideVisible: computed(() => store.state.asideVisible),
-      activeKey,
-      updateActiveKey,
-    }
-  },
-}
-</script>
