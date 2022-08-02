@@ -33,12 +33,7 @@ const headerClass = computed(() =>
 
 <template>
   <CDropdown>
-    <CDropdownToggle
-      placement="bottom-end"
-      class="py-0"
-      color="link"
-      :caret="false"
-    >
+    <CDropdownToggle class="py-0" color="link" :caret="false">
       <CAvatar
         color="secondary"
         text-color="white"
