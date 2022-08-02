@@ -14,7 +14,6 @@ const fetchCompanyList = () => store.dispatch('settings/fetchCompanyList')
 const emit = defineEmits(['com-select'])
 const selectCom = () => {
   nextTick(() => {
-    alert(com.value)
     emit('com-select', com.value)
   })
 }
