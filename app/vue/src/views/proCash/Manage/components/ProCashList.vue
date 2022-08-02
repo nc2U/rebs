@@ -15,7 +15,7 @@
     </colgroup>
 
     <CTableHead>
-      <CTableRow color="secondary" class="text-center">
+      <CTableRow :color="headerSecondary" class="text-center">
         <CTableHeaderCell scope="col">거래일자</CTableHeaderCell>
         <CTableHeaderCell scope="col">구분</CTableHeaderCell>
         <CTableHeaderCell scope="col">계정</CTableHeaderCell>
@@ -43,8 +43,8 @@
     <CTableBody>
       <ProCash
         v-for="proCash in getProCashLogs"
-        :proCash="proCash"
         :key="proCash.pk"
+        :pro-cash="proCash"
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
       />
@@ -52,7 +52,7 @@
   </CTable>
 
   <CSmartPagination
-    :activePage="1"
+    :active-page="1"
     :limit="8"
     :pages="proCashPages(15)"
     class="mt-3"
@@ -60,13 +60,13 @@
   />
 
   <AlertModal ref="DAccount" size="lg">
-    <template v-slot:header> 프로젝트 계정 분류 보기</template>
-    <template v-slot:default>
+    <template #header> 프로젝트 계정 분류 보기</template>
+    <template #default>
       <CAccordion>
         <CAccordionItem
           v-for="d1 in allAccD1List"
-          :item-key="d1.pk"
           :key="d1.pk"
+          :item-key="d1.pk"
         >
           <CAccordionHeader
             >{{ `[${d1.code}] ${d1.name} (${d1.description})` }}
@@ -85,7 +85,7 @@
         </CAccordionItem>
       </CAccordion>
     </template>
-    <template v-slot:footer></template>
+    <template #footer></template>
   </AlertModal>
 </template>
 
@@ -93,6 +93,7 @@
 import { defineComponent } from 'vue'
 import ProCash from '@/views/proCash/Manage/components/ProCash.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
+import { headerSecondary } from '@/utils/cssMixins'
 import { mapGetters, mapState } from 'vuex'
 
 export default defineComponent({
@@ -100,6 +101,9 @@ export default defineComponent({
   components: { ProCash, AlertModal },
   props: { project: Object },
   computed: {
+    headerSecondary() {
+      return headerSecondary
+    },
     ...mapGetters('proCash', ['proCashPages', 'getProCashLogs']),
     ...mapState('proCash', ['allAccD1List', 'allAccD2List']),
   },
