@@ -156,11 +156,7 @@ import { mapState } from 'vuex'
 
 export default defineComponent({
   name: 'CashListByDate',
-  components: {},
-  props: { date: String },
-  setup() {
-    return {}
-  },
+  props: { date: { type: String, default: '' } },
   data() {
     return {
       dateIncSet: null,
@@ -169,12 +165,9 @@ export default defineComponent({
       dateOutTotal: 0,
     }
   },
-  created(this: any) {
-    this.setData()
-  },
   computed: {
     headerSecondary() {
-      return headerSecondary
+      return headerSecondary.value
     },
     ...mapState('comCash', [
       'listAccD1List',
@@ -188,6 +181,9 @@ export default defineComponent({
     dateCashBook() {
       this.setData()
     },
+  },
+  created(this: any) {
+    this.setData()
   },
   methods: {
     getDAccText(num: number, acc: any) {

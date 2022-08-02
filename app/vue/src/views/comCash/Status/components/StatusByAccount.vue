@@ -110,7 +110,7 @@ watch(comBalanceByAccList, () => getSumTotal())
         </CTableDataCell>
       </CTableRow>
 
-      <CTableRow color="secondary" class="text-right">
+      <CTableRow :color="headerSecondary" class="text-right">
         <CTableHeaderCell colspan="2" class="text-center">
           현금성 자산 계
         </CTableHeaderCell>
