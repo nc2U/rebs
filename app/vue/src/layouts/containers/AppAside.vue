@@ -1,6 +1,13 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
 import { useStore } from 'vuex'
+import avatar2 from '@/assets/images/avatars/2.jpg'
+import avatar3 from '@/assets/images/avatars/3.jpg'
+import avatar4 from '@/assets/images/avatars/4.jpg'
+import avatar5 from '@/assets/images/avatars/5.jpg'
+import avatar6 from '@/assets/images/avatars/6.jpg'
+import avatar7 from '@/assets/images/avatars/7.jpg'
+import avatar8 from '@/assets/images/avatars/8.jpg'
 
 const activeKey = ref(1)
 
@@ -13,6 +20,7 @@ const store = useStore()
 const isDark = computed(() =>
   store.state.theme === 'dark' ? 'dark-theme' : 'bg-white',
 )
+const active = (key: number) => key === activeKey.value
 const asideVisible = computed(() => store.state.asideVisible)
 </script>
 
@@ -27,18 +35,18 @@ const asideVisible = computed(() => store.state.asideVisible)
     :class="isDark"
   >
     <CSidebarHeader class="bg-transparent p-0">
-      <CNav variant="pills">
-        <CNavItem>
+      <CNav variant="underline">
+        <CNavItem :class="{ selected: active(1) }">
           <CNavLink @click="updateActiveKey(1)">
             <CIcon icon="cil-List" alt="CoreUI Icons List" />
           </CNavLink>
         </CNavItem>
-        <CNavItem>
+        <CNavItem :class="{ selected: active(2) }">
           <CNavLink @click="updateActiveKey(2)">
             <CIcon icon="cil-speech" alt="CoreUI Icons Speech" />
           </CNavLink>
         </CNavItem>
-        <CNavItem>
+        <CNavItem :class="{ selected: active(3) }">
           <CNavLink @click="updateActiveKey(3)">
             <CIcon icon="cil-settings" alt="CoreUI Icons Settings" />
           </CNavLink>
@@ -48,7 +56,7 @@ const asideVisible = computed(() => store.state.asideVisible)
         </CNavItem>
       </CNav>
     </CSidebarHeader>
-    <CTabContent>
+    <CTabContent class="border-top-1">
       <CTabPane :visible="activeKey == 1">
         <CListGroup flush>
           <CListGroupItem
@@ -282,30 +290,41 @@ const asideVisible = computed(() => store.state.asideVisible)
             <b>CPU Usage</b>
           </small>
         </div>
-        <CProgress thin color="info-gradient" :value="25" />
+        <CProgress thin color="info" :value="25" />
         <small class="text-medium-emphasis">348 Processes. 1/4 Cores.</small>
         <div class="text-uppercase mb-1 mt-2">
           <small>
             <b>Memory Usage</b>
           </small>
         </div>
-        <CProgress thin color="warning-gradient" :value="70" />
+        <CProgress thin color="warning" :value="70" />
         <small class="text-medium-emphasis">11444GB/16384MB</small>
         <div class="text-uppercase mb-1 mt-2">
           <small>
             <b>SSD 1 Usage</b>
           </small>
         </div>
-        <CProgress thin color="danger-gradient" :value="95" />
+        <CProgress thin color="danger" :value="95" />
         <small class="text-medium-emphasis">243GB/256GB</small>
         <div class="text-uppercase mb-1 mt-2">
           <small>
             <b>SSD 2 Usage</b>
           </small>
         </div>
-        <CProgress thin color="success-gradient" :value="10" />
+        <CProgress thin color="success" :value="10" />
         <small class="text-medium-emphasis">25GB/256GB</small>
       </CTabPane>
     </CTabContent>
   </CSidebar>
 </template>
+
+<style lang="scss" scoped>
+.selected,
+.selected:hover {
+  border-bottom: solid 1px #0d6efd;
+}
+
+.border-top-1 {
+  border-top: 1px solid #ddd;
+}
+</style>
