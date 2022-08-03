@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, ref, onMounted, reactive } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 import { useStore } from 'vuex'
 import { onBeforeRouteLeave } from 'vue-router'
 import { pageTitle, navMenu } from '@/views/payments/_menu/headermixin'
@@ -9,12 +9,11 @@ import PaymentSummary from '@/views/payments/List/components/PaymentSummary.vue'
 import ListController from '@/views/payments/List/components/ListController.vue'
 import PaymentList from '@/views/payments/List/components/PaymentList.vue'
 import TableTitleRow from '@/components/TableTitleRow.vue'
-import { mapActions, mapGetters, mapState } from 'vuex'
 
 const store = useStore()
 
 const listControl = ref()
-let dataFilter = reactive({
+let dataFilter = ref({
   page: 1,
   from_date: '',
   to_date: '',
@@ -26,6 +25,17 @@ let dataFilter = reactive({
 
 const project = computed(() => store.state.project.project)
 const initProjId = computed(() => store.getters['accounts/initProjId'])
+
+const excelUrl = computed(() => {
+  let url = project.value ? `/excel/payments/?project=${project.value.pk}` : ''
+  if (dataFilter.value.from_date) url += `&sd=${dataFilter.value.from_date}`
+  if (dataFilter.value.to_date) url += `&ed=${dataFilter.value.to_date}`
+  if (dataFilter.value.pay_order) url += `&ipo=${dataFilter.value.pay_order}`
+  if (dataFilter.value.pay_account) url += `&ba=${dataFilter.value.pay_account}`
+  if (dataFilter.value.no_contract) url += `&up=on`
+  if (dataFilter.value.search) url += `&q=${dataFilter.value.search}`
+  return url
+})
 
 const fetchTypeList = (pj: number) =>
   store.dispatch('project/fetchTypeList', pj)
@@ -49,15 +59,6 @@ const paymentUpdateState = (payload: any) =>
 const proCashUpdateState = (payload: any) =>
   store.commit('proCash/updateState', payload)
 
-onMounted(() => {
-  fetchTypeList(initProjId.value)
-  fetchPaySumList(initProjId.value)
-  fetchContNumList(initProjId.value)
-  fetchPayOrderList(initProjId.value)
-  fetchPaymentList({ project: initProjId.value })
-  fetchProBankAccList(initProjId.value)
-})
-
 const onSelectAdd = (target: any) => {
   if (target !== '') {
     fetchTypeList(target)
@@ -79,14 +80,14 @@ const onSelectAdd = (target: any) => {
   }
 }
 
-const pageSelect = (page: number) => {
-  dataFilter.page = page
-  listControl.value.listFiltering(page)
+const listFiltering = (payload: any) => {
+  dataFilter.value = payload
+  fetchPaymentList({ ...{ project: project.value.pk }, ...payload })
 }
 
-const listFiltering = (payload: any) => {
-  dataFilter = payload
-  fetchPaymentList({ ...{ project: project.value.pk }, ...payload })
+const pageSelect = (page: number) => {
+  dataFilter.value.page = page
+  listControl.value.listFiltering(page)
 }
 
 const onUpdate = (payload: any) => {
@@ -102,9 +103,17 @@ const onDelete = (pk: number) => {
   alert(pk)
 }
 
+onMounted(() => {
+  fetchTypeList(initProjId.value)
+  fetchPaySumList(initProjId.value)
+  fetchContNumList(initProjId.value)
+  fetchPayOrderList(initProjId.value)
+  fetchPaymentList({ project: initProjId.value })
+  fetchProBankAccList(initProjId.value)
+})
+
 onBeforeRouteLeave(() => {
-  store.state.payment.paymentList = []
-  store.state.payment.paymentsCount = 0
+  paymentUpdateState({ paymentList: [], paymentsCount: 0 })
 })
 </script>
 
@@ -118,6 +127,7 @@ onBeforeRouteLeave(() => {
   </ContentHeader>
 
   <ContentBody>
+    {{ dataFilter.no_contract }}
     <CCardBody class="pb-5">
       <ListController ref="listControl" @payment-filtering="listFiltering" />
       <TableTitleRow excel :url="excelUrl" />
