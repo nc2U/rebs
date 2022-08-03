@@ -1,12 +1,24 @@
+<script lang="ts" setup>
+import { computed } from 'vue'
+import { useStore } from 'vuex'
+import { AppSidebarNav } from './AppSidebarNav'
+import { logoNegative, sygnet } from '@/assets/brand/current-logo'
+
+const store = useStore()
+
+const sidebarUnfoldable = computed(() => store.state.sidebarUnfoldable)
+const sidebarVisible = computed(() => store.state.sidebarVisible)
+</script>
+
 <template>
   <CSidebar
     position="fixed"
-    selfHiding="md"
+    self-hiding="md"
     :unfoldable="sidebarUnfoldable"
     :visible="sidebarVisible"
     @visible-change="
       event =>
-        $store.commit({
+        store.commit({
           type: 'updateSidebarVisible',
           value: event,
         })
@@ -14,12 +26,12 @@
   >
     <CSidebarBrand>
       <CIcon
-        customClassName="sidebar-brand-full"
+        custom-class-name="sidebar-brand-full"
         :icon="logoNegative"
         :height="35"
       />
       <CIcon
-        customClassName="sidebar-brand-narrow"
+        custom-class-name="sidebar-brand-narrow"
         :icon="sygnet"
         :height="35"
       />
@@ -27,31 +39,7 @@
     <AppSidebarNav />
     <CSidebarToggler
       class="d-none d-lg-flex"
-      @click="$store.commit('toggleUnfoldable')"
+      @click="store.commit('toggleUnfoldable')"
     />
   </CSidebar>
 </template>
-
-<script lang="ts">
-import { computed } from 'vue'
-import { useStore } from 'vuex'
-import { AppSidebarNav } from './AppSidebarNav'
-import { logoNegative, sygnet } from '@/assets/brand/current-logo'
-
-export default {
-  name: 'AppSidebar',
-  components: {
-    AppSidebarNav,
-  },
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  setup() {
-    const store = useStore()
-    return {
-      logoNegative,
-      sygnet,
-      sidebarUnfoldable: computed(() => store.state.sidebarUnfoldable),
-      sidebarVisible: computed(() => store.state.sidebarVisible),
-    }
-  },
-}
-</script>
