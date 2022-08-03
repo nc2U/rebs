@@ -74,9 +74,12 @@ export default defineComponent({
     }
 
     const showTab = (num: number) => {
-      if (num === 1) compName.value = 'StatusByAccount'
-      else if (num === 2) compName.value = 'CashListByDate'
-      else if (num === 3) compName.value = 'SummaryForBudget'
+      const comp: { [key: number]: string } = {
+        1: 'StatusByAccount',
+        2: 'CashListByDate',
+        3: 'SummaryForBudget',
+      }
+      compName.value = comp[num]
     }
 
     const setDate = (d: Date) => {
