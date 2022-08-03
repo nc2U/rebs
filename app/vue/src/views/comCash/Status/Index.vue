@@ -36,10 +36,14 @@ export default defineComponent({
     const fetchAllAccD3List = () => store.dispatch('comCash/fetchAllAccD3List')
     const fetchComBankAccList = (com: number) =>
       store.dispatch('comCash/fetchComBankAccList', com)
-    const fetchComBalanceByAccList = (com: { company: number }) =>
-      store.dispatch('comCash/fetchComBalanceByAccList', com)
-    const fetchDateCashBookList = (payload: any) =>
-      store.dispatch('comCash/fetchDateCashBookList', payload)
+    const fetchComBalanceByAccList = (com: {
+      company: number
+      date?: string
+    }) => store.dispatch('comCash/fetchComBalanceByAccList', com)
+    const fetchDateCashBookList = (payload: {
+      company: number
+      date: string
+    }) => store.dispatch('comCash/fetchDateCashBookList', payload)
 
     const updateState = (payload: any) =>
       store.commit('comCash/updateState', payload)
@@ -47,7 +51,10 @@ export default defineComponent({
     const onSelectAdd = (target: any) => {
       if (target !== '') {
         fetchComBankAccList(target)
-        fetchComBalanceByAccList({ company: target })
+        fetchComBalanceByAccList({
+          company: target,
+          date: dateFormat(date.value),
+        })
         fetchDateCashBookList({
           company: target,
           date: dateFormat(date.value),
@@ -72,7 +79,10 @@ export default defineComponent({
     const setDate = (d: string) => {
       const dt = new Date(d)
       date.value = new Date(dt)
-      fetchComBalanceByAccList({ company: company.value.pk })
+      fetchComBalanceByAccList({
+        company: company.value.pk,
+        date: dateFormat(dt),
+      })
       fetchDateCashBookList({
         company: company.value.pk,
         date: dateFormat(dt),
