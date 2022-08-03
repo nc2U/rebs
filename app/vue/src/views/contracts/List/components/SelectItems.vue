@@ -153,7 +153,7 @@ onMounted(() => {
 </template>
 
 <style lang="scss" scoped>
-::v-deep.my-checkbox .v-label {
+:deep(.my-checkbox .v-label) {
   font-size: 1em !important;
 }
 </style>
