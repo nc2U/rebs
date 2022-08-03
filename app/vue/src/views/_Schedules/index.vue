@@ -30,7 +30,12 @@
         <div class="demo-app-sidebar">
           <div class="demo-app-sidebar-section">
             <h2>
-              <v-icon icon="mdi-alpha-i-circle" size="small" class="mr-2" />
+              <v-icon
+                icon="mdi-alpha-i-circle"
+                size="small"
+                class="mr-2"
+                color="indigo"
+              />
               Instructions
             </h2>
             <ul>
