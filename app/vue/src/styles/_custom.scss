@@ -20,6 +20,10 @@
   background: #FDEBEB;
 }
 
+.dark-theme select > option {
+  background: #2F303A !important;
+}
+
 // NProgress css
 #nprogress .bar {
   background: #e3caf9;
