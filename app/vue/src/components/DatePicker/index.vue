@@ -1,46 +1,38 @@
+<script lang="ts" setup>
+import { computed } from 'vue'
+import { useStore } from 'vuex'
+import Datepicker from '@vuepic/vue-datepicker'
+import { dateFormat } from '@/utils/baseMixins'
+import { maska as vMaska } from 'maska'
+
+const store = useStore()
+
+const textInputOptions = computed(() => {
+  return {
+    enterSubmit: true,
+    tabSubmit: true,
+    openMenu: true,
+    format: 'yyyy-MM-dd',
+  }
+})
+
+const isDark = computed(() => store.state.theme === 'dark')
+</script>
+
 <template>
   <Datepicker
+    v-maska="'####-##-##'"
     name="date-picker"
-    textInput
-    autoApply
+    text-input
+    auto-apply
     :format="dateFormat"
     position="left"
-    :textInputOptions="textInputOptions"
-    inputClassName="form-control"
-    :enableTimePicker="false"
-    v-maska="'####-##-##'"
+    :text-input-options="textInputOptions"
+    input-class-name="form-control"
+    :enable-time-picker="false"
     teleport="#app"
-    :dark="dark"
+    :dark="isDark"
     locale="ko"
     required
   />
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import Datepicker from '@vuepic/vue-datepicker'
-import dayjs from 'dayjs'
-import { maska } from 'maska'
-
-export default defineComponent({
-  name: 'DatePicker',
-  directives: { maska },
-  components: { Datepicker },
-  computed: {
-    textInputOptions() {
-      return {
-        enterSubmit: true,
-        tabSubmit: true,
-        openMenu: true,
-        format: 'yyyy-MM-dd',
-      }
-    },
-    dark(this: any) {
-      return this.$store.state.theme === 'dark'
-    },
-  },
-  methods: {
-    dateFormat: (date: any) => dayjs(date).format('YYYY-MM-DD'),
-  },
-})
-</script>

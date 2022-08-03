@@ -1,5 +1,3 @@
-import dayjs from 'dayjs'
-
 export default {
   methods: {
     numFormat(val = 0, n?: number) {
@@ -24,7 +22,7 @@ export default {
     },
 
     dateFormat(date: Date) {
-      return dayjs(date).format('YYYY-MM-DD')
+      return date.toISOString().replace(/T.*$/, '')
     },
   },
 }

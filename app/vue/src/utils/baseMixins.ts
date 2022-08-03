@@ -1,5 +1,3 @@
-import dayjs from 'dayjs'
-
 export const numFormat = (val = 0, n?: number) => {
   const value = !val ? 0 : val
   const parts = n
@@ -22,5 +20,5 @@ export const diffDate = (date: string) => {
 }
 
 export const dateFormat = (date: Date) => {
-  return dayjs(date).format('YYYY-MM-DD')
+  return date.toISOString().replace(/T.*$/, '')
 }

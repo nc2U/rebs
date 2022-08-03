@@ -27,7 +27,6 @@
     "axios": "^0.24.0",
     "buffer": "^6.0.3",
     "core-js": "^3.22.8",
-    "dayjs": "^1.11.2",
     "js-cookie": "^3.0.1",
     "maska": "^1.5.0",
     "mosha-vue-toastify": "^1.0.23",
