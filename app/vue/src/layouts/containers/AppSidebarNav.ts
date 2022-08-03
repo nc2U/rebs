@@ -69,9 +69,9 @@ const AppSidebarNav = defineComponent({
     const route = useRoute()
     const firstRender = ref(true)
 
-    onMounted(() => {
-      firstRender.value = false
-    })
+    // onMounted(() => {
+    //   firstRender.value = false
+    // })
 
     const renderItem = (item: Item) => {
       if (item.items) {
