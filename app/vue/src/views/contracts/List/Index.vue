@@ -14,6 +14,7 @@ const store = useStore()
 
 const listControl = ref()
 const visible = ref(false)
+const unitSet = ref(false)
 const filteredStr = ref('')
 const printItems = ref(['1', '2', '3', '4', '7', '8', '9', '10', '18-19-20-21'])
 
@@ -23,12 +24,13 @@ const childListFiltering = (page: number) =>
 const project = computed(() => store.state.project.project)
 watch(project, pj => {
   if (pj.is_unit_set) printItems.value.splice(4, 0, '5-6')
+  unitSet.value = pj.is_unit_set
 })
 const initProjId = computed(() => store.getters['accounts/initProjId'])
 const excelUrl = computed(() => {
-  const pk = project.value ? project.value.pk : ''
-  const items = printItems.value.join('-')
-  return `/excel/contracts/?project=${pk}${filteredStr.value}&col=${items}`
+  // const pk = project.value ? project.value.pk : ''
+  // const items = printItems.value.join('-')
+  // return `/excel/contracts/?project=${pk}${filteredStr.value}&col=${items}`
 })
 
 const fetchOrderGroupList = (id: number) =>
@@ -123,9 +125,8 @@ onMounted(() => {
         </v-btn>
       </TableTitleRow>
       <SelectItems
-        v-if="project"
-        :project="project.is_unit_set"
         :visible="visible"
+        :project="unitSet"
         @print-items="setItems"
       />
       <ContractList @page-select="pageSelect" />
