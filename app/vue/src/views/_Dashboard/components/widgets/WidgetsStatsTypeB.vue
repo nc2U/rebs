@@ -1,3 +1,7 @@
+<script lang="ts" setup>
+import MainChartExample from '@/views/_Dashboard/components/charts/MainChartExample.vue'
+</script>
+
 <template>
   <CRow>
     <CCol :md="12">
@@ -88,14 +92,3 @@
     </CCol>
   </CRow>
 </template>
-
-<script>
-import MainChartExample from '@/views/_Dashboard/components/charts/MainChartExample.vue'
-
-export default {
-  name: 'WidgetsStatsB',
-  components: {
-    MainChartExample,
-  },
-}
-</script>

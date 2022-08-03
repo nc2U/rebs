@@ -1,3 +1,7 @@
+<script lang="ts" setup>
+import { CChart } from '@coreui/vue-chartjs'
+</script>
+
 <template>
   <CCol>
     <CRow>
@@ -371,15 +375,3 @@
     </CRow>
   </CCol>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import { CChart } from '@coreui/vue-chartjs'
-
-export default defineComponent({
-  name: 'WidgetsStatsA',
-  components: {
-    CChart,
-  },
-})
-</script>

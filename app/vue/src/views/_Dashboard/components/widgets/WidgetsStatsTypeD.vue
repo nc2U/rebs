@@ -1,3 +1,35 @@
+<script lang="ts" setup>
+import { CChart } from '@coreui/vue-chartjs'
+
+const options = {
+  elements: {
+    line: {
+      tension: 0.4,
+    },
+    point: {
+      radius: 0,
+      hitRadius: 10,
+      hoverRadius: 4,
+      hoverBorderWidth: 3,
+    },
+  },
+  maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      display: false,
+    },
+  },
+  scales: {
+    x: {
+      display: false,
+    },
+    y: {
+      display: false,
+    },
+  },
+}
+</script>
+
 <template>
   <CRow>
     <CCol :sm="6" :lg="3">
@@ -170,47 +202,3 @@
     </CCol>
   </CRow>
 </template>
-
-<script>
-import { CChart } from '@coreui/vue-chartjs'
-
-export default {
-  name: 'WidgetsStatsD',
-  components: {
-    CChart,
-  },
-  setup() {
-    const options = {
-      elements: {
-        line: {
-          tension: 0.4,
-        },
-        point: {
-          radius: 0,
-          hitRadius: 10,
-          hoverRadius: 4,
-          hoverBorderWidth: 3,
-        },
-      },
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          display: false,
-        },
-      },
-      scales: {
-        x: {
-          display: false,
-        },
-        y: {
-          display: false,
-        },
-      },
-    }
-
-    return {
-      options,
-    }
-  },
-}
-</script>
