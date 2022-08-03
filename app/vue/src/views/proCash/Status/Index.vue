@@ -39,14 +39,14 @@ export default defineComponent({
       store.dispatch('proCash/fetchProAllAccD2List')
     const fetchProBankAccList = (proj: number) =>
       store.dispatch('proCash/fetchProBankAccList', proj)
-    const fetchBalanceByAccList = (proj: { project: number }) =>
+    const fetchBalanceByAccList = (proj: { project: number; date?: string }) =>
       store.dispatch('proCash/fetchBalanceByAccList', proj)
 
     const fetchDateCashBookList = (payload: any) =>
       store.dispatch('proCash/fetchDateCashBookList', payload)
     const fetchProjectBudgetList = (proj: number) =>
       store.dispatch('proCash/fetchProjectBudgetList', proj)
-    const fetchExecAmountList = (proj: { project: number }) =>
+    const fetchExecAmountList = (proj: { project: number; date?: string }) =>
       store.dispatch('proCash/fetchExecAmountList', proj)
 
     const updateState = (payload: any) =>
@@ -55,13 +55,13 @@ export default defineComponent({
     const onSelectAdd = (target: any) => {
       if (target !== '') {
         fetchProBankAccList(target)
-        fetchBalanceByAccList({ project: target })
+        fetchBalanceByAccList({ project: target, date: dateFormat(date.value) })
         fetchDateCashBookList({
           project: target,
           date: dateFormat(date.value),
         })
         fetchProjectBudgetList(target)
-        fetchExecAmountList({ project: target })
+        fetchExecAmountList({ project: target, date: dateFormat(date.value) })
       } else {
         updateState({
           proBankAccountList: [],
@@ -85,10 +85,10 @@ export default defineComponent({
     const setDate = (d: Date) => {
       const dt = new Date(d)
       date.value = dt
-      fetchBalanceByAccList({ project: project.value })
-      fetchDateCashBookList({ project: project.value, date: dateFormat(dt) })
-      fetchProjectBudgetList(project.value)
-      fetchExecAmountList({ project: project.value })
+      fetchBalanceByAccList({ project: project.value.pk, date: dateFormat(dt) })
+      fetchDateCashBookList({ project: project.value.pk, date: dateFormat(dt) })
+      fetchProjectBudgetList(project.value.pk)
+      fetchExecAmountList({ project: project.value.pk, date: dateFormat(dt) })
     }
 
     onMounted(() => {
