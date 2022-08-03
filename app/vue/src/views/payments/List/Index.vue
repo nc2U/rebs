@@ -127,7 +127,6 @@ onBeforeRouteLeave(() => {
   </ContentHeader>
 
   <ContentBody>
-    {{ dataFilter.no_contract }}
     <CCardBody class="pb-5">
       <ListController ref="listControl" @payment-filtering="listFiltering" />
       <TableTitleRow excel :url="excelUrl" />
