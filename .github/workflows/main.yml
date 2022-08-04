@@ -16,6 +16,12 @@ jobs:
       - name: Check out source code
         uses: actions/checkout@v3
 
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
       # Dockerfile, reqirements.txt 변화 감지 후 build & push
       - name: Cache Nginx Dockerfile
         # 그걸 제공하는 Action도 있네요? 갖다 쓰겠습니다.
@@ -29,16 +35,11 @@ jobs:
           # 아래 키값으로 cache가 돼있는지 확인합니다.
           key: nginx-${{ hashFiles('**/Dockerfile') }}
 
-      - name: pikube/nginx push (Login to DockerHub)
-        if: steps.cache_nginx.outputs.cache-hit != 'true'
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Build and push
+      - name: pikube/nginx push Build and push
         if: steps.cache_nginx.outputs.cache-hit != 'true'
         uses: docker/build-push-action@v3
         with:
+          context: "{{defaultContext}}:deploy/docker/nginx"
           push: true
           tags: pikube/nginx:latest
 
@@ -49,16 +50,11 @@ jobs:
           path: ./deploy/docker/python
           key: python-${{ hashFiles('**/Dockerfile') }}-${{ hashFiles('**/requirements.txt') }}
 
-      - name: pikube/web push (Login to DockerHub)
-        if: steps.cache_django.outputs.cache-hit != 'true'
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Build and push
+      - name: pikube/web push Build and push
         if: steps.cache_django.outputs.cache-hit != 'true'
         uses: docker/build-push-action@v3
         with:
+          context: "{{defaultContext}}:deploy/docker/python"
           push: true
           tags: pikube/web:latest
 
