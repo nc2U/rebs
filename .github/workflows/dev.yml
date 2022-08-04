@@ -44,7 +44,7 @@ jobs:
           host: ${{ secrets.CICD_HOST }}
           username: ${{ secrets.CICD_USERNAME }}
           password: ${{ secrets.CICD_PASSWORD }}
-          source: 'app/django,deploy/helm,deploy/kubectl,deploy/kubernetes.sh'
+          source: 'app/django,deploy/helm,deploy/kubectl'
           target: '/mnt/nfs/'
 
       - name: SSH Remote Commands from ci/cd server

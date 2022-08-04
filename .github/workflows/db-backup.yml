@@ -1,0 +1,20 @@
+name: CI/CD
+
+on:
+  schedule:
+    - cron: "0 30 0 1/1 * ? *"
+
+jobs:
+  backup:
+    name: DB_backup
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: SSH Remote Commands from ci/cd server
+        uses: garygrossgarten/github-action-ssh@release
+        with:
+          host: ${{ secrets.CICD_HOST }}
+          username: ${{ secrets.CICD_USERNAME }}
+          password: ${{ secrets.CICD_PASSWORD }}
+          command: |
+            echo 'database backup!!'
