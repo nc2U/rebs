@@ -68,7 +68,7 @@ jobs:
           host: ${{ secrets.CICD_HOST }}
           username: ${{ secrets.CICD_USERNAME }}
           password: ${{ secrets.CICD_PASSWORD }}
-          source: 'app/django'
+          source: './app/django'
           target: '/mnt/nfs'
 
       - name: Remote Commands using password
