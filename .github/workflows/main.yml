@@ -70,7 +70,7 @@ jobs:
       # run 키워드는 `npm start`같이 커맨트 명령어를 입력할 수 있게 해주는 키워드예요.
       # `npm run xxx`를 사용하려면 pacakge.json에 해당 명령어에 대한 정의가 필요하겠죠?
       # 저는 간단하게 아래 `사진-4`처럼 2개만 만들어봤어요.(실제로는 테스트 항목이 더 많고, 테스트를 실행할 수 있는 코드가 들어가야겠죠?)
-      - run: pwd && yarn lint
+      - run: cd app/vue && yarn lint
         # `if: ${{ always() }}`라는 문법은 무엇일까요?
         # 만약 `yarn lint`라는 곳에서 에러가 났다고 칩시다.
         # 그러면 뒤의 tsc, build를 실행하지 않고 해당 workflow가 끝나버리게 됩니다.
@@ -79,6 +79,6 @@ jobs:
         # `yarn lint`라는 곳에서 에러가 나도 뒤의 tsc, build까지 다 실행을 해보고 난 뒤 종료합니다.
         # 그래서 모든 테스트 스크립트에 ${{ always() }}를 붙여줍니다.
         if: ${{ always() }}
-      - run: pwd && yarn build
+      - run: cd app/vue && yarn build
         if: ${{ always() }}
-      - run: pwd && ls -al
+      - run: cd app/vue && ls -al
