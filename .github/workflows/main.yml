@@ -80,4 +80,4 @@ jobs:
         # `yarn lint`라는 곳에서 에러가 나도 뒤의 tsc, build까지 다 실행을 해보고 난 뒤 종료합니다.
         # 그래서 모든 테스트 스크립트에 ${{ always() }}를 붙여줍니다.
         if: ${{ always() }}
-      - run: cd app/vue && ls -al
+      - run: cd app/django/static && ls -al
