@@ -51,11 +51,11 @@ jobs:
         id: cache
         with:
           # node_modules라는 폴더를 검사하여
-          path: app/vue/node_modules
+          path: ./app/vue/node_modules
           # 아래 키값으로 cache가 돼있는지 확인합니다.
           key: yarn-packages-${{ hashFiles('**/yarn.lock') }}
       - name: test
-        run: pwd && ls -al
+        run: cd app/vue && pwd && ls -al
 #      - name: Install Dependencies
 #        # 위 step에서 node_modules에 대한 cache 검사를 했잖아요?
 #        # 만약 모듈에 변한 게 있다면 `npm install`을 실행하고 아니면 해당 step을 건너뛰게 됩니다.
