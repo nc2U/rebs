@@ -39,7 +39,7 @@ jobs:
         if: steps.cache_nginx.outputs.cache-hit != 'true'
         uses: docker/build-push-action@v3
         with:
-          context: "{{defaultContext}}:deploy/docker/nginx"
+          context: "deploy/docker/nginx"
           push: true
           tags: pikube/nginx:latest
 
@@ -54,7 +54,7 @@ jobs:
         if: steps.cache_django.outputs.cache-hit != 'true'
         uses: docker/build-push-action@v3
         with:
-          context: "{{defaultContext}}:deploy/docker/python"
+          context: "deploy/docker/python"
           push: true
           tags: pikube/web:latest
 
