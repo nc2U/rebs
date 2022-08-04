@@ -4,10 +4,9 @@ on:
   push:
     branches: [ "master" ]
 
-# job은 사용자가 정한 플랫폼을 통해 step이라는 일련의 과정을 실행할 수 있어요.
-# 여러 개의 job을 사용할 수 있으며, 여러 개의 job을 사용할 때는 서로 정보도 교환할 수 있어요.
-# 그리고 각각 독립적으로도 실행할 수도 있어요.
-# 해당 예제는 간단한 workflow이므로 하나의 job만 갖도록 할게요.
+# job은 사용자가 정한 플랫폼을 통해 steps 라는 일련의 과정을 실행.
+# 여러 개의 job 을 사용할 수 있으며, 여러 개의 job 을 사용할 때는 서로 정보도 교환 가능.
+# 각각 독립적으로도 실행 가능.
 jobs:
   build:
     name: Build
@@ -19,13 +18,12 @@ jobs:
 
       - name: Use Node.js
         uses: actions/setup-node@v3
-        # with라는 키워드로 Action에 값을 전달할 수 있어요.
+        # with라는 키워드로 Action에 값을 전달.
         with:
           node-version: 16
 
-      # push할 때마다 npm을 install 해야될까요? (시간이 여간 많이 걸리는 게 아닐 텐데 ..)
-      # 아닙니다. 해당 프로젝트의 node_modules가 변했는지 안 변했는지를 이용해서
-      # 모듈 변화가 있을 때만 npm install을 해줄 수도 있어요.
+      # node_modules가 변했는지 안 변했는지를 이용해서
+      # 모듈 변화가 있을 때만 npm install을 해준다.
       - name: Cache node modules
         # 그걸 제공하는 Action도 있네요? 갖다 쓰겠습니다.
         uses: actions/cache@v3
@@ -77,9 +75,10 @@ jobs:
           username: ${{ secrets.CICD_USERNAME }}
           password: ${{ secrets.CICD_PASSWORD }}
           script: |
-            cd /mnt/nfs/deploy/helm && ls -al
-            helm version
+            whoami
+#            cd /mnt/nfs/deploy/helm && ls -al
 #            helm template rebs .
+#            helm version
 
       - name: Send slack when failed
         # 실패했을 때 실행되겠죠?
