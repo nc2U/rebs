@@ -11,11 +11,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: SSH Remote Commands from ci/cd server
-        uses: garygrossgarten/github-action-ssh@release
+      - uses: actions-hub/kubectl@master
+        env:
+          KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
         with:
-          host: ${{ secrets.CICD_HOST }}
-          username: ${{ secrets.CICD_USERNAME }}
-          password: ${{ secrets.CICD_PASSWORD }}
-          command: |
-            db=$(kubectl get pod -n prod-hrebs | grep master | cut -d ' ' -f1) && kubectl exec -it -n prod-hrebs $db -- bash && pwd && ls -al
+          args: get pods
