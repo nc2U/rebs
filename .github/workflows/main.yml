@@ -1,14 +1,8 @@
-# workflow의 이름. 나중에 해당 값을 사용할 수 있기 때문에 저는 유니크하게 사용합니다.
 name: CI
 
-# workflow를 동작하게하는 trigger입니다.
-# repository에 push 이벤트가 발생할 때마다 실행될 거예요.
-# push 말고도 여러 가지 이벤트들이 있겠죠?
 on:
   push:
     branches: [ "master" ]
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
 
 # job은 사용자가 정한 플랫폼을 통해 step이라는 일련의 과정을 실행할 수 있어요.
 # 여러 개의 job을 사용할 수 있으며, 여러 개의 job을 사용할 때는 서로 정보도 교환할 수 있어요.
@@ -16,27 +10,16 @@ on:
 # 해당 예제는 간단한 workflow이므로 하나의 job만 갖도록 할게요.
 jobs:
   build:
-    # job의 이름을 정해줍니다.
     name: Build
     runs-on: ubuntu-latest
 
-    # job 안에는 step이라는 키워드가 옵니다. step은 shell script를 실행할 수도 있고,
-    # 누군가 만들어 놓은 Action을 사용할 수도 있어요.
     steps:
       - name: Check out source code
         uses: actions/checkout@v3
 
-      # GitHub Actions는 해당 프로젝트를 리눅스 환경에 checkout하고 나서 실행을 합니다.
-      # 마치 우리가 브랜치를 만들 때 checkout하는 것처럼요. 꼭 필요합니다.
-      # 참고로 아래 코드는 누군가 만들어놓은 Action을 사용하는 겁니다.
-      # 만들어놓은 Action을 사용할 때는 uses라는 키워드를 사용해야 돼요.
       - name: Use Node.js
         uses: actions/setup-node@v3
         # with라는 키워드로 Action에 값을 전달할 수 있어요.
-        # 이 Action은 node-version이라는 값을 받을 수 있네요?
-        # 아까 NODE_VERSION이라는 Secret을 만들었는데요,
-        # ${{ secrets.XXX }}라는 값으로 GitHub의 Secrets 값을 가져올 수 있어요.
-        # node-version은 16.13.1이 되겠죠?
         with:
           node-version: 16
 
@@ -50,7 +33,7 @@ jobs:
         # 해당 값은 뒤의 step에서 사용해볼게요.
         id: cache
         with:
-          # node_modules라는 폴더를 검사하여
+          # ./app/vue/node_modules라는 폴더를 검사하여
           path: ./app/vue/node_modules
           # 아래 키값으로 cache가 돼있는지 확인합니다.
           key: yarn-packages-${{ hashFiles('**/yarn.lock') }}
@@ -66,11 +49,6 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true'
         run: cd app/vue && yarn
 
-      # 아래 로직은 저희가 만든 프로젝트의 lint, tsc, build를 테스트하는 곳이에요.
-      # run 키워드는 `npm start`같이 커맨트 명령어를 입력할 수 있게 해주는 키워드예요.
-      # `npm run xxx`를 사용하려면 pacakge.json에 해당 명령어에 대한 정의가 필요하겠죠?
-      # 저는 간단하게 아래 `사진-4`처럼 2개만 만들어봤어요.(실제로는 테스트 항목이 더 많고, 테스트를 실행할 수 있는 코드가 들어가야겠죠?)
-
       #      - run: yarn lint
       #        # `if: ${{ always() }}`라는 문법은 무엇일까요?
       #        # 만약 `yarn lint`라는 곳에서 에러가 났다고 칩시다.
@@ -83,3 +61,22 @@ jobs:
       - run: cd app/vue && yarn build
         if: ${{ always() }}
       - run: cd app/django/static && ls -al dist
+
+      - name: Send slack when failed
+        # 실패했을 때 실행되겠죠?
+        if: ${{ failure() }}
+        # 직접 '만든' Action이므로 uses 키워드를 이용해서 아래 경로를 입력해줍니다.
+        uses: ./.github/actions/slack-notify
+        # 아까 secrets로 접근할 수 있게 만들어놓은 슬랙 url을 여기에 써볼게요.
+        # with 키워드와 함께 slack_incoming_url 값으로 넘겨줍니다.
+        with:
+          slack_incoming_url: ${{ secrets.SLACK_INCOMING_URL }}
+
+      - name: Send slack if completed
+        # 성공할 때만 실행되겠죠?
+        if: ${{ success() }}
+        uses: ./.github/actions/slack-notify
+        # status input은 받는 쪽에서 default 값을 정해놨기 때문에 success일 때만 넘겨줄게요.
+        with:
+          status: success
+          slack_incoming_url: ${{ secrets.SLACK_INCOMING_URL }}
