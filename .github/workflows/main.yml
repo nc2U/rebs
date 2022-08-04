@@ -70,16 +70,16 @@ jobs:
           source: 'app/django,deploy/helm'
           target: '/mnt/nfs/'
 
-      - name: Remote Commands using password
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.CICD_HOST }}
-          username: ${{ secrets.CICD_USERNAME }}
-          password: ${{ secrets.CICD_PASSWORD }}
-          script: |
-            cd /mnt/nfs/deploy/helm && ls -al
-            helm version
-            helm template rebs .
+#      - name: Remote Commands using bash
+#        uses: appleboy/ssh-action@master
+#        with:
+#          host: ${{ secrets.CICD_HOST }}
+#          username: ${{ secrets.CICD_USERNAME }}
+#          password: ${{ secrets.CICD_PASSWORD }}
+#          script: |
+#            cd /mnt/nfs/deploy/helm && ls -al
+#            helm version
+#            helm template rebs .
 
       - name: Send slack when failed
         # 실패했을 때 실행되겠죠?
