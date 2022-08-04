@@ -1,4 +1,4 @@
-Django==4.0.6
+Django==4.1
 uWSGI==2.0.20
 mysqlclient==2.1.1
 django-widget-tweaks==1.4.12
