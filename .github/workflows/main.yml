@@ -100,22 +100,23 @@ jobs:
           username: ${{ secrets.CICD_USERNAME }}
           password: ${{ secrets.CICD_PASSWORD }}
           command: |
+            bash
             cd ${{ secrets.NFS_PATH }}
             kubectl apply -f ./deploy/kubectl/ns-prod.yaml
-#            helm upgrade ${{ secrets.DATABASE_USER }} ./deploy/helm --install -f ./deploy/helm/values-prod.yaml -n prod-hrebs \
-#            --set global.password=${{ secrets.DATABASE_PASSWORD }} \
-#            --set global.nfsPath=${{ secrets.NFS_PATH }} \
-#            --set global.nfsServerHost=${{ secrets.CICD_HOST }} \
-#            --set nginx.ingress.tls[0].hosts[0]=${{ secrets.DOMAIN_NAME }} \
-#            --set nginx.ingress.tls[0].hosts[1]=www.${{ secrets.DOMAIN_NAME }} \
-#            --set nginx.ingress.tls[0].hosts[2]=api.${{ secrets.DOMAIN_NAME }} \
-#            --set nginx.ingress.hosts[0].host=${{ secrets.DOMAIN_NAME }} \
-#            --set nginx.ingress.hosts[1].host=www.${{ secrets.DOMAIN_NAME }} \
-#            --set nginx.ingress.hosts[2].host=api.${{ secrets.DOMAIN_NAME }} \
-#            --set nginx.ingress.hosts[1].paths[0].path=/ \
-#            --set nginx.ingress.hosts[1].paths[0].pathType=ImplementationSpecific \
-#            --set nginx.ingress.hosts[2].paths[0].path=/ \
-#            --set nginx.ingress.hosts[2].paths[0].pathType=ImplementationSpecific
+            helm upgrade ${{ secrets.DATABASE_USER }} ./deploy/helm --install -f ./deploy/helm/values-prod.yaml -n prod-hrebs \
+            --set global.password=${{ secrets.DATABASE_PASSWORD }} \
+            --set global.nfsPath=${{ secrets.NFS_PATH }} \
+            --set global.nfsServerHost=${{ secrets.CICD_HOST }} \
+            --set nginx.ingress.tls[0].hosts[0]=${{ secrets.DOMAIN_NAME }} \
+            --set nginx.ingress.tls[0].hosts[1]=www.${{ secrets.DOMAIN_NAME }} \
+            --set nginx.ingress.tls[0].hosts[2]=api.${{ secrets.DOMAIN_NAME }} \
+            --set nginx.ingress.hosts[0].host=${{ secrets.DOMAIN_NAME }} \
+            --set nginx.ingress.hosts[1].host=www.${{ secrets.DOMAIN_NAME }} \
+            --set nginx.ingress.hosts[2].host=api.${{ secrets.DOMAIN_NAME }} \
+            --set nginx.ingress.hosts[1].paths[0].path=/ \
+            --set nginx.ingress.hosts[1].paths[0].pathType=ImplementationSpecific \
+            --set nginx.ingress.hosts[2].paths[0].path=/ \
+            --set nginx.ingress.hosts[2].paths[0].pathType=ImplementationSpecific
 
 
       - name: Send slack when failed
