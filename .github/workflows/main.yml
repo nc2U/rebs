@@ -100,7 +100,7 @@ jobs:
           username: ${{ secrets.CICD_USERNAME }}
           password: ${{ secrets.CICD_PASSWORD }}
           script: |
-            pwd && ls -al
+            cd /mnt/nfs && ls -al
 #            kubectl apply -f ./deploy/kubectl/ns-prod.yaml
 #            helm upgrade ${{ secrets.DATABASE_USER }} ./deploy/helm --install -f ./deploy/helm/values-prod.yaml -n prod-hrebs \
 #            --set global.password=${{ secrets.DATABASE_PASSWORD }} \
