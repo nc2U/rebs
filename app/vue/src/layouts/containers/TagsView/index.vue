@@ -29,7 +29,7 @@ const isAffix = (tag: any) => tag.meta && tag.meta.affix
 const filterAffixTags = (routes: any[]) => {
   let tags: Array<VisitedViews> = []
   routes.forEach((r: any) => {
-    if (r.meta && r.meta.affix) {
+    if (r.meta && r.meta.affix && r.name !== 'Login') {
       tags.push({
         fullPath: r.path,
         path: r.path,
