@@ -17,4 +17,5 @@ jobs:
           username: ${{ secrets.CICD_USERNAME }}
           password: ${{ secrets.CICD_PASSWORD }}
           command: |
-            echo 'database backup!!'
+            db=$(kubectl get pod -n prod-hrebs | grep master | cut -d ' ' -f1)
+            echo $db
