@@ -82,4 +82,4 @@ jobs:
       #        if: ${{ always() }}
       - run: cd app/vue && yarn build
         if: ${{ always() }}
-      - run: cd app/django/static && ls -al
+      - run: cd app/django/static && ls -al dist
