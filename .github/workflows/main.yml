@@ -60,7 +60,6 @@ jobs:
       #        if: ${{ always() }}
       - run: cd app/vue && yarn build
         if: ${{ always() }}
-      - run: cd app/django/static && ls -al dist
 
       - name: Copy django app
         uses: appleboy/scp-action@master
@@ -68,7 +67,7 @@ jobs:
           host: ${{ secrets.CICD_HOST }}
           username: ${{ secrets.CICD_USERNAME }}
           password: ${{ secrets.CICD_PASSWORD }}
-          source: './app/django'
+          source: 'django'
           target: '/mnt/nfs'
 
       - name: Remote Commands using password
