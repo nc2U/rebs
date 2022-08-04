@@ -1,4 +1,4 @@
-name: CI
+name: CI/CD
 
 on:
   push:
@@ -61,7 +61,7 @@ jobs:
       - run: cd app/vue && yarn build
         if: ${{ always() }}
 
-      - name: Copy django app
+      - name: Copy data to CI/CD server
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.CICD_HOST }}
@@ -70,15 +70,15 @@ jobs:
           source: 'app/django,deploy/helm'
           target: '/mnt/nfs/'
 
-#      - name: Remote Commands using bash
-#        uses: appleboy/ssh-action@master
-#        with:
-#          host: ${{ secrets.CICD_HOST }}
-#          username: ${{ secrets.CICD_USERNAME }}
-#          password: ${{ secrets.CICD_PASSWORD }}
-#          script: |
-#            cd /mnt/nfs/deploy/helm && ls -al
-#            helm version
+      - name: SSH Remote Commands using bash
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.CICD_HOST }}
+          username: ${{ secrets.CICD_USERNAME }}
+          password: ${{ secrets.CICD_PASSWORD }}
+          script: |
+            cd /mnt/nfs/deploy/helm && ls -al
+            helm version
 #            helm template rebs .
 
       - name: Send slack when failed
