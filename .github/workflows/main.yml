@@ -29,12 +29,38 @@ jobs:
           # 아래 키값으로 cache가 돼있는지 확인합니다.
           key: nginx-${{ hashFiles('**/Dockerfile') }}
 
+      - name: pikube/nginx push (Login to DockerHub)
+        if: steps.cache_nginx.outputs.cache-hit != 'true'
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build and push
+        if: steps.cache_nginx.outputs.cache-hit != 'true'
+        uses: docker/build-push-action@v3
+        with:
+          push: true
+          tags: pikube/nginx:latest
+
       - name: Cache WEB Dockerfile
         uses: actions/cache@v3
         id: cache_django
         with:
           path: ./deploy/docker/python
-          key: nginx-${{ hashFiles('**/Dockerfile') }}-${{ hashFiles('**/requirements.txt') }}
+          key: python-${{ hashFiles('**/Dockerfile') }}-${{ hashFiles('**/requirements.txt') }}
+
+      - name: pikube/web push (Login to DockerHub)
+        if: steps.cache_django.outputs.cache-hit != 'true'
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build and push
+        if: steps.cache_django.outputs.cache-hit != 'true'
+        uses: docker/build-push-action@v3
+        with:
+          push: true
+          tags: pikube/web:latest
 
       - name: Use Node.js
         uses: actions/setup-node@v3
