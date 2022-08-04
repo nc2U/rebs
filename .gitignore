@@ -48,8 +48,6 @@ venv/
 
 docker-compose.yml
 
-package-lock.json
-yarn.lock
 /coverage
 
 /tests/e2e/reports/
