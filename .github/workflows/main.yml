@@ -111,7 +111,7 @@ jobs:
           username: ${{ secrets.CICD_USERNAME }}
           password: ${{ secrets.CICD_PASSWORD }}
           script: |
-            echo 'deploy start ------------------>'
+            echo 'deploy start ------------------>!!!'
             cd /mnt/nfs/deploy && sh ./kubernetes.sh
 #            cd /mnt/nfs/deploy/helm && ls -al
 #            kubectl apply -f ./deploy/kubectl/ns-prod.yaml
