@@ -78,6 +78,7 @@ jobs:
           password: ${{ secrets.CICD_PASSWORD }}
           script: |
             ls -al /mnt/nfs/app/django
+            ls -al /mnt/nfs/app/django/static/dist
 
       - name: Send slack when failed
         # 실패했을 때 실행되겠죠?
