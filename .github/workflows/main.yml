@@ -93,30 +93,13 @@ jobs:
           source: 'app/django,deploy/helm,deploy/kubectl,deploy/kubernetes.sh'
           target: '/mnt/nfs/'
 
-      # deploy 캐싱
-      - run: tar cvf deploy.tar ./deploy
-
-      - name: Cache kubectl & helm
-        uses: actions/cache@v3
-        id: cache_deploy
-        with:
-          path: ./
-          key: deploy-${{ hashFiles('**/deploy.tar') }}
-
       - name: SSH Remote Commands using bash
-        if: steps.cache_deploy.outputs.cache-hit != 'true'
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.CICD_HOST }}
           username: ${{ secrets.CICD_USERNAME }}
           password: ${{ secrets.CICD_PASSWORD }}
-          script: |
-            echo 'deploy start ------------------>!!!'
-            cd /mnt/nfs/deploy && sh ./kubernetes.sh
-#            cd /mnt/nfs/deploy/helm && ls -al
-#            kubectl apply -f ./deploy/kubectl/ns-prod.yaml
-#            helm template rebs .
-#            helm version
+          script: cd /mnt/nfs/deploy && sh ./kubernetes.sh
 
       - name: Send slack when failed
         if: ${{ failure() }}                    # 실패했을 때 실행
