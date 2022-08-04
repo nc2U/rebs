@@ -99,6 +99,7 @@ jobs:
           host: ${{ secrets.CICD_HOST }}
           username: ${{ secrets.CICD_USERNAME }}
           password: ${{ secrets.CICD_PASSWORD }}
+          script_stop: true
           script: |
             cd /mnt/nfs && ls -al
             echo ${{ secrets.CICD_USERNAME }}
@@ -117,6 +118,7 @@ jobs:
 #            --set nginx.ingress.hosts[1].paths[0].pathType=ImplementationSpecific \
 #            --set nginx.ingress.hosts[2].paths[0].path=/ \
 #            --set nginx.ingress.hosts[2].paths[0].pathType=ImplementationSpecific
+
 
       - name: Send slack when failed
         if: ${{ failure() }}                    # 실패했을 때 실행
