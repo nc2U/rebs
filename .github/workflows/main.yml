@@ -16,6 +16,32 @@ jobs:
       - name: Check out source code
         uses: actions/checkout@v3
 
+      # Dockerfile, reqirements.txt 변화 감지 후 build & push
+      - name: Cache Nginx Dockerfile
+        # 그걸 제공하는 Action도 있네요? 갖다 쓰겠습니다.
+        uses: actions/cache@v3
+        # 해당 step을 대표하는 id를 설정할 수도 있어요.
+        # 해당 값은 뒤의 step에서 사용해볼게요.
+        id: cache_nginx
+        with:
+          # ./app/vue/node_modules라는 폴더를 검사하여
+          path: ./deploy/docker/nginx
+          # 아래 키값으로 cache가 돼있는지 확인합니다.
+          key: nginx-${{ hashFiles('**/Dockerfile') }}
+
+      # Dockerfile, reqirements.txt 변화 감지 후 build & push
+      - name: Cache WEB Dockerfile
+        # 그걸 제공하는 Action도 있네요? 갖다 쓰겠습니다.
+        uses: actions/cache@v3
+        # 해당 step을 대표하는 id를 설정할 수도 있어요.
+        # 해당 값은 뒤의 step에서 사용해볼게요.
+        id: cache_django
+        with:
+          # ./app/vue/node_modules라는 폴더를 검사하여
+          path: ./deploy/docker/python
+          # 아래 키값으로 cache가 돼있는지 확인합니다.
+          key: nginx-${{ hashFiles('**/Dockerfile') }}-${{'**/requirements.txt'}}
+
       - name: Use Node.js
         uses: actions/setup-node@v3
         # with라는 키워드로 Action에 값을 전달.
@@ -29,7 +55,7 @@ jobs:
         uses: actions/cache@v3
         # 해당 step을 대표하는 id를 설정할 수도 있어요.
         # 해당 값은 뒤의 step에서 사용해볼게요.
-        id: cache
+        id: cache_node
         with:
           # ./app/vue/node_modules라는 폴더를 검사하여
           path: ./app/vue/node_modules
@@ -44,7 +70,7 @@ jobs:
         # cache라는 id 값을 가진 step에서는 cache-hit라는 output을 내뱉네요?
         # 그걸로 cache가 hit 됐는지 안 됐는지를 알 수 있나봐요!
         # 그 값이 true가 아닐 때만 npm install을 하겠죠?
-        if: steps.cache.outputs.cache-hit != 'true'
+        if: steps.cache_node.outputs.cache-hit != 'true'
         run: cd app/vue && yarn
 
       #      - run: yarn lint
