@@ -1,4 +1,4 @@
-name: CI/CD
+name: DB_BACKUP
 
 on:
   push
@@ -7,7 +7,7 @@ on:
 
 jobs:
   backup:
-    name: DB_backup
+    name: DB_BACKUP
     runs-on: ubuntu-latest
 
     steps:
@@ -19,4 +19,6 @@ jobs:
           password: ${{ secrets.CICD_PASSWORD }}
           command: |
             db=$(kubectl get pod -n prod-hrebs | grep master | cut -d ' ' -f1)
-            echo $db
+            kubectl exec -it -n prod-hrebs $db -- bash
+            cd docker-entrypoint-initdb.d/
+            ls -al
