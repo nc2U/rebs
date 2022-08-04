@@ -22,19 +22,15 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      # Dockerfile, reqirements.txt 변화 감지 후 build & push
+      # Nginx Dockerfile 캐싱
       - name: Cache Nginx Dockerfile
-        # 그걸 제공하는 Action도 있네요? 갖다 쓰겠습니다.
         uses: actions/cache@v3
-        # 해당 step을 대표하는 id를 설정할 수도 있어요.
-        # 해당 값은 뒤의 step에서 사용해볼게요.
         id: cache_nginx
         with:
-          # ./deploy/docker/nginx 라는 폴더를 검사하여
           path: ./deploy/docker/nginx
-          # 아래 키값으로 cache가 돼있는지 확인합니다.
           key: nginx-${{ hashFiles('**/Dockerfile') }}
 
+      # Nginx image 변화가 있으면 빌드 및 푸시
       - name: pikube/nginx push Build and push
         if: steps.cache_nginx.outputs.cache-hit != 'true'
         uses: docker/build-push-action@v3
@@ -43,6 +39,7 @@ jobs:
           push: true
           tags: pikube/nginx:latest
 
+      # Web Dockerfile 캐싱
       - name: Cache WEB Dockerfile
         uses: actions/cache@v3
         id: cache_django
@@ -50,6 +47,7 @@ jobs:
           path: ./deploy/docker/python
           key: python-${{ hashFiles('**/Dockerfile') }}-${{ hashFiles('**/requirements.txt') }}
 
+      # Web image 변화가 있으면 빌드 및 푸시
       - name: pikube/web push Build and push
         if: steps.cache_django.outputs.cache-hit != 'true'
         uses: docker/build-push-action@v3
@@ -58,45 +56,30 @@ jobs:
           push: true
           tags: pikube/web:latest
 
+      # Node.js 사용
       - name: Use Node.js
         uses: actions/setup-node@v3
-        # with라는 키워드로 Action에 값을 전달.
         with:
           node-version: 16
 
-      # node_modules가 변했는지 안 변했는지를 이용해서
-      # 모듈 변화가 있을 때만 npm install을 해준다.
+      # node_modules 캐싱
       - name: Cache node modules
-        # 그걸 제공하는 Action도 있네요? 갖다 쓰겠습니다.
         uses: actions/cache@v3
-        # 해당 step을 대표하는 id를 설정할 수도 있어요.
-        # 해당 값은 뒤의 step에서 사용해볼게요.
         id: cache_node
         with:
-          # ./app/vue/node_modules라는 폴더를 검사하여
           path: ./app/vue/node_modules
-          # 아래 키값으로 cache가 돼있는지 확인합니다.
           key: yarn-packages-${{ hashFiles('**/yarn.lock') }}
+
+      # node_modules 변화기 있으면 빌드
       - name: Install Dependencies
-        # 위 step에서 node_modules에 대한 cache 검사를 했잖아요?
-        # 만약 모듈에 변한 게 있다면 `npm install`을 실행하고 아니면 해당 step을 건너뛰게 됩니다.
-        # if 키워드는 해당 스텝을 실행할지 말지를 결정할 수 있는 키워드예요.
-        # `steps.cache.outputs.cache-hit`이 값은 무엇일까요?
-        # 위 step에서 정했던 cache라는 id를 steps.cache로 가져올 수 있어요.
-        # cache라는 id 값을 가진 step에서는 cache-hit라는 output을 내뱉네요?
-        # 그걸로 cache가 hit 됐는지 안 됐는지를 알 수 있나봐요!
-        # 그 값이 true가 아닐 때만 npm install을 하겠죠?
         if: steps.cache_node.outputs.cache-hit != 'true'
         run: cd app/vue && yarn
 
       #      - run: yarn lint
-      #        # `if: ${{ always() }}`라는 문법은 무엇일까요?
-      #        # 만약 `yarn lint`라는 곳에서 에러가 났다고 칩시다.
-      #        # 그러면 뒤의 tsc, build를 실행하지 않고 해당 workflow가 끝나버리게 됩니다.
-      #        # 뒤의 tsc, build에서도 에러가 있을지도 모르는데 말이죠.
-      #        # 하지만 ${{ always() }}라는 문법을 사용한다면
-      #        # `yarn lint`라는 곳에서 에러가 나도 뒤의 tsc, build까지 다 실행을 해보고 난 뒤 종료합니다.
-      #        # 그래서 모든 테스트 스크립트에 ${{ always() }}를 붙여줍니다.
+      #        # `if: ${{ always() }} => ` 만약 `yarn lint`라는 곳에서 에러가 났을 경우
+      #        # 이후 build를 실행하지 않고 해당 workflow가 종료됨.
+      #        # ${{ always() }}라는 문법을 사용 시 `yarn lint`라는 곳에서 에러가 나도
+      #        # 이후의 build까지 다 실행을 해보고 난 뒤 종료 하므로 모든 테스트 스크립트에 ${{ always() }}를 붙임.
       #        if: ${{ always() }}
       - run: cd app/vue && yarn build
         if: ${{ always() }}
@@ -123,20 +106,14 @@ jobs:
 #            helm version
 
       - name: Send slack when failed
-        # 실패했을 때 실행되겠죠?
-        if: ${{ failure() }}
-        # 직접 '만든' Action이므로 uses 키워드를 이용해서 아래 경로를 입력해줍니다.
-        uses: ./.github/actions/slack-notify
-        # 아까 secrets로 접근할 수 있게 만들어놓은 슬랙 url을 여기에 써볼게요.
-        # with 키워드와 함께 slack_incoming_url 값으로 넘겨줍니다.
+        if: ${{ failure() }}                    # 실패했을 때 실행
+        uses: ./.github/actions/slack-notify    # 직접 '만든' Action이므로 uses 키워드를 이용해서 아래 경로를 입력해줍니다.
         with:
           slack_incoming_url: ${{ secrets.SLACK_INCOMING_URL }}
 
       - name: Send slack if completed
-        # 성공할 때만 실행되겠죠?
-        if: ${{ success() }}
+        if: ${{ success() }}                    # 성공할 때만 실행
         uses: ./.github/actions/slack-notify
-        # status input은 받는 쪽에서 default 값을 정해놨기 때문에 success일 때만 넘겨줄게요.
         with:
-          status: success
+          status: success   # status input은 받는 쪽에서 default 값을 정해놨기 때문에 success일 때만 전달.
           slack_incoming_url: ${{ secrets.SLACK_INCOMING_URL }}
