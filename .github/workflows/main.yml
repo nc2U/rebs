@@ -63,7 +63,7 @@ jobs:
       - run: cd app/django/static && ls -al dist
 
       - name: Copy django app
-        uses: appleboy/scp-action@deploy
+        uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.CICD_HOST }}
           username: ${{ secrets.CICD_USERNAME }}
@@ -72,7 +72,7 @@ jobs:
           target: '/mnt/nfs'
 
       - name: Remote Commands using password
-        uses: appleboy/ssh-action@deploy
+        uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.CICD_HOST }}
           username: ${{ secrets.CICD_USERNAME }}
