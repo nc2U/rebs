@@ -1,8 +1,9 @@
 name: CI/CD
 
 on:
-  schedule:
-    - cron: "0 30 0 1/1 * ? *"
+  push
+#  schedule:
+#    - cron: "*/5 * * * *"
 
 jobs:
   backup:
