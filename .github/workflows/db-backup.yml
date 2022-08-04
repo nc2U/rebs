@@ -19,4 +19,4 @@ jobs:
           command: |
             db=$(kubectl get pod -n prod-hrebs | grep master | cut -d ' ' -f1)
             kubectl exec -it -n prod-hrebs $db -- bash
-            pwd
+            pwd && ls -al
