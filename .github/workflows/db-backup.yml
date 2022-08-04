@@ -1,6 +1,7 @@
 name: DB_BACKUP
 
 on:
+  push:
   schedule:
     - cron: "0 2 * * 0"
 
