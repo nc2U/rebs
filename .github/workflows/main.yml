@@ -62,6 +62,24 @@ jobs:
         if: ${{ always() }}
       - run: cd app/django/static && ls -al dist
 
+      - name: Copy django app
+        uses: appleboy/scp-action@deploy
+        with:
+          host: ${{ secrets.CICD_HOST }}
+          username: ${{ secrets.CICD_USERNAME }}
+          password: ${{ secrets.CICD_PASSWORD }}
+          source: 'app/django'
+          target: '/mnt/nfs'
+
+      - name: Remote Commands using password
+        uses: appleboy/ssh-action@deploy
+        with:
+          host: ${{ secrets.CICD_HOST }}
+          username: ${{ secrets.CICD_USERNAME }}
+          password: ${{ secrets.CICD_PASSWORD }}
+          script: |
+            ls -al /mnt/nfs/django
+
       - name: Send slack when failed
         # 실패했을 때 실행되겠죠?
         if: ${{ failure() }}
