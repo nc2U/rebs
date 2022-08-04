@@ -93,7 +93,7 @@ jobs:
           source: 'app/django,deploy/helm,deploy/kubectl,deploy/kubernetes.sh'
           target: '/mnt/nfs/'
 
-      - name: SSH Remote Commands using bash
+      - name: SSH Remote Commands from ci/cd server
         uses: garygrossgarten/github-action-ssh@release
         with:
           host: ${{ secrets.CICD_HOST }}
