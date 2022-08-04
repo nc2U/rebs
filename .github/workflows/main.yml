@@ -68,7 +68,7 @@ jobs:
           username: ${{ secrets.CICD_USERNAME }}
           password: ${{ secrets.CICD_PASSWORD }}
           source: 'app/django'
-          target: '/mnt/nfs/django'
+          target: '/mnt/nfs/'
 
       - name: Remote Commands using password
         uses: appleboy/ssh-action@master
