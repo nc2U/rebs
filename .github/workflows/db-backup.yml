@@ -19,6 +19,8 @@ jobs:
           password: ${{ secrets.CICD_PASSWORD }}
           command: |
             db=$(kubectl get pod -n prod-hrebs | grep master | cut -d ' ' -f1)
+            echo $db
             kubectl exec -it -n prod-hrebs $db -- bash
+            ls -al
             cd docker-entrypoint-initdb.d/
             ls -al
