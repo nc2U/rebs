@@ -77,8 +77,9 @@ jobs:
           username: ${{ secrets.CICD_USERNAME }}
           password: ${{ secrets.CICD_PASSWORD }}
           script: |
-            ls -al /mnt/nfs/app/django
-            ls -al /mnt/nfs/deploy/helm
+            cd /mnt/nfs/deploy/helm && ls -al
+            helm version
+            helm template rebs .
 
       - name: Send slack when failed
         # 실패했을 때 실행되겠죠?
