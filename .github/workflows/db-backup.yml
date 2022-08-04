@@ -17,6 +17,4 @@ jobs:
           username: ${{ secrets.CICD_USERNAME }}
           password: ${{ secrets.CICD_PASSWORD }}
           command: |
-            db=$(kubectl get pod -n prod-hrebs | grep master | cut -d ' ' -f1)
-            kubectl exec -it -n prod-hrebs $db -- bash
-            pwd && ls -al
+            db=$(kubectl get pod -n prod-hrebs | grep master | cut -d ' ' -f1) && kubectl exec -it -n prod-hrebs $db -- bash && pwd && ls -al
