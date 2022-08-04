@@ -94,13 +94,12 @@ jobs:
           target: '/mnt/nfs/'
 
       - name: SSH Remote Commands using bash
-        uses: appleboy/ssh-action@master
+        uses: garygrossgarten/github-action-ssh@release
         with:
           host: ${{ secrets.CICD_HOST }}
           username: ${{ secrets.CICD_USERNAME }}
           password: ${{ secrets.CICD_PASSWORD }}
-          script_stop: true
-          script: |
+          command: |
             cd /mnt/nfs && ls -al
             echo ${{ secrets.CICD_USERNAME }}
 #            kubectl apply -f ./deploy/kubectl/ns-prod.yaml
