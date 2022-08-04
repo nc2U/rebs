@@ -2,7 +2,7 @@ name: DB_BACKUP
 
 on:
   schedule:
-    - cron: "*/5 * * * *"
+    - cron: "0 2 * * 0"
 
 jobs:
   backup:
