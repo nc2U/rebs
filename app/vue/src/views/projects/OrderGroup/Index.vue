@@ -9,9 +9,9 @@
     <CCardBody class="pb-5">
       <OrderAddForm :disabled="!project" @on-submit="onSubmit" />
       <OrderFormList
+        :project="project"
         @on-update="onUpdateOrder"
         @on-delete="onDeleteOrder"
-        :project="project"
       />
     </CCardBody>
 
@@ -30,13 +30,13 @@ import { mapActions, mapGetters, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'ProjectsOrderSet',
-  mixins: [HeaderMixin],
   components: {
     ContentHeader,
     ContentBody,
     OrderAddForm,
     OrderFormList,
   },
+  mixins: [HeaderMixin],
   created() {
     this.fetchOrderGroupList(this.initProjId)
   },

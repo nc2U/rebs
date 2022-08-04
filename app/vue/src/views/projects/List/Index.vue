@@ -8,7 +8,7 @@
   <ContentBody>
     <component
       :is="compName"
-      :userInfo="userInfo"
+      :user-info="userInfo"
       :project="project"
       :update="update"
       @to-create="toCreate"
@@ -31,13 +31,13 @@ import { mapActions, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'ProjectsIndex',
-  mixins: [HeaderMixin],
   components: {
     ContentHeader,
     ContentBody,
     IndexForm,
     IndexDetail,
   },
+  mixins: [HeaderMixin],
   data() {
     return {
       compName: 'IndexDetail',

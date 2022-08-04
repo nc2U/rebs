@@ -17,11 +17,11 @@ import { mapState } from 'vuex'
 
 export default defineComponent({
   name: 'Department',
-  mixins: [HeaderMixin],
   components: {
     ContentHeader,
     ContentBody,
   },
+  mixins: [HeaderMixin],
   computed: {
     ...mapState('settings', ['company']),
   },

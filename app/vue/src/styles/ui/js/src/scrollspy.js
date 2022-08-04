@@ -8,7 +8,12 @@
  * --------------------------------------------------------------------------
  */
 
-import { defineJQueryPlugin, getElement, isDisabled, isVisible } from './util/index'
+import {
+  defineJQueryPlugin,
+  getElement,
+  isDisabled,
+  isVisible,
+} from './util/index'
 import EventHandler from './dom/event-handler'
 import SelectorEngine from './dom/selector-engine'
 import BaseComponent from './base-component'
@@ -43,14 +48,14 @@ const Default = {
   offset: null, // TODO: v6 @deprecated, keep it for backwards compatibility reasons
   rootMargin: '0px 0px -25%',
   smoothScroll: false,
-  target: null
+  target: null,
 }
 
 const DefaultType = {
   offset: '(number|null)', // TODO v6 @deprecated, keep it for backwards compatibility reasons
   rootMargin: 'string',
   smoothScroll: 'boolean',
-  target: 'element'
+  target: 'element',
 }
 
 /**
@@ -64,12 +69,15 @@ class ScrollSpy extends BaseComponent {
     // this._element is the observablesContainer and config.target the menu links wrapper
     this._targetLinks = new Map()
     this._observableSections = new Map()
-    this._rootElement = getComputedStyle(this._element).overflowY === 'visible' ? null : this._element
+    this._rootElement =
+      getComputedStyle(this._element).overflowY === 'visible'
+        ? null
+        : this._element
     this._activeTarget = null
     this._observer = null
     this._previousScrollData = {
       visibleEntryTop: 0,
-      parentScrollTop: 0
+      parentScrollTop: 0,
     }
     this.refresh() // initialize
   }
@@ -124,31 +132,41 @@ class ScrollSpy extends BaseComponent {
     // unregister any previous listeners
     EventHandler.off(this._config.target, EVENT_CLICK)
 
-    EventHandler.on(this._config.target, EVENT_CLICK, SELECTOR_TARGET_LINKS, event => {
-      const observableSection = this._observableSections.get(event.target.hash)
-      if (observableSection) {
-        event.preventDefault()
-        const root = this._rootElement || window
-        const height = observableSection.offsetTop - this._element.offsetTop
-        if (root.scrollTo) {
-          root.scrollTo({ top: height, behavior: 'smooth' })
-          return
-        }
+    EventHandler.on(
+      this._config.target,
+      EVENT_CLICK,
+      SELECTOR_TARGET_LINKS,
+      event => {
+        const observableSection = this._observableSections.get(
+          event.target.hash,
+        )
+        if (observableSection) {
+          event.preventDefault()
+          const root = this._rootElement || window
+          const height = observableSection.offsetTop - this._element.offsetTop
+          if (root.scrollTo) {
+            root.scrollTo({ top: height, behavior: 'smooth' })
+            return
+          }
 
-        // Chrome 60 doesn't support `scrollTo`
-        root.scrollTop = height
-      }
-    })
+          // Chrome 60 doesn't support `scrollTo`
+          root.scrollTop = height
+        }
+      },
+    )
   }
 
   _getNewObserver() {
     const options = {
       root: this._rootElement,
       threshold: [0.1, 0.5, 1],
-      rootMargin: this._getRootMargin()
+      rootMargin: this._getRootMargin(),
     }
 
-    return new IntersectionObserver(entries => this._observerCallback(entries), options)
+    return new IntersectionObserver(
+      entries => this._observerCallback(entries),
+      options,
+    )
   }
 
   // The logic of selection
@@ -159,8 +177,10 @@ class ScrollSpy extends BaseComponent {
       this._process(targetElement(entry))
     }
 
-    const parentScrollTop = (this._rootElement || document.documentElement).scrollTop
-    const userScrollsDown = parentScrollTop >= this._previousScrollData.parentScrollTop
+    const parentScrollTop = (this._rootElement || document.documentElement)
+      .scrollTop
+    const userScrollsDown =
+      parentScrollTop >= this._previousScrollData.parentScrollTop
     this._previousScrollData.parentScrollTop = parentScrollTop
 
     for (const entry of entries) {
@@ -171,7 +191,8 @@ class ScrollSpy extends BaseComponent {
         continue
       }
 
-      const entryIsLowerThanPrevious = entry.target.offsetTop >= this._previousScrollData.visibleEntryTop
+      const entryIsLowerThanPrevious =
+        entry.target.offsetTop >= this._previousScrollData.visibleEntryTop
       // if we are scrolling down, pick the bigger offsetTop
       if (userScrollsDown && entryIsLowerThanPrevious) {
         activate(entry)
@@ -192,14 +213,19 @@ class ScrollSpy extends BaseComponent {
 
   // TODO: v6 Only for backwards compatibility reasons. Use rootMargin only
   _getRootMargin() {
-    return this._config.offset ? `${this._config.offset}px 0px -30%` : this._config.rootMargin
+    return this._config.offset
+      ? `${this._config.offset}px 0px -30%`
+      : this._config.rootMargin
   }
 
   _initializeTargetsAndObservables() {
     this._targetLinks = new Map()
     this._observableSections = new Map()
 
-    const targetLinks = SelectorEngine.find(SELECTOR_TARGET_LINKS, this._config.target)
+    const targetLinks = SelectorEngine.find(
+      SELECTOR_TARGET_LINKS,
+      this._config.target,
+    )
 
     for (const anchor of targetLinks) {
       // ensure that the anchor has an id and is not disabled
@@ -207,7 +233,10 @@ class ScrollSpy extends BaseComponent {
         continue
       }
 
-      const observableSection = SelectorEngine.findOne(anchor.hash, this._element)
+      const observableSection = SelectorEngine.findOne(
+        anchor.hash,
+        this._element,
+      )
 
       // ensure that the observableSection exists & is visible
       if (isVisible(observableSection)) {
@@ -227,18 +256,25 @@ class ScrollSpy extends BaseComponent {
     target.classList.add(CLASS_NAME_ACTIVE)
     this._activateParents(target)
 
-    EventHandler.trigger(this._element, EVENT_ACTIVATE, { relatedTarget: target })
+    EventHandler.trigger(this._element, EVENT_ACTIVATE, {
+      relatedTarget: target,
+    })
   }
 
   _activateParents(target) {
     // Activate dropdown parents
     if (target.classList.contains(CLASS_NAME_DROPDOWN_ITEM)) {
-      SelectorEngine.findOne(SELECTOR_DROPDOWN_TOGGLE, target.closest(SELECTOR_DROPDOWN))
-        .classList.add(CLASS_NAME_ACTIVE)
+      SelectorEngine.findOne(
+        SELECTOR_DROPDOWN_TOGGLE,
+        target.closest(SELECTOR_DROPDOWN),
+      ).classList.add(CLASS_NAME_ACTIVE)
       return
     }
 
-    for (const listGroup of SelectorEngine.parents(target, SELECTOR_NAV_LIST_GROUP)) {
+    for (const listGroup of SelectorEngine.parents(
+      target,
+      SELECTOR_NAV_LIST_GROUP,
+    )) {
       // Set triggered links parents as active
       // With both <ul> and <nav> markup a parent is the previous sibling of any nav ancestor
       for (const item of SelectorEngine.prev(listGroup, SELECTOR_LINK_ITEMS)) {
@@ -250,7 +286,10 @@ class ScrollSpy extends BaseComponent {
   _clearActiveClass(parent) {
     parent.classList.remove(CLASS_NAME_ACTIVE)
 
-    const activeNodes = SelectorEngine.find(`${SELECTOR_TARGET_LINKS}.${CLASS_NAME_ACTIVE}`, parent)
+    const activeNodes = SelectorEngine.find(
+      `${SELECTOR_TARGET_LINKS}.${CLASS_NAME_ACTIVE}`,
+      parent,
+    )
     for (const node of activeNodes) {
       node.classList.remove(CLASS_NAME_ACTIVE)
     }
@@ -265,7 +304,11 @@ class ScrollSpy extends BaseComponent {
         return
       }
 
-      if (data[config] === undefined || config.startsWith('_') || config === 'constructor') {
+      if (
+        data[config] === undefined ||
+        config.startsWith('_') ||
+        config === 'constructor'
+      ) {
         throw new TypeError(`No method named "${config}"`)
       }
 

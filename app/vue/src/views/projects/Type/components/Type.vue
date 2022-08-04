@@ -67,8 +67,8 @@
       <CButton
         color="success"
         size="sm"
-        @click="onUpdateType"
         :disabled="formsCheck"
+        @click="onUpdateType"
       >
         수정
       </CButton>
@@ -77,15 +77,15 @@
   </CTableRow>
 
   <ConfirmModal ref="confirmModal">
-    <template v-slot:header>
+    <template #header>
       <CIcon name="cil-warning" />
       타입 정보 삭제
     </template>
-    <template v-slot:default>
+    <template #default>
       이 타입에 종속 데이터가 있는 경우 해당 데이터를 모두 제거한 후 삭제가능
       합니다. 해당 타입을 삭제 하시겠습니까?
     </template>
-    <template v-slot:footer>
+    <template #footer>
       <CButton color="danger" @click="modalAction">삭제</CButton>
     </template>
   </ConfirmModal>
@@ -102,6 +102,7 @@ import { mapGetters } from 'vuex'
 export default defineComponent({
   name: 'UnitType',
   components: { ConfirmModal, AlertModal },
+  props: { type: Object },
   data() {
     return {
       form: {
@@ -116,7 +117,6 @@ export default defineComponent({
       validated: false,
     }
   },
-  props: { type: Object },
   created(this: any) {
     if (this.type) this.resetForm()
   },

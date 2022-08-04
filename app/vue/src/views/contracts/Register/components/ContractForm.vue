@@ -14,7 +14,7 @@
             구분
           </CFormLabel>
           <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
-            <CFormSelect v-model="form.status" @change="unitReset" required>
+            <CFormSelect v-model="form.status" required @change="unitReset">
               <option value="">---------</option>
               <option value="1">청약</option>
               <option value="2">계약</option>
@@ -30,15 +30,15 @@
           <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
             <CFormSelect
               v-model="form.order_group"
-              @change="unitReset"
               required
               :disabled="noStatus"
+              @change="unitReset"
             >
               <option value="">---------</option>
               <option
                 v-for="order in orderGroupList"
-                :value="`${order.pk},${order.sort}`"
                 :key="order.pk"
+                :value="`${order.pk},${order.sort}`"
               >
                 {{ order.order_group_name }}
               </option>
@@ -52,15 +52,15 @@
           <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
             <CFormSelect
               v-model="form.unit_type"
-              @change="typeSelect"
               required
               :disabled="form.order_group === '' && !contract"
+              @change="typeSelect"
             >
               <option value="">---------</option>
               <option
                 v-for="type in unitTypeList"
-                :value="type.pk"
                 :key="type.pk"
+                :value="type.pk"
               >
                 {{ type.name }}
               </option>
@@ -74,15 +74,15 @@
           <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
             <CFormSelect
               v-model="form.key_unit"
-              @change="form.houseunit = ''"
               required
               :disabled="form.unit_type === '' && !contract"
+              @change="form.houseunit = ''"
             >
               <option value="">---------</option>
               <option
                 v-for="unit in keyUnitList"
-                :value="`${unit.pk},${unit.unit_code}`"
                 :key="unit.pk"
+                :value="`${unit.pk},${unit.unit_code}`"
               >
                 {{ unit.unit_code }}
               </option>
@@ -92,10 +92,10 @@
             </CFormFeedback>
           </CCol>
 
-          <CFormLabel class="col-md-2 col-lg-1 col-form-label" v-if="unitSet">
+          <CFormLabel v-if="unitSet" class="col-md-2 col-lg-1 col-form-label">
             동호수
           </CFormLabel>
-          <CCol md="10" lg="2" class="mb-md-3 mb-lg-0" v-if="unitSet">
+          <CCol v-if="unitSet" md="10" lg="2" class="mb-md-3 mb-lg-0">
             <CFormSelect
               v-model="form.houseunit"
               :disabled="form.key_unit === '' && !contract"
@@ -103,8 +103,8 @@
               <option value="">---------</option>
               <option
                 v-for="house in houseUnitList"
-                :value="house.pk"
                 :key="house.pk"
+                :value="house.pk"
               >
                 {{ house.__str__ }}
               </option>
@@ -161,20 +161,20 @@
           <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
             <DatePicker
               v-model="form.birth_date"
-              placeholder="생년월일"
               v-maska="'####-##-##'"
+              placeholder="생년월일"
               :required="isContract"
               :disabled="noStatus"
             />
             <CFormFeedback invalid>생년월일 입력하세요.</CFormFeedback>
           </CCol>
 
-          <CCol xs="5" lg="1" class="pt-2 p-0 text-center" v-show="isContract">
+          <CCol v-show="isContract" xs="5" lg="1" class="pt-2 p-0 text-center">
             <div class="form-check form-check-inline">
               <input
+                id="male"
                 v-model="form.gender"
                 class="form-check-input"
-                id="male"
                 type="radio"
                 value="M"
                 name="gender"
@@ -185,9 +185,9 @@
             </div>
             <div class="form-check form-check-inline">
               <input
+                id="female"
                 v-model="form.gender"
                 class="form-check-input"
-                id="female"
                 type="radio"
                 value="F"
                 name="gender"
@@ -198,10 +198,10 @@
             <CFormFeedback invalid>성별을 선택하세요.</CFormFeedback>
           </CCol>
 
-          <CCol xs="6" lg="2" class="pt-2 p-0" v-show="isContract && isUnion">
+          <CCol v-show="isContract && isUnion" xs="6" lg="2" class="pt-2 p-0">
             <CFormSwitch
-              v-model="form.is_registed"
               id="is_registed"
+              v-model="form.is_registed"
               label="인가등록여부"
               :disabled="!isContract"
             />
@@ -287,11 +287,11 @@
                   <CCol>
                     계약금
                     <router-link
+                      v-c-tooltip="'전체 건별수납 관리'"
                       :to="{
                         name: '건별수납 관리',
                         query: { contract: contract.pk },
                       }"
-                      v-c-tooltip="'전체 건별수납 관리'"
                     >
                       납부내역
                     </router-link>
@@ -300,11 +300,11 @@
                   <CCol class="text-right">{{ payment.deal_date }}</CCol>
                   <CCol class="text-right">
                     <router-link
+                      v-c-tooltip="'전체 건별수납 관리'"
                       :to="{
                         name: '건별수납 관리',
                         query: { contract: contract.pk },
                       }"
-                      v-c-tooltip="'전체 건별수납 관리'"
                     >
                       {{ numFormat(payment.income) }}
                     </router-link>
@@ -340,8 +340,8 @@
               <CCol md="10" lg="2" class="mb-3 mb-lg-0">
                 <DatePicker
                   v-model="form.deal_date"
-                  placeholder="입금일자"
                   v-maska="'####-##-##'"
+                  placeholder="입금일자"
                   :required="!contract"
                   :disabled="noStatus"
                 />
@@ -370,8 +370,8 @@
                   <option value="">납부계좌 선택</option>
                   <option
                     v-for="pb in proBankAccountList"
-                    :value="pb.pk"
                     :key="pb.pk"
+                    :value="pb.pk"
                   >
                     {{ pb.alias_name }}
                   </option>
@@ -400,8 +400,8 @@
                   <option value="">납부회차 선택</option>
                   <option
                     v-for="po in downPayOrder"
-                    :value="po.pk"
                     :key="po.pk"
+                    :value="po.pk"
                   >
                     {{ po.__str__ }}
                   </option>
@@ -424,7 +424,7 @@
           </CAlert>
         </CRow>
 
-        <CRow class="mb-0" v-show="isContract">
+        <CRow v-show="isContract" class="mb-0">
           <CFormLabel class="col-md-2 col-lg-1 col-form-label">
             주민등록 주소
           </CFormLabel>
@@ -439,9 +439,9 @@
                 type="text"
                 maxlength="5"
                 placeholder="우편번호"
-                @focus="$refs.postCode.initiate(2)"
                 :required="isContract"
                 :disabled="!isContract"
+                @focus="$refs.postCode.initiate(2)"
               />
               <CFormFeedback invalid>우편번호를 입력하세요.</CFormFeedback>
             </CInputGroup>
@@ -453,9 +453,9 @@
               type="text"
               maxlength="50"
               placeholder="주민등록 주소를 입력하세요"
-              @focus="$refs.postCode.initiate(2)"
               :required="isContract"
               :disabled="!isContract"
+              @focus="$refs.postCode.initiate(2)"
             />
             <CFormFeedback invalid>주민등록 주소를 입력하세요.</CFormFeedback>
           </CCol>
@@ -464,8 +464,8 @@
 
           <CCol md="6" lg="2" class="mb-3 mb-lg-0">
             <CFormInput
-              v-model="form.id_address2"
               ref="address21"
+              v-model="form.id_address2"
               type="text"
               maxlength="30"
               placeholder="상세주소를 입력하세요"
@@ -485,7 +485,7 @@
           </CCol>
         </CRow>
 
-        <CRow class="mb-0" v-show="isContract">
+        <CRow v-show="isContract" class="mb-0">
           <CFormLabel class="col-md-2 col-lg-1 col-form-label">
             우편수령 주소
           </CFormLabel>
@@ -500,9 +500,9 @@
                 type="text"
                 maxlength="5"
                 placeholder="우편번호"
-                @focus="$refs.postCode.initiate(3)"
                 :required="isContract"
                 :disabled="!isContract"
+                @focus="$refs.postCode.initiate(3)"
               />
               <CFormFeedback invalid>우편번호를 입력하세요.</CFormFeedback>
             </CInputGroup>
@@ -514,9 +514,9 @@
               type="text"
               maxlength="50"
               placeholder="우편물 수령 주소를 입력하세요"
-              @focus="$refs.postCode.initiate(3)"
               :required="isContract"
               :disabled="!isContract"
+              @focus="$refs.postCode.initiate(3)"
             />
             <CFormFeedback invalid>
               우편물 수령 주소를 입력하세요.
@@ -527,8 +527,8 @@
 
           <CCol md="6" lg="2" class="mb-3 mb-lg-0">
             <CFormInput
-              v-model="form.dm_address2"
               ref="address22"
+              v-model="form.dm_address2"
               type="text"
               maxlength="30"
               placeholder="상세주소를 입력하세요"
@@ -551,11 +551,11 @@
 
           <CCol md="10" lg="1" class="pt-2 mb-3">
             <CFormCheck
-              @click="toSame"
-              v-model="sameAddr"
               id="to-same"
+              v-model="sameAddr"
               label="상동"
               :disabled="!isContract || !form.id_zipcode"
+              @click="toSame"
             />
           </CCol>
         </CRow>
@@ -577,8 +577,8 @@
       <CCardFooter class="text-right">
         <CButton type="button" color="light" @click="formReset"> 취소</CButton>
         <CButton
-          type="button"
           v-if="contract"
+          type="button"
           color="danger"
           @click="deleteContract"
         >
@@ -596,30 +596,30 @@
     </CForm>
   </CCard>
 
-  <DaumPostcode @addressPut="addressPut" ref="postCode" />
+  <DaumPostcode ref="postCode" @addressPut="addressPut" />
 
   <ConfirmModal ref="delModal">
-    <template v-slot:header>프로젝트정보 삭제</template>
-    <template v-slot:default>현재 삭제 기능이 구현되지 않았습니다.</template>
-    <template v-slot:footer>
+    <template #header>프로젝트정보 삭제</template>
+    <template #default>현재 삭제 기능이 구현되지 않았습니다.</template>
+    <template #footer>
       <CButton color="danger" disabled="">삭제</CButton>
     </template>
   </ConfirmModal>
 
   <ConfirmModal ref="confirmModal">
-    <template v-slot:header>
+    <template #header>
       <CIcon name="cilItalic" />
       {{ contLabel }} 정보 등록
     </template>
-    <template v-slot:default>
+    <template #default>
       {{ contLabel }} 정보 {{ contract ? '수정등록' : '신규등록' }}을
       진행하시겠습니까?
     </template>
-    <template v-slot:footer>
+    <template #footer>
       <CButton
         :color="contract ? 'success' : 'primary'"
-        @click="modalAction"
         :disabled="formsCheck"
+        @click="modalAction"
       >
         저장
       </CButton>
@@ -649,8 +649,8 @@ export default defineComponent({
     DatePicker,
     DaumPostcode,
   },
-  mixins: [addressMixin],
   directives: { maska },
+  mixins: [addressMixin],
   props: {
     contract: Object,
     unitSet: Boolean,

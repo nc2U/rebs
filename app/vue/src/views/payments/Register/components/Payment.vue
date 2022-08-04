@@ -21,18 +21,18 @@
     </CTableDataCell>
   </CTableRow>
 
-  <FormModal size="lg" ref="updateFormModal">
-    <template v-slot:header>
+  <FormModal ref="updateFormModal" size="lg">
+    <template #header>
       <CIcon name="cil-italic" />
       건별 수납 관리
     </template>
-    <template v-slot:default>
+    <template #default>
       <PaymentForm
         :contract="contract"
+        :payment="payment"
         @on-submit="updateObject"
         @on-delete="deleteObject"
         @close="$refs.updateFormModal.visible = false"
-        :payment="payment"
       />
     </template>
   </FormModal>

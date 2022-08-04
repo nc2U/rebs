@@ -8,12 +8,12 @@
     </CButton>
   </CAlert>
 
-  <FormModal size="lg" ref="releaseFormModal">
-    <template v-slot:header>
+  <FormModal ref="releaseFormModal" size="lg">
+    <template #header>
       <CIcon name="cil-italic" />
       계약 해지 신규 등록
     </template>
-    <template v-slot:default>
+    <template #default>
       <ReleaseForm
         :contractor="contractor"
         :release="contRelease"

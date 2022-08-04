@@ -2,13 +2,13 @@
   <CButtonGroup role="group" aria-label="Basic example" class="mb-3">
     <CButton
       color="light"
+      :disabled="!contractor || contractor.status > '2'"
       @click="
         $router.push({
           name: '계약등록 관리',
           query: { contract: contractor.contract.pk },
         })
       "
-      :disabled="!contractor || contractor.status > '2'"
     >
       등록 계약 변경
     </CButton>

@@ -9,9 +9,9 @@
     <CCardBody class="pb-5">
       <FloorAddForm :disabled="!project" @on-submit="onSubmit" />
       <FloorFormList
+        :project="project"
         @on-update="onUpdateFloor"
         @on-delete="onDeleteFloor"
-        :project="project"
       />
     </CCardBody>
 
@@ -30,13 +30,13 @@ import FloorFormList from '@/views/projects/Floor/components/FloorFormList.vue'
 
 export default defineComponent({
   name: 'ProjectsFloorSet',
-  mixins: [HeaderMixin],
   components: {
     ContentHeader,
     ContentBody,
     FloorAddForm,
     FloorFormList,
   },
+  mixins: [HeaderMixin],
   created() {
     this.fetchFloorTypeList(this.initProjId)
   },

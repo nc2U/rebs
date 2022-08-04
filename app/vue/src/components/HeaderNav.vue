@@ -2,8 +2,8 @@
   <CNav variant="tabs" class="mb-5">
     <CNavItem v-for="(menu, i) in menus" :key="i">
       <CNavLink
-        @click="$router.push({ name: menu })"
         :active="$route.name == menu"
+        @click="$router.push({ name: menu })"
       >
         {{ menu }}
       </CNavLink>

@@ -3,12 +3,12 @@
     <CButton color="primary" @click="createConfirm">신규등록</CButton>
   </CAlert>
 
-  <FormModal size="lg" ref="createFormModal">
-    <template v-slot:header>
+  <FormModal ref="createFormModal" size="lg">
+    <template #header>
       <CIcon name="cil-italic" />
       프로젝트 입출금 거래 건별 등록
     </template>
-    <template v-slot:default>
+    <template #default>
       <ProCashForm
         @multi-submit="multiSubmit"
         @close="$refs.createFormModal.visible = false"

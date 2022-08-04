@@ -1,13 +1,15 @@
-export const convertToLocalDate = (d, locale, options = {}) => d.toLocaleDateString(locale, options)
+export const convertToLocalDate = (d, locale, options = {}) =>
+  d.toLocaleDateString(locale, options)
 
-export const convertToLocalTime = (d, locale, options = {}) => d.toLocaleTimeString(locale, options)
+export const convertToLocalTime = (d, locale, options = {}) =>
+  d.toLocaleTimeString(locale, options)
 
 export const createGroupsInArray = (arr, numberOfGroups) => {
   const perGroup = Math.ceil(arr.length / numberOfGroups)
   // eslint-disable-next-line unicorn/no-new-array
   return new Array(numberOfGroups)
-        .fill('')
-        .map((_, i) => arr.slice(i * perGroup, (i + 1) * perGroup))
+    .fill('')
+    .map((_, i) => arr.slice(i * perGroup, (i + 1) * perGroup))
 }
 
 export const getCurrentYear = () => new Date().getFullYear()
@@ -16,18 +18,20 @@ export const getCurrentMonth = () => new Date().getMonth()
 
 export const getLocalDateFromString = (string, locale, time) => {
   const date = new Date(2013, 11, 31, 17, 19, 22)
-  let regex = time ? date.toLocaleString(locale) : date.toLocaleDateString(locale)
+  let regex = time
+    ? date.toLocaleString(locale)
+    : date.toLocaleDateString(locale)
   regex = regex
-        .replace('2013', '(?<year>[0-9]{2,4})')
-        .replace('12', '(?<month>[0-9]{1,2})')
-        .replace('31', '(?<day>[0-9]{1,2})')
+    .replace('2013', '(?<year>[0-9]{2,4})')
+    .replace('12', '(?<month>[0-9]{1,2})')
+    .replace('31', '(?<day>[0-9]{1,2})')
   if (time) {
     regex = regex
-            .replace('5', '(?<hour>[0-9]{1,2})')
-            .replace('17', '(?<hour>[0-9]{1,2})')
-            .replace('19', '(?<minute>[0-9]{1,2})')
-            .replace('22', '(?<second>[0-9]{1,2})')
-            .replace('PM', '(?<ampm>[A-Z]{2})')
+      .replace('5', '(?<hour>[0-9]{1,2})')
+      .replace('17', '(?<hour>[0-9]{1,2})')
+      .replace('19', '(?<minute>[0-9]{1,2})')
+      .replace('22', '(?<second>[0-9]{1,2})')
+      .replace('PM', '(?<ampm>[A-Z]{2})')
   }
 
   const rgx = new RegExp(`${regex}`)
@@ -36,14 +40,26 @@ export const getLocalDateFromString = (string, locale, time) => {
     return
   }
 
-  const newDate = partials.groups &&
-        (time ?
-          new Date(Number(partials.groups.year, 10), Number(partials.groups.month, 10) - 1, Number(partials.groups.day), partials.groups.ampm ?
-            (partials.groups.ampm === 'PM' ?
-              Number(partials.groups.hour) + 12 :
-              Number(partials.groups.hour)) :
-            Number(partials.groups.hour), Number(partials.groups.minute), Number(partials.groups.second)) :
-          new Date(Number(partials.groups.year), Number(partials.groups.month) - 1, Number(partials.groups.day)))
+  const newDate =
+    partials.groups &&
+    (time
+      ? new Date(
+          Number(partials.groups.year, 10),
+          Number(partials.groups.month, 10) - 1,
+          Number(partials.groups.day),
+          partials.groups.ampm
+            ? partials.groups.ampm === 'PM'
+              ? Number(partials.groups.hour) + 12
+              : Number(partials.groups.hour)
+            : Number(partials.groups.hour),
+          Number(partials.groups.minute),
+          Number(partials.groups.second),
+        )
+      : new Date(
+          Number(partials.groups.year),
+          Number(partials.groups.month) - 1,
+          Number(partials.groups.day),
+        ))
   return newDate
 }
 
@@ -91,7 +107,7 @@ const getLeadingDays = (year, month, firstDayOfWeek) => {
   for (let i = leadingDays * -1; i < 0; i++) {
     dates.push({
       date: new Date(y, m, i + 1),
-      month: 'previous'
+      month: 'previous',
     })
   }
 
@@ -104,7 +120,7 @@ const getMonthDays = (year, month) => {
   for (let i = 1; i <= lastDay; i++) {
     dates.push({
       date: new Date(year, month, i),
-      month: 'current'
+      month: 'current',
     })
   }
 
@@ -117,7 +133,7 @@ const getTrailingDays = (year, month, leadingDays, monthDays) => {
   for (let i = 1; i <= days; i++) {
     dates.push({
       date: new Date(year, month + 1, i),
-      month: 'next'
+      month: 'next',
     })
   }
 
@@ -127,7 +143,12 @@ const getTrailingDays = (year, month, leadingDays, monthDays) => {
 export const getMonthDetails = (year, month, firstDayOfWeek) => {
   const daysPrevMonth = getLeadingDays(year, month, firstDayOfWeek)
   const daysThisMonth = getMonthDays(year, month)
-  const daysNextMonth = getTrailingDays(year, month, daysPrevMonth, daysThisMonth)
+  const daysNextMonth = getTrailingDays(
+    year,
+    month,
+    daysPrevMonth,
+    daysThisMonth,
+  )
   const days = [...daysPrevMonth, ...daysThisMonth, ...daysNextMonth]
   const weeks = []
   for (const [index, day] of days.entries()) {
@@ -190,7 +211,9 @@ export const isDateInRange = (date, start, end) => {
 }
 
 export const isDateSelected = (date, start, end) => {
-  return (start && isSameDateAs(start, date)) || (end && isSameDateAs(end, date))
+  return (
+    (start && isSameDateAs(start, date)) || (end && isSameDateAs(end, date))
+  )
 }
 
 export const isEndDate = (date, start, end) => {
@@ -206,9 +229,11 @@ export const isLastDayOfMonth = date => {
 
 export const isSameDateAs = (date, date2) => {
   if (date instanceof Date && date2 instanceof Date) {
-    return (date.getDate() === date2.getDate() &&
-            date.getMonth() === date2.getMonth() &&
-            date.getFullYear() === date2.getFullYear())
+    return (
+      date.getDate() === date2.getDate() &&
+      date.getMonth() === date2.getMonth() &&
+      date.getFullYear() === date2.getFullYear()
+    )
   }
 
   if (date === null && date2 === null) {
@@ -224,9 +249,11 @@ export const isStartDate = (date, start, end) => {
 
 export const isToday = date => {
   const today = new Date()
-  return (date.getDate() === today.getDate() &&
-        date.getMonth() === today.getMonth() &&
-        date.getFullYear() === today.getFullYear())
+  return (
+    date.getDate() === today.getDate() &&
+    date.getMonth() === today.getMonth() &&
+    date.getFullYear() === today.getFullYear()
+  )
 }
 
 export const isValidDate = date => {

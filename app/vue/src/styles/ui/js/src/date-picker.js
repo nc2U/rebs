@@ -11,10 +11,10 @@ import SelectorEngine from './dom/selector-engine'
 import DateRangePicker from './date-range-picker'
 
 /**
-* ------------------------------------------------------------------------
-* Constants
-* ------------------------------------------------------------------------
-*/
+ * ------------------------------------------------------------------------
+ * Constants
+ * ------------------------------------------------------------------------
+ */
 
 const NAME = 'date-picker'
 const DATA_KEY = 'coreui.date-picker'
@@ -31,19 +31,19 @@ const Default = {
   calendars: 1,
   placeholder: ['Select date'],
   range: false,
-  separator: false
+  separator: false,
 }
 
 const DefaultType = {
   ...DateRangePicker.DefaultType,
-  date: '(date|string|null)'
+  date: '(date|string|null)',
 }
 
 /**
-* ------------------------------------------------------------------------
-* Class Definition
-* ------------------------------------------------------------------------
-*/
+ * ------------------------------------------------------------------------
+ * Class Definition
+ * ------------------------------------------------------------------------
+ */
 
 class DatePicker extends DateRangePicker {
   // Getters
@@ -73,7 +73,7 @@ class DatePicker extends DateRangePicker {
 
         EventHandler.trigger(this._element, EVENT_DATE_CHANGE, {
           date: event.date,
-          formatedDate: event.date ? this._formatDate(event.date) : undefined
+          formatedDate: event.date ? this._formatDate(event.date) : undefined,
         })
       })
     }
@@ -101,7 +101,11 @@ class DatePicker extends DateRangePicker {
         return
       }
 
-      if (data[config] === undefined || config.startsWith('_') || config === 'constructor') {
+      if (
+        data[config] === undefined ||
+        config.startsWith('_') ||
+        config === 'constructor'
+      ) {
         throw new TypeError(`No method named "${config}"`)
       }
 
@@ -111,10 +115,10 @@ class DatePicker extends DateRangePicker {
 }
 
 /**
-* ------------------------------------------------------------------------
-* Data Api implementation
-* ------------------------------------------------------------------------
-*/
+ * ------------------------------------------------------------------------
+ * Data Api implementation
+ * ------------------------------------------------------------------------
+ */
 
 EventHandler.on(window, EVENT_LOAD_DATA_API, () => {
   const datePickers = SelectorEngine.find(SELECTOR_DATA_TOGGLE)
@@ -124,11 +128,11 @@ EventHandler.on(window, EVENT_LOAD_DATA_API, () => {
 })
 
 /**
-* ------------------------------------------------------------------------
-* jQuery
-* ------------------------------------------------------------------------
-* add .DatePicker to jQuery only if jQuery is present
-*/
+ * ------------------------------------------------------------------------
+ * jQuery
+ * ------------------------------------------------------------------------
+ * add .DatePicker to jQuery only if jQuery is present
+ */
 
 defineJQueryPlugin(DatePicker)
 

@@ -27,11 +27,11 @@
                   <CForm novalidate>
                     <CInputGroup class="mb-3">
                       <CFormInput
-                        type="password"
-                        autoComplete="username email"
                         v-model="password"
-                        @keypress.enter="toHome"
+                        type="password"
+                        auto-complete="username email"
                         required
+                        @keypress.enter="toHome"
                       />
                       <CInputGroupText @click="toHome">
                         <CIcon icon="cilArrowCircleRight"></CIcon>

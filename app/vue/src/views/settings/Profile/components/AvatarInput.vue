@@ -3,9 +3,9 @@
     <CCol>
       <h6>Profile picture</h6>
       <input
+        id="file"
         type="file"
         class="form-control"
-        id="file"
         accept="image/*"
         style="display: none"
         @change="change"

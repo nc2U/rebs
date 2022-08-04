@@ -26,10 +26,10 @@
             <CCol sm="8">
               <CFormSelect v-model="form.status" required>
                 <option value="">---------</option>
-                <option value="0" v-if="release && release.status < '4'">
+                <option v-if="release && release.status < '4'" value="0">
                   신청 취소
                 </option>
-                <option value="3" v-if="release && release.status < '4'">
+                <option v-if="release && release.status < '4'" value="3">
                   해지 신청
                 </option>
                 <option value="4">해지 종결</option>

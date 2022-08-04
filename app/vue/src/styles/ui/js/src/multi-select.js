@@ -84,7 +84,7 @@ const Default = {
   selectAll: true,
   selectAllLabel: 'Select all options',
   selectionType: 'tags',
-  selectionTypeCounterText: 'item(s) selected'
+  selectionTypeCounterText: 'item(s) selected',
 }
 
 const DefaultType = {
@@ -100,7 +100,7 @@ const DefaultType = {
   selectAll: 'boolean',
   selectAllLabel: 'string',
   selectionType: 'string',
-  selectionTypeCounterText: 'string'
+  selectionTypeCounterText: 'string',
 }
 
 /**
@@ -275,7 +275,7 @@ class MultiSelect extends BaseComponent {
     config = {
       ...Default,
       ...Manipulator.getDataAttributes(this._element),
-      ...(typeof config === 'object' ? config : {})
+      ...(typeof config === 'object' ? config : {}),
     }
 
     return config
@@ -290,7 +290,10 @@ class MultiSelect extends BaseComponent {
       return this._config.options
     }
 
-    const nodes = Array.from(node.childNodes).filter(element => element.nodeName === 'OPTION' || element.nodeName === 'OPTGROUP')
+    const nodes = Array.from(node.childNodes).filter(
+      element =>
+        element.nodeName === 'OPTION' || element.nodeName === 'OPTGROUP',
+    )
     const options = []
 
     for (const node of nodes) {
@@ -299,14 +302,14 @@ class MultiSelect extends BaseComponent {
           value: node.value,
           text: node.innerHTML,
           selected: node.selected,
-          disabled: node.disabled
+          disabled: node.disabled,
         })
       }
 
       if (node.nodeName === 'OPTGROUP') {
         options.push({
           label: node.label,
-          options: this._getOptions(node)
+          options: this._getOptions(node),
         })
       }
     }
@@ -331,7 +334,7 @@ class MultiSelect extends BaseComponent {
 
         selected.push({
           value: String(e.value),
-          text: e.text
+          text: e.text,
         })
       }
     }
@@ -351,7 +354,7 @@ class MultiSelect extends BaseComponent {
 
   _createNativeOptions(parentElement, options) {
     for (const option of options) {
-      if ((typeof option.options !== 'undefined')) {
+      if (typeof option.options !== 'undefined') {
         const optgroup = document.createElement('optgroup')
         optgroup.label = option.label
         this._createNativeOptions(optgroup, option.options)
@@ -542,16 +545,25 @@ class MultiSelect extends BaseComponent {
   }
 
   _onOptionsClick(element) {
-    if (!element.classList.contains(CLASS_NAME_OPTION) || element.classList.contains(CLASS_NAME_LABEL)) {
+    if (
+      !element.classList.contains(CLASS_NAME_OPTION) ||
+      element.classList.contains(CLASS_NAME_LABEL)
+    ) {
       return
     }
 
     const value = String(element.dataset.value)
     const text = element.textContent
 
-    if (this._config.multiple && element.classList.contains(CLASS_NAME_SELECTED)) {
+    if (
+      this._config.multiple &&
+      element.classList.contains(CLASS_NAME_SELECTED)
+    ) {
       this._deselectOption(value)
-    } else if (this._config.multiple && !element.classList.contains(CLASS_NAME_SELECTED)) {
+    } else if (
+      this._config.multiple &&
+      !element.classList.contains(CLASS_NAME_SELECTED)
+    ) {
       this._selectOption(value, text)
     } else if (!this._config.multiple) {
       this._selectOption(value, text)
@@ -572,23 +584,29 @@ class MultiSelect extends BaseComponent {
     if (this._selection.filter(e => e.value === value).length === 0) {
       this._selection.push({
         value,
-        text
+        text,
       })
     }
 
-    const nativeOption = SelectorEngine.findOne(`option[value="${value}"]`, this._element)
+    const nativeOption = SelectorEngine.findOne(
+      `option[value="${value}"]`,
+      this._element,
+    )
 
     if (nativeOption) {
       nativeOption.selected = true
     }
 
-    const option = SelectorEngine.findOne(`[data-value="${value}"]`, this._optionsElement)
+    const option = SelectorEngine.findOne(
+      `[data-value="${value}"]`,
+      this._optionsElement,
+    )
     if (option) {
       option.classList.add(CLASS_NAME_SELECTED)
     }
 
     EventHandler.trigger(this._element, EVENT_CHANGED, {
-      value: this._selection
+      value: this._selection,
     })
 
     this._updateSelection()
@@ -601,15 +619,21 @@ class MultiSelect extends BaseComponent {
     const selected = this._selection.filter(e => e.value !== value)
     this._selection = selected
 
-    SelectorEngine.findOne(`option[value="${value}"]`, this._element).selected = false
+    SelectorEngine.findOne(
+      `option[value="${value}"]`,
+      this._element,
+    ).selected = false
 
-    const option = SelectorEngine.findOne(`[data-value="${value}"]`, this._optionsElement)
+    const option = SelectorEngine.findOne(
+      `[data-value="${value}"]`,
+      this._optionsElement,
+    )
     if (option) {
       option.classList.remove(CLASS_NAME_SELECTED)
     }
 
     EventHandler.trigger(this._element, EVENT_CHANGED, {
-      value: this._selection
+      value: this._selection,
     })
 
     this._updateSelection()
@@ -657,7 +681,10 @@ class MultiSelect extends BaseComponent {
       return
     }
 
-    const selectionCleaner = SelectorEngine.findOne(SELECTOR_SELECTION_CLEANER, this._clone)
+    const selectionCleaner = SelectorEngine.findOne(
+      SELECTOR_SELECTION_CLEANER,
+      this._clone,
+    )
 
     if (this._selection.length > 0) {
       selectionCleaner.style.removeProperty('display')
@@ -678,7 +705,11 @@ class MultiSelect extends BaseComponent {
       return
     }
 
-    if (this._selection.length > 0 && this._config.multiple && this._config.selectionType !== 'counter') {
+    if (
+      this._selection.length > 0 &&
+      this._config.multiple &&
+      this._config.selectionType !== 'counter'
+    ) {
       this._searchElement.removeAttribute('placeholder')
       this._selectionElement.style.removeProperty('display')
       return
@@ -701,12 +732,20 @@ class MultiSelect extends BaseComponent {
       return
     }
 
-    if (this._selection.length > 0 && (this._config.selectionType === 'tags' || this._config.selectionType === 'text')) {
+    if (
+      this._selection.length > 0 &&
+      (this._config.selectionType === 'tags' ||
+        this._config.selectionType === 'text')
+    ) {
       this._searchElement.size = size
       return
     }
 
-    if (this._selection.length === 0 && (this._config.selectionType === 'tags' || this._config.selectionType === 'text')) {
+    if (
+      this._selection.length === 0 &&
+      (this._config.selectionType === 'tags' ||
+        this._config.selectionType === 'text')
+    ) {
       this._searchElement.removeAttribute('size')
     }
   }
@@ -734,7 +773,7 @@ class MultiSelect extends BaseComponent {
 
   _isVisible(element) {
     const style = window.getComputedStyle(element)
-    return (style.display !== 'none')
+    return style.display !== 'none'
   }
 
   _filterOptionsList() {
@@ -753,7 +792,11 @@ class MultiSelect extends BaseComponent {
       const optgroup = option.closest(SELECTOR_OPTGROUP)
       if (optgroup) {
         // eslint-disable-next-line  unicorn/prefer-array-some
-        if (SelectorEngine.children(optgroup, SELECTOR_OPTION).filter(element => this._isVisible(element)).length > 0) {
+        if (
+          SelectorEngine.children(optgroup, SELECTOR_OPTION).filter(element =>
+            this._isVisible(element),
+          ).length > 0
+        ) {
           optgroup.style.removeProperty('display')
         } else {
           optgroup.style.display = 'none'
@@ -775,7 +818,9 @@ class MultiSelect extends BaseComponent {
       placeholder.innerHTML = this._config.searchNoResultsLabel
 
       if (!SelectorEngine.findOne(SELECTOR_OPTIONS_EMPTY, this._clone)) {
-        SelectorEngine.findOne(SELECTOR_OPTIONS, this._clone).append(placeholder)
+        SelectorEngine.findOne(SELECTOR_OPTIONS, this._clone).append(
+          placeholder,
+        )
       }
     }
   }
@@ -801,8 +846,11 @@ class MultiSelect extends BaseComponent {
   }
 
   static clearMenus(event) {
-    if (event && (event.button === RIGHT_MOUSE_BUTTON ||
-      (event.type === 'keyup' && event.key !== TAB_KEY))) {
+    if (
+      event &&
+      (event.button === RIGHT_MOUSE_BUTTON ||
+        (event.type === 'keyup' && event.key !== TAB_KEY))
+    ) {
       return
     }
 
@@ -811,7 +859,7 @@ class MultiSelect extends BaseComponent {
     for (let i = 0, len = selects.length; i < len; i++) {
       const context = Data.get(selects[i], DATA_KEY)
       const relatedTarget = {
-        relatedTarget: selects[i]
+        relatedTarget: selects[i],
       }
 
       if (event && event.type === 'click') {

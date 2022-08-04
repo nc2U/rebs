@@ -6,25 +6,25 @@
           <CCol md="6" lg="3" class="mb-3">
             <DatePicker
               v-model="from_date"
-              @keydown.enter="listFiltering(1)"
               v-maska="'####-##-##'"
               placeholder="납부일자 (From)"
+              @keydown.enter="listFiltering(1)"
             />
           </CCol>
 
           <CCol md="6" lg="3" class="mb-3">
             <DatePicker
               v-model="to_date"
-              @keydown.enter="listFiltering(1)"
               v-maska="'####-##-##'"
               placeholder="납부일자 (To)"
+              @keydown.enter="listFiltering(1)"
             />
           </CCol>
 
           <CCol md="6" lg="3" class="mb-3">
             <CFormSelect v-model="form.pay_order" @change="listFiltering(1)">
               <option value="">납부회차 선택</option>
-              <option v-for="po in payOrderList" :value="po.pk" :key="po.pk">
+              <option v-for="po in payOrderList" :key="po.pk" :value="po.pk">
                 {{ po.__str__ }}
               </option>
             </CFormSelect>
@@ -35,8 +35,8 @@
               <option value="">납부계좌 선택</option>
               <option
                 v-for="ba in proBankAccountList"
-                :value="ba.pk"
                 :key="ba.pk"
+                :value="ba.pk"
               >
                 {{ ba.alias_name }}
               </option>
@@ -48,8 +48,8 @@
         <CRow>
           <CCol md="6" class="mb-3 pl-4 pt-2">
             <CFormSwitch
-              v-model="form.no_contract"
               id="no_contract"
+              v-model="form.no_contract"
               label="미등록 납부대금 건"
               @change="listFiltering(1)"
             />
@@ -59,10 +59,10 @@
             <CInputGroup class="flex-nowrap">
               <CFormInput
                 v-model="form.search"
-                @keydown.enter="listFiltering(1)"
                 placeholder="계약자, 입금자, 적요, 비고"
                 aria-label="Username"
                 aria-describedby="addon-wrapping"
+                @keydown.enter="listFiltering(1)"
               />
               <CInputGroupText @click="listFiltering(1)">검색</CInputGroupText>
             </CInputGroup>
@@ -74,8 +74,8 @@
       <CCol color="warning" class="p-2 pl-3">
         <strong>납부 건수 조회 결과 : {{ paymentsCount }} 건</strong>
       </CCol>
-      <CCol class="text-right mb-0" v-if="!formsCheck">
-        <CButton color="info" @click="resetForm" size="sm">
+      <CCol v-if="!formsCheck" class="text-right mb-0">
+        <CButton color="info" size="sm" @click="resetForm">
           검색조건 초기화
         </CButton>
       </CCol>

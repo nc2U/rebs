@@ -32,13 +32,13 @@ import { message } from '@/utils/helper'
 
 export default defineComponent({
   name: 'UnitIndex',
-  mixins: [HeaderMixin],
   components: {
     ContentHeader,
     ContentBody,
     UnitController,
     UnitListTable,
   },
+  mixins: [HeaderMixin],
   data() {
     return {
       bldgName: '',

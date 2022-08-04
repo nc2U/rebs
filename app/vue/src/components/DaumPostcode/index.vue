@@ -12,10 +12,10 @@
     }"
   >
     <img
-      src="//t1.daumcdn.net/postcode/resource/images/close.png"
       id="btnCloseLayer"
-      @click="closeLayer"
+      src="//t1.daumcdn.net/postcode/resource/images/close.png"
       alt="닫기 버튼"
+      @click="closeLayer"
     />
   </div>
 </template>
@@ -26,6 +26,88 @@ import store from '@/store'
 
 export default defineComponent({
   name: 'DaumPostcode',
+  props: {
+    width: {
+      type: Number,
+      default: 450,
+    },
+    height: {
+      type: Number,
+      default: 415,
+    },
+    borderWidth: {
+      type: Number,
+      default: 5,
+    },
+    autoClose: {
+      type: Boolean,
+      default: false,
+    },
+    autoResize: {
+      type: Boolean,
+      default: false,
+    },
+    animation: {
+      type: Boolean,
+      default: false,
+    },
+    autoMapping: {
+      type: Boolean,
+      default: true,
+    },
+    shorthand: {
+      type: Boolean,
+      default: true,
+    },
+    pleaseReadGuide: {
+      type: Number,
+      default: 0,
+    },
+    pleaseReadGuideTimer: {
+      type: Number,
+      default: 1.5,
+    },
+    maxSuggestItems: {
+      type: Number,
+      default: 8,
+    },
+    showMoreHName: {
+      type: Boolean,
+      default: false,
+    },
+    hideMapBtn: {
+      type: Boolean,
+      default: false,
+    },
+    hideEngBtn: {
+      type: Boolean,
+      default: false,
+    },
+    alwaysShowEngAddr: {
+      type: Boolean,
+      default: false,
+    },
+    submitMode: {
+      type: Boolean,
+      default: true,
+    },
+    useSuggest: {
+      type: Boolean,
+      default: true,
+    },
+    componentStyle: {
+      type: Object,
+      default: null,
+    },
+    defaultQuery: {
+      type: String,
+      default: null,
+    },
+    scriptUrl: {
+      type: String,
+      default: '//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js',
+    },
+  },
   data() {
     return {
       dispalyVal: 'none',
@@ -114,88 +196,6 @@ export default defineComponent({
     },
     closeLayer() {
       this.dispalyVal = 'none'
-    },
-  },
-  props: {
-    width: {
-      type: Number,
-      default: 450,
-    },
-    height: {
-      type: Number,
-      default: 415,
-    },
-    borderWidth: {
-      type: Number,
-      default: 5,
-    },
-    autoClose: {
-      type: Boolean,
-      default: false,
-    },
-    autoResize: {
-      type: Boolean,
-      default: false,
-    },
-    animation: {
-      type: Boolean,
-      default: false,
-    },
-    autoMapping: {
-      type: Boolean,
-      default: true,
-    },
-    shorthand: {
-      type: Boolean,
-      default: true,
-    },
-    pleaseReadGuide: {
-      type: Number,
-      default: 0,
-    },
-    pleaseReadGuideTimer: {
-      type: Number,
-      default: 1.5,
-    },
-    maxSuggestItems: {
-      type: Number,
-      default: 8,
-    },
-    showMoreHName: {
-      type: Boolean,
-      default: false,
-    },
-    hideMapBtn: {
-      type: Boolean,
-      default: false,
-    },
-    hideEngBtn: {
-      type: Boolean,
-      default: false,
-    },
-    alwaysShowEngAddr: {
-      type: Boolean,
-      default: false,
-    },
-    submitMode: {
-      type: Boolean,
-      default: true,
-    },
-    useSuggest: {
-      type: Boolean,
-      default: true,
-    },
-    componentStyle: {
-      type: Object,
-      default: null,
-    },
-    defaultQuery: {
-      type: String,
-      default: null,
-    },
-    scriptUrl: {
-      type: String,
-      default: '//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js',
     },
   },
 })

@@ -9,9 +9,9 @@
     <CCardBody class="pb-5">
       <BuildingAddForm :disabled="!project" @on-submit="onSubmit" />
       <BuildingFormList
+        :project="project"
         @on-update="onUpdateBuilding"
         @on-delete="onDeleteBuilding"
-        :project="project"
       />
     </CCardBody>
 
@@ -30,13 +30,13 @@ import { mapActions, mapGetters, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'BuildingIndex',
-  mixins: [HeaderMixin],
   components: {
     ContentHeader,
     ContentBody,
     BuildingAddForm,
     BuildingFormList,
   },
+  mixins: [HeaderMixin],
   created() {
     this.fetchBuildingList(this.initProjId)
   },

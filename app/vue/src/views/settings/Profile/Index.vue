@@ -7,7 +7,7 @@
   <ContentBody>
     <ProfileForm
       ref="profile"
-      :userInfo="userInfo"
+      :user-info="userInfo"
       @file-upload="fileUpload"
       @on-submit="onSubmit"
     />
@@ -24,12 +24,12 @@ import { mapActions, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'ProfileIndex',
-  mixins: [HeaderMixin],
   components: {
     ContentHeader,
     ContentBody,
     ProfileForm,
   },
+  mixins: [HeaderMixin],
   data() {
     return {
       image: null,

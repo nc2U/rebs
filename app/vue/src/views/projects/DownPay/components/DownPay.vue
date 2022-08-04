@@ -3,7 +3,7 @@
     <CTableDataCell>
       <CFormSelect v-model="form.order_group" required>
         <option value="">차수선택</option>
-        <option v-for="order in orders" :value="order.pk" :key="order.pk">
+        <option v-for="order in orders" :key="order.pk" :value="order.pk">
           {{ order.order_group_name }}
         </option>
       </CFormSelect>
@@ -11,7 +11,7 @@
     <CTableDataCell>
       <CFormSelect v-model="form.unit_type" required>
         <option value="">타입선택</option>
-        <option v-for="type in types" :value="type.pk" :key="type.pk">
+        <option v-for="type in types" :key="type.pk" :value="type.pk">
           {{ type.name }}
         </option>
       </CFormSelect>
@@ -45,8 +45,8 @@
       <CButton
         color="success"
         size="sm"
-        @click="onUpdateDownPay"
         :disabled="formsCheck"
+        @click="onUpdateDownPay"
       >
         수정
       </CButton>
@@ -55,15 +55,15 @@
   </CTableRow>
 
   <ConfirmModal ref="confirmModal">
-    <template v-slot:header>
+    <template #header>
       <CIcon name="cil-warning" />
       층별 타입 삭제
     </template>
-    <template v-slot:default>
+    <template #default>
       이 타입에 종속된 분양가 데이터가 있는 경우 해당 데이터를 모두 제거한 후
       삭제가능 합니다. 해당 층별 타입을 삭제 하시겠습니까?
     </template>
-    <template v-slot:footer>
+    <template #footer>
       <CButton color="danger" @click="modalAction">삭제</CButton>
     </template>
   </ConfirmModal>
@@ -80,6 +80,7 @@ import { mapGetters } from 'vuex'
 export default defineComponent({
   name: 'DownPay',
   components: { ConfirmModal, AlertModal },
+  props: { downPay: Object, orders: Array, types: Array },
   data() {
     return {
       form: {
@@ -91,7 +92,6 @@ export default defineComponent({
       validated: false,
     }
   },
-  props: { downPay: Object, orders: Array, types: Array },
   created(this: any) {
     if (this.downPay) {
       this.resetForm()

@@ -39,8 +39,8 @@
               <option value="">프로젝트 종류</option>
               <option
                 v-for="sort in sortOptins"
-                :value="sort.value"
                 :key="sort.value"
+                :value="sort.value"
                 :selected="update && sort.value === project.kind"
               >
                 {{ sort.label }}
@@ -68,8 +68,8 @@
           <CFormLabel class="col-md-2 col-form-label"></CFormLabel>
           <CCol md="8" lg="5">
             <CFormSwitch
-              v-model="form.is_direct_manage"
               id="is_direct_manage"
+              v-model="form.is_direct_manage"
               label="직영운영여부"
               :checked="update && project.is_direct_manage"
             />
@@ -84,8 +84,8 @@
           <CFormLabel class="col-md-2 col-form-label"></CFormLabel>
           <CCol md="8" lg="5">
             <CFormSwitch
-              v-model="form.is_returned_area"
               id="is_returned_area"
+              v-model="form.is_returned_area"
               label="토지환지여부"
               :checked="update && project.is_returned_area"
             />
@@ -99,8 +99,8 @@
           <CFormLabel class="col-md-2 col-form-label"></CFormLabel>
           <CCol md="8" lg="5">
             <CFormSwitch
-              v-model="form.is_unit_set"
               id="is_unit_set"
+              v-model="form.is_unit_set"
               label="동호지정여부"
               :checked="update && project.is_unit_set"
             />
@@ -142,8 +142,8 @@
 
           <CCol md="5" lg="2" class="mb-3 mb-lg-0">
             <CFormInput
-              v-model="form.local_address2"
               ref="address2"
+              v-model="form.local_address2"
               type="text"
               maxlength="25"
               placeholder="상세주소를 입력하세요"
@@ -360,12 +360,12 @@
       </CCardBody>
 
       <CCardFooter class="text-right">
-        <CButton type="button" color="light" @click="this.$emit('reset-form')">
+        <CButton type="button" color="light" @click="$emit('reset-form')">
           취소
         </CButton>
         <CButton
-          type="button"
           v-if="update"
+          type="button"
           color="danger"
           @click="deleteProject"
         >
@@ -379,28 +379,28 @@
     </CForm>
   </CCard>
 
-  <DaumPostcode @addressPut="addressPut" ref="postCode" />
+  <DaumPostcode ref="postCode" @addressPut="addressPut" />
 
   <ConfirmModal ref="delModal">
-    <template v-slot:header>
+    <template #header>
       <CIcon name="cilChevronCircleRightAlt" />
       프로젝트정보 삭제
     </template>
-    <template v-slot:default>현재 삭제 기능이 구현되지 않았습니다.</template>
-    <template v-slot:footer>
+    <template #default>현재 삭제 기능이 구현되지 않았습니다.</template>
+    <template #footer>
       <CButton color="danger" disabled="">삭제</CButton>
     </template>
   </ConfirmModal>
 
   <ConfirmModal ref="confirmModal">
-    <template v-slot:header>
+    <template #header>
       <CIcon name="cilChevronCircleRightAlt" />
       프로젝트정보
     </template>
-    <template v-slot:default>
+    <template #default>
       프로젝트정보 {{ confirmText }}을 진행하시겠습니까?
     </template>
-    <template v-slot:footer>
+    <template #footer>
       <CButton :color="btnClass" @click="modalAction">저장</CButton>
     </template>
   </ConfirmModal>
@@ -420,6 +420,18 @@ export default defineComponent({
   name: 'IndexForm',
   components: { ConfirmModal, AlertModal, DaumPostcode },
   mixins: [addressMixin],
+  props: {
+    userInfo: {
+      type: Object,
+    },
+    project: {
+      type: Object,
+    },
+    update: {
+      type: Boolean,
+      required: true,
+    },
+  },
   data() {
     return {
       pk: null,
@@ -492,18 +504,6 @@ export default defineComponent({
       this.form.num_legal_parking = this.project.num_legal_parking
       this.form.num_planed_parking = this.project.num_planed_parking
     }
-  },
-  props: {
-    userInfo: {
-      type: Object,
-    },
-    project: {
-      type: Object,
-    },
-    update: {
-      type: Boolean,
-      required: true,
-    },
   },
   computed: {
     company(this: any) {

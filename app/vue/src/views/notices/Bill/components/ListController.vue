@@ -6,8 +6,8 @@
           <CCol md="6" lg="2" class="mb-3">
             <CFormSelect
               v-model="form.limit"
-              @change="listFiltering(1)"
               disabled
+              @change="listFiltering(1)"
             >
               <option value="">표시 개수</option>
               <option value="5">5 개</option>
@@ -24,8 +24,8 @@
               <option value="">차수선택</option>
               <option
                 v-for="order in orderGroupList"
-                :value="order.pk"
                 :key="order.pk"
+                :value="order.pk"
               >
                 {{ order.order_group_name }}
               </option>
@@ -37,8 +37,8 @@
               <option value="">타입선택</option>
               <option
                 v-for="type in simpleTypes"
-                :value="type.pk"
                 :key="type.pk"
+                :value="type.pk"
               >
                 {{ type.name }}
               </option>
@@ -50,8 +50,8 @@
               <option value="">동 선택</option>
               <option
                 v-for="dong in buildingList"
-                :value="dong.pk"
                 :key="dong.pk"
+                :value="dong.pk"
               >
                 {{ dong.name }}
               </option>
@@ -86,10 +86,10 @@
             <CInputGroup class="flex-nowrap">
               <CFormInput
                 v-model="form.search"
-                @change="listFiltering(1)"
                 placeholder="계약자, 전화번호, 일련번호, 비고"
                 aria-label="Username"
                 aria-describedby="addon-wrapping"
+                @change="listFiltering(1)"
               />
               <CInputGroupText @click="listFiltering(1)">검색</CInputGroupText>
             </CInputGroup>
@@ -101,8 +101,8 @@
       <CCol color="warning" class="p-2 pl-3">
         <strong>계약 건수 조회 결과 : {{ contractsCount }} 건</strong>
       </CCol>
-      <CCol class="text-right mb-0" v-if="!formsCheck">
-        <CButton color="info" @click="resetForm" size="sm">
+      <CCol v-if="!formsCheck" class="text-right mb-0">
+        <CButton color="info" size="sm" @click="resetForm">
           검색조건 초기화
         </CButton>
       </CCol>

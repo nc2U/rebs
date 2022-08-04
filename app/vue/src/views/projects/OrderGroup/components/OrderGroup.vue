@@ -30,8 +30,8 @@
       <CButton
         color="success"
         size="sm"
-        @click="onUpdateOrder"
         :disabled="formsCheck"
+        @click="onUpdateOrder"
       >
         수정
       </CButton>
@@ -40,15 +40,15 @@
   </CTableRow>
 
   <ConfirmModal ref="confirmModal">
-    <template v-slot:header>
+    <template #header>
       <CIcon name="cil-warning" />
       차수그룹 삭제
     </template>
-    <template v-slot:default>
+    <template #default>
       이 그룹에 종속 데이터가 있는 경우 해당 데이터를 모두 제거한 후 삭제가능
       합니다. 해당 차수그룹을 삭제 하시겠습니까?
     </template>
-    <template v-slot:footer>
+    <template #footer>
       <CButton color="danger" @click="modalAction">삭제</CButton>
     </template>
   </ConfirmModal>
@@ -65,6 +65,7 @@ import { mapGetters } from 'vuex'
 export default defineComponent({
   name: 'OrderGroup',
   components: { ConfirmModal, AlertModal },
+  props: ['order'],
   data() {
     return {
       form: {
@@ -75,7 +76,6 @@ export default defineComponent({
       validated: false,
     }
   },
-  props: ['order'],
   created() {
     if (this.order) this.resetForm()
   },

@@ -14,10 +14,10 @@
         @on-submit="onSubmit"
       />
       <DownPayFormList
-        @on-update="onUpdateDownPay"
-        @on-delete="onDeleteDownPay"
         :orders="orderGroupList"
         :types="unitTypeList"
+        @on-update="onUpdateDownPay"
+        @on-delete="onDeleteDownPay"
       />
     </CCardBody>
 
@@ -36,13 +36,13 @@ import { mapActions, mapGetters, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'ProjectsDownPaySet',
-  mixins: [HeaderMixin],
   components: {
     ContentHeader,
     ContentBody,
     DownPayAddForm,
     DownPayFormList,
   },
+  mixins: [HeaderMixin],
   created() {
     this.fetchDownPayList({ project: this.initProjId })
     this.fetchOrderGroupList(this.initProjId)

@@ -10,9 +10,9 @@
                   <CFormInput
                     v-model="form.search"
                     placeholder="계약자, 비고, 계약 일련번호"
-                    @keydown.enter="listFiltering(1)"
                     aria-label="Search"
                     aria-describedby="addon-wrapping"
+                    @keydown.enter="listFiltering(1)"
                   />
                   <CInputGroupText @click="listFiltering(1)">
                     계약 건 찾기
@@ -24,18 +24,18 @@
         </CRow>
         <CRow>
           <CCol
+            v-if="contractIndex.length !== 0"
             color="warning"
             class="p-2 pl-3"
-            v-if="contractIndex.length !== 0"
           >
             <CButton
-              type="button"
-              color="dark"
               v-for="cont in contractIndex"
               :key="cont.pk"
-              @click="contMatching(cont)"
+              type="button"
+              color="dark"
               variant="outline"
               size="sm"
+              @click="contMatching(cont)"
             >
               {{ `${cont.contractor}(${cont.serial_number})` }}
             </CButton>
@@ -47,8 +47,8 @@
       </CCallout>
 
       <CAlert
-        color="default"
         v-if="contractIndex.length !== 0"
+        color="default"
         class="pt-0 pb-0"
       >
         상기 계약 건 중 아래 수납 항목을 매칭 등록할 계약 건을 클릭하여
@@ -70,13 +70,13 @@
   </CRow>
 
   <ConfirmModal ref="confirmModal">
-    <template v-slot:header>건별 수납 매칭</template>
-    <template v-slot:default>
+    <template #header>건별 수납 매칭</template>
+    <template #default>
       해당 수납 항목을 이 계약 건 &lt;{{
         `${cont.contractor}(${cont.serial_number})`
       }}&gt; 에 등록하시겠습니까?
     </template>
-    <template v-slot:footer>
+    <template #footer>
       <CButton color="primary" @click="modalAction">저장</CButton>
     </template>
   </ConfirmModal>

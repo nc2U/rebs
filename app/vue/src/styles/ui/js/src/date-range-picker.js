@@ -17,10 +17,10 @@ import Picker from './picker'
 import TimePicker from './time-picker'
 
 /**
-* ------------------------------------------------------------------------
-* Constants
-* ------------------------------------------------------------------------
-*/
+ * ------------------------------------------------------------------------
+ * Constants
+ * ------------------------------------------------------------------------
+ */
 
 const NAME = 'date-range-picker'
 const DATA_KEY = 'coreui.date-range-picker'
@@ -58,7 +58,7 @@ const Default = {
   selectEndDate: false,
   timepicker: false,
   todayButton: 'Today',
-  todayButtonClasses: ['btn', 'btn-sm', 'btn-primary', 'me-auto']
+  todayButtonClasses: ['btn', 'btn-sm', 'btn-primary', 'me-auto'],
 }
 
 const DefaultType = {
@@ -86,22 +86,29 @@ const DefaultType = {
   selectEndDate: 'boolean',
   timepicker: 'boolean',
   todayButton: '(boolean|string)',
-  todayButtonClasses: '(array|string)'
+  todayButtonClasses: '(array|string)',
 }
 
 /**
-* ------------------------------------------------------------------------
-* Class Definition
-* ------------------------------------------------------------------------
-*/
+ * ------------------------------------------------------------------------
+ * Class Definition
+ * ------------------------------------------------------------------------
+ */
 
 class DateRangePicker extends Picker {
   constructor(element, config) {
     super(element)
 
     this._config = this._getConfig(config)
-    this._calendarDate = this._convertStringToDate(this._config.calendarDate || this._config.date || this._config.startDate || new Date())
-    this._startDate = this._convertStringToDate(this._config.date || this._config.startDate)
+    this._calendarDate = this._convertStringToDate(
+      this._config.calendarDate ||
+        this._config.date ||
+        this._config.startDate ||
+        new Date(),
+    )
+    this._startDate = this._convertStringToDate(
+      this._config.date || this._config.startDate,
+    )
     this._endDate = this._convertStringToDate(this._config.endDate)
     this._initialStartDate = null
     this._initialEndDate = null
@@ -206,9 +213,13 @@ class DateRangePicker extends Picker {
     })
 
     EventHandler.on(this._startInput, 'input', event => {
-      const date = this._config.format ?
-        parseISO(event.target.value) :
-        getLocalDateFromString(event.target.value, this._config.locale, this._config.timepicker)
+      const date = this._config.format
+        ? parseISO(event.target.value)
+        : getLocalDateFromString(
+            event.target.value,
+            this._config.locale,
+            this._config.timepicker,
+          )
 
       // eslint-disable-next-line no-console
       console.log(parseISO(event.target.value))
@@ -226,9 +237,13 @@ class DateRangePicker extends Picker {
     })
 
     EventHandler.on(this._endInput, 'input', event => {
-      const date = this._config.format ?
-        parseISO(event.target.value) :
-        getLocalDateFromString(event.target.value, this._config.locale, this._config.timepicker)
+      const date = this._config.format
+        ? parseISO(event.target.value)
+        : getLocalDateFromString(
+            event.target.value,
+            this._config.locale,
+            this._config.timepicker,
+          )
       if (date instanceof Date && date.getTime()) {
         this._endDate = date
         this._calendarDate = date
@@ -236,10 +251,15 @@ class DateRangePicker extends Picker {
       }
     })
 
-    EventHandler.on(this._element, 'click', '.picker-input-group-cleaner', event => {
-      event.stopPropagation()
-      this.clear()
-    })
+    EventHandler.on(
+      this._element,
+      'click',
+      '.picker-input-group-cleaner',
+      event => {
+        event.stopPropagation()
+        this.clear()
+      },
+    )
 
     EventHandler.on(this._element, 'onCancelClick.coreui.picker', () => {
       this.cancel()
@@ -258,13 +278,17 @@ class DateRangePicker extends Picker {
         this._startInput.value = this._setInputValue(event.date)
         this._updateCalendars()
 
-        if (!this._config.range && (!this._config.footer && !this._config.timepicker)) {
+        if (
+          !this._config.range &&
+          !this._config.footer &&
+          !this._config.timepicker
+        ) {
           this._dropdown.hide()
         }
 
         EventHandler.trigger(this._element, EVENT_START_DATE_CHANGE, {
           date: event.date,
-          formatedDate: event.date ? this._formatDate(event.date) : undefined
+          formatedDate: event.date ? this._formatDate(event.date) : undefined,
         })
       })
 
@@ -274,13 +298,17 @@ class DateRangePicker extends Picker {
         this._endInput.value = this._setInputValue(event.date)
         this._updateCalendars()
 
-        if (this._startDate && (!this._config.footer && !this._config.timepicker)) {
+        if (
+          this._startDate &&
+          !this._config.footer &&
+          !this._config.timepicker
+        ) {
           this._dropdown.hide()
         }
 
         EventHandler.trigger(this._element, EVENT_END_DATE_CHANGE, {
           date: event.date,
-          formatedDate: event.date ? this._formatDate(event.date) : undefined
+          formatedDate: event.date ? this._formatDate(event.date) : undefined,
         })
       })
 
@@ -304,7 +332,8 @@ class DateRangePicker extends Picker {
     inputEl.classList.add('form-control')
     inputEl.disabled = this._config.disabled
     inputEl.placeholder = placeholder
-    inputEl.readOnly = this._config.inputReadOnly || typeof this._config.format === 'string'
+    inputEl.readOnly =
+      this._config.inputReadOnly || typeof this._config.format === 'string'
     inputEl.type = 'text'
     inputEl.value = value
 
@@ -319,12 +348,19 @@ class DateRangePicker extends Picker {
       inputGroupEl.classList.add(`input-group-${this._config.size}`)
     }
 
-    const startInputEl = this._createInput(this._getPlaceholder()[0], this._setInputValue(this._startDate))
-    const endInputEl = this._createInput(this._getPlaceholder()[1], this._setInputValue(this._endDate))
+    const startInputEl = this._createInput(
+      this._getPlaceholder()[0],
+      this._setInputValue(this._startDate),
+    )
+    const endInputEl = this._createInput(
+      this._getPlaceholder()[1],
+      this._setInputValue(this._endDate),
+    )
 
     const inputGroupTextSeparatorEl = document.createElement('span')
     inputGroupTextSeparatorEl.classList.add('input-group-text')
-    inputGroupTextSeparatorEl.innerHTML = '<span class="picker-input-group-icon date-picker-arrow-icon"></span>'
+    inputGroupTextSeparatorEl.innerHTML =
+      '<span class="picker-input-group-icon date-picker-arrow-icon"></span>'
 
     const inputGroupTextEl = document.createElement('span')
     inputGroupTextEl.classList.add('input-group-text')
@@ -373,7 +409,7 @@ class DateRangePicker extends Picker {
       calendarDate: new Date(
         this._calendarDate.getFullYear(),
         this._calendarDate.getMonth(),
-        1
+        1,
       ),
       calendars: this._config.calendars,
       disabledDates: this._config.disabledDates,
@@ -384,17 +420,21 @@ class DateRangePicker extends Picker {
       minDate: this._config.minDate,
       range: this._config.range,
       selectEndDate: this._selectEndDate,
-      startDate: this._startDate
+      startDate: this._startDate,
     })
 
-    EventHandler.one(calendarEl, 'calendarDateChange.coreui.calendar', event => {
-      this._calendarDate = new Date(
-        event.date.getFullYear(),
-        event.date.getMonth(),
-        1
-      )
-      this._updateCalendars()
-    })
+    EventHandler.one(
+      calendarEl,
+      'calendarDateChange.coreui.calendar',
+      event => {
+        this._calendarDate = new Date(
+          event.date.getFullYear(),
+          event.date.getMonth(),
+          1,
+        )
+        this._updateCalendars()
+      },
+    )
 
     if (this._config.timepicker) {
       if (this._mobile || (this._range && this._config.calendars === 1)) {
@@ -407,15 +447,19 @@ class DateRangePicker extends Picker {
           disabled: !this._startDate,
           locale: this._config.locale,
           time: this._startDate,
-          variant: 'select'
+          variant: 'select',
         })
         calendarEl.append(timePickerStartEl)
 
-        EventHandler.one(timePickerStartEl, 'timeChange.coreui.time-picker', event => {
-          this._startDate = event.date
-          this._startInput.value = this._setInputValue(this._startDate)
-          this._updateCalendars()
-        })
+        EventHandler.one(
+          timePickerStartEl,
+          'timeChange.coreui.time-picker',
+          event => {
+            this._startDate = event.date
+            this._startInput.value = this._setInputValue(this._startDate)
+            this._updateCalendars()
+          },
+        )
 
         const timePickerEndEl = document.createElement('div')
         timePickerEndEl.classList.add('time-picker')
@@ -426,18 +470,24 @@ class DateRangePicker extends Picker {
           disabled: !this._endDate,
           locale: this._config.locale,
           time: this._endDate,
-          variant: 'select'
+          variant: 'select',
         })
         this._timepickers.append(timePickerEndEl)
 
-        EventHandler.one(timePickerEndEl, 'timeChange.coreui.time-picker', event => {
-          this._endDate = event.date
-          this._endInput.value = this._setInputValue(this._endDate)
-          this._updateCalendars()
-        })
+        EventHandler.one(
+          timePickerEndEl,
+          'timeChange.coreui.time-picker',
+          event => {
+            this._endDate = event.date
+            this._endInput.value = this._setInputValue(this._endDate)
+            this._updateCalendars()
+          },
+        )
       } else {
         // eslint-disable-next-line no-unused-vars
-        for (const [index, _] of Array.from({ length: this._config.calendars }).entries()) {
+        for (const [index, _] of Array.from({
+          length: this._config.calendars,
+        }).entries()) {
           const timePickerEl = document.createElement('div')
           timePickerEl.classList.add('time-picker')
 
@@ -447,22 +497,26 @@ class DateRangePicker extends Picker {
             disabled: index === 0 ? !this._startDate : !this._endDate,
             locale: this._config.locale,
             time: index === 0 ? this._startDate : this._endDate,
-            variant: 'select'
+            variant: 'select',
           })
 
           this._timepickers.append(timePickerEl)
 
-          EventHandler.one(timePickerEl, 'timeChange.coreui.time-picker', event => {
-            if (index === 0) {
-              this._startDate = event.date
-              this._startInput.value = this._setInputValue(this._startDate)
-            } else {
-              this._endDate = event.date
-              this._endInput.value = this._setInputValue(this._endDate)
-            }
+          EventHandler.one(
+            timePickerEl,
+            'timeChange.coreui.time-picker',
+            event => {
+              if (index === 0) {
+                this._startDate = event.date
+                this._startInput.value = this._setInputValue(this._startDate)
+              } else {
+                this._endDate = event.date
+                this._endInput.value = this._setInputValue(this._endDate)
+              }
 
-            this._updateCalendars()
-          })
+              this._updateCalendars()
+            },
+          )
         }
       }
     }
@@ -484,7 +538,9 @@ class DateRangePicker extends Picker {
 
       for (const key of Object.keys(this._config.ranges)) {
         const buttonEl = document.createElement('button')
-        buttonEl.classList.add(...this._getButtonClasses(this._config.rangesButtonsClasses))
+        buttonEl.classList.add(
+          ...this._getButtonClasses(this._config.rangesButtonsClasses),
+        )
         buttonEl.role = 'button'
         buttonEl.addEventListener('click', () => {
           this._startDate = this._config.ranges[key][0]
@@ -522,7 +578,9 @@ class DateRangePicker extends Picker {
   _createFooterContent() {
     if (this._config.todayButton) {
       const todayButtonEl = document.createElement('button')
-      todayButtonEl.classList.add(...this._getButtonClasses(this._config.todayButtonClasses))
+      todayButtonEl.classList.add(
+        ...this._getButtonClasses(this._config.todayButtonClasses),
+      )
       todayButtonEl.type = 'button'
       todayButtonEl.innerHTML = this._config.todayButton
       todayButtonEl.addEventListener('click', () => {
@@ -573,7 +631,7 @@ class DateRangePicker extends Picker {
     config = {
       ...this.constructor.Default,
       ...Manipulator.getDataAttributes(this._element),
-      ...(typeof config === 'object' ? config : {})
+      ...(typeof config === 'object' ? config : {}),
     }
 
     return config
@@ -611,7 +669,11 @@ class DateRangePicker extends Picker {
         return
       }
 
-      if (data[config] === undefined || config.startsWith('_') || config === 'constructor') {
+      if (
+        data[config] === undefined ||
+        config.startsWith('_') ||
+        config === 'constructor'
+      ) {
         throw new TypeError(`No method named "${config}"`)
       }
 
@@ -621,10 +683,10 @@ class DateRangePicker extends Picker {
 }
 
 /**
-* ------------------------------------------------------------------------
-* Data Api implementation
-* ------------------------------------------------------------------------
-*/
+ * ------------------------------------------------------------------------
+ * Data Api implementation
+ * ------------------------------------------------------------------------
+ */
 
 EventHandler.on(window, EVENT_LOAD_DATA_API, () => {
   const dateRangePickers = SelectorEngine.find(SELECTOR_DATA_TOGGLE)
@@ -634,11 +696,11 @@ EventHandler.on(window, EVENT_LOAD_DATA_API, () => {
 })
 
 /**
-* ------------------------------------------------------------------------
-* jQuery
-* ------------------------------------------------------------------------
-* add .DateRangePicker to jQuery only if jQuery is present
-*/
+ * ------------------------------------------------------------------------
+ * jQuery
+ * ------------------------------------------------------------------------
+ * add .DateRangePicker to jQuery only if jQuery is present
+ */
 
 defineJQueryPlugin(DateRangePicker)
 

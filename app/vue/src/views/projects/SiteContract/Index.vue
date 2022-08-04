@@ -21,11 +21,11 @@ import { mapState } from 'vuex'
 
 export default defineComponent({
   name: 'SiteContract',
-  mixins: [HeaderMixin],
   components: {
     ContentHeader,
     ContentBody,
   },
+  mixins: [HeaderMixin],
   computed: {
     ...mapState('project', ['project']),
   },

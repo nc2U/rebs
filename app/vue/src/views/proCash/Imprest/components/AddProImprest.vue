@@ -3,12 +3,12 @@
     <CButton color="primary" @click="createConfirm">신규등록</CButton>
   </CAlert>
 
-  <FormModal size="lg" ref="createFormModal">
-    <template v-slot:header>
+  <FormModal ref="createFormModal" size="lg">
+    <template #header>
       <CIcon name="cil-italic" />
       운영비(전도금) 거래 건별 등록
     </template>
-    <template v-slot:default>
+    <template #default>
       <ProImprestForm
         @multi-submit="multiSubmit"
         @close="$refs.createFormModal.visible = false"

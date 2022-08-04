@@ -23,8 +23,8 @@
     <CInputGroup class="mb-3">
       <CInputGroupText>@</CInputGroupText>
       <CFormInput
-        type="email"
         v-model="email"
+        type="email"
         autocomplete="email"
         placeholder="이메일을 입력해주세요"
         required
@@ -38,8 +38,8 @@
       </CInputGroupText>
       <CFormInput
         ref="password"
-        type="password"
         v-model="password"
+        type="password"
         autocomplete="password"
         placeholder="비밀번호를 입력해주세요"
         required
@@ -52,8 +52,8 @@
         <CIcon icon="cil-lock-locked" />
       </CInputGroupText>
       <CFormInput
-        type="password"
         v-model="passwordConfirm"
+        type="password"
         autocomplete="password-confirm"
         placeholder="비밀번호를 한번 더 입력해주세요"
         required

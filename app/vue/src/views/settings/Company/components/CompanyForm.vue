@@ -13,8 +13,8 @@
 
         <CCol md="4">
           <CFormInput
-            type="text"
             v-model="form.name"
+            type="text"
             placeholder="회사명을 입력하세요"
             maxlength="20"
             required
@@ -28,8 +28,8 @@
 
         <CCol md="4">
           <CFormInput
-            type="text"
             v-model="form.ceo"
+            type="text"
             placeholder="대표자명을 입력하세요"
             maxlength="20"
             required
@@ -44,10 +44,10 @@
         </CFormLabel>
         <CCol md="4">
           <CFormInput
-            type="text"
             v-model="form.tax_number"
-            placeholder="사업자번호를 입력하세요"
             v-maska="'###-##-#####'"
+            type="text"
+            placeholder="사업자번호를 입력하세요"
             maxlength="12"
             required
           />
@@ -58,10 +58,10 @@
         </CFormLabel>
         <CCol md="4">
           <CFormInput
-            type="text"
             v-model="form.org_number"
-            placeholder="법인등록번호를 입력하세요"
             v-maska="'######-#######'"
+            type="text"
+            placeholder="법인등록번호를 입력하세요"
             maxlength="14"
             required
           />
@@ -75,8 +75,8 @@
         </CFormLabel>
         <CCol md="4">
           <CFormInput
-            type="text"
             v-model="form.business_cond"
+            type="text"
             placeholder="업태를 입력하세요"
             maxlength="20"
             required
@@ -88,8 +88,8 @@
         </CFormLabel>
         <CCol md="4">
           <CFormInput
-            type="text"
             v-model="form.business_even"
+            type="text"
             placeholder="종목을 입력하세요"
             maxlength="20"
             required
@@ -104,11 +104,11 @@
         </CFormLabel>
         <CCol md="4">
           <DatePicker
-            type="text"
             v-model="form.es_date"
+            v-maska="'####-##-##'"
+            type="text"
             maxlength="10"
             placeholder="설립일자를 입력하세요"
-            v-maska="'####-##-##'"
             required
           />
           <CFormFeedback invalid>설립일자를 입력하세요.</CFormFeedback>
@@ -118,11 +118,11 @@
         </CFormLabel>
         <CCol md="4">
           <DatePicker
-            type="text"
             v-model="form.op_date"
+            v-maska="'####-##-##'"
+            type="text"
             maxlength="10"
             placeholder="개업일자를 입력하세요"
-            v-maska="'####-##-##'"
             required
           />
           <CFormFeedback invalid>개업일자를 입력하세요.</CFormFeedback>
@@ -138,8 +138,8 @@
         <CCol md="4" xl="2" class="mb-3">
           <CInputGroup>
             <CFormInput
-              type="text"
               v-model="form.zipcode"
+              type="text"
               placeholder="우편번호"
               maxlength="5"
               required
@@ -156,8 +156,8 @@
         <CCol sm="2"></CCol>
         <CCol md="10" lg="4" class="mb-3">
           <CFormInput
-            type="text"
             v-model="form.address1"
+            type="text"
             placeholder="회사주소를 입력하세요"
             maxlength="50"
             required
@@ -168,9 +168,9 @@
         <CCol xs="2" class="d-none d-md-block d-lg-none"></CCol>
         <CCol md="5" lg="3" class="mb-3">
           <CFormInput
-            type="text"
-            v-model="form.address2"
             ref="address2"
+            v-model="form.address2"
+            type="text"
             placeholder="상세주소를 입력하세요"
             maxlength="30"
             required
@@ -179,8 +179,8 @@
         </CCol>
         <CCol md="5" lg="3" class="mb-3">
           <CFormInput
-            type="text"
             v-model="form.address3"
+            type="text"
             placeholder="나머지 주소를 입력하세요"
             maxlength="30"
           />
@@ -190,12 +190,12 @@
     </CCardBody>
 
     <CCardFooter class="text-right">
-      <CButton type="button" color="light" @click="this.$emit('reset-form')">
+      <CButton type="button" color="light" @click="$emit('reset-form')">
         취소
       </CButton>
       <CButton
-        type="button"
         v-if="update"
+        type="button"
         color="danger"
         @click="deleteCompany"
       >
@@ -208,28 +208,28 @@
     </CCardFooter>
   </CForm>
 
-  <DaumPostcode @addressPut="addressPut" ref="postCode" />
+  <DaumPostcode ref="postCode" @addressPut="addressPut" />
 
   <ConfirmModal ref="delModal">
-    <template v-slot:header>
+    <template #header>
       <CIcon name="cilChevronCircleRightAlt" />
       회사정보
     </template>
-    <template v-slot:default>현재 삭제 기능이 구현되지 않았습니다.</template>
-    <template v-slot:footer>
+    <template #default>현재 삭제 기능이 구현되지 않았습니다.</template>
+    <template #footer>
       <CButton color="danger" disabled="">삭제</CButton>
     </template>
   </ConfirmModal>
 
   <ConfirmModal ref="confirmModal">
-    <template v-slot:header>
+    <template #header>
       <CIcon name="cilChevronCircleRightAlt" />
       회사정보
     </template>
-    <template v-slot:default>
+    <template #default>
       회사정보 {{ confirmText }}을 진행하시겠습니까?
     </template>
-    <template v-slot:footer>
+    <template #footer>
       <CButton :color="btnClass" @click="modalAction">저장</CButton>
     </template>
   </ConfirmModal>
@@ -250,8 +250,15 @@ import { maska } from 'maska'
 export default defineComponent({
   name: 'CompanyForm',
   components: { DatePicker, DaumPostcode, ConfirmModal, AlertModal },
-  mixins: [addressMixin],
   directives: { maska },
+  mixins: [addressMixin],
+  props: {
+    company: Object,
+    update: {
+      type: Boolean,
+      required: true,
+    },
+  },
   data() {
     return {
       pk: '',
@@ -288,13 +295,6 @@ export default defineComponent({
       this.form.address2 = this.company.address2
       this.form.address3 = this.company.address3
     }
-  },
-  props: {
-    company: Object,
-    update: {
-      type: Boolean,
-      required: true,
-    },
   },
   computed: {
     confirmText() {

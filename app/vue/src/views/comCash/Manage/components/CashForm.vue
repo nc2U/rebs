@@ -29,8 +29,8 @@
               <CFormSelect
                 v-model="form.sort"
                 required
-                @change="sort_change"
                 :disabled="cash && cash.sort !== ''"
+                @change="sort_change"
               >
                 <option value="">---------</option>
                 <option value="1">입금</option>
@@ -48,12 +48,12 @@
             <CCol sm="8">
               <CFormSelect
                 v-model="form.account_d1"
-                @change="d1_change"
                 required
                 :disabled="form.sort === ''"
+                @change="d1_change"
               >
                 <option value="">---------</option>
-                <option v-for="d1 in formAccD1List" :value="d1.pk" :key="d1.pk">
+                <option v-for="d1 in formAccD1List" :key="d1.pk" :value="d1.pk">
                   {{ d1.name }}
                 </option>
               </CFormSelect>
@@ -71,12 +71,12 @@
             <CCol sm="8">
               <CFormSelect
                 v-model="form.account_d2"
-                @change="d2_change"
                 required
                 :disabled="form.account_d1 === ''"
+                @change="d2_change"
               >
                 <option value="">---------</option>
-                <option v-for="d2 in formAccD2List" :value="d2.pk" :key="d2.pk">
+                <option v-for="d2 in formAccD2List" :key="d2.pk" :value="d2.pk">
                   {{ d2.name }}
                 </option>
               </CFormSelect>
@@ -95,7 +95,7 @@
                 :disabled="form.account_d2 === ''"
               >
                 <option value="">---------</option>
-                <option v-for="d3 in formAccD3List" :value="d3.pk" :key="d3.pk">
+                <option v-for="d3 in formAccD3List" :key="d3.pk" :value="d3.pk">
                   {{ d3.name }}
                 </option>
               </CFormSelect>
@@ -145,7 +145,7 @@
                 :disabled="form.sort === ''"
               >
                 <option value="">---------</option>
-                <option v-for="ba in comBankList" :value="ba.pk" :key="ba.pk">
+                <option v-for="ba in comBankList" :key="ba.pk" :value="ba.pk">
                   {{ ba.alias_name }}
                 </option>
               </CFormSelect>
@@ -180,7 +180,7 @@
                 :disabled="form.sort !== '3'"
               >
                 <option value="">---------</option>
-                <option v-for="ba in comBankList" :value="ba.pk" :key="ba.pk">
+                <option v-for="ba in comBankList" :key="ba.pk" :value="ba.pk">
                   {{ ba.alias_name }}
                 </option>
               </CFormSelect>

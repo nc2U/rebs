@@ -49,7 +49,6 @@ import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'PaymentsRegister',
-  mixins: [HeaderMixin],
   components: {
     ContentHeader,
     ContentBody,
@@ -57,6 +56,10 @@ export default defineComponent({
     AllPaymentList,
     CreateButton,
     OrdersBoard,
+  },
+  mixins: [HeaderMixin],
+  beforeRouteLeave(this: any) {
+    this.$store.state.contract.contract = null
   },
   data() {
     return {
@@ -75,9 +78,6 @@ export default defineComponent({
     this.fetchTypeList(this.initProjId)
     this.fetchPayOrderList(this.initProjId)
     this.fetchProBankAccList(this.initProjId)
-  },
-  beforeRouteLeave(this: any) {
-    this.$store.state.contract.contract = null
   },
   computed: {
     ...mapState('project', ['project']),

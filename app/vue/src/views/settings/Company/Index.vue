@@ -31,13 +31,13 @@ import { mapActions, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'CompanyInfo',
-  mixins: [HeaderMixin],
   components: {
     ContentHeader,
     ContentBody,
     CompanyForm,
     CompanyDetail,
   },
+  mixins: [HeaderMixin],
   data() {
     return {
       compName: 'CompanyDetail',

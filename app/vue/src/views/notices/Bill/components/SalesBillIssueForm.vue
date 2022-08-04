@@ -7,10 +7,10 @@
       </CCol>
       <CCol>
         <CFormSwitch
+          id="formSwitch"
           label="고지서 관련정보 설정"
           :model-value="visible"
           @click="visible = !visible"
-          id="formSwitch"
         />
       </CCol>
     </CRow>
@@ -50,7 +50,7 @@
             required
           >
             <option value="">--------</option>
-            <option v-for="po in payOrderList" :value="po.pk" :key="po.pk">
+            <option v-for="po in payOrderList" :key="po.pk" :value="po.pk">
               {{ po.__str__ }}
             </option>
           </CFormSelect>
@@ -88,10 +88,10 @@
         </CCol>
         <CCol sm="8" md="4" xl="2">
           <input
-            type="text"
-            class="form-control"
             v-model="form.host_tel"
             v-maska="['###-###-####', '###-####-####']"
+            type="text"
+            class="form-control"
             placeholder="시행자 전화"
             maxlength="13"
             required
@@ -114,10 +114,10 @@
         </CCol>
         <CCol sm="8" md="4" xl="2">
           <input
-            type="text"
-            class="form-control"
             v-model="form.agency_tel"
             v-maska="['###-###-####', '###-####-####']"
+            type="text"
+            class="form-control"
             placeholder="대행사 전화"
             maxlength="13"
           />
@@ -208,9 +208,9 @@
               우편번호
             </CInputGroupText>
             <CFormInput
-              type="text"
               v-model="form.zipcode"
               v-maska="'#####'"
+              type="text"
               placeholder="우편번호"
               maxlength="5"
               required
@@ -225,10 +225,10 @@
         <CCol sm="8" md="6" xl="4" class="mb-1">
           <CFormInput
             v-model="form.address1"
-            @click="$refs.postCode.initiate()"
             placeholder="메인 주소"
             maxlength="20"
             required
+            @click="$refs.postCode.initiate()"
           />
         </CCol>
 
@@ -236,8 +236,8 @@
 
         <CCol sm="8" md="5" xl="2" class="mb-1">
           <CFormInput
-            v-model="form.address2"
             ref="address2"
+            v-model="form.address2"
             placeholder="상세 주소"
             maxlngth="20"
             required
@@ -294,17 +294,17 @@
     </CCollapse>
   </CForm>
 
-  <DaumPostcode @addressPut="addressPut" ref="postCode" />
+  <DaumPostcode ref="postCode" @addressPut="addressPut" />
 
   <ConfirmModal ref="confirmModal">
-    <template v-slot:header>
+    <template #header>
       <CIcon name="cilChevronCircleRightAlt" />
       수납 고지서 발행 정보
     </template>
-    <template v-slot:default>
+    <template #default>
       수납 고지서 발행 정보 {{ confirmText }}을(를) 진행하시겠습니까?
     </template>
-    <template v-slot:footer>
+    <template #footer>
       <CButton :color="btnClass" @click="modalAction">저장</CButton>
     </template>
   </ConfirmModal>
@@ -325,8 +325,8 @@ import { mapGetters, mapState } from 'vuex'
 export default defineComponent({
   name: 'SalesBillIssueForm',
   components: { DatePicker, ConfirmModal, AlertModal, DaumPostcode },
-  mixins: [addressMixin],
   directives: { maska },
+  mixins: [addressMixin],
   props: {
     bill_issue: Object,
   },

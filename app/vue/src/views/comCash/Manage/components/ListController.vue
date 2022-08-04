@@ -6,17 +6,17 @@
           <CCol md="6" class="mb-3">
             <DatePicker
               v-model="from_date"
-              @keydown.enter="listFiltering(1)"
               v-maska="'####-##-##'"
               placeholder="시작일 (From)"
+              @keydown.enter="listFiltering(1)"
             />
           </CCol>
           <CCol md="6" class="mb-3">
             <DatePicker
               v-model="to_date"
-              @keydown.enter="listFiltering(1)"
               v-maska="'####-##-##'"
               placeholder="종료일 (To)"
+              @keydown.enter="listFiltering(1)"
             />
           </CCol>
         </CRow>
@@ -38,8 +38,8 @@
               <option value="">계정[대분류]</option>
               <option
                 v-for="acc1 in formAccD1List"
-                :value="acc1.pk"
                 :key="acc1.pk"
+                :value="acc1.pk"
               >
                 {{ acc1.name }}
               </option>
@@ -49,14 +49,14 @@
           <CCol md="6" lg="3" class="mb-3">
             <CFormSelect
               v-model="form.account_d2"
+              :disabled="!form.account_d1"
               @change="accountD2Select"
-              :disabled="!this.form.account_d1"
             >
               <option value="">계정[중분류]</option>
               <option
                 v-for="acc2 in formAccD2List"
-                :value="acc2.pk"
                 :key="acc2.pk"
+                :value="acc2.pk"
               >
                 {{ acc2.name }}
               </option>
@@ -66,14 +66,14 @@
           <CCol md="6" lg="3" class="mb-3">
             <CFormSelect
               v-model="form.account_d3"
+              :disabled="!form.account_d1"
               @change="listFiltering(1)"
-              :disabled="!this.form.account_d1"
             >
               <option value="">계정[소분류]</option>
               <option
                 v-for="acc3 in formAccD3List"
-                :value="acc3.pk"
                 :key="acc3.pk"
+                :value="acc3.pk"
               >
                 {{ acc3.name }}
               </option>
@@ -87,7 +87,7 @@
           <CCol md="6" lg="4" class="mb-3">
             <CFormSelect v-model="form.bank_account" @change="listFiltering(1)">
               <option value="">거래계좌</option>
-              <option v-for="acc in comBankList" :value="acc.pk" :key="acc.pk">
+              <option v-for="acc in comBankList" :key="acc.pk" :value="acc.pk">
                 {{ acc.alias_name }}
               </option>
             </CFormSelect>
@@ -97,10 +97,10 @@
             <CInputGroup class="flex-nowrap">
               <CFormInput
                 v-model="form.search"
-                @keydown.enter="listFiltering(1)"
                 placeholder="적요, 거래처 검색"
                 aria-label="Username"
                 aria-describedby="addon-wrapping"
+                @keydown.enter="listFiltering(1)"
               />
               <CInputGroupText @click="listFiltering(1)">검색</CInputGroupText>
             </CInputGroup>
@@ -115,8 +115,8 @@
           거래 건수 조회 결과 : {{ numFormat(cashBookCount) }} 건
         </strong>
       </CCol>
-      <CCol class="text-right mb-0" v-if="!formsCheck">
-        <CButton color="info" @click="resetForm" size="sm">
+      <CCol v-if="!formsCheck" class="text-right mb-0">
+        <CButton color="info" size="sm" @click="resetForm">
           검색조건 초기화
         </CButton>
       </CCol>

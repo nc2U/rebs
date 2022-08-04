@@ -20,14 +20,15 @@ import {
   isLastDayOfMonth,
   isToday,
   isStartDate,
-  isEndDate } from './util/calendar'
+  isEndDate,
+} from './util/calendar'
 import BaseComponent from './base-component'
 
 /**
-* ------------------------------------------------------------------------
-* Constants
-* ------------------------------------------------------------------------
-*/
+ * ------------------------------------------------------------------------
+ * Constants
+ * ------------------------------------------------------------------------
+ */
 
 const NAME = 'calendar'
 const DATA_KEY = 'coreui.calendar'
@@ -59,7 +60,7 @@ const Default = {
   range: true,
   startDate: null,
   selectEndDate: false,
-  weekdayFormat: 2
+  weekdayFormat: 2,
 }
 
 const DefaultType = {
@@ -74,14 +75,14 @@ const DefaultType = {
   range: 'boolean',
   startDate: '(date|string|null)',
   selectEndDate: 'boolean',
-  weekdayFormat: '(number|string)'
+  weekdayFormat: '(number|string)',
 }
 
 /**
-* ------------------------------------------------------------------------
-* Class Definition
-* ------------------------------------------------------------------------
-*/
+ * ------------------------------------------------------------------------
+ * Class Definition
+ * ------------------------------------------------------------------------
+ */
 
 class Calendar extends BaseComponent {
   constructor(element, config) {
@@ -114,47 +115,74 @@ class Calendar extends BaseComponent {
 
   // Private
   _addEventListeners() {
-    EventHandler.on(this._element, 'click', SELECTOR_CALENDAR_CELL_INNER, event => {
-      event.preventDefault()
-      if (event.target.classList.contains('day')) {
-        this._selectDate(Manipulator.getDataAttribute(event.target, 'date'))
-      }
+    EventHandler.on(
+      this._element,
+      'click',
+      SELECTOR_CALENDAR_CELL_INNER,
+      event => {
+        event.preventDefault()
+        if (event.target.classList.contains('day')) {
+          this._selectDate(Manipulator.getDataAttribute(event.target, 'date'))
+        }
 
-      if (event.target.classList.contains('month')) {
-        this._setCalendarDate(new Date(this._calendarDate.getFullYear(), Manipulator.getDataAttribute(event.target, 'month'), 1))
-        this._view = 'days'
-      }
+        if (event.target.classList.contains('month')) {
+          this._setCalendarDate(
+            new Date(
+              this._calendarDate.getFullYear(),
+              Manipulator.getDataAttribute(event.target, 'month'),
+              1,
+            ),
+          )
+          this._view = 'days'
+        }
 
-      if (event.target.classList.contains('year')) {
-        this._calendarDate = new Date(Manipulator.getDataAttribute(event.target, 'year'), this._calendarDate.getMonth(), 1)
-        this._view = 'months'
-      }
+        if (event.target.classList.contains('year')) {
+          this._calendarDate = new Date(
+            Manipulator.getDataAttribute(event.target, 'year'),
+            this._calendarDate.getMonth(),
+            1,
+          )
+          this._view = 'months'
+        }
 
-      this._updateCalendar()
-    })
+        this._updateCalendar()
+      },
+    )
 
-    EventHandler.on(this._element, EVENT_MOUSEENTER, SELECTOR_CALENDAR_CELL_INNER, event => {
-      event.preventDefault()
-      if (event.target.parentElement.classList.contains('disabled')) {
-        return
-      }
+    EventHandler.on(
+      this._element,
+      EVENT_MOUSEENTER,
+      SELECTOR_CALENDAR_CELL_INNER,
+      event => {
+        event.preventDefault()
+        if (event.target.parentElement.classList.contains('disabled')) {
+          return
+        }
 
-      this._hoverDate = new Date(Manipulator.getDataAttribute(event.target, 'date'))
+        this._hoverDate = new Date(
+          Manipulator.getDataAttribute(event.target, 'date'),
+        )
 
-      EventHandler.trigger(this._element, EVENT_CELL_HOVER, {
-        date: new Date(Manipulator.getDataAttribute(event.target, 'date'))
-      })
-    })
+        EventHandler.trigger(this._element, EVENT_CELL_HOVER, {
+          date: new Date(Manipulator.getDataAttribute(event.target, 'date')),
+        })
+      },
+    )
 
-    EventHandler.on(this._element, EVENT_MOUSELEAVE, SELECTOR_CALENDAR_CELL_INNER, event => {
-      event.preventDefault()
+    EventHandler.on(
+      this._element,
+      EVENT_MOUSELEAVE,
+      SELECTOR_CALENDAR_CELL_INNER,
+      event => {
+        event.preventDefault()
 
-      this._hoverDate = null
+        this._hoverDate = null
 
-      EventHandler.trigger(this._element, EVENT_CELL_HOVER, {
-        date: null
-      })
-    })
+        EventHandler.trigger(this._element, EVENT_CELL_HOVER, {
+          date: null,
+        })
+      },
+    )
 
     // Navigation
     EventHandler.on(this._element, 'click', '.btn-prev', event => {
@@ -196,7 +224,7 @@ class Calendar extends BaseComponent {
     this._calendarDate = date
 
     EventHandler.trigger(this._element, EVENT_CALENDAR_DATE_CHANGE, {
-      date
+      date,
     })
   }
 
@@ -217,7 +245,7 @@ class Calendar extends BaseComponent {
 
     if (this._view === 'days') {
       EventHandler.trigger(this._element, EVENT_CALENDAR_DATE_CHANGE, {
-        date: d
+        date: d,
       })
     }
 
@@ -228,7 +256,7 @@ class Calendar extends BaseComponent {
     this._endDate = new Date(date)
     EventHandler.trigger(this._element, EVENT_END_DATE_CHANGE, {
       date: this._endDate,
-      selectEndDate
+      selectEndDate,
     })
   }
 
@@ -236,12 +264,19 @@ class Calendar extends BaseComponent {
     this._startDate = new Date(date)
     EventHandler.trigger(this._element, EVENT_START_DATE_CHANGE, {
       date: this._startDate,
-      selectEndDate
+      selectEndDate,
     })
   }
 
   _selectDate(date) {
-    if (isDateDisabled(date, this._config.minDate, this._config.maxDate, this._config.disabledDates)) {
+    if (
+      isDateDisabled(
+        date,
+        this._config.minDate,
+        this._config.maxDate,
+        this._config.disabledDates,
+      )
+    ) {
       return
     }
 
@@ -265,7 +300,11 @@ class Calendar extends BaseComponent {
     let date = this._calendarDate
 
     if (addMonths !== 0) {
-      date = new Date(this._calendarDate.getFullYear(), this._calendarDate.getMonth() + addMonths, 1)
+      date = new Date(
+        this._calendarDate.getFullYear(),
+        this._calendarDate.getMonth() + addMonths,
+        1,
+      )
     }
 
     const year = date.getFullYear()
@@ -282,9 +321,13 @@ class Calendar extends BaseComponent {
         <button class="btn btn-transparent btn-sm btn-double-prev">
           <span class="calendar-nav-icon calendar-nav-icon-double-prev"></span>
         </button>
-        ${this._view === 'days' ? `<button class="btn btn-transparent btn-sm btn-prev">
+        ${
+          this._view === 'days'
+            ? `<button class="btn btn-transparent btn-sm btn-prev">
           <span class="calendar-nav-icon calendar-nav-icon-prev"></span>
-        </button>` : ''}
+        </button>`
+            : ''
+        }
       </div>
       <div class="calendar-nav-date">
         <button class="btn btn-transparent btn-sm btn-month">
@@ -295,66 +338,127 @@ class Calendar extends BaseComponent {
         </button>
       </div>
       <div class="calendar-nav-next">
-        ${this._view === 'days' ? `<button class="btn btn-transparent btn-sm btn-next">
+        ${
+          this._view === 'days'
+            ? `<button class="btn btn-transparent btn-sm btn-next">
           <span class="calendar-nav-icon calendar-nav-icon-next"></span>
-        </button>` : ''}
+        </button>`
+            : ''
+        }
         <button class="btn btn-transparent btn-sm btn-double-next">
           <span class="calendar-nav-icon calendar-nav-icon-double-next"></span>
         </button>
       </div>
     `
 
-    const monthDetails = getMonthDetails(year, month, this._config.firstDayOfWeek)
-    const listOfMonths = createGroupsInArray(getMonthsNames(this._config.locale), 4)
+    const monthDetails = getMonthDetails(
+      year,
+      month,
+      this._config.firstDayOfWeek,
+    )
+    const listOfMonths = createGroupsInArray(
+      getMonthsNames(this._config.locale),
+      4,
+    )
     const listOfYears = createGroupsInArray(getYears(date.getFullYear()), 4)
     const weekDays = monthDetails[0]
 
     const calendarTable = document.createElement('table')
     calendarTable.innerHTML = `
-    ${this._view === 'days' ? `
+    ${
+      this._view === 'days'
+        ? `
       <thead>
         <tr>
-          ${weekDays.map(({ date }) => (
-            `<th class="calendar-cell">
+          ${weekDays
+            .map(
+              ({ date }) =>
+                `<th class="calendar-cell">
               <div class="calendar-header-cell-inner">
-              ${typeof this._config.weekdayFormat === 'string' ?
-              date.toLocaleDateString(this._config.locale, { weekday: this._config.weekdayFormat }) :
-              date
-                  .toLocaleDateString(this._config.locale, { weekday: 'long' })
-                  .slice(0, this._config.weekdayFormat)}
+              ${
+                typeof this._config.weekdayFormat === 'string'
+                  ? date.toLocaleDateString(this._config.locale, {
+                      weekday: this._config.weekdayFormat,
+                    })
+                  : date
+                      .toLocaleDateString(this._config.locale, {
+                        weekday: 'long',
+                      })
+                      .slice(0, this._config.weekdayFormat)
+              }
               </div>
-            </th>`
-          )).join('')}
+            </th>`,
+            )
+            .join('')}
         </tr>
-      </thead>` : ''}
+      </thead>`
+        : ''
+    }
       <tbody>
-        ${this._view === 'days' ? monthDetails.map(week => (
-          `<tr>${week.map(({ date, month }) => (
-            `<td class="calendar-cell ${this._dayClassNames(date, month)}">
+        ${
+          this._view === 'days'
+            ? monthDetails
+                .map(
+                  week =>
+                    `<tr>${week
+                      .map(
+                        ({ date, month }) =>
+                          `<td class="calendar-cell ${this._dayClassNames(
+                            date,
+                            month,
+                          )}">
               <div class="calendar-cell-inner day" data-coreui-date="${date}">
-                ${date.toLocaleDateString(this._config.locale, { day: 'numeric' })}
+                ${date.toLocaleDateString(this._config.locale, {
+                  day: 'numeric',
+                })}
               </div>
-            </td>`
-          )).join('')}</tr>`
-        )).join('') : ''}
-        ${this._view === 'months' ? listOfMonths.map((row, index) => (
-          `<tr>${row.map((month, idx) => (
-            `<td class="calendar-cell">
-              <div class="calendar-cell-inner month" data-coreui-month="${(index * 3) + idx - addMonths}">
+            </td>`,
+                      )
+                      .join('')}</tr>`,
+                )
+                .join('')
+            : ''
+        }
+        ${
+          this._view === 'months'
+            ? listOfMonths
+                .map(
+                  (row, index) =>
+                    `<tr>${row
+                      .map(
+                        (month, idx) =>
+                          `<td class="calendar-cell">
+              <div class="calendar-cell-inner month" data-coreui-month="${
+                index * 3 + idx - addMonths
+              }">
                 ${month}
               </div>
-            </td>`
-          )).join('')}</tr>`
-        )).join('') : ''}
-        ${this._view === 'years' ? listOfYears.map(row => (
-          `<tr>${row.map(year => (
-            `<td class="calendar-cell">
+            </td>`,
+                      )
+                      .join('')}</tr>`,
+                )
+                .join('')
+            : ''
+        }
+        ${
+          this._view === 'years'
+            ? listOfYears
+                .map(
+                  row =>
+                    `<tr>${row
+                      .map(
+                        year =>
+                          `<td class="calendar-cell">
               <div class="calendar-cell-inner year" data-coreui-year="${year}">
                 ${year}
               </div>
-            </td>`
-          )).join('')}</tr>`
-        )).join('') : ''}
+            </td>`,
+                      )
+                      .join('')}</tr>`,
+                )
+                .join('')
+            : ''
+        }
       </tbody>
     `
     calendarPanelEl.append(navigationElement, calendarTable)
@@ -366,11 +470,11 @@ class Calendar extends BaseComponent {
     const calendarsEl = document.createElement('div')
     calendarsEl.classList.add('calendars')
     // eslint-disable-next-line no-unused-vars
-    for (const [index, _] of Array.from({ length: this._config.calendars }).entries()) {
-(
+    for (const [index, _] of Array.from({
+      length: this._config.calendars,
+    }).entries()) {
       calendarsEl.append(this._createCalendarPanel(index))
-    )
-}
+    }
 
     this._element.classList.add(CLASS_NAME_CALENDAR)
     this._element.append(calendarsEl)
@@ -384,16 +488,25 @@ class Calendar extends BaseComponent {
   _dayClassNames(date, month) {
     const classNames = {
       today: isToday(date),
-      disabled: isDateDisabled(date, this._config.minDate, this._config.maxDate, this._config.disabledDates),
+      disabled: isDateDisabled(
+        date,
+        this._config.minDate,
+        this._config.maxDate,
+        this._config.disabledDates,
+      ),
       [month]: true,
       last: isLastDayOfMonth(date),
-      range: month === 'current' && isDateInRange(date, this._startDate, this._endDate),
-      'range-hover': month === 'current' && (this._hoverDate && this._selectEndDate ?
-        isDateInRange(date, this._startDate, this._hoverDate) :
-        isDateInRange(date, this._hoverDate, this._endDate)),
+      range:
+        month === 'current' &&
+        isDateInRange(date, this._startDate, this._endDate),
+      'range-hover':
+        month === 'current' &&
+        (this._hoverDate && this._selectEndDate
+          ? isDateInRange(date, this._startDate, this._hoverDate)
+          : isDateInRange(date, this._hoverDate, this._endDate)),
       selected: isDateSelected(date, this._startDate, this._endDate),
       start: isStartDate(date, this._startDate, this._endDate),
-      end: isEndDate(date, this._startDate, this._endDate)
+      end: isEndDate(date, this._startDate, this._endDate),
     }
 
     // eslint-disable-next-line unicorn/no-array-reduce
@@ -410,7 +523,7 @@ class Calendar extends BaseComponent {
     config = {
       ...this.constructor.Default,
       ...Manipulator.getDataAttributes(this._element),
-      ...config
+      ...config,
     }
 
     return config
@@ -438,7 +551,11 @@ class Calendar extends BaseComponent {
         return
       }
 
-      if (data[config] === undefined || config.startsWith('_') || config === 'constructor') {
+      if (
+        data[config] === undefined ||
+        config.startsWith('_') ||
+        config === 'constructor'
+      ) {
         throw new TypeError(`No method named "${config}"`)
       }
 
@@ -448,23 +565,25 @@ class Calendar extends BaseComponent {
 }
 
 /**
-* ------------------------------------------------------------------------
-* Data Api implementation
-* ------------------------------------------------------------------------
-*/
+ * ------------------------------------------------------------------------
+ * Data Api implementation
+ * ------------------------------------------------------------------------
+ */
 
 EventHandler.on(window, EVENT_LOAD_DATA_API, () => {
-  for (const element of Array.from(document.querySelectorAll(SELECTOR_CALENDAR))) {
+  for (const element of Array.from(
+    document.querySelectorAll(SELECTOR_CALENDAR),
+  )) {
     Calendar.calendarInterface(element)
   }
 })
 
 /**
-* ------------------------------------------------------------------------
-* jQuery
-* ------------------------------------------------------------------------
-* add .Calendar to jQuery only if jQuery is present
-*/
+ * ------------------------------------------------------------------------
+ * jQuery
+ * ------------------------------------------------------------------------
+ * add .Calendar to jQuery only if jQuery is present
+ */
 
 defineJQueryPlugin(Calendar)
 

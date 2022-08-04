@@ -9,7 +9,7 @@
       <CCol md="2" class="mb-2">
         <CFormSelect v-model="form.order_group" :disabled="disabled" required>
           <option value="">차수선택</option>
-          <option v-for="order in orders" :value="order.pk" :key="order.pk">
+          <option v-for="order in orders" :key="order.pk" :value="order.pk">
             {{ order.order_group_name }}
           </option>
         </CFormSelect>
@@ -18,7 +18,7 @@
       <CCol md="2" class="mb-2">
         <CFormSelect v-model="form.unit_type" :disabled="disabled" required>
           <option value="">타입선택</option>
-          <option v-for="type in types" :value="type.pk" :key="type.pk">
+          <option v-for="type in types" :key="type.pk" :value="type.pk">
             {{ type.name }}
           </option>
         </CFormSelect>
@@ -57,14 +57,14 @@
   </CForm>
 
   <ConfirmModal ref="confirmModal">
-    <template v-slot:header>
+    <template #header>
       <CIcon name="cil-info" />
       타입별 계약금
     </template>
-    <template v-slot:default>
+    <template #default>
       프로젝트의 타입별 계약금 정보 등록을 진행하시겠습니까?
     </template>
-    <template v-slot:footer>
+    <template #footer>
       <CButton color="primary" @click="modalAction">저장</CButton>
     </template>
   </ConfirmModal>
@@ -83,6 +83,7 @@ export default defineComponent({
   name: 'DownPayAddForm',
   directives: { maska },
   components: { ConfirmModal, AlertModal },
+  props: { disabled: Boolean, orders: Array, types: Array },
   data() {
     return {
       form: {
@@ -94,7 +95,6 @@ export default defineComponent({
       validated: false,
     }
   },
-  props: { disabled: Boolean, orders: Array, types: Array },
   computed: {
     ...mapGetters('accounts', ['staffAuth', 'superAuth']),
   },

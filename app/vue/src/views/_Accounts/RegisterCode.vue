@@ -22,8 +22,8 @@
               <CForm
                 class="needs-validation"
                 :validated="validated"
-                @submit.prevent="onSubmit"
                 novalidate
+                @submit.prevent="onSubmit"
               >
                 <CRow class="mb-2">
                   <CCol>
@@ -65,12 +65,12 @@
       </CRow>
 
       <AlertModal ref="alertModal">
-        <template v-slot:header>계정 생성코드 오류</template>
-        <template v-slot:default>
+        <template #header>계정 생성코드 오류</template>
+        <template #default>
           계정 생성코드가 맞지 않습니다. 계정 생성코드를 확인 후 다시 시도하여
           주십시요.
         </template>
-        <template v-slot:footer>
+        <template #footer>
           <CButton color="primary" @click="$router.back()"> 뒤로 가기</CButton>
         </template>
       </AlertModal>

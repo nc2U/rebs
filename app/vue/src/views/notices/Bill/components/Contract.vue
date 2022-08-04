@@ -6,12 +6,12 @@
   >
     <CTableDataCell>
       <CFormCheck
-        v-model="checked"
         :id="'check_' + contract.ctor_pk"
+        v-model="checked"
         :value="contract.ctor_pk"
-        @change="ctorChk(contract.ctor_pk)"
         :disabled="paidCompleted"
         label="선택"
+        @change="ctorChk(contract.ctor_pk)"
       />
     </CTableDataCell>
     <CTableDataCell>{{ contract.order_group.order_group_name }}</CTableDataCell>
@@ -124,9 +124,6 @@ export default defineComponent({
     ...mapState('payment', ['payOrderList']),
     ...mapState('contract', ['salesPriceList', 'downPaymentList']),
   },
-  mounted() {
-    this.orderList = this.payOrderList
-  },
   watch: {
     allChecked(val) {
       if (!this.paidCompleted) {
@@ -137,6 +134,9 @@ export default defineComponent({
     page(n, o) {
       if (n !== o) this.checked = false
     },
+  },
+  mounted() {
+    this.orderList = this.payOrderList
   },
   methods: {
     ctorChk(ctorPk: string) {

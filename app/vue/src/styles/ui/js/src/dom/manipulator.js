@@ -55,11 +55,14 @@ const Manipulator = {
     }
 
     const attributes = {}
-    const coreuiKeys = Object.keys(element.dataset).filter(key => key.startsWith('coreui') && !key.startsWith('coreuiConfig'))
+    const coreuiKeys = Object.keys(element.dataset).filter(
+      key => key.startsWith('coreui') && !key.startsWith('coreuiConfig'),
+    )
 
     for (const key of coreuiKeys) {
       let pureKey = key.replace(/^coreui/, '')
-      pureKey = pureKey.charAt(0).toLowerCase() + pureKey.slice(1, pureKey.length)
+      pureKey =
+        pureKey.charAt(0).toLowerCase() + pureKey.slice(1, pureKey.length)
       attributes[pureKey] = normalizeData(element.dataset[key])
     }
 
@@ -67,8 +70,10 @@ const Manipulator = {
   },
 
   getDataAttribute(element, key) {
-    return normalizeData(element.getAttribute(`data-coreui-${normalizeDataKey(key)}`))
-  }
+    return normalizeData(
+      element.getAttribute(`data-coreui-${normalizeDataKey(key)}`),
+    )
+  },
 }
 
 export default Manipulator

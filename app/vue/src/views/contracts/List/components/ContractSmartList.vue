@@ -1,24 +1,24 @@
 <template>
   <CSmartTable
-    clickableRows
-    :tableProps="{
+    clickable-rows
+    :table-props="{
       striped: false,
       hover: true,
     }"
-    :tableHeadProps="{
+    :table-head-props="{
       color: 'dark',
     }"
-    :activePage="1"
+    :active-page="1"
     clickable-rows
     :items="contractIndex"
     :columns="columns"
-    columnFilter
-    tableFilter
+    column-filter
+    table-filter
     cleaner
-    itemsPerPageSelect
-    :itemsPerPage="10"
+    items-per-page-select
+    :items-per-page="10"
     items-per-page-label="페이지당 표시 건수"
-    columnSorter
+    column-sorter
     pagination
   >
     <template #serial_number="{ item }">

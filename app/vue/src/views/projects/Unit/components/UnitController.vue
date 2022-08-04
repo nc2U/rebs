@@ -9,8 +9,8 @@
           <CCol sm="8">
             <CFormSelect
               v-model="form.building"
-              @change="bldgSelect"
               :disabled="!project"
+              @change="bldgSelect"
             >
               <option value>---------</option>
               <option
@@ -50,14 +50,14 @@
           <CCol sm="8">
             <CFormSelect
               v-model="form.type"
-              @change="typeSelect"
               :disabled="form.line == ''"
+              @change="typeSelect"
             >
               <option value>---------</option>
               <option
                 v-for="type in unitTypeList"
-                :value="type.pk"
                 :key="type.pk"
+                :value="type.pk"
               >
                 {{ type.name }}
               </option>
@@ -88,9 +88,9 @@
               v-model.number="form.maxFloor"
               type="number"
               min="0"
-              @keydown.enter="unitRegister"
               placeholder="입력 범위 종료층"
               :disabled="form.minFloor == ''"
+              @keydown.enter="unitRegister"
             />
           </CCol>
         </CRow>
@@ -98,7 +98,7 @@
     </CRow>
   </CCallout>
 
-  <CAlert color="danger" v-if="warning">
+  <CAlert v-if="warning" color="danger">
     <CIcon name="cilWarning" />
     <strong> 주의</strong> : 해당 라인에서 시작층부터 종료층까지 범위의
     호수(유니트)가 일괄등록됩니다. 해당 동, 타입과 층을 다시 한번 확인하고
@@ -108,19 +108,19 @@
   <CAlert color="secondary" class="text-right">
     <CButton
       color="primary"
-      @click="unitRegister"
       :disabled="form.minFloor === ''"
+      @click="unitRegister"
     >
       호수(유니트) 일괄등록
     </CButton>
   </CAlert>
 
   <ConfirmModal ref="confirmModal">
-    <template v-slot:header>
+    <template #header>
       <CIcon name="cilItalic" />
       호수(유니트) 정보
     </template>
-    <template v-slot:default>
+    <template #default>
       <p class="text-primary">
         <strong>
           [{{ bldgName }}동] ({{ form.type }} 타입) {{ form.line }}호 라인,
@@ -129,7 +129,7 @@
       </p>
       <p>상기 호수(유니트)정보의 일괄등록을 진행하시겠습니까?</p>
     </template>
-    <template v-slot:footer>
+    <template #footer>
       <CButton color="primary" @click="modalAction">일괄등록</CButton>
     </template>
   </ConfirmModal>

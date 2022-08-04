@@ -31,14 +31,14 @@ const Default = {
   disabledOnLoading: false,
   spinner: true,
   spinnerType: 'border',
-  timeout: false
+  timeout: false,
 }
 
 const DefaultType = {
   disabledOnLoading: 'boolean',
   spinner: 'boolean',
   spinnerType: 'string',
-  timeout: '(boolean|number)'
+  timeout: '(boolean|number)',
 }
 
 /**
@@ -133,7 +133,7 @@ class LoadingButton extends BaseComponent {
     config = {
       ...Default,
       ...Manipulator.getDataAttributes(this._element),
-      ...(typeof config === 'object' ? config : {})
+      ...(typeof config === 'object' ? config : {}),
     }
 
     return config
@@ -143,7 +143,11 @@ class LoadingButton extends BaseComponent {
     if (this._config.spinner) {
       const spinner = document.createElement('span')
       const type = this._config.spinnerType
-      spinner.classList.add(CLASS_NAME_LOADING_BUTTON_SPINNER, `spinner-${type}`, `spinner-${type}-sm`)
+      spinner.classList.add(
+        CLASS_NAME_LOADING_BUTTON_SPINNER,
+        `spinner-${type}`,
+        `spinner-${type}-sm`,
+      )
       spinner.setAttribute('role', 'status')
       spinner.setAttribute('aria-hidden', 'true')
       this._element.insertBefore(spinner, this._element.firstChild)

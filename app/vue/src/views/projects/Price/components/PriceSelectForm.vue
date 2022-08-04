@@ -10,8 +10,8 @@
             <CFormSelect
               id="sel1"
               v-model="order"
-              @change="onOrderSelect"
               :disabled="orderDisabled"
+              @change="onOrderSelect"
             >
               <option value="">---------</option>
               <option v-for="order in orders" :key="order.pk" :value="order.pk">
@@ -31,8 +31,8 @@
             <CFormSelect
               id="sel2"
               v-model="type"
-              @change="onTypeSelect"
               :disabled="order == ''"
+              @change="onTypeSelect"
             >
               <option value="">---------</option>
               <option v-for="type in types" :key="type.pk" :value="type.pk">
@@ -52,6 +52,7 @@ import { defineComponent } from 'vue'
 export default defineComponent({
   name: 'PriceSelectForm',
   components: {},
+  props: ['orders', 'types'],
 
   data() {
     return {
@@ -60,7 +61,6 @@ export default defineComponent({
       orderDisabled: false,
     }
   },
-  props: ['orders', 'types'],
   methods: {
     onOrderSelect(e: any) {
       this.type = ''

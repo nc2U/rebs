@@ -9,9 +9,9 @@
     <CCardBody class="pb-5">
       <PayOrderAddForm :disabled="!project" @on-submit="onSubmit" />
       <PayOrderFormList
+        :project="project"
         @on-update="onUpdatePayOrder"
         @on-delete="onDeletePayOrder"
-        :project="project"
       />
     </CCardBody>
 
@@ -30,13 +30,13 @@ import { mapActions, mapGetters, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'ProjectsPayOrderSet',
-  mixins: [HeaderMixin],
   components: {
     ContentHeader,
     ContentBody,
     PayOrderAddForm,
     PayOrderFormList,
   },
+  mixins: [HeaderMixin],
   created() {
     this.fetchPayOrderList(this.initProjId)
   },

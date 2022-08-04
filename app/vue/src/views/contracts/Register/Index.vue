@@ -27,11 +27,14 @@ import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'ContractRegister',
-  mixins: [HeaderMixin],
   components: {
     ContentHeader,
     ContentBody,
     ContractForm,
+  },
+  mixins: [HeaderMixin],
+  beforeRouteLeave() {
+    this.FETCH_CONTRACT(null)
   },
   created(this: any) {
     this.fetchOrderGroupList(this.initProjId)
@@ -46,9 +49,6 @@ export default defineComponent({
     if (this.$route.query.contract) {
       this.getContract(this.$route.query.contract)
     }
-  },
-  beforeRouteLeave() {
-    this.FETCH_CONTRACT(null)
   },
   computed: {
     unitSet() {

@@ -48,8 +48,8 @@
       </ul>
 
       <button
-        class="clear-completed"
         v-show="todos.length > remaining"
+        class="clear-completed"
         @click="clearCompleted"
       >
         Clear completed
@@ -58,10 +58,10 @@
   </section>
 
   <footer class="info text-center" style="color: #ccc; font-size: 0.875rem">
-    <p class="aa" v-if="todos.length">
+    <p v-if="todos.length" class="aa">
       할 일 목록을 수정하려면 더블클릭 하세요.
     </p>
-    <p class="aa" v-else>첫 번째 할 일 목록을 메모해 보세요.</p>
+    <p v-else class="aa">첫 번째 할 일 목록을 메모해 보세요.</p>
   </footer>
 </template>
 

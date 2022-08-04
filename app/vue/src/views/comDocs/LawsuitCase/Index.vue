@@ -25,11 +25,11 @@ import { mapState } from 'vuex'
 
 export default defineComponent({
   name: 'LawsuitCase',
-  mixins: [HeaderMixin],
   components: {
     ContentHeader,
     ContentBody,
   },
+  mixins: [HeaderMixin],
   computed: {
     ...mapState('settings', ['company']),
   },

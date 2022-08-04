@@ -46,15 +46,15 @@
               <CCol sm="8">
                 <CFormSelect
                   v-model="form.project_account_d1"
-                  @change="d1_change"
                   :required="!form.is_separate"
                   :disabled="form.sort === '' || form.is_separate"
+                  @change="d1_change"
                 >
                   <option value="">---------</option>
                   <option
                     v-for="d1 in formAccD1List"
-                    :value="d1.pk"
                     :key="d1.pk"
+                    :value="d1.pk"
                   >
                     {{ d1.name }}
                   </option>
@@ -76,8 +76,8 @@
                   <option value="">---------</option>
                   <option
                     v-for="d2 in formAccD2List"
-                    :value="d2.pk"
                     :key="d2.pk"
+                    :value="d2.pk"
                   >
                     {{ d2.name }}
                   </option>
@@ -135,8 +135,8 @@
                   <option value="">---------</option>
                   <option
                     v-for="ba in proBankAccountList"
-                    :value="ba.pk"
                     :key="ba.pk"
+                    :value="ba.pk"
                   >
                     {{ ba.alias_name }}
                   </option>
@@ -174,8 +174,8 @@
                   <option value="">---------</option>
                   <option
                     v-for="ba in proBankAccountList"
-                    :value="ba.pk"
                     :key="ba.pk"
+                    :value="ba.pk"
                   >
                     {{ ba.alias_name }}
                   </option>
@@ -247,7 +247,7 @@
 
       <div v-if="form.is_separate && proCash">
         <hr v-if="proCash.sepItems.length > 0" />
-        <CRow class="mb-3" v-if="proCash.sepItems.length > 0">
+        <CRow v-if="proCash.sepItems.length > 0" class="mb-3">
           <CCol>
             <strong>
               <CIcon name="cilDescription" class="mr-2" />
@@ -277,10 +277,10 @@
           </CCol>
           <CCol sm="2" class="text-right">
             <CButton
-              @click="sepUpdate(sep)"
               type="button"
               color="success"
               size="sm"
+              @click="sepUpdate(sep)"
             >
               수정
             </CButton>
@@ -299,14 +299,14 @@
                   <CCol sm="8">
                     <CFormSelect
                       v-model="sepItem.project_account_d1"
-                      @change="sepD1_change"
                       required
+                      @change="sepD1_change"
                     >
                       <option value="">---------</option>
                       <option
                         v-for="d1 in formAccD1List"
-                        :value="d1.pk"
                         :key="d1.pk"
+                        :value="d1.pk"
                       >
                         {{ d1.name }}
                       </option>
@@ -328,8 +328,8 @@
                       <option value="">---------</option>
                       <option
                         v-for="d2 in formAccD2List"
-                        :value="d2.pk"
                         :key="d2.pk"
+                        :value="d2.pk"
                       >
                         {{ d2.name }}
                       </option>
@@ -398,8 +398,8 @@
                       <option value="">---------</option>
                       <option
                         v-for="ba in proBankAccountList"
-                        :value="ba.pk"
                         :key="ba.pk"
+                        :value="ba.pk"
                       >
                         {{ ba.alias_name }}
                       </option>
@@ -514,15 +514,15 @@
   </CForm>
 
   <ConfirmModal ref="delModal">
-    <template v-slot:header>
+    <template #header>
       <CIcon name="cilWarning" />
       프로젝트 입출금 거래 정보 삭제
     </template>
-    <template v-slot:default>
+    <template #default>
       삭제한 데이터는 복구할 수 없습니다. 해당 입출금 거래 정보를
       삭제하시겠습니까?
     </template>
-    <template v-slot:footer>
+    <template #footer>
       <CButton color="danger" @click="deleteObject">삭제</CButton>
     </template>
   </ConfirmModal>

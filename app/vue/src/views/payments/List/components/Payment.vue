@@ -1,5 +1,5 @@
 <template>
-  <CTableRow class="text-center" v-if="payment" :color="rowClass">
+  <CTableRow v-if="payment" class="text-center" :color="rowClass">
     <CTableDataCell>{{ payment.deal_date }}</CTableDataCell>
     <CTableDataCell>{{ payment.order_group }}</CTableDataCell>
     <CTableDataCell class="text-left">
@@ -14,12 +14,12 @@
     </CTableDataCell>
     <CTableDataCell>{{ payment.serial_number }}</CTableDataCell>
     <CTableDataCell>
-      <router-link @click="toManage" to="">
+      <router-link to="" @click="toManage">
         {{ payment.contract ? payment.contractor : '계약정보 확인' }}
       </router-link>
     </CTableDataCell>
     <CTableDataCell class="text-right">
-      <router-link @click="toManage" to="">
+      <router-link to="" @click="toManage">
         {{ numFormat(payment.income) }}
       </router-link>
     </CTableDataCell>
@@ -39,18 +39,18 @@
     <CTableDataCell>{{ payment.bank_account }}</CTableDataCell>
     <CTableDataCell>{{ payment.trader }}</CTableDataCell>
     <CTableDataCell>
-      <CButton type="button" color="info" @click="toManage" size="sm">
+      <CButton type="button" color="info" size="sm" @click="toManage">
         확인
       </CButton>
     </CTableDataCell>
   </CTableRow>
 
-  <FormModal size="lg" ref="contMatchingModal">
-    <template v-slot:header>
+  <FormModal ref="contMatchingModal" size="lg">
+    <template #header>
       <CIcon name="cil-italic" />
       수납 건별 계약 건 매칭
     </template>
-    <template v-slot:default class="p-5">
+    <template #default class="p-5">
       <ContChoicer
         :payment="payment"
         @on-patch="onPatch"
@@ -68,8 +68,8 @@ import ContChoicer from '@/views/payments/List/components/ContChoicer.vue'
 
 export default defineComponent({
   name: 'Payment',
-  mixins: [commonMixin],
   components: { FormModal, ContChoicer },
+  mixins: [commonMixin],
   props: {
     payment: {
       type: Object,

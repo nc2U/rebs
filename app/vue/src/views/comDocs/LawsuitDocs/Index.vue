@@ -24,12 +24,12 @@ import ContentBody from '@/layouts/ContentBody/Index.vue'
 import { mapState } from 'vuex'
 
 export default defineComponent({
-  name: 'lawsuitDocs',
-  mixins: [HeaderMixin],
+  name: 'LawsuitDocs',
   components: {
     ContentHeader,
     ContentBody,
   },
+  mixins: [HeaderMixin],
   computed: {
     ...mapState('settings', ['company']),
   },

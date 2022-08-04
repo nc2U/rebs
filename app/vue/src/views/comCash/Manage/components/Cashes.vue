@@ -27,35 +27,35 @@
     </CTableDataCell>
     <CTableDataCell>{{ cash.evidence_desc }}</CTableDataCell>
     <CTableDataCell>
-      <CButton color="info" @click="showDetail" size="sm">확인</CButton>
+      <CButton color="info" size="sm" @click="showDetail">확인</CButton>
     </CTableDataCell>
   </CTableRow>
 
-  <FormModal size="lg" ref="updateFormModal">
-    <template v-slot:header>
+  <FormModal ref="updateFormModal" size="lg">
+    <template #header>
       <CIcon name="cil-italic" />
       입출금 거래 건별 수정
     </template>
-    <template v-slot:default>
+    <template #default>
       <CashForm
+        :cash="cash"
         @on-submit="updateConfirm"
         @on-delete="deleteConfirm"
         @close="$refs.updateFormModal.visible = false"
-        :cash="cash"
       />
     </template>
   </FormModal>
 
   <ConfirmModal ref="delModal">
-    <template v-slot:header>
+    <template #header>
       <CIcon name="cilWarning" />
       입출금 거래 정보 삭제
     </template>
-    <template v-slot:default>
+    <template #default>
       삭제한 데이터는 복구할 수 없습니다. 해당 입출금 거래 정보를
       삭제하시겠습니까?
     </template>
-    <template v-slot:footer>
+    <template #footer>
       <CButton color="danger" @click="deleteObject">삭제</CButton>
     </template>
   </ConfirmModal>

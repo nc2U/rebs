@@ -11,10 +11,10 @@ import BaseComponent from './base-component'
 import Dropdown from './dropdown'
 
 /**
-* ------------------------------------------------------------------------
-* Constants
-* ------------------------------------------------------------------------
-*/
+ * ------------------------------------------------------------------------
+ * Constants
+ * ------------------------------------------------------------------------
+ */
 
 const NAME = 'picker'
 const DATA_KEY = 'coreui.picker'
@@ -29,7 +29,7 @@ const Default = {
   confirmButtonClasses: ['btn', 'btn-sm', 'btn-primary'],
   container: 'dropdown',
   disabled: false,
-  footer: false
+  footer: false,
 }
 
 const DefaultType = {
@@ -39,14 +39,14 @@ const DefaultType = {
   confirmButtonClasses: '(array|string)',
   container: 'string',
   disabled: 'boolean',
-  footer: 'boolean'
+  footer: 'boolean',
 }
 
 /**
-* ------------------------------------------------------------------------
-* Class Definition
-* ------------------------------------------------------------------------
-*/
+ * ------------------------------------------------------------------------
+ * Class Definition
+ * ------------------------------------------------------------------------
+ */
 
 class Picker extends BaseComponent {
   constructor(element, config) {
@@ -106,7 +106,7 @@ class Picker extends BaseComponent {
     this._element.append(dropdownEl)
 
     this._dropdown = new Dropdown(dropdownToggleEl, {
-      autoClose: 'outside'
+      autoClose: 'outside',
     })
   }
 
@@ -118,7 +118,9 @@ class Picker extends BaseComponent {
 
     if (this._config.cancelButton) {
       const cancelButtonEl = document.createElement('button')
-      cancelButtonEl.classList.add(...this._getButtonClasses(this._config.cancelButtonClasses))
+      cancelButtonEl.classList.add(
+        ...this._getButtonClasses(this._config.cancelButtonClasses),
+      )
       cancelButtonEl.type = 'button'
       cancelButtonEl.innerHTML = this._config.cancelButton
       cancelButtonEl.addEventListener('click', () => {
@@ -131,7 +133,9 @@ class Picker extends BaseComponent {
 
     if (this._config.confirmButton) {
       const confirmButtonEl = document.createElement('button')
-      confirmButtonEl.classList.add(...this._getButtonClasses(this._config.confirmButtonClasses))
+      confirmButtonEl.classList.add(
+        ...this._getButtonClasses(this._config.confirmButtonClasses),
+      )
       confirmButtonEl.type = 'button'
       confirmButtonEl.innerHTML = this._config.confirmButton
       confirmButtonEl.addEventListener('click', () => {
@@ -162,7 +166,7 @@ class Picker extends BaseComponent {
     config = {
       ...this.constructor.Default,
       ...Manipulator.getDataAttributes(this._element),
-      ...(typeof config === 'object' ? config : {})
+      ...(typeof config === 'object' ? config : {}),
     }
 
     return config

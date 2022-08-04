@@ -13,7 +13,7 @@
       </CInputGroupText>
       <CFormInput
         v-model="email"
-        autoComplete="username email"
+        auto-complete="username email"
         placeholder="이메일주소를 입력해주세요"
         required
       />
@@ -24,9 +24,9 @@
         <CIcon icon="cil-lock-locked" />
       </CInputGroupText>
       <CFormInput
-        type="password"
         v-model="password"
-        autoComplete="current-password"
+        type="password"
+        auto-complete="current-password"
         placeholder="비밀번호를 입력해주세요"
         required
       />

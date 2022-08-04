@@ -28,7 +28,7 @@
             <CCol sm="8">
               <CFormSelect v-model="form.installment_order" required>
                 <option value="">---------</option>
-                <option v-for="po in payOrderList" :value="po.pk" :key="po.pk">
+                <option v-for="po in payOrderList" :key="po.pk" :value="po.pk">
                   {{ po.__str__ }}
                 </option>
               </CFormSelect>
@@ -59,8 +59,8 @@
                 <option value="">---------</option>
                 <option
                   v-for="pb in proBankAccountList"
-                  :value="pb.pk"
                   :key="pb.pk"
+                  :value="pb.pk"
                 >
                   {{ pb.alias_name }}
                 </option>
@@ -124,14 +124,14 @@
   </CForm>
 
   <ConfirmModal ref="confirmModal">
-    <template v-slot:header>
+    <template #header>
       <CIcon name="cil-warning" />
       건별 수납 정보 - [삭제]
     </template>
-    <template v-slot:default>
+    <template #default>
       삭제 후 복구할 수 없습니다. 해당 건별 수납 정보 삭제를 진행하시겠습니까?
     </template>
-    <template v-slot:footer>
+    <template #footer>
       <CButton color="danger" @click="modalAction">삭제</CButton>
     </template>
   </ConfirmModal>

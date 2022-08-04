@@ -16,8 +16,8 @@
               <option value="">차수선택</option>
               <option
                 v-for="order in orderGroupList"
-                :value="order.pk"
                 :key="order.pk"
+                :value="order.pk"
               >
                 {{ order.order_group_name }}
               </option>
@@ -29,8 +29,8 @@
               <option value="">타입선택</option>
               <option
                 v-for="type in simpleTypes"
-                :value="type.pk"
                 :key="type.pk"
+                :value="type.pk"
               >
                 {{ type.name }}
               </option>
@@ -42,8 +42,8 @@
               <option value="">동 선택</option>
               <option
                 v-for="bldg in buildingList"
-                :value="bldg.pk"
                 :key="bldg.pk"
+                :value="bldg.pk"
               >
                 {{ bldg.name }}동
               </option>
@@ -81,18 +81,18 @@
           <CCol md="6" class="mb-3">
             <DatePicker
               v-model="from_date"
-              @keydown.enter="listFiltering(1)"
               v-maska="'####-##-##'"
               placeholder="계약일 (From)"
+              @keydown.enter="listFiltering(1)"
             />
           </CCol>
 
           <CCol md="6" class="mb-3">
             <DatePicker
               v-model="to_date"
-              @keydown.enter="listFiltering(1)"
               v-maska="'####-##-##'"
               placeholder="계약일 (To)"
+              @keydown.enter="listFiltering(1)"
             />
           </CCol>
         </CRow>
@@ -104,10 +104,10 @@
             <CInputGroup class="flex-nowrap">
               <CFormInput
                 v-model="form.search"
-                @keydown.enter="listFiltering(1)"
                 placeholder="계약자, 전화번호, 일련번호, 비고"
                 aria-label="Username"
                 aria-describedby="addon-wrapping"
+                @keydown.enter="listFiltering(1)"
               />
               <CInputGroupText @click="listFiltering(1)">검색</CInputGroupText>
             </CInputGroup>
@@ -119,8 +119,8 @@
       <CCol color="warning" class="p-2 pl-3">
         <strong>계약 건수 조회 결과 : {{ contractsCount }} 건</strong>
       </CCol>
-      <CCol class="text-right mb-0" v-if="!formsCheck">
-        <CButton color="info" @click="resetForm" size="sm">
+      <CCol v-if="!formsCheck" class="text-right mb-0">
+        <CButton color="info" size="sm" @click="resetForm">
           검색조건 초기화
         </CButton>
       </CCol>

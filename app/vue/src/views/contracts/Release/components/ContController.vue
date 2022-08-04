@@ -8,9 +8,9 @@
               <CFormInput
                 v-model="search"
                 placeholder="계약자, 비고, 계약 일련번호"
-                @keydown.enter="searchContractor"
                 aria-label="Search"
                 aria-describedby="addon-wrapping"
+                @keydown.enter="searchContractor"
               />
               <CInputGroupText @click="searchContractor">
                 계약 건 찾기
@@ -18,20 +18,20 @@
             </CInputGroup>
           </CCol>
           <CCol
+            v-if="contractorList && contractorList.length > 0"
             color="warning"
             class="p-1 pl-3 mb-2"
-            v-if="contractorList && contractorList.length > 0"
           >
             <CButton
-              type="button"
-              color="dark"
               v-for="contractor in contractorList"
               :key="contractor.pk"
+              type="button"
+              color="dark"
+              variant="outline"
+              size="sm"
               @click="
                 setContractor(contractor.pk, contractor.contractorrelease)
               "
-              variant="outline"
-              size="sm"
             >
               {{ `${contractor.name}(${contractor.contract.serial_number})` }}
             </CButton>

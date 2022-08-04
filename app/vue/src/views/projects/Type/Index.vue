@@ -9,9 +9,9 @@
     <CCardBody class="pb-5">
       <TypeAddForm :disabled="!project" @on-submit="onSubmit" />
       <TypeFormList
+        :project="project"
         @on-update="onUpdateType"
         @on-delete="onDeleteType"
-        :project="project"
       />
     </CCardBody>
 
@@ -30,13 +30,13 @@ import { mapActions, mapGetters, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'ProjectsTypeSet',
-  mixins: [HeaderMixin],
   components: {
     ContentHeader,
     ContentBody,
     TypeAddForm,
     TypeFormList,
   },
+  mixins: [HeaderMixin],
   created() {
     this.fetchTypeList(this.initProjId)
   },

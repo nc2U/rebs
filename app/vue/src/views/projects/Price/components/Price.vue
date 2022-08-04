@@ -44,16 +44,16 @@
       <CButton
         :color="btnColor"
         size="sm"
-        @click="onStorePrice"
         :disabled="formsCheck"
+        @click="onStorePrice"
       >
         {{ btnTitle }}
       </CButton>
       <CButton
         color="danger"
         size="sm"
-        @click="deletePrice()"
         :disabled="disabled"
+        @click="deletePrice()"
       >
         삭제
       </CButton>
@@ -61,15 +61,15 @@
   </CTableRow>
 
   <ConfirmModal ref="confirmModal">
-    <template v-slot:header>
+    <template #header>
       <CIcon name="cil-warning" />
       공급가격 삭제
     </template>
-    <template v-slot:default>
+    <template #default>
       이 그룹에 종속 데이터가 있는 경우 해당 데이터를 모두 제거한 후 삭제가능
       합니다. 해당 공급가격을 삭제 하시겠습니까?
     </template>
-    <template v-slot:footer>
+    <template #footer>
       <CButton color="danger" @click="modalAction">삭제</CButton>
     </template>
   </ConfirmModal>
@@ -86,6 +86,7 @@ import { mapGetters, mapState } from 'vuex'
 export default defineComponent({
   name: 'Price',
   components: { ConfirmModal, AlertModal },
+  props: { floor: Object, condTexts: Object, queryIds: Object },
   data() {
     return {
       form: {
@@ -97,7 +98,6 @@ export default defineComponent({
       price: {},
     }
   },
-  props: { floor: Object, condTexts: Object, queryIds: Object },
   computed: {
     btnColor() {
       return this.price ? 'success' : 'primary'

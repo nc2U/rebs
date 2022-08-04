@@ -9,18 +9,18 @@
     <CCardBody class="pb-5">
       <PriceSelectForm
         ref="formSelect"
-        @on-order-select="orderSelect"
-        @on-type-select="typeSelect"
         :orders="orderGroupList"
         :types="unitTypeList"
+        @on-order-select="orderSelect"
+        @on-type-select="typeSelect"
       />
       <PriceFormList
-        @on-create="onCreatePrice"
-        @on-update="onUpdatePrice"
-        @on-delete="onDeletePrice"
         :msg="priceMessage"
         :cond-texts="condTexts"
         :query-ids="queryIds"
+        @on-create="onCreatePrice"
+        @on-update="onUpdatePrice"
+        @on-delete="onDeletePrice"
       />
     </CCardBody>
 
@@ -39,13 +39,13 @@ import { mapActions, mapGetters, mapState } from 'vuex'
 
 export default defineComponent({
   name: 'ProjectsPriceSet',
-  mixins: [HeaderMixin],
   components: {
     ContentHeader,
     ContentBody,
     PriceSelectForm,
     PriceFormList,
   },
+  mixins: [HeaderMixin],
   data() {
     return {
       order_group: '', // condTexts 함수에 인자로 사용

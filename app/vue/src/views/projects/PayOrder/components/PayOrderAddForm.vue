@@ -116,14 +116,14 @@
   </CForm>
 
   <ConfirmModal ref="confirmModal">
-    <template v-slot:header>
+    <template #header>
       <CIcon name="cil-info" />
       층별 타입 등록
     </template>
-    <template v-slot:default>
+    <template #default>
       프로젝트의 층별 범위 타입 정보 등록을 진행하시겠습니까?
     </template>
-    <template v-slot:footer>
+    <template #footer>
       <CButton color="primary" @click="modalAction">저장</CButton>
     </template>
   </ConfirmModal>
@@ -142,6 +142,7 @@ export default defineComponent({
   name: 'PayOrderAddForm',
   directives: { maska },
   components: { ConfirmModal, AlertModal },
+  props: { disabled: Boolean },
   data() {
     return {
       form: {
@@ -157,7 +158,6 @@ export default defineComponent({
       validated: false,
     }
   },
-  props: { disabled: Boolean },
   computed: {
     ...mapGetters('accounts', ['staffAuth', 'superAuth']),
   },

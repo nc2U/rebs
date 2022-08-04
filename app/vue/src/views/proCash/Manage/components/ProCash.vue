@@ -1,8 +1,8 @@
 <template>
   <CTableRow
+    v-if="proCash"
     class="text-center"
     :color="rowColor"
-    v-if="proCash"
     :style="proCash.is_separate ? 'font-weight: bold;' : ''"
   >
     <CTableDataCell>{{ proCash.deal_date }}</CTableDataCell>
@@ -32,21 +32,21 @@
     </CTableDataCell>
     <CTableDataCell>{{ proCash.evidence_desc }}</CTableDataCell>
     <CTableDataCell>
-      <CButton color="info" @click="showDetail" size="sm">확인</CButton>
+      <CButton color="info" size="sm" @click="showDetail">확인</CButton>
     </CTableDataCell>
   </CTableRow>
 
-  <FormModal size="lg" ref="updateFormModal">
-    <template v-slot:header>
+  <FormModal ref="updateFormModal" size="lg">
+    <template #header>
       <CIcon name="cil-italic" />
       프로젝트 입출금 거래 건별 관리
     </template>
-    <template v-slot:default>
+    <template #default>
       <ProCashForm
+        :pro-cash="proCash"
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
         @close="$refs.updateFormModal.visible = false"
-        :pro-cash="proCash"
       />
     </template>
   </FormModal>
@@ -60,8 +60,8 @@ import ProCashForm from '@/views/proCash/Manage/components/ProCashForm.vue'
 
 export default defineComponent({
   name: 'ProCash',
-  mixins: [commonMixin],
   components: { FormModal, ProCashForm },
+  mixins: [commonMixin],
   props: {
     proCash: {
       type: Object,

@@ -1,8 +1,8 @@
 <template>
   <CTableRow
+    v-if="imprest"
     class="text-center"
     :color="rowColor"
-    v-if="imprest"
     :style="imprest.is_separate ? 'font-weight: bold;' : ''"
   >
     <CTableDataCell>{{ imprest.deal_date }}</CTableDataCell>
@@ -32,21 +32,21 @@
     </CTableDataCell>
     <CTableDataCell>{{ imprest.evidence_desc }}</CTableDataCell>
     <CTableDataCell>
-      <CButton color="info" @click="showDetail" size="sm">확인</CButton>
+      <CButton color="info" size="sm" @click="showDetail">확인</CButton>
     </CTableDataCell>
   </CTableRow>
 
-  <FormModal size="lg" ref="updateFormModal">
-    <template v-slot:header>
+  <FormModal ref="updateFormModal" size="lg">
+    <template #header>
       <CIcon name="cil-italic" />
       운영비(전도금) 거래 건별 관리
     </template>
-    <template v-slot:default>
+    <template #default>
       <ProImprestForm
+        :imprest="imprest"
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
         @close="$refs.updateFormModal.visible = false"
-        :imprest="imprest"
       />
     </template>
   </FormModal>
@@ -60,8 +60,8 @@ import ProImprestForm from '@/views/proCash/Imprest/components/ProImprestForm.vu
 
 export default defineComponent({
   name: 'ProImprest',
-  mixins: [commonMixin],
   components: { FormModal, ProImprestForm },
+  mixins: [commonMixin],
   props: {
     imprest: {
       type: Object,

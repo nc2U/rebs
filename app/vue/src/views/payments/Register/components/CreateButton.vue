@@ -3,19 +3,19 @@
     <CButton
       type="button"
       color="primary"
-      @click="showDetail"
       :disabled="btnActive"
+      @click="showDetail"
     >
       신규납부 등록
     </CButton>
   </CAlert>
 
-  <FormModal size="lg" ref="createFormModal">
-    <template v-slot:header>
+  <FormModal ref="createFormModal" size="lg">
+    <template #header>
       <CIcon name="cil-italic" />
       건별 수납 관리 [신규 납부등록]
     </template>
-    <template v-slot:default>
+    <template #default>
       <PaymentForm
         :contract="contract"
         @on-submit="createObject"

@@ -1,4 +1,3 @@
-
 /* eslint-disable indent */
 /**
  * --------------------------------------------------------------------------
@@ -19,15 +18,15 @@ import {
   getListOfMinutes,
   getListOfSeconds,
   isAmPm,
-  isValidTime
+  isValidTime,
 } from './util/time'
 import Picker from './picker'
 
 /**
-* ------------------------------------------------------------------------
-* Constants
-* ------------------------------------------------------------------------
-*/
+ * ------------------------------------------------------------------------
+ * Constants
+ * ------------------------------------------------------------------------
+ */
 
 const NAME = 'time-picker'
 const DATA_KEY = 'coreui.time-picker'
@@ -51,7 +50,7 @@ const Default = {
   placeholder: 'Select time',
   size: null,
   time: null,
-  variant: 'roll'
+  variant: 'roll',
 }
 
 const DefaultType = {
@@ -63,14 +62,14 @@ const DefaultType = {
   placeholder: 'string',
   size: '(string|null)',
   time: '(date|string|null)',
-  variant: 'string'
+  variant: 'string',
 }
 
 /**
-* ------------------------------------------------------------------------
-* Class Definition
-* ------------------------------------------------------------------------
-*/
+ * ------------------------------------------------------------------------
+ * Class Definition
+ * ------------------------------------------------------------------------
+ */
 
 class TimePicker extends Picker {
   constructor(element, config) {
@@ -79,7 +78,9 @@ class TimePicker extends Picker {
     this._config = this._getConfig(config)
     this._date = this._convertStringToDate(this._config.time)
     this._initialDate = null
-    this._ampm = this._date ? getAmPm(new Date(this._date), this._config.locale) : 'am'
+    this._ampm = this._date
+      ? getAmPm(new Date(this._date), this._config.locale)
+      : 'am'
 
     // subcomponents
     this._input = null
@@ -110,7 +111,11 @@ class TimePicker extends Picker {
 
   cancel() {
     this._date = this._initialDate
-    this._input.value = this._initialDate ? this._convertStringToDate(this._initialDate).toLocaleTimeString(this._config.locale) : ''
+    this._input.value = this._initialDate
+      ? this._convertStringToDate(this._initialDate).toLocaleTimeString(
+          this._config.locale,
+        )
+      : ''
     this._timePickerBody.innerHTML = ''
     this._createTimePickerSelection()
   }
@@ -124,7 +129,9 @@ class TimePicker extends Picker {
 
   reset() {
     this._date = this._convertStringToDate(this._config.time)
-    this._input.value = this._convertStringToDate(this._config.time).toLocaleTimeString(this._config.locale)
+    this._input.value = this._convertStringToDate(
+      this._config.time,
+    ).toLocaleTimeString(this._config.locale)
     this._timePickerBody.innerHTML = ''
     this._createTimePickerSelection()
   }
@@ -142,7 +149,9 @@ class TimePicker extends Picker {
     }
 
     if (part === 'hours') {
-      return isAmPm(this._config.locale) ? convert24hTo12h(this._date.getHours()) : this._date.getHours()
+      return isAmPm(this._config.locale)
+        ? convert24hTo12h(this._date.getHours())
+        : this._date.getHours()
     }
 
     if (part === 'minutes') {
@@ -160,8 +169,14 @@ class TimePicker extends Picker {
 
   _setUpRolls(initial = false) {
     for (const part of Array.from(['hours', 'minutes', 'seconds', 'toggle'])) {
-      for (const element of SelectorEngine.find(`[data-coreui-${part}]`, this._element)) {
-        if (this._getPartOfTime(part) === Manipulator.getDataAttribute(element, part)) {
+      for (const element of SelectorEngine.find(
+        `[data-coreui-${part}]`,
+        this._element,
+      )) {
+        if (
+          this._getPartOfTime(part) ===
+          Manipulator.getDataAttribute(element, part)
+        ) {
           element.classList.add('selected')
           this._scrollTo(element.parentElement, element, initial)
 
@@ -178,7 +193,10 @@ class TimePicker extends Picker {
 
   _setUpSelects() {
     for (const part of Array.from(['hours', 'minutes', 'seconds', 'toggle'])) {
-      for (const element of SelectorEngine.find(`select.${part}`, this._element)) {
+      for (const element of SelectorEngine.find(
+        `select.${part}`,
+        this._element,
+      )) {
         if (this._getPartOfTime(part)) {
           element.value = this._getPartOfTime(part)
         }
@@ -210,10 +228,15 @@ class TimePicker extends Picker {
       }
     })
 
-    EventHandler.on(this._element, 'click', '.picker-input-group-cleaner', event => {
-      event.stopPropagation()
-      this.clear()
-    })
+    EventHandler.on(
+      this._element,
+      'click',
+      '.picker-input-group-cleaner',
+      event => {
+        event.stopPropagation()
+        this.clear()
+      },
+    )
 
     EventHandler.on(this._element, 'onCancelClick.coreui.picker', () => {
       this.cancel()
@@ -226,14 +249,18 @@ class TimePicker extends Picker {
         EventHandler.trigger(this._element, EVENT_TIME_CHANGE, {
           timeString: this._date.toTimeString(),
           localeTimeString: this._date.toLocaleTimeString(),
-          date: this._date
+          date: this._date,
         })
       }
     })
   }
 
   _convertStringToDate(date) {
-    return date ? (date instanceof Date ? date : new Date(`1970-01-01 ${date}`)) : null
+    return date
+      ? date instanceof Date
+        ? date
+        : new Date(`1970-01-01 ${date}`)
+      : null
   }
 
   _createInputGroup() {
@@ -250,7 +277,9 @@ class TimePicker extends Picker {
     inputEl.placeholder = this._config.placeholder
     inputEl.readOnly = this._config.inputReadOnly
     inputEl.type = 'text'
-    inputEl.value = this._date ? this._date.toLocaleTimeString(this._config.locale) : ''
+    inputEl.value = this._date
+      ? this._date.toLocaleTimeString(this._config.locale)
+      : ''
 
     inputGroupEl.append(inputEl)
 
@@ -306,11 +335,11 @@ class TimePicker extends Picker {
   }
 
   _createTimePickerSelection() {
-    const selectedHour = this._date ?
-    (isAmPm(this._config.locale) ?
-      convert24hTo12h(this._date.getHours()) :
-      this._date.getHours()) :
-    null
+    const selectedHour = this._date
+      ? isAmPm(this._config.locale)
+        ? convert24hTo12h(this._date.getHours())
+        : this._date.getHours()
+      : null
     const selectedMinute = this._date ? this._date.getMinutes() : null
     const selectedSecond = this._date ? this._date.getSeconds() : null
 
@@ -327,7 +356,9 @@ class TimePicker extends Picker {
     const selectEl = document.createElement('select')
     selectEl.classList.add('form-select', 'form-select-sm', className)
     selectEl.disabled = this._config.disabled
-    selectEl.addEventListener('change', event => this._handleTimeChange(className, event.target.value))
+    selectEl.addEventListener('change', event =>
+      this._handleTimeChange(className, event.target.value),
+    )
 
     for (const option of options) {
       const optionEl = document.createElement('option')
@@ -345,32 +376,63 @@ class TimePicker extends Picker {
     timeSeparatorEl.classList.add('time-separator')
     timeSeparatorEl.innerHTML = ':'
 
-    this._timePickerBody.innerHTML = '<span class="time-picker-inline-icon"></span>'
+    this._timePickerBody.innerHTML =
+      '<span class="time-picker-inline-icon"></span>'
     this._timePickerBody.append(
       this._createSelect('hours', getListOfHours(this._config.locale)),
       timeSeparatorEl.cloneNode(true),
-      this._createSelect('minutes', getListOfMinutes(this._config.locale, true)),
+      this._createSelect(
+        'minutes',
+        getListOfMinutes(this._config.locale, true),
+      ),
       timeSeparatorEl,
-      this._createSelect('seconds', getListOfSeconds(this._config.locale, true))
+      this._createSelect(
+        'seconds',
+        getListOfSeconds(this._config.locale, true),
+      ),
     )
 
     if (isAmPm(this._config.locale)) {
       this._timePickerBody.append(
-        this._createSelect('toggle', [{ value: 'am', label: 'AM' }, { value: 'pm', label: 'PM' }], '_selectAmPm', this._ampm)
+        this._createSelect(
+          'toggle',
+          [
+            { value: 'am', label: 'AM' },
+            { value: 'pm', label: 'PM' },
+          ],
+          '_selectAmPm',
+          this._ampm,
+        ),
       )
     }
   }
 
   _createTimePickerRoll() {
     this._timePickerBody.append(
-      this._createTimePickerRollCol(getListOfHours(this._config.locale), 'hours'),
-      this._createTimePickerRollCol(getListOfMinutes(this._config.locale), 'minutes'),
-      this._createTimePickerRollCol(getListOfSeconds(this._config.locale), 'seconds')
+      this._createTimePickerRollCol(
+        getListOfHours(this._config.locale),
+        'hours',
+      ),
+      this._createTimePickerRollCol(
+        getListOfMinutes(this._config.locale),
+        'minutes',
+      ),
+      this._createTimePickerRollCol(
+        getListOfSeconds(this._config.locale),
+        'seconds',
+      ),
     )
 
     if (isAmPm(this._config.locale)) {
       this._timePickerBody.append(
-        this._createTimePickerRollCol([{ value: 'am', label: 'AM' }, { value: 'pm', label: 'PM' }], 'toggle', this._ampm)
+        this._createTimePickerRollCol(
+          [
+            { value: 'am', label: 'AM' },
+            { value: 'pm', label: 'PM' },
+          ],
+          'toggle',
+          this._ampm,
+        ),
       )
     }
   }
@@ -400,7 +462,7 @@ class TimePicker extends Picker {
     config = {
       ...this.constructor.Default,
       ...Manipulator.getDataAttributes(this._element),
-      ...(typeof config === 'object' ? config : {})
+      ...(typeof config === 'object' ? config : {}),
     }
 
     return config
@@ -446,12 +508,15 @@ class TimePicker extends Picker {
     EventHandler.trigger(this._element, EVENT_TIME_CHANGE, {
       timeString: _date.toTimeString(),
       localeTimeString: _date.toLocaleTimeString(),
-      date: _date
+      date: _date,
     })
   }
 
   _scrollTo(parent, children, initial = false) {
-    parent.scrollTo({ top: children.offsetTop, behavior: initial ? 'instant' : 'smooth' })
+    parent.scrollTo({
+      top: children.offsetTop,
+      behavior: initial ? 'instant' : 'smooth',
+    })
   }
 
   _updateTimePicker() {
@@ -481,7 +546,11 @@ class TimePicker extends Picker {
         return
       }
 
-      if (data[config] === undefined || config.startsWith('_') || config === 'constructor') {
+      if (
+        data[config] === undefined ||
+        config.startsWith('_') ||
+        config === 'constructor'
+      ) {
         throw new TypeError(`No method named "${config}"`)
       }
 
@@ -491,10 +560,10 @@ class TimePicker extends Picker {
 }
 
 /**
-* ------------------------------------------------------------------------
-* Data Api implementation
-* ------------------------------------------------------------------------
-*/
+ * ------------------------------------------------------------------------
+ * Data Api implementation
+ * ------------------------------------------------------------------------
+ */
 
 EventHandler.on(window, EVENT_LOAD_DATA_API, () => {
   const timePickers = SelectorEngine.find(SELECTOR_DATA_TOGGLE)
@@ -504,11 +573,11 @@ EventHandler.on(window, EVENT_LOAD_DATA_API, () => {
 })
 
 /**
-* ------------------------------------------------------------------------
-* jQuery
-* ------------------------------------------------------------------------
-* add .TimePicker to jQuery only if jQuery is present
-*/
+ * ------------------------------------------------------------------------
+ * jQuery
+ * ------------------------------------------------------------------------
+ * add .TimePicker to jQuery only if jQuery is present
+ */
 
 defineJQueryPlugin(TimePicker)
 
