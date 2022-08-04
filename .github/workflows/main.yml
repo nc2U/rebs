@@ -24,23 +24,17 @@ jobs:
         # 해당 값은 뒤의 step에서 사용해볼게요.
         id: cache_nginx
         with:
-          # ./app/vue/node_modules라는 폴더를 검사하여
+          # ./deploy/docker/nginx 라는 폴더를 검사하여
           path: ./deploy/docker/nginx
           # 아래 키값으로 cache가 돼있는지 확인합니다.
           key: nginx-${{ hashFiles('**/Dockerfile') }}
 
-      # Dockerfile, reqirements.txt 변화 감지 후 build & push
       - name: Cache WEB Dockerfile
-        # 그걸 제공하는 Action도 있네요? 갖다 쓰겠습니다.
         uses: actions/cache@v3
-        # 해당 step을 대표하는 id를 설정할 수도 있어요.
-        # 해당 값은 뒤의 step에서 사용해볼게요.
         id: cache_django
         with:
-          # ./app/vue/node_modules라는 폴더를 검사하여
           path: ./deploy/docker/python
-          # 아래 키값으로 cache가 돼있는지 확인합니다.
-          key: nginx-${{ hashFiles('**/Dockerfile') }}-${{'**/requirements.txt'}}
+          key: nginx-${{ hashFiles('**/Dockerfile') }}-${{ hashFiles('**/requirements.txt') }}
 
       - name: Use Node.js
         uses: actions/setup-node@v3
