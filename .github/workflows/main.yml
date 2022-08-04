@@ -56,17 +56,17 @@ jobs:
           key: yarn-packages-${{ hashFiles('**/yarn.lock') }}
       - name: test
         run: cd app/vue && pwd && ls -al
-#      - name: Install Dependencies
-#        # 위 step에서 node_modules에 대한 cache 검사를 했잖아요?
-#        # 만약 모듈에 변한 게 있다면 `npm install`을 실행하고 아니면 해당 step을 건너뛰게 됩니다.
-#        # if 키워드는 해당 스텝을 실행할지 말지를 결정할 수 있는 키워드예요.
-#        # `steps.cache.outputs.cache-hit`이 값은 무엇일까요?
-#        # 위 step에서 정했던 cache라는 id를 steps.cache로 가져올 수 있어요.
-#        # cache라는 id 값을 가진 step에서는 cache-hit라는 output을 내뱉네요?
-#        # 그걸로 cache가 hit 됐는지 안 됐는지를 알 수 있나봐요!
-#        # 그 값이 true가 아닐 때만 npm install을 하겠죠?
-#        if: steps.cache.outputs.cache-hit != 'true'
-#      - run: yarn
+      - name: Install Dependencies
+        # 위 step에서 node_modules에 대한 cache 검사를 했잖아요?
+        # 만약 모듈에 변한 게 있다면 `npm install`을 실행하고 아니면 해당 step을 건너뛰게 됩니다.
+        # if 키워드는 해당 스텝을 실행할지 말지를 결정할 수 있는 키워드예요.
+        # `steps.cache.outputs.cache-hit`이 값은 무엇일까요?
+        # 위 step에서 정했던 cache라는 id를 steps.cache로 가져올 수 있어요.
+        # cache라는 id 값을 가진 step에서는 cache-hit라는 output을 내뱉네요?
+        # 그걸로 cache가 hit 됐는지 안 됐는지를 알 수 있나봐요!
+        # 그 값이 true가 아닐 때만 npm install을 하겠죠?
+        if: steps.cache.outputs.cache-hit != 'true'
+      - run: yarn
 #
 #      # 아래 로직은 저희가 만든 프로젝트의 lint, tsc, build를 테스트하는 곳이에요.
 #      # run 키워드는 `npm start`같이 커맨트 명령어를 입력할 수 있게 해주는 키워드예요.
