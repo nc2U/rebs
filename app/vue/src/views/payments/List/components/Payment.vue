@@ -62,7 +62,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import commonMixin from '@/views/commonMixin'
+import commonMixin from '@/mixins/commonMixin'
 import FormModal from '@/components/Modals/FormModal.vue'
 import ContChoicer from '@/views/payments/List/components/ContChoicer.vue'
 

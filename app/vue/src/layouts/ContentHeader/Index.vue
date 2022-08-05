@@ -24,8 +24,8 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import HeaderNav from '@/components/HeaderNav.vue'
-import CompanyMixin from '@/views/settings/companyMixin'
-import ProjectMixin from '@/views/projects/projectMixin'
+import CompanyMixin from '@/mixins/companyMixin'
+import ProjectMixin from '@/mixins/projectMixin'
 import CompanySelect from '@/layouts/ContentHeader/CompanySelect/Index.vue'
 import ProjectSelect from '@/layouts/ContentHeader/ProjectSelect/Index.vue'
 

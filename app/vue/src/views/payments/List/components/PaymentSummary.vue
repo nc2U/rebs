@@ -79,7 +79,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import commonMixin from '@/views/commonMixin'
+import commonMixin from '@/mixins/commonMixin'
 import { headerSecondary } from '@/utils/cssMixins'
 import { mapGetters, mapState } from 'vuex'
 

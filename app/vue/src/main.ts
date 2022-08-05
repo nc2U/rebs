@@ -3,7 +3,7 @@ import Cookies from 'js-cookie'
 import App from './App.vue'
 import store from './store'
 import router from './router'
-import mixins from '@/mixins'
+import mixins from '@/mixins/mixins'
 
 import CoreuiVue from '@coreui/vue'
 import { CIcon } from '@coreui/icons-vue'

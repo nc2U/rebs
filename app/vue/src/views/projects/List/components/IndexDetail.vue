@@ -211,7 +211,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import commonMixin from '@/views/commonMixin'
+import commonMixin from '@/mixins/commonMixin'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 import { headerSecondary } from '@/utils/cssMixins'
 import { mapGetters } from 'vuex'
