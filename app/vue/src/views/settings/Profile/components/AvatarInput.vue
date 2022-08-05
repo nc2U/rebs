@@ -9,33 +9,33 @@ const props = defineProps({
 const emit = defineEmits(['file-upload'])
 
 const imgUrl = ref(props.defaultSrc || '/static/dist/img/NoImage.jpeg')
-const modalImg = ref(null)
+const modalImg = ref()
 const cropModal = ref()
 
 const browse = () => {
-  let fu = document.getElementById('file')
+  const fu = document.getElementById('file')
   if (fu !== null) fu.click()
 }
 
-const change = (event: any) => {
+const change = (event: { target: { files: File[] } }) => {
   const image = event.target.files[0]
   emit('file-upload', image)
   let reader = new FileReader()
   reader.readAsDataURL(image)
-  reader.onload = (e: any) => {
-    modalImg.value = e.target.result
+  reader.onload = e => {
+    modalImg.value = e.target?.result
     if (modalImg.value !== null) {
       cropModal.value.callModal()
     }
   }
 }
 
-const fileUpload = (image: any) => {
-  emit('file-upload', image)
+const fileUpload = (img: File) => {
+  emit('file-upload', img)
   let reader = new FileReader()
-  reader.readAsDataURL(image)
-  reader.onload = (e: any) => {
-    imgUrl.value = e.target.result
+  reader.readAsDataURL(img)
+  reader.onload = e => {
+    imgUrl.value = String(e.target?.result)
   }
 }
 const delModalImg = () => {
