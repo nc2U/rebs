@@ -12,7 +12,7 @@ const props = defineProps({
   userInfo: { type: Object, default: null },
 })
 
-const emit = defineEmits(['file-upload', 'on-submit'])
+const emit = defineEmits(['file-upload', 'on-submit', 'reset-form'])
 
 const form = reactive({
   pk: '',
@@ -21,7 +21,7 @@ const form = reactive({
   birth_date: '',
   cell_phone: '',
 })
-const image = ref(null)
+const image = ref()
 const validated = ref(false)
 
 const alertModal = ref()
@@ -52,14 +52,18 @@ const isChanged = () => {
   return a && b && c && d
 }
 
-const fileUpload = (img: any) => {
+const fileUpload = (img: File) => {
   image.value = img
   emit('file-upload', img)
 }
-const onSubmit = (event: any) => {
+const onSubmit = (event: {
+  currentTarget: { checkValidity: () => boolean }
+  preventDefault: () => void
+  stopPropagation: () => void
+}) => {
   if (isAuthorized.value) {
     const form = event.currentTarget
-    if (form.checkValidity() === false) {
+    if (!form.checkValidity()) {
       event.preventDefault()
       event.stopPropagation()
 
