@@ -38,7 +38,7 @@ export default defineComponent({
   name: 'CropperModal',
   components: { CircleStencil, Cropper },
   props: {
-    modalImg: String,
+    modalImg: { type: Object, default: null },
   },
   setup() {
     return {}
@@ -66,7 +66,7 @@ export default defineComponent({
     crop(this: any) {
       const { canvas } = this.$refs.cropper.getResult()
       if (canvas) {
-        canvas.toBlob((blob: any) => {
+        canvas.toBlob((blob: Blob) => {
           const image = new File([blob], 'profile.png', { type: blob.type })
           this.$emit('file-upload', image)
         })

@@ -1,3 +1,48 @@
+<script lang="ts" setup>
+import { ref } from 'vue'
+import CropperModal from './CropperModal.vue'
+
+const props = defineProps({
+  defaultSrc: { type: String, default: '' },
+})
+
+const emit = defineEmits(['file-upload'])
+
+const imgUrl = ref(props.defaultSrc || '/static/dist/img/NoImage.jpeg')
+const modalImg = ref(null)
+const cropModal = ref()
+
+const browse = () => {
+  let fu = document.getElementById('file')
+  if (fu !== null) fu.click()
+}
+
+const change = (event: any) => {
+  const image = event.target.files[0]
+  emit('file-upload', image)
+  let reader = new FileReader()
+  reader.readAsDataURL(image)
+  reader.onload = (e: any) => {
+    modalImg.value = e.target.result
+    if (modalImg.value !== null) {
+      cropModal.value.callModal()
+    }
+  }
+}
+
+const fileUpload = (image: any) => {
+  emit('file-upload', image)
+  let reader = new FileReader()
+  reader.readAsDataURL(image)
+  reader.onload = (e: any) => {
+    imgUrl.value = e.target.result
+  }
+}
+const delModalImg = () => {
+  modalImg.value = null
+}
+</script>
+
 <template>
   <CRow class="mb-4">
     <CCol>
@@ -38,54 +83,6 @@
     @file-upload="fileUpload"
   />
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import CropperModal from './CropperModal.vue'
-
-export default defineComponent({
-  name: 'AvatarInput',
-  components: { CropperModal },
-  props: {
-    defaultSrc: String,
-  },
-  data() {
-    return {
-      imgUrl: this.defaultSrc || '/static/dist/img/NoImage.jpeg',
-      modalImg: null,
-    }
-  },
-  methods: {
-    browse(this: any) {
-      let fu = document.getElementById('file')
-      if (fu !== null) fu.click()
-    },
-    change(this: any, event: any) {
-      const image = event.target.files[0]
-      this.$emit('file-upload', image)
-      let reader = new FileReader()
-      reader.readAsDataURL(image)
-      reader.onload = (e: any) => {
-        this.modalImg = e.target.result
-        if (this.modalImg !== null) {
-          this.$refs.cropModal.callModal()
-        }
-      }
-    },
-    fileUpload(image: any) {
-      this.$emit('file-upload', image)
-      let reader = new FileReader()
-      reader.readAsDataURL(image)
-      reader.onload = (e: any) => {
-        this.imgUrl = e.target.result
-      }
-    },
-    delModalImg() {
-      this.modalImg = null
-    },
-  },
-})
-</script>
 
 <style lang="scss" scoped>
 @media (min-width: 768px) {
