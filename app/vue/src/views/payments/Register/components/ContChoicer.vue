@@ -1,3 +1,60 @@
+<script lang="ts" setup>
+import { useStore } from 'vuex'
+import { ref, reactive, computed, nextTick, onMounted } from 'vue'
+import TableTitleRow from '@/components/TableTitleRow.vue'
+
+const store = useStore()
+
+const props = defineProps({
+  project: { type: Object, default: null },
+  contract: { type: Object, default: null },
+})
+
+const emit = defineEmits(['list-filtering', 'get-contract'])
+
+const contractIndex = computed(() => store.getters['contract/contractIndex'])
+
+const paymentUrl = computed(() => {
+  const url = '/rebs/pdf-payments/'
+  const project = props.project ? props.project.pk : ''
+  const contract = props.contract ? props.contract.pk : ''
+  return `${url}?project=${project}&contract=${contract}`
+})
+
+const form = reactive({ search: '' })
+const msg = ref('')
+const textClass = ref('')
+
+const pageInit = () => {
+  form.search = ''
+  textClass.value = 'text-medium-emphasis'
+  msg.value = '계약자 관련정보 또는 계약 일련변호를 입력하세요.'
+  store.commit('contract/updateState', { contractList: [] })
+}
+
+const listFiltering = (page = 1) => {
+  nextTick(() => {
+    if (form.search === '') pageInit()
+    else emit('list-filtering', { ...{ page }, ...form })
+  })
+  if (contractIndex.value.length === 0) {
+    msg.value = `해당 검색어로 등록된 데이터가 없습니다.`
+    textClass.value = 'text-danger'
+  }
+}
+const getContract = (cont: number) => {
+  emit('get-contract', cont)
+  pageInit()
+}
+
+const removeContract = () => {
+  store.commit('contract/updateState', { contract: null })
+  store.commit('payment/updateState', { paymentList: [] })
+}
+
+onMounted(() => pageInit())
+</script>
+
 <template>
   <CCallout color="warning" class="pb-0 mb-4">
     <CRow>
@@ -77,67 +134,5 @@
       </CCol>
     </CRow>
   </CAlert>
-  <TableTitleRow v-if="contract" pdf :url="paymentUrl" />
+  <TableTitleRow :disabled="!contract" pdf :url="paymentUrl" />
 </template>
-
-<script lang="ts">
-import TableTitleRow from '@/components/TableTitleRow.vue'
-import { defineComponent } from 'vue'
-import { maska } from 'maska'
-import { mapGetters } from 'vuex'
-
-export default defineComponent({
-  name: 'ContChoicer',
-  components: { TableTitleRow },
-
-  directives: { maska },
-  props: { project: Object, contract: Object },
-  data() {
-    return {
-      form: {
-        search: '',
-      },
-      msg: '',
-      textClass: '',
-    }
-  },
-  created() {
-    this.pageInit()
-  },
-  computed: {
-    paymentUrl() {
-      const url = '/rebs/pdf-payments/'
-      const project = this.project ? this.project.pk : ''
-      const contract = this.contract ? this.contract.pk : ''
-      return `${url}?project=${project}&contract=${contract}`
-    },
-    ...mapGetters('contract', ['contractIndex']),
-  },
-  methods: {
-    listFiltering(this: any, page = 1) {
-      this.$nextTick(() => {
-        if (this.form.search === '') this.pageInit()
-        else this.$emit('list-filtering', { ...{ page }, ...this.form })
-      })
-      if (this.contractIndex.length === 0) {
-        this.msg = `해당 검색어로 등록된 데이터가 없습니다.`
-        this.textClass = 'text-danger'
-      }
-    },
-    getContract(cont: number) {
-      this.$emit('get-contract', cont)
-      this.pageInit()
-    },
-    pageInit(this: any) {
-      this.form.search = ''
-      this.textClass = 'text-medium-emphasis'
-      this.msg = '계약자 관련정보 또는 계약 일련변호를 입력하세요.'
-      this.$store.state.contract.contractList = []
-    },
-    removeContract(this: any) {
-      this.$store.state.contract.contract = null
-      this.$store.state.payment.paymentList = []
-    },
-  },
-})
-</script>
