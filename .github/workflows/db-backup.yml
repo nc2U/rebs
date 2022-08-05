@@ -19,6 +19,5 @@ jobs:
           username: ${{ secrets.CICD_USERNAME }}
           password: ${{ secrets.CICD_PASSWORD }}
           command: |
-            DB=$(kubectl get pod -n prod-hrebs | grep master | cut -d ' ' -f1)
+            DB=$(kubectl get pod -n dev-hrebs | grep master | cut -d ' ' -f1)
             kubectl exec -it -n prod-hrebs $DB -- ls -al /docker-entrypoint-initdb.d/
-            # mysqldump -u {{ secrets.DATABASE_USER }} -p {{ secrets.DATABASE_PASSWORD }} {{ secrets.DATABASE_USER }}  --ignore-table={{ secrets.DATABASE_USER }}.django_migrations > /docker-entrypoint-initdb.d/backup.sql
