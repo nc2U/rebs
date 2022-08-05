@@ -1,3 +1,97 @@
+<script lang="ts" setup>
+import { reactive, ref, computed, onBeforeMount } from 'vue'
+import { useStore } from 'vuex'
+import { maska as vMaska } from 'maska'
+import { dateFormat } from '@/utils/baseMixins'
+import DatePicker from '@/components/DatePicker/index.vue'
+import AvatarInput from './AvatarInput.vue'
+import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
+import AlertModal from '@/components/Modals/AlertModal.vue'
+
+const props = defineProps({
+  userInfo: { type: Object, default: null },
+})
+
+const emit = defineEmits(['file-upload', 'on-submit'])
+
+const form = reactive({
+  pk: '',
+  user: '',
+  name: '',
+  birth_date: '',
+  cell_phone: '',
+})
+const image = ref(null)
+const validated = ref(false)
+
+const alertModal = ref()
+const confirmModal = ref()
+
+const store = useStore()
+
+const isAuthorized = computed(() => store.getters['accounts/isAuthorized'])
+
+const formsCheck = computed(() =>
+  props.userInfo?.profile?.pk ? isChanged() : false,
+)
+
+const confirmText = computed(() =>
+  props.userInfo?.profile?.pk ? '변경' : '등록',
+)
+
+const btnClass = computed(() =>
+  props.userInfo?.profile?.pk ? 'success' : 'primary',
+)
+
+const isChanged = () => {
+  const a = form.name === props.userInfo?.profile.name
+  const b = form.birth_date === props.userInfo?.profile.birth_date
+  const c = form.cell_phone === props.userInfo?.profile.cell_phone
+  const d =
+    image.value === null || image.value === props.userInfo?.profile.image
+  return a && b && c && d
+}
+
+const fileUpload = (img: any) => {
+  image.value = img
+  emit('file-upload', img)
+}
+const onSubmit = (event: any) => {
+  if (isAuthorized.value) {
+    const form = event.currentTarget
+    if (form.checkValidity() === false) {
+      event.preventDefault()
+      event.stopPropagation()
+
+      validated.value = true
+    } else {
+      confirmModal.value.callModal()
+    }
+  } else {
+    alertModal.value.callModal()
+  }
+}
+const modalAction = () => {
+  form.birth_date = dateFormat(new Date(form.birth_date))
+  emit('on-submit', form)
+  validated.value = false
+  confirmModal.value.visible = false
+}
+
+onBeforeMount(() => {
+  if (props.userInfo) {
+    form.user = props.userInfo.pk
+    if (props.userInfo.profile) {
+      form.pk = props.userInfo.profile.pk
+      form.name = props.userInfo.profile.name
+      form.birth_date = props.userInfo.profile.birth_date
+      form.cell_phone = props.userInfo.profile.cell_phone
+      image.value = props.userInfo.profile.image
+    }
+  }
+})
+</script>
+
 <template>
   <CForm
     class="needs-validation"
@@ -120,94 +214,3 @@
 
   <AlertModal ref="alertModal" />
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import DatePicker from '@/components/DatePicker/index.vue'
-import AvatarInput from './AvatarInput.vue'
-import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
-import AlertModal from '@/components/Modals/AlertModal.vue'
-import { maska } from 'maska'
-import { mapGetters } from 'vuex'
-
-export default defineComponent({
-  name: 'ProfileForm',
-  components: { AvatarInput, DatePicker, ConfirmModal, AlertModal },
-  directives: { maska },
-  props: {
-    userInfo: Object,
-  },
-  data() {
-    return {
-      form: {
-        pk: '',
-        user: '',
-        name: '',
-        birth_date: '',
-        cell_phone: '',
-      },
-      image: null,
-      validated: false,
-    }
-  },
-  computed: {
-    formsCheck() {
-      return this.userInfo?.profile?.pk ? this.isChanged() : false
-    },
-    confirmText(this: any) {
-      return this.userInfo?.profile?.pk ? '변경' : '등록'
-    },
-    btnClass(this: any) {
-      return this.userInfo?.profile?.pk ? 'success' : 'primary'
-    },
-    ...mapGetters('accounts', ['isAuthorized']),
-  },
-  created(this: any) {
-    if (this.userInfo) {
-      this.form.user = this.userInfo.pk
-      if (this.userInfo.profile) {
-        this.form.pk = this.userInfo.profile.pk
-        this.form.name = this.userInfo.profile.name
-        this.form.birth_date = this.userInfo.profile.birth_date
-        this.form.cell_phone = this.userInfo.profile.cell_phone
-        this.image = this.userInfo.profile.image
-      }
-    }
-  },
-  methods: {
-    isChanged(this: any) {
-      const a = this.form.name === this.userInfo?.profile.name
-      const b = this.form.birth_date === this.userInfo?.profile.birth_date
-      const c = this.form.cell_phone === this.userInfo?.profile.cell_phone
-      const d =
-        this.image === null || this.image === this.userInfo?.profile.image
-      return a && b && c && d
-    },
-    fileUpload(image: any) {
-      this.image = image
-      this.$emit('file-upload', image)
-    },
-    onSubmit(this: any, event: any) {
-      if (this.isAuthorized) {
-        const form = event.currentTarget
-        if (form.checkValidity() === false) {
-          event.preventDefault()
-          event.stopPropagation()
-
-          this.validated = true
-        } else {
-          this.$refs.confirmModal.callModal()
-        }
-      } else {
-        this.$refs.alertModal.callModal()
-      }
-    },
-    modalAction(this: any) {
-      this.form.birth_date = this.dateFormat(this.form.birth_date)
-      this.$emit('on-submit', this.form)
-      this.validated = false
-      this.$refs.confirmModal.visible = false
-    },
-  },
-})
-</script>
