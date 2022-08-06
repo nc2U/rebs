@@ -63,16 +63,16 @@ jobs:
           node-version: 16
 
       # node_modules 캐싱
-      - name: Cache node modules
+      - name: Cache vue node
         uses: actions/cache@v3
-        id: cache_node
+        id: cache_vue
         with:
-          path: ./app/vue/node_modules
-          key: yarn-packages-${{ hashFiles('**/yarn.lock') }}
+          path: ./app/vue
+          key: yarn-packages-${{ hashFiles('yarn.lock') }}
 
       # node_modules 변화기 있으면 빌드
       - name: Install Dependencies
-        if: steps.cache_node.outputs.cache-hit != 'true'
+        if: steps.cache_vue.outputs.cache-hit != 'true'
         run: cd app/vue && yarn
 
       #      - run: yarn lint
@@ -82,6 +82,28 @@ jobs:
       #        # 이후의 build까지 다 실행을 해보고 난 뒤 종료 하므로 모든 테스트 스크립트에 ${{ always() }}를 붙임.
       #        if: ${{ always() }}
       - run: cd app/vue && yarn build
+        if: ${{ always() }}
+
+      # node_modules 캐싱
+      - name: Cache svelte node
+        uses: actions/cache@v3
+        id: cache_svelte
+        with:
+          path: ./app/svelte
+          key: yarn-packages-${{ hashFiles('yarn.lock') }}
+
+      # node_modules 변화기 있으면 빌드
+      - name: Install Dependencies
+        if: steps.cache_svelte.outputs.cache-hit != 'true'
+        run: cd app/svelte && yarn
+
+      #      - run: yarn lint
+      #        # `if: ${{ always() }} => ` 만약 `yarn lint`라는 곳에서 에러가 났을 경우
+      #        # 이후 build를 실행하지 않고 해당 workflow가 종료됨.
+      #        # ${{ always() }}라는 문법을 사용 시 `yarn lint`라는 곳에서 에러가 나도
+      #        # 이후의 build까지 다 실행을 해보고 난 뒤 종료 하므로 모든 테스트 스크립트에 ${{ always() }}를 붙임.
+      #        if: ${{ always() }}
+      - run: cd app/svelte && yarn build
         if: ${{ always() }}
 
       - name: Copy data to CI/CD server
