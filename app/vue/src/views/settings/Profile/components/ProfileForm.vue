@@ -53,7 +53,7 @@ const isChanged = () => {
 }
 
 const fileUpload = (img: File) => {
-  image.value = img
+  image.value = img.name
   emit('file-upload', img)
 }
 const onSubmit = (event: {

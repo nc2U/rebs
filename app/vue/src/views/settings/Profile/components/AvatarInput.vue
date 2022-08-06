@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { nextTick, ref } from 'vue'
+import { ref } from 'vue'
 import CropperModal from './CropperModal.vue'
 
 const props = defineProps({
