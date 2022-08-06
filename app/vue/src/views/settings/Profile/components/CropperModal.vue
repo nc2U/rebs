@@ -10,6 +10,7 @@ export default defineComponent({
   props: {
     modalImg: { type: String, default: undefined },
   },
+  emits: ['image-del', 'file-upload'],
   setup(props, ctx) {
     const visible = ref(false)
     const cropper = ref()
