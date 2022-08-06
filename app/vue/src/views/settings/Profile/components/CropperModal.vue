@@ -1,3 +1,49 @@
+<script lang="ts">
+import { defineComponent, ref, watch } from 'vue'
+import { CircleStencil, Cropper } from 'vue-advanced-cropper'
+import 'vue-advanced-cropper/dist/style.css'
+import 'vue-advanced-cropper/dist/theme.compact.css'
+
+export default defineComponent({
+  name: 'CropperModal',
+  components: { CircleStencil, Cropper },
+  props: {
+    modalImg: { type: String, default: undefined },
+  },
+  setup(props, ctx) {
+    const visible = ref(false)
+    const cropper = ref()
+
+    const close = () => {
+      visible.value = false
+      ctx.emit('image-del')
+    }
+
+    const crop = () => {
+      const { canvas } = cropper.value.getResult()
+      if (canvas) {
+        canvas.toBlob((blob: Blob) => {
+          const img = new File([blob], 'profile.png', { type: blob.type })
+          ctx.emit('file-upload', img)
+        })
+      }
+      close()
+    }
+
+    watch(visible, val => {
+      if (!val) ctx.emit('image-del')
+    })
+
+    return {
+      visible,
+      cropper,
+      close,
+      crop,
+    }
+  },
+})
+</script>
+
 <template>
   <CModal :visible="visible" @close="() => close">
     <CModalHeader :close-button="false">
@@ -27,52 +73,6 @@
     <CircleStencil v-if="false" />
   </CModal>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import { CircleStencil, Cropper } from 'vue-advanced-cropper'
-import 'vue-advanced-cropper/dist/style.css'
-import 'vue-advanced-cropper/dist/theme.compact.css'
-
-export default defineComponent({
-  name: 'CropperModal',
-  components: { CircleStencil, Cropper },
-  props: {
-    modalImg: { type: Object, default: null },
-  },
-  setup() {
-    return {}
-  },
-  data() {
-    return {
-      visible: false,
-    }
-  },
-  computed: {},
-  watch: {
-    visible(val) {
-      if (val === false) {
-        this.$emit('image-del', null)
-      }
-    },
-  },
-  methods: {
-    close() {
-      this.visible = false
-    },
-    crop(this: any) {
-      const { canvas } = this.$refs.cropper.getResult()
-      if (canvas) {
-        canvas.toBlob((blob: Blob) => {
-          const image = new File([blob], 'profile.png', { type: blob.type })
-          this.$emit('file-upload', image)
-        })
-      }
-      this.close()
-    },
-  },
-})
-</script>
 
 <style lang="scss" scoped>
 .cropper {

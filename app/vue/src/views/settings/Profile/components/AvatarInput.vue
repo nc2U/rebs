@@ -18,13 +18,13 @@ const browse = () => {
 }
 
 const change = (event: { target: { files: File[] } }) => {
-  const image = event.target.files[0]
-  emit('file-upload', image)
+  const img = event.target.files[0]
+  emit('file-upload', img)
   let reader = new FileReader()
-  reader.readAsDataURL(image)
+  reader.readAsDataURL(img)
   reader.onload = e => {
-    modalImg.value = e.target?.result
-    if (modalImg.value !== null) {
+    modalImg.value = e.target ? e.target.result : null
+    if (!!modalImg.value) {
       cropModal.value.visible = true
     }
   }
