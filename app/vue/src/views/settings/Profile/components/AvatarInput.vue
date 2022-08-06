@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { nextTick, ref } from 'vue'
 import CropperModal from './CropperModal.vue'
 
 const props = defineProps({
@@ -23,7 +23,7 @@ const change = (event: { target: { files: File[] } }) => {
   let reader = new FileReader()
   reader.readAsDataURL(img)
   reader.onload = e => {
-    modalImg.value = e.target ? e.target.result : null
+    modalImg.value = e.target?.result
     if (!!modalImg.value) {
       cropModal.value.visible = true
     }

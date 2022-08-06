@@ -15,8 +15,8 @@ export default defineComponent({
     const cropper = ref()
 
     const close = () => {
-      visible.value = false
       ctx.emit('image-del')
+      visible.value = false
     }
 
     const crop = () => {
@@ -31,7 +31,7 @@ export default defineComponent({
     }
 
     watch(visible, val => {
-      if (!val) ctx.emit('image-del')
+      if (!val) close()
     })
 
     return {
