@@ -25,7 +25,7 @@ const change = (event: { target: { files: File[] } }) => {
   reader.onload = e => {
     modalImg.value = e.target?.result
     if (modalImg.value !== null) {
-      cropModal.value.callModal()
+      cropModal.value.visible = true
     }
   }
 }

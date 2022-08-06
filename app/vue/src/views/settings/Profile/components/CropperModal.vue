@@ -57,9 +57,6 @@ export default defineComponent({
     },
   },
   methods: {
-    callModal() {
-      this.visible = true
-    },
     close() {
       this.visible = false
     },
