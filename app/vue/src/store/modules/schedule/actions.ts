@@ -7,7 +7,6 @@ const actions = {
     api
       .get('/schedule/')
       .then(res => {
-        console.log(res.data.results)
         commit(UPDATE_STATE, { scheduleList: res.data.results })
       })
       .catch(err => errorHandle(err.response))

@@ -3,7 +3,9 @@ import { State } from '@/store'
 export interface Schedule {
   pk: number
   title: string
-  event_date: string | null
+  all_day: boolean
+  start_date: string | null
+  end_date: string | null
   start_time: string | null
   end_time: string | null
 }
