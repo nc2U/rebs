@@ -5,14 +5,19 @@ const todayStr: string = new Date().toISOString().replace(/T.*$/, '') // YYYY-MM
 
 export const INITIAL_EVENTS: EventInput[] = [
   {
-    id: createEventId(),
+    id: '1',
     title: 'All-day event',
     start: todayStr,
   },
   {
-    id: createEventId(),
+    id: '2',
     title: 'Timed event',
     start: todayStr + 'T12:00:00',
+  },
+  {
+    id: '3',
+    title: 'Tomorrow eventaasdfasdf',
+    start: '2022-08-08',
   },
 ]
 
