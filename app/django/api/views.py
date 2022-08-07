@@ -33,13 +33,13 @@ class ApiIndex(generics.GenericAPIView):
     def get(self, request, *args, **kwargs):
         api = 'api:'
         return Response({
-            'user': reverse(api + UserList.name, request=request),
-            'profile': reverse(api + ProfileList.name, request=request),
-            'todo': reverse(api + TodoList.name, request=request),
-            'company': reverse(api + CompanyList.name, request=request),
-            'department': reverse(api + DepartmentList.name, request=request),
-            'position': reverse(api + PositionList.name, request=request),
-            'staff': reverse(api + StaffList.name, request=request),
+            'user': reverse(api + 'user-list', request=request),
+            'profile': reverse(api + 'profile-list', request=request),
+            'todo': reverse(api + 'todo-list', request=request),
+            'company': reverse(api + 'company-list', request=request),
+            'department': reverse(api + 'depart-list', request=request),
+            'position': reverse(api + 'position-list', request=request),
+            'staff': reverse(api + 'staff-list', request=request),
             'schedule': reverse(api + 'schedule-list', request=request),
             'account-sort': reverse(api + AccountSortList.name, request=request),
             'account-depth1': reverse(api + AccountSubD1List.name, request=request),
@@ -48,11 +48,11 @@ class ApiIndex(generics.GenericAPIView):
             'project-acc-sort': reverse(api + ProjectAccountSortList.name, request=request),
             'project-acc-d1': reverse(api + ProjectAccountD1List.name, request=request),
             'project-acc-d2': reverse(api + ProjectAccountD2List.name, request=request),
-            'project': reverse(api + ProjectList.name, request=request),
-            'type': reverse(api + UnitTypeList.name, request=request),
-            'floor': reverse(api + UnitFloorTypeList.name, request=request),
-            'key-unit': reverse(api + KeyUnitList.name, request=request),
-            'bldg-unit': reverse(api + BuildingUnitList.name, request=request),
+            'project': reverse(api + 'project-list', request=request),
+            'type': reverse(api + 'unittype-list', request=request),
+            'floor': reverse(api + 'floortype-list', request=request),
+            'key-unit': reverse(api + 'key_unit-list', request=request),
+            'bldg-unit': reverse(api + 'bldg-list', request=request),
             'house-unit': reverse(api + HouseUnitList.name, request=request),
             'available-house-unit': reverse(api + AvailableHouseUnitList.name, request=request),
             'all-house-unit': reverse(api + AllHouseUnitList.name, request=request),
@@ -63,7 +63,7 @@ class ApiIndex(generics.GenericAPIView):
             # 'site-relation': reverse(api + RelationList.name, request=request),
             # 'site-contract': reverse(api + SiteContractList.name, request=request),
             # 'bank-code': reverse(api + BankCodeList.name, request=request),
-            'com-bank': reverse(api + ComBankAccountList.name, request=request),
+            'com-bank': reverse(api + 'com_bank-list', request=request),
             'balance-by-acc': reverse(api + BalanceByAccountList.name, request=request),
             'cashbook': reverse(api + CashBookList.name, request=request),
             'date-cashbook': reverse(api + DateCashBookList.name, request=request),
@@ -105,22 +105,13 @@ class ApiIndex(generics.GenericAPIView):
 
 
 # Accounts --------------------------------------------------------------------------
-class UserList(generics.ListCreateAPIView):
-    name = 'user-list'
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    permission_classes = (permissions.AllowAny,)
-
-
-class UserDetail(generics.RetrieveUpdateDestroyAPIView):
-    name = 'user-detail'
+class UserViewSets(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = (permissions.IsAuthenticated, IsOwnSelfOrReadOnly)
 
 
-class ProfileList(generics.ListCreateAPIView):
-    name = 'profile-list'
+class ProfileViewSets(viewsets.ModelViewSet):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
     permission_classes = (permissions.IsAuthenticated, IsOwnerOnly)
@@ -129,15 +120,7 @@ class ProfileList(generics.ListCreateAPIView):
         serializer.save(user=self.request.user)
 
 
-class ProfileDetail(generics.RetrieveUpdateDestroyAPIView):
-    name = 'profile-detail'
-    queryset = Profile.objects.all()
-    serializer_class = ProfileSerializer
-    permission_classes = (permissions.IsAuthenticated, IsOwnerOnly)
-
-
-class TodoList(generics.ListCreateAPIView):
-    name = 'todo-list'
+class TodoViewSets(viewsets.ModelViewSet):
     queryset = Todo.objects.all()
     serializer_class = TodoSerializer
     pagination_class = PageNumberPaginationFifty
@@ -149,65 +132,26 @@ class TodoList(generics.ListCreateAPIView):
         serializer.save(user=self.request.user)
 
 
-class TodoDetail(generics.RetrieveUpdateDestroyAPIView):
-    name = 'todo-detail'
-    queryset = Todo.objects.all()
-    serializer_class = TodoSerializer
-    permission_classes = (permissions.IsAuthenticated, IsOwnerOnly)
-
-
 # Company --------------------------------------------------------------------------
-class CompanyList(generics.ListCreateAPIView):
-    name = 'company-list'
+class CompanyViewSets(viewsets.ModelViewSet):
     queryset = Company.objects.all()
     serializer_class = CompanySerializer
     permission_classes = (permissions.IsAuthenticated, IsSuperUserOrReadOnly)
 
 
-class CompanyDetail(generics.RetrieveUpdateDestroyAPIView):
-    name = 'company-detail'
-    queryset = Company.objects.all()
-    serializer_class = CompanySerializer
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-
-
-class DepartmentList(generics.ListCreateAPIView):
-    name = 'depart-list'
+class DepartmentViewSets(viewsets.ModelViewSet):
     queryset = Department.objects.all()
     serializer_class = DepartmentSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
 
-class DepartmentDetail(generics.RetrieveUpdateDestroyAPIView):
-    name = 'depart-detail'
-    queryset = Department.objects.all()
-    serializer_class = DepartmentSerializer
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-
-
-class PositionList(generics.ListCreateAPIView):
-    name = 'position-list'
+class PositionViewSets(viewsets.ModelViewSet):
     queryset = Position.objects.all()
     serializer_class = PositionSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
 
-class PositionDetail(generics.RetrieveUpdateDestroyAPIView):
-    name = 'position-detail'
-    queryset = Position.objects.all()
-    serializer_class = PositionSerializer
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-
-
-class StaffList(generics.ListCreateAPIView):
-    name = 'staff-list'
-    queryset = Staff.objects.all()
-    serializer_class = StaffSerializer
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-
-
-class StaffDetail(generics.RetrieveUpdateDestroyAPIView):
-    name = 'staff-detail'
+class StaffViewSets(viewsets.ModelViewSet):
     queryset = Staff.objects.all()
     serializer_class = StaffSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
@@ -275,22 +219,13 @@ class ProjectAccountD2List(generics.ListAPIView):
 
 
 # Project --------------------------------------------------------------------------
-class ProjectList(generics.ListCreateAPIView):
-    name = 'project-list'
+class ProjectViewSets(viewsets.ModelViewSet):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
     permission_classes = (permissions.IsAuthenticated, IsSuperUserOrReadOnly)
 
 
-class ProjectDetail(generics.RetrieveUpdateDestroyAPIView):
-    name = 'project-detail'
-    queryset = Project.objects.all()
-    serializer_class = ProjectSerializer
-    permission_classes = (permissions.IsAuthenticated, IsSuperUserOrReadOnly)
-
-
-class UnitTypeList(generics.ListCreateAPIView):
-    name = 'unittype-list'
+class UnitTypeViewSets(viewsets.ModelViewSet):
     queryset = UnitType.objects.all()
     serializer_class = UnitTypeSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
@@ -298,44 +233,13 @@ class UnitTypeList(generics.ListCreateAPIView):
     search_fields = ('name',)
 
 
-class UnitTypeDetail(generics.RetrieveUpdateDestroyAPIView):
-    name = 'unittype-detail'
-    queryset = UnitType.objects.all()
-    serializer_class = UnitTypeSerializer
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-
-
-class UnitFloorTypeList(generics.ListCreateAPIView):
-    name = 'floortype-list'
+class UnitFloorTypeViewSets(viewsets.ModelViewSet):
     queryset = UnitFloorType.objects.all()
     serializer_class = UnitFloorTypeSerializer
     pagination_class = PageNumberPaginationFifty
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
     filter_fields = ('project',)
     search_fields = ('alias_name',)
-
-
-class UnitFloorTypeDetail(generics.RetrieveUpdateDestroyAPIView):
-    name = 'floortype-detail'
-    queryset = UnitFloorType.objects.all()
-    serializer_class = UnitFloorTypeSerializer
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-
-
-class BuildingUnitList(generics.ListCreateAPIView):
-    name = 'bldg-list'
-    queryset = BuildingUnit.objects.all()
-    serializer_class = BuildingUnitSerializer
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-    filter_fields = ('project',)
-    search_fields = ('name',)
-
-
-class BuildingUnitDetail(generics.RetrieveUpdateDestroyAPIView):
-    name = 'bldg-detail'
-    queryset = BuildingUnit.objects.all()
-    serializer_class = BuildingUnitSerializer
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
 
 class KeyUnitListFilterSet(FilterSet):
@@ -346,19 +250,19 @@ class KeyUnitListFilterSet(FilterSet):
         fields = ('project', 'unit_type', 'contract', 'available')
 
 
-class KeyUnitList(generics.ListCreateAPIView):
-    name = 'key_unit-list'
+class KeyUnitViewSets(viewsets.ModelViewSet):
     queryset = KeyUnit.objects.all()
     serializer_class = KeyUnitSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
     filter_class = KeyUnitListFilterSet
 
 
-class KeyUnitDetail(generics.RetrieveUpdateDestroyAPIView):
-    name = 'key_unit-detail'
-    queryset = KeyUnit.objects.all()
-    serializer_class = KeyUnitSerializer
+class BuildingUnitViewSets(viewsets.ModelViewSet):
+    queryset = BuildingUnit.objects.all()
+    serializer_class = BuildingUnitSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    filter_fields = ('project',)
+    search_fields = ('name',)
 
 
 class HouseUnitList(generics.ListCreateAPIView):
@@ -368,6 +272,13 @@ class HouseUnitList(generics.ListCreateAPIView):
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
     filter_fields = ('project', 'building_unit')
     search_fields = ('hold_reason',)
+
+
+class HouseUnitDetail(generics.RetrieveUpdateDestroyAPIView):
+    name = 'unit-detail'
+    queryset = HouseUnit.objects.all()
+    serializer_class = HouseUnitSerializer
+    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
 
 class AvailableHouseUnitList(HouseUnitList):
@@ -395,13 +306,6 @@ class AllHouseUnitList(HouseUnitList):
     name = 'all-unit-list'
     serializer_class = AllHouseUnitSerializer
     pagination_class = PageNumberPaginationThreeThousand
-
-
-class HouseUnitDetail(generics.RetrieveUpdateDestroyAPIView):
-    name = 'unit-detail'
-    queryset = HouseUnit.objects.all()
-    serializer_class = HouseUnitSerializer
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
 
 class ProjectBudgetList(generics.ListCreateAPIView):
@@ -521,18 +425,10 @@ class ExecAmountToBudgetList(generics.ListAPIView):
 #     serializer_class = BankCodeSerializer
 
 
-class ComBankAccountList(generics.ListCreateAPIView):
-    name = 'com_bank-list'
+class ComBankAccountViewSets(viewsets.ModelViewSet):
     queryset = CompanyBankAccount.objects.all()
     serializer_class = CompanyBankAccountSerializer
     pagination_class = PageNumberPaginationFifty
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-
-
-class ComBankAccountDetail(generics.RetrieveUpdateDestroyAPIView):
-    name = 'com_bank-detail'
-    queryset = CompanyBankAccount.objects.all()
-    serializer_class = CompanyBankAccountSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
 
