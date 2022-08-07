@@ -105,7 +105,9 @@ class ProjectAccountD2(models.Model):
 
 class CalendarSchedule(models.Model):
     title = models.CharField('일정 제목', max_length=100)
-    event_date = models.DateField('일정 일자', null=True, blank=True)
+    all_day = models.BooleanField(default=True)
+    start_date = models.DateField('시작 일자', null=True, blank=True)
+    end_date = models.DateField('종료 일자', null=True, blank=True)
     start_time = models.DateTimeField('시작 시간', null=True, blank=True)
     end_time = models.DateTimeField('종료 시간', null=True, blank=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')

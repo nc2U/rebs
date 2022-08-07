@@ -173,7 +173,7 @@ class ProjectAccountD2Serializer(serializers.ModelSerializer):
 class CalendarScheduleSerializer(serializers.ModelSerializer):
     class Meta:
         model = CalendarSchedule
-        fields = ('pk', 'title', 'event_date', 'start_time', 'end_time')
+        fields = ('pk', 'title', 'all_day', 'start_date', 'end_date', 'start_time', 'end_time')
 
 
 # Project --------------------------------------------------------------------------
