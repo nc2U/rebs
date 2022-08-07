@@ -19,6 +19,14 @@ from .views import *
 
 app_name = 'api'
 
+list_view = {'get': 'list', 'post': 'create'}
+detail_view = {
+    'get': 'retrieve',
+    'put': 'update',
+    'patch': 'partial_update',
+    'delete': 'destroy'
+}
+
 urlpatterns = [
     path('', ApiIndex.as_view(), name=ApiIndex.name),
     path('user/', UserList.as_view(), name=UserList.name),
@@ -29,6 +37,8 @@ urlpatterns = [
     path('todo/<int:pk>/', TodoDetail.as_view(), name=TodoDetail.name),
     path('staff/', StaffList.as_view(), name=StaffList.name),
     path('staff/<int:pk>/', StaffDetail.as_view(), name=StaffDetail.name),
+    path('schedule/', CalendarScheduleViewSet.as_view(list_view), name='schedule-list'),
+    path('schedule/<int:pk>/', CalendarScheduleViewSet.as_view(detail_view), name='schedule-detail'),
     path('company/', CompanyList.as_view(), name=CompanyList.name),
     path('company/<int:pk>/', CompanyDetail.as_view(), name=CompanyDetail.name),
     path('department/', DepartmentList.as_view(), name=DepartmentList.name),

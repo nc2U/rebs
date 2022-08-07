@@ -1,6 +1,6 @@
 from datetime import datetime
-from django.db.models import Sum, Count, F, Q, Case, When, IntegerField
-from rest_framework import generics
+from django.db.models import Sum, Count, F, Q, Case, When
+from rest_framework import generics, viewsets
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from django_filters.rest_framework import FilterSet
@@ -15,8 +15,8 @@ from company.models import Company, Department, Position, Staff
 from project.models import (Project, UnitType, UnitFloorType,
                             KeyUnit, BuildingUnit, HouseUnit, ProjectBudget,
                             Site, SiteOwner, SiteOwnshipRelationship, SiteContract)
-from rebs.models import (AccountSort, AccountSubD1, AccountSubD2, AccountSubD3,
-                         ProjectAccountSort, ProjectAccountD1, ProjectAccountD2, WiseSaying)
+from rebs.models import (AccountSort, AccountSubD1, AccountSubD2, AccountSubD3, ProjectAccountSort,
+                         ProjectAccountD1, ProjectAccountD2, CalendarSchedule, WiseSaying)
 from cash.models import (BankCode, CompanyBankAccount, ProjectBankAccount,
                          CashBook, ProjectCashBook, SalesPriceByGT,
                          InstallmentPaymentOrder, DownPayment, OverDueRule)
@@ -40,6 +40,7 @@ class ApiIndex(generics.GenericAPIView):
             'department': reverse(api + DepartmentList.name, request=request),
             'position': reverse(api + PositionList.name, request=request),
             'staff': reverse(api + StaffList.name, request=request),
+            'schedule': reverse(api + 'schedule-list', request=request),
             'account-sort': reverse(api + AccountSortList.name, request=request),
             'account-depth1': reverse(api + AccountSubD1List.name, request=request),
             'account-depth2': reverse(api + AccountSubD2List.name, request=request),
@@ -210,6 +211,15 @@ class StaffDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Staff.objects.all()
     serializer_class = StaffSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+
+
+class CalendarScheduleViewSet(viewsets.ModelViewSet):
+    queryset = CalendarSchedule.objects.all()
+    serializer_class = CalendarScheduleSerializer
+    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 
 # Rebs --------------------------------------------------------------------------

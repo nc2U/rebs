@@ -7,7 +7,7 @@ from project.models import (Project, UnitType, UnitFloorType,
                             KeyUnit, BuildingUnit, HouseUnit, ProjectBudget,
                             Site, SiteOwner, SiteOwnshipRelationship, SiteContract)
 from rebs.models import (AccountSort, AccountSubD1, AccountSubD2, AccountSubD3,
-                         ProjectAccountD1, ProjectAccountD2, WiseSaying)
+                         ProjectAccountD1, ProjectAccountD2, CalendarSchedule, WiseSaying)
 from cash.models import (BankCode, CompanyBankAccount, ProjectBankAccount,
                          CashBook, ProjectCashBook, SalesPriceByGT,
                          InstallmentPaymentOrder, DownPayment, OverDueRule)
@@ -168,6 +168,12 @@ class ProjectAccountD2Serializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectAccountD2
         fields = ('pk', 'd1', 'code', 'sub_title', 'name', 'description')
+
+
+class CalendarScheduleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CalendarSchedule
+        fields = ('pk', 'title', 'event_date', 'start_time', 'end_time')
 
 
 # Project --------------------------------------------------------------------------
