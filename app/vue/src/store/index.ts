@@ -1,5 +1,6 @@
 import { createStore } from 'vuex'
 import tagsView from '@/store/modules/tagsView'
+import schedule from '@/store/modules/schedule'
 import accounts from '@/store/modules/accounts'
 import comCash from '@/store/modules/comCash'
 import contract from '@/store/modules/contract'
@@ -74,6 +75,7 @@ const store = createStore({
   mutations,
   modules: {
     tagsView,
+    schedule,
     accounts,
     comCash,
     contract,

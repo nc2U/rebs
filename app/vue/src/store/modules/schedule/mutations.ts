@@ -1,7 +1,9 @@
 import { ScheduleState, Schedule } from '@/store/modules/schedule/state'
 
+export const UPDATE_STATE = 'UPDATE_STATE'
+
 const mutations = {
-  updateState: (
+  UPDATE_STATE: (
     state: ScheduleState,
     payload: { [key: string]: null | Schedule | Schedule[] },
   ) => {

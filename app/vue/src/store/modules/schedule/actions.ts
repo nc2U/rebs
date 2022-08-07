@@ -1,5 +1,5 @@
 import api from '@/api'
-import updateState from './mutations'
+import { UPDATE_STATE } from './mutations'
 import { errorHandle, message } from '@/utils/helper'
 
 const actions = {
@@ -7,9 +7,10 @@ const actions = {
     api
       .get('/schedule/')
       .then(res => {
-        commit(updateState, res.data)
+        console.log(res.data.results)
+        commit(UPDATE_STATE, { scheduleList: res.data.results })
       })
-      .catch(err => errorHandle(err.response.data))
+      .catch(err => errorHandle(err.response))
   },
 
   fetchSchedule: ({ commit }: any, payload: any) => {
@@ -17,7 +18,7 @@ const actions = {
     api
       .get(`/schedule/${pk}/`)
       .then(res => {
-        commit(updateState, res.data)
+        commit(UPDATE_STATE, { schedule: res.data })
       })
       .catch(err => errorHandle(err.response.data))
   },

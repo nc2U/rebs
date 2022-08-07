@@ -1,8 +1,11 @@
 import { State } from '@/store'
 
 export interface Schedule {
-  name: string
-  task: string
+  pk: number
+  title: string
+  event_date: string | null
+  start_time: string | null
+  end_time: string | null
 }
 
 export interface ScheduleState extends State {
