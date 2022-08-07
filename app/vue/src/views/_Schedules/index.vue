@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount, reactive } from 'vue'
+import { computed, onBeforeMount, reactive, watch } from 'vue'
 import { useStore } from 'vuex'
 import '@fullcalendar/core/vdom' // solve problem with Vite
 import FullCalendar, {
@@ -15,40 +15,47 @@ import interactionPlugin from '@fullcalendar/interaction'
 import CalendarInfo from './components/CalendarInfo.vue'
 
 const store = useStore()
+
 const fetchScheduleList = () => store.dispatch('schedule/fetchScheduleList')
-const events = computed(() => store.getters['schedule/events'])
 
 const currentEvents: EventApi[] = reactive([])
 
+const events = computed(() => store.getters['schedule/events'])
+
+watch(events, val => {
+  console.log('events -> watch --->', val)
+})
+
 const handleDateSelect = (selectInfo: DateSelectArg) => {
-  alert('날짜 클릭 시 이벤트')
-  // let title = prompt('Please enter a new title for your event')
-  // let calendarApi = selectInfo.view.calendar
-  // calendarApi.unselect() // clear date selection
-  // if (title) {
-  //   calendarApi.addEvent({
-  //     // id: createEventId(),
-  //     title,
-  //     start: selectInfo.startStr,
-  //     end: selectInfo.endStr,
-  //     allDay: selectInfo.allDay,
-  //   })
-  // }
+  // alert('날짜 클릭 시 이벤트')
+  let title = prompt('Please enter a new title for your event')
+  let calendarApi = selectInfo.view.calendar
+  calendarApi.unselect() // clear date selection
+
+  if (title) {
+    calendarApi.addEvent({
+      // id: createEventId(),
+      title,
+      start: selectInfo.startStr,
+      end: selectInfo.endStr,
+      allDay: selectInfo.allDay,
+    })
+  }
 }
 
 const handleEventClick = (clickInfo: EventClickArg) => {
-  alert('일정 클릭 시 이벤트')
-  // if (
-  //   confirm(
-  //     `Are you sure you want to delete the event '${clickInfo.event.title}'`,
-  //   )
-  // ) {
-  //   clickInfo.event.remove()
-  // }
+  // 일정 클릭 시 이벤트
+  if (
+    confirm(
+      `Are you sure you want to delete the event '${clickInfo.event.title}'`,
+    )
+  ) {
+    clickInfo.event.remove()
+  }
 }
 
-const handleEvents = (events: EventApi[]) => {
-  currentEvents.splice(0, currentEvents.length, ...events)
+const handleEvents = () => {
+  currentEvents.splice(0, currentEvents.length, ...events.value)
 }
 
 const calendarOptions: CalendarOptions = reactive({
@@ -63,7 +70,7 @@ const calendarOptions: CalendarOptions = reactive({
     right: 'dayGridMonth,timeGridWeek,timeGridDay',
   },
   initialView: 'dayGridMonth',
-  initialEvents: events, // alternatively, use the `events` setting to fetch from a feed
+  initialEvents: events.value, // alternatively, use the `events` setting to fetch from a feed
   editable: true,
   selectable: true,
   selectMirror: true,
@@ -74,11 +81,10 @@ const calendarOptions: CalendarOptions = reactive({
   eventClick: handleEventClick,
   eventsSet: handleEvents,
 
-  /* you can update a remote database when these fire:
-  eventAdd:
-  eventChange:
-  eventRemove:
-  */
+  // you can update a remote database when these fire:
+  eventAdd: () => alert('add'),
+  eventChange: () => alert('change'),
+  eventRemove: () => alert('del'),
 })
 
 const handleWeekendsToggle = () => {
@@ -87,6 +93,8 @@ const handleWeekendsToggle = () => {
 
 onBeforeMount(() => {
   fetchScheduleList()
+
+  console.log('onBeforeMount --->', events.value)
 })
 </script>
 
