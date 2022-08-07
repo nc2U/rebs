@@ -3,14 +3,12 @@ import { computed, onBeforeMount, reactive, watch } from 'vue'
 import '@fullcalendar/core/vdom' // solve problem with Vite
 import FullCalendar, {
   CalendarOptions,
-  EventApi,
   DateSelectArg,
   EventClickArg,
 } from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
-// import { createEventId } from './event-utils'
 
 import { useStore } from 'vuex'
 import CalendarInfo from './components/CalendarInfo.vue'
@@ -19,9 +17,9 @@ const store = useStore()
 
 const fetchScheduleList = () => store.dispatch('schedule/fetchScheduleList')
 
-const currentEvents: EventApi[] = reactive([])
+const currentEvents = computed(() => store.getters['schedule/events'])
 
-const events = computed(() => store.getters['schedule/events'])
+watch(currentEvents, () => calendarOptions.initialEvents)
 
 const handleDateSelect = (selectInfo: DateSelectArg) => {
   // alert('날짜 클릭 시 이벤트')
@@ -51,10 +49,6 @@ const handleEventClick = (clickInfo: EventClickArg) => {
   }
 }
 
-const handleEvents = () => {
-  currentEvents.splice(0, currentEvents.length, ...events.value)
-}
-
 const calendarOptions: CalendarOptions = reactive({
   plugins: [
     dayGridPlugin,
@@ -67,16 +61,17 @@ const calendarOptions: CalendarOptions = reactive({
     right: 'dayGridMonth,timeGridWeek,timeGridDay',
   },
   initialView: 'dayGridMonth',
-  initialEvents: events.value, // alternatively, use the `events` setting to fetch from a feed
+  initialEvents: currentEvents, // alternatively, use the `events` setting to fetch from a feed
   editable: true,
   selectable: true,
   selectMirror: true,
   dayMaxEvents: true,
+
   weekends: true,
 
   select: handleDateSelect,
   eventClick: handleEventClick,
-  eventsSet: handleEvents,
+  // eventsSet: handleEvents,
 
   // you can update a remote database when these fire:
   eventAdd: () => alert('add'),
@@ -90,7 +85,7 @@ const handleWeekendsToggle = () => {
 
 onBeforeMount(() => {
   fetchScheduleList()
-  console.log(events.value)
+  console.log(calendarOptions.initialEvents)
 })
 </script>
 
