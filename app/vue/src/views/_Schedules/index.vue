@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount, reactive, watch } from 'vue'
-import { useStore } from 'vuex'
 import '@fullcalendar/core/vdom' // solve problem with Vite
 import FullCalendar, {
   CalendarOptions,
@@ -12,6 +11,8 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 // import { createEventId } from './event-utils'
+
+import { useStore } from 'vuex'
 import CalendarInfo from './components/CalendarInfo.vue'
 
 const store = useStore()
@@ -21,10 +22,6 @@ const fetchScheduleList = () => store.dispatch('schedule/fetchScheduleList')
 const currentEvents: EventApi[] = reactive([])
 
 const events = computed(() => store.getters['schedule/events'])
-
-watch(events, val => {
-  console.log('events -> watch --->', val)
-})
 
 const handleDateSelect = (selectInfo: DateSelectArg) => {
   // alert('날짜 클릭 시 이벤트')
@@ -93,8 +90,7 @@ const handleWeekendsToggle = () => {
 
 onBeforeMount(() => {
   fetchScheduleList()
-
-  console.log('onBeforeMount --->', events.value)
+  console.log(events.value)
 })
 </script>
 
