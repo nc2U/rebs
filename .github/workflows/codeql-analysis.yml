@@ -14,7 +14,7 @@ name: "CodeQL"
 on:
   push:
     paths:
-      - "app"
+      - "app/**"
     branches: [ "master" ]
 
 jobs:
