@@ -17,67 +17,65 @@ jobs:
       - name: Check out source code
         uses: actions/checkout@v3
 
-      - run: git log --oneline --decorate --graph --all
+      # 도커 허브 로그인
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-#      # 도커 허브 로그인
-#      - name: Login to DockerHub
-#        uses: docker/login-action@v2
-#        with:
-#          username: ${{ secrets.DOCKERHUB_USERNAME }}
-#          password: ${{ secrets.DOCKERHUB_TOKEN }}
-#
-#      # Nginx Dockerfile 캐싱
-#      - name: Cache Nginx Dockerfile
-#        uses: actions/cache@v3
-#        id: cache_nginx
-#        with:
-#          path: ./deploy/docker/nginx
-#          key: nginx-${{ hashFiles('**/Dockerfile') }}
-#
-#      # Nginx image 변화가 있으면 빌드 및 푸시
-#      - name: pikube/nginx push Build and push
-#        if: steps.cache_nginx.outputs.cache-hit != 'true'
-#        uses: docker/build-push-action@v3
-#        with:
-#          context: "deploy/docker/nginx"
-#          push: true
-#          tags: pikube/nginx:latest
-#
-#      # Web Dockerfile 캐싱
-#      - name: Cache WEB Dockerfile
-#        uses: actions/cache@v3
-#        id: cache_django
-#        with:
-#          path: ./deploy/docker/python
-#          key: python-${{ hashFiles('**/Dockerfile') }}-${{ hashFiles('**/requirements.txt') }}
-#
-#      # Web image 변화가 있으면 빌드 및 푸시
-#      - name: pikube/web push Build and push
-#        if: steps.cache_django.outputs.cache-hit != 'true'
-#        uses: docker/build-push-action@v3
-#        with:
-#          context: "deploy/docker/python"
-#          push: true
-#          tags: pikube/web:latest
+      # Nginx Dockerfile 캐싱
+      - name: Cache Nginx Dockerfile
+        uses: actions/cache@v3
+        id: cache_nginx
+        with:
+          path: ./deploy/docker/nginx
+          key: nginx-${{ hashFiles('**/Dockerfile') }}
+
+      # Nginx image 변화가 있으면 빌드 및 푸시
+      - name: pikube/nginx push Build and push
+        if: steps.cache_nginx.outputs.cache-hit != 'true'
+        uses: docker/build-push-action@v3
+        with:
+          context: "deploy/docker/nginx"
+          push: true
+          tags: pikube/nginx:latest
+
+      # Web Dockerfile 캐싱
+      - name: Cache WEB Dockerfile
+        uses: actions/cache@v3
+        id: cache_django
+        with:
+          path: ./deploy/docker/python
+          key: python-${{ hashFiles('**/Dockerfile') }}-${{ hashFiles('**/requirements.txt') }}
+
+      # Web image 변화가 있으면 빌드 및 푸시
+      - name: pikube/web push Build and push
+        if: steps.cache_django.outputs.cache-hit != 'true'
+        uses: docker/build-push-action@v3
+        with:
+          context: "deploy/docker/python"
+          push: true
+          tags: pikube/web:latest
 #
       # Node.js 사용
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 16
-#
-#      # node_modules 캐싱
-#      - name: Cache vue node
-#        uses: actions/cache@v3
-#        id: cache_vue
-#        with:
-#          path: ./app/vue
-#          key: yarn-packages-${{ hashFiles('yarn.lock') }}
-#
-#      # node_modules 변화기 있으면 빌드
-#      - name: Install Dependencies
-#        if: steps.cache_vue.outputs.cache-hit != 'true'
-#        run: cd app/vue && yarn
+
+      # node_modules 캐싱
+      - name: Cache vue node
+        uses: actions/cache@v3
+        id: cache_vue
+        with:
+          path: ./app/vue/node_modules
+          key: yarn-packages-${{ hashFiles('yarn.lock') }}
+
+      # node_modules 변화기 있으면 빌드
+      - name: Install Dependencies
+        if: steps.cache_vue.outputs.cache-hit != 'true'
+        run: cd app/vue && yarn
 
       #      - run: yarn lint
       #        # `if: ${{ always() }} => ` 만약 `yarn lint`라는 곳에서 에러가 났을 경우
@@ -86,25 +84,25 @@ jobs:
       #        # 이후의 build까지 다 실행을 해보고 난 뒤 종료 하므로 모든 테스트 스크립트에 ${{ always() }}를 붙임.
       #        if: ${{ always() }}
 
-      - run: git log --oneline --decorate --graph --all && cd app/vue && cat index.html && yarn && yarn build && cat ../django/static/dist/index.html
-#        if: ${{ always() }}
+      - run: yarn build
+        if: ${{ always() }}
 
-#      # node_modules 캐싱
-#      - name: Cache svelte node
-#        uses: actions/cache@v3
-#        id: cache_svelte
-#        with:
-#          path: ./app/svelte
-#          key: yarn-packages-${{ hashFiles('yarn.lock') }}
-#
-#      # node_modules 변화기 있으면 빌드
-#      - name: Install Dependencies
-#        if: steps.cache_svelte.outputs.cache-hit != 'true'
-#        run: cd app/svelte && yarn
-#
-#      - run: cd app/svelte && yarn build
-#        if: ${{ always() }}
-#
+      # node_modules 캐싱
+      - name: Cache svelte node
+        uses: actions/cache@v3
+        id: cache_svelte
+        with:
+          path: ./app/svelte/node_modules
+          key: yarn-packages-${{ hashFiles('yarn.lock') }}
+
+      # node_modules 변화기 있으면 빌드
+      - name: Install Dependencies
+        if: steps.cache_svelte.outputs.cache-hit != 'true'
+        run: cd app/svelte && yarn
+
+      - run: cd app/svelte && yarn build
+        if: ${{ always() }}
+
       # data to server copy transfer
       - name: Copy django, etc data to CI/CD server
         uses: appleboy/scp-action@master
@@ -114,55 +112,55 @@ jobs:
           password: ${{ secrets.CICD_PASSWORD }}
           source: 'app/django,deploy/helm,deploy/kubectl'
           target: '/mnt/nfs/'
-#
-#      # helm upgrade --> install
-#      - name: SSH Remote Commands from ci/cd server
-#        uses: garygrossgarten/github-action-ssh@release
-#        with:
-#          host: ${{ secrets.CICD_HOST }}
-#          username: ${{ secrets.CICD_USERNAME }}
-#          password: ${{ secrets.CICD_PASSWORD }}
-#          command: |
-#            cd ${{ secrets.NFS_PATH }}
-#            kubectl apply -f ./deploy/kubectl/ns-prod.yaml
-#            bash
-#            helm upgrade ${{ secrets.DATABASE_USER }} ./deploy/helm --install -f ./deploy/helm/values-prod.yaml -n prod-hrebs \
-#            --set global.password=${{ secrets.DATABASE_PASSWORD }} \
-#            --set global.nfsPath=${{ secrets.NFS_PATH }} \
-#            --set global.nfsServerHost=${{ secrets.CICD_HOST }} \
-#            --set nginx.ingress.tls[0].hosts[0]=${{ secrets.DOMAIN_NAME }} \
-#            --set nginx.ingress.tls[0].hosts[1]=www.${{ secrets.DOMAIN_NAME }} \
-#            --set nginx.ingress.tls[0].hosts[2]=api.${{ secrets.DOMAIN_NAME }} \
-#            --set nginx.ingress.hosts[0].host=${{ secrets.DOMAIN_NAME }} \
-#            --set nginx.ingress.hosts[1].host=www.${{ secrets.DOMAIN_NAME }} \
-#            --set nginx.ingress.hosts[2].host=api.${{ secrets.DOMAIN_NAME }} \
-#            --set nginx.ingress.hosts[1].paths[0].path=/ \
-#            --set nginx.ingress.hosts[1].paths[0].pathType=ImplementationSpecific \
-#            --set nginx.ingress.hosts[2].paths[0].path=/ \
-#            --set nginx.ingress.hosts[2].paths[0].pathType=ImplementationSpecific
-#
-#      # web pod --> django model migrations
-#      - name: django model migration
-#        uses: garygrossgarten/github-action-ssh@release
-#        with:
-#          host: ${{ secrets.CICD_HOST }}
-#          username: ${{ secrets.CICD_USERNAME }}
-#          password: ${{ secrets.CICD_PASSWORD }}
-#          command: |
-#            web_pod=$(kubectl get pod -n prod-hrebs | grep web | cut -d ' ' -f1)
-#            kubectl exec -it -n prod-hrebs $web_pod -- python manage.py makemigrations accounts book cash company contract document notice project rebs
-#            kubectl exec -it -n prod-hrebs $web_pod -- python manage.py migrate
-#
-#      # slack --> notification
-#      - name: Send slack when failed
-#        if: ${{ failure() }}                    # 실패했을 때 실행
-#        uses: ./.github/actions/slack-notify    # 직접 '만든' Action이므로 uses 키워드를 이용해서 아래 경로를 입력해줍니다.
-#        with:
-#          slack_incoming_url: ${{ secrets.SLACK_INCOMING_URL }}
-#
-#      - name: Send slack if completed
-#        if: ${{ success() }}                    # 성공할 때만 실행
-#        uses: ./.github/actions/slack-notify
-#        with:
-#          status: success   # status input은 받는 쪽에서 default 값을 정해놨기 때문에 success일 때만 전달.
-#          slack_incoming_url: ${{ secrets.SLACK_INCOMING_URL }}
+
+      # helm upgrade --> install
+      - name: SSH Remote Commands from ci/cd server
+        uses: garygrossgarten/github-action-ssh@release
+        with:
+          host: ${{ secrets.CICD_HOST }}
+          username: ${{ secrets.CICD_USERNAME }}
+          password: ${{ secrets.CICD_PASSWORD }}
+          command: |
+            cd ${{ secrets.NFS_PATH }}
+            kubectl apply -f ./deploy/kubectl/ns-prod.yaml
+            bash
+            helm upgrade ${{ secrets.DATABASE_USER }} ./deploy/helm --install -f ./deploy/helm/values-prod.yaml -n prod-hrebs \
+            --set global.password=${{ secrets.DATABASE_PASSWORD }} \
+            --set global.nfsPath=${{ secrets.NFS_PATH }} \
+            --set global.nfsServerHost=${{ secrets.CICD_HOST }} \
+            --set nginx.ingress.tls[0].hosts[0]=${{ secrets.DOMAIN_NAME }} \
+            --set nginx.ingress.tls[0].hosts[1]=www.${{ secrets.DOMAIN_NAME }} \
+            --set nginx.ingress.tls[0].hosts[2]=api.${{ secrets.DOMAIN_NAME }} \
+            --set nginx.ingress.hosts[0].host=${{ secrets.DOMAIN_NAME }} \
+            --set nginx.ingress.hosts[1].host=www.${{ secrets.DOMAIN_NAME }} \
+            --set nginx.ingress.hosts[2].host=api.${{ secrets.DOMAIN_NAME }} \
+            --set nginx.ingress.hosts[1].paths[0].path=/ \
+            --set nginx.ingress.hosts[1].paths[0].pathType=ImplementationSpecific \
+            --set nginx.ingress.hosts[2].paths[0].path=/ \
+            --set nginx.ingress.hosts[2].paths[0].pathType=ImplementationSpecific
+
+      # web pod --> django model migrations
+      - name: django model migration
+        uses: garygrossgarten/github-action-ssh@release
+        with:
+          host: ${{ secrets.CICD_HOST }}
+          username: ${{ secrets.CICD_USERNAME }}
+          password: ${{ secrets.CICD_PASSWORD }}
+          command: |
+            web_pod=$(kubectl get pod -n prod-hrebs | grep web | cut -d ' ' -f1)
+            kubectl exec -it -n prod-hrebs $web_pod -- python manage.py makemigrations accounts book cash company contract document notice project rebs
+            kubectl exec -it -n prod-hrebs $web_pod -- python manage.py migrate
+
+      # slack --> notification
+      - name: Send slack when failed
+        if: ${{ failure() }}                    # 실패했을 때 실행
+        uses: ./.github/actions/slack-notify    # 직접 '만든' Action이므로 uses 키워드를 이용해서 아래 경로를 입력해줍니다.
+        with:
+          slack_incoming_url: ${{ secrets.SLACK_INCOMING_URL }}
+
+      - name: Send slack if completed
+        if: ${{ success() }}                    # 성공할 때만 실행
+        uses: ./.github/actions/slack-notify
+        with:
+          status: success   # status input은 받는 쪽에서 default 값을 정해놨기 때문에 success일 때만 전달.
+          slack_incoming_url: ${{ secrets.SLACK_INCOMING_URL }}
