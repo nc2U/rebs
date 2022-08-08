@@ -60,11 +60,11 @@ jobs:
 #          push: true
 #          tags: pikube/web:latest
 #
-#      # Node.js 사용
-#      - name: Use Node.js
-#        uses: actions/setup-node@v3
-#        with:
-#          node-version: 16
+      # Node.js 사용
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
 #
 #      # node_modules 캐싱
 #      - name: Cache vue node
