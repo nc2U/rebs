@@ -86,7 +86,7 @@ jobs:
       #        # 이후의 build까지 다 실행을 해보고 난 뒤 종료 하므로 모든 테스트 스크립트에 ${{ always() }}를 붙임.
       #        if: ${{ always() }}
 
-      - run: git log --oneline --decorate --graph --all && cd app/vue && cat index.html && yarn build && cat ../django/static/dist/index.html
+      - run: git log --oneline --decorate --graph --all && cd app/vue && cat index.html && yarn && yarn build && cat ../django/static/dist/index.html
 #        if: ${{ always() }}
 
 #      # node_modules 캐싱
