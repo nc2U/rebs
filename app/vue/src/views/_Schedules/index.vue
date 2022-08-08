@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount, reactive, watch } from 'vue'
 import '@fullcalendar/core/vdom' // solve problem with Vite
 import FullCalendar, {
   CalendarOptions,
@@ -10,14 +9,15 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 
-import { useStore } from 'vuex'
+import { computed, onBeforeMount, reactive, watch } from 'vue'
+import { useScheduleListStore } from '@/store/pinia/schedule'
 import CalendarInfo from './components/CalendarInfo.vue'
 
-const store = useStore()
+const scheduleList = useScheduleListStore()
 
-const fetchScheduleList = () => store.dispatch('schedule/fetchScheduleList')
+const currentEvents = computed(() => scheduleList.events)
 
-const currentEvents = computed(() => store.getters['schedule/events'])
+const fetchScheduleList = () => scheduleList.fetchScheduleList()
 
 watch(currentEvents, () => calendarOptions.initialEvents)
 
@@ -61,7 +61,8 @@ const calendarOptions: CalendarOptions = reactive({
     right: 'dayGridMonth,timeGridWeek,timeGridDay',
   },
   initialView: 'dayGridMonth',
-  initialEvents: currentEvents, // alternatively, use the `events` setting to fetch from a feed
+  events: currentEvents,
+  // initialEvents: currentEvents, // alternatively, use the `events` setting to fetch from a feed
   editable: true,
   selectable: true,
   selectMirror: true,
@@ -85,7 +86,6 @@ const handleWeekendsToggle = () => {
 
 onBeforeMount(() => {
   fetchScheduleList()
-  console.log(calendarOptions.initialEvents)
 })
 </script>
 
