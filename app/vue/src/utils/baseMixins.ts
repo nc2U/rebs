@@ -19,6 +19,10 @@ export const diffDate = (date: string) => {
   return btween / 1000 / 60 / 60 / 24
 }
 
+export const addDays = (date: Date, days: number) => {
+  return date.setDate(date.getDate() + days)
+}
+
 export const dateFormat = (date: Date) => {
   return date.toISOString().replace(/T.*$/, '')
 }
