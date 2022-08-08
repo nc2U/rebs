@@ -161,6 +161,7 @@ class CalendarScheduleViewSet(viewsets.ModelViewSet):
     queryset = CalendarSchedule.objects.all()
     serializer_class = CalendarScheduleSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    search_fields = ('start_date', 'start_time')
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
