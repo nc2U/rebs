@@ -102,4 +102,14 @@ const delModalImg = () => {
   overflow: hidden;
   cursor: pointer;
 }
+
+.btn:focus,
+.btn:active:focus,
+.btn.active:focus,
+.btn.focus,
+.btn:active.focus,
+.btn.active.focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
 </style>
