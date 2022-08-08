@@ -45,7 +45,7 @@ url = [
 
     path('', TemplateView.as_view(template_name='base-vue.html')),
 
-    path('svelte', TemplateView.as_view(template_name='base-svelte.html')),
+    path('svelte/', TemplateView.as_view(template_name='base-svelte.html')),
 
     path('book/', include('book.urls')),
 
