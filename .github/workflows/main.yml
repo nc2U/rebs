@@ -19,46 +19,46 @@ jobs:
 
       - run: git log --oneline --decorate --graph --all
 
-#      # 도커 허브 로그인
-#      - name: Login to DockerHub
-#        uses: docker/login-action@v2
-#        with:
-#          username: ${{ secrets.DOCKERHUB_USERNAME }}
-#          password: ${{ secrets.DOCKERHUB_TOKEN }}
-#
-#      # Nginx Dockerfile 캐싱
-#      - name: Cache Nginx Dockerfile
-#        uses: actions/cache@v3
-#        id: cache_nginx
-#        with:
-#          path: ./deploy/docker/nginx
-#          key: nginx-${{ hashFiles('**/Dockerfile') }}
-#
-#      # Nginx image 변화가 있으면 빌드 및 푸시
-#      - name: pikube/nginx push Build and push
-#        if: steps.cache_nginx.outputs.cache-hit != 'true'
-#        uses: docker/build-push-action@v3
-#        with:
-#          context: "deploy/docker/nginx"
-#          push: true
-#          tags: pikube/nginx:latest
-#
-#      # Web Dockerfile 캐싱
-#      - name: Cache WEB Dockerfile
-#        uses: actions/cache@v3
-#        id: cache_django
-#        with:
-#          path: ./deploy/docker/python
-#          key: python-${{ hashFiles('**/Dockerfile') }}-${{ hashFiles('**/requirements.txt') }}
-#
-#      # Web image 변화가 있으면 빌드 및 푸시
-#      - name: pikube/web push Build and push
-#        if: steps.cache_django.outputs.cache-hit != 'true'
-#        uses: docker/build-push-action@v3
-#        with:
-#          context: "deploy/docker/python"
-#          push: true
-#          tags: pikube/web:latest
+      # 도커 허브 로그인
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # Nginx Dockerfile 캐싱
+      - name: Cache Nginx Dockerfile
+        uses: actions/cache@v3
+        id: cache_nginx
+        with:
+          path: ./deploy/docker/nginx
+          key: nginx-${{ hashFiles('**/Dockerfile') }}
+
+      # Nginx image 변화가 있으면 빌드 및 푸시
+      - name: pikube/nginx push Build and push
+        if: steps.cache_nginx.outputs.cache-hit != 'true'
+        uses: docker/build-push-action@v3
+        with:
+          context: "deploy/docker/nginx"
+          push: true
+          tags: pikube/nginx:latest
+
+      # Web Dockerfile 캐싱
+      - name: Cache WEB Dockerfile
+        uses: actions/cache@v3
+        id: cache_django
+        with:
+          path: ./deploy/docker/python
+          key: python-${{ hashFiles('**/Dockerfile') }}-${{ hashFiles('**/requirements.txt') }}
+
+      # Web image 변화가 있으면 빌드 및 푸시
+      - name: pikube/web push Build and push
+        if: steps.cache_django.outputs.cache-hit != 'true'
+        uses: docker/build-push-action@v3
+        with:
+          context: "deploy/docker/python"
+          push: true
+          tags: pikube/web:latest
 
       # Node.js 사용
       - name: Use Node.js
@@ -66,28 +66,28 @@ jobs:
         with:
           node-version: 16
 
-#      # node_modules 캐싱
-#      - name: Cache vue node
-#        uses: actions/cache@v3
-#        id: cache_vue
-#        with:
-#          path: ./app/vue
-#          key: yarn-packages-${{ hashFiles('yarn.lock') }}
-#
-#      # node_modules 변화기 있으면 빌드
-#      - name: Install Dependencies
-#        if: steps.cache_vue.outputs.cache-hit != 'true'
-#        run: cd app/vue && yarn
-#
-#      #      - run: yarn lint
-#      #        # `if: ${{ always() }} => ` 만약 `yarn lint`라는 곳에서 에러가 났을 경우
-#      #        # 이후 build를 실행하지 않고 해당 workflow가 종료됨.
-#      #        # ${{ always() }}라는 문법을 사용 시 `yarn lint`라는 곳에서 에러가 나도
-#      #        # 이후의 build까지 다 실행을 해보고 난 뒤 종료 하므로 모든 테스트 스크립트에 ${{ always() }}를 붙임.
-#      #        if: ${{ always() }}
+      # node_modules 캐싱
+      - name: Cache vue node
+        uses: actions/cache@v3
+        id: cache_vue
+        with:
+          path: ./app/vue
+          key: yarn-packages-${{ hashFiles('yarn.lock') }}
+
+      # node_modules 변화기 있으면 빌드
+      - name: Install Dependencies
+        if: steps.cache_vue.outputs.cache-hit != 'true'
+        run: cd app/vue && yarn
+
+      #      - run: yarn lint
+      #        # `if: ${{ always() }} => ` 만약 `yarn lint`라는 곳에서 에러가 났을 경우
+      #        # 이후 build를 실행하지 않고 해당 workflow가 종료됨.
+      #        # ${{ always() }}라는 문법을 사용 시 `yarn lint`라는 곳에서 에러가 나도
+      #        # 이후의 build까지 다 실행을 해보고 난 뒤 종료 하므로 모든 테스트 스크립트에 ${{ always() }}를 붙임.
+      #        if: ${{ always() }}
 
       - run: git log --oneline --decorate --graph --all && cd app/vue && cat index.html && yarn build && cat ../django/static/dist/index.html
-#        if: ${{ always() }}
+        if: ${{ always() }}
 
 #      # node_modules 캐싱
 #      - name: Cache svelte node
