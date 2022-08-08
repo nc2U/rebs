@@ -26,9 +26,10 @@ export const useScheduleListStore = defineStore('scheduleList', () => {
     }))
   })
 
-  const fetchScheduleList = () => {
+  const fetchScheduleList = (month?: string) => {
+    const mon = month ? month : new Date().toISOString().slice(0, 7)
     api
-      .get('/schedule/')
+      .get(`/schedule/?search=${mon}`)
       .then(res =>
         scheduleList.splice(0, scheduleList.length, ...res.data.results),
       )
