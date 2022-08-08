@@ -1,4 +1,4 @@
-name: svelte_app
+name: Svelte_App_Update
 
 on:
   push:

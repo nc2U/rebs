@@ -1,4 +1,4 @@
-name: vue_app
+name: Vue_App_Update
 
 on:
   push:
