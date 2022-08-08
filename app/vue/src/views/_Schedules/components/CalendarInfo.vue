@@ -40,7 +40,7 @@ defineProps({
         <ul>
           <li v-for="event in currentEvents" :key="event.id">
             <b>{{ event.start }}</b>
-            <i class="mx-2">{{ event.title }}</i>
+            <i class="ml-2">{{ event.title }}</i>
           </li>
         </ul>
       </div>
