@@ -7,7 +7,10 @@
     "serve": "vite preview",
     "lint": "vue-cli-service lint",
     "test:unit": "vue-cli-service test:unit",
-    "test:e2e": "vue-cli-service test:e2e"
+    "test:e2e": "vue-cli-service test:e2e",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:serve": "vitepress serve docs"
   },
   "dependencies": {
     "@coreui/chartjs": "^3.0.0",
@@ -70,6 +73,7 @@
     "typescript": "~4.4.4",
     "vite": "^2.9.14",
     "vite-plugin-vuetify": "^1.0.0-alpha.14",
+    "vitepress": "^1.0.0-alpha.4",
     "vue-cli-plugin-vuetify": "~2.5.1",
     "vue-jest": "^5.0.0-alpha.10"
   }
