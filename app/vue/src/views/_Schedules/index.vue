@@ -1,19 +1,27 @@
 <script lang="ts" setup>
 import '@fullcalendar/core/vdom' // solve problem with Vite
-import FullCalendar, { DateSelectArg, EventClickArg } from '@fullcalendar/vue3'
+import FullCalendar, {
+  CalendarOptions,
+  DateSelectArg,
+  EventClickArg,
+} from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
-import { computed, onBeforeMount, reactive } from 'vue'
+import { addDays, diffDate } from '@/utils/baseMixins'
+import { computed, onBeforeMount, reactive, ref, watch } from 'vue'
 import { useScheduleListStore } from '@/store/pinia/schedule'
 import CalendarInfo from './components/CalendarInfo.vue'
-import { CalendarOptions } from '@fullcalendar/core'
+
+const cal = ref()
+
+const month = ref('')
 
 const scheduleList = useScheduleListStore()
 
 const currentEvents = computed(() => scheduleList.events)
 
-const fetchScheduleList = () => scheduleList.fetchScheduleList()
+const fetchScheduleList = (mon = '') => scheduleList.fetchScheduleList(mon)
 
 const handleDateSelect = (selectInfo: DateSelectArg) => {
   // alert('날짜 클릭 시 이벤트')
@@ -43,6 +51,15 @@ const handleEventClick = (clickInfo: EventClickArg) => {
   }
 }
 
+const handleMonthChange = (payload: any) => {
+  const diff = diffDate(payload.start, payload.end)
+  const addDay = diff > 10 ? 7 : 1
+  const date = new Date(addDays(payload.start, addDay))
+  month.value = date.toISOString().substr(0, 7)
+}
+
+watch(month, val => fetchScheduleList(val))
+
 const calendarOptions = reactive({
   plugins: [
     dayGridPlugin,
@@ -65,6 +82,7 @@ const calendarOptions = reactive({
 
   select: handleDateSelect,
   eventClick: handleEventClick,
+  datesSet: handleMonthChange, // prev, next button click event
 
   // you can update a remote database when these fire:
   eventAdd: () => alert('add'),
@@ -77,7 +95,7 @@ const handleWeekendsToggle = () => {
 }
 
 onBeforeMount(() => {
-  fetchScheduleList()
+  fetchScheduleList(month.value)
 })
 </script>
 
@@ -95,6 +113,7 @@ onBeforeMount(() => {
             <div class="demo-app text-body">
               <div class="demo-app-main">
                 <FullCalendar
+                  ref="cal"
                   class="demo-app-calendar"
                   :options="calendarOptions"
                 >

@@ -12,11 +12,11 @@ export const cutString = (str: string, len: number) => {
   return content.length > len ? `${content.substr(0, len)}..` : content
 }
 
-export const diffDate = (date: string) => {
-  const now = new Date()
-  const start = new Date(date)
-  const btween = now.getTime() - start.getTime()
-  return btween / 1000 / 60 / 60 / 24
+export const diffDate = (date1: Date | string, date2?: Date) => {
+  const start = typeof date1 === 'string' ? new Date(date1) : date1
+  const now = !date2 ? new Date() : date2
+  const between = now.getTime() - start.getTime()
+  return between / 1000 / 60 / 60 / 24
 }
 
 export const addDays = (date: Date, days: number) => {

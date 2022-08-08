@@ -27,7 +27,7 @@ export const useScheduleListStore = defineStore('scheduleList', () => {
   })
 
   const fetchScheduleList = (month?: string) => {
-    const mon = month ? month : new Date().toISOString().slice(0, 7)
+    const mon = month !== '' ? month : new Date().toISOString().slice(0, 7)
     api
       .get(`/schedule/?search=${mon}`)
       .then(res =>
