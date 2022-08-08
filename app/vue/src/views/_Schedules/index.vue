@@ -2,6 +2,8 @@
 import '@fullcalendar/core/vdom' // solve problem with Vite
 import FullCalendar, {
   CalendarOptions,
+  Identity,
+  EventSourceInput,
   DateSelectArg,
   EventClickArg,
 } from '@fullcalendar/vue3'
@@ -49,7 +51,7 @@ const handleEventClick = (clickInfo: EventClickArg) => {
   }
 }
 
-const calendarOptions: CalendarOptions = reactive({
+const calendarOptions = reactive({
   plugins: [
     dayGridPlugin,
     timeGridPlugin,
