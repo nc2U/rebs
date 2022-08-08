@@ -1,4 +1,5 @@
 import { createApp } from 'vue'
+import { createPinia } from 'pinia'
 import Cookies from 'js-cookie'
 import App from './App.vue'
 import store from './store'
@@ -25,6 +26,8 @@ function init() {
 
 init().then(() => {
   const app = createApp(App)
+  const pinia = createPinia()
+  app.use(pinia)
   app.use(store)
   app.use(router)
   app.use(vuetify)
