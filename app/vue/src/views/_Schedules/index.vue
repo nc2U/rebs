@@ -1,27 +1,19 @@
 <script lang="ts" setup>
 import '@fullcalendar/core/vdom' // solve problem with Vite
-import FullCalendar, {
-  CalendarOptions,
-  Identity,
-  EventSourceInput,
-  DateSelectArg,
-  EventClickArg,
-} from '@fullcalendar/vue3'
+import FullCalendar, { DateSelectArg, EventClickArg } from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
-
-import { computed, onBeforeMount, reactive, watch } from 'vue'
+import { computed, onBeforeMount, reactive } from 'vue'
 import { useScheduleListStore } from '@/store/pinia/schedule'
 import CalendarInfo from './components/CalendarInfo.vue'
+import { CalendarOptions } from '@fullcalendar/core'
 
 const scheduleList = useScheduleListStore()
 
 const currentEvents = computed(() => scheduleList.events)
 
 const fetchScheduleList = () => scheduleList.fetchScheduleList()
-
-watch(currentEvents, () => calendarOptions.initialEvents)
 
 const handleDateSelect = (selectInfo: DateSelectArg) => {
   // alert('날짜 클릭 시 이벤트')
@@ -64,7 +56,6 @@ const calendarOptions = reactive({
   },
   initialView: 'dayGridMonth',
   events: currentEvents,
-  // initialEvents: currentEvents, // alternatively, use the `events` setting to fetch from a feed
   editable: true,
   selectable: true,
   selectMirror: true,
@@ -74,13 +65,12 @@ const calendarOptions = reactive({
 
   select: handleDateSelect,
   eventClick: handleEventClick,
-  // eventsSet: handleEvents,
 
   // you can update a remote database when these fire:
   eventAdd: () => alert('add'),
   eventChange: () => alert('change'),
   eventRemove: () => alert('del'),
-})
+}) as CalendarOptions
 
 const handleWeekendsToggle = () => {
   calendarOptions.weekends = !calendarOptions.weekends // update a property
@@ -109,7 +99,7 @@ onBeforeMount(() => {
                   :options="calendarOptions"
                 >
                   <template #eventContent="arg">
-                    <b>{{ arg.timeText }}</b>
+                    <b>{{ arg.timeText }} </b>
                     <i>{{ arg.event.title }}</i>
                   </template>
                 </FullCalendar>

@@ -36,10 +36,10 @@ defineProps({
         </label>
       </div>
       <div class="demo-app-sidebar-section">
-        <h2>전체 이벤트 ({{ currentEvents.length }})</h2>
+        <h2>당월 일정 목록 ({{ currentEvents.length }})</h2>
         <ul>
           <li v-for="event in currentEvents" :key="event.id">
-            <b>{{ event.startStr }}</b>
+            <b>{{ event.start }} </b>
             <i>{{ event.title }}</i>
           </li>
         </ul>
