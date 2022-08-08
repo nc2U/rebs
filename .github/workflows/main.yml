@@ -29,7 +29,7 @@ jobs:
         uses: actions/cache@v3
         id: cache_nginx
         with:
-          path: ./deploy/docker/nginx
+#          path: ./deploy/docker/nginx
           key: nginx-${{ hashFiles('**/Dockerfile') }}
 
       # Nginx image 변화가 있으면 빌드 및 푸시
@@ -46,7 +46,7 @@ jobs:
         uses: actions/cache@v3
         id: cache_django
         with:
-          path: ./deploy/docker/python
+#          path: ./deploy/docker/python
           key: python-${{ hashFiles('**/Dockerfile') }}-${{ hashFiles('**/requirements.txt') }}
 
       # Web image 변화가 있으면 빌드 및 푸시
