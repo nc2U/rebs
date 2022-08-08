@@ -31,7 +31,7 @@ jobs:
         id: cache_svelte
         with:
           path: ./app/svelte/node_modules
-          key: yarn-packages-${{ hashFiles('yarn.lock') }}
+          key: yarn-packages-${{ hashFiles('**/yarn.lock') }}
 
       # node_modules 변화기 있으면 빌드
       - name: Install Dependencies
