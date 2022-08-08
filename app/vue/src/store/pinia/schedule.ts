@@ -1,7 +1,7 @@
 import api from '@/api'
 import { computed, ref, reactive, Ref } from 'vue'
 import { defineStore } from 'pinia'
-import { errorHandle } from '@/utils/helper'
+import { errorHandle, message } from '@/utils/helper'
 import Schedule from '@/store/modules/schedule'
 
 interface Schedule {
@@ -14,7 +14,8 @@ interface Schedule {
   end_time: string | null
 }
 
-export const useScheduleListStore = defineStore('scheduleList', () => {
+export const useScheduleStore = defineStore('schedule', () => {
+  const schedule: Ref<Schedule> | Ref<null> = ref(null)
   const scheduleList: Schedule[] = reactive([])
 
   const events = computed(() => {
@@ -27,7 +28,7 @@ export const useScheduleListStore = defineStore('scheduleList', () => {
   })
 
   const fetchScheduleList = (month?: string) => {
-    const mon = month !== '' ? month : new Date().toISOString().slice(0, 7)
+    const mon = month ? month : new Date().toISOString().slice(0, 7)
     api
       .get(`/schedule/?search=${mon}`)
       .then(res =>
@@ -36,17 +37,64 @@ export const useScheduleListStore = defineStore('scheduleList', () => {
       .catch(err => errorHandle(err.response))
   }
 
-  return {
-    scheduleList,
-    events,
-    fetchScheduleList,
+  const createSchedule = (payload: any) => {
+    api
+      .post('/schedule/', payload)
+      .then(() => {
+        fetchScheduleList()
+        message()
+      })
+      .catch(err => errorHandle(err.response.data))
   }
-})
 
-export const useScheduleStore = defineStore('schedule', () => {
-  const schedule: Ref<Schedule> | Ref<null> = ref(null)
+  const fetchSchedule = (pk: number) => {
+    api
+      .get(`/schedule/${pk}/`)
+      .then(res => (schedule.value = res.data))
+      .catch(err => errorHandle(err.response.data))
+  }
+
+  const patchSchedule = ({ pk, data }: { pk: number; data: Schedule }) => {
+    api
+      .patch(`/schedule/${pk}`, data)
+      .then(res => {
+        fetchSchedule(res.data.pk)
+        fetchScheduleList()
+        message()
+      })
+      .catch(err => errorHandle(err.response.data))
+  }
+
+  const updateSchedule = ({ pk, data }: { pk: number; data: Schedule }) => {
+    api
+      .put(`/schedule/${pk}`, data)
+      .then(res => {
+        fetchSchedule(res.data.pk)
+        fetchScheduleList()
+        message()
+      })
+      .catch(err => errorHandle(err.response.data))
+  }
+
+  const deleteSchedule = (pk: number) => {
+    api
+      .delete(`/schedule/${pk}`)
+      .then(() => {
+        fetchScheduleList()
+        message('danger', '알림!', '삭제되었습니다.')
+      })
+      .catch(err => errorHandle(err.response.data))
+  }
 
   return {
     schedule,
+    scheduleList,
+    events,
+    fetchScheduleList,
+    createSchedule,
+    fetchSchedule,
+    patchSchedule,
+    updateSchedule,
+    deleteSchedule,
   }
 })

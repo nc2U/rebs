@@ -10,18 +10,18 @@ import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import { addDays, diffDate } from '@/utils/baseMixins'
 import { computed, onBeforeMount, reactive, ref, watch } from 'vue'
-import { useScheduleListStore } from '@/store/pinia/schedule'
+import { useScheduleStore } from '@/store/pinia/schedule'
 import CalendarInfo from './components/CalendarInfo.vue'
 
 const cal = ref()
 
 const month = ref('')
 
-const scheduleList = useScheduleListStore()
+const scheduleStore = useScheduleStore()
 
-const currentEvents = computed(() => scheduleList.events)
+const currentEvents = computed(() => scheduleStore.events)
 
-const fetchScheduleList = (mon = '') => scheduleList.fetchScheduleList(mon)
+const fetchScheduleList = (mon = '') => scheduleStore.fetchScheduleList(mon)
 
 const handleDateSelect = (selectInfo: DateSelectArg) => {
   // alert('날짜 클릭 시 이벤트')
