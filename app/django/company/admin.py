@@ -1,7 +1,7 @@
 from django.contrib import admin
 from import_export.admin import ImportExportMixin
 
-from .models import Company, Department, Position, Staff
+from .models import Company, Logo, Department, Position, Staff
 
 
 class DepartmentInline(admin.StackedInline):
@@ -12,11 +12,15 @@ class PositionInline(admin.StackedInline):
     model = Position
 
 
+class LogoInline(admin.StackedInline):
+    model = Logo
+
+
 class CompanyAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = (
         'id', 'name', 'ceo', 'tax_number', 'org_number', 'business_cond', 'business_even', 'es_date', 'op_date')
     list_display_links = ('name',)
-    inlines = (DepartmentInline, PositionInline)
+    inlines = (LogoInline, DepartmentInline, PositionInline)
 
 
 class DepartmentAdmin(ImportExportMixin, admin.ModelAdmin):

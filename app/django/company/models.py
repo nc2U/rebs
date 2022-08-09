@@ -1,3 +1,4 @@
+import hashlib
 from django.db import models
 
 
@@ -21,6 +22,22 @@ class Company(models.Model):
 
     def __str__(self):
         return self.name
+
+
+def get_image_filename(instance, filename):
+    company = instance.company.pk
+    hash_value = hashlib.md5().hexdigest()
+    return f"company/{company}_{hash_value}_{filename}"
+
+
+class Logo(models.Model):
+    company = models.OneToOneField(Company, on_delete=models.CASCADE)
+    generic_logo = models.ImageField(upload_to=get_image_filename, null=True, help_text='4.5:1 ~ 5:1 크기 추천',
+                                     verbose_name='일반 로고')
+    dark_logo = models.ImageField(upload_to=get_image_filename, null=True, help_text='4.5:1 ~ 5:1 크기 추천',
+                                  verbose_name='다크 로고')
+    simple_logo = models.ImageField(upload_to=get_image_filename, null=True, help_text='1:1 크기 추천',
+                                    verbose_name='심플 로고')
 
 
 class Department(models.Model):
