@@ -1,16 +1,12 @@
 <script lang="ts" setup>
 import '@fullcalendar/core/vdom' // solve problem with Vite
-import FullCalendar, {
-  CalendarOptions,
-  DateSelectArg,
-  EventClickArg,
-} from '@fullcalendar/vue3'
+import FullCalendar, { DateSelectArg, EventClickArg } from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import { addDays, diffDate } from '@/utils/baseMixins'
 import { computed, onBeforeMount, reactive, ref, watch } from 'vue'
-import { useScheduleStore } from '@/store/pinia/schedule'
+import { useScheduleStore, Event } from '@/store/pinia/schedule'
 import CalendarInfo from './components/CalendarInfo.vue'
 
 const cal = ref()
@@ -40,6 +36,22 @@ const handleDateSelect = (selectInfo: DateSelectArg) => {
     scheduleStore.createSchedule(eventData)
     // calendarApi.addEvent({ id: createEventId(), ...eventData})
   }
+}
+
+const handleChange = (el: any) => {
+  const pk = el.event._def.publicId
+  const title = el.event._def.title
+  const event = el.event._instance.range
+  const allDay = el.event._def.allDay
+  const _start = event.start.toISOString()
+  const _end = event.end.toISOString()
+  const start = allDay
+    ? _start.substr(0, 10)
+    : _start.replace('.000Z', '+09:00')
+  const end = allDay ? _end.substr(0, 10) : _end.replace('.000Z', '+09:00')
+  const eventDate: Event = { title, allDay, start, end }
+  // console.log(el, eventDate)
+  scheduleStore.updateSchedule({ pk, data: eventDate })
 }
 
 const handleEventClick = (clickInfo: EventClickArg) => {
@@ -89,7 +101,7 @@ const calendarOptions = reactive({
 
   // you can update a remote database when these fire:
   eventAdd: () => console.log('created!'),
-  eventChange: () => console.log('changed!'),
+  eventChange: handleChange,
   eventRemove: () => console.log('deleted!'),
 })
 

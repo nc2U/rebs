@@ -14,6 +14,26 @@ interface Schedule {
   end_time: string | null
 }
 
+export interface Event {
+  title: string
+  allDay: boolean
+  start: string
+  end: string
+}
+
+const transform = (payload: Event) => {
+  const { title, start, allDay, end } = payload
+
+  return {
+    title: title,
+    all_day: allDay,
+    start_date: allDay ? start : null,
+    end_date: allDay ? end : null,
+    start_time: !allDay ? start : null,
+    end_time: !allDay ? end : null,
+  }
+}
+
 export const useScheduleStore = defineStore('schedule', () => {
   const schedule: Ref<Schedule> | Ref<null> = ref(null)
   const scheduleList: Schedule[] = reactive([])
@@ -37,21 +57,12 @@ export const useScheduleStore = defineStore('schedule', () => {
       .catch(err => errorHandle(err.response))
   }
 
-  const createSchedule = (payload: any) => {
-    const { title, start, allDay, end } = payload
-    console.log(start, payload)
-    const eventData = {
-      title: title,
-      all_day: allDay,
-      start_date: allDay ? start : null,
-      end_date: allDay ? end : null,
-      start_time: !allDay ? start : null,
-      end_time: !allDay ? end : null,
-    }
+  const createSchedule = (payload: Event) => {
+    const eventData = transform(payload)
     api
       .post('/schedule/', eventData)
       .then(() => {
-        fetchScheduleList(start.substr(0, 7))
+        fetchScheduleList(payload.start.substr(0, 7))
         message()
       })
       .catch(err => errorHandle(err.response))
@@ -64,20 +75,12 @@ export const useScheduleStore = defineStore('schedule', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const patchSchedule = ({ pk, data }: { pk: number; data: Schedule }) => {
+  const updateSchedule = (payload: { pk: number; data: Event }) => {
+    const { pk, data } = payload
+    const eventData = transform(data)
+    console.log(pk, eventData)
     api
-      .patch(`/schedule/${pk}`, data)
-      .then(res => {
-        fetchSchedule(res.data.pk)
-        fetchScheduleList()
-        message()
-      })
-      .catch(err => errorHandle(err.response.data))
-  }
-
-  const updateSchedule = ({ pk, data }: { pk: number; data: Schedule }) => {
-    api
-      .put(`/schedule/${pk}`, data)
+      .put(`/schedule/${pk}/`, eventData)
       .then(res => {
         fetchSchedule(res.data.pk)
         fetchScheduleList()
@@ -103,7 +106,6 @@ export const useScheduleStore = defineStore('schedule', () => {
     fetchScheduleList,
     createSchedule,
     fetchSchedule,
-    patchSchedule,
     updateSchedule,
     deleteSchedule,
   }
