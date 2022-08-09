@@ -12,7 +12,6 @@ export default defineConfig({
     lineNumbers: true
   },
   themeConfig: {
-    // Type is `DefaultTheme.Config`
     logo: '/favicon.png',
     siteTitle: 'REBS',
     nav: [
@@ -30,45 +29,47 @@ export default defineConfig({
       {
         text: '소개',
         items: [
-          {text: 'REBS란?', link: '/'},
-          {text: '시작하기', link: '/getting-started'},
+          {text: 'REBS란?', link: '/intro/'},
+          {text: '시작하기', link: '/intro/getting-started'},
         ]
       },
       {
         text: '기본 설정',
         items: [
-          {text: '회사정보 설정', link: '/company'},
-          {text: '프로젝트 설정', link: '/project'},
-          {text: '세부정보 설정', link: '/settings'},
-          {text: '부지정보 입력', link: '/site-manage'},
+          {text: '회사정보 설정', link: '/settings/company'},
+          {text: '프로젝트 설정', link: '/settings/project'},
+          {text: '세부정보 설정', link: '/settings/details'},
+          {text: '부지정보 관리', link: '/settings/site-manage'},
         ]
       },
       {
-        text: '계약 관리',
+        text: '계약 수납 관리',
         items: [
-          {text: '계약 등록 관리', link: '/contract'},
-          {text: '계약 해지 관리', link: '/release'},
-        ]
-      },
-      {
-        text: '분양대금 수납 관리',
-        items: [
-          {text: '수납 등록 관리', link: '/payment'},
-          {text: '고지서 발급 관리', link: '/bill-notice'},
+          {text: '계약 등록 관리', link: '/contract/'},
+          {text: '계약 해지 관리', link: '/contract/release'},
+          {text: '수납 등록 관리', link: '/contract/payment'},
+          {text: '고지서 발급 관리', link: '/contract/bill-notice'},
         ]
       },
       {
         text: '일반 입출금 관리',
         items: [
-          {text: '설정 관리', link: '/cash-settings'},
-          {text: '입출금 관리', link: '/cash-manage'},
+          {text: '기본 설정 관리', link: '/cashes/settings'},
+          {text: '입출금 정보 관리', link: '/cashes/manage'},
+        ]
+      },
+      {
+        text: '문서 관리',
+        items: [
+          {text: '일반 문서 관리', link: '/document/'},
+          {text: '소송 기록 관리', link: '/document/legal-case'},
         ]
       },
       {
         text: '권한 관리',
         items: [
-          {text: '사용자 권한 관리', link: '/auth-manage'},
-          {text: 'admin 페이지', link: '/admin-page'},
+          {text: '사용자 권한 관리', link: '/authority/'},
+          {text: '관리자(admin) 페이지', link: '/authority/admin-page'},
         ]
       }
     ],
