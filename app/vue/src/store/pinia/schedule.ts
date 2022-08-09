@@ -25,12 +25,12 @@ const transform = (payload: Event) => {
   const { title, start, allDay, end } = payload
 
   return {
-    title: title,
+    title,
     all_day: allDay,
     start_date: allDay ? start : null,
     end_date: allDay ? end : null,
-    start_time: !allDay ? start : null,
-    end_time: !allDay ? end : null,
+    start_time: allDay ? null : start,
+    end_time: allDay ? null : end,
   }
 }
 
