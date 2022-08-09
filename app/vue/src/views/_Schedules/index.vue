@@ -30,17 +30,25 @@ const handleDateSelect = (selectInfo: DateSelectArg) => {
   calendarApi.unselect() // clear date selection
 
   if (title) {
-    calendarApi.addEvent({
-      // id: createEventId(),
+    const data = {
       title,
-      start: selectInfo.startStr,
-      end: selectInfo.endStr,
-      allDay: selectInfo.allDay,
-    })
+      start_date: selectInfo.startStr,
+      end_date: selectInfo.endStr,
+      all_day: selectInfo.allDay,
+    }
+    scheduleStore.createSchedule(data)
+    // calendarApi.addEvent({
+    //   //   // id: createEventId(),
+    //   title,
+    //   start: selectInfo.startStr,
+    //   end: selectInfo.endStr,
+    //   allDay: selectInfo.allDay,
+    // })
   }
 }
 
 const handleEventClick = (clickInfo: EventClickArg) => {
+  console.log(clickInfo.event)
   // 일정 클릭 시 이벤트
   if (
     confirm(
@@ -85,10 +93,10 @@ const calendarOptions = reactive({
   datesSet: handleMonthChange, // prev, next button click event
 
   // you can update a remote database when these fire:
-  eventAdd: () => alert('add'),
-  eventChange: () => alert('change'),
-  eventRemove: () => alert('del'),
-}) as CalendarOptions
+  eventAdd: () => console.log('created!'),
+  eventChange: () => console.log('changed!'),
+  eventRemove: () => console.log('deleted!'),
+})
 
 const handleWeekendsToggle = () => {
   calendarOptions.weekends = !calendarOptions.weekends // update a property
