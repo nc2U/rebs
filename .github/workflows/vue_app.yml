@@ -2,8 +2,8 @@ name: Vue_App_Update
 
 on:
   push:
-    paths:
-      - "app/vue/**"
+#    paths:
+#      - "app/vue/**"
     branches: [ "master" ]
 
 # job은 사용자가 정한 플랫폼을 통해 steps 라는 일련의 과정을 실행.
@@ -45,8 +45,14 @@ jobs:
       #        # 이후의 build까지 다 실행을 해보고 난 뒤 종료 하므로 모든 테스트 스크립트에 ${{ always() }}를 붙임.
       #        if: ${{ always() }}
 
-      - run: cd app/vue && yarn build
+      - run: cd app/vue && yarn build && yarn docs:build
         if: ${{ always() }}
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: app/vue/docs/.vitepress/dist
 
       # data to server copy transfer
       - name: Copy django, etc data to CI/CD server
