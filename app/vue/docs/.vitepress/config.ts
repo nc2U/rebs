@@ -32,10 +32,10 @@ export default defineConfig({
         items: [
           {text: 'REBS란?', link: '/'},
           {text: '시작하기', link: '/getting-started'},
-          {text: '회사설정', link: '/getting-started'},
-          {text: '프로젝트 설정', link: '/getting-started'},
-          {text: '계약등록', link: '/getting-started'},
-          {text: '입출금 관리', link: '/getting-started'},
+          {text: '회사설정', link: '/company'},
+          {text: '프로젝트 설정', link: '/project'},
+          {text: '계약등록', link: '/contract'},
+          {text: '입출금 관리', link: '/cash-inout'},
         ]
       }
     ],
