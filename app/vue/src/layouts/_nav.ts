@@ -12,10 +12,6 @@ const dashboard = {
 const schedule = {
   component: 'CNavItem',
   name: '일 정 관 리',
-  badge: {
-    color: 'danger',
-    text: 'u.c',
-  },
   to: '/schedule',
   icon: 'cil-calendar',
 }
