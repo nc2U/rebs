@@ -6,7 +6,7 @@ import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import { addDays, diffDate } from '@/utils/baseMixins'
 import { computed, onBeforeMount, reactive, ref, watch } from 'vue'
-import { useScheduleStore, Event } from '@/store/pinia/schedule'
+import { useScheduleStore } from '@/store/pinia/schedule'
 import CalendarInfo from './components/CalendarInfo.vue'
 
 const cal = ref()
@@ -20,11 +20,9 @@ const currentEvents = computed(() => scheduleStore.events)
 const fetchScheduleList = (mon = '') => scheduleStore.fetchScheduleList(mon)
 
 const handleDateSelect = (selectInfo: DateSelectArg) => {
-  // alert('날짜 클릭 시 이벤트')
   let title = prompt('Please enter a new title for your event')
   let calendarApi = selectInfo.view.calendar
   calendarApi.unselect() // clear date selection
-
   if (title) {
     const eventData = {
       title,
@@ -32,37 +30,34 @@ const handleDateSelect = (selectInfo: DateSelectArg) => {
       end: selectInfo.endStr,
       allDay: selectInfo.allDay,
     }
-
     scheduleStore.createSchedule(eventData)
-    // calendarApi.addEvent({ id: createEventId(), ...eventData})
   }
 }
 
-const handleChange = (el: any) => {
-  const pk = el.event._def.publicId
-  const title = el.event._def.title
-  const event = el.event._instance.range
-  const allDay = el.event._def.allDay
-  const _start = event.start.toISOString()
-  const _end = event.end.toISOString()
-  const start = allDay
-    ? _start.substr(0, 10)
-    : _start.replace('.000Z', '+09:00')
-  const end = allDay ? _end.substr(0, 10) : _end.replace('.000Z', '+09:00')
-  const eventDate: Event = { title, allDay, start, end }
-  // console.log(el, eventDate)
+const transformData = (event: any) => {
+  const title = event.title
+  const allDay = event.allDay
+  const s = event._instance.range.start.toISOString().replace('.000Z', '+09:00')
+  const e = event._instance.range.end.toISOString().replace('.000Z', '+09:00')
+  const start = allDay ? s.substr(0, 10) : s
+  const end = allDay ? e.substr(0, 10) : e
+  return { title, allDay, start, end }
+}
+
+const handleChange = (el: EventClickArg) => {
+  const pk = el.event.id
+  const eventDate = transformData(el.event)
   scheduleStore.updateSchedule({ pk, data: eventDate })
 }
 
 const handleEventClick = (clickInfo: EventClickArg) => {
-  console.log(clickInfo.event)
-  // 일정 클릭 시 이벤트
+  const pk = clickInfo.event.id
   if (
     confirm(
       `Are you sure you want to delete the event '${clickInfo.event.title}'`,
     )
   ) {
-    clickInfo.event.remove()
+    scheduleStore.deleteSchedule(pk)
   }
 }
 

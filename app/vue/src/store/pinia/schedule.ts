@@ -75,7 +75,7 @@ export const useScheduleStore = defineStore('schedule', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const updateSchedule = (payload: { pk: number; data: Event }) => {
+  const updateSchedule = (payload: { pk: string; data: Event }) => {
     const { pk, data } = payload
     const eventData = transform(data)
     console.log(pk, eventData)
@@ -89,7 +89,7 @@ export const useScheduleStore = defineStore('schedule', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const deleteSchedule = (pk: number) => {
+  const deleteSchedule = (pk: string) => {
     api
       .delete(`/schedule/${pk}`)
       .then(() => {
