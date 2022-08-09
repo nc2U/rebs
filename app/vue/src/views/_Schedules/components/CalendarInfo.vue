@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { computed } from 'vue'
+
 const emit = defineEmits(['weekends-toggle'])
 defineProps({
   calendarOptions: { type: Object, default: Function },
@@ -39,7 +41,7 @@ defineProps({
         <h2>월간 진행 일정 목록 ({{ currentEvents.length }})</h2>
         <ul>
           <li v-for="event in currentEvents" :key="event.id">
-            <b>{{ event.start }}</b>
+            <b>{{ event.start.replace('T', ' ').replace(':00+09:00', '') }}</b>
             <i class="ml-2">{{ event.title }}</i>
           </li>
         </ul>
