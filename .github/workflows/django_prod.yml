@@ -1,4 +1,4 @@
-name: Django_app_Update
+name: Django_Prod_Update
 
 on:
   push:
