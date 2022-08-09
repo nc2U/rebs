@@ -2,7 +2,7 @@ from django.db import transaction
 from rest_framework import serializers
 
 from accounts.models import User, StaffAuth, Profile, Todo
-from company.models import Company, Department, Position, Staff
+from company.models import Company, Logo, Department, Position, Staff
 from project.models import (Project, UnitType, UnitFloorType,
                             KeyUnit, BuildingUnit, HouseUnit, ProjectBudget,
                             Site, SiteOwner, SiteOwnshipRelationship, SiteContract)
@@ -93,6 +93,12 @@ class CompanySerializer(serializers.ModelSerializer):
         fields = ('pk', 'name', 'ceo', 'tax_number', 'org_number', 'business_cond',
                   'business_even', 'es_date', 'op_date', 'zipcode', 'address1',
                   'address2', 'address3', 'departments', 'positions')
+
+
+class LogoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Logo
+        fields = ('pk', 'company', 'generic_logo', 'dark_logo', 'simple_logo')
 
 
 class StaffsInDepartmentSerializer(serializers.ModelSerializer):

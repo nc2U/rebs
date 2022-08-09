@@ -11,7 +11,7 @@ from .pagination import *
 from .serializers import *
 
 from accounts.models import User, Profile, Todo
-from company.models import Company, Department, Position, Staff
+from company.models import Company, Logo, Department, Position, Staff
 from project.models import (Project, UnitType, UnitFloorType,
                             KeyUnit, BuildingUnit, HouseUnit, ProjectBudget,
                             Site, SiteOwner, SiteOwnshipRelationship, SiteContract)
@@ -37,6 +37,7 @@ class ApiIndex(generics.GenericAPIView):
             'profile': reverse(api + 'profile-list', request=request),
             'todo': reverse(api + 'todo-list', request=request),
             'company': reverse(api + 'company-list', request=request),
+            'logo': reverse(api + 'logo-list', request=request),
             'department': reverse(api + 'depart-list', request=request),
             'position': reverse(api + 'position-list', request=request),
             'staff': reverse(api + 'staff-list', request=request),
@@ -136,6 +137,12 @@ class TodoViewSets(viewsets.ModelViewSet):
 class CompanyViewSets(viewsets.ModelViewSet):
     queryset = Company.objects.all()
     serializer_class = CompanySerializer
+    permission_classes = (permissions.IsAuthenticated, IsSuperUserOrReadOnly)
+
+
+class LogoViewSets(viewsets.ModelViewSet):
+    queryset = Logo.objects.all()
+    serializer_class = LogoSerializer
     permission_classes = (permissions.IsAuthenticated, IsSuperUserOrReadOnly)
 
 
