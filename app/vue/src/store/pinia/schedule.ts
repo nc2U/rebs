@@ -38,12 +38,20 @@ export const useScheduleStore = defineStore('schedule', () => {
   }
 
   const createSchedule = (payload: any) => {
-    const { start_date } = payload
-    console.log(start_date, payload)
+    const { title, start, allDay, end } = payload
+    console.log(start, payload)
+    const eventData = {
+      title: title,
+      all_day: allDay,
+      start_date: allDay ? start : null,
+      end_date: allDay ? end : null,
+      start_time: !allDay ? start : null,
+      end_time: !allDay ? end : null,
+    }
     api
-      .post('/schedule/', payload)
+      .post('/schedule/', eventData)
       .then(() => {
-        fetchScheduleList(start_date.substr(0, 7))
+        fetchScheduleList(start.substr(0, 7))
         message()
       })
       .catch(err => errorHandle(err.response))

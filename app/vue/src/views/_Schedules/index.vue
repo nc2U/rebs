@@ -30,20 +30,15 @@ const handleDateSelect = (selectInfo: DateSelectArg) => {
   calendarApi.unselect() // clear date selection
 
   if (title) {
-    const data = {
+    const eventData = {
       title,
-      start_date: selectInfo.startStr,
-      end_date: selectInfo.endStr,
-      all_day: selectInfo.allDay,
+      start: selectInfo.startStr,
+      end: selectInfo.endStr,
+      allDay: selectInfo.allDay,
     }
-    scheduleStore.createSchedule(data)
-    // calendarApi.addEvent({
-    //   //   // id: createEventId(),
-    //   title,
-    //   start: selectInfo.startStr,
-    //   end: selectInfo.endStr,
-    //   allDay: selectInfo.allDay,
-    // })
+
+    scheduleStore.createSchedule(eventData)
+    // calendarApi.addEvent({ id: createEventId(), ...eventData})
   }
 }
 
