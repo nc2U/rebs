@@ -6,6 +6,7 @@ export default defineConfig({
   description: '부동산 개발관리 프로그램',
   base: '/docs/',
   lastUpdated: true,
+  // outDir: '../../django/templates/docs',
   markdown: {
     theme: 'material-palenight',
     lineNumbers: true
@@ -31,6 +32,10 @@ export default defineConfig({
         items: [
           {text: 'REBS란?', link: '/'},
           {text: '시작하기', link: '/getting-started'},
+          {text: '회사설정', link: '/getting-started'},
+          {text: '프로젝트 설정', link: '/getting-started'},
+          {text: '계약등록', link: '/getting-started'},
+          {text: '입출금 관리', link: '/getting-started'},
         ]
       }
     ],
@@ -41,6 +46,10 @@ export default defineConfig({
     editLink: {
       pattern: 'https://github.com/vuejs/vitepress/edit/main/docs/:path',
       text: 'Edit this page on GitHub'
+    },
+    carbonAds: {
+      code: 'your-carbon-code',
+      placement: 'your-carbon-placement'
     },
     footer: {
       message: 'Released under the MIT License.',
