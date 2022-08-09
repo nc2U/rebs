@@ -74,11 +74,11 @@ export default defineConfig({
       }
     ],
     socialLinks: [
-      {icon: 'github', link: 'https://github.com/vuejs/vitepress'},
-      {icon: 'slack', link: '...'},
+      {icon: 'github', link: 'https://github.com/austin-kho/Rebs'},
+      {icon: 'slack', link: 'https://br-on.slack.com'},
     ],
     editLink: {
-      pattern: 'https://github.com/vuejs/vitepress/edit/main/docs/:path',
+      pattern: 'https://github.com/austin-kho/Rebs/blob/master/app/vue/docs/:path',
       text: 'Edit this page on GitHub'
     },
     carbonAds: {
