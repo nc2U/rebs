@@ -5,11 +5,14 @@ export default defineConfig({
   title: 'REBS',
   description: '부동산 개발관리 프로그램',
   base: '/docs/',
+  head: [
+    ['link', {rel: 'shortcut icon', href: '/favicon.png'}]
+  ],
   lastUpdated: true,
   // outDir: '../../django/templates/docs',
   markdown: {
     theme: 'material-palenight',
-    lineNumbers: true
+    lineNumbers: true,
   },
   themeConfig: {
     logo: '/favicon.png',
@@ -30,7 +33,7 @@ export default defineConfig({
       {
         text: '소개',
         items: [
-          {text: 'REBS란?', link: '/intro/'},
+          {text: 'REBS란?', link: '/'},
           {text: '시작하기', link: '/intro/getting-started'},
         ]
       },
