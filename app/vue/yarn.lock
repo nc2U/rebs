@@ -8532,6 +8532,11 @@ vue-advanced-cropper@^2.8.3:
     debounce "^1.2.0"
     easy-bem "^1.0.2"
 
+vue-cli-plugin-pinia@^0.1.4:
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/vue-cli-plugin-pinia/-/vue-cli-plugin-pinia-0.1.4.tgz#36ca55e3a06e6cc2879e29a56b0aa1b5e7fe5142"
+  integrity sha512-YZy0Zhsgpl5MLoe6hJwNdsuaxW7xYc4jZyohS3ZzWpibCXNdxbr1INOJpLpLeE1ai9VoPXXHvooPxUZs+hHEDg==
+
 vue-cli-plugin-vuetify@~2.5.1:
   version "2.5.1"
   resolved "https://registry.yarnpkg.com/vue-cli-plugin-vuetify/-/vue-cli-plugin-vuetify-2.5.1.tgz#6a3ee80c6e8d09b634ec7705422573f2ee0bc7e7"
