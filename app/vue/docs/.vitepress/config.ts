@@ -4,12 +4,12 @@ export default defineConfig({
   lang: 'ko-KR',
   title: 'REBS',
   titleTemplate: 'Real-Estate Build System',
-  description: '부동산 개발관리 프로그램',
+  description: '부동산 개발관리 프로그램 매뉴얼',
   base: process.env.NODE_ENV === 'production'
     ? '/rebs/'
     : '',
   head: [
-    ['link', {rel: 'shortcut icon', href: './favicon.png'}]
+    ['link', {rel: 'shortcut icon', href: '/favicon.png'}]
   ],
   lastUpdated: true,
   markdown: {
@@ -18,7 +18,7 @@ export default defineConfig({
     // lineNumbers: true,
   },
   themeConfig: {
-    logo: './favicon.svg',
+    logo: '/favicon.svg',
     siteTitle: 'REBS',
     nav: [
       {text: '가이드', link: '/intro/getting-started'},
@@ -78,11 +78,11 @@ export default defineConfig({
       }
     ],
     socialLinks: [
-      {icon: 'github', link: 'https://github.com/nc2U/Rebs'},
+      {icon: 'github', link: 'https://github.com/nc2U/rebs'},
       {icon: 'slack', link: 'https://br-on.slack.com'},
     ],
     editLink: {
-      pattern: 'https://github.com/nc2U/Rebs/blob/master/app/vue/docs/:path',
+      pattern: 'https://github.com/nc2U/rebs/blob/master/app/vue/docs/:path',
       text: 'Edit this page on GitHub'
     },
     carbonAds: {
