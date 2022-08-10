@@ -6,7 +6,7 @@ on:
       - "deploy/helm/**"
     branches: [ "master" ]
 
-    # Allows you to run this workflow manually from the Actions tab
+  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 # job은 사용자가 정한 플랫폼을 통해 steps 라는 일련의 과정을 실행.
