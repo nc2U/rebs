@@ -13,7 +13,7 @@
 ### 1. Clone this Repository
 
 ```bash
-clone https://github.com/austin-kho/Rebs
+clone https://github.com/nc2u/Rebs
 cd Rebs
 ```
 
