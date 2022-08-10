@@ -4,7 +4,7 @@ export default defineConfig({
   lang: 'ko-KR',
   title: 'REBS',
   description: '부동산 개발관리 프로그램',
-  // base: '/docs/',
+  base: '/rebs/',
   // outDir: './.vitepress/dist/docs',
   head: [
     ['link', {rel: 'shortcut icon', href: '/favicon.png'}]
