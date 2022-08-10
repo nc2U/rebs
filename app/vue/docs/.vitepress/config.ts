@@ -9,7 +9,6 @@ export default defineConfig({
     ['link', {rel: 'shortcut icon', href: '/favicon.png'}]
   ],
   lastUpdated: true,
-  // outDir: '../../django/templates/docs',
   markdown: {
     theme: 'material-palenight',
     lineNumbers: true,
@@ -77,11 +76,11 @@ export default defineConfig({
       }
     ],
     socialLinks: [
-      {icon: 'github', link: 'https://github.com/nc2u/Rebs'},
+      {icon: 'github', link: 'https://github.com/nc2U/Rebs'},
       {icon: 'slack', link: 'https://br-on.slack.com'},
     ],
     editLink: {
-      pattern: 'https://github.com/nc2u/Rebs/blob/master/app/vue/docs/:path',
+      pattern: 'https://github.com/nc2U/Rebs/blob/master/app/vue/docs/:path',
       text: 'Edit this page on GitHub'
     },
     carbonAds: {

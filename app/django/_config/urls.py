@@ -44,7 +44,6 @@ url = [
     path('rebs/', include('rebs.urls')),
 
     path('', TemplateView.as_view(template_name='base-vue.html')),
-    path('docs/', TemplateView.as_view(template_name='base-docs.html')),
 
     path('svelte/', TemplateView.as_view(template_name='base-svelte.html')),
 
