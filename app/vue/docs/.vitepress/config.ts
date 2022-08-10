@@ -8,7 +8,7 @@ export default defineConfig({
     ? '/rebs/'
     : '',
   head: [
-    ['link', {rel: 'shortcut icon', href: '/favicon.svg'}]
+    ['link', {rel: 'shortcut icon', href: '/favicon.png'}]
   ],
   lastUpdated: true,
   markdown: {
@@ -16,7 +16,7 @@ export default defineConfig({
     lineNumbers: true,
   },
   themeConfig: {
-    logo: '/favicon.svg',
+    logo: '/favicon.png',
     siteTitle: 'REBS',
     nav: [
       {text: '가이드', link: '/intro/getting-started'},
