@@ -26,8 +26,6 @@ export default defineConfig({
         text: '관련 사이트',
         items: [
           {text: 'REBS', link: 'https://brdnc.co.kr'},
-          {text: 'REBS 구버전', link: 'https://brdnc.co.kr/rebs/'},
-          {text: 'API 인덱스', link: 'https://brdnc.co.kr/api/'},
           {text: '관리자 페이지', link: 'https://brdnc.co.kr/admin/'}
         ]
       }
