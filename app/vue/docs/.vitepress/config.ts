@@ -3,7 +3,7 @@ import {defineConfig} from "vitepress";
 export default defineConfig({
   lang: 'ko-KR',
   title: 'REBS',
-  titleTemplate: 'Real-Estate Build System',
+  titleTemplate: 'REBS | Real-Estate Build System',
   description: '부동산 개발관리 프로그램 매뉴얼',
   base: process.env.NODE_ENV === 'production'
     ? '/rebs/'
