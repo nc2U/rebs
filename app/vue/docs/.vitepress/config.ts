@@ -3,20 +3,22 @@ import {defineConfig} from "vitepress";
 export default defineConfig({
   lang: 'ko-KR',
   title: 'REBS',
+  titleTemplate: 'Real-Estate Build System',
   description: '부동산 개발관리 프로그램',
   base: process.env.NODE_ENV === 'production'
     ? '/rebs/'
     : '',
   head: [
-    ['link', {rel: 'shortcut icon', href: '/favicon.png'}]
+    ['link', {rel: 'shortcut icon', href: './favicon.png'}]
   ],
   lastUpdated: true,
   markdown: {
     theme: 'material-palenight',
-    lineNumbers: true,
+    // theme: 'Shiki.IThemeRegistration',
+    // lineNumbers: true,
   },
   themeConfig: {
-    logo: '/favicon.png',
+    logo: './favicon.svg',
     siteTitle: 'REBS',
     nav: [
       {text: '가이드', link: '/intro/getting-started'},
