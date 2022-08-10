@@ -77,11 +77,11 @@ export default defineConfig({
       }
     ],
     socialLinks: [
-      {icon: 'github', link: 'https://github.com/austin-kho/Rebs'},
+      {icon: 'github', link: 'https://github.com/nc2u/Rebs'},
       {icon: 'slack', link: 'https://br-on.slack.com'},
     ],
     editLink: {
-      pattern: 'https://github.com/austin-kho/Rebs/blob/master/app/vue/docs/:path',
+      pattern: 'https://github.com/nc2u/Rebs/blob/master/app/vue/docs/:path',
       text: 'Edit this page on GitHub'
     },
     carbonAds: {
