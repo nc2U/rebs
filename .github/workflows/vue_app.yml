@@ -50,11 +50,11 @@ jobs:
       - run: cd app/vue && yarn build && yarn docs:build
         if: ${{ always() }}
 
-#      - name: Docs Deploy
-#        uses: peaceiris/actions-gh-pages@v3
-#        with:
-#          github_token: ${{ secrets.GITHUB_TOKEN }}
-#          publish_dir: app/vue/docs/.vitepress/dist
+      - name: Docs Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: app/vue/docs/.vitepress/dist
 
       # data to server copy transfer
       - name: Copy django, etc data to CI/CD server
