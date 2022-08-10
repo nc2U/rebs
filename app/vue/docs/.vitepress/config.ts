@@ -4,7 +4,9 @@ export default defineConfig({
   lang: 'ko-KR',
   title: 'REBS',
   description: '부동산 개발관리 프로그램',
-  base: '/rebs/',
+  base: process.env.NODE_ENV === 'production'
+    ? '/rebs/'
+    : '',
   head: [
     ['link', {rel: 'shortcut icon', href: '/favicon.png'}]
   ],
