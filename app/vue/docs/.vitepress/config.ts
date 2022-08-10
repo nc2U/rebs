@@ -9,7 +9,7 @@ export default defineConfig({
     ? '/rebs/'
     : '',
   head: [
-    ['link', {rel: 'shortcut icon', href: '/favicon.png'}]
+    ['link', {rel: 'shortcut icon', href: 'https://github.com/nc2U/rebs/blob/master/app/vue/docs/favicon.png?raw=true'}]
   ],
   lastUpdated: true,
   markdown: {
@@ -18,7 +18,7 @@ export default defineConfig({
     // lineNumbers: true,
   },
   themeConfig: {
-    logo: '/favicon.svg',
+    logo: 'https://raw.githubusercontent.com/nc2U/rebs/5787dbf80bf9ccbb16a8b3a49d052199cafdb171/app/vue/docs/favicon.svg',
     siteTitle: 'REBS',
     nav: [
       {text: '가이드', link: '/intro/getting-started'},
