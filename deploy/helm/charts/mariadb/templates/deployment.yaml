@@ -33,7 +33,7 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          args: ["--character-set-server=utf8", "--collation-server=utf8_unicode_ci"]
+          args: [ "--character-set-server=utf8", "--collation-server=utf8_unicode_ci" ]
           envFrom:
             - configMapRef:
                 name: {{ include "mariadb.fullname" . }}-config
@@ -51,10 +51,10 @@ spec:
             initialDelaySeconds: 30
             failureThreshold: 2
             periodSeconds: 30
-#          readinessProbe:
-#            httpGet:
-#              path: /
-#              port: http
+          #          readinessProbe:
+          #            httpGet:
+          #              path: /
+          #              port: http
           volumeMounts:
             - name: mysql-data
               mountPath: /var/lib/mysql
@@ -69,6 +69,9 @@ spec:
         - name: init-sql
           persistentVolumeClaim:
             claimName: {{ include "mariadb.fullname" . }}-sql-{{ .Values.global.appMode }}-nfs-pvc
+        - name: backup-dump
+          persistentVolumeClaim:
+            claimName: {{ include "mariadb.fullname" . }}-backup-{{ .Values.global.appMode }}-nfs-pvc
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
