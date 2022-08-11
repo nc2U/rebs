@@ -21,8 +21,16 @@ jobs:
     steps:
       - name: Check out source code
         uses: actions/checkout@v3
+
+      # data to server copy transfer
+      - name: Copy helm, to CI/CD server
+        uses: appleboy/scp-action@master
         with:
-          ref: 'dev'
+          host: ${{ secrets.CICD_HOST }}
+          username: ${{ secrets.CICD_USERNAME }}
+          password: ${{ secrets.CICD_PASSWORD }}
+          source: 'deploy/helm,deploy/kubectl'
+          target: '/mnt/nfs/'
 
       - name: SSH Remote Commands from ci/cd server
         uses: garygrossgarten/github-action-ssh@release
