@@ -21,6 +21,8 @@ jobs:
     steps:
       - name: Check out source code
         uses: actions/checkout@v3
+        with:
+          ref: 'dev'
 
       - name: SSH Remote Commands from ci/cd server
         uses: garygrossgarten/github-action-ssh@release
