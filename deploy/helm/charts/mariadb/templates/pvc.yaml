@@ -31,7 +31,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: {{ include "mariadb.fullname" . }}-backup-{{ .Values.global.appMode }}-nfs-pvc
 spec:
-  storageClassName: backup-dump-{{ .Values.global.appMode }}
+  storageClassName: dump-backup-{{ .Values.global.appMode }}
   accessModes:
   {{- range .Values.volumes.backupAccessModes }}
     - {{ . }}
