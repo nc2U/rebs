@@ -8,6 +8,7 @@ import { addDays, diffDate } from '@/utils/baseMixins'
 import { computed, onBeforeMount, reactive, ref, watch } from 'vue'
 import { useScheduleStore } from '@/store/pinia/schedule'
 import CalendarInfo from './components/CalendarInfo.vue'
+import FormModal from '@/components/Modals/FormModal.vue'
 
 const cal = ref()
 
@@ -19,19 +20,27 @@ const currentEvents = computed(() => scheduleStore.events)
 
 const fetchScheduleList = (mon = '') => scheduleStore.fetchScheduleList(mon)
 
+const formModal = ref()
+const newTitle = ref('')
+const newEvent = reactive({
+  start: '',
+  end: '',
+  allDay: true,
+})
+
 const handleDateSelect = (selectInfo: DateSelectArg) => {
-  let title = prompt('Please enter a new title for your event')
+  newTitle.value = ''
+  formModal.value.callModal()
   let calendarApi = selectInfo.view.calendar
   calendarApi.unselect() // clear date selection
-  if (title) {
-    const eventData = {
-      title,
-      start: selectInfo.startStr,
-      end: selectInfo.endStr,
-      allDay: selectInfo.allDay,
-    }
-    scheduleStore.createSchedule(eventData)
-  }
+  newEvent.start = selectInfo.startStr
+  newEvent.end = selectInfo.endStr
+  newEvent.allDay = selectInfo.allDay
+}
+
+const eventRegister = () => {
+  scheduleStore.createSchedule({ title: newTitle.value, ...newEvent })
+  formModal.value.visible = false
 }
 
 const transformData = (event: any) => {
@@ -145,4 +154,29 @@ onBeforeMount(() => {
       />
     </CRow>
   </div>
+
+  <FormModal ref="formModal">
+    <template #header> 진행 일정 - 이벤트 등록</template>
+    <template #default>
+      <CModalBody>
+        <CRow>
+          <CCol>
+            <CFormInput
+              id="event-title"
+              v-model="newTitle"
+              type="text"
+              placeholder="진행 일정"
+              @keydown.enter="eventRegister"
+            />
+          </CCol>
+        </CRow>
+      </CModalBody>
+      <CModalFooter>
+        <CButton color="light" @click="() => (formModal.visible = false)">
+          닫기
+        </CButton>
+        <CButton color="primary" @click="eventRegister">등록</CButton>
+      </CModalFooter>
+    </template>
+  </FormModal>
 </template>
