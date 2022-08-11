@@ -39,3 +39,22 @@ spec:
   nfs:
     path: {{ .Values.global.nfsPath }}/volume/sql
     server: {{ .Values.global.nfsServerHost }}
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ include "mariadb.fullname" . }}-backup-{{ .Values.global.appMode }}-nfs-pv
+spec:
+  storageClassName: backup-dump-{{ .Values.global.appMode }}
+  capacity:
+    storage: {{ .Values.volumes.backupPvStorage }}
+  accessModes:
+  {{- range .Values.volumes.backupAccessModes }}
+    - {{ . }}
+  {{- end }}
+  mountOptions:
+    - hard
+    - nfsvers=4.1
+  nfs:
+    path: {{ .Values.global.nfsPath }}/volume/backup
+    server: {{ .Values.global.nfsServerHost }}

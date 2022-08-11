@@ -25,3 +25,17 @@ spec:
   resources:
     requests:
       storage: {{ .Values.volumes.sqlPvcStorage }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "mariadb.fullname" . }}-backup-{{ .Values.global.appMode }}-nfs-pvc
+spec:
+  storageClassName: backup-dump-{{ .Values.global.appMode }}
+  accessModes:
+  {{- range .Values.volumes.backupAccessModes }}
+    - {{ . }}
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.volumes.backupPvcStorage }}
