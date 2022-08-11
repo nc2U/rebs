@@ -60,6 +60,8 @@ spec:
               mountPath: /var/lib/mysql
             - name: init-sql
               mountPath: /docker-entrypoint-initdb.d
+            - name: backup-dump
+              mountPath: /backup
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
