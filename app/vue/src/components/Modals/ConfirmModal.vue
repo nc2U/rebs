@@ -3,6 +3,7 @@
     alignment="center"
     :visible="visible"
     @close="() => (visible = false)"
+    @keydown.esc="() => (visible = false)"
   >
     <CModalHeader>
       <CModalTitle>
@@ -17,7 +18,7 @@
       </slot>
     </CModalBody>
     <CModalFooter>
-      <CButton color="light" @click="() => (visible = false)"> 닫기 </CButton>
+      <CButton color="light" @click="() => (visible = false)"> 닫기</CButton>
       <slot name="footer">
         <CButton color="primary">Save changes</CButton>
       </slot>

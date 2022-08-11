@@ -3,6 +3,7 @@
     alignment="center"
     :visible="visible"
     @close="() => (visible = false)"
+    @keydown.esc="() => (visible = false)"
   >
     <CModalHeader>
       <CModalTitle>

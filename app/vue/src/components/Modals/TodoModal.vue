@@ -1,5 +1,10 @@
 <template>
-  <CModal :visible="visible" scrollable @close="() => (visible = false)">
+  <CModal
+    :visible="visible"
+    scrollable
+    @close="() => (visible = false)"
+    @keydown.esc="() => (visible = false)"
+  >
     <CModalHeader>
       <CModalTitle>
         <CIcon name="cilCalendarCheck" class="mr-2" />
