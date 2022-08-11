@@ -9,6 +9,7 @@ import { computed, onBeforeMount, reactive, ref, watch } from 'vue'
 import { useScheduleStore } from '@/store/pinia/schedule'
 import CalendarInfo from './components/CalendarInfo.vue'
 import FormModal from '@/components/Modals/FormModal.vue'
+import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
 const cal = ref()
 
@@ -20,8 +21,11 @@ const currentEvents = computed(() => scheduleStore.events)
 
 const fetchScheduleList = (mon = '') => scheduleStore.fetchScheduleList(mon)
 
+const mode = ref<'create' | 'update'>('create')
+
 const formModal = ref()
-const newTitle = ref('')
+const eventId = ref<string>('')
+const eventTitle = ref('')
 const newEvent = reactive({
   start: '',
   end: '',
@@ -29,7 +33,8 @@ const newEvent = reactive({
 })
 
 const handleDateSelect = (selectInfo: DateSelectArg) => {
-  newTitle.value = ''
+  mode.value = 'create'
+  eventTitle.value = ''
   formModal.value.callModal()
   let calendarApi = selectInfo.view.calendar
   calendarApi.unselect() // clear date selection
@@ -38,8 +43,12 @@ const handleDateSelect = (selectInfo: DateSelectArg) => {
   newEvent.allDay = selectInfo.allDay
 }
 
-const eventRegister = () => {
-  scheduleStore.createSchedule({ title: newTitle.value, ...newEvent })
+const eventManagement = () => {
+  const eventData = { title: eventTitle.value, ...newEvent }
+  if (mode.value === 'create') scheduleStore.createSchedule(eventData)
+  else if (mode.value === 'update')
+    // console.log({ pk: eventId.value, ...{ data: eventData } })
+    scheduleStore.updateSchedule({ pk: eventId.value, ...{ data: eventData } })
   formModal.value.visible = false
 }
 
@@ -59,15 +68,25 @@ const handleChange = (el: EventClickArg) => {
   scheduleStore.updateSchedule({ pk, data: eventDate })
 }
 
+const confirmModal = ref()
 const handleEventClick = (clickInfo: EventClickArg) => {
-  const pk = clickInfo.event.id
-  if (
-    confirm(
-      `Are you sure you want to delete the event '${clickInfo.event.title}'`,
-    )
-  ) {
-    scheduleStore.deleteSchedule(pk)
-  }
+  mode.value = 'update'
+  eventId.value = clickInfo.event.id
+  eventTitle.value = clickInfo.event.title
+  newEvent.start = clickInfo.event.startStr
+  newEvent.end = clickInfo.event.endStr
+  newEvent.allDay = clickInfo.event.allDay
+  formModal.value.callModal()
+}
+
+const removeConfirm = () => {
+  formModal.value.visible = false
+  confirmModal.value.callModal()
+}
+
+const eventRemove = () => {
+  scheduleStore.deleteSchedule(eventId.value)
+  confirmModal.value.visible = false
 }
 
 const handleMonthChange = (payload: any) => {
@@ -156,17 +175,19 @@ onBeforeMount(() => {
   </div>
 
   <FormModal ref="formModal">
-    <template #header> 진행 일정 - 이벤트 등록</template>
+    <template #header>
+      진행 일정 - 이벤트 {{ mode === 'create' ? '등록' : '편집' }}
+    </template>
     <template #default>
       <CModalBody>
         <CRow>
           <CCol>
             <CFormInput
               id="event-title"
-              v-model="newTitle"
+              v-model="eventTitle"
               type="text"
               placeholder="진행 일정"
-              @keydown.enter="eventRegister"
+              @keydown.enter="eventManagement"
             />
           </CCol>
         </CRow>
@@ -175,8 +196,32 @@ onBeforeMount(() => {
         <CButton color="light" @click="() => (formModal.visible = false)">
           닫기
         </CButton>
-        <CButton color="primary" @click="eventRegister">등록</CButton>
+        <CButton
+          v-if="mode === 'create'"
+          color="primary"
+          @click="eventManagement"
+        >
+          등록
+        </CButton>
+        <CButton
+          v-if="mode === 'update'"
+          color="success"
+          @click="eventManagement"
+        >
+          수정
+        </CButton>
+        <CButton v-if="mode === 'update'" color="danger" @click="removeConfirm">
+          삭제
+        </CButton>
       </CModalFooter>
     </template>
   </FormModal>
+
+  <ConfirmModal ref="confirmModal">
+    <template #header> 진행 일정 - 이벤트 삭제</template>
+    [{{ eventTitle }}] - 해당 진행 일정을 정말 삭제 하시겠습니까?
+    <template #footer>
+      <CButton color="danger" @click="eventRemove">삭제</CButton>
+    </template>
+  </ConfirmModal>
 </template>
