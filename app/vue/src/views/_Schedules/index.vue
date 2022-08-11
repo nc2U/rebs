@@ -47,7 +47,6 @@ const eventManagement = () => {
   const eventData = { title: eventTitle.value, ...newEvent }
   if (mode.value === 'create') scheduleStore.createSchedule(eventData)
   else if (mode.value === 'update')
-    // console.log({ pk: eventId.value, ...{ data: eventData } })
     scheduleStore.updateSchedule({ pk: eventId.value, ...{ data: eventData } })
   formModal.value.visible = false
 }
