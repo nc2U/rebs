@@ -65,8 +65,11 @@ const actions = {
           commit(SET_LOCKED_USER, res.data)
           dispatch('fetchTodoList')
         })
-        .catch(err => console.log(err.response.data))
-    } else return
+        .catch(err => {
+          router.push({ name: 'Login' })
+          console.log(err.response.data)
+        })
+    } else router.push({ name: 'Login' })
   },
 
   logout({ commit }: any) {
