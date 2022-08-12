@@ -1,3 +1,94 @@
+<script lang="ts" setup>
+import { ref, computed, onBeforeMount, watch } from 'vue'
+import { useAccount } from '@/store/pinia/accounts'
+import Todo from './Todo.vue'
+
+interface Todo {
+  pk: number
+  title: string
+  completed: boolean
+  soft_deleted: boolean
+}
+
+const account = useAccount()
+
+const visibility = ref('all')
+const todos = ref<Todo[]>([])
+
+type filterType = {
+  [key: string]: (x: Todo[]) => ((y: Todo) => boolean) | Todo[]
+}
+
+const userInfo = computed(() => account.userInfo)
+const myTodos = computed(() => account.myTodos)
+watch(myTodos, val => (todos.value = val))
+
+const filters: filterType = {
+  all: (myTodos: Todo[]) => myTodos,
+  active: (myTodos: Todo[]) => myTodos.filter(todo => !todo.completed),
+  completed: (myTodos: Todo[]) => myTodos.filter(todo => todo.completed),
+}
+
+const allChecked = computed(() => myTodos.value.every(todo => todo.completed))
+
+const filteredTodos = computed(() => filters[visibility.value](todos.value))
+
+const remaining = computed(
+  () => todos.value.filter((todo: todo) => !todo.completed).length,
+)
+
+// ...mapActions('accounts', ['fetchTodoList', 'createTodo', 'patchTodo']),
+
+const addTodo = (e: any) => {
+  const title = e.target.value.trim()
+  if (userInfo.value && title) {
+    account.createTodo({ user: userInfo.value.pk, title })
+  }
+  e.target.value = ''
+}
+
+const toggleTodo = (todo: Todo) => {
+  todo.completed = !todo.completed
+  const payload = { pk: todo.pk, completed: todo.completed }
+  account.patchTodo(payload)
+}
+
+const delTodo = (todo: Todo) => {
+  const { pk } = todo
+  const soft_deleted = true
+  const payload = { pk, soft_deleted }
+  account.patchTodo(payload)
+}
+
+const editTodo = ({ todo, title }: { todo: Todo; title: string }) => {
+  const { pk } = todo
+  const payload = { pk, title }
+  account.patchTodo(payload)
+}
+
+const clearCompleted = () => {
+  todos.value.forEach((todo: Todo) => {
+    if (todo.completed) {
+      const payload = { pk: todo.pk, soft_deleted: true }
+      account.patchTodo(payload)
+    }
+  })
+}
+
+const toggleAll = ({ completed }: { completed: boolean }) => {
+  todos.value.forEach((todo: Todo) => {
+    todo.completed = completed
+    const payload = { pk: todo.pk, completed: todo.completed }
+    account.patchTodo(payload)
+  })
+}
+
+const pluralize = (n: any, w: any) => (n === 1 ? w : w + 's')
+const capitalize = (s: any) => s.charAt(0).toUpperCase() + s.slice(1)
+
+onBeforeMount(() => account.fetchTodoList())
+</script>
+
 <template>
   <section class="todoapp mb-4">
     <!-- header -->
@@ -64,121 +155,6 @@
     <p v-else class="aa">첫 번째 할 일 목록을 메모해 보세요.</p>
   </footer>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import Todo from './Todo.vue'
-import { mapActions, mapGetters, mapState } from 'vuex'
-
-interface todo {
-  id: number
-  title: string
-  completed: boolean
-  soft_deleted: boolean
-}
-
-type filterType = {
-  [index: string]: (x: todo[]) => ((y: todo) => boolean) | todo[]
-}
-
-const filters: filterType = {
-  all: (todos: todo[]) => todos,
-  active: (todos: todo[]) => todos.filter(todo => !todo.completed),
-  completed: (todos: todo[]) => todos.filter(todo => todo.completed),
-}
-const defalutList = [
-  {
-    id: 500,
-    title: 'star this repository',
-    completed: false,
-    soft_deleted: false,
-  },
-  {
-    id: 501,
-    title: 'fork this repository',
-    completed: false,
-    soft_deleted: false,
-  },
-  { id: 502, title: 'follow author', completed: false, soft_deleted: false },
-  { id: 503, title: 'vue-element-admin', completed: true, soft_deleted: false },
-  { id: 504, title: 'vue', completed: true, soft_deleted: false },
-  { id: 505, title: 'element-ui', completed: true, soft_deleted: false },
-  { id: 506, title: 'axios', completed: true, soft_deleted: false },
-  { id: 507, title: 'webpack', completed: true, soft_deleted: false },
-]
-export default defineComponent({
-  name: 'TodoListApp',
-  components: { Todo },
-  data() {
-    return {
-      visibility: 'all',
-      filters,
-    }
-  },
-  created() {
-    this.fetchTodoList()
-  },
-  computed: {
-    todos() {
-      return (this as any).myTodos
-    },
-    allChecked() {
-      return (this as any).todos.every((todo: todo) => todo.completed)
-    },
-    filteredTodos() {
-      return filters[(this as any).visibility]((this as any).todos)
-    },
-    remaining() {
-      return (this as any).todos.filter((todo: todo) => !todo.completed).length
-    },
-    ...mapState('accounts', ['userInfo']),
-    ...mapGetters('accounts', ['myTodos']),
-  },
-  methods: {
-    addTodo(e: any) {
-      const title = e.target.value
-      if (title.trim()) {
-        this.createTodo({ user: this.userInfo.pk, title })
-      }
-      e.target.value = ''
-    },
-    toggleTodo(todo: any) {
-      todo.completed = !todo.completed
-      const payload = { pk: todo.pk, completed: todo.completed }
-      this.patchTodo(payload)
-    },
-    delTodo(todo: any) {
-      const { pk } = todo
-      const soft_deleted = true
-      const payload = { pk, soft_deleted }
-      this.patchTodo(payload)
-    },
-    editTodo({ todo, title }: any) {
-      const { pk } = todo
-      const payload = { pk, title }
-      this.patchTodo(payload)
-    },
-    clearCompleted() {
-      this.todos.forEach((todo: any) => {
-        if (todo.completed === true) {
-          const payload = { pk: todo.pk, soft_deleted: true }
-          this.patchTodo(payload)
-        }
-      })
-    },
-    toggleAll({ completed }: any) {
-      this.todos.forEach((todo: any) => {
-        todo.completed = completed
-        const payload = { pk: todo.pk, completed: todo.completed }
-        this.patchTodo(payload)
-      })
-    },
-    pluralize: (n: any, w: any) => (n === 1 ? w : w + 's'),
-    capitalize: (s: any) => s.charAt(0).toUpperCase() + s.slice(1),
-    ...mapActions('accounts', ['fetchTodoList', 'createTodo', 'patchTodo']),
-  },
-})
-</script>
 
 <style lang="scss">
 @import 'index';
