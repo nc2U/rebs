@@ -33,7 +33,7 @@ const transform = (payload: Event) => {
   }
 }
 
-export const useScheduleStore = defineStore('schedule', () => {
+export const useSchedule = defineStore('schedule', () => {
   const schedule: Ref<Schedule> | Ref<null> = ref(null)
   const scheduleList: Schedule[] = reactive([])
 
@@ -77,7 +77,6 @@ export const useScheduleStore = defineStore('schedule', () => {
   const updateSchedule = (payload: { pk: string; data: Event }) => {
     const { pk, data } = payload
     const eventData = transform(data)
-    console.log(pk, eventData)
     api
       .put(`/schedule/${pk}/`, eventData)
       .then(res => {
