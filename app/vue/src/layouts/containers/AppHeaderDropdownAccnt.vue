@@ -1,20 +1,12 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { useStore } from 'vuex'
-import { useRouter, useRoute } from 'vue-router'
+import { useAccount } from '@/store/pinia/accounts'
 import TodoModal from '@/components/Modals/TodoModal.vue'
 
 const store = useStore()
-const router = useRouter()
-const route = useRoute()
 
-const logOut = () => {
-  store.dispatch('accounts/logout')
-  router.push({
-    name: 'Login',
-    query: { redirect: route.path },
-  })
-}
+const account = useAccount()
 
 const props = defineProps({ userInfo: { type: Object, required: true } })
 
@@ -25,7 +17,7 @@ const avatarText = computed(() =>
   props.userInfo ? props.userInfo.username.substring(0, 1).toUpperCase() : 'A',
 )
 
-const itemsCount = store.getters['accounts/myTodos'].length
+const itemsCount = account.myTodos.length
 const headerClass = computed(() =>
   store.state.theme === 'dark' ? 'bg-secondary' : 'bg-light',
 )
@@ -77,7 +69,7 @@ const headerClass = computed(() =>
         프로필
       </CDropdownItem>
       <CDropdownDivider />
-      <CDropdownItem style="cursor: pointer" @click="logOut">
+      <CDropdownItem style="cursor: pointer" @click="account.logout()">
         <CIcon icon="cil-lock-locked" />
         로그아웃
       </CDropdownItem>
