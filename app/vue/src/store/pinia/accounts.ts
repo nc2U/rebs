@@ -102,15 +102,22 @@ export const useAccount = defineStore('account', () => {
     fetchTodoList()
   }
 
-  const login = (payload: { email: string; password: string }) => {
+  const login = (payload: {
+    email: string
+    password: string
+    redirect?: string
+  }) => {
+    const { redirect, ...loginData } = payload
     return api
-      .post('/token/', payload)
+      .post('/token/', loginData)
       .then(res => {
         setToken(res.data.access)
         return api.get(`/user/${extractId(accessToken.value)}`)
       })
       .then(res => {
         setUser(res.data)
+        if (redirect) router.push({ path: redirect })
+        else router.push({ name: 'Home' })
         message('', '', '로그인 성공 알림!')
       })
       .catch(err => console.log(err.response.data))
@@ -136,6 +143,7 @@ export const useAccount = defineStore('account', () => {
     accessToken.value = ''
     delete api.defaults.headers.common.Authorization
     Cookies.remove('accessToken')
+    router.push({ name: 'Login' })
     message('', '', '로그아웃 완료 알림!')
   }
 
