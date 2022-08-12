@@ -10,7 +10,7 @@ const route = useRoute()
 const router = useRouter()
 
 const visible = ref(false)
-let affixTags: any[] = reactive([])
+let affixTags = reactive<any>([])
 
 const currentTag = ref()
 const scrollPane = ref()
@@ -29,7 +29,7 @@ const isAffix = (tag: any) => tag.meta && tag.meta.affix
 const filterAffixTags = (routes: any[]) => {
   let tags: Array<VisitedViews> = []
   routes.forEach((r: any) => {
-    if (r.meta && r.meta.affix && r.name !== 'Login') {
+    if (r.meta && r.meta.affix) {
       tags.push({
         fullPath: r.path,
         path: r.path,
@@ -50,14 +50,14 @@ const filterAffixTags = (routes: any[]) => {
 
 const initTags = () => {
   affixTags = filterAffixTags(routes)
-  affixTags.forEach(tag =>
+  affixTags.forEach((tag: any) =>
     tag.name ? store.dispatch('tagsView/addVisitedView', tag) : undefined,
   )
 }
 
 const addTags = () => {
-  const { name } = route
-  if (name) {
+  const { name, meta } = route
+  if (name && !meta.except) {
     store.dispatch('tagsView/addView', route)
   }
   return false

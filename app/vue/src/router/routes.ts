@@ -72,13 +72,13 @@ const routes: Array<RouteRecordRaw> = [
     path: '/accounts/login',
     name: 'Login',
     component: () => import('@/views/_Accounts/Login.vue'),
-    meta: { title: '로그인' },
+    meta: { title: '로그인', except: true },
   },
   {
     path: '/accounts/register',
     name: 'Register',
     component: () => import('@/views/_Accounts/Register.vue'),
-    meta: { title: '회원가입' },
+    meta: { title: '회원가입', except: true },
     beforeEnter: (to, from, next) => {
       if (
         from.name === 'RegisterCode' &&
@@ -96,7 +96,7 @@ const routes: Array<RouteRecordRaw> = [
     path: '/accounts/register-code',
     name: 'RegisterCode',
     component: () => import('@/views/_Accounts/RegisterCode.vue'),
-    meta: { title: '코드입력' },
+    meta: { title: '코드입력', except: true },
   },
   {
     path: '/:pathMatch(.*)*',
