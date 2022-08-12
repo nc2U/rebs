@@ -1,5 +1,5 @@
 import api from '@/api'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { Buffer } from 'buffer'
 import router from '@/router'
@@ -51,22 +51,26 @@ export const useAccount = defineStore('account', () => {
   const todoList = ref<Todo[]>([])
 
   // getters
-  const superAuth = () => userInfo.value?.is_superuser
-  const staffAuth = () =>
-    userInfo.value?.staffauth ? userInfo.value.staffauth : null
-  const isAuthorized = () => accessToken.value.length && !!userInfo.value
-  const initComId = () =>
-    userInfo.value?.staffauth?.company ? userInfo.value.staffauth.company : 1
-  const initProjId = () =>
+  const superAuth = computed(() => userInfo.value?.is_superuser)
+  const staffAuth = computed(() =>
+    userInfo.value?.staffauth ? userInfo.value.staffauth : null,
+  )
+  const isAuthorized = computed(
+    () => accessToken.value.length && !!userInfo.value,
+  )
+  const initComId = computed(() =>
+    userInfo.value?.staffauth?.company ? userInfo.value.staffauth.company : 1,
+  )
+  const initProjId = computed(() =>
     userInfo.value?.staffauth?.assigned_project
       ? userInfo.value.staffauth.assigned_project
-      : userInfo.value?.staffauth?.allowed_projects[0] || 1
-  const myTodos = () =>
-    userInfo.value
-      ? todoList.value.filter(
-          todo => !todo.soft_deleted && todo.user === userInfo.value?.pk,
-        )
-      : []
+      : userInfo.value?.staffauth?.allowed_projects[0] || 1,
+  )
+  const myTodos = computed(() =>
+    todoList.value.filter(
+      todo => !todo.soft_deleted && todo.user === userInfo.value?.pk,
+    ),
+  )
 
   // actions
   const extractId = (token: string) => {
@@ -179,7 +183,7 @@ export const useAccount = defineStore('account', () => {
     api
       .get(url)
       .then(res => {
-        todoList.value = res.data
+        todoList.value = res.data.results
       })
       .catch(err => errorHandle(err.response.data))
   }
