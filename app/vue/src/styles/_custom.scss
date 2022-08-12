@@ -43,6 +43,11 @@
   --dp-menu-border-color: #B1B7C1 !important;
 }
 
+.btn-link {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
 .example {
   &:not(:first-child) {
     margin-top: 1.5rem;

@@ -86,25 +86,3 @@ const headerClass = computed(() =>
 
   <TodoModal ref="todoModal" />
 </template>
-
-<style lang="scss" scoped>
-.show,
-.btn-link:hover,
-.btn-link:active {
-  text-decoration: none !important;
-}
-
-.btn {
-  box-shadow: none !important;
-}
-
-.btn:focus,
-.btn:active:focus,
-.btn.active:focus,
-.btn.focus,
-.btn:active.focus,
-.btn.active.focus {
-  outline: none !important;
-  box-shadow: none !important;
-}
-</style>
