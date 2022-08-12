@@ -1,3 +1,16 @@
+<script lang="ts" setup>
+import { useAccount } from '@/store/pinia/accounts'
+import LoginForm from './components/LoginForm.vue'
+
+const account = useAccount()
+
+const onSubmit = (payload: {
+  email: string
+  password: string
+  redirect: string
+}) => account.login(payload)
+</script>
+
 <template>
   <div class="bg-light min-vh-100 d-flex flex-row align-items-center">
     <CContainer>
@@ -6,7 +19,6 @@
           <CCard class="p-4">
             <CCardBody>
               <LoginForm @onSubmit="onSubmit" />
-
               <CRow>
                 <CCol xs="12" class="mt-3">
                   <p class="text-medium-emphasis">Sign with</p>
@@ -39,29 +51,3 @@
     </CContainer>
   </div>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import { mapActions } from 'vuex'
-import LoginForm from './components/LoginForm.vue'
-
-export default defineComponent({
-  name: 'Login',
-  components: {
-    LoginForm,
-  },
-  methods: {
-    onSubmit(payload: { email: string; password: string; redirect: string }) {
-      const { email, password, redirect } = payload
-      this.login({ email, password }).then(() => {
-        if (redirect) this.$router.push({ path: redirect })
-        else this.$router.push({ name: 'Home' })
-      })
-    },
-    toRegister() {
-      this.$router.push({ name: 'Register' })
-    },
-    ...mapActions('accounts', ['login']),
-  },
-})
-</script>

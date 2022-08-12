@@ -1,3 +1,46 @@
+<script lang="ts" setup>
+import { ref, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
+import router from '@/router'
+
+const route = useRoute()
+const emit = defineEmits(['onSubmit'])
+
+const email = ref('')
+const password = ref('')
+const redirect = ref()
+const validated = ref(false)
+
+onMounted(() => {
+  redirect.value = route.query?.redirect
+})
+
+const onSubmit = (event: any) => {
+  const form = event.currentTarget
+  if (form.checkValidity() === false) {
+    event.preventDefault()
+    event.stopPropagation()
+
+    validated.value = true
+  } else {
+    emit('onSubmit', {
+      email: email.value,
+      password: password.value,
+      redirect: redirect.value,
+    })
+    validated.value = false
+  }
+}
+
+const toRegister = () => {
+  router.push({ name: 'Register' })
+}
+
+const toFindAccount = () => {
+  alert('준비중!')
+}
+</script>
+
 <template>
   <CForm
     novalidate
@@ -39,12 +82,7 @@
         </CButton>
       </CCol>
       <CCol class="text-right">
-        <CButton
-          type="button"
-          color="link"
-          class="px-0"
-          @click="$router.push({ name: 'Register' })"
-        >
+        <CButton type="button" color="link" class="px-0" @click="toRegister">
           회원가입하러 가기
         </CButton>
       </CCol>
@@ -54,40 +92,3 @@
     </CRow>
   </CForm>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-
-export default defineComponent({
-  name: 'LoginForm',
-  data() {
-    return {
-      email: '',
-      password: '',
-      redirect: '',
-      validated: false,
-    }
-  },
-  created(this: any) {
-    this.redirect = this.$route.query.redirect
-  },
-  methods: {
-    onSubmit(event: any) {
-      const form = event.currentTarget
-      if (form.checkValidity() === false) {
-        event.preventDefault()
-        event.stopPropagation()
-
-        this.validated = true
-      } else {
-        const { email, password, redirect } = this
-        this.$emit('onSubmit', { email, password, redirect })
-        this.validated = false
-      }
-    },
-    toFindAccount() {
-      alert('준비중!')
-    },
-  },
-})
-</script>
