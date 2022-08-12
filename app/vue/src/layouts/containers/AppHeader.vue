@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { useStore } from 'vuex'
+import { useAccount } from '@/store/pinia/accounts'
 import AppBreadcrumb from './AppBreadcrumb.vue'
 import AppHeaderDropdownAccnt from './AppHeaderDropdownAccnt.vue'
 import { directive as vFullscreen } from 'vue-fullscreen'
@@ -8,6 +9,7 @@ import { logo } from '@/assets/brand/current-logo'
 import TagsView from '@/layouts/containers/TagsView/index.vue'
 
 const store = useStore()
+const account = useAccount()
 
 const screenIcon = ref('mdi-fullscreen')
 const screenGuide = ref('전체화면')
@@ -18,8 +20,8 @@ const options = ref({
     screenGuide.value = !isFullscreen ? '전체화면' : '전체화면 종료'
   },
 })
-const userInfo = store.state.accounts.userInfo
-const isAuthorized = store.getters['accounts/isAuthorized']
+const userInfo = account.userInfo
+const isAuthorized = account.isAuthorized
 </script>
 
 <template>
@@ -48,10 +50,10 @@ const isAuthorized = store.getters['accounts/isAuthorized']
             :button="{ color: 'primary' }"
             name="theme-switch"
             auto-complete="off"
-            :checked="$store.state.theme === 'default'"
+            :checked="store.state.theme === 'default'"
             @change="
               event =>
-                $store.commit({
+                store.commit({
                   type: 'toggleTheme',
                   value: 'default',
                 })
@@ -109,9 +111,3 @@ const isAuthorized = store.getters['accounts/isAuthorized']
     </CContainer>
   </CHeader>
 </template>
-
-<style lang="scss" scoped>
-.btn:focus {
-  outline: none !important;
-}
-</style>

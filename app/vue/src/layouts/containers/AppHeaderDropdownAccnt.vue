@@ -17,7 +17,7 @@ const avatarText = computed(() =>
   props.userInfo ? props.userInfo.username.substring(0, 1).toUpperCase() : 'A',
 )
 
-const itemsCount = account.myTodos.length
+const itemsCount = computed(() => account.myTodos.length)
 const headerClass = computed(() =>
   store.state.theme === 'dark' ? 'bg-secondary' : 'bg-light',
 )
