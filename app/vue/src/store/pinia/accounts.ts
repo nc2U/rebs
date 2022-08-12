@@ -1,27 +1,11 @@
 import api from '@/api'
-import { reactive, ref } from 'vue'
+import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import { State } from '@/store'
 import { Buffer } from 'buffer'
 import router from '@/router'
 import Cookies from 'js-cookie'
 import { errorHandle, message } from '@/utils/helper'
-
-export declare interface StaffAuth {
-  pk: number
-  company: number
-  is_staff: boolean
-  assigned_project: number
-  allowed_projects: number[]
-  contract: string
-  payment: string
-  notice: string
-  project_cash: string
-  project_docs: string
-  human_resource: string
-  company_settings: string
-  auth_manage: string
-}
+import { StaffAuth } from '@/store/modules/accounts/state'
 
 interface Profile {
   pk: number
@@ -57,13 +41,6 @@ export declare interface LockedUser {
   pk: number
   email: string
   username: string
-}
-
-export declare interface AccountsState extends State {
-  accessToken: string
-  userInfo: User | null
-  lockedUser: LockedUser | null
-  todoList: Todo[]
 }
 
 export const useAccount = defineStore('account', () => {
@@ -199,49 +176,46 @@ export const useAccount = defineStore('account', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  // createTodo: (
-  //   { commit, dispatch, state }: any,
-  //   payload: { user: number; title: string },
-  // ) => {
-  //   api
-  //     .post('/todo/', payload)
-  //     .then(() => {
-  //       dispatch('fetchTodoList')
-  //       return api
-  //         .get(`/user/${state.userInfo.pk}/`)
-  //         .then(res => {
-  //           commit(SET_USER_INFO, res.data)
-  //         })
-  //         .catch(err => errorHandle(err.response.data))
-  //     })
-  //     .catch(err => errorHandle(err.response.data))
-  // },
-  //
-  // patchTodo: ({ dispatch }: any, payload: any) => {
-  //   const { pk } = payload
-  //   delete payload.pk
-  //   api
-  //     .patch(`/todo/${pk}/`, payload)
-  //     .then(() => {
-  //       dispatch('fetchTodoList')
-  //     })
-  //     .catch(err => errorHandle(err.response.data))
-  // },
-  //
-  // deleteTodo: ({ commit, dispatch, state }: any, pk: any) => {
-  //   api
-  //     .delete(`/todo/${pk}/`)
-  //     .then(() => {
-  //       dispatch('fetchTodoList')
-  //       return api
-  //         .get(`/user/${state.userInfo.pk}/`)
-  //         .then(res => {
-  //           commit(SET_USER_INFO, res.data)
-  //         })
-  //         .catch(err => errorHandle(err.response.data))
-  //     })
-  //     .catch(err => errorHandle(err.response.data))
-  // },
+  const createTodo = (payload: { user: number; title: string }) => {
+    api
+      .post('/todo/', payload)
+      .then(() => {
+        fetchTodoList()
+        return api
+          .get(`/user/${userInfo.value?.pk}/`)
+          .then(res => {
+            userInfo.value = res.data
+          })
+          .catch(err => errorHandle(err.response.data))
+      })
+      .catch(err => errorHandle(err.response.data))
+  }
+
+  const patchTodo = (payload: any) => {
+    const { pk } = payload
+    delete payload.pk
+    api
+      .patch(`/todo/${pk}/`, payload)
+      .then(() => {
+        fetchTodoList()
+      })
+      .catch(err => errorHandle(err.response.data))
+  }
+
+  const deleteTodo = (pk: string) => {
+    api
+      .delete(`/todo/${pk}/`)
+      .then(() => {
+        fetchTodoList()
+        return api
+          .get(`/user/${userInfo.value?.pk}/`)
+          .then(res => {
+            userInfo.value = res.data
+          })
+          .catch(err => errorHandle(err.response.data))
+      })
+      .catch(err => errorHandle(err.response.data))
+  }
 
   return {
     accessToken,
@@ -265,5 +239,8 @@ export const useAccount = defineStore('account', () => {
     patchProfile,
 
     fetchTodoList,
+    createTodo,
+    patchTodo,
+    deleteTodo,
   }
 })
