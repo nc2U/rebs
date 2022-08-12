@@ -26,8 +26,7 @@ function init() {
 
 init().then(() => {
   const app = createApp(App)
-  const pinia = createPinia()
-  app.use(pinia)
+  app.use(createPinia())
   app.use(store)
   app.use(router)
   app.use(vuetify)
