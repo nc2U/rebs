@@ -2,7 +2,6 @@ import api from '@/api'
 import { computed, ref, reactive, Ref } from 'vue'
 import { defineStore } from 'pinia'
 import { errorHandle, message } from '@/utils/helper'
-import Schedule from '@/store/modules/schedule'
 
 interface Schedule {
   pk: number
