@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
-
 const emit = defineEmits(['weekends-toggle'])
 defineProps({
   calendarOptions: { type: Object, default: Function },
@@ -12,19 +10,19 @@ defineProps({
   <CCol md="3" class="d-none d-md-block">
     <div class="demo-app-sidebar">
       <div class="demo-app-sidebar-section">
-        <h2>
+        <h5>
           <v-icon
             icon="mdi-alpha-i-circle"
             size="small"
             class="mr-2"
             color="indigo"
           />
-          Instructions
-        </h2>
+          참고
+        </h5>
         <ul>
           <li>날짜를 선택하면 새 이벤트를 생성하라는 메시지가 표시됩니다.</li>
-          <li>드래그, 드롭 및 크기 조정 이벤트</li>
-          <li>이벤트를 삭제하려면 클릭하세요.</li>
+          <li>드래그, 드롭 및 기간 조정 이벤트</li>
+          <li>이벤트를 편집하려면 클릭하세요.</li>
         </ul>
       </div>
       <div class="demo-app-sidebar-section">
@@ -38,7 +36,15 @@ defineProps({
         </label>
       </div>
       <div class="demo-app-sidebar-section">
-        <h2>월간 진행 일정 목록 ({{ currentEvents.length }})</h2>
+        <h5>
+          <v-icon
+            icon="mdi-alpha-i-circle"
+            size="small"
+            class="mr-2"
+            color="indigo"
+          />
+          월간 진행 일정 목록 ({{ currentEvents.length }})
+        </h5>
         <ul>
           <li v-for="event in currentEvents" :key="event.id">
             <b>{{ event.start.replace('T', ' ').replace(':00+09:00', '') }}</b>
@@ -51,9 +57,10 @@ defineProps({
 </template>
 
 <style lang="scss" scoped>
-h2 {
+h5 {
   margin: 0;
-  font-size: 16px;
+  font-weight: bold;
+  font-size: 1em;
 }
 
 ul {
