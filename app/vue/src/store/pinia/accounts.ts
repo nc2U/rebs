@@ -134,10 +134,9 @@ export const useAccount = defineStore('account', () => {
         .get(`/user/${extractId(token)}`)
         .then(res => setUser(res.data))
         .catch(err => {
-          router.push({ name: 'Login' })
           console.log(err.response.data)
         })
-    } else router.push({ name: 'Login' })
+    } else return Promise.resolve()
   }
 
   const logout = () => {

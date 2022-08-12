@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
+import { useAccount } from '@/store/pinia/accounts'
 import Cookies from 'js-cookie'
 import App from './App.vue'
 import store from './store'
@@ -17,16 +18,15 @@ loadFonts()
 
 function init() {
   const cookedToken = Cookies.get('accessToken')
-  if (cookedToken) {
-    return store.dispatch('accounts/loginByToken', cookedToken)
-  } else {
-    return Promise.resolve()
-  }
+  return account.loginByToken(cookedToken)
 }
 
+const app = createApp(App)
+
+app.use(createPinia())
+const account = useAccount()
+
 init().then(() => {
-  const app = createApp(App)
-  app.use(createPinia())
   app.use(store)
   app.use(router)
   app.use(vuetify)
@@ -34,6 +34,5 @@ init().then(() => {
   app.use(CoreuiVue)
   app.provide('icons', icons)
   app.component('CIcon', CIcon)
-
   app.mount('#app')
 })

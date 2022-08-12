@@ -1,4 +1,5 @@
 import store from '@/store'
+import { useAccount } from '@/store/pinia/accounts'
 import { hashCode } from '@/utils/helper'
 import { RouteRecordRaw } from 'vue-router'
 
@@ -57,8 +58,7 @@ const routes: Array<RouteRecordRaw> = [
       settings,
     ],
     beforeEnter: (to, from, next) => {
-      const isAuth = store.getters['accounts/isAuthorized']
-      if (!isAuth) {
+      if (!useAccount().isAuthorized) {
         next({
           name: 'Login',
           query: { redirect: to.fullPath },
