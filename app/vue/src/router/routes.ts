@@ -1,5 +1,5 @@
 import store from '@/store'
-import { useAccount } from '@/store/pinia/accounts'
+import { useAccount } from '@/store/pinia/account'
 import { hashCode } from '@/utils/helper'
 import { RouteRecordRaw } from 'vue-router'
 

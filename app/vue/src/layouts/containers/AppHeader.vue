@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { useStore } from 'vuex'
-import { useAccount } from '@/store/pinia/accounts'
+import { useAccount } from '@/store/pinia/account'
 import AppBreadcrumb from './AppBreadcrumb.vue'
 import AppHeaderDropdownAccnt from './AppHeaderDropdownAccnt.vue'
 import { directive as vFullscreen } from 'vue-fullscreen'

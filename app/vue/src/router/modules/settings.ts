@@ -1,5 +1,5 @@
 import { computed, h, resolveComponent } from 'vue'
-import { useAccount } from '@/store/pinia/accounts'
+import { useAccount } from '@/store/pinia/account'
 
 const account = computed(() => useAccount())
 const pageViewAuth = computed(

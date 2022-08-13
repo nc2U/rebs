@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useAccount } from '@/store/pinia/accounts'
+import { useAccount } from '@/store/pinia/account'
 import LoginForm from './components/LoginForm.vue'
 
 const account = useAccount()

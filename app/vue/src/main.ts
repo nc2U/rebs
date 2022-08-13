@@ -1,5 +1,5 @@
 import { createApp } from 'vue'
-import { useAccount } from '@/store/pinia/accounts'
+import { useAccount } from '@/store/pinia/account'
 import Cookies from 'js-cookie'
 import App from './App.vue'
 import store, { pinia } from './store'

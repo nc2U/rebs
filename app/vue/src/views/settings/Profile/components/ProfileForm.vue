@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { reactive, ref, computed, onBeforeMount } from 'vue'
 import { useStore } from 'vuex'
-import { useAccount } from '@/store/pinia/accounts'
+import { useAccount } from '@/store/pinia/account'
 import { maska as vMaska } from 'maska'
 import { dateFormat } from '@/utils/baseMixins'
 import DatePicker from '@/components/DatePicker/index.vue'
