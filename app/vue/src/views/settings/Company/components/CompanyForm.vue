@@ -94,11 +94,12 @@ const modalAction = () => {
   form.value.op_date = dateFormat(new Date(form.value.op_date))
 
   if (props.update) {
-    emit('to-update', { ...{ pk }, ...form.value })
+    emit('to-update', { ...{ pk: pk.value }, ...form.value })
   } else {
     emit('to-create', form.value)
   }
   validated.value = false
+  confirmModal.value.visible = false
 }
 
 const deleteCompany = () => {

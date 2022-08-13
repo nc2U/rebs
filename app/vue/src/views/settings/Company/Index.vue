@@ -57,24 +57,18 @@ const toUpdate = (payload: any) => {
 
   <ContentBody>
     <CompanyDetail
-      v-if="compName == 'CompanyDetail'"
+      v-if="compName === 'CompanyDetail'"
       :company="company"
-      :update="update"
-      @to-create="toCreate"
-      @to-update="toUpdate"
-      @reset-form="resetForm"
       @create-form="createForm"
       @update-form="updateForm"
     />
     <CompanyForm
-      v-if="compName == 'CompanyForm'"
+      v-if="compName === 'CompanyForm'"
       :company="company"
       :update="update"
       @to-create="toCreate"
       @to-update="toUpdate"
       @reset-form="resetForm"
-      @create-form="createForm"
-      @update-form="updateForm"
     />
   </ContentBody>
 </template>
