@@ -7,7 +7,7 @@ import { headerSecondary } from '@/utils/cssMixins'
 const props = defineProps({
   company: {
     type: Object,
-    required: true,
+    default: null,
   },
 })
 const emit = defineEmits(['create-form', 'update-form'])
@@ -132,7 +132,12 @@ const toCreate = () => {
   <CCardFooter>
     <CRow class="justify-content-between">
       <CCol xs="auto">
-        <CButton type="button" color="success" @click="toEdit">
+        <CButton
+          type="button"
+          color="success"
+          :disabled="!company"
+          @click="toEdit"
+        >
           <CIcon name="cil-check-circle" />
           수정하기
         </CButton>

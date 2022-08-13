@@ -111,24 +111,26 @@ const confirmText = computed(() => (props.update ? '변경' : '등록'))
 const btnClass = computed(() => (props.update ? 'success' : 'primary'))
 
 const formsCheck = computed(() => {
-  const a = form.value.name === props.company.name
-  const b = form.value.ceo === props.company.ceo
-  const c = form.value.tax_number === props.company.tax_number
-  const d = form.value.org_number === props.company.org_number
-  const e = form.value.business_cond === props.company.business_cond
-  const f = form.value.business_even === props.company.business_even
-  const g =
-    new Date(form.value.es_date).toString() ===
-    new Date(props.company.es_date).toString()
-  const h =
-    new Date(form.value.op_date).toString() ===
-    new Date(props.company.op_date).toString()
-  const i = form.value.zipcode === props.company.zipcode
-  const j = form.value.address1 === props.company.address1
-  const k = form.value.address2 === props.company.address2
-  const l = form.value.address3 === props.company.address3
+  if (props.company) {
+    const a = form.value.name === props.company.name
+    const b = form.value.ceo === props.company.ceo
+    const c = form.value.tax_number === props.company.tax_number
+    const d = form.value.org_number === props.company.org_number
+    const e = form.value.business_cond === props.company.business_cond
+    const f = form.value.business_even === props.company.business_even
+    const g =
+      new Date(form.value.es_date).toString() ===
+      new Date(props.company.es_date).toString()
+    const h =
+      new Date(form.value.op_date).toString() ===
+      new Date(props.company.op_date).toString()
+    const i = form.value.zipcode === props.company.zipcode
+    const j = form.value.address1 === props.company.address1
+    const k = form.value.address2 === props.company.address2
+    const l = form.value.address3 === props.company.address3
 
-  return a && b && c && d && e && f && g && h && i && j && k && l
+    return a && b && c && d && e && f && g && h && i && j && k && l
+  } else return false
 })
 
 const writeAuth = computed(() => {
