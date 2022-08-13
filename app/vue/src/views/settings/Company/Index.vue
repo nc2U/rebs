@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, ref, shallowRef, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/settings/_menu/headermixin'
-import { useStore } from 'vuex'
+import { useCompany } from '@/store/pinia/company'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import CompanyForm from './components/CompanyForm.vue'
@@ -11,17 +11,15 @@ const update = ref(false)
 
 const compName = shallowRef('CompanyDetail')
 
-const store = useStore()
+const companyStore = useCompany()
 
-const company = computed(() => store.state.settings.company)
+const company = computed(() => companyStore.company)
 
 watch(company, () => (compName.value = 'CompanyDetail'))
 
-const createCompany = (payload: any) =>
-  store.dispatch('settings/createCompany', payload)
+const createCompany = (payload: any) => companyStore.createCompany(payload)
 
-const updateCompany = (payload: any) =>
-  store.dispatch('settings/updateCompany', payload)
+const updateCompany = (payload: any) => companyStore.updateCompany(payload)
 
 const createForm = () => {
   update.value = false
