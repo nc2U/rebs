@@ -1,9 +1,8 @@
 import { createApp } from 'vue'
-import { createPinia } from 'pinia'
 import { useAccount } from '@/store/pinia/accounts'
 import Cookies from 'js-cookie'
 import App from './App.vue'
-import store from './store'
+import store, { pinia } from './store'
 import router from './router'
 import mixins from '@/mixins/mixins'
 
@@ -22,8 +21,7 @@ function init() {
 }
 
 const app = createApp(App)
-
-app.use(createPinia())
+app.use(pinia)
 const account = useAccount()
 
 init().then(() => {

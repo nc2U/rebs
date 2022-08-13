@@ -1,3 +1,4 @@
+import { createPinia } from 'pinia'
 import { createStore } from 'vuex'
 import tagsView from '@/store/modules/tagsView'
 import schedule from '@/store/modules/schedule'
@@ -11,6 +12,8 @@ import project from '@/store/modules/project'
 import proCash from '@/store/modules/proCash'
 import settings from '@/store/modules/settings'
 import Cookies from 'js-cookie'
+
+export const pinia = createPinia()
 
 export interface State {
   [key: string]: any
