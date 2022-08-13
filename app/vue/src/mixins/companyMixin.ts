@@ -1,20 +1,17 @@
 import { defineComponent } from 'vue'
-import { mapActions, mapGetters } from 'vuex'
+import { useCompany } from '@/store/pinia/company'
 
 export default defineComponent({
-  created() {
-    this.fetchCompany(this.initComId)
-  },
-  computed: {
-    ...mapGetters('accounts', ['initComId']),
-  },
-  methods: {
-    comSelect(this: any, com: string) {
-      if (com !== '') this.fetchCompany(com)
-      else this.$store.commit('settings/updateState', { company: null })
+  emits: ['header-select'],
 
+  methods: {
+    fetchCompany: (pk: string) => {
+      useCompany().fetchCompany(pk)
+    },
+    comSelect(this: any, com: string) {
+      if (!!com) this.fetchCompany(com)
+      else useCompany().company = null
       this.$emit('header-select', com)
     },
-    ...mapActions('settings', ['fetchCompany']),
   },
 })
