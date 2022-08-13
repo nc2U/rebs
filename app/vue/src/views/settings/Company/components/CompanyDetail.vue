@@ -1,3 +1,35 @@
+<script lang="ts" setup>
+import { ref } from 'vue'
+import { useAccount } from '@/store/pinia/accounts'
+import AlertModal from '@/components/Modals/AlertModal.vue'
+import { headerSecondary } from '@/utils/cssMixins'
+
+const props = defineProps({
+  company: {
+    type: Object,
+    required: true,
+  },
+})
+const emit = defineEmits(['create-form', 'update-form'])
+
+const alertModal = ref()
+
+const account = useAccount()
+
+const toEdit = () => {
+  if (
+    account.superAuth ||
+    (account.staffAuth && account.staffAuth.company_settings === '2')
+  )
+    emit('update-form')
+  else alertModal.value.callModal()
+}
+const toCreate = () => {
+  if (account.superAuth) emit('create-form')
+  else alertModal.value.callModal()
+}
+</script>
+
 <template>
   <CCardBody>
     <CRow>
@@ -116,41 +148,3 @@
 
   <AlertModal ref="alertModal" />
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import AlertModal from '@/components/Modals/AlertModal.vue'
-import { headerSecondary } from '@/utils/cssMixins'
-import { mapGetters } from 'vuex'
-
-export default defineComponent({
-  name: 'CompanyDetail',
-  components: { AlertModal },
-  props: {
-    company: {
-      type: Object,
-      required: true,
-    },
-  },
-  computed: {
-    headerSecondary() {
-      return headerSecondary.value
-    },
-    ...mapGetters('accounts', ['staffAuth', 'superAuth']),
-  },
-  methods: {
-    toEdit(this: any) {
-      if (
-        this.superAuth ||
-        (this.staffAuth && this.staffAuth.company_settings === '2')
-      )
-        this.$emit('update-form')
-      else this.$refs.alertModal.callModal()
-    },
-    toCreate(this: any) {
-      if (this.superAuth) this.$emit('create-form')
-      else this.$refs.alertModal.callModal()
-    },
-  },
-})
-</script>
