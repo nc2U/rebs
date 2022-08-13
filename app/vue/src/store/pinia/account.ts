@@ -104,14 +104,9 @@ export const useAccount = defineStore('account', () => {
     fetchTodoList()
   }
 
-  const login = (payload: {
-    email: string
-    password: string
-    redirect?: string
-  }) => {
-    const { redirect, ...loginData } = payload
+  const login = (payload: { email: string; password: string }) => {
     return api
-      .post('/token/', loginData)
+      .post('/token/', payload)
       .then(res => {
         setToken(res.data.access)
         return api.get(`/user/${extractId(accessToken.value)}`)
