@@ -3,7 +3,7 @@
     id="layer"
     ref="element_layer"
     :style="{
-      display: dispalyVal,
+      display: displayVal,
       width: widthVal,
       height: heightVal,
       border: borderVal,
@@ -108,9 +108,10 @@ export default defineComponent({
       default: '//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js',
     },
   },
+  emits: ['address-put'],
   data() {
     return {
-      dispalyVal: 'none',
+      displayVal: 'none',
     }
   },
   computed: {
@@ -169,8 +170,8 @@ export default defineComponent({
       ;(window as any).daum.postcode.load(() => {
         new (window as any).daum.Postcode({
           oncomplete: function oncomplete(data: any) {
-            vm.$emit('addressPut', { ...{ formNum }, ...data })
-            vm.dispalyVal = 'none'
+            vm.$emit('address-put', { ...{ formNum }, ...data })
+            vm.displayVal = 'none'
           },
           alwaysShowEngAddr: vm.alwaysShowEngAddr,
           animation: vm.animation,
@@ -191,11 +192,11 @@ export default defineComponent({
         }).embed(vm.$refs.element_layer)
 
         // iframe을 넣은 element를 보이게 한다.
-        vm.dispalyVal = 'block'
+        vm.displayVal = 'block'
       })
     },
     closeLayer() {
-      this.dispalyVal = 'none'
+      this.displayVal = 'none'
     },
   },
 })
