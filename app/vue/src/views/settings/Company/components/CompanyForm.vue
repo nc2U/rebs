@@ -1,3 +1,129 @@
+<script lang="ts" setup>
+import { computed, onBeforeMount, ref } from 'vue'
+import { useAccount } from '@/store/pinia/accounts'
+import DatePicker from '@/components/DatePicker/index.vue'
+import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
+import AlertModal from '@/components/Modals/AlertModal.vue'
+import DaumPostcode from '@/components/DaumPostcode/index.vue'
+import { dateFormat } from '@/utils/baseMixins'
+import addressMixin from '@/components/DaumPostcode/addressMixin'
+import { maska as vMaska } from 'maska'
+
+const account = useAccount()
+
+const props = defineProps({
+  company: { type: Object, default: null },
+  update: { type: Boolean, required: true },
+})
+
+const delModal = ref()
+const alertModal = ref()
+const confirmModal = ref()
+
+const pk = ref('')
+const validated = ref(false)
+const form = ref({
+  name: '',
+  ceo: '',
+  tax_number: '',
+  org_number: '',
+  business_cond: '',
+  business_even: '',
+  es_date: new Date() as string | Date,
+  op_date: new Date() as string | Date,
+  zipcode: '',
+  address1: '',
+  address2: '',
+  address3: '',
+})
+
+const onSubmit = (event: any) => {
+  if (writeAuth.value) {
+    const form = event.currentTarget
+    if (form.checkValidity() === false) {
+      event.preventDefault()
+      event.stopPropagation()
+
+      validated.value = true
+    } else {
+      confirmModal.value.callModal()
+    }
+  } else {
+    alertModal.value.callModal()
+  }
+}
+
+const emit = defineEmits(['to-create', 'to-update'])
+
+const modalAction = () => {
+  form.value.es_date = dateFormat(new Date(form.value.es_date))
+  form.value.op_date = dateFormat(new Date(form.value.op_date))
+
+  if (props.update) {
+    emit('to-update', { ...{ pk }, ...form.value })
+  } else {
+    emit('to-create', form.value)
+  }
+  validated.value = false
+}
+
+const deleteCompany = () => {
+  if (account.superAuth) delModal.value.callModal()
+  else alertModal.value.callModal()
+}
+
+const confirmText = computed(() => (props.update ? '변경' : '등록'))
+const btnClass = computed(() => (props.update ? 'success' : 'primary'))
+
+const formsCheck = computed(() => {
+  const a = form.value.name === props.company.name
+  const b = form.value.ceo === props.company.ceo
+  const c = form.value.tax_number === props.company.tax_number
+  const d = form.value.org_number === props.company.org_number
+  const e = form.value.business_cond === props.company.business_cond
+  const f = form.value.business_even === props.company.business_even
+  const g =
+    new Date(form.value.es_date).toString() ===
+    new Date(props.company.es_date).toString()
+  const h =
+    new Date(form.value.op_date).toString() ===
+    new Date(props.company.op_date).toString()
+  const i = form.value.zipcode === props.company.zipcode
+  const j = form.value.address1 === props.company.address1
+  const k = form.value.address2 === props.company.address2
+  const l = form.value.address3 === props.company.address3
+
+  return a && b && c && d && e && f && g && h && i && j && k && l
+})
+
+const writeAuth = computed(() => {
+  const create = !!account.superAuth
+  const update =
+    account.superAuth ||
+    (account.staffAuth && account.staffAuth.company_settings === '2')
+  return props.update ? update : create
+})
+
+//   mixins: [addressMixin],
+onBeforeMount(() => {
+  if (props.update && props.company) {
+    pk.value = props.company.pk
+    form.value.name = props.company.name
+    form.value.ceo = props.company.ceo
+    form.value.tax_number = props.company.tax_number
+    form.value.org_number = props.company.org_number
+    form.value.business_cond = props.company.business_cond
+    form.value.business_even = props.company.business_even
+    form.value.es_date = new Date(props.company.es_date)
+    form.value.op_date = new Date(props.company.op_date)
+    form.value.zipcode = props.company.zipcode
+    form.value.address1 = props.company.address1
+    form.value.address2 = props.company.address2
+    form.value.address3 = props.company.address3
+  }
+})
+</script>
+
 <template>
   <CForm
     class="needs-validation"
@@ -236,133 +362,3 @@
 
   <AlertModal ref="alertModal" />
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import DatePicker from '@/components/DatePicker/index.vue'
-import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
-import AlertModal from '@/components/Modals/AlertModal.vue'
-import DaumPostcode from '@/components/DaumPostcode/index.vue'
-import addressMixin from '@/components/DaumPostcode/addressMixin'
-import { mapGetters } from 'vuex'
-import { maska } from 'maska'
-
-export default defineComponent({
-  name: 'CompanyForm',
-  components: { DatePicker, DaumPostcode, ConfirmModal, AlertModal },
-  directives: { maska },
-  mixins: [addressMixin],
-  props: {
-    company: Object,
-    update: {
-      type: Boolean,
-      required: true,
-    },
-  },
-  data() {
-    return {
-      pk: '',
-      form: {
-        name: '',
-        ceo: '',
-        tax_number: '',
-        org_number: '',
-        business_cond: '',
-        business_even: '',
-        es_date: new Date(),
-        op_date: new Date(),
-        zipcode: '',
-        address1: '',
-        address2: '',
-        address3: '',
-      },
-      validated: false,
-    }
-  },
-  created() {
-    if (this.update && this.company) {
-      this.pk = this.company.pk
-      this.form.name = this.company.name
-      this.form.ceo = this.company.ceo
-      this.form.tax_number = this.company.tax_number
-      this.form.org_number = this.company.org_number
-      this.form.business_cond = this.company.business_cond
-      this.form.business_even = this.company.business_even
-      this.form.es_date = new Date(this.company.es_date)
-      this.form.op_date = new Date(this.company.op_date)
-      this.form.zipcode = this.company.zipcode
-      this.form.address1 = this.company.address1
-      this.form.address2 = this.company.address2
-      this.form.address3 = this.company.address3
-    }
-  },
-  computed: {
-    confirmText() {
-      return this.update ? '변경' : '등록'
-    },
-    btnClass() {
-      return this.update ? 'success' : 'primary'
-    },
-    formsCheck(this: any) {
-      const a = this.form.name === this.company.name
-      const b = this.form.ceo === this.company.ceo
-      const c = this.form.tax_number === this.company.tax_number
-      const d = this.form.org_number === this.company.org_number
-      const e = this.form.business_cond === this.company.business_cond
-      const f = this.form.business_even === this.company.business_even
-      const g =
-        new Date(this.form.es_date).toString() ===
-        new Date(this.company.es_date).toString()
-      const h =
-        new Date(this.form.op_date).toString() ===
-        new Date(this.company.op_date).toString()
-      const i = this.form.zipcode === this.company.zipcode
-      const j = this.form.address1 === this.company.address1
-      const k = this.form.address2 === this.company.address2
-      const l = this.form.address3 === this.company.address3
-
-      return a && b && c && d && e && f && g && h && i && j && k && l
-    },
-    writeAuth() {
-      const create = this.superAuth ? true : false
-      const update =
-        this.superAuth ||
-        (this.staffAuth && this.staffAuth.company_settings === '2')
-      return this.update ? update : create
-    },
-    ...mapGetters('accounts', ['staffAuth', 'superAuth']),
-  },
-  methods: {
-    onSubmit(this: any, event: any) {
-      if (this.writeAuth) {
-        const form = event.currentTarget
-        if (form.checkValidity() === false) {
-          event.preventDefault()
-          event.stopPropagation()
-
-          this.validated = true
-        } else {
-          this.$refs.confirmModal.callModal()
-        }
-      } else {
-        this.$refs.alertModal.callModal()
-      }
-    },
-    modalAction(this: any) {
-      const { pk } = this
-      this.form.es_date = this.dateFormat(this.form.es_date)
-      this.form.op_date = this.dateFormat(this.form.op_date)
-      if (this.update) {
-        this.$emit('to-update', { ...{ pk }, ...this.form })
-      } else {
-        this.$emit('to-create', this.form)
-      }
-      this.validated = false
-    },
-    deleteCompany(this: any) {
-      if (this.superAuth) this.$refs.delModal.callModal()
-      else this.$refs.alertModal.callModal()
-    },
-  },
-})
-</script>
