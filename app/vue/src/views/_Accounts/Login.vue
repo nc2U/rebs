@@ -1,14 +1,21 @@
 <script lang="ts" setup>
 import { useAccount } from '@/store/pinia/account'
+import { useRouter } from 'vue-router'
 import LoginForm from './components/LoginForm.vue'
 
 const account = useAccount()
+const router = useRouter()
 
 const onSubmit = (payload: {
   email: string
   password: string
   redirect: string
-}) => account.login(payload)
+}) => {
+  account.login(payload).then(() => {
+    if (payload.redirect) router.push({ path: payload.redirect })
+    else router.push({ name: 'Home' })
+  })
+}
 </script>
 
 <template>

@@ -2,7 +2,6 @@ import api from '@/api'
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { Buffer } from 'buffer'
-import { useRouter } from 'vue-router'
 import Cookies from 'js-cookie'
 import { errorHandle, message } from '@/utils/helper'
 import { StaffAuth } from '@/store/modules/accounts/state'
@@ -44,8 +43,6 @@ export declare interface LockedUser {
 }
 
 export const useAccount = defineStore('account', () => {
-  const router = useRouter()
-
   // states
   const accessToken = ref('')
   const userInfo = ref<User | null>(null)
@@ -90,7 +87,6 @@ export const useAccount = defineStore('account', () => {
     api
       .post('/user/', payload)
       .then(() => {
-        router.push({ name: 'Login' })
         message('info', '', '회원가입이 완료되었습니다.')
       })
       .catch(err => errorHandle(err.response.data))
@@ -122,11 +118,9 @@ export const useAccount = defineStore('account', () => {
       })
       .then(res => {
         setUser(res.data)
-        if (redirect) router.push({ path: redirect })
-        else router.push({ name: 'Home' })
         message('', '', '로그인 성공 알림!')
       })
-      .catch(err => console.log(err.response.data))
+      .catch(err => console.log(err))
   }
 
   const loginByToken = (token?: string) => {
@@ -148,7 +142,6 @@ export const useAccount = defineStore('account', () => {
     accessToken.value = ''
     delete api.defaults.headers.common.Authorization
     Cookies.remove('accessToken')
-    router.push({ name: 'Login' })
     message('', '', '로그아웃 완료 알림!')
   }
 
