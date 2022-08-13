@@ -1,3 +1,42 @@
+<script lang="ts" setup>
+import HeaderNav from '@/components/HeaderNav.vue'
+import CompanySelect from '@/layouts/ContentHeader/CompanySelect/Index.vue'
+import ProjectSelect from '@/layouts/ContentHeader/ProjectSelect/Index.vue'
+import { useProject } from '@/store/pinia/project'
+import { useCompany } from '@/store/pinia/company'
+
+const companyStore = useCompany()
+const projectStore = useProject()
+
+defineProps({
+  pageTitle: {
+    type: String,
+    default: 'Page Title',
+  },
+  navMenu: {
+    type: String,
+    default: 'Base Menu',
+  },
+  selector: {
+    type: String,
+    default: 'ProjectSelect',
+  },
+})
+const emit = defineEmits(['header-select'])
+
+const comSelect = (com: string) => {
+  if (!!com) companyStore.fetchCompany(com)
+  else companyStore.company = null
+  emit('header-select', com)
+}
+
+const projSelect = (proj: string) => {
+  if (!!proj) projectStore.fetchProject(proj)
+  else projectStore.project = null
+  emit('header-select', proj)
+}
+</script>
+
 <template>
   <CCard class="mb-4 text-body">
     <CCardHeader>
@@ -8,11 +47,15 @@
     <CCardBody>
       <HeaderNav :menus="navMenu" />
 
-      <component
-        :is="selector"
+      <CompanySelect
+        v-if="selector === 'CompanySelect'"
         :company="company"
-        :project="project"
         @com-select="comSelect"
+      />
+
+      <ProjectSelect
+        v-if="selector === 'ProjectSelect'"
+        :project="project"
         @proj-select="projSelect"
       />
 
@@ -20,31 +63,3 @@
     </CCardBody>
   </CCard>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import HeaderNav from '@/components/HeaderNav.vue'
-import CompanyMixin from '@/mixins/companyMixin'
-import ProjectMixin from '@/mixins/projectMixin'
-import CompanySelect from '@/layouts/ContentHeader/CompanySelect/Index.vue'
-import ProjectSelect from '@/layouts/ContentHeader/ProjectSelect/Index.vue'
-
-export default defineComponent({
-  name: 'ContentHeader',
-  components: { HeaderNav, CompanySelect, ProjectSelect },
-  mixins: [CompanyMixin, ProjectMixin],
-  props: {
-    pageTitle: {
-      type: String,
-      default: 'Page Title',
-    },
-    navMenu: {
-      type: Object,
-    },
-    selector: {
-      type: String,
-      default: 'ProjectSelect',
-    },
-  },
-})
-</script>

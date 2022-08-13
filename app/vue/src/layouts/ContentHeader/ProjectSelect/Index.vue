@@ -1,23 +1,26 @@
 <script lang="ts" setup>
-import { ref, computed, onMounted } from 'vue'
-import { useStore } from 'vuex'
+import { ref, computed, onBeforeMount, nextTick } from 'vue'
+import { useProject } from '@/store/pinia/project'
+import { useAccount } from '@/store/pinia/account'
 
-const selected = ref()
-const store = useStore()
+const proj = ref()
+const projectStore = useProject()
+const accountStore = useAccount()
+
 const props = defineProps({ project: { type: Object, default: null } })
-const emit = defineEmits(['projSelect'])
 
-const projSelect = computed(() => store.getters['project/projSelect'])
-const initProjId = computed(() => store.getters['accounts/initProjId'])
-const projId = computed(() =>
-  props.project ? props.project.pk : initProjId.value,
-)
+const projSelectList = computed(() => projectStore.projSelect)
+const initProjId = computed(() => accountStore.initProjId)
 
-const fetchProjectList = () => store.dispatch('project/fetchProjectList')
+const emit = defineEmits(['header-select'])
+const projSelect = (event: any) => {
+  nextTick(() => emit('header-select', event.target.value))
+}
 
-onMounted(() => {
-  fetchProjectList()
-  selected.value = projId.value
+onBeforeMount(() => {
+  proj.value = initProjId.value
+  projectStore.fetchProject(proj.value)
+  projectStore.fetchProjectList()
 })
 </script>
 
@@ -25,10 +28,10 @@ onMounted(() => {
   <CRow class="m-0">
     <CFormLabel class="col-lg-1 col-form-label text-body">프로젝트</CFormLabel>
     <CCol md="6" lg="3">
-      <CFormSelect v-model="selected" @change="$emit('proj-select', $event)">
+      <CFormSelect v-model="proj" @change="projSelect">
         <option value="">프로젝트선택</option>
         <option
-          v-for="proj in projSelect"
+          v-for="proj in projSelectList"
           :key="proj.value"
           :value="proj.value"
         >
