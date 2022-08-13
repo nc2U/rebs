@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { reactive, ref, computed, onBeforeMount } from 'vue'
 import { useStore } from 'vuex'
+import { useAccount } from '@/store/pinia/accounts'
 import { maska as vMaska } from 'maska'
 import { dateFormat } from '@/utils/baseMixins'
 import DatePicker from '@/components/DatePicker/index.vue'
@@ -28,8 +29,9 @@ const alertModal = ref()
 const confirmModal = ref()
 
 const store = useStore()
+const account = useAccount()
 
-const isAuthorized = computed(() => store.getters['accounts/isAuthorized'])
+const isAuthorized = computed(() => account.isAuthorized) // store.getters['accounts/isAuthorized'])
 
 const formsCheck = computed(() =>
   props.userInfo?.profile?.pk ? isChanged() : false,

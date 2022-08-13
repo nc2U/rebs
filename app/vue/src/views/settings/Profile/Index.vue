@@ -1,3 +1,48 @@
+<script lang="ts" setup>
+import { computed, ref } from 'vue'
+import { useStore } from 'vuex'
+import { useAccount } from '@/store/pinia/accounts'
+import { pageTitle, navMenu } from '@/views/settings/_menu/headermixin'
+import ContentHeader from '@/layouts/ContentHeader/Index.vue'
+import ContentBody from '@/layouts/ContentBody/Index.vue'
+import ProfileForm from '@/views/settings/Profile/components/ProfileForm.vue'
+
+const store = useStore()
+const account = useAccount()
+
+const image = ref(null)
+
+const profile = ref()
+const avatar = ref()
+
+const company = computed(() => store.state.settings.company)
+const userInfo = computed(() => account.userInfo)
+
+const fileUpload = (image: any) => {
+  image.value = image
+}
+
+const createProfile = (payload: { form: FormData }) =>
+  store.dispatch('accounts/createProfile', payload)
+const patchProfile = (payload: { pk: string; form: FormData }) =>
+  store.dispatch('accounts/patchProfile', payload)
+
+const onSubmit = async (payload: any) => {
+  const { pk, ...formData } = payload
+  const form = new FormData()
+  if (image.value) form.append('image', image.value)
+  for (const key in formData) {
+    form.append(`${key}`, formData[key])
+  }
+
+  if (pk) await patchProfile({ ...{ pk }, ...{ form } })
+  else await createProfile({ ...{ form } })
+
+  profile.value.avatar.value.changeImage = false
+  profile.value.image = userInfo.value?.profile?.image
+}
+</script>
+
 <template>
   <ContentHeader
     :page-title="pageTitle"
@@ -13,51 +58,3 @@
     />
   </ContentBody>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import HeaderMixin from '@/views/settings/_menu/headermixin'
-import ContentHeader from '@/layouts/ContentHeader/Index.vue'
-import ContentBody from '@/layouts/ContentBody/Index.vue'
-import ProfileForm from '@/views/settings/Profile/components/ProfileForm.vue'
-import { mapActions, mapState } from 'vuex'
-
-export default defineComponent({
-  name: 'ProfileIndex',
-  components: {
-    ContentHeader,
-    ContentBody,
-    ProfileForm,
-  },
-  mixins: [HeaderMixin],
-  data() {
-    return {
-      image: null,
-    }
-  },
-  computed: {
-    ...mapState('settings', ['company']),
-    ...mapState('accounts', ['userInfo']),
-  },
-  methods: {
-    fileUpload(image: any) {
-      this.image = image
-    },
-    async onSubmit(this: any, payload: any) {
-      const { pk, ...formData } = payload
-      const form = new FormData()
-      if (this.image) form.append('image', this.image)
-      for (const key in formData) {
-        form.append(`${key}`, formData[key])
-      }
-
-      if (pk) await this.patchProfile({ ...{ pk }, ...{ form } })
-      else await this.createProfile({ ...{ form } })
-
-      this.$refs.profile.$refs.avatar.changeImage = false
-      this.$refs.profile.image = this.userInfo.profile.image
-    },
-    ...mapActions('accounts', ['createProfile', 'patchProfile']),
-  },
-})
-</script>
