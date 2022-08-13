@@ -9,10 +9,13 @@ export declare interface StaffAuth {
   contract: string
   payment: string
   notice: string
+  project: string
   project_cash: string
   project_docs: string
   human_resource: string
   company_settings: string
+  company_cash: string
+  company_docs: string
   auth_manage: string
 }
 

@@ -1,5 +1,13 @@
-import store from '@/store'
-import { h, resolveComponent } from 'vue'
+import { computed, h, resolveComponent } from 'vue'
+import { useAccount } from '@/store/pinia/accounts'
+
+const account = computed(() => useAccount())
+const pageViewAuth = computed(
+  () =>
+    account.value.userInfo?.is_superuser ||
+    (account.value.userInfo?.staffauth &&
+      account.value.userInfo.staffauth?.company_docs > '0'),
+)
 
 const comDocs = {
   path: 'docs',
@@ -15,8 +23,7 @@ const comDocs = {
       path: 'general/docs',
       name: '본사 일반문서',
       component: () =>
-        store.state.accounts.userInfo.is_superuser ||
-        store.state.accounts.userInfo.staffauth?.company_docs > '0'
+        pageViewAuth.value
           ? import('@/views/comDocs/GeneralDocs/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
       meta: { title: '본사 일반문서' },
@@ -35,8 +42,7 @@ const comDocs = {
           path: 'docs',
           name: '본사 소송문서',
           component: () =>
-            store.state.accounts.userInfo.is_superuser ||
-            store.state.accounts.userInfo.staffauth?.company_docs > '0'
+            pageViewAuth.value
               ? import('@/views/comDocs/LawsuitDocs/Index.vue')
               : import('@/views/_Accounts/NoAuth.vue'),
           meta: { title: '본사 소송문서' },
@@ -45,8 +51,7 @@ const comDocs = {
           path: 'case',
           name: '본사 소송사건',
           component: () =>
-            store.state.accounts.userInfo.is_superuser ||
-            store.state.accounts.userInfo.staffauth?.company_docs > '0'
+            pageViewAuth.value
               ? import('@/views/comDocs/LawsuitCase/Index.vue')
               : import('@/views/_Accounts/NoAuth.vue'),
           meta: { title: '본사 소송사건' },

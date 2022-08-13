@@ -1,5 +1,13 @@
-import store from '@/store'
-import { h, resolveComponent } from 'vue'
+import { computed, h, resolveComponent } from 'vue'
+import { useAccount } from '@/store/pinia/accounts'
+
+const account = computed(() => useAccount())
+const pageViewAuth = computed(
+  () =>
+    account.value.userInfo?.is_superuser ||
+    (account.value.userInfo?.staffauth &&
+      account.value.userInfo.staffauth?.human_resource > '0'),
+)
 
 const hrManage = {
   path: 'hr-manage',
@@ -15,8 +23,7 @@ const hrManage = {
       path: 'employee',
       name: '직원정보 관리',
       component: () =>
-        store.state.accounts.userInfo.is_superuser ||
-        store.state.accounts.userInfo.staffauth?.human_resource > '0'
+        pageViewAuth.value
           ? import('@/views/hrManage/Employee/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
       meta: { title: '직원정보 관리' },
@@ -25,8 +32,7 @@ const hrManage = {
       path: 'department',
       name: '부서정보 관리',
       component: () =>
-        store.state.accounts.userInfo.is_superuser ||
-        store.state.accounts.userInfo.staffauth?.human_resource > '0'
+        pageViewAuth.value
           ? import('@/views/hrManage/Department/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
       meta: { title: '부서정보 관리' },

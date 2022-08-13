@@ -1,5 +1,13 @@
-import store from '@/store'
-import { h, resolveComponent } from 'vue'
+import { computed, h, resolveComponent } from 'vue'
+import { useAccount } from '@/store/pinia/accounts'
+
+const account = computed(() => useAccount())
+const pageViewAuth = computed(
+  () =>
+    account.value.userInfo?.is_superuser ||
+    (account.value.userInfo?.staffauth &&
+      account.value.userInfo.staffauth?.payment > '0'),
+)
 
 const payments = {
   path: 'payments',
@@ -15,8 +23,7 @@ const payments = {
       path: 'index',
       name: '분양수납 내역',
       component: () =>
-        store.state.accounts.userInfo.is_superuser ||
-        store.state.accounts.userInfo.staffauth?.payment > '0'
+        pageViewAuth.value
           ? import('@/views/payments/List/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
       meta: { title: '분양수납 내역' },
@@ -25,8 +32,7 @@ const payments = {
       path: 'manage',
       name: '건별수납 관리',
       component: () =>
-        store.state.accounts.userInfo.is_superuser ||
-        store.state.accounts.userInfo.staffauth?.payment > '0'
+        pageViewAuth.value
           ? import('@/views/payments/Register/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
       meta: { title: '건별수납 관리' },

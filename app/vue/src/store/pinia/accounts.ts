@@ -2,7 +2,7 @@ import api from '@/api'
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { Buffer } from 'buffer'
-import router from '@/router'
+import { useRouter } from 'vue-router'
 import Cookies from 'js-cookie'
 import { errorHandle, message } from '@/utils/helper'
 import { StaffAuth } from '@/store/modules/accounts/state'
@@ -44,6 +44,8 @@ export declare interface LockedUser {
 }
 
 export const useAccount = defineStore('account', () => {
+  const router = useRouter()
+
   // states
   const accessToken = ref('')
   const userInfo = ref<User | null>(null)

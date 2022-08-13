@@ -1,5 +1,13 @@
-import store from '@/store'
-import { h, resolveComponent } from 'vue'
+import { computed, h, resolveComponent } from 'vue'
+import { useAccount } from '@/store/pinia/accounts'
+
+const account = computed(() => useAccount())
+const pageViewAuth = computed(
+  () =>
+    account.value.userInfo?.is_superuser ||
+    (account.value.userInfo?.staffauth &&
+      account.value.userInfo.staffauth?.company_cash > '0'),
+)
 
 const comCash = {
   path: 'cashes',
@@ -15,8 +23,7 @@ const comCash = {
       path: 'status',
       name: '본사자금 현황',
       component: () =>
-        store.state.accounts.userInfo.is_superuser ||
-        store.state.accounts.userInfo.staffauth?.company_cash > '0'
+        pageViewAuth.value
           ? import('@/views/comCash/Status/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
       meta: { title: '본사자금 현황' },
@@ -25,8 +32,7 @@ const comCash = {
       path: 'index',
       name: '본사출납 관리',
       component: () =>
-        store.state.accounts.userInfo.is_superuser ||
-        store.state.accounts.userInfo.staffauth?.company_cash > '0'
+        pageViewAuth.value
           ? import('@/views/comCash/Manage/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
       meta: { title: '본사출납 관리' },

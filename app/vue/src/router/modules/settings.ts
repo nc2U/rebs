@@ -1,5 +1,13 @@
-import store from '@/store'
-import { h, resolveComponent } from 'vue'
+import { computed, h, resolveComponent } from 'vue'
+import { useAccount } from '@/store/pinia/accounts'
+
+const account = computed(() => useAccount())
+const pageViewAuth = computed(
+  () =>
+    account.value.userInfo?.is_superuser ||
+    (account.value.userInfo?.staffauth &&
+      account.value.userInfo.staffauth?.company_settings > '0'),
+)
 
 const settings = {
   path: 'settings',
@@ -15,8 +23,7 @@ const settings = {
       path: 'company',
       name: '회사정보 관리',
       component: () =>
-        store.state.accounts.userInfo.is_superuser ||
-        store.state.accounts.userInfo.staffauth?.company_settings > '0'
+        pageViewAuth.value
           ? import('@/views/settings/Company/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
       meta: { title: '회사정보 관리' },
@@ -25,8 +32,7 @@ const settings = {
       path: 'authorization',
       name: '권한설정 관리',
       component: () =>
-        store.state.accounts.userInfo.is_superuser ||
-        store.state.accounts.userInfo.staffauth?.auth_manage > '0'
+        pageViewAuth.value
           ? import('@/views/settings/Authorization/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
       meta: { title: '권한설정 관리' },

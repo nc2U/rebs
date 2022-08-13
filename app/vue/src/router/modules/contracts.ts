@@ -1,5 +1,13 @@
-import store from '@/store'
-import { h, resolveComponent } from 'vue'
+import { computed, h, resolveComponent } from 'vue'
+import { useAccount } from '@/store/pinia/accounts'
+
+const account = computed(() => useAccount())
+const pageViewAuth = computed(
+  () =>
+    account.value.userInfo?.is_superuser ||
+    (account.value.userInfo?.staffauth &&
+      account.value.userInfo.staffauth?.contract > '0'),
+)
 
 const contract = {
   path: 'contracts',
@@ -15,8 +23,7 @@ const contract = {
       path: 'index',
       name: '계약내역 조회',
       component: () =>
-        store.state.accounts.userInfo.is_superuser ||
-        store.state.accounts.userInfo.staffauth?.contract > '0'
+        pageViewAuth.value
           ? import('@/views/contracts/List/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
       meta: { title: '계약내역 조회' },
@@ -25,8 +32,7 @@ const contract = {
       path: 'register',
       name: '계약등록 관리',
       component: () =>
-        store.state.accounts.userInfo.is_superuser ||
-        store.state.accounts.userInfo.staffauth?.contract > '0'
+        pageViewAuth.value
           ? import('@/views/contracts/Register/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
       meta: { title: '계약등록 관리' },
@@ -35,8 +41,7 @@ const contract = {
       path: 'status',
       name: '동호수 현황표',
       component: () =>
-        store.state.accounts.userInfo.is_superuser ||
-        store.state.accounts.userInfo.staffauth?.contract > '0'
+        pageViewAuth.value
           ? import('@/views/contracts/Status/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
       meta: { title: '동호수 현황표' },
@@ -45,8 +50,7 @@ const contract = {
       path: 'cancel',
       name: '계약해지 관리',
       component: () =>
-        store.state.accounts.userInfo.is_superuser ||
-        store.state.accounts.userInfo.staffauth?.contract > '0'
+        pageViewAuth.value
           ? import('@/views/contracts/Release/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
       meta: { title: '계약해지 관리' },

@@ -1,5 +1,13 @@
-import store from '@/store'
-import { h, resolveComponent } from 'vue'
+import { computed, h, resolveComponent } from 'vue'
+import { useAccount } from '@/store/pinia/accounts'
+
+const account = computed(() => useAccount())
+const pageViewAuth = computed(
+  () =>
+    account.value.userInfo?.is_superuser ||
+    (account.value.userInfo?.staffauth &&
+      account.value.userInfo.staffauth?.project_cash > '0'),
+)
 
 const proCash = {
   path: 'project-cash',
@@ -15,8 +23,7 @@ const proCash = {
       path: 'status',
       name: '현장자금 현황',
       component: () =>
-        store.state.accounts.userInfo.is_superuser ||
-        store.state.accounts.userInfo.staffauth?.project_cash > '0'
+        pageViewAuth.value
           ? import('@/views/proCash/Status/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
       meta: { title: '현장자금 현황' },
@@ -25,8 +32,7 @@ const proCash = {
       path: 'index',
       name: '현장출납 관리',
       component: () =>
-        store.state.accounts.userInfo.is_superuser ||
-        store.state.accounts.userInfo.staffauth?.project_cash > '0'
+        pageViewAuth.value
           ? import('@/views/proCash/Manage/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
       meta: { title: '현장출납 관리' },
@@ -35,8 +41,7 @@ const proCash = {
       path: 'imprest',
       name: '운영비용 관리',
       component: () =>
-        store.state.accounts.userInfo.is_superuser ||
-        store.state.accounts.userInfo.staffauth?.project_cash > '0'
+        pageViewAuth.value
           ? import('@/views/proCash/Imprest/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
       meta: { title: '운영비용 관리' },
