@@ -36,8 +36,9 @@ const actions = {
   },
 
   updateCompany: ({ dispatch }: any, payload: any) => {
+    const { pk, ...comData } = payload
     api
-      .put(`/company/${payload.pk}/`, payload)
+      .put(`/company/${pk}/`, comData)
       .then(res => {
         dispatch('fetchCompany', res.data.pk)
         dispatch('fetchCompanyList')
