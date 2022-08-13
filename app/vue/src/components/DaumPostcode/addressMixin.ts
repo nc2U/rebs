@@ -67,7 +67,7 @@ const addressMixin = {
       if (data.userSelectedType === 'R') {
         // 법정동명이 있을 경우 추가한다. (법정리는 제외), 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
         if (data.bname !== '' && /[동|로|가]$/g.test(data.bname)) {
-          extraAddr += data.bname
+          extraAddr = data.bname
         }
         // 건물명이 있고, 공동주택일 경우 추가한다.
         if (data.buildingName !== '' && data.apartment === 'Y') {
@@ -91,6 +91,7 @@ const addressMixin = {
       if (newVal === 1) {
         this.form.zipcode = this.zipcode // 우편번호와 주소 정보를 해당 필드에 넣는다.
         this.form.address1 = this.address1
+        this.form.address2 = ''
         this.form.address3 = this.address3 // 조합된 참고항목을 해당 필드에 넣는다.
         this.$refs.address2.$el.nextElementSibling.focus() // 커서를 상세주소 필드로 이동한다.
       }
