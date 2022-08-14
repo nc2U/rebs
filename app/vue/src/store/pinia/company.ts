@@ -13,7 +13,7 @@ export const useCompany = defineStore('company', () => {
   // getters
   const initComId = computed(() => {
     const account = useAccount()
-    account.userInfo?.staffauth?.company
+    return account.userInfo?.staffauth?.company
       ? account.userInfo.staffauth.company
       : 1
   })

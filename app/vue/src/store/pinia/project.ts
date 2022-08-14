@@ -13,7 +13,7 @@ export const useProject = defineStore('project', () => {
   // getters
   const initProjId = computed(() => {
     const account = useAccount()
-    account.userInfo?.staffauth?.assigned_project
+    return account.userInfo?.staffauth?.assigned_project
       ? account.userInfo.staffauth.assigned_project
       : account.userInfo?.staffauth?.allowed_projects[0] || 1
   })
