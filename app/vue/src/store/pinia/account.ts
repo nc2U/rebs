@@ -57,14 +57,6 @@ export const useAccount = defineStore('account', () => {
   const isAuthorized = computed(
     () => accessToken.value.length && !!userInfo.value,
   )
-  // const initComId = computed(() =>
-  //   userInfo.value?.staffauth?.company ? userInfo.value.staffauth.company : 1,
-  // )
-  // const initProjId = computed(() =>
-  //   userInfo.value?.staffauth?.assigned_project
-  //     ? userInfo.value.staffauth.assigned_project
-  //     : userInfo.value?.staffauth?.allowed_projects[0] || 1,
-  // )
   const myTodos = computed(() =>
     todoList.value.filter(
       todo => !todo.soft_deleted && todo.user === userInfo.value?.pk,

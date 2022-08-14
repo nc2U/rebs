@@ -34,9 +34,11 @@ const transform = (payload: Event) => {
 }
 
 export const useSchedule = defineStore('schedule', () => {
+  // states
   const schedule = ref<Schedule | null>(null)
   const scheduleList = ref<Schedule[]>([])
 
+  // getters
   const events = computed(() => {
     return scheduleList.value.map((s: Schedule) => ({
       id: s.pk.toString(),
@@ -46,6 +48,7 @@ export const useSchedule = defineStore('schedule', () => {
     }))
   })
 
+  // actions
   const fetchScheduleList = (month?: string) => {
     const mon = month ? month : new Date().toISOString().slice(0, 7)
     api
