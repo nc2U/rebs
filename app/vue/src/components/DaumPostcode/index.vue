@@ -22,6 +22,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { AddressData } from '@/components/DaumPostcode/address'
 import store from '@/store'
 
 export default defineComponent({
@@ -169,7 +170,7 @@ export default defineComponent({
       const vm: any = this
       ;(window as any).daum.postcode.load(() => {
         new (window as any).daum.Postcode({
-          oncomplete: function oncomplete(data: any) {
+          oncomplete: function oncomplete(data: AddressData) {
             vm.$emit('address-callback', { ...{ formNum }, ...data })
             vm.displayVal = 'none'
           },
