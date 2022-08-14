@@ -596,7 +596,7 @@
     </CForm>
   </CCard>
 
-  <DaumPostcode ref="postCode" @addressPut="addressPut" />
+  <DaumPostcode ref="postCode" @addressCallback="addressCallback" />
 
   <ConfirmModal ref="delModal">
     <template #header>프로젝트정보 삭제</template>
@@ -656,6 +656,7 @@ export default defineComponent({
     unitSet: Boolean,
     isUnion: Boolean,
   },
+  emits: ['type-select', 'on-create', 'on-update'],
   data() {
     return {
       pk: null,
@@ -751,13 +752,15 @@ export default defineComponent({
       if (newVal === 2) {
         this.form.id_zipcode = this.zipcode // 우편번호와 주소 정보를 해당 필드에 넣는다.
         this.form.id_address1 = this.address1
+        this.form.id_address2 = ''
         this.form.id_address3 = this.address3 // 조합된 참고항목을 해당 필드에 넣는다.
-        this.$refs.address21.$el.focus() // 커서를 상세주소 필드로 이동한다.
+        this.$refs.address21.$el.nextElementSibling.focus() // 커서를 상세주소 필드로 이동한다.
       } else if (newVal === 3) {
         this.form.dm_zipcode = this.zipcode // 우편번호와 주소 정보를 해당 필드에 넣는다.
         this.form.dm_address1 = this.address1
+        this.form.dm_address2 = ''
         this.form.dm_address3 = this.address3 // 조합된 참고항목을 해당 필드에 넣는다.
-        this.$refs.address22.$el.focus() // 커서를 상세주소 필드로 이동한다.
+        this.$refs.address22.$el.nextElementSibling.focus() // 커서를 상세주소 필드로 이동한다.
       }
     },
     contract(this: any, newVal) {

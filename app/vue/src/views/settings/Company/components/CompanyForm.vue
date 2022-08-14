@@ -5,7 +5,7 @@ import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 import DaumPostcode from '@/components/DaumPostcode/index.vue'
-// import { addressPut } from '@/components/DaumPostcode/address'
+// import { addressCallback } from '@/components/DaumPostcode/address'
 import { dateFormat } from '@/utils/baseMixins'
 import { maska as vMaska } from 'maska'
 
@@ -39,7 +39,7 @@ const form = ref({
   address3: '',
 })
 
-const addressPut = (data: any) => {
+const addressCallback = (data: any) => {
   // form.value.addrForm = data.formNum
   form.value.zipcode = data.zonecode
 
@@ -370,7 +370,7 @@ onBeforeMount(() => {
     </CCardFooter>
   </CForm>
 
-  <DaumPostcode ref="postCode" @address-put="addressPut" />
+  <DaumPostcode ref="postCode" @address-callback="addressCallback" />
 
   <ConfirmModal ref="delModal">
     <template #header>

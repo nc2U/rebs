@@ -1,6 +1,8 @@
-export const addressPut = (data: any) => {
+import { AddressData } from '@/components/DaumPostcode/addressMixin'
+
+export const addressCallback = (data: AddressData) => {
   const form = {
-    addrForm: '',
+    addrForm: 1,
     zipcode: '',
     address1: '',
     address3: '',
@@ -29,7 +31,7 @@ export const addressPut = (data: any) => {
 
   console.log(form)
 
-  return form
+  // addressPut(form)
 }
 
 // const addressPut = (data: any) => {

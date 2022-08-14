@@ -294,7 +294,7 @@
     </CCollapse>
   </CForm>
 
-  <DaumPostcode ref="postCode" @addressPut="addressPut" />
+  <DaumPostcode ref="postCode" @addressCallback="addressCallback" />
 
   <ConfirmModal ref="confirmModal">
     <template #header>

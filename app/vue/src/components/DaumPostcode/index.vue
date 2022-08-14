@@ -108,7 +108,7 @@ export default defineComponent({
       default: '//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js',
     },
   },
-  emits: ['address-put'],
+  emits: ['address-callback'],
   data() {
     return {
       displayVal: 'none',
@@ -170,7 +170,7 @@ export default defineComponent({
       ;(window as any).daum.postcode.load(() => {
         new (window as any).daum.Postcode({
           oncomplete: function oncomplete(data: any) {
-            vm.$emit('address-put', { ...{ formNum }, ...data })
+            vm.$emit('address-callback', { ...{ formNum }, ...data })
             vm.displayVal = 'none'
           },
           alwaysShowEngAddr: vm.alwaysShowEngAddr,
