@@ -1,16 +1,14 @@
 <script lang="ts" setup>
 import { ref, computed, onBeforeMount, nextTick } from 'vue'
 import { useProject } from '@/store/pinia/project'
-import { useAccount } from '@/store/pinia/account'
 
 const proj = ref()
 const projectStore = useProject()
-const accountStore = useAccount()
 
 const props = defineProps({ project: { type: Object, default: null } })
 
 const projSelectList = computed(() => projectStore.projSelect)
-const initProjId = computed(() => accountStore.initProjId)
+const initProjId = computed(() => projectStore.initProjId)
 
 const emit = defineEmits(['header-select'])
 const projSelect = (event: any) => {

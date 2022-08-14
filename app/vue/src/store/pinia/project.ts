@@ -11,6 +11,13 @@ export const useProject = defineStore('project', () => {
   const project = ref(null)
 
   // getters
+  const initProjId = computed(() => {
+    const account = useAccount()
+    account.userInfo?.staffauth?.assigned_project
+      ? account.userInfo.staffauth.assigned_project
+      : account.userInfo?.staffauth?.allowed_projects[0] || 1
+  })
+
   const allowed_projects = computed(() => {
     const account = useAccount()
     return account.userInfo && account.userInfo.staffauth
@@ -77,6 +84,7 @@ export const useProject = defineStore('project', () => {
   return {
     projectList,
     project,
+    initProjId,
     allowed_projects,
     projSelect,
 

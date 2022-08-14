@@ -1,16 +1,14 @@
 <script lang="ts" setup>
 import { ref, computed, nextTick, onBeforeMount } from 'vue'
 import { useCompany } from '@/store/pinia/company'
-import { useAccount } from '@/store/pinia/account'
 
 const com = ref()
 const companyStore = useCompany()
-const accountStore = useAccount()
 
-const props = defineProps({ company: { type: Object, default: null } })
+defineProps({ company: { type: Object, default: null } })
 
+const initComId = computed(() => companyStore.initComId)
 const comSelectList = computed(() => companyStore.comSelect)
-const initComId = computed(() => accountStore.initComId)
 
 const emit = defineEmits(['com-select'])
 const comSelect = (event: any) => {

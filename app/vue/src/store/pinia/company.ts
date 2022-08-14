@@ -1,6 +1,7 @@
 import api from '@/api'
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
+import { useAccount } from '@/store/pinia/account'
 import { Company } from '@/store/modules/settings/state'
 import { errorHandle, message } from '@/utils/helper'
 
@@ -10,6 +11,13 @@ export const useCompany = defineStore('company', () => {
   const company = ref<Company | null>(null)
 
   // getters
+  const initComId = computed(() => {
+    const account = useAccount()
+    account.userInfo?.staffauth?.company
+      ? account.userInfo.staffauth.company
+      : 1
+  })
+
   const comSelect = computed(() => {
     return companyList.value.map((com: Company) => ({
       value: com.pk,
@@ -65,6 +73,7 @@ export const useCompany = defineStore('company', () => {
   return {
     companyList,
     company,
+    initComId,
     comSelect,
     fetchCompanyList,
     fetchCompany,
