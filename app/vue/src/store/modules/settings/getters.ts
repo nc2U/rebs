@@ -1,4 +1,5 @@
-import { Company, CompanyState } from '@/store/modules/settings/state'
+import { Company } from '@/store/pinia/company'
+import { CompanyState } from '@/store/modules/settings/state'
 
 const getters = {
   comSelect(state: CompanyState) {

@@ -2,7 +2,8 @@ import {
   FETCH_COMPANY,
   FETCH_COMPANY_LIST,
 } from '@/store/modules/settings/mutations-types'
-import { Company, CompanyState } from '@/store/modules/settings/state'
+import { Company } from '@/store/pinia/company'
+import { CompanyState } from '@/store/modules/settings/state'
 
 const mutations = {
   updateState: (state: CompanyState, payload: any) => {
