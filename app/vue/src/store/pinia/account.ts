@@ -44,7 +44,7 @@ export declare interface LockedUser {
 
 export const useAccount = defineStore('account', () => {
   // states
-  const accessToken = ref('')
+  const accessToken = ref<string>('')
   const userInfo = ref<User | null>(null)
   const lockedUser = ref<LockedUser | null>(null)
   const todoList = ref<Todo[]>([])

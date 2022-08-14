@@ -37,8 +37,8 @@ export interface Project {
 
 export const useProject = defineStore('project', () => {
   // states
-  const projectList = ref([])
-  const project = ref(null)
+  const projectList = ref<Project[]>([])
+  const project = ref<Project | null>(null)
 
   // getters
   const initProjId = computed(() => {

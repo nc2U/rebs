@@ -1,5 +1,5 @@
 import api from '@/api'
-import { computed, ref, reactive, Ref } from 'vue'
+import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import { errorHandle, message } from '@/utils/helper'
 
@@ -34,11 +34,11 @@ const transform = (payload: Event) => {
 }
 
 export const useSchedule = defineStore('schedule', () => {
-  const schedule: Ref<Schedule> | Ref<null> = ref(null)
-  const scheduleList: Schedule[] = reactive([])
+  const schedule = ref<Schedule | null>(null)
+  const scheduleList = ref<Schedule[]>([])
 
   const events = computed(() => {
-    return scheduleList.map((s: Schedule) => ({
+    return scheduleList.value.map((s: Schedule) => ({
       id: s.pk.toString(),
       title: s.title,
       start: s.all_day ? s.start_date : s.start_time,
@@ -50,9 +50,7 @@ export const useSchedule = defineStore('schedule', () => {
     const mon = month ? month : new Date().toISOString().slice(0, 7)
     api
       .get(`/schedule/?search=${mon}`)
-      .then(res =>
-        scheduleList.splice(0, scheduleList.length, ...res.data.results),
-      )
+      .then(res => (scheduleList.value = res.data.results))
       .catch(err => errorHandle(err.response))
   }
 
