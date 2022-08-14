@@ -4,7 +4,7 @@ import { useAccount } from '@/store/pinia/account'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 import { headerSecondary } from '@/utils/cssMixins'
 
-const props = defineProps({
+defineProps({
   company: {
     type: Object,
     default: null,
