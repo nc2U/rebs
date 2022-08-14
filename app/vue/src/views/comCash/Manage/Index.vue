@@ -2,7 +2,7 @@
 import { computed, onBeforeMount, ref } from 'vue'
 import { useStore } from 'vuex'
 import { useCompany } from '@/store/pinia/company'
-import { pageTitle, navMenu } from '@/views/comCash/_menu/headermixin'
+import { navMenu, pageTitle } from '@/views/comCash/_menu/headermixin'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from '@/views/comCash/Manage/components/ListController.vue'
@@ -87,15 +87,16 @@ const listFiltering = (payload: any) => {
 const onCreate = (payload: any) => {
   payload.company = company.value?.pk
   if (payload.sort === '3' && payload.bank_account_to) {
-    const { bank_account_to, income, ...outData } = payload
+    const { bank_account_to, income, ...inputData } = payload
 
-    createCashBook(outData)
+    createCashBook(inputData)
 
-    const { bank_account, outlay, ...incData } = outData
+    delete inputData.bank_account
+    delete inputData.outlay
 
     createCashBook({
       ...{ bank_account: bank_account_to, income },
-      ...incData,
+      ...inputData,
     })
   } else createCashBook(payload)
 }
