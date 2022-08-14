@@ -1,3 +1,86 @@
+<script lang="ts" setup>
+import { computed, reactive, ref, watch, nextTick } from 'vue'
+import { useStore } from 'vuex'
+import { dateFormat } from '@/utils/baseMixins'
+import DatePicker from '@/components/DatePicker/index.vue'
+import { maska as vMaska } from 'maska'
+
+const emit = defineEmits(['list-filtering'])
+
+const from_date = ref('')
+const to_date = ref('')
+const form = reactive({
+  sort: '',
+  account_d1: '',
+  account_d2: '',
+  account_d3: '',
+  bank_account: '',
+  search: '',
+})
+
+const formsCheck = computed(() => {
+  const a = from_date.value === ''
+  const b = to_date.value === ''
+  const c = form.sort === ''
+  const d = form.account_d1 === ''
+  const e = form.account_d2 === ''
+  const f = form.account_d3 === ''
+  const g = form.bank_account === ''
+  const h = form.search === ''
+  return a && b && c && d && e && f && g && h
+})
+
+const store = useStore()
+const formAccD1List = computed(() => store.state.comCash.formAccD1List)
+const formAccD2List = computed(() => store.state.comCash.formAccD2List)
+const formAccD3List = computed(() => store.state.comCash.formAccD3List)
+const comBankList = computed(() => store.state.comCash.comBankList)
+const cashBookCount = computed(() => store.state.comCash.cashBookCount)
+
+watch(from_date, () => listFiltering(1))
+watch(to_date, () => listFiltering(2))
+
+//   methods: {
+const sortSelect = () => {
+  listFiltering(1)
+  form.account_d1 = ''
+  form.account_d2 = ''
+  form.account_d3 = ''
+}
+const accountD1Select = () => {
+  listFiltering(1)
+  form.account_d2 = ''
+  form.account_d3 = ''
+}
+const accountD2Select = () => {
+  listFiltering(1)
+  form.account_d3 = ''
+}
+
+const listFiltering = (page = 1) => {
+  nextTick(() => {
+    from_date.value = from_date.value ? dateFormat(from_date.value) : ''
+    to_date.value = to_date.value ? dateFormat(to_date.value) : ''
+    emit('list-filtering', {
+      ...{ page, from_date: from_date.value, to_date: to_date.value },
+      ...form,
+    })
+  })
+}
+
+const resetForm = () => {
+  from_date.value = ''
+  to_date.value = ''
+  form.sort = ''
+  form.account_d1 = ''
+  form.account_d2 = ''
+  form.account_d3 = ''
+  form.bank_account = ''
+  form.search = ''
+  listFiltering(1)
+}
+</script>
+
 <template>
   <CCallout color="primary" class="pb-0 mb-4">
     <CRow>
@@ -123,96 +206,3 @@
     </CRow>
   </CCallout>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import DatePicker from '@/components/DatePicker/index.vue'
-import { maska } from 'maska'
-import { mapState } from 'vuex'
-
-export default defineComponent({
-  name: 'ListController',
-  components: { DatePicker },
-  directives: { maska },
-  data() {
-    return {
-      from_date: '',
-      to_date: '',
-      form: {
-        sort: '',
-        account_d1: '',
-        account_d2: '',
-        account_d3: '',
-        bank_account: '',
-        search: '',
-      },
-    }
-  },
-  computed: {
-    formsCheck(this: any) {
-      const a = this.from_date === ''
-      const b = this.to_date === ''
-      const c = this.form.sort === ''
-      const d = this.form.account_d1 === ''
-      const e = this.form.account_d2 === ''
-      const f = this.form.account_d3 === ''
-      const g = this.form.bank_account === ''
-      const h = this.form.search === ''
-      return a && b && c && d && e && f && g && h
-    },
-    ...mapState('comCash', [
-      'formAccD1List',
-      'formAccD2List',
-      'formAccD3List',
-      'comBankList',
-      'cashBookCount',
-    ]),
-  },
-  watch: {
-    from_date() {
-      this.listFiltering(1)
-    },
-    to_date() {
-      this.listFiltering(1)
-    },
-  },
-  methods: {
-    sortSelect() {
-      this.listFiltering(1)
-      this.form.account_d1 = ''
-      this.form.account_d2 = ''
-      this.form.account_d3 = ''
-    },
-    accountD1Select() {
-      this.listFiltering(1)
-      this.form.account_d2 = ''
-      this.form.account_d3 = ''
-    },
-    accountD2Select() {
-      this.listFiltering(1)
-      this.form.account_d3 = ''
-    },
-    listFiltering(this: any, page = 1) {
-      this.$nextTick(() => {
-        const from_date = this.from_date ? this.dateFormat(this.from_date) : ''
-        const to_date = this.to_date ? this.dateFormat(this.to_date) : ''
-        this.$emit('list-filtering', {
-          ...{ page, from_date, to_date },
-          ...this.form,
-        })
-      })
-    },
-    resetForm() {
-      this.from_date = ''
-      this.to_date = ''
-      this.form.sort = ''
-      this.form.account_d1 = ''
-      this.form.account_d2 = ''
-      this.form.account_d3 = ''
-      this.form.bank_account = ''
-      this.form.search = ''
-      this.listFiltering(1)
-    },
-  },
-})
-</script>
