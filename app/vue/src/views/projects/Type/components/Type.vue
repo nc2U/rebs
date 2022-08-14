@@ -1,3 +1,78 @@
+<script lang="ts" setup>
+import { ref, reactive, computed, onBeforeMount } from 'vue'
+import { useAccount } from '@/store/pinia/account'
+import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
+import AlertModal from '@/components/Modals/AlertModal.vue'
+import { write_project } from '@/utils/pageAuth'
+
+const props = defineProps({ type: { type: Object, default: null } })
+const emit = defineEmits(['on-update', 'on-delete'])
+
+const form = reactive({
+  name: '',
+  color: '',
+  actual_area: null,
+  supply_area: null,
+  contract_area: null,
+  average_price: null,
+  num_unit: null,
+})
+
+const alertModal = ref()
+const confirmModal = ref()
+
+const formsCheck = computed(() => {
+  if (props.type) {
+    const a = form.name === props.type.name
+    const b = form.color === props.type.color
+    const c = form.actual_area === props.type.actual_area
+    const d = form.supply_area === props.type.supply_area
+    const e = form.contract_area === props.type.contract_area
+    const f = form.average_price === props.type.average_price
+    const g = form.num_unit === props.type.num_unit
+    return a && b && c && d && e && f && g
+  } else return false
+})
+
+const formCheck = (bool: boolean) => {
+  if (bool) onUpdateType()
+  return
+}
+const onUpdateType = () => {
+  if (write_project) {
+    const pk = props.type.pk
+    emit('on-update', { ...{ pk }, ...form })
+  } else {
+    alertModal.value.callModal()
+    resetForm()
+  }
+}
+const onDeleteType = () => {
+  if (useAccount().superAuth) confirmModal.value.callModal()
+  else {
+    alertModal.value.callModal()
+    resetForm()
+  }
+}
+const modalAction = () => {
+  emit('on-delete', props.type.pk)
+  confirmModal.value.visible = false
+}
+const resetForm = () => {
+  form.name = props.type.name
+  form.color = props.type.color
+  form.actual_area = props.type.actual_area
+  form.supply_area = props.type.supply_area
+  form.contract_area = props.type.contract_area
+  form.average_price = props.type.average_price
+  form.num_unit = props.type.num_unit
+}
+
+onBeforeMount(() => {
+  if (props.type) resetForm()
+})
+</script>
+
 <template>
   <CTableRow>
     <CTableDataCell>
@@ -92,84 +167,3 @@
 
   <AlertModal ref="alertModal" />
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
-import AlertModal from '@/components/Modals/AlertModal.vue'
-import { mapGetters } from 'vuex'
-
-export default defineComponent({
-  name: 'UnitType',
-  components: { ConfirmModal, AlertModal },
-  props: { type: Object },
-  data() {
-    return {
-      form: {
-        name: '',
-        color: '',
-        actual_area: null,
-        supply_area: null,
-        contract_area: null,
-        average_price: null,
-        num_unit: null,
-      },
-      validated: false,
-    }
-  },
-  created(this: any) {
-    if (this.type) this.resetForm()
-  },
-  computed: {
-    formsCheck(this: any) {
-      const a = this.form.name === this.type.name
-      const b = this.form.color === this.type.color
-      const c = this.form.actual_area === this.type.actual_area
-      const d = this.form.supply_area === this.type.supply_area
-      const e = this.form.contract_area === this.type.contract_area
-      const f = this.form.average_price === this.type.average_price
-      const g = this.form.num_unit === this.type.num_unit
-      return a && b && c && d && e && f && g
-    },
-    ...mapGetters('accounts', ['staffAuth', 'superAuth']),
-  },
-  methods: {
-    formCheck(bool: boolean) {
-      if (bool) this.onUpdateType()
-      return
-    },
-    onUpdateType(this: any) {
-      if (
-        this.superAuth ||
-        (this.staffAuth && this.staffAuth.project === '2')
-      ) {
-        const pk = this.type.pk
-        this.$emit('on-update', { ...{ pk }, ...this.form })
-      } else {
-        this.$refs.alertModal.callModal()
-        this.resetForm()
-      }
-    },
-    onDeleteType(this: any) {
-      if (this.superAuth) this.$refs.confirmModal.callModal()
-      else {
-        this.$refs.alertModal.callModal()
-        this.resetForm()
-      }
-    },
-    modalAction(this: any) {
-      this.$emit('on-delete', this.type.pk)
-      this.$refs.confirmModal.visible = false
-    },
-    resetForm(this: any) {
-      this.form.name = this.type.name
-      this.form.color = this.type.color
-      this.form.actual_area = this.type.actual_area
-      this.form.supply_area = this.type.supply_area
-      this.form.contract_area = this.type.contract_area
-      this.form.average_price = this.type.average_price
-      this.form.num_unit = this.type.num_unit
-    },
-  },
-})
-</script>

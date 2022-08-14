@@ -1,3 +1,42 @@
+<script lang="ts" setup>
+import { computed, onBeforeMount } from 'vue'
+import { useStore } from 'vuex'
+import { useProject } from '@/store/pinia/project'
+import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin1'
+import ContentHeader from '@/layouts/ContentHeader/Index.vue'
+import ContentBody from '@/layouts/ContentBody/Index.vue'
+import TypeAddForm from '@/views/projects/Type/components/TypeAddForm.vue'
+import TypeFormList from '@/views/projects/Type/components/TypeFormList.vue'
+
+const store = useStore()
+const projectStore = useProject()
+
+const project = computed(() => projectStore.project?.pk)
+const initProjId = computed(() => projectStore.initProjId)
+
+const fetchTypeList = (projId: number) =>
+  store.dispatch('project/fetchTypeList', projId)
+const createType = (payload: any) =>
+  store.dispatch('project/createType', payload)
+const updateType = (payload: any) =>
+  store.dispatch('project/updateType', payload)
+const deleteType = (payload: any) =>
+  store.dispatch('project/deleteType', payload)
+
+const onSelectAdd = (target: any) => {
+  if (target !== '') fetchTypeList(target)
+  else store.commit('project/updateState', { unitTypeList: [] })
+}
+const onSubmit = (payload: any) =>
+  createType({ ...{ project: project.value }, ...payload })
+const onUpdateType = (payload: any) =>
+  updateType({ ...{ project: project.value }, ...payload })
+const onDeleteType = (pk: number) =>
+  deleteType({ ...{ pk }, ...{ project: project.value } })
+
+onBeforeMount(() => fetchTypeList(initProjId.value))
+</script>
+
 <template>
   <ContentHeader
     :page-title="pageTitle"
@@ -8,65 +47,9 @@
   <ContentBody>
     <CCardBody class="pb-5">
       <TypeAddForm :disabled="!project" @on-submit="onSubmit" />
-      <TypeFormList
-        :project="project"
-        @on-update="onUpdateType"
-        @on-delete="onDeleteType"
-      />
+      <TypeFormList @on-update="onUpdateType" @on-delete="onDeleteType" />
     </CCardBody>
 
     <CCardFooter>&nbsp;</CCardFooter>
   </ContentBody>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import HeaderMixin from '@/views/projects/_menu/headermixin1'
-import ContentHeader from '@/layouts/ContentHeader/Index.vue'
-import ContentBody from '@/layouts/ContentBody/Index.vue'
-import TypeAddForm from '@/views/projects/Type/components/TypeAddForm.vue'
-import TypeFormList from '@/views/projects/Type/components/TypeFormList.vue'
-import { mapActions, mapGetters, mapState } from 'vuex'
-
-export default defineComponent({
-  name: 'ProjectsTypeSet',
-  components: {
-    ContentHeader,
-    ContentBody,
-    TypeAddForm,
-    TypeFormList,
-  },
-  mixins: [HeaderMixin],
-  created() {
-    this.fetchTypeList(this.initProjId)
-  },
-  computed: {
-    ...mapState('project', ['project']),
-    ...mapGetters('accounts', ['initProjId']),
-  },
-  methods: {
-    onSelectAdd(this: any, target: any) {
-      if (target !== '') this.fetchTypeList(target)
-      else this.$store.state.project.unitTypeList = []
-    },
-    onSubmit(payload: any) {
-      const project = this.project.pk
-      this.createType({ ...{ project }, ...payload })
-    },
-    onUpdateType(payload: any) {
-      const project = this.project.pk
-      this.updateType({ ...{ project }, ...payload })
-    },
-    onDeleteType(pk: number) {
-      const project = this.project.pk
-      this.deleteType({ ...{ pk }, ...{ project } })
-    },
-    ...mapActions('project', [
-      'fetchTypeList',
-      'createType',
-      'updateType',
-      'deleteType',
-    ]),
-  },
-})
-</script>

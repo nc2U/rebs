@@ -1,3 +1,22 @@
+<script lang="ts" setup>
+import { computed } from 'vue'
+import { useStore } from 'vuex'
+import Type from '@/views/projects/Type/components/Type.vue'
+import { headerSecondary } from '@/utils/cssMixins'
+
+const emit = defineEmits(['on-update', 'on-delete'])
+
+const store = useStore()
+const unitTypeList = computed(() => store.state.project.unitTypeList)
+
+const onUpdateType = (payload: any) => {
+  emit('on-update', payload)
+}
+const onDeleteType = (pk: number) => {
+  emit('on-delete', pk)
+}
+</script>
+
 <template>
   <CTable hover responsive>
     <colgroup>
@@ -41,30 +60,3 @@
     </CTableBody>
   </CTable>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import Type from '@/views/projects/Type/components/Type.vue'
-import { headerSecondary } from '@/utils/cssMixins'
-import { mapState } from 'vuex'
-
-export default defineComponent({
-  name: 'TypeFormList',
-  components: { Type },
-  props: ['project'],
-  computed: {
-    headerSecondary() {
-      return headerSecondary.value
-    },
-    ...mapState('project', ['unitTypeList']),
-  },
-  methods: {
-    onUpdateType(payload: any) {
-      this.$emit('on-update', payload)
-    },
-    onDeleteType(pk: number) {
-      this.$emit('on-delete', pk)
-    },
-  },
-})
-</script>
