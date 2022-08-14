@@ -1,3 +1,55 @@
+<script lang="ts" setup>
+import { ref, reactive } from 'vue'
+import { write_project } from '@/utils/pageAuth'
+import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
+import AlertModal from '@/components/Modals/AlertModal.vue'
+
+defineProps({ disabled: Boolean })
+const emit = defineEmits(['on-submit'])
+
+const alertModal = ref()
+const confirmModal = ref()
+
+const form = reactive({
+  start_floor: '',
+  end_floor: '',
+  extra_cond: '',
+  alias_name: '',
+})
+const validated = ref(false)
+
+const onSubmit = (event: any) => {
+  if (write_project) {
+    const el = event.currentTarget
+    if (el.checkValidity() === false) {
+      event.preventDefault()
+      event.stopPropagation()
+
+      validated.value = true
+    } else {
+      confirmModal.value.callModal()
+    }
+  } else {
+    alertModal.value.callModal()
+    resetForm()
+  }
+}
+
+const modalAction = () => {
+  emit('on-submit', form)
+  validated.value = false
+  confirmModal.value.visible = false
+  resetForm()
+}
+
+const resetForm = () => {
+  form.start_floor = ''
+  form.end_floor = ''
+  form.extra_cond = ''
+  form.alias_name = ''
+}
+</script>
+
 <template>
   <CForm
     novalidate
@@ -46,7 +98,9 @@
       </CCol>
 
       <CCol md="2" class="d-grid gap-2 d-lg-block mb-3">
-        <CButton color="primary" :disabled="disabled">층별타입추가</CButton>
+        <CButton color="primary" type="submit" :disabled="disabled">
+          층별타입추가
+        </CButton>
       </CCol>
     </CRow>
   </CForm>
@@ -66,63 +120,3 @@
 
   <AlertModal ref="alertModal" />
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
-import AlertModal from '@/components/Modals/AlertModal.vue'
-import { mapGetters } from 'vuex'
-
-export default defineComponent({
-  name: 'FloorAddForm',
-  components: { ConfirmModal, AlertModal },
-  props: { disabled: Boolean },
-  data() {
-    return {
-      form: {
-        start_floor: '',
-        end_floor: '',
-        extra_cond: '',
-        alias_name: '',
-      },
-      validated: false,
-    }
-  },
-  computed: {
-    ...mapGetters('accounts', ['staffAuth', 'superAuth']),
-  },
-  methods: {
-    onSubmit(this: any, event: any) {
-      if (
-        this.superAuth ||
-        (this.staffAuth && this.staffAuth.project === '2')
-      ) {
-        const form = event.currentTarget
-        if (form.checkValidity() === false) {
-          event.preventDefault()
-          event.stopPropagation()
-
-          this.validated = true
-        } else {
-          this.$refs.confirmModal.callModal()
-        }
-      } else {
-        this.$refs.alertModal.callModal()
-        this.resetForm()
-      }
-    },
-    modalAction(this: any) {
-      this.$emit('on-submit', this.form)
-      this.validated = false
-      this.$refs.confirmModal.visible = false
-      this.resetForm()
-    },
-    resetForm() {
-      this.form.start_floor = ''
-      this.form.end_floor = ''
-      this.form.extra_cond = ''
-      this.form.alias_name = ''
-    },
-  },
-})
-</script>

@@ -1,3 +1,72 @@
+<script lang="ts" setup>
+import { ref, reactive, computed, onBeforeMount } from 'vue'
+import { useAccount } from '@/store/pinia/account'
+import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
+import AlertModal from '@/components/Modals/AlertModal.vue'
+import { write_project } from '@/utils/pageAuth'
+
+const props = defineProps({ floor: { type: Object, default: null } })
+const emit = defineEmits(['on-update', 'on-delete'])
+
+const alertModal = ref()
+const confirmModal = ref()
+
+const form = reactive({
+  start_floor: null,
+  end_floor: null,
+  extra_cond: '',
+  alias_name: '',
+})
+const validated = ref(false)
+
+onBeforeMount(() => {
+  if (props.floor) resetForm()
+})
+
+const formsCheck = computed(() => {
+  if (props.floor) {
+    const a = form.start_floor === props.floor.start_floor
+    const b = form.end_floor === props.floor.end_floor
+    const c = form.extra_cond === props.floor.extra_cond
+    const d = form.alias_name === props.floor.alias_name
+    return a && b && c && d
+  } else return false
+})
+
+const formCheck = (bool: boolean) => {
+  if (bool) onUpdateFloor()
+  return
+}
+
+const onUpdateFloor = () => {
+  if (write_project) {
+    const pk = props.floor.pk
+    emit('on-update', { ...{ pk }, ...form })
+  } else {
+    alertModal.value.callModal()
+    resetForm()
+  }
+}
+
+const onDeleteFloor = () => {
+  if (useAccount().superAuth) confirmModal.value.callModal()
+  else {
+    alertModal.value.callModal()
+    resetForm()
+  }
+}
+const modalAction = () => {
+  emit('on-delete', props.floor.pk)
+  confirmModal.value.visible = false
+}
+const resetForm = () => {
+  form.start_floor = props.floor.start_floor
+  form.end_floor = props.floor.end_floor
+  form.extra_cond = props.floor.extra_cond
+  form.alias_name = props.floor.alias_name
+}
+</script>
+
 <template>
   <CTableRow>
     <CTableDataCell>
@@ -66,75 +135,3 @@
 
   <AlertModal ref="alertModal" />
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
-import AlertModal from '@/components/Modals/AlertModal.vue'
-import { mapGetters } from 'vuex'
-
-export default defineComponent({
-  name: 'FloorType',
-  components: { ConfirmModal, AlertModal },
-  props: { floor: Object },
-  data() {
-    return {
-      form: {
-        start_floor: null,
-        end_floor: null,
-        extra_cond: '',
-        alias_name: '',
-      },
-      validated: false,
-    }
-  },
-  created(this: any) {
-    if (this.floor) this.resetForm()
-  },
-  computed: {
-    formsCheck(this: any) {
-      const a = this.form.start_floor === this.floor.start_floor
-      const b = this.form.end_floor === this.floor.end_floor
-      const c = this.form.extra_cond === this.floor.extra_cond
-      const d = this.form.alias_name === this.floor.alias_name
-      return a && b && c && d
-    },
-    ...mapGetters('accounts', ['staffAuth', 'superAuth']),
-  },
-  methods: {
-    formCheck(bool: boolean) {
-      if (bool) this.onUpdateFloor()
-      return
-    },
-    onUpdateFloor(this: any) {
-      if (
-        this.superAuth ||
-        (this.staffAuth && this.staffAuth.project === '2')
-      ) {
-        const pk = this.floor.pk
-        this.$emit('on-update', { ...{ pk }, ...this.form })
-      } else {
-        this.$refs.alertModal.callModal()
-        this.resetForm()
-      }
-    },
-    onDeleteFloor(this: any) {
-      if (this.superAuth) this.$refs.confirmModal.callModal()
-      else {
-        this.$refs.alertModal.callModal()
-        this.resetForm()
-      }
-    },
-    modalAction(this: any) {
-      this.$emit('on-delete', this.floor.pk)
-      this.$refs.confirmModal.visible = false
-    },
-    resetForm(this: any) {
-      this.form.start_floor = this.floor.start_floor
-      this.form.end_floor = this.floor.end_floor
-      this.form.extra_cond = this.floor.extra_cond
-      this.form.alias_name = this.floor.alias_name
-    },
-  },
-})
-</script>

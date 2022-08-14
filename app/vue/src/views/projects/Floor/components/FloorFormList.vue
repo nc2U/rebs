@@ -45,7 +45,6 @@ import { mapState } from 'vuex'
 export default defineComponent({
   name: 'FloorFormList',
   components: { Floor },
-  props: ['project'],
   computed: {
     headerSecondary() {
       return headerSecondary.value
