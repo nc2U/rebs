@@ -1,3 +1,150 @@
+<script lang="ts" setup>
+import { ref, computed, nextTick, onBeforeMount } from 'vue'
+import { useStore } from 'vuex'
+import { dateFormat } from '@/utils/baseMixins'
+import DatePicker from '@/components/DatePicker/index.vue'
+
+const props = defineProps({
+  cash: {
+    type: Object,
+    required: true,
+  },
+})
+const emit = defineEmits(['on-submit', 'on-delete', 'close'])
+
+const validated = ref(false)
+
+const form = ref({
+  company: '',
+  sort: '',
+  account_d1: '',
+  account_d2: '',
+  account_d3: '',
+  content: '',
+  trader: '',
+  bank_account: '',
+  income: null,
+  outlay: null,
+  evidence: '',
+  note: '',
+  deal_date: new Date() as Date | string,
+})
+
+const formsCheck = computed(() => {
+  if (props.cash) {
+    const a = form.value.company === props.cash.company
+    const b = form.value.sort === props.cash.sort
+    const c = form.value.account_d1 === props.cash.account_d1
+    const d = form.value.account_d2 === props.cash.account_d2
+    const e = form.value.account_d3 === props.cash.account_d3
+    const f = form.value.content === props.cash.content
+    const g = form.value.trader === props.cash.trader
+    const h = form.value.bank_account === props.cash.bank_account
+    const i = form.value.income === props.cash.income
+    const j = form.value.outlay === props.cash.outlay
+    const k = form.value.evidence === props.cash.evidence
+    const l = form.value.note === props.cash.note
+    const m =
+      form.value.deal_date.toString() ===
+      new Date(props.cash.deal_date).toString()
+
+    return a && b && c && d && e && f && g && h && i && j && k && l && m
+  } else return false
+})
+
+const store = useStore()
+const formAccD1List = computed(() => store.state.comCash.formAccD1List)
+const formAccD2List = computed(() => store.state.comCash.formAccD2List)
+const formAccD3List = computed(() => store.state.comCash.formAccD3List)
+const comBankList = computed(() => store.state.comCash.comBankList)
+
+const onSubmit = (event: any) => {
+  const e = event.currentTarget
+  if (e.checkValidity() === false) {
+    event.preventDefault()
+    event.stopPropagation()
+
+    validated.value = true
+  } else {
+    form.value.deal_date = dateFormat(form.value.deal_date)
+    emit('on-submit', form.value)
+  }
+}
+
+const sort_change = (event: any) => {
+  if (event.target.value === '1') {
+    form.value.account_d1 = '4'
+    form.value.account_d2 = ''
+    form.value.account_d3 = ''
+    form.value.outlay = null
+  } else if (event.target.value === '2') {
+    form.value.account_d1 = '5'
+    form.value.account_d2 = ''
+    form.value.account_d3 = ''
+    form.value.income = null
+  } else if (event.target.value === '3') {
+    form.value.account_d1 = '6'
+    form.value.account_d2 = '19'
+    form.value.account_d3 = '128'
+  } else {
+    form.value.account_d1 = ''
+    form.value.account_d2 = ''
+    form.value.account_d3 = ''
+  }
+  callAccount()
+}
+
+const d1_change = () => {
+  form.value.account_d2 = ''
+  form.value.account_d3 = ''
+  callAccount()
+}
+
+const d2_change = () => {
+  form.value.account_d3 = ''
+  callAccount()
+}
+
+const callAccount = () => {
+  nextTick(() => {
+    const sort = form.value.sort
+    const d1 = form.value.account_d1 ? form.value.account_d1 : null
+    const d2 = form.value.account_d2 ? form.value.account_d2 : null
+    fetchFormAccD1List({ sort })
+    fetchFormAccD2List({ sort, d1 })
+    fetchFormAccD3List({ sort, d1, d2 })
+  })
+}
+const fetchFormAccD1List = (payload: { sort: string }) =>
+  store.dispatch('comCash/fetchFormAccD1List', payload)
+const fetchFormAccD2List = (payload: { sort: string; d1: string | null }) =>
+  store.dispatch('comCash/fetchFormAccD2List', payload)
+const fetchFormAccD3List = (payload: {
+  sort: string
+  d1: string | null
+  d2: string | null
+}) => store.dispatch('comCash/fetchFormAccD3List', payload)
+
+onBeforeMount(() => {
+  if (props.cash) {
+    form.value.company = props.cash.company
+    form.value.sort = props.cash.sort
+    form.value.account_d1 = props.cash.account_d1
+    form.value.account_d2 = props.cash.account_d2
+    form.value.account_d3 = props.cash.account_d3
+    form.value.content = props.cash.content
+    form.value.trader = props.cash.trader
+    form.value.bank_account = props.cash.bank_account
+    form.value.income = props.cash.income
+    form.value.outlay = props.cash.outlay
+    form.value.evidence = props.cash.evidence // ? cash.evidence : '0'
+    form.value.note = props.cash.note
+    form.value.deal_date = new Date(props.cash.deal_date)
+  }
+  callAccount()
+})
+</script>
+
 <template>
   <CForm
     class="needs-validation"
@@ -239,7 +386,7 @@
     </CModalBody>
 
     <CModalFooter>
-      <CButton type="button" color="light" @click="$emit('close')">
+      <CButton type="button" color="light" @click="emit('close')">
         닫기
       </CButton>
       <slot name="footer">
@@ -254,7 +401,7 @@
           v-if="cash"
           type="button"
           color="danger"
-          @click="$emit('on-delete')"
+          @click="emit('on-delete')"
         >
           삭제
         </CButton>
@@ -262,147 +409,3 @@
     </CModalFooter>
   </CForm>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import DatePicker from '@/components/DatePicker/index.vue'
-import { mapActions, mapState } from 'vuex'
-
-export default defineComponent({
-  name: 'CashForm',
-  components: { DatePicker },
-  props: {
-    cash: {
-      type: Object,
-      required: true,
-    },
-  },
-  data() {
-    return {
-      form: {
-        company: '',
-        sort: '',
-        account_d1: '',
-        account_d2: '',
-        account_d3: '',
-        content: '',
-        trader: '',
-        bank_account: '',
-        income: null,
-        outlay: null,
-        evidence: '',
-        note: '',
-        deal_date: new Date(),
-      },
-      validated: false,
-    }
-  },
-  created() {
-    if (this.cash) {
-      this.form.company = this.cash.company
-      this.form.sort = this.cash.sort
-      this.form.account_d1 = this.cash.account_d1
-      this.form.account_d2 = this.cash.account_d2
-      this.form.account_d3 = this.cash.account_d3
-      this.form.content = this.cash.content
-      this.form.trader = this.cash.trader
-      this.form.bank_account = this.cash.bank_account
-      this.form.income = this.cash.income
-      this.form.outlay = this.cash.outlay
-      this.form.evidence = this.cash.evidence // ? this.cash.evidence : '0'
-      this.form.note = this.cash.note
-      this.form.deal_date = new Date(this.cash.deal_date)
-    }
-    this.callAccount()
-  },
-  computed: {
-    formsCheck() {
-      if (this.cash) {
-        const a = this.form.company === this.cash.company
-        const b = this.form.sort === this.cash.sort
-        const c = this.form.account_d1 === this.cash.account_d1
-        const d = this.form.account_d2 === this.cash.account_d2
-        const e = this.form.account_d3 === this.cash.account_d3
-        const f = this.form.content === this.cash.content
-        const g = this.form.trader === this.cash.trader
-        const h = this.form.bank_account === this.cash.bank_account
-        const i = this.form.income === this.cash.income
-        const j = this.form.outlay === this.cash.outlay
-        const k = this.form.evidence === this.cash.evidence
-        const l = this.form.note === this.cash.note
-        const m =
-          this.form.deal_date.toString() ===
-          new Date(this.cash.deal_date).toString()
-
-        return a && b && c && d && e && f && g && h && i && j && k && l && m
-      } else return false
-    },
-    ...mapState('comCash', [
-      'formAccD1List',
-      'formAccD2List',
-      'formAccD3List',
-      'comBankList',
-    ]),
-  },
-  methods: {
-    onSubmit(this: any, event: any) {
-      const form = event.currentTarget
-      if (form.checkValidity() === false) {
-        event.preventDefault()
-        event.stopPropagation()
-
-        this.validated = true
-      } else {
-        this.form.deal_date = this.dateFormat(this.form.deal_date)
-        this.$emit('on-submit', this.form)
-      }
-    },
-    sort_change(event: any) {
-      if (event.target.value === '1') {
-        this.form.account_d1 = '4'
-        this.form.account_d2 = ''
-        this.form.account_d3 = ''
-        this.form.outlay = null
-      } else if (event.target.value === '2') {
-        this.form.account_d1 = '5'
-        this.form.account_d2 = ''
-        this.form.account_d3 = ''
-        this.form.income = null
-      } else if (event.target.value === '3') {
-        this.form.account_d1 = '6'
-        this.form.account_d2 = '19'
-        this.form.account_d3 = '128'
-      } else {
-        this.form.account_d1 = ''
-        this.form.account_d2 = ''
-        this.form.account_d3 = ''
-      }
-      this.callAccount()
-    },
-    d1_change() {
-      this.form.account_d2 = ''
-      this.form.account_d3 = ''
-      this.callAccount()
-    },
-    d2_change() {
-      this.form.account_d3 = ''
-      this.callAccount()
-    },
-    callAccount() {
-      this.$nextTick(() => {
-        const sort = this.form.sort
-        const d1 = this.form.account_d1 ? this.form.account_d1 : null
-        const d2 = this.form.account_d2 ? this.form.account_d2 : null
-        this.fetchFormAccD1List({ sort })
-        this.fetchFormAccD2List({ sort, d1 })
-        this.fetchFormAccD3List({ sort, d1, d2 })
-      })
-    },
-    ...mapActions('comCash', [
-      'fetchFormAccD1List',
-      'fetchFormAccD2List',
-      'fetchFormAccD3List',
-    ]),
-  },
-})
-</script>
