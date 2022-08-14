@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, onBeforeMount, watch } from 'vue'
+import { ref, reactive, computed, onBeforeMount } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 import DaumPostcode from '@/components/DaumPostcode/index.vue'
-// import { addressCallback } from '@/components/DaumPostcode/address'
+import { callAddress, AddressData } from '@/components/DaumPostcode/address'
 
 const props = defineProps({
   project: {
@@ -136,36 +136,16 @@ const deleteProject = () => {
   else alertModal.value.callModal()
 }
 
-const addressCallback = (data: any) => {
-  form.local_zipcode = data.zonecode
-
-  if (data.userSelectedType === 'R') {
-    form.local_address1 = data.roadAddress // 사용자가 도로명 주소를 선택했을 경우
-  } else {
-    form.local_address1 = data.jibunAddress // 사용자가 지번 주소를 선택했을 경우(J)
+const addressCallback = (data: AddressData) => {
+  const { formNum, zipcode, address1, address3 } = callAddress(data)
+  if (formNum === 1) {
+    // 입력할 데이터와 focus 폼 지정
+    form.local_zipcode = zipcode
+    form.local_address1 = address1
+    form.local_address2 = ''
+    form.local_address3 = address3
+    address2.value.$el.nextElementSibling.focus()
   }
-
-  if (data.userSelectedType === 'R') {
-    // 법정동명이 있을 경우 추가한다. (법정리는 제외), 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
-    if (data.bname !== '' && /[동|로|가]$/g.test(data.bname)) {
-      form.local_address3 = data.bname
-    }
-
-    if (data.buildingName !== '' && data.apartment === 'Y') {
-      // 건물명이 있고, 공동주택일 경우 추가한다.
-      form.local_address3 +=
-        form.local_address3 !== ''
-          ? ', ' + data.buildingName
-          : data.buildingName
-    }
-    // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
-    if (form.local_address3 !== '') {
-      form.local_address3 = ' (' + form.local_address3 + ')'
-    }
-  }
-
-  form.local_address2 = ''
-  address2.value.$el.nextElementSibling.focus()
 }
 
 onBeforeMount(() => {

@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount, ref } from 'vue'
+import { computed, onBeforeMount, reactive, ref } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 import DaumPostcode from '@/components/DaumPostcode/index.vue'
-// import { addressCallback } from '@/components/DaumPostcode/address'
+import { callAddress, AddressData } from '@/components/DaumPostcode/address'
 import { dateFormat } from '@/utils/baseMixins'
 import { maska as vMaska } from 'maska'
 
@@ -24,7 +24,7 @@ const address2 = ref()
 
 const pk = ref('')
 const validated = ref(false)
-const form = ref({
+const form = reactive({
   name: '',
   ceo: '',
   tax_number: '',
@@ -39,36 +39,16 @@ const form = ref({
   address3: '',
 })
 
-const addressCallback = (data: any) => {
-  // form.value.addrForm = data.formNum
-  form.value.zipcode = data.zonecode
-
-  if (data.userSelectedType === 'R') {
-    form.value.address1 = data.roadAddress // 사용자가 도로명 주소를 선택했을 경우
-  } else {
-    form.value.address1 = data.jibunAddress // 사용자가 지번 주소를 선택했을 경우(J)
+const addressCallback = (data: AddressData) => {
+  const { formNum, zipcode, address1, address3 } = callAddress(data)
+  if (formNum === 1) {
+    // 입력할 데이터와 focus 폼 지정
+    form.zipcode = zipcode
+    form.address1 = address1
+    form.address2 = ''
+    form.address3 = address3
+    address2.value.$el.nextElementSibling.focus()
   }
-
-  if (data.userSelectedType === 'R') {
-    // 법정동명이 있을 경우 추가한다. (법정리는 제외), 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
-    if (data.bname !== '' && /[동|로|가]$/g.test(data.bname)) {
-      form.value.address3 = data.bname
-    }
-
-    if (data.buildingName !== '' && data.apartment === 'Y') {
-      // 건물명이 있고, 공동주택일 경우 추가한다.
-      form.value.address3 +=
-        form.value.address3 !== ''
-          ? ', ' + data.buildingName
-          : data.buildingName
-    }
-    // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
-    if (form.value.address3 !== '') {
-      form.value.address3 = ' (' + form.value.address3 + ')'
-    }
-  }
-  form.value.address2 = ''
-  address2.value.$el.nextElementSibling.focus()
 }
 
 const onSubmit = (event: any) => {
@@ -90,13 +70,13 @@ const onSubmit = (event: any) => {
 const emit = defineEmits(['to-create', 'to-update', 'reset-form'])
 
 const modalAction = () => {
-  form.value.es_date = dateFormat(new Date(form.value.es_date))
-  form.value.op_date = dateFormat(new Date(form.value.op_date))
+  form.es_date = dateFormat(form.es_date)
+  form.op_date = dateFormat(form.op_date)
 
   if (props.update) {
-    emit('to-update', { ...{ pk: pk.value }, ...form.value })
+    emit('to-update', { ...{ pk: pk.value }, ...form })
   } else {
-    emit('to-create', form.value)
+    emit('to-create', form)
   }
   validated.value = false
   confirmModal.value.visible = false
@@ -112,22 +92,22 @@ const btnClass = computed(() => (props.update ? 'success' : 'primary'))
 
 const formsCheck = computed(() => {
   if (props.company) {
-    const a = form.value.name === props.company.name
-    const b = form.value.ceo === props.company.ceo
-    const c = form.value.tax_number === props.company.tax_number
-    const d = form.value.org_number === props.company.org_number
-    const e = form.value.business_cond === props.company.business_cond
-    const f = form.value.business_even === props.company.business_even
+    const a = form.name === props.company.name
+    const b = form.ceo === props.company.ceo
+    const c = form.tax_number === props.company.tax_number
+    const d = form.org_number === props.company.org_number
+    const e = form.business_cond === props.company.business_cond
+    const f = form.business_even === props.company.business_even
     const g =
-      new Date(form.value.es_date).toString() ===
+      new Date(form.es_date).toString() ===
       new Date(props.company.es_date).toString()
     const h =
-      new Date(form.value.op_date).toString() ===
+      new Date(form.op_date).toString() ===
       new Date(props.company.op_date).toString()
-    const i = form.value.zipcode === props.company.zipcode
-    const j = form.value.address1 === props.company.address1
-    const k = form.value.address2 === props.company.address2
-    const l = form.value.address3 === props.company.address3
+    const i = form.zipcode === props.company.zipcode
+    const j = form.address1 === props.company.address1
+    const k = form.address2 === props.company.address2
+    const l = form.address3 === props.company.address3
 
     return a && b && c && d && e && f && g && h && i && j && k && l
   } else return false
@@ -144,18 +124,18 @@ const writeAuth = computed(() => {
 onBeforeMount(() => {
   if (props.update && props.company) {
     pk.value = props.company.pk
-    form.value.name = props.company.name
-    form.value.ceo = props.company.ceo
-    form.value.tax_number = props.company.tax_number
-    form.value.org_number = props.company.org_number
-    form.value.business_cond = props.company.business_cond
-    form.value.business_even = props.company.business_even
-    form.value.es_date = new Date(props.company.es_date)
-    form.value.op_date = new Date(props.company.op_date)
-    form.value.zipcode = props.company.zipcode
-    form.value.address1 = props.company.address1
-    form.value.address2 = props.company.address2
-    form.value.address3 = props.company.address3
+    form.name = props.company.name
+    form.ceo = props.company.ceo
+    form.tax_number = props.company.tax_number
+    form.org_number = props.company.org_number
+    form.business_cond = props.company.business_cond
+    form.business_even = props.company.business_even
+    form.es_date = new Date(props.company.es_date)
+    form.op_date = new Date(props.company.op_date)
+    form.zipcode = props.company.zipcode
+    form.address1 = props.company.address1
+    form.address2 = props.company.address2
+    form.address3 = props.company.address3
   }
 })
 </script>
