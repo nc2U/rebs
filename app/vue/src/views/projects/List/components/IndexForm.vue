@@ -1,3 +1,205 @@
+<script lang="ts" setup>
+import { ref, reactive, computed, onBeforeMount, watch } from 'vue'
+import { useAccount } from '@/store/pinia/account'
+import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
+import AlertModal from '@/components/Modals/AlertModal.vue'
+import DaumPostcode from '@/components/DaumPostcode/index.vue'
+// import { addressCallback } from '@/components/DaumPostcode/address'
+
+const props = defineProps({
+  project: {
+    type: Object,
+  },
+  update: {
+    type: Boolean,
+    required: true,
+  },
+})
+
+const pk = ref('')
+const form = reactive({
+  name: '',
+  order: null,
+  kind: '',
+  start_year: '',
+  is_direct_manage: false,
+  is_returned_area: false,
+  is_unit_set: false,
+  local_zipcode: '',
+  local_address1: '',
+  local_address2: '',
+  local_address3: '',
+  area_usage: '',
+  build_size: '',
+  num_unit: null,
+  buy_land_extent: null,
+  scheme_land_extent: null,
+  donation_land_extent: null,
+  on_floor_area: null,
+  under_floor_area: null,
+  total_floor_area: null,
+  build_area: null,
+  floor_area_ratio: null,
+  build_to_land_ratio: null,
+  num_legal_parking: null,
+  num_planed_parking: null,
+})
+
+const sortOptins = [
+  { value: '1', label: '공동주택(아파트)' },
+  { value: '2', label: '공동주택(타운하우스)' },
+  { value: '3', label: '주상복합(아파트)' },
+  { value: '4', label: '주상복합(오피스텔)' },
+  { value: '5', label: '근린생활시설' },
+  { value: '6', label: '생활형숙박시설' },
+  { value: '7', label: '지식산업센터' },
+  { value: '8', label: '기타' },
+]
+
+const validated = ref(false)
+
+const accountStore = useAccount()
+const company = computed(() =>
+  props.update ? props.project?.company : accountStore.staffAuth?.company,
+)
+
+const confirmText = () => (props.update ? '변경' : '등록')
+const btnClass = () => (props.update ? 'success' : 'primary')
+
+const formsCheck = computed(() => {
+  if (props.update && props.project) {
+    const a = form.name === props.project.name
+    const b = form.order === props.project.order
+    const c = form.kind === props.project.kind
+    const d = form.start_year === props.project.start_year
+    const e = form.is_direct_manage === props.project.is_direct_manage
+    const f = form.is_returned_area === props.project.is_returned_area
+    const g = form.is_unit_set === props.project.is_unit_set
+    const h = form.local_zipcode === props.project.local_zipcode
+    const i = form.local_address1 === props.project.local_address1
+    const j = form.local_address2 === props.project.local_address2
+    const k = form.local_address3 === props.project.local_address3
+    const l = form.area_usage === props.project.area_usage
+    const m = form.build_size === props.project.build_size
+    const n = form.num_unit === props.project.num_unit
+    const o = form.buy_land_extent === props.project.buy_land_extent
+    const p = form.scheme_land_extent === props.project.scheme_land_extent
+    const q = form.donation_land_extent === props.project.donation_land_extent
+    const r = form.on_floor_area === props.project.on_floor_area
+    const s = form.under_floor_area === props.project.under_floor_area
+    const t = form.total_floor_area === props.project.total_floor_area
+    const u = form.build_area === props.project.build_area
+    const v = form.floor_area_ratio === props.project.floor_area_ratio
+    const w = form.build_to_land_ratio === props.project.build_to_land_ratio
+    const x = form.num_legal_parking === props.project.num_legal_parking
+    const y = form.num_planed_parking === props.project.num_planed_parking
+
+    const group1 = a && b && c && d && e && f && g && h
+    const group2 = i && j && k && l && m && n && o && p
+    const group3 = q && r && s && t && u && v && w && x && y
+
+    return group1 && group2 && group3
+  } else return false
+})
+
+const delModal = ref()
+const alertModal = ref()
+const confirmModal = ref()
+const address2 = ref()
+
+const onSubmit = (event: any) => {
+  if (accountStore.superAuth) {
+    const e = event.currentTarget
+    if (e.checkValidity() === false) {
+      event.preventDefault()
+      event.stopPropagation()
+      validated.value = true
+    } else {
+      confirmModal.value.callModal()
+    }
+  } else alertModal.value.callModal()
+}
+
+const emit = defineEmits(['to-create', 'to-update'])
+
+const modalAction = () => {
+  if (props.update) {
+    emit('to-update', { ...{ pk: pk.value, company: company.value }, ...form })
+  } else {
+    emit('to-create', { ...{ company: company.value }, ...form })
+  }
+  validated.value = false
+}
+
+const deleteProject = () => {
+  if (accountStore.superAuth) delModal.value.callModal()
+  else alertModal.value.callModal()
+}
+
+const addressCallback = (data: any) => {
+  form.local_zipcode = data.zonecode
+
+  if (data.userSelectedType === 'R') {
+    form.local_address1 = data.roadAddress // 사용자가 도로명 주소를 선택했을 경우
+  } else {
+    form.local_address1 = data.jibunAddress // 사용자가 지번 주소를 선택했을 경우(J)
+  }
+
+  if (data.userSelectedType === 'R') {
+    // 법정동명이 있을 경우 추가한다. (법정리는 제외), 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
+    if (data.bname !== '' && /[동|로|가]$/g.test(data.bname)) {
+      form.local_address3 = data.bname
+    }
+
+    if (data.buildingName !== '' && data.apartment === 'Y') {
+      // 건물명이 있고, 공동주택일 경우 추가한다.
+      form.local_address3 +=
+        form.local_address3 !== ''
+          ? ', ' + data.buildingName
+          : data.buildingName
+    }
+    // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
+    if (form.local_address3 !== '') {
+      form.local_address3 = ' (' + form.local_address3 + ')'
+    }
+  }
+
+  form.local_address2 = ''
+  address2.value.$el.nextElementSibling.focus()
+}
+
+onBeforeMount(() => {
+  if (props.update && props.project) {
+    pk.value = props.project.pk
+    form.name = props.project.name
+    form.order = props.project.order
+    form.kind = props.project.kind
+    form.start_year = props.project.start_year
+    form.is_direct_manage = props.project.is_direct_manage
+    form.is_returned_area = props.project.is_returned_area
+    form.is_unit_set = props.project.is_unit_set
+    form.local_zipcode = props.project.local_zipcode
+    form.local_address1 = props.project.local_address1
+    form.local_address2 = props.project.local_address2
+    form.local_address3 = props.project.local_address3
+    form.area_usage = props.project.area_usage
+    form.build_size = props.project.build_size
+    form.num_unit = props.project.num_unit
+    form.buy_land_extent = props.project.buy_land_extent
+    form.scheme_land_extent = props.project.scheme_land_extent
+    form.donation_land_extent = props.project.donation_land_extent
+    form.on_floor_area = props.project.on_floor_area
+    form.under_floor_area = props.project.under_floor_area
+    form.total_floor_area = props.project.total_floor_area
+    form.build_area = props.project.build_area
+    form.floor_area_ratio = props.project.floor_area_ratio
+    form.build_to_land_ratio = props.project.build_to_land_ratio
+    form.num_legal_parking = props.project.num_legal_parking
+    form.num_planed_parking = props.project.num_planed_parking
+  }
+})
+</script>
+
 <template>
   <CCard>
     <CForm
@@ -8,7 +210,7 @@
     >
       <CCardBody>
         <CRow class="mb-3">
-          <CFormLabel class="col-md-2 col-form-label"> 프로젝트명 </CFormLabel>
+          <CFormLabel class="col-md-2 col-form-label"> 프로젝트명</CFormLabel>
           <CCol md="10" lg="4" class="mb-md-3 mb-lg-0">
             <CFormInput
               v-model="form.name"
@@ -73,7 +275,7 @@
               label="직영운영여부"
               :checked="update && project.is_direct_manage"
             />
-            <CFormText class="text-secondary">
+            <CFormText class="text-grey">
               본사 직접 운영하는 프로젝트인 경우 체크, 즉 시행대행이나
               업무대행이 아닌 경우
             </CFormText>
@@ -89,7 +291,7 @@
               label="토지환지여부"
               :checked="update && project.is_returned_area"
             />
-            <CFormText class="text-secondary">
+            <CFormText class="text-grey">
               해당 사업부지가 환지방식 도시개발사업구역인 경우 체크
             </CFormText>
           </CCol>
@@ -104,7 +306,7 @@
               label="동호지정여부"
               :checked="update && project.is_unit_set"
             />
-            <CFormText class="text-secondary">
+            <CFormText class="text-grey">
               현재 동호수를 지정하지 않는 경우 체크하지 않음
             </CFormText>
           </CCol>
@@ -379,7 +581,7 @@
     </CForm>
   </CCard>
 
-  <DaumPostcode ref="postCode" @addressPut="addressPut" />
+  <DaumPostcode ref="postCode" @address-callback="addressCallback" />
 
   <ConfirmModal ref="delModal">
     <template #header>
@@ -407,192 +609,3 @@
 
   <AlertModal ref="alertModal" />
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
-import AlertModal from '@/components/Modals/AlertModal.vue'
-import DaumPostcode from '@/components/DaumPostcode/index.vue'
-import addressMixin from '@/components/DaumPostcode/addressMixin'
-import { mapGetters } from 'vuex'
-
-export default defineComponent({
-  name: 'IndexForm',
-  components: { ConfirmModal, AlertModal, DaumPostcode },
-  mixins: [addressMixin],
-  props: {
-    userInfo: {
-      type: Object,
-    },
-    project: {
-      type: Object,
-    },
-    update: {
-      type: Boolean,
-      required: true,
-    },
-  },
-  data() {
-    return {
-      pk: null,
-      form: {
-        name: '',
-        order: null,
-        kind: '',
-        start_year: '',
-        is_direct_manage: false,
-        is_returned_area: false,
-        is_unit_set: false,
-        local_zipcode: '',
-        local_address1: '',
-        local_address2: '',
-        local_address3: '',
-        area_usage: '',
-        build_size: '',
-        num_unit: null,
-        buy_land_extent: null,
-        scheme_land_extent: null,
-        donation_land_extent: null,
-        on_floor_area: null,
-        under_floor_area: null,
-        total_floor_area: null,
-        build_area: null,
-        floor_area_ratio: null,
-        build_to_land_ratio: null,
-        num_legal_parking: null,
-        num_planed_parking: null,
-      },
-      sortOptins: [
-        { value: '1', label: '공동주택(아파트)' },
-        { value: '2', label: '공동주택(타운하우스)' },
-        { value: '3', label: '주상복합(아파트)' },
-        { value: '4', label: '주상복합(오피스텔)' },
-        { value: '5', label: '근린생활시설' },
-        { value: '6', label: '생활형숙박시설' },
-        { value: '7', label: '지식산업센터' },
-        { value: '8', label: '기타' },
-      ],
-      validated: false,
-    }
-  },
-  created() {
-    if (this.update && this.project) {
-      this.pk = this.project.pk
-      this.form.name = this.project.name
-      this.form.order = this.project.order
-      this.form.kind = this.project.kind
-      this.form.start_year = this.project.start_year
-      this.form.is_direct_manage = this.project.is_direct_manage
-      this.form.is_returned_area = this.project.is_returned_area
-      this.form.is_unit_set = this.project.is_unit_set
-      this.form.local_zipcode = this.project.local_zipcode
-      this.form.local_address1 = this.project.local_address1
-      this.form.local_address2 = this.project.local_address2
-      this.form.local_address3 = this.project.local_address3
-      this.form.area_usage = this.project.area_usage
-      this.form.build_size = this.project.build_size
-      this.form.num_unit = this.project.num_unit
-      this.form.buy_land_extent = this.project.buy_land_extent
-      this.form.scheme_land_extent = this.project.scheme_land_extent
-      this.form.donation_land_extent = this.project.donation_land_extent
-      this.form.on_floor_area = this.project.on_floor_area
-      this.form.under_floor_area = this.project.under_floor_area
-      this.form.total_floor_area = this.project.total_floor_area
-      this.form.build_area = this.project.build_area
-      this.form.floor_area_ratio = this.project.floor_area_ratio
-      this.form.build_to_land_ratio = this.project.build_to_land_ratio
-      this.form.num_legal_parking = this.project.num_legal_parking
-      this.form.num_planed_parking = this.project.num_planed_parking
-    }
-  },
-  computed: {
-    company(this: any) {
-      return this.update
-        ? this.project.company
-        : this.userInfo.staffauth.company
-    },
-    confirmText() {
-      return this.update ? '변경' : '등록'
-    },
-    btnClass() {
-      return this.update ? 'success' : 'primary'
-    },
-    formsCheck(this: any) {
-      const a = this.form.name === this.project.name
-      const b = this.form.order === this.project.order
-      const c = this.form.kind === this.project.kind
-      const d = this.form.start_year === this.project.start_year
-      const e = this.form.is_direct_manage === this.project.is_direct_manage
-      const f = this.form.is_returned_area === this.project.is_returned_area
-      const g = this.form.is_unit_set === this.project.is_unit_set
-      const h = this.form.local_zipcode === this.project.local_zipcode
-      const i = this.form.local_address1 === this.project.local_address1
-      const j = this.form.local_address2 === this.project.local_address2
-      const k = this.form.local_address3 === this.project.local_address3
-      const l = this.form.area_usage === this.project.area_usage
-      const m = this.form.build_size === this.project.build_size
-      const n = this.form.num_unit === this.project.num_unit
-      const o = this.form.buy_land_extent === this.project.buy_land_extent
-      const p = this.form.scheme_land_extent === this.project.scheme_land_extent
-      const q =
-        this.form.donation_land_extent === this.project.donation_land_extent
-      const r = this.form.on_floor_area === this.project.on_floor_area
-      const s = this.form.under_floor_area === this.project.under_floor_area
-      const t = this.form.total_floor_area === this.project.total_floor_area
-      const u = this.form.build_area === this.project.build_area
-      const v = this.form.floor_area_ratio === this.project.floor_area_ratio
-      const w =
-        this.form.build_to_land_ratio === this.project.build_to_land_ratio
-      const x = this.form.num_legal_parking === this.project.num_legal_parking
-      const y = this.form.num_planed_parking === this.project.num_planed_parking
-
-      const group1 = a && b && c && d && e && f && g && h
-      const group2 = i && j && k && l && m && n && o && p
-      const group3 = q && r && s && t && u && v && w && x && y
-
-      return group1 && group2 && group3
-    },
-    ...mapGetters('accounts', ['staffAuth', 'superAuth']),
-  },
-  watch: {
-    zipcode(value) {
-      this.form.local_zipcode = value
-    },
-    address1(value) {
-      this.form.local_address1 = value
-    },
-    address3(value) {
-      this.form.local_address3 = value
-    },
-  },
-  methods: {
-    onSubmit(this: any, event: any) {
-      if (this.superAuth) {
-        const form = event.currentTarget
-        if (form.checkValidity() === false) {
-          event.preventDefault()
-          event.stopPropagation()
-
-          console.log(form.checkValidity())
-          this.validated = true
-        } else {
-          ;(this as any).$refs.confirmModal.callModal()
-        }
-      } else this.$refs.alertModal.callModal()
-    },
-    modalAction() {
-      const { pk, company } = this
-      if (this.update) {
-        this.$emit('to-update', { ...{ pk, company }, ...this.form })
-      } else {
-        this.$emit('to-create', { ...{ company }, ...this.form })
-      }
-      this.validated = false
-    },
-    deleteProject(this: any) {
-      if (this.superAuth) this.$refs.delModal.callModal()
-      else this.$refs.alertModal.callModal()
-    },
-  },
-})
-</script>

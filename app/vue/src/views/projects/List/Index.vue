@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue'
 import { useStore } from 'vuex'
-import { useAccount } from '@/store/pinia/account'
 import { useProject, Project } from '@/store/pinia/project'
 import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin1'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
@@ -13,10 +12,8 @@ const compName = ref('IndexDetail')
 const update = ref(false)
 
 const store = useStore()
-const accountStore = useAccount()
 const projectStore = useProject()
 
-const userInfo = computed(() => accountStore.userInfo)
 const project = computed(() => projectStore.project)
 
 watch(project, () => (compName.value = 'IndexDetail'))
@@ -62,7 +59,6 @@ const toUpdate = (payload: { pk: string } & Project) => updateProject(payload)
 
     <IndexForm
       v-if="compName === 'IndexForm'"
-      :user-info="userInfo"
       :project="project"
       :update="update"
       @to-create="toCreate"
