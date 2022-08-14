@@ -1,12 +1,9 @@
 <script lang="ts" setup>
 import HeaderNav from '@/components/HeaderNav.vue'
-import CompanySelect from '@/layouts/ContentHeader/CompanySelect/Index.vue'
-import ProjectSelect from '@/layouts/ContentHeader/ProjectSelect/Index.vue'
 import { useProject } from '@/store/pinia/project'
 import { useCompany } from '@/store/pinia/company'
-
-const companyStore = useCompany()
-const projectStore = useProject()
+import CompanySelect from '@/layouts/ContentHeader/CompanySelect/Index.vue'
+import ProjectSelect from '@/layouts/ContentHeader/ProjectSelect/Index.vue'
 
 defineProps({
   pageTitle: {
@@ -23,6 +20,9 @@ defineProps({
   },
 })
 const emit = defineEmits(['header-select'])
+
+const companyStore = useCompany()
+const projectStore = useProject()
 
 const comSelect = (com: string) => {
   if (!!com) companyStore.fetchCompany(com)
