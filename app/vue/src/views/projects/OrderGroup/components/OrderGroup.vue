@@ -1,3 +1,71 @@
+<script lang="ts" setup>
+import { ref, reactive, computed, onBeforeMount } from 'vue'
+import { useAccount } from '@/store/pinia/account'
+import { write_project } from '@/utils/pageAuth'
+import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
+import AlertModal from '@/components/Modals/AlertModal.vue'
+
+const props = defineProps({ order: { type: Object, default: null } })
+const emit = defineEmits(['on-update', 'on-delete'])
+
+const form = reactive({
+  order_number: null,
+  sort: '',
+  order_group_name: '',
+})
+
+const alertModal = ref()
+const confirmModal = ref()
+
+onBeforeMount(() => {
+  if (props.order) resetForm()
+})
+
+const formsCheck = computed(() => {
+  if (props.order) {
+    const a = form.order_number === props.order.order_number
+    const b = form.sort === props.order.sort
+    const c = form.order_group_name === props.order.order_group_name
+    return a && b && c
+  } else return false
+})
+
+const formCheck = (bool: boolean) => {
+  if (bool) onUpdateOrder()
+  return
+}
+
+const onUpdateOrder = () => {
+  if (write_project) {
+    const pk = props.order.pk
+    emit('on-update', { ...{ pk }, ...form })
+  } else {
+    alertModal.value.callModal()
+    resetForm()
+  }
+}
+
+const accStore = useAccount()
+const onDeleteOrder = () => {
+  if (accStore.superAuth) confirmModal.value.callModal()
+  else {
+    alertModal.value.callModal()
+    resetForm()
+  }
+}
+
+const modalAction = () => {
+  emit('on-delete', props.order.pk)
+  confirmModal.value.visible = false
+}
+
+const resetForm = () => {
+  form.order_number = props.order.order_number
+  form.sort = props.order.sort
+  form.order_group_name = props.order.order_group_name
+}
+</script>
+
 <template>
   <CTableRow>
     <CTableDataCell>
@@ -55,72 +123,3 @@
 
   <AlertModal ref="alertModal" />
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
-import AlertModal from '@/components/Modals/AlertModal.vue'
-import { mapGetters } from 'vuex'
-
-export default defineComponent({
-  name: 'OrderGroup',
-  components: { ConfirmModal, AlertModal },
-  props: ['order'],
-  data() {
-    return {
-      form: {
-        order_number: null,
-        sort: '',
-        order_group_name: '',
-      },
-      validated: false,
-    }
-  },
-  created() {
-    if (this.order) this.resetForm()
-  },
-  computed: {
-    formsCheck(this: any) {
-      const a = this.form.order_number === this.order.order_number
-      const b = this.form.sort === this.order.sort
-      const c = this.form.order_group_name === this.order.order_group_name
-      return a && b && c
-    },
-    ...mapGetters('accounts', ['staffAuth', 'superAuth']),
-  },
-  methods: {
-    formCheck(bool: boolean) {
-      if (bool) this.onUpdateOrder()
-      return
-    },
-    onUpdateOrder(this: any) {
-      if (
-        this.superAuth ||
-        (this.staffAuth && this.staffAuth.project === '2')
-      ) {
-        const pk = this.order.pk
-        this.$emit('on-update', { ...{ pk }, ...this.form })
-      } else {
-        this.$refs.alertModal.callModal()
-        this.resetForm()
-      }
-    },
-    onDeleteOrder(this: any) {
-      if (this.superAuth) this.$refs.confirmModal.callModal()
-      else {
-        this.$refs.alertModal.callModal()
-        this.resetForm()
-      }
-    },
-    modalAction(this: any) {
-      this.$emit('on-delete', this.order.pk)
-      this.$refs.confirmModal.visible = false
-    },
-    resetForm() {
-      this.form.order_number = this.order.order_number
-      this.form.sort = this.order.sort
-      this.form.order_group_name = this.order.order_group_name
-    },
-  },
-})
-</script>

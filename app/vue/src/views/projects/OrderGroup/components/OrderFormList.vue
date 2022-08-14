@@ -1,3 +1,18 @@
+<script lang="ts" setup>
+import { computed } from 'vue'
+import { useStore } from 'vuex'
+import OrderGroup from './OrderGroup.vue'
+import { headerSecondary } from '@/utils/cssMixins'
+
+const emit = defineEmits(['on-update', 'on-delete'])
+
+const store = useStore()
+const orderGroupList = computed(() => store.state.contract.orderGroupList)
+
+const onUpdateOrder = (payload: any) => emit('on-update', payload)
+const onDeleteOrder = (pk: number) => emit('on-delete', pk)
+</script>
+
 <template>
   <CTable hover responsive>
     <colgroup>
@@ -33,30 +48,3 @@
     </CTableBody>
   </CTable>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import OrderGroup from './OrderGroup.vue'
-import { headerSecondary } from '@/utils/cssMixins'
-import { mapState } from 'vuex'
-
-export default defineComponent({
-  name: 'OrderFormList',
-  components: { OrderGroup },
-  props: ['project'],
-  computed: {
-    headerSecondary() {
-      return headerSecondary.value
-    },
-    ...mapState('contract', ['orderGroupList']),
-  },
-  methods: {
-    onUpdateOrder(payload: any) {
-      this.$emit('on-update', payload)
-    },
-    onDeleteOrder(pk: number) {
-      this.$emit('on-delete', pk)
-    },
-  },
-})
-</script>

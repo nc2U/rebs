@@ -1,3 +1,51 @@
+<script lang="ts" setup>
+import { ref, reactive } from 'vue'
+import { write_project } from '@/utils/pageAuth'
+import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
+import AlertModal from '@/components/Modals/AlertModal.vue'
+
+defineProps({ disabled: Boolean })
+const emit = defineEmits(['on-submit'])
+
+const alertModal = ref()
+const confirmModal = ref()
+
+const validated = ref(false)
+const form = reactive({
+  order_number: null,
+  sort: '',
+  order_group_name: '',
+})
+
+const onSubmit = (event: any) => {
+  if (write_project) {
+    const e = event.currentTarget
+    if (e.checkValidity() === false) {
+      event.preventDefault()
+      event.stopPropagation()
+
+      validated.value = true
+    } else confirmModal.value.callModal()
+  } else {
+    alertModal.value.callModal()
+    resetForm()
+  }
+}
+
+const modalAction = () => {
+  emit('on-submit', form)
+  validated.value = false
+  confirmModal.value.visible = false
+  resetForm()
+}
+
+const resetForm = () => {
+  form.order_number = null
+  form.sort = ''
+  form.order_group_name = ''
+}
+</script>
+
 <template>
   <CForm
     novalidate
@@ -35,7 +83,9 @@
       </CCol>
 
       <CCol md="3" class="d-grid gap-2 d-lg-block mb-3">
-        <CButton color="primary" :disabled="disabled">그룹추가</CButton>
+        <CButton color="primary" type="submit" :disabled="disabled">
+          그룹추가
+        </CButton>
       </CCol>
     </CRow>
   </CForm>
@@ -55,63 +105,3 @@
 
   <AlertModal ref="alertModal" />
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
-import AlertModal from '@/components/Modals/AlertModal.vue'
-import { mapGetters } from 'vuex'
-
-export default defineComponent({
-  name: 'OrderAddForm',
-  components: { ConfirmModal, AlertModal },
-  props: {
-    disabled: Boolean,
-  },
-  data() {
-    return {
-      form: {
-        order_number: null,
-        sort: '',
-        order_group_name: '',
-      },
-      validated: false,
-    }
-  },
-  computed: {
-    ...mapGetters('accounts', ['staffAuth', 'superAuth']),
-  },
-  methods: {
-    onSubmit(this: any, event: any) {
-      if (
-        this.superAuth ||
-        (this.staffAuth && this.staffAuth.project === '2')
-      ) {
-        const form = event.currentTarget
-        if (form.checkValidity() === false) {
-          event.preventDefault()
-          event.stopPropagation()
-
-          this.validated = true
-        } else {
-          this.$refs.confirmModal.callModal()
-        }
-      } else {
-        this.$refs.alertModal.callModal()
-        this.resetForm()
-      }
-    },
-    modalAction(this: any) {
-      this.$emit('on-submit', this.form)
-      this.validated = false
-      this.$refs.confirmModal.visible = false
-      this.resetForm()
-    },
-    resetForm() {
-      this.form.order_number = null
-      this.form.sort = ''
-      this.form.order_group_name = ''
-    },
-  },
-})
-</script>
