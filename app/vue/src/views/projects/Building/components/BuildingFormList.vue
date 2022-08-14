@@ -1,3 +1,19 @@
+<script lang="ts" setup>
+import { computed } from 'vue'
+import { useStore } from 'vuex'
+import Building from '@/views/projects/Building/components/Building.vue'
+import { headerSecondary } from '@/utils/cssMixins'
+
+const emit = defineEmits(['on-update', 'on-delete'])
+
+const store = useStore()
+const buildingList = computed(() => store.state.project.buildingList)
+
+const onUpdateBuilding = (payload: any) => emit('on-update', payload)
+
+const onDeleteBuilding = (pk: number) => emit('on-delete', pk)
+</script>
+
 <template>
   <CTable hover responsive>
     <colgroup>
@@ -29,30 +45,3 @@
     </CTableBody>
   </CTable>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import Building from '@/views/projects/Building/components/Building.vue'
-import { headerSecondary } from '@/utils/cssMixins'
-import { mapState } from 'vuex'
-
-export default defineComponent({
-  name: 'BuildingFormList',
-  components: { Building },
-  props: ['project'],
-  computed: {
-    headerSecondary() {
-      return headerSecondary.value
-    },
-    ...mapState('project', ['buildingList']),
-  },
-  methods: {
-    onUpdateBuilding(payload: any) {
-      this.$emit('on-update', payload)
-    },
-    onDeleteBuilding(pk: number) {
-      this.$emit('on-delete', pk)
-    },
-  },
-})
-</script>

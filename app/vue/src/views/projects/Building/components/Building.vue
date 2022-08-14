@@ -1,3 +1,55 @@
+<script lang="ts" setup>
+import { ref, reactive, computed, onBeforeMount } from 'vue'
+import { useAccount } from '@/store/pinia/account'
+import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
+import AlertModal from '@/components/Modals/AlertModal.vue'
+import { write_project } from '@/utils/pageAuth'
+
+const props = defineProps({ building: { type: Object, default: null } })
+const emit = defineEmits(['on-update', 'on-delete'])
+
+const alertModal = ref()
+const confirmModal = ref()
+
+const form = reactive({ name: '' })
+
+const formsCheck = computed(() => {
+  const a = form.name === props.building.name
+  return a
+})
+
+onBeforeMount(() => {
+  if (props.building) resetForm()
+})
+const formCheck = (bool: boolean) => {
+  if (bool) onUpdateBuilding()
+  return
+}
+const onUpdateBuilding = () => {
+  if (write_project) {
+    const pk = props.building.pk
+    emit('on-update', { ...{ pk }, ...form })
+  } else {
+    alertModal.value.callModal()
+    resetForm()
+  }
+}
+const onDeleteBuilding = () => {
+  if (useAccount().superAuth) confirmModal.value.callModal()
+  else {
+    alertModal.value.callModal()
+    resetForm()
+  }
+}
+const modalAction = () => {
+  emit('on-delete', props.building.pk)
+  confirmModal.value.visible = false
+}
+const resetForm = () => {
+  form.name = props.building.name
+}
+</script>
+
 <template>
   <CTableRow>
     <CTableDataCell>
@@ -36,66 +88,3 @@
 
   <AlertModal ref="alertModal" />
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
-import AlertModal from '@/components/Modals/AlertModal.vue'
-import { mapGetters } from 'vuex'
-
-export default defineComponent({
-  name: 'Building',
-  components: { ConfirmModal, AlertModal },
-  props: { building: { type: Object, default: null } },
-  data() {
-    return {
-      form: {
-        name: '',
-      },
-      validated: false,
-    }
-  },
-  computed: {
-    formsCheck(this: any) {
-      const a = this.form.name === this.building.name
-      return a
-    },
-    ...mapGetters('accounts', ['staffAuth', 'superAuth']),
-  },
-  created() {
-    if (this.building) this.resetForm()
-  },
-  methods: {
-    formCheck(bool: boolean) {
-      if (bool) this.onUpdateBuilding()
-      return
-    },
-    onUpdateBuilding(this: any) {
-      if (
-        this.superAuth ||
-        (this.staffAuth && this.staffAuth.project === '2')
-      ) {
-        const pk = this.building.pk
-        this.$emit('on-update', { ...{ pk }, ...this.form })
-      } else {
-        this.$refs.alertModal.callModal()
-        this.resetForm()
-      }
-    },
-    onDeleteBuilding(this: any) {
-      if (this.superAuth) this.$refs.confirmModal.callModal()
-      else {
-        this.$refs.alertModal.callModal()
-        this.resetForm()
-      }
-    },
-    modalAction(this: any) {
-      this.$emit('on-delete', this.building.pk)
-      this.$refs.confirmModal.visible = false
-    },
-    resetForm() {
-      this.form.name = this.building.name
-    },
-  },
-})
-</script>

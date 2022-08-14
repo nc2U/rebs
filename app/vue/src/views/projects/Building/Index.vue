@@ -1,3 +1,44 @@
+<script lang="ts" setup>
+import { computed, onBeforeMount } from 'vue'
+import { useStore } from 'vuex'
+import { useProject } from '@/store/pinia/project'
+import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin2'
+import ContentHeader from '@/layouts/ContentHeader/Index.vue'
+import ContentBody from '@/layouts/ContentBody/Index.vue'
+import BuildingAddForm from '@/views/projects/Building/components/BuildingAddForm.vue'
+import BuildingFormList from '@/views/projects/Building/components/BuildingFormList.vue'
+
+const store = useStore()
+const projectStore = useProject()
+
+const project = computed(() => projectStore.project?.pk)
+const initProjId = computed(() => projectStore.initProjId)
+
+const fetchBuildingList = (projId: number) =>
+  store.dispatch('project/fetchBuildingList', projId)
+const createBuilding = (payload: any) =>
+  store.dispatch('project/createBuilding', payload)
+const updateBuilding = (payload: any) =>
+  store.dispatch('project/updateBuilding', payload)
+const deleteBuilding = (payload: any) =>
+  store.dispatch('project/deleteBuilding', payload)
+
+onBeforeMount(() => fetchBuildingList(initProjId.value))
+
+const onSelectAdd = (target: any) => {
+  if (target !== '') fetchBuildingList(target)
+  else store.commit('project/updateState', { buildingList: [] })
+}
+const onSubmit = (payload: any) =>
+  createBuilding({ ...{ project: project.value }, ...payload })
+
+const onUpdateBuilding = (payload: any) =>
+  updateBuilding({ ...{ project: project.value }, ...payload })
+
+const onDeleteBuilding = (pk: number) =>
+  deleteBuilding({ ...{ pk }, ...{ project: project.value } })
+</script>
+
 <template>
   <ContentHeader
     :page-title="pageTitle"
@@ -9,7 +50,6 @@
     <CCardBody class="pb-5">
       <BuildingAddForm :disabled="!project" @on-submit="onSubmit" />
       <BuildingFormList
-        :project="project"
         @on-update="onUpdateBuilding"
         @on-delete="onDeleteBuilding"
       />
@@ -18,55 +58,3 @@
     <CCardFooter>&nbsp;</CCardFooter>
   </ContentBody>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import HeaderMixin from '@/views/projects/_menu/headermixin2'
-import ContentHeader from '@/layouts/ContentHeader/Index.vue'
-import ContentBody from '@/layouts/ContentBody/Index.vue'
-import BuildingAddForm from '@/views/projects/Building/components/BuildingAddForm.vue'
-import BuildingFormList from '@/views/projects/Building/components/BuildingFormList.vue'
-import { mapActions, mapGetters, mapState } from 'vuex'
-
-export default defineComponent({
-  name: 'BuildingIndex',
-  components: {
-    ContentHeader,
-    ContentBody,
-    BuildingAddForm,
-    BuildingFormList,
-  },
-  mixins: [HeaderMixin],
-  created() {
-    this.fetchBuildingList(this.initProjId)
-  },
-  computed: {
-    ...mapState('project', ['project']),
-    ...mapGetters('accounts', ['initProjId']),
-  },
-  methods: {
-    onSelectAdd(this: any, target: any) {
-      if (target !== '') this.fetchBuildingList(target)
-      else this.$store.state.project.buildingList = []
-    },
-    onSubmit(payload: any) {
-      const project = this.project.pk
-      this.createBuilding({ ...{ project }, ...payload })
-    },
-    onUpdateBuilding(payload: any) {
-      const project = this.project.pk
-      this.updateBuilding({ ...{ project }, ...payload })
-    },
-    onDeleteBuilding(pk: number) {
-      const project = this.project.pk
-      this.deleteBuilding({ ...{ pk }, ...{ project } })
-    },
-    ...mapActions('project', [
-      'fetchBuildingList',
-      'createBuilding',
-      'updateBuilding',
-      'deleteBuilding',
-    ]),
-  },
-})
-</script>
