@@ -10,9 +10,9 @@ const props = defineProps({ project: { type: Object, default: null } })
 const projSelectList = computed(() => projectStore.projSelect)
 const initProjId = computed(() => projectStore.initProjId)
 
-const emit = defineEmits(['header-select'])
+const emit = defineEmits(['proj-select'])
 const projSelect = (event: any) => {
-  nextTick(() => emit('header-select', event.target.value))
+  nextTick(() => emit('proj-select', event.target.value))
 }
 
 onBeforeMount(() => {
