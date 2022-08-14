@@ -1,3 +1,18 @@
+<script lang="ts" setup>
+import { ref, watch } from 'vue'
+import { dateFormat } from '@/utils/baseMixins'
+import DatePicker from '@/components/DatePicker/index.vue'
+
+const emit = defineEmits(['set-date'])
+
+const date = ref(new Date())
+watch(date, val => {
+  if (val === null) date.value = new Date()
+  setDate()
+})
+const setDate = () => emit('set-date', dateFormat(date.value))
+</script>
+
 <template>
   <CCallout color="primary">
     <CRow>
@@ -8,29 +23,3 @@
     </CRow>
   </CCallout>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import DatePicker from '@/components/DatePicker/index.vue'
-
-export default defineComponent({
-  name: 'DateChoicer',
-  components: { DatePicker },
-  data() {
-    return {
-      date: new Date(),
-    }
-  },
-  watch: {
-    date(val) {
-      if (val === null) this.date = new Date()
-      this.setDate()
-    },
-  },
-  methods: {
-    setDate(this: any) {
-      this.$emit('set-date', this.dateFormat(this.date))
-    },
-  },
-})
-</script>

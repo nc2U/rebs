@@ -1,3 +1,55 @@
+<script lang="ts" setup>
+import { computed, onBeforeMount, ref, watch, Ref } from 'vue'
+import { useStore } from 'vuex'
+import { headerSecondary } from '@/utils/cssMixins'
+
+defineProps({ date: { type: String, default: '' } })
+
+const dateIncSet: Ref<Array<number> | null> = ref(null)
+const dateOutSet: Ref<Array<number> | null> = ref(null)
+const dateIncTotal = ref(0)
+const dateOutTotal = ref(0)
+
+const store = useStore()
+
+const listAccD1List = computed(() => store.state.comCash.listAccD1List)
+const listAccD2List = computed(() => store.state.comCash.listAccD2List)
+const listAccD3List = computed(() => store.state.comCash.listAccD3List)
+const comBankList = computed(() => store.state.comCash.comBankList)
+const dateCashBook = computed(() => store.state.comCash.dateCashBook)
+
+const getDAccText = (num: number, acc: any) => {
+  return acc.filter((d: any) => d.pk === num).map((d: any) => d.name)[0]
+}
+
+const getBankAcc = (num: number) => {
+  return comBankList.value
+    .filter((b: any) => b.pk === num)
+    .map((b: any) => b.alias_name)[0]
+}
+const setData = () => {
+  dateIncSet.value = dateCashBook.value.filter(
+    (i: any) => i.income > 0 && !i.outlay,
+  )
+  dateOutSet.value = dateCashBook.value.filter(
+    (o: any) => o.outlay > 0 && !o.income,
+  )
+  dateIncTotal.value = dateIncSet.value
+    ? dateIncSet.value
+        .map((i: any) => i.income)
+        .reduce((x: number, y: number) => x + y, 0)
+    : null
+  dateOutTotal.value = dateOutSet.value
+    ? dateOutSet.value
+        .map((o: any) => o.outlay)
+        .reduce((x: number, y: number) => x + y, 0)
+    : null
+}
+
+watch(dateCashBook, () => setData())
+onBeforeMount(() => setData())
+</script>
+
 <template>
   <CTable hover responsive bordered align="middle">
     <colgroup>
@@ -148,66 +200,3 @@
     </CTableBody>
   </CTable>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import { headerSecondary } from '@/utils/cssMixins'
-import { mapState } from 'vuex'
-
-export default defineComponent({
-  name: 'CashListByDate',
-  props: { date: { type: String, default: '' } },
-  data() {
-    return {
-      dateIncSet: null,
-      dateOutSet: null,
-      dateIncTotal: 0,
-      dateOutTotal: 0,
-    }
-  },
-  computed: {
-    headerSecondary() {
-      return headerSecondary.value
-    },
-    ...mapState('comCash', [
-      'listAccD1List',
-      'listAccD2List',
-      'listAccD3List',
-      'comBankList',
-      'dateCashBook',
-    ]),
-  },
-  watch: {
-    dateCashBook() {
-      this.setData()
-    },
-  },
-  created(this: any) {
-    this.setData()
-  },
-  methods: {
-    getDAccText(num: number, acc: any) {
-      return acc.filter((d: any) => d.pk === num).map((d: any) => d.name)[0]
-    },
-    getBankAcc(num: number) {
-      return this.comBankList
-        .filter((b: any) => b.pk === num)
-        .map((b: any) => b.alias_name)[0]
-    },
-    setData(this: any) {
-      this.dateIncSet = this.dateCashBook.filter(
-        (i: any) => i.income > 0 && !i.outlay,
-      )
-      this.dateOutSet = this.dateCashBook.filter(
-        (o: any) => o.outlay > 0 && !o.income,
-      )
-      this.dateIncTotal = this.dateIncSet
-        .map((i: any) => i.income)
-        .reduce((x: number, y: number) => x + y, 0)
-      this.dateOutTotal = this.dateOutSet
-        .map((o: any) => o.outlay)
-        .reduce((x: number, y: number) => x + y, 0)
-    },
-  },
-})
-</script>
