@@ -1,3 +1,30 @@
+<script lang="ts" setup>
+import { computed } from 'vue'
+import { useStore } from 'vuex'
+import Cashes from '@/views/comCash/Manage/components/Cashes.vue'
+import Pagination from '@/components/Pagination'
+import AlertModal from '@/components/Modals/AlertModal.vue'
+import { headerSecondary } from '@/utils/cssMixins'
+
+defineProps({ company: { type: Object, default: null } })
+
+const emit = defineEmits(['page-select', 'on-update', 'on-delete'])
+
+const store = useStore()
+
+const cashesPages = computed(() => store.getters['comCash/cashesPages'])
+const getCashLogs = computed(() => store.getters['comCash/getCashLogs'])
+const listAccD1List = computed(() => store.state.comCash.listAccD1List)
+const listAccD2List = computed(() => store.state.comCash.listAccD2List)
+const listAccD3List = computed(() => store.state.comCash.listAccD3List)
+
+const pageSelect = (page: number) => emit('page-select', page)
+
+const onUpdate = (payload: any) => emit('on-update', payload)
+
+const onDelete = (pk: number) => emit('on-delete', pk)
+</script>
+
 <template>
   <CTable hover responsive align="middle">
     <colgroup>
@@ -98,36 +125,3 @@
     <template #footer></template>
   </AlertModal>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import Cashes from '@/views/comCash/Manage/components/Cashes.vue'
-import Pagination from '@/components/Pagination'
-import AlertModal from '@/components/Modals/AlertModal.vue'
-import { headerSecondary } from '@/utils/cssMixins'
-import { mapGetters, mapState } from 'vuex'
-
-export default defineComponent({
-  name: 'CashesList',
-  components: { Cashes, Pagination, AlertModal },
-  props: { company: Object },
-  computed: {
-    headerSecondary() {
-      return headerSecondary.value
-    },
-    ...mapGetters('comCash', ['cashesPages', 'getCashLogs']),
-    ...mapState('comCash', ['listAccD1List', 'listAccD2List', 'listAccD3List']),
-  },
-  methods: {
-    pageSelect(page: number) {
-      this.$emit('page-select', page)
-    },
-    onUpdate(payload: any) {
-      this.$emit('on-update', payload)
-    },
-    onDelete(pk: number) {
-      this.$emit('on-delete', pk)
-    },
-  },
-})
-</script>
