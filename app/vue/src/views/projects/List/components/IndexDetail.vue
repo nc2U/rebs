@@ -11,10 +11,6 @@ defineProps({
     type: Object,
     required: true,
   },
-  userInfo: {
-    type: Object,
-    required: true,
-  },
 })
 
 const emit = defineEmits(['create-form', 'update-form'])

@@ -54,16 +54,19 @@ const toUpdate = (payload: { pk: string } & Project) => updateProject(payload)
   <ContentBody>
     <IndexDetail
       v-if="compName === 'IndexDetail'"
-      :user-info="userInfo"
       :project="project"
-      :update="update"
-      @to-create="toCreate"
-      @to-update="toUpdate"
       @reset-form="resetForm"
       @create-form="createForm"
       @update-form="updateForm"
     />
 
-    <IndexForm v-if="compName === 'IndexForm'" />
+    <IndexForm
+      v-if="compName === 'IndexForm'"
+      :user-info="userInfo"
+      :project="project"
+      :update="update"
+      @to-create="toCreate"
+      @to-update="toUpdate"
+    />
   </ContentBody>
 </template>
