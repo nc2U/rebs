@@ -29,22 +29,6 @@ const companyStore = useCompany()
 const initComId = computed(() => companyStore.initComId.toString())
 const company = computed(() => companyStore.company)
 
-//     ...mapActions('settings', ['fetchCompany']),
-//     ...mapActions('comCash', [
-//       'fetchAccSortList',
-//       'fetchAllAccD1List',
-//       'fetchAllAccD2List',
-//       'fetchAllAccD3List',
-//       'fetchFormAccD1List',
-//       'fetchFormAccD2List',
-//       'fetchFormAccD3List',
-//       'fetchComBankAccList',
-//       'fetchCashBookList',
-//       'createCashBook',
-//       'updateCashBook',
-//       'deleteCashBook',
-//     ]),
-
 const fetchCompany = (pk: string) => companyStore.fetchCompany(pk)
 const fetchAccSortList = () => store.dispatch('comCash/fetchAccSortList')
 const fetchAllAccD1List = () => store.dispatch('comCash/fetchAllAccD1List')
