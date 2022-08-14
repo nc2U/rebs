@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, ref, shallowRef, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/settings/_menu/headermixin'
-import { useCompany } from '@/store/pinia/company'
+import { useCompany, Company } from '@/store/pinia/company'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import CompanyForm from './components/CompanyForm.vue'
@@ -17,9 +17,10 @@ const company = computed(() => companyStore.company)
 
 watch(company, () => (compName.value = 'CompanyDetail'))
 
-const createCompany = (payload: any) => companyStore.createCompany(payload)
+const createCompany = (payload: Company) => companyStore.createCompany(payload)
 
-const updateCompany = (payload: any) => companyStore.updateCompany(payload)
+const updateCompany = (payload: { pk: string } & Company) =>
+  companyStore.updateCompany(payload)
 
 const createForm = () => {
   update.value = false
@@ -36,11 +37,11 @@ const resetForm = () => {
   compName.value = 'CompanyDetail'
 }
 
-const toCreate = (payload: any) => {
+const toCreate = (payload: Company) => {
   createCompany(payload)
 }
 
-const toUpdate = (payload: any) => {
+const toUpdate = (payload: { pk: string } & Company) => {
   updateCompany(payload)
 }
 </script>
