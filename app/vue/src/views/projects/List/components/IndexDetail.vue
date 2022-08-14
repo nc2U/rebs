@@ -1,3 +1,36 @@
+<script lang="ts" setup>
+import { ref } from 'vue'
+import { write_project } from '@/utils/pageAuth'
+import { headerSecondary } from '@/utils/cssMixins'
+import { numFormat } from '@/utils/baseMixins'
+import { areaM2PyFormat, ratioFormat } from '@/utils/areaMixins'
+import AlertModal from '@/components/Modals/AlertModal.vue'
+
+defineProps({
+  project: {
+    type: Object,
+    required: true,
+  },
+  userInfo: {
+    type: Object,
+    required: true,
+  },
+})
+
+const emit = defineEmits(['create-form', 'update-form'])
+
+const alertModal = ref()
+
+const toCreate = () => {
+  if (write_project) emit('create-form')
+  else alertModal.value.callModal()
+}
+const toUpdate = () => {
+  if (write_project) emit('update-form')
+  else alertModal.value.callModal()
+}
+</script>
+
 <template>
   <CCard>
     <CCardBody>
@@ -208,45 +241,3 @@
 
   <AlertModal ref="alertModal" />
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import commonMixin from '@/mixins/commonMixin'
-import AlertModal from '@/components/Modals/AlertModal.vue'
-import { headerSecondary } from '@/utils/cssMixins'
-import { mapGetters } from 'vuex'
-
-export default defineComponent({
-  name: 'ProjectDetail',
-  components: { AlertModal },
-  mixins: [commonMixin],
-  props: {
-    project: {
-      type: Object,
-      required: true,
-    },
-    userInfo: {
-      type: Object,
-      required: true,
-    },
-  },
-  computed: {
-    headerSecondary() {
-      return headerSecondary.value
-    },
-    ...mapGetters('accounts', ['staffAuth', 'superAuth']),
-  },
-  methods: {
-    toCreate(this: any) {
-      if (this.superAuth || (this.staffAuth && this.staffAuth.project === '2'))
-        this.$emit('create-form')
-      else this.$refs.alertModal.callModal()
-    },
-    toUpdate(this: any) {
-      if (this.superAuth || (this.staffAuth && this.staffAuth.project === '2'))
-        this.$emit('update-form')
-      else this.$refs.alertModal.callModal()
-    },
-  },
-})
-</script>
