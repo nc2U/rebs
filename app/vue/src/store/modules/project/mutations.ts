@@ -7,7 +7,8 @@ import {
   FETCH_HOUSE_UNIT_LIST,
   FETCH_NUM_UNIT_BY_TYPE,
 } from '@/store/modules/project/mutations-types'
-import { Project, ProjectState } from '@/store/modules/project/state'
+import { Project } from '@/store/pinia/project'
+import { ProjectState } from '@/store/modules/project/state'
 
 const mutations = {
   updateState: (state: ProjectState, payload: any) => {

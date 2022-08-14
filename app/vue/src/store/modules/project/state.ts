@@ -1,35 +1,5 @@
 import { State } from '@/store'
-
-export interface Project {
-  pk: number
-  company: number
-  name: string
-  order: number | null
-  kind: string
-  kind_desc: string
-  start_year: string
-  is_direct_manage: boolean
-  is_returned_area: boolean
-  is_unit_set: boolean
-  local_zipcode: string | null
-  local_address1: string | null
-  local_address2: string | null
-  local_address3: string | null
-  area_usage: string | null
-  build_size: string | null
-  num_unit: number | null
-  buy_land_extent: number | null
-  scheme_land_extent: number | null
-  donation_land_extent: number | null
-  on_floor_area: number | null
-  under_floor_area: number | null
-  total_floor_area: number | null
-  build_area: number | null
-  floor_area_ratio: number | null
-  build_to_land_ratio: number | null
-  num_legal_parking: number | null
-  num_planed_parking: number | null
-}
+import { Project } from '@/store/pinia/project'
 
 interface UnitType {
   pk: number
