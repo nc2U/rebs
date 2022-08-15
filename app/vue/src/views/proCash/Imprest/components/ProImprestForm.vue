@@ -547,6 +547,7 @@ export default defineComponent({
       required: true,
     },
   },
+  emits: ['multi-submit', 'on-delete', 'close'],
   setup(props) {
     const sepPk = ref(null)
     let sepItem = reactive({
@@ -607,25 +608,6 @@ export default defineComponent({
       validated: false,
     }
   },
-  created() {
-    if (this.imprest) {
-      this.form.project = this.imprest.project
-      this.form.sort = this.imprest.sort
-      this.form.project_account_d1 = this.imprest.project_account_d1
-      this.form.project_account_d2 = this.imprest.project_account_d2
-      this.form.content = this.imprest.content
-      this.form.trader = this.imprest.trader
-      this.form.bank_account = this.imprest.bank_account
-      this.form.income = this.imprest.income
-      this.form.outlay = this.imprest.outlay
-      this.form.evidence = this.imprest.evidence
-      this.form.note = this.imprest.note
-      this.form.deal_date = new Date(this.imprest.deal_date)
-      this.form.is_separate = this.imprest.is_separate
-      this.form.separated = this.imprest.separated
-    }
-    this.callAccount()
-  },
   computed: {
     requireItem() {
       return (
@@ -685,6 +667,25 @@ export default defineComponent({
     ...mapState('proCash', ['formAccD1List', 'formAccD2List']),
     ...mapGetters('proCash', ['imprestBAccount']),
     ...mapGetters('accounts', ['staffAuth', 'superAuth']),
+  },
+  created() {
+    if (this.imprest) {
+      this.form.project = this.imprest.project
+      this.form.sort = this.imprest.sort
+      this.form.project_account_d1 = this.imprest.project_account_d1
+      this.form.project_account_d2 = this.imprest.project_account_d2
+      this.form.content = this.imprest.content
+      this.form.trader = this.imprest.trader
+      this.form.bank_account = this.imprest.bank_account
+      this.form.income = this.imprest.income
+      this.form.outlay = this.imprest.outlay
+      this.form.evidence = this.imprest.evidence
+      this.form.note = this.imprest.note
+      this.form.deal_date = new Date(this.imprest.deal_date)
+      this.form.is_separate = this.imprest.is_separate
+      this.form.separated = this.imprest.separated
+    }
+    this.callAccount()
   },
   methods: {
     sort_change(event: any) {
