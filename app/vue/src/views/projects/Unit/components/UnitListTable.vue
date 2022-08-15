@@ -1,3 +1,21 @@
+<script lang="ts" setup>
+import { computed } from 'vue'
+import { useStore } from 'vuex'
+import Unit from '@/views/projects/Unit/components/Unit.vue'
+
+defineProps({ bldgName: { type: String, default: '' } })
+
+const store = useStore()
+
+const maxFloor = computed(() =>
+  Math.max(...simpleUnits.value.map((u: any) => u.floor)),
+)
+const simpleUnits = computed(() => store.getters['project/simpleUnits'])
+const lineList = computed(() =>
+  [...new Set(simpleUnits.value.map((u: any) => u.line))].sort(),
+)
+</script>
+
 <template>
   <CContainer>
     <CRow v-if="simpleUnits.length === 0">
@@ -31,27 +49,6 @@
     </CRow>
   </CContainer>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import Unit from '@/views/projects/Unit/components/Unit.vue'
-import { mapGetters } from 'vuex'
-
-export default defineComponent({
-  name: 'UnitListTable',
-  components: { Unit },
-  props: ['bldgName'],
-  computed: {
-    maxFloor(this: any) {
-      return Math.max(...this.simpleUnits.map((u: any) => u.floor))
-    },
-    lineList(this: any) {
-      return [...new Set(this.simpleUnits.map((u: any) => u.line))].sort()
-    },
-    ...mapGetters('project', ['simpleUnits']),
-  },
-})
-</script>
 
 <style lang="scss" scoped>
 .build-base {

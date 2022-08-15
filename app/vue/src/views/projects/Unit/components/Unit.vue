@@ -1,3 +1,22 @@
+<script lang="ts" setup>
+import { computed } from 'vue'
+
+const props = defineProps({
+  units: { type: Array, default: [] },
+  floor: { type: Number, default: null },
+  line: { type: Number, default: null },
+})
+
+const unit = computed<any>(
+  () =>
+    props.units
+      .filter((u: any) => u.line == props.line)
+      .filter((u: any) => u.floor == props.floor)[0],
+)
+const isBuild = computed(() => unit.value || props.floor < 3)
+const color = computed(() => (unit.value ? unit.value.color : '#999'))
+</script>
+
 <template>
   <div
     v-if="isBuild"
@@ -12,31 +31,6 @@
     <span v-if="unit">{{ unit.name }}</span>
   </div>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-
-export default defineComponent({
-  name: 'Unit',
-  props: { units: Array, floor: Number, line: Number },
-  setup() {
-    return {}
-  },
-  computed: {
-    unit(this: any) {
-      return this.units
-        .filter((u: any) => u.line == this.line)
-        .filter((u: any) => u.floor == this.floor)[0]
-    },
-    isBuild(this: any) {
-      return this.unit || this.floor < 3
-    },
-    color() {
-      return this.unit ? this.unit.color : '#999'
-    },
-  },
-})
-</script>
 
 <style lang="scss" scoped>
 .unit {

@@ -1,3 +1,128 @@
+<script lang="ts" setup>
+import { computed, reactive, ref, watch } from 'vue'
+import { useStore } from 'vuex'
+import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
+import AlertModal from '@/components/Modals/AlertModal.vue'
+import project from '@/store/modules/project'
+import { write_project } from '@/utils/pageAuth'
+
+const props = defineProps({
+  project: {
+    type: Number,
+    required: true,
+  },
+})
+
+const bldgName = ref('')
+const typeName = ref('')
+const form = reactive({
+  building: '',
+  line: '',
+  type: '',
+  minFloor: '',
+  maxFloor: '',
+})
+
+const warning = computed(() => form.maxFloor !== '')
+const typeNameLength = computed(() => {
+  const typeNames = unitTypeList.value
+    .map((t: any) => t.name)
+    .map((t: any) => t.replace(/[^0-9a-zA-Z]/g, ''))
+    .map((t: any) => t.length)
+  return Math.max.apply({}, typeNames)
+})
+
+const typeMaxUnits = computed(() =>
+  Math.max.apply(
+    {},
+    unitTypeList.value.map((t: any) => t.num_unit),
+  ),
+)
+
+const store = useStore()
+const unitTypeList = computed(() => store.state.project.unitTypeList)
+const buildingList = computed(() => store.state.project.buildingList)
+const simpleFloors = computed(() => store.getters['project/simpleFloors'])
+
+const fetchNumUnitByType = (payload: any) =>
+  store.dispatch('project/fetchNumUnitByType', payload)
+
+watch(project, () => {
+  form.building = ''
+  form.type = ''
+})
+
+watch(form, val => {
+  if (val.building == '') reset(1)
+  else if (val.line == '') reset(2)
+  else if (val.type == '') reset(3)
+  else if (val.minFloor == '') reset(4)
+})
+
+const reset = (n: number) => {
+  if (n == 1) {
+    form.line = ''
+    form.type = ''
+    form.minFloor = ''
+    form.maxFloor = ''
+  } else if (n == 2) {
+    form.type = ''
+    form.minFloor = ''
+    form.maxFloor = ''
+  } else if (n == 3) {
+    form.minFloor = ''
+    form.maxFloor = ''
+  } else {
+    form.maxFloor = ''
+  }
+}
+const emit = defineEmits(['bldg-select', 'unit-register'])
+const confirmModal = ref()
+const alertModal = ref()
+
+const bldgSelect = (event: any) => {
+  const bdName = event.target.value
+    ? buildingList.value.filter((b: any) => b.pk == event.target.value)[0].name
+    : ''
+  bldgName.value = bdName
+  const bldg = {
+    pk: event.target.value,
+    name: bdName,
+  }
+  emit('bldg-select', bldg)
+}
+const typeSelect = (event: any) => {
+  const tpName = event.target.value
+    ? unitTypeList.value.filter((t: any) => t.pk == event.target.value)[0].name
+    : ''
+  typeName.value = tpName
+  fetchNumUnitByType({
+    project: props.project,
+    unit_type: event.target.value,
+  })
+}
+const unitRegister = () => {
+  if (write_project) confirmModal.value.callModal()
+  else {
+    alertModal.value.callModal()
+    reset(1)
+  }
+}
+const modalAction = () => {
+  emit('unit-register', {
+    ...form,
+    ...{
+      typeName: typeName.value,
+      maxLength: typeNameLength.value,
+      maxUnits: typeMaxUnits.value,
+    },
+    ...{ floors: simpleFloors.value },
+  })
+  confirmModal.value.visible = false
+  reset(1)
+}
+</script>
+
 <template>
   <CCallout color="info" class="pb-2">
     <CRow>
@@ -136,133 +261,3 @@
 
   <AlertModal ref="alertModal" />
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
-import AlertModal from '@/components/Modals/AlertModal.vue'
-import { mapActions, mapGetters, mapState } from 'vuex'
-
-export default defineComponent({
-  name: 'BuildingSelector',
-  components: { ConfirmModal, AlertModal },
-  props: {
-    project: {
-      type: Object,
-      required: true,
-    },
-  },
-  data() {
-    return {
-      bldgName: '',
-      typeName: '',
-      form: {
-        building: '',
-        line: '',
-        type: '',
-        minFloor: '',
-        maxFloor: '',
-      },
-    }
-  },
-  computed: {
-    warning() {
-      return this.form.maxFloor !== ''
-    },
-    typeNameLength() {
-      const typeNames = this.unitTypeList
-        .map((t: any) => t.name)
-        .map((t: any) => t.replace(/[^0-9a-zA-Z]/g, ''))
-        .map((t: any) => t.length)
-      return Math.max.apply({}, typeNames)
-    },
-    typeMaxUnits() {
-      return Math.max.apply(
-        {},
-        this.unitTypeList.map((t: any) => t.num_unit),
-      )
-    },
-    ...mapState('project', ['unitTypeList', 'buildingList']),
-    ...mapGetters('project', ['simpleFloors']),
-    ...mapGetters('accounts', ['staffAuth', 'superAuth']),
-  },
-  watch: {
-    project() {
-      this.form.building = ''
-      this.form.type = ''
-    },
-    form: {
-      deep: true,
-      handler(val) {
-        if (val.building == '') this.reset(1)
-        else if (val.line == '') this.reset(2)
-        else if (val.type == '') this.reset(3)
-        else if (val.minFloor == '') this.reset(4)
-      },
-    },
-  },
-  methods: {
-    reset(n: number): void {
-      if (n == 1) {
-        this.form.line = ''
-        this.form.type = ''
-        this.form.minFloor = ''
-        this.form.maxFloor = ''
-      } else if (n == 2) {
-        this.form.type = ''
-        this.form.minFloor = ''
-        this.form.maxFloor = ''
-      } else if (n == 3) {
-        this.form.minFloor = ''
-        this.form.maxFloor = ''
-      } else {
-        this.form.maxFloor = ''
-      }
-    },
-    bldgSelect(this: any, event: any) {
-      const bldgName = event.target.value
-        ? this.buildingList.filter((b: any) => b.pk == event.target.value)[0]
-            .name
-        : ''
-      this.bldgName = bldgName
-      const bldg = {
-        pk: event.target.value,
-        name: bldgName,
-      }
-      this.$emit('bldg-select', bldg)
-    },
-    typeSelect(event: any) {
-      const typeName = event.target.value
-        ? this.unitTypeList.filter((t: any) => t.pk == event.target.value)[0]
-            .name
-        : ''
-      this.typeName = typeName
-      this.fetchNumUnitByType({
-        project: this.project.pk,
-        unit_type: event.target.value,
-      })
-    },
-    unitRegister(this: any) {
-      if (this.superAuth || (this.staffAuth && this.staffAuth.project === '2'))
-        this.$refs.confirmModal.callModal()
-      else {
-        this.$refs.alertModal.callModal()
-        this.reset(1)
-      }
-    },
-    modalAction(this: any) {
-      this.$emit('unit-register', {
-        ...this.form,
-        ...{
-          typeName: this.typeName,
-          maxLength: this.typeNameLength,
-          maxUnits: this.typeMaxUnits,
-        },
-        ...{ floors: this.simpleFloors },
-      })
-      this.$refs.confirmModal.visible = false
-    },
-    ...mapActions('project', ['fetchNumUnitByType']),
-  },
-})
-</script>
