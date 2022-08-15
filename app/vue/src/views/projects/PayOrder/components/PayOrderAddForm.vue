@@ -1,3 +1,82 @@
+<script lang="ts" setup>
+import { ref, reactive, watch } from 'vue'
+import { write_project } from '@/utils/pageAuth'
+import { dateFormat } from '@/utils/baseMixins'
+import DatePicker from '@/components/DatePicker/index.vue'
+import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
+import AlertModal from '@/components/Modals/AlertModal.vue'
+import { maska as vMaska } from 'maska'
+
+defineProps({ disabled: Boolean })
+const emit = defineEmits(['on-submit'])
+
+const alertModal = ref()
+const confirmModal = ref()
+
+const validated = ref(false)
+const form = reactive<{
+  pay_sort: string
+  pay_code: string | null
+  pay_time: string | null
+  pay_name: string
+  alias_name: string
+  is_pm_cost: boolean
+  pay_due_date: string | null
+  extra_due_date: string | null
+}>({
+  pay_sort: '',
+  pay_code: null,
+  pay_time: null,
+  pay_name: '',
+  alias_name: '',
+  is_pm_cost: false,
+  pay_due_date: null,
+  extra_due_date: null,
+})
+
+const onSubmit = (event: any) => {
+  if (write_project) {
+    const el = event.currentTarget
+    if (el.checkValidity() === false) {
+      event.preventDefault()
+      event.stopPropagation()
+
+      validated.value = true
+    } else {
+      confirmModal.value.callModal()
+    }
+  } else {
+    alertModal.value.callModal()
+    resetForm()
+  }
+}
+
+watch(form, val => {
+  if (val.pay_due_date !== null)
+    form.pay_due_date = dateFormat(val.pay_due_date)
+  if (val.extra_due_date !== null)
+    form.extra_due_date = dateFormat(val.extra_due_date)
+})
+
+const modalAction = () => {
+  emit('on-submit', form)
+  validated.value = false
+  confirmModal.value.visible = false
+  resetForm()
+}
+
+const resetForm = () => {
+  form.pay_sort = ''
+  form.pay_code = null
+  form.pay_time = null
+  form.pay_name = ''
+  form.alias_name = ''
+  form.is_pm_cost = false
+  form.pay_due_date = null
+  form.extra_due_date = null
+}
+</script>
+
 <template>
   <CForm
     novalidate
@@ -6,7 +85,7 @@
     @submit.prevent="onSubmit"
   >
     <CRow class="p-2">
-      <CCol md="5">
+      <CCol xl="5">
         <CRow>
           <CCol md="3" class="mb-2">
             <CFormSelect v-model="form.pay_sort" :disabled="disabled" required>
@@ -63,7 +142,7 @@
         </CRow>
       </CCol>
 
-      <CCol md="5">
+      <CCol xl="6">
         <CRow>
           <CCol md="3" class="mb-2">
             <CFormInput
@@ -82,33 +161,37 @@
           </CCol>
 
           <CCol md="3" class="mb-2">
-            <CFormInput
+            <DatePicker
               v-model="form.pay_due_date"
               v-maska="'####-##-##'"
               placeholder="납부기한일"
+              :required="false"
               :disabled="disabled"
             />
           </CCol>
 
           <CCol md="3" class="mb-2">
-            <CFormInput
+            <DatePicker
               v-model="form.extra_due_date"
               v-maska="'####-##-##'"
               placeholder="납부유예일"
+              :required="false"
               :disabled="disabled"
             />
-            <!--        <CFormText>-->
-            <!--          연체료 계산 기준은 납부기한일이 원칙이나 이 값이 있는 경우-->
-            <!--          납부유예일을 연체료 계산 기준으로 한다.-->
-            <!--        </CFormText>-->
+            <!--            <CFormText class="text-grey">-->
+            <!--              연체료 계산 기준은 납부기한일이 원칙이나 이 값이 있는 경우-->
+            <!--              납부유예일을 연체료 계산 기준으로 한다.-->
+            <!--            </CFormText>-->
           </CCol>
         </CRow>
       </CCol>
 
-      <CCol md="2">
+      <CCol xl="1">
         <CRow>
           <CCol md="12" class="d-grid gap-2 d-lg-block mb-3">
-            <CButton color="primary" :disabled="disabled">회차추가</CButton>
+            <CButton color="primary" type="submit" :disabled="disabled">
+              회차추가
+            </CButton>
           </CCol>
         </CRow>
       </CCol>
@@ -130,73 +213,3 @@
 
   <AlertModal ref="alertModal" />
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
-import AlertModal from '@/components/Modals/AlertModal.vue'
-import { maska } from 'maska'
-import { mapGetters } from 'vuex'
-
-export default defineComponent({
-  name: 'PayOrderAddForm',
-  directives: { maska },
-  components: { ConfirmModal, AlertModal },
-  props: { disabled: Boolean },
-  data() {
-    return {
-      form: {
-        pay_sort: '',
-        pay_code: null,
-        pay_time: null,
-        pay_name: '',
-        alias_name: '',
-        is_pm_cost: false,
-        pay_due_date: null,
-        extra_due_date: null,
-      },
-      validated: false,
-    }
-  },
-  computed: {
-    ...mapGetters('accounts', ['staffAuth', 'superAuth']),
-  },
-  methods: {
-    onSubmit(this: any, event: any) {
-      if (
-        this.superAuth ||
-        (this.staffAuth && this.staffAuth.project === '2')
-      ) {
-        const form = event.currentTarget
-        if (form.checkValidity() === false) {
-          event.preventDefault()
-          event.stopPropagation()
-
-          this.validated = true
-        } else {
-          this.$refs.confirmModal.callModal()
-        }
-      } else {
-        this.$refs.alertModal.callModal()
-        this.resetForm()
-      }
-    },
-    modalAction(this: any) {
-      this.$emit('on-submit', this.form)
-      this.validated = false
-      this.$refs.confirmModal.visible = false
-      this.resetForm()
-    },
-    resetForm() {
-      this.form.pay_sort = ''
-      this.form.pay_code = null
-      this.form.pay_time = null
-      this.form.pay_name = ''
-      this.form.alias_name = ''
-      this.form.is_pm_cost = false
-      this.form.pay_due_date = null
-      this.form.extra_due_date = null
-    },
-  },
-})
-</script>

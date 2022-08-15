@@ -1,3 +1,101 @@
+<script lang="ts" setup>
+import { ref, reactive, computed, onBeforeMount, watch } from 'vue'
+import { useAccount } from '@/store/pinia/account'
+import { write_project } from '@/utils/pageAuth'
+import DatePicker from '@/components/DatePicker/index.vue'
+import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
+import AlertModal from '@/components/Modals/AlertModal.vue'
+import { maska as vMaska } from 'maska'
+import { dateFormat } from '@/utils/baseMixins'
+
+const emit = defineEmits(['on-update', 'on-delete'])
+const props = defineProps({ payOrder: { type: Object, default: null } })
+
+const form = reactive<{
+  pay_sort: string
+  pay_code: string | null
+  pay_time: string | null
+  pay_name: string
+  alias_name: string
+  is_pm_cost: boolean
+  pay_due_date: string | null
+  extra_due_date: string | null
+}>({
+  pay_sort: '',
+  pay_code: null,
+  pay_time: null,
+  pay_name: '',
+  alias_name: '',
+  is_pm_cost: false,
+  pay_due_date: null,
+  extra_due_date: null,
+})
+
+watch(form, val => {
+  if (val.pay_due_date !== null)
+    form.pay_due_date = dateFormat(val.pay_due_date)
+  if (val.extra_due_date !== null)
+    form.extra_due_date = dateFormat(val.extra_due_date)
+})
+
+const alertModal = ref()
+const confirmModal = ref()
+
+onBeforeMount(() => {
+  if (props.payOrder) resetForm()
+})
+
+const formsCheck = computed(() => {
+  if (props.payOrder) {
+    const a = form.pay_sort === props.payOrder.pay_sort
+    const b = form.pay_code === props.payOrder.pay_code
+    const c = form.pay_time === props.payOrder.pay_time
+    const d = form.pay_name === props.payOrder.pay_name
+    const e = form.alias_name === props.payOrder.alias_name
+    const f = form.is_pm_cost === props.payOrder.is_pm_cost
+    const g = form.pay_due_date === props.payOrder.pay_due_date
+    const h = form.extra_due_date === props.payOrder.extra_due_date
+    return a && b && c && d && e && f && g && h
+  } else return false
+})
+
+const formCheck = (bool: boolean) => {
+  if (bool) onUpdatePayOrder()
+  return
+}
+const onUpdatePayOrder = () => {
+  if (write_project) {
+    const pk = props.payOrder.pk
+    emit('on-update', { ...{ pk }, ...form })
+  } else {
+    alertModal.value.callModal()
+    resetForm()
+  }
+}
+const onDeletePayOrder = () => {
+  if (useAccount().superAuth) confirmModal.value.callModal()
+  else {
+    alertModal.value.callModal()
+    resetForm()
+  }
+}
+const modalAction = () => {
+  emit('on-delete', props.payOrder.pk)
+  confirmModal.value.visible = false
+}
+
+const resetForm = () => {
+  form.pay_sort = props.payOrder.pay_sort
+  form.pay_code = props.payOrder.pay_code
+  form.pay_time = props.payOrder.pay_time
+  form.pay_name = props.payOrder.pay_name
+  form.alias_name = props.payOrder.alias_name
+  form.is_pm_cost = props.payOrder.is_pm_cost
+  form.pay_due_date = props.payOrder.pay_due_date
+  form.extra_due_date = props.payOrder.extra_due_date
+}
+</script>
+
 <template>
   <CTableRow>
     <CTableDataCell>
@@ -57,21 +155,21 @@
     </CTableDataCell>
 
     <CTableDataCell>
-      <CFormInput
+      <DatePicker
         v-model="form.pay_due_date"
         v-maska="'####-##-##'"
         placeholder="납부기한일"
-        required
+        :required="false"
         @keypress.enter="formCheck(form.pay_due_date !== payOrder.pay_due_date)"
       />
     </CTableDataCell>
 
     <CTableDataCell>
-      <CFormInput
+      <DatePicker
         v-model="form.extra_due_date"
         v-maska="'####-##-##'"
         placeholder="납부유예일"
-        required
+        :required="false"
         @keypress.enter="
           formCheck(form.extra_due_date !== payOrder.extra_due_date)
         "
@@ -107,91 +205,3 @@
 
   <AlertModal ref="alertModal" />
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
-import AlertModal from '@/components/Modals/AlertModal.vue'
-import { maska } from 'maska'
-import { mapGetters } from 'vuex'
-
-export default defineComponent({
-  name: 'PayOrder',
-  directives: { maska },
-  components: { ConfirmModal, AlertModal },
-  props: ['payOrder'],
-  data() {
-    return {
-      form: {
-        pay_sort: '',
-        pay_code: null,
-        pay_time: null,
-        pay_name: '',
-        alias_name: '',
-        is_pm_cost: false,
-        pay_due_date: null,
-        extra_due_date: null,
-      },
-      validated: false,
-    }
-  },
-  created(this: any) {
-    if (this.payOrder) {
-      this.resetForm()
-    }
-  },
-  computed: {
-    formsCheck(this: any) {
-      const a = this.form.pay_sort === this.payOrder.pay_sort
-      const b = this.form.pay_code === this.payOrder.pay_code
-      const c = this.form.pay_time === this.payOrder.pay_time
-      const d = this.form.pay_name === this.payOrder.pay_name
-      const e = this.form.alias_name === this.payOrder.alias_name
-      const f = this.form.is_pm_cost === this.payOrder.is_pm_cost
-      const g = this.form.pay_due_date === this.payOrder.pay_due_date
-      const h = this.form.extra_due_date === this.payOrder.extra_due_date
-      return a && b && c && d && e && f && g && h
-    },
-    ...mapGetters('accounts', ['staffAuth', 'superAuth']),
-  },
-  methods: {
-    formCheck(bool: boolean) {
-      if (bool) this.onUpdatePayOrder()
-      return
-    },
-    onUpdatePayOrder(this: any) {
-      if (
-        this.superAuth ||
-        (this.staffAuth && this.staffAuth.project === '2')
-      ) {
-        const pk = this.payOrder.pk
-        this.$emit('on-update', { ...{ pk }, ...this.form })
-      } else {
-        this.$refs.alertModal.callModal()
-        this.resetForm()
-      }
-    },
-    onDeletePayOrder(this: any) {
-      if (this.superAuth) this.$refs.confirmModal.callModal()
-      else {
-        this.$refs.alertModal.callModal()
-        this.resetForm()
-      }
-    },
-    modalAction(this: any) {
-      this.$emit('on-delete', this.payOrder.pk)
-      this.$refs.confirmModal.visible = false
-    },
-    resetForm() {
-      this.form.pay_sort = this.payOrder.pay_sort
-      this.form.pay_code = this.payOrder.pay_code
-      this.form.pay_time = this.payOrder.pay_time
-      this.form.pay_name = this.payOrder.pay_name
-      this.form.alias_name = this.payOrder.alias_name
-      this.form.is_pm_cost = this.payOrder.is_pm_cost
-      this.form.pay_due_date = this.payOrder.pay_due_date
-      this.form.extra_due_date = this.payOrder.extra_due_date
-    },
-  },
-})
-</script>

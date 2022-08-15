@@ -1,3 +1,19 @@
+<script lang="ts" setup>
+import { computed } from 'vue'
+import { useStore } from 'vuex'
+import PayOrder from '@/views/projects/PayOrder/components/PayOrder.vue'
+import { headerSecondary } from '@/utils/cssMixins'
+
+const emit = defineEmits(['on-update', 'on-delete'])
+
+const store = useStore()
+
+const payOrderList = computed(() => store.state.payment.payOrderList)
+
+const onUpdatePayOrder = (payload: any) => emit('on-update', payload)
+const onDeletePayOrder = (pk: number) => emit('on-delete', pk)
+</script>
+
 <template>
   <CTable hover responsive>
     <colgroup>
@@ -43,30 +59,3 @@
     </CTableBody>
   </CTable>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import PayOrder from '@/views/projects/PayOrder/components/PayOrder.vue'
-import { headerSecondary } from '@/utils/cssMixins'
-import { mapState } from 'vuex'
-
-export default defineComponent({
-  name: 'PayOrderFormList',
-  components: { PayOrder },
-  props: ['project'],
-  computed: {
-    headerSecondary() {
-      return headerSecondary.value
-    },
-    ...mapState('payment', ['payOrderList']),
-  },
-  methods: {
-    onUpdatePayOrder(payload: any) {
-      this.$emit('on-update', payload)
-    },
-    onDeletePayOrder(pk: number) {
-      this.$emit('on-delete', pk)
-    },
-  },
-})
-</script>
