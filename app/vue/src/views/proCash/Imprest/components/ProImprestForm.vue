@@ -532,6 +532,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, reactive } from 'vue'
+import { write_project_cash } from '@/utils/pageAuth'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
@@ -678,12 +679,6 @@ export default defineComponent({
           : 0
       return [inc, out]
     },
-    pageManageAuth() {
-      return (
-        this.superAuth ||
-        (this.staffAuth && this.staffAuth.project_cash === '2')
-      )
-    },
     allowedPeriod(this: any) {
       return this.superAuth || this.diffDate(this.imprest.deal_date) <= 30
     },
@@ -737,11 +732,11 @@ export default defineComponent({
       this.sepItem.note = sep.note
     },
     createConfirm(this: any, payload: any) {
-      if (this.pageManageAuth) this.multiSubmit(payload)
+      if (write_project_cash) this.multiSubmit(payload)
       else this.$refs.alertModal.callModal()
     },
     updateConfirm(this: any, payload: any) {
-      if (this.pageManageAuth)
+      if (write_project_cash)
         if (this.allowedPeriod) this.multiSubmit(payload)
         else
           this.$refs.alertModal.callModal(
@@ -751,7 +746,7 @@ export default defineComponent({
       else this.$refs.alertModal.callModal()
     },
     deleteConfirm(this: any) {
-      if (this.pageManageAuth)
+      if (write_project_cash)
         if (this.allowedPeriod) this.$refs.delModal.callModal()
         else
           this.$refs.alertModal.callModal(
