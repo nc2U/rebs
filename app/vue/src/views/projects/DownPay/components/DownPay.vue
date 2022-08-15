@@ -1,3 +1,74 @@
+<script lang="ts" setup>
+import { ref, reactive, computed, onBeforeMount } from 'vue'
+import { useAccount } from '@/store/pinia/account'
+import { write_project } from '@/utils/pageAuth'
+import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
+import AlertModal from '@/components/Modals/AlertModal.vue'
+
+const props = defineProps({
+  downPay: { type: Object, default: null },
+  orders: { type: Array, default: [] },
+  types: { type: Array, default: [] },
+})
+const emit = defineEmits(['on-update', 'on-delete'])
+
+const form = reactive({
+  order_group: null,
+  unit_type: null,
+  number_payments: null,
+  payment_amount: null,
+})
+
+const alertModal = ref()
+const confirmModal = ref()
+
+onBeforeMount(() => {
+  if (props.downPay) resetForm()
+})
+
+const formsCheck = computed(() => {
+  if (props.downPay) {
+    const a = form.order_group === props.downPay.order_group
+    const b = form.unit_type === props.downPay.unit_type
+    const c = form.number_payments === props.downPay.number_payments
+    const d = form.payment_amount === props.downPay.payment_amount
+    return a && b && c && d
+  } else return false
+})
+
+const formCheck = (bool: boolean) => {
+  if (bool) onUpdateDownPay()
+  return
+}
+const onUpdateDownPay = () => {
+  if (write_project) {
+    const pk = props.downPay.pk
+    emit('on-update', { ...{ pk }, ...form })
+  } else {
+    alertModal.value.callModal()
+    resetForm()
+  }
+}
+const onDeleteDownPay = () => {
+  if (useAccount().superAuth) confirmModal.value.callModal()
+  else {
+    alertModal.value.callModal()
+    resetForm()
+  }
+}
+const modalAction = () => {
+  emit('on-delete', props.downPay.pk)
+  confirmModal.value.visible = false
+}
+
+const resetForm = () => {
+  form.order_group = props.downPay.order_group
+  form.unit_type = props.downPay.unit_type
+  form.number_payments = props.downPay.number_payments
+  form.payment_amount = props.downPay.payment_amount
+}
+</script>
+
 <template>
   <CTableRow>
     <CTableDataCell>
@@ -70,77 +141,3 @@
 
   <AlertModal ref="alertModal" />
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
-import AlertModal from '@/components/Modals/AlertModal.vue'
-import { mapGetters } from 'vuex'
-
-export default defineComponent({
-  name: 'DownPay',
-  components: { ConfirmModal, AlertModal },
-  props: { downPay: Object, orders: Array, types: Array },
-  data() {
-    return {
-      form: {
-        order_group: null,
-        unit_type: null,
-        number_payments: null,
-        payment_amount: null,
-      },
-      validated: false,
-    }
-  },
-  created(this: any) {
-    if (this.downPay) {
-      this.resetForm()
-    }
-  },
-  computed: {
-    formsCheck(this: any) {
-      const a = this.form.order_group === this.downPay.order_group
-      const b = this.form.unit_type === this.downPay.unit_type
-      const c = this.form.number_payments === this.downPay.number_payments
-      const d = this.form.payment_amount === this.downPay.payment_amount
-      return a && b && c && d
-    },
-    ...mapGetters('accounts', ['staffAuth', 'superAuth']),
-  },
-  methods: {
-    formCheck(bool: boolean) {
-      if (bool) this.onUpdateDownPay()
-      return
-    },
-    onUpdateDownPay(this: any) {
-      if (
-        this.superAuth ||
-        (this.staffAuth && this.staffAuth.project === '2')
-      ) {
-        const pk = this.downPay.pk
-        this.$emit('on-update', { ...{ pk }, ...this.form })
-      } else {
-        this.$refs.alertModal.callModal()
-        this.resetForm()
-      }
-    },
-    onDeleteDownPay(this: any) {
-      if (this.superAuth) this.$refs.confirmModal.callModal()
-      else {
-        this.$refs.alertModal.callModal()
-        this.resetForm()
-      }
-    },
-    modalAction(this: any) {
-      this.$emit('on-delete', this.downPay.pk)
-      this.$refs.confirmModal.visible = false
-    },
-    resetForm(this: any) {
-      this.form.order_group = this.downPay.order_group
-      this.form.unit_type = this.downPay.unit_type
-      this.form.number_payments = this.downPay.number_payments
-      this.form.payment_amount = this.downPay.payment_amount
-    },
-  },
-})
-</script>

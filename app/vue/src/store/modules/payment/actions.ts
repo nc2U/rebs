@@ -147,7 +147,7 @@ const actions = {
     api
       .put(`/down-payment/${pk}/`, formData)
       .then(res => {
-        dispatch('fetchDownPayList', res.data.project)
+        dispatch('fetchDownPayList', { project: res.data.project })
         message()
       })
       .catch(err => errorHandle(err.response.data))
@@ -158,7 +158,7 @@ const actions = {
     api
       .delete(`/down-payment/${pk}/`)
       .then(() => {
-        dispatch('fetchDownPayList', project)
+        dispatch('fetchDownPayList', { project })
         message('danger', '알림!', '해당 오브젝트가 삭제되었습니다.')
       })
       .catch(err => errorHandle(err.response.data))

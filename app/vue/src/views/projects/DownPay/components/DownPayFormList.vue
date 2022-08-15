@@ -1,3 +1,22 @@
+<script lang="ts" setup>
+import { computed } from 'vue'
+import { useStore } from 'vuex'
+import DownPay from '@/views/projects/DownPay/components/DownPay.vue'
+import { headerSecondary } from '@/utils/cssMixins'
+
+defineProps({
+  orders: { type: Object, default: null },
+  types: { type: Object, default: null },
+})
+const emit = defineEmits(['on-update', 'on-delete'])
+
+const store = useStore()
+const downPayList = computed(() => store.state.payment.downPayList)
+
+const onUpdateDownPay = (payload: any) => emit('on-update', payload)
+const onDeleteDownPay = (pk: number) => emit('on-delete', pk)
+</script>
+
 <template>
   <CTable hover responsive>
     <colgroup>
@@ -36,33 +55,3 @@
     </CTableBody>
   </CTable>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import DownPay from '@/views/projects/DownPay/components/DownPay.vue'
-import { headerSecondary } from '@/utils/cssMixins'
-import { mapState } from 'vuex'
-
-export default defineComponent({
-  name: 'DownPayFormList',
-  components: { DownPay },
-  props: {
-    orders: { type: Object, default: null },
-    types: { type: Object, default: null },
-  },
-  computed: {
-    headerSecondary() {
-      return headerSecondary.value
-    },
-    ...mapState('payment', ['downPayList']),
-  },
-  methods: {
-    onUpdateDownPay(payload: any) {
-      this.$emit('on-update', payload)
-    },
-    onDeleteDownPay(pk: number) {
-      this.$emit('on-delete', pk)
-    },
-  },
-})
-</script>

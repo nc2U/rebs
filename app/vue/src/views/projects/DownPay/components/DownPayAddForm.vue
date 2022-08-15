@@ -1,3 +1,58 @@
+<script lang="ts" setup>
+import { ref, reactive, watch } from 'vue'
+import { write_project } from '@/utils/pageAuth'
+import { isValidate } from '@/utils/helper'
+import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
+import AlertModal from '@/components/Modals/AlertModal.vue'
+
+const props = defineProps({
+  disabled: Boolean,
+  orders: { type: Array, default: [] },
+  types: { type: Array, default: [] },
+})
+const emit = defineEmits(['on-submit'])
+
+const alertModal = ref()
+const confirmModal = ref()
+
+const form = reactive({
+  order_group: '',
+  unit_type: '',
+  number_payments: null,
+  payment_amount: null,
+})
+
+const validated = ref(false)
+
+watch(props, () => {
+  form.order_group = ''
+  form.unit_type = ''
+})
+
+const onSubmit = (event: any) => {
+  if (write_project) {
+    isValidate(event)
+      ? (validated.value = true)
+      : confirmModal.value.callModal()
+  } else {
+    alertModal.value.callModal()
+    resetForm()
+  }
+}
+const modalAction = () => {
+  emit('on-submit', form)
+  validated.value = false
+  confirmModal.value.visible = false
+  resetForm()
+}
+const resetForm = () => {
+  form.order_group = ''
+  form.unit_type = ''
+  form.number_payments = null
+  form.payment_amount = null
+}
+</script>
+
 <template>
   <CForm
     novalidate
@@ -49,7 +104,9 @@
       <CCol md="2">
         <CRow>
           <CCol md="12" class="d-grid gap-2 d-lg-block mb-3">
-            <CButton color="primary" :disabled="disabled">계약금 추가</CButton>
+            <CButton color="primary" type="submit" :disabled="disabled">
+              계약금 추가
+            </CButton>
           </CCol>
         </CRow>
       </CCol>
@@ -71,65 +128,3 @@
 
   <AlertModal ref="alertModal" />
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
-import AlertModal from '@/components/Modals/AlertModal.vue'
-import { maska } from 'maska'
-import { mapGetters } from 'vuex'
-
-export default defineComponent({
-  name: 'DownPayAddForm',
-  directives: { maska },
-  components: { ConfirmModal, AlertModal },
-  props: { disabled: Boolean, orders: Array, types: Array },
-  data() {
-    return {
-      form: {
-        order_group: null,
-        unit_type: null,
-        number_payments: null,
-        payment_amount: null,
-      },
-      validated: false,
-    }
-  },
-  computed: {
-    ...mapGetters('accounts', ['staffAuth', 'superAuth']),
-  },
-  methods: {
-    onSubmit(this: any, event: any) {
-      if (
-        this.superAuth ||
-        (this.staffAuth && this.staffAuth.project === '2')
-      ) {
-        const form = event.currentTarget
-        if (form.checkValidity() === false) {
-          event.preventDefault()
-          event.stopPropagation()
-
-          this.validated = true
-        } else {
-          this.$refs.confirmModal.callModal()
-        }
-      } else {
-        this.$refs.alertModal.callModal()
-        this.resetForm()
-      }
-    },
-    modalAction(this: any) {
-      this.$emit('on-submit', this.form)
-      this.validated = false
-      this.$refs.confirmModal.visible = false
-      this.resetForm()
-    },
-    resetForm() {
-      this.form.order_group = null
-      this.form.unit_type = null
-      this.form.number_payments = null
-      this.form.payment_amount = null
-    },
-  },
-})
-</script>
