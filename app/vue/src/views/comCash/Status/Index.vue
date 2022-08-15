@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, onBeforeMount, ref } from 'vue'
 import { useStore } from 'vuex'
 import { useCompany } from '@/store/pinia/company'
 import { pageTitle, navMenu } from '@/views/comCash/_menu/headermixin'
@@ -18,8 +18,8 @@ const compName = ref('StatusByAccount')
 const store = useStore()
 const companyStore = useCompany()
 
-const company = computed(() => companyStore.company) // store.state.settings.company)
-const initComId = computed(() => companyStore.initComId) // store.getters['accounts/initComId'])
+const company = computed(() => companyStore.company)
+const initComId = computed(() => companyStore.initComId)
 
 const fetchAllAccD1List = () => store.dispatch('comCash/fetchAllAccD1List')
 const fetchAllAccD2List = () => store.dispatch('comCash/fetchAllAccD2List')
@@ -76,7 +76,7 @@ const setDate = (d: string) => {
   })
 }
 
-onMounted(() => {
+onBeforeMount(() => {
   fetchAllAccD1List()
   fetchAllAccD2List()
   fetchAllAccD3List()
@@ -105,7 +105,6 @@ onMounted(() => {
       <TableTitleRow excel disabled />
 
       <StatusByAccount v-if="compName === 'StatusByAccount'" :date="date" />
-
       <CashListByDate v-if="compName === 'CashListByDate'" :date="date" />
     </CCardBody>
 
