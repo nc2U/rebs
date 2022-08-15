@@ -1,3 +1,21 @@
+<script lang="ts" setup>
+import { ref } from 'vue'
+import { write_project_cash } from '@/utils/pageAuth'
+import FormModal from '@/components/Modals/FormModal.vue'
+import ProCashForm from '@/views/proCash/Manage/components/ProCashForm.vue'
+
+const emit = defineEmits(['multi-submit'])
+
+const createFormModal = ref()
+const createAlertModal = ref()
+
+const createConfirm = () => {
+  if (write_project_cash) createFormModal.value.callModal()
+  else createAlertModal.value.callModal()
+}
+const multiSubmit = (payload: any) => emit('multi-submit', payload)
+</script>
+
 <template>
   <CAlert color="secondary" class="text-right">
     <CButton color="primary" @click="createConfirm">신규등록</CButton>
@@ -18,33 +36,3 @@
 
   <AlertModal ref="createAlertModal" />
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import FormModal from '@/components/Modals/FormModal.vue'
-import ProCashForm from '@/views/proCash/Manage/components/ProCashForm.vue'
-import { mapGetters } from 'vuex'
-
-export default defineComponent({
-  name: 'AddProCash',
-  components: { FormModal, ProCashForm },
-  computed: {
-    pageManageAuth(this: any) {
-      return (
-        this.superAuth ||
-        (this.staffAuth && this.staffAuth.project_cash === '2')
-      )
-    },
-    ...mapGetters('accounts', ['staffAuth', 'superAuth']),
-  },
-  methods: {
-    createConfirm(this: any) {
-      if (this.pageManageAuth) this.$refs.createFormModal.callModal()
-      else this.$refs.createAlertModal.callModal()
-    },
-    multiSubmit(payload: any) {
-      this.$emit('multi-submit', payload)
-    },
-  },
-})
-</script>

@@ -1,3 +1,81 @@
+<script lang="ts" setup>
+import { computed, reactive, ref, watch, nextTick } from 'vue'
+import { useStore } from 'vuex'
+import { dateFormat } from '@/utils/baseMixins'
+import DatePicker from '@/components/DatePicker/index.vue'
+import { maska as vMaska } from 'maska'
+
+const emit = defineEmits(['list-filtering'])
+
+const from_date = ref('')
+const to_date = ref('')
+const form = reactive({
+  sort: '',
+  pro_acc_d1: '',
+  pro_acc_d2: '',
+  bank_account: '',
+  search: '',
+})
+
+const store = useStore()
+
+const sortList = computed(() => store.state.proCash.sortList)
+const formAccD1List = computed(() => store.state.proCash.formAccD1List)
+const formAccD2List = computed(() => store.state.proCash.formAccD2List)
+const proBankAccountList = computed(
+  () => store.state.proCash.proBankAccountList,
+)
+const proCashesCount = computed(() => store.state.proCash.proCashesCount)
+
+const formsCheck = computed(() => {
+  const a = from_date.value === ''
+  const b = to_date.value === ''
+  const c = form.sort === ''
+  const d = form.pro_acc_d1 === ''
+  const e = form.pro_acc_d2 === ''
+  const f = form.bank_account === ''
+  const g = form.search === ''
+  return a && b && c && d && e && f && g
+})
+
+watch(from_date, () => listFiltering(1))
+watch(to_date, () => listFiltering(1))
+
+const sortSelect = () => {
+  listFiltering(1)
+  form.pro_acc_d1 = ''
+  form.pro_acc_d2 = ''
+}
+
+const proAccD1Select = () => {
+  listFiltering(1)
+  form.pro_acc_d2 = ''
+}
+
+const listFiltering = (page = 1) => {
+  nextTick(() => {
+    const from = from_date.value ? dateFormat(from_date.value) : ''
+    const to = to_date.value ? dateFormat(to_date.value) : ''
+
+    emit('list-filtering', {
+      ...{ page, from_date: from, to_date: to },
+      ...form,
+    })
+  })
+}
+
+const resetForm = () => {
+  from_date.value = ''
+  to_date.value = ''
+  form.sort = ''
+  form.pro_acc_d1 = ''
+  form.pro_acc_d2 = ''
+  form.bank_account = ''
+  form.search = ''
+  listFiltering(1)
+}
+</script>
+
 <template>
   <CCallout color="success" class="pb-0 mb-3">
     <CRow>
@@ -94,87 +172,3 @@
     </CRow>
   </CCallout>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import DatePicker from '@/components/DatePicker/index.vue'
-import { maska } from 'maska'
-import { mapState } from 'vuex'
-
-export default defineComponent({
-  name: 'ListController',
-  components: { DatePicker },
-  directives: { maska },
-  data() {
-    return {
-      from_date: '',
-      to_date: '',
-      form: {
-        sort: '',
-        pro_acc_d1: '',
-        pro_acc_d2: '',
-        bank_account: '',
-        search: '',
-      },
-    }
-  },
-  computed: {
-    formsCheck(this: any) {
-      const a = this.from_date === ''
-      const b = this.to_date === ''
-      const c = this.form.sort === ''
-      const d = this.form.pro_acc_d1 === ''
-      const e = this.form.pro_acc_d2 === ''
-      const f = this.form.bank_account === ''
-      const g = this.form.search === ''
-      return a && b && c && d && e && f && g
-    },
-    ...mapState('proCash', [
-      'sortList',
-      'formAccD1List',
-      'formAccD2List',
-      'proBankAccountList',
-      'proCashesCount',
-    ]),
-  },
-  watch: {
-    from_date() {
-      this.listFiltering(1)
-    },
-    to_date() {
-      this.listFiltering(1)
-    },
-  },
-  methods: {
-    sortSelect() {
-      this.listFiltering(1)
-      this.form.pro_acc_d1 = ''
-      this.form.pro_acc_d2 = ''
-    },
-    proAccD1Select() {
-      this.listFiltering(1)
-      this.form.pro_acc_d2 = ''
-    },
-    listFiltering(this: any, page = 1) {
-      this.$nextTick(() => {
-        const from_date = this.from_date ? this.dateFormat(this.from_date) : ''
-        const to_date = this.to_date ? this.dateFormat(this.to_date) : ''
-        this.$emit('list-filtering', {
-          ...{ page, from_date, to_date },
-          ...this.form,
-        })
-      })
-    },
-    resetForm() {
-      this.from_date = ''
-      this.to_date = ''
-      this.form.sort = ''
-      this.form.pro_acc_d1 = ''
-      this.form.pro_acc_d2 = ''
-      this.form.bank_account = ''
-      this.form.search = ''
-      this.listFiltering(1)
-    },
-  },
-})
-</script>

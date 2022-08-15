@@ -1,3 +1,294 @@
+<script lang="ts" setup>
+import { ref, reactive, computed, watch, onBeforeMount, nextTick } from 'vue'
+import { useStore } from 'vuex'
+import { useAccount } from '@/store/pinia/account'
+import { diffDate, dateFormat } from '@/utils/baseMixins'
+import { write_project_cash } from '@/utils/pageAuth'
+import DatePicker from '@/components/DatePicker/index.vue'
+import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
+import AlertModal from '@/components/Modals/AlertModal.vue'
+import { isValidate } from '@/utils/helper'
+
+const props = defineProps({
+  proCash: {
+    type: Object,
+    required: true,
+  },
+})
+const emit = defineEmits(['multi-submit', 'on-delete', 'close'])
+
+const delModal = ref()
+const alertModal = ref()
+
+const sepPk = ref(null)
+const sepItem = reactive({
+  project: '',
+  sort: '',
+  project_account_d1: '',
+  project_account_d2: '',
+  content: '',
+  trader: '',
+  bank_account: '',
+  income: null,
+  outlay: null,
+  evidence: '',
+  note: '',
+  deal_date: '',
+  is_separate: false,
+  separated: null,
+})
+
+if (props.proCash) {
+  // eslint-disable-next-line vue/no-setup-props-destructure
+  sepItem.project = props.proCash.project
+  // eslint-disable-next-line vue/no-setup-props-destructure
+  sepItem.sort = props.proCash.sort
+  // eslint-disable-next-line vue/no-setup-props-destructure
+  sepItem.bank_account = props.proCash.bank_account
+  // eslint-disable-next-line vue/no-setup-props-destructure
+  sepItem.deal_date = props.proCash.deal_date
+  // eslint-disable-next-line vue/no-setup-props-destructure
+  sepItem.separated = props.proCash.pk
+}
+
+const validated = ref(false)
+
+const form = reactive<{
+  project: string
+  sort: string
+  project_account_d1: string
+  project_account_d2: string
+  content: string
+  trader: string
+  bank_account: string
+  income: null | string
+  outlay: null | string
+  evidence: string
+  note: string
+  deal_date: Date | string
+  is_separate: boolean
+  separated: null | string
+  is_imprest: boolean
+}>({
+  project: '',
+  sort: '',
+  project_account_d1: '',
+  project_account_d2: '',
+  content: '',
+  trader: '',
+  bank_account: '',
+  income: null,
+  outlay: null,
+  evidence: '',
+  note: '',
+  deal_date: new Date(),
+  is_separate: false,
+  separated: null,
+  is_imprest: false,
+})
+
+const formsCheck = computed(() => {
+  if (props.proCash) {
+    const a = form.project === props.proCash.project
+    const b = form.sort === props.proCash.sort
+    const c = form.project_account_d1 === props.proCash.project_account_d1
+    const d = form.project_account_d2 === props.proCash.project_account_d2
+    const e = form.content === props.proCash.content
+    const f = form.trader === props.proCash.trader
+    const g = form.bank_account === props.proCash.bank_account
+    const h = form.income === props.proCash.income
+    const i = form.outlay === props.proCash.outlay
+    const j = form.evidence === props.proCash.evidence
+    const k = form.note === props.proCash.note
+    const l =
+      form.deal_date.toString() === new Date(props.proCash.deal_date).toString()
+    const m = form.is_separate === props.proCash.is_separate
+
+    return a && b && c && d && e && f && g && h && i && j && k && l && m
+  } else return false
+})
+
+const store = useStore()
+const accountStore = useAccount()
+
+const formAccD1List = computed(() => store.state.proCash.formAccD1List)
+const formAccD2List = computed(() => store.state.proCash.formAccD2List)
+const proBankAccountList = computed(
+  () => store.state.proCash.proBankAccountList,
+)
+
+const fetchProFormAccD1List = (sort: string) =>
+  store.dispatch('proCash/fetchProFormAccD1List', sort)
+const fetchProFormAccD2List = (payload: { sort: string; d1: string }) =>
+  store.dispatch('proCash/fetchProFormAccD2List', payload)
+
+const requireItem = computed(
+  () => form.project_account_d1 !== '' && form.project_account_d2 !== '',
+)
+const sepDisabled = computed(() => {
+  const disabled =
+    form.project_account_d1 !== '' || form.project_account_d2 !== ''
+  return props.proCash
+    ? disabled || props.proCash.sepItems.length > 0
+    : disabled
+})
+
+const sepSummary = computed(() => {
+  const inc =
+    props.proCash.sepItems.length !== 0
+      ? props.proCash.sepItems
+          .map((s: any) => s.income)
+          .reduce((res: any, el: any) => res + el)
+      : 0
+  const out =
+    props.proCash.sepItems.length !== 0
+      ? props.proCash.sepItems
+          .map((s: any) => s.outlay)
+          .reduce((res: any, el: any) => res + el)
+      : 0
+  return [inc, out]
+})
+const pageManageAuth = computed(() => write_project_cash)
+const allowedPeriod = computed(
+  () => accountStore.superAuth || diffDate(props.proCash.deal_date) <= 30,
+)
+
+watch(form, val => {
+  if (val.project_account_d2 === '63') form.is_imprest = true
+  else form.is_imprest = false
+})
+
+const sort_change = (event: any) => {
+  if (event.target.value === '1') form.outlay = null
+  if (event.target.value === '2') form.income = null
+  if (event.target.value === '3') {
+    form.project_account_d1 = '17'
+    form.project_account_d2 = '62'
+  } else {
+    form.project_account_d1 = ''
+    form.project_account_d2 = ''
+  }
+  callAccount()
+}
+
+const d1_change = () => {
+  form.project_account_d2 = ''
+  callAccount()
+}
+
+const sepD1_change = () => {
+  sepItem.project_account_d2 = ''
+  nextTick(() => {
+    const sort = form.sort
+    const d1 = sepItem.project_account_d1
+    fetchProFormAccD1List(sort)
+    fetchProFormAccD2List({ sort, d1 })
+  })
+}
+
+const callAccount = () => {
+  nextTick(() => {
+    const sort = form.sort
+    const d1 = form.project_account_d1
+    fetchProFormAccD1List(sort)
+    fetchProFormAccD2List({ sort, d1 })
+  })
+}
+
+const sepUpdate = (sep: any) => {
+  sepPk.value = sep.pk
+  sepItem.project_account_d1 = sep.project_account_d1
+  sepItem.project_account_d2 = sep.project_account_d2
+  sepItem.content = sep.content
+  sepItem.trader = sep.trader
+  sepItem.evidence = sep.evidence
+  sepItem.outlay = sep.outlay
+  sepItem.income = sep.income
+  sepItem.note = sep.note
+}
+const createConfirm = (payload: any) => {
+  if (pageManageAuth.value) multiSubmit(payload)
+  else alertModal.value.callModal()
+}
+
+const updateConfirm = (payload: any) => {
+  if (pageManageAuth.value)
+    if (allowedPeriod.value) multiSubmit(payload)
+    else
+      alertModal.value.callModal(
+        null,
+        '거래일로부터 30일이 경과한 건은 수정할 수 없습니다. 관리자에게 문의바랍니다.',
+      )
+  else alertModal.value.callModal()
+}
+const deleteConfirm = () => {
+  if (pageManageAuth.value)
+    if (allowedPeriod.value) delModal.value.callModal()
+    else
+      alertModal.value.callModal(
+        null,
+        '거래일로부터 30일이 경과한 건은 삭제할 수 없습니다. 관리자에게 문의바랍니다.',
+      )
+  else alertModal.value.callModal()
+}
+
+watch(form, val => {
+  if (val.deal_date) form.deal_date = dateFormat(val.deal_date)
+})
+
+const onSubmit = (event: any) => {
+  if (isValidate(event)) {
+    validated.value = true
+  } else {
+    let formData = {}
+    if (!formsCheck.value) {
+      if (!props.proCash) formData = { ...form }
+      else formData = { ...{ ...{ pk: props.proCash.pk }, ...form } }
+    }
+    let sepData = {}
+    if (form.is_separate) {
+      if (!sepPk.value) sepData = { ...sepItem }
+      else sepData = { ...{ ...{ pk: sepPk.value }, ...sepItem } }
+    }
+    if (props.proCash || sepPk.value) updateConfirm({ formData, sepData })
+    else createConfirm({ formData, sepData })
+  }
+}
+
+const multiSubmit = (multiPayload: any) => {
+  emit('multi-submit', multiPayload)
+  emit('close')
+}
+const deleteObject = () => {
+  emit('on-delete', {
+    project: props.proCash.project,
+    pk: props.proCash.pk,
+  })
+  delModal.value.visible = false
+  emit('close')
+}
+
+onBeforeMount(() => {
+  if (props.proCash) {
+    form.project = props.proCash.project
+    form.sort = props.proCash.sort
+    form.project_account_d1 = props.proCash.project_account_d1
+    form.project_account_d2 = props.proCash.project_account_d2
+    form.content = props.proCash.content
+    form.trader = props.proCash.trader
+    form.bank_account = props.proCash.bank_account
+    form.income = props.proCash.income
+    form.outlay = props.proCash.outlay
+    form.evidence = props.proCash.evidence
+    form.note = props.proCash.note
+    form.deal_date = new Date(props.proCash.deal_date)
+    form.is_separate = props.proCash.is_separate
+    form.separated = props.proCash.separated
+  }
+  callAccount()
+})
+</script>
+
 <template>
   <CForm
     class="needs-validation"
@@ -529,288 +820,3 @@
 
   <AlertModal ref="alertModal" />
 </template>
-
-<script lang="ts">
-import { defineComponent, ref, reactive } from 'vue'
-import DatePicker from '@/components/DatePicker/index.vue'
-import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
-import AlertModal from '@/components/Modals/AlertModal.vue'
-import { mapActions, mapGetters, mapState } from 'vuex'
-
-export default defineComponent({
-  name: 'ProCashForm',
-  components: { DatePicker, ConfirmModal, AlertModal },
-  props: {
-    proCash: {
-      type: Object,
-      required: true,
-    },
-  },
-  setup(props) {
-    const sepPk = ref(null)
-    let sepItem = reactive({
-      project: '',
-      sort: '',
-      project_account_d1: '',
-      project_account_d2: '',
-      content: '',
-      trader: '',
-      bank_account: '',
-      income: null,
-      outlay: null,
-      evidence: '',
-      note: '',
-      deal_date: '',
-      is_separate: false,
-      separated: null,
-    })
-
-    if (props.proCash) {
-      // eslint-disable-next-line vue/no-setup-props-destructure
-      sepItem.project = props.proCash.project
-      // eslint-disable-next-line vue/no-setup-props-destructure
-      sepItem.sort = props.proCash.sort
-      // eslint-disable-next-line vue/no-setup-props-destructure
-      sepItem.bank_account = props.proCash.bank_account
-      // eslint-disable-next-line vue/no-setup-props-destructure
-      sepItem.deal_date = props.proCash.deal_date
-      // eslint-disable-next-line vue/no-setup-props-destructure
-      sepItem.separated = props.proCash.pk
-    }
-
-    return {
-      sepPk,
-      sepItem,
-    }
-  },
-  data() {
-    return {
-      form: {
-        project: '',
-        sort: '',
-        project_account_d1: '',
-        project_account_d2: '',
-        content: '',
-        trader: '',
-        bank_account: '',
-        income: null,
-        outlay: null,
-        evidence: '',
-        note: '',
-        deal_date: new Date(),
-        is_separate: false,
-        separated: null,
-        is_imprest: false,
-      },
-      validated: false,
-    }
-  },
-  created() {
-    if (this.proCash) {
-      this.form.project = this.proCash.project
-      this.form.sort = this.proCash.sort
-      this.form.project_account_d1 = this.proCash.project_account_d1
-      this.form.project_account_d2 = this.proCash.project_account_d2
-      this.form.content = this.proCash.content
-      this.form.trader = this.proCash.trader
-      this.form.bank_account = this.proCash.bank_account
-      this.form.income = this.proCash.income
-      this.form.outlay = this.proCash.outlay
-      this.form.evidence = this.proCash.evidence
-      this.form.note = this.proCash.note
-      this.form.deal_date = new Date(this.proCash.deal_date)
-      this.form.is_separate = this.proCash.is_separate
-      this.form.separated = this.proCash.separated
-    }
-    this.callAccount()
-  },
-  computed: {
-    requireItem() {
-      return (
-        this.form.project_account_d1 !== '' &&
-        this.form.project_account_d2 !== ''
-      )
-    },
-    sepDisabled() {
-      const disabled =
-        this.form.project_account_d1 !== '' ||
-        this.form.project_account_d2 !== ''
-      return this.proCash
-        ? disabled || this.proCash.sepItems.length > 0
-        : disabled
-    },
-    formsCheck() {
-      if (this.proCash) {
-        const a = this.form.project === this.proCash.project
-        const b = this.form.sort === this.proCash.sort
-        const c =
-          this.form.project_account_d1 === this.proCash.project_account_d1
-        const d =
-          this.form.project_account_d2 === this.proCash.project_account_d2
-        const e = this.form.content === this.proCash.content
-        const f = this.form.trader === this.proCash.trader
-        const g = this.form.bank_account === this.proCash.bank_account
-        const h = this.form.income === this.proCash.income
-        const i = this.form.outlay === this.proCash.outlay
-        const j = this.form.evidence === this.proCash.evidence
-        const k = this.form.note === this.proCash.note
-        const l =
-          this.form.deal_date.toString() ===
-          new Date(this.proCash.deal_date).toString()
-        const m = this.form.is_separate === this.proCash.is_separate
-
-        return a && b && c && d && e && f && g && h && i && j && k && l && m
-      } else return false
-    },
-    sepSummary() {
-      const inc =
-        this.proCash.sepItems.length !== 0
-          ? this.proCash.sepItems
-              .map((s: any) => s.income)
-              .reduce((res: any, el: any) => res + el)
-          : 0
-      const out =
-        this.proCash.sepItems.length !== 0
-          ? this.proCash.sepItems
-              .map((s: any) => s.outlay)
-              .reduce((res: any, el: any) => res + el)
-          : 0
-      return [inc, out]
-    },
-    pageManageAuth() {
-      return (
-        this.superAuth ||
-        (this.staffAuth && this.staffAuth.project_cash === '2')
-      )
-    },
-    allowedPeriod(this: any) {
-      return this.superAuth || this.diffDate(this.proCash.deal_date) <= 30
-    },
-    ...mapState('proCash', [
-      'formAccD1List',
-      'formAccD2List',
-      'proBankAccountList',
-    ]),
-    ...mapGetters('accounts', ['staffAuth', 'superAuth']),
-  },
-  watch: {
-    form: {
-      deep: true,
-      handler(val) {
-        if (val.project_account_d2 === '63') this.form.is_imprest = true
-        else this.form.is_imprest = false
-      },
-    },
-  },
-  methods: {
-    sort_change(event: any) {
-      if (event.target.value === '1') this.form.outlay = null
-      if (event.target.value === '2') this.form.income = null
-      if (event.target.value === '3') {
-        this.form.project_account_d1 = '17'
-        this.form.project_account_d2 = '62'
-      } else {
-        this.form.project_account_d1 = ''
-        this.form.project_account_d2 = ''
-      }
-      this.callAccount()
-    },
-    d1_change() {
-      this.form.project_account_d2 = ''
-      this.callAccount()
-    },
-    sepD1_change() {
-      this.sepItem.project_account_d2 = ''
-      this.$nextTick(() => {
-        const sort = this.form.sort
-        const d1 = this.sepItem.project_account_d1
-        this.fetchProFormAccD1List(sort)
-        this.fetchProFormAccD2List({ sort, d1 })
-      })
-    },
-    callAccount() {
-      this.$nextTick(() => {
-        const sort = this.form.sort
-        const d1 = this.form.project_account_d1
-        this.fetchProFormAccD1List(sort)
-        this.fetchProFormAccD2List({ sort, d1 })
-      })
-    },
-    sepUpdate(sep: any) {
-      this.sepPk = sep.pk
-      this.sepItem.project_account_d1 = sep.project_account_d1
-      this.sepItem.project_account_d2 = sep.project_account_d2
-      this.sepItem.content = sep.content
-      this.sepItem.trader = sep.trader
-      this.sepItem.evidence = sep.evidence
-      this.sepItem.outlay = sep.outlay
-      this.sepItem.income = sep.income
-      this.sepItem.note = sep.note
-    },
-    createConfirm(this: any, payload: any) {
-      if (this.pageManageAuth) this.multiSubmit(payload)
-      else this.$refs.alertModal.callModal()
-    },
-    updateConfirm(this: any, payload: any) {
-      if (this.pageManageAuth)
-        if (this.allowedPeriod) this.multiSubmit(payload)
-        else
-          this.$refs.alertModal.callModal(
-            null,
-            '거래일로부터 30일이 경과한 건은 수정할 수 없습니다. 관리자에게 문의바랍니다.',
-          )
-      else this.$refs.alertModal.callModal()
-    },
-    deleteConfirm(this: any) {
-      if (this.pageManageAuth)
-        if (this.allowedPeriod) this.$refs.delModal.callModal()
-        else
-          this.$refs.alertModal.callModal(
-            null,
-            '거래일로부터 30일이 경과한 건은 삭제할 수 없습니다. 관리자에게 문의바랍니다.',
-          )
-      else this.$refs.alertModal.callModal()
-    },
-    onSubmit(this: any, event: any) {
-      const form = event.currentTarget
-      if (form.checkValidity() === false) {
-        event.preventDefault()
-        event.stopPropagation()
-
-        this.validated = true
-      } else {
-        let formData = {}
-        if (!this.formsCheck) {
-          this.form.deal_date = this.dateFormat(this.form.deal_date)
-          if (!this.proCash) formData = { ...this.form }
-          else formData = { ...{ ...{ pk: this.proCash.pk }, ...this.form } }
-        }
-        let sepData = {}
-        if (this.form.is_separate) {
-          if (!this.sepPk) sepData = { ...this.sepItem }
-          else sepData = { ...{ ...{ pk: this.sepPk }, ...this.sepItem } }
-        }
-        if (this.proCash || this.sepPk)
-          this.updateConfirm({ formData, sepData })
-        else this.createConfirm({ formData, sepData })
-      }
-    },
-    multiSubmit(multiPayload: any) {
-      this.$emit('multi-submit', multiPayload)
-      this.$emit('close')
-    },
-    deleteObject(this: any) {
-      this.$emit('on-delete', {
-        project: this.proCash.project,
-        pk: this.proCash.pk,
-      })
-      this.$refs.delModal.visible = false
-      this.$emit('close')
-    },
-    ...mapActions('proCash', [
-      'fetchProFormAccD1List',
-      'fetchProFormAccD2List',
-    ]),
-  },
-})
-</script>

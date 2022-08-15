@@ -1,3 +1,126 @@
+<script lang="ts" setup>
+import { ref, computed, onBeforeMount } from 'vue'
+import { useStore } from 'vuex'
+import { useProject } from '@/store/pinia/project'
+import { pageTitle, navMenu } from '@/views/proCash/_menu/headermixin'
+import ContentHeader from '@/layouts/ContentHeader/Index.vue'
+import ContentBody from '@/layouts/ContentBody/Index.vue'
+import ListController from '@/views/proCash/Manage/components/ListController.vue'
+import AddProCash from '@/views/proCash/Manage/components/AddProCash.vue'
+import TableTitleRow from '@/components/TableTitleRow.vue'
+import ProCashList from '@/views/proCash/Manage/components/ProCashList.vue'
+
+const dataFilter = ref({
+  page: 1,
+  from_date: '',
+  to_date: '',
+  sort: '',
+  pro_acc_d1: '',
+  pro_acc_d2: '',
+  bank_account: '',
+  search: '',
+})
+
+const projectStore = useProject()
+
+const project = computed(() => projectStore.project?.pk)
+const initProjId = computed(() => projectStore.initProjId)
+
+const store = useStore()
+
+const fetchProAccSortList = () => store.dispatch('proCash/fetchProAccSortList')
+const fetchProAllAccD1List = () =>
+  store.dispatch('proCash/fetchProAllAccD1List')
+const fetchProAllAccD2List = () =>
+  store.dispatch('proCash/fetchProAllAccD2List')
+const fetchProFormAccD1List = (sort?: string) =>
+  store.dispatch('proCash/fetchProFormAccD1List', sort)
+const fetchProFormAccD2List = (payload?: { d1: string; sort: string }) =>
+  store.dispatch('proCash/fetchProFormAccD2List', payload)
+const fetchProBankAccList = (projId: number) =>
+  store.dispatch('proCash/fetchProBankAccList', projId)
+const fetchProjectCashList = (payload: { project: number }) =>
+  store.dispatch('proCash/fetchProjectCashList', payload)
+const createPrCashBook = (payload: any) =>
+  store.dispatch('proCash/createPrCashBook', payload)
+const updatePrCashBook = (payload: any) =>
+  store.dispatch('proCash/updatePrCashBook', payload)
+const deletePrCashBook = (payload: any) =>
+  store.dispatch('proCash/deletePrCashBook', payload)
+
+onBeforeMount(() => {
+  fetchProAccSortList()
+  fetchProAllAccD1List()
+  fetchProAllAccD2List()
+  fetchProFormAccD1List()
+  fetchProFormAccD2List()
+  fetchProBankAccList(initProjId.value)
+  fetchProjectCashList({ project: initProjId.value })
+})
+const onSelectAdd = (target: any) => {
+  if (!!target) {
+    fetchProBankAccList(target)
+    fetchProjectCashList({ project: target })
+  } else {
+    store.commit('payment/updateState', {
+      proBankAccountList: [],
+      proCashBookList: [],
+      proCashesCount: 0,
+    })
+  }
+}
+
+const listControl = ref()
+
+const pageSelect = (page: number) => {
+  dataFilter.value.page = page
+  listControl.value.listFiltering(page)
+}
+
+const listFiltering = (payload: any) => {
+  dataFilter.value = payload
+  const sort = payload.sort ? payload.sort : ''
+  const d1 = payload.pro_acc_d1 ? payload.pro_acc_d1 : ''
+  fetchProFormAccD1List(sort)
+  fetchProFormAccD2List({ d1, sort })
+  fetchProjectCashList({ ...{ project: project.value }, ...payload })
+}
+const onCreate = (payload: any) => {
+  payload.project = project.value
+  if (payload.sort === '3' && payload.bank_account_to) {
+    const { bank_account_to, income, ...inputData } = payload
+    createPrCashBook(inputData)
+
+    delete inputData.bank_account
+    delete inputData.outlay
+
+    createPrCashBook({
+      ...{ bank_account: bank_account_to, income },
+      ...inputData,
+    })
+  } else createPrCashBook(payload)
+}
+
+const onUpdate = (payload: any) =>
+  updatePrCashBook({ ...{ filters: dataFilter.value }, ...payload })
+
+const multiSubmit = (payload: any) => {
+  const { formData, sepData } = payload
+  console.log(formData, sepData)
+  if (formData.sort) {
+    if (formData.pk) onUpdate(formData)
+    else onCreate(formData)
+  }
+  if (sepData.sort) {
+    if (sepData.pk) onUpdate(sepData)
+    else onCreate({ ...{ filters: dataFilter.value }, ...sepData })
+  }
+}
+
+const onDelete = (payload: any) =>
+  deletePrCashBook({ ...{ filters: dataFilter.value }, ...payload })
+</script>
+
 <template>
   <ContentHeader
     :page-title="pageTitle"
@@ -16,7 +139,6 @@
         disabled
       />
       <ProCashList
-        :project="project"
         @page-select="pageSelect"
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
@@ -26,122 +148,3 @@
     <CCardFooter>&nbsp;</CCardFooter>
   </ContentBody>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import HeaderMixin from '@/views/proCash/_menu/headermixin'
-import ContentHeader from '@/layouts/ContentHeader/Index.vue'
-import ContentBody from '@/layouts/ContentBody/Index.vue'
-import ListController from '@/views/proCash/Manage/components/ListController.vue'
-import AddProCash from '@/views/proCash/Manage/components/AddProCash.vue'
-import TableTitleRow from '@/components/TableTitleRow.vue'
-import ProCashList from '@/views/proCash/Manage/components/ProCashList.vue'
-import { mapActions, mapGetters, mapState } from 'vuex'
-
-export default defineComponent({
-  name: 'ProjectCashManage',
-  components: {
-    ContentHeader,
-    ContentBody,
-    ListController,
-    AddProCash,
-    TableTitleRow,
-    ProCashList,
-  },
-  mixins: [HeaderMixin],
-  data() {
-    return {
-      dataFilter: {
-        page: 1,
-        from_date: '',
-        to_date: '',
-        sort: '',
-        pro_acc_d1: '',
-        pro_acc_d2: '',
-        bank_account: '',
-        search: '',
-      },
-    }
-  },
-  created() {
-    this.fetchProAccSortList()
-    this.fetchProAllAccD1List()
-    this.fetchProAllAccD2List()
-    this.fetchProFormAccD1List()
-    this.fetchProFormAccD2List()
-    this.fetchProBankAccList(this.initProjId)
-    this.fetchProjectCashList({ project: this.initProjId })
-  },
-  computed: {
-    ...mapState('project', ['project']),
-    ...mapGetters('accounts', ['initProjId']),
-  },
-  methods: {
-    onSelectAdd(this: any, target: any) {
-      if (target !== '') {
-        this.fetchProBankAccList(target)
-        this.fetchProjectCashList({ project: target })
-      } else {
-        this.$store.state.payment.proBankAccountList = []
-        this.$store.state.payment.proCashBookList = []
-        this.$store.state.payment.proCashesCount = 0
-      }
-    },
-    pageSelect(this: any, page: number) {
-      this.dataFilter.page = page
-      this.$refs.listControl.listFiltering(page)
-    },
-    listFiltering(payload: any) {
-      this.dataFilter = payload
-      const project = this.project.pk
-      const sort = payload.sort ? payload.sort : ''
-      const d1 = payload.pro_acc_d1 ? payload.pro_acc_d1 : ''
-      this.fetchProFormAccD1List(sort)
-      this.fetchProFormAccD2List({ d1, sort })
-      this.fetchProjectCashList({ ...{ project }, ...payload })
-    },
-    onCreate(payload: any) {
-      payload.project = this.project.pk
-      if (payload.sort === '3' && payload.bank_account_to) {
-        const { bank_account_to, income, ...outData } = payload
-        this.createPrCashBook(outData)
-        const { bank_account, outlay, ...incData } = outData
-        this.createPrCashBook({
-          ...{ bank_account: bank_account_to, income },
-          ...incData,
-        })
-      } else this.createPrCashBook(payload)
-    },
-    onUpdate(payload: any) {
-      this.updatePrCashBook({ ...{ filters: this.dataFilter }, ...payload })
-    },
-    multiSubmit(payload: any) {
-      const { formData, sepData } = payload
-      console.log(formData, sepData)
-      if (formData.sort) {
-        if (formData.pk) this.onUpdate(formData)
-        else this.onCreate(formData)
-      }
-      if (sepData.sort) {
-        if (sepData.pk) this.onUpdate(sepData)
-        else this.onCreate({ ...{ filters: this.dataFilter }, ...sepData })
-      }
-    },
-    onDelete(payload: any) {
-      this.deletePrCashBook({ ...{ filters: this.dataFilter }, ...payload })
-    },
-    ...mapActions('proCash', [
-      'fetchProAccSortList',
-      'fetchProAllAccD1List',
-      'fetchProAllAccD2List',
-      'fetchProFormAccD1List',
-      'fetchProFormAccD2List',
-      'fetchProBankAccList',
-      'fetchProjectCashList',
-      'createPrCashBook',
-      'updatePrCashBook',
-      'deletePrCashBook',
-    ]),
-  },
-})
-</script>

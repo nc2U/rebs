@@ -1,3 +1,26 @@
+<script lang="ts" setup>
+import { computed } from 'vue'
+import { useStore } from 'vuex'
+import ProCash from '@/views/proCash/Manage/components/ProCash.vue'
+import Pagination from '@/components/Pagination'
+import AlertModal from '@/components/Modals/AlertModal.vue'
+import { headerSecondary } from '@/utils/cssMixins'
+
+const emit = defineEmits(['page-select', 'on-delete', 'multi-submit'])
+
+const store = useStore()
+
+const allAccD1List = computed(() => store.state.proCash.allAccD1List)
+const allAccD2List = computed(() => store.state.proCash.allAccD2List)
+
+const proCashPages = computed(() => store.getters['proCash/proCashPages'])
+const getProCashLogs = computed(() => store.getters['proCash/getProCashLogs'])
+
+const pageSelect = (page: number) => emit('page-select', page)
+const multiSubmit = (payload: any) => emit('multi-submit', payload)
+const onDelete = (pk: number) => emit('on-delete', pk)
+</script>
+
 <template>
   <CTable hover responsive align="middle">
     <colgroup>
@@ -88,42 +111,3 @@
     <template #footer></template>
   </AlertModal>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import ProCash from '@/views/proCash/Manage/components/ProCash.vue'
-import Pagination from '@/components/Pagination'
-import AlertModal from '@/components/Modals/AlertModal.vue'
-import { headerSecondary } from '@/utils/cssMixins'
-import { mapGetters, mapState } from 'vuex'
-
-export default defineComponent({
-  name: 'ProCashList',
-  components: { ProCash, Pagination, AlertModal },
-  props: { project: Object },
-  computed: {
-    headerSecondary() {
-      return headerSecondary.value
-    },
-    ...mapGetters('proCash', ['proCashPages', 'getProCashLogs']),
-    ...mapState('proCash', ['allAccD1List', 'allAccD2List']),
-  },
-  methods: {
-    pageSelect(page: number) {
-      this.$emit('page-select', page)
-    },
-    onCreate(payload: any) {
-      this.$emit('on-create', payload)
-    },
-    onUpdate(payload: any) {
-      this.$emit('on-update', payload)
-    },
-    multiSubmit(payload: any) {
-      this.$emit('multi-submit', payload)
-    },
-    onDelete(pk: number) {
-      this.$emit('on-delete', pk)
-    },
-  },
-})
-</script>

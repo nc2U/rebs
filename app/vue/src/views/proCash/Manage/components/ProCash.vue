@@ -1,3 +1,40 @@
+<script lang="ts" setup>
+import { ref, computed } from 'vue'
+import FormModal from '@/components/Modals/FormModal.vue'
+import ProCashForm from '@/views/proCash/Manage/components/ProCashForm.vue'
+
+const props = defineProps({
+  proCash: {
+    type: Object,
+    required: true,
+  },
+})
+
+const emit = defineEmits(['multi-submit', 'on-delete'])
+
+const updateFormModal = ref()
+
+const sortClass = computed(() => {
+  const cls = ['', 'text-primary', 'text-danger', 'text-info']
+  return cls[props.proCash.sort]
+})
+
+const rowColor = computed(() => {
+  let color = ''
+  color =
+    props.proCash.contract && props.proCash.project_account_d2 <= '2'
+      ? 'info'
+      : color
+  color = props.proCash.is_separate ? 'primary' : color
+  color = props.proCash.separated ? 'secondary' : color
+  return color
+})
+
+const showDetail = () => updateFormModal.value.callModal()
+const multiSubmit = (payload: any) => emit('multi-submit', payload)
+const onDelete = (payload: any) => emit('on-delete', payload)
+</script>
+
 <template>
   <CTableRow
     v-if="proCash"
@@ -51,55 +88,3 @@
     </template>
   </FormModal>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import commonMixin from '@/mixins/commonMixin'
-import FormModal from '@/components/Modals/FormModal.vue'
-import ProCashForm from '@/views/proCash/Manage/components/ProCashForm.vue'
-
-export default defineComponent({
-  name: 'ProCash',
-  components: { FormModal, ProCashForm },
-  mixins: [commonMixin],
-  props: {
-    proCash: {
-      type: Object,
-      required: true,
-    },
-  },
-  computed: {
-    sortClass() {
-      const cls = ['', 'text-primary', 'text-danger', 'text-info']
-      return cls[this.proCash.sort]
-    },
-    rowColor() {
-      let color = ''
-      color =
-        this.proCash.contract && this.proCash.project_account_d2 <= '2'
-          ? 'info'
-          : color
-      color = this.proCash.is_separate ? 'primary' : color
-      color = this.proCash.separated ? 'secondary' : color
-      return color
-    },
-  },
-  methods: {
-    showDetail(this: any) {
-      this.$refs.updateFormModal.callModal()
-    },
-    // onCreate(payload: any) {
-    //   this.$emit('on-create', payload)
-    // },
-    // onUpdate(payload: any) {
-    //   this.$emit('on-update', payload)
-    // },
-    multiSubmit(payload: any) {
-      this.$emit('multi-submit', payload)
-    },
-    onDelete(payload: any) {
-      this.$emit('on-delete', payload)
-    },
-  },
-})
-</script>
