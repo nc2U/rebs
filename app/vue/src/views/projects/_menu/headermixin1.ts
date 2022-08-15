@@ -5,12 +5,3 @@ export const navMenu = [
   '타입정보 등록',
   '층별조건 등록',
 ]
-
-export default {
-  data() {
-    return {
-      pageTitle,
-      navMenu,
-    }
-  },
-}

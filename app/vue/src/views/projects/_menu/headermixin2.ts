@@ -6,12 +6,3 @@ export const navMenu = [
   '납부회차 등록',
   '계약조건 등록',
 ]
-
-export default {
-  data() {
-    return {
-      pageTitle,
-      navMenu,
-    }
-  },
-}
