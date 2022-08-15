@@ -34,3 +34,13 @@ export const hashCode = (s: string) =>
     a = (a << 5) - a + b.charCodeAt(0)
     return a & a
   }, 0)
+
+export const isValidate = (event: any) => {
+  const el = event.currentTarget
+  if (el.checkValidity() === false) {
+    event.preventDefault()
+    event.stopPropagation()
+
+    return true
+  } else return false
+}
