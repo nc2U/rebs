@@ -1,3 +1,24 @@
+<script lang="ts" setup>
+import { computed } from 'vue'
+import { useStore } from 'vuex'
+import Price from '@/views/projects/Price/components/Price.vue'
+import { headerSecondary } from '@/utils/cssMixins'
+
+defineProps({
+  msg: { type: String, default: '' },
+  condTexts: { type: Object, default: null },
+  queryIds: { type: Object, default: null },
+})
+const emit = defineEmits(['on-create', 'on-update', 'on-delete'])
+
+const store = useStore()
+const floorTypeList = computed(() => store.state.project.floorTypeList)
+
+const onCreate = (payload: any) => emit('on-create', payload)
+const onUpdate = (payload: any) => emit('on-update', payload)
+const onDelete = (pk: number) => emit('on-delete', pk)
+</script>
+
 <template>
   <CTable hover responsive>
     <colgroup>
@@ -56,33 +77,3 @@
     </CTableBody>
   </CTable>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import Price from '@/views/projects/Price/components/Price.vue'
-import { headerSecondary } from '@/utils/cssMixins'
-import { mapState } from 'vuex'
-
-export default defineComponent({
-  name: 'PriceFormList',
-  components: { Price },
-  props: { msg: String, condTexts: Object, queryIds: Object },
-  computed: {
-    headerSecondary() {
-      return headerSecondary.value
-    },
-    ...mapState('project', ['floorTypeList']),
-  },
-  methods: {
-    onCreate(payload: any) {
-      this.$emit('on-create', payload)
-    },
-    onUpdate(payload: any) {
-      this.$emit('on-update', payload)
-    },
-    onDelete(pk: number) {
-      this.$emit('on-delete', pk)
-    },
-  },
-})
-</script>

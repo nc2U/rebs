@@ -1,3 +1,116 @@
+<script lang="ts" setup>
+import { ref, reactive, computed, watch, onUpdated, onMounted } from 'vue'
+import { useStore } from 'vuex'
+import { useAccount } from '@/store/pinia/account'
+import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
+import AlertModal from '@/components/Modals/AlertModal.vue'
+import { write_project } from '@/utils/pageAuth'
+
+const props = defineProps({
+  floor: { type: Object, default: null },
+  condTexts: { type: Object, default: null },
+  queryIds: { type: Object, default: null },
+})
+const emit = defineEmits(['on-create', 'on-update', 'on-delete'])
+
+const alertModal = ref()
+const confirmModal = ref()
+
+const price = ref({
+  pk: null,
+  price_build: null,
+  price_land: null,
+  price_tax: null,
+  price: null,
+})
+const form = reactive({
+  price_build: null,
+  price_land: null,
+  price_tax: null,
+  price: null,
+})
+
+watch(form, val => {
+  if (val.price_build == '') form.price_build = null
+  if (val.price_land == '') form.price_land = null
+  if (val.price_tax == '') form.price_tax = null
+  if (val.price == '') form.price = null
+})
+
+const btnColor = computed(() => (price.value ? 'success' : 'primary'))
+const btnTitle = computed(() => (price.value ? '수정' : '등록'))
+
+const formsCheck = computed(() => {
+  if (price.value) {
+    const a = form.price_build == price.value.price_build
+    const b = form.price_land == price.value.price_land
+    const c = form.price_tax == price.value.price_tax
+    const d = form.price == price.value.price
+    return (a && b && c && d) || !price.value
+  } else {
+    return (
+      !form.price_build && !form.price_land && !form.price_tax && !form.price
+    )
+  }
+})
+
+const store = useStore()
+
+const priceList = computed(() => store.state.payment.priceList)
+
+watch(priceList, () => resetForm())
+
+const onStorePrice = () => {
+  if (write_project) {
+    const payload = {
+      ...props.queryIds,
+      ...{ unit_floor_type: props.floor.pk },
+      ...form,
+    }
+    if (!price.value) emit('on-create', payload)
+    else {
+      const updatePayload = { ...{ pk: price.value.pk }, ...payload }
+      emit('on-update', updatePayload)
+    }
+  } else {
+    alertModal.value.callModal()
+    resetForm()
+  }
+}
+
+const deletePrice = () => {
+  if (useAccount().superAuth) confirmModal.value.callModal()
+  else {
+    alertModal.value.callModal()
+    resetForm()
+  }
+}
+const modalAction = () => {
+  emit('on-delete', price.value.pk)
+  confirmModal.value.visible = false
+}
+
+const resetForm = () => {
+  const unit_floor_type = String(props.floor.pk)
+  const { project, order_group, unit_type } = props.queryIds
+
+  price.value = priceList.value.filter(
+    (p: any) =>
+      p.project == project &&
+      p.order_group == order_group &&
+      p.unit_type == unit_type &&
+      p.unit_floor_type == unit_floor_type,
+  )[0]
+
+  if (price.value) {
+    form.price_build = price.value.price_build
+    form.price_land = price.value.price_land
+    form.price_tax = price.value.price_tax
+    form.price = price.value.price
+  }
+}
+</script>
+
 <template>
   <CTableRow>
     <CTableDataCell class="text-center">
@@ -6,7 +119,9 @@
     <CTableDataCell class="text-center">
       {{ condTexts.typeText }}
     </CTableDataCell>
-    <CTableDataCell> {{ floor.alias_name }}</CTableDataCell>
+    <CTableDataCell>
+      {{ floor.alias_name }}
+    </CTableDataCell>
 
     <CTableDataCell>
       <CFormInput
@@ -52,7 +167,7 @@
       <CButton
         color="danger"
         size="sm"
-        :disabled="disabled"
+        :disabled="!price"
         @click="deletePrice()"
       >
         삭제
@@ -76,111 +191,3 @@
 
   <AlertModal ref="alertModal" />
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
-import AlertModal from '@/components/Modals/AlertModal.vue'
-import { mapGetters, mapState } from 'vuex'
-
-export default defineComponent({
-  name: 'Price',
-  components: { ConfirmModal, AlertModal },
-  props: { floor: Object, condTexts: Object, queryIds: Object },
-  data() {
-    return {
-      form: {
-        price_build: null,
-        price_land: null,
-        price_tax: null,
-        price: null,
-      },
-      price: {},
-    }
-  },
-  computed: {
-    btnColor() {
-      return this.price ? 'success' : 'primary'
-    },
-    btnTitle() {
-      return this.price ? '수정' : '등록'
-    },
-    disabled() {
-      return !this.price
-    },
-    formsCheck(this: any) {
-      if (this.price) {
-        const a = this.form.price_build == this.price.price_build
-        const b = this.form.price_land == this.price.price_land
-        const c = this.form.price_tax == this.price.price_tax
-        const d = this.form.price == this.price.price
-        return (a && b && c && d) || !this.price
-      } else {
-        return (
-          !this.form.price_build &&
-          !this.form.price_land &&
-          !this.form.price_tax &&
-          !this.form.price
-        )
-      }
-    },
-
-    ...mapState('payment', ['priceList']),
-    ...mapGetters('accounts', ['staffAuth', 'superAuth']),
-  },
-  watch: {
-    priceList() {
-      this.resetForm()
-    },
-  },
-  methods: {
-    onStorePrice(this: any) {
-      if (
-        this.superAuth ||
-        (this.staffAuth && this.staffAuth.project === '2')
-      ) {
-        const payload = {
-          ...this.queryIds,
-          ...{ unit_floor_type: this.floor.pk },
-          ...this.form,
-        }
-        if (!this.price) this.$emit('on-create', payload)
-        else {
-          const updatePayload = { ...{ pk: this.price.pk }, ...payload }
-          this.$emit('on-update', updatePayload)
-        }
-      } else {
-        this.$refs.alertModal.callModal()
-        this.resetForm()
-      }
-    },
-    deletePrice(this: any) {
-      if (this.superAuth) this.$refs.confirmModal.callModal()
-      else {
-        this.$refs.alertModal.callModal()
-        this.resetForm()
-      }
-    },
-    modalAction(this: any) {
-      this.$emit('on-delete', this.price.pk)
-      this.$refs.confirmModal.visible = false
-    },
-    resetForm(this: any) {
-      const unit_floor_type = String(this.floor.pk)
-      const { project, order_group, unit_type }: any = this.queryIds
-      const price = this.priceList.filter(
-        (p: any) =>
-          p.project == project &&
-          p.order_group == order_group &&
-          p.unit_type == unit_type &&
-          p.unit_floor_type == unit_floor_type,
-      )[0]
-      this.price = price
-      this.form.price_build = price ? price.price_build : null
-      this.form.price_land = price ? price.price_land : null
-      this.form.price_tax = price ? price.price_tax : null
-      this.form.price = price ? price.price : null
-    },
-  },
-})
-</script>

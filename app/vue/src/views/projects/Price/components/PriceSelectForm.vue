@@ -1,3 +1,28 @@
+<script lang="ts" setup>
+import { ref, watch } from 'vue'
+
+const props = defineProps({
+  orders: { type: Object, default: null },
+  types: { type: Object, default: null },
+})
+const emit = defineEmits(['on-order-select', 'on-type-select'])
+
+const order = ref('')
+const type = ref('')
+const orderDisabled = ref(false)
+
+watch(props, () => {
+  order.value = ''
+  type.value = ''
+})
+
+const onOrderSelect = (e: any) => {
+  type.value = ''
+  emit('on-order-select', e.target.value)
+}
+const onTypeSelect = (e: any) => emit('on-type-select', e.target.value)
+</script>
+
 <template>
   <CCallout color="warning" class="pb-2 mb-4">
     <CRow>
@@ -45,30 +70,3 @@
     </CRow>
   </CCallout>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-
-export default defineComponent({
-  name: 'PriceSelectForm',
-  components: {},
-  props: ['orders', 'types'],
-
-  data() {
-    return {
-      order: '',
-      type: '',
-      orderDisabled: false,
-    }
-  },
-  methods: {
-    onOrderSelect(e: any) {
-      this.type = ''
-      this.$emit('on-order-select', e.target.value)
-    },
-    onTypeSelect(e: any) {
-      this.$emit('on-type-select', e.target.value)
-    },
-  },
-})
-</script>
