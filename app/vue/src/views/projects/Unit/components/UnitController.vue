@@ -23,6 +23,10 @@ const form = reactive({
   maxFloor: '',
 })
 
+watch(props, () => {
+  form.building = ''
+})
+
 const warning = computed(() => form.maxFloor !== '')
 const typeNameLength = computed(() => {
   const typeNames = unitTypeList.value
