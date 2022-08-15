@@ -136,7 +136,7 @@ const actions = {
     api
       .post(`/down-payment/`, payload)
       .then(res => {
-        dispatch('fetchDownPayList', res.data.project)
+        dispatch('fetchDownPayList', { project: res.data.project })
         message()
       })
       .catch(err => errorHandle(err.response.data))
