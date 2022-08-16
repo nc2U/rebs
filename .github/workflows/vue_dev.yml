@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - "app/vue/**"
+      - ".github/workflows/vue_dev.yml"
     branches: [ "dev" ]
 
   # Allows you to run this workflow manually from the Actions tab

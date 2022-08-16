@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - "app/django/**"
+      - ".github/workflows/django_prod.yml"
     branches: [ "master" ]
 
   # Allows you to run this workflow manually from the Actions tab
@@ -32,7 +33,7 @@ jobs:
           source: 'app/django'
           target: '/mnt/nfs/prod'
 
-      # web pod --> django model migrations
+      # web pod --> django model migrations & collectstatic
       - name: django model migration
         uses: garygrossgarten/github-action-ssh@release
         with:
@@ -43,6 +44,7 @@ jobs:
             web_pod=$(kubectl get pod -n prod-hrebs | grep web | cut -d ' ' -f1)
             kubectl exec -it -n prod-hrebs $web_pod -- python manage.py makemigrations accounts book cash company contract document notice project rebs
             kubectl exec -it -n prod-hrebs $web_pod -- python manage.py migrate
+            kubectl exec -it -n prod-hrebs $web_pod -- echo yes | python manage.py collectstatic
 
       # slack --> notification
       - name: Send slack when failed

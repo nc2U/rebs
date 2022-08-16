@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - "app/svelte/**"
+      - ".github/workflows/svelte_prod.yml"
     branches: [ "master" ]
 
   # Allows you to run this workflow manually from the Actions tab

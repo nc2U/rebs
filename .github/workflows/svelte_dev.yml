@@ -1,10 +1,10 @@
-name: django_dev_action
+name: svelte_app_action
 
 on:
   push:
     paths:
-      - "app/django/**"
-      - ".github/workflows/django_dev.yml"
+      - "app/svelte/**"
+      - ".github/workflows/svelte_dev.yml"
     branches: [ "dev" ]
 
   # Allows you to run this workflow manually from the Actions tab
@@ -22,8 +22,28 @@ jobs:
       # 레파지터리 체크 아웃
       - name: Check out source code
         uses: actions/checkout@v3
+
+      # Node.js 사용
+      - name: Use Node.js
+        uses: actions/setup-node@v3
         with:
-          ref: 'dev'
+          node-version: 16
+
+      # node_modules 캐싱
+      - name: Cache svelte node
+        uses: actions/cache@v3
+        id: cache_svelte
+        with:
+          path: ./app/svelte/node_modules
+          key: yarn-packages-${{ hashFiles('**/yarn.lock') }}
+
+      # node_modules 변화기 있으면 빌드
+      - name: Install Dependencies
+        if: steps.cache_svelte.outputs.cache-hit != 'true'
+        run: cd app/svelte && yarn
+
+      - run: cd app/svelte && yarn build
+        if: ${{ always() }}
 
       # data to server copy transfer
       - name: Copy django, etc data to CI/CD server
@@ -34,19 +54,6 @@ jobs:
           password: ${{ secrets.CICD_PASSWORD }}
           source: 'app/django'
           target: '/mnt/nfs/dev'
-
-      # web pod --> django model migrations
-      - name: django model migration
-        uses: garygrossgarten/github-action-ssh@release
-        with:
-          host: ${{ secrets.CICD_HOST }}
-          username: ${{ secrets.CICD_USERNAME }}
-          password: ${{ secrets.CICD_PASSWORD }}
-          command: |
-            web_pod=$(kubectl get pod -n dev-hrebs | grep web | cut -d ' ' -f1)
-            kubectl exec -it -n dev-hrebs $web_pod -- python manage.py makemigrations accounts book cash company contract document notice project rebs
-            kubectl exec -it -n dev-hrebs $web_pod -- python manage.py migrate
-            kubectl exec -it -n dev-hrebs $web_pod -- echo yes | python manage.py collectstatic
 
       # slack --> notification
       - name: Send slack when failed
