@@ -61,21 +61,21 @@ volumes:
   dataAccessModes:
     - ReadWriteMany
   dataPvStorageProd: 1Gi
-  dataPvStorageDev: 0.5Gi
+  dataPvStorageDev: 500Mi
   dataPvcStorageProd: 1Gi
-  dataPvcStorageDev: 0.5Gi
+  dataPvcStorageDev: 500Mi
 
   sqlAccessModes:
     - ReadWriteMany
-  sqlPvStorage: 0.2Gi
-  sqlPvcStorage: 0.2Gi
+  sqlPvStorage: 200Mi
+  sqlPvcStorage: 200Mi
 
   backupAccessModes:
     - ReadWriteMany
-  backupPvStorageProd: 0.8Gi
-  backupPvStorageDev: 0.2Gi
-  backupPvcStorageProd: 0.8Gi
-  backupPvcStorageDev: 0.2Gi
+  backupPvStorageProd: 800Mi
+  backupPvStorageDev: 200Mi
+  backupPvcStorageProd: 800Mi
+  backupPvcStorageDev: 200Mi
 
 resources: { }
   # We usually recommend not to specify default resources and to leave this as a conscious

@@ -67,10 +67,10 @@ ingress:
 volumes:
   staticAccessModes:
   - ReadWriteMany
-  staticPvStorageProd: 0.5Gi
-  staticPvStorageDev: 0.3Gi
-  staticPvcStorageProd: 0.5Gi
-  staticPvcStorageDev: 0.3Gi
+  staticPvStorageProd: 500Mi
+  staticPvStorageDev: 300Mi
+  staticPvcStorageProd: 500MGi
+  staticPvcStorageDev: 300MGi
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
