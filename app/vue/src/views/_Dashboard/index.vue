@@ -9,7 +9,6 @@ import WidgetsStatsD from './components/widgets/WidgetsStatsTypeD.vue'
 
 <template>
   <CContainer fluid>
-    aa
     <CRow>
       <CCol xl="11" xxl="10">
         <MainCarousel />
