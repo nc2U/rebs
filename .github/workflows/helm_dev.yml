@@ -1,4 +1,4 @@
-name: Helm_Dev_Update
+name: helm_dev_action
 
 on:
   push:
@@ -41,7 +41,8 @@ jobs:
           username: ${{ secrets.CICD_USERNAME }}
           password: ${{ secrets.CICD_PASSWORD }}
           command: |
-            cd ${{ secrets.NFS_PATH }}/dev/ && pwd && ls -al
+            cd ${{ secrets.NFS_PATH }}/dev/ 
+            pwd && ls -al && cat /deploy/helm/values.yaml
 #            kubectl apply -f ./deploy/kubectl/ns-dev.yaml
 #            bash
 #            helm upgrade ${{ secrets.DATABASE_USER }} ./deploy/helm --install -f ./deploy/helm/values-dev.yaml -n dev-hrebs \
