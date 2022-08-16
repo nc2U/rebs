@@ -6,6 +6,9 @@ on:
       - "deploy/docker/python/**"
     branches: [ "master" ]
 
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
 # job은 사용자가 정한 플랫폼을 통해 steps 라는 일련의 과정을 실행.
 # 여러 개의 job 을 사용할 수 있으며, 여러 개의 job 을 사용할 때는 서로 정보도 교환 가능.
 # 각각 독립적으로도 실행 가능.
