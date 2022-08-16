@@ -1,3 +1,27 @@
+<script lang="ts" setup>
+import { computed } from 'vue'
+import { headerSecondary } from '@/utils/cssMixins'
+import Payment from '@/views/payments/Register/components/Payment.vue'
+
+const props = defineProps({
+  contract: { type: Object, default: null },
+  paymentList: { type: Array, default: [] },
+  paymentId: { type: String, default: '' },
+})
+const emit = defineEmits(['on-update', 'on-delete'])
+
+const paymentSum = computed(() => {
+  return props.paymentList.length !== 0
+    ? props.paymentList
+        .map((p: any) => p.income)
+        .reduce((x: any, y: any) => x + y)
+    : 0
+})
+
+const onUpdate = (payload: any) => emit('on-update', payload)
+const onDelete = (pk: number) => emit('on-delete', pk)
+</script>
+
 <template>
   <CTable hover responsive align="middle">
     <colgroup>
@@ -48,35 +72,3 @@
     </CTableHead>
   </CTable>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import { headerSecondary } from '@/utils/cssMixins'
-import Payment from '@/views/payments/Register/components/Payment.vue'
-
-export default defineComponent({
-  name: 'AllPaymentList',
-  components: { Payment },
-  props: { contract: Object, paymentList: Array, paymentId: String },
-  computed: {
-    headerSecondary() {
-      return headerSecondary.value
-    },
-    paymentSum(this: any) {
-      return this.paymentList.length !== 0
-        ? this.paymentList
-            .map((p: any) => p.income)
-            .reduce((x: any, y: any) => x + y)
-        : 0
-    },
-  },
-  methods: {
-    onUpdate(payload: any) {
-      this.$emit('on-update', payload)
-    },
-    onDelete(pk: number) {
-      this.$emit('on-delete', pk)
-    },
-  },
-})
-</script>

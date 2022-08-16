@@ -1,3 +1,32 @@
+<script lang="ts" setup>
+import { ref, onMounted } from 'vue'
+import FormModal from '@/components/Modals/FormModal.vue'
+import PaymentForm from '@/views/payments/Register/components/PaymentForm.vue'
+
+const props = defineProps({
+  payment: { type: Object, default: null },
+  paymentId: { type: String, default: '' },
+  contract: { type: Object, default: null },
+})
+const emit = defineEmits(['on-update', 'on-delete'])
+
+const updateFormModal = ref()
+
+onMounted(() => {
+  if (props.paymentId === props.payment.pk.toString()) {
+    showDetail()
+  }
+})
+
+const showDetail = () => updateFormModal.value.callModal()
+
+const updateObject = (payload: any) => {
+  emit('on-update', { ...{ pk: props.payment.pk }, ...payload })
+  updateFormModal.value.visible = false
+}
+const deleteObject = () => emit('on-delete', props.payment.pk)
+</script>
+
 <template>
   <CTableRow
     class="text-center"
@@ -37,36 +66,3 @@
     </template>
   </FormModal>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import FormModal from '@/components/Modals/FormModal.vue'
-import PaymentForm from '@/views/payments/Register/components/PaymentForm.vue'
-import { mapGetters } from 'vuex'
-
-export default defineComponent({
-  name: 'Payment',
-  components: { FormModal, PaymentForm },
-  props: { payment: Object, paymentId: String, contract: Object },
-  mounted(this: any) {
-    if (this.paymentId === this.payment.pk.toString()) {
-      this.showDetail()
-    }
-  },
-  computed: {
-    ...mapGetters('accounts', ['staffAuth', 'superAuth']),
-  },
-  methods: {
-    showDetail(this: any) {
-      this.$refs.updateFormModal.callModal()
-    },
-    updateObject(this: any, payload: any) {
-      this.$emit('on-update', { ...{ pk: this.payment.pk }, ...payload })
-      this.$refs.updateFormModal.visible = false
-    },
-    deleteObject(this: any) {
-      this.$emit('on-delete', this.payment.pk)
-    },
-  },
-})
-</script>
