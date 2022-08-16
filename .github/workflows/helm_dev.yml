@@ -24,25 +24,26 @@ jobs:
         with:
           ref: 'dev'
 
-      # data to server copy transfer
-      - name: Copy helm, to CI/CD server
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.CICD_HOST }}
-          username: ${{ secrets.CICD_USERNAME }}
-          password: ${{ secrets.CICD_PASSWORD }}
-          source: 'deploy/helm,deploy/kubectl'
-          target: '/mnt/nfs/dev/'
+      - run: git branch
 
-      - name: SSH Remote Commands from ci/cd server
-        uses: garygrossgarten/github-action-ssh@release
-        with:
-          host: ${{ secrets.CICD_HOST }}
-          username: ${{ secrets.CICD_USERNAME }}
-          password: ${{ secrets.CICD_PASSWORD }}
-          command: |
-            cd ${{ secrets.NFS_PATH }}/dev/
-            pwd && ls -al
+#      # data to server copy transfer
+#      - name: Copy helm, to CI/CD server
+#        uses: appleboy/scp-action@master
+#        with:
+#          host: ${{ secrets.CICD_HOST }}
+#          username: ${{ secrets.CICD_USERNAME }}
+#          password: ${{ secrets.CICD_PASSWORD }}
+#          source: 'deploy/helm,deploy/kubectl'
+#          target: '/mnt/nfs/dev/'
+#
+#      - name: SSH Remote Commands from ci/cd server
+#        uses: garygrossgarten/github-action-ssh@release
+#        with:
+#          host: ${{ secrets.CICD_HOST }}
+#          username: ${{ secrets.CICD_USERNAME }}
+#          password: ${{ secrets.CICD_PASSWORD }}
+#          command: |
+#            cd ${{ secrets.NFS_PATH }}/dev/
 #            kubectl apply -f ./deploy/kubectl/ns-dev.yaml
 #            bash
 #            helm upgrade ${{ secrets.DATABASE_USER }} ./deploy/helm --install -f ./deploy/helm/values-dev.yaml -n dev-hrebs \
