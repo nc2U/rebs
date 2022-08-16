@@ -1,13 +1,10 @@
-name: Django_Prod_Update
+name: Vue_app_Update
 
 on:
   push:
     paths:
-      - "app/django/**"
-    branches: [ "master" ]
-
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+      - "app/vue/**"
+    branches: [ "dev" ]
 
 # job은 사용자가 정한 플랫폼을 통해 steps 라는 일련의 과정을 실행.
 # 여러 개의 job 을 사용할 수 있으며, 여러 개의 job 을 사용할 때는 서로 정보도 교환 가능.
@@ -21,6 +18,45 @@ jobs:
       # 레파지터리 체크 아웃
       - name: Check out source code
         uses: actions/checkout@v3
+        with:
+          ref: 'dev'
+
+      - run: pwd && ls -al
+
+      # Node.js 사용
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      # node_modules 캐싱
+      - name: Cache vue node
+        uses: actions/cache@v3
+        id: cache_vue
+        with:
+          path: ./app/vue/node_modules
+          key: yarn-packages-${{ hashFiles('**/yarn.lock') }}
+
+      # node_modules 변화기 있으면 빌드
+      - name: Install Dependencies
+        if: steps.cache_vue.outputs.cache-hit != 'true'
+        run: cd app/vue && yarn
+
+      #      - run: yarn lint
+      #        # `if: ${{ always() }} => ` 만약 `yarn lint`라는 곳에서 에러가 났을 경우
+      #        # 이후 build를 실행하지 않고 해당 workflow가 종료됨.
+      #        # ${{ always() }}라는 문법을 사용 시 `yarn lint`라는 곳에서 에러가 나도
+      #        # 이후의 build까지 다 실행을 해보고 난 뒤 종료 하므로 모든 테스트 스크립트에 ${{ always() }}를 붙임.
+      #        if: ${{ always() }}
+
+      - run: cd app/vue && yarn build && yarn docs:build
+        if: ${{ always() }}
+
+      - name: Docs Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: app/vue/docs/.vitepress/dist
 
       # data to server copy transfer
       - name: Copy django, etc data to CI/CD server
@@ -30,19 +66,7 @@ jobs:
           username: ${{ secrets.CICD_USERNAME }}
           password: ${{ secrets.CICD_PASSWORD }}
           source: 'app/django'
-          target: '/mnt/nfs/prod'
-
-      # web pod --> django model migrations
-      - name: django model migration
-        uses: garygrossgarten/github-action-ssh@release
-        with:
-          host: ${{ secrets.CICD_HOST }}
-          username: ${{ secrets.CICD_USERNAME }}
-          password: ${{ secrets.CICD_PASSWORD }}
-          command: |
-            web_pod=$(kubectl get pod -n prod-hrebs | grep web | cut -d ' ' -f1)
-            kubectl exec -it -n prod-hrebs $web_pod -- python manage.py makemigrations accounts book cash company contract document notice project rebs
-            kubectl exec -it -n prod-hrebs $web_pod -- python manage.py migrate
+          target: '/mnt/nfs/dev/'
 
       # slack --> notification
       - name: Send slack when failed

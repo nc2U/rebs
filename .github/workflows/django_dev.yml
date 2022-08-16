@@ -31,8 +31,8 @@ jobs:
           host: ${{ secrets.CICD_HOST }}
           username: ${{ secrets.CICD_USERNAME }}
           password: ${{ secrets.CICD_PASSWORD }}
-          source: 'app/dev/django'
-          target: '/mnt/nfs/'
+          source: 'app/django'
+          target: '/mnt/nfs/dev/'
 
       # web pod --> django model migrations
       - name: django model migration

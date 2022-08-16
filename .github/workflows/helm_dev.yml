@@ -32,7 +32,7 @@ jobs:
           username: ${{ secrets.CICD_USERNAME }}
           password: ${{ secrets.CICD_PASSWORD }}
           source: 'deploy/helm,deploy/kubectl'
-          target: '/mnt/nfs/'
+          target: '/mnt/nfs/dev/'
 
       - name: SSH Remote Commands from ci/cd server
         uses: garygrossgarten/github-action-ssh@release
