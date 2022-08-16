@@ -43,21 +43,22 @@ jobs:
           username: ${{ secrets.CICD_USERNAME }}
           password: ${{ secrets.CICD_PASSWORD }}
           command: |
-            web_pod=$(kubectl get pod -n dev-hrebs | grep web | cut -d ' ' -f1)
-            kubectl exec -it -n dev-hrebs $web_pod -- python manage.py makemigrations accounts book cash company contract document notice project rebs
-            kubectl exec -it -n dev-hrebs $web_pod -- python manage.py migrate
-            kubectl exec -it -n dev-hrebs $web_pod -- echo yes | python manage.py collectstatic
+            pwd && ls -al
+#            web_pod=$(kubectl get pod -n dev-hrebs | grep web | cut -d ' ' -f1)
+#            kubectl exec -it -n dev-hrebs $web_pod -- python manage.py makemigrations accounts book cash company contract document notice project rebs
+#            kubectl exec -it -n dev-hrebs $web_pod -- python manage.py migrate
+#            kubectl exec -it -n dev-hrebs $web_pod -- echo yes | python manage.py collectstatic
 
-      # slack --> notification
-      - name: Send slack when failed
-        if: ${{ failure() }}                    # 실패했을 때 실행
-        uses: ./.github/actions/slack-notify    # 직접 '만든' Action이므로 uses 키워드를 이용해서 아래 경로를 입력해줍니다.
-        with:
-          slack_incoming_url: ${{ secrets.SLACK_INCOMING_URL }}
-
-      - name: Send slack if completed
-        if: ${{ success() }}                    # 성공할 때만 실행
-        uses: ./.github/actions/slack-notify
-        with:
-          status: success   # status input은 받는 쪽에서 default 값을 정해놨기 때문에 success일 때만 전달.
-          slack_incoming_url: ${{ secrets.SLACK_INCOMING_URL }}
+#      # slack --> notification
+#      - name: Send slack when failed
+#        if: ${{ failure() }}                    # 실패했을 때 실행
+#        uses: ./.github/actions/slack-notify    # 직접 '만든' Action이므로 uses 키워드를 이용해서 아래 경로를 입력해줍니다.
+#        with:
+#          slack_incoming_url: ${{ secrets.SLACK_INCOMING_URL }}
+#
+#      - name: Send slack if completed
+#        if: ${{ success() }}                    # 성공할 때만 실행
+#        uses: ./.github/actions/slack-notify
+#        with:
+#          status: success   # status input은 받는 쪽에서 default 값을 정해놨기 때문에 success일 때만 전달.
+#          slack_incoming_url: ${{ secrets.SLACK_INCOMING_URL }}
