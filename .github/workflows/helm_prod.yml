@@ -42,7 +42,7 @@ jobs:
           password: ${{ secrets.CICD_PASSWORD }}
           command: |
             cd ${{ secrets.NFS_PATH }}/prod/
-            ls -al
+            ls -al && pwd
       #            kubectl apply -f ./deploy/kubectl/ns-prod.yaml
       #            bash
       #            helm upgrade ${{ secrets.DATABASE_USER }} ./deploy/helm --install -f ./deploy/helm/values-prod.yaml -n prod-hrebs \
