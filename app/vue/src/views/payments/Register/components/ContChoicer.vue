@@ -16,7 +16,7 @@ const contractIndex = computed(() => store.getters['contract/contractIndex'])
 
 const paymentUrl = computed(() => {
   const url = '/rebs/pdf-payments/'
-  const project = props.project ? props.project.pk : ''
+  const project = props.project ? props.project : ''
   const contract = props.contract ? props.contract.pk : ''
   return `${url}?project=${project}&contract=${contract}`
 })
