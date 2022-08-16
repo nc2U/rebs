@@ -15,9 +15,9 @@ spec:
     - nfsvers=4.1
   nfs:
     {{- if eq .Values.global.appMode "prod" }}
-    path: {{ .Values.global.nfsPath }}/volume/prod/mysql
+    path: {{ .Values.global.nfsPath }}/prod/volume/mysql
     {{- else if eq .Values.global.appMode "dev" }}
-    path: {{ .Values.global.nfsPath }}/volume/dev/mysql
+    path: {{ .Values.global.nfsPath }}/dev/volume/mysql
     {{- end }}
     server: {{ .Values.global.nfsServerHost }}
 ---
@@ -38,9 +38,9 @@ spec:
     - nfsvers=4.1
   nfs:
   {{- if eq .Values.global.appMode "prod" }}
-    path: {{ .Values.global.nfsPath }}/volume/prod/sql
+    path: {{ .Values.global.nfsPath }}/prod/volume/sql
   {{- else if eq.Values.global.appMode "dev" }}
-    path: {{ .Values.global.nfsPath }}/volume/dev/sql
+    path: {{ .Values.global.nfsPath }}/dev/volume/sql
   {{- end }}
     server: {{ .Values.global.nfsServerHost }}
 ---
@@ -61,8 +61,8 @@ spec:
     - nfsvers=4.1
   nfs:
   {{- if eq .Values.global.appMode "prod" }}
-    path: {{ .Values.global.nfsPath }}/volume/prod/backup
+    path: {{ .Values.global.nfsPath }}/prod/volume/backup
   {{- else if eq.Values.global.appMode "dev" }}
-    path: {{ .Values.global.nfsPath }}/volume/dev/backup
+    path: {{ .Values.global.nfsPath }}/dev/volume/backup
   {{- end}}
     server: {{ .Values.global.nfsServerHost }}
