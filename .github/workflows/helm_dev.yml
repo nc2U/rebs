@@ -21,6 +21,8 @@ jobs:
     steps:
       - name: Check out source code
         uses: actions/checkout@v3
+        with:
+          ref: 'dev'
 
       # data to server copy transfer
       - name: Copy helm, to CI/CD server
