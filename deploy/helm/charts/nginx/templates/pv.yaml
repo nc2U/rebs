@@ -5,7 +5,11 @@ metadata:
 spec:
   storageClassName: {{ include "nginx.fullname" . }}-static-{{ .Values.global.appMode }}
   capacity:
-    storage: {{ .Values.volumes.staticPvcStorage}}
+  {{- if eq .Values.global.appMode "prod" }}
+    storage: {{ .Values.volumes.staticPvcStorageProd }}
+  {{- else if eq .Values.global.appMode "dev" }}
+    storage: {{ .Values.volumes.staticPvcStorageDev }}
+  {{- end }}
   accessModes:
   {{- range .Values.volumes.staticAccessModes }}
     - {{ . }}
@@ -14,9 +18,9 @@ spec:
     - hard
     - nfsvers=4.1
   nfs:
-    {{- if eq .Values.global.appMode "prod" }}
+  {{- if eq .Values.global.appMode "prod" }}
     path: {{ .Values.global.nfsPath }}/prod/app/django/static
-    {{- else if eq .Values.global.appMode "dev" }}
+  {{- else if eq .Values.global.appMode "dev" }}
     path: {{ .Values.global.nfsPath }}/dev/app/django/static
-    {{- end }}
+  {{- end }}
     server: {{ .Values.global.nfsServerHost }}

@@ -10,4 +10,8 @@ spec:
   {{- end }}
   resources:
     requests:
-      storage: {{ .Values.volumes.djangoPvcStorage }}
+    {{- if eq .Values.global.appMode "prod" }}
+      storage: {{ .Values.volumes.djangoPvcStorageProd }}
+    {{- else if eq .Values.global.appMode "dev" }}
+      storage: {{ .Values.volumes.djangoPvcStorageDev }}
+    {{- end }}

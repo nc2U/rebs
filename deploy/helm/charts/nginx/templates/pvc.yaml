@@ -10,4 +10,8 @@ spec:
   {{- end }}
   resources:
     requests:
-      storage: {{ .Values.volumes.staticPvcStorage }}
+    {{- if eq .Values.global.appMode "prod" }}
+      storage: {{ .Values.volumes.staticPvcStorageProd }}
+    {{- else if eq .Values.global.appMode "dev" }}
+      storage: {{ .Values.volumes.staticPvcStorageProd }}
+    {{- end }}

@@ -5,7 +5,11 @@ metadata:
 spec:
   storageClassName: {{ include "web.fullname" . }}-app-{{ .Values.global.appMode }}
   capacity:
-    storage: {{ .Values.volumes.djangoPvStorage }}
+  {{- if eq .Values.global.appMode "prod" }}
+    storage: {{ .Values.volumes.djangoPvStorageProd }}
+  {{- else if eq .Values.global.appMode "dev" }}
+    storage: {{ .Values.volumes.djangoPvStorageDev }}
+  {{- end }}
   accessModes:
     {{- range .Values.volumes.djangoAccessModes }}
     - {{ . }}

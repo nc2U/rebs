@@ -60,8 +60,10 @@ ingress:
 volumes:
   dataAccessModes:
     - ReadWriteMany
-  dataPvStorage: 1Gi
-  dataPvcStorage: 1Gi
+  dataPvStorageProd: 1Gi
+  dataPvStorageDev: 0.5Gi
+  dataPvcStorageProd: 1Gi
+  dataPvcStorageDev: 0.5Gi
 
   sqlAccessModes:
     - ReadWriteMany
@@ -70,8 +72,10 @@ volumes:
 
   backupAccessModes:
     - ReadWriteMany
-  backupPvStorage: 0.8Gi
-  backupPvcStorage: 0.8Gi
+  backupPvStorageProd: 0.8Gi
+  backupPvStorageDev: 0.2Gi
+  backupPvcStorageProd: 0.8Gi
+  backupPvcStorageDev: 0.2Gi
 
 resources: { }
   # We usually recommend not to specify default resources and to leave this as a conscious

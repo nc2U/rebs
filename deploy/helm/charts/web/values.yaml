@@ -67,8 +67,10 @@ ingress:
 volumes:
   djangoAccessModes:
     - ReadWriteMany
-  djangoPvStorage: 2Gi
-  djangoPvcStorage: 2Gi
+  djangoPvStorageProd: 0.6Gi
+  djangoPvStorageDev: 0.4Gi
+  djangoPvcStorageProd: 0.6Gi
+  djangoPvcStorageDev: 0.4Gi
 
 resources: { }
   # We usually recommend not to specify default resources and to leave this as a conscious
