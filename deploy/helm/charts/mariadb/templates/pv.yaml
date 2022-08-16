@@ -39,7 +39,7 @@ spec:
   nfs:
   {{- if eq .Values.global.appMode "prod" }}
     path: {{ .Values.global.nfsPath }}/prod/volume/sql
-  {{- else if eq.Values.global.appMode "dev" }}
+  {{- else if eq .Values.global.appMode "dev" }}
     path: {{ .Values.global.nfsPath }}/dev/volume/sql
   {{- end }}
     server: {{ .Values.global.nfsServerHost }}
@@ -62,7 +62,7 @@ spec:
   nfs:
   {{- if eq .Values.global.appMode "prod" }}
     path: {{ .Values.global.nfsPath }}/prod/volume/backup
-  {{- else if eq.Values.global.appMode "dev" }}
+  {{- else if eq .Values.global.appMode "dev" }}
     path: {{ .Values.global.nfsPath }}/dev/volume/backup
   {{- end}}
     server: {{ .Values.global.nfsServerHost }}

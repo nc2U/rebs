@@ -14,9 +14,9 @@ spec:
     - hard
     - nfsvers=4.1
   nfs:
-    {{- if eq.Values.global.appMode "prod" }}
+    {{- if eq .Values.global.appMode "prod" }}
     path: {{ .Values.global.nfsPath }}/prod/app/django
-    {{- else if eq.Values.global.appMode "dev" }}
+    {{- else if eq .Values.global.appMode "dev" }}
     path: {{ .Values.global.nfsPath }}/dev/app/django
     {{- end }}
     server: {{ .Values.global.nfsServerHost }}
