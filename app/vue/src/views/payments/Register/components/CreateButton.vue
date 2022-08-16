@@ -1,3 +1,23 @@
+<script lang="ts" setup>
+import { ref, computed } from 'vue'
+import FormModal from '@/components/Modals/FormModal.vue'
+import PaymentForm from '@/views/payments/Register/components/PaymentForm.vue'
+
+const props = defineProps({ contract: { type: Object, default: null } })
+const emit = defineEmits(['on-create'])
+
+const createFormModal = ref()
+
+const btnActive = computed(() => !props.contract)
+
+const showDetail = () => createFormModal.value.callModal()
+
+const createObject = (payload: any) => {
+  emit('on-create', payload)
+  createFormModal.value.visible = false
+}
+</script>
+
 <template>
   <CAlert color="secondary" class="text-right">
     <CButton
@@ -24,31 +44,3 @@
     </template>
   </FormModal>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import FormModal from '@/components/Modals/FormModal.vue'
-import PaymentForm from '@/views/payments/Register/components/PaymentForm.vue'
-import { mapGetters } from 'vuex'
-
-export default defineComponent({
-  name: 'CreateButton',
-  components: { FormModal, PaymentForm },
-  props: { contract: Object },
-  computed: {
-    btnActive() {
-      return !this.contract
-    },
-    ...mapGetters('accounts', ['staffAuth', 'superAuth']),
-  },
-  methods: {
-    showDetail(this: any) {
-      this.$refs.createFormModal.callModal()
-    },
-    createObject(this: any, payload: any) {
-      this.$emit('on-create', payload)
-      this.$refs.createFormModal.visible = false
-    },
-  },
-})
-</script>
