@@ -11,8 +11,12 @@ spec:
     - {{ . }}
   {{- end }}
   mountOptions:
-  - hard
-  - nfsvers=4.1
+    - hard
+    - nfsvers=4.1
   nfs:
-    path: {{ .Values.global.nfsPath }}/app/django/static
+    {{- if eq.Values.global.appMode "prod" }}
+    path: {{ .Values.global.nfsPath }}/app/prod/django/static
+    {{- else if eq.Values.global.appMode "dev" }}
+    path: {{ .Values.global.nfsPath }}/app/dev/django/static
+    {{- end }}
     server: {{ .Values.global.nfsServerHost }}

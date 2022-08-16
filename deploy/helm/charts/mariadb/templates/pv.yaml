@@ -15,9 +15,9 @@ spec:
     - nfsvers=4.1
   nfs:
     {{- if eq .Values.global.appMode "prod" }}
-    path: {{ .Values.global.nfsPath }}/volume/mysql
+    path: {{ .Values.global.nfsPath }}/volume/prod/mysql
     {{- else if eq .Values.global.appMode "dev" }}
-    path: {{ .Values.global.nfsPath }}/volume/mysql-dev
+    path: {{ .Values.global.nfsPath }}/volume/dev/mysql
     {{- end }}
     server: {{ .Values.global.nfsServerHost }}
 ---
@@ -37,7 +37,11 @@ spec:
     - hard
     - nfsvers=4.1
   nfs:
-    path: {{ .Values.global.nfsPath }}/volume/sql
+  {{- if eq .Values.global.appMode "prod" }}
+    path: {{ .Values.global.nfsPath }}/volume/prod/sql
+  {{- else if eq.Values.global.appMode "dev" }}
+    path: {{ .Values.global.nfsPath }}/volume/dev/sql
+  {{- end }}
     server: {{ .Values.global.nfsServerHost }}
 ---
 apiVersion: v1
@@ -56,5 +60,9 @@ spec:
     - hard
     - nfsvers=4.1
   nfs:
-    path: {{ .Values.global.nfsPath }}/volume/backup
+  {{- if eq .Values.global.appMode "prod" }}
+    path: {{ .Values.global.nfsPath }}/volume/prod/backup
+  {{- else if eq.Values.global.appMode "dev" }}
+    path: {{ .Values.global.nfsPath }}/volume/dev/backup
+  {{- end}}
     server: {{ .Values.global.nfsServerHost }}

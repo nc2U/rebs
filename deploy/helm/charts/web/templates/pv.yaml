@@ -9,10 +9,14 @@ spec:
   accessModes:
     {{- range .Values.volumes.djangoAccessModes }}
     - {{ . }}
-    {{- end}}
+    {{- end }}
   mountOptions:
     - hard
     - nfsvers=4.1
   nfs:
-    path: {{ .Values.global.nfsPath }}/app/django
+    {{- if eq.Values.global.appMode "prod" }}
+    path: {{ .Values.global.nfsPath }}/app/prod/django
+    {{- else if eq.Values.global.appMode "dev" }}
+    path: {{ .Values.global.nfsPath }}/app/dev/django
+    {{- end }}
     server: {{ .Values.global.nfsServerHost }}
