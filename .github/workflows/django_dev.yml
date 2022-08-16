@@ -18,6 +18,8 @@ jobs:
       # 레파지터리 체크 아웃
       - name: Check out source code
         uses: actions/checkout@v3
+        with:
+          ref: 'dev'
 
       # data to server copy transfer
       - name: Copy django, etc data to CI/CD server
@@ -26,7 +28,7 @@ jobs:
           host: ${{ secrets.CICD_HOST }}
           username: ${{ secrets.CICD_USERNAME }}
           password: ${{ secrets.CICD_PASSWORD }}
-          source: 'app/django'
+          source: 'app/dev/django'
           target: '/mnt/nfs/'
 
       # web pod --> django model migrations
