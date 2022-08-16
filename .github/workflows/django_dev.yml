@@ -1,4 +1,4 @@
-name: Django_Dev_Update
+name: django_dev_action
 
 on:
   push:
