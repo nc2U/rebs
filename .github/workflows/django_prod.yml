@@ -34,7 +34,7 @@ jobs:
           target: '/mnt/nfs/prod'
 
       # web pod --> django model migrations & collectstatic
-      - name: django model migration
+      - name: django model migration & collectstatic
         uses: garygrossgarten/github-action-ssh@release
         with:
           host: ${{ secrets.CICD_HOST }}

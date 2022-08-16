@@ -35,15 +35,15 @@ jobs:
           source: 'app/django'
           target: '/mnt/nfs/dev'
 
-      # web pod --> django model migrations
-      - name: django model migration
+      # web pod --> django model migrations & collectstatic
+      - name: django model migration & collectstatic
         uses: garygrossgarten/github-action-ssh@release
         with:
           host: ${{ secrets.CICD_HOST }}
           username: ${{ secrets.CICD_USERNAME }}
           password: ${{ secrets.CICD_PASSWORD }}
           command: |
-            pwd && ls -al
+            pwd && ls -l
 #            web_pod=$(kubectl get pod -n dev-hrebs | grep web | cut -d ' ' -f1)
 #            kubectl exec -it -n dev-hrebs $web_pod -- python manage.py makemigrations accounts book cash company contract document notice project rebs
 #            kubectl exec -it -n dev-hrebs $web_pod -- python manage.py migrate
