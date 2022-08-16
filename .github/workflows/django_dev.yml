@@ -44,9 +44,8 @@ jobs:
           password: ${{ secrets.CICD_PASSWORD }}
           command: |
             web_pod=$(kubectl get pod -n dev-hrebs | grep web | cut -d ' ' -f1)
-            echo $web_pod
-#            kubectl exec -it -n dev-hrebs $web_pod -- python manage.py makemigrations accounts book cash company contract document notice project rebs
-#            kubectl exec -it -n dev-hrebs $web_pod -- python manage.py migrate
+            kubectl exec -it -n dev-hrebs $web_pod -- python manage.py makemigrations accounts book cash company contract document notice project rebs
+            kubectl exec -it -n dev-hrebs $web_pod -- python manage.py migrate
 #            kubectl exec -it -n dev-hrebs $web_pod -- echo yes | python manage.py collectstatic
 
 #      # slack --> notification
