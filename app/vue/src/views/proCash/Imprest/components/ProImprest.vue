@@ -1,3 +1,44 @@
+<script lang="ts" setup>
+import { ref, computed } from 'vue'
+import FormModal from '@/components/Modals/FormModal.vue'
+import ProImprestForm from '@/views/proCash/Imprest/components/ProImprestForm.vue'
+
+const props = defineProps({
+  imprest: {
+    type: Object,
+    required: true,
+  },
+})
+const emit = defineEmits(['multi-submit', 'on-delete'])
+
+const updateFormModal = ref()
+
+const sortClass = computed(
+  () => ['', 'text-primary', 'text-danger', 'text-info'][props.imprest.sort],
+)
+
+const rowColor = computed(() => {
+  let color = ''
+  color =
+    props.imprest.contract && props.imprest.project_account_d2 <= '2'
+      ? 'info'
+      : color
+  color = props.imprest.is_separate ? 'dark' : color
+  color = props.imprest.separated ? 'primary' : color
+  return color
+})
+
+const showDetail = () => updateFormModal.value.callModal()
+//     // onCreate(payload: any) {
+//     //   this.$emit('on-create', payload)
+//     // },
+//     // onUpdate(payload: any) {
+//     //   this.$emit('on-update', payload)
+//     // },
+const multiSubmit = (payload: any) => emit('multi-submit', payload)
+const onDelete = (payload: any) => emit('on-delete', payload)
+</script>
+
 <template>
   <CTableRow
     v-if="imprest"
@@ -51,55 +92,3 @@
     </template>
   </FormModal>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import commonMixin from '@/mixins/commonMixin'
-import FormModal from '@/components/Modals/FormModal.vue'
-import ProImprestForm from '@/views/proCash/Imprest/components/ProImprestForm.vue'
-
-export default defineComponent({
-  name: 'ProImprest',
-  components: { FormModal, ProImprestForm },
-  mixins: [commonMixin],
-  props: {
-    imprest: {
-      type: Object,
-      required: true,
-    },
-  },
-  computed: {
-    sortClass() {
-      const cls = ['', 'text-primary', 'text-danger', 'text-info']
-      return cls[this.imprest.sort]
-    },
-    rowColor() {
-      let color = ''
-      color =
-        this.imprest.contract && this.imprest.project_account_d2 <= '2'
-          ? 'info'
-          : color
-      color = this.imprest.is_separate ? 'dark' : color
-      color = this.imprest.separated ? 'primary' : color
-      return color
-    },
-  },
-  methods: {
-    showDetail(this: any) {
-      this.$refs.updateFormModal.callModal()
-    },
-    // onCreate(payload: any) {
-    //   this.$emit('on-create', payload)
-    // },
-    // onUpdate(payload: any) {
-    //   this.$emit('on-update', payload)
-    // },
-    multiSubmit(payload: any) {
-      this.$emit('multi-submit', payload)
-    },
-    onDelete(payload: any) {
-      this.$emit('on-delete', payload)
-    },
-  },
-})
-</script>

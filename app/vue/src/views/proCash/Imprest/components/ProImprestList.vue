@@ -1,3 +1,37 @@
+<script lang="ts" setup>
+import { computed } from 'vue'
+import { useStore } from 'vuex'
+import ProImprest from '@/views/proCash/Imprest/components/ProImprest.vue'
+import Pagination from '@/components/Pagination'
+import AlertModal from '@/components/Modals/AlertModal.vue'
+import { headerSecondary } from '@/utils/cssMixins'
+
+// defineProps({ project: { type: Object, default: null } })
+const emit = defineEmits([
+  'page-select',
+  'multi-submit',
+  'on-create',
+  'on-update',
+  'on-delete',
+])
+
+const store = useStore()
+
+const allAccD1List = computed(() => store.state.proCash.allAccD1List)
+const allAccD2List = computed(() => store.state.proCash.allAccD2List)
+
+const proImprestPages = computed(() => store.getters['proCash/proImprestPages'])
+const getProImprestLogs = computed(
+  () => store.getters['proCash/getProImprestLogs'],
+)
+
+const pageSelect = (page: number) => emit('page-select', page)
+const onCreate = (payload: any) => emit('on-create', payload)
+const onUpdate = (payload: any) => emit('on-update', payload)
+const multiSubmit = (payload: any) => emit('multi-submit', payload)
+const onDelete = (pk: number) => emit('on-delete', pk)
+</script>
+
 <template>
   <CTable hover responsive align="middle">
     <colgroup>
@@ -88,42 +122,3 @@
     <template #footer></template>
   </AlertModal>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import ProImprest from '@/views/proCash/Imprest/components/ProImprest.vue'
-import Pagination from '@/components/Pagination'
-import AlertModal from '@/components/Modals/AlertModal.vue'
-import { headerSecondary } from '@/utils/cssMixins'
-import { mapGetters, mapState } from 'vuex'
-
-export default defineComponent({
-  name: 'ProImprestList',
-  components: { ProImprest, Pagination, AlertModal },
-  props: { project: Object },
-  computed: {
-    headerSecondary() {
-      return headerSecondary.value
-    },
-    ...mapGetters('proCash', ['proImprestPages', 'getProImprestLogs']),
-    ...mapState('proCash', ['allAccD1List', 'allAccD2List']),
-  },
-  methods: {
-    pageSelect(page: number) {
-      this.$emit('page-select', page)
-    },
-    onCreate(payload: any) {
-      this.$emit('on-create', payload)
-    },
-    onUpdate(payload: any) {
-      this.$emit('on-update', payload)
-    },
-    multiSubmit(payload: any) {
-      this.$emit('multi-submit', payload)
-    },
-    onDelete(pk: number) {
-      this.$emit('on-delete', pk)
-    },
-  },
-})
-</script>

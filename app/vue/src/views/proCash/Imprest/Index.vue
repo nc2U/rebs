@@ -137,7 +137,6 @@ const onDelete = (payload: any) =>
         disabled
       />
       <ProImprestList
-        :project="project"
         @page-select="pageSelect"
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
