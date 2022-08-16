@@ -69,8 +69,8 @@ volumes:
   - ReadWriteMany
   staticPvStorageProd: 500Mi
   staticPvStorageDev: 300Mi
-  staticPvcStorageProd: 500MGi
-  staticPvcStorageDev: 300MGi
+  staticPvcStorageProd: 500Mi
+  staticPvcStorageDev: 300Mi
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
