@@ -218,6 +218,15 @@ const actions = {
           },
           { root: true },
         )
+        dispatch(
+          'payment/fetchAllPaymentList',
+          {
+            project: res.data.project,
+            contract: res.data.contract,
+            ordering: 'deal_date',
+          },
+          { root: true },
+        )
         message()
       })
       .catch(err => errorHandle(err.response.data))

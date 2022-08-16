@@ -1,3 +1,143 @@
+<script lang="ts" setup>
+import { computed, onMounted, reactive, ref } from 'vue'
+import { useStore } from 'vuex'
+import { useAccount } from '@/store/pinia/account'
+import { diffDate } from '@/utils/baseMixins'
+import { write_payment } from '@/utils/pageAuth'
+import { dateFormat } from '@/utils/baseMixins'
+import { isValidate } from '@/utils/helper'
+import DatePicker from '@/components/DatePicker/index.vue'
+import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
+import AlertModal from '@/components/Modals/AlertModal.vue'
+
+const props = defineProps({
+  contract: { type: Object, default: null },
+  payment: { type: Object, default: null },
+})
+const emit = defineEmits(['on-submit', 'on-delete', 'close'])
+
+const alertModal = ref()
+const confirmModal = ref()
+
+const validated = ref(false)
+const form = reactive<{
+  project: string
+  sort: number
+  project_account_d1: string
+  project_account_d2: string
+  is_contract_payment: boolean
+  contract: null | number
+  content: string
+  installment_order: string
+  trader: string
+  bank_account: string
+  income: null | number
+  note: string
+  deal_date: string | Date
+}>({
+  project: '', // hidden -> index에서 처리
+  sort: 1, // hidden -> always
+  project_account_d1: '', // hidden
+  project_account_d2: '', // hidden
+  is_contract_payment: true, // hidden -> always
+  contract: null, //  hidden -> 예외 및 신규 매칭 시 코드 확인
+  content: '', // hidden
+  installment_order: '',
+  trader: '',
+  bank_account: '',
+  income: null,
+  note: '',
+  deal_date: new Date(),
+})
+
+const formsCheck = computed(() => {
+  if (props.payment) {
+    const io = props.payment.installment_order
+      ? props.payment.installment_order.pk
+      : null
+    const a = form.installment_order && form.installment_order === io
+    const b = form.trader && form.trader === props.payment.trader
+    const c =
+      form.bank_account && form.bank_account === props.payment.bank_account.pk
+    const d = form.income && form.income === props.payment.income
+    const e = form.note === props.payment.note
+    const f =
+      form.deal_date.toString() === new Date(props.payment.deal_date).toString()
+
+    return a && b && c && d && e && f
+  } else return false
+})
+// const pageManageAuth = computed(() => write_payment)
+
+const allowedPeriod = computed(() => {
+  return props.payment
+    ? useAccount().superAuth || diffDate(props.payment.deal_date) <= 90
+    : true
+})
+
+const store = useStore()
+
+const payOrderList = computed(() => store.state.payment.payOrderList)
+const proBankAccountList = computed(
+  () => store.state.proCash.proBankAccountList,
+)
+
+const onSubmit = (event: any) => {
+  if (write_payment) {
+    if (allowedPeriod.value) {
+      if (isValidate(event)) {
+        validated.value = true
+      } else {
+        form.deal_date = dateFormat(form.deal_date)
+        const payload = props.payment
+          ? { ...{ pk: props.payment.pk }, ...form }
+          : form
+        emit('on-submit', payload)
+      }
+    } else
+      alertModal.value.callModal(
+        null,
+        '수납일로부터 90일이 경과한 건은 수정할 수 없습니다. 관리자에게 문의바랍니다.',
+      )
+  } else alertModal.value.callModal()
+}
+
+const deleteConfirm = () => {
+  if (write_payment) {
+    if (allowedPeriod.value) {
+      confirmModal.value.callModal()
+    } else
+      alertModal.value.callModal(
+        null,
+        '수납일로부터 90일이 경과한 건은 삭제할 수 없습니다. 관리자에게 문의바랍니다.',
+      )
+  } else alertModal.value.callModal()
+}
+
+const modalAction = () => {
+  emit('on-delete')
+  emit('close')
+}
+
+onMounted(() => {
+  if (props.payment) {
+    const io = props.payment.installment_order
+      ? props.payment.installment_order.pk
+      : null
+    form.installment_order = io
+    form.trader = props.payment.trader
+    form.bank_account = props.payment.bank_account.pk
+    form.income = props.payment.income
+    form.note = props.payment.note
+    form.deal_date = new Date(props.payment.deal_date)
+  }
+  form.project_account_d1 = props.contract.order_group.sort
+  form.project_account_d2 = props.contract.order_group.sort
+  form.contract = props.contract.pk
+  form.content = `${props.contract.contractor.name}[${props.contract.serial_number}] 대금납부`
+})
+</script>
+
 <template>
   <CForm
     class="needs-validation"
@@ -138,130 +278,3 @@
 
   <AlertModal ref="alertModal" />
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import DatePicker from '@/components/DatePicker/index.vue'
-import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
-import AlertModal from '@/components/Modals/AlertModal.vue'
-import { mapGetters, mapState } from 'vuex'
-
-export default defineComponent({
-  name: 'PayForm',
-  components: { DatePicker, ConfirmModal, AlertModal },
-  props: { contract: Object, payment: Object },
-  data(this: any) {
-    return {
-      form: {
-        project: '', // hidden -> index에서 처리
-        sort: 1, // hidden -> always
-        project_account_d1: '', // hidden
-        project_account_d2: '', // hidden
-        is_contract_payment: true, // hidden -> always
-        contract: null, //  hidden -> 예외 및 신규 매칭 시 코드 확인
-        content: '', // hidden
-
-        installment_order: '',
-        trader: '',
-        bank_account: '',
-        income: null,
-        note: '',
-        deal_date: new Date(),
-      },
-      validated: false,
-    }
-  },
-  mounted(this: any) {
-    if (this.payment) {
-      const io = this.payment.installment_order
-        ? this.payment.installment_order.pk
-        : null
-      this.form.installment_order = io
-      this.form.trader = this.payment.trader
-      this.form.bank_account = this.payment.bank_account.pk
-      this.form.income = this.payment.income
-      this.form.note = this.payment.note
-      this.form.deal_date = new Date(this.payment.deal_date)
-    }
-    this.form.project_account_d1 = this.contract.order_group.sort
-    this.form.project_account_d2 = this.contract.order_group.sort
-    this.form.contract = this.contract.pk
-    this.form.content = `${this.contract.contractor.name}[${this.contract.serial_number}] 대금납부`
-  },
-  computed: {
-    formsCheck() {
-      if (this.payment) {
-        const io = this.payment.installment_order
-          ? this.payment.installment_order.pk
-          : null
-        const a =
-          this.form.installment_order && this.form.installment_order === io
-        const b = this.form.trader && this.form.trader === this.payment.trader
-        const c =
-          this.form.bank_account &&
-          this.form.bank_account === this.payment.bank_account.pk
-        const d = this.form.income && this.form.income === this.payment.income
-        const e = this.form.note === this.payment.note
-        const f =
-          this.form.deal_date.toString() ===
-          new Date(this.payment.deal_date).toString()
-
-        return a && b && c && d && e && f
-      } else return false
-    },
-    pageManageAuth() {
-      return (
-        this.superAuth || (this.staffAuth && this.staffAuth.payment === '2')
-      )
-    },
-    allowedPeriod(this: any) {
-      return this.payment
-        ? this.superAuth || this.diffDate(this.payment.deal_date) <= 90
-        : true
-    },
-    ...mapState('payment', ['payOrderList']),
-    ...mapState('proCash', ['proBankAccountList']),
-    ...mapGetters('accounts', ['staffAuth', 'superAuth']),
-  },
-  methods: {
-    onSubmit(this: any, event: any) {
-      if (this.pageManageAuth) {
-        if (this.allowedPeriod) {
-          const form = event.currentTarget
-          if (form.checkValidity() === false) {
-            event.preventDefault()
-            event.stopPropagation()
-
-            this.validated = true
-          } else {
-            this.form.deal_date = this.dateFormat(this.form.deal_date)
-            const payload = this.payment
-              ? { ...{ pk: this.payment.pk }, ...this.form }
-              : this.form
-            this.$emit('on-submit', payload)
-          }
-        } else
-          this.$refs.alertModal.callModal(
-            null,
-            '수납일로부터 90일이 경과한 건은 수정할 수 없습니다. 관리자에게 문의바랍니다.',
-          )
-      } else this.$refs.alertModal.callModal()
-    },
-    deleteConfirm(this: any) {
-      if (this.pageManageAuth) {
-        if (this.allowedPeriod) {
-          this.$refs.confirmModal.callModal()
-        } else
-          this.$refs.alertModal.callModal(
-            null,
-            '수납일로부터 90일이 경과한 건은 삭제할 수 없습니다. 관리자에게 문의바랍니다.',
-          )
-      } else this.$refs.alertModal.callModal()
-    },
-    modalAction() {
-      this.$emit('on-delete')
-      this.$emit('close')
-    },
-  },
-})
-</script>
