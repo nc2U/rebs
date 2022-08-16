@@ -46,7 +46,7 @@ jobs:
             web_pod=$(kubectl get pod -n dev-hrebs | grep web | cut -d ' ' -f1)
             kubectl exec -it -n dev-hrebs $web_pod -- python manage.py makemigrations accounts book cash company contract document notice project rebs
             kubectl exec -it -n dev-hrebs $web_pod -- python manage.py migrate
-            kubectl exec -it -n dev-hrebs $web_pod -- echo yes | python manage.py collectstatic
+            kubectl exec -it -n dev-hrebs $web_pod -- python manage.py collectstatic --no-input
 
 #      # slack --> notification
 #      - name: Send slack when failed
