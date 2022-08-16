@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed, ref, onMounted } from 'vue'
 import { useStore } from 'vuex'
+import { useProject } from '@/store/pinia/project'
 import { onBeforeRouteLeave } from 'vue-router'
 import { pageTitle, navMenu } from '@/views/payments/_menu/headermixin'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
@@ -9,8 +10,6 @@ import PaymentSummary from '@/views/payments/List/components/PaymentSummary.vue'
 import ListController from '@/views/payments/List/components/ListController.vue'
 import PaymentList from '@/views/payments/List/components/PaymentList.vue'
 import TableTitleRow from '@/components/TableTitleRow.vue'
-
-const store = useStore()
 
 const listControl = ref()
 let dataFilter = ref({
@@ -23,8 +22,11 @@ let dataFilter = ref({
   search: '',
 })
 
-const project = computed(() => store.state.project.project)
-const initProjId = computed(() => store.getters['accounts/initProjId'])
+const store = useStore()
+const projectStore = useProject()
+
+const project = computed(() => projectStore.project)
+const initProjId = computed(() => projectStore.initProjId)
 
 const excelUrl = computed(() => {
   let url = project.value ? `/excel/payments/?project=${project.value.pk}` : ''
