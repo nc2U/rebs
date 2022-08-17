@@ -1,3 +1,21 @@
+<script lang="ts" setup>
+import { computed } from 'vue'
+import { useStore } from 'vuex'
+import Payment from '@/views/payments/List/components/Payment.vue'
+import Pagination from '@/components/Pagination'
+import { headerSecondary } from '@/utils/cssMixins'
+
+defineProps({ project: { type: Object, default: null } })
+const emit = defineEmits(['page-select', 'on-update', 'on-patch', 'on-delete'])
+
+const store = useStore()
+
+const getPayments = computed(() => store.getters['payment/getPayments'])
+const paymentPages = computed(() => store.getters['payment/paymentPages'])
+
+const pageSelect = (page: number) => emit('page-select', page)
+</script>
+
 <template>
   <CTable hover responsive align="middle">
     <colgroup>
@@ -33,9 +51,6 @@
         v-for="(payment, i) in getPayments"
         :key="i"
         :payment="payment"
-        @on-update="onUpdate"
-        @on-patch="onPatch"
-        @on-delete="onDelete"
       />
     </CTableBody>
   </CTable>
@@ -48,37 +63,3 @@
     @active-page-change="pageSelect"
   />
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import Payment from '@/views/payments/List/components/Payment.vue'
-import Pagination from '@/components/Pagination'
-import { headerSecondary } from '@/utils/cssMixins'
-import { mapGetters } from 'vuex'
-
-export default defineComponent({
-  name: 'PaymentList',
-  components: { Payment, Pagination },
-  props: { project: Object },
-  computed: {
-    headerSecondary() {
-      return headerSecondary.value
-    },
-    ...mapGetters('payment', ['paymentPages', 'getPayments']),
-  },
-  methods: {
-    pageSelect(page: number) {
-      this.$emit('page-select', page)
-    },
-    onUpdate(payload: any) {
-      this.$emit('on-update', payload)
-    },
-    onPatch(payload: any) {
-      this.$emit('on-patch', payload)
-    },
-    onDelete(pk: number) {
-      this.$emit('on-delete', pk)
-    },
-  },
-})
-</script>

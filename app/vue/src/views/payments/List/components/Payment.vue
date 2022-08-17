@@ -1,3 +1,41 @@
+<script lang="ts" setup>
+import { ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
+import { numFormat } from '@/utils/baseMixins'
+
+const props = defineProps({
+  payment: {
+    type: Object,
+    required: true,
+  },
+})
+
+const router = useRouter()
+const contMatchingModal = ref()
+
+const rowClass = computed(() => {
+  let cls = ''
+  cls =
+    props.payment.contract && props.payment.installment_order === '-'
+      ? 'danger'
+      : cls
+  cls = !props.payment.contract ? 'warning' : cls
+  return cls
+})
+
+const toManage = () => (props.payment.contract ? toRegister() : contMatching())
+const toRegister = () => {
+  router.push({
+    name: '건별수납 관리',
+    query: { contract: props.payment.contract.pk, payment: props.payment.pk },
+  })
+}
+const contMatching = () => {
+  if (!props.payment.contract) contMatchingModal.value.callModal()
+  return
+}
+</script>
+
 <template>
   <CTableRow v-if="payment" class="text-center" :color="rowClass">
     <CTableDataCell>{{ payment.deal_date }}</CTableDataCell>
@@ -44,66 +82,4 @@
       </CButton>
     </CTableDataCell>
   </CTableRow>
-
-  <FormModal ref="contMatchingModal" size="lg">
-    <template #header>
-      <CIcon name="cil-italic" />
-      수납 건별 계약 건 매칭
-    </template>
-    <template #default class="p-5">
-      <ContChoicer
-        :payment="payment"
-        @on-patch="onPatch"
-        @close="$refs.contMatchingModal.visible = false"
-      />
-    </template>
-  </FormModal>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import commonMixin from '@/mixins/commonMixin'
-import FormModal from '@/components/Modals/FormModal.vue'
-import ContChoicer from '@/views/payments/List/components/ContChoicer.vue'
-
-export default defineComponent({
-  name: 'Payment',
-  components: { FormModal, ContChoicer },
-  mixins: [commonMixin],
-  props: {
-    payment: {
-      type: Object,
-      required: true,
-    },
-  },
-  computed: {
-    rowClass() {
-      let cls = ''
-      cls =
-        this.payment.contract && this.payment.installment_order === '-'
-          ? 'danger'
-          : cls
-      cls = !this.payment.contract ? 'warning' : cls
-      return cls
-    },
-  },
-  methods: {
-    toManage() {
-      return this.payment.contract ? this.toRegister() : this.contMatching()
-    },
-    toRegister() {
-      this.$router.push({
-        name: '건별수납 관리',
-        query: { contract: this.payment.contract.pk, payment: this.payment.pk },
-      })
-    },
-    contMatching(this: any) {
-      if (!this.payment.contract) this.$refs.contMatchingModal.callModal()
-      return
-    },
-    onPatch(this: any, payload: any) {
-      this.$emit('on-patch', payload)
-    },
-  },
-})
-</script>

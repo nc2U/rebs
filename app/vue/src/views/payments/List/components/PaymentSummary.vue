@@ -1,3 +1,58 @@
+<script lang="ts" setup>
+import { computed } from 'vue'
+import { useStore } from 'vuex'
+import { headerSecondary } from '@/utils/cssMixins'
+
+defineProps({ project: { type: Object, default: null } })
+
+const store = useStore()
+
+const unitTypeList = computed(() => store.state.project.unitTypeList)
+const paySumList = computed(() => store.state.payment.paySumList)
+const contNumList = computed(() => store.state.payment.contNumList)
+
+const total_budget = computed(() => {
+  return unitTypeList.value.length !== 0
+    ? unitTypeList.value
+        .map((t: any) => t.average_price * t.num_unit)
+        .reduce((x: number, y: number) => x + y)
+    : 0
+})
+const totalAmount = computed(() => {
+  const types = unitTypeList.value.map((t: any) => t.average_price)
+  const nums = contNumList.value.map((c: any) => c.num_cont)
+
+  let total = 0
+  for (let i in types) {
+    const type = types[i]
+    if (typeof type === 'number' && typeof nums[i] === 'number')
+      total += type * nums[i]
+  }
+  return total
+})
+const totalPayment = computed(() => {
+  return paySumList.value.length !== 0
+    ? paySumList.value
+        .map((p: any) => p.type_total)
+        .reduce((x: number, y: number) => x + y)
+    : 0
+})
+
+const sellAmount = (type: number, price = 0) => {
+  const nums = contNumList.value
+    .filter((c: any) => c.unit_type === type)
+    .map((c: any) => c.num_cont)
+  const num = typeof nums[0] === 'number' ? nums[0] : 0
+  return num * price
+}
+
+const payByType = (type: number) => {
+  return paySumList.value
+    .filter((p: any) => p.unit_type === type)
+    .map((p: any) => p.type_total)[0]
+}
+</script>
+
 <template>
   <CTable hover responsive bordered class="mt-3">
     <CTableHead class="text-center" :color="headerSecondary">
@@ -76,68 +131,3 @@
     </CTableBody>
   </CTable>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import commonMixin from '@/mixins/commonMixin'
-import { headerSecondary } from '@/utils/cssMixins'
-import { mapGetters, mapState } from 'vuex'
-
-export default defineComponent({
-  name: 'ContractSummary',
-  mixins: [commonMixin],
-  props: {
-    project: {
-      type: Object,
-    },
-  },
-  computed: {
-    headerSecondary() {
-      return headerSecondary
-    },
-    total_budget() {
-      return this.unitTypeList.length !== 0
-        ? this.unitTypeList
-            .map((t: any) => t.average_price * t.num_unit)
-            .reduce((x: number, y: number) => x + y)
-        : 0
-    },
-    totalAmount() {
-      const types = this.unitTypeList.map((t: any) => t.average_price)
-      const nums = this.contNumList.map((c: any) => c.num_cont)
-
-      let total = 0
-      for (let i in types) {
-        const type = types[i]
-        if (typeof type === 'number' && typeof nums[i] === 'number')
-          total += type * nums[i]
-      }
-      return total
-    },
-    totalPayment() {
-      return this.paySumList.length !== 0
-        ? this.paySumList
-            .map((p: any) => p.type_total)
-            .reduce((x: number, y: number) => x + y)
-        : 0
-    },
-    ...mapState('project', ['unitTypeList']),
-    ...mapState('payment', ['paySumList', 'contNumList']),
-    ...mapGetters('contract', ['getSubs', 'getConts']),
-  },
-  methods: {
-    sellAmount(type: number, price = 0) {
-      const nums = this.contNumList
-        .filter((c: any) => c.unit_type === type)
-        .map((c: any) => c.num_cont)
-      const num = typeof nums[0] === 'number' ? nums[0] : 0
-      return num * price
-    },
-    payByType(type: number) {
-      return this.paySumList
-        .filter((p: any) => p.unit_type === type)
-        .map((p: any) => p.type_total)[0]
-    },
-  },
-})
-</script>

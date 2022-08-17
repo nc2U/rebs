@@ -1,3 +1,64 @@
+<script lang="ts" setup>
+import { computed, reactive, ref, nextTick, watch } from 'vue'
+import { useStore } from 'vuex'
+import { dateFormat } from '@/utils/baseMixins'
+import DatePicker from '@/components/DatePicker/index.vue'
+import { maska as vMaska } from 'maska'
+
+const emit = defineEmits(['payment-filtering'])
+
+const from_date = ref('')
+const to_date = ref('')
+const form = reactive({
+  pay_order: '',
+  pay_account: '',
+  no_contract: false,
+  search: '',
+})
+
+const store = useStore()
+
+const payOrderList = computed(() => store.state.payment.payOrderList)
+const paymentsCount = computed(() => store.state.payment.paymentsCount)
+const proBankAccountList = computed(
+  () => store.state.proCash.proBankAccountList,
+)
+
+const formsCheck = computed(() => {
+  const a = from_date.value === ''
+  const b = to_date.value === ''
+  const c = form.pay_order === ''
+  const d = form.pay_account === ''
+  const e = !form.no_contract
+  const f = form.search === ''
+  return a && b && c && d && e && f
+})
+
+watch(from_date, () => listFiltering(1))
+watch(to_date, () => listFiltering(1))
+
+const listFiltering = (page = 1) => {
+  nextTick(() => {
+    const from = from_date.value ? dateFormat(from_date.value) : ''
+    const to = to_date.value ? dateFormat(to_date.value) : ''
+    emit('payment-filtering', {
+      ...{ page, from_date: from, to_date: to },
+      ...form,
+    })
+  })
+}
+
+const resetForm = () => {
+  from_date.value = ''
+  to_date.value = ''
+  form.pay_order = ''
+  form.pay_account = ''
+  form.no_contract = false
+  form.search = ''
+  listFiltering(1)
+}
+</script>
+
 <template>
   <CCallout color="warning" class="pb-0 mb-4">
     <CRow>
@@ -82,70 +143,3 @@
     </CRow>
   </CCallout>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import DatePicker from '@/components/DatePicker/index.vue'
-import { maska } from 'maska'
-import { mapState } from 'vuex'
-
-export default defineComponent({
-  name: 'ListController',
-  components: { DatePicker },
-  directives: { maska },
-  data() {
-    return {
-      from_date: '',
-      to_date: '',
-      form: {
-        pay_order: '',
-        pay_account: '',
-        no_contract: false,
-        search: '',
-      },
-    }
-  },
-  computed: {
-    formsCheck(this: any) {
-      const a = this.from_date === ''
-      const b = this.to_date === ''
-      const c = this.form.pay_order === ''
-      const d = this.form.pay_account === ''
-      const e = !this.form.no_contract
-      const f = this.form.search === ''
-      return a && b && c && d && e && f
-    },
-    ...mapState('payment', ['payOrderList', 'paymentsCount']),
-    ...mapState('proCash', ['proBankAccountList']),
-  },
-  watch: {
-    from_date() {
-      this.listFiltering(1)
-    },
-    to_date() {
-      this.listFiltering(1)
-    },
-  },
-  methods: {
-    listFiltering(this: any, page = 1) {
-      this.$nextTick(() => {
-        const from_date = this.from_date ? this.dateFormat(this.from_date) : ''
-        const to_date = this.to_date ? this.dateFormat(this.to_date) : ''
-        this.$emit('payment-filtering', {
-          ...{ page, from_date, to_date },
-          ...this.form,
-        })
-      })
-    },
-    resetForm() {
-      this.from_date = ''
-      this.to_date = ''
-      this.form.pay_order = ''
-      this.form.pay_account = ''
-      this.form.no_contract = false
-      this.form.search = ''
-      this.listFiltering(1)
-    },
-  },
-})
-</script>
