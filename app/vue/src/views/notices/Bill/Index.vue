@@ -122,12 +122,12 @@ const onSelectAdd = (target: any) => {
 const pageSelect = (page: number) => {
   ctor_ids.value = []
   listControl.value.listFiltering(page)
+  contractList.value.unChk()
 }
 
 const listFiltering = (payload: any) => {
   ctor_ids.value = []
   fetchContractList({ ...{ project: project.value }, ...payload })
-  contractList.value.unChk()
 }
 
 const onCtorChk = (payload: { chk: boolean; pk: number }) => {
