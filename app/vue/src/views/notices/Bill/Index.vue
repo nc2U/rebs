@@ -1,44 +1,6 @@
-<template>
-  <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    @header-select="onSelectAdd"
-  />
-
-  <ContentBody>
-    <CCardBody class="pb-5">
-      <SalesBillIssueForm
-        :bill_issue="bill_issue"
-        @get-now-order="getNowOrder"
-        @set-pub-date="setPubDate"
-        @on-submit="onSubmit"
-      />
-      <ListController
-        ref="listControl"
-        :now_order="payOrderName"
-        @list-filtering="listFiltering"
-      />
-      <DownloadButton
-        :bill_issue="bill_issue"
-        :print_data="print_data"
-        :contractors="ctor_ids"
-      />
-      <ContractList
-        ref="contractList"
-        :project="project"
-        :now_order="payOrderTime"
-        @on-ctor-chk="onCtorChk"
-        @page-select="pageSelect"
-        @all-un-checked="allUnChecked"
-      />
-    </CCardBody>
-
-    <CCardFooter>&nbsp;</CCardFooter>
-  </ContentBody>
-</template>
-
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { computed, defineComponent } from 'vue'
+import { useProject } from '@/store/pinia/project'
 import HeaderMixin from '@/views/notices/_menu/headermixin'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
@@ -59,6 +21,17 @@ export default defineComponent({
     ContractList,
   },
   mixins: [HeaderMixin],
+  setup() {
+    const projectStore = useProject()
+
+    const project = computed(() => projectStore.project)
+    const initProjId = computed(() => projectStore.initProjId)
+
+    return {
+      project,
+      initProjId,
+    }
+  },
   data(this: any) {
     return {
       ctor_ids: [],
@@ -69,6 +42,27 @@ export default defineComponent({
         pub_date: this.dateFormat(new Date()),
       },
     }
+  },
+  computed: {
+    payOrderTime() {
+      return this.payOrder ? this.payOrder.pay_time : null
+    },
+    payOrderName() {
+      return this.payOrder ? this.payOrder.__str__ : ''
+    },
+    // ...mapState('project', ['project']),
+    // ...mapGetters('accounts', ['initProjId']),
+    ...mapState('payment', ['payOrder']),
+  },
+  watch: {
+    project(val) {
+      if (val) {
+        this.bill_issue = val.salesbillissue
+        this.print_data.is_bill_issue = !!val.salesbillissue
+        this.print_data.project = val.pk
+        this.fetchPayOrder(val.salesbillissue.now_payment_order)
+      }
+    },
   },
   created(this: any) {
     this.fetchPayOrderList(this.initProjId)
@@ -81,27 +75,6 @@ export default defineComponent({
     })
     this.fetchSalePriceList({ project: this.initProjId })
     this.fetchDownPayList({ project: this.initProjId })
-  },
-  computed: {
-    payOrderTime() {
-      return this.payOrder ? this.payOrder.pay_time : null
-    },
-    payOrderName() {
-      return this.payOrder ? this.payOrder.__str__ : ''
-    },
-    ...mapState('project', ['project']),
-    ...mapGetters('accounts', ['initProjId']),
-    ...mapState('payment', ['payOrder']),
-  },
-  watch: {
-    project(val) {
-      if (val) {
-        this.bill_issue = val.salesbillissue
-        this.print_data.is_bill_issue = !!val.salesbillissue
-        this.print_data.project = val.pk
-        this.fetchPayOrder(val.salesbillissue.now_payment_order)
-      }
-    },
   },
   methods: {
     onSelectAdd(this: any, target: any) {
@@ -189,3 +162,38 @@ export default defineComponent({
   },
 })
 </script>
+
+<template>
+  <ContentHeader
+    :page-title="pageTitle"
+    :nav-menu="navMenu"
+    @header-select="onSelectAdd"
+  />
+
+  <ContentBody>
+    <CCardBody class="pb-5">
+      <SalesBillIssueForm
+        :bill_issue="bill_issue"
+        @get-now-order="getNowOrder"
+        @set-pub-date="setPubDate"
+        @on-submit="onSubmit"
+      />
+      <ListController
+        ref="listControl"
+        :now_order="payOrderName"
+        @list-filtering="listFiltering"
+      />
+      <DownloadButton :print_data="print_data" :contractors="ctor_ids" />
+      <ContractList
+        ref="contractList"
+        :project="project"
+        :now_order="payOrderTime"
+        @on-ctor-chk="onCtorChk"
+        @page-select="pageSelect"
+        @all-un-checked="allUnChecked"
+      />
+    </CCardBody>
+
+    <CCardFooter>&nbsp;</CCardFooter>
+  </ContentBody>
+</template>
