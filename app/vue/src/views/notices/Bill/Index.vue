@@ -35,7 +35,7 @@ export default defineComponent({
   data(this: any) {
     return {
       ctor_ids: [],
-      bill_issue: null,
+      billIssue: null,
       print_data: {
         is_bill_issue: false,
         project: null,
@@ -57,7 +57,7 @@ export default defineComponent({
   watch: {
     project(val) {
       if (val) {
-        this.bill_issue = val.salesbillissue
+        this.billIssue = val.salesbillissue
         this.print_data.is_bill_issue = !!val.salesbillissue
         this.print_data.project = val.pk
         this.fetchPayOrder(val.salesbillissue.now_payment_order)
@@ -173,7 +173,7 @@ export default defineComponent({
   <ContentBody>
     <CCardBody class="pb-5">
       <SalesBillIssueForm
-        :bill_issue="bill_issue"
+        :bill-issue="billIssue"
         @get-now-order="getNowOrder"
         @set-pub-date="setPubDate"
         @on-submit="onSubmit"
