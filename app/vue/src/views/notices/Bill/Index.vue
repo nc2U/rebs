@@ -37,12 +37,12 @@ export default defineComponent({
     const store = useStore()
     const payOrder = computed(() => store.state.payment.payOrder)
 
-    const payOrderTime = computed(() => {
-      return payOrder.value ? payOrder.value.pay_time : null
-    })
-    const payOrderName = computed(() => {
-      return payOrder.value ? payOrder.value.__str__ : ''
-    })
+    const payOrderTime = computed(() =>
+      payOrder.value ? payOrder.value.pay_time : null,
+    )
+    const payOrderName = computed(() =>
+      payOrder.value ? payOrder.value.__str__ : '',
+    )
 
     return {
       pageTitle,
