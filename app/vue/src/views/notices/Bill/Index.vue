@@ -1,14 +1,15 @@
 <script lang="ts">
-import { computed, defineComponent } from 'vue'
+import { defineComponent, ref, computed } from 'vue'
 import { useProject } from '@/store/pinia/project'
-import HeaderMixin from '@/views/notices/_menu/headermixin'
+import { dateFormat } from '@/utils/baseMixins'
+import { pageTitle, navMenu } from '@/views/notices/_menu/headermixin'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import SalesBillIssueForm from '@/views/notices/Bill/components/SalesBillIssueForm.vue'
 import ListController from '@/views/notices/Bill/components/ListController.vue'
 import DownloadButton from '@/views/notices/Bill/components/DownloadButton.vue'
 import ContractList from '@/views/notices/Bill/components/ContractList.vue'
-import { mapActions, mapGetters, mapState } from 'vuex'
+import { mapActions, useStore } from 'vuex'
 
 export default defineComponent({
   name: 'Bill',
@@ -20,40 +21,43 @@ export default defineComponent({
     DownloadButton,
     ContractList,
   },
-  mixins: [HeaderMixin],
   setup() {
-    const projectStore = useProject()
+    const ctor_ids = ref([])
+    const billIssue = ref(null)
+    const print_data = ref({
+      is_bill_issue: false,
+      project: null,
+      pub_date: dateFormat(new Date()),
+    })
 
+    const projectStore = useProject()
     const project = computed(() => projectStore.project)
     const initProjId = computed(() => projectStore.initProjId)
 
+    const store = useStore()
+    const payOrder = computed(() => store.state.payment.payOrder)
+
+    const payOrderTime = computed(() => {
+      return payOrder.value ? payOrder.value.pay_time : null
+    })
+    const payOrderName = computed(() => {
+      return payOrder.value ? payOrder.value.__str__ : ''
+    })
+
     return {
+      pageTitle,
+      navMenu,
+      ctor_ids,
+      billIssue,
+      print_data,
       project,
       initProjId,
+      payOrder,
+      payOrderTime,
+      payOrderName,
     }
   },
-  data(this: any) {
-    return {
-      ctor_ids: [],
-      billIssue: null,
-      print_data: {
-        is_bill_issue: false,
-        project: null,
-        pub_date: this.dateFormat(new Date()),
-      },
-    }
-  },
-  computed: {
-    payOrderTime() {
-      return this.payOrder ? this.payOrder.pay_time : null
-    },
-    payOrderName() {
-      return this.payOrder ? this.payOrder.__str__ : ''
-    },
-    // ...mapState('project', ['project']),
-    // ...mapGetters('accounts', ['initProjId']),
-    ...mapState('payment', ['payOrder']),
-  },
+
   watch: {
     project(val) {
       if (val) {
