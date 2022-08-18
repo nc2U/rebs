@@ -23,7 +23,6 @@ export default defineComponent({
   },
   setup() {
     const ctor_ids = ref([])
-    const billIssue = ref(null)
     const print_data = ref({
       is_bill_issue: false,
       project: null,
@@ -48,7 +47,6 @@ export default defineComponent({
       pageTitle,
       navMenu,
       ctor_ids,
-      billIssue,
       print_data,
       project,
       initProjId,
@@ -61,7 +59,7 @@ export default defineComponent({
   watch: {
     project(val) {
       if (val) {
-        this.billIssue = val.salesbillissue
+        this.fetchSalesBillIssue(val.pk)
         this.print_data.is_bill_issue = !!val.salesbillissue
         this.print_data.project = val.pk
         this.fetchPayOrder(val.salesbillissue.now_payment_order)
@@ -109,7 +107,7 @@ export default defineComponent({
       this.$refs.listControl.listFiltering(page)
       this.$refs.contractList.unChk()
     },
-    listFiltering(payload: any) {
+    listFiltering(this: any, payload: any) {
       this.ctor_ids = []
       const project = this.project.pk
       this.fetchContractList({ ...{ project }, ...payload })
@@ -162,7 +160,11 @@ export default defineComponent({
       'fetchPayOrderList',
     ]),
     ...mapActions('project', ['fetchTypeList', 'fetchBuildingList']),
-    ...mapActions('notice', ['createSalesBillIssue', 'patchSalesBillIssue']),
+    ...mapActions('notice', [
+      'fetchSalesBillIssue',
+      'createSalesBillIssue',
+      'patchSalesBillIssue',
+    ]),
   },
 })
 </script>
@@ -177,7 +179,6 @@ export default defineComponent({
   <ContentBody>
     <CCardBody class="pb-5">
       <SalesBillIssueForm
-        :bill-issue="billIssue"
         @get-now-order="getNowOrder"
         @set-pub-date="setPubDate"
         @on-submit="onSubmit"
