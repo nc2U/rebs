@@ -1,3 +1,75 @@
+<script lang="ts" setup>
+import { ref, reactive, computed, watch, nextTick } from 'vue'
+import { useStore } from 'vuex'
+import { dateFormat } from '@/utils/baseMixins'
+import DatePicker from '@/components/DatePicker/index.vue'
+import { maska as vMaska } from 'maska'
+
+const emit = defineEmits(['cont-filtering'])
+
+const form = reactive({
+  status: '2',
+  order_group: '',
+  unit_type: '',
+  building: '',
+  registed: '',
+  ordering: '-created_at',
+  search: '',
+})
+const from_date = ref('')
+const to_date = ref('')
+
+const formsCheck = computed(() => {
+  const a = form.status === '2'
+  const b = form.order_group === ''
+  const c = form.unit_type === ''
+  const d = form.building === ''
+  const e = form.registed === ''
+  const f = from_date.value === ''
+  const g = to_date.value === ''
+  const h = form.ordering === '-created_at'
+  const i = form.search === ''
+  const groupA = a && b && c && d && e
+  const groupB = f && g && h && i
+  return groupA && groupB
+})
+
+const store = useStore()
+
+const orderGroupList = computed(() => store.state.contract.orderGroupList)
+const contractsCount = computed(() => store.state.contract.contractsCount)
+const buildingList = computed(() => store.state.project.buildingList)
+const simpleTypes = computed(() => store.getters['project/simpleTypes'])
+
+watch(from_date, () => listFiltering(1))
+watch(to_date, () => listFiltering(1))
+
+const listFiltering = (page = 1) => {
+  nextTick(() => {
+    const from = from_date.value ? dateFormat(from_date.value) : ''
+    const to = to_date.value ? dateFormat(to_date.value) : ''
+    emit('cont-filtering', {
+      ...{ page, from_date: from, to_date: to },
+      ...form,
+    })
+  })
+}
+defineExpose({ listFiltering })
+
+const resetForm = () => {
+  form.status = '2'
+  form.order_group = ''
+  form.unit_type = ''
+  form.building = ''
+  form.registed = ''
+  from_date.value = ''
+  to_date.value = ''
+  form.ordering = '-created_at'
+  form.search = ''
+  listFiltering(1)
+}
+</script>
+
 <template>
   <CCallout color="info" class="pb-0 mb-4">
     <CRow>
@@ -127,82 +199,3 @@
     </CRow>
   </CCallout>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import DatePicker from '@/components/DatePicker/index.vue'
-import { mapGetters, mapState } from 'vuex'
-import { maska } from 'maska'
-
-export default defineComponent({
-  name: 'ListController',
-  components: { DatePicker },
-  directives: { maska },
-  data() {
-    return {
-      form: {
-        status: '2',
-        order_group: '',
-        unit_type: '',
-        building: '',
-        registed: '',
-        ordering: '-created_at',
-        search: '',
-      },
-      from_date: '',
-      to_date: '',
-    }
-  },
-  computed: {
-    formsCheck(this: any) {
-      const a = this.form.status === '2'
-      const b = this.form.order_group === ''
-      const c = this.form.unit_type === ''
-      const d = this.form.building === ''
-      const e = this.form.registed === ''
-      const f = this.from_date === ''
-      const g = this.to_date === ''
-      const h = this.form.ordering === '-created_at'
-      const i = this.form.search === ''
-      const groupA = a && b && c && d && e
-      const groupB = f && g && h && i
-      return groupA && groupB
-    },
-    ...mapState('contract', ['orderGroupList', 'contractsCount']),
-    ...mapState('project', ['buildingList']),
-    ...mapGetters('project', ['simpleTypes']),
-  },
-  watch: {
-    from_date() {
-      this.listFiltering(1)
-    },
-    to_date() {
-      this.listFiltering(1)
-    },
-  },
-  methods: {
-    listFiltering(this: any, page = 1) {
-      this.$nextTick(() => {
-        const from_date = this.from_date ? this.dateFormat(this.from_date) : ''
-        const to_date = this.to_date ? this.dateFormat(this.to_date) : ''
-        this.$emit('cont-filtering', {
-          ...{ page, from_date, to_date },
-          ...this.form,
-        })
-      })
-    },
-    resetForm() {
-      this.form.status = '2'
-      this.form.order_group = ''
-      this.form.unit_type = ''
-      this.form.building = ''
-      this.form.registed = ''
-      this.from_date = ''
-      this.to_date = ''
-      this.form.ordering = '-created_at'
-      this.form.search = ''
-      this.listFiltering(1)
-    },
-  },
-})
-</script>

@@ -1,3 +1,12 @@
+<script lang="ts" setup>
+defineProps({
+  contract: {
+    type: Object,
+    required: true,
+  },
+})
+</script>
+
 <template>
   <CTableRow v-if="contract" class="text-center">
     <CTableDataCell>
@@ -67,17 +76,3 @@
     </CTableDataCell>
   </CTableRow>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-
-export default defineComponent({
-  name: 'Contract',
-  props: {
-    contract: {
-      type: Object,
-      required: true,
-    },
-  },
-})
-</script>
