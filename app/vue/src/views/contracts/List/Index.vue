@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref, computed, onMounted, watch } from 'vue'
 import { useStore } from 'vuex'
+import { useProject } from '@/store/pinia/project'
 import { pageTitle, navMenu } from '@/views/contracts/_menu/headermixin'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
@@ -10,9 +11,8 @@ import TableTitleRow from '@/components/TableTitleRow.vue'
 import SelectItems from '@/views/contracts/List/components/SelectItems.vue'
 import ContractList from '@/views/contracts/List/components/ContractList.vue'
 
-const store = useStore()
-
 const listControl = ref()
+
 const visible = ref(false)
 const unitSet = ref(false)
 const filteredStr = ref('')
@@ -21,16 +21,21 @@ const printItems = ref(['1', '2', '3', '4', '7', '8', '9', '10', '18-19-20-21'])
 const childListFiltering = (page: number) =>
   listControl.value.listFiltering(page)
 
-const project = computed(() => store.state.project.project)
+const store = useStore()
+const projectStore = useProject()
+
+const project = computed(() => projectStore.project)
+const initProjId = computed(() => projectStore.initProjId)
+
 watch(project, pj => {
-  if (pj.is_unit_set) printItems.value.splice(4, 0, '5-6')
-  unitSet.value = pj.is_unit_set
+  if (pj?.is_unit_set) printItems.value.splice(4, 0, '5-6')
+  unitSet.value = pj?.is_unit_set || false
 })
-const initProjId = computed(() => store.getters['accounts/initProjId'])
+
 const excelUrl = computed(() => {
-  // const pk = project.value ? project.value.pk : ''
-  // const items = printItems.value.join('-')
-  // return `/excel/contracts/?project=${pk}${filteredStr.value}&col=${items}`
+  const pk = project.value ? project.value.pk : ''
+  const items = printItems.value.join('-')
+  return `/excel/contracts/?project=${pk}${filteredStr.value}&col=${items}`
 })
 
 const fetchOrderGroupList = (id: number) =>
@@ -73,7 +78,7 @@ const onSelectAdd = (target: any) => {
 }
 const pageSelect = (page: number) => childListFiltering(page)
 const onContFiltering = (payload: any) => {
-  const pk = project.value.pk
+  const pk = project.value?.pk
   const {
     order_group,
     unit_type,
