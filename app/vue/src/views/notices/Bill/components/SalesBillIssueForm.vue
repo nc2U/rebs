@@ -87,13 +87,12 @@ export default defineComponent({
       return false
     },
     ...mapState('payment', ['payOrderList']),
-    // ...mapState('notice', ['billIssue']),
     ...mapGetters('accounts', ['staffAuth', 'superAuth']),
   },
   watch: {
     billIssue(val) {
       if (val) {
-        this.get_now_order(val.now_payment_order)
+        this.$emit('get-now-order', val.now_payment_order)
 
         this.pk = val.pk
         this.form.now_payment_order = val.now_payment_order
@@ -125,13 +124,6 @@ export default defineComponent({
     },
   },
   methods: {
-    get_now_order(np_order: number) {
-      // const now_order = this.payOrderList
-      //   .filter((o: any) => o.pk == np_order)
-      //   .map((o: any) => o)[0]
-      // alert(now_order)
-      this.$emit('get-now-order', np_order)
-    },
     onSubmit(this: any, event: any) {
       if (write_notice) {
         if (isValidate(event)) {
