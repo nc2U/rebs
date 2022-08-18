@@ -192,10 +192,10 @@ const onSubmit = (payload: any) => {
       />
       <ListController
         ref="listControl"
-        :now_order="payOrderName"
+        :now-order-name="payOrderName"
         @list-filtering="listFiltering"
       />
-      <DownloadButton :print_data="print_data" :contractors="ctor_ids" />
+      <DownloadButton :print-data="print_data" :contractors="ctor_ids" />
       <ContractList
         ref="contractList"
         :now_order="payOrderTime"

@@ -1,3 +1,56 @@
+<script lang="ts" setup>
+import { computed, reactive, nextTick } from 'vue'
+import { useStore } from 'vuex'
+
+defineProps({ nowOrderName: { type: String, default: '' } })
+const emit = defineEmits(['list-filtering'])
+
+const store = useStore()
+
+const orderGroupList = computed(() => store.state.contract.orderGroupList)
+const contractsCount = computed(() => store.state.contract.contractsCount)
+const buildingList = computed(() => store.state.project.buildingList)
+const simpleTypes = computed(() => store.getters['project/simpleTypes'])
+
+const form = reactive({
+  limit: '',
+  order_group: '',
+  unit_type: '',
+  building: '',
+  ordering: 'contractor__name',
+  search: '',
+})
+
+const formsCheck = computed(() => {
+  const a = form.limit === ''
+  const b = form.order_group === ''
+  const c = form.unit_type === ''
+  const d = form.building === ''
+  const e = form.ordering === 'contractor__name'
+  const f = form.search === ''
+  return a && b && c && d && e && f
+})
+
+const listFiltering = (page = 1) => {
+  nextTick(() => {
+    emit('list-filtering', {
+      ...{ page },
+      ...form,
+    })
+  })
+}
+
+const resetForm = () => {
+  form.limit = ''
+  form.order_group = ''
+  form.unit_type = ''
+  form.building = ''
+  form.ordering = 'contractor__name'
+  form.search = ''
+  listFiltering(1)
+}
+</script>
+
 <template>
   <CCallout color="primary" class="pb-0 mb-4">
     <CRow>
@@ -80,7 +133,7 @@
       <CCol lg="5">
         <CRow>
           <CCol md="6" class="mb-3 text-primary light-yellow">
-            <strong>{{ now_order }}</strong>
+            <strong>{{ nowOrderName }}</strong>
           </CCol>
           <CCol md="6" class="mb-3">
             <CInputGroup class="flex-nowrap">
@@ -109,65 +162,6 @@
     </CRow>
   </CCallout>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import { maska } from 'maska'
-import { mapGetters, mapState } from 'vuex'
-
-export default defineComponent({
-  name: 'ListController',
-  directives: { maska },
-  props: {
-    now_order: String,
-  },
-  data() {
-    return {
-      form: {
-        limit: '',
-        order_group: '',
-        unit_type: '',
-        building: '',
-        ordering: 'contractor__name',
-        search: '',
-      },
-    }
-  },
-  computed: {
-    formsCheck(this: any) {
-      const a = this.form.limit === ''
-      const b = this.form.order_group === ''
-      const c = this.form.unit_type === ''
-      const d = this.form.building === ''
-      const e = this.form.ordering === 'contractor__name'
-      const f = this.form.search === ''
-      return a && b && c && d && e && f
-    },
-    ...mapState('contract', ['orderGroupList', 'contractsCount']),
-    ...mapGetters('project', ['simpleTypes']),
-    ...mapState('project', ['buildingList']),
-  },
-  methods: {
-    listFiltering(this: any, page = 1) {
-      this.$nextTick(() => {
-        this.$emit('list-filtering', {
-          ...{ page },
-          ...this.form,
-        })
-      })
-    },
-    resetForm() {
-      this.form.limit = ''
-      this.form.order_group = ''
-      this.form.unit_type = ''
-      this.form.building = ''
-      this.form.ordering = 'contractor__name'
-      this.form.search = ''
-      this.listFiltering(1)
-    },
-  },
-})
-</script>
 
 <style lang="scss" scoped>
 .light-yellow {
