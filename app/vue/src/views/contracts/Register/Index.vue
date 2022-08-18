@@ -1,3 +1,125 @@
+<script lang="ts" setup>
+import { computed, onBeforeMount, watch } from 'vue'
+import { useStore } from 'vuex'
+import { useProject } from '@/store/pinia/project'
+import { useRoute, useRouter, onBeforeRouteLeave } from 'vue-router'
+import { pageTitle, navMenu } from '@/views/contracts/_menu/headermixin'
+import ContentHeader from '@/layouts/ContentHeader/Index.vue'
+import ContentBody from '@/layouts/ContentBody/Index.vue'
+import ContractForm from '@/views/contracts/Register/components/ContractForm.vue'
+
+const route = useRoute()
+const router = useRouter()
+
+const store = useStore()
+const contract = computed(() => store.state.contract.contract)
+const unitSet = computed(() => project.value?.is_unit_set)
+const isUnion = computed(() => !project.value?.is_direct_manage)
+
+const projectStore = useProject()
+const project = computed(() => projectStore.project)
+const initProjId = computed(
+  () => contract.value?.project || projectStore.initProjId,
+)
+
+const fetchContract = (cont: any) =>
+  store.dispatch('contract/fetchContract', cont)
+const fetchOrderGroupList = (projId: number) =>
+  store.dispatch('contract/fetchOrderGroupList', projId)
+const fetchKeyUnitList = (payload: any) =>
+  store.dispatch('contract/fetchKeyUnitList', payload)
+const fetchHouseUnitList = (payload: any) =>
+  store.dispatch('contract/fetchHouseUnitList', payload)
+const createContractSet = (payload: any) =>
+  store.dispatch('contract/createContractSet', payload)
+const updateContractSet = (payload: any) =>
+  store.dispatch('contract/updateContractSet', payload)
+
+const fetchTypeList = (projId: number) =>
+  store.dispatch('project/fetchTypeList', projId)
+const fetchProBankAccList = (projId: number) =>
+  store.dispatch('proCash/fetchProBankAccList', projId)
+const fetchPayOrderList = (projId: number) =>
+  store.dispatch('payment/fetchPayOrderList', projId)
+
+watch(contract, newVal => {
+  const projId = project.value?.pk || initProjId.value
+  if (newVal) {
+    fetchKeyUnitList({
+      project: projId,
+      unit_type: newVal.unit_type.pk,
+      contract: route.query.contract,
+      available: 'false',
+    })
+    if (newVal.keyunit.houseunit) {
+      fetchHouseUnitList({
+        project: projId,
+        unit_type: newVal.unit_type.pk,
+        contract: route.query.contract,
+      })
+    } else {
+      fetchHouseUnitList({
+        project: projId,
+        unit_type: newVal.unit_type.pk,
+      })
+    }
+  }
+})
+
+const onSelectAdd = (target: any) => {
+  if (!!target) {
+    fetchOrderGroupList(target)
+    fetchKeyUnitList({ project: target })
+    fetchHouseUnitList({ project: target })
+    fetchTypeList(target)
+    fetchPayOrderList(target)
+    fetchProBankAccList(target)
+  } else {
+    store.commit('contract/updateState', {
+      contract: null,
+      orderGroupList: [],
+      keyUnitList: [],
+      houseUnitList: [],
+    })
+    store.commit('project/updateState', { unitTypeList: [] })
+    store.commit('payment/updateState', { payOrderList: [] })
+    store.commit('proCash/updateState', { proBankAccountList: [] })
+  }
+}
+const typeSelect = (type: number) => {
+  const unit_type = type
+  fetchKeyUnitList({ project: project.value?.pk, unit_type })
+  fetchHouseUnitList({ project: project.value?.pk, unit_type })
+}
+const getContract = (cont: any) => fetchContract(cont)
+
+const onCreate = (payload: any) => {
+  createContractSet({ project: project.value?.pk, ...payload })
+  router.push({ name: '계약내역 조회' })
+}
+const onUpdate = (payload: any) =>
+  updateContractSet({ project: project.value?.pk, ...payload })
+
+onBeforeMount(() => {
+  fetchOrderGroupList(initProjId.value)
+  fetchTypeList(initProjId.value)
+
+  fetchProBankAccList(initProjId.value)
+  fetchPayOrderList(initProjId.value)
+
+  fetchKeyUnitList({ project: initProjId.value })
+  fetchHouseUnitList({ project: initProjId.value })
+
+  if (route.query.contract) {
+    getContract(route.query.contract)
+  }
+})
+
+onBeforeRouteLeave(() =>
+  store.commit('contract/updateState', { contract: null }),
+)
+</script>
+
 <template>
   <ContentHeader
     :page-title="pageTitle"
@@ -16,132 +138,3 @@
     />
   </ContentBody>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import HeaderMixin from '@/views/contracts/_menu/headermixin'
-import ContentHeader from '@/layouts/ContentHeader/Index.vue'
-import ContentBody from '@/layouts/ContentBody/Index.vue'
-import ContractForm from '@/views/contracts/Register/components/ContractForm.vue'
-import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
-
-export default defineComponent({
-  name: 'ContractRegister',
-  components: {
-    ContentHeader,
-    ContentBody,
-    ContractForm,
-  },
-  mixins: [HeaderMixin],
-  beforeRouteLeave() {
-    this.FETCH_CONTRACT(null)
-  },
-  created(this: any) {
-    this.fetchOrderGroupList(this.initProjId)
-    this.fetchTypeList(this.initProjId)
-
-    this.fetchProBankAccList(this.initProjId)
-    this.fetchPayOrderList(this.initProjId)
-
-    this.fetchKeyUnitList({ project: this.initProjId })
-    this.fetchHouseUnitList({ project: this.initProjId })
-
-    if (this.$route.query.contract) {
-      this.getContract(this.$route.query.contract)
-    }
-  },
-  computed: {
-    unitSet() {
-      return this.project ? this.project.is_unit_set : false
-    },
-    isUnion() {
-      return this.project ? !this.project.is_direct_manage : false
-    },
-    ...mapState('contract', ['contract']),
-    ...mapState('project', ['project']),
-    ...mapGetters('accounts', ['initProjId']),
-  },
-  watch: {
-    contract(newVal) {
-      if (this.contract) {
-        this.fetchKeyUnitList({
-          project: this.project ? this.project.pk : this.initProjId,
-          unit_type: newVal.unit_type.pk,
-          contract: this.$route.query.contract,
-          available: 'false',
-        })
-
-        if (this.contract.keyunit.houseunit) {
-          this.fetchHouseUnitList({
-            project: this.project ? this.project.pk : this.initProjId,
-            unit_type: newVal.unit_type.pk,
-            contract: this.$route.query.contract,
-          })
-        } else {
-          this.fetchHouseUnitList({
-            project: this.project ? this.project.pk : this.initProjId,
-            unit_type: newVal.unit_type.pk,
-          })
-        }
-      }
-    },
-  },
-  methods: {
-    onSelectAdd(this: any, target: any) {
-      if (target !== '') {
-        this.fetchOrderGroupList(target)
-        this.fetchTypeList(target)
-        this.fetchKeyUnitList({ project: target })
-        this.fetchHouseUnitList({ project: target })
-        this.fetchProBankAccList(target)
-        this.fetchPayOrderList(target)
-      } else {
-        this.FETCH_ORDER_GROUP_LIST([])
-        this.FETCH_TYPE_LIST([])
-        this.FETCH_KEY_UNIT_LIST([])
-        this.FETCH_HOUSE_UNIT_LIST([])
-        this.FETCH_P_BANK_ACCOUNT_LIST([])
-        this.FETCH_PAY_ORDER_LIST([])
-      }
-    },
-    typeSelect(type: number) {
-      const project = this.project.pk
-      const unit_type = type
-      this.fetchKeyUnitList({ project, unit_type })
-      this.fetchHouseUnitList({ project, unit_type })
-    },
-    getContract(cont: number) {
-      this.fetchContract(cont)
-    },
-    onCreate(payload: any) {
-      const project = this.project.pk
-      this.createContractSet({ project, ...payload })
-      this.$router.push({ name: '계약내역 조회' })
-    },
-    onUpdate(payload: any) {
-      const project = this.project.pk
-      this.updateContractSet({ project, ...payload })
-    },
-    ...mapActions('contract', [
-      'fetchContract',
-      'fetchOrderGroupList',
-      'fetchKeyUnitList',
-      'fetchHouseUnitList',
-      'createContractSet',
-      'updateContractSet',
-    ]),
-    ...mapActions('project', ['fetchTypeList']),
-    ...mapActions('proCash', ['fetchProBankAccList']),
-    ...mapActions('payment', ['fetchPayOrderList']),
-    ...mapMutations('contract', [
-      'FETCH_CONTRACT',
-      'FETCH_ORDER_GROUP_LIST',
-      'FETCH_KEY_UNIT_LIST',
-      'FETCH_HOUSE_UNIT_LIST',
-    ]),
-    ...mapMutations('proCash', ['FETCH_P_BANK_ACCOUNT_LIST']),
-    ...mapMutations('project', ['FETCH_TYPE_LIST']),
-    ...mapMutations('payment', ['FETCH_PAY_ORDER_LIST']),
-  },
-})
-</script>
