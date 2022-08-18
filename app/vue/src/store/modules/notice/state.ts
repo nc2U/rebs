@@ -23,12 +23,10 @@ export declare interface SalesBillIssue {
 }
 
 export declare interface NoticeState extends State {
-  billIssueList: SalesBillIssue[]
   billIssue: SalesBillIssue | null
 }
 
 const state: NoticeState = {
-  billIssueList: [],
   billIssue: null,
 }
 

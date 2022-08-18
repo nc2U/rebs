@@ -48,7 +48,7 @@
       </router-link>
     </CTableDataCell>
     <CTableDataCell>
-      <span v-if="paidCompleted" class="text-secondary">완납중</span>
+      <span v-if="paidCompleted" class="text-success">완납중</span>
       <span v-else class="text-danger">미납중</span>
       {{
         contract.last_paid_order === '-'
