@@ -15,6 +15,7 @@ export default defineComponent({
   components: { DatePicker, ConfirmModal, AlertModal, DaumPostcode },
   directives: { maska },
   mixins: [addressMixin],
+  props: { billIssue: { type: Object, default: null } },
   emits: ['on-submit', 'get-now-order', 'set-pub-date'],
   setup() {
     return {
@@ -86,7 +87,7 @@ export default defineComponent({
       return false
     },
     ...mapState('payment', ['payOrderList']),
-    ...mapState('notice', ['billIssue']),
+    // ...mapState('notice', ['billIssue']),
     ...mapGetters('accounts', ['staffAuth', 'superAuth']),
   },
   watch: {
@@ -125,10 +126,11 @@ export default defineComponent({
   },
   methods: {
     get_now_order(np_order: number) {
-      const now_order = this.payOrderList
-        .filter((o: any) => o.pk == np_order)
-        .map((o: any) => o)[0]
-      this.$emit('get-now-order', now_order.pk)
+      // const now_order = this.payOrderList
+      //   .filter((o: any) => o.pk == np_order)
+      //   .map((o: any) => o)[0]
+      // alert(now_order)
+      this.$emit('get-now-order', np_order)
     },
     onSubmit(this: any, event: any) {
       if (write_notice) {

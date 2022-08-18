@@ -67,7 +67,6 @@ export default defineComponent({
   name: 'ContractorList',
   components: { Contract, Pagination },
   props: {
-    project: Object,
     now_order: Number,
   },
   data() {

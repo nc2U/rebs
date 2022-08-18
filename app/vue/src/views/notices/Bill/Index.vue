@@ -1,5 +1,6 @@
-<script lang="ts">
-import { defineComponent, ref, computed } from 'vue'
+<script lang="ts" setup>
+import { ref, reactive, computed, watch, onBeforeMount } from 'vue'
+import { useStore } from 'vuex'
 import { useProject } from '@/store/pinia/project'
 import { dateFormat } from '@/utils/baseMixins'
 import { pageTitle, navMenu } from '@/views/notices/_menu/headermixin'
@@ -9,164 +10,169 @@ import SalesBillIssueForm from '@/views/notices/Bill/components/SalesBillIssueFo
 import ListController from '@/views/notices/Bill/components/ListController.vue'
 import DownloadButton from '@/views/notices/Bill/components/DownloadButton.vue'
 import ContractList from '@/views/notices/Bill/components/ContractList.vue'
-import { mapActions, useStore } from 'vuex'
 
-export default defineComponent({
-  name: 'Bill',
-  components: {
-    ContentHeader,
-    ContentBody,
-    SalesBillIssueForm,
-    ListController,
-    DownloadButton,
-    ContractList,
-  },
-  setup() {
-    const ctor_ids = ref([])
-    const print_data = ref({
-      is_bill_issue: false,
-      project: null,
-      pub_date: dateFormat(new Date()),
-    })
+const ctor_ids = ref([])
+const print_data = reactive<{
+  is_bill_issue: boolean
+  project: null | number
+  pub_date: string
+}>({
+  is_bill_issue: false,
+  project: null,
+  pub_date: dateFormat(new Date()),
+})
 
-    const projectStore = useProject()
-    const project = computed(() => projectStore.project)
-    const initProjId = computed(() => projectStore.initProjId)
+const projectStore = useProject()
+const project = computed(() => projectStore.project?.pk)
+const initProjId = computed(() => projectStore.initProjId)
 
-    const store = useStore()
-    const payOrder = computed(() => store.state.payment.payOrder)
+const store = useStore()
+const payOrder = computed(() => store.state.payment.payOrder)
 
-    const payOrderTime = computed(() =>
-      payOrder.value ? payOrder.value.pay_time : null,
-    )
-    const payOrderName = computed(() =>
-      payOrder.value ? payOrder.value.__str__ : '',
-    )
+const billIssue = computed(() => store.state.notice.billIssue)
 
-    return {
-      pageTitle,
-      navMenu,
-      ctor_ids,
-      print_data,
-      project,
-      initProjId,
-      payOrder,
-      payOrderTime,
-      payOrderName,
-    }
-  },
+const payOrderTime = computed(() =>
+  payOrder.value ? payOrder.value.pay_time : null,
+)
+const payOrderName = computed(() =>
+  payOrder.value ? payOrder.value.__str__ : '',
+)
 
-  watch: {
-    project(val) {
-      if (val) {
-        this.fetchSalesBillIssue(val.pk)
-        this.print_data.is_bill_issue = !!val.salesbillissue
-        this.print_data.project = val.pk
-        this.fetchPayOrder(val.salesbillissue.now_payment_order)
-      }
-    },
-  },
-  created(this: any) {
-    this.fetchPayOrderList(this.initProjId)
-    this.fetchOrderGroupList(this.initProjId)
-    this.fetchTypeList(this.initProjId)
-    this.fetchBuildingList(this.initProjId)
-    this.fetchContractList({
-      project: this.initProjId,
+const fetchSalesBillIssue = (projId: number) =>
+  store.dispatch('notice/fetchSalesBillIssue', projId)
+const createSalesBillIssue = (projId: number) =>
+  store.dispatch('notice/createSalesBillIssue', projId)
+const patchSalesBillIssue = (projId: number) =>
+  store.dispatch('notice/patchSalesBillIssue', projId)
+
+const fetchPayOrder = (payload: any) =>
+  store.dispatch('payment/fetchPayOrder', payload)
+const patchPayOrder = (payload: any) =>
+  store.dispatch('payment/patchPayOrder', payload)
+const fetchPayOrderList = (projId: number) =>
+  store.dispatch('payment/fetchPayOrderList', projId)
+
+const fetchTypeList = (projId: number) =>
+  store.dispatch('project/fetchTypeList', projId)
+const fetchBuildingList = (projId: number) =>
+  store.dispatch('project/fetchBuildingList', projId)
+
+const fetchOrderGroupList = (projId: number) =>
+  store.dispatch('contract/fetchOrderGroupList', projId)
+const fetchContractList = (payload: { project: number; ordering: string }) =>
+  store.dispatch('contract/fetchContractList', payload)
+const fetchSalePriceList = (payload: { project: number }) =>
+  store.dispatch('contract/fetchSalePriceList', payload)
+const fetchDownPayList = (payload: { project: number }) =>
+  store.dispatch('contract/fetchDownPayList', payload)
+
+onBeforeMount(() => {
+  fetchSalesBillIssue(initProjId.value)
+  fetchPayOrderList(initProjId.value)
+  fetchOrderGroupList(initProjId.value)
+  fetchTypeList(initProjId.value)
+  fetchBuildingList(initProjId.value)
+  fetchContractList({
+    project: initProjId.value,
+    ordering: 'contractor__name',
+  })
+  fetchSalePriceList({ project: initProjId.value })
+  fetchDownPayList({ project: initProjId.value })
+})
+
+watch(project, val => {
+  if (val) {
+    fetchSalesBillIssue(val)
+    print_data.project = val
+  }
+})
+
+watch(billIssue, val => {
+  if (val) {
+    print_data.is_bill_issue = !!val
+    fetchPayOrder(val.now_payment_order)
+  }
+})
+
+const onSelectAdd = (target: any) => {
+  if (!!target) {
+    fetchPayOrderList(target)
+    fetchOrderGroupList(target)
+    fetchTypeList(target)
+    fetchBuildingList(target)
+    fetchContractList({
+      project: target,
       ordering: 'contractor__name',
     })
-    this.fetchSalePriceList({ project: this.initProjId })
-    this.fetchDownPayList({ project: this.initProjId })
-  },
-  methods: {
-    onSelectAdd(this: any, target: any) {
-      if (target !== '') {
-        this.fetchPayOrderList(target)
-        this.fetchOrderGroupList(target)
-        this.fetchTypeList(target)
-        this.fetchBuildingList(target)
-        this.fetchContractList({
-          project: target,
-          ordering: 'contractor__name',
-        })
-        this.fetchSalePriceList({ project: target })
-        this.fetchDownPayList({ project: target })
-      } else {
-        this.$store.state.payment.payOrderList = []
-        this.$store.state.contract.orderGroupList = []
-        this.$store.state.project.unitTypeList = []
-        this.$store.state.project.buildingList = []
-        this.$store.state.contract.contractList = []
-        this.$store.state.contract.contractsCount = 0
-        this.$store.state.contract.salesPriceList = []
-        this.$store.state.contract.downPayList = []
-      }
-    },
-    pageSelect(this: any, page: number) {
-      this.ctor_ids = []
-      this.$refs.listControl.listFiltering(page)
-      this.$refs.contractList.unChk()
-    },
-    listFiltering(this: any, payload: any) {
-      this.ctor_ids = []
-      const project = this.project.pk
-      this.fetchContractList({ ...{ project }, ...payload })
-      this.$refs.contractList.unChk()
-    },
-    onCtorChk(payload: { chk: boolean; pk: number }) {
-      let ctors: number[] = this.ctor_ids
-      if (payload.chk) {
-        if (!ctors.includes(payload.pk)) ctors.push(payload.pk)
-      } else {
-        let i = ctors.indexOf(payload.pk)
-        ctors.splice(i, 1)
-      }
-    },
-    allUnChecked() {
-      this.ctor_ids = []
-    },
-    getNowOrder(orderPk: string) {
-      this.fetchPayOrder(orderPk)
-    },
-    setPubDate(payload: any) {
-      this.print_data.pub_date = payload
-    },
-    onSubmit(payload: any) {
-      const { pk, now_payment_order } = payload
-      const { now_due_date, ...bill_data } = payload
-      if (pk) {
-        this.patchPayOrder({
-          pk: now_payment_order,
-          pay_due_date: now_due_date,
-        })
-        this.patchSalesBillIssue(bill_data)
-      } else {
-        this.patchPayOrder({
-          pk: now_payment_order,
-          pay_due_date: now_due_date,
-        })
-        this.createSalesBillIssue(bill_data)
-      }
-    },
-    ...mapActions('contract', [
-      'fetchOrderGroupList',
-      'fetchContractList',
-      'fetchSalePriceList',
-      'fetchDownPayList',
-    ]),
-    ...mapActions('payment', [
-      'patchPayOrder',
-      'fetchPayOrder',
-      'fetchPayOrderList',
-    ]),
-    ...mapActions('project', ['fetchTypeList', 'fetchBuildingList']),
-    ...mapActions('notice', [
-      'fetchSalesBillIssue',
-      'createSalesBillIssue',
-      'patchSalesBillIssue',
-    ]),
-  },
-})
+    fetchSalePriceList({ project: target })
+    fetchDownPayList({ project: target })
+  } else {
+    store.commit('contract/updateState', {
+      orderGroupList: [],
+      contractList: [],
+      contractsCount: 0,
+      salesPriceList: [],
+      downPayList: [],
+    })
+    store.commit('payment/updateState', { payOrderList: [] })
+    store.commit('project/updateState', { unitTypeList: [], buildingList: [] })
+  }
+}
+
+const listControl = ref()
+const contractList = ref()
+
+const pageSelect = (page: number) => {
+  ctor_ids.value = []
+  listControl.value.listFiltering(page)
+  contractList.value.unChk()
+}
+
+const listFiltering = (payload: any) => {
+  ctor_ids.value = []
+  fetchContractList({ ...{ project: project.value }, ...payload })
+  contractList.value.unChk()
+}
+
+const onCtorChk = (payload: { chk: boolean; pk: number }) => {
+  const contractors: number[] = ctor_ids.value
+  if (payload.chk) {
+    if (!contractors.includes(payload.pk)) contractors.push(payload.pk)
+  } else {
+    let i = contractors.indexOf(payload.pk)
+    contractors.splice(i, 1)
+  }
+}
+
+const allUnChecked = () => {
+  ctor_ids.value = []
+}
+
+const getNowOrder = (orderPk: string) => {
+  fetchPayOrder(orderPk)
+}
+
+const setPubDate = (payload: any) => {
+  print_data.pub_date = payload
+}
+
+const onSubmit = (payload: any) => {
+  const { pk, now_payment_order } = payload
+  const { now_due_date, ...bill_data } = payload
+  if (pk) {
+    patchPayOrder({
+      pk: now_payment_order,
+      pay_due_date: now_due_date,
+    })
+    patchSalesBillIssue(bill_data)
+  } else {
+    patchPayOrder({
+      pk: now_payment_order,
+      pay_due_date: now_due_date,
+    })
+    createSalesBillIssue(bill_data)
+  }
+}
 </script>
 
 <template>
@@ -179,6 +185,7 @@ export default defineComponent({
   <ContentBody>
     <CCardBody class="pb-5">
       <SalesBillIssueForm
+        :bill-issue="billIssue"
         @get-now-order="getNowOrder"
         @set-pub-date="setPubDate"
         @on-submit="onSubmit"
@@ -191,7 +198,6 @@ export default defineComponent({
       <DownloadButton :print_data="print_data" :contractors="ctor_ids" />
       <ContractList
         ref="contractList"
-        :project="project"
         :now_order="payOrderTime"
         @on-ctor-chk="onCtorChk"
         @page-select="pageSelect"
