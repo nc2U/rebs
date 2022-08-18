@@ -63,6 +63,7 @@ const listFiltering = (page = 1) => {
     })
   })
 }
+defineExpose({ listFiltering })
 
 const resetForm = () => {
   from_date.value = ''
