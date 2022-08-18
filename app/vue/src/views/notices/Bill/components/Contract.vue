@@ -1,3 +1,113 @@
+<script lang="ts" setup>
+import { computed, ref, nextTick, onMounted, watch } from 'vue'
+import { useStore } from 'vuex'
+
+const props = defineProps({
+  contract: {
+    type: Object,
+    required: true,
+  },
+  page: { type: Number, default: 1 },
+  nowOrder: { type: Number, default: null },
+  allChecked: Boolean,
+})
+const emit = defineEmits(['on-ctor-chk'])
+
+const checked = ref(false)
+// const orderList = ref([{ pay_time: null }])
+
+const store = useStore()
+const payOrderList = computed(() => store.state.payment.payOrderList)
+const salesPriceList = computed(() => store.state.contract.salesPriceList)
+const downPaymentList = computed(() => store.state.contract.downPaymentList)
+
+const paidCompleted = computed(() => {
+  const due: number = props.nowOrder || 2
+  const paid: number = get_paid_order()
+  return paid >= due
+})
+const price = computed(() => {
+  // 해당 건별 분양가 구하기
+  const c = props.contract
+  const unit = c.house_unit
+  return unit
+    ? salesPriceList.value.filter(
+        (s: any) =>
+          s.order_group === c.order_group.pk &&
+          s.unit_type === c.type_pk &&
+          s.unit_floor_type === unit.floor_type,
+      )[0]?.price
+    : props.contract.average_price
+})
+const downPay = computed(() => {
+  // 계약금 구하기
+  const c = props.contract
+  const pay_num = payOrderList.value.filter(
+    (p: any) => p.pay_sort === '1',
+  ).length
+  const average_downPay = Number((price.value * 0.1) / Math.round(pay_num / 2))
+
+  const downPay = downPaymentList.value.filter(
+    (d: any) => d.order_group === c.order_group.pk && d.unit_type === c.type_pk,
+  )[0]
+
+  return downPay ? downPay.payment_amount : average_downPay
+})
+const lastPayName = computed(
+  () => payOrderList.value[payOrderList.value.length - 1].pay_time,
+)
+
+watch(props, (n, o) => {
+  if (!paidCompleted.value) {
+    checked.value = n.allChecked
+    ctorChk(n.contract.ctor_pk)
+  }
+  if (n.page !== o.page) checked.value = false
+})
+// watch: {
+//   allChecked(val) {
+//     if (!this.paidCompleted) {
+//       this.checked = val
+//       this.ctorChk(this.contract.ctor_pk)
+//     }
+//   },
+//   page(n, o) {
+//     if (n !== o) this.checked = false
+//   },
+// },
+
+// onMounted(() => (orderList.value = payOrderList.value))
+
+const ctorChk = (ctorPk: string) =>
+  nextTick(() => {
+    emit('on-ctor-chk', { chk: checked.value, pk: ctorPk })
+  })
+
+const get_paid_order = () => {
+  let paid_amount = 0
+  const total_paid = props.contract.total_paid
+  let paid_orders: any[] = []
+
+  const middle = Number(price.value * 0.1)
+
+  payOrderList.value.forEach((p: any) => {
+    if (p.pay_sort === '1') paid_amount += downPay.value
+    else if (p.pay_sort === '2') paid_amount += middle
+
+    if (total_paid >= paid_amount) {
+      paid_orders.push(p.pay_time)
+    }
+  })
+  return total_paid >= price.value ? lastPayName.value : paid_orders.pop()
+}
+
+const getPayName = (pay_time: number) => {
+  return payOrderList.value
+    .filter((p: any) => p.pay_time === pay_time)
+    .map((p: any) => p.pay_name)[0]
+}
+</script>
+
 <template>
   <CTableRow
     v-if="contract"
@@ -59,114 +169,3 @@
     <CTableDataCell>{{ contract.contract_date }}</CTableDataCell>
   </CTableRow>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import { mapState } from 'vuex'
-
-export default defineComponent({
-  name: 'Contract',
-  props: {
-    contract: {
-      type: Object,
-      required: true,
-    },
-    page: Number,
-    now_order: Number,
-    allChecked: Boolean,
-  },
-  data() {
-    return {
-      checked: false,
-      orderList: [{ pay_time: null }],
-    }
-  },
-  computed: {
-    paidCompleted() {
-      const due: number = this.now_order || 2
-      const paid: number = this.get_paid_order()
-      return paid >= due
-    },
-    price() {
-      // 해당 건별 분양가 구하기
-      const c = this.contract
-      const unit = c.house_unit
-      return unit
-        ? this.salesPriceList.filter(
-            (s: any) =>
-              s.order_group === c.order_group.pk &&
-              s.unit_type === c.type_pk &&
-              s.unit_floor_type === unit.floor_type,
-          )[0]?.price
-        : this.contract.average_price
-    },
-
-    downPay() {
-      // 계약금 구하기
-      const c = this.contract
-      const pay_num = this.payOrderList.filter(
-        (p: any) => p.pay_sort === '1',
-      ).length
-      const average_downPay = Number(
-        (this.price * 0.1) / Math.round(pay_num / 2),
-      )
-
-      const downPay = this.downPaymentList.filter(
-        (d: any) =>
-          d.order_group === c.order_group.pk && d.unit_type === c.type_pk,
-      )[0]
-
-      return downPay ? downPay.payment_amount : average_downPay
-    },
-    lastPayName() {
-      return this.payOrderList[this.payOrderList.length - 1].pay_time
-    },
-    ...mapState('payment', ['payOrderList']),
-    ...mapState('contract', ['salesPriceList', 'downPaymentList']),
-  },
-  watch: {
-    allChecked(val) {
-      if (!this.paidCompleted) {
-        this.checked = val
-        this.ctorChk(this.contract.ctor_pk)
-      }
-    },
-    page(n, o) {
-      if (n !== o) this.checked = false
-    },
-  },
-  mounted() {
-    this.orderList = this.payOrderList
-  },
-  methods: {
-    ctorChk(ctorPk: string) {
-      this.$nextTick(() => {
-        this.$emit('on-ctor-chk', { chk: this.checked, pk: ctorPk })
-      })
-    },
-
-    get_paid_order() {
-      let paid_amount = 0
-      const total_paid = this.contract.total_paid
-      let paid_orders: any[] = []
-
-      const middle = Number(this.price * 0.1)
-
-      this.orderList.forEach((p: any) => {
-        if (p.pay_sort === '1') paid_amount += this.downPay
-        else if (p.pay_sort === '2') paid_amount += middle
-
-        if (total_paid >= paid_amount) {
-          paid_orders.push(p.pay_time)
-        }
-      })
-      return total_paid >= this.price ? this.lastPayName : paid_orders.pop()
-    },
-    getPayName(pay_time: number) {
-      return this.payOrderList
-        .filter((p: any) => p.pay_time === pay_time)
-        .map((p: any) => p.pay_name)[0]
-    },
-  },
-})
-</script>

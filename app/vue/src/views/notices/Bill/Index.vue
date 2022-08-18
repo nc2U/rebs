@@ -11,14 +11,14 @@ import ListController from '@/views/notices/Bill/components/ListController.vue'
 import DownloadButton from '@/views/notices/Bill/components/DownloadButton.vue'
 import ContractList from '@/views/notices/Bill/components/ContractList.vue'
 
+const listControl = ref()
+const contractList = ref()
+defineExpose({ listControl, contractList })
+
 const ctor_ids = ref([])
-const print_data = reactive<{
-  is_bill_issue: boolean
-  project: null | number
-  pub_date: string
-}>({
+const print_data = reactive({
   is_bill_issue: false,
-  project: null,
+  project: null as null | number,
   pub_date: dateFormat(new Date()),
 })
 
@@ -119,13 +119,9 @@ const onSelectAdd = (target: any) => {
   }
 }
 
-const listControl = ref()
-const contractList = ref()
-
 const pageSelect = (page: number) => {
   ctor_ids.value = []
   listControl.value.listFiltering(page)
-  contractList.value.unChk()
 }
 
 const listFiltering = (payload: any) => {
@@ -198,7 +194,7 @@ const onSubmit = (payload: any) => {
       <DownloadButton :print-data="print_data" :contractors="ctor_ids" />
       <ContractList
         ref="contractList"
-        :now_order="payOrderTime"
+        :now-order="payOrderTime"
         @on-ctor-chk="onCtorChk"
         @page-select="pageSelect"
         @all-un-checked="allUnChecked"

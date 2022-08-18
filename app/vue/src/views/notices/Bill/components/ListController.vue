@@ -144,7 +144,7 @@ const resetForm = () => {
                 aria-describedby="addon-wrapping"
                 @change="listFiltering(1)"
               />
-              <CInputGroupText @click="listFiltering(1)">검색</CInputGroupText>
+              <CInputGroupText @click="listFiltering(1)">검색 </CInputGroupText>
             </CInputGroup>
           </CCol>
         </CRow>

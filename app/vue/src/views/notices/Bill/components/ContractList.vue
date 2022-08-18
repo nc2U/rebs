@@ -1,3 +1,37 @@
+<script lang="ts" setup>
+import { computed, ref, nextTick } from 'vue'
+import { useStore } from 'vuex'
+import Contract from '@/views/notices/Bill/components/Contract.vue'
+import Pagination from '@/components/Pagination'
+import { headerSecondary } from '@/utils/cssMixins'
+
+defineProps({ nowOrder: { type: Number, default: null } })
+const emit = defineEmits(['page-select', 'on-ctor-chk', 'all-un-checked'])
+
+const page = ref(1)
+const allChecked = ref(false)
+
+const store = useStore()
+
+const contBillIndex = computed(() => store.getters['contract/contBillIndex'])
+const contractPages = computed(() => store.getters['contract/contractPages'])
+
+const pageSelect = (page: number) => {
+  allChecked.value = false
+  emit('page-select', page)
+}
+
+const allUnChecked = () =>
+  nextTick(() => {
+    if (!allChecked.value) {
+      emit('all-un-checked')
+    }
+  })
+
+const onCtorChk = (payload: { chk: boolean; pk: number }) =>
+  emit('on-ctor-chk', payload)
+</script>
+
 <template>
   <CTable hover responsive align="middle">
     <colgroup>
@@ -38,7 +72,7 @@
         v-for="contract in contBillIndex"
         :key="contract.pk"
         :page="page"
-        :now_order="now_order"
+        :now-order="nowOrder"
         :all-checked="allChecked"
         :contract="contract"
         @on-ctor-chk="onCtorChk"
@@ -55,54 +89,3 @@
     @active-page-change="pageSelect"
   />
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import Contract from '@/views/notices/Bill/components/Contract.vue'
-import Pagination from '@/components/Pagination'
-import { headerSecondary } from '@/utils/cssMixins'
-import { mapGetters } from 'vuex'
-
-export default defineComponent({
-  name: 'ContractorList',
-  components: { Contract, Pagination },
-  props: {
-    now_order: Number,
-  },
-  data() {
-    return {
-      allChecked: false,
-      page: 1,
-    }
-  },
-  computed: {
-    headerSecondary() {
-      return headerSecondary.value
-    },
-    ...mapGetters('contract', ['contBillIndex', 'contractPages']),
-  },
-  methods: {
-    pageSelect(this: any, page: number) {
-      this.allChecked = false
-      this.page = page
-      this.$emit('page-select', page)
-    },
-    allUnChecked() {
-      this.$nextTick(() => {
-        if (!this.allChecked) {
-          this.$emit('all-un-checked')
-        }
-      })
-    },
-    onCtorChk(payload: { chk: boolean; pk: number }) {
-      this.$emit('on-ctor-chk', payload)
-    },
-    unChk(this: any) {
-      this.page = 2
-      setTimeout(() => {
-        this.page = 1
-      }, 50)
-    },
-  },
-})
-</script>
