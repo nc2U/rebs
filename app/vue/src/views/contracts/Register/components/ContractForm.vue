@@ -1,3 +1,311 @@
+<script lang="ts" setup>
+import { reactive, ref, watch, nextTick, computed } from 'vue'
+import { useStore } from 'vuex'
+import { useAccount } from '@/store/pinia/account'
+import { useRouter } from 'vue-router'
+import { diffDate } from '@/utils/baseMixins'
+import { isValidate } from '@/utils/helper'
+import { dateFormat } from '@/utils/baseMixins'
+import { write_contract } from '@/utils/pageAuth'
+import ContNavigation from './ContNavigation.vue'
+import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
+import AlertModal from '@/components/Modals/AlertModal.vue'
+import DatePicker from '@/components/DatePicker/index.vue'
+import DaumPostcode from '@/components/DaumPostcode/index.vue'
+import { callAddress } from '@/components/DaumPostcode/address'
+import { maska as vMaska } from 'maska'
+
+const props = defineProps({
+  contract: { type: Object, default: null },
+  unitSet: Boolean,
+  isUnion: Boolean,
+})
+const emit = defineEmits(['type-select', 'on-create', 'on-update'])
+
+const address21 = ref()
+const address22 = ref()
+const delModal = ref()
+const alertModal = ref()
+const confirmModal = ref()
+
+const pk = ref(null)
+const sameAddr = ref(false)
+const formsCheck = ref(true)
+const validated = ref(false)
+const form = reactive({
+  // contract
+  order_group: '', // 2
+  unit_type: '', // 3
+  key_unit: '', // 4
+  houseunit: '', // 5
+  cont_keyunit: '', // 디비 계약 유닛
+  cont_houseunit: '', // 디비 동호 유닛
+  // contractor
+  contractorPk: null,
+  name: '', // 7
+  birth_date: null as string | Date | null, // 8
+  gender: '', // 9
+  is_registed: false, // 10
+  status: '', // 1
+  reservation_date: null as string | Date | null, // 6-1
+  contract_date: null as string | Date | null, // 6-2
+  note: '', // 28
+  // proCash
+  paymentPk: null,
+  deal_date: null as string | Date | null, // 15
+  income: '', // 16
+  bank_account: '', // 17
+  trader: '', // 18
+  installment_order: '', // 19
+  // address
+  addressPk: null,
+  id_zipcode: '', // 20
+  id_address1: '', // 21
+  id_address2: '', // 22
+  id_address3: '', // 23
+  dm_zipcode: '', // 24
+  dm_address1: '', // 25
+  dm_address2: '', // 26
+  dm_address3: '', // 27
+  // contact
+  contactPk: null,
+  cell_phone: '', // 11
+  home_phone: '', // 12
+  other_phone: '', // 13
+  email: '', // 14
+})
+
+watch(props, newVal => {
+  if (newVal.contract) {
+    // contract
+    pk.value = props.contract.pk
+    form.order_group = `${props.contract.order_group.pk},${props.contract.order_group.sort}`
+    form.unit_type = props.contract.unit_type.pk
+    form.key_unit = `${props.contract.keyunit.pk},${props.contract.keyunit.unit_code}`
+    form.houseunit = props.contract.keyunit.houseunit
+      ? props.contract.keyunit.houseunit.pk
+      : ''
+    form.cont_keyunit = props.contract.keyunit.pk
+    form.cont_houseunit = props.contract.keyunit.houseunit
+      ? props.contract.keyunit.houseunit.pk
+      : ''
+
+    // contractor
+    form.contractorPk = props.contract.contractor.pk
+    form.name = props.contract.contractor.name
+    form.birth_date = new Date(props.contract.contractor.birth_date)
+    form.gender = props.contract.contractor.gender // 9
+    form.is_registed = props.contract.contractor.is_registed // 10
+    form.status = props.contract.contractor.status
+    form.reservation_date =
+      props.contract.contractor.reservation_date === null
+        ? null
+        : new Date(props.contract.contractor.reservation_date)
+    form.contract_date =
+      props.contract.contractor.contract_date === null
+        ? null
+        : new Date(props.contract.contractor.contract_date)
+    form.note = props.contract.contractor.note
+
+    // address
+    if (newVal.contract.contractor.status === '2') {
+      form.addressPk = props.contract.contractor.contractoraddress.pk
+      form.id_zipcode = props.contract.contractor.contractoraddress.id_zipcode // 20
+      form.id_address1 = props.contract.contractor.contractoraddress.id_address1 // 21
+      form.id_address2 = props.contract.contractor.contractoraddress.id_address2 // 22
+      form.id_address3 = props.contract.contractor.contractoraddress.id_address3 // 23
+      form.dm_zipcode = props.contract.contractor.contractoraddress.dm_zipcode // 24
+      form.dm_address1 = props.contract.contractor.contractoraddress.dm_address1
+      form.dm_address2 = props.contract.contractor.contractoraddress.dm_address2 // 26
+      form.dm_address3 = props.contract.contractor.contractoraddress.dm_address3 // 27
+    }
+    // contact
+    form.contactPk = props.contract.contractor.contractorcontact.pk //
+    form.cell_phone = props.contract.contractor.contractorcontact.cell_phone
+    form.home_phone = props.contract.contractor.contractorcontact.home_phone // 11 // 12
+    form.other_phone = props.contract.contractor.contractorcontact.other_phone // 13
+    form.email = props.contract.contractor.contractorcontact.email // 14
+  }
+  nextTick(() => (formsCheck.value = true))
+})
+
+watch(form, () => (formsCheck.value = false))
+
+const store = useStore()
+const orderGroupList = computed(() => store.state.contract.orderGroupList)
+const keyUnitList = computed(() => store.state.contract.keyUnitList)
+const houseUnitList = computed(() => store.state.contract.houseUnitList)
+const unitTypeList = computed(() => store.state.project.unitTypeList)
+const proBankAccountList = computed(
+  () => store.state.proCash.proBankAccountList,
+)
+const payOrderList = computed(() => store.state.payment.payOrderList)
+
+const contLabel = computed(() => (form.status !== '1' ? '계약' : '청약'))
+const isContract = computed(() => form.status === '2')
+const noStatus = computed(() => form.status === '' && !props.contract)
+const downPayOrder = computed(() =>
+  payOrderList.value.filter((po: any) => po.pay_time <= '1'),
+)
+const downPayments = computed(() =>
+  props.contract && props.contract.payments.length > 0
+    ? props.contract.payments.filter(
+        (p: any) =>
+          p.installment_order !== null && p.installment_order.pay_time === 1,
+      )
+    : [],
+)
+const pageManageAuth = computed(() => write_contract)
+const allowedPeriod = computed(() =>
+  form.deal_date
+    ? useAccount().superAuth ||
+      form.paymentPk === null ||
+      diffDate(form.deal_date) <= 90
+    : false,
+)
+
+const addressCallback = (date: any) => {
+  const { formNum, zipcode, address1, address3 } = callAddress(date)
+  if (formNum === 2) {
+    form.id_zipcode = zipcode
+    form.id_address1 = address1
+    form.id_address2 = ''
+    form.id_address3 = address3
+    address21.value.$el.nextElementSibling.focus()
+  } else if (formNum === 3) {
+    form.dm_zipcode = zipcode
+    form.dm_address1 = address1
+    form.dm_address2 = ''
+    form.dm_address3 = address3
+    address22.value.$el.nextElementSibling.focus()
+  }
+}
+
+const onSubmit = (event: any) => {
+  if (isValidate(event)) {
+    validated.value = true
+  } else {
+    if (write_contract)
+      if (allowedPeriod.value) confirmModal.value.callModal()
+      else
+        alertModal.value.callModal(
+          null,
+          '거래일로부터 90일이 경과한 건은 수정할 수 없습니다. 관리자에게 문의바랍니다.',
+        )
+    else alertModal.value.callModal()
+  }
+}
+const payUpdate = (payment: any) => {
+  form.paymentPk = payment.pk
+  form.deal_date = new Date(payment.deal_date)
+  form.income = payment.income
+  form.bank_account = payment.bank_account
+  form.trader = payment.trader
+  form.installment_order = payment.installment_order.pk
+}
+
+const payReset = () => {
+  form.paymentPk = null
+  form.deal_date = null
+  form.income = ''
+  form.bank_account = ''
+  form.trader = ''
+  form.installment_order = ''
+}
+
+const unitReset = (event: any) => {
+  form.reservation_date = null
+  form.contract_date = null
+  if (event.target.value === '') formReset()
+}
+const typeSelect = (event: any) => {
+  emit('type-select', event.target.value)
+  form.key_unit = ''
+  form.houseunit = ''
+}
+const toSame = () => {
+  if (!sameAddr.value) {
+    form.dm_zipcode = form.id_zipcode
+    form.dm_address1 = form.id_address1
+    form.dm_address2 = form.id_address2
+    form.dm_address3 = form.id_address3
+  } else {
+    form.dm_zipcode = ''
+    form.dm_address1 = ''
+    form.dm_address2 = ''
+    form.dm_address3 = ''
+  }
+}
+
+const router = useRouter()
+const formReset = () => {
+  pk.value = null
+  form.order_group = ''
+  form.unit_type = ''
+  form.key_unit = ''
+  form.houseunit = ''
+
+  form.contractorPk = null
+  form.name = ''
+  form.birth_date = null
+  form.gender = ''
+  form.is_registed = false
+  form.status = ''
+  form.reservation_date = null
+  form.contract_date = null
+  form.note = ''
+
+  form.paymentPk = null
+  form.deal_date = null
+  form.income = ''
+  form.bank_account = ''
+  form.trader = ''
+  form.installment_order = ''
+
+  form.addressPk = null
+  form.id_zipcode = ''
+  form.id_address1 = ''
+  form.id_address2 = ''
+  form.id_address3 = ''
+  form.dm_zipcode = ''
+  form.dm_address1 = ''
+  form.dm_address2 = ''
+  form.dm_address3 = ''
+
+  form.contactPk = null
+  form.cell_phone = ''
+  form.home_phone = ''
+  form.other_phone = ''
+  form.email = ''
+  store.commit('contract/updateState', { contract: null })
+  router.push({ name: '계약등록 관리' })
+  nextTick(() => (formsCheck.value = true))
+}
+const modalAction = () => {
+  form.birth_date = form.birth_date ? dateFormat(form.birth_date) : null
+  form.reservation_date = form.reservation_date
+    ? dateFormat(form.reservation_date)
+    : null
+  form.contract_date = form.contract_date
+    ? dateFormat(form.contract_date)
+    : null
+  form.deal_date = form.deal_date ? dateFormat(form.deal_date) : null
+  if (!props.contract) emit('on-create', form)
+  else
+    emit('on-update', {
+      ...{ pk: pk.value },
+      ...form,
+    })
+  validated.value = false
+  formReset()
+  confirmModal.value.visible = false
+}
+const deleteContract = () => {
+  if (useAccount().superAuth) delModal.value.callModal()
+  else alertModal.value.callModal()
+}
+</script>
+
 <template>
   <CCard>
     <CForm
@@ -628,342 +936,3 @@
 
   <AlertModal ref="alertModal" />
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import ContNavigation from './ContNavigation.vue'
-import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
-import AlertModal from '@/components/Modals/AlertModal.vue'
-import DatePicker from '@/components/DatePicker/index.vue'
-import DaumPostcode from '@/components/DaumPostcode/index.vue'
-import addressMixin from '@/components/DaumPostcode/addressMixin'
-import { maska } from 'maska'
-import { mapGetters, mapMutations, mapState } from 'vuex'
-
-export default defineComponent({
-  name: 'ContractForm',
-  components: {
-    ContNavigation,
-    ConfirmModal,
-    AlertModal,
-    DatePicker,
-    DaumPostcode,
-  },
-  directives: { maska },
-  mixins: [addressMixin],
-  props: {
-    contract: Object,
-    unitSet: Boolean,
-    isUnion: Boolean,
-  },
-  emits: ['type-select', 'on-create', 'on-update'],
-  data() {
-    return {
-      pk: null,
-      form: {
-        // contract
-        order_group: '', // 2
-        unit_type: '', // 3
-        key_unit: '', // 4
-        houseunit: '', // 5
-        cont_keyunit: '', // 디비 계약 유닛
-        cont_houseunit: '', // 디비 동호 유닛
-        // contractor
-        contractorPk: null,
-        name: '', // 7
-        birth_date: null, // 8
-        gender: '', // 9
-        is_registed: false, // 10
-        status: '', // 1
-        reservation_date: null, // 6-1
-        contract_date: null, // 6-2
-        note: '', // 28
-        // proCash
-        paymentPk: null,
-        deal_date: null, // 15
-        income: '', // 16
-        bank_account: '', // 17
-        trader: '', // 18
-        installment_order: '', // 19
-        // address
-        addressPk: null,
-        id_zipcode: '', // 20
-        id_address1: '', // 21
-        id_address2: '', // 22
-        id_address3: '', // 23
-        dm_zipcode: '', // 24
-        dm_address1: '', // 25
-        dm_address2: '', // 26
-        dm_address3: '', // 27
-        // contact
-        contactPk: null,
-        cell_phone: '', // 11
-        home_phone: '', // 12
-        other_phone: '', // 13
-        email: '', // 14
-      },
-      sameAddr: false,
-      formsCheck: true,
-      validated: false,
-    }
-  },
-  computed: {
-    contLabel() {
-      return this.form.status !== '1' ? '계약' : '청약'
-    },
-    isContract() {
-      return this.form.status === '2'
-    },
-    noStatus() {
-      return this.form.status === '' && !this.contract
-    },
-    downPayOrder() {
-      return this.payOrderList.filter((po: any) => po.pay_time <= '1')
-    },
-    downPayments(this: any) {
-      return this.contract && this.contract.payments.length > 0
-        ? this.contract.payments.filter(
-            (p: any) =>
-              p.installment_order !== null &&
-              p.installment_order.pay_time === 1,
-          )
-        : []
-    },
-    pageManageAuth() {
-      return (
-        this.superAuth || (this.staffAuth && this.staffAuth.contract === '2')
-      )
-    },
-    allowedPeriod(this: any) {
-      return (
-        this.superAuth ||
-        this.form.paymentPk === null ||
-        this.diffDate(this.form.deal_date) <= 90
-      )
-    },
-    ...mapState('contract', ['orderGroupList', 'keyUnitList', 'houseUnitList']),
-    ...mapState('project', ['unitTypeList']),
-    ...mapState('proCash', ['proBankAccountList']),
-    ...mapState('payment', ['payOrderList']),
-    ...mapGetters('accounts', ['staffAuth', 'superAuth']),
-  },
-  watch: {
-    addrForm(this: any, newVal: number) {
-      if (newVal === 2) {
-        this.form.id_zipcode = this.zipcode // 우편번호와 주소 정보를 해당 필드에 넣는다.
-        this.form.id_address1 = this.address1
-        this.form.id_address2 = ''
-        this.form.id_address3 = this.address3 // 조합된 참고항목을 해당 필드에 넣는다.
-        this.$refs.address21.$el.nextElementSibling.focus() // 커서를 상세주소 필드로 이동한다.
-      } else if (newVal === 3) {
-        this.form.dm_zipcode = this.zipcode // 우편번호와 주소 정보를 해당 필드에 넣는다.
-        this.form.dm_address1 = this.address1
-        this.form.dm_address2 = ''
-        this.form.dm_address3 = this.address3 // 조합된 참고항목을 해당 필드에 넣는다.
-        this.$refs.address22.$el.nextElementSibling.focus() // 커서를 상세주소 필드로 이동한다.
-      }
-    },
-    contract(this: any, newVal) {
-      if (this.contract && newVal) {
-        // contract
-        this.pk = this.contract.pk
-        this.form.order_group = `${this.contract.order_group.pk},${this.contract.order_group.sort}`
-        this.form.unit_type = this.contract.unit_type.pk
-        this.form.key_unit = `${this.contract.keyunit.pk},${this.contract.keyunit.unit_code}`
-        this.form.houseunit = this.contract.keyunit.houseunit
-          ? this.contract.keyunit.houseunit.pk
-          : ''
-        this.form.cont_keyunit = this.contract.keyunit.pk
-        this.form.cont_houseunit = this.contract.keyunit.houseunit
-          ? this.contract.keyunit.houseunit.pk
-          : ''
-
-        // contractor
-        this.form.contractorPk = this.contract.contractor.pk
-        this.form.name = this.contract.contractor.name
-        this.form.birth_date = new Date(this.contract.contractor.birth_date)
-        this.form.gender = this.contract.contractor.gender // 9
-        this.form.is_registed = this.contract.contractor.is_registed // 10
-        this.form.status = this.contract.contractor.status
-        this.form.reservation_date =
-          this.contract.contractor.reservation_date === null
-            ? null
-            : new Date(this.contract.contractor.reservation_date)
-        this.form.contract_date =
-          this.contract.contractor.contract_date === null
-            ? null
-            : new Date(this.contract.contractor.contract_date)
-        this.form.note = this.contract.contractor.note
-
-        // address
-        if (newVal.contractor.status === '2') {
-          this.form.addressPk = this.contract.contractor.contractoraddress.pk
-          this.form.id_zipcode =
-            this.contract.contractor.contractoraddress.id_zipcode // 20
-          this.form.id_address1 =
-            this.contract.contractor.contractoraddress.id_address1 // 21
-          this.form.id_address2 =
-            this.contract.contractor.contractoraddress.id_address2 // 22
-          this.form.id_address3 =
-            this.contract.contractor.contractoraddress.id_address3 // 23
-          this.form.dm_zipcode =
-            this.contract.contractor.contractoraddress.dm_zipcode // 24
-          this.form.dm_address1 =
-            this.contract.contractor.contractoraddress.dm_address1
-          this.form.dm_address2 =
-            this.contract.contractor.contractoraddress.dm_address2 // 26
-          this.form.dm_address3 =
-            this.contract.contractor.contractoraddress.dm_address3 // 27
-        }
-        // contact
-        this.form.contactPk = this.contract.contractor.contractorcontact.pk //
-        this.form.cell_phone =
-          this.contract.contractor.contractorcontact.cell_phone
-        this.form.home_phone =
-          this.contract.contractor.contractorcontact.home_phone // 11 // 12
-        this.form.other_phone =
-          this.contract.contractor.contractorcontact.other_phone // 13
-        this.form.email = this.contract.contractor.contractorcontact.email // 14
-      }
-      this.$nextTick(() => (this.formsCheck = true))
-    },
-    form: {
-      deep: true,
-      handler() {
-        this.formsCheck = false
-      },
-    },
-  },
-  methods: {
-    onSubmit(this: any, event: any) {
-      const form = event.currentTarget
-      if (form.checkValidity() === false) {
-        event.preventDefault()
-        event.stopPropagation()
-
-        console.log(form.checkValidity())
-        this.validated = true
-      } else {
-        if (this.pageManageAuth)
-          if (this.allowedPeriod) this.$refs.confirmModal.callModal()
-          else
-            this.$refs.alertModal.callModal(
-              null,
-              '거래일로부터 90일이 경과한 건은 수정할 수 없습니다. 관리자에게 문의바랍니다.',
-            )
-        else this.$refs.alertModal.callModal()
-      }
-    },
-    payUpdate(this: any, payment: any) {
-      this.form.paymentPk = payment.pk
-      this.form.deal_date = new Date(payment.deal_date)
-      this.form.income = payment.income
-      this.form.bank_account = payment.bank_account
-      this.form.trader = payment.trader
-      this.form.installment_order = payment.installment_order.pk
-    },
-    payReset() {
-      this.form.paymentPk = null
-      this.form.deal_date = null
-      this.form.income = ''
-      this.form.bank_account = ''
-      this.form.trader = ''
-      this.form.installment_order = ''
-    },
-    unitReset(event: any) {
-      this.form.reservation_date = null
-      this.form.contract_date = null
-      if (event.target.value === '') this.formReset()
-    },
-    typeSelect(event: any) {
-      this.$emit('type-select', event.target.value)
-      this.form.key_unit = ''
-      this.form.houseunit = ''
-    },
-    toSame() {
-      if (!this.sameAddr) {
-        this.form.dm_zipcode = this.form.id_zipcode
-        this.form.dm_address1 = this.form.id_address1
-        this.form.dm_address2 = this.form.id_address2
-        this.form.dm_address3 = this.form.id_address3
-      } else {
-        this.form.dm_zipcode = ''
-        this.form.dm_address1 = ''
-        this.form.dm_address2 = ''
-        this.form.dm_address3 = ''
-      }
-    },
-    formReset() {
-      this.pk = null
-      this.form.order_group = ''
-      this.form.unit_type = ''
-      this.form.key_unit = ''
-      this.form.houseunit = ''
-
-      this.form.contractorPk = null
-      this.form.name = ''
-      this.form.birth_date = null
-      this.form.gender = ''
-      this.form.is_registed = false
-      this.form.status = ''
-      this.form.reservation_date = null
-      this.form.contract_date = null
-      this.form.note = ''
-
-      this.form.paymentPk = null
-      this.form.deal_date = null
-      this.form.income = ''
-      this.form.bank_account = ''
-      this.form.trader = ''
-      this.form.installment_order = ''
-
-      this.form.addressPk = null
-      this.form.id_zipcode = ''
-      this.form.id_address1 = ''
-      this.form.id_address2 = ''
-      this.form.id_address3 = ''
-      this.form.dm_zipcode = ''
-      this.form.dm_address1 = ''
-      this.form.dm_address2 = ''
-      this.form.dm_address3 = ''
-
-      this.form.contactPk = null
-      this.form.cell_phone = ''
-      this.form.home_phone = ''
-      this.form.other_phone = ''
-      this.form.email = ''
-      this.FETCH_CONTRACT(null)
-      this.$router.push({ name: '계약등록 관리' })
-      this.$nextTick(() => (this.formsCheck = true))
-    },
-    modalAction(this: any) {
-      this.form.birth_date = this.form.birth_date
-        ? this.dateFormat(this.form.birth_date)
-        : null
-      this.form.reservation_date = this.form.reservation_date
-        ? this.dateFormat(this.form.reservation_date)
-        : null
-      this.form.contract_date = this.form.contract_date
-        ? this.dateFormat(this.form.contract_date)
-        : null
-      this.form.deal_date = this.form.deal_date
-        ? this.dateFormat(this.form.deal_date)
-        : null
-      if (!this.contract) this.$emit('on-create', this.form)
-      else
-        this.$emit('on-update', {
-          ...{ pk: this.pk },
-          ...this.form,
-        })
-      this.validated = false
-      this.formReset()
-      this.$refs.confirmModal.visible = false
-    },
-    deleteContract(this: any) {
-      if (this.superAuth) this.$refs.delModal.callModal()
-      else this.$refs.alertModal.callModal()
-    },
-    ...mapMutations('contract', ['FETCH_CONTRACT']),
-  },
-})
-</script>

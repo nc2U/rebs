@@ -5,13 +5,13 @@ const account = useAccount()
 
 export const isSuperUser = computed(() => account.superAuth)
 
-export const readContract = computed(
+export const read_contract = computed(
   () =>
     isSuperUser.value ||
     (account.staffAuth && account.staffAuth.contract === '1'),
 )
 
-export const writeContract = computed(
+export const write_contract = computed(
   () =>
     isSuperUser.value ||
     (account.staffAuth && account.staffAuth.contract === '2'),
