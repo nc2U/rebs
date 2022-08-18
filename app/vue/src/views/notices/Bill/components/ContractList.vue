@@ -31,13 +31,13 @@ const allUnChecked = () =>
 const onCtorChk = (payload: { chk: boolean; pk: number }) =>
   emit('on-ctor-chk', payload)
 
-const unChk = () => {
-  page.value = 2
-  setTimeout(() => {
-    page.value = 1
-  }, 50)
-}
-defineExpose({ unChk })
+// const unChk = () => {
+//   page.value = 2
+//   setTimeout(() => {
+//     page.value = 1
+//   }, 50)
+// }
+// defineExpose({ unChk })
 </script>
 
 <template>

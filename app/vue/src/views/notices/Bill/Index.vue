@@ -122,7 +122,6 @@ const onSelectAdd = (target: any) => {
 const pageSelect = (page: number) => {
   ctor_ids.value = []
   listControl.value.listFiltering(page)
-  contractList.value.unChk()
 }
 
 const listFiltering = (payload: any) => {
