@@ -1,161 +1,154 @@
-<script lang="ts">
-import { defineComponent } from 'vue'
+<script lang="ts" setup>
+import { computed, reactive, ref, watch } from 'vue'
+import { useStore } from 'vuex'
 import { write_notice } from '@/utils/pageAuth'
 import { isValidate } from '@/utils/helper'
+import { dateFormat } from '@/utils/baseMixins'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 import DaumPostcode from '@/components/DaumPostcode/index.vue'
-import addressMixin from '@/components/DaumPostcode/addressMixin'
-import { maska } from 'maska'
-import { mapGetters, mapState } from 'vuex'
+import { AddressData, callAddress } from '@/components/DaumPostcode/address'
+import { maska as vMaska } from 'maska'
 
-export default defineComponent({
-  name: 'SalesBillIssueForm',
-  components: { DatePicker, ConfirmModal, AlertModal, DaumPostcode },
-  directives: { maska },
-  mixins: [addressMixin],
-  props: { billIssue: { type: Object, default: null } },
-  emits: ['on-submit', 'get-now-order', 'set-pub-date'],
-  setup() {
-    return {
-      write_notice,
-      isValidate,
-    }
-  },
-  data() {
-    return {
-      visible: false,
-      published_date: new Date(),
-      now_order: null,
-      pk: '',
-      form: {
-        now_payment_order: '',
-        now_due_date: null,
-        host_name: '',
-        host_tel: '',
-        agency: '',
-        agency_tel: '',
-        bank_account1: '',
-        bank_number1: '',
-        bank_host1: '',
-        bank_account2: '',
-        bank_number2: '',
-        bank_host2: '',
-        zipcode: '',
-        address1: '',
-        address2: '',
-        address3: '',
-        title: '',
-        content: '',
-      },
-      validated: false,
-    }
-  },
-  computed: {
-    confirmText() {
-      return this.billIssue ? '업데이트' : '신규등록'
-    },
-    btnClass() {
-      return this.billIssue ? 'success' : 'primary'
-    },
-    formsCheck(this: any) {
-      if (this.billIssue) {
-        const a =
-          this.form.now_payment_order === this.billIssue.now_payment_order
-        const b = this.form.now_due_date === this.now_order?.pay_due_date
-        const c = this.form.host_name === this.billIssue.host_name
-        const d = this.form.host_tel === this.billIssue.host_tel
-        const e = this.form.agency === this.billIssue.agency
-        const f = this.form.agency_tel === this.billIssue.agency_tel
-        const g = this.form.bank_account1 === this.billIssue.bank_account1
-        const h = this.form.bank_number1 === this.billIssue.bank_number1
-        const i = this.form.bank_host1 === this.billIssue.bank_host1
-        const j = this.form.bank_account2 === this.billIssue.bank_account2
-        const k = this.form.bank_number2 === this.billIssue.bank_number2
-        const l = this.form.bank_host2 === this.billIssue.bank_host2
-        const m = this.form.zipcode === this.billIssue.zipcode
-        const n = this.form.address1 === this.billIssue.address1
-        const o = this.form.address2 === this.billIssue.address2
-        const p = this.form.address3 === this.billIssue.address3
-        const q = this.form.title === this.billIssue.title
-        const r = this.form.content === this.billIssue.content
-        const sky = a && b && c && d && e && f && g && h && i
-        const land = j && k && l && m && n && o && p && q && r
-        return sky && land
-      }
-      return false
-    },
-    ...mapState('payment', ['payOrderList']),
-    ...mapGetters('accounts', ['staffAuth', 'superAuth']),
-  },
-  watch: {
-    billIssue(val) {
-      if (val) {
-        this.$emit('get-now-order', val.now_payment_order)
+const props = defineProps({ billIssue: { type: Object, default: null } })
+const emit = defineEmits(['on-submit', 'get-now-order', 'set-pub-date'])
 
-        this.pk = val.pk
-        this.form.now_payment_order = val.now_payment_order
-        this.form.host_name = val.host_name
-        this.form.host_tel = val.host_tel
-        this.form.agency = val.agency
-        this.form.agency_tel = val.agency_tel
-        this.form.bank_account1 = val.bank_account1
-        this.form.bank_number1 = val.bank_number1
-        this.form.bank_host1 = val.bank_host1
-        this.form.bank_account2 = val.bank_account2
-        this.form.bank_number2 = val.bank_number2
-        this.form.bank_host2 = val.bank_host2
-        this.form.zipcode = val.zipcode
-        this.form.address1 = val.address1
-        this.form.address2 = val.address2
-        this.form.address3 = val.address3
-        this.form.title = val.title
-        this.form.content = val.content
-      }
-    },
-    now_order(val) {
-      if (val) {
-        this.form.now_due_date = val?.pay_due_date
-      }
-    },
-    published_date(this: any, val) {
-      this.$emit('set-pub-date', this.dateFormat(val))
-    },
-  },
-  methods: {
-    onSubmit(this: any, event: any) {
-      if (write_notice) {
-        if (isValidate(event)) {
-          this.validated = true
-        } else {
-          this.$refs.confirmModal.callModal()
-        }
-      } else {
-        this.$refs.alertModal.callModal()
-      }
-    },
-    modalAction(this: any) {
-      const { pk } = this
-      this.form.now_due_date = this.form.now_due_date
-        ? this.dateFormat(this.form.now_due_date)
-        : null
-      if (this.form.now_payment_order) {
-        this.$emit('get-now-order', this.form.now_payment_order)
-      }
-      let payload
-      if (this.billIssue) {
-        payload = { ...{ pk }, ...this.form }
-      } else {
-        payload = this.form
-      }
-      this.$emit('on-submit', payload)
+const address2 = ref()
 
-      this.validated = false
-      this.$refs.confirmModal.visible = false
-    },
-  },
+const pk = ref('')
+const published_date = ref(new Date())
+const now_order = ref<any | null>(null)
+const visible = ref(false)
+const validated = ref(false)
+const form = reactive({
+  now_payment_order: '',
+  now_due_date: null as string | null,
+  host_name: '',
+  host_tel: '',
+  agency: '',
+  agency_tel: '',
+  bank_account1: '',
+  bank_number1: '',
+  bank_host1: '',
+  bank_account2: '',
+  bank_number2: '',
+  bank_host2: '',
+  zipcode: '',
+  address1: '',
+  address2: '',
+  address3: '',
+  title: '',
+  content: '',
 })
+
+const store = useStore()
+const payOrderList = computed(() => store.state.payment.payOrderList)
+
+const confirmText = computed(() => (props.billIssue ? '업데이트' : '신규등록'))
+const btnClass = computed(() => (props.billIssue ? 'success' : 'primary'))
+const formsCheck = computed(() => {
+  if (props.billIssue) {
+    const a = form.now_payment_order === props.billIssue.now_payment_order
+    const b = form.now_due_date === now_order.value?.pay_due_date
+    const c = form.host_name === props.billIssue.host_name
+    const d = form.host_tel === props.billIssue.host_tel
+    const e = form.agency === props.billIssue.agency
+    const f = form.agency_tel === props.billIssue.agency_tel
+    const g = form.bank_account1 === props.billIssue.bank_account1
+    const h = form.bank_number1 === props.billIssue.bank_number1
+    const i = form.bank_host1 === props.billIssue.bank_host1
+    const j = form.bank_account2 === props.billIssue.bank_account2
+    const k = form.bank_number2 === props.billIssue.bank_number2
+    const l = form.bank_host2 === props.billIssue.bank_host2
+    const m = form.zipcode === props.billIssue.zipcode
+    const n = form.address1 === props.billIssue.address1
+    const o = form.address2 === props.billIssue.address2
+    const p = form.address3 === props.billIssue.address3
+    const q = form.title === props.billIssue.title
+    const r = form.content === props.billIssue.content
+    const sky = a && b && c && d && e && f && g && h && i
+    const land = j && k && l && m && n && o && p && q && r
+    return sky && land
+  } else return false
+})
+
+watch(props, value => {
+  if (value.billIssue) {
+    const val = value.billIssue
+    emit('get-now-order', val.now_payment_order)
+    pk.value = val.pk
+    form.now_payment_order = val.now_payment_order
+    form.host_name = val.host_name
+    form.host_tel = val.host_tel
+    form.agency = val.agency
+    form.agency_tel = val.agency_tel
+    form.bank_account1 = val.bank_account1
+    form.bank_number1 = val.bank_number1
+    form.bank_host1 = val.bank_host1
+    form.bank_account2 = val.bank_account2
+    form.bank_number2 = val.bank_number2
+    form.bank_host2 = val.bank_host2
+    form.zipcode = val.zipcode
+    form.address1 = val.address1
+    form.address2 = val.address2
+    form.address3 = val.address3
+    form.title = val.title
+    form.content = val.content
+  }
+})
+
+watch(now_order, val => {
+  if (val) form.now_due_date = val?.pay_due_date
+})
+
+watch(published_date, val => emit('set-pub-date', dateFormat(val)))
+
+const alertModal = ref()
+const confirmModal = ref()
+
+const onSubmit = (event: any) => {
+  if (write_notice) {
+    if (isValidate(event)) {
+      validated.value = true
+    } else {
+      confirmModal.value.callModal()
+    }
+  } else {
+    alertModal.value.callModal()
+  }
+}
+
+watch(form, val => {
+  if (val.now_due_date) form.now_due_date = dateFormat(val.now_due_date)
+})
+
+const modalAction = () => {
+  if (form.now_payment_order) {
+    emit('get-now-order', form.now_payment_order)
+  }
+  let payload
+  if (props.billIssue) {
+    payload = { ...{ pk: pk.value }, ...form }
+  } else {
+    payload = form
+  }
+  emit('on-submit', payload)
+
+  validated.value = false
+  confirmModal.value.visible = false
+}
+
+const addressCallback = (data: AddressData) => {
+  const { formNum, zipcode, address1, address3 } = callAddress(data)
+  if (formNum === 1) {
+    form.zipcode = zipcode
+    form.address1 = address1
+    form.address2 = ''
+    form.address3 = address3
+    address2.value.$el.nextElementSibling.focus()
+  }
+}
 </script>
 
 <template>
