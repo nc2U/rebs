@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useStore } from 'vuex'
 import { useAccount } from '@/store/pinia/account'
 import AppBreadcrumb from './AppBreadcrumb.vue'
@@ -20,14 +20,14 @@ const options = ref({
     screenGuide.value = !isFullscreen ? '전체화면' : '전체화면 종료'
   },
 })
-const userInfo = account.userInfo
-const isAuthorized = account.isAuthorized
+const userInfo = computed(() => account.userInfo)
+const isAuthorized = computed(() => account.isAuthorized)
 </script>
 
 <template>
   <CHeader position="sticky" class="mb-4 pb-0">
     <CContainer fluid>
-      <CHeaderToggler class="ps-1" @click="$store.commit('toggleSidebar')">
+      <CHeaderToggler class="ps-1" @click="store.commit('toggleSidebar')">
         <CIcon icon="cil-menu" size="lg" />
       </CHeaderToggler>
       <CHeaderBrand class="mx-auto d-lg-none" to="/">
@@ -52,7 +52,7 @@ const isAuthorized = account.isAuthorized
             auto-complete="off"
             :checked="store.state.theme === 'default'"
             @change="
-              event =>
+              () =>
                 store.commit({
                   type: 'toggleTheme',
                   value: 'default',
@@ -71,7 +71,7 @@ const isAuthorized = account.isAuthorized
             auto-complete="off"
             :checked="store.state.theme === 'dark'"
             @change="
-              event =>
+              () =>
                 store.commit({
                   type: 'toggleTheme',
                   value: 'dark',

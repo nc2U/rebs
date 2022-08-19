@@ -5,11 +5,9 @@ import { useRouter } from 'vue-router'
 import { useAccount } from '@/store/pinia/account'
 import TodoModal from '@/components/Modals/TodoModal.vue'
 
-const router = useRouter()
-const store = useStore()
-const account = useAccount()
-
 const props = defineProps({ userInfo: { type: Object, required: true } })
+
+const router = useRouter()
 
 const avatarSrc = computed(() => {
   return props.userInfo?.profile?.image ? props.userInfo?.profile?.image : ''
@@ -18,10 +16,15 @@ const avatarText = computed(() =>
   props.userInfo ? props.userInfo.username.substring(0, 1).toUpperCase() : 'A',
 )
 
-const itemsCount = computed(() => account.myTodos.length)
+const store = useStore()
 const headerClass = computed(() =>
   store.state.theme === 'dark' ? 'bg-secondary' : 'bg-light',
 )
+
+const locationBlank = (url: string) => window.open(url, '_blank')
+
+const account = useAccount()
+const itemsCount = computed(() => account.myTodos.length)
 
 const logout = () => {
   account.logout()
@@ -58,7 +61,7 @@ const logout = () => {
       </CDropdownHeader>
       <CDropdownItem @click="$refs.todoModal.callModal()">
         <CIcon icon="cil-task" />
-        할일목록
+        할일 관리
         <CBadge color="danger" size="sm" class="ms-auto">
           {{ itemsCount }}
         </CBadge>
@@ -70,9 +73,23 @@ const logout = () => {
       >
         Settings
       </CDropdownHeader>
-      <CDropdownItem @click="$router.push({ name: '프로필 관리' })">
+      <CDropdownItem @click="router.push({ name: '프로필 관리' })">
         <CIcon icon="cil-user" />
         프로필
+      </CDropdownItem>
+      <CDropdownItem
+        v-if="userInfo.pk === 1"
+        @click="locationBlank('https://nc2u.github.io/rebs/')"
+      >
+        <CIcon icon="cil-description" />
+        사용자 매뉴얼
+      </CDropdownItem>
+      <CDropdownItem
+        v-if="userInfo.is_superuser"
+        @click="locationBlank('/admin/')"
+      >
+        <CIcon icon="cil-settings" />
+        관리자 페이지
       </CDropdownItem>
       <CDropdownDivider />
       <CDropdownItem style="cursor: pointer" @click="logout">
