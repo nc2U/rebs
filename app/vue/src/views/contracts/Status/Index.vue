@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed, onMounted } from 'vue'
 import { useStore } from 'vuex'
+import { useProject } from '@/store/pinia/project'
 import { pageTitle, navMenu } from '@/views/contracts/_menu/headermixin'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
@@ -9,11 +10,12 @@ import TableTitleRow from '@/components/TableTitleRow.vue'
 import ContractBoard from '@/views/contracts/Status/components/ContractBoard.vue'
 
 const store = useStore()
+const projectStore = useProject()
 
-const project = computed(() => store.state.project.project)
-const initProjId = computed(() => store.getters['accounts/initProjId'])
+const project = computed(() => projectStore.project?.pk)
+const initProjId = computed(() => projectStore.initProjId)
 const excelUrl = computed(() =>
-  project.value ? `excel/status/?project=${project.value.pk}` : '',
+  project.value ? `excel/status/?project=${project.value}` : '',
 )
 
 const fetchTypeList = (id: number) =>

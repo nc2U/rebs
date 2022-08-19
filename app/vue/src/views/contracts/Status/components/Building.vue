@@ -16,11 +16,10 @@ const lineList = computed(() =>
 )
 const buildingList = computed(() => store.state.project.buildingList)
 
-const bldgName = (bldg: number) => {
-  return buildingList.value
+const bldgName = (bldg: number) =>
+  buildingList.value
     .filter((b: any) => b.pk === bldg)
     .map((b: any) => b.name)[0]
-}
 </script>
 
 <template>

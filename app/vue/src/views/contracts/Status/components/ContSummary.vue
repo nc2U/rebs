@@ -9,7 +9,7 @@ import {
 
 const store = useStore()
 
-const houseUnitNum = computed(() => store.state.project.houseUnitNum)
+// const houseUnitNum = computed(() => store.state.project.houseUnitNum)
 const simpleTypes = computed(() => store.getters['project/simpleTypes'])
 const unitSummary = computed(() => store.getters['project/unitSummary'])
 </script>
@@ -26,14 +26,14 @@ const unitSummary = computed(() => store.getters['project/unitSummary'])
         </colgroup>
         <CTableBody>
           <CTableRow>
-            <CTableHeaderCell :color="headerSecondary"
-              >총세대수
+            <CTableHeaderCell :color="headerSecondary">
+              총세대수
             </CTableHeaderCell>
             <CTableDataCell class="text-right">
               {{ numFormat(unitSummary.totalNum) }}
             </CTableDataCell>
-            <CTableHeaderCell :color="headerSecondary"
-              >홀딩세대
+            <CTableHeaderCell :color="headerSecondary">
+              홀딩세대
             </CTableHeaderCell>
             <CTableDataCell class="text-right">
               {{ numFormat(unitSummary.holdNum) }}
@@ -56,8 +56,8 @@ const unitSummary = computed(() => store.getters['project/unitSummary'])
             <CTableDataCell class="text-right">
               {{ numFormat(unitSummary.appNum + unitSummary.contNum) }}
             </CTableDataCell>
-            <CTableHeaderCell :color="headerSecondary"
-              >잔여세대
+            <CTableHeaderCell :color="headerSecondary">
+              잔여세대
             </CTableHeaderCell>
             <CTableDataCell class="text-right">
               {{

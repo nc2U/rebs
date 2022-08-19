@@ -1,3 +1,38 @@
+<script lang="ts" setup>
+import { computed } from 'vue'
+
+const props = defineProps({
+  units: { type: Object, default: null },
+  floor: { type: Number, default: 1 },
+  line: { type: Number, default: 1 },
+})
+
+const unit = computed(
+  () =>
+    props.units
+      .filter((u: any) => u.line == props.line)
+      .filter((u: any) => u.floor == props.floor)[0],
+)
+const isPiloti = computed(() => !unit.value && props.floor < 3)
+const isContract = computed(() => !!unit.value.key_unit?.contract)
+const contractor = computed(() =>
+  isContract.value ? unit.value.key_unit.contract.contractor.name : '',
+)
+const status = computed(() =>
+  isContract.value ? unit.value.key_unit.contract.contractor.status : '',
+)
+const isHold = computed(() => (isContract.value ? unit.value.is_hold : ''))
+const statusColor = computed(() => {
+  let color = ''
+  if (unit.value && isContract.value) {
+    if (status.value === '1') color = '#D5F1DE'
+    if (status.value === '2') color = '#CBC7EC'
+    if (isHold.value) color = '#555'
+  }
+  return color
+})
+</script>
+
 <template>
   <div class="unit">
     <div
@@ -36,49 +71,6 @@
     </div>
   </div>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-
-export default defineComponent({
-  name: 'Unit',
-  props: { units: Array, floor: Number, line: Number },
-  computed: {
-    unit(this: any) {
-      return this.units
-        .filter((u: any) => u.line == this.line)
-        .filter((u: any) => u.floor == this.floor)[0]
-    },
-    isPiloti(this: any) {
-      return !this.unit && this.floor < 3
-    },
-    isContract() {
-      return !!this.unit.key_unit?.contract
-    },
-    contractor() {
-      return this.isContract ? this.unit.key_unit.contract.contractor.name : ''
-    },
-    status() {
-      return this.isContract
-        ? this.unit.key_unit.contract.contractor.status
-        : ''
-    },
-    isHold() {
-      return this.isContract ? this.unit.is_hold : ''
-    },
-    statusColor() {
-      let color = ''
-      if (this.unit && this.isContract) {
-        if (this.status === '1') color = '#D5F1DE'
-        if (this.status === '2') color = '#CBC7EC'
-        if (this.isHold) color = '#555'
-      }
-
-      return color
-    },
-  },
-})
-</script>
 
 <style lang="scss" scoped>
 .unit {
