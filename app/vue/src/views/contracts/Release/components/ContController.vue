@@ -1,3 +1,27 @@
+<script lang="ts" setup>
+import { computed, ref } from 'vue'
+import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
+
+const emit = defineEmits(['search-contractor', 'get-release'])
+const search = ref('')
+
+const store = useStore()
+const contractorList = computed(() => store.state.contract.contractorList)
+
+const searchContractor = () => emit('search-contractor', search.value)
+
+const router = useRouter()
+const setContractor = (pk: number, release: number | null) => {
+  router.push({ name: '계약해지 관리', query: { contractor: pk } })
+  if (release !== null) emit('get-release', release)
+  else store.commit('contract/updateState', { contRelease: null })
+
+  search.value = ''
+  store.commit('contract/updateState', { contractorList: [] })
+}
+</script>
+
 <template>
   <CCallout color="danger" class="pb-0 mb-4">
     <CRow>
@@ -59,37 +83,3 @@
     </CRow>
   </CCallout>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import { mapMutations, mapState } from 'vuex'
-
-export default defineComponent({
-  name: 'ContController',
-  data() {
-    return {
-      search: '',
-    }
-  },
-  computed: {
-    ...mapState('contract', ['contractorList']),
-  },
-  methods: {
-    searchContractor() {
-      this.$emit('search-contractor', this.search)
-    },
-    setContractor(pk: number, release: number | null) {
-      this.$router.push({ name: '계약해지 관리', query: { contractor: pk } })
-      if (release !== null) this.$emit('get-release', release)
-      else this.FETCH_CONT_RELEASE(null)
-
-      this.search = ''
-      this.FETCH_CONTRACTOR_LIST([])
-    },
-    ...mapMutations('contract', [
-      'FETCH_CONT_RELEASE',
-      'FETCH_CONTRACTOR_LIST',
-    ]),
-  },
-})
-</script>

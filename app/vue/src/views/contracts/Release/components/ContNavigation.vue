@@ -1,3 +1,7 @@
+<script lang="ts" setup>
+defineProps({ contractor: { type: Object, default: null } })
+</script>
+
 <template>
   <CButtonGroup role="group" aria-label="Basic example" class="mb-3">
     <CButton
@@ -17,12 +21,3 @@
     <CButton color="danger">계약 해지 관리</CButton>
   </CButtonGroup>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-
-export default defineComponent({
-  name: 'ContNavigation',
-  props: { contractor: Object },
-})
-</script>

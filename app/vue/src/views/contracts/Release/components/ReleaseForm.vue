@@ -1,3 +1,88 @@
+<script lang="ts" setup>
+import { reactive, ref, computed, watch, onBeforeMount } from 'vue'
+import { write_contract } from '@/utils/pageAuth'
+import { isValidate } from '@/utils/helper'
+import { dateFormat } from '@/utils/baseMixins'
+import DatePicker from '@/components/DatePicker/index.vue'
+import AlertModal from '@/components/Modals/AlertModal.vue'
+import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
+
+const props = defineProps({
+  release: { type: Object, default: null },
+  contractor: { type: Object, default: null },
+})
+
+const emit = defineEmits(['on-submit'])
+
+const alertModal = ref()
+const confirmModal = ref()
+
+const pk = ref(null)
+const validated = ref(false)
+const form = reactive({
+  contractor: '',
+  status: '',
+  refund_amount: '',
+  refund_account_bank: '',
+  refund_account_number: '',
+  refund_account_depositor: '',
+  request_date: '',
+  completion_date: '',
+  note: '',
+})
+
+const is_complete = computed(() => {
+  const refund =
+    form.refund_amount &&
+    form.refund_account_bank &&
+    form.refund_account_number &&
+    form.refund_account_depositor
+  return !form.completion_date && !refund
+})
+
+watch(form, val => {
+  if (val.completion_date)
+    form.completion_date = dateFormat(val.completion_date)
+})
+
+// methods: {
+const onSubmit = (event: any) => {
+  if (write_contract) {
+    if (isValidate(event)) {
+      validated.value = true
+    } else {
+      form.request_date = dateFormat(form.request_date)
+      const payload = pk.value
+        ? { pk: pk.value, ...form }
+        : { pk: null, ...form }
+      emit('on-submit', payload)
+    }
+  } else alertModal.value.callModal()
+}
+
+const deleteConfirm = () => {
+  if (write_contract) ConfirmModal.value.callModal()
+  else alertModal.value.callModal()
+}
+
+const modalAction = () => alert('this is ready!')
+
+onBeforeMount(() => {
+  if (props.release && props.release.pk) {
+    pk.value = props.release.pk
+    form.contractor = props.release.contractor
+    form.status = props.release.status
+    form.refund_amount = props.release.refund_amount
+    form.refund_account_bank = props.release.refund_account_bank
+    form.refund_account_number = props.release.refund_account_number
+    form.refund_account_depositor = props.release.refund_account_depositor
+    form.request_date = props.release.request_date
+    form.completion_date = props.release.completion_date
+    form.note = props.release.note
+  } else form.contractor = props.contractor.pk
+})
+</script>
+
 <template>
   <CForm
     class="needs-validation"
@@ -176,108 +261,18 @@
     </CModalFooter>
   </CForm>
 
-  <!--  <ConfirmModal ref="confirmModal">-->
-  <!--    <template v-slot:header>-->
-  <!--      <CIcon name="cil-warning" />-->
-  <!--      건별 수납 정보 - [삭제]-->
-  <!--    </template>-->
-  <!--    <template v-slot:default>-->
-  <!--      삭제 후 복구할 수 없습니다. 해당 건별 수납 정보 삭제를 진행하시겠습니까?-->
-  <!--    </template>-->
-  <!--    <template v-slot:footer>-->
-  <!--      <CButton color="danger" @click="modalAction">삭제</CButton>-->
-  <!--    </template>-->
-  <!--  </ConfirmModal>-->
+  <ConfirmModal ref="confirmModal">
+    <template #header>
+      <CIcon name="cil-warning" />
+      계약 해지 정보 - [삭제]
+    </template>
+    <template #default>
+      삭제 후 복구할 수 없습니다. 해당 건별 수납 정보 삭제를 진행하시겠습니까?
+    </template>
+    <template #footer>
+      <CButton color="danger" @click="modalAction">삭제</CButton>
+    </template>
+  </ConfirmModal>
 
   <AlertModal ref="alertModal" />
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import DatePicker from '@/components/DatePicker/index.vue'
-// import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
-import AlertModal from '@/components/Modals/AlertModal.vue'
-import { mapGetters } from 'vuex'
-
-export default defineComponent({
-  name: 'ReleaseForm',
-  components: {
-    DatePicker,
-    // ConfirmModal,
-    AlertModal,
-  },
-  props: { release: Object, contractor: Object },
-  data() {
-    return {
-      pk: null,
-      form: {
-        contractor: '',
-        status: '',
-        refund_amount: '',
-        refund_account_bank: '',
-        refund_account_number: '',
-        refund_account_depositor: '',
-        request_date: '',
-        completion_date: '',
-        note: '',
-      },
-      validated: false,
-    }
-  },
-  created(this: any) {
-    if (this.release && this.release.pk) {
-      this.pk = this.release.pk
-      this.form.contractor = this.release.contractor
-      this.form.status = this.release.status
-      this.form.refund_amount = this.release.refund_amount
-      this.form.refund_account_bank = this.release.refund_account_bank
-      this.form.refund_account_number = this.release.refund_account_number
-      this.form.refund_account_depositor = this.release.refund_account_depositor
-      this.form.request_date = this.release.request_date
-      this.form.completion_date = this.release.completion_date
-      this.form.note = this.release.note
-    } else this.form.contractor = this.contractor.pk
-  },
-  computed: {
-    is_complete() {
-      const refund =
-        this.form.refund_amount &&
-        this.form.refund_account_bank &&
-        this.form.refund_account_number &&
-        this.form.refund_account_depositor
-      return !this.form.completion_date && !refund
-    },
-    pageManageAuth() {
-      return (
-        this.superAuth || (this.staffAuth && this.staffAuth.releaseract === '2')
-      )
-    },
-    ...mapGetters('accounts', ['staffAuth', 'superAuth']),
-  },
-  methods: {
-    onSubmit(this: any, event: any) {
-      if (this.pageManageAuth) {
-        const form = event.currentTarget
-        if (form.checkValidity() === false) {
-          event.preventDefault()
-          event.stopPropagation()
-
-          this.validated = true
-        } else {
-          this.form.request_date = this.dateFormat(this.form.request_date)
-          this.form.completion_date = this.form.completion_date
-            ? this.dateFormat(this.form.completion_date)
-            : null
-          const payload = this.pk
-            ? { pk: this.pk, ...this.form }
-            : { pk: null, ...this.form }
-          this.$emit('on-submit', payload)
-        }
-      } else this.$refs.alertModal.callModal()
-    },
-    deleteConfirm() {
-      alert('delete ready!')
-    },
-  },
-})
-</script>
