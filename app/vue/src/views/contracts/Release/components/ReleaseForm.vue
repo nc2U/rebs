@@ -12,7 +12,7 @@ const props = defineProps({
   contractor: { type: Object, default: null },
 })
 
-const emit = defineEmits(['on-submit'])
+const emit = defineEmits(['on-submit', 'close'])
 
 const alertModal = ref()
 const confirmModal = ref()
@@ -61,7 +61,7 @@ const onSubmit = (event: any) => {
 }
 
 const deleteConfirm = () => {
-  if (write_contract) ConfirmModal.value.callModal()
+  if (write_contract) confirmModal.value.callModal()
   else alertModal.value.callModal()
 }
 
@@ -238,7 +238,7 @@ onBeforeMount(() => {
     </CModalBody>
 
     <CModalFooter>
-      <CButton type="button" color="light" @click="$emit('close')">
+      <CButton type="button" color="light" @click="emit('close')">
         닫기
       </CButton>
       <slot name="footer">

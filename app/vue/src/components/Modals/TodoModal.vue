@@ -1,3 +1,14 @@
+<script lang="ts" setup>
+import { ref } from 'vue'
+import TodoListApp from '@/components/TodoListApp/index.vue'
+
+const visible = ref(false)
+
+const callModal = () => (visible.value = true)
+const close = () => (visible.value = false)
+defineExpose({ callModal, close })
+</script>
+
 <template>
   <CModal
     :visible="visible"
@@ -16,23 +27,3 @@
     </CModalBody>
   </CModal>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import TodoListApp from '@/components/TodoListApp/index.vue'
-
-export default defineComponent({
-  name: 'TodoModal',
-  components: { TodoListApp },
-  data() {
-    return {
-      visible: false,
-    }
-  },
-  methods: {
-    callModal() {
-      this.visible = true
-    },
-  },
-})
-</script>

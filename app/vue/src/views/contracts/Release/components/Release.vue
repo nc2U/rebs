@@ -33,7 +33,7 @@
         :release="release"
         :contractor="contractor"
         @on-submit="onSubmit"
-        @close="$refs.releaseFormModal.visible = false"
+        @close="$refs.releaseFormModal.close()"
       />
     </template>
   </FormModal>
@@ -73,6 +73,9 @@ export default defineComponent({
     onSubmit(this: any, payload: any) {
       this.$emit('on-submit', payload)
       this.$refs.releaseFormModal.visible = false
+    },
+    cloase() {
+      alert('aaa')
     },
   },
 })

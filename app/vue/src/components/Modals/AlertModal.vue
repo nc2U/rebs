@@ -1,3 +1,18 @@
+<script lang="ts" setup>
+import { ref } from 'vue'
+
+const headMessage = ref('')
+const bodyMessage = ref('')
+const visible = ref(false)
+const callModal = (head?: string, body?: string) => {
+  if (head) headMessage.value = head
+  if (body) bodyMessage.value = body
+  visible.value = true
+}
+const close = () => (visible.value = false)
+defineExpose({ callModal, close })
+</script>
+
 <template>
   <CModal
     alignment="center"
@@ -24,25 +39,3 @@
     </CModalFooter>
   </CModal>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-
-export default defineComponent({
-  name: 'ConfirmModal',
-  data() {
-    return {
-      headMessage: '',
-      bodyMessage: '',
-      visible: false,
-    }
-  },
-  methods: {
-    callModal(this: any, head?: string, body?: string) {
-      if (head) this.headMessage = head
-      if (body) this.bodyMessage = body
-      this.visible = true
-    },
-  },
-})
-</script>

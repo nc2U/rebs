@@ -1,3 +1,13 @@
+<script lang="ts" setup>
+import { defineExpose, ref } from 'vue'
+
+const visible = ref(false)
+
+const callModal = () => (visible.value = true)
+const close = () => (visible.value = false)
+defineExpose({ callModal, close })
+</script>
+
 <template>
   <CModal
     alignment="center"
@@ -19,21 +29,3 @@
     </slot>
   </CModal>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-
-export default defineComponent({
-  name: 'FormModal',
-  data() {
-    return {
-      visible: false,
-    }
-  },
-  methods: {
-    callModal() {
-      this.visible = true
-    },
-  },
-})
-</script>
