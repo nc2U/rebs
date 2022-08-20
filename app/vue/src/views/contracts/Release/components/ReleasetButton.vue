@@ -1,3 +1,32 @@
+<script lang="ts" setup>
+import { ref, computed } from 'vue'
+import { useStore } from 'vuex'
+import { write_contract } from '@/utils/pageAuth'
+import FormModal from '@/components/Modals/FormModal.vue'
+import ReleaseForm from '@/views/contracts/Release/components/ReleaseForm.vue'
+import AlertModal from '@/components/Modals/AlertModal.vue'
+
+defineProps({ contractor: { type: Object, default: null } })
+const emit = defineEmits(['on-submit'])
+
+const releaseFormModal = ref()
+const releaseAlertModal = ref()
+
+const store = useStore()
+
+const contRelease = computed(() => store.state.contract.contRelease)
+
+const callFormModal = () => {
+  if (write_contract) releaseFormModal.value.callModal()
+  else releaseAlertModal.value.callModal()
+}
+
+const onSubmit = (payload: any) => {
+  emit('on-submit', payload)
+  releaseFormModal.value.visible = false
+}
+</script>
+
 <template>
   <CAlert color="secondary">
     <CButton
@@ -25,36 +54,3 @@
 
   <AlertModal ref="releaseAlertModal" />
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import FormModal from '@/components/Modals/FormModal.vue'
-import ReleaseForm from '@/views/contracts/Release/components/ReleaseForm.vue'
-import AlertModal from '@/components/Modals/AlertModal.vue'
-import { mapGetters, mapState } from 'vuex'
-
-export default defineComponent({
-  name: 'ReleaseButton',
-  components: { FormModal, ReleaseForm, AlertModal },
-  props: { contractor: Object },
-  computed: {
-    pageManageAuth(this: any) {
-      return (
-        this.superAuth || (this.staffAuth && this.staffAuth.contract === '2')
-      )
-    },
-    ...mapState('contract', ['contRelease']),
-    ...mapGetters('accounts', ['staffAuth', 'superAuth']),
-  },
-  methods: {
-    callFormModal(this: any) {
-      if (this.pageManageAuth) this.$refs.releaseFormModal.callModal()
-      else this.$refs.releaseAlertModal.callModal()
-    },
-    onSubmit(this: any, payload: any) {
-      this.$emit('on-submit', payload)
-      this.$refs.releaseFormModal.visible = false
-    },
-  },
-})
-</script>
