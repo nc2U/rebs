@@ -51,10 +51,11 @@ spec:
             initialDelaySeconds: 30
             failureThreshold: 2
             periodSeconds: 30
-          #          readinessProbe:
-          #            httpGet:
-          #              path: /
-          #              port: http
+          readinessProbe:
+            exec:
+              command:
+                - mysql
+                - --version
           volumeMounts:
             - name: mysql-data
               mountPath: /var/lib/mysql
