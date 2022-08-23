@@ -69,8 +69,8 @@ spec:
     - nfsvers=4.1
   nfs:
   {{- if eq .Values.global.appMode "prod" }}
-    path: {{ .Values.global.nfsPath }}/prod/volume/backup
+    path: {{ .Values.global.nfsPath }}/prod/volume/backups
   {{- else if eq .Values.global.appMode "dev" }}
-    path: {{ .Values.global.nfsPath }}/dev/volume/backup
+    path: {{ .Values.global.nfsPath }}/dev/volume/backups
   {{- end}}
     server: {{ .Values.global.nfsServerHost }}
