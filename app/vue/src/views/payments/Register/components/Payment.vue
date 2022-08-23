@@ -22,7 +22,7 @@ const showDetail = () => updateFormModal.value.callModal()
 
 const updateObject = (payload: any) => {
   emit('on-update', { ...{ pk: props.payment.pk }, ...payload })
-  updateFormModal.value.visible = false
+  updateFormModal.value.close()
 }
 const deleteObject = () => emit('on-delete', props.payment.pk)
 </script>
@@ -61,7 +61,7 @@ const deleteObject = () => emit('on-delete', props.payment.pk)
         :payment="payment"
         @on-submit="updateObject"
         @on-delete="deleteObject"
-        @close="$refs.updateFormModal.visible = false"
+        @close="updateFormModal.close()"
       />
     </template>
   </FormModal>

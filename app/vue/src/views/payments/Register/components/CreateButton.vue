@@ -14,7 +14,7 @@ const showDetail = () => createFormModal.value.callModal()
 
 const createObject = (payload: any) => {
   emit('on-create', payload)
-  createFormModal.value.visible = false
+  createFormModal.value.close()
 }
 </script>
 
@@ -39,7 +39,7 @@ const createObject = (payload: any) => {
       <PaymentForm
         :contract="contract"
         @on-submit="createObject"
-        @close="$refs.createFormModal.visible = false"
+        @close="createFormModal.close()"
       />
     </template>
   </FormModal>
