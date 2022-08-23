@@ -29,7 +29,7 @@ const multiSubmit = (payload: any) => emit('multi-submit', payload)
     <template #default>
       <ProImprestForm
         @multi-submit="multiSubmit"
-        @close="$refs.createFormModal.visible = false"
+        @close="createFormModal.close()"
       />
     </template>
   </FormModal>

@@ -112,7 +112,7 @@ const deleteObject = () => {
         :cash="cash"
         @on-submit="updateConfirm"
         @on-delete="deleteConfirm"
-        @close="$refs.updateFormModal.visible = false"
+        @close="updateFormModal.close()"
       />
     </template>
   </FormModal>

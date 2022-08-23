@@ -87,7 +87,7 @@ const onDelete = (payload: any) => emit('on-delete', payload)
         :imprest="imprest"
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
-        @close="$refs.updateFormModal.visible = false"
+        @close="updateFormModal.close()"
       />
     </template>
   </FormModal>

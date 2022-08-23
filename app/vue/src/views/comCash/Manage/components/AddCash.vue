@@ -39,10 +39,7 @@ const createObject = (payload: any) => {
       입출금 거래 건별 등록
     </template>
     <template #default>
-      <CashForm
-        @on-submit="createObject"
-        @close="createFormModal.visible = false"
-      />
+      <CashForm @on-submit="createObject" @close="createFormModal.close()" />
     </template>
   </FormModal>
 

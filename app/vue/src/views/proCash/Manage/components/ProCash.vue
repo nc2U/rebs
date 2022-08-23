@@ -83,7 +83,7 @@ const onDelete = (payload: any) => emit('on-delete', payload)
         :pro-cash="proCash"
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
-        @close="$refs.updateFormModal.visible = false"
+        @close="updateFormModal.close()"
       />
     </template>
   </FormModal>
