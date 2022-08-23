@@ -41,12 +41,12 @@ jobs:
             master_pod=$(kubectl get pod -n prod-hrebs | grep master | cut -d ' ' -f1)
             kubectl exec -it -n prod-hrebs $master_pod -- sh /var/backups/script.sh
 
-#      # slack --> notification
-#      - name: Send slack when failed
-#        if: ${{ failure() }}                    # 실패했을 때 실행
-#        uses: ./.github/actions/slack-notify    # 직접 '만든' Action이므로 uses 키워드를 이용해서 아래 경로를 입력해줍니다.
-#        with:
-#          slack_incoming_url: ${{ secrets.SLACK_INCOMING_URL }}
+      # slack --> notification
+      - name: Send slack when failed
+        if: ${{ failure() }}                    # 실패했을 때 실행
+        uses: ./.github/actions/slack-notify    # 직접 '만든' Action이므로 uses 키워드를 이용해서 아래 경로를 입력해줍니다.
+        with:
+          slack_incoming_url: ${{ secrets.SLACK_INCOMING_URL }}
 #
 #      - name: Send slack if completed
 #        if: ${{ success() }}                    # 성공할 때만 실행
