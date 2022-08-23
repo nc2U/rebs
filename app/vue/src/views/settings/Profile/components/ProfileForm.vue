@@ -84,7 +84,7 @@ const modalAction = () => {
   confirmModal.value.visible = false
 }
 
-onBeforeMount(() => {
+const resetForm = () => {
   if (props.userInfo) {
     form.user = props.userInfo.pk
     if (props.userInfo.profile) {
@@ -94,8 +94,16 @@ onBeforeMount(() => {
       form.cell_phone = props.userInfo.profile.cell_phone
       image.value = props.userInfo.profile.image
     }
+  } else {
+    form.pk = ''
+    form.user = ''
+    form.name = ''
+    form.birth_date = ''
+    form.cell_phone = ''
   }
-})
+}
+
+onBeforeMount(() => resetForm())
 </script>
 
 <template>
@@ -196,9 +204,7 @@ onBeforeMount(() => {
     </CCardBody>
 
     <CCardFooter class="text-right">
-      <CButton type="button" color="light" @click="$emit('reset-form')">
-        취소
-      </CButton>
+      <CButton type="button" color="light" @click="resetForm"> 취소 </CButton>
       <CButton type="submit" :color="btnClass" :disabled="formsCheck">
         <CIcon name="cil-check-circle" />
         {{ confirmText }}
