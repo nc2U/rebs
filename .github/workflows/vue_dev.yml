@@ -1,4 +1,4 @@
-name: vue_dev_action
+name: Vue_dev_action
 
 on:
   push:

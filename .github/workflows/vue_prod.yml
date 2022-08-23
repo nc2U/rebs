@@ -1,4 +1,4 @@
-name: vue_prod_action
+name: Vue_prod_action
 
 on:
   push:
