@@ -10,16 +10,15 @@ export interface Site {
   district: string
   lot_number: string
   site_purpose: string
-  official_area: number
-  returned_area: number
+  official_area: string
+  returned_area: number | null
   rights_restrictions: string
   dup_issue_date: string
-  created_at: string
-  updated_at: string
 }
 
 export interface SiteOwner {
   pk: number
+  project: number
   owner: string
   date_of_birth: string | null
   phone1: string
@@ -32,7 +31,6 @@ export interface SiteOwner {
   own_sort_desc: string
   sites: number[]
   counsel_record: string
-  user: number
 }
 
 export interface SiteOwnshipRelationship {
