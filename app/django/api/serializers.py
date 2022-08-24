@@ -312,8 +312,6 @@ class ExecAmountToBudget(serializers.ModelSerializer):
 
 
 class SiteSerializer(serializers.ModelSerializer):
-    project = serializers.SlugRelatedField(queryset=Project.objects.all(), slug_field='name')
-
     class Meta:
         model = Site
         fields = ('pk', 'project', 'order', 'district', 'lot_number', 'site_purpose',
@@ -321,7 +319,7 @@ class SiteSerializer(serializers.ModelSerializer):
 
 
 class SiteOwnerSerializer(serializers.ModelSerializer):
-    project = serializers.SlugRelatedField(queryset=Project.objects.all(), slug_field='name')
+    # project = serializers.SlugRelatedField(queryset=Project.objects.all(), slug_field='name')
     own_sort_desc = serializers.CharField(source='get_own_sort_display', read_only=True)
 
     class Meta:
