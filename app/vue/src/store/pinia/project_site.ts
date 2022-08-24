@@ -78,9 +78,9 @@ export const useSite = defineStore('project', () => {
   const siteOwnerRelationList = ref<SiteOwnshipRelationship[]>([])
   const siteContractList = ref<SiteContract[]>([])
 
-  const fetchSiteList = () => {
+  const fetchSiteList = (project: string) => {
     api
-      .get('/site/')
+      .get(`/site/?project=${project}`)
       .then(res => {
         siteList.value = res.data.results
       })
@@ -91,7 +91,7 @@ export const useSite = defineStore('project', () => {
     api
       .post(`/site/`, payload)
       .then(res => {
-        fetchSiteList()
+        fetchSiteList(res.data.project)
         message()
       })
       .catch(err => errorHandle(err.response.data))
@@ -102,17 +102,17 @@ export const useSite = defineStore('project', () => {
     api
       .put(`/site/${pk}/`, siteData)
       .then(res => {
-        fetchSiteList()
+        fetchSiteList(res.data.project)
         message()
       })
       .catch(err => errorHandle(err.response.data))
   }
 
-  const deleteSite = (pk: string) => {
+  const deleteSite = (pk: string, project: string) => {
     api
       .delete(`/site/${pk}/`)
       .then(() => {
-        fetchSiteList()
+        fetchSiteList(project)
         message('warning', '', '삭제되었습니다.')
       })
       .catch(err => errorHandle(err.response.data))
