@@ -1,18 +1,3 @@
-"""config URL Configuration
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/3.0/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
 from django.urls import path
 
 from .views import *
@@ -74,14 +59,14 @@ urlpatterns = [
     path('budget/', ProjectBudgetList.as_view(), name=ProjectBudgetList.name),
     # path('budget/<int:pk>/', ProjectBudgetDetail.as_view(), name=ProjectBudgetDetail.name),
     path('exec-amount/', ExecAmountToBudgetList.as_view(), name=ExecAmountToBudgetList.name),
-    # path('site/', SiteList.as_view(), name=SiteList.name),
-    # path('site/<int:pk>/', SiteDetail.as_view(), name=SiteDetail.name),
-    # path('site-owner/', SiteOwnerList.as_view(), name=SiteOwnerList.name),
-    # path('site-owner/<int:pk>/', SiteOwnerDetail.as_view(), name=SiteOwnerDetail.name),
-    # path('site-relation/', RelationList.as_view(), name=RelationList.name),
-    # path('site-relation/<int:pk>/', RelationDetail.as_view(), name=RelationDetail.name),
-    # path('site-contract/', SiteContractList.as_view(), name=SiteContractList.name),
-    # path('site-contract/<int:pk>/', SiteContractDetail.as_view(), name=SiteContractDetail.name),
+    path('site/', SiteViewSets.as_view(list_view), name='site-list'),
+    path('site/<int:pk>/', SiteViewSets.as_view(detail_view), name='site-detail'),
+    path('site-owner/', SiteOwnerViewSets.as_view(list_view), name='siteowner-list'),
+    path('site-owner/<int:pk>/', SiteOwnerViewSets.as_view(detail_view), name='siteowner-detail'),
+    path('site-relation/', SiteRelationViewSets.as_view(list_view), name='relation-list'),
+    path('site-relation/<int:pk>/', SiteRelationViewSets.as_view(detail_view), name='relation-detail'),
+    path('site-contract/', SiteContractViewSets.as_view(list_view), name='sitecontract-list'),
+    path('site-contract/<int:pk>/', SiteContractViewSets.as_view(detail_view), name='sitecontract-detail'),
 
     # path('bank-code/', BankCodeList.as_view(), name=BankCodeList.name),
     # path('bank-code/<int:pk>/', BankCodeDetail.as_view(), name=BankCodeDetail.name),

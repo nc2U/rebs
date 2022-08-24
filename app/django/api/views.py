@@ -59,10 +59,10 @@ class ApiIndex(generics.GenericAPIView):
             'all-house-unit': reverse(api + AllHouseUnitList.name, request=request),
             'budget': reverse(api + ProjectBudgetList.name, request=request),
             'exec-amount-budget': reverse(api + ExecAmountToBudgetList.name, request=request),
-            # 'site': reverse(api + SiteList.name, request=request),
-            # 'site-owner': reverse(api + SiteOwnerList.name, request=request),
-            # 'site-relation': reverse(api + RelationList.name, request=request),
-            # 'site-contract': reverse(api + SiteContractList.name, request=request),
+            'site': reverse(api + 'site-list', request=request),
+            'site-owner': reverse(api + 'siteowner-list', request=request),
+            'site-relation': reverse(api + 'relation-list', request=request),
+            'site-contract': reverse(api + 'sitecontract-list', request=request),
             # 'bank-code': reverse(api + BankCodeList.name, request=request),
             'com-bank': reverse(api + 'com_bank-list', request=request),
             'balance-by-acc': reverse(api + BalanceByAccountList.name, request=request),
@@ -365,6 +365,14 @@ class ExecAmountToBudgetList(generics.ListAPIView):
 #     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
 
+class SiteViewSets(viewsets.ModelViewSet):
+    queryset = Site.objects.all()
+    serializer_class = SiteSerializer
+    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    filter_fields = ('project',)
+    search_fields = ('district', 'lot_number', 'site_purpose')
+
+
 # class SiteList(generics.ListCreateAPIView):
 #     name = 'site-list'
 #     queryset = Site.objects.all()
@@ -377,6 +385,14 @@ class ExecAmountToBudgetList(generics.ListAPIView):
 #     queryset = Site.objects.all()
 #     serializer_class = SiteSerializer
 #     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+
+
+class SiteOwnerViewSets(viewsets.ModelViewSet):
+    queryset = SiteOwner.objects.all()
+    serializer_class = SiteOwnerSerializer
+    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    filter_fields = ('project',)
+    search_fields = ('owner',)
 
 
 # class SiteOwnerList(generics.ListCreateAPIView):
@@ -393,6 +409,14 @@ class ExecAmountToBudgetList(generics.ListAPIView):
 #     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
 
+class SiteRelationViewSets(viewsets.ModelViewSet):
+    queryset = SiteOwnshipRelationship.objects.all()
+    serializer_class = SiteOwnshipRelationSerializer
+    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    filter_fields = ('project',)
+    search_fields = ('site_owner',)
+
+
 # class RelationList(generics.ListCreateAPIView):
 #     name = 'relation-list'
 #     queryset = SiteOwnshipRelationship.objects.all()
@@ -405,6 +429,14 @@ class ExecAmountToBudgetList(generics.ListAPIView):
 #     queryset = SiteOwnshipRelationship.objects.all()
 #     serializer_class = SiteOwnshipRelationSerializer
 #     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+
+
+class SiteContractViewSets(viewsets.ModelViewSet):
+    queryset = SiteContract.objects.all()
+    serializer_class = SiteContractSerializer
+    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    filter_fields = ('project',)
+    search_fields = ('owner',)
 
 
 # class SiteContractList(generics.ListCreateAPIView):
