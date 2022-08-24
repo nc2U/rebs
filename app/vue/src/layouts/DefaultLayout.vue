@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { CContainer } from '@coreui/vue'
-import AppAside from '@/layouts/containers/AppAside.vue'
-import AppFooter from '@/layouts/containers/AppFooter.vue'
-import AppHeader from '@/layouts/containers/AppHeader.vue'
 import AppSidebar from '@/layouts/containers/AppSidebar.vue'
+import AppHeader from '@/layouts/containers/AppHeader.vue'
+import AppFooter from '@/layouts/containers/AppFooter.vue'
+import AppAside from '@/layouts/containers/AppAside.vue'
 import BackToTop from '@/components/BackToTop/index.vue'
 </script>
 
@@ -17,7 +17,7 @@ import BackToTop from '@/components/BackToTop/index.vue'
       </CContainer>
     </div>
     <AppFooter />
-    <BackToTop />
   </div>
   <AppAside />
+  <BackToTop />
 </template>
