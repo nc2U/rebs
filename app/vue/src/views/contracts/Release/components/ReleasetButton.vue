@@ -23,7 +23,7 @@ const callFormModal = () => {
 
 const onSubmit = (payload: any) => {
   emit('on-submit', payload)
-  releaseFormModal.value.visible = false
+  releaseFormModal.value.close()
 }
 </script>
 
@@ -47,7 +47,7 @@ const onSubmit = (payload: any) => {
         :contractor="contractor"
         :release="contRelease"
         @on-submit="onSubmit"
-        @close="$refs.releaseFormModal.visible = false"
+        @close="releaseFormModal.close()"
       />
     </template>
   </FormModal>

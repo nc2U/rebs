@@ -74,7 +74,7 @@ const onSubmit = (payload: any) => {
         :release="release"
         :contractor="contractor"
         @on-submit="onSubmit"
-        @close="$refs.releaseFormModal.close()"
+        @close="releaseFormModal.close()"
       />
     </template>
   </FormModal>
