@@ -34,10 +34,19 @@ export interface Company {
   positions: Positions[]
 }
 
+interface Logo {
+  pk: number
+  company: number
+  generic_logo: string
+  dark_logo: string
+  simple_logo: string
+}
+
 export const useCompany = defineStore('company', () => {
   // states
   const companyList = ref<Company[]>([])
   const company = ref<Company | null>(null)
+  const logo = ref<Logo | null>(null)
 
   // getters
   const initComId = computed(() => {
@@ -64,8 +73,15 @@ export const useCompany = defineStore('company', () => {
 
   const fetchCompany = (pk: string) => {
     api
-      .get(`/company/${pk}`)
+      .get(`/company/${pk}/`)
       .then(res => (company.value = res.data))
+      .catch(err => errorHandle(err.response.data))
+  }
+
+  const fetchLogo = (pk: string) => {
+    api
+      .get(`/logo/${pk}/`)
+      .then(res => (logo.value = res.data))
       .catch(err => errorHandle(err.response.data))
   }
 
@@ -75,6 +91,16 @@ export const useCompany = defineStore('company', () => {
       .then(res => {
         fetchCompany(res.data.pk)
         fetchCompanyList()
+        message()
+      })
+      .catch(err => errorHandle(err.response.data))
+  }
+
+  const createLogo = (payload: Logo) => {
+    api
+      .post(`/logo/`, payload)
+      .then(res => {
+        fetchLogo(res.data.pk)
         message()
       })
       .catch(err => errorHandle(err.response.data))
@@ -92,22 +118,49 @@ export const useCompany = defineStore('company', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
+  const updateLogo = (payload: { pk: string } & Logo) => {
+    const { pk, ...logoData } = payload
+    api
+      .put(`/logo/${pk}/`, logoData)
+      .then(res => {
+        fetchLogo(res.data.pk)
+        message()
+      })
+      .catch(err => errorHandle(err.response.data))
+  }
+
   const deleteCompany = (pk: string) => {
-    api.delete(`/company/${pk}`).then(() => {
-      fetchCompanyList()
-      message('warning', '', '삭제되었습니다.')
-    })
+    api
+      .delete(`/company/${pk}/`)
+      .then(() => {
+        fetchCompanyList()
+        message('warning', '', '삭제되었습니다.')
+      })
+      .catch(err => errorHandle(err.response.data))
+  }
+
+  const deleteLogo = (pk: string) => {
+    api
+      .delete(`/logo/${pk}/`)
+      .then(() => message('warning', '', '삭제되었습니다.'))
+      .catch(err => errorHandle(err.response.data))
   }
 
   return {
     companyList,
     company,
+    logo,
     initComId,
     comSelect,
+
     fetchCompanyList,
     fetchCompany,
+    fetchLogo,
     createCompany,
+    createLogo,
     updateCompany,
+    updateLogo,
     deleteCompany,
+    deleteLogo,
   }
 })
