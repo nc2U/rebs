@@ -10,7 +10,7 @@ defineProps({ contractor: { type: Object, default: null } })
       @click="
         $router.push({
           name: '계약등록 관리',
-          query: { contract: contractor.contract.pk },
+          query: { contract: contractor.contract },
         })
       "
     >
