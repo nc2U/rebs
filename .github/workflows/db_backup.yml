@@ -2,7 +2,7 @@ name: DB_backup
 
 on:
   schedule:
-    - cron: "0 2 * * 1-5"
+    - cron: "0 16 * * 1-5"
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -30,6 +30,8 @@ jobs:
           source: 'volume/backups'
           target: '/mnt/nfs/prod'
 
+      - run: date
+
       # mysql pod --> database bakcup
       - name: database backup
         uses: garygrossgarten/github-action-ssh@release
@@ -47,10 +49,3 @@ jobs:
         uses: ./.github/actions/slack-notify    # 직접 '만든' Action이므로 uses 키워드를 이용해서 아래 경로를 입력해줍니다.
         with:
           slack_incoming_url: ${{ secrets.SLACK_INCOMING_URL }}
-#
-#      - name: Send slack if completed
-#        if: ${{ success() }}                    # 성공할 때만 실행
-#        uses: ./.github/actions/slack-notify
-#        with:
-#          status: success   # status input은 받는 쪽에서 default 값을 정해놨기 때문에 success일 때만 전달.
-#          slack_incoming_url: ${{ secrets.SLACK_INCOMING_URL }}
