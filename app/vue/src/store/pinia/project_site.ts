@@ -68,7 +68,7 @@ export interface SiteContract {
   note: string
 }
 
-export const useSite = defineStore('project', () => {
+export const useSite = defineStore('site', () => {
   // states
 
   const siteList = ref<Site[]>([])

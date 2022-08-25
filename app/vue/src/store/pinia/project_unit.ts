@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 
-export const useUnit = defineStore('project', () => {
+export const useUnit = defineStore('unit', () => {
   // states
   const buildingList = ref([])
   const houseUnitList = ref([])
