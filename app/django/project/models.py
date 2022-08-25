@@ -186,7 +186,7 @@ class SiteOwner(models.Model):
     OWN_CHOICES = (('1', '개인'), ('2', '법인'), ('3', '국공유지'))
     own_sort = models.CharField('소유구분', max_length=1, choices=OWN_CHOICES, default='1')
     sites = models.ManyToManyField(Site, through='SiteOwnshipRelationship', through_fields=('site_owner', 'site'),
-                                   verbose_name='소유부지')
+                                   verbose_name='소유부지', related_name='owners')
     counsel_record = models.TextField('상담기록', blank=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
     created_at = models.DateTimeField('등록일', auto_now_add=True)

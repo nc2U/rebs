@@ -314,20 +314,19 @@ class ExecAmountToBudget(serializers.ModelSerializer):
 class SiteOwnerInSiteSerializer(serializers.ModelSerializer):
     class Meta:
         model = SiteOwner
-        fields = ('owner',)
+        fields = ('pk', 'owner')
 
 
 class SiteSerializer(serializers.ModelSerializer):
-    site_owner = SiteOwnerInSiteSerializer(many=True, read_only=True)
+    owners = SiteOwnerInSiteSerializer(many=True, read_only=True)
 
     class Meta:
         model = Site
         fields = ('pk', 'project', 'order', 'district', 'lot_number', 'site_purpose',
-                  'official_area', 'returned_area', 'rights_restrictions', 'dup_issue_date', 'site_owner')
+                  'official_area', 'returned_area', 'rights_restrictions', 'dup_issue_date', 'owners')
 
 
 class SiteOwnerSerializer(serializers.ModelSerializer):
-    # project = serializers.SlugRelatedField(queryset=Project.objects.all(), slug_field='name')
     own_sort_desc = serializers.CharField(source='get_own_sort_display', read_only=True)
 
     class Meta:
@@ -337,10 +336,10 @@ class SiteOwnerSerializer(serializers.ModelSerializer):
                   'own_sort_desc', 'sites', 'counsel_record')
 
 
-class SiteOwnshipRelationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = SiteOwnshipRelationship
-        fields = ('pk', 'site', 'site_owner', 'ownership_ratio', 'owned_area', 'acquisition_date')
+# class SiteOwnshipRelationSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = SiteOwnshipRelationship
+#         fields = ('pk', 'site', 'site_owner', 'ownership_ratio', 'owned_area', 'acquisition_date')
 
 
 class SiteContractSerializer(serializers.ModelSerializer):
