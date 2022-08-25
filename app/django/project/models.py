@@ -159,8 +159,8 @@ class Site(models.Model):
     site_purpose = models.CharField('지목', max_length=10)
     official_area = models.DecimalField('대지면적', max_digits=10, decimal_places=4)
     returned_area = models.DecimalField('환지면적', max_digits=10, decimal_places=4, null=True, blank=True)
-    rights_restrictions = models.TextField('권리제한사항', blank=True)
     dup_issue_date = models.DateField('등본발급일', null=True, blank=True)
+    rights_restrictions = models.TextField('주요 권리제한사항', blank=True)
     created_at = models.DateTimeField('등록일', auto_now_add=True)
     updated_at = models.DateTimeField('수정일', auto_now=True)
 
@@ -186,7 +186,7 @@ class SiteOwner(models.Model):
     OWN_CHOICES = (('1', '개인'), ('2', '법인'), ('3', '국공유지'))
     own_sort = models.CharField('소유구분', max_length=1, choices=OWN_CHOICES, default='1')
     sites = models.ManyToManyField(Site, through='SiteOwnshipRelationship', through_fields=('site_owner', 'site'),
-                                   verbose_name='소유부지', related_name='owners')
+                                   related_name='owners', verbose_name='소유부지')
     counsel_record = models.TextField('상담기록', blank=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
     created_at = models.DateTimeField('등록일', auto_now_add=True)
@@ -206,7 +206,7 @@ class SiteOwnshipRelationship(models.Model):
     site_owner = models.ForeignKey(SiteOwner, on_delete=models.CASCADE)
     ownership_ratio = models.DecimalField('소유지분', max_digits=10, decimal_places=7, null=True, blank=True)
     owned_area = models.DecimalField('소유면적', max_digits=10, decimal_places=4, null=True, blank=True)
-    acquisition_date = models.DateField('소유권 취득일', null=True, blank=True)
+    acquisition_date = models.DateField('최초 소유권 취득일', null=True, blank=True)
 
     def __str__(self):
         return f'{self.site} {self.site_owner}'

@@ -326,20 +326,27 @@ class SiteSerializer(serializers.ModelSerializer):
                   'official_area', 'returned_area', 'rights_restrictions', 'dup_issue_date', 'owners')
 
 
+class SiteInRelationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Site
+        fields = ('district', 'lot_number')
+
+
+class SiteOwnshipRelationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SiteOwnshipRelationship
+        fields = ('pk', '__str__', 'ownership_ratio', 'owned_area', 'acquisition_date')
+
+
 class SiteOwnerSerializer(serializers.ModelSerializer):
     own_sort_desc = serializers.CharField(source='get_own_sort_display', read_only=True)
+    sites = SiteOwnshipRelationSerializer(many=True, read_only=True)
 
     class Meta:
         model = SiteOwner
         fields = ('pk', 'project', 'owner', 'date_of_birth', 'phone1', 'phone2',
                   'zipcode', 'address1', 'address2', 'address3', 'own_sort',
                   'own_sort_desc', 'sites', 'counsel_record')
-
-
-# class SiteOwnshipRelationSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = SiteOwnshipRelationship
-#         fields = ('pk', 'site', 'site_owner', 'ownership_ratio', 'owned_area', 'acquisition_date')
 
 
 class SiteContractSerializer(serializers.ModelSerializer):
