@@ -311,11 +311,19 @@ class ExecAmountToBudget(serializers.ModelSerializer):
         fields = ('acc_d2', 'all_sum', 'month_sum')
 
 
+class SiteOwnerInSiteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SiteOwner
+        fields = ('owner',)
+
+
 class SiteSerializer(serializers.ModelSerializer):
+    site_owner = SiteOwnerInSiteSerializer(many=True, read_only=True)
+
     class Meta:
         model = Site
         fields = ('pk', 'project', 'order', 'district', 'lot_number', 'site_purpose',
-                  'official_area', 'returned_area', 'rights_restrictions', 'dup_issue_date')
+                  'official_area', 'returned_area', 'rights_restrictions', 'dup_issue_date', 'site_owner')
 
 
 class SiteOwnerSerializer(serializers.ModelSerializer):
