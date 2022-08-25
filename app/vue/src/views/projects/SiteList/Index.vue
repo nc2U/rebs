@@ -17,14 +17,14 @@ const siteStore = useSite()
 
 const onSelectAdd = (target: any) => {
   if (!!target) {
-    // siteStore.fetchSiteList(target)
+    siteStore.fetchSiteList(target)
   } else {
     siteStore.siteList = []
   }
 }
 
 onBeforeMount(() => {
-  // siteStore.fetchSiteList(initProjId.value)
+  siteStore.fetchSiteList(initProjId.value)
 })
 </script>
 

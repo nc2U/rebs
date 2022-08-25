@@ -1,14 +1,15 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { useStore } from 'vuex'
+import { useSite } from '@/store/pinia/project_site'
+import { headerSecondary } from '@/utils/cssMixins'
 import Site from './Site.vue'
 import Pagination from '@/components/Pagination'
 import AlertModal from '@/components/Modals/AlertModal.vue'
-import { headerSecondary } from '@/utils/cssMixins'
 
 const emit = defineEmits(['page-select', 'on-delete', 'multi-submit'])
 
-const store = useStore()
+const siteStore = useSite()
+const siteList = computed(() => siteStore.siteList)
 
 const pageSelect = (page: number) => emit('page-select', page)
 const multiSubmit = (payload: any) => emit('multi-submit', payload)
@@ -48,14 +49,13 @@ const onDelete = (pk: number) => emit('on-delete', pk)
     </CTableHead>
 
     <CTableBody>
-      <Site />
-      <!--      v-for="proCash in getProCashLogs"-->
-      <!--        &lt;!&ndash;&ndash;&gt;-->
-      <!--        :key="proCash.pk"-->
-      <!--        :pro-cash="proCash"-->
-      <!--        @multi-submit="multiSubmit"-->
-      <!--        @on-delete="onDelete"-->
-      <!--            />-->
+      <Site
+        v-for="site in siteList"
+        :key="site.pk"
+        :site="site"
+        @multi-submit="multiSubmit"
+        @on-delete="onDelete"
+      />
     </CTableBody>
   </CTable>
 
