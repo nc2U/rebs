@@ -349,6 +349,12 @@ class SiteOwnerSerializer(serializers.ModelSerializer):
                   'own_sort_desc', 'sites', 'counsel_record')
 
 
+class SiteOwnshipRelationshipSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SiteOwnshipRelationship
+        fields = ('pk', 'site', 'site_owner', 'ownership_ratio', 'owned_area', 'acquisition_date')
+
+
 class SiteContractSerializer(serializers.ModelSerializer):
     class Meta:
         model = SiteContract
