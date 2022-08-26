@@ -72,6 +72,7 @@ export const useSite = defineStore('site', () => {
   // states
 
   const siteList = ref<Site[]>([])
+  const siteCount = ref(0)
   const siteOwnerList = ref<SiteOwner[]>([])
   const siteOwnerRelationList = ref<SiteOwnshipRelationship[]>([])
   const siteContractList = ref<SiteContract[]>([])
@@ -81,6 +82,7 @@ export const useSite = defineStore('site', () => {
       .get(`/site/?project=${project}`)
       .then(res => {
         siteList.value = res.data.results
+        siteCount.value = res.data.count
       })
       .catch(err => errorHandle(err.response.data))
   }
@@ -118,6 +120,7 @@ export const useSite = defineStore('site', () => {
 
   return {
     siteList,
+    siteCount,
     siteOwnerList,
     siteOwnerRelationList,
     siteContractList,
