@@ -10,7 +10,9 @@ const emit = defineEmits(['page-select', 'on-delete', 'multi-submit'])
 
 const siteStore = useSite()
 const siteList = computed(() => siteStore.siteList)
+const siteCount = computed(() => siteStore.siteCount)
 
+const sitePages = (num: number) => Math.ceil(siteCount.value / num)
 const pageSelect = (page: number) => emit('page-select', page)
 const multiSubmit = (payload: any) => emit('multi-submit', payload)
 const onDelete = (pk: number) => emit('on-delete', pk)
@@ -59,40 +61,40 @@ const onDelete = (pk: number) => emit('on-delete', pk)
     </CTableBody>
   </CTable>
 
-  <!--  <Pagination-->
-  <!--    :active-page="1"-->
-  <!--    :limit="8"-->
-  <!--    :pages="proCashPages(15)"-->
-  <!--    class="mt-3"-->
-  <!--    @active-page-change="pageSelect"-->
-  <!--  />-->
+  <Pagination
+    :active-page="1"
+    :limit="8"
+    :pages="sitePages(15)"
+    class="mt-3"
+    @active-page-change="pageSelect"
+  />
 
-  <!--  <AlertModal ref="DAccount" size="lg">-->
-  <!--    <template #header> 프로젝트 계정 분류 보기</template>-->
-  <!--    <template #default>-->
-  <!--      <CAccordion>-->
-  <!--        <CAccordionItem-->
-  <!--          v-for="d1 in allAccD1List"-->
-  <!--          :key="d1.pk"-->
-  <!--          :item-key="d1.pk"-->
-  <!--        >-->
-  <!--          <CAccordionHeader-->
-  <!--            >{{ `[${d1.code}] ${d1.name} (${d1.description})` }}-->
-  <!--          </CAccordionHeader>-->
-  <!--          <CAccordionBody class="pl-3">-->
-  <!--            <CRow-->
-  <!--              v-for="d2 in allAccD2List.filter(d2 => d2.d1 === d1.pk)"-->
-  <!--              :key="d2.pk"-->
-  <!--              class="pl-2 mb-2"-->
-  <!--            >-->
-  <!--              <CCol>-->
-  <!--                [{{ d2.code }}] {{ d2.name }} &#45;&#45;&#45;&#45;&#45;&#45; ({{ d2.description }})-->
-  <!--              </CCol>-->
-  <!--            </CRow>-->
-  <!--          </CAccordionBody>-->
-  <!--        </CAccordionItem>-->
-  <!--      </CAccordion>-->
-  <!--    </template>-->
-  <!--    <template #footer></template>-->
-  <!--  </AlertModal>-->
+  <AlertModal ref="DAccount" size="lg">
+    <template #header> 프로젝트 계정 분류 보기</template>
+    <template #default>
+      <CAccordion>
+        <CAccordionItem
+          v-for="d1 in allAccD1List"
+          :key="d1.pk"
+          :item-key="d1.pk"
+        >
+          <CAccordionHeader
+            >{{ `[${d1.code}] ${d1.name} (${d1.description})` }}
+          </CAccordionHeader>
+          <CAccordionBody class="pl-3">
+            <CRow
+              v-for="d2 in allAccD2List.filter(d2 => d2.d1 === d1.pk)"
+              :key="d2.pk"
+              class="pl-2 mb-2"
+            >
+              <CCol>
+                [{{ d2.code }}] {{ d2.name }} ------ ({{ d2.description }})
+              </CCol>
+            </CRow>
+          </CAccordionBody>
+        </CAccordionItem>
+      </CAccordion>
+    </template>
+    <template #footer></template>
+  </AlertModal>
 </template>
