@@ -353,7 +353,7 @@ class SiteManage(LoginRequiredMixin, ListView, FormView):
         return self.form_class(initial=initial)
 
     def get_queryset(self):
-        return self.model.objects.filter(project=self.get_project()).order_by('-order')
+        return self.model.objects.filter(project=self.get_project())
 
     def get_context_data(self, **kwargs):
         context = super(SiteManage, self).get_context_data(**kwargs)
