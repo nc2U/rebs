@@ -17,8 +17,8 @@ mariadb:
 
 nginx:
   service:
-    type: NodePort
-    port: 80
+    type: LoadBalancer
+    port: 8888
 
   ingress:
     enabled: true

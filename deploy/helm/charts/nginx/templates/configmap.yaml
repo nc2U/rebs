@@ -8,6 +8,7 @@ data:
   BACKEND_MAX_FAILS: {{ .backendMaxFails | quote }}
   BACKEND_MAX_TIMEOUT: {{ .backendMaxTimeout }}
   LOG_STDOUT: {{ .logStdout | quote }}
+  SERVER_PORT: {{ .Values.service.port }}
   {{- end }}
 kind: ConfigMap
 metadata:
