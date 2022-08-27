@@ -8,6 +8,9 @@ global:
 nginx:
   replicaCount: 1
 
+  service:
+    port: 8881
+
   ingress:
     hosts:
       - host: "host-path" # Host address
