@@ -9,7 +9,7 @@ import AlertModal from '@/components/Modals/AlertModal.vue'
 const emit = defineEmits(['page-select', 'on-delete', 'multi-submit'])
 
 const siteStore = useSite()
-const siteList = computed(() => siteStore.siteList)
+const siteList = computed(() => siteStore.getSiteList)
 const siteCount = computed(() => siteStore.siteCount)
 
 const sitePages = (num: number) => Math.ceil(siteCount.value / num)

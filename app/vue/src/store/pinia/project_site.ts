@@ -1,5 +1,5 @@
 import api from '@/api'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { errorHandle, message } from '@/utils/helper'
 
@@ -14,6 +14,7 @@ export interface Site {
   returned_area: number | null
   rights_restrictions: string
   dup_issue_date: string
+  owners: SiteOwner[]
 }
 
 export interface SiteOwner {
@@ -72,6 +73,21 @@ export const useSite = defineStore('site', () => {
   // states
 
   const siteList = ref<Site[]>([])
+  const getSiteList = computed(() =>
+    siteList.value.map((s: Site) => ({
+      pk: s.pk,
+      project: s.project,
+      order: s.order,
+      district: s.district,
+      lot_number: s.lot_number,
+      site_purpose: s.site_purpose,
+      official_area: s.official_area,
+      returned_area: s.returned_area,
+      rights_restrictions: s.rights_restrictions,
+      dup_issue_date: s.dup_issue_date,
+      owners: s.owners.map(o => o.owner),
+    })),
+  )
   const siteCount = ref(0)
   const siteOwnerList = ref<SiteOwner[]>([])
   const siteOwnerRelationList = ref<SiteOwnshipRelationship[]>([])
@@ -120,6 +136,7 @@ export const useSite = defineStore('site', () => {
 
   return {
     siteList,
+    getSiteList,
     siteCount,
     siteOwnerList,
     siteOwnerRelationList,
