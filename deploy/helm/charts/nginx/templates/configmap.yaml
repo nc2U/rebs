@@ -9,7 +9,7 @@ data:
   BACKEND_MAX_TIMEOUT: {{ .backendMaxTimeout }}
   LOG_STDOUT: {{ .logStdout | quote }}
   {{- end }}
-  SERVER_PORT: {{ .Values.service.port }}
+  SERVER_PORT: {{ .Values.service.port | quote }}
 kind: ConfigMap
 metadata:
   name: {{ include "nginx.fullname" . }}-config
