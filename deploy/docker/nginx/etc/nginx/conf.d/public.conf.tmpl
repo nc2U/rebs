@@ -1,5 +1,5 @@
 server {
-    listen          {{ var "SERVER_PORT" | default "80" }} default_server;
+    listen          {{ var "NGINX_SERVICE_PORT" | default "80" }} default_server;
     server_name     $host www.$host;
     charset         utf-8;
 
