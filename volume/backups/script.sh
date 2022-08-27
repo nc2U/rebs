@@ -1,6 +1,6 @@
 #!/bin/bash
 DATE=`date +"%Y-%m-%d"`
-SQLFILE=/var/backups/db-rebs-${DATE}.sql
+SQLFILE=/var/backups/db-${MYSQL_DATABASE}-${DATE}.sql
 DATABASE=${MYSQL_DATABASE}
 USER=${MYSQL_USER}
 PASSWORD=${MYSQL_PASSWORD}
