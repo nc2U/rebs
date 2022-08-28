@@ -16,13 +16,6 @@ const emit = defineEmits(['multi-submit', 'on-delete'])
 
 const updateFormModal = ref()
 
-const printArray = (arr: string[], sep = ',') => {
-  return arr.forEach((el, i) => {
-    ;`${el}`
-    if (i !== arr.length) `${sep} `
-  })
-}
-
 const showDetail = () => updateFormModal.value.callModal()
 const multiSubmit = (payload: any) => emit('multi-submit', payload)
 const onDelete = (payload: any) => emit('on-delete', payload)
@@ -47,17 +40,17 @@ const onDelete = (payload: any) => emit('on-delete', payload)
     <CTableDataCell class="text-right">
       {{ numFormat(site.official_area, 2) }}
     </CTableDataCell>
-    <CTableDataCell class="text-right">
+    <CTableDataCell class="text-right" color="warning">
       {{ numFormat(site.official_area, 2) }}
     </CTableDataCell>
     <CTableDataCell v-if="isReturned" class="text-right">
       {{ numFormat(site.returned_area, 2) }}
     </CTableDataCell>
-    <CTableDataCell v-if="isReturned" class="text-right">
+    <CTableDataCell v-if="isReturned" class="text-right" color="warning">
       {{ numFormat(site.returned_area, 2) }}
     </CTableDataCell>
-    <CTableDataCell>
-      {{ printArray(site.owners, ',') }}
+    <CTableDataCell class="text-left">
+      {{ site.owners.join(', ') }}
     </CTableDataCell>
     <CTableDataCell>
       <CButton color="info" size="sm" @click="showDetail">확인</CButton>

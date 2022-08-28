@@ -31,7 +31,7 @@ const resetForm = () => {
 <template>
   <CCallout color="secondary" class="pb-0 mb-3">
     <CRow>
-      <CCol lg="8"> </CCol>
+      <CCol lg="8"></CCol>
 
       <CCol lg="4">
         <CRow>
@@ -52,7 +52,7 @@ const resetForm = () => {
     </CRow>
     <CRow>
       <CCol color="warning" class="p-2 pl-3">
-        <strong> 거래 건수 조회 결과 : {{ numFormat(siteCount) }} 건 </strong>
+        <strong> 필지 건수 조회 결과 : {{ numFormat(siteCount) }} 건 </strong>
       </CCol>
       <CCol v-if="!formsCheck" class="text-right mb-0">
         <CButton color="info" size="sm" @click="resetForm">
