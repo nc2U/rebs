@@ -13,18 +13,13 @@ const listControl = ref()
 
 const dataFilter = ref({
   page: 1,
-  from_date: '',
-  to_date: '',
-  sort: '',
-  pro_acc_d1: '',
-  pro_acc_d2: '',
-  bank_account: '',
   search: '',
 })
 
 const projectStore = useProject()
 const project = computed(() => projectStore.project?.pk)
-const initProjId = computed(() => projectStore.initProjId.toString())
+const initProjId = computed(() => projectStore.initProjId)
+const isReturned = computed(() => projectStore.project?.is_returned_area)
 
 const siteStore = useSite()
 
@@ -36,13 +31,14 @@ const onSelectAdd = (target: any) => {
   }
 }
 
-const listFiltering = (payload: any) => {
-  dataFilter.value = payload
-}
+// const listFiltering = (payload: any) => {
+//   dataFilter.value = payload
+// }
 
 const pageSelect = (page: number) => {
   dataFilter.value.page = page
-  listControl.value.listFiltering(page)
+  siteStore.fetchSiteList(project.value || initProjId.value, page)
+  // listControl.value.listFiltering(page)
 }
 
 const onCreate = (payload: any) => {
@@ -97,6 +93,8 @@ onBeforeMount(() => {
       <ListController />
       <AddSite />
       <SiteList
+        ref="listControl"
+        :is-returned="isReturned"
         @page-select="pageSelect"
         @multi-submit="multiSubmit"
         @on-delete="onDelete"

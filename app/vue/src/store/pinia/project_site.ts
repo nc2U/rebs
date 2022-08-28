@@ -93,9 +93,9 @@ export const useSite = defineStore('site', () => {
   const siteOwnerRelationList = ref<SiteOwnshipRelationship[]>([])
   const siteContractList = ref<SiteContract[]>([])
 
-  const fetchSiteList = (project: string) => {
+  const fetchSiteList = (project: number, page = 1, search = '') => {
     api
-      .get(`/site/?project=${project}`)
+      .get(`/site/?project=${project}&page=${page}&search=${search}`)
       .then(res => {
         siteList.value = res.data.results
         siteCount.value = res.data.count
@@ -113,7 +113,7 @@ export const useSite = defineStore('site', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const updateSite = (payload: { pk: string } & Site) => {
+  const updateSite = (payload: { pk: number } & Site) => {
     const { pk, ...siteData } = payload
     api
       .put(`/site/${pk}/`, siteData)
@@ -124,7 +124,7 @@ export const useSite = defineStore('site', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const deleteSite = (pk: string, project: string) => {
+  const deleteSite = (pk: number, project: number) => {
     api
       .delete(`/site/${pk}/`)
       .then(() => {

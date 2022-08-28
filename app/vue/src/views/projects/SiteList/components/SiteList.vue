@@ -6,6 +6,7 @@ import Site from './Site.vue'
 import Pagination from '@/components/Pagination'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
+defineProps({ isReturned: { type: Boolean } })
 const emit = defineEmits(['page-select', 'on-delete', 'multi-submit'])
 
 const siteStore = useSite()
@@ -21,13 +22,15 @@ const onDelete = (pk: number) => emit('on-delete', pk)
 <template>
   <CTable hover responsive align="middle">
     <colgroup>
-      <col width="8%" />
       <col width="6%" />
       <col width="7%" />
-      <col width="10%" />
-      <col width="12%" />
-      <col width="11%" />
-      <col width="11%" />
+      <col width="8%" />
+      <col width="8%" />
+      <col width="8%" />
+      <col width="8%" />
+      <col v-if="isReturned" width="8%" />
+      <col v-if="isReturned" width="8%" />
+      <col width="33%" />
       <col width="6%" />
     </colgroup>
 
@@ -38,15 +41,19 @@ const onDelete = (pk: number) => emit('on-delete', pk)
         <CTableHeaderCell rowspan="2" scope="col">지번</CTableHeaderCell>
         <CTableHeaderCell rowspan="2" scope="col">지목</CTableHeaderCell>
         <CTableHeaderCell colspan="2" scope="col">공부상 면적</CTableHeaderCell>
-        <CTableHeaderCell colspan="2" scope="col">환지 면적</CTableHeaderCell>
+        <CTableHeaderCell v-if="isReturned" colspan="2" scope="col">
+          환지 면적
+        </CTableHeaderCell>
         <CTableHeaderCell rowspan="2" scope="col">소유자 목록</CTableHeaderCell>
         <CTableHeaderCell rowspan="2" scope="col">비고</CTableHeaderCell>
       </CTableRow>
       <CTableRow class="text-center">
         <CTableHeaderCell scope="col">m<sup>2</sup></CTableHeaderCell>
         <CTableHeaderCell scope="col">평</CTableHeaderCell>
-        <CTableHeaderCell scope="col">m<sup>2</sup></CTableHeaderCell>
-        <CTableHeaderCell scope="col">평</CTableHeaderCell>
+        <CTableHeaderCell v-if="isReturned" scope="col">
+          m<sup>2</sup>
+        </CTableHeaderCell>
+        <CTableHeaderCell v-if="isReturned" scope="col">평</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
 
@@ -55,6 +62,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
         v-for="site in siteList"
         :key="site.pk"
         :site="site"
+        :is-returned="isReturned"
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
       />
@@ -64,7 +72,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
   <Pagination
     :active-page="1"
     :limit="8"
-    :pages="sitePages(15)"
+    :pages="sitePages(10)"
     class="mt-3"
     @active-page-change="pageSelect"
   />
