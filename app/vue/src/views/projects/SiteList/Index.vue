@@ -92,7 +92,7 @@ onBeforeMount(() => {
   <ContentBody>
     <CCardBody class="pb-5">
       <ListController @list-filtering="listFiltering" />
-      <AddSite :project="project" />
+      <AddSite />
       <SiteList
         ref="listControl"
         :is-returned="isReturned"

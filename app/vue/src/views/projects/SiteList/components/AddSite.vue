@@ -5,7 +5,6 @@ import { headerSecondary } from '@/utils/cssMixins'
 import FormModal from '@/components/Modals/FormModal.vue'
 import SiteForm from './SiteForm.vue'
 
-defineProps({ project: { type: Number, default: null } })
 const emit = defineEmits(['multi-submit'])
 
 const formModal = ref()
@@ -29,11 +28,7 @@ const multiSubmit = (payload: any) => emit('multi-submit', payload)
       사업 부지 등록
     </template>
     <template #default>
-      <SiteForm
-        :project="project"
-        @multi-submit="multiSubmit"
-        @close="formModal.close()"
-      />
+      <SiteForm @multi-submit="multiSubmit" @close="formModal.close()" />
     </template>
   </FormModal>
 

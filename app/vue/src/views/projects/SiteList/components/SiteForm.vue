@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, watch, onBeforeMount, nextTick } from 'vue'
+import { ref, reactive, computed, watch, onBeforeMount } from 'vue'
+import { useProject } from '@/store/pinia/project'
 import { useSite } from '@/store/pinia/project_site'
 import { dateFormat } from '@/utils/baseMixins'
 import { write_project } from '@/utils/pageAuth'
@@ -9,10 +10,6 @@ import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
 const props = defineProps({
-  project: {
-    type: Number,
-    default: null,
-  },
   site: {
     type: Object,
     default: null,
@@ -38,6 +35,10 @@ const form = reactive({
   dup_issue_date: '',
 })
 
+const projectStore = useProject()
+const initProjId = computed(() => projectStore.initProjId)
+const project = computed(() => projectStore.project?.pk || initProjId.value)
+const isReturned = computed(() => projectStore.project?.is_returned_area)
 const siteStore = useSite()
 
 const formsCheck = computed(() => {
@@ -110,7 +111,7 @@ onBeforeMount(() => {
     form.rights_restrictions = props.site.rights_restrictions
     form.dup_issue_date = props.site.dup_issue_date
   } else {
-    form.project = props.project
+    form.project = project.value
     form.order = siteStore.siteCount + 1
   }
 })
@@ -135,6 +136,21 @@ onBeforeMount(() => {
                   required
                   type="number"
                   placeholder="등록 번호"
+                />
+              </CCol>
+            </CRow>
+          </CCol>
+
+          <CCol v-if="!isReturned" sm="6">
+            <CRow>
+              <CFormLabel class="col-sm-4 col-form-label">
+                등기부 발급일
+              </CFormLabel>
+              <CCol sm="8">
+                <DatePicker
+                  v-model="form.dup_issue_date"
+                  :required="false"
+                  placeholder="등기부 발급일"
                 />
               </CCol>
             </CRow>
@@ -195,7 +211,7 @@ onBeforeMount(() => {
           </CCol>
         </CRow>
 
-        <CRow class="mb-3">
+        <CRow v-if="isReturned" class="mb-3">
           <CCol sm="6">
             <CRow>
               <CFormLabel class="col-sm-4 col-form-label">
@@ -236,6 +252,7 @@ onBeforeMount(() => {
               <CCol sm="10">
                 <CFormTextarea
                   v-model="form.rights_restrictions"
+                  rows="4"
                   placeholder="주요 권리 제한 사항"
                 />
               </CCol>
