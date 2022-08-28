@@ -1,18 +1,19 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { write_project_cash } from '@/utils/pageAuth'
-import FormModal from '@/components/Modals/FormModal.vue'
-import ProCashForm from '@/views/proCash/Manage/components/ProCashForm.vue'
 import { headerSecondary } from '@/utils/cssMixins'
+import FormModal from '@/components/Modals/FormModal.vue'
+import SiteForm from './SiteForm.vue'
 
+defineProps({ project: { type: Number, default: null } })
 const emit = defineEmits(['multi-submit'])
 
-const createFormModal = ref()
-const createAlertModal = ref()
+const formModal = ref()
+const alertModal = ref()
 
 const createConfirm = () => {
-  if (write_project_cash) createFormModal.value.callModal()
-  else createAlertModal.value.callModal()
+  if (write_project_cash) formModal.value.callModal()
+  else alertModal.value.callModal()
 }
 const multiSubmit = (payload: any) => emit('multi-submit', payload)
 </script>
@@ -22,18 +23,19 @@ const multiSubmit = (payload: any) => emit('multi-submit', payload)
     <CButton color="primary" @click="createConfirm">신규등록</CButton>
   </CAlert>
 
-  <FormModal ref="createFormModal" size="lg">
+  <FormModal ref="formModal" size="lg">
     <template #header>
-      <CIcon name="cil-italic" />
-      프로젝트 입출금 거래 건별 등록
+      <v-icon icon="mdi-briefcase-plus" size="small" color="dark" />
+      사업 부지 등록
     </template>
     <template #default>
-      <ProCashForm
+      <SiteForm
+        :project="project"
         @multi-submit="multiSubmit"
-        @close="createFormModal.close()"
+        @close="formModal.close()"
       />
     </template>
   </FormModal>
 
-  <AlertModal ref="createAlertModal" />
+  <AlertModal ref="alertModal" />
 </template>

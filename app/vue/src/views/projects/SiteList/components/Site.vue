@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { numFormat } from '@/utils/baseMixins'
 import FormModal from '@/components/Modals/FormModal.vue'
 import SiteForm from './SiteForm.vue'
@@ -59,8 +59,8 @@ const onDelete = (payload: any) => emit('on-delete', payload)
 
   <FormModal ref="updateFormModal" size="lg">
     <template #header>
-      <CIcon name="cil-italic" />
-      프로젝트 입출금 거래 건별 관리
+      <v-icon icon="mdi-briefcase-plus" size="small" color="dark" />
+      사업 부지 등록
     </template>
     <template #default>
       <SiteForm
