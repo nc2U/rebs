@@ -179,7 +179,7 @@
                                     <tbody>
                                     {% for object in object_list %}
                                         {% for s in object.relations.all %}
-                                            {% with num=object.siteownshiprelationship_set.all.count %}
+                                            {% with num=object.relations.all.count %}
                                                 <tr>
                                                     {% if forloop.first %}
                                                         {#                                                        <td class="text-center" rowspan="{{ num }}">{{ object.id }}</td>#}
