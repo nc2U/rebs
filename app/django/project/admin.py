@@ -68,6 +68,7 @@ class SiteAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display_links = ('project', '__str__',)
     list_editable = ('official_area', 'returned_area')
     search_fields = ('__str__',)
+    list_filter = ('project',)
 
 
 class SiteOwnerAdmin(ImportExportMixin, admin.ModelAdmin):
