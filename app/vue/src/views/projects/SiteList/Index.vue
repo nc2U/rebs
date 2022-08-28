@@ -17,8 +17,8 @@ const dataFilter = ref({
 })
 
 const projectStore = useProject()
-const project = computed(() => projectStore.project?.pk)
 const initProjId = computed(() => projectStore.initProjId)
+const project = computed(() => projectStore.project?.pk || initProjId.value)
 const isReturned = computed(() => projectStore.project?.is_returned_area)
 
 const siteStore = useSite()
@@ -31,14 +31,15 @@ const onSelectAdd = (target: any) => {
   }
 }
 
-// const listFiltering = (payload: any) => {
-//   dataFilter.value = payload
-// }
+const listFiltering = (payload: any) => {
+  dataFilter.value = payload
+  siteStore.fetchSiteList(project.value, payload.page, payload.search)
+}
 
 const pageSelect = (page: number) => {
   dataFilter.value.page = page
-  siteStore.fetchSiteList(project.value || initProjId.value, page)
-  // listControl.value.listFiltering(page)
+  siteStore.fetchSiteList(project.value, page)
+  listControl.value.listFiltering(page)
 }
 
 const onCreate = (payload: any) => {
@@ -90,7 +91,7 @@ onBeforeMount(() => {
 
   <ContentBody>
     <CCardBody class="pb-5">
-      <ListController />
+      <ListController @list-filtering="listFiltering" />
       <AddSite />
       <SiteList
         ref="listControl"
