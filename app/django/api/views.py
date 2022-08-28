@@ -370,7 +370,7 @@ class SiteViewSets(viewsets.ModelViewSet):
     serializer_class = SiteSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
     filter_fields = ('project',)
-    search_fields = ('district', 'lot_number', 'site_purpose')
+    search_fields = ('district', 'lot_number', 'site_purpose', 'owners__owner')
 
 
 class SiteOwnerViewSets(viewsets.ModelViewSet):
