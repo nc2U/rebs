@@ -166,8 +166,8 @@
                                                 <td class="text-right bg-warning-lighten">{{ object.returned_area|mul:0.3025|floatformat:2|intcomma|default:"-" }}</td>
                                             {% endif %}
                                             <td class="text-center">
-                                                {% for owner in object.siteowner_set.all %}{{ owner }}
-                                                    {% if not forloop.last %}, {% endif %}
+                                                {% for owner in object.owners.all %}
+                                                    {{ owner }}{% if not forloop.last %}, {% endif %}
                                                 {% endfor %}
                                             </td>
                                             <td class="text-center bg-dragula">
