@@ -203,7 +203,7 @@ class SiteOwner(models.Model):
 
 class SiteOwnshipRelationship(models.Model):
     site = models.ForeignKey(Site, on_delete=models.CASCADE)
-    site_owner = models.ForeignKey(SiteOwner, on_delete=models.CASCADE)
+    site_owner = models.ForeignKey(SiteOwner, on_delete=models.CASCADE, related_name='relations')
     ownership_ratio = models.DecimalField('소유지분', max_digits=10, decimal_places=7, null=True, blank=True)
     owned_area = models.DecimalField('소유면적', max_digits=10, decimal_places=4, null=True, blank=True)
     acquisition_date = models.DateField('최초 소유권 취득일', null=True, blank=True)

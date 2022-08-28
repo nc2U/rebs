@@ -160,7 +160,7 @@
                                         <th class="text-center bg-info-lighten" rowspan="2" style="width: 11%">소유지분(%)
                                         </th>
                                         <th class="text-center bg-info-lighten" colspan="2">
-                                            소유면적{% if this_project.is_returned_area %}(환지면적 기준){% endif %}
+                                            소유면적 {% if this_project.is_returned_area %}(환지면적 기준){% endif %}
                                         </th>
                                         <th class="text-center bg-info-lighten" rowspan="2" style="width: 11%">소유권 취득일
                                         </th>
@@ -178,7 +178,7 @@
                                     </thead>
                                     <tbody>
                                     {% for object in object_list %}
-                                        {% for s in object.siteownshiprelationship_set.all %}
+                                        {% for s in object.relations.all %}
                                             {% with num=object.siteownshiprelationship_set.all.count %}
                                                 <tr>
                                                     {% if forloop.first %}
