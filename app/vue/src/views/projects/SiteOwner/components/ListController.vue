@@ -2,6 +2,7 @@
 import { computed, reactive, nextTick } from 'vue'
 import { useSite } from '@/store/pinia/project_site'
 
+defineProps({ project: { type: Number, default: null } })
 const emit = defineEmits(['list-filtering'])
 
 const form = reactive({
@@ -30,13 +31,13 @@ const listFiltering = (page = 1) => {
   })
 }
 
-defineExpose({ listFiltering })
-
 const resetForm = () => {
   form.own_sort = ''
   form.search = ''
   listFiltering(1)
 }
+
+defineExpose({ listFiltering })
 </script>
 
 <template>
@@ -45,7 +46,11 @@ const resetForm = () => {
       <CCol lg="4" md="6">
         <CRow>
           <CCol md="4" class="mb-3">
-            <CFormSelect v-model="form.own_sort" @change="listFiltering">
+            <CFormSelect
+              v-model="form.own_sort"
+              :disabled="!project"
+              @change="listFiltering(1)"
+            >
               <option value="">소유구분</option>
               <option
                 v-for="sort in own_sort_select"
@@ -62,6 +67,7 @@ const resetForm = () => {
                 v-model="form.search"
                 placeholder="소유자, 연락처, 지번, 상담기록 검색"
                 aria-label="search"
+                :disabled="!project"
                 @keydown.enter="listFiltering(1)"
               />
               <CInputGroupText @click="listFiltering(1)">검색</CInputGroupText>

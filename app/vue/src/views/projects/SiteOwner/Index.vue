@@ -13,12 +13,13 @@ const listControl = ref()
 
 const dataFilter = ref({
   page: 1,
+  own_sort: '',
   search: '',
 })
 
 const projectStore = useProject()
+const project = computed(() => projectStore.project?.pk)
 const initProjId = computed(() => projectStore.initProjId)
-const project = computed(() => projectStore.project?.pk || initProjId.value)
 const isReturned = computed(() => projectStore.project?.is_returned_area)
 
 const siteStore = useSite()
@@ -34,7 +35,12 @@ const onSelectAdd = (target: any) => {
 
 const listFiltering = (payload: any) => {
   dataFilter.value = payload
-  siteStore.fetchSiteOwnerList(project.value, payload.page, payload.search)
+  siteStore.fetchSiteOwnerList(
+    project.value || initProjId.value,
+    payload.page,
+    payload.own_sort,
+    payload.search,
+  )
 }
 
 const pageSelect = (page: number) => {
@@ -71,10 +77,13 @@ onBeforeMount(() => {
 
   <ContentBody>
     <CCardBody class="pb-5">
-      <ListController @list-filtering="listFiltering" />
+      <ListController
+        ref="listControl"
+        :project="project"
+        @list-filtering="listFiltering"
+      />
       <AddSiteOwner @multi-submit="multiSubmit" />
       <SiteOwnerList
-        ref="listControl"
         :is-returned="isReturned"
         @page-select="pageSelect"
         @multi-submit="multiSubmit"

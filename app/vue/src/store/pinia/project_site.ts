@@ -151,9 +151,16 @@ export const useSite = defineStore('site', () => {
   const siteOwnerList = ref<SiteOwner[]>([])
   const siteOwnerCount = ref(0)
 
-  const fetchSiteOwnerList = (project: number, page = 1, search = '') => {
+  const fetchSiteOwnerList = (
+    project: number,
+    page = 1,
+    own_sort = '',
+    search = '',
+  ) => {
     api
-      .get(`/site-owner/?project=${project}&page=${page}&search=${search}`)
+      .get(
+        `/site-owner/?project=${project}&page=${page}&own_sort=${own_sort}&search=${search}`,
+      )
       .then(res => {
         siteOwnerList.value = res.data.results
         siteOwnerCount.value = res.data.count
