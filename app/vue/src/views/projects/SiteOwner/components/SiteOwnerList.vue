@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { useSite } from '@/store/pinia/project_site'
-import { headerSecondary } from '@/utils/cssMixins'
+import { headerInfo, headerSuccess, headerSecondary } from '@/utils/cssMixins'
 import SiteOwner from '@/views/projects/SiteOwner/components/SiteOwner.vue'
 import Pagination from '@/components/Pagination'
 
@@ -19,40 +19,49 @@ const onDelete = (pk: number) => emit('on-delete', pk)
 </script>
 
 <template>
-  <CTable hover responsive align="middle">
+  <CTable hover responsive bordered align="middle">
     <colgroup>
-      <col width="6%" />
       <col width="7%" />
-      <col width="8%" />
-      <col width="8%" />
-      <col width="8%" />
-      <col width="8%" />
-      <col v-if="isReturned" width="8%" />
-      <col v-if="isReturned" width="8%" />
-      <col width="33%" />
+      <col width="9%" />
+      <col width="11%" />
+      <col width="13%" />
+      <col width="10%" />
+      <col width="11%" />
+      <col width="11%" />
+      <col width="11%" />
+      <col width="11%" />
       <col width="6%" />
     </colgroup>
 
     <CTableHead :color="headerSecondary">
       <CTableRow class="text-center">
-        <CTableHeaderCell rowspan="2" scope="col">No</CTableHeaderCell>
-        <CTableHeaderCell rowspan="2" scope="col">행정동</CTableHeaderCell>
-        <CTableHeaderCell rowspan="2" scope="col">지번</CTableHeaderCell>
-        <CTableHeaderCell rowspan="2" scope="col">지목</CTableHeaderCell>
-        <CTableHeaderCell colspan="2" scope="col">공부상 면적</CTableHeaderCell>
-        <CTableHeaderCell v-if="isReturned" colspan="2" scope="col">
-          환지 면적
+        <CTableHeaderCell colspan="5" :color="headerInfo">
+          소유자 관련 정보
         </CTableHeaderCell>
-        <CTableHeaderCell rowspan="2" scope="col">소유자 목록</CTableHeaderCell>
+        <CTableHeaderCell colspan="5" :color="headerSuccess">
+          소유권 관련 정보
+        </CTableHeaderCell>
+      </CTableRow>
+      <CTableRow class="text-center" align="middle">
+        <CTableHeaderCell rowspan="2" scope="col">소유구분</CTableHeaderCell>
+        <CTableHeaderCell rowspan="2" scope="col">소유자</CTableHeaderCell>
+        <CTableHeaderCell rowspan="2" scope="col">생년월일</CTableHeaderCell>
+        <CTableHeaderCell rowspan="2" scope="col">주연락처</CTableHeaderCell>
+        <CTableHeaderCell rowspan="2" scope="col">
+          소유부지(지번)
+        </CTableHeaderCell>
+        <CTableHeaderCell rowspan="2" scope="col">소유지분(%)</CTableHeaderCell>
+        <CTableHeaderCell colspan="2" scope="col">
+          소유면적 <span v-if="isReturned">(환지면적 기준)</span>
+        </CTableHeaderCell>
+        <CTableHeaderCell rowspan="2" scope="col">
+          소유권 취득일
+        </CTableHeaderCell>
         <CTableHeaderCell rowspan="2" scope="col">비고</CTableHeaderCell>
       </CTableRow>
       <CTableRow class="text-center">
         <CTableHeaderCell scope="col">m<sup>2</sup></CTableHeaderCell>
         <CTableHeaderCell scope="col">평</CTableHeaderCell>
-        <CTableHeaderCell v-if="isReturned" scope="col">
-          m<sup>2</sup>
-        </CTableHeaderCell>
-        <CTableHeaderCell v-if="isReturned" scope="col">평</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
 
@@ -60,7 +69,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
       <SiteOwner
         v-for="owner in siteOwnerList"
         :key="owner.pk"
-        :site="owner"
+        :owner="owner"
         :is-returned="isReturned"
         @multi-submit="multiSubmit"
         @on-delete="onDelete"

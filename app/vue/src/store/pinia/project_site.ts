@@ -30,8 +30,25 @@ export interface SiteOwner {
   address3: string
   own_sort: string
   own_sort_desc: string
-  sites: number[]
+  relations: Relations[]
   counsel_record: string
+}
+
+export interface Relations {
+  pk: number
+  site: SimpleSite
+  ownership_ratio: string
+  owned_area: string
+  acquisition_date: null | string
+}
+
+export interface SimpleSite {
+  pk: number
+  district: string
+  lot_number: string
+  site_purpose: string
+  official_area: string
+  returned_area: number | null
 }
 
 export interface SiteOwnshipRelationship {

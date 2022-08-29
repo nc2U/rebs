@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { numFormat } from '@/utils/baseMixins'
+import Relation from '@/views/projects/SiteOwner/components/Relation.vue'
 import FormModal from '@/components/Modals/FormModal.vue'
 import SiteOwnerForm from '@/views/projects/SiteOwner/components/SiteOwnerForm.vue'
 
@@ -9,7 +10,6 @@ const props = defineProps({
     type: Object,
     required: true,
   },
-  isReturned: { type: Boolean },
 })
 
 const emit = defineEmits(['multi-submit', 'on-delete'])
@@ -23,38 +23,11 @@ const onDelete = (payload: any) => emit('on-delete', payload)
 
 <template>
   <CTableRow
-    v-if="owner"
+    v-for="(rel, i) in owner.relations"
+    :key="rel.pk"
     class="text-center"
-    :style="owner.is_separate ? 'font-weight: bold;' : ''"
   >
-    <CTableDataCell>{{ owner.order }}</CTableDataCell>
-    <CTableDataCell>
-      {{ owner.district }}
-    </CTableDataCell>
-    <CTableDataCell>
-      {{ owner.lot_number }}
-    </CTableDataCell>
-    <CTableDataCell>
-      {{ owner.owner_purpose }}
-    </CTableDataCell>
-    <CTableDataCell class="text-right">
-      {{ numFormat(owner.official_area, 2) }}
-    </CTableDataCell>
-    <CTableDataCell class="text-right" color="warning">
-      {{ numFormat(owner.official_area, 2) }}
-    </CTableDataCell>
-    <CTableDataCell v-if="isReturned" class="text-right">
-      {{ numFormat(owner.returned_area, 2) }}
-    </CTableDataCell>
-    <CTableDataCell v-if="isReturned" class="text-right" color="warning">
-      {{ numFormat(owner.returned_area, 2) }}
-    </CTableDataCell>
-    <CTableDataCell class="text-left">
-      {{ owner.owners.join(', ') }}
-    </CTableDataCell>
-    <CTableDataCell>
-      <CButton color="info" size="sm" @click="showDetail">확인</CButton>
-    </CTableDataCell>
+    <Relation :owner="owner" :relation="rel" :index="i" />
   </CTableRow>
 
   <FormModal ref="updateFormModal" size="lg">
