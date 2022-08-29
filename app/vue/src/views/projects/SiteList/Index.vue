@@ -42,19 +42,19 @@ const pageSelect = (page: number) => {
   listControl.value.listFiltering(page)
 }
 
-const onCreate = (payload: any) => {
-  payload.project = project.value
-  console.log(payload)
-}
+const onCreate = (payload: any) => siteStore.createSite(payload)
 
-const onUpdate = (payload: any) => console.log(payload)
+const onUpdate = (payload: any) => siteStore.updateSite(payload)
 
 const multiSubmit = (payload: any) => {
-  if (payload.pk) onCreate(payload)
-  else onUpdate(payload)
+  if (payload.pk) onUpdate(payload)
+  else onCreate(payload)
 }
 
-const onDelete = (payload: any) => console.log(payload)
+const onDelete = (payload: { pk: number; project: number }) => {
+  const { pk, project } = payload
+  siteStore.deleteSite(pk, project)
+}
 
 onBeforeMount(() => {
   siteStore.fetchSiteList(initProjId.value)

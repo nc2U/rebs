@@ -129,7 +129,7 @@ export const useSite = defineStore('site', () => {
       .delete(`/site/${pk}/`)
       .then(() => {
         fetchSiteList(project)
-        message('warning', '', '삭제되었습니다.')
+        message('warning', '', '해당 부지 정보가 삭제되었습니다.')
       })
       .catch(err => errorHandle(err.response.data))
   }

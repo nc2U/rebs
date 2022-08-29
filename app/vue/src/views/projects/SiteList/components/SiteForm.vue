@@ -33,7 +33,7 @@ const form = reactive({
   official_area: '',
   returned_area: null,
   rights_restrictions: '',
-  dup_issue_date: '',
+  dup_issue_date: null as null | string,
 })
 
 const projectStore = useProject()
@@ -45,14 +45,14 @@ const siteStore = useSite()
 const formsCheck = computed(() => {
   if (props.site) {
     const a = form.project === props.site.project
-    const b = form.order === props.site.sort
-    const c = form.district === props.site.project_account_d1
-    const d = form.lot_number === props.site.project_account_d2
-    const e = form.site_purpose === props.site.content
-    const f = form.official_area === props.site.trader
-    const g = form.returned_area === props.site.bank_account
-    const h = form.rights_restrictions === props.site.income
-    const i = form.dup_issue_date === props.site.outlay
+    const b = form.order === props.site.order
+    const c = form.district === props.site.district
+    const d = form.lot_number === props.site.lot_number
+    const e = form.site_purpose === props.site.site_purpose
+    const f = form.official_area === props.site.official_area
+    const g = form.returned_area === props.site.returned_area
+    const h = form.rights_restrictions === props.site.rights_restrictions
+    const i = form.dup_issue_date === props.site.dup_issue_date
 
     return a && b && c && d && e && f && g && h && i
   } else return false
@@ -78,10 +78,7 @@ const multiSubmit = (multiPayload: any) => {
 }
 
 const deleteObject = () => {
-  emit('on-delete', {
-    project: props.site.project,
-    pk: props.site.pk,
-  })
+  emit('on-delete', { pk: props.site.pk, project: props.site.project })
   delModal.value.visible = false
   emit('close')
 }
@@ -189,6 +186,7 @@ onBeforeMount(() => {
                 <CFormInput
                   v-model.number="form.official_area"
                   type="number"
+                  required
                   min="0"
                   step="0.0001"
                   placeholder="공부상 면적"
@@ -201,7 +199,11 @@ onBeforeMount(() => {
             <CRow>
               <CFormLabel class="col-sm-4 col-form-label">지목</CFormLabel>
               <CCol sm="8">
-                <CFormInput v-model="form.site_purpose" placeholder="지목" />
+                <CFormInput
+                  v-model="form.site_purpose"
+                  required
+                  placeholder="지목"
+                />
               </CCol>
             </CRow>
           </CCol>
