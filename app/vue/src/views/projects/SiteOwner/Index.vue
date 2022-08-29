@@ -28,6 +28,7 @@ const onSelectAdd = (target: any) => {
     siteStore.fetchSiteOwnerList(target)
   } else {
     siteStore.siteOwnerList = []
+    siteStore.siteOwnerCount = 0
   }
 }
 
@@ -62,7 +63,11 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
+  <ContentHeader
+    :page-title="pageTitle"
+    :nav-menu="navMenu"
+    @header-select="onSelectAdd"
+  />
 
   <ContentBody>
     <CCardBody class="pb-5">

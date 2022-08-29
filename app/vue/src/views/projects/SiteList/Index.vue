@@ -28,6 +28,7 @@ const onSelectAdd = (target: any) => {
     siteStore.fetchSiteList(target)
   } else {
     siteStore.siteList = []
+    siteStore.siteCount = 0
   }
 }
 
