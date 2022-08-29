@@ -25,6 +25,7 @@ watch(form, val => {
 const sitesNum = computed(() => props.owner.relations.length)
 
 const formSubmit = () => alert('ok')
+const ownerDetail = () => alert('detail')
 
 onBeforeMount(() => {
   if (props.relation) {
@@ -84,5 +85,6 @@ onBeforeMount(() => {
   </CTableDataCell>
   <CTableDataCell>
     <CButton color="success" size="sm" @click="formSubmit">적용</CButton>
+    <CButton color="info" size="sm" @click="ownerDetail">확인</CButton>
   </CTableDataCell>
 </template>
