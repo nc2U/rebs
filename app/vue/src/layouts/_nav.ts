@@ -259,10 +259,6 @@ const project = {
         {
           component: 'CNavItem',
           name: '지번목록 관리',
-          badge: {
-            color: 'warning',
-            text: 'link',
-          },
           to: '/project/site/index',
         },
         {
