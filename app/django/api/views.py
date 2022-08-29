@@ -377,8 +377,8 @@ class SiteOwnerViewSets(viewsets.ModelViewSet):
     queryset = SiteOwner.objects.all()
     serializer_class = SiteOwnerSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-    filter_fields = ('project',)
-    search_fields = ('owner',)
+    filter_fields = ('project', 'own_sort')
+    search_fields = ('owner', 'phone1', 'phone2', 'sites__lot_number')
 
 
 class SiteRelationViewSets(viewsets.ModelViewSet):
