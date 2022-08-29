@@ -89,9 +89,6 @@ export const useSite = defineStore('site', () => {
     })),
   )
   const siteCount = ref(0)
-  const siteOwnerList = ref<SiteOwner[]>([])
-  const siteOwnerRelationList = ref<SiteOwnshipRelationship[]>([])
-  const siteContractList = ref<SiteContract[]>([])
 
   const fetchSiteList = (project: number, page = 1, search = '') => {
     api
@@ -134,17 +131,72 @@ export const useSite = defineStore('site', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
+  const siteOwnerList = ref<SiteOwner[]>([])
+  const siteOwnerCount = ref(0)
+
+  const fetchSiteOwnerList = (project: number, page = 1, search = '') => {
+    api
+      .get(`/site-owner/?project=${project}&page=${page}&search=${search}`)
+      .then(res => {
+        siteOwnerList.value = res.data.results
+        siteOwnerCount.value = res.data.count
+      })
+      .catch(err => errorHandle(err.response.data))
+  }
+
+  const createSiteOwner = (payload: Site) => {
+    api
+      .post(`/site-owner/`, payload)
+      .then(res => {
+        fetchSiteOwnerList(res.data.project)
+        message()
+      })
+      .catch(err => errorHandle(err.response.data))
+  }
+
+  const updateSiteOwner = (payload: { pk: number } & Site) => {
+    const { pk, ...siteData } = payload
+    api
+      .put(`/site-owner/${pk}/`, siteData)
+      .then(res => {
+        fetchSiteOwnerList(res.data.project)
+        message()
+      })
+      .catch(err => errorHandle(err.response.data))
+  }
+
+  const deleteSiteOwner = (pk: number, project: number) => {
+    api
+      .delete(`/site-owner/${pk}/`)
+      .then(() => {
+        fetchSiteOwnerList(project)
+        message('warning', '', '해당 소유자 정보가 삭제되었습니다.')
+      })
+      .catch(err => errorHandle(err.response.data))
+  }
+
+  const siteOwnerRelationList = ref<SiteOwnshipRelationship[]>([])
+  const siteContractList = ref<SiteContract[]>([])
+
   return {
     siteList,
     getSiteList,
     siteCount,
-    siteOwnerList,
-    siteOwnerRelationList,
-    siteContractList,
 
     fetchSiteList,
     createSite,
     updateSite,
     deleteSite,
+
+    siteOwnerList,
+    siteOwnerCount,
+
+    fetchSiteOwnerList,
+    createSiteOwner,
+    updateSiteOwner,
+    deleteSiteOwner,
+
+    siteOwnerRelationList,
+    siteContractList,
   }
 })

@@ -2,17 +2,17 @@
 import { computed } from 'vue'
 import { useSite } from '@/store/pinia/project_site'
 import { headerSecondary } from '@/utils/cssMixins'
-import Site from './Site.vue'
+import SiteOwner from '@/views/projects/SiteOwner/components/SiteOwner.vue'
 import Pagination from '@/components/Pagination'
 
 defineProps({ isReturned: { type: Boolean } })
 const emit = defineEmits(['page-select', 'on-delete', 'multi-submit'])
 
 const siteStore = useSite()
-const siteList = computed(() => siteStore.getSiteList)
-const siteCount = computed(() => siteStore.siteCount)
+const siteOwnerList = computed(() => siteStore.siteOwnerList)
+const siteOwnerCount = computed(() => siteStore.siteOwnerCount)
 
-const sitePages = (num: number) => Math.ceil(siteCount.value / num)
+const ownerPages = (num: number) => Math.ceil(siteOwnerCount.value / num)
 const pageSelect = (page: number) => emit('page-select', page)
 const multiSubmit = (payload: any) => emit('multi-submit', payload)
 const onDelete = (pk: number) => emit('on-delete', pk)
@@ -57,10 +57,10 @@ const onDelete = (pk: number) => emit('on-delete', pk)
     </CTableHead>
 
     <CTableBody>
-      <Site
-        v-for="site in siteList"
-        :key="site.pk"
-        :site="site"
+      <SiteOwner
+        v-for="owner in siteOwnerList"
+        :key="owner.pk"
+        :site="owner"
         :is-returned="isReturned"
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
@@ -71,7 +71,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
   <Pagination
     :active-page="1"
     :limit="8"
-    :pages="sitePages(10)"
+    :pages="ownerPages(10)"
     class="mt-3"
     @active-page-change="pageSelect"
   />

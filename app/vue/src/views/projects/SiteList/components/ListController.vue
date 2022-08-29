@@ -29,7 +29,7 @@ const resetForm = () => {
 </script>
 
 <template>
-  <CCallout color="warning" class="pb-0 mb-3">
+  <CCallout color="info" class="pb-0 mb-3">
     <CRow>
       <CCol lg="4" md="6">
         <CRow>
@@ -47,7 +47,6 @@ const resetForm = () => {
           </CCol>
         </CRow>
       </CCol>
-      <!--      <CCol lg="8"></CCol>-->
     </CRow>
     <CRow>
       <CCol class="p-2 pl-3">
