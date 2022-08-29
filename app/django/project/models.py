@@ -161,6 +161,7 @@ class Site(models.Model):
     returned_area = models.DecimalField('환지면적', max_digits=10, decimal_places=4, null=True, blank=True)
     dup_issue_date = models.DateField('등본발급일', null=True, blank=True)
     rights_restrictions = models.TextField('주요 권리제한사항', blank=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
     created_at = models.DateTimeField('등록일', auto_now_add=True)
     updated_at = models.DateTimeField('수정일', auto_now=True)
 

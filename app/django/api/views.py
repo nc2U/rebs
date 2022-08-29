@@ -372,6 +372,9 @@ class SiteViewSets(viewsets.ModelViewSet):
     filter_fields = ('project',)
     search_fields = ('district', 'lot_number', 'site_purpose', 'owners__owner')
 
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
 
 class SiteOwnerViewSets(viewsets.ModelViewSet):
     queryset = SiteOwner.objects.all()
@@ -379,6 +382,9 @@ class SiteOwnerViewSets(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
     filter_fields = ('project', 'own_sort')
     search_fields = ('owner', 'phone1', 'phone2', 'sites__lot_number', 'counsel_record')
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 
 class SiteRelationViewSets(viewsets.ModelViewSet):
