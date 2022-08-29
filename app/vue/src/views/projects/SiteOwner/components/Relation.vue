@@ -1,12 +1,18 @@
 <script setup lang="ts">
 import { computed, onBeforeMount, reactive, ref, watch } from 'vue'
 import DatePicker from '@/components/DatePicker/index.vue'
+import FormModal from '@/components/Modals/FormModal.vue'
+import SiteOwnerForm from '@/views/projects/SiteOwner/components/SiteOwnerForm.vue'
 
 const props = defineProps({
   owner: { type: Object, required: true },
   relation: { type: Object, required: true },
   index: { type: Number, default: 0 },
 })
+
+const emit = defineEmits(['multi-submit', 'on-delete'])
+
+const updateFormModal = ref()
 
 const form = reactive({
   pk: null,
@@ -25,7 +31,9 @@ watch(form, val => {
 const sitesNum = computed(() => props.owner.relations.length)
 
 const formSubmit = () => alert('ok')
-const ownerDetail = () => alert('detail')
+const showDetail = () => updateFormModal.value.callModal()
+const multiSubmit = (payload: any) => emit('multi-submit', payload)
+const onDelete = (payload: any) => emit('on-delete', payload)
 
 onBeforeMount(() => {
   if (props.relation) {
@@ -85,6 +93,21 @@ onBeforeMount(() => {
   </CTableDataCell>
   <CTableDataCell>
     <CButton color="success" size="sm" @click="formSubmit">적용</CButton>
-    <CButton color="info" size="sm" @click="ownerDetail">확인</CButton>
+    <CButton color="info" size="sm" @click="showDetail">확인</CButton>
   </CTableDataCell>
+
+  <FormModal ref="updateFormModal" size="lg">
+    <template #header>
+      <v-icon icon="mdi-briefcase-plus" size="small" color="dark" />
+      부지 소유자 등록
+    </template>
+    <template #default>
+      <SiteOwnerForm
+        :owner="owner"
+        @multi-submit="multiSubmit"
+        @on-delete="onDelete"
+        @close="updateFormModal.close()"
+      />
+    </template>
+  </FormModal>
 </template>
