@@ -44,38 +44,17 @@ const pageSelect = (page: number) => {
 
 const onCreate = (payload: any) => {
   payload.project = project.value
-  // if (payload.sort === '3' && payload.bank_account_to) {
-  //   const { bank_account_to, income, ...inputData } = payload
-  //   createPrCashBook(inputData)
-  //
-  //   delete inputData.bank_account
-  //   delete inputData.outlay
-  //
-  //   createPrCashBook({
-  //     ...{ bank_account: bank_account_to, income },
-  //     ...inputData,
-  //   })
-  // } else createPrCashBook(payload)
+  console.log(payload)
 }
 
-const onUpdate = (payload: any) => 1
-//   updatePrCashBook({ ...{ filters: dataFilter.value }, ...payload })
+const onUpdate = (payload: any) => console.log(payload)
 
 const multiSubmit = (payload: any) => {
-  const { formData, sepData } = payload
-  console.log(formData, sepData)
-  // if (formData.sort) {
-  //   if (formData.pk) onUpdate(formData)
-  //   else onCreate(formData)
-  // }
-  // if (sepData.sort) {
-  //   if (sepData.pk) onUpdate(sepData)
-  //   else onCreate({ ...{ filters: dataFilter.value }, ...sepData })
-  // }
+  if (payload.pk) onCreate(payload)
+  else onUpdate(payload)
 }
 
-const onDelete = (payload: any) => 1
-//   deletePrCashBook({ ...{ filters: dataFilter.value }, ...payload })
+const onDelete = (payload: any) => console.log(payload)
 
 onBeforeMount(() => {
   siteStore.fetchSiteList(initProjId.value)
@@ -92,7 +71,7 @@ onBeforeMount(() => {
   <ContentBody>
     <CCardBody class="pb-5">
       <ListController @list-filtering="listFiltering" />
-      <AddSite />
+      <AddSite @multi-submit="multiSubmit" />
       <SiteList
         ref="listControl"
         :is-returned="isReturned"

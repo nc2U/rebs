@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, reactive, nextTick, watch } from 'vue'
+import { computed, reactive, nextTick } from 'vue'
 import { useSite } from '@/store/pinia/project_site'
 
 const emit = defineEmits(['list-filtering'])

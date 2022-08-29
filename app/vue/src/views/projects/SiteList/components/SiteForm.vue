@@ -23,6 +23,7 @@ const alertModal = ref()
 
 const validated = ref(false)
 
+const pk = ref<number | null>(null)
 const form = reactive({
   project: null as number | null,
   order: null as number | null,
@@ -57,22 +58,6 @@ const formsCheck = computed(() => {
   } else return false
 })
 
-const createConfirm = (payload: any) => {
-  if (write_project) multiSubmit(payload)
-  else alertModal.value.callModal()
-}
-
-const updateConfirm = (payload: any) => {
-  if (write_project) {
-    multiSubmit(payload)
-  } else alertModal.value.callModal()
-}
-
-const deleteConfirm = () => {
-  if (write_project) delModal.value.callModal()
-  else alertModal.value.callModal()
-}
-
 watch(form, val => {
   if (val.dup_issue_date) form.dup_issue_date = dateFormat(val.dup_issue_date)
 })
@@ -81,8 +66,9 @@ const onSubmit = (event: any) => {
   if (isValidate(event)) {
     validated.value = true
   } else {
-    if (props.site) updateConfirm(form)
-    else createConfirm(form)
+    const payload = props.site ? { pk: pk.value, ...form } : { ...form }
+    if (write_project) multiSubmit(payload)
+    else alertModal.value.callModal()
   }
 }
 
@@ -90,6 +76,7 @@ const multiSubmit = (multiPayload: any) => {
   emit('multi-submit', multiPayload)
   emit('close')
 }
+
 const deleteObject = () => {
   emit('on-delete', {
     project: props.site.project,
@@ -99,8 +86,14 @@ const deleteObject = () => {
   emit('close')
 }
 
+const deleteConfirm = () => {
+  if (write_project) delModal.value.callModal()
+  else alertModal.value.callModal()
+}
+
 onBeforeMount(() => {
   if (props.site) {
+    pk.value = props.site.pk
     form.project = props.site.project
     form.order = props.site.order
     form.district = props.site.district
@@ -134,6 +127,7 @@ onBeforeMount(() => {
                 <CFormInput
                   v-model.number="form.order"
                   required
+                  min="0"
                   type="number"
                   placeholder="등록 번호"
                 />
@@ -195,6 +189,8 @@ onBeforeMount(() => {
                 <CFormInput
                   v-model.number="form.official_area"
                   type="number"
+                  min="0"
+                  step="0.0001"
                   placeholder="공부상 면적"
                 />
               </CCol>
@@ -221,6 +217,8 @@ onBeforeMount(() => {
                 <CFormInput
                   v-model.number="form.returned_area"
                   type="number"
+                  min="0"
+                  step="0.0001"
                   placeholder="환지 면적"
                 />
               </CCol>
