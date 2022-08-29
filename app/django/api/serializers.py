@@ -337,7 +337,7 @@ class SiteOwnRelationshipInSiteOwnerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SiteOwnshipRelationship
-        fields = ('site', 'ownership_ratio', 'owned_area', 'acquisition_date')
+        fields = ('pk', 'site', 'ownership_ratio', 'owned_area', 'acquisition_date')
 
 
 class SiteOwnerSerializer(serializers.ModelSerializer):
