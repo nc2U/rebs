@@ -400,6 +400,9 @@ class SiteContractViewSets(viewsets.ModelViewSet):
     filter_fields = ('project',)
     search_fields = ('owner',)
 
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
 
 # # Cash --------------------------------------------------------------------------
 # class BankCodeList(generics.ListAPIView):
