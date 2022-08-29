@@ -2,6 +2,7 @@
 import { computed, reactive, nextTick } from 'vue'
 import { useSite } from '@/store/pinia/project_site'
 
+defineProps({ project: { type: Number, default: null } })
 const emit = defineEmits(['list-filtering'])
 
 const form = reactive({
@@ -38,8 +39,8 @@ const resetForm = () => {
               <CFormInput
                 v-model="form.search"
                 placeholder="행정동, 지번, 소유자, 지목 검색"
-                aria-label="Username"
-                aria-describedby="addon-wrapping"
+                aria-label="search"
+                :disabled="!project"
                 @keydown.enter="listFiltering(1)"
               />
               <CInputGroupText @click="listFiltering(1)">검색</CInputGroupText>
