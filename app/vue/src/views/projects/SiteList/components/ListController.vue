@@ -29,11 +29,9 @@ const resetForm = () => {
 </script>
 
 <template>
-  <CCallout color="secondary" class="pb-0 mb-3">
+  <CCallout color="warning" class="pb-0 mb-3">
     <CRow>
-      <CCol lg="8"></CCol>
-
-      <CCol lg="4">
+      <CCol lg="4" md="6">
         <CRow>
           <CCol class="mb-3">
             <CInputGroup class="flex-nowrap">
@@ -49,9 +47,10 @@ const resetForm = () => {
           </CCol>
         </CRow>
       </CCol>
+      <!--      <CCol lg="8"></CCol>-->
     </CRow>
     <CRow>
-      <CCol color="warning" class="p-2 pl-3">
+      <CCol class="p-2 pl-3">
         <strong> 필지 건수 조회 결과 : {{ numFormat(siteCount) }} 건 </strong>
       </CCol>
       <CCol v-if="!formsCheck" class="text-right mb-0">
