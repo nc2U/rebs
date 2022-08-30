@@ -61,6 +61,7 @@ urlpatterns = [
     path('exec-amount/', ExecAmountToBudgetList.as_view(), name=ExecAmountToBudgetList.name),
     path('site/', SiteViewSets.as_view(list_view), name='site-list'),
     path('site/<int:pk>/', SiteViewSets.as_view(detail_view), name='site-detail'),
+    path('all-site/', AllSiteList.as_view(), name=AllSiteList.name),
     path('site-owner/', SiteOwnerViewSets.as_view(list_view), name='siteowner-list'),
     path('site-owner/<int:pk>/', SiteOwnerViewSets.as_view(detail_view), name='siteowner-detail'),
     path('site-relation/', SiteRelationViewSets.as_view(list_view), name='relation-list'),

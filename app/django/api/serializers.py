@@ -311,6 +311,12 @@ class ExecAmountToBudget(serializers.ModelSerializer):
         fields = ('acc_d2', 'all_sum', 'month_sum')
 
 
+class AllSiteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Site
+        fields = ('pk', '__str__')
+
+
 class SiteOwnerInSiteSerializer(serializers.ModelSerializer):
     class Meta:
         model = SiteOwner
