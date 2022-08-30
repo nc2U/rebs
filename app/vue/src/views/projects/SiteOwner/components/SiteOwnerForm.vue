@@ -30,9 +30,9 @@ const validated = ref(false)
 const pk = ref<number | null>(null)
 const form = reactive({
   project: null as number | null,
-  own_sort: '',
+  own_sort: '1',
   owner: '',
-  date_of_birth: '',
+  date_of_birth: null as string | null,
   phone1: '',
   phone2: '',
   zipcode: '',

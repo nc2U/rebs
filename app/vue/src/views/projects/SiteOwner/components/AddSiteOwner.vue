@@ -5,6 +5,7 @@ import { headerSecondary } from '@/utils/cssMixins'
 import FormModal from '@/components/Modals/FormModal.vue'
 import SiteOwnerForm from '@/views/projects/SiteOwner/components/SiteOwnerForm.vue'
 
+defineProps({ project: { type: Number, default: null } })
 const emit = defineEmits(['multi-submit'])
 
 const formModal = ref()
@@ -19,7 +20,9 @@ const multiSubmit = (payload: any) => emit('multi-submit', payload)
 
 <template>
   <CAlert :color="headerSecondary" class="text-right">
-    <CButton color="primary" @click="createConfirm">신규등록</CButton>
+    <CButton color="primary" :disabled="!project" @click="createConfirm">
+      신규등록
+    </CButton>
   </CAlert>
 
   <FormModal ref="formModal" size="lg">

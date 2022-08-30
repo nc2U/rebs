@@ -80,7 +80,7 @@ onBeforeMount(() => {
         :project="project"
         @list-filtering="listFiltering"
       />
-      <AddSite @multi-submit="multiSubmit" />
+      <AddSite :project="project" @multi-submit="multiSubmit" />
       <SiteList
         :is-returned="isReturned"
         @page-select="pageSelect"

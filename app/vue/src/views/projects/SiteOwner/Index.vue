@@ -49,7 +49,7 @@ const pageSelect = (page: number) => {
   listControl.value.listFiltering(page)
 }
 
-const onCreate = (payload: any) => siteStore.createSiteOwner(payload)
+const onCreate = (payload: any) => alert('create') // siteStore.createSiteOwner(payload)
 
 const onUpdate = (payload: any) => siteStore.updateSiteOwner(payload)
 
@@ -82,7 +82,7 @@ onBeforeMount(() => {
         :project="project"
         @list-filtering="listFiltering"
       />
-      <AddSiteOwner @multi-submit="multiSubmit" />
+      <AddSiteOwner :project="project" @multi-submit="multiSubmit" />
       <SiteOwnerList
         :is-returned="isReturned"
         @page-select="pageSelect"

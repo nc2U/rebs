@@ -69,6 +69,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
   </CTable>
 
   <Pagination
+    v-if="siteCount > 10"
     :active-page="1"
     :limit="8"
     :pages="sitePages(10)"
