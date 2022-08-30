@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, watch, onBeforeMount } from 'vue'
 import { useProject } from '@/store/pinia/project'
-import { Relations, useSite } from '@/store/pinia/project_site'
+import { useSite } from '@/store/pinia/project_site'
 import { dateFormat } from '@/utils/baseMixins'
 import { write_project } from '@/utils/pageAuth'
 import { isValidate } from '@/utils/helper'
