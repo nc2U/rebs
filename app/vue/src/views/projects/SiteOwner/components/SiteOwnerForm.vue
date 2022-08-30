@@ -1,16 +1,17 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, watch, onBeforeMount } from 'vue'
 import { useProject } from '@/store/pinia/project'
-import { useSite } from '@/store/pinia/project_site'
+import { Relations, useSite } from '@/store/pinia/project_site'
 import { dateFormat } from '@/utils/baseMixins'
 import { write_project } from '@/utils/pageAuth'
 import { isValidate } from '@/utils/helper'
+import { maska as vMaska } from 'maska'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
 const props = defineProps({
-  site: {
+  owner: {
     type: Object,
     default: null,
   },
@@ -26,15 +27,24 @@ const validated = ref(false)
 const pk = ref<number | null>(null)
 const form = reactive({
   project: null as number | null,
-  order: null as number | null,
-  district: '',
-  lot_number: '',
-  site_purpose: '',
-  official_area: '',
-  returned_area: null,
-  rights_restrictions: '',
-  dup_issue_date: null as null | string,
+  own_sort: '',
+  owner: '',
+  date_of_birth: '',
+  phone1: '',
+  phone2: '',
+  zipcode: '',
+  address1: '',
+  address2: '',
+  address3: '',
+  own_sort_desc: '',
+  counsel_record: '',
 })
+
+const own_sort_select = [
+  { val: '1', text: '개인' },
+  { val: '2', text: '법인' },
+  { val: '3', text: '국공유지' },
+]
 
 const projectStore = useProject()
 const initProjId = computed(() => projectStore.initProjId)
@@ -43,30 +53,33 @@ const isReturned = computed(() => projectStore.project?.is_returned_area)
 const siteStore = useSite()
 
 const formsCheck = computed(() => {
-  if (props.site) {
-    const a = form.project === props.site.project
-    const b = form.order === props.site.order
-    const c = form.district === props.site.district
-    const d = form.lot_number === props.site.lot_number
-    const e = form.site_purpose === props.site.site_purpose
-    const f = form.official_area === props.site.official_area
-    const g = form.returned_area === props.site.returned_area
-    const h = form.rights_restrictions === props.site.rights_restrictions
-    const i = form.dup_issue_date === props.site.dup_issue_date
+  if (props.owner) {
+    const a = form.project === props.owner.project
+    const b = form.own_sort === props.owner.own_sort
+    const c = form.owner === props.owner.owner
+    const d = form.date_of_birth === props.owner.date_of_birth
+    const e = form.phone1 === props.owner.phone1
+    const f = form.phone2 === props.owner.phone2
+    const g = form.zipcode === props.owner.zipcode
+    const h = form.address1 === props.owner.address1
+    const i = form.address2 === props.owner.address2
+    const j = form.address3 === props.owner.address3
+    const k = form.own_sort_desc === props.owner.own_sort_desc
+    const l = form.counsel_record === props.owner.counsel_record
 
-    return a && b && c && d && e && f && g && h && i
+    return a && b && c && d && e && f && g && h && i && j && k && l
   } else return false
 })
 
 watch(form, val => {
-  if (val.dup_issue_date) form.dup_issue_date = dateFormat(val.dup_issue_date)
+  if (val.date_of_birth) form.date_of_birth = dateFormat(val.date_of_birth)
 })
 
 const onSubmit = (event: any) => {
   if (isValidate(event)) {
     validated.value = true
   } else {
-    const payload = props.site ? { pk: pk.value, ...form } : { ...form }
+    const payload = props.owner ? { pk: pk.value, ...form } : { ...form }
     if (write_project) multiSubmit(payload)
     else alertModal.value.callModal()
   }
@@ -78,7 +91,7 @@ const multiSubmit = (multiPayload: any) => {
 }
 
 const deleteObject = () => {
-  emit('on-delete', { pk: props.site.pk, project: props.site.project })
+  emit('on-delete', { pk: props.owner.pk, project: props.owner.project })
   delModal.value.visible = false
   emit('close')
 }
@@ -89,20 +102,22 @@ const deleteConfirm = () => {
 }
 
 onBeforeMount(() => {
-  if (props.site) {
-    pk.value = props.site.pk
-    form.project = props.site.project
-    form.order = props.site.order
-    form.district = props.site.district
-    form.lot_number = props.site.lot_number
-    form.site_purpose = props.site.site_purpose
-    form.official_area = props.site.official_area
-    form.returned_area = props.site.returned_area
-    form.rights_restrictions = props.site.rights_restrictions
-    form.dup_issue_date = props.site.dup_issue_date
+  if (props.owner) {
+    pk.value = props.owner.pk
+    form.project = props.owner.project
+    form.own_sort = props.owner.own_sort
+    form.owner = props.owner.owner
+    form.date_of_birth = props.owner.date_of_birth
+    form.phone1 = props.owner.phone1
+    form.phone2 = props.owner.phone2
+    form.zipcode = props.owner.zipcode
+    form.address1 = props.owner.address1
+    form.address2 = props.owner.address2
+    form.address3 = props.owner.address3
+    form.own_sort_desc = props.owner.own_sort_desc
+    form.counsel_record = props.owner.counsel_record
   } else {
     form.project = project.value
-    form.order = siteStore.siteCount + 1
   }
 })
 </script>
@@ -119,29 +134,44 @@ onBeforeMount(() => {
         <CRow class="mb-3">
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label">등록 번호</CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label">소유구분</CFormLabel>
+              <CCol sm="8">
+                <CFormSelect v-model="form.own_sort">
+                  <option
+                    v-for="sort in own_sort_select"
+                    :key="sort.val"
+                    :value="sort.val"
+                  >
+                    {{ sort.text }}
+                  </option>
+                </CFormSelect>
+              </CCol>
+            </CRow>
+          </CCol>
+        </CRow>
+
+        <CRow class="mb-3">
+          <CCol sm="6">
+            <CRow>
+              <CFormLabel class="col-sm-4 col-form-label"> 소유자</CFormLabel>
               <CCol sm="8">
                 <CFormInput
-                  v-model.number="form.order"
+                  v-model="form.owner"
                   required
-                  min="0"
-                  type="number"
-                  placeholder="등록 번호"
+                  placeholder="소유자"
                 />
               </CCol>
             </CRow>
           </CCol>
 
-          <CCol v-if="!isReturned" sm="6">
+          <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label">
-                등기부 발급일
-              </CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label">생년월일</CFormLabel>
               <CCol sm="8">
                 <DatePicker
-                  v-model="form.dup_issue_date"
+                  v-model="form.date_of_birth"
                   :required="false"
-                  placeholder="등기부 발급일"
+                  placeholder="생년월일"
                 />
               </CCol>
             </CRow>
@@ -151,12 +181,12 @@ onBeforeMount(() => {
         <CRow class="mb-3">
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label">행정 동</CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label">주 연락처</CFormLabel>
               <CCol sm="8">
                 <CFormInput
-                  v-model="form.district"
+                  v-model="form.phone1"
                   required
-                  placeholder="행정 동"
+                  placeholder="주 연락처"
                 />
               </CCol>
             </CRow>
@@ -164,12 +194,32 @@ onBeforeMount(() => {
 
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label">지번</CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label">
+                보조 연락처
+              </CFormLabel>
               <CCol sm="8">
+                <CFormInput v-model="form.phone2" placeholder="보조 연락처" />
+              </CCol>
+            </CRow>
+          </CCol>
+        </CRow>
+
+        <CRow class="mb-3">
+          <CCol sm="12">
+            <CRow>
+              <CFormLabel class="col-sm-2 col-form-label">주소</CFormLabel>
+              <CCol sm="3">
                 <CFormInput
-                  v-model="form.lot_number"
-                  required
-                  placeholder="지번"
+                  v-model="form.zipcode"
+                  v-maska="'#####'"
+                  placeholder="우편번호"
+                />
+              </CCol>
+              <CCol sm="7">
+                <CFormInput
+                  v-model="form.address1"
+                  v-maska="'#####'"
+                  placeholder="메인 주소"
                 />
               </CCol>
             </CRow>
@@ -177,66 +227,21 @@ onBeforeMount(() => {
         </CRow>
 
         <CRow class="mb-3">
-          <CCol sm="6">
+          <CCol sm="12">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label">
-                공부상 면적 - m<sup>2</sup>
-              </CFormLabel>
-              <CCol sm="8">
+              <CFormLabel class="col-sm-2 col-form-label"></CFormLabel>
+              <CCol sm="5">
                 <CFormInput
-                  v-model.number="form.official_area"
-                  type="number"
-                  required
-                  min="0"
-                  step="0.0001"
-                  placeholder="공부상 면적"
+                  v-model="form.address2"
+                  v-maska="'#####'"
+                  placeholder="상세 주소"
                 />
               </CCol>
-            </CRow>
-          </CCol>
-
-          <CCol sm="6">
-            <CRow>
-              <CFormLabel class="col-sm-4 col-form-label">지목</CFormLabel>
-              <CCol sm="8">
+              <CCol sm="5">
                 <CFormInput
-                  v-model="form.site_purpose"
-                  required
-                  placeholder="지목"
-                />
-              </CCol>
-            </CRow>
-          </CCol>
-        </CRow>
-
-        <CRow v-if="isReturned" class="mb-3">
-          <CCol sm="6">
-            <CRow>
-              <CFormLabel class="col-sm-4 col-form-label">
-                환지 면적 - m<sup>2</sup>
-              </CFormLabel>
-              <CCol sm="8">
-                <CFormInput
-                  v-model.number="form.returned_area"
-                  type="number"
-                  min="0"
-                  step="0.0001"
-                  placeholder="환지 면적"
-                />
-              </CCol>
-            </CRow>
-          </CCol>
-
-          <CCol sm="6">
-            <CRow>
-              <CFormLabel class="col-sm-4 col-form-label">
-                등기부 발급일
-              </CFormLabel>
-              <CCol sm="8">
-                <DatePicker
-                  v-model="form.dup_issue_date"
-                  :required="false"
-                  placeholder="등기부 발급일"
+                  v-model="form.address3"
+                  v-maska="'#####'"
+                  placeholder="나머지 주소"
                 />
               </CCol>
             </CRow>
@@ -247,13 +252,13 @@ onBeforeMount(() => {
           <CCol sm="12">
             <CRow>
               <CFormLabel class="col-sm-2 col-form-label">
-                주요 권리 제한 사항
+                주요 상담 기록
               </CFormLabel>
               <CCol sm="10">
                 <CFormTextarea
-                  v-model="form.rights_restrictions"
+                  v-model="form.counsel_record"
                   rows="4"
-                  placeholder="주요 권리 제한 사항"
+                  placeholder="주요 상담 기록"
                 />
               </CCol>
             </CRow>
@@ -269,13 +274,13 @@ onBeforeMount(() => {
       <slot name="footer">
         <CButton
           type="submit"
-          :color="site ? 'success' : 'primary'"
+          :color="owner ? 'success' : 'primary'"
           :disabled="formsCheck"
         >
           저장
         </CButton>
         <CButton
-          v-if="site"
+          v-if="owner"
           type="button"
           color="danger"
           @click="deleteConfirm"
