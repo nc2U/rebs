@@ -45,11 +45,11 @@ const listFiltering = (payload: any) => {
 
 const pageSelect = (page: number) => {
   dataFilter.value.page = page
-  siteStore.fetchSiteOwnerList(project.value, page)
+  siteStore.fetchSiteOwnerList(project.value || initProjId.value, page)
   listControl.value.listFiltering(page)
 }
 
-const onCreate = (payload: any) => alert('create') // siteStore.createSiteOwner(payload)
+const onCreate = (payload: any) => siteStore.createSiteOwner(payload)
 
 const onUpdate = (payload: any) => siteStore.updateSiteOwner(payload)
 
