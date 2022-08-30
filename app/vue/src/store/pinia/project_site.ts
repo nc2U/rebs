@@ -87,8 +87,27 @@ export interface SiteContract {
   note: string
 }
 
+interface AllSite {
+  pk: number
+  __str__: string
+}
+
 export const useSite = defineStore('site', () => {
   // states
+
+  const allSites = ref<AllSite[]>([])
+  const getSites = computed(() =>
+    allSites.value.map((s: AllSite) => ({
+      value: s.pk,
+      text: s.__str__,
+    })),
+  )
+
+  const fetchAllSites = (project: number) => {
+    api.get(`/all-site/?project=${project}`).then(res => {
+      allSites.value = res.data.results
+    })
+  }
 
   const siteList = ref<Site[]>([])
   const getSiteList = computed(() =>
@@ -204,6 +223,10 @@ export const useSite = defineStore('site', () => {
   const siteContractList = ref<SiteContract[]>([])
 
   return {
+    allSites,
+    getSites,
+    fetchAllSites,
+
     siteList,
     getSiteList,
     siteCount,

@@ -26,6 +26,7 @@ const siteStore = useSite()
 
 const onSelectAdd = (target: any) => {
   if (!!target) {
+    siteStore.fetchAllSites(target)
     siteStore.fetchSiteOwnerList(target)
   } else {
     siteStore.siteOwnerList = []
@@ -49,7 +50,7 @@ const pageSelect = (page: number) => {
   listControl.value.listFiltering(page)
 }
 
-const onCreate = (payload: any) => siteStore.createSiteOwner(payload)
+const onCreate = (payload: any) => console.log(payload) // siteStore.createSiteOwner(payload)
 
 const onUpdate = (payload: any) => siteStore.updateSiteOwner(payload)
 
@@ -64,6 +65,7 @@ const onDelete = (payload: { pk: number; project: number }) => {
 }
 
 onBeforeMount(() => {
+  siteStore.fetchAllSites(initProjId.value)
   siteStore.fetchSiteOwnerList(initProjId.value)
 })
 </script>

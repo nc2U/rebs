@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, watch, onBeforeMount } from 'vue'
 import { useProject } from '@/store/pinia/project'
+import { useSite } from '@/store/pinia/project_site'
 import { dateFormat } from '@/utils/baseMixins'
 import { write_project } from '@/utils/pageAuth'
 import { isValidate } from '@/utils/helper'
@@ -33,6 +34,7 @@ const form = reactive({
   own_sort: '1',
   owner: '',
   date_of_birth: null as string | null,
+  sites: [] as Array<number>,
   phone1: '',
   phone2: '',
   zipcode: '',
@@ -53,22 +55,26 @@ const projectStore = useProject()
 const initProjId = computed(() => projectStore.initProjId)
 const project = computed(() => projectStore.project?.pk || initProjId.value)
 
+const siteStore = useSite()
+const getSites = computed(() => siteStore.getSites)
+
 const formsCheck = computed(() => {
   if (props.owner) {
     const a = form.project === props.owner.project
     const b = form.own_sort === props.owner.own_sort
     const c = form.owner === props.owner.owner
     const d = form.date_of_birth === props.owner.date_of_birth
-    const e = form.phone1 === props.owner.phone1
-    const f = form.phone2 === props.owner.phone2
-    const g = form.zipcode === props.owner.zipcode
-    const h = form.address1 === props.owner.address1
-    const i = form.address2 === props.owner.address2
-    const j = form.address3 === props.owner.address3
-    const k = form.own_sort_desc === props.owner.own_sort_desc
-    const l = form.counsel_record === props.owner.counsel_record
+    const e = form.sites === props.owner.sites
+    const f = form.phone1 === props.owner.phone1
+    const g = form.phone2 === props.owner.phone2
+    const h = form.zipcode === props.owner.zipcode
+    const i = form.address1 === props.owner.address1
+    const j = form.address2 === props.owner.address2
+    const k = form.address3 === props.owner.address3
+    const l = form.own_sort_desc === props.owner.own_sort_desc
+    const m = form.counsel_record === props.owner.counsel_record
 
-    return a && b && c && d && e && f && g && h && i && j && k && l
+    return a && b && c && d && e && f && g && h && i && j && k && l && m
   } else return false
 })
 
@@ -121,6 +127,7 @@ onBeforeMount(() => {
     form.own_sort = props.owner.own_sort
     form.owner = props.owner.owner
     form.date_of_birth = props.owner.date_of_birth
+    form.sites = props.owner.sites
     form.phone1 = props.owner.phone1
     form.phone2 = props.owner.phone2
     form.zipcode = props.owner.zipcode
@@ -186,6 +193,28 @@ onBeforeMount(() => {
                   :required="false"
                   placeholder="생년월일"
                 />
+              </CCol>
+            </CRow>
+          </CCol>
+        </CRow>
+
+        <CRow class="mb-3">
+          <CCol sm="12">
+            <CRow>
+              <CFormLabel class="col-sm-2 col-form-label">
+                소유지번 (<span class="text-bg-">필수</span>)
+              </CFormLabel>
+              <CCol sm="10">
+                <CFormSelect v-model="form.sites" required multiple>
+                  <option>소유부지 지번 선택</option>
+                  <option
+                    v-for="site in getSites"
+                    :key="site.value"
+                    :value="site.value"
+                  >
+                    {{ site.text }}
+                  </option>
+                </CFormSelect>
               </CCol>
             </CRow>
           </CCol>
