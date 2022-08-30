@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, watch, onBeforeMount } from 'vue'
 import { useProject } from '@/store/pinia/project'
-import { useSite } from '@/store/pinia/project_site'
 import { dateFormat } from '@/utils/baseMixins'
 import { write_project } from '@/utils/pageAuth'
 import { isValidate } from '@/utils/helper'
@@ -9,6 +8,8 @@ import { maska as vMaska } from 'maska'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
+import DaumPostcode from '@/components/DaumPostcode/index.vue'
+import { AddressData, callAddress } from '@/components/DaumPostcode/address'
 
 const props = defineProps({
   owner: {
@@ -21,6 +22,8 @@ const emit = defineEmits(['multi-submit', 'on-delete', 'close'])
 
 const delModal = ref()
 const alertModal = ref()
+const postCode = ref()
+const address2 = ref()
 
 const validated = ref(false)
 
@@ -49,8 +52,6 @@ const own_sort_select = [
 const projectStore = useProject()
 const initProjId = computed(() => projectStore.initProjId)
 const project = computed(() => projectStore.project?.pk || initProjId.value)
-const isReturned = computed(() => projectStore.project?.is_returned_area)
-const siteStore = useSite()
 
 const formsCheck = computed(() => {
   if (props.owner) {
@@ -74,6 +75,18 @@ const formsCheck = computed(() => {
 watch(form, val => {
   if (val.date_of_birth) form.date_of_birth = dateFormat(val.date_of_birth)
 })
+
+const addressCallback = (data: AddressData) => {
+  const { formNum, zipcode, address1, address3 } = callAddress(data)
+  if (formNum === 1) {
+    // 입력할 데이터와 focus 폼 지정
+    form.zipcode = zipcode
+    form.address1 = address1
+    form.address2 = ''
+    form.address3 = address3
+    address2.value.$el.nextElementSibling.focus()
+  }
+}
 
 const onSubmit = (event: any) => {
   if (isValidate(event)) {
@@ -185,7 +198,7 @@ onBeforeMount(() => {
               <CCol sm="8">
                 <CFormInput
                   v-model="form.phone1"
-                  required
+                  v-maska="['###-###-####', '###-####-####']"
                   placeholder="주 연락처"
                 />
               </CCol>
@@ -198,7 +211,11 @@ onBeforeMount(() => {
                 보조 연락처
               </CFormLabel>
               <CCol sm="8">
-                <CFormInput v-model="form.phone2" placeholder="보조 연락처" />
+                <CFormInput
+                  v-model="form.phone2"
+                  v-maska="['###-###-####', '###-####-####']"
+                  placeholder="보조 연락처"
+                />
               </CCol>
             </CRow>
           </CCol>
@@ -209,11 +226,19 @@ onBeforeMount(() => {
             <CRow>
               <CFormLabel class="col-sm-2 col-form-label">주소</CFormLabel>
               <CCol sm="3">
-                <CFormInput
-                  v-model="form.zipcode"
-                  v-maska="'#####'"
-                  placeholder="우편번호"
-                />
+                <CInputGroup>
+                  <CInputGroupText @click="postCode.initiate()">
+                    우편번호
+                  </CInputGroupText>
+                  <CFormInput
+                    v-model="form.zipcode"
+                    v-maska="'#####'"
+                    placeholder="우편번호"
+                    maxlength="5"
+                    @focus="postCode.initiate()"
+                  />
+                  <CFormFeedback invalid>우편번호를 입력하세요.</CFormFeedback>
+                </CInputGroup>
               </CCol>
               <CCol sm="7">
                 <CFormInput
@@ -232,6 +257,7 @@ onBeforeMount(() => {
               <CFormLabel class="col-sm-2 col-form-label"></CFormLabel>
               <CCol sm="5">
                 <CFormInput
+                  ref="address2"
                   v-model="form.address2"
                   v-maska="'#####'"
                   placeholder="상세 주소"
@@ -289,6 +315,8 @@ onBeforeMount(() => {
         </CButton>
       </slot>
     </CModalFooter>
+
+    <DaumPostcode ref="postCode" @address-callback="addressCallback" />
   </CForm>
 
   <ConfirmModal ref="delModal">
