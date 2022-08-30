@@ -30,6 +30,7 @@ export interface SiteOwner {
   address3: string
   own_sort: string
   own_sort_desc: string
+  sites: number[]
   relations: Relations[]
   counsel_record: string
 }

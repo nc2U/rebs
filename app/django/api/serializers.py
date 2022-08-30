@@ -348,7 +348,7 @@ class SiteOwnerSerializer(serializers.ModelSerializer):
         model = SiteOwner
         fields = ('pk', 'project', 'owner', 'date_of_birth', 'phone1', 'phone2',
                   'zipcode', 'address1', 'address2', 'address3', 'own_sort',
-                  'own_sort_desc', 'relations', 'counsel_record')
+                  'own_sort_desc', 'sites', 'relations', 'counsel_record')
 
 
 class SiteOwnshipRelationshipSerializer(serializers.ModelSerializer):
