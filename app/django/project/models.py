@@ -213,7 +213,7 @@ class SiteOwnshipRelationship(models.Model):
         return f'{self.site} {self.site_owner}'
 
     class Meta:
-        ordering = ('id',)
+        ordering = ('-id',)
         verbose_name = '10. 사업부지 소유관계'
         verbose_name_plural = '10. 사업부지 소유관계'
 
