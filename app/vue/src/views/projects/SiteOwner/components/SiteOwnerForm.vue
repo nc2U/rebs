@@ -34,7 +34,7 @@ const form = reactive({
   own_sort: '1',
   owner: '',
   date_of_birth: null as string | null,
-  sites: [] as Array<number>,
+  sites: [] as number[],
   phone1: '',
   phone2: '',
   zipcode: '',
