@@ -8,8 +8,9 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['multi-submit', 'on-delete'])
+const emit = defineEmits(['relation-update', 'multi-submit', 'on-delete'])
 
+const relationUpdate = (payload: any) => emit('relation-update', payload)
 const multiSubmit = (payload: any) => emit('multi-submit', payload)
 const onDelete = (payload: any) => emit('on-delete', payload)
 </script>
@@ -24,6 +25,7 @@ const onDelete = (payload: any) => emit('on-delete', payload)
       :owner="owner"
       :relation="rel"
       :index="i"
+      @relation-update="relationUpdate"
       @multi-submit="multiSubmit"
       @on-delete="onDelete"
     />

@@ -54,6 +54,8 @@ const onCreate = (payload: any) => console.log(payload) // siteStore.createSiteO
 
 const onUpdate = (payload: any) => console.log(payload) // siteStore.updateSiteOwner(payload)
 
+const relationUpdate = (payload: any) => console.log('relation-update', payload)
+
 const multiSubmit = (payload: any) => {
   if (payload.pk) onUpdate(payload)
   else onCreate(payload)
@@ -88,6 +90,7 @@ onBeforeMount(() => {
       <SiteOwnerList
         :is-returned="isReturned"
         @page-select="pageSelect"
+        @relation-update="relationUpdate"
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
       />

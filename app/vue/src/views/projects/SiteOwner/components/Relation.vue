@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onBeforeMount, reactive, ref, watch } from 'vue'
+import { dateFormat } from '@/utils/baseMixins'
 import DatePicker from '@/components/DatePicker/index.vue'
 import FormModal from '@/components/Modals/FormModal.vue'
 import SiteOwnerForm from '@/views/projects/SiteOwner/components/SiteOwnerForm.vue'
@@ -10,7 +11,7 @@ const props = defineProps({
   index: { type: Number, default: 0 },
 })
 
-const emit = defineEmits(['multi-submit', 'on-delete'])
+const emit = defineEmits(['relation-update', 'multi-submit', 'on-delete'])
 
 const updateFormModal = ref()
 
@@ -21,16 +22,20 @@ const form = reactive({
   owned_area: '',
   acquisition_date: null as null | string,
 })
+
 const calcArea = ref(0)
 
 watch(form, val => {
   if (val.owned_area) calcArea.value = parseInt(val.owned_area) * 0.3025
   else calcArea.value = 0
+
+  if (val.acquisition_date)
+    form.acquisition_date = dateFormat(val.acquisition_date)
 })
 
 const sitesNum = computed(() => props.owner.relations.length)
 
-const formSubmit = () => alert('ok')
+const relationUpdate = (payload: any) => emit('relation-update', payload)
 const showDetail = () => updateFormModal.value.callModal()
 const multiSubmit = (payload: any) => emit('multi-submit', payload)
 const onDelete = (payload: any) => emit('on-delete', payload)
@@ -92,10 +97,12 @@ onBeforeMount(() => {
     />
   </CTableDataCell>
   <CTableDataCell>
-    <CButton color="success" size="sm" @click="formSubmit">적용</CButton>
+    <CButton color="success" size="sm" @click="relationUpdate(form)">
+      적용
+    </CButton>
   </CTableDataCell>
   <CTableDataCell v-if="index === 0" :rowspan="sitesNum">
-    <CButton color="info" size="sm" @click="showDetail"> 확인 </CButton>
+    <CButton color="info" size="sm" @click="showDetail"> 확인</CButton>
   </CTableDataCell>
 
   <FormModal ref="updateFormModal" size="lg">
