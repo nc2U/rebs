@@ -54,7 +54,11 @@ const onCreate = (payload: any) => console.log(payload) // siteStore.createSiteO
 
 const onUpdate = (payload: any) => console.log(payload) // siteStore.updateSiteOwner(payload)
 
-const relationUpdate = (payload: any) => console.log('relation-update', payload)
+const relationUpdate = (payload: any) => {
+  const data = { project: project.value, ...payload }
+  console.log(data)
+  siteStore.updateRelation(data)
+} // console.log('relation-update', payload)
 
 const multiSubmit = (payload: any) => {
   if (payload.pk) onUpdate(payload)

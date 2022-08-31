@@ -31,11 +31,11 @@ export interface SiteOwner {
   own_sort: string
   own_sort_desc: string
   sites: number[]
-  relations: Relations[]
+  relations: Relation[]
   counsel_record: string
 }
 
-export interface Relations {
+export interface Relation {
   pk: number
   site: SimpleSite
   ownership_ratio: string
@@ -56,9 +56,9 @@ export interface SiteOwnshipRelationship {
   pk: number
   site: number
   site_owner: number
-  ownership_ratio: number | null
-  owned_area: number | null
-  acquisition_date: string | null
+  ownership_ratio: string
+  owned_area: string
+  acquisition_date: null | string
 }
 
 export interface SiteContract {
@@ -219,7 +219,21 @@ export const useSite = defineStore('site', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const siteOwnerRelationList = ref<SiteOwnshipRelationship[]>([])
+  const relationList = ref<SiteOwnshipRelationship[]>([])
+
+  const updateRelation = (
+    payload: SiteOwnshipRelationship & { project: number },
+  ) => {
+    const { pk, project, ...relationData } = payload
+    api
+      .put(`/site-relation/${pk}/`, relationData)
+      .then(() => {
+        fetchSiteOwnerList(project)
+        message()
+      })
+      .catch(err => errorHandle(err.response.data))
+  }
+
   const siteContractList = ref<SiteContract[]>([])
 
   return {
@@ -244,7 +258,10 @@ export const useSite = defineStore('site', () => {
     updateSiteOwner,
     deleteSiteOwner,
 
-    siteOwnerRelationList,
+    relationList,
+
+    updateRelation,
+
     siteContractList,
   }
 })
