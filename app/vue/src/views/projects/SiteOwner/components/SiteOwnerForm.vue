@@ -35,6 +35,7 @@ const form = reactive({
   owner: '',
   date_of_birth: null as string | null,
   sites: [] as number[],
+  relations: [] as number[],
   phone1: '',
   phone2: '',
   zipcode: '',
@@ -128,6 +129,7 @@ onBeforeMount(() => {
     form.owner = props.owner.owner
     form.date_of_birth = props.owner.date_of_birth
     form.sites = props.owner.sites
+    form.relations = props.owner.relations
     form.phone1 = props.owner.phone1
     form.phone2 = props.owner.phone2
     form.zipcode = props.owner.zipcode
@@ -202,11 +204,15 @@ onBeforeMount(() => {
           <CCol sm="12">
             <CRow>
               <CFormLabel class="col-sm-2 col-form-label">
-                소유지번 (<span class="text-bg-">필수</span>)
+                {{ form.sites }} 소유지번 (<span class="text-bg-">필수</span>)
               </CFormLabel>
               <CCol sm="10">
-                <CFormSelect v-model="form.sites" required multiple>
-                  <option>소유부지 지번 선택</option>
+                <select
+                  v-model="form.sites"
+                  required
+                  multiple
+                  class="form-control"
+                >
                   <option
                     v-for="site in getSites"
                     :key="site.value"
@@ -214,7 +220,7 @@ onBeforeMount(() => {
                   >
                     {{ site.text }}
                   </option>
-                </CFormSelect>
+                </select>
               </CCol>
             </CRow>
           </CCol>

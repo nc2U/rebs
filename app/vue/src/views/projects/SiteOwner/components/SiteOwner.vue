@@ -60,14 +60,14 @@ onBeforeMount(() => {
 
 <template>
   <CTableRow
-    v-for="(rel, i) in owner.relations"
-    :key="rel.pk"
+    v-for="(relation, index) in owner.relations"
+    :key="relation.pk"
     class="text-center"
   >
     <Relation
       :owner="owner"
-      :relation="rel"
-      :index="i"
+      :relation="relation"
+      :index="index"
       @show-detail="showDetail"
       @relation-update="relationUpdate"
       @multi-submit="multiSubmit"

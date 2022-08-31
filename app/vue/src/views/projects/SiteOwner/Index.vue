@@ -52,7 +52,7 @@ const pageSelect = (page: number) => {
 
 const onCreate = (payload: any) => console.log(payload) // siteStore.createSiteOwner(payload)
 
-const onUpdate = (payload: any) => console.log(payload) // siteStore.updateSiteOwner(payload)
+const onUpdate = (payload: any) => siteStore.updateSiteOwner(payload)
 
 const relationUpdate = (payload: any) => {
   const data = { project: project.value, ...payload }
