@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, watch, onBeforeMount } from 'vue'
 import { useProject } from '@/store/pinia/project'
-import { useSite } from '@/store/pinia/project_site'
+import { SiteOwner, useSite } from '@/store/pinia/project_site'
 import { dateFormat } from '@/utils/baseMixins'
 import { write_project } from '@/utils/pageAuth'
 import { isValidate } from '@/utils/helper'
@@ -29,12 +29,13 @@ const address2 = ref()
 const validated = ref(false)
 
 const pk = ref<number | null>(null)
-const form = reactive({
-  project: null as number | null,
+const form = reactive<SiteOwner>({
+  pk: null,
+  project: null,
   own_sort: '1',
   owner: '',
-  date_of_birth: null as string | null,
-  sites: [] as number[],
+  date_of_birth: null,
+  sites: [],
   phone1: '',
   phone2: '',
   zipcode: '',
@@ -98,8 +99,8 @@ const onSubmit = (event: any) => {
   if (isValidate(event)) {
     validated.value = true
   } else {
-    const payload = props.owner ? { pk: pk.value, ...form } : { ...form }
-    if (write_project) multiSubmit(payload)
+    // const payload = props.owner ? { pk: pk.value, ...form } : { ...form }
+    if (write_project) multiSubmit(form)
     else alertModal.value.callModal()
   }
 }
@@ -122,12 +123,12 @@ const deleteConfirm = () => {
 
 onBeforeMount(() => {
   if (props.owner) {
-    pk.value = props.owner.pk
+    form.pk = props.owner.pk
     form.project = props.owner.project
     form.own_sort = props.owner.own_sort
     form.owner = props.owner.owner
     form.date_of_birth = props.owner.date_of_birth
-    form.sites = props.owner.sites
+    form.sites = props.owner.sites.map((s: SiteOwner) => s.pk)
     form.phone1 = props.owner.phone1
     form.phone2 = props.owner.phone2
     form.zipcode = props.owner.zipcode
@@ -199,7 +200,7 @@ onBeforeMount(() => {
           </CCol>
         </CRow>
 
-        <CRow v-if="!owner" class="mb-3">
+        <CRow class="mb-3">
           <CCol sm="12">
             <CRow>
               <CFormLabel class="col-sm-2 col-form-label">
@@ -211,6 +212,7 @@ onBeforeMount(() => {
                   required
                   multiple
                   class="form-control"
+                  :disabled="owner"
                 >
                   <option
                     v-for="site in getSites"
