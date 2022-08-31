@@ -333,12 +333,12 @@ class SiteSerializer(serializers.ModelSerializer):
 
 
 class RelationsInSiteOwnerSerializer(serializers.ModelSerializer):
-    pk = serializers.ReadOnlyField(source='site.pk')
+    site = serializers.ReadOnlyField(source='site.pk')
     __str__ = serializers.ReadOnlyField(source='site.__str__')
 
     class Meta:
         model = SiteOwnshipRelationship
-        fields = ('pk', '__str__', 'ownership_ratio', 'owned_area', 'acquisition_date')
+        fields = ('pk', 'site', '__str__', 'ownership_ratio', 'owned_area', 'acquisition_date')
 
 
 class SiteOwnerSerializer(serializers.ModelSerializer):
