@@ -93,7 +93,9 @@ onBeforeMount(() => {
   </CTableDataCell>
   <CTableDataCell>
     <CButton color="success" size="sm" @click="formSubmit">적용</CButton>
-    <CButton color="info" size="sm" @click="showDetail">확인</CButton>
+  </CTableDataCell>
+  <CTableDataCell v-if="index === 0" :rowspan="sitesNum">
+    <CButton color="info" size="sm" @click="showDetail"> 확인 </CButton>
   </CTableDataCell>
 
   <FormModal ref="updateFormModal" size="lg">

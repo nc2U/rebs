@@ -30,7 +30,8 @@ const onDelete = (pk: number) => emit('on-delete', pk)
       <col width="11%" />
       <col width="10%" />
       <col width="11%" />
-      <col width="8%" />
+      <col width="4%" />
+      <col width="4%" />
     </colgroup>
 
     <CTableHead :color="headerSecondary">
@@ -38,7 +39,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
         <CTableHeaderCell colspan="5" :color="headerInfo">
           소유자 관련 정보
         </CTableHeaderCell>
-        <CTableHeaderCell colspan="5" :color="headerSuccess">
+        <CTableHeaderCell colspan="6" :color="headerSuccess">
           소유권 관련 정보
         </CTableHeaderCell>
       </CTableRow>
@@ -57,7 +58,9 @@ const onDelete = (pk: number) => emit('on-delete', pk)
         <CTableHeaderCell rowspan="2" scope="col">
           소유권 취득일
         </CTableHeaderCell>
-        <CTableHeaderCell rowspan="2" scope="col">비고</CTableHeaderCell>
+        <CTableHeaderCell rowspan="2" colspan="2" scope="col">
+          비고
+        </CTableHeaderCell>
       </CTableRow>
       <CTableRow class="text-center">
         <CTableHeaderCell scope="col">m<sup>2</sup></CTableHeaderCell>
