@@ -11,10 +11,10 @@ export interface Site {
   lot_number: string
   site_purpose: string
   official_area: string
-  returned_area: number | null
+  returned_area: string | null
   rights_restrictions: string
   dup_issue_date: string
-  owners: SiteOwner[]
+  owners: { pk: number; owner: string }[]
 }
 
 export interface SiteOwner {
@@ -31,31 +31,31 @@ export interface SiteOwner {
   own_sort: string
   own_sort_desc: string
   sites: number[]
-  relations: Relation[]
+  relations: number[]
   counsel_record: string
 }
 
+// export interface RelationInOwner {
+//   pk: number
+//   site: SimpleSite
+//   ownership_ratio: string
+//   owned_area: string
+//   acquisition_date: null | string
+// }
+//
+// export interface SimpleSite {
+//   pk: number
+//   district: string
+//   lot_number: string
+//   site_purpose: string
+//   official_area: string
+//   returned_area: number | null
+// }
+
 export interface Relation {
-  pk: number
-  site: SimpleSite
-  ownership_ratio: string
-  owned_area: string
-  acquisition_date: null | string
-}
-
-export interface SimpleSite {
-  pk: number
-  district: string
-  lot_number: string
-  site_purpose: string
-  official_area: string
-  returned_area: number | null
-}
-
-export interface SiteOwnshipRelationship {
-  pk: number
-  site: number
-  site_owner: number
+  pk: number | null
+  site: number | null
+  site_owner: number | null
   ownership_ratio: string
   owned_area: string
   acquisition_date: null | string
@@ -219,11 +219,9 @@ export const useSite = defineStore('site', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const relationList = ref<SiteOwnshipRelationship[]>([])
+  const relationList = ref<Relation[]>([])
 
-  const updateRelation = (
-    payload: SiteOwnshipRelationship & { project: number },
-  ) => {
+  const updateRelation = (payload: Relation & { project: number }) => {
     const { pk, project, ...relationData } = payload
     api
       .put(`/site-relation/${pk}/`, relationData)

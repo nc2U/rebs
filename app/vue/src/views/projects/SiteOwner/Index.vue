@@ -57,7 +57,7 @@ const onUpdate = (payload: any) => console.log(payload) // siteStore.updateSiteO
 const relationUpdate = (payload: any) => {
   const data = { project: project.value, ...payload }
   console.log(data)
-  siteStore.updateRelation(data)
+  // siteStore.updateRelation(data)
 } // console.log('relation-update', payload)
 
 const multiSubmit = (payload: any) => {

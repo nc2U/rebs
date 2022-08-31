@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { computed, onBeforeMount, reactive, ref, watch } from 'vue'
 import { dateFormat } from '@/utils/baseMixins'
+import { Relation } from '@/store/pinia/project_site'
 import DatePicker from '@/components/DatePicker/index.vue'
-import FormModal from '@/components/Modals/FormModal.vue'
-import SiteOwnerForm from '@/views/projects/SiteOwner/components/SiteOwnerForm.vue'
 
 const props = defineProps({
   owner: { type: Object, required: true },
@@ -11,13 +10,12 @@ const props = defineProps({
   index: { type: Number, default: 0 },
 })
 
-const emit = defineEmits(['relation-update', 'multi-submit', 'on-delete'])
+const emit = defineEmits(['show-detail', 'relation-update'])
 
-const updateFormModal = ref()
-
-const form = reactive({
+const form = reactive<Relation>({
   pk: null,
   site: null,
+  site_owner: null,
   ownership_ratio: '',
   owned_area: '',
   acquisition_date: null as null | string,
@@ -35,18 +33,18 @@ watch(form, val => {
 
 const sitesNum = computed(() => props.owner.relations.length)
 
+const showDetail = () => emit('show-detail')
 const relationUpdate = (payload: any) => emit('relation-update', payload)
-const showDetail = () => updateFormModal.value.callModal()
-const multiSubmit = (payload: any) => emit('multi-submit', payload)
-const onDelete = (payload: any) => emit('on-delete', payload)
 
 onBeforeMount(() => {
   if (props.relation) {
     form.pk = props.relation.pk
     form.site = props.relation.site
+    form.site_owner = props.relation.site_owner
     form.ownership_ratio = props.relation.ownership_ratio
     form.owned_area = props.relation.owned_area
     form.acquisition_date = props.relation.acquisition_date
+
     calcArea.value = props.relation.owned_area * 0.3025
   }
 })
@@ -66,7 +64,7 @@ onBeforeMount(() => {
     {{ owner.phone1 }}
   </CTableDataCell>
   <CTableDataCell>
-    {{ relation.site.lot_number }}
+    <!--    {{ relation.site.lot_number }}-->
   </CTableDataCell>
   <CTableDataCell class="text-right">
     <CFormInput
@@ -104,19 +102,4 @@ onBeforeMount(() => {
   <CTableDataCell v-if="index === 0" :rowspan="sitesNum">
     <CButton color="info" size="sm" @click="showDetail"> 확인</CButton>
   </CTableDataCell>
-
-  <FormModal ref="updateFormModal" size="lg">
-    <template #header>
-      <v-icon icon="mdi-briefcase-plus" size="small" color="dark" />
-      부지 소유자 정보 관리
-    </template>
-    <template #default>
-      <SiteOwnerForm
-        :owner="owner"
-        @multi-submit="multiSubmit"
-        @on-delete="onDelete"
-        @close="updateFormModal.close()"
-      />
-    </template>
-  </FormModal>
 </template>

@@ -348,7 +348,8 @@ class SiteOwnRelationshipInSiteOwnerSerializer(serializers.ModelSerializer):
 
 class SiteOwnerSerializer(serializers.ModelSerializer):
     own_sort_desc = serializers.CharField(source='get_own_sort_display', read_only=True)
-    relations = SiteOwnRelationshipInSiteOwnerSerializer(many=True, read_only=True)
+
+    # relations = SiteOwnRelationshipInSiteOwnerSerializer(many=True, read_only=True)
 
     class Meta:
         model = SiteOwner
