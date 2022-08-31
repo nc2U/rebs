@@ -332,30 +332,57 @@ class SiteSerializer(serializers.ModelSerializer):
                   'official_area', 'returned_area', 'rights_restrictions', 'dup_issue_date', 'owners')
 
 
-class SiteInSiteOwnerSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Site
-        fields = ('pk', 'district', 'lot_number', 'site_purpose', 'official_area', 'returned_area')
-
-
-class SiteOwnRelationshipInSiteOwnerSerializer(serializers.ModelSerializer):
-    site = SiteInSiteOwnerSerializer()
+class RelationInSiteOwnerSerializer(serializers.ModelSerializer):
+    pk = serializers.ReadOnlyField(source='site.pk')
 
     class Meta:
         model = SiteOwnshipRelationship
-        fields = ('pk', 'site', 'ownership_ratio', 'owned_area', 'acquisition_date')
+        fields = ('pk', 'ownership_ratio', 'owned_area', 'acquisition_date')
 
 
 class SiteOwnerSerializer(serializers.ModelSerializer):
     own_sort_desc = serializers.CharField(source='get_own_sort_display', read_only=True)
-
-    # relations = SiteOwnRelationshipInSiteOwnerSerializer(many=True, read_only=True)
+    sites = RelationInSiteOwnerSerializer(source='relations', many=True, read_only=True)
 
     class Meta:
         model = SiteOwner
         fields = ('pk', 'project', 'owner', 'date_of_birth', 'phone1', 'phone2',
                   'zipcode', 'address1', 'address2', 'address3', 'own_sort',
                   'own_sort_desc', 'sites', 'relations', 'counsel_record')
+        depth = 1
+
+    @transaction.atomic
+    def create(self, validated_data):
+        site_owner = SiteOwner.objects.create(**validated_data)
+        if 'sites' in self.initial_data:
+            sites = self.initial_data.get('sites')
+            for site in sites:
+                pk = site.get('pk')
+                ownership_ratio = site.get('ownership_ratio')
+                owned_area = site.get('owned_area')
+                acquisition_date = site.get('acquisition_date')
+                site_instance = Site.objects.get(pk=pk)
+                SiteOwnshipRelationship(site=site_instance, site_owner=site_owner, ownership_ratio=ownership_ratio,
+                                        owned_area=owned_area, acquisition_date=acquisition_date).save()
+        site_owner.save()
+        return site_owner
+
+    @transaction.atomic
+    def update(self, instance, validated_data):
+        SiteOwnshipRelationship.objects.filter(site_owner=instance).delete()
+        sites = self.initial_data.get('sites')
+        for site in sites:
+            pk = site.get('pk')
+            ownership_ratio = site.get('ownership_ratio')
+            owned_area = site.get('owned_area')
+            acquisition_date = site.get('acquisition_date')
+            new_site = Site.objects.get(pk=pk)
+            SiteOwnshipRelationship(site=new_site, site_owner=instance, ownership_ratio=ownership_ratio,
+                                    owned_area=owned_area, acquisition_date=acquisition_date).save()
+
+        instance.__dict__.update(**validated_data)
+        instance.save()
+        return instance
 
 
 class SiteOwnshipRelationshipSerializer(serializers.ModelSerializer):
