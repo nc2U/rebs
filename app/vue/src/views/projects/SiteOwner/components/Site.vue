@@ -1,21 +1,19 @@
 <script setup lang="ts">
 import { computed, onBeforeMount, reactive, ref, watch } from 'vue'
 import { dateFormat } from '@/utils/baseMixins'
-import { Relation } from '@/store/pinia/project_site'
 import DatePicker from '@/components/DatePicker/index.vue'
 
 const props = defineProps({
   owner: { type: Object, required: true },
-  relation: { type: Object, required: true },
+  site: { type: Object, required: true },
   index: { type: Number, default: 0 },
 })
 
 const emit = defineEmits(['show-detail', 'relation-update'])
 
-const form = reactive<Relation>({
+const form = reactive({
   pk: null,
-  site: null,
-  site_owner: null,
+  __str__: '',
   ownership_ratio: '',
   owned_area: '',
   acquisition_date: null as null | string,
@@ -31,21 +29,20 @@ watch(form, val => {
     form.acquisition_date = dateFormat(val.acquisition_date)
 })
 
-const sitesNum = computed(() => props.owner.relations.length)
+const sitesNum = computed(() => props.owner.sites.length)
 
 const showDetail = () => emit('show-detail')
 const relationUpdate = (payload: any) => emit('relation-update', payload)
 
 onBeforeMount(() => {
-  if (props.relation) {
-    form.pk = props.relation.pk
-    form.site = props.relation.site
-    form.site_owner = props.relation.site_owner
-    form.ownership_ratio = props.relation.ownership_ratio
-    form.owned_area = props.relation.owned_area
-    form.acquisition_date = props.relation.acquisition_date
+  if (props.site) {
+    form.pk = props.site.pk
+    form.__str__ = props.site.__str__
+    form.ownership_ratio = props.site.ownership_ratio
+    form.owned_area = props.site.owned_area
+    form.acquisition_date = props.site.acquisition_date
 
-    calcArea.value = props.relation.owned_area * 0.3025
+    calcArea.value = props.site.owned_area * 0.3025
   }
 })
 </script>
@@ -63,8 +60,8 @@ onBeforeMount(() => {
   <CTableDataCell v-if="index === 0" :rowspan="sitesNum">
     {{ owner.phone1 }}
   </CTableDataCell>
-  <CTableDataCell>
-    <!--    {{ relation.site.lot_number }}-->
+  <CTableDataCell class="text-left">
+    {{ site.__str__ }}
   </CTableDataCell>
   <CTableDataCell class="text-right">
     <CFormInput

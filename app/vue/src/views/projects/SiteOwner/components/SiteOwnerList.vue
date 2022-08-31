@@ -27,12 +27,12 @@ const onDelete = (pk: number) => emit('on-delete', pk)
 <template>
   <CTable hover responsive bordered align="middle">
     <colgroup>
-      <col width="7%" />
-      <col width="9%" />
+      <col width="5%" />
+      <col width="10%" />
       <col width="11%" />
       <col width="13%" />
       <col width="10%" />
-      <col width="10%" />
+      <col width="11%" />
       <col width="11%" />
       <col width="10%" />
       <col width="11%" />
@@ -54,9 +54,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
         <CTableHeaderCell rowspan="2" scope="col">소유자</CTableHeaderCell>
         <CTableHeaderCell rowspan="2" scope="col">생년월일</CTableHeaderCell>
         <CTableHeaderCell rowspan="2" scope="col">주연락처</CTableHeaderCell>
-        <CTableHeaderCell rowspan="2" scope="col">
-          소유부지(지번)
-        </CTableHeaderCell>
+        <CTableHeaderCell rowspan="2" scope="col">소유부지</CTableHeaderCell>
         <CTableHeaderCell rowspan="2" scope="col">소유지분(%)</CTableHeaderCell>
         <CTableHeaderCell colspan="2" scope="col">
           소유면적 <span v-if="isReturned">(환지면적 기준)</span>

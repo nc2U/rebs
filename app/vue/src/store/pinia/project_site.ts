@@ -188,17 +188,23 @@ export const useSite = defineStore('site', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const createSiteOwner = (payload: Site) => {
+  const createSiteOwner = (payload: SiteOwner) => {
     api
       .post(`/site-owner/`, payload)
       .then(res => {
+        // res.data.sites
+        //   .forEach((site: number) => {
+        //     api.post('/site-relation/', { site, site_owner: res.data.pk })
+        //   })
+        //   .finally(() => console.log('------------------>>>'))
         fetchSiteOwnerList(res.data.project)
         message()
+        console.log('--->', res.data, res.data.sites)
       })
       .catch(err => errorHandle(err.response.data))
   }
 
-  const updateSiteOwner = (payload: { pk: number } & Site) => {
+  const updateSiteOwner = (payload: SiteOwner) => {
     const { pk, ...siteData } = payload
     api
       .put(`/site-owner/${pk}/`, siteData)

@@ -50,9 +50,15 @@ const pageSelect = (page: number) => {
   listControl.value.listFiltering(page)
 }
 
-const onCreate = (payload: any) => console.log(payload) // siteStore.createSiteOwner(payload)
+const onCreate = (payload: any) => {
+  siteStore.createSiteOwner(payload)
+  console.log(payload)
+}
 
-const onUpdate = (payload: any) => siteStore.updateSiteOwner(payload)
+const onUpdate = (payload: any) => {
+  siteStore.updateSiteOwner(payload)
+  console.log(payload)
+}
 
 const relationUpdate = (payload: any) => {
   const data = { project: project.value, ...payload }

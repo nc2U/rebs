@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { onBeforeMount, reactive, ref } from 'vue'
-import Relation from '@/views/projects/SiteOwner/components/Relation.vue'
+import Site from '@/views/projects/SiteOwner/components/Site.vue'
 import FormModal from '@/components/Modals/FormModal.vue'
 import SiteOwnerForm from '@/views/projects/SiteOwner/components/SiteOwnerForm.vue'
 
@@ -27,7 +27,6 @@ const form = reactive({
   own_sort: '',
   own_sort_desc: '',
   sites: [],
-  relations: [],
   counsel_record: '',
 })
 
@@ -52,7 +51,6 @@ onBeforeMount(() => {
     form.own_sort = props.owner.own_sort
     form.own_sort_desc = props.owner.own_sort_desc
     form.sites = props.owner.sites
-    form.relations = props.owner.relations
     form.counsel_record = props.owner.counsel_record
   }
 })
@@ -60,13 +58,13 @@ onBeforeMount(() => {
 
 <template>
   <CTableRow
-    v-for="(relation, index) in owner.relations"
-    :key="relation.pk"
+    v-for="(site, index) in owner.sites"
+    :key="site.pk"
     class="text-center"
   >
-    <Relation
+    <Site
       :owner="owner"
-      :relation="relation"
+      :site="site"
       :index="index"
       @show-detail="showDetail"
       @relation-update="relationUpdate"
