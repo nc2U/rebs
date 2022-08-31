@@ -76,7 +76,7 @@ class SiteOwnerAdmin(ImportExportMixin, admin.ModelAdmin):
         'id', 'owner', 'date_of_birth', 'phone1', 'phone2', 'zipcode', 'address1', 'address2', 'address3', 'own_sort')
     list_display_links = ('owner',)
     search_fields = ('owner', 'own_sort')
-    list_filter = ('own_sort',)
+    list_filter = ('project', 'own_sort',)
 
 
 class SiteOwnshipRelationshipAdmin(ImportExportMixin, admin.ModelAdmin):

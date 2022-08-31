@@ -356,29 +356,33 @@ class SiteOwnerSerializer(serializers.ModelSerializer):
         site_owner = SiteOwner.objects.create(**validated_data)
         if 'sites' in self.initial_data:
             sites = self.initial_data.get('sites')
+            # for site in sites:
+            #     pk = site.get('pk')
+            #     ownership_ratio = site.get('ownership_ratio')
+            #     owned_area = site.get('owned_area')
+            #     acquisition_date = site.get('acquisition_date')
+            #     site_instance = Site.objects.get(pk=pk)
+            #     SiteOwnshipRelationship(site=site_instance, site_owner=site_owner, ownership_ratio=ownership_ratio,
+            #                             owned_area=owned_area, acquisition_date=acquisition_date).save()
             for site in sites:
-                pk = site.get('pk')
-                ownership_ratio = site.get('ownership_ratio')
-                owned_area = site.get('owned_area')
-                acquisition_date = site.get('acquisition_date')
-                site_instance = Site.objects.get(pk=pk)
-                SiteOwnshipRelationship(site=site_instance, site_owner=site_owner, ownership_ratio=ownership_ratio,
-                                        owned_area=owned_area, acquisition_date=acquisition_date).save()
+                site_instance = Site.objects.get(pk=site)
+                SiteOwnshipRelationship(site=site_instance, site_owner=site_owner).save()
+
         site_owner.save()
         return site_owner
 
     @transaction.atomic
     def update(self, instance, validated_data):
-        SiteOwnshipRelationship.objects.filter(site_owner=instance).delete()
-        sites = self.initial_data.get('sites')
-        for site in sites:
-            pk = site.get('pk')
-            ownership_ratio = site.get('ownership_ratio')
-            owned_area = site.get('owned_area')
-            acquisition_date = site.get('acquisition_date')
-            new_site = Site.objects.get(pk=pk)
-            SiteOwnshipRelationship(site=new_site, site_owner=instance, ownership_ratio=ownership_ratio,
-                                    owned_area=owned_area, acquisition_date=acquisition_date).save()
+        # SiteOwnshipRelationship.objects.filter(site_owner=instance).delete()
+        # sites = self.initial_data.get('sites')
+        # for site in sites:
+        #     pk = site.get('pk')
+        #     ownership_ratio = site.get('ownership_ratio')
+        #     owned_area = site.get('owned_area')
+        #     acquisition_date = site.get('acquisition_date')
+        #     new_site = Site.objects.get(pk=pk)
+        #     SiteOwnshipRelationship(site=new_site, site_owner=instance, ownership_ratio=ownership_ratio,
+        #                             owned_area=owned_area, acquisition_date=acquisition_date).save()
 
         instance.__dict__.update(**validated_data)
         instance.save()
