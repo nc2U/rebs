@@ -92,7 +92,7 @@ onBeforeMount(() => {
     />
   </CTableDataCell>
   <CTableDataCell>
-    <CButton color="success" size="sm" @click="relationUpdate(form)">
+    <CButton color="success" size="sm" disabled @click="relationUpdate(form)">
       적용
     </CButton>
   </CTableDataCell>

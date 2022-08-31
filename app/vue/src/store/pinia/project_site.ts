@@ -30,8 +30,14 @@ export interface SiteOwner {
   address3: string
   own_sort: string
   own_sort_desc: string
+  // sites: {
+  //   pk: number
+  //   __str__: string
+  //   ownership_ratio: string
+  //   owned_area: string
+  //   acquisition_date: string | null
+  // }[]
   sites: number[]
-  relations: number[]
   counsel_record: string
 }
 

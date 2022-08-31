@@ -199,7 +199,7 @@ onBeforeMount(() => {
           </CCol>
         </CRow>
 
-        <CRow class="mb-3">
+        <CRow v-if="!owner" class="mb-3">
           <CCol sm="12">
             <CRow>
               <CFormLabel class="col-sm-2 col-form-label">
