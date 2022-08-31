@@ -332,24 +332,24 @@ class SiteSerializer(serializers.ModelSerializer):
                   'official_area', 'returned_area', 'rights_restrictions', 'dup_issue_date', 'owners')
 
 
-class RelationInSiteOwnerSerializer(serializers.ModelSerializer):
+class RelationsInSiteOwnerSerializer(serializers.ModelSerializer):
     pk = serializers.ReadOnlyField(source='site.pk')
+    __str__ = serializers.ReadOnlyField(source='site.__str__')
 
     class Meta:
         model = SiteOwnshipRelationship
-        fields = ('pk', 'ownership_ratio', 'owned_area', 'acquisition_date')
+        fields = ('pk', '__str__', 'ownership_ratio', 'owned_area', 'acquisition_date')
 
 
 class SiteOwnerSerializer(serializers.ModelSerializer):
     own_sort_desc = serializers.CharField(source='get_own_sort_display', read_only=True)
-    sites = RelationInSiteOwnerSerializer(source='relations', many=True, read_only=True)
+    sites = RelationsInSiteOwnerSerializer(source='relations', many=True, read_only=True)
 
     class Meta:
         model = SiteOwner
         fields = ('pk', 'project', 'owner', 'date_of_birth', 'phone1', 'phone2',
-                  'zipcode', 'address1', 'address2', 'address3', 'own_sort',
-                  'own_sort_desc', 'sites', 'relations', 'counsel_record')
-        depth = 1
+                  'zipcode', 'address1', 'address2', 'address3',
+                  'own_sort', 'own_sort_desc', 'sites', 'counsel_record')
 
     @transaction.atomic
     def create(self, validated_data):
