@@ -41,23 +41,6 @@ export interface SiteOwner {
   counsel_record: string
 }
 
-// export interface RelationInOwner {
-//   pk: number
-//   site: SimpleSite
-//   ownership_ratio: string
-//   owned_area: string
-//   acquisition_date: null | string
-// }
-//
-// export interface SimpleSite {
-//   pk: number
-//   district: string
-//   lot_number: string
-//   site_purpose: string
-//   official_area: string
-//   returned_area: number | null
-// }
-
 export interface Relation {
   pk: number | null
   site: number | null
@@ -244,7 +227,49 @@ export const useSite = defineStore('site', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const siteContractList = ref<SiteContract[]>([])
+  const siteContList = ref<SiteContract[]>([])
+  const siteContCount = ref(0)
+
+  const fetchSiteContList = (project: number, page = 1, search = '') => {
+    api
+      .get(`/site-contract/?project=${project}&page=${page}&search=${search}`)
+      .then(res => {
+        siteContList.value = res.data.results
+        siteContCount.value = res.data.count
+      })
+      .catch(err => errorHandle(err.response.data))
+  }
+
+  const createSiteCont = (payload: SiteContract) => {
+    api
+      .post(`/site-contract/`, payload)
+      .then(res => {
+        fetchSiteContList(res.data.project)
+        message()
+      })
+      .catch(err => errorHandle(err.response.data))
+  }
+
+  const updateSiteCont = (payload: { pk: number } & SiteContract) => {
+    const { pk, ...contData } = payload
+    api
+      .put(`/site-contract/${pk}/`, contData)
+      .then(res => {
+        fetchSiteContList(res.data.project)
+        message()
+      })
+      .catch(err => errorHandle(err.response.data))
+  }
+
+  const deleteSiteCont = (pk: number, project: number) => {
+    api
+      .delete(`/site-contract/${pk}/`)
+      .then(() => {
+        fetchSiteContList(project)
+        message('warning', '', '해당 부지 매입계약 정보가 삭제되었습니다.')
+      })
+      .catch(err => errorHandle(err.response.data))
+  }
 
   return {
     allSites,
@@ -272,6 +297,12 @@ export const useSite = defineStore('site', () => {
 
     patchRelation,
 
-    siteContractList,
+    siteContList,
+    siteContCount,
+
+    fetchSiteContList,
+    createSiteCont,
+    updateSiteCont,
+    deleteSiteCont,
   }
 })
