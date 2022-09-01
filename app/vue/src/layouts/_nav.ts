@@ -264,10 +264,6 @@ const project = {
         {
           component: 'CNavItem',
           name: '소유자별 관리',
-          badge: {
-            color: 'warning',
-            text: 'link',
-          },
           to: '/project/site/owner',
         },
         {
