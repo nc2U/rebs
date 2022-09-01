@@ -6,7 +6,6 @@ import { dateFormat } from '@/utils/baseMixins'
 import { write_project } from '@/utils/pageAuth'
 import { isValidate } from '@/utils/helper'
 import { maska as vMaska } from 'maska'
-import { CMultiSelect } from '@/components/MultiSelect'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
@@ -203,28 +202,23 @@ onBeforeMount(() => {
           <CCol sm="12">
             <CRow>
               <CFormLabel class="col-sm-2 col-form-label">
-                소유지번 (<span class="text-bg-">필수</span>)
+                소유부지 (<span class="text-bg-">필수</span>)
               </CFormLabel>
               <CCol sm="10">
-                <CMultiSelect
+                <select
                   v-model="form.sites"
                   required
-                  :options="getSites"
-                />
-                <!--                <select-->
-                <!--                  v-model="form.sites"-->
-                <!--                  required-->
-                <!--                  multiple-->
-                <!--                  class="form-control"-->
-                <!--                >-->
-                <!--                  <option-->
-                <!--                    v-for="site in getSites"-->
-                <!--                    :key="site.value"-->
-                <!--                    :value="site.value"-->
-                <!--                  >-->
-                <!--                    {{ site.text }}-->
-                <!--                  </option>-->
-                <!--                </select>-->
+                  multiple
+                  class="form-control"
+                >
+                  <option
+                    v-for="site in getSites"
+                    :key="site.value"
+                    :value="site.value"
+                  >
+                    {{ site.text }}
+                  </option>
+                </select>
               </CCol>
             </CRow>
           </CCol>
