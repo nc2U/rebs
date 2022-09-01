@@ -6,6 +6,7 @@ import { useSite } from '@/store/pinia/project_site'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from '@/views/projects/SiteOwner/components/ListController.vue'
+import TableTitleRow from '@/components/TableTitleRow.vue'
 import AddSiteOwner from '@/views/projects/SiteOwner/components/AddSiteOwner.vue'
 import SiteOwnerList from '@/views/projects/SiteOwner/components/SiteOwnerList.vue'
 
@@ -90,6 +91,7 @@ onBeforeMount(() => {
         @list-filtering="listFiltering"
       />
       <AddSiteOwner :project="project" @multi-submit="multiSubmit" />
+      <TableTitleRow title="부지 소유자 목록" excel url="" disabled />
       <SiteOwnerList
         :is-returned="isReturned"
         @page-select="pageSelect"

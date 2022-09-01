@@ -6,6 +6,7 @@ import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin3'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from './components/ListController.vue'
+import TableTitleRow from '@/components/TableTitleRow.vue'
 import AddSite from './components/AddSite.vue'
 import SiteList from './components/SiteList.vue'
 
@@ -81,6 +82,7 @@ onBeforeMount(() => {
         @list-filtering="listFiltering"
       />
       <AddSite :project="project" @multi-submit="multiSubmit" />
+      <TableTitleRow title="사업 부지 목록" excel url="" disabled />
       <SiteList
         :is-returned="isReturned"
         @page-select="pageSelect"
