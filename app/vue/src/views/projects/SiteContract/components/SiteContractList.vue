@@ -20,35 +20,46 @@ const onDelete = (pk: number) => emit('on-delete', pk)
 <template>
   <CTable hover responsive bordered align="middle">
     <colgroup>
+      <col width="5%" />
+      <col width="9%" />
+      <col width="8%" />
+      <col width="7%" />
       <col width="6%" />
+      <col width="9%" />
+      <col width="8%" />
+      <col width="5%" />
       <col width="8%" />
       <col width="8%" />
       <col width="8%" />
-      <col width="8%" />
-      <col width="8%" />
-      <col width="8%" />
-      <col width="8%" />
-      <col width="8%" />
-      <col width="8%" />
-      <col width="8%" />
-      <col width="8%" />
-      <col width="6%" />
+      <col width="9%" />
+      <col width="5%" />
+      <col width="5%" />
     </colgroup>
 
     <CTableHead :color="headerSecondary">
       <CTableRow class="text-center" align="middle">
-        <CTableHeaderCell rowspan="2" scope="col">No</CTableHeaderCell>
+        <CTableHeaderCell rowspan="2" scope="col"
+          >소유<br />구분
+        </CTableHeaderCell>
         <CTableHeaderCell rowspan="2" scope="col">소유자</CTableHeaderCell>
         <CTableHeaderCell rowspan="2" scope="col">계약일</CTableHeaderCell>
-        <CTableHeaderCell colspan="2" scope="col">총계약 면적</CTableHeaderCell>
-        <CTableHeaderCell rowspan="2" scope="col">총매매 대금</CTableHeaderCell>
+        <CTableHeaderCell colspan="2" scope="col">
+          총계약 면적
+        </CTableHeaderCell>
+        <CTableHeaderCell rowspan="2" scope="col">
+          총매매<br />대금
+        </CTableHeaderCell>
         <CTableHeaderCell rowspan="2" scope="col">계약금1</CTableHeaderCell>
-        <CTableHeaderCell rowspan="2" scope="col">지급여부</CTableHeaderCell>
+        <CTableHeaderCell rowspan="2" scope="col">
+          지급<br />여부
+        </CTableHeaderCell>
         <CTableHeaderCell rowspan="2" scope="col">계약금2</CTableHeaderCell>
         <CTableHeaderCell rowspan="2" scope="col">중도금1</CTableHeaderCell>
         <CTableHeaderCell rowspan="2" scope="col">중도금2</CTableHeaderCell>
         <CTableHeaderCell rowspan="2" scope="col">잔금</CTableHeaderCell>
-        <CTableHeaderCell rowspan="2" scope="col">지급여부</CTableHeaderCell>
+        <CTableHeaderCell rowspan="2" scope="col">
+          지급<br />여부
+        </CTableHeaderCell>
         <CTableHeaderCell rowspan="2" scope="col">비고</CTableHeaderCell>
       </CTableRow>
       <CTableRow class="text-center">
@@ -58,14 +69,14 @@ const onDelete = (pk: number) => emit('on-delete', pk)
     </CTableHead>
 
     <CTableBody>
-      <SiteContract
-        v-for="site in siteList"
-        :key="site.pk"
-        :site="site"
-        :is-returned="isReturned"
-        @multi-submit="multiSubmit"
-        @on-delete="onDelete"
-      />
+      <!--      <SiteContract-->
+      <!--        v-for="site in siteList"-->
+      <!--        :key="site.pk"-->
+      <!--        :site="site"-->
+      <!--        @multi-submit="multiSubmit"-->
+      <!--        @on-delete="onDelete"-->
+      <!--      />-->
+      <SiteContract />
     </CTableBody>
   </CTable>
 

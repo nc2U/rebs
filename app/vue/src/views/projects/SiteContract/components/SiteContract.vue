@@ -21,38 +21,40 @@ const onDelete = (payload: any) => emit('on-delete', payload)
 </script>
 
 <template>
-  <CTableRow
-    v-if="site"
-    class="text-center"
-    :style="site.is_separate ? 'font-weight: bold;' : ''"
-  >
-    <CTableDataCell>{{ site.order }}</CTableDataCell>
-    <CTableDataCell>
-      {{ site.district }}
-    </CTableDataCell>
-    <CTableDataCell>
-      {{ site.lot_number }}
-    </CTableDataCell>
-    <CTableDataCell>
-      {{ site.site_purpose }}
-    </CTableDataCell>
+  <!--  <CTableRow-->
+  <!--    v-if="site"-->
+  <!--    class="text-center"-->
+  <!--  >-->
+  <CTableRow class="text-center">
+    <CTableDataCell>국공유지</CTableDataCell>
+    <CTableDataCell>홍길동</CTableDataCell>
+    <CTableDataCell>2022-09-01</CTableDataCell>
     <CTableDataCell class="text-right">
-      {{ numFormat(site.official_area, 2) }}
+      {{ numFormat(1000000) }}
     </CTableDataCell>
     <CTableDataCell class="text-right" color="warning">
-      {{ numFormat(site.official_area, 2) }}
+      {{ numFormat(300000) }}
     </CTableDataCell>
     <CTableDataCell class="text-right">
-      {{ numFormat(site.returned_area, 2) }}
+      {{ numFormat(20000000000) }}
     </CTableDataCell>
-    <CTableDataCell class="text-right" color="warning">
-      {{ numFormat(site.returned_area, 2) }}
+    <CTableDataCell class="text-right">
+      {{ numFormat(10000000) }}
     </CTableDataCell>
-    <CTableDataCell class="text-left"> </CTableDataCell>
-    <CTableDataCell></CTableDataCell>
-    <CTableDataCell></CTableDataCell>
-    <CTableDataCell></CTableDataCell>
-    <CTableDataCell></CTableDataCell>
+    <CTableDataCell>완료</CTableDataCell>
+    <CTableDataCell class="text-right">
+      {{ numFormat(10000000) }}
+    </CTableDataCell>
+    <CTableDataCell class="text-right">
+      {{ numFormat(10000000) }}
+    </CTableDataCell>
+    <CTableDataCell class="text-right">
+      {{ numFormat(10000000) }}
+    </CTableDataCell>
+    <CTableDataCell class="text-right">
+      {{ numFormat(160000000) }}
+    </CTableDataCell>
+    <CTableDataCell>완료</CTableDataCell>
     <CTableDataCell>
       <CButton color="info" size="sm" @click="showDetail">확인</CButton>
     </CTableDataCell>
