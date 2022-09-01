@@ -6,6 +6,7 @@ import { dateFormat } from '@/utils/baseMixins'
 import { write_project } from '@/utils/pageAuth'
 import { isValidate } from '@/utils/helper'
 import { maska as vMaska } from 'maska'
+import { CMultiSelect } from '@/components/MultiSelect'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
@@ -64,15 +65,16 @@ const formsCheck = computed(() => {
     const a = form.own_sort === props.owner.own_sort
     const b = form.owner === props.owner.owner
     const c = form.date_of_birth === props.owner.date_of_birth
-    const d = form.phone1 === props.owner.phone1
-    const e = form.phone2 === props.owner.phone2
-    const f = form.zipcode === props.owner.zipcode
-    const g = form.address1 === props.owner.address1
-    const h = form.address2 === props.owner.address2
-    const i = form.address3 === props.owner.address3
-    const j = form.counsel_record === props.owner.counsel_record
+    const d = form.sites == props.owner.sites.map((s: any) => s.site)
+    const e = form.phone1 === props.owner.phone1
+    const f = form.phone2 === props.owner.phone2
+    const g = form.zipcode === props.owner.zipcode
+    const h = form.address1 === props.owner.address1
+    const i = form.address2 === props.owner.address2
+    const j = form.address3 === props.owner.address3
+    const k = form.counsel_record === props.owner.counsel_record
 
-    return a && b && c && d && e && f && g && h && i && j
+    return a && b && c && d && e && f && g && h && i && j && k
   } else return false
 })
 
@@ -171,7 +173,7 @@ onBeforeMount(() => {
         <CRow class="mb-3">
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label"> 소유자</CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label">소유자</CFormLabel>
               <CCol sm="8">
                 <CFormInput
                   v-model="form.owner"
@@ -204,21 +206,25 @@ onBeforeMount(() => {
                 소유지번 (<span class="text-bg-">필수</span>)
               </CFormLabel>
               <CCol sm="10">
-                <select
+                <CMultiSelect
                   v-model="form.sites"
                   required
-                  multiple
-                  class="form-control"
-                  :disabled="owner"
-                >
-                  <option
-                    v-for="site in getSites"
-                    :key="site.value"
-                    :value="site.value"
-                  >
-                    {{ site.text }}
-                  </option>
-                </select>
+                  :options="getSites"
+                />
+                <!--                <select-->
+                <!--                  v-model="form.sites"-->
+                <!--                  required-->
+                <!--                  multiple-->
+                <!--                  class="form-control"-->
+                <!--                >-->
+                <!--                  <option-->
+                <!--                    v-for="site in getSites"-->
+                <!--                    :key="site.value"-->
+                <!--                    :value="site.value"-->
+                <!--                  >-->
+                <!--                    {{ site.text }}-->
+                <!--                  </option>-->
+                <!--                </select>-->
               </CCol>
             </CRow>
           </CCol>
