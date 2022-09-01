@@ -141,6 +141,7 @@ onBeforeMount(() => {
                 <DatePicker
                   v-model="form.dup_issue_date"
                   :required="false"
+                  maxlength="10"
                   placeholder="등기부 발급일"
                 />
               </CCol>
@@ -156,6 +157,7 @@ onBeforeMount(() => {
                 <CFormInput
                   v-model="form.district"
                   required
+                  maxlength="10"
                   placeholder="행정 동"
                 />
               </CCol>
@@ -169,6 +171,7 @@ onBeforeMount(() => {
                 <CFormInput
                   v-model="form.lot_number"
                   required
+                  maxlength="10"
                   placeholder="지번"
                 />
               </CCol>
@@ -202,6 +205,7 @@ onBeforeMount(() => {
                 <CFormInput
                   v-model="form.site_purpose"
                   required
+                  maxlength="10"
                   placeholder="지목"
                 />
               </CCol>
@@ -236,6 +240,7 @@ onBeforeMount(() => {
                 <DatePicker
                   v-model="form.dup_issue_date"
                   :required="false"
+                  maxlength="10"
                   placeholder="등기부 발급일"
                 />
               </CCol>
