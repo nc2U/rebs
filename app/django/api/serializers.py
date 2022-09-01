@@ -373,8 +373,19 @@ class SiteOwnerSerializer(serializers.ModelSerializer):
 
     @transaction.atomic
     def update(self, instance, validated_data):
-        # SiteOwnshipRelationship.objects.filter(site_owner=instance).delete()
-        # sites = self.initial_data.get('sites')
+        sites = self.initial_data.get('sites')
+        relations = SiteOwnshipRelationship.objects.filter(site_owner=instance)  # .delete()
+        stored_sites = []
+        for r in relations:
+            if r.site.pk in sites:
+                stored_sites.append(r.site.pk)
+            else:
+                r.delete()
+        for site in sites:
+            if site not in stored_sites:
+                new_site = Site.objects.get(pk=site)
+                SiteOwnshipRelationship(site=new_site, site_owner=instance).save()
+
         # for site in sites:
         #     pk = site.get('pk')
         #     ownership_ratio = site.get('ownership_ratio')
@@ -383,6 +394,9 @@ class SiteOwnerSerializer(serializers.ModelSerializer):
         #     new_site = Site.objects.get(pk=pk)
         #     SiteOwnshipRelationship(site=new_site, site_owner=instance, ownership_ratio=ownership_ratio,
         #                             owned_area=owned_area, acquisition_date=acquisition_date).save()
+        # for site in sites:
+        #     new_site = Site.objects.get(pk=site)
+        #     SiteOwnshipRelationship(site=new_site, site_owner=instance).save()
 
         instance.__dict__.update(**validated_data)
         instance.save()
