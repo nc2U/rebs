@@ -386,18 +386,6 @@ class SiteOwnerSerializer(serializers.ModelSerializer):
                 new_site = Site.objects.get(pk=site)
                 SiteOwnshipRelationship(site=new_site, site_owner=instance).save()
 
-        # for site in sites:
-        #     pk = site.get('pk')
-        #     ownership_ratio = site.get('ownership_ratio')
-        #     owned_area = site.get('owned_area')
-        #     acquisition_date = site.get('acquisition_date')
-        #     new_site = Site.objects.get(pk=pk)
-        #     SiteOwnshipRelationship(site=new_site, site_owner=instance, ownership_ratio=ownership_ratio,
-        #                             owned_area=owned_area, acquisition_date=acquisition_date).save()
-        # for site in sites:
-        #     new_site = Site.objects.get(pk=site)
-        #     SiteOwnshipRelationship(site=new_site, site_owner=instance).save()
-
         instance.__dict__.update(**validated_data)
         instance.save()
         return instance
