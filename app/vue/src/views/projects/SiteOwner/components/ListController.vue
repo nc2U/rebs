@@ -41,7 +41,7 @@ defineExpose({ listFiltering })
 </script>
 
 <template>
-  <CCallout color="success" class="pb-0 mb-3">
+  <CCallout color="warning" class="pb-0 mb-3">
     <CRow>
       <CCol lg="4" md="6">
         <CRow>

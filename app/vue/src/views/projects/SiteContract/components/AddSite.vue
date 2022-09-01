@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { write_project_cash } from '@/utils/pageAuth'
-import { headerSecondary } from '@/utils/cssMixins'
+import { headerLight } from '@/utils/cssMixins'
 import FormModal from '@/components/Modals/FormModal.vue'
 import SiteContractForm from './SiteContractForm.vue'
 
@@ -19,9 +19,9 @@ const multiSubmit = (payload: any) => emit('multi-submit', payload)
 </script>
 
 <template>
-  <CAlert :color="headerSecondary" class="text-right">
+  <CAlert :color="headerLight" variant="solid" class="text-right">
     <CButton color="primary" :disabled="!project" @click="createConfirm">
-      신규등록
+      부지 매입계약 신규등록
     </CButton>
   </CAlert>
 

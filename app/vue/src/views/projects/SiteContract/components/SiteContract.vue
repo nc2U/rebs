@@ -46,10 +46,10 @@ const onDelete = (payload: any) => emit('on-delete', payload)
       {{ numFormat(10000000) }}
     </CTableDataCell>
     <CTableDataCell class="text-right">
-      {{ numFormat(10000000) }}
+      {{ numFormat(0) }}
     </CTableDataCell>
     <CTableDataCell class="text-right">
-      {{ numFormat(10000000) }}
+      {{ numFormat(0) }}
     </CTableDataCell>
     <CTableDataCell class="text-right">
       {{ numFormat(160000000) }}
