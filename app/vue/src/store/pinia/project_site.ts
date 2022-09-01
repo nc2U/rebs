@@ -105,7 +105,7 @@ export const useSite = defineStore('site', () => {
   const getSites = computed(() =>
     allSites.value.map((s: AllSite) => ({
       value: s.pk,
-      text: s.__str__,
+      label: s.__str__,
     })),
   )
 

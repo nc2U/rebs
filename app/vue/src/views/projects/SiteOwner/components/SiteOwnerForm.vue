@@ -11,6 +11,7 @@ import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 import DaumPostcode from '@/components/DaumPostcode/index.vue'
 import { AddressData, callAddress } from '@/components/DaumPostcode/address'
+import Multiselect from '@vueform/multiselect'
 
 const props = defineProps({
   owner: {
@@ -205,20 +206,12 @@ onBeforeMount(() => {
                 소유부지 (<span class="text-bg-">필수</span>)
               </CFormLabel>
               <CCol sm="10">
-                <select
+                <Multiselect
                   v-model="form.sites"
-                  required
-                  multiple
-                  class="form-control"
-                >
-                  <option
-                    v-for="site in getSites"
-                    :key="site.value"
-                    :value="site.value"
-                  >
-                    {{ site.text }}
-                  </option>
-                </select>
+                  :options="getSites"
+                  placeholder="소유부지"
+                  searchable
+                />
               </CCol>
             </CRow>
           </CCol>
