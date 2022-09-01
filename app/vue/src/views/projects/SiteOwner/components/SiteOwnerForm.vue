@@ -191,6 +191,7 @@ onBeforeMount(() => {
               <CCol sm="8">
                 <DatePicker
                   v-model="form.date_of_birth"
+                  maxlength="10"
                   :required="false"
                   placeholder="생년월일"
                 />
@@ -203,14 +204,15 @@ onBeforeMount(() => {
           <CCol sm="12">
             <CRow>
               <CFormLabel class="col-sm-2 col-form-label">
-                소유부지 (<span class="text-bg-">필수</span>)
+                소유부지
               </CFormLabel>
               <CCol sm="10">
                 <Multiselect
                   v-model="form.sites"
                   :options="getSites"
                   mode="tags"
-                  placeholder="소유부지"
+                  required
+                  placeholder="소유부지 :: 필수 입력"
                   searchable
                 />
               </CCol>
@@ -226,6 +228,7 @@ onBeforeMount(() => {
                 <CFormInput
                   v-model="form.phone1"
                   v-maska="['###-###-####', '###-####-####']"
+                  maxlength="13"
                   placeholder="주 연락처"
                 />
               </CCol>
@@ -241,6 +244,7 @@ onBeforeMount(() => {
                 <CFormInput
                   v-model="form.phone2"
                   v-maska="['###-###-####', '###-####-####']"
+                  maxlength="13"
                   placeholder="보조 연락처"
                 />
               </CCol>
@@ -270,7 +274,7 @@ onBeforeMount(() => {
               <CCol sm="7">
                 <CFormInput
                   v-model="form.address1"
-                  v-maska="'#####'"
+                  maxlength="50"
                   placeholder="메인 주소"
                 />
               </CCol>
@@ -286,14 +290,14 @@ onBeforeMount(() => {
                 <CFormInput
                   ref="address2"
                   v-model="form.address2"
-                  v-maska="'#####'"
+                  maxlength="25"
                   placeholder="상세 주소"
                 />
               </CCol>
               <CCol sm="5">
                 <CFormInput
                   v-model="form.address3"
-                  v-maska="'#####'"
+                  maxlength="25"
                   placeholder="나머지 주소"
                 />
               </CCol>
