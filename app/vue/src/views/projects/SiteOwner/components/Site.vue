@@ -9,11 +9,11 @@ const props = defineProps({
   index: { type: Number, default: 0 },
 })
 
-const emit = defineEmits(['show-detail', 'relation-update'])
+const emit = defineEmits(['show-detail', 'relation-patch'])
 
 const form = reactive({
   pk: null,
-  __str__: '',
+  site: null,
   ownership_ratio: '',
   owned_area: '',
   acquisition_date: null as null | string,
@@ -29,15 +29,26 @@ watch(form, val => {
     form.acquisition_date = dateFormat(val.acquisition_date)
 })
 
+const formsCheck = computed(() => {
+  const a = form.pk === props.site.pk
+  const b = form.site === props.site.site
+  const c = form.ownership_ratio === props.site.ownership_ratio
+  const d = form.owned_area === props.site.owned_area
+  const e = form.acquisition_date === props.site.acquisition_date
+
+  return a && b && c && d && e
+})
+
 const sitesNum = computed(() => props.owner.sites.length)
 
 const showDetail = () => emit('show-detail')
-const relationUpdate = (payload: any) => emit('relation-update', payload)
+const relationPatch = (payload: any) => emit('relation-patch', payload)
+const relPatch = () => relationPatch(form)
 
 onBeforeMount(() => {
   if (props.site) {
     form.pk = props.site.pk
-    form.__str__ = props.site.__str__
+    form.site = props.site.site
     form.ownership_ratio = props.site.ownership_ratio
     form.owned_area = props.site.owned_area
     form.acquisition_date = props.site.acquisition_date
@@ -70,6 +81,7 @@ onBeforeMount(() => {
       min="0"
       step="0.0001"
       placeholder="소유지분(%)"
+      @keydown.enter="relPatch"
     />
   </CTableDataCell>
   <CTableDataCell class="text-right">
@@ -79,6 +91,7 @@ onBeforeMount(() => {
       min="0"
       step="0.0001"
       placeholder="면적(제곱미터)"
+      @keydown.enter="relPatch"
     />
   </CTableDataCell>
   <CTableDataCell class="text-right" color="warning">
@@ -89,10 +102,11 @@ onBeforeMount(() => {
       v-model="form.acquisition_date"
       type="number"
       placeholder="소유권 취득일"
+      @keydown.enter="relPatch"
     />
   </CTableDataCell>
   <CTableDataCell>
-    <CButton color="success" size="sm" disabled @click="relationUpdate(form)">
+    <CButton color="success" size="sm" :disabled="formsCheck" @click="relPatch">
       적용
     </CButton>
   </CTableDataCell>

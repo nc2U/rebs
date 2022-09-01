@@ -11,7 +11,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['relation-update', 'multi-submit', 'on-delete'])
+const emit = defineEmits(['relation-patch', 'multi-submit', 'on-delete'])
 
 const form = reactive({
   pk: null,
@@ -32,7 +32,7 @@ const form = reactive({
 
 const updateFormModal = ref()
 const showDetail = () => updateFormModal.value.callModal()
-const relationUpdate = (payload: any) => emit('relation-update', payload)
+const relationPatch = (payload: any) => emit('relation-patch', payload)
 const multiSubmit = (payload: any) => emit('multi-submit', payload)
 const onDelete = (payload: any) => emit('on-delete', payload)
 
@@ -67,7 +67,7 @@ onBeforeMount(() => {
       :site="site"
       :index="index"
       @show-detail="showDetail"
-      @relation-update="relationUpdate"
+      @relation-patch="relationPatch"
       @multi-submit="multiSubmit"
       @on-delete="onDelete"
     />

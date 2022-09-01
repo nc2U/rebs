@@ -7,7 +7,7 @@ import Pagination from '@/components/Pagination'
 
 defineProps({ isReturned: { type: Boolean } })
 const emit = defineEmits([
-  'relation-update',
+  'relation-patch',
   'page-select',
   'on-delete',
   'multi-submit',
@@ -19,7 +19,7 @@ const siteOwnerCount = computed(() => siteStore.siteOwnerCount)
 
 const ownerPages = (num: number) => Math.ceil(siteOwnerCount.value / num)
 const pageSelect = (page: number) => emit('page-select', page)
-const relationUpdate = (payload: any) => emit('relation-update', payload)
+const relationPatch = (payload: any) => emit('relation-patch', payload)
 const multiSubmit = (payload: any) => emit('multi-submit', payload)
 const onDelete = (pk: number) => emit('on-delete', pk)
 </script>
@@ -78,7 +78,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
         :key="owner.pk"
         :owner="owner"
         :is-returned="isReturned"
-        @relation-update="relationUpdate"
+        @relation-patch="relationPatch"
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
       />

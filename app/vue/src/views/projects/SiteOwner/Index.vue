@@ -50,21 +50,14 @@ const pageSelect = (page: number) => {
   listControl.value.listFiltering(page)
 }
 
-const onCreate = (payload: any) => {
-  siteStore.createSiteOwner(payload)
-  console.log(payload)
-}
+const onCreate = (payload: any) => siteStore.createSiteOwner(payload)
 
-const onUpdate = (payload: any) => {
-  siteStore.updateSiteOwner(payload)
-  console.log(payload)
-}
+const onUpdate = (payload: any) => siteStore.updateSiteOwner(payload)
 
-const relationUpdate = (payload: any) => {
+const relationPatch = (payload: any) => {
   const data = { project: project.value, ...payload }
-  console.log(data)
-  // siteStore.updateRelation(data)
-} // console.log('relation-update', payload)
+  siteStore.patchRelation(data)
+}
 
 const multiSubmit = (payload: any) => {
   if (payload.pk) onUpdate(payload)
@@ -100,7 +93,7 @@ onBeforeMount(() => {
       <SiteOwnerList
         :is-returned="isReturned"
         @page-select="pageSelect"
-        @relation-update="relationUpdate"
+        @relation-patch="relationPatch"
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
       />

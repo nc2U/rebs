@@ -32,6 +32,7 @@ export interface SiteOwner {
   own_sort_desc: string
   sites: {
     pk: number
+    site: number
     __str__: string
     ownership_ratio: string
     owned_area: string
@@ -232,10 +233,10 @@ export const useSite = defineStore('site', () => {
 
   const relationList = ref<Relation[]>([])
 
-  const updateRelation = (payload: Relation & { project: number }) => {
+  const patchRelation = (payload: Relation & { project: number }) => {
     const { pk, project, ...relationData } = payload
     api
-      .put(`/site-relation/${pk}/`, relationData)
+      .patch(`/site-relation/${pk}/`, relationData)
       .then(() => {
         fetchSiteOwnerList(project)
         message()
@@ -269,7 +270,7 @@ export const useSite = defineStore('site', () => {
 
     relationList,
 
-    updateRelation,
+    patchRelation,
 
     siteContractList,
   }
