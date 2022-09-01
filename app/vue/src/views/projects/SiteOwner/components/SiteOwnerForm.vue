@@ -11,7 +11,7 @@ import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 import DaumPostcode from '@/components/DaumPostcode/index.vue'
 import { AddressData, callAddress } from '@/components/DaumPostcode/address'
-import Multiselect from '@vueform/multiselect'
+import Multiselect from '@/components/MultiSelect/index.vue'
 
 const props = defineProps({
   owner: {
@@ -210,10 +210,8 @@ onBeforeMount(() => {
                 <Multiselect
                   v-model="form.sites"
                   :options="getSites"
-                  mode="tags"
-                  required
                   placeholder="소유부지 :: 필수 입력"
-                  searchable
+                  required
                 />
               </CCol>
             </CRow>
