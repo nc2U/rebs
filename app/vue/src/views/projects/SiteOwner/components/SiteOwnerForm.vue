@@ -61,21 +61,18 @@ const getSites = computed(() => siteStore.getSites)
 
 const formsCheck = computed(() => {
   if (props.owner) {
-    const a = form.project === props.owner.project
-    const b = form.own_sort === props.owner.own_sort
-    const c = form.owner === props.owner.owner
-    const d = form.date_of_birth === props.owner.date_of_birth
-    const e = form.sites === props.owner.sites
-    const f = form.phone1 === props.owner.phone1
-    const g = form.phone2 === props.owner.phone2
-    const h = form.zipcode === props.owner.zipcode
-    const i = form.address1 === props.owner.address1
-    const j = form.address2 === props.owner.address2
-    const k = form.address3 === props.owner.address3
-    const l = form.own_sort_desc === props.owner.own_sort_desc
-    const m = form.counsel_record === props.owner.counsel_record
+    const a = form.own_sort === props.owner.own_sort
+    const b = form.owner === props.owner.owner
+    const c = form.date_of_birth === props.owner.date_of_birth
+    const d = form.phone1 === props.owner.phone1
+    const e = form.phone2 === props.owner.phone2
+    const f = form.zipcode === props.owner.zipcode
+    const g = form.address1 === props.owner.address1
+    const h = form.address2 === props.owner.address2
+    const i = form.address3 === props.owner.address3
+    const j = form.counsel_record === props.owner.counsel_record
 
-    return a && b && c && d && e && f && g && h && i && j && k && l && m
+    return a && b && c && d && e && f && g && h && i && j
   } else return false
 })
 
@@ -128,7 +125,7 @@ onBeforeMount(() => {
     form.own_sort = props.owner.own_sort
     form.owner = props.owner.owner
     form.date_of_birth = props.owner.date_of_birth
-    form.sites = props.owner.sites.map((s: SiteOwner) => s.pk)
+    form.sites = props.owner.sites.map((s: any) => s.site)
     form.phone1 = props.owner.phone1
     form.phone2 = props.owner.phone2
     form.zipcode = props.owner.zipcode
