@@ -209,6 +209,7 @@ onBeforeMount(() => {
                 <Multiselect
                   v-model="form.sites"
                   :options="getSites"
+                  mode="tags"
                   placeholder="소유부지"
                   searchable
                 />
