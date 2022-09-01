@@ -31,6 +31,67 @@ $dp__input_padding: 6px 8px !default; // padding in the input
 $dp__font_size: .875rem !default; // overall font-size
 $dp__preview_font_size: 0.8rem !default; // font size of the date preview in the action row
 
+// multi-select
+:root {
+  --ms-font-size: .875rem;
+  --ms-line-height: 1.375;
+  --ms-bg: #FFFFFF;
+  --ms-bg-disabled: #F3F4F6;
+  --ms-border-color: #AAAEB7; // #D1D5DB;
+  --ms-border-width: 1px;
+  --ms-radius: 6px;
+  --ms-py: 0.48rem;
+  --ms-px: 0.875rem;
+  --ms-ring-width: 4px;
+  --ms-ring-color: #CCC7F8; // #10B98130;
+  --ms-placeholder-color: #9CA3AF;
+  --ms-max-height: 10rem;
+
+  --ms-spinner-color: #10B981;
+  --ms-caret-color: #999999;
+  --ms-clear-color: #999999;
+  --ms-clear-color-hover: #000000;
+
+  --ms-tag-font-size: 0.875rem;
+  --ms-tag-line-height: 1.25rem;
+  --ms-tag-font-weight: 600;
+  --ms-tag-bg: #10B981;
+  --ms-tag-bg-disabled: #9CA3AF;
+  --ms-tag-color: #FFFFFF;
+  --ms-tag-color-disabled: #FFFFFF;
+  --ms-tag-radius: 4px;
+  --ms-tag-py: 0.125rem;
+  --ms-tag-px: 0.5rem;
+  --ms-tag-my: 0.25rem;
+  --ms-tag-mx: 0.25rem;
+
+  --ms-tag-remove-radius: 4px;
+  --ms-tag-remove-py: 0.25rem;
+  --ms-tag-remove-px: 0.25rem;
+  --ms-tag-remove-my: 0rem;
+  --ms-tag-remove-mx: 0.125rem;
+
+  --ms-dropdown-bg: #FFFFFF;
+  --ms-dropdown-border-color: #D1D5DB;
+  --ms-dropdown-border-width: 1px;
+  --ms-dropdown-radius: 4px;
+
+  --ms-option-font-size: .875rem;
+  --ms-option-line-height: 1.375;
+  --ms-option-bg-pointed: #FFFFFF;
+  --ms-option-color-pointed: #1F2937;
+  --ms-option-bg-selected: #10B981;
+  --ms-option-color-selected: #FFFFFF;
+  --ms-option-bg-disabled: #FFFFFF;
+  --ms-option-color-disabled: #D1D5DB;
+  --ms-option-bg-selected-pointed: #26C08E;
+  --ms-option-color-selected-pointed: #FFFFFF;
+  --ms-option-bg-selected-disabled: #FFFFFF;
+  --ms-option-color-selected-disabled: #D1FAE5;
+  --ms-option-py: 0.48rem;
+  --ms-option-px: 0.75rem;
+}
+
 // bootstrap
 $spacer: 1rem;
 $spacers: (
