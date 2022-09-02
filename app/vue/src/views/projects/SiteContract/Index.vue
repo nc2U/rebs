@@ -26,6 +26,7 @@ const siteStore = useSite()
 
 const onSelectAdd = (target: any) => {
   if (!!target) {
+    siteStore.fetchAllOwners(target)
     siteStore.fetchSiteContList(target)
   } else {
     siteStore.siteContList = []
@@ -64,6 +65,7 @@ const onDelete = (payload: { pk: number; project: number }) => {
 }
 
 onBeforeMount(() => {
+  siteStore.fetchAllOwners(initProjId.value)
   siteStore.fetchSiteContList(initProjId.value)
 })
 </script>
