@@ -10,7 +10,7 @@ import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
 const props = defineProps({
-  site: {
+  contract: {
     type: Object,
     default: null,
   },
@@ -26,14 +26,28 @@ const validated = ref(false)
 const pk = ref<number | null>(null)
 const form = reactive({
   project: null as number | null,
-  order: null as number | null,
-  district: '',
-  lot_number: '',
-  site_purpose: '',
-  official_area: '',
-  returned_area: null,
-  rights_restrictions: '',
-  dup_issue_date: null as null | string,
+  owner: null as number | null,
+  contract_date: null as string | null,
+  total_price: null,
+  contract_area: '',
+  down_pay1: null,
+  down_pay1_is_paid: false,
+  down_pay2: null,
+  down_pay2_is_paid: false,
+  inter_pay1: null,
+  inter_pay1_date: null as string | null,
+  inter_pay1_is_paid: false,
+  inter_pay2: null,
+  inter_pay2_date: null as string | null,
+  inter_pay2_is_paid: false,
+  remain_pay: null,
+  remain_pay_date: null as string | null,
+  remain_pay_is_paid: false,
+  ownership_completion: false,
+  acc_bank: '',
+  acc_number: '',
+  acc_owner: '',
+  note: '',
 })
 
 const projectStore = useProject()
@@ -43,30 +57,53 @@ const isReturned = computed(() => projectStore.project?.is_returned_area)
 const siteStore = useSite()
 
 const formsCheck = computed(() => {
-  if (props.site) {
-    const a = form.project === props.site.project
-    const b = form.order === props.site.order
-    const c = form.district === props.site.district
-    const d = form.lot_number === props.site.lot_number
-    const e = form.site_purpose === props.site.site_purpose
-    const f = form.official_area === props.site.official_area
-    const g = form.returned_area === props.site.returned_area
-    const h = form.rights_restrictions === props.site.rights_restrictions
-    const i = form.dup_issue_date === props.site.dup_issue_date
+  if (props.contract) {
+    const a = form.owner === props.contract.owner
+    const b = form.contract_date === props.contract.contract_date
+    const c = form.total_price === props.contract.total_price
+    const d = form.contract_area === props.contract.contract_area
+    const e = form.down_pay1 === props.contract.down_pay1
+    const f = form.down_pay1_is_paid === props.contract.down_pay1_is_paid
+    const g = form.down_pay2 === props.contract.down_pay2
+    const h = form.down_pay2_is_paid === props.contract.down_pay2_is_paid
+    const i = form.inter_pay1 === props.contract.inter_pay1
+    const j = form.inter_pay1_date === props.contract.inter_pay1_date
+    const k = form.inter_pay1_is_paid === props.contract.inter_pay1_is_paid
+    const l = form.inter_pay2 === props.contract.inter_pay2
+    const m = form.inter_pay2_date === props.contract.inter_pay2_date
+    const n = form.inter_pay2_is_paid === props.contract.inter_pay2_is_paid
+    const o = form.remain_pay === props.contract.remain_pay
+    const p = form.remain_pay_date === props.contract.remain_pay_date
+    const q = form.remain_pay_is_paid === props.contract.remain_pay_is_paid
+    const r = form.ownership_completion === props.contract.ownership_completion
+    const s = form.acc_bank === props.contract.acc_bank
+    const t = form.acc_number === props.contract.acc_number
+    const u = form.acc_owner === props.contract.acc_owner
+    const v = form.note === props.contract.note
 
-    return a && b && c && d && e && f && g && h && i
+    const sky = a && b && c && d && e && f && g && h && i
+    const sea = j && k && l && m && n && o && p && q && r
+    const air = s && t && u && v
+
+    return sky && sea && air
   } else return false
 })
 
 watch(form, val => {
-  if (val.dup_issue_date) form.dup_issue_date = dateFormat(val.dup_issue_date)
+  if (val.contract_date) form.contract_date = dateFormat(val.contract_date)
+  if (val.inter_pay1_date)
+    form.inter_pay1_date = dateFormat(val.inter_pay1_date)
+  if (val.inter_pay2_date)
+    form.inter_pay2_date = dateFormat(val.inter_pay2_date)
+  if (val.remain_pay_date)
+    form.remain_pay_date = dateFormat(val.remain_pay_date)
 })
 
 const onSubmit = (event: any) => {
   if (isValidate(event)) {
     validated.value = true
   } else {
-    const payload = props.site ? { pk: pk.value, ...form } : { ...form }
+    const payload = props.contract ? { pk: pk.value, ...form } : { ...form }
     if (write_project) multiSubmit(payload)
     else alertModal.value.callModal()
   }
@@ -78,7 +115,7 @@ const multiSubmit = (multiPayload: any) => {
 }
 
 const deleteObject = () => {
-  emit('on-delete', { pk: props.site.pk, project: props.site.project })
+  emit('on-delete', { pk: props.contract.pk, project: props.contract.project })
   delModal.value.visible = false
   emit('close')
 }
@@ -89,20 +126,31 @@ const deleteConfirm = () => {
 }
 
 onBeforeMount(() => {
-  if (props.site) {
-    pk.value = props.site.pk
-    form.project = props.site.project
-    form.order = props.site.order
-    form.district = props.site.district
-    form.lot_number = props.site.lot_number
-    form.site_purpose = props.site.site_purpose
-    form.official_area = props.site.official_area
-    form.returned_area = props.site.returned_area
-    form.rights_restrictions = props.site.rights_restrictions
-    form.dup_issue_date = props.site.dup_issue_date
-  } else {
-    form.project = project.value
-    form.order = siteStore.siteCount + 1
+  if (props.contract) {
+    pk.value = props.contract.pk
+    form.project = props.contract.project
+    form.owner = props.contract.owner
+    form.contract_date = props.contract.contract_date
+    form.total_price = props.contract.total_price
+    form.contract_area = props.contract.contract_area
+    form.down_pay1 = props.contract.down_pay1
+    form.down_pay1_is_paid = props.contract.down_pay1_is_paid
+    form.down_pay2 = props.contract.down_pay2
+    form.down_pay2_is_paid = props.contract.down_pay2_is_paid
+    form.inter_pay1 = props.contract.inter_pay1
+    form.inter_pay1_date = props.contract.inter_pay1_date
+    form.inter_pay1_is_paid = props.contract.inter_pay1_is_paid
+    form.inter_pay2 = props.contract.inter_pay2
+    form.inter_pay2_date = props.contract.inter_pay2_date
+    form.inter_pay2_is_paid = props.contract.inter_pay2_is_paid
+    form.remain_pay = props.contract.remain_pay
+    form.remain_pay_date = props.contract.remain_pay_date
+    form.remain_pay_is_paid = props.contract.remain_pay_is_paid
+    form.ownership_completion = props.contract.ownership_completion
+    form.acc_bank = props.contract.acc_bank
+    form.acc_number = props.contract.acc_number
+    form.acc_owner = props.contract.acc_owner
+    form.note = props.contract.note
   }
 })
 </script>
@@ -119,60 +167,29 @@ onBeforeMount(() => {
         <CRow class="mb-3">
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label">등록 번호</CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label">소유자</CFormLabel>
               <CCol sm="8">
-                <CFormInput
-                  v-model.number="form.order"
+                <CFormSelect
+                  v-model.number="form.owner"
                   required
-                  min="0"
-                  type="number"
-                  placeholder="등록 번호"
+                  placeholder="소유자"
                 />
               </CCol>
             </CRow>
           </CCol>
 
-          <CCol v-if="!isReturned" sm="6">
+          <CCol sm="6">
             <CRow>
               <CFormLabel class="col-sm-4 col-form-label">
-                등기부 발급일
+                총 계약면적
               </CFormLabel>
               <CCol sm="8">
-                <DatePicker
-                  v-model="form.dup_issue_date"
-                  :required="false"
-                  maxlength="10"
-                  placeholder="등기부 발급일"
-                />
-              </CCol>
-            </CRow>
-          </CCol>
-        </CRow>
-
-        <CRow class="mb-3">
-          <CCol sm="6">
-            <CRow>
-              <CFormLabel class="col-sm-4 col-form-label">행정 동</CFormLabel>
-              <CCol sm="8">
                 <CFormInput
-                  v-model="form.district"
-                  required
-                  maxlength="10"
-                  placeholder="행정 동"
-                />
-              </CCol>
-            </CRow>
-          </CCol>
-
-          <CCol sm="6">
-            <CRow>
-              <CFormLabel class="col-sm-4 col-form-label">지번</CFormLabel>
-              <CCol sm="8">
-                <CFormInput
-                  v-model="form.lot_number"
-                  required
-                  maxlength="10"
-                  placeholder="지번"
+                  v-model.number="form.contract_area"
+                  type="number"
+                  min="0"
+                  step="0.0000001"
+                  placeholder="총 계약면적"
                 />
               </CCol>
             </CRow>
@@ -183,16 +200,14 @@ onBeforeMount(() => {
           <CCol sm="6">
             <CRow>
               <CFormLabel class="col-sm-4 col-form-label">
-                공부상 면적 - m<sup>2</sup>
+                총 매매가격
               </CFormLabel>
               <CCol sm="8">
                 <CFormInput
-                  v-model.number="form.official_area"
-                  type="number"
-                  required
+                  v-model.number="form.total_price"
                   min="0"
-                  step="0.0001"
-                  placeholder="공부상 면적"
+                  type="number"
+                  placeholder="총 매매가격"
                 />
               </CCol>
             </CRow>
@@ -200,48 +215,54 @@ onBeforeMount(() => {
 
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label">지목</CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label">
+                계약 체결일
+              </CFormLabel>
               <CCol sm="8">
-                <CFormInput
-                  v-model="form.site_purpose"
-                  required
+                <DatePicker
+                  v-model="form.contract_date"
+                  :required="false"
                   maxlength="10"
-                  placeholder="지목"
+                  placeholder="계약 체결일"
                 />
               </CCol>
             </CRow>
           </CCol>
         </CRow>
 
-        <CRow v-if="isReturned" class="mb-3">
-          <CCol sm="6">
+        <CRow class="mb-3">
+          <CCol sm="12">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label">
-                환지 면적 - m<sup>2</sup>
-              </CFormLabel>
-              <CCol sm="8">
+              <CFormLabel class="col-sm-2 col-form-label">계약금</CFormLabel>
+              <CCol sm="3">
                 <CFormInput
-                  v-model.number="form.returned_area"
+                  v-model.number="form.down_pay1"
                   type="number"
                   min="0"
-                  step="0.0001"
-                  placeholder="환지 면적"
+                  placeholder="계약금 - 1차"
                 />
               </CCol>
-            </CRow>
-          </CCol>
+              <CCol sm="2">
+                <CFormSwitch
+                  id="down_pay1_is_paid"
+                  v-model="form.down_pay1_is_paid"
+                  label="지급"
+                />
+              </CCol>
 
-          <CCol sm="6">
-            <CRow>
-              <CFormLabel class="col-sm-4 col-form-label">
-                등기부 발급일
-              </CFormLabel>
-              <CCol sm="8">
-                <DatePicker
-                  v-model="form.dup_issue_date"
-                  :required="false"
-                  maxlength="10"
-                  placeholder="등기부 발급일"
+              <CCol sm="3">
+                <CFormInput
+                  v-model.number="form.down_pay2"
+                  type="number"
+                  min="0"
+                  placeholder="계약금 - 2차"
+                />
+              </CCol>
+              <CCol sm="2">
+                <CFormSwitch
+                  id="down_pay2_is_paid"
+                  v-model="form.down_pay2_is_paid"
+                  label="지급"
                 />
               </CCol>
             </CRow>
@@ -252,13 +273,148 @@ onBeforeMount(() => {
           <CCol sm="12">
             <CRow>
               <CFormLabel class="col-sm-2 col-form-label">
-                주요 권리 제한 사항
+                중도금 (1차)
+              </CFormLabel>
+              <CCol sm="3">
+                <CFormInput
+                  v-model.number="form.inter_pay1"
+                  type="number"
+                  min="0"
+                  placeholder="중도금 - 1차"
+                />
+              </CCol>
+              <CCol sm="3">
+                <CFormSwitch
+                  id="down_pay1_is_paid"
+                  v-model="form.inter_pay1_is_paid"
+                  label="지급"
+                />
+              </CCol>
+
+              <CCol sm="3">
+                <DatePicker
+                  v-model="form.inter_pay1_date"
+                  :required="false"
+                  maxlength="10"
+                  placeholder="중도금1 지급일"
+                />
+              </CCol>
+            </CRow>
+          </CCol>
+        </CRow>
+
+        <CRow class="mb-3">
+          <CCol sm="6">
+            <CRow>
+              <CFormLabel class="col-sm-4 col-form-label">
+                중도금 (1차)
+              </CFormLabel>
+              <CCol sm="5">
+                <CFormInput
+                  v-model.number="form.inter_pay1"
+                  type="number"
+                  min="0"
+                  placeholder="중도금 - 1차"
+                />
+              </CCol>
+              <CCol sm="3">
+                <CFormSwitch
+                  id="down_pay1_is_paid"
+                  v-model="form.inter_pay1_is_paid"
+                  label="지급"
+                />
+              </CCol>
+            </CRow>
+          </CCol>
+
+          <CCol sm="6">
+            <CRow>
+              <CFormLabel class="col-sm-4 col-form-label">
+                중도금1 지급일
+              </CFormLabel>
+              <CCol sm="8">
+                <DatePicker
+                  v-model="form.inter_pay1_date"
+                  :required="false"
+                  maxlength="10"
+                  placeholder="중도금1 지급일"
+                />
+              </CCol>
+            </CRow>
+          </CCol>
+        </CRow>
+
+        <CRow class="mb-3">
+          <CCol sm="6">
+            <CRow>
+              <CFormLabel class="col-sm-4 col-form-label">
+                중도금 (1차)
+              </CFormLabel>
+              <CCol sm="5">
+                <CFormInput
+                  v-model.number="form.inter_pay1"
+                  type="number"
+                  min="0"
+                  placeholder="중도금 - 1차"
+                />
+              </CCol>
+              <CCol sm="3">
+                <CFormSwitch
+                  id="down_pay1_is_paid"
+                  v-model="form.inter_pay1_is_paid"
+                  label="지급"
+                />
+              </CCol>
+            </CRow>
+          </CCol>
+
+          <CCol sm="6">
+            <CRow>
+              <CFormLabel class="col-sm-4 col-form-label">
+                중도금1 지급일
+              </CFormLabel>
+              <CCol sm="8">
+                <DatePicker
+                  v-model="form.inter_pay1_date"
+                  :required="false"
+                  maxlength="10"
+                  placeholder="중도금1 지급일"
+                />
+              </CCol>
+            </CRow>
+          </CCol>
+        </CRow>
+
+        <CRow class="mb-3">
+          <CCol sm="12">
+            <CRow>
+              <CFormLabel class="col-sm-2 col-form-label">
+                입금 은행
+              </CFormLabel>
+              <CCol sm="3">
+                <CFormInput v-model="form.acc_bank" placeholder="입금 은행" />
+              </CCol>
+              <CCol sm="4">
+                <CFormInput v-model="form.acc_number" placeholder="계좌번호" />
+              </CCol>
+              <CCol sm="3">
+                <CFormInput v-model="form.acc_owner" placeholder="예금주" />
+              </CCol>
+            </CRow>
+          </CCol>
+        </CRow>
+
+        <CRow class="mb-3">
+          <CCol sm="12">
+            <CRow>
+              <CFormLabel class="col-sm-2 col-form-label">
+                특이사항
               </CFormLabel>
               <CCol sm="10">
                 <CFormTextarea
-                  v-model="form.rights_restrictions"
+                  v-model="form.note"
                   rows="4"
-                  placeholder="주요 권리 제한 사항"
+                  placeholder="특이사항"
                 />
               </CCol>
             </CRow>
