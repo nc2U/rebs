@@ -231,38 +231,85 @@ onBeforeMount(() => {
         </CRow>
 
         <CRow class="mb-3">
+          <CCol sm="6">
+            <CRow>
+              <CFormLabel class="col-sm-4 col-form-label">
+                계약금 (1차)
+              </CFormLabel>
+              <CCol sm="8">
+                <CInputGroup class="mb-3">
+                  <CFormInput
+                    v-model.number="form.down_pay1"
+                    type="number"
+                    min="0"
+                    placeholder="계약금 - 1차"
+                  />
+                  <CInputGroupText>
+                    <CFormCheck
+                      v-model.number="form.down_pay1_is_paid"
+                      type="checkbox"
+                      label="지급"
+                    />
+                  </CInputGroupText>
+                </CInputGroup>
+              </CCol>
+            </CRow>
+          </CCol>
+
+          <CCol sm="6">
+            <CRow>
+              <CFormLabel class="col-sm-4 col-form-label">
+                계약금 (2차)
+              </CFormLabel>
+              <CCol sm="8">
+                <CInputGroup class="mb-3">
+                  <CFormInput
+                    v-model.number="form.down_pay2"
+                    type="number"
+                    min="0"
+                    placeholder="계약금 - 2차"
+                  />
+                  <CInputGroupText>
+                    <CFormCheck
+                      v-model.number="form.down_pay2_is_paid"
+                      type="checkbox"
+                      label="지급"
+                    />
+                  </CInputGroupText>
+                </CInputGroup>
+              </CCol>
+            </CRow>
+          </CCol>
+        </CRow>
+
+        <CRow class="mb-3">
           <CCol sm="12">
             <CRow>
-              <CFormLabel class="col-sm-2 col-form-label">계약금</CFormLabel>
-              <CCol sm="3">
+              <CFormLabel class="col-sm-2 col-form-label">
+                중도금 (1차)
+              </CFormLabel>
+              <CCol sm="4">
                 <CFormInput
-                  v-model.number="form.down_pay1"
+                  v-model.number="form.inter_pay1"
                   type="number"
                   min="0"
-                  placeholder="계약금 - 1차"
+                  placeholder="중도금 - 1차"
                 />
               </CCol>
               <CCol sm="2">
                 <CFormSwitch
                   id="down_pay1_is_paid"
-                  v-model="form.down_pay1_is_paid"
+                  v-model="form.inter_pay1_is_paid"
                   label="지급"
                 />
               </CCol>
 
-              <CCol sm="3">
-                <CFormInput
-                  v-model.number="form.down_pay2"
-                  type="number"
-                  min="0"
-                  placeholder="계약금 - 2차"
-                />
-              </CCol>
-              <CCol sm="2">
-                <CFormSwitch
-                  id="down_pay2_is_paid"
-                  v-model="form.down_pay2_is_paid"
-                  label="지급"
+              <CCol sm="4">
+                <DatePicker
+                  v-model="form.inter_pay1_date"
+                  :required="false"
+                  maxlength="10"
+                  placeholder="중도금1 지급일"
                 />
               </CCol>
             </CRow>
@@ -275,7 +322,7 @@ onBeforeMount(() => {
               <CFormLabel class="col-sm-2 col-form-label">
                 중도금 (1차)
               </CFormLabel>
-              <CCol sm="3">
+              <CCol sm="4">
                 <CFormInput
                   v-model.number="form.inter_pay1"
                   type="number"
@@ -283,7 +330,7 @@ onBeforeMount(() => {
                   placeholder="중도금 - 1차"
                 />
               </CCol>
-              <CCol sm="3">
+              <CCol sm="2">
                 <CFormSwitch
                   id="down_pay1_is_paid"
                   v-model="form.inter_pay1_is_paid"
@@ -291,7 +338,7 @@ onBeforeMount(() => {
                 />
               </CCol>
 
-              <CCol sm="3">
+              <CCol sm="4">
                 <DatePicker
                   v-model="form.inter_pay1_date"
                   :required="false"
@@ -304,12 +351,12 @@ onBeforeMount(() => {
         </CRow>
 
         <CRow class="mb-3">
-          <CCol sm="6">
+          <CCol sm="12">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label">
+              <CFormLabel class="col-sm-2 col-form-label">
                 중도금 (1차)
               </CFormLabel>
-              <CCol sm="5">
+              <CCol sm="4">
                 <CFormInput
                   v-model.number="form.inter_pay1"
                   type="number"
@@ -317,63 +364,15 @@ onBeforeMount(() => {
                   placeholder="중도금 - 1차"
                 />
               </CCol>
-              <CCol sm="3">
+              <CCol sm="2">
                 <CFormSwitch
                   id="down_pay1_is_paid"
                   v-model="form.inter_pay1_is_paid"
                   label="지급"
                 />
               </CCol>
-            </CRow>
-          </CCol>
 
-          <CCol sm="6">
-            <CRow>
-              <CFormLabel class="col-sm-4 col-form-label">
-                중도금1 지급일
-              </CFormLabel>
-              <CCol sm="8">
-                <DatePicker
-                  v-model="form.inter_pay1_date"
-                  :required="false"
-                  maxlength="10"
-                  placeholder="중도금1 지급일"
-                />
-              </CCol>
-            </CRow>
-          </CCol>
-        </CRow>
-
-        <CRow class="mb-3">
-          <CCol sm="6">
-            <CRow>
-              <CFormLabel class="col-sm-4 col-form-label">
-                중도금 (1차)
-              </CFormLabel>
-              <CCol sm="5">
-                <CFormInput
-                  v-model.number="form.inter_pay1"
-                  type="number"
-                  min="0"
-                  placeholder="중도금 - 1차"
-                />
-              </CCol>
-              <CCol sm="3">
-                <CFormSwitch
-                  id="down_pay1_is_paid"
-                  v-model="form.inter_pay1_is_paid"
-                  label="지급"
-                />
-              </CCol>
-            </CRow>
-          </CCol>
-
-          <CCol sm="6">
-            <CRow>
-              <CFormLabel class="col-sm-4 col-form-label">
-                중도금1 지급일
-              </CFormLabel>
-              <CCol sm="8">
+              <CCol sm="4">
                 <DatePicker
                   v-model="form.inter_pay1_date"
                   :required="false"
@@ -413,7 +412,7 @@ onBeforeMount(() => {
               <CCol sm="10">
                 <CFormTextarea
                   v-model="form.note"
-                  rows="4"
+                  rows="3"
                   placeholder="특이사항"
                 />
               </CCol>
