@@ -509,6 +509,7 @@ class SiteContractManage(LoginRequiredMixin, ListView, FormView):
             site_cont = SiteContract.objects.get(pk=self.request.GET.get('id'))
             initial['owner'] = site_cont.owner
             initial['contract_date'] = site_cont.contract_date
+            initial['contract_area'] = site_cont.contract_area
             initial['total_price'] = site_cont.total_price
             initial['down_pay1'] = site_cont.down_pay1
             initial['down_pay1_is_paid'] = site_cont.down_pay1_is_paid
