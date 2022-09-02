@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { numFormat } from '@/utils/baseMixins'
 import FormModal from '@/components/Modals/FormModal.vue'
 import SiteContractForm from './SiteContractForm.vue'
 
 const props = defineProps({
-  site: {
+  contract: {
     type: Object,
     required: true,
   },
@@ -18,43 +18,40 @@ const updateFormModal = ref()
 const showDetail = () => updateFormModal.value.callModal()
 const multiSubmit = (payload: any) => emit('multi-submit', payload)
 const onDelete = (payload: any) => emit('on-delete', payload)
+const isDone = (bool: boolean) => (bool ? '완료' : '-')
 </script>
 
 <template>
-  <!--  <CTableRow-->
-  <!--    v-if="site"-->
-  <!--    class="text-center"-->
-  <!--  >-->
-  <CTableRow class="text-center">
-    <CTableDataCell>국공유지</CTableDataCell>
-    <CTableDataCell>홍길동</CTableDataCell>
-    <CTableDataCell>2022-09-01</CTableDataCell>
+  <CTableRow v-if="contract" class="text-center">
+    <CTableDataCell>{{ contract.owner.own_sort_desc }}</CTableDataCell>
+    <CTableDataCell>{{ contract.owner.owner }}</CTableDataCell>
+    <CTableDataCell>{{ contract.contract_date }}</CTableDataCell>
     <CTableDataCell class="text-right">
-      {{ numFormat(1000000) }}
+      {{ numFormat(contract.contract_area, 2) }}
     </CTableDataCell>
     <CTableDataCell class="text-right" color="warning">
-      {{ numFormat(300000) }}
+      {{ numFormat(contract.contract_area * 0.3025, 2) }}
     </CTableDataCell>
     <CTableDataCell class="text-right">
-      {{ numFormat(20000000000) }}
+      {{ numFormat(contract.total_price) }}
     </CTableDataCell>
     <CTableDataCell class="text-right">
-      {{ numFormat(10000000) }}
+      {{ numFormat(contract.down_pay1) }}
     </CTableDataCell>
-    <CTableDataCell>완료</CTableDataCell>
+    <CTableDataCell>{{ isDone(contract.down_pay1_is_paid) }}</CTableDataCell>
     <CTableDataCell class="text-right">
-      {{ numFormat(10000000) }}
-    </CTableDataCell>
-    <CTableDataCell class="text-right">
-      {{ numFormat(0) }}
+      {{ numFormat(contract.down_pay2) }}
     </CTableDataCell>
     <CTableDataCell class="text-right">
-      {{ numFormat(0) }}
+      {{ numFormat(contract.inter_pay1) }}
     </CTableDataCell>
     <CTableDataCell class="text-right">
-      {{ numFormat(160000000) }}
+      {{ numFormat(contract.inter_pay2) }}
     </CTableDataCell>
-    <CTableDataCell>완료</CTableDataCell>
+    <CTableDataCell class="text-right">
+      {{ numFormat(contract.remain_pay) }}
+    </CTableDataCell>
+    <CTableDataCell>{{ isDone(contract.remain_pay_is_paid) }}</CTableDataCell>
     <CTableDataCell>
       <CButton color="info" size="sm" @click="showDetail">확인</CButton>
     </CTableDataCell>
@@ -67,7 +64,7 @@ const onDelete = (payload: any) => emit('on-delete', payload)
     </template>
     <template #default>
       <SiteContractForm
-        :site="site"
+        :contract="contract"
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
         @close="updateFormModal.close()"

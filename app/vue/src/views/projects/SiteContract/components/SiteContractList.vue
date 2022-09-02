@@ -8,10 +8,10 @@ import Pagination from '@/components/Pagination'
 const emit = defineEmits(['page-select', 'on-delete', 'multi-submit'])
 
 const siteStore = useSite()
-const siteList = computed(() => siteStore.getSiteList)
-const siteCount = computed(() => siteStore.siteCount)
+const siteContList = computed(() => siteStore.siteContList)
+const siteContCount = computed(() => siteStore.siteContCount)
 
-const sitePages = (num: number) => Math.ceil(siteCount.value / num)
+const siteContPages = (num: number) => Math.ceil(siteContCount.value / num)
 const pageSelect = (page: number) => emit('page-select', page)
 const multiSubmit = (payload: any) => emit('multi-submit', payload)
 const onDelete = (pk: number) => emit('on-delete', pk)
@@ -69,22 +69,21 @@ const onDelete = (pk: number) => emit('on-delete', pk)
     </CTableHead>
 
     <CTableBody>
-      <!--      <SiteContract-->
-      <!--        v-for="site in siteList"-->
-      <!--        :key="site.pk"-->
-      <!--        :site="site"-->
-      <!--        @multi-submit="multiSubmit"-->
-      <!--        @on-delete="onDelete"-->
-      <!--      />-->
-      <SiteContract />
+      <SiteContract
+        v-for="cont in siteContList"
+        :key="cont.pk"
+        :contract="cont"
+        @multi-submit="multiSubmit"
+        @on-delete="onDelete"
+      />
     </CTableBody>
   </CTable>
 
   <Pagination
-    v-if="siteCount > 10"
+    v-if="siteContCount > 10"
     :active-page="1"
     :limit="8"
-    :pages="sitePages(10)"
+    :pages="siteContPages(10)"
     class="mt-3"
     @active-page-change="pageSelect"
   />
