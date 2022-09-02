@@ -541,17 +541,17 @@ class SiteContractManage(LoginRequiredMixin, ListView, FormView):
         context['project_list'] = Project.objects.all() if user.is_superuser else user.staffauth.allowed_projects.all()
         context['this_project'] = self.get_project()
         context['total_contract'] = SiteContract.objects.filter(project=self.get_project()).count()
-        ta = []
-        context['total_cont_area'] = 0
-        paginator = Paginator(self.get_queryset(), self.paginate_by)
-        page = self.request.GET.get('page') if self.request.GET.get('page') else 1
-        paginate_queryset = paginator.page(page)
-        for i in paginate_queryset:
-            own_area = SiteOwnshipRelationship.objects.filter(site_owner=i.owner).aggregate(Sum('owned_area'))
-            own_area_sum = own_area['owned_area__sum'] if own_area['owned_area__sum'] else 0
-            ta.append(own_area_sum)
-            context['total_cont_area'] += own_area_sum
-        context['total_area'] = list(reversed(ta))
+        # ta = []
+        # context['total_cont_area'] = 0
+        # paginator = Paginator(self.get_queryset(), self.paginate_by)
+        # page = self.request.GET.get('page') if self.request.GET.get('page') else 1
+        # paginate_queryset = paginator.page(page)
+        # for i in paginate_queryset:
+        #     own_area = SiteOwnshipRelationship.objects.filter(site_owner=i.owner).aggregate(Sum('owned_area'))
+        #     own_area_sum = own_area['owned_area__sum'] if own_area['owned_area__sum'] else 0
+        #     ta.append(own_area_sum)
+        #     context['total_cont_area'] += own_area_sum
+        # context['total_area'] = list(reversed(ta))
         return context
 
     def post(self, request, *args, **kwargs):

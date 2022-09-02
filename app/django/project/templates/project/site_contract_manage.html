@@ -49,29 +49,29 @@
                                     {{ hidden }}
                                 {% endfor %}
                                 <div class="col-12 form-row">
-                                    <div class="col-sm-12 col-lg-1 bg-light text-center mb-1">
+                                    <div class="col-sm-12 col-xl-1 bg-light text-center mb-1">
                                         <div class="col p-0 pt-2 pb-2 m-auto h-100"><strong>매입 계약등록</strong></div>
                                     </div>
-                                    <div class="col-sm-12 col-lg-11">
+                                    <div class="col-sm-12 col-xl-11">
                                         <div class="col-12 form-row mb-1">
-                                            <div class="col-12 col-lg-2 mb-1">
+                                            <div class="col-xs-12 col-sm-6 col-xl-2 mb-1">
                                                 {{ form.owner|add_class:"form-control select2"|attr:"data-placeholder:소유자 ❖ 필수 선택 ❖"|attr:"data-toggle=select2 required" }}
                                                 <div class="invalid-feedback">소유자를 선택하여 주십시요.</div>
                                             </div>
-                                            <div class="col-xs-12 col-sm-6 col-lg-2 mb-1">
+                                            <div class="col-xs-12 col-sm-6 col-xl-2 mb-1">
                                                 {{ form.contract_date|add_class:"form-control"|attr:"placeholder:계약체결일"|attr:"data-provide=datepicker data-date-format=yyyy-mm-dd data-date-autoclose=true data-toggle=input-mask data-mask-format=0000-00-00" }}
                                             </div>
-                                            <div class="col-xs-12 col-sm-6 col-lg-2 mb-1">
+                                            <div class="col-xs-12 col-sm-6 col-xl-2 mb-1">
                                                 {{ form.contract_area|add_class:"form-control"|attr:"placeholder:총 계약면적" }}
                                             </div>
-
-                                            <div class="col-xs-12 col-sm-6 col-lg-2 mb-1">
+                                            <div class="col-6 d-none d-lg-block"></div>
+                                            <div class="col-xs-12 col-sm-6 col-xl-2 mb-1">
                                                 {{ form.total_price|add_class:"form-control"|attr:"placeholder:총매매대금" }}
                                             </div>
-                                            <div class="col-xs-12 col-sm-8 col-lg-2 mb-1">
+                                            <div class="col-xs-12 col-sm-8 col-xl-2 mb-1">
                                                 {{ form.down_pay1|add_class:"form-control"|attr:"placeholder:1차계약금" }}
                                             </div>
-                                            <div class="col-xs-12 col-sm-4 col-lg-2 mb-1 m-auto">
+                                            <div class="col-xs-12 col-sm-4 col-xl-2 mb-1 m-auto">
                                                 <div class="custom-control custom-switch">
                                                     {{ form.down_pay1_is_paid|add_class:"custom-control-input"|attr:"placeholder:1차계약금 지급여부" }}
                                                     <label class="custom-control-label"
@@ -81,13 +81,13 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-xs-12 col-sm-4 col-lg-2 mb-1">
+                                            <div class="col-xs-12 col-sm-4 col-xl-2 mb-1">
                                                 {{ form.down_pay2|add_class:"form-control"|attr:"placeholder:2차계약금" }}
                                             </div>
-                                            <div class="col-xs-12 col-sm-4 col-lg-2 mb-1">
+                                            <div class="col-xs-12 col-sm-4 col-xl-2 mb-1">
                                                 {{ form.down_pay2_date|add_class:"form-control"|attr:"placeholder:2차계약금 지급일"|attr:"data-provide=datepicker data-date-format=yyyy-mm-dd data-date-autoclose=true data-toggle=input-mask data-mask-format=0000-00-00" }}
                                             </div>
-                                            <div class="col-xs-12 col-sm-4 col-lg-2 mb-1 m-auto">
+                                            <div class="col-xs-12 col-sm-4 col-xl-2 mb-1 m-auto">
                                                 <div class="custom-control custom-switch">
                                                     {{ form.down_pay2_is_paid|add_class:"custom-control-input"|attr:"placeholder:1차계약금 지급여부" }}
                                                     <label class="custom-control-label"
@@ -97,13 +97,13 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-xs-12 col-sm-4 col-lg-2 mb-1">
+                                            <div class="col-xs-12 col-sm-4 col-xl-2 mb-1">
                                                 {{ form.inter_pay1|add_class:"form-control"|attr:"placeholder:1차중도금" }}
                                             </div>
-                                            <div class="col-xs-12 col-sm-4 col-lg-2 mb-1">
+                                            <div class="col-xs-12 col-sm-4 col-xl-2 mb-1">
                                                 {{ form.inter_pay1_date|add_class:"form-control"|attr:"placeholder:1차중도금 지급일"|attr:"data-provide=datepicker data-date-format=yyyy-mm-dd data-date-autoclose=true data-toggle=input-mask data-mask-format=0000-00-00" }}
                                             </div>
-                                            <div class="col-xs-12 col-sm-4 col-lg-2 mb-1 m-auto">
+                                            <div class="col-xs-12 col-sm-4 col-xl-2 mb-1 m-auto">
                                                 <div class="custom-control custom-switch">
                                                     {{ form.inter_pay1_is_paid|add_class:"custom-control-input"|attr:"placeholder:1차계약금 지급여부" }}
                                                     <label class="custom-control-label"
@@ -113,13 +113,13 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-xs-12 col-sm-4 col-lg-2 mb-1">
+                                            <div class="col-xs-12 col-sm-4 col-xl-2 mb-1">
                                                 {{ form.inter_pay2|add_class:"form-control"|attr:"placeholder:2차중도금" }}
                                             </div>
-                                            <div class="col-xs-12 col-sm-4 col-lg-2 mb-1">
+                                            <div class="col-xs-12 col-sm-4 col-xl-2 mb-1">
                                                 {{ form.inter_pay2_date|add_class:"form-control"|attr:"placeholder:2차중도금 지급일"|attr:"data-provide=datepicker data-date-format=yyyy-mm-dd data-date-autoclose=true data-toggle=input-mask data-mask-format=0000-00-00" }}
                                             </div>
-                                            <div class="col-xs-12 col-sm-4 col-lg-2 mb-1 m-auto">
+                                            <div class="col-xs-12 col-sm-4 col-xl-2 mb-1 m-auto">
                                                 <div class="custom-control custom-switch">
                                                     {{ form.inter_pay2_is_paid|add_class:"custom-control-input"|attr:"placeholder:2차중도금 지급여부" }}
                                                     <label class="custom-control-label"
@@ -129,13 +129,13 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-xs-12 col-sm-4 col-lg-2 mb-1">
+                                            <div class="col-xs-12 col-sm-4 col-xl-2 mb-1">
                                                 {{ form.remain_pay|add_class:"form-control"|attr:"placeholder:잔금" }}
                                             </div>
-                                            <div class="col-xs-12 col-sm-4 col-lg-2 mb-1">
+                                            <div class="col-xs-12 col-sm-4 col-xl-2 mb-1">
                                                 {{ form.remain_pay_date|add_class:"form-control"|attr:"placeholder:잔금 지급일"|attr:"data-provide=datepicker data-date-format=yyyy-mm-dd data-date-autoclose=true data-toggle=input-mask data-mask-format=0000-00-00" }}
                                             </div>
-                                            <div class="col-xs-12 col-sm-4 col-lg-2 mb-1 m-auto">
+                                            <div class="col-xs-12 col-sm-4 col-xl-2 mb-1 m-auto">
                                                 <div class="custom-control custom-switch">
                                                     {{ form.remain_pay_is_paid|add_class:"custom-control-input"|attr:"placeholder:잔금 지급여부" }}
                                                     <label class="custom-control-label"
@@ -145,27 +145,27 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-xs-12 col-sm-4 col-lg-2 mb-1">
+                                            <div class="col-xs-12 col-sm-4 col-xl-2 mb-1">
                                                 {{ form.acc_bank|add_class:"form-control"|attr:"placeholder:은행" }}
                                             </div>
-                                            <div class="col-xs-12 col-sm-4 col-lg-2 mb-1">
+                                            <div class="col-xs-12 col-sm-4 col-xl-2 mb-1">
                                                 {{ form.acc_number|add_class:"form-control"|attr:"placeholder:계좌번호" }}
                                             </div>
-                                            <div class="col-xs-12 col-sm-4 col-lg-2 mb-1">
+                                            <div class="col-xs-12 col-sm-4 col-xl-2 mb-1">
                                                 {{ form.acc_owner|add_class:"form-control"|attr:"placeholder:예금주" }}
                                             </div>
 
-                                            <div class="form-group col-xs-12 col-lg-10 mb-1">
+                                            <div class="form-group col-xs-12 col-xl-10 mb-1">
                                                 {{ form.note|add_class:"form-control"|attr:"placeholder:특이사항"|attr:"rows:2" }}
                                             </div>
                                             {% if request.user.is_superuser or request.user.staffauth.project > '1' %}
-                                                <div class="col-6 col-lg-1 text-right m-auto">
+                                                <div class="col-6 col-xl-1 text-right m-auto">
                                                     {% if request.GET.id %}
                                                         <a class="btn btn-light" href="{% url 'rebs:project:site-contract' %}?{% if request.GET.page %}page={{ request.GET.page }}&{% endif %}{% if request.GET.project %}project={{ request.GET.project }}{% endif %}">변경취소</a>
                                                     {% endif %}
                                                 </div>
                                             {% endif %}
-                                            <div class="col-6 col-lg-{% if request.user.is_superuser or request.user.staffauth.project > '1' %}1{% else %}2{% endif %} text-left m-auto">
+                                            <div class="col-6 col-xl-{% if request.user.is_superuser or request.user.staffauth.project > '1' %}1{% else %}2{% endif %} text-left m-auto">
                                                 {% if request.user.is_superuser or request.user.staffauth.project > '1' %}
                                                     <button type="submit"
                                                             class="btn btn-{% if request.GET.id %}success{% else %}primary{% endif %}">
@@ -233,14 +233,12 @@
                                                 <a href="{% url 'rebs:project:site-contract' %}?{% if request.GET.page %}page={{ request.GET.page }}&{% endif %}{% if request.GET.project %}project={{ request.GET.project }}&{% endif %}id={{ object.id }}">{{ object.owner }}</a>
                                             </td>
                                             <td class="text-center">{{ object.contract_date|date:"Y-m-d" }}</td>
-                                            {% with ta=total_area.pop %}
-                                                <td class="text-right">
-                                                    {{ ta|floatformat:2|default:"-"|intcomma }}
-                                                </td>
-                                                <td class="text-right">
-                                                    {{ ta|mul:"0.3025"|floatformat:2|default:"-"|intcomma }}
-                                                </td>
-                                            {% endwith %}
+                                            <td class="text-right">
+                                                {{ object.contract_area|floatformat:2|default:"-"|intcomma }}
+                                            </td>
+                                            <td class="text-right">
+                                                {{ object.contract_area|mul:"0.3025"|floatformat:2|default:"-"|intcomma }}
+                                            </td>
                                             <td class="text-right">{{ object.total_price|default:"-"|intcomma }}</td>
                                             <td class="text-right">{{ object.down_pay1|default:"-"|intcomma }}</td>
                                             <td class="text-center {% if object.down_pay1_is_paid %}text-success{% endif %}">
