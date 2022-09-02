@@ -96,8 +96,6 @@ interface AllOwner {
 }
 
 export const useSite = defineStore('site', () => {
-  // states
-
   const allSites = ref<AllSite[]>([])
   const getSites = computed(() =>
     allSites.value.map((s: AllSite) => ({
@@ -105,10 +103,21 @@ export const useSite = defineStore('site', () => {
       label: s.__str__,
     })),
   )
+  const getSitesTotal = ref<{
+    project: number
+    official: number | null
+    returned: number | null
+  }>()
 
   const fetchAllSites = (project: number) => {
     api.get(`/all-site/?project=${project}`).then(res => {
       allSites.value = res.data.results
+    })
+  }
+
+  const fetchSitesTotal = (project: number) => {
+    api.get(`/sites-total/?project=${project}`).then(res => {
+      getSitesTotal.value = res.data.results[0]
     })
   }
 
@@ -136,6 +145,7 @@ export const useSite = defineStore('site', () => {
       .then(res => {
         siteList.value = res.data.results
         siteCount.value = res.data.count
+        fetchSitesTotal(project)
       })
       .catch(err => errorHandle(err.response.data))
   }
@@ -178,9 +188,20 @@ export const useSite = defineStore('site', () => {
       label: o.owner,
     })),
   )
+  const getOwnersTotal = ref<{
+    project: number
+    owned_area: number | null
+  }>()
+
   const siteOwner = ref<SiteOwner | null>(null)
   const siteOwnerList = ref<SiteOwner[]>([])
   const siteOwnerCount = ref(0)
+
+  const fetchOwnersTotal = (project: number) => {
+    api.get(`/owners-total/?project=${project}`).then(res => {
+      getOwnersTotal.value = res.data.results[0]
+    })
+  }
 
   const fetchAllOwners = (project: number) => {
     api.get(`/all-owner/?project=${project}`).then(res => {
@@ -210,6 +231,7 @@ export const useSite = defineStore('site', () => {
       .then(res => {
         siteOwnerList.value = res.data.results
         siteOwnerCount.value = res.data.count
+        fetchOwnersTotal(project)
       })
       .catch(err => errorHandle(err.response.data))
   }
@@ -313,22 +335,26 @@ export const useSite = defineStore('site', () => {
   return {
     allSites,
     getSites,
+    getSitesTotal,
     siteList,
     getSiteList,
     siteCount,
 
     fetchAllSites,
+    fetchSitesTotal,
     fetchSiteList,
     createSite,
     updateSite,
     deleteSite,
 
     getOwners,
+    getOwnersTotal,
     siteOwner,
     siteOwnerList,
     siteOwnerCount,
 
     fetchAllOwners,
+    fetchOwnersTotal,
     fetchSiteOwner,
     fetchSiteOwnerList,
     createSiteOwner,
