@@ -60,8 +60,10 @@ class ApiIndex(generics.GenericAPIView):
             'budget': reverse(api + ProjectBudgetList.name, request=request),
             'exec-amount-budget': reverse(api + ExecAmountToBudgetList.name, request=request),
             'all-site': reverse(api + AllSiteList.name, request=request),
+            'sites-total': reverse(api + TotalSiteArea.name, request=request),
             'site': reverse(api + 'site-list', request=request),
             'all-owner': reverse(api + AllOwnerList.name, request=request),
+            'owners-total': reverse(api + TotalOwnerArea.name, request=request),
             'site-owner': reverse(api + 'siteowner-list', request=request),
             'site-relation': reverse(api + 'relation-list', request=request),
             'site-contract': reverse(api + 'sitecontract-list', request=request),
@@ -373,7 +375,18 @@ class AllSiteList(generics.ListAPIView):
     serializer_class = AllSiteSerializer
     pagination_class = PageNumberPaginationFiveHundred
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+
+
+class TotalSiteArea(generics.ListAPIView):
+    name = 'sites-total'
+    serializer_class = TotalSiteAreaSerializer
+    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
     filter_fields = ('project',)
+
+    def get_queryset(self):
+        return Site.objects.values('project') \
+            .annotate(official=Sum('official_area'),
+                      returned=Sum('returned_area'))
 
 
 class SiteViewSets(viewsets.ModelViewSet):
@@ -394,6 +407,17 @@ class AllOwnerList(generics.ListAPIView):
     pagination_class = PageNumberPaginationFiveHundred
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
     filter_fields = ('project',)
+
+
+class TotalOwnerArea(generics.ListAPIView):
+    name = 'owners-total'
+    serializer_class = TotalOwnerAreaSerializer
+    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    filter_fields = ('project',)
+
+    def get_queryset(self):
+        return Site.objects.values('project') \
+            .annotate(owned_area=Sum('siteownshiprelationship__owned_area'))
 
 
 class SiteOwnerViewSets(viewsets.ModelViewSet):

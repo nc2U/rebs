@@ -317,6 +317,16 @@ class AllSiteSerializer(serializers.ModelSerializer):
         fields = ('pk', '__str__')
 
 
+class TotalSiteAreaSerializer(serializers.ModelSerializer):
+    project = serializers.IntegerField()
+    official = serializers.IntegerField()
+    returned = serializers.IntegerField()
+
+    class Meta:
+        model = Site
+        fields = ('project', 'official', 'returned')
+
+
 class SiteOwnerInSiteSerializer(serializers.ModelSerializer):
     own_sort_desc = serializers.CharField(source='get_own_sort_display', read_only=True)
 
@@ -347,6 +357,15 @@ class AllOwnerSerializer(serializers.ModelSerializer):
     class Meta:
         model = SiteOwner
         fields = ('pk', 'owner')
+
+
+class TotalOwnerAreaSerializer(serializers.ModelSerializer):
+    project = serializers.IntegerField()
+    owned_area = serializers.IntegerField()
+
+    class Meta:
+        model = SiteOwner
+        fields = ('project', 'owned_area')
 
 
 class SiteOwnerSerializer(serializers.ModelSerializer):
