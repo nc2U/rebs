@@ -90,6 +90,11 @@ interface AllSite {
   __str__: string
 }
 
+interface AllOwner {
+  pk: number
+  owner: string
+}
+
 export const useSite = defineStore('site', () => {
   // states
 
@@ -166,8 +171,21 @@ export const useSite = defineStore('site', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
+  const allOwners = ref<AllOwner[]>([])
+  const getOwners = computed(() =>
+    allOwners.value.map((o: AllOwner) => ({
+      value: o.pk,
+      label: o.owner,
+    })),
+  )
   const siteOwnerList = ref<SiteOwner[]>([])
   const siteOwnerCount = ref(0)
+
+  const fetchAllOwners = (project: number) => {
+    api.get(`/all-owner/?project=${project}`).then(res => {
+      allOwners.value = res.data.results
+    })
+  }
 
   const fetchSiteOwnerList = (
     project: number,
@@ -285,20 +303,21 @@ export const useSite = defineStore('site', () => {
   return {
     allSites,
     getSites,
-    fetchAllSites,
-
     siteList,
     getSiteList,
     siteCount,
 
+    fetchAllSites,
     fetchSiteList,
     createSite,
     updateSite,
     deleteSite,
 
+    getOwners,
     siteOwnerList,
     siteOwnerCount,
 
+    fetchAllOwners,
     fetchSiteOwnerList,
     createSiteOwner,
     updateSiteOwner,
