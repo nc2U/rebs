@@ -404,7 +404,7 @@ class SiteContractSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SiteContract
-        fields = ('pk', 'project', 'owner', 'contract_date', 'contract_area', 'total_price', 'down_pay1',
+        fields = ('pk', 'project', 'owner', 'contract_date', 'total_price', 'contract_area', 'down_pay1',
                   'down_pay1_is_paid', 'down_pay2', 'down_pay2_date', 'down_pay2_is_paid',
                   'inter_pay1', 'inter_pay1_date', 'inter_pay1_is_paid', 'inter_pay2',
                   'inter_pay2_date', 'inter_pay2_is_paid', 'remain_pay', 'remain_pay_date',
