@@ -3,6 +3,7 @@ import { computed, onBeforeMount, ref } from 'vue'
 import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin3'
 import { useProject } from '@/store/pinia/project'
 import { useSite } from '@/store/pinia/project_site'
+import { numFormat } from '@/utils/baseMixins'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from '@/views/projects/SiteOwner/components/ListController.vue'
@@ -24,6 +25,7 @@ const initProjId = computed(() => projectStore.initProjId)
 const isReturned = computed(() => projectStore.project?.is_returned_area)
 
 const siteStore = useSite()
+const getOwnersTotal = computed(() => siteStore.getOwnersTotal?.owned_area)
 
 const onSelectAdd = (target: any) => {
   if (!!target) {
@@ -91,7 +93,13 @@ onBeforeMount(() => {
         @list-filtering="listFiltering"
       />
       <AddSiteOwner :project="project" @multi-submit="multiSubmit" />
-      <TableTitleRow title="부지 소유자 목록" excel url="" disabled />
+      <TableTitleRow title="부지 소유자 목록" excel url="" disabled>
+        <span class="pt-1 text-success">
+          소유자 면적 : {{ numFormat(getOwnersTotal, 2) }}m<sup>2</sup> ({{
+            numFormat(getOwnersTotal * 0.3025, 2)
+          }}평) 등록
+        </span>
+      </TableTitleRow>
       <SiteOwnerList
         :is-returned="isReturned"
         @page-select="pageSelect"

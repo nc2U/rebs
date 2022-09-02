@@ -3,6 +3,7 @@ import { computed, onBeforeMount, ref } from 'vue'
 import { useProject } from '@/store/pinia/project'
 import { useSite } from '@/store/pinia/project_site'
 import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin3'
+import { numFormat } from '@/utils/baseMixins'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from './components/ListController.vue'
@@ -23,6 +24,12 @@ const initProjId = computed(() => projectStore.initProjId)
 const isReturned = computed(() => projectStore.project?.is_returned_area)
 
 const siteStore = useSite()
+const getSitesTotal = computed(() => siteStore.getSitesTotal)
+const totalArea = computed(() =>
+  isReturned.value
+    ? getSitesTotal.value?.returned
+    : getSitesTotal.value?.official,
+)
 
 const onSelectAdd = (target: any) => {
   if (!!target) {
@@ -79,10 +86,18 @@ onBeforeMount(() => {
       <ListController
         ref="listControl"
         :project="project"
+        :is-returned="isReturned"
         @list-filtering="listFiltering"
       />
       <AddSite :project="project" @multi-submit="multiSubmit" />
-      <TableTitleRow title="사업 부지 목록" excel url="" disabled />
+      <TableTitleRow title="사업 부지 목록" excel url="" disabled>
+        <span class="pt-1 text-success">
+          총 면적 : {{ numFormat(totalArea, 2) }}m<sup>2</sup> ({{
+            numFormat(totalArea * 0.3025, 2)
+          }}
+          평) 등록
+        </span>
+      </TableTitleRow>
       <SiteList
         :is-returned="isReturned"
         @page-select="pageSelect"

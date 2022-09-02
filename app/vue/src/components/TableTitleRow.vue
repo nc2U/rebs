@@ -2,7 +2,7 @@
 import ExcelExport from '@/components/DownLoad/ExcelExport.vue'
 import PdfExport from '@/components/DownLoad/PdfExport.vue'
 
-const props = defineProps({
+defineProps({
   color: { type: String, default: 'indigo' },
   title: { type: String, default: '' },
   excel: Boolean,
