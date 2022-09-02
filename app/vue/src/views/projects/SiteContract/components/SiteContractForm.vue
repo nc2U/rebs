@@ -230,7 +230,7 @@ onBeforeMount(() => {
           </CCol>
         </CRow>
 
-        <CRow class="mb-3">
+        <CRow>
           <CCol sm="6">
             <CRow>
               <CFormLabel class="col-sm-4 col-form-label">
@@ -282,102 +282,127 @@ onBeforeMount(() => {
           </CCol>
         </CRow>
 
-        <CRow class="mb-3">
-          <CCol sm="12">
+        <CRow>
+          <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-2 col-form-label">
+              <CFormLabel class="col-sm-4 col-form-label">
                 중도금 (1차)
               </CFormLabel>
-              <CCol sm="4">
-                <CFormInput
-                  v-model.number="form.inter_pay1"
-                  type="number"
-                  min="0"
-                  placeholder="중도금 - 1차"
-                />
+              <CCol sm="8">
+                <CInputGroup class="mb-3">
+                  <CFormInput
+                    v-model.number="form.inter_pay1"
+                    type="number"
+                    min="0"
+                    placeholder="중도금 - 1차"
+                  />
+                  <CInputGroupText>
+                    <CFormCheck
+                      v-model.number="form.inter_pay1_is_paid"
+                      type="checkbox"
+                      label="지급"
+                    />
+                  </CInputGroupText>
+                </CInputGroup>
               </CCol>
-              <CCol sm="2">
-                <CFormSwitch
-                  id="down_pay1_is_paid"
-                  v-model="form.inter_pay1_is_paid"
-                  label="지급"
-                />
-              </CCol>
+            </CRow>
+          </CCol>
 
-              <CCol sm="4">
+          <CCol sm="6">
+            <CRow>
+              <CFormLabel class="col-sm-4 col-form-label">
+                지급 일자
+              </CFormLabel>
+              <CCol sm="8">
                 <DatePicker
                   v-model="form.inter_pay1_date"
                   :required="false"
                   maxlength="10"
-                  placeholder="중도금1 지급일"
+                  placeholder="중도금 1차 지급일"
                 />
               </CCol>
             </CRow>
           </CCol>
         </CRow>
 
-        <CRow class="mb-3">
-          <CCol sm="12">
+        <CRow>
+          <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-2 col-form-label">
-                중도금 (1차)
+              <CFormLabel class="col-sm-4 col-form-label">
+                중도금 (2차)
               </CFormLabel>
-              <CCol sm="4">
-                <CFormInput
-                  v-model.number="form.inter_pay1"
-                  type="number"
-                  min="0"
-                  placeholder="중도금 - 1차"
-                />
+              <CCol sm="8">
+                <CInputGroup class="mb-3">
+                  <CFormInput
+                    v-model.number="form.inter_pay2"
+                    type="number"
+                    min="0"
+                    placeholder="중도금 - 2차"
+                  />
+                  <CInputGroupText>
+                    <CFormCheck
+                      v-model.number="form.inter_pay1_is_paid"
+                      type="checkbox"
+                      label="지급"
+                    />
+                  </CInputGroupText>
+                </CInputGroup>
               </CCol>
-              <CCol sm="2">
-                <CFormSwitch
-                  id="down_pay1_is_paid"
-                  v-model="form.inter_pay1_is_paid"
-                  label="지급"
-                />
-              </CCol>
+            </CRow>
+          </CCol>
 
-              <CCol sm="4">
+          <CCol sm="6">
+            <CRow>
+              <CFormLabel class="col-sm-4 col-form-label">
+                지급 일자
+              </CFormLabel>
+              <CCol sm="8">
                 <DatePicker
-                  v-model="form.inter_pay1_date"
+                  v-model="form.inter_pay2_date"
                   :required="false"
                   maxlength="10"
-                  placeholder="중도금1 지급일"
+                  placeholder="중도금 2차 지급일"
                 />
               </CCol>
             </CRow>
           </CCol>
         </CRow>
 
-        <CRow class="mb-3">
-          <CCol sm="12">
+        <CRow>
+          <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-2 col-form-label">
-                중도금 (1차)
-              </CFormLabel>
-              <CCol sm="4">
-                <CFormInput
-                  v-model.number="form.inter_pay1"
-                  type="number"
-                  min="0"
-                  placeholder="중도금 - 1차"
-                />
+              <CFormLabel class="col-sm-4 col-form-label">계약 잔금</CFormLabel>
+              <CCol sm="8">
+                <CInputGroup class="mb-3">
+                  <CFormInput
+                    v-model.number="form.remain_pay"
+                    type="number"
+                    min="0"
+                    placeholder="계약 잔금"
+                  />
+                  <CInputGroupText>
+                    <CFormCheck
+                      v-model.number="form.remain_pay_is_paid"
+                      type="checkbox"
+                      label="지급"
+                    />
+                  </CInputGroupText>
+                </CInputGroup>
               </CCol>
-              <CCol sm="2">
-                <CFormSwitch
-                  id="down_pay1_is_paid"
-                  v-model="form.inter_pay1_is_paid"
-                  label="지급"
-                />
-              </CCol>
+            </CRow>
+          </CCol>
 
-              <CCol sm="4">
+          <CCol sm="6">
+            <CRow>
+              <CFormLabel class="col-sm-4 col-form-label">
+                지급 일자
+              </CFormLabel>
+              <CCol sm="8">
                 <DatePicker
-                  v-model="form.inter_pay1_date"
+                  v-model="form.remain_pay_date"
                   :required="false"
                   maxlength="10"
-                  placeholder="중도금1 지급일"
+                  placeholder="잔금 지급일"
                 />
               </CCol>
             </CRow>
@@ -391,13 +416,32 @@ onBeforeMount(() => {
                 입금 은행
               </CFormLabel>
               <CCol sm="3">
-                <CFormInput v-model="form.acc_bank" placeholder="입금 은행" />
-              </CCol>
-              <CCol sm="4">
-                <CFormInput v-model="form.acc_number" placeholder="계좌번호" />
+                <CFormInput
+                  v-model="form.acc_bank"
+                  maxlength="20"
+                  placeholder="입금 은행"
+                />
               </CCol>
               <CCol sm="3">
-                <CFormInput v-model="form.acc_owner" placeholder="예금주" />
+                <CFormInput
+                  v-model="form.acc_number"
+                  maxlength="20"
+                  placeholder="계좌번호"
+                />
+              </CCol>
+              <CCol sm="2">
+                <CFormInput
+                  v-model="form.acc_owner"
+                  maxlength="20"
+                  placeholder="예금주"
+                />
+              </CCol>
+              <CCol sm="2" class="pt-2">
+                <CFormSwitch
+                  id="ownership_completion"
+                  v-model="form.ownership_completion"
+                  label="소유권 확보"
+                />
               </CCol>
             </CRow>
           </CCol>
@@ -449,10 +493,10 @@ onBeforeMount(() => {
   <ConfirmModal ref="delModal">
     <template #header>
       <CIcon name="cilWarning" />
-      사업 부지 정보 삭제
+      부지 매입 계약 정보 삭제
     </template>
     <template #default>
-      삭제한 데이터는 복구할 수 없습니다. 해당 사업 부지 정보를
+      삭제한 데이터는 복구할 수 없습니다. 해당 부지 매입 계약 정보를
       삭제하시겠습니까?
     </template>
     <template #footer>
