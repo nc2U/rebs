@@ -14,7 +14,15 @@ export interface Site {
   returned_area: string | null
   rights_restrictions: string
   dup_issue_date: string
-  owners: { pk: number; owner: string }[]
+  owners: SimpleOwner[]
+}
+
+type OwnSort = '개인' | '법인' | '국공유지'
+
+interface SimpleOwner {
+  pk: number
+  owner: string
+  own_sort_desc: OwnSort
 }
 
 export interface SiteOwner {
@@ -53,17 +61,17 @@ export interface Relation {
 export interface SiteContract {
   pk: number
   project: number
-  owner: number
+  owner: SimpleOwner
   contract_date: string
   total_price: number
-  down_pay1: number
+  down_pay1: number | null
   down_pay1_is_paid: boolean
-  down_pay2: number
+  down_pay2: number | null
   down_pay2_is_paid: boolean
-  inter_pay1: number
+  inter_pay1: number | null
   inter_pay1_date: string | null
   inter_pay1_is_paid: boolean
-  inter_pay2: number
+  inter_pay2: number | null
   inter_pay2_date: string | null
   inter_pay2_is_paid: boolean
   remain_pay: number
@@ -181,11 +189,6 @@ export const useSite = defineStore('site', () => {
     api
       .post(`/site-owner/`, payload)
       .then(res => {
-        // res.data.sites
-        //   .forEach((site: number) => {
-        //     api.post('/site-relation/', { site, site_owner: res.data.pk })
-        //   })
-        //   .finally(() => console.log('------------------>>>'))
         fetchSiteOwnerList(res.data.project)
         message()
         console.log('--->', res.data, res.data.sites)
