@@ -343,6 +343,12 @@ class RelationsInSiteOwnerSerializer(serializers.ModelSerializer):
         fields = ('pk', 'site', '__str__', 'ownership_ratio', 'owned_area', 'acquisition_date')
 
 
+class AllOwnerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SiteOwner
+        fields = ('pk', 'owner')
+
+
 class SiteOwnerSerializer(serializers.ModelSerializer):
     own_sort_desc = serializers.CharField(source='get_own_sort_display', read_only=True)
     sites = RelationsInSiteOwnerSerializer(source='relations', many=True, read_only=True)

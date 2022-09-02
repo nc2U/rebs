@@ -61,6 +61,7 @@ class ApiIndex(generics.GenericAPIView):
             'exec-amount-budget': reverse(api + ExecAmountToBudgetList.name, request=request),
             'all-site': reverse(api + AllSiteList.name, request=request),
             'site': reverse(api + 'site-list', request=request),
+            'all-owner': reverse(api + AllOwnerList.name, request=request),
             'site-owner': reverse(api + 'siteowner-list', request=request),
             'site-relation': reverse(api + 'relation-list', request=request),
             'site-contract': reverse(api + 'sitecontract-list', request=request),
@@ -384,6 +385,15 @@ class SiteViewSets(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+
+class AllOwnerList(generics.ListAPIView):
+    name = 'all-owner'
+    queryset = SiteOwner.objects.all()
+    serializer_class = AllOwnerSerializer
+    pagination_class = PageNumberPaginationFiveHundred
+    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    filter_fields = ('project',)
 
 
 class SiteOwnerViewSets(viewsets.ModelViewSet):

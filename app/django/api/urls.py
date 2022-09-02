@@ -62,6 +62,7 @@ urlpatterns = [
     path('site/', SiteViewSets.as_view(list_view), name='site-list'),
     path('all-site/', AllSiteList.as_view(), name=AllSiteList.name),
     path('site/<int:pk>/', SiteViewSets.as_view(detail_view), name='site-detail'),
+    path('all-owner/', AllOwnerList.as_view(), name=AllOwnerList.name),
     path('site-owner/', SiteOwnerViewSets.as_view(list_view), name='siteowner-list'),
     path('site-owner/<int:pk>/', SiteOwnerViewSets.as_view(detail_view), name='siteowner-detail'),
     path('site-relation/', SiteRelationViewSets.as_view(list_view), name='relation-list'),
