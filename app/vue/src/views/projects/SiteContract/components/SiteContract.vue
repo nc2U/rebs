@@ -18,7 +18,8 @@ const updateFormModal = ref()
 const showDetail = () => updateFormModal.value.callModal()
 const multiSubmit = (payload: any) => emit('multi-submit', payload)
 const onDelete = (payload: any) => emit('on-delete', payload)
-const isDone = (bool: boolean) => (bool ? '완료' : '-')
+const isDoneText = (bool: boolean) => (bool ? '완료' : '-')
+const isDoneClass = (bool: boolean) => (bool ? 'bg-success' : '')
 </script>
 
 <template>
@@ -38,7 +39,9 @@ const isDone = (bool: boolean) => (bool ? '완료' : '-')
     <CTableDataCell class="text-right">
       {{ numFormat(contract.down_pay1) }}
     </CTableDataCell>
-    <CTableDataCell>{{ isDone(contract.down_pay1_is_paid) }}</CTableDataCell>
+    <CTableDataCell :class="isDoneClass(contract.down_pay1_is_paid)">
+      {{ isDoneText(contract.down_pay1_is_paid) }}
+    </CTableDataCell>
     <CTableDataCell class="text-right">
       {{ numFormat(contract.down_pay2) }}
     </CTableDataCell>
@@ -51,7 +54,9 @@ const isDone = (bool: boolean) => (bool ? '완료' : '-')
     <CTableDataCell class="text-right">
       {{ numFormat(contract.remain_pay) }}
     </CTableDataCell>
-    <CTableDataCell>{{ isDone(contract.remain_pay_is_paid) }}</CTableDataCell>
+    <CTableDataCell :class="isDoneClass(contract.remain_pay_is_paid)">
+      {{ isDoneText(contract.remain_pay_is_paid) }}
+    </CTableDataCell>
     <CTableDataCell>
       <CButton color="info" size="sm" @click="showDetail">확인</CButton>
     </CTableDataCell>
