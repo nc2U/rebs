@@ -230,9 +230,16 @@ export const useSite = defineStore('site', () => {
   const siteContList = ref<SiteContract[]>([])
   const siteContCount = ref(0)
 
-  const fetchSiteContList = (project: number, page = 1, search = '') => {
+  const fetchSiteContList = (
+    project: number,
+    page = 1,
+    own_sort = '',
+    search = '',
+  ) => {
     api
-      .get(`/site-contract/?project=${project}&page=${page}&search=${search}`)
+      .get(
+        `/site-contract/?project=${project}&page=${page}&own_sort=${own_sort}&search=${search}`,
+      )
       .then(res => {
         siteContList.value = res.data.results
         siteContCount.value = res.data.count
