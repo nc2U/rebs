@@ -318,9 +318,11 @@ class AllSiteSerializer(serializers.ModelSerializer):
 
 
 class SiteOwnerInSiteSerializer(serializers.ModelSerializer):
+    own_sort_desc = serializers.CharField(source='get_own_sort_display', read_only=True)
+
     class Meta:
         model = SiteOwner
-        fields = ('pk', 'owner')
+        fields = ('pk', 'owner', 'own_sort_desc')
 
 
 class SiteSerializer(serializers.ModelSerializer):
@@ -398,6 +400,8 @@ class SiteOwnshipRelationshipSerializer(serializers.ModelSerializer):
 
 
 class SiteContractSerializer(serializers.ModelSerializer):
+    owner = SiteOwnerInSiteSerializer()
+
     class Meta:
         model = SiteContract
         fields = ('pk', 'project', 'owner', 'contract_date', 'total_price', 'down_pay1',
