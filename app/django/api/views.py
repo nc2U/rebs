@@ -389,7 +389,7 @@ class SiteViewSets(viewsets.ModelViewSet):
 
 class AllOwnerList(generics.ListAPIView):
     name = 'all-owner'
-    queryset = SiteOwner.objects.all()
+    queryset = SiteOwner.objects.all().order_by('id')
     serializer_class = AllOwnerSerializer
     pagination_class = PageNumberPaginationFiveHundred
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
