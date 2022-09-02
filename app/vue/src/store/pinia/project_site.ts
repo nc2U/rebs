@@ -63,8 +63,8 @@ export interface SiteContract {
   project: number
   owner: SimpleOwner
   contract_date: string
-  contract_area: string | null
   total_price: number
+  contract_area: string | null
   down_pay1: number | null
   down_pay1_is_paid: boolean
   down_pay2: number | null
