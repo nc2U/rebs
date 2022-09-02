@@ -407,8 +407,8 @@ class SiteContractViewSets(viewsets.ModelViewSet):
     queryset = SiteContract.objects.all()
     serializer_class = SiteContractSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-    filter_fields = ('project',)
-    search_fields = ('owner__owner', 'owner__own_sort', 'acc_bank', 'acc_owner', 'note')
+    filter_fields = ('project', 'owner__own_sort')
+    search_fields = ('owner__owner', 'owner__phone1', 'acc_bank', 'acc_owner', 'note')
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
