@@ -41,13 +41,13 @@ const onDelete = (payload: any) => emit('on-delete', payload)
       {{ numFormat(site.official_area, 2) }}
     </CTableDataCell>
     <CTableDataCell class="text-right" color="warning">
-      {{ numFormat(site.official_area, 2) }}
+      {{ numFormat(site.official_area * 0.3025, 2) }}
     </CTableDataCell>
     <CTableDataCell v-if="isReturned" class="text-right">
       {{ numFormat(site.returned_area, 2) }}
     </CTableDataCell>
     <CTableDataCell v-if="isReturned" class="text-right" color="warning">
-      {{ numFormat(site.returned_area, 2) }}
+      {{ numFormat(site.returned_area * 0.3025, 2) }}
     </CTableDataCell>
     <CTableDataCell class="text-left">
       {{ site.owners.join(', ') }}
