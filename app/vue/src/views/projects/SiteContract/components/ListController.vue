@@ -65,7 +65,7 @@ defineExpose({ listFiltering })
             <CInputGroup class="flex-nowrap">
               <CFormInput
                 v-model="form.search"
-                placeholder="소유자, 연락처, 지번, 상담기록 검색"
+                placeholder="소유자, 연락처, 은행, 예금주, 비고 검색"
                 aria-label="search"
                 :disabled="!project"
                 @keydown.enter="listFiltering(1)"

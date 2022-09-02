@@ -26,17 +26,16 @@ const siteStore = useSite()
 
 const onSelectAdd = (target: any) => {
   if (!!target) {
-    siteStore.fetchAllSites(target)
-    siteStore.fetchSiteOwnerList(target)
+    siteStore.fetchSiteContList(target)
   } else {
-    siteStore.siteOwnerList = []
-    siteStore.siteOwnerCount = 0
+    siteStore.siteContList = []
+    siteStore.siteContCount = 0
   }
 }
 
 const listFiltering = (payload: any) => {
   dataFilter.value = payload
-  siteStore.fetchSiteOwnerList(
+  siteStore.fetchSiteContList(
     project.value || initProjId.value,
     payload.page,
     payload.own_sort,
@@ -46,13 +45,13 @@ const listFiltering = (payload: any) => {
 
 const pageSelect = (page: number) => {
   dataFilter.value.page = page
-  siteStore.fetchSiteOwnerList(project.value || initProjId.value, page)
+  siteStore.fetchSiteContList(project.value || initProjId.value, page)
   listControl.value.listFiltering(page)
 }
 
-const onCreate = (payload: any) => siteStore.createSiteOwner(payload)
+const onCreate = (payload: any) => siteStore.createSiteCont(payload)
 
-const onUpdate = (payload: any) => siteStore.updateSiteOwner(payload)
+const onUpdate = (payload: any) => siteStore.updateSiteCont(payload)
 
 const multiSubmit = (payload: any) => {
   if (payload.pk) onUpdate(payload)
@@ -61,12 +60,11 @@ const multiSubmit = (payload: any) => {
 
 const onDelete = (payload: { pk: number; project: number }) => {
   const { pk, project } = payload
-  siteStore.deleteSiteOwner(pk, project)
+  siteStore.deleteSiteCont(pk, project)
 }
 
 onBeforeMount(() => {
-  siteStore.fetchAllSites(initProjId.value)
-  siteStore.fetchSiteOwnerList(initProjId.value)
+  siteStore.fetchSiteContList(initProjId.value)
 })
 </script>
 
