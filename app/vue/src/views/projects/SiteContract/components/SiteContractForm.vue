@@ -29,8 +29,8 @@ const form = reactive({
   project: null as number | null,
   owner: null as number | null,
   contract_date: null as string | null,
-  total_price: null,
-  contract_area: '',
+  total_price: null as number | null,
+  contract_area: null as number | null,
   down_pay1: null,
   down_pay1_is_paid: false,
   down_pay2: null,
@@ -87,6 +87,14 @@ const formsCheck = computed(() => {
   } else return false
 })
 
+const getAreaByOwner = computed(() =>
+  !props.contract && siteStore.siteOwner
+    ? siteStore.siteOwner.sites
+        .map(s => Number(s.owned_area))
+        .reduce((sum, val) => sum + val, 0)
+    : null,
+)
+
 watch(form, val => {
   if (val.contract_date) form.contract_date = dateFormat(val.contract_date)
   if (val.inter_pay1_date)
@@ -95,7 +103,10 @@ watch(form, val => {
     form.inter_pay2_date = dateFormat(val.inter_pay2_date)
   if (val.remain_pay_date)
     form.remain_pay_date = dateFormat(val.remain_pay_date)
+  if (!props.contract && val.owner) siteStore.fetchSiteOwner(val.owner)
 })
+
+watch(getAreaByOwner, val => (form.contract_area = val))
 
 const onSubmit = (event: any) => {
   if (isValidate(event)) {
@@ -149,7 +160,9 @@ onBeforeMount(() => {
     form.acc_number = props.contract.acc_number
     form.acc_owner = props.contract.acc_owner
     form.note = props.contract.note
-  } else form.project = props.project
+  } else {
+    form.project = props.project
+  }
 })
 </script>
 

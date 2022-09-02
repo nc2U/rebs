@@ -178,6 +178,7 @@ export const useSite = defineStore('site', () => {
       label: o.owner,
     })),
   )
+  const siteOwner = ref<SiteOwner | null>(null)
   const siteOwnerList = ref<SiteOwner[]>([])
   const siteOwnerCount = ref(0)
 
@@ -185,6 +186,15 @@ export const useSite = defineStore('site', () => {
     api.get(`/all-owner/?project=${project}`).then(res => {
       allOwners.value = res.data.results
     })
+  }
+
+  const fetchSiteOwner = (pk: number) => {
+    api
+      .get(`/site-owner/${pk}/`)
+      .then(res => {
+        siteOwner.value = res.data
+      })
+      .catch(err => errorHandle(err.response.data))
   }
 
   const fetchSiteOwnerList = (
@@ -314,10 +324,12 @@ export const useSite = defineStore('site', () => {
     deleteSite,
 
     getOwners,
+    siteOwner,
     siteOwnerList,
     siteOwnerCount,
 
     fetchAllOwners,
+    fetchSiteOwner,
     fetchSiteOwnerList,
     createSiteOwner,
     updateSiteOwner,
