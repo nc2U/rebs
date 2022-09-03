@@ -150,22 +150,25 @@ export const useSite = defineStore('site', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const createSite = (payload: Site) => {
+  const createSite = (payload: Site & { page: number; search: string }) => {
+    const { page, search, ...formData } = payload
     api
-      .post(`/site/`, payload)
+      .post(`/site/`, formData)
       .then(res => {
-        fetchSiteList(res.data.project)
+        fetchSiteList(res.data.project, page, search)
         message()
       })
       .catch(err => errorHandle(err.response.data))
   }
 
-  const updateSite = (payload: { pk: number } & Site) => {
-    const { pk, ...siteData } = payload
+  const updateSite = (
+    payload: { pk: number; page: number; search: string } & Site,
+  ) => {
+    const { pk, page, search, ...formData } = payload
     api
-      .put(`/site/${pk}/`, siteData)
+      .put(`/site/${pk}/`, formData)
       .then(res => {
-        fetchSiteList(res.data.project)
+        fetchSiteList(res.data.project, page, search)
         message()
       })
       .catch(err => errorHandle(err.response.data))
