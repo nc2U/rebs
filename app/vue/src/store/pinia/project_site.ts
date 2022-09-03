@@ -299,6 +299,16 @@ export const useSite = defineStore('site', () => {
 
   const siteContList = ref<SiteContract[]>([])
   const siteContCount = ref(0)
+  const getContsTotal = ref<{
+    project: number
+    contracted_area: number | null
+  }>()
+
+  const fetchContsTotal = (project: number) => {
+    api.get(`/conts-total/?project=${project}`).then(res => {
+      getContsTotal.value = res.data.results[0]
+    })
+  }
 
   const fetchSiteContList = (
     project: number,
@@ -313,6 +323,7 @@ export const useSite = defineStore('site', () => {
       .then(res => {
         siteContList.value = res.data.results
         siteContCount.value = res.data.count
+        fetchContsTotal(project)
       })
       .catch(err => errorHandle(err.response.data))
   }
@@ -383,6 +394,7 @@ export const useSite = defineStore('site', () => {
 
     siteContList,
     siteContCount,
+    getContsTotal,
 
     fetchSiteContList,
     createSiteCont,
