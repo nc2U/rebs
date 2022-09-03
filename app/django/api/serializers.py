@@ -425,7 +425,7 @@ class SiteOwnshipRelationshipSerializer(serializers.ModelSerializer):
 
 
 class SiteContractSerializer(serializers.ModelSerializer):
-    owner_desc = SiteOwnerInSiteSerializer(read_only=True)
+    owner_desc = SiteOwnerInSiteSerializer(source='owner', read_only=True)
 
     class Meta:
         model = SiteContract
