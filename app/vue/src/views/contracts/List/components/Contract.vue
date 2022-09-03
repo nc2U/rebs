@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { numFormat, cutString } from '@/utils/baseMixins'
+
 defineProps({
   contract: {
     type: Object,
