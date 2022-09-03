@@ -58,13 +58,16 @@ const onCreate = (payload: any) => siteStore.createSiteOwner(payload)
 const onUpdate = (payload: any) => siteStore.updateSiteOwner(payload)
 
 const relationPatch = (payload: any) => {
-  const data = { project: project.value, ...payload }
+  const { page, own_sort, search } = dataFilter.value
+  const data = { project: project.value, page, own_sort, search, ...payload }
   siteStore.patchRelation(data)
 }
 
 const multiSubmit = (payload: any) => {
-  if (payload.pk) onUpdate(payload)
-  else onCreate(payload)
+  const { page, own_sort, search } = dataFilter.value
+  const submitData = { ...payload, page, own_sort, search }
+  if (payload.pk) onUpdate(submitData)
+  else onCreate(submitData)
 }
 
 const onDelete = (payload: { pk: number; project: number }) => {

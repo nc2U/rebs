@@ -236,23 +236,28 @@ export const useSite = defineStore('site', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const createSiteOwner = (payload: SiteOwner) => {
+  const createSiteOwner = (
+    payload: SiteOwner & { page: number; own_sort: string; search: string },
+  ) => {
+    const { page, own_sort, search, ...formData } = payload
     api
-      .post(`/site-owner/`, payload)
+      .post(`/site-owner/`, formData)
       .then(res => {
-        fetchSiteOwnerList(res.data.project)
+        fetchSiteOwnerList(res.data.project, page, own_sort, search)
         message()
         console.log('--->', res.data, res.data.sites)
       })
       .catch(err => errorHandle(err.response.data))
   }
 
-  const updateSiteOwner = (payload: SiteOwner) => {
-    const { pk, ...siteData } = payload
+  const updateSiteOwner = (
+    payload: SiteOwner & { page: number; own_sort: string; search: string },
+  ) => {
+    const { pk, page, own_sort, search, ...formData } = payload
     api
-      .put(`/site-owner/${pk}/`, siteData)
+      .put(`/site-owner/${pk}/`, formData)
       .then(res => {
-        fetchSiteOwnerList(res.data.project)
+        fetchSiteOwnerList(res.data.project, page, own_sort, search)
         message()
       })
       .catch(err => errorHandle(err.response.data))
@@ -270,12 +275,19 @@ export const useSite = defineStore('site', () => {
 
   const relationList = ref<Relation[]>([])
 
-  const patchRelation = (payload: Relation & { project: number }) => {
-    const { pk, project, ...relationData } = payload
+  const patchRelation = (
+    payload: Relation & {
+      project: number
+      page: number
+      own_sort: string
+      search: string
+    },
+  ) => {
+    const { pk, project, page, own_sort, search, ...relationData } = payload
     api
       .patch(`/site-relation/${pk}/`, relationData)
       .then(() => {
-        fetchSiteOwnerList(project)
+        fetchSiteOwnerList(project, page, own_sort, search)
         message()
       })
       .catch(err => errorHandle(err.response.data))
