@@ -269,10 +269,6 @@ const project = {
         {
           component: 'CNavItem',
           name: '매입계약 관리',
-          badge: {
-            color: 'warning',
-            text: 'link',
-          },
           to: '/project/site/contract',
         },
       ],
