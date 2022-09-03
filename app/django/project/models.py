@@ -157,8 +157,8 @@ class Site(models.Model):
     district = models.CharField('행정동', max_length=10)
     lot_number = models.CharField('지번', max_length=10)
     site_purpose = models.CharField('지목', max_length=10)
-    official_area = models.DecimalField('대지면적', max_digits=10, decimal_places=4)
-    returned_area = models.DecimalField('환지면적', max_digits=10, decimal_places=4, null=True, blank=True)
+    official_area = models.DecimalField('대지면적', max_digits=12, decimal_places=7)
+    returned_area = models.DecimalField('환지면적', max_digits=12, decimal_places=7, null=True, blank=True)
     dup_issue_date = models.DateField('등본발급일', null=True, blank=True)
     rights_restrictions = models.TextField('주요 권리제한사항', blank=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
@@ -206,7 +206,7 @@ class SiteOwnshipRelationship(models.Model):
     site = models.ForeignKey(Site, on_delete=models.CASCADE)
     site_owner = models.ForeignKey(SiteOwner, on_delete=models.CASCADE, related_name='relations')
     ownership_ratio = models.DecimalField('소유지분', max_digits=10, decimal_places=7, null=True, blank=True)
-    owned_area = models.DecimalField('소유면적', max_digits=10, decimal_places=4, null=True, blank=True)
+    owned_area = models.DecimalField('소유면적', max_digits=12, decimal_places=7, null=True, blank=True)
     acquisition_date = models.DateField('최초 소유권 취득일', null=True, blank=True)
 
     def __str__(self):
@@ -223,7 +223,7 @@ class SiteContract(models.Model):
     owner = models.ForeignKey(SiteOwner, on_delete=models.CASCADE, verbose_name='소유자')
     contract_date = models.DateField('계약체결일')
     total_price = models.PositiveBigIntegerField('총매매대금')
-    contract_area = models.DecimalField('계약면적', max_digits=10, decimal_places=7, null=True, blank=True)
+    contract_area = models.DecimalField('계약면적', max_digits=12, decimal_places=7, null=True, blank=True)
     down_pay1 = models.PositiveBigIntegerField('계약금1', null=True, blank=True)
     down_pay1_is_paid = models.BooleanField('계약금1 지급여부', default=False)
     down_pay2 = models.PositiveBigIntegerField('계약금2', null=True, blank=True)
