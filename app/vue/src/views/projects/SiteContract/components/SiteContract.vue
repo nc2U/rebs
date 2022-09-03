@@ -24,8 +24,8 @@ const isDoneClass = (bool: boolean) => (bool ? 'bg-success' : '')
 
 <template>
   <CTableRow v-if="contract" class="text-center">
-    <CTableDataCell>{{ contract.owner.own_sort_desc }}</CTableDataCell>
-    <CTableDataCell>{{ contract.owner.owner }}</CTableDataCell>
+    <CTableDataCell>{{ contract.owner_desc.own_sort_desc }}</CTableDataCell>
+    <CTableDataCell>{{ contract.owner_desc.owner }}</CTableDataCell>
     <CTableDataCell>{{ contract.contract_date }}</CTableDataCell>
     <CTableDataCell class="text-right">
       {{ numFormat(contract.contract_area, 2) }}

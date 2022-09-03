@@ -61,7 +61,8 @@ export interface Relation {
 export interface SiteContract {
   pk: number
   project: number
-  owner: SimpleOwner
+  owner: number
+  owner_desc: SimpleOwner
   contract_date: string
   total_price: number
   contract_area: string | null
