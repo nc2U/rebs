@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed, reactive, nextTick } from 'vue'
 import { useSite } from '@/store/pinia/project_site'
+import { numFormat } from '@/utils/baseMixins'
 
 defineProps({ project: { type: Number, default: null } })
 const emit = defineEmits(['list-filtering'])

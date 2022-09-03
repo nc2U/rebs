@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed, reactive, nextTick } from 'vue'
 import { useSite } from '@/store/pinia/project_site'
+import { numFormat } from '@/utils/baseMixins'
 
 defineProps({ project: { type: Number, default: null } })
 const emit = defineEmits(['list-filtering'])
@@ -17,7 +18,7 @@ const own_sort_select = [
 ]
 
 const siteStore = useSite()
-const siteOwnerCount = computed(() => siteStore.siteOwnerCount)
+const siteContCount = computed(() => siteStore.siteContCount)
 
 const formsCheck = computed(() => form.own_sort === '' && form.search === '')
 
@@ -79,7 +80,7 @@ defineExpose({ listFiltering })
     <CRow>
       <CCol class="p-2 pl-3">
         <strong>
-          소유자 수 조회 결과 : {{ numFormat(siteOwnerCount) }} 건
+          소유자 수 조회 결과 : {{ numFormat(siteContCount) }} 건
         </strong>
       </CCol>
       <CCol v-if="!formsCheck" class="text-right mb-0">
