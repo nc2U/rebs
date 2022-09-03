@@ -16,14 +16,10 @@ import '@/styles/style.scss'
 const app = createApp(App)
 app.use(pinia)
 const account = useAccount()
+const init = () => account.loginByToken(Cookies.get('accessToken'))
 
-function init() {
-  const cookedToken = Cookies.get('accessToken')
-  return account.loginByToken(cookedToken)
-}
-
-loadFonts().then(() => {
-  init().then(() => {
+init().then(() => {
+  loadFonts().then(() => {
     app.use(store)
     app.use(router)
     app.use(vuetify)
