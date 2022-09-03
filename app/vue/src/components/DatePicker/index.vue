@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
 import { useStore } from 'vuex'
-import { dateFormat } from '@/utils/baseMixins'
 import { maska as vMaska } from 'maska'
 import Datepicker from '@vuepic/vue-datepicker'
 
@@ -15,6 +14,8 @@ const textInputOptions = ref({
 })
 
 const isDark = computed(() => store.state.theme === 'dark')
+
+const dateFormat = (date: Date) => date.toISOString().replace(/T.*$/, '')
 </script>
 
 <template>
