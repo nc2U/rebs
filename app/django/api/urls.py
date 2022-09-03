@@ -69,6 +69,7 @@ urlpatterns = [
     path('site-owner/<int:pk>/', SiteOwnerViewSets.as_view(detail_view), name='siteowner-detail'),
     path('site-relation/', SiteRelationViewSets.as_view(list_view), name='relation-list'),
     path('site-relation/<int:pk>/', SiteRelationViewSets.as_view(detail_view), name='relation-detail'),
+    path('conts-total/', TotalContractedArea.as_view(), name=TotalContractedArea.name),
     path('site-contract/', SiteContractViewSets.as_view(list_view), name='sitecontract-list'),
     path('site-contract/<int:pk>/', SiteContractViewSets.as_view(detail_view), name='sitecontract-detail'),
 

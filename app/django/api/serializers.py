@@ -424,6 +424,15 @@ class SiteOwnshipRelationshipSerializer(serializers.ModelSerializer):
         fields = ('pk', 'site', 'site_owner', 'ownership_ratio', 'owned_area', 'acquisition_date')
 
 
+class TotalContractedAreaSerializer(serializers.ModelSerializer):
+    project = serializers.IntegerField()
+    contracted_area = serializers.IntegerField()
+
+    class Meta:
+        model = SiteOwner
+        fields = ('project', 'contracted_area')
+
+
 class SiteContractSerializer(serializers.ModelSerializer):
     owner_desc = SiteOwnerInSiteSerializer(source='owner', read_only=True)
 

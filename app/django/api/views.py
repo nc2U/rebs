@@ -66,6 +66,7 @@ class ApiIndex(generics.GenericAPIView):
             'owners-total': reverse(api + TotalOwnerArea.name, request=request),
             'site-owner': reverse(api + 'siteowner-list', request=request),
             'site-relation': reverse(api + 'relation-list', request=request),
+            'conts-total': reverse(api + TotalContractedArea.name, request=request),
             'site-contract': reverse(api + 'sitecontract-list', request=request),
             # 'bank-code': reverse(api + BankCodeList.name, request=request),
             'com-bank': reverse(api + 'com_bank-list', request=request),
@@ -435,6 +436,17 @@ class SiteRelationViewSets(viewsets.ModelViewSet):
     queryset = SiteOwnshipRelationship.objects.all()
     serializer_class = SiteOwnshipRelationshipSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+
+
+class TotalContractedArea(generics.ListAPIView):
+    name = 'conts-total'
+    serializer_class = TotalContractedAreaSerializer
+    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    filter_fields = ('project',)
+
+    def get_queryset(self):
+        return SiteContract.objects.values('project') \
+            .annotate(contracted_area=Sum('contract_area'))
 
 
 class SiteContractViewSets(viewsets.ModelViewSet):
