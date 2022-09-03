@@ -12,11 +12,8 @@ import FormModal from '@/components/Modals/FormModal.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
 const cal = ref()
-
 const month = ref('')
-
 const scheduleStore = useSchedule()
-
 const currentEvents = computed(() => scheduleStore.events)
 
 const fetchScheduleList = (mon = '') => scheduleStore.fetchScheduleList(mon)
