@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { useStore } from 'vuex'
+import { numFormat } from '@/utils/baseMixins'
 import {
   headerSecondary,
   headerSuccess,

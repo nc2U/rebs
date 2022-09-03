@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { dateFormat } from '@/utils/baseMixins'
+import { numFormat, dateFormat } from '@/utils/baseMixins'
 
 const props = defineProps({
   contract: { type: Object, default: null },

@@ -19,8 +19,8 @@ const compName = ref('StatusByAccount')
 const store = useStore()
 const projectStore = useProject()
 
-const project = computed(() => projectStore.project?.pk)
 const initProjId = computed(() => projectStore.initProjId)
+const project = computed(() => projectStore.project?.pk || initProjId.value)
 
 const fetchProAllAccD1List = () =>
   store.dispatch('proCash/fetchProAllAccD1List')
@@ -76,11 +76,8 @@ const setDate = (d: Date) => {
   date.value = dt
   fetchBalanceByAccList({ project: project.value, date: dateFormat(dt) })
   fetchDateCashBookList({ project: project.value, date: dateFormat(dt) })
-  fetchProjectBudgetList(project.value || initProjId.value)
-  fetchExecAmountList({
-    project: project.value || initProjId.value,
-    date: dateFormat(dt),
-  })
+  fetchProjectBudgetList(project.value)
+  fetchExecAmountList({ project: project.value, date: dateFormat(dt) })
 }
 
 onBeforeMount(() => {

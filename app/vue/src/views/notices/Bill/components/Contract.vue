@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import { computed, ref, nextTick, onMounted, watch } from 'vue'
+import { computed, ref, nextTick, watch } from 'vue'
 import { useStore } from 'vuex'
+import { numFormat } from '@/utils/baseMixins'
 
 const props = defineProps({
   contract: {

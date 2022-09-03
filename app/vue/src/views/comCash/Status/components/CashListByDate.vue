@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount, ref, watch, Ref } from 'vue'
 import { useStore } from 'vuex'
+import { numFormat, dateFormat } from '@/utils/baseMixins'
 import { headerSecondary } from '@/utils/cssMixins'
 
 defineProps({ date: { type: String, default: '' } })

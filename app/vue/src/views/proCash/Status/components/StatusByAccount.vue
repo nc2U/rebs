@@ -1,3 +1,59 @@
+<script lang="ts" setup>
+import { computed, onBeforeMount, ref, watch } from 'vue'
+import { useStore } from 'vuex'
+import { numFormat, dateFormat } from '@/utils/baseMixins'
+import { headerSecondary } from '@/utils/cssMixins'
+
+defineProps({ date: { type: String, default: '' } })
+
+const preBalance = ref(0)
+const dateIncSum = ref(0)
+const dateOutSum = ref(0)
+const dateBalance = ref(0)
+
+const store = useStore()
+
+const balanceByAccList = computed(() => store.state.proCash.balanceByAccList)
+
+watch(balanceByAccList, () => getSumTotal())
+
+onBeforeMount(() => getSumTotal())
+
+const getSumTotal = () => {
+  const dateIncSumCalc =
+    balanceByAccList.value.length !== 0
+      ? balanceByAccList.value
+          .map((i: any) => i.date_inc)
+          .reduce((x: number, y: number) => x + y)
+      : 0
+  const dateOutSumCalc =
+    balanceByAccList.value.length !== 0
+      ? balanceByAccList.value
+          .map((o: any) => o.date_out)
+          .reduce((x: number, y: number) => x + y)
+      : 0
+  const dateIncTotalCalc =
+    balanceByAccList.value.length !== 0
+      ? balanceByAccList.value
+          .filter((i: any) => i.inc_sum !== null)
+          .map((i: any) => i.inc_sum)
+          .reduce((x: number, y: number) => x + y)
+      : 0
+  const dateOutTotalCalc =
+    balanceByAccList.value.length !== 0
+      ? balanceByAccList.value
+          .filter((o: any) => o.out_sum !== null)
+          .map((o: any) => o.out_sum)
+          .reduce((x: number, y: number) => x + y)
+      : 0
+  dateIncSum.value = dateIncSumCalc
+  dateOutSum.value = dateOutSumCalc
+  dateBalance.value = dateIncTotalCalc - dateOutTotalCalc
+  preBalance.value =
+    dateIncTotalCalc - dateOutTotalCalc - (dateIncSumCalc - dateOutSumCalc)
+}
+</script>
+
 <template>
   <CTable hover responsive bordered align="middle">
     <colgroup>
@@ -68,71 +124,3 @@
     </CTableBody>
   </CTable>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import { headerSecondary } from '@/utils/cssMixins'
-import { mapState } from 'vuex'
-
-export default defineComponent({
-  name: 'StatusByAccount',
-  components: {},
-  props: { date: String },
-  data() {
-    return {
-      preBalance: 0,
-      dateIncSum: 0,
-      dateOutSum: 0,
-      dateBalance: 0,
-    }
-  },
-  computed: {
-    headerSecondary() {
-      return headerSecondary.value
-    },
-    ...mapState('proCash', ['balanceByAccList']),
-  },
-  watch: {
-    balanceByAccList() {
-      this.getSumTotal()
-    },
-  },
-  created() {
-    this.getSumTotal()
-  },
-  methods: {
-    getSumTotal() {
-      const dateIncSum =
-        this.balanceByAccList.length !== 0
-          ? this.balanceByAccList
-              .map((i: any) => i.date_inc)
-              .reduce((x: number, y: number) => x + y)
-          : 0
-      const dateOutSum =
-        this.balanceByAccList.length !== 0
-          ? this.balanceByAccList
-              .map((o: any) => o.date_out)
-              .reduce((x: number, y: number) => x + y)
-          : 0
-      const dateIncTotal =
-        this.balanceByAccList.length !== 0
-          ? this.balanceByAccList
-              .filter((i: any) => i.inc_sum !== null)
-              .map((i: any) => i.inc_sum)
-              .reduce((x: number, y: number) => x + y)
-          : 0
-      const dateOutTotal =
-        this.balanceByAccList.length !== 0
-          ? this.balanceByAccList
-              .filter((o: any) => o.out_sum !== null)
-              .map((o: any) => o.out_sum)
-              .reduce((x: number, y: number) => x + y)
-          : 0
-      this.dateIncSum = dateIncSum
-      this.dateOutSum = dateOutSum
-      this.dateBalance = dateIncTotal - dateOutTotal
-      this.preBalance = dateIncTotal - dateOutTotal - (dateIncSum - dateOutSum)
-    },
-  },
-})
-</script>

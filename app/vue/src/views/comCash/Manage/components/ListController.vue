@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, reactive, ref, watch, nextTick } from 'vue'
 import { useStore } from 'vuex'
-import { dateFormat } from '@/utils/baseMixins'
+import { numFormat, dateFormat } from '@/utils/baseMixins'
 import DatePicker from '@/components/DatePicker/index.vue'
 import { maska as vMaska } from 'maska'
 

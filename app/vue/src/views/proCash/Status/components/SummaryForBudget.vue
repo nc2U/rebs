@@ -1,3 +1,71 @@
+<script lang="ts" setup>
+import { computed, onBeforeMount, ref, watch } from 'vue'
+import { useStore } from 'vuex'
+import { numFormat, dateFormat } from '@/utils/baseMixins'
+import { headerSecondary, headerInfo } from '@/utils/cssMixins'
+
+defineProps({ date: { type: String, default: '' } })
+
+const totalBudget = ref(0)
+const preExecAmt = ref(0)
+const monthExecAmt = ref(0)
+const totalExecAmt = ref(0)
+const availableBudget = ref(0)
+
+const store = useStore()
+
+const orderGroupList = computed(() => store.state.contract.orderGroupList)
+const unitTypeList = computed(() => store.state.project.unitTypeList)
+const proBudgetList = computed(() => store.state.proCash.proBudgetList)
+const execAmountList = computed(() => store.state.proCash.execAmountList)
+
+onBeforeMount(() => getSumTotal())
+
+watch(proBudgetList, () => getSumTotal())
+
+const getD2sInter = (arr: number[]) => {
+  const d2s = proBudgetList.value.map((b: any) => b.account_d2.pk)
+  const d2Inters = arr.filter(x => d2s.includes(x))
+  return d2Inters
+}
+const getLength = (arr: number[]) => getD2sInter(arr).length
+
+const getFirst = (arr: number[]) => getD2sInter(arr)[0]
+
+const getSubTitle = (sub: string) =>
+  sub !== ''
+    ? proBudgetList.value
+        .filter((b: any) => b.account_d2.sub_title === sub)
+        .map((b: any) => b.pk)
+    : []
+
+const getExecAmount = (d2: number) =>
+  execAmountList.value.filter((e: any) => e.acc_d2 === d2)
+
+const getEASum = (d2: number) => getExecAmount(d2).map((e: any) => e.all_sum)[0]
+
+const getEAMonth = (d2: number) =>
+  getExecAmount(d2).map((e: any) => e.month_sum)[0]
+
+const getSumTotal = () => {
+  const totalBudgetCalc = proBudgetList.value
+    .map((b: any) => b.budget)
+    .reduce((res: number, val: number) => res + val, 0)
+  const monthExecAmtCalc = execAmountList.value
+    .map((a: any) => a.month_sum)
+    .reduce((r: number, v: number) => r + v, 0)
+  const totalExecAmtCalc = execAmountList.value
+    .map((a: any) => a.all_sum)
+    .reduce((r: number, v: number) => r + v, 0)
+
+  totalBudget.value = totalBudgetCalc
+  preExecAmt.value = totalExecAmtCalc - monthExecAmtCalc
+  monthExecAmt.value = monthExecAmtCalc
+  totalExecAmt.value = totalExecAmtCalc
+  availableBudget.value = totalBudgetCalc - totalExecAmtCalc
+}
+</script>
+
 <template>
   <CTable hover responsive bordered align="middle">
     <colgroup>
@@ -105,88 +173,3 @@
     </CTableBody>
   </CTable>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import { headerSecondary, headerInfo } from '@/utils/cssMixins'
-import { mapState } from 'vuex'
-
-export default defineComponent({
-  name: 'SummaryForBudget',
-  props: { date: String },
-  data() {
-    return {
-      totalBudget: 0,
-      preExecAmt: 0,
-      monthExecAmt: 0,
-      totalExecAmt: 0,
-      availableBudget: 0,
-    }
-  },
-  created() {
-    this.getSumTotal()
-  },
-  computed: {
-    headerSecondary() {
-      return headerSecondary.value
-    },
-    headerInfo() {
-      return headerInfo.value
-    },
-    ...mapState('contract', ['orderGroupList']),
-    ...mapState('project', ['unitTypeList']),
-    ...mapState('proCash', ['proBudgetList', 'execAmountList']),
-  },
-  watch: {
-    proBudgetList() {
-      this.getSumTotal()
-    },
-  },
-  methods: {
-    getD2sInter(arr: number[]) {
-      const d2s = this.proBudgetList.map((b: any) => b.account_d2.pk)
-      const d2Inters = arr.filter(x => d2s.includes(x))
-      return d2Inters
-    },
-    getLength(arr: number[]) {
-      return this.getD2sInter(arr).length
-    },
-    getFirst(arr: number[]) {
-      return this.getD2sInter(arr)[0]
-    },
-    getSubTitle(sub: string) {
-      return sub !== ''
-        ? this.proBudgetList
-            .filter((b: any) => b.account_d2.sub_title === sub)
-            .map((b: any) => b.pk)
-        : []
-    },
-    getExecAmount(d2: number) {
-      return this.execAmountList.filter((e: any) => e.acc_d2 === d2)
-    },
-    getEASum(d2: number) {
-      return this.getExecAmount(d2).map((e: any) => e.all_sum)[0]
-    },
-    getEAMonth(d2: number) {
-      return this.getExecAmount(d2).map((e: any) => e.month_sum)[0]
-    },
-    getSumTotal() {
-      const totalBudget = this.proBudgetList
-        .map((b: any) => b.budget)
-        .reduce((res: number, val: number) => res + val, 0)
-      const monthExecAmt = this.execAmountList
-        .map((a: any) => a.month_sum)
-        .reduce((r: number, v: number) => r + v, 0)
-      const totalExecAmt = this.execAmountList
-        .map((a: any) => a.all_sum)
-        .reduce((r: number, v: number) => r + v, 0)
-
-      this.totalBudget = totalBudget
-      this.preExecAmt = totalExecAmt - monthExecAmt
-      this.monthExecAmt = monthExecAmt
-      this.totalExecAmt = totalExecAmt
-      this.availableBudget = totalBudget - totalExecAmt
-    },
-  },
-})
-</script>

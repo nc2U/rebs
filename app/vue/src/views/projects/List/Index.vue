@@ -63,6 +63,7 @@ const toUpdate = (payload: { pk: string } & Project) => updateProject(payload)
       :update="update"
       @to-create="toCreate"
       @to-update="toUpdate"
+      @reset-form="resetForm"
     />
   </ContentBody>
 </template>

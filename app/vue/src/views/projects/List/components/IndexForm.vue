@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+<script setup lang="ts">
 import { ref, reactive, computed, onBeforeMount } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
@@ -9,6 +9,7 @@ import { callAddress, AddressData } from '@/components/DaumPostcode/address'
 const props = defineProps({
   project: {
     type: Object,
+    default: null,
   },
   update: {
     type: Boolean,
@@ -63,8 +64,8 @@ const company = computed(() =>
   props.update ? props.project?.company : accountStore.staffAuth?.company,
 )
 
-const confirmText = () => (props.update ? '변경' : '등록')
-const btnClass = () => (props.update ? 'success' : 'primary')
+const confirmText = computed(() => (props.update ? '변경' : '등록'))
+const btnClass = computed(() => (props.update ? 'success' : 'primary'))
 
 const formsCheck = computed(() => {
   if (props.update && props.project) {
@@ -120,7 +121,7 @@ const onSubmit = (event: any) => {
   } else alertModal.value.callModal()
 }
 
-const emit = defineEmits(['to-create', 'to-update'])
+const emit = defineEmits(['to-create', 'to-update', 'reset-form'])
 
 const modalAction = () => {
   if (props.update) {
@@ -542,7 +543,7 @@ onBeforeMount(() => {
       </CCardBody>
 
       <CCardFooter class="text-right">
-        <CButton type="button" color="light" @click="$emit('reset-form')">
+        <CButton type="button" color="light" @click="emit('reset-form')">
           취소
         </CButton>
         <CButton
