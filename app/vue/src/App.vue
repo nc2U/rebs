@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { watch } from 'vue'
+import { onMounted, watch } from 'vue'
 import { useStore } from 'vuex'
 import Spinner from '@/components/Spinner/index.vue'
 
@@ -11,9 +11,11 @@ watch(store.state, () => {
     : document.body.classList.remove('dark-theme')
 })
 
-store.state.theme === 'dark'
-  ? document.body.classList.add('dark-theme')
-  : document.body.classList.remove('dark-theme')
+onMounted(() =>
+  store.state.theme === 'dark'
+    ? document.body.classList.add('dark-theme')
+    : document.body.classList.remove('dark-theme'),
+)
 </script>
 
 <template>
