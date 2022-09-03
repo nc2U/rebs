@@ -7,14 +7,12 @@ import { maska as vMaska } from 'maska'
 
 const store = useStore()
 
-const textInputOptions = computed(() => {
-  return {
-    enterSubmit: true,
-    tabSubmit: true,
-    openMenu: true,
-    format: 'yyyy-MM-dd',
-  }
-})
+const textInputOptions = computed(() => ({
+  enterSubmit: true,
+  tabSubmit: true,
+  openMenu: true,
+  format: 'yyyy-MM-dd',
+}))
 
 const isDark = computed(() => store.state.theme === 'dark')
 </script>
