@@ -13,14 +13,15 @@ import vuetify from './plugins/vuetify'
 import { loadFonts } from './plugins/webfontloader'
 import '@/styles/style.scss'
 
+const app = createApp(App)
+app.use(pinia)
+const account = useAccount()
+
 function init() {
   const cookedToken = Cookies.get('accessToken')
   return account.loginByToken(cookedToken)
 }
 
-const app = createApp(App)
-app.use(pinia)
-const account = useAccount()
 loadFonts().then(() => {
   init().then(() => {
     app.use(store)
