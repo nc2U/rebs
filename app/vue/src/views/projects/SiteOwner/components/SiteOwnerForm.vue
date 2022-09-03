@@ -211,7 +211,7 @@ onBeforeMount(() => {
                   v-model="form.sites"
                   :options="getSites"
                   placeholder="소유부지 :: 필수 입력"
-                  required
+                  :attrs="form.sites.length ? {} : { required: true }"
                 />
               </CCol>
             </CRow>

@@ -184,8 +184,11 @@ onBeforeMount(() => {
                   v-model.number="form.owner"
                   :options="getOwners"
                   placeholder="소유자"
+                  autocomplete="label"
+                  :classes="{ search: 'form-control multiselect-search' }"
+                  :attrs="form.owner ? {} : { required: true }"
+                  :add-option-on="['enter' | 'tab']"
                   searchable
-                  required
                 />
               </CCol>
             </CRow>
