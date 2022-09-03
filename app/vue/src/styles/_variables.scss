@@ -32,6 +32,12 @@ $dp__font_size: .875rem !default; // overall font-size
 $dp__preview_font_size: 0.8rem !default; // font size of the date preview in the action row
 
 // multi-select
+.dark-theme {
+  --ms-bg: #474850 !important;
+  --ms-dropdown-bg: #353641 !important;
+  --ms-option-bg-pointed: #D1FAE5 !important;
+}
+
 :root {
   --ms-font-size: .875rem;
   --ms-line-height: 1.375;
