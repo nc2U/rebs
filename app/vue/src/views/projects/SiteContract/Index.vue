@@ -3,6 +3,7 @@ import { computed, onBeforeMount, ref } from 'vue'
 import { useProject } from '@/store/pinia/project'
 import { useSite } from '@/store/pinia/project_site'
 import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin3'
+import { numFormat } from '@/utils/baseMixins'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from './components/ListController.vue'
@@ -23,6 +24,7 @@ const project = computed(() => projectStore.project?.pk)
 const initProjId = computed(() => projectStore.initProjId)
 
 const siteStore = useSite()
+const getContsTotal = computed(() => siteStore.getContsTotal?.contracted_area)
 
 const onSelectAdd = (target: any) => {
   if (!!target) {
@@ -85,7 +87,14 @@ onBeforeMount(() => {
         @list-filtering="listFiltering"
       />
       <AddSite :project="project" @multi-submit="multiSubmit" />
-      <TableTitleRow title="부지 매입계약 목록" excel url="" disabled />
+      <TableTitleRow title="부지 매입계약 목록" excel url="" disabled>
+        <span class="pt-1 text-success">
+          총 계약 면적 : {{ numFormat(getContsTotal, 2) }}m<sup>2</sup> ({{
+            numFormat(getContsTotal * 0.3025, 2)
+          }}
+          평) 등록
+        </span>
+      </TableTitleRow>
       <SiteContractList
         @page-select="pageSelect"
         @multi-submit="multiSubmit"
