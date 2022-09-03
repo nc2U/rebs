@@ -259,6 +259,7 @@ onBeforeMount(() => {
                   />
                   <CInputGroupText>
                     <CFormCheck
+                      id="down_pay1_is_paid"
                       v-model="form.down_pay1_is_paid"
                       type="checkbox"
                       label="지급"
@@ -284,6 +285,7 @@ onBeforeMount(() => {
                   />
                   <CInputGroupText>
                     <CFormCheck
+                      id="down_pay2_is_paid"
                       v-model="form.down_pay2_is_paid"
                       type="checkbox"
                       label="지급"
@@ -311,6 +313,7 @@ onBeforeMount(() => {
                   />
                   <CInputGroupText>
                     <CFormCheck
+                      id="inter_pay1_is_paid"
                       v-model="form.inter_pay1_is_paid"
                       type="checkbox"
                       label="지급"
@@ -354,7 +357,8 @@ onBeforeMount(() => {
                   />
                   <CInputGroupText>
                     <CFormCheck
-                      v-model="form.inter_pay1_is_paid"
+                      id="inter_pay2_is_paid"
+                      v-model="form.inter_pay2_is_paid"
                       type="checkbox"
                       label="지급"
                     />
@@ -396,6 +400,7 @@ onBeforeMount(() => {
                   />
                   <CInputGroupText>
                     <CFormCheck
+                      id="remain_pay_is_paid"
                       v-model="form.remain_pay_is_paid"
                       type="checkbox"
                       label="지급"
