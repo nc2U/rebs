@@ -24,8 +24,7 @@ export const addDays = (date: Date, days: number) => {
 }
 
 export const dateFormat = (date: Date | string) => {
-  let source
-  if (typeof date === 'string') source = date
-  else source = date.toISOString()
-  return source.replace(/T.*$/, '')
+  return typeof date === 'string'
+    ? date
+    : date.toISOString().replace(/T.*$/, '')
 }
