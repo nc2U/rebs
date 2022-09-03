@@ -32,6 +32,7 @@ const multiSubmit = (payload: any) => emit('multi-submit', payload)
     </template>
     <template #default>
       <SiteContractForm
+        :project="project"
         @multi-submit="multiSubmit"
         @close="formModal.close()"
       />
