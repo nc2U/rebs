@@ -13,8 +13,6 @@ import vuetify from './plugins/vuetify'
 import { loadFonts } from './plugins/webfontloader'
 import '@/styles/style.scss'
 
-loadFonts()
-
 function init() {
   const cookedToken = Cookies.get('accessToken')
   return account.loginByToken(cookedToken)
@@ -23,14 +21,15 @@ function init() {
 const app = createApp(App)
 app.use(pinia)
 const account = useAccount()
-
-init().then(() => {
-  app.use(store)
-  app.use(router)
-  app.use(vuetify)
-  app.mixin(mixins)
-  app.use(CoreuiVue)
-  app.provide('icons', icons)
-  app.component('CIcon', CIcon)
-  app.mount('#app')
+loadFonts().then(() => {
+  init().then(() => {
+    app.use(store)
+    app.use(router)
+    app.use(vuetify)
+    app.mixin(mixins)
+    app.use(CoreuiVue)
+    app.provide('icons', icons)
+    app.component('CIcon', CIcon)
+    app.mount('#app')
+  })
 })
