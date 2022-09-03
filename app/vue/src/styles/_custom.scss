@@ -26,14 +26,13 @@
 
 // NProgress css
 #nprogress .bar {
-  background: #e3caf9;
+  background: #61D766;
   height: 1.2px;
 }
 
 // DatePicker scss
 .dp__theme_dark {
-  --dp-background-color: #2F303A !important;
-  --dp-secondary-color: #a9a9a9;
+  --dp-background-color: #353641 !important; // #474850
   --dp-border-color: #42434C !important;
   --dp-menu-border-color: #42434C !important;
 }
