@@ -191,7 +191,7 @@ onBeforeMount(() => {
                   type="number"
                   required
                   min="0"
-                  step="0.0001"
+                  step="0.0000001"
                   placeholder="공부상 면적"
                 />
               </CCol>
@@ -224,7 +224,7 @@ onBeforeMount(() => {
                   v-model.number="form.returned_area"
                   type="number"
                   min="0"
-                  step="0.0001"
+                  step="0.0000001"
                   placeholder="환지 면적"
                 />
               </CCol>

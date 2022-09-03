@@ -79,7 +79,7 @@ onBeforeMount(() => {
       v-model.number="form.ownership_ratio"
       type="number"
       min="0"
-      step="0.0001"
+      step="0.0000001"
       placeholder="소유지분(%)"
       @keydown.enter="relPatch"
     />
@@ -89,7 +89,7 @@ onBeforeMount(() => {
       v-model.number="form.owned_area"
       type="number"
       min="0"
-      step="0.0001"
+      step="0.0000001"
       placeholder="면적(제곱미터)"
       @keydown.enter="relPatch"
     />
