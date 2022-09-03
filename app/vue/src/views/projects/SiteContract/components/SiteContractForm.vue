@@ -484,19 +484,19 @@ onBeforeMount(() => {
     </CModalBody>
 
     <CModalFooter>
-      <CButton type="button" color="light" @click="$emit('close')">
+      <CButton type="button" color="light" @click="emit('close')">
         닫기
       </CButton>
       <slot name="footer">
         <CButton
           type="submit"
-          :color="site ? 'success' : 'primary'"
+          :color="contract ? 'success' : 'primary'"
           :disabled="formsCheck"
         >
           저장
         </CButton>
         <CButton
-          v-if="site"
+          v-if="contract"
           type="button"
           color="danger"
           @click="deleteConfirm"
