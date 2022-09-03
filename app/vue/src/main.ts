@@ -4,7 +4,6 @@ import Cookies from 'js-cookie'
 import App from './App.vue'
 import store, { pinia } from './store'
 import router from './router'
-import mixins from '@/mixins/mixins'
 
 import CoreuiVue from '@coreui/vue'
 import { CIcon } from '@coreui/icons-vue'
@@ -23,7 +22,6 @@ init().then(() => {
     app.use(store)
     app.use(router)
     app.use(vuetify)
-    app.mixin(mixins)
     app.use(CoreuiVue)
     app.provide('icons', icons)
     app.component('CIcon', CIcon)
