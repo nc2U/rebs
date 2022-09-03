@@ -319,8 +319,8 @@ class AllSiteSerializer(serializers.ModelSerializer):
 
 class TotalSiteAreaSerializer(serializers.ModelSerializer):
     project = serializers.IntegerField()
-    official = serializers.IntegerField()
-    returned = serializers.IntegerField()
+    official = serializers.DecimalField(max_digits=12, decimal_places=7)
+    returned = serializers.DecimalField(max_digits=12, decimal_places=7)
 
     class Meta:
         model = Site
@@ -361,7 +361,7 @@ class AllOwnerSerializer(serializers.ModelSerializer):
 
 class TotalOwnerAreaSerializer(serializers.ModelSerializer):
     project = serializers.IntegerField()
-    owned_area = serializers.IntegerField()
+    owned_area = serializers.DecimalField(max_digits=12, decimal_places=7)
 
     class Meta:
         model = SiteOwner
@@ -426,7 +426,7 @@ class SiteOwnshipRelationshipSerializer(serializers.ModelSerializer):
 
 class TotalContractedAreaSerializer(serializers.ModelSerializer):
     project = serializers.IntegerField()
-    contracted_area = serializers.IntegerField()
+    contracted_area = serializers.DecimalField(max_digits=12, decimal_places=7)
 
     class Meta:
         model = SiteOwner
