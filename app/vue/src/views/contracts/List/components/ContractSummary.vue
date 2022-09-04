@@ -1,18 +1,20 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { useStore } from 'vuex'
+import { useProjectData } from '@/store/pinia/project_data'
+import { useContract } from '@/store/pinia/contract'
 import { numFormat } from '@/utils/baseMixins'
 import { ratioFormat } from '@/utils/areaMixins'
 import { headerSecondary } from '@/utils/cssMixins'
 
-const store = useStore()
-
 const props = defineProps({ project: { type: Object, default: null } })
 
-const orderGroupList = computed(() => store.state.contract.orderGroupList)
-const subsSummaryList = computed(() => store.state.contract.subsSummaryList)
-const contSummaryList = computed(() => store.state.contract.contSummaryList)
-const unitTypeList = computed(() => store.state.project.unitTypeList)
+const contractStore = useContract()
+const projectDataStore = useProjectData()
+
+const orderGroupList = computed(() => contractStore.orderGroupList)
+const subsSummaryList = computed(() => contractStore.subsSummaryList)
+const contSummaryList = computed(() => contractStore.contSummaryList)
+const unitTypeList = computed(() => projectDataStore.unitTypeList)
 
 const subsNum = (type?: number) => {
   let subs = subsSummaryList.value

@@ -52,10 +52,11 @@ const fetchSubsSummaryList = (pk: number) =>
 const fetchContSummaryList = (pk: number) =>
   contractStore.fetchContSummaryList(pk)
 
-const pData = useProjectData()
+const projectDataStore = useProjectData()
 
-const fetchTypeList = (projId: number) => pData.fetchTypeList(projId)
-const fetchBuildingList = (projId: number) => pData.fetchBuildingList(projId)
+const fetchTypeList = (projId: number) => projectDataStore.fetchTypeList(projId)
+const fetchBuildingList = (projId: number) =>
+  projectDataStore.fetchBuildingList(projId)
 
 const onSelectAdd = (target: any) => {
   if (target !== '') {
@@ -71,7 +72,7 @@ const onSelectAdd = (target: any) => {
     contractStore.contSummaryList = []
     contractStore.contractList = []
     contractStore.contractsCount = 0
-    pData.buildingList = []
+    projectDataStore.buildingList = []
   }
 }
 const pageSelect = (page: number) => childListFiltering(page)
