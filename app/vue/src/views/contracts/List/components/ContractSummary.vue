@@ -5,6 +5,7 @@ import { useContract } from '@/store/pinia/contract'
 import { numFormat } from '@/utils/baseMixins'
 import { ratioFormat } from '@/utils/areaMixins'
 import { headerSecondary } from '@/utils/cssMixins'
+import { SubsSummary, ContSummary } from '@/store/types/contract'
 
 const props = defineProps({ project: { type: Object, default: null } })
 
@@ -17,18 +18,20 @@ const contSummaryList = computed(() => contractStore.contSummaryList)
 const unitTypeList = computed(() => projectDataStore.unitTypeList)
 
 const subsNum = (type?: number) => {
-  let subs = subsSummaryList.value
-  subs = type ? subs.filter((s: any) => s.unit_type === type) : subs
-  subs = subs.map((s: any) => s.num_cont)
-  return subs.length !== 0 ? subs.reduce((o: number, n: number) => o + n) : 0
+  // 청약 수
+  let subs: SubsSummary[] | number[] = subsSummaryList.value
+  subs = type ? subs.filter((s: SubsSummary) => s.unit_type === type) : subs
+  subs = subs.map((s: SubsSummary) => s.num_cont)
+  return subs.reduce((o: number, n: number) => o + n, 0)
 }
 
 const contNum = (order: number | null, type?: number) => {
-  let cont = contSummaryList.value
-  cont = order ? cont.filter((c: any) => c.order_group === order) : cont
-  cont = type ? cont.filter((c: any) => c.unit_type === type) : cont
-  cont = cont.map((c: any) => c.num_cont)
-  return cont.length !== 0 ? cont.reduce((o: number, n: number) => o + n) : 0
+  // 계약 수
+  let cont: ContSummary[] | number[] = contSummaryList.value
+  cont = order ? cont.filter((c: ContSummary) => c.order_group === order) : cont
+  cont = type ? cont.filter((c: ContSummary) => c.unit_type === type) : cont
+  cont = cont.map((c: ContSummary) => c.num_cont)
+  return cont.reduce((o: number, n: number) => o + n, 0)
 }
 </script>
 

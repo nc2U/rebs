@@ -110,15 +110,11 @@ export interface Contractor {
 
 export interface SubsSummary {
   order_group: number
+  unit_type: number
   num_cont: number
 }
 
-export interface ContractSummary {
-  project: number
-  order_group: number
-  unit_type: number
-  contractor: string
-}
+export type ContSummary = SubsSummary
 
 export interface ContractRelease {
   pk: number

@@ -6,7 +6,7 @@ import {
   Contract,
   Contractor,
   SubsSummary,
-  ContractSummary,
+  ContSummary,
   OrderGroup,
   KeyUnit,
   HouseUnit,
@@ -58,7 +58,7 @@ export const useContract = defineStore('contract', () => {
 
   // state & getters
   const subsSummaryList = ref<SubsSummary[]>([])
-  const contSummaryList = ref<ContractSummary[]>([])
+  const contSummaryList = ref<ContSummary[]>([])
 
   // actions
   const fetchSubsSummaryList = (project: number) =>
