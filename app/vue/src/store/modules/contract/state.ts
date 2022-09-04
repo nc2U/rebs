@@ -3,7 +3,7 @@ import {
   Contract,
   Contractor,
   SubsSummary,
-  ContractSummary,
+  ContSummary,
   OrderGroup,
   KeyUnit,
   HouseUnit,
@@ -19,7 +19,7 @@ export interface ContractState extends State {
   contractorList: Contractor[]
   contractor: Contractor | null
   subsSummaryList: SubsSummary[]
-  contSummaryList: ContractSummary[]
+  contSummaryList: ContSummary[]
   orderGroupList: OrderGroup[]
   keyUnitList: KeyUnit[]
   houseUnitList: HouseUnit[]
