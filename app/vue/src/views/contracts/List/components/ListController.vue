@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, watch, nextTick } from 'vue'
-import { useStore } from 'vuex'
+import { useProjectData } from '@/store/pinia/project_data'
+import { useContract } from '@/store/pinia/contract'
 import { dateFormat } from '@/utils/baseMixins'
 import DatePicker from '@/components/DatePicker/index.vue'
 import { maska as vMaska } from 'maska'
@@ -34,12 +35,13 @@ const formsCheck = computed(() => {
   return groupA && groupB
 })
 
-const store = useStore()
+const contractStore = useContract()
+const projectDataStore = useProjectData()
 
-const orderGroupList = computed(() => store.state.contract.orderGroupList)
-const contractsCount = computed(() => store.state.contract.contractsCount)
-const buildingList = computed(() => store.state.project.buildingList)
-const simpleTypes = computed(() => store.getters['project/simpleTypes'])
+const orderGroupList = computed(() => contractStore.orderGroupList)
+const contractsCount = computed(() => contractStore.contractsCount)
+const buildingList = computed(() => projectDataStore.buildingList)
+const simpleTypes = computed(() => projectDataStore.simpleTypes)
 
 watch(from_date, () => listFiltering(1))
 watch(to_date, () => listFiltering(1))
