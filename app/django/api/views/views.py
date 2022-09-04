@@ -10,8 +10,6 @@ from ..permission import *
 from ..pagination import *
 from ..serializers.serializers import *
 
-from accounts.models import User, Profile, Todo
-from company.models import Company, Logo, Department, Position, Staff
 from project.models import (Project, UnitType, UnitFloorType,
                             KeyUnit, BuildingUnit, HouseUnit, ProjectBudget,
                             Site, SiteOwner, SiteOwnshipRelationship, SiteContract)
@@ -42,6 +40,7 @@ class ApiIndex(generics.GenericAPIView):
             'department': reverse(api + 'depart-list', request=request),
             'position': reverse(api + 'position-list', request=request),
             'staff': reverse(api + 'staff-list', request=request),
+
             'schedule': reverse(api + 'schedule-list', request=request),
             'account-sort': reverse(api + AccountSortList.name, request=request),
             'account-depth1': reverse(api + AccountSubD1List.name, request=request),
@@ -50,6 +49,7 @@ class ApiIndex(generics.GenericAPIView):
             'project-acc-sort': reverse(api + ProjectAccountSortList.name, request=request),
             'project-acc-d1': reverse(api + ProjectAccountD1List.name, request=request),
             'project-acc-d2': reverse(api + ProjectAccountD2List.name, request=request),
+            
             'project': reverse(api + 'project-list', request=request),
             'type': reverse(api + 'unittype-list', request=request),
             'floor': reverse(api + 'floortype-list', request=request),
@@ -111,37 +111,7 @@ class ApiIndex(generics.GenericAPIView):
         })
 
 
-# Company --------------------------------------------------------------------------
-class CompanyViewSets(viewsets.ModelViewSet):
-    queryset = Company.objects.all()
-    serializer_class = CompanySerializer
-    permission_classes = (permissions.IsAuthenticated, IsSuperUserOrReadOnly)
-
-
-class LogoViewSets(viewsets.ModelViewSet):
-    queryset = Logo.objects.all()
-    serializer_class = LogoSerializer
-    permission_classes = (permissions.IsAuthenticated, IsSuperUserOrReadOnly)
-
-
-class DepartmentViewSets(viewsets.ModelViewSet):
-    queryset = Department.objects.all()
-    serializer_class = DepartmentSerializer
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-
-
-class PositionViewSets(viewsets.ModelViewSet):
-    queryset = Position.objects.all()
-    serializer_class = PositionSerializer
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-
-
-class StaffViewSets(viewsets.ModelViewSet):
-    queryset = Staff.objects.all()
-    serializer_class = StaffSerializer
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-
-
+# Rebs --------------------------------------------------------------------------
 class CalendarScheduleViewSet(viewsets.ModelViewSet):
     queryset = CalendarSchedule.objects.all()
     serializer_class = CalendarScheduleSerializer
@@ -153,7 +123,6 @@ class CalendarScheduleViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
 
-# Rebs --------------------------------------------------------------------------
 class AccountSortList(generics.ListAPIView):
     name = 'acc_sort-list'
     queryset = AccountSort.objects.all()

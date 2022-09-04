@@ -2,6 +2,7 @@ from django.urls import path
 
 from .views.views import *
 from .views.accounts import *
+from .views.company import *
 
 app_name = 'api'
 
@@ -21,10 +22,7 @@ urlpatterns = [
     path('profile/<int:pk>/', ProfileViewSets.as_view(detail_view), name='profile-detail'),
     path('todo/', TodoViewSets.as_view(list_view), name='todo-list'),
     path('todo/<int:pk>/', TodoViewSets.as_view(detail_view), name='todo-detail'),
-    path('staff/', StaffViewSets.as_view(list_view), name='staff-list'),
-    path('staff/<int:pk>/', StaffViewSets.as_view(detail_view), name='staff-detail'),
-    path('schedule/', CalendarScheduleViewSet.as_view(list_view), name='schedule-list'),
-    path('schedule/<int:pk>/', CalendarScheduleViewSet.as_view(detail_view), name='schedule-detail'),
+
     path('company/', CompanyViewSets.as_view(list_view), name='company-list'),
     path('company/<int:pk>/', CompanyViewSets.as_view(detail_view), name='company-detail'),
     path('logo/', LogoViewSets.as_view(list_view), name='logo-list'),
@@ -33,7 +31,11 @@ urlpatterns = [
     path('department/<int:pk>/', DepartmentViewSets.as_view(detail_view), name='depart-detail'),
     path('position/', PositionViewSets.as_view(list_view), name='position-list'),
     path('position/<int:pk>/', PositionViewSets.as_view(detail_view), name='position-detail'),
+    path('staff/', StaffViewSets.as_view(list_view), name='staff-list'),
+    path('staff/<int:pk>/', StaffViewSets.as_view(detail_view), name='staff-detail'),
 
+    path('schedule/', CalendarScheduleViewSet.as_view(list_view), name='schedule-list'),
+    path('schedule/<int:pk>/', CalendarScheduleViewSet.as_view(detail_view), name='schedule-detail'),
     path('account-sort/', AccountSortList.as_view(), name=AccountSortList.name),
     path('account-depth1/', AccountSubD1List.as_view(), name=AccountSubD1List.name),
     path('account-depth2/', AccountSubD2List.as_view(), name=AccountSubD2List.name),
