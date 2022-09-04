@@ -1,5 +1,5 @@
-import { Project } from '@/store/pinia/project'
-import { HouseUnit, ProjectState } from '@/store/modules/project/state'
+import { Project, HouseUnit } from '@/store/types/project'
+import { ProjectState } from '@/store/modules/project/state'
 
 const getters = {
   allowed_projects: (state: any, getters: any, rootState: any) => {
