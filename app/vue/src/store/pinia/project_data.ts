@@ -27,7 +27,7 @@ export const useProjectData = defineStore('projectData', () => {
     api
       .get(`/type/?project=${projId}`)
       .then(res => {
-        unitTypeList.value = res.data
+        unitTypeList.value = res.data.results
       })
       .catch(err => errorHandle(err.response.data))
 
@@ -70,7 +70,7 @@ export const useProjectData = defineStore('projectData', () => {
   const fetchFloorTypeList = (projId: number) =>
     api
       .get(`/floor/?project=${projId}`)
-      .then(res => (floorTypeList.value = res.data))
+      .then(res => (floorTypeList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
   const createFloorType = (payload: UnitFloorType) =>
@@ -102,7 +102,7 @@ export const useProjectData = defineStore('projectData', () => {
   const fetchBuildingList = (projId: number) =>
     api
       .get(`/bldg/?project=${projId}`)
-      .then(res => (buildingList.value = res.data))
+      .then(res => (buildingList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
   const createBuilding = (payload: BuildingUnit) =>
@@ -173,7 +173,7 @@ export const useProjectData = defineStore('projectData', () => {
     if (bldg) apiUri += `&building_unit=${bldg}`
     return api
       .get(apiUri)
-      .then(res => (houseUnitList.value = res.data))
+      .then(res => (houseUnitList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
   }
 
