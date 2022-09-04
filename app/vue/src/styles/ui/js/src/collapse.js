@@ -26,7 +26,7 @@ import BaseComponent from './base-component'
 const NAME = 'collapse'
 const DATA_KEY = 'coreui.collapse'
 const EVENT_KEY = `.${DATA_KEY}`
-const DATA_API_KEY = '.data-api'
+const DATA_API_KEY = '.data-apiV1'
 
 const EVENT_SHOW = `show${EVENT_KEY}`
 const EVENT_SHOWN = `shown${EVENT_KEY}`

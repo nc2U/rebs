@@ -21,7 +21,7 @@ import Backdrop from './util/backdrop'
 const NAME = 'sidebar'
 const DATA_KEY = 'coreui.sidebar'
 const EVENT_KEY = `.${DATA_KEY}`
-const DATA_API_KEY = '.data-api'
+const DATA_API_KEY = '.data-apiV1'
 
 const Default = {}
 

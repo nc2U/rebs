@@ -33,7 +33,7 @@ import BaseComponent from './base-component'
 const NAME = 'calendar'
 const DATA_KEY = 'coreui.calendar'
 const EVENT_KEY = `.${DATA_KEY}`
-const DATA_API_KEY = '.data-api'
+const DATA_API_KEY = '.data-apiV1'
 
 const EVENT_CALENDAR_DATE_CHANGE = `calendarDateChange${EVENT_KEY}`
 const EVENT_CELL_HOVER = `cellHover${EVENT_KEY}`
@@ -99,6 +99,7 @@ class Calendar extends BaseComponent {
     this._createCalendar()
     this._addEventListeners()
   }
+
   // Getters
 
   static get Default() {

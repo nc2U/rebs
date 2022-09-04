@@ -30,7 +30,7 @@ import { enableDismissTrigger } from './util/component-functions'
 const NAME = 'modal'
 const DATA_KEY = 'coreui.modal'
 const EVENT_KEY = `.${DATA_KEY}`
-const DATA_API_KEY = '.data-api'
+const DATA_API_KEY = '.data-apiV1'
 const ESCAPE_KEY = 'Escape'
 
 const EVENT_HIDE = `hide${EVENT_KEY}`

@@ -31,7 +31,7 @@ import Picker from './picker'
 const NAME = 'time-picker'
 const DATA_KEY = 'coreui.time-picker'
 const EVENT_KEY = `.${DATA_KEY}`
-const DATA_API_KEY = '.data-api'
+const DATA_API_KEY = '.data-apiV1'
 
 const EVENT_TIME_CHANGE = `timeChange${EVENT_KEY}`
 const EVENT_LOAD_DATA_API = `load${EVENT_KEY}${DATA_API_KEY}`

@@ -19,7 +19,7 @@ import BaseComponent from './base-component'
 const NAME = 'button'
 const DATA_KEY = 'coreui.button'
 const EVENT_KEY = `.${DATA_KEY}`
-const DATA_API_KEY = '.data-api'
+const DATA_API_KEY = '.data-apiV1'
 
 const CLASS_NAME_ACTIVE = 'active'
 

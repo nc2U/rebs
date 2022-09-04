@@ -31,7 +31,7 @@ import BaseComponent from './base-component'
 const NAME = 'dropdown'
 const DATA_KEY = 'coreui.dropdown'
 const EVENT_KEY = `.${DATA_KEY}`
-const DATA_API_KEY = '.data-api'
+const DATA_API_KEY = '.data-apiV1'
 
 const ESCAPE_KEY = 'Escape'
 const TAB_KEY = 'Tab'

@@ -29,7 +29,7 @@ import { enableDismissTrigger } from './util/component-functions'
 const NAME = 'offcanvas'
 const DATA_KEY = 'coreui.offcanvas'
 const EVENT_KEY = `.${DATA_KEY}`
-const DATA_API_KEY = '.data-api'
+const DATA_API_KEY = '.data-apiV1'
 const EVENT_LOAD_DATA_API = `load${EVENT_KEY}${DATA_API_KEY}`
 const ESCAPE_KEY = 'Escape'
 

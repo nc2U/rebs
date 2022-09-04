@@ -25,7 +25,7 @@ import BaseComponent from './base-component'
 const NAME = 'scrollspy'
 const DATA_KEY = 'coreui.scrollspy'
 const EVENT_KEY = `.${DATA_KEY}`
-const DATA_API_KEY = '.data-api'
+const DATA_API_KEY = '.data-apiV1'
 
 const EVENT_ACTIVATE = `activate${EVENT_KEY}`
 const EVENT_CLICK = `click${EVENT_KEY}`

@@ -21,7 +21,7 @@ import BaseComponent from './base-component'
 const NAME = 'multi-select'
 const DATA_KEY = 'coreui.multi-select'
 const EVENT_KEY = `.${DATA_KEY}`
-const DATA_API_KEY = '.data-api'
+const DATA_API_KEY = '.data-apiV1'
 
 const TAB_KEY = 'Tab'
 const RIGHT_MOUSE_BUTTON = 2

@@ -14,11 +14,11 @@ from .views.document import *
 
 
 class ApiIndex(generics.GenericAPIView):
-    name = 'api-index'
+    name = 'apiV1-index'
     permission_classes = (permissions.AllowAny,)
 
     def get(self, request, *args, **kwargs):
-        api = 'api:'
+        api = 'apiV1:'
         return Response({
             # accounts
             'user': reverse(api + 'user-list', request=request),
@@ -78,7 +78,7 @@ class ApiIndex(generics.GenericAPIView):
             'price': reverse(api + SalesPriceList.name, request=request),
             'pay-order': reverse(api + InstallmentOrderList.name, request=request),
             'down-payment': reverse(api + DownPaymentList.name, request=request),
-            # 'over-due-rule': reverse(api + OverDueRuleList.name, request=request),
+            # 'over-due-rule': reverse(apiV1 + OverDueRuleList.name, request=request),
             # contract
             'order-group': reverse(api + 'order_group-list', request=request),
             'contract': reverse(api + 'contract-list', request=request),
@@ -105,7 +105,7 @@ class ApiIndex(generics.GenericAPIView):
         })
 
 
-app_name = 'api'
+app_name = 'apiV1'
 
 list_view = {'get': 'list', 'post': 'create'}
 detail_view = {

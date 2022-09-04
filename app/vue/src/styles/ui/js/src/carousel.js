@@ -30,7 +30,7 @@ import BaseComponent from './base-component'
 const NAME = 'carousel'
 const DATA_KEY = 'coreui.carousel'
 const EVENT_KEY = `.${DATA_KEY}`
-const DATA_API_KEY = '.data-api'
+const DATA_API_KEY = '.data-apiV1'
 
 const ARROW_LEFT_KEY = 'ArrowLeft'
 const ARROW_RIGHT_KEY = 'ArrowRight'

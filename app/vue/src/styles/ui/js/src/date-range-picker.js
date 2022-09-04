@@ -25,7 +25,7 @@ import TimePicker from './time-picker'
 const NAME = 'date-range-picker'
 const DATA_KEY = 'coreui.date-range-picker'
 const EVENT_KEY = `.${DATA_KEY}`
-const DATA_API_KEY = '.data-api'
+const DATA_API_KEY = '.data-apiV1'
 
 const EVENT_END_DATE_CHANGE = `endDateChange${EVENT_KEY}`
 const EVENT_START_DATE_CHANGE = `startDateChange${EVENT_KEY}`

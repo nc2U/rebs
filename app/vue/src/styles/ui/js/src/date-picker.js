@@ -19,7 +19,7 @@ import DateRangePicker from './date-range-picker'
 const NAME = 'date-picker'
 const DATA_KEY = 'coreui.date-picker'
 const EVENT_KEY = `.${DATA_KEY}`
-const DATA_API_KEY = '.data-api'
+const DATA_API_KEY = '.data-apiV1'
 
 const EVENT_DATE_CHANGE = `dateChange${EVENT_KEY}`
 const EVENT_LOAD_DATA_API = `load${EVENT_KEY}${DATA_API_KEY}`

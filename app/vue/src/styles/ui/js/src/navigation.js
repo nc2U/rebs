@@ -21,7 +21,7 @@ import BaseComponent from './base-component'
 const NAME = 'navigation'
 const DATA_KEY = 'coreui.navigation'
 const EVENT_KEY = `.${DATA_KEY}`
-const DATA_API_KEY = '.data-api'
+const DATA_API_KEY = '.data-apiV1'
 
 const Default = {
   activeLinksExact: true,
@@ -63,6 +63,7 @@ class Navigation extends BaseComponent {
 
     Data.set(element, DATA_KEY, this)
   }
+
   // Getters
 
   static get Default() {
