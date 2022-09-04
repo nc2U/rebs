@@ -2,99 +2,14 @@ import api from '@/api'
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { errorHandle, message } from '@/utils/helper'
-
-export interface Site {
-  pk: number
-  project: number
-  order: number
-  district: string
-  lot_number: string
-  site_purpose: string
-  official_area: string
-  returned_area: string | null
-  rights_restrictions: string
-  dup_issue_date: string
-  owners: SimpleOwner[]
-}
-
-type OwnSort = '개인' | '법인' | '국공유지'
-
-interface SimpleOwner {
-  pk: number
-  owner: string
-  own_sort_desc: OwnSort
-}
-
-export interface SiteOwner {
-  pk: number | null
-  project: number | null
-  owner: string
-  date_of_birth: string | null
-  phone1: string
-  phone2: string
-  zipcode: string
-  address1: string
-  address2: string
-  address3: string
-  own_sort: string
-  own_sort_desc: string
-  sites: {
-    pk: number
-    site: number
-    __str__: string
-    ownership_ratio: string
-    owned_area: string
-    acquisition_date: string | null
-  }[]
-  counsel_record: string
-}
-
-export interface Relation {
-  pk: number | null
-  site: number | null
-  site_owner: number | null
-  ownership_ratio: string
-  owned_area: string
-  acquisition_date: null | string
-}
-
-export interface SiteContract {
-  pk: number
-  project: number
-  owner: number
-  owner_desc: SimpleOwner
-  contract_date: string
-  total_price: number
-  contract_area: string | null
-  down_pay1: number | null
-  down_pay1_is_paid: boolean
-  down_pay2: number | null
-  down_pay2_is_paid: boolean
-  inter_pay1: number | null
-  inter_pay1_date: string | null
-  inter_pay1_is_paid: boolean
-  inter_pay2: number | null
-  inter_pay2_date: string | null
-  inter_pay2_is_paid: boolean
-  remain_pay: number
-  remain_pay_date: string | null
-  remain_pay_is_paid: boolean
-  ownership_completion: boolean
-  acc_bank: string
-  acc_number: string
-  acc_owner: string
-  note: string
-}
-
-interface AllSite {
-  pk: number
-  __str__: string
-}
-
-interface AllOwner {
-  pk: number
-  owner: string
-}
+import {
+  AllSite,
+  Site,
+  AllOwner,
+  SiteOwner,
+  Relation,
+  SiteContract,
+} from '@/store/types/project'
 
 export const useSite = defineStore('site', () => {
   const allSites = ref<AllSite[]>([])
