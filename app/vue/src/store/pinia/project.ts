@@ -3,14 +3,13 @@ import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import { useAccount } from '@/store/pinia/account'
 import { errorHandle, message } from '@/utils/helper'
-import { Project } from '@/store/types/project'
+import { Project, ProjectBudget } from '@/store/types/project'
 
 export const useProject = defineStore('project', () => {
-  // states
+  // states & getters
   const projectList = ref<Project[]>([])
   const project = ref<Project | null>(null)
 
-  // getters
   const initProjId = computed(() => {
     const account = useAccount()
     return account.userInfo?.staffauth?.assigned_project
@@ -32,6 +31,7 @@ export const useProject = defineStore('project', () => {
           .map((p: Project) => ({ value: p.pk, text: p.name }))
       : [],
   )
+  const projectBudgetList = ref<ProjectBudget[]>([])
 
   // actions
   const fetchProjectList = () => {
@@ -87,6 +87,7 @@ export const useProject = defineStore('project', () => {
     initProjId,
     allowed_projects,
     projSelect,
+    projectBudgetList,
 
     fetchProjectList,
     fetchProject,

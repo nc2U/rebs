@@ -1,11 +1,11 @@
 import { State } from '@/store'
 import {
   Project,
+  ProjectBudget,
   UnitType,
   UnitFloorType,
   BuildingUnit,
   HouseUnit,
-  ProjectBudget,
   Site,
   SiteOwner,
   Relation,
@@ -15,13 +15,15 @@ import {
 export interface ProjectState extends State {
   projectList: Project[]
   project: Project | null
+  projectBudgetList: ProjectBudget[]
+
   unitTypeList: UnitType[]
   floorTypeList: UnitFloorType[]
   buildingList: BuildingUnit[]
   houseUnitList: HouseUnit[]
   houseUnitNum: number
   numUnitByType: number
-  projectBudgetList: ProjectBudget[]
+
   siteList: Site[]
   siteOwnerList: SiteOwner[]
   siteOwnerRelationList: Relation[]
@@ -31,13 +33,15 @@ export interface ProjectState extends State {
 const state: ProjectState = {
   projectList: [],
   project: null,
+  projectBudgetList: [],
+
   unitTypeList: [],
   floorTypeList: [],
   buildingList: [],
   houseUnitList: [],
   houseUnitNum: 0,
   numUnitByType: 0,
-  projectBudgetList: [],
+
   siteList: [],
   siteOwnerList: [],
   siteOwnerRelationList: [],
