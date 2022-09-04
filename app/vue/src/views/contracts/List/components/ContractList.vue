@@ -1,17 +1,16 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { useStore } from 'vuex'
+import { useContract } from '@/store/pinia/contract'
 import { headerSecondary } from '@/utils/cssMixins'
 import Pagination from '@/components/Pagination'
 import Contract from '@/views/contracts/List/components/Contract.vue'
 
-const store = useStore()
-
 const emit = defineEmits(['page-select'])
 
-const contractIndex = computed(() => store.getters['contract/contractIndex'])
-const contractPages = computed(() => store.getters['contract/contractPages'])
+const contractStore = useContract()
+const contractIndex = computed(() => contractStore.contractIndex)
 
+const contractPages = (pageNum: number) => contractStore.contractPages(pageNum)
 const pageSelect = (page: number) => emit('page-select', page)
 </script>
 

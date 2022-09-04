@@ -1,5 +1,5 @@
 import api from '@/api'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { message, errorHandle } from '@/utils/helper'
 import {
@@ -19,12 +19,41 @@ export const useContract = defineStore('contract', () => {
   // state & getters
   const contract = ref<Contract | null>(null)
   const contractList = ref<Contract[]>([])
+  const contractIndex = computed(() =>
+    contractList.value.map(c => ({
+      pk: c.pk,
+      serial_number: c.serial_number,
+      order_group: c.order_group,
+      unit_type: c.unit_type.name,
+      type_color: c.unit_type.color,
+      house_unit: c.keyunit?.houseunit?.__str__ || '미정',
+      contractor: c.contractor?.name,
+      total_paid:
+        c.payments.length !== 0
+          ? c.payments.map(o => o.income).reduce((res, item) => res + item)
+          : 0,
+      last_paid_order:
+        c.payments.length !== 0
+          ? c.payments
+              .filter(p => p.installment_order !== null)
+              .map(p => p.installment_order)
+              .pop()
+          : '-',
+      is_registed: c.contractor?.is_registed,
+      address: c.contractor?.contractoraddress?.dm_address1,
+      cell_phone: c.contractor?.contractorcontact?.cell_phone,
+      contract_date: c.contractor?.contract_date,
+    })),
+  )
   const contractsCount = ref<number>(0)
 
   const contractor = ref<Contractor | null>(null)
   const contractorList = ref<Contractor[]>([])
 
   // actions
+  const contractPages = (itemsPerPage: number) =>
+    Math.ceil(contractsCount.value / itemsPerPage)
+
   const fetchContract = (pk: number) =>
     api
       .get(`/contract-custom-list/${pk}/`)
@@ -165,6 +194,9 @@ export const useContract = defineStore('contract', () => {
   const contReleaseCount = ref<number>(0)
 
   // actions
+  const releasePages = (itemsPerPage: number) =>
+    Math.ceil(contractsCount.value / itemsPerPage)
+
   const fetchContRelease = (pk: number) =>
     api
       .get(`/contractor-release/${pk}/`)
@@ -177,14 +209,44 @@ export const useContract = defineStore('contract', () => {
       .then(res => (contReleaseList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
+  const contBillIndex = computed(() =>
+    contractList.value.map(c => ({
+      pk: c.pk,
+      ctor_pk: c.contractor?.pk,
+      serial_number: c.serial_number,
+      order_group: c.order_group,
+      type_pk: c.unit_type.pk,
+      unit_type: c.unit_type.name,
+      type_color: c.unit_type.color,
+      average_price: c.unit_type.average_price,
+      house_unit_str: c.keyunit?.houseunit?.__str__,
+      house_unit: c.keyunit?.houseunit,
+      contractor: c.contractor?.name,
+      total_paid:
+        c.payments.length !== 0
+          ? c.payments.map(o => o.income).reduce((res, item) => res + item)
+          : 0,
+      last_paid_order:
+        c.payments.length !== 0
+          ? c.payments
+              .filter(p => p.installment_order !== null)
+              .map(p => p.installment_order)
+              .pop()
+          : '-',
+      contract_date: c.contractor?.contract_date,
+    })),
+  )
+
   return {
     contract,
     contractList,
+    contractIndex,
     contractsCount,
 
     contractor,
     contractorList,
 
+    contractPages,
     fetchContract,
     fetchContractList,
 
@@ -215,7 +277,10 @@ export const useContract = defineStore('contract', () => {
     contReleaseList,
     contReleaseCount,
 
+    releasePages,
     fetchContRelease,
     fetchContReleaseList,
+
+    contBillIndex,
   }
 })
