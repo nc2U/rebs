@@ -21,7 +21,7 @@ const actions = {
   fetchContractList: ({ commit }: any, payload?: any) => {
     const { project } = payload
     const status = payload.status ? payload.status : '2'
-    let url = `/contract-custom-list/?project=${project}&activation=true&contractor__status=${status}`
+    let url = `/contract-set/?project=${project}&activation=true&contractor__status=${status}`
     if (payload.order_group) url += `&order_group=${payload.order_group}`
     if (payload.unit_type) url += `&unit_type=${payload.unit_type}`
     if (payload.building)
@@ -43,7 +43,7 @@ const actions = {
 
   fetchContract: ({ commit }: any, pk: number) => {
     return api
-      .get(`/contract-custom-list/${pk}/`)
+      .get(`/contract-set/${pk}/`)
       .then(res => {
         commit(FETCH_CONTRACT, res.data)
       })

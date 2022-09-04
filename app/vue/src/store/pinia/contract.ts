@@ -56,13 +56,13 @@ export const useContract = defineStore('contract', () => {
 
   const fetchContract = (pk: number) =>
     api
-      .get(`/contract-custom-list/${pk}/`)
+      .get(`/contract-set/${pk}/`)
       .then(res => (contract.value = res.data))
       .catch(err => errorHandle(err.response.data))
 
   const fetchContractList = (payload: any) => {
     const status = payload.status || '2'
-    let apiuri = `/contract-custom-list/?project=${payload.project}&activation=true&contractor__status=${status}`
+    let apiuri = `/contract-set/?project=${payload.project}&activation=true&contractor__status=${status}`
     if (payload.order_group) apiuri += `&order_group=${payload.order_group}`
     if (payload.unit_type) apiuri += `&unit_type=${payload.unit_type}`
     if (payload.building)
