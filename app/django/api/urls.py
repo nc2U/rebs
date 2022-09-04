@@ -6,6 +6,7 @@ from .views.company import *
 from .views.rebs import *
 from .views.project import *
 from .views.cash import *
+from .views.contract import *
 
 app_name = 'api'
 
@@ -107,24 +108,25 @@ urlpatterns = [
     path('down-payment/<int:pk>/', DownPaymentDetail.as_view(), name=DownPaymentDetail.name),
     # path('over-due-rule/', OverDueRuleList.as_view(), name=OverDueRuleList.name),
     # path('over-due-rule/<int:pk>/', OverDueRuleDetail.as_view(), name=OverDueRuleDetail.name),
+    # contract
+    path('order-group/', OrderGroupList.as_view(), name=OrderGroupList.name),
+    path('order-group/<int:pk>/', OrderGroupDetail.as_view(), name=OrderGroupDetail.name),
+    path('contract/', ContractList.as_view(), name=ContractList.name),
+    path('contract/<int:pk>/', ContractDetail.as_view(), name=ContractDetail.name),
+    path('contract-custom-list/', ContractCustomList.as_view(), name=ContractCustomList.name),
+    path('contract-custom-list/<int:pk>/', ContractCustomDetail.as_view(), name=ContractCustomDetail.name),
+    path('subs-sum/', SubsSummaryList.as_view(), name=SubsSummaryList.name),
+    path('cont-sum/', ContSummaryList.as_view(), name=ContSummaryList.name),
 
-    # path('order-group/', OrderGroupList.as_view(), name=OrderGroupList.name),
-    # path('order-group/<int:pk>/', OrderGroupDetail.as_view(), name=OrderGroupDetail.name),
-    # path('contract/', ContractList.as_view(), name=ContractList.name),
-    # path('contract/<int:pk>/', ContractDetail.as_view(), name=ContractDetail.name),
-    # path('contract-custom-list/', ContractCustomList.as_view(), name=ContractCustomList.name),
-    # path('contract-custom-list/<int:pk>/', ContractCustomDetail.as_view(), name=ContractCustomDetail.name),
-    # path('subs-sum/', SubsSummaryList.as_view(), name=SubsSummaryList.name),
-    # path('cont-sum/', ContSummaryList.as_view(), name=ContSummaryList.name),
-    #
-    # path('contractor/', ContractorList.as_view(), name=ContractorList.name),
-    # path('contractor/<int:pk>/', ContractorDetail.as_view(), name=ContractorDetail.name),
-    # path('contractor-address/', ContAddressList.as_view(), name=ContAddressList.name),
-    # path('contractor-address/<int:pk>/', ContAddressDetail.as_view(), name=ContAddressDetail.name),
-    # path('contractor-contact/', ContContactList.as_view(), name=ContContactList.name),
-    # path('contractor-contact/<int:pk>/', ContContactDetail.as_view(), name=ContContactDetail.name),
-    # path('contractor-release/', ContReleaseList.as_view(), name=ContReleaseList.name),
-    # path('contractor-release/<int:pk>/', ContReleaseDetail.as_view(), name=ContReleaseDetail.name),
+    path('contractor/', ContractorList.as_view(), name=ContractorList.name),
+    path('contractor/<int:pk>/', ContractorDetail.as_view(), name=ContractorDetail.name),
+    path('contractor-address/', ContAddressList.as_view(), name=ContAddressList.name),
+    path('contractor-address/<int:pk>/', ContAddressDetail.as_view(), name=ContAddressDetail.name),
+    path('contractor-contact/', ContContactList.as_view(), name=ContContactList.name),
+    path('contractor-contact/<int:pk>/', ContContactDetail.as_view(), name=ContContactDetail.name),
+    path('contractor-release/', ContReleaseList.as_view(), name=ContReleaseList.name),
+    path('contractor-release/<int:pk>/', ContReleaseDetail.as_view(), name=ContReleaseDetail.name),
+
     # path('sales-bill-issue/', BillIssueList.as_view(), name=BillIssueList.name),
     # path('sales-bill-issue/<int:pk>/', BillIssueDetail.as_view(), name=BillIssueDetail.name),
     # # path('group/', GroupList.as_view(), name=GroupList.name),
