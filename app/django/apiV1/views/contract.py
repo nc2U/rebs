@@ -36,7 +36,7 @@ class ContractFilter(FilterSet):
 
 class ContractViewSets(viewsets.ModelViewSet):
     queryset = Contract.objects.all()
-    serializer_class = ContractListSerializer
+    serializer_class = ContractSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
     filter_class = ContractFilter
     search_fields = (

@@ -1,3 +1,4 @@
+from django.db import transaction
 from rest_framework import serializers
 
 from contract.models import (OrderGroup, Contract, Contractor,
@@ -24,7 +25,7 @@ class HouseUnitInKeyUnitSerializer(serializers.ModelSerializer):
         fields = ('pk', '__str__', 'floor_type')
 
 
-class KeyUnitInContractListSerializer(serializers.ModelSerializer):
+class KeyUnitInContractSerializer(serializers.ModelSerializer):
     houseunit = HouseUnitInKeyUnitSerializer()
 
     class Meta:
@@ -45,7 +46,7 @@ class ContactInContractorSerializer(serializers.ModelSerializer):
         fields = ('pk', 'cell_phone', 'home_phone', 'other_phone', 'email')
 
 
-class ContractorInContractListSerializer(serializers.ModelSerializer):
+class ContractorInContractSerializer(serializers.ModelSerializer):
     contractoraddress = AddressInContractorSerializer()
     contractorcontact = ContactInContractorSerializer()
 
@@ -56,13 +57,13 @@ class ContractorInContractListSerializer(serializers.ModelSerializer):
             'contractorcontact', 'status', 'reservation_date', 'contract_date', 'note')
 
 
-class ContractListSerializer(serializers.ModelSerializer):
+class ContractSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contract
         fields = ('pk', 'project', 'order_group', 'unit_type', 'serial_number', 'activation')
 
 
-class ProjectCashBookInContractListSerializer(serializers.ModelSerializer):
+class ProjectCashBookInContractSerializer(serializers.ModelSerializer):
     installment_order = SimpleInstallmentOrderSerializer()
 
     class Meta:
@@ -73,8 +74,8 @@ class ProjectCashBookInContractListSerializer(serializers.ModelSerializer):
 class ContractCustomListSerializer(serializers.ModelSerializer):
     order_group = SimpleOrderGroupSerializer()
     unit_type = SimpleUnitTypeSerializer()
-    keyunit = KeyUnitInContractListSerializer()
-    contractor = ContractorInContractListSerializer()
+    keyunit = KeyUnitInContractSerializer()
+    contractor = ContractorInContractSerializer()
     payments = serializers.SerializerMethodField()
 
     class Meta:
@@ -85,7 +86,7 @@ class ContractCustomListSerializer(serializers.ModelSerializer):
 
     def get_payments(self, instance):
         payments = instance.payments.filter(project_account_d2__lte=2).order_by('deal_date', 'id')
-        return ProjectCashBookInContractListSerializer(payments, many=True, read_only=True).data
+        return ProjectCashBookInContractSerializer(payments, many=True, read_only=True).data
 
 
 class SubsSummarySerializer(serializers.ModelSerializer):
@@ -116,7 +117,6 @@ class ContractInContractorSerializer(serializers.ModelSerializer):
 
 
 class ContractorSerializer(serializers.ModelSerializer):
-    # contract = ContractInContractorSerializer()
     contractorrelease = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
