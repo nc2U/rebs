@@ -70,3 +70,17 @@ class ProjectAccountD2List(generics.ListAPIView):
     pagination_class = PageNumberPaginationOneHundred
     serializer_class = ProjectAccountD2Serializer
     filter_fields = ('d1', 'd1__projectaccountsort')
+
+
+class WiseSayList(generics.ListCreateAPIView):
+    name = 'wise-say-list'
+    queryset = WiseSaying.objects.all()
+    serializer_class = WiseSaySerializer
+    permissions_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+
+
+class WiseSayDetail(generics.RetrieveUpdateDestroyAPIView):
+    name = 'wise-say-detail'
+    queryset = WiseSaying.objects.all()
+    serializer_class = WiseSaySerializer
+    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)

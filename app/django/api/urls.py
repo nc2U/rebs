@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views1 import ApiIndex
+from .index import ApiIndex
 from .views.accounts import *
 from .views.company import *
 from .views.rebs import *
@@ -50,6 +50,8 @@ urlpatterns = [
     path('project-acc-sort/', ProjectAccountSortList.as_view(), name=ProjectAccountSortList.name),
     path('project-account-depth1/', ProjectAccountD1List.as_view(), name=ProjectAccountD1List.name),
     path('project-account-depth2/', ProjectAccountD2List.as_view(), name=ProjectAccountD2List.name),
+    path('wise-say/', WiseSayList.as_view(), name=WiseSayList.name),
+    path('wise-say/<int:pk>/', WiseSayDetail.as_view(), name=WiseSayDetail.name),
     # project
     path('project/', ProjectViewSets.as_view(list_view), name='project-list'),
     path('project/<int:pk>/', ProjectViewSets.as_view(detail_view), name='project-detail'),
@@ -153,6 +155,4 @@ urlpatterns = [
     path('tag/', TagList.as_view(), name=TagList.name),
     path('tag/<int:pk>/', TagDetail.as_view(), name=TagDetail.name),
 
-    # path('wise-say/', WiseSayList.as_view(), name=WiseSayList.name),
-    # path('wise-say/<int:pk>/', WiseSayDetail.as_view(), name=WiseSayDetail.name),
 ]

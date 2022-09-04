@@ -47,3 +47,9 @@ class CalendarScheduleSerializer(serializers.ModelSerializer):
     class Meta:
         model = CalendarSchedule
         fields = ('pk', 'title', 'all_day', 'start_date', 'end_date', 'start_time', 'end_time')
+
+
+class WiseSaySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WiseSaying
+        fields = ('pk', 'saying_ko', 'saying_en', 'spoked_by')

@@ -1,26 +1,5 @@
-from datetime import datetime
-from django.db.models import Sum, Count, F, Q, Case, When
-from rest_framework import generics, viewsets
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
-from django_filters.rest_framework import FilterSet
-from django_filters import ChoiceFilter, ModelChoiceFilter, DateFilter, BooleanFilter
-
-from .permission import *
-from .pagination import *
-# from .serializers1 import *
-
-from project.models import (Project, UnitType, UnitFloorType,
-                            KeyUnit, BuildingUnit, HouseUnit, ProjectBudget,
-                            Site, SiteOwner, SiteOwnshipRelationship, SiteContract)
-
-from cash.models import (BankCode, CompanyBankAccount, ProjectBankAccount,
-                         CashBook, ProjectCashBook, SalesPriceByGT,
-                         InstallmentPaymentOrder, DownPayment, OverDueRule)
-from contract.models import (OrderGroup, Contract, Contractor,
-                             ContractorAddress, ContractorContact, ContractorRelease)
-from notice.models import SalesBillIssue
-from document.models import Group, Board, Category, LawsuitCase, Post, Image, Link, File, Comment, Tag
 
 from .views.rebs import *
 from .views.project import *
@@ -56,6 +35,7 @@ class ApiIndex(generics.GenericAPIView):
             'project-acc-sort': reverse(api + ProjectAccountSortList.name, request=request),
             'project-acc-d1': reverse(api + ProjectAccountD1List.name, request=request),
             'project-acc-d2': reverse(api + ProjectAccountD2List.name, request=request),
+            'wise-say': reverse(api + WiseSayList.name, request=request),
             # project
             'project': reverse(api + 'project-list', request=request),
             'type': reverse(api + 'unittype-list', request=request),
@@ -118,20 +98,4 @@ class ApiIndex(generics.GenericAPIView):
             'file': reverse(api + FileList.name, request=request),
             'comment': reverse(api + CommentList.name, request=request),
             'tag': reverse(api + TagList.name, request=request),
-            
-            # 'wise-say': reverse(api + WiseSayList.name, request=request),
         })
-
-# # Etc --------------------------------------------------------------------------
-# class WiseSayList(generics.ListCreateAPIView):
-#     name = 'wise-say-list'
-#     queryset = WiseSaying.objects.all()
-#     serializer_class = WiseSaySerializer
-#     permissions_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-#
-#
-# class WiseSayDetail(generics.RetrieveUpdateDestroyAPIView):
-#     name = 'wise-say-detail'
-#     queryset = WiseSaying.objects.all()
-#     serializer_class = WiseSaySerializer
-#     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
