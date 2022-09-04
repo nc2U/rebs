@@ -1,5 +1,5 @@
 from django.db.models import Count
-from rest_framework import generics
+from rest_framework import generics, viewsets
 from django_filters.rest_framework import FilterSet
 from django_filters import ChoiceFilter, ModelChoiceFilter, DateFilter, BooleanFilter
 
@@ -12,20 +12,12 @@ from project.models import BuildingUnit
 
 
 # Contract --------------------------------------------------------------------------
-class OrderGroupList(generics.ListCreateAPIView):
-    name = 'order_group-list'
+class OrderGroupViewSets(viewsets.ModelViewSet):
     queryset = OrderGroup.objects.all()
     serializer_class = OrderGroupSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
     filter_fields = ('project', 'sort')
     search_fields = ('order_group_name',)
-
-
-class OrderGroupDetail(generics.RetrieveUpdateDestroyAPIView):
-    name = 'order_group-detail'
-    queryset = OrderGroup.objects.all()
-    serializer_class = OrderGroupSerializer
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
 
 class ContractFilter(FilterSet):
@@ -42,8 +34,7 @@ class ContractFilter(FilterSet):
                   'contractor__is_registed', 'from_contract_date', 'to_contract_date')
 
 
-class ContractList(generics.ListCreateAPIView):
-    name = 'contract-list'
+class ContractViewSets(viewsets.ModelViewSet):
     queryset = Contract.objects.all()
     serializer_class = ContractListSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
@@ -57,20 +48,7 @@ class ContractList(generics.ListCreateAPIView):
         serializer.save(user=self.request.user)
 
 
-class ContractDetail(generics.RetrieveUpdateDestroyAPIView):
-    name = 'contract-detail'
-    queryset = Contract.objects.all()
-    serializer_class = ContractListSerializer
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-
-
-class ContractCustomList(ContractList):
-    name = 'contract-cumstom-list'
-    serializer_class = ContractCustomListSerializer
-
-
-class ContractCustomDetail(ContractDetail):
-    name = 'contract-custom-detail'
+class ContractCustomViewSets(ContractViewSets):
     serializer_class = ContractCustomListSerializer
 
 
@@ -98,8 +76,7 @@ class ContSummaryList(generics.ListAPIView):
             .annotate(num_cont=Count('order_group'))
 
 
-class ContractorList(generics.ListCreateAPIView):
-    name = 'contractor-list'
+class ContractorViewSets(viewsets.ModelViewSet):
     queryset = Contractor.objects.all()
     serializer_class = ContractorSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
@@ -110,15 +87,7 @@ class ContractorList(generics.ListCreateAPIView):
         serializer.save(user=self.request.user)
 
 
-class ContractorDetail(generics.RetrieveUpdateDestroyAPIView):
-    name = 'contractor-detail'
-    queryset = Contractor.objects.all()
-    serializer_class = ContractorSerializer
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-
-
-class ContAddressList(generics.ListCreateAPIView):
-    name = 'cont_address-list'
+class ContAddressViewSets(viewsets.ModelViewSet):
     queryset = ContractorAddress.objects.all()
     serializer_class = ContractorAddressSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
@@ -127,15 +96,7 @@ class ContAddressList(generics.ListCreateAPIView):
         serializer.save(user=self.request.user)
 
 
-class ContAddressDetail(generics.RetrieveUpdateDestroyAPIView):
-    name = 'cont_address-detail'
-    queryset = ContractorAddress.objects.all()
-    serializer_class = ContractorAddressSerializer
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-
-
-class ContContactList(generics.ListCreateAPIView):
-    name = 'contact-list'
+class ContContactViewSets(viewsets.ModelViewSet):
     queryset = ContractorContact.objects.all()
     serializer_class = ContractorContactSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
@@ -144,15 +105,7 @@ class ContContactList(generics.ListCreateAPIView):
         serializer.save(user=self.request.user)
 
 
-class ContContactDetail(generics.RetrieveUpdateDestroyAPIView):
-    name = 'contact-detail'
-    queryset = ContractorContact.objects.all()
-    serializer_class = ContractorContactSerializer
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-
-
-class ContReleaseList(generics.ListCreateAPIView):
-    name = 'release-list'
+class ContReleaseViewSets(viewsets.ModelViewSet):
     queryset = ContractorRelease.objects.all().order_by('-request_date')
     serializer_class = ContractorReleaseSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
@@ -160,10 +113,3 @@ class ContReleaseList(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
-
-
-class ContReleaseDetail(generics.RetrieveUpdateDestroyAPIView):
-    name = 'release-detail'
-    queryset = ContractorRelease.objects.all()
-    serializer_class = ContractorReleaseSerializer
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
