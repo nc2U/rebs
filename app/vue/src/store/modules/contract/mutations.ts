@@ -13,11 +13,8 @@ import {
   FETCH_CONT_RELEASE_LIST,
   FETCH_CONT_RELEASE,
 } from '@/store/modules/contract/mutations-types'
-import {
-  ContractState,
-  Contract,
-  Contractor,
-} from '@/store/modules/contract/state'
+import { ContractState } from '@/store/modules/contract/state'
+import { Contract, Contractor } from '@/store/types/contract'
 
 const mutations = {
   updateState: (state: ContractState, payload: any) => {

@@ -1,5 +1,5 @@
 import api from '@/api'
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { message, errorHandle } from '@/utils/helper'
 import {
@@ -14,6 +14,10 @@ import {
   DownPayment,
   ContractRelease,
 } from '@/store/types/contract'
+import {
+  FETCH_CONT_RELEASE,
+  FETCH_CONT_RELEASE_LIST,
+} from '@/store/modules/contract/mutations-types'
 
 export const useContract = defineStore('contract', () => {
   // state & getters
@@ -64,13 +68,13 @@ export const useContract = defineStore('contract', () => {
   const fetchSubsSummaryList = (project: number) =>
     api
       .get(`/subs-sum/?project=${project}`)
-      .then(res => (subsSummaryList.value = res.data))
+      .then(res => (subsSummaryList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
   const fetchContSummaryList = (project: number) =>
     api
       .get(`/cont-sum/?project=${project}`)
-      .then(res => (contSummaryList.value = res.data))
+      .then(res => (contSummaryList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
   const orderGroupList = ref<OrderGroup[]>([])
@@ -78,7 +82,7 @@ export const useContract = defineStore('contract', () => {
   const fetchOrderGroupList = (pk: number) =>
     api
       .get(`/order-group/?project=${pk}`)
-      .then(res => (orderGroupList.value = res.data))
+      .then(res => (orderGroupList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
   const createOrderGroup = (payload: OrderGroup) =>
@@ -122,7 +126,7 @@ export const useContract = defineStore('contract', () => {
       .get(
         `/key-unit/?project=${project}&unit_type=${unit_type}&contract=${contract}&available=${available}`,
       )
-      .then(res => (keyUnitList.value = res.data))
+      .then(res => (keyUnitList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
   }
   const fetchHouseUnitList = (payload: any) => {
@@ -133,7 +137,7 @@ export const useContract = defineStore('contract', () => {
 
     return api
       .get(url)
-      .then(res => (houseUnitList.value = res.data))
+      .then(res => (houseUnitList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
   }
   const fetchSalePriceList = (payload: any) => {
@@ -144,7 +148,7 @@ export const useContract = defineStore('contract', () => {
 
     return api
       .get(url)
-      .then(res => (salesPriceList.value = res.data))
+      .then(res => (salesPriceList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
   }
   const fetchDownPayList = (payload: any) => {
@@ -155,7 +159,7 @@ export const useContract = defineStore('contract', () => {
 
     return api
       .get(url)
-      .then(res => (downPaymentList.value = res.data))
+      .then(res => (downPaymentList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
   }
 
@@ -165,8 +169,17 @@ export const useContract = defineStore('contract', () => {
   const contReleaseCount = ref<number>(0)
 
   // actions
-  const fetchContRelease = () => 1
-  const fetchContReleaseList = () => 2
+  const fetchContRelease = (pk: number) =>
+    api
+      .get(`/contractor-release/${pk}/`)
+      .then(res => (contRelease.value = res.data))
+      .catch(err => errorHandle(err.response.data))
+
+  const fetchContReleaseList = (project: number, page = 1) =>
+    api
+      .get(`/contractor-release/?project=${project}&page=${page}`)
+      .then(res => (contReleaseList.value = res.data.results))
+      .catch(err => errorHandle(err.response.data))
 
   return {
     contract,
