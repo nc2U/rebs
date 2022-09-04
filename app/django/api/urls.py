@@ -7,6 +7,7 @@ from .views.rebs import *
 from .views.project import *
 from .views.cash import *
 from .views.contract import *
+from .views.notice import *
 
 app_name = 'api'
 
@@ -126,9 +127,10 @@ urlpatterns = [
     path('contractor-contact/<int:pk>/', ContContactDetail.as_view(), name=ContContactDetail.name),
     path('contractor-release/', ContReleaseList.as_view(), name=ContReleaseList.name),
     path('contractor-release/<int:pk>/', ContReleaseDetail.as_view(), name=ContReleaseDetail.name),
+    # notice
+    path('sales-bill-issue/', BillIssueList.as_view(), name=BillIssueList.name),
+    path('sales-bill-issue/<int:pk>/', BillIssueDetail.as_view(), name=BillIssueDetail.name),
 
-    # path('sales-bill-issue/', BillIssueList.as_view(), name=BillIssueList.name),
-    # path('sales-bill-issue/<int:pk>/', BillIssueDetail.as_view(), name=BillIssueDetail.name),
     # # path('group/', GroupList.as_view(), name=GroupList.name),
     # # path('group/<int:pk>/', GroupDetail.as_view(), name=GroupDetail.name),
     # # path('board/', BoardList.as_view(), name=BoardList.name),

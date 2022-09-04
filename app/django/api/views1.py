@@ -26,6 +26,7 @@ from .views.rebs import *
 from .views.project import *
 from .views.cash import *
 from .views.contract import *
+from .views.notice import *
 
 
 class ApiIndex(generics.GenericAPIView):
@@ -103,8 +104,9 @@ class ApiIndex(generics.GenericAPIView):
             'contractor-address': reverse(api + ContAddressList.name, request=request),
             'contractor-contact': reverse(api + ContContactList.name, request=request),
             'contractor-release': reverse(api + ContReleaseList.name, request=request),
-            
-            # 'sales-bill-issue': reverse(api + BillIssueList.name, request=request),
+            # notice
+            'sales-bill-issue': reverse(api + BillIssueList.name, request=request),
+
             # # 'group': reverse(api + GroupList.name, request=request),
             # # 'board': reverse(api + BoardList.name, request=request),
             # # 'category': reverse(api + CategoryList.name, request=request),
@@ -118,22 +120,6 @@ class ApiIndex(generics.GenericAPIView):
             # 'wise-say': reverse(api + WiseSayList.name, request=request),
         })
 
-# class BillIssueList(generics.ListCreateAPIView):
-#     name = 'bill_issue-list'
-#     queryset = SalesBillIssue.objects.all()
-#     serializer_class = SallesBillIssueSerializer
-#     filter_fields = ('project',)
-#     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-#
-#     def perform_create(self, serializer):
-#         serializer.save(user=self.request.user)
-#
-#
-# class BillIssueDetail(generics.RetrieveUpdateDestroyAPIView):
-#     name = 'bill_issue-detail'
-#     queryset = SalesBillIssue.objects.all()
-#     serializer_class = SallesBillIssueSerializer
-#     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 #
 #
 # # # Document --------------------------------------------------------------------------
