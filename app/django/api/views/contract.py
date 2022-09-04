@@ -6,12 +6,9 @@ from django_filters import ChoiceFilter, ModelChoiceFilter, DateFilter, BooleanF
 from ..permission import *
 from ..serializers.contract import *
 
-from project.models import (Project, UnitType, UnitFloorType,
-                            KeyUnit, BuildingUnit, HouseUnit, ProjectBudget,
-                            Site, SiteOwner, SiteOwnshipRelationship, SiteContract)
-
 from contract.models import (OrderGroup, Contract, Contractor,
                              ContractorAddress, ContractorContact, ContractorRelease)
+from project.models import BuildingUnit
 
 
 # Contract --------------------------------------------------------------------------
