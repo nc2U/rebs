@@ -14,10 +14,6 @@ import {
   DownPayment,
   ContractRelease,
 } from '@/store/types/contract'
-import {
-  FETCH_CONT_RELEASE,
-  FETCH_CONT_RELEASE_LIST,
-} from '@/store/modules/contract/mutations-types'
 
 export const useContract = defineStore('contract', () => {
   // state & getters
