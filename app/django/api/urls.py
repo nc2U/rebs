@@ -8,6 +8,7 @@ from .views.project import *
 from .views.cash import *
 from .views.contract import *
 from .views.notice import *
+from .views.document import *
 
 app_name = 'api'
 
@@ -130,27 +131,28 @@ urlpatterns = [
     # notice
     path('sales-bill-issue/', BillIssueList.as_view(), name=BillIssueList.name),
     path('sales-bill-issue/<int:pk>/', BillIssueDetail.as_view(), name=BillIssueDetail.name),
+    # document
+    path('group/', GroupList.as_view(), name=GroupList.name),
+    path('group/<int:pk>/', GroupDetail.as_view(), name=GroupDetail.name),
+    path('board/', BoardList.as_view(), name=BoardList.name),
+    path('board/<int:pk>/', BoardDetail.as_view(), name=BoardDetail.name),
+    path('category/', CategoryList.as_view(), name=CategoryList.name),
+    path('category/<int:pk>/', CategoryDetail.as_view(), name=CategoryDetail.name),
+    path('suitcase/', LawSuitCaseList.as_view(), name=LawSuitCaseList.name),
+    path('suitcase/<int:pk>/', LawSuitCaseDetail.as_view(), name=LawSuitCaseDetail.name),
+    path('post/', PostList.as_view(), name=PostList.name),
+    path('post/<int:pk>/', PostDetail.as_view(), name=PostDetail.name),
+    path('image/', ImageList.as_view(), name=ImageList.name),
+    path('image/<int:pk>/', ImageDetail.as_view(), name=ImageDetail.name),
+    path('link/', LinkList.as_view(), name=LinkList.name),
+    path('link/<int:pk>/', LinkDetail.as_view(), name=LinkDetail.name),
+    path('file/', FileList.as_view(), name=FileList.name),
+    path('file/<int:pk>/', FileDetail.as_view(), name=FileDetail.name),
+    path('comment/', CommentList.as_view(), name=CommentList.name),
+    path('comment/<int:pk>/', CommentDetail.as_view(), name=CommentDetail.name),
+    path('tag/', TagList.as_view(), name=TagList.name),
+    path('tag/<int:pk>/', TagDetail.as_view(), name=TagDetail.name),
 
-    # # path('group/', GroupList.as_view(), name=GroupList.name),
-    # # path('group/<int:pk>/', GroupDetail.as_view(), name=GroupDetail.name),
-    # # path('board/', BoardList.as_view(), name=BoardList.name),
-    # # path('board/<int:pk>/', BoardDetail.as_view(), name=BoardDetail.name),
-    # # path('category/', CategoryList.as_view(), name=CategoryList.name),
-    # # path('category/<int:pk>/', CategoryDetail.as_view(), name=CategoryDetail.name),
-    # # path('suitcase/', LawSuitCaseList.as_view(), name=LawSuitCaseList.name),
-    # # path('suitcase/<int:pk>/', LawSuitCaseDetail.as_view(), name=LawSuitCaseDetail.name),
-    # # path('post/', PostList.as_view(), name=PostList.name),
-    # # path('post/<int:pk>/', PostDetail.as_view(), name=PostDetail.name),
-    # # path('image/', ImageList.as_view(), name=ImageList.name),
-    # # path('image/<int:pk>/', ImageDetail.as_view(), name=ImageDetail.name),
-    # # path('link/', LinkList.as_view(), name=LinkList.name),
-    # # path('link/<int:pk>/', LinkDetail.as_view(), name=LinkDetail.name),
-    # # path('file/', FileList.as_view(), name=FileList.name),
-    # # path('file/<int:pk>/', FileDetail.as_view(), name=FileDetail.name),
-    # # path('comment/', CommentList.as_view(), name=CommentList.name),
-    # # path('comment/<int:pk>/', CommentDetail.as_view(), name=CommentDetail.name),
-    # # path('tag/', TagList.as_view(), name=TagList.name),
-    # # path('tag/<int:pk>/', TagDetail.as_view(), name=TagDetail.name),
     # path('wise-say/', WiseSayList.as_view(), name=WiseSayList.name),
     # path('wise-say/<int:pk>/', WiseSayDetail.as_view(), name=WiseSayDetail.name),
 ]
