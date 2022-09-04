@@ -82,7 +82,7 @@ class ApiIndex(generics.GenericAPIView):
             # contract
             'order-group': reverse(api + 'order_group-list', request=request),
             'contract': reverse(api + 'contract-list', request=request),
-            'contract-custom-list': reverse(api + 'contract-cumstom-list', request=request),
+            'contract-set': reverse(api + 'contract-set-list', request=request),
             'subs-sum': reverse(api + SubsSummaryList.name, request=request),
             'cont-sum': reverse(api + ContSummaryList.name, request=request),
             'contractor': reverse(api + 'contractor-list', request=request),
@@ -212,8 +212,8 @@ urlpatterns = [
     path('order-group/<int:pk>/', OrderGroupViewSets.as_view(detail_view), name='order_group-detail'),
     path('contract/', ContractViewSets.as_view(list_view), name='contract-list'),
     path('contract/<int:pk>/', ContractViewSets.as_view(detail_view), name='contract-detail'),
-    path('contract-custom-list/', ContractCustomViewSets.as_view(list_view), name='contract-cumstom-list'),
-    path('contract-custom-list/<int:pk>/', ContractCustomViewSets.as_view(detail_view), name='contract-cumstom-detail'),
+    path('contract-set/', ContractSetViewSets.as_view(list_view), name='contract-set-list'),
+    path('contract-set/<int:pk>/', ContractSetViewSets.as_view(detail_view), name='contract-set-detail'),
     path('subs-sum/', SubsSummaryList.as_view(), name=SubsSummaryList.name),
     path('cont-sum/', ContSummaryList.as_view(), name=ContSummaryList.name),
 

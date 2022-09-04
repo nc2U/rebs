@@ -71,7 +71,7 @@ class ProjectCashBookInContractSerializer(serializers.ModelSerializer):
         fields = ('pk', 'deal_date', 'income', 'bank_account', 'trader', 'installment_order')
 
 
-class ContractCustomListSerializer(serializers.ModelSerializer):
+class ContractSetSerializer(serializers.ModelSerializer):
     order_group = SimpleOrderGroupSerializer()
     unit_type = SimpleUnitTypeSerializer()
     keyunit = KeyUnitInContractSerializer()
@@ -87,6 +87,19 @@ class ContractCustomListSerializer(serializers.ModelSerializer):
     def get_payments(self, instance):
         payments = instance.payments.filter(project_account_d2__lte=2).order_by('deal_date', 'id')
         return ProjectCashBookInContractSerializer(payments, many=True, read_only=True).data
+
+    # @transaction.atomic
+    # def create(self, validated_data):
+    #     contract = Contract.objects.create(**validated_data)
+    #
+    #     contract.save()
+    #     return contract
+    #
+    # @transaction.atomic
+    # def update(self, instance, validated_data):
+    #     instance.__dict__.update(**validated_data)
+    #     instance.save()
+    #     return instance
 
 
 class SubsSummarySerializer(serializers.ModelSerializer):

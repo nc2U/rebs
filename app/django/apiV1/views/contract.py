@@ -48,8 +48,8 @@ class ContractViewSets(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
 
-class ContractCustomViewSets(ContractViewSets):
-    serializer_class = ContractCustomListSerializer
+class ContractSetViewSets(ContractViewSets):
+    serializer_class = ContractSetSerializer
 
 
 class SubsSummaryList(generics.ListAPIView):
