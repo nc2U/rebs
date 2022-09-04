@@ -3,7 +3,7 @@ import store from '@/store'
 import router from '@/router'
 
 const api = axios.create({
-  baseURL: '/api/',
+  baseURL: '/api/v1/',
 })
 
 api.interceptors.request.use(
