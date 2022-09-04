@@ -1,9 +1,10 @@
 from django.urls import path
 
-from .views1 import *
+from .views1 import ApiIndex
 from .views.accounts import *
 from .views.company import *
 from .views.rebs import *
+from .views.project import *
 
 app_name = 'api'
 
@@ -45,39 +46,38 @@ urlpatterns = [
     path('project-acc-sort/', ProjectAccountSortList.as_view(), name=ProjectAccountSortList.name),
     path('project-account-depth1/', ProjectAccountD1List.as_view(), name=ProjectAccountD1List.name),
     path('project-account-depth2/', ProjectAccountD2List.as_view(), name=ProjectAccountD2List.name),
+    # project
+    path('project/', ProjectViewSets.as_view(list_view), name='project-list'),
+    path('project/<int:pk>/', ProjectViewSets.as_view(detail_view), name='project-detail'),
+    path('type/', UnitTypeViewSets.as_view(list_view), name='unittype-list'),
+    path('type/<int:pk>/', UnitTypeViewSets.as_view(detail_view), name='unittype-detail'),
+    path('floor/', UnitFloorTypeViewSets.as_view(list_view), name='floortype-list'),
+    path('floor/<int:pk>/', UnitFloorTypeViewSets.as_view(detail_view), name='floortype-detail'),
+    path('key-unit/', KeyUnitViewSets.as_view(list_view), name='key_unit-list'),
+    path('key-unit/<int:pk>/', KeyUnitViewSets.as_view(detail_view), name='key_unit-detail'),
+    path('bldg/', BuildingUnitViewSets.as_view(list_view), name='bldg-list'),
+    path('bldg/<int:pk>/', BuildingUnitViewSets.as_view(detail_view), name='bldg-detail'),
+    path('house-unit/', HouseUnitList.as_view(), name=HouseUnitList.name),
+    path('house-unit/<int:pk>/', HouseUnitDetail.as_view(), name=HouseUnitDetail.name),
+    path('available-house-unit/', AvailableHouseUnitList.as_view(), name=AvailableHouseUnitList.name),
+    path('all-house-unit/', AllHouseUnitList.as_view(), name=AllHouseUnitList.name),
+    path('budget/', ProjectBudgetList.as_view(), name=ProjectBudgetList.name),
+    # path('budget/<int:pk>/', ProjectBudgetDetail.as_view(), name=ProjectBudgetDetail.name),
+    path('exec-amount/', ExecAmountToBudgetList.as_view(), name=ExecAmountToBudgetList.name),
+    path('site/', SiteViewSets.as_view(list_view), name='site-list'),
+    path('all-site/', AllSiteList.as_view(), name=AllSiteList.name),
+    path('sites-total/', TotalSiteArea.as_view(), name=TotalSiteArea.name),
+    path('site/<int:pk>/', SiteViewSets.as_view(detail_view), name='site-detail'),
+    path('all-owner/', AllOwnerList.as_view(), name=AllOwnerList.name),
+    path('owners-total/', TotalOwnerArea.as_view(), name=TotalOwnerArea.name),
+    path('site-owner/', SiteOwnerViewSets.as_view(list_view), name='siteowner-list'),
+    path('site-owner/<int:pk>/', SiteOwnerViewSets.as_view(detail_view), name='siteowner-detail'),
+    path('site-relation/', SiteRelationViewSets.as_view(list_view), name='relation-list'),
+    path('site-relation/<int:pk>/', SiteRelationViewSets.as_view(detail_view), name='relation-detail'),
+    path('conts-total/', TotalContractedArea.as_view(), name=TotalContractedArea.name),
+    path('site-contract/', SiteContractViewSets.as_view(list_view), name='sitecontract-list'),
+    path('site-contract/<int:pk>/', SiteContractViewSets.as_view(detail_view), name='sitecontract-detail'),
 
-    # path('project/', ProjectViewSets.as_view(list_view), name='project-list'),
-    # path('project/<int:pk>/', ProjectViewSets.as_view(detail_view), name='project-detail'),
-    # path('type/', UnitTypeViewSets.as_view(list_view), name='unittype-list'),
-    # path('type/<int:pk>/', UnitTypeViewSets.as_view(detail_view), name='unittype-detail'),
-    # path('floor/', UnitFloorTypeViewSets.as_view(list_view), name='floortype-list'),
-    # path('floor/<int:pk>/', UnitFloorTypeViewSets.as_view(detail_view), name='floortype-detail'),
-    # path('key-unit/', KeyUnitViewSets.as_view(list_view), name='key_unit-list'),
-    # path('key-unit/<int:pk>/', KeyUnitViewSets.as_view(detail_view), name='key_unit-detail'),
-    # path('bldg/', BuildingUnitViewSets.as_view(list_view), name='bldg-list'),
-    # path('bldg/<int:pk>/', BuildingUnitViewSets.as_view(detail_view), name='bldg-detail'),
-    #
-    # path('house-unit/', HouseUnitList.as_view(), name=HouseUnitList.name),
-    # path('house-unit/<int:pk>/', HouseUnitDetail.as_view(), name=HouseUnitDetail.name),
-    # path('available-house-unit/', AvailableHouseUnitList.as_view(), name=AvailableHouseUnitList.name),
-    # path('all-house-unit/', AllHouseUnitList.as_view(), name=AllHouseUnitList.name),
-    # path('budget/', ProjectBudgetList.as_view(), name=ProjectBudgetList.name),
-    # # path('budget/<int:pk>/', ProjectBudgetDetail.as_view(), name=ProjectBudgetDetail.name),
-    # path('exec-amount/', ExecAmountToBudgetList.as_view(), name=ExecAmountToBudgetList.name),
-    # path('site/', SiteViewSets.as_view(list_view), name='site-list'),
-    # path('all-site/', AllSiteList.as_view(), name=AllSiteList.name),
-    # path('sites-total/', TotalSiteArea.as_view(), name=TotalSiteArea.name),
-    # path('site/<int:pk>/', SiteViewSets.as_view(detail_view), name='site-detail'),
-    # path('all-owner/', AllOwnerList.as_view(), name=AllOwnerList.name),
-    # path('owners-total/', TotalOwnerArea.as_view(), name=TotalOwnerArea.name),
-    # path('site-owner/', SiteOwnerViewSets.as_view(list_view), name='siteowner-list'),
-    # path('site-owner/<int:pk>/', SiteOwnerViewSets.as_view(detail_view), name='siteowner-detail'),
-    # path('site-relation/', SiteRelationViewSets.as_view(list_view), name='relation-list'),
-    # path('site-relation/<int:pk>/', SiteRelationViewSets.as_view(detail_view), name='relation-detail'),
-    # path('conts-total/', TotalContractedArea.as_view(), name=TotalContractedArea.name),
-    # path('site-contract/', SiteContractViewSets.as_view(list_view), name='sitecontract-list'),
-    # path('site-contract/<int:pk>/', SiteContractViewSets.as_view(detail_view), name='sitecontract-detail'),
-    #
     # # path('bank-code/', BankCodeList.as_view(), name=BankCodeList.name),
     # # path('bank-code/<int:pk>/', BankCodeDetail.as_view(), name=BankCodeDetail.name),
     # path('company-bank-account/', ComBankAccountViewSets.as_view(list_view), name='com_bank-list'),
