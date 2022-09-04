@@ -9,7 +9,7 @@ import {
 import api from '@/api'
 import { errorHandle, message } from '@/utils/helper'
 
-export const useUnit = defineStore('unit', () => {
+export const useProjectData = defineStore('projectData', () => {
   // states & getters
   const unitTypeList = ref<UnitType[]>([])
   const simpleTypes = computed(() =>
@@ -23,9 +23,9 @@ export const useUnit = defineStore('unit', () => {
   )
 
   // actions
-  const fetchTypeList = (pk: number) =>
+  const fetchTypeList = (projId: number) =>
     api
-      .get(`/type/?project=${pk}`)
+      .get(`/type/?project=${projId}`)
       .then(res => {
         unitTypeList.value = res.data
       })
@@ -67,9 +67,9 @@ export const useUnit = defineStore('unit', () => {
   )
 
   // actions
-  const fetchFloorTypeList = (pk: number) =>
+  const fetchFloorTypeList = (projId: number) =>
     api
-      .get(`/floor/?project=${pk}`)
+      .get(`/floor/?project=${projId}`)
       .then(res => (floorTypeList.value = res.data))
       .catch(err => errorHandle(err.response.data))
 
@@ -99,9 +99,9 @@ export const useUnit = defineStore('unit', () => {
   const buildingList = ref<BuildingUnit[]>([])
 
   // actions
-  const fetchBuildingList = (pk: number) =>
+  const fetchBuildingList = (projId: number) =>
     api
-      .get(`/bldg/?project=${pk}`)
+      .get(`/bldg/?project=${projId}`)
       .then(res => (buildingList.value = res.data))
       .catch(err => errorHandle(err.response.data))
 

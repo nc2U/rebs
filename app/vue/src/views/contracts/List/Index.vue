@@ -2,6 +2,8 @@
 import { ref, computed, onMounted, watch } from 'vue'
 import { useStore } from 'vuex'
 import { useProject } from '@/store/pinia/project'
+import { useProjectData } from '@/store/pinia/project_data'
+import { useContract } from '@/store/pinia/contract'
 import { pageTitle, navMenu } from '@/views/contracts/_menu/headermixin'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
@@ -27,9 +29,9 @@ const projectStore = useProject()
 const project = computed(() => projectStore.project)
 const initProjId = computed(() => projectStore.initProjId)
 
-watch(project, pj => {
-  if (pj?.is_unit_set) printItems.value.splice(4, 0, '5-6')
-  unitSet.value = pj?.is_unit_set || false
+watch(project, nVal => {
+  if (nVal?.is_unit_set) printItems.value.splice(4, 0, '5-6')
+  unitSet.value = nVal?.is_unit_set || false
 })
 
 const excelUrl = computed(() => {
@@ -38,24 +40,22 @@ const excelUrl = computed(() => {
   return `/excel/contracts/?project=${pk}${filteredStr.value}&col=${items}`
 })
 
-const fetchOrderGroupList = (id: number) =>
-  store.dispatch('contract/fetchOrderGroupList', id)
+const contractStore = useContract()
+
+const fetchOrderGroupList = (pk: number) =>
+  contractStore.fetchOrderGroupList(pk)
+
 const fetchContractList = (project: { project: number }) =>
-  store.dispatch('contract/fetchContractList', project)
-const fetchSubsSummaryList = (id: number) =>
-  store.dispatch('contract/fetchSubsSummaryList', id)
-const fetchContSummaryList = (id: number) =>
-  store.dispatch('contract/fetchContSummaryList', id)
+  contractStore.fetchContractList(project)
+const fetchSubsSummaryList = (pk: number) =>
+  contractStore.fetchSubsSummaryList(pk)
+const fetchContSummaryList = (pk: number) =>
+  contractStore.fetchContSummaryList(pk)
 
-const fetchTypeList = (id: number) =>
-  store.dispatch('project/fetchTypeList', id)
-const fetchBuildingList = (id: number) =>
-  store.dispatch('project/fetchBuildingList', id)
+const pData = useProjectData()
 
-const contractUpdate = (payload: any) =>
-  store.commit('contract/updateState', payload)
-const projectUpdate = (payload: any) =>
-  store.commit('project/updateState', payload)
+const fetchTypeList = (projId: number) => pData.fetchTypeList(projId)
+const fetchBuildingList = (projId: number) => pData.fetchBuildingList(projId)
 
 const onSelectAdd = (target: any) => {
   if (target !== '') {
@@ -66,14 +66,12 @@ const onSelectAdd = (target: any) => {
     fetchSubsSummaryList(target)
     fetchContSummaryList(target)
   } else {
-    contractUpdate({
-      orderGroupList: [],
-      subsSummaryList: [],
-      contSummaryList: [],
-      contractList: [],
-      contractsCount: 0,
-    })
-    projectUpdate({ unitTypeList: [], buildingList: [] })
+    contractStore.orderGroupList = []
+    contractStore.subsSummaryList = []
+    contractStore.contSummaryList = []
+    contractStore.contractList = []
+    contractStore.contractsCount = 0
+    pData.buildingList = []
   }
 }
 const pageSelect = (page: number) => childListFiltering(page)
