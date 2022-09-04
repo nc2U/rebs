@@ -6,9 +6,9 @@ from rest_framework.reverse import reverse
 from django_filters.rest_framework import FilterSet
 from django_filters import ChoiceFilter, ModelChoiceFilter, DateFilter, BooleanFilter
 
-from .permission import *
-from .pagination import *
-from .serializers import *
+from ..permission import *
+from ..pagination import *
+from ..serializers.serializers import *
 
 from accounts.models import User, Profile, Todo
 from company.models import Company, Logo, Department, Position, Staff
