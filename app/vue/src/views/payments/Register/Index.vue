@@ -47,8 +47,6 @@ const fetchContractList = (payload: any) =>
 const fetchContract = (cont: any) =>
   store.dispatch('contract/fetchContract', cont)
 
-//     ...mapMutations('payment', ['FETCH_PAYMENT_ID']),
-
 const route = useRoute()
 const router = useRouter()
 
@@ -68,8 +66,8 @@ onBeforeMount(() => {
 
 watch(contract, newVal => {
   if (newVal) {
-    const order_group = newVal.order_group.pk
-    const unit_type = newVal.unit_type.pk
+    const order_group = newVal.order_group
+    const unit_type = newVal.unit_type
     fetchPriceList({ project: project.value, order_group, unit_type })
     fetchDownPayList({ project: project.value, order_group, unit_type })
     fetchAllPaymentList({
