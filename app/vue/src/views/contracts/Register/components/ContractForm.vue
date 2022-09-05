@@ -7,13 +7,13 @@ import { diffDate } from '@/utils/baseMixins'
 import { isValidate } from '@/utils/helper'
 import { numFormat, dateFormat } from '@/utils/baseMixins'
 import { write_contract } from '@/utils/pageAuth'
+import { maska as vMaska } from 'maska'
 import ContNavigation from './ContNavigation.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 import DatePicker from '@/components/DatePicker/index.vue'
 import DaumPostcode from '@/components/DaumPostcode/index.vue'
 import { callAddress } from '@/components/DaumPostcode/address'
-import { maska as vMaska } from 'maska'
 
 const props = defineProps({
   contract: { type: Object, default: null },
@@ -79,8 +79,8 @@ watch(props, newVal => {
   if (newVal.contract) {
     // contract
     pk.value = props.contract.pk
-    form.order_group = `${props.contract.order_group.pk},${props.contract.order_group.sort}`
-    form.unit_type = props.contract.unit_type.pk
+    form.order_group = `${props.contract.order_group},${props.contract.order_group_desc.sort}`
+    form.unit_type = props.contract.unit_type
     form.key_unit = `${props.contract.keyunit.pk},${props.contract.keyunit.unit_code}`
     form.houseunit = props.contract.keyunit.houseunit
       ? props.contract.keyunit.houseunit.pk
