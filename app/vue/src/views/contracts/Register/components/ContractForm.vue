@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { reactive, ref, watch, nextTick, computed } from 'vue'
-import { useStore } from 'vuex'
 import { useAccount } from '@/store/pinia/account'
 import { useContract } from '@/store/pinia/contract'
 import { useProjectData } from '@/store/pinia/project_data'
 import { usePayment } from '@/store/pinia/payment'
+import { useProCash } from '@/store/pinia/proCash'
 import { useRouter } from 'vue-router'
 import { diffDate } from '@/utils/baseMixins'
 import { isValidate } from '@/utils/helper'
@@ -142,10 +142,8 @@ const houseUnitList = computed(() => contractStore.houseUnitList)
 const projectDataStore = useProjectData()
 const unitTypeList = computed(() => projectDataStore.unitTypeList)
 
-const store = useStore()
-const proBankAccountList = computed(() => {
-  return store.state.proCash.proBankAccountList
-})
+const proCashStore = useProCash()
+const proBankAccountList = computed(() => proCashStore.proBankAccountList)
 
 const paymentStore = usePayment()
 const payOrderList = computed(() => paymentStore.payOrderList)

@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { ref, computed, onBeforeMount, watch } from 'vue'
-import { useStore } from 'vuex'
 import { useContract } from '@/store/pinia/contract'
 import { useProject } from '@/store/pinia/project'
 import { useProjectData } from '@/store/pinia/project_data'
 import { usePayment } from '@/store/pinia/payment'
+import { useProCash } from '@/store/pinia/proCash'
 import { useRoute, useRouter, onBeforeRouteLeave } from 'vue-router'
 import { pageTitle, navMenu } from '@/views/contracts/_menu/headermixin'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
@@ -41,9 +41,9 @@ const updateContractSet = (payload: any) => console.log(payload) // contractStor
 const projectDataStore = useProjectData()
 const fetchTypeList = (projId: number) => projectDataStore.fetchTypeList(projId)
 
-const store = useStore()
+const proCashStore = useProCash()
 const fetchProBankAccList = (projId: number) =>
-  store.dispatch('proCash/fetchProBankAccList', projId)
+  proCashStore.fetchProBankAccList(projId)
 
 const paymentStore = usePayment()
 const fetchPayOrderList = (projId: number) =>
