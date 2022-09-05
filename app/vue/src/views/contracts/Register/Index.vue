@@ -84,15 +84,14 @@ const onSelectAdd = (target: any) => {
     fetchPayOrderList(target)
     fetchProBankAccList(target)
   } else {
-    store.commit('contract/updateState', {
-      contract: null,
-      orderGroupList: [],
-      keyUnitList: [],
-      houseUnitList: [],
-    })
-    store.commit('project/updateState', { unitTypeList: [] })
-    store.commit('payment/updateState', { payOrderList: [] })
-    store.commit('proCash/updateState', { proBankAccountList: [] })
+    contractStore.contract = null
+    contractStore.orderGroupList = []
+    contractStore.keyUnitList = []
+    contractStore.houseUnitList = []
+
+    projectDataStore.unitTypeList = []
+    paymentStore.payOrderList = []
+    proCashStore.proBankAccountList = []
   }
 }
 

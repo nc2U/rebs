@@ -6,9 +6,8 @@ import { useProjectData } from '@/store/pinia/project_data'
 import { usePayment } from '@/store/pinia/payment'
 import { useProCash } from '@/store/pinia/proCash'
 import { useRouter } from 'vue-router'
-import { diffDate } from '@/utils/baseMixins'
 import { isValidate } from '@/utils/helper'
-import { numFormat, dateFormat } from '@/utils/baseMixins'
+import { numFormat, dateFormat, diffDate } from '@/utils/baseMixins'
 import { write_contract } from '@/utils/pageAuth'
 import { maska as vMaska } from 'maska'
 import ContNavigation from './ContNavigation.vue'
@@ -163,13 +162,13 @@ const downPayments = computed(() =>
     : [],
 )
 
-const allowedPeriod = computed(() =>
-  form.deal_date
-    ? useAccount().superAuth ||
-      form.paymentPk === null ||
-      diffDate(form.deal_date) <= 90
-    : false,
-)
+// const allowedPeriod = computed(() =>
+//   form.deal_date
+//     ? useAccount().superAuth ||
+//       form.paymentPk === null ||
+//       diffDate(form.deal_date) <= 90
+//     : false,
+// )
 
 const addressCallback = (date: any) => {
   const { formNum, zipcode, address1, address3 } = callAddress(date)
@@ -192,13 +191,13 @@ const onSubmit = (event: any) => {
   if (isValidate(event)) {
     validated.value = true
   } else {
-    if (write_contract)
-      if (allowedPeriod.value) confirmModal.value.callModal()
-      else
-        alertModal.value.callModal(
-          null,
-          '거래일로부터 90일이 경과한 건은 수정할 수 없습니다. 관리자에게 문의바랍니다.',
-        )
+    if (write_contract) confirmModal.value.callModal()
+    // if (allowedPeriod.value) confirmModal.value.callModal()
+    // else
+    //   alertModal.value.callModal(
+    //     null,
+    //     '거래일로부터 90일이 경과한 건은 수정할 수 없습니다. 관리자에게 문의바랍니다.',
+    //   )
     else alertModal.value.callModal()
   }
 }
@@ -309,8 +308,8 @@ const modalAction = () => {
       ...form,
     })
   validated.value = false
-  formReset()
-  confirmModal.value.visible = false
+  confirmModal.value.close()
+  // formReset()
 }
 
 const deleteContract = () => {
@@ -790,7 +789,6 @@ const deleteContract = () => {
               type="text"
               maxlength="30"
               placeholder="상세주소를 입력하세요"
-              :required="isContract"
               :disabled="!isContract"
             />
             <CFormFeedback invalid>상세주소를 입력하세요.</CFormFeedback>
@@ -853,7 +851,6 @@ const deleteContract = () => {
               type="text"
               maxlength="30"
               placeholder="상세주소를 입력하세요"
-              :required="isContract"
               :disabled="!isContract"
             />
             <CFormFeedback invalid>상세주소를 입력하세요.</CFormFeedback>
