@@ -162,16 +162,13 @@ const downPayments = computed(() =>
     : [],
 )
 
-const allowedPeriod = computed(() =>
-  form.deal_date
-    ? useAccount().superAuth ||
-      form.paymentPk === null ||
-      diffDate(form.deal_date) <= 90
-    : false,
-)
+const accountStore = useAccount()
+
+const allowedPeriod = (paidDate: any) =>
+  accountStore.superAuth || diffDate(paidDate) <= 90
 
 const payUpdate = (payment: any) => {
-  if (allowedPeriod.value) {
+  if (allowedPeriod(payment.deal_date)) {
     form.paymentPk = payment.pk
     form.deal_date = new Date(payment.deal_date)
     form.income = payment.income
