@@ -1,5 +1,5 @@
 import { State } from '@/store'
-import { ProjectCashBook } from '@/store/modules/proCash/state'
+import { ProjectCashBook } from '@/store/types/proCash'
 import {
   Price,
   PayOrder,
