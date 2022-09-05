@@ -1,5 +1,5 @@
 import { State } from '@/store'
-import { AccountSort } from '@/store/modules/comCash/state'
+import { AccountSort } from '@/store/types/comCash'
 import {
   ProjectAccountD1,
   ProjectAccountD2,
