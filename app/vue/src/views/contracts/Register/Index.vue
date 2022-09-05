@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount, watch } from 'vue'
+import { ref, computed, onBeforeMount, watch } from 'vue'
 import { useStore } from 'vuex'
 import { useProject } from '@/store/pinia/project'
 import { useRoute, useRouter, onBeforeRouteLeave } from 'vue-router'
@@ -7,6 +7,8 @@ import { pageTitle, navMenu } from '@/views/contracts/_menu/headermixin'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ContractForm from '@/views/contracts/Register/components/ContractForm.vue'
+
+const contForm = ref()
 
 const [route, router] = [useRoute(), useRouter()]
 
@@ -66,6 +68,8 @@ watch(contract, newVal => {
 })
 
 const onSelectAdd = (target: any) => {
+  contForm.value.formReset()
+
   if (!!target) {
     fetchOrderGroupList(target)
     fetchKeyUnitList({ project: target })
@@ -85,6 +89,7 @@ const onSelectAdd = (target: any) => {
     store.commit('proCash/updateState', { proBankAccountList: [] })
   }
 }
+
 const typeSelect = (type: number) => {
   const unit_type = type
   fetchKeyUnitList({ project: project.value?.pk, unit_type })
@@ -128,6 +133,7 @@ onBeforeRouteLeave(() =>
 
   <ContentBody>
     <ContractForm
+      ref="contForm"
       :contract="contract"
       :unit-set="unitSet"
       :is-union="isUnion"

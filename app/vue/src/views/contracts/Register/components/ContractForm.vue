@@ -214,15 +214,15 @@ const payReset = () => {
 }
 
 const unitReset = (event: any) => {
-  form.reservation_date = null
-  form.contract_date = null
   if (event.target.value === '') formReset()
 }
+
 const typeSelect = (event: any) => {
   emit('type-select', event.target.value)
   form.key_unit = ''
   form.houseunit = ''
 }
+
 const toSame = () => {
   if (!sameAddr.value) {
     form.dm_zipcode = form.id_zipcode
@@ -238,6 +238,7 @@ const toSame = () => {
 }
 
 const router = useRouter()
+
 const formReset = () => {
   pk.value = null
   form.order_group = ''
@@ -281,6 +282,9 @@ const formReset = () => {
   router.push({ name: '계약등록 관리' })
   nextTick(() => (formsCheck.value = true))
 }
+
+defineExpose({ formReset })
+
 const modalAction = () => {
   form.birth_date = form.birth_date ? dateFormat(form.birth_date) : null
   form.reservation_date = form.reservation_date

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount, ref, watch } from 'vue'
+import { computed, nextTick, onBeforeMount, ref, watch } from 'vue'
 import { useStore } from 'vuex'
 import { useProject } from '@/store/pinia/project'
 import { useRouter, useRoute, onBeforeRouteLeave } from 'vue-router'
@@ -86,18 +86,18 @@ watch(contract, newVal => {
 })
 
 const onSelectAdd = (target: any) => {
+  router.push({ name: '건별수납 관리' })
+  store.commit('contract/updateState', { contract: null, contractList: [] })
+  store.commit('project/updateState', { unitTypeList: [] })
+  store.commit('payment/updateState', {
+    AllPaymentList: [],
+    payOrderList: [],
+  })
+  store.commit('proCash/updateState', { proBankAccountList: [] })
   if (target !== '') {
     fetchTypeList(target)
     fetchPayOrderList(target)
     fetchProBankAccList(target)
-  } else {
-    store.commit('contract/updateState', { contract: null, contractList: [] })
-    store.commit('project/updateState', { unitTypeList: [] })
-    store.commit('payment/updateState', {
-      AllPaymentList: [],
-      payOrderList: [],
-    })
-    store.commit('proCash/updateState', { proBankAccountList: [] })
   }
 }
 
