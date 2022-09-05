@@ -54,4 +54,4 @@ class ProfileSerializer(serializers.ModelSerializer):
 class TodoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Todo
-        fields = ('pk', 'user', 'title', 'completed', 'created_at', 'updated_at', 'soft_deleted')
+        fields = ('pk', 'user', 'title', 'completed', 'soft_deleted')
