@@ -1,5 +1,5 @@
 import { State } from '@/store'
-import { Company } from '@/store/pinia/company'
+import { Company } from '@/store/types/settings'
 
 export interface CompanyState extends State {
   companyList: Company[]
