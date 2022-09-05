@@ -11,13 +11,13 @@ import PaymentListAll from '@/views/payments/Register/components/PaymentListAll.
 import OrdersBoard from '@/views/payments/Register/components/OrdersBoard.vue'
 import CreateButton from '@/views/payments/Register/components/CreateButton.vue'
 
-const paymentId = ref('') as any
+const paymentId = ref<any>('')
 
 const store = useStore()
 const projectStore = useProject()
 
-const project = computed(() => projectStore.project?.pk)
 const initProjId = computed(() => projectStore.initProjId)
+const project = computed(() => projectStore.project?.pk || initProjId.value)
 
 const contract = computed(() => store.state.contract.contract)
 const AllPaymentList = computed(() => store.state.payment.AllPaymentList)
@@ -52,13 +52,14 @@ const router = useRouter()
 
 onBeforeMount(() => {
   if (route.query.contract) {
-    router.push({ name: '건별수납 관리' })
+    router.replace({
+      name: '건별수납 관리',
+      query: { contract: route.query.contract },
+    })
     getContract(route.query.contract)
   }
-  if (route.query.payment) {
-    router.push({ name: '건별수납 관리' })
-    paymentId.value = route.query.payment
-  }
+  if (route.query.payment) paymentId.value = route.query.payment
+
   fetchTypeList(initProjId.value)
   fetchPayOrderList(initProjId.value)
   fetchProBankAccList(initProjId.value)
@@ -103,7 +104,13 @@ const onSelectAdd = (target: any) => {
 const onContFiltering = (payload: any) =>
   fetchContractList({ ...{ project: project.value }, ...payload })
 
-const getContract = (cont: any) => fetchContract(cont)
+const getContract = (cont: any) => {
+  router.replace({
+    name: '건별수납 관리',
+    query: { contract: cont },
+  })
+  fetchContract(cont)
+}
 
 const onCreate = (payload: any) => {
   payload.project = project.value

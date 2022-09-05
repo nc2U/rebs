@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { numFormat } from '@/utils/baseMixins'
+import { headerSecondary } from '@/utils/cssMixins'
 import FormModal from '@/components/Modals/FormModal.vue'
 import PaymentForm from '@/views/payments/Register/components/PaymentForm.vue'
 
@@ -19,7 +21,14 @@ onMounted(() => {
   }
 })
 
-const showDetail = () => updateFormModal.value.callModal()
+const router = useRouter()
+const showDetail = () => {
+  router.replace({
+    name: '건별수납 관리',
+    query: { contract: props.contract.pk },
+  })
+  updateFormModal.value.callModal()
+}
 
 const updateObject = (payload: any) => {
   emit('on-update', { ...{ pk: props.payment.pk }, ...payload })
@@ -31,7 +40,7 @@ const deleteObject = () => emit('on-delete', props.payment.pk)
 <template>
   <CTableRow
     class="text-center"
-    :color="payment.pk.toString() === paymentId ? 'secondary' : ''"
+    :color="payment.pk.toString() === paymentId ? headerSecondary : ''"
   >
     <CTableDataCell>{{ payment.deal_date }}</CTableDataCell>
     <CTableDataCell>
