@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { reactive, ref, watch, nextTick, computed } from 'vue'
 import { useStore } from 'vuex'
+import { useContract } from '@/store/pinia/contract'
 import { useAccount } from '@/store/pinia/account'
 import { useRouter } from 'vue-router'
 import { diffDate } from '@/utils/baseMixins'
@@ -132,13 +133,15 @@ watch(props, newVal => {
 watch(form, () => (formsCheck.value = false))
 
 const store = useStore()
-const orderGroupList = computed(() => store.state.contract.orderGroupList)
-const keyUnitList = computed(() => store.state.contract.keyUnitList)
-const houseUnitList = computed(() => store.state.contract.houseUnitList)
+const contractStore = useContract()
+const orderGroupList = computed(() => contractStore.orderGroupList)
+const keyUnitList = computed(() => contractStore.keyUnitList)
+const houseUnitList = computed(() => contractStore.houseUnitList)
+
 const unitTypeList = computed(() => store.state.project.unitTypeList)
-const proBankAccountList = computed(
-  () => store.state.proCash.proBankAccountList,
-)
+const proBankAccountList = computed(() => {
+  return store.state.proCash.proBankAccountList
+})
 const payOrderList = computed(() => store.state.payment.payOrderList)
 
 const contLabel = computed(() => (form.status !== '1' ? '계약' : '청약'))
@@ -155,7 +158,7 @@ const downPayments = computed(() =>
       )
     : [],
 )
-const pageManageAuth = computed(() => write_contract)
+
 const allowedPeriod = computed(() =>
   form.deal_date
     ? useAccount().superAuth ||
@@ -195,6 +198,7 @@ const onSubmit = (event: any) => {
     else alertModal.value.callModal()
   }
 }
+
 const payUpdate = (payment: any) => {
   form.paymentPk = payment.pk
   form.deal_date = new Date(payment.deal_date)
@@ -304,6 +308,7 @@ const modalAction = () => {
   formReset()
   confirmModal.value.visible = false
 }
+
 const deleteContract = () => {
   if (useAccount().superAuth) delModal.value.callModal()
   else alertModal.value.callModal()

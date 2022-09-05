@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref, computed, onBeforeMount, watch } from 'vue'
 import { useStore } from 'vuex'
+import { useContract } from '@/store/pinia/contract'
 import { useProject } from '@/store/pinia/project'
 import { useRoute, useRouter, onBeforeRouteLeave } from 'vue-router'
 import { pageTitle, navMenu } from '@/views/contracts/_menu/headermixin'
@@ -12,56 +13,56 @@ const contForm = ref()
 
 const [route, router] = [useRoute(), useRouter()]
 
-const store = useStore()
-const contract = computed(() => store.state.contract.contract)
-const unitSet = computed(() => project.value?.is_unit_set)
-const isUnion = computed(() => !project.value?.is_direct_manage)
+const contractStore = useContract()
+const contract = computed(() => contractStore.contract)
 
 const projectStore = useProject()
 const project = computed(() => projectStore.project)
-const initProjId = computed(
-  () => contract.value?.project || projectStore.initProjId,
-)
+const initProjId = computed(() => projectStore.initProjId)
+const unitSet = computed(() => project.value?.is_unit_set)
+const isUnion = computed(() => !project.value?.is_direct_manage)
 
-const fetchContract = (cont: any) =>
-  store.dispatch('contract/fetchContract', cont)
+const fetchContract = (cont: any) => contractStore.fetchContract(cont)
+
 const fetchOrderGroupList = (projId: number) =>
-  store.dispatch('contract/fetchOrderGroupList', projId)
-const fetchKeyUnitList = (payload: any) =>
-  store.dispatch('contract/fetchKeyUnitList', payload)
-const fetchHouseUnitList = (payload: any) =>
-  store.dispatch('contract/fetchHouseUnitList', payload)
-const createContractSet = (payload: any) =>
-  store.dispatch('contract/createContractSet', payload)
-const updateContractSet = (payload: any) =>
-  store.dispatch('contract/updateContractSet', payload)
+  contractStore.fetchOrderGroupList(projId)
 
+const fetchKeyUnitList = (payload: any) =>
+  contractStore.fetchKeyUnitList(payload)
+
+const fetchHouseUnitList = (payload: any) =>
+  contractStore.fetchHouseUnitList(payload)
+
+const createContractSet = (payload: any) => console.log(payload) // contractStore.createContractSet(payload)
+const updateContractSet = (payload: any) => console.log(payload) // contractStore.updateContractSet(payload)
+
+const store = useStore()
+const fetchPayOrderList = (projId: number) =>
+  store.dispatch('payment/fetchPayOrderList', projId)
 const fetchTypeList = (projId: number) =>
   store.dispatch('project/fetchTypeList', projId)
 const fetchProBankAccList = (projId: number) =>
   store.dispatch('proCash/fetchProBankAccList', projId)
-const fetchPayOrderList = (projId: number) =>
-  store.dispatch('payment/fetchPayOrderList', projId)
 
 watch(contract, newVal => {
   const projId = project.value?.pk || initProjId.value
   if (newVal) {
     fetchKeyUnitList({
       project: projId,
-      unit_type: newVal.unit_type.pk,
+      unit_type: newVal.unit_type,
       contract: route.query.contract,
       available: 'false',
     })
-    if (newVal.keyunit.houseunit) {
+    if (newVal.keyunit?.houseunit) {
       fetchHouseUnitList({
         project: projId,
-        unit_type: newVal.unit_type.pk,
+        unit_type: newVal.unit_type,
         contract: route.query.contract,
       })
     } else {
       fetchHouseUnitList({
         project: projId,
-        unit_type: newVal.unit_type.pk,
+        unit_type: newVal.unit_type,
       })
     }
   }
@@ -90,12 +91,13 @@ const onSelectAdd = (target: any) => {
   }
 }
 
+const getContract = (cont: any) => fetchContract(cont)
+
 const typeSelect = (type: number) => {
   const unit_type = type
   fetchKeyUnitList({ project: project.value?.pk, unit_type })
   fetchHouseUnitList({ project: project.value?.pk, unit_type })
 }
-const getContract = (cont: any) => fetchContract(cont)
 
 const onCreate = (payload: any) => {
   createContractSet({ project: project.value?.pk, ...payload })
