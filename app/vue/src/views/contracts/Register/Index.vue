@@ -3,6 +3,8 @@ import { ref, computed, onBeforeMount, watch } from 'vue'
 import { useStore } from 'vuex'
 import { useContract } from '@/store/pinia/contract'
 import { useProject } from '@/store/pinia/project'
+import { useProjectData } from '@/store/pinia/project_data'
+import { usePayment } from '@/store/pinia/payment'
 import { useRoute, useRouter, onBeforeRouteLeave } from 'vue-router'
 import { pageTitle, navMenu } from '@/views/contracts/_menu/headermixin'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
@@ -36,13 +38,16 @@ const fetchHouseUnitList = (payload: any) =>
 const createContractSet = (payload: any) => console.log(payload) // contractStore.createContractSet(payload)
 const updateContractSet = (payload: any) => console.log(payload) // contractStore.updateContractSet(payload)
 
+const projectDataStore = useProjectData()
+const fetchTypeList = (projId: number) => projectDataStore.fetchTypeList(projId)
+
 const store = useStore()
-const fetchPayOrderList = (projId: number) =>
-  store.dispatch('payment/fetchPayOrderList', projId)
-const fetchTypeList = (projId: number) =>
-  store.dispatch('project/fetchTypeList', projId)
 const fetchProBankAccList = (projId: number) =>
   store.dispatch('proCash/fetchProBankAccList', projId)
+
+const paymentStore = usePayment()
+const fetchPayOrderList = (projId: number) =>
+  paymentStore.fetchPayOrderList(projId)
 
 watch(contract, newVal => {
   const projId = project.value?.pk || initProjId.value

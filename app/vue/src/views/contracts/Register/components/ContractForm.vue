@@ -1,8 +1,10 @@
 <script lang="ts" setup>
 import { reactive, ref, watch, nextTick, computed } from 'vue'
 import { useStore } from 'vuex'
-import { useContract } from '@/store/pinia/contract'
 import { useAccount } from '@/store/pinia/account'
+import { useContract } from '@/store/pinia/contract'
+import { useProjectData } from '@/store/pinia/project_data'
+import { usePayment } from '@/store/pinia/payment'
 import { useRouter } from 'vue-router'
 import { diffDate } from '@/utils/baseMixins'
 import { isValidate } from '@/utils/helper'
@@ -132,17 +134,21 @@ watch(props, newVal => {
 
 watch(form, () => (formsCheck.value = false))
 
-const store = useStore()
 const contractStore = useContract()
 const orderGroupList = computed(() => contractStore.orderGroupList)
 const keyUnitList = computed(() => contractStore.keyUnitList)
 const houseUnitList = computed(() => contractStore.houseUnitList)
 
-const unitTypeList = computed(() => store.state.project.unitTypeList)
+const projectDataStore = useProjectData()
+const unitTypeList = computed(() => projectDataStore.unitTypeList)
+
+const store = useStore()
 const proBankAccountList = computed(() => {
   return store.state.proCash.proBankAccountList
 })
-const payOrderList = computed(() => store.state.payment.payOrderList)
+
+const paymentStore = usePayment()
+const payOrderList = computed(() => paymentStore.payOrderList)
 
 const contLabel = computed(() => (form.status !== '1' ? '계약' : '청약'))
 const isContract = computed(() => form.status === '2')
