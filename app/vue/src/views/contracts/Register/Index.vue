@@ -126,9 +126,9 @@ onBeforeMount(() => {
   }
 })
 
-onBeforeRouteLeave(() =>
-  store.commit('contract/updateState', { contract: null }),
-)
+onBeforeRouteLeave(() => {
+  contractStore.contract = null
+})
 </script>
 
 <template>
