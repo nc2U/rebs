@@ -162,53 +162,28 @@ const downPayments = computed(() =>
     : [],
 )
 
-// const allowedPeriod = computed(() =>
-//   form.deal_date
-//     ? useAccount().superAuth ||
-//       form.paymentPk === null ||
-//       diffDate(form.deal_date) <= 90
-//     : false,
-// )
-
-const addressCallback = (date: any) => {
-  const { formNum, zipcode, address1, address3 } = callAddress(date)
-  if (formNum === 2) {
-    form.id_zipcode = zipcode
-    form.id_address1 = address1
-    form.id_address2 = ''
-    form.id_address3 = address3
-    address21.value.$el.nextElementSibling.focus()
-  } else if (formNum === 3) {
-    form.dm_zipcode = zipcode
-    form.dm_address1 = address1
-    form.dm_address2 = ''
-    form.dm_address3 = address3
-    address22.value.$el.nextElementSibling.focus()
-  }
-}
-
-const onSubmit = (event: any) => {
-  if (isValidate(event)) {
-    validated.value = true
-  } else {
-    if (write_contract) confirmModal.value.callModal()
-    // if (allowedPeriod.value) confirmModal.value.callModal()
-    // else
-    //   alertModal.value.callModal(
-    //     null,
-    //     '거래일로부터 90일이 경과한 건은 수정할 수 없습니다. 관리자에게 문의바랍니다.',
-    //   )
-    else alertModal.value.callModal()
-  }
-}
+const allowedPeriod = computed(() =>
+  form.deal_date
+    ? useAccount().superAuth ||
+      form.paymentPk === null ||
+      diffDate(form.deal_date) <= 90
+    : false,
+)
 
 const payUpdate = (payment: any) => {
-  form.paymentPk = payment.pk
-  form.deal_date = new Date(payment.deal_date)
-  form.income = payment.income
-  form.bank_account = payment.bank_account
-  form.trader = payment.trader
-  form.installment_order = payment.installment_order.pk
+  if (allowedPeriod.value) {
+    form.paymentPk = payment.pk
+    form.deal_date = new Date(payment.deal_date)
+    form.income = payment.income
+    form.bank_account = payment.bank_account
+    form.trader = payment.trader
+    form.installment_order = payment.installment_order.pk
+  } else {
+    alertModal.value.callModal(
+      null,
+      '거래일로부터 90일이 경과한 입력 데이터는 수정할 수 없습니다. 관리자에게 문의바랍니다.',
+    )
+  }
 }
 
 const payReset = () => {
@@ -228,6 +203,57 @@ const typeSelect = (event: any) => {
   emit('type-select', event.target.value)
   form.key_unit = ''
   form.houseunit = ''
+}
+
+const onSubmit = (event: any) => {
+  if (isValidate(event)) {
+    validated.value = true
+  } else {
+    if (write_contract) confirmModal.value.callModal()
+    else alertModal.value.callModal()
+  }
+}
+
+const modalAction = () => {
+  form.birth_date = form.birth_date ? dateFormat(form.birth_date) : null
+  form.reservation_date = form.reservation_date
+    ? dateFormat(form.reservation_date)
+    : null
+  form.contract_date = form.contract_date
+    ? dateFormat(form.contract_date)
+    : null
+  form.deal_date = form.deal_date ? dateFormat(form.deal_date) : null
+  if (!props.contract) emit('on-create', form)
+  else
+    emit('on-update', {
+      ...{ pk: pk.value },
+      ...form,
+    })
+  validated.value = false
+  confirmModal.value.close()
+  // formReset()
+}
+
+const deleteContract = () => {
+  if (useAccount().superAuth) delModal.value.callModal()
+  else alertModal.value.callModal()
+}
+
+const addressCallback = (date: any) => {
+  const { formNum, zipcode, address1, address3 } = callAddress(date)
+  if (formNum === 2) {
+    form.id_zipcode = zipcode
+    form.id_address1 = address1
+    form.id_address2 = ''
+    form.id_address3 = address3
+    address21.value.$el.nextElementSibling.focus()
+  } else if (formNum === 3) {
+    form.dm_zipcode = zipcode
+    form.dm_address1 = address1
+    form.dm_address2 = ''
+    form.dm_address3 = address3
+    address22.value.$el.nextElementSibling.focus()
+  }
 }
 
 const toSame = () => {
@@ -291,31 +317,6 @@ const formReset = () => {
 }
 
 defineExpose({ formReset })
-
-const modalAction = () => {
-  form.birth_date = form.birth_date ? dateFormat(form.birth_date) : null
-  form.reservation_date = form.reservation_date
-    ? dateFormat(form.reservation_date)
-    : null
-  form.contract_date = form.contract_date
-    ? dateFormat(form.contract_date)
-    : null
-  form.deal_date = form.deal_date ? dateFormat(form.deal_date) : null
-  if (!props.contract) emit('on-create', form)
-  else
-    emit('on-update', {
-      ...{ pk: pk.value },
-      ...form,
-    })
-  validated.value = false
-  confirmModal.value.close()
-  // formReset()
-}
-
-const deleteContract = () => {
-  if (useAccount().superAuth) delModal.value.callModal()
-  else alertModal.value.callModal()
-}
 </script>
 
 <template>
