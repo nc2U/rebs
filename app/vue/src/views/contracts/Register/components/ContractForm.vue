@@ -286,7 +286,7 @@ const formReset = () => {
   form.home_phone = ''
   form.other_phone = ''
   form.email = ''
-  store.commit('contract/updateState', { contract: null })
+  contractStore.contract = null
   router.replace({ name: '계약등록 관리' })
   nextTick(() => (formsCheck.value = true))
 }
