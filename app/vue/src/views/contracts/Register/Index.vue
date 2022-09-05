@@ -35,8 +35,14 @@ const fetchKeyUnitList = (payload: any) =>
 const fetchHouseUnitList = (payload: any) =>
   contractStore.fetchHouseUnitList(payload)
 
-const createContractSet = (payload: any) => console.log(payload) // contractStore.createContractSet(payload)
-const updateContractSet = (payload: any) => console.log(payload) // contractStore.updateContractSet(payload)
+const createContractSet = (payload: any) => {
+  console.log(payload) // contractStore.createContractSet(payload)
+  alert('로직 수정 중!')
+}
+const updateContractSet = (payload: any) => {
+  console.log(payload) // contractStore.updateContractSet(payload)
+  alert('로직 수정 중!')
+}
 
 const projectDataStore = useProjectData()
 const fetchTypeList = (projId: number) => projectDataStore.fetchTypeList(projId)
