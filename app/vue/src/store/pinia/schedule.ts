@@ -2,23 +2,7 @@ import api from '@/api'
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import { errorHandle, message } from '@/utils/helper'
-
-interface Schedule {
-  pk: number
-  title: string
-  all_day: boolean
-  start_date: string | null
-  end_date: string | null
-  start_time: string | null
-  end_time: string | null
-}
-
-export interface Event {
-  title: string
-  allDay: boolean
-  start: string
-  end: string
-}
+import { Schedule, Event } from '@/store/types/schedule'
 
 const transform = (payload: Event) => {
   const { title, start, allDay, end } = payload
@@ -102,6 +86,7 @@ export const useSchedule = defineStore('schedule', () => {
     schedule,
     scheduleList,
     events,
+
     fetchScheduleList,
     createSchedule,
     fetchSchedule,
