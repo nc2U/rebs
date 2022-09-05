@@ -279,7 +279,7 @@ const formReset = () => {
   form.other_phone = ''
   form.email = ''
   store.commit('contract/updateState', { contract: null })
-  router.push({ name: '계약등록 관리' })
+  router.replace({ name: '계약등록 관리' })
   nextTick(() => (formsCheck.value = true))
 }
 
