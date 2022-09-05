@@ -55,17 +55,17 @@ export interface ExecAmountToBudget {
 export interface ProjectCashBook {
   pk: number
   project: number
-  sort: string
-  sort_desc: string
+  sort: number
   project_account_d1: number | null
   project_account_d2: number | null
   is_separate: boolean
-  separated: number
+  separated: number | null
+  is_imprest: boolean
+  sepItems: []
   is_contract_payment: boolean
   contract: number | null
   installment_order: number | null
-  is_release: boolean
-  is_refund_contractor: number | null
+  refund_contractor: number | null
   content: string
   trader: string
   bank_account: number
