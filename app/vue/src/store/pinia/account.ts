@@ -1,46 +1,10 @@
 import api from '@/api'
+import Cookies from 'js-cookie'
+import { Buffer } from 'buffer'
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
-import { Buffer } from 'buffer'
-import Cookies from 'js-cookie'
 import { errorHandle, message } from '@/utils/helper'
-import { StaffAuth } from '@/store/modules/accounts/state'
-
-interface Profile {
-  pk: number
-  user: number
-  name: string
-  birth_date: string
-  cell_phone: string
-  image: string | null
-}
-
-export declare interface Todo {
-  pk: number
-  url: string
-  user: number
-  title: string
-  completed: boolean
-  soft_deleted: boolean
-}
-
-export declare interface User {
-  pk: number
-  email: string
-  username: string
-  is_active: boolean
-  date_joined: string
-  is_superuser: boolean
-  staffauth: StaffAuth | null
-  profile: Profile | null
-  todos: Todo[]
-}
-
-export declare interface LockedUser {
-  pk: number
-  email: string
-  username: string
-}
+import { User, LockedUser, Todo, Profile } from '@/store/types/accounts'
 
 export const useAccount = defineStore('account', () => {
   // states
