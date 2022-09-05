@@ -162,10 +162,8 @@ const downPayments = computed(() =>
     : [],
 )
 
-const accountStore = useAccount()
-
 const allowedPeriod = (paidDate: any) =>
-  accountStore.superAuth || diffDate(paidDate) <= 90
+  useAccount().superAuth || diffDate(paidDate) <= 90
 
 const payUpdate = (payment: any) => {
   if (allowedPeriod(payment.deal_date)) {
