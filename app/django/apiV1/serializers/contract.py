@@ -76,8 +76,8 @@ class ContractSetSerializer(serializers.ModelSerializer):
     keyunit = KeyUnitInContractSerializer(read_only=True)
     contractor = ContractorInContractSerializer(read_only=True)
     payments = serializers.SerializerMethodField(read_only=True)
-    order_group_desc = SimpleOrderGroupSerializer(source='order_group')
-    unit_type_desc = SimpleUnitTypeSerializer(source='unit_type')
+    order_group_desc = SimpleOrderGroupSerializer(source='order_group', read_only=True)
+    unit_type_desc = SimpleUnitTypeSerializer(source='unit_type', read_only=True)
 
     class Meta:
         model = Contract
