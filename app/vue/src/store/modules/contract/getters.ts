@@ -5,7 +5,7 @@ const getters = {
     return state.contractList.map(c => ({
       pk: c.pk,
       serial_number: c.serial_number,
-      order_group: c.order_group,
+      order_group: c.order_group_desc,
       unit_type: c.unit_type_desc.name,
       type_color: c.unit_type_desc.color,
       house_unit: c.keyunit?.houseunit?.__str__ || '미정',
@@ -33,7 +33,7 @@ const getters = {
       pk: c.pk,
       ctor_pk: c.contractor?.pk,
       serial_number: c.serial_number,
-      order_group: c.order_group,
+      order_group: c.order_group_desc,
       type_pk: c.unit_type,
       unit_type: c.unit_type_desc.name,
       type_color: c.unit_type_desc.color,
