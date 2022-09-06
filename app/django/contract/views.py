@@ -268,32 +268,51 @@ class ContractRegisterView(LoginRequiredMixin, FormView):
                 contract.save()
 
                 # 2. 계약 유닛 연결
+                post_key_unit = self.request.POST.get('key_unit')
+                post_house_unit = self.request.POST.get('house_unit')
+
                 if not cont_id:
-                    keyunit = KeyUnit.objects.get(pk=self.request.POST.get('key_unit'))
+                    keyunit = KeyUnit.objects.get(pk=post_key_unit)
                     keyunit.contract = contract
                     keyunit.save()
                 else:
                     # 1) 종전 동호수 연결 해제
-                    try:
-                        pastUN = contract.keyunit.houseunit
-                        pastUN.key_unit = None  # 종전 계약의 동호수 삭제
-                        pastUN.save()
-                    except ObjectDoesNotExist:
-                        pass
+                    if contract.keyunit.pk != post_key_unit:
+                        try:
+                            old_houseunit = contract.keyunit.houseunit
+                            if old_houseunit != post_house_unit:
+                                old_houseunit.key_unit = None  # 종전 계약의 동호수 삭제
+                                old_houseunit.save()
+                        except ObjectDoesNotExist:
+                            pass
 
-                    # 3. 계약 유닛 연결
-                    pastCU = contract.keyunit
-                    pastCU.contract = None  # 종전 계약의 계약유닛 삭제
-                    pastCU.save()
-                    keyunit = KeyUnit.objects.get(pk=self.request.POST.get('key_unit'))
-                    keyunit.contract = contract
-                    keyunit.save()
+                        # 3. 계약 유닛 연결
+                        old_keyunit = contract.keyunit
+                        old_keyunit.contract = None  # 종전 계약의 계약유닛 삭제
+                        old_keyunit.save()
 
-                # 3. 동호수 연결
-                if self.request.POST.get('house_unit'):
-                    house_unit = HouseUnit.objects.get(pk=self.request.POST.get('house_unit'))
-                    house_unit.key_unit = keyunit
-                    house_unit.save()
+                        keyunit = KeyUnit.objects.get(pk=post_key_unit)
+                        keyunit.contract = contract
+                        keyunit.save()
+
+                        # 3. 동호수 연결
+                        house_unit = HouseUnit.objects.get(pk=self.request.POST.get('house_unit'))
+                        house_unit.key_unit = keyunit
+                        house_unit.save()
+                    else:
+                        try:
+                            old_houseunit = contract.keyunit.houseunit
+                            if old_houseunit != post_house_unit:
+                                old_houseunit.key_unit = None  # 종전 계약의 동호수 삭제
+                                old_houseunit.save()
+
+                                # 3. 동호수 연결
+                                house_unit = HouseUnit.objects.get(pk=self.request.POST.get('house_unit'))
+                                house_unit.key_unit = contract.keyunit
+                                house_unit.save()
+
+                        except ObjectDoesNotExist:
+                            pass
 
                 # 4. 계약자 정보 테이블 입력
                 if not cont_id:

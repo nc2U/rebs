@@ -73,11 +73,11 @@ class ProjectCashBookInContractSerializer(serializers.ModelSerializer):
 
 
 class ContractSetSerializer(serializers.ModelSerializer):
-    order_group_desc = SimpleOrderGroupSerializer(source='order_group', read_only=True)
-    unit_type_desc = SimpleUnitTypeSerializer(source='unit_type', read_only=True)
     keyunit = KeyUnitInContractSerializer(read_only=True)
     contractor = ContractorInContractSerializer(read_only=True)
     payments = serializers.SerializerMethodField(read_only=True)
+    unit_type_desc = SimpleUnitTypeSerializer(source='unit_type', read_only=True)
+    order_group_desc = SimpleOrderGroupSerializer(source='order_group', read_only=True)
 
     class Meta:
         model = Contract
@@ -289,17 +289,17 @@ class ContractSetSerializer(serializers.ModelSerializer):
         contractorContact.other_phone = contact_other_phone
         contractorContact.email = contact_email
         contractorContact.save()
-
-        # 7. 계약금 -- 수납 정보 테이블 입력
-        payment = self.initial_data.get('payment')
-        project = self.initial_data.get('project')
-        order_group_sort = self.initial_data.get('order_group_sort')
-        down_pay_installment_order = self.initial_data.get('installment_order')
-        serial_number = self.initial_data.get('serial_number')
-        down_pay_trader = self.initial_data.get('trader')
-        down_pay_bank_account = self.initial_data.get('bank_account')
-        down_pay_income = self.initial_data.get('income')
-        down_pay_deal_date = self.initial_data.get('deal_date')
+        #
+        # # 7. 계약금 -- 수납 정보 테이블 입력
+        # payment = self.initial_data.get('payment')
+        # project = self.initial_data.get('project')
+        # order_group_sort = self.initial_data.get('order_group_sort')
+        # down_pay_installment_order = self.initial_data.get('installment_order')
+        # serial_number = self.initial_data.get('serial_number')
+        # down_pay_trader = self.initial_data.get('trader')
+        # down_pay_bank_account = self.initial_data.get('bank_account')
+        # down_pay_income = self.initial_data.get('income')
+        # down_pay_deal_date = self.initial_data.get('deal_date')
 
         # if payment:
         #     stored_payment = ProjectCashBook.objects.get(pk=payment)
