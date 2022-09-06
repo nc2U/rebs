@@ -1,17 +1,19 @@
 export interface Contract {
   pk: number
   project: number
-  order_group: {
-    pk: number
-    sort: string
-    order_group_name: string
-  }
-  unit_type: UnitType
+  order_group: number
+  unit_type: number
   serial_number: string
   activation: boolean
   contractor: ContractorInContract | null
   keyunit: KeyUnit | null
   payments: Payment[]
+  order_group_desc: {
+    pk: number
+    sort: string
+    order_group_name: string
+  }
+  unit_type_desc: UnitType
 }
 
 export interface UnitType {
