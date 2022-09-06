@@ -266,16 +266,16 @@ class ContractSetSerializer(serializers.ModelSerializer):
         address_dm_address2 = self.initial_data.get('dm_address2')
         address_dm_address3 = self.initial_data.get('dm_address3')
 
-        contractorAddress = ContractorAddress.objects.get(contractor=contractor)
-        contractorAddress.id_zipcode = address_id_zipcode
-        contractorAddress.id_address1 = address_id_address1
-        contractorAddress.id_address2 = address_id_address2
-        contractorAddress.id_address3 = address_id_address3
-        contractorAddress.dm_zipcode = address_dm_zipcode
-        contractorAddress.dm_address1 = address_dm_address1
-        contractorAddress.dm_address2 = address_dm_address2
-        contractorAddress.dm_address3 = address_dm_address3
-        contractorAddress.save()
+        contractor_address = ContractorAddress.objects.get(contractor=contractor)
+        contractor_address.id_zipcode = address_id_zipcode
+        contractor_address.id_address1 = address_id_address1
+        contractor_address.id_address2 = address_id_address2
+        contractor_address.id_address3 = address_id_address3
+        contractor_address.dm_zipcode = address_dm_zipcode
+        contractor_address.dm_address1 = address_dm_address1
+        contractor_address.dm_address2 = address_dm_address2
+        contractor_address.dm_address3 = address_dm_address3
+        contractor_address.save()
 
         # 6. 계약자 연락처 테이블 입력
         contact_cell_phone = self.initial_data.get('cell_phone')
@@ -283,46 +283,45 @@ class ContractSetSerializer(serializers.ModelSerializer):
         contact_other_phone = self.initial_data.get('other_phone')
         contact_email = self.initial_data.get('email')
 
-        contractorContact = ContractorContact.objects.get(contractor=contractor)
-        contractorContact.cell_phone = contact_cell_phone
-        contractorContact.home_phone = contact_home_phone
-        contractorContact.other_phone = contact_other_phone
-        contractorContact.email = contact_email
-        contractorContact.save()
-        #
-        # # 7. 계약금 -- 수납 정보 테이블 입력
-        # payment = self.initial_data.get('payment')
-        # project = self.initial_data.get('project')
-        # order_group_sort = self.initial_data.get('order_group_sort')
-        # down_pay_installment_order = self.initial_data.get('installment_order')
-        # serial_number = self.initial_data.get('serial_number')
-        # down_pay_trader = self.initial_data.get('trader')
-        # down_pay_bank_account = self.initial_data.get('bank_account')
-        # down_pay_income = self.initial_data.get('income')
-        # down_pay_deal_date = self.initial_data.get('deal_date')
+        contractor_contact = ContractorContact.objects.get(contractor=contractor)
+        contractor_contact.cell_phone = contact_cell_phone
+        contractor_contact.home_phone = contact_home_phone
+        contractor_contact.other_phone = contact_other_phone
+        contractor_contact.email = contact_email
+        contractor_contact.save()
 
-        # if payment:
-        #     stored_payment = ProjectCashBook.objects.get(pk=payment)
-        #     stored_payment.installment_order = down_pay_installment_order
-        #     stored_payment.trader = down_pay_trader
-        #     stored_payment.bank_account = down_pay_bank_account
-        #     stored_payment.income = down_pay_income
-        #     stored_payment.deal_date = down_pay_deal_date
-        #     stored_payment.save()
+        # 7. 계약금 -- 수납 정보 테이블 입력
+        payment_id = self.initial_data.get('payment')
+        payment_project = self.initial_data.get('project')
+        payment_order_group_sort = self.initial_data.get('order_group_sort')
+        payment_installment_order = self.initial_data.get('installment_order')
+        payment_serial_number = self.initial_data.get('serial_number')
+        payment_trader = self.initial_data.get('trader')
+        payment_bank_account = self.initial_data.get('bank_account')
+        payment_income = self.initial_data.get('income')
+        payment_deal_date = self.initial_data.get('deal_date')
+
+        if payment_id:
+            update_payment = ProjectCashBook.objects.get(pk=payment_id)
+            update_payment.trader = payment_trader
+            # update_payment.bank_account = payment_bank_account
+            update_payment.income = payment_income
+            update_payment.deal_date = payment_deal_date
+            update_payment.save()
         # else:
-        #     new_downpay = ProjectCashBook(project=project,
+        #     create_payment = ProjectCashBook(project=project,
         #                                   sort=1,
         #                                   project_account_d1=order_group_sort,
         #                                   project_account_d2=order_group_sort,
         #                                   is_contract_payment=True,
         #                                   contract=instance,
-        #                                   installment_order=down_pay_installment_order,
+        #                                   installment_order=payment_installment_order,
         #                                   content=f'{contractor_name}[{serial_number}] 대금납부',
-        #                                   trader=down_pay_trader,
-        #                                   bank_account=down_pay_bank_account,
-        #                                   income=down_pay_income,
-        #                                   deal_date=down_pay_deal_date)
-        #     new_downpay.save()
+        #                                   trader=payment_trader,
+        #                                   bank_account=payment_bank_account,
+        #                                   income=payment_income,
+        #                                   deal_date=payment_deal_date)
+        #     create_payment.save()
         return instance
 
 
