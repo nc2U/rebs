@@ -37,8 +37,8 @@ const validated = ref(false)
 const form = reactive({
   // contract
   pk: null as number | null,
-  order_group: '',
-  unit_type: '',
+  order_group: null as number | null,
+  unit_type: null as number | null,
   serial_number: '',
   activation: true,
 
@@ -50,7 +50,6 @@ const form = reactive({
   cont_houseunit: '', // 디비 동호 유닛
 
   // contractor
-  // contractor: null,
   name: '', // 7
   birth_date: null as string | Date | null, // 8
   gender: '', // 9
@@ -61,7 +60,6 @@ const form = reactive({
   note: '', // 28
 
   // address
-  // addressPk: null,
   id_zipcode: '', // 20
   id_address1: '', // 21
   id_address2: '', // 22
@@ -70,8 +68,9 @@ const form = reactive({
   dm_address1: '', // 25
   dm_address2: '', // 26
   dm_address3: '', // 27
+
   // contact
-  contactPk: null,
+  // contactPk: null,
   cell_phone: '', // 11
   home_phone: '', // 12
   other_phone: '', // 13
@@ -144,7 +143,7 @@ watch(props, nVal => {
       form.dm_address3 = props.contract.contractor.contractoraddress.dm_address3 // 27
     }
     // contact
-    form.contactPk = props.contract.contractor.contractorcontact.pk //
+    // form.contactPk = props.contract.contractor.contractorcontact.pk //
     form.cell_phone = props.contract.contractor.contractorcontact.cell_phone
     form.home_phone = props.contract.contractor.contractorcontact.home_phone // 11 // 12
     form.other_phone = props.contract.contractor.contractorcontact.other_phone // 13
@@ -299,9 +298,9 @@ const router = useRouter()
 
 const formReset = () => {
   form.pk = null
-  form.order_group = ''
+  form.order_group = null
   form.order_group_sort = ''
-  form.unit_type = ''
+  form.unit_type = null
   form.keyunit = ''
   form.houseunit = ''
   form.keyunit_code = ''
@@ -333,7 +332,7 @@ const formReset = () => {
   form.dm_address2 = ''
   form.dm_address3 = ''
 
-  form.contactPk = null
+  // form.contactPk = null
   form.cell_phone = ''
   form.home_phone = ''
   form.other_phone = ''
@@ -401,7 +400,10 @@ defineExpose({ formReset })
             <CFormSelect
               v-model="form.unit_type"
               required
-              :disabled="form.order_group === '' && !contract"
+              :disabled="
+                (form.order_group === '' || form.order_group === null) &&
+                !contract
+              "
               @change="typeSelect"
             >
               <option value="">---------</option>
@@ -423,7 +425,7 @@ defineExpose({ formReset })
             <CFormSelect
               v-model="form.keyunit"
               required
-              :disabled="form.unit_type === '' && !contract"
+              :disabled="form.unit_type === null && !contract"
               @change="setKeyCode"
             >
               <option value="">---------</option>
