@@ -85,6 +85,18 @@ export const useContract = defineStore('contract', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
+  const createContractSet = (payload: any) =>
+    api
+      .post(`/contract-set/`, payload)
+      .then(() => message())
+      .catch(err => errorHandle(err.response.data))
+
+  const updateContractSet = (payload: any) =>
+    api
+      .put(`/contract-set/${payload.pk}/`, payload)
+      .then(() => message())
+      .catch(err => errorHandle(err.response.data))
+
   // state & getters
   const subsSummaryList = ref<SubsSummary[]>([])
   const contSummaryList = ref<ContSummary[]>([])
@@ -249,6 +261,8 @@ export const useContract = defineStore('contract', () => {
     contractPages,
     fetchContract,
     fetchContractList,
+    createContractSet,
+    updateContractSet,
 
     subsSummaryList,
     contSummaryList,

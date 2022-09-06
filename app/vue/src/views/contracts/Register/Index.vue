@@ -101,12 +101,12 @@ const typeSelect = (type: number) => {
 }
 
 const onCreate = (payload: any) => {
-  console.log({ project: project.value, ...payload }) // contractStore.createContractSet({ project: project.value, ...payload })
+  contractStore.createContractSet({ project: project.value, ...payload })
   router.push({ name: '계약내역 조회' })
 }
 
 const onUpdate = (payload: any) =>
-  console.log({ project: project.value, ...payload }) // contractStore.updateContractSet({ project: project.value, ...payload })
+  contractStore.updateContractSet({ project: project.value, ...payload })
 
 onBeforeMount(() => {
   fetchOrderGroupList(initProjId.value)
