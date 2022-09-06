@@ -16,7 +16,6 @@ import AlertModal from '@/components/Modals/AlertModal.vue'
 import DatePicker from '@/components/DatePicker/index.vue'
 import DaumPostcode from '@/components/DaumPostcode/index.vue'
 import { callAddress } from '@/components/DaumPostcode/address'
-import { OrderGroup, UnitType } from '@/store/types/contract'
 
 const props = defineProps({
   contract: { type: Object, default: null },
@@ -38,8 +37,8 @@ const validated = ref(false)
 const form = reactive({
   // contract
   pk: null as number | null,
-  order_group: null as OrderGroup | null,
-  unit_type: null as UnitType | null,
+  order_group: null as number | null,
+  unit_type: null as number | null,
   serial_number: '',
   activation: true,
 
@@ -89,7 +88,7 @@ watch(form, nVal => {
   if (form.keyunit_code)
     form.serial_number = `${nVal.keyunit_code}-${form.order_group}`
   if (form.order_group)
-    form.serial_number = `${form.keyunit_code}-${nVal.order_group?.pk}`
+    form.serial_number = `${form.keyunit_code}-${nVal.order_group}`
 
   formsCheck.value = false
 })
@@ -376,11 +375,7 @@ defineExpose({ formReset })
               <option
                 v-for="order in orderGroupList"
                 :key="order.pk"
-                :value="{
-                  pk: order.pk,
-                  sort: order.sort,
-                  order_group_name: order.order_group_name,
-                }"
+                :value="order.pk"
               >
                 {{ order.order_group_name }}
               </option>
@@ -405,12 +400,7 @@ defineExpose({ formReset })
               <option
                 v-for="type in unitTypeList"
                 :key="type.pk"
-                :value="{
-                  pk: type.pk,
-                  name: type.name,
-                  color: type.color,
-                  average_price: type.average_price,
-                }"
+                :value="type.pk"
               >
                 {{ type.name }}
               </option>

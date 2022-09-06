@@ -18,7 +18,9 @@ defineProps({
         {{ contract.serial_number }}
       </router-link>
     </CTableDataCell>
-    <CTableDataCell>{{ contract.order_group.order_group_name }}</CTableDataCell>
+    <CTableDataCell>
+      {{ contract.order_group.order_group_name }}
+    </CTableDataCell>
     <CTableDataCell class="text-left">
       <CIcon
         name="cibDiscover"
