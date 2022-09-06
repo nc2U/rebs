@@ -51,20 +51,20 @@ watch(contract, newVal => {
   if (newVal) {
     fetchKeyUnitList({
       project: projId,
-      unit_type: newVal.unit_type,
+      unit_type: newVal.unit_type.pk,
       contract: route.query.contract,
       available: 'false',
     })
     if (newVal.keyunit?.houseunit) {
       fetchHouseUnitList({
         project: projId,
-        unit_type: newVal.unit_type,
+        unit_type: newVal.unit_type.pk,
         contract: route.query.contract,
       })
     } else {
       fetchHouseUnitList({
         project: projId,
-        unit_type: newVal.unit_type,
+        unit_type: newVal.unit_type.pk,
       })
     }
   }

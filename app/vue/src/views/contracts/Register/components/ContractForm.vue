@@ -70,7 +70,6 @@ const form = reactive({
   dm_address3: '', // 27
 
   // contact
-  // contactPk: null,
   cell_phone: '', // 11
   home_phone: '', // 12
   other_phone: '', // 13
@@ -90,7 +89,7 @@ watch(form, nVal => {
   if (form.keyunit_code)
     form.serial_number = `${nVal.keyunit_code}-${form.order_group}`
   if (form.order_group)
-    form.serial_number = `${form.keyunit_code}-${nVal.order_group}`
+    form.serial_number = `${form.keyunit_code}-${nVal.order_group.pk}`
 
   formsCheck.value = false
 })
@@ -99,9 +98,9 @@ watch(props, nVal => {
   if (nVal.contract) {
     // contract
     form.pk = props.contract.pk
-    form.order_group = props.contract.order_group
-    form.order_group_sort = props.contract.order_group_desc.sort
-    form.unit_type = props.contract.unit_type
+    form.order_group = props.contract.order_group.pk
+    form.order_group_sort = props.contract.order_group.sort
+    form.unit_type = props.contract.unit_type.pk
     form.serial_number = props.contract.serial_number
     form.keyunit = props.contract.keyunit.pk
     form.keyunit_code = props.contract.keyunit.unit_code
@@ -114,7 +113,6 @@ watch(props, nVal => {
       : ''
 
     // contractor
-    // form.contractor = props.contract.contractor.pk
     form.name = props.contract.contractor.name
     form.birth_date = new Date(props.contract.contractor.birth_date)
     form.gender = props.contract.contractor.gender // 9
