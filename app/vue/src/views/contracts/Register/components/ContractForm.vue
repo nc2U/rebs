@@ -16,6 +16,7 @@ import AlertModal from '@/components/Modals/AlertModal.vue'
 import DatePicker from '@/components/DatePicker/index.vue'
 import DaumPostcode from '@/components/DaumPostcode/index.vue'
 import { callAddress } from '@/components/DaumPostcode/address'
+import { OrderGroup, UnitType } from '@/store/types/contract'
 
 const props = defineProps({
   contract: { type: Object, default: null },
@@ -37,8 +38,8 @@ const validated = ref(false)
 const form = reactive({
   // contract
   pk: null as number | null,
-  order_group: null as number | null,
-  unit_type: null as number | null,
+  order_group: null as OrderGroup | null,
+  unit_type: null as UnitType | null,
   serial_number: '',
   activation: true,
 
@@ -82,14 +83,13 @@ const form = reactive({
   bank_account: '', // 17
   trader: '', // 18
   installment_order: '', // 19
-  order_group_sort: '',
 })
 
 watch(form, nVal => {
   if (form.keyunit_code)
     form.serial_number = `${nVal.keyunit_code}-${form.order_group}`
   if (form.order_group)
-    form.serial_number = `${form.keyunit_code}-${nVal.order_group.pk}`
+    form.serial_number = `${form.keyunit_code}-${nVal.order_group?.pk}`
 
   formsCheck.value = false
 })
@@ -98,9 +98,8 @@ watch(props, nVal => {
   if (nVal.contract) {
     // contract
     form.pk = props.contract.pk
-    form.order_group = props.contract.order_group.pk
-    form.order_group_sort = props.contract.order_group.sort
-    form.unit_type = props.contract.unit_type.pk
+    form.order_group = props.contract.order_group
+    form.unit_type = props.contract.unit_type
     form.serial_number = props.contract.serial_number
     form.keyunit = props.contract.keyunit.pk
     form.keyunit_code = props.contract.keyunit.unit_code
@@ -211,11 +210,6 @@ const payReset = () => {
 const getOGSort = (pk: number) =>
   orderGroupList.value.filter(o => o.pk == pk)[0].sort
 
-const setOGSort = (e: any) => {
-  form.order_group_sort = e.target.value !== '' ? getOGSort(e.target.value) : ''
-  unitReset(e)
-}
-
 const setKeyCode = (e: any) => {
   form.houseunit = ''
   form.keyunit_code = e.target.selectedOptions[0].text
@@ -297,7 +291,6 @@ const router = useRouter()
 const formReset = () => {
   form.pk = null
   form.order_group = null
-  form.order_group_sort = ''
   form.unit_type = null
   form.keyunit = ''
   form.houseunit = ''
@@ -377,13 +370,13 @@ defineExpose({ formReset })
               v-model="form.order_group"
               required
               :disabled="noStatus"
-              @change="setOGSort"
+              @change="unitReset"
             >
               <option value="">---------</option>
               <option
                 v-for="order in orderGroupList"
                 :key="order.pk"
-                :value="order.pk"
+                :value="order"
               >
                 {{ order.order_group_name }}
               </option>
@@ -405,11 +398,7 @@ defineExpose({ formReset })
               @change="typeSelect"
             >
               <option value="">---------</option>
-              <option
-                v-for="type in unitTypeList"
-                :key="type.pk"
-                :value="type.pk"
-              >
+              <option v-for="type in unitTypeList" :key="type.pk" :value="type">
                 {{ type.name }}
               </option>
             </CFormSelect>

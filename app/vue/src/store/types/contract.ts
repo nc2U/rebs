@@ -14,7 +14,7 @@ export interface Contract {
   payments: Payment[]
 }
 
-interface UnitType {
+export interface UnitType {
   pk: number
   name: string
   color: string
