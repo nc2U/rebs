@@ -4,9 +4,9 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from contract.models import (OrderGroup, Contract, Contractor,
                              ContractorAddress, ContractorContact, ContractorRelease)
-from cash.models import ProjectCashBook
-from project.models import HouseUnit, KeyUnit
-
+from cash.models import ProjectBankAccount, ProjectCashBook, InstallmentPaymentOrder
+from project.models import Project, HouseUnit, KeyUnit
+from rebs.models import ProjectAccountSort, ProjectAccountD1, ProjectAccountD2
 from .project import SimpleUnitTypeSerializer
 from .cash import SimpleInstallmentOrderSerializer, SimpleOrderGroupSerializer
 
@@ -162,30 +162,34 @@ class ContractSetSerializer(serializers.ModelSerializer):
                                               email=contact_email)
         contractorContact.save()
 
-        # # 7. 계약금 -- 수납 정보 테이블 입력
-        # project = self.initial_data.get('project')
-        # order_group_sort = self.initial_data.get('order_group_sort')
-        # down_pay_installment_order = self.initial_data.get('installment_order')
-        # serial_number = self.initial_data.get('serial_number')
-        # down_pay_trader = self.initial_data.get('trader')
-        # down_pay_bank_account = self.initial_data.get('bank_account')
-        # down_pay_income = self.initial_data.get('income')
-        # down_pay_deal_date = self.initial_data.get('deal_date')
-        #
-        # downPay = ProjectCashBook(project=project,
-        #                           sort=1,
-        #                           project_account_d1=order_group_sort,
-        #                           project_account_d2=order_group_sort,
-        #                           is_contract_payment=True,
-        #                           contract=contract,
-        #                           installment_order=down_pay_installment_order,
-        #                           content=f'{contractor_name}[{serial_number}] 대금납부',
-        #                           trader=down_pay_trader,
-        #                           bank_account=down_pay_bank_account,
-        #                           income=down_pay_income,
-        #                           deal_date=down_pay_deal_date,
-        #                           user=self.request.user)
-        # downPay.save()
+        # 7. 계약금 -- 수납 정보 테이블 입력
+        project = self.initial_data.get('project')
+        payment_project = Project.objects.get(pk=project)
+        order_group_sort = self.initial_data.get('order_group_sort')
+        payment_account_d1 = ProjectAccountD1.objects.get(pk=order_group_sort)
+        payment_account_d2 = ProjectAccountD2.objects.get(pk=order_group_sort)
+        ins_order = self.initial_data.get('installment_order')
+        payment_installment_order = InstallmentPaymentOrder.objects.get(pk=ins_order)
+        payment_serial_number = self.initial_data.get('serial_number')
+        payment_trader = self.initial_data.get('trader')
+        bank_account = self.initial_data.get('bank_account')
+        payment_bank_account = ProjectBankAccount.objects.get(pk=bank_account)
+        payment_income = self.initial_data.get('income')
+        payment_deal_date = self.initial_data.get('deal_date')
+
+        down_payment = ProjectCashBook(project=payment_project,
+                                       sort=ProjectAccountSort.objects.get(pk=1),
+                                       project_account_d1=payment_account_d1,
+                                       project_account_d2=payment_account_d2,
+                                       is_contract_payment=True,
+                                       contract=contract,
+                                       installment_order=payment_installment_order,
+                                       content=f'{contractor_name}[{payment_serial_number}] 대금납부',
+                                       trader=payment_trader,
+                                       bank_account=payment_bank_account,
+                                       income=payment_income,
+                                       deal_date=payment_deal_date)
+        down_payment.save()
 
         return contract
 
@@ -292,36 +296,42 @@ class ContractSetSerializer(serializers.ModelSerializer):
 
         # 7. 계약금 -- 수납 정보 테이블 입력
         payment_id = self.initial_data.get('payment')
-        payment_project = self.initial_data.get('project')
-        payment_order_group_sort = self.initial_data.get('order_group_sort')
-        payment_installment_order = self.initial_data.get('installment_order')
+        project = self.initial_data.get('project')
+        payment_project = Project.objects.get(pk=project)
+        order_group_sort = self.initial_data.get('order_group_sort')
+        payment_account_d1 = ProjectAccountD1.objects.get(pk=order_group_sort)
+        payment_account_d2 = ProjectAccountD2.objects.get(pk=order_group_sort)
+        ins_order = self.initial_data.get('installment_order')
+        payment_installment_order = InstallmentPaymentOrder.objects.get(pk=ins_order)
         payment_serial_number = self.initial_data.get('serial_number')
         payment_trader = self.initial_data.get('trader')
-        payment_bank_account = self.initial_data.get('bank_account')
+        bank_account = self.initial_data.get('bank_account')
+        payment_bank_account = ProjectBankAccount.objects.get(pk=bank_account)
         payment_income = self.initial_data.get('income')
         payment_deal_date = self.initial_data.get('deal_date')
 
         if payment_id:
             update_payment = ProjectCashBook.objects.get(pk=payment_id)
             update_payment.trader = payment_trader
-            # update_payment.bank_account = payment_bank_account
+            update_payment.bank_account = payment_bank_account
             update_payment.income = payment_income
             update_payment.deal_date = payment_deal_date
             update_payment.save()
-        # else:
-        #     create_payment = ProjectCashBook(project=project,
-        #                                   sort=1,
-        #                                   project_account_d1=order_group_sort,
-        #                                   project_account_d2=order_group_sort,
-        #                                   is_contract_payment=True,
-        #                                   contract=instance,
-        #                                   installment_order=payment_installment_order,
-        #                                   content=f'{contractor_name}[{serial_number}] 대금납부',
-        #                                   trader=payment_trader,
-        #                                   bank_account=payment_bank_account,
-        #                                   income=payment_income,
-        #                                   deal_date=payment_deal_date)
-        #     create_payment.save()
+        else:
+            create_payment = ProjectCashBook(project=payment_project,
+                                             sort=ProjectAccountSort.objects.get(pk=1),
+                                             project_account_d1=payment_account_d1,
+                                             project_account_d2=payment_account_d2,
+                                             is_contract_payment=True,
+                                             contract=instance,
+                                             installment_order=payment_installment_order,
+                                             content=f'{contractor_name}[{payment_serial_number}] 대금납부',
+                                             trader=payment_trader,
+                                             bank_account=payment_bank_account,
+                                             income=payment_income,
+                                             deal_date=payment_deal_date)
+            create_payment.save()
+            
         return instance
 
 
