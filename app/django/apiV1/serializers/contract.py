@@ -83,7 +83,7 @@ class ContractSetSerializer(serializers.ModelSerializer):
         model = Contract
         fields = (
             'pk', 'project', 'order_group', 'unit_type', 'serial_number', 'activation',
-            'contractor', 'unit_type_desc', 'order_group_desc', 'keyunit', 'payments')
+            'keyunit', 'contractor', 'payments', 'unit_type_desc', 'order_group_desc')
 
     def get_payments(self, instance):
         payments = instance.payments.filter(project_account_d2__lte=2).order_by('deal_date', 'id')
