@@ -73,17 +73,17 @@ class ProjectCashBookInContractSerializer(serializers.ModelSerializer):
 
 
 class ContractSetSerializer(serializers.ModelSerializer):
-    order_group = SimpleOrderGroupSerializer()
-    unit_type = SimpleUnitTypeSerializer()
     keyunit = KeyUnitInContractSerializer(read_only=True)
     contractor = ContractorInContractSerializer(read_only=True)
     payments = serializers.SerializerMethodField(read_only=True)
+    order_group_desc = SimpleOrderGroupSerializer(source='order_group')
+    unit_type_desc = SimpleUnitTypeSerializer(source='unit_type')
 
     class Meta:
         model = Contract
         fields = (
             'pk', 'project', 'order_group', 'unit_type', 'serial_number', 'activation',
-            'keyunit', 'contractor', 'payments')
+            'keyunit', 'contractor', 'payments', 'order_group_desc', 'unit_type_desc')
 
     def get_payments(self, instance):
         payments = instance.payments.filter(project_account_d2__lte=2).order_by('deal_date', 'id')
