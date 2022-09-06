@@ -12,6 +12,7 @@ const props = defineProps({
   nowOrder: { type: Number, default: null },
   allChecked: Boolean,
 })
+
 const emit = defineEmits(['on-ctor-chk'])
 
 const checked = ref(false)
@@ -40,6 +41,7 @@ const price = computed(() => {
       )[0]?.price
     : props.contract.average_price
 })
+
 const downPay = computed(() => {
   // 계약금 구하기
   const c = props.contract
@@ -85,21 +87,19 @@ const ctorChk = (ctorPk: string) =>
   })
 
 const get_paid_order = () => {
-  let paid_amount = 0
-  const total_paid = props.contract.total_paid
-  let paid_orders: any[] = []
+  let paid_amount = 0 // 금회차까지 납부해야할 금액 누계
+  const total_paid = props.contract.total_paid // 총 낸돈
+  let paid_orders: any[] = [] // 완납 회차 리스트
 
-  const middle = Number(price.value * 0.1)
+  const middle = Number(price.value * 0.1) // 중도금액
 
   payOrderList.value.forEach((p: any) => {
-    if (p.pay_sort === '1') paid_amount += downPay.value
-    else if (p.pay_sort === '2') paid_amount += middle
+    if (p.pay_sort === '1') paid_amount += downPay.value // 계약금 더하기
+    else if (p.pay_sort === '2') paid_amount += middle // 중도금 더하기
 
-    if (total_paid >= paid_amount) {
-      paid_orders.push(p.pay_time)
-    }
+    if (total_paid >= paid_amount) paid_orders.push(p.pay_time) // (총 낸돈 >= 총 낼돈)
   })
-  return total_paid >= price.value ? lastPayName.value : paid_orders.pop()
+  return price.value // total_paid >= price.value ? lastPayName.value : paid_orders.pop()
 }
 
 const getPayName = (pay_time: number) => {
