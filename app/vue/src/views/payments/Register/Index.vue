@@ -67,8 +67,8 @@ onBeforeMount(() => {
 
 watch(contract, newVal => {
   if (newVal) {
-    const order_group = newVal.order_group.pk
-    const unit_type = newVal.unit_type.pk
+    const order_group = newVal.order_group
+    const unit_type = newVal.unit_type
     fetchPriceList({ project: project.value, order_group, unit_type })
     fetchDownPayList({ project: project.value, order_group, unit_type })
     fetchAllPaymentList({
