@@ -529,10 +529,11 @@ defineExpose({ formReset })
             휴대전화
           </CFormLabel>
           <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
-            <CFormInput
+            <input
               v-model="form.cell_phone"
               v-maska="['###-###-####', '###-####-####']"
               type="text"
+              class="form-control"
               maxlength="13"
               placeholder="휴대전화번호를 선택하세요"
               required
@@ -545,10 +546,11 @@ defineExpose({ formReset })
             집전화
           </CFormLabel>
           <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
-            <CFormInput
+            <input
               v-model="form.home_phone"
               v-maska="['###-###-####', '###-####-####']"
               type="text"
+              class="form-control"
               maxlength="13"
               placeholder="집전화번호를 선택하세요"
               :disabled="noStatus"
