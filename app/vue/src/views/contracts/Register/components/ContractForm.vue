@@ -1,5 +1,13 @@
 <script lang="ts" setup>
-import { reactive, ref, watch, nextTick, computed, onBeforeMount } from 'vue'
+import {
+  reactive,
+  ref,
+  watch,
+  nextTick,
+  computed,
+  onMounted,
+  onBeforeMount,
+} from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { useContract } from '@/store/pinia/contract'
 import { useProjectData } from '@/store/pinia/project_data'
@@ -37,9 +45,7 @@ const validated = ref(false)
 const form = reactive({
   // contract
   pk: null as number | null,
-  project: null as number | null,
   order_group: '',
-  order_group_sort: '',
   unit_type: '',
   serial_number: '',
   activation: true,
@@ -52,7 +58,7 @@ const form = reactive({
   cont_houseunit: '', // 디비 동호 유닛
 
   // contractor
-  contractor: null,
+  // contractor: null,
   name: '', // 7
   birth_date: null as string | Date | null, // 8
   gender: '', // 9
@@ -61,15 +67,9 @@ const form = reactive({
   reservation_date: null as string | Date | null, // 6-1
   contract_date: null as string | Date | null, // 6-2
   note: '', // 28
-  // proCash
-  paymentPk: null,
-  deal_date: null as string | Date | null, // 15
-  income: '', // 16
-  bank_account: '', // 17
-  trader: '', // 18
-  installment_order: '', // 19
+
   // address
-  addressPk: null,
+  // addressPk: null,
   id_zipcode: '', // 20
   id_address1: '', // 21
   id_address2: '', // 22
@@ -84,6 +84,15 @@ const form = reactive({
   home_phone: '', // 12
   other_phone: '', // 13
   email: '', // 14
+
+  // proCash
+  payment: null,
+  deal_date: null as string | Date | null, // 15
+  income: '', // 16
+  bank_account: '', // 17
+  trader: '', // 18
+  installment_order: '', // 19
+  order_group_sort: '',
 })
 
 watch(form, nVal => {
@@ -95,8 +104,8 @@ watch(form, nVal => {
   formsCheck.value = false
 })
 
-onBeforeMount(() => {
-  if (props.contract) {
+watch(props, nVal => {
+  if (nVal.contract) {
     // contract
     form.pk = props.contract.pk
     form.order_group = props.contract.order_group
@@ -114,7 +123,7 @@ onBeforeMount(() => {
       : ''
 
     // contractor
-    form.contractor = props.contract.contractor.pk
+    // form.contractor = props.contract.contractor.pk
     form.name = props.contract.contractor.name
     form.birth_date = new Date(props.contract.contractor.birth_date)
     form.gender = props.contract.contractor.gender // 9
@@ -131,8 +140,8 @@ onBeforeMount(() => {
     form.note = props.contract.contractor.note
 
     // address
-    if (newVal.contract.contractor.status === '2') {
-      form.addressPk = props.contract.contractor.contractoraddress.pk
+    if (nVal.contract.contractor.status === '2') {
+      // form.addressPk = props.contract.contractor.contractoraddress.pk
       form.id_zipcode = props.contract.contractor.contractoraddress.id_zipcode // 20
       form.id_address1 = props.contract.contractor.contractoraddress.id_address1 // 21
       form.id_address2 = props.contract.contractor.contractoraddress.id_address2 // 22
@@ -149,6 +158,7 @@ onBeforeMount(() => {
     form.other_phone = props.contract.contractor.contractorcontact.other_phone // 13
     form.email = props.contract.contractor.contractorcontact.email // 14
   }
+  nextTick(() => (formsCheck.value = true))
 })
 
 const contractStore = useContract()
@@ -171,6 +181,7 @@ const noStatus = computed(() => form.status === '' && !props.contract)
 const downPayOrder = computed(() =>
   payOrderList.value.filter((po: any) => po.pay_time <= '1'),
 )
+
 const downPayments = computed(() =>
   props.contract && props.contract.payments.length > 0
     ? props.contract.payments.filter(
@@ -185,7 +196,7 @@ const allowedPeriod = (paidDate: any) =>
 
 const payUpdate = (payment: any) => {
   if (allowedPeriod(payment.deal_date)) {
-    form.paymentPk = payment.pk
+    form.payment = payment.pk
     form.deal_date = new Date(payment.deal_date)
     form.income = payment.income
     form.bank_account = payment.bank_account
@@ -200,7 +211,7 @@ const payUpdate = (payment: any) => {
 }
 
 const payReset = () => {
-  form.paymentPk = null
+  form.payment = null
   form.deal_date = null
   form.income = ''
   form.bank_account = ''
@@ -250,11 +261,7 @@ const modalAction = () => {
     : null
   form.deal_date = form.deal_date ? dateFormat(form.deal_date) : null
   if (!props.contract) emit('on-create', form)
-  else
-    emit('on-update', {
-      ...{ pk: pk.value },
-      ...form,
-    })
+  else emit('on-update', form)
   validated.value = false
   confirmModal.value.close()
   // formReset()
@@ -307,7 +314,7 @@ const formReset = () => {
   form.houseunit = ''
   form.keyunit_code = ''
 
-  form.contractor = null
+  // form.contractor = null
   form.name = ''
   form.birth_date = null
   form.gender = ''
@@ -317,14 +324,14 @@ const formReset = () => {
   form.contract_date = null
   form.note = ''
 
-  form.paymentPk = null
+  form.payment = null
   form.deal_date = null
   form.income = ''
   form.bank_account = ''
   form.trader = ''
   form.installment_order = ''
 
-  form.addressPk = null
+  // form.addressPk = null
   form.id_zipcode = ''
   form.id_address1 = ''
   form.id_address2 = ''
@@ -631,7 +638,7 @@ defineExpose({ formReset })
                   :key="payment.pk"
                   class="text-center mb-1"
                   :class="
-                    form.paymentPk === payment.pk
+                    form.payment === payment.pk
                       ? 'text-success text-decoration-underline'
                       : ''
                   "
@@ -687,7 +694,7 @@ defineExpose({ formReset })
             </CRow>
             <CRow>
               <CFormLabel class="col-md-2 col-lg-1 col-form-label">
-                {{ contLabel }}금 {{ !form.paymentPk ? '등록' : '수정' }}
+                {{ contLabel }}금 {{ !form.payment ? '등록' : '수정' }}
               </CFormLabel>
               <CCol md="10" lg="2" class="mb-3 mb-lg-0">
                 <DatePicker
@@ -763,13 +770,7 @@ defineExpose({ formReset })
 
               <CCol md="2" class="d-none d-md-block d-lg-none"></CCol>
 
-              <CCol
-                v-if="form.paymentPk"
-                xs="3"
-                md="2"
-                lg="1"
-                class="pt-2 mb-3"
-              >
+              <CCol v-if="form.payment" xs="3" md="2" lg="1" class="pt-2 mb-3">
                 <router-link to="" @click="payReset">Reset</router-link>
               </CCol>
             </CRow>

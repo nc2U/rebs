@@ -19,10 +19,10 @@ const contractStore = useContract()
 const contract = computed(() => contractStore.contract)
 
 const projectStore = useProject()
-const project = computed(() => projectStore.project)
+const project = computed(() => projectStore.project?.pk)
 const initProjId = computed(() => projectStore.initProjId)
-const unitSet = computed(() => project.value?.is_unit_set)
-const isUnion = computed(() => !project.value?.is_direct_manage)
+const unitSet = computed(() => projectStore.project?.is_unit_set)
+const isUnion = computed(() => !projectStore.project?.is_direct_manage)
 
 const fetchContract = (cont: any) => contractStore.fetchContract(cont)
 
@@ -34,15 +34,6 @@ const fetchKeyUnitList = (payload: any) =>
 
 const fetchHouseUnitList = (payload: any) =>
   contractStore.fetchHouseUnitList(payload)
-
-const createContractSet = (payload: any) => {
-  console.log(payload) // contractStore.createContractSet(payload)
-  alert('로직 수정 중!')
-}
-const updateContractSet = (payload: any) => {
-  console.log(payload) // contractStore.updateContractSet(payload)
-  alert('로직 수정 중!')
-}
 
 const projectDataStore = useProjectData()
 const fetchTypeList = (projId: number) => projectDataStore.fetchTypeList(projId)
@@ -56,7 +47,7 @@ const fetchPayOrderList = (projId: number) =>
   paymentStore.fetchPayOrderList(projId)
 
 watch(contract, newVal => {
-  const projId = project.value?.pk || initProjId.value
+  const projId = project.value || initProjId.value
   if (newVal) {
     fetchKeyUnitList({
       project: projId,
@@ -105,16 +96,17 @@ const getContract = (cont: any) => fetchContract(cont)
 
 const typeSelect = (type: number) => {
   const unit_type = type
-  fetchKeyUnitList({ project: project.value?.pk, unit_type })
-  fetchHouseUnitList({ project: project.value?.pk, unit_type })
+  fetchKeyUnitList({ project: project.value, unit_type })
+  fetchHouseUnitList({ project: project.value, unit_type })
 }
 
 const onCreate = (payload: any) => {
-  createContractSet({ project: project.value?.pk, ...payload })
+  console.log({ project: project.value, ...payload }) // contractStore.createContractSet({ project: project.value, ...payload })
   router.push({ name: '계약내역 조회' })
 }
+
 const onUpdate = (payload: any) =>
-  updateContractSet({ project: project.value?.pk, ...payload })
+  console.log({ project: project.value, ...payload }) // contractStore.updateContractSet({ project: project.value, ...payload })
 
 onBeforeMount(() => {
   fetchOrderGroupList(initProjId.value)
