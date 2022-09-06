@@ -1,13 +1,5 @@
 <script lang="ts" setup>
-import {
-  reactive,
-  ref,
-  watch,
-  nextTick,
-  computed,
-  onMounted,
-  onBeforeMount,
-} from 'vue'
+import { reactive, ref, watch, nextTick, computed } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { useContract } from '@/store/pinia/contract'
 import { useProjectData } from '@/store/pinia/project_data'

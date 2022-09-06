@@ -95,17 +95,17 @@ class ContractSetSerializer(serializers.ModelSerializer):
         contract = Contract.objects.create(**validated_data)
         contract.save()
 
-        # # 2. 계약 유닛 연결
-        # keyunit_id = self.initial_data.get('keyunit')
-        # keyunit = KeyUnit.objects.get(pk=keyunit_id)
-        # keyunit.contract = contract
-        # keyunit.save()
-        #
-        # # 3. 동호수 연결
-        # houseunit_id = self.initial_data.get('houseunit')
-        # house_unit = HouseUnit.objects.get(pk=houseunit_id)
-        # house_unit.key_unit = keyunit
-        # house_unit.save()
+        # 2. 계약 유닛 연결
+        keyunit_data = self.initial_data.get('keyunit')
+        keyunit = KeyUnit.objects.get(pk=keyunit_data)
+        keyunit.contract = contract
+        keyunit.save()
+
+        # 3. 동호수 연결
+        house_unit_data = self.initial_data.get('houseunit')
+        house_unit = HouseUnit.objects.get(pk=house_unit_data)
+        house_unit.key_unit = keyunit
+        house_unit.save()
 
         # 4. 계약자 정보 테이블 입력
         contractor_name = self.initial_data.get('name')
@@ -162,30 +162,30 @@ class ContractSetSerializer(serializers.ModelSerializer):
                                               email=contact_email)
         contractorContact.save()
 
-        # 7. 계약금 -- 수납 정보 테이블 입력
-        project = self.initial_data.get('project')
-        order_group_sort = self.initial_data.get('order_group_sort')
-        down_pay_installment_order = self.initial_data.get('installment_order')
-        serial_number = self.initial_data.get('serial_number')
-        down_pay_trader = self.initial_data.get('trader')
-        down_pay_bank_account = self.initial_data.get('bank_account')
-        down_pay_income = self.initial_data.get('income')
-        down_pay_deal_date = self.initial_data.get('deal_date')
-
-        downPay = ProjectCashBook(project=project,
-                                  sort=1,
-                                  project_account_d1=order_group_sort,
-                                  project_account_d2=order_group_sort,
-                                  is_contract_payment=True,
-                                  contract=contract,
-                                  installment_order=down_pay_installment_order,
-                                  content=f'{contractor_name}[{serial_number}] 대금납부',
-                                  trader=down_pay_trader,
-                                  bank_account=down_pay_bank_account,
-                                  income=down_pay_income,
-                                  deal_date=down_pay_deal_date,
-                                  user=self.request.user)
-        downPay.save()
+        # # 7. 계약금 -- 수납 정보 테이블 입력
+        # project = self.initial_data.get('project')
+        # order_group_sort = self.initial_data.get('order_group_sort')
+        # down_pay_installment_order = self.initial_data.get('installment_order')
+        # serial_number = self.initial_data.get('serial_number')
+        # down_pay_trader = self.initial_data.get('trader')
+        # down_pay_bank_account = self.initial_data.get('bank_account')
+        # down_pay_income = self.initial_data.get('income')
+        # down_pay_deal_date = self.initial_data.get('deal_date')
+        #
+        # downPay = ProjectCashBook(project=project,
+        #                           sort=1,
+        #                           project_account_d1=order_group_sort,
+        #                           project_account_d2=order_group_sort,
+        #                           is_contract_payment=True,
+        #                           contract=contract,
+        #                           installment_order=down_pay_installment_order,
+        #                           content=f'{contractor_name}[{serial_number}] 대금납부',
+        #                           trader=down_pay_trader,
+        #                           bank_account=down_pay_bank_account,
+        #                           income=down_pay_income,
+        #                           deal_date=down_pay_deal_date,
+        #                           user=self.request.user)
+        # downPay.save()
 
         return contract
 
@@ -195,30 +195,29 @@ class ContractSetSerializer(serializers.ModelSerializer):
         instance.__dict__.update(**validated_data)
         instance.save()
 
-        # # 1-2. 종전 동호수 연결 해제
-        # try:
-        #     past_UN = instance.keyunit.houseunit
-        #     past_UN.key_unit = None
-        #     past_UN.save()
-        # except ObjectDoesNotExist:
-        #     pass
-        #
-        # # 2. 계약 유닛 연결
-        # pastCU = instance.keyunit
-        # pastCU.contract = None  # 종전 계약의 계약유닛 삭제
-        # pastCU.save()
-        #
-        # keyunit_data = self.initial_data.get('keyunit')
-        # keyunit = KeyUnit.objects.get(pk=keyunit_data.get('pk'))
-        # keyunit.contract = instance
-        # keyunit.save()
-        #
-        # # 3. 동호수 연결
-        # house_unit_data = keyunit_data.get('houseunit')
-        # h_unit_id = house_unit_data.get('pk')
-        # house_unit = HouseUnit.objects.get(pk=h_unit_id)
-        # house_unit.key_unit = keyunit
-        # house_unit.save()
+        # 1-2. 종전 동호수 연결 해제
+        try:
+            past_UN = instance.keyunit.houseunit
+            past_UN.key_unit = None
+            past_UN.save()
+        except ObjectDoesNotExist:
+            pass
+
+        # 2. 계약 유닛 연결
+        old_keyunit = instance.keyunit
+        old_keyunit.contract = None  # 종전 계약의 계약유닛 삭제
+        old_keyunit.save()
+
+        keyunit_data = self.initial_data.get('keyunit')
+        keyunit = KeyUnit.objects.get(pk=keyunit_data)
+        keyunit.contract = instance
+        keyunit.save()
+
+        # 3. 동호수 연결
+        house_unit_data = self.initial_data.get('houseunit')
+        house_unit = HouseUnit.objects.get(pk=house_unit_data)
+        house_unit.key_unit = keyunit
+        house_unit.save()
 
         # 4. 계약자 정보 테이블 입력
         contractor_name = self.initial_data.get('name')
