@@ -196,28 +196,44 @@ class ContractSetSerializer(serializers.ModelSerializer):
         instance.save()
 
         # 1-2. 종전 동호수 연결 해제
-        try:
-            past_UN = instance.keyunit.houseunit
-            past_UN.key_unit = None
-            past_UN.save()
-        except ObjectDoesNotExist:
-            pass
-
-        # 2. 계약 유닛 연결
-        old_keyunit = instance.keyunit
-        old_keyunit.contract = None  # 종전 계약의 계약유닛 삭제
-        old_keyunit.save()
-
         keyunit_data = self.initial_data.get('keyunit')
-        keyunit = KeyUnit.objects.get(pk=keyunit_data)
-        keyunit.contract = instance
-        keyunit.save()
-
-        # 3. 동호수 연결
         house_unit_data = self.initial_data.get('houseunit')
-        house_unit = HouseUnit.objects.get(pk=house_unit_data)
-        house_unit.key_unit = keyunit
-        house_unit.save()
+
+        if instance.keyunit.pk != keyunit_data:  # 키유닛이 수정된 경우
+            try:
+                old_houseunit = instance.keyunit.houseunit
+                if old_houseunit != house_unit_data:  # 동호수도 수정된 경우
+                    old_houseunit.key_unit = None
+                    old_houseunit.save()
+            except ObjectDoesNotExist:
+                pass
+
+            # 2. 계약 유닛 연결
+            old_keyunit = instance.keyunit
+            old_keyunit.contract = None  # 종전 계약의 계약유닛 삭제
+            old_keyunit.save()
+
+            keyunit = KeyUnit.objects.get(pk=keyunit_data)
+            keyunit.contract = instance
+            keyunit.save()
+
+            # 3. 동호수 연결
+            house_unit = HouseUnit.objects.get(pk=house_unit_data)
+            house_unit.key_unit = keyunit  # 동호수를 키유닛과 연결
+            house_unit.save()
+        else:
+            try:
+                old_houseunit = instance.keyunit.houseunit
+                if old_houseunit != house_unit_data:  # 동호수만 수정된 경우
+                    old_houseunit.key_unit = None
+                    old_houseunit.save()
+
+                    # 3. 동호수 연결
+                    house_unit = HouseUnit.objects.get(pk=house_unit_data)
+                    house_unit.key_unit = instance.keyunit  # 동호수를 기존 키유닛과 연결
+                    house_unit.save()
+            except ObjectDoesNotExist:
+                pass
 
         # 4. 계약자 정보 테이블 입력
         contractor_name = self.initial_data.get('name')
