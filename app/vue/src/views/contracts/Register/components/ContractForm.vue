@@ -376,7 +376,11 @@ defineExpose({ formReset })
               <option
                 v-for="order in orderGroupList"
                 :key="order.pk"
-                :value="order"
+                :value="{
+                  pk: order.pk,
+                  sort: order.sort,
+                  order_group_name: order.order_group_name,
+                }"
               >
                 {{ order.order_group_name }}
               </option>
@@ -398,7 +402,16 @@ defineExpose({ formReset })
               @change="typeSelect"
             >
               <option value="">---------</option>
-              <option v-for="type in unitTypeList" :key="type.pk" :value="type">
+              <option
+                v-for="type in unitTypeList"
+                :key="type.pk"
+                :value="{
+                  pk: type.pk,
+                  name: type.name,
+                  color: type.color,
+                  average_price: type.average_price,
+                }"
+              >
                 {{ type.name }}
               </option>
             </CFormSelect>
