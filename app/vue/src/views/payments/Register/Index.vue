@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, nextTick, onBeforeMount, ref, watch } from 'vue'
+import { computed, onBeforeMount, ref, watch } from 'vue'
 import { useStore } from 'vuex'
 import { useProject } from '@/store/pinia/project'
 import { useRouter, useRoute, onBeforeRouteLeave } from 'vue-router'
@@ -67,8 +67,8 @@ onBeforeMount(() => {
 
 watch(contract, newVal => {
   if (newVal) {
-    const order_group = newVal.order_group
-    const unit_type = newVal.unit_type
+    const order_group = newVal.order_group.pk
+    const unit_type = newVal.unit_type.pk
     fetchPriceList({ project: project.value, order_group, unit_type })
     fetchDownPayList({ project: project.value, order_group, unit_type })
     fetchAllPaymentList({
