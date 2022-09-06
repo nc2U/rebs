@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { reactive, ref, watch, nextTick, computed } from 'vue'
+import { reactive, ref, watch, nextTick, computed, onBeforeMount } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { useContract } from '@/store/pinia/contract'
 import { useProjectData } from '@/store/pinia/project_data'
@@ -31,20 +31,28 @@ const delModal = ref()
 const alertModal = ref()
 const confirmModal = ref()
 
-const pk = ref(null)
 const sameAddr = ref(false)
 const formsCheck = ref(true)
 const validated = ref(false)
 const form = reactive({
   // contract
-  order_group: '', // 2
-  unit_type: '', // 3
-  key_unit: '', // 4
+  pk: null as number | null,
+  project: null as number | null,
+  order_group: '',
+  order_group_sort: '',
+  unit_type: '',
+  serial_number: '',
+  activation: true,
+
+  // keyunit & houseunit
+  keyunit: '', // 4
+  keyunit_code: '',
   houseunit: '', // 5
   cont_keyunit: '', // 디비 계약 유닛
   cont_houseunit: '', // 디비 동호 유닛
+
   // contractor
-  contractorPk: null,
+  contractor: null,
   name: '', // 7
   birth_date: null as string | Date | null, // 8
   gender: '', // 9
@@ -78,13 +86,25 @@ const form = reactive({
   email: '', // 14
 })
 
-watch(props, newVal => {
-  if (newVal.contract) {
+watch(form, nVal => {
+  if (form.keyunit_code)
+    form.serial_number = `${nVal.keyunit_code}-${form.order_group}`
+  if (form.order_group)
+    form.serial_number = `${form.keyunit_code}-${nVal.order_group}`
+
+  formsCheck.value = false
+})
+
+onBeforeMount(() => {
+  if (props.contract) {
     // contract
-    pk.value = props.contract.pk
-    form.order_group = `${props.contract.order_group},${props.contract.order_group_desc.sort}`
+    form.pk = props.contract.pk
+    form.order_group = props.contract.order_group
+    form.order_group_sort = props.contract.order_group_desc.sort
     form.unit_type = props.contract.unit_type
-    form.key_unit = `${props.contract.keyunit.pk},${props.contract.keyunit.unit_code}`
+    form.serial_number = props.contract.serial_number
+    form.keyunit = props.contract.keyunit.pk
+    form.keyunit_code = props.contract.keyunit.unit_code
     form.houseunit = props.contract.keyunit.houseunit
       ? props.contract.keyunit.houseunit.pk
       : ''
@@ -94,7 +114,7 @@ watch(props, newVal => {
       : ''
 
     // contractor
-    form.contractorPk = props.contract.contractor.pk
+    form.contractor = props.contract.contractor.pk
     form.name = props.contract.contractor.name
     form.birth_date = new Date(props.contract.contractor.birth_date)
     form.gender = props.contract.contractor.gender // 9
@@ -129,10 +149,7 @@ watch(props, newVal => {
     form.other_phone = props.contract.contractor.contractorcontact.other_phone // 13
     form.email = props.contract.contractor.contractorcontact.email // 14
   }
-  nextTick(() => (formsCheck.value = true))
 })
-
-watch(form, () => (formsCheck.value = false))
 
 const contractStore = useContract()
 const orderGroupList = computed(() => contractStore.orderGroupList)
@@ -191,13 +208,26 @@ const payReset = () => {
   form.installment_order = ''
 }
 
+const getOGSort = (pk: number) =>
+  orderGroupList.value.filter(o => o.pk == pk)[0].sort
+
+const setOGSort = (e: any) => {
+  form.order_group_sort = e.target.value !== '' ? getOGSort(e.target.value) : ''
+  unitReset(e)
+}
+
+const setKeyCode = (e: any) => {
+  form.houseunit = ''
+  form.keyunit_code = e.target.selectedOptions[0].text
+}
+
 const unitReset = (event: any) => {
   if (event.target.value === '') formReset()
 }
 
 const typeSelect = (event: any) => {
   emit('type-select', event.target.value)
-  form.key_unit = ''
+  form.keyunit = ''
   form.houseunit = ''
 }
 
@@ -269,13 +299,15 @@ const toSame = () => {
 const router = useRouter()
 
 const formReset = () => {
-  pk.value = null
+  form.pk = null
   form.order_group = ''
+  form.order_group_sort = ''
   form.unit_type = ''
-  form.key_unit = ''
+  form.keyunit = ''
   form.houseunit = ''
+  form.keyunit_code = ''
 
-  form.contractorPk = null
+  form.contractor = null
   form.name = ''
   form.birth_date = null
   form.gender = ''
@@ -349,13 +381,13 @@ defineExpose({ formReset })
               v-model="form.order_group"
               required
               :disabled="noStatus"
-              @change="unitReset"
+              @change="setOGSort"
             >
               <option value="">---------</option>
               <option
                 v-for="order in orderGroupList"
                 :key="order.pk"
-                :value="`${order.pk},${order.sort}`"
+                :value="order.pk"
               >
                 {{ order.order_group_name }}
               </option>
@@ -390,16 +422,16 @@ defineExpose({ formReset })
           </CFormLabel>
           <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
             <CFormSelect
-              v-model="form.key_unit"
+              v-model="form.keyunit"
               required
               :disabled="form.unit_type === '' && !contract"
-              @change="form.houseunit = ''"
+              @change="setKeyCode"
             >
               <option value="">---------</option>
               <option
                 v-for="unit in keyUnitList"
                 :key="unit.pk"
-                :value="`${unit.pk},${unit.unit_code}`"
+                :value="unit.pk"
               >
                 {{ unit.unit_code }}
               </option>
@@ -415,7 +447,7 @@ defineExpose({ formReset })
           <CCol v-if="unitSet" md="10" lg="2" class="mb-md-3 mb-lg-0">
             <CFormSelect
               v-model="form.houseunit"
-              :disabled="form.key_unit === '' && !contract"
+              :disabled="form.keyunit === '' && !contract"
             >
               <option value="">---------</option>
               <option
