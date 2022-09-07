@@ -21,6 +21,7 @@ class OrderGroupViewSets(viewsets.ModelViewSet):
 
 
 class ContractFilter(FilterSet):
+    houseunit__isnull = BooleanFilter(field_name='keyunit__houseunit', lookup_expr='isnull', label='동호미지정 여부')
     keyunit__houseunit__building_unit = ModelChoiceFilter(queryset=BuildingUnit.objects.all(), label='동(건물)')
     contractor__status = ChoiceFilter(field_name='contractor__status', choices=Contractor.STATUS_CHOICES, label='현재상태')
     contractor__is_registed = BooleanFilter(field_name='contractor__is_registed', label='인가등록여부')
@@ -29,7 +30,7 @@ class ContractFilter(FilterSet):
 
     class Meta:
         model = Contract
-        fields = ('project', 'order_group', 'activation', 'unit_type',
+        fields = ('project', 'order_group', 'activation', 'unit_type', 'houseunit__isnull',
                   'keyunit__houseunit__building_unit', 'contractor__status',
                   'contractor__is_registed', 'from_contract_date', 'to_contract_date')
 
