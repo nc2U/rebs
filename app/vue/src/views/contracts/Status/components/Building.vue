@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { useStore } from 'vuex'
+import { useProjectData } from '@/store/pinia/project_data'
 import Unit from '@/views/contracts/Status/components/Unit.vue'
 
-const store = useStore()
+const projectDataStore = useProjectData()
 
 const props = defineProps({
   bldg: { type: Number, default: null },
@@ -14,7 +14,7 @@ const props = defineProps({
 const lineList = computed(() =>
   [...new Set(props.units.map((u: any) => u.line))].sort(),
 )
-const buildingList = computed(() => store.state.project.buildingList)
+const buildingList = computed(() => projectDataStore.buildingList)
 
 const bldgName = (bldg: number) =>
   buildingList.value

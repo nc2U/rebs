@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, onMounted } from 'vue'
-import { useStore } from 'vuex'
 import { useProject } from '@/store/pinia/project'
+import { useProjectData } from '@/store/pinia/project_data'
 import { pageTitle, navMenu } from '@/views/contracts/_menu/headermixin'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
@@ -9,7 +9,6 @@ import ContSummary from '@/views/contracts/Status/components/ContSummary.vue'
 import TableTitleRow from '@/components/TableTitleRow.vue'
 import ContractBoard from '@/views/contracts/Status/components/ContractBoard.vue'
 
-const store = useStore()
 const projectStore = useProject()
 
 const project = computed(() => projectStore.project?.pk)
@@ -18,33 +17,29 @@ const excelUrl = computed(() =>
   project.value ? `excel/status/?project=${project.value}` : '',
 )
 
-const fetchTypeList = (id: number) =>
-  store.dispatch('project/fetchTypeList', id)
-const fetchBuildingList = (id: number) =>
-  store.dispatch('project/fetchBuildingList', id)
-const fetchHouseUnitList = (project: { project: number }) =>
-  store.dispatch('project/fetchHouseUnitList', project)
+const projectDataStore = useProjectData()
 
-const projectUpdate = (payload: any) =>
-  store.commit('project/updateState', payload)
+const fetchTypeList = (projId: number) => projectDataStore.fetchTypeList(projId)
+const fetchBuildingList = (projId: number) =>
+  projectDataStore.fetchBuildingList(projId)
+const fetchHouseUnitList = (projId: number) =>
+  projectDataStore.fetchHouseUnitList(projId)
 
 onMounted(() => {
   fetchTypeList(initProjId.value)
   fetchBuildingList(initProjId.value)
-  fetchHouseUnitList({ project: initProjId.value })
+  fetchHouseUnitList(initProjId.value)
 })
 
 const onSelectAdd = (target: any) => {
   if (target !== '') {
     fetchTypeList(target)
     fetchBuildingList(target)
-    fetchHouseUnitList({ project: target })
+    fetchHouseUnitList(target)
   } else {
-    projectUpdate({
-      unitTypeList: [],
-      buildingList: [],
-      houseUnitList: [],
-    })
+    projectDataStore.unitTypeList = []
+    projectDataStore.buildingList = []
+    projectDataStore.houseUnitList = []
   }
 }
 </script>

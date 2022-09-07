@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { useStore } from 'vuex'
+import { useProjectData } from '@/store/pinia/project_data'
 import { numFormat } from '@/utils/baseMixins'
 import {
   headerSecondary,
@@ -8,11 +8,10 @@ import {
   headerPrimary,
 } from '@/utils/cssMixins'
 
-const store = useStore()
+const projectDataStore = useProjectData()
 
-// const houseUnitNum = computed(() => store.state.project.houseUnitNum)
-const simpleTypes = computed(() => store.getters['project/simpleTypes'])
-const unitSummary = computed(() => store.getters['project/unitSummary'])
+const simpleTypes = computed(() => projectDataStore.simpleTypes)
+const unitSummary = computed(() => projectDataStore.unitSummary)
 </script>
 
 <template>

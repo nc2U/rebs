@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { useStore } from 'vuex'
+import { useProjectData } from '@/store/pinia/project_data'
 import Building from '@/views/contracts/Status/components/Building.vue'
 
-import { KeyUnit } from '@/store/modules/project/state'
+import { KeyUnit } from '@/store/types/project'
 
 type UnitType = {
   bldg: number
@@ -15,9 +15,9 @@ type UnitType = {
   floor: number
 }
 
-const store = useStore()
+const projectDataStore = useProjectData()
 
-const simpleUnits = computed(() => store.getters['project/simpleUnits'])
+const simpleUnits = computed(() => projectDataStore.simpleUnits)
 
 const getBldg = computed(() =>
   [...new Set(simpleUnits.value.map((u: UnitType) => u.bldg))].sort(),
