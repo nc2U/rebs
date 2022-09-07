@@ -24,6 +24,7 @@ const actions = {
     let url = `/contract-set/?project=${project}&activation=true&contractor__status=${status}`
     if (payload.order_group) url += `&order_group=${payload.order_group}`
     if (payload.unit_type) url += `&unit_type=${payload.unit_type}`
+    if (payload.null_unit) apiuri += '&houseunit__isnull=true'
     if (payload.building)
       url += `&keyunit__houseunit__building_unit=${payload.building}`
     if (payload.registed) url += `&contractor__is_registed=${payload.registed}`
