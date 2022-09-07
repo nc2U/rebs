@@ -65,6 +65,7 @@ export const useContract = defineStore('contract', () => {
     let apiuri = `/contract-set/?project=${payload.project}&activation=true&contractor__status=${status}`
     if (payload.order_group) apiuri += `&order_group=${payload.order_group}`
     if (payload.unit_type) apiuri += `&unit_type=${payload.unit_type}`
+    if (payload.null_unit) apiuri += `&houseunit__isnull=true`
     if (payload.building)
       apiuri += `&keyunit__houseunit__building_unit=${payload.building}`
     if (payload.registed)
