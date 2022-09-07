@@ -86,17 +86,13 @@ export const useContract = defineStore('contract', () => {
   const createContractSet = (payload: any) =>
     api
       .post(`/contract-set/`, payload)
-      .then(res =>
-        fetchContractList({ project: res.data.project }).then(() => message()),
-      )
+      .then(() => message())
       .catch(err => errorHandle(err.response.data))
 
   const updateContractSet = (payload: any) =>
     api
       .put(`/contract-set/${payload.pk}/`, payload)
-      .then(res => {
-        fetchContractList({ project: res.data.project }).then(() => message())
-      })
+      .then(() => message())
       .catch(err => errorHandle(err.response.data))
 
   const contractor = ref<Contractor | null>(null)

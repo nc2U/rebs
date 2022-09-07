@@ -38,6 +38,7 @@ const form = reactive({
   // contract
   pk: null as number | null,
   order_group: null as number | null,
+  order_group_sort: '',
   unit_type: null as number | null,
   serial_number: '',
   activation: true,
@@ -98,6 +99,7 @@ watch(props, nVal => {
     // contract
     form.pk = props.contract.pk
     form.order_group = props.contract.order_group
+    form.order_group_sort = props.contract.order_group_desc.sort
     form.unit_type = props.contract.unit_type
     form.serial_number = props.contract.serial_number
     form.keyunit = props.contract.keyunit.pk
@@ -209,6 +211,11 @@ const payReset = () => {
 const getOGSort = (pk: number) =>
   orderGroupList.value.filter(o => o.pk == pk)[0].sort
 
+const setOGSort = (e: any) => {
+  form.order_group_sort = getOGSort(e.target.value)
+  unitReset(e)
+}
+
 const setKeyCode = (e: any) => {
   form.houseunit = ''
   form.keyunit_code = e.target.selectedOptions[0].text
@@ -290,6 +297,7 @@ const router = useRouter()
 const formReset = () => {
   form.pk = null
   form.order_group = null
+  form.order_group_sort = ''
   form.unit_type = null
   form.keyunit = ''
   form.houseunit = ''
@@ -369,7 +377,7 @@ defineExpose({ formReset })
               v-model="form.order_group"
               required
               :disabled="noStatus"
-              @change="unitReset"
+              @change="setOGSort"
             >
               <option value="">---------</option>
               <option
