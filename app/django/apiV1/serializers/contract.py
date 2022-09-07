@@ -398,58 +398,59 @@ class ContractorReleaseSerializer(serializers.ModelSerializer):
         # 1. 해지정보 테이블 입력
         instance.__dict__.update(**validated_data)
 
-        if self.initial_data.get('status') >= '4':  # 4 -> 처리완료, 5 -> 자격상실 :: 최종 해지 확정 요청
+        contractor = Contractor.objects.get(pk=self.initial_data.get('contractor'))
+
+        try:
+            released_done = contractor.contractorrelease.status >= '4'
+        except:
+            released_done = False
+
+        # 미완료인 상태에서 4 -> 처리완료, 5 -> 자격상실 :: 최종 해지 확정 요청이 있을 경우
+        if not released_done and self.initial_data.get('status') >= '4':
             # 1. 계약자 정보 현재 상태 변경
-            contractor = Contractor.objects.get(pk=self.initial_data.get('contractor'))
             contract = Contract.objects.get(pk=contractor.contract.id)
             keyunit = KeyUnit.objects.get(contract__contractor=contractor)
 
-            try:
-                released_done = contractor.contractorrelease.status >= '4'
-            except:
-                released_done = False
-
             completion_date = self.initial_data.get('completion_date')
 
-            if not released_done:
-                # 2. 계약 상태 변경
-                contract.serial_number = contract.serial_number + \
-                                         '-terminated-' + \
-                                         completion_date
-                contract.activation = False  # 일련번호 활성 해제
-                contract.save()
+            # 2. 계약 상태 변경
+            contract.serial_number = contract.serial_number + \
+                                     '-terminated-' + \
+                                     completion_date
+            contract.activation = False  # 일련번호 활성 해제
+            contract.save()
 
-                # 3. 계약유닛 연결 해제
-                keyunit.contract = None
-                keyunit.save()
+            # 3. 계약유닛 연결 해제
+            keyunit.contract = None
+            keyunit.save()
 
-                # 4. 동호수 연결 해제
-                try:  # 동호수 존재 여부 확인
-                    unit = keyunit.houseunit
-                except Exception:
-                    unit = None
-                if unit:
-                    unit.key_unit = None
-                    unit.save()
+            # 4. 동호수 연결 해제
+            try:  # 동호수 존재 여부 확인
+                unit = keyunit.houseunit
+            except Exception:
+                unit = None
+            if unit:
+                unit.key_unit = None
+                unit.save()
 
-                # 5. 해당 납부분담금 환불처리
-                sort = ProjectAccountSort.objects.get(pk=1)
-                projectCash = ProjectCashBook.objects.filter(sort=sort, contract=contractor.contract)
-                for payment in projectCash:
-                    if not released_done:
-                        refund_d2 = payment.project_account_d2.id + 63  # 분양대금 or 분담금 환불 건
-                        payment.project_account_d2 = ProjectAccountD2.objects.get(pk=refund_d2)
-                        payment.refund_contractor = contractor  # 환불 계약자 등록
-                    if completion_date:
-                        msg = f'환불 계약 건 - {payment.contract.serial_number} ({completion_date} 환불완료)'
-                        append_note = ', ' + msg if payment.note else msg
-                        payment.note = payment.note + append_note
-                    payment.save()
+            # 5. 해당 납부분담금 환불처리
+            sort = ProjectAccountSort.objects.get(pk=1)
+            projectCash = ProjectCashBook.objects.filter(sort=sort, contract=contractor.contract)
+            for payment in projectCash:
+                if not released_done:
+                    refund_d2 = payment.project_account_d2.id + 63  # 분양대금 or 분담금 환불 건
+                    payment.project_account_d2 = ProjectAccountD2.objects.get(pk=refund_d2)
+                    payment.refund_contractor = contractor  # 환불 계약자 등록
+                if completion_date:
+                    msg = f'환불 계약 건 - {payment.contract.serial_number} ({completion_date} 환불완료)'
+                    append_note = ', ' + msg if payment.note else msg
+                    payment.note = payment.note + append_note
+                payment.save()
 
-                # 6. 최종 해지상태로 변경
-                contractor.is_registed = False  # 인가 등록 취소
-                contractor.status = str(int(contractor.status) + 2)  # 해지 상태로 변경
-                contractor.save()
+            # 6. 최종 해지상태로 변경
+            contractor.is_registed = False  # 인가 등록 취소
+            contractor.status = str(int(contractor.status) + 2)  # 해지 상태로 변경
+            contractor.save()
 
         instance.save()
 
