@@ -542,7 +542,7 @@ class ContractorReleaseRegister(LoginRequiredMixin, ListView, FormView):
 
                     # 6. 최종 해지상태로 변경
                     contractor.is_registed = False  # 인가 등록 여부
-                    contractor.status = str(int(contractor.status) + 2)  # 해지 상태로 변경
+                    contractor.status = '4'  # 해지 상태로 변경
                     contractor.user = request.user  # 해지 등록 작업자
                     contractor.save()
 

@@ -449,7 +449,7 @@ class ContractorReleaseSerializer(serializers.ModelSerializer):
 
             # 6. 최종 해지상태로 변경
             contractor.is_registed = False  # 인가 등록 취소
-            contractor.status = str(int(contractor.status) + 2)  # 해지 상태로 변경
+            contractor.status = '4'  # 해지 상태로 변경
             contractor.save()
 
         instance.save()
