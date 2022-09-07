@@ -12,14 +12,6 @@ import {
   ProjectBudget,
   ExecAmountToBudget,
 } from '@/store/types/proCash'
-import {
-  FETCH_BALANCE_BY_ACC_LIST,
-  FETCH_EXEC_AMOUNT_LIST,
-  FETCH_P_BUDGET_LIST,
-  FETCH_P_CASHBOOK_LIST,
-  FETCH_P_DATE_CASHBOOK,
-  FETCH_P_IMPREST_LIST,
-} from '@/store/modules/proCash/mutations-types'
 
 export const useProCash = defineStore('proCash', () => {
   // state & getters
