@@ -495,7 +495,6 @@ class ContractorReleaseRegister(LoginRequiredMixin, ListView, FormView):
             with transaction.atomic():  # 트랜잭션
 
                 if request.GET.get('task') >= '4':
-
                     # 1. 계약자 정보 현재 상태 변경
                     contractor = Contractor.objects.get(pk=request.POST.get('contractor'))
                     contract = Contract.objects.get(pk=contractor.contract.id)
@@ -506,24 +505,19 @@ class ContractorReleaseRegister(LoginRequiredMixin, ListView, FormView):
                     except:
                         released_done = False
 
+                    completion_date = form.cleaned_data.get('completion_date')
+
                     if not released_done:
-                        contractor.is_registed = False  # 인가 등록 여부
-                        contractor.status = str(int(contractor.status) + 2)  # 해지 상태로 변경
-                    contractor.user = request.user  # 해지 등록 작업자
-                    contractor.save()
-                    # 2. 계약 상태 변경
-                    if not released_done:
-                        contract.serial_number = str(contract.serial_number) + '-terminated-' + str(
-                            form.cleaned_data.get('completion_date'))
+                        # 2. 계약 상태 변경
+                        contract.serial_number = str(contract.serial_number) + '-terminated-' + str(completion_date)
                         contract.activation = False  # 일련번호 활성 해제
                         contract.save()
-                    # 3. 계약유닛 연결 해제
-                    # contract.keyunit.houseunit
-                    if not released_done:
+
+                        # 3. 계약유닛 연결 해제
                         keyunit.contract = None
                         keyunit.save()
-                    # 4. 동호수 연결 해제
-                    if not released_done:
+
+                        # 4. 동호수 연결 해제
                         try:  # 동호수 존재 여부 확인
                             unit = keyunit.houseunit
                         except Exception:
@@ -531,21 +525,29 @@ class ContractorReleaseRegister(LoginRequiredMixin, ListView, FormView):
                         if unit:
                             unit.key_unit = None
                             unit.save()
-                    # 5. 해당 납부분담금 환불처리
-                    projectCash = ProjectCashBook.objects.filter(sort='1', contract=contractor.contract)
-                    for pc in projectCash:
-                        if not released_done:
-                            refund_d2 = pc.project_account_d2.id + 63  # 분양대금 or 분담금 환불 건
-                            pc.project_account_d2 = ProjectAccountD2.objects.get(pk=refund_d2)
-                            pc.refund_contractor = contractor  # 환불 계약자 등록
-                        if form.cleaned_data.get('completion_date'):
-                            refund_date = str(form.cleaned_data.get('completion_date'))
-                            msg = f'환불 계약 건 - {pc.contract.serial_number} ({refund_date} 환불완료)'
-                            append_note = ', ' + msg if pc.note else msg
-                            pc.note = pc.note + append_note
-                        pc.save()
 
-                # 4. 계약 해지 정보 테이블 입력
+                        # 5. 해당 납부분담금 환불처리
+                        sort = ProjectAccountSort.objects.get(pk=1)
+                        projectCash = ProjectCashBook.objects.filter(sort=sort, contract=contractor.contract)
+                        for pc in projectCash:
+                            if not released_done:
+                                refund_d2 = pc.project_account_d2.id + 63  # 분양대금 or 분담금 환불 건
+                                pc.project_account_d2 = ProjectAccountD2.objects.get(pk=refund_d2)
+                                pc.refund_contractor = contractor  # 환불 계약자 등록
+                            if form.cleaned_data.get('completion_date'):
+                                refund_date = str(completion_date)
+                                msg = f'환불 계약 건 - {pc.contract.serial_number} ({refund_date} 환불완료)'
+                                append_note = ', ' + msg if pc.note else msg
+                                pc.note = pc.note + append_note
+                            pc.save()
+
+                        # 6. 최종 해지상태로 변경
+                        contractor.is_registed = False  # 인가 등록 여부
+                        contractor.status = str(int(contractor.status) + 2)  # 해지 상태로 변경
+                        contractor.user = request.user  # 해지 등록 작업자
+                        contractor.save()
+
+                # 7. 계약 해지 정보 테이블 입력
                 form.save()
 
                 return redirect(reverse_lazy('rebs:contract:release') + '?project=' + str(self.get_project().id))
