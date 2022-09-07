@@ -698,7 +698,7 @@ defineExpose({ formReset })
                   type="number"
                   min="0"
                   placeholder="입금액"
-                  :required="!contract"
+                  :required="!contract || form.deal_date"
                   :disabled="noStatus"
                 />
                 <CFormFeedback invalid>입금액을 입력하세요.</CFormFeedback>
@@ -707,7 +707,7 @@ defineExpose({ formReset })
               <CCol md="5" lg="2" class="mb-3 mb-lg-0">
                 <CFormSelect
                   v-model="form.bank_account"
-                  :required="!contract"
+                  :required="!contract || form.deal_date"
                   :disabled="noStatus"
                 >
                   <option value="">납부계좌 선택</option>
@@ -729,7 +729,7 @@ defineExpose({ formReset })
                   v-model="form.trader"
                   maxlength="20"
                   placeholder="입금자명을 입력하세요"
-                  :required="!contract"
+                  :required="!contract || form.deal_date"
                   :disabled="noStatus"
                 />
                 <CFormFeedback invalid>입금자명을 입력하세요.</CFormFeedback>
@@ -737,7 +737,7 @@ defineExpose({ formReset })
               <CCol md="5" lg="2" class="mb-md-3 mb-lg-0">
                 <CFormSelect
                   v-model="form.installment_order"
-                  :required="!contract"
+                  :required="!contract || form.deal_date"
                   :disabled="noStatus"
                 >
                   <option value="">납부회차 선택</option>
