@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { reactive, ref, computed, watch, onBeforeMount } from 'vue'
+import { reactive, ref, watch, onBeforeMount } from 'vue'
 import { write_contract } from '@/utils/pageAuth'
 import { isValidate } from '@/utils/helper'
 import { dateFormat } from '@/utils/baseMixins'
@@ -31,22 +31,12 @@ const form = reactive({
   note: '',
 })
 
-// const is_complete = computed(() => {
-//   const refund =
-//     form.refund_amount &&
-//     form.refund_account_bank &&
-//     form.refund_account_number &&
-//     form.refund_account_depositor
-//   return !form.completion_date && !refund
-// })
-
 watch(form, val => {
   if (val.request_date) form.request_date = dateFormat(val.request_date)
   if (val.completion_date)
     form.completion_date = dateFormat(val.completion_date)
 })
 
-// methods: {
 const onSubmit = (event: any) => {
   if (write_contract) {
     if (isValidate(event)) {
