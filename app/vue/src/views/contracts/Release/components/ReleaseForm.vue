@@ -112,8 +112,8 @@ onBeforeMount(() => {
                 <option v-if="!release || release.status < '4'" value="3">
                   해지 신청
                 </option>
-                <option value="4">해지 종결</option>
-                <option value="5">자격 상실(제명)</option>
+                <option v-if="release" value="4">해지 종결</option>
+                <option v-if="release" value="5">자격 상실(제명)</option>
               </CFormSelect>
               <small
                 v-if="form.status >= '4' && release.status < '4'"
