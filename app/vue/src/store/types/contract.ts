@@ -104,13 +104,15 @@ export interface Contractor {
   pk: number
   contract: number
   name: string
-  birth_date: string
+  __str__: string
+  birth_date: string | null
   gender: string
   is_registed: boolean
   status: string
   reservation_date: string | null
   contract_date: string | null
   note: string
+  contractorrelease: number
 }
 
 export interface SubsSummary {
