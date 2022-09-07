@@ -414,9 +414,7 @@ class ContractorReleaseSerializer(serializers.ModelSerializer):
             completion_date = self.initial_data.get('completion_date')
 
             # 2. 계약 상태 변경
-            contract.serial_number = contract.serial_number + \
-                                     '-terminated-' + \
-                                     completion_date
+            contract.serial_number = f"{contract.serial_number}-terminated-{completion_date}"
             contract.activation = False  # 일련번호 활성 해제
             contract.save()
 

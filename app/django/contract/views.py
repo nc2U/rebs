@@ -508,7 +508,7 @@ class ContractorReleaseRegister(LoginRequiredMixin, ListView, FormView):
                     completion_date = form.cleaned_data.get('completion_date')
 
                     # 2. 계약 상태 변경
-                    contract.serial_number = str(contract.serial_number) + '-terminated-' + str(completion_date)
+                    contract.serial_number = f"{contract.serial_number}-terminated-{completion_date}"
                     contract.activation = False  # 일련번호 활성 해제
                     contract.save()
 
