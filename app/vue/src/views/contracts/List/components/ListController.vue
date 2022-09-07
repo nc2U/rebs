@@ -12,6 +12,7 @@ const form = reactive({
   status: '2',
   order_group: '',
   unit_type: '',
+  null_unit: false,
   building: '',
   registed: '',
   ordering: '-created_at',
@@ -24,14 +25,15 @@ const formsCheck = computed(() => {
   const a = form.status === '2'
   const b = form.order_group === ''
   const c = form.unit_type === ''
-  const d = form.building === ''
-  const e = form.registed === ''
-  const f = from_date.value === ''
-  const g = to_date.value === ''
-  const h = form.ordering === '-created_at'
-  const i = form.search === ''
+  const d = form.null_unit === false
+  const e = form.building === ''
+  const f = form.registed === ''
+  const g = from_date.value === ''
+  const h = to_date.value === ''
+  const i = form.ordering === '-created_at'
+  const j = form.search === ''
   const groupA = a && b && c && d && e
-  const groupB = f && g && h && i
+  const groupB = f && g && h && i && j
   return groupA && groupB
 })
 
@@ -62,6 +64,7 @@ const resetForm = () => {
   form.status = '2'
   form.order_group = ''
   form.unit_type = ''
+  form.null_unit = false
   form.building = ''
   form.registed = ''
   from_date.value = ''
@@ -123,12 +126,14 @@ const resetForm = () => {
               </option>
             </CFormSelect>
           </CCol>
-          <CCol md="6" lg="2" class="mb-3">
-            <CFormSelect v-model="form.registed" @change="listFiltering(1)">
-              <option value="">인가 구분</option>
-              <option value="true">인가</option>
-              <option value="false">미인가</option>
-            </CFormSelect>
+
+          <CCol md="6" lg="2" class="pt-1 mb-3">
+            <CFormSwitch
+              id="null_unit"
+              v-model="form.null_unit"
+              label="동호 미지정"
+              @change="listFiltering(1)"
+            />
           </CCol>
 
           <CCol md="6" lg="2" class="mb-3">
@@ -150,9 +155,17 @@ const resetForm = () => {
         </CRow>
       </CCol>
 
-      <CCol lg="3">
+      <CCol lg="5">
         <CRow>
-          <CCol md="6" class="mb-3">
+          <CCol md="2" class="mb-3">
+            <CFormSelect v-model="form.registed" @change="listFiltering(1)">
+              <option value="">인가 구분</option>
+              <option value="true">인가</option>
+              <option value="false">미인가</option>
+            </CFormSelect>
+          </CCol>
+
+          <CCol md="3" class="mb-3">
             <DatePicker
               v-model="from_date"
               v-maska="'####-##-##'"
@@ -161,7 +174,7 @@ const resetForm = () => {
             />
           </CCol>
 
-          <CCol md="6" class="mb-3">
+          <CCol md="3" class="mb-3">
             <DatePicker
               v-model="to_date"
               v-maska="'####-##-##'"
@@ -169,11 +182,7 @@ const resetForm = () => {
               @keydown.enter="listFiltering(1)"
             />
           </CCol>
-        </CRow>
-      </CCol>
 
-      <CCol lg="2">
-        <CRow>
           <CCol class="mb-3">
             <CInputGroup class="flex-nowrap">
               <CFormInput
