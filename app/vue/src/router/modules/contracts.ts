@@ -47,7 +47,7 @@ const contract = {
       meta: { title: '동호수 현황표' },
     },
     {
-      path: 'cancel',
+      path: 'release',
       name: '계약해지 관리',
       component: () =>
         pageViewAuth.value

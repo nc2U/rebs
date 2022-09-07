@@ -40,7 +40,7 @@ const contract = {
     {
       component: 'CNavItem',
       name: '계약해지 관리',
-      to: '/contracts/cancel',
+      to: '/contracts/release',
     },
   ],
 }
