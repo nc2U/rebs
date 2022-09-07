@@ -84,6 +84,7 @@ onBeforeMount(() => {
 
 onBeforeRouteLeave(() => {
   contractStore.contractor = null
+  contractStore.contRelease = null
 })
 </script>
 

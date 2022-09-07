@@ -17,30 +17,31 @@ const emit = defineEmits(['on-submit', 'close'])
 const alertModal = ref()
 const confirmModal = ref()
 
-const pk = ref(null)
 const validated = ref(false)
 const form = reactive({
+  pk: null as number | null,
   contractor: '',
   status: '',
   refund_amount: null as number | null,
   refund_account_bank: '',
   refund_account_number: '',
   refund_account_depositor: '',
-  request_date: '',
-  completion_date: '',
+  request_date: null as string | null,
+  completion_date: null as string | null,
   note: '',
 })
 
-const is_complete = computed(() => {
-  const refund =
-    form.refund_amount &&
-    form.refund_account_bank &&
-    form.refund_account_number &&
-    form.refund_account_depositor
-  return !form.completion_date && !refund
-})
+// const is_complete = computed(() => {
+//   const refund =
+//     form.refund_amount &&
+//     form.refund_account_bank &&
+//     form.refund_account_number &&
+//     form.refund_account_depositor
+//   return !form.completion_date && !refund
+// })
 
 watch(form, val => {
+  if (val.request_date) form.request_date = dateFormat(val.request_date)
   if (val.completion_date)
     form.completion_date = dateFormat(val.completion_date)
 })
@@ -50,13 +51,7 @@ const onSubmit = (event: any) => {
   if (write_contract) {
     if (isValidate(event)) {
       validated.value = true
-    } else {
-      form.request_date = dateFormat(form.request_date)
-      const payload = pk.value
-        ? { pk: pk.value, ...form }
-        : { pk: null, ...form }
-      emit('on-submit', payload)
-    }
+    } else emit('on-submit', { ...form })
   } else alertModal.value.callModal()
 }
 
@@ -69,7 +64,7 @@ const modalAction = () => alert('this is ready!')
 
 onBeforeMount(() => {
   if (props.release && props.release.pk) {
-    pk.value = props.release.pk
+    form.pk = props.release.pk
     form.contractor = props.release.contractor
     form.status = props.release.status
     form.refund_amount = props.release.refund_amount
@@ -108,7 +103,7 @@ onBeforeMount(() => {
         <CCol xs="6">
           <CRow>
             <CFormLabel class="col-sm-4 col-form-label">구분</CFormLabel>
-            <CCol sm="8">
+            <CCol sm="8" class="text-left">
               <CFormSelect v-model="form.status" required>
                 <option value="">---------</option>
                 <option v-if="release && release.status < '4'" value="0">
@@ -121,11 +116,11 @@ onBeforeMount(() => {
                 <option value="5">자격 상실(제명)</option>
               </CFormSelect>
               <small
-                v-if="form.status >= '4' && release && release.status < '4'"
+                v-if="form.status >= '4' && release.status < '4'"
                 class="text-danger"
               >
-                해지 종결, 자격 상실(제명) 처리 건은 해당 데이터를 계약상태로
-                되돌릴 수 없습니다.
+                해지 종결, 자격 상실(제명) 처리된 계약 건은 계약상태로 되돌릴 수
+                없으므로 해지 확정상태에서만 진행하십시요.
               </small>
             </CCol>
           </CRow>
@@ -216,7 +211,7 @@ onBeforeMount(() => {
             <CCol sm="8">
               <DatePicker
                 v-model="form.completion_date"
-                :required="false"
+                :required="form.status >= '4'"
                 placeholder="해지종결일"
               />
             </CCol>
