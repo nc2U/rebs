@@ -109,7 +109,7 @@ export const useContract = defineStore('contract', () => {
       .then(res => (contractor.value = res.data))
       .catch(err => errorHandle(err.response.data))
 
-  const fetchContractorList = (project: number, search: number) => {
+  const fetchContractorList = (project: number, search = '') => {
     api
       .get(`/contractor/?project=${project}&search=${search}`)
       .then(res => (contractorList.value = res.data.results))
@@ -240,53 +240,21 @@ export const useContract = defineStore('contract', () => {
       .then(res => (contReleaseList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
-  const createRelease = (payload: any) => {
-    // 1. 해지 정보 테이블 데이터 생성
-    const { refund_amount, ...restData } = payload
-    const createData = !refund_amount ? restData : payload
-
+  const createRelease = (payload: ContractRelease) =>
     api
-      .post(`/contractor-release/`, createData)
-      .then(res => {
-        fetchContRelease(res.data.pk)
-        fetchContReleaseList(payload.project)
-      })
+      .post(`/contractor-release/`, payload)
+      .then(() => fetchContReleaseList(payload.project).then(() => message()))
       .catch(err => errorHandle(err.response.data))
 
-    if (payload.status >= '4') {
-      // releaseSet(payload)
-    }
-    message()
-  }
-
-  const updateRelease = (payload: any) => {
-    const { pk, refund_amount, ...updateData } = payload
-
-    api.get(`/contractor-release/${pk}/`).then(res => {
-      const status = res.data.status < '4' && payload.status >= '4'
-      const completion_date =
-        !res.data.completion_date && payload.completion_date
-      if (status || completion_date) {
-        // releaseSet(payload)
-      }
-
-      // 1. 해지 정보 테이블 데이터 업데이트
-      const page = payload.page
-      const project = payload.project
-      const fixedData =
-        refund_amount !== ''
-          ? { refund_amount, ...updateData }
-          : { ...{ refund_amount: null }, ...updateData }
-      api
-        .put(`/contractor-release/${pk}/`, fixedData)
-        .then(res => {
-          fetchContRelease(res.data.pk)
-          fetchContReleaseList(project, page)
-        })
-        .catch(err => errorHandle(err.response.data))
-    })
-    message()
-  }
+  const updateRelease = (payload: ContractRelease & { page: number }) =>
+    api
+      .put(`/contractor-release/${payload.pk}/`, payload)
+      .then(() =>
+        fetchContReleaseList(payload.project, payload.page).then(() =>
+          message(),
+        ),
+      )
+      .catch(err => errorHandle(err.response.data))
 
   const contBillIndex = computed(() =>
     contractList.value.map(c => ({
