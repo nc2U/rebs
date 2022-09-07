@@ -1,20 +1,21 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { useStore } from 'vuex'
+import { useContract } from '@/store/pinia/contract'
+import { ContractRelease } from '@/store/types/contract'
 import Pagination from '@/components/Pagination'
 import Release from '@/views/contracts/Release/components/Release.vue'
 import { headerSecondary } from '@/utils/cssMixins'
 
-const store = useStore()
+const contractStore = useContract()
 
 const emit = defineEmits(['page-select', 'get-release', 'on-submit'])
 
-const contReleaseList = computed(() => store.state.contract.contReleaseList)
-const releasePages = computed(() => store.getters['contract/releasePages'])
+const contReleaseList = computed(() => contractStore.contReleaseList)
+const releasePages = computed(() => contractStore.releasePages)
 
 const pageSelect = (page: number) => emit('page-select', page)
 const getRelease = (release: number) => emit('get-release', release)
-const onSubmit = (payload: any) => emit('on-submit', payload)
+const onSubmit = (payload: ContractRelease) => emit('on-submit', payload)
 </script>
 
 <template>

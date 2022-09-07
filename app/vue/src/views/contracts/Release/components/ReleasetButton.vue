@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
-import { useStore } from 'vuex'
+import { useContract } from '@/store/pinia/contract'
 import { write_contract } from '@/utils/pageAuth'
 import FormModal from '@/components/Modals/FormModal.vue'
 import ReleaseForm from '@/views/contracts/Release/components/ReleaseForm.vue'
@@ -12,9 +12,8 @@ const emit = defineEmits(['on-submit'])
 const releaseFormModal = ref()
 const releaseAlertModal = ref()
 
-const store = useStore()
-
-const contRelease = computed(() => store.state.contract.contRelease)
+const contractStore = useContract()
+const contRelease = computed(() => contractStore.contRelease)
 
 const callFormModal = () => {
   if (write_contract) releaseFormModal.value.callModal()

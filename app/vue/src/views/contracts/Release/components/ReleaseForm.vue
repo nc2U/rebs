@@ -22,7 +22,7 @@ const validated = ref(false)
 const form = reactive({
   contractor: '',
   status: '',
-  refund_amount: '',
+  refund_amount: null as number | null,
   refund_account_bank: '',
   refund_account_number: '',
   refund_account_depositor: '',

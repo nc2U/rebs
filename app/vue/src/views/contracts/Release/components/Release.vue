@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
-import { useStore } from 'vuex'
+import { useContract } from '@/store/pinia/contract'
+import { ContractRelease } from '@/store/types/contract'
 import { useRouter } from 'vue-router'
 import { numFormat, cutString } from '@/utils/baseMixins'
 import FormModal from '@/components/Modals/FormModal.vue'
@@ -11,8 +12,8 @@ const emit = defineEmits(['on-submit', 'get-release'])
 
 const releaseFormModal = ref()
 
-const store = useStore()
-const contractor = computed(() => store.state.contract.contractor)
+const contractStore = useContract()
+const contractor = computed(() => contractStore.contractor)
 
 const getStatus = (num: string) => {
   const status = [
@@ -34,7 +35,7 @@ const callFormModal = () => {
   releaseFormModal.value.callModal()
 }
 
-const onSubmit = (payload: any) => {
+const onSubmit = (payload: ContractRelease) => {
   emit('on-submit', payload)
   releaseFormModal.value.close()
 }

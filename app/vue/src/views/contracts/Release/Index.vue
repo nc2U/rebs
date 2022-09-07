@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount, ref, watch } from 'vue'
-import { useStore } from 'vuex'
 import { useProject } from '@/store/pinia/project'
+import { useContract } from '@/store/pinia/contract'
 import { useRoute, useRouter, onBeforeRouteLeave } from 'vue-router'
 import { pageTitle, navMenu } from '@/views/contracts/_menu/headermixin'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
@@ -16,65 +16,59 @@ import ReleaseList from '@/views/contracts/Release/components/ReleaseList.vue'
 const page = ref(1)
 
 const projectStore = useProject()
-const project = computed(() => projectStore.project?.pk)
 const initProjId = computed(() => projectStore.initProjId)
+const project = computed(() => projectStore.project?.pk || initProjId.value)
 const downloadUrl = computed(() => `/excel/releases/?project=${project.value}`)
 
-const store = useStore()
-const contractor = computed(() => store.state.contract.contractor)
+const contractStore = useContract()
+const contractor = computed(() => contractStore.contractor)
 
-const fetchContractor = (contor: any) =>
-  store.dispatch('contract/fetchContractor', contor)
-const fetchContractorList = (payload: any) =>
-  store.dispatch('contract/fetchContractorList', payload)
-const fetchContRelease = (payload: any) =>
-  store.dispatch('contract/fetchContRelease', payload)
-const fetchContReleaseList = (payload: { project: number } & any) =>
-  store.dispatch('contract/fetchContReleaseList', payload)
-const createRelease = (payload: any) =>
-  store.dispatch('contract/createRelease', payload)
-const updateRelease = (payload: any) =>
-  store.dispatch('contract/updateRelease', payload)
+const fetchContractor = (contor: number) =>
+  contractStore.fetchContractor(contor)
+const fetchContractorList = (projId: number, search?: string) =>
+  contractStore.fetchContractorList(projId, search)
+const fetchContRelease = (pk: number) => contractStore.fetchContRelease(pk)
+const fetchContReleaseList = (projId: number, page?: number) =>
+  contractStore.fetchContReleaseList(projId, page)
+
+const createRelease = (payload: any) => contractStore.createRelease(payload)
+const updateRelease = (payload: any) => contractStore.updateRelease(payload)
 
 const route = useRoute()
 
 watch(route, val => {
-  if (val.query.contractor) fetchContractor(val.query.contractor)
-  else store.commit('contract/updateState', { contractor: null })
+  if (val.query.contractor) fetchContractor(Number(val.query.contractor))
+  else contractStore.contractor = null
 })
 
 watch(contractor, val => {
-  if (val && val.contractorrelease) fetchContRelease(val.contractorrelease)
+  if (val?.contractorrelease) fetchContRelease(val.contractorrelease)
 })
 
 const router = useRouter()
 
 const onSelectAdd = (target: any) => {
   if (target !== '') {
-    fetchContReleaseList({ project: target })
+    fetchContReleaseList(target)
   } else {
-    store.commit('contract/updateState', {
-      contractor: null,
-      contractorList: [],
-      contRelease: null,
-      contReleaseList: [],
-      contReleaseCount: 0,
-    })
+    contractStore.contractor = null
+    contractStore.contractorList = []
+    contractStore.contRelease = null
+    contractStore.contReleaseList = []
+    contractStore.contReleaseCount = 0
   }
   router.push({ name: '계약해지 관리' })
 }
 const searchContractor = (search: string) => {
   if (search !== '') {
-    fetchContractorList({ project: project.value, search })
-  } else store.commit('contract/updateState', { contractorList: [] })
+    fetchContractorList(project.value, search)
+  } else contractStore.contractorList = []
 }
 
 const getRelease = (release: number) => fetchContRelease(release)
 
-const pageSelect = (p: number) => {
-  page.value = p
-  fetchContReleaseList({ project: project.value, page: p })
-}
+const pageSelect = (p: number) =>
+  fetchContReleaseList(project.value, page.value)
 
 const onSubmit = (payload: any) => {
   if (payload.pk)
@@ -83,14 +77,14 @@ const onSubmit = (payload: any) => {
 }
 
 onBeforeMount(() => {
-  fetchContReleaseList({ project: initProjId.value })
-  if (route.query.contractor) fetchContractor(route.query.contractor)
-  else store.commit('contract/updateState', { contractor: null }) // this.FETCH_CONTRACTOR(null)
+  fetchContReleaseList(initProjId.value)
+  if (route.query.contractor) fetchContractor(Number(route.query.contractor))
+  else contractStore.contractor = null
 })
 
-onBeforeRouteLeave(() =>
-  store.commit('contract/updateState', { contractor: null }),
-)
+onBeforeRouteLeave(() => {
+  contractStore.contractor = null
+})
 </script>
 
 <template>

@@ -1,13 +1,14 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
-import { useStore } from 'vuex'
+import { useContract } from '@/store/pinia/contract'
 import { useRouter } from 'vue-router'
 
 const emit = defineEmits(['search-contractor', 'get-release'])
+
 const search = ref('')
 
-const store = useStore()
-const contractorList = computed(() => store.state.contract.contractorList)
+const contractStore = useContract()
+const contractorList = computed(() => contractStore.contractorList)
 
 const searchContractor = () => emit('search-contractor', search.value)
 
@@ -15,10 +16,10 @@ const router = useRouter()
 const setContractor = (pk: number, release: number | null) => {
   router.push({ name: '계약해지 관리', query: { contractor: pk } })
   if (release !== null) emit('get-release', release)
-  else store.commit('contract/updateState', { contRelease: null })
+  else contractStore.contRelease = null
 
   search.value = ''
-  store.commit('contract/updateState', { contractorList: [] })
+  contractStore.contractorList = []
 }
 </script>
 
