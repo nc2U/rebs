@@ -218,7 +218,6 @@ onBeforeMount(() => {
                 v-model="form.completion_date"
                 :required="false"
                 placeholder="해지종결일"
-                :disabled="is_complete"
               />
             </CCol>
           </CRow>
