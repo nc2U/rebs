@@ -28,7 +28,7 @@ class UnitTypeViewSets(viewsets.ModelViewSet):
     queryset = UnitType.objects.all()
     serializer_class = UnitTypeSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-    filter_fields = ('project',)
+    filterset_fields = ('project',)
     search_fields = ('name',)
 
 
@@ -37,7 +37,7 @@ class UnitFloorTypeViewSets(viewsets.ModelViewSet):
     serializer_class = UnitFloorTypeSerializer
     pagination_class = PageNumberPaginationFifty
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-    filter_fields = ('project',)
+    filterset_fields = ('project',)
     search_fields = ('alias_name',)
 
 
@@ -53,14 +53,14 @@ class KeyUnitViewSets(viewsets.ModelViewSet):
     queryset = KeyUnit.objects.all()
     serializer_class = KeyUnitSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-    filter_class = KeyUnitListFilterSet
+    filterset_class = KeyUnitListFilterSet
 
 
 class BuildingUnitViewSets(viewsets.ModelViewSet):
     queryset = BuildingUnit.objects.all()
     serializer_class = BuildingUnitSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-    filter_fields = ('project',)
+    filterset_fields = ('project',)
     search_fields = ('name',)
 
 
@@ -69,7 +69,7 @@ class HouseUnitList(generics.ListCreateAPIView):
     queryset = HouseUnit.objects.all()
     serializer_class = HouseUnitSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-    filter_fields = ('project', 'building_unit')
+    filterset_fields = ('project', 'building_unit')
     search_fields = ('hold_reason',)
 
 
@@ -113,7 +113,7 @@ class ProjectBudgetList(generics.ListCreateAPIView):
     serializer_class = ProjectBudgetSerializer
     pagination_class = PageNumberPaginationFifty
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-    filter_fields = ('project',)
+    filterset_fields = ('project',)
 
 
 class ExecAmountToBudgetList(generics.ListAPIView):
@@ -121,7 +121,7 @@ class ExecAmountToBudgetList(generics.ListAPIView):
     serializer_class = ExecAmountToBudget
     pagination_class = PageNumberPaginationFifty
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-    filter_fields = ('project',)
+    filterset_fields = ('project',)
 
     def get_queryset(self):
         TODAY = datetime.today().strftime('%Y-%m-%d')
@@ -167,7 +167,7 @@ class TotalSiteArea(generics.ListAPIView):
     name = 'sites-total'
     serializer_class = TotalSiteAreaSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-    filter_fields = ('project',)
+    filterset_fields = ('project',)
 
     def get_queryset(self):
         return Site.objects.values('project') \
@@ -179,7 +179,7 @@ class SiteViewSets(viewsets.ModelViewSet):
     queryset = Site.objects.all()
     serializer_class = SiteSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-    filter_fields = ('project',)
+    filterset_fields = ('project',)
     search_fields = ('district', 'lot_number', 'site_purpose', 'owners__owner')
 
     def perform_create(self, serializer):
@@ -192,14 +192,14 @@ class AllOwnerList(generics.ListAPIView):
     serializer_class = AllOwnerSerializer
     pagination_class = PageNumberPaginationFiveHundred
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-    filter_fields = ('project',)
+    filterset_fields = ('project',)
 
 
 class TotalOwnerArea(generics.ListAPIView):
     name = 'owners-total'
     serializer_class = TotalOwnerAreaSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-    filter_fields = ('project',)
+    filterset_fields = ('project',)
 
     def get_queryset(self):
         return Site.objects.values('project') \
@@ -210,7 +210,7 @@ class SiteOwnerViewSets(viewsets.ModelViewSet):
     queryset = SiteOwner.objects.all()
     serializer_class = SiteOwnerSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-    filter_fields = ('project', 'own_sort')
+    filterset_fields = ('project', 'own_sort')
     search_fields = ('owner', 'phone1', 'phone2', 'sites__lot_number', 'counsel_record')
 
     def perform_create(self, serializer):
@@ -227,7 +227,7 @@ class TotalContractedArea(generics.ListAPIView):
     name = 'conts-total'
     serializer_class = TotalContractedAreaSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-    filter_fields = ('project',)
+    filterset_fields = ('project',)
 
     def get_queryset(self):
         return SiteContract.objects.values('project') \
@@ -238,7 +238,7 @@ class SiteContractViewSets(viewsets.ModelViewSet):
     queryset = SiteContract.objects.all()
     serializer_class = SiteContractSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-    filter_fields = ('project', 'owner__own_sort')
+    filterset_fields = ('project', 'owner__own_sort')
     search_fields = ('owner__owner', 'owner__phone1', 'acc_bank', 'acc_owner', 'note')
 
     def perform_create(self, serializer):

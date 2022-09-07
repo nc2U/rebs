@@ -10,7 +10,7 @@ class BillIssueList(generics.ListCreateAPIView):
     name = 'bill_issue-list'
     queryset = SalesBillIssue.objects.all()
     serializer_class = SallesBillIssueSerializer
-    filter_fields = ('project',)
+    filterset_fields = ('project',)
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
     def perform_create(self, serializer):

@@ -28,7 +28,7 @@ class TodoViewSets(viewsets.ModelViewSet):
     serializer_class = TodoSerializer
     pagination_class = PageNumberPaginationFifty
     permission_classes = (permissions.IsAuthenticated, IsOwnerOnly)
-    filter_fields = ('user', 'soft_deleted')
+    filterset_fields = ('user', 'soft_deleted')
     search_fields = ('title',)
 
     def perform_create(self, serializer):

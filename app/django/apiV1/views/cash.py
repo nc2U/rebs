@@ -41,7 +41,7 @@ class BalanceByAccountList(generics.ListAPIView):
     serializer_class = BalanceByAccountSerializer
     pagination_class = PageNumberPaginationOneHundred
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-    filter_fields = ('company',)
+    filterset_fields = ('company',)
 
     def get_queryset(self):
         TODAY = datetime.today().strftime('%Y-%m-%d')
@@ -82,7 +82,7 @@ class CashBookList(generics.ListCreateAPIView):
     serializer_class = CashBookSerializer
     pagination_class = PageNumberPaginationFifteen
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-    filter_class = CashBookFilterSet
+    filterset_class = CashBookFilterSet
     search_fields = ('content', 'trader', 'note')
 
     def perform_create(self, serializer):
@@ -113,7 +113,7 @@ class ProjectBankAccountList(generics.ListCreateAPIView):
     serializer_class = ProjectBankAccountSerializer
     pagination_class = PageNumberPaginationFifty
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-    filter_fields = ('project',)
+    filterset_fields = ('project',)
 
 
 class ProjectBankAccountDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -128,7 +128,7 @@ class PrBalanceByAccountList(generics.ListAPIView):
     serializer_class = PrBalanceByAccountSerializer
     pagination_class = PageNumberPaginationOneHundred
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-    filter_fields = ('project',)
+    filterset_fields = ('project',)
 
     def get_queryset(self):
         TODAY = datetime.today().strftime('%Y-%m-%d')
@@ -173,7 +173,7 @@ class ProjectCashBookList(generics.ListCreateAPIView):
     serializer_class = ProjectCashBookSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
     pagination_class = PageNumberPaginationFifteen
-    filter_class = ProjectCashBookFilterSet
+    filterset_class = ProjectCashBookFilterSet
     search_fields = ('contract__contractor__name', 'content', 'trader', 'note')
 
     def perform_create(self, serializer):
@@ -221,7 +221,7 @@ class PaymentSummary(generics.ListAPIView):
     name = 'payment-sum'
     serializer_class = PaymentSummarySerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-    filter_fields = ('project',)
+    filterset_fields = ('project',)
 
     def get_queryset(self):
         return ProjectCashBook.objects.filter(contract__activation=True, contract__contractor__status=2) \
@@ -235,7 +235,7 @@ class NumContractByType(generics.ListAPIView):
     name = 'cont-count'
     serializer_class = NumContractByTypeSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-    filter_fields = ('project',)
+    filterset_fields = ('project',)
 
     def get_queryset(self):
         return Contract.objects.filter(activation=True, contractor__status=2) \
@@ -249,7 +249,7 @@ class SalesPriceList(generics.ListCreateAPIView):
     serializer_class = SalesPriceSerializer
     pagination_class = PageNumberPaginationFifty
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-    filter_fields = ('project', 'order_group', 'unit_type')
+    filterset_fields = ('project', 'order_group', 'unit_type')
 
 
 class SalesPriceDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -265,7 +265,7 @@ class InstallmentOrderList(generics.ListCreateAPIView):
     serializer_class = InstallmentOrderSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
     pagination_class = PageNumberPaginationTwenty
-    filter_fields = ('project', 'pay_sort', 'is_pm_cost')
+    filterset_fields = ('project', 'pay_sort', 'is_pm_cost')
     search_fields = ('pay_name', 'alias_name')
 
 
@@ -282,7 +282,7 @@ class DownPaymentList(generics.ListCreateAPIView):
     serializer_class = DownPaymentSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
     pagination_class = PageNumberPaginationTwenty
-    filter_fields = ('project', 'order_group', 'unit_type')
+    filterset_fields = ('project', 'order_group', 'unit_type')
 
 
 class DownPaymentDetail(generics.RetrieveUpdateDestroyAPIView):

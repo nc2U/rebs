@@ -31,7 +31,7 @@ class AccountSubD1List(generics.ListAPIView):
     name = 'acc_d1-list'
     queryset = AccountSubD1.objects.all()
     serializer_class = AccountSubD1Serializer
-    filter_fields = ('accountsort',)
+    filterset_fields = ('accountsort',)
 
 
 class AccountSubD2List(generics.ListAPIView):
@@ -39,7 +39,7 @@ class AccountSubD2List(generics.ListAPIView):
     queryset = AccountSubD2.objects.all()
     serializer_class = AccountSubD2Serializer
     pagination_class = PageNumberPaginationTwenty
-    filter_fields = ('d1__accountsort', 'd1')
+    filterset_fields = ('d1__accountsort', 'd1')
 
 
 class AccountSubD3List(generics.ListAPIView):
@@ -47,7 +47,7 @@ class AccountSubD3List(generics.ListAPIView):
     queryset = AccountSubD3.objects.all()
     serializer_class = AccountSubD3Serializer
     pagination_class = PageNumberPaginationTwoHundred
-    filter_fields = ('d2__d1__accountsort', 'd2__d1', 'd2')
+    filterset_fields = ('d2__d1__accountsort', 'd2__d1', 'd2')
 
 
 class ProjectAccountSortList(generics.ListAPIView):
@@ -61,7 +61,7 @@ class ProjectAccountD1List(generics.ListAPIView):
     queryset = ProjectAccountD1.objects.all()
     pagination_class = PageNumberPaginationTwenty
     serializer_class = ProjectAccountD1Serializer
-    filter_fields = ('projectaccountsort',)
+    filterset_fields = ('projectaccountsort',)
 
 
 class ProjectAccountD2List(generics.ListAPIView):
@@ -69,7 +69,7 @@ class ProjectAccountD2List(generics.ListAPIView):
     queryset = ProjectAccountD2.objects.all()
     pagination_class = PageNumberPaginationOneHundred
     serializer_class = ProjectAccountD2Serializer
-    filter_fields = ('d1', 'd1__projectaccountsort')
+    filterset_fields = ('d1', 'd1__projectaccountsort')
 
 
 class WiseSayList(generics.ListCreateAPIView):

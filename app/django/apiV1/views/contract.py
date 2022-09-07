@@ -16,7 +16,7 @@ class OrderGroupViewSets(viewsets.ModelViewSet):
     queryset = OrderGroup.objects.all()
     serializer_class = OrderGroupSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-    filter_fields = ('project', 'sort')
+    filterset_fields = ('project', 'sort')
     search_fields = ('order_group_name',)
 
 
@@ -39,7 +39,7 @@ class ContractViewSets(viewsets.ModelViewSet):
     queryset = Contract.objects.all()
     serializer_class = ContractSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-    filter_class = ContractFilter
+    filterset_class = ContractFilter
     search_fields = (
         'serial_number', 'contractor__name', 'contractor__note', 'contractor__contractorcontact__cell_phone')
     ordering_fields = (
@@ -57,7 +57,7 @@ class SubsSummaryList(generics.ListAPIView):
     name = 'subs-summary'
     serializer_class = SubsSummarySerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-    filter_fields = ('project',)
+    filterset_fields = ('project',)
 
     def get_queryset(self):
         return Contract.objects.filter(activation=True, contractor__status=1) \
@@ -69,7 +69,7 @@ class ContSummaryList(generics.ListAPIView):
     name = 'cont-summary'
     serializer_class = ContSummarySerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-    filter_fields = ('project',)
+    filterset_fields = ('project',)
 
     def get_queryset(self):
         return Contract.objects.filter(activation=True, contractor__status=2) \
@@ -81,7 +81,7 @@ class ContractorViewSets(viewsets.ModelViewSet):
     queryset = Contractor.objects.all()
     serializer_class = ContractorSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-    filter_fields = ('gender', 'is_registed', 'status')
+    filterset_fields = ('gender', 'is_registed', 'status')
     search_fields = ('name', 'note', 'contract__serial_number')
 
     def perform_create(self, serializer):
@@ -110,7 +110,7 @@ class ContReleaseViewSets(viewsets.ModelViewSet):
     queryset = ContractorRelease.objects.all().order_by('-request_date')
     serializer_class = ContractorReleaseSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-    filter_fields = ('project',)
+    filterset_fields = ('project',)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
