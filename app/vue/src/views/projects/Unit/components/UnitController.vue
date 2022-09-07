@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import { computed, reactive, ref, watch } from 'vue'
 import { useStore } from 'vuex'
+import { headerLight } from '@/utils/cssMixins'
+import { write_project } from '@/utils/pageAuth'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 import project from '@/store/modules/project'
-import { write_project } from '@/utils/pageAuth'
 
 const props = defineProps({
   project: {
@@ -234,7 +235,7 @@ const modalAction = () => {
     신중하게 진행하여 주십시요.
   </CAlert>
 
-  <CAlert color="secondary" class="text-right">
+  <CAlert :color="headerLight" variant="solid" class="text-right">
     <CButton
       color="primary"
       :disabled="form.minFloor === ''"

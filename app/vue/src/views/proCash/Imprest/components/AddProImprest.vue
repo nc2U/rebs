@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { write_project_cash } from '@/utils/pageAuth'
+import { headerLight } from '@/utils/cssMixins'
 import FormModal from '@/components/Modals/FormModal.vue'
 import ProImprestForm from '@/views/proCash/Imprest/components/ProImprestForm.vue'
 
@@ -17,7 +18,7 @@ const multiSubmit = (payload: any) => emit('multi-submit', payload)
 </script>
 
 <template>
-  <CAlert color="secondary" class="text-right">
+  <CAlert :color="headerLight" variant="solid" class="text-right">
     <CButton color="primary" @click="createConfirm">신규등록</CButton>
   </CAlert>
 

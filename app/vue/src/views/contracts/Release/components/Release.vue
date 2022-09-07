@@ -61,7 +61,12 @@ const onSubmit = (payload: ContractRelease) => {
   <CTableDataCell>{{ release.request_date }}</CTableDataCell>
   <CTableDataCell>{{ release.completion_date }}</CTableDataCell>
   <CTableDataCell>
-    <CButton type="button" color="danger" size="sm" @click="callFormModal">
+    <CButton
+      type="button"
+      :color="release.status >= '4' ? 'secondary' : 'warning'"
+      size="sm"
+      @click="callFormModal"
+    >
       확인
     </CButton>
   </CTableDataCell>

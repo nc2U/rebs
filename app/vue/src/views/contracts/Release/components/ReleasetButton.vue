@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
 import { useContract } from '@/store/pinia/contract'
+import { headerLight } from '@/utils/cssMixins'
 import { write_contract } from '@/utils/pageAuth'
 import FormModal from '@/components/Modals/FormModal.vue'
 import ReleaseForm from '@/views/contracts/Release/components/ReleaseForm.vue'
@@ -27,7 +28,7 @@ const onSubmit = (payload: any) => {
 </script>
 
 <template>
-  <CAlert color="secondary">
+  <CAlert :color="headerLight" variant="solid">
     <CButton
       :color="contRelease && contRelease.pk ? 'warning' : 'danger'"
       @click="callFormModal"

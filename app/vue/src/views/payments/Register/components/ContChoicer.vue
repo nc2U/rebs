@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { useStore } from 'vuex'
 import { ref, reactive, computed, nextTick, onMounted } from 'vue'
+import { headerLight } from '@/utils/cssMixins'
 import TableTitleRow from '@/components/TableTitleRow.vue'
 
 const store = useStore()
@@ -97,7 +98,7 @@ onMounted(() => pageInit())
     </CRow>
   </CCallout>
 
-  <CAlert :color="contract ? 'info' : 'secondary'">
+  <CAlert v-if="contract" color="info">
     <CRow>
       <CCol xs="10">
         <strong v-if="contract">

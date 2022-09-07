@@ -111,7 +111,7 @@ onBeforeRouteLeave(() => {
       <TableTitleRow
         v-if="project"
         title="계약해지 현황"
-        color="error"
+        color="grey"
         excel
         :url="downloadUrl"
       />
