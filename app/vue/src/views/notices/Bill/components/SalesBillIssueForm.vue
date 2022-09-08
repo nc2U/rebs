@@ -1,15 +1,15 @@
 <script lang="ts" setup>
 import { computed, reactive, ref, watch } from 'vue'
-import { useStore } from 'vuex'
+import { usePayment } from '@/store/pinia/payment'
 import { write_notice } from '@/utils/pageAuth'
 import { isValidate } from '@/utils/helper'
 import { dateFormat } from '@/utils/baseMixins'
+import { maska as vMaska } from 'maska'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 import DaumPostcode from '@/components/DaumPostcode/index.vue'
 import { AddressData, callAddress } from '@/components/DaumPostcode/address'
-import { maska as vMaska } from 'maska'
 
 const props = defineProps({ billIssue: { type: Object, default: null } })
 const emit = defineEmits(['on-submit', 'get-now-order', 'set-pub-date'])
@@ -42,8 +42,8 @@ const form = reactive({
   content: '',
 })
 
-const store = useStore()
-const payOrderList = computed(() => store.state.payment.payOrderList)
+const paymentStore = usePayment()
+const payOrderList = computed(() => paymentStore.payOrderList)
 
 const confirmText = computed(() => (props.billIssue ? '업데이트' : '신규등록'))
 const btnClass = computed(() => (props.billIssue ? 'success' : 'primary'))

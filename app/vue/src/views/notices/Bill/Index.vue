@@ -1,10 +1,13 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, watch, onBeforeMount } from 'vue'
-import { useStore } from 'vuex'
 import { useProject } from '@/store/pinia/project'
+import { useProjectData } from '@/store/pinia/project_data'
+import { useNotice } from '@/store/pinia/notice'
 import { usePayment } from '@/store/pinia/payment'
+import { useContract } from '@/store/pinia/contract'
 import { dateFormat } from '@/utils/baseMixins'
 import { pageTitle, navMenu } from '@/views/notices/_menu/headermixin'
+import { SalesBillIssue } from '@/store/types/notice'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import SalesBillIssueForm from '@/views/notices/Bill/components/SalesBillIssueForm.vue'
@@ -27,10 +30,18 @@ const projectStore = useProject()
 const project = computed(() => projectStore.project?.pk)
 const initProjId = computed(() => projectStore.initProjId)
 
-const store = useStore()
-const payOrder = computed(() => store.state.payment.payOrder)
+const noticeStore = useNotice()
+const billIssue = computed(() => noticeStore.billIssue)
 
-const billIssue = computed(() => store.state.notice.billIssue)
+const fetchSalesBillIssue = (projId: number) =>
+  noticeStore.fetchSalesBillIssue(projId)
+const createSalesBillIssue = (payload: SalesBillIssue) =>
+  noticeStore.createSalesBillIssue(payload)
+const patchSalesBillIssue = (payload: SalesBillIssue) =>
+  noticeStore.patchSalesBillIssue(payload)
+
+const paymentStore = usePayment()
+const payOrder = computed(() => paymentStore.payOrder)
 
 const payOrderTime = computed(() =>
   payOrder.value ? payOrder.value.pay_time : null,
@@ -39,33 +50,25 @@ const payOrderName = computed(() =>
   payOrder.value ? payOrder.value.__str__ : '',
 )
 
-const fetchSalesBillIssue = (projId: number) =>
-  store.dispatch('notice/fetchSalesBillIssue', projId)
-const createSalesBillIssue = (projId: number) =>
-  store.dispatch('notice/createSalesBillIssue', projId)
-const patchSalesBillIssue = (projId: number) =>
-  store.dispatch('notice/patchSalesBillIssue', projId)
-
-const fetchPayOrder = (payload: any) =>
-  store.dispatch('payment/fetchPayOrder', payload)
-const patchPayOrder = (payload: any) =>
-  store.dispatch('payment/patchPayOrder', payload)
+const fetchPayOrder = (payload: any) => paymentStore.fetchPayOrder(payload)
+const patchPayOrder = (payload: any) => paymentStore.patchPayOrder(payload)
 const fetchPayOrderList = (projId: number) =>
-  store.dispatch('payment/fetchPayOrderList', projId)
+  paymentStore.fetchPayOrderList(projId)
 
-const fetchTypeList = (projId: number) =>
-  store.dispatch('project/fetchTypeList', projId)
+const projectDataStore = useProjectData()
+const fetchTypeList = (projId: number) => projectDataStore.fetchTypeList(projId)
 const fetchBuildingList = (projId: number) =>
-  store.dispatch('project/fetchBuildingList', projId)
+  projectDataStore.fetchBuildingList(projId)
 
+const contractStore = useContract()
 const fetchOrderGroupList = (projId: number) =>
-  store.dispatch('contract/fetchOrderGroupList', projId)
+  contractStore.fetchOrderGroupList(projId)
 const fetchContractList = (payload: { project: number; ordering: string }) =>
-  store.dispatch('contract/fetchContractList', payload)
+  contractStore.fetchContractList(payload)
 const fetchSalePriceList = (payload: { project: number }) =>
-  store.dispatch('contract/fetchSalePriceList', payload)
+  contractStore.fetchSalePriceList(payload)
 const fetchDownPayList = (payload: { project: number }) =>
-  store.dispatch('contract/fetchDownPayList', payload)
+  contractStore.fetchDownPayList(payload)
 
 onBeforeMount(() => {
   fetchSalesBillIssue(initProjId.value)
@@ -108,15 +111,15 @@ const onSelectAdd = (target: any) => {
     fetchSalePriceList({ project: target })
     fetchDownPayList({ project: target })
   } else {
-    store.commit('contract/updateState', {
-      orderGroupList: [],
-      contractList: [],
-      contractsCount: 0,
-      salesPriceList: [],
-      downPayList: [],
-    })
-    store.commit('payment/updateState', { payOrderList: [] })
-    store.commit('project/updateState', { unitTypeList: [], buildingList: [] })
+    contractStore.orderGroupList = []
+    contractStore.contractList = []
+    contractStore.contractsCount = 0
+    contractStore.salesPriceList = []
+    contractStore.downPaymentList = []
+
+    paymentStore.payOrderList = []
+    projectDataStore.unitTypeList = []
+    projectDataStore.buildingList = []
   }
 }
 

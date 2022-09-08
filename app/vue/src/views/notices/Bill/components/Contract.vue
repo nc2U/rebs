@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed, ref, nextTick, watch } from 'vue'
-import { useStore } from 'vuex'
+import { usePayment } from '@/store/pinia/payment'
+import { useContract } from '@/store/pinia/contract'
 import { numFormat } from '@/utils/baseMixins'
 
 const props = defineProps({
@@ -18,10 +19,12 @@ const emit = defineEmits(['on-ctor-chk'])
 const checked = ref(false)
 // const orderList = ref([{ pay_time: null }])
 
-const store = useStore()
-const payOrderList = computed(() => store.state.payment.payOrderList)
-const salesPriceList = computed(() => store.state.contract.salesPriceList)
-const downPaymentList = computed(() => store.state.contract.downPaymentList)
+const paymentStore = usePayment()
+const payOrderList = computed(() => paymentStore.payOrderList)
+
+const contractStore = useContract()
+const salesPriceList = computed(() => contractStore.salesPriceList)
+const downPaymentList = computed(() => contractStore.downPaymentList)
 
 const paidCompleted = computed(() => {
   const due: number = props.nowOrder || 2

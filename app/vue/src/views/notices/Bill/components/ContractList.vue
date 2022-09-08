@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, ref, nextTick } from 'vue'
-import { useStore } from 'vuex'
+import { useContract } from '@/store/pinia/contract'
 import Contract from '@/views/notices/Bill/components/Contract.vue'
 import Pagination from '@/components/Pagination'
 import { headerSecondary } from '@/utils/cssMixins'
@@ -11,10 +11,9 @@ const emit = defineEmits(['page-select', 'on-ctor-chk', 'all-un-checked'])
 const page = ref(1)
 const allChecked = ref(false)
 
-const store = useStore()
-
-const contBillIndex = computed(() => store.getters['contract/contBillIndex'])
-const contractPages = computed(() => store.getters['contract/contractPages'])
+const contractStore = useContract()
+const contBillIndex = computed(() => contractStore.contBillIndex)
+const contractPages = computed(() => contractStore.contractPages)
 
 const pageSelect = (page: number) => {
   allChecked.value = false
@@ -30,14 +29,6 @@ const allUnChecked = () =>
 
 const onCtorChk = (payload: { chk: boolean; pk: number }) =>
   emit('on-ctor-chk', payload)
-
-// const unChk = () => {
-//   page.value = 2
-//   setTimeout(() => {
-//     page.value = 1
-//   }, 50)
-// }
-// defineExpose({ unChk })
 </script>
 
 <template>
