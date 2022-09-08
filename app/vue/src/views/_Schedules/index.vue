@@ -189,9 +189,7 @@ onBeforeMount(() => {
         </CRow>
       </CModalBody>
       <CModalFooter>
-        <CButton color="light" @click="() => (formModal.visible = false)">
-          닫기
-        </CButton>
+        <CButton color="light" @click="formModal.close()"> 닫기</CButton>
         <CButton
           v-if="mode === 'create'"
           color="primary"
