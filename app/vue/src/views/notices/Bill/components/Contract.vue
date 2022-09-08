@@ -17,7 +17,6 @@ const props = defineProps({
 const emit = defineEmits(['on-ctor-chk'])
 
 const checked = ref(false)
-// const orderList = ref([{ pay_time: null }])
 
 const paymentStore = usePayment()
 const payOrderList = computed(() => paymentStore.payOrderList)
@@ -31,6 +30,7 @@ const paidCompleted = computed(() => {
   const paid: number = get_paid_order()
   return paid >= due
 })
+
 const price = computed(() => {
   // 해당 건별 분양가 구하기
   const c = props.contract
@@ -70,19 +70,6 @@ watch(props, (n, o) => {
   }
   if (n.page !== o.page) checked.value = false
 })
-// watch: {
-//   allChecked(val) {
-//     if (!this.paidCompleted) {
-//       this.checked = val
-//       this.ctorChk(this.contract.ctor_pk)
-//     }
-//   },
-//   page(n, o) {
-//     if (n !== o) this.checked = false
-//   },
-// },
-
-// onMounted(() => (orderList.value = payOrderList.value))
 
 const ctorChk = (ctorPk: string) =>
   nextTick(() => {
@@ -102,7 +89,7 @@ const get_paid_order = () => {
 
     if (total_paid >= paid_amount) paid_orders.push(p.pay_time) // (총 낸돈 >= 총 낼돈)
   })
-  return price.value // total_paid >= price.value ? lastPayName.value : paid_orders.pop()
+  return total_paid >= price.value ? lastPayName.value : paid_orders.pop()
 }
 
 const getPayName = (pay_time: number) => {
