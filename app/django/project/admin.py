@@ -21,6 +21,7 @@ class UnitTypeAdmin(ImportExportMixin, admin.ModelAdmin):
         'num_unit')
     list_display_links = ('project', 'name',)
     list_editable = ('actual_area', 'supply_area', 'contract_area', 'average_price', 'num_unit')
+    list_filter = ('project',)
 
     def styled_color(self, obj):
         return format_html(f'<div style="width:15px; background:{obj.color};">&nbsp;</div>')
@@ -32,19 +33,21 @@ class UnitFloorTypeAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'project', 'start_floor', 'end_floor', 'extra_cond', 'alias_name')
     list_display_links = ('project',)
     list_editable = ('start_floor', 'end_floor', 'extra_cond', 'alias_name')
+    list_filter = ('project',)
 
 
 class KeyUnitAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'project', 'unit_code', 'unit_type', 'contract')
     search_fields = ('unit_code',)
     list_display_links = ('project', 'unit_code',)
-    list_filter = ('project', 'unit_type', 'contract',)
+    list_filter = ('project', 'unit_type', 'contract')
 
 
 class BuindingUnitAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'project', 'name')
     list_display_links = ('project',)
     list_editable = ('name',)
+    list_filter = ('project',)
 
 
 class HouseUnitAdmin(ImportExportMixin, admin.ModelAdmin):
@@ -53,12 +56,14 @@ class HouseUnitAdmin(ImportExportMixin, admin.ModelAdmin):
         'name', 'floor_type', 'bldg_line', 'floor_no', 'is_hold', 'hold_reason')
     search_fields = ('name',)
     list_display_links = ('project', 'key_unit',)
+    list_filter = ('project', 'unit_type', 'building_unit', 'floor_type', 'is_hold', 'key_unit')
 
 
 class ProjectBudgetAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'project', 'account_d1', 'account_d2', 'budget')
     list_display_links = ('project', 'account_d1', 'account_d2')
     list_editable = ('budget',)
+    list_filter = ('project', 'account_d1', 'account_d2')
 
 
 class SiteAdmin(ImportExportMixin, admin.ModelAdmin):
@@ -68,7 +73,7 @@ class SiteAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display_links = ('project', '__str__',)
     list_editable = ('official_area', 'returned_area')
     search_fields = ('__str__',)
-    list_filter = ('project',)
+    list_filter = ('project', 'site_purpose')
 
 
 class SiteOwnerAdmin(ImportExportMixin, admin.ModelAdmin):
@@ -83,6 +88,7 @@ class SiteOwnshipRelationshipAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'site', 'site_owner', 'ownership_ratio', 'owned_area', 'acquisition_date')
     list_display_links = ('site', 'site_owner')
     list_editable = ('ownership_ratio', 'owned_area', 'acquisition_date')
+    list_filter = ('site__project',)
 
 
 class SiteContractAdmin(ImportExportMixin, admin.ModelAdmin):
@@ -90,6 +96,7 @@ class SiteContractAdmin(ImportExportMixin, admin.ModelAdmin):
         'id', 'owner', 'formatted_price', 'contract_date', 'acc_bank', 'acc_number', 'acc_owner', 'remain_pay_is_paid',
         'ownership_completion')
     list_display_links = ('owner',)
+    list_filter = ('owner__project',)
 
     def formatted_price(self, obj):
         price = intcomma(obj.total_price)
