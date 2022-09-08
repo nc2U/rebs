@@ -12,6 +12,7 @@ import {
   ProjectBudget,
   ExecAmountToBudget,
 } from '@/store/types/proCash'
+import { usePayment } from '@/store/pinia/payment'
 
 export const useProCash = defineStore('proCash', () => {
   // state & getters
@@ -41,11 +42,13 @@ export const useProCash = defineStore('proCash', () => {
 
   const formAccD1List = ref<ProjectAccountD1[]>([])
 
-  const fetchProFormAccD1List = (sort = '') =>
+  const fetchProFormAccD1List = (sort = '') => {
+    const sortUri = sort ? `?projectaccountsort=${sort}` : ''
     api
-      .get(`/project-account-depth1/?projectaccountsort=${sort}`)
+      .get(`/project-account-depth1/${sortUri}`)
       .then(res => (formAccD1List.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
+  }
 
   const formAccD2List = ref<ProjectAccountD2[]>([])
 
@@ -196,6 +199,123 @@ export const useProCash = defineStore('proCash', () => {
   const proCashPages = (itemsPerPage: number) =>
     Math.ceil(proCashesCount.value / itemsPerPage)
 
+  const paymentStore = usePayment()
+
+  const createPrCashBook = (payload: ProjectCashBook & any) => {
+    const { filters, ...formData } = payload
+    api
+      .post(`/project-cashbook/`, formData)
+      .then(res => {
+        fetchProjectCashList({
+          project: res.data.project,
+          ...filters,
+        }).then(() => {
+          fetchProjectImprestList({
+            project: res.data.project,
+            ...filters,
+          }).then(() => {
+            paymentStore.fetchPaymentList({
+              project: res.data.project,
+              contract: res.data.contract,
+              ordering: 'deal_date',
+            })
+            paymentStore.fetchAllPaymentList({
+              project: res.data.project,
+              contract: res.data.contract,
+              ordering: 'deal_date',
+            })
+            message()
+          })
+        })
+      })
+      .catch(err => errorHandle(err.response.data))
+  }
+
+  const updatePrCashBook = (payload: ProjectCashBook & any) => {
+    const { pk, filters, ...formData } = payload
+    api
+      .put(`/project-cashbook/${pk}/`, formData)
+      .then(res => {
+        fetchProjectCashList({
+          project: res.data.project,
+          ...filters,
+        }).then(() => {
+          fetchProjectImprestList({
+            project: res.data.project,
+            ...filters,
+          }).then(() => {
+            paymentStore.fetchPaymentList({
+              project: res.data.project,
+              ...filters,
+            })
+            paymentStore.fetchAllPaymentList({
+              project: res.data.project,
+              contract: res.data.contract,
+              ordering: 'deal_date',
+            })
+            message()
+          })
+        })
+      })
+      .catch(err => errorHandle(err.response.data))
+  }
+
+  const patchPrCashBook = (payload: ProjectCashBook & any) => {
+    const { pk, filters, ...formData } = payload
+    api
+      .patch(`/project-cashbook/${pk}/`, formData)
+      .then(res => {
+        fetchProjectCashList({
+          project: res.data.project,
+          ...filters,
+        }).then(() => {
+          fetchProjectImprestList({
+            project: res.data.project,
+            ...filters,
+          }).then(() => {
+            paymentStore.fetchPaymentList({
+              project: res.data.project,
+              contract: res.data.contract,
+            })
+            paymentStore.fetchAllPaymentList({
+              project: res.data.project,
+              contract: res.data.contract,
+              ordering: 'deal_date',
+            })
+            message()
+          })
+        })
+      })
+      .catch(err => errorHandle(err.response.data))
+  }
+
+  const deletePrCashBook = (payload: any) => {
+    const { pk, project, filters, contract } = payload
+
+    api
+      .delete(`/project-cashbook/${pk}/`)
+      .then(() => {
+        fetchProjectCashList({
+          project,
+          ...filters,
+        }).then(() => {
+          fetchProjectImprestList({
+            project,
+            ...filters,
+          }).then(() => {
+            paymentStore.fetchPaymentList({ project, contract })
+            paymentStore.fetchAllPaymentList({
+              project,
+              contract,
+              ordering: 'deal_date',
+            })
+            message('danger', '알림!', '해당 오브젝트가 삭제되었습니다.')
+          })
+        })
+      })
+      .catch(err => errorHandle(err.response.data))
+  }
+
   const proImprestList = ref<ProjectCashBook[]>([])
   const getProImprestLogs = computed(() =>
     proImprestList.value
@@ -306,6 +426,10 @@ export const useProCash = defineStore('proCash', () => {
     proCashesCount,
     fetchProjectCashList,
     proCashPages,
+    createPrCashBook,
+    updatePrCashBook,
+    patchPrCashBook,
+    deletePrCashBook,
 
     proImprestList,
     getProImprestLogs,
