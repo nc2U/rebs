@@ -296,9 +296,10 @@ class ContractRegisterView(LoginRequiredMixin, FormView):
                         keyunit.save()
 
                         # 3. 동호수 연결
-                        house_unit = HouseUnit.objects.get(pk=self.request.POST.get('house_unit'))
-                        house_unit.key_unit = keyunit
-                        house_unit.save()
+                        if post_house_unit:
+                            house_unit = HouseUnit.objects.get(pk=post_house_unit)
+                            house_unit.key_unit = keyunit
+                            house_unit.save()
                     else:
                         try:
                             old_houseunit = contract.keyunit.houseunit

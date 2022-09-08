@@ -44,11 +44,11 @@ const form = reactive({
   activation: true,
 
   // keyunit & houseunit
-  keyunit: '', // 4
+  keyunit: null as number | null | string, // 4
   keyunit_code: '',
-  houseunit: '', // 5
-  cont_keyunit: '', // 디비 계약 유닛
-  cont_houseunit: '', // 디비 동호 유닛
+  houseunit: null as number | null | string, // 5
+  // cont_keyunit: '', // 디비 계약 유닛
+  // cont_houseunit: '', // 디비 동호 유닛
 
   // contractor
   name: '', // 7
@@ -86,10 +86,12 @@ const form = reactive({
 })
 
 watch(form, nVal => {
-  if (form.keyunit_code)
+  if (nVal.keyunit_code)
     form.serial_number = `${nVal.keyunit_code}-${form.order_group}`
-  if (form.order_group)
+  if (nVal.order_group)
     form.serial_number = `${form.keyunit_code}-${nVal.order_group}`
+  if (nVal.keyunit === '') form.keyunit = null
+  if (nVal.houseunit === '') form.houseunit = null
 
   formsCheck.value = false
 })
@@ -107,10 +109,10 @@ watch(props, nVal => {
     form.houseunit = props.contract.keyunit.houseunit
       ? props.contract.keyunit.houseunit.pk
       : ''
-    form.cont_keyunit = props.contract.keyunit.pk
-    form.cont_houseunit = props.contract.keyunit.houseunit
-      ? props.contract.keyunit.houseunit.pk
-      : ''
+    // form.cont_keyunit = props.contract.keyunit.pk
+    // form.cont_houseunit = props.contract.keyunit.houseunit
+    //   ? props.contract.keyunit.houseunit.pk
+    //   : ''
 
     // contractor
     form.name = props.contract.contractor.name
@@ -217,7 +219,7 @@ const setOGSort = (e: any) => {
 }
 
 const setKeyCode = (e: any) => {
-  form.houseunit = ''
+  form.houseunit = null
   form.keyunit_code = e.target.selectedOptions[0].text
 }
 
@@ -227,8 +229,8 @@ const unitReset = (event: any) => {
 
 const typeSelect = (event: any) => {
   emit('type-select', event.target.value)
-  form.keyunit = ''
-  form.houseunit = ''
+  form.keyunit = null
+  form.houseunit = null
 }
 
 const onSubmit = (event: any) => {
@@ -299,8 +301,8 @@ const formReset = () => {
   form.order_group = null
   form.order_group_sort = ''
   form.unit_type = null
-  form.keyunit = ''
-  form.houseunit = ''
+  form.keyunit = null
+  form.houseunit = null
   form.keyunit_code = ''
 
   // form.contractor = null
@@ -379,7 +381,7 @@ defineExpose({ formReset })
               :disabled="noStatus"
               @change="setOGSort"
             >
-              <option value="">---------</option>
+              <option :value="null">---------</option>
               <option
                 v-for="order in orderGroupList"
                 :key="order.pk"
@@ -398,13 +400,10 @@ defineExpose({ formReset })
             <CFormSelect
               v-model="form.unit_type"
               required
-              :disabled="
-                (form.order_group === '' || form.order_group === null) &&
-                !contract
-              "
+              :disabled="form.order_group === null && !contract"
               @change="typeSelect"
             >
-              <option value="">---------</option>
+              <option :value="null">---------</option>
               <option
                 v-for="type in unitTypeList"
                 :key="type.pk"
@@ -446,7 +445,7 @@ defineExpose({ formReset })
           <CCol v-if="unitSet" md="10" lg="2" class="mb-md-3 mb-lg-0">
             <CFormSelect
               v-model="form.houseunit"
-              :disabled="form.keyunit === '' && !contract"
+              :disabled="form.keyunit === null && !contract"
             >
               <option value="">---------</option>
               <option

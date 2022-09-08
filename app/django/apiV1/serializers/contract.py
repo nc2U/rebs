@@ -102,10 +102,11 @@ class ContractSetSerializer(serializers.ModelSerializer):
         keyunit.save()
 
         # 3. 동호수 연결
-        house_unit_data = self.initial_data.get('houseunit')
-        house_unit = HouseUnit.objects.get(pk=house_unit_data)
-        house_unit.key_unit = keyunit
-        house_unit.save()
+        if self.initial_data.get('houseunit'):
+            house_unit_data = self.initial_data.get('houseunit')
+            house_unit = HouseUnit.objects.get(pk=house_unit_data)
+            house_unit.key_unit = keyunit
+            house_unit.save()
 
         # 4. 계약자 정보 테이블 입력
         contractor_name = self.initial_data.get('name')
@@ -223,9 +224,10 @@ class ContractSetSerializer(serializers.ModelSerializer):
             keyunit.save()
 
             # 3. 동호수 연결
-            house_unit = HouseUnit.objects.get(pk=house_unit_data)
-            house_unit.key_unit = keyunit  # 동호수를 키유닛과 연결
-            house_unit.save()
+            if house_unit_data:
+                house_unit = HouseUnit.objects.get(pk=house_unit_data)
+                house_unit.key_unit = keyunit  # 동호수를 키유닛과 연결
+                house_unit.save()
         else:
             try:
                 old_houseunit = instance.keyunit.houseunit

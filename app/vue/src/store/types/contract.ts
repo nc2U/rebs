@@ -25,12 +25,14 @@ export interface UnitType {
 
 export interface KeyUnit {
   pk: number
+  unit_code: string
   houseunit: HouseUnit | null
 }
 
 export interface HouseUnit {
   pk: number
   __str__: string
+  floor_type: number
 }
 
 interface Payment {
@@ -44,6 +46,7 @@ interface Payment {
 
 interface InstallmentOrder {
   pk: number
+  pay_sort: string
   pay_time: number
   pay_name: string
   __str__: string
