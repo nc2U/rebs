@@ -29,7 +29,7 @@ const unitSummary = computed(() => projectDataStore.unitSummary)
         <CTableBody>
           <CTableRow>
             <CTableHeaderCell :color="headerSecondary">
-              총세대수 {{ contractsCount }}
+              총세대수
             </CTableHeaderCell>
             <CTableDataCell class="text-right" colspan="3">
               {{ numFormat(unitSummary.totalNum) }}
