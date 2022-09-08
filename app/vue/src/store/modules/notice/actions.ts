@@ -1,20 +1,8 @@
 import api from '@/api'
-import {
-  FETCH_SALES_BILL_ISSUE,
-  FETCH_SALES_BILL_ISSUE_LIST,
-} from '@/store/modules/notice/mutations-types'
+import { FETCH_SALES_BILL_ISSUE } from '@/store/modules/notice/mutations-types'
 import { errorHandle } from '@/utils/helper'
 
 const actions = {
-  fetchSalesBillIssueList: ({ commit }: any, project: any) => {
-    api
-      .get(`/sales-bill-issue/?project=${project}`)
-      .then(res => {
-        commit(FETCH_SALES_BILL_ISSUE_LIST, res.data)
-      })
-      .catch(err => errorHandle(err.response.data))
-  },
-
   fetchSalesBillIssue: ({ commit }: any, pk: number) => {
     return api
       .get(`/sales-bill-issue/${pk}/`)

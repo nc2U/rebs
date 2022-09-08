@@ -2,6 +2,7 @@
 import { ref, reactive, computed, watch, onBeforeMount } from 'vue'
 import { useStore } from 'vuex'
 import { useProject } from '@/store/pinia/project'
+import { usePayment } from '@/store/pinia/payment'
 import { dateFormat } from '@/utils/baseMixins'
 import { pageTitle, navMenu } from '@/views/notices/_menu/headermixin'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
