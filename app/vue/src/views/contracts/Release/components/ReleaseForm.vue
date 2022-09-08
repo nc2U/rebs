@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { reactive, ref, watch, onBeforeMount } from 'vue'
+import { reactive, ref, watch, onBeforeMount, computed } from 'vue'
 import { write_contract } from '@/utils/pageAuth'
 import { isValidate } from '@/utils/helper'
 import { dateFormat } from '@/utils/baseMixins'
@@ -31,6 +31,22 @@ const form = reactive({
   note: '',
 })
 
+const formsCheck = computed(() => {
+  if (props.release) {
+    const a = form.status === props.release.status
+    const b =
+      !form.refund_amount || form.refund_amount === props.release.refund_amount
+    const c = form.refund_account_bank === props.release.refund_account_bank
+    const d = form.refund_account_number === props.release.refund_account_number
+    const e =
+      form.refund_account_depositor === props.release.refund_account_depositor
+    const f = form.request_date === props.release.request_date
+    const g = form.completion_date === props.release.completion_date
+    const h = form.note === props.release.note
+    return a && b && c && d && e && f && g && h
+  } else return false
+})
+
 watch(form, val => {
   if (val.request_date) form.request_date = dateFormat(val.request_date)
   if (val.completion_date)
@@ -53,7 +69,7 @@ const deleteConfirm = () => {
 const modalAction = () => alert('this is ready!')
 
 onBeforeMount(() => {
-  if (props.release && props.release.pk) {
+  if (props.release) {
     form.pk = props.release.pk
     form.contractor = props.release.contractor
     form.status = props.release.status
@@ -125,7 +141,7 @@ onBeforeMount(() => {
             </CFormLabel>
             <CCol sm="8">
               <CFormInput
-                v-model="form.refund_amount"
+                v-model.number="form.refund_amount"
                 type="number"
                 min="0"
                 placeholder="환불(예정)금액"
