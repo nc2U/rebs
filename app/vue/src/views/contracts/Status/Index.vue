@@ -30,11 +30,14 @@ const contractStore = useContract()
 const contractsCount = computed(() => contractStore.contractsCount)
 const fetchContractList = (payload: { project: number }) =>
   contractStore.fetchContractList(payload)
+const fetchSubsSummaryList = (projId: number) =>
+  contractStore.fetchSubsSummaryList(projId)
 
 onMounted(() => {
   fetchTypeList(initProjId.value)
   fetchBuildingList(initProjId.value)
   fetchHouseUnitList(initProjId.value)
+  fetchSubsSummaryList(initProjId.value)
   fetchContractList({ project: initProjId.value })
 })
 
@@ -43,11 +46,13 @@ const onSelectAdd = (target: any) => {
     fetchTypeList(target)
     fetchBuildingList(target)
     fetchHouseUnitList(target)
+    fetchSubsSummaryList(target)
     fetchContractList({ project: target })
   } else {
     projectDataStore.unitTypeList = []
     projectDataStore.buildingList = []
     projectDataStore.houseUnitList = []
+    contractStore.subsSummaryList = []
     contractStore.contractsCount = 0
   }
 }
