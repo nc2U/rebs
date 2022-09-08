@@ -58,7 +58,7 @@ const setContractor = (pk: number, release: number | null) => {
                 setContractor(contractor.pk, contractor.contractorrelease)
               "
             >
-              {{ `${contractor.name}(${contractor.contract.serial_number})` }}
+              {{ `${contractor.name}(${contractor.__str__})` }}
             </CButton>
           </CCol>
         </CRow>
