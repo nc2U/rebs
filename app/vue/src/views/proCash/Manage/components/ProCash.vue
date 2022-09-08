@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
 import { numFormat, cutString } from '@/utils/baseMixins'
+import { ProjectCashBook } from '@/store/types/proCash'
 import FormModal from '@/components/Modals/FormModal.vue'
 import ProCashForm from '@/views/proCash/Manage/components/ProCashForm.vue'
 
@@ -32,7 +33,7 @@ const rowColor = computed(() => {
 })
 
 const showDetail = () => updateFormModal.value.callModal()
-const multiSubmit = (payload: any) => emit('multi-submit', payload)
+const multiSubmit = (payload: ProjectCashBook) => emit('multi-submit', payload)
 const onDelete = (payload: any) => emit('on-delete', payload)
 </script>
 

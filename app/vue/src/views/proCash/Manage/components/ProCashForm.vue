@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, watch, onBeforeMount, nextTick } from 'vue'
-import { useStore } from 'vuex'
+import { useProCash } from '@/store/pinia/proCash'
 import { useAccount } from '@/store/pinia/account'
 import { diffDate, dateFormat } from '@/utils/baseMixins'
 import { write_project_cash } from '@/utils/pageAuth'
@@ -108,19 +108,15 @@ const formsCheck = computed(() => {
   } else return false
 })
 
-const store = useStore()
-const accountStore = useAccount()
-
-const formAccD1List = computed(() => store.state.proCash.formAccD1List)
-const formAccD2List = computed(() => store.state.proCash.formAccD2List)
-const proBankAccountList = computed(
-  () => store.state.proCash.proBankAccountList,
-)
+const proCashStore = useProCash()
+const formAccD1List = computed(() => proCashStore.formAccD1List)
+const formAccD2List = computed(() => proCashStore.formAccD2List)
+const proBankAccountList = computed(() => proCashStore.proBankAccountList)
 
 const fetchProFormAccD1List = (sort: string) =>
-  store.dispatch('proCash/fetchProFormAccD1List', sort)
-const fetchProFormAccD2List = (payload: { sort: string; d1: string }) =>
-  store.dispatch('proCash/fetchProFormAccD2List', payload)
+  proCashStore.fetchProFormAccD1List(sort)
+const fetchProFormAccD2List = (d1: string, sort: string) =>
+  proCashStore.fetchProFormAccD2List(d1, sort)
 
 const requireItem = computed(
   () => form.project_account_d1 !== '' && form.project_account_d2 !== '',
@@ -148,7 +144,10 @@ const sepSummary = computed(() => {
       : 0
   return [inc, out]
 })
+
 const pageManageAuth = computed(() => write_project_cash)
+
+const accountStore = useAccount()
 const allowedPeriod = computed(
   () => accountStore.superAuth || diffDate(props.proCash.deal_date) <= 30,
 )
@@ -179,10 +178,10 @@ const d1_change = () => {
 const sepD1_change = () => {
   sepItem.project_account_d2 = ''
   nextTick(() => {
-    const sort = form.sort
     const d1 = sepItem.project_account_d1
+    const sort = form.sort
     fetchProFormAccD1List(sort)
-    fetchProFormAccD2List({ sort, d1 })
+    fetchProFormAccD2List(d1, sort)
   })
 }
 
@@ -191,7 +190,7 @@ const callAccount = () => {
     const sort = form.sort
     const d1 = form.project_account_d1
     fetchProFormAccD1List(sort)
-    fetchProFormAccD2List({ sort, d1 })
+    fetchProFormAccD2List(d1, sort)
   })
 }
 

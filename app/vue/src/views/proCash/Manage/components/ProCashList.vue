@@ -1,23 +1,23 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { useStore } from 'vuex'
+import { useProCash } from '@/store/pinia/proCash'
 import ProCash from '@/views/proCash/Manage/components/ProCash.vue'
 import Pagination from '@/components/Pagination'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 import { headerSecondary } from '@/utils/cssMixins'
+import { ProjectCashBook } from '@/store/types/proCash'
 
 const emit = defineEmits(['page-select', 'on-delete', 'multi-submit'])
 
-const store = useStore()
+const proCashStore = useProCash()
+const allAccD1List = computed(() => proCashStore.allAccD1List)
+const allAccD2List = computed(() => proCashStore.allAccD2List)
 
-const allAccD1List = computed(() => store.state.proCash.allAccD1List)
-const allAccD2List = computed(() => store.state.proCash.allAccD2List)
-
-const proCashPages = computed(() => store.getters['proCash/proCashPages'])
-const getProCashLogs = computed(() => store.getters['proCash/getProCashLogs'])
+const proCashPages = computed(() => proCashStore.proCashPages)
+const getProCashLogs = computed(() => proCashStore.getProCashLogs)
 
 const pageSelect = (page: number) => emit('page-select', page)
-const multiSubmit = (payload: any) => emit('multi-submit', payload)
+const multiSubmit = (payload: ProjectCashBook) => emit('multi-submit', payload)
 const onDelete = (pk: number) => emit('on-delete', pk)
 </script>
 

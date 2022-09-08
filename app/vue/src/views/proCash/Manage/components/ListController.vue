@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, reactive, ref, watch, nextTick } from 'vue'
-import { useStore } from 'vuex'
+import { useProCash } from '@/store/pinia/proCash'
 import { numFormat, dateFormat } from '@/utils/baseMixins'
 import DatePicker from '@/components/DatePicker/index.vue'
 import { maska as vMaska } from 'maska'
@@ -17,15 +17,12 @@ const form = reactive({
   search: '',
 })
 
-const store = useStore()
-
-const sortList = computed(() => store.state.proCash.sortList)
-const formAccD1List = computed(() => store.state.proCash.formAccD1List)
-const formAccD2List = computed(() => store.state.proCash.formAccD2List)
-const proBankAccountList = computed(
-  () => store.state.proCash.proBankAccountList,
-)
-const proCashesCount = computed(() => store.state.proCash.proCashesCount)
+const proCashStore = useProCash()
+const sortList = computed(() => proCashStore.sortList)
+const formAccD1List = computed(() => proCashStore.formAccD1List)
+const formAccD2List = computed(() => proCashStore.formAccD2List)
+const proBankAccountList = computed(() => proCashStore.proBankAccountList)
+const proCashesCount = computed(() => proCashStore.proCashesCount)
 
 const formsCheck = computed(() => {
   const a = from_date.value === ''
