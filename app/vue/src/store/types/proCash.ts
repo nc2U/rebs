@@ -40,9 +40,15 @@ export interface BalanceByAccount {
 
 export interface ProjectBudget {
   pk: number
-  project: number
-  account_d1: number
-  account_d2: number
+  account_d1: {
+    name: string
+    acc_d2s: Array<number>
+  }
+  account_d2: {
+    pk: number
+    name: string
+    sub_title: string
+  }
   budget: number
 }
 

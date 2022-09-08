@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, computed, onBeforeMount } from 'vue'
-import { useStore } from 'vuex'
 import { useProject } from '@/store/pinia/project'
+import { useProCash } from '@/store/pinia/proCash'
 import { dateFormat } from '@/utils/baseMixins'
 import { pageTitle, navMenu } from '@/views/proCash/_menu/headermixin'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
@@ -16,30 +16,25 @@ import SummaryForBudget from '@/views/proCash/Status/components/SummaryForBudget
 const date = ref(new Date())
 const compName = ref('StatusByAccount')
 
-const store = useStore()
 const projectStore = useProject()
 
 const initProjId = computed(() => projectStore.initProjId)
 const project = computed(() => projectStore.project?.pk || initProjId.value)
 
-const fetchProAllAccD1List = () =>
-  store.dispatch('proCash/fetchProAllAccD1List')
-const fetchProAllAccD2List = () =>
-  store.dispatch('proCash/fetchProAllAccD2List')
+const proCashStore = useProCash()
+const fetchProAllAccD1List = () => proCashStore.fetchProAllAccD1List
+const fetchProAllAccD2List = () => proCashStore.fetchProAllAccD2List
 const fetchProBankAccList = (proj: number) =>
-  store.dispatch('proCash/fetchProBankAccList', proj)
+  proCashStore.fetchProBankAccList(proj)
 
 const fetchBalanceByAccList = (proj: { project: number; date?: string }) =>
-  store.dispatch('proCash/fetchBalanceByAccList', proj)
+  proCashStore.fetchBalanceByAccList(proj)
 const fetchDateCashBookList = (payload: any) =>
-  store.dispatch('proCash/fetchDateCashBookList', payload)
+  proCashStore.fetchDateCashBookList(payload)
 const fetchProjectBudgetList = (proj: number) =>
-  store.dispatch('proCash/fetchProjectBudgetList', proj)
-const fetchExecAmountList = (proj: { project: number; date?: string }) =>
-  store.dispatch('proCash/fetchExecAmountList', proj)
-
-const updateState = (payload: any) =>
-  store.commit('proCash/updateState', payload)
+  proCashStore.fetchProjectBudgetList(proj)
+const fetchExecAmountList = (project: number, date?: string) =>
+  proCashStore.fetchExecAmountList(project, date)
 
 const onSelectAdd = (target: any) => {
   if (target !== '') {
@@ -50,15 +45,13 @@ const onSelectAdd = (target: any) => {
       date: dateFormat(date.value),
     })
     fetchProjectBudgetList(target)
-    fetchExecAmountList({ project: target, date: dateFormat(date.value) })
+    fetchExecAmountList(target, dateFormat(date.value))
   } else {
-    updateState({
-      proBankAccountList: [],
-      balanceByAccList: [],
-      proDateCashBook: [],
-      proBudgetList: [],
-      execAmountList: [],
-    })
+    proCashStore.proBankAccountList = []
+    proCashStore.balanceByAccList = []
+    proCashStore.proDateCashBook = []
+    proCashStore.proBudgetList = []
+    proCashStore.execAmountList = []
   }
 }
 
@@ -77,7 +70,7 @@ const setDate = (d: Date) => {
   fetchBalanceByAccList({ project: project.value, date: dateFormat(dt) })
   fetchDateCashBookList({ project: project.value, date: dateFormat(dt) })
   fetchProjectBudgetList(project.value)
-  fetchExecAmountList({ project: project.value, date: dateFormat(dt) })
+  fetchExecAmountList(project.value, dateFormat(dt))
 }
 
 onBeforeMount(() => {
@@ -90,7 +83,7 @@ onBeforeMount(() => {
     date: dateFormat(date.value),
   })
   fetchProjectBudgetList(initProjId.value)
-  fetchExecAmountList({ project: initProjId.value })
+  fetchExecAmountList(initProjId.value)
 })
 </script>
 

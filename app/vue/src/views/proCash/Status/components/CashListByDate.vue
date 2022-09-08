@@ -1,52 +1,59 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount, ref, watch } from 'vue'
-import { useStore } from 'vuex'
+import { useProCash } from '@/store/pinia/proCash'
 import { numFormat, dateFormat } from '@/utils/baseMixins'
 import { headerSecondary } from '@/utils/cssMixins'
+import {
+  ProjectAccountD1,
+  ProjectAccountD2,
+  ProjectCashBook,
+  ProjectBankAccount,
+} from '@/store/types/proCash'
 
 defineProps({ date: { type: String, default: '' } })
 
-const dateIncSet = ref([])
-const dateOutSet = ref([])
-const dateIncTotal = ref(0)
-const dateOutTotal = ref(0)
+const dateIncSet = ref<ProjectCashBook[]>([])
+const dateOutSet = ref<ProjectCashBook[]>([])
+const dateIncTotal = ref<number>(0)
+const dateOutTotal = ref<number>(0)
 
-const store = useStore()
-
-const allAccD1List = computed(() => store.state.proCash.allAccD1List)
-const allAccD2List = computed(() => store.state.proCash.allAccD2List)
-const proBankAccountList = computed(
-  () => store.state.proCash.proBankAccountList,
-)
-const proDateCashBook = computed(() => store.state.proCash.proDateCashBook)
+const proCashStore = useProCash()
+const allAccD1List = computed(() => proCashStore.allAccD1List)
+const allAccD2List = computed(() => proCashStore.allAccD2List)
+const proBankAccountList = computed(() => proCashStore.proBankAccountList)
+const proDateCashBook = computed(() => proCashStore.proDateCashBook)
 
 watch(proDateCashBook, () => setData())
 
 onBeforeMount(() => setData())
 
 const getD1Text = (num: number) =>
-  allAccD1List.value.filter((d: any) => d.pk === num).map((d: any) => d.name)[0]
+  allAccD1List.value
+    .filter((d: ProjectAccountD1) => d.pk === num)
+    .map((d: ProjectAccountD1) => d.name)[0]
 
 const getD2Text = (num: number) =>
-  allAccD2List.value.filter((d: any) => d.pk === num).map((d: any) => d.name)[0]
+  allAccD2List.value
+    .filter((d: ProjectAccountD2) => d.pk === num)
+    .map((d: ProjectAccountD2) => d.name)[0]
 
 const getBankAcc = (num: number) =>
   proBankAccountList.value
-    .filter((b: any) => b.pk === num)
-    .map((b: any) => b.alias_name)[0]
+    .filter((b: ProjectBankAccount) => b.pk === num)
+    .map((b: ProjectBankAccount) => b.alias_name)[0]
 
 const setData = () => {
   dateIncSet.value = proDateCashBook.value.filter(
-    (i: any) => i.income > 0 && !i.outlay,
+    (i: ProjectCashBook) => i.income && i.income > 0 && !i.outlay,
   )
   dateOutSet.value = proDateCashBook.value.filter(
-    (o: any) => o.outlay > 0 && !o.income,
+    (o: ProjectCashBook) => o.outlay && o.outlay > 0 && !o.income,
   )
   dateIncTotal.value = dateIncSet.value
-    .map((i: any) => i.income)
+    .map((i: ProjectCashBook) => i.income || 0)
     .reduce((x: number, y: number) => x + y, 0)
   dateOutTotal.value = dateOutSet.value
-    .map((o: any) => o.outlay)
+    .map((o: ProjectCashBook) => o.outlay || 0)
     .reduce((x: number, y: number) => x + y, 0)
 }
 </script>

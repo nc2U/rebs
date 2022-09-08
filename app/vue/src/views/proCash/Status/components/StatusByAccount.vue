@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount, ref, watch } from 'vue'
-import { useStore } from 'vuex'
+import { useProCash } from '@/store/pinia/proCash'
 import { numFormat, dateFormat } from '@/utils/baseMixins'
 import { headerSecondary } from '@/utils/cssMixins'
 
@@ -11,9 +11,8 @@ const dateIncSum = ref(0)
 const dateOutSum = ref(0)
 const dateBalance = ref(0)
 
-const store = useStore()
-
-const balanceByAccList = computed(() => store.state.proCash.balanceByAccList)
+const proCashStore = useProCash()
+const balanceByAccList = computed(() => proCashStore.balanceByAccList)
 
 watch(balanceByAccList, () => getSumTotal())
 
