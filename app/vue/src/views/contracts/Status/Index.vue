@@ -2,6 +2,7 @@
 import { computed, onMounted } from 'vue'
 import { useProject } from '@/store/pinia/project'
 import { useProjectData } from '@/store/pinia/project_data'
+import { useContract } from '@/store/pinia/contract'
 import { pageTitle, navMenu } from '@/views/contracts/_menu/headermixin'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
@@ -25,10 +26,16 @@ const fetchBuildingList = (projId: number) =>
 const fetchHouseUnitList = (projId: number) =>
   projectDataStore.fetchHouseUnitList(projId)
 
+const contractStore = useContract()
+const contractsCount = computed(() => contractStore.contractsCount)
+const fetchContractList = (payload: { project: number }) =>
+  contractStore.fetchContractList(payload)
+
 onMounted(() => {
   fetchTypeList(initProjId.value)
   fetchBuildingList(initProjId.value)
   fetchHouseUnitList(initProjId.value)
+  fetchContractList({ project: initProjId.value })
 })
 
 const onSelectAdd = (target: any) => {
@@ -36,10 +43,12 @@ const onSelectAdd = (target: any) => {
     fetchTypeList(target)
     fetchBuildingList(target)
     fetchHouseUnitList(target)
+    fetchContractList({ project: target })
   } else {
     projectDataStore.unitTypeList = []
     projectDataStore.buildingList = []
     projectDataStore.houseUnitList = []
+    contractStore.contractsCount = 0
   }
 }
 </script>
@@ -53,7 +62,7 @@ const onSelectAdd = (target: any) => {
 
   <ContentBody>
     <CCardBody class="pb-5">
-      <ContSummary />
+      <ContSummary :contracts-count="contractsCount" />
       <TableTitleRow v-if="project" excel :url="excelUrl" />
       <v-divider color="grey" class="my-0" />
       <ContractBoard />

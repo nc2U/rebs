@@ -8,6 +8,8 @@ import {
   headerPrimary,
 } from '@/utils/cssMixins'
 
+defineProps({ contractsCount: { type: Number, default: 0 } })
+
 const projectDataStore = useProjectData()
 
 const simpleTypes = computed(() => projectDataStore.simpleTypes)
@@ -27,16 +29,10 @@ const unitSummary = computed(() => projectDataStore.unitSummary)
         <CTableBody>
           <CTableRow>
             <CTableHeaderCell :color="headerSecondary">
-              총세대수
+              총세대수 {{ contractsCount }}
             </CTableHeaderCell>
-            <CTableDataCell class="text-right">
+            <CTableDataCell class="text-right" colspan="3">
               {{ numFormat(unitSummary.totalNum) }}
-            </CTableDataCell>
-            <CTableHeaderCell :color="headerSecondary">
-              홀딩세대
-            </CTableHeaderCell>
-            <CTableDataCell class="text-right">
-              {{ numFormat(unitSummary.holdNum) }}
             </CTableDataCell>
           </CTableRow>
 
@@ -47,14 +43,29 @@ const unitSummary = computed(() => projectDataStore.unitSummary)
             </CTableDataCell>
             <CTableHeaderCell :color="headerPrimary">계약세대</CTableHeaderCell>
             <CTableDataCell class="text-right">
-              {{ numFormat(unitSummary.contNum) }}
+              {{ numFormat(contractsCount) }}
+            </CTableDataCell>
+          </CTableRow>
+
+          <CTableRow>
+            <CTableHeaderCell :color="headerSecondary">
+              동호미배정 세대
+            </CTableHeaderCell>
+            <CTableDataCell class="text-right">
+              {{ numFormat(contractsCount - unitSummary.contNum) }}
+            </CTableDataCell>
+            <CTableHeaderCell :color="headerSecondary">
+              홀딩세대
+            </CTableHeaderCell>
+            <CTableDataCell class="text-right">
+              {{ numFormat(unitSummary.holdNum) }}
             </CTableDataCell>
           </CTableRow>
 
           <CTableRow>
             <CTableHeaderCell :color="headerSecondary">합계</CTableHeaderCell>
             <CTableDataCell class="text-right">
-              {{ numFormat(unitSummary.appNum + unitSummary.contNum) }}
+              {{ numFormat(contractsCount) }}
             </CTableDataCell>
             <CTableHeaderCell :color="headerSecondary">
               잔여세대
@@ -62,9 +73,7 @@ const unitSummary = computed(() => projectDataStore.unitSummary)
             <CTableDataCell class="text-right">
               {{
                 numFormat(
-                  unitSummary.totalNum -
-                    unitSummary.appNum -
-                    unitSummary.contNum,
+                  contractsCount - unitSummary.appNum - unitSummary.contNum,
                 )
               }}
             </CTableDataCell>
