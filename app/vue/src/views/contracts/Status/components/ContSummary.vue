@@ -18,7 +18,7 @@ const unitSummary = computed(() => projectDataStore.unitSummary)
 
 <template>
   <CRow>
-    <CCol lg="6">
+    <CCol lg="5">
       <CTable hover responsive bordered align="middle">
         <colgroup>
           <col width="25%" />
@@ -81,7 +81,7 @@ const unitSummary = computed(() => projectDataStore.unitSummary)
         </CTableBody>
       </CTable>
     </CCol>
-    <CCol lg="6">
+    <CCol lg="7">
       <span v-for="type in simpleTypes" :key="type.pk" class="mr-3">
         <div class="cube mr-1" :style="`background-color: ${type.color};`" />
         {{ type.name }}
