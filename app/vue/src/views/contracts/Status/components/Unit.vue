@@ -24,10 +24,13 @@ const status = computed(() =>
 const isHold = computed(() => (isContract.value ? unit.value.is_hold : ''))
 const statusColor = computed(() => {
   let color = ''
-  if (unit.value && isContract.value) {
-    if (status.value === '1') color = '#D5F1DE'
-    if (status.value === '2') color = '#CBC7EC'
-    if (isHold.value) color = '#555'
+  if (unit.value) {
+    color = '#eee'
+    if (isContract.value) {
+      if (status.value === '1') color = '#D5F1DE'
+      if (status.value === '2') color = '#CBC7EC'
+      if (isHold.value) color = '#555'
+    }
   }
   return color
 })
