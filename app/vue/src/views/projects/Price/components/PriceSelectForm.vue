@@ -7,20 +7,21 @@ const props = defineProps({
 })
 const emit = defineEmits(['on-order-select', 'on-type-select'])
 
-const order = ref('')
-const type = ref('')
+const order = ref<number | null>(null)
+const type = ref<number | null>(null)
 const orderDisabled = ref(false)
 
 watch(props, () => {
-  order.value = ''
-  type.value = ''
+  order.value = null
+  type.value = null
 })
 
-const onOrderSelect = (e: any) => {
-  type.value = ''
-  emit('on-order-select', e.target.value)
+const onOrderSelect = (e: Event) => {
+  type.value = null
+  emit('on-order-select', (e.target as HTMLSelectElement).value)
 }
-const onTypeSelect = (e: any) => emit('on-type-select', e.target.value)
+const onTypeSelect = (e: Event) =>
+  emit('on-type-select', (e.target as HTMLSelectElement).value)
 </script>
 
 <template>

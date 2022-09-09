@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, watch, onUpdated, onMounted } from 'vue'
-import { useStore } from 'vuex'
+import { ref, reactive, computed, watch } from 'vue'
 import { useAccount } from '@/store/pinia/account'
+import { usePayment } from '@/store/pinia/payment'
+import { Price } from '@/store/types/payment'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 import { write_project } from '@/utils/pageAuth'
@@ -17,24 +18,24 @@ const alertModal = ref()
 const confirmModal = ref()
 
 const price = ref({
-  pk: null,
-  price_build: null,
-  price_land: null,
-  price_tax: null,
-  price: null,
+  pk: null as number | null,
+  price_build: null as number | null,
+  price_land: null as number | null,
+  price_tax: null as number | null,
+  price: null as number | null,
 })
 const form = reactive({
-  price_build: null,
-  price_land: null,
-  price_tax: null,
-  price: null,
+  price_build: null as number | null,
+  price_land: null as number | null,
+  price_tax: null as number | null,
+  price: null as number | null,
 })
 
 watch(form, val => {
-  if (val.price_build == '') form.price_build = null
-  if (val.price_land == '') form.price_land = null
-  if (val.price_tax == '') form.price_tax = null
-  if (val.price == '') form.price = null
+  if (!!val.price_build) form.price_build = null
+  if (!!val.price_land) form.price_land = null
+  if (!!val.price_tax) form.price_tax = null
+  if (!!val.price) form.price = null
 })
 
 const btnColor = computed(() => (price.value ? 'success' : 'primary'))
@@ -54,9 +55,8 @@ const formsCheck = computed(() => {
   }
 })
 
-const store = useStore()
-
-const priceList = computed(() => store.state.payment.priceList)
+const paymentStore = usePayment()
+const priceList = computed(() => paymentStore.priceList)
 
 watch(priceList, () => resetForm())
 
@@ -91,15 +91,15 @@ const modalAction = () => {
 }
 
 const resetForm = () => {
-  const unit_floor_type = String(props.floor.pk)
+  const unit_floor_type = props.floor.pk
   const { project, order_group, unit_type } = props.queryIds
 
   price.value = priceList.value.filter(
-    (p: any) =>
-      p.project == project &&
-      p.order_group == order_group &&
-      p.unit_type == unit_type &&
-      p.unit_floor_type == unit_floor_type,
+    (p: Price) =>
+      p.project === project &&
+      p.order_group === order_group &&
+      p.unit_type === unit_type &&
+      p.unit_floor_type === unit_floor_type,
   )[0]
 
   if (price.value) {

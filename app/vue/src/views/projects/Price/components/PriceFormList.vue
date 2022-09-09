@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { useStore } from 'vuex'
+import { useProjectData } from '@/store/pinia/project_data'
+import { Price as P } from '@/store/types/payment'
 import Price from '@/views/projects/Price/components/Price.vue'
 import { headerSecondary } from '@/utils/cssMixins'
 
@@ -11,11 +12,11 @@ defineProps({
 })
 const emit = defineEmits(['on-create', 'on-update', 'on-delete'])
 
-const store = useStore()
-const floorTypeList = computed(() => store.state.project.floorTypeList)
+const projectDataStore = useProjectData()
+const floorTypeList = computed(() => projectDataStore.floorTypeList)
 
-const onCreate = (payload: any) => emit('on-create', payload)
-const onUpdate = (payload: any) => emit('on-update', payload)
+const onCreate = (payload: P) => emit('on-create', payload)
+const onUpdate = (payload: P) => emit('on-update', payload)
 const onDelete = (pk: number) => emit('on-delete', pk)
 </script>
 

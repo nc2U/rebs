@@ -10,18 +10,27 @@ import {
   ContractNum,
 } from '@/store/types/payment'
 import { ProjectCashBook } from '@/store/types/proCash'
+import { numFormat } from '@/utils/baseMixins'
 
 export const usePayment = defineStore('payment', () => {
   // state & getters
   const priceList = ref<Price[]>([])
 
+  type Ids = {
+    project: number | null
+    order_group: number | null
+    unit_type: number | null
+  }
+
   // actions
-  const fetchPriceList = (payload: Price) => {
+  const fetchPriceList = (payload: Ids) => {
     const { project, order_group, unit_type } = payload
+    const url = `/price/?project=${project || ''}&order_group=${
+      order_group || ''
+    }&unit_type=${unit_type || ''}`
+
     return api
-      .get(
-        `/price/?project=${project}&order_group=${order_group}&unit_type=${unit_type}`,
-      )
+      .get(url)
       .then(res => (priceList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
   }
@@ -38,7 +47,7 @@ export const usePayment = defineStore('payment', () => {
       .then(() => fetchPriceList(payload).then(() => message()))
       .catch(err => errorHandle(err.response.data))
 
-  const deletePrice = (payload: Price) =>
+  const deletePrice = (payload: Ids & { pk: number }) =>
     api
       .delete(`/price/${payload.pk}/`)
       .then(() =>
