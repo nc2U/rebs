@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, ref, onBeforeMount } from 'vue'
-import { useStore } from 'vuex'
+import { useProCash } from '@/store/pinia/proCash'
 import { useProject } from '@/store/pinia/project'
 import { pageTitle, navMenu } from '@/views/proCash/_menu/headermixin'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
@@ -23,35 +23,31 @@ const dataFilter = ref({
   search: '',
 })
 
-const store = useStore()
 const projectStore = useProject()
-
 const project = computed(() => projectStore.project?.pk)
 const initProjId = computed(() => projectStore.initProjId)
 
-const fetchProAccSortList = () => store.dispatch('proCash/fetchProAccSortList')
-
-const fetchProAllAccD1List = () =>
-  store.dispatch('proCash/fetchProAllAccD1List')
-const fetchProAllAccD2List = () =>
-  store.dispatch('proCash/fetchProAllAccD2List')
+const proCashStore = useProCash()
+const fetchProAccSortList = () => proCashStore.fetchProAccSortList
+const fetchProAllAccD1List = () => proCashStore.fetchProAllAccD1List
+const fetchProAllAccD2List = () => proCashStore.fetchProAllAccD2List
 
 const fetchProFormAccD1List = (sort?: string) =>
-  store.dispatch('proCash/fetchProFormAccD1List', sort)
-const fetchProFormAccD2List = (payload?: { d1: string; sort: string }) =>
-  store.dispatch('proCash/fetchProFormAccD2List', payload)
+  proCashStore.fetchProFormAccD1List(sort)
+const fetchProFormAccD2List = (d1?: string, sort?: string) =>
+  proCashStore.fetchProFormAccD2List(d1, sort)
 
 const fetchProBankAccList = (projId: number) =>
-  store.dispatch('proCash/fetchProBankAccList', projId)
+  proCashStore.fetchProBankAccList(projId)
 const fetchProjectImprestList = (payload: { project: number } & any) =>
-  store.dispatch('proCash/fetchProjectImprestList', payload)
+  proCashStore.fetchProjectImprestList(payload)
 
 const createPrCashBook = (payload: any) =>
-  store.dispatch('proCash/createPrCashBook', payload)
+  proCashStore.createPrCashBook(payload)
 const updatePrCashBook = (payload: any) =>
-  store.dispatch('proCash/updatePrCashBook', payload)
+  proCashStore.updatePrCashBook(payload)
 const deletePrCashBook = (payload: any) =>
-  store.dispatch('proCash/deletePrCashBook', payload)
+  proCashStore.deletePrCashBook(payload)
 
 onBeforeMount(() => {
   fetchProAccSortList()
@@ -68,25 +64,25 @@ const onSelectAdd = (target: any) => {
     fetchProBankAccList(target)
     fetchProjectImprestList({ project: target })
   } else {
-    store.commit('proCash/updateState', {
-      balanceByAccList: [],
-      proImprestList: [],
-      proImprestCount: 0,
-    })
+    proCashStore.balanceByAccList = []
+    proCashStore.proImprestList = []
+    proCashStore.proImprestCount = 0
   }
 }
 const pageSelect = (page: number) => {
   dataFilter.value.page = page
   listControl.value.listFiltering(page)
 }
+
 const listFiltering = (payload: any) => {
   dataFilter.value = payload
   const sort = payload.sort ? payload.sort : ''
   const d1 = payload.pro_acc_d1 ? payload.pro_acc_d1 : ''
   fetchProFormAccD1List(sort)
-  fetchProFormAccD2List({ d1, sort })
+  fetchProFormAccD2List(sort, d1)
   fetchProjectImprestList({ ...{ project: project.value }, ...payload })
 }
+
 const onCreate = (payload: any) => {
   payload.project = project.value
   if (payload.sort === '3' && payload.bank_account_to) {
@@ -100,6 +96,7 @@ const onCreate = (payload: any) => {
     })
   } else createPrCashBook(payload)
 }
+
 const onUpdate = (payload: any) =>
   updatePrCashBook({ ...{ filters: dataFilter.value }, ...payload })
 

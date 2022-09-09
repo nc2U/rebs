@@ -4,6 +4,7 @@ import { useProCash } from '@/store/pinia/proCash'
 import { useAccount } from '@/store/pinia/account'
 import { diffDate, dateFormat } from '@/utils/baseMixins'
 import { write_project_cash } from '@/utils/pageAuth'
+import { ProjectCashBook } from '@/store/types/proCash'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
@@ -20,17 +21,17 @@ const emit = defineEmits(['multi-submit', 'on-delete', 'close'])
 const delModal = ref()
 const alertModal = ref()
 
-const sepPk = ref(null)
+const sepPk = ref<number | null>(null)
 const sepItem = reactive({
   project: '',
   sort: '',
-  project_account_d1: '',
-  project_account_d2: '',
+  project_account_d1: null as number | null,
+  project_account_d2: null as number | null,
   content: '',
   trader: '',
   bank_account: '',
-  income: null,
-  outlay: null,
+  income: null as number | null,
+  outlay: null as number | null,
   evidence: '',
   note: '',
   deal_date: '',
@@ -38,52 +39,23 @@ const sepItem = reactive({
   separated: null,
 })
 
-if (props.proCash) {
-  // eslint-disable-next-line vue/no-setup-props-destructure
-  sepItem.project = props.proCash.project
-  // eslint-disable-next-line vue/no-setup-props-destructure
-  sepItem.sort = props.proCash.sort
-  // eslint-disable-next-line vue/no-setup-props-destructure
-  sepItem.bank_account = props.proCash.bank_account
-  // eslint-disable-next-line vue/no-setup-props-destructure
-  sepItem.deal_date = props.proCash.deal_date
-  // eslint-disable-next-line vue/no-setup-props-destructure
-  sepItem.separated = props.proCash.pk
-}
-
 const validated = ref(false)
 
-const form = reactive<{
-  project: string
-  sort: string
-  project_account_d1: string
-  project_account_d2: string
-  content: string
-  trader: string
-  bank_account: string
-  income: null | string
-  outlay: null | string
-  evidence: string
-  note: string
-  deal_date: Date | string
-  is_separate: boolean
-  separated: null | string
-  is_imprest: boolean
-}>({
+const form = reactive({
   project: '',
   sort: '',
-  project_account_d1: '',
-  project_account_d2: '',
+  project_account_d1: null as number | null,
+  project_account_d2: null as number | null,
   content: '',
   trader: '',
   bank_account: '',
-  income: null,
-  outlay: null,
+  income: null as number | null,
+  outlay: null as number | null,
   evidence: '',
   note: '',
-  deal_date: new Date(),
+  deal_date: new Date() as Date | string,
   is_separate: false,
-  separated: null,
+  separated: null as null | number,
   is_imprest: false,
 })
 
@@ -119,11 +91,11 @@ const fetchProFormAccD2List = (d1: string, sort: string) =>
   proCashStore.fetchProFormAccD2List(d1, sort)
 
 const requireItem = computed(
-  () => form.project_account_d1 !== '' && form.project_account_d2 !== '',
+  () => form.project_account_d1 !== null && form.project_account_d2 !== null,
 )
 const sepDisabled = computed(() => {
   const disabled =
-    form.project_account_d1 !== '' || form.project_account_d2 !== ''
+    form.project_account_d1 !== null || form.project_account_d2 !== null
   return props.proCash
     ? disabled || props.proCash.sepItems.length > 0
     : disabled
@@ -133,14 +105,14 @@ const sepSummary = computed(() => {
   const inc =
     props.proCash.sepItems.length !== 0
       ? props.proCash.sepItems
-          .map((s: any) => s.income)
-          .reduce((res: any, el: any) => res + el)
+          .map((s: ProjectCashBook) => s.income)
+          .reduce((res: number, el: number) => res + el)
       : 0
   const out =
     props.proCash.sepItems.length !== 0
       ? props.proCash.sepItems
-          .map((s: any) => s.outlay)
-          .reduce((res: any, el: any) => res + el)
+          .map((s: ProjectCashBook) => s.outlay)
+          .reduce((res: number, el: number) => res + el)
       : 0
   return [inc, out]
 })
@@ -153,7 +125,7 @@ const allowedPeriod = computed(
 )
 
 watch(form, val => {
-  if (val.project_account_d2 === '63') form.is_imprest = true
+  if (val.project_account_d2 === 63) form.is_imprest = true
   else form.is_imprest = false
 })
 
@@ -161,25 +133,25 @@ const sort_change = (event: any) => {
   if (event.target.value === '1') form.outlay = null
   if (event.target.value === '2') form.income = null
   if (event.target.value === '3') {
-    form.project_account_d1 = '17'
-    form.project_account_d2 = '62'
+    form.project_account_d1 = 17
+    form.project_account_d2 = 62
   } else {
-    form.project_account_d1 = ''
-    form.project_account_d2 = ''
+    form.project_account_d1 = null
+    form.project_account_d2 = null
   }
   callAccount()
 }
 
 const d1_change = () => {
-  form.project_account_d2 = ''
+  form.project_account_d2 = null
   callAccount()
 }
 
 const sepD1_change = () => {
-  sepItem.project_account_d2 = ''
+  sepItem.project_account_d2 = null
   nextTick(() => {
-    const d1 = sepItem.project_account_d1
     const sort = form.sort
+    const d1 = String(sepItem.project_account_d1 || '')
     fetchProFormAccD1List(sort)
     fetchProFormAccD2List(d1, sort)
   })
@@ -188,13 +160,13 @@ const sepD1_change = () => {
 const callAccount = () => {
   nextTick(() => {
     const sort = form.sort
-    const d1 = form.project_account_d1
+    const d1 = String(sepItem.project_account_d1 || '')
     fetchProFormAccD1List(sort)
     fetchProFormAccD2List(d1, sort)
   })
 }
 
-const sepUpdate = (sep: any) => {
+const sepUpdate = (sep: ProjectCashBook) => {
   sepPk.value = sep.pk
   sepItem.project_account_d1 = sep.project_account_d1
   sepItem.project_account_d2 = sep.project_account_d2
@@ -254,7 +226,7 @@ const onSubmit = (event: any) => {
   }
 }
 
-const multiSubmit = (multiPayload: any) => {
+const multiSubmit = (multiPayload: ProjectCashBook) => {
   emit('multi-submit', multiPayload)
   emit('close')
 }
@@ -269,6 +241,12 @@ const deleteObject = () => {
 
 onBeforeMount(() => {
   if (props.proCash) {
+    sepItem.project = props.proCash.project
+    sepItem.sort = props.proCash.sort
+    sepItem.bank_account = props.proCash.bank_account
+    sepItem.deal_date = props.proCash.deal_date
+    sepItem.separated = props.proCash.pk
+
     form.project = props.proCash.project
     form.sort = props.proCash.sort
     form.project_account_d1 = props.proCash.project_account_d1

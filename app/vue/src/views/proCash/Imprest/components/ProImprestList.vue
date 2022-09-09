@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { useStore } from 'vuex'
+import { useProCash } from '@/store/pinia/proCash'
+import { ProjectCashBook } from '@/store/types/proCash'
 import ProImprest from '@/views/proCash/Imprest/components/ProImprest.vue'
 import Pagination from '@/components/Pagination'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 import { headerSecondary } from '@/utils/cssMixins'
 
-// defineProps({ project: { type: Object, default: null } })
 const emit = defineEmits([
   'page-select',
   'multi-submit',
@@ -15,20 +15,17 @@ const emit = defineEmits([
   'on-delete',
 ])
 
-const store = useStore()
+const proCashStore = useProCash()
+const allAccD1List = computed(() => proCashStore.allAccD1List)
+const allAccD2List = computed(() => proCashStore.allAccD2List)
 
-const allAccD1List = computed(() => store.state.proCash.allAccD1List)
-const allAccD2List = computed(() => store.state.proCash.allAccD2List)
-
-const proImprestPages = computed(() => store.getters['proCash/proImprestPages'])
-const getProImprestLogs = computed(
-  () => store.getters['proCash/getProImprestLogs'],
-)
+const proImprestPages = computed(() => proCashStore.proImprestPages)
+const getProImprestLogs = computed(() => proCashStore.getProImprestLogs)
 
 const pageSelect = (page: number) => emit('page-select', page)
-const onCreate = (payload: any) => emit('on-create', payload)
-const onUpdate = (payload: any) => emit('on-update', payload)
-const multiSubmit = (payload: any) => emit('multi-submit', payload)
+// const onCreate = (payload: ProjectCashBook) => emit('on-create', payload)
+// const onUpdate = (payload: ProjectCashBook) => emit('on-update', payload)
+const multiSubmit = (payload: ProjectCashBook) => emit('multi-submit', payload)
 const onDelete = (pk: number) => emit('on-delete', pk)
 </script>
 

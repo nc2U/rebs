@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
 import { numFormat, cutString } from '@/utils/baseMixins'
+import { ProjectCashBook } from '@/store/types/proCash'
 import FormModal from '@/components/Modals/FormModal.vue'
 import ProImprestForm from '@/views/proCash/Imprest/components/ProImprestForm.vue'
 
@@ -10,6 +11,7 @@ const props = defineProps({
     required: true,
   },
 })
+
 const emit = defineEmits(['multi-submit', 'on-delete'])
 
 const updateFormModal = ref()
@@ -30,13 +32,7 @@ const rowColor = computed(() => {
 })
 
 const showDetail = () => updateFormModal.value.callModal()
-//     // onCreate(payload: any) {
-//     //   this.$emit('on-create', payload)
-//     // },
-//     // onUpdate(payload: any) {
-//     //   this.$emit('on-update', payload)
-//     // },
-const multiSubmit = (payload: any) => emit('multi-submit', payload)
+const multiSubmit = (payload: ProjectCashBook) => emit('multi-submit', payload)
 const onDelete = (payload: any) => emit('on-delete', payload)
 </script>
 

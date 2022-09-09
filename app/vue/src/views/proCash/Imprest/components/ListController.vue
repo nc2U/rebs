@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, reactive, ref, watch, nextTick } from 'vue'
-import { useStore } from 'vuex'
+import { useProCash } from '@/store/pinia/proCash'
 import { numFormat, dateFormat } from '@/utils/baseMixins'
 import { maska as vMaska } from 'maska'
 import DatePicker from '@/components/DatePicker/index.vue'
@@ -17,13 +17,12 @@ const form = reactive({
   search: '',
 })
 
-const store = useStore()
-
-const sortList = computed(() => store.state.proCash.sortList)
-const formAccD1List = computed(() => store.state.proCash.formAccD1List)
-const formAccD2List = computed(() => store.state.proCash.formAccD2List)
-const proImprestCount = computed(() => store.state.proCash.proImprestCount)
-const imprestBAccount = computed(() => store.getters['proCash/imprestBAccount'])
+const proCashStore = useProCash()
+const sortList = computed(() => proCashStore.sortList)
+const formAccD1List = computed(() => proCashStore.formAccD1List)
+const formAccD2List = computed(() => proCashStore.formAccD2List)
+const proImprestCount = computed(() => proCashStore.proImprestCount)
+const imprestBAccount = computed(() => proCashStore.imprestBAccount)
 
 const formsCheck = computed(() => {
   const a = from_date.value === ''
@@ -60,6 +59,7 @@ const listFiltering = (page = 1) => {
     })
   })
 }
+
 defineExpose({ listFiltering })
 
 const resetForm = () => {

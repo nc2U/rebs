@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, nextTick, watch, onBeforeMount } from 'vue'
-import { useStore } from 'vuex'
 import { useAccount } from '@/store/pinia/account'
+import { useProCash } from '@/store/pinia/proCash'
 import { dateFormat, diffDate } from '@/utils/baseMixins'
 import { write_project_cash } from '@/utils/pageAuth'
+import { ProjectCashBook } from '@/store/types/proCash'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
@@ -15,22 +16,23 @@ const props = defineProps({
     required: true,
   },
 })
+
 const emit = defineEmits(['multi-submit', 'on-delete', 'close'])
 
 const delModal = ref()
 const alertModal = ref()
 
-const sepPk = ref(null)
+const sepPk = ref<number | null>(null)
 let sepItem = reactive({
   project: '',
   sort: '',
-  project_account_d1: '',
-  project_account_d2: '',
+  project_account_d1: null as number | null,
+  project_account_d2: null as number | null,
   content: '',
   trader: '',
   bank_account: '',
-  income: null,
-  outlay: null,
+  income: null as number | null,
+  outlay: null as number | null,
   evidence: '',
   note: '',
   deal_date: '',
@@ -39,52 +41,23 @@ let sepItem = reactive({
   is_imprest: true,
 })
 
-if (props.imprest) {
-  // eslint-disable-next-line vue/no-setup-props-destructure
-  sepItem.project = props.imprest.project
-  // eslint-disable-next-line vue/no-setup-props-destructure
-  sepItem.sort = props.imprest.sort
-  // eslint-disable-next-line vue/no-setup-props-destructure
-  sepItem.bank_account = props.imprest.bank_account
-  // eslint-disable-next-line vue/no-setup-props-destructure
-  sepItem.deal_date = props.imprest.deal_date
-  // eslint-disable-next-line vue/no-setup-props-destructure
-  sepItem.separated = props.imprest.pk
-}
-
 const validated = ref(false)
 
-const form = reactive<{
-  project: string
-  sort: string
-  project_account_d1: string
-  project_account_d2: string
-  content: string
-  trader: string
-  bank_account: string
-  income: null | string
-  outlay: null | string
-  evidence: string
-  note: string
-  deal_date: Date | string
-  is_separate: boolean
-  separated: null | string
-  is_imprest: boolean
-}>({
+const form = reactive({
   project: '',
   sort: '',
-  project_account_d1: '',
-  project_account_d2: '',
+  project_account_d1: null as number | null,
+  project_account_d2: null as number | null,
   content: '',
   trader: '',
   bank_account: '',
-  income: null,
-  outlay: null,
+  income: null as null | string,
+  outlay: null as null | string,
   evidence: '',
   note: '',
-  deal_date: new Date(),
+  deal_date: new Date() as Date | string,
   is_separate: false,
-  separated: null,
+  separated: null as null | number,
   is_imprest: true,
 })
 
@@ -109,25 +82,23 @@ const formsCheck = computed(() => {
   } else return false
 })
 
-const store = useStore()
-const accountStore = useAccount()
-
-const formAccD1List = computed(() => store.state.proCash.formAccD1List)
-const formAccD2List = computed(() => store.state.proCash.formAccD2List)
-const imprestBAccount = computed(() => store.getters['proCash/imprestBAccount'])
+const proCashStore = useProCash()
+const formAccD1List = computed(() => proCashStore.formAccD1List)
+const formAccD2List = computed(() => proCashStore.formAccD2List)
+const imprestBAccount = computed(() => proCashStore.imprestBAccount)
 
 const fetchProFormAccD1List = (sort: string) =>
-  store.dispatch('proCash/fetchProFormAccD1List', sort)
-const fetchProFormAccD2List = (payload: { sort: string; d1: string }) =>
-  store.dispatch('proCash/fetchProFormAccD2List', payload)
+  proCashStore.fetchProFormAccD1List(sort)
+const fetchProFormAccD2List = (d1?: string, sort?: string) =>
+  proCashStore.fetchProFormAccD2List(d1, sort)
 
-const requireItem = computed(() => {
-  return form.project_account_d1 !== '' && form.project_account_d2 !== ''
-})
+const requireItem = computed(
+  () => form.project_account_d1 !== null && form.project_account_d2 !== null,
+)
 
 const sepDisabled = computed(() => {
   const disabled =
-    form.project_account_d1 !== '' || form.project_account_d2 !== ''
+    form.project_account_d1 !== null || form.project_account_d2 !== null
   return props.imprest
     ? disabled || props.imprest.sepItems.length > 0
     : disabled
@@ -137,59 +108,62 @@ const sepSummary = computed(() => {
   const inc =
     props.imprest.sepItems.length !== 0
       ? props.imprest.sepItems
-          .map((s: any) => s.income)
-          .reduce((res: any, el: any) => res + el)
+          .map((s: ProjectCashBook) => s.income || 0)
+          .reduce((res: number, el: number) => res + el, 0)
       : 0
   const out =
     props.imprest.sepItems.length !== 0
       ? props.imprest.sepItems
-          .map((s: any) => s.outlay)
-          .reduce((res: any, el: any) => res + el)
+          .map((s: ProjectCashBook) => s.outlay || 0)
+          .reduce((res: number, el: number) => res + el, 0)
       : 0
   return [inc, out]
 })
 
-const allowedPeriod = computed(() => {
-  // 일반 사용자 편집 허용 기간(거래일 deal_date 로부터)
-  return accountStore.superAuth || diffDate(props.imprest.deal_date) <= 30
-})
+const accountStore = useAccount()
+const allowedPeriod = computed(
+  () =>
+    // 일반 사용자 편집 허용 기간(거래일 deal_date 로부터)
+    accountStore.superAuth || diffDate(props.imprest.deal_date) <= 30,
+)
 
 const sort_change = (event: any) => {
   if (event.target.value === '1') form.outlay = null
   if (event.target.value === '2') form.income = null
   if (event.target.value === '3') {
-    form.project_account_d1 = '17'
-    form.project_account_d2 = '62'
+    form.project_account_d1 = 17
+    form.project_account_d2 = 62
   } else {
-    form.project_account_d1 = ''
-    form.project_account_d2 = ''
+    form.project_account_d1 = null
+    form.project_account_d2 = null
   }
   callAccount()
 }
 const d1_change = () => {
-  form.project_account_d2 = ''
+  form.project_account_d2 = null
   callAccount()
 }
 
 const sepD1_change = () => {
-  sepItem.project_account_d2 = ''
+  sepItem.project_account_d2 = null
   nextTick(() => {
     const sort = form.sort
-    const d1 = sepItem.project_account_d1
+    const d1 = String(sepItem.project_account_d1 || '')
     fetchProFormAccD1List(sort)
-    fetchProFormAccD2List({ sort, d1 })
+    fetchProFormAccD2List(d1, sort)
   })
 }
 
 const callAccount = () => {
   nextTick(() => {
     const sort = form.sort
-    const d1 = form.project_account_d1
+    const d1 = String(sepItem.project_account_d1 || '')
     fetchProFormAccD1List(sort)
-    fetchProFormAccD2List({ sort, d1 })
+    fetchProFormAccD2List(d1, sort)
   })
 }
-const sepUpdate = (sep: any) => {
+
+const sepUpdate = (sep: ProjectCashBook) => {
   sepPk.value = sep.pk
   sepItem.project_account_d1 = sep.project_account_d1
   sepItem.project_account_d2 = sep.project_account_d2
@@ -252,7 +226,7 @@ const onSubmit = (event: any) => {
   }
 }
 
-const multiSubmit = (multiPayload: any) => {
+const multiSubmit = (multiPayload: ProjectCashBook) => {
   emit('multi-submit', multiPayload)
   emit('close')
 }
@@ -267,6 +241,12 @@ const deleteObject = () => {
 
 onBeforeMount(() => {
   if (props.imprest) {
+    sepItem.project = props.imprest.project
+    sepItem.sort = props.imprest.sort
+    sepItem.bank_account = props.imprest.bank_account
+    sepItem.deal_date = props.imprest.deal_date
+    sepItem.separated = props.imprest.pk
+
     form.project = props.imprest.project
     form.sort = props.imprest.sort
     form.project_account_d1 = props.imprest.project_account_d1
@@ -314,7 +294,6 @@ onBeforeMount(() => {
               <CFormLabel class="col-sm-4 col-form-label">구분</CFormLabel>
               <CCol sm="8">
                 <CFormSelect v-model="form.sort" required @change="sort_change">
-                  <!--                  :disabled="imprest && imprest.sort !== ''"-->
                   <option value="">---------</option>
                   <option value="1">입금</option>
                   <option value="2">출금</option>
