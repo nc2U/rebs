@@ -2,7 +2,8 @@
 import { computed } from 'vue'
 import { useSite } from '@/store/pinia/project_site'
 import { headerSecondary } from '@/utils/cssMixins'
-import Site from './Site.vue'
+import { Site as S } from '@/store/types/project'
+import Site from '@/views/projects/SiteList/components/Site.vue'
 import Pagination from '@/components/Pagination'
 
 defineProps({ isReturned: { type: Boolean } })
@@ -14,7 +15,7 @@ const siteCount = computed(() => siteStore.siteCount)
 
 const sitePages = (num: number) => Math.ceil(siteCount.value / num)
 const pageSelect = (page: number) => emit('page-select', page)
-const multiSubmit = (payload: any) => emit('multi-submit', payload)
+const multiSubmit = (payload: S) => emit('multi-submit', payload)
 const onDelete = (pk: number) => emit('on-delete', pk)
 </script>
 

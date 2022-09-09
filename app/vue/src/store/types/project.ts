@@ -103,17 +103,17 @@ export interface AllOwner {
 }
 
 export interface Site {
-  pk: number
-  project: number
-  order: number
+  pk: number | null
+  project: number | null
+  order: number | null
   district: string
   lot_number: string
   site_purpose: string
   official_area: string
-  returned_area: string | null
+  returned_area: number | null
   rights_restrictions: string
-  dup_issue_date: string
-  owners: SimpleOwner[]
+  dup_issue_date: string | null
+  owners?: SimpleOwner[]
 }
 
 type OwnSort = '개인' | '법인' | '국공유지'

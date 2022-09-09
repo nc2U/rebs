@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
+import { Site } from '@/store/types/project'
 import { numFormat } from '@/utils/baseMixins'
 import FormModal from '@/components/Modals/FormModal.vue'
 import SiteForm from './SiteForm.vue'
 
-const props = defineProps({
+defineProps({
   site: {
     type: Object,
     required: true,
@@ -17,8 +18,9 @@ const emit = defineEmits(['multi-submit', 'on-delete'])
 const updateFormModal = ref()
 
 const showDetail = () => updateFormModal.value.callModal()
-const multiSubmit = (payload: any) => emit('multi-submit', payload)
-const onDelete = (payload: any) => emit('on-delete', payload)
+const multiSubmit = (payload: Site) => emit('multi-submit', payload)
+const onDelete = (payload: { pk: number; project: number }) =>
+  emit('on-delete', payload)
 </script>
 
 <template>

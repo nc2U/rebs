@@ -3,8 +3,9 @@ import { ref, reactive, computed, watch, onBeforeMount } from 'vue'
 import { useProject } from '@/store/pinia/project'
 import { useSite } from '@/store/pinia/project_site'
 import { dateFormat } from '@/utils/baseMixins'
-import { write_project } from '@/utils/pageAuth'
 import { isValidate } from '@/utils/helper'
+import { Site } from '@/store/types/project'
+import { write_project } from '@/utils/pageAuth'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
@@ -23,15 +24,15 @@ const alertModal = ref()
 
 const validated = ref(false)
 
-const pk = ref<number | null>(null)
 const form = reactive({
+  pk: null as number | null,
   project: null as number | null,
   order: null as number | null,
   district: '',
   lot_number: '',
   site_purpose: '',
   official_area: '',
-  returned_area: null,
+  returned_area: null as number | null,
   rights_restrictions: '',
   dup_issue_date: null as null | string,
 })
@@ -62,24 +63,23 @@ watch(form, val => {
   if (val.dup_issue_date) form.dup_issue_date = dateFormat(val.dup_issue_date)
 })
 
-const onSubmit = (event: any) => {
+const onSubmit = (event: Event) => {
   if (isValidate(event)) {
     validated.value = true
   } else {
-    const payload = props.site ? { pk: pk.value, ...form } : { ...form }
-    if (write_project) multiSubmit(payload)
+    if (write_project) multiSubmit({ ...form })
     else alertModal.value.callModal()
   }
 }
 
-const multiSubmit = (multiPayload: any) => {
-  emit('multi-submit', multiPayload)
+const multiSubmit = (payload: Site) => {
+  emit('multi-submit', payload)
   emit('close')
 }
 
 const deleteObject = () => {
   emit('on-delete', { pk: props.site.pk, project: props.site.project })
-  delModal.value.visible = false
+  delModal.value.close()
   emit('close')
 }
 
@@ -90,7 +90,7 @@ const deleteConfirm = () => {
 
 onBeforeMount(() => {
   if (props.site) {
-    pk.value = props.site.pk
+    form.pk = props.site.pk
     form.project = props.site.project
     form.order = props.site.order
     form.district = props.site.district
