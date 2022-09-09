@@ -34,52 +34,40 @@ export const useProject = defineStore('project', () => {
   const projectBudgetList = ref<ProjectBudget[]>([])
 
   // actions
-  const fetchProjectList = () => {
+  const fetchProjectList = () =>
     api
       .get('/project/')
       .then(res => (projectList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
-  }
 
-  const fetchProject = (pk: string) => {
+  const fetchProject = (pk: string) =>
     api
       .get(`/project/${pk}/`)
       .then(res => (project.value = res.data))
       .catch(err => errorHandle(err.response.data))
-  }
 
   const createProject = (payload: Project) => {
     api
       .post('/project/', payload)
-      .then(res => {
-        fetchProject(res.data.pk)
-        fetchProjectList()
-        message()
-      })
+      .then(res => fetchProject(res.data.pk).then(() => message()))
       .catch(err => errorHandle(err.response.data))
   }
 
-  const updateProject = (payload: { pk: string } & Project) => {
-    const { pk, ...projectData } = payload
+  const updateProject = (payload: Project) =>
     api
-      .put(`/project/${pk}/`, projectData)
-      .then(res => {
-        fetchProject(res.data.pk)
-        fetchProjectList()
-        message()
-      })
+      .put(`/project/${payload.pk}/`, payload)
+      .then(res => fetchProject(res.data.pk).then(() => message()))
       .catch(err => errorHandle(err.response.data))
-  }
 
-  const deleteProject = (pk: string) => {
+  const deleteProject = (pk: string) =>
     api
       .delete(`/project/${pk}/`)
-      .then(() => {
-        fetchProjectList()
-        message('warning', '', '삭제되었습니다.')
-      })
+      .then(() =>
+        fetchProjectList().then(() =>
+          message('warning', '', '해당 오브젝트가 삭제되었습니다.'),
+        ),
+      )
       .catch(err => errorHandle(err.response.data))
-  }
 
   return {
     projectList,
