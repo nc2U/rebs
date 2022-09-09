@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { onBeforeMount, reactive, ref } from 'vue'
+import { SiteOwner, Relation } from '@/store/types/project'
 import Site from '@/views/projects/SiteOwner/components/Site.vue'
 import FormModal from '@/components/Modals/FormModal.vue'
 import SiteOwnerForm from '@/views/projects/SiteOwner/components/SiteOwnerForm.vue'
@@ -32,9 +33,10 @@ const form = reactive({
 
 const updateFormModal = ref()
 const showDetail = () => updateFormModal.value.callModal()
-const relationPatch = (payload: any) => emit('relation-patch', payload)
-const multiSubmit = (payload: any) => emit('multi-submit', payload)
-const onDelete = (payload: any) => emit('on-delete', payload)
+const relationPatch = (payload: Relation) => emit('relation-patch', payload)
+const multiSubmit = (payload: SiteOwner) => emit('multi-submit', payload)
+const onDelete = (payload: { pk: number; project: number }) =>
+  emit('on-delete', payload)
 
 onBeforeMount(() => {
   if (props.owner) {

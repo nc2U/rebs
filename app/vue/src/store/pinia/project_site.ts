@@ -50,7 +50,7 @@ export const useSite = defineStore('site', () => {
       returned_area: s.returned_area,
       rights_restrictions: s.rights_restrictions,
       dup_issue_date: s.dup_issue_date,
-      owners: s.owners.map(o => o.owner),
+      owners: s.owners?.map(o => o.owner),
     })),
   )
   const siteCount = ref(0)

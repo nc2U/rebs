@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { useSite } from '@/store/pinia/project_site'
+import { Relation, SiteOwner as owner } from '@/store/types/project'
 import { headerInfo, headerSuccess, headerSecondary } from '@/utils/cssMixins'
 import SiteOwner from '@/views/projects/SiteOwner/components/SiteOwner.vue'
 import Pagination from '@/components/Pagination'
@@ -19,8 +20,8 @@ const siteOwnerCount = computed(() => siteStore.siteOwnerCount)
 
 const ownerPages = (num: number) => Math.ceil(siteOwnerCount.value / num)
 const pageSelect = (page: number) => emit('page-select', page)
-const relationPatch = (payload: any) => emit('relation-patch', payload)
-const multiSubmit = (payload: any) => emit('multi-submit', payload)
+const relationPatch = (payload: Relation) => emit('relation-patch', payload)
+const multiSubmit = (payload: owner) => emit('multi-submit', payload)
 const onDelete = (pk: number) => emit('on-delete', pk)
 </script>
 

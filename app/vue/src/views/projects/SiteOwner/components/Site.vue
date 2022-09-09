@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onBeforeMount, reactive, ref, watch } from 'vue'
 import { numFormat, dateFormat } from '@/utils/baseMixins'
+import { Relation } from '@/store/types/project'
 import DatePicker from '@/components/DatePicker/index.vue'
 
 const props = defineProps({
@@ -11,12 +12,20 @@ const props = defineProps({
 
 const emit = defineEmits(['show-detail', 'relation-patch'])
 
-const form = reactive({
+type semiRel = {
+  pk: number | null
+  site: number | null
+  ownership_ratio: string
+  owned_area: string
+  acquisition_date: null | string
+}
+
+const form = reactive<semiRel>({
   pk: null,
   site: null,
   ownership_ratio: '',
   owned_area: '',
-  acquisition_date: null as null | string,
+  acquisition_date: null,
 })
 
 const calcArea = ref(0)
@@ -42,7 +51,7 @@ const formsCheck = computed(() => {
 const sitesNum = computed(() => props.owner.sites.length)
 
 const showDetail = () => emit('show-detail')
-const relationPatch = (payload: any) => emit('relation-patch', payload)
+const relationPatch = (payload: semiRel) => emit('relation-patch', payload)
 const relPatch = () => relationPatch(form)
 
 onBeforeMount(() => {
@@ -52,7 +61,6 @@ onBeforeMount(() => {
     form.ownership_ratio = props.site.ownership_ratio
     form.owned_area = props.site.owned_area
     form.acquisition_date = props.site.acquisition_date
-
     calcArea.value = props.site.owned_area * 0.3025
   }
 })

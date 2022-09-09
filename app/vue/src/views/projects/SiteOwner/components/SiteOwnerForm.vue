@@ -1,16 +1,17 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, watch, onBeforeMount } from 'vue'
 import { useProject } from '@/store/pinia/project'
-import { SiteOwner, useSite } from '@/store/pinia/project_site'
+import { useSite } from '@/store/pinia/project_site'
+import { SimpleSite, SiteOwner } from '@/store/types/project'
 import { dateFormat } from '@/utils/baseMixins'
 import { write_project } from '@/utils/pageAuth'
 import { isValidate } from '@/utils/helper'
 import { maska as vMaska } from 'maska'
+import { AddressData, callAddress } from '@/components/DaumPostcode/address'
+import DaumPostcode from '@/components/DaumPostcode/index.vue'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
-import DaumPostcode from '@/components/DaumPostcode/index.vue'
-import { AddressData, callAddress } from '@/components/DaumPostcode/address'
 import Multiselect from '@/components/MultiSelect/index.vue'
 
 const props = defineProps({
@@ -65,7 +66,7 @@ const formsCheck = computed(() => {
     const a = form.own_sort === props.owner.own_sort
     const b = form.owner === props.owner.owner
     const c = form.date_of_birth === props.owner.date_of_birth
-    const d = form.sites == props.owner.sites.map((s: any) => s.site)
+    const d = form.sites == props.owner.sites.map((s: SimpleSite) => s.site)
     const e = form.phone1 === props.owner.phone1
     const f = form.phone2 === props.owner.phone2
     const g = form.zipcode === props.owner.zipcode
@@ -94,17 +95,16 @@ const addressCallback = (data: AddressData) => {
   }
 }
 
-const onSubmit = (event: any) => {
+const onSubmit = (event: Event) => {
   if (isValidate(event)) {
     validated.value = true
   } else {
-    // const payload = props.owner ? { pk: pk.value, ...form } : { ...form }
     if (write_project) multiSubmit(form)
     else alertModal.value.callModal()
   }
 }
 
-const multiSubmit = (multiPayload: any) => {
+const multiSubmit = (multiPayload: SiteOwner) => {
   emit('multi-submit', multiPayload)
   emit('close')
 }
@@ -127,7 +127,7 @@ onBeforeMount(() => {
     form.own_sort = props.owner.own_sort
     form.owner = props.owner.owner
     form.date_of_birth = props.owner.date_of_birth
-    form.sites = props.owner.sites.map((s: any) => s.site)
+    form.sites = props.owner.sites.map((s: SimpleSite) => s.site)
     form.phone1 = props.owner.phone1
     form.phone2 = props.owner.phone2
     form.zipcode = props.owner.zipcode
@@ -136,9 +136,7 @@ onBeforeMount(() => {
     form.address3 = props.owner.address3
     form.own_sort_desc = props.owner.own_sort_desc
     form.counsel_record = props.owner.counsel_record
-  } else {
-    form.project = project.value
-  }
+  } else form.project = project.value
 })
 </script>
 

@@ -3,6 +3,7 @@ import { computed, onBeforeMount, ref } from 'vue'
 import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin3'
 import { useProject } from '@/store/pinia/project'
 import { useSite } from '@/store/pinia/project_site'
+import { Relation, SiteOwner } from '@/store/types/project'
 import { numFormat } from '@/utils/baseMixins'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
@@ -13,21 +14,27 @@ import SiteOwnerList from '@/views/projects/SiteOwner/components/SiteOwnerList.v
 
 const listControl = ref()
 
-const dataFilter = ref({
+type filter = {
+  page: number
+  own_sort: string
+  search: string
+}
+
+const dataFilter = ref<filter>({
   page: 1,
   own_sort: '',
   search: '',
 })
 
 const projectStore = useProject()
-const project = computed(() => projectStore.project?.pk)
 const initProjId = computed(() => projectStore.initProjId)
+const project = computed(() => projectStore.project?.pk || initProjId.value)
 const isReturned = computed(() => projectStore.project?.is_returned_area)
 
 const siteStore = useSite()
 const getOwnersTotal = computed(() => siteStore.getOwnersTotal?.owned_area)
 
-const onSelectAdd = (target: any) => {
+const onSelectAdd = (target: number) => {
   if (!!target) {
     siteStore.fetchAllSites(target)
     siteStore.fetchSiteOwnerList(target)
@@ -37,7 +44,7 @@ const onSelectAdd = (target: any) => {
   }
 }
 
-const listFiltering = (payload: any) => {
+const listFiltering = (payload: filter) => {
   dataFilter.value = payload
   siteStore.fetchSiteOwnerList(
     project.value || initProjId.value,
@@ -53,17 +60,19 @@ const pageSelect = (page: number) => {
   listControl.value.listFiltering(page)
 }
 
-const onCreate = (payload: any) => siteStore.createSiteOwner(payload)
+const onCreate = (payload: SiteOwner & filter) =>
+  siteStore.createSiteOwner(payload)
 
-const onUpdate = (payload: any) => siteStore.updateSiteOwner(payload)
+const onUpdate = (payload: SiteOwner & filter) =>
+  siteStore.updateSiteOwner(payload)
 
-const relationPatch = (payload: any) => {
+const relationPatch = (payload: Relation) => {
   const { page, own_sort, search } = dataFilter.value
   const data = { project: project.value, page, own_sort, search, ...payload }
   siteStore.patchRelation(data)
 }
 
-const multiSubmit = (payload: any) => {
+const multiSubmit = (payload: SiteOwner) => {
   const { page, own_sort, search } = dataFilter.value
   const submitData = { ...payload, page, own_sort, search }
   if (payload.pk) onUpdate(submitData)
