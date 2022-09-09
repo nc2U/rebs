@@ -192,7 +192,10 @@ export const useProCash = defineStore('proCash', () => {
     if (payload.page) url += `&page=${page}`
     return api
       .get(url)
-      .then(res => (proCashBookList.value = res.data.results))
+      .then(res => {
+        proCashBookList.value = res.data.results
+        proCashesCount.value = res.data.count
+      })
       .catch(err => errorHandle(err.response.data))
   }
 
@@ -377,7 +380,10 @@ export const useProCash = defineStore('proCash', () => {
     if (payload.page) url += `&page=${page}`
     return api
       .get(url)
-      .then(res => (proImprestList.value = res.data.results))
+      .then(res => {
+        proImprestList.value = res.data.results
+        proImprestCount.value = res.data.count
+      })
       .catch(err => errorHandle(err.response.data))
   }
 

@@ -196,7 +196,10 @@ export const useComCash = defineStore('comCash', () => {
 
     return api
       .get(url)
-      .then(res => (cashBookList.value = res.data.results))
+      .then(res => {
+        cashBookList.value = res.data.results
+        cashBookCount.value = res.data.count
+      })
       .catch(err => errorHandle(err.response.data))
   }
 

@@ -1,47 +1,45 @@
 <script lang="ts" setup>
 import { ref, computed, onMounted, watch } from 'vue'
-import { useStore } from 'vuex'
+import { useComCash } from '@/store/pinia/comCash'
 import { numFormat, dateFormat } from '@/utils/baseMixins'
 import { headerSecondary } from '@/utils/cssMixins'
 
-const store = useStore()
-const props = defineProps({ date: String })
+defineProps({ date: { type: String, default: '' } })
 
 const preBalance = ref(0)
 const dateIncSum = ref(0)
 const dateOutSum = ref(0)
 const dateBalance = ref(0)
 
-const comBalanceByAccList = computed(
-  () => store.state.comCash.comBalanceByAccList,
-)
+const comCashStore = useComCash()
+const comBalanceByAccList = computed(() => comCashStore.comBalanceByAccList)
 
 const getSumTotal = () => {
   const _dateIncSum =
     comBalanceByAccList.value.length !== 0
       ? comBalanceByAccList.value
-          .map((i: any) => i.date_inc)
+          .map((i: { date_inc: number }) => i.date_inc)
           .reduce((x: number, y: number) => x + y)
       : 0
   const _dateOutSum =
     comBalanceByAccList.value.length !== 0
       ? comBalanceByAccList.value
-          .map((o: any) => o.date_out)
+          .map((o: { date_out: number }) => o.date_out)
           .reduce((x: number, y: number) => x + y)
       : 0
   const _dateIncTotal =
     comBalanceByAccList.value.length !== 0
       ? comBalanceByAccList.value
-          .filter((i: any) => i.inc_sum !== null)
-          .map((i: any) => i.inc_sum)
-          .reduce((x: number, y: number) => x + y)
+          .filter((i: { inc_sum: number | null }) => i.inc_sum !== null)
+          .map(i => i.inc_sum || 0)
+          .reduce((x: number, y: number) => x + y, 0)
       : 0
   const _dateOutTotal =
     comBalanceByAccList.value.length !== 0
       ? comBalanceByAccList.value
-          .filter((o: any) => o.out_sum !== null)
-          .map((o: any) => o.out_sum)
-          .reduce((x: number, y: number) => x + y)
+          .filter((o: { out_sum: number | null }) => o.out_sum !== null)
+          .map(o => o.out_sum || 0)
+          .reduce((x: number, y: number) => x + y, 0)
       : 0
   dateIncSum.value = _dateIncSum
   dateOutSum.value = _dateOutSum

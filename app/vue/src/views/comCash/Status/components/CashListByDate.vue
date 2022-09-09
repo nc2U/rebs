@@ -1,50 +1,46 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount, ref, watch, Ref } from 'vue'
-import { useStore } from 'vuex'
+import { computed, onBeforeMount, ref, watch } from 'vue'
+import { useComCash } from '@/store/pinia/comCash'
+import { AccountD1, AccountD2, AccountD3, CashBook } from '@/store/types/comCash'
 import { numFormat, dateFormat } from '@/utils/baseMixins'
 import { headerSecondary } from '@/utils/cssMixins'
 
-defineProps({ date: { type: String, default: '' } })
+defineProps({date: {type: String, default: ''}})
 
-const dateIncSet: Ref<Array<number> | null> = ref(null)
-const dateOutSet: Ref<Array<number> | null> = ref(null)
+const dateIncSet = ref<Array<CashBook> | null>(null)
+const dateOutSet = ref<Array<CashBook> | null>(null)
 const dateIncTotal = ref(0)
 const dateOutTotal = ref(0)
 
-const store = useStore()
+const comCashStore = useComCash()
+const listAccD1List = computed(() => comCashStore.listAccD1List)
+const listAccD2List = computed(() => comCashStore.listAccD2List)
+const listAccD3List = computed(() => comCashStore.listAccD3List)
 
-const listAccD1List = computed(() => store.state.comCash.listAccD1List)
-const listAccD2List = computed(() => store.state.comCash.listAccD2List)
-const listAccD3List = computed(() => store.state.comCash.listAccD3List)
-const comBankList = computed(() => store.state.comCash.comBankList)
-const dateCashBook = computed(() => store.state.comCash.dateCashBook)
+const comBankList = computed(() => comCashStore.comBankList)
+const dateCashBook = computed(() => comCashStore.dateCashBook)
 
-const getDAccText = (num: number, acc: any) => {
-  return acc.filter((d: any) => d.pk === num).map((d: any) => d.name)[0]
-}
+const getDAccText = (num: number, acc: any) =>
+    acc.filter((d: { pk: number }) => d.pk === num).map((d: { name: string }) => d.name)[0]
 
 const getBankAcc = (num: number) => {
   return comBankList.value
-    .filter((b: any) => b.pk === num)
-    .map((b: any) => b.alias_name)[0]
+      .filter((b: {pk: number}) => b.pk === num)
+      .map((b: {alias_name: string}) => b.alias_name)[0]
 }
 const setData = () => {
-  dateIncSet.value = dateCashBook.value.filter(
-    (i: any) => i.income > 0 && !i.outlay,
-  )
-  dateOutSet.value = dateCashBook.value.filter(
-    (o: any) => o.outlay > 0 && !o.income,
-  )
+  dateIncSet.value = dateCashBook.value.filter((i: CashBook) => !!i.income)
+  dateOutSet.value = dateCashBook.value.filter((o: CashBook) => !!o.outlay)
   dateIncTotal.value = dateIncSet.value
-    ? dateIncSet.value
-        .map((i: any) => i.income)
-        .reduce((x: number, y: number) => x + y, 0)
-    : null
+      ? dateIncSet.value
+          .map((i: CashBook) => i.income||0)
+          .reduce((x: number, y: number) => x + y, 0)
+      : 0
   dateOutTotal.value = dateOutSet.value
-    ? dateOutSet.value
-        .map((o: any) => o.outlay)
-        .reduce((x: number, y: number) => x + y, 0)
-    : null
+      ? dateOutSet.value
+          .map((o: CashBook) => o.outlay||0)
+          .reduce((x: number, y: number) => x + y, 0)
+      : 0
 }
 
 watch(dateCashBook, () => setData())
@@ -54,19 +50,19 @@ onBeforeMount(() => setData())
 <template>
   <CTable hover responsive bordered align="middle">
     <colgroup>
-      <col width="12%" />
-      <col width="12%" />
-      <col width="12%" />
-      <col width="14%" />
-      <col width="15%" />
-      <col width="15%" />
-      <col width="20%" />
+      <col width="12%"/>
+      <col width="12%"/>
+      <col width="12%"/>
+      <col width="14%"/>
+      <col width="15%"/>
+      <col width="15%"/>
+      <col width="20%"/>
     </colgroup>
     <CTableHead>
       <CTableRow>
         <CTableDataCell colspan="6">
           <strong>
-            <CIcon name="cilFolderOpen" />
+            <CIcon name="cilFolderOpen"/>
             본사 당일 입금내역
           </strong>
           <small class="text-medium-emphasis">
@@ -129,19 +125,19 @@ onBeforeMount(() => setData())
 
   <CTable hover responsive bordered align="middle">
     <colgroup>
-      <col width="12%" />
-      <col width="12%" />
-      <col width="12%" />
-      <col width="14%" />
-      <col width="15%" />
-      <col width="15%" />
-      <col width="20%" />
+      <col width="12%"/>
+      <col width="12%"/>
+      <col width="12%"/>
+      <col width="14%"/>
+      <col width="15%"/>
+      <col width="15%"/>
+      <col width="20%"/>
     </colgroup>
     <CTableHead>
       <CTableRow>
         <CTableDataCell colspan="6">
           <strong>
-            <CIcon name="cilFolderOpen" />
+            <CIcon name="cilFolderOpen"/>
             본사 당일 출금내역
           </strong>
           <small class="text-medium-emphasis">
@@ -164,13 +160,13 @@ onBeforeMount(() => setData())
     <CTableBody>
       <CTableRow v-for="out in dateOutSet" :key="out.pk" class="text-center">
         <CTableDataCell>
-          {{ getDAccText(out.account_d1, listAccD1List) }}
+          {{ getDAccText<AccountD1>(out.account_d1, listAccD1List) }}
         </CTableDataCell>
         <CTableDataCell>
-          {{ getDAccText(out.account_d2, listAccD2List) }}
+          {{ getDAccText<AccountD2>(out.account_d2, listAccD2List) }}
         </CTableDataCell>
         <CTableDataCell>
-          {{ getDAccText(out.account_d3, listAccD3List) }}
+          {{ getDAccText<AccountD3>(out.account_d3, listAccD3List) }}
         </CTableDataCell>
         <CTableDataCell class="text-right" color="danger">
           {{ numFormat(out.outlay) }}

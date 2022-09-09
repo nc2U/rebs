@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount, ref } from 'vue'
-import { useStore } from 'vuex'
-import { useCompany } from '@/store/pinia/company'
 import { pageTitle, navMenu } from '@/views/comCash/_menu/headermixin'
+import { useCompany } from '@/store/pinia/company'
+import { useComCash } from '@/store/pinia/comCash'
 import { dateFormat } from '@/utils/baseMixins'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
@@ -15,28 +15,38 @@ import CashListByDate from '@/views/comCash/Status/components/CashListByDate.vue
 const date = ref(new Date())
 const compName = ref('StatusByAccount')
 
-const store = useStore()
 const companyStore = useCompany()
-
-const company = computed(() => companyStore.company)
 const initComId = computed(() => companyStore.initComId)
+const company = computed(() => companyStore.company?.pk || initComId.value)
 
-const fetchAllAccD1List = () => store.dispatch('comCash/fetchAllAccD1List')
-const fetchAllAccD2List = () => store.dispatch('comCash/fetchAllAccD2List')
-const fetchAllAccD3List = () => store.dispatch('comCash/fetchAllAccD3List')
+const comCashStore = useComCash()
+const fetchAccSortList = () => comCashStore.fetchAccSortList()
+const fetchAllAccD1List = () => comCashStore.fetchAllAccD1List()
+const fetchAllAccD2List = () => comCashStore.fetchAllAccD2List()
+const fetchAllAccD3List = () => comCashStore.fetchAllAccD3List()
+
+onBeforeMount(() => {
+  fetchAccSortList()
+  fetchAllAccD1List()
+  fetchAllAccD2List()
+  fetchAllAccD3List()
+  fetchComBankAccList(initComId.value)
+  fetchComBalanceByAccList({ company: initComId.value })
+  fetchDateCashBookList({
+    company: initComId.value,
+    date: dateFormat(date.value),
+  })
+})
 
 const fetchComBankAccList = (com: number) =>
-  store.dispatch('comCash/fetchComBankAccList', com)
+  comCashStore.fetchComBankAccList(com)
 const fetchComBalanceByAccList = (com: { company: number; date?: string }) =>
-  store.dispatch('comCash/fetchComBalanceByAccList', com)
+  comCashStore.fetchComBalanceByAccList(com)
 const fetchDateCashBookList = (payload: { company: number; date: string }) =>
-  store.dispatch('comCash/fetchDateCashBookList', payload)
+  comCashStore.fetchDateCashBookList(payload)
 
-const updateState = (payload: any) =>
-  store.commit('comCash/updateState', payload)
-
-const onSelectAdd = (target: any) => {
-  if (target !== '') {
+const onSelectAdd = (target: number) => {
+  if (!!target) {
     fetchComBankAccList(target)
     fetchComBalanceByAccList({
       company: target,
@@ -47,11 +57,9 @@ const onSelectAdd = (target: any) => {
       date: dateFormat(date.value),
     })
   } else {
-    updateState({
-      comBankList: [],
-      comBalanceByAccList: [],
-      dateCashBook: [],
-    })
+    comCashStore.comBankList = []
+    comCashStore.comBalanceByAccList = []
+    comCashStore.dateCashBook = []
   }
 }
 
@@ -67,26 +75,14 @@ const setDate = (d: string) => {
   const dt = new Date(d)
   date.value = new Date(dt)
   fetchComBalanceByAccList({
-    company: company.value?.pk || initComId.value,
+    company: company.value,
     date: dateFormat(dt),
   })
   fetchDateCashBookList({
-    company: company.value?.pk || initComId.value,
+    company: company.value,
     date: dateFormat(dt),
   })
 }
-
-onBeforeMount(() => {
-  fetchAllAccD1List()
-  fetchAllAccD2List()
-  fetchAllAccD3List()
-  fetchComBankAccList(initComId.value)
-  fetchComBalanceByAccList({ company: initComId.value })
-  fetchDateCashBookList({
-    company: initComId.value,
-    date: dateFormat(date.value),
-  })
-})
 </script>
 
 <template>
