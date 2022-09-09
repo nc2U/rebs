@@ -1,36 +1,37 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount } from 'vue'
-import { useStore } from 'vuex'
-import { useProject } from '@/store/pinia/project'
 import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin1'
+import { useProject } from '@/store/pinia/project'
+import { useContract } from '@/store/pinia/contract'
+import { OrderGroup } from '@/store/types/contract'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import OrderAddForm from '@/views/projects/OrderGroup/components/OrderAddForm.vue'
 import OrderFormList from '@/views/projects/OrderGroup/components/OrderFormList.vue'
 
-const store = useStore()
 const projectStore = useProject()
 const project = computed(() => projectStore.project?.pk)
 const initProjId = computed(() => projectStore.initProjId)
 
+const contractStore = useContract()
 const onSelectAdd = (target: any) => {
   if (target !== '') fetchOrderGroupList(target)
-  else store.commit('contract/updateState', { orderGroupList: [] })
+  else contractStore.orderGroupList = []
 }
 
 const fetchOrderGroupList = (pk: number) =>
-  store.dispatch('contract/fetchOrderGroupList', pk)
+  contractStore.fetchOrderGroupList(pk)
 const createOrderGroup = (payload: any) =>
-  store.dispatch('contract/createOrderGroup', payload)
+  contractStore.createOrderGroup(payload)
 const updateOrderGroup = (payload: any) =>
-  store.dispatch('contract/updateOrderGroup', payload)
+  contractStore.updateOrderGroup(payload)
 const deleteOrderGroup = (payload: any) =>
-  store.dispatch('contract/deleteOrderGroup', payload)
+  contractStore.deleteOrderGroup(payload)
 
-const onSubmit = (payload: any) =>
+const onSubmit = (payload: OrderGroup) =>
   createOrderGroup({ ...{ project: project.value }, ...payload })
 
-const onUpdateOrder = (payload: any) =>
+const onUpdateOrder = (payload: OrderGroup) =>
   updateOrderGroup({ ...{ project: project.value }, ...payload })
 
 const onDeleteOrder = (pk: number) =>

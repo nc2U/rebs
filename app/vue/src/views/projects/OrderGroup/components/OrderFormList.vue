@@ -1,15 +1,16 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { useStore } from 'vuex'
+import { useContract } from '@/store/pinia/contract'
+import { OrderGroup as og } from '@/store/types/contract'
 import OrderGroup from './OrderGroup.vue'
 import { headerSecondary } from '@/utils/cssMixins'
 
 const emit = defineEmits(['on-update', 'on-delete'])
 
-const store = useStore()
-const orderGroupList = computed(() => store.state.contract.orderGroupList)
+const contractStore = useContract()
+const orderGroupList = computed(() => contractStore.orderGroupList)
 
-const onUpdateOrder = (payload: any) => emit('on-update', payload)
+const onUpdateOrder = (payload: og) => emit('on-update', payload)
 const onDeleteOrder = (pk: number) => emit('on-delete', pk)
 </script>
 
