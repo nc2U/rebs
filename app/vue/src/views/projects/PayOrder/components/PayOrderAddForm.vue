@@ -1,43 +1,35 @@
 <script lang="ts" setup>
 import { ref, reactive, watch } from 'vue'
 import { write_project } from '@/utils/pageAuth'
+import { maska as vMaska } from 'maska'
 import { dateFormat } from '@/utils/baseMixins'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
-import { maska as vMaska } from 'maska'
 
 defineProps({ disabled: Boolean })
+
 const emit = defineEmits(['on-submit'])
 
 const alertModal = ref()
 const confirmModal = ref()
 
 const validated = ref(false)
-const form = reactive<{
-  pay_sort: string
-  pay_code: string | null
-  pay_time: string | null
-  pay_name: string
-  alias_name: string
-  is_pm_cost: boolean
-  pay_due_date: string | null
-  extra_due_date: string | null
-}>({
+const form = reactive({
   pay_sort: '',
-  pay_code: null,
-  pay_time: null,
+  pay_code: null as string | null,
+  pay_time: null as string | null,
   pay_name: '',
   alias_name: '',
   is_pm_cost: false,
-  pay_due_date: null,
-  extra_due_date: null,
+  pay_due_date: null as string | null,
+  extra_due_date: null as string | null,
 })
 
-const onSubmit = (event: any) => {
+const onSubmit = (event: Event) => {
   if (write_project) {
-    const el = event.currentTarget
-    if (el.checkValidity() === false) {
+    const el = event.currentTarget as HTMLSelectElement
+    if (!el.checkValidity()) {
       event.preventDefault()
       event.stopPropagation()
 
@@ -61,7 +53,7 @@ watch(form, val => {
 const modalAction = () => {
   emit('on-submit', form)
   validated.value = false
-  confirmModal.value.visible = false
+  confirmModal.value.close()
   resetForm()
 }
 

@@ -1,45 +1,45 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount } from 'vue'
-import { useStore } from 'vuex'
-import { useProject } from '@/store/pinia/project'
 import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin2'
+import { useProject } from '@/store/pinia/project'
+import { usePayment } from '@/store/pinia/payment'
+import { PayOrder } from '@/store/types/payment'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import PayOrderAddForm from '@/views/projects/PayOrder/components/PayOrderAddForm.vue'
 import PayOrderFormList from '@/views/projects/PayOrder/components/PayOrderFormList.vue'
 
-const store = useStore()
 const projectStore = useProject()
 
-const project = computed(() => projectStore.project?.pk)
 const initProjId = computed(() => projectStore.initProjId)
+const project = computed(() => projectStore.project?.pk || initProjId.value)
 
+const paymentStore = usePayment()
 const fetchPayOrderList = (projId: number) =>
-  store.dispatch('payment/fetchPayOrderList', projId)
+  paymentStore.fetchPayOrderList(projId)
 
-const createPayOrder = (payload: any) =>
-  store.dispatch('payment/createPayOrder', payload)
+const createPayOrder = (payload: PayOrder) =>
+  paymentStore.createPayOrder(payload)
 
-const updatePayOrder = (payload: any) =>
-  store.dispatch('payment/updatePayOrder', payload)
+const updatePayOrder = (payload: PayOrder) =>
+  paymentStore.updatePayOrder(payload)
 
-const deletePayOrder = (payload: any) =>
-  store.dispatch('payment/deletePayOrder', payload)
+const deletePayOrder = (pk: number, projId: number) =>
+  paymentStore.deletePayOrder(pk, projId)
 
 onBeforeMount(() => fetchPayOrderList(initProjId.value))
 
-const onSelectAdd = (target: any) => {
+const onSelectAdd = (target: number) => {
   if (!!target) fetchPayOrderList(target)
-  else store.commit('payment/updateState', { payOrderList: [] })
+  else paymentStore.payOrderList = []
 }
-const onSubmit = (payload: any) =>
+const onSubmit = (payload: PayOrder) =>
   createPayOrder({ ...{ project: project.value }, ...payload })
 
-const onUpdatePayOrder = (payload: any) =>
+const onUpdatePayOrder = (payload: PayOrder) =>
   updatePayOrder({ ...{ project: project.value }, ...payload })
 
-const onDeletePayOrder = (pk: number) =>
-  deletePayOrder({ ...{ pk }, ...{ project: project.value } })
+const onDeletePayOrder = (pk: number) => deletePayOrder(pk, project.value)
 </script>
 
 <template>

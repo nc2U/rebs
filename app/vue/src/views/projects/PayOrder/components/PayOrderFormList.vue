@@ -1,16 +1,16 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { useStore } from 'vuex'
-import PayOrder from '@/views/projects/PayOrder/components/PayOrder.vue'
+import { usePayment } from '@/store/pinia/payment'
+import { PayOrder as po } from '@/store/types/payment'
 import { headerSecondary } from '@/utils/cssMixins'
+import PayOrder from '@/views/projects/PayOrder/components/PayOrder.vue'
 
 const emit = defineEmits(['on-update', 'on-delete'])
 
-const store = useStore()
+const paymentStore = usePayment()
+const payOrderList = computed(() => paymentStore.payOrderList)
 
-const payOrderList = computed(() => store.state.payment.payOrderList)
-
-const onUpdatePayOrder = (payload: any) => emit('on-update', payload)
+const onUpdatePayOrder = (payload: po) => emit('on-update', payload)
 const onDeletePayOrder = (pk: number) => emit('on-delete', pk)
 </script>
 

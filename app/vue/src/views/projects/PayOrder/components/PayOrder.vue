@@ -1,41 +1,30 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, onBeforeMount, watch } from 'vue'
 import { useAccount } from '@/store/pinia/account'
+import { maska as vMaska } from 'maska'
+import { dateFormat } from '@/utils/baseMixins'
 import { write_project } from '@/utils/pageAuth'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
-import { maska as vMaska } from 'maska'
-import { dateFormat } from '@/utils/baseMixins'
 
 const emit = defineEmits(['on-update', 'on-delete'])
 const props = defineProps({ payOrder: { type: Object, default: null } })
 
-const form = reactive<{
-  pay_sort: string
-  pay_code: string | null
-  pay_time: string | null
-  pay_name: string
-  alias_name: string
-  is_pm_cost: boolean
-  pay_due_date: string | null
-  extra_due_date: string | null
-}>({
+const form = reactive({
   pay_sort: '',
-  pay_code: null,
-  pay_time: null,
+  pay_code: null as string | null,
+  pay_time: null as string | null,
   pay_name: '',
   alias_name: '',
   is_pm_cost: false,
-  pay_due_date: null,
-  extra_due_date: null,
+  pay_due_date: null as string | null,
+  extra_due_date: null as string | null,
 })
 
 watch(form, val => {
-  if (val.pay_due_date !== null)
-    form.pay_due_date = dateFormat(val.pay_due_date)
-  if (val.extra_due_date !== null)
-    form.extra_due_date = dateFormat(val.extra_due_date)
+  if (!!val.pay_due_date) form.pay_due_date = dateFormat(val.pay_due_date)
+  if (!!val.extra_due_date) form.extra_due_date = dateFormat(val.extra_due_date)
 })
 
 const alertModal = ref()
