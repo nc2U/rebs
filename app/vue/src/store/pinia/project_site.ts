@@ -253,7 +253,7 @@ export const useSite = defineStore('site', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const updateSiteCont = (payload: { pk: number } & SiteContract) => {
+  const updateSiteCont = (payload: SiteContract) => {
     const { pk, ...contData } = payload
     api
       .put(`/site-contract/${pk}/`, contData)
