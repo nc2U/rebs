@@ -1,38 +1,35 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount } from 'vue'
-import { useStore } from 'vuex'
-import { useProject } from '@/store/pinia/project'
 import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin1'
+import { useProject } from '@/store/pinia/project'
+import { useProjectData } from '@/store/pinia/project_data'
+import { UnitType } from '@/store/types/project'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import TypeAddForm from '@/views/projects/Type/components/TypeAddForm.vue'
 import TypeFormList from '@/views/projects/Type/components/TypeFormList.vue'
 
-const store = useStore()
 const projectStore = useProject()
 
-const project = computed(() => projectStore.project?.pk)
 const initProjId = computed(() => projectStore.initProjId)
+const project = computed(() => projectStore.project?.pk || initProjId.value)
 
-const fetchTypeList = (projId: number) =>
-  store.dispatch('project/fetchTypeList', projId)
-const createType = (payload: any) =>
-  store.dispatch('project/createType', payload)
-const updateType = (payload: any) =>
-  store.dispatch('project/updateType', payload)
-const deleteType = (payload: any) =>
-  store.dispatch('project/deleteType', payload)
+const projectDataStore = useProjectData()
+const fetchTypeList = (projId: number) => projectDataStore.fetchTypeList(projId)
+const createType = (payload: any) => projectDataStore.createType(payload)
+const updateType = (payload: any) => projectDataStore.updateType(payload)
+const deleteType = (pk: number, project: number) =>
+  projectDataStore.deleteType(pk, project)
 
 const onSelectAdd = (target: any) => {
   if (target !== '') fetchTypeList(target)
-  else store.commit('project/updateState', { unitTypeList: [] })
+  else projectDataStore.unitTypeList = []
 }
-const onSubmit = (payload: any) =>
+const onSubmit = (payload: UnitType) =>
   createType({ ...{ project: project.value }, ...payload })
-const onUpdateType = (payload: any) =>
+const onUpdateType = (payload: UnitType) =>
   updateType({ ...{ project: project.value }, ...payload })
-const onDeleteType = (pk: number) =>
-  deleteType({ ...{ pk }, ...{ project: project.value } })
+const onDeleteType = (pk: number) => deleteType(pk, project.value)
 
 onBeforeMount(() => fetchTypeList(initProjId.value))
 </script>

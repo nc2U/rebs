@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { useStore } from 'vuex'
+import { useProjectData } from '@/store/pinia/project_data'
 import Type from '@/views/projects/Type/components/Type.vue'
 import { headerSecondary } from '@/utils/cssMixins'
 
 const emit = defineEmits(['on-update', 'on-delete'])
 
-const store = useStore()
-const unitTypeList = computed(() => store.state.project.unitTypeList)
+const projectDataStore = useProjectData()
+const unitTypeList = computed(() => projectDataStore.unitTypeList)
 
 const onUpdateType = (payload: any) => {
   emit('on-update', payload)
