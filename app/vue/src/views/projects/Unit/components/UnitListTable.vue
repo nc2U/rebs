@@ -1,19 +1,24 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { useStore } from 'vuex'
+import { useProjectData } from '@/store/pinia/project_data'
 import Unit from '@/views/projects/Unit/components/Unit.vue'
 
 defineProps({ bldgName: { type: String, default: '' } })
 
-const store = useStore()
-
 const maxFloor = computed(() =>
-  Math.max(...simpleUnits.value.map((u: any) => u.floor)),
+  Math.max(...simpleUnits.value.map((u: { floor: number }) => u.floor)),
 )
-const simpleUnits = computed(() => store.getters['project/simpleUnits'])
+
+const projectDataStore = useProjectData()
+const simpleUnits = computed(() => projectDataStore.simpleUnits)
 const lineList = computed(() =>
-  [...new Set(simpleUnits.value.map((u: any) => u.line))].sort(),
+  [...new Set(simpleUnits.value.map((u: { line: number }) => u.line))].sort(),
 )
+
+const getUnit = (line: number, floor: number) =>
+  simpleUnits.value
+    .filter((u: { line: number }) => u.line === line)
+    .filter((u: { floor: number }) => u.floor === floor)[0]
 </script>
 
 <template>
@@ -29,8 +34,8 @@ const lineList = computed(() =>
         <CRow v-for="i in maxFloor" :key="i">
           <Unit
             v-for="line in lineList"
-            :key="line"
-            :units="simpleUnits"
+            :key="`${line}-${i}`"
+            :unit="getUnit(line, maxFloor + 1 - i)"
             :floor="maxFloor + 1 - i"
             :line="line"
           />

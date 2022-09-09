@@ -135,8 +135,8 @@ export const useProjectData = defineStore('projectData', () => {
       ? houseUnitList.value.map((u: HouseUnit) => ({
           bldg: u.building_unit,
           color: simpleTypes.value
-            .filter((t: any) => t.pk === u.unit_type)
-            .map((t: any) => t.color)[0],
+            .filter((t: { pk: number }) => t.pk === u.unit_type)
+            .map((t: { color: string }) => t.color)[0],
           name: u.name,
           key_unit: u.key_unit,
           line: u.bldg_line,

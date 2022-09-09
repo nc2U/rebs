@@ -2,19 +2,13 @@
 import { computed } from 'vue'
 
 const props = defineProps({
-  units: { type: Array, default: [] },
-  floor: { type: Number, default: null },
-  line: { type: Number, default: null },
+  unit: { type: Object, default: null },
+  floor: { type: Number, default: 1 },
+  line: { type: Number, default: 1 },
 })
 
-const unit = computed<any>(
-  () =>
-    props.units
-      .filter((u: any) => u.line == props.line)
-      .filter((u: any) => u.floor == props.floor)[0],
-)
-const isBuild = computed(() => unit.value || props.floor < 3)
-const color = computed(() => (unit.value ? unit.value.color : '#999'))
+const isBuild = computed(() => props.unit || props.floor < 3)
+const color = computed(() => (props.unit ? props.unit.color : '#ccc'))
 </script>
 
 <template>
@@ -22,9 +16,8 @@ const color = computed(() => (unit.value ? unit.value.color : '#999'))
     v-if="isBuild"
     class="unit"
     :class="{
-      firstline: line === 1,
-      restline: line !== 1,
-      piloti: isPiloti,
+      first: line === 1,
+      rest: line !== 1,
     }"
     :style="{ background: color }"
   >
@@ -42,17 +35,13 @@ const color = computed(() => (unit.value ? unit.value.color : '#999'))
   vertical-align: middle;
 }
 
-.piloti {
-  background-color: #ccc;
-}
-
-.firstline {
+.first {
   border-width: 1px 1px 0 1px;
   border-style: solid;
   border-color: #999;
 }
 
-.restline {
+.rest {
   border-width: 1px 1px 0 0;
   border-style: solid;
   border-color: #999;

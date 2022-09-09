@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { computed, reactive, ref, watch } from 'vue'
-import { useStore } from 'vuex'
+import { useProjectData } from '@/store/pinia/project_data'
+import { BuildingUnit } from '@/store/types/project'
 import { headerLight } from '@/utils/cssMixins'
 import { write_project } from '@/utils/pageAuth'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
-import project from '@/store/modules/project'
 
 const props = defineProps({
   project: {
@@ -31,30 +31,32 @@ watch(props, () => {
 const warning = computed(() => form.maxFloor !== '')
 const typeNameLength = computed(() => {
   const typeNames = unitTypeList.value
-    .map((t: any) => t.name)
-    .map((t: any) => t.replace(/[^0-9a-zA-Z]/g, ''))
-    .map((t: any) => t.length)
+    .map((t: { name: string }) => t.name)
+    .map((t: string) => t.replace(/[^0-9a-zA-Z]/g, ''))
+    .map((t: string) => t.length)
   return Math.max.apply({}, typeNames)
 })
 
 const typeMaxUnits = computed(() =>
   Math.max.apply(
     {},
-    unitTypeList.value.map((t: any) => t.num_unit),
+    unitTypeList.value.map((t: { num_unit: number }) => t.num_unit),
   ),
 )
 
-const store = useStore()
-const unitTypeList = computed(() => store.state.project.unitTypeList)
-const buildingList = computed(() => store.state.project.buildingList)
-const simpleFloors = computed(() => store.getters['project/simpleFloors'])
+const projectDataStore = useProjectData()
+const unitTypeList = computed(() => projectDataStore.unitTypeList)
+const buildingList = computed(() => projectDataStore.buildingList)
+const simpleFloors = computed(() => projectDataStore.simpleFloors)
 
-const fetchNumUnitByType = (payload: any) =>
-  store.dispatch('project/fetchNumUnitByType', payload)
+const fetchNumUnitByType = (projId: number, unit_type: number) =>
+  projectDataStore.fetchNumUnitByType(projId, unit_type)
 
-watch(project, () => {
-  form.building = ''
-  form.type = ''
+watch(props, nVal => {
+  if (nVal.project) {
+    form.building = ''
+    form.type = ''
+  }
 })
 
 watch(form, val => {
@@ -85,26 +87,32 @@ const emit = defineEmits(['bldg-select', 'unit-register'])
 const confirmModal = ref()
 const alertModal = ref()
 
-const bldgSelect = (event: any) => {
-  const bdName = event.target.value
-    ? buildingList.value.filter((b: any) => b.pk == event.target.value)[0].name
+const bldgSelect = (event: Event) => {
+  const bdName = (event.target as HTMLSelectElement).value
+    ? buildingList.value.filter(
+        (b: BuildingUnit) =>
+          b.pk.toString() == (event.target as HTMLSelectElement).value,
+      )[0].name
     : ''
   bldgName.value = bdName
   const bldg = {
-    pk: event.target.value,
+    pk: (event.target as HTMLSelectElement).value,
     name: bdName,
   }
   emit('bldg-select', bldg)
 }
-const typeSelect = (event: any) => {
-  const tpName = event.target.value
-    ? unitTypeList.value.filter((t: any) => t.pk == event.target.value)[0].name
+
+const typeSelect = (event: Event) => {
+  typeName.value = (event.target as HTMLSelectElement).value
+    ? unitTypeList.value.filter(
+        (t: { pk: number }) =>
+          t.pk.toString() == (event.target as HTMLSelectElement).value,
+      )[0].name
     : ''
-  typeName.value = tpName
-  fetchNumUnitByType({
-    project: props.project,
-    unit_type: event.target.value,
-  })
+  fetchNumUnitByType(
+    props.project,
+    Number((event.target as HTMLSelectElement).value),
+  )
 }
 const unitRegister = () => {
   if (write_project) confirmModal.value.callModal()
@@ -123,7 +131,7 @@ const modalAction = () => {
     },
     ...{ floors: simpleFloors.value },
   })
-  confirmModal.value.visible = false
+  confirmModal.value.close()
   reset(1)
 }
 </script>

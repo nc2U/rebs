@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount, ref } from 'vue'
-import { useStore } from 'vuex'
-import { useProject } from '@/store/pinia/project'
 import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin2'
+import { useProject } from '@/store/pinia/project'
+import { useProjectData } from '@/store/pinia/project_data'
+import { HouseUnit } from '@/store/types/project'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import UnitController from '@/views/projects/Unit/components/UnitController.vue'
@@ -11,49 +12,49 @@ import { message } from '@/utils/helper'
 
 const bldgName = ref('')
 
-const store = useStore()
 const projectStore = useProject()
 
-const project = computed(() => projectStore.project?.pk)
-const numUnitByType = computed(() => store.state.project.numUnitByType)
-const simpleUnits = computed(() => store.getters['project/simpleUnits'])
 const initProjId = computed(() => projectStore.initProjId)
+const project = computed(() => projectStore.project?.pk || initProjId.value)
 
-const fetchTypeList = (projId: number) =>
-  store.dispatch('project/fetchTypeList', projId)
+const projectDataStore = useProjectData()
+const numUnitByType = computed(() => projectDataStore.numUnitByType)
+const simpleUnits = computed(() => projectDataStore.simpleUnits)
+
+const fetchTypeList = (projId: number) => projectDataStore.fetchTypeList(projId)
 const fetchFloorTypeList = (projId: number) =>
-  store.dispatch('project/fetchFloorTypeList', projId)
+  projectDataStore.fetchFloorTypeList(projId)
 const fetchBuildingList = (projId: number) =>
-  store.dispatch('project/fetchBuildingList', projId)
-const fetchHouseUnitList = (payload: any) =>
-  store.dispatch('project/fetchHouseUnitList', payload)
-const createUnit = (payload: any) =>
-  store.dispatch('project/createUnit', payload)
+  projectDataStore.fetchBuildingList(projId)
+const fetchHouseUnitList = (projId: number, bldg?: number) =>
+  projectDataStore.fetchHouseUnitList(projId, bldg)
+
+const createUnit = (payload: HouseUnit & any) =>
+  projectDataStore.createUnit(payload)
 
 onBeforeMount(() => {
   fetchTypeList(initProjId.value)
   fetchFloorTypeList(initProjId.value)
   fetchBuildingList(initProjId.value)
-  store.commit('project/updateState', { houseUnitList: [] })
+  projectDataStore.houseUnitList = []
 })
-const onSelectAdd = (target: any) => {
-  if (target !== '') {
+
+const onSelectAdd = (target: number) => {
+  if (!!target) {
     fetchTypeList(target)
     fetchFloorTypeList(target)
     fetchBuildingList(target)
   } else {
-    store.commit('project/updateState', {
-      unitTypeList: [],
-      floorTypeList: [],
-      buildingList: [],
-    })
+    projectDataStore.unitTypeList = []
+    projectDataStore.floorTypeList = []
+    projectDataStore.buildingList = []
   }
-  store.commit('project/updateState', { houseUnitList: [] })
+  projectDataStore.houseUnitList = []
 }
-const bldgSelect = (bldg: any) => {
-  if (bldg.pk !== '')
-    fetchHouseUnitList({ project: project.value, bldg: bldg.pk })
-  else store.commit('project/updateState', { houseUnitList: [] })
+
+const bldgSelect = (bldg: { pk: number; name: string }) => {
+  if (!!bldg.pk) fetchHouseUnitList(project.value, bldg.pk)
+  else projectDataStore.houseUnitList = []
   bldgName.value = bldg.name
 }
 
@@ -74,12 +75,13 @@ const unitRegister = (payload: any) => {
     const suffix = typeDigit >= 1 ? '0'.repeat(typeDigit - 1) + '1' : ''
     return `${typeStr}${suffix}${prefix}${num}`
   }
+
   let num = numUnitByType.value
 
   const isExist = range(size, payload.minFloor).map(i =>
     simpleUnits.value
-      .filter((u: any) => u.line === bldg_line)
-      .map((u: any) => u.floor)
+      .filter((u: { line: number }) => u.line === bldg_line)
+      .map((u: { floor: number }) => u.floor)
       .includes(i),
   )
 
@@ -91,8 +93,10 @@ const unitRegister = (payload: any) => {
       floor_no: i,
       name: `${i}${midWord}${bldg_line}`,
       floor_type: payload.floors
-        .filter((f: any) => between(i, f.start, f.end))
-        .map((f: any) => f.pk)[0],
+        .filter((f: { start: number; end: number }) =>
+          between(i, f.start, f.end),
+        )
+        .map((f: { pk: number }) => f.pk)[0],
       unit_code: getCode((num += 1), `${payload.maxUnits}`.length),
     }))
 
@@ -102,7 +106,7 @@ const unitRegister = (payload: any) => {
         ...unit,
       })
     })
-    fetchHouseUnitList({ project: project.value, bldg: building_unit })
+    fetchHouseUnitList(project.value, building_unit)
     message()
   }
 }
