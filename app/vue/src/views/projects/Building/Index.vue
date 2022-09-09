@@ -1,42 +1,43 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount } from 'vue'
-import { useStore } from 'vuex'
 import { useProject } from '@/store/pinia/project'
+import { useProjectData } from '@/store/pinia/project_data'
+import { BuildingUnit } from '@/store/types/project'
 import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin2'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import BuildingAddForm from '@/views/projects/Building/components/BuildingAddForm.vue'
 import BuildingFormList from '@/views/projects/Building/components/BuildingFormList.vue'
 
-const store = useStore()
 const projectStore = useProject()
 
-const project = computed(() => projectStore.project?.pk)
 const initProjId = computed(() => projectStore.initProjId)
+const project = computed(() => projectStore.project?.pk || initProjId.value)
 
+const projectDataStore = useProjectData()
 const fetchBuildingList = (projId: number) =>
-  store.dispatch('project/fetchBuildingList', projId)
+  projectDataStore.fetchBuildingList(projId)
 const createBuilding = (payload: any) =>
-  store.dispatch('project/createBuilding', payload)
+  projectDataStore.createBuilding(payload)
 const updateBuilding = (payload: any) =>
-  store.dispatch('project/updateBuilding', payload)
-const deleteBuilding = (payload: any) =>
-  store.dispatch('project/deleteBuilding', payload)
+  projectDataStore.updateBuilding(payload)
+const deleteBuilding = (pk: number, projId: number) =>
+  projectDataStore.deleteBuilding(pk, projId)
 
 onBeforeMount(() => fetchBuildingList(initProjId.value))
 
-const onSelectAdd = (target: any) => {
-  if (target !== '') fetchBuildingList(target)
-  else store.commit('project/updateState', { buildingList: [] })
+const onSelectAdd = (target: number) => {
+  if (!!target) fetchBuildingList(target)
+  else projectDataStore.buildingList = []
 }
-const onSubmit = (payload: any) =>
+
+const onCreateBuilding = (payload: BuildingUnit) =>
   createBuilding({ ...{ project: project.value }, ...payload })
 
-const onUpdateBuilding = (payload: any) =>
+const onUpdateBuilding = (payload: BuildingUnit) =>
   updateBuilding({ ...{ project: project.value }, ...payload })
 
-const onDeleteBuilding = (pk: number) =>
-  deleteBuilding({ ...{ pk }, ...{ project: project.value } })
+const onDeleteBuilding = (pk: number) => deleteBuilding(pk, project.value)
 </script>
 
 <template>
@@ -48,7 +49,7 @@ const onDeleteBuilding = (pk: number) =>
 
   <ContentBody>
     <CCardBody class="pb-5">
-      <BuildingAddForm :disabled="!project" @on-submit="onSubmit" />
+      <BuildingAddForm :disabled="!project" @on-submit="onCreateBuilding" />
       <BuildingFormList
         @on-update="onUpdateBuilding"
         @on-delete="onDeleteBuilding"

@@ -32,7 +32,7 @@ const onSubmit = (event: any) => {
 const modalAction = () => {
   emit('on-submit', form)
   validated.value = false
-  confirmModal.value.visible = false
+  confirmModal.value.close()
   resetForm()
 }
 const resetForm = () => (form.name = '')

@@ -13,18 +13,17 @@ const confirmModal = ref()
 
 const form = reactive({ name: '' })
 
-const formsCheck = computed(() => {
-  const a = form.name === props.building.name
-  return a
-})
+const formsCheck = computed(() => form.name === props.building.name)
 
 onBeforeMount(() => {
   if (props.building) resetForm()
 })
+
 const formCheck = (bool: boolean) => {
   if (bool) onUpdateBuilding()
   return
 }
+
 const onUpdateBuilding = () => {
   if (write_project) {
     const pk = props.building.pk
@@ -34,6 +33,7 @@ const onUpdateBuilding = () => {
     resetForm()
   }
 }
+
 const onDeleteBuilding = () => {
   if (useAccount().superAuth) confirmModal.value.callModal()
   else {
@@ -41,13 +41,13 @@ const onDeleteBuilding = () => {
     resetForm()
   }
 }
+
 const modalAction = () => {
   emit('on-delete', props.building.pk)
-  confirmModal.value.visible = false
+  confirmModal.value.close()
 }
-const resetForm = () => {
-  form.name = props.building.name
-}
+
+const resetForm = () => (form.name = props.building.name)
 </script>
 
 <template>

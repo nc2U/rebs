@@ -1,16 +1,16 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { useStore } from 'vuex'
-import Building from '@/views/projects/Building/components/Building.vue'
+import { useProjectData } from '@/store/pinia/project_data'
+import { BuildingUnit } from '@/store/types/project'
 import { headerSecondary } from '@/utils/cssMixins'
+import Building from '@/views/projects/Building/components/Building.vue'
 
 const emit = defineEmits(['on-update', 'on-delete'])
 
-const store = useStore()
-const buildingList = computed(() => store.state.project.buildingList)
+const projectDataStore = useProjectData()
+const buildingList = computed(() => projectDataStore.buildingList)
 
-const onUpdateBuilding = (payload: any) => emit('on-update', payload)
-
+const onUpdateBuilding = (payload: BuildingUnit) => emit('on-update', payload)
 const onDeleteBuilding = (pk: number) => emit('on-delete', pk)
 </script>
 
