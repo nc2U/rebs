@@ -22,52 +22,52 @@ export const useComCash = defineStore('comCash', () => {
       .then(res => (sortList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
-  const formAccD1List = ref<AccountD1[]>([])
+  const listAccD1List = ref<AccountD1[]>([])
 
   const fetchAllAccD1List = () =>
     api
       .get(`/account-depth1/`)
-      .then(res => (formAccD1List.value = res.data.results))
+      .then(res => (listAccD1List.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
-  const formAccD2List = ref<AccountD2[]>([])
+  const listAccD2List = ref<AccountD2[]>([])
 
   const fetchAllAccD2List = () =>
     api
       .get(`/account-depth2/`)
-      .then(res => (formAccD2List.value = res.data.results))
+      .then(res => (listAccD2List.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
-  const formAccD3List = ref<AccountD3[]>([])
+  const listAccD3List = ref<AccountD3[]>([])
 
   const fetchAllAccD3List = () =>
     api
       .get(`/account-depth3/`)
-      .then(res => (formAccD3List.value = res.data.results))
+      .then(res => (listAccD3List.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
-  const listAccD1List = ref<AccountD1[]>([])
+  const formAccD1List = ref<AccountD1[]>([])
 
   const fetchFormAccD1List = (sort = '') => {
     const sortUri = sort ? `?accountsort=${sort}` : ''
     return api
       .get(`/account-depth1/${sortUri}`)
-      .then(res => (listAccD1List.value = res.data.results))
+      .then(res => (formAccD1List.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
   }
 
-  const listAccD2List = ref<AccountD2[]>([])
+  const formAccD2List = ref<AccountD2[]>([])
 
   const fetchFormAccD2List = (d1 = '', sort = '') => {
     const d1Uri = d1 ? `?d1=${d1}` : ''
     const sortUri = sort ? `&d1__accountsort=${sort}` : ''
     return api
       .get(`/account-depth2/${d1Uri}${sortUri}`)
-      .then(res => (listAccD2List.value = res.data.results))
+      .then(res => (formAccD2List.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
   }
 
-  const listAccD3List = ref<AccountD3[]>([])
+  const formAccD3List = ref<AccountD3[]>([])
 
   const fetchFormAccD3List = (d1 = '', d2 = '', sort = '') => {
     const d1Uri = d1 ? `?d2__d1=${d1}` : ''
@@ -75,7 +75,7 @@ export const useComCash = defineStore('comCash', () => {
     const sortUri = sort ? `&d2__d1__accountsort=${sort}` : ''
     return api
       .get(`/account-depth3/?d2__d1=${d1Uri}${d2Uri}${sortUri}`)
-      .then(res => (listAccD3List.value = res.data.results))
+      .then(res => (formAccD3List.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
   }
 
