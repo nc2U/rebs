@@ -50,22 +50,23 @@ export interface BalanceByAccount {
 }
 
 export interface CashBook {
-  pk: number
-  company: number
-  sort: string
-  sort_desc: string
-  account_d1: string
+  pk: number | null
+  company: number | null
+  sort: number | null
+  sort_desc?: string
+  account_d1: number | null
+  account_d1_desc?: string
+  account_d2: number | null
   account_d3: number | null
+  account_d3_desc?: string
   content: string
   trader: string
-  bank_account: number
+  bank_account: number | null
+  bank_account_desc?: string
   income: number | null
   outlay: number | null
   evidence: string
   evidence_desc: string
   note: string
   deal_date: string
-  user: number
-  created_at: string
-  updated_at: string
 }
