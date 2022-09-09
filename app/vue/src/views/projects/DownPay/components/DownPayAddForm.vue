@@ -29,7 +29,7 @@ watch(props, () => {
   form.unit_type = ''
 })
 
-const onSubmit = (event: any) => {
+const onSubmit = (event: Event) => {
   if (write_project) {
     isValidate(event)
       ? (validated.value = true)
@@ -42,7 +42,7 @@ const onSubmit = (event: any) => {
 const modalAction = () => {
   emit('on-submit', form)
   validated.value = false
-  confirmModal.value.visible = false
+  confirmModal.value.close()
   resetForm()
 }
 const resetForm = () => {

@@ -58,7 +58,7 @@ const onDeleteDownPay = () => {
 }
 const modalAction = () => {
   emit('on-delete', props.downPay.pk)
-  confirmModal.value.visible = false
+  confirmModal.value.close()
 }
 
 const resetForm = () => {

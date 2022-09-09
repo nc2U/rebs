@@ -106,13 +106,17 @@ export const usePayment = defineStore('payment', () => {
   const downPayList = ref<DownPay[]>([])
 
   // actions
-  const fetchDownPayList = (payload: any) => {
+  const fetchDownPayList = (payload: {
+    project: number
+    order_group?: number
+    unit_type?: number
+  }) => {
     let url = `/down-payment/?project=${payload.project}`
     if (payload.order_group) url += `&order_group=${payload.order_group}`
     if (payload.unit_type) url += `&unit_type=${payload.unit_type}`
     return api
       .get(url)
-      .then(res => (paymentList.value = res.data.results))
+      .then(res => (downPayList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
   }
 
