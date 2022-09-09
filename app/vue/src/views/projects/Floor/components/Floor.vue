@@ -17,7 +17,6 @@ const form = reactive({
   extra_cond: '',
   alias_name: '',
 })
-const validated = ref(false)
 
 onBeforeMount(() => {
   if (props.floor) resetForm()

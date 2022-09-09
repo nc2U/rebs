@@ -16,6 +16,7 @@ const form = reactive({
   extra_cond: '',
   alias_name: '',
 })
+
 const validated = ref(false)
 
 const onSubmit = (event: any) => {

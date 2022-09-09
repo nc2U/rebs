@@ -1,3 +1,19 @@
+<script lang="ts" setup>
+import { computed } from 'vue'
+import { useProjectData } from '@/store/pinia/project_data'
+import { UnitFloorType } from '@/store/types/project'
+import { headerSecondary } from '@/utils/cssMixins'
+import Floor from '@/views/projects/Floor/components/Floor.vue'
+
+const emit = defineEmits(['on-update', 'on-delete'])
+
+const projectData = useProjectData()
+const floorTypeList = computed(() => projectData.floorTypeList)
+
+const onUpdateFloor = (payload: UnitFloorType) => emit('on-update', payload)
+const onDeleteFloor = (pk: number) => emit('on-delete', pk)
+</script>
+
 <template>
   <CTable hover responsive>
     <colgroup>
@@ -35,29 +51,3 @@
     </CTableBody>
   </CTable>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import Floor from '@/views/projects/Floor/components/Floor.vue'
-import { headerSecondary } from '@/utils/cssMixins'
-import { mapState } from 'vuex'
-
-export default defineComponent({
-  name: 'FloorFormList',
-  components: { Floor },
-  computed: {
-    headerSecondary() {
-      return headerSecondary.value
-    },
-    ...mapState('project', ['floorTypeList']),
-  },
-  methods: {
-    onUpdateFloor(payload: any) {
-      this.$emit('on-update', payload)
-    },
-    onDeleteFloor(pk: number) {
-      this.$emit('on-delete', pk)
-    },
-  },
-})
-</script>

@@ -1,43 +1,43 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount } from 'vue'
-import { useStore } from 'vuex'
-import { useProject } from '@/store/pinia/project'
 import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin1'
+import { useProject } from '@/store/pinia/project'
+import { useProjectData } from '@/store/pinia/project_data'
+import { UnitFloorType } from '@/store/types/project'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import FloorAddForm from '@/views/projects/Floor/components/FloorAddForm.vue'
 import FloorFormList from '@/views/projects/Floor/components/FloorFormList.vue'
 
-const store = useStore()
 const projectStore = useProject()
 
-const project = computed(() => projectStore.project?.pk)
 const initProjId = computed(() => projectStore.initProjId)
+const project = computed(() => projectStore.project?.pk || initProjId.value)
 
+const projectDataStore = useProjectData()
 const fetchFloorTypeList = (projId: number) =>
-  store.dispatch('project/fetchFloorTypeList', projId)
-const createFloorType = (payload: any) =>
-  store.dispatch('project/createFloorType', payload)
-const updateFloorType = (payload: any) =>
-  store.dispatch('project/updateFloorType', payload)
-const deleteFloorType = (payload: any) =>
-  store.dispatch('project/deleteFloorType', payload)
+  projectDataStore.fetchFloorTypeList(projId)
+const createFloorType = (payload: UnitFloorType) =>
+  projectDataStore.createFloorType(payload)
+const updateFloorType = (payload: UnitFloorType) =>
+  projectDataStore.updateFloorType(payload)
+const deleteFloorType = (pk: number, project: number) =>
+  projectDataStore.deleteFloorType(pk, project)
+
+const onSelectAdd = (target: number) => {
+  if (!!target) fetchFloorTypeList(target)
+  else projectDataStore.floorTypeList = []
+}
+
+const onSubmit = (payload: UnitFloorType) =>
+  createFloorType({ ...{ project: project.value }, ...payload })
+
+const onUpdateFloor = (payload: UnitFloorType) =>
+  updateFloorType({ ...{ project: project.value }, ...payload })
+
+const onDeleteFloor = (pk: number) => deleteFloorType(pk, project.value)
 
 onBeforeMount(() => fetchFloorTypeList(initProjId.value))
-
-const onSelectAdd = (target: any) => {
-  if (target !== '') fetchFloorTypeList(target)
-  else store.commit('project/updateState', { floorTypeList: [] })
-}
-const onSubmit = (payload: any) => {
-  createFloorType({ ...{ project: project.value }, ...payload })
-}
-const onUpdateFloor = (payload: any) => {
-  updateFloorType({ ...{ project: project.value }, ...payload })
-}
-const onDeleteFloor = (pk: number) => {
-  deleteFloorType({ ...{ pk }, ...{ project: project.value } })
-}
 </script>
 
 <template>
