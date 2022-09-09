@@ -97,7 +97,7 @@ const onSelectAdd = (target: number) => {
 // 차수 선택 시 실행 함수
 const orderSelect = (order: number) => {
   order_group.value = order // order_group pk 값 할당
-  priceMessage.value = !!order
+  priceMessage.value = !order
     ? '공급가격을 입력하기 위해 [차수 정보]를 선택하여 주십시요.'
     : '공급가격을 입력하기 위해 [타입 정보]를 선택하여 주십시요.'
   resetPrices() // 가격 상태 초기화
@@ -105,21 +105,20 @@ const orderSelect = (order: number) => {
 // 타입 선택 시 실행 함수
 const typeSelect = (type: number) => {
   unit_type.value = type // unit_type pk 값 할당
-  priceMessage.value = !!type
+  priceMessage.value = !type
     ? '공급가격을 입력하기 위해 [타입 정보]를 선택하여 주십시요.'
     : ''
   queryIds.project = project.value
   queryIds.order_group = order_group.value
   queryIds.unit_type = unit_type.value
-  fetchPriceList(queryIds) // 갸격 상태 저장 실행
+  fetchPriceList(queryIds) // 가격 상태 저장 실행
 }
 // 프로젝트 또는 차수 선택 변경 시 가격 데이터 초기화
 const resetPrices = () => (paymentStore.priceList = [])
 
 const onCreatePrice = (payload: Price) => createPrice(payload)
 const onUpdatePrice = (payload: Price) => updatePrice(payload)
-const onDeletePrice = (pk: Ids & { pk: number }) =>
-  deletePrice({ ...pk, ...queryIds })
+const onDeletePrice = (pk: number) => deletePrice({ ...{ pk }, ...queryIds })
 </script>
 
 <template>

@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { useProjectData } from '@/store/pinia/project_data'
+import { usePayment } from '@/store/pinia/payment'
 import { Price as P } from '@/store/types/payment'
 import Price from '@/views/projects/Price/components/Price.vue'
 import { headerSecondary } from '@/utils/cssMixins'
 
-defineProps({
+const props = defineProps({
   msg: { type: String, default: '' },
   condTexts: { type: Object, default: null },
   queryIds: { type: Object, default: null },
@@ -14,6 +15,12 @@ const emit = defineEmits(['on-create', 'on-update', 'on-delete'])
 
 const projectDataStore = useProjectData()
 const floorTypeList = computed(() => projectDataStore.floorTypeList)
+
+const paymentStore = usePayment()
+const priceList = computed(() => paymentStore.priceList)
+
+const getPrice = (floor: number) =>
+  priceList.value.filter((p: P) => p.unit_floor_type === floor)[0]
 
 const onCreate = (payload: P) => emit('on-create', payload)
 const onUpdate = (payload: P) => emit('on-update', payload)
@@ -51,6 +58,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
         :cond-texts="condTexts"
         :query-ids="queryIds"
         :floor="floor"
+        :price="getPrice(floor.pk)"
         @on-create="onCreate"
         @on-update="onUpdate"
         @on-delete="onDelete"

@@ -9,7 +9,6 @@ const emit = defineEmits(['on-order-select', 'on-type-select'])
 
 const order = ref<number | null>(null)
 const type = ref<number | null>(null)
-const orderDisabled = ref(false)
 
 watch(props, () => {
   order.value = null
@@ -33,15 +32,10 @@ const onTypeSelect = (e: Event) =>
             차수선택
           </CFormLabel>
           <CCol sm="9">
-            <CFormSelect
-              id="sel1"
-              v-model="order"
-              :disabled="orderDisabled"
-              @change="onOrderSelect"
-            >
+            <CFormSelect id="sel1" v-model="order" @change="onOrderSelect">
               <option value="">---------</option>
-              <option v-for="order in orders" :key="order.pk" :value="order.pk">
-                {{ order.order_group_name }}
+              <option v-for="o in orders" :key="o.pk" :value="o.pk">
+                {{ o.order_group_name }}
               </option>
             </CFormSelect>
           </CCol>
@@ -57,12 +51,12 @@ const onTypeSelect = (e: Event) =>
             <CFormSelect
               id="sel2"
               v-model="type"
-              :disabled="order == ''"
+              :disabled="!order"
               @change="onTypeSelect"
             >
               <option value="">---------</option>
-              <option v-for="type in types" :key="type.pk" :value="type.pk">
-                {{ type.name }}
+              <option v-for="t in types" :key="t.pk" :value="t.pk">
+                {{ t.name }}
               </option>
             </CFormSelect>
           </CCol>

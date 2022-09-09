@@ -10,7 +10,6 @@ import {
   ContractNum,
 } from '@/store/types/payment'
 import { ProjectCashBook } from '@/store/types/proCash'
-import { numFormat } from '@/utils/baseMixins'
 
 export const usePayment = defineStore('payment', () => {
   // state & getters
@@ -24,13 +23,14 @@ export const usePayment = defineStore('payment', () => {
 
   // actions
   const fetchPriceList = (payload: Ids) => {
-    const { project, order_group, unit_type } = payload
-    const url = `/price/?project=${project || ''}&order_group=${
-      order_group || ''
-    }&unit_type=${unit_type || ''}`
+    const project = payload.project || ''
+    const order_group = payload.order_group || ''
+    const unit_type = payload.unit_type || ''
 
     return api
-      .get(url)
+      .get(
+        `/price/?project=${project}&order_group=${order_group}&unit_type=${unit_type}`,
+      )
       .then(res => (priceList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
   }
