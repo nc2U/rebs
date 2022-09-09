@@ -17,8 +17,8 @@ const props = defineProps({
   },
 })
 
-const pk = ref('')
 const form = reactive({
+  pk: null as number | null,
   name: '',
   order: null,
   kind: '',
@@ -124,11 +124,10 @@ const onSubmit = (event: any) => {
 const emit = defineEmits(['to-create', 'to-update', 'reset-form'])
 
 const modalAction = () => {
-  if (props.update) {
-    emit('to-update', { ...{ pk: pk.value, company: company.value }, ...form })
-  } else {
-    emit('to-create', { ...{ company: company.value }, ...form })
-  }
+  const submitData = { ...{ company: company.value }, ...form }
+  if (props.project && props.update) emit('to-update', submitData)
+  else emit('to-create', submitData)
+
   validated.value = false
 }
 
@@ -151,7 +150,7 @@ const addressCallback = (data: AddressData) => {
 
 onBeforeMount(() => {
   if (props.update && props.project) {
-    pk.value = props.project.pk
+    form.pk = props.project.pk
     form.name = props.project.name
     form.order = props.project.order
     form.kind = props.project.kind

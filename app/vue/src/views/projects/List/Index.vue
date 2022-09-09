@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue'
-import { useStore } from 'vuex'
-import { useProject, Project } from '@/store/pinia/project'
+import { useProject } from '@/store/pinia/project'
+import { Project } from '@/store/types/project'
 import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin1'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
@@ -11,17 +11,14 @@ import IndexDetail from '@/views/projects/List/components/IndexDetail.vue'
 const compName = ref('IndexDetail')
 const update = ref(false)
 
-const store = useStore()
 const projectStore = useProject()
 
 const project = computed(() => projectStore.project)
 
 watch(project, () => (compName.value = 'IndexDetail'))
 
-const createProject = (payload: Project) =>
-  store.dispatch('project/createProject', payload)
-const updateProject = (payload: { pk: string } & Project) =>
-  store.dispatch('project/updateProject', payload)
+const createProject = (payload: Project) => projectStore.createProject(payload)
+const updateProject = (payload: Project) => projectStore.updateProject(payload)
 
 const createForm = () => {
   update.value = false
