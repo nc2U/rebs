@@ -160,13 +160,13 @@ export interface Relation {
 }
 
 export interface SiteContract {
-  pk: number
-  project: number
-  owner: number
-  owner_desc: SimpleOwner
-  contract_date: string
-  total_price: number
-  contract_area: string | null
+  pk: number | null
+  project: number | null
+  owner: number | null
+  owner_desc?: SimpleOwner
+  contract_date: string | null
+  total_price: number | null
+  contract_area: number | null
   down_pay1: number | null
   down_pay1_is_paid: boolean
   down_pay2: number | null
@@ -177,7 +177,7 @@ export interface SiteContract {
   inter_pay2: number | null
   inter_pay2_date: string | null
   inter_pay2_is_paid: boolean
-  remain_pay: number
+  remain_pay: number | null
   remain_pay_date: string | null
   remain_pay_is_paid: boolean
   ownership_completion: boolean

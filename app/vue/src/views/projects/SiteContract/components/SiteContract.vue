@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
+import { SiteContract } from '@/store/types/project'
 import { numFormat } from '@/utils/baseMixins'
 import FormModal from '@/components/Modals/FormModal.vue'
 import SiteContractForm from './SiteContractForm.vue'
 
-const props = defineProps({
+defineProps({
   contract: {
     type: Object,
     required: true,
@@ -16,8 +17,9 @@ const emit = defineEmits(['multi-submit', 'on-delete'])
 const updateFormModal = ref()
 
 const showDetail = () => updateFormModal.value.callModal()
-const multiSubmit = (payload: any) => emit('multi-submit', payload)
-const onDelete = (payload: any) => emit('on-delete', payload)
+const multiSubmit = (payload: SiteContract) => emit('multi-submit', payload)
+const onDelete = (payload: { pk: number; project: number }) =>
+  emit('on-delete', payload)
 const isDoneText = (bool: boolean) => (bool ? '완료' : '-')
 const isDoneClass = (bool: boolean) => (bool ? 'bg-success' : '')
 </script>

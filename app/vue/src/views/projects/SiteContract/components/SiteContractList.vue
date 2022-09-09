@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { useSite } from '@/store/pinia/project_site'
+import { SiteContract as siteCont } from '@/store/types/project'
 import { headerSecondary } from '@/utils/cssMixins'
 import SiteContract from './SiteContract.vue'
 import Pagination from '@/components/Pagination'
@@ -13,7 +14,7 @@ const siteContCount = computed(() => siteStore.siteContCount)
 
 const siteContPages = (num: number) => Math.ceil(siteContCount.value / num)
 const pageSelect = (page: number) => emit('page-select', page)
-const multiSubmit = (payload: any) => emit('multi-submit', payload)
+const multiSubmit = (payload: siteCont) => emit('multi-submit', payload)
 const onDelete = (pk: number) => emit('on-delete', pk)
 </script>
 

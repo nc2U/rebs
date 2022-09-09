@@ -2,8 +2,9 @@
 import { ref, reactive, computed, watch, onBeforeMount } from 'vue'
 import { useSite } from '@/store/pinia/project_site'
 import { dateFormat } from '@/utils/baseMixins'
-import { write_project } from '@/utils/pageAuth'
 import { isValidate } from '@/utils/helper'
+import { SiteContract } from '@/store/types/project'
+import { write_project } from '@/utils/pageAuth'
 import Multiselect from '@vueform/multiselect'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
@@ -24,13 +25,13 @@ const alertModal = ref()
 
 const validated = ref(false)
 
-const pk = ref<number | null>(null)
-const form = reactive({
-  project: null as number | null,
-  owner: null as number | null,
-  contract_date: null as string | null,
-  total_price: null as number | null,
-  contract_area: null as number | null,
+const form = reactive<SiteContract>({
+  pk: null,
+  project: null,
+  owner: null,
+  contract_date: null,
+  total_price: null,
+  contract_area: null,
   down_pay1: null,
   down_pay1_is_paid: false,
   down_pay2: null,
@@ -42,7 +43,7 @@ const form = reactive({
   inter_pay2_date: null as string | null,
   inter_pay2_is_paid: false,
   remain_pay: null,
-  remain_pay_date: null as string | null,
+  remain_pay_date: null,
   remain_pay_is_paid: false,
   ownership_completion: false,
   acc_bank: '',
@@ -108,24 +109,23 @@ watch(form, val => {
 
 watch(getAreaByOwner, val => (form.contract_area = val))
 
-const onSubmit = (event: any) => {
+const onSubmit = (event: Event) => {
   if (isValidate(event)) {
     validated.value = true
   } else {
-    const payload = props.contract ? { pk: pk.value, ...form } : { ...form }
-    if (write_project) multiSubmit(payload)
+    if (write_project) multiSubmit({ ...form })
     else alertModal.value.callModal()
   }
 }
 
-const multiSubmit = (multiPayload: any) => {
+const multiSubmit = (multiPayload: SiteContract) => {
   emit('multi-submit', multiPayload)
   emit('close')
 }
 
 const deleteObject = () => {
   emit('on-delete', { pk: props.contract.pk, project: props.contract.project })
-  delModal.value.visible = false
+  delModal.value.close()
   emit('close')
 }
 
@@ -136,7 +136,7 @@ const deleteConfirm = () => {
 
 onBeforeMount(() => {
   if (props.contract) {
-    pk.value = props.contract.pk
+    form.pk = props.contract.pk
     form.project = props.contract.project
     form.owner = props.contract.owner
     form.contract_date = props.contract.contract_date
@@ -160,9 +160,7 @@ onBeforeMount(() => {
     form.acc_number = props.contract.acc_number
     form.acc_owner = props.contract.acc_owner
     form.note = props.contract.note
-  } else {
-    form.project = props.project
-  }
+  } else form.project = props.project
 })
 </script>
 
