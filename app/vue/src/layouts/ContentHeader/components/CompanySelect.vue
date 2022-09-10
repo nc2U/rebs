@@ -16,9 +16,9 @@ const comSelect = (event: Event) =>
   nextTick(() => emit('com-select', (event.target as HTMLSelectElement).value))
 
 onBeforeMount(() => {
+  companyStore.fetchCompanyList()
   currentCompany.value = initComId.value
   companyStore.fetchCompany(currentCompany.value)
-  companyStore.fetchCompanyList()
 })
 </script>
 

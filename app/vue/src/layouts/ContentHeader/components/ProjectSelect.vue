@@ -16,9 +16,9 @@ const projSelect = (event: Event) =>
   nextTick(() => emit('proj-select', (event.target as HTMLSelectElement).value))
 
 onBeforeMount(() => {
+  projectStore.fetchProjectList()
   currentProject.value = initProjId.value
   projectStore.fetchProject(currentProject.value)
-  projectStore.fetchProjectList()
 })
 </script>
 
