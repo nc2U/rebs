@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { useStore } from 'vuex'
+import { useComCash } from '@/store/pinia/comCash'
+import { CashBook } from '@/store/types/comCash'
 import Cashes from '@/views/comCash/Manage/components/Cashes.vue'
 import Pagination from '@/components/Pagination'
 import AlertModal from '@/components/Modals/AlertModal.vue'
@@ -10,18 +11,15 @@ defineProps({ company: { type: Object, default: null } })
 
 const emit = defineEmits(['page-select', 'on-update', 'on-delete'])
 
-const store = useStore()
-
-const cashesPages = computed(() => store.getters['comCash/cashesPages'])
-const getCashLogs = computed(() => store.getters['comCash/getCashLogs'])
-const listAccD1List = computed(() => store.state.comCash.listAccD1List)
-const listAccD2List = computed(() => store.state.comCash.listAccD2List)
-const listAccD3List = computed(() => store.state.comCash.listAccD3List)
+const useComCashStore = useComCash()
+const cashesPages = computed(() => useComCashStore.cashesPages)
+const getCashLogs = computed(() => useComCashStore.getCashLogs)
+const listAccD1List = computed(() => useComCashStore.listAccD1List)
+const listAccD2List = computed(() => useComCashStore.listAccD2List)
+const listAccD3List = computed(() => useComCashStore.listAccD3List)
 
 const pageSelect = (page: number) => emit('page-select', page)
-
-const onUpdate = (payload: any) => emit('on-update', payload)
-
+const onUpdate = (payload: CashBook) => emit('on-update', payload)
 const onDelete = (pk: number) => emit('on-delete', pk)
 </script>
 

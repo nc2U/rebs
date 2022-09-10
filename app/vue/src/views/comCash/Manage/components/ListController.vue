@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, reactive, ref, watch, nextTick } from 'vue'
-import { useStore } from 'vuex'
+import { useComCash } from '@/store/pinia/comCash'
 import { numFormat, dateFormat } from '@/utils/baseMixins'
 import DatePicker from '@/components/DatePicker/index.vue'
 import { maska as vMaska } from 'maska'
@@ -30,12 +30,12 @@ const formsCheck = computed(() => {
   return a && b && c && d && e && f && g && h
 })
 
-const store = useStore()
-const formAccD1List = computed(() => store.state.comCash.formAccD1List)
-const formAccD2List = computed(() => store.state.comCash.formAccD2List)
-const formAccD3List = computed(() => store.state.comCash.formAccD3List)
-const comBankList = computed(() => store.state.comCash.comBankList)
-const cashBookCount = computed(() => store.state.comCash.cashBookCount)
+const useComCashStore = useComCash()
+const formAccD1List = computed(() => useComCashStore.formAccD1List)
+const formAccD2List = computed(() => useComCashStore.formAccD2List)
+const formAccD3List = computed(() => useComCashStore.formAccD3List)
+const comBankList = computed(() => useComCashStore.comBankList)
+const cashBookCount = computed(() => useComCashStore.cashBookCount)
 
 watch(from_date, () => listFiltering(1))
 watch(to_date, () => listFiltering(2))

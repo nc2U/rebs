@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import { ref, computed, nextTick, onBeforeMount } from 'vue'
-import { useStore } from 'vuex'
+import { ref, reactive, computed, nextTick, onBeforeMount } from 'vue'
+import { useComCash } from '@/store/pinia/comCash'
+import { CashBook } from '@/store/types/comCash'
 import { dateFormat } from '@/utils/baseMixins'
 import DatePicker from '@/components/DatePicker/index.vue'
 
@@ -14,132 +15,135 @@ const emit = defineEmits(['on-submit', 'on-delete', 'close'])
 
 const validated = ref(false)
 
-const form = ref({
-  company: '',
-  sort: '',
-  account_d1: '',
-  account_d2: '',
-  account_d3: '',
+const form = reactive<CashBook>({
+  pk: null,
+  company: null,
+  sort: null,
+  account_d1: null,
+  account_d2: null,
+  account_d3: null,
   content: '',
   trader: '',
-  bank_account: '',
+  bank_account: null,
   income: null,
   outlay: null,
   evidence: '',
   note: '',
-  deal_date: new Date() as Date | string,
+  deal_date: dateFormat(new Date()),
 })
 
 const formsCheck = computed(() => {
   if (props.cash) {
-    const a = form.value.company === props.cash.company
-    const b = form.value.sort === props.cash.sort
-    const c = form.value.account_d1 === props.cash.account_d1
-    const d = form.value.account_d2 === props.cash.account_d2
-    const e = form.value.account_d3 === props.cash.account_d3
-    const f = form.value.content === props.cash.content
-    const g = form.value.trader === props.cash.trader
-    const h = form.value.bank_account === props.cash.bank_account
-    const i = form.value.income === props.cash.income
-    const j = form.value.outlay === props.cash.outlay
-    const k = form.value.evidence === props.cash.evidence
-    const l = form.value.note === props.cash.note
+    const a = form.company === props.cash.company
+    const b = form.sort === props.cash.sort
+    const c = form.account_d1 === props.cash.account_d1
+    const d = form.account_d2 === props.cash.account_d2
+    const e = form.account_d3 === props.cash.account_d3
+    const f = form.content === props.cash.content
+    const g = form.trader === props.cash.trader
+    const h = form.bank_account === props.cash.bank_account
+    const i = form.income === props.cash.income
+    const j = form.outlay === props.cash.outlay
+    const k = form.evidence === props.cash.evidence
+    const l = form.note === props.cash.note
     const m =
-      form.value.deal_date.toString() ===
-      new Date(props.cash.deal_date).toString()
+      form.deal_date.toString() === new Date(props.cash.deal_date).toString()
 
     return a && b && c && d && e && f && g && h && i && j && k && l && m
   } else return false
 })
 
-const store = useStore()
-const formAccD1List = computed(() => store.state.comCash.formAccD1List)
-const formAccD2List = computed(() => store.state.comCash.formAccD2List)
-const formAccD3List = computed(() => store.state.comCash.formAccD3List)
-const comBankList = computed(() => store.state.comCash.comBankList)
+const useComCashStore = useComCash()
+const formAccD1List = computed(() => useComCashStore.formAccD1List)
+const formAccD2List = computed(() => useComCashStore.formAccD2List)
+const formAccD3List = computed(() => useComCashStore.formAccD3List)
+const comBankList = computed(() => useComCashStore.comBankList)
 
-const onSubmit = (event: any) => {
-  const e = event.currentTarget
-  if (e.checkValidity() === false) {
-    event.preventDefault()
-    event.stopPropagation()
+const fetchFormAccD1List = (sort: number | null) =>
+  useComCashStore.fetchFormAccD1List(sort)
+const fetchFormAccD2List = (sort: number | null, d1: number | null) =>
+  useComCashStore.fetchFormAccD2List(sort, d1)
+const fetchFormAccD3List = (
+  sort: number | null,
+  d1: number | null,
+  d2: number | null,
+) => useComCashStore.fetchFormAccD3List(sort, d1, d2)
 
-    validated.value = true
+const sort_change = (event: Event) => {
+  if ((event.target as HTMLSelectElement).value === '1') {
+    form.account_d1 = 4
+    form.account_d2 = null
+    form.account_d3 = null
+    form.outlay = null
+  } else if ((event.target as HTMLSelectElement).value === '2') {
+    form.account_d1 = 5
+    form.account_d2 = null
+    form.account_d3 = null
+    form.income = null
+  } else if ((event.target as HTMLSelectElement).value === '3') {
+    form.account_d1 = 6
+    form.account_d2 = 19
+    form.account_d3 = 128
   } else {
-    form.value.deal_date = dateFormat(form.value.deal_date)
-    emit('on-submit', form.value)
-  }
-}
-
-const sort_change = (event: any) => {
-  if (event.target.value === '1') {
-    form.value.account_d1 = '4'
-    form.value.account_d2 = ''
-    form.value.account_d3 = ''
-    form.value.outlay = null
-  } else if (event.target.value === '2') {
-    form.value.account_d1 = '5'
-    form.value.account_d2 = ''
-    form.value.account_d3 = ''
-    form.value.income = null
-  } else if (event.target.value === '3') {
-    form.value.account_d1 = '6'
-    form.value.account_d2 = '19'
-    form.value.account_d3 = '128'
-  } else {
-    form.value.account_d1 = ''
-    form.value.account_d2 = ''
-    form.value.account_d3 = ''
+    form.account_d1 = null
+    form.account_d2 = null
+    form.account_d3 = null
   }
   callAccount()
 }
 
 const d1_change = () => {
-  form.value.account_d2 = ''
-  form.value.account_d3 = ''
+  form.account_d2 = null
+  form.account_d3 = null
   callAccount()
 }
 
 const d2_change = () => {
-  form.value.account_d3 = ''
+  form.account_d3 = null
   callAccount()
 }
 
 const callAccount = () => {
   nextTick(() => {
-    const sort = form.value.sort
-    const d1 = form.value.account_d1 ? form.value.account_d1 : null
-    const d2 = form.value.account_d2 ? form.value.account_d2 : null
-    fetchFormAccD1List({ sort })
-    fetchFormAccD2List({ sort, d1 })
-    fetchFormAccD3List({ sort, d1, d2 })
+    const sort = form.sort
+    const d1 = form.account_d1 ? form.account_d1 : null
+    const d2 = form.account_d2 ? form.account_d2 : null
+    fetchFormAccD1List(sort)
+    fetchFormAccD2List(sort, d1)
+    fetchFormAccD3List(sort, d1, d2)
   })
 }
-const fetchFormAccD1List = (payload: { sort: string }) =>
-  store.dispatch('comCash/fetchFormAccD1List', payload)
-const fetchFormAccD2List = (payload: { sort: string; d1: string | null }) =>
-  store.dispatch('comCash/fetchFormAccD2List', payload)
-const fetchFormAccD3List = (payload: {
-  sort: string
-  d1: string | null
-  d2: string | null
-}) => store.dispatch('comCash/fetchFormAccD3List', payload)
+
+const onSubmit = (event: Event) => {
+  const e = event.currentTarget as HTMLSelectElement
+  if (!e.checkValidity()) {
+    event.preventDefault()
+    event.stopPropagation()
+
+    validated.value = true
+  } else {
+    form.deal_date = dateFormat(form.deal_date)
+    emit('on-submit', form)
+    emit('close')
+  }
+}
 
 onBeforeMount(() => {
   if (props.cash) {
-    form.value.company = props.cash.company
-    form.value.sort = props.cash.sort
-    form.value.account_d1 = props.cash.account_d1
-    form.value.account_d2 = props.cash.account_d2
-    form.value.account_d3 = props.cash.account_d3
-    form.value.content = props.cash.content
-    form.value.trader = props.cash.trader
-    form.value.bank_account = props.cash.bank_account
-    form.value.income = props.cash.income
-    form.value.outlay = props.cash.outlay
-    form.value.evidence = props.cash.evidence // ? cash.evidence : '0'
-    form.value.note = props.cash.note
-    form.value.deal_date = new Date(props.cash.deal_date)
+    form.pk = props.cash.pk
+    form.company = props.cash.company
+    form.sort = props.cash.sort
+    form.account_d1 = props.cash.account_d1
+    form.account_d2 = props.cash.account_d2
+    form.account_d3 = props.cash.account_d3
+    form.content = props.cash.content
+    form.trader = props.cash.trader
+    form.bank_account = props.cash.bank_account
+    form.income = props.cash.income
+    form.outlay = props.cash.outlay
+    form.evidence = props.cash.evidence // ? cash.evidence : '0'
+    form.note = props.cash.note
+    form.deal_date = dateFormat(new Date(props.cash.deal_date))
   }
   callAccount()
 })
@@ -174,7 +178,7 @@ onBeforeMount(() => {
             <CFormLabel class="col-sm-4 col-form-label">구분</CFormLabel>
             <CCol sm="8">
               <CFormSelect
-                v-model="form.sort"
+                v-model.number="form.sort"
                 required
                 :disabled="cash && cash.sort !== ''"
                 @change="sort_change"

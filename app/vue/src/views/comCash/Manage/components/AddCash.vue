@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
 import { useAccount } from '@/store/pinia/account'
+import { Company } from '@/store/types/settings'
 import { headerLight } from '@/utils/cssMixins'
 import FormModal from '@/components/Modals/FormModal.vue'
 import CashForm from '@/views/comCash/Manage/components/CashForm.vue'
@@ -23,7 +24,7 @@ const createConfirm = () => {
   else createAlertModal.value.callModal()
 }
 
-const createObject = (payload: any) => {
+const createObject = (payload: Company) => {
   emit('on-create', payload)
   createFormModal.value.visible = false
 }

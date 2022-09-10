@@ -34,14 +34,14 @@ export const useCompany = defineStore('company', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const fetchCompany = (pk: string) => {
+  const fetchCompany = (pk: number) => {
     api
       .get(`/company/${pk}/`)
       .then(res => (company.value = res.data))
       .catch(err => errorHandle(err.response.data))
   }
 
-  const fetchLogo = (pk: string) => {
+  const fetchLogo = (pk: number) => {
     api
       .get(`/logo/${pk}/`)
       .then(res => (logo.value = res.data))
@@ -69,7 +69,7 @@ export const useCompany = defineStore('company', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const updateCompany = (payload: { pk: string } & Company) => {
+  const updateCompany = (payload: { pk: number } & Company) => {
     const { pk, ...comData } = payload
     api
       .put(`/company/${pk}/`, comData)
@@ -81,7 +81,7 @@ export const useCompany = defineStore('company', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const updateLogo = (payload: { pk: string } & Logo) => {
+  const updateLogo = (payload: { pk: number } & Logo) => {
     const { pk, ...logoData } = payload
     api
       .put(`/logo/${pk}/`, logoData)
@@ -92,7 +92,7 @@ export const useCompany = defineStore('company', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const deleteCompany = (pk: string) => {
+  const deleteCompany = (pk: number) => {
     api
       .delete(`/company/${pk}/`)
       .then(() => {
@@ -102,7 +102,7 @@ export const useCompany = defineStore('company', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const deleteLogo = (pk: string) => {
+  const deleteLogo = (pk: number) => {
     api
       .delete(`/logo/${pk}/`)
       .then(() => message('warning', '', '삭제되었습니다.'))

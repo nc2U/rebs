@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
 import { useAccount } from '@/store/pinia/account'
+import { CashBook } from '@/store/types/comCash'
 import { write_company_cash } from '@/utils/pageAuth'
 import { numFormat, cutString, diffDate } from '@/utils/baseMixins'
 import FormModal from '@/components/Modals/FormModal.vue'
@@ -14,6 +15,7 @@ const props = defineProps({
     required: true,
   },
 })
+
 const emit = defineEmits(['on-update', 'on-delete'])
 
 const delModal = ref()
@@ -36,7 +38,7 @@ const showDetail = () => {
   updateFormModal.value.callModal()
 }
 
-const updateConfirm = (payload: any) => {
+const updateConfirm = (payload: CashBook) => {
   if (pageManageAuth.value) {
     if (allowedPeriod.value) updateObject(payload)
     else
@@ -47,8 +49,8 @@ const updateConfirm = (payload: any) => {
   } else alertModal.value.callModal()
 }
 
-const updateObject = (payload: any) => {
-  emit('on-update', { ...{ pk: props.cash.pk }, ...payload })
+const updateObject = (payload: CashBook) => {
+  emit('on-update', { ...payload })
   updateFormModal.value.visible = false
 }
 
