@@ -123,7 +123,7 @@ const onSubmit = (event: Event) => {
     validated.value = true
   } else {
     form.deal_date = dateFormat(form.deal_date)
-    emit('on-submit', form)
+    emit('on-submit', { ...form })
     emit('close')
   }
 }
@@ -180,7 +180,7 @@ onBeforeMount(() => {
               <CFormSelect
                 v-model.number="form.sort"
                 required
-                :disabled="cash && cash.sort !== ''"
+                :disabled="cash && cash.sort !== null"
                 @change="sort_change"
               >
                 <option value="">---------</option>
@@ -198,9 +198,9 @@ onBeforeMount(() => {
             </CFormLabel>
             <CCol sm="8">
               <CFormSelect
-                v-model="form.account_d1"
+                v-model.number="form.account_d1"
                 required
-                :disabled="form.sort === ''"
+                :disabled="form.sort === null"
                 @change="d1_change"
               >
                 <option value="">---------</option>
@@ -221,9 +221,9 @@ onBeforeMount(() => {
             </CFormLabel>
             <CCol sm="8">
               <CFormSelect
-                v-model="form.account_d2"
+                v-model.number="form.account_d2"
                 required
-                :disabled="form.account_d1 === ''"
+                :disabled="form.account_d1 === null"
                 @change="d2_change"
               >
                 <option value="">---------</option>
@@ -241,9 +241,9 @@ onBeforeMount(() => {
             </CFormLabel>
             <CCol sm="8">
               <CFormSelect
-                v-model="form.account_d3"
+                v-model.number="form.account_d3"
                 required
-                :disabled="form.account_d2 === ''"
+                :disabled="form.account_d2 === null"
               >
                 <option value="">---------</option>
                 <option v-for="d3 in formAccD3List" :key="d3.pk" :value="d3.pk">
@@ -264,7 +264,7 @@ onBeforeMount(() => {
                 v-model="form.content"
                 placeholder="거래 내용"
                 required
-                :disabled="form.sort === ''"
+                :disabled="form.sort === null"
               />
             </CCol>
           </CRow>
@@ -276,7 +276,7 @@ onBeforeMount(() => {
               <CFormInput
                 v-model="form.trader"
                 placeholder="거래처"
-                :disabled="form.sort === ''"
+                :disabled="form.sort === null"
               />
             </CCol>
           </CRow>
@@ -287,13 +287,13 @@ onBeforeMount(() => {
         <CCol sm="6">
           <CRow>
             <CFormLabel class="col-sm-4 col-form-label">
-              {{ !cash && form.sort === '3' ? '출금' : '거래' }}계좌
+              {{ !cash && form.sort === 3 ? '출금' : '거래' }}계좌
             </CFormLabel>
             <CCol sm="8">
               <CFormSelect
-                v-model="form.bank_account"
+                v-model.number="form.bank_account"
                 required
-                :disabled="form.sort === ''"
+                :disabled="form.sort === null"
               >
                 <option value="">---------</option>
                 <option v-for="ba in comBankList" :key="ba.pk" :value="ba.pk">
@@ -305,7 +305,7 @@ onBeforeMount(() => {
         </CCol>
 
         <CCol sm="6">
-          <CRow v-if="form.sort === '2'">
+          <CRow v-if="form.sort === 2">
             <CFormLabel class="col-sm-4 col-form-label">지출증빙</CFormLabel>
             <CCol sm="8">
               <CFormSelect v-model="form.evidence" required>
@@ -322,13 +322,13 @@ onBeforeMount(() => {
             </CCol>
           </CRow>
 
-          <CRow v-if="!cash && form.sort === '3'">
+          <CRow v-if="!cash && form.sort === 3">
             <CFormLabel class="col-sm-4 col-form-label">입금계좌</CFormLabel>
             <CCol sm="8">
               <CFormSelect
                 v-model="form.bank_account_to"
                 required
-                :disabled="form.sort !== '3'"
+                :disabled="form.sort !== 3"
               >
                 <option value="">---------</option>
                 <option v-for="ba in comBankList" :key="ba.pk" :value="ba.pk">
@@ -350,8 +350,8 @@ onBeforeMount(() => {
                 type="number"
                 min="0"
                 placeholder="출금 금액"
-                :required="form.sort === '2'"
-                :disabled="form.sort === '1' || form.sort === ''"
+                :required="form.sort === 2"
+                :disabled="form.sort === 1 || form.sort === null"
               />
             </CCol>
           </CRow>
@@ -365,8 +365,8 @@ onBeforeMount(() => {
                 type="number"
                 min="0"
                 placeholder="입금 금액"
-                :required="form.sort === '1'"
-                :disabled="form.sort === '2' || form.sort === ''"
+                :required="form.sort === 1"
+                :disabled="form.sort === 2 || form.sort === null"
               />
             </CCol>
           </CRow>
@@ -381,7 +381,7 @@ onBeforeMount(() => {
               <CFormTextarea
                 v-model.number="form.note"
                 placeholder="특이사항"
-                :disabled="form.sort === ''"
+                :disabled="form.sort === null"
               />
             </CCol>
           </CRow>
