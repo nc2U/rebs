@@ -2,8 +2,6 @@
 import { ref, computed, onBeforeMount, nextTick } from 'vue'
 import { useProject } from '@/store/pinia/project'
 
-defineProps({ project: { type: Object, default: null } })
-
 const emit = defineEmits(['proj-select'])
 
 const currentProject = ref()

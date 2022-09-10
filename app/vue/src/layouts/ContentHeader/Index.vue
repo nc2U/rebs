@@ -49,13 +49,11 @@ const projSelect = (proj: number) => {
 
       <CompanySelect
         v-if="selector === 'CompanySelect'"
-        :company="company"
         @com-select="comSelect"
       />
 
       <ProjectSelect
         v-if="selector === 'ProjectSelect'"
-        :project="project"
         @proj-select="projSelect"
       />
 

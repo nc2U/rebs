@@ -2,8 +2,6 @@
 import { ref, computed, nextTick, onBeforeMount } from 'vue'
 import { useCompany } from '@/store/pinia/company'
 
-defineProps({ company: { type: Object, default: null } })
-
 const emit = defineEmits(['com-select'])
 
 const currentCompany = ref()
