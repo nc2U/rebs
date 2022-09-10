@@ -24,13 +24,13 @@ const emit = defineEmits(['header-select'])
 const companyStore = useCompany()
 const projectStore = useProject()
 
-const comSelect = (com: string) => {
+const comSelect = (com: number) => {
   if (!!com) companyStore.fetchCompany(com)
   else companyStore.company = null
   emit('header-select', com)
 }
 
-const projSelect = (proj: string) => {
+const projSelect = (proj: number) => {
   if (!!proj) projectStore.fetchProject(proj)
   else projectStore.project = null
   emit('header-select', proj)

@@ -40,7 +40,7 @@ export const useProject = defineStore('project', () => {
       .then(res => (projectList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
-  const fetchProject = (pk: string) =>
+  const fetchProject = (pk: number) =>
     api
       .get(`/project/${pk}/`)
       .then(res => (project.value = res.data))
@@ -59,7 +59,7 @@ export const useProject = defineStore('project', () => {
       .then(res => fetchProject(res.data.pk).then(() => message()))
       .catch(err => errorHandle(err.response.data))
 
-  const deleteProject = (pk: string) =>
+  const deleteProject = (pk: number) =>
     api
       .delete(`/project/${pk}/`)
       .then(() =>
