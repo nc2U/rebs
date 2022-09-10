@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { useAccount } from '@/store/pinia/account'
+import { write_company_settings } from '@/utils/pageAuth'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 import { headerSecondary } from '@/utils/cssMixins'
 
@@ -10,20 +11,18 @@ defineProps({
     default: null,
   },
 })
+
 const emit = defineEmits(['create-form', 'update-form'])
 
 const alertModal = ref()
 
-const account = useAccount()
-
 const toEdit = () => {
-  if (
-    account.superAuth ||
-    (account.staffAuth && account.staffAuth.company_settings === '2')
-  )
-    emit('update-form')
+  if (write_company_settings) emit('update-form')
   else alertModal.value.callModal()
 }
+
+const account = useAccount()
+
 const toCreate = () => {
   if (account.superAuth) emit('create-form')
   else alertModal.value.callModal()

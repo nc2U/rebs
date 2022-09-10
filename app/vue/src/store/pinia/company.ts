@@ -6,12 +6,10 @@ import { errorHandle, message } from '@/utils/helper'
 import { Company, Logo } from '@/store/types/settings'
 
 export const useCompany = defineStore('company', () => {
-  // states
+  // states & getters
   const companyList = ref<Company[]>([])
   const company = ref<Company | null>(null)
-  const logo = ref<Logo | null>(null)
 
-  // getters
   const initComId = computed(() => {
     const account = useAccount()
     return account.userInfo?.staffauth?.company
@@ -27,103 +25,87 @@ export const useCompany = defineStore('company', () => {
   })
 
   // actions
-  const fetchCompanyList = () => {
+  const fetchCompanyList = () =>
     api
       .get('/company/')
       .then(res => (companyList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
-  }
 
-  const fetchCompany = (pk: number) => {
+  const fetchCompany = (pk: number) =>
     api
       .get(`/company/${pk}/`)
       .then(res => (company.value = res.data))
       .catch(err => errorHandle(err.response.data))
-  }
 
-  const fetchLogo = (pk: number) => {
+  const createCompany = (payload: Company) =>
+    api
+      .post(`/company/`, payload)
+      .then(res =>
+        fetchCompanyList().then(() =>
+          fetchCompany(res.data.pk).then(() => message()),
+        ),
+      )
+      .catch(err => errorHandle(err.response.data))
+
+  const updateCompany = (payload: Company) =>
+    api
+      .put(`/company/${payload.pk}/`, payload)
+      .then(res => fetchCompany(res.data.pk).then(() => message()))
+      .catch(err => errorHandle(err.response.data))
+
+  const deleteCompany = (pk: number) =>
+    api
+      .delete(`/company/${pk}/`)
+      .then(() =>
+        fetchCompanyList().then(() =>
+          message('warning', '', '삭제되었습니다.'),
+        ),
+      )
+      .catch(err => errorHandle(err.response.data))
+
+  // states & getters
+  const logo = ref<Logo | null>(null)
+
+  const fetchLogo = (pk: number) =>
     api
       .get(`/logo/${pk}/`)
       .then(res => (logo.value = res.data))
       .catch(err => errorHandle(err.response.data))
-  }
 
-  const createCompany = (payload: Company) => {
-    api
-      .post(`/company/`, payload)
-      .then(res => {
-        fetchCompany(res.data.pk)
-        fetchCompanyList()
-        message()
-      })
-      .catch(err => errorHandle(err.response.data))
-  }
-
-  const createLogo = (payload: Logo) => {
+  const createLogo = (payload: Logo) =>
     api
       .post(`/logo/`, payload)
-      .then(res => {
-        fetchLogo(res.data.pk)
-        message()
-      })
+      .then(res => fetchLogo(res.data.pk).then(() => message()))
       .catch(err => errorHandle(err.response.data))
-  }
 
-  const updateCompany = (payload: { pk: number } & Company) => {
-    const { pk, ...comData } = payload
+  const updateLogo = (payload: Logo) =>
     api
-      .put(`/company/${pk}/`, comData)
-      .then(res => {
-        fetchCompany(res.data.pk)
-        fetchCompanyList()
-        message()
-      })
+      .put(`/logo/${payload.pk}/`, payload)
+      .then(res => fetchLogo(res.data.pk).then(() => message()))
       .catch(err => errorHandle(err.response.data))
-  }
 
-  const updateLogo = (payload: { pk: number } & Logo) => {
-    const { pk, ...logoData } = payload
-    api
-      .put(`/logo/${pk}/`, logoData)
-      .then(res => {
-        fetchLogo(res.data.pk)
-        message()
-      })
-      .catch(err => errorHandle(err.response.data))
-  }
-
-  const deleteCompany = (pk: number) => {
-    api
-      .delete(`/company/${pk}/`)
-      .then(() => {
-        fetchCompanyList()
-        message('warning', '', '삭제되었습니다.')
-      })
-      .catch(err => errorHandle(err.response.data))
-  }
-
-  const deleteLogo = (pk: number) => {
+  const deleteLogo = (pk: number) =>
     api
       .delete(`/logo/${pk}/`)
       .then(() => message('warning', '', '삭제되었습니다.'))
       .catch(err => errorHandle(err.response.data))
-  }
 
   return {
     companyList,
     company,
-    logo,
     initComId,
     comSelect,
 
     fetchCompanyList,
     fetchCompany,
-    fetchLogo,
     createCompany,
-    createLogo,
     updateCompany,
-    updateLogo,
     deleteCompany,
+
+    logo,
+    fetchLogo,
+    createLogo,
+    updateLogo,
     deleteLogo,
   }
 })

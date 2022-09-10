@@ -1,48 +1,33 @@
 <script lang="ts" setup>
-import { computed, ref, shallowRef, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/settings/_menu/headermixin'
-import { useCompany, Company } from '@/store/pinia/company'
+import { useCompany } from '@/store/pinia/company'
+import { Company } from '@/store/types/settings'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import CompanyForm from './components/CompanyForm.vue'
 import CompanyDetail from './components/CompanyDetail.vue'
 
-const update = ref(false)
-
-const compName = shallowRef('CompanyDetail')
+const compName = ref('CompanyDetail')
 
 const companyStore = useCompany()
-
 const company = computed(() => companyStore.company)
 
 watch(company, () => (compName.value = 'CompanyDetail'))
 
 const createCompany = (payload: Company) => companyStore.createCompany(payload)
+const updateCompany = (payload: Company) => companyStore.updateCompany(payload)
 
-const updateCompany = (payload: { pk: string } & Company) =>
-  companyStore.updateCompany(payload)
+const createForm = () => (compName.value = 'CreateForm')
+const updateForm = () => (compName.value = 'UpdateForm')
+const resetForm = () => (compName.value = 'CompanyDetail')
 
-const createForm = () => {
-  update.value = false
-  compName.value = 'CompanyForm'
-}
+const onCreate = (payload: Company) => createCompany(payload)
+const onUpdate = (payload: Company) => updateCompany(payload)
 
-const updateForm = () => {
-  update.value = true
-  compName.value = 'CompanyForm'
-}
-
-const resetForm = () => {
-  update.value = false
-  compName.value = 'CompanyDetail'
-}
-
-const toCreate = (payload: Company) => {
-  createCompany(payload)
-}
-
-const toUpdate = (payload: { pk: string } & Company) => {
-  updateCompany(payload)
+const onSubmit = (payload: Company) => {
+  if (payload.pk) onUpdate(payload)
+  else onCreate(payload)
 }
 </script>
 
@@ -51,7 +36,6 @@ const toUpdate = (payload: { pk: string } & Company) => {
     :page-title="pageTitle"
     :nav-menu="navMenu"
     :selector="'CompanySelect'"
-    @header-select="onSelectAdd"
   />
 
   <ContentBody>
@@ -61,12 +45,17 @@ const toUpdate = (payload: { pk: string } & Company) => {
       @create-form="createForm"
       @update-form="updateForm"
     />
+
     <CompanyForm
-      v-if="compName === 'CompanyForm'"
+      v-if="compName === 'CreateForm'"
+      @on-submit="onSubmit"
+      @reset-form="resetForm"
+    />
+
+    <CompanyForm
+      v-if="compName === 'UpdateForm'"
       :company="company"
-      :update="update"
-      @to-create="toCreate"
-      @to-update="toUpdate"
+      @on-submit="onSubmit"
       @reset-form="resetForm"
     />
   </ContentBody>

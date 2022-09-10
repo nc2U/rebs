@@ -1,19 +1,22 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount, reactive, ref } from 'vue'
+import { computed, onBeforeMount, reactive, ref, watch } from 'vue'
 import { useAccount } from '@/store/pinia/account'
+import { Company } from '@/store/types/settings'
+import { write_company_settings } from '@/utils/pageAuth'
+import { dateFormat } from '@/utils/baseMixins'
+import { maska as vMaska } from 'maska'
+import { callAddress, AddressData } from '@/components/DaumPostcode/address'
+import DaumPostcode from '@/components/DaumPostcode/index.vue'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
-import DaumPostcode from '@/components/DaumPostcode/index.vue'
-import { callAddress, AddressData } from '@/components/DaumPostcode/address'
-import { dateFormat } from '@/utils/baseMixins'
-import { maska as vMaska } from 'maska'
+
+const emit = defineEmits(['on-submit', 'reset-form'])
 
 const account = useAccount()
 
 const props = defineProps({
   company: { type: Object, default: null },
-  update: { type: Boolean, required: true },
 })
 
 const delModal = ref()
@@ -22,17 +25,17 @@ const confirmModal = ref()
 const postCode = ref()
 const address2 = ref()
 
-const pk = ref('')
 const validated = ref(false)
-const form = reactive({
+const form = reactive<Company>({
+  pk: null,
   name: '',
   ceo: '',
   tax_number: '',
   org_number: '',
   business_cond: '',
   business_even: '',
-  es_date: new Date() as string | Date,
-  op_date: new Date() as string | Date,
+  es_date: dateFormat(new Date()),
+  op_date: dateFormat(new Date()),
   zipcode: '',
   address1: '',
   address2: '',
@@ -51,10 +54,10 @@ const addressCallback = (data: AddressData) => {
   }
 }
 
-const onSubmit = (event: any) => {
-  if (writeAuth.value) {
-    const form = event.currentTarget
-    if (form.checkValidity() === false) {
+const onSubmit = (event: Event) => {
+  if (write_company_settings) {
+    const e = event.currentTarget as HTMLSelectElement
+    if (!e.checkValidity()) {
       event.preventDefault()
       event.stopPropagation()
 
@@ -67,19 +70,15 @@ const onSubmit = (event: any) => {
   }
 }
 
-const emit = defineEmits(['to-create', 'to-update', 'reset-form'])
+watch(form, val => {
+  if (val.es_date) form.es_date = dateFormat(val.es_date)
+  if (val.op_date) form.es_date = dateFormat(val.op_date)
+})
 
 const modalAction = () => {
-  form.es_date = dateFormat(form.es_date)
-  form.op_date = dateFormat(form.op_date)
-
-  if (props.update) {
-    emit('to-update', { ...{ pk: pk.value }, ...form })
-  } else {
-    emit('to-create', form)
-  }
+  emit('on-submit', { ...form })
   validated.value = false
-  confirmModal.value.visible = false
+  confirmModal.value.close()
 }
 
 const deleteCompany = () => {
@@ -87,8 +86,8 @@ const deleteCompany = () => {
   else alertModal.value.callModal()
 }
 
-const confirmText = computed(() => (props.update ? '변경' : '등록'))
-const btnClass = computed(() => (props.update ? 'success' : 'primary'))
+const confirmText = computed(() => (props.company ? '변경' : '등록'))
+const btnClass = computed(() => (props.company ? 'success' : 'primary'))
 
 const formsCheck = computed(() => {
   if (props.company) {
@@ -113,25 +112,17 @@ const formsCheck = computed(() => {
   } else return false
 })
 
-const writeAuth = computed(() => {
-  const create = !!account.superAuth
-  const update =
-    account.superAuth ||
-    (account.staffAuth && account.staffAuth.company_settings === '2')
-  return props.update ? update : create
-})
-
 onBeforeMount(() => {
-  if (props.update && props.company) {
-    pk.value = props.company.pk
+  if (props.company) {
+    form.pk = props.company.pk
     form.name = props.company.name
     form.ceo = props.company.ceo
     form.tax_number = props.company.tax_number
     form.org_number = props.company.org_number
     form.business_cond = props.company.business_cond
     form.business_even = props.company.business_even
-    form.es_date = new Date(props.company.es_date)
-    form.op_date = new Date(props.company.op_date)
+    form.es_date = props.company.es_date
+    form.op_date = props.company.op_date
     form.zipcode = props.company.zipcode
     form.address1 = props.company.address1
     form.address2 = props.company.address2

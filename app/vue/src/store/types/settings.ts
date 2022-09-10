@@ -1,5 +1,5 @@
 export interface Company {
-  pk: number
+  pk: number | null
   name: string
   ceo: string
   tax_number: string
@@ -12,8 +12,8 @@ export interface Company {
   address1: string
   address2: string
   address3: string
-  departments: Department[]
-  positions: Positions[]
+  departments?: Department[]
+  positions?: Positions[]
 }
 
 export interface Logo {
