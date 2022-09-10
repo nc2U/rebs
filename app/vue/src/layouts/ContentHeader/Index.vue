@@ -11,8 +11,8 @@ defineProps({
     default: 'Page Title',
   },
   navMenu: {
-    type: String,
-    default: 'Base Menu',
+    type: Array,
+    default: () => ['Base Menu'],
   },
   selector: {
     type: String,
