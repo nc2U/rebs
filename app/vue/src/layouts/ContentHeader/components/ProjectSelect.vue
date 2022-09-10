@@ -2,22 +2,22 @@
 import { ref, computed, onBeforeMount, nextTick } from 'vue'
 import { useProject } from '@/store/pinia/project'
 
-const proj = ref()
-const projectStore = useProject()
-
-const props = defineProps({ project: { type: Object, default: null } })
-
-const projSelectList = computed(() => projectStore.projSelect)
-const initProjId = computed(() => projectStore.initProjId)
+defineProps({ project: { type: Object, default: null } })
 
 const emit = defineEmits(['proj-select'])
-const projSelect = (event: any) => {
-  nextTick(() => emit('proj-select', event.target.value))
-}
+
+const currentProject = ref()
+
+const projectStore = useProject()
+const initProjId = computed(() => projectStore.initProjId)
+const projSelectList = computed(() => projectStore.projSelect)
+
+const projSelect = (event: Event) =>
+  nextTick(() => emit('proj-select', (event.target as HTMLSelectElement).value))
 
 onBeforeMount(() => {
-  proj.value = initProjId.value
-  projectStore.fetchProject(proj.value)
+  currentProject.value = initProjId.value
+  projectStore.fetchProject(currentProject.value)
   projectStore.fetchProjectList()
 })
 </script>
@@ -26,30 +26,12 @@ onBeforeMount(() => {
   <CRow class="m-0">
     <CFormLabel class="col-lg-1 col-form-label text-body">프로젝트</CFormLabel>
     <CCol md="6" lg="3">
-      <CFormSelect v-model="proj" @change="projSelect">
+      <CFormSelect v-model="currentProject" @change="projSelect">
         <option value="">프로젝트선택</option>
-        <option
-          v-for="proj in projSelectList"
-          :key="proj.value"
-          :value="proj.value"
-        >
-          {{ proj.text }}
+        <option v-for="p in projSelectList" :key="p.value" :value="p.value">
+          {{ p.text }}
         </option>
       </CFormSelect>
     </CCol>
-    <!--    <CCol md="6" lg="4" xl="3">-->
-    <!--      <v-select-->
-    <!--        v-model="selected"-->
-    <!--        :items="projSelect"-->
-    <!--        :hint="`${projSelect.value}, ${projSelect.text}`"-->
-    <!--        item-title="text"-->
-    <!--        item-value="value"-->
-    <!--        label="프로젝트"-->
-    <!--        density="comfortable"-->
-    <!--        persistent-hint-->
-    <!--        return-object-->
-    <!--      />-->
-    <!--      &lt;!&ndash;        @update:modelValue="emit('projSelect', selected)"&ndash;&gt;-->
-    <!--    </CCol>-->
   </CRow>
 </template>
