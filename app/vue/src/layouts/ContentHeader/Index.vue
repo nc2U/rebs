@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import HeaderNav from '@/components/HeaderNav.vue'
 import { useProject } from '@/store/pinia/project'
 import { useCompany } from '@/store/pinia/company'
+import HeaderNav from '@/components/HeaderNav.vue'
 import CompanySelect from '@/layouts/ContentHeader/components/CompanySelect.vue'
 import ProjectSelect from '@/layouts/ContentHeader/components/ProjectSelect.vue'
 
