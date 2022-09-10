@@ -81,22 +81,21 @@ const listFiltering = (payload: Filter) => {
   fetchCashBookList(payload)
 }
 
-const onCreate = (payload: CashBook & { bank_account_to: string }) => {
-  console.log(payload)
-  // payload.company = company.value?.pk
-  // if (payload.sort === 3 && payload.bank_account_to) {
-  //   const { bank_account_to, income, ...inputData } = payload
-  //
-  //   createCashBook(inputData)
-  //
-  //   delete inputData.bank_account
-  //   delete inputData.outlay
-  //
-  //   createCashBook({
-  //     ...{ bank_account: bank_account_to, income },
-  //     ...inputData,
-  //   })
-  // } else createCashBook(payload)
+const onCreate = (payload: CashBook & { bank_account_to: number }) => {
+  payload.company = company.value
+  if (payload.sort === 3 && payload.bank_account_to) {
+    const { bank_account_to, income, ...inputData } = payload
+
+    createCashBook(inputData)
+
+    delete inputData.outlay
+    inputData.bank_account = bank_account_to
+
+    createCashBook({
+      ...{ income },
+      ...inputData,
+    })
+  } else createCashBook(payload)
 }
 
 const onUpdate = (payload: CashBook) => {
