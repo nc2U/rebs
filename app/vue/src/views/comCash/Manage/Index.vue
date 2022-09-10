@@ -66,10 +66,7 @@ const onSelectAdd = (target: number) => {
   }
 }
 
-const pageSelect = (page: number) => {
-  dataFilter.value.page = page
-  listControl.value.listFiltering(page)
-}
+const pageSelect = (page: number) => listControl.value.listFiltering(page)
 
 const listFiltering = (payload: Filter) => {
   if (company.value) payload.company = company.value

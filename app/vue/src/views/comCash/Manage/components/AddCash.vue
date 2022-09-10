@@ -24,10 +24,7 @@ const createConfirm = () => {
   else createAlertModal.value.callModal()
 }
 
-const createObject = (payload: Company) => {
-  emit('on-create', payload)
-  createFormModal.value.visible = false
-}
+const createObject = (payload: Company) => emit('on-create', payload)
 </script>
 
 <template>

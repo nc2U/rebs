@@ -72,11 +72,9 @@ const accountD2Select = () => {
 }
 
 const listFiltering = (page = 1) => {
+  form.page = page
   nextTick(() => {
-    emit('list-filtering', {
-      ...{ page },
-      ...form,
-    })
+    emit('list-filtering', { ...form })
   })
 }
 
