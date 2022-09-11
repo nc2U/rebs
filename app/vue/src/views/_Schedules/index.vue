@@ -201,7 +201,7 @@ onBeforeMount(() => {
 
   <FormModal ref="formModal">
     <template #header>
-      <v-icon icon="mdi-clock-outline" />
+      <v-icon icon="mdi-calendar-clock-outline" size="small" />
       진행 일정 - 이벤트 {{ mode === 'create' ? '등록' : '편집' }}
     </template>
     <template #default>
@@ -243,7 +243,7 @@ onBeforeMount(() => {
 
   <ConfirmModal ref="confirmModal">
     <template #header>
-      <v-icon icon="mdi-trash-can-outline" />
+      <v-icon icon="mdi-trash-can-outline" size="small" />
       진행 일정 - 이벤트 삭제
     </template>
     [{{ eventTitle }}] - 삭제 후 복구할 수 없습니다. 해당 일정을 삭제
