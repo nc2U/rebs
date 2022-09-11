@@ -26,7 +26,12 @@ const onSubmit = (event: any) => {
         name: 'Register',
         query: { id: hashCode(registerCode.value).toString() },
       })
-    } else alertModal.value.callModal()
+    } else
+      alertModal.value.callModal(
+        '계정 생성코드 오류',
+        '계정 생성코드가 맞지 않습니다. 계정 생성코드를 확인 후 다시 시도하여\n' +
+          '          주십시요.',
+      )
   }
 }
 </script>
@@ -99,16 +104,7 @@ const onSubmit = (event: any) => {
         </CCol>
       </CRow>
 
-      <AlertModal ref="alertModal">
-        <template #header> 계정 생성코드 오류</template>
-        <template #default>
-          계정 생성코드가 맞지 않습니다. 계정 생성코드를 확인 후 다시 시도하여
-          주십시요.
-        </template>
-        <template #footer>
-          <CButton color="primary" @click="$router.back()"> 뒤로 가기</CButton>
-        </template>
-      </AlertModal>
+      <AlertModal ref="alertModal" />
     </CContainer>
   </div>
 </template>
