@@ -3,8 +3,9 @@ import { computed, onBeforeMount, reactive, ref, watch } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { useSchedule } from '@/store/pinia/schedule'
 import { addDays, diffDate } from '@/utils/baseMixins'
-import '@fullcalendar/core/vdom' // solve problem with Vite
 import FullCalendar, { DateSelectArg, EventClickArg } from '@fullcalendar/vue3'
+import { EventApi } from '@fullcalendar/common'
+import '@fullcalendar/core/vdom' // solve problem with Vite
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
@@ -26,7 +27,14 @@ const formModal = ref()
 const alertModal = ref()
 const eventId = ref<string>('')
 const eventTitle = ref('')
-const newEvent = reactive({
+
+type CalEvent = {
+  start: string
+  end: string
+  allDay: boolean
+}
+
+const newEvent = reactive<CalEvent>({
   start: '',
   end: '',
   allDay: true,
@@ -61,13 +69,15 @@ const eventManagement = () => {
   formModal.value.close()
 }
 
-const transformData = (event: any) => {
+const transformData = (event: EventApi) => {
   const title = event.title
   const allDay = event.allDay
-  const s = event._instance.range.start.toISOString().replace('.000Z', '+09:00')
-  const e = event._instance.range.end.toISOString().replace('.000Z', '+09:00')
-  const start = allDay ? s.substr(0, 10) : s
-  const end = allDay ? e.substr(0, 10) : e
+  const s = event._instance?.range.start
+    .toISOString()
+    .replace('.000Z', '+09:00')
+  const e = event._instance?.range.end.toISOString().replace('.000Z', '+09:00')
+  const start = allDay ? s?.substr(0, 10) : s
+  const end = allDay ? e?.substr(0, 10) : e
   return { title, allDay, start, end }
 }
 
@@ -104,10 +114,10 @@ const eventRemove = () => {
   confirmModal.value.visible = false
 }
 
-const handleMonthChange = (payload: any) => {
-  const diff = diffDate(payload.start, payload.end)
+const handleMonthChange = (payload: CalEvent) => {
+  const diff = diffDate(payload.start, new Date(payload.end))
   const addDay = diff > 10 ? 7 : 1
-  const date = new Date(addDays(payload.start, addDay))
+  const date = new Date(addDays(new Date(payload.start), addDay))
   month.value = date.toISOString().substr(0, 7)
 }
 

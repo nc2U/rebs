@@ -11,6 +11,6 @@ export interface Schedule {
 export interface Event {
   title: string
   allDay: boolean
-  start: string
-  end: string
+  start?: string
+  end?: string
 }
