@@ -1,9 +1,8 @@
 <script lang="ts" setup>
 import { ref, computed, onMounted, watch } from 'vue'
-import { useStore } from 'vuex'
 import { useProject } from '@/store/pinia/project'
 import { useProjectData } from '@/store/pinia/project_data'
-import { useContract } from '@/store/pinia/contract'
+import { useContract, ContFilter } from '@/store/pinia/contract'
 import { pageTitle, navMenu } from '@/views/contracts/_menu/headermixin'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
@@ -17,13 +16,13 @@ const listControl = ref()
 
 const visible = ref(false)
 const unitSet = ref(false)
+
 const filteredStr = ref('')
 const printItems = ref(['1', '2', '3', '4', '7', '8', '9', '10', '18-19-20-21'])
 
 const childListFiltering = (page: number) =>
   listControl.value.listFiltering(page)
 
-const store = useStore()
 const projectStore = useProject()
 
 const project = computed(() => projectStore.project)
@@ -45,8 +44,8 @@ const contractStore = useContract()
 const fetchOrderGroupList = (pk: number) =>
   contractStore.fetchOrderGroupList(pk)
 
-const fetchContractList = (project: { project: number }) =>
-  contractStore.fetchContractList(project)
+const fetchContractList = (payload: ContFilter) =>
+  contractStore.fetchContractList(payload)
 const fetchSubsSummaryList = (pk: number) =>
   contractStore.fetchSubsSummaryList(pk)
 const fetchContSummaryList = (pk: number) =>
@@ -58,8 +57,8 @@ const fetchTypeList = (projId: number) => projectDataStore.fetchTypeList(projId)
 const fetchBuildingList = (projId: number) =>
   projectDataStore.fetchBuildingList(projId)
 
-const onSelectAdd = (target: any) => {
-  if (target !== '') {
+const onSelectAdd = (target: number) => {
+  if (!!target) {
     fetchOrderGroupList(target)
     fetchTypeList(target)
     fetchBuildingList(target)
@@ -76,21 +75,23 @@ const onSelectAdd = (target: any) => {
   }
 }
 const pageSelect = (page: number) => childListFiltering(page)
-const onContFiltering = (payload: any) => {
-  const pk = project.value?.pk
+
+const onContFiltering = (payload: ContFilter) => {
   const {
     order_group,
     unit_type,
     building,
     status,
+    null_unit,
     registed,
     from_date,
     to_date,
     search,
   } = payload
+  payload.project = project.value?.pk
   const reg = registed === 'true' ? '1' : ''
   filteredStr.value = `&group=${order_group}&type=${unit_type}&dong=${building}&status=${status}&reg=${reg}&sdate=${from_date}&edate=${to_date}&q=${search}`
-  fetchContractList({ ...{ project: pk }, ...payload })
+  fetchContractList(payload)
 }
 const setItems = (arr: string[]) => (printItems.value = arr)
 

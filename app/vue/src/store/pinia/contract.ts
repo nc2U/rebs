@@ -15,6 +15,21 @@ import {
   ContractRelease,
 } from '@/store/types/contract'
 
+export interface ContFilter {
+  project?: number | null
+  order_group?: string
+  unit_type?: string
+  building?: string
+  status?: string
+  null_unit?: boolean
+  registed?: string
+  ordering?: string
+  from_date?: string
+  to_date?: string
+  search?: string
+  page?: number
+}
+
 export const useContract = defineStore('contract', () => {
   // state & getters
   const contract = ref<Contract | null>(null)
@@ -57,7 +72,7 @@ export const useContract = defineStore('contract', () => {
       .then(res => (contract.value = res.data))
       .catch(err => errorHandle(err.response.data))
 
-  const fetchContractList = (payload: any) => {
+  const fetchContractList = (payload: ContFilter) => {
     const status = payload.status || '2'
     let apiuri = `/contract-set/?project=${payload.project}&activation=true&contractor__status=${status}`
     if (payload.order_group) apiuri += `&order_group=${payload.order_group}`

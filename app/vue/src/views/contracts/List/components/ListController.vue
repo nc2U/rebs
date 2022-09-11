@@ -1,14 +1,14 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, watch, nextTick } from 'vue'
+import { reactive, computed, watch, nextTick } from 'vue'
 import { useProjectData } from '@/store/pinia/project_data'
-import { useContract } from '@/store/pinia/contract'
+import { useContract, ContFilter } from '@/store/pinia/contract'
 import { dateFormat } from '@/utils/baseMixins'
-import DatePicker from '@/components/DatePicker/index.vue'
 import { maska as vMaska } from 'maska'
+import DatePicker from '@/components/DatePicker/index.vue'
 
 const emit = defineEmits(['cont-filtering'])
 
-const form = reactive({
+const form = reactive<ContFilter>({
   status: '2',
   order_group: '',
   unit_type: '',
@@ -16,10 +16,10 @@ const form = reactive({
   building: '',
   registed: '',
   ordering: '-created_at',
+  from_date: '',
+  to_date: '',
   search: '',
 })
-const from_date = ref('')
-const to_date = ref('')
 
 const formsCheck = computed(() => {
   const a = form.status === '2'
@@ -28,8 +28,8 @@ const formsCheck = computed(() => {
   const d = form.null_unit === false
   const e = form.building === ''
   const f = form.registed === ''
-  const g = from_date.value === ''
-  const h = to_date.value === ''
+  const g = form.from_date === ''
+  const h = form.to_date === ''
   const i = form.ordering === '-created_at'
   const j = form.search === ''
   const groupA = a && b && c && d && e
@@ -45,19 +45,26 @@ const contractsCount = computed(() => contractStore.contractsCount)
 const buildingList = computed(() => projectDataStore.buildingList)
 const simpleTypes = computed(() => projectDataStore.simpleTypes)
 
-watch(from_date, () => listFiltering(1))
-watch(to_date, () => listFiltering(1))
+watch(form, val => {
+  if (val.from_date) {
+    form.from_date = dateFormat(val.from_date)
+    listFiltering(1)
+  } else listFiltering(1)
+  if (val.to_date) {
+    form.to_date = dateFormat(val.to_date)
+    listFiltering(1)
+  } else listFiltering(1)
+})
 
 const listFiltering = (page = 1) => {
   nextTick(() => {
-    const from = from_date.value ? dateFormat(from_date.value) : ''
-    const to = to_date.value ? dateFormat(to_date.value) : ''
     emit('cont-filtering', {
-      ...{ page, from_date: from, to_date: to },
+      ...{ page },
       ...form,
     })
   })
 }
+
 defineExpose({ listFiltering })
 
 const resetForm = () => {
@@ -67,8 +74,8 @@ const resetForm = () => {
   form.null_unit = false
   form.building = ''
   form.registed = ''
-  from_date.value = ''
-  to_date.value = ''
+  form.from_date = ''
+  form.to_date = ''
   form.ordering = '-created_at'
   form.search = ''
   listFiltering(1)
@@ -167,7 +174,7 @@ const resetForm = () => {
 
           <CCol md="4" lg="6" xl="4" class="mb-3">
             <DatePicker
-              v-model="from_date"
+              v-model="form.from_date"
               v-maska="'####-##-##'"
               placeholder="계약일 (From)"
               @keydown.enter="listFiltering(1)"
@@ -176,7 +183,7 @@ const resetForm = () => {
 
           <CCol md="4" lg="6" xl="4" class="mb-3">
             <DatePicker
-              v-model="to_date"
+              v-model="form.to_date"
               v-maska="'####-##-##'"
               placeholder="계약일 (To)"
               @keydown.enter="listFiltering(1)"
