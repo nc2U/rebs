@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { reactive, ref, computed, onBeforeMount } from 'vue'
+import { reactive, ref, computed, onBeforeMount, watch } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { maska as vMaska } from 'maska'
 import { dateFormat } from '@/utils/baseMixins'
@@ -27,10 +27,14 @@ const form = reactive<Profile>({
   image: '',
 })
 
+watch(form, val => {
+  if (val.birth_date) form.birth_date = dateFormat(val.birth_date)
+})
+
 const validated = ref(false)
 
 const accountStore = useAccount()
-const isAuthorized = computed(() => accountStore.isAuthorized)
+const userInfo = computed(() => accountStore.userInfo)
 
 const formsCheck = computed(() => (props.profile?.pk ? isChanged() : false))
 
@@ -49,7 +53,7 @@ const isChanged = () => {
 const fileUpload = (img: File) => (form.image = img.name)
 
 const onSubmit = (event: Event) => {
-  if (isAuthorized.value) {
+  if (userInfo.value) {
     const e = event.currentTarget as HTMLSelectElement
     if (!e.checkValidity()) {
       event.preventDefault()
@@ -65,7 +69,6 @@ const onSubmit = (event: Event) => {
 }
 
 const modalAction = () => {
-  form.birth_date = dateFormat(new Date(form.birth_date))
   emit('on-submit', form)
   validated.value = false
   confirmModal.value.close()
