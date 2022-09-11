@@ -1,24 +1,26 @@
 <script setup lang="ts">
 import { ref, reactive, computed, onBeforeMount } from 'vue'
 import { useAccount } from '@/store/pinia/account'
+import { Project } from '@/store/types/project'
+import { callAddress, AddressData } from '@/components/DaumPostcode/address'
+import DaumPostcode from '@/components/DaumPostcode/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
-import DaumPostcode from '@/components/DaumPostcode/index.vue'
-import { callAddress, AddressData } from '@/components/DaumPostcode/address'
 
 const props = defineProps({
   project: {
     type: Object,
     default: null,
   },
-  update: {
-    type: Boolean,
-    required: true,
-  },
 })
 
-const form = reactive({
-  pk: null as number | null,
+const emit = defineEmits(['to-submit', 'reset-form', 'close'])
+
+const accountStore = useAccount()
+
+const form = reactive<Project>({
+  pk: null,
+  company: null,
   name: '',
   order: null,
   kind: '',
@@ -59,16 +61,11 @@ const sortOptins = [
 
 const validated = ref(false)
 
-const accountStore = useAccount()
-const company = computed(() =>
-  props.update ? props.project?.company : accountStore.staffAuth?.company,
-)
-
-const confirmText = computed(() => (props.update ? '변경' : '등록'))
-const btnClass = computed(() => (props.update ? 'success' : 'primary'))
+const confirmText = computed(() => (props.project ? '변경' : '등록'))
+const btnClass = computed(() => (props.project ? 'success' : 'primary'))
 
 const formsCheck = computed(() => {
-  if (props.update && props.project) {
+  if (props.project) {
     const a = form.name === props.project.name
     const b = form.order === props.project.order
     const c = form.kind === props.project.kind
@@ -108,10 +105,10 @@ const alertModal = ref()
 const confirmModal = ref()
 const address2 = ref()
 
-const onSubmit = (event: any) => {
+const onSubmit = (event: Event) => {
   if (accountStore.superAuth) {
-    const e = event.currentTarget
-    if (e.checkValidity() === false) {
+    const e = event.currentTarget as HTMLSelectElement
+    if (!e.checkValidity()) {
       event.preventDefault()
       event.stopPropagation()
       validated.value = true
@@ -121,14 +118,11 @@ const onSubmit = (event: any) => {
   } else alertModal.value.callModal()
 }
 
-const emit = defineEmits(['to-create', 'to-update', 'reset-form'])
-
 const modalAction = () => {
-  const submitData = { ...{ company: company.value }, ...form }
-  if (props.project && props.update) emit('to-update', submitData)
-  else emit('to-create', submitData)
-
+  if (form.order === null) form.order = 100
+  emit('to-submit', { ...form })
   validated.value = false
+  emit('close')
 }
 
 const deleteProject = () => {
@@ -149,8 +143,9 @@ const addressCallback = (data: AddressData) => {
 }
 
 onBeforeMount(() => {
-  if (props.update && props.project) {
+  if (props.project) {
     form.pk = props.project.pk
+    form.company = props.project.company
     form.name = props.project.name
     form.order = props.project.order
     form.kind = props.project.kind
@@ -176,7 +171,7 @@ onBeforeMount(() => {
     form.build_to_land_ratio = props.project.build_to_land_ratio
     form.num_legal_parking = props.project.num_legal_parking
     form.num_planed_parking = props.project.num_planed_parking
-  }
+  } else form.company = accountStore.staffAuth?.company || null
 })
 </script>
 

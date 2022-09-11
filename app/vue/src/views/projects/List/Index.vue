@@ -9,7 +9,6 @@ import IndexForm from '@/views/projects/List/components/IndexForm.vue'
 import IndexDetail from '@/views/projects/List/components/IndexDetail.vue'
 
 const compName = ref('IndexDetail')
-const update = ref(false)
 
 const projectStore = useProject()
 
@@ -20,30 +19,20 @@ watch(project, () => (compName.value = 'IndexDetail'))
 const createProject = (payload: Project) => projectStore.createProject(payload)
 const updateProject = (payload: Project) => projectStore.updateProject(payload)
 
-const createForm = () => {
-  update.value = false
-  compName.value = 'IndexForm'
-}
+const createForm = () => (compName.value = 'CreateForm')
+const updateForm = () => (compName.value = 'UpdateForm')
+const resetForm = () => (compName.value = 'IndexDetail')
 
-const updateForm = () => {
-  update.value = true
-  compName.value = 'IndexForm'
-}
-
-const resetForm = () => {
-  update.value = false
-  compName.value = 'IndexDetail'
-}
 const toCreate = (payload: Project) => createProject(payload)
-const toUpdate = (payload: { pk: string } & Project) => updateProject(payload)
+const toUpdate = (payload: Project) => updateProject(payload)
+const toSubmit = (payload: Project) => {
+  if (payload.pk) toUpdate(payload)
+  else toCreate(payload)
+}
 </script>
 
 <template>
-  <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    @header-select="onSelectAdd"
-  />
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
 
   <ContentBody>
     <IndexDetail
@@ -55,11 +44,15 @@ const toUpdate = (payload: { pk: string } & Project) => updateProject(payload)
     />
 
     <IndexForm
-      v-if="compName === 'IndexForm'"
+      v-if="compName === 'CreateForm'"
+      @to-submit="toSubmit"
+      @reset-form="resetForm"
+    />
+
+    <IndexForm
+      v-if="compName === 'UpdateForm'"
       :project="project"
-      :update="update"
-      @to-create="toCreate"
-      @to-update="toUpdate"
+      @to-submit="toSubmit"
       @reset-form="resetForm"
     />
   </ContentBody>
