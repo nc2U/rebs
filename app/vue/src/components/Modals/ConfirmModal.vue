@@ -15,12 +15,12 @@ defineExpose({ callModal, close })
     @close="() => (visible = false)"
     @keydown.esc="() => (visible = false)"
   >
-    <CModalHeader>
-      <CModalTitle class="text-body">
+    <CModalHeader class="text-body">
+      <CModalTitle>
         <slot name="header">Title</slot>
       </CModalTitle>
     </CModalHeader>
-    <CModalBody>
+    <CModalBody class="text-body">
       <slot>
         Cras mattis consectetur purus sit amet fermentum. Cras justo odio,
         dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac

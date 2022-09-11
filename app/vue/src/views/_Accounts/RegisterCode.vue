@@ -36,7 +36,7 @@ const onSubmit = (event: any) => {
     <CContainer>
       <CRow class="justify-content-center">
         <CCol md="8" lg="6" xl="4">
-          <CCard class="p-4">
+          <CCard class="p-4 text-body">
             <CCardBody>
               <CRow class="mb-3">
                 <h2>계정 생성코드 입력</h2>
@@ -69,7 +69,9 @@ const onSubmit = (event: any) => {
                 </CRow>
                 <CRow>
                   <CCol class="d-grid gap-2 mb-2">
-                    <CButton class="btn btn-primary"> 제출하기</CButton>
+                    <CButton class="btn btn-primary" type="submit">
+                      제출하기
+                    </CButton>
                   </CCol>
                 </CRow>
               </CForm>
@@ -98,7 +100,7 @@ const onSubmit = (event: any) => {
       </CRow>
 
       <AlertModal ref="alertModal">
-        <template #header>계정 생성코드 오류</template>
+        <template #header> 계정 생성코드 오류</template>
         <template #default>
           계정 생성코드가 맞지 않습니다. 계정 생성코드를 확인 후 다시 시도하여
           주십시요.
