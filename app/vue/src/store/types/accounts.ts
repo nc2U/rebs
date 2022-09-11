@@ -1,5 +1,5 @@
 export declare interface User {
-  pk: number
+  pk?: number
   email: string
   username: string
   is_active: boolean
@@ -10,23 +10,17 @@ export declare interface User {
   todos: Todo[]
 }
 
-export declare interface LockedUser {
-  pk: number
-  email: string
-  username: string
-}
-
 export interface Profile {
-  pk: number
-  user: number
+  pk?: number | null
+  user: number | null
   name: string
   birth_date: string
   cell_phone: string
-  image: string | null
+  image?: string
 }
 
 export declare interface Todo {
-  pk: number
+  pk?: number
   url: string
   user: number
   title: string
@@ -35,7 +29,7 @@ export declare interface Todo {
 }
 
 interface StaffAuth {
-  pk: number
+  pk?: number
   company: number
   is_staff: boolean
   assigned_project: number

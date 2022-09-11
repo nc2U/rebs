@@ -4,13 +4,12 @@ import { Buffer } from 'buffer'
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { errorHandle, message } from '@/utils/helper'
-import { User, LockedUser, Todo, Profile } from '@/store/types/accounts'
+import { User, Todo, Profile } from '@/store/types/accounts'
 
 export const useAccount = defineStore('account', () => {
   // states
   const accessToken = ref<string>('')
   const userInfo = ref<User | null>(null)
-  const lockedUser = ref<LockedUser | null>(null)
   const todoList = ref<Todo[]>([])
 
   // getters
@@ -56,12 +55,11 @@ export const useAccount = defineStore('account', () => {
 
   const setUser = (user: User) => {
     userInfo.value = user
-    lockedUser.value = user
     fetchTodoList()
   }
 
-  const login = (payload: { email: string; password: string }) => {
-    return api
+  const login = (payload: { email: string; password: string }) =>
+    api
       .post('/token/', payload)
       .then(res => {
         setToken(res.data.access)
@@ -76,7 +74,6 @@ export const useAccount = defineStore('account', () => {
         if (err.response.status === 401)
           message('warning', '', err.response.data.detail)
       })
-  }
 
   const loginByToken = (token?: string) => {
     if (token) {
@@ -92,7 +89,6 @@ export const useAccount = defineStore('account', () => {
 
   const logout = () => {
     userInfo.value = null
-    lockedUser.value = null
     todoList.value = []
     accessToken.value = ''
     delete api.defaults.headers.common.Authorization
@@ -100,27 +96,24 @@ export const useAccount = defineStore('account', () => {
     message('', '', '로그아웃 완료 알림!')
   }
 
-  const createProfile = (form: Profile) => {
+  const createProfile = (payload: Profile) => {
     api.defaults.headers.post['Content-Type'] = 'multipart/form-data'
-    api
-      .post(`/profile/`, form)
+    return api
+      .post(`/profile/`, payload)
       .then(() => {
         const cookedToken = Cookies.get('accessToken')
-        loginByToken(cookedToken)
-        message()
+        loginByToken(cookedToken).then(() => message())
       })
       .catch(err => errorHandle(err.response.data))
   }
 
-  const patchProfile = (payload: { pk: string; form: Profile }) => {
-    const { pk, form } = payload
+  const patchProfile = (payload: Profile) => {
     api.defaults.headers.patch['Content-Type'] = 'multipart/form-data'
-    api
-      .patch(`/profile/${pk}/`, form)
+    return api
+      .patch(`/profile/${payload.pk}/`, payload)
       .then(() => {
         const cookedToken = Cookies.get('accessToken')
-        loginByToken(cookedToken)
-        message()
+        loginByToken(cookedToken).then(() => message())
       })
       .catch(err => errorHandle(err.response.data))
   }
@@ -137,7 +130,7 @@ export const useAccount = defineStore('account', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const createTodo = (payload: { user: number; title: string }) => {
+  const createTodo = (payload: Todo) =>
     api
       .post('/todo/', payload)
       .then(() => {
@@ -150,20 +143,16 @@ export const useAccount = defineStore('account', () => {
           .catch(err => errorHandle(err.response.data))
       })
       .catch(err => errorHandle(err.response.data))
-  }
 
-  const patchTodo = (payload: any) => {
-    const { pk } = payload
-    delete payload.pk
+  const patchTodo = (payload: Todo) =>
     api
-      .patch(`/todo/${pk}/`, payload)
+      .patch(`/todo/${payload.pk}/`, payload)
       .then(() => {
         fetchTodoList()
       })
       .catch(err => errorHandle(err.response.data))
-  }
 
-  const deleteTodo = (pk: string) => {
+  const deleteTodo = (pk: number) => {
     api
       .delete(`/todo/${pk}/`)
       .then(() => {
@@ -181,7 +170,6 @@ export const useAccount = defineStore('account', () => {
   return {
     accessToken,
     userInfo,
-    lockedUser,
     todoList,
 
     superAuth,
