@@ -11,7 +11,7 @@ from accounts.models import User, Profile, Todo
 class UserViewSets(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = (permissions.IsAuthenticated, IsOwnSelfOrReadOnly)
+    permission_classes = (permissions.AllowAny,)
 
 
 class ProfileViewSets(viewsets.ModelViewSet):

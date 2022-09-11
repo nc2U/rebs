@@ -20,6 +20,7 @@ class UserSerializer(serializers.ModelSerializer):
         style={'input_type': 'password', 'placeholder': '비밀번호'}
     )
     staffauth = StaffAuthInUserSerializer()
+    profile = serializers.ReadOnlyField(source='profile.pk')
 
     class Meta:
         model = User
