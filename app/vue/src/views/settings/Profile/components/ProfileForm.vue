@@ -18,13 +18,14 @@ const emit = defineEmits(['file-upload', 'on-submit', 'reset-form'])
 const alertModal = ref()
 const confirmModal = ref()
 
+const image = ref()
+
 const form = reactive<Profile>({
   pk: null,
   user: null,
   name: '',
   birth_date: '',
   cell_phone: '',
-  image: '',
 })
 
 watch(form, val => {
@@ -46,11 +47,14 @@ const isChanged = () => {
   const a = form.name === props.profile.name
   const b = form.birth_date === props.profile.birth_date
   const c = form.cell_phone === props.profile.cell_phone
-  const d = !form.image || form.image === props.profile.image
+  const d = !image.value || image.value === props.profile.image
   return a && b && c && d
 }
 
-const fileUpload = (img: File) => (form.image = img.name)
+const fileUpload = (img: File) => {
+  image.value = img.name
+  emit('file-upload', img)
+}
 
 const onSubmit = (event: Event) => {
   if (userInfo.value) {
@@ -82,7 +86,7 @@ const resetForm = () => {
       form.name = props.profile.name
       form.birth_date = props.profile.birth_date
       form.cell_phone = props.profile.cell_phone
-      form.image = props.profile.image
+      image.value = props.profile.image
     }
   } else {
     form.pk = null
@@ -90,7 +94,7 @@ const resetForm = () => {
     form.name = ''
     form.birth_date = ''
     form.cell_phone = ''
-    form.image = ''
+    image.value = ''
   }
 }
 
@@ -187,7 +191,7 @@ onBeforeMount(() => resetForm())
         <CCol md="6">
           <AvatarInput
             ref="avatar"
-            :default-src="form.image"
+            :default-src="image"
             @file-upload="fileUpload"
           />
         </CCol>

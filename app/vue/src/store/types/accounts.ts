@@ -17,7 +17,6 @@ export type Profile = {
   name: string
   birth_date: string
   cell_phone: string
-  image?: string | Blob
 }
 
 export declare interface Todo {

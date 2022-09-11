@@ -114,11 +114,11 @@ export const useAccount = defineStore('account', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const patchProfile = (payload: { pk: number } & FormData) => {
-    const { pk, ...formData } = payload
+  const patchProfile = (payload: { pk: number; form: FormData }) => {
+    const { pk, form } = payload
     api.defaults.headers.patch['Content-Type'] = 'multipart/form-data'
     return api
-      .patch(`/profile/${pk}/`, formData)
+      .patch(`/profile/${pk}/`, form)
       .then(() => {
         const cookedToken = Cookies.get('accessToken')
         loginByToken(cookedToken).then(() => message())

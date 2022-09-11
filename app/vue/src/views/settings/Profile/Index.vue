@@ -1,40 +1,33 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
 import { useAccount } from '@/store/pinia/account'
-import { Profile } from '@/store/types/accounts'
 import { pageTitle, navMenu } from '@/views/settings/_menu/headermixin'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ProfileForm from '@/views/settings/Profile/components/ProfileForm.vue'
+import { Profile } from '@/store/types/accounts'
 
-// const profile = ref()
-// const image = ref(null)
-
+const image = ref()
 const accountStore = useAccount()
 const profile = computed(() => accountStore.profile)
 
-// const fileUpload = (image: File) => (image.value = image)
+const fileUpload = (img: File) => (image.value = img)
 
-const createProfile = (payload: FormData) => console.log(payload) // accountStore.createProfile(payload)
-const patchProfile = (payload: { pk: number } & FormData) =>
-  console.log(payload) //  accountStore.patchProfile(payload)
+const createProfile = (payload: FormData) => accountStore.createProfile(payload)
+const patchProfile = (payload: { pk: number; form: FormData }) =>
+  accountStore.patchProfile(payload)
 
-const onSubmit = async (payload: Profile) => {
+const onSubmit = (payload: Profile) => {
+  if (image.value) payload.image = image.value
   const { pk, ...formData } = payload
   const form = new FormData()
 
-  for (const key in formData as any) {
-    // form.append(key, formData[key])
-    console.log(key, formData[key])
+  for (const key in formData) {
+    form.append(key, formData[key] as string | Blob)
   }
 
-  console.log(form)
-
-  // if (pk) await patchProfile({ ...{ pk }, ...form })
-  // else await createProfile({ ...form })
-
-  // profile.value.avatar.value.changeImage = false
-  // profile.value.image = userInfo.value?.profile?.image
+  if (pk) patchProfile({ ...{ pk }, ...{ form } })
+  else createProfile(form)
 }
 </script>
 
@@ -44,7 +37,13 @@ const onSubmit = async (payload: Profile) => {
     :nav-menu="navMenu"
     :selector="'CompanySelect'"
   />
+
   <ContentBody>
-    <ProfileForm ref="profile" :profile="profile" @on-submit="onSubmit" />
+    <ProfileForm
+      ref="profile"
+      :profile="profile"
+      @file-upload="fileUpload"
+      @on-submit="onSubmit"
+    />
   </ContentBody>
 </template>
