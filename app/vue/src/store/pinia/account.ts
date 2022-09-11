@@ -8,6 +8,13 @@ import { User, Profile, Todo } from '@/store/types/accounts'
 
 type LoginUser = { email: string; password: string }
 
+const extractId = (token: string) => {
+  const base64Payload = token.split('.')[1]
+  const payload = Buffer.from(base64Payload, 'base64')
+  const result = JSON.parse(payload.toString())
+  return result.user_id ? result.user_id : null
+}
+
 export const useAccount = defineStore('account', () => {
   // states
   const accessToken = ref<string>('')
@@ -30,19 +37,14 @@ export const useAccount = defineStore('account', () => {
   )
 
   // actions
-  const extractId = (token: string) => {
-    const base64Payload = token.split('.')[1]
-    const payload = Buffer.from(base64Payload, 'base64')
-    const result = JSON.parse(payload.toString())
-    return result.user_id ? result.user_id : null
-  }
-
-  const signup = (payload: LoginUser & { username: string }) => {
+  const signup = (payload: LoginUser & { username: string }) =>
     api
       .post('/user/', payload)
       .then(() => message('info', '', '회원가입이 완료되었습니다.'))
-      .catch(err => errorHandle(err.response.data))
-  }
+      .catch(err => {
+        errorHandle(err.response.data)
+        console.log(err)
+      })
 
   const setToken = (token: string) => {
     accessToken.value = token

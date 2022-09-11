@@ -26,10 +26,11 @@ const actions = {
   ) {
     api
       .post(`/user/`, payload)
-      .then(() => {
-        router.push({ name: 'Login' })
-        message('info', '', '회원가입이 완료되었습니다.')
-      })
+      .then(() =>
+        router
+          .push({ name: 'Login' })
+          .then(() => message('info', '', '회원가입이 완료되었습니다.')),
+      )
       .catch(err => errorHandle(err.response.data))
   },
   login(

@@ -1,9 +1,8 @@
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
-import router from '@/router'
+import { useRoute, useRouter } from 'vue-router'
 
-const route = useRoute()
+const [route, router] = [useRoute(), useRouter()]
 const emit = defineEmits(['onSubmit'])
 
 const email = ref('')
@@ -15,9 +14,9 @@ onMounted(() => {
   redirect.value = route.query?.redirect
 })
 
-const onSubmit = (event: any) => {
-  const form = event.currentTarget
-  if (form.checkValidity() === false) {
+const onSubmit = (event: Event) => {
+  const el = event.currentTarget as HTMLInputElement
+  if (!el.checkValidity()) {
     event.preventDefault()
     event.stopPropagation()
 

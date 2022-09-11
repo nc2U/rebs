@@ -1,3 +1,7 @@
+<script setup lang="ts">
+import ContentBody from '@/layouts/ContentBody/Index.vue'
+</script>
+
 <template>
   <ContentBody>
     <CCardBody class="blank-body text-center">
@@ -9,18 +13,6 @@
     <CCardFooter>&nbsp;</CCardFooter>
   </ContentBody>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import ContentBody from '@/layouts/ContentBody/Index.vue'
-
-export default defineComponent({
-  name: 'NoAuth',
-  components: {
-    ContentBody,
-  },
-})
-</script>
 
 <style lang="scss" scoped>
 .card-body {

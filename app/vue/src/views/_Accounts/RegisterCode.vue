@@ -1,3 +1,36 @@
+<script setup lang="ts">
+import { ref } from 'vue'
+import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
+import { hashCode } from '@/utils/helper'
+import AlertModal from '@/components/Modals/AlertModal.vue'
+
+const alertModal = ref()
+
+const registerCode = ref('')
+const validated = ref(false)
+
+const store = useStore()
+const router = useRouter()
+
+const onSubmit = (event: any) => {
+  const form = event.currentTarget
+  if (form.checkValidity() === false) {
+    event.preventDefault()
+    event.stopPropagation()
+
+    validated.value = true
+  } else {
+    if (registerCode.value === store.state.registerCode) {
+      router.push({
+        name: 'Register',
+        query: { id: hashCode(registerCode.value).toString() },
+      })
+    } else alertModal.value.callModal()
+  }
+}
+</script>
+
 <template>
   <div class="bg-light min-vh-100 d-flex flex-row align-items-center">
     <CContainer>
@@ -77,42 +110,3 @@
     </CContainer>
   </div>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import { hashCode } from '@/utils/helper'
-import AlertModal from '@/components/Modals/AlertModal.vue'
-
-export default defineComponent({
-  name: 'RegisterCode',
-  components: {
-    AlertModal,
-  },
-  data() {
-    return {
-      registerCode: '',
-      validated: false,
-    }
-  },
-  methods: {
-    onSubmit(event: any) {
-      const form = event.currentTarget
-      if (form.checkValidity() === false) {
-        event.preventDefault()
-        event.stopPropagation()
-
-        this.validated = true
-      } else {
-        if (this.registerCode === (this as any).$store.state.registerCode) {
-          this.$router.push({
-            name: 'Register',
-            query: { id: hashCode(this.registerCode).toString() },
-          })
-        } else {
-          ;(this as any).$refs.alertModal.callModal()
-        }
-      }
-    },
-  },
-})
-</script>

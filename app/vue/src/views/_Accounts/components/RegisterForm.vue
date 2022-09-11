@@ -1,3 +1,38 @@
+<script setup lang="ts">
+import { reactive, ref } from 'vue'
+
+const emit = defineEmits(['onSubmit'])
+
+const passwordForm = ref()
+
+const form = reactive({
+  username: '',
+  email: '',
+  password: '',
+  passwordConfirm: '',
+})
+
+const validated = ref(false)
+
+const onSubmit = (event: Event) => {
+  const el = event.currentTarget as HTMLInputElement
+  if (!el.checkValidity()) {
+    event.preventDefault()
+    event.stopPropagation()
+
+    validated.value = true
+  } else {
+    if (form.password !== form.passwordConfirm) {
+      alert('비밀번호가 일치하지 않습니다.')
+      passwordForm.value.focus()
+      return
+    }
+    emit('onSubmit', { ...form })
+    validated.value = false
+  }
+}
+</script>
+
 <template>
   <CForm
     class="needs-validation"
@@ -5,14 +40,14 @@
     :validated="validated"
     @submit.prevent="onSubmit"
   >
-    <h1>회원가입</h1>
+    <h1 class="text-body">회원가입</h1>
     <p class="text-muted">Create your account</p>
     <CInputGroup class="mb-3">
       <CInputGroupText>
         <CIcon icon="cil-user" />
       </CInputGroupText>
       <CFormInput
-        v-model="username"
+        v-model="form.username"
         autocomplete="username"
         placeholder="아이디를 입력해주세요"
         required
@@ -23,7 +58,7 @@
     <CInputGroup class="mb-3">
       <CInputGroupText>@</CInputGroupText>
       <CFormInput
-        v-model="email"
+        v-model="form.email"
         type="email"
         autocomplete="email"
         placeholder="이메일을 입력해주세요"
@@ -37,8 +72,8 @@
         <CIcon icon="cil-lock-locked" />
       </CInputGroupText>
       <CFormInput
-        ref="password"
-        v-model="password"
+        ref="passwordForm"
+        v-model="form.password"
         type="password"
         autocomplete="password"
         placeholder="비밀번호를 입력해주세요"
@@ -52,7 +87,7 @@
         <CIcon icon="cil-lock-locked" />
       </CInputGroupText>
       <CFormInput
-        v-model="passwordConfirm"
+        v-model="form.passwordConfirm"
         type="password"
         autocomplete="password-confirm"
         placeholder="비밀번호를 한번 더 입력해주세요"
@@ -79,41 +114,3 @@
     </div>
   </CForm>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-
-export default defineComponent({
-  name: 'RegisterForm',
-  data() {
-    return {
-      username: '',
-      email: '',
-      password: '',
-      passwordConfirm: '',
-      validated: false,
-    }
-  },
-  methods: {
-    onSubmit(event: any) {
-      const form = event.currentTarget
-      if (form.checkValidity() === false) {
-        event.preventDefault()
-        event.stopPropagation()
-
-        this.validated = true
-      } else {
-        const { username, email, password, passwordConfirm } = this
-        const staffauth = { company: 1 }
-        if (password !== passwordConfirm) {
-          alert('비밀번호가 일치하지 않습니다.')
-          ;(this as any).$refs.password.$el.focus()
-          return
-        }
-        this.$emit('onSubmit', { username, email, password, staffauth })
-        this.validated = false
-      }
-    },
-  },
-})
-</script>

@@ -1,3 +1,19 @@
+<script setup lang="ts">
+import { useAccount } from '@/store/pinia/account'
+import RegisterForm from './components/RegisterForm.vue'
+
+interface SignUser {
+  email: string
+  username: string
+  password: string
+}
+
+const accountStore = useAccount()
+
+const signup = (payload: SignUser) => accountStore.signup(payload)
+const onSubmit = (payload: SignUser) => signup(payload)
+</script>
+
 <template>
   <div class="bg-light min-vh-100 d-flex flex-row align-items-center">
     <CContainer>
@@ -7,7 +23,7 @@
             <CCardBody class="p-4">
               <RegisterForm @onSubmit="onSubmit" />
 
-              <CRow>
+              <CRow class="text-body">
                 <CCol xs="12" class="mt-3">
                   <p class="text-medium-emphasis">Sign up using</p>
                 </CCol>
@@ -39,25 +55,3 @@
     </CContainer>
   </div>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import RegisterForm from './components/RegisterForm.vue'
-import { mapActions } from 'vuex'
-
-export default defineComponent({
-  name: 'Register',
-  components: { RegisterForm },
-  methods: {
-    onSubmit(payload: {
-      email: string
-      username: string
-      password: string
-      staffauth: any
-    }) {
-      this.signup(payload)
-    },
-    ...mapActions('accounts', ['signup']),
-  },
-})
-</script>
