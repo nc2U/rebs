@@ -4,12 +4,15 @@ import { Buffer } from 'buffer'
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { errorHandle, message } from '@/utils/helper'
-import { User, Todo, Profile } from '@/store/types/accounts'
+import { User, Profile, Todo } from '@/store/types/accounts'
+
+type LoginUser = { email: string; password: string }
 
 export const useAccount = defineStore('account', () => {
   // states
   const accessToken = ref<string>('')
   const userInfo = ref<User | null>(null)
+  const profile = ref<Profile | null>(null)
   const todoList = ref<Todo[]>([])
 
   // getters
@@ -34,16 +37,10 @@ export const useAccount = defineStore('account', () => {
     return result.user_id ? result.user_id : null
   }
 
-  const signup = (payload: {
-    email: string
-    username: string
-    password: string
-  }) => {
+  const signup = (payload: LoginUser & { username: string }) => {
     api
       .post('/user/', payload)
-      .then(() => {
-        message('info', '', '회원가입이 완료되었습니다.')
-      })
+      .then(() => message('info', '', '회원가입이 완료되었습니다.'))
       .catch(err => errorHandle(err.response.data))
   }
 
@@ -55,10 +52,11 @@ export const useAccount = defineStore('account', () => {
 
   const setUser = (user: User) => {
     userInfo.value = user
+    fetchProfile()
     fetchTodoList()
   }
 
-  const login = (payload: { email: string; password: string }) =>
+  const login = (payload: LoginUser) =>
     api
       .post('/token/', payload)
       .then(res => {
@@ -89,6 +87,7 @@ export const useAccount = defineStore('account', () => {
 
   const logout = () => {
     userInfo.value = null
+    profile.value = null
     todoList.value = []
     accessToken.value = ''
     delete api.defaults.headers.common.Authorization
@@ -96,7 +95,15 @@ export const useAccount = defineStore('account', () => {
     message('', '', '로그아웃 완료 알림!')
   }
 
-  const createProfile = (payload: Profile) => {
+  const fetchProfile = () =>
+    userInfo.value?.profile
+      ? api
+          .get(`/profile/${userInfo.value?.profile}/`)
+          .then(res => (profile.value = res.data))
+          .catch(err => errorHandle(err.response.data))
+      : null
+
+  const createProfile = (payload: FormData) => {
     api.defaults.headers.post['Content-Type'] = 'multipart/form-data'
     return api
       .post(`/profile/`, payload)
@@ -107,10 +114,11 @@ export const useAccount = defineStore('account', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const patchProfile = (payload: Profile) => {
+  const patchProfile = (payload: { pk: number } & FormData) => {
+    const { pk, ...formData } = payload
     api.defaults.headers.patch['Content-Type'] = 'multipart/form-data'
     return api
-      .patch(`/profile/${payload.pk}/`, payload)
+      .patch(`/profile/${pk}/`, formData)
       .then(() => {
         const cookedToken = Cookies.get('accessToken')
         loginByToken(cookedToken).then(() => message())
@@ -170,6 +178,7 @@ export const useAccount = defineStore('account', () => {
   return {
     accessToken,
     userInfo,
+    profile,
     todoList,
 
     superAuth,
@@ -182,6 +191,7 @@ export const useAccount = defineStore('account', () => {
     loginByToken,
     logout,
 
+    fetchProfile,
     createProfile,
     patchProfile,
 

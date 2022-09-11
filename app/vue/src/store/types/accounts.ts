@@ -10,13 +10,14 @@ export declare interface User {
   todos: Todo[]
 }
 
-export interface Profile {
+export type Profile = {
+  [key: string]: number | null | string | Blob | undefined
   pk?: number | null
   user: number | null
   name: string
   birth_date: string
   cell_phone: string
-  image?: string
+  image?: string | Blob
 }
 
 export declare interface Todo {
