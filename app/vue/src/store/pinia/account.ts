@@ -58,8 +58,9 @@ export const useAccount = defineStore('account', () => {
     fetchTodoList()
   }
 
-  const login = (payload: LoginUser) =>
-    api
+  const login = (payload: LoginUser) => {
+    Cookies.remove('accessToken')
+    return api
       .post('/token/', payload)
       .then(res => {
         setToken(res.data.access)
@@ -74,6 +75,7 @@ export const useAccount = defineStore('account', () => {
         if (err.response.status === 401)
           message('warning', '', err.response.data.detail)
       })
+  }
 
   const loginByToken = (token?: string) => {
     if (token) {
