@@ -75,7 +75,7 @@ export const useSchedule = defineStore('schedule', () => {
       .delete(`/schedule/${pk}`)
       .then(() =>
         fetchScheduleList().then(() =>
-          message('danger', '알림!', '삭제되었습니다.'),
+          message('warning', '알림!', '해당 일정이 삭제되었습니다.'),
         ),
       )
       .catch(err => errorHandle(err.response.data))

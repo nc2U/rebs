@@ -111,7 +111,7 @@ const removeConfirm = () => {
 
 const eventRemove = () => {
   scheduleStore.deleteSchedule(eventId.value)
-  confirmModal.value.visible = false
+  confirmModal.value.close()
 }
 
 const handleMonthChange = (payload: CalEvent) => {
@@ -201,6 +201,7 @@ onBeforeMount(() => {
 
   <FormModal ref="formModal">
     <template #header>
+      <v-icon icon="mdi-clock-outline" />
       진행 일정 - 이벤트 {{ mode === 'create' ? '등록' : '편집' }}
     </template>
     <template #default>
@@ -241,8 +242,12 @@ onBeforeMount(() => {
   </FormModal>
 
   <ConfirmModal ref="confirmModal">
-    <template #header> 진행 일정 - 이벤트 삭제</template>
-    [{{ eventTitle }}] - 해당 진행 일정을 정말 삭제 하시겠습니까?
+    <template #header>
+      <v-icon icon="mdi-trash-can-outline" />
+      진행 일정 - 이벤트 삭제
+    </template>
+    [{{ eventTitle }}] - 삭제 후 복구할 수 없습니다. 해당 일정을 삭제
+    하시겠습니까?
     <template #footer>
       <CButton color="danger" @click="eventRemove">삭제</CButton>
     </template>
