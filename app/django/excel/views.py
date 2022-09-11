@@ -126,6 +126,8 @@ class ExportContracts(View):
             data = data.filter(keyunit__houseunit__building_unit=self.request.GET.get('dong'))
         if request.GET.get('status'):
             data = data.filter(contractor__status=request.GET.get('status'))
+        if request.GET.get('null'):
+            data = data.filter(keyunit__houseunit__isnull=True)
         if request.GET.get('reg'):
             result = True if request.GET.get('reg') == '1' else False
             data = data.filter(contractor__is_registed=result)

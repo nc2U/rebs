@@ -44,6 +44,8 @@ class ContractLV(LoginRequiredMixin, ListView):
             contract = contract.filter(keyunit__houseunit__building_unit=self.request.GET.get('dong'))
         if self.request.GET.get('status'):
             contract = contract.filter(contractor__contractorrelease__status=self.request.GET.get('status'))
+        if self.request.GET.get('null'):
+            contract = contract.filter(keyunit__houseunit__isnull=True)
         if self.request.GET.get('register'):
             result = True if self.request.GET.get('register') == '1' else False
             contract = contract.filter(contractor__is_registed=result)
