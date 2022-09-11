@@ -1,71 +1,57 @@
 <script lang="ts" setup>
 import { reactive, ref, computed, onBeforeMount } from 'vue'
-import { useStore } from 'vuex'
 import { useAccount } from '@/store/pinia/account'
 import { maska as vMaska } from 'maska'
 import { dateFormat } from '@/utils/baseMixins'
+import { Profile } from '@/store/types/accounts'
 import DatePicker from '@/components/DatePicker/index.vue'
 import AvatarInput from './AvatarInput.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
 const props = defineProps({
-  userInfo: { type: Object, default: null },
+  profile: { type: Object, default: null },
 })
 
 const emit = defineEmits(['file-upload', 'on-submit', 'reset-form'])
 
-const form = reactive({
-  pk: '',
-  user: '',
-  name: '',
-  birth_date: '',
-  cell_phone: '',
-})
-const image = ref()
-const validated = ref(false)
-
 const alertModal = ref()
 const confirmModal = ref()
 
-const store = useStore()
-const account = useAccount()
+const form = reactive<Profile>({
+  pk: null,
+  user: null,
+  name: '',
+  birth_date: '',
+  cell_phone: '',
+  image: '',
+})
 
-const isAuthorized = computed(() => account.isAuthorized) // store.getters['accounts/isAuthorized'])
+const validated = ref(false)
 
-const formsCheck = computed(() =>
-  props.userInfo?.profile?.pk ? isChanged() : false,
-)
+const accountStore = useAccount()
+const isAuthorized = computed(() => accountStore.isAuthorized)
 
-const confirmText = computed(() =>
-  props.userInfo?.profile?.pk ? '변경' : '등록',
-)
+const formsCheck = computed(() => (props.profile?.pk ? isChanged() : false))
 
-const btnClass = computed(() =>
-  props.userInfo?.profile?.pk ? 'success' : 'primary',
-)
+const confirmText = computed(() => (props.profile?.pk ? '변경' : '등록'))
+
+const btnClass = computed(() => (props.profile?.pk ? 'success' : 'primary'))
 
 const isChanged = () => {
-  const a = form.name === props.userInfo?.profile.name
-  const b = form.birth_date === props.userInfo?.profile.birth_date
-  const c = form.cell_phone === props.userInfo?.profile.cell_phone
-  const d =
-    image.value === null || image.value === props.userInfo?.profile.image
+  const a = form.name === props.profile.name
+  const b = form.birth_date === props.profile.birth_date
+  const c = form.cell_phone === props.profile.cell_phone
+  const d = !form.image || form.image === props.profile.image
   return a && b && c && d
 }
 
-const fileUpload = (img: File) => {
-  image.value = img.name
-  emit('file-upload', img)
-}
-const onSubmit = (event: {
-  currentTarget: { checkValidity: () => boolean }
-  preventDefault: () => void
-  stopPropagation: () => void
-}) => {
+const fileUpload = (img: File) => (form.image = img.name)
+
+const onSubmit = (event: Event) => {
   if (isAuthorized.value) {
-    const form = event.currentTarget
-    if (!form.checkValidity()) {
+    const e = event.currentTarget as HTMLSelectElement
+    if (!e.checkValidity()) {
       event.preventDefault()
       event.stopPropagation()
 
@@ -77,29 +63,31 @@ const onSubmit = (event: {
     alertModal.value.callModal()
   }
 }
+
 const modalAction = () => {
   form.birth_date = dateFormat(new Date(form.birth_date))
   emit('on-submit', form)
   validated.value = false
-  confirmModal.value.visible = false
+  confirmModal.value.close()
 }
 
 const resetForm = () => {
-  if (props.userInfo) {
-    form.user = props.userInfo.pk
-    if (props.userInfo.profile) {
-      form.pk = props.userInfo.profile.pk
-      form.name = props.userInfo.profile.name
-      form.birth_date = props.userInfo.profile.birth_date
-      form.cell_phone = props.userInfo.profile.cell_phone
-      image.value = props.userInfo.profile.image
+  if (props.profile) {
+    if (props.profile) {
+      form.pk = props.profile.pk
+      form.user = props.profile.user
+      form.name = props.profile.name
+      form.birth_date = props.profile.birth_date
+      form.cell_phone = props.profile.cell_phone
+      form.image = props.profile.image
     }
   } else {
-    form.pk = ''
-    form.user = ''
+    form.pk = null
+    form.user = null
     form.name = ''
     form.birth_date = ''
     form.cell_phone = ''
+    form.image = ''
   }
 }
 
@@ -196,7 +184,7 @@ onBeforeMount(() => resetForm())
         <CCol md="6">
           <AvatarInput
             ref="avatar"
-            :default-src="image"
+            :default-src="form.image"
             @file-upload="fileUpload"
           />
         </CCol>
@@ -204,7 +192,7 @@ onBeforeMount(() => resetForm())
     </CCardBody>
 
     <CCardFooter class="text-right">
-      <CButton type="button" color="light" @click="resetForm"> 취소 </CButton>
+      <CButton type="button" color="light" @click="resetForm"> 취소</CButton>
       <CButton type="submit" :color="btnClass" :disabled="formsCheck">
         <CIcon name="cil-check-circle" />
         {{ confirmText }}

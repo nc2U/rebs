@@ -1,45 +1,40 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue'
-import { useStore } from 'vuex'
+import { computed } from 'vue'
 import { useAccount } from '@/store/pinia/account'
+import { Profile } from '@/store/types/accounts'
 import { pageTitle, navMenu } from '@/views/settings/_menu/headermixin'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ProfileForm from '@/views/settings/Profile/components/ProfileForm.vue'
 
-const store = useStore()
-const account = useAccount()
+// const profile = ref()
+// const image = ref(null)
 
-const image = ref(null)
+const accountStore = useAccount()
+const profile = computed(() => accountStore.profile)
 
-const profile = ref()
-const avatar = ref()
+// const fileUpload = (image: File) => (image.value = image)
 
-const company = computed(() => store.state.settings.company)
-const userInfo = computed(() => account.userInfo)
+const createProfile = (payload: FormData) => console.log(payload) // accountStore.createProfile(payload)
+const patchProfile = (payload: { pk: number } & FormData) =>
+  console.log(payload) //  accountStore.patchProfile(payload)
 
-const fileUpload = (image: any) => {
-  image.value = image
-}
-
-const createProfile = (payload: { form: FormData }) =>
-  store.dispatch('accounts/createProfile', payload)
-const patchProfile = (payload: { pk: string; form: FormData }) =>
-  store.dispatch('accounts/patchProfile', payload)
-
-const onSubmit = async (payload: any) => {
+const onSubmit = async (payload: Profile) => {
   const { pk, ...formData } = payload
   const form = new FormData()
-  if (image.value) form.append('image', image.value)
-  for (const key in formData) {
-    form.append(`${key}`, formData[key])
+
+  for (const key in formData as any) {
+    // form.append(key, formData[key])
+    console.log(key, formData[key])
   }
 
-  if (pk) await patchProfile({ ...{ pk }, ...{ form } })
-  else await createProfile({ ...{ form } })
+  console.log(form)
 
-  profile.value.avatar.value.changeImage = false
-  profile.value.image = userInfo.value?.profile?.image
+  // if (pk) await patchProfile({ ...{ pk }, ...form })
+  // else await createProfile({ ...form })
+
+  // profile.value.avatar.value.changeImage = false
+  // profile.value.image = userInfo.value?.profile?.image
 }
 </script>
 
@@ -50,11 +45,6 @@ const onSubmit = async (payload: any) => {
     :selector="'CompanySelect'"
   />
   <ContentBody>
-    <ProfileForm
-      ref="profile"
-      :user-info="userInfo"
-      @file-upload="fileUpload"
-      @on-submit="onSubmit"
-    />
+    <ProfileForm ref="profile" :profile="profile" @on-submit="onSubmit" />
   </ContentBody>
 </template>

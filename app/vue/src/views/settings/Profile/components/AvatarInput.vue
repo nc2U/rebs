@@ -14,7 +14,7 @@ const cropModal = ref()
 
 const browse = () => {
   const fu = document.getElementById('file')
-  if (fu !== null) fu.click()
+  if (!!fu) fu.click()
 }
 
 const change = (event: { target: { files: File[] } }) => {
@@ -38,9 +38,8 @@ const fileUpload = (img: File) => {
     imgUrl.value = String(e.target?.result)
   }
 }
-const delModalImg = () => {
-  modalImg.value = null
-}
+
+const delModalImg = () => (modalImg.value = null)
 </script>
 
 <template>
