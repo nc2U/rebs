@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, onMounted, nextTick, watch } from 'vue'
 import { useStore } from 'vuex'
-import { useRoute, useRouter } from 'vue-router'
+import { RouteRecordRaw, useRoute, useRouter } from 'vue-router'
 import { VisitedViews } from '@/store/modules/tagsView/state'
 import routes from '@/router/routes'
 
@@ -10,7 +10,7 @@ const route = useRoute()
 const router = useRouter()
 
 const visible = ref(false)
-let affixTags = reactive<any>([])
+let affixTags = reactive<RouteRecordRaw[]>([])
 
 const currentTag = ref()
 const scrollPane = ref()
@@ -22,19 +22,21 @@ const btnColor = computed(() =>
 
 const visitedViews = computed(() => store.state.tagsView.visitedViews)
 
-const isActive = (currentRoute: any) => currentRoute.name === route.name
+const isActive = (currentRoute: { name: string }) =>
+  currentRoute.name === route.name
 
-const isAffix = (tag: any) => tag.meta && tag.meta.affix
+const isAffix = (tag: { meta: { affix: boolean } }) =>
+  tag.meta && tag.meta.affix
 
-const filterAffixTags = (routes: any[]) => {
+const filterAffixTags = (routes: RouteRecordRaw[]) => {
   let tags: Array<VisitedViews> = []
-  routes.forEach((r: any) => {
+  routes.forEach((r: RouteRecordRaw) => {
     if (r.meta && r.meta.affix) {
       tags.push({
         fullPath: r.path,
         path: r.path,
-        name: r.name,
-        meta: { ...r.meta },
+        name: r.name as string,
+        meta: { ...r.meta } as { title: string; affix: boolean },
       })
     }
 
@@ -49,7 +51,7 @@ const filterAffixTags = (routes: any[]) => {
 }
 
 const initTags = () => {
-  affixTags = filterAffixTags(routes)
+  affixTags = filterAffixTags(routes) as any
   affixTags.forEach((tag: any) =>
     tag.name ? store.dispatch('tagsView/addVisitedView', tag) : undefined,
   )

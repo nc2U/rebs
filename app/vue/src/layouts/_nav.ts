@@ -398,7 +398,7 @@ const settings = {
   ],
 }
 
-const nav: any = [
+const nav = [
   dashboard,
   schedule,
   {
