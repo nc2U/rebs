@@ -368,3 +368,20 @@
     }
   }
 }
+
+.dark-theme {
+
+  .new-todo {
+    color: #fff;
+  }
+
+  .todo-list li {
+    background: #24252F;
+    color: #fff;
+    border-bottom: 1px solid #3E3E3E;
+  }
+
+  .todo-list li .destroy {
+    color: #F4B8B8;
+  }
+}
