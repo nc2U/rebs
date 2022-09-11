@@ -2,17 +2,18 @@
 import { computed, ref } from 'vue'
 import { useStore } from 'vuex'
 import { useAccount } from '@/store/pinia/account'
-import AppBreadcrumb from './AppBreadcrumb.vue'
-import AppHeaderDropdownAccnt from './AppHeaderDropdownAccnt.vue'
 import { directive as vFullscreen } from 'vue-fullscreen'
 import { logo } from '@/assets/brand/current-logo'
+import AppBreadcrumb from './AppBreadcrumb.vue'
+import AppHeaderDropdownAccnt from './AppHeaderDropdownAccnt.vue'
 import TagsView from '@/layouts/containers/TagsView/index.vue'
 
 const store = useStore()
-const account = useAccount()
+const accountStore = useAccount()
 
 const screenIcon = ref('mdi-fullscreen')
 const screenGuide = ref('전체화면')
+
 const options = ref({
   target: '.fullscreen-wrapper',
   callback(isFullscreen: boolean) {
@@ -20,8 +21,10 @@ const options = ref({
     screenGuide.value = !isFullscreen ? '전체화면' : '전체화면 종료'
   },
 })
-const userInfo = computed(() => account.userInfo)
-const isAuthorized = computed(() => account.isAuthorized)
+
+const userInfo = computed(() => accountStore.userInfo)
+const profile = computed(() => accountStore.profile)
+const isAuthorized = computed(() => accountStore.isAuthorized)
 </script>
 
 <template>
@@ -86,8 +89,9 @@ const isAuthorized = computed(() => account.isAuthorized)
       </CHeaderNav>
       <CHeaderNav class="mr-4">
         <AppHeaderDropdownAccnt
-          v-if="isAuthorized && userInfo"
+          v-if="isAuthorized"
           :user-info="userInfo"
+          :profile="profile"
         />
         <router-link
           v-else

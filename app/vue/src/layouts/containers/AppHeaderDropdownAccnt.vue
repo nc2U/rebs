@@ -5,13 +5,17 @@ import { useRouter } from 'vue-router'
 import { useAccount } from '@/store/pinia/account'
 import TodoModal from '@/components/Modals/TodoModal.vue'
 
-const props = defineProps({ userInfo: { type: Object, required: true } })
+const props = defineProps({
+  userInfo: { type: Object, required: true },
+  profile: { type: Object, default: null },
+})
 
 const router = useRouter()
 
 const avatarSrc = computed(() => {
-  return props.userInfo?.profile?.image ? props.userInfo?.profile?.image : ''
+  return props.profile?.image ? props.profile?.image : ''
 })
+
 const avatarText = computed(() =>
   props.userInfo ? props.userInfo.username.substring(0, 1).toUpperCase() : 'A',
 )
@@ -51,13 +55,7 @@ const logout = () => {
         class="fw-semibold py-2"
         :class="headerClass"
       >
-        Account -
-        {{
-          userInfo.profile && userInfo.profile.name
-            ? userInfo.profile.name
-            : userInfo.username
-        }}
-        님
+        {{ profile.name ? profile.name : userInfo.username }}님
       </CDropdownHeader>
       <CDropdownItem @click="$refs.todoModal.callModal()">
         <CIcon icon="cil-task" />
