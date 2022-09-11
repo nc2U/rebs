@@ -1,15 +1,17 @@
 <script lang="ts" setup>
+import { computed, onBeforeMount, reactive, ref, watch } from 'vue'
+import { useAccount } from '@/store/pinia/account'
+import { useSchedule } from '@/store/pinia/schedule'
+import { addDays, diffDate } from '@/utils/baseMixins'
 import '@fullcalendar/core/vdom' // solve problem with Vite
 import FullCalendar, { DateSelectArg, EventClickArg } from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
-import { addDays, diffDate } from '@/utils/baseMixins'
-import { computed, onBeforeMount, reactive, ref, watch } from 'vue'
-import { useSchedule } from '@/store/pinia/schedule'
 import CalendarInfo from './components/CalendarInfo.vue'
 import FormModal from '@/components/Modals/FormModal.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
+import AlertModal from '@/components/Modals/AlertModal.vue'
 
 const cal = ref()
 const month = ref('')
@@ -21,6 +23,7 @@ const fetchScheduleList = (mon = '') => scheduleStore.fetchScheduleList(mon)
 const mode = ref<'create' | 'update'>('create')
 
 const formModal = ref()
+const alertModal = ref()
 const eventId = ref<string>('')
 const eventTitle = ref('')
 const newEvent = reactive({
@@ -29,23 +32,33 @@ const newEvent = reactive({
   allDay: true,
 })
 
+const accountStore = useAccount()
 const handleDateSelect = (selectInfo: DateSelectArg) => {
-  mode.value = 'create'
-  eventTitle.value = ''
-  formModal.value.callModal()
-  let calendarApi = selectInfo.view.calendar
-  calendarApi.unselect() // clear date selection
-  newEvent.start = selectInfo.startStr
-  newEvent.end = selectInfo.endStr
-  newEvent.allDay = selectInfo.allDay
+  if (accountStore.staffAuth) {
+    mode.value = 'create'
+    eventTitle.value = ''
+    formModal.value.callModal()
+    let calendarApi = selectInfo.view.calendar
+    calendarApi.unselect() // clear date selection
+    newEvent.start = selectInfo.startStr
+    newEvent.end = selectInfo.endStr
+    newEvent.allDay = selectInfo.allDay
+  } else
+    alertModal.value.callModal(
+      '',
+      '스태프(일정 등록) 권한이 없습니다. 관리자에게 문의하여 주십시요.',
+    )
 }
 
 const eventManagement = () => {
   const eventData = { title: eventTitle.value, ...newEvent }
   if (mode.value === 'create') scheduleStore.createSchedule(eventData)
   else if (mode.value === 'update')
-    scheduleStore.updateSchedule({ pk: eventId.value, ...{ data: eventData } })
-  formModal.value.visible = false
+    scheduleStore.updateSchedule({
+      pk: eventId.value,
+      ...{ data: eventData },
+    })
+  formModal.value.close()
 }
 
 const transformData = (event: any) => {
@@ -66,13 +79,19 @@ const handleChange = (el: EventClickArg) => {
 
 const confirmModal = ref()
 const handleEventClick = (clickInfo: EventClickArg) => {
-  mode.value = 'update'
-  eventId.value = clickInfo.event.id
-  eventTitle.value = clickInfo.event.title
-  newEvent.start = clickInfo.event.startStr
-  newEvent.end = clickInfo.event.endStr
-  newEvent.allDay = clickInfo.event.allDay
-  formModal.value.callModal()
+  if (accountStore.staffAuth) {
+    mode.value = 'update'
+    eventId.value = clickInfo.event.id
+    eventTitle.value = clickInfo.event.title
+    newEvent.start = clickInfo.event.startStr
+    newEvent.end = clickInfo.event.endStr
+    newEvent.allDay = clickInfo.event.allDay
+    formModal.value.callModal()
+  } else
+    alertModal.value.callModal(
+      '',
+      '스태프(일정 수정) 권한이 없습니다. 관리자에게 문의하여 주십시요.',
+    )
 }
 
 const removeConfirm = () => {
@@ -218,4 +237,6 @@ onBeforeMount(() => {
       <CButton color="danger" @click="eventRemove">삭제</CButton>
     </template>
   </ConfirmModal>
+
+  <AlertModal ref="alertModal" />
 </template>

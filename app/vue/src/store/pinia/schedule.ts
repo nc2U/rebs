@@ -35,7 +35,7 @@ export const useSchedule = defineStore('schedule', () => {
   // actions
   const fetchScheduleList = (month?: string) => {
     const mon = month ? month : new Date().toISOString().slice(0, 7)
-    api
+    return api
       .get(`/schedule/?search=${mon}`)
       .then(res => (scheduleList.value = res.data.results))
       .catch(err => errorHandle(err.response))
@@ -45,40 +45,39 @@ export const useSchedule = defineStore('schedule', () => {
     const eventData = transform(payload)
     api
       .post('/schedule/', eventData)
-      .then(() => {
-        fetchScheduleList(payload.start.substr(0, 7))
-        message()
-      })
+      .then(() =>
+        fetchScheduleList(payload.start.substr(0, 7)).then(() => message()),
+      )
       .catch(err => errorHandle(err.response))
   }
 
-  const fetchSchedule = (pk: number) => {
+  const fetchSchedule = (pk: number) =>
     api
       .get(`/schedule/${pk}/`)
       .then(res => (schedule.value = res.data))
       .catch(err => errorHandle(err.response.data))
-  }
 
   const updateSchedule = (payload: { pk: string; data: Event }) => {
     const { pk, data } = payload
     const eventData = transform(data)
-    api
+    return api
       .put(`/schedule/${pk}/`, eventData)
-      .then(res => {
-        fetchSchedule(res.data.pk)
+      .then(res =>
         fetchScheduleList()
-        message()
-      })
+          .then(() => fetchSchedule(res.data.pk))
+          .then(() => message()),
+      )
       .catch(err => errorHandle(err.response.data))
   }
 
   const deleteSchedule = (pk: string) => {
     api
       .delete(`/schedule/${pk}`)
-      .then(() => {
-        fetchScheduleList()
-        message('danger', '알림!', '삭제되었습니다.')
-      })
+      .then(() =>
+        fetchScheduleList().then(() =>
+          message('danger', '알림!', '삭제되었습니다.'),
+        ),
+      )
       .catch(err => errorHandle(err.response.data))
   }
 

@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-const emit = defineEmits(['weekends-toggle'])
 defineProps({
   calendarOptions: { type: Object, default: Function },
   currentEvents: { type: Array, default: Function },
 })
+const emit = defineEmits(['weekends-toggle'])
 </script>
 
 <template>
