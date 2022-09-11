@@ -52,7 +52,11 @@ export const useProject = defineStore('project', () => {
   const createProject = (payload: Project) => {
     api
       .post('/project/', payload)
-      .then(res => fetchProject(res.data.pk).then(() => message()))
+      .then(res =>
+        fetchProjectList().then(() =>
+          fetchProject(res.data.pk).then(() => message()),
+        ),
+      )
       .catch(err => errorHandle(err.response.data))
   }
 
