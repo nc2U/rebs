@@ -55,7 +55,7 @@ const logout = () => {
         class="fw-semibold py-2"
         :class="headerClass"
       >
-        {{ profile.name ? profile.name : userInfo.username }}님
+        {{ profile && profile.name ? profile.name : userInfo.username }}님
       </CDropdownHeader>
       <CDropdownItem @click="$refs.todoModal.callModal()">
         <CIcon icon="cil-task" />
