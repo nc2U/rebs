@@ -5,17 +5,18 @@ import { useAccount } from '@/store/pinia/account'
 import { errorHandle, message } from '@/utils/helper'
 import { Company, Logo } from '@/store/types/settings'
 
+const accountStore = useAccount()
+
 export const useCompany = defineStore('company', () => {
   // states & getters
   const companyList = ref<Company[]>([])
   const company = ref<Company | null>(null)
 
-  const initComId = computed(() => {
-    const account = useAccount()
-    return account.userInfo?.staffauth?.company
-      ? account.userInfo.staffauth.company
-      : 1
-  })
+  const initComId = computed(() =>
+    accountStore.userInfo?.staffauth?.company
+      ? accountStore.userInfo.staffauth.company
+      : 1,
+  )
 
   const comSelect = computed(() => {
     return companyList.value.map((com: Company) => ({

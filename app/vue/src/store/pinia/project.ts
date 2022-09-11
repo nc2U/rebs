@@ -5,32 +5,35 @@ import { useAccount } from '@/store/pinia/account'
 import { errorHandle, message } from '@/utils/helper'
 import { Project, ProjectBudget } from '@/store/types/project'
 
+const accountStore = useAccount()
+
 export const useProject = defineStore('project', () => {
   // states & getters
   const projectList = ref<Project[]>([])
   const project = ref<Project | null>(null)
 
-  const initProjId = computed(() => {
-    const account = useAccount()
-    return account.userInfo?.staffauth?.assigned_project
-      ? account.userInfo.staffauth.assigned_project
-      : account.userInfo?.staffauth?.allowed_projects[0] || 1
-  })
+  const initProjId = computed(() =>
+    accountStore.userInfo?.staffauth?.assigned_project
+      ? accountStore.userInfo.staffauth.assigned_project
+      : 1,
+  )
 
-  const allowed_projects = computed(() => {
-    const account = useAccount()
-    return account.userInfo && account.userInfo.staffauth
-      ? account.userInfo.staffauth.allowed_projects
-      : []
-  })
-
-  const projSelect = computed(() =>
-    projectList.value
-      ? projectList.value
-          .filter((p: Project) => allowed_projects.value.includes(p.pk))
-          .map((p: Project) => ({ value: p.pk, text: p.name }))
+  const allowed_projects = computed(() =>
+    accountStore.userInfo && accountStore.userInfo.staffauth
+      ? accountStore.userInfo.staffauth.allowed_projects
       : [],
   )
+
+  const projSelect = computed(() => {
+    const allowedProject = accountStore.superAuth
+      ? projectList.value
+      : projectList.value.filter((p: Project) =>
+          allowed_projects.value.includes(p.pk || 0),
+        )
+
+    return allowedProject.map((p: Project) => ({ value: p.pk, text: p.name }))
+  })
+
   const projectBudgetList = ref<ProjectBudget[]>([])
 
   // actions

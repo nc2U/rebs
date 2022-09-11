@@ -1,20 +1,20 @@
 export interface Project {
-  pk: number
-  company: number
+  pk: number | null
+  company: number | null
   name: string
   order: number | null
   kind: string
-  kind_desc: string
+  kind_desc?: string
   start_year: string
   is_direct_manage: boolean
   is_returned_area: boolean
   is_unit_set: boolean
-  local_zipcode: string | null
-  local_address1: string | null
-  local_address2: string | null
-  local_address3: string | null
-  area_usage: string | null
-  build_size: string | null
+  local_zipcode: string
+  local_address1: string
+  local_address2: string
+  local_address3: string
+  area_usage: string
+  build_size: string
   num_unit: number | null
   buy_land_extent: number | null
   scheme_land_extent: number | null
