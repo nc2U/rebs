@@ -1,3 +1,116 @@
+<script setup lang="ts">
+import { ref, computed, onMounted } from 'vue'
+import { AddressData } from '@/components/DaumPostcode/address'
+import { useStore } from 'vuex'
+
+const store = useStore()
+
+const props = defineProps({
+  width: { type: Number, default: 450 },
+  height: { type: Number, default: 415 },
+  borderWidth: { type: Number, default: 5 },
+  autoClose: { type: Boolean, default: false },
+  autoResize: { type: Boolean, default: false },
+  animation: { type: Boolean, default: false },
+  autoMapping: { type: Boolean, default: true },
+  shorthand: { type: Boolean, default: true },
+  pleaseReadGuide: { type: Number, default: 0 },
+  pleaseReadGuideTimer: { type: Number, default: 1.5 },
+  maxSuggestItems: { type: Number, default: 8 },
+  showMoreHName: { type: Boolean, default: false },
+  hideMapBtn: { type: Boolean, default: false },
+  hideEngBtn: { type: Boolean, default: false },
+  alwaysShowEngAddr: { type: Boolean, default: false },
+  submitMode: { type: Boolean, default: true },
+  useSuggest: { type: Boolean, default: true },
+  componentStyle: { type: Object, default: null },
+  defaultQuery: { type: String, default: null },
+  scriptUrl: {
+    type: String,
+    default: '//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js',
+  },
+})
+
+const emit = defineEmits(['address-callback', 'address-callback'])
+
+const element_layer = ref()
+const displayVal = ref('none')
+
+const widthVal = computed(() => props.width + 'px')
+const heightVal = computed(() => props.height + 'px')
+const borderVal = computed(() => props.borderWidth + 'px solid')
+const leftVal = computed(
+  () =>
+    ((window.innerWidth || document.documentElement.clientWidth) -
+      props.width) /
+      2 -
+    props.borderWidth +
+    'px',
+)
+const topVal = computed(
+  () =>
+    ((window.innerHeight || document.documentElement.clientHeight) -
+      props.height) /
+      2 -
+    props.borderWidth +
+    'px',
+)
+const theme = computed(() => {
+  if (store.state.theme === 'dark') {
+    return {
+      searchBgColor: '#2A2B36', //검색창 배경색
+      queryTextColor: '#FFFFFF', //검색창 글자색
+    }
+  } else {
+    return null
+  }
+})
+
+const initiate = (formNum = 1) => {
+  ;(window as any).daum.postcode.load(() => {
+    new (window as any).daum.Postcode({
+      oncomplete: function oncomplete(data: AddressData) {
+        emit('address-callback', { ...{ formNum }, ...data })
+        displayVal.value = 'none'
+      },
+      alwaysShowEngAddr: props.alwaysShowEngAddr,
+      animation: props.animation,
+      autoMapping: props.autoMapping,
+      autoResize: props.autoResize,
+      hideEngBtn: props.hideEngBtn,
+      hideMapBtn: props.hideMapBtn,
+      maxSuggestItems: props.maxSuggestItems,
+      pleaseReadGuide: props.pleaseReadGuide,
+      pleaseReadGuideTimer: props.pleaseReadGuideTimer,
+      shorthand: props.shorthand,
+      showMoreHName: props.showMoreHName,
+      submitMode: props.submitMode,
+      theme: theme.value,
+      useSuggest: props.useSuggest,
+      width: '100%',
+      height: '100%',
+    }).embed(element_layer.value)
+
+    displayVal.value = 'block'
+  })
+}
+
+defineExpose({ initiate })
+
+const closeLayer = () => (displayVal.value = 'none')
+
+onMounted(() => {
+  const scriptId = 'daum_postcode_script'
+  const isExist = !!document.getElementById(scriptId)
+  if (!isExist) {
+    const script = document.createElement('script')
+    script.src = props.scriptUrl
+    script.id = scriptId
+    document.body.appendChild(script)
+  }
+})
+</script>
+
 <template>
   <div
     id="layer"
@@ -19,189 +132,6 @@
     />
   </div>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import { AddressData } from '@/components/DaumPostcode/address'
-import store from '@/store'
-
-export default defineComponent({
-  name: 'DaumPostcode',
-  props: {
-    width: {
-      type: Number,
-      default: 450,
-    },
-    height: {
-      type: Number,
-      default: 415,
-    },
-    borderWidth: {
-      type: Number,
-      default: 5,
-    },
-    autoClose: {
-      type: Boolean,
-      default: false,
-    },
-    autoResize: {
-      type: Boolean,
-      default: false,
-    },
-    animation: {
-      type: Boolean,
-      default: false,
-    },
-    autoMapping: {
-      type: Boolean,
-      default: true,
-    },
-    shorthand: {
-      type: Boolean,
-      default: true,
-    },
-    pleaseReadGuide: {
-      type: Number,
-      default: 0,
-    },
-    pleaseReadGuideTimer: {
-      type: Number,
-      default: 1.5,
-    },
-    maxSuggestItems: {
-      type: Number,
-      default: 8,
-    },
-    showMoreHName: {
-      type: Boolean,
-      default: false,
-    },
-    hideMapBtn: {
-      type: Boolean,
-      default: false,
-    },
-    hideEngBtn: {
-      type: Boolean,
-      default: false,
-    },
-    alwaysShowEngAddr: {
-      type: Boolean,
-      default: false,
-    },
-    submitMode: {
-      type: Boolean,
-      default: true,
-    },
-    useSuggest: {
-      type: Boolean,
-      default: true,
-    },
-    componentStyle: {
-      type: Object,
-      default: null,
-    },
-    defaultQuery: {
-      type: String,
-      default: null,
-    },
-    scriptUrl: {
-      type: String,
-      default: '//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js',
-    },
-  },
-  emits: ['address-callback'],
-  data() {
-    return {
-      displayVal: 'none',
-    }
-  },
-  computed: {
-    widthVal() {
-      return this.width + 'px'
-    },
-    heightVal() {
-      return this.height + 'px'
-    },
-    borderVal() {
-      return this.borderWidth + 'px solid'
-    },
-    leftVal() {
-      return (
-        ((window.innerWidth || document.documentElement.clientWidth) -
-          this.width) /
-          2 -
-        this.borderWidth +
-        'px'
-      )
-    },
-    topVal() {
-      return (
-        ((window.innerHeight || document.documentElement.clientHeight) -
-          this.height) /
-          2 -
-        this.borderWidth +
-        'px'
-      )
-    },
-    theme() {
-      if (store.state.theme === 'dark') {
-        return {
-          searchBgColor: '#2A2B36', //검색창 배경색
-          queryTextColor: '#FFFFFF', //검색창 글자색
-        }
-      } else {
-        return null
-      }
-    },
-  },
-  mounted: function () {
-    const scriptId = 'daum_postcode_script'
-    const isExist = !!document.getElementById(scriptId)
-    if (!isExist) {
-      const script = document.createElement('script')
-      script.src = this.scriptUrl
-      script.id = scriptId
-      document.body.appendChild(script)
-    }
-  },
-  methods: {
-    initiate(formNum = 1) {
-      // eslint-disable-next-line @typescript-eslint/no-this-alias
-      const vm: any = this
-      ;(window as any).daum.postcode.load(() => {
-        new (window as any).daum.Postcode({
-          oncomplete: function oncomplete(data: AddressData) {
-            vm.$emit('address-callback', { ...{ formNum }, ...data })
-            vm.displayVal = 'none'
-          },
-          alwaysShowEngAddr: vm.alwaysShowEngAddr,
-          animation: vm.animation,
-          autoMapping: vm.autoMapping,
-          autoResize: vm.autoResize,
-          hideEngBtn: vm.hideEngBtn,
-          hideMapBtn: vm.hideMapBtn,
-          maxSuggestItems: vm.maxSuggestItems,
-          pleaseReadGuide: vm.pleaseReadGuide,
-          pleaseReadGuideTimer: vm.pleaseReadGuideTimer,
-          shorthand: vm.shorthand,
-          showMoreHName: vm.showMoreHName,
-          submitMode: vm.submitMode,
-          theme: vm.theme,
-          useSuggest: vm.useSuggest,
-          width: '100%',
-          height: '100%',
-        }).embed(vm.$refs.element_layer)
-
-        // iframe을 넣은 element를 보이게 한다.
-        vm.displayVal = 'block'
-      })
-    },
-    closeLayer() {
-      this.displayVal = 'none'
-    },
-  },
-})
-</script>
 
 <style lang="scss" scoped>
 #layer {
