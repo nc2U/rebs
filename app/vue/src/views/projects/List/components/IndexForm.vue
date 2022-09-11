@@ -122,7 +122,7 @@ const modalAction = () => {
   if (form.order === null) form.order = 100
   emit('to-submit', { ...form })
   validated.value = false
-  emit('close')
+  confirmModal.value.close()
 }
 
 const deleteProject = () => {

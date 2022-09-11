@@ -41,11 +41,7 @@ export const useCompany = defineStore('company', () => {
   const createCompany = (payload: Company) =>
     api
       .post(`/company/`, payload)
-      .then(res =>
-        fetchCompanyList().then(() =>
-          fetchCompany(res.data.pk).then(() => message()),
-        ),
-      )
+      .then(res => fetchCompany(res.data.pk).then(() => message()))
       .catch(err => errorHandle(err.response.data))
 
   const updateCompany = (payload: Company) =>
