@@ -46,7 +46,7 @@ export const useSchedule = defineStore('schedule', () => {
     api
       .post('/schedule/', eventData)
       .then(() =>
-        fetchScheduleList(payload.start.substr(0, 7)).then(() => message()),
+        fetchScheduleList(payload.start?.substr(0, 7)).then(() => message()),
       )
       .catch(err => errorHandle(err.response))
   }
