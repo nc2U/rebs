@@ -137,7 +137,7 @@ onBeforeMount(() => account.fetchTodoList())
     </footer>
   </section>
 
-  <footer class="info text-center" style="color: #ccc; font-size: 0.875rem">
+  <footer class="info text-center bottom-footer" style="font-size: 0.875rem">
     <p v-if="todos.length">할 일 목록을 수정하려면 더블클릭 하세요.</p>
     <p v-else>첫 번째 할 일 목록을 메모해 보세요.</p>
   </footer>
@@ -145,4 +145,14 @@ onBeforeMount(() => account.fetchTodoList())
 
 <style lang="scss">
 @import 'index';
+
+.bottom-footer {
+  color: #ccc;
+}
+
+.dark-theme {
+  .bottom-footer {
+    color: #3e4853;
+  }
+}
 </style>
