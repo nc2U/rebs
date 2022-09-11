@@ -119,7 +119,7 @@ const onSubmit = (event: Event) => {
 }
 
 const modalAction = () => {
-  if (form.order === null) form.order = 100
+  if (!form.order) form.order = 100
   emit('to-submit', { ...form })
   validated.value = false
   confirmModal.value.close()

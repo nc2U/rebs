@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed, nextTick, onBeforeMount } from 'vue'
+import { ref, computed, nextTick, onBeforeMount, watch } from 'vue'
 import { useCompany } from '@/store/pinia/company'
 
 const emit = defineEmits(['com-select'])
@@ -8,7 +8,10 @@ const currentCompany = ref()
 
 const companyStore = useCompany()
 const initComId = computed(() => companyStore.initComId)
+const company = computed(() => companyStore.company?.pk)
 const comSelectList = computed(() => companyStore.comSelect)
+
+watch(company, val => (currentCompany.value = val))
 
 const comSelect = (event: Event) =>
   nextTick(() => emit('com-select', (event.target as HTMLSelectElement).value))

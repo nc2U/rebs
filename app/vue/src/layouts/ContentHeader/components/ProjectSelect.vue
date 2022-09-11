@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed, onBeforeMount, nextTick } from 'vue'
+import { ref, computed, onBeforeMount, nextTick, watch } from 'vue'
 import { useProject } from '@/store/pinia/project'
 
 const emit = defineEmits(['proj-select'])
@@ -8,7 +8,10 @@ const currentProject = ref()
 
 const projectStore = useProject()
 const initProjId = computed(() => projectStore.initProjId)
+const project = computed(() => projectStore.project?.pk)
 const projSelectList = computed(() => projectStore.projSelect)
+
+watch(project, val => (currentProject.value = val))
 
 const projSelect = (event: Event) =>
   nextTick(() => emit('proj-select', (event.target as HTMLSelectElement).value))
