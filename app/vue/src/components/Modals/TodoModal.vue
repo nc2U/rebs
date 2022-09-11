@@ -17,7 +17,7 @@ defineExpose({ callModal, close })
     @keydown.esc="() => (visible = false)"
   >
     <CModalHeader>
-      <CModalTitle>
+      <CModalTitle class="text-body">
         <CIcon name="cilCalendarCheck" class="mr-2" />
         할 일 목록
       </CModalTitle>

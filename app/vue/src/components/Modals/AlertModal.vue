@@ -21,7 +21,7 @@ defineExpose({ callModal, close })
     @keydown.esc="() => (visible = false)"
   >
     <CModalHeader>
-      <CModalTitle>
+      <CModalTitle class="text-body">
         <CIcon name="cilItalic" />
         <slot name="header"> {{ headMessage || ' 알림' }}</slot>
       </CModalTitle>
