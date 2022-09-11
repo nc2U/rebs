@@ -1,32 +1,25 @@
 <script lang="ts" setup>
 import { ref, computed, onBeforeMount, watch } from 'vue'
 import { useAccount } from '@/store/pinia/account'
+import { Todo as T } from '@/store/types/accounts'
 import Todo from './Todo.vue'
 
-interface Todo {
-  pk: number
-  title: string
-  completed: boolean
-  soft_deleted: boolean
+const todos = ref<T[]>([])
+const visibility = ref('all')
+
+type filterType = {
+  [key: string]: (x: T[]) => ((y: T) => boolean) | T[]
 }
 
 const account = useAccount()
-
-const visibility = ref('all')
-const todos = ref<Todo[]>([])
-
-type filterType = {
-  [key: string]: (x: Todo[]) => ((y: Todo) => boolean) | Todo[]
-}
-
-const userInfo = computed(() => account.userInfo)
+const userInfo = computed(() => account.userInfo?.pk || 1)
 const myTodos = computed(() => account.myTodos)
 watch(myTodos, val => (todos.value = val))
 
 const filters: filterType = {
-  all: (myTodos: Todo[]) => myTodos,
-  active: (myTodos: Todo[]) => myTodos.filter(todo => !todo.completed),
-  completed: (myTodos: Todo[]) => myTodos.filter(todo => todo.completed),
+  all: (myTodos: T[]) => myTodos,
+  active: (myTodos: T[]) => myTodos.filter(todo => !todo.completed),
+  completed: (myTodos: T[]) => myTodos.filter(todo => todo.completed),
 }
 
 const allChecked = computed(() => myTodos.value.every(todo => todo.completed))
@@ -34,40 +27,36 @@ const allChecked = computed(() => myTodos.value.every(todo => todo.completed))
 const filteredTodos = computed(() => filters[visibility.value](todos.value))
 
 const remaining = computed(
-  () => todos.value.filter((todo: todo) => !todo.completed).length,
+  () => todos.value.filter((todo: T) => !todo.completed).length,
 )
 
-// ...mapActions('accounts', ['fetchTodoList', 'createTodo', 'patchTodo']),
-
-const addTodo = (e: any) => {
-  const title = e.target.value.trim()
+const addTodo = (e: Event) => {
+  const title = (e.target as HTMLInputElement).value.trim()
   if (userInfo.value && title) {
-    account.createTodo({ user: userInfo.value.pk, title })
+    account.createTodo({ user: userInfo.value, title })
   }
-  e.target.value = ''
+  ;(e.target as HTMLInputElement).value = ''
 }
 
-const toggleTodo = (todo: Todo) => {
+const toggleTodo = (todo: T) => {
   todo.completed = !todo.completed
   const payload = { pk: todo.pk, completed: todo.completed }
   account.patchTodo(payload)
 }
 
-const delTodo = (todo: Todo) => {
-  const { pk } = todo
+const delTodo = (pk: number) => {
   const soft_deleted = true
   const payload = { pk, soft_deleted }
   account.patchTodo(payload)
 }
 
-const editTodo = ({ todo, title }: { todo: Todo; title: string }) => {
-  const { pk } = todo
+const editTodo = (pk: number, title: string) => {
   const payload = { pk, title }
   account.patchTodo(payload)
 }
 
 const clearCompleted = () => {
-  todos.value.forEach((todo: Todo) => {
+  todos.value.forEach((todo: T) => {
     if (todo.completed) {
       const payload = { pk: todo.pk, soft_deleted: true }
       account.patchTodo(payload)
@@ -76,15 +65,15 @@ const clearCompleted = () => {
 }
 
 const toggleAll = ({ completed }: { completed: boolean }) => {
-  todos.value.forEach((todo: Todo) => {
+  todos.value.forEach((todo: T) => {
     todo.completed = completed
     const payload = { pk: todo.pk, completed: todo.completed }
     account.patchTodo(payload)
   })
 }
 
-const pluralize = (n: any, w: any) => (n === 1 ? w : w + 's')
-const capitalize = (s: any) => s.charAt(0).toUpperCase() + s.slice(1)
+const pluralize = (n: number, w: string) => (n === 1 ? w : w + 's')
+const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1)
 
 onBeforeMount(() => account.fetchTodoList())
 </script>
@@ -113,8 +102,8 @@ onBeforeMount(() => account.fetchTodoList())
       <label for="toggle-all" />
       <ul class="todo-list">
         <Todo
-          v-for="(todo, index) in filteredTodos"
-          :key="index"
+          v-for="todo in filteredTodos"
+          :key="todo.pk"
           :todo="todo"
           @toggleTodo="toggleTodo"
           @editTodo="editTodo"
@@ -149,10 +138,8 @@ onBeforeMount(() => account.fetchTodoList())
   </section>
 
   <footer class="info text-center" style="color: #ccc; font-size: 0.875rem">
-    <p v-if="todos.length" class="aa">
-      할 일 목록을 수정하려면 더블클릭 하세요.
-    </p>
-    <p v-else class="aa">첫 번째 할 일 목록을 메모해 보세요.</p>
+    <p v-if="todos.length">할 일 목록을 수정하려면 더블클릭 하세요.</p>
+    <p v-else>첫 번째 할 일 목록을 메모해 보세요.</p>
   </footer>
 </template>
 

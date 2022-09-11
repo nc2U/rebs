@@ -11,7 +11,7 @@ export declare interface User {
 }
 
 export type Profile = {
-  [key: string]: number | null | string | Blob | undefined
+  [key: string]: undefined | number | null | string
   pk?: number | null
   user: number | null
   name: string
@@ -19,13 +19,12 @@ export type Profile = {
   cell_phone: string
 }
 
-export declare interface Todo {
+export interface Todo {
   pk?: number
-  url: string
-  user: number
-  title: string
-  completed: boolean
-  soft_deleted: boolean
+  user?: number
+  title?: string
+  completed?: boolean
+  soft_deleted?: boolean
 }
 
 interface StaffAuth {

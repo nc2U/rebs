@@ -12,7 +12,7 @@
     </div>
     <input
       v-show="editing"
-      v-focus="editing"
+      ref="editInput"
       :value="todo.title"
       class="edit"
       @keyup.enter="doneEdit"
@@ -22,59 +22,38 @@
   </li>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
+<script setup lang="ts">
+import { nextTick, ref, watch } from 'vue'
+import { Todo } from '@/store/types/accounts'
 
-export default defineComponent({
-  name: 'Todo',
-  directives: {
-    focus(el, { value }) {
-      if (value) {
-        el.focus()
-      }
-    },
-  },
-  props: {
-    todo: {
-      type: Object,
-      default: function () {
-        return {}
-      },
-    },
-  },
-  data() {
-    return {
-      editing: false,
-    }
-  },
-  methods: {
-    delTodo(todo: any) {
-      this.$emit('delTodo', todo)
-    },
-    editTodo({ todo, title }: any) {
-      if (todo.title !== title) this.$emit('editTodo', { todo, title })
-      else return
-    },
-    toggleTodo(todo: any) {
-      this.$emit('toggleTodo', todo)
-    },
-    doneEdit(e: any) {
-      const title = e.target.value.trim()
-      const { todo }: any = this
-      if (!title) {
-        this.delTodo(todo)
-      } else if (this.editing) {
-        this.editTodo({
-          todo,
-          title,
-        })
-      }
-      this.editing = false
-    },
-    cancelEdit(e: any) {
-      e.target.value = (this as any).todo.title
-      this.editing = false
-    },
-  },
+const props = defineProps({ todo: { type: Object, default: null } })
+
+const emit = defineEmits(['delTodo', 'editTodo', 'toggleTodo'])
+
+const editInput = ref()
+const editing = ref(false)
+
+watch(editing, val => {
+  if (val) nextTick(() => editInput.value.focus())
 })
+
+const delTodo = (pk: number) => emit('delTodo', pk)
+
+const editTodo = (pk: number, title: string) => {
+  if (props.todo.title !== title) emit('editTodo', pk, title)
+  else return
+}
+
+const toggleTodo = (todo: Todo) => emit('toggleTodo', todo)
+
+const doneEdit = (e: Event) => {
+  const title = (e.target as HTMLInputElement).value.trim()
+  if (!title) delTodo(props.todo.pk)
+  else if (editing.value) editTodo(props.todo.pk, title)
+  editing.value = false
+}
+const cancelEdit = (e: Event) => {
+  ;(e.target as HTMLInputElement).value = props.todo.title
+  editing.value = false
+}
 </script>
