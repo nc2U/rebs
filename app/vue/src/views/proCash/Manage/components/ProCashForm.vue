@@ -123,8 +123,6 @@ const sepSummary = computed(() => {
   return [inc, out]
 })
 
-const pageManageAuth = computed(() => write_project_cash)
-
 const accountStore = useAccount()
 const allowedPeriod = computed(
   () => accountStore.superAuth || diffDate(props.proCash.deal_date) <= 30,
@@ -185,42 +183,18 @@ const sepUpdate = (sep: ProjectCashBook) => {
   sepItem.income = sep.income
   sepItem.note = sep.note
 }
-const createConfirm = (payload: {
-  formData: ProjectCashBook
-  sepData: ProjectCashBook
-}) => {
-  if (pageManageAuth.value) multiSubmit(payload)
-  else alertModal.value.callModal()
-}
-
-const updateConfirm = (payload: {
-  formData: ProjectCashBook
-  sepData: ProjectCashBook
-}) => {
-  if (pageManageAuth.value)
-    if (allowedPeriod.value) multiSubmit(payload)
-    else
-      alertModal.value.callModal(
-        null,
-        '거래일로부터 30일이 경과한 건은 수정할 수 없습니다. 관리자에게 문의바랍니다.',
-      )
-  else alertModal.value.callModal()
-}
-
-const deleteConfirm = () => {
-  if (pageManageAuth.value)
-    if (allowedPeriod.value) delModal.value.callModal()
-    else
-      alertModal.value.callModal(
-        null,
-        '거래일로부터 30일이 경과한 건은 삭제할 수 없습니다. 관리자에게 문의바랍니다.',
-      )
-  else alertModal.value.callModal()
-}
 
 watch(form, val => {
   if (val.deal_date) form.deal_date = dateFormat(val.deal_date)
 })
+
+const multiSubmit = (multiPayload: {
+  formData: ProjectCashBook
+  sepData: ProjectCashBook
+}) => {
+  emit('multi-submit', multiPayload)
+  emit('close')
+}
 
 const onSubmit = (event: Event) => {
   if (isValidate(event)) {
@@ -230,24 +204,37 @@ const onSubmit = (event: Event) => {
       ? { formData: form }
       : { formData: form, sepData: sepItem }
 
-    if (props.proCash || sepItem.pk) updateConfirm(payload)
-    else createConfirm(payload)
+    if (write_project_cash) {
+      if (props.proCash) {
+        if (allowedPeriod.value) multiSubmit(payload)
+        else
+          alertModal.value.callModal(
+            null,
+            '거래일로부터 30일이 경과한 건은 수정할 수 없습니다. 관리자에게 문의바랍니다.',
+          )
+      } else multiSubmit(payload)
+    } else alertModal.value.callModal()
+    emit('close')
   }
 }
 
-const multiSubmit = (multiPayload: {
-  formData: ProjectCashBook
-  sepData: ProjectCashBook
-}) => {
-  emit('multi-submit', multiPayload)
-  emit('close')
+const deleteConfirm = () => {
+  if (write_project_cash)
+    if (allowedPeriod.value) delModal.value.callModal()
+    else
+      alertModal.value.callModal(
+        null,
+        '거래일로부터 30일이 경과한 건은 삭제할 수 없습니다. 관리자에게 문의바랍니다.',
+      )
+  else alertModal.value.callModal()
 }
+
 const deleteObject = () => {
   emit('on-delete', {
     project: props.proCash.project,
     pk: props.proCash.pk,
   })
-  delModal.value.visible = false
+  delModal.value.close()
   emit('close')
 }
 
@@ -772,7 +759,7 @@ onBeforeMount(() => {
     </CModalBody>
 
     <CModalFooter>
-      <CButton type="button" color="light" @click="$emit('close')">
+      <CButton type="button" color="light" @click="emit('close')">
         닫기
       </CButton>
       <slot name="footer">
