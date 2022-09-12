@@ -3,23 +3,25 @@ import { computed } from 'vue'
 import { numFormat } from '@/utils/baseMixins'
 import { headerSecondary } from '@/utils/cssMixins'
 import Payment from '@/views/payments/Register/components/Payment.vue'
+import { ProjectCashBook } from '@/store/types/proCash'
 
 const props = defineProps({
   contract: { type: Object, default: null },
   paymentList: { type: Array, default: () => [] },
   paymentId: { type: String, default: '' },
 })
+
 const emit = defineEmits(['on-update', 'on-delete'])
 
 const paymentSum = computed(() => {
   return props.paymentList.length !== 0
     ? props.paymentList
         .map((p: any) => p.income)
-        .reduce((x: any, y: any) => x + y)
+        .reduce((x: any, y: any) => x + y, 0)
     : 0
 })
 
-const onUpdate = (payload: any) => emit('on-update', payload)
+const onUpdate = (payload: ProjectCashBook) => emit('on-update', payload)
 const onDelete = (pk: number) => emit('on-delete', pk)
 </script>
 

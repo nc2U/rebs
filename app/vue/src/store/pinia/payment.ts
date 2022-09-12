@@ -11,18 +11,37 @@ import {
 } from '@/store/types/payment'
 import { ProjectCashBook } from '@/store/types/proCash'
 
+export type PaymentFilter = {
+  project?: number
+  from_date?: string
+  to_date?: string
+  pay_order?: string
+  pay_account?: string
+  contract?: number
+  no_contract?: boolean
+  ordering?: string
+  search?: string
+  page?: number
+}
+
+export type DownPayFilter = {
+  project: number
+  order_group?: number
+  unit_type?: number
+}
+
+export type PriceFilter = {
+  project?: number | null
+  order_group?: number | null
+  unit_type?: number | null
+}
+
 export const usePayment = defineStore('payment', () => {
   // state & getters
   const priceList = ref<Price[]>([])
 
-  type Ids = {
-    project: number | null
-    order_group: number | null
-    unit_type: number | null
-  }
-
   // actions
-  const fetchPriceList = (payload: Ids) => {
+  const fetchPriceList = (payload: PriceFilter) => {
     const project = payload.project || ''
     const order_group = payload.order_group || ''
     const unit_type = payload.unit_type || ''
@@ -47,7 +66,7 @@ export const usePayment = defineStore('payment', () => {
       .then(() => fetchPriceList(payload).then(() => message()))
       .catch(err => errorHandle(err.response.data))
 
-  const deletePrice = (payload: Ids & { pk: number }) =>
+  const deletePrice = (payload: PriceFilter & { pk: number }) =>
     api
       .delete(`/price/${payload.pk}/`)
       .then(() =>
@@ -106,11 +125,7 @@ export const usePayment = defineStore('payment', () => {
   const downPayList = ref<DownPay[]>([])
 
   // actions
-  const fetchDownPayList = (payload: {
-    project: number
-    order_group?: number
-    unit_type?: number
-  }) => {
+  const fetchDownPayList = (payload: DownPayFilter) => {
     let url = `/down-payment/?project=${payload.project}`
     if (payload.order_group) url += `&order_group=${payload.order_group}`
     if (payload.unit_type) url += `&unit_type=${payload.unit_type}`
@@ -175,7 +190,7 @@ export const usePayment = defineStore('payment', () => {
   const paymentsCount = ref<number>(0)
 
   // actions
-  const fetchPaymentList = (payload: any) => {
+  const fetchPaymentList = (payload: PaymentFilter) => {
     const { project } = payload
     let url = `/payment/?project=${project}`
     if (payload.from_date) url += `&from_deal_date=${payload.from_date}`

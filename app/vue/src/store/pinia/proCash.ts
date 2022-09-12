@@ -25,7 +25,6 @@ export type CashBookFilter = {
   bank_account?: number
   pay_order?: string
   pay_account?: string
-  no_contract?: boolean
   search?: string
 }
 
@@ -251,7 +250,9 @@ export const useProCash = defineStore('proCash', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const updatePrCashBook = (payload: ProjectCashBook & any) => {
+  const updatePrCashBook = (
+    payload: ProjectCashBook & { filters: CashBookFilter },
+  ) => {
     const { pk, filters, ...formData } = payload
     api
       .put(`/project-cashbook/${pk}/`, formData)
@@ -309,7 +310,11 @@ export const useProCash = defineStore('proCash', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const deletePrCashBook = (payload: any) => {
+  const deletePrCashBook = (
+    payload: { pk: number; project: number; contract: number } & {
+      filters?: CashBookFilter
+    },
+  ) => {
     const { pk, project, filters, contract } = payload
 
     api

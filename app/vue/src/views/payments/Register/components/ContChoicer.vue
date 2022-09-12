@@ -1,10 +1,8 @@
 <script lang="ts" setup>
-import { useStore } from 'vuex'
 import { ref, reactive, computed, nextTick, onMounted } from 'vue'
-import { headerLight } from '@/utils/cssMixins'
 import TableTitleRow from '@/components/TableTitleRow.vue'
-
-const store = useStore()
+import { useContract } from '@/store/pinia/contract'
+import { usePayment } from '@/store/pinia/payment'
 
 const props = defineProps({
   project: { type: Object, default: null },
@@ -13,7 +11,8 @@ const props = defineProps({
 
 const emit = defineEmits(['list-filtering', 'get-contract'])
 
-const contractIndex = computed(() => store.getters['contract/contractIndex'])
+const contractStore = useContract()
+const contractIndex = computed(() => contractStore.contractIndex)
 
 const paymentUrl = computed(() => {
   const url = '/rebs/pdf-payments/'
@@ -30,7 +29,7 @@ const pageInit = () => {
   form.search = ''
   textClass.value = 'text-medium-emphasis'
   msg.value = '계약자 관련정보 또는 계약 일련변호를 입력하세요.'
-  store.commit('contract/updateState', { contractList: [] })
+  contractStore.contractList = []
 }
 
 const listFiltering = (page = 1) => {
@@ -48,9 +47,11 @@ const getContract = (cont: number) => {
   pageInit()
 }
 
+const paymentStore = usePayment()
 const removeContract = () => {
-  store.commit('contract/updateState', { contract: null })
-  store.commit('payment/updateState', { paymentList: [] })
+  contractStore.contract = null
+  paymentStore.paymentList = []
+  paymentStore.paymentsCount = 0
 }
 
 onMounted(() => pageInit())

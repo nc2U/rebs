@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
+import { ProjectCashBook } from '@/store/types/proCash'
 import { headerLight } from '@/utils/cssMixins'
 import FormModal from '@/components/Modals/FormModal.vue'
 import PaymentForm from '@/views/payments/Register/components/PaymentForm.vue'
@@ -13,7 +14,7 @@ const btnActive = computed(() => !props.contract)
 
 const showDetail = () => createFormModal.value.callModal()
 
-const createObject = (payload: any) => {
+const createObject = (payload: ProjectCashBook) => {
   emit('on-create', payload)
   createFormModal.value.close()
 }

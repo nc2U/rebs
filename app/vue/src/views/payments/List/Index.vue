@@ -3,9 +3,8 @@ import { computed, ref, onMounted } from 'vue'
 import { pageTitle, navMenu } from '@/views/payments/_menu/headermixin'
 import { useProject } from '@/store/pinia/project'
 import { useProjectData } from '@/store/pinia/project_data'
-import { usePayment } from '@/store/pinia/payment'
-import { CashBookFilter, useProCash } from '@/store/pinia/proCash'
-// import { ProjectCashBook } from '@/store/types/proCash'
+import { PaymentFilter, usePayment } from '@/store/pinia/payment'
+import { useProCash } from '@/store/pinia/proCash'
 import { onBeforeRouteLeave } from 'vue-router'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
@@ -15,7 +14,7 @@ import PaymentList from '@/views/payments/List/components/PaymentList.vue'
 import TableTitleRow from '@/components/TableTitleRow.vue'
 
 const listControl = ref()
-let dataFilter = ref<CashBookFilter>({
+let dataFilter = ref<PaymentFilter>({
   page: 1,
   from_date: '',
   to_date: '',
@@ -49,14 +48,12 @@ const fetchContNumList = (projId: number) =>
   paymentStore.fetchContNumList(projId)
 const fetchPayOrderList = (projId: number) =>
   paymentStore.fetchPayOrderList(projId)
-const fetchPaymentList = (payload: CashBookFilter) =>
+const fetchPaymentList = (payload: PaymentFilter) =>
   paymentStore.fetchPaymentList(payload)
 
 const proCashStore = useProCash()
 const fetchProBankAccList = (projId: number) =>
   proCashStore.fetchProBankAccList(projId)
-// const patchPrCashBook = (payload: ProjectCashBook) =>
-//   proCashStore.patchPrCashBook(payload)
 
 const onSelectAdd = (target: number) => {
   if (!!target) {
@@ -77,7 +74,7 @@ const onSelectAdd = (target: number) => {
   }
 }
 
-const listFiltering = (payload: CashBookFilter) => {
+const listFiltering = (payload: PaymentFilter) => {
   dataFilter.value = payload
   payload.project = project.value?.pk || initProjId.value
   fetchPaymentList(payload)
@@ -87,15 +84,6 @@ const pageSelect = (page: number) => {
   dataFilter.value.page = page
   listControl.value.listFiltering(page)
 }
-
-// const onUpdate = (payload: ProjectCashBook) => {
-//   alert('a')
-//   console.log(payload)
-// }
-//
-// const onPatch = (payload: ProjectCashBook) => patchPrCashBook(payload)
-//
-// const onDelete = (pk: number) => alert(pk)
 
 onMounted(() => {
   fetchTypeList(initProjId.value)

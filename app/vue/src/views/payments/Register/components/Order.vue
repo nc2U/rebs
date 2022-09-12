@@ -15,9 +15,10 @@ const props = defineProps({
 const dueDate = computed(
   () => props.order.extra_due_date || props.order.pay_due_date || '-',
 )
+
 const paidByOrder = computed(() => {
   const paid = props.paymentList
-    .filter((p: any) => p.installment_order !== null)
+    .filter((p: any) => !!p.installment_order)
     .filter((p: any) => p.installment_order.pk === props.order.pk)
     .map((p: any) => p.income)
   return paid.length === 0 ? 0 : paid.reduce((x: any, y: any) => x + y)
