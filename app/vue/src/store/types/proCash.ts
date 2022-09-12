@@ -59,26 +59,26 @@ export interface ExecAmountToBudget {
 }
 
 export interface ProjectCashBook {
-  pk: number
-  project: number
+  pk?: number
+  project: number | null
   sort: number
   project_account_d1: number | null
   project_account_d2: number | null
-  is_separate: boolean
-  separated: number | null
-  is_imprest: boolean
-  sepItems: []
-  is_contract_payment: boolean
-  contract: number | null
-  installment_order: number | null
-  refund_contractor: number | null
+  is_separate?: boolean
+  separated?: number | null
+  is_imprest?: boolean
+  sepItems?: []
+  is_contract_payment?: boolean
+  contract?: number | null
+  installment_order?: number | null
+  refund_contractor?: number | null
   content: string
   trader: string
-  bank_account: number
-  income: number | null
-  outlay: number | null
-  evidence: string
-  evidence_desc: string
+  bank_account: number | null
+  income?: number | null
+  outlay?: number | null
+  evidence?: string
+  evidence_desc?: string
   note: string
   deal_date: string
 }

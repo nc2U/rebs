@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 import { computed, onMounted, reactive, ref } from 'vue'
-import { useStore } from 'vuex'
 import { useAccount } from '@/store/pinia/account'
-import { diffDate } from '@/utils/baseMixins'
-import { write_payment } from '@/utils/pageAuth'
-import { dateFormat } from '@/utils/baseMixins'
+import { usePayment } from '@/store/pinia/payment'
+import { useProCash } from '@/store/pinia/proCash'
+import { ProjectCashBook } from '@/store/types/proCash'
+import { dateFormat, diffDate } from '@/utils/baseMixins'
 import { isValidate } from '@/utils/helper'
+import { write_payment } from '@/utils/pageAuth'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
@@ -14,40 +15,27 @@ const props = defineProps({
   contract: { type: Object, default: null },
   payment: { type: Object, default: null },
 })
+
 const emit = defineEmits(['on-submit', 'on-delete', 'close'])
 
 const alertModal = ref()
 const confirmModal = ref()
 
 const validated = ref(false)
-const form = reactive<{
-  project: string
-  sort: number
-  project_account_d1: string
-  project_account_d2: string
-  is_contract_payment: boolean
-  contract: null | number
-  content: string
-  installment_order: string
-  trader: string
-  bank_account: string
-  income: null | number
-  note: string
-  deal_date: string | Date
-}>({
-  project: '', // hidden -> index에서 처리
+const form = reactive<ProjectCashBook>({
+  project: null, // hidden -> index에서 처리
   sort: 1, // hidden -> always
-  project_account_d1: '', // hidden
-  project_account_d2: '', // hidden
+  project_account_d1: null, // hidden
+  project_account_d2: null, // hidden
   is_contract_payment: true, // hidden -> always
   contract: null, //  hidden -> 예외 및 신규 매칭 시 코드 확인
   content: '', // hidden
-  installment_order: '',
+  installment_order: null,
   trader: '',
-  bank_account: '',
+  bank_account: null,
   income: null,
   note: '',
-  deal_date: new Date(),
+  deal_date: dateFormat(new Date()),
 })
 
 const formsCheck = computed(() => {
@@ -67,7 +55,6 @@ const formsCheck = computed(() => {
     return a && b && c && d && e && f
   } else return false
 })
-// const pageManageAuth = computed(() => write_payment)
 
 const allowedPeriod = computed(() => {
   return props.payment
@@ -75,14 +62,13 @@ const allowedPeriod = computed(() => {
     : true
 })
 
-const store = useStore()
+const paymentStore = usePayment()
+const payOrderList = computed(() => paymentStore.payOrderList)
 
-const payOrderList = computed(() => store.state.payment.payOrderList)
-const proBankAccountList = computed(
-  () => store.state.proCash.proBankAccountList,
-)
+const proCashStore = useProCash()
+const proBankAccountList = computed(() => proCashStore.proBankAccountList)
 
-const onSubmit = (event: any) => {
+const onSubmit = (event: Event) => {
   if (write_payment) {
     if (allowedPeriod.value) {
       if (isValidate(event)) {
@@ -129,7 +115,7 @@ onMounted(() => {
     form.bank_account = props.payment.bank_account.pk
     form.income = props.payment.income
     form.note = props.payment.note
-    form.deal_date = new Date(props.payment.deal_date)
+    form.deal_date = props.payment.deal_date
   }
   form.project_account_d1 = props.contract.order_group.sort
   form.project_account_d2 = props.contract.order_group.sort

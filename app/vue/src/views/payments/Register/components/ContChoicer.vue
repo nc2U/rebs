@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, nextTick, onMounted } from 'vue'
-import TableTitleRow from '@/components/TableTitleRow.vue'
 import { useContract } from '@/store/pinia/contract'
 import { usePayment } from '@/store/pinia/payment'
+import TableTitleRow from '@/components/TableTitleRow.vue'
 
 const props = defineProps({
   project: { type: Object, default: null },

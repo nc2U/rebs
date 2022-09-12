@@ -17,11 +17,12 @@ export interface PayOrder {
   pay_sort: string
   pay_code: number
   pay_time: number
+  pay_ratio: string | null
   pay_name: string
   alias_name: string
   is_pm_cost: boolean
-  pay_due_date: Date
-  extra_due_date: Date
+  pay_due_date: string
+  extra_due_date: string
 }
 
 export interface DownPay {

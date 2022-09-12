@@ -1,20 +1,20 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { useStore } from 'vuex'
+import { usePayment } from '@/store/pinia/payment'
 import { numFormat, dateFormat } from '@/utils/baseMixins'
 import { headerSecondary } from '@/utils/cssMixins'
 import Order from '@/views/payments/Register/components/Order.vue'
+import { DownPay, PayOrder } from '@/store/types/payment'
 
 const props = defineProps({
   contract: { type: Object, default: null },
   paymentList: { type: Array, default: () => [] },
 })
 
-const store = useStore()
-
-const payOrderList = computed(() => store.state.payment.payOrderList)
-const priceList = computed(() => store.state.payment.priceList)
-const downPayList = computed(() => store.state.payment.downPayList)
+const paymentStore = usePayment()
+const payOrderList = computed(() => paymentStore.payOrderList)
+const priceList = computed(() => paymentStore.priceList)
+const downPayList = computed(() => paymentStore.downPayList)
 
 const thisPrice = computed(() => {
   if (props.contract) {
@@ -29,26 +29,31 @@ const thisPrice = computed(() => {
   }
   return 0
 })
+
 const numDown = computed(
   () => payOrderList.value.filter((o: any) => o.pay_sort === '1').length,
 )
+
 const numMid = computed(
   () => payOrderList.value.filter((o: any) => o.pay_sort === '2').length,
 )
+
 const paidTotal = computed(() => {
   const paid = props.paymentList.map((p: any) => p.income)
   return paid.length === 0 ? 0 : paid.reduce((x: number, y: number) => x + y)
 })
+
+// 납부해야할 총액
 const dueTotal = computed(() => {
   let commitment: number[] = []
   const today = dateFormat(new Date())
   const dueOrder = payOrderList.value
     .filter(
-      (o: any) =>
+      (o: PayOrder) =>
         (o.pay_due_date <= today && !o.extra_due_date) ||
         o.extra_due_date <= today,
     )
-    .map((o: any) => o.pay_time)
+    .map((o: PayOrder) => o.pay_time)
   dueOrder.forEach((el: number) => {
     commitment.push(getCommits(el))
   })
@@ -59,25 +64,27 @@ const commit = (pay_tyme: number) => getCommits(pay_tyme)
 
 const getCommits = (el: number) => {
   const down = downPayList.value
-    .filter((d: any) => d.order_group === props.contract.order_group.pk)
-    .filter((d: any) => d.unit_type === props.contract.unit_type.pk)
-    .map((d: any) => d.payment_amount)[0] // 1. downPayList, 2. payByOrder, 3. 분양가 / 총회차수
+    .filter((d: DownPay) => d.order_group === props.contract.order_group)
+    .filter(d => d.unit_type === props.contract.unit_type)
+    .map(d => d.payment_amount)[0] // 1. downPayList, 2. payByOrder, 3. 분양가 / 총회차수
 
-  const order = payOrderList.value.find((o: any) => o.pay_time === el)
+  const order = payOrderList.value.find((o: PayOrder) => o.pay_time === el)
 
-  const payByOrder = order.pay_ratio
-    ? thisPrice.value * order.pay_ratio
+  const payByOrder = order?.pay_ratio
+    ? (thisPrice.value * Number(order.pay_ratio)) / 100
     : thisPrice.value * 0.1 // 1. payByOrder === '중도금' (지정된 비율이 없으면 회당 10%)
   const downPay = down ? down : payByOrder
   const balace =
     thisPrice.value - downPay * numDown.value - payByOrder * numMid.value // 분양가 - (계약금 + 중도금), 2. payByOrder
-  const balacePay = balace ? balace : payByOrder * order.pay_ratio
+  const balacePay = balace
+    ? balace
+    : (payByOrder * Number(order?.pay_ratio)) / 100
 
-  if (order.pay_sort === '1') {
+  if (order?.pay_sort === '1') {
     return downPay // 계약금
-  } else if (order.pay_sort === '2') {
+  } else if (order?.pay_sort === '2') {
     return payByOrder // 중도금
-  } else if (order.pay_sort === '3') {
+  } else if (order?.pay_sort === '3') {
     return balacePay // 잔금
   } else return 0
 }
