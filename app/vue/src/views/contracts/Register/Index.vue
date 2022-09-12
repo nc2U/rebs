@@ -48,23 +48,22 @@ const fetchPayOrderList = (projId: number) =>
   paymentStore.fetchPayOrderList(projId)
 
 watch(contract, newVal => {
-  const projId = project.value || initProjId.value
   if (newVal) {
     fetchKeyUnitList({
-      project: projId,
+      project: project.value,
       unit_type: newVal.unit_type,
       contract: route.query.contract as string,
-      available: false,
+      available: 'false',
     })
     if (newVal.keyunit?.houseunit) {
       fetchHouseUnitList({
-        project: projId,
+        project: project.value,
         unit_type: newVal.unit_type,
         contract: route.query.contract as string,
       })
     } else {
       fetchHouseUnitList({
-        project: projId,
+        project: project.value,
         unit_type: newVal.unit_type,
       })
     }
