@@ -1,29 +1,33 @@
 <script lang="ts" setup>
 import { computed, reactive, ref, watch } from 'vue'
 import { usePayment } from '@/store/pinia/payment'
+import { SalesBillIssue } from '@/store/types/notice'
 import { write_notice } from '@/utils/pageAuth'
 import { isValidate } from '@/utils/helper'
 import { dateFormat } from '@/utils/baseMixins'
 import { maska as vMaska } from 'maska'
+import { AddressData, callAddress } from '@/components/DaumPostcode/address'
+import DaumPostcode from '@/components/DaumPostcode/index.vue'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
-import DaumPostcode from '@/components/DaumPostcode/index.vue'
-import { AddressData, callAddress } from '@/components/DaumPostcode/address'
 
 const props = defineProps({ billIssue: { type: Object, default: null } })
+
 const emit = defineEmits(['on-submit', 'get-now-order', 'set-pub-date'])
 
 const address2 = ref()
 
-const pk = ref('')
-const published_date = ref(new Date())
-const now_order = ref<any | null>(null)
 const visible = ref(false)
 const validated = ref(false)
-const form = reactive({
-  now_payment_order: '',
-  now_due_date: null as string | null,
+
+const published_date = ref(dateFormat(new Date())) // 발행일자
+const now_due_date = ref<string | null>(null) // 납부기한
+
+const form = reactive<SalesBillIssue>({
+  pk: null,
+  project: null,
+  now_payment_order: null,
   host_name: '',
   host_tel: '',
   agency: '',
@@ -44,13 +48,15 @@ const form = reactive({
 
 const paymentStore = usePayment()
 const payOrderList = computed(() => paymentStore.payOrderList)
+const now_order = computed(() => paymentStore.payOrder)
 
 const confirmText = computed(() => (props.billIssue ? '업데이트' : '신규등록'))
 const btnClass = computed(() => (props.billIssue ? 'success' : 'primary'))
+
 const formsCheck = computed(() => {
   if (props.billIssue) {
     const a = form.now_payment_order === props.billIssue.now_payment_order
-    const b = form.now_due_date === now_order.value?.pay_due_date
+    const b = now_due_date.value === now_order.value?.pay_due_date
     const c = form.host_name === props.billIssue.host_name
     const d = form.host_tel === props.billIssue.host_tel
     const e = form.agency === props.billIssue.agency
@@ -77,7 +83,8 @@ watch(props, value => {
   if (value.billIssue) {
     const val = value.billIssue
     emit('get-now-order', val.now_payment_order)
-    pk.value = val.pk
+    form.pk = val.pk
+    form.project = val.project
     form.now_payment_order = val.now_payment_order
     form.host_name = val.host_name
     form.host_tel = val.host_tel
@@ -99,7 +106,11 @@ watch(props, value => {
 })
 
 watch(now_order, val => {
-  if (val) form.now_due_date = val?.pay_due_date
+  if (val?.pay_due_date) now_due_date.value = val.pay_due_date
+})
+
+watch(now_due_date, val => {
+  if (val) now_due_date.value = dateFormat(val)
 })
 
 watch(published_date, val => emit('set-pub-date', dateFormat(val)))
@@ -107,7 +118,7 @@ watch(published_date, val => emit('set-pub-date', dateFormat(val)))
 const alertModal = ref()
 const confirmModal = ref()
 
-const onSubmit = (event: any) => {
+const onSubmit = (event: Event) => {
   if (write_notice) {
     if (isValidate(event)) {
       validated.value = true
@@ -119,24 +130,11 @@ const onSubmit = (event: any) => {
   }
 }
 
-watch(form, val => {
-  if (val.now_due_date) form.now_due_date = dateFormat(val.now_due_date)
-})
-
 const modalAction = () => {
-  if (form.now_payment_order) {
-    emit('get-now-order', form.now_payment_order)
-  }
-  let payload
-  if (props.billIssue) {
-    payload = { ...{ pk: pk.value }, ...form }
-  } else {
-    payload = form
-  }
-  emit('on-submit', payload)
+  emit('on-submit', { now_due_date: now_due_date.value, ...form })
 
   validated.value = false
-  confirmModal.value.visible = false
+  confirmModal.value.close()
 }
 
 const addressCallback = (data: AddressData) => {
@@ -214,7 +212,7 @@ const addressCallback = (data: AddressData) => {
         </CCol>
         <CCol sm="8" md="4" xl="2">
           <DatePicker
-            v-model="form.now_due_date"
+            v-model="now_due_date"
             v-maska="'####-##-##'"
             placeholder="당회 납부기한"
             maxlength="10"

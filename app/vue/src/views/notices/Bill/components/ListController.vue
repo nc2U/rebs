@@ -15,22 +15,22 @@ const buildingList = computed(() => projectDataStore.buildingList)
 const simpleTypes = computed(() => projectDataStore.simpleTypes)
 
 const form = reactive({
-  limit: '',
   order_group: '',
   unit_type: '',
   building: '',
   ordering: 'contractor__name',
   search: '',
+  // limit: '',
 })
 
 const formsCheck = computed(() => {
-  const a = form.limit === ''
-  const b = form.order_group === ''
-  const c = form.unit_type === ''
-  const d = form.building === ''
-  const e = form.ordering === 'contractor__name'
-  const f = form.search === ''
-  return a && b && c && d && e && f
+  const a = form.order_group === ''
+  const b = form.unit_type === ''
+  const c = form.building === ''
+  const d = form.ordering === 'contractor__name'
+  const e = form.search === ''
+  // const a = form.limit === ''
+  return a && b && c && d && e
 })
 
 const listFiltering = (page = 1) => {
@@ -43,14 +43,15 @@ const listFiltering = (page = 1) => {
 }
 
 const resetForm = () => {
-  form.limit = ''
   form.order_group = ''
   form.unit_type = ''
   form.building = ''
   form.ordering = 'contractor__name'
   form.search = ''
+  // form.limit = ''
   listFiltering(1)
 }
+
 defineExpose({ listFiltering })
 </script>
 

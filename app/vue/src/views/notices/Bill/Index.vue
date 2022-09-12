@@ -1,13 +1,14 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, watch, onBeforeMount } from 'vue'
+import { pageTitle, navMenu } from '@/views/notices/_menu/headermixin'
 import { useProject } from '@/store/pinia/project'
 import { useProjectData } from '@/store/pinia/project_data'
 import { useNotice } from '@/store/pinia/notice'
-import { usePayment } from '@/store/pinia/payment'
-import { useContract } from '@/store/pinia/contract'
-import { dateFormat } from '@/utils/baseMixins'
-import { pageTitle, navMenu } from '@/views/notices/_menu/headermixin'
 import { SalesBillIssue } from '@/store/types/notice'
+import { usePayment } from '@/store/pinia/payment'
+import { PayOrder } from '@/store/types/payment'
+import { ContFilter, useContract } from '@/store/pinia/contract'
+import { dateFormat } from '@/utils/baseMixins'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import SalesBillIssueForm from '@/views/notices/Bill/components/SalesBillIssueForm.vue'
@@ -27,8 +28,8 @@ const print_data = reactive({
 })
 
 const projectStore = useProject()
-const project = computed(() => projectStore.project?.pk)
 const initProjId = computed(() => projectStore.initProjId)
+const project = computed(() => projectStore.project?.pk || initProjId.value)
 
 const noticeStore = useNotice()
 const billIssue = computed(() => noticeStore.billIssue)
@@ -50,8 +51,8 @@ const payOrderName = computed(() =>
   payOrder.value ? payOrder.value.__str__ : '',
 )
 
-const fetchPayOrder = (payload: any) => paymentStore.fetchPayOrder(payload)
-const patchPayOrder = (payload: any) => paymentStore.patchPayOrder(payload)
+const fetchPayOrder = (pk: number) => paymentStore.fetchPayOrder(pk)
+const patchPayOrder = (payload: PayOrder) => paymentStore.patchPayOrder(payload)
 const fetchPayOrderList = (projId: number) =>
   paymentStore.fetchPayOrderList(projId)
 
@@ -63,7 +64,7 @@ const fetchBuildingList = (projId: number) =>
 const contractStore = useContract()
 const fetchOrderGroupList = (projId: number) =>
   contractStore.fetchOrderGroupList(projId)
-const fetchContractList = (payload: { project: number; ordering: string }) =>
+const fetchContractList = (payload: ContFilter) =>
   contractStore.fetchContractList(payload)
 const fetchSalePriceList = (payload: { project: number }) =>
   contractStore.fetchSalePriceList(payload)
@@ -94,11 +95,11 @@ watch(project, val => {
 watch(billIssue, val => {
   if (val) {
     print_data.is_bill_issue = !!val
-    fetchPayOrder(val.now_payment_order)
+    if (val.now_payment_order) fetchPayOrder(val.now_payment_order)
   }
 })
 
-const onSelectAdd = (target: any) => {
+const onSelectAdd = (target: number) => {
   if (!!target) {
     fetchPayOrderList(target)
     fetchOrderGroupList(target)
@@ -128,9 +129,10 @@ const pageSelect = (page: number) => {
   listControl.value.listFiltering(page)
 }
 
-const listFiltering = (payload: any) => {
+const listFiltering = (payload: ContFilter) => {
   ctor_ids.value = []
-  fetchContractList({ ...{ project: project.value }, ...payload })
+  payload.project = project.value
+  fetchContractList(payload)
 }
 
 const onCtorChk = (payload: { chk: boolean; pk: number }) => {
@@ -143,34 +145,26 @@ const onCtorChk = (payload: { chk: boolean; pk: number }) => {
   }
 }
 
-const allUnChecked = () => {
-  ctor_ids.value = []
-}
+const allUnChecked = () => (ctor_ids.value = [])
 
-const getNowOrder = (orderPk: string) => {
-  fetchPayOrder(orderPk)
-}
+const getNowOrder = (orderPk: number) => fetchPayOrder(orderPk)
 
-const setPubDate = (payload: any) => {
-  print_data.pub_date = payload
-}
+const setPubDate = (payload: string) => (print_data.pub_date = payload)
 
-const onSubmit = (payload: any) => {
+const onSubmit = (payload: SalesBillIssue & { now_due_date: string }) => {
+  console.log(payload)
   const { pk, now_payment_order } = payload
   const { now_due_date, ...bill_data } = payload
-  if (pk) {
+
+  if (payOrder.value?.pay_due_date !== now_due_date) {
     patchPayOrder({
       pk: now_payment_order,
       pay_due_date: now_due_date,
     })
-    patchSalesBillIssue(bill_data)
-  } else {
-    patchPayOrder({
-      pk: now_payment_order,
-      pay_due_date: now_due_date,
-    })
-    createSalesBillIssue(bill_data)
   }
+
+  if (pk) patchSalesBillIssue(bill_data)
+  else createSalesBillIssue(bill_data)
 }
 </script>
 

@@ -1,7 +1,7 @@
 export declare interface SalesBillIssue {
-  pk: number
-  project: number
-  now_payment_order: number
+  pk: number | null
+  project: number | null
+  now_payment_order: number | null
   host_name: string
   host_tel: string
   agency: string
