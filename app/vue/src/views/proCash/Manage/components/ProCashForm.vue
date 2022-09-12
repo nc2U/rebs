@@ -194,6 +194,11 @@ const sepRemove = () => {
   sepItem.note = ''
 }
 
+const isModify = computed(() => {
+  if (!form.is_separate) return !!props.proCash
+  else return !!sepItem.pk
+})
+
 watch(form, val => {
   if (val.deal_date) form.deal_date = dateFormat(val.deal_date)
 })
@@ -796,13 +801,13 @@ onBeforeMount(() => {
         </CButton>
         <CButton
           type="submit"
-          :color="sepItem.pk ? 'success' : 'primary'"
+          :color="isModify ? 'success' : 'primary'"
           :disabled="formsCheck && requireItem"
         >
           저장
         </CButton>
         <CButton
-          v-if="sepItem.pk"
+          v-if="isModify"
           type="button"
           color="danger"
           @click="deleteConfirm"

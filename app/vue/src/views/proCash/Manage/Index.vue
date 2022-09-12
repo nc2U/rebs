@@ -90,7 +90,7 @@ const listFiltering = (payload: CashBookFilter) => {
 }
 const onCreate = (
   payload: ProjectCashBook & { filters: CashBookFilter } & {
-    bank_account_to: number
+    bank_account_to?: number
   },
 ) => {
   payload.project = project.value
@@ -109,15 +109,21 @@ const onCreate = (
 const onUpdate = (payload: ProjectCashBook & { filters: CashBookFilter }) =>
   updatePrCashBook({ ...{ filters: dataFilter.value }, ...payload })
 
-const multiSubmit = (payload: any) => {
+const multiSubmit = (payload: {
+  formData: ProjectCashBook
+  sepData: ProjectCashBook | null
+}) => {
   const { formData, sepData } = payload
 
-  if (formData.pk) onUpdate(formData)
-  else onCreate(formData)
+  const mainFormData = { ...{ filters: dataFilter.value }, ...formData }
+
+  if (formData.pk) onUpdate(mainFormData)
+  else onCreate(mainFormData)
 
   if (sepData) {
-    if (sepData.pk) onUpdate(sepData)
-    else onCreate({ ...{ filters: dataFilter.value }, ...sepData })
+    const separatedData = { ...{ filters: dataFilter.value }, ...sepData }
+    if (sepData.pk) onUpdate(separatedData)
+    else onCreate(separatedData)
   }
 }
 
