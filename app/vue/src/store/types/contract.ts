@@ -35,7 +35,7 @@ export interface HouseUnit {
   floor_type: number
 }
 
-interface Payment {
+export interface Payment {
   pk: number
   deal_date: string
   income: number

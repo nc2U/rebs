@@ -5,17 +5,19 @@ import { useContract } from '@/store/pinia/contract'
 import { useProjectData } from '@/store/pinia/project_data'
 import { usePayment } from '@/store/pinia/payment'
 import { useProCash } from '@/store/pinia/proCash'
+import { PayOrder } from '@/store/types/payment'
+import { Payment } from '@/store/types/contract'
 import { useRouter } from 'vue-router'
 import { isValidate } from '@/utils/helper'
 import { numFormat, dateFormat, diffDate } from '@/utils/baseMixins'
 import { write_contract } from '@/utils/pageAuth'
 import { maska as vMaska } from 'maska'
+import { AddressData, callAddress } from '@/components/DaumPostcode/address'
+import DaumPostcode from '@/components/DaumPostcode/index.vue'
 import ContNavigation from './ContNavigation.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 import DatePicker from '@/components/DatePicker/index.vue'
-import DaumPostcode from '@/components/DaumPostcode/index.vue'
-import { callAddress } from '@/components/DaumPostcode/address'
 
 const props = defineProps({
   contract: { type: Object, default: null },
@@ -77,12 +79,12 @@ const form = reactive({
   email: '', // 14
 
   // proCash
-  payment: null,
+  payment: null as number | null,
   deal_date: null as string | Date | null, // 15
-  income: '', // 16
-  bank_account: '', // 17
+  income: null as number | null, // 16
+  bank_account: null as number | null, // 17
   trader: '', // 18
-  installment_order: '', // 19
+  installment_order: null as number | null, // 19
 })
 
 watch(form, nVal => {
@@ -170,22 +172,21 @@ const contLabel = computed(() => (form.status !== '1' ? '계약' : '청약'))
 const isContract = computed(() => form.status === '2')
 const noStatus = computed(() => form.status === '' && !props.contract)
 const downPayOrder = computed(() =>
-  payOrderList.value.filter((po: any) => po.pay_time <= '1'),
+  payOrderList.value.filter((po: PayOrder) => po.pay_time <= 1),
 )
 
 const downPayments = computed(() =>
   props.contract && props.contract.payments.length > 0
     ? props.contract.payments.filter(
-        (p: any) =>
-          p.installment_order !== null && p.installment_order.pay_time === 1,
+        (p: Payment) => p.installment_order.pay_time === 1,
       )
     : [],
 )
 
-const allowedPeriod = (paidDate: any) =>
+const allowedPeriod = (paidDate: string) =>
   useAccount().superAuth || diffDate(paidDate) <= 90
 
-const payUpdate = (payment: any) => {
+const payUpdate = (payment: Payment) => {
   if (allowedPeriod(payment.deal_date)) {
     form.payment = payment.pk
     form.deal_date = new Date(payment.deal_date)
@@ -204,36 +205,37 @@ const payUpdate = (payment: any) => {
 const payReset = () => {
   form.payment = null
   form.deal_date = null
-  form.income = ''
-  form.bank_account = ''
+  form.income = null
+  form.bank_account = null
   form.trader = ''
-  form.installment_order = ''
+  form.installment_order = null
 }
 
-const getOGSort = (pk: number) =>
+const getOGSort = (pk: number): string =>
   orderGroupList.value.filter(o => o.pk == pk)[0].sort
 
-const setOGSort = (e: any) => {
-  form.order_group_sort = getOGSort(e.target.value)
+const setOGSort = (e: Event) => {
+  const pk = Number((e.target as HTMLSelectElement).value)
+  form.order_group_sort = getOGSort(pk)
   unitReset(e)
 }
 
-const setKeyCode = (e: any) => {
+const setKeyCode = (e: Event) => {
   form.houseunit = null
-  form.keyunit_code = e.target.selectedOptions[0].text
+  form.keyunit_code = (e.target as HTMLSelectElement).selectedOptions[0].text
 }
 
-const unitReset = (event: any) => {
-  if (event.target.value === '') formReset()
+const unitReset = (event: Event) => {
+  if ((event.target as HTMLSelectElement).value === '') formReset()
 }
 
-const typeSelect = (event: any) => {
-  emit('type-select', event.target.value)
+const typeSelect = (event: Event) => {
+  emit('type-select', (event.target as HTMLSelectElement).value)
   form.keyunit = null
   form.houseunit = null
 }
 
-const onSubmit = (event: any) => {
+const onSubmit = (event: Event) => {
   if (isValidate(event)) {
     validated.value = true
   } else {
@@ -263,8 +265,8 @@ const deleteContract = () => {
   else alertModal.value.callModal()
 }
 
-const addressCallback = (date: any) => {
-  const { formNum, zipcode, address1, address3 } = callAddress(date)
+const addressCallback = (data: AddressData) => {
+  const { formNum, zipcode, address1, address3 } = callAddress(data)
   if (formNum === 2) {
     form.id_zipcode = zipcode
     form.id_address1 = address1
@@ -317,10 +319,10 @@ const formReset = () => {
 
   form.payment = null
   form.deal_date = null
-  form.income = ''
-  form.bank_account = ''
+  form.income = null
+  form.bank_account = null
   form.trader = ''
-  form.installment_order = ''
+  form.installment_order = null
 
   // form.addressPk = null
   form.id_zipcode = ''
@@ -376,7 +378,7 @@ defineExpose({ formReset })
           </CFormLabel>
           <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
             <CFormSelect
-              v-model="form.order_group"
+              v-model.number="form.order_group"
               required
               :disabled="noStatus"
               @change="setOGSort"
