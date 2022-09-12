@@ -1,14 +1,14 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { computed, PropType } from 'vue'
 import { usePayment } from '@/store/pinia/payment'
+import { AllPayment, DownPay, PayOrder, Price } from '@/store/types/payment'
 import { numFormat, dateFormat } from '@/utils/baseMixins'
 import { headerSecondary } from '@/utils/cssMixins'
 import Order from '@/views/payments/Register/components/Order.vue'
-import { DownPay, PayOrder } from '@/store/types/payment'
 
 const props = defineProps({
   contract: { type: Object, default: null },
-  paymentList: { type: Array, default: () => [] },
+  paymentList: { type: Array as PropType<AllPayment[]>, default: () => [] },
 })
 
 const paymentStore = usePayment()
@@ -21,26 +21,26 @@ const thisPrice = computed(() => {
     return props.contract.keyunit.houseunit
       ? priceList.value
           .filter(
-            (p: any) =>
+            (p: Price) =>
               p.unit_floor_type === props.contract.keyunit.houseunit.floor_type,
           )
-          .map((p: any) => p.price)[0]
+          .map((p: Price) => p.price)[0]
       : Math.ceil(props.contract.unit_type.average_price / 10000) * 10000
   }
   return 0
 })
 
 const numDown = computed(
-  () => payOrderList.value.filter((o: any) => o.pay_sort === '1').length,
+  () => payOrderList.value.filter((o: PayOrder) => o.pay_sort === '1').length,
 )
 
 const numMid = computed(
-  () => payOrderList.value.filter((o: any) => o.pay_sort === '2').length,
+  () => payOrderList.value.filter((o: PayOrder) => o.pay_sort === '2').length,
 )
 
 const paidTotal = computed(() => {
-  const paid = props.paymentList.map((p: any) => p.income)
-  return paid.length === 0 ? 0 : paid.reduce((x: number, y: number) => x + y)
+  const paid = props.paymentList.map((p: AllPayment) => p.income)
+  return paid.length === 0 ? 0 : paid.reduce((x: number, y: number) => x + y, 0)
 })
 
 // 납부해야할 총액

@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { computed, PropType } from 'vue'
+import { AllPayment } from '@/store/types/payment'
 import { numFormat, dateFormat } from '@/utils/baseMixins'
 
 const props = defineProps({
@@ -9,7 +10,7 @@ const props = defineProps({
   price: { type: Number, default: 0 },
   numDown: { type: Number, default: 0 },
   numMid: { type: Number, default: 0 },
-  paymentList: { type: Array, default: () => [] },
+  paymentList: { type: Array as PropType<AllPayment[]>, default: () => [] },
 })
 
 const dueDate = computed(
@@ -18,10 +19,11 @@ const dueDate = computed(
 
 const paidByOrder = computed(() => {
   const paid = props.paymentList
-    .filter((p: any) => !!p.installment_order)
-    .filter((p: any) => p.installment_order.pk === props.order.pk)
-    .map((p: any) => p.income)
-  return paid.length === 0 ? 0 : paid.reduce((x: any, y: any) => x + y)
+    .filter((p: AllPayment) => !!p.installment_order)
+    .filter(p => p.installment_order.pk === props.order.pk)
+    .map(p => p.income)
+
+  return paid.length === 0 ? 0 : paid.reduce((x: number, y: number) => x + y, 0)
 })
 
 const calculated = computed(() => {

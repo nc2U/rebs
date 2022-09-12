@@ -43,3 +43,38 @@ export interface ContractNum {
   unit_type: number
   num_cont: number
 }
+
+export interface AllPayment {
+  pk: number
+  deal_date: string
+  contract: {
+    pk: number
+    order_group: {
+      pk: number
+      sort: string
+      order_group_name: string
+    }
+    unit_type: {
+      pk: number
+      name: string
+      color: string
+      average_price: number | null
+    }
+    serial_number: string
+    contractor: string
+  }
+  income: number
+  installment_order: {
+    pk: number
+    pay_sort: string
+    pay_time: number
+    pay_name: string
+    __str__: string
+  }
+  bank_account: {
+    pk: number
+    alias_name: string
+  }
+  trader: string
+  note: string
+}

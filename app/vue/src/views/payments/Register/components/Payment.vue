@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue'
+import { ProjectCashBook } from '@/store/types/proCash'
 import { useRouter } from 'vue-router'
 import { numFormat } from '@/utils/baseMixins'
 import { headerSecondary } from '@/utils/cssMixins'
@@ -30,10 +31,11 @@ const showDetail = () => {
   updateFormModal.value.callModal()
 }
 
-const updateObject = (payload: any) => {
+const updateObject = (payload: ProjectCashBook) => {
   emit('on-update', { ...{ pk: props.payment.pk }, ...payload })
   updateFormModal.value.close()
 }
+
 const deleteObject = () => emit('on-delete', props.payment.pk)
 </script>
 

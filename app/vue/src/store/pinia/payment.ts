@@ -8,6 +8,7 @@ import {
   DownPay,
   PaySumByType,
   ContractNum,
+  AllPayment,
 } from '@/store/types/payment'
 import { ProjectCashBook } from '@/store/types/proCash'
 
@@ -162,8 +163,8 @@ export const usePayment = defineStore('payment', () => {
       .catch(err => errorHandle(err.response.data))
 
   // state & getters
-  const paymentList = ref<ProjectCashBook[]>([])
-  const AllPaymentList = ref<ProjectCashBook[]>([])
+  const paymentList = ref<AllPayment[]>([])
+  const AllPaymentList = ref<AllPayment[]>([])
   const getPayments = computed(() =>
     paymentList.value
       ? paymentList.value.map((p: any) => ({

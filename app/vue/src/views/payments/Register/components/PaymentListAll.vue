@@ -1,13 +1,14 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { computed, PropType } from 'vue'
+import { AllPayment } from '@/store/types/payment'
+import { ProjectCashBook } from '@/store/types/proCash'
 import { numFormat } from '@/utils/baseMixins'
 import { headerSecondary } from '@/utils/cssMixins'
 import Payment from '@/views/payments/Register/components/Payment.vue'
-import { ProjectCashBook } from '@/store/types/proCash'
 
 const props = defineProps({
   contract: { type: Object, default: null },
-  paymentList: { type: Array, default: () => [] },
+  paymentList: { type: Array as PropType<AllPayment[]>, default: () => [] },
   paymentId: { type: String, default: '' },
 })
 
@@ -16,8 +17,8 @@ const emit = defineEmits(['on-update', 'on-delete'])
 const paymentSum = computed(() => {
   return props.paymentList.length !== 0
     ? props.paymentList
-        .map((p: any) => p.income)
-        .reduce((x: any, y: any) => x + y, 0)
+        .map((p: AllPayment) => p.income)
+        .reduce((x: number, y: number) => x + y, 0)
     : 0
 })
 
