@@ -12,14 +12,14 @@ const props = defineProps({
 })
 
 const lineList = computed(() =>
-  [...new Set(props.units.map((u: any) => u.line))].sort(),
+  [...new Set(props.units.map((u: { line: number }) => u.line))].sort(),
 )
 const buildingList = computed(() => projectDataStore.buildingList)
 
 const bldgName = (bldg: number) =>
   buildingList.value
-    .filter((b: any) => b.pk === bldg)
-    .map((b: any) => b.name)[0]
+    .filter((b: { pk: number; name: string }) => b.pk === bldg)
+    .map(b => b.name)[0]
 </script>
 
 <template>

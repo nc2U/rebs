@@ -10,8 +10,8 @@ const props = defineProps({
 const unit = computed(
   () =>
     props.units
-      .filter((u: any) => u.line == props.line)
-      .filter((u: any) => u.floor == props.floor)[0],
+      .filter((u: { line: number }) => u.line == props.line)
+      .filter((u: { floor: number }) => u.floor == props.floor)[0],
 )
 const isPiloti = computed(() => !unit.value && props.floor < 3)
 const isContract = computed(() => !!unit.value.key_unit?.contract)

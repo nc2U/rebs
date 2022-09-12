@@ -41,8 +41,8 @@ onMounted(() => {
   fetchContractList({ project: initProjId.value })
 })
 
-const onSelectAdd = (target: any) => {
-  if (target !== '') {
+const onSelectAdd = (target: number) => {
+  if (!!target) {
     fetchTypeList(target)
     fetchBuildingList(target)
     fetchHouseUnitList(target)
