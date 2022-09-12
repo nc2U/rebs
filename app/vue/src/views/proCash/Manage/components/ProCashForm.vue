@@ -2,7 +2,7 @@
 import { ref, reactive, computed, watch, onBeforeMount, nextTick } from 'vue'
 import { useProCash } from '@/store/pinia/proCash'
 import { useAccount } from '@/store/pinia/account'
-import { diffDate, dateFormat } from '@/utils/baseMixins'
+import { diffDate, dateFormat, cutString, numFormat } from '@/utils/baseMixins'
 import { write_project_cash } from '@/utils/pageAuth'
 import { ProjectCashBook } from '@/store/types/proCash'
 import { isValidate } from '@/utils/helper'
@@ -78,8 +78,7 @@ const formsCheck = computed(() => {
     const i = form.outlay === props.proCash.outlay
     const j = form.evidence === props.proCash.evidence
     const k = form.note === props.proCash.note
-    const l =
-      form.deal_date.toString() === new Date(props.proCash.deal_date).toString()
+    const l = form.deal_date === props.proCash.deal_date
     const m = form.is_separate === props.proCash.is_separate
 
     return a && b && c && d && e && f && g && h && i && j && k && l && m
@@ -97,11 +96,11 @@ const fetchProFormAccD2List = (d1: number | null, sort: number | null) =>
   proCashStore.fetchProFormAccD2List(d1, sort)
 
 const requireItem = computed(
-  () => form.project_account_d1 !== null && form.project_account_d2 !== null,
+  () => !!form.project_account_d1 && !!form.project_account_d2,
 )
+
 const sepDisabled = computed(() => {
-  const disabled =
-    form.project_account_d1 !== null || form.project_account_d2 !== null
+  const disabled = !!form.project_account_d1 || !!form.project_account_d2
   return props.proCash
     ? disabled || props.proCash.sepItems.length > 0
     : disabled
@@ -172,7 +171,6 @@ const callAccount = () => {
 }
 
 const sepUpdate = (sep: ProjectCashBook) => {
-  // sepPk.value = sep.pk || null
   sepItem.pk = sep.pk
   sepItem.project_account_d1 = sep.project_account_d1
   sepItem.project_account_d2 = sep.project_account_d2
@@ -182,6 +180,18 @@ const sepUpdate = (sep: ProjectCashBook) => {
   sepItem.outlay = sep.outlay
   sepItem.income = sep.income
   sepItem.note = sep.note
+}
+
+const sepRemove = () => {
+  sepItem.pk = null
+  sepItem.project_account_d1 = null
+  sepItem.project_account_d2 = null
+  sepItem.content = ''
+  sepItem.trader = ''
+  sepItem.evidence = ''
+  sepItem.outlay = null
+  sepItem.income = null
+  sepItem.note = ''
 }
 
 watch(form, val => {
@@ -239,7 +249,6 @@ const deleteObject = () => {
 
 onBeforeMount(() => {
   if (props.proCash) {
-    sepItem.pk = props.proCash.pk
     sepItem.project = props.proCash.project
     sepItem.sort = props.proCash.sort
     sepItem.bank_account = props.proCash.bank_account
@@ -420,7 +429,11 @@ onBeforeMount(() => {
             <CRow v-if="form.sort === 2">
               <CFormLabel class="col-sm-4 col-form-label">지출증빙</CFormLabel>
               <CCol sm="8">
-                <CFormSelect v-model="form.evidence" required>
+                <CFormSelect
+                  v-model="form.evidence"
+                  :required="!form.is_separate"
+                  :disabled="form.is_separate"
+                >
                   <option value="">---------</option>
                   <option value="0">증빙 없음</option>
                   <option value="1">세금계산서</option>
@@ -517,9 +530,9 @@ onBeforeMount(() => {
         </CRow>
       </div>
 
-      <div v-if="form.is_separate && proCash">
-        <hr v-if="proCash.sepItems.length > 0" />
-        <CRow v-if="proCash.sepItems.length > 0" class="mb-3">
+      <div v-if="form.is_separate">
+        <hr v-if="proCash && proCash.sepItems.length > 0" />
+        <CRow v-if="proCash && proCash.sepItems.length > 0" class="mb-3">
           <CCol>
             <strong>
               <CIcon name="cilDescription" class="mr-2" />
@@ -533,33 +546,36 @@ onBeforeMount(() => {
           </CCol>
         </CRow>
 
-        <CRow
-          v-for="(sep, i) in proCash.sepItems"
-          :key="sep.pk"
-          class="mb-1"
-          :class="
-            sep.pk === sepItem.pk
-              ? 'text-success text-decoration-underline'
-              : ''
-          "
-        >
-          <CCol sm="1">{{ i + 1 }}</CCol>
-          <CCol sm="2">{{ sep.trader }}</CCol>
-          <CCol sm="5">{{ cutString(sep.content, 20) }}</CCol>
-          <CCol sm="2" class="text-right">
-            {{ sep.income ? numFormat(sep.income) : numFormat(sep.outlay) }}
-          </CCol>
-          <CCol sm="2" class="text-right">
-            <CButton
-              type="button"
-              color="success"
-              size="sm"
-              @click="sepUpdate(sep)"
-            >
-              수정
-            </CButton>
-          </CCol>
-        </CRow>
+        <div v-if="proCash">
+          <CRow
+            v-for="(sep, i) in proCash.sepItems"
+            :key="sep.pk"
+            class="mb-1"
+            :class="
+              sep.pk === sepItem.pk
+                ? 'text-success text-decoration-underline'
+                : ''
+            "
+          >
+            <CCol sm="1">{{ i + 1 }}</CCol>
+            <CCol sm="2">{{ sep.trader }}</CCol>
+            <CCol sm="5">{{ cutString(sep.content, 20) }}</CCol>
+            <CCol sm="2" class="text-right">
+              {{ sep.income ? numFormat(sep.income) : numFormat(sep.outlay) }}
+            </CCol>
+            <CCol sm="2" class="text-right">
+              <CButton
+                type="button"
+                color="success"
+                size="sm"
+                @click="sepUpdate(sep)"
+              >
+                수정
+              </CButton>
+            </CCol>
+          </CRow>
+        </div>
+
         <hr />
         <CRow class="mb-3">
           <CCol sm="1"></CCol>
@@ -668,6 +684,7 @@ onBeforeMount(() => {
                       v-model.number="sepItem.bank_account"
                       readonly
                       required
+                      :disabled="sepItem.pk"
                     >
                       <option value="">---------</option>
                       <option
@@ -769,14 +786,23 @@ onBeforeMount(() => {
       </CButton>
       <slot name="footer">
         <CButton
+          v-if="sepItem.pk"
+          type="button"
+          color="dark"
+          variant="outline"
+          @click="sepRemove"
+        >
+          취소
+        </CButton>
+        <CButton
           type="submit"
-          :color="proCash ? 'success' : 'primary'"
+          :color="sepItem.pk ? 'success' : 'primary'"
           :disabled="formsCheck && requireItem"
         >
           저장
         </CButton>
         <CButton
-          v-if="proCash"
+          v-if="sepItem.pk"
           type="button"
           color="danger"
           @click="deleteConfirm"
