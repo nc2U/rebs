@@ -16,7 +16,7 @@ import Cookies from 'js-cookie'
 export const pinia = createPinia()
 
 export interface State {
-  [key: string]: any
+  [key: string]: undefined | string | number | boolean
 }
 
 declare interface RootState extends State {
@@ -52,7 +52,7 @@ const mutations = {
     state.sidebarVisible = sidebarVisible
     Cookies.set('sidebarVisible', String(sidebarVisible))
   },
-  toggleTheme(state: RootState, payload: any) {
+  toggleTheme(state: RootState, payload: { value: 'default' | 'dark' }) {
     state.theme = payload.value
     Cookies.set('theme', payload.value)
   },
