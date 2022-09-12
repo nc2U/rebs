@@ -1,16 +1,13 @@
-import { createToast } from 'mosha-vue-toastify'
+import { createToast, ToastType } from 'mosha-vue-toastify'
 
 export const message = (
-  type: any = 'success',
-  title: any = '알림!',
-  description: any = '해당 내용이 저장되었습니다!',
+  type = 'success' as ToastType,
+  title = '알림!',
+  description = '해당 내용이 저장되었습니다!',
   duration = 2500,
 ) => {
   createToast(
-    {
-      title,
-      description,
-    },
+    { title, description },
     {
       type,
       hideProgressBar: true,
@@ -22,7 +19,14 @@ export const message = (
   )
 }
 
-export const errorHandle = (error: any) => {
+type Error = {
+  [key: string]: string | undefined
+  name: string
+  message: string
+  stack?: string
+}
+
+export const errorHandle = (error: Error) => {
   console.log(error)
   for (const key in error) {
     message('danger', `${key} - 에러`, `${error[key]}`, 20000)
@@ -35,9 +39,12 @@ export const hashCode = (s: string) =>
     return a & a
   }, 0)
 
-export const isValidate = (event: any) => {
-  const el = event.currentTarget
-  if (el.checkValidity() === false) {
+export const isValidate = (event: Event) => {
+  const el = event.currentTarget as
+    | HTMLInputElement
+    | HTMLSelectElement
+    | HTMLFormElement
+  if (!el.checkValidity()) {
     event.preventDefault()
     event.stopPropagation()
 

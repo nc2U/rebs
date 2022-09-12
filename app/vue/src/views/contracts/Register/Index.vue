@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref, computed, onBeforeMount, watch } from 'vue'
-import { useContract } from '@/store/pinia/contract'
+import { UnitFilter, useContract } from '@/store/pinia/contract'
+import { Contract } from '@/store/types/contract'
 import { useProject } from '@/store/pinia/project'
 import { useProjectData } from '@/store/pinia/project_data'
 import { usePayment } from '@/store/pinia/payment'
@@ -19,20 +20,20 @@ const contractStore = useContract()
 const contract = computed(() => contractStore.contract)
 
 const projectStore = useProject()
-const project = computed(() => projectStore.project?.pk)
 const initProjId = computed(() => projectStore.initProjId)
+const project = computed(() => projectStore.project?.pk || initProjId.value)
 const unitSet = computed(() => projectStore.project?.is_unit_set)
 const isUnion = computed(() => !projectStore.project?.is_direct_manage)
 
-const fetchContract = (cont: any) => contractStore.fetchContract(cont)
+const fetchContract = (cont: number) => contractStore.fetchContract(cont)
 
 const fetchOrderGroupList = (projId: number) =>
   contractStore.fetchOrderGroupList(projId)
 
-const fetchKeyUnitList = (payload: any) =>
+const fetchKeyUnitList = (payload: UnitFilter) =>
   contractStore.fetchKeyUnitList(payload)
 
-const fetchHouseUnitList = (payload: any) =>
+const fetchHouseUnitList = (payload: UnitFilter) =>
   contractStore.fetchHouseUnitList(payload)
 
 const projectDataStore = useProjectData()
@@ -52,14 +53,14 @@ watch(contract, newVal => {
     fetchKeyUnitList({
       project: projId,
       unit_type: newVal.unit_type,
-      contract: route.query.contract,
-      available: 'false',
+      contract: route.query.contract as string,
+      available: false,
     })
     if (newVal.keyunit?.houseunit) {
       fetchHouseUnitList({
         project: projId,
         unit_type: newVal.unit_type,
-        contract: route.query.contract,
+        contract: route.query.contract as string,
       })
     } else {
       fetchHouseUnitList({
@@ -70,7 +71,7 @@ watch(contract, newVal => {
   }
 })
 
-const onSelectAdd = (target: any) => {
+const onSelectAdd = (target: number) => {
   contForm.value.formReset()
 
   if (!!target) {
@@ -92,7 +93,7 @@ const onSelectAdd = (target: any) => {
   }
 }
 
-const getContract = (cont: any) => fetchContract(cont)
+const getContract = (cont: string) => fetchContract(parseInt(cont))
 
 const typeSelect = (type: number) => {
   const unit_type = type
@@ -100,13 +101,16 @@ const typeSelect = (type: number) => {
   fetchHouseUnitList({ project: project.value, unit_type })
 }
 
-const onCreate = (payload: any) => {
-  contractStore.createContractSet({ project: project.value, ...payload })
+const onCreate = (payload: Contract) => {
+  payload.project = project.value
+  contractStore.createContractSet({ ...payload })
   router.replace({ name: '계약내역 조회' })
 }
 
-const onUpdate = (payload: any) =>
-  contractStore.updateContractSet({ project: project.value, ...payload })
+const onUpdate = (payload: Contract) => {
+  payload.project = project.value
+  contractStore.updateContractSet({ ...payload })
+}
 
 onBeforeMount(() => {
   fetchOrderGroupList(initProjId.value)
@@ -119,7 +123,7 @@ onBeforeMount(() => {
   fetchHouseUnitList({ project: initProjId.value })
 
   if (route.query.contract) {
-    getContract(route.query.contract)
+    getContract(route.query.contract as string)
   }
 })
 

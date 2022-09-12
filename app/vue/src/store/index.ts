@@ -16,7 +16,7 @@ import Cookies from 'js-cookie'
 export const pinia = createPinia()
 
 export interface State {
-  [key: string]: undefined | string | number | boolean
+  [key: string]: any
 }
 
 declare interface RootState extends State {

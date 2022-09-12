@@ -30,6 +30,13 @@ export interface ContFilter {
   page?: number
 }
 
+export type UnitFilter = {
+  project: number
+  unit_type?: number
+  contract?: number | string
+  available?: boolean
+}
+
 export const useContract = defineStore('contract', () => {
   // state & getters
   const contract = ref<Contract | null>(null)
@@ -98,13 +105,13 @@ export const useContract = defineStore('contract', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const createContractSet = (payload: any) =>
+  const createContractSet = (payload: Contract) =>
     api
       .post(`/contract-set/`, payload)
       .then(() => message())
       .catch(err => errorHandle(err.response.data))
 
-  const updateContractSet = (payload: any) =>
+  const updateContractSet = (payload: Contract) =>
     api
       .put(`/contract-set/${payload.pk}/`, payload)
       .then(() => message())
@@ -183,7 +190,7 @@ export const useContract = defineStore('contract', () => {
   const downPaymentList = ref<DownPayment[]>([])
 
   // actions
-  const fetchKeyUnitList = (payload: any) => {
+  const fetchKeyUnitList = (payload: UnitFilter) => {
     const { project } = payload
     const unit_type = payload.unit_type ? payload.unit_type : ''
     const contract = payload.contract ? payload.contract : ''

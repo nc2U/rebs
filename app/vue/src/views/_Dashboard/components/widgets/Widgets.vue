@@ -65,13 +65,13 @@ const widgetStatsE = reactive({
   },
 })
 
-const widgetProgressIconItems = reactive([
-  { color: 'primary', icon: 'cil-puzzle' },
-  { color: 'success', icon: 'cil-speedometer' },
-  { color: 'danger', icon: 'cil-cursor' },
-  { color: 'info', icon: 'cil-drop' },
-  { color: 'secondary', icon: 'cil-pencil' },
-])
+// const widgetProgressIconItems = reactive([
+//   { color: 'primary', icon: 'cil-puzzle' },
+//   { color: 'success', icon: 'cil-speedometer' },
+//   { color: 'danger', icon: 'cil-cursor' },
+//   { color: 'info', icon: 'cil-drop' },
+//   { color: 'secondary', icon: 'cil-pencil' },
+// ])
 </script>
 
 <template>

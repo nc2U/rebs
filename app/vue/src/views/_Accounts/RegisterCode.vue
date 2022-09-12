@@ -13,9 +13,9 @@ const validated = ref(false)
 const store = useStore()
 const router = useRouter()
 
-const onSubmit = (event: any) => {
-  const form = event.currentTarget
-  if (form.checkValidity() === false) {
+const onSubmit = (event: Event) => {
+  const form = event.currentTarget as HTMLInputElement
+  if (!form.checkValidity()) {
     event.preventDefault()
     event.stopPropagation()
 
