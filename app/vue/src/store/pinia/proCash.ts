@@ -342,7 +342,7 @@ export const useProCash = defineStore('proCash', () => {
               contract,
               ordering: 'deal_date',
             })
-            message('danger', '알림!', '해당 오브젝트가 삭제되었습니다.')
+            message('warning', '알림!', '해당 오브젝트가 삭제되었습니다.')
           })
         })
       })

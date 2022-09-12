@@ -111,11 +111,11 @@ const onUpdate = (payload: ProjectCashBook & { filters: CashBookFilter }) =>
 
 const multiSubmit = (payload: any) => {
   const { formData, sepData } = payload
-  if (formData.sort) {
-    if (formData.pk) onUpdate(formData)
-    else onCreate(formData)
-  }
-  if (sepData.sort) {
+
+  if (formData.pk) onUpdate(formData)
+  else onCreate(formData)
+
+  if (sepData && sepData.sort) {
     if (sepData.pk) onUpdate(sepData)
     else onCreate({ ...{ filters: dataFilter.value }, ...sepData })
   }

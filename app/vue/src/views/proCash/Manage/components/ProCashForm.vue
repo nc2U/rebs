@@ -5,10 +5,10 @@ import { useAccount } from '@/store/pinia/account'
 import { diffDate, dateFormat } from '@/utils/baseMixins'
 import { write_project_cash } from '@/utils/pageAuth'
 import { ProjectCashBook } from '@/store/types/proCash'
+import { isValidate } from '@/utils/helper'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
-import { isValidate } from '@/utils/helper'
 
 const props = defineProps({
   proCash: {
@@ -190,7 +190,7 @@ watch(form, val => {
 
 const multiSubmit = (multiPayload: {
   formData: ProjectCashBook
-  sepData: ProjectCashBook
+  sepData: ProjectCashBook | null
 }) => {
   emit('multi-submit', multiPayload)
   emit('close')
@@ -201,7 +201,7 @@ const onSubmit = (event: Event) => {
     validated.value = true
   } else {
     const payload = !form.is_separate
-      ? { formData: form }
+      ? { formData: form, sepData: null }
       : { formData: form, sepData: sepItem }
 
     if (write_project_cash) {
@@ -214,7 +214,6 @@ const onSubmit = (event: Event) => {
           )
       } else multiSubmit(payload)
     } else alertModal.value.callModal()
-    emit('close')
   }
 }
 
@@ -294,8 +293,11 @@ onBeforeMount(() => {
             <CRow>
               <CFormLabel class="col-sm-4 col-form-label">구분</CFormLabel>
               <CCol sm="8">
-                <CFormSelect v-model="form.sort" required @change="sort_change">
-                  <!--                  :disabled="proCash && proCash.sort !== ''"-->
+                <CFormSelect
+                  v-model.number="form.sort"
+                  required
+                  @change="sort_change"
+                >
                   <option value="">---------</option>
                   <option value="1">입금</option>
                   <option value="2">출금</option>
@@ -314,9 +316,9 @@ onBeforeMount(() => {
               </CFormLabel>
               <CCol sm="8">
                 <CFormSelect
-                  v-model="form.project_account_d1"
+                  v-model.number="form.project_account_d1"
                   :required="!form.is_separate"
-                  :disabled="form.sort === '' || form.is_separate"
+                  :disabled="!form.sort || form.is_separate"
                   @change="d1_change"
                 >
                   <option value="">---------</option>
@@ -338,9 +340,9 @@ onBeforeMount(() => {
               </CFormLabel>
               <CCol sm="8">
                 <CFormSelect
-                  v-model="form.project_account_d2"
+                  v-model.number="form.project_account_d2"
                   :required="!form.is_separate"
-                  :disabled="form.project_account_d1 === '' || form.is_separate"
+                  :disabled="!form.project_account_d1 || form.is_separate"
                 >
                   <option value="">---------</option>
                   <option
@@ -364,7 +366,7 @@ onBeforeMount(() => {
                 <CFormInput
                   v-model="form.content"
                   placeholder="거래 내용"
-                  :disabled="form.sort === ''"
+                  :disabled="!form.sort"
                 />
               </CCol>
             </CRow>
@@ -382,7 +384,7 @@ onBeforeMount(() => {
                   }"
                   placeholder="거래처 (수납자)"
                   required
-                  :disabled="form.sort === ''"
+                  :disabled="!form.sort"
                 />
               </CCol>
             </CRow>
@@ -393,13 +395,13 @@ onBeforeMount(() => {
           <CCol sm="6">
             <CRow>
               <CFormLabel class="col-sm-4 col-form-label">
-                {{ !proCash && form.sort === '3' ? '출금' : '거래' }}계좌
+                {{ !proCash && form.sort === 3 ? '출금' : '거래' }}계좌
               </CFormLabel>
               <CCol sm="8">
                 <CFormSelect
-                  v-model="form.bank_account"
+                  v-model.number="form.bank_account"
                   required
-                  :disabled="form.sort === ''"
+                  :disabled="!form.sort"
                 >
                   <option value="">---------</option>
                   <option
@@ -415,7 +417,7 @@ onBeforeMount(() => {
           </CCol>
 
           <CCol sm="6">
-            <CRow v-if="form.sort === '2'">
+            <CRow v-if="form.sort === 2">
               <CFormLabel class="col-sm-4 col-form-label">지출증빙</CFormLabel>
               <CCol sm="8">
                 <CFormSelect v-model="form.evidence" required>
@@ -432,13 +434,13 @@ onBeforeMount(() => {
               </CCol>
             </CRow>
 
-            <CRow v-if="!proCash && form.sort === '3'">
+            <CRow v-if="!proCash && form.sort === 3">
               <CFormLabel class="col-sm-4 col-form-label">입금계좌</CFormLabel>
               <CCol sm="8">
                 <CFormSelect
-                  v-model="form.bank_account_to"
+                  v-model.number="form.bank_account_to"
                   required
-                  :disabled="form.sort !== '3'"
+                  :disabled="form.sort !== 3"
                 >
                   <option value="">---------</option>
                   <option
@@ -464,8 +466,8 @@ onBeforeMount(() => {
                   type="number"
                   min="0"
                   placeholder="출금 금액"
-                  :required="form.sort === '2'"
-                  :disabled="form.sort === '1' || form.sort === ''"
+                  :required="form.sort === 2"
+                  :disabled="form.sort === 1 || !form.sort"
                 />
               </CCol>
             </CRow>
@@ -480,8 +482,8 @@ onBeforeMount(() => {
                   type="number"
                   min="0"
                   placeholder="입금 금액"
-                  :required="form.sort === '1'"
-                  :disabled="form.sort === '2' || form.sort === ''"
+                  :required="form.sort === 1"
+                  :disabled="form.sort === 2 || !form.sort"
                 />
               </CCol>
             </CRow>
@@ -496,7 +498,7 @@ onBeforeMount(() => {
                 <CFormTextarea
                   v-model.number="form.note"
                   placeholder="특이사항"
-                  :disabled="form.sort === ''"
+                  :disabled="!form.sort"
                 />
               </CCol>
             </CRow>
@@ -506,6 +508,7 @@ onBeforeMount(() => {
         <CRow>
           <CCol class="text-medium-emphasis">
             <CFormCheck
+              id="is_separate"
               v-model="form.is_separate"
               label="별도 분리기록 거래 건 - 여러 계정 항목이 1회에 입·출금되어 별도 분리 기록이 필요한 거래인 경우."
               :disabled="sepDisabled"
@@ -535,7 +538,9 @@ onBeforeMount(() => {
           :key="sep.pk"
           class="mb-1"
           :class="
-            sep.pk === sepPk ? 'text-success text-decoration-underline' : ''
+            sep.pk === sepItem.pk
+              ? 'text-success text-decoration-underline'
+              : ''
           "
         >
           <CCol sm="1">{{ i + 1 }}</CCol>
@@ -567,7 +572,7 @@ onBeforeMount(() => {
                   </CFormLabel>
                   <CCol sm="8">
                     <CFormSelect
-                      v-model="sepItem.project_account_d1"
+                      v-model.number="sepItem.project_account_d1"
                       required
                       @change="sepD1_change"
                     >
@@ -590,7 +595,7 @@ onBeforeMount(() => {
                   </CFormLabel>
                   <CCol sm="8">
                     <CFormSelect
-                      v-model="sepItem.project_account_d2"
+                      v-model.number="sepItem.project_account_d2"
                       :disabled="sepItem.project_account_d1 === ''"
                       required
                     >
@@ -660,7 +665,7 @@ onBeforeMount(() => {
                   </CFormLabel>
                   <CCol sm="8">
                     <CFormSelect
-                      v-model="sepItem.bank_account"
+                      v-model.number="sepItem.bank_account"
                       readonly
                       required
                     >
@@ -678,7 +683,7 @@ onBeforeMount(() => {
               </CCol>
 
               <CCol sm="6">
-                <CRow v-if="form.sort === '2'">
+                <CRow v-if="form.sort === 2">
                   <CFormLabel class="col-sm-4 col-form-label">
                     지출증빙
                   </CFormLabel>
@@ -712,12 +717,12 @@ onBeforeMount(() => {
                   </CFormLabel>
                   <CCol sm="8">
                     <CFormInput
-                      v-model="sepItem.outlay"
+                      v-model.number="sepItem.outlay"
                       type="number"
                       min="0"
                       placeholder="출금 금액"
-                      :required="form.sort === '2'"
-                      :disabled="form.sort !== '2'"
+                      :required="form.sort === 2"
+                      :disabled="form.sort !== 2"
                     />
                   </CCol>
                 </CRow>
@@ -730,12 +735,12 @@ onBeforeMount(() => {
                   </CFormLabel>
                   <CCol sm="8">
                     <CFormInput
-                      v-model="sepItem.income"
+                      v-model.number="sepItem.income"
                       type="number"
                       min="0"
                       placeholder="입금 금액"
-                      :required="form.sort === '1'"
-                      :disabled="form.sort !== '1'"
+                      :required="form.sort === 1"
+                      :disabled="form.sort !== 1"
                     />
                   </CCol>
                 </CRow>
