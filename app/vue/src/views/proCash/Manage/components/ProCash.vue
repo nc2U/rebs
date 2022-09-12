@@ -33,8 +33,14 @@ const rowColor = computed(() => {
 })
 
 const showDetail = () => updateFormModal.value.callModal()
-const multiSubmit = (payload: ProjectCashBook) => emit('multi-submit', payload)
-const onDelete = (payload: any) => emit('on-delete', payload)
+
+const multiSubmit = (payload: {
+  formData: ProjectCashBook
+  sepData: ProjectCashBook | null
+}) => emit('multi-submit', payload)
+
+const onDelete = (payload: { project: number; pk: number }) =>
+  emit('on-delete', payload)
 </script>
 
 <template>

@@ -47,7 +47,7 @@ const updatePrCashBook = (
   payload: ProjectCashBook & { filters: CashBookFilter },
 ) => proCashStore.updatePrCashBook(payload)
 const deletePrCashBook = (
-  payload: { pk: number; project: number; contract: number } & {
+  payload: { pk: number; project: number } & {
     filters?: CashBookFilter
   },
 ) => proCashStore.deletePrCashBook(payload)
@@ -127,11 +127,8 @@ const multiSubmit = (payload: {
   }
 }
 
-const onDelete = (
-  payload: { pk: number; project: number; contract: number } & {
-    filters?: CashBookFilter
-  },
-) => deletePrCashBook({ ...{ filters: dataFilter.value }, ...payload })
+const onDelete = (payload: { pk: number; project: number }) =>
+  deletePrCashBook({ ...{ filters: dataFilter.value }, ...payload })
 </script>
 
 <template>

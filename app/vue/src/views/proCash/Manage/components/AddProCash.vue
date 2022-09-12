@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { write_project_cash } from '@/utils/pageAuth'
 import { headerLight } from '@/utils/cssMixins'
+import { ProjectCashBook } from '@/store/types/proCash'
 import FormModal from '@/components/Modals/FormModal.vue'
 import ProCashForm from '@/views/proCash/Manage/components/ProCashForm.vue'
 
@@ -14,7 +15,10 @@ const createConfirm = () => {
   if (write_project_cash) createFormModal.value.callModal()
   else createAlertModal.value.callModal()
 }
-const multiSubmit = (payload: any) => emit('multi-submit', payload)
+const multiSubmit = (payload: {
+  formData: ProjectCashBook
+  sepData: ProjectCashBook | null
+}) => emit('multi-submit', payload)
 </script>
 
 <template>

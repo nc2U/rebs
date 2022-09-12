@@ -319,7 +319,7 @@ export const useProCash = defineStore('proCash', () => {
   }
 
   const deletePrCashBook = (
-    payload: { pk: number; project: number; contract: number } & {
+    payload: { pk: number; project: number; contract?: number | null } & {
       filters?: CashBookFilter
     },
   ) => {
@@ -336,12 +336,14 @@ export const useProCash = defineStore('proCash', () => {
             project,
             ...filters,
           }).then(() => {
-            paymentStore.fetchPaymentList({ project, contract })
-            paymentStore.fetchAllPaymentList({
-              project,
-              contract,
-              ordering: 'deal_date',
-            })
+            if (contract) {
+              paymentStore.fetchPaymentList({ project, contract })
+              paymentStore.fetchAllPaymentList({
+                project,
+                contract,
+                ordering: 'deal_date',
+              })
+            }
             message('warning', '알림!', '해당 오브젝트가 삭제되었습니다.')
           })
         })
