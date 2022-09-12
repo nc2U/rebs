@@ -28,9 +28,9 @@ const initProjId = computed(() => projectStore.initProjId)
 const project = computed(() => projectStore.project?.pk || initProjId.value)
 
 const proCashStore = useProCash()
-const fetchProAccSortList = () => proCashStore.fetchProAccSortList
-const fetchProAllAccD1List = () => proCashStore.fetchProAllAccD1List
-const fetchProAllAccD2List = () => proCashStore.fetchProAllAccD2List
+const fetchProAccSortList = () => proCashStore.fetchProAccSortList()
+const fetchProAllAccD1List = () => proCashStore.fetchProAllAccD1List()
+const fetchProAllAccD2List = () => proCashStore.fetchProAllAccD2List()
 const fetchProFormAccD1List = (sort?: number | null) =>
   proCashStore.fetchProFormAccD1List(sort)
 const fetchProFormAccD2List = (d1?: number | null, sort?: number | null) =>
