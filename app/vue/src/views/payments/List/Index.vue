@@ -5,7 +5,7 @@ import { useProject } from '@/store/pinia/project'
 import { useProjectData } from '@/store/pinia/project_data'
 import { usePayment } from '@/store/pinia/payment'
 import { CashBookFilter, useProCash } from '@/store/pinia/proCash'
-import { ProjectCashBook } from '@/store/types/proCash'
+// import { ProjectCashBook } from '@/store/types/proCash'
 import { onBeforeRouteLeave } from 'vue-router'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
@@ -55,8 +55,8 @@ const fetchPaymentList = (payload: CashBookFilter) =>
 const proCashStore = useProCash()
 const fetchProBankAccList = (projId: number) =>
   proCashStore.fetchProBankAccList(projId)
-const patchPrCashBook = (payload: ProjectCashBook) =>
-  proCashStore.patchPrCashBook(payload)
+// const patchPrCashBook = (payload: ProjectCashBook) =>
+//   proCashStore.patchPrCashBook(payload)
 
 const onSelectAdd = (target: number) => {
   if (!!target) {
@@ -88,14 +88,14 @@ const pageSelect = (page: number) => {
   listControl.value.listFiltering(page)
 }
 
-const onUpdate = (payload: ProjectCashBook) => {
-  alert('a')
-  console.log(payload)
-}
-
-const onPatch = (payload: ProjectCashBook) => patchPrCashBook(payload)
-
-const onDelete = (pk: number) => alert(pk)
+// const onUpdate = (payload: ProjectCashBook) => {
+//   alert('a')
+//   console.log(payload)
+// }
+//
+// const onPatch = (payload: ProjectCashBook) => patchPrCashBook(payload)
+//
+// const onDelete = (pk: number) => alert(pk)
 
 onMounted(() => {
   fetchTypeList(initProjId.value)
@@ -125,13 +125,7 @@ onBeforeRouteLeave(() => {
     <CCardBody class="pb-5">
       <ListController ref="listControl" @payment-filtering="listFiltering" />
       <TableTitleRow excel :url="excelUrl" />
-      <PaymentList
-        :project="project"
-        @page-select="pageSelect"
-        @on-update="onUpdate"
-        @on-patch="onPatch"
-        @on-delete="onDelete"
-      />
+      <PaymentList :project="project" @page-select="pageSelect" />
     </CCardBody>
 
     <CCardFooter>&nbsp;</CCardFooter>

@@ -190,7 +190,10 @@ export const usePayment = defineStore('payment', () => {
     if (payload.page) url += `&page=${page}`
     return api
       .get(url)
-      .then(res => (paymentList.value = res.data.results))
+      .then(res => {
+        paymentList.value = res.data.results
+        paymentsCount.value = res.data.count
+      })
       .catch(err => errorHandle(err.response.data))
   }
 

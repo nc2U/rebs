@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import { computed, reactive, ref, nextTick, watch } from 'vue'
-import { useStore } from 'vuex'
+import { usePayment } from '@/store/pinia/payment'
+import { useProCash } from '@/store/pinia/proCash'
 import { dateFormat } from '@/utils/baseMixins'
-import DatePicker from '@/components/DatePicker/index.vue'
 import { maska as vMaska } from 'maska'
+import DatePicker from '@/components/DatePicker/index.vue'
 
 const emit = defineEmits(['payment-filtering'])
 
@@ -16,13 +17,12 @@ const form = reactive({
   search: '',
 })
 
-const store = useStore()
+const paymentStore = usePayment()
+const payOrderList = computed(() => paymentStore.payOrderList)
+const paymentsCount = computed(() => paymentStore.paymentsCount)
 
-const payOrderList = computed(() => store.state.payment.payOrderList)
-const paymentsCount = computed(() => store.state.payment.paymentsCount)
-const proBankAccountList = computed(
-  () => store.state.proCash.proBankAccountList,
-)
+const proCashStore = useProCash()
+const proBankAccountList = computed(() => proCashStore.proBankAccountList)
 
 const formsCheck = computed(() => {
   const a = from_date.value === ''

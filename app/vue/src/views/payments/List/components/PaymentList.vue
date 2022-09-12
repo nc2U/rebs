@@ -1,17 +1,16 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { useStore } from 'vuex'
+import { usePayment } from '@/store/pinia/payment'
+import { headerSecondary } from '@/utils/cssMixins'
 import Payment from '@/views/payments/List/components/Payment.vue'
 import Pagination from '@/components/Pagination'
-import { headerSecondary } from '@/utils/cssMixins'
 
 defineProps({ project: { type: Object, default: null } })
-const emit = defineEmits(['page-select', 'on-update', 'on-patch', 'on-delete'])
+const emit = defineEmits(['page-select'])
 
-const store = useStore()
-
-const getPayments = computed(() => store.getters['payment/getPayments'])
-const paymentPages = computed(() => store.getters['payment/paymentPages'])
+const paymentStore = usePayment()
+const getPayments = computed(() => paymentStore.getPayments)
+const paymentPages = computed(() => paymentStore.paymentPages)
 
 const pageSelect = (page: number) => emit('page-select', page)
 </script>

@@ -1,27 +1,30 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { useStore } from 'vuex'
+import { usePayment } from '@/store/pinia/payment'
+import { useProjectData } from '@/store/pinia/project_data'
+import { UnitType } from '@/store/types/project'
 import { numFormat } from '@/utils/baseMixins'
 import { headerSecondary } from '@/utils/cssMixins'
 
 defineProps({ project: { type: Object, default: null } })
 
-const store = useStore()
+const projectDataStore = useProjectData()
+const unitTypeList = computed(() => projectDataStore.unitTypeList)
 
-const unitTypeList = computed(() => store.state.project.unitTypeList)
-const paySumList = computed(() => store.state.payment.paySumList)
-const contNumList = computed(() => store.state.payment.contNumList)
+const paymentStore = usePayment()
+const paySumList = computed(() => paymentStore.paySumList)
+const contNumList = computed(() => paymentStore.contNumList)
 
 const total_budget = computed(() => {
   return unitTypeList.value.length !== 0
     ? unitTypeList.value
-        .map((t: any) => t.average_price * t.num_unit)
+        .map((t: UnitType) => t.average_price * t.num_unit)
         .reduce((x: number, y: number) => x + y)
     : 0
 })
 const totalAmount = computed(() => {
-  const types = unitTypeList.value.map((t: any) => t.average_price)
-  const nums = contNumList.value.map((c: any) => c.num_cont)
+  const types = unitTypeList.value.map((t: UnitType) => t.average_price)
+  const nums = contNumList.value.map((c: { num_cont: number }) => c.num_cont)
 
   let total = 0
   for (let i in types) {
@@ -34,23 +37,23 @@ const totalAmount = computed(() => {
 const totalPayment = computed(() => {
   return paySumList.value.length !== 0
     ? paySumList.value
-        .map((p: any) => p.type_total)
-        .reduce((x: number, y: number) => x + y)
+        .map((p: { type_total: number }) => p.type_total)
+        .reduce((x: number, y: number) => x + y, 0)
     : 0
 })
 
 const sellAmount = (type: number, price = 0) => {
   const nums = contNumList.value
-    .filter((c: any) => c.unit_type === type)
-    .map((c: any) => c.num_cont)
+    .filter((c: { unit_type: number }) => c.unit_type === type)
+    .map((c: { num_cont: number }) => c.num_cont)
   const num = typeof nums[0] === 'number' ? nums[0] : 0
   return num * price
 }
 
 const payByType = (type: number) => {
   return paySumList.value
-    .filter((p: any) => p.unit_type === type)
-    .map((p: any) => p.type_total)[0]
+    .filter((p: { unit_type: number }) => p.unit_type === type)
+    .map((p: { type_total: number }) => p.type_total)[0]
 }
 </script>
 
