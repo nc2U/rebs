@@ -9,7 +9,7 @@ const props = defineProps({
   price: { type: Number, default: 0 },
   numDown: { type: Number, default: 0 },
   numMid: { type: Number, default: 0 },
-  paymentList: { type: Array, default: [] },
+  paymentList: { type: Array, default: () => [] },
 })
 
 const dueDate = computed(

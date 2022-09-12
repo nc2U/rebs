@@ -7,8 +7,8 @@ import AlertModal from '@/components/Modals/AlertModal.vue'
 
 const props = defineProps({
   downPay: { type: Object, default: null },
-  orders: { type: Array, default: [] },
-  types: { type: Array, default: [] },
+  orders: { type: Array, default: () => [] },
+  types: { type: Array, default: () => [] },
 })
 const emit = defineEmits(['on-update', 'on-delete'])
 

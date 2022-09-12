@@ -6,7 +6,7 @@ import Payment from '@/views/payments/Register/components/Payment.vue'
 
 const props = defineProps({
   contract: { type: Object, default: null },
-  paymentList: { type: Array, default: [] },
+  paymentList: { type: Array, default: () => [] },
   paymentId: { type: String, default: '' },
 })
 const emit = defineEmits(['on-update', 'on-delete'])

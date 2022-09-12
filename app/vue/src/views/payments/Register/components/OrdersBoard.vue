@@ -7,7 +7,7 @@ import Order from '@/views/payments/Register/components/Order.vue'
 
 const props = defineProps({
   contract: { type: Object, default: null },
-  paymentList: { type: Array, default: [] },
+  paymentList: { type: Array, default: () => [] },
 })
 
 const store = useStore()

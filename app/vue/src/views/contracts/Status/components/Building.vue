@@ -8,7 +8,7 @@ const projectDataStore = useProjectData()
 const props = defineProps({
   bldg: { type: Number, default: null },
   maxFloor: { type: Number, default: null },
-  units: { type: Object, default: [] },
+  units: { type: Object, default: () => [] },
 })
 
 const lineList = computed(() =>

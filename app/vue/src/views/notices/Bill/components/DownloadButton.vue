@@ -5,7 +5,7 @@ import AlertModal from '@/components/Modals/AlertModal.vue'
 
 const props = defineProps({
   printData: { type: Object, default: null },
-  contractors: { type: Array, default: [] },
+  contractors: { type: Array, default: () => [] },
 })
 
 const alertModal = ref()
