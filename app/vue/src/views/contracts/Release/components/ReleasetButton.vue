@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
 import { useContract } from '@/store/pinia/contract'
+import { ContractRelease } from '@/store/types/contract'
 import { headerLight } from '@/utils/cssMixins'
 import { write_contract } from '@/utils/pageAuth'
 import FormModal from '@/components/Modals/FormModal.vue'
@@ -21,7 +22,7 @@ const callFormModal = () => {
   else releaseAlertModal.value.callModal()
 }
 
-const onSubmit = (payload: any) => {
+const onSubmit = (payload: ContractRelease) => {
   emit('on-submit', payload)
   releaseFormModal.value.close()
 }

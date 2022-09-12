@@ -53,7 +53,7 @@ watch(form, val => {
     form.completion_date = dateFormat(val.completion_date)
 })
 
-const onSubmit = (event: any) => {
+const onSubmit = (event: Event) => {
   if (write_contract) {
     if (isValidate(event)) {
       validated.value = true

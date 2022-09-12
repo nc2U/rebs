@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount, ref, watch } from 'vue'
+import { pageTitle, navMenu } from '@/views/contracts/_menu/headermixin'
 import { useProject } from '@/store/pinia/project'
 import { useContract } from '@/store/pinia/contract'
+import { ContractRelease } from '@/store/types/contract'
 import { useRoute, useRouter, onBeforeRouteLeave } from 'vue-router'
-import { pageTitle, navMenu } from '@/views/contracts/_menu/headermixin'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ReleasetButton from '@/views/contracts/Release/components/ReleasetButton.vue'
@@ -31,11 +32,12 @@ const fetchContRelease = (pk: number) => contractStore.fetchContRelease(pk)
 const fetchContReleaseList = (projId: number, page?: number) =>
   contractStore.fetchContReleaseList(projId, page)
 
-const createRelease = (payload: any) => contractStore.createRelease(payload)
-const updateRelease = (payload: any) => contractStore.updateRelease(payload)
+const createRelease = (payload: ContractRelease) =>
+  contractStore.createRelease(payload)
+const updateRelease = (payload: ContractRelease & { page: number }) =>
+  contractStore.updateRelease(payload)
 
 const route = useRoute()
-
 watch(route, val => {
   if (val.query.contractor) fetchContractor(Number(val.query.contractor))
   else contractStore.contractor = null
@@ -47,8 +49,8 @@ watch(contractor, val => {
 
 const router = useRouter()
 
-const onSelectAdd = (target: any) => {
-  if (target !== '') {
+const onSelectAdd = (target: number) => {
+  if (!!target) {
     fetchContReleaseList(target)
   } else {
     contractStore.contractor = null
@@ -70,10 +72,10 @@ const getRelease = (release: number) => fetchContRelease(release)
 const pageSelect = (p: number) =>
   fetchContReleaseList(project.value, page.value)
 
-const onSubmit = (payload: any) => {
-  if (payload.pk)
-    updateRelease({ project: project.value, page: page.value, ...payload })
-  else createRelease({ project: project.value, ...payload })
+const onSubmit = (payload: ContractRelease) => {
+  payload.project = project.value
+  if (!payload.pk) createRelease({ ...payload })
+  else updateRelease({ page: page.value, ...payload })
 }
 
 onBeforeMount(() => {
