@@ -29,15 +29,15 @@ const fetchProBankAccList = (proj: number) =>
 
 const fetchBalanceByAccList = (proj: { project: number; date?: string }) =>
   proCashStore.fetchBalanceByAccList(proj)
-const fetchDateCashBookList = (payload: any) =>
+const fetchDateCashBookList = (payload: { project: number; date: string }) =>
   proCashStore.fetchDateCashBookList(payload)
 const fetchProjectBudgetList = (proj: number) =>
   proCashStore.fetchProjectBudgetList(proj)
 const fetchExecAmountList = (project: number, date?: string) =>
   proCashStore.fetchExecAmountList(project, date)
 
-const onSelectAdd = (target: any) => {
-  if (target !== '') {
+const onSelectAdd = (target: number) => {
+  if (!!target) {
     fetchProBankAccList(target)
     fetchBalanceByAccList({ project: target, date: dateFormat(date.value) })
     fetchDateCashBookList({

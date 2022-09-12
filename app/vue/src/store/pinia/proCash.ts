@@ -120,7 +120,10 @@ export const useProCash = defineStore('proCash', () => {
 
   const proDateCashBook = ref<ProjectCashBook[]>([])
 
-  const fetchDateCashBookList = (payload: any) => {
+  const fetchDateCashBookList = (payload: {
+    project: number
+    date: string
+  }) => {
     const { project, date } = payload
     const url = `/pr-date-cashbook/?project=${project}&date=${date}`
     return api

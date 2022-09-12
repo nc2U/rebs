@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount, ref, watch } from 'vue'
 import { useProCash } from '@/store/pinia/proCash'
+import { BalanceByAccount } from '@/store/types/proCash'
 import { numFormat, dateFormat } from '@/utils/baseMixins'
 import { headerSecondary } from '@/utils/cssMixins'
 
@@ -22,28 +23,28 @@ const getSumTotal = () => {
   const dateIncSumCalc =
     balanceByAccList.value.length !== 0
       ? balanceByAccList.value
-          .map((i: any) => i.date_inc)
-          .reduce((x: number, y: number) => x + y)
+          .map((i: BalanceByAccount) => i.date_inc)
+          .reduce((x: number, y: number) => x + y, 0)
       : 0
   const dateOutSumCalc =
     balanceByAccList.value.length !== 0
       ? balanceByAccList.value
-          .map((o: any) => o.date_out)
-          .reduce((x: number, y: number) => x + y)
+          .map((o: BalanceByAccount) => o.date_out)
+          .reduce((x: number, y: number) => x + y, 0)
       : 0
   const dateIncTotalCalc =
     balanceByAccList.value.length !== 0
       ? balanceByAccList.value
-          .filter((i: any) => i.inc_sum !== null)
-          .map((i: any) => i.inc_sum)
-          .reduce((x: number, y: number) => x + y)
+          .filter((i: BalanceByAccount) => i.inc_sum !== null)
+          .map(i => i.inc_sum || 0)
+          .reduce((x: number, y: number) => x + y, 0)
       : 0
   const dateOutTotalCalc =
     balanceByAccList.value.length !== 0
       ? balanceByAccList.value
-          .filter((o: any) => o.out_sum !== null)
-          .map((o: any) => o.out_sum)
-          .reduce((x: number, y: number) => x + y)
+          .filter((o: BalanceByAccount) => o.out_sum !== null)
+          .map(o => o.out_sum || 0)
+          .reduce((x: number, y: number) => x + y, 0)
       : 0
   dateIncSum.value = dateIncSumCalc
   dateOutSum.value = dateOutSumCalc
