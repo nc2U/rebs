@@ -14,6 +14,21 @@ import {
 } from '@/store/types/proCash'
 import { usePayment } from '@/store/pinia/payment'
 
+export type CashBookFilter = {
+  project?: number
+  page?: number
+  from_date?: string
+  to_date?: string
+  sort?: number
+  pro_acc_d1?: number
+  pro_acc_d2?: number
+  bank_account?: number
+  pay_order?: string
+  pay_account?: string
+  no_contract?: boolean
+  search?: string
+}
+
 export const useProCash = defineStore('proCash', () => {
   // state & getters
   const sortList = ref<AccountSort[]>([])
@@ -178,7 +193,7 @@ export const useProCash = defineStore('proCash', () => {
   )
   const proCashesCount = ref<number>(0)
 
-  const fetchProjectCashList = (payload: any) => {
+  const fetchProjectCashList = (payload: CashBookFilter) => {
     const { project } = payload
     let url = `/project-cashbook/?project=${project}`
     if (payload.from_date) url += `&from_deal_date=${payload.from_date}`
@@ -204,7 +219,9 @@ export const useProCash = defineStore('proCash', () => {
 
   const paymentStore = usePayment()
 
-  const createPrCashBook = (payload: ProjectCashBook & any) => {
+  const createPrCashBook = (
+    payload: ProjectCashBook & { filters: CashBookFilter },
+  ) => {
     const { filters, ...formData } = payload
     api
       .post(`/project-cashbook/`, formData)
