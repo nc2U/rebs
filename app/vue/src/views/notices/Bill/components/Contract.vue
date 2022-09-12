@@ -2,7 +2,9 @@
 import { computed, ref, nextTick, watch } from 'vue'
 import { usePayment } from '@/store/pinia/payment'
 import { useContract } from '@/store/pinia/contract'
+import { DownPayment, SalesPrice } from '@/store/types/contract'
 import { numFormat } from '@/utils/baseMixins'
+import { PayOrder } from '@/store/types/payment'
 
 const props = defineProps({
   contract: {
@@ -27,7 +29,7 @@ const downPaymentList = computed(() => contractStore.downPaymentList)
 
 const paidCompleted = computed(() => {
   const due: number = props.nowOrder || 2
-  const paid: number = get_paid_order()
+  const paid: number = get_paid_order() || 0
   return paid >= due
 })
 
@@ -37,7 +39,7 @@ const price = computed(() => {
   const unit = c.house_unit
   return unit
     ? salesPriceList.value.filter(
-        (s: any) =>
+        (s: SalesPrice) =>
           s.order_group === c.order_group.pk &&
           s.unit_type === c.type_pk &&
           s.unit_floor_type === unit.floor_type,
@@ -49,12 +51,13 @@ const downPay = computed(() => {
   // 계약금 구하기
   const c = props.contract
   const pay_num = payOrderList.value.filter(
-    (p: any) => p.pay_sort === '1',
+    (p: PayOrder) => p.pay_sort === '1',
   ).length
   const average_downPay = Number((price.value * 0.1) / Math.round(pay_num / 2))
 
   const downPay = downPaymentList.value.filter(
-    (d: any) => d.order_group === c.order_group.pk && d.unit_type === c.type_pk,
+    (d: DownPayment) =>
+      d.order_group === c.order_group.pk && d.unit_type === c.type_pk,
   )[0]
 
   return downPay ? downPay.payment_amount : average_downPay
@@ -79,11 +82,11 @@ const ctorChk = (ctorPk: string) =>
 const get_paid_order = () => {
   let paid_amount = 0 // 금회차까지 납부해야할 금액 누계
   const total_paid = props.contract.total_paid // 총 낸돈
-  let paid_orders: any[] = [] // 완납 회차 리스트
+  let paid_orders: number[] = [] // 완납 회차 리스트
 
   const middle = Number(price.value * 0.1) // 중도금액
 
-  payOrderList.value.forEach((p: any) => {
+  payOrderList.value.forEach((p: PayOrder) => {
     if (p.pay_sort === '1') paid_amount += downPay.value // 계약금 더하기
     else if (p.pay_sort === '2') paid_amount += middle // 중도금 더하기
 
@@ -94,8 +97,8 @@ const get_paid_order = () => {
 
 const getPayName = (pay_time: number) => {
   return payOrderList.value
-    .filter((p: any) => p.pay_time === pay_time)
-    .map((p: any) => p.pay_name)[0]
+    .filter((p: PayOrder) => p.pay_time === pay_time)
+    .map(p => p.pay_name)[0]
 }
 </script>
 
