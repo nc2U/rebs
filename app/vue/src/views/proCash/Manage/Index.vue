@@ -114,13 +114,11 @@ const multiSubmit = (payload: any) => {
 
   if (formData.pk) onUpdate(formData)
   else onCreate(formData)
-  console.log('form ->', formData)
 
-  // if (sepData && sepData.sort) {
-  //   if (sepData.pk) onUpdate(sepData)
-  //   else onCreate({ ...{ filters: dataFilter.value }, ...sepData })
-  // }
-  console.log('sep ->', sepData)
+  if (sepData) {
+    if (sepData.pk) onUpdate(sepData)
+    else onCreate({ ...{ filters: dataFilter.value }, ...sepData })
+  }
 }
 
 const onDelete = (
