@@ -91,10 +91,7 @@ const onCreate = (payload: CashBook & { bank_account_to: number }) => {
     delete inputData.outlay
     inputData.bank_account = bank_account_to
 
-    createCashBook({
-      ...{ income },
-      ...inputData,
-    })
+    createCashBook({ ...{ income }, ...inputData })
   } else createCashBook(payload)
 }
 

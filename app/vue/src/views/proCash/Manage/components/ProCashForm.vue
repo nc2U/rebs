@@ -16,47 +16,53 @@ const props = defineProps({
     required: true,
   },
 })
+
 const emit = defineEmits(['multi-submit', 'on-delete', 'close'])
 
 const delModal = ref()
 const alertModal = ref()
 
-const sepPk = ref<number | null>(null)
-const sepItem = reactive({
-  project: '',
-  sort: '',
-  project_account_d1: null as number | null,
-  project_account_d2: null as number | null,
+const sepItem = reactive<ProjectCashBook>({
+  pk: null,
+  project: null,
+  sort: null,
+  project_account_d1: null,
+  project_account_d2: null,
+
+  is_separate: false,
+  separated: null,
+
   content: '',
   trader: '',
-  bank_account: '',
-  income: null as number | null,
-  outlay: null as number | null,
+  bank_account: null,
+  income: null,
+  outlay: null,
   evidence: '',
   note: '',
   deal_date: '',
-  is_separate: false,
-  separated: null,
 })
 
 const validated = ref(false)
 
-const form = reactive({
-  project: '',
-  sort: '',
-  project_account_d1: null as number | null,
-  project_account_d2: null as number | null,
-  content: '',
-  trader: '',
-  bank_account: '',
-  income: null as number | null,
-  outlay: null as number | null,
-  evidence: '',
-  note: '',
-  deal_date: new Date() as Date | string,
+const form = reactive<ProjectCashBook>({
+  pk: null,
+  project: null,
+  sort: null,
+  project_account_d1: null,
+  project_account_d2: null,
+
   is_separate: false,
   separated: null as null | number,
   is_imprest: false,
+
+  content: '',
+  trader: '',
+  bank_account: null,
+  income: null,
+  outlay: null,
+  evidence: '',
+  note: '',
+  deal_date: dateFormat(new Date()),
 })
 
 const formsCheck = computed(() => {
@@ -85,9 +91,9 @@ const formAccD1List = computed(() => proCashStore.formAccD1List)
 const formAccD2List = computed(() => proCashStore.formAccD2List)
 const proBankAccountList = computed(() => proCashStore.proBankAccountList)
 
-const fetchProFormAccD1List = (sort: string) =>
+const fetchProFormAccD1List = (sort: number | null) =>
   proCashStore.fetchProFormAccD1List(sort)
-const fetchProFormAccD2List = (d1: string, sort: string) =>
+const fetchProFormAccD2List = (d1: number | null, sort: number | null) =>
   proCashStore.fetchProFormAccD2List(d1, sort)
 
 const requireItem = computed(
@@ -129,10 +135,11 @@ watch(form, val => {
   else form.is_imprest = false
 })
 
-const sort_change = (event: any) => {
-  if (event.target.value === '1') form.outlay = null
-  if (event.target.value === '2') form.income = null
-  if (event.target.value === '3') {
+const sort_change = (event: Event) => {
+  const el = (event.target as HTMLSelectElement).value
+  if (el === '1') form.outlay = null
+  if (el === '2') form.income = null
+  if (el === '3') {
     form.project_account_d1 = 17
     form.project_account_d2 = 62
   } else {
@@ -151,7 +158,7 @@ const sepD1_change = () => {
   sepItem.project_account_d2 = null
   nextTick(() => {
     const sort = form.sort
-    const d1 = String(sepItem.project_account_d1 || '')
+    const d1 = sepItem.project_account_d1
     fetchProFormAccD1List(sort)
     fetchProFormAccD2List(d1, sort)
   })
@@ -160,14 +167,15 @@ const sepD1_change = () => {
 const callAccount = () => {
   nextTick(() => {
     const sort = form.sort
-    const d1 = String(sepItem.project_account_d1 || '')
+    const d1 = sepItem.project_account_d1
     fetchProFormAccD1List(sort)
     fetchProFormAccD2List(d1, sort)
   })
 }
 
 const sepUpdate = (sep: ProjectCashBook) => {
-  sepPk.value = sep.pk
+  // sepPk.value = sep.pk || null
+  sepItem.pk = sep.pk
   sepItem.project_account_d1 = sep.project_account_d1
   sepItem.project_account_d2 = sep.project_account_d2
   sepItem.content = sep.content
@@ -177,12 +185,18 @@ const sepUpdate = (sep: ProjectCashBook) => {
   sepItem.income = sep.income
   sepItem.note = sep.note
 }
-const createConfirm = (payload: any) => {
+const createConfirm = (payload: {
+  formData: ProjectCashBook
+  sepData: ProjectCashBook
+}) => {
   if (pageManageAuth.value) multiSubmit(payload)
   else alertModal.value.callModal()
 }
 
-const updateConfirm = (payload: any) => {
+const updateConfirm = (payload: {
+  formData: ProjectCashBook
+  sepData: ProjectCashBook
+}) => {
   if (pageManageAuth.value)
     if (allowedPeriod.value) multiSubmit(payload)
     else
@@ -192,6 +206,7 @@ const updateConfirm = (payload: any) => {
       )
   else alertModal.value.callModal()
 }
+
 const deleteConfirm = () => {
   if (pageManageAuth.value)
     if (allowedPeriod.value) delModal.value.callModal()
@@ -207,26 +222,23 @@ watch(form, val => {
   if (val.deal_date) form.deal_date = dateFormat(val.deal_date)
 })
 
-const onSubmit = (event: any) => {
+const onSubmit = (event: Event) => {
   if (isValidate(event)) {
     validated.value = true
   } else {
-    let formData = {}
-    if (!formsCheck.value) {
-      if (!props.proCash) formData = { ...form }
-      else formData = { ...{ ...{ pk: props.proCash.pk }, ...form } }
-    }
-    let sepData = {}
-    if (form.is_separate) {
-      if (!sepPk.value) sepData = { ...sepItem }
-      else sepData = { ...{ ...{ pk: sepPk.value }, ...sepItem } }
-    }
-    if (props.proCash || sepPk.value) updateConfirm({ formData, sepData })
-    else createConfirm({ formData, sepData })
+    const payload = !form.is_separate
+      ? { formData: form }
+      : { formData: form, sepData: sepItem }
+
+    if (props.proCash || sepItem.pk) updateConfirm(payload)
+    else createConfirm(payload)
   }
 }
 
-const multiSubmit = (multiPayload: ProjectCashBook) => {
+const multiSubmit = (multiPayload: {
+  formData: ProjectCashBook
+  sepData: ProjectCashBook
+}) => {
   emit('multi-submit', multiPayload)
   emit('close')
 }
@@ -241,12 +253,14 @@ const deleteObject = () => {
 
 onBeforeMount(() => {
   if (props.proCash) {
+    sepItem.pk = props.proCash.pk
     sepItem.project = props.proCash.project
     sepItem.sort = props.proCash.sort
     sepItem.bank_account = props.proCash.bank_account
     sepItem.deal_date = props.proCash.deal_date
     sepItem.separated = props.proCash.pk
 
+    form.pk = props.proCash.pk
     form.project = props.proCash.project
     form.sort = props.proCash.sort
     form.project_account_d1 = props.proCash.project_account_d1
@@ -258,7 +272,7 @@ onBeforeMount(() => {
     form.outlay = props.proCash.outlay
     form.evidence = props.proCash.evidence
     form.note = props.proCash.note
-    form.deal_date = new Date(props.proCash.deal_date)
+    form.deal_date = props.proCash.deal_date
     form.is_separate = props.proCash.is_separate
     form.separated = props.proCash.separated
   }

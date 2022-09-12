@@ -19,10 +19,10 @@ export type CashBookFilter = {
   page?: number
   from_date?: string
   to_date?: string
-  sort?: number
-  pro_acc_d1?: number
-  pro_acc_d2?: number
-  bank_account?: number
+  sort?: number | null
+  pro_acc_d1?: number | null
+  pro_acc_d2?: number | null
+  bank_account?: number | null
   pay_order?: string
   pay_account?: string
   search?: string
@@ -56,7 +56,7 @@ export const useProCash = defineStore('proCash', () => {
 
   const formAccD1List = ref<ProjectAccountD1[]>([])
 
-  const fetchProFormAccD1List = (sort = '') => {
+  const fetchProFormAccD1List = (sort: number | null = null) => {
     const sortUri = sort ? `?projectaccountsort=${sort}` : ''
     api
       .get(`/project-account-depth1/${sortUri}`)
@@ -66,12 +66,15 @@ export const useProCash = defineStore('proCash', () => {
 
   const formAccD2List = ref<ProjectAccountD2[]>([])
 
-  const fetchProFormAccD2List = (d1 = '', sort = '') => {
+  const fetchProFormAccD2List = (
+    d1: number | null = null,
+    sort: number | null = null,
+  ) => {
     const sortUri = sort
       ? `&d1__projectaccountsort=${sort}`
       : '&d1__projectaccountsort=1&d1__projectaccountsort=2&d1__projectaccountsort=3'
     return api
-      .get(`/project-account-depth2/?d1=${d1}${sortUri}`)
+      .get(`/project-account-depth2/?d1=${d1 || ''}${sortUri}`)
       .then(res => (formAccD2List.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
   }
@@ -284,7 +287,9 @@ export const useProCash = defineStore('proCash', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const patchPrCashBook = (payload: ProjectCashBook & any) => {
+  const patchPrCashBook = (
+    payload: ProjectCashBook & { filters: CashBookFilter },
+  ) => {
     const { pk, filters, ...formData } = payload
     api
       .patch(`/project-cashbook/${pk}/`, formData)
