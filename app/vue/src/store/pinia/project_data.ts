@@ -9,6 +9,17 @@ import {
 import api from '@/api'
 import { errorHandle, message } from '@/utils/helper'
 
+export type CreateUnit = {
+  project: number
+  unit_type: number
+  building_unit: number
+  bldg_line: number
+  floor_no: number
+  name: string
+  floor_type: number
+  unit_code: string
+}
+
 export const useProjectData = defineStore('projectData', () => {
   // states & getters
   const unitTypeList = ref<UnitType[]>([])
@@ -183,7 +194,7 @@ export const useProjectData = defineStore('projectData', () => {
       .then(res => (numUnitByType.value = res.data.count))
       .catch(err => errorHandle(err.response.data))
 
-  const createUnit = (payload: HouseUnit & { unit_code: number }) => {
+  const createUnit = (payload: CreateUnit) => {
     const { project, unit_type, ...restPayload } = payload
     const { unit_code, ...unitPayload } = restPayload
     const houseUnits = { ...{ project, unit_type }, ...unitPayload }

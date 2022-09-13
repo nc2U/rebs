@@ -14,21 +14,26 @@ const props = defineProps({
   },
 })
 
+const emit = defineEmits(['bldg-select', 'unit-register'])
+
+const confirmModal = ref()
+const alertModal = ref()
+
 const bldgName = ref('')
 const typeName = ref('')
+
 const form = reactive({
-  building: '',
-  line: '',
-  type: '',
-  minFloor: '',
-  maxFloor: '',
+  building: null,
+  line: null,
+  type: null,
+  minFloor: null,
+  maxFloor: null,
 })
 
-watch(props, () => {
-  form.building = ''
-})
+watch(props, () => (form.building = null))
 
-const warning = computed(() => form.maxFloor !== '')
+const warning = computed(() => !!form.maxFloor)
+
 const typeNameLength = computed(() => {
   const typeNames = unitTypeList.value
     .map((t: { name: string }) => t.name)
@@ -54,38 +59,35 @@ const fetchNumUnitByType = (projId: number, unit_type: number) =>
 
 watch(props, nVal => {
   if (nVal.project) {
-    form.building = ''
-    form.type = ''
+    form.building = null
+    form.type = null
   }
 })
 
 watch(form, val => {
-  if (val.building == '') reset(1)
-  else if (val.line == '') reset(2)
-  else if (val.type == '') reset(3)
-  else if (val.minFloor == '') reset(4)
+  if (!val.building) reset(1)
+  else if (!val.line) reset(2)
+  else if (!val.type) reset(3)
+  else if (!val.minFloor) reset(4)
 })
 
 const reset = (n: number) => {
   if (n == 1) {
-    form.line = ''
-    form.type = ''
-    form.minFloor = ''
-    form.maxFloor = ''
+    form.line = null
+    form.type = null
+    form.minFloor = null
+    form.maxFloor = null
   } else if (n == 2) {
-    form.type = ''
-    form.minFloor = ''
-    form.maxFloor = ''
+    form.type = null
+    form.minFloor = null
+    form.maxFloor = null
   } else if (n == 3) {
-    form.minFloor = ''
-    form.maxFloor = ''
+    form.minFloor = null
+    form.maxFloor = null
   } else {
-    form.maxFloor = ''
+    form.maxFloor = null
   }
 }
-const emit = defineEmits(['bldg-select', 'unit-register'])
-const confirmModal = ref()
-const alertModal = ref()
 
 const bldgSelect = (event: Event) => {
   const bdName = (event.target as HTMLSelectElement).value
@@ -114,6 +116,7 @@ const typeSelect = (event: Event) => {
     Number((event.target as HTMLSelectElement).value),
   )
 }
+
 const unitRegister = () => {
   if (write_project) confirmModal.value.callModal()
   else {
@@ -121,6 +124,7 @@ const unitRegister = () => {
     reset(1)
   }
 }
+
 const modalAction = () => {
   emit('unit-register', {
     ...form,
@@ -146,7 +150,7 @@ const modalAction = () => {
           </CFormLabel>
           <CCol sm="8">
             <CFormSelect
-              v-model="form.building"
+              v-model.number="form.building"
               :disabled="!project"
               @change="bldgSelect"
             >
@@ -176,7 +180,7 @@ const modalAction = () => {
               type="number"
               min="0"
               placeholder="등록할 라인 숫자 입력"
-              :disabled="form.building == ''"
+              :disabled="!form.building"
             />
           </CCol>
         </CRow>
@@ -187,8 +191,8 @@ const modalAction = () => {
           <CFormLabel class="col-sm-4 col-form-label"> 타입선택</CFormLabel>
           <CCol sm="8">
             <CFormSelect
-              v-model="form.type"
-              :disabled="form.line == ''"
+              v-model.number="form.type"
+              :disabled="!form.line"
               @change="typeSelect"
             >
               <option value>---------</option>
@@ -212,7 +216,7 @@ const modalAction = () => {
               v-model.number="form.minFloor"
               type="number"
               placeholder="시작층(피로티 제외)"
-              :disabled="form.type == ''"
+              :disabled="!form.type"
             />
           </CCol>
         </CRow>
@@ -227,7 +231,7 @@ const modalAction = () => {
               type="number"
               min="0"
               placeholder="입력 범위 종료층"
-              :disabled="form.minFloor == ''"
+              :disabled="!form.minFloor"
               @keydown.enter="unitRegister"
             />
           </CCol>

@@ -2,18 +2,18 @@
 import { computed, onBeforeMount, ref } from 'vue'
 import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin2'
 import { useProject } from '@/store/pinia/project'
-import { useProjectData } from '@/store/pinia/project_data'
-import { HouseUnit } from '@/store/types/project'
+import { CreateUnit, useProjectData } from '@/store/pinia/project_data'
+import { message } from '@/utils/helper'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import UnitController from '@/views/projects/Unit/components/UnitController.vue'
 import UnitListTable from '@/views/projects/Unit/components/UnitListTable.vue'
-import { message } from '@/utils/helper'
+
+const alertModal = ref()
 
 const bldgName = ref('')
 
 const projectStore = useProject()
-
 const initProjId = computed(() => projectStore.initProjId)
 const project = computed(() => projectStore.project?.pk || initProjId.value)
 
@@ -29,8 +29,7 @@ const fetchBuildingList = (projId: number) =>
 const fetchHouseUnitList = (projId: number, bldg?: number) =>
   projectDataStore.fetchHouseUnitList(projId, bldg)
 
-const createUnit = (payload: HouseUnit & any) =>
-  projectDataStore.createUnit(payload)
+const createUnit = (payload: CreateUnit) => projectDataStore.createUnit(payload)
 
 onBeforeMount(() => {
   fetchTypeList(initProjId.value)
@@ -58,9 +57,26 @@ const bldgSelect = (bldg: { pk: number; name: string }) => {
   bldgName.value = bldg.name
 }
 
-const unitRegister = (payload: any) => {
-  const unit_type = Number(payload.type)
-  const building_unit = Number(payload.building)
+type OriginalUnit = {
+  building: number
+  line: number
+  type: number
+  minFloor: number
+  maxFloor: number
+  typeName: string
+  maxLength: number
+  maxUnits: number
+  floors: {
+    pk: number
+    start: number
+    end: number
+    name: string
+  }[]
+}
+
+const unitRegister = (payload: OriginalUnit) => {
+  const unit_type = payload.type
+  const building_unit = payload.building
   const bldg_line = payload.line
   const midWord = bldg_line < 10 ? '0' : ''
   const size = payload.maxFloor - payload.minFloor + 1
@@ -131,4 +147,6 @@ const unitRegister = (payload: any) => {
 
     <CCardFooter>&nbsp;</CCardFooter>
   </ContentBody>
+
+  <AlertModal ref="alertModal" />
 </template>
