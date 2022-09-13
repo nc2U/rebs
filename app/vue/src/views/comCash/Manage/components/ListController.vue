@@ -20,10 +20,6 @@ const form = reactive<DataFilter>({
   search: '',
 })
 
-onBeforeMount(() => {
-  //
-})
-
 const formsCheck = computed(() => {
   const a = form.from_date === ''
   const b = form.to_date === ''

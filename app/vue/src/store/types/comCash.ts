@@ -50,7 +50,7 @@ export interface BalanceByAccount {
 }
 
 export interface CashBook {
-  pk?: number
+  pk: number | null
   company: number | null
   sort: number | null
   sort_desc?: string
@@ -61,10 +61,10 @@ export interface CashBook {
   account_d3_desc?: string
   content: string
   trader: string
-  bank_account: number
+  bank_account: number | null
   bank_account_desc?: string
-  income?: number
-  outlay?: number
+  income: number | null
+  outlay: number | null
   evidence: string
   evidence_desc?: string
   note: string

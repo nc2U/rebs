@@ -109,6 +109,7 @@ onBeforeMount(() => {
     <DatePicker
       v-model="form.acquisition_date"
       type="number"
+      maxlength="10"
       placeholder="소유권 취득일"
       @keydown.enter="relPatch"
     />

@@ -24,8 +24,8 @@ class Project(models.Model):
     is_returned_area = models.BooleanField('토지환지여부', default=False, help_text='해당 사업부지가 환지방식 도시개발사업구역인 경우 체크')
     is_unit_set = models.BooleanField('동호지정여부', default=False, help_text='현재 동호수를 지정하지 않는 경우 체크하지 않음')
     local_zipcode = models.CharField('우편번호', max_length=5, blank=True)
-    local_address1 = models.CharField('대표부지 주소', max_length=50, blank=True)
-    local_address2 = models.CharField('상세주소', max_length=25, blank=True)
+    local_address1 = models.CharField('대표부지 주소', max_length=35, blank=True)
+    local_address2 = models.CharField('상세주소', max_length=20, blank=True)
     local_address3 = models.CharField('참고항목', max_length=20, blank=True)
     area_usage = models.CharField('용도지역지구', max_length=50, blank=True)
     build_size = models.CharField('건축규모', max_length=50, blank=True)
@@ -54,7 +54,7 @@ class Project(models.Model):
 class UnitType(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE, verbose_name='프로젝트', related_name='types')
     name = models.CharField('타입명칭', max_length=10)
-    color = models.CharField('타입색상', max_length=7)
+    color = models.CharField('타입색상', max_length=20)
     actual_area = models.DecimalField('전용면적(㎡)', max_digits=7, decimal_places=4, null=True, blank=True)
     supply_area = models.DecimalField('공급면적(㎡)', max_digits=7, decimal_places=4, null=True, blank=True)
     contract_area = models.DecimalField('계약면적(㎡)', max_digits=7, decimal_places=4, null=True, blank=True)
@@ -76,7 +76,7 @@ class UnitFloorType(models.Model):  # 층별 타입
     end_floor = models.PositiveIntegerField('종료 층')
     extra_cond = models.CharField('방향/위치', max_length=20, blank=True,
                                   help_text='동일범위의 층범위를 방향/위치 등으로 구분해야 할 필요가 있는 경우 입력')
-    alias_name = models.CharField('층별 범위 명칭', max_length=50)
+    alias_name = models.CharField('층별 범위 명칭', max_length=20)
 
     def __str__(self):
         return self.alias_name
@@ -105,7 +105,7 @@ class KeyUnit(models.Model):
 
 class BuildingUnit(models.Model):
     project = models.ForeignKey('project.Project', on_delete=models.PROTECT, verbose_name='프로젝트')
-    name = models.CharField('동(건물)이름', max_length=20)
+    name = models.CharField('동(건물)이름', max_length=10)
 
     class Meta:
         ordering = ('-project', 'id')
@@ -181,9 +181,9 @@ class SiteOwner(models.Model):
     phone1 = models.CharField('주연락처', max_length=13, blank=True)
     phone2 = models.CharField('비상연락처', max_length=13, blank=True)
     zipcode = models.CharField('우편번호', max_length=5, blank=True)
-    address1 = models.CharField('주소', max_length=50, blank=True)
-    address2 = models.CharField('상세주소', max_length=25, blank=True)
-    address3 = models.CharField('참고항목', max_length=25, blank=True)
+    address1 = models.CharField('주소', max_length=35, blank=True)
+    address2 = models.CharField('상세주소', max_length=20, blank=True)
+    address3 = models.CharField('참고항목', max_length=20, blank=True)
     OWN_CHOICES = (('1', '개인'), ('2', '법인'), ('3', '국공유지'))
     own_sort = models.CharField('소유구분', max_length=1, choices=OWN_CHOICES, default='1')
     sites = models.ManyToManyField(Site, through='SiteOwnshipRelationship', through_fields=('site_owner', 'site'),
@@ -240,7 +240,7 @@ class SiteContract(models.Model):
     remain_pay_is_paid = models.BooleanField('잔금 지급여부', default=False)
     ownership_completion = models.BooleanField('소유권 확보여부', default=False)
     acc_bank = models.CharField('은행', max_length=20)
-    acc_number = models.CharField('계좌번호', max_length=20)
+    acc_number = models.CharField('계좌번호', max_length=25)
     acc_owner = models.CharField('예금주', max_length=20)
     note = models.TextField('특이사항', blank=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')

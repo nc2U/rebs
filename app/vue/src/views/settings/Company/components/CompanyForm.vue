@@ -149,7 +149,7 @@ onBeforeMount(() => {
             v-model="form.name"
             type="text"
             placeholder="회사명을 입력하세요"
-            maxlength="20"
+            maxlength="30"
             required
           />
           <CFormFeedback invalid>회사명을 입력하세요.</CFormFeedback>
@@ -176,10 +176,11 @@ onBeforeMount(() => {
           사업자등록번호
         </CFormLabel>
         <CCol md="4">
-          <CFormInput
+          <input
             v-model="form.tax_number"
             v-maska="'###-##-#####'"
             type="text"
+            class="form-control"
             placeholder="사업자번호를 입력하세요"
             maxlength="12"
             required
@@ -190,10 +191,11 @@ onBeforeMount(() => {
           법인등록번호
         </CFormLabel>
         <CCol md="4">
-          <CFormInput
+          <input
             v-model="form.org_number"
             v-maska="'######-#######'"
             type="text"
+            class="form-control"
             placeholder="법인등록번호를 입력하세요"
             maxlength="14"
             required
@@ -238,8 +240,6 @@ onBeforeMount(() => {
         <CCol md="4">
           <DatePicker
             v-model="form.es_date"
-            v-maska="'####-##-##'"
-            type="text"
             maxlength="10"
             placeholder="설립일자를 입력하세요"
             required
@@ -252,8 +252,6 @@ onBeforeMount(() => {
         <CCol md="4">
           <DatePicker
             v-model="form.op_date"
-            v-maska="'####-##-##'"
-            type="text"
             maxlength="10"
             placeholder="개업일자를 입력하세요"
             required
@@ -292,7 +290,7 @@ onBeforeMount(() => {
             v-model="form.address1"
             type="text"
             placeholder="회사주소를 입력하세요"
-            maxlength="50"
+            maxlength="35"
             required
             @focus="postCode.initiate()"
           />
@@ -305,7 +303,7 @@ onBeforeMount(() => {
             v-model="form.address2"
             type="text"
             placeholder="상세주소를 입력하세요"
-            maxlength="30"
+            maxlength="20"
             required
           />
           <CFormFeedback invalid>상세주소를 입력하세요.</CFormFeedback>
@@ -315,7 +313,7 @@ onBeforeMount(() => {
             v-model="form.address3"
             type="text"
             placeholder="나머지 주소를 입력하세요"
-            maxlength="30"
+            maxlength="20"
           />
           <CFormFeedback invalid>나머지 주소를 입력하세요.</CFormFeedback>
         </CCol>

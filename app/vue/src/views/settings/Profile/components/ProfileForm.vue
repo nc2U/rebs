@@ -162,8 +162,6 @@ onBeforeMount(() => resetForm())
             <CCol md="8">
               <DatePicker
                 v-model="form.birth_date"
-                v-maska="'####-##-##'"
-                type="text"
                 placeholder="생년월일을 입력하세요"
                 maxlength="10"
               />
@@ -177,10 +175,11 @@ onBeforeMount(() => resetForm())
             </CFormLabel>
 
             <CCol md="8">
-              <CFormInput
+              <input
                 v-model="form.cell_phone"
                 v-maska="['###-###-####', '###-####-####']"
                 type="text"
+                class="form-control"
                 placeholder="휴대전화를 입력하세요"
                 maxlength="13"
               />

@@ -128,6 +128,7 @@ const resetForm = () => {
     <CTableDataCell>
       <CFormInput
         v-model="form.pay_name"
+        maxlength="20"
         placeholder="납부회차 명"
         required
         @keypress.enter="formCheck(form.pay_name !== payOrder.pay_name)"
@@ -137,6 +138,7 @@ const resetForm = () => {
     <CTableDataCell>
       <CFormInput
         v-model="form.alias_name"
+        maxlength="20"
         placeholder="회차 별칭"
         required
         @keypress.enter="formCheck(form.alias_name !== payOrder.alias_name)"
@@ -146,7 +148,7 @@ const resetForm = () => {
     <CTableDataCell>
       <DatePicker
         v-model="form.pay_due_date"
-        v-maska="'####-##-##'"
+        maxlength="10"
         placeholder="납부기한일"
         :required="false"
         @keypress.enter="formCheck(form.pay_due_date !== payOrder.pay_due_date)"
@@ -156,7 +158,7 @@ const resetForm = () => {
     <CTableDataCell>
       <DatePicker
         v-model="form.extra_due_date"
-        v-maska="'####-##-##'"
+        maxlength="10"
         placeholder="납부유예일"
         :required="false"
         @keypress.enter="

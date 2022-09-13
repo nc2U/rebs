@@ -69,6 +69,7 @@ const resetForm = () => {
           <CCol lg="4" class="mb-2">
             <CFormInput
               v-model="form.name"
+              maxlength="10"
               placeholder="타입명칭"
               required
               :disabled="disabled"

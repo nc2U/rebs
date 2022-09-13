@@ -88,6 +88,7 @@ const resetForm = () => {
     <CTableDataCell>
       <CFormInput
         v-model="form.order_group_name"
+        maxlength="20"
         placeholder="차수그룹명"
         @keypress.enter="
           formCheck(form.order_group_name !== order.order_group_name)

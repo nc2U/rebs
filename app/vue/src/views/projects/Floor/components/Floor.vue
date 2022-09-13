@@ -92,6 +92,7 @@ const resetForm = () => {
     <CTableDataCell>
       <CFormInput
         v-model="form.extra_cond"
+        maxlength="20"
         placeholder="방향/위치"
         @keypress.enter="formCheck(form.extra_cond !== floor.extra_cond)"
       />
@@ -100,6 +101,7 @@ const resetForm = () => {
     <CTableDataCell>
       <CFormInput
         v-model="form.alias_name"
+        maxlength="20"
         placeholder="층별 범위 명칭"
         required
         @keypress.enter="formCheck(form.alias_name !== floor.alias_name)"

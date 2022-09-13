@@ -297,6 +297,7 @@ onBeforeMount(() => {
                 <DatePicker
                   v-model="form.deal_date"
                   required
+                  maxlength="10"
                   placeholder="거래일자"
                 />
               </CCol>
@@ -379,6 +380,7 @@ onBeforeMount(() => {
               <CCol sm="8">
                 <CFormInput
                   v-model="form.content"
+                  maxlength="50"
                   placeholder="거래 내용"
                   :disabled="!form.sort"
                 />
@@ -396,6 +398,7 @@ onBeforeMount(() => {
                       '분양대금(분담금) 수납 건인 경우 반드시 해당 계좌에 기재된 입금자를 기재',
                     placement: 'top',
                   }"
+                  maxlength="20"
                   placeholder="거래처 (수납자)"
                   required
                   :disabled="!form.sort"
@@ -647,6 +650,7 @@ onBeforeMount(() => {
                   <CCol sm="8">
                     <CFormInput
                       v-model="sepItem.content"
+                      maxlength="50"
                       placeholder="거래 내용"
                     />
                   </CCol>
@@ -665,6 +669,7 @@ onBeforeMount(() => {
                           '분양대금(분담금) 수납 건인 경우 반드시 해당 계좌에 기재된 입금자를 기재',
                         placement: 'top',
                       }"
+                      maxlength="20"
                       placeholder="거래처 (수납자)"
                       required
                     />

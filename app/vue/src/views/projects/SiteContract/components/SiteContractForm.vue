@@ -446,7 +446,7 @@ onBeforeMount(() => {
               <CCol sm="3">
                 <CFormInput
                   v-model="form.acc_number"
-                  maxlength="20"
+                  maxlength="25"
                   required
                   placeholder="계좌번호"
                 />

@@ -139,6 +139,7 @@ const resetForm = () => {
           <CCol md="3" class="mb-2">
             <CFormInput
               v-model="form.pay_name"
+              maxlength="20"
               placeholder="납부회차 명"
               required
               :disabled="disabled"
@@ -147,6 +148,7 @@ const resetForm = () => {
           <CCol md="3" class="mb-2">
             <CFormInput
               v-model="form.alias_name"
+              maxlength="20"
               placeholder="별칭 이름"
               :disabled="disabled"
             />
@@ -155,7 +157,7 @@ const resetForm = () => {
           <CCol md="3" class="mb-2">
             <DatePicker
               v-model="form.pay_due_date"
-              v-maska="'####-##-##'"
+              maxlength="10"
               placeholder="납부기한일"
               :required="false"
               :disabled="disabled"
@@ -165,7 +167,7 @@ const resetForm = () => {
           <CCol md="3" class="mb-2">
             <DatePicker
               v-model="form.extra_due_date"
-              v-maska="'####-##-##'"
+              maxlength="10"
               placeholder="납부유예일"
               :required="false"
               :disabled="disabled"

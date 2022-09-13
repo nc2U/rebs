@@ -511,6 +511,7 @@ defineExpose({ formReset })
             <DatePicker
               v-model="form.birth_date"
               v-maska="'####-##-##'"
+              maxlength="10"
               placeholder="생년월일"
               :required="isContract"
               :disabled="noStatus"
@@ -624,7 +625,7 @@ defineExpose({ formReset })
             :color="$store.state.theme === 'dark' ? 'default' : 'secondary'"
             class="pb-0"
           >
-            <CRow v-if="downPayments.length !== 0" class="mb-3">
+            <CRow v-if="downPayments.length" class="mb-3">
               <CCol>
                 <CRow
                   v-for="(payment, i) in downPayments"
@@ -694,6 +695,7 @@ defineExpose({ formReset })
                   v-model="form.deal_date"
                   v-maska="'####-##-##'"
                   placeholder="입금일자"
+                  maxlength="10"
                   :required="!contract"
                   :disabled="noStatus"
                 />
@@ -797,7 +799,7 @@ defineExpose({ formReset })
             <CFormInput
               v-model="form.id_address1"
               type="text"
-              maxlength="50"
+              maxlength="35"
               placeholder="주민등록 주소를 입력하세요"
               :required="isContract"
               :disabled="!isContract"
@@ -813,7 +815,7 @@ defineExpose({ formReset })
               ref="address21"
               v-model="form.id_address2"
               type="text"
-              maxlength="30"
+              maxlength="20"
               placeholder="상세주소를 입력하세요"
               :disabled="!isContract"
             />
@@ -823,7 +825,7 @@ defineExpose({ formReset })
             <CFormInput
               v-model="form.id_address3"
               type="text"
-              maxlength="30"
+              maxlength="20"
               placeholder="참고항목을 입력하세요"
               :disabled="!isContract"
             />

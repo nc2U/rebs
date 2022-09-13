@@ -55,6 +55,7 @@ const resetForm = () => (form.name = props.building.name)
     <CTableDataCell>
       <CFormInput
         v-model="form.name"
+        maxlength="10"
         placeholder="동(건물)"
         @keypress.enter="formCheck(form.name !== building.name)"
       />

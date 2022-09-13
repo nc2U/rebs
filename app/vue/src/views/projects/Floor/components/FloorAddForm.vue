@@ -84,6 +84,7 @@ const resetForm = () => {
       <CCol md="2" class="mb-2">
         <CFormInput
           v-model="form.extra_cond"
+          maxlength="20"
           placeholder="방향/위치(옵션)"
           :disabled="disabled"
         />
@@ -92,6 +93,7 @@ const resetForm = () => {
       <CCol md="2" class="mb-2">
         <CFormInput
           v-model="form.alias_name"
+          maxlength="20"
           placeholder="층별 범위 명칭"
           required
           :disabled="disabled"

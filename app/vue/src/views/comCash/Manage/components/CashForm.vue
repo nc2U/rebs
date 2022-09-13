@@ -164,6 +164,7 @@ onBeforeMount(() => {
             <CCol sm="8">
               <DatePicker
                 v-model="form.deal_date"
+                maxlength="10"
                 required
                 placeholder="거래일자"
               />
@@ -262,6 +263,7 @@ onBeforeMount(() => {
             <CCol sm="8">
               <CFormInput
                 v-model="form.content"
+                maxlength="50"
                 placeholder="거래 내용"
                 required
                 :disabled="form.sort === null"
@@ -275,6 +277,7 @@ onBeforeMount(() => {
             <CCol sm="8">
               <CFormInput
                 v-model="form.trader"
+                maxlength="20"
                 placeholder="거래처"
                 :disabled="form.sort === null"
               />

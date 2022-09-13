@@ -158,6 +158,7 @@ onBeforeMount(() => {
             <CCol sm="8">
               <CFormInput
                 v-model="form.refund_account_bank"
+                maxlength="20"
                 placeholder="환불계좌(은행)"
               />
             </CCol>
@@ -174,6 +175,7 @@ onBeforeMount(() => {
             <CCol sm="8">
               <CFormInput
                 v-model="form.refund_account_number"
+                maxlength="25"
                 placeholder="환불계좌(번호)"
               />
             </CCol>
@@ -188,6 +190,7 @@ onBeforeMount(() => {
             <CCol sm="8">
               <CFormInput
                 v-model="form.refund_account_depositor"
+                maxlength="20"
                 placeholder="환불계좌(예금주)"
               />
             </CCol>

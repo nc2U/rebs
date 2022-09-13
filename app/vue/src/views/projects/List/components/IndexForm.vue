@@ -218,7 +218,7 @@ onBeforeMount(() => {
                 v-for="sort in sortOptins"
                 :key="sort.value"
                 :value="sort.value"
-                :selected="update && sort.value === project.kind"
+                :selected="project && sort.value === project.kind"
               >
                 {{ sort.label }}
               </option>
@@ -248,7 +248,7 @@ onBeforeMount(() => {
               id="is_direct_manage"
               v-model="form.is_direct_manage"
               label="직영운영여부"
-              :checked="update && project.is_direct_manage"
+              :checked="project && project.is_direct_manage"
             />
             <CFormText class="text-grey">
               본사 직접 운영하는 프로젝트인 경우 체크, 즉 시행대행이나
@@ -264,7 +264,7 @@ onBeforeMount(() => {
               id="is_returned_area"
               v-model="form.is_returned_area"
               label="토지환지여부"
-              :checked="update && project.is_returned_area"
+              :checked="project && project.is_returned_area"
             />
             <CFormText class="text-grey">
               해당 사업부지가 환지방식 도시개발사업구역인 경우 체크
@@ -279,7 +279,7 @@ onBeforeMount(() => {
               id="is_unit_set"
               v-model="form.is_unit_set"
               label="동호지정여부"
-              :checked="update && project.is_unit_set"
+              :checked="project && project.is_unit_set"
             />
             <CFormText class="text-grey">
               현재 동호수를 지정하지 않는 경우 체크하지 않음
@@ -308,7 +308,7 @@ onBeforeMount(() => {
             <CFormInput
               v-model="form.local_address1"
               type="text"
-              maxlength="50"
+              maxlength="35"
               placeholder="대표지번 주소를 입력하세요"
               @focus="$refs.postCode.initiate()"
             />
@@ -322,7 +322,7 @@ onBeforeMount(() => {
               ref="address2"
               v-model="form.local_address2"
               type="text"
-              maxlength="25"
+              maxlength="20"
               placeholder="상세주소를 입력하세요"
             />
             <CFormFeedback invalid>상세주소를 입력하세요.</CFormFeedback>
@@ -541,7 +541,7 @@ onBeforeMount(() => {
           취소
         </CButton>
         <CButton
-          v-if="update"
+          v-if="project"
           type="button"
           color="danger"
           @click="deleteProject"

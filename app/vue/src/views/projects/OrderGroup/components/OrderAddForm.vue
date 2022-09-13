@@ -77,6 +77,7 @@ const resetForm = () => {
         <CFormInput
           v-model="form.order_group_name"
           placeholder="차수그룹명"
+          maxlength="20"
           required
           :disabled="disabled"
         />

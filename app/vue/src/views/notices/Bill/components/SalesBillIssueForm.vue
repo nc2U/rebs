@@ -197,7 +197,6 @@ const addressCallback = (data: AddressData) => {
           <CFormSelect
             v-model="form.now_payment_order"
             placeholder="발행회차"
-            maxlength="10"
             required
           >
             <option value="">--------</option>
@@ -295,7 +294,7 @@ const addressCallback = (data: AddressData) => {
           <CFormInput
             v-model="form.bank_number1"
             placeholder="계좌번호[1]"
-            maxlength="20"
+            maxlength="25"
             required
           />
         </CCol>
@@ -332,7 +331,7 @@ const addressCallback = (data: AddressData) => {
           <CFormInput
             v-model="form.bank_number2"
             placeholder="계좌번호[2]"
-            maxlength="20"
+            maxlength="25"
           />
         </CCol>
 
@@ -377,7 +376,7 @@ const addressCallback = (data: AddressData) => {
           <CFormInput
             v-model="form.address1"
             placeholder="메인 주소"
-            maxlength="20"
+            maxlength="35"
             required
             @click="$refs.postCode.initiate()"
           />
@@ -416,7 +415,7 @@ const addressCallback = (data: AddressData) => {
           <CFormInput
             v-model="form.title"
             placeholder="고재서 제목"
-            maxlength="20"
+            maxlength="80"
             required
           />
         </CCol>

@@ -205,6 +205,7 @@ onMounted(() => {
                     '이 란은 반드시 해당 계좌에 기재된 입금자명과 일치하도록 기재하세요.',
                   placement: 'top',
                 }"
+                maxlength="20"
                 required
                 placeholder="입금자명"
               />

@@ -78,13 +78,14 @@ onBeforeMount(() => {
     <CTableDataCell>
       <CFormInput
         v-model="form.name"
+        maxlength="10"
         placeholder="타입명칭"
         required
         @keypress.enter="formCheck(form.name !== type.name)"
       />
     </CTableDataCell>
     <CTableDataCell>
-      <CFormInput v-model="form.color" title="타입색상" type="color" />
+      <CFormInput v-model="form.color" title="타입색상" type="color" required />
     </CTableDataCell>
 
     <CTableDataCell>

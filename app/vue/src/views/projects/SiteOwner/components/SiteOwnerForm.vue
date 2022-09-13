@@ -221,9 +221,10 @@ onBeforeMount(() => {
             <CRow>
               <CFormLabel class="col-sm-4 col-form-label">주 연락처</CFormLabel>
               <CCol sm="8">
-                <CFormInput
+                <input
                   v-model="form.phone1"
                   v-maska="['###-###-####', '###-####-####']"
+                  class="form-control"
                   maxlength="13"
                   placeholder="주 연락처"
                 />
@@ -237,9 +238,10 @@ onBeforeMount(() => {
                 보조 연락처
               </CFormLabel>
               <CCol sm="8">
-                <CFormInput
+                <input
                   v-model="form.phone2"
                   v-maska="['###-###-####', '###-####-####']"
+                  class="form-control"
                   maxlength="13"
                   placeholder="보조 연락처"
                 />
@@ -270,7 +272,7 @@ onBeforeMount(() => {
               <CCol sm="7">
                 <CFormInput
                   v-model="form.address1"
-                  maxlength="50"
+                  maxlength="35"
                   placeholder="메인 주소"
                 />
               </CCol>
@@ -286,14 +288,14 @@ onBeforeMount(() => {
                 <CFormInput
                   ref="address2"
                   v-model="form.address2"
-                  maxlength="25"
+                  maxlength="20"
                   placeholder="상세 주소"
                 />
               </CCol>
               <CCol sm="5">
                 <CFormInput
                   v-model="form.address3"
-                  maxlength="25"
+                  maxlength="20"
                   placeholder="나머지 주소"
                 />
               </CCol>
