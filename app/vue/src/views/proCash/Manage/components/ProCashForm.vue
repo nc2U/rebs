@@ -65,6 +65,10 @@ const form = reactive<ProjectCashBook>({
   deal_date: dateFormat(new Date()),
 })
 
+watch(form, val => {
+  if (val.deal_date) form.deal_date = dateFormat(val.deal_date)
+})
+
 const formsCheck = computed(() => {
   if (props.proCash) {
     const a = form.project === props.proCash.project
@@ -122,14 +126,33 @@ const sepSummary = computed(() => {
   return [inc, out]
 })
 
-const accountStore = useAccount()
-const allowedPeriod = computed(
-  () => accountStore.superAuth || diffDate(props.proCash.deal_date) <= 30,
-)
+const sepUpdate = (sep: ProjectCashBook) => {
+  sepItem.pk = sep.pk
+  sepItem.project_account_d1 = sep.project_account_d1
+  sepItem.project_account_d2 = sep.project_account_d2
+  sepItem.content = sep.content
+  sepItem.trader = sep.trader
+  sepItem.evidence = sep.evidence
+  sepItem.outlay = sep.outlay
+  sepItem.income = sep.income
+  sepItem.note = sep.note
+}
 
-watch(form, val => {
-  if (val.project_account_d2 === 63) form.is_imprest = true
-  else form.is_imprest = false
+const sepRemove = () => {
+  sepItem.pk = null
+  sepItem.project_account_d1 = null
+  sepItem.project_account_d2 = null
+  sepItem.content = ''
+  sepItem.trader = ''
+  sepItem.evidence = ''
+  sepItem.outlay = null
+  sepItem.income = null
+  sepItem.note = ''
+}
+
+const isModify = computed(() => {
+  if (!form.is_separate) return !!props.proCash
+  else return !!sepItem.pk
 })
 
 const sort_change = (event: Event) => {
@@ -170,38 +193,15 @@ const callAccount = () => {
   })
 }
 
-const sepUpdate = (sep: ProjectCashBook) => {
-  sepItem.pk = sep.pk
-  sepItem.project_account_d1 = sep.project_account_d1
-  sepItem.project_account_d2 = sep.project_account_d2
-  sepItem.content = sep.content
-  sepItem.trader = sep.trader
-  sepItem.evidence = sep.evidence
-  sepItem.outlay = sep.outlay
-  sepItem.income = sep.income
-  sepItem.note = sep.note
-}
-
-const sepRemove = () => {
-  sepItem.pk = null
-  sepItem.project_account_d1 = null
-  sepItem.project_account_d2 = null
-  sepItem.content = ''
-  sepItem.trader = ''
-  sepItem.evidence = ''
-  sepItem.outlay = null
-  sepItem.income = null
-  sepItem.note = ''
-}
-
-const isModify = computed(() => {
-  if (!form.is_separate) return !!props.proCash
-  else return !!sepItem.pk
-})
-
 watch(form, val => {
-  if (val.deal_date) form.deal_date = dateFormat(val.deal_date)
+  if (val.project_account_d2 === 63) form.is_imprest = true
+  else form.is_imprest = false
 })
+
+const accountStore = useAccount()
+const allowedPeriod = computed(
+  () => accountStore.superAuth || diffDate(props.proCash.deal_date) <= 30,
+)
 
 const onSubmit = (event: Event) => {
   if (isValidate(event)) {

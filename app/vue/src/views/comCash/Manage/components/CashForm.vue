@@ -4,7 +4,7 @@ import { useAccount } from '@/store/pinia/account'
 import { useComCash } from '@/store/pinia/comCash'
 import { CashBook } from '@/store/types/comCash'
 import { dateFormat, diffDate, cutString, numFormat } from '@/utils/baseMixins'
-import { write_company_cash } from '@/utils/pageAuth'
+import { write_company_cash, write_project_cash } from '@/utils/pageAuth'
 import DatePicker from '@/components/DatePicker/index.vue'
 import { isValidate } from '@/utils/helper'
 
@@ -97,6 +97,10 @@ const fetchFormAccD3List = (
   d1: number | null,
   d2: number | null,
 ) => useComCashStore.fetchFormAccD3List(sort, d1, d2)
+
+const requireItem = computed(
+  () => !!form.account_d1 && !!form.account_d2 && !!form.account_d3,
+)
 
 const sepDisabled = computed(() => {
   const disabled = !!form.account_d1 || !!form.account_d2 || !!form.account_d3
@@ -226,8 +230,34 @@ const onSubmit = (event: Event) => {
   }
 }
 
+const deleteConfirm = () => {
+  if (write_company_cash)
+    if (allowedPeriod.value) delModal.value.callModal()
+    else
+      alertModal.value.callModal(
+        null,
+        '거래일로부터 30일이 경과한 건은 삭제할 수 없습니다. 관리자에게 문의바랍니다.',
+      )
+  else alertModal.value.callModal()
+}
+
+const deleteObject = () => {
+  emit('on-delete', {
+    project: props.cash.project,
+    pk: props.cash.pk,
+  })
+  delModal.value.close()
+  emit('close')
+}
+
 onBeforeMount(() => {
   if (props.cash) {
+    sepItem.company = props.cash.company
+    sepItem.sort = props.cash.sort
+    sepItem.bank_account = props.cash.bank_account
+    sepItem.deal_date = props.cash.deal_date
+    sepItem.separated = props.cash.pk
+
     form.pk = props.cash.pk
     form.company = props.cash.company
     form.sort = props.cash.sort
@@ -241,7 +271,7 @@ onBeforeMount(() => {
     form.outlay = props.cash.outlay
     form.evidence = props.cash.evidence
     form.note = props.cash.note
-    form.deal_date = dateFormat(new Date(props.cash.deal_date))
+    form.deal_date = props.cash.deal_date
   }
   callAccount()
 })
