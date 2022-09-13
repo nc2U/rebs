@@ -206,11 +206,11 @@ const onSubmit = (event: Event) => {
   if (isValidate(event)) {
     validated.value = true
   } else {
-    if (form.is_separate) {
-      sepItem.sort = form.sort
-      sepItem.bank_account = form.bank_account
-      sepItem.deal_date = form.deal_date
-    }
+    // if (form.is_separate) {
+    //   sepItem.sort = form.sort
+    //   sepItem.bank_account = form.bank_account
+    //   sepItem.deal_date = form.deal_date
+    // }
     const payload = !form.is_separate
       ? { formData: form, sepData: null }
       : { formData: form, sepData: sepItem }
@@ -535,7 +535,7 @@ onBeforeMount(() => {
         </CRow>
       </div>
 
-      <div v-if="form.is_separate">
+      <div v-if="form.is_separate && imprest">
         <hr v-if="imprest && imprest.sepItems.length > 0" />
         <CRow v-if="imprest && imprest.sepItems.length > 0" class="mb-3">
           <CCol>

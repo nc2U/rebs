@@ -26,10 +26,14 @@ const cls = ref(['text-primary', 'text-danger', 'text-info'])
 const sortClass = computed(() => cls.value[props.cash.sort - 1])
 const d1Class = computed(() => cls.value[props.cash.account_d1 - 1])
 
+const rowColor = computed(() => {
+  let color = ''
+  color = props.cash.is_separate ? 'primary' : color
+  color = props.cash.separated ? 'secondary' : color
+  return color
+})
+
 const accountStore = useAccount()
-
-const pageManageAuth = computed(() => write_company_cash)
-
 const allowedPeriod = computed(
   () => accountStore.superAuth || diffDate(props.cash.deal_date) <= 30,
 )
@@ -42,7 +46,7 @@ const multiSubmit = (payload: {
 }) => emit('multi-submit', payload)
 
 const deleteConfirm = () => {
-  if (pageManageAuth.value)
+  if (write_company_cash)
     if (allowedPeriod.value) delModal.value.callModal()
     else
       alertModal.value.callModal(
@@ -54,12 +58,17 @@ const deleteConfirm = () => {
 
 const deleteObject = () => {
   emit('on-delete', { company: props.cash.company, pk: props.cash.pk })
-  delModal.value.visible = false
+  delModal.value.close()
 }
 </script>
 
 <template>
-  <CTableRow class="text-center">
+  <CTableRow
+    v-if="cash"
+    class="text-center"
+    :color="rowColor"
+    :style="cash.is_separate ? 'font-weight: bold;' : ''"
+  >
     <CTableDataCell>{{ cash.deal_date }}</CTableDataCell>
     <CTableDataCell :class="sortClass">
       {{ cash.sort_desc }}

@@ -176,6 +176,8 @@ export const useComCash = defineStore('comCash', () => {
                 .filter(d3 => d3.pk === c.account_d3)
                 .map(d3 => d3.name)[0]
             : '',
+          is_separate: c.is_separate,
+          separated: c.separated,
           content: c.content,
           trader: c.trader,
           bank_account: c.bank_account,
