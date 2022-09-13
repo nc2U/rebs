@@ -133,10 +133,10 @@ watch(form, val => {
 })
 
 const sort_change = (event: Event) => {
-  const el = (event.target as HTMLSelectElement).value
-  if (el === '1') form.outlay = null
-  if (el === '2') form.income = null
-  if (el === '3') {
+  const el = event.target as HTMLSelectElement
+  if (el.value === '1') form.outlay = null
+  if (el.value === '2') form.income = null
+  if (el.value === '3') {
     form.project_account_d1 = 17
     form.project_account_d2 = 62
   } else {
