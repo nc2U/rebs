@@ -19,10 +19,10 @@ const form = reactive({
 
 const validated = ref(false)
 
-const onSubmit = (event: any) => {
+const onSubmit = (event: Event) => {
   if (write_project) {
-    const el = event.currentTarget
-    if (el.checkValidity() === false) {
+    const el = event.currentTarget as HTMLFormElement
+    if (!el.checkValidity()) {
       event.preventDefault()
       event.stopPropagation()
 
