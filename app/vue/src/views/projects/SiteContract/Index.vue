@@ -8,7 +8,7 @@ import { numFormat } from '@/utils/baseMixins'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from './components/ListController.vue'
-import AddSite from './components/AddSite.vue'
+import AddSiteContract from './components/AddSiteContract.vue'
 import TableTitleRow from '@/components/TableTitleRow.vue'
 import SiteContractList from './components/SiteContractList.vue'
 
@@ -93,7 +93,7 @@ onBeforeMount(() => {
         :project="project"
         @list-filtering="listFiltering"
       />
-      <AddSite :project="project" @multi-submit="multiSubmit" />
+      <AddSiteContract :project="project" @multi-submit="multiSubmit" />
       <TableTitleRow title="부지 매입계약 목록" excel url="" disabled>
         <span class="pt-1 text-success">
           총 계약 면적 : {{ numFormat(getContsTotal, 2) }}m<sup>2</sup> ({{
