@@ -207,6 +207,11 @@ const onSubmit = (event: Event) => {
   if (isValidate(event)) {
     validated.value = true
   } else {
+    if (form.is_separate) {
+      sepItem.sort = form.sort
+      sepItem.bank_account = form.bank_account
+      sepItem.deal_date = form.deal_date
+    }
     const payload = !form.is_separate
       ? { formData: form, sepData: null }
       : { formData: form, sepData: sepItem }
@@ -687,7 +692,7 @@ onBeforeMount(() => {
                       v-model.number="sepItem.bank_account"
                       readonly
                       required
-                      :disabled="sepItem.pk"
+                      :disabled="sepItem.pk || form.is_separate"
                     >
                       <option value="">---------</option>
                       <option
