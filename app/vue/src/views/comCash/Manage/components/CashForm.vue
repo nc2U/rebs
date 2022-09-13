@@ -17,6 +17,10 @@ const form = reactive<CashBook>({
   account_d1: null,
   account_d2: null,
   account_d3: null,
+
+  is_separate: false,
+  separated: null as null | number,
+
   content: '',
   trader: '',
   bank_account: null,
@@ -152,239 +156,515 @@ onBeforeMount(() => {
     @submit.prevent="onSubmit"
   >
     <CModalBody class="p-4">
-      <CRow class="mb-3">
-        <CCol sm="6">
-          <CRow>
-            <CFormLabel class="col-sm-4 col-form-label">거래일자</CFormLabel>
-            <CCol sm="8">
-              <DatePicker
-                v-model="form.deal_date"
-                maxlength="10"
-                required
-                placeholder="거래일자"
-              />
-            </CCol>
-          </CRow>
-        </CCol>
-      </CRow>
+      <div>
+        <CRow class="mb-3">
+          <CCol sm="6">
+            <CRow>
+              <CFormLabel class="col-sm-4 col-form-label">거래일자</CFormLabel>
+              <CCol sm="8">
+                <DatePicker
+                  v-model="form.deal_date"
+                  maxlength="10"
+                  required
+                  placeholder="거래일자"
+                />
+              </CCol>
+            </CRow>
+          </CCol>
+        </CRow>
 
-      <CRow class="mb-3">
-        <CCol sm="6">
-          <CRow>
-            <CFormLabel class="col-sm-4 col-form-label">구분</CFormLabel>
-            <CCol sm="8">
-              <CFormSelect
-                v-model.number="form.sort"
-                required
-                :disabled="cash && !!cash.sort"
-                @change="sort_change"
-              >
-                <option value="">---------</option>
-                <option value="1">입금</option>
-                <option value="2">출금</option>
-                <option value="3">대체</option>
-              </CFormSelect>
-            </CCol>
-          </CRow>
-        </CCol>
-        <CCol sm="6">
-          <CRow>
-            <CFormLabel class="col-sm-4 col-form-label">
-              계정[대분류]
-            </CFormLabel>
-            <CCol sm="8">
-              <CFormSelect
-                v-model.number="form.account_d1"
-                required
-                :disabled="!form.sort"
-                @change="d1_change"
-              >
-                <option value="">---------</option>
-                <option v-for="d1 in formAccD1List" :key="d1.pk" :value="d1.pk">
-                  {{ d1.name }}
-                </option>
-              </CFormSelect>
-            </CCol>
-          </CRow>
-        </CCol>
-      </CRow>
+        <CRow class="mb-3">
+          <CCol sm="6">
+            <CRow>
+              <CFormLabel class="col-sm-4 col-form-label">구분</CFormLabel>
+              <CCol sm="8">
+                <CFormSelect
+                  v-model.number="form.sort"
+                  required
+                  :disabled="cash && !!cash.sort"
+                  @change="sort_change"
+                >
+                  <option value="">---------</option>
+                  <option value="1">입금</option>
+                  <option value="2">출금</option>
+                  <option value="3">대체</option>
+                </CFormSelect>
+              </CCol>
+            </CRow>
+          </CCol>
+          <CCol sm="6">
+            <CRow>
+              <CFormLabel class="col-sm-4 col-form-label">
+                계정[대분류]
+              </CFormLabel>
+              <CCol sm="8">
+                <CFormSelect
+                  v-model.number="form.account_d1"
+                  required
+                  :disabled="!form.sort"
+                  @change="d1_change"
+                >
+                  <option value="">---------</option>
+                  <option
+                    v-for="d1 in formAccD1List"
+                    :key="d1.pk"
+                    :value="d1.pk"
+                  >
+                    {{ d1.name }}
+                  </option>
+                </CFormSelect>
+              </CCol>
+            </CRow>
+          </CCol>
+        </CRow>
 
-      <CRow class="mb-3">
-        <CCol sm="6">
-          <CRow>
-            <CFormLabel class="col-sm-4 col-form-label">
-              계정[중분류]
-            </CFormLabel>
-            <CCol sm="8">
-              <CFormSelect
-                v-model.number="form.account_d2"
-                required
-                :disabled="!form.account_d1"
-                @change="d2_change"
-              >
-                <option value="">---------</option>
-                <option v-for="d2 in formAccD2List" :key="d2.pk" :value="d2.pk">
-                  {{ d2.name }}
-                </option>
-              </CFormSelect>
-            </CCol>
-          </CRow>
-        </CCol>
-        <CCol sm="6">
-          <CRow>
-            <CFormLabel class="col-sm-4 col-form-label">
-              계정[소분류]
-            </CFormLabel>
-            <CCol sm="8">
-              <CFormSelect
-                v-model.number="form.account_d3"
-                required
-                :disabled="!form.account_d2"
-              >
-                <option value="">---------</option>
-                <option v-for="d3 in formAccD3List" :key="d3.pk" :value="d3.pk">
-                  {{ d3.name }}
-                </option>
-              </CFormSelect>
-            </CCol>
-          </CRow>
-        </CCol>
-      </CRow>
+        <CRow class="mb-3">
+          <CCol sm="6">
+            <CRow>
+              <CFormLabel class="col-sm-4 col-form-label">
+                계정[중분류]
+              </CFormLabel>
+              <CCol sm="8">
+                <CFormSelect
+                  v-model.number="form.account_d2"
+                  required
+                  :disabled="!form.account_d1"
+                  @change="d2_change"
+                >
+                  <option value="">---------</option>
+                  <option
+                    v-for="d2 in formAccD2List"
+                    :key="d2.pk"
+                    :value="d2.pk"
+                  >
+                    {{ d2.name }}
+                  </option>
+                </CFormSelect>
+              </CCol>
+            </CRow>
+          </CCol>
+          <CCol sm="6">
+            <CRow>
+              <CFormLabel class="col-sm-4 col-form-label">
+                계정[소분류]
+              </CFormLabel>
+              <CCol sm="8">
+                <CFormSelect
+                  v-model.number="form.account_d3"
+                  required
+                  :disabled="!form.account_d2"
+                >
+                  <option value="">---------</option>
+                  <option
+                    v-for="d3 in formAccD3List"
+                    :key="d3.pk"
+                    :value="d3.pk"
+                  >
+                    {{ d3.name }}
+                  </option>
+                </CFormSelect>
+              </CCol>
+            </CRow>
+          </CCol>
+        </CRow>
 
-      <CRow class="mb-3">
-        <CCol sm="6">
-          <CRow>
-            <CFormLabel class="col-sm-4 col-form-label">적요</CFormLabel>
-            <CCol sm="8">
-              <CFormInput
-                v-model="form.content"
-                maxlength="50"
-                placeholder="거래 내용"
-                required
-                :disabled="!form.sort"
-              />
-            </CCol>
-          </CRow>
-        </CCol>
-        <CCol sm="6">
-          <CRow>
-            <CFormLabel class="col-sm-4 col-form-label">거래처</CFormLabel>
-            <CCol sm="8">
-              <CFormInput
-                v-model="form.trader"
-                maxlength="20"
-                placeholder="거래처"
-                :disabled="!form.sort"
-              />
-            </CCol>
-          </CRow>
-        </CCol>
-      </CRow>
+        <CRow class="mb-3">
+          <CCol sm="6">
+            <CRow>
+              <CFormLabel class="col-sm-4 col-form-label">적요</CFormLabel>
+              <CCol sm="8">
+                <CFormInput
+                  v-model="form.content"
+                  maxlength="50"
+                  placeholder="거래 내용"
+                  required
+                  :disabled="!form.sort"
+                />
+              </CCol>
+            </CRow>
+          </CCol>
+          <CCol sm="6">
+            <CRow>
+              <CFormLabel class="col-sm-4 col-form-label">거래처</CFormLabel>
+              <CCol sm="8">
+                <CFormInput
+                  v-model="form.trader"
+                  maxlength="20"
+                  placeholder="거래처"
+                  :disabled="!form.sort"
+                />
+              </CCol>
+            </CRow>
+          </CCol>
+        </CRow>
 
-      <CRow class="mb-3">
-        <CCol sm="6">
-          <CRow>
-            <CFormLabel class="col-sm-4 col-form-label">
-              {{ !cash && form.sort === 3 ? '출금' : '거래' }}계좌
-            </CFormLabel>
-            <CCol sm="8">
-              <CFormSelect
-                v-model.number="form.bank_account"
-                required
-                :disabled="!form.sort"
-              >
-                <option value="">---------</option>
-                <option v-for="ba in comBankList" :key="ba.pk" :value="ba.pk">
-                  {{ ba.alias_name }}
-                </option>
-              </CFormSelect>
-            </CCol>
-          </CRow>
-        </CCol>
+        <CRow class="mb-3">
+          <CCol sm="6">
+            <CRow>
+              <CFormLabel class="col-sm-4 col-form-label">
+                {{ !cash && form.sort === 3 ? '출금' : '거래' }}계좌
+              </CFormLabel>
+              <CCol sm="8">
+                <CFormSelect
+                  v-model.number="form.bank_account"
+                  required
+                  :disabled="!form.sort"
+                >
+                  <option value="">---------</option>
+                  <option v-for="ba in comBankList" :key="ba.pk" :value="ba.pk">
+                    {{ ba.alias_name }}
+                  </option>
+                </CFormSelect>
+              </CCol>
+            </CRow>
+          </CCol>
 
-        <CCol sm="6">
-          <CRow v-if="form.sort === 2">
-            <CFormLabel class="col-sm-4 col-form-label">지출증빙</CFormLabel>
-            <CCol sm="8">
-              <CFormSelect v-model="form.evidence" required>
-                <option value="">---------</option>
-                <option value="0">증빙 없음</option>
-                <option value="1">세금계산서</option>
-                <option value="2">계산서(면세)</option>
-                <option value="3">카드전표/현금영수증</option>
-                <option value="4">간이영수증</option>
-                <option value="5">거래명세서</option>
-                <option value="6">입금표</option>
-                <option value="7">지출결의서</option>
-              </CFormSelect>
-            </CCol>
-          </CRow>
+          <CCol sm="6">
+            <CRow v-if="form.sort === 2">
+              <CFormLabel class="col-sm-4 col-form-label">지출증빙</CFormLabel>
+              <CCol sm="8">
+                <CFormSelect v-model="form.evidence" required>
+                  <option value="">---------</option>
+                  <option value="0">증빙 없음</option>
+                  <option value="1">세금계산서</option>
+                  <option value="2">계산서(면세)</option>
+                  <option value="3">카드전표/현금영수증</option>
+                  <option value="4">간이영수증</option>
+                  <option value="5">거래명세서</option>
+                  <option value="6">입금표</option>
+                  <option value="7">지출결의서</option>
+                </CFormSelect>
+              </CCol>
+            </CRow>
 
-          <CRow v-if="!cash && form.sort === 3">
-            <CFormLabel class="col-sm-4 col-form-label">입금계좌</CFormLabel>
-            <CCol sm="8">
-              <CFormSelect
-                v-model="form.bank_account_to"
-                required
-                :disabled="form.sort !== 3"
-              >
-                <option value="">---------</option>
-                <option v-for="ba in comBankList" :key="ba.pk" :value="ba.pk">
-                  {{ ba.alias_name }}
-                </option>
-              </CFormSelect>
-            </CCol>
-          </CRow>
-        </CCol>
-      </CRow>
+            <CRow v-if="!cash && form.sort === 3">
+              <CFormLabel class="col-sm-4 col-form-label">입금계좌</CFormLabel>
+              <CCol sm="8">
+                <CFormSelect
+                  v-model="form.bank_account_to"
+                  required
+                  :disabled="form.sort !== 3"
+                >
+                  <option value="">---------</option>
+                  <option v-for="ba in comBankList" :key="ba.pk" :value="ba.pk">
+                    {{ ba.alias_name }}
+                  </option>
+                </CFormSelect>
+              </CCol>
+            </CRow>
+          </CCol>
+        </CRow>
 
-      <CRow class="mb-3">
-        <CCol sm="6">
-          <CRow>
-            <CFormLabel class="col-sm-4 col-form-label">출금액</CFormLabel>
-            <CCol sm="8">
-              <CFormInput
-                v-model.number="form.outlay"
-                type="number"
-                min="0"
-                placeholder="출금 금액"
-                :required="form.sort === 2"
-                :disabled="form.sort === 1 || !form.sort"
-              />
-            </CCol>
-          </CRow>
-        </CCol>
-        <CCol sm="6">
-          <CRow>
-            <CFormLabel class="col-sm-4 col-form-label">입금액</CFormLabel>
-            <CCol sm="8">
-              <CFormInput
-                v-model.number="form.income"
-                type="number"
-                min="0"
-                placeholder="입금 금액"
-                :required="form.sort === 1"
-                :disabled="form.sort === 2 || !form.sort"
-              />
-            </CCol>
-          </CRow>
-        </CCol>
-      </CRow>
+        <CRow class="mb-3">
+          <CCol sm="6">
+            <CRow>
+              <CFormLabel class="col-sm-4 col-form-label">출금액</CFormLabel>
+              <CCol sm="8">
+                <CFormInput
+                  v-model.number="form.outlay"
+                  type="number"
+                  min="0"
+                  placeholder="출금 금액"
+                  :required="form.sort === 2"
+                  :disabled="form.sort === 1 || !form.sort"
+                />
+              </CCol>
+            </CRow>
+          </CCol>
+          <CCol sm="6">
+            <CRow>
+              <CFormLabel class="col-sm-4 col-form-label">입금액</CFormLabel>
+              <CCol sm="8">
+                <CFormInput
+                  v-model.number="form.income"
+                  type="number"
+                  min="0"
+                  placeholder="입금 금액"
+                  :required="form.sort === 1"
+                  :disabled="form.sort === 2 || !form.sort"
+                />
+              </CCol>
+            </CRow>
+          </CCol>
+        </CRow>
 
-      <CRow class="mb-3">
-        <CCol sm="12">
-          <CRow>
-            <CFormLabel class="col-sm-2 col-form-label">비고</CFormLabel>
-            <CCol sm="10">
-              <CFormTextarea
-                v-model.number="form.note"
-                placeholder="특이사항"
-                :disabled="!form.sort"
-              />
-            </CCol>
-          </CRow>
-        </CCol>
-      </CRow>
+        <CRow class="mb-3">
+          <CCol sm="12">
+            <CRow>
+              <CFormLabel class="col-sm-2 col-form-label">비고</CFormLabel>
+              <CCol sm="10">
+                <CFormTextarea
+                  v-model.number="form.note"
+                  placeholder="특이사항"
+                  :disabled="!form.sort"
+                />
+              </CCol>
+            </CRow>
+          </CCol>
+        </CRow>
+
+        <CRow>
+          <CCol class="text-medium-emphasis">
+            <CFormCheck
+              id="is_separate"
+              v-model="form.is_separate"
+              label="별도 분리기록 거래 건 - 여러 계정 항목이 1회에 입·출금되어 별도 분리 기록이 필요한 거래인 경우."
+              :disabled="sepDisabled"
+            />
+          </CCol>
+        </CRow>
+      </div>
+
+      <div v-if="form.is_separate">
+        <hr v-if="cash && cash.sepItems.length > 0" />
+        <CRow v-if="cash && cash.sepItems.length > 0" class="mb-3">
+          <CCol>
+            <strong>
+              <CIcon name="cilDescription" class="mr-2" />
+              {{
+                sepSummary[0] ? `입금액 합계 : ${numFormat(sepSummary[0])}` : ''
+              }}
+              {{
+                sepSummary[1] ? `출금액 합계 : ${numFormat(sepSummary[1])}` : ''
+              }}
+            </strong>
+          </CCol>
+        </CRow>
+
+        <!--        <div v-if="cash">-->
+        <!--          <CRow-->
+        <!--            v-for="(sep, i) in cash.sepItems"-->
+        <!--            :key="sep.pk"-->
+        <!--            class="mb-1"-->
+        <!--            :class="-->
+        <!--              sep.pk === sepItem.pk-->
+        <!--                ? 'text-success text-decoration-underline'-->
+        <!--                : ''-->
+        <!--            "-->
+        <!--          >-->
+        <!--            <CCol sm="1">{{ i + 1 }}</CCol>-->
+        <!--            <CCol sm="2">{{ sep.trader }}</CCol>-->
+        <!--            <CCol sm="5">{{ cutString(sep.content, 20) }}</CCol>-->
+        <!--            <CCol sm="2" class="text-right">-->
+        <!--              {{ sep.income ? numFormat(sep.income) : numFormat(sep.outlay) }}-->
+        <!--            </CCol>-->
+        <!--            <CCol sm="2" class="text-right">-->
+        <!--              <CButton-->
+        <!--                type="button"-->
+        <!--                color="success"-->
+        <!--                size="sm"-->
+        <!--                @click="sepUpdate(sep)"-->
+        <!--              >-->
+        <!--                수정-->
+        <!--              </CButton>-->
+        <!--            </CCol>-->
+        <!--          </CRow>-->
+        <!--        </div>-->
+
+        <hr />
+        <!--        <CRow class="mb-3">-->
+        <!--          <CCol sm="1"></CCol>-->
+        <!--          <CCol sm="11">-->
+        <!--            <CRow>-->
+        <!--              <CCol sm="6">-->
+        <!--                <CRow>-->
+        <!--                  <CFormLabel class="col-sm-4 col-form-label">-->
+        <!--                    계정[상위분류]-->
+        <!--                  </CFormLabel>-->
+        <!--                  <CCol sm="8">-->
+        <!--                    <CFormSelect-->
+        <!--                      v-model.number="sepItem.project_account_d1"-->
+        <!--                      required-->
+        <!--                      @change="sepD1_change"-->
+        <!--                    >-->
+        <!--                      <option value="">-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;</option>-->
+        <!--                      <option-->
+        <!--                        v-for="d1 in formAccD1List"-->
+        <!--                        :key="d1.pk"-->
+        <!--                        :value="d1.pk"-->
+        <!--                      >-->
+        <!--                        {{ d1.name }}-->
+        <!--                      </option>-->
+        <!--                    </CFormSelect>-->
+        <!--                  </CCol>-->
+        <!--                </CRow>-->
+        <!--              </CCol>-->
+        <!--              <CCol sm="6">-->
+        <!--                <CRow>-->
+        <!--                  <CFormLabel class="col-sm-4 col-form-label">-->
+        <!--                    계정[하위분류]-->
+        <!--                  </CFormLabel>-->
+        <!--                  <CCol sm="8">-->
+        <!--                    <CFormSelect-->
+        <!--                      v-model.number="sepItem.project_account_d2"-->
+        <!--                      :disabled="!sepItem.project_account_d1"-->
+        <!--                      required-->
+        <!--                    >-->
+        <!--                      <option value="">-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;</option>-->
+        <!--                      <option-->
+        <!--                        v-for="d2 in formAccD2List"-->
+        <!--                        :key="d2.pk"-->
+        <!--                        :value="d2.pk"-->
+        <!--                      >-->
+        <!--                        {{ d2.name }}-->
+        <!--                      </option>-->
+        <!--                    </CFormSelect>-->
+        <!--                  </CCol>-->
+        <!--                </CRow>-->
+        <!--              </CCol>-->
+        <!--            </CRow>-->
+        <!--          </CCol>-->
+        <!--        </CRow>-->
+        <!--        <CRow class="mb-3">-->
+        <!--          <CCol sm="1"></CCol>-->
+        <!--          <CCol sm="11">-->
+        <!--            <CRow>-->
+        <!--              <CCol sm="6">-->
+        <!--                <CRow>-->
+        <!--                  <CFormLabel class="col-sm-4 col-form-label">-->
+        <!--                    적요-->
+        <!--                  </CFormLabel>-->
+        <!--                  <CCol sm="8">-->
+        <!--                    <CFormInput-->
+        <!--                      v-model="sepItem.content"-->
+        <!--                      maxlength="50"-->
+        <!--                      placeholder="거래 내용"-->
+        <!--                    />-->
+        <!--                  </CCol>-->
+        <!--                </CRow>-->
+        <!--              </CCol>-->
+        <!--              <CCol sm="6">-->
+        <!--                <CRow>-->
+        <!--                  <CFormLabel class="col-sm-4 col-form-label">-->
+        <!--                    거래처-->
+        <!--                  </CFormLabel>-->
+        <!--                  <CCol sm="8">-->
+        <!--                    <CFormInput-->
+        <!--                      v-model="sepItem.trader"-->
+        <!--                      v-c-tooltip="{-->
+        <!--                        content:-->
+        <!--                          '분양대금(분담금) 수납 건인 경우 반드시 해당 계좌에 기재된 입금자를 기재',-->
+        <!--                        placement: 'top',-->
+        <!--                      }"-->
+        <!--                      maxlength="20"-->
+        <!--                      placeholder="거래처 (수납자)"-->
+        <!--                      required-->
+        <!--                    />-->
+        <!--                  </CCol>-->
+        <!--                </CRow>-->
+        <!--              </CCol>-->
+        <!--            </CRow>-->
+        <!--          </CCol>-->
+        <!--        </CRow>-->
+
+        <!--        <CRow class="mb-3">-->
+        <!--          <CCol sm="1"></CCol>-->
+        <!--          <CCol sm="11">-->
+        <!--            <CRow>-->
+        <!--              <CCol sm="6">-->
+        <!--                <CRow>-->
+        <!--                  <CFormLabel class="col-sm-4 col-form-label">-->
+        <!--                    거래계좌-->
+        <!--                  </CFormLabel>-->
+        <!--                  <CCol sm="8">-->
+        <!--                    <CFormSelect-->
+        <!--                      v-model.number="sepItem.bank_account"-->
+        <!--                      readonly-->
+        <!--                      required-->
+        <!--                      :disabled="sepItem.pk"-->
+        <!--                    >-->
+        <!--                      <option value="">-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;</option>-->
+        <!--                      <option-->
+        <!--                        v-for="ba in proBankAccountList"-->
+        <!--                        :key="ba.pk"-->
+        <!--                        :value="ba.pk"-->
+        <!--                      >-->
+        <!--                        {{ ba.alias_name }}-->
+        <!--                      </option>-->
+        <!--                    </CFormSelect>-->
+        <!--                  </CCol>-->
+        <!--                </CRow>-->
+        <!--              </CCol>-->
+
+        <!--              <CCol sm="6">-->
+        <!--                <CRow v-if="form.sort === 2">-->
+        <!--                  <CFormLabel class="col-sm-4 col-form-label">-->
+        <!--                    지출증빙-->
+        <!--                  </CFormLabel>-->
+        <!--                  <CCol sm="8">-->
+        <!--                    <CFormSelect v-model="sepItem.evidence" required>-->
+        <!--                      <option value="">-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;</option>-->
+        <!--                      <option value="0">증빙 없음</option>-->
+        <!--                      <option value="1">세금계산서</option>-->
+        <!--                      <option value="2">계산서(면세)</option>-->
+        <!--                      <option value="3">카드전표/현금영수증</option>-->
+        <!--                      <option value="4">간이영수증</option>-->
+        <!--                      <option value="5">거래명세서</option>-->
+        <!--                      <option value="6">입금표</option>-->
+        <!--                      <option value="7">지출결의서</option>-->
+        <!--                    </CFormSelect>-->
+        <!--                  </CCol>-->
+        <!--                </CRow>-->
+        <!--              </CCol>-->
+        <!--            </CRow>-->
+        <!--          </CCol>-->
+        <!--        </CRow>-->
+
+        <!--        <CRow class="mb-3">-->
+        <!--          <CCol sm="1"></CCol>-->
+        <!--          <CCol sm="11">-->
+        <!--            <CRow>-->
+        <!--              <CCol sm="6">-->
+        <!--                <CRow>-->
+        <!--                  <CFormLabel class="col-sm-4 col-form-label">-->
+        <!--                    출금액-->
+        <!--                  </CFormLabel>-->
+        <!--                  <CCol sm="8">-->
+        <!--                    <CFormInput-->
+        <!--                      v-model.number="sepItem.outlay"-->
+        <!--                      type="number"-->
+        <!--                      min="0"-->
+        <!--                      placeholder="출금 금액"-->
+        <!--                      :required="form.sort === 2"-->
+        <!--                      :disabled="form.sort !== 2"-->
+        <!--                    />-->
+        <!--                  </CCol>-->
+        <!--                </CRow>-->
+        <!--              </CCol>-->
+
+        <!--              <CCol sm="6">-->
+        <!--                <CRow>-->
+        <!--                  <CFormLabel class="col-sm-4 col-form-label">-->
+        <!--                    입금액-->
+        <!--                  </CFormLabel>-->
+        <!--                  <CCol sm="8">-->
+        <!--                    <CFormInput-->
+        <!--                      v-model.number="sepItem.income"-->
+        <!--                      type="number"-->
+        <!--                      min="0"-->
+        <!--                      placeholder="입금 금액"-->
+        <!--                      :required="form.sort === 1"-->
+        <!--                      :disabled="form.sort !== 1"-->
+        <!--                    />-->
+        <!--                  </CCol>-->
+        <!--                </CRow>-->
+        <!--              </CCol>-->
+        <!--            </CRow>-->
+        <!--          </CCol>-->
+        <!--        </CRow>-->
+
+        <!--        <CRow class="mb-3">-->
+        <!--          <CCol sm="1"></CCol>-->
+        <!--          <CCol sm="11">-->
+        <!--            <CRow>-->
+        <!--              <CFormLabel class="col-sm-2 col-form-label">비고</CFormLabel>-->
+        <!--              <CCol sm="10">-->
+        <!--                <CFormTextarea v-model="sepItem.note" placeholder="특이사항" />-->
+        <!--              </CCol>-->
+        <!--            </CRow>-->
+        <!--          </CCol>-->
+        <!--        </CRow>-->
+      </div>
     </CModalBody>
 
     <CModalFooter>

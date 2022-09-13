@@ -59,6 +59,8 @@ export interface CashBook {
   account_d2: number | null
   account_d3: number | null
   account_d3_desc?: string
+  is_separate: boolean
+  separated: null | number
   content: string
   trader: string
   bank_account: number | null
