@@ -94,6 +94,16 @@ class ProjectCashBookSerializer(serializers.ModelSerializer):
                   'contract', 'installment_order', 'refund_contractor', 'content', 'trader',
                   'bank_account', 'income', 'outlay', 'evidence', 'evidence_desc', 'note', 'deal_date')
 
+    @transaction.atomic
+    def create(self, validated_data):
+        prcashbook = ProjectCashBook.objects.create(**validated_data)
+        prcashbook.save()
+
+    @transaction.atomic
+    def update(self, instance, validated_data):
+        instance.__dict__.update(**validated_data)
+        instance.save()
+
 
 class SimpleOrderGroupSerializer(serializers.ModelSerializer):
     class Meta:
