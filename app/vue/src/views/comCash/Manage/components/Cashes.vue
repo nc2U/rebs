@@ -34,17 +34,12 @@ const allowedPeriod = computed(
   () => accountStore.superAuth || diffDate(props.cash.deal_date) <= 30,
 )
 
-const showDetail = () => {
-  updateFormModal.value.callModal()
-}
+const showDetail = () => updateFormModal.value.callModal()
 
 const multiSubmit = (payload: {
   formData: CashBook
   sepData: CashBook | null
-}) => {
-  emit('multi-submit', payload)
-  updateFormModal.value.visible = false
-}
+}) => emit('multi-submit', payload)
 
 const deleteConfirm = () => {
   if (pageManageAuth.value)

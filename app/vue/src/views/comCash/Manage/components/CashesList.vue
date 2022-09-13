@@ -19,7 +19,12 @@ const listAccD2List = computed(() => useComCashStore.listAccD2List)
 const listAccD3List = computed(() => useComCashStore.listAccD3List)
 
 const pageSelect = (page: number) => emit('page-select', page)
-const multiSubmit = (payload: CashBook) => emit('multi-submit', payload)
+
+const multiSubmit = (payload: {
+  formData: CashBook
+  sepData: CashBook | null
+}) => emit('multi-submit', payload)
+
 const onDelete = (pk: number) => emit('on-delete', pk)
 </script>
 

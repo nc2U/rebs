@@ -8,7 +8,8 @@ import CashForm from '@/views/comCash/Manage/components/CashForm.vue'
 const emit = defineEmits(['multi-submit'])
 
 const createFormModal = ref()
-const createAlertModal = ref()
+
+const createConfirm = () => createFormModal.value.callModal()
 
 const multiSubmit = (payload: {
   formData: CashBook
@@ -30,6 +31,4 @@ const multiSubmit = (payload: {
       <CashForm @multi-submit="multiSubmit" @close="createFormModal.close()" />
     </template>
   </FormModal>
-
-  <AlertModal ref="createAlertModal" />
 </template>
