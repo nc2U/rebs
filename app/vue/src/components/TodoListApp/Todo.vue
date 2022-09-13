@@ -8,7 +8,7 @@
         @change="toggleTodo(todo)"
       />
       <label @dblclick="editing = true" v-text="todo.title" />
-      <button class="destroy" @click="delTodo(todo)" />
+      <button class="destroy" @click="delTodo(todo.pk)" />
     </div>
     <input
       v-show="editing"
@@ -26,7 +26,7 @@
 import { nextTick, ref, watch } from 'vue'
 import { Todo } from '@/store/types/accounts'
 
-const props = defineProps({ todo: { type: Object, default: null } })
+const props = defineProps({ todo: { type: Object, required: true } })
 
 const emit = defineEmits(['delTodo', 'editTodo', 'toggleTodo'])
 
