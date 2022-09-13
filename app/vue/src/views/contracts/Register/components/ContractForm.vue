@@ -612,7 +612,7 @@ defineExpose({ formReset })
             <CFormInput
               v-model="form.email"
               type="email"
-              maxlength="50"
+              maxlength="30"
               placeholder="이메일 주소를 입력하세요."
               :disabled="noStatus"
             />

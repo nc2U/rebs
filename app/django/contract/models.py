@@ -88,7 +88,7 @@ class ContractorContact(models.Model):
     cell_phone = models.CharField('휴대전화', max_length=13)
     home_phone = models.CharField('집 전화', max_length=13, blank=True)
     other_phone = models.CharField('기타 전화', max_length=13, blank=True)
-    email = models.EmailField('이메일', blank=True)
+    email = models.EmailField('이메일', max_length=30, blank=True)
     created_at = models.DateTimeField('등록일', auto_now_add=True)
     updated_at = models.DateTimeField('수정일', auto_now=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
