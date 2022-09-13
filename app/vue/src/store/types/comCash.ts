@@ -63,8 +63,8 @@ export interface CashBook {
   trader: string
   bank_account: number | null
   bank_account_desc?: string
-  income: number | null
-  outlay: number | null
+  income?: number | null
+  outlay?: number | null
   evidence: string
   evidence_desc?: string
   note: string

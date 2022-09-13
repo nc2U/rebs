@@ -5,12 +5,7 @@ import { CashBook } from '@/store/types/comCash'
 import { dateFormat } from '@/utils/baseMixins'
 import DatePicker from '@/components/DatePicker/index.vue'
 
-const props = defineProps({
-  cash: {
-    type: Object,
-    required: true,
-  },
-})
+const props = defineProps({ cash: { type: Object, required: true } })
 const emit = defineEmits(['on-submit', 'on-delete', 'close'])
 
 const validated = ref(false)
@@ -141,7 +136,7 @@ onBeforeMount(() => {
     form.bank_account = props.cash.bank_account
     form.income = props.cash.income
     form.outlay = props.cash.outlay
-    form.evidence = props.cash.evidence // ? cash.evidence : '0'
+    form.evidence = props.cash.evidence
     form.note = props.cash.note
     form.deal_date = dateFormat(new Date(props.cash.deal_date))
   }
@@ -181,7 +176,7 @@ onBeforeMount(() => {
               <CFormSelect
                 v-model.number="form.sort"
                 required
-                :disabled="cash && cash.sort !== null"
+                :disabled="cash && !!cash.sort"
                 @change="sort_change"
               >
                 <option value="">---------</option>
@@ -201,7 +196,7 @@ onBeforeMount(() => {
               <CFormSelect
                 v-model.number="form.account_d1"
                 required
-                :disabled="form.sort === null"
+                :disabled="!form.sort"
                 @change="d1_change"
               >
                 <option value="">---------</option>
@@ -224,7 +219,7 @@ onBeforeMount(() => {
               <CFormSelect
                 v-model.number="form.account_d2"
                 required
-                :disabled="form.account_d1 === null"
+                :disabled="!form.account_d1"
                 @change="d2_change"
               >
                 <option value="">---------</option>
@@ -244,7 +239,7 @@ onBeforeMount(() => {
               <CFormSelect
                 v-model.number="form.account_d3"
                 required
-                :disabled="form.account_d2 === null"
+                :disabled="!form.account_d2"
               >
                 <option value="">---------</option>
                 <option v-for="d3 in formAccD3List" :key="d3.pk" :value="d3.pk">
@@ -266,7 +261,7 @@ onBeforeMount(() => {
                 maxlength="50"
                 placeholder="거래 내용"
                 required
-                :disabled="form.sort === null"
+                :disabled="!form.sort"
               />
             </CCol>
           </CRow>
@@ -279,7 +274,7 @@ onBeforeMount(() => {
                 v-model="form.trader"
                 maxlength="20"
                 placeholder="거래처"
-                :disabled="form.sort === null"
+                :disabled="!form.sort"
               />
             </CCol>
           </CRow>
@@ -296,7 +291,7 @@ onBeforeMount(() => {
               <CFormSelect
                 v-model.number="form.bank_account"
                 required
-                :disabled="form.sort === null"
+                :disabled="!form.sort"
               >
                 <option value="">---------</option>
                 <option v-for="ba in comBankList" :key="ba.pk" :value="ba.pk">
@@ -354,7 +349,7 @@ onBeforeMount(() => {
                 min="0"
                 placeholder="출금 금액"
                 :required="form.sort === 2"
-                :disabled="form.sort === 1 || form.sort === null"
+                :disabled="form.sort === 1 || !form.sort"
               />
             </CCol>
           </CRow>
@@ -369,7 +364,7 @@ onBeforeMount(() => {
                 min="0"
                 placeholder="입금 금액"
                 :required="form.sort === 1"
-                :disabled="form.sort === 2 || form.sort === null"
+                :disabled="form.sort === 2 || !form.sort"
               />
             </CCol>
           </CRow>
@@ -384,7 +379,7 @@ onBeforeMount(() => {
               <CFormTextarea
                 v-model.number="form.note"
                 placeholder="특이사항"
-                :disabled="form.sort === null"
+                :disabled="!form.sort"
               />
             </CCol>
           </CRow>
