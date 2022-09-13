@@ -1,3 +1,4 @@
+from django.db import transaction
 from rest_framework import serializers
 
 from cash.models import (BankCode, CompanyBankAccount, ProjectBankAccount,
@@ -44,6 +45,16 @@ class CashBookSerializer(serializers.ModelSerializer):
             'pk', 'company', 'sort', 'account_d1', 'account_d2', 'account_d3', 'is_separate',
             'separated', 'content', 'trader', 'bank_account', 'income', 'outlay', 'evidence',
             'evidence_desc', 'note', 'deal_date', 'user', 'created_at', 'updated_at')
+
+    @transaction.atomic
+    def create(self, validated_data):
+        cashbook = CashBook.objects.create(**validated_data)
+        cashbook.save()
+
+    @transaction.atomic
+    def update(self, instance, validated_data):
+        instance.__dict__.update(**validated_data)
+        instance.save()
 
 
 class ProjectBankAccountSerializer(serializers.ModelSerializer):
