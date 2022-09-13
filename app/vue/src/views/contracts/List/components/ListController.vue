@@ -46,14 +46,11 @@ const buildingList = computed(() => projectDataStore.buildingList)
 const simpleTypes = computed(() => projectDataStore.simpleTypes)
 
 watch(form, val => {
-  if (val.from_date) {
-    form.from_date = dateFormat(val.from_date)
-    listFiltering(1)
-  } else listFiltering(1)
-  if (val.to_date) {
-    form.to_date = dateFormat(val.to_date)
-    listFiltering(1)
-  } else listFiltering(1)
+  if (val.from_date) form.from_date = dateFormat(val.from_date)
+  else form.from_date = ''
+  if (val.to_date) form.to_date = dateFormat(val.to_date)
+  else form.to_date = ''
+  listFiltering(1)
 })
 
 const listFiltering = (page = 1) => {
