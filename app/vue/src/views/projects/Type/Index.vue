@@ -16,13 +16,13 @@ const project = computed(() => projectStore.project?.pk || initProjId.value)
 
 const projectDataStore = useProjectData()
 const fetchTypeList = (projId: number) => projectDataStore.fetchTypeList(projId)
-const createType = (payload: any) => projectDataStore.createType(payload)
-const updateType = (payload: any) => projectDataStore.updateType(payload)
+const createType = (payload: UnitType) => projectDataStore.createType(payload)
+const updateType = (payload: UnitType) => projectDataStore.updateType(payload)
 const deleteType = (pk: number, project: number) =>
   projectDataStore.deleteType(pk, project)
 
-const onSelectAdd = (target: any) => {
-  if (target !== '') fetchTypeList(target)
+const onSelectAdd = (target: number) => {
+  if (!!target) fetchTypeList(target)
   else projectDataStore.unitTypeList = []
 }
 const onSubmit = (payload: UnitType) =>

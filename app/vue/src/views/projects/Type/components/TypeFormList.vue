@@ -1,20 +1,17 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { useProjectData } from '@/store/pinia/project_data'
-import Type from '@/views/projects/Type/components/Type.vue'
+import { UnitType } from '@/store/types/project'
 import { headerSecondary } from '@/utils/cssMixins'
+import Type from '@/views/projects/Type/components/Type.vue'
 
 const emit = defineEmits(['on-update', 'on-delete'])
 
 const projectDataStore = useProjectData()
 const unitTypeList = computed(() => projectDataStore.unitTypeList)
 
-const onUpdateType = (payload: any) => {
-  emit('on-update', payload)
-}
-const onDeleteType = (pk: number) => {
-  emit('on-delete', pk)
-}
+const onUpdateType = (payload: UnitType) => emit('on-update', payload)
+const onDeleteType = (pk: number) => emit('on-delete', pk)
 </script>
 
 <template>

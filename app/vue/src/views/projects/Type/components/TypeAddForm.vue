@@ -21,10 +21,10 @@ const form = reactive({
   num_unit: null,
 })
 
-const onSubmit = (event: any) => {
+const onSubmit = (event: Event) => {
   if (write_project) {
-    const el = event.currentTarget
-    if (el.checkValidity() === false) {
+    const el = event.currentTarget as HTMLFormElement
+    if (!el.checkValidity()) {
       event.preventDefault()
       event.stopPropagation()
 
@@ -37,6 +37,7 @@ const onSubmit = (event: any) => {
     resetForm()
   }
 }
+
 const modalAction = () => {
   emit('on-submit', form)
   validated.value = false
