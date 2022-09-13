@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { useProCash } from '@/store/pinia/proCash'
+import { ProjectCashBook } from '@/store/types/proCash'
+import { headerSecondary } from '@/utils/cssMixins'
 import ProCash from '@/views/proCash/Manage/components/ProCash.vue'
 import Pagination from '@/components/Pagination'
 import AlertModal from '@/components/Modals/AlertModal.vue'
-import { headerSecondary } from '@/utils/cssMixins'
-import { ProjectCashBook } from '@/store/types/proCash'
 
 const emit = defineEmits(['page-select', 'on-delete', 'multi-submit'])
 
@@ -17,8 +17,14 @@ const proCashPages = computed(() => proCashStore.proCashPages)
 const getProCashLogs = computed(() => proCashStore.getProCashLogs)
 
 const pageSelect = (page: number) => emit('page-select', page)
-const multiSubmit = (payload: ProjectCashBook) => emit('multi-submit', payload)
-const onDelete = (pk: number) => emit('on-delete', pk)
+
+const multiSubmit = (payload: {
+  formData: ProjectCashBook
+  sepData: ProjectCashBook | null
+}) => emit('multi-submit', payload)
+
+const onDelete = (payload: { project: number; pk: number }) =>
+  emit('on-delete', payload)
 </script>
 
 <template>

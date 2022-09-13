@@ -53,6 +53,7 @@ const listFiltering = (page = 1) => {
   nextTick(() => {
     const from = from_date.value ? dateFormat(from_date.value) : ''
     const to = to_date.value ? dateFormat(to_date.value) : ''
+
     emit('list-filtering', {
       ...{ page, from_date: from, to_date: to },
       ...form,

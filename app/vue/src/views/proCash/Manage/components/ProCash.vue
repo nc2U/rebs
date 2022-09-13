@@ -16,10 +16,9 @@ const emit = defineEmits(['multi-submit', 'on-delete'])
 
 const updateFormModal = ref()
 
-const sortClass = computed(() => {
-  const cls = ['', 'text-primary', 'text-danger', 'text-info']
-  return cls[props.proCash.sort]
-})
+const sortClass = computed(
+  () => ['', 'text-primary', 'text-danger', 'text-info'][props.proCash.sort],
+)
 
 const rowColor = computed(() => {
   let color = ''

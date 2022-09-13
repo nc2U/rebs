@@ -2,18 +2,12 @@
 import { computed } from 'vue'
 import { useProCash } from '@/store/pinia/proCash'
 import { ProjectCashBook } from '@/store/types/proCash'
+import { headerSecondary } from '@/utils/cssMixins'
 import ProImprest from '@/views/proCash/Imprest/components/ProImprest.vue'
 import Pagination from '@/components/Pagination'
 import AlertModal from '@/components/Modals/AlertModal.vue'
-import { headerSecondary } from '@/utils/cssMixins'
 
-const emit = defineEmits([
-  'page-select',
-  'multi-submit',
-  'on-create',
-  'on-update',
-  'on-delete',
-])
+const emit = defineEmits(['page-select', 'multi-submit', 'on-delete'])
 
 const proCashStore = useProCash()
 const allAccD1List = computed(() => proCashStore.allAccD1List)
@@ -23,10 +17,14 @@ const proImprestPages = computed(() => proCashStore.proImprestPages)
 const getProImprestLogs = computed(() => proCashStore.getProImprestLogs)
 
 const pageSelect = (page: number) => emit('page-select', page)
-// const onCreate = (payload: ProjectCashBook) => emit('on-create', payload)
-// const onUpdate = (payload: ProjectCashBook) => emit('on-update', payload)
-const multiSubmit = (payload: ProjectCashBook) => emit('multi-submit', payload)
-const onDelete = (pk: number) => emit('on-delete', pk)
+
+const multiSubmit = (payload: {
+  formData: ProjectCashBook
+  sepData: ProjectCashBook | null
+}) => emit('multi-submit', payload)
+
+const onDelete = (payload: { project: number; pk: number }) =>
+  emit('on-delete', payload)
 </script>
 
 <template>

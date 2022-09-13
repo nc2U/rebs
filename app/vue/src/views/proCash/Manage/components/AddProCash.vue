@@ -15,6 +15,7 @@ const createConfirm = () => {
   if (write_project_cash) createFormModal.value.callModal()
   else createAlertModal.value.callModal()
 }
+
 const multiSubmit = (payload: {
   formData: ProjectCashBook
   sepData: ProjectCashBook | null
