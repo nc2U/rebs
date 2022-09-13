@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { write_project_cash } from '@/utils/pageAuth'
 import { headerLight } from '@/utils/cssMixins'
 import { ProjectCashBook } from '@/store/types/proCash'
 import FormModal from '@/components/Modals/FormModal.vue'
@@ -9,12 +8,8 @@ import ProCashForm from '@/views/proCash/Manage/components/ProCashForm.vue'
 const emit = defineEmits(['multi-submit'])
 
 const createFormModal = ref()
-const createAlertModal = ref()
 
-const createConfirm = () => {
-  if (write_project_cash) createFormModal.value.callModal()
-  else createAlertModal.value.callModal()
-}
+const createConfirm = () => createFormModal.value.callModal()
 
 const multiSubmit = (payload: {
   formData: ProjectCashBook
@@ -39,6 +34,4 @@ const multiSubmit = (payload: {
       />
     </template>
   </FormModal>
-
-  <AlertModal ref="createAlertModal" />
 </template>

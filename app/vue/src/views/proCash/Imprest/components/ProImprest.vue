@@ -26,8 +26,8 @@ const rowColor = computed(() => {
     props.imprest.contract && props.imprest.project_account_d2 <= '2'
       ? 'info'
       : color
-  color = props.imprest.is_separate ? 'dark' : color
-  color = props.imprest.separated ? 'primary' : color
+  color = props.imprest.is_separate ? 'primary' : color
+  color = props.imprest.separated ? 'secondary' : color
   return color
 })
 
