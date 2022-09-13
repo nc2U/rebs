@@ -11,6 +11,8 @@ import AddProCash from '@/views/proCash/Manage/components/AddProCash.vue'
 import TableTitleRow from '@/components/TableTitleRow.vue'
 import ProCashList from '@/views/proCash/Manage/components/ProCashList.vue'
 
+const listControl = ref()
+
 const dataFilter = ref<CashBookFilter>({
   page: 1,
   from_date: '',
@@ -23,7 +25,6 @@ const dataFilter = ref<CashBookFilter>({
 })
 
 const projectStore = useProject()
-
 const initProjId = computed(() => projectStore.initProjId)
 const project = computed(() => projectStore.project?.pk || initProjId.value)
 
@@ -31,10 +32,12 @@ const proCashStore = useProCash()
 const fetchProAccSortList = () => proCashStore.fetchProAccSortList()
 const fetchProAllAccD1List = () => proCashStore.fetchProAllAccD1List()
 const fetchProAllAccD2List = () => proCashStore.fetchProAllAccD2List()
+
 const fetchProFormAccD1List = (sort?: number | null) =>
   proCashStore.fetchProFormAccD1List(sort)
 const fetchProFormAccD2List = (d1?: number | null, sort?: number | null) =>
   proCashStore.fetchProFormAccD2List(d1, sort)
+
 const fetchProBankAccList = (projId: number) =>
   proCashStore.fetchProBankAccList(projId)
 const fetchProjectCashList = (payload: { project: number }) =>
@@ -72,8 +75,6 @@ const onSelectAdd = (target: number) => {
     proCashStore.proCashesCount = 0
   }
 }
-
-const listControl = ref()
 
 const pageSelect = (page: number) => {
   dataFilter.value.page = page

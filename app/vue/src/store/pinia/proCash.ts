@@ -398,7 +398,7 @@ export const useProCash = defineStore('proCash', () => {
   )
   const proImprestCount = ref<number>(0)
 
-  const fetchProjectImprestList = (payload: any) => {
+  const fetchProjectImprestList = (payload: CashBookFilter) => {
     const { project } = payload
     let url = `/project-imprest/?project=${project}`
     if (payload.from_date) url += `&from_deal_date=${payload.from_date}`

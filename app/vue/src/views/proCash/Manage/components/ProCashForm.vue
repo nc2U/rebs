@@ -617,7 +617,7 @@ onBeforeMount(() => {
                   <CCol sm="8">
                     <CFormSelect
                       v-model.number="sepItem.project_account_d2"
-                      :disabled="sepItem.project_account_d1 === ''"
+                      :disabled="!sepItem.project_account_d1"
                       required
                     >
                       <option value="">---------</option>

@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import { computed, ref, onBeforeMount } from 'vue'
-import { useProCash } from '@/store/pinia/proCash'
-import { useProject } from '@/store/pinia/project'
 import { pageTitle, navMenu } from '@/views/proCash/_menu/headermixin'
+import { useProject } from '@/store/pinia/project'
+import { CashBookFilter, useProCash } from '@/store/pinia/proCash'
+import { ProjectCashBook } from '@/store/types/proCash'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from '@/views/proCash/Imprest/components/ListController.vue'
@@ -24,30 +25,35 @@ const dataFilter = ref({
 })
 
 const projectStore = useProject()
-const project = computed(() => projectStore.project?.pk)
 const initProjId = computed(() => projectStore.initProjId)
+const project = computed(() => projectStore.project?.pk || initProjId.value)
 
 const proCashStore = useProCash()
 const fetchProAccSortList = () => proCashStore.fetchProAccSortList
 const fetchProAllAccD1List = () => proCashStore.fetchProAllAccD1List
 const fetchProAllAccD2List = () => proCashStore.fetchProAllAccD2List
 
-const fetchProFormAccD1List = (sort?: string) =>
+const fetchProFormAccD1List = (sort?: number | null) =>
   proCashStore.fetchProFormAccD1List(sort)
-const fetchProFormAccD2List = (d1?: string, sort?: string) =>
+const fetchProFormAccD2List = (d1?: number | null, sort?: number | null) =>
   proCashStore.fetchProFormAccD2List(d1, sort)
 
 const fetchProBankAccList = (projId: number) =>
   proCashStore.fetchProBankAccList(projId)
-const fetchProjectImprestList = (payload: { project: number } & any) =>
+const fetchProjectImprestList = (payload: { project: number }) =>
   proCashStore.fetchProjectImprestList(payload)
 
-const createPrCashBook = (payload: any) =>
-  proCashStore.createPrCashBook(payload)
-const updatePrCashBook = (payload: any) =>
-  proCashStore.updatePrCashBook(payload)
-const deletePrCashBook = (payload: any) =>
-  proCashStore.deletePrCashBook(payload)
+const createPrCashBook = (
+  payload: ProjectCashBook & { filters: CashBookFilter },
+) => proCashStore.createPrCashBook(payload)
+const updatePrCashBook = (
+  payload: ProjectCashBook & { filters: CashBookFilter },
+) => proCashStore.updatePrCashBook(payload)
+const deletePrCashBook = (
+  payload: { pk: number; project: number } & {
+    filters?: CashBookFilter
+  },
+) => proCashStore.deletePrCashBook(payload)
 
 onBeforeMount(() => {
   fetchProAccSortList()
@@ -59,7 +65,7 @@ onBeforeMount(() => {
   fetchProjectImprestList({ project: initProjId.value })
 })
 
-const onSelectAdd = (target: any) => {
+const onSelectAdd = (target: number) => {
   if (!!target) {
     fetchProBankAccList(target)
     fetchProjectImprestList({ project: target })
@@ -69,38 +75,46 @@ const onSelectAdd = (target: any) => {
     proCashStore.proImprestCount = 0
   }
 }
+
 const pageSelect = (page: number) => {
   dataFilter.value.page = page
   listControl.value.listFiltering(page)
 }
 
-const listFiltering = (payload: any) => {
+const listFiltering = (payload: CashBookFilter) => {
   dataFilter.value = payload
-  const sort = payload.sort ? payload.sort : ''
-  const d1 = payload.pro_acc_d1 ? payload.pro_acc_d1 : ''
+  const sort = payload.sort ? payload.sort : null
+  const d1 = payload.pro_acc_d1 ? payload.pro_acc_d1 : null
   fetchProFormAccD1List(sort)
   fetchProFormAccD2List(sort, d1)
   fetchProjectImprestList({ ...{ project: project.value }, ...payload })
 }
 
-const onCreate = (payload: any) => {
+const onCreate = (
+  payload: ProjectCashBook & { filters: CashBookFilter } & {
+    bank_account_to?: number
+  },
+) => {
   payload.project = project.value
-  if (payload.sort === '3' && payload.bank_account_to) {
+  if (payload.sort === 3 && payload.bank_account_to) {
     const { bank_account_to, income, ...inputData } = payload
+
     createPrCashBook(inputData)
-    delete inputData.bank_account
+
     delete inputData.outlay
-    createPrCashBook({
-      ...{ bank_account: bank_account_to, income },
-      ...inputData,
-    })
+    inputData.bank_account = bank_account_to
+
+    createPrCashBook({ ...{ income }, ...inputData })
   } else createPrCashBook(payload)
 }
 
-const onUpdate = (payload: any) =>
+const onUpdate = (payload: ProjectCashBook & { filters: CashBookFilter }) =>
   updatePrCashBook({ ...{ filters: dataFilter.value }, ...payload })
 
-const multiSubmit = (payload: any) => {
+const multiSubmit = (payload: {
+  formData: ProjectCashBook
+  sepData: ProjectCashBook | null
+}) => {
   const { formData, sepData } = payload
   if (formData.sort) {
     if (formData.pk) onUpdate(formData)
@@ -112,7 +126,7 @@ const multiSubmit = (payload: any) => {
   }
 }
 
-const onDelete = (payload: any) =>
+const onDelete = (payload: { pk: number; project: number }) =>
   deletePrCashBook({ ...{ filters: dataFilter.value }, ...payload })
 </script>
 

@@ -2,7 +2,7 @@
 import { ref, reactive, computed, nextTick, watch, onBeforeMount } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { useProCash } from '@/store/pinia/proCash'
-import { dateFormat, diffDate } from '@/utils/baseMixins'
+import { dateFormat, diffDate, numFormat, cutString } from '@/utils/baseMixins'
 import { write_project_cash } from '@/utils/pageAuth'
 import { ProjectCashBook } from '@/store/types/proCash'
 import DatePicker from '@/components/DatePicker/index.vue'
@@ -22,43 +22,49 @@ const emit = defineEmits(['multi-submit', 'on-delete', 'close'])
 const delModal = ref()
 const alertModal = ref()
 
-const sepPk = ref<number | null>(null)
-let sepItem = reactive({
-  project: '',
-  sort: '',
-  project_account_d1: null as number | null,
-  project_account_d2: null as number | null,
+// const sepPk = ref<number | null>(null)
+let sepItem = reactive<ProjectCashBook>({
+  pk: null,
+  project: null,
+  sort: null,
+  project_account_d1: null,
+  project_account_d2: null,
+
+  is_separate: false,
+  separated: null,
+
   content: '',
   trader: '',
-  bank_account: '',
-  income: null as number | null,
-  outlay: null as number | null,
+  bank_account: null,
+  income: null,
+  outlay: null,
   evidence: '',
   note: '',
   deal_date: '',
-  is_separate: false,
-  separated: null,
   is_imprest: true,
 })
 
 const validated = ref(false)
 
-const form = reactive({
-  project: '',
-  sort: '',
-  project_account_d1: null as number | null,
-  project_account_d2: null as number | null,
-  content: '',
-  trader: '',
-  bank_account: '',
-  income: null as null | string,
-  outlay: null as null | string,
-  evidence: '',
-  note: '',
-  deal_date: new Date() as Date | string,
+const form = reactive<ProjectCashBook>({
+  pk: null,
+  project: null,
+  sort: null,
+  project_account_d1: null,
+  project_account_d2: null,
+
   is_separate: false,
   separated: null as null | number,
   is_imprest: true,
+
+  content: '',
+  trader: '',
+  bank_account: null,
+  income: null,
+  outlay: null,
+  evidence: '',
+  note: '',
+  deal_date: dateFormat(new Date()),
 })
 
 const formsCheck = computed(() => {
@@ -74,8 +80,7 @@ const formsCheck = computed(() => {
     const i = form.outlay === props.imprest.outlay
     const j = form.evidence === props.imprest.evidence
     const k = form.note === props.imprest.note
-    const l =
-      form.deal_date.toString() === new Date(props.imprest.deal_date).toString()
+    const l = form.deal_date === props.imprest.deal_date
     const m = form.is_separate === props.imprest.is_separate
 
     return a && b && c && d && e && f && g && h && i && j && k && l && m
@@ -87,18 +92,17 @@ const formAccD1List = computed(() => proCashStore.formAccD1List)
 const formAccD2List = computed(() => proCashStore.formAccD2List)
 const imprestBAccount = computed(() => proCashStore.imprestBAccount)
 
-const fetchProFormAccD1List = (sort: string) =>
+const fetchProFormAccD1List = (sort: number | null) =>
   proCashStore.fetchProFormAccD1List(sort)
-const fetchProFormAccD2List = (d1?: string, sort?: string) =>
+const fetchProFormAccD2List = (d1: number | null, sort: number | null) =>
   proCashStore.fetchProFormAccD2List(d1, sort)
 
 const requireItem = computed(
-  () => form.project_account_d1 !== null && form.project_account_d2 !== null,
+  () => !!form.project_account_d1 && !!form.project_account_d2,
 )
 
 const sepDisabled = computed(() => {
-  const disabled =
-    form.project_account_d1 !== null || form.project_account_d2 !== null
+  const disabled = !!form.project_account_d1 || !!form.project_account_d2
   return props.imprest
     ? disabled || props.imprest.sepItems.length > 0
     : disabled
@@ -148,7 +152,7 @@ const sepD1_change = () => {
   sepItem.project_account_d2 = null
   nextTick(() => {
     const sort = form.sort
-    const d1 = String(sepItem.project_account_d1 || '')
+    const d1 = sepItem.project_account_d1
     fetchProFormAccD1List(sort)
     fetchProFormAccD2List(d1, sort)
   })
@@ -157,14 +161,15 @@ const sepD1_change = () => {
 const callAccount = () => {
   nextTick(() => {
     const sort = form.sort
-    const d1 = String(sepItem.project_account_d1 || '')
+    const d1 = sepItem.project_account_d1
     fetchProFormAccD1List(sort)
     fetchProFormAccD2List(d1, sort)
   })
 }
 
 const sepUpdate = (sep: ProjectCashBook) => {
-  sepPk.value = sep.pk
+  // sepPk.value = sep.pk
+  sepItem.pk = sep.pk
   sepItem.project_account_d1 = sep.project_account_d1
   sepItem.project_account_d2 = sep.project_account_d2
   sepItem.content = sep.content
@@ -175,20 +180,54 @@ const sepUpdate = (sep: ProjectCashBook) => {
   sepItem.note = sep.note
 }
 
-const createConfirm = (payload: any) => {
-  if (write_project_cash) multiSubmit(payload)
-  else alertModal.value.callModal()
+const sepRemove = () => {
+  sepItem.pk = null
+  sepItem.project_account_d1 = null
+  sepItem.project_account_d2 = null
+  sepItem.content = ''
+  sepItem.trader = ''
+  sepItem.evidence = ''
+  sepItem.outlay = null
+  sepItem.income = null
+  sepItem.note = ''
 }
 
-const updateConfirm = (payload: any) => {
-  if (write_project_cash)
-    if (allowedPeriod.value) multiSubmit(payload)
-    else
-      alertModal.value.callModal(
-        null,
-        '거래일로부터 30일이 경과한 건은 수정할 수 없습니다. 관리자에게 문의바랍니다.',
-      )
-  else alertModal.value.callModal()
+const isModify = computed(() => {
+  if (!form.is_separate) return !!props.imprest
+  else return !!sepItem.pk
+})
+
+watch(form, val => {
+  if (val.deal_date) form.deal_date = dateFormat(val.deal_date)
+})
+
+const multiSubmit = (multiPayload: {
+  formData: ProjectCashBook
+  sepData: ProjectCashBook | null
+}) => {
+  emit('multi-submit', multiPayload)
+  emit('close')
+}
+
+const onSubmit = (event: Event) => {
+  if (isValidate(event)) {
+    validated.value = true
+  } else {
+    const payload = !form.is_separate
+      ? { formData: form, sepData: null }
+      : { formData: form, sepData: sepItem }
+
+    if (write_project_cash) {
+      if (props.imprest) {
+        if (allowedPeriod.value) multiSubmit(payload)
+        else
+          alertModal.value.callModal(
+            null,
+            '거래일로부터 30일이 경과한 건은 수정할 수 없습니다. 관리자에게 문의바랍니다.',
+          )
+      } else multiSubmit(payload)
+    } else alertModal.value.callModal()
+  }
 }
 
 const deleteConfirm = () => {
@@ -202,34 +241,6 @@ const deleteConfirm = () => {
   else alertModal.value.callModal()
 }
 
-watch(form, val => {
-  if (val.deal_date) form.deal_date = dateFormat(val.deal_date)
-})
-
-const onSubmit = (event: any) => {
-  if (isValidate(event)) {
-    validated.value = true
-  } else {
-    let formData = {}
-    if (!formsCheck.value) {
-      form.deal_date = dateFormat(form.deal_date)
-      if (!props.imprest) formData = { ...form }
-      else formData = { ...{ ...{ pk: props.imprest.pk }, ...form } }
-    }
-    let sepData = {}
-    if (form.is_separate) {
-      if (!sepPk.value) sepData = { ...sepItem }
-      else sepData = { ...{ ...{ pk: sepPk.value }, ...sepItem } }
-    }
-    if (props.imprest || sepPk.value) updateConfirm({ formData, sepData })
-    else createConfirm({ formData, sepData })
-  }
-}
-
-const multiSubmit = (multiPayload: ProjectCashBook) => {
-  emit('multi-submit', multiPayload)
-  emit('close')
-}
 const deleteObject = () => {
   emit('on-delete', {
     project: props.imprest.project,
@@ -247,6 +258,7 @@ onBeforeMount(() => {
     sepItem.deal_date = props.imprest.deal_date
     sepItem.separated = props.imprest.pk
 
+    form.pk = props.imprest.pk
     form.project = props.imprest.project
     form.sort = props.imprest.sort
     form.project_account_d1 = props.imprest.project_account_d1
@@ -258,7 +270,7 @@ onBeforeMount(() => {
     form.outlay = props.imprest.outlay
     form.evidence = props.imprest.evidence
     form.note = props.imprest.note
-    form.deal_date = new Date(props.imprest.deal_date)
+    form.deal_date = props.imprest.deal_date
     form.is_separate = props.imprest.is_separate
     form.separated = props.imprest.separated
   }
@@ -293,7 +305,11 @@ onBeforeMount(() => {
             <CRow>
               <CFormLabel class="col-sm-4 col-form-label">구분</CFormLabel>
               <CCol sm="8">
-                <CFormSelect v-model="form.sort" required @change="sort_change">
+                <CFormSelect
+                  v-model.number="form.sort"
+                  required
+                  @change="sort_change"
+                >
                   <option value="">---------</option>
                   <option value="1">입금</option>
                   <option value="2">출금</option>
@@ -312,9 +328,9 @@ onBeforeMount(() => {
               </CFormLabel>
               <CCol sm="8">
                 <CFormSelect
-                  v-model="form.project_account_d1"
+                  v-model.number="form.project_account_d1"
                   :required="!form.is_separate"
-                  :disabled="form.sort === '' || form.is_separate"
+                  :disabled="!form.sort || form.is_separate"
                   @change="d1_change"
                 >
                   <option value="">---------</option>
@@ -336,9 +352,9 @@ onBeforeMount(() => {
               </CFormLabel>
               <CCol sm="8">
                 <CFormSelect
-                  v-model="form.project_account_d2"
+                  v-model.number="form.project_account_d2"
                   :required="!form.is_separate"
-                  :disabled="form.project_account_d1 === '' || form.is_separate"
+                  :disabled="!form.project_account_d1 || form.is_separate"
                 >
                   <option value="">---------</option>
                   <option
@@ -362,7 +378,7 @@ onBeforeMount(() => {
                 <CFormInput
                   v-model="form.content"
                   placeholder="거래 내용"
-                  :disabled="form.sort === ''"
+                  :disabled="!form.sort"
                 />
               </CCol>
             </CRow>
@@ -380,7 +396,7 @@ onBeforeMount(() => {
                   }"
                   placeholder="거래처 (수납자)"
                   required
-                  :disabled="form.sort === ''"
+                  :disabled="!form.sort"
                 />
               </CCol>
             </CRow>
@@ -391,13 +407,13 @@ onBeforeMount(() => {
           <CCol sm="6">
             <CRow>
               <CFormLabel class="col-sm-4 col-form-label">
-                {{ !imprest && form.sort === '3' ? '출금' : '거래' }}계좌
+                {{ !imprest && form.sort === 3 ? '출금' : '거래' }}계좌
               </CFormLabel>
               <CCol sm="8">
                 <CFormSelect
-                  v-model="form.bank_account"
+                  v-model.number="form.bank_account"
                   required
-                  :disabled="form.sort === ''"
+                  :disabled="!form.sort"
                 >
                   <option value="">---------</option>
                   <option
@@ -413,10 +429,14 @@ onBeforeMount(() => {
           </CCol>
 
           <CCol sm="6">
-            <CRow v-if="form.sort === '2'">
+            <CRow v-if="form.sort === 2">
               <CFormLabel class="col-sm-4 col-form-label">지출증빙</CFormLabel>
               <CCol sm="8">
-                <CFormSelect v-model="form.evidence" required>
+                <CFormSelect
+                  v-model="form.evidence"
+                  :required="!form.is_separate"
+                  :disabled="form.is_separate"
+                >
                   <option value="">---------</option>
                   <option value="0">증빙 없음</option>
                   <option value="1">세금계산서</option>
@@ -430,13 +450,13 @@ onBeforeMount(() => {
               </CCol>
             </CRow>
 
-            <CRow v-if="!imprest && form.sort === '3'">
+            <CRow v-if="!imprest && form.sort === 3">
               <CFormLabel class="col-sm-4 col-form-label">입금계좌</CFormLabel>
               <CCol sm="8">
                 <CFormSelect
-                  v-model="form.bank_account_to"
+                  v-model.number="form.bank_account_to"
                   required
-                  :disabled="form.sort !== '3'"
+                  :disabled="form.sort !== 3"
                 >
                   <option value="">---------</option>
                   <option
@@ -462,8 +482,8 @@ onBeforeMount(() => {
                   type="number"
                   min="0"
                   placeholder="출금 금액"
-                  :required="form.sort === '2'"
-                  :disabled="form.sort === '1' || form.sort === ''"
+                  :required="form.sort === 2"
+                  :disabled="form.sort === 1 || !form.sort"
                 />
               </CCol>
             </CRow>
@@ -478,8 +498,8 @@ onBeforeMount(() => {
                   type="number"
                   min="0"
                   placeholder="입금 금액"
-                  :required="form.sort === '1'"
-                  :disabled="form.sort === '2' || form.sort === ''"
+                  :required="form.sort === 1"
+                  :disabled="form.sort === 2 || !form.sort"
                 />
               </CCol>
             </CRow>
@@ -494,7 +514,7 @@ onBeforeMount(() => {
                 <CFormTextarea
                   v-model.number="form.note"
                   placeholder="특이사항"
-                  :disabled="form.sort === ''"
+                  :disabled="!form.sort"
                 />
               </CCol>
             </CRow>
@@ -504,6 +524,7 @@ onBeforeMount(() => {
         <CRow>
           <CCol class="text-medium-emphasis">
             <CFormCheck
+              id="is_separate"
               v-model="form.is_separate"
               label="별도 분리기록 거래 건 - 여러 계정 항목이 1회에 입·출금되어 별도 분리 기록이 필요한 거래인 경우."
               :disabled="sepDisabled"
@@ -512,9 +533,9 @@ onBeforeMount(() => {
         </CRow>
       </div>
 
-      <div v-if="form.is_separate && imprest">
-        <hr v-if="imprest.sepItems.length > 0" />
-        <CRow v-if="imprest.sepItems.length > 0" class="mb-3">
+      <div v-if="form.is_separate">
+        <hr v-if="imprest && imprest.sepItems.length > 0" />
+        <CRow v-if="imprest && imprest.sepItems.length > 0" class="mb-3">
           <CCol>
             <strong>
               <CIcon name="cilDescription" class="mr-2" />
@@ -533,7 +554,9 @@ onBeforeMount(() => {
           :key="sep.pk"
           class="mb-1"
           :class="
-            sep.pk === sepPk ? 'text-success text-decoration-underline' : ''
+            sep.pk === sepItem.pk
+              ? 'text-success text-decoration-underline'
+              : ''
           "
         >
           <CCol sm="1">{{ i + 1 }}</CCol>
@@ -565,7 +588,7 @@ onBeforeMount(() => {
                   </CFormLabel>
                   <CCol sm="8">
                     <CFormSelect
-                      v-model="sepItem.project_account_d1"
+                      v-model.number="sepItem.project_account_d1"
                       required
                       @change="sepD1_change"
                     >
@@ -588,8 +611,8 @@ onBeforeMount(() => {
                   </CFormLabel>
                   <CCol sm="8">
                     <CFormSelect
-                      v-model="sepItem.project_account_d2"
-                      :disabled="sepItem.project_account_d1 === ''"
+                      v-model.number="sepItem.project_account_d2"
+                      :disabled="!sepItem.project_account_d1"
                       required
                     >
                       <option value="">---------</option>
@@ -658,9 +681,10 @@ onBeforeMount(() => {
                   </CFormLabel>
                   <CCol sm="8">
                     <CFormSelect
-                      v-model="sepItem.bank_account"
+                      v-model.number="sepItem.bank_account"
                       readonly
                       required
+                      :disabled="sepItem.pk"
                     >
                       <option value="">---------</option>
                       <option
@@ -676,7 +700,7 @@ onBeforeMount(() => {
               </CCol>
 
               <CCol sm="6">
-                <CRow v-if="form.sort === '2'">
+                <CRow v-if="form.sort === 2">
                   <CFormLabel class="col-sm-4 col-form-label">
                     지출증빙
                   </CFormLabel>
@@ -710,12 +734,12 @@ onBeforeMount(() => {
                   </CFormLabel>
                   <CCol sm="8">
                     <CFormInput
-                      v-model="sepItem.outlay"
+                      v-model.number="sepItem.outlay"
                       type="number"
                       min="0"
                       placeholder="출금 금액"
-                      :required="form.sort === '2'"
-                      :disabled="form.sort !== '2'"
+                      :required="form.sort === 2"
+                      :disabled="form.sort !== 2"
                     />
                   </CCol>
                 </CRow>
@@ -728,12 +752,12 @@ onBeforeMount(() => {
                   </CFormLabel>
                   <CCol sm="8">
                     <CFormInput
-                      v-model="sepItem.income"
+                      v-model.number="sepItem.income"
                       type="number"
                       min="0"
                       placeholder="입금 금액"
-                      :required="form.sort === '1'"
-                      :disabled="form.sort !== '1'"
+                      :required="form.sort === 1"
+                      :disabled="form.sort !== 1"
                     />
                   </CCol>
                 </CRow>
@@ -757,19 +781,28 @@ onBeforeMount(() => {
     </CModalBody>
 
     <CModalFooter>
-      <CButton type="button" color="light" @click="$emit('close')">
+      <CButton type="button" color="light" @click="emit('close')">
         닫기
       </CButton>
       <slot name="footer">
         <CButton
+          v-if="sepItem.pk"
+          type="button"
+          color="dark"
+          variant="outline"
+          @click="sepRemove"
+        >
+          취소
+        </CButton>
+        <CButton
           type="submit"
-          :color="imprest ? 'success' : 'primary'"
+          :color="isModify ? 'success' : 'primary'"
           :disabled="formsCheck && requireItem"
         >
           저장
         </CButton>
         <CButton
-          v-if="imprest"
+          v-if="isModify"
           type="button"
           color="danger"
           @click="deleteConfirm"
