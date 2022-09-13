@@ -9,7 +9,7 @@ import { headerSecondary } from '@/utils/cssMixins'
 
 defineProps({ company: { type: Object, default: null } })
 
-const emit = defineEmits(['page-select', 'on-update', 'on-delete'])
+const emit = defineEmits(['page-select', 'multi-submit', 'on-delete'])
 
 const useComCashStore = useComCash()
 const cashesPages = computed(() => useComCashStore.cashesPages)
@@ -19,7 +19,7 @@ const listAccD2List = computed(() => useComCashStore.listAccD2List)
 const listAccD3List = computed(() => useComCashStore.listAccD3List)
 
 const pageSelect = (page: number) => emit('page-select', page)
-const onUpdate = (payload: CashBook) => emit('on-update', payload)
+const multiSubmit = (payload: CashBook) => emit('multi-submit', payload)
 const onDelete = (pk: number) => emit('on-delete', pk)
 </script>
 
@@ -65,7 +65,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
         v-for="cash in getCashLogs"
         :key="cash.pk"
         :cash="cash"
-        @on-update="onUpdate"
+        @multi-submit="multiSubmit"
         @on-delete="onDelete"
       />
     </CTableBody>

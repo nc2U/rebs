@@ -10,6 +10,7 @@ import ListController from '@/views/comCash/Manage/components/ListController.vue
 import AddCash from '@/views/comCash/Manage/components/AddCash.vue'
 import TableTitleRow from '@/components/TableTitleRow.vue'
 import CashesList from '@/views/comCash/Manage/components/CashesList.vue'
+import { CashBookFilter } from '@/store/pinia/proCash'
 
 const listControl = ref()
 
@@ -81,7 +82,9 @@ const listFiltering = (payload: Filter) => {
   fetchCashBookList(payload)
 }
 
-const onCreate = (payload: CashBook & { bank_account_to: number }) => {
+const onCreate = (
+  payload: CashBook & { filters: Filter } & { bank_account_to?: number },
+) => {
   payload.company = company.value
   if (payload.sort === 3 && payload.bank_account_to) {
     const { bank_account_to, income, ...inputData } = payload
@@ -95,13 +98,29 @@ const onCreate = (payload: CashBook & { bank_account_to: number }) => {
   } else createCashBook(payload)
 }
 
-const onUpdate = (payload: CashBook) => {
-  updateCashBook({ ...{ filters: dataFilter.value }, ...payload })
+const onUpdate = (payload: CashBook & { filters: Filter }) =>
+  updateCashBook(payload)
+
+const multiSubmit = (payload: {
+  formData: CashBook
+  sepData: CashBook | null
+}) => {
+  const { formData, sepData } = payload
+
+  const mainFormData = { ...{ filters: dataFilter.value }, ...formData }
+
+  if (formData.pk) onUpdate(mainFormData)
+  else onCreate(mainFormData)
+
+  if (sepData) {
+    const separatedData = { ...{ filters: dataFilter.value }, ...sepData }
+    if (sepData.pk) onUpdate(separatedData)
+    else onCreate(separatedData)
+  }
 }
 
-const onDelete = (payload: CashBook) => {
+const onDelete = (payload: CashBook) =>
   deleteCashBook({ ...{ filters: dataFilter.value }, ...payload })
-}
 
 onBeforeMount(() => {
   fetchCompany(initComId.value)
@@ -128,12 +147,12 @@ onBeforeMount(() => {
   <ContentBody>
     <CCardBody class="pb-5">
       <ListController ref="listControl" @list-filtering="listFiltering" />
-      <AddCash @on-create="onCreate" />
+      <AddCash @multi-submit="multiSubmit" />
       <TableTitleRow title="본사 입출금 관리" color="indigo" excel disabled />
       <CashesList
         :company="company"
         @page-select="pageSelect"
-        @on-update="onUpdate"
+        @multi-submit="multiSubmit"
         @on-delete="onDelete"
       />
     </CCardBody>

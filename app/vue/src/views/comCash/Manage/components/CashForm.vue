@@ -1,12 +1,39 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, nextTick, onBeforeMount } from 'vue'
+import { ref, reactive, computed, nextTick, onBeforeMount, watch } from 'vue'
+import { useAccount } from '@/store/pinia/account'
 import { useComCash } from '@/store/pinia/comCash'
 import { CashBook } from '@/store/types/comCash'
-import { dateFormat } from '@/utils/baseMixins'
+import { dateFormat, diffDate, cutString, numFormat } from '@/utils/baseMixins'
+import { write_company_cash } from '@/utils/pageAuth'
 import DatePicker from '@/components/DatePicker/index.vue'
+import { isValidate } from '@/utils/helper'
 
 const props = defineProps({ cash: { type: Object, required: true } })
-const emit = defineEmits(['on-submit', 'on-delete', 'close'])
+const emit = defineEmits(['multi-submit', 'on-delete', 'close'])
+
+const delModal = ref()
+const alertModal = ref()
+
+const sepItem = reactive<CashBook>({
+  pk: null,
+  company: null,
+  sort: null,
+  account_d1: null,
+  account_d2: null,
+  account_d3: null,
+
+  is_separate: false,
+  separated: null,
+
+  content: '',
+  trader: '',
+  bank_account: null,
+  income: null,
+  outlay: null,
+  evidence: '',
+  note: '',
+  deal_date: '',
+})
 
 const validated = ref(false)
 
@@ -31,6 +58,10 @@ const form = reactive<CashBook>({
   deal_date: dateFormat(new Date()),
 })
 
+watch(form, val => {
+  if (val.deal_date) form.deal_date = dateFormat(val.deal_date)
+})
+
 const formsCheck = computed(() => {
   if (props.cash) {
     const a = form.company === props.cash.company
@@ -45,8 +76,7 @@ const formsCheck = computed(() => {
     const j = form.outlay === props.cash.outlay
     const k = form.evidence === props.cash.evidence
     const l = form.note === props.cash.note
-    const m =
-      form.deal_date.toString() === new Date(props.cash.deal_date).toString()
+    const m = form.deal_date === props.cash.deal_date
 
     return a && b && c && d && e && f && g && h && i && j && k && l && m
   } else return false
@@ -67,6 +97,57 @@ const fetchFormAccD3List = (
   d1: number | null,
   d2: number | null,
 ) => useComCashStore.fetchFormAccD3List(sort, d1, d2)
+
+const sepDisabled = computed(() => {
+  const disabled = !!form.account_d1 || !!form.account_d2 || !!form.account_d3
+  return props.cash ? disabled || props.cash.sepItems.length : disabled
+})
+
+const sepSummary = computed(() => {
+  const inc = props.cash.sepItems.length
+    ? props.cash.sepItems
+        .map((s: CashBook) => s.income)
+        .reduce((res: number, el: number) => res + el)
+    : 0
+  const out =
+    props.cash.sepItems.length !== 0
+      ? props.cash.sepItems
+          .map((s: CashBook) => s.outlay)
+          .reduce((res: number, el: number) => res + el)
+      : 0
+  return [inc, out]
+})
+
+const sepUpdate = (sep: CashBook) => {
+  sepItem.pk = sep.pk
+  sepItem.account_d1 = sep.account_d1
+  sepItem.account_d2 = sep.account_d2
+  sepItem.account_d3 = sep.account_d3
+  sepItem.content = sep.content
+  sepItem.trader = sep.trader
+  sepItem.evidence = sep.evidence
+  sepItem.outlay = sep.outlay
+  sepItem.income = sep.income
+  sepItem.note = sep.note
+}
+
+const sepRemove = () => {
+  sepItem.pk = null
+  sepItem.account_d1 = null
+  sepItem.account_d2 = null
+  sepItem.account_d3 = null
+  sepItem.content = ''
+  sepItem.trader = ''
+  sepItem.evidence = ''
+  sepItem.outlay = null
+  sepItem.income = null
+  sepItem.note = ''
+}
+
+const isModify = computed(() => {
+  if (!form.is_separate) return !!props.cash
+  else return !!sepItem.pk
+})
 
 const sort_change = (event: Event) => {
   if ((event.target as HTMLSelectElement).value === '1') {
@@ -113,16 +194,29 @@ const callAccount = () => {
   })
 }
 
-const onSubmit = (event: Event) => {
-  const e = event.currentTarget as HTMLSelectElement
-  if (!e.checkValidity()) {
-    event.preventDefault()
-    event.stopPropagation()
+const accountStore = useAccount()
+const allowedPeriod = computed(
+  () => accountStore.superAuth || diffDate(props.cash.deal_date) <= 30,
+)
 
+const onSubmit = (event: Event) => {
+  if (isValidate(event)) {
     validated.value = true
   } else {
-    form.deal_date = dateFormat(form.deal_date)
-    emit('on-submit', { ...form })
+    const payload = !form.is_separate
+      ? { formData: form, sepData: null }
+      : { formData: form, sepData: sepItem }
+
+    if (write_company_cash) {
+      if (props.cash) {
+        if (allowedPeriod.value) emit('multi-submit', payload)
+        else
+          alertModal.value.callModal(
+            null,
+            '거래일로부터 30일이 경과한 건은 수정할 수 없습니다. 관리자에게 문의바랍니다.',
+          )
+      } else emit('multi-submit', payload)
+    } else alertModal.value.callModal()
     emit('close')
   }
 }

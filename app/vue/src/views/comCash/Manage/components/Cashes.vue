@@ -16,7 +16,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['on-update', 'on-delete'])
+const emit = defineEmits(['multi-submit', 'on-delete'])
 
 const delModal = ref()
 const alertModal = ref()
@@ -38,19 +38,11 @@ const showDetail = () => {
   updateFormModal.value.callModal()
 }
 
-const updateConfirm = (payload: CashBook) => {
-  if (pageManageAuth.value) {
-    if (allowedPeriod.value) updateObject(payload)
-    else
-      alertModal.value.callModal(
-        null,
-        '거래일로부터 30일이 경과한 건은 수정할 수 없습니다. 관리자에게 문의바랍니다.',
-      )
-  } else alertModal.value.callModal()
-}
-
-const updateObject = (payload: CashBook) => {
-  emit('on-update', { ...payload })
+const multiSubmit = (payload: {
+  formData: CashBook
+  sepData: CashBook | null
+}) => {
+  emit('multi-submit', payload)
   updateFormModal.value.visible = false
 }
 
@@ -112,7 +104,7 @@ const deleteObject = () => {
     <template #default>
       <CashForm
         :cash="cash"
-        @on-submit="updateConfirm"
+        @multi-submit="multiSubmit"
         @on-delete="deleteConfirm"
         @close="updateFormModal.close()"
       />

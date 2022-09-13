@@ -1,30 +1,19 @@
 <script lang="ts" setup>
-import { ref, computed } from 'vue'
-import { useAccount } from '@/store/pinia/account'
-import { Company } from '@/store/types/settings'
+import { ref } from 'vue'
+import { CashBook } from '@/store/types/comCash'
 import { headerLight } from '@/utils/cssMixins'
 import FormModal from '@/components/Modals/FormModal.vue'
 import CashForm from '@/views/comCash/Manage/components/CashForm.vue'
 
-const emit = defineEmits(['on-create'])
+const emit = defineEmits(['multi-submit'])
 
 const createFormModal = ref()
 const createAlertModal = ref()
 
-const accountStore = useAccount()
-
-const pageManageAuth = computed(
-  () =>
-    accountStore.superAuth ||
-    (accountStore.staffAuth && accountStore.staffAuth.company_cash === '2'),
-)
-
-const createConfirm = () => {
-  if (pageManageAuth.value) createFormModal.value.callModal()
-  else createAlertModal.value.callModal()
-}
-
-const createObject = (payload: Company) => emit('on-create', payload)
+const multiSubmit = (payload: {
+  formData: CashBook
+  sepData: CashBook | null
+}) => emit('multi-submit', payload)
 </script>
 
 <template>
@@ -38,7 +27,7 @@ const createObject = (payload: Company) => emit('on-create', payload)
       입출금 거래 건별 등록
     </template>
     <template #default>
-      <CashForm @on-submit="createObject" @close="createFormModal.close()" />
+      <CashForm @multi-submit="multiSubmit" @close="createFormModal.close()" />
     </template>
   </FormModal>
 
