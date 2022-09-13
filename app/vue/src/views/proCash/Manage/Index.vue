@@ -89,6 +89,7 @@ const listFiltering = (payload: CashBookFilter) => {
   fetchProFormAccD2List(d1, sort)
   fetchProjectCashList({ ...{ project: project.value }, ...payload })
 }
+
 const onCreate = (
   payload: ProjectCashBook & { filters: CashBookFilter } & {
     bank_account_to?: number
@@ -108,7 +109,7 @@ const onCreate = (
 }
 
 const onUpdate = (payload: ProjectCashBook & { filters: CashBookFilter }) =>
-  updatePrCashBook({ ...{ filters: dataFilter.value }, ...payload })
+  updatePrCashBook(payload)
 
 const multiSubmit = (payload: {
   formData: ProjectCashBook

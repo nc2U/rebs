@@ -109,7 +109,7 @@ const onCreate = (
 }
 
 const onUpdate = (payload: ProjectCashBook & { filters: CashBookFilter }) =>
-  updatePrCashBook({ ...{ filters: dataFilter.value }, ...payload })
+  updatePrCashBook(payload)
 
 const multiSubmit = (payload: {
   formData: ProjectCashBook
