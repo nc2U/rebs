@@ -40,6 +40,10 @@ class CashBook(models.Model):
                                    verbose_name='계정중분류')
     account_d3 = models.ForeignKey('rebs.AccountSubD3', on_delete=models.SET_NULL, null=True, blank=True,
                                    verbose_name='세부계정')
+    is_separate = models.BooleanField('상세 분리기록 등록', default=False,
+                                      help_text='각기 다른 계정 항목이 1회에 같이 출금된 경우 이 항목을 체크')
+    separated = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='sepItems',
+                                  verbose_name='분할 계정')
     content = models.CharField('적요', max_length=50)
     trader = models.CharField('거래처', max_length=20, blank=True)
     bank_account = models.ForeignKey(CompanyBankAccount, on_delete=models.PROTECT, verbose_name='거래계좌')
