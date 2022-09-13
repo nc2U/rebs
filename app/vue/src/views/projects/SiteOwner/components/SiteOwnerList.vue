@@ -75,9 +75,9 @@ const onDelete = (pk: number) => emit('on-delete', pk)
 
     <CTableBody>
       <SiteOwner
-        v-for="owner in siteOwnerList"
-        :key="owner.pk"
-        :owner="owner"
+        v-for="onr in siteOwnerList"
+        :key="onr.pk"
+        :owner="onr"
         :is-returned="isReturned"
         @relation-patch="relationPatch"
         @multi-submit="multiSubmit"
