@@ -202,14 +202,6 @@ watch(form, val => {
   if (val.deal_date) form.deal_date = dateFormat(val.deal_date)
 })
 
-const multiSubmit = (multiPayload: {
-  formData: ProjectCashBook
-  sepData: ProjectCashBook | null
-}) => {
-  emit('multi-submit', multiPayload)
-  emit('close')
-}
-
 const onSubmit = (event: Event) => {
   if (isValidate(event)) {
     validated.value = true
@@ -220,14 +212,15 @@ const onSubmit = (event: Event) => {
 
     if (write_project_cash) {
       if (props.imprest) {
-        if (allowedPeriod.value) multiSubmit(payload)
+        if (allowedPeriod.value) emit('multi-submit', payload)
         else
           alertModal.value.callModal(
             null,
             '거래일로부터 30일이 경과한 건은 수정할 수 없습니다. 관리자에게 문의바랍니다.',
           )
-      } else multiSubmit(payload)
+      } else emit('multi-submit', payload)
     } else alertModal.value.callModal()
+    emit('close')
   }
 }
 
