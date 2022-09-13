@@ -13,10 +13,10 @@ const confirmModal = ref()
 const form = reactive({ name: '' })
 const validated = ref(false)
 
-const onSubmit = (event: any) => {
+const onSubmit = (event: Event) => {
   if (write_project) {
-    const form = event.currentTarget
-    if (form.checkValidity() === false) {
+    const form = event.currentTarget as HTMLFormElement
+    if (!form.checkValidity()) {
       event.preventDefault()
       event.stopPropagation()
 

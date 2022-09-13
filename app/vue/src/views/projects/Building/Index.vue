@@ -17,9 +17,9 @@ const project = computed(() => projectStore.project?.pk || initProjId.value)
 const projectDataStore = useProjectData()
 const fetchBuildingList = (projId: number) =>
   projectDataStore.fetchBuildingList(projId)
-const createBuilding = (payload: any) =>
+const createBuilding = (payload: BuildingUnit) =>
   projectDataStore.createBuilding(payload)
-const updateBuilding = (payload: any) =>
+const updateBuilding = (payload: BuildingUnit) =>
   projectDataStore.updateBuilding(payload)
 const deleteBuilding = (pk: number, projId: number) =>
   projectDataStore.deleteBuilding(pk, projId)
