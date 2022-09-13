@@ -13,14 +13,14 @@ import ProImprestList from '@/views/proCash/Imprest/components/ProImprestList.vu
 
 const listControl = ref()
 
-const dataFilter = ref({
+const dataFilter = ref<CashBookFilter>({
   page: 1,
   from_date: '',
   to_date: '',
-  sort: '',
-  pro_acc_d1: '',
-  pro_acc_d2: '',
-  bank_account: '',
+  sort: null,
+  pro_acc_d1: null,
+  pro_acc_d2: null,
+  bank_account: null,
   search: '',
 })
 
@@ -116,13 +116,16 @@ const multiSubmit = (payload: {
   sepData: ProjectCashBook | null
 }) => {
   const { formData, sepData } = payload
-  if (formData.sort) {
-    if (formData.pk) onUpdate(formData)
-    else onCreate(formData)
-  }
-  if (sepData.sort) {
-    if (sepData.pk) onUpdate(sepData)
-    else onCreate({ ...{ filters: dataFilter.value }, ...sepData })
+
+  const mainFormData = { ...{ filters: dataFilter.value }, ...formData }
+
+  if (formData.pk) onUpdate(mainFormData)
+  else onCreate(mainFormData)
+
+  if (sepData) {
+    const separatedData = { ...{ filters: dataFilter.value }, ...sepData }
+    if (sepData.pk) onUpdate(separatedData)
+    else onCreate(separatedData)
   }
 }
 

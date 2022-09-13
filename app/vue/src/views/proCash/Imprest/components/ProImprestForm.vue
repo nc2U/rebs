@@ -549,33 +549,35 @@ onBeforeMount(() => {
           </CCol>
         </CRow>
 
-        <CRow
-          v-for="(sep, i) in imprest.sepItems"
-          :key="sep.pk"
-          class="mb-1"
-          :class="
-            sep.pk === sepItem.pk
-              ? 'text-success text-decoration-underline'
-              : ''
-          "
-        >
-          <CCol sm="1">{{ i + 1 }}</CCol>
-          <CCol sm="2">{{ sep.trader }}</CCol>
-          <CCol sm="5">{{ cutString(sep.content, 20) }}</CCol>
-          <CCol sm="2" class="text-right">
-            {{ sep.income ? numFormat(sep.income) : numFormat(sep.outlay) }}
-          </CCol>
-          <CCol sm="2" class="text-right">
-            <CButton
-              type="button"
-              color="success"
-              size="sm"
-              @click="sepUpdate(sep)"
-            >
-              수정
-            </CButton>
-          </CCol>
-        </CRow>
+        <div v-if="imprest">
+          <CRow
+            v-for="(sep, i) in imprest.sepItems"
+            :key="sep.pk"
+            class="mb-1"
+            :class="
+              sep.pk === sepItem.pk
+                ? 'text-success text-decoration-underline'
+                : ''
+            "
+          >
+            <CCol sm="1">{{ i + 1 }}</CCol>
+            <CCol sm="2">{{ sep.trader }}</CCol>
+            <CCol sm="5">{{ cutString(sep.content, 20) }}</CCol>
+            <CCol sm="2" class="text-right">
+              {{ sep.income ? numFormat(sep.income) : numFormat(sep.outlay) }}
+            </CCol>
+            <CCol sm="2" class="text-right">
+              <CButton
+                type="button"
+                color="success"
+                size="sm"
+                @click="sepUpdate(sep)"
+              >
+                수정
+              </CButton>
+            </CCol>
+          </CRow>
+        </div>
         <hr />
         <CRow class="mb-3">
           <CCol sm="1"></CCol>
