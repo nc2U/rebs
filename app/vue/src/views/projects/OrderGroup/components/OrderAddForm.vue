@@ -17,10 +17,10 @@ const form = reactive({
   order_group_name: '',
 })
 
-const onSubmit = (event: any) => {
+const onSubmit = (event: Event) => {
   if (write_project) {
-    const e = event.currentTarget
-    if (e.checkValidity() === false) {
+    const e = event.currentTarget as HTMLFormElement
+    if (!e.checkValidity()) {
       event.preventDefault()
       event.stopPropagation()
 
