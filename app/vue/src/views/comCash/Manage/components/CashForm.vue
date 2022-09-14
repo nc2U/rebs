@@ -18,23 +18,15 @@ const alertModal = ref()
 
 const sepItem = reactive<SepItems>({
   pk: null,
-  // company: null,
-  // sort: null,
   account_d1: null,
   account_d2: null,
   account_d3: null,
-
-  // is_separate: false,
-  separated: null,
-
   content: '',
   trader: '',
-  // bank_account: null,
   income: null,
   outlay: null,
   evidence: '',
   note: '',
-  // deal_date: '',
 })
 
 const validated = ref(false)
@@ -176,6 +168,26 @@ const sort_change = (event: Event) => {
       form.account_d2 = null
       form.account_d3 = null
     }
+  } else {
+    if ((event.target as HTMLSelectElement).value === '1') {
+      sepItem.account_d1 = 4
+      sepItem.account_d2 = null
+      sepItem.account_d3 = null
+      sepItem.outlay = null
+    } else if ((event.target as HTMLSelectElement).value === '2') {
+      sepItem.account_d1 = 5
+      sepItem.account_d2 = null
+      sepItem.account_d3 = null
+      sepItem.income = null
+    } else if ((event.target as HTMLSelectElement).value === '3') {
+      sepItem.account_d1 = 6
+      sepItem.account_d2 = 19
+      sepItem.account_d3 = 128
+    } else {
+      sepItem.account_d1 = null
+      sepItem.account_d2 = null
+      sepItem.account_d3 = null
+    }
   }
   callAccount()
 }
@@ -191,8 +203,8 @@ const sepD1_change = () => {
   nextTick(() => {
     const sort = form.sort
     const d1 = sepItem.account_d1
-    // fetchProFormAccD1List(sort)
-    // fetchProFormAccD2List(d1, sort)
+    fetchFormAccD1List(sort)
+    fetchFormAccD2List(sort, d1)
   })
 }
 
@@ -207,8 +219,7 @@ const sepD2_change = () => {
     const sort = form.sort
     const d1 = sepItem.account_d1
     const d2 = sepItem.account_d2
-    // fetchProFormAccD1List(sort)
-    // fetchProFormAccD2List(d1, sort)
+    fetchFormAccD3List(sort, d1, d2)
   })
 }
 
@@ -232,11 +243,6 @@ const onSubmit = (event: Event) => {
   if (isValidate(event)) {
     validated.value = true
   } else {
-    // if (form.is_separate) {
-    //   sepItem.sort = form.sort
-    //   sepItem.bank_account = form.bank_account
-    //   sepItem.deal_date = form.deal_date
-    // }
     const payload = !form.is_separate
       ? { formData: form, sepData: null }
       : { formData: form, sepData: sepItem }
@@ -277,12 +283,6 @@ const deleteObject = () => {
 
 onBeforeMount(() => {
   if (props.cash) {
-    // sepItem.company = props.cash.company
-    // sepItem.sort = props.cash.sort
-    // sepItem.bank_account = props.cash.bank_account
-    // sepItem.deal_date = props.cash.deal_date
-    sepItem.separated = props.cash.pk
-
     form.pk = props.cash.pk
     form.company = props.cash.company
     form.sort = props.cash.sort
@@ -664,6 +664,7 @@ onBeforeMount(() => {
                       v-model.number="sepItem.account_d2"
                       :disabled="!sepItem.account_d1"
                       required
+                      @change="sepD2_change"
                     >
                       <option value="">---------</option>
                       <option

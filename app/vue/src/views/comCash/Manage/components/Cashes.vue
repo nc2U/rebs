@@ -103,7 +103,7 @@ const deleteObject = () => {
   <FormModal ref="updateFormModal" size="lg">
     <template #header>
       <CIcon name="cil-italic" />
-      입출금 거래 건별 수정
+      본사 입출금 거래 건별 수정
     </template>
     <template #default>
       <CashForm

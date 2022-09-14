@@ -25,7 +25,7 @@ const multiSubmit = (payload: {
   <FormModal ref="createFormModal" size="lg">
     <template #header>
       <CIcon name="cil-italic" />
-      입출금 거래 건별 등록
+      본사 입출금 거래 건별 등록
     </template>
     <template #default>
       <CashForm @multi-submit="multiSubmit" @close="createFormModal.close()" />
