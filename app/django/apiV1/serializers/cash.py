@@ -46,15 +46,15 @@ class CashBookSerializer(serializers.ModelSerializer):
             'separated', 'content', 'trader', 'bank_account', 'income', 'outlay', 'evidence',
             'evidence_desc', 'note', 'deal_date', 'user', 'created_at', 'updated_at')
 
-    @transaction.atomic
-    def create(self, validated_data):
-        cashbook = CashBook.objects.create(**validated_data)
-        cashbook.save()
-
-    @transaction.atomic
-    def update(self, instance, validated_data):
-        instance.__dict__.update(**validated_data)
-        instance.save()
+    # @transaction.atomic
+    # def create(self, validated_data):
+    #     cashbook = CashBook.objects.create(**validated_data)
+    #     cashbook.save()
+    #
+    # @transaction.atomic
+    # def update(self, instance, validated_data):
+    #     instance.__dict__.update(**validated_data)
+    #     instance.save()
 
 
 class ProjectBankAccountSerializer(serializers.ModelSerializer):
@@ -94,15 +94,15 @@ class ProjectCashBookSerializer(serializers.ModelSerializer):
                   'contract', 'installment_order', 'refund_contractor', 'content', 'trader',
                   'bank_account', 'income', 'outlay', 'evidence', 'evidence_desc', 'note', 'deal_date')
 
-    @transaction.atomic
-    def create(self, validated_data):
-        prcashbook = ProjectCashBook.objects.create(**validated_data)
-        prcashbook.save()
-
-    @transaction.atomic
-    def update(self, instance, validated_data):
-        instance.__dict__.update(**validated_data)
-        instance.save()
+    # @transaction.atomic
+    # def create(self, validated_data):
+    #     prcashbook = ProjectCashBook.objects.create(**validated_data)
+    #     prcashbook.save()
+    #
+    # @transaction.atomic
+    # def update(self, instance, validated_data):
+    #     instance.__dict__.update(**validated_data)
+    #     instance.save()
 
 
 class SimpleOrderGroupSerializer(serializers.ModelSerializer):
