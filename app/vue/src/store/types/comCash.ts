@@ -60,15 +60,30 @@ export interface CashBook {
   account_d3: number | null
   account_d3_desc?: string
   is_separate: boolean
-  separated: null | number
+  separated: number | null
+  sepItems?: SepItems[]
   content: string
   trader: string
   bank_account: number | null
   bank_account_desc?: string
   income?: number | null
   outlay?: number | null
-  evidence: string
+  evidence: '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | null
   evidence_desc?: string
   note: string
   deal_date: string
+}
+
+export interface SepItems {
+  pk: number | null
+  account_d1: number | null
+  account_d2: number | null
+  account_d3: number | null
+  separated: number | null
+  content: string
+  trader: string
+  income?: number | null
+  outlay?: number | null
+  evidence: '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | null
+  note: string
 }

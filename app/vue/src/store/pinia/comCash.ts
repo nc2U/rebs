@@ -178,6 +178,7 @@ export const useComCash = defineStore('comCash', () => {
             : '',
           is_separate: c.is_separate,
           separated: c.separated,
+          sepItems: c.sepItems,
           content: c.content,
           trader: c.trader,
           bank_account: c.bank_account,
