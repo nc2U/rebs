@@ -50,7 +50,7 @@ class BalanceByAccountList(generics.ListAPIView):
 
         queryset = CashBook.objects.all() \
             .order_by('bank_account') \
-            .filter(deal_date__lte=date)
+            .filter(is_separate=False, deal_date__lte=date)
 
         return queryset.annotate(bank_acc=F('bank_account__alias_name')) \
             .values('bank_acc') \
@@ -97,7 +97,7 @@ class DateCashBookList(CashBookList):
         TODAY = datetime.today().strftime('%Y-%m-%d')
         date = self.request.query_params.get('date')
         date = date if date else TODAY
-        return CashBook.objects.filter(deal_date__exact=date)
+        return CashBook.objects.filter(is_separate=False, deal_date__exact=date)
 
 
 class CashBookDetail(generics.RetrieveUpdateDestroyAPIView):
