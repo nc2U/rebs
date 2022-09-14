@@ -98,9 +98,9 @@ class ProjectCashBookSerializer(serializers.ModelSerializer):
 
     @transaction.atomic
     def create(self, validated_data):
-        prcashbook = ProjectCashBook.objects.create(**validated_data)
-        prcashbook.save()
-        return prcashbook
+        prCashbook = ProjectCashBook.objects.create(**validated_data)
+        prCashbook.save()
+        return prCashbook
 
     @transaction.atomic
     def update(self, instance, validated_data):
