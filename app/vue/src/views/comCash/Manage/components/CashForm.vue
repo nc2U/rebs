@@ -186,14 +186,11 @@ const sort_change = (event: Event) => {
       sepItem.account_d3 = null
       sepItem.outlay = null
     } else if ((event.target as HTMLSelectElement).value === '2') {
+      form.evidence = '0'
       sepItem.account_d1 = 5
       sepItem.account_d2 = null
       sepItem.account_d3 = null
       sepItem.income = null
-    } else if ((event.target as HTMLSelectElement).value === '3') {
-      sepItem.account_d1 = 6
-      sepItem.account_d2 = 19
-      sepItem.account_d3 = 128
     } else {
       sepItem.account_d1 = null
       sepItem.account_d2 = null
@@ -483,7 +480,11 @@ onBeforeMount(() => {
             <CRow v-if="form.sort === 2">
               <CFormLabel class="col-sm-4 col-form-label">지출증빙</CFormLabel>
               <CCol sm="8">
-                <CFormSelect v-model="form.evidence" required>
+                <CFormSelect
+                  v-model="form.evidence"
+                  :required="!form.is_separate"
+                  :disabled="form.is_separate"
+                >
                   <option value="">---------</option>
                   <option value="0">증빙 없음</option>
                   <option value="1">세금계산서</option>

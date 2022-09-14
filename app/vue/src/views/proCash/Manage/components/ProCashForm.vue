@@ -170,13 +170,9 @@ const sort_change = (event: Event) => {
   } else {
     const el = event.target as HTMLSelectElement
     if (el.value === '1') sepItem.outlay = null
-    if (el.value === '2') sepItem.income = null
-    if (el.value === '3') {
-      sepItem.project_account_d1 = 17
-      sepItem.project_account_d2 = 62
-    } else {
-      sepItem.project_account_d1 = null
-      sepItem.project_account_d2 = null
+    if (el.value === '2') {
+      form.evidence = '0'
+      sepItem.income = null
     }
   }
   callAccount()
