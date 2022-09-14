@@ -147,6 +147,17 @@ const isModify = computed(() => {
   else return !!sepItem.pk
 })
 
+const callAccount = () => {
+  nextTick(() => {
+    const sort = form.sort
+    const d1 = form.account_d1 || null
+    const d2 = form.account_d2 || null
+    fetchFormAccD1List(sort)
+    fetchFormAccD2List(sort, d1)
+    fetchFormAccD3List(sort, d1, d2)
+  })
+}
+
 const sort_change = (event: Event) => {
   if (!form.is_separate) {
     if ((event.target as HTMLSelectElement).value === '1') {
@@ -208,6 +219,10 @@ const sepD1_change = () => {
   })
 }
 
+watch(sepItem, val => {
+  if (val.account_d1) sepD1_change()
+})
+
 const d2_change = () => {
   form.account_d3 = null
   callAccount()
@@ -219,17 +234,6 @@ const sepD2_change = () => {
     const sort = form.sort
     const d1 = sepItem.account_d1
     const d2 = sepItem.account_d2
-    fetchFormAccD3List(sort, d1, d2)
-  })
-}
-
-const callAccount = () => {
-  nextTick(() => {
-    const sort = form.sort
-    const d1 = form.account_d1 ? form.account_d1 : null
-    const d2 = form.account_d2 ? form.account_d2 : null
-    fetchFormAccD1List(sort)
-    fetchFormAccD2List(sort, d1)
     fetchFormAccD3List(sort, d1, d2)
   })
 }
@@ -770,8 +774,15 @@ onBeforeMount(() => {
                     거래계좌
                   </CFormLabel>
                   <CCol sm="8">
-                    <CFormSelect disabled>
+                    <CFormSelect v-model.number="form.bank_account" disabled>
                       <option value="">---------</option>
+                      <option
+                        v-for="ba in comBankList"
+                        :key="ba.pk"
+                        :value="ba.pk"
+                      >
+                        {{ ba.alias_name }}
+                      </option>
                     </CFormSelect>
                   </CCol>
                 </CRow>

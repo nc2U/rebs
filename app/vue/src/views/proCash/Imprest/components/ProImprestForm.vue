@@ -156,15 +156,28 @@ const callAccount = () => {
 }
 
 const sort_change = (event: Event) => {
-  const el = event.target as HTMLSelectElement
-  if (el.value === '1') form.outlay = null
-  if (el.value === '2') form.income = null
-  if (el.value === '3') {
-    form.project_account_d1 = 17
-    form.project_account_d2 = 62
+  if (!form.is_separate) {
+    const el = event.target as HTMLSelectElement
+    if (el.value === '1') form.outlay = null
+    if (el.value === '2') form.income = null
+    if (el.value === '3') {
+      form.project_account_d1 = 17
+      form.project_account_d2 = 62
+    } else {
+      form.project_account_d1 = null
+      form.project_account_d2 = null
+    }
   } else {
-    form.project_account_d1 = null
-    form.project_account_d2 = null
+    const el = event.target as HTMLSelectElement
+    if (el.value === '1') sepItem.outlay = null
+    if (el.value === '2') sepItem.income = null
+    if (el.value === '3') {
+      sepItem.project_account_d1 = 17
+      sepItem.project_account_d2 = 62
+    } else {
+      sepItem.project_account_d1 = null
+      sepItem.project_account_d2 = null
+    }
   }
   callAccount()
 }
@@ -662,12 +675,7 @@ onBeforeMount(() => {
                     거래계좌
                   </CFormLabel>
                   <CCol sm="8">
-                    <CFormSelect
-                      v-model.number="sepItem.bank_account"
-                      readonly
-                      required
-                      :disabled="sepItem.pk || form.is_separate"
-                    >
+                    <CFormSelect v-model.number="form.bank_account" disabled>
                       <option value="">---------</option>
                       <option
                         v-for="ba in imprestBAccount"
