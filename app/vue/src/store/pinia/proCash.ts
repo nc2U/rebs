@@ -2,7 +2,7 @@ import api from '@/api'
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { message, errorHandle } from '@/utils/helper'
-import { AccountSort } from '@/store/types/comCash'
+import { AccountSort, SepItems } from '@/store/types/comCash'
 import {
   ProjectAccountD1,
   ProjectAccountD2,
@@ -225,7 +225,9 @@ export const useProCash = defineStore('proCash', () => {
   const paymentStore = usePayment()
 
   const createPrCashBook = (
-    payload: ProjectCashBook & { filters: CashBookFilter },
+    payload: ProjectCashBook & { sepData: ProjectCashBook | null } & {
+      filters: CashBookFilter
+    },
   ) => {
     const { filters, ...formData } = payload
     api
@@ -257,7 +259,9 @@ export const useProCash = defineStore('proCash', () => {
   }
 
   const updatePrCashBook = (
-    payload: ProjectCashBook & { filters: CashBookFilter },
+    payload: ProjectCashBook & { sepData: ProjectCashBook | null } & {
+      filters: CashBookFilter
+    },
   ) => {
     const { pk, filters, ...formData } = payload
     api

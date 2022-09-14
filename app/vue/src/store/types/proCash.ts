@@ -58,30 +58,41 @@ export interface ExecAmountToBudget {
   month_sum: number
 }
 
-export interface ProjectCashBook {
-  pk?: number | null
-  project: number | null
-  sort: number | null
+export interface ProSepItems {
+  pk: number | null
   project_account_d1: number | null
   project_account_d2: number | null
-
-  is_separate?: boolean
   separated?: number | null
-  is_imprest?: boolean
+  is_imprest: boolean
+  content: string
+  trader: string
+  income?: number | null
+  outlay?: number | null
+  evidence: '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | ''
+  note: string
+}
 
+export interface ProjectCashBook extends ProSepItems {
+  // pk?: number | null
+  project: number | null
+  sort: number | null
+  // project_account_d1: number | null
+  // project_account_d2: number | null
+  is_separate?: boolean
+  // separated?: number | null
+  // is_imprest?: boolean
   sepItems?: []
   is_contract_payment?: boolean
   contract?: number | null
   installment_order?: number | null
   refund_contractor?: number | null
-
-  content: string
-  trader: string
+  // content: string
+  // trader: string
   bank_account: number | null
-  income?: number | null
-  outlay?: number | null
-  evidence?: string
+  // income?: number | null
+  // outlay?: number | null
+  // evidence?: string
   evidence_desc?: string
-  note: string
+  // note: string
   deal_date: string
 }
