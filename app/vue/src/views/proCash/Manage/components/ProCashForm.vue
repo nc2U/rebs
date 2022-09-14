@@ -516,7 +516,7 @@ onBeforeMount(() => {
         </CRow>
       </div>
 
-      <div v-if="form.is_separate && proCash">
+      <div v-if="form.is_separate">
         <hr v-if="proCash && proCash.sepItems.length > 0" />
         <CRow v-if="proCash && proCash.sepItems.length > 0" class="mb-3">
           <CCol>
