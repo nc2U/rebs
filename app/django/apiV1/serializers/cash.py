@@ -36,15 +36,22 @@ class BalanceByAccountSerializer(serializers.ModelSerializer):
         fields = ('bank_acc', 'date_inc', 'date_out', 'inc_sum', 'out_sum')
 
 
+class SepItemsinCashBookSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProjectCashBook
+        fields = ('pk', 'account_d1', 'account_d2', 'account_d3', 'separated',
+                  'content', 'trader', 'income', 'outlay', 'evidence', 'note',)
+
+
 class CashBookSerializer(serializers.ModelSerializer):
     evidence_desc = serializers.CharField(source='get_evidence_display', read_only=True)
 
     class Meta:
         model = CashBook
         fields = (
-            'pk', 'company', 'sort', 'account_d1', 'account_d2', 'account_d3', 'is_separate',
-            'separated', 'content', 'trader', 'bank_account', 'income', 'outlay', 'evidence',
-            'evidence_desc', 'note', 'deal_date', 'user', 'created_at', 'updated_at')
+            'pk', 'company', 'sort', 'account_d1', 'account_d2', 'account_d3',
+            'is_separate', 'separated', 'sepItems', 'content', 'trader', 'bank_account',
+            'income', 'outlay', 'evidence', 'evidence_desc', 'note', 'deal_date')
 
     @transaction.atomic
     def create(self, validated_data):
@@ -66,7 +73,7 @@ class ProjectBankAccountSerializer(serializers.ModelSerializer):
                   'open_date', 'note', 'inactive', 'directpay', 'is_imprest')
 
 
-class SeparatedItemsSerializer(serializers.ModelSerializer):
+class SepItemsinPrCashBookSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectCashBook
         fields = ('pk', 'project', 'project_account_d1', 'project_account_d2', 'separated',
@@ -87,7 +94,7 @@ class PrBalanceByAccountSerializer(serializers.ModelSerializer):
 
 class ProjectCashBookSerializer(serializers.ModelSerializer):
     evidence_desc = serializers.CharField(source='get_evidence_display', read_only=True)
-    sepItems = SeparatedItemsSerializer(many=True, read_only=True)
+    sepItems = SepItemsinPrCashBookSerializer(many=True, read_only=True)
 
     class Meta:
         model = ProjectCashBook
