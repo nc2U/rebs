@@ -184,11 +184,6 @@ const sepD1_change = () => {
   })
 }
 
-watch(form, val => {
-  if (val.project_account_d2 === 63) form.is_imprest = true
-  else form.is_imprest = false
-})
-
 const accountStore = useAccount()
 const allowedPeriod = computed(
   () => accountStore.superAuth || diffDate(props.imprest.deal_date) <= 30,
