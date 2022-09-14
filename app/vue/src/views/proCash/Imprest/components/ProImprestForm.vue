@@ -4,7 +4,7 @@ import { useAccount } from '@/store/pinia/account'
 import { useProCash } from '@/store/pinia/proCash'
 import { dateFormat, diffDate, numFormat, cutString } from '@/utils/baseMixins'
 import { write_project_cash } from '@/utils/pageAuth'
-import { ProjectCashBook } from '@/store/types/proCash'
+import { ProjectCashBook, ProSepItems } from '@/store/types/proCash'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
@@ -22,26 +22,17 @@ const emit = defineEmits(['multi-submit', 'on-delete', 'close'])
 const delModal = ref()
 const alertModal = ref()
 
-// const sepPk = ref<number | null>(null)
-let sepItem = reactive<ProjectCashBook>({
+let sepItem = reactive<ProSepItems>({
   pk: null,
-  project: null,
-  sort: null,
   project_account_d1: null,
   project_account_d2: null,
-
-  is_separate: false,
-  separated: null,
-
+  is_imprest: true,
   content: '',
   trader: '',
-  bank_account: null,
   income: null,
   outlay: null,
   evidence: '',
   note: '',
-  deal_date: '',
-  is_imprest: true,
 })
 
 const validated = ref(false)
@@ -65,6 +56,10 @@ const form = reactive<ProjectCashBook>({
   evidence: '',
   note: '',
   deal_date: dateFormat(new Date()),
+})
+
+watch(form, val => {
+  if (val.deal_date) form.deal_date = dateFormat(val.deal_date)
 })
 
 const formsCheck = computed(() => {
@@ -103,9 +98,7 @@ const requireItem = computed(
 
 const sepDisabled = computed(() => {
   const disabled = !!form.project_account_d1 || !!form.project_account_d2
-  return props.imprest
-    ? disabled || props.imprest.sepItems.length > 0
-    : disabled
+  return props.imprest ? disabled || props.imprest.sepItems.length : disabled
 })
 
 const sepSummary = computed(() => {
@@ -118,58 +111,13 @@ const sepSummary = computed(() => {
   const out =
     props.imprest.sepItems.length !== 0
       ? props.imprest.sepItems
-          .map((s: ProjectCashBook) => s.outlay || 0)
+          .map((s: ProSepItems) => s.outlay || 0)
           .reduce((res: number, el: number) => res + el, 0)
       : 0
   return [inc, out]
 })
 
-const accountStore = useAccount()
-const allowedPeriod = computed(
-  () =>
-    // 일반 사용자 편집 허용 기간(거래일 deal_date 로부터)
-    accountStore.superAuth || diffDate(props.imprest.deal_date) <= 30,
-)
-
-const sort_change = (event: Event) => {
-  const el = event.target as HTMLSelectElement
-  if (el.value === '1') form.outlay = null
-  if (el.value === '2') form.income = null
-  if (el.value === '3') {
-    form.project_account_d1 = 17
-    form.project_account_d2 = 62
-  } else {
-    form.project_account_d1 = null
-    form.project_account_d2 = null
-  }
-  callAccount()
-}
-const d1_change = () => {
-  form.project_account_d2 = null
-  callAccount()
-}
-
-const sepD1_change = () => {
-  sepItem.project_account_d2 = null
-  nextTick(() => {
-    const sort = form.sort
-    const d1 = sepItem.project_account_d1
-    fetchProFormAccD1List(sort)
-    fetchProFormAccD2List(d1, sort)
-  })
-}
-
-const callAccount = () => {
-  nextTick(() => {
-    const sort = form.sort
-    const d1 = sepItem.project_account_d1
-    fetchProFormAccD1List(sort)
-    fetchProFormAccD2List(d1, sort)
-  })
-}
-
 const sepUpdate = (sep: ProjectCashBook) => {
-  // sepPk.value = sep.pk
   sepItem.pk = sep.pk
   sepItem.project_account_d1 = sep.project_account_d1
   sepItem.project_account_d2 = sep.project_account_d2
@@ -198,19 +146,58 @@ const isModify = computed(() => {
   else return !!sepItem.pk
 })
 
+const callAccount = () => {
+  nextTick(() => {
+    const sort = form.sort
+    const d1 = form.project_account_d1
+    fetchProFormAccD1List(sort)
+    fetchProFormAccD2List(d1, sort)
+  })
+}
+
+const sort_change = (event: Event) => {
+  const el = event.target as HTMLSelectElement
+  if (el.value === '1') form.outlay = null
+  if (el.value === '2') form.income = null
+  if (el.value === '3') {
+    form.project_account_d1 = 17
+    form.project_account_d2 = 62
+  } else {
+    form.project_account_d1 = null
+    form.project_account_d2 = null
+  }
+  callAccount()
+}
+
+const d1_change = () => {
+  form.project_account_d2 = null
+  callAccount()
+}
+
+const sepD1_change = () => {
+  sepItem.project_account_d2 = null
+  nextTick(() => {
+    const sort = form.sort
+    const d1 = sepItem.project_account_d1
+    fetchProFormAccD1List(sort)
+    fetchProFormAccD2List(d1, sort)
+  })
+}
+
 watch(form, val => {
-  if (val.deal_date) form.deal_date = dateFormat(val.deal_date)
+  if (val.project_account_d2 === 63) form.is_imprest = true
+  else form.is_imprest = false
 })
+
+const accountStore = useAccount()
+const allowedPeriod = computed(
+  () => accountStore.superAuth || diffDate(props.imprest.deal_date) <= 30,
+)
 
 const onSubmit = (event: Event) => {
   if (isValidate(event)) {
     validated.value = true
   } else {
-    // if (form.is_separate) {
-    //   sepItem.sort = form.sort
-    //   sepItem.bank_account = form.bank_account
-    //   sepItem.deal_date = form.deal_date
-    // }
     const payload = !form.is_separate
       ? { formData: form, sepData: null }
       : { formData: form, sepData: sepItem }
@@ -251,12 +238,6 @@ const deleteObject = () => {
 
 onBeforeMount(() => {
   if (props.imprest) {
-    sepItem.project = props.imprest.project
-    sepItem.sort = props.imprest.sort
-    sepItem.bank_account = props.imprest.bank_account
-    sepItem.deal_date = props.imprest.deal_date
-    sepItem.separated = props.imprest.pk
-
     form.pk = props.imprest.pk
     form.project = props.imprest.project
     form.sort = props.imprest.sort

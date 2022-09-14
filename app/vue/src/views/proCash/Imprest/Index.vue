@@ -3,7 +3,10 @@ import { computed, ref, onBeforeMount } from 'vue'
 import { pageTitle, navMenu } from '@/views/proCash/_menu/headermixin'
 import { useProject } from '@/store/pinia/project'
 import { CashBookFilter, useProCash } from '@/store/pinia/proCash'
-import { ProjectCashBook } from '@/store/types/proCash'
+import {
+  ProjectCashBook as PrCashBook,
+  ProSepItems,
+} from '@/store/types/proCash'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from '@/views/proCash/Imprest/components/ListController.vue'
@@ -44,11 +47,17 @@ const fetchProjectImprestList = (payload: { project: number }) =>
   proCashStore.fetchProjectImprestList(payload)
 
 const createPrCashBook = (
-  payload: ProjectCashBook & { filters: CashBookFilter },
+  payload: PrCashBook & { sepData: PrCashBook | null } & {
+    filters: CashBookFilter
+  },
 ) => proCashStore.createPrCashBook(payload)
+
 const updatePrCashBook = (
-  payload: ProjectCashBook & { filters: CashBookFilter },
+  payload: PrCashBook & { sepData: PrCashBook | null } & {
+    filters: CashBookFilter
+  },
 ) => proCashStore.updatePrCashBook(payload)
+
 const deletePrCashBook = (
   payload: { pk: number; project: number } & {
     filters?: CashBookFilter
@@ -91,7 +100,9 @@ const listFiltering = (payload: CashBookFilter) => {
 }
 
 const onCreate = (
-  payload: ProjectCashBook & { filters: CashBookFilter } & {
+  payload: PrCashBook & { sepData: PrCashBook | null } & {
+    filters: CashBookFilter
+  } & {
     bank_account_to?: number
   },
 ) => {
@@ -108,25 +119,25 @@ const onCreate = (
   } else createPrCashBook(payload)
 }
 
-const onUpdate = (payload: ProjectCashBook & { filters: CashBookFilter }) =>
-  updatePrCashBook(payload)
+const onUpdate = (
+  payload: PrCashBook & { sepData: PrCashBook | null } & {
+    filters: CashBookFilter
+  },
+) => updatePrCashBook(payload)
 
 const multiSubmit = (payload: {
-  formData: ProjectCashBook
-  sepData: ProjectCashBook | null
+  formData: PrCashBook
+  sepData: PrCashBook | null
 }) => {
-  const { formData, sepData } = payload
-
-  const mainFormData = { ...{ filters: dataFilter.value }, ...formData }
-
-  if (formData.pk) onUpdate(mainFormData)
-  else onCreate(mainFormData)
-
-  if (sepData) {
-    const separatedData = { ...{ filters: dataFilter.value }, ...sepData }
-    if (sepData.pk) onUpdate(separatedData)
-    else onCreate(separatedData)
+  const { formData, ...sepData } = payload
+  const submitData = {
+    ...formData,
+    ...sepData,
+    ...{ filters: dataFilter.value },
   }
+
+  if (formData.pk) onUpdate(submitData)
+  else onCreate(submitData)
 }
 
 const onDelete = (payload: { pk: number; project: number }) =>

@@ -4,7 +4,7 @@ import { useProCash } from '@/store/pinia/proCash'
 import { useAccount } from '@/store/pinia/account'
 import { diffDate, dateFormat, cutString, numFormat } from '@/utils/baseMixins'
 import { write_project_cash } from '@/utils/pageAuth'
-import { ProjectCashBook } from '@/store/types/proCash'
+import { ProjectCashBook, ProSepItems } from '@/store/types/proCash'
 import { isValidate } from '@/utils/helper'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
@@ -22,24 +22,17 @@ const emit = defineEmits(['multi-submit', 'on-delete', 'close'])
 const delModal = ref()
 const alertModal = ref()
 
-const sepItem = reactive<ProjectCashBook>({
+const sepItem = reactive<ProSepItems>({
   pk: null,
-  project: null,
-  sort: null,
   project_account_d1: null,
   project_account_d2: null,
-
-  is_separate: false,
-  separated: null,
-
+  is_imprest: false,
   content: '',
   trader: '',
-  bank_account: null,
   income: null,
   outlay: null,
   evidence: '',
   note: '',
-  deal_date: '',
 })
 
 const validated = ref(false)
@@ -105,9 +98,7 @@ const requireItem = computed(
 
 const sepDisabled = computed(() => {
   const disabled = !!form.project_account_d1 || !!form.project_account_d2
-  return props.proCash
-    ? disabled || props.proCash.sepItems.length > 0
-    : disabled
+  return props.proCash ? disabled || props.proCash.sepItems.length : disabled
 })
 
 const sepSummary = computed(() => {
@@ -120,7 +111,7 @@ const sepSummary = computed(() => {
   const out =
     props.proCash.sepItems.length !== 0
       ? props.proCash.sepItems
-          .map((s: ProjectCashBook) => s.outlay)
+          .map((s: ProSepItems) => s.outlay)
           .reduce((res: number, el: number) => res + el)
       : 0
   return [inc, out]
@@ -155,6 +146,15 @@ const isModify = computed(() => {
   else return !!sepItem.pk
 })
 
+const callAccount = () => {
+  nextTick(() => {
+    const sort = form.sort
+    const d1 = form.project_account_d1
+    fetchProFormAccD1List(sort)
+    fetchProFormAccD2List(d1, sort)
+  })
+}
+
 const sort_change = (event: Event) => {
   const el = event.target as HTMLSelectElement
   if (el.value === '1') form.outlay = null
@@ -184,15 +184,6 @@ const sepD1_change = () => {
   })
 }
 
-const callAccount = () => {
-  nextTick(() => {
-    const sort = form.sort
-    const d1 = sepItem.project_account_d1
-    fetchProFormAccD1List(sort)
-    fetchProFormAccD2List(d1, sort)
-  })
-}
-
 watch(form, val => {
   if (val.project_account_d2 === 63) form.is_imprest = true
   else form.is_imprest = false
@@ -207,11 +198,6 @@ const onSubmit = (event: Event) => {
   if (isValidate(event)) {
     validated.value = true
   } else {
-    // if (form.is_separate) {
-    //   sepItem.sort = form.sort
-    //   sepItem.bank_account = form.bank_account
-    //   sepItem.deal_date = form.deal_date
-    // }
     const payload = !form.is_separate
       ? { formData: form, sepData: null }
       : { formData: form, sepData: sepItem }
@@ -252,12 +238,6 @@ const deleteObject = () => {
 
 onBeforeMount(() => {
   if (props.proCash) {
-    sepItem.project = props.proCash.project
-    sepItem.sort = props.proCash.sort
-    sepItem.bank_account = props.proCash.bank_account
-    sepItem.deal_date = props.proCash.deal_date
-    sepItem.separated = props.proCash.pk
-
     form.pk = props.proCash.pk
     form.project = props.proCash.project
     form.sort = props.proCash.sort
