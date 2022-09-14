@@ -136,8 +136,8 @@ const multiSubmit = (payload: {
     ...{ filters: dataFilter.value },
   }
 
-  if (formData.pk) console.log(submitData) // onUpdate(submitData)
-  else console.log(submitData) //  onCreate(submitData)
+  if (formData.pk) onUpdate(submitData)
+  else onCreate(submitData)
 }
 
 const onDelete = (payload: { pk: number; project: number }) =>
