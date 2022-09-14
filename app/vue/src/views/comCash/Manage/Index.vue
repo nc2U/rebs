@@ -2,15 +2,18 @@
 import { computed, onBeforeMount, ref } from 'vue'
 import { navMenu, pageTitle } from '@/views/comCash/_menu/headermixin'
 import { useCompany } from '@/store/pinia/company'
-import { useComCash, DataFilter as Filter } from '@/store/pinia/comCash'
-import { CashBook } from '@/store/types/comCash'
+import {
+  useComCash,
+  DataFilter as Filter,
+  DataFilter,
+} from '@/store/pinia/comCash'
+import { CashBook, SepItems } from '@/store/types/comCash'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from '@/views/comCash/Manage/components/ListController.vue'
 import AddCash from '@/views/comCash/Manage/components/AddCash.vue'
 import TableTitleRow from '@/components/TableTitleRow.vue'
 import CashesList from '@/views/comCash/Manage/components/CashesList.vue'
-import { CashBookFilter } from '@/store/pinia/proCash'
 
 const listControl = ref()
 
@@ -19,11 +22,11 @@ const dataFilter = ref<Filter>({
   company: null,
   from_date: '',
   to_date: '',
-  sort: '',
-  account_d1: '',
-  account_d2: '',
-  account_d3: '',
-  bank_account: '',
+  sort: null,
+  account_d1: null,
+  account_d2: null,
+  account_d3: null,
+  bank_account: null,
   search: '',
 })
 
@@ -37,20 +40,24 @@ const fetchAccSortList = () => comCashStore.fetchAccSortList()
 const fetchAllAccD1List = () => comCashStore.fetchAllAccD1List()
 const fetchAllAccD2List = () => comCashStore.fetchAllAccD2List()
 const fetchAllAccD3List = () => comCashStore.fetchAllAccD3List()
-const fetchFormAccD1List = (sort: string) =>
+const fetchFormAccD1List = (sort: number | null) =>
   comCashStore.fetchFormAccD1List(sort)
-const fetchFormAccD2List = (sort: string, d1: string) =>
+const fetchFormAccD2List = (sort: number | null, d1: number | null) =>
   comCashStore.fetchFormAccD2List(sort, d1)
-const fetchFormAccD3List = (sort: string, d1: string, d2: string) =>
-  comCashStore.fetchFormAccD3List(sort, d1, d2)
+const fetchFormAccD3List = (
+  sort: number | null,
+  d1: number | null,
+  d2: number | null,
+) => comCashStore.fetchFormAccD3List(sort, d1, d2)
 const fetchComBankAccList = (pk: number) => comCashStore.fetchComBankAccList(pk)
 
 const fetchCashBookList = (payload: Filter) =>
   comCashStore.fetchCashBookList(payload)
-const createCashBook = (payload: CashBook) =>
+const createCashBook = (payload: CashBook & { sepData: SepItems | null }) =>
   comCashStore.createCashBook(payload)
-const updateCashBook = (payload: CashBook) =>
-  comCashStore.updateCashBook(payload)
+const updateCashBook = (
+  payload: CashBook & { sepData: SepItems | null } & { filters: DataFilter },
+) => comCashStore.updateCashBook(payload)
 const deleteCashBook = (payload: CashBook & { filters: Filter }) =>
   comCashStore.deleteCashBook(payload)
 
@@ -72,18 +79,20 @@ const pageSelect = (page: number) => listControl.value.listFiltering(page)
 const listFiltering = (payload: Filter) => {
   if (company.value) payload.company = company.value
   dataFilter.value = payload
-  const sort = payload.sort ? payload.sort : ''
-  const d1 = payload.account_d1 ? payload.account_d1 : ''
-  const d2 = payload.account_d2 ? payload.account_d2 : ''
-  fetchFormAccD1List(sort)
-  fetchFormAccD2List(sort, d1)
-  fetchFormAccD3List(sort, d1, d2)
+  const sort = payload.sort
+  const d1 = payload.account_d1
+  const d2 = payload.account_d2
+  fetchFormAccD1List(sort || null)
+  fetchFormAccD2List(sort || null, d1 || null)
+  fetchFormAccD3List(sort || null, d1 || null, d2 || null)
 
   fetchCashBookList(payload)
 }
 
 const onCreate = (
-  payload: CashBook & { filters: Filter } & { bank_account_to?: number },
+  payload: CashBook & { sepData: SepItems | null } & {
+    bank_account_to?: number
+  },
 ) => {
   payload.company = company.value
   if (payload.sort === 3 && payload.bank_account_to) {
@@ -98,25 +107,20 @@ const onCreate = (
   } else createCashBook(payload)
 }
 
-const onUpdate = (payload: CashBook & { filters: Filter }) =>
-  updateCashBook(payload)
+const onUpdate = (
+  payload: CashBook & { sepData: SepItems | null } & { filters: Filter },
+) => updateCashBook(payload)
 
 const multiSubmit = (payload: {
   formData: CashBook
-  sepData: CashBook | null
+  sepData: SepItems | null
 }) => {
-  const { formData, sepData } = payload
+  const { formData, ...sepData } = payload
+  const createData = { ...formData, ...sepData }
+  const updateData = { ...{ filters: dataFilter.value }, ...createData }
 
-  const mainFormData = { ...{ filters: dataFilter.value }, ...formData }
-
-  if (formData.pk) onUpdate(mainFormData)
-  else onCreate(mainFormData)
-
-  if (sepData) {
-    const separatedData = { ...{ filters: dataFilter.value }, ...sepData }
-    if (sepData.pk) onUpdate(separatedData)
-    else onCreate(separatedData)
-  }
+  if (formData.pk) onUpdate(updateData)
+  else onCreate(createData)
 }
 
 const onDelete = (payload: CashBook) =>
@@ -128,9 +132,9 @@ onBeforeMount(() => {
   fetchAllAccD1List()
   fetchAllAccD2List()
   fetchAllAccD3List()
-  fetchFormAccD1List('')
-  fetchFormAccD2List('', '')
-  fetchFormAccD3List('', '', '')
+  fetchFormAccD1List(null)
+  fetchFormAccD2List(null, null)
+  fetchFormAccD3List(null, null, null)
   fetchComBankAccList(initComId.value)
   fetchCashBookList({ company: initComId.value })
   dataFilter.value.company = initComId.value

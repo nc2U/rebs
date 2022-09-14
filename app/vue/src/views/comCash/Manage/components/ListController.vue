@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, reactive, watch, nextTick, onBeforeMount } from 'vue'
+import { computed, reactive, watch, nextTick } from 'vue'
 import { useComCash, DataFilter } from '@/store/pinia/comCash'
 import { numFormat, dateFormat } from '@/utils/baseMixins'
 import { maska as vMaska } from 'maska'
@@ -12,23 +12,23 @@ const form = reactive<DataFilter>({
   company: null,
   from_date: '',
   to_date: '',
-  sort: '',
-  account_d1: '',
-  account_d2: '',
-  account_d3: '',
-  bank_account: '',
+  sort: null,
+  account_d1: null,
+  account_d2: null,
+  account_d3: null,
+  bank_account: null,
   search: '',
 })
 
 const formsCheck = computed(() => {
-  const a = form.from_date === ''
-  const b = form.to_date === ''
-  const c = form.sort === ''
-  const d = form.account_d1 === ''
-  const e = form.account_d2 === ''
-  const f = form.account_d3 === ''
-  const g = form.bank_account === ''
-  const h = form.search === ''
+  const a = !form.from_date
+  const b = !form.to_date
+  const c = !form.sort
+  const d = !form.account_d1
+  const e = !form.account_d2
+  const f = !form.account_d3
+  const g = !form.bank_account
+  const h = !form.search
   return a && b && c && d && e && f && g && h
 })
 
@@ -53,18 +53,18 @@ watch(form, val => {
 //   methods: {
 const sortSelect = () => {
   listFiltering(1)
-  form.account_d1 = ''
-  form.account_d2 = ''
-  form.account_d3 = ''
+  form.account_d1 = null
+  form.account_d2 = null
+  form.account_d3 = null
 }
 const accountD1Select = () => {
   listFiltering(1)
-  form.account_d2 = ''
-  form.account_d3 = ''
+  form.account_d2 = null
+  form.account_d3 = null
 }
 const accountD2Select = () => {
   listFiltering(1)
-  form.account_d3 = ''
+  form.account_d3 = null
 }
 
 const listFiltering = (page = 1) => {
@@ -79,11 +79,11 @@ defineExpose({ listFiltering })
 const resetForm = () => {
   form.from_date = ''
   form.to_date = ''
-  form.sort = ''
-  form.account_d1 = ''
-  form.account_d2 = ''
-  form.account_d3 = ''
-  form.bank_account = ''
+  form.sort = null
+  form.account_d1 = null
+  form.account_d2 = null
+  form.account_d3 = null
+  form.bank_account = null
   form.search = ''
   listFiltering(1)
 }

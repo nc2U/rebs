@@ -18,11 +18,11 @@ export type DataFilter = {
   company?: number | null
   from_date?: string
   to_date?: string
-  sort?: string
-  account_d1?: string
-  account_d2?: string
-  account_d3?: string
-  bank_account?: string
+  sort?: number | null
+  account_d1?: number | null
+  account_d2?: number | null
+  account_d3?: number | null
+  bank_account?: number | null
   search?: string
 }
 
@@ -201,7 +201,7 @@ export const useComCash = defineStore('comCash', () => {
   const cashesPages = (itemsPerPage: number) =>
     Math.ceil(cashBookCount.value / itemsPerPage)
 
-  const fetchCashBookList = (payload: any) => {
+  const fetchCashBookList = (payload: DataFilter) => {
     const { company } = payload
     let url = `/cashbook/?company=${company}`
     if (payload.from_date) url += `&from_deal_date=${payload.from_date}`

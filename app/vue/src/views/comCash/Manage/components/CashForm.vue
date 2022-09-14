@@ -2,7 +2,7 @@
 import { ref, reactive, computed, nextTick, onBeforeMount, watch } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { useComCash } from '@/store/pinia/comCash'
-import { CashBook } from '@/store/types/comCash'
+import { CashBook, SepItems } from '@/store/types/comCash'
 import { write_company_cash } from '@/utils/pageAuth'
 import { isValidate } from '@/utils/helper'
 import { dateFormat, diffDate, cutString, numFormat } from '@/utils/baseMixins'
@@ -16,25 +16,25 @@ const emit = defineEmits(['multi-submit', 'on-delete', 'close'])
 const delModal = ref()
 const alertModal = ref()
 
-const sepItem = reactive<CashBook>({
+const sepItem = reactive<SepItems>({
   pk: null,
-  company: null,
-  sort: null,
+  // company: null,
+  // sort: null,
   account_d1: null,
   account_d2: null,
   account_d3: null,
 
-  is_separate: false,
+  // is_separate: false,
   separated: null,
 
   content: '',
   trader: '',
-  bank_account: null,
+  // bank_account: null,
   income: null,
   outlay: null,
   evidence: '',
   note: '',
-  deal_date: '',
+  // deal_date: '',
 })
 
 const validated = ref(false)
@@ -106,7 +106,7 @@ const requireItem = computed(
 
 const sepDisabled = computed(() => {
   const disabled = !!form.account_d1 || !!form.account_d2 || !!form.account_d3
-  return props.cash ? disabled || props.cash.sepItems.length : disabled
+  return props.cash ? disabled || props.cash.sepItems.length === 0 : disabled
 })
 
 const sepSummary = computed(() => {
@@ -277,10 +277,10 @@ const deleteObject = () => {
 
 onBeforeMount(() => {
   if (props.cash) {
-    sepItem.company = props.cash.company
-    sepItem.sort = props.cash.sort
-    sepItem.bank_account = props.cash.bank_account
-    sepItem.deal_date = props.cash.deal_date
+    // sepItem.company = props.cash.company
+    // sepItem.sort = props.cash.sort
+    // sepItem.bank_account = props.cash.bank_account
+    // sepItem.deal_date = props.cash.deal_date
     sepItem.separated = props.cash.pk
 
     form.pk = props.cash.pk
@@ -289,6 +289,8 @@ onBeforeMount(() => {
     form.account_d1 = props.cash.account_d1
     form.account_d2 = props.cash.account_d2
     form.account_d3 = props.cash.account_d3
+    form.is_separate = props.cash.is_separate
+    form.separated = props.cash.separated
     form.content = props.cash.content
     form.trader = props.cash.trader
     form.bank_account = props.cash.bank_account
@@ -569,9 +571,9 @@ onBeforeMount(() => {
         </CRow>
       </div>
 
-      <div v-if="form.is_separate && cash">
-        <hr v-if="cash && cash.sepItems.length > 0" />
-        <CRow v-if="cash && cash.sepItems.length > 0" class="mb-3">
+      <div v-if="form.is_separate">
+        <hr v-if="cash && cash.sepItems.length" />
+        <CRow v-if="cash && cash.sepItems.length" class="mb-3">
           <CCol>
             <strong>
               <CIcon name="cilDescription" class="mr-2" />
@@ -617,13 +619,14 @@ onBeforeMount(() => {
 
         <hr />
         <CRow class="mb-3">
-          <CCol sm="1"></CCol>
+          <CCol sm="1" />
           <CCol sm="11">
             <CRow>
+              <CCol sm="6" />
               <CCol sm="6">
                 <CRow>
                   <CFormLabel class="col-sm-4 col-form-label">
-                    계정[상위분류]
+                    계정[대분류]
                   </CFormLabel>
                   <CCol sm="8">
                     <CFormSelect
@@ -643,10 +646,18 @@ onBeforeMount(() => {
                   </CCol>
                 </CRow>
               </CCol>
+            </CRow>
+          </CCol>
+        </CRow>
+
+        <CRow class="mb-3">
+          <CCol sm="1"></CCol>
+          <CCol sm="11">
+            <CRow>
               <CCol sm="6">
                 <CRow>
                   <CFormLabel class="col-sm-4 col-form-label">
-                    계정[하위분류]
+                    계정[중분류]
                   </CFormLabel>
                   <CCol sm="8">
                     <CFormSelect
@@ -666,9 +677,33 @@ onBeforeMount(() => {
                   </CCol>
                 </CRow>
               </CCol>
+              <CCol sm="6">
+                <CRow>
+                  <CFormLabel class="col-sm-4 col-form-label">
+                    계정[소분류]
+                  </CFormLabel>
+                  <CCol sm="8">
+                    <CFormSelect
+                      v-model.number="sepItem.account_d3"
+                      :disabled="!sepItem.account_d2"
+                      required
+                    >
+                      <option value="">---------</option>
+                      <option
+                        v-for="d3 in formAccD3List"
+                        :key="d3.pk"
+                        :value="d3.pk"
+                      >
+                        {{ d3.name }}
+                      </option>
+                    </CFormSelect>
+                  </CCol>
+                </CRow>
+              </CCol>
             </CRow>
           </CCol>
         </CRow>
+
         <CRow class="mb-3">
           <CCol sm="1"></CCol>
           <CCol sm="11">
@@ -712,7 +747,7 @@ onBeforeMount(() => {
         </CRow>
 
         <CRow class="mb-3">
-          <CCol sm="1"></CCol>
+          <CCol sm="1" />
           <CCol sm="11">
             <CRow>
               <CCol sm="6">
@@ -721,20 +756,8 @@ onBeforeMount(() => {
                     거래계좌
                   </CFormLabel>
                   <CCol sm="8">
-                    <CFormSelect
-                      v-model.number="sepItem.bank_account"
-                      readonly
-                      required
-                      :disabled="sepItem.pk || form.is_separate"
-                    >
+                    <CFormSelect disabled>
                       <option value="">---------</option>
-                      <option
-                        v-for="ba in comBankList"
-                        :key="ba.pk"
-                        :value="ba.pk"
-                      >
-                        {{ ba.alias_name }}
-                      </option>
                     </CFormSelect>
                   </CCol>
                 </CRow>
@@ -765,7 +788,7 @@ onBeforeMount(() => {
         </CRow>
 
         <CRow class="mb-3">
-          <CCol sm="1"></CCol>
+          <CCol sm="1" />
           <CCol sm="11">
             <CRow>
               <CCol sm="6">
