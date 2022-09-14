@@ -6,6 +6,7 @@ from cash.models import (BankCode, CompanyBankAccount, ProjectBankAccount,
                          InstallmentPaymentOrder, DownPayment, OverDueRule)
 from contract.models import OrderGroup, Contract, Contractor
 from project.models import UnitType
+from rebs.models import AccountSort, AccountSubD1, AccountSubD2, AccountSubD3
 
 from .project import SimpleUnitTypeSerializer
 
@@ -56,14 +57,68 @@ class CashBookSerializer(serializers.ModelSerializer):
 
     @transaction.atomic
     def create(self, validated_data):
+        # 1. 거래정보 입력
         cashbook = CashBook.objects.create(**validated_data)
         cashbook.save()
+
+        # 2. sep 정보 확인
+        sepData = self.initial_data.get('sepData')
+        if sepData and not sepData.get('pk'):
+            sepCashbook_company = cashbook.company
+            sepCashbook_sort = cashbook.sort
+            sepCashbook_account_d1 = AccountSubD1.objects.get(pk=sepData.get('account_d1'))
+            sepCashbook_account_d2 = AccountSubD2.objects.get(pk=sepData.get('account_d2'))
+            sepCashbook_account_d3 = AccountSubD3.objects.get(pk=sepData.get('account_d3'))
+            sepCashbook_separated = cashbook
+            sepCashbook_content = sepData.get('content')
+            sepCashbook_trader = sepData.get('trader')
+            sepCashbook_bank_account = cashbook.bank_account
+            sepCashbook_income = sepData.get('income')
+            sepCashbook_outlay = sepData.get('outlay')
+            sepCashbook_evidence = sepData.get('evidence')
+            sepCashbook_note = sepData.get('note')
+            sepCashbook_deal_date = cashbook.deal_date
+            sepCashbook = CashBook(company=sepCashbook_company,
+                                   sort=sepCashbook_sort,
+                                   account_d1=sepCashbook_account_d1,
+                                   account_d2=sepCashbook_account_d2,
+                                   account_d3=sepCashbook_account_d3,
+                                   separated=sepCashbook_separated,
+                                   content=sepCashbook_content,
+                                   trader=sepCashbook_trader,
+                                   bank_account=sepCashbook_bank_account,
+                                   income=sepCashbook_income,
+                                   outlay=sepCashbook_outlay,
+                                   evidence=sepCashbook_evidence,
+                                   note=sepCashbook_note,
+                                   deal_date=sepCashbook_deal_date)
+            sepCashbook.save()
         return cashbook
 
     @transaction.atomic
     def update(self, instance, validated_data):
         instance.__dict__.update(**validated_data)
         instance.save()
+
+        # 2. sep 정보 확인 후 저장
+        sepData = self.initial_data.get('sepData')
+        if sepData and sepData.get('pk'):
+            sepCashbook = CashBook.objects.get(pk=sepData.get('pk'))
+            sepCashbook.company = instance.company
+            sepCashbook.sort = instance.sort
+            sepCashbook.account_d1 = AccountSubD1.objects.get(pk=sepData.get('account_d1'))
+            sepCashbook.account_d2 = AccountSubD2.objects.get(pk=sepData.get('account_d2'))
+            sepCashbook.account_d3 = AccountSubD3.objects.get(pk=sepData.get('account_d3'))
+            sepCashbook.separated = instance
+            sepCashbook.content = sepData.get('content')
+            sepCashbook.trader = sepData.get('trader')
+            sepCashbook.bank_account = instance.bank_account
+            sepCashbook.income = sepData.get('income')
+            sepCashbook.outlay = sepData.get('outlay')
+            sepCashbook.evidence = sepData.get('evidence')
+            sepCashbook.note = sepData.get('note')
+            sepCashbook.deal_date = instance.deal_date
+            sepCashbook.save()
         return instance
 
 
