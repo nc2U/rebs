@@ -36,15 +36,16 @@ class BalanceByAccountSerializer(serializers.ModelSerializer):
         fields = ('bank_acc', 'date_inc', 'date_out', 'inc_sum', 'out_sum')
 
 
-class SepItemsinCashBookSerializer(serializers.ModelSerializer):
+class SepItemsInCashBookSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ProjectCashBook
+        model = CashBook
         fields = ('pk', 'account_d1', 'account_d2', 'account_d3', 'separated',
-                  'content', 'trader', 'income', 'outlay', 'evidence', 'note',)
+                  'content', 'trader', 'income', 'outlay', 'evidence', 'note')
 
 
 class CashBookSerializer(serializers.ModelSerializer):
     evidence_desc = serializers.CharField(source='get_evidence_display', read_only=True)
+    sepItems = SepItemsInCashBookSerializer(many=True, read_only=True)
 
     class Meta:
         model = CashBook
@@ -73,7 +74,7 @@ class ProjectBankAccountSerializer(serializers.ModelSerializer):
                   'open_date', 'note', 'inactive', 'directpay', 'is_imprest')
 
 
-class SepItemsinPrCashBookSerializer(serializers.ModelSerializer):
+class SepItemsInPrCashBookSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectCashBook
         fields = ('pk', 'project', 'project_account_d1', 'project_account_d2', 'separated',
@@ -94,7 +95,7 @@ class PrBalanceByAccountSerializer(serializers.ModelSerializer):
 
 class ProjectCashBookSerializer(serializers.ModelSerializer):
     evidence_desc = serializers.CharField(source='get_evidence_display', read_only=True)
-    sepItems = SepItemsinPrCashBookSerializer(many=True, read_only=True)
+    sepItems = SepItemsInPrCashBookSerializer(many=True, read_only=True)
 
     class Meta:
         model = ProjectCashBook
