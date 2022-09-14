@@ -10,6 +10,7 @@ import {
   CompanyBank,
   BalanceByAccount,
   CashBook,
+  SepItems,
 } from '@/store/types/comCash'
 
 export type DataFilter = {
@@ -223,7 +224,7 @@ export const useComCash = defineStore('comCash', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const createCashBook = (payload: CashBook) =>
+  const createCashBook = (payload: CashBook & { sepData: SepItems | null }) =>
     api
       .post(`/cashbook/`, payload)
       .then(res =>
@@ -231,10 +232,12 @@ export const useComCash = defineStore('comCash', () => {
       )
       .catch(err => errorHandle(err.response.data))
 
-  const updateCashBook = (payload: CashBook & any) => {
-    const { pk, filters, ...formData } = payload
+  const updateCashBook = (
+    payload: CashBook & { sepData: SepItems | null } & { filters: DataFilter },
+  ) => {
+    const { filters, ...formData } = payload
     return api
-      .put(`/cashbook/${pk}/`, formData)
+      .put(`/cashbook/${formData.pk}/`, formData)
       .then(res =>
         fetchCashBookList({
           company: res.data.company,
