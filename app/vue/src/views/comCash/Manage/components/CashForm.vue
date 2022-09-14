@@ -343,7 +343,7 @@ onBeforeMount(() => {
                   <option value="">---------</option>
                   <option value="1">입금</option>
                   <option value="2">출금</option>
-                  <option value="3">대체</option>
+                  <option v-if="!form.is_separate" value="3">대체</option>
                 </CFormSelect>
               </CCol>
             </CRow>
@@ -622,7 +622,20 @@ onBeforeMount(() => {
           <CCol sm="1" />
           <CCol sm="11">
             <CRow>
-              <CCol sm="6" />
+              <CCol sm="6">
+                <CRow>
+                  <CFormLabel class="col-sm-4 col-form-label">구분</CFormLabel>
+                  <CCol sm="8">
+                    <CFormSelect v-model.number="form.sort" disabled>
+                      <option value="">---------</option>
+                      <option value="1">입금</option>
+                      <option value="2">출금</option>
+                      <option value="3">대체</option>
+                    </CFormSelect>
+                  </CCol>
+                </CRow>
+              </CCol>
+
               <CCol sm="6">
                 <CRow>
                   <CFormLabel class="col-sm-4 col-form-label">

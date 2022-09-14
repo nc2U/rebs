@@ -289,7 +289,7 @@ onBeforeMount(() => {
                   <option value="">---------</option>
                   <option value="1">입금</option>
                   <option value="2">출금</option>
-                  <option value="3">대체</option>
+                  <option v-if="!form.is_separate" value="3">대체</option>
                 </CFormSelect>
               </CCol>
             </CRow>
