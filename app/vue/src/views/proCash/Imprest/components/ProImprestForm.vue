@@ -169,6 +169,8 @@ const sort_change = (event: Event) => {
     }
   } else {
     const el = event.target as HTMLSelectElement
+    sepItem.project_account_d1 = null
+    sepItem.project_account_d2 = null
     if (el.value === '1') sepItem.outlay = null
     if (el.value === '2') {
       form.evidence = '0'
@@ -579,6 +581,7 @@ onBeforeMount(() => {
                     <CFormSelect
                       v-model.number="sepItem.project_account_d1"
                       required
+                      :disabled="!form.sort"
                       @change="sepD1_change"
                     >
                       <option value="">---------</option>

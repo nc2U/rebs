@@ -159,18 +159,20 @@ const callAccount = () => {
 }
 
 const sort_change = (event: Event) => {
+  const el = event.target as HTMLSelectElement
+
   if (!form.is_separate) {
-    if ((event.target as HTMLSelectElement).value === '1') {
+    if (el.value === '1') {
       form.account_d1 = 4
       form.account_d2 = null
       form.account_d3 = null
       form.outlay = null
-    } else if ((event.target as HTMLSelectElement).value === '2') {
+    } else if (el.value === '2') {
       form.account_d1 = 5
       form.account_d2 = null
       form.account_d3 = null
       form.income = null
-    } else if ((event.target as HTMLSelectElement).value === '3') {
+    } else if (el.value === '3') {
       form.account_d1 = 6
       form.account_d2 = 19
       form.account_d3 = 128
@@ -179,25 +181,28 @@ const sort_change = (event: Event) => {
       form.account_d2 = null
       form.account_d3 = null
     }
+    callAccount()
   } else {
-    if ((event.target as HTMLSelectElement).value === '1') {
+    if (el.value === '1') {
       sepItem.account_d1 = 4
       sepItem.account_d2 = null
       sepItem.account_d3 = null
       sepItem.outlay = null
-    } else if ((event.target as HTMLSelectElement).value === '2') {
+      fetchFormAccD2List(1, 4)
+    } else if (el.value === '2') {
       form.evidence = '0'
       sepItem.account_d1 = 5
       sepItem.account_d2 = null
       sepItem.account_d3 = null
       sepItem.income = null
+      fetchFormAccD2List(2, 5)
     } else {
       sepItem.account_d1 = null
       sepItem.account_d2 = null
       sepItem.account_d3 = null
+      callAccount()
     }
   }
-  callAccount()
 }
 
 const d1_change = () => {
@@ -208,6 +213,7 @@ const d1_change = () => {
 
 const sepD1_change = () => {
   sepItem.account_d2 = null
+  sepItem.account_d3 = null
   nextTick(() => {
     const sort = form.sort
     const d1 = sepItem.account_d1
@@ -215,10 +221,6 @@ const sepD1_change = () => {
     fetchFormAccD2List(sort, d1)
   })
 }
-
-watch(sepItem, val => {
-  if (val.account_d1) sepD1_change()
-})
 
 const d2_change = () => {
   form.account_d3 = null
@@ -650,6 +652,7 @@ onBeforeMount(() => {
                     <CFormSelect
                       v-model.number="sepItem.account_d1"
                       required
+                      :disabled="!form.sort"
                       @change="sepD1_change"
                     >
                       <option value="">---------</option>
@@ -680,8 +683,8 @@ onBeforeMount(() => {
                   <CCol sm="8">
                     <CFormSelect
                       v-model.number="sepItem.account_d2"
-                      :disabled="!sepItem.account_d1"
                       required
+                      :disabled="!sepItem.account_d1"
                       @change="sepD2_change"
                     >
                       <option value="">---------</option>
@@ -699,7 +702,7 @@ onBeforeMount(() => {
               <CCol sm="6">
                 <CRow>
                   <CFormLabel class="col-sm-4 col-form-label">
-                    계정[소분류]
+                    계정[소분류]/{{ sepItem.account_d3 }}
                   </CFormLabel>
                   <CCol sm="8">
                     <CFormSelect

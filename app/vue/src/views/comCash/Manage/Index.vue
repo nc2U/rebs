@@ -119,8 +119,8 @@ const multiSubmit = (payload: {
   const createData = { ...formData, ...sepData }
   const updateData = { ...{ filters: dataFilter.value }, ...createData }
 
-  if (formData.pk) onUpdate(updateData)
-  else onCreate(createData)
+  if (formData.pk) console.log(updateData) // onUpdate(updateData)
+  else console.log(createData) // onCreate(createData)
 }
 
 const onDelete = (payload: CashBook) =>
