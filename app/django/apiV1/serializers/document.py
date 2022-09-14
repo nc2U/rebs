@@ -25,23 +25,23 @@ class CategorySerializer(serializers.ModelSerializer):
 class LawSuitCaseSerializer(serializers.ModelSerializer):
     class Meta:
         model = LawsuitCase
-        fields = ('pk', 'project', 'sort', 'level', 'related_case', 'court', 'other_agency',
-                  'case_number', 'case_name', 'plaintiff', 'defendant', 'related_debtor',
-                  'case_start_date', 'summary', 'user', 'created', 'updated')
+        fields = ('pk', 'project', 'sort', 'level', 'related_case', 'court',
+                  'other_agency', 'case_number', 'case_name', 'plaintiff',
+                  'defendant', 'related_debtor', 'case_start_date', 'summary')
 
 
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ('pk', 'board', 'is_notice', 'project', 'category', 'lawsuit', 'title',
-                  'execution_date', 'content', 'is_hide_comment', 'hit', 'like', 'dislike', 'blame',
-                  'ip', 'device', 'secret', 'password', 'user', 'soft_delete', 'created', 'updated')
+                  'execution_date', 'content', 'is_hide_comment', 'hit', 'like', 'dislike',
+                  'blame', 'ip', 'device', 'secret', 'password', 'soft_delete')
 
 
 class ImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Image
-        fields = ('pk', 'post', 'image', 'created')
+        fields = ('pk', 'post', 'image')
 
 
 class LinkSerializer(serializers.ModelSerializer):
@@ -60,8 +60,8 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = (
-            'pk', 'post', 'content', 'like', 'dislike', 'blame', 'ip', 'device',
-            'secret', 'password', 'user', 'soft_delete', 'created', 'updated')
+            'pk', 'post', 'content', 'like', 'dislike', 'blame', 'ip',
+            'device', 'secret', 'password', 'soft_delete')
 
 
 class TagSerializer(serializers.ModelSerializer):
