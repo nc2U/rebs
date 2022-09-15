@@ -33,9 +33,9 @@ class LawSuitCaseSerializer(serializers.ModelSerializer):
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
-        fields = ('pk', 'board', 'is_notice', 'project', 'category', 'lawsuit', 'title',
-                  'execution_date', 'content', 'is_hide_comment', 'hit', 'like', 'dislike',
-                  'blame', 'ip', 'device', 'secret', 'password', 'soft_delete')
+        fields = ('pk', 'board', 'is_notice', 'project', 'category', 'lawsuit', 'title', 'execution_date',
+                  'content', 'is_hide_comment', 'hit', 'like', 'dislike', 'blame', 'ip',
+                  'device', 'secret', 'password', 'user', 'soft_delete', 'created', 'updated')
 
 
 class ImageSerializer(serializers.ModelSerializer):
