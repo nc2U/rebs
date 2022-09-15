@@ -3,6 +3,7 @@ export interface Post {
   board: number
   is_notice: boolean
   project: number
+  project_name?: string | null
   category: number | null
   lawsuit: number | null
   title: string
