@@ -55,8 +55,8 @@ const pageSelect = (page: number) => emit('page-select', page)
     </CTableBody>
   </CTable>
 
-  <CRow>
-    <CCol md="10">
+  <CRow class="flex-lg-row flex-column-reverse">
+    <CCol lg="10">
       <Pagination
         :active-page="1"
         :limit="8"
@@ -65,12 +65,8 @@ const pageSelect = (page: number) => emit('page-select', page)
         @active-page-change="pageSelect"
       />
     </CCol>
-    <CCol>
-      <div class="justify-content-md-end">
-        <CCol>
-          <CButton color="primary">등록하기</CButton>
-        </CCol>
-      </div>
+    <CCol lg="2" class="text-right">
+      <CButton color="primary" class="px-5">등록하기</CButton>
     </CCol>
   </CRow>
 </template>
