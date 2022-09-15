@@ -18,18 +18,21 @@ class BoardViewSets(viewsets.ModelViewSet):
     queryset = Board.objects.all()
     serializer_class = BoardSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    filterset_fields = ('group', 'search_able', 'manager')
 
 
 class CategoryViewSets(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    filterset_fields = ('board',)
 
 
 class LawSuitCaseViewSets(viewsets.ModelViewSet):
     queryset = LawsuitCase.objects.all()
     serializer_class = LawSuitCaseSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    filterset_fields = ('project', 'sort', 'level', 'court')
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -39,6 +42,7 @@ class PostViewSets(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    filterset_fields = ('board', 'is_notice', 'project', 'category', 'lawsuit')
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
