@@ -1,7 +1,5 @@
 <script lang="ts" setup>
-import { reactive, computed, watch, nextTick } from 'vue'
-import { dateFormat } from '@/utils/baseMixins'
-import DatePicker from '@/components/DatePicker/index.vue'
+import { reactive, computed, nextTick } from 'vue'
 
 const emit = defineEmits(['docs-filtering'])
 
@@ -94,7 +92,7 @@ const resetForm = () => {
     </CRow>
     <CRow>
       <CCol color="warning" class="p-2 pl-3">
-        <strong>계약 건수 조회 결과 : {{ 'docsCount' }} 건</strong>
+        <strong>등록 건수 조회 결과 : {{ 'docsCount' }} 건</strong>
       </CCol>
       <CCol v-if="!formsCheck" class="text-right mb-0">
         <CButton color="info" size="sm" @click="resetForm">

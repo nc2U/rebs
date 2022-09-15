@@ -6,12 +6,7 @@ const msg = ref('Category Tabs')
 </script>
 
 <template>
-  <v-tabs
-    v-model="tab"
-    background-color=""
-    color="deep-purple-accent-4"
-    class="mt-5"
-  >
+  <v-tabs v-model="tab" background-color="" color="primary" class="mt-5">
     <v-tab value="1">전체</v-tab>
     <v-tab value="2">발송공문</v-tab>
     <v-tab value="3">수신공문</v-tab>
