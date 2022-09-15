@@ -2,6 +2,7 @@ import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { CachedViews, VisitedViews } from '@/store/types/tagsView'
 import { RouteLocationNormalizedLoaded as RouteNormal } from 'vue-router'
+import retryTimes = jest.retryTimes
 
 export const useTagsView = defineStore('tags-view', () => {
   // state & getters
@@ -15,6 +16,10 @@ export const useTagsView = defineStore('tags-view', () => {
   }
 
   const addVisitedView = (view: VisitedViews) => {
+    const delVisted = visitedViews.value.filter(
+      v => v.meta.title === view.meta.title && v.name !== view.name,
+    )[0]
+    if (delVisted) delView(delVisted)
     if (visitedViews.value.some(v => v.name === view.name)) return
     visitedViews.value.push(Object.assign({}, view))
   }

@@ -54,7 +54,7 @@ const filterAffixTags = (routes: RouteRecordRaw[]) => {
 }
 
 const initTags = () => {
-  affixTags.value = filterAffixTags(routes) as VisitedViews[]
+  affixTags.value = filterAffixTags(routes)
   affixTags.value.forEach((tag: VisitedViews) =>
     tag.name ? tagsViewStore.addVisitedView(tag) : undefined,
   )
@@ -83,11 +83,10 @@ const moveToCurrentTag = () => {
   })
 }
 
-const toLastView = (visitedViews: any, view: any) => {
+const toLastView = (visitedViews: VisitedViews[], view: VisitedViews) => {
   const latestView = visitedViews.slice(-1)[0]
-  if (latestView) {
-    router.push(latestView.fullPath)
-  } else {
+  if (latestView) router.push(latestView.fullPath)
+  else {
     // now the default is to redirect to the home page if there is no tags-view,
     // you can adjust it according to your needs.
     if (view.name === 'Dashboard') {
