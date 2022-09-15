@@ -1,8 +1,12 @@
-export const numFormat = (val: number | string, n?: number) => {
+export const numFormat = (
+  val: number | string,
+  n?: number,
+  zero: string | 0 = '-',
+) => {
   const value = typeof val === 'number' ? val : parseInt(val) || 0
   const parts = n ? value.toFixed(n).split('.') : value.toString().split('.')
   parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-  return !value || value === 0 ? '-' : parts.join('.')
+  return !value || value === 0 ? zero : parts.join('.')
 }
 
 export const cutString = (str = '', len: number) =>
