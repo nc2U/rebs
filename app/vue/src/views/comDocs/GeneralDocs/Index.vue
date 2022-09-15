@@ -1,14 +1,22 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onBeforeMount, ref } from 'vue'
+import { useDocument } from '@/store/pinia/document'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from './components/ListController.vue'
 import CategoryTabs from './components/CategoryTabs.vue'
 import DocsList from './components/DocsList.vue'
 
-const msg = ref('')
+const tab = ref<number>(0)
+const documentStore = useDocument()
+const fetchCategoryList = (board: number) =>
+  documentStore.fetchCategoryList(board)
 
 const onSelectAdd = () => 1
+
+const selectTab = (tabValue: number | null) => (tab.value = tabValue)
+
+onBeforeMount(() => fetchCategoryList(1))
 </script>
 
 <template>
@@ -22,9 +30,9 @@ const onSelectAdd = () => 1
     <CCardBody class="pb-5">
       <ListController />
 
-      <CategoryTabs />
+      <CategoryTabs @select-tab="selectTab" />
 
-      <DocsList />
+      <DocsList :tab-value="tab" />
     </CCardBody>
 
     <CCardFooter>&nbsp;</CCardFooter>

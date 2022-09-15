@@ -1,30 +1,23 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref, watch } from 'vue'
+import { useDocument } from '@/store/pinia/document'
 
-const tab = ref('1')
-const msg = ref('Category Tabs')
+const emit = defineEmits(['select-tab'])
+
+const tab = ref(0)
+const documentStore = useDocument()
+const categoryList = computed(() => documentStore.categoryList)
+
+watch(tab, val => {
+  emit('select-tab', val)
+})
 </script>
 
 <template>
   <v-tabs v-model="tab" background-color="" color="primary" class="mt-5">
-    <v-tab value="1">전체</v-tab>
-    <v-tab value="2">발송공문</v-tab>
-    <v-tab value="3">수신공문</v-tab>
-    <v-tab value="4">회의록/보고서</v-tab>
-    <v-tab value="5">계약서/협약서</v-tab>
-    <v-tab value="6">내규/서식</v-tab>
-    <v-tab value="7">기타</v-tab>
+    <v-tab :value="0">전체</v-tab>
+    <v-tab v-for="cate in categoryList" :key="cate.pk" :value="cate.pk">
+      {{ cate.name }}
+    </v-tab>
   </v-tabs>
-
-  <v-card-text>
-    <v-window v-model="tab">
-      <v-window-item value="1"> 전체</v-window-item>
-      <v-window-item value="2"> 발송공문</v-window-item>
-      <v-window-item value="3"> 수신공문</v-window-item>
-      <v-window-item value="4"> 회의록/보고서</v-window-item>
-      <v-window-item value="5"> 계약서/협약서</v-window-item>
-      <v-window-item value="6"> 내규/서식</v-window-item>
-      <v-window-item value="7"> 기타</v-window-item>
-    </v-window>
-  </v-card-text>
 </template>
