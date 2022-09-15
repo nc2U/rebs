@@ -55,11 +55,22 @@ const pageSelect = (page: number) => emit('page-select', page)
     </CTableBody>
   </CTable>
 
-  <Pagination
-    :active-page="1"
-    :limit="8"
-    :pages="postPages(10)"
-    class="mt-3"
-    @active-page-change="pageSelect"
-  />
+  <CRow>
+    <CCol md="10">
+      <Pagination
+        :active-page="1"
+        :limit="8"
+        :pages="postPages(10)"
+        class="mt-3"
+        @active-page-change="pageSelect"
+      />
+    </CCol>
+    <CCol>
+      <div class="justify-content-md-end">
+        <CCol>
+          <CButton color="primary">등록하기</CButton>
+        </CCol>
+      </div>
+    </CCol>
+  </CRow>
 </template>

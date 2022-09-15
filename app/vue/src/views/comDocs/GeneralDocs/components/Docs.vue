@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { PropType } from 'vue'
+import { Post } from '@/store/types/document'
+import { timeFormat } from '@/utils/baseMixins'
 
-defineProps({ post: { type: Object, default: null } })
-
-const msg = ref('Docs')
+defineProps({ post: { type: Object as PropType<Post>, default: null } })
 </script>
 
 <template>
@@ -12,8 +12,8 @@ const msg = ref('Docs')
     <CTableDataCell>{{ post.project }}</CTableDataCell>
     <CTableDataCell>{{ post.execution_date }}</CTableDataCell>
     <CTableDataCell class="text-left">{{ post.title }}</CTableDataCell>
-    <CTableDataCell>{{ '---' }}</CTableDataCell>
-    <CTableDataCell>{{ '---' }}</CTableDataCell>
+    <CTableDataCell>{{ post.user }}</CTableDataCell>
+    <CTableDataCell>{{ timeFormat(post.created) }}</CTableDataCell>
     <CTableDataCell>{{ post.hit }}</CTableDataCell>
   </CTableRow>
 </template>

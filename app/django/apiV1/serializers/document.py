@@ -1,6 +1,8 @@
 from rest_framework import serializers
 
-from document.models import Group, Board, Category, LawsuitCase, Post, Image, Link, File, Comment, Tag
+from accounts.models import User
+from document.models import (Group, Board, Category, LawsuitCase,
+                             Post, Image, Link, File, Comment, Tag)
 
 
 # Document --------------------------------------------------------------------------
@@ -31,11 +33,13 @@ class LawSuitCaseSerializer(serializers.ModelSerializer):
 
 
 class PostSerializer(serializers.ModelSerializer):
+    user = serializers.SlugRelatedField(read_only=True, slug_field='username')
+
     class Meta:
         model = Post
-        fields = ('pk', 'board', 'is_notice', 'project', 'category', 'lawsuit', 'title', 'execution_date',
-                  'content', 'is_hide_comment', 'hit', 'like', 'dislike', 'blame', 'ip',
-                  'device', 'secret', 'password', 'user', 'soft_delete', 'created', 'updated')
+        fields = ('pk', 'board', 'is_notice', 'project', 'category', 'lawsuit', 'title',
+                  'execution_date', 'content', 'is_hide_comment', 'hit', 'like', 'dislike', 'blame',
+                  'ip', 'device', 'secret', 'password', 'user', 'soft_delete', 'created', 'updated')
 
 
 class ImageSerializer(serializers.ModelSerializer):
