@@ -12,7 +12,7 @@ const pageViewAuth = computed(
 const comDocs = {
   path: 'docs',
   name: '본사문서 관리',
-  redirect: '/docs/general/docs',
+  redirect: '/docs/general/posts',
   component: {
     render() {
       return h(resolveComponent('router-view'))
@@ -20,7 +20,7 @@ const comDocs = {
   },
   children: [
     {
-      path: 'general/docs',
+      path: 'general/posts',
       name: '본사 일반문서',
       component: () =>
         pageViewAuth.value
@@ -31,7 +31,7 @@ const comDocs = {
     {
       path: 'lawsuit',
       name: '본사 소송관리',
-      redirect: '/docs/lawsuit/docs',
+      redirect: '/docs/lawsuit/posts',
       component: {
         render() {
           return h(resolveComponent('router-view'))
@@ -39,7 +39,7 @@ const comDocs = {
       },
       children: [
         {
-          path: 'docs',
+          path: 'posts',
           name: '본사 소송문서',
           component: () =>
             pageViewAuth.value

@@ -151,7 +151,7 @@ const project_docs = {
         color: 'warning',
         text: 'link',
       },
-      to: '/project-docs/general/docs',
+      to: '/project-docs/general/posts',
       icon: 'cil-layers',
     },
     {
@@ -167,7 +167,7 @@ const project_docs = {
             color: 'warning',
             text: 'link',
           },
-          to: '/project-docs/lawsuit/docs',
+          to: '/project-docs/lawsuit/posts',
         },
         {
           component: 'CNavItem',
@@ -308,7 +308,7 @@ const company_docs = {
         color: 'warning',
         text: 'link',
       },
-      to: '/docs/general/docs',
+      to: '/docs/general/posts',
     },
     {
       component: 'CNavItem',
@@ -323,7 +323,7 @@ const company_docs = {
             color: 'warning',
             text: 'link',
           },
-          to: '/docs/lawsuit/docs',
+          to: '/docs/lawsuit/posts',
         },
         {
           component: 'CNavItem',
