@@ -3,7 +3,7 @@
     <slot name="header">
       <CCardHeader>
         <CIcon name="cil-notes" />
-        <strong class="pl-1"> {{ $route.name }}</strong>
+        <strong class="pl-1"> {{ $route.meta.title || $route.name }}</strong>
       </CCardHeader>
     </slot>
 
@@ -14,11 +14,3 @@
     </slot>
   </CCard>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-
-export default defineComponent({
-  name: 'ContentBody',
-})
-</script>
