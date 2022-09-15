@@ -23,3 +23,9 @@ export const dateFormat = (date: Date | string) => {
     ? date
     : date.toISOString().replace(/T.*$/, '')
 }
+
+export const timeFormat = (date: string) =>
+  new Date(+new Date(date) + 3240 * 10000)
+    .toISOString()
+    .replace('T', ' ')
+    .replace(/\..*/, '')
