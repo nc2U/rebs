@@ -50,7 +50,7 @@ const resetForm = () => {
 </script>
 
 <template>
-  <CCallout color="info" class="pb-0 mb-4">
+  <CCallout color="primary" class="pb-0 mb-4">
     <CRow>
       <CCol lg="6">
         <CRow>

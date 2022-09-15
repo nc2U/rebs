@@ -3,6 +3,14 @@ import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { message, errorHandle } from '@/utils/helper'
 
+export type PostFilter = {
+  board: number
+  is_notice?: boolean
+  project?: number
+  category?: number
+  lawsuit?: number
+}
+
 export const useDocument = defineStore('document', () => {
   // state & getters
   const groupList = ref()
@@ -43,6 +51,7 @@ export const useDocument = defineStore('document', () => {
       .get(`/category/?board=${board}`)
       .then(res => (categoryList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
+
   const createCategory = () => 2
   const updateCategory = () => 3
   const deleteCategory = () => 4
@@ -55,8 +64,23 @@ export const useDocument = defineStore('document', () => {
   const deleteSuitCase = () => 4
 
   const post = ref()
+  const postList = ref()
 
-  const fetchPost = () => 1
+  const fetchPost = (pk: number) =>
+    api
+      .get(`/post/${pk}`)
+      .then(res => (post.value = res.data))
+      .catch(err => errorHandle(err.response.data))
+
+  const fetchPostList = (payload: PostFilter) => {
+    const { board, category } = payload
+
+    return api
+      .get(`/post/?board=${board || ''}&category=${category || ''}`)
+      .then(res => (postList.value = res.data.results))
+      .catch(err => errorHandle(err.response.data))
+  }
+
   const createPost = () => 2
   const updatePost = () => 3
   const deletePost = () => 4
@@ -121,8 +145,10 @@ export const useDocument = defineStore('document', () => {
     deleteSuitCase,
 
     post,
+    postList,
 
     fetchPost,
+    fetchPostList,
     createPost,
     updatePost,
     deletePost,
