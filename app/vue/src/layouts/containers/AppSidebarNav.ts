@@ -50,6 +50,10 @@ const isActiveItem = (route: RouteLocation, item: Item): boolean => {
     return true
   }
 
+  if (item.name && route.meta.title) {
+    return item.name === route.meta.title
+  }
+
   if (item.items) {
     return item.items.some(child => isActiveItem(route, child))
   }
