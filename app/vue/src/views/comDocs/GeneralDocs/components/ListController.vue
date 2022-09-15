@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { reactive, computed, nextTick } from 'vue'
 import { useDocument } from '@/store/pinia/document'
+import { numFormat } from '@/utils/baseMixins'
 
 defineProps({ tab: { type: Number, default: null } })
 const emit = defineEmits(['docs-filtering'])
@@ -17,7 +18,7 @@ const formsCheck = computed(() => {
   const c = form.search === ''
   return a && b && c
 })
-//
+
 // const orderGroupList = computed(() => contractStore.orderGroupList)
 // const contractsCount = computed(() => contractStore.contractsCount)
 // const buildingList = computed(() => projectDataStore.buildingList)
@@ -58,7 +59,16 @@ const resetForm = () => {
     <CRow>
       <CCol lg="6">
         <CRow>
-          <CCol md="4" lg="6" xl="2" class="mb-3">
+          <CCol md="4" lg="6" xl="3" class="mb-3">
+            <CFormSelect v-model="form.ordering" @change="listFiltering(1)">
+              <option value="-created_at">전체 프로젝트</option>
+              <option value="created_at">본사</option>
+              <option value="-contractor">(가칭)송도센트럴자이</option>
+              <option value="-contractor">(가칭)아야진프로젝트</option>
+            </CFormSelect>
+          </CCol>
+
+          <CCol md="4" lg="6" xl="3" class="mb-3">
             <CFormSelect v-model="form.ordering" @change="listFiltering(1)">
               <option value="-created_at">작성일자순</option>
               <option value="created_at">시행일자순</option>
@@ -70,7 +80,7 @@ const resetForm = () => {
 
       <CCol lg="6">
         <CRow class="justify-content-md-end">
-          <CCol md="4" lg="6" xl="2" class="mb-3">
+          <CCol md="4" lg="6" xl="3" class="mb-3">
             <CFormSelect v-model="form.searchFilter" @change="listFiltering(1)">
               <option value="">전체</option>
               <option value="">제목+내용</option>
@@ -80,7 +90,7 @@ const resetForm = () => {
             </CFormSelect>
           </CCol>
 
-          <CCol md="4" lg="6" xl="3" class="mb-3">
+          <CCol md="4" lg="6" xl="4" class="mb-3">
             <CInputGroup class="flex-nowrap">
               <CFormInput
                 v-model="form.search"
@@ -95,7 +105,9 @@ const resetForm = () => {
     </CRow>
     <CRow>
       <CCol color="warning" class="p-2 pl-3">
-        <strong>문서 건수 조회 결과 : {{ postCount }} 건</strong>
+        <strong>
+          문서 건수 조회 결과 : {{ numFormat(postCount, 0, 0) }} 건
+        </strong>
       </CCol>
       <CCol v-if="!formsCheck" class="text-right mb-0">
         <CButton color="info" size="sm" @click="resetForm">
