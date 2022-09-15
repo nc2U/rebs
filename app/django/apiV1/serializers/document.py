@@ -33,11 +33,12 @@ class LawSuitCaseSerializer(serializers.ModelSerializer):
 
 
 class PostSerializer(serializers.ModelSerializer):
+    project_name = serializers.SlugField(source='project', read_only=True)
     user = serializers.SlugRelatedField(read_only=True, slug_field='username')
 
     class Meta:
         model = Post
-        fields = ('pk', 'board', 'is_notice', 'project', 'category', 'lawsuit', 'title',
+        fields = ('pk', 'board', 'is_notice', 'project', 'project_name', 'category', 'lawsuit', 'title',
                   'execution_date', 'content', 'is_hide_comment', 'hit', 'like', 'dislike', 'blame',
                   'ip', 'device', 'secret', 'password', 'user', 'soft_delete', 'created', 'updated')
 
