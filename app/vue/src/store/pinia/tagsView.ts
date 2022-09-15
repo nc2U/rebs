@@ -1,8 +1,9 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { CachedViews, VisitedViews } from '@/store/types/tagsView'
+import { RouteLocationNormalizedLoaded as RouteNormal } from 'vue-router'
 
-export const useTagsView = defineStore('tagsView', () => {
+export const useTagsView = defineStore('tags-view', () => {
   // state & getters
   const visitedViews = ref<VisitedViews[]>([])
   const cachedViews = ref<CachedViews[]>([])
@@ -97,10 +98,10 @@ export const useTagsView = defineStore('tagsView', () => {
       resolve([...cachedViews.value])
     })
 
-  const updateVisitedView = (view: VisitedViews) => {
+  const updateVisitedView = (route: RouteNormal) => {
     for (let v of visitedViews.value) {
-      if (v.path === view.path) {
-        v = Object.assign(v, view)
+      if (v.path === route.path) {
+        v = Object.assign(v, route)
         break
       }
     }
@@ -111,6 +112,7 @@ export const useTagsView = defineStore('tagsView', () => {
     cachedViews,
 
     addView,
+    addVisitedView,
     delView,
     delOthersViews,
     delAllViews,

@@ -1,26 +1,25 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, onMounted, nextTick, watch } from 'vue'
+import { ref, computed, onMounted, nextTick, watch } from 'vue'
 import { useStore } from 'vuex'
+import { useTagsView } from '@/store/pinia/tagsView'
+import { VisitedViews } from '@/store/types/tagsView'
 import { RouteRecordRaw, useRoute, useRouter } from 'vue-router'
-import { VisitedViews } from '@/store/modules/tagsView/state'
 import routes from '@/router/routes'
 
+const [route, router] = [useRoute(), useRouter()]
+
 const store = useStore()
-const route = useRoute()
-const router = useRouter()
+const dark = computed(() => store.state.theme === 'dark')
+const btnColor = computed(() => (dark.value ? 'blue-grey' : ''))
 
 const visible = ref(false)
-let affixTags = reactive<RouteRecordRaw[]>([])
+const affixTags = ref<VisitedViews[]>([])
 
 const currentTag = ref()
 const scrollPane = ref()
 
-const dark = computed(() => store.state.theme === 'dark')
-const btnColor = computed(() =>
-  store.state.theme === 'dark' ? 'blue-grey' : '',
-)
-
-const visitedViews = computed(() => store.state.tagsView.visitedViews)
+const tagsViewStore = useTagsView()
+const visitedViews = computed(() => tagsViewStore.visitedViews)
 
 const isActive = (currentRoute: { name: string }) =>
   currentRoute.name === route.name
@@ -36,7 +35,11 @@ const filterAffixTags = (routes: RouteRecordRaw[]) => {
         fullPath: r.path,
         path: r.path,
         name: r.name as string,
-        meta: { ...r.meta } as { title: string; affix: boolean },
+        meta: { ...r.meta } as {
+          title: string
+          affix: boolean
+          noCache: boolean
+        },
       })
     }
 
@@ -51,28 +54,28 @@ const filterAffixTags = (routes: RouteRecordRaw[]) => {
 }
 
 const initTags = () => {
-  affixTags = filterAffixTags(routes) as any
-  affixTags.forEach((tag: any) =>
-    tag.name ? store.dispatch('tagsView/addVisitedView', tag) : undefined,
+  affixTags.value = filterAffixTags(routes) as VisitedViews[]
+  affixTags.value.forEach((tag: VisitedViews) =>
+    tag.name ? tagsViewStore.addVisitedView(tag) : undefined,
   )
 }
 
 const addTags = () => {
   const { name, meta } = route
   if (name && !meta.except) {
-    store.dispatch('tagsView/addView', route)
+    tagsViewStore.addView(route)
   }
   return false
 }
 
 const moveToCurrentTag = () => {
-  const tags = currentTag.value
+  // const tags = currentTag.value
   nextTick(() => {
-    for (const tag of tags) {
+    for (const tag of currentTag.value) {
       if (tag.to.path === route.path) {
         // when query is different then update
         if (tag.to.fullPath !== route.fullPath) {
-          store.dispatch('tagsView/updateVisitedView', route)
+          tagsViewStore.updateVisitedView(route)
         }
         break
       }
@@ -96,13 +99,12 @@ const toLastView = (visitedViews: any, view: any) => {
   }
 }
 
-const closeSelectedTag = (view: any) => {
-  store.dispatch('tagsView/delView', view).then(({ visitedViews }) => {
-    if (isActive(view)) {
-      toLastView(visitedViews, view)
-    }
+const closeSelectedTag = (view: VisitedViews) => {
+  tagsViewStore.delView(view).then(({ visitedViews }: any) => {
+    if (isActive(view)) toLastView(visitedViews, view)
   })
 }
+
 const closeMenu = () => {
   visible.value = false
 }
