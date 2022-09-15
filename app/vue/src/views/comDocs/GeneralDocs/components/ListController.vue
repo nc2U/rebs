@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { reactive, computed, nextTick } from 'vue'
+import { useDocument } from '@/store/pinia/document'
 
 defineProps({ tab: { type: Number, default: null } })
 const emit = defineEmits(['docs-filtering'])
@@ -29,6 +30,9 @@ const formsCheck = computed(() => {
 //   else form.to_date = ''
 //   listFiltering(1)
 // })
+
+const documentStore = useDocument()
+const postCount = computed(() => documentStore.postCount)
 
 const listFiltering = (page = 1) => {
   nextTick(() => {
@@ -91,7 +95,7 @@ const resetForm = () => {
     </CRow>
     <CRow>
       <CCol color="warning" class="p-2 pl-3">
-        <strong>문서 건수 조회 결과 : {{ 0 }} 건</strong>
+        <strong>문서 건수 조회 결과 : {{ postCount }} 건</strong>
       </CCol>
       <CCol v-if="!formsCheck" class="text-right mb-0">
         <CButton color="info" size="sm" @click="resetForm">

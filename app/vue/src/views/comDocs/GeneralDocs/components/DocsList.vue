@@ -2,8 +2,10 @@
 import { computed, onBeforeMount, ref, watch } from 'vue'
 import { useDocument, PostFilter } from '@/store/pinia/document'
 import Docs from './Docs.vue'
+import Pagination from '@/components/Pagination'
 
 const props = defineProps({ tabValue: { type: Number, default: 0 } })
+const emit = defineEmits(['page-select'])
 
 const tab = ref(0)
 
@@ -19,6 +21,9 @@ watch(props, val => {
 })
 
 onBeforeMount(() => fetchPostList({ board: 1 }))
+
+const postPages = (num: number) => documentStore.postPages(num)
+const pageSelect = (page: number) => emit('page-select', page)
 </script>
 
 <template>
@@ -49,4 +54,12 @@ onBeforeMount(() => fetchPostList({ board: 1 }))
       <Docs v-for="post in postList" :key="post.pk" :post="post" />
     </CTableBody>
   </CTable>
+
+  <Pagination
+    :active-page="1"
+    :limit="8"
+    :pages="postPages(10)"
+    class="mt-3"
+    @active-page-change="pageSelect"
+  />
 </template>

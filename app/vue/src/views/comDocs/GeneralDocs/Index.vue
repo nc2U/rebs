@@ -10,6 +10,7 @@ import DocsList from './components/DocsList.vue'
 const tab = ref<number>(0)
 
 const selectTab = (tabValue: number) => (tab.value = tabValue)
+const pageSelect = (page: number) => console.log(page)
 </script>
 
 <template>
@@ -25,7 +26,7 @@ const selectTab = (tabValue: number) => (tab.value = tabValue)
 
       <CategoryTabs @select-tab="selectTab" />
 
-      <DocsList :tab-value="tab" />
+      <DocsList :tab-value="tab" @page-select="pageSelect" />
     </CCardBody>
 
     <CCardFooter>&nbsp;</CCardFooter>

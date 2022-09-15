@@ -65,6 +65,10 @@ export const useDocument = defineStore('document', () => {
 
   const post = ref()
   const postList = ref()
+  const postCount = ref(0)
+
+  const postPages = (itemsPerPage: number) =>
+    Math.ceil(postCount.value / itemsPerPage)
 
   const fetchPost = (pk: number) =>
     api
@@ -77,7 +81,10 @@ export const useDocument = defineStore('document', () => {
 
     return api
       .get(`/post/?board=${board || ''}&category=${category || ''}`)
-      .then(res => (postList.value = res.data.results))
+      .then(res => {
+        postList.value = res.data.results
+        postCount.value = res.data.count
+      })
       .catch(err => errorHandle(err.response.data))
   }
 
@@ -146,7 +153,9 @@ export const useDocument = defineStore('document', () => {
 
     post,
     postList,
+    postCount,
 
+    postPages,
     fetchPost,
     fetchPostList,
     createPost,
