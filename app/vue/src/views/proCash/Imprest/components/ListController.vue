@@ -160,7 +160,7 @@ const resetForm = () => {
     <CRow>
       <CCol color="warning" class="p-2 pl-3">
         <strong>
-          거래 건수 조회 결과 : {{ numFormat(proImprestCount) }} 건
+          거래 건수 조회 결과 : {{ numFormat(proImprestCount, 0, 0) }} 건
         </strong>
       </CCol>
       <CCol v-if="!formsCheck" class="text-right mb-0">

@@ -2,7 +2,7 @@
 import { reactive, computed, watch, nextTick } from 'vue'
 import { useProjectData } from '@/store/pinia/project_data'
 import { useContract, ContFilter } from '@/store/pinia/contract'
-import { dateFormat } from '@/utils/baseMixins'
+import { numFormat, dateFormat } from '@/utils/baseMixins'
 import { maska as vMaska } from 'maska'
 import DatePicker from '@/components/DatePicker/index.vue'
 
@@ -208,7 +208,10 @@ const resetForm = () => {
     </CRow>
     <CRow>
       <CCol color="warning" class="p-2 pl-3">
-        <strong>계약 건수 조회 결과 : {{ contractsCount }} 건</strong>
+        <strong>
+          계약 건수 조회 결과 :
+          {{ numFormat(contractsCount, 0, 0) }} 건
+        </strong>
       </CCol>
       <CCol v-if="!formsCheck" class="text-right mb-0">
         <CButton color="info" size="sm" @click="resetForm">
