@@ -27,6 +27,17 @@ const comDocs = {
           ? import('@/views/comDocs/GeneralDocs/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
       meta: { title: '본사 일반문서' },
+      children: [
+        {
+          path: ':postId',
+          name: 'comDocs:view',
+          component: () =>
+            pageViewAuth.value
+              ? import('@/views/comDocs/GeneralDocs/Index.vue')
+              : import('@/views/_Accounts/NoAuth.vue'),
+          meta: { title: '본사 일반문서' },
+        },
+      ],
     },
     {
       path: 'lawsuit',
