@@ -37,7 +37,7 @@
     "nprogress": "^0.2.0",
     "pinia": "^2.0.17",
     "roboto-fontface": "0.10.0",
-    "vue": "^3.2.37",
+    "vue": "^3.2.39",
     "vue-advanced-cropper": "^2.8.3",
     "vue-fullscreen": "^2.6.1",
     "vue-router": "^4.1.3",
