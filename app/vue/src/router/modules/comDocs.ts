@@ -29,7 +29,7 @@ const comDocs = {
       meta: { title: '본사 일반문서' },
       children: [
         {
-          path: ':postId',
+          path: ':postId(\\d+)',
           name: 'comDocs:view',
           component: () =>
             pageViewAuth.value
