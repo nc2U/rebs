@@ -28,6 +28,7 @@
     "@mdi/font": "5.9.55",
     "@vueform/multiselect": "^2.5.2",
     "@vuepic/vue-datepicker": "^3.4.0",
+    "@vueuse/core": "^9.2.0",
     "axios": "^0.24.0",
     "buffer": "^6.0.3",
     "core-js": "^3.24.1",
