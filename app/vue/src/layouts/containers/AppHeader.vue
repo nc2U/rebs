@@ -6,7 +6,7 @@ import { directive as vFullscreen } from 'vue-fullscreen'
 import { logo } from '@/assets/brand/current-logo'
 import AppBreadcrumb from './AppBreadcrumb.vue'
 import AppHeaderDropdownAccnt from './AppHeaderDropdownAccnt.vue'
-import TagsView from '@/layouts/containers/TagsView/index.vue'
+import TagsView from '@/layouts/containers/TagsView.vue'
 
 const store = useStore()
 const accountStore = useAccount()
