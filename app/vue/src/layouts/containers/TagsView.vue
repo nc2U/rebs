@@ -62,9 +62,7 @@ const initTags = () => {
 
 const addTags = () => {
   const { name, meta } = route
-  if (name && !meta.except) {
-    tagsViewStore.addView(route)
-  }
+  if (name && !meta.except) tagsViewStore.addView(route)
   return false
 }
 
