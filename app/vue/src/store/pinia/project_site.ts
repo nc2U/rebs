@@ -233,7 +233,7 @@ export const useSite = defineStore('site', () => {
   ) => {
     api
       .get(
-        `/site-contract/?project=${project}&page=${page}&own_sort=${own_sort}&search=${search}`,
+        `/site-contract/?project=${project}&page=${page}&owner__own_sort=${own_sort}&search=${search}`,
       )
       .then(res => {
         siteContList.value = res.data.results
