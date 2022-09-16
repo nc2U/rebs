@@ -10,6 +10,7 @@ const emit = defineEmits(['payment-filtering'])
 
 const from_date = ref('')
 const to_date = ref('')
+
 const form = reactive({
   pay_order: '',
   pay_account: '',
@@ -25,25 +26,29 @@ const proCashStore = useProCash()
 const proBankAccountList = computed(() => proCashStore.proBankAccountList)
 
 const formsCheck = computed(() => {
-  const a = from_date.value === ''
-  const b = to_date.value === ''
-  const c = form.pay_order === ''
-  const d = form.pay_account === ''
+  const a = !from_date.value
+  const b = !to_date.value
+  const c = !form.pay_order
+  const d = !form.pay_account
   const e = !form.no_contract
   const f = form.search.trim() === ''
   return a && b && c && d && e && f
 })
 
-watch(from_date, () => listFiltering(1))
-watch(to_date, () => listFiltering(1))
+watch(from_date, val => {
+  if (val) from_date.value = dateFormat(val)
+  listFiltering(1)
+})
+watch(to_date, val => {
+  if (val) to_date.value = dateFormat(val)
+  listFiltering(1)
+})
 
 const listFiltering = (page = 1) => {
   nextTick(() => {
     form.search = form.search.trim()
-    const from = from_date.value ? dateFormat(from_date.value) : ''
-    const to = to_date.value ? dateFormat(to_date.value) : ''
     emit('payment-filtering', {
-      ...{ page, from_date: from, to_date: to },
+      ...{ page, from_date: from_date.value, to_date: to_date.value },
       ...form,
     })
   })

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, reactive, watch, nextTick } from 'vue'
+import { ref, reactive, computed, watch, nextTick } from 'vue'
 import { useComCash, DataFilter } from '@/store/pinia/comCash'
 import { numFormat, dateFormat } from '@/utils/baseMixins'
 import { maska as vMaska } from 'maska'
@@ -7,11 +7,12 @@ import DatePicker from '@/components/DatePicker/index.vue'
 
 const emit = defineEmits(['list-filtering'])
 
+const from_date = ref('')
+const to_date = ref('')
+
 const form = reactive<DataFilter>({
   page: 1,
   company: null,
-  from_date: '',
-  to_date: '',
   sort: null,
   account_d1: null,
   account_d2: null,
@@ -21,8 +22,8 @@ const form = reactive<DataFilter>({
 })
 
 const formsCheck = computed(() => {
-  const a = !form.from_date
-  const b = !form.to_date
+  const a = !from_date.value
+  const b = !to_date.value
   const c = !form.sort
   const d = !form.account_d1
   const e = !form.account_d2
@@ -39,15 +40,13 @@ const formAccD3List = computed(() => useComCashStore.formAccD3List)
 const comBankList = computed(() => useComCashStore.comBankList)
 const cashBookCount = computed(() => useComCashStore.cashBookCount)
 
-watch(form, val => {
-  if (val.from_date) {
-    form.from_date = dateFormat(val.from_date)
-    listFiltering(1)
-  }
-  if (val.to_date) {
-    form.to_date = dateFormat(val.to_date)
-    listFiltering(1)
-  }
+watch(from_date, val => {
+  if (val) from_date.value = dateFormat(val)
+  listFiltering(1)
+})
+watch(to_date, val => {
+  if (val) to_date.value = dateFormat(val)
+  listFiltering(1)
 })
 
 //   methods: {
@@ -70,6 +69,8 @@ const accountD2Select = () => {
 const listFiltering = (page = 1) => {
   form.page = page
   form.search = form.search?.trim()
+  form.from_date = from_date.value
+  form.to_date = to_date.value
   nextTick(() => {
     emit('list-filtering', { ...form })
   })
@@ -78,8 +79,8 @@ const listFiltering = (page = 1) => {
 defineExpose({ listFiltering })
 
 const resetForm = () => {
-  form.from_date = ''
-  form.to_date = ''
+  from_date.value = ''
+  to_date.value = ''
   form.sort = null
   form.account_d1 = null
   form.account_d2 = null
@@ -97,7 +98,7 @@ const resetForm = () => {
         <CRow>
           <CCol md="6" class="mb-3">
             <DatePicker
-              v-model="form.from_date"
+              v-model="from_date"
               v-maska="'####-##-##'"
               placeholder="시작일 (From)"
               @keydown.enter="listFiltering(1)"
@@ -105,7 +106,7 @@ const resetForm = () => {
           </CCol>
           <CCol md="6" class="mb-3">
             <DatePicker
-              v-model="form.to_date"
+              v-model="to_date"
               v-maska="'####-##-##'"
               placeholder="종료일 (To)"
               @keydown.enter="listFiltering(1)"

@@ -9,6 +9,7 @@ const emit = defineEmits(['list-filtering'])
 
 const from_date = ref('')
 const to_date = ref('')
+
 const form = reactive({
   sort: '',
   pro_acc_d1: '',
@@ -25,18 +26,24 @@ const proImprestCount = computed(() => proCashStore.proImprestCount)
 const imprestBAccount = computed(() => proCashStore.imprestBAccount)
 
 const formsCheck = computed(() => {
-  const a = from_date.value === ''
-  const b = to_date.value === ''
-  const c = form.sort === ''
-  const d = form.pro_acc_d1 === ''
-  const e = form.pro_acc_d2 === ''
-  const f = form.bank_account === ''
+  const a = !from_date.value
+  const b = !to_date.value
+  const c = !form.sort
+  const d = !form.pro_acc_d1
+  const e = !form.pro_acc_d2
+  const f = !form.bank_account
   const g = form.search.trim() === ''
   return a && b && c && d && e && f && g
 })
 
-watch(from_date, () => listFiltering(1))
-watch(to_date, () => listFiltering(1))
+watch(from_date, val => {
+  if (val) from_date.value = dateFormat(val)
+  listFiltering(1)
+})
+watch(to_date, val => {
+  if (val) to_date.value = dateFormat(val)
+  listFiltering(1)
+})
 
 const pro_acc_d1Select = () => {
   listFiltering(1)
@@ -52,11 +59,9 @@ const pro_acc_d2Select = () => {
 const listFiltering = (page = 1) => {
   nextTick(() => {
     form.search = form.search.trim()
-    const from = from_date.value ? dateFormat(from_date.value) : ''
-    const to = to_date.value ? dateFormat(to_date.value) : ''
 
     emit('list-filtering', {
-      ...{ page, from_date: from, to_date: to },
+      ...{ page, from_date: from_date.value, to_date: to_date.value },
       ...form,
     })
   })
