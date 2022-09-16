@@ -31,7 +31,7 @@ const formsCheck = computed(() => {
   const g = form.from_date === ''
   const h = form.to_date === ''
   const i = form.ordering === '-created_at'
-  const j = form.search === ''
+  const j = form.search?.trim() === ''
   const groupA = a && b && c && d && e
   const groupB = f && g && h && i && j
   return groupA && groupB
@@ -46,14 +46,18 @@ const buildingList = computed(() => projectDataStore.buildingList)
 const simpleTypes = computed(() => projectDataStore.simpleTypes)
 
 watch(form, val => {
-  if (val.from_date) form.from_date = dateFormat(val.from_date)
-  else form.from_date = ''
-  if (val.to_date) form.to_date = dateFormat(val.to_date)
-  else form.to_date = ''
-  listFiltering(1)
+  if (val.from_date) {
+    form.from_date = dateFormat(val.from_date)
+    listFiltering(1)
+  } else form.from_date = ''
+  if (val.to_date) {
+    form.to_date = dateFormat(val.to_date)
+    listFiltering(1)
+  } else form.to_date = ''
 })
 
 const listFiltering = (page = 1) => {
+  form.search = form.search?.trim()
   nextTick(() => {
     emit('cont-filtering', {
       ...{ page },

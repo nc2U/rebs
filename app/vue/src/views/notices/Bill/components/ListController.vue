@@ -28,13 +28,14 @@ const formsCheck = computed(() => {
   const b = form.unit_type === ''
   const c = form.building === ''
   const d = form.ordering === 'contractor__name'
-  const e = form.search === ''
+  const e = form.search.trim() === ''
   // const a = form.limit === ''
   return a && b && c && d && e
 })
 
 const listFiltering = (page = 1) => {
   nextTick(() => {
+    form.search = form.search.trim()
     emit('list-filtering', {
       ...{ page },
       ...form,

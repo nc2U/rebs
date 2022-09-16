@@ -31,7 +31,7 @@ const formsCheck = computed(() => {
   const d = form.pro_acc_d1 === ''
   const e = form.pro_acc_d2 === ''
   const f = form.bank_account === ''
-  const g = form.search === ''
+  const g = form.search.trim() === ''
   return a && b && c && d && e && f && g
 })
 
@@ -51,6 +51,7 @@ const proAccD1Select = () => {
 
 const listFiltering = (page = 1) => {
   nextTick(() => {
+    form.search = form.search.trim()
     const from = from_date.value ? dateFormat(from_date.value) : ''
     const to = to_date.value ? dateFormat(to_date.value) : ''
 

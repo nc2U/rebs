@@ -30,7 +30,7 @@ const formsCheck = computed(() => {
   const c = form.pay_order === ''
   const d = form.pay_account === ''
   const e = !form.no_contract
-  const f = form.search === ''
+  const f = form.search.trim() === ''
   return a && b && c && d && e && f
 })
 
@@ -39,6 +39,7 @@ watch(to_date, () => listFiltering(1))
 
 const listFiltering = (page = 1) => {
   nextTick(() => {
+    form.search = form.search.trim()
     const from = from_date.value ? dateFormat(from_date.value) : ''
     const to = to_date.value ? dateFormat(to_date.value) : ''
     emit('payment-filtering', {

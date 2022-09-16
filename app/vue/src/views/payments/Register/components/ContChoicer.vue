@@ -34,6 +34,7 @@ const pageInit = () => {
 
 const listFiltering = (page = 1) => {
   nextTick(() => {
+    form.search = form.search.trim()
     if (form.search === '') pageInit()
     else emit('list-filtering', { ...{ page }, ...form })
   })

@@ -20,14 +20,16 @@ const own_sort_select = [
 const siteStore = useSite()
 const siteContCount = computed(() => siteStore.siteContCount)
 
-const formsCheck = computed(() => form.own_sort === '' && form.search === '')
+const formsCheck = computed(
+  () => form.own_sort === '' && form.search.trim() === '',
+)
 
 const listFiltering = (page = 1) => {
   nextTick(() => {
     emit('list-filtering', {
       page,
       own_sort: form.own_sort,
-      search: form.search,
+      search: form.search.trim(),
     })
   })
 }

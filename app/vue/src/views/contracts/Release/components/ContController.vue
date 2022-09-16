@@ -10,7 +10,7 @@ const search = ref('')
 const contractStore = useContract()
 const contractorList = computed(() => contractStore.contractorList)
 
-const searchContractor = () => emit('search-contractor', search.value)
+const searchContractor = () => emit('search-contractor', search.value.trim())
 
 const router = useRouter()
 const setContractor = (pk: number, release: number | null) => {

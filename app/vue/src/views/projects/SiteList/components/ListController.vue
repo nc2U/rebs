@@ -14,11 +14,11 @@ const siteStore = useSite()
 
 const siteCount = computed(() => siteStore.siteCount)
 
-const formsCheck = computed(() => form.search === '')
+const formsCheck = computed(() => form.search.trim() === '')
 
 const listFiltering = (page = 1) => {
   nextTick(() => {
-    emit('list-filtering', { page, search: form.search })
+    emit('list-filtering', { page, search: form.search.trim() })
   })
 }
 

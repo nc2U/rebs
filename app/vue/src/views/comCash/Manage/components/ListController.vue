@@ -28,7 +28,7 @@ const formsCheck = computed(() => {
   const e = !form.account_d2
   const f = !form.account_d3
   const g = !form.bank_account
-  const h = !form.search
+  const h = !form.search?.trim()
   return a && b && c && d && e && f && g && h
 })
 
@@ -69,6 +69,7 @@ const accountD2Select = () => {
 
 const listFiltering = (page = 1) => {
   form.page = page
+  form.search = form.search?.trim()
   nextTick(() => {
     emit('list-filtering', { ...form })
   })
