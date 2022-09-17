@@ -5,6 +5,7 @@ import ListController from './components/ListController.vue'
 import CategoryTabs from './components/CategoryTabs.vue'
 import DocsList from './components/DocsList.vue'
 import DocsView from './components/DocsView.vue'
+import DocsForm from './components/DocsForm.vue'
 
 const tab = ref<number>(0)
 
@@ -17,16 +18,23 @@ const pageSelect = (page: number) => console.log(page)
     <CCardBody class="pb-5">
       <ListController />
 
-      <CContainer v-if="!$route.params.postId">
+      <CContainer v-if="$route.name === '본사 일반문서'">
         <CategoryTabs @select-tab="selectTab" />
 
         <DocsList :tab-value="tab" @page-select="pageSelect" />
       </CContainer>
 
-      <CContainer v-else>
+      <CContainer v-else-if="$route.name.includes('보기')">
         <DocsView />
       </CContainer>
-      {{ $router.currentRoute.value.matched }}
+
+      <CContainer v-else-if="$route.name.includes('작성')">
+        <DocsForm />
+      </CContainer>
+
+      <CContainer v-else>
+        <DocsForm />
+      </CContainer>
     </CCardBody>
 
     <CCardFooter>&nbsp;</CCardFooter>

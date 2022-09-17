@@ -1,9 +1,7 @@
 <script lang="ts" setup="">
 import { ref } from 'vue'
 
-// const msg = ref('View')
+const msg = ref('DocsView')
 </script>
 
-<template>
-  {{ $route }}
-</template>
+<template>{{ msg }}</template>
