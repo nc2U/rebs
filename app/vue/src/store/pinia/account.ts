@@ -68,7 +68,7 @@ export const useAccount = defineStore('account', () => {
       })
       .then(res => {
         setUser(res.data)
-        message('default', '', '로그인 성공 알림!')
+        message('info', '', '로그인 성공 알림!', 2000, 'top-center', 'bounce')
       })
       .catch(err => {
         console.log(err.response)
@@ -96,7 +96,7 @@ export const useAccount = defineStore('account', () => {
     accessToken.value = ''
     delete api.defaults.headers.common.Authorization
     Cookies.remove('accessToken')
-    message('default', '', '로그아웃 완료 알림!')
+    message('info', '', '로그아웃 완료 알림!')
   }
 
   const fetchProfile = () =>

@@ -1,19 +1,23 @@
 import { createToast, ToastType } from 'mosha-vue-toastify'
+import { Position, TransitionType } from 'mosha-vue-toastify/dist/types'
 
 export const message = (
-  type = 'success' as ToastType,
+  type: ToastType = 'success',
   title = '알림!',
   description = '해당 내용이 저장되었습니다!',
   duration = 2500,
+  position: Position = 'top-right',
+  transition: TransitionType = 'slide',
 ) => {
   createToast(
     { title, description },
     {
       type,
+      position,
+      transition,
       hideProgressBar: true,
       showIcon: true,
       timeout: duration,
-      transition: 'slide',
       // toastBackgroundColor: '#4DC374',
     },
   )
