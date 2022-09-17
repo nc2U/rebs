@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+<script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { RouteLocationMatched } from 'vue-router'
 import router from '@/router'
@@ -7,13 +7,13 @@ const breadcrumbs = ref()
 
 const getBreadcrumbs = () => {
   return router.currentRoute.value.matched.map(
-    (route: RouteLocationMatched) => {
-      return {
-        active: route.path === router.currentRoute.value.fullPath,
-        name: route.name,
-        path: `${router.options.history.base}${route.path}`,
-      }
-    },
+    (route: RouteLocationMatched) => ({
+      active:
+        route.path === router.currentRoute.value.fullPath ||
+        route.path.includes(':'),
+      name: route.name,
+      path: `${router.options.history.base}${route.path}`,
+    }),
   )
 }
 
