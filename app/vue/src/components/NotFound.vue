@@ -14,11 +14,23 @@ import ContentBody from '@/layouts/ContentBody/Index.vue'
       </blockquote>
 
       <v-btn
+        color="info"
+        variant="outlined"
+        rounded="pill"
+        class="mt-1"
+        @click="$router.go(-1)"
+      >
+        To previous
+      </v-btn>
+
+      <span class="horizontal-divider">|</span>
+
+      <v-btn
         color="success"
         variant="outlined"
         rounded="pill"
-        class="mt-4"
-        @click="$router.push({ path: '/' })"
+        class="mt-1"
+        @click="$router.replace({ path: '/' })"
       >
         Take me home
       </v-btn>
@@ -58,6 +70,18 @@ import ContentBody from '@/layouts/ContentBody/Index.vue'
     font-size: 14px;
     font-weight: 500;
     color: #767676;
+  }
+
+  .horizontal-divider {
+    display: inline-block;
+    margin-top: 30px;
+    margin-right: 10px;
+    margin-left: 10px;
+    color: #c6c6c6;
+  }
+
+  button {
+    margin-top: 100px;
   }
 }
 </style>
