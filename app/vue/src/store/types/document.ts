@@ -3,8 +3,9 @@ export interface Post {
   board: number
   is_notice: boolean
   project: number
-  project_name?: string | null
+  proj_name?: string | null
   category: number | null
+  cate_name?: string | null
   lawsuit: number | null
   title: string
   execution_date: string

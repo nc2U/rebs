@@ -7,7 +7,7 @@ const props = defineProps({
   post: { type: Object as PropType<Post>, default: null },
 })
 
-const sortName = computed(() => props.post.project_name || '본사')
+const sortName = computed(() => props.post.proj_name || '본사')
 const sortColor = computed(() => (props.post.project ? 'success' : 'info'))
 </script>
 
