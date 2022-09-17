@@ -16,9 +16,9 @@ const pageSelect = (page: number) => console.log(page)
 <template>
   <ContentBody>
     <CCardBody class="pb-5">
-      <ListController />
-
       <CContainer v-if="$route.name === '본사 일반문서'">
+        <ListController />
+
         <CategoryTabs @select-tab="selectTab" />
 
         <DocsList :tab-value="tab" @page-select="pageSelect" />
@@ -32,7 +32,7 @@ const pageSelect = (page: number) => console.log(page)
         <DocsForm />
       </CContainer>
 
-      <CContainer v-else>
+      <CContainer v-else-if="$route.name.includes('수정')">
         <DocsForm />
       </CContainer>
     </CCardBody>
