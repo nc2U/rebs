@@ -19,6 +19,7 @@ export interface Post {
   device: string
   secret: boolean
   password: string
+  comments: number[]
   user: number | null
   soft_delete: string | null
   created: string

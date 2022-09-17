@@ -12,6 +12,10 @@ const sortName = computed(() => post.value.proj_name || '본사')
 
 const fetchPost = (pk: number) => documentStore.fetchPost(pk)
 
+const toPrint = () => alert('준비중!')
+
+const toSocial = () => alert('준비중!')
+
 onBeforeMount(() => fetchPost(Number(route.params.postId)))
 </script>
 
@@ -33,7 +37,7 @@ onBeforeMount(() => fetchPost(Number(route.params.postId)))
         <small class="mr-3">작성자 : {{ post.user }}</small>
         <small class="mr-3">
           <v-icon icon="mdi-comment-text-multiple" size="small" />
-          <span class="ml-2">{{ 0 }}</span>
+          <span class="ml-2">{{ post.comments.length || 0 }}</span>
         </small>
         <small class="mr-3">
           <v-icon icon="mdi-eye" size="small" />
@@ -47,7 +51,7 @@ onBeforeMount(() => fetchPost(Number(route.params.postId)))
           <v-icon icon="mdi-thumb-down" size="small" />
           <span class="ml-2">{{ post.dislike }}</span>
         </small>
-        <small class="mr-3 print" @click="alert('준비중!')">
+        <small class="mr-3 print" @click="toPrint">
           <v-icon icon="mdi-printer" size="small" />
           <span class="ml-2">프린트</span>
         </small>
@@ -94,10 +98,10 @@ onBeforeMount(() => fetchPost(Number(route.params.postId)))
     </CRow>
 
     <CRow class="mt-2 px-3">
-      <CCol class="text-grey-darken-1 pt-2">
-        <v-icon icon="mdi-facebook" size="large" class="mr-2" />
-        <v-icon icon="mdi-twitter" size="large" class="mr-2" />
-        <v-icon icon="mdi-instagram" size="large" class="mr-2" />
+      <CCol class="text-grey-darken-1 pt-2 social">
+        <v-icon icon="mdi-facebook" class="mr-2" @click="toSocial" />
+        <v-icon icon="mdi-twitter" class="mr-2" @click="toSocial" />
+        <v-icon icon="mdi-instagram" class="mr-2" @click="toSocial" />
       </CCol>
       <CCol class="text-right">
         <v-btn variant="tonal" class="mr-1">스크랩</v-btn>
@@ -138,6 +142,14 @@ onBeforeMount(() => fetchPost(Number(route.params.postId)))
 }
 
 .print:hover {
-  color: #4235b2;
+  color: darkslateblue;
+}
+
+.social i {
+  cursor: pointer;
+}
+
+.social i:hover {
+  color: darkslateblue;
 }
 </style>
