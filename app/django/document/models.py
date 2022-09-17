@@ -384,7 +384,7 @@ class File(models.Model):
 
 
 class Comment(models.Model):
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, verbose_name='게시물')
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, verbose_name='게시물', related_name='comments')
     content = models.TextField('내용')
     like = models.PositiveIntegerField('추천', default=0)
     dislike = models.PositiveIntegerField('비추천', default=0)
