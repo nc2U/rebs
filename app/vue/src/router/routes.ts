@@ -64,13 +64,13 @@ const routes: Array<RouteRecordRaw> = [
       },
     ],
     beforeEnter: (to, from, next) => {
-      if (!useAccount().isAuthorized) {
+      if (useAccount().isAuthorized) {
+        next()
+      } else {
         next({
           name: 'Login',
           query: { redirect: to.fullPath },
         })
-      } else {
-        next()
       }
     },
   },

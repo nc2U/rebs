@@ -4,9 +4,10 @@ import { useStore } from 'vuex'
 import { useTagsView } from '@/store/pinia/tagsView'
 import { VisitedViews } from '@/store/types/tagsView'
 import { RouteRecordRaw, useRoute, useRouter } from 'vue-router'
-import routes from '@/router/routes'
 
 const [route, router] = [useRoute(), useRouter()]
+
+const routes = route.matched
 
 const store = useStore()
 const dark = computed(() => store.state.theme === 'dark')
@@ -21,8 +22,9 @@ const scrollPane = ref()
 const tagsViewStore = useTagsView()
 const visitedViews = computed(() => tagsViewStore.visitedViews)
 
-const isActive = (currentRoute: { name: string }) =>
-  currentRoute.name === route.name
+const isActive = (currentRoute: VisitedViews) =>
+  currentRoute.name === route.name ||
+  currentRoute.meta.title === route.meta.title
 
 const isAffix = (tag: { meta: { affix: boolean } }) =>
   tag.meta && tag.meta.affix
@@ -56,25 +58,23 @@ const filterAffixTags = (routes: RouteRecordRaw[]) => {
 const initTags = () => {
   affixTags.value = filterAffixTags(routes)
   affixTags.value.forEach((tag: VisitedViews) =>
-    tag.name ? tagsViewStore.addVisitedView(tag) : undefined,
+    tag.meta.title ? tagsViewStore.addVisitedView(tag) : undefined,
   )
 }
 
 const addTags = () => {
-  const { name, meta } = route
-  if (name && !meta.except) tagsViewStore.addView(route)
+  const { meta } = route
+  if (meta.title && !meta.except) tagsViewStore.addView(route)
   return false
 }
 
 const moveToCurrentTag = () => {
-  // const tags = currentTag.value
   nextTick(() => {
     for (const tag of currentTag.value) {
       if (tag.to.path === route.path) {
         // when query is different then update
-        if (tag.to.fullPath !== route.fullPath) {
+        if (tag.to.fullPath !== route.fullPath)
           tagsViewStore.updateVisitedView(route)
-        }
         break
       }
     }

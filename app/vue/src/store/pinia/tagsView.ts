@@ -2,7 +2,6 @@ import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { CachedViews, VisitedViews } from '@/store/types/tagsView'
 import { RouteLocationNormalizedLoaded as RouteNormal } from 'vue-router'
-import retryTimes = jest.retryTimes
 
 export const useTagsView = defineStore('tags-view', () => {
   // state & getters
