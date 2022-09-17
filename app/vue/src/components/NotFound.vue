@@ -17,7 +17,6 @@ import ContentBody from '@/layouts/ContentBody/Index.vue'
         color="info"
         variant="outlined"
         rounded="pill"
-        class="mt-1"
         @click="$router.go(-1)"
       >
         To previous
@@ -29,7 +28,6 @@ import ContentBody from '@/layouts/ContentBody/Index.vue'
         color="success"
         variant="outlined"
         rounded="pill"
-        class="mt-1"
         @click="$router.replace({ path: '/' })"
       >
         Take me home
@@ -74,14 +72,10 @@ import ContentBody from '@/layouts/ContentBody/Index.vue'
 
   .horizontal-divider {
     display: inline-block;
-    margin-top: 30px;
+    margin-top: 32px;
     margin-right: 10px;
     margin-left: 10px;
     color: #c6c6c6;
-  }
-
-  button {
-    margin-top: 100px;
   }
 }
 </style>
