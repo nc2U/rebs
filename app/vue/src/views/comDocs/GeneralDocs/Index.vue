@@ -26,6 +26,7 @@ const pageSelect = (page: number) => console.log(page)
       <CContainer v-else>
         <DocsView />
       </CContainer>
+      {{ $router.currentRoute.value.matched }}
     </CCardBody>
 
     <CCardFooter>&nbsp;</CCardFooter>

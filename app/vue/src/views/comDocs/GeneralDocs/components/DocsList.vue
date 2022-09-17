@@ -66,7 +66,13 @@ const pageSelect = (page: number) => emit('page-select', page)
       />
     </CCol>
     <CCol lg="4" class="text-right pt-3">
-      <CButton color="primary" class="px-5">등록하기</CButton>
+      <CButton
+        color="primary"
+        class="px-5"
+        @click="$router.push({ name: '본사 일반문서 - 작성' })"
+      >
+        등록하기
+      </CButton>
     </CCol>
   </CRow>
 </template>
