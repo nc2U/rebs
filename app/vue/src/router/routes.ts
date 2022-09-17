@@ -56,6 +56,12 @@ const routes: Array<RouteRecordRaw> = [
       comDocs,
       hrManage,
       settings,
+      {
+        path: '/:pathMatch(.*)*',
+        name: 'NotFound',
+        component: () => import('@/components/NotFound.vue'),
+        meta: { title: 'Not-Found', except: true },
+      },
     ],
     beforeEnter: (to, from, next) => {
       if (!useAccount().isAuthorized) {
@@ -97,11 +103,6 @@ const routes: Array<RouteRecordRaw> = [
     name: 'RegisterCode',
     component: () => import('@/views/_Accounts/RegisterCode.vue'),
     meta: { title: '코드입력', except: true },
-  },
-  {
-    path: '/:pathMatch(.*)*',
-    name: 'NotFound',
-    redirect: '/',
   },
 ]
 
