@@ -2,6 +2,7 @@
 import { computed, onBeforeMount } from 'vue'
 import { useRoute } from 'vue-router'
 import { useDocument } from '@/store/pinia/document'
+import { PatchPost } from '@/store/types/document'
 import { timeFormat } from '@/utils/baseMixins'
 
 const route = useRoute()
@@ -11,12 +12,20 @@ const post = computed(() => documentStore.post)
 const sortName = computed(() => post.value.proj_name || '본사')
 
 const fetchPost = (pk: number) => documentStore.fetchPost(pk)
+const patchPost = (payload: PatchPost) => documentStore.patchPost(payload)
 
 const toPrint = () => alert('준비중!')
 
 const toSocial = () => alert('준비중!')
 
-onBeforeMount(() => fetchPost(Number(route.params.postId)))
+onBeforeMount(() => {
+  fetchPost(Number(route.params.postId)).then(() =>
+    patchPost({
+      pk: post.value.pk as number,
+      hit: (post.value.hit + 1) as number,
+    }),
+  )
+})
 </script>
 
 <template>
@@ -104,8 +113,18 @@ onBeforeMount(() => fetchPost(Number(route.params.postId)))
         <v-icon icon="mdi-instagram" class="mr-2" @click="toSocial" />
       </CCol>
       <CCol class="text-right">
-        <v-btn variant="tonal" class="mr-1">스크랩</v-btn>
-        <v-btn variant="tonal">신고</v-btn>
+        <v-btn
+          variant="tonal"
+          size="small"
+          :rounded="0"
+          class="mr-1"
+          @click="toSocial"
+        >
+          스크랩
+        </v-btn>
+        <v-btn variant="tonal" size="small" :rounded="0" @click="toSocial">
+          신고
+        </v-btn>
       </CCol>
     </CRow>
 
@@ -113,12 +132,14 @@ onBeforeMount(() => fetchPost(Number(route.params.postId)))
 
     <CRow class="py-4">
       <CCol>
-        <CButtonGroup role="group" aria-label="Vertical button group">
-          <!--          <CButton color="light">목록</CButton>-->
-          <CButton color="success">수정</CButton>
-          <CButton color="danger">삭제</CButton>
+        <CButtonGroup role="group">
           <CButton color="light">이전글</CButton>
           <CButton color="light">다음글</CButton>
+        </CButtonGroup>
+
+        <CButtonGroup role="group" class="ml-2">
+          <CButton color="success">수정</CButton>
+          <CButton color="danger">삭제</CButton>
         </CButtonGroup>
       </CCol>
       <CCol class="text-right">

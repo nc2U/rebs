@@ -1,7 +1,8 @@
 import api from '@/api'
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { message, errorHandle } from '@/utils/helper'
+import { PatchPost, Post } from '@/store/types/document'
 
 export type PostFilter = {
   board: number
@@ -88,8 +89,24 @@ export const useDocument = defineStore('document', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const createPost = () => 2
-  const updatePost = () => 3
+  const createPost = (payload: Post) =>
+    api
+      .post(`/post/`, payload)
+      .then(() => message())
+      .catch(err => errorHandle(err.response.data))
+
+  const updatePost = (payload: Post) =>
+    api
+      .put(`/post/${payload.pk}/`, payload)
+      .then(() => message())
+      .catch(err => errorHandle(err.response.data))
+
+  const patchPost = (payload: PatchPost) =>
+    api
+      .patch(`/post/${payload.pk}/`, payload)
+      .then(res => fetchPost(res.data.pk))
+      .catch(err => errorHandle(err.response.data))
+
   const deletePost = () => 4
 
   const link = ref()
@@ -160,6 +177,7 @@ export const useDocument = defineStore('document', () => {
     fetchPostList,
     createPost,
     updatePost,
+    patchPost,
     deletePost,
 
     link,
