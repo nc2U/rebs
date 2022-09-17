@@ -365,7 +365,7 @@ class Image(models.Model):
 
 
 class Link(models.Model):
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, default=None, verbose_name='게시물')
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, default=None, verbose_name='게시물', related_name='links')
     link = models.URLField(max_length=500, verbose_name='링크')
     hit = models.PositiveIntegerField('클릭수', default=0)
 
@@ -374,7 +374,7 @@ class Link(models.Model):
 
 
 class File(models.Model):
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, default=None, verbose_name='게시물')
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, default=None, verbose_name='게시물', related_name='files')
     file = models.FileField(upload_to=get_docs_name, verbose_name='파일')
     hit = models.PositiveIntegerField('다운로드수', default=0)
     created = models.DateTimeField(auto_now_add=True)

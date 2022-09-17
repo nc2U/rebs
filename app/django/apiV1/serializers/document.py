@@ -39,10 +39,10 @@ class PostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ('pk', 'board', 'is_notice', 'project', 'proj_name', 'category',
-                  'cate_name', 'lawsuit', 'title', 'execution_date', 'content',
-                  'is_hide_comment', 'hit', 'like', 'dislike', 'blame', 'ip', 'device',
-                  'secret', 'password', 'comments', 'user', 'soft_delete', 'created', 'updated')
+        fields = ('pk', 'board', 'is_notice', 'project', 'proj_name', 'category', 'cate_name',
+                  'lawsuit', 'title', 'execution_date', 'content', 'is_hide_comment', 'hit',
+                  'like', 'dislike', 'blame', 'ip', 'device', 'secret', 'password', 'links',
+                  'files', 'comments', 'user', 'soft_delete', 'created', 'updated')
 
 
 class ImageSerializer(serializers.ModelSerializer):
