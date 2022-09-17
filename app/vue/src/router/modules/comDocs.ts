@@ -30,12 +30,30 @@ const comDocs = {
       children: [
         {
           path: ':postId(\\d+)',
-          name: 'comDocs:view',
+          name: '본사 일반문서 - 보기',
           component: () =>
             pageViewAuth.value
               ? import('@/views/comDocs/GeneralDocs/Index.vue')
               : import('@/views/_Accounts/NoAuth.vue'),
-          meta: { title: '본사 일반문서' },
+          meta: { title: '본사 일반문서', except: true },
+        },
+        {
+          path: ':postId(\\d+)/update',
+          name: '본사 일반문서 - 수정',
+          component: () =>
+            pageViewAuth.value
+              ? import('@/views/comDocs/GeneralDocs/Index.vue')
+              : import('@/views/_Accounts/NoAuth.vue'),
+          meta: { title: '본사 일반문서', except: true },
+        },
+        {
+          path: 'create',
+          name: '본사 일반문서 - 작성',
+          component: () =>
+            pageViewAuth.value
+              ? import('@/views/comDocs/GeneralDocs/Index.vue')
+              : import('@/views/_Accounts/NoAuth.vue'),
+          meta: { title: '본사 일반문서', except: true },
         },
       ],
     },
