@@ -16,11 +16,7 @@ export const useTagsView = defineStore('tags-view', () => {
   }
 
   const addVisitedView = (view: VisitedViews) => {
-    const delVisted = visitedViews.value.filter(
-      v => v.meta.title === view.meta.title && v.name !== view.name,
-    )[0]
-    if (delVisted) delView(delVisted)
-    if (visitedViews.value.some(v => v.name === view.name)) return
+    if (visitedViews.value.some(v => v.meta.title === view.meta.title)) return
     visitedViews.value.push(Object.assign({}, view))
   }
 
