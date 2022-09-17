@@ -40,7 +40,7 @@ const onSubmit = (event: Event) => {
     :validated="validated"
     @submit.prevent="onSubmit"
   >
-    <h1 class="text-body">회원가입</h1>
+    <h1>회원가입</h1>
     <p class="text-muted">Create your account</p>
     <CInputGroup class="mb-3">
       <CInputGroupText>

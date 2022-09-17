@@ -24,7 +24,7 @@ const onSubmit = (payload: {
       <CRow class="justify-content-center">
         <CCol md="8" lg="6" xl="4">
           <CCard class="p-4">
-            <CCardBody>
+            <CCardBody class="text-body">
               <LoginForm @onSubmit="onSubmit" />
               <CRow>
                 <CCol xs="12" class="mt-3">

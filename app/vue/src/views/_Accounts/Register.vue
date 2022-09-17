@@ -19,11 +19,10 @@ const onSubmit = (payload: SignUser) => signup(payload)
     <CContainer>
       <CRow class="justify-content-center">
         <CCol md="9" lg="7" xl="5">
-          <CCard class="mx-4">
-            <CCardBody class="p-4">
+          <CCard class="mx-4 p-4">
+            <CCardBody class="text-body">
               <RegisterForm @onSubmit="onSubmit" />
-
-              <CRow class="text-body">
+              <CRow>
                 <CCol xs="12" class="mt-3">
                   <p class="text-medium-emphasis">Sign up using</p>
                 </CCol>

@@ -41,8 +41,8 @@ const onSubmit = (event: Event) => {
     <CContainer>
       <CRow class="justify-content-center">
         <CCol md="8" lg="6" xl="4">
-          <CCard class="p-4 text-body">
-            <CCardBody>
+          <CCard class="p-4">
+            <CCardBody class="text-body">
               <CRow class="mb-3">
                 <h2>계정 생성코드 입력</h2>
               </CRow>
