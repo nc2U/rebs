@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onBeforeMount, ref } from 'vue'
+import { useRoute } from 'vue-router'
 import { useDocument } from '@/store/pinia/document'
 import { PatchPost, Post } from '@/store/types/document'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
@@ -18,21 +19,28 @@ const categoryList = computed(() => documentStore.categoryList)
 const fetchCategoryList = (board: number) =>
   documentStore.fetchCategoryList(board)
 
+const fetchPost = (pk: number) => documentStore.fetchPost(pk)
+
 const createPost = (payload: Post) => documentStore.createPost(payload)
 const updatePost = (payload: Post) => documentStore.updatePost(payload)
 const patchPost = (payload: PatchPost) => documentStore.patchPost(payload)
 
 const onSubmit = (payload: Post) => {
-  if (payload.pk) createPost(payload)
-  else return updatePost(payload)
+  if (payload.pk) console.log(payload) // createPost(payload)
+  else return console.log(payload) // updatePost(payload)
 }
 
-const patchObject = (payload: PatchPost) => patchPost(payload)
+const hitPlus = (payload: PatchPost) => patchPost(payload)
 
 const selectTab = (tabValue: number) => (tab.value = tabValue)
 const pageSelect = (page: number) => console.log(page)
 
-onBeforeMount(() => fetchCategoryList(1))
+const route = useRoute()
+
+onBeforeMount(() => {
+  fetchCategoryList(1)
+  if (route.params.postId) fetchPost(Number(route.params.postId))
+})
 </script>
 
 <template>
@@ -47,7 +55,7 @@ onBeforeMount(() => fetchCategoryList(1))
       </CContainer>
 
       <CContainer v-else-if="$route.name.includes('보기')">
-        <DocsView :post="post" @patch-post="patchObject" />
+        <DocsView :post="post" @hit-plus="hitPlus" />
       </CContainer>
 
       <CContainer v-else-if="$route.name.includes('작성')">
