@@ -39,7 +39,7 @@ const form = ref<Post>({
 })
 const validated = ref(false)
 const sortName = computed(() =>
-  props.post && props.post.project ? props.post.project : '본사',
+  props.post && props.post.project ? props.post.proj_name : '본사',
 )
 
 const onSubmit = (event: Event) => {

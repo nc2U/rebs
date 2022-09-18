@@ -11,6 +11,7 @@ import DocsForm from './components/DocsForm.vue'
 const tab = ref<number>(0)
 
 const documentStore = useDocument()
+const post = computed(() => documentStore.post)
 const categoryList = computed(() => documentStore.categoryList)
 
 const fetchCategoryList = (board: number) =>
@@ -34,7 +35,7 @@ onBeforeMount(() => fetchCategoryList(1))
       </CContainer>
 
       <CContainer v-else-if="$route.name.includes('보기')">
-        <DocsView />
+        <DocsView :post="post" />
       </CContainer>
 
       <CContainer v-else-if="$route.name.includes('작성')">
@@ -42,7 +43,7 @@ onBeforeMount(() => fetchCategoryList(1))
       </CContainer>
 
       <CContainer v-else-if="$route.name.includes('수정')">
-        <DocsForm :category-list="categoryList" />
+        <DocsForm :category-list="categoryList" :post="post" />
       </CContainer>
     </CCardBody>
 

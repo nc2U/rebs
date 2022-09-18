@@ -5,12 +5,13 @@ import { useDocument } from '@/store/pinia/document'
 import { PatchPost } from '@/store/types/document'
 import { timeFormat } from '@/utils/baseMixins'
 
+const props = defineProps({ post: { type: Object, default: null } })
+
 const route = useRoute()
 
-const documentStore = useDocument()
-const post = computed(() => documentStore.post)
-const sortName = computed(() => post.value.proj_name || '본사')
+const sortName = computed(() => props.post.proj_name || '본사')
 
+const documentStore = useDocument()
 const fetchPost = (pk: number) => documentStore.fetchPost(pk)
 const patchPost = (payload: PatchPost) => documentStore.patchPost(payload)
 
@@ -21,8 +22,8 @@ const toDelete = () => alert('준비중!')
 onBeforeMount(() => {
   fetchPost(Number(route.params.postId)).then(() =>
     patchPost({
-      pk: post.value.pk as number,
-      hit: (post.value.hit + 1) as number,
+      pk: props.post.pk as number,
+      hit: (props.post.hit + 1) as number,
     }),
   )
 })
