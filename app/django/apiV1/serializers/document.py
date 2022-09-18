@@ -42,7 +42,7 @@ class PostSerializer(serializers.ModelSerializer):
         fields = ('pk', 'board', 'is_notice', 'project', 'proj_name', 'category', 'cate_name',
                   'lawsuit', 'title', 'execution_date', 'content', 'is_hide_comment', 'hit',
                   'like', 'dislike', 'blame', 'ip', 'device', 'secret', 'password', 'links',
-                  'files', 'comments', 'user', 'soft_delete', 'created', 'updated')
+                  'files', 'comments', 'user', 'soft_delete', 'created', 'updated', 'is_new')
 
 
 class ImageSerializer(serializers.ModelSerializer):
