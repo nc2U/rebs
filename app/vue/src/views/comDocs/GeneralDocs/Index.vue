@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeMount, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { ref, computed, onBeforeMount } from 'vue'
 import { useDocument } from '@/store/pinia/document'
 import { PatchPost, Post } from '@/store/types/document'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
@@ -13,13 +12,10 @@ import DocsForm from './components/DocsForm.vue'
 const tab = ref<number>(0)
 
 const documentStore = useDocument()
-const post = computed(() => documentStore.post)
 const categoryList = computed(() => documentStore.categoryList)
 
 const fetchCategoryList = (board: number) =>
   documentStore.fetchCategoryList(board)
-
-const fetchPost = (pk: number) => documentStore.fetchPost(pk)
 
 const createPost = (payload: Post) => documentStore.createPost(payload)
 const updatePost = (payload: Post) => documentStore.updatePost(payload)
@@ -35,12 +31,7 @@ const hitPlus = (payload: PatchPost) => patchPost(payload)
 const selectTab = (tabValue: number) => (tab.value = tabValue)
 const pageSelect = (page: number) => console.log(page)
 
-const route = useRoute()
-
-onBeforeMount(() => {
-  fetchCategoryList(1)
-  if (route.params.postId) fetchPost(Number(route.params.postId))
-})
+onBeforeMount(() => fetchCategoryList(1))
 </script>
 
 <template>
@@ -55,7 +46,7 @@ onBeforeMount(() => {
       </CContainer>
 
       <CContainer v-else-if="$route.name.includes('보기')">
-        <DocsView :post="post" @hit-plus="hitPlus" />
+        <DocsView @hit-plus="hitPlus" />
       </CContainer>
 
       <CContainer v-else-if="$route.name.includes('작성')">
@@ -63,11 +54,7 @@ onBeforeMount(() => {
       </CContainer>
 
       <CContainer v-else-if="$route.name.includes('수정')">
-        <DocsForm
-          :category-list="categoryList"
-          :post="post"
-          @on-submit="onSubmit"
-        />
+        <DocsForm :category-list="categoryList" @on-submit="onSubmit" />
       </CContainer>
     </CCardBody>
 

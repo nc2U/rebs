@@ -1,19 +1,31 @@
 <script lang="ts" setup="">
-import { computed, onMounted } from 'vue'
+import { computed, onBeforeMount, onMounted } from 'vue'
 import { timeFormat } from '@/utils/baseMixins'
+import { useDocument } from '@/store/pinia/document'
+import { useRoute } from 'vue-router'
 
-const props = defineProps({ post: { type: Object, default: null } })
 const emit = defineEmits(['hit-plus'])
 
-const sortName = computed(() => props.post.proj_name || '본사')
+const documentStore = useDocument()
+const post = computed(() => documentStore.post)
+
+const sortName = computed(() => post.value.proj_name || '본사')
+
+const fetchPost = (pk: number) => documentStore.fetchPost(pk)
 
 const toPrint = () => alert('준비중!')
 const toSocial = () => alert('준비중!')
 const toDelete = () => alert('준비중!')
 
+const route = useRoute()
+
+onBeforeMount(() => {
+  if (route.params.postId) fetchPost(Number(route.params.postId))
+})
+
 onMounted(() => {
-  if (props.post)
-    emit('hit-plus', { pk: props.post.pk, hit: props.post.hit + 1 })
+  if (post.value)
+    emit('hit-plus', { pk: post.value.pk, hit: post.value.hit + 1 })
 })
 </script>
 

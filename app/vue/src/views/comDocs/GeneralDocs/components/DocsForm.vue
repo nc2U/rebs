@@ -1,5 +1,5 @@
 <script lang="ts" setup="">
-import { computed, onBeforeMount, ref } from 'vue'
+import { ref, computed, onBeforeMount, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { Post } from '@/store/types/document'
 import { write_company_docs } from '@/utils/pageAuth'
@@ -8,9 +8,9 @@ import Editor from '@/components/TinyMce/index.vue'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
+import { useDocument } from '@/store/pinia/document'
 
 const props = defineProps({
-  post: { type: Object, default: null },
   categoryList: { type: Object, default: null },
 })
 
@@ -45,9 +45,14 @@ const form = ref<Post>({
 
 const validated = ref(false)
 
+const documentStore = useDocument()
+const post = computed(() => documentStore.post)
+
 const sortName = computed(() =>
-  props.post && props.post.project ? props.post.proj_name : '본사',
+  post.value && post.value.project ? post.value.proj_name : '본사',
 )
+
+const fetchPost = (pk: number) => documentStore.fetchPost(pk)
 
 const route = useRoute()
 const btnClass = computed(() => (route.params.postId ? 'success' : 'primary'))
@@ -67,27 +72,31 @@ const onSubmit = (event: Event) => {
 const modalAction = (payload: Post) => emit('on-submit', payload)
 
 onBeforeMount(() => {
-  if (props.post) {
-    form.value.pk = props.post.pk
-    form.value.board = props.post.board
-    form.value.is_notice = props.post.is_notice
-    form.value.project = props.post.project
-    form.value.category = props.post.category
-    form.value.lawsuit = props.post.lawsuit
-    form.value.title = props.post.title
-    form.value.execution_date = props.post.execution_date
-    form.value.content = props.post.content
-    form.value.is_hide_comment = props.post.is_hide_comment
-    form.value.hit = props.post.hit
-    form.value.like = props.post.like
-    form.value.dislike = props.post.dislike
-    form.value.blame = props.post.blame
-    form.value.blame = props.post.blame
-    form.value.device = props.post.device
-    form.value.secret = props.post.secret
-    form.value.password = props.post.password
-    form.value.links = props.post.links
-    form.value.files = props.post.files
+  if (route.params.postId) fetchPost(Number(route.params.postId))
+})
+
+watch(post, val => {
+  if (val) {
+    form.value.pk = val.pk
+    form.value.board = val.board
+    form.value.is_notice = val.is_notice
+    form.value.project = val.project
+    form.value.category = val.category
+    form.value.lawsuit = val.lawsuit
+    form.value.title = val.title
+    form.value.execution_date = val.execution_date
+    form.value.content = val.content
+    form.value.is_hide_comment = val.is_hide_comment
+    form.value.hit = val.hit
+    form.value.like = val.like
+    form.value.dislike = val.dislike
+    form.value.blame = val.blame
+    form.value.blame = val.blame
+    form.value.device = val.device
+    form.value.secret = val.secret
+    form.value.password = val.password
+    form.value.links = val.links
+    form.value.files = val.files
   }
 })
 </script>
