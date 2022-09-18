@@ -26,6 +26,7 @@ export interface Post {
   soft_delete?: string | null
   created?: string
   updated?: string
+  is_new?: boolean
 }
 
 export interface PatchPost {
