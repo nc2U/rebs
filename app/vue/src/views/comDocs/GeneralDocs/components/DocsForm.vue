@@ -1,6 +1,7 @@
 <script lang="ts" setup="">
-import { ref, computed, onBeforeMount, watch } from 'vue'
+import { ref, reactive, computed, onBeforeMount, watch } from 'vue'
 import { useRoute } from 'vue-router'
+import { useDocument } from '@/store/pinia/document'
 import { Post } from '@/store/types/document'
 import { write_company_docs } from '@/utils/pageAuth'
 import Editor from '@/components/TinyMce/index.vue'
@@ -8,19 +9,18 @@ import Editor from '@/components/TinyMce/index.vue'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
-import { useDocument } from '@/store/pinia/document'
 
 const props = defineProps({
   categoryList: { type: Object, default: null },
 })
 
-const emit = defineEmits(['on-submit'])
+const emit = defineEmits(['on-submit', 'close'])
 
 const delModal = ref()
 const alertModal = ref()
 const confirmModal = ref()
 
-const form = ref<Post>({
+const form = reactive<Post>({
   pk: null,
   board: null,
   is_notice: false,
@@ -35,7 +35,7 @@ const form = ref<Post>({
   like: 0,
   dislike: 0,
   blame: 0,
-  ip: '',
+  ip: null,
   device: '',
   secret: false,
   password: '',
@@ -59,7 +59,7 @@ const btnClass = computed(() => (route.params.postId ? 'success' : 'primary'))
 
 const onSubmit = (event: Event) => {
   if (write_company_docs) {
-    const el = event.currentTarget as HTMLFormElement
+    const el = event.currentTarget as HTMLSelectElement
     if (!el.checkValidity()) {
       event.preventDefault()
       event.stopPropagation()
@@ -69,7 +69,11 @@ const onSubmit = (event: Event) => {
   } else alertModal.value.callModal()
 }
 
-const modalAction = (payload: Post) => emit('on-submit', payload)
+const modalAction = () => {
+  emit('on-submit', { ...form })
+  validated.value = false
+  confirmModal.value.close()
+}
 
 onBeforeMount(() => {
   if (route.params.postId) fetchPost(Number(route.params.postId))
@@ -77,26 +81,26 @@ onBeforeMount(() => {
 
 watch(post, val => {
   if (val) {
-    form.value.pk = val.pk
-    form.value.board = val.board
-    form.value.is_notice = val.is_notice
-    form.value.project = val.project
-    form.value.category = val.category
-    form.value.lawsuit = val.lawsuit
-    form.value.title = val.title
-    form.value.execution_date = val.execution_date
-    form.value.content = val.content
-    form.value.is_hide_comment = val.is_hide_comment
-    form.value.hit = val.hit
-    form.value.like = val.like
-    form.value.dislike = val.dislike
-    form.value.blame = val.blame
-    form.value.blame = val.blame
-    form.value.device = val.device
-    form.value.secret = val.secret
-    form.value.password = val.password
-    form.value.links = val.links
-    form.value.files = val.files
+    form.pk = val.pk
+    form.board = val.board
+    form.is_notice = val.is_notice
+    form.project = val.project
+    form.category = val.category
+    form.lawsuit = val.lawsuit
+    form.title = val.title
+    form.execution_date = val.execution_date
+    form.content = val.content
+    form.is_hide_comment = val.is_hide_comment
+    form.hit = val.hit
+    form.like = val.like
+    form.dislike = val.dislike
+    form.blame = val.blame
+    form.blame = val.blame
+    form.device = val.device
+    form.secret = val.secret
+    form.password = val.password
+    form.links = val.links
+    form.files = val.files
   }
 })
 </script>
@@ -160,12 +164,7 @@ watch(post, val => {
     <CRow class="mb-3">
       <CFormLabel for="title" class="col-md-2 col-form-label">내용</CFormLabel>
       <CCol md="10">
-        <Editor
-          v-model="form.content"
-          placeholder="본문 내용"
-          required
-          rows="20"
-        />
+        <Editor v-model="form.content" placeholder="본문 내용" rows="20" />
       </CCol>
     </CRow>
 
@@ -206,7 +205,7 @@ watch(post, val => {
         <CButton color="light" @click="$router.push({ name: '본사 일반문서' })">
           목록으로
         </CButton>
-        <CButton :color="btnClass" type="submit"> 저장하기</CButton>
+        <CButton :color="btnClass" type="submit">저장하기</CButton>
       </CCol>
     </CRow>
   </CForm>

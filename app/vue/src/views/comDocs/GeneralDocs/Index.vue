@@ -22,8 +22,8 @@ const updatePost = (payload: Post) => documentStore.updatePost(payload)
 const patchPost = (payload: PatchPost) => documentStore.patchPost(payload)
 
 const onSubmit = (payload: Post) => {
-  if (payload.pk) console.log(payload) // createPost(payload)
-  else return console.log(payload) // updatePost(payload)
+  if (payload.pk) updatePost(payload)
+  else createPost(payload)
 }
 
 const hitPlus = (payload: PatchPost) => patchPost(payload)
