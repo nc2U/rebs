@@ -1,6 +1,5 @@
 from rest_framework import serializers
 
-from accounts.models import User
 from document.models import (Group, Board, Category, LawsuitCase,
                              Post, Image, Link, File, Comment, Tag)
 
