@@ -1,7 +1,10 @@
 <script lang="ts" setup="">
 import { computed, onBeforeMount, ref } from 'vue'
+import { useRoute } from 'vue-router'
 import { Post } from '@/store/types/document'
 import { write_company_docs } from '@/utils/pageAuth'
+import Editor from '@/components/TinyMce/index.vue'
+// import Tiptap from '@/components/TipTap/index.vue'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
@@ -10,6 +13,8 @@ const props = defineProps({
   post: { type: Object, default: null },
   categoryList: { type: Object, default: null },
 })
+
+const emit = defineEmits(['on-submit'])
 
 const delModal = ref()
 const alertModal = ref()
@@ -37,10 +42,15 @@ const form = ref<Post>({
   links: [],
   files: [],
 })
+
 const validated = ref(false)
+
 const sortName = computed(() =>
   props.post && props.post.project ? props.post.proj_name : '본사',
 )
+
+const route = useRoute()
+const btnClass = computed(() => (route.params.postId ? 'success' : 'primary'))
 
 const onSubmit = (event: Event) => {
   if (write_company_docs) {
@@ -53,6 +63,8 @@ const onSubmit = (event: Event) => {
     } else confirmModal.value.callModal()
   } else alertModal.value.callModal()
 }
+
+const modalAction = (payload: Post) => emit('on-submit', payload)
 
 onBeforeMount(() => {
   if (props.post) {
@@ -94,6 +106,7 @@ onBeforeMount(() => {
   <hr />
 
   <CForm
+    enctype="multipart/form-data"
     class="needs-validation"
     novalidate
     :validated="validated"
@@ -138,11 +151,11 @@ onBeforeMount(() => {
     <CRow class="mb-3">
       <CFormLabel for="title" class="col-md-2 col-form-label">내용</CFormLabel>
       <CCol md="10">
-        <CFormTextarea
+        <Editor
           v-model="form.content"
           placeholder="본문 내용"
           required
-          rows="15"
+          rows="20"
         />
       </CCol>
     </CRow>
@@ -184,12 +197,7 @@ onBeforeMount(() => {
         <CButton color="light" @click="$router.push({ name: '본사 일반문서' })">
           목록으로
         </CButton>
-        <CButton
-          :color="$route.params.postId ? 'success' : 'primary'"
-          type="submit"
-        >
-          저장하기
-        </CButton>
+        <CButton :color="btnClass" type="submit"> 저장하기</CButton>
       </CCol>
     </CRow>
   </CForm>
@@ -197,7 +205,7 @@ onBeforeMount(() => {
   <ConfirmModal ref="delModal">
     <template #header>
       <CIcon name="cilChevronCircleRightAlt" />
-      회사정보
+      본사 일반문서
     </template>
     <template #default>현재 삭제 기능이 구현되지 않았습니다.</template>
     <template #footer>
