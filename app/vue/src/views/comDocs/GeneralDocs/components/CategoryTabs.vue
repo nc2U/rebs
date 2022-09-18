@@ -1,21 +1,14 @@
 <script setup lang="ts">
-import { computed, onBeforeMount, ref, watch } from 'vue'
-import { useDocument } from '@/store/pinia/document'
+import { ref, watch } from 'vue'
 
+defineProps({ categoryList: { type: Object, default: null } })
 const emit = defineEmits(['select-tab'])
 
 const tab = ref(0)
-const documentStore = useDocument()
-const categoryList = computed(() => documentStore.categoryList)
-
-const fetchCategoryList = (board: number) =>
-  documentStore.fetchCategoryList(board)
 
 watch(tab, val => {
   emit('select-tab', val)
 })
-
-onBeforeMount(() => fetchCategoryList(1))
 </script>
 
 <template>

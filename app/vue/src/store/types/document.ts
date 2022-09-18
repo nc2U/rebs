@@ -1,8 +1,8 @@
 export interface Post {
-  pk: number
-  board: number
+  pk: number | null
+  board: number | null
   is_notice: boolean
-  project: number
+  project: number | null
   proj_name?: string | null
   category: number | null
   cate_name?: string | null
@@ -21,11 +21,11 @@ export interface Post {
   password: string
   links: number[]
   files: number[]
-  comments: number[]
-  user: number | null
-  soft_delete: string | null
-  created: string
-  updated: string
+  comments?: number[]
+  user?: number | null
+  soft_delete?: string | null
+  created?: string
+  updated?: string
 }
 
 export interface PatchPost {

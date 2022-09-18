@@ -15,8 +15,8 @@ const fetchPost = (pk: number) => documentStore.fetchPost(pk)
 const patchPost = (payload: PatchPost) => documentStore.patchPost(payload)
 
 const toPrint = () => alert('준비중!')
-
 const toSocial = () => alert('준비중!')
+const toDelete = () => alert('준비중!')
 
 onBeforeMount(() => {
   fetchPost(Number(route.params.postId)).then(() =>
@@ -138,8 +138,17 @@ onBeforeMount(() => {
         </CButtonGroup>
 
         <CButtonGroup role="group" class="ml-2">
-          <CButton color="success">수정</CButton>
-          <CButton color="danger">삭제</CButton>
+          <CButton
+            color="success"
+            @click="
+              $router.push({
+                name: '본사 일반문서 - 수정',
+                params: { postId: post.pk },
+              })
+            "
+            >수정
+          </CButton>
+          <CButton color="danger" @click="toDelete">삭제</CButton>
         </CButtonGroup>
       </CCol>
       <CCol class="text-right">
