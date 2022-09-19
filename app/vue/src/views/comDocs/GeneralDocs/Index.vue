@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onBeforeMount } from 'vue'
+import { useRouter } from 'vue-router'
 import { useDocument } from '@/store/pinia/document'
 import { PatchPost, Post } from '@/store/types/document'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
@@ -21,9 +22,18 @@ const createPost = (payload: Post) => documentStore.createPost(payload)
 const updatePost = (payload: Post) => documentStore.updatePost(payload)
 const patchPost = (payload: PatchPost) => documentStore.patchPost(payload)
 
+const router = useRouter()
 const onSubmit = (payload: Post) => {
-  if (payload.pk) updatePost(payload)
-  else createPost(payload)
+  if (payload.pk) {
+    updatePost(payload)
+    router.replace({
+      name: '본사 일반문서 - 보기',
+      params: { postId: payload.pk },
+    })
+  } else {
+    createPost(payload)
+    router.replace({ name: '본사 일반문서' })
+  }
 }
 
 const hitPlus = (payload: PatchPost) => patchPost(payload)

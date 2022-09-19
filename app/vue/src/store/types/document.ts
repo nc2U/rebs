@@ -8,7 +8,7 @@ export interface Post {
   cate_name?: string | null
   lawsuit: number | null
   title: string
-  execution_date: string
+  execution_date: string | null
   content: string
   is_hide_comment: boolean
   hit: number
@@ -35,7 +35,7 @@ export interface PatchPost {
   category?: number | null
   lawsuit?: number | null
   title?: string
-  execution_date?: string
+  execution_date?: string | null
   content?: string
   is_hide_comment?: boolean
   hit?: number

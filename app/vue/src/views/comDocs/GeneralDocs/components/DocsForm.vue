@@ -4,6 +4,7 @@ import { useRoute } from 'vue-router'
 import { useDocument } from '@/store/pinia/document'
 import { Post } from '@/store/types/document'
 import { write_company_docs } from '@/utils/pageAuth'
+import { dateFormat } from '@/utils/baseMixins'
 import Editor from '@/components/TinyMce/index.vue'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
@@ -21,13 +22,13 @@ const confirmModal = ref()
 
 const form = reactive<Post>({
   pk: null,
-  board: null,
+  board: 1,
   is_notice: false,
   project: null,
   category: null,
   lawsuit: null,
   title: '',
-  execution_date: '',
+  execution_date: null,
   content: '',
   is_hide_comment: false,
   hit: 0,
@@ -76,6 +77,10 @@ const modalAction = () => {
 
 onBeforeMount(() => {
   if (route.params.postId) fetchPost(Number(route.params.postId))
+})
+
+watch(form, val => {
+  if (val.execution_date) form.execution_date = dateFormat(val.execution_date)
 })
 
 watch(post, val => {
