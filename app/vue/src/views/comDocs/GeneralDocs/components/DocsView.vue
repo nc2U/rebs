@@ -1,4 +1,4 @@
-<script lang="ts" setup="">
+<script lang="ts" setup>
 import { computed, onBeforeMount, onMounted } from 'vue'
 import { timeFormat } from '@/utils/baseMixins'
 import { useDocument } from '@/store/pinia/document'

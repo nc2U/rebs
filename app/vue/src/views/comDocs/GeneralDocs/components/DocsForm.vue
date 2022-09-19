@@ -1,4 +1,4 @@
-<script lang="ts" setup="">
+<script lang="ts" setup>
 import { ref, reactive, computed, onBeforeMount, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useDocument } from '@/store/pinia/document'
