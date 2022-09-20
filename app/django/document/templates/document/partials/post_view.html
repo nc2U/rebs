@@ -45,10 +45,10 @@
             </table>
         {% endif %}
 
-        {% if object.link_set.all %}
+        {% if object.links.all %}
             <ul class="list-group">
                 <li class="list-group-item disabled text-dark" aria-disabled="true">Link</li>
-                {% for link in object.link_set.all %}
+                {% for link in object.links.all %}
                     <li class="list-group-item d-flex justify-content-between align-items-start">
                         <div class="ms-2 me-auto">
                             <div class="fw-bold">
@@ -62,10 +62,10 @@
             </ul>
         {% endif %}
 
-        {% if object.file_set.all %}
+        {% if object.files.all %}
             <ul class="list-group">
                 <li class="list-group-item disabled text-dark" aria-disabled="true">Download</li>
-                {% for file in object.file_set.all %}
+                {% for file in object.files.all %}
                     <li class="list-group-item d-flex justify-content-between align-items-start">
                         <div class="ms-2 me-auto">
                             <div class="fw-bold">

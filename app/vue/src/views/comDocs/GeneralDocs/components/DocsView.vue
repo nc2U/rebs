@@ -17,6 +17,11 @@ const toPrint = () => alert('준비중!')
 const toSocial = () => alert('준비중!')
 const toDelete = () => alert('준비중!')
 
+const linkHitUp = () => alert('ready!')
+const fileHitUp = () => alert('ready!')
+
+const getFileName = (file: string) => file.split('/').slice(-1)[0]
+
 const route = useRoute()
 
 onBeforeMount(() => {
@@ -75,7 +80,7 @@ onMounted(() => {
       </CCol>
     </CRow>
 
-    <CRow class="mt-5 py-2">
+    <CRow class="mt-5 py-2 justify-content-between">
       <CCol md="5" lg="4" xl="3">
         <table class="table table-bordered mt-2 mb-3">
           <tbody>
@@ -85,6 +90,42 @@ onMounted(() => {
             </tr>
           </tbody>
         </table>
+      </CCol>
+
+      <CCol md="6">
+        <CRow class="mb-3">
+          <CCol>
+            <CListGroup>
+              <CListGroupItem>Link</CListGroupItem>
+              <CListGroupItem
+                v-for="l in post.links"
+                :key="l.pk"
+                class="d-flex justify-content-between align-items-center"
+              >
+                <a :href="l.link" target="_blank">{{ l.link }} </a>
+                <CBadge color="info" shape="rounded-pill">{{ l.hit }}</CBadge>
+              </CListGroupItem>
+            </CListGroup>
+          </CCol>
+        </CRow>
+
+        <CRow>
+          <CCol>
+            <CListGroup>
+              <CListGroupItem>File</CListGroupItem>
+              <CListGroupItem
+                v-for="f in post.files"
+                :key="f.pk"
+                class="d-flex justify-content-between align-items-center"
+              >
+                <a :href="f.file" target="_blank">{{ getFileName(f.file) }}</a>
+                <CBadge color="success" shape="rounded-pill">
+                  {{ f.hit }}
+                </CBadge>
+              </CListGroupItem>
+            </CListGroup>
+          </CCol>
+        </CRow>
       </CCol>
     </CRow>
 
@@ -147,7 +188,8 @@ onMounted(() => {
                 params: { postId: post.pk },
               })
             "
-            >수정
+          >
+            수정
           </CButton>
           <CButton color="danger" @click="toDelete">삭제</CButton>
         </CButtonGroup>
