@@ -19,14 +19,32 @@ export interface Post {
   device: string
   secret: boolean
   password: string
-  links: number[]
-  files: number[]
+  links: Link[]
+  images: Image[]
+  files: File[]
   comments?: number[]
   user?: number | null
   soft_delete?: string | null
   created?: string
   updated?: string
   is_new?: boolean
+}
+
+interface Link {
+  pk: null | number
+  link: string
+  hit: number
+}
+
+interface Image {
+  pk: null | number
+  image: string
+}
+
+interface File {
+  pk: null | number
+  file: string
+  hit: number
 }
 
 export interface PatchPost {
