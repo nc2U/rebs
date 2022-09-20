@@ -1,3 +1,11 @@
+export interface Category {
+  pk: number | null
+  board: number | null
+  name: string
+  parent: number | null
+  order: number | null
+}
+
 export interface Post {
   pk: number | null
   board: number | null

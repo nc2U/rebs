@@ -2,7 +2,7 @@ import api from '@/api'
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { message, errorHandle } from '@/utils/helper'
-import { PatchPost, Post } from '@/store/types/document'
+import { Category, PatchPost, Post } from '@/store/types/document'
 
 export type PostFilter = {
   board: number
@@ -14,7 +14,7 @@ export type PostFilter = {
 
 export const useDocument = defineStore('document', () => {
   // state & getters
-  const groupList = ref()
+  const groupList = ref([])
 
   const fetchGroupList = () =>
     api
@@ -26,8 +26,8 @@ export const useDocument = defineStore('document', () => {
   const updateGroup = () => 3
   const deleteGroup = () => 4
 
-  const board = ref()
-  const boardList = ref()
+  const board = ref(null)
+  const boardList = ref([])
 
   const fetchBoard = (pk: number) =>
     api
@@ -45,7 +45,7 @@ export const useDocument = defineStore('document', () => {
   const updateBoard = () => 3
   const deleteBoard = () => 4
 
-  const categoryList = ref()
+  const categoryList = ref<Category[]>([])
 
   const fetchCategoryList = (board: number) =>
     api
@@ -64,8 +64,8 @@ export const useDocument = defineStore('document', () => {
   const updateSuitCase = () => 3
   const deleteSuitCase = () => 4
 
-  const post = ref()
-  const postList = ref()
+  const post = ref<Post | null>(null)
+  const postList = ref<Post[]>([])
   const postCount = ref(0)
 
   const postPages = (itemsPerPage: number) =>
@@ -109,28 +109,28 @@ export const useDocument = defineStore('document', () => {
 
   const deletePost = () => 4
 
-  const link = ref()
+  const link = ref(null)
 
   const fetchLink = () => 1
   const createLink = () => 2
   const updateLink = () => 3
   const deleteLink = () => 4
 
-  const file = ref()
+  const file = ref(null)
 
   const fetchFile = () => 1
   const createFile = () => 2
   const updateFile = () => 3
   const deleteFile = () => 4
 
-  const comment = ref()
+  const comment = ref(null)
 
   const fetchComment = () => 1
   const createComment = () => 2
   const updateComment = () => 3
   const deleteComment = () => 4
 
-  const tag = ref()
+  const tag = ref(null)
 
   const fetchTag = () => 1
   const createTag = () => 2
