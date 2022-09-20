@@ -365,7 +365,7 @@ class Link(models.Model):
 
 
 class Image(models.Model):
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, default=None, verbose_name='게시물')
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, default=None, verbose_name='게시물', related_name='images')
     image = models.ImageField(upload_to=get_image_name, verbose_name='이미지')
     created = models.DateTimeField(auto_now_add=True)
 

@@ -52,8 +52,8 @@ class FilesInPostSerializer(serializers.ModelSerializer):
 class PostSerializer(serializers.ModelSerializer):
     proj_name = serializers.SlugField(source='project', read_only=True)
     cate_name = serializers.SlugField(source='category', read_only=True)
-    images = ImagesInPostSerializer(many=True, read_only=True)
     links = LinksInPostSerializer(many=True, read_only=True)
+    images = ImagesInPostSerializer(many=True, read_only=True)
     files = FilesInPostSerializer(many=True, read_only=True)
     comments = serializers.RelatedField(many=True, read_only=True)
     user = serializers.SlugRelatedField(read_only=True, slug_field='username')
