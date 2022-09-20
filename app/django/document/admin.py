@@ -39,6 +39,11 @@ class LawsuitCaseAdmin(ImportExportMixin, admin.ModelAdmin):
     search_fields = ('case_number', 'plaintiff', 'defendant')
 
 
+class LinkInline(admin.TabularInline):
+    model = Link
+    extra = 1
+
+
 class ImageInline(admin.TabularInline):
     model = Image
     extra = 1
@@ -46,11 +51,6 @@ class ImageInline(admin.TabularInline):
 
 class FileInline(admin.TabularInline):
     model = File
-    extra = 1
-
-
-class LinkInline(admin.TabularInline):
-    model = Link
     extra = 1
 
 
@@ -65,7 +65,7 @@ class PostAdmin(ImportExportMixin, admin.ModelAdmin):
     list_editable = ('board', 'is_notice', 'project', 'category', 'execution_date')
     search_fields = ('title', 'content')
     list_filter = ('board', 'is_notice', 'project', 'category')
-    inlines = (ImageInline, FileInline, LinkInline)
+    inlines = (LinkInline, ImageInline, FileInline, CommentInline)
 
 
 class TagAdmin(ImportExportMixin, admin.ModelAdmin):

@@ -355,15 +355,6 @@ def get_docs_name(instance, filename):
     return f"board/docs/{today}_{hash_value}_{filename}"
 
 
-class Image(models.Model):
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, default=None, verbose_name='게시물')
-    image = models.ImageField(upload_to=get_image_name, verbose_name='이미지')
-    created = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return settings.MEDIA_URL
-
-
 class Link(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, default=None, verbose_name='게시물', related_name='links')
     link = models.URLField(max_length=500, verbose_name='링크')
@@ -371,6 +362,15 @@ class Link(models.Model):
 
     def __str__(self):
         return self.link
+
+
+class Image(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, default=None, verbose_name='게시물')
+    image = models.ImageField(upload_to=get_image_name, verbose_name='이미지')
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return settings.MEDIA_URL
 
 
 class File(models.Model):

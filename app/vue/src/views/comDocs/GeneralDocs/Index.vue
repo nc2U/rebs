@@ -25,11 +25,12 @@ const patchPost = (payload: PatchPost) => documentStore.patchPost(payload)
 const router = useRouter()
 const onSubmit = (payload: Post) => {
   if (payload.pk) {
-    updatePost(payload)
-    router.replace({
-      name: '본사 일반문서 - 보기',
-      params: { postId: payload.pk },
-    })
+    // updatePost(payload)
+    console.log(payload)
+    // router.replace({
+    //   name: '본사 일반문서 - 보기',
+    //   params: { postId: payload.pk },
+    // })
   } else {
     createPost(payload)
     router.replace({ name: '본사 일반문서' })

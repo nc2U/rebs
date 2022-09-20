@@ -31,9 +31,30 @@ class LawSuitCaseSerializer(serializers.ModelSerializer):
                   'defendant', 'related_debtor', 'case_start_date', 'summary')
 
 
+class LinksInPostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Link
+        fields = ('pk', 'link', 'hit')
+
+
+class ImagesInPostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Image
+        fields = ('pk', 'image')
+
+
+class FilesInPostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = File
+        fields = ('pk', 'file', 'hit')
+
+
 class PostSerializer(serializers.ModelSerializer):
     proj_name = serializers.SlugField(source='project', read_only=True)
     cate_name = serializers.SlugField(source='category', read_only=True)
+    images = ImagesInPostSerializer(many=True, read_only=True)
+    links = LinksInPostSerializer(many=True, read_only=True)
+    files = FilesInPostSerializer(many=True, read_only=True)
     comments = serializers.RelatedField(many=True, read_only=True)
     user = serializers.SlugRelatedField(read_only=True, slug_field='username')
 
@@ -41,7 +62,7 @@ class PostSerializer(serializers.ModelSerializer):
         model = Post
         fields = ('pk', 'board', 'is_notice', 'project', 'proj_name', 'category', 'cate_name',
                   'lawsuit', 'title', 'execution_date', 'content', 'is_hide_comment', 'hit',
-                  'like', 'dislike', 'blame', 'ip', 'device', 'secret', 'password', 'links',
+                  'like', 'dislike', 'blame', 'ip', 'device', 'secret', 'password', 'links', 'images',
                   'files', 'comments', 'user', 'soft_delete', 'created', 'updated', 'is_new')
 
 
