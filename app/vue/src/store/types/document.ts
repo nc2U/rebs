@@ -54,7 +54,7 @@ export interface Image {
 export interface File {
   pk: null | number
   file: string
-  oldFile?: string
+  newFile?: string
   hit: number
   del?: boolean
 }

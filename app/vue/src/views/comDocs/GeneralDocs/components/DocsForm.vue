@@ -11,9 +11,7 @@ import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-const props = defineProps({
-  categoryList: { type: Object, default: null },
-})
+defineProps({ categoryList: { type: Object, default: null } })
 
 const emit = defineEmits(['on-submit', 'close'])
 
@@ -42,11 +40,9 @@ const form = reactive<Post & Attatches>({
   password: '',
 
   oldLinks: [],
-  oldImages: [],
   oldFiles: [],
 
   newLinks: [],
-  newImages: [],
   newFiles: [],
 })
 
@@ -135,9 +131,15 @@ watch(post, val => {
     form.device = val.device
     form.secret = val.secret
     form.password = val.password
-    form.oldLinks = val.links || []
-    form.oldImages = val.images || []
-    form.oldFiles = val.files || []
+    if (val.links) form.oldLinks = val.links
+    if (val.files) {
+      form.oldFiles = val.files.map(file => ({
+        pk: file.pk,
+        file: file.file,
+        newFile: '',
+        hit: file.hit,
+      }))
+    }
   }
 })
 
@@ -301,7 +303,7 @@ onBeforeRouteLeave(() => {
                       변경 : &nbsp;
                       <CFormInput
                         :id="`post-file-${file.pk}`"
-                        v-model="form.oldFiles[i].oldFile"
+                        v-model="form.oldFiles[i].newFile"
                         size="sm"
                         type="file"
                         aria-label="File"

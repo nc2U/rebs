@@ -24,33 +24,13 @@ const patchPost = (payload: PatchPost) => documentStore.patchPost(payload)
 
 const router = useRouter()
 const onSubmit = (payload: Post & Attatches) => {
-  console.log(payload.oldLinks)
-  console.log(payload.oldFiles)
-  console.log('----------------')
-  console.log(payload.newLinks)
-  console.log(payload.newFiles)
-
-  // if (payload.oldLinks?.length)
-  //   payload.oldLinks.forEach(link => console.log('update', link))
-  //
-  // if (payload.oldFiles?.length)
-  //   payload.oldFiles.forEach(file => console.log('update', file))
-  //
-  // if (payload.newLinks?.length)
-  //   payload.newLinks.forEach(link => console.log('create', link))
-  //
-  // if (payload.newFiles?.length)
-  //   payload.newFiles.forEach(file => console.log('create', file))
-
   if (payload.pk) {
-    // console.log('update -->', payload)
     updatePost(payload)
     router.replace({
       name: '본사 일반문서 - 보기',
       params: { postId: payload.pk },
     })
   } else {
-    // console.log('create -->', payload)
     createPost(payload)
     router.replace({ name: '본사 일반문서' })
   }
