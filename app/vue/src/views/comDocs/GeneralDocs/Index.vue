@@ -24,6 +24,24 @@ const patchPost = (payload: PatchPost) => documentStore.patchPost(payload)
 
 const router = useRouter()
 const onSubmit = (payload: Post) => {
+  if (payload.links.length)
+    payload.links.forEach(link => {
+      if (link.pk) console.log('update', link)
+      else console.log('create', link)
+    })
+
+  if (payload.images.length)
+    payload.images.forEach(image => {
+      if (image.pk) console.log('update', image)
+      else console.log('create', image)
+    })
+
+  if (payload.files.length)
+    payload.files.forEach(file => {
+      if (file.pk) console.log('update', file)
+      else console.log('create', file)
+    })
+
   if (payload.pk) {
     updatePost(payload)
     router.replace({

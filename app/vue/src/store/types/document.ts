@@ -38,18 +38,18 @@ export interface Post {
   is_new?: boolean
 }
 
-interface Link {
+export interface Link {
   pk: null | number
   link: string
   hit: number
 }
 
-interface Image {
+export interface Image {
   pk: null | number
   image: string
 }
 
-interface File {
+export interface File {
   pk: null | number
   file: string
   hit: number
