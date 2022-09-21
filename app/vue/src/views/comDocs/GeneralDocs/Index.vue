@@ -2,7 +2,7 @@
 import { ref, computed, onBeforeMount } from 'vue'
 import { useRouter } from 'vue-router'
 import { useDocument } from '@/store/pinia/document'
-import { PatchPost, Post } from '@/store/types/document'
+import { Attatches, PatchPost, Post } from '@/store/types/document'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from './components/ListController.vue'
 import CategoryTabs from './components/CategoryTabs.vue'
@@ -23,32 +23,34 @@ const updatePost = (payload: Post) => documentStore.updatePost(payload)
 const patchPost = (payload: PatchPost) => documentStore.patchPost(payload)
 
 const router = useRouter()
-const onSubmit = (payload: Post) => {
-  if (payload.links.length)
-    payload.links.forEach(link => {
-      if (link.pk) console.log('update', link)
-      else console.log('create', link)
-    })
+const onSubmit = (payload: Post & Attatches) => {
+  console.log(payload.oldLinks)
+  console.log(payload.oldFiles)
+  console.log('----------------')
+  console.log(payload.newLinks)
+  console.log(payload.newFiles)
 
-  if (payload.images.length)
-    payload.images.forEach(image => {
-      if (image.pk) console.log('update', image)
-      else console.log('create', image)
-    })
-
-  if (payload.files.length)
-    payload.files.forEach(file => {
-      if (file.pk) console.log('update', file)
-      else console.log('create', file)
-    })
+  // if (payload.oldLinks?.length)
+  //   payload.oldLinks.forEach(link => console.log('update', link))
+  //
+  // if (payload.oldFiles?.length)
+  //   payload.oldFiles.forEach(file => console.log('update', file))
+  //
+  // if (payload.newLinks?.length)
+  //   payload.newLinks.forEach(link => console.log('create', link))
+  //
+  // if (payload.newFiles?.length)
+  //   payload.newFiles.forEach(file => console.log('create', file))
 
   if (payload.pk) {
+    // console.log('update -->', payload)
     updatePost(payload)
     router.replace({
       name: '본사 일반문서 - 보기',
       params: { postId: payload.pk },
     })
   } else {
+    // console.log('create -->', payload)
     createPost(payload)
     router.replace({ name: '본사 일반문서' })
   }
