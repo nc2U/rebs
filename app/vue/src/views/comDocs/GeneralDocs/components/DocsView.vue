@@ -20,7 +20,10 @@ const toDelete = () => alert('준비중!')
 const linkHitUp = () => alert('ready!')
 const fileHitUp = () => alert('ready!')
 
-const getFileName = (file: string) => file.split('/').slice(-1)[0]
+const getFileName = (file: string) => {
+  if (file) return decodeURI(file.split('/').slice(-1)[0])
+  else return
+}
 
 const route = useRoute()
 
