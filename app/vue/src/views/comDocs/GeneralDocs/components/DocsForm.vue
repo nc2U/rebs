@@ -264,13 +264,12 @@ onBeforeRouteLeave(() => {
                 aria-label="File Link"
                 aria-describedby="basic-addon1"
               />
-              <CInputGroupText id="basic-addon1">
+              <CInputGroupText id="basic-addon1" @click="ctlLinkNum(lNum)">
                 <v-icon
                   :icon="`mdi-${
                     lNum + 1 < newLinkNum ? 'minus' : 'plus'
                   }-thick`"
                   :color="lNum + 1 < newLinkNum ? 'error' : 'primary'"
-                  @click="ctlLinkNum(lNum)"
                 />
               </CInputGroupText>
             </CInputGroup>
@@ -338,13 +337,12 @@ onBeforeRouteLeave(() => {
                 aria-label="File"
                 aria-describedby="basic-addon2"
               />
-              <CInputGroupText id="basic-addon2">
+              <CInputGroupText id="basic-addon2" @click="ctlFileNum(fNum)">
                 <v-icon
                   :icon="`mdi-${
                     fNum + 1 < newFileNum ? 'minus' : 'plus'
                   }-thick`"
                   :color="fNum + 1 < newFileNum ? 'error' : 'primary'"
-                  @click="ctlFileNum(fNum)"
                 />
               </CInputGroupText>
             </CInputGroup>
