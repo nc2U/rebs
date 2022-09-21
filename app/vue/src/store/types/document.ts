@@ -27,9 +27,9 @@ export interface Post {
   device: string
   secret: boolean
   password: string
-  links: Link[]
-  images: Image[]
-  files: File[]
+  links?: Link[]
+  images?: Image[]
+  files?: File[]
   comments?: number[]
   user?: number | null
   soft_delete?: string | null
@@ -42,17 +42,31 @@ export interface Link {
   pk: null | number
   link: string
   hit: number
+  del?: boolean
 }
 
 export interface Image {
   pk: null | number
   image: string
+  del?: boolean
 }
 
 export interface File {
   pk: null | number
   file: string
+  oldFile?: string
   hit: number
+  del?: boolean
+}
+
+export type Attatches = {
+  oldLinks: Link[]
+  oldImages: Image[]
+  oldFiles: File[]
+
+  newLinks: Link[]
+  newImages: Image[]
+  newFiles: File[]
 }
 
 export interface PatchPost {
