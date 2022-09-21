@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, onBeforeMount, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { onBeforeRouteLeave, useRoute } from 'vue-router'
 import { useDocument } from '@/store/pinia/document'
-import { Post, Link, Image, File } from '@/store/types/document'
+import { Post, Attatches } from '@/store/types/document'
 import { write_company_docs } from '@/utils/pageAuth'
 import { dateFormat } from '@/utils/baseMixins'
+import { AlertSecondary } from '@/utils/cssMixins'
 import Editor from '@/components/TinyMce/index.vue'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
@@ -20,7 +21,7 @@ const delModal = ref()
 const alertModal = ref()
 const confirmModal = ref()
 
-const form = reactive<Post>({
+const form = reactive<Post & Attatches>({
   pk: null,
   board: 1,
   is_notice: false,
@@ -39,14 +40,39 @@ const form = reactive<Post>({
   device: '',
   secret: false,
   password: '',
-  links: [],
-  images: [],
-  files: [],
+
+  oldLinks: [],
+  oldImages: [],
+  oldFiles: [],
+
+  newLinks: [],
+  newImages: [],
+  newFiles: [],
 })
 
-const links = ref<Link[]>([])
-const images = ref<Image[]>([])
-const files = ref<File[]>([])
+const newLinkNum = ref(1)
+const newLinkRange = computed(() => {
+  let array = []
+  for (let i = 0; i < newLinkNum.value; ++i) array.push(i)
+  return array
+})
+
+const ctlLinkNum = (n: number) => {
+  if (n + 1 >= newLinkNum.value) newLinkNum.value = newLinkNum.value + 1
+  else newLinkNum.value = newLinkNum.value - 1
+}
+
+const newFileNum = ref(1)
+const newFileRange = computed(() => {
+  let array = []
+  for (let i = 0; i < newFileNum.value; ++i) array.push(i)
+  return array
+})
+
+const ctlFileNum = (n: number) => {
+  if (n + 1 >= newFileNum.value) newFileNum.value = newFileNum.value + 1
+  else newFileNum.value = newFileNum.value - 1
+}
 
 const validated = ref(false)
 
@@ -85,10 +111,6 @@ const devideUri = (uri: string) => {
   return [devidedUri[0] + 'media/', devidedUri[1]]
 }
 
-onBeforeMount(() => {
-  if (route.params.postId) fetchPost(Number(route.params.postId))
-})
-
 watch(form, val => {
   if (val.execution_date) form.execution_date = dateFormat(val.execution_date)
 })
@@ -113,9 +135,23 @@ watch(post, val => {
     form.device = val.device
     form.secret = val.secret
     form.password = val.password
-    form.links = val.links
-    form.files = val.files
+    form.oldLinks = val.links || []
+    form.oldImages = val.images || []
+    form.oldFiles = val.files || []
   }
+})
+
+watch(route, val => {
+  if (val.params.postId) fetchPost(Number(val.params.postId))
+  else documentStore.post = null
+})
+
+onBeforeMount(() => {
+  if (route.params.postId) fetchPost(Number(route.params.postId))
+})
+
+onBeforeRouteLeave(() => {
+  documentStore.post = null
 })
 </script>
 
@@ -184,33 +220,59 @@ watch(post, val => {
 
     <CRow class="mb-3">
       <CFormLabel for="title" class="col-md-2 col-form-label">링크</CFormLabel>
-      <CCol md="6">
-        <CRow v-if="post && form.links.length" class="mb-2">
-          <CCol>
-            <CInputGroup v-for="(link, i) in form.links" :key="link.pk">
-              <CFormInput
-                :id="`post-link-${link.pk}`"
-                v-model="form.links[i].link"
-                placeholder="파일 링크"
-                aria-label="File Link"
-                aria-describedby="basic-addon1"
-              />
-              <CInputGroupText id="basic-addon1">+</CInputGroupText>
-            </CInputGroup>
-          </CCol>
+      <CCol md="10" lg="8" xl="6">
+        <CRow v-if="post && form.oldLinks.length">
+          <CAlert :color="AlertSecondary">
+            <CCol>
+              <CInputGroup
+                v-for="(link, i) in form.oldLinks"
+                :key="link.pk"
+                class="mb-2"
+              >
+                <CFormInput
+                  :id="`post-link-${link.pk}`"
+                  v-model="form.oldLinks[i].link"
+                  size="sm"
+                  placeholder="파일 링크"
+                  aria-label="File Link"
+                  aria-describedby="basic-addon1"
+                />
+                <CInputGroupText id="basic-addon1" class="py-0">
+                  <CFormCheck
+                    :id="`del-link-${link.pk}`"
+                    v-model="form.oldLinks[i].del"
+                    :value="false"
+                    label="삭제"
+                  />
+                </CInputGroupText>
+              </CInputGroup>
+            </CCol>
+          </CAlert>
         </CRow>
 
         <CRow class="mb-2">
           <CCol>
-            <CInputGroup>
+            <CInputGroup
+              v-for="lNum in newLinkRange"
+              :key="`ln-${lNum}`"
+              class="mb-2"
+            >
               <CFormInput
-                id="link-0"
-                v-model="links[0]"
+                :id="`link-${lNum}`"
+                v-model="form.newLinks[lNum]"
                 placeholder="파일 링크"
                 aria-label="File Link"
                 aria-describedby="basic-addon1"
               />
-              <CInputGroupText id="basic-addon1">+</CInputGroupText>
+              <CInputGroupText id="basic-addon1">
+                <v-icon
+                  :icon="`mdi-${
+                    lNum + 1 < newLinkNum ? 'minus' : 'plus'
+                  }-thick`"
+                  :color="lNum + 1 < newLinkNum ? 'error' : 'primary'"
+                  @click="ctlLinkNum(lNum)"
+                />
+              </CInputGroupText>
             </CInputGroup>
           </CCol>
         </CRow>
@@ -219,49 +281,72 @@ watch(post, val => {
 
     <CRow class="mb-3">
       <CFormLabel for="title" class="col-md-2 col-form-label">파일</CFormLabel>
-      <CCol md="6">
-        <CRow v-if="post && form.files.length" class="mb-2">
-          <CCol
-            v-for="file in form.files"
-            :key="file.pk"
-            xs="12"
-            color="primary"
-          >
-            <small>
-              {{ devideUri(file.file)[0] }} <br />
-              현재 :
-              <a :href="file.file" target="_blank">
-                {{ devideUri(file.file)[1] }}
-              </a>
-              <CRow>
-                <CCol>
-                  <small>변경 : </small>
-                </CCol>
-                <CCol xs="10">
-                  <CFormInput
-                    :id="`post-file-${file.pk}`"
-                    type="file"
-                    size="sm"
-                    aria-label="File"
-                    aria-describedby="basic-addon2"
-                  />
-                </CCol>
-              </CRow>
-            </small>
-          </CCol>
+      <CCol md="10" lg="8" xl="6">
+        <CRow v-if="post && form.oldFiles.length">
+          <CAlert :color="AlertSecondary">
+            <small>{{ devideUri(form.oldFiles[0].file)[0] }}</small>
+            <CCol
+              v-for="(file, i) in form.oldFiles"
+              :key="file.pk"
+              xs="12"
+              color="primary"
+            >
+              <small>
+                현재 :
+                <a :href="file.file" target="_blank">
+                  {{ devideUri(file.file)[1] }}
+                </a>
+                <CRow>
+                  <CCol>
+                    <CInputGroup>
+                      변경 : &nbsp;
+                      <CFormInput
+                        :id="`post-file-${file.pk}`"
+                        v-model="form.oldFiles[i].oldFile"
+                        size="sm"
+                        type="file"
+                        aria-label="File"
+                        aria-describedby="basic-addon2"
+                      />
+                      <CInputGroupText id="basic-addon2" class="py-0">
+                        <CFormCheck
+                          :id="`del-file-${file.pk}`"
+                          v-model="form.oldFiles[i].del"
+                          :value="false"
+                          label="삭제"
+                        />
+                      </CInputGroupText>
+                    </CInputGroup>
+                  </CCol>
+                </CRow>
+              </small>
+            </CCol>
+          </CAlert>
         </CRow>
 
         <CRow class="mb-2">
           <CCol>
-            <CInputGroup>
+            <CInputGroup
+              v-for="fNum in newFileRange"
+              :key="`fn-${fNum}`"
+              class="mb-2"
+            >
               <CFormInput
-                id="file-0"
-                v-model="files[0]"
+                :id="`file-${fNum}`"
+                v-model="form.newFiles[fNum]"
                 type="file"
                 aria-label="File"
                 aria-describedby="basic-addon2"
               />
-              <CInputGroupText id="basic-addon2">+</CInputGroupText>
+              <CInputGroupText id="basic-addon2">
+                <v-icon
+                  :icon="`mdi-${
+                    fNum + 1 < newFileNum ? 'minus' : 'plus'
+                  }-thick`"
+                  :color="fNum + 1 < newFileNum ? 'error' : 'primary'"
+                  @click="ctlFileNum(fNum)"
+                />
+              </CInputGroupText>
             </CInputGroup>
           </CCol>
         </CRow>
@@ -272,6 +357,13 @@ watch(post, val => {
       <CCol class="text-right">
         <CButton color="light" @click="$router.push({ name: '본사 일반문서' })">
           목록으로
+        </CButton>
+        <CButton
+          v-if="route.params.postId"
+          color="light"
+          @click="$router.go(-1)"
+        >
+          뒤로
         </CButton>
         <CButton :color="btnClass" type="submit">저장하기</CButton>
       </CCol>
