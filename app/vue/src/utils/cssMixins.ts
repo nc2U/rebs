@@ -28,3 +28,7 @@ export const headerDanger = computed(() =>
 export const headerLight = computed(() =>
   store.state.theme === 'dark' ? '' : 'light',
 )
+
+export const AlertSecondary = computed(() =>
+  store.state.theme === 'dark' ? '' : 'secondary',
+)
