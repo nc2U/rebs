@@ -1,3 +1,6 @@
+from django.db import transaction
+from django.core.exceptions import ValidationError
+from urllib.parse import urlsplit, urlunsplit
 from rest_framework import serializers
 
 from document.models import (Group, Board, Category, LawsuitCase,
@@ -64,6 +67,92 @@ class PostSerializer(serializers.ModelSerializer):
                   'lawsuit', 'title', 'execution_date', 'content', 'is_hide_comment', 'hit',
                   'like', 'dislike', 'blame', 'ip', 'device', 'secret', 'password', 'links', 'images',
                   'files', 'comments', 'user', 'soft_delete', 'created', 'updated', 'is_new')
+
+    def to_python(self, value):
+
+        def split_url(url):
+            """
+            Return a list of url parts via urlparse.urlsplit(), or raise
+            ValidationError for some malformed URLs.
+            """
+            try:
+                return list(urlsplit(url))
+            except ValueError:
+                # urlparse.urlsplit can raise a ValueError with some
+                # misformatted URLs.
+                raise ValidationError(self.error_messages['invalid'], code='invalid')
+
+        if value:
+            url_fields = split_url(value)
+            if not url_fields[0]:
+                # If no URL scheme given, assume http://
+                url_fields[0] = 'http'
+            if not url_fields[1]:
+                # Assume that if no domain is provided, that the path segment
+                # contains the domain.
+                url_fields[1] = url_fields[2]
+                url_fields[2] = ''
+                # Rebuild the url_fields list, since the domain segment may now
+                # contain the path too.
+                url_fields = split_url(urlunsplit(url_fields))
+            value = urlunsplit(url_fields)
+        return value
+
+    @transaction.atomic
+    def create(self, validated_data):
+        post = Post.objects.create(**validated_data)
+        post.save()
+
+        # Links 처리
+        new_links = self.initial_data.get('newLinks')
+        if new_links:
+            for link in new_links:
+                link_object = Link(post=post, link=self.to_python(link))
+                link_object.save()
+
+        # Files 처리
+        new_files = self.initial_data.get('newFiles')
+        if new_files:
+            for file in new_files:
+                file_object = File(post=post, file=file)
+                file_object.save()
+
+        return post
+
+    @transaction.atomic
+    def update(self, instance, validated_data):
+        instance.__dict__.update(**validated_data)
+        instance.save()
+
+        # Links 처리
+        old_links = self.initial_data.get('oldLinks')
+        if old_links:
+            for link in old_links:
+                link_object = Link.objects.get(pk=link.get('pk'))
+                link_object.link = self.to_python(link.get('link'))
+                link_object.save()
+
+        new_links = self.initial_data.get('newLinks')
+        if new_links:
+            for link in new_links:
+                link_object = Link(post=instance, link=self.to_python(link))
+                link_object.save()
+
+        # Files 처리
+        old_files = self.initial_data.get('oldFiles')
+        if old_files:
+            for file in old_files:
+                file_object = File.objects.get(pk=file.get('pk'))
+                file_object.file = file
+                file_object.save()
+
+        new_files = self.initial_data.get('newFiles')
+        if new_files:
+            for file in new_files:
+                file_object = File(post=instance, file=file)
+                file_object.save()
+
+        return instance
 
 
 class ImageSerializer(serializers.ModelSerializer):
