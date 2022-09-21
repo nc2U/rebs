@@ -61,11 +61,11 @@ export interface File {
 
 export type Attatches = {
   oldLinks: Link[]
-  oldImages: Image[]
+  oldImages?: Image[]
   oldFiles: File[]
 
   newLinks: Link[]
-  newImages: Image[]
+  newImages?: Image[]
   newFiles: File[]
 }
 
