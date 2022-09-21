@@ -2,7 +2,7 @@
 import { ref, reactive, computed, onBeforeMount, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useDocument } from '@/store/pinia/document'
-import { Post } from '@/store/types/document'
+import { Post, Link, Image, File } from '@/store/types/document'
 import { write_company_docs } from '@/utils/pageAuth'
 import { dateFormat } from '@/utils/baseMixins'
 import Editor from '@/components/TinyMce/index.vue'
@@ -40,8 +40,13 @@ const form = reactive<Post>({
   secret: false,
   password: '',
   links: [],
+  images: [],
   files: [],
 })
+
+const links = ref<Link[]>([])
+const images = ref<Image[]>([])
+const files = ref<File[]>([])
 
 const validated = ref(false)
 
@@ -73,6 +78,11 @@ const modalAction = () => {
   emit('on-submit', { ...form })
   validated.value = false
   confirmModal.value.close()
+}
+
+const devideUri = (uri: string) => {
+  const devidedUri = decodeURI(uri).split('media/')
+  return [devidedUri[0] + 'media/', devidedUri[1]]
 }
 
 onBeforeMount(() => {
@@ -175,32 +185,86 @@ watch(post, val => {
     <CRow class="mb-3">
       <CFormLabel for="title" class="col-md-2 col-form-label">링크</CFormLabel>
       <CCol md="6">
-        <CInputGroup>
-          <CFormInput
-            id="title"
-            v-model="form.links[0]"
-            placeholder="파일 링크"
-            aria-label="File Link"
-            aria-describedby="basic-addon1"
-          />
-          <CInputGroupText id="basic-addon1">+</CInputGroupText>
-        </CInputGroup>
+        <CRow v-if="post && form.links.length" class="mb-2">
+          <CCol>
+            <CInputGroup v-for="(link, i) in form.links" :key="link.pk">
+              <CFormInput
+                :id="`post-link-${link.pk}`"
+                v-model="form.links[i].link"
+                placeholder="파일 링크"
+                aria-label="File Link"
+                aria-describedby="basic-addon1"
+              />
+              <CInputGroupText id="basic-addon1">+</CInputGroupText>
+            </CInputGroup>
+          </CCol>
+        </CRow>
+
+        <CRow class="mb-2">
+          <CCol>
+            <CInputGroup>
+              <CFormInput
+                id="link-0"
+                v-model="links[0]"
+                placeholder="파일 링크"
+                aria-label="File Link"
+                aria-describedby="basic-addon1"
+              />
+              <CInputGroupText id="basic-addon1">+</CInputGroupText>
+            </CInputGroup>
+          </CCol>
+        </CRow>
       </CCol>
     </CRow>
 
     <CRow class="mb-3">
       <CFormLabel for="title" class="col-md-2 col-form-label">파일</CFormLabel>
       <CCol md="6">
-        <CInputGroup>
-          <CFormInput
-            id="title"
-            v-model="form.files[0]"
-            type="file"
-            aria-label="File"
-            aria-describedby="basic-addon2"
-          />
-          <CInputGroupText id="basic-addon2">+</CInputGroupText>
-        </CInputGroup>
+        <CRow v-if="post && form.files.length" class="mb-2">
+          <CCol
+            v-for="file in form.files"
+            :key="file.pk"
+            xs="12"
+            color="primary"
+          >
+            <small>
+              {{ devideUri(file.file)[0] }} <br />
+              현재 :
+              <a :href="file.file" target="_blank">
+                {{ devideUri(file.file)[1] }}
+              </a>
+              <CRow>
+                <CCol>
+                  <small>변경 : </small>
+                </CCol>
+                <CCol xs="10">
+                  <CFormInput
+                    :id="`post-file-${file.pk}`"
+                    type="file"
+                    size="sm"
+                    aria-label="File"
+                    aria-describedby="basic-addon2"
+                  />
+                </CCol>
+              </CRow>
+            </small>
+          </CCol>
+        </CRow>
+
+        <CRow class="mb-2">
+          <CCol>
+            <CInputGroup>
+              <CFormInput
+                id="file-0"
+                v-model="files[0]"
+                type="file"
+                aria-label="File"
+                aria-describedby="basic-addon2"
+              />
+              <CInputGroupText id="basic-addon2">+</CInputGroupText>
+            </CInputGroup>
+          </CCol>
+        </CRow>
       </CCol>
     </CRow>
 
