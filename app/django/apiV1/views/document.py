@@ -3,7 +3,8 @@ from rest_framework import viewsets
 from ..permission import *
 from ..serializers.document import *
 
-from document.models import Group, Board, Category, LawsuitCase, Post, Image, Link, File, Comment, Tag
+from document.models import (Group, Board, Category, LawsuitCase, Post,
+                             Like, DisLike, Image, Link, File, Comment, Tag)
 
 
 # Document --------------------------------------------------------------------------
@@ -46,6 +47,20 @@ class PostViewSets(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+
+class LikeViewSets(viewsets.ModelViewSet):
+    queryset = Like.objects.all()
+    serializer_class = LikeSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+    filterset_fields = ('user', 'post')
+
+
+class DisLikeViewSets(viewsets.ModelViewSet):
+    queryset = DisLike.objects.all()
+    serializer_class = DisLikeSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+    filterset_fields = ('user', 'post')
 
 
 class ImageViewSets(viewsets.ModelViewSet):

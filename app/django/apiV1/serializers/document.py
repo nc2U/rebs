@@ -3,8 +3,8 @@ from django.core.exceptions import ValidationError
 from urllib.parse import urlsplit, urlunsplit
 from rest_framework import serializers
 
-from document.models import (Group, Board, Category, LawsuitCase,
-                             Post, Image, Link, File, Comment, Tag)
+from document.models import (Group, Board, Category, LawsuitCase, Post,
+                             Like, DisLike, Image, Link, File, Comment, Tag)
 
 
 # Document --------------------------------------------------------------------------
@@ -163,6 +163,18 @@ class PostSerializer(serializers.ModelSerializer):
                 file_object.save()
 
         return instance
+
+
+class LikeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Like
+        fields = ('pk', 'user', 'post')
+
+
+class DisLikeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DisLike
+        fields = ('pk', 'user', 'post')
 
 
 class ImageSerializer(serializers.ModelSerializer):

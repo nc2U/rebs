@@ -97,6 +97,8 @@ class ApiIndex(generics.GenericAPIView):
             'category': reverse(api + 'category-list', request=request),
             'suitcase': reverse(api + 'suitcase-list', request=request),
             'post': reverse(api + 'post-list', request=request),
+            'like': reverse(api + 'like-list', request=request),
+            'dislike': reverse(api + 'dislike-list', request=request),
             'link': reverse(api + 'link-list', request=request),
             'image': reverse(api + 'image-list', request=request),
             'file': reverse(api + 'file-list', request=request),
@@ -239,6 +241,10 @@ urlpatterns = [
     path('suitcase/<int:pk>/', LawSuitCaseViewSets.as_view(detail_view), name='suitcase-detail'),
     path('post/', PostViewSets.as_view(list_view), name='post-list'),
     path('post/<int:pk>/', PostViewSets.as_view(detail_view), name='post-detail'),
+    path('like/', LikeViewSets.as_view(list_view), name='like-list'),
+    path('like/<int:pk>/', LikeViewSets.as_view(detail_view), name='like-detail'),
+    path('dislike/', DisLikeViewSets.as_view(list_view), name='dislike-list'),
+    path('dislike/<int:pk>/', DisLikeViewSets.as_view(detail_view), name='dislike-detail'),
     path('link/', LinkViewSets.as_view(list_view), name='link-list'),
     path('link/<int:pk>/', LinkViewSets.as_view(detail_view), name='link-detail'),
     path('image/', ImageViewSets.as_view(list_view), name='image-list'),
@@ -249,5 +255,4 @@ urlpatterns = [
     path('comment/<int:pk>/', CommentViewSets.as_view(detail_view), name='comment-detail'),
     path('tag/', TagViewSets.as_view(list_view), name='tag-list'),
     path('tag/<int:pk>/', TagViewSets.as_view(detail_view), name='tag-detail'),
-
 ]
