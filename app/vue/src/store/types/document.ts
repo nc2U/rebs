@@ -40,6 +40,7 @@ export interface Post {
 
 export interface Link {
   pk: null | number
+  post: number
   link: string
   hit: number
   del?: boolean
@@ -47,12 +48,14 @@ export interface Link {
 
 export interface Image {
   pk: null | number
+  post: number
   image: string
   del?: boolean
 }
 
 export interface File {
   pk: null | number
+  post: number
   file: string
   newFile?: string
   hit: number

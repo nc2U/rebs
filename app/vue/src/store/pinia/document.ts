@@ -2,7 +2,7 @@ import api from '@/api'
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { message, errorHandle } from '@/utils/helper'
-import { Category, PatchPost, Post } from '@/store/types/document'
+import { Category, File, Link, PatchPost, Post } from '@/store/types/document'
 
 export type PostFilter = {
   board: number
@@ -109,19 +109,33 @@ export const useDocument = defineStore('document', () => {
 
   const deletePost = () => 4
 
-  const link = ref(null)
+  const link = ref<Link | null>(null)
 
-  const fetchLink = () => 1
-  const createLink = () => 2
-  const updateLink = () => 3
-  const deleteLink = () => 4
+  const fetchLink = (pk: number) =>
+    api
+      .get(`/link/${pk}/`)
+      .then(res => (link.value = res.data))
+      .catch(err => errorHandle(err.response.data))
 
-  const file = ref(null)
+  const patchLink = (payload: Link) =>
+    api
+      .patch(`/link/${payload.pk}/`, payload)
+      .then(res => fetchPost(res.data.post))
+      .catch(err => errorHandle(err.response.data))
 
-  const fetchFile = () => 1
-  const createFile = () => 2
-  const updateFile = () => 3
-  const deleteFile = () => 4
+  const file = ref<File | null>(null)
+
+  const fetchFile = (pk: number) =>
+    api
+      .get(`/file/${pk}/`)
+      .then(res => (file.value = res.data))
+      .catch(err => errorHandle(err.response.data))
+
+  const patchFile = (payload: File) =>
+    api
+      .patch(`/file/${payload.pk}/`, payload)
+      .then(res => fetchPost(res.data.post))
+      .catch(err => errorHandle(err.response.data))
 
   const comment = ref(null)
 
@@ -181,18 +195,12 @@ export const useDocument = defineStore('document', () => {
     deletePost,
 
     link,
-
     fetchLink,
-    createLink,
-    updateLink,
-    deleteLink,
+    patchLink,
 
     file,
-
     fetchFile,
-    createFile,
-    updateFile,
-    deleteFile,
+    patchFile,
 
     comment,
 
