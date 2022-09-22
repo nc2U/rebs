@@ -81,11 +81,11 @@ onBeforeRouteLeave(() => {
         </small>
         <small class="mr-3">
           <v-icon icon="mdi-thumb-up" size="small" />
-          <span class="ml-2">{{ post.like }}</span>
+          <span class="ml-2">{{ 0 }}</span>
         </small>
         <small class="mr-3">
           <v-icon icon="mdi-thumb-down" size="small" />
-          <span class="ml-2">{{ post.dislike }}</span>
+          <span class="ml-2">{{ 0 }}</span>
         </small>
         <small class="mr-3 print" @click="toPrint">
           <v-icon icon="mdi-printer" size="small" />
