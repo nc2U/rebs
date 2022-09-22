@@ -317,8 +317,6 @@ class Post(models.Model):
     content = HTMLField('내용', blank=True)
     is_hide_comment = models.BooleanField('댓글숨기기', default=False)
     hit = models.PositiveIntegerField('조회수', default=0)
-    like = models.PositiveIntegerField('좋아요', default=0)
-    dislike = models.PositiveIntegerField('싫어요', default=0)
     blame = models.PositiveSmallIntegerField('신고', default=0)
     ip = models.GenericIPAddressField('아이피', null=True, blank=True)
     device = models.CharField('등록기기', max_length=10, blank=True)
@@ -407,13 +405,31 @@ class Comment(models.Model):
 
 class Tag(models.Model):
     board = models.ForeignKey(Board, on_delete=models.CASCADE, verbose_name='게시판')
-    tag = models.CharField('태그', max_length=100)
     post = models.ManyToManyField(Post, blank=True, verbose_name='게시물')
+    name = models.CharField('태그', max_length=100)
 
     def __str__(self):
-        return self.tag
+        return self.name
 
     class Meta:
         ordering = ['id']
         verbose_name = '06. 태그 관리'
         verbose_name_plural = '06. 태그 관리'
+
+
+class Like(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='likes')
+    liked = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.post.title} liked by {self.user.name}'
+
+
+class DisLike(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='dislikes')
+    disliked = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.post.title} disliked by {self.user.name}'

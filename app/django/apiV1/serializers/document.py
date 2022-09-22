@@ -65,8 +65,8 @@ class PostSerializer(serializers.ModelSerializer):
         model = Post
         fields = ('pk', 'board', 'is_notice', 'project', 'proj_name', 'category', 'cate_name',
                   'lawsuit', 'title', 'execution_date', 'content', 'is_hide_comment', 'hit',
-                  'like', 'dislike', 'blame', 'ip', 'device', 'secret', 'password', 'links', 'images',
-                  'files', 'comments', 'user', 'soft_delete', 'created', 'updated', 'is_new')
+                  'blame', 'ip', 'device', 'secret', 'password', 'links', 'images', 'files',
+                  'comments', 'user', 'soft_delete', 'created', 'updated', 'is_new')
         read_only_fields = ('ip',)
 
     def to_python(self, value):

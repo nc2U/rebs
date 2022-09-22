@@ -69,9 +69,9 @@ class PostAdmin(ImportExportMixin, admin.ModelAdmin):
 
 
 class TagAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'board', 'tag')
-    list_editable = ('tag',)
-    search_fields = ('tag',)
+    list_display = ('id', 'board', 'name')
+    list_editable = ('name',)
+    search_fields = ('name',)
     list_filter = ('board',)
 
 
