@@ -129,8 +129,11 @@ class PostSerializer(serializers.ModelSerializer):
         if old_links:
             for link in old_links:
                 link_object = Link.objects.get(pk=link.get('pk'))
-                link_object.link = self.to_python(link.get('link'))
-                link_object.save()
+                if link.get('del'):
+                    link_object.delete()
+                else:
+                    link_object.link = self.to_python(link.get('link'))
+                    link_object.save()
 
         new_links = self.initial_data.get('newLinks')
         if new_links:
@@ -143,8 +146,10 @@ class PostSerializer(serializers.ModelSerializer):
 
         if old_files:
             for file in old_files:
-                if file.get('newFile'):
-                    file_object = File.objects.get(pk=file.get('pk'))
+                file_object = File.objects.get(pk=file.get('pk'))
+                if file.get('del'):
+                    file_object.delete()
+                elif file.get('newFile'):
                     file_object.file = file.get('newFile')
                     file_object.save()
 
