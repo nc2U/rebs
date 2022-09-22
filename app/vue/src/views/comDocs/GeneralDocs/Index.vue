@@ -12,6 +12,9 @@ import DocsForm from './components/DocsForm.vue'
 
 const tab = ref<number>(0)
 
+const selectTab = (tabValue: number) => (tab.value = tabValue)
+const pageSelect = (page: number) => console.log(page)
+
 const documentStore = useDocument()
 const categoryList = computed(() => documentStore.categoryList)
 
@@ -41,9 +44,6 @@ const onSubmit = (payload: Post & Attatches) => {
 const postHit = (payload: PatchPost) => patchPost(payload)
 const linkHit = (payload: Link) => patchLink(payload)
 const fileHit = (payload: File) => patchFile(payload)
-
-const selectTab = (tabValue: number) => (tab.value = tabValue)
-const pageSelect = (page: number) => console.log(page)
 
 onBeforeMount(() => fetchCategoryList(1))
 </script>

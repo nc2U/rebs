@@ -1,10 +1,8 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount, watch } from 'vue'
-import { Link, File } from '@/store/types/document'
 import { timeFormat } from '@/utils/baseMixins'
 import { useDocument } from '@/store/pinia/document'
 import { onBeforeRouteLeave, useRoute } from 'vue-router'
-import { fi } from 'vuetify/locale'
 
 const emit = defineEmits(['post-hit', 'link-hit', 'file-hit'])
 
@@ -26,6 +24,7 @@ const linkHitUp = async (pk: number) => {
   link.hit = link.hit + 1
   emit('link-hit', link)
 }
+
 const fileHitUp = async (pk: number) => {
   const file = await fetchFile(pk)
   const hit = file.hit + 1
