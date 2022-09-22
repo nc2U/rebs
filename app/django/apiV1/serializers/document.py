@@ -165,16 +165,16 @@ class PostSerializer(serializers.ModelSerializer):
         return instance
 
 
-class LikeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Like
-        fields = ('pk', 'user', 'post')
-
-
-class DisLikeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = DisLike
-        fields = ('pk', 'user', 'post')
+# class LikeSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Like
+#         fields = ('pk', 'user', 'post')
+#
+#
+# class DisLikeSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = DisLike
+#         fields = ('pk', 'user', 'post')
 
 
 class ImageSerializer(serializers.ModelSerializer):
