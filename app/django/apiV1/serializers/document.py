@@ -67,6 +67,7 @@ class PostSerializer(serializers.ModelSerializer):
                   'lawsuit', 'title', 'execution_date', 'content', 'is_hide_comment', 'hit',
                   'like', 'dislike', 'blame', 'ip', 'device', 'secret', 'password', 'links', 'images',
                   'files', 'comments', 'user', 'soft_delete', 'created', 'updated', 'is_new')
+        read_only_fields = ('ip',)
 
     def to_python(self, value):
 
@@ -100,6 +101,7 @@ class PostSerializer(serializers.ModelSerializer):
 
     @transaction.atomic
     def create(self, validated_data):
+        validated_data['ip'] = self.context.get('request').META.get('REMOTE_ADDR')
         post = Post.objects.create(**validated_data)
         post.save()
 
