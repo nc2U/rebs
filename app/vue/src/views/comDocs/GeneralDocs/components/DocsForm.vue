@@ -220,7 +220,7 @@ onBeforeRouteLeave(() => {
       </CCol>
     </CRow>
 
-    <CRow class="mb-3">
+    <CRow>
       <CFormLabel for="title" class="col-md-2 col-form-label">링크</CFormLabel>
       <CCol md="10" lg="8" xl="6">
         <CRow v-if="post && form.oldLinks.length">
