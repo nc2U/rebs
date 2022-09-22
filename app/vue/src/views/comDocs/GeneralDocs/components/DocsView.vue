@@ -1,10 +1,12 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount, watch } from 'vue'
+import { Link, File } from '@/store/types/document'
 import { timeFormat } from '@/utils/baseMixins'
 import { useDocument } from '@/store/pinia/document'
 import { onBeforeRouteLeave, useRoute } from 'vue-router'
+import { fi } from 'vuetify/locale'
 
-const emit = defineEmits(['hit-plus'])
+const emit = defineEmits(['post-hit', 'link-hit', 'file-hit'])
 
 const documentStore = useDocument()
 const post = computed(() => documentStore.post)
@@ -12,13 +14,23 @@ const post = computed(() => documentStore.post)
 const sortName = computed(() => post.value?.proj_name || '본사')
 
 const fetchPost = (pk: number) => documentStore.fetchPost(pk)
+const fetchLink = (pk: number) => documentStore.fetchLink(pk)
+const fetchFile = (pk: number) => documentStore.fetchFile(pk)
 
 const toPrint = () => alert('준비중!')
 const toSocial = () => alert('준비중!')
 const toDelete = () => alert('준비중!')
 
-const linkHitUp = () => alert('ready!')
-const fileHitUp = () => alert('ready!')
+const linkHitUp = async (pk: number) => {
+  const link = await fetchLink(pk)
+  link.hit = link.hit + 1
+  emit('link-hit', link)
+}
+const fileHitUp = async (pk: number) => {
+  const file = await fetchFile(pk)
+  const hit = file.hit + 1
+  emit('file-hit', { pk, hit })
+}
 
 const getFileName = (file: string) => {
   if (file) return decodeURI(file.split('/').slice(-1)[0])
@@ -36,7 +48,7 @@ onBeforeMount(async () => {
   if (route.params.postId) await fetchPost(Number(route.params.postId))
 
   if (post.value)
-    emit('hit-plus', { pk: post.value?.pk, hit: post.value.hit + 1 })
+    emit('post-hit', { pk: post.value?.pk, hit: post.value.hit + 1 })
 })
 
 onBeforeRouteLeave(() => {
@@ -112,8 +124,12 @@ onBeforeRouteLeave(() => {
                 :key="l.pk"
                 class="d-flex justify-content-between align-items-center"
               >
-                <a :href="l.link" target="_blank">{{ l.link }} </a>
-                <CBadge color="info" shape="rounded-pill">{{ l.hit }}</CBadge>
+                <a :href="l.link" target="_blank" @click="linkHitUp(l.pk)">
+                  {{ l.link }}
+                </a>
+                <CBadge color="info" shape="rounded-pill">
+                  {{ l.hit }}
+                </CBadge>
               </CListGroupItem>
             </CListGroup>
           </CCol>
@@ -128,7 +144,9 @@ onBeforeRouteLeave(() => {
                 :key="f.pk"
                 class="d-flex justify-content-between align-items-center"
               >
-                <a :href="f.file" target="_blank">{{ getFileName(f.file) }}</a>
+                <a :href="f.file" target="_blank" @click="fileHitUp(f.pk)">
+                  {{ getFileName(f.file) }}
+                </a>
                 <CBadge color="success" shape="rounded-pill">
                   {{ f.hit }}
                 </CBadge>
