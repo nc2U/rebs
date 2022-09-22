@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount, onMounted, watch } from 'vue'
+import { computed, onBeforeMount, watch } from 'vue'
 import { timeFormat } from '@/utils/baseMixins'
 import { useDocument } from '@/store/pinia/document'
 import { onBeforeRouteLeave, useRoute } from 'vue-router'
@@ -32,13 +32,11 @@ watch(route, val => {
   else documentStore.post = null
 })
 
-onBeforeMount(() => {
-  if (route.params.postId) fetchPost(Number(route.params.postId))
-})
+onBeforeMount(async () => {
+  if (route.params.postId) await fetchPost(Number(route.params.postId))
 
-onMounted(() => {
   if (post.value)
-    emit('hit-plus', { pk: post.value.pk, hit: post.value.hit + 1 })
+    emit('hit-plus', { pk: post.value?.pk, hit: post.value.hit + 1 })
 })
 
 onBeforeRouteLeave(() => {
