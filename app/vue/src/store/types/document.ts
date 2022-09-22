@@ -20,8 +20,8 @@ export interface Post {
   content: string
   is_hide_comment: boolean
   hit: number
-  like: number
-  dislike: number
+  like: number[]
+  dislike: number[]
   blame: number
   ip: string | null
   device: string
@@ -66,7 +66,6 @@ export type Attatches = {
   oldLinks: Link[]
   oldImages?: Image[]
   oldFiles: File[]
-
   newLinks: Link[]
   newImages?: Image[]
   newFiles: File[]
@@ -82,8 +81,8 @@ export interface PatchPost {
   content?: string
   is_hide_comment?: boolean
   hit?: number
-  like?: number
-  dislike?: number
+  like?: number[]
+  dislike?: number[]
   blame?: number
   secret?: boolean
   password?: string

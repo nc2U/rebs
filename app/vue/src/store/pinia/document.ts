@@ -109,6 +109,18 @@ export const useDocument = defineStore('document', () => {
 
   const deletePost = () => 4
 
+  const patchLike = (payload: any) =>
+    api
+      .patch(`/like/${payload.pk}/`, payload)
+      .then(res => fetchPost(res.data.post))
+      .catch(err => errorHandle(err.response.data))
+
+  const patchDisLike = (payload: any) =>
+    api
+      .patch(`/dislike/${payload.pk}/`, payload)
+      .then(res => fetchPost(res.data.post))
+      .catch(err => errorHandle(err.response.data))
+
   const link = ref<Link | null>(null)
 
   const fetchLink = (pk: number) =>
@@ -193,6 +205,9 @@ export const useDocument = defineStore('document', () => {
     updatePost,
     patchPost,
     deletePost,
+
+    patchLike,
+    patchDisLike,
 
     link,
     fetchLink,
