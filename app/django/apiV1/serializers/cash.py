@@ -200,55 +200,55 @@ class ProjectCashBookSerializer(serializers.ModelSerializer):
 
     @transaction.atomic
     def create(self, validated_data):
-        prCashbook = ProjectCashBook.objects.create(**validated_data)
-        prCashbook.save()
+        pr_cashbook = ProjectCashBook.objects.create(**validated_data)
+        pr_cashbook.save()
 
         # 2. sep 정보 확인
-        sepData = self.initial_data.get('sepData')
-        if sepData:
-            sepPrCashbook_project_account_d1 = ProjectAccountD1.objects.get(pk=sepData.get('project_account_d1'))
-            sepPrCashbook_project_account_d2 = ProjectAccountD2.objects.get(pk=sepData.get('project_account_d2'))
-            sepPrCashbook_is_imprest = sepData.get('is_imprest')
-            sepPrCashbook_content = sepData.get('content')
-            sepPrCashbook_trader = sepData.get('trader')
-            sepPrCashbook_income = sepData.get('income')
-            sepPrCashbook_outlay = sepData.get('outlay')
-            sepPrCashbook_evidence = sepData.get('evidence')
-            sepPrCashbook_note = sepData.get('note')
-            if not sepData.get('pk'):
-                sepPrCashbook = ProjectCashBook(project=prCashbook.project,
-                                                sort=prCashbook.sort,
-                                                project_account_d1=sepPrCashbook_project_account_d1,
-                                                project_account_d2=sepPrCashbook_project_account_d2,
-                                                separated=prCashbook,
-                                                is_imprest=sepPrCashbook_is_imprest,
-                                                content=sepPrCashbook_content,
-                                                trader=sepPrCashbook_trader,
-                                                bank_account=prCashbook.bank_account,
-                                                income=sepPrCashbook_income,
-                                                outlay=sepPrCashbook_outlay,
-                                                evidence=sepPrCashbook_evidence,
-                                                note=sepPrCashbook_note,
-                                                deal_date=prCashbook.deal_date)
-                sepPrCashbook.save()
+        sep_data = self.initial_data.get('sepData')
+        if sep_data:
+            sep_pr_cashbook_project_account_d1 = ProjectAccountD1.objects.get(pk=sep_data.get('project_account_d1'))
+            sep_pr_cashbook_project_account_d2 = ProjectAccountD2.objects.get(pk=sep_data.get('project_account_d2'))
+            sep_pr_cashbook_is_imprest = sep_data.get('is_imprest')
+            sep_pr_cashbook_content = sep_data.get('content')
+            sep_pr_cashbook_trader = sep_data.get('trader')
+            sep_pr_cashbook_income = sep_data.get('income')
+            sep_pr_cashbook_outlay = sep_data.get('outlay')
+            sep_pr_cashbook_evidence = sep_data.get('evidence')
+            sep_pr_cashbook_note = sep_data.get('note')
+            if not sep_data.get('pk'):
+                sep_pr_cashbook = ProjectCashBook(project=pr_cashbook.project,
+                                                  sort=pr_cashbook.sort,
+                                                  project_account_d1=sep_pr_cashbook_project_account_d1,
+                                                  project_account_d2=sep_pr_cashbook_project_account_d2,
+                                                  separated=pr_cashbook,
+                                                  is_imprest=sep_pr_cashbook_is_imprest,
+                                                  content=sep_pr_cashbook_content,
+                                                  trader=sep_pr_cashbook_trader,
+                                                  bank_account=pr_cashbook.bank_account,
+                                                  income=sep_pr_cashbook_income,
+                                                  outlay=sep_pr_cashbook_outlay,
+                                                  evidence=sep_pr_cashbook_evidence,
+                                                  note=sep_pr_cashbook_note,
+                                                  deal_date=pr_cashbook.deal_date)
+                sep_pr_cashbook.save()
             else:
-                sepPrCashbook = ProjectCashBook.objects.get(pk=sepData.get('pk'))
-                sepPrCashbook.project = prCashbook.project
-                sepPrCashbook.sort = prCashbook.sort
-                sepPrCashbook.project_account_d1 = sepPrCashbook_project_account_d1
-                sepPrCashbook.project_account_d2 = sepPrCashbook_project_account_d2
-                sepPrCashbook.separated = prCashbook
-                sepPrCashbook.is_imprest = sepPrCashbook_is_imprest
-                sepPrCashbook.content = sepPrCashbook_content
-                sepPrCashbook.trader = sepPrCashbook_trader
-                sepPrCashbook.bank_account = prCashbook.bank_account
-                sepPrCashbook.income = sepPrCashbook_income
-                sepPrCashbook.outlay = sepPrCashbook_outlay
-                sepPrCashbook.evidence = sepPrCashbook_evidence
-                sepPrCashbook.note = sepPrCashbook_note
-                sepPrCashbook.deal_date = prCashbook.deal_date
-                sepPrCashbook.save()
-        return prCashbook
+                sep_pr_cashbook = ProjectCashBook.objects.get(pk=sep_data.get('pk'))
+                sep_pr_cashbook.project = pr_cashbook.project
+                sep_pr_cashbook.sort = pr_cashbook.sort
+                sep_pr_cashbook.project_account_d1 = sep_pr_cashbook_project_account_d1
+                sep_pr_cashbook.project_account_d2 = sep_pr_cashbook_project_account_d2
+                sep_pr_cashbook.separated = pr_cashbook
+                sep_pr_cashbook.is_imprest = sep_pr_cashbook_is_imprest
+                sep_pr_cashbook.content = sep_pr_cashbook_content
+                sep_pr_cashbook.trader = sep_pr_cashbook_trader
+                sep_pr_cashbook.bank_account = pr_cashbook.bank_account
+                sep_pr_cashbook.income = sep_pr_cashbook_income
+                sep_pr_cashbook.outlay = sep_pr_cashbook_outlay
+                sep_pr_cashbook.evidence = sep_pr_cashbook_evidence
+                sep_pr_cashbook.note = sep_pr_cashbook_note
+                sep_pr_cashbook.deal_date = pr_cashbook.deal_date
+                sep_pr_cashbook.save()
+        return pr_cashbook
 
     @transaction.atomic
     def update(self, instance, validated_data):
@@ -256,50 +256,50 @@ class ProjectCashBookSerializer(serializers.ModelSerializer):
         instance.save()
 
         # 2. sep 정보 확인
-        sepData = self.initial_data.get('sepData')
-        if sepData:
-            sepPrCashbook_project_account_d1 = ProjectAccountD1.objects.get(pk=sepData.get('project_account_d1'))
-            sepPrCashbook_project_account_d2 = ProjectAccountD2.objects.get(pk=sepData.get('project_account_d2'))
-            sepPrCashbook_is_imprest = sepData.get('is_imprest')
-            sepPrCashbook_content = sepData.get('content')
-            sepPrCashbook_trader = sepData.get('trader')
-            sepPrCashbook_income = sepData.get('income')
-            sepPrCashbook_outlay = sepData.get('outlay')
-            sepPrCashbook_evidence = sepData.get('evidence')
-            sepPrCashbook_note = sepData.get('note')
-            if not sepData.get('pk'):
-                sepPrCashbook = ProjectCashBook(project=instance.project,
-                                                sort=instance.sort,
-                                                project_account_d1=sepPrCashbook_project_account_d1,
-                                                project_account_d2=sepPrCashbook_project_account_d2,
-                                                separated=instance,
-                                                is_imprest=sepPrCashbook_is_imprest,
-                                                content=sepPrCashbook_content,
-                                                trader=sepPrCashbook_trader,
-                                                bank_account=instance.bank_account,
-                                                income=sepPrCashbook_income,
-                                                outlay=sepPrCashbook_outlay,
-                                                evidence=sepPrCashbook_evidence,
-                                                note=sepPrCashbook_note,
-                                                deal_date=instance.deal_date)
-                sepPrCashbook.save()
+        sep_data = self.initial_data.get('sepData')
+        if sep_data:
+            sep_pr_cashbook_project_account_d1 = ProjectAccountD1.objects.get(pk=sep_data.get('project_account_d1'))
+            sep_pr_cashbook_project_account_d2 = ProjectAccountD2.objects.get(pk=sep_data.get('project_account_d2'))
+            sep_pr_cashbook_is_imprest = sep_data.get('is_imprest')
+            sep_pr_cashbook_content = sep_data.get('content')
+            sep_pr_cashbook_trader = sep_data.get('trader')
+            sep_pr_cashbook_income = sep_data.get('income')
+            sep_pr_cashbook_outlay = sep_data.get('outlay')
+            sep_pr_cashbook_evidence = sep_data.get('evidence')
+            sep_pr_cashbook_note = sep_data.get('note')
+            if not sep_data.get('pk'):
+                sep_pr_cashbook = ProjectCashBook(project=instance.project,
+                                                  sort=instance.sort,
+                                                  project_account_d1=sep_pr_cashbook_project_account_d1,
+                                                  project_account_d2=sep_pr_cashbook_project_account_d2,
+                                                  separated=instance,
+                                                  is_imprest=sep_pr_cashbook_is_imprest,
+                                                  content=sep_pr_cashbook_content,
+                                                  trader=sep_pr_cashbook_trader,
+                                                  bank_account=instance.bank_account,
+                                                  income=sep_pr_cashbook_income,
+                                                  outlay=sep_pr_cashbook_outlay,
+                                                  evidence=sep_pr_cashbook_evidence,
+                                                  note=sep_pr_cashbook_note,
+                                                  deal_date=instance.deal_date)
+                sep_pr_cashbook.save()
             else:
-                sepPrCashbook = ProjectCashBook.objects.get(pk=sepData.get('pk'))
-                sepPrCashbook.project = instance.project
-                sepPrCashbook.sort = instance.sort
-                sepPrCashbook.project_account_d1 = sepPrCashbook_project_account_d1
-                sepPrCashbook.project_account_d2 = sepPrCashbook_project_account_d2
-                sepPrCashbook.separated = instance
-                sepPrCashbook.is_imprest = sepPrCashbook_is_imprest
-                sepPrCashbook.content = sepPrCashbook_content
-                sepPrCashbook.trader = sepPrCashbook_trader
-                sepPrCashbook.bank_account = instance.bank_account
-                sepPrCashbook.income = sepPrCashbook_income
-                sepPrCashbook.outlay = sepPrCashbook_outlay
-                sepPrCashbook.evidence = sepPrCashbook_evidence
-                sepPrCashbook.note = sepPrCashbook_note
-                sepPrCashbook.deal_date = instance.deal_date
-                sepPrCashbook.save()
+                sep_pr_cashbook = ProjectCashBook.objects.get(pk=sep_data.get('pk'))
+                sep_pr_cashbook.project = instance.project
+                sep_pr_cashbook.sort = instance.sort
+                sep_pr_cashbook.project_account_d1 = sep_pr_cashbook_project_account_d1
+                sep_pr_cashbook.project_account_d2 = sep_pr_cashbook_project_account_d2
+                sep_pr_cashbook.separated = instance
+                sep_pr_cashbook.is_imprest = sep_pr_cashbook_is_imprest
+                sep_pr_cashbook.content = sep_pr_cashbook_content
+                sep_pr_cashbook.trader = sep_pr_cashbook_trader
+                sep_pr_cashbook.bank_account = instance.bank_account
+                sep_pr_cashbook.income = sep_pr_cashbook_income
+                sep_pr_cashbook.outlay = sep_pr_cashbook_outlay
+                sep_pr_cashbook.evidence = sep_pr_cashbook_evidence
+                sep_pr_cashbook.note = sep_pr_cashbook_note
+                sep_pr_cashbook.deal_date = instance.deal_date
+                sep_pr_cashbook.save()
         return instance
 
 
