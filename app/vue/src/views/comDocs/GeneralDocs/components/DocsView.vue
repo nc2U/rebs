@@ -127,9 +127,12 @@ onBeforeRouteLeave(() => {
                 <a :href="l.link" target="_blank" @click="linkHitUp(l.pk)">
                   {{ l.link }}
                 </a>
-                <CBadge color="info" shape="rounded-pill">
-                  {{ l.hit }}
-                </CBadge>
+                <small>
+                  조회 수 :
+                  <CBadge color="info" shape="rounded-pill">
+                    {{ l.hit }}
+                  </CBadge>
+                </small>
               </CListGroupItem>
             </CListGroup>
           </CCol>
@@ -147,9 +150,12 @@ onBeforeRouteLeave(() => {
                 <a :href="f.file" target="_blank" @click="fileHitUp(f.pk)">
                   {{ getFileName(f.file) }}
                 </a>
-                <CBadge color="success" shape="rounded-pill">
-                  {{ f.hit }}
-                </CBadge>
+                <small>
+                  다운로드 :
+                  <CBadge color="success" shape="rounded-pill">
+                    {{ f.hit }}
+                  </CBadge>
+                </small>
               </CListGroupItem>
             </CListGroup>
           </CCol>
