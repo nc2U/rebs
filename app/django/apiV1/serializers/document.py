@@ -37,19 +37,19 @@ class LawSuitCaseSerializer(serializers.ModelSerializer):
 class LinksInPostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Link
-        fields = ('pk', 'link', 'hit')
+        fields = ('pk', 'post', 'link', 'hit')
 
 
 class ImagesInPostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Image
-        fields = ('pk', 'image')
+        fields = ('pk', 'post', 'image')
 
 
 class FilesInPostSerializer(serializers.ModelSerializer):
     class Meta:
         model = File
-        fields = ('pk', 'file', 'hit')
+        fields = ('pk', 'post', 'file', 'hit')
 
 
 class PostSerializer(serializers.ModelSerializer):
