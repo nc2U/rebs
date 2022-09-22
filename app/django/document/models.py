@@ -341,6 +341,24 @@ class Post(models.Model):
         verbose_name_plural = '05. 게시물 관리'
 
 
+class Like(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='likes')
+    liked = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.post.title} liked by {self.user.name}'
+
+
+class DisLike(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='dislikes')
+    disliked = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.post.title} disliked by {self.user.name}'
+
+
 def get_image_name(instance, filename):
     today = datetime.today().strftime('%y%m%d')
     hash_value = hashlib.blake2b(digest_size=3).hexdigest()
@@ -415,21 +433,3 @@ class Tag(models.Model):
         ordering = ['id']
         verbose_name = '06. 태그 관리'
         verbose_name_plural = '06. 태그 관리'
-
-
-class Like(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='likes')
-    liked = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f'{self.post.title} liked by {self.user.name}'
-
-
-class DisLike(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='dislikes')
-    disliked = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f'{self.post.title} disliked by {self.user.name}'

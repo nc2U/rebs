@@ -55,6 +55,8 @@ class FilesInPostSerializer(serializers.ModelSerializer):
 class PostSerializer(serializers.ModelSerializer):
     proj_name = serializers.SlugField(source='project', read_only=True)
     cate_name = serializers.SlugField(source='category', read_only=True)
+    likes = serializers.RelatedField(many=True, read_only=True)
+    dislikes = serializers.RelatedField(many=True, read_only=True)
     links = LinksInPostSerializer(many=True, read_only=True)
     images = ImagesInPostSerializer(many=True, read_only=True)
     files = FilesInPostSerializer(many=True, read_only=True)
@@ -65,8 +67,8 @@ class PostSerializer(serializers.ModelSerializer):
         model = Post
         fields = ('pk', 'board', 'is_notice', 'project', 'proj_name', 'category', 'cate_name',
                   'lawsuit', 'title', 'execution_date', 'content', 'is_hide_comment', 'hit',
-                  'blame', 'ip', 'device', 'secret', 'password', 'links', 'images', 'files',
-                  'comments', 'user', 'soft_delete', 'created', 'updated', 'is_new')
+                  'likes', 'dislikes', 'blame', 'ip', 'device', 'secret', 'password', 'links',
+                  'images', 'files', 'comments', 'user', 'soft_delete', 'created', 'updated', 'is_new')
         read_only_fields = ('ip',)
 
     def to_python(self, value):
