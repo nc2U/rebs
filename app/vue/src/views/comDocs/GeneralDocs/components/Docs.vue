@@ -24,7 +24,9 @@ const sortColor = computed(() => (props.post.project ? 'success' : 'info'))
       >
         {{ cutString(post.title, 30) }}
       </router-link>
-      <CBadge v-if="post.is_new" color="primary" class="ml-2">New</CBadge>
+      <CBadge v-if="post.is_new" color="warning" size="sm" class="ml-2">
+        new
+      </CBadge>
     </CTableDataCell>
     <CTableDataCell>{{ post.user }}</CTableDataCell>
     <CTableDataCell>{{ timeFormat(post.created) }}</CTableDataCell>
