@@ -209,21 +209,6 @@ onBeforeRouteLeave(() => {
       <CCol>
         <CButtonGroup role="group" class="mr-3">
           <CButton
-            color="success"
-            @click="
-              $router.push({
-                name: '본사 일반문서 - 수정',
-                params: { postId: post.pk },
-              })
-            "
-          >
-            수정
-          </CButton>
-          <CButton color="danger" @click="toDelete">삭제</CButton>
-        </CButtonGroup>
-
-        <CButtonGroup role="group">
-          <CButton
             color="light"
             :disabled="!post.get_prev"
             @click="
@@ -247,6 +232,21 @@ onBeforeRouteLeave(() => {
           >
             다음글
           </CButton>
+        </CButtonGroup>
+
+        <CButtonGroup role="group">
+          <CButton
+            color="success"
+            @click="
+              $router.push({
+                name: '본사 일반문서 - 수정',
+                params: { postId: post.pk },
+              })
+            "
+          >
+            수정
+          </CButton>
+          <CButton color="danger" @click="toDelete">삭제</CButton>
         </CButtonGroup>
       </CCol>
       <CCol class="text-right">
