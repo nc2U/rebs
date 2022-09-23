@@ -22,8 +22,9 @@ const sortColor = computed(() => (props.post.project ? 'success' : 'info'))
       <router-link
         :to="{ name: '본사 일반문서 - 보기', params: { postId: post.pk } }"
       >
-        {{ cutString(post.title, 38) }}
+        {{ cutString(post.title, 30) }}
       </router-link>
+      <CBadge v-if="post.is_new" color="primary" class="ml-2">New</CBadge>
     </CTableDataCell>
     <CTableDataCell>{{ post.user }}</CTableDataCell>
     <CTableDataCell>{{ timeFormat(post.created) }}</CTableDataCell>

@@ -208,8 +208,30 @@ onBeforeRouteLeave(() => {
     <CRow class="py-4">
       <CCol>
         <CButtonGroup role="group">
-          <CButton color="light">이전글</CButton>
-          <CButton color="light">다음글</CButton>
+          <CButton
+            color="light"
+            :disabled="!post.get_prev"
+            @click="
+              $router.push({
+                name: '본사 일반문서 - 보기',
+                params: { postId: post.get_prev },
+              })
+            "
+          >
+            이전글
+          </CButton>
+          <CButton
+            color="light"
+            :disabled="!post.get_next"
+            @click="
+              $router.push({
+                name: '본사 일반문서 - 보기',
+                params: { postId: post.get_next },
+              })
+            "
+          >
+            다음글
+          </CButton>
         </CButtonGroup>
 
         <CButtonGroup role="group" class="ml-2">
