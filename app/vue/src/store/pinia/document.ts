@@ -10,6 +10,7 @@ export type PostFilter = {
   project?: number
   category?: number
   lawsuit?: number
+  page?: number
 }
 
 export const useDocument = defineStore('document', () => {
@@ -31,7 +32,7 @@ export const useDocument = defineStore('document', () => {
 
   const fetchBoard = (pk: number) =>
     api
-      .get(`/board/${pk}`)
+      .get(`/board/${pk}/`)
       .then(res => (board.value = res.data))
       .catch(err => errorHandle(err.response.data))
 
@@ -73,15 +74,19 @@ export const useDocument = defineStore('document', () => {
 
   const fetchPost = (pk: number) =>
     api
-      .get(`/post/${pk}`)
+      .get(`/post/${pk}/`)
       .then(res => (post.value = res.data))
       .catch(err => errorHandle(err.response.data))
 
   const fetchPostList = (payload: PostFilter) => {
-    const { board, category } = payload
+    const { board, category, page } = payload
 
     return api
-      .get(`/post/?board=${board || ''}&category=${category || ''}`)
+      .get(
+        `/post/?board=${board || ''}&category=${category || ''}&page=${
+          page || 1
+        }`,
+      )
       .then(res => {
         postList.value = res.data.results
         postCount.value = res.data.count

@@ -36,8 +36,6 @@ export interface Post {
   created?: string
   updated?: string
   is_new?: boolean
-  get_prev?: number | null
-  get_next?: number | null
 }
 
 export interface Link {
