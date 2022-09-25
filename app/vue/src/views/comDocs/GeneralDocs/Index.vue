@@ -10,9 +10,9 @@ import DocsList from './components/DocsList.vue'
 import DocsView from './components/DocsView.vue'
 import DocsForm from './components/DocsForm.vue'
 
-const tab = ref<number>(0)
+const category = ref<number>(0)
 
-const selectTab = (tabValue: number) => (tab.value = tabValue)
+const selectCate = (cate: number) => (category.value = cate)
 const pageSelect = (page: number) => console.log(page)
 
 const documentStore = useDocument()
@@ -54,13 +54,18 @@ onBeforeMount(() => fetchCategoryList(1))
       <CContainer v-if="$route.name === '본사 일반문서'">
         <ListController />
 
-        <CategoryTabs :category-list="categoryList" @select-tab="selectTab" />
+        <CategoryTabs :category-list="categoryList" @select-cate="selectCate" />
 
-        <DocsList :tab-value="tab" @page-select="pageSelect" />
+        <DocsList :category="category" @page-select="pageSelect" />
       </CContainer>
 
       <CContainer v-else-if="$route.name.includes('보기')">
-        <DocsView @post-hit="postHit" @link-hit="linkHit" @file-hit="fileHit" />
+        <DocsView
+          :category="category"
+          @post-hit="postHit"
+          @link-hit="linkHit"
+          @file-hit="fileHit"
+        />
       </CContainer>
 
       <CContainer v-else-if="$route.name.includes('작성')">

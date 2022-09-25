@@ -4,10 +4,8 @@ import { useDocument, PostFilter } from '@/store/pinia/document'
 import Docs from './Docs.vue'
 import Pagination from '@/components/Pagination'
 
-const props = defineProps({ tabValue: { type: Number, default: 0 } })
+const props = defineProps({ category: { type: Number, default: 0 } })
 const emit = defineEmits(['page-select'])
-
-const tab = ref(0)
 
 const documentStore = useDocument()
 const postList = computed(() => documentStore.postList)
@@ -16,8 +14,7 @@ const fetchPostList = (payload: PostFilter) =>
   documentStore.fetchPostList(payload)
 
 watch(props, val => {
-  tab.value = val.tabValue
-  fetchPostList({ board: 1, category: tab.value })
+  fetchPostList({ board: 1, category: val.category })
 })
 
 onBeforeMount(() => fetchPostList({ board: 1 }))

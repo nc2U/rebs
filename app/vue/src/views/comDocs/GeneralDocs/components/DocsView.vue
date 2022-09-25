@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount, watch } from 'vue'
 import { timeFormat } from '@/utils/baseMixins'
-import { useDocument } from '@/store/pinia/document'
+import { PostFilter, useDocument } from '@/store/pinia/document'
 import { onBeforeRouteLeave, useRoute } from 'vue-router'
 
+const props = defineProps({ category: { type: Number, default: undefined } })
 const emit = defineEmits(['post-hit', 'link-hit', 'file-hit'])
 
 const documentStore = useDocument()
@@ -14,6 +15,8 @@ const sortName = computed(() => post.value?.proj_name || '본사')
 const fetchPost = (pk: number) => documentStore.fetchPost(pk)
 const fetchLink = (pk: number) => documentStore.fetchLink(pk)
 const fetchFile = (pk: number) => documentStore.fetchFile(pk)
+const fetchPostList = (payload: PostFilter) =>
+  documentStore.fetchPostList(payload)
 
 const toPrint = () => alert('준비중!')
 const toSocial = () => alert('준비중!')
@@ -43,11 +46,13 @@ watch(route, val => {
   else documentStore.post = null
 })
 
-onBeforeMount(async () => {
-  if (route.params.postId) await fetchPost(Number(route.params.postId))
+onBeforeMount(() => {
+  if (route.params.postId) fetchPost(Number(route.params.postId))
 
   if (post.value)
     emit('post-hit', { pk: post.value?.pk, hit: post.value.hit + 1 })
+  const page = Number(route.query.page) || 1
+  fetchPostList({ board: 1, page, category: props.category })
 })
 
 onBeforeRouteLeave(() => {
@@ -210,11 +215,11 @@ onBeforeRouteLeave(() => {
         <CButtonGroup role="group" class="mr-3">
           <CButton
             color="light"
-            :disabled="!post.get_prev"
+            :disabled="!post.prev_page"
             @click="
               $router.push({
                 name: '본사 일반문서 - 보기',
-                params: { postId: post.get_prev },
+                params: { postId: post.prev_page },
               })
             "
           >
@@ -222,11 +227,11 @@ onBeforeRouteLeave(() => {
           </CButton>
           <CButton
             color="light"
-            :disabled="!post.get_next"
+            :disabled="!post.next_page"
             @click="
               $router.push({
                 name: '본사 일반문서 - 보기',
-                params: { postId: post.get_next },
+                params: { postId: post.next_page },
               })
             "
           >

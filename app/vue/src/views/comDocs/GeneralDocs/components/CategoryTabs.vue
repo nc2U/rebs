@@ -2,12 +2,12 @@
 import { ref, watch } from 'vue'
 
 defineProps({ categoryList: { type: Object, default: null } })
-const emit = defineEmits(['select-tab'])
+const emit = defineEmits(['select-cate'])
 
 const tab = ref(0)
 
 watch(tab, val => {
-  emit('select-tab', val)
+  emit('select-cate', val)
 })
 </script>
 
