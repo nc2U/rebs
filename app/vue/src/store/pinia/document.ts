@@ -1,5 +1,5 @@
 import api from '@/api'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import { message, errorHandle } from '@/utils/helper'
 import { Category, File, Link, PatchPost, Post } from '@/store/types/document'
@@ -68,6 +68,22 @@ export const useDocument = defineStore('document', () => {
   const post = ref<Post | null>(null)
   const postList = ref<Post[]>([])
   const postCount = ref(0)
+
+  const postPkList = computed(() => postList.value.map(p => p.pk))
+  const postPk = computed(() => post.value?.pk || 0)
+  const postIndex = computed(() => postPkList.value.indexOf(postPk.value))
+
+  const getPrev = computed(() =>
+    postIndex.value && postIndex.value === postList.value.length
+      ? null
+      : postPkList.value[postIndex.value + 1],
+  )
+
+  const getNext = computed(() =>
+    postIndex.value && postIndex.value === 0
+      ? null
+      : postPkList.value[postIndex.value - 1],
+  )
 
   const postPages = (itemsPerPage: number) =>
     Math.ceil(postCount.value / itemsPerPage)
@@ -190,6 +206,8 @@ export const useDocument = defineStore('document', () => {
     post,
     postList,
     postCount,
+    getPrev,
+    getNext,
 
     postPages,
     fetchPost,

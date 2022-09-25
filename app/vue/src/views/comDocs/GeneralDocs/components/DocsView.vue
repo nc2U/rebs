@@ -9,6 +9,8 @@ const emit = defineEmits(['post-hit', 'link-hit', 'file-hit'])
 
 const documentStore = useDocument()
 const post = computed(() => documentStore.post)
+const getPrev = computed(() => documentStore.getPrev)
+const getNext = computed(() => documentStore.getNext)
 
 const sortName = computed(() => post.value?.proj_name || '본사')
 
@@ -215,11 +217,11 @@ onBeforeRouteLeave(() => {
         <CButtonGroup role="group" class="mr-3">
           <CButton
             color="light"
-            :disabled="!post.prev_page"
+            :disabled="!getPrev"
             @click="
               $router.push({
                 name: '본사 일반문서 - 보기',
-                params: { postId: post.prev_page },
+                params: { postId: getPrev },
               })
             "
           >
@@ -227,11 +229,11 @@ onBeforeRouteLeave(() => {
           </CButton>
           <CButton
             color="light"
-            :disabled="!post.next_page"
+            :disabled="!getNext"
             @click="
               $router.push({
                 name: '본사 일반문서 - 보기',
-                params: { postId: post.next_page },
+                params: { postId: getNext },
               })
             "
           >
