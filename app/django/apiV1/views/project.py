@@ -16,6 +16,8 @@ from cash.models import (BankCode, CompanyBankAccount, ProjectBankAccount,
                          CashBook, ProjectCashBook, SalesPriceByGT,
                          InstallmentPaymentOrder, DownPayment, OverDueRule)
 
+TODAY = datetime.today().strftime('%Y-%m-%d')
+
 
 # Project --------------------------------------------------------------------------
 class ProjectViewSet(viewsets.ModelViewSet):
@@ -112,7 +114,6 @@ class ExecAmountToBudgetViewSet(viewsets.ModelViewSet):
     filterset_fields = ('project',)
 
     def get_queryset(self):
-        TODAY = datetime.today().strftime('%Y-%m-%d')
         date = self.request.query_params.get('date')
         date = date if date else TODAY
         month_first = datetime(datetime.strptime(date, '%Y-%m-%d').year,
