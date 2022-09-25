@@ -21,66 +21,51 @@ class CalendarScheduleViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
 
-class AccountSortList(generics.ListAPIView):
-    name = 'acc_sort-list'
+class AccountSortViewSet(viewsets.ModelViewSet):
     queryset = AccountSort.objects.all()
     serializer_class = AccountSortSerializer
 
 
-class AccountSubD1List(generics.ListAPIView):
-    name = 'acc_d1-list'
+class AccountSubD1ViewSet(viewsets.ModelViewSet):
     queryset = AccountSubD1.objects.all()
     serializer_class = AccountSubD1Serializer
     filterset_fields = ('accountsort',)
 
 
-class AccountSubD2List(generics.ListAPIView):
-    name = 'acc_d2-list'
+class AccountSubD2ViewSet(viewsets.ModelViewSet):
     queryset = AccountSubD2.objects.all()
     serializer_class = AccountSubD2Serializer
     pagination_class = PageNumberPaginationTwenty
     filterset_fields = ('d1__accountsort', 'd1')
 
 
-class AccountSubD3List(generics.ListAPIView):
-    name = 'acc_d3-list'
+class AccountSubD3ViewSet(viewsets.ModelViewSet):
     queryset = AccountSubD3.objects.all()
     serializer_class = AccountSubD3Serializer
     pagination_class = PageNumberPaginationTwoHundred
     filterset_fields = ('d2__d1__accountsort', 'd2__d1', 'd2')
 
 
-class ProjectAccountSortList(generics.ListAPIView):
-    name = 'pro-acc_sort-list'
+class ProjectAccountSortViewSet(viewsets.ModelViewSet):
     queryset = ProjectAccountSort.objects.all()
     serializer_class = AccountSortSerializer
 
 
-class ProjectAccountD1List(generics.ListAPIView):
-    name = 'project_acc_d1-list'
+class ProjectAccountD1ViewSet(viewsets.ModelViewSet):
     queryset = ProjectAccountD1.objects.all()
     pagination_class = PageNumberPaginationTwenty
     serializer_class = ProjectAccountD1Serializer
     filterset_fields = ('projectaccountsort',)
 
 
-class ProjectAccountD2List(generics.ListAPIView):
-    name = 'project_acc_d2-list'
+class ProjectAccountD2ViewSet(viewsets.ModelViewSet):
     queryset = ProjectAccountD2.objects.all()
     pagination_class = PageNumberPaginationOneHundred
     serializer_class = ProjectAccountD2Serializer
     filterset_fields = ('d1', 'd1__projectaccountsort')
 
 
-class WiseSayList(generics.ListCreateAPIView):
-    name = 'wise-say-list'
+class WiseSayViewSet(viewsets.ModelViewSet):
     queryset = WiseSaying.objects.all()
     serializer_class = WiseSaySerializer
     permissions_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-
-
-class WiseSayDetail(generics.RetrieveUpdateDestroyAPIView):
-    name = 'wise-say-detail'
-    queryset = WiseSaying.objects.all()
-    serializer_class = WiseSaySerializer
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
