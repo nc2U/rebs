@@ -6,7 +6,7 @@ from ..serializers.notice import *
 from notice.models import SalesBillIssue
 
 
-class BillIssueViewSets(viewsets.ModelViewSet):
+class BillIssueViewSet(viewsets.ModelViewSet):
     queryset = SalesBillIssue.objects.all()
     serializer_class = SallesBillIssueSerializer
     filterset_fields = ('project',)

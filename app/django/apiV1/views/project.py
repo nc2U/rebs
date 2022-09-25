@@ -18,13 +18,13 @@ from cash.models import (BankCode, CompanyBankAccount, ProjectBankAccount,
 
 
 # Project --------------------------------------------------------------------------
-class ProjectViewSets(viewsets.ModelViewSet):
+class ProjectViewSet(viewsets.ModelViewSet):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
     permission_classes = (permissions.IsAuthenticated, IsSuperUserOrReadOnly)
 
 
-class UnitTypeViewSets(viewsets.ModelViewSet):
+class UnitTypeViewSet(viewsets.ModelViewSet):
     queryset = UnitType.objects.all()
     serializer_class = UnitTypeSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
@@ -32,7 +32,7 @@ class UnitTypeViewSets(viewsets.ModelViewSet):
     search_fields = ('name',)
 
 
-class UnitFloorTypeViewSets(viewsets.ModelViewSet):
+class UnitFloorTypeViewSet(viewsets.ModelViewSet):
     queryset = UnitFloorType.objects.all()
     serializer_class = UnitFloorTypeSerializer
     pagination_class = PageNumberPaginationFifty
@@ -49,14 +49,14 @@ class KeyUnitListFilterSet(FilterSet):
         fields = ('project', 'unit_type', 'contract', 'available')
 
 
-class KeyUnitViewSets(viewsets.ModelViewSet):
+class KeyUnitViewSet(viewsets.ModelViewSet):
     queryset = KeyUnit.objects.all()
     serializer_class = KeyUnitSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
     filterset_class = KeyUnitListFilterSet
 
 
-class BuildingUnitViewSets(viewsets.ModelViewSet):
+class BuildingUnitViewSet(viewsets.ModelViewSet):
     queryset = BuildingUnit.objects.all()
     serializer_class = BuildingUnitSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
@@ -175,7 +175,7 @@ class TotalSiteArea(generics.ListAPIView):
                       returned=Sum('returned_area'))
 
 
-class SiteViewSets(viewsets.ModelViewSet):
+class SiteViewSet(viewsets.ModelViewSet):
     queryset = Site.objects.all()
     serializer_class = SiteSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
@@ -206,7 +206,7 @@ class TotalOwnerArea(generics.ListAPIView):
             .annotate(owned_area=Sum('siteownshiprelationship__owned_area'))
 
 
-class SiteOwnerViewSets(viewsets.ModelViewSet):
+class SiteOwnerViewSet(viewsets.ModelViewSet):
     queryset = SiteOwner.objects.all()
     serializer_class = SiteOwnerSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
@@ -217,7 +217,7 @@ class SiteOwnerViewSets(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
 
-class SiteRelationViewSets(viewsets.ModelViewSet):
+class SiteRelationViewSet(viewsets.ModelViewSet):
     queryset = SiteOwnshipRelationship.objects.all()
     serializer_class = SiteOwnshipRelationshipSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
@@ -234,7 +234,7 @@ class TotalContractedArea(generics.ListAPIView):
             .annotate(contracted_area=Sum('contract_area'))
 
 
-class SiteContractViewSets(viewsets.ModelViewSet):
+class SiteContractViewSet(viewsets.ModelViewSet):
     queryset = SiteContract.objects.all()
     serializer_class = SiteContractSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)

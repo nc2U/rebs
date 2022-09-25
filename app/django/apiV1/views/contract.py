@@ -12,7 +12,7 @@ from project.models import BuildingUnit
 
 
 # Contract --------------------------------------------------------------------------
-class OrderGroupViewSets(viewsets.ModelViewSet):
+class OrderGroupViewSet(viewsets.ModelViewSet):
     queryset = OrderGroup.objects.all()
     serializer_class = OrderGroupSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
@@ -35,7 +35,7 @@ class ContractFilter(FilterSet):
                   'contractor__is_registed', 'from_contract_date', 'to_contract_date')
 
 
-class ContractViewSets(viewsets.ModelViewSet):
+class ContractViewSet(viewsets.ModelViewSet):
     queryset = Contract.objects.all()
     serializer_class = ContractSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
@@ -49,7 +49,7 @@ class ContractViewSets(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
 
-class ContractSetViewSets(ContractViewSets):
+class ContractSetViewSet(ContractViewSet):
     serializer_class = ContractSetSerializer
 
 
@@ -77,7 +77,7 @@ class ContSummaryList(generics.ListAPIView):
             .annotate(num_cont=Count('order_group'))
 
 
-class ContractorViewSets(viewsets.ModelViewSet):
+class ContractorViewSet(viewsets.ModelViewSet):
     queryset = Contractor.objects.all()
     serializer_class = ContractorSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
@@ -88,7 +88,7 @@ class ContractorViewSets(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
 
-class ContAddressViewSets(viewsets.ModelViewSet):
+class ContAddressViewSet(viewsets.ModelViewSet):
     queryset = ContractorAddress.objects.all()
     serializer_class = ContractorAddressSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
@@ -97,7 +97,7 @@ class ContAddressViewSets(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
 
-class ContContactViewSets(viewsets.ModelViewSet):
+class ContContactViewSet(viewsets.ModelViewSet):
     queryset = ContractorContact.objects.all()
     serializer_class = ContractorContactSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
@@ -106,7 +106,7 @@ class ContContactViewSets(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
 
-class ContReleaseViewSets(viewsets.ModelViewSet):
+class ContReleaseViewSet(viewsets.ModelViewSet):
     queryset = ContractorRelease.objects.all().order_by('-request_date')
     serializer_class = ContractorReleaseSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)

@@ -29,7 +29,7 @@ class BankCodeDetail(generics.ListAPIView):
     serializer_class = BankCodeSerializer
 
 
-class ComBankAccountViewSets(viewsets.ModelViewSet):
+class ComBankAccountViewSet(viewsets.ModelViewSet):
     queryset = CompanyBankAccount.objects.all()
     serializer_class = CompanyBankAccountSerializer
     pagination_class = PageNumberPaginationFifty

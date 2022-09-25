@@ -8,13 +8,13 @@ from accounts.models import User, Profile, Todo
 
 
 # Accounts --------------------------------------------------------------------------
-class UserViewSets(viewsets.ModelViewSet):
+class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = (permissions.AllowAny,)
 
 
-class ProfileViewSets(viewsets.ModelViewSet):
+class ProfileViewSet(viewsets.ModelViewSet):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
     permission_classes = (permissions.IsAuthenticated, IsOwnerOnly)
@@ -23,7 +23,7 @@ class ProfileViewSets(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
 
-class TodoViewSets(viewsets.ModelViewSet):
+class TodoViewSet(viewsets.ModelViewSet):
     queryset = Todo.objects.all()
     serializer_class = TodoSerializer
     pagination_class = PageNumberPaginationFifty
