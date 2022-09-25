@@ -16,16 +16,9 @@ from contract.models import (OrderGroup, Contract, Contractor,
 
 
 # Cash --------------------------------------------------------------------------
-class BankCodeList(generics.ListAPIView):
-    name = 'bankcode-list'
+class BankCodeViewSet(viewsets.ModelViewSet):
     queryset = BankCode.objects.all()
     pagination_class = PageNumberPaginationFifty
-    serializer_class = BankCodeSerializer
-
-
-class BankCodeDetail(generics.ListAPIView):
-    name = 'bankcode-detail'
-    queryset = BankCode.objects.all()
     serializer_class = BankCodeSerializer
 
 
@@ -36,8 +29,7 @@ class ComBankAccountViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
 
-class BalanceByAccountList(generics.ListAPIView):
-    name = 'balance-by-acc'
+class BalanceByAccountViewSet(viewsets.ModelViewSet):
     serializer_class = BalanceByAccountSerializer
     pagination_class = PageNumberPaginationOneHundred
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
@@ -76,8 +68,8 @@ class CashBookFilterSet(FilterSet):
                   'account_d1', 'account_d2', 'account_d3', 'bank_account')
 
 
-class CashBookList(generics.ListCreateAPIView):
-    name = 'cashbook-list'
+class CashBookViewSet(viewsets.ModelViewSet):
+    # name = 'cashbook-list'
     queryset = CashBook.objects.all()
     serializer_class = CashBookSerializer
     pagination_class = PageNumberPaginationFifteen
@@ -89,8 +81,7 @@ class CashBookList(generics.ListCreateAPIView):
         serializer.save(user=self.request.user)
 
 
-class DateCashBookList(CashBookList):
-    name = 'date-cashbook'
+class DateCashBookViewSet(CashBookViewSet):
     pagination_class = PageNumberPaginationTwoHundred
 
     def get_queryset(self):
@@ -100,15 +91,7 @@ class DateCashBookList(CashBookList):
         return CashBook.objects.filter(is_separate=False, deal_date__exact=date)
 
 
-class CashBookDetail(generics.RetrieveUpdateDestroyAPIView):
-    name = 'cashbook-detail'
-    queryset = CashBook.objects.all()
-    serializer_class = CashBookSerializer
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-
-
-class ProjectBankAccountList(generics.ListCreateAPIView):
-    name = 'project_bank-list'
+class ProjectBankAccountViewSet(viewsets.ModelViewSet):
     queryset = ProjectBankAccount.objects.all()
     serializer_class = ProjectBankAccountSerializer
     pagination_class = PageNumberPaginationFifty
@@ -116,15 +99,8 @@ class ProjectBankAccountList(generics.ListCreateAPIView):
     filterset_fields = ('project',)
 
 
-class ProjectBankAccountDetail(generics.RetrieveUpdateDestroyAPIView):
-    name = 'project_bank-detail'
-    queryset = ProjectBankAccount.objects.all()
-    serializer_class = ProjectBankAccountSerializer
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-
-
-class PrBalanceByAccountList(generics.ListAPIView):
-    name = 'pr-balance-by-acc'
+class PrBalanceByAccountViewSet(viewsets.ModelViewSet):
+    # name = 'pr-balance-by-acc'
     serializer_class = PrBalanceByAccountSerializer
     pagination_class = PageNumberPaginationOneHundred
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
@@ -167,8 +143,8 @@ class ProjectCashBookFilterSet(FilterSet):
                   'bank_account', 'is_contract_payment', 'contract', 'no_contract')
 
 
-class ProjectCashBookList(generics.ListCreateAPIView):
-    name = 'project_cashbook-list'
+class ProjectCashBookViewSet(viewsets.ModelViewSet):
+    # name = 'project_cashbook-list'
     queryset = ProjectCashBook.objects.filter(Q(is_imprest=False) | Q(project_account_d2=63, income__isnull=True))
     serializer_class = ProjectCashBookSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
@@ -180,8 +156,8 @@ class ProjectCashBookList(generics.ListCreateAPIView):
         serializer.save(user=self.request.user)
 
 
-class ProjectDateCashBookList(ProjectCashBookList):
-    name = 'pr-date-cashbook'
+class ProjectDateCashBookViewSet(ProjectCashBookViewSet):
+    # name = 'pr-date-cashbook'
     pagination_class = PageNumberPaginationTwoHundred
 
     def get_queryset(self):
@@ -191,20 +167,20 @@ class ProjectDateCashBookList(ProjectCashBookList):
         return ProjectCashBook.objects.filter(is_separate=False, deal_date__exact=date)
 
 
-class ProjectImprestList(ProjectCashBookList):
-    name = 'project-imprest-list'
+class ProjectImprestViewSet(ProjectCashBookViewSet):
+    # name = 'project-imprest-list'
     queryset = ProjectCashBook.objects.filter(is_imprest=True).exclude(project_account_d2=63, income__isnull=True)
 
 
-class ProjectCashBookDetail(generics.RetrieveUpdateDestroyAPIView):
-    name = 'project_cashbook-detail'
-    queryset = ProjectCashBook.objects.all()
-    serializer_class = ProjectCashBookSerializer
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+# class ProjectCashBookDetail(generics.RetrieveUpdateDestroyAPIView):
+#     name = 'project_cashbook-detail'
+#     queryset = ProjectCashBook.objects.all()
+#     serializer_class = ProjectCashBookSerializer
+#     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
 
-class PaymentList(ProjectCashBookList):
-    name = 'payment-list'
+class PaymentViewSet(ProjectCashBookViewSet):
+    # name = 'payment-list'
     serializer_class = PaymentSerializer
     pagination_class = PageNumberPaginationTen
 
@@ -212,13 +188,13 @@ class PaymentList(ProjectCashBookList):
         return ProjectCashBook.objects.filter(project_account_d2__in=(1, 2), refund_contractor=None)
 
 
-class AllPaymentList(PaymentList):
-    name = 'all-payment-list'
+class AllPaymentViewSet(PaymentViewSet):
+    # name = 'all-payment-list'
     pagination_class = PageNumberPaginationOneHundred
 
 
-class PaymentSummary(generics.ListAPIView):
-    name = 'payment-sum'
+class PaymentSummaryViewSet(viewsets.ModelViewSet):
+    # name = 'payment-sum'
     serializer_class = PaymentSummarySerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
     filterset_fields = ('project',)
@@ -231,8 +207,8 @@ class PaymentSummary(generics.ListAPIView):
             .annotate(type_total=Sum('income'))
 
 
-class NumContractByType(generics.ListAPIView):
-    name = 'cont-count'
+class NumContractByTypeViewSet(viewsets.ModelViewSet):
+    # name = 'cont-count'
     serializer_class = NumContractByTypeSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
     filterset_fields = ('project',)
@@ -243,8 +219,8 @@ class NumContractByType(generics.ListAPIView):
             .annotate(num_cont=Count('unit_type'))
 
 
-class SalesPriceList(generics.ListCreateAPIView):
-    name = 'price-list'
+class SalesPriceViewSet(viewsets.ModelViewSet):
+    # name = 'price-list'
     queryset = SalesPriceByGT.objects.all()
     serializer_class = SalesPriceSerializer
     pagination_class = PageNumberPaginationFifty
@@ -252,15 +228,15 @@ class SalesPriceList(generics.ListCreateAPIView):
     filterset_fields = ('project', 'order_group', 'unit_type')
 
 
-class SalesPriceDetail(generics.RetrieveUpdateDestroyAPIView):
-    name = 'price-detail'
-    queryset = SalesPriceByGT.objects.all()
-    serializer_class = SalesPriceSerializer
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+# class SalesPriceDetail(generics.RetrieveUpdateDestroyAPIView):
+#     name = 'price-detail'
+#     queryset = SalesPriceByGT.objects.all()
+#     serializer_class = SalesPriceSerializer
+#     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
 
-class InstallmentOrderList(generics.ListCreateAPIView):
-    name = 'install_order-list'
+class InstallmentOrderViewSet(viewsets.ModelViewSet):
+    # name = 'install_order-list'
     queryset = InstallmentPaymentOrder.objects.all()
     serializer_class = InstallmentOrderSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
@@ -269,27 +245,27 @@ class InstallmentOrderList(generics.ListCreateAPIView):
     search_fields = ('pay_name', 'alias_name')
 
 
-class InstallmentOrderDetail(generics.RetrieveUpdateDestroyAPIView):
-    name = 'install_order-detail'
-    queryset = InstallmentPaymentOrder.objects.all()
-    serializer_class = InstallmentOrderSerializer
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+# class InstallmentOrderDetail(generics.RetrieveUpdateDestroyAPIView):
+#     name = 'install_order-detail'
+#     queryset = InstallmentPaymentOrder.objects.all()
+#     serializer_class = InstallmentOrderSerializer
+#     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
 
-class DownPaymentList(generics.ListCreateAPIView):
-    name = 'downpay-list'
+class DownPaymentViewSet(viewsets.ModelViewSet):
+    # name = 'downpay-list'
     queryset = DownPayment.objects.all()
     serializer_class = DownPaymentSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
     pagination_class = PageNumberPaginationTwenty
     filterset_fields = ('project', 'order_group', 'unit_type')
 
+# class DownPaymentDetail(generics.RetrieveUpdateDestroyAPIView):
+#     name = 'downpay-detail'
+#     queryset = DownPayment.objects.all()
+#     serializer_class = DownPaymentSerializer
+#     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
-class DownPaymentDetail(generics.RetrieveUpdateDestroyAPIView):
-    name = 'downpay-detail'
-    queryset = DownPayment.objects.all()
-    serializer_class = DownPaymentSerializer
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
 # class OverDueRuleList(generics.ListCreateAPIView):
 #     name = 'over_due_rule-list'
