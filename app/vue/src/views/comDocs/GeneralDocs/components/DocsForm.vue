@@ -50,17 +50,17 @@ const newLinkRange = computed(() => {
   return array
 })
 
-const ctlLinkNum = (n: number) => {
-  if (n + 1 >= newLinkNum.value) newLinkNum.value = newLinkNum.value + 1
-  else newLinkNum.value = newLinkNum.value - 1
-}
-
 const newFileNum = ref(1)
 const newFileRange = computed(() => {
   let array = []
   for (let i = 0; i < newFileNum.value; ++i) array.push(i)
   return array
 })
+
+const ctlLinkNum = (n: number) => {
+  if (n + 1 >= newLinkNum.value) newLinkNum.value = newLinkNum.value + 1
+  else newLinkNum.value = newLinkNum.value - 1
+}
 
 const ctlFileNum = (n: number) => {
   if (n + 1 >= newFileNum.value) newFileNum.value = newFileNum.value + 1
@@ -71,6 +71,23 @@ const validated = ref(false)
 
 const documentStore = useDocument()
 const post = computed(() => documentStore.post)
+
+const formsCheck = computed(() => {
+  if (post.value) {
+    const a = form.is_notice === post.value.is_notice
+    const b = form.category === post.value.category
+    const c = form.lawsuit === post.value.lawsuit
+    const d = form.title === post.value.title
+    const e = form.execution_date === post.value.execution_date
+    const f = form.content === post.value.content
+    // const g = form.oldLinks === []
+    // const h = form.oldFiles === []
+    // const i = form.newLinks === []
+    // const j = form.newFiles === []
+
+    return a && b && c && d && e && f // && g && h && i && j
+  } else return false
+})
 
 const sortName = computed(() =>
   post.value && post.value.project ? post.value.proj_name : '본사',
@@ -360,7 +377,9 @@ onBeforeRouteLeave(() => {
         >
           뒤로
         </CButton>
-        <CButton :color="btnClass" type="submit">저장하기</CButton>
+        <CButton :color="btnClass" type="submit" :disabled="formsCheck">
+          저장하기
+        </CButton>
       </CCol>
     </CRow>
   </CForm>
