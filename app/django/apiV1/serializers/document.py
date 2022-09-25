@@ -204,4 +204,4 @@ class CommentSerializer(serializers.ModelSerializer):
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
-        fields = ('pk', 'board', 'tag', 'post')
+        fields = ('pk', 'board', 'name', 'post')
