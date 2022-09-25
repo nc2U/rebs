@@ -60,26 +60,14 @@ class PostSerializer(serializers.ModelSerializer):
     files = FilesInPostSerializer(many=True, read_only=True)
     comments = serializers.RelatedField(many=True, read_only=True)
     user = serializers.SlugRelatedField(read_only=True, slug_field='username')
-    prev = serializers.SerializerMethodField()
-    next = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
         fields = ('pk', 'board', 'is_notice', 'project', 'proj_name', 'category', 'cate_name',
                   'lawsuit', 'title', 'execution_date', 'content', 'is_hide_comment', 'hit', 'blame',
                   'ip', 'device', 'secret', 'password', 'links', 'images', 'files', 'comments',
-                  'user', 'soft_delete', 'created', 'updated', 'is_new', 'prev', 'next')
+                  'user', 'soft_delete', 'created', 'updated', 'is_new')
         read_only_fields = ('ip',)
-
-    def get_prev(self, obj):
-        for (index, ins) in enumerate(self.instance):
-            if ins.pk == obj.pk:
-                return None if index + 1 == len(self.instance) else self.instance[index + 1].pk
-
-    def get_next(self, obj):
-        for (index, ins) in enumerate(self.instance):
-            if ins.pk == obj.pk:
-                return None if index == 0 else self.instance[index - 1].pk
 
     def to_python(self, value):
 
