@@ -1,5 +1,5 @@
-from django.db.models import Count, Sum, F, Q, Case, When
-from rest_framework import generics, viewsets
+from django.db.models import Count
+from rest_framework import viewsets
 from django_filters.rest_framework import FilterSet
 from django_filters import ChoiceFilter, ModelChoiceFilter, DateFilter, BooleanFilter
 
@@ -53,8 +53,7 @@ class ContractSetViewSet(ContractViewSet):
     serializer_class = ContractSetSerializer
 
 
-class SubsSummaryList(generics.ListAPIView):
-    name = 'subs-summary'
+class SubsSummaryViewSet(viewsets.ModelViewSet):
     serializer_class = SubsSummarySerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
     filterset_fields = ('project',)
@@ -65,8 +64,7 @@ class SubsSummaryList(generics.ListAPIView):
             .annotate(num_cont=Count('unit_type'))
 
 
-class ContSummaryList(generics.ListAPIView):
-    name = 'cont-summary'
+class ContSummaryViewSet(viewsets.ModelViewSet):
     serializer_class = ContSummarySerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
     filterset_fields = ('project',)
