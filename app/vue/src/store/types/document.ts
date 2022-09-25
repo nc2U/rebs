@@ -20,8 +20,6 @@ export interface Post {
   content: string
   is_hide_comment: boolean
   hit: number
-  like: number[]
-  dislike: number[]
   blame: number
   ip: string | null
   device: string
@@ -55,7 +53,7 @@ export interface Image {
 
 export interface File {
   pk: null | number
-  post: number
+  post?: number
   file: string
   newFile?: string
   hit: number

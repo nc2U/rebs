@@ -31,8 +31,6 @@ const form = reactive<Post & Attatches>({
   content: '',
   is_hide_comment: false,
   hit: 0,
-  like: 0,
-  dislike: 0,
   blame: 0,
   ip: null,
   device: '',
@@ -41,7 +39,6 @@ const form = reactive<Post & Attatches>({
 
   oldLinks: [],
   oldFiles: [],
-
   newLinks: [],
   newFiles: [],
 })
@@ -124,8 +121,6 @@ watch(post, val => {
     form.content = val.content
     form.is_hide_comment = val.is_hide_comment
     form.hit = val.hit
-    form.like = val.like
-    form.dislike = val.dislike
     form.blame = val.blame
     form.blame = val.blame
     form.device = val.device
