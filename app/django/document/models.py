@@ -335,14 +335,6 @@ class Post(models.Model):
         created = self.created + timedelta(days=3)
         return today < created.strftime('%Y-%m-%d %H:%M')
 
-    def get_prev(self):
-        prev_objects = Post.objects.filter(id__lt=self.pk)
-        return prev_objects.first().pk if prev_objects else None
-
-    def get_next(self):
-        next_objects = Post.objects.filter(id__gt=self.pk)
-        return next_objects.first().pk if next_objects else None
-
     class Meta:
         ordering = ['-id']
         verbose_name = '05. 게시물 관리'
