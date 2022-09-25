@@ -64,8 +64,7 @@ class BuildingUnitViewSet(viewsets.ModelViewSet):
     search_fields = ('name',)
 
 
-class HouseUnitList(generics.ListCreateAPIView):
-    name = 'unit-list'
+class HouseUnitViewSet(viewsets.ModelViewSet):
     queryset = HouseUnit.objects.all()
     serializer_class = HouseUnitSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
@@ -73,15 +72,7 @@ class HouseUnitList(generics.ListCreateAPIView):
     search_fields = ('hold_reason',)
 
 
-class HouseUnitDetail(generics.RetrieveUpdateDestroyAPIView):
-    name = 'unit-detail'
-    queryset = HouseUnit.objects.all()
-    serializer_class = HouseUnitSerializer
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-
-
-class AvailableHouseUnitList(HouseUnitList):
-    name = 'all-house-unit'
+class AvailableHouseUnitViewSet(HouseUnitViewSet):
 
     def get_queryset(self):
         houseunit = HouseUnit.objects.all()
@@ -101,14 +92,12 @@ class AvailableHouseUnitList(HouseUnitList):
         return queryset
 
 
-class AllHouseUnitList(HouseUnitList):
-    name = 'all-unit-list'
+class AllHouseUnitViewSet(HouseUnitViewSet):
     serializer_class = AllHouseUnitSerializer
     pagination_class = PageNumberPaginationThreeThousand
 
 
-class ProjectBudgetList(generics.ListCreateAPIView):
-    name = 'projectbudget-list'
+class ProjectBudgetViewSet(viewsets.ModelViewSet):
     queryset = ProjectBudget.objects.all()
     serializer_class = ProjectBudgetSerializer
     pagination_class = PageNumberPaginationFifty
@@ -116,8 +105,7 @@ class ProjectBudgetList(generics.ListCreateAPIView):
     filterset_fields = ('project',)
 
 
-class ExecAmountToBudgetList(generics.ListAPIView):
-    name = 'execution-amount'
+class ExecAmountToBudgetViewSet(viewsets.ModelViewSet):
     serializer_class = ExecAmountToBudget
     pagination_class = PageNumberPaginationFifty
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
@@ -148,23 +136,14 @@ class ExecAmountToBudgetList(generics.ListAPIView):
                       )))
 
 
-# class ProjectBudgetDetail(generics.ListCreateAPIView):
-#     name = 'projectbudget-detail'
-#     queryset = ProjectBudget.objects.all()
-#     serializer_class = ProjectBudgetSerializer
-#     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-
-
-class AllSiteList(generics.ListAPIView):
-    name = 'all-site'
+class AllSiteViewSet(viewsets.ModelViewSet):
     queryset = Site.objects.all()
     serializer_class = AllSiteSerializer
     pagination_class = PageNumberPaginationFiveHundred
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
 
-class TotalSiteArea(generics.ListAPIView):
-    name = 'sites-total'
+class TotalSiteAreaViewSet(viewsets.ModelViewSet):
     serializer_class = TotalSiteAreaSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
     filterset_fields = ('project',)
@@ -186,8 +165,7 @@ class SiteViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
 
-class AllOwnerList(generics.ListAPIView):
-    name = 'all-owner'
+class AllOwnerViewSet(viewsets.ModelViewSet):
     queryset = SiteOwner.objects.all().order_by('id')
     serializer_class = AllOwnerSerializer
     pagination_class = PageNumberPaginationFiveHundred
@@ -195,8 +173,7 @@ class AllOwnerList(generics.ListAPIView):
     filterset_fields = ('project',)
 
 
-class TotalOwnerArea(generics.ListAPIView):
-    name = 'owners-total'
+class TotalOwnerAreaViewSet(viewsets.ModelViewSet):
     serializer_class = TotalOwnerAreaSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
     filterset_fields = ('project',)
@@ -223,8 +200,7 @@ class SiteRelationViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
 
-class TotalContractedArea(generics.ListAPIView):
-    name = 'conts-total'
+class TotalContractedAreaViewSet(viewsets.ModelViewSet):
     serializer_class = TotalContractedAreaSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
     filterset_fields = ('project',)
