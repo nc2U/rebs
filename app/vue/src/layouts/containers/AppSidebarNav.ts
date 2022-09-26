@@ -31,13 +31,9 @@ const normalizePath = (path: string) =>
     .replace(/(index)?\.(html)$/, '')
 
 const isActiveLink = (route: RouteLocation, link: string) => {
-  if (link === undefined) {
-    return false
-  }
+  if (link === undefined) return false
 
-  if (route.hash === link) {
-    return true
-  }
+  if (route.hash === link) return true
 
   const currentPath = normalizePath(route.path)
   const targetPath = normalizePath(link)
@@ -46,18 +42,11 @@ const isActiveLink = (route: RouteLocation, link: string) => {
 }
 
 const isActiveItem = (route: RouteLocation, item: Item): boolean => {
-  console.log(route.path, item.to)
-  if (item.to && isActiveLink(route, item.to)) {
-    return true
-  }
+  if (item.to && isActiveLink(route, item.to)) return true
 
-  if (item.name && route.meta.title) {
-    return item.name === route.meta.title
-  }
+  if (item.items) return item.items.some(child => isActiveItem(route, child))
 
-  if (item.items) {
-    return item.items.some(child => isActiveItem(route, child))
-  }
+  if (item.name && route.meta.title) return item.name === route.meta.title
 
   return false
 }
