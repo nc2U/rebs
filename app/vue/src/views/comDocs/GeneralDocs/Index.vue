@@ -27,7 +27,10 @@ const docsFilter = (payload: any) => {
   fetchPostList({ ...postFilter })
 }
 
-const selectCate = (cate: number) => (postFilter.category = cate)
+const selectCate = (cate: number) => {
+  postFilter.category = cate
+  docsFilter(postFilter)
+}
 const pageSelect = (page: number) => console.log(page)
 
 const documentStore = useDocument()
@@ -62,10 +65,6 @@ const onSubmit = (payload: Post & Attatches) => {
 const postHit = (payload: PatchPost) => patchPost(payload)
 const linkHit = (payload: Link) => patchLink(payload)
 const fileHit = (payload: AFile) => patchFile(payload)
-
-watch(postFilter, val => {
-  if (val.category) fetchPostList({ board: 1, category: val.category })
-})
 
 onBeforeMount(() => {
   fetchCategoryList(1)
