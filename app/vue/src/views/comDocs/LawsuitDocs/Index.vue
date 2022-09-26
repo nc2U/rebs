@@ -21,7 +21,13 @@ const caseFilter = reactive<PostFilter>({
   search: '',
 })
 
-const listFiltering = (payload: PostFilter) => 1
+const listFiltering = (payload: PostFilter) => {
+  caseFilter.is_com = payload.is_com
+  if (!payload.is_com) caseFilter.project = payload.project
+  caseFilter.ordering = payload.ordering
+  caseFilter.search = payload.search
+  fetchPostList({ ...caseFilter })
+}
 
 const selectCate = (cate: number) => {
   caseFilter.category = cate

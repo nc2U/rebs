@@ -74,8 +74,8 @@ onBeforeMount(() => fetchProjectList())
             <CFormSelect v-model="form.ordering" @change="listFiltering(1)">
               <option value="created">작성일자 오름차순</option>
               <option value="-created">작성일자 내림차순</option>
-              <option value="execution_date">시행일자 오름차순</option>
-              <option value="-execution_date">시행일자 내림차순</option>
+              <option value="lawsuit">사건번호 오름차순</option>
+              <option value="-lawsuit">사건번호 내림차순</option>
               <option value="-hit">조회수 오름차순</option>
               <option value="hit">조회수 내림차순</option>
             </CFormSelect>
