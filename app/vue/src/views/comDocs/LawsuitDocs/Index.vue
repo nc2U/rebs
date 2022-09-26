@@ -1,37 +1,19 @@
+<script setup lang="ts">
+import { defineComponent } from 'vue'
+import { navMenu } from '@/views/comDocs/_menu/headermixin'
+import HeaderNav from '@/components/HeaderNav.vue'
+import ContentBody from '@/layouts/ContentBody/Index.vue'
+</script>
+
 <template>
-  <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    :selector="'CompanySelect'"
-    @header-select="onSelectAdd"
-  />
   <ContentBody>
     <CCardBody class="pb-5">
+      <HeaderNav :menus="navMenu" />
       <a href="/rebs/docs/lawsuit/" target="_blank">
-        구) 소송 문서 관리 페이지 바로가기
+        구) 소송 문서 관리 페이지 바로가기!
       </a>
     </CCardBody>
 
     <CCardFooter>&nbsp;</CCardFooter>
   </ContentBody>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import HeaderMixin from '@/views/comDocs/_menu/headermixin'
-import ContentHeader from '@/layouts/ContentHeader/Index.vue'
-import ContentBody from '@/layouts/ContentBody/Index.vue'
-import { mapState } from 'vuex'
-
-export default defineComponent({
-  name: 'LawsuitDocs',
-  components: {
-    ContentHeader,
-    ContentBody,
-  },
-  mixins: [HeaderMixin],
-  computed: {
-    ...mapState('settings', ['company']),
-  },
-})
-</script>
