@@ -19,7 +19,7 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <v-tabs v-model="tab" background-color="" color="primary" class="mt-5">
+  <v-tabs v-model="tab" background-color="" color="success" class="mt-5">
     <v-tab :value="0">전체</v-tab>
     <v-tab v-for="cate in categoryList" :key="cate.pk" :value="cate.pk">
       {{ cate.name }}
