@@ -8,7 +8,7 @@ defineProps({ tab: { type: Number, default: null } })
 const emit = defineEmits(['docs-filter'])
 
 const form = reactive<PostFilter>({
-  board: 1,
+  // board: 1,
   is_com: false,
   project: '',
 

@@ -5,7 +5,7 @@ import { message, errorHandle } from '@/utils/helper'
 import { Category, AFile, Link, PatchPost, Post } from '@/store/types/document'
 
 export type PostFilter = {
-  board: number
+  board?: number
   is_notice?: boolean
   is_com?: boolean
   project?: string
@@ -100,11 +100,10 @@ export const useDocument = defineStore('document', () => {
   const fetchPostList = (payload: PostFilter) => {
     const { board, page } = payload
     let url = `/post/?board=${board}&page=${page || 1}`
-    if (payload.is_notice) url += `&is_notice=${payload.is_notice}`
-    if (payload.is_com) url += `&is_notice=${payload.is_com}`
-    if (payload.project) url += `&is_notice=${payload.project}`
-    if (payload.category) url += `&is_notice=${payload.category}`
-    if (payload.lawsuit) url += `&is_notice=${payload.lawsuit}`
+    if (payload.is_com) url += `&is_com=${payload.is_com}`
+    if (payload.project) url += `&project=${payload.project}`
+    if (payload.category) url += `&category=${payload.category}`
+    if (payload.lawsuit) url += `&lawsuit=${payload.lawsuit}`
 
     return api
       .get(url)

@@ -15,10 +15,17 @@ const postFilter = reactive<PostFilter>({
   category: null,
   is_com: false,
   project: '',
-
   ordering: '-created_at',
   search: '',
 })
+
+const docsFilter = (payload: any) => {
+  postFilter.is_com = payload.is_com
+  postFilter.ordering = payload.ordering
+  postFilter.search = payload.search
+  if (!payload.is_com) postFilter.project = payload.project
+  fetchPostList({ ...postFilter })
+}
 
 const selectCate = (cate: number) => (postFilter.category = cate)
 const pageSelect = (page: number) => console.log(page)
@@ -55,12 +62,6 @@ const onSubmit = (payload: Post & Attatches) => {
 const postHit = (payload: PatchPost) => patchPost(payload)
 const linkHit = (payload: Link) => patchLink(payload)
 const fileHit = (payload: AFile) => patchFile(payload)
-
-const docsFilter = (payload: any) => {
-  if (payload.is_com) payload.project = ''
-  if (postFilter.category) payload.category = postFilter.category
-  fetchPostList(payload)
-}
 
 watch(postFilter, val => {
   if (val.category) fetchPostList({ board: 1, category: val.category })
