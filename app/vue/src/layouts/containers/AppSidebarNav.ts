@@ -46,6 +46,7 @@ const isActiveLink = (route: RouteLocation, link: string) => {
 }
 
 const isActiveItem = (route: RouteLocation, item: Item): boolean => {
+  console.log(route.path, item.to)
   if (item.to && isActiveLink(route, item.to)) {
     return true
   }
