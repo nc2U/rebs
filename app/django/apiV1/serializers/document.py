@@ -125,6 +125,7 @@ class PostSerializer(serializers.ModelSerializer):
     @transaction.atomic
     def update(self, instance, validated_data):
         instance.__dict__.update(**validated_data)
+        instance.category = validated_data.get('category', instance.category)
         instance.save()
 
         # Links 처리
