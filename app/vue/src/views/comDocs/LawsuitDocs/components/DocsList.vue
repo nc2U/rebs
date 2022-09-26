@@ -16,7 +16,7 @@ const pageSelect = (page: number) => emit('page-select', page)
 </script>
 
 <template>
-  <CTable hover responsive align="middle" class="mt-5">
+  <CTable hover responsive align="middle">
     <colgroup>
       <col width="8%" />
       <col width="10%" />

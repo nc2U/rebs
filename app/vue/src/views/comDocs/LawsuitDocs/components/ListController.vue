@@ -5,7 +5,7 @@ import { PostFilter, useDocument } from '@/store/pinia/document'
 import { numFormat } from '@/utils/baseMixins'
 
 defineProps({ tab: { type: Number, default: null } })
-const emit = defineEmits(['docs-filter'])
+const emit = defineEmits(['list-filter'])
 
 const form = reactive<PostFilter>({
   is_com: false,
@@ -28,7 +28,7 @@ const postCount = computed(() => documentStore.postCount)
 const listFiltering = (page = 1) => {
   nextTick(() => {
     form.is_com = form.project === 'com'
-    emit('docs-filter', {
+    emit('list-filter', {
       ...{ page },
       ...form,
     })
