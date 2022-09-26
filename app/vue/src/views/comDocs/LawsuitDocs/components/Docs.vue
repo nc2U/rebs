@@ -17,8 +17,8 @@ const sortColor = computed(() => (props.post.project ? 'success' : 'info'))
     <CTableDataCell class="text-left">
       <CBadge :color="sortColor">{{ sortName }}</CBadge>
     </CTableDataCell>
-    <CTableDataCell class="text-left"
-      >{{ cutString(post.lawsuit_name, 23) }}
+    <CTableDataCell class="text-left">
+      {{ cutString(post.lawsuit_name || '', 23) }}
     </CTableDataCell>
     <CTableDataCell class="text-left">
       <router-link
