@@ -15,15 +15,15 @@ const postFilter = reactive<PostFilter>({
   category: null,
   is_com: false,
   project: '',
-  ordering: '-created_at',
+  ordering: '',
   search: '',
 })
 
 const docsFilter = (payload: any) => {
   postFilter.is_com = payload.is_com
+  if (!payload.is_com) postFilter.project = payload.project
   postFilter.ordering = payload.ordering
   postFilter.search = payload.search
-  if (!payload.is_com) postFilter.project = payload.project
   fetchPostList({ ...postFilter })
 }
 

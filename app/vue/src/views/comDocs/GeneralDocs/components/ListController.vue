@@ -8,18 +8,16 @@ defineProps({ tab: { type: Number, default: null } })
 const emit = defineEmits(['docs-filter'])
 
 const form = reactive<PostFilter>({
-  // board: 1,
   is_com: false,
   project: '',
-
-  ordering: '-created_at',
+  ordering: '-created',
   search: '',
 })
 
 const formsCheck = computed(() => {
   const a = form.project === ''
   const b = form.is_com === false
-  const c = form.ordering === '-created_at'
+  const c = form.ordering === '-created'
   const d = form.search === ''
   return a && b && c && d
 })
@@ -42,7 +40,7 @@ defineExpose({ listFiltering })
 const resetForm = () => {
   form.project = ''
   form.is_com = false
-  form.ordering = '-created_at'
+  form.ordering = '-created'
   form.search = ''
   listFiltering(1)
 }
@@ -74,9 +72,12 @@ onBeforeMount(() => fetchProjectList())
 
           <CCol md="4" lg="6" xl="3" class="mb-3">
             <CFormSelect v-model="form.ordering" @change="listFiltering(1)">
-              <option value="-created_at">작성일자순</option>
-              <option value="created_at">시행일자순</option>
-              <option value="-contractor">조회수순</option>
+              <option value="created">작성일자 오름차순</option>
+              <option value="-created">작성일자 내림차순</option>
+              <option value="execution_date">시행일자 오름차순</option>
+              <option value="-execution_date">시행일자 내림차순</option>
+              <option value="-hit">조회수 오름차순</option>
+              <option value="hit">조회수 내림차순</option>
             </CFormSelect>
           </CCol>
         </CRow>

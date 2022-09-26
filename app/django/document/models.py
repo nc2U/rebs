@@ -336,7 +336,7 @@ class Post(models.Model):
         return today < created.strftime('%Y-%m-%d %H:%M')
 
     class Meta:
-        ordering = ['-id']
+        ordering = ['-created']
         verbose_name = '05. 게시물 관리'
         verbose_name_plural = '05. 게시물 관리'
 
