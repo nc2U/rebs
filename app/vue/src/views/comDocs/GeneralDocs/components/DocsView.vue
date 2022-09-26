@@ -65,7 +65,7 @@ onBeforeRouteLeave(() => {
 <template>
   <div v-if="post" class="m-0 p-0">
     <CRow class="mt-5">
-      <CCol md="6">
+      <CCol md="8">
         <h5>{{ post.title }}</h5>
       </CCol>
       <CCol class="pt-1 text-right">
