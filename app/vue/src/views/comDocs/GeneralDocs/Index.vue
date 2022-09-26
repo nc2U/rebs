@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive, computed, watch, onBeforeMount } from 'vue'
+import { reactive, computed, onBeforeMount } from 'vue'
 import { useRouter } from 'vue-router'
 import { useDocument, PostFilter } from '@/store/pinia/document'
 import { AFile, Attatches, Link, PatchPost, Post } from '@/store/types/document'
