@@ -54,7 +54,7 @@ onBeforeMount(() => {
   if (post.value)
     emit('post-hit', { pk: post.value?.pk, hit: post.value.hit + 1 })
   const page = Number(route.query.page) || 1
-  fetchPostList({ board: 1, page, category: props.category })
+  fetchPostList({ board: 2, page, category: props.category })
 })
 
 onBeforeRouteLeave(() => {

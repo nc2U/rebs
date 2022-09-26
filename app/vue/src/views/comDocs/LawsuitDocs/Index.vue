@@ -1,14 +1,16 @@
 <script setup lang="ts">
 import { computed, onBeforeMount, reactive } from 'vue'
 import { navMenu } from '@/views/comDocs/_menu/headermixin'
+import { useRouter } from 'vue-router'
 import { PostFilter, useDocument } from '@/store/pinia/document'
+import { AFile, Attatches, Link, PatchPost, Post } from '@/store/types/document'
 import HeaderNav from '@/components/HeaderNav.vue'
+import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from './components/ListController.vue'
 import CategoryTabs from './components/CategoryTabs.vue'
+import DocsView from './components/DocsView.vue'
 import DocsList from './components/DocsList.vue'
-import ContentBody from '@/layouts/ContentBody/Index.vue'
-import { AFile, Attatches, Link, PatchPost, Post } from '@/store/types/document'
-import { useRouter } from 'vue-router'
+import DocsForm from './components/DocsForm.vue'
 
 const caseFilter = reactive<PostFilter>({
   board: 2,

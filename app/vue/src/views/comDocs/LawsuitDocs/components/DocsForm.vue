@@ -21,7 +21,7 @@ const confirmModal = ref()
 
 const form = reactive<Post & Attatches>({
   pk: null,
-  board: 1,
+  board: 2,
   is_notice: false,
   project: null,
   category: null,
@@ -175,7 +175,7 @@ onBeforeRouteLeave(() => {
       <h5>
         {{ sortName }}
         <v-icon icon="mdi-chevron-double-right" size="xs" />
-        일반문서
+        소송문서
       </h5>
     </CCol>
   </CRow>
