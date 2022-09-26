@@ -1,13 +1,20 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watch, onBeforeMount } from 'vue'
 
-defineProps({ categoryList: { type: Object, default: null } })
+const props = defineProps({
+  category: { type: Number, default: 0 },
+  categoryList: { type: Object, default: null },
+})
 const emit = defineEmits(['select-cate'])
 
 const tab = ref(0)
 
 watch(tab, val => {
   emit('select-cate', val)
+})
+
+onBeforeMount(() => {
+  if (props.category) tab.value = props.category
 })
 </script>
 

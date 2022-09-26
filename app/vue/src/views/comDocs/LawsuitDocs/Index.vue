@@ -83,7 +83,11 @@ onBeforeMount(() => {
       <div v-if="$route.name === '본사 소송문서'" class="pt-3">
         <ListController @list-filter="listFiltering" />
 
-        <CategoryTabs :category-list="categoryList" @select-cate="selectCate" />
+        <CategoryTabs
+          :category="caseFilter.category"
+          :category-list="categoryList"
+          @select-cate="selectCate"
+        />
 
         <DocsList :post-list="postList" @page-select="pageSelect" />
       </div>
