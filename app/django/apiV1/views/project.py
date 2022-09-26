@@ -1,6 +1,6 @@
 from datetime import datetime
 from django.db.models import Sum, F, Q, Case, When
-from rest_framework import generics, viewsets
+from rest_framework import viewsets
 from django_filters.rest_framework import FilterSet
 from django_filters import BooleanFilter
 

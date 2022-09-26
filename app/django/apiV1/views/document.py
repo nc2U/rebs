@@ -1,4 +1,6 @@
 from rest_framework import viewsets
+from django_filters import BooleanFilter
+from django_filters.rest_framework import FilterSet
 
 from ..permission import *
 from ..serializers.document import *
@@ -39,11 +41,19 @@ class LawSuitCaseViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
 
+class PostFilterSet(FilterSet):
+    is_com = BooleanFilter(field_name='project', lookup_expr='isnull', label='본사')
+
+    class Meta:
+        model = Post
+        fields = ('board', 'is_notice', 'is_com', 'project', 'category', 'lawsuit')
+
+
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-    filterset_fields = ('board', 'is_notice', 'project', 'category', 'lawsuit')
+    filterset_class = PostFilterSet
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)

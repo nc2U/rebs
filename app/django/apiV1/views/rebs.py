@@ -1,4 +1,4 @@
-from rest_framework import generics, viewsets
+from rest_framework import viewsets
 
 from ..permission import *
 from ..pagination import *
