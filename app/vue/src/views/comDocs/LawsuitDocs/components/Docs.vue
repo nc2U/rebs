@@ -17,7 +17,9 @@ const sortColor = computed(() => (props.post.project ? 'success' : 'info'))
     <CTableDataCell class="text-left">
       <CBadge :color="sortColor">{{ sortName }}</CBadge>
     </CTableDataCell>
-    <CTableDataCell>{{ post.execution_date }}</CTableDataCell>
+    <CTableDataCell class="text-left"
+      >{{ cutString(post.lawsuit_name, 23) }}
+    </CTableDataCell>
     <CTableDataCell class="text-left">
       <router-link
         :to="{ name: '본사 일반문서 - 보기', params: { postId: post.pk } }"

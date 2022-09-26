@@ -19,7 +19,7 @@ const postFilter = reactive<PostFilter>({
   search: '',
 })
 
-const docsFilter = (payload: any) => {
+const docsFilter = (payload: PostFilter) => {
   postFilter.is_com = payload.is_com
   if (!payload.is_com) postFilter.project = payload.project
   postFilter.ordering = payload.ordering

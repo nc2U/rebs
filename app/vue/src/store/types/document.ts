@@ -15,6 +15,7 @@ export interface Post {
   category: number | null
   cate_name?: string | null
   lawsuit: number | null
+  lawsuit_name?: string | null
   title: string
   execution_date: string | null
   content: string
