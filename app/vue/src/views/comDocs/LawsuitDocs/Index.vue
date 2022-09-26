@@ -2,6 +2,7 @@
 import { defineComponent } from 'vue'
 import { navMenu } from '@/views/comDocs/_menu/headermixin'
 import HeaderNav from '@/components/HeaderNav.vue'
+import ListController from './components/ListController.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 </script>
 
@@ -9,9 +10,8 @@ import ContentBody from '@/layouts/ContentBody/Index.vue'
   <ContentBody>
     <CCardBody class="pb-5">
       <HeaderNav :menus="navMenu" />
-      <a href="/rebs/docs/lawsuit/" target="_blank">
-        구) 소송 문서 관리 페이지 바로가기!
-      </a>
+
+      <ListController />
     </CCardBody>
 
     <CCardFooter>&nbsp;</CCardFooter>

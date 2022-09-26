@@ -56,7 +56,7 @@ onBeforeMount(() => fetchProjectList())
     <CRow>
       <CCol lg="6">
         <CRow>
-          <CCol md="6" xl="4" class="mb-3">
+          <CCol md="6" lg="5" xl="4" class="mb-3">
             <CFormSelect v-model="form.project" @change="listFiltering(1)">
               <option value="">전체 프로젝트</option>
               <option value="com">본사</option>
@@ -70,7 +70,7 @@ onBeforeMount(() => fetchProjectList())
             </CFormSelect>
           </CCol>
 
-          <CCol md="6" xl="4" class="mb-3">
+          <CCol md="6" lg="5" xl="4" class="mb-3">
             <CFormSelect v-model="form.ordering" @change="listFiltering(1)">
               <option value="created">작성일자 오름차순</option>
               <option value="-created">작성일자 내림차순</option>
@@ -85,13 +85,13 @@ onBeforeMount(() => fetchProjectList())
 
       <CCol lg="6">
         <CRow class="justify-content-md-end">
-          <CCol md="6" xl="4" class="mb-3">
+          <CCol md="6" lg="5" xl="4" class="mb-3">
             <CFormSelect>
               <option value="">제목+내용+작성자</option>
             </CFormSelect>
           </CCol>
 
-          <CCol md="6" xl="5" class="mb-3">
+          <CCol md="6" lg="5" class="mb-3">
             <CInputGroup class="flex-nowrap">
               <CFormInput
                 v-model="form.search"

@@ -75,30 +75,30 @@ onBeforeMount(() => {
 <template>
   <ContentBody>
     <CCardBody class="pb-5">
-      <CContainer v-if="$route.name === '본사 일반문서'">
+      <div v-if="$route.name === '본사 일반문서'" class="pt-3">
         <ListController @docs-filter="docsFilter" />
 
         <CategoryTabs :category-list="categoryList" @select-cate="selectCate" />
 
         <DocsList :post-list="postList" @page-select="pageSelect" />
-      </CContainer>
+      </div>
 
-      <CContainer v-else-if="$route.name.includes('보기')">
+      <div v-else-if="$route.name.includes('보기')">
         <DocsView
           :category="postFilter.category"
           @post-hit="postHit"
           @link-hit="linkHit"
           @file-hit="fileHit"
         />
-      </CContainer>
+      </div>
 
-      <CContainer v-else-if="$route.name.includes('작성')">
+      <div v-else-if="$route.name.includes('작성')">
         <DocsForm :category-list="categoryList" @on-submit="onSubmit" />
-      </CContainer>
+      </div>
 
-      <CContainer v-else-if="$route.name.includes('수정')">
+      <div v-else-if="$route.name.includes('수정')">
         <DocsForm :category-list="categoryList" @on-submit="onSubmit" />
-      </CContainer>
+      </div>
     </CCardBody>
 
     <CCardFooter>&nbsp;</CCardFooter>
