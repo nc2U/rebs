@@ -2,7 +2,7 @@
 import { ref, computed, onBeforeMount } from 'vue'
 import { useRouter } from 'vue-router'
 import { useDocument } from '@/store/pinia/document'
-import { Attatches, Link, PatchPost, Post } from '@/store/types/document'
+import { AFile, Attatches, Link, PatchPost, Post } from '@/store/types/document'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from './components/ListController.vue'
 import CategoryTabs from './components/CategoryTabs.vue'
@@ -25,7 +25,7 @@ const createPost = (payload: Post) => documentStore.createPost(payload)
 const updatePost = (payload: Post) => documentStore.updatePost(payload)
 const patchPost = (payload: PatchPost) => documentStore.patchPost(payload)
 const patchLink = (payload: Link) => documentStore.patchLink(payload)
-const patchFile = (payload: File) => documentStore.patchFile(payload)
+const patchFile = (payload: AFile) => documentStore.patchFile(payload)
 
 const router = useRouter()
 const onSubmit = (payload: Post & Attatches) => {
@@ -43,7 +43,13 @@ const onSubmit = (payload: Post & Attatches) => {
 
 const postHit = (payload: PatchPost) => patchPost(payload)
 const linkHit = (payload: Link) => patchLink(payload)
-const fileHit = (payload: File) => patchFile(payload)
+const fileHit = (payload: AFile) => patchFile(payload)
+
+const docsFilter = (payload: any) => {
+  if (payload.is_com) payload.sortFilter = ''
+  console.log(payload)
+  alert('ok!')
+}
 
 onBeforeMount(() => fetchCategoryList(1))
 </script>
@@ -52,7 +58,7 @@ onBeforeMount(() => fetchCategoryList(1))
   <ContentBody>
     <CCardBody class="pb-5">
       <CContainer v-if="$route.name === '본사 일반문서'">
-        <ListController />
+        <ListController @docs-filter="docsFilter" />
 
         <CategoryTabs :category-list="categoryList" @select-cate="selectCate" />
 

@@ -1,43 +1,34 @@
 <script lang="ts" setup>
-import { reactive, computed, nextTick } from 'vue'
+import { reactive, computed, watch, nextTick, onBeforeMount } from 'vue'
+import { useProject } from '@/store/pinia/project'
 import { useDocument } from '@/store/pinia/document'
 import { numFormat } from '@/utils/baseMixins'
 
 defineProps({ tab: { type: Number, default: null } })
-const emit = defineEmits(['docs-filtering'])
+const emit = defineEmits(['docs-filter'])
 
 const form = reactive({
+  sortFilter: '',
+  is_com: false,
   ordering: '-created_at',
-  searchFilter: '',
   search: '',
 })
 
 const formsCheck = computed(() => {
-  const a = form.ordering === '-created_at'
-  const b = form.searchFilter === ''
-  const c = form.search === ''
-  return a && b && c
+  const a = form.sortFilter === ''
+  const b = form.is_com === false
+  const c = form.ordering === '-created_at'
+  const d = form.search === ''
+  return a && b && c && d
 })
-
-// const orderGroupList = computed(() => contractStore.orderGroupList)
-// const contractsCount = computed(() => contractStore.contractsCount)
-// const buildingList = computed(() => projectDataStore.buildingList)
-// const simpleTypes = computed(() => projectDataStore.simpleTypes)
-//
-// watch(form, val => {
-//   if (val.from_date) form.from_date = dateFormat(val.from_date)
-//   else form.from_date = ''
-//   if (val.to_date) form.to_date = dateFormat(val.to_date)
-//   else form.to_date = ''
-//   listFiltering(1)
-// })
 
 const documentStore = useDocument()
 const postCount = computed(() => documentStore.postCount)
 
 const listFiltering = (page = 1) => {
   nextTick(() => {
-    emit('docs-filtering', {
+    form.is_com = form.sortFilter === 'com'
+    emit('docs-filter', {
       ...{ page },
       ...form,
     })
@@ -47,11 +38,17 @@ const listFiltering = (page = 1) => {
 defineExpose({ listFiltering })
 
 const resetForm = () => {
+  form.sortFilter = ''
+  form.is_com = false
   form.ordering = '-created_at'
-  form.searchFilter = ''
   form.search = ''
   listFiltering(1)
 }
+
+const projectStore = useProject()
+const projSelect = computed(() => projectStore.projSelect)
+const fetchProjectList = () => projectStore.fetchProjectList()
+onBeforeMount(() => fetchProjectList())
 </script>
 
 <template>
@@ -60,11 +57,16 @@ const resetForm = () => {
       <CCol lg="6">
         <CRow>
           <CCol md="4" lg="6" xl="3" class="mb-3">
-            <CFormSelect v-model="form.ordering" @change="listFiltering(1)">
-              <option value="-created_at">전체 프로젝트</option>
-              <option value="created_at">본사</option>
-              <option value="-contractor">(가칭)송도센트럴자이</option>
-              <option value="-contractor">(가칭)아야진프로젝트</option>
+            <CFormSelect v-model="form.sortFilter" @change="listFiltering(1)">
+              <option value="">전체 프로젝트</option>
+              <option value="com">본사</option>
+              <option
+                v-for="proj in projSelect"
+                :key="proj.value"
+                :value="proj.value"
+              >
+                {{ proj.text }}
+              </option>
             </CFormSelect>
           </CCol>
 

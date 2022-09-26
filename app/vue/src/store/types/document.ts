@@ -51,7 +51,7 @@ export interface Image {
   del?: boolean
 }
 
-export interface File {
+export interface AFile {
   pk: null | number
   post?: number
   file: string
