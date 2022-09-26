@@ -367,7 +367,7 @@ onBeforeRouteLeave(() => {
 
     <CRow>
       <CCol class="text-right">
-        <CButton color="light" @click="$router.push({ name: '본사 일반문서' })">
+        <CButton color="light" @click="$router.push({ name: '본사 소송문서' })">
           목록으로
         </CButton>
         <CButton
@@ -387,7 +387,7 @@ onBeforeRouteLeave(() => {
   <ConfirmModal ref="delModal">
     <template #header>
       <CIcon name="cilChevronCircleRightAlt" />
-      본사 일반문서
+      본사 소송문서
     </template>
     <template #default>현재 삭제 기능이 구현되지 않았습니다.</template>
     <template #footer>
@@ -398,9 +398,9 @@ onBeforeRouteLeave(() => {
   <ConfirmModal ref="confirmModal">
     <template #header>
       <CIcon name="cilChevronCircleRightAlt" />
-      본사 일반문서
+      본사 소송문서
     </template>
-    <template #default> 본사 일반문서 저장을 진행하시겠습니까?</template>
+    <template #default> 본사 소송문서 저장을 진행하시겠습니까?</template>
     <template #footer>
       <CButton :color="btnClass" @click="modalAction">저장</CButton>
     </template>

@@ -22,7 +22,7 @@ const sortColor = computed(() => (props.post.project ? 'success' : 'info'))
     </CTableDataCell>
     <CTableDataCell class="text-left">
       <router-link
-        :to="{ name: '본사 일반문서 - 보기', params: { postId: post.pk } }"
+        :to="{ name: '본사 소송문서 - 보기', params: { postId: post.pk } }"
       >
         {{ cutString(post.title, 30) }}
       </router-link>

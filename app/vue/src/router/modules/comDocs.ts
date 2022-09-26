@@ -75,6 +75,35 @@ const comDocs = {
               ? import('@/views/comDocs/LawsuitDocs/Index.vue')
               : import('@/views/_Accounts/NoAuth.vue'),
           meta: { title: '본사 소송문서' },
+          children: [
+            {
+              path: ':postId(\\d+)',
+              name: '본사 소송문서 - 보기',
+              component: () =>
+                pageViewAuth.value
+                  ? import('@/views/comDocs/LawsuitDocs/Index.vue')
+                  : import('@/views/_Accounts/NoAuth.vue'),
+              meta: { title: '본사 소송문서', except: true },
+            },
+            {
+              path: ':postId(\\d+)/update',
+              name: '본사 소송문서 - 수정',
+              component: () =>
+                pageViewAuth.value
+                  ? import('@/views/comDocs/LawsuitDocs/Index.vue')
+                  : import('@/views/_Accounts/NoAuth.vue'),
+              meta: { title: '본사 소송문서', except: true },
+            },
+            {
+              path: 'create',
+              name: '본사 소송문서 - 작성',
+              component: () =>
+                pageViewAuth.value
+                  ? import('@/views/comDocs/LawsuitDocs/Index.vue')
+                  : import('@/views/_Accounts/NoAuth.vue'),
+              meta: { title: '본사 소송문서', except: true },
+            },
+          ],
         },
         {
           path: 'case',

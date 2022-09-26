@@ -220,7 +220,7 @@ onBeforeRouteLeave(() => {
             :disabled="!getPrev"
             @click="
               $router.push({
-                name: '본사 일반문서 - 보기',
+                name: '본사 소송문서 - 보기',
                 params: { postId: getPrev },
               })
             "
@@ -232,7 +232,7 @@ onBeforeRouteLeave(() => {
             :disabled="!getNext"
             @click="
               $router.push({
-                name: '본사 일반문서 - 보기',
+                name: '본사 소송문서 - 보기',
                 params: { postId: getNext },
               })
             "
@@ -246,7 +246,7 @@ onBeforeRouteLeave(() => {
             color="success"
             @click="
               $router.push({
-                name: '본사 일반문서 - 수정',
+                name: '본사 소송문서 - 수정',
                 params: { postId: post.pk },
               })
             "
@@ -257,12 +257,12 @@ onBeforeRouteLeave(() => {
         </CButtonGroup>
       </CCol>
       <CCol class="text-right">
-        <CButton color="light" @click="$router.push({ name: '본사 일반문서' })">
+        <CButton color="light" @click="$router.push({ name: '본사 소송문서' })">
           목록으로
         </CButton>
         <CButton
           color="primary"
-          @click="$router.push({ name: '본사 일반문서 - 작성' })"
+          @click="$router.push({ name: '본사 소송문서 - 작성' })"
         >
           등록하기
         </CButton>

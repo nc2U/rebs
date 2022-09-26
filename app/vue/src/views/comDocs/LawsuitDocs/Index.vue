@@ -36,9 +36,28 @@ onBeforeMount(() => {
     <CCardBody class="pb-5">
       <HeaderNav :menus="navMenu" />
 
-      <ListController />
+      <div v-if="$route.name === '본사 소송문서'" class="pt-3">
+        <ListController />
 
-      <DocsList :post-list="postList" />
+        <DocsList :post-list="postList" />
+      </div>
+
+      <div v-else-if="$route.name.includes('보기')">
+        <DocsView
+          :category="postFilter.category"
+          @post-hit="postHit"
+          @link-hit="linkHit"
+          @file-hit="fileHit"
+        />
+      </div>
+
+      <div v-else-if="$route.name.includes('작성')">
+        <DocsForm :category-list="categoryList" @on-submit="onSubmit" />
+      </div>
+
+      <div v-else-if="$route.name.includes('수정')">
+        <DocsForm :category-list="categoryList" @on-submit="onSubmit" />
+      </div>
     </CCardBody>
 
     <CCardFooter>&nbsp;</CCardFooter>
