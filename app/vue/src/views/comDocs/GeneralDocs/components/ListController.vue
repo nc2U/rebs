@@ -1,21 +1,23 @@
 <script lang="ts" setup>
-import { reactive, computed, watch, nextTick, onBeforeMount } from 'vue'
+import { reactive, computed, nextTick, onBeforeMount } from 'vue'
 import { useProject } from '@/store/pinia/project'
-import { useDocument } from '@/store/pinia/document'
+import { PostFilter, useDocument } from '@/store/pinia/document'
 import { numFormat } from '@/utils/baseMixins'
 
 defineProps({ tab: { type: Number, default: null } })
 const emit = defineEmits(['docs-filter'])
 
-const form = reactive({
-  sortFilter: '',
+const form = reactive<PostFilter>({
+  board: 1,
   is_com: false,
+  project: '',
+
   ordering: '-created_at',
   search: '',
 })
 
 const formsCheck = computed(() => {
-  const a = form.sortFilter === ''
+  const a = form.project === ''
   const b = form.is_com === false
   const c = form.ordering === '-created_at'
   const d = form.search === ''
@@ -27,7 +29,7 @@ const postCount = computed(() => documentStore.postCount)
 
 const listFiltering = (page = 1) => {
   nextTick(() => {
-    form.is_com = form.sortFilter === 'com'
+    form.is_com = form.project === 'com'
     emit('docs-filter', {
       ...{ page },
       ...form,
@@ -38,7 +40,7 @@ const listFiltering = (page = 1) => {
 defineExpose({ listFiltering })
 
 const resetForm = () => {
-  form.sortFilter = ''
+  form.project = ''
   form.is_com = false
   form.ordering = '-created_at'
   form.search = ''
@@ -57,7 +59,7 @@ onBeforeMount(() => fetchProjectList())
       <CCol lg="6">
         <CRow>
           <CCol md="4" lg="6" xl="3" class="mb-3">
-            <CFormSelect v-model="form.sortFilter" @change="listFiltering(1)">
+            <CFormSelect v-model="form.project" @change="listFiltering(1)">
               <option value="">전체 프로젝트</option>
               <option value="com">본사</option>
               <option

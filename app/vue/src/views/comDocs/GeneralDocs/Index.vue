@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref, computed, onBeforeMount } from 'vue'
+import { reactive, computed, watch, onBeforeMount } from 'vue'
 import { useRouter } from 'vue-router'
-import { useDocument } from '@/store/pinia/document'
+import { useDocument, PostFilter } from '@/store/pinia/document'
 import { AFile, Attatches, Link, PatchPost, Post } from '@/store/types/document'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from './components/ListController.vue'
@@ -10,14 +10,25 @@ import DocsList from './components/DocsList.vue'
 import DocsView from './components/DocsView.vue'
 import DocsForm from './components/DocsForm.vue'
 
-const category = ref<number>(0)
+const postFilter = reactive<PostFilter>({
+  board: 1,
+  category: null,
+  is_com: false,
+  project: '',
 
-const selectCate = (cate: number) => (category.value = cate)
+  ordering: '-created_at',
+  search: '',
+})
+
+const selectCate = (cate: number) => (postFilter.category = cate)
 const pageSelect = (page: number) => console.log(page)
 
 const documentStore = useDocument()
+const postList = computed(() => documentStore.postList)
 const categoryList = computed(() => documentStore.categoryList)
 
+const fetchPostList = (payload: PostFilter) =>
+  documentStore.fetchPostList(payload)
 const fetchCategoryList = (board: number) =>
   documentStore.fetchCategoryList(board)
 
@@ -46,12 +57,19 @@ const linkHit = (payload: Link) => patchLink(payload)
 const fileHit = (payload: AFile) => patchFile(payload)
 
 const docsFilter = (payload: any) => {
-  if (payload.is_com) payload.sortFilter = ''
-  console.log(payload)
-  alert('ok!')
+  if (payload.is_com) payload.project = ''
+  if (postFilter.category) payload.category = postFilter.category
+  fetchPostList(payload)
 }
 
-onBeforeMount(() => fetchCategoryList(1))
+watch(postFilter, val => {
+  if (val.category) fetchPostList({ board: 1, category: val.category })
+})
+
+onBeforeMount(() => {
+  fetchCategoryList(1)
+  fetchPostList({ board: 1 })
+})
 </script>
 
 <template>
@@ -62,12 +80,12 @@ onBeforeMount(() => fetchCategoryList(1))
 
         <CategoryTabs :category-list="categoryList" @select-cate="selectCate" />
 
-        <DocsList :category="category" @page-select="pageSelect" />
+        <DocsList :post-list="postList" @page-select="pageSelect" />
       </CContainer>
 
       <CContainer v-else-if="$route.name.includes('보기')">
         <DocsView
-          :category="category"
+          :category="postFilter.category"
           @post-hit="postHit"
           @link-hit="linkHit"
           @file-hit="fileHit"

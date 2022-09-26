@@ -2,14 +2,17 @@ import api from '@/api'
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import { message, errorHandle } from '@/utils/helper'
-import { Category, File, Link, PatchPost, Post } from '@/store/types/document'
+import { Category, AFile, Link, PatchPost, Post } from '@/store/types/document'
 
 export type PostFilter = {
   board: number
   is_notice?: boolean
-  project?: number
-  category?: number
+  is_com?: boolean
+  project?: string
+  category?: number | null
   lawsuit?: number
+  ordering?: string
+  search?: string
   page?: number
 }
 
@@ -95,14 +98,16 @@ export const useDocument = defineStore('document', () => {
       .catch(err => errorHandle(err.response.data))
 
   const fetchPostList = (payload: PostFilter) => {
-    const { board, category, page } = payload
+    const { board, page } = payload
+    let url = `/post/?board=${board}&page=${page || 1}`
+    if (payload.is_notice) url += `&is_notice=${payload.is_notice}`
+    if (payload.is_com) url += `&is_notice=${payload.is_com}`
+    if (payload.project) url += `&is_notice=${payload.project}`
+    if (payload.category) url += `&is_notice=${payload.category}`
+    if (payload.lawsuit) url += `&is_notice=${payload.lawsuit}`
 
     return api
-      .get(
-        `/post/?board=${board || ''}&category=${category || ''}&page=${
-          page || 1
-        }`,
-      )
+      .get(url)
       .then(res => {
         postList.value = res.data.results
         postCount.value = res.data.count
@@ -144,7 +149,7 @@ export const useDocument = defineStore('document', () => {
       .then(res => fetchPost(res.data.post))
       .catch(err => errorHandle(err.response.data))
 
-  const file = ref<File | null>(null)
+  const file = ref<AFile | null>(null)
 
   const fetchFile = (pk: number) =>
     api
@@ -152,7 +157,7 @@ export const useDocument = defineStore('document', () => {
       .then(res => (file.value = res.data))
       .catch(err => errorHandle(err.response.data))
 
-  const patchFile = (payload: File) =>
+  const patchFile = (payload: AFile) =>
     api
       .patch(`/file/${payload.pk}/`, payload)
       .then(res => fetchPost(res.data.post))

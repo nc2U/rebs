@@ -1,23 +1,15 @@
 <script setup lang="ts">
-import { computed, onBeforeMount, ref, watch } from 'vue'
-import { useDocument, PostFilter } from '@/store/pinia/document'
+import { useDocument } from '@/store/pinia/document'
 import Docs from './Docs.vue'
 import Pagination from '@/components/Pagination'
 
-const props = defineProps({ category: { type: Number, default: 0 } })
+defineProps({
+  postList: { type: Array, default: () => [] },
+})
+
 const emit = defineEmits(['page-select'])
 
 const documentStore = useDocument()
-const postList = computed(() => documentStore.postList)
-
-const fetchPostList = (payload: PostFilter) =>
-  documentStore.fetchPostList(payload)
-
-watch(props, val => {
-  fetchPostList({ board: 1, category: val.category })
-})
-
-onBeforeMount(() => fetchPostList({ board: 1 }))
 
 const postPages = (num: number) => documentStore.postPages(num)
 const pageSelect = (page: number) => emit('page-select', page)
