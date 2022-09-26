@@ -304,10 +304,6 @@ const company_docs = {
     {
       component: 'CNavItem',
       name: '본사 일반문서',
-      badge: {
-        color: 'info',
-        text: 'building..',
-      },
       to: '/docs/general/posts',
     },
     {
@@ -320,8 +316,8 @@ const company_docs = {
           component: 'CNavItem',
           name: '본사 소송문서',
           badge: {
-            color: 'warning',
-            text: 'link',
+            color: 'info',
+            text: 'building..',
           },
           to: '/docs/lawsuit/posts',
         },
