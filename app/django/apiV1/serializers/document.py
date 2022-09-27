@@ -37,7 +37,7 @@ class LawSuitCaseSerializer(serializers.ModelSerializer):
 class SimpleLawSuitCaseSerializer(serializers.ModelSerializer):
     class Meta:
         model = LawsuitCase
-        fields = ('pk', 'case_number', 'case_name')
+        fields = ('pk', '__str__')
 
 
 class LinksInPostSerializer(serializers.ModelSerializer):

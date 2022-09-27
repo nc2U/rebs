@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, onBeforeMount, watch } from 'vue'
 import { onBeforeRouteLeave, useRoute } from 'vue-router'
-import { useDocument } from '@/store/pinia/document'
+import { useDocument, SuitCaseFilter } from '@/store/pinia/document'
 import { Post, Attatches } from '@/store/types/document'
 import { write_company_docs } from '@/utils/pageAuth'
 import { dateFormat } from '@/utils/baseMixins'
@@ -71,6 +71,7 @@ const validated = ref(false)
 
 const documentStore = useDocument()
 const post = computed(() => documentStore.post)
+const allSuitCaseList = computed(() => documentStore.allSuitCaseList)
 
 const formsCheck = computed(() => {
   if (post.value) {
@@ -94,6 +95,8 @@ const sortName = computed(() =>
 )
 
 const fetchPost = (pk: number) => documentStore.fetchPost(pk)
+const fetchAllSuitCaseList = (payload: SuitCaseFilter) =>
+  documentStore.fetchAllSuitCaseList(payload)
 
 const route = useRoute()
 const btnClass = computed(() => (route.params.postId ? 'success' : 'primary'))
@@ -162,6 +165,7 @@ watch(route, val => {
 
 onBeforeMount(() => {
   if (route.params.postId) fetchPost(Number(route.params.postId))
+  fetchAllSuitCaseList({})
 })
 
 onBeforeRouteLeave(() => {
@@ -208,8 +212,12 @@ onBeforeRouteLeave(() => {
       <CCol md="2">
         <CFormSelect id="category" v-model="form.lawsuit" required>
           <option value="">사건번호 선택</option>
-          <option v-for="cate in categoryList" :key="cate.pk" :value="cate.pk">
-            {{ cate.name }}
+          <option
+            v-for="suitcase in allSuitCaseList"
+            :key="suitcase.pk"
+            :value="suitcase.pk"
+          >
+            {{ suitcase.__str__ }}
           </option>
         </CFormSelect>
       </CCol>

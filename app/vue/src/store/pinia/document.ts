@@ -4,7 +4,7 @@ import { defineStore } from 'pinia'
 import { message, errorHandle } from '@/utils/helper'
 import { Category, AFile, Link, PatchPost, Post } from '@/store/types/document'
 
-type SuitCaseFilter = {
+export type SuitCaseFilter = {
   page?: number
   is_com?: boolean
   project?: number
@@ -73,6 +73,7 @@ export const useDocument = defineStore('document', () => {
   const suitcase = ref()
   const suitcaseList = ref()
   const suitcaseCount = ref(0)
+  const allSuitCaseList = ref()
 
   const fetchSuitCase = () => 1
 
@@ -105,10 +106,7 @@ export const useDocument = defineStore('document', () => {
 
     api
       .get(`/all-suitcase/?page=${page}${queryStr}`)
-      .then(res => {
-        suitcaseList.value = res.data.results
-        suitcaseCount.value = res.data.count
-      })
+      .then(res => (allSuitCaseList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
   }
 
@@ -253,6 +251,7 @@ export const useDocument = defineStore('document', () => {
     suitcase,
     suitcaseList,
     suitcaseCount,
+    allSuitCaseList,
 
     fetchSuitCase,
     fetchSuitCaseList,
