@@ -164,14 +164,6 @@ class AllSiteViewSet(SiteViewSet):
     pagination_class = PageNumberPaginationFiveHundred
 
 
-class AllOwnerViewSet(viewsets.ModelViewSet):
-    queryset = SiteOwner.objects.all().order_by('id')
-    serializer_class = AllOwnerSerializer
-    pagination_class = PageNumberPaginationFiveHundred
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-    filterset_fields = ('project',)
-
-
 class TotalOwnerAreaViewSet(viewsets.ModelViewSet):
     serializer_class = TotalOwnerAreaSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
@@ -191,6 +183,13 @@ class SiteOwnerViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+
+class AllOwnerViewSet(SiteOwnerViewSet):
+    queryset = SiteOwner.objects.all().order_by('id')
+    serializer_class = AllOwnerSerializer
+    pagination_class = PageNumberPaginationFiveHundred
+    filterset_fields = ('project',)
 
 
 class SiteRelationViewSet(viewsets.ModelViewSet):
