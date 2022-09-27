@@ -4,6 +4,7 @@ from django_filters.rest_framework import FilterSet
 
 from ..permission import *
 from ..serializers.document import *
+from ..pagination import PageNumberPaginationThreeThousand
 
 from document.models import (Group, Board, Category, LawsuitCase, Post,
                              Like, DisLike, Image, Link, File, Comment, Tag)
@@ -47,6 +48,11 @@ class LawSuitCaseViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+
+class AllLawSuitCaseViewSet(LawSuitCaseViewSet):
+    serializer_class = SimpleLawSuitCaseSerializer
+    pagination_class = PageNumberPaginationThreeThousand
 
 
 class PostFilterSet(FilterSet):

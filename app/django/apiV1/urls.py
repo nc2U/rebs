@@ -39,15 +39,16 @@ router.register(r'floor', project.UnitFloorTypeViewSet)
 router.register(r'key-unit', project.KeyUnitViewSet)
 router.register(r'bldg', project.BuildingUnitViewSet)
 router.register(r'house-unit', project.HouseUnitViewSet)
-router.register(r'available-house-unit', project.AvailableHouseUnitViewSet)  # only list
-router.register(r'all-house-unit', project.AllHouseUnitViewSet)  # only list
+router.register(r'available-house-unit', project.AvailableHouseUnitViewSet,
+                basename='available-house-unit')  # only list
+router.register(r'all-house-unit', project.AllHouseUnitViewSet, basename='all-house-unit')  # only list
 router.register(r'budget', project.ProjectBudgetViewSet)  # only list
 router.register(r'exec-amount', project.ExecAmountToBudgetViewSet, basename='exec-amount')  # only list
 router.register(r'site', project.SiteViewSet)
-router.register(r'all-site', project.AllSiteViewSet)  # only list
+router.register(r'all-site', project.AllSiteViewSet, basename='all-site')  # only list
 router.register(r'sites-total', project.TotalSiteAreaViewSet, basename='sites-total')  # only list
 router.register(r'site-owner', project.SiteOwnerViewSet)
-router.register(r'all-owner', project.AllOwnerViewSet)  # only list
+router.register(r'all-owner', project.AllOwnerViewSet, basename='all-owner')  # only list
 router.register(r'owners-total', project.TotalOwnerAreaViewSet, basename='owners-total')  # only list
 router.register(r'site-relation', project.SiteRelationViewSet)
 router.register(r'site-contract', project.SiteContractViewSet)
@@ -57,14 +58,14 @@ router.register(r'bank-code', cash.BankCodeViewSet)
 router.register(r'company-bank-account', cash.ComBankAccountViewSet)
 router.register(r'balance-by-acc', cash.BalanceByAccountViewSet, basename='balance-by-acc')  # only list
 router.register(r'cashbook', cash.CashBookViewSet)
-router.register(r'date-cashbook', cash.DateCashBookViewSet)  # only list
+router.register(r'date-cashbook', cash.DateCashBookViewSet, basename='date-cashbook')  # only list
 router.register(r'project-bank-account', cash.ProjectBankAccountViewSet)
 router.register(r'pr-balance-by-acc', cash.PrBalanceByAccountViewSet, basename='pr-balance-by-acc')  # only list
 router.register(r'project-cashbook', cash.ProjectCashBookViewSet)
-router.register(r'pr-date-cashbook', cash.ProjectDateCashBookViewSet)  # only list
-router.register(r'project-imprest', cash.ProjectImprestViewSet)  # only list
-router.register(r'payment', cash.PaymentViewSet)  # only list
-router.register(r'all-payment', cash.AllPaymentViewSet)  # only list
+router.register(r'pr-date-cashbook', cash.ProjectDateCashBookViewSet, basename='pr-date-cashbook')  # only list
+router.register(r'project-imprest', cash.ProjectImprestViewSet, basename='pr-imprest')  # only list
+router.register(r'payment', cash.PaymentViewSet, basename='payment')  # only list
+router.register(r'all-payment', cash.AllPaymentViewSet, basename='all-payment')  # only list
 router.register(r'payment-sum', cash.PaymentSummaryViewSet, basename='payment-sum')  # only list
 router.register(r'contract-num', cash.NumContractByTypeViewSet, basename='contract-num')  # only list
 router.register(r'price', cash.SalesPriceViewSet)
@@ -73,7 +74,7 @@ router.register(r'down-payment', cash.DownPaymentViewSet)
 # contract
 router.register(r'order-group', contract.OrderGroupViewSet)
 router.register(r'contract', contract.ContractViewSet)
-router.register(r'contract-set', contract.ContractSetViewSet)
+router.register(r'contract-set', contract.ContractSetViewSet, basename='cont-set')
 router.register(r'subs-sum', contract.SubsSummaryViewSet, basename='subs-sum')  # only list
 router.register(r'cont-sum', contract.ContSummaryViewSet, basename='cont-sum')  # only list
 router.register(r'contractor', contract.ContractorViewSet)
@@ -87,6 +88,7 @@ router.register(r'group', document.GroupViewSet)
 router.register(r'board', document.BoardViewSet)
 router.register(r'category', document.CategoryViewSet)
 router.register(r'suitcase', document.LawSuitCaseViewSet)
+router.register(r'all-suitcase', document.AllLawSuitCaseViewSet, basename='all-suitcase')
 router.register(r'post', document.PostViewSet)
 router.register(r'link', document.LinkViewSet)
 router.register(r'image', document.ImageViewSet)
