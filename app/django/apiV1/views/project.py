@@ -137,13 +137,6 @@ class ExecAmountToBudgetViewSet(viewsets.ModelViewSet):
                       )))
 
 
-class AllSiteViewSet(viewsets.ModelViewSet):
-    queryset = Site.objects.all()
-    serializer_class = AllSiteSerializer
-    pagination_class = PageNumberPaginationFiveHundred
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-
-
 class TotalSiteAreaViewSet(viewsets.ModelViewSet):
     serializer_class = TotalSiteAreaSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
@@ -164,6 +157,11 @@ class SiteViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+
+class AllSiteViewSet(SiteViewSet):
+    serializer_class = AllSiteSerializer
+    pagination_class = PageNumberPaginationFiveHundred
 
 
 class AllOwnerViewSet(viewsets.ModelViewSet):
