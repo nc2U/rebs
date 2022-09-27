@@ -8,6 +8,7 @@ import { dateFormat } from '@/utils/baseMixins'
 import { AlertSecondary } from '@/utils/cssMixins'
 import Editor from '@/components/TinyMce/index.vue'
 import DatePicker from '@/components/DatePicker/index.vue'
+import Multiselect from '@vueform/multiselect'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
@@ -71,7 +72,7 @@ const validated = ref(false)
 
 const documentStore = useDocument()
 const post = computed(() => documentStore.post)
-const allSuitCaseList = computed(() => documentStore.allSuitCaseList)
+const getSuitCase = computed(() => documentStore.getSuitCase)
 
 const formsCheck = computed(() => {
   if (post.value) {
@@ -195,7 +196,7 @@ onBeforeRouteLeave(() => {
   >
     <CRow class="mb-3">
       <CFormLabel for="title" class="col-md-2 col-form-label">제목</CFormLabel>
-      <CCol md="10" lg="8">
+      <CCol md="9">
         <CFormInput
           id="title"
           v-model="form.title"
@@ -209,17 +210,17 @@ onBeforeRouteLeave(() => {
       <CFormLabel for="inputPassword" class="col-sm-2 col-form-label">
         사건번호 (사건번호 등록)
       </CFormLabel>
-      <CCol md="2">
-        <CFormSelect id="category" v-model="form.lawsuit" required>
-          <option value="">사건번호 선택</option>
-          <option
-            v-for="suitcase in allSuitCaseList"
-            :key="suitcase.pk"
-            :value="suitcase.pk"
-          >
-            {{ suitcase.__str__ }}
-          </option>
-        </CFormSelect>
+      <CCol md="3">
+        <Multiselect
+          v-model="form.lawsuit"
+          :options="getSuitCase"
+          placeholder="사건번호 선택"
+          autocomplete="label"
+          :classes="{ search: 'form-control multiselect-search' }"
+          :attrs="form.lawsuit ? {} : { required: true }"
+          :add-option-on="['enter' | 'tab']"
+          searchable
+        />
       </CCol>
 
       <CFormLabel for="category" class="col-md-2 col-lg-1 col-form-label">
@@ -238,7 +239,11 @@ onBeforeRouteLeave(() => {
         문서 발행일자
       </CFormLabel>
       <CCol md="2">
-        <DatePicker v-model="form.execution_date" placeholder="문서 발행일자" />
+        <DatePicker
+          v-model="form.execution_date"
+          placeholder="문서 발행일자"
+          required
+        />
       </CCol>
     </CRow>
 

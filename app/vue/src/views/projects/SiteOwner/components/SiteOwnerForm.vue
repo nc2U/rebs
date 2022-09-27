@@ -30,7 +30,6 @@ const address2 = ref()
 
 const validated = ref(false)
 
-const pk = ref<number | null>(null)
 const form = reactive<SiteOwner>({
   pk: null,
   project: null,
