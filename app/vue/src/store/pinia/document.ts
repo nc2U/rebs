@@ -2,14 +2,24 @@ import api from '@/api'
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import { message, errorHandle } from '@/utils/helper'
-import { Category, AFile, Link, PatchPost, Post } from '@/store/types/document'
+import {
+  Group,
+  Board,
+  Category,
+  AFile,
+  Link,
+  PatchPost,
+  SuitCase,
+  SimpleSuitCase,
+  Post,
+} from '@/store/types/document'
 
 export type SuitCaseFilter = {
   page?: number
   is_com?: boolean
   project?: number
-  sort?: 1 | 2 | 3 | 4 | 5
-  level?: 0 | 1 | 2 | 3
+  sort?: '1' | '2' | '3' | '4' | '5'
+  level?: '0' | '1' | '2' | '3'
   court?: string
 }
 
@@ -27,7 +37,7 @@ export type PostFilter = {
 
 export const useDocument = defineStore('document', () => {
   // state & getters
-  const groupList = ref([])
+  const groupList = ref<Group[]>([])
 
   const fetchGroupList = () =>
     api
@@ -39,8 +49,8 @@ export const useDocument = defineStore('document', () => {
   const updateGroup = () => 3
   const deleteGroup = () => 4
 
-  const board = ref(null)
-  const boardList = ref([])
+  const board = ref<Board | null>(null)
+  const boardList = ref<Board[]>([])
 
   const fetchBoard = (pk: number) =>
     api
@@ -70,10 +80,17 @@ export const useDocument = defineStore('document', () => {
   const updateCategory = () => 3
   const deleteCategory = () => 4
 
-  const suitcase = ref()
-  const suitcaseList = ref()
-  const suitcaseCount = ref(0)
-  const allSuitCaseList = ref()
+  const suitcase = ref<SuitCase | null>(null)
+  const suitcaseList = ref<SuitCase[]>([])
+  const suitcaseCount = ref<number>(0)
+  const allSuitCaseList = ref<SimpleSuitCase[]>([])
+
+  const getSuitCase = computed(() =>
+    allSuitCaseList.value.map(s => ({
+      value: s.pk,
+      label: s.__str__,
+    })),
+  )
 
   const fetchSuitCase = () => 1
 
@@ -251,7 +268,7 @@ export const useDocument = defineStore('document', () => {
     suitcase,
     suitcaseList,
     suitcaseCount,
-    allSuitCaseList,
+    getSuitCase,
 
     fetchSuitCase,
     fetchSuitCaseList,

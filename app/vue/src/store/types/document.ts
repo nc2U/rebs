@@ -1,9 +1,46 @@
+export interface Group {
+  pk: number | null
+  name: string
+  manager: number[]
+}
+
+export interface Board {
+  pk: number | null
+  group: number | null
+  name: string
+  order: number | null
+  search_able: boolean
+  manager: number[]
+}
+
 export interface Category {
   pk: number | null
   board: number | null
   name: string
   parent: number | null
   order: number | null
+}
+
+export interface SuitCase {
+  pk: number | null
+  project: number | null
+  sort: '1' | '2' | '3' | '4' | '5'
+  level: '0' | '1' | '2' | '3'
+  related_case: number | null
+  court: string
+  other_agency: string
+  case_number: string
+  case_name: string
+  plaintiff: string
+  defendant: string
+  related_debtor: string
+  case_start_date: string
+  summary: string
+}
+
+export interface SimpleSuitCase {
+  pk: number | null
+  __str__: string
 }
 
 export interface Post {
