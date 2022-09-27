@@ -4,6 +4,15 @@ import { defineStore } from 'pinia'
 import { message, errorHandle } from '@/utils/helper'
 import { Category, AFile, Link, PatchPost, Post } from '@/store/types/document'
 
+type SuitCaseFilter = {
+  page?: number
+  is_com?: boolean
+  project?: number
+  sort?: 1 | 2 | 3 | 4 | 5
+  level?: 0 | 1 | 2 | 3
+  court?: string
+}
+
 export type PostFilter = {
   board?: number
   is_notice?: boolean
@@ -62,8 +71,47 @@ export const useDocument = defineStore('document', () => {
   const deleteCategory = () => 4
 
   const suitcase = ref()
+  const suitcaseList = ref()
+  const suitcaseCount = ref(0)
 
   const fetchSuitCase = () => 1
+
+  const fetchSuitCaseList = (payload: SuitCaseFilter) => {
+    const page = payload.page || 1
+    let queryStr = ''
+    if (payload.is_com) queryStr += `&is_com=${payload.is_com}`
+    if (payload.project) queryStr += `&project=${payload.project}`
+    if (payload.sort) queryStr += `&sort=${payload.sort}`
+    if (payload.level) queryStr += `&level=${payload.level}`
+    if (payload.court) queryStr += `&court=${payload.court}`
+
+    api
+      .get(`/suitcase/?page=${page}${queryStr}`)
+      .then(res => {
+        suitcaseList.value = res.data.results
+        suitcaseCount.value = res.data.count
+      })
+      .catch(err => errorHandle(err.response.data))
+  }
+
+  const fetchAllSuitCaseList = (payload: SuitCaseFilter) => {
+    const page = payload.page || 1
+    let queryStr = ''
+    if (payload.is_com) queryStr += `&is_com=${payload.is_com}`
+    if (payload.project) queryStr += `&project=${payload.project}`
+    if (payload.sort) queryStr += `&sort=${payload.sort}`
+    if (payload.level) queryStr += `&level=${payload.level}`
+    if (payload.court) queryStr += `&court=${payload.court}`
+
+    api
+      .get(`/all-suitcase/?page=${page}${queryStr}`)
+      .then(res => {
+        suitcaseList.value = res.data.results
+        suitcaseCount.value = res.data.count
+      })
+      .catch(err => errorHandle(err.response.data))
+  }
+
   const createSuitCase = () => 2
   const updateSuitCase = () => 3
   const deleteSuitCase = () => 4
@@ -203,8 +251,12 @@ export const useDocument = defineStore('document', () => {
     deleteCategory,
 
     suitcase,
+    suitcaseList,
+    suitcaseCount,
 
     fetchSuitCase,
+    fetchSuitCaseList,
+    fetchAllSuitCaseList,
     createSuitCase,
     updateSuitCase,
     deleteSuitCase,

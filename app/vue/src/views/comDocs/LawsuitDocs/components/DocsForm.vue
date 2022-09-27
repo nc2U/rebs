@@ -191,7 +191,7 @@ onBeforeRouteLeave(() => {
   >
     <CRow class="mb-3">
       <CFormLabel for="title" class="col-md-2 col-form-label">제목</CFormLabel>
-      <CCol md="8">
+      <CCol md="10" lg="8">
         <CFormInput
           id="title"
           v-model="form.title"
@@ -202,10 +202,22 @@ onBeforeRouteLeave(() => {
     </CRow>
 
     <CRow class="mb-3">
-      <CFormLabel for="category" class="col-sm-2 col-form-label">
+      <CFormLabel for="inputPassword" class="col-sm-2 col-form-label">
+        사건번호 (사건번호 등록)
+      </CFormLabel>
+      <CCol md="2">
+        <CFormSelect id="category" v-model="form.lawsuit" required>
+          <option value="">사건번호 선택</option>
+          <option v-for="cate in categoryList" :key="cate.pk" :value="cate.pk">
+            {{ cate.name }}
+          </option>
+        </CFormSelect>
+      </CCol>
+
+      <CFormLabel for="category" class="col-md-2 col-lg-1 col-form-label">
         카테고리
       </CFormLabel>
-      <CCol md="3">
+      <CCol md="2">
         <CFormSelect id="category" v-model="form.category" required>
           <option value="">카테고리 선택</option>
           <option v-for="cate in categoryList" :key="cate.pk" :value="cate.pk">
@@ -214,14 +226,11 @@ onBeforeRouteLeave(() => {
         </CFormSelect>
       </CCol>
 
-      <CFormLabel for="inputPassword" class="col-sm-2 col-form-label">
-        문서 시행일자
+      <CFormLabel for="inputPassword" class="col-md-2 col-lg-1 col-form-label">
+        문서 발행일자
       </CFormLabel>
-      <CCol md="3">
-        <DatePicker v-model="form.execution_date" placeholder="문서 시행일자" />
-      </CCol>
-      <CCol class="pt-2">
-        <CFormSwitch id="is_notice" v-model="form.is_notice" label="공지여부" />
+      <CCol md="2">
+        <DatePicker v-model="form.execution_date" placeholder="문서 발행일자" />
       </CCol>
     </CRow>
 
