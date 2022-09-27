@@ -31,11 +31,19 @@ class CategoryViewSet(viewsets.ModelViewSet):
     filterset_fields = ('board',)
 
 
+class LawSuitCaseFilterSet(FilterSet):
+    is_com = BooleanFilter(field_name='project', lookup_expr='isnull', label='본사')
+
+    class Meta:
+        model = LawsuitCase
+        fields = ('is_com', 'project', 'sort', 'level', 'court')
+
+
 class LawSuitCaseViewSet(viewsets.ModelViewSet):
     queryset = LawsuitCase.objects.all()
     serializer_class = LawSuitCaseSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-    filterset_fields = ('project', 'sort', 'level', 'court')
+    filterset_class = LawSuitCaseFilterSet
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
