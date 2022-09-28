@@ -9,6 +9,12 @@ const props = defineProps({
 
 const sortName = computed(() => props.post.proj_name || '본사')
 const sortColor = computed(() => (props.post.project ? 'success' : 'info'))
+
+const courtName = (court: string) =>
+  court
+    .replace('지방법원', '지법')
+    .replace('고등법원', '고법')
+    .replace('대법원', '대법')
 </script>
 
 <template>
@@ -18,7 +24,7 @@ const sortColor = computed(() => (props.post.project ? 'success' : 'info'))
       <CBadge :color="sortColor">{{ sortName }}</CBadge>
     </CTableDataCell>
     <CTableDataCell class="text-left">
-      {{ cutString(post.lawsuit_name || '', 23) }}
+      {{ cutString(courtName(post.lawsuit_name) || '', 23) }}
     </CTableDataCell>
     <CTableDataCell class="text-left">
       <router-link

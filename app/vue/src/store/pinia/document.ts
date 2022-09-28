@@ -88,7 +88,10 @@ export const useDocument = defineStore('document', () => {
   const getSuitCase = computed(() =>
     allSuitCaseList.value.map(s => ({
       value: s.pk,
-      label: s.__str__,
+      label: s.__str__
+        .replace('지방법원', '지법')
+        .replace('고등법원', '고법')
+        .replace('대법원', '대법'),
     })),
   )
 
