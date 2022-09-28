@@ -315,18 +315,14 @@ const company_docs = {
         {
           component: 'CNavItem',
           name: '본사 소송문서',
-          badge: {
-            color: 'info',
-            text: 'building..',
-          },
           to: '/docs/lawsuit/posts',
         },
         {
           component: 'CNavItem',
           name: '본사 소송사건',
           badge: {
-            color: 'warning',
-            text: 'link',
+            color: 'info',
+            text: 'building..',
           },
           to: '/docs/lawsuit/case',
         },
