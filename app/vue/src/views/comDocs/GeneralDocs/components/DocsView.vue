@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount, watch } from 'vue'
 import { timeFormat } from '@/utils/baseMixins'
-import { PostFilter, useDocument } from '@/store/pinia/document'
+import { useDocument } from '@/store/pinia/document'
 import { onBeforeRouteLeave, useRoute } from 'vue-router'
 
 const props = defineProps({ category: { type: Number, default: undefined } })
@@ -17,8 +17,6 @@ const sortName = computed(() => post.value?.proj_name || '본사')
 const fetchPost = (pk: number) => documentStore.fetchPost(pk)
 const fetchLink = (pk: number) => documentStore.fetchLink(pk)
 const fetchFile = (pk: number) => documentStore.fetchFile(pk)
-const fetchPostList = (payload: PostFilter) =>
-  documentStore.fetchPostList(payload)
 
 const toPrint = () => alert('준비중!')
 const toSocial = () => alert('준비중!')
@@ -51,10 +49,10 @@ watch(route, val => {
 onBeforeMount(() => {
   if (route.params.postId) fetchPost(Number(route.params.postId))
 
-  if (post.value)
-    emit('post-hit', { pk: post.value?.pk, hit: post.value.hit + 1 })
-  const page = Number(route.query.page) || 1
-  fetchPostList({ board: 1, page, category: props.category })
+  setTimeout(() => {
+    if (post.value)
+      emit('post-hit', { pk: post.value.pk, hit: post.value.hit + 1 })
+  }, 500)
 })
 
 onBeforeRouteLeave(() => {
