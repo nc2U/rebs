@@ -42,6 +42,17 @@
   --dp-menu-border-color: #B1B7C1 !important;
 }
 
+// tinymce
+.dark-theme {
+  .tox-toolbar__primary {
+    background-color: #24252f !important;
+  }
+
+  body.mce-content-body {
+    background-color: #2f303a !important;
+  }
+}
+
 .btn-link {
   outline: none !important;
   box-shadow: none !important;
