@@ -74,6 +74,8 @@ const documentStore = useDocument()
 const post = computed(() => documentStore.post)
 const getSuitCase = computed(() => documentStore.getSuitCase)
 
+const attach = ref(true)
+
 const formsCheck = computed(() => {
   if (post.value) {
     const a = form.is_notice === post.value.is_notice
@@ -82,14 +84,15 @@ const formsCheck = computed(() => {
     const d = form.title === post.value.title
     const e = form.execution_date === post.value.execution_date
     const f = form.content === post.value.content
-    // const g = form.oldLinks === []
-    // const h = form.oldFiles === []
-    // const i = form.newLinks === []
-    // const j = form.newFiles === []
 
-    return a && b && c && d && e && f // && g && h && i && j
+    return a && b && c && d && e && f && attach.value
   } else return false
 })
+
+const enableStore = (event: Event) => {
+  const el = event.target as HTMLInputElement
+  attach.value = !el.value
+}
 
 const sortName = computed(() =>
   post.value && post.value.project ? post.value.proj_name : '본사',
@@ -297,8 +300,7 @@ onBeforeRouteLeave(() => {
                 :id="`link-${lNum}`"
                 v-model="form.newLinks[lNum]"
                 placeholder="파일 링크"
-                aria-label="File Link"
-                aria-describedby="basic-addon1"
+                @input="enableStore"
               />
               <CInputGroupText id="basic-addon1" @click="ctlLinkNum(lNum)">
                 <v-icon
@@ -370,8 +372,7 @@ onBeforeRouteLeave(() => {
                 :id="`file-${fNum}`"
                 v-model="form.newFiles[fNum]"
                 type="file"
-                aria-label="File"
-                aria-describedby="basic-addon2"
+                @input="enableStore"
               />
               <CInputGroupText id="basic-addon2" @click="ctlFileNum(fNum)">
                 <v-icon
