@@ -19,6 +19,7 @@ const caseFilter = reactive<PostFilter>({
   project: '',
   ordering: '',
   search: '',
+  page: 1,
 })
 
 const listFiltering = (payload: PostFilter) => {
@@ -34,7 +35,10 @@ const selectCate = (cate: number) => {
   listFiltering(caseFilter)
 }
 
-const pageSelect = (page: number) => console.log(page)
+const pageSelect = (page: number) => {
+  caseFilter.page = page
+  listFiltering(caseFilter)
+}
 
 const documentStore = useDocument()
 const postList = computed(() => documentStore.postList)
@@ -71,7 +75,11 @@ const fileHit = (payload: AFile) => patchFile(payload)
 
 onBeforeMount(() => {
   fetchCategoryList(2)
-  fetchPostList({ board: 2 })
+  fetchPostList({
+    board: 2,
+    page: caseFilter.page,
+    category: caseFilter.category,
+  })
 })
 </script>
 
@@ -89,7 +97,11 @@ onBeforeMount(() => {
           @select-cate="selectCate"
         />
 
-        <DocsList :post-list="postList" @page-select="pageSelect" />
+        <DocsList
+          :page="caseFilter.page"
+          :post-list="postList"
+          @page-select="pageSelect"
+        />
       </div>
 
       <div v-else-if="$route.name.includes('보기')">

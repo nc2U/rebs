@@ -4,6 +4,7 @@ import Docs from './Docs.vue'
 import Pagination from '@/components/Pagination'
 
 defineProps({
+  page: { type: Number, default: 1 },
   postList: { type: Array, default: () => [] },
 })
 
@@ -47,7 +48,7 @@ const pageSelect = (page: number) => emit('page-select', page)
   <CRow class="flex-lg-row flex-column-reverse">
     <CCol lg="8">
       <Pagination
-        :active-page="1"
+        :active-page="page"
         :limit="8"
         :pages="postPages(10)"
         class="mt-3"

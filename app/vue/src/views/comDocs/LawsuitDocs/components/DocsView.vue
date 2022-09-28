@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount, watch } from 'vue'
+import { computed, onBeforeMount, onMounted, watch } from 'vue'
 import { timeFormat } from '@/utils/baseMixins'
 import { PostFilter, useDocument } from '@/store/pinia/document'
 import { onBeforeRouteLeave, useRoute } from 'vue-router'
@@ -51,10 +51,10 @@ watch(route, val => {
 onBeforeMount(() => {
   if (route.params.postId) fetchPost(Number(route.params.postId))
 
-  if (post.value)
-    emit('post-hit', { pk: post.value?.pk, hit: post.value.hit + 1 })
-  const page = Number(route.query.page) || 1
-  fetchPostList({ board: 2, page, category: props.category })
+  setTimeout(() => {
+    if (post.value)
+      emit('post-hit', { pk: post.value.pk, hit: post.value.hit + 1 })
+  }, 500)
 })
 
 onBeforeRouteLeave(() => {

@@ -17,6 +17,7 @@ const postFilter = reactive<PostFilter>({
   project: '',
   ordering: '',
   search: '',
+  page: 1,
 })
 
 const docsFilter = (payload: PostFilter) => {
@@ -68,7 +69,11 @@ const fileHit = (payload: AFile) => patchFile(payload)
 
 onBeforeMount(() => {
   fetchCategoryList(1)
-  fetchPostList({ board: 1 })
+  fetchPostList({
+    board: 1,
+    page: postFilter.page,
+    category: postFilter.category,
+  })
 })
 </script>
 
@@ -84,7 +89,11 @@ onBeforeMount(() => {
           @select-cate="selectCate"
         />
 
-        <DocsList :post-list="postList" @page-select="pageSelect" />
+        <DocsList
+          :page="postFilter.page"
+          :post-list="postList"
+          @page-select="pageSelect"
+        />
       </div>
 
       <div v-else-if="$route.name.includes('보기')">
