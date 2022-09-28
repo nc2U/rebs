@@ -185,7 +185,9 @@ export const useDocument = defineStore('document', () => {
   const createPost = (payload: Post) =>
     api
       .post(`/post/`, payload)
-      .then(() => message())
+      .then(res =>
+        fetchPostList({ board: res.data.board }).then(() => message()),
+      )
       .catch(err => errorHandle(err.response.data))
 
   const updatePost = (payload: Post) =>
