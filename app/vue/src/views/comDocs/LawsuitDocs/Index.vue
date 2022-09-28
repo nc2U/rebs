@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeMount, reactive } from 'vue'
+import { computed, onBeforeMount, onBeforeUpdate, reactive } from 'vue'
 import { navMenu } from '@/views/comDocs/_menu/headermixin'
 import { useRouter } from 'vue-router'
 import { PostFilter, useDocument } from '@/store/pinia/document'
@@ -75,6 +75,10 @@ const fileHit = (payload: AFile) => patchFile(payload)
 
 onBeforeMount(() => {
   fetchCategoryList(2)
+  fetchPostList({ board: 2 })
+})
+
+onBeforeUpdate(() => {
   fetchPostList({
     board: 2,
     page: caseFilter.page,
