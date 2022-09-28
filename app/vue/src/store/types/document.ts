@@ -65,7 +65,7 @@ export interface Post {
   password: string
   links?: Link[]
   images?: Image[]
-  files?: File[]
+  files?: AFile[]
   comments?: number[]
   user?: number | null
   soft_delete?: string | null
@@ -101,7 +101,7 @@ export interface AFile {
 export type Attatches = {
   oldLinks: Link[]
   oldImages?: Image[]
-  oldFiles: File[]
+  oldFiles: AFile[]
   newLinks: Link[]
   newImages?: Image[]
   newFiles: File[]
