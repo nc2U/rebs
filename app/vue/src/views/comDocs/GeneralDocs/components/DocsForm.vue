@@ -90,6 +90,7 @@ const formsCheck = computed(() => {
 const enableStore = (event: Event) => {
   const el = event.target as HTMLInputElement
   attach.value = !el.value
+  console.log(el, el.value)
 }
 
 const sortName = computed(() =>
@@ -256,8 +257,8 @@ onBeforeRouteLeave(() => {
                   <CFormCheck
                     :id="`del-link-${link.pk}`"
                     v-model="form.oldLinks[i].del"
-                    :value="false"
                     label="삭제"
+                    @input="enableStore"
                   />
                 </CInputGroupText>
               </CInputGroup>
@@ -318,8 +319,7 @@ onBeforeRouteLeave(() => {
                         v-model="form.oldFiles[i].newFile"
                         size="sm"
                         type="file"
-                        aria-label="File"
-                        aria-describedby="basic-addon2"
+                        @input="enableStore"
                       />
                       <CInputGroupText id="basic-addon2" class="py-0">
                         <CFormCheck
@@ -327,6 +327,8 @@ onBeforeRouteLeave(() => {
                           v-model="form.oldFiles[i].del"
                           :value="false"
                           label="삭제"
+                          :disabled="!!form.oldFiles[i].newFile"
+                          @input="enableStore"
                         />
                       </CInputGroupText>
                     </CInputGroup>
