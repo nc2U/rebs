@@ -17,7 +17,7 @@ const browse = () => {
   if (!!fu) fu.click()
 }
 
-const change = (event: { target: { files: File[] } }) => {
+const loadFile = (event: { target: { files: File[] } }) => {
   const img = event.target.files[0]
   emit('file-upload', img)
   let reader = new FileReader()
@@ -52,7 +52,7 @@ const delModalImg = () => (modalImg.value = null)
         class="form-control"
         accept="image/*"
         style="display: none"
-        @change="change"
+        @change="loadFile"
       />
       <CRow class="relative inline-block">
         <CCol>

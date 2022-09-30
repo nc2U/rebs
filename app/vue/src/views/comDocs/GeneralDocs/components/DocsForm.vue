@@ -90,7 +90,12 @@ const formsCheck = computed(() => {
 const enableStore = (event: Event) => {
   const el = event.target as HTMLInputElement
   attach.value = !el.value
-  console.log(el, el.value)
+  console.log(el.value.split('\\')[-1])
+}
+
+const loadFile = (event: { target: { files: File[] } }) => {
+  const file = event.target.files[0]
+  console.log(file)
 }
 
 const sortName = computed(() =>
@@ -320,6 +325,7 @@ onBeforeRouteLeave(() => {
                         size="sm"
                         type="file"
                         @input="enableStore"
+                        @change="loadFile"
                       />
                       <CInputGroupText id="basic-addon2" class="py-0">
                         <CFormCheck
@@ -351,6 +357,7 @@ onBeforeRouteLeave(() => {
                 v-model="form.newFiles[fNum]"
                 type="file"
                 @input="enableStore"
+                @change="loadFile"
               />
               <CInputGroupText id="basic-addon2" @click="ctlFileNum(fNum)">
                 <v-icon
