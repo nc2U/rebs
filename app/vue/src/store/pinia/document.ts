@@ -182,25 +182,33 @@ export const useDocument = defineStore('document', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const createPost = (payload: Post) =>
-    api
+  const createPost = (payload: FormData) => {
+    api.defaults.headers.post['Content-Type'] = 'multipart/form-data'
+    return api
       .post(`/post/`, payload)
       .then(res =>
         fetchPostList({ board: res.data.board }).then(() => message()),
       )
       .catch(err => errorHandle(err.response.data))
+  }
 
-  const updatePost = (payload: Post) =>
-    api
-      .put(`/post/${payload.pk}/`, payload)
+  const updatePost = (payload: { pk: number } & FormData) => {
+    api.defaults.headers.post['Content-Type'] = 'multipart/form-data'
+    const { pk, ...form } = payload
+    return api
+      .put(`/post/${pk}/`, form)
       .then(() => message())
       .catch(err => errorHandle(err.response.data))
+  }
 
-  const patchPost = (payload: PatchPost) =>
-    api
-      .patch(`/post/${payload.pk}/`, payload)
+  const patchPost = (payload: { pk: number } & FormData) => {
+    api.defaults.headers.post['Content-Type'] = 'multipart/form-data'
+    const { pk, ...form } = payload
+    return api
+      .patch(`/post/${pk}/`, form)
       .then(res => fetchPost(res.data.pk))
       .catch(err => errorHandle(err.response.data))
+  }
 
   const deletePost = () => 4
 

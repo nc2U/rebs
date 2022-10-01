@@ -85,7 +85,7 @@ export interface Link {
 export interface Image {
   pk: null | number
   post: number
-  image: string
+  image: string | File
   del?: boolean
 }
 
@@ -93,7 +93,7 @@ export interface AFile {
   pk: null | number
   post?: number
   file: string
-  newFile?: string
+  newFile?: string | File
   hit: number
   del?: boolean
 }
@@ -104,7 +104,7 @@ export type Attatches = {
   oldFiles: AFile[]
   newLinks: Link[]
   newImages?: Image[]
-  newFiles: File[]
+  newFiles: string[] | File[]
 }
 
 export interface PatchPost {
