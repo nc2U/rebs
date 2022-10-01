@@ -182,33 +182,31 @@ export const useDocument = defineStore('document', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const createPost = (payload: FormData) => {
-    api.defaults.headers.post['Content-Type'] = 'multipart/form-data'
-    return api
-      .post(`/post/`, payload)
+  const createPost = (payload: FormData) =>
+    api
+      .post(`/post/`, payload, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      })
       .then(res =>
         fetchPostList({ board: res.data.board }).then(() => message()),
       )
       .catch(err => errorHandle(err.response.data))
-  }
 
-  const updatePost = (payload: { pk: number } & FormData) => {
-    api.defaults.headers.post['Content-Type'] = 'multipart/form-data'
-    const { pk, ...form } = payload
-    return api
-      .put(`/post/${pk}/`, form)
+  const updatePost = (payload: { pk: number; form: FormData }) =>
+    api
+      .put(`/post/${payload.pk}/`, payload.form, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      })
       .then(() => message())
       .catch(err => errorHandle(err.response.data))
-  }
 
-  const patchPost = (payload: { pk: number } & FormData) => {
-    api.defaults.headers.post['Content-Type'] = 'multipart/form-data'
-    const { pk, ...form } = payload
-    return api
-      .patch(`/post/${pk}/`, form)
+  const patchPost = (payload: { pk: number; form: FormData }) =>
+    api
+      .patch(`/post/${payload.pk}/`, payload.form, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      })
       .then(res => fetchPost(res.data.pk))
       .catch(err => errorHandle(err.response.data))
-  }
 
   const deletePost = () => 4
 

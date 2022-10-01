@@ -43,7 +43,17 @@ export interface SimpleSuitCase {
   __str__: string
 }
 
-export interface Post {
+export type Post = {
+  [key: string]:
+    | undefined
+    | number
+    | number[]
+    | null
+    | string
+    | boolean
+    | Link[]
+    | Image[]
+    | AFile[]
   pk: number | null
   board: number | null
   is_notice: boolean
