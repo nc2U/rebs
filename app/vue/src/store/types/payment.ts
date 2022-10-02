@@ -16,7 +16,7 @@ export interface PayOrder {
   __str__?: string
   pay_sort?: string
   pay_code?: number
-  pay_time: number
+  pay_time?: number
   pay_ratio?: string | null
   pay_name?: string
   alias_name?: string

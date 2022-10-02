@@ -21,7 +21,7 @@ const contractList = ref()
 defineExpose({ listControl, contractList })
 
 const ctor_ids = ref([])
-const print_data = reactive({
+const printData = reactive({
   is_bill_issue: false,
   project: null as null | number,
   pub_date: dateFormat(new Date()),
@@ -87,14 +87,15 @@ onBeforeMount(() => {
 
 watch(project, val => {
   if (val) {
+    printData.project = val
     fetchSalesBillIssue(val)
-    print_data.project = val
   }
 })
 
 watch(billIssue, val => {
   if (val) {
-    print_data.is_bill_issue = !!val
+    printData.is_bill_issue = !!val
+    printData.project = val.project
     if (val.now_payment_order) fetchPayOrder(val.now_payment_order)
   }
 })
@@ -149,7 +150,7 @@ const allUnChecked = () => (ctor_ids.value = [])
 
 const getNowOrder = (orderPk: number) => fetchPayOrder(orderPk)
 
-const setPubDate = (payload: string) => (print_data.pub_date = payload)
+const setPubDate = (payload: string) => (printData.pub_date = payload)
 
 const onSubmit = (payload: SalesBillIssue & { now_due_date: string }) => {
   console.log(payload)
@@ -188,7 +189,7 @@ const onSubmit = (payload: SalesBillIssue & { now_due_date: string }) => {
         :now-order-name="payOrderName"
         @list-filtering="listFiltering"
       />
-      <DownloadButton :print-data="print_data" :contractors="ctor_ids" />
+      <DownloadButton :print-data="printData" :contractors="ctor_ids" />
       <ContractList
         ref="contractList"
         :now-order="payOrderTime"
