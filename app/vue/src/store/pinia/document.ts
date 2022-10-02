@@ -202,9 +202,7 @@ export const useDocument = defineStore('document', () => {
 
   const patchPost = (payload: PatchPost) =>
     api
-      .patch(`/post/${payload.pk}/`, payload, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      })
+      .patch(`/post/${payload.pk}/`, payload)
       .then(res => fetchPost(res.data.pk))
       .catch(err => errorHandle(err.response.data))
 
