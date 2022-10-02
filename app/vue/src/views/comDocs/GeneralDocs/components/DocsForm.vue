@@ -90,12 +90,14 @@ const formsCheck = computed(() => {
 const enableStore = (event: Event) => {
   const el = event.target as HTMLInputElement
   attach.value = !el.value
-  console.log(el.value.split('\\')[-1])
 }
 
-const loadFile = (event: { target: { files: File[] } }) => {
-  const file = event.target.files[0]
-  console.log(file)
+const loadFile = (event: { target: { id: string; files: File[] } }) => {
+  const el = event.target
+  const arr = el.id.split('-')
+  const index = Number(arr[arr.length - 1])
+  form.newFiles[index] = event.target.files[0] // el.files[0].name
+  console.log(form.newFiles, el.files[0].name)
 }
 
 const sortName = computed(() =>

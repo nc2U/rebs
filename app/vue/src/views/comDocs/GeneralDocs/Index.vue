@@ -2,7 +2,7 @@
 import { reactive, computed, onBeforeMount, onBeforeUpdate } from 'vue'
 import { useRouter } from 'vue-router'
 import { useDocument, PostFilter } from '@/store/pinia/document'
-import { AFile, Attatches, Link, PatchPost, Post } from '@/store/types/document'
+import { AFile, Attatches, Link, Post, PatchPost } from '@/store/types/document'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from './components/ListController.vue'
 import CategoryTabs from './components/CategoryTabs.vue'
@@ -51,16 +51,27 @@ const patchFile = (payload: AFile) => documentStore.patchFile(payload)
 
 const router = useRouter()
 const onSubmit = (payload: Post & Attatches) => {
-  if (payload.pk) {
-    updatePost(payload)
-    router.replace({
-      name: '본사 일반문서 - 보기',
-      params: { postId: payload.pk },
-    })
-  } else {
-    createPost(payload)
-    router.replace({ name: '본사 일반문서' })
-  }
+  const { pk, ...formData } = payload
+
+  // const form = new FormData()
+  //
+  // for (const key in formData) {
+  //   form.append(key, formData[key] as string | Blob)
+  // }
+
+  // console.log(form)
+  console.log({ pk }, { form: formData })
+
+  // if (payload.pk) {
+  //   updatePost(payload)
+  //   router.replace({
+  //     name: '본사 일반문서 - 보기',
+  //     params: { postId: payload.pk },
+  //   })
+  // } else {
+  //   createPost(payload)
+  //   router.replace({ name: '본사 일반문서' })
+  // }
 }
 
 const postHit = (payload: PatchPost) => patchPost(payload)

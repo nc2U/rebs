@@ -182,7 +182,7 @@ export const useDocument = defineStore('document', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const createPost = (payload: FormData) =>
+  const createPost = (payload: Post) =>
     api
       .post(`/post/`, payload, {
         headers: { 'Content-Type': 'multipart/form-data' },
@@ -192,17 +192,17 @@ export const useDocument = defineStore('document', () => {
       )
       .catch(err => errorHandle(err.response.data))
 
-  const updatePost = (payload: { pk: number; form: FormData }) =>
+  const updatePost = (payload: Post) =>
     api
-      .put(`/post/${payload.pk}/`, payload.form, {
+      .put(`/post/${payload.pk}/`, payload, {
         headers: { 'Content-Type': 'multipart/form-data' },
       })
       .then(() => message())
       .catch(err => errorHandle(err.response.data))
 
-  const patchPost = (payload: { pk: number; form: FormData }) =>
+  const patchPost = (payload: PatchPost) =>
     api
-      .patch(`/post/${payload.pk}/`, payload.form, {
+      .patch(`/post/${payload.pk}/`, payload, {
         headers: { 'Content-Type': 'multipart/form-data' },
       })
       .then(res => fetchPost(res.data.pk))
