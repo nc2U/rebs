@@ -9,6 +9,7 @@ import { AlertSecondary } from '@/utils/cssMixins'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
+import { CFormTextarea } from '@coreui/vue/dist/components/form'
 
 defineProps({ categoryList: { type: Object, default: null } })
 
