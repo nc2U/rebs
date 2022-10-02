@@ -26,6 +26,7 @@
     "@fullcalendar/timegrid": "^5.11.3",
     "@fullcalendar/vue3": "^5.11.2",
     "@mdi/font": "5.9.55",
+    "@toast-ui/vue-editor": "^3.2.2",
     "@vueform/multiselect": "^2.5.2",
     "@vuepic/vue-datepicker": "^3.4.8",
     "@vueuse/core": "^9.2.0",
