@@ -28,3 +28,14 @@ const toolbarOptions = [
 <template>
   <QuillEditor theme="snow" :toolbar="toolbarOptions" />
 </template>
+
+<style lang="scss">
+.ql-container {
+  box-sizing: border-box;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 15px;
+  height: 250px;
+  margin: 0px;
+  position: relative;
+}
+</style>
