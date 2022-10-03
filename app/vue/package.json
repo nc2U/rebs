@@ -29,7 +29,6 @@
     "@toast-ui/vue-editor": "^3.2.2",
     "@vueform/multiselect": "^2.5.2",
     "@vuepic/vue-datepicker": "^3.4.8",
-    "@vueup/vue-quill": "^1.0.0-beta.10",
     "@vueuse/core": "^9.2.0",
     "axios": "^0.24.0",
     "buffer": "^6.0.3",
