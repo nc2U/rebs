@@ -6,10 +6,10 @@ import { Post, Attatches } from '@/store/types/document'
 import { write_company_docs } from '@/utils/pageAuth'
 import { dateFormat } from '@/utils/baseMixins'
 import { AlertSecondary } from '@/utils/cssMixins'
+import ToastEditor from '@/components/ToastEditor/index.vue'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
-import { CFormTextarea } from '@coreui/vue/dist/components/form'
 
 defineProps({ categoryList: { type: Object, default: null } })
 
@@ -239,11 +239,7 @@ onBeforeRouteLeave(() => {
     <CRow class="mb-3">
       <CFormLabel for="title" class="col-md-2 col-form-label">내용</CFormLabel>
       <CCol md="10">
-        <CFormTextarea
-          v-model="form.content"
-          placeholder="본문 내용"
-          rows="20"
-        />
+        <ToastEditor v-model="form.content" placeholder="본문 내용" />
       </CCol>
     </CRow>
 
