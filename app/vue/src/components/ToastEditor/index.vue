@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
+import { useStore } from 'vuex'
 import Editor from '@toast-ui/editor'
 import '@toast-ui/editor/dist/toastui-editor.css'
+import '@toast-ui/editor/dist/theme/toastui-editor-dark.css'
 
 defineProps({
   modelValue: {
@@ -14,6 +16,22 @@ const emit = defineEmits(['update:modelValue'])
 
 const editor = ref()
 
+const store = useStore()
+const theme = computed(() => store.state.theme)
+
+watch(theme, () => {
+  const e: Editor = new Editor({
+    el: editor.value,
+    height: '380px',
+    initialEditType: 'wysiwyg',
+    previewStyle: 'vertical',
+    events: {
+      change: () => emit('update:modelValue', e.getMarkdown()),
+    },
+    theme: theme.value,
+  })
+})
+
 onMounted(() => {
   const e: Editor = new Editor({
     el: editor.value,
@@ -23,6 +41,7 @@ onMounted(() => {
     events: {
       change: () => emit('update:modelValue', e.getMarkdown()),
     },
+    theme: theme.value,
   })
 })
 </script>
@@ -34,39 +53,33 @@ onMounted(() => {
 </template>
 
 <style lang="scss">
+.toastui-editor-contents {
+  font-size: 15px;
+}
+
+.toastui-editor-dark .toastui-editor-defaultUI-toolbar {
+  background-color: #181924;
+  border-bottom-color: #303238;
+}
+
 .dark-theme {
-  .toastui-editor-defaultUI-toolbar {
-    background: #24252f;
+  .toastui-editor-dark .toastui-editor-md-container,
+  .toastui-editor-dark .toastui-editor-ww-container {
+    background-color: #2f303a;
   }
 
-  .toastui-editor-defaultUI-toolbar button:hover {
-    background-color: #353641;
+  .toastui-editor-dark .toastui-editor-main .toastui-editor-md-splitter {
+    background-color: #393b42;
   }
 
-  .toastui-editor-popup {
-    background: #24252f;
+  .toastui-editor-dark .toastui-editor-mode-switch {
+    border-top-color: #393b42;
+    background-color: #24252f;
   }
 
-  .toastui-editor-popup li:hover {
-    background: #353641;
-  }
-
-  .toastui-editor-contents {
-    background-color: #353641;
-    //color: #ffffff !important;
-  }
-
-  .toastui-editor-mode-switch {
-    background-color: #30313e;
-
-    .active {
-      background-color: #353641 !important;
-      color: #ffffff;
-    }
-
-    .tab-item {
-      background-color: #24252f !important;
-    }
+  .toastui-editor-dark .toastui-editor-mode-switch .tab-item.active {
+    border-top-color: #2f303a;
+    background-color: #2f303a;
   }
 }
 </style>
