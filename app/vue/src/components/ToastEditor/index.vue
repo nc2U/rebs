@@ -48,13 +48,13 @@ onMounted(() => {
 
 <template>
   <div>
-    <div ref="editor" class="text-body" />
+    <div ref="editor" />
   </div>
 </template>
 
 <style lang="scss">
 .toastui-editor-contents {
-  font-size: 15px;
+  font-size: 1em;
 }
 
 .toastui-editor-dark .toastui-editor-defaultUI-toolbar {
@@ -62,24 +62,22 @@ onMounted(() => {
   border-bottom-color: #303238;
 }
 
-.dark-theme {
-  .toastui-editor-dark .toastui-editor-md-container,
-  .toastui-editor-dark .toastui-editor-ww-container {
-    background-color: #2f303a;
-  }
+.toastui-editor-dark .toastui-editor-md-container,
+.toastui-editor-dark .toastui-editor-ww-container {
+  background-color: #2f303a;
+}
 
-  .toastui-editor-dark .toastui-editor-main .toastui-editor-md-splitter {
-    background-color: #393b42;
-  }
+.toastui-editor-dark .toastui-editor-main .toastui-editor-md-splitter {
+  background-color: #393b42;
+}
 
-  .toastui-editor-dark .toastui-editor-mode-switch {
-    border-top-color: #393b42;
-    background-color: #24252f;
-  }
+.toastui-editor-dark .toastui-editor-mode-switch {
+  border-top-color: #393b42;
+  background-color: #24252f;
+}
 
-  .toastui-editor-dark .toastui-editor-mode-switch .tab-item.active {
-    border-top-color: #2f303a;
-    background-color: #2f303a;
-  }
+.toastui-editor-dark .toastui-editor-mode-switch .tab-item.active {
+  border-top-color: #2f303a;
+  background-color: #2f303a;
 }
 </style>
