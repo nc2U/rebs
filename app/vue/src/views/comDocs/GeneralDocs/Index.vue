@@ -43,8 +43,10 @@ const fetchPostList = (payload: PostFilter) =>
 const fetchCategoryList = (board: number) =>
   documentStore.fetchCategoryList(board)
 
-const createPost = (payload: Post) => documentStore.createPost(payload)
-const updatePost = (payload: Post) => documentStore.updatePost(payload)
+const createPost = (payload: { form: Post }) =>
+  documentStore.createPost(payload)
+const updatePost = (payload: { pk: number; form: Post }) =>
+  documentStore.updatePost(payload)
 const patchPost = (payload: PatchPost) => documentStore.patchPost(payload)
 const patchLink = (payload: Link) => documentStore.patchLink(payload)
 const patchFile = (payload: AFile) => documentStore.patchFile(payload)
@@ -53,25 +55,22 @@ const router = useRouter()
 const onSubmit = (payload: Post & Attatches) => {
   const { pk, ...formData } = payload
 
-  // const form = new FormData()
-  //
-  // for (const key in formData) {
-  //   form.append(key, formData[key] as string | Blob)
-  // }
+  const form = new FormData()
 
-  // console.log(form)
-  console.log({ pk }, { form: formData })
+  for (const key in formData) {
+    form.append(key, formData[key] as string | Blob)
+  }
 
-  // if (payload.pk) {
-  //   updatePost(payload)
-  //   router.replace({
-  //     name: '본사 일반문서 - 보기',
-  //     params: { postId: payload.pk },
-  //   })
-  // } else {
-  //   createPost(payload)
-  //   router.replace({ name: '본사 일반문서' })
-  // }
+  if (pk) {
+    updatePost({ pk, form: formData })
+    router.replace({
+      name: '본사 일반문서 - 보기',
+      params: { postId: payload.pk },
+    })
+  } else {
+    createPost({ form: formData })
+    router.replace({ name: '본사 일반문서' })
+  }
 }
 
 const postHit = (payload: PatchPost) => patchPost(payload)
