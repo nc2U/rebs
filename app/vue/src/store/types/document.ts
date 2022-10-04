@@ -57,11 +57,11 @@ export type Post = {
   pk?: number | null
   board: number | null
   is_notice: boolean
-  project: number | null
+  project: number | null | string
   proj_name?: string | null
   category: number | null
   cate_name?: string | null
-  lawsuit: number | null
+  lawsuit: number | null | string
   lawsuit_name?: string | null
   title: string
   execution_date: string | null
