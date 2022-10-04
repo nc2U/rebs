@@ -7,6 +7,7 @@ import { write_company_docs } from '@/utils/pageAuth'
 import { dateFormat } from '@/utils/baseMixins'
 import { AlertSecondary } from '@/utils/cssMixins'
 import ToastEditor from '@/components/ToastEditor/index.vue'
+import FileUpload from '@/components/FileUpload.vue'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
@@ -90,14 +91,6 @@ const formsCheck = computed(() => {
 const enableStore = (event: Event) => {
   const el = event.target as HTMLInputElement
   attach.value = !el.value
-}
-
-const loadFile = (event: { target: { id: string; files: File[] } }) => {
-  const el = event.target
-  const arr = el.id.split('-')
-  const index = Number(arr[arr.length - 1])
-  form.newFiles[index] = event.target.files[0] // el.files[0].name
-  console.log(form.newFiles, el.files[0].name)
 }
 
 const sortName = computed(() =>
@@ -322,13 +315,12 @@ onBeforeRouteLeave(() => {
                   <CCol>
                     <CInputGroup>
                       변경 : &nbsp;
-                      <CFormInput
+                      <FileUpload
                         :id="`post-file-${file.pk}`"
                         v-model="form.oldFiles[i].newFile"
                         size="sm"
                         type="file"
                         @input="enableStore"
-                        @change="loadFile"
                       />
                       <CInputGroupText id="basic-addon2" class="py-0">
                         <CFormCheck
@@ -355,12 +347,11 @@ onBeforeRouteLeave(() => {
               :key="`fn-${fNum}`"
               class="mb-2"
             >
-              <CFormInput
+              <FileUpload
                 :id="`file-${fNum}`"
                 v-model="form.newFiles[fNum]"
                 type="file"
                 @input="enableStore"
-                @change="loadFile"
               />
               <CInputGroupText id="basic-addon2" @click="ctlFileNum(fNum)">
                 <v-icon

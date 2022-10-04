@@ -6,6 +6,8 @@ import { Post, Attatches } from '@/store/types/document'
 import { write_company_docs } from '@/utils/pageAuth'
 import { dateFormat } from '@/utils/baseMixins'
 import { AlertSecondary } from '@/utils/cssMixins'
+import ToastEditor from '@/components/ToastEditor/index.vue'
+import FileUpload from '@/components/FileUpload.vue'
 import DatePicker from '@/components/DatePicker/index.vue'
 import Multiselect from '@vueform/multiselect'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
@@ -91,11 +93,6 @@ const formsCheck = computed(() => {
 const enableStore = (event: Event) => {
   const el = event.target as HTMLInputElement
   attach.value = !el.value
-}
-
-const loadFile = (event: { target: { files: File[] } }) => {
-  const file = event.target.files[0]
-  console.log(file)
 }
 
 const sortName = computed(() =>
@@ -257,11 +254,7 @@ onBeforeRouteLeave(() => {
     <CRow class="mb-3">
       <CFormLabel for="title" class="col-md-2 col-form-label">내용</CFormLabel>
       <CCol md="10">
-        <CFormTextarea
-          v-model="form.content"
-          placeholder="본문 내용"
-          rows="20"
-        />
+        <ToastEditor v-model="form.content" placeholder="본문 내용" />
       </CCol>
     </CRow>
 
@@ -345,13 +338,12 @@ onBeforeRouteLeave(() => {
                   <CCol>
                     <CInputGroup>
                       변경 : &nbsp;
-                      <CFormInput
+                      <FileUpload
                         :id="`post-file-${file.pk}`"
                         v-model="form.oldFiles[i].newFile"
                         size="sm"
                         type="file"
                         @input="enableStore"
-                        @change="loadFile"
                       />
                       <CInputGroupText id="basic-addon2" class="py-0">
                         <CFormCheck
@@ -378,12 +370,11 @@ onBeforeRouteLeave(() => {
               :key="`fn-${fNum}`"
               class="mb-2"
             >
-              <CFormInput
+              <FileUpload
                 :id="`file-${fNum}`"
                 v-model="form.newFiles[fNum]"
                 type="file"
                 @input="enableStore"
-                @change="loadFile"
               />
               <CInputGroupText id="basic-addon2" @click="ctlFileNum(fNum)">
                 <v-icon
