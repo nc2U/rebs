@@ -43,9 +43,9 @@ const fetchPostList = (payload: PostFilter) =>
 const fetchCategoryList = (board: number) =>
   documentStore.fetchCategoryList(board)
 
-const createPost = (payload: { form: Post }) =>
+const createPost = (payload: { form: FormData }) =>
   documentStore.createPost(payload)
-const updatePost = (payload: { pk: number; form: Post }) =>
+const updatePost = (payload: { pk: number; form: FormData }) =>
   documentStore.updatePost(payload)
 const patchPost = (payload: PatchPost) => documentStore.patchPost(payload)
 const patchLink = (payload: Link) => documentStore.patchLink(payload)
@@ -62,13 +62,13 @@ const onSubmit = (payload: Post & Attatches) => {
   }
 
   if (pk) {
-    updatePost({ pk, form: formData })
+    updatePost({ pk, form })
     router.replace({
       name: '본사 일반문서 - 보기',
       params: { postId: payload.pk },
     })
   } else {
-    createPost({ form: formData })
+    createPost({ form })
     router.replace({ name: '본사 일반문서' })
   }
 }
