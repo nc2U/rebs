@@ -136,16 +136,16 @@ class PostSerializer(serializers.ModelSerializer):
 
         # Links 처리
         old_links = self.initial_data.get('oldLinks')
-        if old_links:
-            for link in old_links:
-                link_object = Link.objects.get(pk=link.get('pk'))
-                if link.get('del'):
-                    link_object.delete()
-                else:
-                    link_object.link = self.to_python(link.get('link'))
-                    link_object.save()
+        # if old_links:
+        #     for link in old_links:
+        #         link_object = Link.objects.get(pk=link.get('pk'))
+        #         if link.get('del'):
+        #             link_object.delete()
+        #         else:
+        #             link_object.link = self.to_python(link.get('link'))
+        #             link_object.save()
 
-        new_links = self.initial_data.get('newLinks')
+        new_links = self.initial_data.get('newLinks[]')
         if new_links:
             for link in new_links:
                 link_object = Link(post=instance, link=self.to_python(link))
@@ -153,20 +153,20 @@ class PostSerializer(serializers.ModelSerializer):
 
         # Files 처리
         old_files = self.initial_data.get('oldFiles')
-        if old_files:
-            for file in old_files:
-                file_object = File.objects.get(pk=file.get('pk'))
-                if file.get('del'):
-                    file_object.delete()
-                elif file.get('newFile'):
-                    file_object.file = file.get('newFile')
-                    file_object.save()
+        # if old_files:
+        #     for file in old_files:
+        #         file_object = File.objects.get(pk=file.get('pk'))
+        #         if file.get('del'):
+        #             file_object.delete()
+        #         elif file.get('newFile'):
+        #             file_object.file = file.get('newFile')
+        #             file_object.save()
 
-        new_files = self.initial_data.get('newFiles')
-        if new_files:
-            for file in new_files:
-                file_object = File(post=instance, file=file)
-                file_object.save()
+        # new_files = self.initial_data.get('newFiles')
+        # if new_files:
+        #     for file in new_files:
+        #         file_object = File(post=instance, file=file)
+        #         file_object.save()
 
         return instance
 

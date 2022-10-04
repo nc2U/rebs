@@ -58,11 +58,21 @@ const onSubmit = (payload: Post & Attatches) => {
   const form = new FormData()
 
   for (const key in formData) {
-    if (formData[key] !== null) form.append(key, formData[key] as string | Blob)
+    if (formData[key] !== null) {
+      if (key === 'newLinks') {
+        formData[key].forEach((fData: File | Blob | any) =>
+          form.append(`${key}[]`, fData),
+        )
+      } else if (key === 'newFiles') {
+        formData[key].forEach((fData: Blob | any, i) =>
+          form.append(`${key}[]`, fData),
+        )
+      } else form.append(key, formData[key] as string)
+    }
   }
 
   console.log(formData)
-  console.log(form)
+  console.log(...form)
 
   if (pk) {
     updatePost({ pk, form })
