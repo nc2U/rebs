@@ -54,7 +54,7 @@ export type Post = {
     | Link[]
     | Image[]
     | AFile[]
-  pk: number | null
+  pk?: number | null
   board: number | null
   is_notice: boolean
   project: number | null
