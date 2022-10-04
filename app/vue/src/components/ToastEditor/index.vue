@@ -24,7 +24,7 @@ const createEditor = () => {
     el: editor.value,
     height: '380px',
     initialEditType: 'wysiwyg',
-    initialValue: props.modelValue,
+    initialValue: props.modelValue || ' ',
     previewStyle: 'vertical',
     events: {
       change: () => emit('update:modelValue', e.getHTML()),
