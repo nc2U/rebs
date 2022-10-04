@@ -115,8 +115,6 @@ const onSubmit = (event: Event) => {
 }
 
 const modalAction = () => {
-  form.project = form.project ? form.project : ''
-  form.lawsuit = form.lawsuit ? form.lawsuit : ''
   emit('on-submit', { ...form })
   validated.value = false
   confirmModal.value.close()
