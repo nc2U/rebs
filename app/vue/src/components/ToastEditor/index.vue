@@ -58,7 +58,7 @@ onMounted(() => {
 }
 
 .toastui-editor-dark .toastui-editor-defaultUI-toolbar {
-  background-color: #181924;
+  background-color: #1c1d2a;
   border-bottom-color: #303238;
 }
 
