@@ -5,7 +5,7 @@ import Editor from '@toast-ui/editor'
 import '@toast-ui/editor/dist/toastui-editor.css'
 import '@toast-ui/editor/dist/theme/toastui-editor-dark.css'
 
-defineProps({
+const props = defineProps({
   modelValue: {
     type: String,
     required: false,
@@ -19,30 +19,25 @@ const editor = ref()
 const store = useStore()
 const theme = computed(() => store.state.theme)
 
-watch(theme, () => {
+const createEditor = () => {
   const e: Editor = new Editor({
     el: editor.value,
     height: '380px',
     initialEditType: 'wysiwyg',
+    initialValue: props.modelValue,
     previewStyle: 'vertical',
     events: {
-      change: () => emit('update:modelValue', e.getMarkdown()),
+      change: () => emit('update:modelValue', e.getHTML()),
     },
     theme: theme.value,
   })
-})
+  return e
+}
 
+watch(theme, () => createEditor())
 onMounted(() => {
-  const e: Editor = new Editor({
-    el: editor.value,
-    height: '380px',
-    initialEditType: 'wysiwyg',
-    previewStyle: 'vertical',
-    events: {
-      change: () => emit('update:modelValue', e.getMarkdown()),
-    },
-    theme: theme.value,
-  })
+  createEditor()
+  setTimeout(() => createEditor(), 600)
 })
 </script>
 
