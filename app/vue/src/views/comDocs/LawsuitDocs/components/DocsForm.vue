@@ -91,7 +91,6 @@ const formsCheck = computed(() => {
 const enableStore = (event: Event) => {
   const el = event.target as HTMLInputElement
   attach.value = !el.value
-  console.log(el.value.split('\\')[-1])
 }
 
 const loadFile = (event: { target: { files: File[] } }) => {
@@ -282,8 +281,7 @@ onBeforeRouteLeave(() => {
                   v-model="form.oldLinks[i].link"
                   size="sm"
                   placeholder="파일 링크"
-                  aria-label="File Link"
-                  aria-describedby="basic-addon1"
+                  @input="enableStore"
                 />
                 <CInputGroupText id="basic-addon1" class="py-0">
                   <CFormCheck

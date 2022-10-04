@@ -259,6 +259,7 @@ onBeforeRouteLeave(() => {
                   v-model="form.oldLinks[i].link"
                   size="sm"
                   placeholder="파일 링크"
+                  @input="enableStore"
                 />
                 <CInputGroupText id="basic-addon1" class="py-0">
                   <CFormCheck
