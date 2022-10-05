@@ -52,7 +52,6 @@ export type Post = {
     | string
     | boolean
     | Link[]
-    | Image[]
     | AFile[]
   pk?: number | null
   board: number | null
@@ -74,7 +73,6 @@ export type Post = {
   secret: boolean
   password: string
   links?: Link[]
-  images?: Image[]
   files?: AFile[]
   comments?: number[]
   user?: number | null
@@ -92,13 +90,6 @@ export interface Link {
   del?: boolean
 }
 
-export interface Image {
-  pk: null | number
-  post: number
-  image: string | File
-  del?: boolean
-}
-
 export interface AFile {
   pk: null | number
   post?: number
@@ -110,10 +101,8 @@ export interface AFile {
 
 export type Attatches = {
   oldLinks: Link[]
-  oldImages?: Image[]
   oldFiles: AFile[]
   newLinks: Link[]
-  newImages?: Image[]
   newFiles: string[] | File[]
 }
 
