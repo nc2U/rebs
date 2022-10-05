@@ -191,15 +191,20 @@ class PrBalanceByAccountSerializer(serializers.ModelSerializer):
 
 
 class ProjectCashBookSerializer(serializers.ModelSerializer):
+    sort_desc = serializers.SlugField(source='sort', read_only=True)
+    project_account_d1_desc = serializers.SlugField(source='project_account_d1', read_only=True)
+    project_account_d2_desc = serializers.SlugField(source='project_account_d2', read_only=True)
+    bank_account_desc = serializers.SlugField(source='bank_account', read_only=True)
     evidence_desc = serializers.CharField(source='get_evidence_display', read_only=True)
     sepItems = SepItemsInPrCashBookSerializer(many=True, read_only=True)
 
     class Meta:
         model = ProjectCashBook
-        fields = ('pk', 'project', 'sort', 'project_account_d1', 'project_account_d2',
-                  'is_separate', 'separated', 'is_imprest', 'sepItems', 'is_contract_payment',
-                  'contract', 'installment_order', 'refund_contractor', 'content', 'trader',
-                  'bank_account', 'income', 'outlay', 'evidence', 'evidence_desc', 'note', 'deal_date')
+        fields = ('pk', 'project', 'sort', 'sort_desc', 'project_account_d1', 'project_account_d1_desc',
+                  'project_account_d2', 'project_account_d2_desc', 'is_separate', 'separated',
+                  'is_imprest', 'sepItems', 'is_contract_payment', 'contract', 'installment_order',
+                  'refund_contractor', 'content', 'trader', 'bank_account', 'bank_account_desc',
+                  'income', 'outlay', 'evidence', 'evidence_desc', 'note', 'deal_date')
 
     @transaction.atomic
     def create(self, validated_data):
