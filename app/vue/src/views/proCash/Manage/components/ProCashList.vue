@@ -14,7 +14,7 @@ const allAccD1List = computed(() => proCashStore.allAccD1List)
 const allAccD2List = computed(() => proCashStore.allAccD2List)
 
 const proCashPages = computed(() => proCashStore.proCashPages)
-const getProCashLogs = computed(() => proCashStore.getProCashLogs)
+const proCashBookList = computed(() => proCashStore.proCashBookList)
 
 const pageSelect = (page: number) => emit('page-select', page)
 
@@ -71,7 +71,7 @@ const onDelete = (payload: { project: number; pk: number }) =>
 
     <CTableBody>
       <ProCash
-        v-for="proCash in getProCashLogs"
+        v-for="proCash in proCashBookList"
         :key="proCash.pk"
         :pro-cash="proCash"
         @multi-submit="multiSubmit"

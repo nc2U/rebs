@@ -13,8 +13,8 @@ const proCashStore = useProCash()
 const allAccD1List = computed(() => proCashStore.allAccD1List)
 const allAccD2List = computed(() => proCashStore.allAccD2List)
 
+const proImprestList = computed(() => proCashStore.proImprestList)
 const proImprestPages = computed(() => proCashStore.proImprestPages)
-const getProImprestLogs = computed(() => proCashStore.getProImprestLogs)
 
 const pageSelect = (page: number) => emit('page-select', page)
 
@@ -71,7 +71,7 @@ const onDelete = (payload: { project: number; pk: number }) =>
 
     <CTableBody>
       <ProImprest
-        v-for="imprest in getProImprestLogs"
+        v-for="imprest in proImprestList"
         :key="imprest.pk"
         :imprest="imprest"
         @multi-submit="multiSubmit"
