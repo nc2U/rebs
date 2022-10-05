@@ -3,6 +3,7 @@ import { reactive, computed, onBeforeMount, onBeforeUpdate } from 'vue'
 import { useRouter } from 'vue-router'
 import { useDocument, PostFilter } from '@/store/pinia/document'
 import { AFile, Attatches, Link, Post, PatchPost } from '@/store/types/document'
+import { formUtility } from '@/utils/helper'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from './components/ListController.vue'
 import CategoryTabs from './components/CategoryTabs.vue'
@@ -55,21 +56,7 @@ const router = useRouter()
 const onSubmit = (payload: Post & Attatches) => {
   const { pk, ...formData } = payload
 
-  const form = new FormData()
-
-  for (const key in formData) {
-    if (formData[key] !== null) {
-      if (key === 'newLinks') {
-        formData[key].forEach((fData: File | Blob | any) =>
-          form.append(`${key}[]`, fData),
-        )
-      } else if (key === 'newFiles') {
-        formData[key].forEach((fData: Blob | any, i) =>
-          form.append(`${key}[]`, fData),
-        )
-      } else form.append(key, formData[key] as string)
-    }
-  }
+  const form = formUtility.getFormData(formData)
 
   console.log(formData)
   console.log(...form)
