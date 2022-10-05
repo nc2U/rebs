@@ -63,7 +63,6 @@ class PostSerializer(serializers.ModelSerializer):
     cate_name = serializers.SlugField(source='category', read_only=True)
     lawsuit_name = serializers.SlugField(source='lawsuit', read_only=True)
     links = LinksInPostSerializer(many=True, read_only=True)
-    images = ImagesInPostSerializer(many=True, read_only=True)
     files = FilesInPostSerializer(many=True, read_only=True)
     comments = serializers.RelatedField(many=True, read_only=True)
     user = serializers.SlugRelatedField(read_only=True, slug_field='username')
@@ -71,26 +70,8 @@ class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ('pk', 'board', 'is_notice', 'project', 'proj_name', 'category', 'cate_name',
-                  'lawsuit', 'lawsuit_name', 'title', 'execution_date', 'content', 'is_hide_comment',
-                  'hit', 'blame', 'ip', 'device', 'secret', 'password', 'links', 'images',
-                  'files', 'comments', 'user', 'soft_delete', 'created', 'updated', 'is_new')
-
-
-class Post1Serializer(serializers.ModelSerializer):
-    proj_name = serializers.SlugField(source='project', read_only=True)
-    cate_name = serializers.SlugField(source='category', read_only=True)
-    lawsuit_name = serializers.SlugField(source='lawsuit', read_only=True)
-    links = LinksInPostSerializer(many=True, read_only=True)
-    images = ImagesInPostSerializer(many=True, read_only=True)
-    files = FilesInPostSerializer(many=True, read_only=True)
-    comments = serializers.RelatedField(many=True, read_only=True)
-    user = serializers.SlugRelatedField(read_only=True, slug_field='username')
-
-    class Meta:
-        model = Post
-        fields = ('pk', 'board', 'is_notice', 'project', 'proj_name', 'category', 'cate_name',
-                  'lawsuit', 'lawsuit_name', 'title', 'execution_date', 'content', 'is_hide_comment',
-                  'hit', 'blame', 'ip', 'device', 'secret', 'password', 'links', 'images',
+                  'lawsuit', 'lawsuit_name', 'title', 'execution_date', 'is_hide_comment',
+                  'content', 'hit', 'blame', 'ip', 'device', 'secret', 'password', 'links',
                   'files', 'comments', 'user', 'soft_delete', 'created', 'updated', 'is_new')
         read_only_fields = ('ip',)
 
