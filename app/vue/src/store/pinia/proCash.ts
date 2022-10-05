@@ -271,21 +271,16 @@ export const useProCash = defineStore('proCash', () => {
           project: res.data.project,
           ...filters,
         }).then(() => {
-          fetchProjectImprestList({
+          paymentStore.fetchPaymentList({
             project: res.data.project,
             ...filters,
-          }).then(() => {
-            paymentStore.fetchPaymentList({
-              project: res.data.project,
-              ...filters,
-            })
-            paymentStore.fetchAllPaymentList({
-              project: res.data.project,
-              contract: res.data.contract,
-              ordering: 'deal_date',
-            })
-            message()
           })
+          paymentStore.fetchAllPaymentList({
+            project: res.data.project,
+            contract: res.data.contract,
+            ordering: 'deal_date',
+          })
+          message()
         })
       })
       .catch(err => errorHandle(err.response.data))
@@ -302,21 +297,16 @@ export const useProCash = defineStore('proCash', () => {
           project: res.data.project,
           ...filters,
         }).then(() => {
-          fetchProjectImprestList({
+          paymentStore.fetchPaymentList({
             project: res.data.project,
-            ...filters,
-          }).then(() => {
-            paymentStore.fetchPaymentList({
-              project: res.data.project,
-              contract: res.data.contract,
-            })
-            paymentStore.fetchAllPaymentList({
-              project: res.data.project,
-              contract: res.data.contract,
-              ordering: 'deal_date',
-            })
-            message()
+            contract: res.data.contract,
           })
+          paymentStore.fetchAllPaymentList({
+            project: res.data.project,
+            contract: res.data.contract,
+            ordering: 'deal_date',
+          })
+          message()
         })
       })
       .catch(err => errorHandle(err.response.data))
@@ -336,20 +326,15 @@ export const useProCash = defineStore('proCash', () => {
           project,
           ...filters,
         }).then(() => {
-          fetchProjectImprestList({
-            project,
-            ...filters,
-          }).then(() => {
-            if (contract) {
-              paymentStore.fetchPaymentList({ project, contract })
-              paymentStore.fetchAllPaymentList({
-                project,
-                contract,
-                ordering: 'deal_date',
-              })
-            }
-            message('warning', '알림!', '해당 오브젝트가 삭제되었습니다.')
-          })
+          if (contract) {
+            paymentStore.fetchPaymentList({ project, contract })
+            paymentStore.fetchAllPaymentList({
+              project,
+              contract,
+              ordering: 'deal_date',
+            })
+          }
+          message('warning', '알림!', '해당 오브젝트가 삭제되었습니다.')
         })
       })
       .catch(err => errorHandle(err.response.data))
@@ -430,6 +415,88 @@ export const useProCash = defineStore('proCash', () => {
     proBankAccountList.value.filter(b => b.is_imprest),
   )
 
+  const updatePrImprestBook = (
+    payload: ProjectCashBook & { sepData: ProjectCashBook | null } & {
+      filters: CashBookFilter
+    },
+  ) => {
+    const { pk, filters, ...formData } = payload
+    api
+      .put(`/project-imprest/${pk}/`, formData)
+      .then(res => {
+        fetchProjectImprestList({
+          project: res.data.project,
+          ...filters,
+        }).then(() => {
+          paymentStore.fetchPaymentList({
+            project: res.data.project,
+            ...filters,
+          })
+          paymentStore.fetchAllPaymentList({
+            project: res.data.project,
+            contract: res.data.contract,
+            ordering: 'deal_date',
+          })
+          message()
+        })
+      })
+      .catch(err => errorHandle(err.response.data))
+  }
+
+  const patchPrImprestBook = (
+    payload: ProjectCashBook & { filters: CashBookFilter },
+  ) => {
+    const { pk, filters, ...formData } = payload
+    api
+      .patch(`/project-imprest/${pk}/`, formData)
+      .then(res => {
+        fetchProjectImprestList({
+          project: res.data.project,
+          ...filters,
+        }).then(() => {
+          paymentStore.fetchPaymentList({
+            project: res.data.project,
+            contract: res.data.contract,
+          })
+          paymentStore.fetchAllPaymentList({
+            project: res.data.project,
+            contract: res.data.contract,
+            ordering: 'deal_date',
+          })
+          message()
+        })
+      })
+      .catch(err => errorHandle(err.response.data))
+  }
+
+  const deletePrImprestBook = (
+    payload: { pk: number; project: number; contract?: number | null } & {
+      filters?: CashBookFilter
+    },
+  ) => {
+    const { pk, project, filters, contract } = payload
+
+    api
+      .delete(`/project-imprest/${pk}/`)
+      .then(() => {
+        fetchProjectImprestList({
+          project,
+          ...filters,
+        }).then(() => {
+          if (contract) {
+            paymentStore.fetchPaymentList({ project, contract })
+            paymentStore.fetchAllPaymentList({
+              project,
+              contract,
+              ordering: 'deal_date',
+            })
+          }
+          message('warning', '알림!', '해당 오브젝트가 삭제되었습니다.')
+        })
+      })
+      .catch(err => errorHandle(err.response.data))
+  }
+
   return {
     sortList,
     fetchProAccSortList,
@@ -479,6 +546,9 @@ export const useProCash = defineStore('proCash', () => {
     proImprestCount,
     fetchProjectImprestList,
     proImprestPages,
+    updatePrImprestBook,
+    patchPrImprestBook,
+    deletePrImprestBook,
     imprestBAccount,
   }
 })
