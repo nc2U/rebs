@@ -49,17 +49,17 @@ const createPrCashBook = (
   },
 ) => proCashStore.createPrCashBook(payload)
 
-const updatePrCashBook = (
+const updatePrImprestBook = (
   payload: PrCashBook & { sepData: PrCashBook | null } & {
     filters: CashBookFilter
   },
-) => proCashStore.updatePrCashBook(payload)
+) => proCashStore.updatePrImprestBook(payload)
 
-const deletePrCashBook = (
+const deletePrImprestBook = (
   payload: { pk: number; project: number } & {
     filters?: CashBookFilter
   },
-) => proCashStore.deletePrCashBook(payload)
+) => proCashStore.deletePrImprestBook(payload)
 
 onBeforeMount(() => {
   fetchProAccSortList()
@@ -118,7 +118,7 @@ const onUpdate = (
   payload: PrCashBook & { sepData: PrCashBook | null } & {
     filters: CashBookFilter
   },
-) => updatePrCashBook(payload)
+) => updatePrImprestBook(payload)
 
 const multiSubmit = (payload: {
   formData: PrCashBook
@@ -136,7 +136,7 @@ const multiSubmit = (payload: {
 }
 
 const onDelete = (payload: { pk: number; project: number }) =>
-  deletePrCashBook({ ...{ filters: dataFilter.value }, ...payload })
+  deletePrImprestBook({ ...{ filters: dataFilter.value }, ...payload })
 </script>
 
 <template>
