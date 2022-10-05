@@ -152,50 +152,6 @@ export const useProCash = defineStore('proCash', () => {
       .catch(err => errorHandle(err.response.data))
 
   const proCashBookList = ref<ProjectCashBook[]>([])
-  const getProCashLogs = computed(() =>
-    proCashBookList.value
-      ? proCashBookList.value.map((p: ProjectCashBook) => ({
-          pk: p.pk,
-          project: p.project,
-          sort: p.sort,
-          sort_desc: sortList.value
-            ? sortList.value.filter(s => s.pk === p.sort).map(s => s.name)[0]
-            : '-',
-          project_account_d1:
-            p.project_account_d1 === null ? '' : String(p.project_account_d1),
-          project_account_d1_desc: p.project_account_d1
-            ? allAccD1List.value
-                .filter(d => d.pk === p.project_account_d1)
-                .map(d => d.name)[0]
-            : '-',
-          project_account_d2:
-            p.project_account_d2 === null ? '' : String(p.project_account_d2),
-          project_account_d2_desc: p.project_account_d2
-            ? allAccD2List.value
-                .filter(d => d.pk === p.project_account_d2)
-                .map(d => d.name)[0]
-            : '-',
-          content: p.content,
-          trader: p.trader,
-          bank_account: p.bank_account,
-          bank_account_desc: proBankAccountList.value
-            ? proBankAccountList.value
-                .filter(b => b.pk === p.bank_account)
-                .map(b => b.alias_name)[0]
-            : '-',
-          income: p.income,
-          outlay: p.outlay,
-          evidence: p.evidence,
-          evidence_desc: p.evidence_desc,
-          note: p.note,
-          deal_date: p.deal_date,
-          contract: p.contract,
-          is_separate: p.is_separate,
-          separated: p.separated,
-          sepItems: p.sepItems,
-        }))
-      : [],
-  )
   const proCashesCount = ref<number>(0)
 
   const fetchProjectCashList = (payload: CashBookFilter) => {
@@ -341,50 +297,6 @@ export const useProCash = defineStore('proCash', () => {
   }
 
   const proImprestList = ref<ProjectCashBook[]>([])
-  const getProImprestLogs = computed(() =>
-    proImprestList.value
-      ? proImprestList.value.map((p: ProjectCashBook) => ({
-          pk: p.pk,
-          project: p.project,
-          sort: p.sort,
-          sort_desc: sortList.value
-            ? sortList.value.filter(s => s.pk === p.sort).map(s => s.name)[0]
-            : '-',
-          project_account_d1:
-            p.project_account_d1 === null ? '' : String(p.project_account_d1),
-          project_account_d1_desc: p.project_account_d1
-            ? allAccD1List.value
-                .filter(d => d.pk === p.project_account_d1)
-                .map(d => d.name)[0]
-            : '-',
-          project_account_d2:
-            p.project_account_d2 === null ? '' : String(p.project_account_d2),
-          project_account_d2_desc: p.project_account_d2
-            ? allAccD2List.value
-                .filter(d => d.pk === p.project_account_d2)
-                .map(d => d.name)[0]
-            : '-',
-          content: p.content,
-          trader: p.trader,
-          bank_account: p.bank_account,
-          bank_account_desc: proBankAccountList.value
-            ? proBankAccountList.value
-                .filter(b => b.pk === p.bank_account)
-                .map(b => b.alias_name)[0]
-            : '-',
-          income: p.income,
-          outlay: p.outlay,
-          evidence: p.evidence,
-          evidence_desc: p.evidence_desc,
-          note: p.note,
-          deal_date: p.deal_date,
-          contract: p.contract,
-          is_separate: p.is_separate,
-          separated: p.separated,
-          sepItems: p.sepItems,
-        }))
-      : [],
-  )
   const proImprestCount = ref<number>(0)
 
   const fetchProjectImprestList = (payload: CashBookFilter) => {
@@ -532,7 +444,6 @@ export const useProCash = defineStore('proCash', () => {
     fetchExecAmountList,
 
     proCashBookList,
-    getProCashLogs,
     proCashesCount,
     fetchProjectCashList,
     proCashPages,
@@ -542,7 +453,6 @@ export const useProCash = defineStore('proCash', () => {
     deletePrCashBook,
 
     proImprestList,
-    getProImprestLogs,
     proImprestCount,
     fetchProjectImprestList,
     proImprestPages,
