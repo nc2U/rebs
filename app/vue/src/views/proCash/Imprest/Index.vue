@@ -3,10 +3,7 @@ import { computed, ref, onBeforeMount } from 'vue'
 import { pageTitle, navMenu } from '@/views/proCash/_menu/headermixin'
 import { useProject } from '@/store/pinia/project'
 import { CashBookFilter, useProCash } from '@/store/pinia/proCash'
-import {
-  ProjectCashBook as PrCashBook,
-  ProSepItems,
-} from '@/store/types/proCash'
+import { ProjectCashBook as PrCashBook } from '@/store/types/proCash'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from '@/views/proCash/Imprest/components/ListController.vue'
@@ -102,9 +99,7 @@ const listFiltering = (payload: CashBookFilter) => {
 const onCreate = (
   payload: PrCashBook & { sepData: PrCashBook | null } & {
     filters: CashBookFilter
-  } & {
-    bank_account_to?: number
-  },
+  } & { bank_account_to?: number },
 ) => {
   payload.project = project.value
   if (payload.sort === 3 && payload.bank_account_to) {
