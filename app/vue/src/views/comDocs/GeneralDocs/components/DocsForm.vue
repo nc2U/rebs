@@ -37,6 +37,7 @@ const form = reactive<Post & Attatches>({
   device: '',
   secret: false,
   password: '',
+  links: [],
 
   oldLinks: [],
   oldFiles: [],

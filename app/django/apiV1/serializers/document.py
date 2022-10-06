@@ -46,12 +46,6 @@ class LinksInPostSerializer(serializers.ModelSerializer):
         fields = ('pk', 'post', 'link', 'hit')
 
 
-class ImagesInPostSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Image
-        fields = ('pk', 'post', 'image')
-
-
 class FilesInPostSerializer(serializers.ModelSerializer):
     class Meta:
         model = File
