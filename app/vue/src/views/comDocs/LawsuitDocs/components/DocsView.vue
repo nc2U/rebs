@@ -3,6 +3,7 @@ import { computed, onBeforeMount, watch } from 'vue'
 import { timeFormat } from '@/utils/baseMixins'
 import { useDocument } from '@/store/pinia/document'
 import { onBeforeRouteLeave, useRoute } from 'vue-router'
+import { cutString } from '@/utils/baseMixins'
 
 const props = defineProps({ category: { type: Number, default: undefined } })
 const emit = defineEmits(['post-hit', 'link-hit', 'file-hit'])
@@ -118,7 +119,7 @@ onBeforeRouteLeave(() => {
         <!--        </table>-->
       </CCol>
 
-      <CCol md="6">
+      <CCol md="7" lg="6" xl="5">
         <CRow v-if="post.links.length" class="mb-3">
           <CCol>
             <CListGroup>
@@ -129,7 +130,7 @@ onBeforeRouteLeave(() => {
                 class="d-flex justify-content-between align-items-center"
               >
                 <a :href="l.link" target="_blank" @click="linkHitUp(l.pk)">
-                  {{ l.link }}
+                  {{ cutString(l.link, 45) }}
                 </a>
                 <small>
                   조회 수 :
@@ -152,7 +153,7 @@ onBeforeRouteLeave(() => {
                 class="d-flex justify-content-between align-items-center"
               >
                 <a :href="f.file" target="_blank" @click="fileHitUp(f.pk)">
-                  {{ getFileName(f.file) }}
+                  {{ cutString(getFileName(f.file), 29) }}
                 </a>
                 <small>
                   다운로드 :
