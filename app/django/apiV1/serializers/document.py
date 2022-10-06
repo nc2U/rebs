@@ -65,7 +65,7 @@ class PostSerializer(serializers.ModelSerializer):
     links = LinksInPostSerializer(many=True, read_only=True)
     files = FilesInPostSerializer(many=True, read_only=True)
     comments = serializers.RelatedField(many=True, read_only=True)
-    user = serializers.SlugRelatedField(read_only=True, slug_field='username')
+    user = serializers.SlugRelatedField(slug_field='username', read_only=True)
 
     class Meta:
         model = Post

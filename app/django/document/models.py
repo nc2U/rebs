@@ -332,8 +332,8 @@ class Post(models.Model):
 
     def is_new(self):
         today = datetime.today().strftime('%Y-%m-%d %H:%M')
-        created = self.created + timedelta(days=3)
-        return today < created.strftime('%Y-%m-%d %H:%M')
+        new_period = self.created + timedelta(days=3)
+        return today < new_period.strftime('%Y-%m-%d %H:%M')
 
     class Meta:
         ordering = ['-created']
