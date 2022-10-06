@@ -44,11 +44,6 @@ class LinkInline(admin.TabularInline):
     extra = 1
 
 
-class ImageInline(admin.TabularInline):
-    model = Image
-    extra = 1
-
-
 class FileInline(admin.TabularInline):
     model = File
     extra = 1
@@ -65,7 +60,7 @@ class PostAdmin(ImportExportMixin, admin.ModelAdmin):
     list_editable = ('board', 'is_notice', 'project', 'category', 'execution_date')
     search_fields = ('title', 'content')
     list_filter = ('board', 'is_notice', 'project', 'category')
-    inlines = (LinkInline, ImageInline, FileInline, CommentInline)
+    inlines = (LinkInline, FileInline, CommentInline)
 
 
 class TagAdmin(ImportExportMixin, admin.ModelAdmin):
