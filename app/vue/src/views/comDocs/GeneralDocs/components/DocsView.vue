@@ -119,7 +119,7 @@ onBeforeRouteLeave(() => {
         </table>
       </CCol>
 
-      <CCol md="6">
+      <CCol md="7" lg="6" xl="5">
         <CRow v-if="post.links.length" class="mb-3">
           <CCol>
             <CListGroup>
@@ -153,7 +153,7 @@ onBeforeRouteLeave(() => {
                 class="d-flex justify-content-between align-items-center"
               >
                 <a :href="f.file" target="_blank" @click="fileHitUp(f.pk)">
-                  {{ cutString(getFileName(f.file), 45) }}
+                  {{ cutString(getFileName(f.file), 29) }}
                 </a>
                 <small>
                   다운로드 :
