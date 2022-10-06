@@ -54,8 +54,7 @@ export const useAccount = defineStore('account', () => {
 
   const setUser = (user: User) => {
     userInfo.value = user
-    fetchProfile()
-    fetchTodoList()
+    fetchTodoList().then(() => fetchProfile())
   }
 
   const login = (payload: LoginUser) => {
@@ -134,7 +133,7 @@ export const useAccount = defineStore('account', () => {
     const url = userInfo.value
       ? `/todo/?user=${userInfo.value.pk}&soft_deleted=false`
       : '/todo/'
-    api
+    return api
       .get(url)
       .then(res => {
         todoList.value = res.data.results
@@ -146,38 +145,37 @@ export const useAccount = defineStore('account', () => {
     api
       .post('/todo/', payload)
       .then(() => {
-        fetchTodoList()
-        return api
-          .get(`/user/${userInfo.value?.pk}/`)
-          .then(res => {
-            userInfo.value = res.data
-          })
-          .catch(err => errorHandle(err.response.data))
+        fetchTodoList().then(() =>
+          api
+            .get(`/user/${userInfo.value?.pk}/`)
+            .then(res => {
+              userInfo.value = res.data
+            })
+            .catch(err => errorHandle(err.response.data)),
+        )
       })
       .catch(err => errorHandle(err.response.data))
 
   const patchTodo = (payload: Todo) =>
     api
       .patch(`/todo/${payload.pk}/`, payload)
-      .then(() => {
-        fetchTodoList()
-      })
+      .then(() => fetchTodoList())
       .catch(err => errorHandle(err.response.data))
 
-  const deleteTodo = (pk: number) => {
+  const deleteTodo = (pk: number) =>
     api
       .delete(`/todo/${pk}/`)
       .then(() => {
-        fetchTodoList()
-        return api
-          .get(`/user/${userInfo.value?.pk}/`)
-          .then(res => {
-            userInfo.value = res.data
-          })
-          .catch(err => errorHandle(err.response.data))
+        fetchTodoList().then(() =>
+          api
+            .get(`/user/${userInfo.value?.pk}/`)
+            .then(res => {
+              userInfo.value = res.data
+            })
+            .catch(err => errorHandle(err.response.data)),
+        )
       })
       .catch(err => errorHandle(err.response.data))
-  }
 
   return {
     accessToken,
