@@ -11,7 +11,7 @@ import xlsxwriter
 import xlwt
 
 from datetime import datetime
-from django.db.models import Q, Max, Sum
+from django.db.models import Q, F, Max, Sum, When, Case
 from django.views.generic import View
 
 from company.models import Company
@@ -791,7 +791,7 @@ class ExportProjectBalance(View):
         # data start --------------------------------------------- #
 
         project = Project.objects.get(pk=request.GET.get('project'))
-        date = request.GET.get('date')
+        date = request.GET.get('date') if request.GET.get('date') else TODAY
 
         # 1. Title
         row_num = 0
@@ -816,21 +816,16 @@ class ExportProjectBalance(View):
         h_format.set_align('vcenter')
         h_format.set_bg_color('#eeeeee')
 
-        worksheet.set_column(0, 0, 10)
-        worksheet.set_column(1, 1, 10)
-        worksheet.set_column(2, 2, 12)
-        worksheet.set_column(3, 3, 18)
-        worksheet.merge_range(row_num, 0, row_num, 3, '구분', h_format)
+        worksheet.set_column(0, 0, 30)
+        worksheet.merge_range(row_num, 0, row_num, 1, '구분', h_format)
+        worksheet.set_column(1, 1, 20)
+        worksheet.write(row_num, 1, '전일잔고', h_format)
+        worksheet.set_column(2, 2, 20)
+        worksheet.write(row_num, 2, '금알입금(증가)', h_format)
+        worksheet.set_column(3, 3, 20)
+        worksheet.write(row_num, 3, '금일출금(감소)', h_format)
         worksheet.set_column(4, 4, 20)
-        worksheet.write(row_num, 4, '예산', h_format)
-        worksheet.set_column(5, 5, 20)
-        worksheet.write(row_num, 5, '전월 인출 금액 누계', h_format)
-        worksheet.set_column(6, 6, 20)
-        worksheet.write(row_num, 6, '당월 인출 금액', h_format)
-        worksheet.set_column(7, 7, 20)
-        worksheet.write(row_num, 7, '인출 금액 합계', h_format)
-        worksheet.set_column(8, 8, 20)
-        worksheet.write(row_num, 8, '가용 예산 합계', h_format)
+        worksheet.write(row_num, 4, '금일잔고', h_format)
 
         # 4. Contents
         b_format = workbook.add_format()
@@ -839,79 +834,50 @@ class ExportProjectBalance(View):
         b_format.set_num_format('#,##0')
         b_format.set_align('end')
 
-        budget = ProjectBudget.objects.filter(project=project)
-        rsp1 = budget.filter(account_d2__code__range=('322', '326')).count()  # 간접공사비
-        rsp2 = budget.filter(account_d2__code__range=('327', '329')).count()  # 설계용역비
-        rsp3 = budget.filter(account_d2__code__range=('331', '339')).count()  # 판매비
-        rsp4 = budget.filter(account_d2__code__range=('341', '349')).count()  # 일반관리비
-        rsp5 = budget.filter(account_d2__code__range=('351', '359')).count()  # 제세공과금
-        budget_sum = budget.aggregate(Sum('budget'))['budget__sum']
-        budget_month_sum = 0
-        budget_total_sum = 0
+        qs = ProjectCashBook.objects.all() \
+            .order_by('bank_account') \
+            .filter(is_separate=False,
+                    bank_account__directpay=False,
+                    deal_date__lte=date)
 
-        for row, bg in enumerate(budget):
+        balance_set = qs.annotate(bank_acc=F('bank_account__alias_name')) \
+            .values('bank_acc') \
+            .annotate(inc_sum=Sum('income'),
+                      out_sum=Sum('outlay'),
+                      date_inc=Sum(Case(
+                          When(deal_date=date, then=F('income')),
+                          default=0
+                      )),
+                      date_out=Sum(Case(
+                          When(deal_date=date, then=F('outlay')),
+                          default=0
+                      )))
+
+        for row, bg in enumerate(balance_set):
             row_num += 1
-            co_budget = ProjectCashBook.objects.filter(project=project,
-                                                       project_account_d2=bg.account_d2,
-                                                       deal_date__lte=date)
 
-            co_budget_month = co_budget.filter(deal_date__gte=date[:8] + '01').aggregate(Sum('outlay'))['outlay__sum']
-            co_budget_month = co_budget_month if co_budget_month else 0
-            budget_month_sum += co_budget_month
-
-            co_budget_total = co_budget.aggregate(Sum('outlay'))['outlay__sum']
-            co_budget_total = co_budget_total if co_budget_total else 0
-            budget_total_sum += co_budget_total
-
-            for col in range(9):
+            for col in range(6):
                 if col == 0 and row == 0:
-                    worksheet.merge_range(row_num, col, budget.count() + 2, col, '사업비', b_format)
+                    worksheet.merge_range(row_num, col, balance_set.count() + 2, col, '보통예금', b_format)
                 if col == 1:
-                    if int(bg.account_d2.code) == int(bg.account_d1.code) + 1:
-                        worksheet.merge_range(row_num, col, row_num + bg.account_d1.projectbudget_set.count() - 1, col,
-                                              bg.account_d1.name, b_format)
+                    worksheet.merge_range(row_num, col, row_num, col + 1, '-', b_format)
                 if col == 2:
-                    if bg.account_d2.sub_title:
-                        crow = 5
-                        if row == crow:
-                            worksheet.merge_range(row_num, col, row_num + rsp1 - 1, col, bg.account_d2.sub_title,
-                                                  b_format)
-                        crow += rsp1
-                        if row == crow:
-                            worksheet.merge_range(row_num, col, row_num + rsp2 - 1, col, bg.account_d2.sub_title,
-                                                  b_format)
-                        crow = crow + rsp2 + rsp3
-                        if row == crow:
-                            worksheet.merge_range(row_num, col, row_num + rsp4 - 1, col, bg.account_d2.sub_title,
-                                                  b_format)
-                        crow += rsp4
-                        if row == crow:
-                            worksheet.merge_range(row_num, col, row_num + rsp5 - 1, col, bg.account_d2.sub_title,
-                                                  b_format)
-                    else:
-                        worksheet.merge_range(row_num, col, row_num, col + 1, bg.account_d2.name, b_format)
+                    worksheet.merge_range(row_num, col, row_num, col + 1, '-', b_format)
                 if col == 3:
-                    if bg.account_d2.sub_title:
-                        worksheet.write(row_num, col, bg.account_d2.name, b_format)
+                    worksheet.merge_range(row_num, col, row_num, col + 1, '-', b_format)
                 if col == 4:
-                    worksheet.write(row_num, col, bg.budget, b_format)
+                    worksheet.merge_range(row_num, col, row_num, col + 1, '-', b_format)
                 if col == 5:
-                    worksheet.write(row_num, col, co_budget_total - co_budget_month, b_format)
+                    worksheet.merge_range(row_num, col, row_num, col + 1, '-', b_format)
                 if col == 6:
-                    worksheet.write(row_num, col, co_budget_month, b_format)
-                if col == 7:
-                    worksheet.write(row_num, col, co_budget_total, b_format)
-                if col == 8:
-                    worksheet.write(row_num, col, bg.budget - co_budget_total, b_format)
+                    worksheet.merge_range(row_num, col, row_num, col + 1, '-', b_format)
 
         # 5. Sum row
         row_num += 1
-        worksheet.merge_range(row_num, 0, row_num, 3, '합 계', b_format)
-        worksheet.write(row_num, 4, budget_sum, b_format)
-        worksheet.write(row_num, 5, budget_total_sum - budget_month_sum, b_format)
-        worksheet.write(row_num, 6, budget_month_sum, b_format)
-        worksheet.write(row_num, 7, budget_total_sum, b_format)
-        worksheet.write(row_num, 8, budget_sum - budget_total_sum, b_format)
+        worksheet.merge_range(row_num, 0, row_num, 1, '현금성 자산 계', b_format)
+        worksheet.write(row_num, 4, '-', b_format)
+        worksheet.write(row_num, 5, '-', b_format)
+        worksheet.write(row_num, 6, '-', b_format)
 
         # data end ----------------------------------------------- #
 
@@ -922,7 +888,7 @@ class ExportProjectBalance(View):
         output.seek(0)
 
         # Set up the Http response.
-        filename = f'{datetime.now().strftime("%Y-%m-%d")}-budget_status.xlsx'
+        filename = f'{datetime.now().strftime("%Y-%m-%d")}-project-balance.xlsx'
         file_format = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         response = HttpResponse(output, content_type=file_format)
         response['Content-Disposition'] = f'attachment; filename={filename}'
