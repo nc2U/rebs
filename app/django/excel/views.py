@@ -805,7 +805,7 @@ class ExportProjectBalance(View):
         # 2. Header
         row_num = 1
         worksheet.set_row(row_num, 18)
-        worksheet.write(row_num, 8, date + ' 현재', workbook.add_format({'align': 'right'}))
+        worksheet.write(row_num, 5, date + ' 현재', workbook.add_format({'align': 'right'}))
 
         # 3. Header
         row_num = 2
@@ -816,16 +816,17 @@ class ExportProjectBalance(View):
         h_format.set_align('vcenter')
         h_format.set_bg_color('#eeeeee')
 
-        worksheet.set_column(0, 0, 30)
+        worksheet.set_column(0, 0, 10)
         worksheet.merge_range(row_num, 0, row_num, 1, '구분', h_format)
-        worksheet.set_column(1, 1, 20)
-        worksheet.write(row_num, 1, '전일잔고', h_format)
+        worksheet.set_column(1, 1, 30)
         worksheet.set_column(2, 2, 20)
-        worksheet.write(row_num, 2, '금알입금(증가)', h_format)
+        worksheet.write(row_num, 2, '전일잔고', h_format)
         worksheet.set_column(3, 3, 20)
-        worksheet.write(row_num, 3, '금일출금(감소)', h_format)
+        worksheet.write(row_num, 3, '금알입금(증가)', h_format)
         worksheet.set_column(4, 4, 20)
-        worksheet.write(row_num, 4, '금일잔고', h_format)
+        worksheet.write(row_num, 4, '금일출금(감소)', h_format)
+        worksheet.set_column(5, 5, 20)
+        worksheet.write(row_num, 5, '금일잔고', h_format)
 
         # 4. Contents
         b_format = workbook.add_format()
@@ -853,31 +854,44 @@ class ExportProjectBalance(View):
                           default=0
                       )))
 
-        for row, bg in enumerate(balance_set):
+        total_inc = 0
+        total_out = 0
+        total_inc_sum = 0
+        total_out_sum = 0
+
+        for row, balance in enumerate(balance_set):
             row_num += 1
+            inc_sum = balance['inc_sum'] if balance['inc_sum'] else 0
+            out_sum = balance['out_sum'] if balance['out_sum'] else 0
+            date_inc = balance['date_inc'] if balance['date_inc'] else 0
+            date_out = balance['date_out'] if balance['date_out'] else 0
+
+            total_inc += date_inc
+            total_out += date_out
+            total_inc_sum += inc_sum
+            total_out_sum += out_sum
 
             for col in range(6):
                 if col == 0 and row == 0:
                     worksheet.merge_range(row_num, col, balance_set.count() + 2, col, '보통예금', b_format)
                 if col == 1:
-                    worksheet.merge_range(row_num, col, row_num, col + 1, '-', b_format)
+                    worksheet.write(row_num, col, balance['bank_acc'], b_format)
                 if col == 2:
-                    worksheet.merge_range(row_num, col, row_num, col + 1, '-', b_format)
+                    worksheet.write(row_num, col, inc_sum - out_sum - date_inc + date_out, b_format)
                 if col == 3:
-                    worksheet.merge_range(row_num, col, row_num, col + 1, '-', b_format)
+                    worksheet.write(row_num, col, date_inc, b_format)
                 if col == 4:
-                    worksheet.merge_range(row_num, col, row_num, col + 1, '-', b_format)
+                    worksheet.write(row_num, col, date_out, b_format)
                 if col == 5:
-                    worksheet.merge_range(row_num, col, row_num, col + 1, '-', b_format)
-                if col == 6:
-                    worksheet.merge_range(row_num, col, row_num, col + 1, '-', b_format)
+                    worksheet.write(row_num, col, inc_sum - out_sum, b_format)
 
         # 5. Sum row
         row_num += 1
         worksheet.merge_range(row_num, 0, row_num, 1, '현금성 자산 계', b_format)
-        worksheet.write(row_num, 4, '-', b_format)
-        worksheet.write(row_num, 5, '-', b_format)
-        worksheet.write(row_num, 6, '-', b_format)
+        worksheet.write(row_num, 2, total_inc_sum - total_out_sum - total_inc + total_out, b_format)
+        worksheet.write(row_num, 3, total_inc, b_format)
+        worksheet.write(row_num, 4, total_out, b_format)
+        worksheet.write(row_num, 5, total_inc_sum - total_out_sum, b_format)
 
         # data end ----------------------------------------------- #
 
