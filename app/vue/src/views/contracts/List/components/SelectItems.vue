@@ -7,7 +7,6 @@ const props = defineProps({
 })
 
 const printItems = ref(['1', '2', '3', '4', '7', '8', '9', '10', '18-19-20-21'])
-g
 const emit = defineEmits(['print-items'])
 
 watch(printItems, newVal => {
