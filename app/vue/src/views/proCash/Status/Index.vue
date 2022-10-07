@@ -37,16 +37,14 @@ const fetchExecAmountList = (project: number, date?: string) =>
   proCashStore.fetchExecAmountList(project, date)
 
 const excelUrl = computed(() => {
+  const comp = compName.value
   const pj = project.value
   const dt = dateFormat(date.value)
   let url = ''
-  if (compName.value === 'StatusByAccount')
-    url = `/excel/budget/?project=${pj}&date=${dt}`
-  else if (compName.value === 'CashListByDate')
-    url = `/excel/budget/?project=${pj}&date=${dt}`
-  else if (compName.value === 'SummaryForBudget')
-    url = `/excel/budget/?project=${pj}&date=${dt}`
-  return url
+  if (comp === 'StatusByAccount') url = `/excel/p-balance/`
+  else if (comp === 'CashListByDate') url = `/excel/p-daily-cash/`
+  else if (comp === 'SummaryForBudget') url = `/excel/p-budget/`
+  return `${url}?project=${pj}&date=${dt}`
 })
 
 const onSelectAdd = (target: number) => {
@@ -113,11 +111,7 @@ onBeforeMount(() => {
 
       <TabSelect @tab-select="showTab" />
 
-      <TableTitleRow
-        excel
-        :disabled="compName !== 'SummaryForBudget'"
-        :url="excelUrl"
-      />
+      <TableTitleRow excel :url="excelUrl" />
 
       <StatusByAccount v-if="compName === 'StatusByAccount'" :date="date" />
       <CashListByDate v-if="compName === 'CashListByDate'" :date="date" />

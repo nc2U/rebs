@@ -79,7 +79,7 @@
                             <div class="tab-content col-12">
                                 <div class="tab-pane show active" id="home-b2">
                                     <div class="text-right mb-1 mr-2">
-                                        <a href="javascript:alert('준비중!')" class="text-secondary">
+                                        <a href="{% url 'excel:project-balance' %}?project={{ this_project.pk }}&date={{ confirm_date }}">
                                             <i class="mdi mdi-file-excel-box"></i> Excel Export
                                             <i class="mdi mdi-download ml-1"></i>
                                         </a>
@@ -133,7 +133,7 @@
                                 </div>
                                 <div class="tab-pane" id="profile-b2">
                                     <div class="text-right mb-1 mr-2">
-                                        <a href="javascript:alert('준비중!')" class="text-secondary">
+                                        <a href="{% url 'excel:project-daily-cash' %}?project={{ this_project.pk }}&date={{ confirm_date }}">
                                             <i class="mdi mdi-file-excel-box"></i> Excel Export
                                             <i class="mdi mdi-download ml-1"></i>
                                         </a>

@@ -37,7 +37,7 @@ const excelUrl = computed(() => {
   const d1 = dataFilter.account_d1 || ''
   const ba = dataFilter.bank_account || ''
   const q = dataFilter.search
-  return `/excel/cashbooks/?s_date=${sd}&e_date=${ed}&sort=${st}&account_d1=${d1}&bank_account=${ba}&search_word=${q}`
+  return `/excel/cashbook/?s_date=${sd}&e_date=${ed}&sort=${st}&account_d1=${d1}&bank_account=${ba}&search_word=${q}`
 })
 
 const companyStore = useCompany()
