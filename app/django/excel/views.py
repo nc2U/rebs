@@ -847,7 +847,7 @@ class ExportBudgetExecutionStatus(View):
         b_format.set_valign('vcenter')
         b_format.set_border()
         b_format.set_num_format('#,##0')
-        b_format.set_align('center')
+        b_format.set_align('end')
 
         budget = ProjectBudget.objects.filter(project=project)
         rsp1 = budget.filter(account_d2__code__range=('322', '326')).count()  # 간접공사비
