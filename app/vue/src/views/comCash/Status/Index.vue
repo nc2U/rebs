@@ -45,6 +45,14 @@ const fetchComBalanceByAccList = (com: { company: number; date?: string }) =>
 const fetchDateCashBookList = (payload: { company: number; date: string }) =>
   comCashStore.fetchDateCashBookList(payload)
 
+const excelUrl = computed(() => {
+  const comp = compName.value
+  let url = ''
+  if (comp === 'StatusByAccount') url = `/excel/balance/`
+  else if (comp === 'CashListByDate') url = `/excel/daily-cash/`
+  return `${url}?&date=${dateFormat(date.value)}`
+})
+
 const onSelectAdd = (target: number) => {
   if (!!target) {
     fetchComBankAccList(target)
@@ -98,7 +106,7 @@ const setDate = (d: string) => {
 
       <TabSelect @tab-select="showTab" />
 
-      <TableTitleRow excel disabled />
+      <TableTitleRow excel :url="excelUrl" />
 
       <StatusByAccount v-if="compName === 'StatusByAccount'" :date="date" />
       <CashListByDate v-if="compName === 'CashListByDate'" :date="date" />
