@@ -67,18 +67,18 @@
                                             <span class="d-none d-md-block">당일 입출현황</span>
                                         </a>
                                     </li>
-                                    {#                                    <li class="nav-item">#}
-                                    {#                                        <a href="#settings-b2" data-toggle="tab" aria-expanded="false" class="nav-link">#}
-                                    {#                                            <i class="mdi mdi-settings-outline d-md-none d-block"></i>#}
-                                    {#                                            <span class="d-none d-md-block">예산대비 현황</span>#}
-                                    {#                                        </a>#}
-                                    {#                                    </li>#}
                                 </ul>
                             </div>
                             <br>
 
                             <div class="tab-content col-12">
                                 <div class="tab-pane show active" id="home-b2">
+                                    <div class="text-right mb-1 mr-2">
+                                        <a href="{% url 'excel:balance' %}?date={{ confirm_date }}">
+                                            <i class="mdi mdi-file-excel-box"></i> Excel Export
+                                            <i class="mdi mdi-download ml-1"></i>
+                                        </a>
+                                    </div>
                                     <div class="table-responsive">
                                         <table class="table table-hover table-centered table-condensed table-bordered table-sm w-100 m-0 nowrap">
                                             <thead>
@@ -132,6 +132,12 @@
                                     </div>
                                 </div>
                                 <div class="tab-pane" id="profile-b2">
+                                    <div class="text-right mb-1 mr-2">
+                                        <a href="{% url 'excel:daily-cash' %}?date={{ confirm_date }}">
+                                            <i class="mdi mdi-file-excel-box"></i> Excel Export
+                                            <i class="mdi mdi-download ml-1"></i>
+                                        </a>
+                                    </div>
                                     <div class="table-responsive">
                                         <table class="table table-hover table-centered table-condensed table-bordered table-sm w-100 m-0 nowrap">
                                             <thead>
