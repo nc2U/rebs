@@ -41,7 +41,7 @@ class ExportContracts(View):
         worksheet.set_default_row(20)
 
         project = Project.objects.get(pk=request.GET.get('project'))
-        cols = request.GET.get('col').split('-')
+        cols = sorted(list(map(int, request.GET.get('col').split('-'))))
 
         # 1. Title
         row_num = 0
@@ -91,9 +91,9 @@ class ExportContracts(View):
         widths = [7]
 
         for i in cols:  # 요청된 컬럼 개수 만큼 반복 (1-2-3... -> i)
-            titles.append(data_source[int(i)][0])  # 일련번호
-            params.append(data_source[int(i)][1])  # serial_number
-            widths.append(data_source[int(i)][2])  # 10
+            titles.append(data_source[i][0])  # 일련번호
+            params.append(data_source[i][1])  # serial_number
+            widths.append(data_source[i][2])  # 10
 
         h_format = workbook.add_format()
         h_format.set_bold()
