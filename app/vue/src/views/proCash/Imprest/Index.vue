@@ -99,15 +99,16 @@ const listFiltering = (payload: CashBookFilter) => {
 const onCreate = (
   payload: PrCashBook & { sepData: PrCashBook | null } & {
     filters: CashBookFilter
-  } & { bank_account_to?: number },
+  } & { bank_account_to?: number; ba_is_imprest: boolean },
 ) => {
   payload.project = project.value
   if (payload.sort === 3 && payload.bank_account_to) {
-    const { bank_account_to, income, ...inputData } = payload
+    const { bank_account_to, ba_is_imprest, income, ...inputData } = payload
 
     createPrCashBook(inputData)
 
     delete inputData.outlay
+    if (!ba_is_imprest) inputData.is_imprest = ba_is_imprest
     inputData.bank_account = bank_account_to
 
     createPrCashBook({ ...{ income }, ...inputData })
