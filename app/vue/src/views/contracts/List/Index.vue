@@ -131,7 +131,7 @@ onMounted(() => {
       </TableTitleRow>
       <SelectItems
         :visible="visible"
-        :project="unitSet"
+        :unit-set="unitSet"
         @print-items="setItems"
       />
       <ContractList @page-select="pageSelect" />

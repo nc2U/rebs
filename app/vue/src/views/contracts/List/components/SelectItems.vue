@@ -2,20 +2,24 @@
 import { ref, watch, onMounted } from 'vue'
 
 const props = defineProps({
-  project: { type: Boolean, default: false },
+  unitSet: { type: Boolean, default: false },
   visible: { type: Boolean, default: false },
 })
 
 const printItems = ref(['1', '2', '3', '4', '7', '8', '9', '10', '18-19-20-21'])
-
+g
 const emit = defineEmits(['print-items'])
 
 watch(printItems, newVal => {
   emit('print-items', newVal)
 })
 
+watch(props, val => {
+  if (val.unitSet) printItems.value.splice(4, 0, '5-6')
+})
+
 onMounted(() => {
-  if (props.project) printItems.value.splice(4, 0, '5-6')
+  if (props.unitSet) printItems.value.splice(4, 0, '5-6')
 })
 </script>
 
@@ -59,7 +63,7 @@ onMounted(() => {
           hide-details
         />
         <v-checkbox-btn
-          v-if="project"
+          v-if="unitSet"
           id="printItems5"
           v-model="printItems"
           label="동호수"
