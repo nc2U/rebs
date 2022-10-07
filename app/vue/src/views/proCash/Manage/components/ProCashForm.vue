@@ -37,7 +37,7 @@ const sepItem = reactive<ProSepItems>({
 
 const validated = ref(false)
 
-const form = reactive<ProjectCashBook>({
+const form = reactive<ProjectCashBook & { bank_account_to: null | number }>({
   pk: null,
   project: null,
   sort: null,
@@ -51,6 +51,7 @@ const form = reactive<ProjectCashBook>({
   content: '',
   trader: '',
   bank_account: null,
+  bank_account_to: null,
   income: null,
   outlay: null,
   evidence: '',
@@ -300,6 +301,7 @@ onBeforeMount(() => {
                 <CFormSelect
                   v-model.number="form.sort"
                   required
+                  :disabled="proCash && !!proCash.sort"
                   @change="sort_change"
                 >
                   <option value="">---------</option>
@@ -477,7 +479,11 @@ onBeforeMount(() => {
                   min="0"
                   placeholder="출금 금액"
                   :required="form.sort === 2"
-                  :disabled="form.sort === 1 || !form.sort"
+                  :disabled="
+                    form.sort === 1 ||
+                    !form.sort ||
+                    (proCash && !proCash.outlay)
+                  "
                 />
               </CCol>
             </CRow>
@@ -493,7 +499,11 @@ onBeforeMount(() => {
                   min="0"
                   placeholder="입금 금액"
                   :required="form.sort === 1"
-                  :disabled="form.sort === 2 || !form.sort"
+                  :disabled="
+                    form.sort === 2 ||
+                    !form.sort ||
+                    (proCash && !proCash.income)
+                  "
                 />
               </CCol>
             </CRow>

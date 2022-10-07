@@ -308,6 +308,7 @@ onBeforeMount(() => {
                 <CFormSelect
                   v-model.number="form.sort"
                   required
+                  :disabled="imprest && !!imprest.sort"
                   @change="sort_change"
                 >
                   <option value="">---------</option>
@@ -486,7 +487,11 @@ onBeforeMount(() => {
                   min="0"
                   placeholder="출금 금액"
                   :required="form.sort === 2"
-                  :disabled="form.sort === 1 || !form.sort"
+                  :disabled="
+                    form.sort === 1 ||
+                    !form.sort ||
+                    (imprest && !imprest.outlay)
+                  "
                 />
               </CCol>
             </CRow>
@@ -502,7 +507,11 @@ onBeforeMount(() => {
                   min="0"
                   placeholder="입금 금액"
                   :required="form.sort === 1"
-                  :disabled="form.sort === 2 || !form.sort"
+                  :disabled="
+                    form.sort === 2 ||
+                    !form.sort ||
+                    (imprest && !imprest.income)
+                  "
                 />
               </CCol>
             </CRow>

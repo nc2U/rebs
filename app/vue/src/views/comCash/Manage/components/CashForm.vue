@@ -529,7 +529,9 @@ onBeforeMount(() => {
                   min="0"
                   placeholder="출금 금액"
                   :required="form.sort === 2"
-                  :disabled="form.sort === 1 || !form.sort"
+                  :disabled="
+                    form.sort === 1 || !form.sort || (cash && !cash.outlay)
+                  "
                 />
               </CCol>
             </CRow>
@@ -544,7 +546,9 @@ onBeforeMount(() => {
                   min="0"
                   placeholder="입금 금액"
                   :required="form.sort === 1"
-                  :disabled="form.sort === 2 || !form.sort"
+                  :disabled="
+                    form.sort === 2 || !form.sort || (cash && !cash.income)
+                  "
                 />
               </CCol>
             </CRow>
