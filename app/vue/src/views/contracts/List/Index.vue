@@ -29,7 +29,8 @@ const project = computed(() => projectStore.project)
 const initProjId = computed(() => projectStore.initProjId)
 
 watch(project, nVal => {
-  if (nVal?.is_unit_set) printItems.value.splice(4, 0, '5-6')
+  if (nVal?.is_unit_set && !printItems.value.includes('5-6'))
+    printItems.value.splice(4, 0, '5-6')
   unitSet.value = nVal?.is_unit_set || false
 })
 

@@ -14,11 +14,13 @@ watch(printItems, newVal => {
 })
 
 watch(props, val => {
-  if (val.unitSet) printItems.value.splice(4, 0, '5-6')
+  if (val.unitSet && !printItems.value.includes('5-6'))
+    printItems.value.splice(4, 0, '5-6')
 })
 
 onMounted(() => {
-  if (props.unitSet) printItems.value.splice(4, 0, '5-6')
+  if (props.unitSet && !printItems.value.includes('5-6'))
+    printItems.value.splice(4, 0, '5-6')
 })
 </script>
 
