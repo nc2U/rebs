@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount, ref } from 'vue'
+import { ref, reactive, computed, onBeforeMount } from 'vue'
 import { navMenu, pageTitle } from '@/views/comCash/_menu/headermixin'
 import { useCompany } from '@/store/pinia/company'
 import {
@@ -17,7 +17,7 @@ import CashesList from '@/views/comCash/Manage/components/CashesList.vue'
 
 const listControl = ref()
 
-const dataFilter = ref<Filter>({
+let dataFilter = reactive<Filter>({
   page: 1,
   company: null,
   from_date: '',
@@ -28,6 +28,16 @@ const dataFilter = ref<Filter>({
   account_d3: null,
   bank_account: null,
   search: '',
+})
+
+const excelUrl = computed(() => {
+  const sd = dataFilter.from_date
+  const ed = dataFilter.to_date
+  const st = dataFilter.sort || ''
+  const d1 = dataFilter.account_d1 || ''
+  const ba = dataFilter.bank_account || ''
+  const q = dataFilter.search
+  return `/excel/cashbooks/?s_date=${sd}&e_date=${ed}&sort=${st}&account_d1=${d1}&bank_account=${ba}&search_word=${q}`
 })
 
 const companyStore = useCompany()
@@ -78,7 +88,7 @@ const pageSelect = (page: number) => listControl.value.listFiltering(page)
 
 const listFiltering = (payload: Filter) => {
   if (company.value) payload.company = company.value
-  dataFilter.value = payload
+  dataFilter = payload
   const sort = payload.sort
   const d1 = payload.account_d1
   const d2 = payload.account_d2
@@ -117,14 +127,14 @@ const multiSubmit = (payload: {
 }) => {
   const { formData, ...sepData } = payload
   const createData = { ...formData, ...sepData }
-  const updateData = { ...{ filters: dataFilter.value }, ...createData }
+  const updateData = { ...{ filters: dataFilter }, ...createData }
 
   if (formData.pk) onUpdate(updateData)
   else onCreate(createData)
 }
 
 const onDelete = (payload: CashBook) =>
-  deleteCashBook({ ...{ filters: dataFilter.value }, ...payload })
+  deleteCashBook({ ...{ filters: dataFilter }, ...payload })
 
 onBeforeMount(() => {
   fetchCompany(initComId.value)
@@ -137,7 +147,7 @@ onBeforeMount(() => {
   fetchFormAccD3List(null, null, null)
   fetchComBankAccList(initComId.value)
   fetchCashBookList({ company: initComId.value })
-  dataFilter.value.company = initComId.value
+  dataFilter.company = initComId.value
 })
 </script>
 
@@ -152,7 +162,12 @@ onBeforeMount(() => {
     <CCardBody class="pb-5">
       <ListController ref="listControl" @list-filtering="listFiltering" />
       <AddCash @multi-submit="multiSubmit" />
-      <TableTitleRow title="본사 입출금 관리" color="indigo" excel disabled />
+      <TableTitleRow
+        title="본사 입출금 관리"
+        color="indigo"
+        excel
+        :url="excelUrl"
+      />
       <CashesList
         :company="company"
         @page-select="pageSelect"
