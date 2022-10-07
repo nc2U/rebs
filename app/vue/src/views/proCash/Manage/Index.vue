@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed, onBeforeMount } from 'vue'
+import { ref, reactive, computed, onBeforeMount } from 'vue'
 import { pageTitle, navMenu } from '@/views/proCash/_menu/headermixin'
 import { CashBookFilter, useProCash } from '@/store/pinia/proCash'
 import { useProject } from '@/store/pinia/project'
@@ -13,7 +13,7 @@ import ProCashList from '@/views/proCash/Manage/components/ProCashList.vue'
 
 const listControl = ref()
 
-const dataFilter = ref<CashBookFilter>({
+let dataFilter = reactive<CashBookFilter>({
   page: 1,
   from_date: '',
   to_date: '',
@@ -22,6 +22,18 @@ const dataFilter = ref<CashBookFilter>({
   pro_acc_d2: null,
   bank_account: null,
   search: '',
+})
+
+const excelUrl = computed(() => {
+  const pj = project.value
+  const sd = dataFilter.from_date
+  const ed = dataFilter.to_date
+  const st = dataFilter.sort || ''
+  const d1 = dataFilter.pro_acc_d1 || ''
+  const d2 = dataFilter.pro_acc_d2 || ''
+  const ba = dataFilter.bank_account || ''
+  const q = dataFilter.search
+  return `/excel/project-cash/?project=${pj}&sdate=${sd}&edate=${ed}&sort=${st}&d1=${d1}&d2=${d2}&bank_acc=${ba}&q=${q}`
 })
 
 const projectStore = useProject()
@@ -83,12 +95,12 @@ const onSelectAdd = (target: number) => {
 }
 
 const pageSelect = (page: number) => {
-  dataFilter.value.page = page
+  dataFilter.page = page
   listControl.value.listFiltering(page)
 }
 
 const listFiltering = (payload: CashBookFilter) => {
-  dataFilter.value = payload
+  dataFilter = payload
   const sort = payload.sort ? payload.sort : null
   const d1 = payload.pro_acc_d1 ? payload.pro_acc_d1 : null
   fetchProFormAccD1List(sort)
@@ -128,7 +140,7 @@ const multiSubmit = (payload: {
   const submitData = {
     ...formData,
     ...sepData,
-    ...{ filters: dataFilter.value },
+    ...{ filters: dataFilter },
   }
 
   if (formData.pk) onUpdate(submitData)
@@ -136,7 +148,7 @@ const multiSubmit = (payload: {
 }
 
 const onDelete = (payload: { pk: number; project: number }) =>
-  deletePrCashBook({ ...{ filters: dataFilter.value }, ...payload })
+  deletePrCashBook({ ...{ filters: dataFilter }, ...payload })
 </script>
 
 <template>
@@ -154,7 +166,7 @@ const onDelete = (payload: { pk: number; project: number }) =>
         title="프로젝트 입출금 내역"
         color="indigo"
         excel
-        disabled
+        :url="excelUrl"
       />
       <ProCashList
         @page-select="pageSelect"
