@@ -938,12 +938,12 @@ class ExportProjectDateCashbook(View):
         title_format.set_font_size(18)
         title_format.set_align('vcenter')
         title_format.set_bold()
-        worksheet.write(row_num, 0, str(project) + ' 당일 입출금내역', title_format)
+        worksheet.write(row_num, 0, str(project) + ' 당일 입출금내역 [' + date + ' 기준]', title_format)
 
         # 2. Header
         row_num = 1
         worksheet.set_row(row_num, 18)
-        worksheet.write(row_num, 6, date + ' 현재', workbook.add_format({'align': 'right'}))
+        # worksheet.write(row_num, 6, date + ' 현재', workbook.add_format({'align': 'right'}))
 
         # 3. Header
         row_num = 2
@@ -976,7 +976,9 @@ class ExportProjectDateCashbook(View):
         b_format.set_num_format('#,##0')
         b_format.set_align('end')
 
-        date_cashes = ProjectCashBook.objects.filter(is_separate=False, deal_date__exact=date)
+        date_cashes = ProjectCashBook.objects.filter(is_separate=False, deal_date__exact=date).order_by('deal_date',
+                                                                                                        'created_at',
+                                                                                                        'id')
 
         inc_sum = 0
         out_sum = 0
@@ -1461,14 +1463,266 @@ def export_sitesContracts_xls(request):
     pass
 
 
-def export_cash_balance_xls(request):
+class ExportBalanceByAcc(View):
     """본사 계좌별 잔고 내역"""
-    pass
+
+    def get(self, request):
+        # Create an in-memory output file for the new workbook.
+        output = io.BytesIO()
+
+        # Even though the final file will be in memory the module uses temp
+        # files during assembly for efficiency. To avoid this on servers that
+        # don't allow temp files, for example the Google APP Engine, set the
+        # 'in_memory' Workbook() constructor option as shown in the docs.
+        workbook = xlsxwriter.Workbook(output)
+        worksheet = workbook.add_worksheet('본사_계좌별_자금현황')
+
+        worksheet.set_default_row(20)  # 기본 행 높이
+
+        # data start --------------------------------------------- #
+
+        company = Company.objects.first()
+        date = request.GET.get('date') if request.GET.get('date') else TODAY
+
+        # 1. Title
+        row_num = 0
+        title_format = workbook.add_format()
+        worksheet.set_row(row_num, 50)
+        title_format.set_font_size(18)
+        title_format.set_align('vcenter')
+        title_format.set_bold()
+        worksheet.write(row_num, 0, str(company) + ' 계좌별 자금현황', title_format)
+
+        # 2. Header
+        row_num = 1
+        worksheet.set_row(row_num, 18)
+        worksheet.write(row_num, 5, date + ' 현재', workbook.add_format({'align': 'right'}))
+
+        # 3. Header
+        row_num = 2
+        h_format = workbook.add_format()
+        h_format.set_bold()
+        h_format.set_border()
+        h_format.set_align('center')
+        h_format.set_align('vcenter')
+        h_format.set_bg_color('#eeeeee')
+
+        worksheet.set_column(0, 0, 10)
+        worksheet.merge_range(row_num, 0, row_num, 1, '구분', h_format)
+        worksheet.set_column(1, 1, 30)
+        worksheet.set_column(2, 2, 20)
+        worksheet.write(row_num, 2, '전일잔고', h_format)
+        worksheet.set_column(3, 3, 20)
+        worksheet.write(row_num, 3, '금알입금(증가)', h_format)
+        worksheet.set_column(4, 4, 20)
+        worksheet.write(row_num, 4, '금일출금(감소)', h_format)
+        worksheet.set_column(5, 5, 20)
+        worksheet.write(row_num, 5, '금일잔고', h_format)
+
+        # 4. Contents
+        b_format = workbook.add_format()
+        b_format.set_valign('vcenter')
+        b_format.set_border()
+        b_format.set_num_format('#,##0')
+        b_format.set_align('end')
+
+        qs = CashBook.objects.all() \
+            .order_by('bank_account') \
+            .filter(is_separate=False, deal_date__lte=date)
+
+        balance_set = qs.annotate(bank_acc=F('bank_account__alias_name')) \
+            .values('bank_acc') \
+            .annotate(inc_sum=Sum('income'),
+                      out_sum=Sum('outlay'),
+                      date_inc=Sum(Case(
+                          When(deal_date=date, then=F('income')),
+                          default=0
+                      )),
+                      date_out=Sum(Case(
+                          When(deal_date=date, then=F('outlay')),
+                          default=0
+                      )))
+
+        total_inc = 0
+        total_out = 0
+        total_inc_sum = 0
+        total_out_sum = 0
+
+        for row, balance in enumerate(balance_set):
+            row_num += 1
+            inc_sum = balance['inc_sum'] if balance['inc_sum'] else 0
+            out_sum = balance['out_sum'] if balance['out_sum'] else 0
+            date_inc = balance['date_inc'] if balance['date_inc'] else 0
+            date_out = balance['date_out'] if balance['date_out'] else 0
+
+            total_inc += date_inc
+            total_out += date_out
+            total_inc_sum += inc_sum
+            total_out_sum += out_sum
+
+            for col in range(6):
+                if col == 0 and row == 0:
+                    worksheet.write(row_num, col, '현금', b_format)
+                if col == 0 and row == 1:
+                    worksheet.merge_range(row_num, col, balance_set.count() + 2, col, '보통예금', b_format)
+                if col == 1:
+                    worksheet.write(row_num, col, balance['bank_acc'], b_format)
+                if col == 2:
+                    worksheet.write(row_num, col, inc_sum - out_sum - date_inc + date_out, b_format)
+                if col == 3:
+                    worksheet.write(row_num, col, date_inc, b_format)
+                if col == 4:
+                    worksheet.write(row_num, col, date_out, b_format)
+                if col == 5:
+                    worksheet.write(row_num, col, inc_sum - out_sum, b_format)
+
+        # 5. Sum row
+        row_num += 1
+        worksheet.merge_range(row_num, 0, row_num, 1, '현금성 자산 계', b_format)
+        worksheet.write(row_num, 2, total_inc_sum - total_out_sum - total_inc + total_out, b_format)
+        worksheet.write(row_num, 3, total_inc, b_format)
+        worksheet.write(row_num, 4, total_out, b_format)
+        worksheet.write(row_num, 5, total_inc_sum - total_out_sum, b_format)
+
+        # data end ----------------------------------------------- #
+
+        # Close the workbook before sending the data.
+        workbook.close()
+
+        # Rewind the buffer.
+        output.seek(0)
+
+        # Set up the Http response.
+        filename = f'{datetime.now().strftime("%Y-%m-%d")}-project-balance.xlsx'
+        file_format = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        response = HttpResponse(output, content_type=file_format)
+        response['Content-Disposition'] = f'attachment; filename={filename}'
+
+        return response
 
 
-def export_daily_cash_xls(request):
+class ExportDateCashbook(View):
     """본사 일별 입출금 내역"""
-    pass
+
+    def get(self, request):
+        # Create an in-memory output file for the new workbook.
+        output = io.BytesIO()
+
+        # Even though the final file will be in memory the module uses temp
+        # files during assembly for efficiency. To avoid this on servers that
+        # don't allow temp files, for example the Google APP Engine, set the
+        # 'in_memory' Workbook() constructor option as shown in the docs.
+        workbook = xlsxwriter.Workbook(output)
+        worksheet = workbook.add_worksheet('당일_입출금내역')
+
+        worksheet.set_default_row(20)  # 기본 행 높이
+
+        # data start --------------------------------------------- #
+
+        company = Company.objects.first()
+        date = request.GET.get('date') if request.GET.get('date') else TODAY
+
+        # 1. Title
+        row_num = 0
+        title_format = workbook.add_format()
+        worksheet.set_row(row_num, 50)
+        title_format.set_font_size(18)
+        title_format.set_align('vcenter')
+        title_format.set_bold()
+        worksheet.write(row_num, 0, str(company) + ' 당일 입출금내역 [' + date + ' 기준]', title_format)
+
+        # 2. Header
+        row_num = 1
+        worksheet.set_row(row_num, 18)
+        # worksheet.write(row_num, 7, date + ' 현재', workbook.add_format({'align': 'right'}))
+
+        # 3. Header
+        row_num = 2
+        h_format = workbook.add_format()
+        h_format.set_bold()
+        h_format.set_border()
+        h_format.set_align('center')
+        h_format.set_align('vcenter')
+        h_format.set_bg_color('#eeeeee')
+
+        worksheet.set_column(0, 0, 15)
+        worksheet.write(row_num, 0, '구분', h_format)
+        worksheet.set_column(1, 1, 15)
+        worksheet.write(row_num, 1, '항목', h_format)
+        worksheet.set_column(2, 2, 15)
+        worksheet.write(row_num, 2, '세부항목', h_format)
+        worksheet.set_column(3, 3, 20)
+        worksheet.write(row_num, 3, '입금 금액', h_format)
+        worksheet.set_column(4, 4, 20)
+        worksheet.write(row_num, 4, '출금 금액', h_format)
+        worksheet.set_column(5, 5, 25)
+        worksheet.write(row_num, 5, '거래 계좌', h_format)
+        worksheet.set_column(6, 6, 30)
+        worksheet.write(row_num, 6, '거래처', h_format)
+        worksheet.set_column(7, 7, 30)
+        worksheet.write(row_num, 7, '적요', h_format)
+
+        # 4. Contents
+        b_format = workbook.add_format()
+        b_format.set_valign('vcenter')
+        b_format.set_border()
+        b_format.set_num_format('#,##0')
+        b_format.set_align('end')
+
+        date_cashes = CashBook.objects.filter(is_separate=False, deal_date__exact=date).order_by('deal_date',
+                                                                                                 'created_at',
+                                                                                                 'id')
+
+        inc_sum = 0
+        out_sum = 0
+        for row, cash in enumerate(date_cashes):
+            row_num += 1
+            inc_sum += cash.income if cash.income else 0
+            out_sum += cash.outlay if cash.outlay else 0
+
+            for col in range(8):
+                if col == 0:
+                    worksheet.write(row_num, col, cash.sort.name + '-' + cash.account_d1.name, b_format)
+                if col == 1:
+                    worksheet.write(row_num, col, cash.account_d2.name, b_format)
+                if col == 2:
+                    worksheet.write(row_num, col, cash.account_d3.name, b_format)
+                if col == 3:
+                    worksheet.write(row_num, col, cash.income, b_format)
+                if col == 4:
+                    worksheet.write(row_num, col, cash.outlay, b_format)
+                if col == 5:
+                    worksheet.write(row_num, col, cash.bank_account.alias_name, b_format)
+                if col == 6:
+                    worksheet.write(row_num, col, cash.trader, b_format)
+                if col == 7:
+                    worksheet.write(row_num, col, cash.content, b_format)
+
+        # 5. Sum row
+        row_num += 1
+        worksheet.merge_range(row_num, 0, row_num, 1, '합계', b_format)
+        worksheet.write(row_num, 2, '', b_format)
+        worksheet.write(row_num, 3, inc_sum, b_format)
+        worksheet.write(row_num, 4, out_sum, b_format)
+        worksheet.write(row_num, 5, '', b_format)
+        worksheet.write(row_num, 6, '', b_format)
+        worksheet.write(row_num, 7, '', b_format)
+
+        # data end ----------------------------------------------- #
+
+        # Close the workbook before sending the data.
+        workbook.close()
+
+        # Rewind the buffer.
+        output.seek(0)
+
+        # Set up the Http response.
+        filename = f'{datetime.now().strftime("%Y-%m-%d")}-project-date-cashbook.xlsx'
+        file_format = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        response = HttpResponse(output, content_type=file_format)
+        response['Content-Disposition'] = f'attachment; filename={filename}'
+
+        return response
 
 
 def export_cashbook_xls(request):

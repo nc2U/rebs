@@ -16,7 +16,7 @@ urlpatterns = [
     path('sites/', export_sites_xls, name='sites'),
     path('sites-by-owner/', export_sitesByOwner_xls, name='sites-by-owner'),
     path('sites-contracts/', export_sitesContracts_xls, name='sites-contracts'),
-    path('balance/', export_cash_balance_xls, name='balance'),
-    path('daily-cash/', export_daily_cash_xls, name='daily-cash'),
+    path('balance/', ExportBalanceByAcc.as_view(), name='balance'),
+    path('daily-cash/', ExportDateCashbook.as_view(), name='daily-cash'),
     path('cashbook/', export_cashbook_xls, name='cashbook'),
 ]

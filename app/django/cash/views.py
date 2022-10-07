@@ -92,16 +92,17 @@ class DaylyCashReport(LoginRequiredMixin, TemplateView):
         context['ba_totay_balance_sum'] = ba_totay_balance_sum if ba_totay_balance_sum != 0 else "-"
 
         # 당일 입출금 데이터
+        cashbook_data = CashBook.objects.all().order_by('deal_date', 'created_at', 'id')
         context['day_inc_list'] = CashBook.objects.filter(income__isnull=False,
                                                           deal_date__exact=context['confirm_date'])
-        context['day_out_list'] = CashBook.objects.filter(outlay__isnull=False,
-                                                          deal_date__exact=context['confirm_date'])
+        context['day_out_list'] = cashbook_data.filter(outlay__isnull=False,
+                                                       deal_date__exact=context['confirm_date'])
 
-        context['day_inc_sum'] = CashBook.objects.filter(income__isnull=False,
-                                                         deal_date__exact=context['confirm_date']).aggregate(
+        context['day_inc_sum'] = cashbook_data.filter(income__isnull=False,
+                                                      deal_date__exact=context['confirm_date']).aggregate(
             Sum('income'))
-        context['day_out_sum'] = CashBook.objects.filter(outlay__isnull=False,
-                                                         deal_date__exact=context['confirm_date']).aggregate(
+        context['day_out_sum'] = cashbook_data.filter(outlay__isnull=False,
+                                                      deal_date__exact=context['confirm_date']).aggregate(
             Sum('outlay'))
         return context
 
@@ -296,19 +297,20 @@ class ProjectCashReport(LoginRequiredMixin, TemplateView):
         context['ba_totay_balance_sum'] = ba_totay_balance_sum if ba_totay_balance_sum != 0 else "-"
 
         # 당일 입출금 데이터
-        context['day_inc_list'] = ProjectCashBook.objects.filter(project=self.get_project(), is_separate=False,
-                                                                 income__isnull=False,
-                                                                 deal_date__exact=context['confirm_date'])
-        context['day_out_list'] = ProjectCashBook.objects.filter(project=self.get_project(), is_separate=False,
-                                                                 outlay__isnull=False,
-                                                                 deal_date__exact=context['confirm_date'])
-        context['day_inc_sum'] = ProjectCashBook.objects.filter(project=self.get_project(), is_separate=False,
-                                                                income__isnull=False,
-                                                                deal_date__exact=context['confirm_date']).aggregate(
+        project_cashbook = ProjectCashBook.objects.all().order_by('deal_date', 'created_at', 'id')
+        context['day_inc_list'] = project_cashbook.filter(project=self.get_project(), is_separate=False,
+                                                          income__isnull=False,
+                                                          deal_date__exact=context['confirm_date'])
+        context['day_out_list'] = project_cashbook.filter(project=self.get_project(), is_separate=False,
+                                                          outlay__isnull=False,
+                                                          deal_date__exact=context['confirm_date'])
+        context['day_inc_sum'] = project_cashbook.filter(project=self.get_project(), is_separate=False,
+                                                         income__isnull=False,
+                                                         deal_date__exact=context['confirm_date']).aggregate(
             Sum('income'))
-        context['day_out_sum'] = ProjectCashBook.objects.filter(project=self.get_project(), is_separate=False,
-                                                                outlay__isnull=False,
-                                                                deal_date__exact=context['confirm_date']).aggregate(
+        context['day_out_sum'] = project_cashbook.filter(project=self.get_project(), is_separate=False,
+                                                         outlay__isnull=False,
+                                                         deal_date__exact=context['confirm_date']).aggregate(
             Sum('outlay'))
         # 예산관련 데이터(수입)
         context['order_group'] = OrderGroup.objects.filter(project=self.get_project())
