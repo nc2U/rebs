@@ -25,9 +25,12 @@ export interface SuitCase {
   pk: number | null
   project: number | null
   sort: '1' | '2' | '3' | '4' | '5'
+  sort_desc: string
   level: '0' | '1' | '2' | '3'
+  level_desc: string
   related_case: number | null
   court: string
+  court_desc: string
   other_agency: string
   case_number: string
   case_name: string
