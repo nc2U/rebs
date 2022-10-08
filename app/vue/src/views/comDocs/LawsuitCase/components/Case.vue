@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { computed, PropType } from 'vue'
-import { Post } from '@/store/types/document'
+import { SuitCase } from '@/store/types/document'
 import { cutString } from '@/utils/baseMixins'
 
 const props = defineProps({
-  suitCase: { type: Object as PropType<Post>, default: null },
+  suitCase: { type: Object as PropType<SuitCase>, default: null },
 })
 
 const suitCaseName = computed(() => {
@@ -15,7 +15,9 @@ const suitCaseName = computed(() => {
 })
 
 const relatedCaseName = computed(() =>
-  getCourt(props.suitCase.related_case_name as string),
+  props.suitCase.related_case_name
+    ? props.suitCase.related_case_name.split(' ')[1]
+    : '',
 )
 
 const getCourt = (court: string) =>
@@ -33,21 +35,22 @@ const getCourt = (court: string) =>
     <CTableDataCell>{{ suitCase.level_desc }}</CTableDataCell>
     <CTableDataCell>
       <CCol v-if="suitCase.related_case">
+        [
         <router-link
           :to="{
-            name: '본사 소송사건 - 보기',
-            params: { caseId: suitCase.related_case },
+            name: '본사 소송사건',
           }"
         >
-          {{ cutString(relatedCaseName, 25) }}
+          {{ relatedCaseName }}
         </router-link>
+        ]
       </CCol>
     </CTableDataCell>
     <CTableDataCell class="text-left">
       <router-link
         :to="{ name: '본사 소송사건 - 보기', params: { caseId: suitCase.pk } }"
       >
-        {{ cutString(suitCaseName, 30) }}
+        {{ cutString(suitCaseName, 35) }}
       </router-link>
     </CTableDataCell>
     <CTableDataCell>{{ suitCase.plaintiff }}</CTableDataCell>

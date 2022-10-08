@@ -19,13 +19,13 @@ const pageSelect = (page: number) => emit('page-select', page)
 <template>
   <CTable hover responsive align="middle" class="mt-5">
     <colgroup>
-      <col width="7%" />
-      <col width="7%" />
-      <col width="23%" />
-      <col width="27%" />
+      <col width="8%" />
+      <col width="8%" />
       <col width="12%" />
-      <col width="12%" />
-      <col width="12%" />
+      <col width="30%" />
+      <col width="14%" />
+      <col width="14%" />
+      <col width="14%" />
     </colgroup>
 
     <CTableHead>

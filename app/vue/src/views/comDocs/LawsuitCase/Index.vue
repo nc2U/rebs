@@ -3,7 +3,6 @@ import { computed, onBeforeMount, onBeforeUpdate, reactive } from 'vue'
 import { navMenu } from '@/views/comDocs/_menu/headermixin'
 import { useRouter } from 'vue-router'
 import { SuitCaseFilter as cFilter, useDocument } from '@/store/pinia/document'
-import { AFile, Attatches, Link, PatchPost, Post } from '@/store/types/document'
 import HeaderNav from '@/components/HeaderNav.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from './components/ListController.vue'
@@ -15,8 +14,8 @@ const caseFilter = reactive<cFilter>({
   page: 1,
   is_com: false,
   project: undefined,
-  sort: '1',
-  level: '0',
+  sort: undefined,
+  level: undefined,
   court: '',
 })
 
@@ -42,7 +41,7 @@ const updateSuitCase = (payload: any) => documentStore.updateSuitCase(payload)
 const deleteSuitCase = (payload: any) => documentStore.deleteSuitCase(payload)
 
 const router = useRouter()
-const onSubmit = (payload: Post & Attatches) => {
+const onSubmit = (payload: any) => {
   if (payload.pk) {
     updateSuitCase(payload)
     router.replace({
