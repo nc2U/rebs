@@ -29,6 +29,7 @@ export interface SuitCase {
   level: '0' | '1' | '2' | '3'
   level_desc: string
   related_case: number | null
+  related_case_name: string
   court: string
   court_desc: string
   other_agency: string
