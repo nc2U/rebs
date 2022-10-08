@@ -27,11 +27,15 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class LawSuitCaseSerializer(serializers.ModelSerializer):
+    sort_desc = serializers.CharField(source='get_sort_display', read_only=True)
+    level_desc = serializers.CharField(source='get_level_display', read_only=True)
+    court_desc = serializers.CharField(source='get_court_display', read_only=True)
+
     class Meta:
         model = LawsuitCase
-        fields = ('pk', 'project', 'sort', 'level', 'related_case', 'court',
-                  'other_agency', 'case_number', 'case_name', 'plaintiff',
-                  'defendant', 'related_debtor', 'case_start_date', 'summary')
+        fields = ('pk', 'project', 'sort', 'sort_desc', 'level', 'level_desc', 'related_case',
+                  'court', 'court_desc', 'other_agency', 'case_number', 'case_name',
+                  'plaintiff', 'defendant', 'related_debtor', 'case_start_date', 'summary')
 
 
 class SimpleLawSuitCaseSerializer(serializers.ModelSerializer):
