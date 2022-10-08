@@ -9,15 +9,40 @@ const props = defineProps({
 
 const suitCaseName = computed(() => {
   const sCase = props.suitCase
-  return `${sCase.court} ${sCase.case_number} ${sCase.case_name}`
+  return `${getCourt(sCase.court_desc as string)} ${sCase.case_number} ${
+    sCase.case_name
+  }`
 })
+
+const relatedCaseName = computed(() =>
+  getCourt(props.suitCase.related_case_name as string),
+)
+
+const getCourt = (court: string) =>
+  court
+    ? court
+        .replace('지방법원', '지법')
+        .replace('고등법원', '고법')
+        .replace('대법원', '대법')
+    : ''
 </script>
 
 <template>
   <CTableRow v-if="suitCase" class="text-center">
-    <CTableDataCell>{{ suitCase.sort }}</CTableDataCell>
-    <CTableDataCell>{{ suitCase.level }}</CTableDataCell>
-    <CTableDataCell>{{ suitCase.related_case }}</CTableDataCell>
+    <CTableDataCell>{{ suitCase.sort_desc }}</CTableDataCell>
+    <CTableDataCell>{{ suitCase.level_desc }}</CTableDataCell>
+    <CTableDataCell>
+      <CCol v-if="suitCase.related_case">
+        <router-link
+          :to="{
+            name: '본사 소송사건 - 보기',
+            params: { caseId: suitCase.related_case },
+          }"
+        >
+          {{ cutString(relatedCaseName, 25) }}
+        </router-link>
+      </CCol>
+    </CTableDataCell>
     <CTableDataCell class="text-left">
       <router-link
         :to="{ name: '본사 소송사건 - 보기', params: { caseId: suitCase.pk } }"

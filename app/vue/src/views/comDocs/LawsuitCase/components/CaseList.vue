@@ -21,8 +21,8 @@ const pageSelect = (page: number) => emit('page-select', page)
     <colgroup>
       <col width="7%" />
       <col width="7%" />
-      <col width="15%" />
-      <col width="35%" />
+      <col width="23%" />
+      <col width="27%" />
       <col width="12%" />
       <col width="12%" />
       <col width="12%" />
