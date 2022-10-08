@@ -113,6 +113,35 @@ const comDocs = {
               ? import('@/views/comDocs/LawsuitCase/Index.vue')
               : import('@/views/_Accounts/NoAuth.vue'),
           meta: { title: '본사 소송사건' },
+          children: [
+            {
+              path: ':caseId(\\d+)',
+              name: '본사 소송사건 - 보기',
+              component: () =>
+                pageViewAuth.value
+                  ? import('@/views/comDocs/LawsuitCase/Index.vue')
+                  : import('@/views/_Accounts/NoAuth.vue'),
+              meta: { title: '본사 소송사건', except: true },
+            },
+            {
+              path: ':caseId(\\d+)/update',
+              name: '본사 소송사건 - 수정',
+              component: () =>
+                pageViewAuth.value
+                  ? import('@/views/comDocs/LawsuitCase/Index.vue')
+                  : import('@/views/_Accounts/NoAuth.vue'),
+              meta: { title: '본사 소송사건', except: true },
+            },
+            {
+              path: 'create',
+              name: '본사 소송사건 - 작성',
+              component: () =>
+                pageViewAuth.value
+                  ? import('@/views/comDocs/LawsuitCase/Index.vue')
+                  : import('@/views/_Accounts/NoAuth.vue'),
+              meta: { title: '본사 소송사건', except: true },
+            },
+          ],
         },
       ],
     },
