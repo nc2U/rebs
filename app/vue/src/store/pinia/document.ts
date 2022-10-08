@@ -98,7 +98,11 @@ export const useDocument = defineStore('document', () => {
   const postCases = (itemsPerPage: number) =>
     Math.ceil(suitcaseCount.value / itemsPerPage)
 
-  const fetchSuitCase = () => 1
+  const fetchSuitCase = (pk: number) =>
+    api
+      .get(`/suitcase/${pk}/`)
+      .then(res => (suitcase.value = res.data))
+      .catch(err => errorHandle(err.response.data))
 
   const fetchSuitCaseList = (payload: SuitCaseFilter) => {
     const page = payload.page || 1
