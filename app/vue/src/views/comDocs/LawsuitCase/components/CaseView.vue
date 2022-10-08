@@ -43,12 +43,12 @@ const getFileName = (file: string) => {
 const route = useRoute()
 
 watch(route, val => {
-  if (val.params.postId) fetchPost(Number(val.params.postId))
+  if (val.params.caseId) fetchPost(Number(val.params.caseId))
   else documentStore.post = null
 })
 
 onBeforeMount(() => {
-  if (route.params.postId) fetchPost(Number(route.params.postId))
+  if (route.params.caseId) fetchPost(Number(route.params.caseId))
 
   setTimeout(() => {
     if (post.value)
@@ -219,8 +219,8 @@ onBeforeRouteLeave(() => {
             :disabled="!getPrev"
             @click="
               $router.push({
-                name: '본사 일반문서 - 보기',
-                params: { postId: getPrev },
+                name: '본사 소송사건 - 보기',
+                params: { caseId: getPrev },
               })
             "
           >
@@ -231,8 +231,8 @@ onBeforeRouteLeave(() => {
             :disabled="!getNext"
             @click="
               $router.push({
-                name: '본사 일반문서 - 보기',
-                params: { postId: getNext },
+                name: '본사 소송사건 - 보기',
+                params: { caseId: getNext },
               })
             "
           >
@@ -245,8 +245,8 @@ onBeforeRouteLeave(() => {
             color="success"
             @click="
               $router.push({
-                name: '본사 일반문서 - 수정',
-                params: { postId: post.pk },
+                name: '본사 소송사건 - 수정',
+                params: { caseId: post.pk },
               })
             "
           >
@@ -256,12 +256,12 @@ onBeforeRouteLeave(() => {
         </CButtonGroup>
       </CCol>
       <CCol class="text-right">
-        <CButton color="light" @click="$router.push({ name: '본사 일반문서' })">
+        <CButton color="light" @click="$router.push({ name: '본사 소송사건' })">
           목록으로
         </CButton>
         <CButton
           color="primary"
-          @click="$router.push({ name: '본사 일반문서 - 작성' })"
+          @click="$router.push({ name: '본사 소송사건 - 작성' })"
         >
           등록하기
         </CButton>

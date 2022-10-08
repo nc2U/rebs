@@ -5,14 +5,14 @@ import Pagination from '@/components/Pagination'
 
 defineProps({
   page: { type: Number, default: 1 },
-  postList: { type: Array, default: () => [] },
+  caseList: { type: Array, default: () => [] },
 })
 
 const emit = defineEmits(['page-select'])
 
 const documentStore = useDocument()
 
-const postPages = (num: number) => documentStore.postPages(num)
+const postCases = (num: number) => documentStore.postCases(num)
 const pageSelect = (page: number) => emit('page-select', page)
 </script>
 
@@ -41,7 +41,11 @@ const pageSelect = (page: number) => emit('page-select', page)
     </CTableHead>
 
     <CTableBody>
-      <Case v-for="post in postList" :key="post.pk" :post="post" />
+      <Case
+        v-for="suitcase in caseList"
+        :key="suitcase.pk"
+        :suit-case="suitcase"
+      />
     </CTableBody>
   </CTable>
 
@@ -50,7 +54,7 @@ const pageSelect = (page: number) => emit('page-select', page)
       <Pagination
         :active-page="page"
         :limit="8"
-        :pages="postPages(10)"
+        :pages="postCases(10)"
         class="mt-3"
         @active-page-change="pageSelect"
       />
@@ -59,7 +63,7 @@ const pageSelect = (page: number) => emit('page-select', page)
       <CButton
         color="primary"
         class="px-5"
-        @click="$router.push({ name: '본사 일반문서 - 작성' })"
+        @click="$router.push({ name: '본사 소송사건 - 작성' })"
       >
         등록하기
       </CButton>

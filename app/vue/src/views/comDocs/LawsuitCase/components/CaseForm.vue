@@ -101,7 +101,7 @@ const sortName = computed(() =>
 const fetchPost = (pk: number) => documentStore.fetchPost(pk)
 
 const route = useRoute()
-const btnClass = computed(() => (route.params.postId ? 'success' : 'primary'))
+const btnClass = computed(() => (route.params.caseId ? 'success' : 'primary'))
 
 const onSubmit = (event: Event) => {
   if (write_company_docs) {
@@ -161,12 +161,12 @@ watch(post, val => {
 })
 
 watch(route, val => {
-  if (val.params.postId) fetchPost(Number(val.params.postId))
+  if (val.params.caseId) fetchPost(Number(val.params.caseId))
   else documentStore.post = null
 })
 
 onBeforeMount(() => {
-  if (route.params.postId) fetchPost(Number(route.params.postId))
+  if (route.params.caseId) fetchPost(Number(route.params.caseId))
 })
 
 onBeforeRouteLeave(() => {
@@ -374,7 +374,7 @@ onBeforeRouteLeave(() => {
           목록으로
         </CButton>
         <CButton
-          v-if="route.params.postId"
+          v-if="route.params.caseId"
           color="light"
           @click="$router.go(-1)"
         >
