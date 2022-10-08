@@ -19,24 +19,24 @@ const pageSelect = (page: number) => emit('page-select', page)
 <template>
   <CTable hover responsive align="middle" class="mt-5">
     <colgroup>
-      <col width="8%" />
-      <col width="10%" />
-      <col width="11%" />
-      <col width="34%" />
-      <col width="12%" />
+      <col width="7%" />
+      <col width="7%" />
       <col width="15%" />
-      <col width="10%" />
+      <col width="35%" />
+      <col width="12%" />
+      <col width="12%" />
+      <col width="12%" />
     </colgroup>
 
     <CTableHead>
       <CTableRow :color="headerSecondary" class="text-center border-top-1">
-        <CTableHeaderCell scope="col">번호</CTableHeaderCell>
         <CTableHeaderCell scope="col">구분</CTableHeaderCell>
-        <CTableHeaderCell scope="col">문서 시행일자</CTableHeaderCell>
-        <CTableHeaderCell scope="col">문서 제목</CTableHeaderCell>
-        <CTableHeaderCell scope="col">등록자</CTableHeaderCell>
-        <CTableHeaderCell scope="col">등록일시</CTableHeaderCell>
-        <CTableHeaderCell scope="col">조회수</CTableHeaderCell>
+        <CTableHeaderCell scope="col">심급</CTableHeaderCell>
+        <CTableHeaderCell scope="col">관련사건</CTableHeaderCell>
+        <CTableHeaderCell scope="col">사건명</CTableHeaderCell>
+        <CTableHeaderCell scope="col">원고/신청인</CTableHeaderCell>
+        <CTableHeaderCell scope="col">피고/피신청인</CTableHeaderCell>
+        <CTableHeaderCell scope="col">제3채무자</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
 
