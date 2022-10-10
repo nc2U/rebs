@@ -2,7 +2,7 @@
 import { ref, reactive, computed, onBeforeMount, watch } from 'vue'
 import { onBeforeRouteLeave, useRoute } from 'vue-router'
 import { useDocument } from '@/store/pinia/document'
-import { Post, Attatches } from '@/store/types/document'
+import { SuitCase } from '@/store/types/document'
 import { write_company_docs } from '@/utils/pageAuth'
 import { dateFormat } from '@/utils/baseMixins'
 import { AlertSecondary } from '@/utils/cssMixins'
@@ -18,79 +18,53 @@ const delModal = ref()
 const alertModal = ref()
 const confirmModal = ref()
 
-const form = reactive<Post & Attatches>({
+const form = reactive<SuitCase>({
   pk: null,
-  board: 1,
-  is_notice: false,
   project: null,
-  category: null,
-  lawsuit: null,
-  title: '',
-  execution_date: null,
-  content: '',
-  is_hide_comment: false,
-  hit: 0,
-  blame: 0,
-  ip: null,
-  device: '',
-  secret: false,
-  password: '',
-  links: [],
-
-  oldLinks: [],
-  oldFiles: [],
-  newLinks: [],
-  newFiles: [],
+  sort: null,
+  level: null,
+  related_case: null,
+  court: '',
+  other_agency: '',
+  case_number: '',
+  case_name: '',
+  plaintiff: '',
+  defendant: '',
+  related_debtor: '',
+  case_start_date: '',
+  summary: '',
 })
-
-const newLinkNum = ref(1)
-const newLinkRange = computed(() => {
-  let array = []
-  for (let i = 0; i < newLinkNum.value; ++i) array.push(i)
-  return array
-})
-
-const newFileNum = ref(1)
-const newFileRange = computed(() => {
-  let array = []
-  for (let i = 0; i < newFileNum.value; ++i) array.push(i)
-  return array
-})
-
-const ctlLinkNum = (n: number) => {
-  if (n + 1 >= newLinkNum.value) newLinkNum.value = newLinkNum.value + 1
-  else newLinkNum.value = newLinkNum.value - 1
-}
-
-const ctlFileNum = (n: number) => {
-  if (n + 1 >= newFileNum.value) newFileNum.value = newFileNum.value + 1
-  else newFileNum.value = newFileNum.value - 1
-}
 
 const validated = ref(false)
 
 const documentStore = useDocument()
 const suitcase = computed(() => documentStore.suitcase)
 
-const attach = ref(true)
-
 const formsCheck = computed(() => {
   if (suitcase.value) {
-    const a = form.is_notice === suitcase.value.is_notice
-    const b = form.category === suitcase.value.category
-    const c = form.lawsuit === suitcase.value.lawsuit
-    const d = form.title === suitcase.value.title
-    const e = form.execution_date === suitcase.value.execution_date
-    const f = form.content === suitcase.value.content
+    const a = form.project === suitcase.value.project
+    const b = form.sort === suitcase.value.sort
+    const c = form.level === suitcase.value.level
+    const d = form.related_case === suitcase.value.related_case
+    const e = form.court === suitcase.value.court
+    const f = form.other_agency === suitcase.value.other_agency
+    const g = form.case_number === suitcase.value.case_number
+    const h = form.case_name === suitcase.value.case_name
+    const i = form.plaintiff === suitcase.value.plaintiff
+    const j = form.defendant === suitcase.value.defendant
+    const k = form.related_debtor === suitcase.value.related_debtor
+    const l = form.case_start_date === suitcase.value.case_start_date
+    const m = form.summary === suitcase.value.summary
 
-    return a && b && c && d && e && f && attach.value
+    const group1 = a && b && c && d && e && f && g
+    const group2 = h && i && j && k && l && m
+    return group1 && group2
   } else return false
 })
 
-const enableStore = (event: Event) => {
-  const el = event.target as HTMLInputElement
-  attach.value = !el.value
-}
+const sortName = computed(() =>
+  suitcase.value && suitcase.value.project ? suitcase.value.proj_name : '본사',
+)
 
 const fetchSuitCase = (pk: number) => documentStore.fetchSuitCase(pk)
 
@@ -121,42 +95,32 @@ const devideUri = (uri: string) => {
 }
 
 watch(form, val => {
-  if (val.execution_date) form.execution_date = dateFormat(val.execution_date)
+  if (val.case_start_date)
+    form.case_start_date = dateFormat(val.case_start_date)
 })
 
 watch(suitcase, val => {
   if (val) {
     form.pk = val.pk
-    form.board = val.board
-    form.is_notice = val.is_notice
     form.project = val.project
-    form.category = val.category
-    form.lawsuit = val.lawsuit
-    form.title = val.title
-    form.execution_date = val.execution_date
-    form.content = val.content
-    form.is_hide_comment = val.is_hide_comment
-    form.hit = val.hit
-    form.blame = val.blame
-    form.blame = val.blame
-    form.device = val.device
-    form.secret = val.secret
-    form.password = val.password
-    if (val.links) form.oldLinks = val.links
-    if (val.files) {
-      form.oldFiles = val.files.map(file => ({
-        pk: file.pk,
-        file: file.file,
-        newFile: '',
-        hit: file.hit,
-      }))
-    }
+    form.sort = val.sort
+    form.level = val.level
+    form.related_case = val.related_case
+    form.court = val.court
+    form.other_agency = val.other_agency
+    form.case_number = val.case_number
+    form.case_name = val.case_name
+    form.plaintiff = val.plaintiff
+    form.defendant = val.defendant
+    form.related_debtor = val.related_debtor
+    form.case_start_date = val.case_start_date
+    form.summary = val.summary
   }
 })
 
 watch(route, val => {
   if (val.params.caseId) fetchSuitCase(Number(val.params.caseId))
-  else documentStore.post = null
+  else documentStore.suitcase = null
 })
 
 onBeforeMount(() => {
@@ -174,7 +138,7 @@ onBeforeRouteLeave(() => {
       <h5>
         {{ sortName }}
         <v-icon icon="mdi-chevron-double-right" size="xs" />
-        일반문서
+        소송사건
       </h5>
     </CCol>
   </CRow>
@@ -189,176 +153,26 @@ onBeforeRouteLeave(() => {
     @submit.prevent="onSubmit"
   >
     <CRow class="mb-3">
-      <CFormLabel for="title" class="col-md-2 col-form-label">제목</CFormLabel>
-      <CCol md="8">
+      <CFormLabel for="title" class="col-md-2 col-form-label">유형</CFormLabel>
+      <CCol md="6">
         <CFormInput
           id="title"
-          v-model="form.title"
+          v-model="form.sort"
           required
-          placeholder="게시물 제목"
+          placeholder="사건유형"
         />
       </CCol>
     </CRow>
 
     <CRow class="mb-3">
-      <!--      <CFormLabel for="category" class="col-sm-2 col-form-label">-->
-      <!--        카테고리-->
-      <!--      </CFormLabel>-->
-      <!--      <CCol md="3">-->
-      <!--        <CFormSelect id="category" v-model="form.category" required>-->
-      <!--          <option value="">카테고리 선택</option>-->
-      <!--          <option v-for="cate in categoryList" :key="cate.pk" :value="cate.pk">-->
-      <!--            {{ cate.name }}-->
-      <!--          </option>-->
-      <!--        </CFormSelect>-->
-      <!--      </CCol>-->
-
-      <CFormLabel for="inputPassword" class="col-sm-2 col-form-label">
-        문서 시행일자
-      </CFormLabel>
-      <CCol md="3">
-        <DatePicker v-model="form.execution_date" placeholder="문서 시행일자" />
-      </CCol>
-      <CCol class="pt-2">
-        <CFormSwitch id="is_notice" v-model="form.is_notice" label="공지여부" />
-      </CCol>
-    </CRow>
-
-    <CRow class="mb-3">
-      <CFormLabel for="title" class="col-md-2 col-form-label">내용</CFormLabel>
-      <CCol md="10">
-        <ToastEditor v-model="form.content" placeholder="본문 내용" />
-      </CCol>
-    </CRow>
-
-    <CRow>
-      <CFormLabel for="title" class="col-md-2 col-form-label">링크</CFormLabel>
-      <CCol md="10" lg="8" xl="6">
-        <CRow v-if="post && form.oldLinks.length">
-          <CAlert :color="AlertSecondary">
-            <CCol>
-              <CInputGroup
-                v-for="(link, i) in form.oldLinks"
-                :key="link.pk"
-                class="mb-2"
-              >
-                <CFormInput
-                  :id="`post-link-${link.pk}`"
-                  v-model="form.oldLinks[i].link"
-                  size="sm"
-                  placeholder="파일 링크"
-                  @input="enableStore"
-                />
-                <CInputGroupText id="basic-addon1" class="py-0">
-                  <CFormCheck
-                    :id="`del-link-${link.pk}`"
-                    v-model="form.oldLinks[i].del"
-                    label="삭제"
-                    @input="enableStore"
-                  />
-                </CInputGroupText>
-              </CInputGroup>
-            </CCol>
-          </CAlert>
-        </CRow>
-
-        <CRow class="mb-2">
-          <CCol>
-            <CInputGroup
-              v-for="lNum in newLinkRange"
-              :key="`ln-${lNum}`"
-              class="mb-2"
-            >
-              <CFormInput
-                :id="`link-${lNum}`"
-                v-model="form.newLinks[lNum]"
-                placeholder="파일 링크"
-                @input="enableStore"
-              />
-              <CInputGroupText id="basic-addon1" @click="ctlLinkNum(lNum)">
-                <v-icon
-                  :icon="`mdi-${
-                    lNum + 1 < newLinkNum ? 'minus' : 'plus'
-                  }-thick`"
-                  :color="lNum + 1 < newLinkNum ? 'error' : 'primary'"
-                />
-              </CInputGroupText>
-            </CInputGroup>
-          </CCol>
-        </CRow>
-      </CCol>
-    </CRow>
-
-    <CRow class="mb-3">
-      <CFormLabel for="title" class="col-md-2 col-form-label">파일</CFormLabel>
-      <CCol md="10" lg="8" xl="6">
-        <CRow v-if="post && form.oldFiles.length">
-          <CAlert :color="AlertSecondary">
-            <small>{{ devideUri(form.oldFiles[0].file)[0] }}</small>
-            <CCol
-              v-for="(file, i) in form.oldFiles"
-              :key="file.pk"
-              xs="12"
-              color="primary"
-            >
-              <small>
-                현재 :
-                <a :href="file.file" target="_blank">
-                  {{ devideUri(file.file)[1] }}
-                </a>
-                <CRow>
-                  <CCol>
-                    <CInputGroup>
-                      변경 : &nbsp;
-                      <FileUpload
-                        :id="`post-file-${file.pk}`"
-                        v-model="form.oldFiles[i].newFile"
-                        size="sm"
-                        type="file"
-                        @input="enableStore"
-                      />
-                      <CInputGroupText id="basic-addon2" class="py-0">
-                        <CFormCheck
-                          :id="`del-file-${file.pk}`"
-                          v-model="form.oldFiles[i].del"
-                          :value="false"
-                          label="삭제"
-                          :disabled="!!form.oldFiles[i].newFile"
-                          @input="enableStore"
-                        />
-                      </CInputGroupText>
-                    </CInputGroup>
-                  </CCol>
-                </CRow>
-              </small>
-            </CCol>
-          </CAlert>
-        </CRow>
-
-        <CRow class="mb-2">
-          <CCol>
-            <CInputGroup
-              v-for="fNum in newFileRange"
-              :key="`fn-${fNum}`"
-              class="mb-2"
-            >
-              <FileUpload
-                :id="`file-${fNum}`"
-                v-model="form.newFiles[fNum]"
-                type="file"
-                @input="enableStore"
-              />
-              <CInputGroupText id="basic-addon2" @click="ctlFileNum(fNum)">
-                <v-icon
-                  :icon="`mdi-${
-                    fNum + 1 < newFileNum ? 'minus' : 'plus'
-                  }-thick`"
-                  :color="fNum + 1 < newFileNum ? 'error' : 'primary'"
-                />
-              </CInputGroupText>
-            </CInputGroup>
-          </CCol>
-        </CRow>
+      <CFormLabel for="title" class="col-md-2 col-form-label">유형</CFormLabel>
+      <CCol md="6">
+        <CFormInput
+          id="title"
+          v-model="form.sort"
+          required
+          placeholder="사건유형"
+        />
       </CCol>
     </CRow>
 
@@ -384,7 +198,7 @@ onBeforeRouteLeave(() => {
   <ConfirmModal ref="delModal">
     <template #header>
       <CIcon name="cilChevronCircleRightAlt" />
-      본사 일반문서
+      본사 소송사건
     </template>
     <template #default>현재 삭제 기능이 구현되지 않았습니다.</template>
     <template #footer>
@@ -395,9 +209,9 @@ onBeforeRouteLeave(() => {
   <ConfirmModal ref="confirmModal">
     <template #header>
       <CIcon name="cilChevronCircleRightAlt" />
-      본사 일반문서
+      본사 소송사건
     </template>
-    <template #default> 본사 일반문서 저장을 진행하시겠습니까?</template>
+    <template #default> 본사 소송사건 저장을 진행하시겠습니까?</template>
     <template #footer>
       <CButton :color="btnClass" @click="modalAction">저장</CButton>
     </template>
