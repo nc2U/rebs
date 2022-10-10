@@ -1,41 +1,13 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount, watch } from 'vue'
-import { timeFormat } from '@/utils/baseMixins'
 import { useDocument } from '@/store/pinia/document'
 import { onBeforeRouteLeave, useRoute } from 'vue-router'
-import { cutString } from '@/utils/baseMixins'
-
-const emit = defineEmits(['post-hit', 'link-hit', 'file-hit'])
+import { headerSecondary } from '@/utils/cssMixins'
 
 const documentStore = useDocument()
 const suitcase = computed(() => documentStore.suitcase)
-// const getPrev = computed(() => documentStore.getPrev)
-// const getNext = computed(() => documentStore.getNext)
 
 const fetchSuitCase = (pk: number) => documentStore.fetchSuitCase(pk)
-// const fetchLink = (pk: number) => documentStore.fetchLink(pk)
-// const fetchFile = (pk: number) => documentStore.fetchFile(pk)
-
-const toPrint = () => alert('준비중!')
-const toSocial = () => alert('준비중!')
-const toDelete = () => alert('준비중!')
-
-// const linkHitUp = async (pk: number) => {
-//   const link = await fetchLink(pk)
-//   link.hit = link.hit + 1
-//   emit('link-hit', link)
-// }
-
-// const fileHitUp = async (pk: number) => {
-//   const file = await fetchFile(pk)
-//   const hit = file.hit + 1
-//   emit('file-hit', { pk, hit })
-// }
-
-// const getFileName = (file: string) => {
-//   if (file) return decodeURI(file.split('/').slice(-1)[0])
-//   else return
-// }
 
 const route = useRoute()
 
@@ -46,11 +18,6 @@ watch(route, val => {
 
 onBeforeMount(() => {
   if (route.params.caseId) fetchSuitCase(Number(route.params.caseId))
-
-  // setTimeout(() => {
-  //   if (suitcase.value)
-  // emit('post-hit', { pk: suitcase.value.pk, hit: suitcase.value.hit + 1 })
-  // }, 500)
 })
 
 onBeforeRouteLeave(() => {
@@ -108,83 +75,93 @@ onBeforeRouteLeave(() => {
       </CCol>
     </CRow>
 
-    <CRow class="mt-5 py-2 justify-content-between">
-      <CCol md="5" lg="4" xl="3">
-        <table class="table table-bordered mt-2 mb-3">
-          <tbody>
-            <tr class="text-center">
-              <td class="p-2 bg-blue-grey-lighten-4">문서 시행일자</td>
-              <!--              <td class="p-2">{{ suitcase.execution_date }}</td>-->
-            </tr>
-          </tbody>
-        </table>
-      </CCol>
+    <CRow class="justify-content-center">
+      <CCol md="10 py-5">
+        <CTable bordered responsive align="middle">
+          <CTableHead>
+            <CTableRow class="text-center" :color="headerSecondary">
+              <CTableHeaderCell scope="col" class="w-25">
+                구 분
+              </CTableHeaderCell>
+              <CTableHeaderCell scope="col">내 용</CTableHeaderCell>
+            </CTableRow>
+          </CTableHead>
 
-      <CCol md="7" lg="6" xl="5">
-        <!--        <CRow v-if="post.links.length" class="mb-3">-->
-        <!--          <CCol>-->
-        <!--            <CListGroup>-->
-        <!--              <CListGroupItem>Link</CListGroupItem>-->
-        <!--              <CListGroupItem-->
-        <!--                v-for="l in post.links"-->
-        <!--                :key="l.pk"-->
-        <!--                class="d-flex justify-content-between align-items-center"-->
-        <!--              >-->
-        <!--                <a :href="l.link" target="_blank" @click="linkHitUp(l.pk)">-->
-        <!--                  {{ cutString(l.link, 45) }}-->
-        <!--                </a>-->
-        <!--                <small>-->
-        <!--                  조회 수 :-->
-        <!--                  <CBadge color="info" shape="rounded-pill">-->
-        <!--                    {{ l.hit }}-->
-        <!--                  </CBadge>-->
-        <!--                </small>-->
-        <!--              </CListGroupItem>-->
-        <!--            </CListGroup>-->
-        <!--          </CCol>-->
-        <!--        </CRow>-->
-
-        <!--        <CRow v-if="post.files.length">-->
-        <!--          <CCol>-->
-        <!--            <CListGroup>-->
-        <!--              <CListGroupItem>File</CListGroupItem>-->
-        <!--              <CListGroupItem-->
-        <!--                v-for="f in post.files"-->
-        <!--                :key="f.pk"-->
-        <!--                class="d-flex justify-content-between align-items-center"-->
-        <!--              >-->
-        <!--                <a :href="f.file" target="_blank" @click="fileHitUp(f.pk)">-->
-        <!--                  {{ cutString(getFileName(f.file), 29) }}-->
-        <!--                </a>-->
-        <!--                <small>-->
-        <!--                  다운로드 :-->
-        <!--                  <CBadge color="success" shape="rounded-pill">-->
-        <!--                    {{ f.hit }}-->
-        <!--                  </CBadge>-->
-        <!--                </small>-->
-        <!--              </CListGroupItem>-->
-        <!--            </CListGroup>-->
-        <!--          </CCol>-->
-        <!--        </CRow>-->
-      </CCol>
-    </CRow>
-
-    <CRow class="my-5 p-3">
-      <CCol>
-        <!--        <div v-html="suitcase.content" />-->
-      </CCol>
-    </CRow>
-
-    <CRow class="py-3">
-      <CCol class="text-right pr-1">
-        <v-btn variant="outlined" icon="true" color="grey" size="small">
-          <v-icon icon="mdi-thumb-up" size="small" />
-        </v-btn>
-      </CCol>
-      <CCol class="pl-1 text-body">
-        <v-btn variant="outlined" icon="true" color="grey" size="small">
-          <v-icon icon="mdi-thumb-down" size="small" />
-        </v-btn>
+          <CTableBody>
+            <CTableRow>
+              <CTableHeaderCell class="text-center" :color="headerSecondary">
+                유 형
+              </CTableHeaderCell>
+              <CTableDataCell>{{ suitcase.sort_desc }}</CTableDataCell>
+            </CTableRow>
+            <CTableRow>
+              <CTableHeaderCell class="text-center" :color="headerSecondary">
+                심 급
+              </CTableHeaderCell>
+              <CTableDataCell>{{ suitcase.level_desc }}</CTableDataCell>
+            </CTableRow>
+            <CTableRow>
+              <CTableHeaderCell class="text-center" :color="headerSecondary">
+                관련사건
+              </CTableHeaderCell>
+              <CTableDataCell>{{ suitcase.related_case_name }}</CTableDataCell>
+            </CTableRow>
+            <CTableRow>
+              <CTableHeaderCell class="text-center" :color="headerSecondary">
+                법원명
+              </CTableHeaderCell>
+              <CTableDataCell>{{ suitcase.court_desc }}</CTableDataCell>
+            </CTableRow>
+            <CTableRow>
+              <CTableHeaderCell class="text-center" :color="headerSecondary">
+                기타 처리기관
+              </CTableHeaderCell>
+              <CTableDataCell>{{ suitcase.other_agency }}</CTableDataCell>
+            </CTableRow>
+            <CTableRow>
+              <CTableHeaderCell class="text-center" :color="headerSecondary">
+                사건번호
+              </CTableHeaderCell>
+              <CTableDataCell>{{ suitcase.case_number }}</CTableDataCell>
+            </CTableRow>
+            <CTableRow>
+              <CTableHeaderCell class="text-center" :color="headerSecondary">
+                사건명
+              </CTableHeaderCell>
+              <CTableDataCell>{{ suitcase.case_name }}</CTableDataCell>
+            </CTableRow>
+            <CTableRow>
+              <CTableHeaderCell class="text-center" :color="headerSecondary">
+                원고(신청인)
+              </CTableHeaderCell>
+              <CTableDataCell>{{ suitcase.plaintiff }}</CTableDataCell>
+            </CTableRow>
+            <CTableRow>
+              <CTableHeaderCell class="text-center" :color="headerSecondary">
+                피고(피신청인)
+              </CTableHeaderCell>
+              <CTableDataCell>{{ suitcase.defendant }}</CTableDataCell>
+            </CTableRow>
+            <CTableRow>
+              <CTableHeaderCell class="text-center" :color="headerSecondary">
+                제3채무자
+              </CTableHeaderCell>
+              <CTableDataCell>{{ suitcase.related_debtor }}</CTableDataCell>
+            </CTableRow>
+            <CTableRow>
+              <CTableHeaderCell class="text-center" :color="headerSecondary">
+                사건개시일
+              </CTableHeaderCell>
+              <CTableDataCell>{{ suitcase.case_start_date }}</CTableDataCell>
+            </CTableRow>
+            <CTableRow>
+              <CTableHeaderCell class="text-center" :color="headerSecondary">
+                개요 및 경과
+              </CTableHeaderCell>
+              <CTableDataCell>{{ suitcase.summary }}</CTableDataCell>
+            </CTableRow>
+          </CTableBody>
+        </CTable>
       </CCol>
     </CRow>
 
@@ -247,7 +224,7 @@ onBeforeRouteLeave(() => {
             @click="
               $router.push({
                 name: '본사 소송사건 - 수정',
-                params: { caseId: post.pk },
+                params: { caseId: suitcase.pk },
               })
             "
           >

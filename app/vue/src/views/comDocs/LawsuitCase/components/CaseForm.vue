@@ -12,8 +12,6 @@ import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-defineProps({ categoryList: { type: Object, default: null } })
-
 const emit = defineEmits(['on-submit', 'close'])
 
 const delModal = ref()
@@ -72,18 +70,18 @@ const ctlFileNum = (n: number) => {
 const validated = ref(false)
 
 const documentStore = useDocument()
-const post = computed(() => documentStore.post)
+const suitcase = computed(() => documentStore.suitcase)
 
 const attach = ref(true)
 
 const formsCheck = computed(() => {
-  if (post.value) {
-    const a = form.is_notice === post.value.is_notice
-    const b = form.category === post.value.category
-    const c = form.lawsuit === post.value.lawsuit
-    const d = form.title === post.value.title
-    const e = form.execution_date === post.value.execution_date
-    const f = form.content === post.value.content
+  if (suitcase.value) {
+    const a = form.is_notice === suitcase.value.is_notice
+    const b = form.category === suitcase.value.category
+    const c = form.lawsuit === suitcase.value.lawsuit
+    const d = form.title === suitcase.value.title
+    const e = form.execution_date === suitcase.value.execution_date
+    const f = form.content === suitcase.value.content
 
     return a && b && c && d && e && f && attach.value
   } else return false
@@ -94,11 +92,7 @@ const enableStore = (event: Event) => {
   attach.value = !el.value
 }
 
-const sortName = computed(() =>
-  post.value && post.value.project ? post.value.proj_name : '본사',
-)
-
-const fetchPost = (pk: number) => documentStore.fetchPost(pk)
+const fetchSuitCase = (pk: number) => documentStore.fetchSuitCase(pk)
 
 const route = useRoute()
 const btnClass = computed(() => (route.params.caseId ? 'success' : 'primary'))
@@ -130,7 +124,7 @@ watch(form, val => {
   if (val.execution_date) form.execution_date = dateFormat(val.execution_date)
 })
 
-watch(post, val => {
+watch(suitcase, val => {
   if (val) {
     form.pk = val.pk
     form.board = val.board
@@ -161,16 +155,16 @@ watch(post, val => {
 })
 
 watch(route, val => {
-  if (val.params.caseId) fetchPost(Number(val.params.caseId))
+  if (val.params.caseId) fetchSuitCase(Number(val.params.caseId))
   else documentStore.post = null
 })
 
 onBeforeMount(() => {
-  if (route.params.caseId) fetchPost(Number(route.params.caseId))
+  if (route.params.caseId) fetchSuitCase(Number(route.params.caseId))
 })
 
 onBeforeRouteLeave(() => {
-  documentStore.post = null
+  documentStore.suitcase = null
 })
 </script>
 
@@ -207,17 +201,17 @@ onBeforeRouteLeave(() => {
     </CRow>
 
     <CRow class="mb-3">
-      <CFormLabel for="category" class="col-sm-2 col-form-label">
-        카테고리
-      </CFormLabel>
-      <CCol md="3">
-        <CFormSelect id="category" v-model="form.category" required>
-          <option value="">카테고리 선택</option>
-          <option v-for="cate in categoryList" :key="cate.pk" :value="cate.pk">
-            {{ cate.name }}
-          </option>
-        </CFormSelect>
-      </CCol>
+      <!--      <CFormLabel for="category" class="col-sm-2 col-form-label">-->
+      <!--        카테고리-->
+      <!--      </CFormLabel>-->
+      <!--      <CCol md="3">-->
+      <!--        <CFormSelect id="category" v-model="form.category" required>-->
+      <!--          <option value="">카테고리 선택</option>-->
+      <!--          <option v-for="cate in categoryList" :key="cate.pk" :value="cate.pk">-->
+      <!--            {{ cate.name }}-->
+      <!--          </option>-->
+      <!--        </CFormSelect>-->
+      <!--      </CCol>-->
 
       <CFormLabel for="inputPassword" class="col-sm-2 col-form-label">
         문서 시행일자
@@ -370,7 +364,7 @@ onBeforeRouteLeave(() => {
 
     <CRow>
       <CCol class="text-right">
-        <CButton color="light" @click="$router.push({ name: '본사 일반문서' })">
+        <CButton color="light" @click="$router.push({ name: '본사 소송사건' })">
           목록으로
         </CButton>
         <CButton
