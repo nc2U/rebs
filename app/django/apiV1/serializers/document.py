@@ -35,8 +35,8 @@ class LawSuitCaseSerializer(serializers.ModelSerializer):
     class Meta:
         model = LawsuitCase
         fields = ('pk', 'project', 'sort', 'sort_desc', 'level', 'level_desc', 'related_case',
-                  'related_case_name', 'court', 'court_desc', 'other_agency', 'case_number',
-                  'case_name', 'plaintiff', 'defendant', 'related_debtor', 'case_start_date', 'summary')
+                  'related_case_name', 'court', 'court_desc', 'other_agency', 'case_number', 'case_name',
+                  'plaintiff', 'defendant', 'related_debtor', 'case_start_date', 'summary', 'created')
 
 
 class SimpleLawSuitCaseSerializer(serializers.ModelSerializer):
