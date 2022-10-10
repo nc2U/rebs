@@ -153,25 +153,148 @@ onBeforeRouteLeave(() => {
     @submit.prevent="onSubmit"
   >
     <CRow class="mb-3">
-      <CFormLabel for="title" class="col-md-2 col-form-label">유형</CFormLabel>
-      <CCol md="6">
+      <CFormLabel for="sort" class="col-md-2 col-form-label">유형</CFormLabel>
+      <CCol md="4">
+        <CFormSelect id="sort" v-model="form.sort" required>
+          <option value="">사건유형 선택</option>
+          <option v-for="cate in categoryList" :key="cate.pk" :value="cate.pk">
+            {{ cate.name }}
+          </option>
+        </CFormSelect>
+      </CCol>
+
+      <CFormLabel for="level" class="col-md-2 col-form-label">심급</CFormLabel>
+      <CCol md="4">
+        <CFormSelect id="level" v-model="form.level" required>
+          <option value="">사건심급 선택</option>
+          <option v-for="cate in categoryList" :key="cate.pk" :value="cate.pk">
+            {{ cate.name }}
+          </option>
+        </CFormSelect>
+      </CCol>
+    </CRow>
+
+    <CRow class="mb-3">
+      <CFormLabel for="related_case" class="col-md-2 col-form-label">
+        관련사건
+      </CFormLabel>
+      <CCol md="4">
+        <CFormSelect id="related_case" v-model="form.related_case" required>
+          <option value="">관련사건 선택</option>
+          <option v-for="cate in categoryList" :key="cate.pk" :value="cate.pk">
+            {{ cate.name }}
+          </option>
+        </CFormSelect>
+      </CCol>
+    </CRow>
+
+    <CRow class="mb-3">
+      <CFormLabel for="related_case" class="col-md-2 col-form-label">
+        법원명
+      </CFormLabel>
+      <CCol md="4">
+        <CFormSelect id="related_case" v-model="form.court" required>
+          <option value="">법원 선택</option>
+          <option v-for="cate in categoryList" :key="cate.pk" :value="cate.pk">
+            {{ cate.name }}
+          </option>
+        </CFormSelect>
+      </CCol>
+
+      <CFormLabel for="other_agency" class="col-md-2 col-form-label">
+        기타 처리기관
+      </CFormLabel>
+      <CCol md="4">
         <CFormInput
-          id="title"
-          v-model="form.sort"
-          required
-          placeholder="사건유형"
+          id="other_agency"
+          v-model="form.other_agency"
+          placeholder="기타 처리기관"
         />
       </CCol>
     </CRow>
 
     <CRow class="mb-3">
-      <CFormLabel for="title" class="col-md-2 col-form-label">유형</CFormLabel>
-      <CCol md="6">
+      <CFormLabel for="case_number" class="col-md-2 col-form-label">
+        사건번호
+      </CFormLabel>
+      <CCol md="4">
         <CFormInput
-          id="title"
-          v-model="form.sort"
-          required
-          placeholder="사건유형"
+          id="case_number"
+          v-model="form.case_number"
+          placeholder="사건번호"
+        />
+      </CCol>
+
+      <CFormLabel for="case_name" class="col-md-2 col-form-label">
+        사건명
+      </CFormLabel>
+      <CCol md="4">
+        <CFormInput
+          id="case_name"
+          v-model="form.case_name"
+          placeholder="사건명"
+        />
+      </CCol>
+    </CRow>
+
+    <CRow class="mb-3">
+      <CFormLabel for="plaintiff" class="col-md-2 col-form-label">
+        원고(신청인)
+      </CFormLabel>
+      <CCol md="4">
+        <CFormInput
+          id="plaintiff"
+          v-model="form.plaintiff"
+          placeholder="원고(신청인)"
+        />
+      </CCol>
+
+      <CFormLabel for="defendant" class="col-md-2 col-form-label">
+        피고(피신청인)
+      </CFormLabel>
+      <CCol md="4">
+        <CFormInput
+          id="defendant"
+          v-model="form.defendant"
+          placeholder="피고(피신청인)"
+        />
+      </CCol>
+    </CRow>
+
+    <CRow class="mb-3">
+      <CFormLabel for="related_debtor" class="col-md-2 col-form-label">
+        제3채무자
+      </CFormLabel>
+      <CCol md="4">
+        <CFormInput
+          id="related_debtor"
+          v-model="form.related_debtor"
+          placeholder="제3채무자"
+        />
+      </CCol>
+
+      <CFormLabel for="case_start_date" class="col-md-2 col-form-label">
+        사건개시일
+      </CFormLabel>
+      <CCol md="4">
+        <DatePicker
+          id="case_start_date"
+          v-model="form.case_start_date"
+          placeholder="사건개시일"
+        />
+      </CCol>
+    </CRow>
+
+    <CRow class="mb-3">
+      <CFormLabel for="summary" class="col-md-2 col-form-label">
+        개요 및 경과
+      </CFormLabel>
+      <CCol>
+        <CFormTextarea
+          id="summary"
+          v-model="form.summary"
+          rows="4"
+          placeholder="개요 및 경과"
         />
       </CCol>
     </CRow>
