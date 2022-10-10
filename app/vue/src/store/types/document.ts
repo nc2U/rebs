@@ -24,14 +24,15 @@ export interface Category {
 export interface SuitCase {
   pk: number | null
   project: number | null
-  sort: '1' | '2' | '3' | '4' | '5'
-  sort_desc: string
-  level: '0' | '1' | '2' | '3'
-  level_desc: string
+  proj_name?: string
+  sort: '1' | '2' | '3' | '4' | '5' | null
+  sort_desc?: string
+  level: '0' | '1' | '2' | '3' | null
+  level_desc?: string
   related_case: number | null
-  related_case_name: string
+  related_case_name?: string
   court: string
-  court_desc: string
+  court_desc?: string
   other_agency: string
   case_number: string
   case_name: string
@@ -40,6 +41,8 @@ export interface SuitCase {
   related_debtor: string
   case_start_date: string
   summary: string
+  user?: string
+  created?: string
 }
 
 export interface SimpleSuitCase {
