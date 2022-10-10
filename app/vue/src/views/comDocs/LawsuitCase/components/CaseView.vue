@@ -3,6 +3,7 @@ import { computed, onBeforeMount, watch } from 'vue'
 import { useDocument } from '@/store/pinia/document'
 import { onBeforeRouteLeave, useRoute } from 'vue-router'
 import { headerSecondary } from '@/utils/cssMixins'
+import { timeFormat } from '@/utils/baseMixins'
 
 const documentStore = useDocument()
 const suitcase = computed(() => documentStore.suitcase)
@@ -28,15 +29,12 @@ onBeforeRouteLeave(() => {
 <template>
   <div v-if="suitcase" class="m-0 p-0">
     <CRow class="mt-5">
-      <CCol md="8">
+      <CCol>
         <h5>
           {{ suitcase.court_desc }}
           {{ suitcase.case_number }}
           {{ suitcase.case_name }}
         </h5>
-      </CCol>
-      <CCol class="pt-1 text-right">
-        <!--        <span>[{{ sortName }}] [{{ suitcase.cate_name }}]</span>-->
       </CCol>
     </CRow>
 
@@ -44,23 +42,7 @@ onBeforeRouteLeave(() => {
 
     <CRow class="text-blue-grey">
       <CCol>
-        <!--        <small class="mr-3">작성자 : {{ suitcase.user }}</small>-->
-        <small class="mr-3">
-          <v-icon icon="mdi-comment-text-multiple" size="small" />
-          <!--          <span class="ml-2">{{ suitcase.comments.length || 0 }}</span>-->
-        </small>
-        <small class="mr-3">
-          <v-icon icon="mdi-eye" size="small" />
-          <!--          <span class="ml-2">{{ suitcase.hit }}</span>-->
-        </small>
-        <small class="mr-3">
-          <v-icon icon="mdi-thumb-up" size="small" />
-          <span class="ml-2">{{ 0 }}</span>
-        </small>
-        <small class="mr-3">
-          <v-icon icon="mdi-thumb-down" size="small" />
-          <span class="ml-2">{{ 0 }}</span>
-        </small>
+        <small class="mr-3">작성자 : {{ suitcase.user }}</small>
         <small class="mr-3 print" @click="toPrint">
           <v-icon icon="mdi-printer" size="small" />
           <span class="ml-2">프린트</span>
@@ -70,7 +52,7 @@ onBeforeRouteLeave(() => {
       <CCol class="text-right" md="3">
         <small>
           <v-icon icon="mdi-calendar-clock" size="small" />
-          <!--          <span class="ml-2">{{ timeFormat(suitcase.created) }}</span>-->
+          <span class="ml-2">{{ timeFormat(suitcase.created) }}</span>
         </small>
       </CCol>
     </CRow>
