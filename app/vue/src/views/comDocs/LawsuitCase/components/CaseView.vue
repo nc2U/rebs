@@ -84,13 +84,13 @@ onBeforeRouteLeave(() => {
             </CTableRow>
             <CTableRow>
               <CTableHeaderCell class="text-center" :color="headerSecondary">
-                관련사건
+                관련 사건
               </CTableHeaderCell>
               <CTableDataCell>{{ suitcase.related_case_name }}</CTableDataCell>
             </CTableRow>
             <CTableRow>
               <CTableHeaderCell class="text-center" :color="headerSecondary">
-                법원명
+                관할 법원
               </CTableHeaderCell>
               <CTableDataCell>{{ suitcase.court_desc }}</CTableDataCell>
             </CTableRow>
@@ -102,37 +102,37 @@ onBeforeRouteLeave(() => {
             </CTableRow>
             <CTableRow>
               <CTableHeaderCell class="text-center" :color="headerSecondary">
-                사건번호
+                사건 번호
               </CTableHeaderCell>
               <CTableDataCell>{{ suitcase.case_number }}</CTableDataCell>
             </CTableRow>
             <CTableRow>
               <CTableHeaderCell class="text-center" :color="headerSecondary">
-                사건명
+                사건 명
               </CTableHeaderCell>
               <CTableDataCell>{{ suitcase.case_name }}</CTableDataCell>
             </CTableRow>
             <CTableRow>
               <CTableHeaderCell class="text-center" :color="headerSecondary">
-                원고(신청인)
+                원고 (신청인)
               </CTableHeaderCell>
               <CTableDataCell>{{ suitcase.plaintiff }}</CTableDataCell>
             </CTableRow>
             <CTableRow>
               <CTableHeaderCell class="text-center" :color="headerSecondary">
-                피고(피신청인)
+                피고 (피신청인)
               </CTableHeaderCell>
               <CTableDataCell>{{ suitcase.defendant }}</CTableDataCell>
             </CTableRow>
             <CTableRow>
               <CTableHeaderCell class="text-center" :color="headerSecondary">
-                제3채무자
+                제3 채무자
               </CTableHeaderCell>
               <CTableDataCell>{{ suitcase.related_debtor }}</CTableDataCell>
             </CTableRow>
             <CTableRow>
               <CTableHeaderCell class="text-center" :color="headerSecondary">
-                사건개시일
+                사건 개시일
               </CTableHeaderCell>
               <CTableDataCell>{{ suitcase.case_start_date }}</CTableDataCell>
             </CTableRow>

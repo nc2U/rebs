@@ -34,7 +34,7 @@ const pageSelect = (page: number) => emit('page-select', page)
         <CTableHeaderCell scope="col">구분</CTableHeaderCell>
         <CTableHeaderCell scope="col">심급</CTableHeaderCell>
         <CTableHeaderCell scope="col">관련사건</CTableHeaderCell>
-        <CTableHeaderCell scope="col">법원명</CTableHeaderCell>
+        <CTableHeaderCell scope="col">관할법원</CTableHeaderCell>
         <CTableHeaderCell scope="col">사건명</CTableHeaderCell>
         <CTableHeaderCell scope="col">원고/신청인</CTableHeaderCell>
         <CTableHeaderCell scope="col">피고/피신청인</CTableHeaderCell>

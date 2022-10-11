@@ -5,6 +5,7 @@ import { useDocument } from '@/store/pinia/document'
 import { SuitCase } from '@/store/types/document'
 import { write_company_docs } from '@/utils/pageAuth'
 import { dateFormat } from '@/utils/baseMixins'
+import { courtChoices } from '@/views/comDocs/LawsuitCase/components/court'
 import Multiselect from '@vueform/multiselect'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
@@ -179,7 +180,7 @@ onBeforeRouteLeave(() => {
         <Multiselect
           v-model="form.related_case"
           :options="getSuitCase"
-          placeholder="관련사건"
+          placeholder="관련 사건"
           autocomplete="label"
           :classes="{ search: 'form-control multiselect-search' }"
           :attrs="form.owner ? {} : { required: true }"
@@ -194,12 +195,16 @@ onBeforeRouteLeave(() => {
         법원명
       </CFormLabel>
       <CCol md="4">
-        <CFormSelect id="related_case" v-model="form.court" required>
-          <option value="">법원 선택</option>
-          <option v-for="cate in categoryList" :key="cate.pk" :value="cate.pk">
-            {{ cate.name }}
-          </option>
-        </CFormSelect>
+        <Multiselect
+          v-model="form.court"
+          :options="courtChoices"
+          placeholder="법원 선택"
+          autocomplete="label"
+          :classes="{ search: 'form-control multiselect-search' }"
+          :attrs="form.owner ? {} : { required: true }"
+          :add-option-on="['enter' | 'tab']"
+          searchable
+        />
       </CCol>
 
       <CFormLabel for="other_agency" class="col-md-2 col-form-label">

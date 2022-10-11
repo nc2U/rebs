@@ -46,7 +46,9 @@ const getCourt = (court: string) =>
         ]
       </CCol>
     </CTableDataCell>
-    <CTableDataCell>{{ suitCase.court_desc }}</CTableDataCell>
+    <CTableDataCell>
+      [ {{ suitCase.court_desc || '-미결형사건-' }} ]
+    </CTableDataCell>
     <CTableDataCell class="text-left">
       <router-link
         :to="{ name: '본사 소송사건 - 보기', params: { caseId: suitCase.pk } }"
