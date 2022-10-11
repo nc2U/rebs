@@ -3,6 +3,7 @@ import { computed, onBeforeMount, onBeforeUpdate, reactive } from 'vue'
 import { navMenu } from '@/views/comDocs/_menu/headermixin'
 import { useRouter } from 'vue-router'
 import { SuitCaseFilter as cFilter, useDocument } from '@/store/pinia/document'
+import { SuitCase } from '@/store/types/document'
 import HeaderNav from '@/components/HeaderNav.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from './components/ListController.vue'
@@ -38,12 +39,14 @@ const fetchSuitCaseList = (payload: cFilter) =>
 const fetchAllSuitCaseList = (payload: cFilter) =>
   documentStore.fetchAllSuitCaseList(payload)
 
-const createSuitCase = (payload: any) => documentStore.createSuitCase(payload)
-const updateSuitCase = (payload: any) => documentStore.updateSuitCase(payload)
-const deleteSuitCase = (payload: any) => documentStore.deleteSuitCase(payload)
+const createSuitCase = (payload: SuitCase) =>
+  documentStore.createSuitCase(payload)
+const updateSuitCase = (payload: SuitCase) =>
+  documentStore.updateSuitCase(payload)
+const deleteSuitCase = (pk: number) => documentStore.deleteSuitCase(pk)
 
 const router = useRouter()
-const onSubmit = (payload: any) => {
+const onSubmit = (payload: SuitCase) => {
   if (payload.pk) {
     updateSuitCase(payload)
     router.replace({
@@ -55,6 +58,8 @@ const onSubmit = (payload: any) => {
     router.replace({ name: '본사 소송사건' })
   }
 }
+
+const onDelete = (pk: number) => deleteSuitCase(pk)
 
 onBeforeMount(() => {
   fetchSuitCaseList({})
@@ -92,7 +97,7 @@ onBeforeUpdate(() => {
       </div>
 
       <div v-else-if="$route.name.includes('수정')">
-        <CaseForm @on-submit="onSubmit" />
+        <CaseForm @on-submit="onSubmit" @on-delete="onDelete" />
       </div>
     </CCardBody>
 

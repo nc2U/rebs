@@ -113,7 +113,7 @@ export const useDocument = defineStore('document', () => {
     if (payload.level) queryStr += `&level=${payload.level}`
     if (payload.court) queryStr += `&court=${payload.court}`
 
-    api
+    return api
       .get(`/suitcase/?page=${page}${queryStr}`)
       .then(res => {
         suitcaseList.value = res.data.results
@@ -130,15 +130,41 @@ export const useDocument = defineStore('document', () => {
     if (payload.level) queryStr += `&level=${payload.level}`
     if (payload.court) queryStr += `&court=${payload.court}`
 
-    api
+    return api
       .get(`/all-suitcase/?${queryStr}`)
       .then(res => (allSuitCaseList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
   }
 
-  const createSuitCase = () => 2
-  const updateSuitCase = () => 3
-  const deleteSuitCase = () => 4
+  const createSuitCase = (payload: SuitCase) =>
+    api
+      .post(`/suitcase/`, payload)
+      .then(() =>
+        fetchAllSuitCaseList({}).then(() =>
+          fetchSuitCaseList({}).then(() => message()),
+        ),
+      )
+      .catch(err => errorHandle(err.response.data))
+
+  const updateSuitCase = (payload: SuitCase) =>
+    api
+      .put(`/suitcase/${payload.pk}/`, payload)
+      .then(() =>
+        fetchAllSuitCaseList({}).then(() =>
+          fetchSuitCaseList({}).then(() => message()),
+        ),
+      )
+      .catch(err => errorHandle(err.response.data))
+
+  const deleteSuitCase = (pk: number) =>
+    api
+      .delete(`/suitcase/${pk}/`)
+      .then(() =>
+        fetchAllSuitCaseList({}).then(() =>
+          fetchSuitCaseList({}).then(() => message()),
+        ),
+      )
+      .catch(err => errorHandle(err.response.data))
 
   const post = ref<Post | null>(null)
   const postList = ref<Post[]>([])
