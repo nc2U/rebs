@@ -17,9 +17,9 @@ import {
 export type SuitCaseFilter = {
   page?: number
   is_com?: boolean
-  project?: number
-  sort?: '1' | '2' | '3' | '4' | '5'
-  level?: '0' | '1' | '2' | '3'
+  project?: number | null
+  sort?: '' | '1' | '2' | '3' | '4' | '5'
+  level?: '' | '0' | '1' | '2' | '3'
   court?: string
 }
 
@@ -123,8 +123,7 @@ export const useDocument = defineStore('document', () => {
   }
 
   const fetchAllSuitCaseList = (payload: SuitCaseFilter) => {
-    const page = payload.page || 1
-    let queryStr = ''
+    let queryStr = '?i=1'
     if (payload.is_com) queryStr += `&is_com=${payload.is_com}`
     if (payload.project) queryStr += `&project=${payload.project}`
     if (payload.sort) queryStr += `&sort=${payload.sort}`
@@ -132,7 +131,7 @@ export const useDocument = defineStore('document', () => {
     if (payload.court) queryStr += `&court=${payload.court}`
 
     api
-      .get(`/all-suitcase/?page=${page}${queryStr}`)
+      .get(`/all-suitcase/?${queryStr}`)
       .then(res => (allSuitCaseList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
   }

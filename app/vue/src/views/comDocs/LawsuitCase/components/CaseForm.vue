@@ -5,9 +5,7 @@ import { useDocument } from '@/store/pinia/document'
 import { SuitCase } from '@/store/types/document'
 import { write_company_docs } from '@/utils/pageAuth'
 import { dateFormat } from '@/utils/baseMixins'
-import { AlertSecondary } from '@/utils/cssMixins'
-import ToastEditor from '@/components/ToastEditor/index.vue'
-import FileUpload from '@/components/FileUpload.vue'
+import Multiselect from '@vueform/multiselect'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
@@ -39,6 +37,7 @@ const validated = ref(false)
 
 const documentStore = useDocument()
 const suitcase = computed(() => documentStore.suitcase)
+const getSuitCase = computed(() => documentStore.getSuitCase)
 
 const formsCheck = computed(() => {
   if (suitcase.value) {
@@ -87,11 +86,6 @@ const modalAction = () => {
   emit('on-submit', { ...form })
   validated.value = false
   confirmModal.value.close()
-}
-
-const devideUri = (uri: string) => {
-  const devidedUri = decodeURI(uri).split('media/')
-  return [devidedUri[0] + 'media/', devidedUri[1]]
 }
 
 watch(form, val => {
@@ -182,12 +176,16 @@ onBeforeRouteLeave(() => {
         관련사건
       </CFormLabel>
       <CCol md="4">
-        <CFormSelect id="related_case" v-model="form.related_case" required>
-          <option value="">관련사건 선택</option>
-          <option v-for="cate in categoryList" :key="cate.pk" :value="cate.pk">
-            {{ cate.name }}
-          </option>
-        </CFormSelect>
+        <Multiselect
+          v-model="form.related_case"
+          :options="getSuitCase"
+          placeholder="관련사건"
+          autocomplete="label"
+          :classes="{ search: 'form-control multiselect-search' }"
+          :attrs="form.owner ? {} : { required: true }"
+          :add-option-on="['enter' | 'tab']"
+          searchable
+        />
       </CCol>
     </CRow>
 

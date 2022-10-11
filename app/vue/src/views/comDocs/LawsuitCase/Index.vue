@@ -35,6 +35,8 @@ const suitcaseList = computed(() => documentStore.suitcaseList)
 
 const fetchSuitCaseList = (payload: cFilter) =>
   documentStore.fetchSuitCaseList(payload)
+const fetchAllSuitCaseList = (payload: cFilter) =>
+  documentStore.fetchAllSuitCaseList(payload)
 
 const createSuitCase = (payload: any) => documentStore.createSuitCase(payload)
 const updateSuitCase = (payload: any) => documentStore.updateSuitCase(payload)
@@ -62,6 +64,7 @@ onBeforeUpdate(() => {
   fetchSuitCaseList({
     page: caseFilter.page,
   })
+  fetchAllSuitCaseList({})
 })
 </script>
 

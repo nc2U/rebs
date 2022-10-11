@@ -1,33 +1,36 @@
 <script lang="ts" setup>
 import { reactive, computed, nextTick, onBeforeMount } from 'vue'
 import { useProject } from '@/store/pinia/project'
-import { PostFilter, useDocument } from '@/store/pinia/document'
+import { SuitCaseFilter, useDocument } from '@/store/pinia/document'
 import { numFormat } from '@/utils/baseMixins'
 
 defineProps({ tab: { type: Number, default: null } })
 const emit = defineEmits(['docs-filter'])
 
-const form = reactive<PostFilter>({
+const form = reactive<SuitCaseFilter>({
+  page: 1,
   is_com: false,
-  project: '',
-  ordering: '-created',
-  search: '',
+  project: null,
+  sort: '',
+  level: '',
+  court: '',
 })
 
 const formsCheck = computed(() => {
-  const a = form.project === ''
-  const b = form.is_com === false
-  const c = form.ordering === '-created'
-  const d = form.search === ''
-  return a && b && c && d
+  const a = form.is_com === false
+  const b = form.project === null
+  const c = form.sort === ''
+  const d = form.level === ''
+  const e = form.court === ''
+  return a && b && c && d && e
 })
 
 const documentStore = useDocument()
-const postCount = computed(() => documentStore.postCount)
+const suitcaseCount = computed(() => documentStore.suitcaseCount)
 
 const listFiltering = (page = 1) => {
   nextTick(() => {
-    form.is_com = form.project === 'com'
+    // form.is_com = form.project === 'com'
     emit('docs-filter', {
       ...{ page },
       ...form,
@@ -38,10 +41,11 @@ const listFiltering = (page = 1) => {
 defineExpose({ listFiltering })
 
 const resetForm = () => {
-  form.project = ''
   form.is_com = false
-  form.ordering = '-created'
-  form.search = ''
+  form.project = null
+  form.sort = ''
+  form.level = ''
+  form.court = ''
   listFiltering(1)
 }
 
@@ -71,13 +75,23 @@ onBeforeMount(() => fetchProjectList())
           </CCol>
 
           <CCol md="6" lg="5" xl="4" class="mb-3">
-            <CFormSelect v-model="form.ordering" @change="listFiltering(1)">
-              <option value="created">작성일자 오름차순</option>
-              <option value="-created">작성일자 내림차순</option>
-              <option value="execution_date">시행일자 오름차순</option>
-              <option value="-execution_date">시행일자 내림차순</option>
-              <option value="-hit">조회수 오름차순</option>
-              <option value="hit">조회수 내림차순</option>
+            <CFormSelect v-model="form.sort" @change="listFiltering(1)">
+              <option value="">사건유형 선택</option>
+              <option value="1">민사</option>
+              <option value="2">형사</option>
+              <option value="3">행정</option>
+              <option value="4">가사</option>
+              <option value="5">신청/집행</option>
+            </CFormSelect>
+          </CCol>
+
+          <CCol md="6" lg="5" xl="4" class="mb-3">
+            <CFormSelect v-model="form.sort" @change="listFiltering(1)">
+              <option value="">사건심급 선택</option>
+              <option value="1">1심</option>
+              <option value="2">2심</option>
+              <option value="3">3심</option>
+              <option value="0">신청/집행</option>
             </CFormSelect>
           </CCol>
         </CRow>
@@ -85,11 +99,11 @@ onBeforeMount(() => fetchProjectList())
 
       <CCol lg="6">
         <CRow class="justify-content-md-end">
-          <CCol md="6" lg="5" xl="4" class="mb-3">
-            <CFormSelect>
-              <option value="">제목+내용+작성자</option>
-            </CFormSelect>
-          </CCol>
+          <!--          <CCol md="6" lg="5" xl="4" class="mb-3">-->
+          <!--            <CFormSelect>-->
+          <!--              <option value="">제목+내용+작성자</option>-->
+          <!--            </CFormSelect>-->
+          <!--          </CCol>-->
 
           <CCol md="6" lg="5" class="mb-3">
             <CInputGroup class="flex-nowrap">
@@ -107,7 +121,7 @@ onBeforeMount(() => fetchProjectList())
     <CRow>
       <CCol color="warning" class="p-2 pl-3">
         <strong>
-          문서 건수 조회 결과 : {{ numFormat(postCount, 0, 0) }} 건
+          문서 건수 조회 결과 : {{ numFormat(suitcaseCount, 0, 0) }} 건
         </strong>
       </CCol>
       <CCol v-if="!formsCheck" class="text-right mb-0">
