@@ -25,9 +25,9 @@ export interface SuitCase {
   pk: number | null
   project: number | null
   proj_name?: string
-  sort: '1' | '2' | '3' | '4' | '5' | null
+  sort: '' | '1' | '2' | '3' | '4' | '5'
   sort_desc?: string
-  level: '0' | '1' | '2' | '3' | null
+  level: '' | '0' | '1' | '2' | '3'
   level_desc?: string
   related_case: number | null
   related_case_name?: string

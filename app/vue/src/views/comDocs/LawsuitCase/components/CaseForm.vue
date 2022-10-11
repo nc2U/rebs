@@ -21,8 +21,8 @@ const confirmModal = ref()
 const form = reactive<SuitCase>({
   pk: null,
   project: null,
-  sort: null,
-  level: null,
+  sort: '',
+  level: '',
   related_case: null,
   court: '',
   other_agency: '',
