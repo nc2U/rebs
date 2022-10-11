@@ -34,4 +34,4 @@ class LawsuitPostForm(forms.ModelForm):
 class LawsuitCaseFrom(forms.ModelForm):
     class Meta:
         model = LawsuitCase
-        exclude = ('project', 'register')
+        exclude = ('project', 'user')

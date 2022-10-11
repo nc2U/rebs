@@ -157,9 +157,11 @@ onBeforeRouteLeave(() => {
       <CCol md="4">
         <CFormSelect id="sort" v-model="form.sort" required>
           <option value="">사건유형 선택</option>
-          <option v-for="cate in categoryList" :key="cate.pk" :value="cate.pk">
-            {{ cate.name }}
-          </option>
+          <option value="1">민사</option>
+          <option value="2">형사</option>
+          <option value="3">행정</option>
+          <option value="4">가사</option>
+          <option value="5">신청/집행</option>
         </CFormSelect>
       </CCol>
 
@@ -167,9 +169,10 @@ onBeforeRouteLeave(() => {
       <CCol md="4">
         <CFormSelect id="level" v-model="form.level" required>
           <option value="">사건심급 선택</option>
-          <option v-for="cate in categoryList" :key="cate.pk" :value="cate.pk">
-            {{ cate.name }}
-          </option>
+          <option value="0">신청/집행</option>
+          <option value="1">1심</option>
+          <option value="2">2심</option>
+          <option value="3">3심</option>
         </CFormSelect>
       </CCol>
     </CRow>
