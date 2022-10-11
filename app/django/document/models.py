@@ -57,7 +57,7 @@ class LawsuitCase(models.Model):
     LEVEL_CHOICES = (('0', '신청/집행'), ('1', '1심'), ('2', '2심'), ('3', '3심'))
     level = models.CharField('심급', max_length=1, choices=LEVEL_CHOICES)
     related_case = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='관련사건',
-                                     help_text='본안 사건인 경우 이전 심급 사건, 신청/집행 사건인 경우 관련 본안 사건 지정')
+                                     help_text='본안 사건인 경우 원심 사건, 신청/집행 사건인 경우 관련 본안 사건 지정')
     COURT_CHOICES = (
         ('000100', '대법원'),
         ('000200', '서울고등법원'),

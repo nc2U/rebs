@@ -56,8 +56,8 @@ const formsCheck = computed(() => {
     const l = form.case_start_date === suitcase.value.case_start_date
     const m = form.summary === suitcase.value.summary
 
-    const group1 = a && b && c && d && e && f && g
-    const group2 = h && i && j && k && l && m
+    const group1 = a && b && c && d && e && f
+    const group2 = g && h && i && j && k && l && m
     return group1 && group2
   } else return false
 })
@@ -183,10 +183,12 @@ onBeforeRouteLeave(() => {
           placeholder="관련 사건"
           autocomplete="label"
           :classes="{ search: 'form-control multiselect-search' }"
-          :attrs="form.owner ? {} : { required: true }"
           :add-option-on="['enter' | 'tab']"
           searchable
         />
+        <small class="text-blue-grey-lighten-2">
+          본안 사건인 경우 원심 사건, 신청/집행 사건인 경우 관련 본안 사건 지정
+        </small>
       </CCol>
     </CRow>
 
@@ -201,7 +203,7 @@ onBeforeRouteLeave(() => {
           placeholder="법원 선택"
           autocomplete="label"
           :classes="{ search: 'form-control multiselect-search' }"
-          :attrs="form.owner ? {} : { required: true }"
+          :attrs="form.court ? {} : { required: true }"
           :add-option-on="['enter' | 'tab']"
           searchable
         />
@@ -216,6 +218,9 @@ onBeforeRouteLeave(() => {
           v-model="form.other_agency"
           placeholder="기타 처리기관"
         />
+        <small class="text-blue-grey-lighten-2">
+          사건 유형이 기소 전 형사 사건인 경우 해당 수사기관을 기재
+        </small>
       </CCol>
     </CRow>
 
@@ -228,6 +233,7 @@ onBeforeRouteLeave(() => {
           id="case_number"
           v-model="form.case_number"
           placeholder="사건번호"
+          required
         />
       </CCol>
 
@@ -239,6 +245,7 @@ onBeforeRouteLeave(() => {
           id="case_name"
           v-model="form.case_name"
           placeholder="사건명"
+          required
         />
       </CCol>
     </CRow>
@@ -252,6 +259,7 @@ onBeforeRouteLeave(() => {
           id="plaintiff"
           v-model="form.plaintiff"
           placeholder="원고(신청인)"
+          required
         />
       </CCol>
 
@@ -263,6 +271,7 @@ onBeforeRouteLeave(() => {
           id="defendant"
           v-model="form.defendant"
           placeholder="피고(피신청인)"
+          required
         />
       </CCol>
     </CRow>
@@ -280,13 +289,14 @@ onBeforeRouteLeave(() => {
       </CCol>
 
       <CFormLabel for="case_start_date" class="col-md-2 col-form-label">
-        사건개시일
+        사건개시(결정)일
       </CFormLabel>
       <CCol md="4">
         <DatePicker
           id="case_start_date"
           v-model="form.case_start_date"
-          placeholder="사건개시일"
+          placeholder="사건개시(결정)일"
+          required
         />
       </CCol>
     </CRow>
