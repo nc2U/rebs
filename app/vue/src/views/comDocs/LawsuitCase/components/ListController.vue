@@ -32,7 +32,7 @@ const suitcaseCount = computed(() => documentStore.suitcaseCount)
 
 const listFiltering = (page = 1) => {
   nextTick(() => {
-    // form.is_com = form.project === 'com'
+    form.is_com = !form.project ? '' : form.project === 'com'
     emit('docs-filter', {
       ...{ page },
       ...form,

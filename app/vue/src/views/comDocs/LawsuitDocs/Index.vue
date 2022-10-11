@@ -15,7 +15,7 @@ import DocsForm from './components/DocsForm.vue'
 const caseFilter = reactive<PostFilter>({
   board: 2,
   category: null,
-  is_com: false,
+  is_com: '',
   project: '',
   ordering: '',
   search: '',
