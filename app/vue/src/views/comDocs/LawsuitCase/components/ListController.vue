@@ -58,9 +58,9 @@ onBeforeMount(() => fetchProjectList())
 <template>
   <CCallout color="primary" class="pb-0 mb-4">
     <CRow>
-      <CCol lg="6">
+      <CCol lg="9">
         <CRow>
-          <CCol md="6" lg="5" xl="4" class="mb-3">
+          <CCol md="4" lg="3" class="mb-3">
             <CFormSelect v-model="form.project" @change="listFiltering(1)">
               <option value="">전체 프로젝트</option>
               <option value="com">본사</option>
@@ -74,7 +74,7 @@ onBeforeMount(() => fetchProjectList())
             </CFormSelect>
           </CCol>
 
-          <CCol md="6" lg="5" xl="4" class="mb-3">
+          <CCol md="4" lg="3" class="mb-3">
             <CFormSelect v-model="form.sort" @change="listFiltering(1)">
               <option value="">사건유형 선택</option>
               <option value="1">민사</option>
@@ -85,7 +85,7 @@ onBeforeMount(() => fetchProjectList())
             </CFormSelect>
           </CCol>
 
-          <CCol md="6" lg="5" xl="4" class="mb-3">
+          <CCol md="4" lg="3" class="mb-3">
             <CFormSelect v-model="form.sort" @change="listFiltering(1)">
               <option value="">사건심급 선택</option>
               <option value="1">1심</option>
@@ -97,15 +97,9 @@ onBeforeMount(() => fetchProjectList())
         </CRow>
       </CCol>
 
-      <CCol lg="6">
+      <CCol lg="3">
         <CRow class="justify-content-md-end">
-          <!--          <CCol md="6" lg="5" xl="4" class="mb-3">-->
-          <!--            <CFormSelect>-->
-          <!--              <option value="">제목+내용+작성자</option>-->
-          <!--            </CFormSelect>-->
-          <!--          </CCol>-->
-
-          <CCol md="6" lg="5" class="mb-3">
+          <CCol lg="10" class="mb-3">
             <CInputGroup class="flex-nowrap">
               <CFormInput
                 v-model="form.search"
