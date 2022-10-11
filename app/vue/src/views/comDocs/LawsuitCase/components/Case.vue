@@ -47,7 +47,7 @@ const getCourt = (court: string) =>
       </CCol>
     </CTableDataCell>
     <CTableDataCell>
-      [ {{ suitCase.court_desc || '-미결형사건-' }} ]
+      <span v-if="suitCase.court_desc">[ {{ suitCase.court_desc }} ]</span>
     </CTableDataCell>
     <CTableDataCell class="text-left">
       <router-link
