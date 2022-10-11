@@ -16,7 +16,7 @@ import {
 
 export type SuitCaseFilter = {
   page?: number
-  is_com?: boolean | 'unknown'
+  is_com?: '' | boolean
   project?: '' | number
   sort?: '' | '1' | '2' | '3' | '4' | '5'
   level?: '' | '0' | '1' | '2' | '3'

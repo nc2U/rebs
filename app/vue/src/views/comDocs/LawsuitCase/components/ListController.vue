@@ -9,7 +9,7 @@ const emit = defineEmits(['docs-filter'])
 
 const form = reactive<SuitCaseFilter>({
   page: 1,
-  is_com: 'unknown',
+  is_com: '',
   project: '',
   sort: '',
   level: '',
@@ -18,7 +18,7 @@ const form = reactive<SuitCaseFilter>({
 })
 
 const formsCheck = computed(() => {
-  const a = form.is_com === 'unknown'
+  const a = form.is_com === ''
   const b = form.project === ''
   const c = form.sort === ''
   const d = form.level === ''
@@ -43,7 +43,7 @@ const listFiltering = (page = 1) => {
 defineExpose({ listFiltering })
 
 const resetForm = () => {
-  form.is_com = 'unknown'
+  form.is_com = ''
   form.project = ''
   form.sort = ''
   form.level = ''
