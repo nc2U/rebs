@@ -9,20 +9,22 @@ const emit = defineEmits(['docs-filter'])
 
 const form = reactive<SuitCaseFilter>({
   page: 1,
-  is_com: false,
-  project: null,
+  is_com: 'unknown',
+  project: '',
   sort: '',
   level: '',
   court: '',
+  search: '',
 })
 
 const formsCheck = computed(() => {
-  const a = form.is_com === false
-  const b = form.project === null
+  const a = form.is_com === 'unknown'
+  const b = form.project === ''
   const c = form.sort === ''
   const d = form.level === ''
   const e = form.court === ''
-  return a && b && c && d && e
+  const f = form.search === ''
+  return a && b && c && d && e && f
 })
 
 const documentStore = useDocument()
@@ -41,11 +43,12 @@ const listFiltering = (page = 1) => {
 defineExpose({ listFiltering })
 
 const resetForm = () => {
-  form.is_com = false
-  form.project = null
+  form.is_com = 'unknown'
+  form.project = ''
   form.sort = ''
   form.level = ''
   form.court = ''
+  form.search = ''
   listFiltering(1)
 }
 

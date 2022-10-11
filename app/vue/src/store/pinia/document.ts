@@ -16,11 +16,12 @@ import {
 
 export type SuitCaseFilter = {
   page?: number
-  is_com?: boolean
-  project?: number | null
+  is_com?: boolean | 'unknown'
+  project?: '' | number
   sort?: '' | '1' | '2' | '3' | '4' | '5'
   level?: '' | '0' | '1' | '2' | '3'
   court?: string
+  search?: string
 }
 
 export type PostFilter = {
