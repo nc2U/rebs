@@ -1,4 +1,5 @@
 import store from '@/store'
+import { computed } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { hashCode } from '@/utils/helper'
 import { RouteRecordRaw } from 'vue-router'
@@ -17,6 +18,8 @@ import comCash from '@/router/modules/comCash'
 import comDocs from '@/router/modules/comDocs'
 import hrManage from '@/router/modules/hrManage'
 import settings from '@/router/modules/settings'
+
+const isAuth = computed(() => useAccount().isAuthorized)
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -64,11 +67,11 @@ const routes: Array<RouteRecordRaw> = [
       },
     ],
     beforeEnter: (to, from, next) => {
-      if (useAccount().isAuthorized) {
+      if (isAuth.value) {
         next()
       } else {
         next({
-          name: 'Login',
+          path: '/accounts/login',
           query: { redirect: to.fullPath },
         })
       }
