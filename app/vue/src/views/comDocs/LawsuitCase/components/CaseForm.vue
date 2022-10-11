@@ -162,7 +162,11 @@ onBeforeRouteLeave(() => {
 
       <CFormLabel for="level" class="col-md-2 col-form-label">심급</CFormLabel>
       <CCol md="4">
-        <CFormSelect id="level" v-model="form.level" required>
+        <CFormSelect
+          id="level"
+          v-model="form.level"
+          :required="!form.other_agency"
+        >
           <option value="">사건심급 선택</option>
           <option value="0">신청/집행</option>
           <option value="1">1심</option>
@@ -203,7 +207,7 @@ onBeforeRouteLeave(() => {
           placeholder="법원 선택"
           autocomplete="label"
           :classes="{ search: 'form-control multiselect-search' }"
-          :attrs="form.court ? {} : { required: true }"
+          :attrs="form.court || form.other_agency ? {} : { required: true }"
           :add-option-on="['enter' | 'tab']"
           searchable
         />
@@ -296,7 +300,6 @@ onBeforeRouteLeave(() => {
           id="case_start_date"
           v-model="form.case_start_date"
           placeholder="사건개시(결정)일"
-          required
         />
       </CCol>
     </CRow>
