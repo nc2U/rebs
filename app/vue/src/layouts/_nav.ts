@@ -210,11 +210,6 @@ const project = {
           name: '타입정보 등록',
           to: '/project/manage/type',
         },
-        {
-          component: 'CNavItem',
-          name: '층별조건 등록',
-          to: '/project/manage/floor',
-        },
       ],
     },
     {
@@ -232,6 +227,11 @@ const project = {
           component: 'CNavItem',
           name: '호(유닛) 등록',
           to: '/project/settings/unit',
+        },
+        {
+          component: 'CNavItem',
+          name: '층별조건 등록',
+          to: '/project/settings/floor',
         },
         {
           component: 'CNavItem',

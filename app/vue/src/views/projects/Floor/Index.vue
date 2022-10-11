@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount } from 'vue'
-import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin1'
+import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin2'
 import { useProject } from '@/store/pinia/project'
 import { useProjectData } from '@/store/pinia/project_data'
 import { UnitFloorType } from '@/store/types/project'

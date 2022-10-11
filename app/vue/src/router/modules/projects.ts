@@ -56,15 +56,6 @@ const projects = {
               : import('@/views/_Accounts/NoAuth.vue'),
           meta: { title: '타입정보 등록' },
         },
-        {
-          path: 'floor',
-          name: '층별조건 등록',
-          component: () =>
-            pageViewAuth.value
-              ? import('@/views/projects/Floor/Index.vue')
-              : import('@/views/_Accounts/NoAuth.vue'),
-          meta: { title: '층별조건 등록' },
-        },
       ],
     },
     {
@@ -94,6 +85,15 @@ const projects = {
               ? import('@/views/projects/Unit/Index.vue')
               : import('@/views/_Accounts/NoAuth.vue'),
           meta: { title: '호(유닛) 등록' },
+        },
+        {
+          path: 'floor',
+          name: '층별조건 등록',
+          component: () =>
+            pageViewAuth.value
+              ? import('@/views/projects/Floor/Index.vue')
+              : import('@/views/_Accounts/NoAuth.vue'),
+          meta: { title: '층별조건 등록' },
         },
         {
           path: 'price',
