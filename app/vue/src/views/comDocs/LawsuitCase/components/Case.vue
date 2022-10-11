@@ -46,11 +46,12 @@ const getCourt = (court: string) =>
         ]
       </CCol>
     </CTableDataCell>
+    <CTableDataCell>{{ suitCase.court_desc }}</CTableDataCell>
     <CTableDataCell class="text-left">
       <router-link
         :to="{ name: '본사 소송사건 - 보기', params: { caseId: suitCase.pk } }"
       >
-        {{ cutString(suitCaseName, 35) }}
+        {{ cutString(suitCaseName, 30) }}
       </router-link>
     </CTableDataCell>
     <CTableDataCell>{{ suitCase.plaintiff }}</CTableDataCell>
