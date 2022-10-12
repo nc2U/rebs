@@ -41,6 +41,15 @@ const getCourt = (court: string) =>
   <CTableRow v-if="suitCase" class="text-center">
     <CTableDataCell>{{ suitCase.sort_desc }}</CTableDataCell>
     <CTableDataCell>{{ suitCase.level_desc }}</CTableDataCell>
+    <CTableDataCell class="text-left">
+      <span v-if="suitCase.court_desc || suitCase.other_agency">
+        [
+        <a href="javascript:void(0);" @click="agencyFunc">
+          {{ suitCase.court_desc || suitCase.other_agency }}
+        </a>
+        ]
+      </span>
+    </CTableDataCell>
     <CTableDataCell>
       <CCol v-if="suitCase.related_case">
         [
@@ -53,15 +62,6 @@ const getCourt = (court: string) =>
         </router-link>
         ]
       </CCol>
-    </CTableDataCell>
-    <CTableDataCell>
-      <span v-if="suitCase.court_desc || suitCase.other_agency">
-        [
-        <a href="javascript:void(0);" @click="agencyFunc">
-          {{ suitCase.court_desc || suitCase.other_agency }}
-        </a>
-        ]
-      </span>
     </CTableDataCell>
     <CTableDataCell class="text-left">
       <router-link

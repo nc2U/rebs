@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { reactive, computed, nextTick, onBeforeMount } from 'vue'
+import { reactive, computed, nextTick, onBeforeMount, inject } from 'vue'
 import { useProject } from '@/store/pinia/project'
 import { SuitCaseFilter, useDocument } from '@/store/pinia/document'
 import { numFormat } from '@/utils/baseMixins'
@@ -13,24 +13,27 @@ const form = reactive<SuitCaseFilter>({
   page: 1,
   is_com: '',
   project: '',
+  court: '',
+  related_case: '',
   sort: '',
   level: '',
-  court: '',
   search: '',
 })
 
 const formsCheck = computed(() => {
   const a = form.is_com === ''
   const b = form.project === ''
-  const c = form.sort === ''
-  const d = form.level === ''
-  const e = form.court === ''
-  const f = form.search === ''
-  return a && b && c && d && e && f
+  const c = form.court === ''
+  const d = form.related_case === ''
+  const e = form.sort === ''
+  const f = form.level === ''
+  const g = form.search === ''
+  return a && b && c && d && e && f && g
 })
 
 const documentStore = useDocument()
 const suitcaseCount = computed(() => documentStore.suitcaseCount)
+const getSuitCase = computed(() => documentStore.getSuitCase)
 
 const listFiltering = (page = 1) => {
   nextTick(() => {
@@ -48,9 +51,10 @@ defineExpose({ listFiltering, courtChange, searchChange })
 const resetForm = () => {
   form.is_com = ''
   form.project = ''
+  form.court = ''
+  form.related_case = ''
   form.sort = ''
   form.level = ''
-  form.court = ''
   form.search = ''
   listFiltering(1)
 }
@@ -69,9 +73,9 @@ onBeforeMount(() => fetchProjectList())
 <template>
   <CCallout color="primary" class="pb-0 mb-4">
     <CRow>
-      <CCol lg="9">
+      <CCol lg="6">
         <CRow>
-          <CCol md="4" lg="3" class="mb-3">
+          <CCol md="4" class="mb-3">
             <CFormSelect v-model="form.project" @change="listFiltering(1)">
               <option value="">전체 프로젝트</option>
               <option value="com">본사</option>
@@ -84,20 +88,37 @@ onBeforeMount(() => fetchProjectList())
               </option>
             </CFormSelect>
           </CCol>
-
-          <CCol md="4" lg="3" class="mb-3">
+          <CCol md="4" class="mb-3">
             <Multiselect
               v-model="form.court"
               :options="courtChoices"
-              placeholder="관할법원 선택"
+              placeholder="관할법원"
               autocomplete="label"
+              :classes="{ search: 'form-control multiselect-search' }"
               :add-option-on="['enter' | 'tab']"
               searchable
               @change="listFiltering(1)"
             />
           </CCol>
 
-          <CCol md="4" lg="3" class="mb-3">
+          <CCol md="4" class="mb-3">
+            <Multiselect
+              v-model="form.related_case"
+              :options="getSuitCase"
+              placeholder="관련사건"
+              autocomplete="label"
+              :classes="{ search: 'form-control multiselect-search' }"
+              :add-option-on="['enter' | 'tab']"
+              searchable
+              @change="listFiltering(1)"
+            />
+          </CCol>
+        </CRow>
+      </CCol>
+
+      <CCol lg="4">
+        <CRow>
+          <CCol md="4" lg="6" class="mb-3">
             <CFormSelect v-model="form.sort" @change="sortChange">
               <option value="">사건유형 선택</option>
               <option value="1">민사</option>
@@ -107,8 +128,7 @@ onBeforeMount(() => fetchProjectList())
               <option value="5">신청/집행</option>
             </CFormSelect>
           </CCol>
-
-          <CCol md="4" lg="3" class="mb-3">
+          <CCol md="4" lg="6" class="mb-3">
             <CFormSelect v-model="form.level" @change="listFiltering(1)">
               <option value="">사건심급 선택</option>
               <option v-if="!form.sort || form.sort !== '5'" value="1">
@@ -131,9 +151,9 @@ onBeforeMount(() => fetchProjectList())
         </CRow>
       </CCol>
 
-      <CCol lg="3">
+      <CCol lg="2">
         <CRow class="justify-content-md-end">
-          <CCol lg="10" class="mb-3">
+          <CCol lg="12" class="mb-3">
             <CInputGroup class="flex-nowrap">
               <CFormInput
                 v-model="form.search"
@@ -146,6 +166,7 @@ onBeforeMount(() => fetchProjectList())
         </CRow>
       </CCol>
     </CRow>
+
     <CRow>
       <CCol color="warning" class="p-2 pl-3">
         <strong>

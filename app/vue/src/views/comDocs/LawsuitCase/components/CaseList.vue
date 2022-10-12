@@ -24,8 +24,8 @@ const pageSelect = (page: number) => emit('page-select', page)
     <colgroup>
       <col width="8%" />
       <col width="8%" />
-      <col width="10%" />
       <col width="12%" />
+      <col width="10%" />
       <col width="20%" />
       <col width="14%" />
       <col width="14%" />
@@ -36,11 +36,11 @@ const pageSelect = (page: number) => emit('page-select', page)
       <CTableRow :color="headerSecondary" class="text-center border-top-1">
         <CTableHeaderCell scope="col">구분</CTableHeaderCell>
         <CTableHeaderCell scope="col">심급</CTableHeaderCell>
+        <CTableHeaderCell scope="col">관할법원 / 처리기관</CTableHeaderCell>
         <CTableHeaderCell scope="col">관련사건</CTableHeaderCell>
-        <CTableHeaderCell scope="col">관할법원</CTableHeaderCell>
         <CTableHeaderCell scope="col">사건명</CTableHeaderCell>
-        <CTableHeaderCell scope="col">원고/신청인</CTableHeaderCell>
-        <CTableHeaderCell scope="col">피고/피신청인</CTableHeaderCell>
+        <CTableHeaderCell scope="col">원고 / 신청인</CTableHeaderCell>
+        <CTableHeaderCell scope="col">피고 / 피신청인</CTableHeaderCell>
         <CTableHeaderCell scope="col">제3채무자</CTableHeaderCell>
       </CTableRow>
     </CTableHead>

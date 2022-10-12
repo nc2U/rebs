@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref, computed, onBeforeMount, onBeforeUpdate } from 'vue'
 import { navMenu } from '@/views/comDocs/_menu/headermixin'
-import { useRouter } from 'vue-router'
 import { SuitCaseFilter as cFilter, useDocument } from '@/store/pinia/document'
 import { SuitCase } from '@/store/types/document'
+import { useRouter } from 'vue-router'
 import HeaderNav from '@/components/HeaderNav.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from './components/ListController.vue'
@@ -22,6 +22,9 @@ const caseFilter = ref<cFilter>({
   search: '',
 })
 
+const documentStore = useDocument()
+const suitcaseList = computed(() => documentStore.suitcaseList)
+
 const listFiltering = (payload: cFilter) => {
   caseFilter.value = payload
   caseFilter.value.project = payload.is_com ? '' : payload.project
@@ -32,9 +35,6 @@ const pageSelect = (page: number) => {
   caseFilter.value.page = page
   listFiltering(caseFilter.value)
 }
-
-const documentStore = useDocument()
-const suitcaseList = computed(() => documentStore.suitcaseList)
 
 const fetchSuitCaseList = (payload: cFilter) =>
   documentStore.fetchSuitCaseList(payload)

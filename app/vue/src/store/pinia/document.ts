@@ -18,9 +18,10 @@ export type SuitCaseFilter = {
   page?: number
   is_com?: '' | boolean
   project?: '' | 'com' | number
+  court?: string
+  related_case?: '' | number
   sort?: '' | '1' | '2' | '3' | '4' | '5'
   level?: '' | '1' | '2' | '3' | '4'
-  court?: string
   search?: string
 }
 
