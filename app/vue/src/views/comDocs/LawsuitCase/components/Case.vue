@@ -7,7 +7,7 @@ const props = defineProps({
   suitCase: { type: Object as PropType<SuitCase>, default: null },
 })
 
-const emit = defineEmits(['agency-filter', 'agency-search'])
+const emit = defineEmits(['agency-filter', 'agency-search', 'related-filter'])
 
 const suitCaseName = computed(() => {
   const sCase = props.suitCase
@@ -27,6 +27,8 @@ const agencyFunc = computed(() =>
     ? emit('agency-filter', props.suitCase.court)
     : emit('agency-search', props.suitCase.other_agency),
 )
+
+const relatedFilter = () => emit('related-filter', props.suitCase.related_case)
 
 const getCourt = (court: string) =>
   court
@@ -53,13 +55,9 @@ const getCourt = (court: string) =>
     <CTableDataCell>
       <CCol v-if="suitCase.related_case">
         [
-        <router-link
-          :to="{
-            name: '본사 소송사건',
-          }"
-        >
+        <a href="javascript:void(0);" @click="relatedFilter">
           {{ relatedCaseName }}
-        </router-link>
+        </a>
         ]
       </CCol>
     </CTableDataCell>

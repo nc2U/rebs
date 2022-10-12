@@ -106,16 +106,23 @@ export const useDocument = defineStore('document', () => {
       .then(res => (suitcase.value = res.data))
       .catch(err => errorHandle(err.response.data))
 
+  const getQueryStr = (payload: SuitCaseFilter) => {
+    const { is_com, project, court, related_case, sort, level, search } =
+      payload
+    let queryStr = ''
+    if (is_com) queryStr += `&is_com=${is_com}`
+    if (project) queryStr += `&project=${project}`
+    if (court) queryStr += `&court=${court}`
+    if (related_case) queryStr += `&related_case=${related_case}`
+    if (sort) queryStr += `&sort=${sort}`
+    if (level) queryStr += `&level=${level}`
+    if (search) queryStr += `&search=${search}`
+    return queryStr
+  }
+
   const fetchSuitCaseList = (payload: SuitCaseFilter) => {
     const page = payload.page || 1
-    let queryStr = ''
-    if (payload.is_com) queryStr += `&is_com=${payload.is_com}`
-    if (payload.project) queryStr += `&project=${payload.project}`
-    if (payload.sort) queryStr += `&sort=${payload.sort}`
-    if (payload.level) queryStr += `&level=${payload.level}`
-    if (payload.court) queryStr += `&court=${payload.court}`
-    if (payload.search) queryStr += `&search=${payload.search}`
-
+    const queryStr = getQueryStr(payload)
     return api
       .get(`/suitcase/?page=${page}${queryStr}`)
       .then(res => {
@@ -126,15 +133,9 @@ export const useDocument = defineStore('document', () => {
   }
 
   const fetchAllSuitCaseList = (payload: SuitCaseFilter) => {
-    let queryStr = '?i=1'
-    if (payload.is_com) queryStr += `&is_com=${payload.is_com}`
-    if (payload.project) queryStr += `&project=${payload.project}`
-    if (payload.sort) queryStr += `&sort=${payload.sort}`
-    if (payload.level) queryStr += `&level=${payload.level}`
-    if (payload.court) queryStr += `&court=${payload.court}`
-
+    const queryStr = getQueryStr(payload)
     return api
-      .get(`/all-suitcase/?${queryStr}`)
+      .get(`/all-suitcase/?i=1${queryStr}`)
       .then(res => (allSuitCaseList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
   }

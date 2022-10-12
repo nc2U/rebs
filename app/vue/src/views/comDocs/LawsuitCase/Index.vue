@@ -16,9 +16,10 @@ const caseFilter = ref<cFilter>({
   page: 1,
   is_com: '',
   project: '',
+  court: '',
+  related_case: '',
   sort: '',
   level: '',
-  court: '',
   search: '',
 })
 
@@ -74,6 +75,12 @@ const agencySearch = (agent: string) => {
   listFiltering(caseFilter.value)
 }
 
+const relatedFilter = (related: number) => {
+  fController.value.relatedChange(related)
+  caseFilter.value.related_case = related
+  listFiltering(caseFilter.value)
+}
+
 onBeforeMount(() => {
   fetchSuitCaseList({})
 })
@@ -100,6 +107,7 @@ onBeforeUpdate(() => {
           @page-select="pageSelect"
           @agency-filter="agencyFilter"
           @agency-search="agencySearch"
+          @related-filter="relatedFilter"
         />
       </div>
 

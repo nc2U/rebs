@@ -8,12 +8,18 @@ defineProps({
   caseList: { type: Array, default: () => [] },
 })
 
-const emit = defineEmits(['page-select', 'agency-filter', 'agency-search'])
+const emit = defineEmits([
+  'page-select',
+  'agency-filter',
+  'agency-search',
+  'related-filter',
+])
 
 const documentStore = useDocument()
 
 const agencyFilter = (court: string) => emit('agency-filter', court)
 const agencySearch = (agent: string) => emit('agency-search', agent)
+const relatedFilter = (related: number) => emit('related-filter', related)
 
 const casePages = (num: number) => documentStore.casePages(num)
 const pageSelect = (page: number) => emit('page-select', page)
@@ -52,6 +58,7 @@ const pageSelect = (page: number) => emit('page-select', page)
         :suit-case="suitcase"
         @agency-filter="agencyFilter"
         @agency-search="agencySearch"
+        @related-filter="relatedFilter"
       />
     </CTableBody>
   </CTable>
