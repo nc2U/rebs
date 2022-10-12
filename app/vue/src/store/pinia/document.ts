@@ -113,7 +113,7 @@ export const useDocument = defineStore('document', () => {
     if (payload.sort) queryStr += `&sort=${payload.sort}`
     if (payload.level) queryStr += `&level=${payload.level}`
     if (payload.court) queryStr += `&court=${payload.court}`
-    if (payload.search) queryStr += `$search=${payload.search}`
+    if (payload.search) queryStr += `&search=${payload.search}`
 
     return api
       .get(`/suitcase/?page=${page}${queryStr}`)
