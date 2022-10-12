@@ -11,6 +11,7 @@ import CaseView from './components/CaseView.vue'
 import CaseList from './components/CaseList.vue'
 import CaseForm from './components/CaseForm.vue'
 
+const fController = ref()
 const caseFilter = ref<cFilter>({
   page: 1,
   is_com: '',
@@ -63,10 +64,12 @@ const onSubmit = (payload: SuitCase) => {
 const onDelete = (pk: number) => deleteSuitCase(pk)
 
 const agencyFilter = (court: string) => {
+  fController.value.courtChange(court)
   caseFilter.value.court = court
   listFiltering(caseFilter.value)
 }
 const agencySearch = (agent: string) => {
+  fController.value.searchChange(agent)
   caseFilter.value.search = agent
   listFiltering(caseFilter.value)
 }
@@ -89,7 +92,7 @@ onBeforeUpdate(() => {
       <HeaderNav :menus="navMenu" />
 
       <div v-if="$route.name === '본사 소송사건'" class="pt-3">
-        <ListController @list-filter="listFiltering" />
+        <ListController ref="fController" @list-filter="listFiltering" />
 
         <CaseList
           :page="caseFilter.page"

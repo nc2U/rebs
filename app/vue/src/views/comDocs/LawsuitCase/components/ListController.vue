@@ -40,7 +40,10 @@ const listFiltering = (page = 1) => {
   })
 }
 
-defineExpose({ listFiltering })
+const courtChange = (court: string) => (form.court = court)
+const searchChange = (search: string) => (form.search = search)
+
+defineExpose({ listFiltering, courtChange, searchChange })
 
 const resetForm = () => {
   form.is_com = ''
