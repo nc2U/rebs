@@ -150,11 +150,7 @@ export const useDocument = defineStore('document', () => {
   const updateSuitCase = (payload: SuitCase) =>
     api
       .put(`/suitcase/${payload.pk}/`, payload)
-      .then(() =>
-        fetchAllSuitCaseList({}).then(() =>
-          fetchSuitCaseList({}).then(() => message()),
-        ),
-      )
+      .then(() => message())
       .catch(err => errorHandle(err.response.data))
 
   const deleteSuitCase = (pk: number) =>
