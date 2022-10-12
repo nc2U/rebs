@@ -54,7 +54,7 @@ class LawsuitCase(models.Model):
                                 verbose_name='프로젝트')
     SORT_CHOICES = (('1', '민사'), ('2', '형사'), ('3', '행정'), ('4', '가사'), ('5', '신청/집행'))
     sort = models.CharField('유형', max_length=1, choices=SORT_CHOICES)
-    LEVEL_CHOICES = (('1', '1심'), ('2', '2심'), ('3', '3심'), ('4', '신청/집행'))
+    LEVEL_CHOICES = (('1', '1심'), ('2', '2심'), ('3', '3심'), ('4', '수사'), ('5', '신청/집행'))
     level = models.CharField('심급', max_length=1, choices=LEVEL_CHOICES, blank=True)
     related_case = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='관련사건',
                                      help_text='본안 사건인 경우 원심 사건, 신청/집행 사건인 경우 관련 본안 사건 지정')

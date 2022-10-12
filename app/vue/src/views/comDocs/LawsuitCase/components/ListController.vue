@@ -100,7 +100,10 @@ onBeforeMount(() => fetchProjectList())
               <option v-if="!form.sort || form.sort !== '5'" value="3">
                 3심
               </option>
-              <option v-if="!form.sort || form.sort === '5'" value="4">
+              <option v-if="!form.sort || form.sort === '2'" value="4">
+                수사
+              </option>
+              <option v-if="!form.sort || form.sort === '5'" value="5">
                 신청/집행
               </option>
             </CFormSelect>

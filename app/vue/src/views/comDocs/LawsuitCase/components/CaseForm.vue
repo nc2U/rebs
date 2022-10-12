@@ -171,7 +171,8 @@ onBeforeRouteLeave(() => {
           <option value="1">1심</option>
           <option value="2">2심</option>
           <option value="3">3심</option>
-          <option value="4">신청/집행</option>
+          <option value="4">수사</option>
+          <option value="5">신청/집행</option>
         </CFormSelect>
       </CCol>
     </CRow>
