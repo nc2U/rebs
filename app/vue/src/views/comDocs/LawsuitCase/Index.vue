@@ -62,6 +62,15 @@ const onSubmit = (payload: SuitCase) => {
 
 const onDelete = (pk: number) => deleteSuitCase(pk)
 
+const agencyFilter = (court: string) => {
+  caseFilter.value.court = court
+  listFiltering(caseFilter.value)
+}
+const agencySearch = (agent: string) => {
+  caseFilter.value.search = agent
+  listFiltering(caseFilter.value)
+}
+
 onBeforeMount(() => {
   fetchSuitCaseList({})
 })
@@ -86,6 +95,8 @@ onBeforeUpdate(() => {
           :page="caseFilter.page"
           :case-list="suitcaseList"
           @page-select="pageSelect"
+          @agency-filter="agencyFilter"
+          @agency-search="agencySearch"
         />
       </div>
 

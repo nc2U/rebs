@@ -3,6 +3,8 @@ import { reactive, computed, nextTick, onBeforeMount } from 'vue'
 import { useProject } from '@/store/pinia/project'
 import { SuitCaseFilter, useDocument } from '@/store/pinia/document'
 import { numFormat } from '@/utils/baseMixins'
+import { courtChoices } from '@/views/comDocs/LawsuitCase/components/court'
+import Multiselect from '@vueform/multiselect'
 
 defineProps({ tab: { type: Number, default: null } })
 const emit = defineEmits(['list-filter'])
@@ -13,6 +15,7 @@ const form = reactive<SuitCaseFilter>({
   project: '',
   sort: '',
   level: '',
+  court: '',
   search: '',
 })
 
@@ -21,8 +24,9 @@ const formsCheck = computed(() => {
   const b = form.project === ''
   const c = form.sort === ''
   const d = form.level === ''
-  const e = form.search === ''
-  return a && b && c && d && e
+  const e = form.court === ''
+  const f = form.search === ''
+  return a && b && c && d && e && f
 })
 
 const documentStore = useDocument()
@@ -43,6 +47,7 @@ const resetForm = () => {
   form.project = ''
   form.sort = ''
   form.level = ''
+  form.court = ''
   form.search = ''
   listFiltering(1)
 }
@@ -75,6 +80,18 @@ onBeforeMount(() => fetchProjectList())
                 {{ proj.text }}
               </option>
             </CFormSelect>
+          </CCol>
+
+          <CCol md="4" lg="3" class="mb-3">
+            <Multiselect
+              v-model="form.court"
+              :options="courtChoices"
+              placeholder="관할법원 선택"
+              autocomplete="label"
+              :add-option-on="['enter' | 'tab']"
+              searchable
+              @change="listFiltering(1)"
+            />
           </CCol>
 
           <CCol md="4" lg="3" class="mb-3">

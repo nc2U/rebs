@@ -162,11 +162,7 @@ onBeforeRouteLeave(() => {
 
       <CFormLabel for="level" class="col-md-2 col-form-label">심급</CFormLabel>
       <CCol md="4">
-        <CFormSelect
-          id="level"
-          v-model="form.level"
-          :required="!form.other_agency"
-        >
+        <CFormSelect id="level" v-model="form.level" required>
           <option value="">사건심급 선택</option>
           <option value="1">1심</option>
           <option value="2">2심</option>

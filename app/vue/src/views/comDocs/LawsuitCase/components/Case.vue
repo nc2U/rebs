@@ -7,6 +7,8 @@ const props = defineProps({
   suitCase: { type: Object as PropType<SuitCase>, default: null },
 })
 
+const emit = defineEmits(['agency-filter', 'agency-search'])
+
 const suitCaseName = computed(() => {
   const sCase = props.suitCase
   return `${getCourt(sCase.court_desc as string)} ${sCase.case_number} ${
@@ -18,6 +20,12 @@ const relatedCaseName = computed(() =>
   props.suitCase.related_case_name
     ? props.suitCase.related_case_name.split(' ')[1]
     : '',
+)
+
+const agencyFunc = computed(() =>
+  props.suitCase.court_desc !== ''
+    ? emit('agency-filter', props.suitCase.court)
+    : emit('agency-search', props.suitCase.other_agency),
 )
 
 const getCourt = (court: string) =>
@@ -47,7 +55,13 @@ const getCourt = (court: string) =>
       </CCol>
     </CTableDataCell>
     <CTableDataCell>
-      <span v-if="suitCase.court_desc">[ {{ suitCase.court_desc }} ]</span>
+      <span v-if="suitCase.court_desc || suitCase.other_agency">
+        [
+        <a href="javascript:void(0);" @click="agencyFunc">
+          {{ suitCase.court_desc || suitCase.other_agency }}
+        </a>
+        ]
+      </span>
     </CTableDataCell>
     <CTableDataCell class="text-left">
       <router-link
