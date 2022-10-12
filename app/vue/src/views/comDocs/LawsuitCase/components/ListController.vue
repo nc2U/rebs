@@ -5,7 +5,7 @@ import { SuitCaseFilter, useDocument } from '@/store/pinia/document'
 import { numFormat } from '@/utils/baseMixins'
 
 defineProps({ tab: { type: Number, default: null } })
-const emit = defineEmits(['docs-filter'])
+const emit = defineEmits(['list-filter'])
 
 const form = reactive<SuitCaseFilter>({
   page: 1,
@@ -13,7 +13,6 @@ const form = reactive<SuitCaseFilter>({
   project: '',
   sort: '',
   level: '',
-  court: '',
   search: '',
 })
 
@@ -22,9 +21,8 @@ const formsCheck = computed(() => {
   const b = form.project === ''
   const c = form.sort === ''
   const d = form.level === ''
-  const e = form.court === ''
-  const f = form.search === ''
-  return a && b && c && d && e && f
+  const e = form.search === ''
+  return a && b && c && d && e
 })
 
 const documentStore = useDocument()
@@ -32,11 +30,9 @@ const suitcaseCount = computed(() => documentStore.suitcaseCount)
 
 const listFiltering = (page = 1) => {
   nextTick(() => {
+    form.page = page
     form.is_com = !form.project ? '' : form.project === 'com'
-    emit('docs-filter', {
-      ...{ page },
-      ...form,
-    })
+    emit('list-filter', { ...form })
   })
 }
 
@@ -47,8 +43,12 @@ const resetForm = () => {
   form.project = ''
   form.sort = ''
   form.level = ''
-  form.court = ''
   form.search = ''
+  listFiltering(1)
+}
+
+const sortChange = () => {
+  form.level = ''
   listFiltering(1)
 }
 
@@ -78,7 +78,7 @@ onBeforeMount(() => fetchProjectList())
           </CCol>
 
           <CCol md="4" lg="3" class="mb-3">
-            <CFormSelect v-model="form.sort" @change="listFiltering(1)">
+            <CFormSelect v-model="form.sort" @change="sortChange">
               <option value="">사건유형 선택</option>
               <option value="1">민사</option>
               <option value="2">형사</option>
@@ -89,12 +89,20 @@ onBeforeMount(() => fetchProjectList())
           </CCol>
 
           <CCol md="4" lg="3" class="mb-3">
-            <CFormSelect v-model="form.sort" @change="listFiltering(1)">
+            <CFormSelect v-model="form.level" @change="listFiltering(1)">
               <option value="">사건심급 선택</option>
-              <option value="1">1심</option>
-              <option value="2">2심</option>
-              <option value="3">3심</option>
-              <option value="0">신청/집행</option>
+              <option v-if="!form.sort || form.sort !== '5'" value="1">
+                1심
+              </option>
+              <option v-if="!form.sort || form.sort !== '5'" value="2">
+                2심
+              </option>
+              <option v-if="!form.sort || form.sort !== '5'" value="3">
+                3심
+              </option>
+              <option v-if="!form.sort || form.sort === '5'" value="4">
+                신청/집행
+              </option>
             </CFormSelect>
           </CCol>
         </CRow>

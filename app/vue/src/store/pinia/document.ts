@@ -19,7 +19,7 @@ export type SuitCaseFilter = {
   is_com?: '' | boolean
   project?: '' | 'com' | number
   sort?: '' | '1' | '2' | '3' | '4' | '5'
-  level?: '' | '0' | '1' | '2' | '3'
+  level?: '' | '1' | '2' | '3' | '4'
   court?: string
   search?: string
 }
@@ -113,6 +113,7 @@ export const useDocument = defineStore('document', () => {
     if (payload.sort) queryStr += `&sort=${payload.sort}`
     if (payload.level) queryStr += `&level=${payload.level}`
     if (payload.court) queryStr += `&court=${payload.court}`
+    if (payload.search) queryStr += `$search=${payload.search}`
 
     return api
       .get(`/suitcase/?page=${page}${queryStr}`)

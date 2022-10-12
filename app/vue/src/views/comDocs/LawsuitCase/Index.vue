@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeMount, onBeforeUpdate, reactive } from 'vue'
+import { ref, computed, onBeforeMount, onBeforeUpdate } from 'vue'
 import { navMenu } from '@/views/comDocs/_menu/headermixin'
 import { useRouter } from 'vue-router'
 import { SuitCaseFilter as cFilter, useDocument } from '@/store/pinia/document'
@@ -11,24 +11,25 @@ import CaseView from './components/CaseView.vue'
 import CaseList from './components/CaseList.vue'
 import CaseForm from './components/CaseForm.vue'
 
-const caseFilter = reactive<cFilter>({
+const caseFilter = ref<cFilter>({
   page: 1,
-  is_com: false,
-  project: undefined,
-  sort: undefined,
-  level: undefined,
+  is_com: '',
+  project: '',
+  sort: '',
+  level: '',
   court: '',
+  search: '',
 })
 
 const listFiltering = (payload: cFilter) => {
-  caseFilter.is_com = payload.is_com
-  if (!payload.is_com) caseFilter.project = payload.project
-  fetchSuitCaseList({ ...caseFilter })
+  caseFilter.value = payload
+  caseFilter.value.project = payload.is_com ? '' : payload.project
+  fetchSuitCaseList({ ...caseFilter.value })
 }
 
 const pageSelect = (page: number) => {
-  caseFilter.page = page
-  listFiltering(caseFilter)
+  caseFilter.value.page = page
+  listFiltering(caseFilter.value)
 }
 
 const documentStore = useDocument()
@@ -67,7 +68,7 @@ onBeforeMount(() => {
 
 onBeforeUpdate(() => {
   fetchSuitCaseList({
-    page: caseFilter.page,
+    page: caseFilter.value.page,
   })
   fetchAllSuitCaseList({})
 })
