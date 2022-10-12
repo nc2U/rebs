@@ -12,7 +12,7 @@ const emit = defineEmits(['page-select'])
 
 const documentStore = useDocument()
 
-const postCases = (num: number) => documentStore.postCases(num)
+const casePages = (num: number) => documentStore.casePages(num)
 const pageSelect = (page: number) => emit('page-select', page)
 </script>
 
@@ -56,7 +56,7 @@ const pageSelect = (page: number) => emit('page-select', page)
       <Pagination
         :active-page="page"
         :limit="8"
-        :pages="postCases(10)"
+        :pages="casePages(10)"
         class="mt-3"
         @active-page-change="pageSelect"
       />
