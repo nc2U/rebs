@@ -66,17 +66,20 @@ const onDelete = (pk: number) => deleteSuitCase(pk)
 
 const agencyFilter = (court: string) => {
   fController.value.courtChange(court)
+  caseFilter.value.page = 1
   caseFilter.value.court = court
   listFiltering(caseFilter.value)
 }
 const agencySearch = (agent: string) => {
   fController.value.searchChange(agent)
+  caseFilter.value.page = 1
   caseFilter.value.search = agent
   listFiltering(caseFilter.value)
 }
 
 const relatedFilter = (related: number) => {
   fController.value.relatedChange(related)
+  caseFilter.value.page = 1
   caseFilter.value.related_case = related
   listFiltering(caseFilter.value)
 }
