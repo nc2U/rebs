@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, onBeforeMount } from 'vue'
+import { ref, computed, onBeforeMount } from 'vue'
 import { navMenu, pageTitle } from '@/views/comCash/_menu/headermixin'
 import { useCompany } from '@/store/pinia/company'
 import {
@@ -17,7 +17,7 @@ import CashesList from '@/views/comCash/Manage/components/CashesList.vue'
 
 const listControl = ref()
 
-let dataFilter = reactive<Filter>({
+const dataFilter = ref<Filter>({
   page: 1,
   company: null,
   from_date: '',
@@ -31,12 +31,12 @@ let dataFilter = reactive<Filter>({
 })
 
 const excelUrl = computed(() => {
-  const sd = dataFilter.from_date
-  const ed = dataFilter.to_date
-  const st = dataFilter.sort || ''
-  const d1 = dataFilter.account_d1 || ''
-  const ba = dataFilter.bank_account || ''
-  const q = dataFilter.search
+  const sd = dataFilter.value.from_date
+  const ed = dataFilter.value.to_date
+  const st = dataFilter.value.sort || ''
+  const d1 = dataFilter.value.account_d1 || ''
+  const ba = dataFilter.value.bank_account || ''
+  const q = dataFilter.value.search
   return `/excel/cashbook/?s_date=${sd}&e_date=${ed}&sort=${st}&account_d1=${d1}&bank_account=${ba}&search_word=${q}`
 })
 
@@ -88,7 +88,7 @@ const pageSelect = (page: number) => listControl.value.listFiltering(page)
 
 const listFiltering = (payload: Filter) => {
   if (company.value) payload.company = company.value
-  dataFilter = payload
+  dataFilter.value = payload
   const sort = payload.sort
   const d1 = payload.account_d1
   const d2 = payload.account_d2
@@ -127,14 +127,14 @@ const multiSubmit = (payload: {
 }) => {
   const { formData, ...sepData } = payload
   const createData = { ...formData, ...sepData }
-  const updateData = { ...{ filters: dataFilter }, ...createData }
+  const updateData = { ...{ filters: dataFilter.value }, ...createData }
 
   if (formData.pk) onUpdate(updateData)
   else onCreate(createData)
 }
 
 const onDelete = (payload: CashBook) =>
-  deleteCashBook({ ...{ filters: dataFilter }, ...payload })
+  deleteCashBook({ ...{ filters: dataFilter.value }, ...payload })
 
 onBeforeMount(() => {
   fetchCompany(initComId.value)
@@ -147,7 +147,7 @@ onBeforeMount(() => {
   fetchFormAccD3List(null, null, null)
   fetchComBankAccList(initComId.value)
   fetchCashBookList({ company: initComId.value })
-  dataFilter.company = initComId.value
+  dataFilter.value.company = initComId.value
 })
 </script>
 

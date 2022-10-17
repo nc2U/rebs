@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, onBeforeMount } from 'vue'
+import { ref, computed, onBeforeMount } from 'vue'
 import { pageTitle, navMenu } from '@/views/proCash/_menu/headermixin'
 import { CashBookFilter, useProCash } from '@/store/pinia/proCash'
 import { useProject } from '@/store/pinia/project'
@@ -13,7 +13,7 @@ import ProCashList from '@/views/proCash/Manage/components/ProCashList.vue'
 
 const listControl = ref()
 
-let dataFilter = reactive<CashBookFilter>({
+const dataFilter = ref<CashBookFilter>({
   page: 1,
   from_date: '',
   to_date: '',
@@ -26,13 +26,13 @@ let dataFilter = reactive<CashBookFilter>({
 
 const excelUrl = computed(() => {
   const pj = project.value
-  const sd = dataFilter.from_date
-  const ed = dataFilter.to_date
-  const st = dataFilter.sort || ''
-  const d1 = dataFilter.pro_acc_d1 || ''
-  const d2 = dataFilter.pro_acc_d2 || ''
-  const ba = dataFilter.bank_account || ''
-  const q = dataFilter.search
+  const sd = dataFilter.value.from_date
+  const ed = dataFilter.value.to_date
+  const st = dataFilter.value.sort || ''
+  const d1 = dataFilter.value.pro_acc_d1 || ''
+  const d2 = dataFilter.value.pro_acc_d2 || ''
+  const ba = dataFilter.value.bank_account || ''
+  const q = dataFilter.value.search
   return `/excel/p-cashbook/?project=${pj}&sdate=${sd}&edate=${ed}&sort=${st}&d1=${d1}&d2=${d2}&bank_acc=${ba}&q=${q}`
 })
 
@@ -95,12 +95,12 @@ const onSelectAdd = (target: number) => {
 }
 
 const pageSelect = (page: number) => {
-  dataFilter.page = page
+  dataFilter.value.page = page
   listControl.value.listFiltering(page)
 }
 
 const listFiltering = (payload: CashBookFilter) => {
-  dataFilter = payload
+  dataFilter.value = payload
   const sort = payload.sort ? payload.sort : null
   const d1 = payload.pro_acc_d1 ? payload.pro_acc_d1 : null
   fetchProFormAccD1List(sort)
@@ -140,7 +140,7 @@ const multiSubmit = (payload: {
   const submitData = {
     ...formData,
     ...sepData,
-    ...{ filters: dataFilter },
+    ...{ filters: dataFilter.value },
   }
 
   if (formData.pk) onUpdate(submitData)
@@ -148,7 +148,7 @@ const multiSubmit = (payload: {
 }
 
 const onDelete = (payload: { pk: number; project: number }) =>
-  deletePrCashBook({ ...{ filters: dataFilter }, ...payload })
+  deletePrCashBook({ ...{ filters: dataFilter.value }, ...payload })
 </script>
 
 <template>
