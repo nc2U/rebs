@@ -15,7 +15,7 @@ const sortColor = computed(() => (props.post.project ? 'success' : 'info'))
   <CTableRow v-if="post" class="text-center">
     <CTableDataCell>{{ post.pk }}</CTableDataCell>
     <CTableDataCell class="text-left">
-      <CBadge :color="sortColor">{{ sortName }}</CBadge>
+      <CBadge :color="sortColor" shape="rounded-pill">{{ sortName }}</CBadge>
     </CTableDataCell>
     <CTableDataCell>{{ post.execution_date }}</CTableDataCell>
     <CTableDataCell class="text-left">

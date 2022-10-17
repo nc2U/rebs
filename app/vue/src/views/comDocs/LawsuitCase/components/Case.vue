@@ -45,11 +45,11 @@ const getCourt = (court: string) =>
     <CTableDataCell>{{ suitCase.level_desc }}</CTableDataCell>
     <CTableDataCell class="text-left">
       <span v-if="suitCase.court_desc || suitCase.other_agency">
-        [
         <a href="javascript:void(0);" @click="agencyFunc">
-          {{ suitCase.court_desc || suitCase.other_agency }}
+          <CBadge color="dark" shape="rounded-pill">
+            {{ suitCase.court_desc || suitCase.other_agency }}
+          </CBadge>
         </a>
-        ]
       </span>
     </CTableDataCell>
     <CTableDataCell>
