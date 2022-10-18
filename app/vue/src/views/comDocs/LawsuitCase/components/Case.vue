@@ -57,7 +57,7 @@ const getCourt = (court: string) =>
 
 <template>
   <CTableRow v-if="suitCase" class="text-center">
-    <CTableDataCell>
+    <CTableDataCell class="text-left">
       <a href="javascript:void(0);" @click="sortFunc">
         <CBadge :color="sortColor" shape="rounded-pill">{{ sortName }}</CBadge>
       </a>
