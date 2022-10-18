@@ -1,3 +1,4 @@
+from django.db.models import Q
 from rest_framework import viewsets
 from django_filters import BooleanFilter
 from django_filters.rest_framework import FilterSet
@@ -37,10 +38,10 @@ class LawSuitCaseFilterSet(FilterSet):
 
     class Meta:
         model = LawsuitCase
-        fields = ('is_com', 'project', 'sort', 'level', 'related_case', 'court')
+        fields = ('is_com', 'project', 'sort', 'level', 'court')
 
 
-class LawSuitCaseViewSet(viewsets.ModelViewSet):
+class LawSuitCaseBase(viewsets.ModelViewSet):
     queryset = LawsuitCase.objects.all()
     serializer_class = LawSuitCaseSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
@@ -50,8 +51,14 @@ class LawSuitCaseViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
+
+class LawSuitCaseViewSet(LawSuitCaseBase):
     def get_queryset(self):
-        return LawsuitCase.objects.all()
+        queryset = LawsuitCase.objects.all()
+        related = self.request.query_params.get('related_case')
+        if related:
+            queryset = queryset.filter(Q(pk=related) | Q(related_case=related))
+        return queryset
 
 
 class AllLawSuitCaseViewSet(LawSuitCaseViewSet):
