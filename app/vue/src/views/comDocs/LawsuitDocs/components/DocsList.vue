@@ -8,9 +8,11 @@ defineProps({
   postList: { type: Array, default: () => [] },
 })
 
-const emit = defineEmits(['page-select'])
+const emit = defineEmits(['sort-filter', 'page-select'])
 
 const documentStore = useDocument()
+
+const sortFilter = (project: number | null) => emit('sort-filter', project)
 
 const postPages = (num: number) => documentStore.postPages(num)
 const pageSelect = (page: number) => emit('page-select', page)
@@ -41,7 +43,12 @@ const pageSelect = (page: number) => emit('page-select', page)
     </CTableHead>
 
     <CTableBody>
-      <Docs v-for="post in postList" :key="post.pk" :post="post" />
+      <Docs
+        v-for="post in postList"
+        :key="post.pk"
+        :post="post"
+        @sort-filter="sortFilter"
+      />
     </CTableBody>
   </CTable>
 

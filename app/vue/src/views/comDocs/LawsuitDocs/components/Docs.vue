@@ -7,6 +7,8 @@ const props = defineProps({
   post: { type: Object as PropType<Post>, default: null },
 })
 
+const emit = defineEmits(['sort-filter'])
+
 const sortName = computed(() => props.post.proj_name || '본사')
 const sortColor = computed(() => (props.post.project ? 'success' : 'info'))
 const lawsuitName = computed(() =>
@@ -17,13 +19,17 @@ const lawsuitName = computed(() =>
         .replace('대법원', '대법')
     : '',
 )
+
+const sortFunc = computed(() => emit('sort-filter', props.post.project))
 </script>
 
 <template>
   <CTableRow v-if="post" class="text-center">
     <CTableDataCell>{{ post.pk }}</CTableDataCell>
     <CTableDataCell class="text-left">
-      <CBadge :color="sortColor" shape="rounded-pill">{{ sortName }}</CBadge>
+      <a href="javascript:void(0);" @click="sortFunc">
+        <CBadge :color="sortColor" shape="rounded-pill">{{ sortName }}</CBadge>
+      </a>
     </CTableDataCell>
     <CTableDataCell class="text-left">
       {{ cutString(lawsuitName, 23) }}

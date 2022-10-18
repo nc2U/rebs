@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeMount, onBeforeUpdate, reactive } from 'vue'
+import { ref, reactive, computed, onBeforeMount, onBeforeUpdate } from 'vue'
 import { navMenu } from '@/views/comDocs/_menu/headermixin'
 import { useRouter } from 'vue-router'
 import { PostFilter, useDocument } from '@/store/pinia/document'
@@ -12,7 +12,8 @@ import DocsView from './components/DocsView.vue'
 import DocsList from './components/DocsList.vue'
 import DocsForm from './components/DocsForm.vue'
 
-const caseFilter = reactive<PostFilter>({
+const fController = ref()
+const caseFilter = ref<PostFilter>({
   board: 2,
   category: null,
   is_com: '',
@@ -23,21 +24,21 @@ const caseFilter = reactive<PostFilter>({
 })
 
 const listFiltering = (payload: PostFilter) => {
-  caseFilter.is_com = payload.is_com
-  if (!payload.is_com) caseFilter.project = payload.project
-  caseFilter.ordering = payload.ordering
-  caseFilter.search = payload.search
-  fetchPostList({ ...caseFilter })
+  caseFilter.value.is_com = payload.is_com
+  if (!payload.is_com) caseFilter.value.project = payload.project
+  caseFilter.value.ordering = payload.ordering
+  caseFilter.value.search = payload.search
+  fetchPostList({ ...caseFilter.value })
 }
 
 const selectCate = (cate: number) => {
-  caseFilter.category = cate
-  listFiltering(caseFilter)
+  caseFilter.value.category = cate
+  listFiltering(caseFilter.value)
 }
 
 const pageSelect = (page: number) => {
-  caseFilter.page = page
-  listFiltering(caseFilter)
+  caseFilter.value.page = page
+  listFiltering(caseFilter.value)
 }
 
 const documentStore = useDocument()
@@ -73,6 +74,14 @@ const postHit = (payload: PatchPost) => patchPost(payload)
 const linkHit = (payload: Link) => patchLink(payload)
 const fileHit = (payload: AFile) => patchFile(payload)
 
+const sortFilter = (project: number | null) => {
+  fController.value.projectChange(project)
+  caseFilter.value.page = 1
+  if (project !== null) caseFilter.value.project = project.toString()
+  else caseFilter.value.is_com = true
+  listFiltering(caseFilter.value)
+}
+
 onBeforeMount(() => {
   fetchCategoryList(2)
   fetchPostList({ board: 2 })
@@ -81,8 +90,8 @@ onBeforeMount(() => {
 onBeforeUpdate(() => {
   fetchPostList({
     board: 2,
-    page: caseFilter.page,
-    category: caseFilter.category,
+    page: caseFilter.value.page,
+    category: caseFilter.value.category,
   })
 })
 </script>
@@ -93,7 +102,7 @@ onBeforeUpdate(() => {
       <HeaderNav :menus="navMenu" />
 
       <div v-if="$route.name === '본사 소송문서'" class="pt-3">
-        <ListController @list-filter="listFiltering" />
+        <ListController ref="fController" @list-filter="listFiltering" />
 
         <CategoryTabs
           :category="caseFilter.category"
@@ -105,6 +114,7 @@ onBeforeUpdate(() => {
           :page="caseFilter.page"
           :post-list="postList"
           @page-select="pageSelect"
+          @sort-filter="sortFilter"
         />
       </div>
 
