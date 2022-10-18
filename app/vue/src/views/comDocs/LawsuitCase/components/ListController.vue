@@ -46,8 +46,18 @@ const listFiltering = (page = 1) => {
 const courtChange = (court: string) => (form.court = court)
 const searchChange = (search: string) => (form.search = search)
 const relatedChange = (related: number) => (form.related_case = related)
+const projectChange = (project: number | null) => {
+  if (project !== null) form.project = project
+  else form.project = 'com'
+}
 
-defineExpose({ listFiltering, courtChange, searchChange, relatedChange })
+defineExpose({
+  listFiltering,
+  courtChange,
+  searchChange,
+  relatedChange,
+  projectChange,
+})
 
 const resetForm = () => {
   form.is_com = ''

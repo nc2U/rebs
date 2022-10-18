@@ -13,6 +13,7 @@ const emit = defineEmits([
   'agency-filter',
   'agency-search',
   'related-filter',
+  'sort-filter',
 ])
 
 const documentStore = useDocument()
@@ -20,6 +21,7 @@ const documentStore = useDocument()
 const agencyFilter = (court: string) => emit('agency-filter', court)
 const agencySearch = (agent: string) => emit('agency-search', agent)
 const relatedFilter = (related: number) => emit('related-filter', related)
+const sortFilter = (project: number | null) => emit('sort-filter', project)
 
 const casePages = (num: number) => documentStore.casePages(num)
 const pageSelect = (page: number) => emit('page-select', page)
@@ -28,19 +30,21 @@ const pageSelect = (page: number) => emit('page-select', page)
 <template>
   <CTable hover responsive align="middle" class="mt-5">
     <colgroup>
-      <col width="8%" />
-      <col width="8%" />
-      <col width="12%" />
+      <col width="9%" />
+      <col width="7%" />
+      <col width="7%" />
+      <col width="9%" />
       <col width="10%" />
-      <col width="20%" />
-      <col width="14%" />
-      <col width="14%" />
-      <col width="14%" />
+      <col width="19%" />
+      <col width="13%" />
+      <col width="13%" />
+      <col width="13%" />
     </colgroup>
 
     <CTableHead>
       <CTableRow :color="headerSecondary" class="text-center border-top-1">
         <CTableHeaderCell scope="col">구분</CTableHeaderCell>
+        <CTableHeaderCell scope="col">종류</CTableHeaderCell>
         <CTableHeaderCell scope="col">심급</CTableHeaderCell>
         <CTableHeaderCell scope="col">관할법원 / 처리기관</CTableHeaderCell>
         <CTableHeaderCell scope="col">관련사건</CTableHeaderCell>
@@ -59,6 +63,7 @@ const pageSelect = (page: number) => emit('page-select', page)
         @agency-filter="agencyFilter"
         @agency-search="agencySearch"
         @related-filter="relatedFilter"
+        @sort-filter="sortFilter"
       />
     </CTableBody>
   </CTable>
