@@ -44,10 +44,8 @@ const agencyFunc = computed(() =>
     : emit('agency-search', props.suitCase.other_agency),
 )
 
-const sortFunc = computed(() => emit('sort-filter', props.suitCase.project))
-
+const sortFunc = () => emit('sort-filter', props.suitCase.project)
 const relatedFilter = () => emit('related-filter', props.suitCase.related_case)
-
 const getCourt = (court: string) =>
   court
     ? court

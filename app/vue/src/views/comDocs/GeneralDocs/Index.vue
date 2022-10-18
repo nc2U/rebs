@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive, computed, onBeforeMount, onBeforeUpdate } from 'vue'
+import { reactive, computed, onBeforeMount, onBeforeUpdate, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useDocument, PostFilter } from '@/store/pinia/document'
 import { AFile, Attatches, Link, Post, PatchPost } from '@/store/types/document'
@@ -11,7 +11,8 @@ import DocsList from './components/DocsList.vue'
 import DocsView from './components/DocsView.vue'
 import DocsForm from './components/DocsForm.vue'
 
-const postFilter = reactive<PostFilter>({
+const fController = ref()
+const postFilter = ref<PostFilter>({
   board: 1,
   category: null,
   is_com: false,
@@ -22,16 +23,16 @@ const postFilter = reactive<PostFilter>({
 })
 
 const docsFilter = (payload: PostFilter) => {
-  postFilter.is_com = payload.is_com
-  if (!payload.is_com) postFilter.project = payload.project
-  postFilter.ordering = payload.ordering
-  postFilter.search = payload.search
-  fetchPostList({ ...postFilter })
+  postFilter.value.is_com = payload.is_com
+  if (!payload.is_com) postFilter.value.project = payload.project
+  postFilter.value.ordering = payload.ordering
+  postFilter.value.search = payload.search
+  fetchPostList({ ...postFilter.value })
 }
 
 const selectCate = (cate: number) => {
-  postFilter.category = cate
-  docsFilter(postFilter)
+  postFilter.value.category = cate
+  docsFilter(postFilter.value)
 }
 const pageSelect = (page: number) => console.log(page)
 
@@ -77,6 +78,14 @@ const postHit = (payload: PatchPost) => patchPost(payload)
 const linkHit = (payload: Link) => patchLink(payload)
 const fileHit = (payload: AFile) => patchFile(payload)
 
+const sortFilter = (project: number | null) => {
+  fController.value.projectChange(project)
+  postFilter.value.page = 1
+  if (project !== null) postFilter.value.project = project.toString()
+  else postFilter.value.is_com = true
+  docsFilter(postFilter.value)
+}
+
 onBeforeMount(() => {
   fetchCategoryList(1)
   fetchPostList({ board: 1 })
@@ -85,8 +94,8 @@ onBeforeMount(() => {
 onBeforeUpdate(() => {
   fetchPostList({
     board: 1,
-    page: postFilter.page,
-    category: postFilter.category,
+    page: postFilter.value.page,
+    category: postFilter.value.category,
   })
 })
 </script>
@@ -95,7 +104,7 @@ onBeforeUpdate(() => {
   <ContentBody>
     <CCardBody class="pb-5">
       <div v-if="$route.name === '본사 일반문서'" class="pt-3">
-        <ListController @docs-filter="docsFilter" />
+        <ListController ref="fController" @docs-filter="docsFilter" />
 
         <CategoryTabs
           :category="postFilter.category"
@@ -107,6 +116,7 @@ onBeforeUpdate(() => {
           :page="postFilter.page"
           :post-list="postList"
           @page-select="pageSelect"
+          @sort-filter="sortFilter"
         />
       </div>
 

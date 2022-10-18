@@ -20,7 +20,7 @@ const lawsuitName = computed(() =>
     : '',
 )
 
-const sortFunc = computed(() => emit('sort-filter', props.post.project))
+const sortFunc = () => emit('sort-filter', props.post.project)
 </script>
 
 <template>

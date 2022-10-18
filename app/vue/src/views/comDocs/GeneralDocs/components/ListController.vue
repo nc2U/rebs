@@ -35,7 +35,12 @@ const listFiltering = (page = 1) => {
   })
 }
 
-defineExpose({ listFiltering })
+const projectChange = (project: number | null) => {
+  if (project !== null) form.project = project.toString()
+  else form.project = 'com'
+}
+
+defineExpose({ listFiltering, projectChange })
 
 const resetForm = () => {
   form.project = ''
