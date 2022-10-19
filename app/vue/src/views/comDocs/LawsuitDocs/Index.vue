@@ -11,6 +11,7 @@ import CategoryTabs from './components/CategoryTabs.vue'
 import DocsView from './components/DocsView.vue'
 import DocsList from './components/DocsList.vue'
 import DocsForm from './components/DocsForm.vue'
+import { formUtility } from '@/utils/helper'
 
 const fController = ref()
 const caseFilter = ref<PostFilter>({
@@ -50,22 +51,28 @@ const fetchPostList = (payload: PostFilter) =>
 const fetchCategoryList = (board: number) =>
   documentStore.fetchCategoryList(board)
 
-const createPost = (payload: Post) => documentStore.createPost(payload)
-const updatePost = (payload: Post) => documentStore.updatePost(payload)
+const createPost = (payload: { form: FormData }) =>
+  documentStore.createPost(payload)
+const updatePost = (payload: { pk: number; form: FormData }) =>
+  documentStore.updatePost(payload)
 const patchPost = (payload: PatchPost) => documentStore.patchPost(payload)
 const patchLink = (payload: Link) => documentStore.patchLink(payload)
 const patchFile = (payload: AFile) => documentStore.patchFile(payload)
 
 const router = useRouter()
 const onSubmit = (payload: Post & Attatches) => {
-  if (payload.pk) {
-    updatePost(payload)
+  const { pk, ...formData } = payload
+
+  const form = formUtility.getFormData(formData)
+
+  if (pk) {
+    updatePost({ pk, form })
     router.replace({
       name: '본사 소송문서 - 보기',
-      params: { postId: payload.pk },
+      params: { postId: pk },
     })
   } else {
-    createPost(payload)
+    createPost({ form })
     router.replace({ name: '본사 소송문서' })
   }
 }
