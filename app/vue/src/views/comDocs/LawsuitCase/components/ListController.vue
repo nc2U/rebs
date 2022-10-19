@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { reactive, computed, nextTick, onBeforeMount, inject } from 'vue'
+import { reactive, computed, nextTick, onBeforeMount } from 'vue'
 import { useProject } from '@/store/pinia/project'
 import { SuitCaseFilter, useDocument } from '@/store/pinia/document'
 import { numFormat } from '@/utils/baseMixins'
@@ -30,6 +30,11 @@ const formsCheck = computed(() => {
   const g = form.search === ''
   return a && b && c && d && e && f && g
 })
+
+const projectStore = useProject()
+const projSelect = computed(() => projectStore.projSelect)
+
+const fetchProjectList = () => projectStore.fetchProjectList()
 
 const documentStore = useDocument()
 const suitcaseCount = computed(() => documentStore.suitcaseCount)
@@ -75,9 +80,6 @@ const sortChange = () => {
   listFiltering(1)
 }
 
-const projectStore = useProject()
-const projSelect = computed(() => projectStore.projSelect)
-const fetchProjectList = () => projectStore.fetchProjectList()
 onBeforeMount(() => fetchProjectList())
 </script>
 

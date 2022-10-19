@@ -94,12 +94,11 @@ const sortFilter = (project: number | null) => {
 
 onBeforeMount(() => {
   fetchSuitCaseList({})
+  fetchAllSuitCaseList({})
 })
 
 onBeforeUpdate(() => {
-  fetchSuitCaseList({
-    page: caseFilter.value.page,
-  })
+  fetchSuitCaseList({ page: caseFilter.value.page })
   fetchAllSuitCaseList({})
 })
 </script>
