@@ -99,7 +99,6 @@ onBeforeMount(() => {
 
 onBeforeUpdate(() => {
   fetchSuitCaseList({ page: caseFilter.value.page })
-  fetchAllSuitCaseList({})
 })
 </script>
 
