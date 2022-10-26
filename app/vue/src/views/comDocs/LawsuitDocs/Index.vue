@@ -65,6 +65,8 @@ const onSubmit = (payload: Post & Attatches) => {
 
   const form = formUtility.getFormData(formData)
 
+  console.log(formData, ...form)
+
   if (pk) {
     updatePost({ pk, form })
     router.replace({
