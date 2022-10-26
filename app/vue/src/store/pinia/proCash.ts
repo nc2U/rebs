@@ -111,7 +111,10 @@ export const useProCash = defineStore('proCash', () => {
 
   const balanceByAccList = ref<BalanceByAccount[]>([])
 
-  const fetchBalanceByAccList = (payload: any) => {
+  const fetchBalanceByAccList = (payload: {
+    project: number
+    date: string
+  }) => {
     const { project, date } = payload
     let url = `/pr-balance-by-acc/?project=${project}`
     if (date) url += `&date=${date}`

@@ -129,7 +129,10 @@ export const useComCash = defineStore('comCash', () => {
 
   const comBalanceByAccList = ref<BalanceByAccount[]>([])
 
-  const fetchComBalanceByAccList = (payload: any) => {
+  const fetchComBalanceByAccList = (payload: {
+    company: number
+    date: string
+  }) => {
     const { company, date } = payload
     const dateUri = date ? `&date=${date}` : ''
     return api
