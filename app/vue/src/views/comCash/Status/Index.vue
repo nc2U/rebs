@@ -31,7 +31,10 @@ onBeforeMount(() => {
   fetchAllAccD2List()
   fetchAllAccD3List()
   fetchComBankAccList(initComId.value)
-  fetchComBalanceByAccList({ company: initComId.value })
+  fetchComBalanceByAccList({
+    company: initComId.value,
+    date: dateFormat(date.value),
+  })
   fetchDateCashBookList({
     company: initComId.value,
     date: dateFormat(date.value),

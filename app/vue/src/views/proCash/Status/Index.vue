@@ -88,7 +88,10 @@ onBeforeMount(() => {
   fetchProAllAccD1List()
   fetchProAllAccD2List()
   fetchProBankAccList(initProjId.value)
-  fetchBalanceByAccList({ project: initProjId.value })
+  fetchBalanceByAccList({
+    project: initProjId.value,
+    date: dateFormat(date.value),
+  })
   fetchDateCashBookList({
     project: initProjId.value,
     date: dateFormat(date.value),
