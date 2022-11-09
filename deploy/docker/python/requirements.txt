@@ -1,5 +1,5 @@
 Django==4.1.2
-uWSGI==2.0.20
+uWSGI==2.0.21
 mysqlclient==2.1.1
 django-widget-tweaks==1.4.12
 django-markdown2==0.3.1
