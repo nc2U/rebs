@@ -822,7 +822,7 @@ class ExportProjectBalance(View):
         worksheet.set_column(2, 2, 20)
         worksheet.write(row_num, 2, '전일잔고', h_format)
         worksheet.set_column(3, 3, 20)
-        worksheet.write(row_num, 3, '금알입금(증가)', h_format)
+        worksheet.write(row_num, 3, '금일입금(증가)', h_format)
         worksheet.set_column(4, 4, 20)
         worksheet.write(row_num, 4, '금일출금(감소)', h_format)
         worksheet.set_column(5, 5, 20)
