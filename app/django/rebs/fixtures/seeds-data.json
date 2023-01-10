@@ -2899,7 +2899,7 @@
     "model": "document.category",
     "pk": 1,
     "fields": {
-      "board": 1,
+      "board": 2,
       "name": "발송공문",
       "order": 1
     }
@@ -2908,7 +2908,7 @@
     "model": "document.category",
     "pk": 2,
     "fields": {
-      "board": 1,
+      "board": 2,
       "name": "수신공문",
       "order": 2
     }
@@ -2917,7 +2917,7 @@
     "model": "document.category",
     "pk": 3,
     "fields": {
-      "board": 1,
+      "board": 2,
       "name": "회의록/보고서",
       "order": 3
     }
@@ -2926,7 +2926,7 @@
     "model": "document.category",
     "pk": 4,
     "fields": {
-      "board": 1,
+      "board": 2,
       "name": "계약서/협약서",
       "order": 4
     }
@@ -2935,7 +2935,7 @@
     "model": "document.category",
     "pk": 5,
     "fields": {
-      "board": 1,
+      "board": 2,
       "name": "내규/서식",
       "order": 5
     }
@@ -2944,9 +2944,45 @@
     "model": "document.category",
     "pk": 6,
     "fields": {
-      "board": 1,
+      "board": 2,
       "name": "기타",
       "order": 6
+    }
+  },
+  {
+    "model": "document.category",
+    "pk": 7,
+    "fields": {
+      "board": 3,
+      "name": "소장/신청서",
+      "order": 1
+    }
+  },
+  {
+    "model": "document.category",
+    "pk": 8,
+    "fields": {
+      "board": 3,
+      "name": "판결/결정문",
+      "order": 2
+    }
+  },
+  {
+    "model": "document.category",
+    "pk": 9,
+    "fields": {
+      "board": 3,
+      "name": "기타제출문서",
+      "order": 3
+    }
+  },
+  {
+    "model": "document.category",
+    "pk": 10,
+    "fields": {
+      "board": 3,
+      "name": "기타수신문서",
+      "order": 4
     }
   }
 ]
