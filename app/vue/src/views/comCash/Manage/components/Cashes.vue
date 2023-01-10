@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
+import { useStore } from 'vuex'
 import { useAccount } from '@/store/pinia/account'
 import { CashBook } from '@/store/types/comCash'
 import { write_company_cash } from '@/utils/pageAuth'
@@ -26,8 +27,11 @@ const cls = ref(['text-primary', 'text-danger', 'text-info'])
 const sortClass = computed(() => cls.value[props.cash.sort - 1])
 const d1Class = computed(() => cls.value[props.cash.account_d1 - 1])
 
+const store = useStore()
+const dark = computed(() => store.state.theme === 'dark')
 const rowColor = computed(() => {
   let color = ''
+  color = dark.value ? '' : color
   color = props.cash.is_separate ? 'primary' : color
   color = props.cash.separated ? 'secondary' : color
   return color
@@ -94,10 +98,10 @@ const deleteObject = () => {
         {{ cutString(cash.bank_account_desc, 10) }}
       </span>
     </CTableDataCell>
-    <CTableDataCell class="text-right" color="primary">
+    <CTableDataCell class="text-right" :color="dark ? '' : 'primary'">
       {{ numFormat(cash.income || 0) }}
     </CTableDataCell>
-    <CTableDataCell class="text-right" color="danger">
+    <CTableDataCell class="text-right" :color="dark ? '' : 'danger'">
       {{ numFormat(cash.outlay || 0) }}
     </CTableDataCell>
     <CTableDataCell>{{ cash.evidence_desc }}</CTableDataCell>

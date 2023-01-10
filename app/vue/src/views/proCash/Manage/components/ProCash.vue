@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
+import { useStore } from 'vuex'
 import { numFormat, cutString } from '@/utils/baseMixins'
 import { ProjectCashBook } from '@/store/types/proCash'
 import FormModal from '@/components/Modals/FormModal.vue'
@@ -20,12 +21,15 @@ const sortClass = computed(
   () => ['', 'text-primary', 'text-danger', 'text-info'][props.proCash.sort],
 )
 
+const store = useStore()
+const dark = computed(() => store.state.theme === 'dark')
 const rowColor = computed(() => {
   let color = ''
   color =
     props.proCash.contract && props.proCash.project_account_d2 <= '2'
       ? 'info'
       : color
+  color = dark.value ? '' : color
   color = props.proCash.is_separate ? 'primary' : color
   color = props.proCash.separated ? 'secondary' : color
   return color
@@ -76,10 +80,10 @@ const onDelete = (payload: { project: number; pk: number }) =>
         {{ cutString(proCash.bank_account_desc, 9) }}
       </span>
     </CTableDataCell>
-    <CTableDataCell class="text-right" color="success">
+    <CTableDataCell class="text-right" :color="dark ? '' : 'success'">
       {{ numFormat(proCash.income || 0) }}
     </CTableDataCell>
-    <CTableDataCell class="text-right" color="danger">
+    <CTableDataCell class="text-right" :color="dark ? '' : 'danger'">
       {{ numFormat(proCash.outlay || 0) }}
     </CTableDataCell>
     <CTableDataCell>{{ proCash.evidence_desc }}</CTableDataCell>
