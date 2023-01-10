@@ -57,16 +57,24 @@ const onDelete = (payload: { project: number; pk: number }) =>
       {{ proCash.project_account_d1_desc }}
     </CTableDataCell>
     <CTableDataCell class="text-left">
-      {{ cutString(proCash.project_account_d2_desc, 9) }}
+      <span v-if="proCash.project_account_d2_desc">
+        {{ cutString(proCash.project_account_d2_desc, 9) }}
+      </span>
     </CTableDataCell>
     <CTableDataCell class="text-left">
-      {{ cutString(proCash.content, 10) }}
+      <span v-if="proCash.content">
+        {{ cutString(proCash.content, 10) }}
+      </span>
     </CTableDataCell>
     <CTableDataCell class="text-left">
-      {{ cutString(proCash.trader, 9) }}
+      <span v-if="proCash.trader">
+        {{ cutString(proCash.trader, 9) }}
+      </span>
     </CTableDataCell>
     <CTableDataCell class="text-left">
-      {{ cutString(proCash.bank_account_desc, 9) }}
+      <span v-if="proCash.bank_account_desc">
+        {{ cutString(proCash.bank_account_desc, 9) }}
+      </span>
     </CTableDataCell>
     <CTableDataCell class="text-right" color="success">
       {{ numFormat(proCash.income || 0) }}
