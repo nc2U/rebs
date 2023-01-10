@@ -2873,7 +2873,7 @@
     "pk": 1,
     "fields": {
       "group": 1,
-      "name": "일반 문서 게시판",
+      "name": "공지사항 게시판",
       "order": 1
     }
   },
@@ -2882,8 +2882,17 @@
     "pk": 2,
     "fields": {
       "group": 1,
-      "name": "소송 기록 게시판",
+      "name": "일반문서 게시판",
       "order": 2
+    }
+  },
+  {
+    "model": "document.board",
+    "pk": 3,
+    "fields": {
+      "group": 1,
+      "name": "소송기록 게시판",
+      "order": 3
     }
   },
   {
