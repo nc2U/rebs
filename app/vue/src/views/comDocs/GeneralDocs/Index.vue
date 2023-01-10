@@ -13,7 +13,7 @@ import DocsForm from './components/DocsForm.vue'
 
 const fController = ref()
 const postFilter = ref<PostFilter>({
-  board: 1,
+  board: 2,
   category: null,
   is_com: false,
   project: '',
@@ -87,13 +87,13 @@ const sortFilter = (project: number | null) => {
 }
 
 onBeforeMount(() => {
-  fetchCategoryList(1)
-  fetchPostList({ board: 1 })
+  fetchCategoryList(2)
+  fetchPostList({ board: 2 })
 })
 
 onBeforeUpdate(() => {
   fetchPostList({
-    board: 1,
+    board: 2,
     page: postFilter.value.page,
     category: postFilter.value.category,
   })

@@ -15,7 +15,7 @@ import { formUtility } from '@/utils/helper'
 
 const fController = ref()
 const caseFilter = ref<PostFilter>({
-  board: 2,
+  board: 3,
   category: null,
   is_com: '',
   project: '',
@@ -92,13 +92,13 @@ const sortFilter = (project: number | null) => {
 }
 
 onBeforeMount(() => {
-  fetchCategoryList(2)
-  fetchPostList({ board: 2 })
+  fetchCategoryList(3)
+  fetchPostList({ board: 3 })
 })
 
 onBeforeUpdate(() => {
   fetchPostList({
-    board: 2,
+    board: 3,
     page: caseFilter.value.page,
     category: caseFilter.value.category,
   })
