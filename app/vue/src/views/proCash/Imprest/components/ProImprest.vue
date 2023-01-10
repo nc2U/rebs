@@ -57,16 +57,24 @@ const onDelete = (payload: { project: number; pk: number }) =>
       {{ imprest.project_account_d1_desc }}
     </CTableDataCell>
     <CTableDataCell class="text-left">
-      {{ cutString(imprest.project_account_d2_desc, 9) }}
+      <span v-if="imprest.project_account_d2_desc">
+        {{ cutString(imprest.project_account_d2_desc, 9) }}
+      </span>
     </CTableDataCell>
     <CTableDataCell class="text-left">
-      {{ cutString(imprest.content, 10) }}
+      <span v-if="imprest.content">
+        {{ cutString(imprest.content, 10) }}
+      </span>
     </CTableDataCell>
     <CTableDataCell class="text-left">
-      {{ cutString(imprest.trader, 9) }}
+      <span v-if="imprest.trader">
+        {{ cutString(imprest.trader, 9) }}
+      </span>
     </CTableDataCell>
     <CTableDataCell class="text-left">
-      {{ cutString(imprest.bank_account_desc, 9) }}
+      <span v-if="imprest.bank_account_desc">
+        {{ cutString(imprest.bank_account_desc, 9) }}
+      </span>
     </CTableDataCell>
     <CTableDataCell class="text-right" color="success">
       {{ numFormat(imprest.income || 0) }}

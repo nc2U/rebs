@@ -80,13 +80,19 @@ const deleteObject = () => {
       {{ cash.account_d3_desc }}
     </CTableDataCell>
     <CTableDataCell class="text-left truncate">
-      {{ cutString(cash.content, 15) }}
+      <span v-if="cash.content">
+        {{ cutString(cash.content, 15) }}
+      </span>
     </CTableDataCell>
     <CTableDataCell class="text-left truncate">
-      {{ cutString(cash.trader, 8) }}
+      <span v-if="cash.trader">
+        {{ cutString(cash.trader, 8) }}
+      </span>
     </CTableDataCell>
     <CTableDataCell class="text-left">
-      {{ cutString(cash.bank_account_desc, 10) }}
+      <span v-if="cash.bank_account_desc">
+        {{ cutString(cash.bank_account_desc, 10) }}
+      </span>
     </CTableDataCell>
     <CTableDataCell class="text-right" color="primary">
       {{ numFormat(cash.income || 0) }}
