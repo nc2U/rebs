@@ -1351,7 +1351,7 @@ def export_sites_xls(request):
 
     # get_data: ?project=1
     project = Project.objects.get(pk=request.GET.get('project'))
-    obj_list = Site.objects.filter(project=project)
+    obj_list = Site.objects.filter(project=project).order_by('order')
 
     # Sheet Title, first row
     # -----------------------
@@ -1424,8 +1424,20 @@ def export_sites_xls(request):
 
     for col_num, col in enumerate(columns):
         if '면적' in col:
-            columns.insert(col_num + 1, '(평)')
-        ws.write(row_num, col_num, columns[col_num], style)
+            columns.insert(col_num + 1, '')
+            # ws.write(row_num, col_num, columns[col_num], style)
+            ws.write_merge(2, 2, col_num, col_num + 1, columns[col_num], style)
+        elif int(col_num) < 4:
+            ws.write_merge(2, 3, col_num, col_num, columns[col_num], style)
+
+    row_num = 3
+    for col_num, col in enumerate(columns):
+        if int(col_num) > 3:
+            if int(col_num) % 2 == 0:
+                ws.write(row_num, col_num, '㎡', style)
+            else:
+                ws.write(row_num, col_num, '평', style)
+
     # -----------------------
 
     # Sheet body, remaining rows
@@ -1437,7 +1449,7 @@ def export_sites_xls(request):
     style.borders.bottom = 1
 
     style.alignment.vert = style.alignment.VERT_CENTER  # 수직정렬
-    # style.alignment.horz = style.alignment.HORZ_CENTER  # 수평정렬
+    style.alignment.horz = style.alignment.HORZ_CENTER  # 수평정렬
 
     for row in rows:
         row_num += 1
