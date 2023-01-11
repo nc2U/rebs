@@ -1457,7 +1457,7 @@ def export_sites_xls(request):
             row = list(row)
 
             if '면적' in col:
-                row.insert(col_num + 1, float(row[col_num]) * 0.3025)
+                row.insert(col_num + 1, round(float(row[col_num]) * 0.3025, 2))
 
             ws.write(row_num, col_num, row[col_num], style)
 
