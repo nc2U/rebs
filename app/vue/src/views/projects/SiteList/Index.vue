@@ -57,6 +57,8 @@ const pageSelect = (page: number) => {
   listControl.value.listFiltering(page)
 }
 
+const excelUrl = 'excel/sites/?project=' + project.value
+
 const onCreate = (payload: Site & filter) => siteStore.createSite(payload)
 
 const onUpdate = (payload: Site & filter) => siteStore.updateSite(payload)
@@ -94,7 +96,7 @@ onBeforeMount(() => {
         @list-filtering="listFiltering"
       />
       <AddSite :project="project" @multi-submit="multiSubmit" />
-      <TableTitleRow title="사업 부지 목록" excel url="" disabled>
+      <TableTitleRow title="사업 부지 목록" excel :url="excelUrl">
         <span class="pt-1 text-success">
           총 면적 : {{ numFormat(totalArea, 2) }}m<sup>2</sup> ({{
             numFormat(totalArea * 0.3025, 2)
