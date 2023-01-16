@@ -1577,7 +1577,7 @@ def export_sitesByOwner_xls(request):
     style.alignment.vert = style.alignment.VERT_CENTER  # 수직정렬
     style.alignment.horz = style.alignment.HORZ_CENTER  # 수평정렬
 
-    os = ['', '개인', '법인', '국공유지']
+    os = ('', '개인', '법인', '국공유지')
 
     for row in rows:
         row_num += 1
@@ -1694,25 +1694,41 @@ class ExportSitesContracts(View):
 
         # data = obj_list.values_list(*params)
 
-        body_format = workbook.add_format()
-        body_format.set_border()
-        body_format.set_align('vcenter')
-        body_format.set_align('center')
-        body_format.set_num_format('#,##0')
+        body_format = {
+            'border': True,
+            'valign': 'vcenter',
+            'num_format': 'yyyy-mm-dd',
+            'align': 'center',
+        }
 
-        # rows = obj_list.values_list(*params)
+        del params[4]
+        rows = obj_list.values_list(*params)
 
-        # for row in rows:
-        #     row_num += 1
-        #     for col_num, cell_data in enumerate(titles):
-        #         row = list(row)
-        #
-        #         if col_num == 2:
-        #             body_format['num_format'] = 'yyyy-mm-dd'
-        #         else:
-        #             body_format['num_format'] = '#,##0'
-        #
-        #         worksheet.write(row_num, col_num, row[col_num], body_format)
+        os = ('', '개인', '법인', '국공유지')
+
+        for row in rows:
+            row_num += 1
+            for col_num, cell_data in enumerate(titles):
+                row = list(row)
+
+                if col_num == 2:
+                    body_format['num_format'] = 'yyyy-mm-dd'
+                elif col_num in (3, 4):
+                    body_format['num_format'] = '#,##0.##'
+                else:
+                    body_format['num_format'] = '#,##0'
+
+                bf = workbook.add_format(body_format)
+
+                if col_num == 0:
+                    worksheet.write(row_num, col_num, self.get_sort(row[col_num]), bf)
+                elif col_num == 4:
+                    worksheet.write(row_num, col_num, float(row[col_num - 1]) * 0.3025, bf)
+                else:
+                    if col_num < 5:
+                        worksheet.write(row_num, col_num, self.get_row_content(row[col_num]), bf)
+                    else:
+                        worksheet.write(row_num, col_num, self.get_row_content(row[col_num - 1]), bf)
         #################################################################
 
         # data end ----------------------------------------------- #
@@ -1731,135 +1747,17 @@ class ExportSitesContracts(View):
 
         return response
 
+    def get_sort(self, code):
+        sort = ('', '개인', '법인', '국공유지')
+        return sort[int(code)]
 
-def export_sitesContracts_xls(request):
-    """프로젝트 토지 계약현황"""
-    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    response['Content-Disposition'] = 'attachment; filename={date}-sites-contracts.xls'.format(
-        date=datetime.now().strftime('%Y-%m-%d'))
-
-    wb = xlwt.Workbook(encoding='utf-8')
-    ws = wb.add_sheet('사업부지_계약현황')  # 시트 이름
-
-    # get_data: ?project=1
-    project = Project.objects.get(pk=request.GET.get('project'))
-    obj_list = SiteContract.objects.filter(project=project)
-
-    # Sheet Title, first row
-    # -----------------------
-    row_num = 0
-
-    style = xlwt.XFStyle()
-    style.font.bold = True
-    style.font.height = 300
-    style.alignment.vert = style.alignment.VERT_CENTER  # 수직정렬
-    style.alignment.horz = style.alignment.HORZ_CENTER  # 수평정렬
-
-    ws.write(row_num, 0, str(project) + ' 사업부지 계약현황', style)
-    rc = 12
-    ws.merge(0, 0, 0, rc)
-    ws.row(0).height_mismatch = True
-    ws.row(0).height = 38 * 20
-    # -----------------------
-
-    # Sheet space, second row
-    # -----------------------
-    row_num = 1
-
-    style = xlwt.XFStyle()
-    style.alignment.vert = style.alignment.VERT_CENTER  # 수직정렬
-    style.alignment.horz = style.alignment.HORZ_RIGHT  # 수평정렬
-    ws.write(row_num, rc, TODAY + ' 현재', style)
-    # -----------------------
-
-    # title_list
-    at = '소유면적'
-    area_title = at + '(환지면적 기준)' if project.is_returned_area else at
-
-    resources = [
-        ['소유구분', 'owner__own_sort'],
-        ['소유자', 'owner__owner'],
-        ['계약일', 'contract_date'],
-        ['총 계약면적', 'contract_area'],
-        ['총 매매대금', 'total_price'],
-        ['계약금1', 'down_pay1'],
-        ['지급여부', 'down_pay1_is_paid'],
-        ['계약금2', 'down_pay2'],
-        ['중도금', 'inter_pay1'],
-        ['잔금', 'remain_pay'],
-        ['지급여부', 'remain_pay_is_paid'],
-        ['비고', 'note'],
-    ]
-
-    columns = []
-    params = []
-
-    for rsc in resources:
-        columns.append(rsc[0])
-        params.append(rsc[1])
-
-    rows = obj_list.values_list(*params)
-
-    # Sheet header, second row - 1
-    # -----------------------
-    row_num = 2
-
-    style = xlwt.XFStyle()
-    style.font.bold = True
-
-    # 테두리 설정
-    # 가는 실선 : 1, 작은 굵은 실선 : 2,가는 파선 : 3, 중간가는 파선 : 4, 큰 굵은 실선 : 5, 이중선 : 6,가는 점선 : 7
-    # 큰 굵은 점선 : 8,가는 점선 : 9, 굵은 점선 : 10,가는 이중 점선 : 11, 굵은 이중 점선 : 12, 사선 점선 : 13
-    style.borders.left = 1
-    style.borders.right = 1
-    style.borders.top = 1
-    style.borders.bottom = 1
-
-    style.pattern.pattern = xlwt.Pattern.SOLID_PATTERN
-    style.pattern.pattern_fore_colour = xlwt.Style.colour_map['silver_ega']
-
-    style.alignment.vert = style.alignment.VERT_CENTER  # 수직정렬
-    style.alignment.horz = style.alignment.HORZ_CENTER  # 수평정렬
-
-    for col_num, col in enumerate(columns):
-        if '면적' in col:
-            columns.insert(col_num + 1, '')
-            ws.write_merge(2, 2, col_num, col_num + 1, columns[col_num], style)
-        elif int(col_num) not in (3, 4):
-            ws.write_merge(2, 3, col_num, col_num, columns[col_num], style)
-
-    row_num = 3
-    for col_num, col in enumerate(columns):
-        if int(col_num) == 3:
-            ws.write(row_num, col_num, '㎡', style)
-        elif int(col_num) == 4:
-            ws.write(row_num, col_num, '평', style)
-
-    # -----------------------
-
-    # Sheet body, remaining rows
-    style = xlwt.XFStyle()
-    # 테두리 설정
-    style.borders.left = 1
-    style.borders.right = 1
-    style.borders.top = 1
-    style.borders.bottom = 1
-
-    style.alignment.vert = style.alignment.VERT_CENTER  # 수직정렬
-    style.alignment.horz = style.alignment.HORZ_CENTER  # 수평정렬
-
-    for row in rows:
-        row_num += 1
-        for col_num, col in enumerate((columns)):
-            row = list(row)
-
-            if '면적' in col:
-                row.insert(col_num + 1, round(float(row[col_num]) * 0.3025, 2))
-
-            ws.write(row_num, col_num, row[col_num], style)
-
-    wb.save(response)
-    return response
+    def get_row_content(self, cont):
+        if cont == True:
+            return '완료'
+        elif cont == False:
+            return ''
+        else:
+            return cont
 
 
 class ExportBalanceByAcc(View):
