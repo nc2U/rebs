@@ -1340,258 +1340,168 @@ def export_project_cash_xls(request):
     return response
 
 
-def export_sites_xls(request):
+class ExportSites(View):
     """프로젝트 지번별 토지목록"""
-    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    response['Content-Disposition'] = 'attachment; filename={date}-sites.xls'.format(
-        date=datetime.now().strftime('%Y-%m-%d'))
 
-    wb = xlwt.Workbook(encoding='utf-8')
-    ws = wb.add_sheet('지번별_토지목록')  # 시트 이름
+    def get(self, request):
+        # Create an in-memory output file for the new workbook.
+        output = io.BytesIO()
 
-    # get_data: ?project=1
-    project = Project.objects.get(pk=request.GET.get('project'))
-    obj_list = Site.objects.filter(project=project).order_by('order')
+        # Even though the final file will be in memory the module uses temp
+        # files during assembly for efficiency. To avoid this on servers that
+        # don't allow temp files, for example the Google APP Engine, set the
+        # 'in_memory' Workbook() constructor option as shown in the docs.
+        workbook = xlsxwriter.Workbook(output)
+        worksheet = workbook.add_worksheet('지번별_토지목록')
 
-    # Sheet Title, first row
-    # -----------------------
-    row_num = 0
+        worksheet.set_default_row(20)  # 기본 행 높이
 
-    style = xlwt.XFStyle()
-    style.font.bold = True
-    style.font.height = 300
-    style.alignment.vert = style.alignment.VERT_CENTER  # 수직정렬
-    style.alignment.horz = style.alignment.HORZ_CENTER  # 수평정렬
+        # data start --------------------------------------------- #
 
-    ws.write(row_num, 0, str(project) + ' 토지목록 조서', style)
-    rc = 7 if project.is_returned_area else 5
-    ws.merge(0, 0, 0, rc)
-    ws.row(0).height_mismatch = True
-    ws.row(0).height = 38 * 20
-    # -----------------------
+        ##### ----------------- get_queryset start ----------------- #####
+        project = Project.objects.get(pk=request.GET.get('project'))
+        obj_list = Site.objects.filter(project=project).order_by('order')
+        ##### ----------------- get_queryset finish ----------------- #####
 
-    # Sheet space, second row
-    # -----------------------
-    row_num = 1
+        rows_cnt = 7
 
-    style = xlwt.XFStyle()
-    style.alignment.vert = style.alignment.VERT_CENTER  # 수직정렬
-    style.alignment.horz = style.alignment.HORZ_RIGHT  # 수평정렬
-    ws.write(row_num, rc, TODAY + ' 현재', style)
-    # -----------------------
+        # 1. Title
+        row_num = 0
+        worksheet.set_row(row_num, 50)
 
-    # title_list
-    resources = [
-        ['No', 'order'],
-        ['행정동', 'district'],
-        ['지번', 'lot_number'],
-        ['지목', 'site_purpose'],
-        ['대지면적', 'official_area'],
-    ]
+        title_format = workbook.add_format()
+        title_format.set_font_size(18)
+        title_format.set_align('vcenter')
+        title_format.set_bold()
+        worksheet.merge_range(row_num, 0, row_num, rows_cnt, str(project) + ' 토지목록 조서', title_format)
 
-    if project.is_returned_area:
-        resources.append(['환지면적', 'returned_area'])
+        # 2. Pre Header - Date
+        row_num = 1
+        worksheet.set_row(row_num, 18)
+        worksheet.write(row_num, rows_cnt, TODAY + ' 현재', workbook.add_format({'align': 'right'}))
 
-    columns = []
-    params = []
+        # 3. Header
+        row_num = 2
+        worksheet.set_row(row_num, 25, workbook.add_format({'bold': True}))
 
-    for rsc in resources:
-        columns.append(rsc[0])
-        params.append(rsc[1])
+        header_format = workbook.add_format()
+        header_format.set_bold()
+        header_format.set_border()
+        header_format.set_align('center')
+        header_format.set_align('vcenter')
+        header_format.set_bg_color('#eeeeee')
 
-    rows = obj_list.values_list(*params)
+        # Header_contents
+        at = '소유면적'
+        area_title = at + '(환지면적 기준)' if project.is_returned_area else at
+        header_src = [
+            ['No', 'order', 10],
+            ['행정동', 'district', 15],
+            ['지번', 'lot_number', 15],
+            ['지목', 'site_purpose', 12],
+            ['대지면적', 'official_area', 13],
+            ['', '', 13],
+        ]
 
-    # Sheet header, second row - 1
-    # -----------------------
-    row_num = 2
+        if project.is_returned_area:
+            header_src.append(['환지면적', 'returned_area', 13])
+            header_src.append(['', '', 13])
 
-    style = xlwt.XFStyle()
-    style.font.bold = True
+        titles = []  # 헤더명
+        params = []  # 헤더 컬럼(db)
+        widths = []  # 헤더 넓이
 
-    # 테두리 설정
-    # 가는 실선 : 1, 작은 굵은 실선 : 2,가는 파선 : 3, 중간가는 파선 : 4, 큰 굵은 실선 : 5, 이중선 : 6,가는 점선 : 7
-    # 큰 굵은 점선 : 8,가는 점선 : 9, 굵은 점선 : 10,가는 이중 점선 : 11, 굵은 이중 점선 : 12, 사선 점선 : 13
-    style.borders.left = 1
-    style.borders.right = 1
-    style.borders.top = 1
-    style.borders.bottom = 1
+        for src in header_src:  # 요청된 컬럼 개수 만큼 반복 (1-2-3... -> i)
+            titles.append(src[0])  # 헤더명
+            params.append(src[1])  # 헤더 컬럼(db)
+            widths.append(src[2])  # 헤더 넓이
 
-    style.pattern.pattern = xlwt.Pattern.SOLID_PATTERN
-    style.pattern.pattern_fore_colour = xlwt.Style.colour_map['silver_ega']
+        # Adjust the column width.
+        for i, cw in enumerate(widths):  # 각 컬럼 넙이 세팅
+            worksheet.set_column(i, i, cw)
 
-    style.alignment.vert = style.alignment.VERT_CENTER  # 수직정렬
-    style.alignment.horz = style.alignment.HORZ_CENTER  # 수평정렬
+        # Write header
+        area_col_num = (4, 5, 6, 7) if project.is_returned_area else (4, 5)
 
-    for col_num, col in enumerate(columns):
-        if '면적' in col:
-            columns.insert(col_num + 1, '')
-            # ws.write(row_num, col_num, columns[col_num], style)
-            ws.write_merge(2, 2, col_num, col_num + 1, columns[col_num], style)
-        elif int(col_num) < 4:
-            ws.write_merge(2, 3, col_num, col_num, columns[col_num], style)
-
-    row_num = 3
-    for col_num, col in enumerate(columns):
-        if int(col_num) > 3:
-            if int(col_num) % 2 == 0:
-                ws.write(row_num, col_num, '㎡', style)
-            else:
-                ws.write(row_num, col_num, '평', style)
-
-    # -----------------------
-
-    # Sheet body, remaining rows
-    style = xlwt.XFStyle()
-    # 테두리 설정
-    style.borders.left = 1
-    style.borders.right = 1
-    style.borders.top = 1
-    style.borders.bottom = 1
-
-    style.alignment.vert = style.alignment.VERT_CENTER  # 수직정렬
-    style.alignment.horz = style.alignment.HORZ_CENTER  # 수평정렬
-
-    for row in rows:
-        row_num += 1
-        for col_num, col in enumerate((columns)):
-            row = list(row)
-
+        for col_num, col in enumerate(titles):  # 헤더 줄 제목 세팅
             if '면적' in col:
-                row.insert(col_num + 1, round(float(row[col_num]) * 0.3025, 2))
+                worksheet.merge_range(row_num, col_num, row_num, col_num + 1, titles[col_num], header_format)
+            elif int(col_num) not in area_col_num:
+                worksheet.merge_range(row_num, col_num, row_num + 1, col_num, titles[col_num], header_format)
 
-            ws.write(row_num, col_num, row[col_num], style)
+        row_num = 3
 
-    wb.save(response)
-    return response
+        area_col1 = (4, 6) if project.is_returned_area else (4,)
+        area_col2 = (5, 7) if project.is_returned_area else (5,)
+        for col_num, col in enumerate(titles):
+            if int(col_num) in area_col1:
+                worksheet.write(row_num, col_num, '㎡', header_format)
+            elif int(col_num) in area_col2:
+                worksheet.write(row_num, col_num, '평', header_format)
 
+        #################################################################
+        # 4. Body
+        # Get some data to write to the spreadsheet.
 
-def export_sitesByOwner_xls(request):
-    """프로젝트 소유자별 토지목록"""
-    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    response['Content-Disposition'] = 'attachment; filename={date}-sites-by-owner.xls'.format(
-        date=datetime.now().strftime('%Y-%m-%d'))
+        # data = obj_list.values_list(*params)
 
-    wb = xlwt.Workbook(encoding='utf-8')
-    ws = wb.add_sheet('소유자별_토지목록')  # 시트 이름
+        body_format = {
+            'border': True,
+            'align': 'center',
+            'valign': 'vcenter',
+            'num_format': '#,##0.00',
+        }
 
-    # get_data: ?project=1
-    project = Project.objects.get(pk=request.GET.get('project'))
-    obj_list = SiteOwner.objects.filter(project=project).distinct()
+        while '' in params:
+            params.remove('')
 
-    # Sheet Title, first row
-    # -----------------------
-    row_num = 0
+        rows = obj_list.values_list(*params)
 
-    style = xlwt.XFStyle()
-    style.font.bold = True
-    style.font.height = 300
-    style.alignment.vert = style.alignment.VERT_CENTER  # 수직정렬
-    style.alignment.horz = style.alignment.HORZ_CENTER  # 수평정렬
+        for row in rows:
+            row_num += 1
+            for col_num, cell_data in enumerate(titles):
+                row = list(row)
 
-    ws.write(row_num, 0, str(project) + ' 토지 소유자 목록', style)
-    rc = 8
-    ws.merge(0, 0, 0, rc)
-    ws.row(0).height_mismatch = True
-    ws.row(0).height = 38 * 20
-    # -----------------------
+                # if col_num in (2, 8):
+                #     body_format['num_format'] = 'yyyy-mm-dd'
 
-    # Sheet space, second row
-    # -----------------------
-    row_num = 1
+                if col_num in area_col_num:
+                    body_format['align'] = 'right'
+                    body_format['num_format'] = '#,##0.00'
+                else:
+                    body_format['align'] = 'center'
+                    body_format['num_format'] = '#,##0'
 
-    style = xlwt.XFStyle()
-    style.alignment.vert = style.alignment.VERT_CENTER  # 수직정렬
-    style.alignment.horz = style.alignment.HORZ_RIGHT  # 수평정렬
-    ws.write(row_num, rc, TODAY + ' 현재', style)
-    # -----------------------
+                bf = workbook.add_format(body_format)
 
-    # title_list
-    at = '소유면적'
-    area_title = at + '(환지면적 기준)' if project.is_returned_area else at
+                if col_num == 5:
+                    worksheet.write(row_num, col_num, float(row[col_num - 1]) * 0.3025, bf)
+                elif col_num == 7:
+                    worksheet.write(row_num, col_num, float(row[col_num - 2]) * 0.3025, bf)
 
-    resources = [
-        ['소유구분', 'own_sort'],
-        ['소유자', 'owner'],
-        ['생년월일', 'date_of_birth'],
-        ['주연락처', 'phone1'],
-        ['소유부지(지번)', 'sites__lot_number'],
-        ['소유지분(%)', 'relations__ownership_ratio'],
-        [area_title, 'relations__owned_area'],
-        ['소유권 취득일', 'relations__acquisition_date'],
-    ]
+                if col_num < 5:
+                    worksheet.write(row_num, col_num, row[col_num], bf)
+                elif col_num < 7:
+                    worksheet.write(row_num, col_num, row[col_num - 1], bf)
+                else:
+                    worksheet.write(row_num, col_num, row[col_num - 2], bf)
+        #################################################################
 
-    columns = []
-    params = []
+        # data finish -------------------------------------------- #
 
-    for rsc in resources:
-        columns.append(rsc[0])
-        params.append(rsc[1])
+        # Close the workbook before sending the data.
+        workbook.close()
 
-    rows = obj_list.values_list(*params)
+        # Rewind the buffer.
+        output.seek(0)
 
-    # Sheet header, second row - 1
-    # -----------------------
-    row_num = 2
+        # Set up the Http response.
+        filename = f'{datetime.now().strftime("%Y-%m-%d")}-sites.xlsx'
+        file_format = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        response = HttpResponse(output, content_type=file_format)
+        response['Content-Disposition'] = f'attachment; filename={filename}'
 
-    style = xlwt.XFStyle()
-    style.font.bold = True
-
-    # 테두리 설정
-    # 가는 실선 : 1, 작은 굵은 실선 : 2,가는 파선 : 3, 중간가는 파선 : 4, 큰 굵은 실선 : 5, 이중선 : 6,가는 점선 : 7
-    # 큰 굵은 점선 : 8,가는 점선 : 9, 굵은 점선 : 10,가는 이중 점선 : 11, 굵은 이중 점선 : 12, 사선 점선 : 13
-    style.borders.left = 1
-    style.borders.right = 1
-    style.borders.top = 1
-    style.borders.bottom = 1
-
-    style.pattern.pattern = xlwt.Pattern.SOLID_PATTERN
-    style.pattern.pattern_fore_colour = xlwt.Style.colour_map['silver_ega']
-
-    style.alignment.vert = style.alignment.VERT_CENTER  # 수직정렬
-    style.alignment.horz = style.alignment.HORZ_CENTER  # 수평정렬
-
-    for col_num, col in enumerate(columns):
-        if '면적' in col:
-            columns.insert(col_num + 1, '')
-            ws.write_merge(2, 2, col_num, col_num + 1, columns[col_num], style)
-        elif int(col_num) not in (6, 7):
-            ws.write_merge(2, 3, col_num, col_num, columns[col_num], style)
-
-    row_num = 3
-    for col_num, col in enumerate(columns):
-        if int(col_num) == 6:
-            ws.write(row_num, col_num, '㎡', style)
-        elif int(col_num) == 7:
-            ws.write(row_num, col_num, '평', style)
-
-    # -----------------------
-
-    # Sheet body, remaining rows
-    style = xlwt.XFStyle()
-    # 테두리 설정
-    style.borders.left = 1
-    style.borders.right = 1
-    style.borders.top = 1
-    style.borders.bottom = 1
-
-    style.alignment.vert = style.alignment.VERT_CENTER  # 수직정렬
-    style.alignment.horz = style.alignment.HORZ_CENTER  # 수평정렬
-
-    os = ('', '개인', '법인', '국공유지')
-
-    for row in rows:
-        row_num += 1
-        for col_num, col in enumerate((columns)):
-            row = list(row)
-
-            if '면적' in col:
-                row.insert(col_num + 1, round(float(row[col_num]) * 0.3025, 2))
-
-            row_cont = os[int(row[col_num])] if col_num == 0 else row[col_num]
-            ws.write(row_num, col_num, row_cont, style)
-
-    wb.save(response)
-    return response
+        return response
 
 
 class ExportSitesByOwner(View):
@@ -1627,7 +1537,7 @@ class ExportSitesByOwner(View):
         title_format.set_font_size(18)
         title_format.set_align('vcenter')
         title_format.set_bold()
-        worksheet.merge_range(row_num, 0, row_num, rows_cnt, str(project) + ' 사업부지 계약현황', title_format)
+        worksheet.merge_range(row_num, 0, row_num, rows_cnt, str(project) + ' 소유자목록 조서', title_format)
 
         # 2. Pre Header - Date
         row_num = 1
@@ -1701,7 +1611,9 @@ class ExportSitesByOwner(View):
             'num_format': '#,##0.00',
         }
 
-        del params[7]
+        while '' in params:
+            params.remove('')
+
         rows = obj_list.values_list(*params)
 
         for row in rows:
@@ -1859,7 +1771,9 @@ class ExportSitesContracts(View):
             'num_format': 'yyyy-mm-dd',
         }
 
-        del params[4]
+        while '' in params:
+            params.remove('')
+
         rows = obj_list.values_list(*params)
 
         for row in rows:
