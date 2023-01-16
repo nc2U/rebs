@@ -191,7 +191,7 @@
                                         ({{ total_cont_area|mul:"0.3025"|floatformat:"2"|intcomma }}평) 등록
                                     </div>
                                     <div class="col-6 text-right">
-                                        <a href="{% url 'excel:sites' %}?project={{ this_project.id }}">
+                                        <a href="{% url 'excel:sites-contracts' %}?project={{ this_project.id }}">
                                             <i class="mdi mdi-file-excel-box"></i> Excel Export
                                             <i class="mdi mdi-download ml-1"></i>
                                         </a>
@@ -209,8 +209,7 @@
                                         <th class="text-center" rowspan="2" style="width: 7%">계약금1</th>
                                         <th class="text-center" rowspan="2" style="width: 6%">지급여부</th>
                                         <th class="text-center" rowspan="2" style="width: 7%">계약금2</th>
-                                        <th class="text-center" rowspan="2" style="width: 7%">중도금1</th>
-                                        <th class="text-center" rowspan="2" style="width: 7%">중도금2</th>
+                                        <th class="text-center" rowspan="2" style="width: 7%">중도금</th>
                                         <th class="text-center" rowspan="2" style="width: 8%">잔금</th>
                                         <th class="text-center" rowspan="2" style="width: 6%">지급여부</th>
                                         <th class="text-center" rowspan="2" scope="col" style="width: 7%">
@@ -246,7 +245,6 @@
                                             </td>
                                             <td class="text-right">{{ object.down_pay2|default:"-"|intcomma }}</td>
                                             <td class="text-right">{{ object.inter_pay1|default:"-"|intcomma }}</td>
-                                            <td class="text-right">{{ object.inter_pay2|default:"-"|intcomma }}</td>
                                             <td class="text-right">{{ object.remain_pay|default:"-"|intcomma }}</td>
                                             <td class="text-center {% if object.remain_pay_is_paid %}text-success{% endif %}">
                                                 {% if object.remain_pay_is_paid %}완료{% else %}-{% endif %}

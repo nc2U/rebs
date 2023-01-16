@@ -23,24 +23,23 @@ const onDelete = (pk: number) => emit('on-delete', pk)
     <colgroup>
       <col width="5%" />
       <col width="9%" />
-      <col width="8%" />
+      <col width="9%" />
       <col width="7%" />
+      <col width="7%" />
+      <col width="10%" />
+      <col width="9%" />
+      <col width="5%" />
+      <col width="9%" />
+      <col width="9%" />
+      <col width="10%" />
+      <col width="5%" />
       <col width="6%" />
-      <col width="9%" />
-      <col width="8%" />
-      <col width="5%" />
-      <col width="8%" />
-      <col width="8%" />
-      <col width="8%" />
-      <col width="9%" />
-      <col width="5%" />
-      <col width="5%" />
     </colgroup>
 
     <CTableHead :color="headerSecondary">
       <CTableRow class="text-center" align="middle">
-        <CTableHeaderCell rowspan="2" scope="col"
-          >소유<br />구분
+        <CTableHeaderCell rowspan="2" scope="col">
+          소유<br />구분
         </CTableHeaderCell>
         <CTableHeaderCell rowspan="2" scope="col">소유자</CTableHeaderCell>
         <CTableHeaderCell rowspan="2" scope="col">계약일</CTableHeaderCell>
@@ -55,8 +54,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
           지급<br />여부
         </CTableHeaderCell>
         <CTableHeaderCell rowspan="2" scope="col">계약금2</CTableHeaderCell>
-        <CTableHeaderCell rowspan="2" scope="col">중도금1</CTableHeaderCell>
-        <CTableHeaderCell rowspan="2" scope="col">중도금2</CTableHeaderCell>
+        <CTableHeaderCell rowspan="2" scope="col">중도금</CTableHeaderCell>
         <CTableHeaderCell rowspan="2" scope="col">잔금</CTableHeaderCell>
         <CTableHeaderCell rowspan="2" scope="col">
           지급<br />여부

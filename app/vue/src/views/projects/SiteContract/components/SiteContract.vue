@@ -51,9 +51,6 @@ const isDoneClass = (bool: boolean) => (bool ? 'bg-success' : '')
       {{ numFormat(contract.inter_pay1) }}
     </CTableDataCell>
     <CTableDataCell class="text-right">
-      {{ numFormat(contract.inter_pay2) }}
-    </CTableDataCell>
-    <CTableDataCell class="text-right">
       {{ numFormat(contract.remain_pay) }}
     </CTableDataCell>
     <CTableDataCell :class="isDoneClass(contract.remain_pay_is_paid)">
