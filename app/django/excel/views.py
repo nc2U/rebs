@@ -1594,6 +1594,164 @@ def export_sitesByOwner_xls(request):
     return response
 
 
+class ExportSitesByOwner(View):
+    """프로젝트 소유자별 토지목록"""
+
+    def get(self, request):
+        # Create an in-memory output file for the new workbook.
+        output = io.BytesIO()
+
+        # Even though the final file will be in memory the module uses temp
+        # files during assembly for efficiency. To avoid this on servers that
+        # don't allow temp files, for example the Google APP Engine, set the
+        # 'in_memory' Workbook() constructor option as shown in the docs.
+        workbook = xlsxwriter.Workbook(output)
+        worksheet = workbook.add_worksheet('소유자별_토지목록')
+
+        worksheet.set_default_row(20)  # 기본 행 높이
+
+        # data start --------------------------------------------- #
+
+        ##### ----------------- get_queryset start ----------------- #####
+        project = Project.objects.get(pk=request.GET.get('project'))
+        obj_list = SiteOwner.objects.filter(project=project).distinct()
+        ##### ----------------- get_queryset finish ----------------- #####
+
+        rows_cnt = 8
+
+        # 1. Title
+        row_num = 0
+        worksheet.set_row(row_num, 50)
+
+        title_format = workbook.add_format()
+        title_format.set_font_size(18)
+        title_format.set_align('vcenter')
+        title_format.set_bold()
+        worksheet.merge_range(row_num, 0, row_num, rows_cnt, str(project) + ' 사업부지 계약현황', title_format)
+
+        # 2. Pre Header - Date
+        row_num = 1
+        worksheet.set_row(row_num, 18)
+        worksheet.write(row_num, rows_cnt, TODAY + ' 현재', workbook.add_format({'align': 'right'}))
+
+        # 3. Header
+        row_num = 2
+        worksheet.set_row(row_num, 25, workbook.add_format({'bold': True}))
+
+        header_format = workbook.add_format()
+        header_format.set_bold()
+        header_format.set_border()
+        header_format.set_align('center')
+        header_format.set_align('vcenter')
+        header_format.set_bg_color('#eeeeee')
+
+        # Header_contents
+        at = '소유면적'
+        area_title = at + '(환지면적 기준)' if project.is_returned_area else at
+        header_src = [
+            ['소유구분', 'own_sort', 10],
+            ['소유자', 'owner', 15],
+            ['생년월일', 'date_of_birth', 15],
+            ['주연락처', 'phone1', 18],
+            ['소유부지(지번)', 'sites__lot_number', 12],
+            ['소유지분(%)', 'relations__ownership_ratio', 10],
+            [area_title, 'relations__owned_area', 12],
+            ['', '', 12],
+            ['소유권 취득일', 'relations__acquisition_date', 15]
+        ]
+
+        titles = []  # 헤더명
+        params = []  # 헤더 컬럼(db)
+        widths = []  # 헤더 넓이
+
+        for src in header_src:  # 요청된 컬럼 개수 만큼 반복 (1-2-3... -> i)
+            titles.append(src[0])  # 일련번호
+            params.append(src[1])  # serial_number
+            widths.append(src[2])  # 10
+
+        # Adjust the column width.
+        for i, cw in enumerate(widths):  # 각 컬럼 넙이 세팅
+            worksheet.set_column(i, i, cw)
+
+        # Write header
+        for col_num, col in enumerate(titles):  # 헤더 줄 제목 세팅
+            if '면적' in col:
+                worksheet.merge_range(row_num, col_num, row_num, col_num + 1, titles[col_num], header_format)
+            elif int(col_num) not in (6, 7):
+                worksheet.merge_range(row_num, col_num, row_num + 1, col_num, titles[col_num], header_format)
+
+        row_num = 3
+
+        for col_num, col in enumerate(titles):
+            if int(col_num) == 6:
+                worksheet.write(row_num, col_num, '㎡', header_format)
+            elif int(col_num) == 7:
+                worksheet.write(row_num, col_num, '평', header_format)
+
+        #################################################################
+        # 4. Body
+        # Get some data to write to the spreadsheet.
+
+        # data = obj_list.values_list(*params)
+
+        body_format = {
+            'border': True,
+            'align': 'center',
+            'valign': 'vcenter',
+            'num_format': '#,##0.00',
+        }
+
+        del params[7]
+        rows = obj_list.values_list(*params)
+
+        for row in rows:
+            row_num += 1
+            for col_num, cell_data in enumerate(titles):
+                row = list(row)
+
+                if col_num in (2, 8):
+                    body_format['num_format'] = 'yyyy-mm-dd'
+
+                if col_num in (5, 6, 7):
+                    body_format['align'] = 'right'
+                    body_format['num_format'] = '#,##0.00'
+                else:
+                    body_format['align'] = 'center'
+
+                bf = workbook.add_format(body_format)
+
+                if col_num == 0:
+                    worksheet.write(row_num, col_num, self.get_sort(row[col_num]), bf)
+                elif col_num == 7:
+                    worksheet.write(row_num, col_num, float(row[col_num - 1]) * 0.3025, bf)
+                else:
+                    if col_num < 8:
+                        worksheet.write(row_num, col_num, row[col_num], bf)
+                    else:
+                        worksheet.write(row_num, col_num, row[col_num - 1], bf)
+        #################################################################
+
+        # data finish -------------------------------------------- #
+
+        # Close the workbook before sending the data.
+        workbook.close()
+
+        # Rewind the buffer.
+        output.seek(0)
+
+        # Set up the Http response.
+        filename = f'{datetime.now().strftime("%Y-%m-%d")}-sites-by-owner.xlsx'
+        file_format = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        response = HttpResponse(output, content_type=file_format)
+        response['Content-Disposition'] = f'attachment; filename={filename}'
+
+        return response
+
+    def get_sort(self, code):
+        sort = ('', '개인', '법인', '국공유지')
+        return sort[int(code)]
+
+
 class ExportSitesContracts(View):
     """프로젝트 토지 계약현황"""
 
@@ -1696,15 +1854,13 @@ class ExportSitesContracts(View):
 
         body_format = {
             'border': True,
+            'align': 'center',
             'valign': 'vcenter',
             'num_format': 'yyyy-mm-dd',
-            'align': 'center',
         }
 
         del params[4]
         rows = obj_list.values_list(*params)
-
-        os = ('', '개인', '법인', '국공유지')
 
         for row in rows:
             row_num += 1
@@ -1714,7 +1870,7 @@ class ExportSitesContracts(View):
                 if col_num == 2:
                     body_format['num_format'] = 'yyyy-mm-dd'
                 elif col_num in (3, 4):
-                    body_format['num_format'] = '#,##0.##'
+                    body_format['num_format'] = '#,##0.00'
                 else:
                     body_format['num_format'] = '#,##0'
 
@@ -2220,7 +2376,7 @@ class ExportExamples(View):
 
         # data start --------------------------------------------- #
 
-        # data end ----------------------------------------------- #
+        # data finish -------------------------------------------- #
 
         # Close the workbook before sending the data.
         workbook.close()
