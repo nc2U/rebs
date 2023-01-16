@@ -1506,6 +1506,9 @@ def export_sitesByOwner_xls(request):
     # -----------------------
 
     # title_list
+    at = '소유면적'
+    area_title = at + '(환지면적 기준)' if project.is_returned_area else at
+    
     resources = [
         ['소유구분', 'own_sort'],
         ['소유자', 'owner'],
@@ -1513,12 +1516,9 @@ def export_sitesByOwner_xls(request):
         ['주연락처', 'phone1'],
         ['소유부지(지번)', 'sites__lot_number'],
         ['소유지분(%)', 'relations__ownership_ratio'],
-        ['소유면적', 'relations__owned_area'],
+        [area_title, 'relations__owned_area'],
         ['소유권 취득일', 'relations__acquisition_date'],
     ]
-
-    # if project.is_returned_area:
-    #     resources.append(['환지면적', 'returned_area'])
 
     columns = []
     params = []
