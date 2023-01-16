@@ -1524,7 +1524,7 @@ class ExportSitesByOwner(View):
 
         ##### ----------------- get_queryset start ----------------- #####
         project = Project.objects.get(pk=request.GET.get('project'))
-        obj_list = SiteOwner.objects.filter(project=project).distinct()
+        obj_list = SiteOwner.objects.filter(project=project).order_by('owner', 'id')
         ##### ----------------- get_queryset finish ----------------- #####
 
         rows_cnt = 8
@@ -1684,7 +1684,7 @@ class ExportSitesContracts(View):
 
         ##### ----------------- get_queryset start ----------------- #####
         project = Project.objects.get(pk=request.GET.get('project'))
-        obj_list = SiteContract.objects.filter(project=project)
+        obj_list = SiteContract.objects.filter(project=project).order_by('contract_date', 'id')
         ##### ----------------- get_queryset finish ----------------- #####
 
         rows_cnt = 12
