@@ -130,8 +130,7 @@
                                         ({{ total_area|mul:"0.3025"|floatformat:"2"|intcomma }}평) 등록
                                     </div>
                                     <div class="col-6 text-right">
-
-                                        <a href="javascript:alert('준비중!')" class="text-secondary">
+                                        <a href="{% url 'excel:sites-by-owner' %}?project={{ this_project.id }}">
                                             <i class="mdi mdi-file-excel-box"></i> Excel Export
                                             <i class="mdi mdi-download ml-1"></i>
                                         </a>
