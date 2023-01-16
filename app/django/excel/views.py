@@ -1605,7 +1605,7 @@ def export_sitesContracts_xls(request):
 
     # get_data: ?project=1
     project = Project.objects.get(pk=request.GET.get('project'))
-    obj_list = SiteOwner.objects.filter(project=project).distinct()
+    obj_list = SiteContract.objects.filter(project=project)
 
     # Sheet Title, first row
     # -----------------------
@@ -1618,7 +1618,7 @@ def export_sitesContracts_xls(request):
     style.alignment.horz = style.alignment.HORZ_CENTER  # 수평정렬
 
     ws.write(row_num, 0, str(project) + ' 사업부지 계약현황', style)
-    rc = 8
+    rc = 12
     ws.merge(0, 0, 0, rc)
     ws.row(0).height_mismatch = True
     ws.row(0).height = 38 * 20
@@ -1639,20 +1639,18 @@ def export_sitesContracts_xls(request):
     area_title = at + '(환지면적 기준)' if project.is_returned_area else at
 
     resources = [
-        ['소유구분', 'own_sort'],
-        ['소유자', 'own_sort'],
-        ['계약일', 'owner'],
-        ['총 계약면적', 'date_of_birth'],
-        ['총매매대금', 'phone1'],
-        ['계약금1', 'sites__lot_number'],
-        ['지급여부', 'relations__ownership_ratio'],
-        ['계약금2', 'relations__owned_area'],
-        ['중도금', 'relations__acquisition_date'],
-        ['잔금', 'relations__acquisition_date'],
-        ['지급여부', 'relations__acquisition_date'],
-        ['', 'relations__acquisition_date'],
-        ['중도금', 'relations__acquisition_date'],
-        ['중도금', 'relations__acquisition_date'],
+        ['No', 'id'],
+        ['소유자', 'owner__owner'],
+        ['계약일', 'contract_date'],
+        ['총 계약면적', 'contract_area'],
+        ['총 매매대금', 'total_price'],
+        ['계약금1', 'down_pay1'],
+        ['지급여부', 'down_pay1_is_paid'],
+        ['계약금2', 'down_pay2'],
+        ['중도금', 'inter_pay1'],
+        ['잔금', 'remain_pay'],
+        ['지급여부', 'remain_pay_is_paid'],
+        ['비고', 'note'],
     ]
 
     columns = []
@@ -1689,14 +1687,14 @@ def export_sitesContracts_xls(request):
         if '면적' in col:
             columns.insert(col_num + 1, '')
             ws.write_merge(2, 2, col_num, col_num + 1, columns[col_num], style)
-        elif int(col_num) not in (6, 7):
+        elif int(col_num) not in (3, 4):
             ws.write_merge(2, 3, col_num, col_num, columns[col_num], style)
 
     row_num = 3
     for col_num, col in enumerate(columns):
-        if int(col_num) == 6:
+        if int(col_num) == 3:
             ws.write(row_num, col_num, '㎡', style)
-        elif int(col_num) == 7:
+        elif int(col_num) == 4:
             ws.write(row_num, col_num, '평', style)
 
     # -----------------------
@@ -1712,8 +1710,6 @@ def export_sitesContracts_xls(request):
     style.alignment.vert = style.alignment.VERT_CENTER  # 수직정렬
     style.alignment.horz = style.alignment.HORZ_CENTER  # 수평정렬
 
-    os = ['', '개인', '법인', '국공유지']
-
     for row in rows:
         row_num += 1
         for col_num, col in enumerate((columns)):
@@ -1722,8 +1718,7 @@ def export_sitesContracts_xls(request):
             if '면적' in col:
                 row.insert(col_num + 1, round(float(row[col_num]) * 0.3025, 2))
 
-            row_cont = os[int(row[col_num])] if col_num == 0 else row[col_num]
-            ws.write(row_num, col_num, row_cont, style)
+            ws.write(row_num, col_num, row[col_num], style)
 
     wb.save(response)
     return response
