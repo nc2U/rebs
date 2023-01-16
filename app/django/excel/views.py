@@ -1377,7 +1377,7 @@ def export_sites_xls(request):
     style = xlwt.XFStyle()
     style.alignment.vert = style.alignment.VERT_CENTER  # 수직정렬
     style.alignment.horz = style.alignment.HORZ_RIGHT  # 수평정렬
-    ws.write(row_num, 7, TODAY + ' 현재', style)
+    ws.write(row_num, rc, TODAY + ' 현재', style)
     # -----------------------
 
     # title_list
@@ -1489,7 +1489,7 @@ def export_sitesByOwner_xls(request):
     style.alignment.horz = style.alignment.HORZ_CENTER  # 수평정렬
 
     ws.write(row_num, 0, str(project) + ' 토지 소유자 목록', style)
-    rc = 7 if project.is_returned_area else 5
+    rc = 8
     ws.merge(0, 0, 0, rc)
     ws.row(0).height_mismatch = True
     ws.row(0).height = 38 * 20
@@ -1502,89 +1502,93 @@ def export_sitesByOwner_xls(request):
     style = xlwt.XFStyle()
     style.alignment.vert = style.alignment.VERT_CENTER  # 수직정렬
     style.alignment.horz = style.alignment.HORZ_RIGHT  # 수평정렬
-    ws.write(row_num, 7, TODAY + ' 현재', style)
+    ws.write(row_num, rc, TODAY + ' 현재', style)
     # -----------------------
 
-    # # title_list
-    # resources = [
-    #     ['No', 'order'],
-    #     ['행정동', 'district'],
-    #     ['지번', 'lot_number'],
-    #     ['지목', 'site_purpose'],
-    #     ['대지면적', 'official_area'],
-    # ]
-    #
+    # title_list
+    resources = [
+        ['소유구분', 'own_sort'],
+        ['소유자', 'owner'],
+        ['생년월일', 'date_of_birth'],
+        ['주연락처', 'phone1'],
+        ['소유부지(지번)', 'sites__lot_number'],
+        ['소유지분(%)', 'relations__ownership_ratio'],
+        ['소유면적', 'relations__owned_area'],
+        ['소유권 취득일', 'relations__acquisition_date'],
+    ]
+
     # if project.is_returned_area:
     #     resources.append(['환지면적', 'returned_area'])
-    #
-    # columns = []
-    # params = []
-    #
-    # for rsc in resources:
-    #     columns.append(rsc[0])
-    #     params.append(rsc[1])
-    #
-    # rows = obj_list.values_list(*params)
-    #
-    # # Sheet header, second row - 1
-    # # -----------------------
-    # row_num = 2
-    #
-    # style = xlwt.XFStyle()
-    # style.font.bold = True
-    #
-    # # 테두리 설정
-    # # 가는 실선 : 1, 작은 굵은 실선 : 2,가는 파선 : 3, 중간가는 파선 : 4, 큰 굵은 실선 : 5, 이중선 : 6,가는 점선 : 7
-    # # 큰 굵은 점선 : 8,가는 점선 : 9, 굵은 점선 : 10,가는 이중 점선 : 11, 굵은 이중 점선 : 12, 사선 점선 : 13
-    # style.borders.left = 1
-    # style.borders.right = 1
-    # style.borders.top = 1
-    # style.borders.bottom = 1
-    #
-    # style.pattern.pattern = xlwt.Pattern.SOLID_PATTERN
-    # style.pattern.pattern_fore_colour = xlwt.Style.colour_map['silver_ega']
-    #
-    # style.alignment.vert = style.alignment.VERT_CENTER  # 수직정렬
-    # style.alignment.horz = style.alignment.HORZ_CENTER  # 수평정렬
-    #
-    # for col_num, col in enumerate(columns):
-    #     if '면적' in col:
-    #         columns.insert(col_num + 1, '')
-    #         # ws.write(row_num, col_num, columns[col_num], style)
-    #         ws.write_merge(2, 2, col_num, col_num + 1, columns[col_num], style)
-    #     elif int(col_num) < 4:
-    #         ws.write_merge(2, 3, col_num, col_num, columns[col_num], style)
-    #
-    # row_num = 3
-    # for col_num, col in enumerate(columns):
-    #     if int(col_num) > 3:
-    #         if int(col_num) % 2 == 0:
-    #             ws.write(row_num, col_num, '㎡', style)
-    #         else:
-    #             ws.write(row_num, col_num, '평', style)
-    #
-    # # -----------------------
-    #
-    # # Sheet body, remaining rows
-    # style = xlwt.XFStyle()
-    # # 테두리 설정
-    # style.borders.left = 1
-    # style.borders.right = 1
-    # style.borders.top = 1
-    # style.borders.bottom = 1
-    #
-    # style.alignment.vert = style.alignment.VERT_CENTER  # 수직정렬
-    # style.alignment.horz = style.alignment.HORZ_CENTER  # 수평정렬
-    #
-    # for row in rows:
-    #     row_num += 1
-    #     for col_num, col in enumerate((columns)):
-    #         row = list(row)
-    #
-    #         if '면적' in col:
-    #             row.insert(col_num + 1, round(float(row[col_num]) * 0.3025, 2))
-    #
-    #         ws.write(row_num, col_num, row[col_num], style)
+
+    columns = []
+    params = []
+
+    for rsc in resources:
+        columns.append(rsc[0])
+        params.append(rsc[1])
+
+    rows = obj_list.values_list(*params)
+
+    # Sheet header, second row - 1
+    # -----------------------
+    row_num = 2
+
+    style = xlwt.XFStyle()
+    style.font.bold = True
+
+    # 테두리 설정
+    # 가는 실선 : 1, 작은 굵은 실선 : 2,가는 파선 : 3, 중간가는 파선 : 4, 큰 굵은 실선 : 5, 이중선 : 6,가는 점선 : 7
+    # 큰 굵은 점선 : 8,가는 점선 : 9, 굵은 점선 : 10,가는 이중 점선 : 11, 굵은 이중 점선 : 12, 사선 점선 : 13
+    style.borders.left = 1
+    style.borders.right = 1
+    style.borders.top = 1
+    style.borders.bottom = 1
+
+    style.pattern.pattern = xlwt.Pattern.SOLID_PATTERN
+    style.pattern.pattern_fore_colour = xlwt.Style.colour_map['silver_ega']
+
+    style.alignment.vert = style.alignment.VERT_CENTER  # 수직정렬
+    style.alignment.horz = style.alignment.HORZ_CENTER  # 수평정렬
+
+    for col_num, col in enumerate(columns):
+        if '면적' in col:
+            columns.insert(col_num + 1, '')
+            ws.write_merge(2, 2, col_num, col_num + 1, columns[col_num], style)
+        elif int(col_num) not in (6, 7):
+            ws.write_merge(2, 3, col_num, col_num, columns[col_num], style)
+
+    row_num = 3
+    for col_num, col in enumerate(columns):
+        if int(col_num) == 6:
+            ws.write(row_num, col_num, '㎡', style)
+        elif int(col_num) == 7:
+            ws.write(row_num, col_num, '평', style)
+
+    # -----------------------
+
+    # Sheet body, remaining rows
+    style = xlwt.XFStyle()
+    # 테두리 설정
+    style.borders.left = 1
+    style.borders.right = 1
+    style.borders.top = 1
+    style.borders.bottom = 1
+
+    style.alignment.vert = style.alignment.VERT_CENTER  # 수직정렬
+    style.alignment.horz = style.alignment.HORZ_CENTER  # 수평정렬
+
+    os = ['', '개인', '법인', '국공유지']
+
+    for row in rows:
+        row_num += 1
+        for col_num, col in enumerate((columns)):
+            row = list(row)
+
+            if '면적' in col:
+                row.insert(col_num + 1, round(float(row[col_num]) * 0.3025, 2))
+
+            row_cont = os[int(row[col_num])] if col_num == 0 else row[col_num]
+            ws.write(row_num, col_num, row_cont, style)
 
     wb.save(response)
     return response
