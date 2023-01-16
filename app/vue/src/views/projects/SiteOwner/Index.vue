@@ -84,6 +84,8 @@ const onDelete = (payload: { pk: number; project: number }) => {
   siteStore.deleteSiteOwner(pk, project)
 }
 
+const excelUrl = 'excel/sites-by-owner/?project=' + project.value
+
 onBeforeMount(() => {
   siteStore.fetchAllSites(initProjId.value)
   siteStore.fetchSiteOwnerList(initProjId.value)
@@ -105,7 +107,7 @@ onBeforeMount(() => {
         @list-filtering="listFiltering"
       />
       <AddSiteOwner :project="project" @multi-submit="multiSubmit" />
-      <TableTitleRow title="부지 소유자 목록" excel url="" disabled>
+      <TableTitleRow title="부지 소유자 목록" excel :url="excelUrl">
         <span class="pt-1 text-success">
           소유자 면적 : {{ numFormat(getOwnersTotal, 2) }}m<sup>2</sup> ({{
             numFormat(getOwnersTotal * 0.3025, 2)

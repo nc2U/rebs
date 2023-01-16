@@ -57,8 +57,6 @@ const pageSelect = (page: number) => {
   listControl.value.listFiltering(page)
 }
 
-const excelUrl = 'excel/sites/?project=' + project.value
-
 const onCreate = (payload: Site & filter) => siteStore.createSite(payload)
 
 const onUpdate = (payload: Site & filter) => siteStore.updateSite(payload)
@@ -74,6 +72,8 @@ const onDelete = (payload: { pk: number; project: number }) => {
   const { pk, project } = payload
   siteStore.deleteSite(pk, project)
 }
+
+const excelUrl = 'excel/sites/?project=' + project.value
 
 onBeforeMount(() => {
   siteStore.fetchSiteList(initProjId.value)

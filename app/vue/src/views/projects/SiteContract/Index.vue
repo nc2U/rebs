@@ -73,6 +73,8 @@ const onDelete = (payload: { pk: number; project: number }) => {
   siteStore.deleteSiteCont(pk, project)
 }
 
+const excelUrl = 'excel/sites-contracts/?project=' + project.value
+
 onBeforeMount(() => {
   siteStore.fetchAllOwners(initProjId.value)
   siteStore.fetchSiteContList(initProjId.value)
@@ -94,7 +96,7 @@ onBeforeMount(() => {
         @list-filtering="listFiltering"
       />
       <AddSiteContract :project="project" @multi-submit="multiSubmit" />
-      <TableTitleRow title="부지 매입계약 목록" excel url="" disabled>
+      <TableTitleRow title="부지 매입계약 목록" excel :url="excelUrl">
         <span class="pt-1 text-success">
           총 계약 면적 : {{ numFormat(getContsTotal, 2) }}m<sup>2</sup> ({{
             numFormat(getContsTotal * 0.3025, 2)
