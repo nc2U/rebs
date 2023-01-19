@@ -1215,16 +1215,16 @@ def export_project_cash_xls(request):
     obj_list = obj_list.filter(is_imprest=True) if is_imp == '1' else obj_list.filter(is_imprest=False)
 
     if sort:
-        obj_list = obj_list.filter(sort__icontains=sort)
+        obj_list = obj_list.filter(sort_id=sort)
 
     if d1:
-        obj_list = obj_list.filter(project_account_d1__id=d1)
+        obj_list = obj_list.filter(project_account_d1_id=d1)
 
     if d2:
-        obj_list = obj_list.filter(project_account_d2__id=d2)
+        obj_list = obj_list.filter(project_account_d2_id=d2)
 
     if bank_acc:
-        obj_list = obj_list.filter(bank_account__id=bank_acc)
+        obj_list = obj_list.filter(bank_account_id=bank_acc)
 
     if q:
         obj_list = obj_list.filter(Q(content__icontains=q) | Q(trader__icontains=q))
