@@ -2104,8 +2104,10 @@ def export_cashbook_xls(request):
     # get_data: ?s_date=2018-06-30&e_date=&category1=&category2=&bank_account=&search_word=
     s_date = request.GET.get('s_date')
     e_date = request.GET.get('e_date')
-    category1 = request.GET.get('category1')
-    category2 = request.GET.get('category2')
+    sort = request.GET.get('sort')
+    account_d1 = request.GET.get('account_d1')
+    account_d2 = request.GET.get('account_d2')
+    account_d3 = request.GET.get('account_d3')
     bank_account = request.GET.get('bank_account')
     search_word = request.GET.get('search_word')
 
@@ -2116,20 +2118,26 @@ def export_cashbook_xls(request):
 
     obj_list = CashBook.objects.filter(company=company, deal_date__range=(s_date, e_date))
 
-    if category1:
-        obj_list = obj_list.filter(cash_category1__icontains=category1)
+    if sort:
+        obj_list = obj_list.filter(sort_id=sort)
 
-    if category2:
-        obj_list = obj_list.filter(cash_category2__icontains=category2)
+    if account_d1:
+        obj_list = obj_list.filter(account_d1_id=account_d1)
+
+    if account_d2:
+        obj_list = obj_list.filter(account_d2_id=account_d2)
+
+    if account_d3:
+        obj_list = obj_list.filter(account_d3_id=account_d3)
 
     if bank_account:
-        obj_list = obj_list.filter(bank_account__id=bank_account)
+        obj_list = obj_list.filter(bank_account_id=bank_account)
 
     if search_word:
         obj_list = obj_list.filter(
-            Q(account__name__icontains=search_word) |
             Q(content__icontains=search_word) |
-            Q(trader__icontains=search_word))
+            Q(trader__icontains=search_word) |
+            Q(note__icontains=search_word))
 
     # Sheet Title, first row
     row_num = 0
