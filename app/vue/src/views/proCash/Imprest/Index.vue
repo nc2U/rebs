@@ -104,7 +104,7 @@ const listFiltering = (payload: CashBookFilter) => {
   const sort = payload.sort ? payload.sort : null
   const d1 = payload.pro_acc_d1 ? payload.pro_acc_d1 : null
   fetchProFormAccD1List(sort)
-  fetchProFormAccD2List(sort, d1)
+  fetchProFormAccD2List(d1, sort)
   fetchProjectImprestList({ ...{ project: project.value }, ...payload })
 }
 

@@ -45,13 +45,13 @@ watch(to_date, val => {
   listFiltering(1)
 })
 
-const pro_acc_d1Select = () => {
+const sortSelect = () => {
   listFiltering(1)
   form.pro_acc_d1 = ''
   form.pro_acc_d2 = ''
 }
 
-const pro_acc_d2Select = () => {
+const pro_acc_d1Select = () => {
   listFiltering(1)
   form.pro_acc_d2 = ''
 }
@@ -105,7 +105,7 @@ const resetForm = () => {
           </CCol>
 
           <CCol md="6" lg="2" class="mb-3">
-            <CFormSelect v-model="form.sort" @change="pro_acc_d1Select">
+            <CFormSelect v-model="form.sort" @change="sortSelect">
               <option value="">거래구분</option>
               <option v-for="sort in sortList" :key="sort.pk" :value="sort.pk">
                 {{ sort.name }}
@@ -114,7 +114,7 @@ const resetForm = () => {
           </CCol>
 
           <CCol md="6" lg="2" class="mb-3">
-            <CFormSelect v-model="form.pro_acc_d1" @change="pro_acc_d2Select">
+            <CFormSelect v-model="form.pro_acc_d1" @change="pro_acc_d1Select">
               <option value="">상위 항목</option>
               <option v-for="d1 in formAccD1List" :key="d1.pk" :value="d1.pk">
                 {{ d1.name }}
