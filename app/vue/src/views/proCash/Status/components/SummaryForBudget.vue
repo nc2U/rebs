@@ -10,6 +10,8 @@ import {
 
 defineProps({ date: { type: String, default: '' } })
 
+const formVisible = ref(false)
+
 const totalBudget = ref(0)
 const preExecAmt = ref(0)
 const monthExecAmt = ref(0)
@@ -140,7 +142,22 @@ const getSumTotal = () => {
         >
           {{ bdj.account_d2.name }}
         </CTableDataCell>
-        <CTableDataCell>{{ numFormat(bdj.budget) }}</CTableDataCell>
+        <CTableDataCell
+          class="py-0"
+          style="cursor: pointer"
+          @dblclick="formVisible = !formVisible"
+        >
+          <span v-if="!formVisible">{{ numFormat(bdj.budget) }}</span>
+          <span v-else class="p-0">
+            <CFormInput
+              type="text"
+              class="form-control text-right"
+              size="sm"
+              :value="bdj.budget"
+              @keydown.enter="formVisible = !formVisible"
+            />
+          </span>
+        </CTableDataCell>
         <CTableDataCell>
           {{
             numFormat(
