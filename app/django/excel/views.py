@@ -1215,7 +1215,7 @@ def export_project_cash_xls(request):
     obj_list = obj_list.filter(is_imprest=True) if is_imp == '1' else obj_list.filter(is_imprest=False)
 
     if sort:
-        obj_list = obj_list.filter(cash_category1__icontains=sort)
+        obj_list = obj_list.filter(sort__icontains=sort)
 
     if d1:
         obj_list = obj_list.filter(project_account_d1__id=d1)
