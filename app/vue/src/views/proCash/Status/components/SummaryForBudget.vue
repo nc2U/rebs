@@ -10,7 +10,12 @@ import {
 
 defineProps({ date: { type: String, default: '' } })
 
-const formVisible = ref(false)
+const formNumber = ref(1000)
+
+const budgetUpdate = (budget: number) => {
+  formNumber.value = 1000
+  console.log(budget)
+}
 
 const totalBudget = ref(0)
 const preExecAmt = ref(0)
@@ -145,16 +150,18 @@ const getSumTotal = () => {
         <CTableDataCell
           class="py-0"
           style="cursor: pointer"
-          @dblclick="formVisible = !formVisible"
+          @dblclick="formNumber = i"
         >
-          <span v-if="!formVisible">{{ numFormat(bdj.budget) }}</span>
+          <span v-if="formNumber !== i">
+            {{ numFormat(bdj.budget) }}
+          </span>
           <span v-else class="p-0">
             <CFormInput
               type="text"
               class="form-control text-right"
               size="sm"
               :value="bdj.budget"
-              @keydown.enter="formVisible = !formVisible"
+              @keydown.enter="budgetUpdate($event.target.value)"
             />
           </span>
         </CTableDataCell>
