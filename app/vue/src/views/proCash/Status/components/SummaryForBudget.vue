@@ -148,7 +148,7 @@ const getSumTotal = () => {
           {{ bdj.account_d2.name }}
         </CTableDataCell>
         <CTableDataCell
-          class="py-0"
+          class="py-0 bg-blue-grey-lighten-5"
           style="cursor: pointer"
           @dblclick="formNumber = i"
         >
