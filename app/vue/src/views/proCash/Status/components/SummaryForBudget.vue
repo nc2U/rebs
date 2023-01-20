@@ -72,7 +72,8 @@ const emit = defineEmits(['patch-budget'])
 
 const patchBudget = (pk: number, budget: string, oldBudget: number) => {
   formNumber.value = 1000
-  if (parseInt(budget) !== oldBudget) emit('patch-budget', pk, parseInt(budget))
+  const bg = parseInt(budget)
+  if (bg !== oldBudget) emit('patch-budget', pk, bg)
 }
 </script>
 
