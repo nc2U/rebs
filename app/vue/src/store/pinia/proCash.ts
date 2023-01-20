@@ -147,7 +147,9 @@ export const useProCash = defineStore('proCash', () => {
       .catch(err => errorHandle(err.response.data))
 
   const patchProBudgetList = (project: number, pk: number, budget: number) =>
-    api.patch(`/budget/${pk}/`, budget).then(res => console.log(project, res))
+    api
+      .patch(`/budget/${pk}/`, { budget })
+      .then(() => fetchProjectBudgetList(project))
 
   const execAmountList = ref<ExecAmountToBudget[]>([])
 

@@ -126,7 +126,7 @@ onBeforeMount(() => {
       <SummaryForBudget
         v-if="compName === 'SummaryForBudget'"
         :date="date"
-        @patchBudget="patchBudget"
+        @patch-budget="patchBudget"
       />
     </CCardBody>
 
