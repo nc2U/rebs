@@ -163,6 +163,7 @@ const patchBudget = (pk: number, budget: string) => {
               class="form-control text-right"
               size="sm"
               :value="bdj.budget"
+              @blur="patchBudget(bdj.pk, $event.target.value)"
               @keydown.enter="patchBudget(bdj.pk, $event.target.value)"
             />
           </span>
