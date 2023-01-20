@@ -27,12 +27,14 @@ const fetchProAllAccD2List = () => proCashStore.fetchProAllAccD2List
 const fetchProBankAccList = (proj: number) =>
   proCashStore.fetchProBankAccList(proj)
 
-const fetchBalanceByAccList = (proj: { project: number; date?: string }) =>
-  proCashStore.fetchBalanceByAccList(proj)
+const fetchBalanceByAccList = (payload: { project: number; date?: string }) =>
+  proCashStore.fetchBalanceByAccList(payload)
 const fetchDateCashBookList = (payload: { project: number; date: string }) =>
   proCashStore.fetchDateCashBookList(payload)
 const fetchProjectBudgetList = (proj: number) =>
   proCashStore.fetchProjectBudgetList(proj)
+const patchProBudgetList = (proj: number, pk: number, budget: number) =>
+  proCashStore.patchProBudgetList(proj, pk, budget)
 const fetchExecAmountList = (project: number, date?: string) =>
   proCashStore.fetchExecAmountList(project, date)
 
@@ -84,6 +86,9 @@ const setDate = (d: Date) => {
   fetchExecAmountList(project.value, dateFormat(dt))
 }
 
+const patchBudget = (pk: number, budget: number) =>
+  patchProBudgetList(project.value, pk, budget)
+
 onBeforeMount(() => {
   fetchProAllAccD1List()
   fetchProAllAccD2List()
@@ -118,7 +123,11 @@ onBeforeMount(() => {
 
       <StatusByAccount v-if="compName === 'StatusByAccount'" :date="date" />
       <CashListByDate v-if="compName === 'CashListByDate'" :date="date" />
-      <SummaryForBudget v-if="compName === 'SummaryForBudget'" :date="date" />
+      <SummaryForBudget
+        v-if="compName === 'SummaryForBudget'"
+        :date="date"
+        @patchBudget="patchBudget"
+      />
     </CCardBody>
 
     <CCardFooter>&nbsp;</CCardFooter>

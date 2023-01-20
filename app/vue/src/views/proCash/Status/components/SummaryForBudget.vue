@@ -12,11 +12,6 @@ defineProps({ date: { type: String, default: '' } })
 
 const formNumber = ref(1000)
 
-const budgetUpdate = (budget: number) => {
-  formNumber.value = 1000
-  console.log(budget)
-}
-
 const totalBudget = ref(0)
 const preExecAmt = ref(0)
 const monthExecAmt = ref(0)
@@ -71,6 +66,11 @@ const getSumTotal = () => {
   monthExecAmt.value = monthExecAmtCalc
   totalExecAmt.value = totalExecAmtCalc
   availableBudget.value = totalBudgetCalc - totalExecAmtCalc
+}
+
+const budgetUpdate = (pk: number, budget: string) => {
+  formNumber.value = 1000
+  console.log(pk, parseInt(budget))
 }
 </script>
 
@@ -161,7 +161,7 @@ const getSumTotal = () => {
               class="form-control text-right"
               size="sm"
               :value="bdj.budget"
-              @keydown.enter="budgetUpdate($event.target.value)"
+              @keydown.enter="budgetUpdate(bdj.pk, $event.target.value)"
             />
           </span>
         </CTableDataCell>

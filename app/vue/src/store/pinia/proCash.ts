@@ -113,7 +113,7 @@ export const useProCash = defineStore('proCash', () => {
 
   const fetchBalanceByAccList = (payload: {
     project: number
-    date: string
+    date?: string
   }) => {
     const { project, date } = payload
     let url = `/pr-balance-by-acc/?project=${project}`
@@ -145,6 +145,9 @@ export const useProCash = defineStore('proCash', () => {
       .get(`/budget/?project=${project}`)
       .then(res => (proBudgetList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
+
+  const patchProBudgetList = (project: number, pk: number, budget: number) =>
+    api.patch(`/budget/${pk}/`, budget).then(res => console.log(project, res))
 
   const execAmountList = ref<ExecAmountToBudget[]>([])
 
@@ -442,6 +445,7 @@ export const useProCash = defineStore('proCash', () => {
 
     proBudgetList,
     fetchProjectBudgetList,
+    patchProBudgetList,
 
     execAmountList,
     fetchExecAmountList,
