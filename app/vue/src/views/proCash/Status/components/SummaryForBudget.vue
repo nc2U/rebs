@@ -70,9 +70,9 @@ const getSumTotal = () => {
 
 const emit = defineEmits(['patch-budget'])
 
-const patchBudget = (pk: number, budget: string) => {
+const patchBudget = (pk: number, budget: string, oldBudget: number) => {
   formNumber.value = 1000
-  emit('patch-budget', pk, parseInt(budget))
+  if (parseInt(budget) !== oldBudget) emit('patch-budget', pk, parseInt(budget))
 }
 </script>
 
@@ -163,8 +163,10 @@ const patchBudget = (pk: number, budget: string) => {
               class="form-control text-right"
               size="sm"
               :value="bdj.budget"
-              @blur="patchBudget(bdj.pk, $event.target.value)"
-              @keydown.enter="patchBudget(bdj.pk, $event.target.value)"
+              @blur="patchBudget(bdj.pk, $event.target.value, bdj.budget)"
+              @keydown.enter="
+                patchBudget(bdj.pk, $event.target.value, bdj.budget)
+              "
             />
           </span>
         </CTableDataCell>
