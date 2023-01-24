@@ -4,10 +4,11 @@ import { pageTitle, navMenu } from '@/views/settings/_menu/headermixin'
 import { useStore } from 'vuex'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
+import UserSelect from './components/UserSelect.vue'
+import ProjectManageAuth from './components/ProjectManageAuth.vue'
+import SideBarManageAuth from './components/SideBarManageAuth.vue'
 
 const store = useStore()
-
-// const company = computed(() => store.state.settings.company)
 </script>
 
 <template>
@@ -15,7 +16,14 @@ const store = useStore()
     :page-title="pageTitle"
     :nav-menu="navMenu"
     :selector="'CompanySelect'"
-    @header-select="onSelectAdd"
   />
-  <ContentBody></ContentBody>
+  <ContentBody>
+    <CCardBody>
+      <UserSelect />
+      <ProjectManageAuth />
+      <SideBarManageAuth />
+    </CCardBody>
+
+    <CCardFooter>&nbsp;</CCardFooter>
+  </ContentBody>
 </template>
