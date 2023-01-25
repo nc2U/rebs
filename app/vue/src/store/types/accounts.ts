@@ -3,28 +3,11 @@ export declare interface User {
   email: string
   username: string
   is_active: boolean
-  date_joined: string
   is_superuser: boolean
+  date_joined: string
   staffauth: StaffAuth | null
   profile: Profile | null
   todos: Todo[]
-}
-
-export type Profile = {
-  [key: string]: undefined | number | null | string
-  pk?: number | null
-  user: number | null
-  name: string
-  birth_date: string
-  cell_phone: string
-}
-
-export interface Todo {
-  pk?: number
-  user?: number
-  title?: string
-  completed?: boolean
-  soft_deleted?: boolean
 }
 
 interface StaffAuth {
@@ -44,4 +27,21 @@ interface StaffAuth {
   company_cash: string
   company_docs: string
   auth_manage: string
+}
+
+export type Profile = {
+  [key: string]: undefined | number | null | string
+  pk?: number | null
+  user: number | null
+  name: string
+  birth_date: string
+  cell_phone: string
+}
+
+export interface Todo {
+  pk?: number
+  user?: number
+  title?: string
+  completed?: boolean
+  soft_deleted?: boolean
 }
