@@ -69,8 +69,9 @@ const formsCheck = computed(() => {
     const k = ma.human_resource === sa?.human_resource
     const l = ma.company_settings === sa?.company_settings
     const m = ma.auth_manage === sa?.auth_manage
+    const n = accountStore.user === null
 
-    return a && b && c && d && e && f && g && h && i && j && k && l && m
+    return (a && b && c && d && e && f && g && h && i && j && k && l && m) || n
   } else return false
 })
 
