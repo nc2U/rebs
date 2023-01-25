@@ -1,13 +1,14 @@
 <script lang="ts" setup="">
-import { ref } from 'vue'
+import { reactive } from 'vue'
+import { useStore } from 'vuex'
 import Multiselect from '@vueform/multiselect'
 
-const msg = ref('유저 셀렉트')
-const getUsers = [{ value: 1, label: '고창균' }]
+const isDark = useStore().state.theme === 'dark'
+const getUsers = reactive([{ value: 1, label: '고창균' }])
 </script>
 
 <template>
-  <CCallout color="info">
+  <CCallout color="dark" :class="{ 'bg-light': !isDark }">
     <CRow>
       <CCol md="10" lg="8" xl="6">
         <CRow class="m-1">

@@ -14,20 +14,18 @@ const auth = ref({
   company_settings: null,
   auth_manage: null,
 })
-
 const auths = reactive([
   '권한없음',
   { label: '읽기권한', value: '1' },
   { label: '쓰기권한', value: '2' },
 ])
+const isInActive = ref(false)
 
 const getColor = (status: '1' | '2' | null) => {
   if (status === '1') return 'yellow-darken-2'
   else if (status === '2') return 'success'
   else return 'blue-grey-lighten-1'
 }
-
-const isInActive = true
 </script>
 
 <template>

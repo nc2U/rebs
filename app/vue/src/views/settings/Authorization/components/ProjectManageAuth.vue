@@ -1,17 +1,18 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, reactive } from 'vue'
+import { useStore } from 'vuex'
 import Multiselect from '@vueform/multiselect'
 
-const msg = ref('프로젝트 관리')
-const getProjects = [
+const isDark = useStore().state.theme === 'dark'
+const getProjects = reactive([
   { value: 1, label: '송도센트럴자이' },
   { value: 2, label: '아야진프로젝트' },
-]
-const isInActive = false
+])
+const isInActive = ref(false)
 </script>
 
 <template>
-  <CCallout color="secondary" class="mb-4">
+  <CCallout color="secondary" class="mb-4" :class="{ 'bg-light': !isDark }">
     <CRow>
       <CCol md="10" lg="8" xl="6">
         <CRow class="m-1">
