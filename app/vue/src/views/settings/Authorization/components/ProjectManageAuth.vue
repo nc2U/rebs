@@ -21,8 +21,10 @@ const isDark = computed(() => store.state.theme === 'dark')
 const project = useProject()
 const getProjects = computed(() => project.getProjects)
 
-const getAllowed = () => nextTick(() => emit('get-allowed', allowedProjects))
-const getAssigned = () => nextTick(() => emit('get-assigned', assignedProject))
+const getAllowed = () =>
+  nextTick(() => emit('get-allowed', allowedProjects.value))
+const getAssigned = () =>
+  nextTick(() => emit('get-assigned', assignedProject.value))
 
 watch(
   () => props.user,
