@@ -1,7 +1,9 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import {ref} from 'vue'
 
 const msg = ref('사이드메뉴 관리')
+const auths = ['권한없음', {label: '읽기권한', value: '1'}, {label: '쓰기권한', value: '2'}]
+const isInActive = true
 </script>
 
 <template>
@@ -15,11 +17,7 @@ const msg = ref('사이드메뉴 관리')
                 분양계약 관리
               </CFormLabel>
               <CCol>
-                <CFormSelect>
-                  <option value="0">권한없음</option>
-                  <option value="1">읽기권한</option>
-                  <option value="2">쓰기권한</option>
-                </CFormSelect>
+                <CFormSelect :options="auths" :disabled="isInActive"/>
               </CCol>
             </CRow>
           </CCol>
@@ -29,11 +27,7 @@ const msg = ref('사이드메뉴 관리')
                 분양수납 관리
               </CFormLabel>
               <CCol>
-                <CFormSelect>
-                  <option value="0">권한없음</option>
-                  <option value="1">읽기권한</option>
-                  <option value="2">쓰기권한</option>
-                </CFormSelect>
+                <CFormSelect :options="auths" :disabled="isInActive"/>
               </CCol>
             </CRow>
           </CCol>
@@ -43,11 +37,7 @@ const msg = ref('사이드메뉴 관리')
                 고객고지 관리
               </CFormLabel>
               <CCol>
-                <CFormSelect>
-                  <option value="0">권한없음</option>
-                  <option value="1">읽기권한</option>
-                  <option value="2">쓰기권한</option>
-                </CFormSelect>
+                <CFormSelect :options="auths" :disabled="isInActive"/>
               </CCol>
             </CRow>
           </CCol>
@@ -60,11 +50,7 @@ const msg = ref('사이드메뉴 관리')
                 현장자금 관리
               </CFormLabel>
               <CCol>
-                <CFormSelect>
-                  <option value="0">권한없음</option>
-                  <option value="1">읽기권한</option>
-                  <option value="2">쓰기권한</option>
-                </CFormSelect>
+                <CFormSelect :options="auths" :disabled="isInActive"/>
               </CCol>
             </CRow>
           </CCol>
@@ -74,11 +60,7 @@ const msg = ref('사이드메뉴 관리')
                 현장문서 관리
               </CFormLabel>
               <CCol>
-                <CFormSelect>
-                  <option value="0">권한없음</option>
-                  <option value="1">읽기권한</option>
-                  <option value="2">쓰기권한</option>
-                </CFormSelect>
+                <CFormSelect :options="auths" :disabled="isInActive"/>
               </CCol>
             </CRow>
           </CCol>
@@ -88,11 +70,7 @@ const msg = ref('사이드메뉴 관리')
                 신규 프로젝트
               </CFormLabel>
               <CCol>
-                <CFormSelect>
-                  <option value="0">권한없음</option>
-                  <option value="1">읽기권한</option>
-                  <option value="2">쓰기권한</option>
-                </CFormSelect>
+                <CFormSelect :options="auths" :disabled="isInActive"/>
               </CCol>
             </CRow>
           </CCol>
@@ -105,11 +83,7 @@ const msg = ref('사이드메뉴 관리')
                 본사회계 관리
               </CFormLabel>
               <CCol>
-                <CFormSelect>
-                  <option value="0">권한없음</option>
-                  <option value="1">읽기권한</option>
-                  <option value="2">쓰기권한</option>
-                </CFormSelect>
+                <CFormSelect :options="auths" :disabled="isInActive"/>
               </CCol>
             </CRow>
           </CCol>
@@ -119,11 +93,7 @@ const msg = ref('사이드메뉴 관리')
                 본사문서 관리
               </CFormLabel>
               <CCol>
-                <CFormSelect>
-                  <option value="0">권한없음</option>
-                  <option value="1">읽기권한</option>
-                  <option value="2">쓰기권한</option>
-                </CFormSelect>
+                <CFormSelect :options="auths" :disabled="isInActive"/>
               </CCol>
             </CRow>
           </CCol>
@@ -133,11 +103,7 @@ const msg = ref('사이드메뉴 관리')
                 본사인사 관리
               </CFormLabel>
               <CCol>
-                <CFormSelect>
-                  <option value="0">권한없음</option>
-                  <option value="1">읽기권한</option>
-                  <option value="2">쓰기권한</option>
-                </CFormSelect>
+                <CFormSelect :options="auths" :disabled="isInActive"/>
               </CCol>
             </CRow>
           </CCol>
@@ -150,11 +116,7 @@ const msg = ref('사이드메뉴 관리')
                 회사관련 설정
               </CFormLabel>
               <CCol>
-                <CFormSelect>
-                  <option value="0">권한없음</option>
-                  <option value="1">읽기권한</option>
-                  <option value="2">쓰기권한</option>
-                </CFormSelect>
+                <CFormSelect :options="auths" :disabled="isInActive"/>
               </CCol>
             </CRow>
           </CCol>
@@ -164,11 +126,7 @@ const msg = ref('사이드메뉴 관리')
                 권한설정 관리
               </CFormLabel>
               <CCol>
-                <CFormSelect>
-                  <option value="0">권한없음</option>
-                  <option value="1">읽기권한</option>
-                  <option value="2">쓰기권한</option>
-                </CFormSelect>
+                <CFormSelect :options="auths" :disabled="isInActive"/>
               </CCol>
             </CRow>
           </CCol>
@@ -178,11 +136,7 @@ const msg = ref('사이드메뉴 관리')
               <!--              분양 계약 관리-->
               <!--            </CFormLabel>-->
               <!--            <CCol>-->
-              <!--              <CFormSelect>-->
-              <!--                <option value="0">권한없음</option>-->
-              <!--                <option value="1">읽기권한</option>-->
-              <!--                <option value="2">쓰기권한</option>-->
-              <!--              </CFormSelect>-->
+              <!--              <CFormSelect :options="auths"/>-->
               <!--            </CCol>-->
             </CRow>
           </CCol>
