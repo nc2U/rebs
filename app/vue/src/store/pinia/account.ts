@@ -18,6 +18,7 @@ const extractId = (token: string) => {
 export const useAccount = defineStore('account', () => {
   // states
   const usersList = ref<User[]>([])
+  const user = ref<User | null>(null)
   const accessToken = ref<string>('')
   const userInfo = ref<User | null>(null)
   const profile = ref<Profile | null>(null)
@@ -37,7 +38,7 @@ export const useAccount = defineStore('account', () => {
     ),
   )
   const getUsers = computed(() =>
-    usersList.value.map((u: User) => ({ value: u.pk, text: u.username })),
+    usersList.value.map((u: User) => ({ value: u.pk, label: u.username })),
   )
 
   // actions
@@ -45,6 +46,12 @@ export const useAccount = defineStore('account', () => {
     api
       .get('/user/')
       .then(res => (usersList.value = res.data.results))
+      .catch(err => errorHandle(err.response.data))
+
+  const fetchUser = (pk: number) =>
+    api
+      .get(`/user/${pk}/`)
+      .then(res => (user.value = res.data))
       .catch(err => errorHandle(err.response.data))
 
   const signup = (payload: LoginUser & { username: string }) =>
@@ -188,6 +195,7 @@ export const useAccount = defineStore('account', () => {
       .catch(err => errorHandle(err.response.data))
 
   return {
+    user,
     accessToken,
     userInfo,
     profile,
@@ -200,6 +208,7 @@ export const useAccount = defineStore('account', () => {
     getUsers,
 
     fetchUsersList,
+    fetchUser,
     signup,
     login,
     loginByToken,
