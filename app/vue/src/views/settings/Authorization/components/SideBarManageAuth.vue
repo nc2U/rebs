@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, watch, nextTick } from 'vue'
+import { MenuType } from '../index.vue'
 
 const props = defineProps({
   user: { type: Object, default: null },
@@ -7,7 +8,7 @@ const props = defineProps({
 
 const emit = defineEmits(['select-auth'])
 
-const auth = ref({
+const auth = ref<MenuType>({
   contract: '0',
   payment: '0',
   notice: '0',
