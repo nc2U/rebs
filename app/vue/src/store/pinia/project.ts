@@ -34,6 +34,10 @@ export const useProject = defineStore('project', () => {
     return allowedProject.map((p: Project) => ({ value: p.pk, text: p.name }))
   })
 
+  const getProjects = computed(() =>
+    projectList.value.map((p: Project) => ({ value: p.pk, label: p.name })),
+  )
+
   const projectBudgetList = ref<ProjectBudget[]>([])
 
   // actions
@@ -82,6 +86,7 @@ export const useProject = defineStore('project', () => {
     initProjId,
     allowed_projects,
     projSelect,
+    getProjects,
     projectBudgetList,
 
     fetchProjectList,
