@@ -32,19 +32,47 @@ const menuAuth = ref<MenuType>({
   contract: '0',
   payment: '0',
   notice: '0',
-  project: '0',
   project_cash: '0',
   project_docs: '0',
-  human_resource: '0',
-  company_settings: '0',
+  project: '0',
   company_cash: '0',
   company_docs: '0',
+  human_resource: '0',
+  company_settings: '0',
   auth_manage: '0',
 })
 
 const accountStore = useAccount()
 const user = computed(() => accountStore.user)
 const userInfo = computed(() => accountStore.userInfo)
+const isStaffAuth = computed(() => !!userInfo.value?.staffauth)
+
+const formsCheck = computed(() => {
+  if (userInfo.value && isStaffAuth) {
+    const pa = projectAuth.value
+    const ma = menuAuth.value
+    const sa = userInfo.value.staffauth
+
+    const a = pa.assigned_project === sa?.assigned_project
+    const b =
+      JSON.stringify(pa.allowed_projects) ===
+      JSON.stringify(sa?.allowed_projects)
+
+    const c = ma.contract === sa?.contract
+    const d = ma.payment === sa?.payment
+    const e = ma.notice === sa?.notice
+    const f = ma.project_cash === sa?.project_cash
+    const g = ma.project_docs === sa?.project_docs
+    const h = ma.project === sa?.project
+    const i = ma.company_cash === sa?.company_cash
+    const j = ma.company_docs === sa?.company_docs
+    const k = ma.human_resource === sa?.human_resource
+    const l = ma.company_settings === sa?.company_settings
+    const m = ma.auth_manage === sa?.auth_manage
+
+    return a && b && c && d && e && f && g && h && i && j && k && l && m
+  } else return false
+})
 
 const selectUser = (pk: number | null) => {
   if (pk === null) accountStore.user = null
@@ -55,6 +83,8 @@ const getAllowed = (payload: number[]) =>
 const getAssigned = (payload: number | null) =>
   (projectAuth.value.assigned_project = payload)
 const selectAuth = (payload: MenuType) => (menuAuth.value = payload)
+
+const formSubmit = () => alert('ok!!')
 
 onBeforeMount(() => {
   accountStore.fetchUsersList()
@@ -99,11 +129,18 @@ watch(
         @get-assigned="getAssigned"
       />
       <SideBarManageAuth :user="user" @select-auth="selectAuth" />
-      {{ projectAuth }}
-      <hr />
-      {{ menuAuth }}
     </CCardBody>
 
-    <CCardFooter>&nbsp;</CCardFooter>
+    <CCardFooter class="text-right">
+      <CButton
+        type="button"
+        :color="isStaffAuth ? 'success' : 'primary'"
+        :disabled="formsCheck"
+        @click="formSubmit"
+      >
+        <CIcon name="cil-check-circle" />
+        저장
+      </CButton>
+    </CCardFooter>
   </ContentBody>
 </template>
