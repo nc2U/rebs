@@ -5,7 +5,7 @@ import { useProject } from '@/store/pinia/project'
 import Multiselect from '@vueform/multiselect'
 
 const props = defineProps({
-  user: { type: Object, default: undefined },
+  user: { type: Object, default: null },
 })
 
 const emit = defineEmits(['get-allowed', 'get-assigned'])
@@ -13,7 +13,7 @@ const emit = defineEmits(['get-allowed', 'get-assigned'])
 const allowedProjects = ref<number[]>([])
 const assignedProject = ref<number | null>(null)
 
-const isInActive = computed(() => props.user === undefined)
+const isInActive = computed(() => !props.user)
 
 const store = useStore()
 const isDark = computed(() => store.state.theme === 'dark')
@@ -27,9 +27,12 @@ const getAssigned = () => nextTick(() => emit('get-assigned', assignedProject))
 watch(
   () => props.user,
   newValue => {
-    if (newValue?.staffauth) {
+    if (newValue && newValue?.staffauth) {
       allowedProjects.value = newValue.staffauth.allowed_projects
       assignedProject.value = newValue.staffauth.assigned_project
+    } else {
+      allowedProjects.value = []
+      assignedProject.value = null
     }
   },
 )
