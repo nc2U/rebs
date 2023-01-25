@@ -17,6 +17,7 @@ const extractId = (token: string) => {
 
 export const useAccount = defineStore('account', () => {
   // states
+  const usersList = ref<User[]>([])
   const accessToken = ref<string>('')
   const userInfo = ref<User | null>(null)
   const profile = ref<Profile | null>(null)
@@ -35,8 +36,17 @@ export const useAccount = defineStore('account', () => {
       todo => !todo.soft_deleted && todo.user === userInfo.value?.pk,
     ),
   )
+  const getUsers = computed(() =>
+    usersList.value.map((u: User) => ({ value: u.pk, text: u.username })),
+  )
 
   // actions
+  const fetchUsersList = () =>
+    api
+      .get('/user/')
+      .then(res => (usersList.value = res.data.results))
+      .catch(err => errorHandle(err.response.data))
+
   const signup = (payload: LoginUser & { username: string }) =>
     api
       .post('/user/', payload)
@@ -187,7 +197,9 @@ export const useAccount = defineStore('account', () => {
     staffAuth,
     isAuthorized,
     myTodos,
+    getUsers,
 
+    fetchUsersList,
     signup,
     login,
     loginByToken,
