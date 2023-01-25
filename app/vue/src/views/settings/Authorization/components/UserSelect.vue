@@ -1,9 +1,10 @@
 <script lang="ts" setup="">
-import { reactive } from 'vue'
+import { computed, reactive } from 'vue'
 import { useStore } from 'vuex'
 import Multiselect from '@vueform/multiselect'
 
-const isDark = useStore().state.theme === 'dark'
+const store = useStore()
+const isDark = computed(() => store.state.theme === 'dark')
 const getUsers = reactive([{ value: 1, label: '고창균' }])
 </script>
 
@@ -22,8 +23,6 @@ const getUsers = reactive([{ value: 1, label: '고창균' }])
               :add-option-on="['enter' | 'tab']"
               searchable
             />
-            <!--            v-model.number="form.owner"-->
-            <!--            :attrs="form.owner ? {} : { required: true }"-->
           </CCol>
         </CRow>
       </CCol>

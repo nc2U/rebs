@@ -1,9 +1,10 @@
 <script lang="ts" setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, computed } from 'vue'
 import { useStore } from 'vuex'
 import Multiselect from '@vueform/multiselect'
 
-const isDark = useStore().state.theme === 'dark'
+const store = useStore()
+const isDark = computed(() => store.state.theme === 'dark')
 const getProjects = reactive([
   { value: 1, label: '송도센트럴자이' },
   { value: 2, label: '아야진프로젝트' },
@@ -30,8 +31,6 @@ const isInActive = ref(false)
               searchable
               :disabled="isInActive"
             />
-            <!--            v-model.number="form.owner"-->
-            <!--            :attrs="form.owner ? {} : { required: true }"-->
             <small class="form-text">
               사용자가 조회 및 관리할 수 있는 프로젝트들을 선택합니다.
             </small>
@@ -54,8 +53,6 @@ const isInActive = ref(false)
               searchable
               :disabled="isInActive"
             />
-            <!--            v-model.number="form.owner"-->
-            <!--            :attrs="form.owner ? {} : { required: true }"-->
             <small class="form-text">
               사용자의 각 화면에서 선택한 프로젝트를 기본 프로젝트로 보여줍니다.
             </small>
