@@ -6,27 +6,26 @@ export declare interface User {
   is_superuser: boolean
   date_joined: string
   staffauth: StaffAuth | null
-  profile: Profile | null
-  todos: Todo[]
+  profile: number | null
 }
 
 interface StaffAuth {
   pk?: number
   company: number
   is_staff: boolean
-  assigned_project: number
+  assigned_project: number | null
   allowed_projects: number[]
-  contract: string
-  payment: string
-  notice: string
-  project: string
-  project_cash: string
-  project_docs: string
-  human_resource: string
-  company_settings: string
-  company_cash: string
-  company_docs: string
-  auth_manage: string
+  contract: '0' | '1' | '2'
+  payment: '0' | '1' | '2'
+  notice: '0' | '1' | '2'
+  project_cash: '0' | '1' | '2'
+  project_docs: '0' | '1' | '2'
+  project: '0' | '1' | '2'
+  company_cash: '0' | '1' | '2'
+  company_docs: '0' | '1' | '2'
+  human_resource: '0' | '1' | '2'
+  company_settings: '0' | '1' | '2'
+  auth_manage: '0' | '1' | '2'
 }
 
 export type Profile = {
