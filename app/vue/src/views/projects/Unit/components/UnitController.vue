@@ -258,10 +258,7 @@ const modalAction = () => {
   </CAlert>
 
   <ConfirmModal ref="confirmModal">
-    <template #header>
-      <CIcon name="cilItalic" />
-      호수(유니트) 정보
-    </template>
+    <template #header> 호수(유니트) 정보 </template>
     <template #default>
       <p class="text-primary">
         <strong>

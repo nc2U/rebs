@@ -349,10 +349,7 @@ onBeforeMount(() => {
   </CForm>
 
   <ConfirmModal ref="delModal">
-    <template #header>
-      <CIcon name="cilWarning" />
-      사업 부지 정보 삭제
-    </template>
+    <template #header> 사업 부지 정보 삭제 </template>
     <template #default>
       삭제한 데이터는 복구할 수 없습니다. 해당 사업 부지 정보를
       삭제하시겠습니까?

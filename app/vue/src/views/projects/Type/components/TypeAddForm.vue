@@ -163,10 +163,7 @@ const resetForm = () => {
   </CForm>
 
   <ConfirmModal ref="confirmModal">
-    <template #header>
-      <CIcon name="cil-info" />
-      타입 정보 등록
-    </template>
+    <template #header> 타입 정보 등록 </template>
     <template #default>
       프로젝트의 타입 정보 등록을 진행하시겠습니까?
     </template>

@@ -126,10 +126,7 @@ const deleteObject = () => {
   </FormModal>
 
   <ConfirmModal ref="delModal">
-    <template #header>
-      <CIcon name="cilWarning" />
-      입출금 거래 정보 삭제
-    </template>
+    <template #header> 입출금 거래 정보 삭제 </template>
     <template #default>
       삭제한 데이터는 복구할 수 없습니다. 해당 입출금 거래 정보를
       삭제하시겠습니까?

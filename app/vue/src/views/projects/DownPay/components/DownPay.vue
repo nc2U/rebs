@@ -126,10 +126,7 @@ const resetForm = () => {
   </CTableRow>
 
   <ConfirmModal ref="confirmModal">
-    <template #header>
-      <CIcon name="cil-warning" />
-      층별 타입 삭제
-    </template>
+    <template #header> 층별 타입 삭제 </template>
     <template #default>
       이 타입에 종속된 분양가 데이터가 있는 경우 해당 데이터를 모두 제거한 후
       삭제가능 합니다. 해당 층별 타입을 삭제 하시겠습니까?

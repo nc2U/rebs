@@ -5,7 +5,7 @@ import { useDocument } from '@/store/pinia/document'
 import { onBeforeRouteLeave, useRoute } from 'vue-router'
 import { cutString } from '@/utils/baseMixins'
 
-const props = defineProps({ category: { type: Number, default: undefined } })
+defineProps({ category: { type: Number, default: undefined } })
 const emit = defineEmits(['post-hit', 'link-hit', 'file-hit'])
 
 const documentStore = useDocument()

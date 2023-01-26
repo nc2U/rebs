@@ -189,10 +189,7 @@ watch(
     </CCardFooter>
 
     <ConfirmModal ref="confirmModal">
-      <template #header>
-        <CIcon name="cilChevronCircleRightAlt" />
-        사용자 권한설정
-      </template>
+      <template #header> 사용자 권한설정 </template>
       <template #default> 사용자 권한설정 저장을 진행하시겠습니까?</template>
       <template #footer>
         <CButton

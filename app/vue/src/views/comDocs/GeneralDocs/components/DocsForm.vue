@@ -388,10 +388,7 @@ onBeforeRouteLeave(() => {
   </CForm>
 
   <ConfirmModal ref="delModal">
-    <template #header>
-      <CIcon name="cilChevronCircleRightAlt" />
-      본사 일반문서
-    </template>
+    <template #header> 본사 일반문서 </template>
     <template #default>현재 삭제 기능이 구현되지 않았습니다.</template>
     <template #footer>
       <CButton color="danger" disabled="">삭제</CButton>
@@ -399,10 +396,7 @@ onBeforeRouteLeave(() => {
   </ConfirmModal>
 
   <ConfirmModal ref="confirmModal">
-    <template #header>
-      <CIcon name="cilChevronCircleRightAlt" />
-      본사 일반문서
-    </template>
+    <template #header> 본사 일반문서 </template>
     <template #default> 본사 일반문서 저장을 진행하시겠습니까?</template>
     <template #footer>
       <CButton :color="btnClass" @click="modalAction">저장</CButton>

@@ -447,10 +447,7 @@ const addressCallback = (data: AddressData) => {
   <DaumPostcode ref="postCode" @addressCallback="addressCallback" />
 
   <ConfirmModal ref="confirmModal">
-    <template #header>
-      <CIcon name="cilChevronCircleRightAlt" />
-      수납 고지서 발행 정보
-    </template>
+    <template #header> 수납 고지서 발행 정보 </template>
     <template #default>
       수납 고지서 발행 정보 {{ confirmText }}을(를) 진행하시겠습니까?
     </template>

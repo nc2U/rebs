@@ -265,10 +265,7 @@ onBeforeMount(() => {
   </CForm>
 
   <ConfirmModal ref="confirmModal">
-    <template #header>
-      <CIcon name="cil-warning" />
-      계약 해지 정보 - [삭제]
-    </template>
+    <template #header> 계약 해지 정보 - [삭제] </template>
     <template #default>
       삭제 후 복구할 수 없습니다. 해당 건별 수납 정보 삭제를 진행하시겠습니까?
     </template>
