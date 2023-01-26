@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, watch, nextTick } from 'vue'
-import { MenuType } from '../index.vue'
+import { UserAuth } from '../index.vue'
 
 const props = defineProps({
   user: { type: Object, default: null },
@@ -8,7 +8,8 @@ const props = defineProps({
 
 const emit = defineEmits(['select-auth'])
 
-const auth = ref<MenuType>({
+const authData = ref<UserAuth>({
+  pk: undefined,
   contract: '0',
   payment: '0',
   notice: '0',
@@ -34,35 +35,42 @@ const getColor = (status: '0' | '1' | '2') => {
   else return 'blue-grey-lighten-1'
 }
 
-const selectAuth = () => nextTick(() => emit('select-auth', auth.value))
+const selectAuth = () =>
+  nextTick(() => {
+    const auth = { ...authData.value }
+    auth.pk = props.user.staffauth.pk
+    emit('select-auth', auth)
+  })
 
 watch(
   () => props.user,
   newValue => {
     if (newValue && newValue?.staffauth) {
-      auth.value.contract = newValue.staffauth.contract
-      auth.value.payment = newValue.staffauth.payment
-      auth.value.notice = newValue.staffauth.notice
-      auth.value.project_cash = newValue.staffauth.project_cash
-      auth.value.project_docs = newValue.staffauth.project_docs
-      auth.value.project = newValue.staffauth.project
-      auth.value.company_cash = newValue.staffauth.company_cash
-      auth.value.company_docs = newValue.staffauth.company_docs
-      auth.value.human_resource = newValue.staffauth.human_resource
-      auth.value.company_settings = newValue.staffauth.company_settings
-      auth.value.auth_manage = newValue.staffauth.auth_manage
+      authData.value.pk = newValue.staffauth.pk
+      authData.value.contract = newValue.staffauth.contract
+      authData.value.payment = newValue.staffauth.payment
+      authData.value.notice = newValue.staffauth.notice
+      authData.value.project_cash = newValue.staffauth.project_cash
+      authData.value.project_docs = newValue.staffauth.project_docs
+      authData.value.project = newValue.staffauth.project
+      authData.value.company_cash = newValue.staffauth.company_cash
+      authData.value.company_docs = newValue.staffauth.company_docs
+      authData.value.human_resource = newValue.staffauth.human_resource
+      authData.value.company_settings = newValue.staffauth.company_settings
+      authData.value.auth_manage = newValue.staffauth.auth_manage
     } else {
-      auth.value.contract = '0'
-      auth.value.payment = '0'
-      auth.value.notice = '0'
-      auth.value.project_cash = '0'
-      auth.value.project_docs = '0'
-      auth.value.project = '0'
-      auth.value.company_cash = '0'
-      auth.value.company_docs = '0'
-      auth.value.human_resource = '0'
-      auth.value.company_settings = '0'
-      auth.value.auth_manage = '0'
+      authData.value.pk = undefined
+      authData.value.contract = '0'
+      authData.value.payment = '0'
+      authData.value.notice = '0'
+      authData.value.project_cash = '0'
+      authData.value.project_docs = '0'
+      authData.value.project = '0'
+      authData.value.company_cash = '0'
+      authData.value.company_docs = '0'
+      authData.value.human_resource = '0'
+      authData.value.company_settings = '0'
+      authData.value.auth_manage = '0'
     }
   },
 )
@@ -80,13 +88,13 @@ watch(
               >
                 <v-icon
                   icon="mdi mdi-account-arrow-left"
-                  :color="getColor(auth.contract)"
+                  :color="getColor(authData.contract)"
                 />
                 분양계약 관리
               </CFormLabel>
               <CCol>
                 <CFormSelect
-                  v-model="auth.contract"
+                  v-model="authData.contract"
                   :options="auths"
                   :disabled="isInActive"
                   @change="selectAuth"
@@ -101,13 +109,13 @@ watch(
               >
                 <v-icon
                   icon="mdi mdi-account-arrow-left"
-                  :color="getColor(auth.payment)"
+                  :color="getColor(authData.payment)"
                 />
                 분양수납 관리
               </CFormLabel>
               <CCol>
                 <CFormSelect
-                  v-model="auth.payment"
+                  v-model="authData.payment"
                   :options="auths"
                   :disabled="isInActive"
                   @change="selectAuth"
@@ -122,13 +130,13 @@ watch(
               >
                 <v-icon
                   icon="mdi mdi-account-arrow-left"
-                  :color="getColor(auth.notice)"
+                  :color="getColor(authData.notice)"
                 />
                 고객고지 관리
               </CFormLabel>
               <CCol>
                 <CFormSelect
-                  v-model="auth.notice"
+                  v-model="authData.notice"
                   :options="auths"
                   :disabled="isInActive"
                   @change="selectAuth"
@@ -146,13 +154,13 @@ watch(
               >
                 <v-icon
                   icon="mdi mdi-account-arrow-left"
-                  :color="getColor(auth.project_cash)"
+                  :color="getColor(authData.project_cash)"
                 />
                 현장자금 관리
               </CFormLabel>
               <CCol>
                 <CFormSelect
-                  v-model="auth.project_cash"
+                  v-model="authData.project_cash"
                   :options="auths"
                   :disabled="isInActive"
                   @change="selectAuth"
@@ -167,13 +175,13 @@ watch(
               >
                 <v-icon
                   icon="mdi mdi-account-arrow-left"
-                  :color="getColor(auth.project_docs)"
+                  :color="getColor(authData.project_docs)"
                 />
                 현장문서 관리
               </CFormLabel>
               <CCol>
                 <CFormSelect
-                  v-model="auth.project_docs"
+                  v-model="authData.project_docs"
                   :options="auths"
                   :disabled="isInActive"
                   @change="selectAuth"
@@ -188,13 +196,13 @@ watch(
               >
                 <v-icon
                   icon="mdi mdi-account-arrow-left"
-                  :color="getColor(auth.project)"
+                  :color="getColor(authData.project)"
                 />
                 신규 프로젝트
               </CFormLabel>
               <CCol>
                 <CFormSelect
-                  v-model="auth.project"
+                  v-model="authData.project"
                   :options="auths"
                   :disabled="isInActive"
                   @change="selectAuth"
@@ -212,13 +220,13 @@ watch(
               >
                 <v-icon
                   icon="mdi mdi-account-arrow-left"
-                  :color="getColor(auth.company_cash)"
+                  :color="getColor(authData.company_cash)"
                 />
                 본사회계 관리
               </CFormLabel>
               <CCol>
                 <CFormSelect
-                  v-model="auth.company_cash"
+                  v-model="authData.company_cash"
                   :options="auths"
                   :disabled="isInActive"
                   @change="selectAuth"
@@ -233,13 +241,13 @@ watch(
               >
                 <v-icon
                   icon="mdi mdi-account-arrow-left"
-                  :color="getColor(auth.company_docs)"
+                  :color="getColor(authData.company_docs)"
                 />
                 본사문서 관리
               </CFormLabel>
               <CCol>
                 <CFormSelect
-                  v-model="auth.company_docs"
+                  v-model="authData.company_docs"
                   :options="auths"
                   :disabled="isInActive"
                   @change="selectAuth"
@@ -254,13 +262,13 @@ watch(
               >
                 <v-icon
                   icon="mdi mdi-account-arrow-left"
-                  :color="getColor(auth.human_resource)"
+                  :color="getColor(authData.human_resource)"
                 />
                 본사인사 관리
               </CFormLabel>
               <CCol>
                 <CFormSelect
-                  v-model="auth.human_resource"
+                  v-model="authData.human_resource"
                   :options="auths"
                   :disabled="isInActive"
                   @change="selectAuth"
@@ -278,13 +286,13 @@ watch(
               >
                 <v-icon
                   icon="mdi mdi-account-arrow-left"
-                  :color="getColor(auth.company_settings)"
+                  :color="getColor(authData.company_settings)"
                 />
                 회사관련 설정
               </CFormLabel>
               <CCol>
                 <CFormSelect
-                  v-model="auth.company_settings"
+                  v-model="authData.company_settings"
                   :options="auths"
                   :disabled="isInActive"
                   @change="selectAuth"
@@ -299,13 +307,13 @@ watch(
               >
                 <v-icon
                   icon="mdi mdi-account-arrow-left"
-                  :color="getColor(auth.auth_manage)"
+                  :color="getColor(authData.auth_manage)"
                 />
                 권한설정 관리
               </CFormLabel>
               <CCol>
                 <CFormSelect
-                  v-model="auth.auth_manage"
+                  v-model="authData.auth_manage"
                   :options="auths"
                   :disabled="isInActive"
                   @change="selectAuth"
