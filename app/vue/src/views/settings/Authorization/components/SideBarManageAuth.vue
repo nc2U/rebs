@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, watch, nextTick } from 'vue'
+import { useStore } from 'vuex'
 import { UserAuth } from '../index.vue'
 
 const props = defineProps({
@@ -7,6 +8,9 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['select-auth'])
+
+const store = useStore()
+const isDark = computed(() => store.state.theme === 'dark')
 
 const authData = ref<UserAuth>({
   pk: undefined,
@@ -22,6 +26,7 @@ const authData = ref<UserAuth>({
   company_settings: '0',
   auth_manage: '0',
 })
+
 const auths = reactive([
   { label: '권한없음', value: '0' },
   { label: '읽기권한', value: '1' },
@@ -30,9 +35,9 @@ const auths = reactive([
 const isInActive = computed(() => !props.user)
 
 const getColor = (status: '0' | '1' | '2') => {
-  if (status === '1') return 'yellow-darken-2'
-  else if (status === '2') return 'success'
-  else return 'blue-grey-lighten-1'
+  if (status === '1') return ['yellow-darken-2', '#fcfced']
+  else if (status === '2') return ['success', '#edf7f2']
+  else return ['blue-grey-lighten-1', '#EEEEEE']
 }
 
 const selectAuth = () =>
@@ -94,7 +99,7 @@ watch(
               >
                 <v-icon
                   icon="mdi mdi-account-arrow-left"
-                  :color="getColor(authData.contract)"
+                  :color="getColor(authData.contract)[0]"
                 />
                 분양계약 관리
               </CFormLabel>
@@ -103,6 +108,11 @@ watch(
                   v-model="authData.contract"
                   :options="auths"
                   :disabled="isInActive"
+                  :style="{
+                    backgroundColor: isDark
+                      ? ''
+                      : getColor(authData.contract)[1],
+                  }"
                   @change="selectAuth"
                 />
               </CCol>
@@ -115,7 +125,7 @@ watch(
               >
                 <v-icon
                   icon="mdi mdi-account-arrow-left"
-                  :color="getColor(authData.payment)"
+                  :color="getColor(authData.payment)[0]"
                 />
                 분양수납 관리
               </CFormLabel>
@@ -124,6 +134,11 @@ watch(
                   v-model="authData.payment"
                   :options="auths"
                   :disabled="isInActive"
+                  :style="{
+                    backgroundColor: isDark
+                      ? ''
+                      : getColor(authData.payment)[1],
+                  }"
                   @change="selectAuth"
                 />
               </CCol>
@@ -136,7 +151,7 @@ watch(
               >
                 <v-icon
                   icon="mdi mdi-account-arrow-left"
-                  :color="getColor(authData.notice)"
+                  :color="getColor(authData.notice)[0]"
                 />
                 고객고지 관리
               </CFormLabel>
@@ -145,6 +160,9 @@ watch(
                   v-model="authData.notice"
                   :options="auths"
                   :disabled="isInActive"
+                  :style="{
+                    backgroundColor: isDark ? '' : getColor(authData.notice)[1],
+                  }"
                   @change="selectAuth"
                 />
               </CCol>
@@ -158,7 +176,7 @@ watch(
               >
                 <v-icon
                   icon="mdi mdi-account-arrow-left"
-                  :color="getColor(authData.project_cash)"
+                  :color="getColor(authData.project_cash)[0]"
                 />
                 현장자금 관리
               </CFormLabel>
@@ -167,6 +185,11 @@ watch(
                   v-model="authData.project_cash"
                   :options="auths"
                   :disabled="isInActive"
+                  :style="{
+                    backgroundColor: isDark
+                      ? ''
+                      : getColor(authData.project_cash)[1],
+                  }"
                   @change="selectAuth"
                 />
               </CCol>
@@ -179,7 +202,7 @@ watch(
               >
                 <v-icon
                   icon="mdi mdi-account-arrow-left"
-                  :color="getColor(authData.project_docs)"
+                  :color="getColor(authData.project_docs)[0]"
                 />
                 현장문서 관리
               </CFormLabel>
@@ -188,6 +211,11 @@ watch(
                   v-model="authData.project_docs"
                   :options="auths"
                   :disabled="isInActive"
+                  :style="{
+                    backgroundColor: isDark
+                      ? ''
+                      : getColor(authData.project_docs)[1],
+                  }"
                   @change="selectAuth"
                 />
               </CCol>
@@ -200,7 +228,7 @@ watch(
               >
                 <v-icon
                   icon="mdi mdi-account-arrow-left"
-                  :color="getColor(authData.project)"
+                  :color="getColor(authData.project)[0]"
                 />
                 신규 프로젝트
               </CFormLabel>
@@ -209,6 +237,11 @@ watch(
                   v-model="authData.project"
                   :options="auths"
                   :disabled="isInActive"
+                  :style="{
+                    backgroundColor: isDark
+                      ? ''
+                      : getColor(authData.project)[1],
+                  }"
                   @change="selectAuth"
                 />
               </CCol>
@@ -238,7 +271,7 @@ watch(
               >
                 <v-icon
                   icon="mdi mdi-account-arrow-left"
-                  :color="getColor(authData.company_cash)"
+                  :color="getColor(authData.company_cash)[0]"
                 />
                 본사회계 관리
               </CFormLabel>
@@ -247,6 +280,11 @@ watch(
                   v-model="authData.company_cash"
                   :options="auths"
                   :disabled="isInActive"
+                  :style="{
+                    backgroundColor: isDark
+                      ? ''
+                      : getColor(authData.company_cash)[1],
+                  }"
                   @change="selectAuth"
                 />
               </CCol>
@@ -259,7 +297,7 @@ watch(
               >
                 <v-icon
                   icon="mdi mdi-account-arrow-left"
-                  :color="getColor(authData.company_docs)"
+                  :color="getColor(authData.company_docs)[0]"
                 />
                 본사문서 관리
               </CFormLabel>
@@ -268,6 +306,11 @@ watch(
                   v-model="authData.company_docs"
                   :options="auths"
                   :disabled="isInActive"
+                  :style="{
+                    backgroundColor: isDark
+                      ? ''
+                      : getColor(authData.company_docs)[1],
+                  }"
                   @change="selectAuth"
                 />
               </CCol>
@@ -280,7 +323,7 @@ watch(
               >
                 <v-icon
                   icon="mdi mdi-account-arrow-left"
-                  :color="getColor(authData.human_resource)"
+                  :color="getColor(authData.human_resource)[0]"
                 />
                 본사인사 관리
               </CFormLabel>
@@ -289,6 +332,11 @@ watch(
                   v-model="authData.human_resource"
                   :options="auths"
                   :disabled="isInActive"
+                  :style="{
+                    backgroundColor: isDark
+                      ? ''
+                      : getColor(authData.human_resource)[1],
+                  }"
                   @change="selectAuth"
                 />
               </CCol>
@@ -302,7 +350,7 @@ watch(
               >
                 <v-icon
                   icon="mdi mdi-account-arrow-left"
-                  :color="getColor(authData.company_settings)"
+                  :color="getColor(authData.company_settings)[0]"
                 />
                 회사관련 설정
               </CFormLabel>
@@ -311,6 +359,11 @@ watch(
                   v-model="authData.company_settings"
                   :options="auths"
                   :disabled="isInActive"
+                  :style="{
+                    backgroundColor: isDark
+                      ? ''
+                      : getColor(authData.company_settings)[1],
+                  }"
                   @change="selectAuth"
                 />
               </CCol>
@@ -323,7 +376,7 @@ watch(
               >
                 <v-icon
                   icon="mdi mdi-account-arrow-left"
-                  :color="getColor(authData.auth_manage)"
+                  :color="getColor(authData.auth_manage)[0]"
                 />
                 권한설정 관리
               </CFormLabel>
@@ -332,6 +385,11 @@ watch(
                   v-model="authData.auth_manage"
                   :options="auths"
                   :disabled="isInActive"
+                  :style="{
+                    backgroundColor: isDark
+                      ? ''
+                      : getColor(authData.auth_manage)[1],
+                  }"
                   @change="selectAuth"
                 />
               </CCol>
