@@ -63,12 +63,6 @@ export const useAccount = defineStore('account', () => {
         console.log(err)
       })
 
-  const patchUser = (payload: LoginUser & { username: string }) =>
-    api
-      .patch('/user/', payload)
-      .then(() => message()) // message('info', '', '사용자 권한이 수정되었습니다.'))
-      .catch(err => errorHandle(err.response.data))
-
   const setToken = (token: string) => {
     accessToken.value = token
     api.defaults.headers.common.Authorization = `Bearer ${accessToken.value}`
@@ -120,6 +114,12 @@ export const useAccount = defineStore('account', () => {
     Cookies.remove('accessToken')
     message('info', '', '로그아웃 완료 알림!')
   }
+
+  const patchAuth = (pk: number, payload: any) =>
+    api
+      .patch(`/staff-auth/${pk}/`, payload)
+      .then(() => message()) // message('info', '', '사용자 권한이 수정되었습니다.'))
+      .catch(err => errorHandle(err.response.data))
 
   const fetchProfile = () =>
     userInfo.value?.profile
@@ -216,10 +216,11 @@ export const useAccount = defineStore('account', () => {
     fetchUsersList,
     fetchUser,
     signup,
-    patchUser,
     login,
     loginByToken,
     logout,
+
+    patchAuth,
 
     fetchProfile,
     createProfile,
