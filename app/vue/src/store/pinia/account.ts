@@ -4,7 +4,7 @@ import { Buffer } from 'buffer'
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { errorHandle, message } from '@/utils/helper'
-import { User, Profile, Todo } from '@/store/types/accounts'
+import { User, StaffAuth, Profile, Todo } from '@/store/types/accounts'
 
 type LoginUser = { email: string; password: string }
 
@@ -115,11 +115,18 @@ export const useAccount = defineStore('account', () => {
     message('info', '', '로그아웃 완료 알림!')
   }
 
-  const patchAuth = (pk: number, payload: any) =>
-    api
-      .patch(`/staff-auth/${pk}/`, payload)
-      .then(() => message()) // message('info', '', '사용자 권한이 수정되었습니다.'))
+  const patchAuth = (payload: StaffAuth, userPk: number) => {
+    const { pk, ...authData } = payload
+    return api
+      .patch(`/staff-auth/${pk}/`, authData)
+      .then(() => {
+        return api.get(`/user/${userPk}`).then(res => {
+          setUser(res.data)
+          message()
+        })
+      })
       .catch(err => errorHandle(err.response.data))
+  }
 
   const fetchProfile = () =>
     userInfo.value?.profile

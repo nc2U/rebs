@@ -9,7 +9,7 @@ export declare interface User {
   profile: number | null
 }
 
-interface StaffAuth {
+export interface StaffAuth {
   pk?: number
   company: number
   is_staff: boolean
