@@ -9,23 +9,25 @@ export declare interface User {
   profile: number | null
 }
 
+type Auth = '0' | '1' | '2'
+
 export interface StaffAuth {
   pk?: number
-  company: number
+  company: number | null
   is_staff: boolean
   assigned_project: number | null
   allowed_projects: number[]
-  contract: '0' | '1' | '2'
-  payment: '0' | '1' | '2'
-  notice: '0' | '1' | '2'
-  project_cash: '0' | '1' | '2'
-  project_docs: '0' | '1' | '2'
-  project: '0' | '1' | '2'
-  company_cash: '0' | '1' | '2'
-  company_docs: '0' | '1' | '2'
-  human_resource: '0' | '1' | '2'
-  company_settings: '0' | '1' | '2'
-  auth_manage: '0' | '1' | '2'
+  contract: Auth
+  payment: Auth
+  notice: Auth
+  project_cash: Auth
+  project_docs: Auth
+  project: Auth
+  company_cash: Auth
+  company_docs: Auth
+  human_resource: Auth
+  company_settings: Auth
+  auth_manage: Auth
 }
 
 export type Profile = {
