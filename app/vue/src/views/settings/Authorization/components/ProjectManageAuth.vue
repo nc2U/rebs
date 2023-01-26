@@ -39,9 +39,7 @@ watch(
   },
 )
 
-onBeforeMount(() => {
-  project.fetchProjectList()
-})
+onBeforeMount(() => project.fetchProjectList())
 </script>
 
 <template>
@@ -86,7 +84,7 @@ onBeforeMount(() => {
               :classes="{ search: 'form-control multiselect-search' }"
               :add-option-on="['enter' | 'tab']"
               searchable
-              :disabled="isInActive"
+              :disabled="isInActive || allowedProjects.length === 0"
               @change="getAssigned"
             />
             <small class="form-text">
