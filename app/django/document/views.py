@@ -102,7 +102,7 @@ class CompanyGeneralDocsDV(LoginRequiredMixin, DetailView):
         context = super(CompanyGeneralDocsDV, self).get_context_data(**kwargs)
         context['co'] = True
         context['menu_order'] = '1'
-        context['this_board'] = Board.objects.first()
+        context['this_board'] = self.get_board()
         context['prev'] = self.get_prev() if self.get_prev() else ''
         context['next'] = self.get_next() if self.get_next() else ''
         return context
