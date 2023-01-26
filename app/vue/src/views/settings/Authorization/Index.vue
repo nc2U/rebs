@@ -174,7 +174,6 @@ watch(
         @get-assigned="getAssigned"
       />
       <SideBarManageAuth :user="user" @select-auth="selectAuth" />
-      {{ isSuperUser }}// {{ write_auth_manage }}
     </CCardBody>
 
     <CCardFooter class="text-right">
