@@ -122,7 +122,7 @@ export const useAccount = defineStore('account', () => {
       .then(() => {
         return api.get(`/user/${userPk}`).then(res => {
           setUser(res.data)
-          message()
+          fetchUser(userPk).then(() => message())
         })
       })
       .catch(err => errorHandle(err.response.data))
