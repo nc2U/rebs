@@ -40,7 +40,7 @@ const logout = () => {
   <CDropdown>
     <CDropdownToggle class="py-0" color="link" :caret="false">
       <CAvatar
-        color="secondary"
+        color="blue-grey-lighten-3"
         text-color="white"
         size="md"
         :src="avatarSrc"
