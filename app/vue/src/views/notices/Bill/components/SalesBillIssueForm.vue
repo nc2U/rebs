@@ -119,7 +119,7 @@ const alertModal = ref()
 const confirmModal = ref()
 
 const onSubmit = (event: Event) => {
-  if (write_notice) {
+  if (write_notice.value) {
     if (isValidate(event)) {
       validated.value = true
     } else {

@@ -18,11 +18,11 @@ const emit = defineEmits(['create-form', 'update-form'])
 const alertModal = ref()
 
 const toCreate = () => {
-  if (write_project) emit('create-form')
+  if (write_project.value) emit('create-form')
   else alertModal.value.callModal()
 }
 const toUpdate = () => {
-  if (write_project) emit('update-form')
+  if (write_project.value) emit('update-form')
   else alertModal.value.callModal()
 }
 </script>

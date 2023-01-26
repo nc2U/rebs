@@ -67,7 +67,7 @@ const onSubmit = (event: Event) => {
   if (isValidate(event)) {
     validated.value = true
   } else {
-    if (write_project) multiSubmit({ ...form })
+    if (write_project.value) multiSubmit({ ...form })
     else alertModal.value.callModal()
   }
 }
@@ -84,7 +84,7 @@ const deleteObject = () => {
 }
 
 const deleteConfirm = () => {
-  if (write_project) delModal.value.callModal()
+  if (write_project.value) delModal.value.callModal()
   else alertModal.value.callModal()
 }
 

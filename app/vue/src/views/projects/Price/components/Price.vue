@@ -59,7 +59,7 @@ const formsCheck = computed(() => {
 })
 
 const onStorePrice = () => {
-  if (write_project) {
+  if (write_project.value) {
     const payload = {
       ...props.queryIds,
       ...{ unit_floor_type: props.floor.pk },

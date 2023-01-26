@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed, onBeforeMount, reactive, ref, watch } from 'vue'
 import { numFormat, dateFormat } from '@/utils/baseMixins'
-import { Relation } from '@/store/types/project'
 import DatePicker from '@/components/DatePicker/index.vue'
 
 const props = defineProps({

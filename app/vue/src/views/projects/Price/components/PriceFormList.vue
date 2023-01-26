@@ -6,7 +6,7 @@ import { Price as P } from '@/store/types/payment'
 import Price from '@/views/projects/Price/components/Price.vue'
 import { headerSecondary } from '@/utils/cssMixins'
 
-const props = defineProps({
+defineProps({
   msg: { type: String, default: '' },
   condTexts: { type: Object, default: null },
   queryIds: { type: Object, default: null },

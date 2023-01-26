@@ -25,7 +25,7 @@ const formCheck = (bool: boolean) => {
 }
 
 const onUpdateBuilding = () => {
-  if (write_project) {
+  if (write_project.value) {
     const pk = props.building.pk
     emit('on-update', { ...{ pk }, ...form })
   } else {

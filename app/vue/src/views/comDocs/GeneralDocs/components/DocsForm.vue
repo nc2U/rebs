@@ -104,7 +104,7 @@ const route = useRoute()
 const btnClass = computed(() => (route.params.postId ? 'success' : 'primary'))
 
 const onSubmit = (event: Event) => {
-  if (write_company_docs) {
+  if (write_company_docs.value) {
     const el = event.currentTarget as HTMLFormElement
     if (!el.checkValidity()) {
       event.preventDefault()

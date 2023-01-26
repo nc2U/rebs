@@ -18,7 +18,7 @@ const contractStore = useContract()
 const contRelease = computed(() => contractStore.contRelease)
 
 const callFormModal = () => {
-  if (write_contract) releaseFormModal.value.callModal()
+  if (write_contract.value) releaseFormModal.value.callModal()
   else releaseAlertModal.value.callModal()
 }
 

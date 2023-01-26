@@ -214,7 +214,7 @@ const onSubmit = (event: Event) => {
       ? { formData: form, sepData: null }
       : { formData: form, sepData: sepItem }
 
-    if (write_project_cash) {
+    if (write_project_cash.value) {
       if (props.proCash) {
         if (allowedPeriod.value) emit('multi-submit', payload)
         else
@@ -229,7 +229,7 @@ const onSubmit = (event: Event) => {
 }
 
 const deleteConfirm = () => {
-  if (write_project_cash)
+  if (write_project_cash.value)
     if (allowedPeriod.value) delModal.value.callModal()
     else
       alertModal.value.callModal(

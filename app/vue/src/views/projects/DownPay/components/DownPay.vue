@@ -41,7 +41,7 @@ const formCheck = (bool: boolean) => {
   return
 }
 const onUpdateDownPay = () => {
-  if (write_project) {
+  if (write_project.value) {
     const pk = props.downPay.pk
     emit('on-update', { ...{ pk }, ...form })
   } else {

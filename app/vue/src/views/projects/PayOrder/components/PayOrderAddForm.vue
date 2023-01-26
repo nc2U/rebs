@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { ref, reactive, watch } from 'vue'
 import { write_project } from '@/utils/pageAuth'
-import { maska as vMaska } from 'maska'
 import { dateFormat } from '@/utils/baseMixins'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
@@ -27,7 +26,7 @@ const form = reactive({
 })
 
 const onSubmit = (event: Event) => {
-  if (write_project) {
+  if (write_project.value) {
     const el = event.currentTarget as HTMLSelectElement
     if (!el.checkValidity()) {
       event.preventDefault()

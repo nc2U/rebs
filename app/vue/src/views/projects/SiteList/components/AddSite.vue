@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { Site } from '@/store/types/project'
-import { write_project_cash } from '@/utils/pageAuth'
+import { write_project } from '@/utils/pageAuth'
 import { headerLight } from '@/utils/cssMixins'
 import FormModal from '@/components/Modals/FormModal.vue'
 import SiteForm from './SiteForm.vue'
@@ -13,7 +13,7 @@ const formModal = ref()
 const alertModal = ref()
 
 const createConfirm = () => {
-  if (write_project_cash) formModal.value.callModal()
+  if (write_project.value) formModal.value.callModal()
   else alertModal.value.callModal()
 }
 const multiSubmit = (payload: Site) => emit('multi-submit', payload)

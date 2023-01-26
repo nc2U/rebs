@@ -36,7 +36,7 @@ const formCheck = (bool: boolean) => {
 }
 
 const onUpdateOrder = () => {
-  if (write_project) {
+  if (write_project.value) {
     const pk = props.order.pk
     emit('on-update', { ...{ pk }, ...form })
   } else {

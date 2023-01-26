@@ -3,6 +3,7 @@ import { ref, reactive, computed, onBeforeMount } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { Project } from '@/store/types/project'
 import { callAddress, AddressData } from '@/components/DaumPostcode/address'
+import { write_project } from '@/utils/pageAuth'
 import DaumPostcode from '@/components/DaumPostcode/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
@@ -106,7 +107,7 @@ const confirmModal = ref()
 const address2 = ref()
 
 const onSubmit = (event: Event) => {
-  if (accountStore.superAuth) {
+  if (write_project.value) {
     const e = event.currentTarget as HTMLSelectElement
     if (!e.checkValidity()) {
       event.preventDefault()
@@ -126,7 +127,7 @@ const modalAction = () => {
 }
 
 const deleteProject = () => {
-  if (accountStore.superAuth) delModal.value.callModal()
+  if (write_project.value) delModal.value.callModal()
   else alertModal.value.callModal()
 }
 

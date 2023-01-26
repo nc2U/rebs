@@ -69,7 +69,7 @@ const proCashStore = useProCash()
 const proBankAccountList = computed(() => proCashStore.proBankAccountList)
 
 const onSubmit = (event: Event) => {
-  if (write_payment) {
+  if (write_payment.value) {
     if (allowedPeriod.value) {
       if (isValidate(event)) {
         validated.value = true
@@ -89,7 +89,7 @@ const onSubmit = (event: Event) => {
 }
 
 const deleteConfirm = () => {
-  if (write_payment) {
+  if (write_payment.value) {
     if (allowedPeriod.value) {
       confirmModal.value.callModal()
     } else

@@ -1,17 +1,17 @@
 <script lang="ts" setup>
-import {ref, reactive, computed, watch, onBeforeMount} from 'vue'
-import {useSite} from '@/store/pinia/project_site'
-import {dateFormat} from '@/utils/baseMixins'
-import {isValidate} from '@/utils/helper'
-import {SiteContract} from '@/store/types/project'
-import {write_project} from '@/utils/pageAuth'
+import { ref, reactive, computed, watch, onBeforeMount } from 'vue'
+import { useSite } from '@/store/pinia/project_site'
+import { dateFormat } from '@/utils/baseMixins'
+import { isValidate } from '@/utils/helper'
+import { SiteContract } from '@/store/types/project'
+import { write_project } from '@/utils/pageAuth'
 import Multiselect from '@vueform/multiselect'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
 const props = defineProps({
-  project: {type: Number, default: null},
+  project: { type: Number, default: null },
   contract: {
     type: Object,
     default: null,
@@ -89,11 +89,11 @@ const formsCheck = computed(() => {
 })
 
 const getAreaByOwner = computed(() =>
-    !props.contract && siteStore.siteOwner
-        ? siteStore.siteOwner.sites
-            .map(s => Number(s.owned_area))
-            .reduce((sum, val) => sum + val, 0)
-        : null,
+  !props.contract && siteStore.siteOwner
+    ? siteStore.siteOwner.sites
+        .map(s => Number(s.owned_area))
+        .reduce((sum, val) => sum + val, 0)
+    : null,
 )
 
 watch(form, val => {
@@ -113,7 +113,7 @@ const onSubmit = (event: Event) => {
   if (isValidate(event)) {
     validated.value = true
   } else {
-    if (write_project) multiSubmit({...form})
+    if (write_project.value) multiSubmit({ ...form })
     else alertModal.value.callModal()
   }
 }
@@ -124,13 +124,13 @@ const multiSubmit = (multiPayload: SiteContract) => {
 }
 
 const deleteObject = () => {
-  emit('on-delete', {pk: props.contract.pk, project: props.contract.project})
+  emit('on-delete', { pk: props.contract.pk, project: props.contract.project })
   delModal.value.close()
   emit('close')
 }
 
 const deleteConfirm = () => {
-  if (write_project) delModal.value.callModal()
+  if (write_project.value) delModal.value.callModal()
   else alertModal.value.callModal()
 }
 
@@ -166,10 +166,10 @@ onBeforeMount(() => {
 
 <template>
   <CForm
-      class="needs-validation"
-      novalidate
-      :validated="validated"
-      @submit.prevent="onSubmit"
+    class="needs-validation"
+    novalidate
+    :validated="validated"
+    @submit.prevent="onSubmit"
   >
     <CModalBody class="p-4">
       <div>
@@ -179,14 +179,14 @@ onBeforeMount(() => {
               <CFormLabel class="col-sm-4 col-form-label">소유자</CFormLabel>
               <CCol sm="8">
                 <Multiselect
-                    v-model.number="form.owner"
-                    :options="getOwners"
-                    placeholder="소유자"
-                    autocomplete="label"
-                    :attrs="form.owner ? {} : { required: true }"
-                    :classes="{ search: 'form-control multiselect-search' }"
-                    :add-option-on="['enter' | 'tab']"
-                    searchable
+                  v-model.number="form.owner"
+                  :options="getOwners"
+                  placeholder="소유자"
+                  autocomplete="label"
+                  :attrs="form.owner ? {} : { required: true }"
+                  :classes="{ search: 'form-control multiselect-search' }"
+                  :add-option-on="['enter' | 'tab']"
+                  searchable
                 />
               </CCol>
             </CRow>
@@ -199,11 +199,11 @@ onBeforeMount(() => {
               </CFormLabel>
               <CCol sm="8">
                 <CFormInput
-                    v-model.number="form.contract_area"
-                    type="number"
-                    min="0"
-                    step="0.0000001"
-                    placeholder="총 계약면적"
+                  v-model.number="form.contract_area"
+                  type="number"
+                  min="0"
+                  step="0.0000001"
+                  placeholder="총 계약면적"
                 />
               </CCol>
             </CRow>
@@ -218,11 +218,11 @@ onBeforeMount(() => {
               </CFormLabel>
               <CCol sm="8">
                 <CFormInput
-                    v-model.number="form.total_price"
-                    min="0"
-                    type="number"
-                    required
-                    placeholder="총 매매가격"
+                  v-model.number="form.total_price"
+                  min="0"
+                  type="number"
+                  required
+                  placeholder="총 매매가격"
                 />
               </CCol>
             </CRow>
@@ -235,9 +235,9 @@ onBeforeMount(() => {
               </CFormLabel>
               <CCol sm="8">
                 <DatePicker
-                    v-model="form.contract_date"
-                    maxlength="10"
-                    placeholder="계약 체결일"
+                  v-model="form.contract_date"
+                  maxlength="10"
+                  placeholder="계약 체결일"
                 />
               </CCol>
             </CRow>
@@ -253,17 +253,17 @@ onBeforeMount(() => {
               <CCol sm="8">
                 <CInputGroup class="mb-3">
                   <CFormInput
-                      v-model.number="form.down_pay1"
-                      type="number"
-                      min="0"
-                      placeholder="계약금 - 1차"
+                    v-model.number="form.down_pay1"
+                    type="number"
+                    min="0"
+                    placeholder="계약금 - 1차"
                   />
                   <CInputGroupText>
                     <CFormCheck
-                        id="down_pay1_is_paid"
-                        v-model="form.down_pay1_is_paid"
-                        type="checkbox"
-                        label="지급"
+                      id="down_pay1_is_paid"
+                      v-model="form.down_pay1_is_paid"
+                      type="checkbox"
+                      label="지급"
                     />
                   </CInputGroupText>
                 </CInputGroup>
@@ -279,17 +279,17 @@ onBeforeMount(() => {
               <CCol sm="8">
                 <CInputGroup class="mb-3">
                   <CFormInput
-                      v-model.number="form.down_pay2"
-                      type="number"
-                      min="0"
-                      placeholder="계약금 - 2차"
+                    v-model.number="form.down_pay2"
+                    type="number"
+                    min="0"
+                    placeholder="계약금 - 2차"
                   />
                   <CInputGroupText>
                     <CFormCheck
-                        id="down_pay2_is_paid"
-                        v-model="form.down_pay2_is_paid"
-                        type="checkbox"
-                        label="지급"
+                      id="down_pay2_is_paid"
+                      v-model="form.down_pay2_is_paid"
+                      type="checkbox"
+                      label="지급"
                     />
                   </CInputGroupText>
                 </CInputGroup>
@@ -307,17 +307,17 @@ onBeforeMount(() => {
               <CCol sm="8">
                 <CInputGroup class="mb-3">
                   <CFormInput
-                      v-model.number="form.inter_pay1"
-                      type="number"
-                      min="0"
-                      placeholder="중도금 - 1차"
+                    v-model.number="form.inter_pay1"
+                    type="number"
+                    min="0"
+                    placeholder="중도금 - 1차"
                   />
                   <CInputGroupText>
                     <CFormCheck
-                        id="inter_pay1_is_paid"
-                        v-model="form.inter_pay1_is_paid"
-                        type="checkbox"
-                        label="지급"
+                      id="inter_pay1_is_paid"
+                      v-model="form.inter_pay1_is_paid"
+                      type="checkbox"
+                      label="지급"
                     />
                   </CInputGroupText>
                 </CInputGroup>
@@ -332,10 +332,10 @@ onBeforeMount(() => {
               </CFormLabel>
               <CCol sm="8">
                 <DatePicker
-                    v-model="form.inter_pay1_date"
-                    :required="false"
-                    maxlength="10"
-                    placeholder="중도금 1차 지급일"
+                  v-model="form.inter_pay1_date"
+                  :required="false"
+                  maxlength="10"
+                  placeholder="중도금 1차 지급일"
                 />
               </CCol>
             </CRow>
@@ -351,17 +351,17 @@ onBeforeMount(() => {
               <CCol sm="8">
                 <CInputGroup class="mb-3">
                   <CFormInput
-                      v-model.number="form.inter_pay2"
-                      type="number"
-                      min="0"
-                      placeholder="중도금 - 2차"
+                    v-model.number="form.inter_pay2"
+                    type="number"
+                    min="0"
+                    placeholder="중도금 - 2차"
                   />
                   <CInputGroupText>
                     <CFormCheck
-                        id="inter_pay2_is_paid"
-                        v-model="form.inter_pay2_is_paid"
-                        type="checkbox"
-                        label="지급"
+                      id="inter_pay2_is_paid"
+                      v-model="form.inter_pay2_is_paid"
+                      type="checkbox"
+                      label="지급"
                     />
                   </CInputGroupText>
                 </CInputGroup>
@@ -376,10 +376,10 @@ onBeforeMount(() => {
               </CFormLabel>
               <CCol sm="8">
                 <DatePicker
-                    v-model="form.inter_pay2_date"
-                    :required="false"
-                    maxlength="10"
-                    placeholder="중도금 2차 지급일"
+                  v-model="form.inter_pay2_date"
+                  :required="false"
+                  maxlength="10"
+                  placeholder="중도금 2차 지급일"
                 />
               </CCol>
             </CRow>
@@ -393,18 +393,18 @@ onBeforeMount(() => {
               <CCol sm="8">
                 <CInputGroup class="mb-3">
                   <CFormInput
-                      v-model.number="form.remain_pay"
-                      type="number"
-                      min="0"
-                      required
-                      placeholder="계약 잔금"
+                    v-model.number="form.remain_pay"
+                    type="number"
+                    min="0"
+                    required
+                    placeholder="계약 잔금"
                   />
                   <CInputGroupText>
                     <CFormCheck
-                        id="remain_pay_is_paid"
-                        v-model="form.remain_pay_is_paid"
-                        type="checkbox"
-                        label="지급"
+                      id="remain_pay_is_paid"
+                      v-model="form.remain_pay_is_paid"
+                      type="checkbox"
+                      label="지급"
                     />
                   </CInputGroupText>
                 </CInputGroup>
@@ -419,10 +419,10 @@ onBeforeMount(() => {
               </CFormLabel>
               <CCol sm="8">
                 <DatePicker
-                    v-model="form.remain_pay_date"
-                    :required="false"
-                    maxlength="10"
-                    placeholder="잔금 지급일"
+                  v-model="form.remain_pay_date"
+                  :required="false"
+                  maxlength="10"
+                  placeholder="잔금 지급일"
                 />
               </CCol>
             </CRow>
@@ -437,33 +437,33 @@ onBeforeMount(() => {
               </CFormLabel>
               <CCol sm="3">
                 <CFormInput
-                    v-model="form.acc_bank"
-                    maxlength="20"
-                    required
-                    placeholder="입금 은행"
+                  v-model="form.acc_bank"
+                  maxlength="20"
+                  required
+                  placeholder="입금 은행"
                 />
               </CCol>
               <CCol sm="3">
                 <CFormInput
-                    v-model="form.acc_number"
-                    maxlength="25"
-                    required
-                    placeholder="계좌번호"
+                  v-model="form.acc_number"
+                  maxlength="25"
+                  required
+                  placeholder="계좌번호"
                 />
               </CCol>
               <CCol sm="2">
                 <CFormInput
-                    v-model="form.acc_owner"
-                    maxlength="20"
-                    required
-                    placeholder="예금주"
+                  v-model="form.acc_owner"
+                  maxlength="20"
+                  required
+                  placeholder="예금주"
                 />
               </CCol>
               <CCol sm="2" class="pt-2">
                 <CFormSwitch
-                    id="ownership_completion"
-                    v-model="form.ownership_completion"
-                    label="소유권 확보"
+                  id="ownership_completion"
+                  v-model="form.ownership_completion"
+                  label="소유권 확보"
                 />
               </CCol>
             </CRow>
@@ -478,9 +478,9 @@ onBeforeMount(() => {
               </CFormLabel>
               <CCol sm="10">
                 <CFormTextarea
-                    v-model="form.note"
-                    rows="3"
-                    placeholder="특이사항"
+                  v-model="form.note"
+                  rows="3"
+                  placeholder="특이사항"
                 />
               </CCol>
             </CRow>
@@ -495,17 +495,17 @@ onBeforeMount(() => {
       </CButton>
       <slot name="footer">
         <CButton
-            type="submit"
-            :color="contract ? 'success' : 'primary'"
-            :disabled="formsCheck"
+          type="submit"
+          :color="contract ? 'success' : 'primary'"
+          :disabled="formsCheck"
         >
           저장
         </CButton>
         <CButton
-            v-if="contract"
-            type="button"
-            color="danger"
-            @click="deleteConfirm"
+          v-if="contract"
+          type="button"
+          color="danger"
+          @click="deleteConfirm"
         >
           삭제
         </CButton>
@@ -515,7 +515,7 @@ onBeforeMount(() => {
 
   <ConfirmModal ref="delModal">
     <template #header>
-      <CIcon name="cilWarning"/>
+      <CIcon name="cilWarning" />
       부지 매입 계약 정보 삭제
     </template>
     <template #default>
@@ -527,5 +527,5 @@ onBeforeMount(() => {
     </template>
   </ConfirmModal>
 
-  <AlertModal ref="alertModal"/>
+  <AlertModal ref="alertModal" />
 </template>

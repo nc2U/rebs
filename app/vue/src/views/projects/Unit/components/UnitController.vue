@@ -118,7 +118,7 @@ const typeSelect = (event: Event) => {
 }
 
 const unitRegister = () => {
-  if (write_project) confirmModal.value.callModal()
+  if (write_project.value) confirmModal.value.callModal()
   else {
     alertModal.value.callModal()
     reset(1)

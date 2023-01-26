@@ -239,7 +239,7 @@ const onSubmit = (event: Event) => {
   if (isValidate(event)) {
     validated.value = true
   } else {
-    if (write_contract) confirmModal.value.callModal()
+    if (write_contract.value) confirmModal.value.callModal()
     else alertModal.value.callModal()
   }
 }

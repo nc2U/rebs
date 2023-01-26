@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, onBeforeMount, watch } from 'vue'
 import { useAccount } from '@/store/pinia/account'
-import { maska as vMaska } from 'maska'
 import { dateFormat } from '@/utils/baseMixins'
 import { write_project } from '@/utils/pageAuth'
 import DatePicker from '@/components/DatePicker/index.vue'
@@ -53,7 +52,7 @@ const formCheck = (bool: boolean) => {
   return
 }
 const onUpdatePayOrder = () => {
-  if (write_project) {
+  if (write_project.value) {
     const pk = props.payOrder.pk
     emit('on-update', { ...{ pk }, ...form })
   } else {

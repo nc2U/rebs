@@ -54,7 +54,7 @@ watch(form, val => {
 })
 
 const onSubmit = (event: Event) => {
-  if (write_contract) {
+  if (write_contract.value) {
     if (isValidate(event)) {
       validated.value = true
     } else emit('on-submit', { ...form })
@@ -62,7 +62,7 @@ const onSubmit = (event: Event) => {
 }
 
 const deleteConfirm = () => {
-  if (write_contract) confirmModal.value.callModal()
+  if (write_contract.value) confirmModal.value.callModal()
   else alertModal.value.callModal()
 }
 

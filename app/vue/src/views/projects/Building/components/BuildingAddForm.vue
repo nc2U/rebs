@@ -14,7 +14,7 @@ const form = reactive({ name: '' })
 const validated = ref(false)
 
 const onSubmit = (event: Event) => {
-  if (write_project) {
+  if (write_project.value) {
     const form = event.currentTarget as HTMLFormElement
     if (!form.checkValidity()) {
       event.preventDefault()

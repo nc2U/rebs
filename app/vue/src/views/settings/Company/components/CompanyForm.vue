@@ -55,7 +55,7 @@ const addressCallback = (data: AddressData) => {
 }
 
 const onSubmit = (event: Event) => {
-  if (write_company_settings) {
+  if (write_company_settings.value) {
     const e = event.currentTarget as HTMLSelectElement
     if (!e.checkValidity()) {
       event.preventDefault()

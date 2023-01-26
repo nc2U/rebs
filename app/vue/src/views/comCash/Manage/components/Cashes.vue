@@ -50,7 +50,7 @@ const multiSubmit = (payload: {
 }) => emit('multi-submit', payload)
 
 const deleteConfirm = () => {
-  if (write_company_cash)
+  if (write_company_cash.value)
     if (allowedPeriod.value) delModal.value.callModal()
     else
       alertModal.value.callModal(

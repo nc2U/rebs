@@ -17,7 +17,7 @@ const emit = defineEmits(['create-form', 'update-form'])
 const alertModal = ref()
 
 const toEdit = () => {
-  if (write_company_settings) emit('update-form')
+  if (write_company_settings.value) emit('update-form')
   else alertModal.value.callModal()
 }
 

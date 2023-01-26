@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount, ref, watch } from 'vue'
 import { useProCash } from '@/store/pinia/proCash'
+import { write_project_cash } from '@/utils/pageAuth'
 import { dateFormat, numFormat } from '@/utils/baseMixins'
 import { headerInfo, headerSecondary } from '@/utils/cssMixins'
 import {
@@ -72,8 +73,12 @@ const emit = defineEmits(['patch-budget'])
 
 const patchBudget = (pk: number, budget: string, oldBudget: number) => {
   formNumber.value = 1000
-  const bg = parseInt(budget)
-  if (bg !== oldBudget) emit('patch-budget', pk, bg)
+  if (write_project_cash.value) {
+    const bg = parseInt(budget)
+    if (bg !== oldBudget) emit('patch-budget', pk, bg)
+  } else {
+    alert('예산수정 권한없음!')
+  }
 }
 </script>
 

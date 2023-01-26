@@ -39,7 +39,7 @@ const formCheck = (bool: boolean) => {
   return
 }
 const onUpdateType = () => {
-  if (write_project) {
+  if (write_project.value) {
     const pk = props.type.pk
     emit('on-update', { ...{ pk }, ...form })
   } else {

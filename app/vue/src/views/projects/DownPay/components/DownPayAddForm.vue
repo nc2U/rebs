@@ -30,7 +30,7 @@ watch(props, () => {
 })
 
 const onSubmit = (event: Event) => {
-  if (write_project) {
+  if (write_project.value) {
     isValidate(event)
       ? (validated.value = true)
       : confirmModal.value.callModal()
