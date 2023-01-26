@@ -14,6 +14,7 @@ app_name = 'apiV1'
 router = DefaultRouter()
 # accounts
 router.register(r'user', accounts.UserViewSet)
+router.register(r'staff-auth', accounts.StaffAuthViewSet)
 router.register(r'profile', accounts.ProfileViewSet)
 router.register(r'todo', accounts.TodoViewSet)
 # company

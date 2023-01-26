@@ -4,13 +4,19 @@ from ..permission import *
 from ..pagination import *
 from ..serializers.accounts import *
 
-from accounts.models import User, Profile, Todo
+from accounts.models import User, StaffAuth, Profile, Todo
 
 
 # Accounts --------------------------------------------------------------------------
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    permission_classes = (permissions.AllowAny,)
+
+
+class StaffAuthViewSet(viewsets.ModelViewSet):
+    queryset = StaffAuth.objects.all()
+    serializer_class = StaffAuthInUserSerializer
     permission_classes = (permissions.AllowAny,)
 
 
