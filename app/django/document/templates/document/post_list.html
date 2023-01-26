@@ -5,10 +5,10 @@
     <div class="row">
         <ul class="nav nav-tabs nav-bordered mb-3 col-12">
             <li class="nav-item">
-                {% if this_board.pk == 1 %}
+                {% if this_board.pk == 2 %}
                     <a href="{% if 'project' in request.path %}{% url 'rebs:docs:pr.general_list' %}{% if request.GET.project %}?project={{ request.GET.project }}{% endif %}{% else %}{% url 'rebs:docs:co.general_list' %}{% endif %}"
                    data-bs-toggle="tab" aria-expanded="false" class="nav-link active">
-                {% else %}
+                {% elif this_board.pk == 3 %}
                     <a href="{% if 'project' in request.path %}{% url 'rebs:docs:pr.lawsuit_list' %}{% if request.GET.project %}?project={{ request.GET.project }}{% endif %}{% else %}{% url 'rebs:docs:co.lawsuit_list' %}{% endif %}"
                    data-bs-toggle="tab" aria-expanded="false" class="nav-link active">
                 {% endif %}
@@ -16,7 +16,7 @@
                     <span class="d-none d-md-block"><h5>{{ this_board }}</h5></span>
                 </a>
             </li>
-            {% if this_board.pk != 1 %}
+            {% if this_board.pk == 3 %}
                 <li class="nav-item">
                     <a href="{% if 'project' in request.path %}{% url 'rebs:docs:pr.case_list' %}{% if request.GET.project %}?project={{ request.GET.project }}{% endif %}{% else %}{% url 'rebs:docs:co.case_list' %}{% endif %}" data-bs-toggle="tab" aria-expanded="true" class="nav-link">
                         <i class="mdi mdi-account-circle d-md-none d-block"></i>
@@ -30,9 +30,9 @@
 
         {% include 'document/partials/category_select.html' %}
 
-        {% if this_board.pk == 1 %}
+        {% if this_board.pk == 2 %}
             {% include 'document/partials/list_docs_table.html' %}
-        {% else %}
+        {% elif this_board.pk == 3 %}
             {% include 'document/partials/list_lawsuit_table.html' %}
         {% endif %}
 
@@ -41,11 +41,11 @@
                 <a href="{% if co %}
 
 
-                    {% if this_board.pk == 1 %}{% url 'rebs:docs:co.general_create' %}{% else %}{% url 'rebs:docs:co.lawsuit_create' %}{% endif %}
+                    {% if this_board.pk == 2 %}{% url 'rebs:docs:co.general_create' %}{% elif this_board.pk == 3 %}{% url 'rebs:docs:co.lawsuit_create' %}{% endif %}
             {% else %}
 
 
-                    {% if this_board.pk == 1 %}{% url 'rebs:docs:pr.general_create' %}{% else %}{% url 'rebs:docs:pr.lawsuit_create' %}{% endif %}
+                    {% if this_board.pk == 2 %}{% url 'rebs:docs:pr.general_create' %}{% elif this_board.pk == 3 %}{% url 'rebs:docs:pr.lawsuit_create' %}{% endif %}
             {% endif %}">
                     <button type="button" class="btn btn-primary">등록하기</button>
                 </a>

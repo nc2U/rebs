@@ -17,7 +17,7 @@ class CompanyGeneralDocsLV(LoginRequiredMixin, ListView):
     paginate_by = 15
 
     def get_board(self):
-        return Board.objects.first()
+        return Board.objects.get(pk=2)
 
     def get_post_list(self):
         posts = self.model.objects.filter(board=self.get_board())
@@ -84,8 +84,11 @@ class CompanyGeneralDocsDV(LoginRequiredMixin, DetailView):
         post.save()
         return post
 
+    def get_board(self):
+        return Board.objects.get(pk=2)
+
     def get_posts(self):
-        return self.model.objects.filter(board=Board.objects.first())
+        return self.model.objects.filter(board=self.get_board())
 
     def get_prev(self):
         instance = self.get_posts().filter(id__lt=self.object.id).order_by('-id', ).first()
@@ -110,6 +113,9 @@ class CompanyGeneralDocsCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     fields = ['is_notice', 'category', 'title', 'execution_date', 'content']
     success_message = "새 게시물이 등록되었습니다."
 
+    def get_board(self):
+        return Board.objects.get(pk=2)
+
     def get_success_url(self):
         return reverse_lazy('rebs:docs:co.general_detail', args=(self.object.id,))
 
@@ -123,7 +129,7 @@ class CompanyGeneralDocsCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
         return context
 
     def form_valid(self, form):
-        form.instance.board = Board.objects.first()
+        form.instance.board = self.get_board()
         form.instance.user = self.request.user
 
         link_formset = LinkInlineFormSet(self.request.POST, )
@@ -183,11 +189,14 @@ class CompanyGeneralDocsDelete(LoginRequiredMixin, DeleteView):
     model = Post
     success_url = reverse_lazy('rebs:docs:co.general_list')
 
+    def get_board(self):
+        return Board.objects.get(pk=2)
+
     def get_context_data(self, **kwargs):
         context = super(CompanyGeneralDocsDelete, self).get_context_data(**kwargs)
         context['co'] = True
         context['menu_order'] = '1'
-        context['this_board'] = Board.objects.first()
+        context['this_board'] = self.get_board()
         return context
 
 
@@ -196,7 +205,7 @@ class CompanyLawsuitDocsLV(LoginRequiredMixin, ListView):
     paginate_by = 15
 
     def get_board(self):
-        return Board.objects.get(pk=2)
+        return Board.objects.get(pk=3)
 
     def get_post_list(self):
         posts = self.model.objects.filter(board=self.get_board())
@@ -263,8 +272,11 @@ class CompanyLawsuitDocsDV(LoginRequiredMixin, DetailView):
         post.save()
         return post
 
+    def get_board(self):
+        return Board.objects.get(pk=3)
+
     def get_post_list(self):
-        return self.model.objects.filter(board=Board.objects.get(id=2))
+        return self.model.objects.filter(board=self.get_board())
 
     def get_prev(self):
         instance = self.get_post_list().filter(id__lt=self.object.id).order_by('-id', ).first()
@@ -278,7 +290,7 @@ class CompanyLawsuitDocsDV(LoginRequiredMixin, DetailView):
         context = super(CompanyLawsuitDocsDV, self).get_context_data(**kwargs)
         context['co'] = True
         context['menu_order'] = '2'
-        context['this_board'] = Board.objects.get(pk=2)
+        context['this_board'] = self.get_board()
         context['prev'] = self.get_prev() if self.get_prev() else ''
         context['next'] = self.get_next() if self.get_next() else ''
         return context
@@ -288,6 +300,9 @@ class CompanyLawsuitDocsCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     model = Post
     form_class = LawsuitPostForm
     success_message = "새 게시물이 등록되었습니다."
+
+    def get_board(self):
+        return Board.objects.get(pk=3)
 
     def get_success_url(self):
         return reverse_lazy('rebs:docs:co.lawsuit_detail', args=(self.object.id,))
@@ -301,13 +316,13 @@ class CompanyLawsuitDocsCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
         context = super(CompanyLawsuitDocsCV, self).get_context_data(**kwargs)
         context['co'] = True
         context['menu_order'] = '2'
-        context['this_board'] = Board.objects.get(pk=2)
+        context['this_board'] = self.get_board()
         context['link_formset'] = LinkInlineFormSet(queryset=Link.objects.none(), )
         context['file_formset'] = FileInlineFormSet(queryset=File.objects.none(), )
         return context
 
     def form_valid(self, form):
-        form.instance.board = Board.objects.get(pk=2)
+        form.instance.board = self.get_board()
         form.instance.user = self.request.user
 
         link_formset = LinkInlineFormSet(self.request.POST, )
@@ -332,6 +347,9 @@ class CompanyLawsuitDocsUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     form_class = LawsuitPostForm
     success_message = "수정 사항이 적용되었습니다."
 
+    def get_board(self):
+        return Board.objects.get(pk=3)
+
     def get_success_url(self):
         return reverse_lazy('rebs:docs:co.lawsuit_detail', args=(self.object.id,))
 
@@ -344,7 +362,7 @@ class CompanyLawsuitDocsUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
         context = super(CompanyLawsuitDocsUV, self).get_context_data(**kwargs)
         context['co'] = True
         context['menu_order'] = '2'
-        context['this_board'] = Board.objects.get(pk=2)
+        context['this_board'] = self.get_board()
         context['link_formset'] = LinkInlineFormSet(
             instance=self.object,
             queryset=Link.objects.filter(post=self.object, ))
@@ -372,11 +390,14 @@ class CompanyLawsuitDocsDelete(LoginRequiredMixin, DeleteView):
     model = Post
     success_url = reverse_lazy('rebs:docs:co.lawsuit_list')
 
+    def get_board(self):
+        return Board.objects.get(pk=3)
+
     def get_context_data(self, **kwargs):
         context = super(CompanyLawsuitDocsDelete, self).get_context_data(**kwargs)
         context['co'] = True
         context['menu_order'] = '2'
-        context['this_board'] = Board.objects.get(pk=2)
+        context['this_board'] = self.get_board()
         return context
 
 

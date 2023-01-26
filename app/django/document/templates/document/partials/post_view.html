@@ -27,7 +27,7 @@
     </div>
 
     <div class="col-12">
-        {% if this_board.pk == 1 and object.execution_date %}
+        {% if this_board.pk == 2 and object.execution_date %}
             <table class="table-sm table-bordered border-primary mt-2 mb-3">
                 <tr>
                     <td class="p-2 bg-dragula">문서 시행일자</td>
@@ -36,7 +36,7 @@
             </table>
         {% endif %}
 
-        {% if this_board.pk == 2 or object.lawsuit %}
+        {% if this_board.pk == 3 or object.lawsuit %}
             <table class="table-sm table-bordered border-primary mt-2 mb-3">
                 <tr>
                     <td class="p-2 bg-dragula">사건번호</td>
@@ -119,35 +119,30 @@
             <div class="btn-group">
                 {% if request.user.is_superuser or request.user == object.user %}
                     <a href="{% if co %}
-
-                        {% if this_board.pk == 1 %}{% url 'rebs:docs:co.general_update' object.pk %}{% else %}{% url 'rebs:docs:co.lawsuit_update' object.pk %}{% endif %}
+                        {% if this_board.pk == 2 %}{% url 'rebs:docs:co.general_update' object.pk %}{% elif this_board.pk == 3 %}{% url 'rebs:docs:co.lawsuit_update' object.pk %}{% endif %}
                     {% else %}
-
-                        {% if this_board.pk == 1 %}{% url 'rebs:docs:pr.general_update' object.pk %}{% else %}{% url 'rebs:docs:pr.lawsuit_update' object.pk %}{% endif %}
+                        {% if this_board.pk == 2 %}{% url 'rebs:docs:pr.general_update' object.pk %}{% elif this_board.pk == 3 %}{% url 'rebs:docs:pr.lawsuit_update' object.pk %}{% endif %}
                     {% endif %}">
                         <button type="button" class="btn btn-light">수정</button>
                     </a>
-
                     <a href="{% if co %}
-
-                        {% if this_board.pk == 1 %}{% url 'rebs:docs:co.general_delete' object.pk %}{% else %}{% url 'rebs:docs:co.lawsuit_delete' object.pk %}{% endif %}
+                        {% if this_board.pk == 2 %}{% url 'rebs:docs:co.general_delete' object.pk %}{% elif this_board.pk == 3 %}{% url 'rebs:docs:co.lawsuit_delete' object.pk %}{% endif %}
                     {% else %}
-
-                        {% if this_board.pk == 1 %}{% url 'rebs:docs:pr.general_delete' object.pk %}{% else %}{% url 'rebs:docs:pr.lawsuit_delete' object.pk %}{% endif %}
+                        {% if this_board.pk == 2 %}{% url 'rebs:docs:pr.general_delete' object.pk %}{% elif this_board.pk == 3 %}{% url 'rebs:docs:pr.lawsuit_delete' object.pk %}{% endif %}
                     {% endif %}">
                         <button type="button" class="btn btn-light">삭제</button>
                     </a>
                 {% endif %}
                 <a href="{% if co %}
-                            {% if this_board.pk == 1 %}
+                            {% if this_board.pk == 2 %}
                                 {% url 'rebs:docs:co.general_list' %}
-                            {% else %}
+                            {% elif this_board.pk == 3 %}
                                 {% url 'rebs:docs:co.lawsuit_list' %}
                             {% endif %}
                         {% else %}
-                            {% if this_board.pk == 1 %}
+                            {% if this_board.pk == 2 %}
                                 {% url 'rebs:docs:pr.general_list' %}
-                            {% else %}
+                            {% elif this_board.pk == 3 %}
                                 {% url 'rebs:docs:pr.lawsuit_list' %}
                             {% endif %}
                         {% endif %}">
@@ -164,11 +159,11 @@
             <a href="{% if co %}
 
 
-                {% if this_board.pk == 1 %}{% url 'rebs:docs:co.general_create' %}{% else %}{% url 'rebs:docs:co.lawsuit_create' %}{% endif %}
+                {% if this_board.pk == 2 %}{% url 'rebs:docs:co.general_create' %}{% elif this_board.pk == 3 %}{% url 'rebs:docs:co.lawsuit_create' %}{% endif %}
             {% else %}
 
 
-                {% if this_board.pk == 1 %}{% url 'rebs:docs:pr.general_create' %}{% else %}{% url 'rebs:docs:pr.lawsuit_create' %}{% endif %}
+                {% if this_board.pk == 2 %}{% url 'rebs:docs:pr.general_create' %}{% elif this_board.pk == 3 %}{% url 'rebs:docs:pr.lawsuit_create' %}{% endif %}
             {% endif %}">
                 <button type="button" class="btn btn-primary">등록하기</button>
             </a>

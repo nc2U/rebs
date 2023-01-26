@@ -24,7 +24,7 @@
         </div>
 
         <div class="row mb-3 text-right">
-            {% if this_board.pk == 1 %}
+            {% if this_board.pk == 2 %}
                 <div class="col-12 col-md-6">
                     <div class="row mb-2">
                         <label for="{{ form.category.id_for_label }}"
@@ -34,7 +34,7 @@
                         </div>
                     </div>
                 </div>
-            {% else %}
+            {% elif this_board.pk == 3 %}
                 <div class="col-12 col-md-6">
                     <div class="row mb-2">
                         <label for="{{ form.lawsuit.id_for_label }}"
