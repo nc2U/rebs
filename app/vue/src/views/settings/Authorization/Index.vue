@@ -56,10 +56,10 @@ const menuAuth = ref<UserAuth>({
 })
 
 const formsCheck = computed(() => {
-  if (userInfo.value && isStaffAuth) {
+  if (user.value && isStaffAuth) {
     const pa = projectAuth.value
     const ma = menuAuth.value
-    const sa = userInfo.value.staffauth
+    const sa = user.value.staffauth
 
     const a = pa.assigned_project === sa?.assigned_project
     const b =
