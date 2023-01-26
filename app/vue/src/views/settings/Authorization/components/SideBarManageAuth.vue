@@ -77,11 +77,17 @@ watch(
 </script>
 
 <template>
-  <Crow>
+  <CRow>
     <CCol>
       <CRow class="mb-3">
         <CRow>
-          <CCol md="4">
+          <CCol>
+            <h6 class="font-weight-bold">1. 프로젝트 관리</h6>
+          </CCol>
+        </CRow>
+
+        <CRow>
+          <CCol md="6" lg="4">
             <CRow class="m-1">
               <CFormLabel
                 class="col-md-4 col-form-label mb-2 mb-md-1 bg-grey-lighten-3"
@@ -102,7 +108,7 @@ watch(
               </CCol>
             </CRow>
           </CCol>
-          <CCol md="4">
+          <CCol md="6" lg="4">
             <CRow class="m-1">
               <CFormLabel
                 class="col-md-4 col-form-label mb-2 mb-md-1 bg-grey-lighten-3"
@@ -123,7 +129,7 @@ watch(
               </CCol>
             </CRow>
           </CCol>
-          <CCol md="4">
+          <CCol md="6" lg="4">
             <CRow class="m-1">
               <CFormLabel
                 class="col-md-4 col-form-label mb-2 mb-md-1 bg-grey-lighten-3"
@@ -144,10 +150,8 @@ watch(
               </CCol>
             </CRow>
           </CCol>
-        </CRow>
 
-        <CRow>
-          <CCol md="4">
+          <CCol md="6" lg="4">
             <CRow class="m-1">
               <CFormLabel
                 class="col-md-4 col-form-label mb-2 mb-md-1 bg-grey-lighten-3"
@@ -168,7 +172,7 @@ watch(
               </CCol>
             </CRow>
           </CCol>
-          <CCol md="4">
+          <CCol md="6" lg="4">
             <CRow class="m-1">
               <CFormLabel
                 class="col-md-4 col-form-label mb-2 mb-md-1 bg-grey-lighten-3"
@@ -189,7 +193,7 @@ watch(
               </CCol>
             </CRow>
           </CCol>
-          <CCol md="4">
+          <CCol md="6" lg="4">
             <CRow class="m-1">
               <CFormLabel
                 class="col-md-4 col-form-label mb-2 mb-md-1 bg-grey-lighten-3"
@@ -211,9 +215,23 @@ watch(
             </CRow>
           </CCol>
         </CRow>
+      </CRow>
+    </CCol>
+  </CRow>
+
+  <hr />
+
+  <CRow>
+    <CCol>
+      <CRow>
+        <CRow>
+          <CCol>
+            <h6 class="font-weight-bold">2. 본사관리</h6>
+          </CCol>
+        </CRow>
 
         <CRow>
-          <CCol md="4">
+          <CCol md="6" lg="4">
             <CRow class="m-1">
               <CFormLabel
                 class="col-md-4 col-form-label mb-2 mb-md-1 bg-grey-lighten-3"
@@ -234,7 +252,7 @@ watch(
               </CCol>
             </CRow>
           </CCol>
-          <CCol md="4">
+          <CCol md="6" lg="4">
             <CRow class="m-1">
               <CFormLabel
                 class="col-md-4 col-form-label mb-2 mb-md-1 bg-grey-lighten-3"
@@ -255,7 +273,7 @@ watch(
               </CCol>
             </CRow>
           </CCol>
-          <CCol md="4">
+          <CCol md="6" lg="4">
             <CRow class="m-1">
               <CFormLabel
                 class="col-md-4 col-form-label mb-2 mb-md-1 bg-grey-lighten-3"
@@ -276,10 +294,8 @@ watch(
               </CCol>
             </CRow>
           </CCol>
-        </CRow>
 
-        <CRow>
-          <CCol md="4">
+          <CCol md="6" lg="4">
             <CRow class="m-1">
               <CFormLabel
                 class="col-md-4 col-form-label mb-2 mb-md-1 bg-grey-lighten-3"
@@ -300,7 +316,7 @@ watch(
               </CCol>
             </CRow>
           </CCol>
-          <CCol md="4">
+          <CCol md="6" lg="4">
             <CRow class="m-1">
               <CFormLabel
                 class="col-md-4 col-form-label mb-2 mb-md-1 bg-grey-lighten-3"
@@ -321,11 +337,11 @@ watch(
               </CCol>
             </CRow>
           </CCol>
-          <CCol md="4">
+          <CCol md="6" lg="4">
             <CRow class="m-1"></CRow>
           </CCol>
         </CRow>
       </CRow>
     </CCol>
-  </Crow>
+  </CRow>
 </template>
