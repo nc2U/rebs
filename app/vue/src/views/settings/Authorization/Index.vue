@@ -3,11 +3,17 @@ import { ref, computed, onBeforeMount, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/settings/_menu/headermixin'
 import { useCompany } from '@/store/pinia/company'
 import { useAccount } from '@/store/pinia/account'
+import { write_auth_manage } from '@/utils/pageAuth'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import UserSelect from './components/UserSelect.vue'
 import ProjectManageAuth from './components/ProjectManageAuth.vue'
 import SideBarManageAuth from './components/SideBarManageAuth.vue'
+import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
+import AlertModal from '@/components/Modals/AlertModal.vue'
+
+const alertModal = ref()
+const confirmModal = ref()
 
 const comInfo = ref<{ company: number | null; is_staff: boolean }>({
   company: null,
@@ -84,6 +90,7 @@ const accountStore = useAccount()
 const user = computed(() => accountStore.user)
 const userInfo = computed(() => accountStore.userInfo)
 const isStaffAuth = computed(() => !!userInfo.value?.staffauth)
+const isSuperUser = computed(() => accountStore.superAuth)
 
 const selectUser = (pk: number | null) => {
   if (pk === null) accountStore.user = null
@@ -96,10 +103,19 @@ const getAssigned = (payload: number | null) =>
   (projectAuth.value.assigned_project = payload)
 const selectAuth = (payload: UserAuth) => (menuAuth.value = payload)
 
-const formSubmit = () => {
+const onSubmit = () => {
+  if (write_auth_manage.value) confirmModal.value.callModal()
+  else alertModal.value.callModal()
+}
+
+const modalAction = () => {
   const authData = { ...comInfo.value, ...projectAuth.value, ...menuAuth.value }
-  console.log(authData)
-  // accountStore.patchAuth(authData, user.value?.pk)
+  if (user.value && user.value.pk) {
+    accountStore.patchAuth(authData, user.value.pk)
+    confirmModal.value.close()
+  } else {
+    alertModal.value.callModal()
+  }
 }
 
 onBeforeMount(() => {
@@ -158,6 +174,7 @@ watch(
         @get-assigned="getAssigned"
       />
       <SideBarManageAuth :user="user" @select-auth="selectAuth" />
+      {{ isSuperUser }}// {{ write_auth_manage }}
     </CCardBody>
 
     <CCardFooter class="text-right">
@@ -165,11 +182,29 @@ watch(
         type="button"
         :color="isStaffAuth ? 'success' : 'primary'"
         :disabled="formsCheck"
-        @click="formSubmit"
+        @click="onSubmit"
       >
         <CIcon name="cil-check-circle" />
         저장
       </CButton>
     </CCardFooter>
+
+    <ConfirmModal ref="confirmModal">
+      <template #header>
+        <CIcon name="cilChevronCircleRightAlt" />
+        사용자 권한설정
+      </template>
+      <template #default> 사용자 권한설정 저장을 진행하시겠습니까?</template>
+      <template #footer>
+        <CButton
+          :color="isStaffAuth ? 'success' : 'primary'"
+          @click="modalAction"
+        >
+          저장
+        </CButton>
+      </template>
+    </ConfirmModal>
+
+    <AlertModal ref="alertModal" />
   </ContentBody>
 </template>
