@@ -372,10 +372,6 @@ const settings = {
     {
       component: 'CNavItem',
       name: '권한설정 관리',
-      badge: {
-        color: 'danger',
-        text: 'u.c',
-      },
       to: '/settings/authorization',
     },
     {
