@@ -1,9 +1,10 @@
 <script lang="ts" setup="">
-import { ref, computed, nextTick, onBeforeMount } from 'vue'
+import { ref, computed, nextTick, onBeforeMount, watch } from 'vue'
 import { useStore } from 'vuex'
 import { useAccount } from '@/store/pinia/account'
 import Multiselect from '@vueform/multiselect'
 
+const props = defineProps({ selUser: { type: Number, default: null } })
 const emit = defineEmits(['select-user'])
 
 const userId = ref<number | null>(null)
@@ -20,6 +21,14 @@ const selectUser = () => nextTick(() => emit('select-user', userId.value))
 onBeforeMount(() => {
   if (userInfo.value) userId.value = userInfo.value.pk as number
 })
+
+watch(
+  () => props.selUser,
+  newVal => {
+    if (!!newVal) userId.value = newVal
+    else userId.value = null
+  },
+)
 </script>
 
 <template>

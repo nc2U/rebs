@@ -151,7 +151,7 @@ watch(
   />
   <ContentBody>
     <CCardBody>
-      <UserSelect @select-user="selectUser" />
+      <UserSelect :sel-user="user?.pk" @select-user="selectUser" />
       <ProjectManageAuth
         :user="user"
         @get-allowed="getAllowed"
