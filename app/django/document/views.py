@@ -479,7 +479,7 @@ class ProjectGeneralDocsLV(LoginRequiredMixin, ListView):
         return project
 
     def get_board(self):
-        return Board.objects.first()
+        return Board.objects.get(pk=2)
 
     def get_post_list(self):
         return self.model.objects.filter(board=self.get_board(), project__isnull=False, project=self.get_project())
@@ -543,8 +543,11 @@ class ProjectGeneralDocsDV(LoginRequiredMixin, DetailView):
     def get_project(self):
         return Project.objects.get(pk=self.object.project.pk)
 
+    def get_board(self):
+        return Board.objects.get(pk=2)
+
     def get_posts(self):
-        return self.model.objects.filter(board=Board.objects.first(),
+        return self.model.objects.filter(board=self.get_board(),
                                          project__isnull=False,
                                          project=self.get_project())
 
@@ -559,7 +562,7 @@ class ProjectGeneralDocsDV(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super(ProjectGeneralDocsDV, self).get_context_data(**kwargs)
         context['menu_order'] = '1'
-        context['this_board'] = Board.objects.first()
+        context['this_board'] = self.get_board()
         context['project_list'] = Project.objects.filter(pk=self.object.project.pk)
         context['this_project'] = self.get_project()
         context['prev'] = self.get_prev() if self.get_prev() else ''
@@ -584,10 +587,13 @@ class ProjectGeneralDocsCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
         project = Project.objects.get(pk=gp) if gp else project
         return project
 
+    def get_board(self):
+        return Board.objects.get(pk=2)
+
     def get_context_data(self, **kwargs):
         context = super(ProjectGeneralDocsCV, self).get_context_data(**kwargs)
         context['menu_order'] = '1'
-        context['this_board'] = Board.objects.first()
+        context['this_board'] = self.get_board()
         user = self.request.user
         context['project_list'] = Project.objects.all() if user.is_superuser else user.staffauth.allowed_projects.all()
         context['this_project'] = self.get_project()
@@ -596,7 +602,7 @@ class ProjectGeneralDocsCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
         return context
 
     def form_valid(self, form):
-        form.instance.board = Board.objects.first()
+        form.instance.board = self.get_board()
         form.instance.project = self.get_project()
         form.instance.user = self.request.user
 
@@ -622,13 +628,16 @@ class ProjectGeneralDocsUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     fields = ['is_notice', 'category', 'title', 'execution_date', 'content']
     success_message = "수정 사항이 적용되었습니다."
 
+    def get_board(self):
+        return Board.objects.get(pk=2)
+
     def get_success_url(self):
         return reverse_lazy('rebs:docs:pr.general_detail', args=(self.object.id,))
 
     def get_context_data(self, **kwargs):
         context = super(ProjectGeneralDocsUV, self).get_context_data(**kwargs)
         context['menu_order'] = '1'
-        context['this_board'] = Board.objects.first()
+        context['this_board'] = self.get_board()
         context['project_list'] = Project.objects.filter(pk=self.object.project.pk)
         context['this_project'] = Project.objects.get(pk=self.object.project.pk)
         context['link_formset'] = LinkInlineFormSet(
@@ -658,10 +667,13 @@ class ProjectGeneralDocsDelete(LoginRequiredMixin, DeleteView):
     model = Post
     success_url = reverse_lazy('rebs:docs:pr.general_list')
 
+    def get_board(self):
+        return Board.objects.get(pk=2)
+
     def get_context_data(self, **kwargs):
         context = super(ProjectGeneralDocsDelete, self).get_context_data(**kwargs)
         context['menu_order'] = '1'
-        context['this_board'] = Board.objects.first()
+        context['this_board'] = self.get_board()
         context['project_list'] = Project.objects.filter(pk=self.object.project.pk)
         context['this_project'] = Project.objects.get(pk=self.object.project.pk)
         return context
@@ -681,7 +693,7 @@ class ProjectLawsuitDocsLV(LoginRequiredMixin, ListView):
         return project
 
     def get_board(self):
-        return Board.objects.get(pk=2)
+        return Board.objects.get(pk=3)
 
     def get_post_list(self):
         return self.model.objects.filter(board=self.get_board(), project__isnull=False, project=self.get_project())
@@ -745,8 +757,11 @@ class ProjectLawsuitDocsDV(LoginRequiredMixin, DetailView):
     def get_project(self):
         return Project.objects.get(pk=self.object.project.pk)
 
+    def get_board(self):
+        return Board.objects.get(pk=3)
+
     def get_posts(self):
-        return self.model.objects.filter(board=Board.objects.get(id=2),
+        return self.model.objects.filter(board=self.get_board(),
                                          project__isnull=False,
                                          project=self.get_project())
 
@@ -761,7 +776,7 @@ class ProjectLawsuitDocsDV(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super(ProjectLawsuitDocsDV, self).get_context_data(**kwargs)
         context['menu_order'] = '2'
-        context['this_board'] = Board.objects.get(id=2)
+        context['this_board'] = self.get_board()
         context['project_list'] = Project.objects.filter(pk=self.object.project.pk)
         context['this_project'] = self.get_project()
         context['prev'] = self.get_prev() if self.get_prev() else ''
@@ -791,10 +806,13 @@ class ProjectLawsuitDocsCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
         project = Project.objects.get(pk=gp) if gp else project
         return project
 
+    def get_board(self):
+        return Board.objects.get(pk=3)
+
     def get_context_data(self, **kwargs):
         context = super(ProjectLawsuitDocsCV, self).get_context_data(**kwargs)
         context['menu_order'] = '2'
-        context['this_board'] = Board.objects.get(id=2)
+        context['this_board'] = self.get_board()
         user = self.request.user
         context['project_list'] = Project.objects.all() if user.is_superuser else user.staffauth.allowed_projects.all()
         context['this_project'] = self.get_project()
@@ -803,7 +821,7 @@ class ProjectLawsuitDocsCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
         return context
 
     def form_valid(self, form):
-        form.instance.board = Board.objects.get(id=2)
+        form.instance.board = self.get_board()
         form.instance.project = self.get_project()
         form.instance.user = self.request.user
 
@@ -829,6 +847,9 @@ class ProjectLawsuitDocsUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     form_class = LawsuitPostForm
     success_message = "수정 사항이 적용되었습니다."
 
+    def get_board(self):
+        return Board.objects.get(pk=3)
+
     def get_success_url(self):
         return reverse_lazy('rebs:docs:pr.lawsuit_detail', args=(self.object.id,))
 
@@ -840,7 +861,7 @@ class ProjectLawsuitDocsUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super(ProjectLawsuitDocsUV, self).get_context_data(**kwargs)
         context['menu_order'] = '2'
-        context['this_board'] = Board.objects.get(id=2)
+        context['this_board'] = self.get_board()
         context['project_list'] = Project.objects.filter(pk=self.object.project.pk)
         context['this_project'] = Project.objects.get(pk=self.object.project.pk)
         context['link_formset'] = LinkInlineFormSet(
@@ -870,10 +891,13 @@ class ProjectLawsuitDocsDelete(LoginRequiredMixin, DeleteView):
     model = Post
     success_url = reverse_lazy('rebs:docs:pr.lawsuit_list')
 
+    def get_board(self):
+        return Board.objects.get(pk=3)
+
     def get_context_data(self, **kwargs):
         context = super(ProjectLawsuitDocsDelete, self).get_context_data(**kwargs)
         context['menu_order'] = '2'
-        context['this_board'] = Board.objects.get(id=2)
+        context['this_board'] = self.get_board()
         context['project_list'] = Project.objects.filter(pk=self.object.project.pk)
         context['this_project'] = Project.objects.get(pk=self.object.project.pk)
         return context
