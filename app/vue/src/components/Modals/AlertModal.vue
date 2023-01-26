@@ -22,7 +22,11 @@ defineExpose({ callModal, close })
   >
     <CModalHeader class="text-body">
       <CModalTitle>
-        <CIcon name="cilItalic" />
+        <v-icon
+          icon="mdi mdi-alert-circle"
+          color="teal-darken-2"
+          class="mr-2"
+        />
         <slot name="header"> {{ headMessage || ' 알림' }}</slot>
       </CModalTitle>
     </CModalHeader>
@@ -30,7 +34,7 @@ defineExpose({ callModal, close })
       <slot>
         {{
           bodyMessage ||
-          '이 페이지에 대한 등록 및 수정 또는 삭제 권한이 없습니다. 관리자에게 문의하여 주십시요.'
+          '이 페이지에 대한 등록 및 수정 또는 삭제 권한이 없습니다. \n관리자에게 문의하여 주십시요.'
         }}
       </slot>
     </CModalBody>
