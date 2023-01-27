@@ -13,3 +13,7 @@ nginx:
       - secretName: web-devbox-kr-cert
         hosts:
           - "host-path" # Host address
+
+web:
+  imageConfigMaps:
+    djangoSettingsModule: _config.settings.prod
