@@ -115,6 +115,19 @@ export const useAccount = defineStore('account', () => {
     message('info', '', '로그아웃 완료 알림!')
   }
 
+  const createAuth = (payload: StaffAuth, userPk: number) => {
+    payload.user = userPk
+    return api
+      .post(`/staff-auth/`, payload)
+      .then(() => {
+        return api.get(`/user/${userPk}`).then(res => {
+          setUser(res.data)
+          fetchUser(userPk).then(() => message())
+        })
+      })
+      .catch(err => errorHandle(err.response.data))
+  }
+
   const patchAuth = (payload: StaffAuth, userPk: number) => {
     const { pk, ...authData } = payload
     return api
@@ -227,6 +240,7 @@ export const useAccount = defineStore('account', () => {
     loginByToken,
     logout,
 
+    createAuth,
     patchAuth,
 
     fetchProfile,
