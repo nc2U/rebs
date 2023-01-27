@@ -5,6 +5,7 @@ import { UserAuth } from '../index.vue'
 
 const props = defineProps({
   user: { type: Object, default: null },
+  allowed: { type: Array, default: () => [] },
 })
 
 const emit = defineEmits(['select-auth'])
@@ -32,7 +33,7 @@ const auths = reactive([
   { label: '읽기권한', value: '1' },
   { label: '쓰기권한', value: '2' },
 ])
-const isInActive = computed(() => !props.user)
+const isInActive = computed(() => !props.user || props.allowed?.length === 0)
 
 const getColor = (status: '0' | '1' | '2') => {
   if (status === '1') return ['yellow-darken-2', '#fcfced']
@@ -43,7 +44,8 @@ const getColor = (status: '0' | '1' | '2') => {
 const selectAuth = () =>
   nextTick(() => {
     const auth = { ...authData.value }
-    auth.pk = props.user.staffauth.pk
+    if (!!props.user.staffauth) auth.pk = props.user.staffauth.pk
+    else auth.pk = undefined
     emit('select-auth', auth)
   })
 

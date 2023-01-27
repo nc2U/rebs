@@ -56,31 +56,47 @@ const menuAuth = ref<UserAuth>({
 })
 
 const formsCheck = computed(() => {
-  if (user.value && isStaffAuth) {
+  if (!!user.value) {
     const pa = projectAuth.value
     const ma = menuAuth.value
     const sa = user.value.staffauth
 
-    const a = pa.assigned_project === sa?.assigned_project
-    const b =
-      JSON.stringify(pa.allowed_projects) ===
-      JSON.stringify(sa?.allowed_projects)
+    if (!!sa) {
+      const a = pa.assigned_project === sa?.assigned_project
+      const b =
+        JSON.stringify(pa.allowed_projects) ===
+        JSON.stringify(sa.allowed_projects)
+      const c = ma.contract === sa.contract
+      const d = ma.payment === sa.payment
+      const e = ma.notice === sa.notice
+      const f = ma.project_cash === sa.project_cash
+      const g = ma.project_docs === sa.project_docs
+      const h = ma.project === sa.project
+      const i = ma.company_cash === sa.company_cash
+      const j = ma.company_docs === sa.company_docs
+      const k = ma.human_resource === sa.human_resource
+      const l = ma.company_settings === sa.company_settings
+      const m = ma.auth_manage === sa.auth_manage
 
-    const c = ma.contract === sa?.contract
-    const d = ma.payment === sa?.payment
-    const e = ma.notice === sa?.notice
-    const f = ma.project_cash === sa?.project_cash
-    const g = ma.project_docs === sa?.project_docs
-    const h = ma.project === sa?.project
-    const i = ma.company_cash === sa?.company_cash
-    const j = ma.company_docs === sa?.company_docs
-    const k = ma.human_resource === sa?.human_resource
-    const l = ma.company_settings === sa?.company_settings
-    const m = ma.auth_manage === sa?.auth_manage
-    const n = accountStore.user === null
+      return a && b && c && d && e && f && g && h && i && j && k && l && m
+    } else {
+      const a = pa.assigned_project === null
+      const b = JSON.stringify(pa.allowed_projects) === JSON.stringify([])
+      const c = ma.contract === '0'
+      const d = ma.payment === '0'
+      const e = ma.notice === '0'
+      const f = ma.project_cash === '0'
+      const g = ma.project_docs === '0'
+      const h = ma.project === '0'
+      const i = ma.company_cash === '0'
+      const j = ma.company_docs === '0'
+      const k = ma.human_resource === '0'
+      const l = ma.company_settings === '0'
+      const m = ma.auth_manage === '0'
 
-    return (a && b && c && d && e && f && g && h && i && j && k && l && m) || n
-  } else return false
+      return a && b && c && d && e && f && g && h && i && j && k && l && m
+    }
+  } else return true
 })
 
 const companyStore = useCompany()
@@ -88,13 +104,17 @@ const comId = computed(() => companyStore.company?.pk || null)
 
 const accountStore = useAccount()
 const user = computed(() => accountStore.user)
-const userInfo = computed(() => accountStore.userInfo)
-const isStaffAuth = computed(() => !!userInfo.value?.staffauth)
-const isSuperUser = computed(() => accountStore.superAuth)
+const isStaffAuth = computed(() => !!user.value?.staffauth)
 
 const selectUser = (pk: number | null) => {
-  if (pk === null) accountStore.user = null
-  else accountStore.fetchUser(pk)
+  if (pk === null) {
+    accountStore.user = null
+    dataReset()
+  } else {
+    accountStore.fetchUser(pk).then(() => {
+      if (user.value && !user.value.staffauth) dataReset()
+    })
+  }
 }
 
 const getAllowed = (payload: number[]) =>
@@ -102,6 +122,23 @@ const getAllowed = (payload: number[]) =>
 const getAssigned = (payload: number | null) =>
   (projectAuth.value.assigned_project = payload)
 const selectAuth = (payload: UserAuth) => (menuAuth.value = payload)
+
+const dataReset = () => {
+  projectAuth.value.assigned_project = null
+  projectAuth.value.allowed_projects = []
+  menuAuth.value.pk = undefined
+  menuAuth.value.contract = '0'
+  menuAuth.value.payment = '0'
+  menuAuth.value.notice = '0'
+  menuAuth.value.project_cash = '0'
+  menuAuth.value.project_docs = '0'
+  menuAuth.value.project = '0'
+  menuAuth.value.company_cash = '0'
+  menuAuth.value.company_docs = '0'
+  menuAuth.value.human_resource = '0'
+  menuAuth.value.company_settings = '0'
+  menuAuth.value.auth_manage = '0'
+}
 
 const onSubmit = () => {
   if (write_auth_manage.value) confirmModal.value.callModal()
@@ -111,7 +148,9 @@ const onSubmit = () => {
 const modalAction = () => {
   const authData = { ...comInfo.value, ...projectAuth.value, ...menuAuth.value }
   if (user.value && user.value.pk) {
-    accountStore.patchAuth(authData, user.value.pk)
+    if (!!authData.pk)
+      accountStore.patchAuth(authData, user.value.pk) // staffauth patch
+    else alert('ok!!!') // staffauth post
     confirmModal.value.close()
   } else {
     alertModal.value.callModal()
@@ -120,7 +159,7 @@ const modalAction = () => {
 
 onBeforeMount(() => {
   accountStore.fetchUsersList()
-  if (userInfo.value) selectUser(userInfo.value.pk as number)
+  if (accountStore?.userInfo) selectUser(accountStore.userInfo.pk as number)
   if (companyStore.company) comInfo.value.company = companyStore.company.pk
 })
 
@@ -173,7 +212,11 @@ watch(
         @get-allowed="getAllowed"
         @get-assigned="getAssigned"
       />
-      <SideBarManageAuth :user="user" @select-auth="selectAuth" />
+      <SideBarManageAuth
+        :user="user"
+        :allowed="projectAuth.allowed_projects"
+        @select-auth="selectAuth"
+      />
     </CCardBody>
 
     <CCardFooter class="text-right">
@@ -189,8 +232,8 @@ watch(
     </CCardFooter>
 
     <ConfirmModal ref="confirmModal">
-      <template #header> 사용자 권한설정 </template>
-      <template #default> 사용자 권한설정 저장을 진행하시겠습니까?</template>
+      <template #header>사용자 권한설정</template>
+      <template #default>사용자 권한설정 저장을 진행하시겠습니까?</template>
       <template #footer>
         <CButton
           :color="isStaffAuth ? 'success' : 'primary'"

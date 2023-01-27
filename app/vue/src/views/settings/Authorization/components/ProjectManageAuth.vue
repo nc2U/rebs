@@ -22,7 +22,10 @@ const project = useProject()
 const getProjects = computed(() => project.getProjects)
 
 const getAllowed = () =>
-  nextTick(() => emit('get-allowed', allowedProjects.value))
+  nextTick(() => {
+    if (allowedProjects.value.length === 0) assignedProject.value = null
+    else emit('get-allowed', allowedProjects.value)
+  })
 const getAssigned = () =>
   nextTick(() => emit('get-assigned', assignedProject.value))
 
