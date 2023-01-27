@@ -43,6 +43,7 @@ jobs:
           command: |
             web_pod=$(kubectl get pod -n prod-hrebs | grep web | cut -d ' ' -f1)
             kubectl exec -it -n prod-hrebs $web_pod -- cp _config/settings/local.py _config/settings/prod.py
+            kubectl exec -it -n prod-hrebs $web_pod -- sed -i 's/True/False/g' _config/settings/prod.py
             kubectl exec -it -n prod-hrebs $web_pod -- python manage.py makemigrations accounts book cash company contract document notice project rebs
             kubectl exec -it -n prod-hrebs $web_pod -- python manage.py migrate
             kubectl exec -it -n prod-hrebs $web_pod -- python manage.py collectstatic --no-input
