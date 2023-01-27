@@ -19,7 +19,7 @@ class UserSerializer(serializers.ModelSerializer):
         help_text='변경할 필요가 없으면 비워 두십시오.',
         style={'input_type': 'password', 'placeholder': '비밀번호'}
     )
-    staffauth = StaffAuthInUserSerializer()
+    staffauth = StaffAuthInUserSerializer(read_only=True)
     profile = serializers.ReadOnlyField(source='profile.pk')
 
     class Meta:
