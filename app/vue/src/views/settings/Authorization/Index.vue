@@ -150,7 +150,7 @@ const modalAction = () => {
   if (user.value && user.value.pk) {
     if (!!authData.pk)
       accountStore.patchAuth(authData, user.value.pk) // staffauth patch
-    else alert('ok!!!') // staffauth post
+    else accountStore.createAuth(authData, user.value.pk) // staffauth create
     confirmModal.value.close()
   } else {
     alertModal.value.callModal()
