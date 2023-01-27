@@ -25,6 +25,11 @@ from django.views.generic import RedirectView, TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
 
+from rebs.views import customHandler404
+
+handler404 = customHandler404.as_view()
+handler500 = 'rebs.views.handler500'
+
 admin.site.site_header = '관리자 페이지'  # default: "Django Administration"
 admin.site.site_title = 'Rebs 사이트 관리'  # default: "Django site admin"
 

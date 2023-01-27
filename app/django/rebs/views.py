@@ -1,4 +1,5 @@
 from itertools import accumulate
+from django.views import generic
 from django.shortcuts import render
 from django.views.generic import View, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -730,3 +731,16 @@ class PdfExportPayments(View):
 
         due_orders = list(filter(lambda o: is_due(self.get_due_date(contract.pk, o)), inspay_orders))
         return max([(o.pay_code, o.alias_name) for o in due_orders])
+
+
+class customHandler404(generic.View):
+    def get(self, request, *args, **kwargs):
+        context = {}
+        return render(request, "errors/404.html", context)
+
+
+def handler500(request):
+    context = {}
+    response = render(request, "errors/500.html", context=context)
+    response.status_code = 500
+    return response
