@@ -342,7 +342,7 @@ onBeforeMount(() => {
   <DaumPostcode ref="postCode" @address-callback="addressCallback" />
 
   <ConfirmModal ref="delModal">
-    <template #header> 회사정보 </template>
+    <template #header> 회사정보</template>
     <template #default>현재 삭제 기능이 구현되지 않았습니다.</template>
     <template #footer>
       <CButton color="danger" disabled="">삭제</CButton>
@@ -350,7 +350,7 @@ onBeforeMount(() => {
   </ConfirmModal>
 
   <ConfirmModal ref="confirmModal">
-    <template #header> 회사정보 </template>
+    <template #header>회사정보</template>
     <template #default>
       회사정보 {{ confirmText }}을 진행하시겠습니까?
     </template>

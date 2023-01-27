@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import router from '@/router'
 import { useAccount } from '@/store/pinia/account'
 import RegisterForm from './components/RegisterForm.vue'
 
@@ -10,8 +11,10 @@ interface SignUser {
 
 const accountStore = useAccount()
 
-const signup = (payload: SignUser) => accountStore.signup(payload)
-const onSubmit = (payload: SignUser) => signup(payload)
+const onSubmit = (payload: SignUser) => {
+  accountStore.signup(payload)
+  router.replace({ name: 'Login' })
+}
 </script>
 
 <template>
