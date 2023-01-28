@@ -14,6 +14,7 @@ const msg = ref('')
       <a href="/rebs/docs/project/general/" target="_blank">
         구) 현장 일반문서 관리 페이지 바로가기
       </a>
+      <div style="height: 420px"></div>
     </CCardBody>
 
     <CCardFooter class="text-right">&nbsp;</CCardFooter>
