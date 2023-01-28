@@ -20,11 +20,11 @@ const hrManage = {
   },
   children: [
     {
-      path: 'employee',
+      path: 'staff',
       name: '직원정보 관리',
       component: () =>
         pageViewAuth.value
-          ? import('@/views/hrManage/Employee/Index.vue')
+          ? import('@/views/hrManage/Staff/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
       meta: { title: '직원정보 관리' },
     },

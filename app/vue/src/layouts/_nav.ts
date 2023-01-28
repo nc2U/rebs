@@ -340,7 +340,7 @@ const human_resource = {
         color: 'danger',
         text: 'u.c',
       },
-      to: '/hr-manage/employee',
+      to: '/hr-manage/staff',
     },
     {
       component: 'CNavItem',
