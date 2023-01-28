@@ -1,0 +1,33 @@
+<script lang="ts" setup="">
+import { ref } from 'vue'
+import { headerSecondary } from '@/utils/cssMixins'
+import { write_human_resource } from '@/utils/pageAuth'
+import FormModal from '@/components/Modals/FormModal.vue'
+import DepartmentForm from './DepartmentForm.vue'
+
+const formModal = ref()
+const alertModal = ref()
+
+const createConfirm = () => {
+  if (write_human_resource.value) formModal.value.callModal()
+  else alertModal.value.callModal()
+}
+</script>
+
+<template>
+  <CAlert :color="headerSecondary" class="text-right">
+    <CButton color="primary" @click="createConfirm">부서 정보 신규등록</CButton>
+  </CAlert>
+
+  <FormModal ref="formModal" size="lg">
+    <template #header>
+      <v-icon icon="mdi-briefcase-plus" size="small" color="dark" />
+      사업 부지 등록
+    </template>
+    <template #default>
+      <DepartmentForm @close="formModal.close()" />
+    </template>
+  </FormModal>
+
+  <AlertModal ref="alertModal" />
+</template>
