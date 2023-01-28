@@ -25,13 +25,13 @@ export const useProject = defineStore('project', () => {
   )
 
   const projSelect = computed(() => {
-    const allowedProject = accountStore.superAuth
+    const getProject = accountStore.superAuth
       ? projectList.value
       : projectList.value.filter((p: Project) =>
           allowed_projects.value.includes(p.pk || 0),
         )
 
-    return allowedProject.map((p: Project) => ({ value: p.pk, text: p.name }))
+    return getProject.map((p: Project) => ({ value: p.pk, label: p.name }))
   })
 
   const getProjects = computed(() =>

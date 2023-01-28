@@ -21,7 +21,7 @@ export const useCompany = defineStore('company', () => {
   const comSelect = computed(() => {
     return companyList.value.map((com: Company) => ({
       value: com.pk,
-      text: com.name,
+      label: com.name,
     }))
   })
 
