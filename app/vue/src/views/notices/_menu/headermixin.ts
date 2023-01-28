@@ -6,12 +6,3 @@ export const navMenu = [
   '우편라벨 관리',
   '발송기록 관리',
 ]
-
-export default {
-  data() {
-    return {
-      pageTitle,
-      navMenu,
-    }
-  },
-}
