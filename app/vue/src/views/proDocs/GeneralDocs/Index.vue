@@ -3,20 +3,16 @@ import { ref } from 'vue'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 
-const msg = ref('현장 문서관리')
+const msg = ref('')
 </script>
 
 <template>
-  <ContentHeader
-    :page-title="'현장 문서관리'"
-    :nav-menu="['현장 일반문서']"
-    :selector="'ProjectSelect'"
-  />
+  <ContentHeader :page-title="'현장 문서관리'" :nav-menu="['현장 일반문서']" />
   <ContentBody>
     <CCardBody>
-      {{ msg }}<br />
+      {{ msg }}
       <a href="/rebs/docs/project/general/" target="_blank">
-        구) 현장 일반 문서 관리 페이지 바로가기
+        구) 현장 일반문서 관리 페이지 바로가기
       </a>
     </CCardBody>
 

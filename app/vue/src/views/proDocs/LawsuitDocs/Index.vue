@@ -4,18 +4,14 @@ import { pageTitle, navMenu } from '@/views/proDocs/_menu/headermixin'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 
-const msg = ref(pageTitle)
+const msg = ref('')
 </script>
 
 <template>
-  <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    :selector="'ProjectSelect'"
-  />
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
   <ContentBody>
     <CCardBody>
-      {{ msg }}<br />
+      {{ msg }}
       <a href="/rebs/docs/project/lawsuit/" target="_blank">
         구) 현장 소송 문서 관리 페이지 바로가기
       </a>
