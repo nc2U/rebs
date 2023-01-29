@@ -1,9 +1,16 @@
 <script lang="ts" setup="">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { headerSecondary } from '@/utils/cssMixins'
+import { useCompany } from '@/store/pinia/company'
 import Department from './Department.vue'
 
-const msg = ref('부서리스트')
+const emit = defineEmits(['page-select'])
+
+const companyStore = useCompany()
+const departmentList = computed(() => companyStore.departmentList)
+
+const departmentPages = (page: number) => companyStore.departmentPages(page)
+const pageSelect = (page: number) => emit('page-select', page)
 </script>
 
 <template>
@@ -17,21 +24,18 @@ const msg = ref('부서리스트')
 
     <CTableHead :color="headerSecondary">
       <CTableRow class="text-center" align="middle">
-        <CTableHeaderCell rowspan="2" scope="col">No</CTableHeaderCell>
-        <CTableHeaderCell rowspan="2" scope="col">상위부서</CTableHeaderCell>
-        <CTableHeaderCell rowspan="2" scope="col">부서명</CTableHeaderCell>
-        <CTableHeaderCell rowspan="2" scope="col">주요업무</CTableHeaderCell>
+        <CTableHeaderCell scope="col">No</CTableHeaderCell>
+        <CTableHeaderCell scope="col">상위부서</CTableHeaderCell>
+        <CTableHeaderCell scope="col">부서명</CTableHeaderCell>
+        <CTableHeaderCell scope="col">주요업무</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
 
     <CTableBody>
       <Department
-        v-for="site in siteList"
-        :key="site.pk"
-        :site="site"
-        :is-returned="isReturned"
-        @multi-submit="multiSubmit"
-        @on-delete="onDelete"
+        v-for="depart in departmentList"
+        :key="depart.pk"
+        :department="depart"
       />
     </CTableBody>
   </CTable>
@@ -40,7 +44,7 @@ const msg = ref('부서리스트')
     v-if="siteCount > 10"
     :active-page="1"
     :limit="8"
-    :pages="sitePages(10)"
+    :pages="departmentPages(10)"
     class="mt-3"
     @active-page-change="pageSelect"
   />
