@@ -344,6 +344,15 @@ const human_resource = {
     },
     {
       component: 'CNavItem',
+      name: '직급정보 관리',
+      badge: {
+        color: 'danger',
+        text: 'u.c',
+      },
+      to: '/hr-manage/rank',
+    },
+    {
+      component: 'CNavItem',
       name: '부서정보 관리',
       badge: {
         color: 'danger',
@@ -351,10 +360,6 @@ const human_resource = {
       },
       to: '/hr-manage/department',
     },
-    // {
-    //   name: '직급정보 관리',
-    //   to: '/hr/rank'
-    // }
   ],
 }
 
