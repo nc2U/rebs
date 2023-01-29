@@ -22,7 +22,7 @@ const createConfirm = () => {
   <FormModal ref="formModal" size="lg">
     <template #header>
       <v-icon icon="mdi-briefcase-plus" size="small" color="dark" />
-      사업 부지 등록
+      부서 정보 등록
     </template>
     <template #default>
       <DepartmentForm @close="formModal.close()" />
