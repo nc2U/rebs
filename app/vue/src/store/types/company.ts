@@ -10,6 +10,8 @@ export interface Department {
 export interface Rank {
   pk?: number
   company?: string
+  sort?: '1' | '2'
+  sort_desc?: '임원' | '직원'
   rank: string
   title: string
   description: string
