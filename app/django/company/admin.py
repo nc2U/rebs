@@ -1,15 +1,15 @@
 from django.contrib import admin
 from import_export.admin import ImportExportMixin
 
-from .models import Company, Logo, Department, Position, Staff
+from .models import Company, Logo, Department, JobRank, Staff
 
 
 class DepartmentInline(admin.StackedInline):
     model = Department
 
 
-class PositionInline(admin.StackedInline):
-    model = Position
+class JobRankInline(admin.StackedInline):
+    model = JobRank
 
 
 class LogoInline(admin.StackedInline):
@@ -20,7 +20,7 @@ class CompanyAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = (
         'id', 'name', 'ceo', 'tax_number', 'org_number', 'business_cond', 'business_even', 'es_date', 'op_date')
     list_display_links = ('name',)
-    inlines = (LogoInline, DepartmentInline, PositionInline)
+    inlines = (LogoInline, DepartmentInline, JobRankInline)
 
 
 class DepartmentAdmin(ImportExportMixin, admin.ModelAdmin):
@@ -28,7 +28,7 @@ class DepartmentAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display_links = ('name',)
 
 
-class PositionAdmin(ImportExportMixin, admin.ModelAdmin):
+class JobRankAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'sort', 'rank', 'title')
     list_display_links = ('rank',)
 
@@ -40,5 +40,5 @@ class StaffAdmin(ImportExportMixin, admin.ModelAdmin):
 
 admin.site.register(Company, CompanyAdmin)
 admin.site.register(Department, DepartmentAdmin)
-admin.site.register(Position, PositionAdmin)
+admin.site.register(JobRank, JobRankAdmin)
 admin.site.register(Staff, StaffAdmin)

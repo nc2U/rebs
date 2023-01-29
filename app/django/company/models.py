@@ -57,12 +57,12 @@ class Department(models.Model):
         verbose_name_plural = '02. 부서 정보'
 
 
-class Position(models.Model):
+class JobRank(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='positions', verbose_name='회사')
     SORT_CHOICES = (('1', '임원'), ('2', '직원'))
     sort = models.CharField('구분', max_length=1, choices=SORT_CHOICES, default='1')
     rank = models.CharField('직책', max_length=20)
-    title = models.CharField('직함', max_length=20, blank=True)
+    title = models.CharField('직함', max_length=50, blank=True)
     description = models.CharField('설명', max_length=255, blank=True)
 
     def __str__(self):
@@ -79,7 +79,7 @@ class Staff(models.Model):
                                 verbose_name='유저 정보')
     department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='부서 정보',
                                    related_name='staffs')
-    position = models.ForeignKey(Position, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='직책 정보')
+    rank = models.ForeignKey(JobRank, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='직책 정보')
     name = models.CharField('직원 성명', max_length=10)
     birth_date = models.DateField('생년월일', null=True, blank=True)
     GENDER_CHOICES = (('M', '남성'), ('F', '여성'))

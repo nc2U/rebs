@@ -3,7 +3,7 @@ from rest_framework import viewsets
 from ..permission import *
 from ..serializers.company import *
 
-from company.models import Company, Logo, Department, Position, Staff
+from company.models import Company, Logo, Department, JobRank, Staff
 
 
 # Company --------------------------------------------------------------------------
@@ -25,9 +25,9 @@ class DepartmentViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
 
-class PositionViewSet(viewsets.ModelViewSet):
-    queryset = Position.objects.all()
-    serializer_class = PositionSerializer
+class JobRankViewSet(viewsets.ModelViewSet):
+    queryset = JobRank.objects.all()
+    serializer_class = JobRankSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
 

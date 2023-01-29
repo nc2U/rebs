@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from company.models import Company, Logo, Department, Position, Staff
+from company.models import Company, Logo, Department, JobRank, Staff
 
 
 # Company --------------------------------------------------------------------------
@@ -10,15 +10,15 @@ class DepartsInCompanySerializer(serializers.ModelSerializer):
         fields = ('pk', 'upper_depart', 'name', 'task')
 
 
-class PositionsInCompanySerializer(serializers.ModelSerializer):
+class RanksInCompanySerializer(serializers.ModelSerializer):
     class Meta:
-        model = Position
+        model = JobRank
         fields = ('pk', 'rank', 'title', 'description')
 
 
 class CompanySerializer(serializers.ModelSerializer):
     departments = DepartsInCompanySerializer(many=True, read_only=True)
-    positions = PositionsInCompanySerializer(many=True, read_only=True)
+    positions = RanksInCompanySerializer(many=True, read_only=True)
 
     class Meta:
         model = Company
@@ -48,11 +48,11 @@ class DepartmentSerializer(serializers.ModelSerializer):
         fields = ('pk', 'company', 'name', 'task', 'staffs')
 
 
-class PositionSerializer(serializers.ModelSerializer):
+class JobRankSerializer(serializers.ModelSerializer):
     company = serializers.SlugRelatedField(queryset=Company.objects.all(), slug_field='name')
 
     class Meta:
-        model = Position
+        model = JobRank
         fields = ('pk', 'rank', 'title', 'description')
 
 

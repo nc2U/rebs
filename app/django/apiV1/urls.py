@@ -21,7 +21,7 @@ router.register(r'todo', accounts.TodoViewSet)
 router.register(r'company', company.CompanyViewSet)
 router.register(r'logo', company.LogoViewSet)
 router.register(r'department', company.DepartmentViewSet)
-router.register(r'position', company.PositionViewSet)
+router.register(r'rank', company.JobRankViewSet)
 router.register(r'staff', company.StaffViewSet)
 # rebs
 router.register(r'schedule', rebs.CalendarScheduleViewSet)
