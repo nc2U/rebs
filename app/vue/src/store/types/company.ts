@@ -1,6 +1,7 @@
 export interface Department {
   pk?: number
-  company: string
+  company?: string
+  upper_depart: number | null
   name: string
   task: string
   staffs: []
@@ -8,7 +9,7 @@ export interface Department {
 
 export interface Rank {
   pk?: number
-  company: string
+  company?: string
   rank: string
   title: string
   description: string
