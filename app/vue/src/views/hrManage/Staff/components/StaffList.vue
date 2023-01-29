@@ -9,18 +9,30 @@ const msg = ref('부서리스트')
 <template>
   <CTable hover responsive bordered align="middle">
     <colgroup>
+      <col width="5%" />
       <col width="10%" />
-      <col width="20%" />
-      <col width="20%" />
-      <col width="50%" />
+      <col width="10%" />
+      <col width="10%" />
+      <col width="11%" />
+      <col width="7%" />
+      <col width="10%" />
+      <col width="15%" />
+      <col width="15%" />
+      <col width="7%" />
     </colgroup>
 
     <CTableHead :color="headerSecondary">
       <CTableRow class="text-center" align="middle">
-        <CTableHeaderCell rowspan="2" scope="col">No</CTableHeaderCell>
-        <CTableHeaderCell rowspan="2" scope="col">상위부서</CTableHeaderCell>
-        <CTableHeaderCell rowspan="2" scope="col">부서명</CTableHeaderCell>
-        <CTableHeaderCell rowspan="2" scope="col">주요업무</CTableHeaderCell>
+        <CTableHeaderCell scope="col">No</CTableHeaderCell>
+        <CTableHeaderCell scope="col">부서</CTableHeaderCell>
+        <CTableHeaderCell scope="col">직책</CTableHeaderCell>
+        <CTableHeaderCell scope="col">성명</CTableHeaderCell>
+        <CTableHeaderCell scope="col">생년월일</CTableHeaderCell>
+        <CTableHeaderCell scope="col">성별</CTableHeaderCell>
+        <CTableHeaderCell scope="col">입사일</CTableHeaderCell>
+        <CTableHeaderCell scope="col">휴대전화</CTableHeaderCell>
+        <CTableHeaderCell scope="col">이메일</CTableHeaderCell>
+        <CTableHeaderCell scope="col">상태</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
 
