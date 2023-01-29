@@ -1,9 +1,17 @@
 <script lang="ts" setup="">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
+import { useCompany } from '@/store/pinia/company'
 import { headerSecondary } from '@/utils/cssMixins'
 import Staff from './Staff.vue'
 
-const msg = ref('부서리스트')
+const emit = defineEmits(['page-select'])
+
+const companyStore = useCompany()
+const staffList = computed(() => companyStore.staffList)
+const staffsCount = computed(() => companyStore.staffsCount)
+
+const staffPages = (page: number) => companyStore.staffPages(page)
+const pageSelect = (page: number) => emit('page-select', page)
 </script>
 
 <template>
@@ -37,22 +45,15 @@ const msg = ref('부서리스트')
     </CTableHead>
 
     <CTableBody>
-      <Staff
-        v-for="site in siteList"
-        :key="site.pk"
-        :site="site"
-        :is-returned="isReturned"
-        @multi-submit="multiSubmit"
-        @on-delete="onDelete"
-      />
+      <Staff v-for="staff in staffList" :key="staff.pk" :staff="staff" />
     </CTableBody>
   </CTable>
 
   <Pagination
-    v-if="siteCount > 10"
+    v-if="staffsCount > 10"
     :active-page="1"
     :limit="8"
-    :pages="sitePages(10)"
+    :pages="staffPages(10)"
     class="mt-3"
     @active-page-change="pageSelect"
   />

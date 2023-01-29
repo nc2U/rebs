@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { pageTitle, navMenu } from '@/views/hrManage/_menu/headermixin'
+import { useCompany } from '@/store/pinia/company'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from './components/ListController.vue'
@@ -8,7 +9,17 @@ import AddStaff from './components/AddStaff.vue'
 import TableTitleRow from '@/components/TableTitleRow.vue'
 import StaffList from './components/StaffList.vue'
 
-const msg = ref(pageTitle)
+const listControl = ref()
+
+const companyStore = useCompany()
+const fetchStaffList = () => companyStore.fetchStaffList()
+
+const listFiltering = () => 1
+const pageSelect = (page: number) => page
+
+onMounted(() => {
+  fetchStaffList()
+})
 </script>
 
 <template>
@@ -19,10 +30,10 @@ const msg = ref(pageTitle)
   />
   <ContentBody>
     <CCardBody>
-      <ListController />
+      <ListController ref="listControl" @list-filtering="listFiltering" />
       <AddStaff />
       <TableTitleRow title="직원 목록" excel url="#" disabled />
-      <StaffList />
+      <StaffList @page-select="pageSelect" />
     </CCardBody>
 
     <CCardFooter class="text-right">&nbsp;</CCardFooter>
