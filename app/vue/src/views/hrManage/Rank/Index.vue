@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { pageTitle, navMenu } from '@/views/hrManage/_menu/headermixin'
+import { useCompany } from '@/store/pinia/company'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from './components/ListController.vue'
@@ -8,7 +9,17 @@ import AddRank from './components/AddRank.vue'
 import TableTitleRow from '@/components/TableTitleRow.vue'
 import RankList from './components/RankList.vue'
 
-const msg = ref(pageTitle)
+const listControl = ref()
+
+const companyStore = useCompany()
+const fetchRankList = () => companyStore.fetchRankList()
+
+const listFiltering = () => 1
+const pageSelect = (page: number) => page
+
+onMounted(() => {
+  fetchRankList()
+})
 </script>
 
 <template>
@@ -19,10 +30,10 @@ const msg = ref(pageTitle)
   />
   <ContentBody>
     <CCardBody>
-      <ListController />
+      <ListController ref="listControl" @list-filtering="listFiltering" />
       <AddRank />
       <TableTitleRow title="직급 목록" excel url="#" disabled />
-      <RankList />
+      <RankList @page-select="pageSelect" />
     </CCardBody>
 
     <CCardFooter class="text-right">&nbsp;</CCardFooter>

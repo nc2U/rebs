@@ -1,13 +1,14 @@
 <script lang="ts" setup="">
-import { computed, ref } from 'vue'
-import { headerSecondary } from '@/utils/cssMixins'
+import { computed } from 'vue'
 import { useCompany } from '@/store/pinia/company'
+import { headerSecondary } from '@/utils/cssMixins'
 import Department from './Department.vue'
 
 const emit = defineEmits(['page-select'])
 
 const companyStore = useCompany()
 const departmentList = computed(() => companyStore.departmentList)
+const departmentsCount = computed(() => companyStore.departmentsCount)
 
 const departmentPages = (page: number) => companyStore.departmentPages(page)
 const pageSelect = (page: number) => emit('page-select', page)
@@ -41,7 +42,7 @@ const pageSelect = (page: number) => emit('page-select', page)
   </CTable>
 
   <Pagination
-    v-if="siteCount > 10"
+    v-if="departmentsCount > 10"
     :active-page="1"
     :limit="8"
     :pages="departmentPages(10)"
