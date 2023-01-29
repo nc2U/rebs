@@ -45,7 +45,7 @@ class DepartmentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Department
-        fields = ('pk', 'company', 'name', 'task', 'staffs')
+        fields = ('pk', 'company', 'upper_depart', 'name', 'task', 'staffs')
 
 
 class JobRankSerializer(serializers.ModelSerializer):
