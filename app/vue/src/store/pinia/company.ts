@@ -4,6 +4,7 @@ import { defineStore } from 'pinia'
 import { useAccount } from '@/store/pinia/account'
 import { errorHandle, message } from '@/utils/helper'
 import { Company, Logo } from '@/store/types/settings'
+import { Department, Rank, Staff } from '@/store/types/company'
 
 const accountStore = useAccount()
 
@@ -91,12 +92,146 @@ export const useCompany = defineStore('company', () => {
       .then(() => message('warning', '', '삭제되었습니다.'))
       .catch(err => errorHandle(err.response.data))
 
+  const departmentList = ref<Department[]>([])
+  const department = ref<Department | null>(null)
+
+  const departmentsCount = ref<number>(0)
+
+  // actions
+  const departmentPages = (itemsPerPage: number) =>
+    Math.ceil(departmentsCount.value / itemsPerPage)
+
+  const fetchDepartmentList = () =>
+    api
+      .get('/department/')
+      .then(res => (departmentList.value = res.data.results))
+      .catch(err => errorHandle(err.response.data))
+
+  const fetchDepartment = (pk: number) =>
+    api
+      .get(`/department/${pk}/`)
+      .then(res => (department.value = res.data))
+      .catch(err => errorHandle(err.response.data))
+
+  const createDepartment = (payload: Department) =>
+    api
+      .post(`/department/`, payload)
+      .then(res =>
+        fetchDepartmentList().then(() =>
+          fetchDepartment(res.data.pk).then(() => message()),
+        ),
+      )
+      .catch(err => errorHandle(err.response.data))
+
+  const updateDepartment = (payload: Department) =>
+    api
+      .put(`/department/${payload.pk}/`, payload)
+      .then(res => fetchDepartment(res.data.pk).then(() => message()))
+      .catch(err => errorHandle(err.response.data))
+
+  const deleteDepartment = (pk: number) =>
+    api
+      .delete(`/department/${pk}/`)
+      .then(() =>
+        fetchDepartmentList().then(() =>
+          message('warning', '', '삭제되었습니다.'),
+        ),
+      )
+      .catch(err => errorHandle(err.response.data))
+
+  const rankList = ref<Rank[]>([])
+  const rank = ref<Rank | null>(null)
+  const ranksCount = ref<number>(0)
+
+  // actions
+  const rankPages = (itemsPerPage: number) =>
+    Math.ceil(ranksCount.value / itemsPerPage)
+
+  const fetchRankList = () =>
+    api
+      .get('/rank/')
+      .then(res => (rankList.value = res.data.results))
+      .catch(err => errorHandle(err.response.data))
+
+  const fetchRank = (pk: number) =>
+    api
+      .get(`/rank/${pk}/`)
+      .then(res => (rank.value = res.data))
+      .catch(err => errorHandle(err.response.data))
+
+  const createRank = (payload: Rank) =>
+    api
+      .post(`/rank/`, payload)
+      .then(res =>
+        fetchRankList().then(() =>
+          fetchRank(res.data.pk).then(() => message()),
+        ),
+      )
+      .catch(err => errorHandle(err.response.data))
+
+  const updateRank = (payload: Rank) =>
+    api
+      .put(`/rank/${payload.pk}/`, payload)
+      .then(res => fetchRank(res.data.pk).then(() => message()))
+      .catch(err => errorHandle(err.response.data))
+
+  const deleteRank = (pk: number) =>
+    api
+      .delete(`/rank/${pk}/`)
+      .then(() =>
+        fetchRankList().then(() => message('warning', '', '삭제되었습니다.')),
+      )
+      .catch(err => errorHandle(err.response.data))
+
+  const staffList = ref<Rank[]>([])
+  const staff = ref<Rank | null>(null)
+  const staffsCount = ref<number>(0)
+
+  // actions
+  const staffPages = (itemsPerPage: number) =>
+    Math.ceil(staffsCount.value / itemsPerPage)
+
+  const fetchStaffList = () =>
+    api
+      .get('/staff/')
+      .then(res => (staffList.value = res.data.results))
+      .catch(err => errorHandle(err.response.data))
+
+  const fetchStaff = (pk: number) =>
+    api
+      .get(`/staff/${pk}/`)
+      .then(res => (staff.value = res.data))
+      .catch(err => errorHandle(err.response.data))
+
+  const createStaff = (payload: Staff) =>
+    api
+      .post(`/staff/`, payload)
+      .then(res =>
+        fetchStaffList().then(() =>
+          fetchStaff(res.data.pk).then(() => message()),
+        ),
+      )
+      .catch(err => errorHandle(err.response.data))
+
+  const updateStaff = (payload: Staff) =>
+    api
+      .put(`/staff/${payload.pk}/`, payload)
+      .then(res => fetchStaff(res.data.pk).then(() => message()))
+      .catch(err => errorHandle(err.response.data))
+
+  const deleteStaff = (pk: number) =>
+    api
+      .delete(`/staff/${pk}/`)
+      .then(() =>
+        fetchStaffList().then(() => message('warning', '', '삭제되었습니다.')),
+      )
+      .catch(err => errorHandle(err.response.data))
+
   return {
     companyList,
     company,
     initComId,
     comSelect,
-
     fetchCompanyList,
     fetchCompany,
     createCompany,
@@ -108,5 +243,35 @@ export const useCompany = defineStore('company', () => {
     createLogo,
     updateLogo,
     deleteLogo,
+
+    departmentList,
+    department,
+    departmentsCount,
+    departmentPages,
+    fetchDepartmentList,
+    fetchDepartment,
+    createDepartment,
+    updateDepartment,
+    deleteDepartment,
+
+    rankList,
+    rank,
+    ranksCount,
+    rankPages,
+    fetchRankList,
+    fetchRank,
+    createRank,
+    updateRank,
+    deleteRank,
+
+    staffList,
+    staff,
+    staffsCount,
+    staffPages,
+    fetchStaffList,
+    fetchStaff,
+    createStaff,
+    updateStaff,
+    deleteStaff,
   }
 })
