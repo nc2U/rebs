@@ -60,6 +60,7 @@ class JobRankSerializer(serializers.ModelSerializer):
 
 class StaffSerializer(serializers.ModelSerializer):
     department = serializers.SlugRelatedField(queryset=Department.objects.all(), slug_field='name')
+    rank = serializers.SlugRelatedField(queryset=JobRank.objects.all(), slug_field='rank')
     gender = serializers.ChoiceField(choices=Staff.GENDER_CHOICES)
     gender_desc = serializers.CharField(source='get_gender_display', read_only=True)
     status = serializers.ChoiceField(choices=Staff.STATUS_CHOICES)
