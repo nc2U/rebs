@@ -117,7 +117,7 @@ export const useCompany = defineStore('company', () => {
 
   const fetchDepartment = (pk: number) =>
     api
-      .get(`/department/?page=${pk}`)
+      .get(`/department/${pk}/`)
       .then(res => (department.value = res.data))
       .catch(err => errorHandle(err.response.data))
 
@@ -134,7 +134,11 @@ export const useCompany = defineStore('company', () => {
   const updateDepartment = (payload: Department) =>
     api
       .put(`/department/${payload.pk}/`, payload)
-      .then(res => fetchDepartment(res.data.pk).then(() => message()))
+      .then(res =>
+        fetchDepartmentList().then(() =>
+          fetchDepartment(res.data.pk).then(() => message()),
+        ),
+      )
       .catch(err => errorHandle(err.response.data))
 
   const deleteDepartment = (pk: number) =>

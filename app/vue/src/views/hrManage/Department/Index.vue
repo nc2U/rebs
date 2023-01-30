@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, onMounted, computed, provide, watch } from 'vue'
+import { ref, onMounted, computed, provide, watch, readonly } from 'vue'
 import { pageTitle, navMenu } from '@/views/hrManage/_menu/headermixin'
 import { useCompany } from '@/store/pinia/company'
 import { Department as Depart } from '@/store/types/company'
@@ -13,10 +13,10 @@ import DepartmentList from './components/DepartmentList.vue'
 const listControl = ref()
 const departs = ref<{ value: number | undefined; label: string }[]>([])
 
-provide('departs', departs)
+provide('departs', readonly(departs))
 
 const companyStore = useCompany()
-const comId = computed(() => companyStore.company?.pk || null)
+const comName = computed(() => companyStore.company?.name || undefined)
 
 const getDeparts = computed(() => companyStore.getDeparts)
 watch(
@@ -30,10 +30,20 @@ watch(
 const fetchDepartmentList = (page?: number) =>
   companyStore.fetchDepartmentList(page)
 
+const createDepartment = (payload: Depart) =>
+  companyStore.createDepartment(payload)
+const updateDepartment = (payload: Depart) =>
+  companyStore.updateDepartment(payload)
+const deleteDepartment = (pk: number) => companyStore.deleteDepartment(pk)
+
 const listFiltering = () => 1
 
-const multiSubmit = (payload: Depart) => alert('submit ok!!')
-const onDelete = (payload: any) => alert('delete ok!!')
+const multiSubmit = (payload: Depart) => {
+  if (!!payload.pk) updateDepartment(payload)
+  else console.log(payload) // createDepartment(payload)
+}
+const onDelete = (pk: number) => deleteDepartment(pk)
+
 const pageSelect = (page: number) => fetchDepartmentList(page)
 
 onMounted(() => fetchDepartmentList())
@@ -48,10 +58,10 @@ onMounted(() => fetchDepartmentList())
   <ContentBody>
     <CCardBody>
       <ListController ref="listControl" @list-filtering="listFiltering" />
-      <AddDepartment />
+      <AddDepartment @multi-submit="multiSubmit" />
       <TableTitleRow title="부서 목록" excel url="#" disabled />
       <DepartmentList
-        :company="comId"
+        :company="comName"
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
         @page-select="pageSelect"

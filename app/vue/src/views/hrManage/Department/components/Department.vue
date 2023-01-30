@@ -22,9 +22,7 @@ const updateFormModal = ref()
 const upper_depart = computed(() => {
   const ud = props.department.upper_depart
   const departs = props.departs as { pk: number; name: string }[]
-  return !!ud
-    ? departs.filter((d: { pk: number; name: string }) => d.pk === ud)[0].name
-    : ''
+  return !!ud ? departs.filter(d => d.pk === ud)[0].name : ''
 })
 
 const showDetail = () => updateFormModal.value.callModal()

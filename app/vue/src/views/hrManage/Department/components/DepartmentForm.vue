@@ -11,7 +11,7 @@ const departs = inject('departs')
 
 const props = defineProps({
   company: {
-    type: Number,
+    type: String,
     default: null,
   },
   department: {
@@ -47,12 +47,12 @@ const onSubmit = (event: Event) => {
   if (isValidate(event)) {
     validated.value = true
   } else {
-    if (write_human_resource.value) multiSubmit({ ...form })
+    if (write_human_resource.value) multiSubmit({ ...form.value })
     else alertModal.value.callModal()
   }
 }
 
-const multiSubmit = (payload: any) => {
+const multiSubmit = (payload: Department) => {
   emit('multi-submit', payload)
   emit('close')
 }
@@ -69,8 +69,9 @@ const deleteConfirm = () => {
 }
 
 onBeforeMount(() => {
-  form.value.company = !!props.company ? props.company : null
+  form.value.company = props.company
   if (props.department) {
+    form.value.pk = props.department.pk
     form.value.company = props.department.company
     form.value.upper_depart = props.department.upper_depart
     form.value.name = props.department.name
@@ -82,7 +83,7 @@ watch(
   () => props.company,
   newVal => {
     if (!!newVal) form.value.company = newVal
-    else form.value.company = null
+    else form.value.company = undefined
   },
 )
 </script>
