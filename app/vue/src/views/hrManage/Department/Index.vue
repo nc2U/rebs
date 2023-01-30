@@ -12,14 +12,13 @@ import DepartmentList from './components/DepartmentList.vue'
 const listControl = ref()
 
 const companyStore = useCompany()
-const fetchDepartmentList = () => companyStore.fetchDepartmentList()
+const fetchDepartmentList = (page?: number) =>
+  companyStore.fetchDepartmentList(page)
 
 const listFiltering = () => 1
-const pageSelect = (page: number) => page
+const pageSelect = (page: number) => fetchDepartmentList(page)
 
-onMounted(() => {
-  fetchDepartmentList()
-})
+onMounted(() => fetchDepartmentList())
 </script>
 
 <template>

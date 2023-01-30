@@ -12,14 +12,12 @@ import StaffList from './components/StaffList.vue'
 const listControl = ref()
 
 const companyStore = useCompany()
-const fetchStaffList = () => companyStore.fetchStaffList()
+const fetchStaffList = (page?: number) => companyStore.fetchStaffList(page)
 
 const listFiltering = () => 1
-const pageSelect = (page: number) => page
+const pageSelect = (page: number) => fetchStaffList(page)
 
-onMounted(() => {
-  fetchStaffList()
-})
+onMounted(() => fetchStaffList())
 </script>
 
 <template>

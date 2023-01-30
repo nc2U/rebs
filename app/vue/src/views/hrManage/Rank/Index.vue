@@ -12,14 +12,12 @@ import RankList from './components/RankList.vue'
 const listControl = ref()
 
 const companyStore = useCompany()
-const fetchRankList = () => companyStore.fetchRankList()
+const fetchRankList = (page?: number) => companyStore.fetchRankList(page)
 
 const listFiltering = () => 1
-const pageSelect = (page: number) => page
+const pageSelect = (page: number) => fetchRankList(page)
 
-onMounted(() => {
-  fetchRankList()
-})
+onMounted(() => fetchRankList())
 </script>
 
 <template>
