@@ -1,5 +1,5 @@
 <script lang="ts" setup="">
-// import { ref } from 'vue'
+import { ref } from 'vue'
 import FormModal from '@/components/Modals/FormModal.vue'
 import StaffForm from './RankForm.vue'
 
@@ -10,9 +10,13 @@ defineProps({
   },
 })
 
-const emit = defineEmits(['show-detail'])
+const emit = defineEmits(['multi-submit', 'on-delete'])
 
-const showDetail = () => emit('show-detail')
+const updateFormModal = ref()
+
+const showDetail = () => updateFormModal.value.callModal()
+const multiSubmit = (payload: any) => emit('multi-submit', payload)
+const onDelete = (payload: any) => emit('on-delete', payload)
 </script>
 
 <template>
@@ -31,7 +35,7 @@ const showDetail = () => emit('show-detail')
     <template #header>사업 부지 등록</template>
     <template #default>
       <StaffForm
-        :site="site"
+        :rank="rank"
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
         @close="updateFormModal.close()"

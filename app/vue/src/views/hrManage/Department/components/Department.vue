@@ -1,5 +1,5 @@
 <script lang="ts" setup="">
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
 import FormModal from '@/components/Modals/FormModal.vue'
 import DepartmentForm from './DepartmentForm.vue'
 
@@ -14,6 +14,10 @@ const props = defineProps({
   },
 })
 
+const emit = defineEmits(['multi-submit', 'on-delete'])
+
+const updateFormModal = ref()
+
 const upper_depart = computed(() => {
   const ud = props.department.upper_depart
   const departs = props.departs as { pk: number; name: string }[]
@@ -22,9 +26,9 @@ const upper_depart = computed(() => {
     : ''
 })
 
-const emit = defineEmits(['show-detail'])
-
-const showDetail = () => emit('show-detail')
+const showDetail = () => updateFormModal.value.callModal()
+const multiSubmit = (payload: any) => emit('multi-submit', payload)
+const onDelete = (payload: any) => emit('on-delete', payload)
 </script>
 
 <template>
@@ -42,7 +46,7 @@ const showDetail = () => emit('show-detail')
     <template #header>사업 부지 등록</template>
     <template #default>
       <DepartmentForm
-        :site="site"
+        :department="department"
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
         @close="updateFormModal.close()"
