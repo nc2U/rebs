@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { useCompany } from '@/store/pinia/company'
 import { headerSecondary } from '@/utils/cssMixins'
+import Pagination from '@/components/Pagination'
 import Department from './Department.vue'
 
 const emit = defineEmits(['page-select'])

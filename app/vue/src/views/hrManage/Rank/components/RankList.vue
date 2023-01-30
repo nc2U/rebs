@@ -1,7 +1,8 @@
 <script lang="ts" setup="">
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import { useCompany } from '@/store/pinia/company'
 import { headerSecondary } from '@/utils/cssMixins'
+import Pagination from '@/components/Pagination'
 import Rank from './Rank.vue'
 
 const emit = defineEmits(['page-select'])
