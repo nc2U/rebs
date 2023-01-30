@@ -99,7 +99,14 @@ export const useCompany = defineStore('company', () => {
   const departmentsCount = ref<number>(0)
 
   // getters
-  const getDeparts = computed(() =>
+  const SDeparts = computed(() =>
+    allDepartList.value.map(d => ({
+      value: d.name,
+      label: d.name,
+    })),
+  )
+
+  const DDeparts = computed(() =>
     allDepartList.value.map(d => ({
       value: d.name,
       label: d.name,
@@ -307,7 +314,8 @@ export const useCompany = defineStore('company', () => {
     departmentList,
     department,
     departmentsCount,
-    getDeparts,
+    SDeparts,
+    DDeparts,
     departmentPages,
     fetchDepartmentList,
     fetchAllDepartList,

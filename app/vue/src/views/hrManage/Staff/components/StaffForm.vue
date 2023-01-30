@@ -10,7 +10,7 @@ import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-const departs = inject('departs')
+const staffDeparts = inject('staffDeparts')
 const ranks = inject('ranks')
 
 const props = defineProps({
@@ -201,7 +201,7 @@ watch(
               <CCol sm="8">
                 <Multiselect
                   v-model.number="form.department"
-                  :options="departs"
+                  :options="staffDeparts"
                   autocomplete="label"
                   :classes="{ search: 'form-control multiselect-search' }"
                   :add-option-on="['enter' | 'tab']"

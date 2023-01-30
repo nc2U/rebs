@@ -13,31 +13,30 @@ import StaffList from './components/StaffList.vue'
 const page = ref<number>(1)
 const listControl = ref()
 
-const departs = ref<
+const staffDeparts = ref<
   {
-    value: number | undefined
+    value: string
     label: string
-    level: number
   }[]
 >([])
 const ranks = ref<
   {
-    value: number | undefined
+    value: string
     label: string
   }[]
 >([])
-provide('departs', readonly(departs))
+provide('staffDeparts', readonly(staffDeparts))
 provide('ranks', readonly(ranks))
 
 const companyStore = useCompany()
 const comName = computed(() => companyStore.company?.name || undefined)
-const getDeparts = computed(() => companyStore.getDeparts)
+const SDeparts = computed(() => companyStore.SDeparts)
 const getRanks = computed(() => companyStore.getRanks)
 watch(
-  () => getDeparts.value,
+  () => SDeparts.value,
   nv => {
-    if (!!nv) departs.value = nv
-    else departs.value = []
+    if (!!nv) staffDeparts.value = nv
+    else staffDeparts.value = []
   },
 )
 watch(

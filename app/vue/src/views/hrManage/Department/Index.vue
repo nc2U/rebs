@@ -24,9 +24,9 @@ provide('departs', readonly(departs))
 
 const companyStore = useCompany()
 const comName = computed(() => companyStore.company?.name || undefined)
-const getDeparts = computed(() => companyStore.getDeparts)
+const DDeparts = computed(() => companyStore.DDeparts)
 watch(
-  () => getDeparts.value,
+  () => DDeparts.value,
   nv => {
     if (!!nv) departs.value = nv
     else departs.value = []
@@ -37,6 +37,7 @@ const listFiltering = () => 1
 
 const fetchDepartmentList = (page?: number) =>
   companyStore.fetchDepartmentList(page)
+const fetchAllDepartList = () => companyStore.fetchAllDepartList()
 
 const createDepartment = (payload: Depart, p: number) =>
   companyStore.createDepartment(payload, p)
@@ -61,7 +62,10 @@ const pageSelect = (num: number) => {
 const getLevel = (up: number) =>
   departs.value.filter(d => d.value === up)[0].level + 1
 
-onMounted(() => fetchDepartmentList())
+onMounted(() => {
+  fetchDepartmentList()
+  fetchAllDepartList()
+})
 </script>
 
 <template>
