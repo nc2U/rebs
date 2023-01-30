@@ -104,7 +104,10 @@ export const useCompany = defineStore('company', () => {
   const fetchDepartmentList = () =>
     api
       .get('/department/')
-      .then(res => (departmentList.value = res.data.results))
+      .then(res => {
+        departmentList.value = res.data.results
+        departmentsCount.value = res.data.count
+      })
       .catch(err => errorHandle(err.response.data))
 
   const fetchDepartment = (pk: number) =>
@@ -150,7 +153,10 @@ export const useCompany = defineStore('company', () => {
   const fetchRankList = () =>
     api
       .get('/rank/')
-      .then(res => (rankList.value = res.data.results))
+      .then(res => {
+        rankList.value = res.data.results
+        ranksCount.value = res.data.count
+      })
       .catch(err => errorHandle(err.response.data))
 
   const fetchRank = (pk: number) =>
@@ -194,7 +200,10 @@ export const useCompany = defineStore('company', () => {
   const fetchStaffList = () =>
     api
       .get('/staff/')
-      .then(res => (staffList.value = res.data.results))
+      .then(res => {
+        staffList.value = res.data.results
+        staffsCount.value = res.data.count
+      })
       .catch(err => errorHandle(err.response.data))
 
   const fetchStaff = (pk: number) =>
