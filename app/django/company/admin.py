@@ -34,7 +34,7 @@ class JobRankAdmin(ImportExportMixin, admin.ModelAdmin):
 
 
 class StaffAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'name', 'department', 'birth_date', 'entered_date', 'email', 'status')
+    list_display = ('id', 'name', 'email', 'department', 'rank', 'entered_date', 'status')
     list_display_links = ('name',)
 
 

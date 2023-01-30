@@ -62,12 +62,10 @@ class StaffSerializer(serializers.ModelSerializer):
     company = serializers.SlugRelatedField(queryset=Company.objects.all(), slug_field='name')
     department = serializers.SlugRelatedField(queryset=Department.objects.all(), slug_field='name')
     rank = serializers.SlugRelatedField(queryset=JobRank.objects.all(), slug_field='rank')
-    gender = serializers.ChoiceField(choices=Staff.GENDER_CHOICES)
-    gender_desc = serializers.CharField(source='get_gender_display', read_only=True)
     status = serializers.ChoiceField(choices=Staff.STATUS_CHOICES)
     status_desc = serializers.CharField(source='get_status_display', read_only=True)
 
     class Meta:
         model = Staff
-        fields = ('pk', 'company', 'department', 'rank', 'name', 'birth_date', 'gender', 'gender_desc',
-                  'entered_date', 'personal_phone', 'email', 'status', 'status_desc')
+        fields = ('pk', 'company', 'name', 'id_number', 'personal_phone', 'email',
+                  'department', 'rank', 'entered_date', 'status', 'status_desc')

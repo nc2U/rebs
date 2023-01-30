@@ -78,16 +78,14 @@ class JobRank(models.Model):
 
 class Staff(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='staffs', verbose_name='회사')
+    name = models.CharField('직원 성명', max_length=10)
+    id_number = models.CharField('주민등록번호', max_length=14, null=True, blank=True)
+    personal_phone = models.CharField('휴대전화', max_length=13)
+    email = models.EmailField('이메일')
     department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='부서 정보',
                                    related_name='staffs')
     rank = models.ForeignKey(JobRank, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='직책 정보')
-    name = models.CharField('직원 성명', max_length=10)
-    birth_date = models.DateField('생년월일', null=True, blank=True)
-    GENDER_CHOICES = (('M', '남성'), ('F', '여성'))
-    gender = models.CharField('성별', max_length=1, choices=GENDER_CHOICES, default='M')
     entered_date = models.DateField('입사일')
-    personal_phone = models.CharField('휴대전화', max_length=13)
-    email = models.EmailField('이메일')
     STATUS_CHOICES = (('1', '근무 중'), ('2', '정직 중'), ('3', '퇴사신청'), ('4', '퇴사처리'))
     status = models.CharField('상태', max_length=1, choices=STATUS_CHOICES, default='1')
     user = models.OneToOneField('accounts.User', on_delete=models.DO_NOTHING, null=True, blank=True,
