@@ -55,7 +55,7 @@ class JobRankSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = JobRank
-        fields = ('pk', 'company', 'sort', 'sort_desc', 'rank', 'title', 'description')
+        fields = ('pk', 'company', 'sort', 'sort_desc', 'level', 'rank', 'title', 'description')
 
 
 class StaffSerializer(serializers.ModelSerializer):

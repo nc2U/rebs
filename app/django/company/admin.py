@@ -29,7 +29,7 @@ class DepartmentAdmin(ImportExportMixin, admin.ModelAdmin):
 
 
 class JobRankAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'sort', 'rank', 'title')
+    list_display = ('id', 'sort', 'level', 'rank', 'title')
     list_display_links = ('rank',)
 
 

@@ -62,6 +62,7 @@ class JobRank(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='positions', verbose_name='회사')
     SORT_CHOICES = (('1', '임원'), ('2', '직원'))
     sort = models.CharField('구분', max_length=1, choices=SORT_CHOICES, default='1')
+    level = models.PositiveSmallIntegerField('레벨')
     rank = models.CharField('직급', max_length=20)
     title = models.CharField('직함', max_length=50, blank=True)
     description = models.CharField('설명', max_length=255, blank=True)
