@@ -3,6 +3,9 @@ import { ref, computed, onBeforeMount, watch } from 'vue'
 import { isValidate } from '@/utils/helper'
 import { write_human_resource } from '@/utils/pageAuth'
 import { Staff } from '@/store/types/company'
+import { maska as vMaska } from 'maska'
+import Multiselect from '@vueform/multiselect'
+import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
@@ -29,8 +32,7 @@ const form = ref<Staff>({
   department: undefined,
   rank: undefined,
   name: '',
-  birth_date: null,
-  gender: 'M',
+  id_number: '',
   entered_date: null,
   personal_phone: '',
   email: '',
@@ -43,16 +45,20 @@ const formsCheck = computed(() => {
     const b = form.value.department === props.staff.department
     const c = form.value.rank === props.staff.rank
     const d = form.value.name === props.staff.name
-    const e = form.value.birth_date === props.staff.birth_date
-    const f = form.value.gender === props.staff.gender
-    const g = form.value.entered_date === props.staff.entered_date
-    const h = form.value.personal_phone === props.staff.personal_phone
-    const i = form.value.email === props.staff.email
-    const j = form.value.status === props.staff.status
+    const e = form.value.id_number === props.staff.id_number
+    const f = form.value.entered_date === props.staff.entered_date
+    const g = form.value.personal_phone === props.staff.personal_phone
+    const h = form.value.email === props.staff.email
+    const i = form.value.status === props.staff.status
 
-    return a && b && c && d && e && f && g && h && i && j
+    return a && b && c && d && e && f && g && h && i
   } else return false
 })
+
+const genders = [
+  { value: 'M', label: '남성' },
+  { value: 'F', label: '여성' },
+]
 
 const onSubmit = (event: Event) => {
   if (isValidate(event)) {
@@ -86,8 +92,7 @@ onBeforeMount(() => {
     form.value.department = props.staff.department
     form.value.rank = props.staff.rank
     form.value.name = props.staff.name
-    form.value.birth_date = props.staff.birth_date
-    form.value.gender = props.staff.gender
+    form.value.id_number = props.staff.id_number
     form.value.entered_date = props.staff.entered_date
     form.value.personal_phone = props.staff.personal_phone
     form.value.email = props.staff.email
@@ -129,9 +134,17 @@ watch(
 
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label">성별</CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label">
+                주민등록번호
+              </CFormLabel>
               <CCol sm="8">
-                <CFormInput v-model="form.gender" required placeholder="성별" />
+                <input
+                  v-model="form.id_number"
+                  v-maska="'######-#######'"
+                  class="form-control"
+                  maxlength="14"
+                  placeholder="주민등록번호"
+                />
               </CCol>
             </CRow>
           </CCol>
@@ -142,8 +155,11 @@ watch(
             <CRow>
               <CFormLabel class="col-sm-4 col-form-label">휴대전화</CFormLabel>
               <CCol sm="8">
-                <CFormInput
+                <input
                   v-model="form.personal_phone"
+                  v-maska="['###-###-####', '###-####-####']"
+                  class="form-control"
+                  maxlength="13"
                   required
                   placeholder="휴대전화"
                 />
@@ -157,32 +173,9 @@ watch(
               <CCol sm="8">
                 <CFormInput
                   v-model="form.email"
+                  type="email"
                   required
                   placeholder="이메일"
-                />
-              </CCol>
-            </CRow>
-          </CCol>
-        </CRow>
-
-        <CRow class="mb-3">
-          <CCol sm="6">
-            <CRow>
-              <CFormLabel class="col-sm-4 col-form-label">생년월일</CFormLabel>
-              <CCol sm="8">
-                <CFormInput v-model="form.birth_date" placeholder="생년월일" />
-              </CCol>
-            </CRow>
-          </CCol>
-
-          <CCol sm="6">
-            <CRow>
-              <CFormLabel class="col-sm-4 col-form-label">입사일</CFormLabel>
-              <CCol sm="8">
-                <CFormInput
-                  v-model="form.entered_date"
-                  required
-                  placeholder="입사일"
                 />
               </CCol>
             </CRow>
@@ -212,6 +205,20 @@ watch(
         </CRow>
 
         <CRow class="mb-3">
+          <CCol sm="6">
+            <CRow>
+              <CFormLabel class="col-sm-4 col-form-label">입사일</CFormLabel>
+              <CCol sm="8">
+                <DatePicker
+                  v-model="form.entered_date"
+                  maxlength="10"
+                  placeholder="입사일"
+                  required
+                />
+              </CCol>
+            </CRow>
+          </CCol>
+
           <CCol sm="6">
             <CRow>
               <CFormLabel class="col-sm-4 col-form-label">상태</CFormLabel>

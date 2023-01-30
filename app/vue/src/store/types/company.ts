@@ -22,15 +22,13 @@ export interface Rank {
 export interface Staff {
   pk?: number
   company?: string
-  department?: string
-  rank?: string
   name: string
-  birth_date: string | null
-  gender: 'M' | 'F'
-  gender_desc?: '남성' | '여성'
-  entered_date: string | null
+  id_number: string
   personal_phone: string
   email: string
+  department?: string
+  rank?: string
+  entered_date: string | null
   status: '1' | '2' | '3' | '4'
   status_desc?: '근무 중' | '정직 중' | '퇴사신청' | '퇴사처리'
 }
