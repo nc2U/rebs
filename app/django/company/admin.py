@@ -24,7 +24,7 @@ class CompanyAdmin(ImportExportMixin, admin.ModelAdmin):
 
 
 class DepartmentAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'name', 'task')
+    list_display = ('id', 'upper_depart', 'name', 'level', 'task')
     list_display_links = ('name',)
 
 

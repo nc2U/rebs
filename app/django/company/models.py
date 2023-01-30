@@ -45,6 +45,7 @@ class Department(models.Model):
     upper_depart = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True,
                                      related_name='sub_departs',
                                      verbose_name='상위 부서')
+    level = models.PositiveSmallIntegerField('레벨')
     name = models.CharField('부서', max_length=20)
     task = models.CharField('주요 업무', max_length=100, blank=True)
 
