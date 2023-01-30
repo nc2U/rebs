@@ -30,16 +30,18 @@ const form = ref<Department>({
   pk: undefined,
   company: undefined,
   upper_depart: null,
+  level: 1,
   name: '',
   task: '',
 })
 
 const formsCheck = computed(() => {
   if (props.department) {
-    const a = form.value.upper_depart === props.department.obupper_departj
+    const a = form.value.upper_depart === props.department.upper_depart
     const b = form.value.name === props.department.name
+    const c = form.value.task === props.department.task
 
-    return a && b
+    return a && b && c
   } else return false
 })
 
@@ -74,6 +76,7 @@ onBeforeMount(() => {
     form.value.pk = props.department.pk
     form.value.company = props.department.company
     form.value.upper_depart = props.department.upper_depart
+    form.value.level = props.department.level
     form.value.name = props.department.name
     form.value.task = props.department.task
   }

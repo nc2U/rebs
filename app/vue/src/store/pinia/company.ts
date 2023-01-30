@@ -99,7 +99,11 @@ export const useCompany = defineStore('company', () => {
 
   // getters
   const getDeparts = computed(() =>
-    departmentList.value.map(d => ({ value: d.pk, label: d.name })),
+    departmentList.value.map(d => ({
+      value: d.pk,
+      label: d.name,
+      level: d.level,
+    })),
   )
 
   // actions

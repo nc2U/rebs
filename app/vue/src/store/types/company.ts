@@ -2,6 +2,7 @@ export interface Department {
   pk?: number
   company?: string
   upper_depart: number | null
+  level: number
   name: string
   task: string
   staffs?: []
@@ -12,6 +13,7 @@ export interface Rank {
   company?: string
   sort?: '1' | '2'
   sort_desc?: '임원' | '직원'
+  level: number | null
   rank: string
   title: string
   description: string

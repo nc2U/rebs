@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, onMounted, computed, provide, watch, readonly } from 'vue'
+import { ref, onMounted, computed, watch, provide, readonly } from 'vue'
 import { pageTitle, navMenu } from '@/views/hrManage/_menu/headermixin'
 import { useCompany } from '@/store/pinia/company'
 import { Department as Depart } from '@/store/types/company'
@@ -11,7 +11,13 @@ import TableTitleRow from '@/components/TableTitleRow.vue'
 import DepartmentList from './components/DepartmentList.vue'
 
 const listControl = ref()
-const departs = ref<{ value: number | undefined; label: string }[]>([])
+const departs = ref<
+  {
+    value: number | undefined
+    label: string
+    level: number
+  }[]
+>([])
 
 provide('departs', readonly(departs))
 
@@ -40,7 +46,7 @@ const listFiltering = () => 1
 
 const multiSubmit = (payload: Depart) => {
   if (!!payload.pk) updateDepartment(payload)
-  else console.log(payload) // createDepartment(payload)
+  else createDepartment(payload)
 }
 const onDelete = (pk: number) => deleteDepartment(pk)
 
