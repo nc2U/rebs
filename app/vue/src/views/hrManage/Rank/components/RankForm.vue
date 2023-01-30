@@ -1,8 +1,9 @@
 <script lang="ts" setup="">
-import { ref, computed } from 'vue'
+import { ref, computed, onBeforeMount, watch } from 'vue'
 import { isValidate } from '@/utils/helper'
 import { write_human_resource } from '@/utils/pageAuth'
 import { Rank } from '@/store/types/company'
+import Multiselect from '@vueform/multiselect'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
@@ -23,19 +24,32 @@ const alertModal = ref()
 
 const validated = ref(false)
 
-const form = ref({
-  obj1: null,
-  obj2: null,
+const form = ref<Rank>({
+  pk: undefined,
+  company: undefined,
+  sort: '1',
+  level: null,
+  rank: '',
+  title: '',
+  description: '',
 })
 
 const formsCheck = computed(() => {
   if (props.rank) {
-    const a = form.value.obj1 === props.rank.obj1
-    const b = form.value.obj2 === props.rank.obj2
+    const a = form.value.sort === props.rank.sort
+    const b = form.value.level === props.rank.level
+    const c = form.value.rank === props.rank.rank
+    const d = form.value.title === props.rank.title
+    const e = form.value.description === props.rank.description
 
-    return a && b
+    return a && b && c && d && e
   } else return false
 })
+
+const sorts = [
+  { value: '1', label: '임원' },
+  { value: '2', label: '직원' },
+]
 
 const onSubmit = (event: Event) => {
   if (isValidate(event)) {
@@ -61,6 +75,26 @@ const deleteConfirm = () => {
   if (write_human_resource.value) delModal.value.callModal()
   else alertModal.value.callModal()
 }
+
+onBeforeMount(() => {
+  if (props.rank) {
+    form.value.pk = props.rank.pk
+    form.value.company = props.rank.company
+    form.value.sort = props.rank.sort
+    form.value.level = props.rank.level
+    form.value.rank = props.rank.rank
+    form.value.title = props.rank.title
+    form.value.description = props.rank.description
+  } else form.value.company = props.company
+})
+
+watch(
+  () => props.company,
+  newVal => {
+    if (!!newVal) form.value.company = newVal
+    else form.value.company = undefined
+  },
+)
 </script>
 
 <template>
@@ -75,12 +109,17 @@ const deleteConfirm = () => {
         <CRow class="mb-3">
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label">항목이름1</CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label">구분</CFormLabel>
               <CCol sm="8">
-                <CFormInput
-                  v-model.number="form.obj1"
-                  required
-                  placeholder="항목이름1"
+                <Multiselect
+                  v-model="form.sort"
+                  :options="sorts"
+                  autocomplete="label"
+                  :classes="{ search: 'form-control multiselect-search' }"
+                  :attrs="{ required: true }"
+                  :add-option-on="['enter' | 'tab']"
+                  searchable
+                  placeholder="구분"
                 />
               </CCol>
             </CRow>
@@ -88,12 +127,50 @@ const deleteConfirm = () => {
 
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label">항목이름2</CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label">직급</CFormLabel>
               <CCol sm="8">
                 <CFormInput
-                  v-model.number="form.obj2"
+                  v-model.number="form.level"
                   required
-                  placeholder="항목이름2"
+                  placeholder="직급"
+                />
+              </CCol>
+            </CRow>
+          </CCol>
+        </CRow>
+
+        <CRow class="mb-3">
+          <CCol sm="6">
+            <CRow>
+              <CFormLabel class="col-sm-4 col-form-label">직책</CFormLabel>
+              <CCol sm="8">
+                <CFormInput
+                  v-model.number="form.rank"
+                  required
+                  placeholder="직책"
+                />
+              </CCol>
+            </CRow>
+          </CCol>
+
+          <CCol sm="6">
+            <CRow>
+              <CFormLabel class="col-sm-4 col-form-label">직함</CFormLabel>
+              <CCol sm="8">
+                <CFormInput v-model.number="form.title" placeholder="직함" />
+              </CCol>
+            </CRow>
+          </CCol>
+        </CRow>
+
+        <CRow class="mb-3">
+          <CCol sm="12">
+            <CRow>
+              <CFormLabel class="col-sm-2 col-form-label">비고</CFormLabel>
+              <CCol sm="10">
+                <CFormTextarea
+                  v-model.number="form.description"
+                  placeholder="비고"
                 />
               </CCol>
             </CRow>

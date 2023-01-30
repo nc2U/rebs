@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onMounted, ref } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { pageTitle, navMenu } from '@/views/hrManage/_menu/headermixin'
 import { useCompany } from '@/store/pinia/company'
 import { Rank } from '@/store/types/company'
