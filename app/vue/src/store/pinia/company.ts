@@ -101,7 +101,7 @@ export const useCompany = defineStore('company', () => {
   // getters
   const getDeparts = computed(() =>
     allDepartList.value.map(d => ({
-      value: d.pk,
+      value: d.name,
       label: d.name,
       level: d.level,
     })),
@@ -172,7 +172,7 @@ export const useCompany = defineStore('company', () => {
   // getters
   const getRanks = computed(() =>
     allRankList.value.map(r => ({
-      value: r.pk,
+      value: r.rank,
       label: r.rank,
     })),
   )

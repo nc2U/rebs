@@ -4,6 +4,7 @@ import { isValidate } from '@/utils/helper'
 import { write_human_resource } from '@/utils/pageAuth'
 import { Staff } from '@/store/types/company'
 import { maska as vMaska } from 'maska'
+import { dateFormat } from '@/utils/baseMixins'
 import Multiselect from '@vueform/multiselect'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
@@ -32,26 +33,30 @@ const validated = ref(false)
 const form = ref<Staff>({
   pk: undefined,
   company: undefined,
-  department: undefined,
-  rank: undefined,
   name: '',
   id_number: '',
-  entered_date: null,
   personal_phone: '',
   email: '',
+  department: '',
+  rank: '',
+  entered_date: null,
   status: '1',
+})
+
+watch(form.value, val => {
+  if (val.entered_date) form.value.entered_date = dateFormat(val.entered_date)
 })
 
 const formsCheck = computed(() => {
   if (props.staff) {
     const a = form.value.pk === props.staff.pk
-    const b = form.value.department === props.staff.department
-    const c = form.value.rank === props.staff.rank
-    const d = form.value.name === props.staff.name
-    const e = form.value.id_number === props.staff.id_number
-    const f = form.value.entered_date === props.staff.entered_date
-    const g = form.value.personal_phone === props.staff.personal_phone
-    const h = form.value.email === props.staff.email
+    const b = form.value.name === props.staff.name
+    const c = form.value.id_number === props.staff.id_number
+    const d = form.value.personal_phone === props.staff.personal_phone
+    const e = form.value.email === props.staff.email
+    const f = form.value.department === props.staff.department
+    const g = form.value.rank === props.staff.rank
+    const h = form.value.entered_date === props.staff.entered_date
     const i = form.value.status === props.staff.status
 
     return a && b && c && d && e && f && g && h && i
@@ -94,13 +99,13 @@ onBeforeMount(() => {
   if (props.staff) {
     form.value.pk = props.staff.pk
     form.value.company = props.staff.company
-    form.value.department = props.staff.department
-    form.value.rank = props.staff.rank
     form.value.name = props.staff.name
     form.value.id_number = props.staff.id_number
-    form.value.entered_date = props.staff.entered_date
     form.value.personal_phone = props.staff.personal_phone
     form.value.email = props.staff.email
+    form.value.department = props.staff.department
+    form.value.rank = props.staff.rank
+    form.value.entered_date = props.staff.entered_date
     form.value.status = props.staff.status
   } else form.value.company = props.company
 })

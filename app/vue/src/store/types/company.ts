@@ -26,8 +26,8 @@ export interface Staff {
   id_number: string
   personal_phone: string
   email: string
-  department?: string
-  rank?: string
+  department: string
+  rank: string
   entered_date: string | null
   status: '1' | '2' | '3' | '4'
   status_desc?: '근무 중' | '정직 중' | '퇴사신청' | '퇴사처리'
