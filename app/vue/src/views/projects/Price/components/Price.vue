@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, watch, onBeforeMount, onUpdated } from 'vue'
 import { useAccount } from '@/store/pinia/account'
+import { write_project } from '@/utils/pageAuth'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
-import { write_project } from '@/utils/pageAuth'
 
 const props = defineProps({
   floor: { type: Object, default: null },
@@ -164,7 +164,7 @@ const resetForm = () => {
   </CTableRow>
 
   <ConfirmModal ref="confirmModal">
-    <template #header> 공급가격 삭제 </template>
+    <template #header> 공급가격 삭제</template>
     <template #default>
       삭제 후 복구할 수 없습니다. 해당 공급가격 정보를 삭제 하시겠습니까?
     </template>

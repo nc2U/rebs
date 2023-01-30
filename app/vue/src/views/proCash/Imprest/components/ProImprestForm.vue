@@ -2,13 +2,13 @@
 import { ref, reactive, computed, nextTick, watch, onBeforeMount } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { useProCash } from '@/store/pinia/proCash'
+import { isValidate } from '@/utils/helper'
 import { dateFormat, diffDate, numFormat, cutString } from '@/utils/baseMixins'
 import { write_project_cash } from '@/utils/pageAuth'
 import { ProjectCashBook, ProSepItems } from '@/store/types/proCash'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
-import { isValidate } from '@/utils/helper'
 
 const props = defineProps({
   imprest: {
@@ -826,7 +826,7 @@ onBeforeMount(() => {
   </CForm>
 
   <ConfirmModal ref="delModal">
-    <template #header> 운영비(전도금) 거래 정보 삭제 </template>
+    <template #header> 운영비(전도금) 거래 정보 삭제</template>
     <template #default>
       삭제한 데이터는 복구할 수 없습니다. 해당 입출금 거래 정보를
       삭제하시겠습니까?

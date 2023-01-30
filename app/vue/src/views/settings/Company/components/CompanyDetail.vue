@@ -2,8 +2,8 @@
 import { ref } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { write_company_settings } from '@/utils/pageAuth'
-import AlertModal from '@/components/Modals/AlertModal.vue'
 import { headerSecondary } from '@/utils/cssMixins'
+import AlertModal from '@/components/Modals/AlertModal.vue'
 
 defineProps({
   company: {

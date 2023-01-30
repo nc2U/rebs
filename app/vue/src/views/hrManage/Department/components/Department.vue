@@ -1,5 +1,6 @@
 <script lang="ts" setup="">
 import { computed } from 'vue'
+import FormModal from '@/components/Modals/FormModal.vue'
 import DepartmentForm from './DepartmentForm.vue'
 
 const props = defineProps({
@@ -37,18 +38,15 @@ const showDetail = () => emit('show-detail')
     </CTableDataCell>
   </CTableRow>
 
-  <!--  <FormModal ref="updateFormModal" size="lg">-->
-  <!--    <template #header>-->
-  <!--      <v-icon icon="mdi-briefcase-plus" size="small" color="dark" />-->
-  <!--      사업 부지 등록-->
-  <!--    </template>-->
-  <!--    <template #default>-->
-  <!--      <DepartmentForm-->
-  <!--        :site="site"-->
-  <!--        @multi-submit="multiSubmit"-->
-  <!--        @on-delete="onDelete"-->
-  <!--        @close="updateFormModal.close()"-->
-  <!--      />-->
-  <!--    </template>-->
-  <!--  </FormModal>-->
+  <FormModal ref="updateFormModal" size="lg">
+    <template #header>사업 부지 등록</template>
+    <template #default>
+      <DepartmentForm
+        :site="site"
+        @multi-submit="multiSubmit"
+        @on-delete="onDelete"
+        @close="updateFormModal.close()"
+      />
+    </template>
+  </FormModal>
 </template>

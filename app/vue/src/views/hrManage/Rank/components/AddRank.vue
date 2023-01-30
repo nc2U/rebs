@@ -20,10 +20,7 @@ const createConfirm = () => {
   </CAlert>
 
   <FormModal ref="formModal" size="lg">
-    <template #header>
-      <v-icon icon="mdi-briefcase-plus" size="small" color="dark" />
-      직급 정보 등록
-    </template>
+    <template #header>직급 정보 등록</template>
     <template #default>
       <RankForm @close="formModal.close()" />
     </template>

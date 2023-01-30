@@ -63,10 +63,7 @@ const deleteObject = () => emit('on-delete', props.payment.pk)
   </CTableRow>
 
   <FormModal ref="updateFormModal" size="lg">
-    <template #header>
-      <CIcon name="cil-italic" />
-      건별 수납 관리
-    </template>
+    <template #header>건별 수납 관리</template>
     <template #default>
       <PaymentForm
         :contract="contract"

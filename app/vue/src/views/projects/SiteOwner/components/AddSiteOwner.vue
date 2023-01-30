@@ -28,10 +28,7 @@ const multiSubmit = (payload: SiteOwner) => emit('multi-submit', payload)
   </CAlert>
 
   <FormModal ref="formModal" size="lg">
-    <template #header>
-      <v-icon icon="mdi-briefcase-plus" size="small" color="dark" />
-      부지 소유자 정보 등록
-    </template>
+    <template #header>부지 소유자 정보 등록</template>
     <template #default>
       <SiteOwnerForm @multi-submit="multiSubmit" @close="formModal.close()" />
     </template>

@@ -60,10 +60,7 @@ const onDelete = (payload: { pk: number; project: number }) =>
   </CTableRow>
 
   <FormModal ref="updateFormModal" size="lg">
-    <template #header>
-      <v-icon icon="mdi-briefcase-plus" size="small" color="dark" />
-      사업 부지 등록
-    </template>
+    <template #header>사업 부지 등록</template>
     <template #default>
       <SiteForm
         :site="site"

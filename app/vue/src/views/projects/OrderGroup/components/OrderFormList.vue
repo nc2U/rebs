@@ -2,8 +2,8 @@
 import { computed } from 'vue'
 import { useContract } from '@/store/pinia/contract'
 import { OrderGroup as og } from '@/store/types/contract'
-import OrderGroup from './OrderGroup.vue'
 import { headerSecondary } from '@/utils/cssMixins'
+import OrderGroup from './OrderGroup.vue'
 
 const emit = defineEmits(['on-update', 'on-delete'])
 

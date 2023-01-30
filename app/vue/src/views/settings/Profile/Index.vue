@@ -2,10 +2,10 @@
 import { ref, computed } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { pageTitle, navMenu } from '@/views/settings/_menu/headermixin'
+import { Profile } from '@/store/types/accounts'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ProfileForm from '@/views/settings/Profile/components/ProfileForm.vue'
-import { Profile } from '@/store/types/accounts'
 
 const image = ref()
 const accountStore = useAccount()

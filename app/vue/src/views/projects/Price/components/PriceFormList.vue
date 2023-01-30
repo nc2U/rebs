@@ -2,9 +2,9 @@
 import { computed } from 'vue'
 import { useProjectData } from '@/store/pinia/project_data'
 import { usePayment } from '@/store/pinia/payment'
+import { headerSecondary } from '@/utils/cssMixins'
 import { Price as P } from '@/store/types/payment'
 import Price from '@/views/projects/Price/components/Price.vue'
-import { headerSecondary } from '@/utils/cssMixins'
 
 defineProps({
   msg: { type: String, default: '' },

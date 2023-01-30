@@ -23,10 +23,7 @@ const multiSubmit = (payload: {
   </CAlert>
 
   <FormModal ref="createFormModal" size="lg">
-    <template #header>
-      <CIcon name="cil-italic" />
-      프로젝트 입출금 거래 건별 등록
-    </template>
+    <template #header>프로젝트 입출금 거래 건별 등록</template>
     <template #default>
       <ProCashForm
         @multi-submit="multiSubmit"

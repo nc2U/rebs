@@ -33,10 +33,7 @@ const createObject = (payload: ProjectCashBook) => {
   </CAlert>
 
   <FormModal ref="createFormModal" size="lg">
-    <template #header>
-      <CIcon name="cil-italic" />
-      건별 수납 관리 [신규 납부등록]
-    </template>
+    <template #header>건별 수납 관리 [신규 납부등록]</template>
     <template #default>
       <PaymentForm
         :contract="contract"

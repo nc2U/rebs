@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, onBeforeMount } from 'vue'
 import { useAccount } from '@/store/pinia/account'
+import { write_project } from '@/utils/pageAuth'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
-import { write_project } from '@/utils/pageAuth'
 
 const props = defineProps({ building: { type: Object, default: null } })
 const emit = defineEmits(['on-update', 'on-delete'])
@@ -74,7 +74,7 @@ const resetForm = () => (form.name = props.building.name)
   </CTableRow>
 
   <ConfirmModal ref="confirmModal">
-    <template #header> 동(건물) 삭제 </template>
+    <template #header> 동(건물) 삭제</template>
     <template #default>
       이 동(건물)에 종속 데이터가 있는 경우 해당 데이터를 모두 제거한 후
       삭제가능 합니다. 해당 동(건물)을 삭제 하시겠습니까?

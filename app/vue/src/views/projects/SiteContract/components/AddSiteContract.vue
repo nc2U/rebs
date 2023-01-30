@@ -27,10 +27,7 @@ const multiSubmit = (payload: SiteContract) => emit('multi-submit', payload)
   </CAlert>
 
   <FormModal ref="formModal" size="lg">
-    <template #header>
-      <v-icon icon="mdi-briefcase-plus" size="small" color="dark" />
-      부지 매입 계약 등록
-    </template>
+    <template #header>부지 매입 계약 등록</template>
     <template #default>
       <SiteContractForm
         :project="project"

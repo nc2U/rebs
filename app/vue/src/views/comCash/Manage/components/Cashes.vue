@@ -111,10 +111,7 @@ const deleteObject = () => {
   </CTableRow>
 
   <FormModal ref="updateFormModal" size="lg">
-    <template #header>
-      <CIcon name="cil-italic" />
-      본사 입출금 거래 건별 수정
-    </template>
+    <template #header>본사 입출금 거래 건별 수정</template>
     <template #default>
       <CashForm
         :cash="cash"
@@ -126,7 +123,7 @@ const deleteObject = () => {
   </FormModal>
 
   <ConfirmModal ref="delModal">
-    <template #header> 입출금 거래 정보 삭제 </template>
+    <template #header> 입출금 거래 정보 삭제</template>
     <template #default>
       삭제한 데이터는 복구할 수 없습니다. 해당 입출금 거래 정보를
       삭제하시겠습니까?

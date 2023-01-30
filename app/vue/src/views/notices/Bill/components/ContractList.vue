@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { computed, ref, nextTick } from 'vue'
 import { useContract } from '@/store/pinia/contract'
+import { headerSecondary } from '@/utils/cssMixins'
 import Contract from '@/views/notices/Bill/components/Contract.vue'
 import Pagination from '@/components/Pagination'
-import { headerSecondary } from '@/utils/cssMixins'
 
 defineProps({ nowOrder: { type: Number, default: null } })
 const emit = defineEmits(['page-select', 'on-ctor-chk', 'all-un-checked'])

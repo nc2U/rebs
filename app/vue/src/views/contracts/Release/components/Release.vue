@@ -72,10 +72,7 @@ const onSubmit = (payload: ContractRelease) => {
   </CTableDataCell>
 
   <FormModal ref="releaseFormModal" size="lg">
-    <template #header>
-      <CIcon name="cil-italic" />
-      계약 해지 수정 등록
-    </template>
+    <template #header>계약 해지 수정 등록</template>
     <template #default>
       <ReleaseForm
         :release="release"

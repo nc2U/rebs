@@ -76,10 +76,7 @@ onBeforeMount(() => {
   </CTableRow>
 
   <FormModal ref="updateFormModal" size="lg">
-    <template #header>
-      <v-icon icon="mdi-briefcase-plus" size="small" color="dark" />
-      부지 소유자 정보 관리
-    </template>
+    <template #header>부지 소유자 정보 관리</template>
     <template #default>
       <SiteOwnerForm
         :owner="owner"

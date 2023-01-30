@@ -93,10 +93,7 @@ const onDelete = (payload: { project: number; pk: number }) =>
   </CTableRow>
 
   <FormModal ref="updateFormModal" size="lg">
-    <template #header>
-      <CIcon name="cil-italic" />
-      운영비(전도금) 거래 건별 관리
-    </template>
+    <template #header>운영비(전도금) 거래 건별 관리</template>
     <template #default>
       <ProImprestForm
         :imprest="imprest"
