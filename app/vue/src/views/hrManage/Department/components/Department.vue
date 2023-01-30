@@ -1,18 +1,31 @@
 <script lang="ts" setup="">
+import { computed } from 'vue'
 import DepartmentForm from './DepartmentForm.vue'
 
-defineProps({
+const props = defineProps({
   department: {
     type: Object,
     required: true,
   },
+  departs: {
+    type: Array,
+    default: () => [],
+  },
+})
+
+const upper_depart = computed(() => {
+  const ud = props.department.upper_depart
+  const departs = props.departs as { pk: number; name: string }[]
+  return !!ud
+    ? departs.filter((d: { pk: number; name: string }) => d.pk === ud)[0].name
+    : ''
 })
 </script>
 
 <template>
   <CTableRow v-if="department" class="text-center">
     <CTableDataCell>{{ department.pk }}</CTableDataCell>
-    <CTableDataCell>{{ department.upper_depart }}</CTableDataCell>
+    <CTableDataCell>{{ upper_depart }}</CTableDataCell>
     <CTableDataCell>{{ department.name }}</CTableDataCell>
     <CTableDataCell class="text-left">{{ department.task }}</CTableDataCell>
   </CTableRow>

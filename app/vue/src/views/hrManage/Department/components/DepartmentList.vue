@@ -8,6 +8,9 @@ const emit = defineEmits(['page-select'])
 
 const companyStore = useCompany()
 const departmentList = computed(() => companyStore.departmentList)
+const departs = computed(() =>
+  departmentList.value.map(d => ({ pk: d.pk, name: d.name })),
+)
 const departmentsCount = computed(() => companyStore.departmentsCount)
 
 const departmentPages = (page: number) => companyStore.departmentPages(page)
@@ -37,6 +40,7 @@ const pageSelect = (page: number) => emit('page-select', page)
         v-for="depart in departmentList"
         :key="depart.pk"
         :department="depart"
+        :departs="departs"
       />
     </CTableBody>
   </CTable>
