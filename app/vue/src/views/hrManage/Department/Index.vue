@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed, provide, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/hrManage/_menu/headermixin'
 import { useCompany } from '@/store/pinia/company'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
@@ -10,8 +10,22 @@ import TableTitleRow from '@/components/TableTitleRow.vue'
 import DepartmentList from './components/DepartmentList.vue'
 
 const listControl = ref()
+const departs = ref<{ value: number | undefined; label: string }[]>([])
+
+provide('departs', departs)
 
 const companyStore = useCompany()
+const comId = computed(() => companyStore.company?.pk || null)
+
+const getDeparts = computed(() => companyStore.getDeparts)
+watch(
+  () => getDeparts.value,
+  nv => {
+    if (!!nv) departs.value = nv
+    else departs.value = []
+  },
+)
+
 const fetchDepartmentList = (page?: number) =>
   companyStore.fetchDepartmentList(page)
 
@@ -32,7 +46,7 @@ onMounted(() => fetchDepartmentList())
       <ListController ref="listControl" @list-filtering="listFiltering" />
       <AddDepartment />
       <TableTitleRow title="부서 목록" excel url="#" disabled />
-      <DepartmentList @page-select="pageSelect" />
+      <DepartmentList :company="comId" @page-select="pageSelect" />
     </CCardBody>
 
     <CCardFooter class="text-right">&nbsp;</CCardFooter>

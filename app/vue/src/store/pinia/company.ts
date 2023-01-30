@@ -97,6 +97,11 @@ export const useCompany = defineStore('company', () => {
 
   const departmentsCount = ref<number>(0)
 
+  // getters
+  const getDeparts = computed(() =>
+    departmentList.value.map(d => ({ value: d.pk, label: d.name })),
+  )
+
   // actions
   const departmentPages = (itemsPerPage: number) =>
     Math.ceil(departmentsCount.value / itemsPerPage)
@@ -256,6 +261,7 @@ export const useCompany = defineStore('company', () => {
     departmentList,
     department,
     departmentsCount,
+    getDeparts,
     departmentPages,
     fetchDepartmentList,
     fetchDepartment,

@@ -1,11 +1,18 @@
 <script lang="ts" setup="">
-import { ref, reactive, computed } from 'vue'
+import { ref, computed, onBeforeMount, watch, inject } from 'vue'
 import { isValidate } from '@/utils/helper'
 import { write_human_resource } from '@/utils/pageAuth'
+import Multiselect from '@vueform/multiselect'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
+const departs = inject('departs')
+
 const props = defineProps({
+  company: {
+    type: Number,
+    default: null,
+  },
   department: {
     type: Object,
     default: null,
@@ -18,15 +25,17 @@ const alertModal = ref()
 
 const validated = ref(false)
 
-const form = reactive({
-  obj1: null,
-  obj2: null,
+const form = ref({
+  company: null as number | null,
+  upper_depart: null,
+  name: '',
+  task: '',
 })
 
 const formsCheck = computed(() => {
   if (props.department) {
-    const a = form.obj1 === props.department.obj1
-    const b = form.obj2 === props.department.obj2
+    const a = form.value.upper_depart === props.department.obupper_departj
+    const b = form.value.name === props.department.name
 
     return a && b
   } else return false
@@ -56,6 +65,24 @@ const deleteConfirm = () => {
   if (write_human_resource.value) delModal.value.callModal()
   else alertModal.value.callModal()
 }
+
+onBeforeMount(() => {
+  form.value.company = !!props.company ? props.company : null
+  if (props.department) {
+    form.value.company = props.department.company
+    form.value.upper_depart = props.department.upper_depart
+    form.value.name = props.department.name
+    form.value.task = props.department.task
+  }
+})
+
+watch(
+  () => props.company,
+  newVal => {
+    if (!!newVal) form.value.company = newVal
+    else form.value.company = null
+  },
+)
 </script>
 
 <template>
@@ -70,12 +97,16 @@ const deleteConfirm = () => {
         <CRow class="mb-3">
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label">항목이름1</CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label">상위부서</CFormLabel>
               <CCol sm="8">
-                <CFormInput
-                  v-model.number="form.obj1"
-                  required
-                  placeholder="항목이름1"
+                <Multiselect
+                  v-model.number="form.upper_depart"
+                  :options="departs"
+                  autocomplete="label"
+                  :classes="{ search: 'form-control multiselect-search' }"
+                  :add-option-on="['enter' | 'tab']"
+                  searchable
+                  placeholder="상위부서"
                 />
               </CCol>
             </CRow>
@@ -83,13 +114,23 @@ const deleteConfirm = () => {
 
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label">항목이름2</CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label">부서명</CFormLabel>
               <CCol sm="8">
                 <CFormInput
-                  v-model.number="form.obj2"
+                  v-model.number="form.name"
                   required
-                  placeholder="항목이름2"
+                  placeholder="부서명"
                 />
+              </CCol>
+            </CRow>
+          </CCol>
+        </CRow>
+        <CRow>
+          <CCol sm="12">
+            <CRow>
+              <CFormLabel class="col-sm-2 col-form-label">주요업무</CFormLabel>
+              <CCol sm="10">
+                <CFormTextarea v-model="form.task" placeholder="주요업무" />
               </CCol>
             </CRow>
           </CCol>
