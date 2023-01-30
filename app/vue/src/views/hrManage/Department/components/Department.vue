@@ -1,5 +1,6 @@
 <script lang="ts" setup="">
 import { ref, computed } from 'vue'
+import { Department } from '@/store/types/company'
 import FormModal from '@/components/Modals/FormModal.vue'
 import DepartmentForm from './DepartmentForm.vue'
 
@@ -27,7 +28,7 @@ const upper_depart = computed(() => {
 })
 
 const showDetail = () => updateFormModal.value.callModal()
-const multiSubmit = (payload: any) => emit('multi-submit', payload)
+const multiSubmit = (payload: Department) => emit('multi-submit', payload)
 const onDelete = (payload: any) => emit('on-delete', payload)
 </script>
 

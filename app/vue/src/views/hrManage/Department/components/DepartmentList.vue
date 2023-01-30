@@ -2,10 +2,11 @@
 import { computed } from 'vue'
 import { useCompany } from '@/store/pinia/company'
 import { headerSecondary } from '@/utils/cssMixins'
+import { Department as Depart } from '@/store/types/company'
 import Pagination from '@/components/Pagination'
 import Department from './Department.vue'
 
-const emit = defineEmits(['page-select'])
+const emit = defineEmits(['page-select', 'multi-submit', 'on-delete'])
 
 const companyStore = useCompany()
 const departmentList = computed(() => companyStore.departmentList)
@@ -16,7 +17,8 @@ const departmentsCount = computed(() => companyStore.departmentsCount)
 
 const departmentPages = (page: number) => companyStore.departmentPages(page)
 const pageSelect = (page: number) => emit('page-select', page)
-const showDetail = () => alert('준비중!!')
+const multiSubmit = (payload: Depart) => emit('multi-submit', payload)
+const onDelete = (payload: any) => emit('on-delete', payload)
 </script>
 
 <template>
@@ -45,7 +47,8 @@ const showDetail = () => alert('준비중!!')
         :key="depart.pk"
         :department="depart"
         :departs="departs"
-        @show-detail="showDetail"
+        @multi-submit="multiSubmit"
+        @on-delete="onDelete"
       />
     </CTableBody>
   </CTable>

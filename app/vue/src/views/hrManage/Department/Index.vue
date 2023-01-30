@@ -2,6 +2,7 @@
 import { ref, onMounted, computed, provide, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/hrManage/_menu/headermixin'
 import { useCompany } from '@/store/pinia/company'
+import { Department as Depart } from '@/store/types/company'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from './components/ListController.vue'
@@ -30,6 +31,9 @@ const fetchDepartmentList = (page?: number) =>
   companyStore.fetchDepartmentList(page)
 
 const listFiltering = () => 1
+
+const multiSubmit = (payload: Depart) => alert('submit ok!!')
+const onDelete = (payload: any) => alert('delete ok!!')
 const pageSelect = (page: number) => fetchDepartmentList(page)
 
 onMounted(() => fetchDepartmentList())
@@ -46,7 +50,12 @@ onMounted(() => fetchDepartmentList())
       <ListController ref="listControl" @list-filtering="listFiltering" />
       <AddDepartment />
       <TableTitleRow title="부서 목록" excel url="#" disabled />
-      <DepartmentList :company="comId" @page-select="pageSelect" />
+      <DepartmentList
+        :company="comId"
+        @multi-submit="multiSubmit"
+        @on-delete="onDelete"
+        @page-select="pageSelect"
+      />
     </CCardBody>
 
     <CCardFooter class="text-right">&nbsp;</CCardFooter>

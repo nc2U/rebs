@@ -2,6 +2,7 @@
 import { ref, computed, onBeforeMount, watch, inject } from 'vue'
 import { isValidate } from '@/utils/helper'
 import { write_human_resource } from '@/utils/pageAuth'
+import { Department } from '@/store/types/company'
 import Multiselect from '@vueform/multiselect'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
@@ -25,8 +26,9 @@ const alertModal = ref()
 
 const validated = ref(false)
 
-const form = ref({
-  company: null as number | null,
+const form = ref<Department>({
+  pk: undefined,
+  company: undefined,
   upper_depart: null,
   name: '',
   task: '',

@@ -4,7 +4,7 @@ export interface Department {
   upper_depart: number | null
   name: string
   task: string
-  staffs: []
+  staffs?: []
 }
 
 export interface Rank {
