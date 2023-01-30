@@ -13,20 +13,20 @@ const staffsCount = computed(() => companyStore.staffsCount)
 
 const staffPages = (page: number) => companyStore.staffPages(page)
 const pageSelect = (page: number) => emit('page-select', page)
+const showDetail = () => alert('준비중!!')
 </script>
 
 <template>
   <CTable hover responsive bordered align="middle">
     <colgroup>
-      <col width="5%" />
-      <col width="10%" />
-      <col width="10%" />
-      <col width="10%" />
+      <col width="6%" />
       <col width="11%" />
-      <col width="7%" />
+      <col width="11%" />
       <col width="10%" />
+      <col width="12%" />
       <col width="15%" />
-      <col width="15%" />
+      <col width="20%" />
+      <col width="8%" />
       <col width="7%" />
     </colgroup>
 
@@ -36,17 +36,21 @@ const pageSelect = (page: number) => emit('page-select', page)
         <CTableHeaderCell scope="col">부서</CTableHeaderCell>
         <CTableHeaderCell scope="col">직책</CTableHeaderCell>
         <CTableHeaderCell scope="col">성명</CTableHeaderCell>
-        <CTableHeaderCell scope="col">생년월일</CTableHeaderCell>
-        <CTableHeaderCell scope="col">성별</CTableHeaderCell>
         <CTableHeaderCell scope="col">입사일</CTableHeaderCell>
         <CTableHeaderCell scope="col">휴대전화</CTableHeaderCell>
         <CTableHeaderCell scope="col">이메일</CTableHeaderCell>
         <CTableHeaderCell scope="col">상태</CTableHeaderCell>
+        <CTableHeaderCell scope="col">비고</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
 
     <CTableBody>
-      <Staff v-for="staff in staffList" :key="staff.pk" :staff="staff" />
+      <Staff
+        v-for="staff in staffList"
+        :key="staff.pk"
+        :staff="staff"
+        @show-detail="showDetail"
+      />
     </CTableBody>
   </CTable>
 

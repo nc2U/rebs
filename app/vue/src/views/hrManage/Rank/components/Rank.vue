@@ -8,6 +8,10 @@ defineProps({
     required: true,
   },
 })
+
+const emit = defineEmits(['show-detail'])
+
+const showDetail = () => emit('show-detail')
 </script>
 
 <template>
@@ -17,6 +21,9 @@ defineProps({
     <CTableDataCell>{{ rank.rank }}</CTableDataCell>
     <CTableDataCell class="text-left">{{ rank.title }}</CTableDataCell>
     <CTableDataCell class="text-left">{{ rank.description }}</CTableDataCell>
+    <CTableDataCell>
+      <CButton color="info" size="sm" @click="showDetail">확인</CButton>
+    </CTableDataCell>
   </CTableRow>
 
   <!--  <FormModal ref="updateFormModal" size="lg">-->

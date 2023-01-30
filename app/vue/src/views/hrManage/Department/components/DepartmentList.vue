@@ -16,15 +16,17 @@ const departmentsCount = computed(() => companyStore.departmentsCount)
 
 const departmentPages = (page: number) => companyStore.departmentPages(page)
 const pageSelect = (page: number) => emit('page-select', page)
+const showDetail = () => alert('준비중!!')
 </script>
 
 <template>
   <CTable hover responsive bordered align="middle">
     <colgroup>
-      <col width="10%" />
+      <col width="7%" />
       <col width="20%" />
       <col width="20%" />
-      <col width="50%" />
+      <col width="46%" />
+      <col width="7%" />
     </colgroup>
 
     <CTableHead :color="headerSecondary">
@@ -33,6 +35,7 @@ const pageSelect = (page: number) => emit('page-select', page)
         <CTableHeaderCell scope="col">상위부서</CTableHeaderCell>
         <CTableHeaderCell scope="col">부서명</CTableHeaderCell>
         <CTableHeaderCell scope="col">주요업무</CTableHeaderCell>
+        <CTableHeaderCell scope="col">비고</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
 
@@ -42,6 +45,7 @@ const pageSelect = (page: number) => emit('page-select', page)
         :key="depart.pk"
         :department="depart"
         :departs="departs"
+        @show-detail="showDetail"
       />
     </CTableBody>
   </CTable>

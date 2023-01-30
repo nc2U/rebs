@@ -20,6 +20,10 @@ const upper_depart = computed(() => {
     ? departs.filter((d: { pk: number; name: string }) => d.pk === ud)[0].name
     : ''
 })
+
+const emit = defineEmits(['show-detail'])
+
+const showDetail = () => emit('show-detail')
 </script>
 
 <template>
@@ -28,6 +32,9 @@ const upper_depart = computed(() => {
     <CTableDataCell>{{ upper_depart }}</CTableDataCell>
     <CTableDataCell>{{ department.name }}</CTableDataCell>
     <CTableDataCell class="text-left">{{ department.task }}</CTableDataCell>
+    <CTableDataCell>
+      <CButton color="info" size="sm" @click="showDetail">확인</CButton>
+    </CTableDataCell>
   </CTableRow>
 
   <!--  <FormModal ref="updateFormModal" size="lg">-->

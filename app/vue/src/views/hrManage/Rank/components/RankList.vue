@@ -13,16 +13,19 @@ const ranksCount = computed(() => companyStore.ranksCount)
 
 const rankPages = (page: number) => companyStore.rankPages(page)
 const pageSelect = (page: number) => emit('page-select', page)
+
+const showDetail = () => alert('준비중!!')
 </script>
 
 <template>
   <CTable hover responsive bordered align="middle">
     <colgroup>
       <col width="7%" />
-      <col width="15%" />
-      <col width="15%" />
+      <col width="10%" />
+      <col width="13%" />
       <col width="25%" />
       <col width="38%" />
+      <col width="7%" />
     </colgroup>
 
     <CTableHead :color="headerSecondary">
@@ -32,11 +35,17 @@ const pageSelect = (page: number) => emit('page-select', page)
         <CTableHeaderCell scope="col">직급</CTableHeaderCell>
         <CTableHeaderCell scope="col">직함</CTableHeaderCell>
         <CTableHeaderCell scope="col">설명</CTableHeaderCell>
+        <CTableHeaderCell scope="col">비고</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
 
     <CTableBody>
-      <Rank v-for="rank in rankList" :key="rank.pk" :rank="rank" />
+      <Rank
+        v-for="rank in rankList"
+        :key="rank.pk"
+        :rank="rank"
+        @show-detail="showDetail"
+      />
     </CTableBody>
   </CTable>
 
