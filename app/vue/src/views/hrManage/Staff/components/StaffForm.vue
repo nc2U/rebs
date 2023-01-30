@@ -122,10 +122,9 @@ const deleteConfirm = () => {
   </CForm>
 
   <ConfirmModal ref="delModal">
-    <template #header>사업 부지 정보 삭제</template>
+    <template #header>직원 정보 삭제</template>
     <template #default>
-      삭제한 데이터는 복구할 수 없습니다. 해당 사업 부지 정보를
-      삭제하시겠습니까?
+      삭제한 데이터는 복구할 수 없습니다. 해당 정보를 삭제하시겠습니까?
     </template>
     <template #footer>
       <CButton color="danger" @click="deleteObject">삭제</CButton>

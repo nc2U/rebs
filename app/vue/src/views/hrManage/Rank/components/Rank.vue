@@ -32,7 +32,7 @@ const onDelete = (payload: any) => emit('on-delete', payload)
   </CTableRow>
 
   <FormModal ref="updateFormModal" size="lg">
-    <template #header>사업 부지 등록</template>
+    <template #header>직급 정보 등록</template>
     <template #default>
       <StaffForm
         :rank="rank"
