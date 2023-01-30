@@ -191,7 +191,9 @@ export const useCompany = defineStore('company', () => {
   const updateRank = (payload: Rank) =>
     api
       .put(`/rank/${payload.pk}/`, payload)
-      .then(res => fetchRank(res.data.pk).then(() => message()))
+      .then(res => {
+        fetchRankList().then(() => fetchRank(res.data.pk).then(() => message()))
+      })
       .catch(err => errorHandle(err.response.data))
 
   const deleteRank = (pk: number) =>
@@ -240,7 +242,11 @@ export const useCompany = defineStore('company', () => {
   const updateStaff = (payload: Staff) =>
     api
       .put(`/staff/${payload.pk}/`, payload)
-      .then(res => fetchStaff(res.data.pk).then(() => message()))
+      .then(res => {
+        fetchStaffList().then(() =>
+          fetchStaff(res.data.pk).then(() => message()),
+        )
+      })
       .catch(err => errorHandle(err.response.data))
 
   const deleteStaff = (pk: number) =>

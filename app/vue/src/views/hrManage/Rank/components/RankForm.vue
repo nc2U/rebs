@@ -116,7 +116,6 @@ watch(
                   :options="sorts"
                   autocomplete="label"
                   :classes="{ search: 'form-control multiselect-search' }"
-                  :attrs="{ required: true }"
                   :add-option-on="['enter' | 'tab']"
                   searchable
                   placeholder="구분"
