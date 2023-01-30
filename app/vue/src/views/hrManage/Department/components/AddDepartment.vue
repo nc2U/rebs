@@ -6,7 +6,7 @@ import { Department } from '@/store/types/company'
 import FormModal from '@/components/Modals/FormModal.vue'
 import DepartmentForm from './DepartmentForm.vue'
 
-const props = defineProps({
+defineProps({
   company: {
     type: String,
     default: null,

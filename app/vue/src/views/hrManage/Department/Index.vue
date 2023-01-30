@@ -33,6 +33,8 @@ watch(
   },
 )
 
+const listFiltering = () => 1
+
 const fetchDepartmentList = (page?: number) =>
   companyStore.fetchDepartmentList(page)
 
@@ -41,8 +43,6 @@ const createDepartment = (payload: Depart) =>
 const updateDepartment = (payload: Depart) =>
   companyStore.updateDepartment(payload)
 const deleteDepartment = (pk: number) => companyStore.deleteDepartment(pk)
-
-const listFiltering = () => 1
 
 const multiSubmit = (payload: Depart) => {
   if (!!payload.pk) updateDepartment(payload)

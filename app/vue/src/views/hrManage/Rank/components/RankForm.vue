@@ -1,11 +1,16 @@
 <script lang="ts" setup="">
-import { ref, reactive, computed } from 'vue'
+import { ref, computed } from 'vue'
 import { isValidate } from '@/utils/helper'
 import { write_human_resource } from '@/utils/pageAuth'
+import { Rank } from '@/store/types/company'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
 const props = defineProps({
+  company: {
+    type: String,
+    default: null,
+  },
   rank: {
     type: Object,
     default: null,
@@ -18,15 +23,15 @@ const alertModal = ref()
 
 const validated = ref(false)
 
-const form = reactive({
+const form = ref({
   obj1: null,
   obj2: null,
 })
 
 const formsCheck = computed(() => {
   if (props.rank) {
-    const a = form.obj1 === props.rank.obj1
-    const b = form.obj2 === props.rank.obj2
+    const a = form.value.obj1 === props.rank.obj1
+    const b = form.value.obj2 === props.rank.obj2
 
     return a && b
   } else return false
@@ -36,18 +41,18 @@ const onSubmit = (event: Event) => {
   if (isValidate(event)) {
     validated.value = true
   } else {
-    if (write_human_resource.value) multiSubmit({ ...form })
+    if (write_human_resource.value) multiSubmit({ ...form.value })
     else alertModal.value.callModal()
   }
 }
 
-const multiSubmit = (payload: any) => {
+const multiSubmit = (payload: Rank) => {
   emit('multi-submit', payload)
   emit('close')
 }
 
-const deleteObject = () => {
-  emit('on-delete', {})
+const deleteObject = (pk: number) => {
+  emit('on-delete', pk)
   delModal.value.close()
   emit('close')
 }
@@ -127,7 +132,7 @@ const deleteConfirm = () => {
       삭제한 데이터는 복구할 수 없습니다. 해당 정보를 삭제하시겠습니까?
     </template>
     <template #footer>
-      <CButton color="danger" @click="deleteObject">삭제</CButton>
+      <CButton color="danger" @click="deleteObject(rank.pk)">삭제</CButton>
     </template>
   </ConfirmModal>
 

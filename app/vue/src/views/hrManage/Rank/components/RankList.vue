@@ -2,10 +2,11 @@
 import { computed } from 'vue'
 import { useCompany } from '@/store/pinia/company'
 import { headerSecondary } from '@/utils/cssMixins'
+import { Rank as RankType } from '@/store/types/company'
 import Pagination from '@/components/Pagination'
 import Rank from './Rank.vue'
 
-const emit = defineEmits(['page-select'])
+const emit = defineEmits(['page-select', 'multi-submit', 'on-delete'])
 
 const companyStore = useCompany()
 const rankList = computed(() => companyStore.rankList)
@@ -13,8 +14,8 @@ const ranksCount = computed(() => companyStore.ranksCount)
 
 const rankPages = (page: number) => companyStore.rankPages(page)
 const pageSelect = (page: number) => emit('page-select', page)
-
-const showDetail = () => alert('준비중!!')
+const multiSubmit = (payload: RankType) => emit('multi-submit', payload)
+const onDelete = (pk: number) => emit('on-delete', pk)
 </script>
 
 <template>
@@ -44,7 +45,8 @@ const showDetail = () => alert('준비중!!')
         v-for="rank in rankList"
         :key="rank.pk"
         :rank="rank"
-        @show-detail="showDetail"
+        @multi-submit="multiSubmit"
+        @on-delete="onDelete"
       />
     </CTableBody>
   </CTable>

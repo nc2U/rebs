@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { pageTitle, navMenu } from '@/views/hrManage/_menu/headermixin'
 import { useCompany } from '@/store/pinia/company'
+import { Rank } from '@/store/types/company'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from './components/ListController.vue'
@@ -12,9 +13,22 @@ import RankList from './components/RankList.vue'
 const listControl = ref()
 
 const companyStore = useCompany()
-const fetchRankList = (page?: number) => companyStore.fetchRankList(page)
+const comName = computed(() => companyStore.company?.name || undefined)
 
 const listFiltering = () => 1
+
+const fetchRankList = (page?: number) => companyStore.fetchRankList(page)
+
+const createRank = (payload: Rank) => companyStore.createRank(payload)
+const updateRank = (payload: Rank) => companyStore.updateRank(payload)
+const deleteRank = (pk: number) => companyStore.deleteRank(pk)
+
+const multiSubmit = (payload: Rank) => {
+  if (!!payload.pk) updateRank(payload)
+  else createRank(payload)
+}
+const onDelete = (pk: number) => deleteRank(pk)
+
 const pageSelect = (page: number) => fetchRankList(page)
 
 onMounted(() => fetchRankList())
@@ -29,9 +43,13 @@ onMounted(() => fetchRankList())
   <ContentBody>
     <CCardBody>
       <ListController ref="listControl" @list-filtering="listFiltering" />
-      <AddRank />
+      <AddRank :company="comName" @multi-submit="multiSubmit" />
       <TableTitleRow title="직급 목록" excel url="#" disabled />
-      <RankList @page-select="pageSelect" />
+      <RankList
+        @multi-submit="multiSubmit"
+        @on-delete="onDelete"
+        @page-select="pageSelect"
+      />
     </CCardBody>
 
     <CCardFooter class="text-right">&nbsp;</CCardFooter>
