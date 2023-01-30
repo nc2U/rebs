@@ -10,7 +10,9 @@ import AddDepartment from './components/AddDepartment.vue'
 import TableTitleRow from '@/components/TableTitleRow.vue'
 import DepartmentList from './components/DepartmentList.vue'
 
+const page = ref(1)
 const listControl = ref()
+
 const departs = ref<
   {
     value: number | undefined
@@ -18,12 +20,10 @@ const departs = ref<
     level: number
   }[]
 >([])
-
 provide('departs', readonly(departs))
 
 const companyStore = useCompany()
 const comName = computed(() => companyStore.company?.name || undefined)
-
 const getDeparts = computed(() => companyStore.getDeparts)
 watch(
   () => getDeparts.value,
@@ -38,22 +38,25 @@ const listFiltering = () => 1
 const fetchDepartmentList = (page?: number) =>
   companyStore.fetchDepartmentList(page)
 
-const createDepartment = (payload: Depart) =>
-  companyStore.createDepartment(payload)
-const updateDepartment = (payload: Depart) =>
-  companyStore.updateDepartment(payload)
+const createDepartment = (payload: Depart, p: number) =>
+  companyStore.createDepartment(payload, p)
+const updateDepartment = (payload: Depart, p: number) =>
+  companyStore.updateDepartment(payload, p)
 const deleteDepartment = (pk: number) => companyStore.deleteDepartment(pk)
 
 const multiSubmit = (payload: Depart) => {
-  if (!!payload.pk) updateDepartment(payload)
+  if (!!payload.pk) updateDepartment(payload, page.value)
   else {
     if (payload.upper_depart) payload.level = getLevel(payload.upper_depart)
-    createDepartment(payload)
+    createDepartment(payload, page.value)
   }
 }
 const onDelete = (pk: number) => deleteDepartment(pk)
 
-const pageSelect = (page: number) => fetchDepartmentList(page)
+const pageSelect = (num: number) => {
+  page.value = num
+  fetchDepartmentList(num)
+}
 
 const getLevel = (up: number) =>
   departs.value.filter(d => d.value === up)[0].level + 1

@@ -125,21 +125,21 @@ export const useCompany = defineStore('company', () => {
       .then(res => (department.value = res.data))
       .catch(err => errorHandle(err.response.data))
 
-  const createDepartment = (payload: Department) =>
+  const createDepartment = (payload: Department, page = 1) =>
     api
       .post(`/department/`, payload)
       .then(res =>
-        fetchDepartmentList().then(() =>
+        fetchDepartmentList(page).then(() =>
           fetchDepartment(res.data.pk).then(() => message()),
         ),
       )
       .catch(err => errorHandle(err.response.data))
 
-  const updateDepartment = (payload: Department) =>
+  const updateDepartment = (payload: Department, page = 1) =>
     api
       .put(`/department/${payload.pk}/`, payload)
       .then(res =>
-        fetchDepartmentList().then(() =>
+        fetchDepartmentList(page).then(() =>
           fetchDepartment(res.data.pk).then(() => message()),
         ),
       )
@@ -178,21 +178,23 @@ export const useCompany = defineStore('company', () => {
       .then(res => (rank.value = res.data))
       .catch(err => errorHandle(err.response.data))
 
-  const createRank = (payload: Rank) =>
+  const createRank = (payload: Rank, page = 1) =>
     api
       .post(`/rank/`, payload)
       .then(res =>
-        fetchRankList().then(() =>
+        fetchRankList(page).then(() =>
           fetchRank(res.data.pk).then(() => message()),
         ),
       )
       .catch(err => errorHandle(err.response.data))
 
-  const updateRank = (payload: Rank) =>
+  const updateRank = (payload: Rank, page = 1) =>
     api
       .put(`/rank/${payload.pk}/`, payload)
       .then(res => {
-        fetchRankList().then(() => fetchRank(res.data.pk).then(() => message()))
+        fetchRankList(page).then(() =>
+          fetchRank(res.data.pk).then(() => message()),
+        )
       })
       .catch(err => errorHandle(err.response.data))
 
@@ -229,21 +231,21 @@ export const useCompany = defineStore('company', () => {
       .then(res => (staff.value = res.data))
       .catch(err => errorHandle(err.response.data))
 
-  const createStaff = (payload: Staff) =>
+  const createStaff = (payload: Staff, page = 1) =>
     api
       .post(`/staff/`, payload)
       .then(res =>
-        fetchStaffList().then(() =>
+        fetchStaffList(page).then(() =>
           fetchStaff(res.data.pk).then(() => message()),
         ),
       )
       .catch(err => errorHandle(err.response.data))
 
-  const updateStaff = (payload: Staff) =>
+  const updateStaff = (payload: Staff, page = 1) =>
     api
       .put(`/staff/${payload.pk}/`, payload)
       .then(res => {
-        fetchStaffList().then(() =>
+        fetchStaffList(page).then(() =>
           fetchStaff(res.data.pk).then(() => message()),
         )
       })

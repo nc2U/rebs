@@ -10,6 +10,7 @@ import AddRank from './components/AddRank.vue'
 import TableTitleRow from '@/components/TableTitleRow.vue'
 import RankList from './components/RankList.vue'
 
+const page = ref<number>(1)
 const listControl = ref()
 
 const companyStore = useCompany()
@@ -19,17 +20,22 @@ const listFiltering = () => 1
 
 const fetchRankList = (page?: number) => companyStore.fetchRankList(page)
 
-const createRank = (payload: Rank) => companyStore.createRank(payload)
-const updateRank = (payload: Rank) => companyStore.updateRank(payload)
+const createRank = (payload: Rank, p: number) =>
+  companyStore.createRank(payload, p)
+const updateRank = (payload: Rank, p: number) =>
+  companyStore.updateRank(payload, p)
 const deleteRank = (pk: number) => companyStore.deleteRank(pk)
 
 const multiSubmit = (payload: Rank) => {
-  if (!!payload.pk) updateRank(payload)
-  else createRank(payload)
+  if (!!payload.pk) updateRank(payload, page.value)
+  else createRank(payload, page.value)
 }
 const onDelete = (pk: number) => deleteRank(pk)
 
-const pageSelect = (page: number) => fetchRankList(page)
+const pageSelect = (num: number) => {
+  page.value = num
+  fetchRankList(num)
+}
 
 onMounted(() => fetchRankList())
 </script>
