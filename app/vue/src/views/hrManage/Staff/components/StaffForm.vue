@@ -1,5 +1,5 @@
 <script lang="ts" setup="">
-import { ref, computed, onBeforeMount, watch } from 'vue'
+import { ref, computed, onBeforeMount, watch, inject } from 'vue'
 import { isValidate } from '@/utils/helper'
 import { write_human_resource } from '@/utils/pageAuth'
 import { Staff } from '@/store/types/company'
@@ -8,6 +8,9 @@ import Multiselect from '@vueform/multiselect'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
+
+const departs = inject('departs')
+const ranks = inject('ranks')
 
 const props = defineProps({
   company: {
@@ -55,9 +58,11 @@ const formsCheck = computed(() => {
   } else return false
 })
 
-const genders = [
-  { value: 'M', label: '남성' },
-  { value: 'F', label: '여성' },
+const statuses = [
+  { value: '1', label: '근무 중' },
+  { value: '2', label: '정직 중' },
+  { value: '3', label: '퇴직신청' },
+  { value: '4', label: '퇴사처리' },
 ]
 
 const onSubmit = (event: Event) => {
@@ -189,7 +194,15 @@ watch(
             <CRow>
               <CFormLabel class="col-sm-4 col-form-label">부서</CFormLabel>
               <CCol sm="8">
-                <CFormInput v-model="form.department" placeholder="부서" />
+                <Multiselect
+                  v-model.number="form.department"
+                  :options="departs"
+                  autocomplete="label"
+                  :classes="{ search: 'form-control multiselect-search' }"
+                  :add-option-on="['enter' | 'tab']"
+                  searchable
+                  placeholder="부서"
+                />
               </CCol>
             </CRow>
           </CCol>
@@ -198,7 +211,15 @@ watch(
             <CRow>
               <CFormLabel class="col-sm-4 col-form-label">직책</CFormLabel>
               <CCol sm="8">
-                <CFormInput v-model="form.rank" placeholder="직책" />
+                <Multiselect
+                  v-model.number="form.rank"
+                  :options="ranks"
+                  autocomplete="label"
+                  :classes="{ search: 'form-control multiselect-search' }"
+                  :add-option-on="['enter' | 'tab']"
+                  searchable
+                  placeholder="직책"
+                />
               </CCol>
             </CRow>
           </CCol>
@@ -223,7 +244,15 @@ watch(
             <CRow>
               <CFormLabel class="col-sm-4 col-form-label">상태</CFormLabel>
               <CCol sm="8">
-                <CFormInput v-model="form.status" required placeholder="상태" />
+                <Multiselect
+                  v-model.number="form.status"
+                  :options="statuses"
+                  autocomplete="label"
+                  :classes="{ search: 'form-control multiselect-search' }"
+                  :add-option-on="['enter' | 'tab']"
+                  searchable
+                  placeholder="상태"
+                />
               </CCol>
             </CRow>
           </CCol>

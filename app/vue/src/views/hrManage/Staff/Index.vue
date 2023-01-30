@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, provide, readonly, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/hrManage/_menu/headermixin'
 import { useCompany } from '@/store/pinia/company'
 import { Staff } from '@/store/types/company'
@@ -13,12 +13,46 @@ import StaffList from './components/StaffList.vue'
 const page = ref<number>(1)
 const listControl = ref()
 
+const departs = ref<
+  {
+    value: number | undefined
+    label: string
+    level: number
+  }[]
+>([])
+const ranks = ref<
+  {
+    value: number | undefined
+    label: string
+  }[]
+>([])
+provide('departs', readonly(departs))
+provide('ranks', readonly(ranks))
+
 const companyStore = useCompany()
 const comName = computed(() => companyStore.company?.name || undefined)
+const getDeparts = computed(() => companyStore.getDeparts)
+const getRanks = computed(() => companyStore.getRanks)
+watch(
+  () => getDeparts.value,
+  nv => {
+    if (!!nv) departs.value = nv
+    else departs.value = []
+  },
+)
+watch(
+  () => getRanks.value,
+  nv => {
+    if (!!nv) ranks.value = nv
+    else ranks.value = []
+  },
+)
 
 const listFiltering = () => 1
 
 const fetchStaffList = (page?: number) => companyStore.fetchStaffList(page)
+const fetchAllRankList = () => companyStore.fetchAllRankList()
+const fetchAllDepartList = () => companyStore.fetchAllDepartList()
 
 const createStaff = (payload: Staff, p: number) =>
   companyStore.createStaff(payload, p)
@@ -37,7 +71,11 @@ const pageSelect = (num: number) => {
   fetchStaffList(num)
 }
 
-onMounted(() => fetchStaffList())
+onMounted(() => {
+  fetchStaffList()
+  fetchAllRankList()
+  fetchAllDepartList()
+})
 </script>
 
 <template>

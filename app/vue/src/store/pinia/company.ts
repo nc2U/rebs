@@ -93,13 +93,14 @@ export const useCompany = defineStore('company', () => {
       .catch(err => errorHandle(err.response.data))
 
   const departmentList = ref<Department[]>([])
+  const allDepartList = ref<Department[]>([])
   const department = ref<Department | null>(null)
 
   const departmentsCount = ref<number>(0)
 
   // getters
   const getDeparts = computed(() =>
-    departmentList.value.map(d => ({
+    allDepartList.value.map(d => ({
       value: d.pk,
       label: d.name,
       level: d.level,
@@ -116,6 +117,14 @@ export const useCompany = defineStore('company', () => {
       .then(res => {
         departmentList.value = res.data.results
         departmentsCount.value = res.data.count
+      })
+      .catch(err => errorHandle(err.response.data))
+
+  const fetchAllDepartList = () =>
+    api
+      .get(`/all-departs/`)
+      .then(res => {
+        allDepartList.value = res.data.results
       })
       .catch(err => errorHandle(err.response.data))
 
@@ -156,8 +165,17 @@ export const useCompany = defineStore('company', () => {
       .catch(err => errorHandle(err.response.data))
 
   const rankList = ref<Rank[]>([])
+  const allRankList = ref<Rank[]>([])
   const rank = ref<Rank | null>(null)
   const ranksCount = ref<number>(0)
+
+  // getters
+  const getRanks = computed(() =>
+    allRankList.value.map(r => ({
+      value: r.pk,
+      label: r.rank,
+    })),
+  )
 
   // actions
   const rankPages = (itemsPerPage: number) =>
@@ -169,6 +187,14 @@ export const useCompany = defineStore('company', () => {
       .then(res => {
         rankList.value = res.data.results
         ranksCount.value = res.data.count
+      })
+      .catch(err => errorHandle(err.response.data))
+
+  const fetchAllRankList = () =>
+    api
+      .get(`/all-ranks/`)
+      .then(res => {
+        allRankList.value = res.data.results
       })
       .catch(err => errorHandle(err.response.data))
 
@@ -284,6 +310,7 @@ export const useCompany = defineStore('company', () => {
     getDeparts,
     departmentPages,
     fetchDepartmentList,
+    fetchAllDepartList,
     fetchDepartment,
     createDepartment,
     updateDepartment,
@@ -292,8 +319,10 @@ export const useCompany = defineStore('company', () => {
     rankList,
     rank,
     ranksCount,
+    getRanks,
     rankPages,
     fetchRankList,
+    fetchAllRankList,
     fetchRank,
     createRank,
     updateRank,
