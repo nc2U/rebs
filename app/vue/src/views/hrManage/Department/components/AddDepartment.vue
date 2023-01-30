@@ -6,6 +6,12 @@ import { Department } from '@/store/types/company'
 import FormModal from '@/components/Modals/FormModal.vue'
 import DepartmentForm from './DepartmentForm.vue'
 
+const props = defineProps({
+  company: {
+    type: String,
+    default: null,
+  },
+})
 const emit = defineEmits(['multi-submit'])
 
 const formModal = ref()
@@ -26,7 +32,11 @@ const multiSubmit = (payload: Department) => emit('multi-submit', payload)
   <FormModal ref="formModal" size="lg">
     <template #header>부서 정보 등록</template>
     <template #default>
-      <DepartmentForm @multi-submit="multiSubmit" @close="formModal.close()" />
+      <DepartmentForm
+        :company="company"
+        @multi-submit="multiSubmit"
+        @close="formModal.close()"
+      />
     </template>
   </FormModal>
 

@@ -71,7 +71,6 @@ const deleteConfirm = () => {
 }
 
 onBeforeMount(() => {
-  form.value.company = props.company
   if (props.department) {
     form.value.pk = props.department.pk
     form.value.company = props.department.company
@@ -79,7 +78,7 @@ onBeforeMount(() => {
     form.value.level = props.department.level
     form.value.name = props.department.name
     form.value.task = props.department.task
-  }
+  } else form.value.company = props.company
 })
 
 watch(

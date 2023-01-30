@@ -46,11 +46,17 @@ const listFiltering = () => 1
 
 const multiSubmit = (payload: Depart) => {
   if (!!payload.pk) updateDepartment(payload)
-  else createDepartment(payload)
+  else {
+    if (payload.upper_depart) payload.level = getLevel(payload.upper_depart)
+    createDepartment(payload)
+  }
 }
 const onDelete = (pk: number) => deleteDepartment(pk)
 
 const pageSelect = (page: number) => fetchDepartmentList(page)
+
+const getLevel = (up: number) =>
+  departs.value.filter(d => d.value === up)[0].level + 1
 
 onMounted(() => fetchDepartmentList())
 </script>
@@ -64,10 +70,9 @@ onMounted(() => fetchDepartmentList())
   <ContentBody>
     <CCardBody>
       <ListController ref="listControl" @list-filtering="listFiltering" />
-      <AddDepartment @multi-submit="multiSubmit" />
+      <AddDepartment :company="comName" @multi-submit="multiSubmit" />
       <TableTitleRow title="부서 목록" excel url="#" disabled />
       <DepartmentList
-        :company="comName"
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
         @page-select="pageSelect"
