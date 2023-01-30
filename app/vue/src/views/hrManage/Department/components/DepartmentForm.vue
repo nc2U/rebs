@@ -59,8 +59,8 @@ const multiSubmit = (payload: Department) => {
   emit('close')
 }
 
-const deleteObject = () => {
-  emit('on-delete', {})
+const deleteObject = (pk: number) => {
+  emit('on-delete', pk)
   delModal.value.close()
   emit('close')
 }
@@ -173,7 +173,9 @@ watch(
       삭제한 데이터는 복구할 수 없습니다. 해당 정보를 삭제하시겠습니까?
     </template>
     <template #footer>
-      <CButton color="danger" @click="deleteObject">삭제</CButton>
+      <CButton color="danger" @click="deleteObject(department.pk)">
+        삭제
+      </CButton>
     </template>
   </ConfirmModal>
 

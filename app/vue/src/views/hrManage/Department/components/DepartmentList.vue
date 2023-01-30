@@ -18,7 +18,7 @@ const departmentsCount = computed(() => companyStore.departmentsCount)
 const departmentPages = (page: number) => companyStore.departmentPages(page)
 const pageSelect = (page: number) => emit('page-select', page)
 const multiSubmit = (payload: Depart) => emit('multi-submit', payload)
-const onDelete = (payload: any) => emit('on-delete', payload)
+const onDelete = (pk: number) => emit('on-delete', pk)
 </script>
 
 <template>

@@ -60,7 +60,7 @@ export const useCompany = defineStore('company', () => {
       .delete(`/company/${pk}/`)
       .then(() =>
         fetchCompanyList().then(() =>
-          message('warning', '', '삭제되었습니다.'),
+          message('warning', '', '해당 오브젝트가 삭제되었습니다.'),
         ),
       )
       .catch(err => errorHandle(err.response.data))
@@ -89,7 +89,7 @@ export const useCompany = defineStore('company', () => {
   const deleteLogo = (pk: number) =>
     api
       .delete(`/logo/${pk}/`)
-      .then(() => message('warning', '', '삭제되었습니다.'))
+      .then(() => message('warning', '', '해당 오브젝트가 삭제되었습니다.'))
       .catch(err => errorHandle(err.response.data))
 
   const departmentList = ref<Department[]>([])
@@ -150,7 +150,7 @@ export const useCompany = defineStore('company', () => {
       .delete(`/department/${pk}/`)
       .then(() =>
         fetchDepartmentList().then(() =>
-          message('warning', '', '삭제되었습니다.'),
+          message('warning', '', '해당 오브젝트가 삭제되었습니다.'),
         ),
       )
       .catch(err => errorHandle(err.response.data))
@@ -198,7 +198,9 @@ export const useCompany = defineStore('company', () => {
     api
       .delete(`/rank/${pk}/`)
       .then(() =>
-        fetchRankList().then(() => message('warning', '', '삭제되었습니다.')),
+        fetchRankList().then(() =>
+          message('warning', '', '해당 오브젝트가 삭제되었습니다.'),
+        ),
       )
       .catch(err => errorHandle(err.response.data))
 
@@ -245,7 +247,9 @@ export const useCompany = defineStore('company', () => {
     api
       .delete(`/staff/${pk}/`)
       .then(() =>
-        fetchStaffList().then(() => message('warning', '', '삭제되었습니다.')),
+        fetchStaffList().then(() =>
+          message('warning', '', '해당 오브젝트가 삭제되었습니다.'),
+        ),
       )
       .catch(err => errorHandle(err.response.data))
 

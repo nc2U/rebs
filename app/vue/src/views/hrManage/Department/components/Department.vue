@@ -27,7 +27,7 @@ const upper_depart = computed(() => {
 
 const showDetail = () => updateFormModal.value.callModal()
 const multiSubmit = (payload: Department) => emit('multi-submit', payload)
-const onDelete = (payload: any) => emit('on-delete', payload)
+const onDelete = (pk: number) => emit('on-delete', pk)
 </script>
 
 <template>
