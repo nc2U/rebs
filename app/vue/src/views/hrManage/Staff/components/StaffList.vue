@@ -1,11 +1,12 @@
 <script lang="ts" setup="">
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import { useCompany } from '@/store/pinia/company'
 import { headerSecondary } from '@/utils/cssMixins'
+import { Staff as StaffType } from '@/store/types/company'
 import Pagination from '@/components/Pagination'
 import Staff from './Staff.vue'
 
-const emit = defineEmits(['page-select'])
+const emit = defineEmits(['page-select', 'multi-submit', 'on-delete'])
 
 const companyStore = useCompany()
 const staffList = computed(() => companyStore.staffList)
@@ -13,7 +14,8 @@ const staffsCount = computed(() => companyStore.staffsCount)
 
 const staffPages = (page: number) => companyStore.staffPages(page)
 const pageSelect = (page: number) => emit('page-select', page)
-const showDetail = () => alert('준비중!!')
+const multiSubmit = (payload: StaffType) => emit('multi-submit', payload)
+const onDelete = (pk: number) => emit('on-delete', pk)
 </script>
 
 <template>
@@ -49,7 +51,8 @@ const showDetail = () => alert('준비중!!')
         v-for="staff in staffList"
         :key="staff.pk"
         :staff="staff"
-        @show-detail="showDetail"
+        @multi-submit="multiSubmit"
+        @on-delete="onDelete"
       />
     </CTableBody>
   </CTable>
