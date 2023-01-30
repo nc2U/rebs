@@ -101,9 +101,9 @@ export const useCompany = defineStore('company', () => {
   const departmentPages = (itemsPerPage: number) =>
     Math.ceil(departmentsCount.value / itemsPerPage)
 
-  const fetchDepartmentList = () =>
+  const fetchDepartmentList = (page = 1) =>
     api
-      .get('/department/')
+      .get(`/department/${page}/`)
       .then(res => {
         departmentList.value = res.data.results
         departmentsCount.value = res.data.count
@@ -112,7 +112,7 @@ export const useCompany = defineStore('company', () => {
 
   const fetchDepartment = (pk: number) =>
     api
-      .get(`/department/${pk}/`)
+      .get(`/department/?page=${pk}`)
       .then(res => (department.value = res.data))
       .catch(err => errorHandle(err.response.data))
 
@@ -150,9 +150,9 @@ export const useCompany = defineStore('company', () => {
   const rankPages = (itemsPerPage: number) =>
     Math.ceil(ranksCount.value / itemsPerPage)
 
-  const fetchRankList = () =>
+  const fetchRankList = (page = 1) =>
     api
-      .get('/rank/')
+      .get(`/rank/?page=${page}`)
       .then(res => {
         rankList.value = res.data.results
         ranksCount.value = res.data.count
