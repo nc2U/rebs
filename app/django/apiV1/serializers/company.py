@@ -18,13 +18,13 @@ class RanksInCompanySerializer(serializers.ModelSerializer):
 
 class CompanySerializer(serializers.ModelSerializer):
     departments = DepartsInCompanySerializer(many=True, read_only=True)
-    positions = RanksInCompanySerializer(many=True, read_only=True)
+    ranks = RanksInCompanySerializer(many=True, read_only=True)
 
     class Meta:
         model = Company
         fields = ('pk', 'name', 'ceo', 'tax_number', 'org_number', 'business_cond',
                   'business_even', 'es_date', 'op_date', 'zipcode', 'address1',
-                  'address2', 'address3', 'departments', 'positions')
+                  'address2', 'address3', 'departments', 'ranks')
 
 
 class LogoSerializer(serializers.ModelSerializer):
@@ -36,7 +36,7 @@ class LogoSerializer(serializers.ModelSerializer):
 class StaffsInDepartmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Staff
-        fields = ('pk', 'position', 'name')
+        fields = ('pk', 'rank', 'name')
 
 
 class DepartmentSerializer(serializers.ModelSerializer):
