@@ -59,7 +59,7 @@ class Department(models.Model):
 
 
 class JobRank(models.Model):
-    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='positions', verbose_name='회사')
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='ranks', verbose_name='회사')
     SORT_CHOICES = (('1', '임원'), ('2', '직원'))
     sort = models.CharField('구분', max_length=1, choices=SORT_CHOICES, default='1')
     level = models.PositiveSmallIntegerField('레벨')
@@ -77,8 +77,7 @@ class JobRank(models.Model):
 
 
 class Staff(models.Model):
-    user = models.OneToOneField('accounts.User', on_delete=models.DO_NOTHING, null=True, blank=True,
-                                verbose_name='유저 정보')
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='staffs', verbose_name='회사')
     department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='부서 정보',
                                    related_name='staffs')
     rank = models.ForeignKey(JobRank, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='직책 정보')
@@ -91,6 +90,8 @@ class Staff(models.Model):
     email = models.EmailField('이메일')
     STATUS_CHOICES = (('1', '근무 중'), ('2', '정직 중'), ('3', '퇴사신청'), ('4', '퇴사처리'))
     status = models.CharField('상태', max_length=1, choices=STATUS_CHOICES, default='1')
+    user = models.OneToOneField('accounts.User', on_delete=models.DO_NOTHING, null=True, blank=True,
+                                verbose_name='유저 정보')
 
     def __str__(self):
         return f'{self.name}({self.birth_date})'
