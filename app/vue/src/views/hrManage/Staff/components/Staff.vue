@@ -15,6 +15,8 @@ const emit = defineEmits(['multi-submit', 'on-delete'])
 
 const updateFormModal = ref()
 
+const badgeColor = ['', 'success', 'teal-darken-2', 'warning', 'danger']
+
 const showDetail = () => updateFormModal.value.callModal()
 const multiSubmit = (payload: Staff) => emit('multi-submit', payload)
 const onDelete = (pk: number) => emit('on-delete', pk)
@@ -29,7 +31,11 @@ const onDelete = (pk: number) => emit('on-delete', pk)
     <CTableDataCell>{{ staff.entered_date }}</CTableDataCell>
     <CTableDataCell>{{ staff.personal_phone }}</CTableDataCell>
     <CTableDataCell>{{ staff.email }}</CTableDataCell>
-    <CTableDataCell>{{ staff.status_desc }}</CTableDataCell>
+    <CTableDataCell>
+      <CBadge :color="badgeColor[staff.status]">
+        {{ staff.status_desc }}
+      </CBadge>
+    </CTableDataCell>
     <CTableDataCell>
       <CButton color="info" size="sm" @click="showDetail">확인</CButton>
     </CTableDataCell>
