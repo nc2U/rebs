@@ -28,6 +28,7 @@ class DepartmentViewSet(viewsets.ModelViewSet):
 
 class AllDepartsViewSet(DepartmentViewSet):
     pagination_class = PageNumberPaginationOneHundred
+    filterset_fields = ('company',)
 
 
 class JobRankViewSet(viewsets.ModelViewSet):
@@ -38,6 +39,7 @@ class JobRankViewSet(viewsets.ModelViewSet):
 
 class AllRanksViewSet(JobRankViewSet):
     pagination_class = PageNumberPaginationOneHundred
+    filterset_fields = ('company',)
 
 
 class StaffViewSet(viewsets.ModelViewSet):
