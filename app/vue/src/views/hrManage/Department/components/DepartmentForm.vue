@@ -1,13 +1,12 @@
 <script lang="ts" setup="">
-import { ref, computed, onBeforeMount, watch, inject } from 'vue'
+import { ref, computed, onBeforeMount, watch } from 'vue'
 import { isValidate } from '@/utils/helper'
 import { write_human_resource } from '@/utils/pageAuth'
+import { useCompany } from '@/store/pinia/company'
 import { Department } from '@/store/types/company'
 import Multiselect from '@vueform/multiselect'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
-
-const departs = inject('departs')
 
 const props = defineProps({
   company: {
@@ -19,6 +18,7 @@ const props = defineProps({
     default: null,
   },
 })
+
 const emit = defineEmits(['multi-submit', 'on-delete', 'close'])
 
 const delModal = ref()
@@ -44,6 +44,9 @@ const formsCheck = computed(() => {
     return a && b && c
   } else return false
 })
+
+const comStore = useCompany()
+const getPkDeparts = computed(() => comStore.getPkDeparts)
 
 const onSubmit = (event: Event) => {
   if (isValidate(event)) {
@@ -106,7 +109,7 @@ watch(
               <CCol sm="8">
                 <Multiselect
                   v-model.number="form.upper_depart"
-                  :options="departs"
+                  :options="getPkDeparts"
                   autocomplete="label"
                   :classes="{ search: 'form-control multiselect-search' }"
                   :add-option-on="['enter' | 'tab']"

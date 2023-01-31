@@ -13,25 +13,9 @@ import DepartmentList from './components/DepartmentList.vue'
 const page = ref(1)
 const listControl = ref()
 
-const departs = ref<
-  {
-    value: number | undefined
-    label: string
-    level: number
-  }[]
->([])
-provide('departs', readonly(departs))
-
 const companyStore = useCompany()
+const getPkDeparts = computed(() => companyStore.getPkDeparts)
 const comName = computed(() => companyStore.company?.name || undefined)
-const DDeparts = computed(() => companyStore.DDeparts)
-watch(
-  () => DDeparts.value,
-  nv => {
-    if (!!nv) departs.value = nv
-    else departs.value = []
-  },
-)
 
 const listFiltering = () => 1
 
@@ -60,7 +44,7 @@ const pageSelect = (num: number) => {
 }
 
 const getLevel = (up: number) =>
-  departs.value.filter(d => d.value === up)[0].level + 1
+  getPkDeparts.value.filter(d => d.value === up)[0].level + 1
 
 onMounted(() => {
   fetchDepartmentList()
