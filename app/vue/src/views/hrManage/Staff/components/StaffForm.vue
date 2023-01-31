@@ -68,7 +68,7 @@ const getRanks = computed(() => comStore.getRanks)
 
 const statuses = [
   { value: '1', label: '근무 중' },
-  { value: '2', label: '정직 중' },
+  { value: '2', label: '휴직 중' },
   { value: '3', label: '퇴직신청' },
   { value: '4', label: '퇴사처리' },
 ]

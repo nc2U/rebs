@@ -9,7 +9,7 @@ export interface Staff {
   rank: string
   entered_date: string | null
   status: '1' | '2' | '3' | '4'
-  status_desc?: '근무 중' | '정직 중' | '퇴사신청' | '퇴사처리'
+  status_desc?: '근무 중' | '휴직 중' | '퇴사신청' | '퇴사처리'
 }
 
 export type StaffFilter = {

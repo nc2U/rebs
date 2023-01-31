@@ -86,7 +86,7 @@ class Staff(models.Model):
                                    related_name='staffs')
     rank = models.ForeignKey(JobRank, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='직책 정보')
     entered_date = models.DateField('입사일')
-    STATUS_CHOICES = (('1', '근무 중'), ('2', '정직 중'), ('3', '퇴사신청'), ('4', '퇴사처리'))
+    STATUS_CHOICES = (('1', '근무 중'), ('2', '휴직 중'), ('3', '퇴사신청'), ('4', '퇴사처리'))
     status = models.CharField('상태', max_length=1, choices=STATUS_CHOICES, default='1')
     user = models.OneToOneField('accounts.User', on_delete=models.DO_NOTHING, null=True, blank=True,
                                 verbose_name='유저 정보')

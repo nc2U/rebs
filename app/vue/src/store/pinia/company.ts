@@ -162,6 +162,13 @@ export const useCompany = defineStore('company', () => {
     })),
   )
 
+  const getPkRanks = computed(() =>
+    allRankList.value.map(r => ({
+      value: r.pk,
+      label: r.rank,
+    })),
+  )
+
   // actions
   const rankPages = (itemsPerPage: number) =>
     Math.ceil(ranksCount.value / itemsPerPage)
@@ -226,18 +233,18 @@ export const useCompany = defineStore('company', () => {
   const departmentsCount = ref<number>(0)
 
   // getters
-  const SDeparts = computed(() =>
+  const getPkDeparts = computed(() =>
     allDepartList.value.map(d => ({
-      value: d.name,
+      value: d.pk,
       label: d.name,
+      level: d.level,
     })),
   )
 
-  const DDeparts = computed(() =>
+  const getSlugDeparts = computed(() =>
     allDepartList.value.map(d => ({
       value: d.name,
       label: d.name,
-      level: d.level,
     })),
   )
 
@@ -329,6 +336,7 @@ export const useCompany = defineStore('company', () => {
     rank,
     ranksCount,
     getRanks,
+    getPkRanks,
     rankPages,
     fetchRankList,
     fetchAllRankList,
@@ -340,8 +348,8 @@ export const useCompany = defineStore('company', () => {
     departmentList,
     department,
     departmentsCount,
-    SDeparts,
-    DDeparts,
+    getPkDeparts,
+    getSlugDeparts,
     departmentPages,
     fetchDepartmentList,
     fetchAllDepartList,

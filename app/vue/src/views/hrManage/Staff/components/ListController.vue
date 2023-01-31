@@ -25,14 +25,23 @@ const formsCheck = computed(
 
 const comStore = useCompany()
 const staffsCount = computed(() => comStore.staffsCount)
+const getPkDeparts = computed(() => comStore.getPkDeparts)
+const getPkRanks = computed(() => comStore.getPkRanks)
+
+const getStatus = [
+  { value: '1', label: '근무 중' },
+  { value: '2', label: '휴직 중' },
+  { value: '3', label: '퇴직신청' },
+  { value: '4', label: '퇴사처리' },
+]
 
 const listFiltering = (page = 1) => {
   nextTick(() => {
     emit('list-filtering', {
       page,
-      dep: form.dep,
-      rank: form.rank,
-      sts: form.sts,
+      dep: form.dep || '',
+      rank: form.rank || '',
+      sts: form.sts || '',
       q: form.q.trim(),
     })
   })
@@ -57,7 +66,7 @@ defineExpose({ listFiltering })
           <CCol md="4" class="mb-3">
             <Multiselect
               v-model.number="form.dep"
-              :options="[]"
+              :options="getPkDeparts"
               autocomplete="label"
               :classes="{ search: 'form-control multiselect-search' }"
               :add-option-on="['enter' | 'tab']"
@@ -69,7 +78,7 @@ defineExpose({ listFiltering })
           <CCol md="4" class="pb-0 mb-3">
             <Multiselect
               v-model.number="form.rank"
-              :options="[]"
+              :options="getPkRanks"
               autocomplete="label"
               :classes="{ search: 'form-control multiselect-search' }"
               :add-option-on="['enter' | 'tab']"
@@ -81,7 +90,7 @@ defineExpose({ listFiltering })
           <CCol md="4" class="pb-0 mb-3">
             <Multiselect
               v-model.number="form.sts"
-              :options="[]"
+              :options="getStatus"
               autocomplete="label"
               :classes="{ search: 'form-control multiselect-search' }"
               :add-option-on="['enter' | 'tab']"
