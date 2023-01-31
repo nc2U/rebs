@@ -1,5 +1,5 @@
 <script lang="ts" setup="">
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { Department } from '@/store/types/company'
 import FormModal from '@/components/Modals/FormModal.vue'
 import DepartmentForm from './DepartmentForm.vue'
@@ -8,6 +8,10 @@ const props = defineProps({
   department: {
     type: Object,
     required: true,
+  },
+  getDeparts: {
+    type: Array,
+    default: () => [],
   },
 })
 
@@ -18,12 +22,22 @@ const updateFormModal = ref()
 const showDetail = () => updateFormModal.value.callModal()
 const multiSubmit = (payload: Department) => emit('multi-submit', payload)
 const onDelete = (pk: number) => emit('on-delete', pk)
+const getUpperName = (up: number) => {
+  const deps = props.getDeparts as {
+    value: number
+    label: string
+    level: number
+  }[]
+  return deps.filter(d => d.value === up).map(d => d.label)[0]
+}
 </script>
 
 <template>
   <CTableRow v-if="department" class="text-center">
     <CTableDataCell>{{ department.pk }}</CTableDataCell>
-    <CTableDataCell>{{ upper_depart }}</CTableDataCell>
+    <CTableDataCell>
+      {{ getUpperName(department.upper_depart) }}
+    </CTableDataCell>
     <CTableDataCell>{{ department.name }}</CTableDataCell>
     <CTableDataCell class="text-left">{{ department.task }}</CTableDataCell>
     <CTableDataCell>

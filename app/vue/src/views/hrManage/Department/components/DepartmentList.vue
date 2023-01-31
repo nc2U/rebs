@@ -9,6 +9,7 @@ import Department from './Department.vue'
 const emit = defineEmits(['page-select', 'multi-submit', 'on-delete'])
 
 const companyStore = useCompany()
+const getPkDeparts = computed(() => companyStore.getPkDeparts)
 const departmentList = computed(() => companyStore.departmentList)
 const departmentsCount = computed(() => companyStore.departmentsCount)
 
@@ -43,6 +44,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
         v-for="depart in departmentList"
         :key="depart.pk"
         :department="depart"
+        :get-departs="getPkDeparts"
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
       />
