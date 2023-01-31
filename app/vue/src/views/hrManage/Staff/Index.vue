@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, onMounted, computed, provide, readonly, watch } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { pageTitle, navMenu } from '@/views/hrManage/_menu/headermixin'
 import { useCompany } from '@/store/pinia/company'
 import { Staff, StaffFilter } from '@/store/types/company'
@@ -12,42 +12,6 @@ import StaffList from './components/StaffList.vue'
 
 const listControl = ref()
 
-const staffDeparts = ref<
-  {
-    value: string
-    label: string
-  }[]
->([])
-const ranks = ref<
-  {
-    value: string
-    label: string
-  }[]
->([])
-provide('staffDeparts', readonly(staffDeparts))
-provide('ranks', readonly(ranks))
-
-const companyStore = useCompany()
-const initComId = computed(() => companyStore.initComId)
-const comId = computed(() => companyStore.company?.pk || initComId.value)
-const comName = computed(() => companyStore.company?.name || undefined)
-const SDeparts = computed(() => companyStore.SDeparts)
-const getRanks = computed(() => companyStore.getRanks)
-watch(
-  () => SDeparts.value,
-  nv => {
-    if (!!nv) staffDeparts.value = nv
-    else staffDeparts.value = []
-  },
-)
-watch(
-  () => getRanks.value,
-  nv => {
-    if (!!nv) ranks.value = nv
-    else ranks.value = []
-  },
-)
-
 const dataFilter = ref<StaffFilter>({
   page: 1,
   com: 1,
@@ -56,6 +20,11 @@ const dataFilter = ref<StaffFilter>({
   sts: '',
   q: '',
 })
+
+const companyStore = useCompany()
+const initComId = computed(() => companyStore.initComId)
+const comId = computed(() => companyStore.company?.pk || initComId.value)
+const comName = computed(() => companyStore.company?.name || undefined)
 
 onMounted(() => {
   fetchStaffList({ com: comId.value })

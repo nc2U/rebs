@@ -1,7 +1,8 @@
 <script lang="ts" setup="">
-import { ref, computed, onBeforeMount, watch, inject } from 'vue'
+import { ref, computed, onBeforeMount, watch } from 'vue'
 import { isValidate } from '@/utils/helper'
 import { write_human_resource } from '@/utils/pageAuth'
+import { useCompany } from '@/store/pinia/company'
 import { Staff } from '@/store/types/company'
 import { maska as vMaska } from 'maska'
 import { dateFormat } from '@/utils/baseMixins'
@@ -9,9 +10,6 @@ import Multiselect from '@vueform/multiselect'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
-
-const staffDeparts = inject('staffDeparts')
-const ranks = inject('ranks')
 
 const props = defineProps({
   company: {
@@ -23,6 +21,7 @@ const props = defineProps({
     default: null,
   },
 })
+
 const emit = defineEmits(['multi-submit', 'on-delete', 'close'])
 
 const delModal = ref()
@@ -62,6 +61,10 @@ const formsCheck = computed(() => {
     return a && b && c && d && e && f && g && h && i
   } else return false
 })
+
+const comStore = useCompany()
+const getSlugDeparts = computed(() => comStore.getSlugDeparts)
+const getRanks = computed(() => comStore.getRanks)
 
 const statuses = [
   { value: '1', label: '근무 중' },
@@ -201,7 +204,7 @@ watch(
               <CCol sm="8">
                 <Multiselect
                   v-model.number="form.department"
-                  :options="staffDeparts"
+                  :options="getSlugDeparts"
                   autocomplete="label"
                   :classes="{ search: 'form-control multiselect-search' }"
                   :add-option-on="['enter' | 'tab']"
@@ -218,7 +221,7 @@ watch(
               <CCol sm="8">
                 <Multiselect
                   v-model.number="form.rank"
-                  :options="ranks"
+                  :options="getRanks"
                   autocomplete="label"
                   :classes="{ search: 'form-control multiselect-search' }"
                   :add-option-on="['enter' | 'tab']"
