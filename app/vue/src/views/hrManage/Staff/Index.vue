@@ -29,6 +29,8 @@ provide('staffDeparts', readonly(staffDeparts))
 provide('ranks', readonly(ranks))
 
 const companyStore = useCompany()
+const initComId = computed(() => companyStore.initComId)
+const comId = computed(() => companyStore.company?.pk || initComId.value)
 const comName = computed(() => companyStore.company?.name || undefined)
 const SDeparts = computed(() => companyStore.SDeparts)
 const getRanks = computed(() => companyStore.getRanks)
@@ -49,31 +51,34 @@ watch(
 
 const listFiltering = () => 1
 
-const fetchStaffList = (page?: number) => companyStore.fetchStaffList(page)
-const fetchAllRankList = () => companyStore.fetchAllRankList()
-const fetchAllDepartList = () => companyStore.fetchAllDepartList()
+const fetchStaffList = (payload: { page?: number; com?: number }) =>
+  companyStore.fetchStaffList(payload)
+const fetchAllRankList = (com?: number) => companyStore.fetchAllRankList(com)
+const fetchAllDepartList = (com?: number) =>
+  companyStore.fetchAllDepartList(com)
 
-const createStaff = (payload: Staff, p: number) =>
-  companyStore.createStaff(payload, p)
-const updateStaff = (payload: Staff, p: number) =>
-  companyStore.updateStaff(payload, p)
-const deleteStaff = (pk: number) => companyStore.deleteStaff(pk)
+const createStaff = (payload: Staff, p?: number, c?: number) =>
+  companyStore.createStaff(payload, p, c)
+const updateStaff = (payload: Staff, p?: number, c?: number) =>
+  companyStore.updateStaff(payload, p, c)
+const deleteStaff = (pk: number, com?: number) =>
+  companyStore.deleteStaff(pk, com)
 
 const multiSubmit = (payload: Staff) => {
-  if (!!payload.pk) updateStaff(payload, page.value)
-  else createStaff(payload, page.value)
+  if (!!payload.pk) updateStaff(payload, page.value, comId.value)
+  else createStaff(payload, page.value, comId.value)
 }
-const onDelete = (pk: number) => deleteStaff(pk)
+const onDelete = (pk: number) => deleteStaff(pk, comId.value)
 
 const pageSelect = (num: number) => {
   page.value = num
-  fetchStaffList(num)
+  fetchStaffList({ page: num, com: comId.value })
 }
 
 onMounted(() => {
-  fetchStaffList()
-  fetchAllRankList()
-  fetchAllDepartList()
+  fetchStaffList({ com: comId.value })
+  fetchAllRankList(comId.value)
+  fetchAllDepartList(comId.value)
 })
 </script>
 
