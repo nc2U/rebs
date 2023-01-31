@@ -4,7 +4,13 @@ import { defineStore } from 'pinia'
 import { useAccount } from '@/store/pinia/account'
 import { errorHandle, message } from '@/utils/helper'
 import { Company, Logo } from '@/store/types/settings'
-import { Staff, StaffFilter, Rank, Department } from '@/store/types/company'
+import {
+  Staff,
+  StaffFilter,
+  Rank,
+  Department,
+  RankFilter,
+} from '@/store/types/company'
 
 const accountStore = useAccount()
 
@@ -102,10 +108,10 @@ export const useCompany = defineStore('company', () => {
 
   const fetchStaffList = (payload: StaffFilter) => {
     const { page = 1, com = 1, dep = '', rank = '', sts = '', q = '' } = payload
-    const query = `?page=${page}&company=${com}&department=${dep}&rank=${rank}&status=${sts}&search=${q}`
+    const qStr = `?page=${page}&company=${com}&department=${dep}&rank=${rank}&status=${sts}&search=${q}`
 
     return api
-      .get(`/staff/${query}`)
+      .get(`/staff/${qStr}`)
       .then(res => {
         staffList.value = res.data.results
         staffsCount.value = res.data.count
@@ -173,14 +179,17 @@ export const useCompany = defineStore('company', () => {
   const rankPages = (itemsPerPage: number) =>
     Math.ceil(ranksCount.value / itemsPerPage)
 
-  const fetchRankList = (page = 1) =>
-    api
-      .get(`/rank/?page=${page}`)
+  const fetchRankList = (payload: RankFilter) => {
+    const { page = 1, com = 1, sort = '', q = '' } = payload
+    const queryStr = `?page=${page}&company=${com}&sort=${sort}&search=${q}`
+    return api
+      .get(`/rank/${queryStr}`)
       .then(res => {
         rankList.value = res.data.results
         ranksCount.value = res.data.count
       })
       .catch(err => errorHandle(err.response.data))
+  }
 
   const fetchAllRankList = (com = 1) =>
     api
@@ -196,31 +205,31 @@ export const useCompany = defineStore('company', () => {
       .then(res => (rank.value = res.data))
       .catch(err => errorHandle(err.response.data))
 
-  const createRank = (payload: Rank, page = 1) =>
+  const createRank = (payload: Rank, page = 1, com = 1) =>
     api
       .post(`/rank/`, payload)
       .then(res =>
-        fetchRankList(page).then(() =>
+        fetchRankList({ page, com }).then(() =>
           fetchRank(res.data.pk).then(() => message()),
         ),
       )
       .catch(err => errorHandle(err.response.data))
 
-  const updateRank = (payload: Rank, page = 1) =>
+  const updateRank = (payload: Rank, page = 1, com = 1) =>
     api
       .put(`/rank/${payload.pk}/`, payload)
       .then(res => {
-        fetchRankList(page).then(() =>
+        fetchRankList({ page, com }).then(() =>
           fetchRank(res.data.pk).then(() => message()),
         )
       })
       .catch(err => errorHandle(err.response.data))
 
-  const deleteRank = (pk: number) =>
+  const deleteRank = (pk: number, com = 1) =>
     api
       .delete(`/rank/${pk}/`)
       .then(() =>
-        fetchRankList().then(() =>
+        fetchRankList({ com }).then(() =>
           message('warning', '', '해당 오브젝트가 삭제되었습니다.'),
         ),
       )

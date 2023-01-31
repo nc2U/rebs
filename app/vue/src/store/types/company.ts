@@ -32,6 +32,13 @@ export interface Rank {
   description: string
 }
 
+export type RankFilter = {
+  page?: number
+  com?: number
+  sort?: string
+  q?: string
+}
+
 export interface Department {
   pk?: number
   company?: string
@@ -40,4 +47,11 @@ export interface Department {
   name: string
   task: string
   staffs?: []
+}
+
+export type DepFilter = {
+  page?: number
+  com?: number
+  upp?: string
+  q?: string
 }

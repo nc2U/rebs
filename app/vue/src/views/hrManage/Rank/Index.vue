@@ -2,7 +2,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { pageTitle, navMenu } from '@/views/hrManage/_menu/headermixin'
 import { useCompany } from '@/store/pinia/company'
-import { Rank } from '@/store/types/company'
+import { Rank, RankFilter } from '@/store/types/company'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from './components/ListController.vue'
@@ -10,34 +10,53 @@ import AddRank from './components/AddRank.vue'
 import TableTitleRow from '@/components/TableTitleRow.vue'
 import RankList from './components/RankList.vue'
 
-const page = ref<number>(1)
 const listControl = ref()
 
+const dataFilter = ref<RankFilter>({
+  page: 1,
+  com: 1,
+  sort: '',
+  q: '',
+})
+
 const companyStore = useCompany()
+const initComId = computed(() => companyStore.initComId)
+const comId = computed(() => companyStore.company?.pk || initComId.value)
 const comName = computed(() => companyStore.company?.name || undefined)
 
-const listFiltering = () => 1
+onMounted(() => fetchRankList({}))
 
-const fetchRankList = (page?: number) => companyStore.fetchRankList(page)
+const listFiltering = (payload: RankFilter) => {
+  dataFilter.value = payload
+  fetchRankList({
+    page: payload.page,
+    com: payload.com,
+    sort: payload.sort,
+    q: payload.q,
+  })
+}
 
-const createRank = (payload: Rank, p: number) =>
-  companyStore.createRank(payload, p)
-const updateRank = (payload: Rank, p: number) =>
-  companyStore.updateRank(payload, p)
-const deleteRank = (pk: number) => companyStore.deleteRank(pk)
+const fetchRankList = (payload: RankFilter) =>
+  companyStore.fetchRankList(payload)
+
+const createRank = (payload: Rank, p?: number, c?: number) =>
+  companyStore.createRank(payload, p, c)
+const updateRank = (payload: Rank, p?: number, c?: number) =>
+  companyStore.updateRank(payload, p, c)
+const deleteRank = (pk: number, com: number) => companyStore.deleteRank(pk, com)
 
 const multiSubmit = (payload: Rank) => {
-  if (!!payload.pk) updateRank(payload, page.value)
-  else createRank(payload, page.value)
+  const { page } = dataFilter.value
+  if (!!payload.pk) updateRank(payload, page, comId.value)
+  else createRank(payload, page, comId.value)
 }
-const onDelete = (pk: number) => deleteRank(pk)
+const onDelete = (pk: number) => deleteRank(pk, comId.value)
 
 const pageSelect = (num: number) => {
-  page.value = num
-  fetchRankList(num)
+  dataFilter.value.page = num
+  dataFilter.value.com = comId.value
+  fetchRankList(dataFilter.value)
 }
-
-onMounted(() => fetchRankList())
 </script>
 
 <template>

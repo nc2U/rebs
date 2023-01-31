@@ -54,7 +54,7 @@ const createStaff = (payload: Staff, p?: number, c?: number) =>
   companyStore.createStaff(payload, p, c)
 const updateStaff = (payload: Staff, p?: number, c?: number) =>
   companyStore.updateStaff(payload, p, c)
-const deleteStaff = (pk: number, com?: number) =>
+const deleteStaff = (pk: number, com: number) =>
   companyStore.deleteStaff(pk, com)
 
 const multiSubmit = (payload: Staff) => {
