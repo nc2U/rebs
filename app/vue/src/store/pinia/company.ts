@@ -92,80 +92,56 @@ export const useCompany = defineStore('company', () => {
       .then(() => message('warning', '', '해당 오브젝트가 삭제되었습니다.'))
       .catch(err => errorHandle(err.response.data))
 
-  const departmentList = ref<Department[]>([])
-  const allDepartList = ref<Department[]>([])
-  const department = ref<Department | null>(null)
-
-  const departmentsCount = ref<number>(0)
-
-  // getters
-  const SDeparts = computed(() =>
-    allDepartList.value.map(d => ({
-      value: d.name,
-      label: d.name,
-    })),
-  )
-
-  const DDeparts = computed(() =>
-    allDepartList.value.map(d => ({
-      value: d.name,
-      label: d.name,
-      level: d.level,
-    })),
-  )
+  const staffList = ref<Rank[]>([])
+  const staff = ref<Rank | null>(null)
+  const staffsCount = ref<number>(0)
 
   // actions
-  const departmentPages = (itemsPerPage: number) =>
-    Math.ceil(departmentsCount.value / itemsPerPage)
+  const staffPages = (itemsPerPage: number) =>
+    Math.ceil(staffsCount.value / itemsPerPage)
 
-  const fetchDepartmentList = (page = 1) =>
-    api
-      .get(`/department/?page=${page}`)
+  const fetchStaffList = (payload: { page?: number; com?: number }) => {
+    const { com = 1, page = 1 } = payload
+    return api
+      .get(`/staff/?page=${page}&company=${com}`)
       .then(res => {
-        departmentList.value = res.data.results
-        departmentsCount.value = res.data.count
+        staffList.value = res.data.results
+        staffsCount.value = res.data.count
       })
       .catch(err => errorHandle(err.response.data))
+  }
 
-  const fetchAllDepartList = () =>
+  const fetchStaff = (pk: number) =>
     api
-      .get(`/all-departs/`)
-      .then(res => {
-        allDepartList.value = res.data.results
-      })
+      .get(`/staff/${pk}/`)
+      .then(res => (staff.value = res.data))
       .catch(err => errorHandle(err.response.data))
 
-  const fetchDepartment = (pk: number) =>
+  const createStaff = (payload: Staff, page = 1, com = 1) =>
     api
-      .get(`/department/${pk}/`)
-      .then(res => (department.value = res.data))
-      .catch(err => errorHandle(err.response.data))
-
-  const createDepartment = (payload: Department, page = 1) =>
-    api
-      .post(`/department/`, payload)
+      .post(`/staff/`, payload)
       .then(res =>
-        fetchDepartmentList(page).then(() =>
-          fetchDepartment(res.data.pk).then(() => message()),
+        fetchStaffList({ page, com }).then(() =>
+          fetchStaff(res.data.pk).then(() => message()),
         ),
       )
       .catch(err => errorHandle(err.response.data))
 
-  const updateDepartment = (payload: Department, page = 1) =>
+  const updateStaff = (payload: Staff, page = 1, com = 1) =>
     api
-      .put(`/department/${payload.pk}/`, payload)
-      .then(res =>
-        fetchDepartmentList(page).then(() =>
-          fetchDepartment(res.data.pk).then(() => message()),
-        ),
-      )
+      .put(`/staff/${payload.pk}/`, payload)
+      .then(res => {
+        fetchStaffList({ page, com }).then(() =>
+          fetchStaff(res.data.pk).then(() => message()),
+        )
+      })
       .catch(err => errorHandle(err.response.data))
 
-  const deleteDepartment = (pk: number) =>
+  const deleteStaff = (pk: number, com = 1) =>
     api
-      .delete(`/department/${pk}/`)
+      .delete(`/staff/${pk}/`)
       .then(() =>
-        fetchDepartmentList().then(() =>
+        fetchStaffList({ com }).then(() =>
           message('warning', '', '해당 오브젝트가 삭제되었습니다.'),
         ),
       )
@@ -197,9 +173,9 @@ export const useCompany = defineStore('company', () => {
       })
       .catch(err => errorHandle(err.response.data))
 
-  const fetchAllRankList = () =>
+  const fetchAllRankList = (com = 1) =>
     api
-      .get(`/all-ranks/`)
+      .get(`/all-ranks/?company=${com}`)
       .then(res => {
         allRankList.value = res.data.results
       })
@@ -241,54 +217,80 @@ export const useCompany = defineStore('company', () => {
       )
       .catch(err => errorHandle(err.response.data))
 
-  const staffList = ref<Rank[]>([])
-  const staff = ref<Rank | null>(null)
-  const staffsCount = ref<number>(0)
+  const departmentList = ref<Department[]>([])
+  const allDepartList = ref<Department[]>([])
+  const department = ref<Department | null>(null)
+
+  const departmentsCount = ref<number>(0)
+
+  // getters
+  const SDeparts = computed(() =>
+    allDepartList.value.map(d => ({
+      value: d.name,
+      label: d.name,
+    })),
+  )
+
+  const DDeparts = computed(() =>
+    allDepartList.value.map(d => ({
+      value: d.name,
+      label: d.name,
+      level: d.level,
+    })),
+  )
 
   // actions
-  const staffPages = (itemsPerPage: number) =>
-    Math.ceil(staffsCount.value / itemsPerPage)
+  const departmentPages = (itemsPerPage: number) =>
+    Math.ceil(departmentsCount.value / itemsPerPage)
 
-  const fetchStaffList = (page = 1) =>
+  const fetchDepartmentList = (page = 1) =>
     api
-      .get(`/staff/?page=${page}`)
+      .get(`/department/?page=${page}`)
       .then(res => {
-        staffList.value = res.data.results
-        staffsCount.value = res.data.count
+        departmentList.value = res.data.results
+        departmentsCount.value = res.data.count
       })
       .catch(err => errorHandle(err.response.data))
 
-  const fetchStaff = (pk: number) =>
+  const fetchAllDepartList = (com = 1) =>
     api
-      .get(`/staff/${pk}/`)
-      .then(res => (staff.value = res.data))
+      .get(`/all-departs/?company=${com}`)
+      .then(res => {
+        allDepartList.value = res.data.results
+      })
       .catch(err => errorHandle(err.response.data))
 
-  const createStaff = (payload: Staff, page = 1) =>
+  const fetchDepartment = (pk: number) =>
     api
-      .post(`/staff/`, payload)
+      .get(`/department/${pk}/`)
+      .then(res => (department.value = res.data))
+      .catch(err => errorHandle(err.response.data))
+
+  const createDepartment = (payload: Department, page = 1) =>
+    api
+      .post(`/department/`, payload)
       .then(res =>
-        fetchStaffList(page).then(() =>
-          fetchStaff(res.data.pk).then(() => message()),
+        fetchDepartmentList(page).then(() =>
+          fetchDepartment(res.data.pk).then(() => message()),
         ),
       )
       .catch(err => errorHandle(err.response.data))
 
-  const updateStaff = (payload: Staff, page = 1) =>
+  const updateDepartment = (payload: Department, page = 1) =>
     api
-      .put(`/staff/${payload.pk}/`, payload)
-      .then(res => {
-        fetchStaffList(page).then(() =>
-          fetchStaff(res.data.pk).then(() => message()),
-        )
-      })
+      .put(`/department/${payload.pk}/`, payload)
+      .then(res =>
+        fetchDepartmentList(page).then(() =>
+          fetchDepartment(res.data.pk).then(() => message()),
+        ),
+      )
       .catch(err => errorHandle(err.response.data))
 
-  const deleteStaff = (pk: number) =>
+  const deleteDepartment = (pk: number) =>
     api
-      .delete(`/staff/${pk}/`)
+      .delete(`/department/${pk}/`)
       .then(() =>
-        fetchStaffList().then(() =>
+        fetchDepartmentList().then(() =>
           message('warning', '', '해당 오브젝트가 삭제되었습니다.'),
         ),
       )
@@ -311,18 +313,15 @@ export const useCompany = defineStore('company', () => {
     updateLogo,
     deleteLogo,
 
-    departmentList,
-    department,
-    departmentsCount,
-    SDeparts,
-    DDeparts,
-    departmentPages,
-    fetchDepartmentList,
-    fetchAllDepartList,
-    fetchDepartment,
-    createDepartment,
-    updateDepartment,
-    deleteDepartment,
+    staffList,
+    staff,
+    staffsCount,
+    staffPages,
+    fetchStaffList,
+    fetchStaff,
+    createStaff,
+    updateStaff,
+    deleteStaff,
 
     rankList,
     rank,
@@ -336,14 +335,17 @@ export const useCompany = defineStore('company', () => {
     updateRank,
     deleteRank,
 
-    staffList,
-    staff,
-    staffsCount,
-    staffPages,
-    fetchStaffList,
-    fetchStaff,
-    createStaff,
-    updateStaff,
-    deleteStaff,
+    departmentList,
+    department,
+    departmentsCount,
+    SDeparts,
+    DDeparts,
+    departmentPages,
+    fetchDepartmentList,
+    fetchAllDepartList,
+    fetchDepartment,
+    createDepartment,
+    updateDepartment,
+    deleteDepartment,
   }
 })
