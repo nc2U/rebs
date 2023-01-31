@@ -10,9 +10,6 @@ const emit = defineEmits(['page-select', 'multi-submit', 'on-delete'])
 
 const companyStore = useCompany()
 const departmentList = computed(() => companyStore.departmentList)
-const departs = computed(() =>
-  departmentList.value.map(d => ({ pk: d.pk, name: d.name })),
-)
 const departmentsCount = computed(() => companyStore.departmentsCount)
 
 const departmentPages = (page: number) => companyStore.departmentPages(page)
@@ -46,7 +43,6 @@ const onDelete = (pk: number) => emit('on-delete', pk)
         v-for="depart in departmentList"
         :key="depart.pk"
         :department="depart"
-        :departs="departs"
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
       />

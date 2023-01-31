@@ -12,7 +12,6 @@ import {
   Department,
   DepFilter,
 } from '@/store/types/company'
-import { resolveUnref } from '@vueuse/core'
 
 const accountStore = useAccount()
 
@@ -259,6 +258,14 @@ export const useCompany = defineStore('company', () => {
     })),
   )
 
+  const getUpperDeps = computed(() => [
+    ...new Set(
+      allDepartList.value
+        .filter(d => !!d.upper_depart)
+        .map(d => d.upper_depart),
+    ),
+  ])
+
   // actions
   const departmentPages = (itemsPerPage: number) =>
     Math.ceil(departmentsCount.value / itemsPerPage)
@@ -365,6 +372,7 @@ export const useCompany = defineStore('company', () => {
     departmentsCount,
     getPkDeparts,
     getSlugDeparts,
+    getUpperDeps,
     departmentPages,
     fetchDepartmentList,
     fetchAllDepartList,

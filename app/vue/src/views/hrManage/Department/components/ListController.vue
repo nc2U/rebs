@@ -16,6 +16,12 @@ const formsCheck = computed(() => form.upp === '' && form.q.trim() === '')
 const comStore = useCompany()
 const departmentsCount = computed(() => comStore.departmentsCount)
 const getPkDeparts = computed(() => comStore.getPkDeparts)
+const uppers = computed(() => comStore.getUpperDeps)
+const getUpperDeps = computed(() =>
+  getPkDeparts.value.filter((d: { value: number & any }) =>
+    uppers.value.includes(d.value),
+  ),
+)
 
 const listFiltering = (page = 1) => {
   nextTick(() => {
@@ -44,7 +50,7 @@ defineExpose({ listFiltering })
           <CCol md="4" class="mb-3">
             <Multiselect
               v-model="form.upp"
-              :options="getPkDeparts"
+              :options="getUpperDeps"
               autocomplete="label"
               :classes="{ search: 'form-control multiselect-search' }"
               :add-option-on="['enter' | 'tab']"

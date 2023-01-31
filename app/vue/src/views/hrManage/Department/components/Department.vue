@@ -9,21 +9,11 @@ const props = defineProps({
     type: Object,
     required: true,
   },
-  departs: {
-    type: Array,
-    default: () => [],
-  },
 })
 
 const emit = defineEmits(['multi-submit', 'on-delete'])
 
 const updateFormModal = ref()
-
-const upper_depart = computed(() => {
-  const ud = props.department.upper_depart
-  const departs = props.departs as { pk: number; name: string }[]
-  return !!ud ? departs.filter(d => d.pk === ud)[0].name : ''
-})
 
 const showDetail = () => updateFormModal.value.callModal()
 const multiSubmit = (payload: Department) => emit('multi-submit', payload)
