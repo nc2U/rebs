@@ -8,9 +8,11 @@ import {
   Staff,
   StaffFilter,
   Rank,
-  Department,
   RankFilter,
+  Department,
+  DepFilter,
 } from '@/store/types/company'
+import { resolveUnref } from '@vueuse/core'
 
 const accountStore = useAccount()
 
@@ -261,14 +263,18 @@ export const useCompany = defineStore('company', () => {
   const departmentPages = (itemsPerPage: number) =>
     Math.ceil(departmentsCount.value / itemsPerPage)
 
-  const fetchDepartmentList = (page = 1) =>
-    api
-      .get(`/department/?page=${page}`)
+  const fetchDepartmentList = (payload: DepFilter) => {
+    const { page = 1, com = 1, upp = '', q = '' } = payload
+    const queryStr = `?page=${page}&company=${com}&upper_depart=${upp}&search=${q}`
+
+    return api
+      .get(`/department/${queryStr}`)
       .then(res => {
         departmentList.value = res.data.results
         departmentsCount.value = res.data.count
       })
       .catch(err => errorHandle(err.response.data))
+  }
 
   const fetchAllDepartList = (com = 1) =>
     api
@@ -284,31 +290,31 @@ export const useCompany = defineStore('company', () => {
       .then(res => (department.value = res.data))
       .catch(err => errorHandle(err.response.data))
 
-  const createDepartment = (payload: Department, page = 1) =>
+  const createDepartment = (payload: Department, page = 1, com = 1) =>
     api
       .post(`/department/`, payload)
       .then(res =>
-        fetchDepartmentList(page).then(() =>
+        fetchDepartmentList({ page, com }).then(() =>
           fetchDepartment(res.data.pk).then(() => message()),
         ),
       )
       .catch(err => errorHandle(err.response.data))
 
-  const updateDepartment = (payload: Department, page = 1) =>
+  const updateDepartment = (payload: Department, page = 1, com = 1) =>
     api
       .put(`/department/${payload.pk}/`, payload)
       .then(res =>
-        fetchDepartmentList(page).then(() =>
+        fetchDepartmentList({ page, com }).then(() =>
           fetchDepartment(res.data.pk).then(() => message()),
         ),
       )
       .catch(err => errorHandle(err.response.data))
 
-  const deleteDepartment = (pk: number) =>
+  const deleteDepartment = (pk: number, com = 1) =>
     api
       .delete(`/department/${pk}/`)
       .then(() =>
-        fetchDepartmentList().then(() =>
+        fetchDepartmentList({ com }).then(() =>
           message('warning', '', '해당 오브젝트가 삭제되었습니다.'),
         ),
       )

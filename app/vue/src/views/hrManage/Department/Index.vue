@@ -2,7 +2,11 @@
 import { ref, onMounted, computed } from 'vue'
 import { pageTitle, navMenu } from '@/views/hrManage/_menu/headermixin'
 import { useCompany } from '@/store/pinia/company'
-import { Department as Depart } from '@/store/types/company'
+import {
+  Department as Depart,
+  DepFilter,
+  RankFilter,
+} from '@/store/types/company'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from './components/ListController.vue'
@@ -10,46 +14,65 @@ import AddDepartment from './components/AddDepartment.vue'
 import TableTitleRow from '@/components/TableTitleRow.vue'
 import DepartmentList from './components/DepartmentList.vue'
 
-const page = ref(1)
 const listControl = ref()
+
+const dataFilter = ref<DepFilter>({
+  page: 1,
+  com: 1,
+  upp: '',
+  q: '',
+})
 
 const companyStore = useCompany()
 const getPkDeparts = computed(() => companyStore.getPkDeparts)
+const initComId = computed(() => companyStore.initComId)
+const comId = computed(() => companyStore.company?.pk || initComId.value)
 const comName = computed(() => companyStore.company?.name || undefined)
 
-const listFiltering = () => 1
+onMounted(() => {
+  fetchDepartmentList({})
+  fetchAllDepartList()
+})
 
-const fetchDepartmentList = (page?: number) =>
-  companyStore.fetchDepartmentList(page)
+const listFiltering = (payload: DepFilter) => {
+  dataFilter.value = payload
+  fetchDepartmentList({
+    page: payload.page,
+    com: payload.com,
+    upp: payload.upp,
+    q: payload.q,
+  })
+}
+
+const fetchDepartmentList = (payload: DepFilter) =>
+  companyStore.fetchDepartmentList(payload)
 const fetchAllDepartList = () => companyStore.fetchAllDepartList()
 
-const createDepartment = (payload: Depart, p: number) =>
-  companyStore.createDepartment(payload, p)
-const updateDepartment = (payload: Depart, p: number) =>
-  companyStore.updateDepartment(payload, p)
-const deleteDepartment = (pk: number) => companyStore.deleteDepartment(pk)
+const createDepartment = (payload: Depart, p?: number, c?: number) =>
+  companyStore.createDepartment(payload, p, c)
+const updateDepartment = (payload: Depart, p?: number, c?: number) =>
+  companyStore.updateDepartment(payload, p, c)
+const deleteDepartment = (pk: number, com: number) =>
+  companyStore.deleteDepartment(pk, com)
 
 const multiSubmit = (payload: Depart) => {
-  if (!!payload.pk) updateDepartment(payload, page.value)
+  const { page } = dataFilter.value
+  if (!!payload.pk) updateDepartment(payload, page)
   else {
     if (payload.upper_depart) payload.level = getLevel(payload.upper_depart)
-    createDepartment(payload, page.value)
+    createDepartment(payload, page)
   }
 }
-const onDelete = (pk: number) => deleteDepartment(pk)
+const onDelete = (pk: number) => deleteDepartment(pk, comId.value)
 
 const pageSelect = (num: number) => {
-  page.value = num
-  fetchDepartmentList(num)
+  dataFilter.value.page = num
+  dataFilter.value.com = comId.value
+  fetchDepartmentList(dataFilter.value)
 }
 
 const getLevel = (up: number) =>
   getPkDeparts.value.filter(d => d.value === up)[0].level + 1
-
-onMounted(() => {
-  fetchDepartmentList()
-  fetchAllDepartList()
-})
 </script>
 
 <template>
