@@ -2,6 +2,7 @@
 import { reactive, computed, nextTick } from 'vue'
 import { numFormat } from '@/utils/baseMixins'
 import { useCompany } from '@/store/pinia/company'
+import Multiselect from '@vueform/multiselect'
 
 const emit = defineEmits(['list-filtering'])
 
@@ -52,19 +53,40 @@ defineExpose({ listFiltering })
       <CCol md="6">
         <CRow>
           <CCol md="4" class="mb-3">
-            <CFormSelect v-model="form.dep" @change="listFiltering(1)">
-              <option value="">---------</option>
-            </CFormSelect>
+            <Multiselect
+              v-model.number="form.dep"
+              :options="[]"
+              autocomplete="label"
+              :classes="{ search: 'form-control multiselect-search' }"
+              :add-option-on="['enter' | 'tab']"
+              searchable
+              placeholder="부서별 목록"
+              @change="listFiltering(1)"
+            />
           </CCol>
           <CCol md="4" class="pb-0 mb-3">
-            <CFormSelect v-model="form.rank" @change="listFiltering(1)">
-              <option value="">---------</option>
-            </CFormSelect>
+            <Multiselect
+              v-model.number="form.rank"
+              :options="[]"
+              autocomplete="label"
+              :classes="{ search: 'form-control multiselect-search' }"
+              :add-option-on="['enter' | 'tab']"
+              searchable
+              placeholder="직급별 목록"
+              @change="listFiltering(1)"
+            />
           </CCol>
           <CCol md="4" class="pb-0 mb-3">
-            <CFormSelect v-model="form.sts" @change="listFiltering(1)">
-              <option value="">---------</option>
-            </CFormSelect>
+            <Multiselect
+              v-model.number="form.sts"
+              :options="[]"
+              autocomplete="label"
+              :classes="{ search: 'form-control multiselect-search' }"
+              :add-option-on="['enter' | 'tab']"
+              searchable
+              placeholder="상태별 목록"
+              @change="listFiltering(1)"
+            />
           </CCol>
         </CRow>
       </CCol>
@@ -75,7 +97,7 @@ defineExpose({ listFiltering })
             <CInputGroup>
               <CFormInput
                 v-model="form.q"
-                placeholder="직급명 검색"
+                placeholder="직원 성명, 이메일 검색"
                 aria-label="search"
                 @keydown.enter="listFiltering(1)"
               />
@@ -88,7 +110,7 @@ defineExpose({ listFiltering })
 
     <CRow>
       <CCol class="p-2 pl-3">
-        <strong> 직급 수 조회 결과 : {{ numFormat(staffsCount) }} 건 </strong>
+        <strong> 직원 수 조회 결과 : {{ numFormat(staffsCount) }} 건 </strong>
       </CCol>
       <CCol v-if="!formsCheck" class="text-right mb-0">
         <CButton color="info" size="sm" @click="resetForm">

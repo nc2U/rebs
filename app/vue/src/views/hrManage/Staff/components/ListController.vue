@@ -2,6 +2,7 @@
 import { reactive, computed, nextTick } from 'vue'
 import { numFormat } from '@/utils/baseMixins'
 import { useCompany } from '@/store/pinia/company'
+import Multiselect from '@vueform/multiselect'
 
 const emit = defineEmits(['list-filtering'])
 
@@ -52,19 +53,40 @@ defineExpose({ listFiltering })
       <CCol md="6">
         <CRow>
           <CCol md="4" class="mb-3">
-            <CFormSelect v-model="form.dep" @change="listFiltering(1)">
-              <option value="">부서별 목록</option>
-            </CFormSelect>
+            <Multiselect
+              v-model.number="form.dep"
+              :options="[]"
+              autocomplete="label"
+              :classes="{ search: 'form-control multiselect-search' }"
+              :add-option-on="['enter' | 'tab']"
+              searchable
+              placeholder="부서별 목록"
+              @change="listFiltering(1)"
+            />
           </CCol>
           <CCol md="4" class="pb-0 mb-3">
-            <CFormSelect v-model="form.rank" @change="listFiltering(1)">
-              <option value="">직급별 목록</option>
-            </CFormSelect>
+            <Multiselect
+              v-model.number="form.rank"
+              :options="[]"
+              autocomplete="label"
+              :classes="{ search: 'form-control multiselect-search' }"
+              :add-option-on="['enter' | 'tab']"
+              searchable
+              placeholder="직급별 목록"
+              @change="listFiltering(1)"
+            />
           </CCol>
           <CCol md="4" class="pb-0 mb-3">
-            <CFormSelect v-model="form.sts" @change="listFiltering(1)">
-              <option value="">상태별 목록</option>
-            </CFormSelect>
+            <Multiselect
+              v-model.number="form.sts"
+              :options="[]"
+              autocomplete="label"
+              :classes="{ search: 'form-control multiselect-search' }"
+              :add-option-on="['enter' | 'tab']"
+              searchable
+              placeholder="상태별 목록"
+              @change="listFiltering(1)"
+            />
           </CCol>
         </CRow>
       </CCol>
