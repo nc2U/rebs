@@ -72,11 +72,11 @@ const onDelete = (pk: number) => deleteStaff(pk, comId.value)
 
 const pageSelect = (num: number) => {
   page.value = num
-  fetchStaffList({ page: num, com: comId.value })
+  fetchStaffList({ page: `${num}`, com: `${comId.value}` })
 }
 
 onMounted(() => {
-  fetchStaffList({ com: comId.value })
+  fetchStaffList({ com: `${comId.value}` })
   fetchAllRankList(comId.value)
   fetchAllDepartList(comId.value)
 })
