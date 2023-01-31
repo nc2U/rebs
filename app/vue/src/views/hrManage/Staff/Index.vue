@@ -10,7 +10,6 @@ import AddStaff from './components/AddStaff.vue'
 import TableTitleRow from '@/components/TableTitleRow.vue'
 import StaffList from './components/StaffList.vue'
 
-const page = ref<number>(1)
 const listControl = ref()
 
 const staffDeparts = ref<
@@ -49,7 +48,32 @@ watch(
   },
 )
 
-const listFiltering = () => 1
+const dataFilter = ref<StaffFilter>({
+  page: 1,
+  com: 1,
+  dep: '',
+  rank: '',
+  sts: '',
+  q: '',
+})
+
+onMounted(() => {
+  fetchStaffList({ com: comId.value })
+  fetchAllRankList(comId.value)
+  fetchAllDepartList(comId.value)
+})
+
+const listFiltering = (payload: StaffFilter) => {
+  dataFilter.value = payload
+  fetchStaffList({
+    page: payload.page,
+    com: payload.com,
+    dep: payload.dep,
+    rank: payload.rank,
+    sts: payload.sts,
+    q: payload.q,
+  })
+}
 
 const fetchStaffList = (payload: StaffFilter) =>
   companyStore.fetchStaffList(payload)
@@ -65,21 +89,17 @@ const deleteStaff = (pk: number, com?: number) =>
   companyStore.deleteStaff(pk, com)
 
 const multiSubmit = (payload: Staff) => {
-  if (!!payload.pk) updateStaff(payload, page.value, comId.value)
-  else createStaff(payload, page.value, comId.value)
+  const { page } = dataFilter.value
+  if (!!payload.pk) updateStaff(payload, page, comId.value)
+  else createStaff(payload, page, comId.value)
 }
 const onDelete = (pk: number) => deleteStaff(pk, comId.value)
 
 const pageSelect = (num: number) => {
-  page.value = num
-  fetchStaffList({ page: `${num}`, com: `${comId.value}` })
+  dataFilter.value.page = num
+  dataFilter.value.com = comId.value
+  fetchStaffList(dataFilter.value)
 }
-
-onMounted(() => {
-  fetchStaffList({ com: `${comId.value}` })
-  fetchAllRankList(comId.value)
-  fetchAllDepartList(comId.value)
-})
 </script>
 
 <template>

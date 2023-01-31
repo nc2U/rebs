@@ -13,8 +13,8 @@ export interface Staff {
 }
 
 export type StaffFilter = {
-  page?: string
-  com?: string
+  page?: number
+  com?: number
   dep?: string
   rank?: string
   sts?: string

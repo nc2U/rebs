@@ -7,6 +7,8 @@ import Multiselect from '@vueform/multiselect'
 const emit = defineEmits(['list-filtering'])
 
 const form = reactive({
+  page: 1,
+  com: 1,
   dep: '',
   rank: '',
   sts: '',
