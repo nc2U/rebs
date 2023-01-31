@@ -4,7 +4,7 @@ import { defineStore } from 'pinia'
 import { useAccount } from '@/store/pinia/account'
 import { errorHandle, message } from '@/utils/helper'
 import { Company, Logo } from '@/store/types/settings'
-import { Department, Rank, Staff } from '@/store/types/company'
+import { Staff, StaffFilter, Rank, Department } from '@/store/types/company'
 
 const accountStore = useAccount()
 
@@ -100,10 +100,12 @@ export const useCompany = defineStore('company', () => {
   const staffPages = (itemsPerPage: number) =>
     Math.ceil(staffsCount.value / itemsPerPage)
 
-  const fetchStaffList = (payload: { page?: number; com?: number }) => {
-    const { com = 1, page = 1 } = payload
+  const fetchStaffList = (payload: StaffFilter) => {
+    const { page = 1, com = 1, dep = '', rank = '', sts = '', q = '' } = payload
+    const query = `?page=${page}&company=${com}&department=${dep}&rank=${rank}&status=${sts}&search=${q}`
+
     return api
-      .get(`/staff/?page=${page}&company=${com}`)
+      .get(`/staff/${query}`)
       .then(res => {
         staffList.value = res.data.results
         staffsCount.value = res.data.count

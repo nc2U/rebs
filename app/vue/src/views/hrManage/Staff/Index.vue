@@ -2,7 +2,7 @@
 import { ref, onMounted, computed, provide, readonly, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/hrManage/_menu/headermixin'
 import { useCompany } from '@/store/pinia/company'
-import { Staff } from '@/store/types/company'
+import { Staff, StaffFilter } from '@/store/types/company'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from './components/ListController.vue'
@@ -51,7 +51,7 @@ watch(
 
 const listFiltering = () => 1
 
-const fetchStaffList = (payload: { page?: number; com?: number }) =>
+const fetchStaffList = (payload: StaffFilter) =>
   companyStore.fetchStaffList(payload)
 const fetchAllRankList = (com?: number) => companyStore.fetchAllRankList(com)
 const fetchAllDepartList = (com?: number) =>
