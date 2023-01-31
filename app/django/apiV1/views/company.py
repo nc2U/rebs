@@ -44,3 +44,5 @@ class StaffViewSet(viewsets.ModelViewSet):
     queryset = Staff.objects.all()
     serializer_class = StaffSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    filterset_fields = ('company', 'department', 'rank', 'status')
+    search_fields = ('name', 'email')
