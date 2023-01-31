@@ -24,6 +24,8 @@ class DepartmentViewSet(viewsets.ModelViewSet):
     queryset = Department.objects.all()
     serializer_class = DepartmentSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    filterset_fields = ('company', 'upper_depart')
+    search_fields = ('name', 'task')
 
 
 class AllDepartsViewSet(DepartmentViewSet):
@@ -35,6 +37,8 @@ class JobRankViewSet(viewsets.ModelViewSet):
     queryset = JobRank.objects.all()
     serializer_class = JobRankSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    filterset_fields = ('company', 'sort')
+    search_fields = ('rank', 'title', 'description')
 
 
 class AllRanksViewSet(JobRankViewSet):
