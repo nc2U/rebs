@@ -2,7 +2,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { pageTitle, navMenu } from '@/views/hrManage/_menu/headermixin'
 import { useCompany } from '@/store/pinia/company'
-import { Grade, ComFilter } from '@/store/types/company'
+import { Duty, ComFilter } from '@/store/types/company'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from './components/ListController.vue'
@@ -23,38 +23,37 @@ const initComId = computed(() => companyStore.initComId)
 const comId = computed(() => companyStore.company?.pk || initComId.value)
 const comName = computed(() => companyStore.company?.name || undefined)
 
-onMounted(() => fetchGradeList({}))
+onMounted(() => fetchDutyList({}))
 
 const listFiltering = (payload: ComFilter) => {
   dataFilter.value = payload
-  fetchGradeList({
+  fetchDutyList({
     page: payload.page,
     com: payload.com,
     q: payload.q,
   })
 }
 
-const fetchGradeList = (payload: ComFilter) =>
-  companyStore.fetchGradeList(payload)
+const fetchDutyList = (payload: ComFilter) =>
+  companyStore.fetchDutyList(payload)
 
-const createGrade = (payload: Grade, p?: number, c?: number) =>
-  companyStore.createGrade(payload, p, c)
-const updateGrade = (payload: Grade, p?: number, c?: number) =>
-  companyStore.updateGrade(payload, p, c)
-const deleteGrade = (pk: number, com: number) =>
-  companyStore.deleteGrade(pk, com)
+const createDuty = (payload: Duty, p?: number, c?: number) =>
+  companyStore.createDuty(payload, p, c)
+const updateDuty = (payload: Duty, p?: number, c?: number) =>
+  companyStore.updateDuty(payload, p, c)
+const deleteDuty = (pk: number, com: number) => companyStore.deleteDuty(pk, com)
 
-const multiSubmit = (payload: Grade) => {
+const multiSubmit = (payload: Duty) => {
   const { page } = dataFilter.value
-  if (!!payload.pk) updateGrade(payload, page, comId.value)
-  else createGrade(payload, page, comId.value)
+  if (!!payload.pk) updateDuty(payload, page, comId.value)
+  else createDuty(payload, page, comId.value)
 }
-const onDelete = (pk: number) => deleteGrade(pk, comId.value)
+const onDelete = (pk: number) => deleteDuty(pk, comId.value)
 
 const pageSelect = (num: number) => {
   dataFilter.value.page = num
   dataFilter.value.com = comId.value
-  fetchGradeList(dataFilter.value)
+  fetchDutyList(dataFilter.value)
 }
 </script>
 
