@@ -2,19 +2,19 @@
 import { computed } from 'vue'
 import { useCompany } from '@/store/pinia/company'
 import { headerSecondary } from '@/utils/cssMixins'
-import { Rank as RankType } from '@/store/types/company'
+import { Grade as GradeType } from '@/store/types/company'
 import Pagination from '@/components/Pagination'
-import Rank from './Rank.vue'
+import Grade from './Grade.vue'
 
 const emit = defineEmits(['page-select', 'multi-submit', 'on-delete'])
 
 const companyStore = useCompany()
-const rankList = computed(() => companyStore.rankList)
-const ranksCount = computed(() => companyStore.ranksCount)
+const gradeList = computed(() => companyStore.gradeList)
+const gradesCount = computed(() => companyStore.gradesCount)
 
-const rankPages = (page: number) => companyStore.rankPages(page)
+const gradePages = (page: number) => companyStore.gradePages(page)
 const pageSelect = (page: number) => emit('page-select', page)
-const multiSubmit = (payload: RankType) => emit('multi-submit', payload)
+const multiSubmit = (payload: GradeType) => emit('multi-submit', payload)
 const onDelete = (pk: number) => emit('on-delete', pk)
 </script>
 
@@ -41,10 +41,10 @@ const onDelete = (pk: number) => emit('on-delete', pk)
     </CTableHead>
 
     <CTableBody>
-      <Rank
-        v-for="rank in rankList"
-        :key="rank.pk"
-        :rank="rank"
+      <Grade
+        v-for="grade in gradeList"
+        :key="grade.pk"
+        :grade="grade"
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
       />
@@ -52,10 +52,10 @@ const onDelete = (pk: number) => emit('on-delete', pk)
   </CTable>
 
   <Pagination
-    v-if="ranksCount > 10"
+    v-if="gradesCount > 10"
     :active-page="1"
     :limit="8"
-    :pages="rankPages(10)"
+    :pages="gradePages(10)"
     class="mt-3"
     @active-page-change="pageSelect"
   />

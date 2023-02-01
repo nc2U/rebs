@@ -2,8 +2,8 @@
 import { ref, computed, onBeforeMount, watch } from 'vue'
 import { isValidate } from '@/utils/helper'
 import { write_human_resource } from '@/utils/pageAuth'
-import { Rank } from '@/store/types/company'
-import Multiselect from '@vueform/multiselect'
+import { Grade } from '@/store/types/company'
+// import Multiselect from '@vueform/multiselect'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
@@ -12,7 +12,7 @@ const props = defineProps({
     type: String,
     default: null,
   },
-  rank: {
+  grade: {
     type: Object,
     default: null,
   },
@@ -24,19 +24,19 @@ const alertModal = ref()
 
 const validated = ref(false)
 
-const form = ref<Rank>({
+const form = ref<Grade>({
   pk: undefined,
   company: undefined,
-  rank: '',
+  grade: '',
   promotion_period: '',
   criteria_new: '',
 })
 
 const formsCheck = computed(() => {
-  if (props.rank) {
-    const a = form.value.rank === props.rank.rank
-    const b = form.value.promotion_period === props.rank.promotion_period
-    const c = form.value.criteria_new === props.rank.criteria_new
+  if (props.grade) {
+    const a = form.value.grade === props.grade.grade
+    const b = form.value.promotion_period === props.grade.promotion_period
+    const c = form.value.criteria_new === props.grade.criteria_new
 
     return a && b && c
   } else return false
@@ -51,7 +51,7 @@ const onSubmit = (event: Event) => {
   }
 }
 
-const multiSubmit = (payload: Rank) => {
+const multiSubmit = (payload: Grade) => {
   emit('multi-submit', payload)
   emit('close')
 }
@@ -68,12 +68,12 @@ const deleteConfirm = () => {
 }
 
 onBeforeMount(() => {
-  if (props.rank) {
-    form.value.pk = props.rank.pk
-    form.value.company = props.rank.company
-    form.value.rank = props.rank.rank
-    form.value.promotion_period = props.rank.promotion_period
-    form.value.criteria_new = props.rank.criteria_new
+  if (props.grade) {
+    form.value.pk = props.grade.pk
+    form.value.company = props.grade.company
+    form.value.grade = props.grade.grade
+    form.value.promotion_period = props.grade.promotion_period
+    form.value.criteria_new = props.grade.criteria_new
   } else form.value.company = props.company
 })
 
@@ -102,7 +102,7 @@ watch(
             <CRow>
               <CFormLabel class="col-sm-4 col-form-label">등급</CFormLabel>
               <CCol sm="8">
-                <CFormInput v-model="form.rank" required placeholder="등급" />
+                <CFormInput v-model="form.grade" required placeholder="등급" />
               </CCol>
             </CRow>
           </CCol>
@@ -148,13 +148,13 @@ watch(
       <slot name="footer">
         <CButton
           type="submit"
-          :color="rank ? 'success' : 'primary'"
+          :color="grade ? 'success' : 'primary'"
           :disabled="formsCheck"
         >
           저장
         </CButton>
         <CButton
-          v-if="rank"
+          v-if="grade"
           type="button"
           color="danger"
           @click="deleteConfirm"
@@ -171,7 +171,7 @@ watch(
       삭제한 데이터는 복구할 수 없습니다. 해당 정보를 삭제하시겠습니까?
     </template>
     <template #footer>
-      <CButton color="danger" @click="deleteObject(rank.pk)">삭제</CButton>
+      <CButton color="danger" @click="deleteObject(grade.pk)">삭제</CButton>
     </template>
   </ConfirmModal>
 

@@ -2,9 +2,9 @@
 import { ref } from 'vue'
 import { AlertSecondary } from '@/utils/cssMixins'
 import { write_human_resource } from '@/utils/pageAuth'
-import { Rank } from '@/store/types/company'
+import { Grade } from '@/store/types/company'
 import FormModal from '@/components/Modals/FormModal.vue'
-import RankForm from './RankForm.vue'
+import GradeForm from './GradeForm.vue'
 
 defineProps({
   company: {
@@ -21,7 +21,7 @@ const createConfirm = () => {
   if (write_human_resource.value) formModal.value.callModal()
   else alertModal.value.callModal()
 }
-const multiSubmit = (payload: Rank) => emit('multi-submit', payload)
+const multiSubmit = (payload: Grade) => emit('multi-submit', payload)
 </script>
 
 <template>
@@ -32,7 +32,7 @@ const multiSubmit = (payload: Rank) => emit('multi-submit', payload)
   <FormModal ref="formModal" size="lg">
     <template #header>직급 정보 등록</template>
     <template #default>
-      <RankForm
+      <GradeForm
         :company="company"
         @multi-submit="multiSubmit"
         @close="formModal.close()"

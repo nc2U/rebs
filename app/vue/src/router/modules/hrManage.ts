@@ -38,11 +38,11 @@ const hrManage = {
       meta: { title: '부서정보 관리' },
     },
     {
-      path: 'rank',
+      path: 'grade',
       name: '직급정보 관리',
       component: () =>
         pageViewAuth.value
-          ? import('@/views/hrManage/Rank/Index.vue')
+          ? import('@/views/hrManage/Grade/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
       meta: { title: '직급정보 관리' },
     },

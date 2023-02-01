@@ -346,7 +346,7 @@ const human_resource = {
     {
       component: 'CNavItem',
       name: '직급정보 관리',
-      to: '/hr-manage/rank',
+      to: '/hr-manage/grade',
     },
   ],
 }

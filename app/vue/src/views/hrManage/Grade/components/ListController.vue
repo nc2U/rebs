@@ -14,7 +14,7 @@ const form = reactive({
 const formsCheck = computed(() => form.sort === '' && form.q.trim() === '')
 
 const comStore = useCompany()
-const ranksCount = computed(() => comStore.ranksCount)
+const gradesCount = computed(() => comStore.gradesCount)
 
 const getSorts = [
   { value: '1', label: '임원' },
@@ -79,7 +79,7 @@ defineExpose({ listFiltering })
 
     <CRow>
       <CCol class="p-2 pl-3">
-        <strong> 직급 수 조회 결과 : {{ numFormat(ranksCount) }} 건 </strong>
+        <strong> 직급 수 조회 결과 : {{ numFormat(gradesCount) }} 건 </strong>
       </CCol>
       <CCol v-if="!formsCheck" class="text-right mb-0">
         <CButton color="info" size="sm" @click="resetForm">

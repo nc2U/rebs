@@ -2,20 +2,19 @@
 import { ref, computed, onMounted } from 'vue'
 import { pageTitle, navMenu } from '@/views/hrManage/_menu/headermixin'
 import { useCompany } from '@/store/pinia/company'
-import { Rank, RankFilter } from '@/store/types/company'
+import { Grade, ComFilter } from '@/store/types/company'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from './components/ListController.vue'
-import AddRank from './components/AddRank.vue'
+import AddGrade from './components/AddGrade.vue'
 import TableTitleRow from '@/components/TableTitleRow.vue'
-import RankList from './components/RankList.vue'
+import GradeList from './components/GradeList.vue'
 
 const listControl = ref()
 
-const dataFilter = ref<RankFilter>({
+const dataFilter = ref<ComFilter>({
   page: 1,
   com: 1,
-  sort: '',
   q: '',
 })
 
@@ -24,38 +23,38 @@ const initComId = computed(() => companyStore.initComId)
 const comId = computed(() => companyStore.company?.pk || initComId.value)
 const comName = computed(() => companyStore.company?.name || undefined)
 
-onMounted(() => fetchRankList({}))
+onMounted(() => fetchGradeList({}))
 
-const listFiltering = (payload: RankFilter) => {
+const listFiltering = (payload: ComFilter) => {
   dataFilter.value = payload
-  fetchRankList({
+  fetchGradeList({
     page: payload.page,
     com: payload.com,
-    sort: payload.sort,
     q: payload.q,
   })
 }
 
-const fetchRankList = (payload: RankFilter) =>
-  companyStore.fetchRankList(payload)
+const fetchGradeList = (payload: ComFilter) =>
+  companyStore.fetchGradeList(payload)
 
-const createRank = (payload: Rank, p?: number, c?: number) =>
-  companyStore.createRank(payload, p, c)
-const updateRank = (payload: Rank, p?: number, c?: number) =>
-  companyStore.updateRank(payload, p, c)
-const deleteRank = (pk: number, com: number) => companyStore.deleteRank(pk, com)
+const createGrade = (payload: Grade, p?: number, c?: number) =>
+  companyStore.createGrade(payload, p, c)
+const updateGrade = (payload: Grade, p?: number, c?: number) =>
+  companyStore.updateGrade(payload, p, c)
+const deleteGrade = (pk: number, com: number) =>
+  companyStore.deleteGrade(pk, com)
 
-const multiSubmit = (payload: Rank) => {
+const multiSubmit = (payload: Grade) => {
   const { page } = dataFilter.value
-  if (!!payload.pk) updateRank(payload, page, comId.value)
-  else createRank(payload, page, comId.value)
+  if (!!payload.pk) updateGrade(payload, page, comId.value)
+  else createGrade(payload, page, comId.value)
 }
-const onDelete = (pk: number) => deleteRank(pk, comId.value)
+const onDelete = (pk: number) => deleteGrade(pk, comId.value)
 
 const pageSelect = (num: number) => {
   dataFilter.value.page = num
   dataFilter.value.com = comId.value
-  fetchRankList(dataFilter.value)
+  fetchGradeList(dataFilter.value)
 }
 </script>
 
@@ -68,9 +67,9 @@ const pageSelect = (num: number) => {
   <ContentBody>
     <CCardBody>
       <ListController ref="listControl" @list-filtering="listFiltering" />
-      <AddRank :company="comName" @multi-submit="multiSubmit" />
+      <AddGrade :company="comName" @multi-submit="multiSubmit" />
       <TableTitleRow title="직급 목록" excel url="#" disabled />
-      <RankList
+      <GradeList
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
         @page-select="pageSelect"
