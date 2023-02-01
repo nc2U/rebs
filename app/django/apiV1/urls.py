@@ -25,7 +25,9 @@ router.register(r'all-departs', company.AllDepartsViewSet, basename='all-departs
 router.register(r'grade', company.JobGradeViewSet)
 router.register(r'all-grades', company.AllGradesViewSet, basename='all-grades')
 router.register(r'position', company.PositionViewSet)
+router.register(r'all-positions', company.AllPositionsViewSet, basename='all-positions')
 router.register(r'duty-title', company.DutyTitleViewSet)
+router.register(r'all-dutys', company.AllDutyViewSet, basename='all-dutys')
 router.register(r'staff', company.StaffViewSet)
 # rebs
 router.register(r'schedule', rebs.CalendarScheduleViewSet)

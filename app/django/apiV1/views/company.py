@@ -54,12 +54,22 @@ class PositionViewSet(viewsets.ModelViewSet):
     search_fields = ('name',)
 
 
+class AllPositionsViewSet(PositionViewSet):
+    pagination_class = PageNumberPaginationOneHundred
+    filterset_fields = ('company',)
+
+
 class DutyTitleViewSet(viewsets.ModelViewSet):
     queryset = DutyTitle.objects.all()
     serializer_class = DutyTitleSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
     filterset_fields = ('company',)
     search_fields = ('name',)
+
+
+class AllDutyViewSet(DutyTitleViewSet):
+    pagination_class = PageNumberPaginationOneHundred
+    filterset_fields = ('company',)
 
 
 class StaffViewSet(viewsets.ModelViewSet):
