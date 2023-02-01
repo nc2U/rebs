@@ -32,6 +32,7 @@ const validated = ref(false)
 const form = ref<Staff>({
   pk: undefined,
   company: undefined,
+  sort: '2',
   name: '',
   id_number: '',
   personal_phone: '',
@@ -65,6 +66,11 @@ const formsCheck = computed(() => {
 const comStore = useCompany()
 const getSlugDeparts = computed(() => comStore.getSlugDeparts)
 const getRanks = computed(() => comStore.getRanks)
+
+const sorts = [
+  { value: '1', label: '임원' },
+  { value: '2', label: '직원' },
+]
 
 const statuses = [
   { value: '1', label: '근무 중' },
@@ -131,6 +137,24 @@ watch(
   >
     <CModalBody class="p-4">
       <div>
+        <CRow class="mb-3">
+          <CCol sm="6">
+            <CRow>
+              <CFormLabel class="col-sm-4 col-form-label">구분</CFormLabel>
+              <CCol sm="8">
+                <Multiselect
+                  v-model="form.sort"
+                  :options="sorts"
+                  autocomplete="label"
+                  :classes="{ search: 'form-control multiselect-search' }"
+                  :add-option-on="['enter' | 'tab']"
+                  searchable
+                  placeholder="구분"
+                />
+              </CCol>
+            </CRow>
+          </CCol>
+        </CRow>
         <CRow class="mb-3">
           <CCol sm="6">
             <CRow>

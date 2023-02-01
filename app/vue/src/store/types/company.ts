@@ -1,6 +1,8 @@
 export interface Staff {
   pk?: number
   company?: string
+  sort?: '1' | '2'
+  sort_desc?: '임원' | '직원'
   name: string
   id_number: string
   personal_phone: string
