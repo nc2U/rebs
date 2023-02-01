@@ -61,13 +61,7 @@ export interface Position {
   name: string
 }
 
-export type PosFilter = {
-  page?: number
-  com?: number
-  q?: string
-}
-
-export interface DutyTitle {
+export interface Duty {
   pk?: number
   company?: string
   name: string

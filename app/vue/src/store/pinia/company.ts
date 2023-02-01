@@ -7,9 +7,11 @@ import { Company, Logo } from '@/store/types/settings'
 import {
   Staff,
   StaffFilter,
-  Grade,
   Department,
   DepFilter,
+  Grade,
+  Position,
+  Duty,
   ComFilter,
 } from '@/store/types/company'
 
@@ -337,6 +339,166 @@ export const useCompany = defineStore('company', () => {
       )
       .catch(err => errorHandle(err.response.data))
 
+  const positionList = ref<Position[]>([])
+  const allPositionList = ref<Position[]>([])
+  const position = ref<Position | null>(null)
+  const positionsCount = ref<number>(0)
+
+  // getters
+  const getPositions = computed(() =>
+    allPositionList.value.map(r => ({
+      value: r.name,
+      label: r.name,
+    })),
+  )
+
+  const getPkPositions = computed(() =>
+    allPositionList.value.map(r => ({
+      value: r.pk,
+      label: r.name,
+    })),
+  )
+
+  // actions
+  const positionPages = (itemsPerPage: number) =>
+    Math.ceil(positionsCount.value / itemsPerPage)
+
+  const fetchPositionList = (payload: ComFilter) => {
+    const { page = 1, com = 1, q = '' } = payload
+    const queryStr = `?page=${page}&company=${com}&search=${q}`
+    return api
+      .get(`/position/${queryStr}`)
+      .then(res => {
+        positionList.value = res.data.results
+        positionsCount.value = res.data.count
+      })
+      .catch(err => errorHandle(err.response.data))
+  }
+
+  const fetchAllPositionList = (com = 1) =>
+    api
+      .get(`/all-positions/?company=${com}`)
+      .then(res => {
+        allPositionList.value = res.data.results
+      })
+      .catch(err => errorHandle(err.response.data))
+
+  const fetchPosition = (pk: number) =>
+    api
+      .get(`/position/${pk}/`)
+      .then(res => (position.value = res.data))
+      .catch(err => errorHandle(err.response.data))
+
+  const createPosition = (payload: Position, page = 1, com = 1) =>
+    api
+      .post(`/position/`, payload)
+      .then(res =>
+        fetchPositionList({ page, com }).then(() =>
+          fetchPosition(res.data.pk).then(() => message()),
+        ),
+      )
+      .catch(err => errorHandle(err.response.data))
+
+  const updatePosition = (payload: Position, page = 1, com = 1) =>
+    api
+      .put(`/position/${payload.pk}/`, payload)
+      .then(res => {
+        fetchPositionList({ page, com }).then(() =>
+          fetchPosition(res.data.pk).then(() => message()),
+        )
+      })
+      .catch(err => errorHandle(err.response.data))
+
+  const deletePosition = (pk: number, com = 1) =>
+    api
+      .delete(`/position/${pk}/`)
+      .then(() =>
+        fetchPositionList({ com }).then(() =>
+          message('warning', '', '해당 오브젝트가 삭제되었습니다.'),
+        ),
+      )
+      .catch(err => errorHandle(err.response.data))
+
+  const dutyList = ref<Duty[]>([])
+  const allDutyList = ref<Duty[]>([])
+  const duty = ref<Duty | null>(null)
+  const dutysCount = ref<number>(0)
+
+  // getters
+  const getDutys = computed(() =>
+    allDutyList.value.map(r => ({
+      value: r.name,
+      label: r.name,
+    })),
+  )
+
+  const getPkDutys = computed(() =>
+    allDutyList.value.map(r => ({
+      value: r.pk,
+      label: r.name,
+    })),
+  )
+
+  // actions
+  const dutyPages = (itemsPerPage: number) =>
+    Math.ceil(dutysCount.value / itemsPerPage)
+
+  const fetchDutyList = (payload: ComFilter) => {
+    const { page = 1, com = 1, q = '' } = payload
+    const queryStr = `?page=${page}&company=${com}&search=${q}`
+    return api
+      .get(`/duty/${queryStr}`)
+      .then(res => {
+        dutyList.value = res.data.results
+        dutysCount.value = res.data.count
+      })
+      .catch(err => errorHandle(err.response.data))
+  }
+
+  const fetchAllDutyList = (com = 1) =>
+    api
+      .get(`/all-dutys/?company=${com}`)
+      .then(res => {
+        allDutyList.value = res.data.results
+      })
+      .catch(err => errorHandle(err.response.data))
+
+  const fetchDuty = (pk: number) =>
+    api
+      .get(`/duty/${pk}/`)
+      .then(res => (duty.value = res.data))
+      .catch(err => errorHandle(err.response.data))
+
+  const createDuty = (payload: Duty, page = 1, com = 1) =>
+    api
+      .post(`/duty/`, payload)
+      .then(res =>
+        fetchDutyList({ page, com }).then(() =>
+          fetchDuty(res.data.pk).then(() => message()),
+        ),
+      )
+      .catch(err => errorHandle(err.response.data))
+
+  const updateDuty = (payload: Duty, page = 1, com = 1) =>
+    api
+      .put(`/duty/${payload.pk}/`, payload)
+      .then(res => {
+        fetchDutyList({ page, com }).then(() =>
+          fetchDuty(res.data.pk).then(() => message()),
+        )
+      })
+      .catch(err => errorHandle(err.response.data))
+
+  const deleteDuty = (pk: number, com = 1) =>
+    api
+      .delete(`/duty/${pk}/`)
+      .then(() =>
+        fetchDutyList({ com }).then(() =>
+          message('warning', '', '해당 오브젝트가 삭제되었습니다.'),
+        ),
+      )
+      .catch(err => errorHandle(err.response.data))
+
   return {
     companyList,
     company,
@@ -390,5 +552,31 @@ export const useCompany = defineStore('company', () => {
     createGrade,
     updateGrade,
     deleteGrade,
+
+    positionList,
+    position,
+    positionsCount,
+    getPositions,
+    getPkPositions,
+    positionPages,
+    fetchPositionList,
+    fetchAllPositionList,
+    fetchPosition,
+    createPosition,
+    updatePosition,
+    deletePosition,
+
+    dutyList,
+    duty,
+    dutysCount,
+    getDutys,
+    getPkDutys,
+    dutyPages,
+    fetchDutyList,
+    fetchAllDutyList,
+    fetchDuty,
+    createDuty,
+    updateDuty,
+    deleteDuty,
   }
 })

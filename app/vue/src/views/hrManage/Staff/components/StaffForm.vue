@@ -198,11 +198,7 @@ watch(
                 성명
               </CFormLabel>
               <CCol sm="8">
-                <CFormInput
-                  v-model.number="form.name"
-                  required
-                  placeholder="성명"
-                />
+                <CFormInput v-model="form.name" required placeholder="성명" />
               </CCol>
             </CRow>
           </CCol>
@@ -271,7 +267,7 @@ watch(
               </CFormLabel>
               <CCol sm="8">
                 <Multiselect
-                  v-model.number="form.department"
+                  v-model="form.department"
                   :options="getSlugDeparts"
                   autocomplete="label"
                   :classes="{ search: 'form-control multiselect-search' }"
@@ -290,7 +286,7 @@ watch(
               </CFormLabel>
               <CCol sm="8">
                 <Multiselect
-                  v-model.number="form.grade"
+                  v-model="form.grade"
                   :options="getGrades"
                   autocomplete="label"
                   :classes="{ search: 'form-control multiselect-search' }"
@@ -311,7 +307,7 @@ watch(
               </CFormLabel>
               <CCol sm="8">
                 <Multiselect
-                  v-model.number="form.position"
+                  v-model="form.position"
                   :options="[]"
                   autocomplete="label"
                   :classes="{ search: 'form-control multiselect-search' }"
@@ -330,7 +326,7 @@ watch(
               </CFormLabel>
               <CCol sm="8">
                 <Multiselect
-                  v-model.number="form.duty"
+                  v-model="form.duty"
                   :options="[]"
                   autocomplete="label"
                   :classes="{ search: 'form-control multiselect-search' }"
@@ -351,7 +347,7 @@ watch(
               </CFormLabel>
               <CCol sm="8">
                 <Multiselect
-                  v-model.number="form.status"
+                  v-model="form.status"
                   :options="statuses"
                   autocomplete="label"
                   :classes="{ search: 'form-control multiselect-search' }"
