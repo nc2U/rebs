@@ -345,6 +345,16 @@ const human_resource = {
     },
     {
       component: 'CNavItem',
+      name: '직위정보 관리',
+      to: '/hr-manage/position',
+    },
+    {
+      component: 'CNavItem',
+      name: '직책정보 관리',
+      to: '/hr-manage/duty',
+    },
+    {
+      component: 'CNavItem',
       name: '직급정보 관리',
       to: '/hr-manage/grade',
     },

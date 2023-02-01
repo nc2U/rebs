@@ -38,6 +38,24 @@ const hrManage = {
       meta: { title: '부서정보 관리' },
     },
     {
+      path: 'position',
+      name: '직위정보 관리',
+      component: () =>
+        pageViewAuth.value
+          ? import('@/views/hrManage/Position/Index.vue')
+          : import('@/views/_Accounts/NoAuth.vue'),
+      meta: { title: '직위정보 관리' },
+    },
+    {
+      path: 'duty',
+      name: '직책정보 관리',
+      component: () =>
+        pageViewAuth.value
+          ? import('@/views/hrManage/Duty/Index.vue')
+          : import('@/views/_Accounts/NoAuth.vue'),
+      meta: { title: '직책정보 관리' },
+    },
+    {
       path: 'grade',
       name: '직급정보 관리',
       component: () =>
