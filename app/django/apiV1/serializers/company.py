@@ -13,7 +13,7 @@ class DepartsInCompanySerializer(serializers.ModelSerializer):
 class RanksInCompanySerializer(serializers.ModelSerializer):
     class Meta:
         model = JobRank
-        fields = ('pk', 'rank', 'title', 'description')
+        fields = ('pk', 'rank', 'promotion_period', 'criteria_new')
 
 
 class CompanySerializer(serializers.ModelSerializer):
@@ -50,17 +50,15 @@ class DepartmentSerializer(serializers.ModelSerializer):
 
 class JobRankSerializer(serializers.ModelSerializer):
     company = serializers.SlugRelatedField(queryset=Company.objects.all(), slug_field='name')
-    sort = serializers.ChoiceField(choices=JobRank.SORT_CHOICES)
-    sort_desc = serializers.CharField(source='get_sort_display', read_only=True)
 
     class Meta:
         model = JobRank
-        fields = ('pk', 'company', 'sort', 'sort_desc', 'level', 'rank', 'title', 'description')
+        fields = ('pk', 'company', 'rank', 'promotion_period', 'criteria_new')
 
 
 class StaffSerializer(serializers.ModelSerializer):
     company = serializers.SlugRelatedField(queryset=Company.objects.all(), slug_field='name')
-    sort = serializers.ChoiceField(choices=JobRank.SORT_CHOICES)
+    sort = serializers.ChoiceField(choices=Staff.SORT_CHOICES)
     sort_desc = serializers.CharField(source='get_sort_display', read_only=True)
     department = serializers.SlugRelatedField(queryset=Department.objects.all(), slug_field='name', allow_null=True)
     rank = serializers.SlugRelatedField(queryset=JobRank.objects.all(), slug_field='rank', allow_null=True)

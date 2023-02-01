@@ -37,8 +37,8 @@ class JobRankViewSet(viewsets.ModelViewSet):
     queryset = JobRank.objects.all()
     serializer_class = JobRankSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-    filterset_fields = ('company', 'sort')
-    search_fields = ('rank', 'title', 'description')
+    filterset_fields = ('company',)
+    search_fields = ('rank', 'promotion_period', 'criteria_new')
 
 
 class AllRanksViewSet(JobRankViewSet):
