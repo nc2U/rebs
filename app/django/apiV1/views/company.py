@@ -4,7 +4,7 @@ from ..permission import *
 from ..pagination import *
 from ..serializers.company import *
 
-from company.models import Company, Logo, Department, JobRank, Staff
+from company.models import Company, Logo, Department, JobGrade, Staff
 
 
 # Company --------------------------------------------------------------------------
@@ -33,15 +33,15 @@ class AllDepartsViewSet(DepartmentViewSet):
     filterset_fields = ('company',)
 
 
-class JobRankViewSet(viewsets.ModelViewSet):
-    queryset = JobRank.objects.all()
+class JobGradeViewSet(viewsets.ModelViewSet):
+    queryset = JobGrade.objects.all()
     serializer_class = JobRankSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
     filterset_fields = ('company',)
     search_fields = ('rank', 'promotion_period', 'criteria_new')
 
 
-class AllRanksViewSet(JobRankViewSet):
+class AllGradesViewSet(JobGradeViewSet):
     pagination_class = PageNumberPaginationOneHundred
     filterset_fields = ('company',)
 
@@ -50,5 +50,5 @@ class StaffViewSet(viewsets.ModelViewSet):
     queryset = Staff.objects.all()
     serializer_class = StaffSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-    filterset_fields = ('company', 'department', 'rank', 'status')
+    filterset_fields = ('company', 'department', 'grade', 'position', 'duty', 'status')
     search_fields = ('name', 'email')

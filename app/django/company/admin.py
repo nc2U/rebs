@@ -1,15 +1,15 @@
 from django.contrib import admin
 from import_export.admin import ImportExportMixin
 
-from .models import Company, Logo, Department, JobRank, Staff
+from .models import Company, Logo, Department, JobGrade, Position, DutyTitle, Staff
 
 
 class DepartmentInline(admin.StackedInline):
     model = Department
 
 
-class JobRankInline(admin.StackedInline):
-    model = JobRank
+class JobGradeInline(admin.StackedInline):
+    model = JobGrade
 
 
 class LogoInline(admin.StackedInline):
@@ -17,28 +17,45 @@ class LogoInline(admin.StackedInline):
 
 
 class CompanyAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = (
-        'id', 'name', 'ceo', 'tax_number', 'org_number', 'business_cond', 'business_even', 'es_date', 'op_date')
+    list_display = ('id', 'name', 'ceo', 'tax_number', 'org_number',
+                    'business_cond', 'business_even', 'es_date', 'op_date')
     list_display_links = ('name',)
-    inlines = (LogoInline, DepartmentInline, JobRankInline)
+    inlines = (LogoInline, DepartmentInline, JobGradeInline)
 
 
 class DepartmentAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'upper_depart', 'name', 'level', 'task')
+    list_display = ('id', 'company', 'upper_depart', 'name', 'level', 'task')
     list_display_links = ('name',)
+    list_filter = ('company',)
 
 
-class JobRankAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'rank', 'promotion_period', 'criteria_new')
-    list_display_links = ('rank',)
+class JobGradeAdmin(ImportExportMixin, admin.ModelAdmin):
+    list_display = ('id', 'company', 'grade', 'promotion_period', 'criteria_new')
+    list_display_links = ('grade',)
+
+
+class PositionAdmin(ImportExportMixin, admin.ModelAdmin):
+    list_display = ('id', 'company', 'grade', 'position')
+    list_display_links = ('position',)
+    list_filter = ('company',)
+
+
+class DutyTitleAdmin(ImportExportMixin, admin.ModelAdmin):
+    list_display = ('id', 'company', 'title')
+    list_display_links = ('title',)
+    list_filter = ('company',)
 
 
 class StaffAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'sort', 'name', 'email', 'department', 'rank', 'entered_date', 'status')
-    list_display_links = ('name',)
+    list_display = ('id', 'company', 'sort', 'grade', 'position', 'duty',
+                    'name', 'email', 'department', 'status', 'date_join', 'date_leave')
+    list_display_links = ('name', 'email')
+    list_filter = ('company', 'sort', 'grade', 'position', 'duty')
 
 
 admin.site.register(Company, CompanyAdmin)
 admin.site.register(Department, DepartmentAdmin)
-admin.site.register(JobRank, JobRankAdmin)
+admin.site.register(JobGrade, JobGradeAdmin)
+admin.site.register(Position, PositionAdmin)
+admin.site.register(DutyTitle, DutyTitleAdmin)
 admin.site.register(Staff, StaffAdmin)

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from company.models import Company, Logo, Department, JobRank, Staff
+from company.models import Company, Logo, Department, JobGrade, Staff
 
 
 # Company --------------------------------------------------------------------------
@@ -12,8 +12,8 @@ class DepartsInCompanySerializer(serializers.ModelSerializer):
 
 class RanksInCompanySerializer(serializers.ModelSerializer):
     class Meta:
-        model = JobRank
-        fields = ('pk', 'rank', 'promotion_period', 'criteria_new')
+        model = JobGrade
+        fields = ('pk', 'grade', 'promotion_period', 'criteria_new')
 
 
 class CompanySerializer(serializers.ModelSerializer):
@@ -52,8 +52,8 @@ class JobRankSerializer(serializers.ModelSerializer):
     company = serializers.SlugRelatedField(queryset=Company.objects.all(), slug_field='name')
 
     class Meta:
-        model = JobRank
-        fields = ('pk', 'company', 'rank', 'promotion_period', 'criteria_new')
+        model = JobGrade
+        fields = ('pk', 'company', 'grade', 'promotion_period', 'criteria_new')
 
 
 class StaffSerializer(serializers.ModelSerializer):
@@ -61,11 +61,12 @@ class StaffSerializer(serializers.ModelSerializer):
     sort = serializers.ChoiceField(choices=Staff.SORT_CHOICES)
     sort_desc = serializers.CharField(source='get_sort_display', read_only=True)
     department = serializers.SlugRelatedField(queryset=Department.objects.all(), slug_field='name', allow_null=True)
-    rank = serializers.SlugRelatedField(queryset=JobRank.objects.all(), slug_field='rank', allow_null=True)
+    grade = serializers.SlugRelatedField(queryset=JobGrade.objects.all(), slug_field='rank', allow_null=True)
     status = serializers.ChoiceField(choices=Staff.STATUS_CHOICES)
     status_desc = serializers.CharField(source='get_status_display', read_only=True)
 
     class Meta:
         model = Staff
-        fields = ('pk', 'company', 'sort', 'sort_desc', 'name', 'id_number', 'personal_phone',
-                  'email', 'department', 'rank', 'entered_date', 'status', 'status_desc')
+        fields = ('pk', 'company', 'sort', 'sort_desc', 'name', 'id_number',
+                  'personal_phone', 'email', 'department', 'grade', 'position',
+                  'duty', 'date_join', 'status', 'status_desc', 'date_leave')

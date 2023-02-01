@@ -42,12 +42,12 @@ class Logo(models.Model):
 
 class Department(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='departments', verbose_name='회사')
-    upper_depart = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True,
+    upper_depart = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True,
                                      related_name='sub_departs',
                                      verbose_name='상위 부서')
-    level = models.PositiveSmallIntegerField('레벨')
+    level = models.PositiveSmallIntegerField('레벨', help_text='부서 간 상하 소속 관계에 의한 단계, 최상위 부서인 경우 1단계 이후 각 뎁스 마다 1씩 증가')
     name = models.CharField('부서', max_length=20)
-    task = models.CharField('주요 업무', max_length=100, blank=True)
+    task = models.CharField('주요 업무', max_length=255, blank=True)
 
     def __str__(self):
         return self.name
@@ -58,19 +58,46 @@ class Department(models.Model):
         verbose_name_plural = '02. 부서 정보'
 
 
-class JobRank(models.Model):
+class JobGrade(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='ranks', verbose_name='회사')
-    rank = models.CharField('등급', max_length=5)
+    grade = models.CharField('직급', max_length=5)
     promotion_period = models.PositiveSmallIntegerField('승급표준년수', null=True, blank=True)
     criteria_new = models.CharField('신입부여 기준', max_length=50, null=True, blank=True)
 
     def __str__(self):
-        return self.rank
+        return self.grade
 
     class Meta:
         ordering = ['id']
         verbose_name = "03. 직급 정보"
         verbose_name_plural = "03. 직급 정보"
+
+
+class Position(models.Model):
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='positions', verbose_name='회사')
+    grade = models.ForeignKey(JobGrade, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='직급')
+    position = models.CharField('직위', max_length=5)
+
+    def __str__(self):
+        return self.position
+
+    class Meta:
+        ordering = ['id']
+        verbose_name = "04. 직위 정보"
+        verbose_name_plural = "04. 직위 정보"
+
+
+class DutyTitle(models.Model):
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='titles', verbose_name='회사')
+    title = models.CharField('직책', max_length=5)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        ordering = ['id']
+        verbose_name = "05. 직책 정보"
+        verbose_name_plural = "05. 직책 정보"
 
 
 class Staff(models.Model):
@@ -83,17 +110,20 @@ class Staff(models.Model):
     email = models.EmailField('이메일')
     department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='부서 정보',
                                    related_name='staffs')
-    rank = models.ForeignKey(JobRank, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='직책 정보')
-    entered_date = models.DateField('입사일')
+    grade = models.ForeignKey(JobGrade, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='직급 정보')
+    position = models.ForeignKey(Position, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='직위 정보')
+    duty = models.ForeignKey(DutyTitle, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='직책 정보')
+    date_join = models.DateField('입사일')
+    date_leave = models.DateField('퇴사일', null=True, blank=True)
     STATUS_CHOICES = (('1', '근무 중'), ('2', '휴직 중'), ('3', '퇴직신청'), ('4', '퇴사처리'))
     status = models.CharField('상태', max_length=1, choices=STATUS_CHOICES, default='1')
     user = models.OneToOneField('accounts.User', on_delete=models.DO_NOTHING, null=True, blank=True,
                                 verbose_name='유저 정보')
 
     def __str__(self):
-        return f'{self.name}({self.birth_date})'
+        return self.name
 
     class Meta:
-        ordering = ['-entered_date']
-        verbose_name = '04. 직원 정보'
-        verbose_name_plural = '04. 직원 정보'
+        ordering = ['-date_join']
+        verbose_name = '06. 직원 정보'
+        verbose_name_plural = '06. 직원 정보'
