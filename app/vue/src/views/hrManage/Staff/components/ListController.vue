@@ -2,31 +2,38 @@
 import { reactive, computed, nextTick } from 'vue'
 import { numFormat } from '@/utils/baseMixins'
 import { useCompany } from '@/store/pinia/company'
+import { StaffFilter } from '@/store/types/company'
 import Multiselect from '@vueform/multiselect'
 
 const emit = defineEmits(['list-filtering'])
 
-const form = reactive({
+const form = reactive<StaffFilter>({
   page: 1,
   com: 1,
+  sort: '2',
   dep: '',
-  rank: '',
+  gra: '',
+  pos: '',
+  dut: '',
   sts: '',
   q: '',
 })
 
 const formsCheck = computed(
   () =>
+    form.sort === '2' &&
     form.dep === '' &&
-    form.rank === '' &&
+    form.gra === '' &&
+    form.pos === '' &&
+    form.dut === '' &&
     form.sts === '' &&
-    form.q.trim() === '',
+    form.q === '',
 )
 
 const comStore = useCompany()
 const staffsCount = computed(() => comStore.staffsCount)
 const getPkDeparts = computed(() => comStore.getPkDeparts)
-const getPkRanks = computed(() => comStore.getPkRanks)
+const getPkRanks = computed(() => comStore.getPkGrades)
 
 const getStatus = [
   { value: '1', label: '근무 중' },
@@ -39,17 +46,23 @@ const listFiltering = (page = 1) => {
   nextTick(() => {
     emit('list-filtering', {
       page,
+      sort: form.sort || '2',
       dep: form.dep || '',
-      rank: form.rank || '',
+      gra: form.gra || '',
+      pos: form.pos || '',
+      dut: form.dut || '',
       sts: form.sts || '',
-      q: form.q.trim(),
+      q: form.q,
     })
   })
 }
 
 const resetForm = () => {
+  form.sort = '2'
   form.dep = ''
-  form.rank = ''
+  form.gra = ''
+  form.pos = ''
+  form.dut = ''
   form.sts = ''
   form.q = ''
   listFiltering(1)
@@ -77,8 +90,8 @@ defineExpose({ listFiltering })
           </CCol>
           <CCol md="4" class="pb-0 mb-3">
             <Multiselect
-              v-model.number="form.rank"
-              :options="getPkRanks"
+              v-model.number="form.grade"
+              :options="getPkGrades"
               autocomplete="label"
               :classes="{ search: 'form-control multiselect-search' }"
               :add-option-on="['enter' | 'tab']"

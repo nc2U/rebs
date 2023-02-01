@@ -38,34 +38,41 @@ const form = ref<Staff>({
   personal_phone: '',
   email: '',
   department: '',
-  rank: '',
-  entered_date: null,
+  grade: '',
+  position: '',
+  duty: '',
+  date_join: '',
+  date_leave: '',
   status: '1',
 })
 
 watch(form.value, val => {
-  if (val.entered_date) form.value.entered_date = dateFormat(val.entered_date)
+  if (val.date_join) form.value.date_join = dateFormat(val.date_join)
 })
 
 const formsCheck = computed(() => {
   if (props.staff) {
     const a = form.value.pk === props.staff.pk
-    const b = form.value.name === props.staff.name
-    const c = form.value.id_number === props.staff.id_number
-    const d = form.value.personal_phone === props.staff.personal_phone
-    const e = form.value.email === props.staff.email
-    const f = form.value.department === props.staff.department
-    const g = form.value.rank === props.staff.rank
-    const h = form.value.entered_date === props.staff.entered_date
-    const i = form.value.status === props.staff.status
+    const b = form.value.sort === props.staff.sort
+    const c = form.value.name === props.staff.name
+    const d = form.value.id_number === props.staff.id_number
+    const e = form.value.personal_phone === props.staff.personal_phone
+    const f = form.value.email === props.staff.email
+    const g = form.value.department === props.staff.department
+    const h = form.value.grade === props.staff.grade
+    const i = form.value.position === props.staff.position
+    const j = form.value.duty === props.staff.duty
+    const k = form.value.date_join === props.staff.date_join
+    const l = form.value.date_leave === props.staff.date_leave
+    const m = form.value.status === props.staff.status
 
-    return a && b && c && d && e && f && g && h && i
+    return a && b && c && d && e && f && g && h && i && j && k && l && m
   } else return false
 })
 
 const comStore = useCompany()
 const getSlugDeparts = computed(() => comStore.getSlugDeparts)
-const getRanks = computed(() => comStore.getRanks)
+const getGrades = computed(() => comStore.getGrades)
 
 const sorts = [
   { value: '1', label: '임원' },
@@ -108,13 +115,17 @@ onBeforeMount(() => {
   if (props.staff) {
     form.value.pk = props.staff.pk
     form.value.company = props.staff.company
+    form.value.sort = props.staff.sort
     form.value.name = props.staff.name
     form.value.id_number = props.staff.id_number
     form.value.personal_phone = props.staff.personal_phone
     form.value.email = props.staff.email
     form.value.department = props.staff.department
-    form.value.rank = props.staff.rank
-    form.value.entered_date = props.staff.entered_date
+    form.value.grade = props.staff.grade
+    form.value.position = props.staff.position
+    form.value.duty = props.staff.duty
+    form.value.date_join = props.staff.date_join
+    form.value.date_leave = props.staff.date_leave
     form.value.status = props.staff.status
   } else form.value.company = props.company
 })
@@ -244,8 +255,8 @@ watch(
               <CFormLabel class="col-sm-4 col-form-label">직책</CFormLabel>
               <CCol sm="8">
                 <Multiselect
-                  v-model.number="form.rank"
-                  :options="getRanks"
+                  v-model.number="form.grade"
+                  :options="getGrades"
                   autocomplete="label"
                   :classes="{ search: 'form-control multiselect-search' }"
                   :add-option-on="['enter' | 'tab']"
@@ -263,7 +274,7 @@ watch(
               <CFormLabel class="col-sm-4 col-form-label">입사일</CFormLabel>
               <CCol sm="8">
                 <DatePicker
-                  v-model="form.entered_date"
+                  v-model="form.date_join"
                   maxlength="10"
                   placeholder="입사일"
                   required

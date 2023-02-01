@@ -8,8 +8,11 @@ export interface Staff {
   personal_phone: string
   email: string
   department: string
-  rank: string
-  entered_date: string | null
+  grade: string
+  position: string
+  duty: string
+  date_join: string
+  date_leave: string
   status: '1' | '2' | '3' | '4'
   status_desc?: '근무 중' | '휴직 중' | '퇴직신청' | '퇴사처리'
 }

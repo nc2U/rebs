@@ -15,8 +15,11 @@ const listControl = ref()
 const dataFilter = ref<StaffFilter>({
   page: 1,
   com: 1,
+  sort: '2',
   dep: '',
-  rank: '',
+  gra: '',
+  pos: '',
+  dut: '',
   sts: '',
   q: '',
 })
@@ -28,7 +31,7 @@ const comName = computed(() => companyStore.company?.name || undefined)
 
 onMounted(() => {
   fetchStaffList({ com: comId.value })
-  fetchAllRankList(comId.value)
+  fetchAllGradeList(comId.value)
   fetchAllDepartList(comId.value)
 })
 
@@ -37,8 +40,11 @@ const listFiltering = (payload: StaffFilter) => {
   fetchStaffList({
     page: payload.page,
     com: payload.com,
+    sort: payload.sort,
     dep: payload.dep,
-    rank: payload.rank,
+    gra: payload.gra,
+    pos: payload.pos,
+    dut: payload.dut,
     sts: payload.sts,
     q: payload.q,
   })
@@ -46,7 +52,7 @@ const listFiltering = (payload: StaffFilter) => {
 
 const fetchStaffList = (payload: StaffFilter) =>
   companyStore.fetchStaffList(payload)
-const fetchAllRankList = (com?: number) => companyStore.fetchAllRankList(com)
+const fetchAllGradeList = (com?: number) => companyStore.fetchAllGradeList(com)
 const fetchAllDepartList = (com?: number) =>
   companyStore.fetchAllDepartList(com)
 
