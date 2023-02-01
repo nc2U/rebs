@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { Grade } from '@/store/types/company'
 import FormModal from '@/components/Modals/FormModal.vue'
-import StaffForm from './GradeForm.vue'
+import StaffForm from './PositionForm.vue'
 
 defineProps({
   rank: {

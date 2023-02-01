@@ -2,13 +2,13 @@
 import { ref, computed, onMounted } from 'vue'
 import { pageTitle, navMenu } from '@/views/hrManage/_menu/headermixin'
 import { useCompany } from '@/store/pinia/company'
-import { Grade, ComFilter } from '@/store/types/company'
+import { Position, ComFilter } from '@/store/types/company'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from './components/ListController.vue'
-import AddGrade from './components/AddGrade.vue'
+import AddPosition from './components/AddPosition.vue'
 import TableTitleRow from '@/components/TableTitleRow.vue'
-import GradeList from './components/GradeList.vue'
+import PositionList from './components/PositionList.vue'
 
 const listControl = ref()
 
@@ -23,38 +23,38 @@ const initComId = computed(() => companyStore.initComId)
 const comId = computed(() => companyStore.company?.pk || initComId.value)
 const comName = computed(() => companyStore.company?.name || undefined)
 
-onMounted(() => fetchGradeList({}))
+onMounted(() => fetchPositionList({}))
 
 const listFiltering = (payload: ComFilter) => {
   dataFilter.value = payload
-  fetchGradeList({
+  fetchPositionList({
     page: payload.page,
     com: payload.com,
     q: payload.q,
   })
 }
 
-const fetchGradeList = (payload: ComFilter) =>
-  companyStore.fetchGradeList(payload)
+const fetchPositionList = (payload: ComFilter) =>
+  companyStore.fetchPositionList(payload)
 
-const createGrade = (payload: Grade, p?: number, c?: number) =>
-  companyStore.createGrade(payload, p, c)
-const updateGrade = (payload: Grade, p?: number, c?: number) =>
-  companyStore.updateGrade(payload, p, c)
-const deleteGrade = (pk: number, com: number) =>
-  companyStore.deleteGrade(pk, com)
+const createPosition = (payload: Position, p?: number, c?: number) =>
+  companyStore.createPosition(payload, p, c)
+const updatePosition = (payload: Position, p?: number, c?: number) =>
+  companyStore.updatePosition(payload, p, c)
+const deletePosition = (pk: number, com: number) =>
+  companyStore.deletePosition(pk, com)
 
-const multiSubmit = (payload: Grade) => {
+const multiSubmit = (payload: Position) => {
   const { page } = dataFilter.value
-  if (!!payload.pk) updateGrade(payload, page, comId.value)
-  else createGrade(payload, page, comId.value)
+  if (!!payload.pk) updatePosition(payload, page, comId.value)
+  else createPosition(payload, page, comId.value)
 }
-const onDelete = (pk: number) => deleteGrade(pk, comId.value)
+const onDelete = (pk: number) => deletePosition(pk, comId.value)
 
 const pageSelect = (num: number) => {
   dataFilter.value.page = num
   dataFilter.value.com = comId.value
-  fetchGradeList(dataFilter.value)
+  fetchPositionList(dataFilter.value)
 }
 </script>
 
@@ -67,9 +67,9 @@ const pageSelect = (num: number) => {
   <ContentBody>
     <CCardBody>
       <ListController ref="listControl" @list-filtering="listFiltering" />
-      <AddGrade :company="comName" @multi-submit="multiSubmit" />
+      <AddPosition :company="comName" @multi-submit="multiSubmit" />
       <TableTitleRow title="직급 목록" excel url="#" disabled />
-      <GradeList
+      <PositionList
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
         @page-select="pageSelect"
