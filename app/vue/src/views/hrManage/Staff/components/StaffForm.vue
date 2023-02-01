@@ -382,22 +382,7 @@ watch(
         <hr />
 
         <CRow class="mt-3">
-          <CCol sm="6">
-            <CRow>
-              <!--              <CFormLabel class="col-sm-4 col-form-label" :class="bgLight">직책</CFormLabel>-->
-              <!--              <CCol sm="8">-->
-              <!--                <Multiselect-->
-              <!--                  v-model.number="form.duty"-->
-              <!--                  :options="[]"-->
-              <!--                  autocomplete="label"-->
-              <!--                  :classes="{ search: 'form-control multiselect-search' }"-->
-              <!--                  :add-option-on="['enter' | 'tab']"-->
-              <!--                  searchable-->
-              <!--                  placeholder="직책"-->
-              <!--                />-->
-              <!--              </CCol>-->
-            </CRow>
-          </CCol>
+          <CCol sm="6"></CCol>
 
           <CCol sm="6">
             <CRow>

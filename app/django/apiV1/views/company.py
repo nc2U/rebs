@@ -38,7 +38,7 @@ class JobGradeViewSet(viewsets.ModelViewSet):
     serializer_class = JobGradeSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
     filterset_fields = ('company',)
-    search_fields = ('grade', 'promotion_period', 'criteria_new')
+    search_fields = ('name', 'promotion_period', 'criteria_new')
 
 
 class AllGradesViewSet(JobGradeViewSet):
@@ -51,7 +51,7 @@ class PositionViewSet(viewsets.ModelViewSet):
     serializer_class = PositionSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
     filterset_fields = ('company',)
-    search_fields = ('position',)
+    search_fields = ('name',)
 
 
 class DutyTitleViewSet(viewsets.ModelViewSet):
@@ -59,7 +59,7 @@ class DutyTitleViewSet(viewsets.ModelViewSet):
     serializer_class = DutyTitleSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
     filterset_fields = ('company',)
-    search_fields = ('title',)
+    search_fields = ('name',)
 
 
 class StaffViewSet(viewsets.ModelViewSet):

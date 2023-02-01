@@ -60,12 +60,12 @@ class Department(models.Model):
 
 class JobGrade(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='ranks', verbose_name='회사')
-    grade = models.CharField('직급', max_length=10)
+    name = models.CharField('직급', max_length=10)
     promotion_period = models.PositiveSmallIntegerField('승급표준년수', null=True, blank=True)
     criteria_new = models.CharField('신입부여 기준', max_length=50, null=True, blank=True)
 
     def __str__(self):
-        return self.grade
+        return self.name
 
     class Meta:
         ordering = ['id']
@@ -76,10 +76,10 @@ class JobGrade(models.Model):
 class Position(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='positions', verbose_name='회사')
     level = models.PositiveSmallIntegerField('순위', help_text='직위 간 순위 관계에 의한 단계, 최 고위 직원인 경우 1레벨, 이후 각 순위 마다 1씩 증가')
-    position = models.CharField('직위', max_length=30)
+    name = models.CharField('직위', max_length=30)
 
     def __str__(self):
-        return self.position
+        return self.name
 
     class Meta:
         ordering = ['id']
@@ -89,10 +89,10 @@ class Position(models.Model):
 
 class DutyTitle(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='titles', verbose_name='회사')
-    title = models.CharField('직책', max_length=5)
+    name = models.CharField('직책', max_length=5)
 
     def __str__(self):
-        return self.title
+        return self.name
 
     class Meta:
         ordering = ['id']

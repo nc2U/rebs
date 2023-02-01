@@ -265,15 +265,15 @@ export const useCompany = defineStore('company', () => {
   // getters
   const getGrades = computed(() =>
     allGradeList.value.map(r => ({
-      value: r.grade,
-      label: r.grade,
+      value: r.name,
+      label: r.name,
     })),
   )
 
   const getPkGrades = computed(() =>
     allGradeList.value.map(r => ({
       value: r.pk,
-      label: r.grade,
+      label: r.name,
     })),
   )
 

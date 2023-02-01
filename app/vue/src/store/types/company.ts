@@ -49,7 +49,7 @@ export type DepFilter = {
 export interface Grade {
   pk?: number
   company?: string
-  grade: string
+  name: string
   promotion_period: number
   criteria_new: string
 }
@@ -58,7 +58,7 @@ export interface Position {
   pk?: number
   company?: string
   level: number
-  position: string
+  name: string
 }
 
 export type PosFilter = {
@@ -70,7 +70,7 @@ export type PosFilter = {
 export interface DutyTitle {
   pk?: number
   company?: string
-  title: string
+  name: string
 }
 
 export type ComFilter = {

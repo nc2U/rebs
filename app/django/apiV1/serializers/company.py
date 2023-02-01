@@ -13,7 +13,7 @@ class DepartsInCompanySerializer(serializers.ModelSerializer):
 class GradesInCompanySerializer(serializers.ModelSerializer):
     class Meta:
         model = JobGrade
-        fields = ('pk', 'grade', 'promotion_period', 'criteria_new')
+        fields = ('pk', 'name', 'promotion_period', 'criteria_new')
 
 
 class CompanySerializer(serializers.ModelSerializer):
@@ -53,19 +53,19 @@ class JobGradeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = JobGrade
-        fields = ('pk', 'company', 'grade', 'promotion_period', 'criteria_new')
+        fields = ('pk', 'company', 'name', 'promotion_period', 'criteria_new')
 
 
 class PositionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Position
-        fields = ('pk', 'company', 'level', 'position')
+        fields = ('pk', 'company', 'level', 'name')
 
 
 class DutyTitleSerializer(serializers.ModelSerializer):
     class Meta:
         model = DutyTitle
-        fields = ('pk', 'company', 'title')
+        fields = ('pk', 'company', 'name')
 
 
 class StaffSerializer(serializers.ModelSerializer):
@@ -73,9 +73,9 @@ class StaffSerializer(serializers.ModelSerializer):
     sort = serializers.ChoiceField(choices=Staff.SORT_CHOICES)
     sort_desc = serializers.CharField(source='get_sort_display', read_only=True)
     department = serializers.SlugRelatedField(queryset=Department.objects.all(), slug_field='name', allow_null=True)
-    grade = serializers.SlugRelatedField(queryset=JobGrade.objects.all(), slug_field='grade', allow_null=True)
-    position = serializers.SlugRelatedField(queryset=Position.objects.all(), slug_field='position', allow_null=True)
-    duty = serializers.SlugRelatedField(queryset=DutyTitle.objects.all(), slug_field='title', allow_null=True)
+    grade = serializers.SlugRelatedField(queryset=JobGrade.objects.all(), slug_field='name', allow_null=True)
+    position = serializers.SlugRelatedField(queryset=Position.objects.all(), slug_field='name', allow_null=True)
+    duty = serializers.SlugRelatedField(queryset=DutyTitle.objects.all(), slug_field='name', allow_null=True)
     status = serializers.ChoiceField(choices=Staff.STATUS_CHOICES)
     status_desc = serializers.CharField(source='get_status_display', read_only=True)
 

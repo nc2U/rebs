@@ -30,19 +30,19 @@ class DepartmentAdmin(ImportExportMixin, admin.ModelAdmin):
 
 
 class JobGradeAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'company', 'grade', 'promotion_period', 'criteria_new')
-    list_display_links = ('grade',)
+    list_display = ('id', 'company', 'name', 'promotion_period', 'criteria_new')
+    list_display_links = ('name',)
 
 
 class PositionAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'company', 'level', 'position')
-    list_display_links = ('position',)
+    list_display = ('id', 'company', 'level', 'name')
+    list_display_links = ('name',)
     list_filter = ('company',)
 
 
 class DutyTitleAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'company', 'title')
-    list_display_links = ('title',)
+    list_display = ('id', 'company', 'name')
+    list_display_links = ('name',)
     list_filter = ('company',)
 
 
