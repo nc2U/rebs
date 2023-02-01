@@ -108,8 +108,18 @@ export const useCompany = defineStore('company', () => {
     Math.ceil(staffsCount.value / itemsPerPage)
 
   const fetchStaffList = (payload: StaffFilter) => {
-    const { page = 1, com = 1, dep = '', rank = '', sts = '', q = '' } = payload
-    const qStr = `?page=${page}&company=${com}&department=${dep}&rank=${rank}&status=${sts}&search=${q}`
+    const {
+      page = 1,
+      com = 1,
+      sort = '2',
+      dep = '',
+      gra = '',
+      pos = '',
+      dut = '',
+      sts = '',
+      q = '',
+    } = payload
+    const qStr = `?page=${page}&company=${com}&sort=${sort}&department=${dep}&grade=${gra}&position=${pos}&duty=${dut}&status=${sts}&search=${q}`
 
     return api
       .get(`/staff/${qStr}`)

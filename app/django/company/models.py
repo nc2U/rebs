@@ -46,7 +46,7 @@ class Department(models.Model):
                                      related_name='sub_departs',
                                      verbose_name='상위 부서')
     level = models.PositiveSmallIntegerField('레벨', help_text='부서 간 상하 소속 관계에 의한 단계, 최상위 부서인 경우 1단계 이후 각 뎁스 마다 1씩 증가')
-    name = models.CharField('부서', max_length=20)
+    name = models.CharField('부서', max_length=30)
     task = models.CharField('주요 업무', max_length=255, blank=True)
 
     def __str__(self):
@@ -60,7 +60,7 @@ class Department(models.Model):
 
 class JobGrade(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='ranks', verbose_name='회사')
-    grade = models.CharField('직급', max_length=5)
+    grade = models.CharField('직급', max_length=10)
     promotion_period = models.PositiveSmallIntegerField('승급표준년수', null=True, blank=True)
     criteria_new = models.CharField('신입부여 기준', max_length=50, null=True, blank=True)
 
@@ -75,8 +75,8 @@ class JobGrade(models.Model):
 
 class Position(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='positions', verbose_name='회사')
-    grade = models.ForeignKey(JobGrade, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='직급')
-    position = models.CharField('직위', max_length=5)
+    level = models.PositiveSmallIntegerField('순위', help_text='직위 간 순위 관계에 의한 단계, 최 고위 직원인 경우 1레벨, 이후 각 순위 마다 1씩 증가')
+    position = models.CharField('직위', max_length=30)
 
     def __str__(self):
         return self.position

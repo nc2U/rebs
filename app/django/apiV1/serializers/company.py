@@ -59,13 +59,13 @@ class JobGradeSerializer(serializers.ModelSerializer):
 class PositionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Position
-        fields = ('pk',)
+        fields = ('pk', 'company', 'level', 'position')
 
 
 class DutyTitleSerializer(serializers.ModelSerializer):
     class Meta:
         model = DutyTitle
-        fields = ('pk',)
+        fields = ('pk', 'company', 'title')
 
 
 class StaffSerializer(serializers.ModelSerializer):
@@ -74,6 +74,8 @@ class StaffSerializer(serializers.ModelSerializer):
     sort_desc = serializers.CharField(source='get_sort_display', read_only=True)
     department = serializers.SlugRelatedField(queryset=Department.objects.all(), slug_field='name', allow_null=True)
     grade = serializers.SlugRelatedField(queryset=JobGrade.objects.all(), slug_field='grade', allow_null=True)
+    position = serializers.SlugRelatedField(queryset=Position.objects.all(), slug_field='position')
+    duty = serializers.SlugRelatedField(queryset=DutyTitle.objects.all(), slug_field='title', allow_null=True)
     status = serializers.ChoiceField(choices=Staff.STATUS_CHOICES)
     status_desc = serializers.CharField(source='get_status_display', read_only=True)
 

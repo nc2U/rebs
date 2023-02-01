@@ -17,8 +17,11 @@ export interface Staff {
 export type StaffFilter = {
   page?: number
   com?: number
+  sort?: '1' | '2'
   dep?: string
-  rank?: string
+  gra?: string
+  pos?: string
+  dut?: string
   sts?: string
   q?: string
 }
@@ -40,17 +43,35 @@ export type DepFilter = {
   q?: string
 }
 
-export interface Rank {
+export interface Grade {
   pk?: number
   company?: string
-  rank: string
+  grade: string
   promotion_period: number
   criteria_new: string
 }
 
-export type RankFilter = {
+export interface Position {
+  pk?: number
+  company?: string
+  level: number
+  position: string
+}
+
+export type PosFilter = {
   page?: number
   com?: number
-  sort?: string
+  q?: string
+}
+
+export interface DutyTitle {
+  pk?: number
+  company?: string
+  title: string
+}
+
+export type ComFilter = {
+  page?: number
+  com?: number
   q?: string
 }
