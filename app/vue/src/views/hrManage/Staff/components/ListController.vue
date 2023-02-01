@@ -71,7 +71,7 @@ defineExpose({ listFiltering })
               :classes="{ search: 'form-control multiselect-search' }"
               :add-option-on="['enter' | 'tab']"
               searchable
-              placeholder="부서별 목록"
+              placeholder="부서별"
               @change="listFiltering(1)"
             />
           </CCol>
@@ -83,7 +83,7 @@ defineExpose({ listFiltering })
               :classes="{ search: 'form-control multiselect-search' }"
               :add-option-on="['enter' | 'tab']"
               searchable
-              placeholder="직급별 목록"
+              placeholder="직급별"
               @change="listFiltering(1)"
             />
           </CCol>
@@ -95,7 +95,7 @@ defineExpose({ listFiltering })
               :classes="{ search: 'form-control multiselect-search' }"
               :add-option-on="['enter' | 'tab']"
               searchable
-              placeholder="상태별 목록"
+              placeholder="상태별"
               @change="listFiltering(1)"
             />
           </CCol>

@@ -55,7 +55,7 @@ defineExpose({ listFiltering })
               :classes="{ search: 'form-control multiselect-search' }"
               :add-option-on="['enter' | 'tab']"
               searchable
-              placeholder="상위 부서별 목록"
+              placeholder="상위부서"
               @change="listFiltering(1)"
             />
           </CCol>

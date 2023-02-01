@@ -53,7 +53,7 @@ defineExpose({ listFiltering })
               :classes="{ search: 'form-control multiselect-search' }"
               :add-option-on="['enter' | 'tab']"
               searchable
-              placeholder="임/직원 구분"
+              placeholder="임/직원"
               @change="listFiltering(1)"
             />
           </CCol>
