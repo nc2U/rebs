@@ -60,6 +60,8 @@ class JobRankSerializer(serializers.ModelSerializer):
 
 class StaffSerializer(serializers.ModelSerializer):
     company = serializers.SlugRelatedField(queryset=Company.objects.all(), slug_field='name')
+    sort = serializers.ChoiceField(choices=JobRank.SORT_CHOICES)
+    sort_desc = serializers.CharField(source='get_sort_display', read_only=True)
     department = serializers.SlugRelatedField(queryset=Department.objects.all(), slug_field='name')
     rank = serializers.SlugRelatedField(queryset=JobRank.objects.all(), slug_field='rank')
     status = serializers.ChoiceField(choices=Staff.STATUS_CHOICES)
@@ -67,5 +69,5 @@ class StaffSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Staff
-        fields = ('pk', 'company', 'name', 'id_number', 'personal_phone', 'email',
-                  'department', 'rank', 'entered_date', 'status', 'status_desc')
+        fields = ('pk', 'company', 'sort', 'sort_desc', 'name', 'id_number', 'personal_phone',
+                  'email', 'department', 'rank', 'entered_date', 'status', 'status_desc')

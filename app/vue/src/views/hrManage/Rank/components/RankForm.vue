@@ -130,6 +130,7 @@ watch(
               <CCol sm="8">
                 <CFormInput
                   v-model.number="form.level"
+                  type="number"
                   required
                   placeholder="직급"
                 />

@@ -78,6 +78,8 @@ class JobRank(models.Model):
 
 class Staff(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='staffs', verbose_name='회사')
+    SORT_CHOICES = (('1', '임원'), ('2', '직원'))
+    sort = models.CharField('구분', max_length=1, choices=SORT_CHOICES, default='1')
     name = models.CharField('직원 성명', max_length=10)
     id_number = models.CharField('주민등록번호', max_length=14, null=True, blank=True)
     personal_phone = models.CharField('휴대전화', max_length=13)
