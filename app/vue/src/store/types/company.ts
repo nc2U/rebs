@@ -43,12 +43,9 @@ export type DepFilter = {
 export interface Rank {
   pk?: number
   company?: string
-  sort?: '1' | '2'
-  sort_desc?: '임원' | '직원'
-  level: number | null
   rank: string
-  title: string
-  description: string
+  promotion_period: number
+  criteria_new: string
 }
 
 export type RankFilter = {

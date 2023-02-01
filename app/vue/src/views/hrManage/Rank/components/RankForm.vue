@@ -27,29 +27,20 @@ const validated = ref(false)
 const form = ref<Rank>({
   pk: undefined,
   company: undefined,
-  sort: '1',
-  level: null,
   rank: '',
-  title: '',
-  description: '',
+  promotion_period: '',
+  criteria_new: '',
 })
 
 const formsCheck = computed(() => {
   if (props.rank) {
-    const a = form.value.sort === props.rank.sort
-    const b = form.value.level === props.rank.level
-    const c = form.value.rank === props.rank.rank
-    const d = form.value.title === props.rank.title
-    const e = form.value.description === props.rank.description
+    const a = form.value.rank === props.rank.rank
+    const b = form.value.promotion_period === props.rank.promotion_period
+    const c = form.value.criteria_new === props.rank.criteria_new
 
-    return a && b && c && d && e
+    return a && b && c
   } else return false
 })
-
-const sorts = [
-  { value: '1', label: '임원' },
-  { value: '2', label: '직원' },
-]
 
 const onSubmit = (event: Event) => {
   if (isValidate(event)) {
@@ -80,11 +71,9 @@ onBeforeMount(() => {
   if (props.rank) {
     form.value.pk = props.rank.pk
     form.value.company = props.rank.company
-    form.value.sort = props.rank.sort
-    form.value.level = props.rank.level
     form.value.rank = props.rank.rank
-    form.value.title = props.rank.title
-    form.value.description = props.rank.description
+    form.value.promotion_period = props.rank.promotion_period
+    form.value.criteria_new = props.rank.criteria_new
   } else form.value.company = props.company
 })
 
@@ -106,58 +95,29 @@ watch(
   >
     <CModalBody class="p-4">
       <div>
+        <CRow class="mb-3"></CRow>
+
         <CRow class="mb-3">
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label">구분</CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label">등급</CFormLabel>
               <CCol sm="8">
-                <Multiselect
-                  v-model="form.sort"
-                  :options="sorts"
-                  autocomplete="label"
-                  :classes="{ search: 'form-control multiselect-search' }"
-                  :add-option-on="['enter' | 'tab']"
-                  searchable
-                  placeholder="구분"
-                />
+                <CFormInput v-model="form.rank" required placeholder="등급" />
               </CCol>
             </CRow>
           </CCol>
 
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label">직급</CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label">
+                승급표준년수
+              </CFormLabel>
               <CCol sm="8">
                 <CFormInput
-                  v-model.number="form.level"
+                  v-model.number="form.promotion_period"
                   type="number"
-                  required
-                  placeholder="직급"
+                  placeholder="승급표준년수"
                 />
-              </CCol>
-            </CRow>
-          </CCol>
-        </CRow>
-
-        <CRow class="mb-3">
-          <CCol sm="6">
-            <CRow>
-              <CFormLabel class="col-sm-4 col-form-label">직책</CFormLabel>
-              <CCol sm="8">
-                <CFormInput
-                  v-model.number="form.rank"
-                  required
-                  placeholder="직책"
-                />
-              </CCol>
-            </CRow>
-          </CCol>
-
-          <CCol sm="6">
-            <CRow>
-              <CFormLabel class="col-sm-4 col-form-label">직함</CFormLabel>
-              <CCol sm="8">
-                <CFormInput v-model.number="form.title" placeholder="직함" />
               </CCol>
             </CRow>
           </CCol>
@@ -166,11 +126,13 @@ watch(
         <CRow class="mb-3">
           <CCol sm="12">
             <CRow>
-              <CFormLabel class="col-sm-2 col-form-label">비고</CFormLabel>
+              <CFormLabel class="col-sm-2 col-form-label">
+                신입부여기준
+              </CFormLabel>
               <CCol sm="10">
-                <CFormTextarea
-                  v-model.number="form.description"
-                  placeholder="비고"
+                <CFormInput
+                  v-model="form.criteria_new"
+                  placeholder="신입부여기준"
                 />
               </CCol>
             </CRow>

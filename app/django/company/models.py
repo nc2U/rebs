@@ -61,8 +61,8 @@ class Department(models.Model):
 class JobRank(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='ranks', verbose_name='회사')
     rank = models.CharField('등급', max_length=5)
-    promotion_period = models.CharField('승급표준년수', max_length=5, blank=True)
-    criteria_new = models.CharField('신입부여 기준', max_length=50, blank=True)
+    promotion_period = models.PositiveSmallIntegerField('승급표준년수', null=True, blank=True)
+    criteria_new = models.CharField('신입부여 기준', max_length=50, null=True, blank=True)
 
     def __str__(self):
         return self.rank
