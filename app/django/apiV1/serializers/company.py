@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from company.models import Company, Logo, Department, JobGrade, Staff
+from company.models import Company, Logo, Department, JobGrade, Position, DutyTitle, Staff
 
 
 # Company --------------------------------------------------------------------------
@@ -10,7 +10,7 @@ class DepartsInCompanySerializer(serializers.ModelSerializer):
         fields = ('pk', 'upper_depart', 'name', 'task')
 
 
-class RanksInCompanySerializer(serializers.ModelSerializer):
+class GradesInCompanySerializer(serializers.ModelSerializer):
     class Meta:
         model = JobGrade
         fields = ('pk', 'grade', 'promotion_period', 'criteria_new')
@@ -18,13 +18,13 @@ class RanksInCompanySerializer(serializers.ModelSerializer):
 
 class CompanySerializer(serializers.ModelSerializer):
     departments = DepartsInCompanySerializer(many=True, read_only=True)
-    ranks = RanksInCompanySerializer(many=True, read_only=True)
+    grades = GradesInCompanySerializer(many=True, read_only=True)
 
     class Meta:
         model = Company
         fields = ('pk', 'name', 'ceo', 'tax_number', 'org_number', 'business_cond',
                   'business_even', 'es_date', 'op_date', 'zipcode', 'address1',
-                  'address2', 'address3', 'departments', 'ranks')
+                  'address2', 'address3', 'departments', 'grades')
 
 
 class LogoSerializer(serializers.ModelSerializer):
@@ -36,7 +36,7 @@ class LogoSerializer(serializers.ModelSerializer):
 class StaffsInDepartmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Staff
-        fields = ('pk', 'rank', 'name')
+        fields = ('pk', 'grade', 'name')
 
 
 class DepartmentSerializer(serializers.ModelSerializer):
@@ -48,7 +48,7 @@ class DepartmentSerializer(serializers.ModelSerializer):
         fields = ('pk', 'company', 'upper_depart', 'level', 'name', 'task', 'staffs')
 
 
-class JobRankSerializer(serializers.ModelSerializer):
+class JobGradeSerializer(serializers.ModelSerializer):
     company = serializers.SlugRelatedField(queryset=Company.objects.all(), slug_field='name')
 
     class Meta:
@@ -56,12 +56,24 @@ class JobRankSerializer(serializers.ModelSerializer):
         fields = ('pk', 'company', 'grade', 'promotion_period', 'criteria_new')
 
 
+class PositionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Position
+        fields = ('pk',)
+
+
+class DutyTitleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DutyTitle
+        fields = ('pk',)
+
+
 class StaffSerializer(serializers.ModelSerializer):
     company = serializers.SlugRelatedField(queryset=Company.objects.all(), slug_field='name')
     sort = serializers.ChoiceField(choices=Staff.SORT_CHOICES)
     sort_desc = serializers.CharField(source='get_sort_display', read_only=True)
     department = serializers.SlugRelatedField(queryset=Department.objects.all(), slug_field='name', allow_null=True)
-    grade = serializers.SlugRelatedField(queryset=JobGrade.objects.all(), slug_field='rank', allow_null=True)
+    grade = serializers.SlugRelatedField(queryset=JobGrade.objects.all(), slug_field='grade', allow_null=True)
     status = serializers.ChoiceField(choices=Staff.STATUS_CHOICES)
     status_desc = serializers.CharField(source='get_status_display', read_only=True)
 
