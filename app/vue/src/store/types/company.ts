@@ -23,6 +23,23 @@ export type StaffFilter = {
   q?: string
 }
 
+export interface Department {
+  pk?: number
+  company?: string
+  upper_depart: number | null
+  level: number
+  name: string
+  task: string
+  staffs?: []
+}
+
+export type DepFilter = {
+  page?: number
+  com?: number
+  upp?: string
+  q?: string
+}
+
 export interface Rank {
   pk?: number
   company?: string
@@ -38,22 +55,5 @@ export type RankFilter = {
   page?: number
   com?: number
   sort?: string
-  q?: string
-}
-
-export interface Department {
-  pk?: number
-  company?: string
-  upper_depart: number | null
-  level: number
-  name: string
-  task: string
-  staffs?: []
-}
-
-export type DepFilter = {
-  page?: number
-  com?: number
-  upp?: string
   q?: string
 }

@@ -156,86 +156,6 @@ export const useCompany = defineStore('company', () => {
       )
       .catch(err => errorHandle(err.response.data))
 
-  const rankList = ref<Rank[]>([])
-  const allRankList = ref<Rank[]>([])
-  const rank = ref<Rank | null>(null)
-  const ranksCount = ref<number>(0)
-
-  // getters
-  const getRanks = computed(() =>
-    allRankList.value.map(r => ({
-      value: r.rank,
-      label: r.rank,
-    })),
-  )
-
-  const getPkRanks = computed(() =>
-    allRankList.value.map(r => ({
-      value: r.pk,
-      label: r.rank,
-    })),
-  )
-
-  // actions
-  const rankPages = (itemsPerPage: number) =>
-    Math.ceil(ranksCount.value / itemsPerPage)
-
-  const fetchRankList = (payload: RankFilter) => {
-    const { page = 1, com = 1, sort = '', q = '' } = payload
-    const queryStr = `?page=${page}&company=${com}&sort=${sort}&search=${q}`
-    return api
-      .get(`/rank/${queryStr}`)
-      .then(res => {
-        rankList.value = res.data.results
-        ranksCount.value = res.data.count
-      })
-      .catch(err => errorHandle(err.response.data))
-  }
-
-  const fetchAllRankList = (com = 1) =>
-    api
-      .get(`/all-ranks/?company=${com}`)
-      .then(res => {
-        allRankList.value = res.data.results
-      })
-      .catch(err => errorHandle(err.response.data))
-
-  const fetchRank = (pk: number) =>
-    api
-      .get(`/rank/${pk}/`)
-      .then(res => (rank.value = res.data))
-      .catch(err => errorHandle(err.response.data))
-
-  const createRank = (payload: Rank, page = 1, com = 1) =>
-    api
-      .post(`/rank/`, payload)
-      .then(res =>
-        fetchRankList({ page, com }).then(() =>
-          fetchRank(res.data.pk).then(() => message()),
-        ),
-      )
-      .catch(err => errorHandle(err.response.data))
-
-  const updateRank = (payload: Rank, page = 1, com = 1) =>
-    api
-      .put(`/rank/${payload.pk}/`, payload)
-      .then(res => {
-        fetchRankList({ page, com }).then(() =>
-          fetchRank(res.data.pk).then(() => message()),
-        )
-      })
-      .catch(err => errorHandle(err.response.data))
-
-  const deleteRank = (pk: number, com = 1) =>
-    api
-      .delete(`/rank/${pk}/`)
-      .then(() =>
-        fetchRankList({ com }).then(() =>
-          message('warning', '', '해당 오브젝트가 삭제되었습니다.'),
-        ),
-      )
-      .catch(err => errorHandle(err.response.data))
-
   const departmentList = ref<Department[]>([])
   const allDepartList = ref<Department[]>([])
   const department = ref<Department | null>(null)
@@ -327,6 +247,86 @@ export const useCompany = defineStore('company', () => {
       )
       .catch(err => errorHandle(err.response.data))
 
+  const rankList = ref<Rank[]>([])
+  const allRankList = ref<Rank[]>([])
+  const rank = ref<Rank | null>(null)
+  const ranksCount = ref<number>(0)
+
+  // getters
+  const getRanks = computed(() =>
+    allRankList.value.map(r => ({
+      value: r.rank,
+      label: r.rank,
+    })),
+  )
+
+  const getPkRanks = computed(() =>
+    allRankList.value.map(r => ({
+      value: r.pk,
+      label: r.rank,
+    })),
+  )
+
+  // actions
+  const rankPages = (itemsPerPage: number) =>
+    Math.ceil(ranksCount.value / itemsPerPage)
+
+  const fetchRankList = (payload: RankFilter) => {
+    const { page = 1, com = 1, sort = '', q = '' } = payload
+    const queryStr = `?page=${page}&company=${com}&sort=${sort}&search=${q}`
+    return api
+      .get(`/rank/${queryStr}`)
+      .then(res => {
+        rankList.value = res.data.results
+        ranksCount.value = res.data.count
+      })
+      .catch(err => errorHandle(err.response.data))
+  }
+
+  const fetchAllRankList = (com = 1) =>
+    api
+      .get(`/all-ranks/?company=${com}`)
+      .then(res => {
+        allRankList.value = res.data.results
+      })
+      .catch(err => errorHandle(err.response.data))
+
+  const fetchRank = (pk: number) =>
+    api
+      .get(`/rank/${pk}/`)
+      .then(res => (rank.value = res.data))
+      .catch(err => errorHandle(err.response.data))
+
+  const createRank = (payload: Rank, page = 1, com = 1) =>
+    api
+      .post(`/rank/`, payload)
+      .then(res =>
+        fetchRankList({ page, com }).then(() =>
+          fetchRank(res.data.pk).then(() => message()),
+        ),
+      )
+      .catch(err => errorHandle(err.response.data))
+
+  const updateRank = (payload: Rank, page = 1, com = 1) =>
+    api
+      .put(`/rank/${payload.pk}/`, payload)
+      .then(res => {
+        fetchRankList({ page, com }).then(() =>
+          fetchRank(res.data.pk).then(() => message()),
+        )
+      })
+      .catch(err => errorHandle(err.response.data))
+
+  const deleteRank = (pk: number, com = 1) =>
+    api
+      .delete(`/rank/${pk}/`)
+      .then(() =>
+        fetchRankList({ com }).then(() =>
+          message('warning', '', '해당 오브젝트가 삭제되었습니다.'),
+        ),
+      )
+      .catch(err => errorHandle(err.response.data))
+
   return {
     companyList,
     company,
@@ -354,19 +354,6 @@ export const useCompany = defineStore('company', () => {
     updateStaff,
     deleteStaff,
 
-    rankList,
-    rank,
-    ranksCount,
-    getRanks,
-    getPkRanks,
-    rankPages,
-    fetchRankList,
-    fetchAllRankList,
-    fetchRank,
-    createRank,
-    updateRank,
-    deleteRank,
-
     departmentList,
     department,
     departmentsCount,
@@ -380,5 +367,18 @@ export const useCompany = defineStore('company', () => {
     createDepartment,
     updateDepartment,
     deleteDepartment,
+
+    rankList,
+    rank,
+    ranksCount,
+    getRanks,
+    getPkRanks,
+    rankPages,
+    fetchRankList,
+    fetchAllRankList,
+    fetchRank,
+    createRank,
+    updateRank,
+    deleteRank,
   }
 })

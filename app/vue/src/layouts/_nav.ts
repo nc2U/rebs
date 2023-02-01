@@ -340,13 +340,13 @@ const human_resource = {
     },
     {
       component: 'CNavItem',
-      name: '직급정보 관리',
-      to: '/hr-manage/rank',
+      name: '부서정보 관리',
+      to: '/hr-manage/department',
     },
     {
       component: 'CNavItem',
-      name: '부서정보 관리',
-      to: '/hr-manage/department',
+      name: '직급정보 관리',
+      to: '/hr-manage/rank',
     },
   ],
 }
