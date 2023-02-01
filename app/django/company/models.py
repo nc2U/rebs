@@ -105,9 +105,9 @@ class Staff(models.Model):
     SORT_CHOICES = (('1', '임원'), ('2', '직원'))
     sort = models.CharField('구분', max_length=1, choices=SORT_CHOICES, default='1')
     name = models.CharField('직원 성명', max_length=10)
-    id_number = models.CharField('주민등록번호', max_length=14, null=True, blank=True)
+    id_number = models.CharField('주민등록번호', max_length=14)
     personal_phone = models.CharField('휴대전화', max_length=13)
-    email = models.EmailField('이메일')
+    email = models.EmailField('이메일', null=True, blank=True)
     department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='부서 정보',
                                    related_name='staffs')
     grade = models.ForeignKey(JobGrade, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='직급 정보')

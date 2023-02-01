@@ -11,8 +11,8 @@ export interface Staff {
   grade: string
   position: string
   duty: string
-  date_join: string
-  date_leave: string
+  date_join: string | null
+  date_leave: string | null
   status: '1' | '2' | '3' | '4'
   status_desc?: '근무 중' | '휴직 중' | '퇴직신청' | '퇴사처리'
 }

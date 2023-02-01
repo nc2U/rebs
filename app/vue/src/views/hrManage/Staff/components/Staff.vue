@@ -24,13 +24,15 @@ const onDelete = (pk: number) => emit('on-delete', pk)
 
 <template>
   <CTableRow v-if="staff" class="text-center">
-    <CTableDataCell>{{ staff.pk }}</CTableDataCell>
+    <CTableDataCell>{{ staff.sort_desc }}</CTableDataCell>
     <CTableDataCell>{{ staff.department }}</CTableDataCell>
-    <CTableDataCell>{{ staff.grade }}</CTableDataCell>
-    <CTableDataCell>{{ staff.name }}</CTableDataCell>
-    <CTableDataCell>{{ staff.entered_date }}</CTableDataCell>
-    <CTableDataCell>{{ staff.personal_phone }}</CTableDataCell>
-    <CTableDataCell>{{ staff.email }}</CTableDataCell>
+    <CTableDataCell>{{ staff.position }}</CTableDataCell>
+    <CTableDataCell>{{ staff.duty }}</CTableDataCell>
+    <CTableDataCell>
+      <a href="javascript:void(0);" @click="showDetail">{{ staff.name }}</a>
+    </CTableDataCell>
+    <CTableDataCell class="text-left">{{ staff.email }}</CTableDataCell>
+    <CTableDataCell>{{ staff.date_join }}</CTableDataCell>
     <CTableDataCell>
       <CBadge :color="badgeColor[staff.status]">
         {{ staff.status_desc }}

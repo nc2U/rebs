@@ -111,7 +111,7 @@ export const useCompany = defineStore('company', () => {
     const {
       page = 1,
       com = 1,
-      sort = '2',
+      sort = '',
       dep = '',
       gra = '',
       pos = '',

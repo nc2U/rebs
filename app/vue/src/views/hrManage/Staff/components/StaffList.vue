@@ -21,26 +21,26 @@ const onDelete = (pk: number) => emit('on-delete', pk)
 <template>
   <CTable hover responsive bordered align="middle">
     <colgroup>
-      <col width="6%" />
-      <col width="11%" />
+      <col width="8%" />
       <col width="11%" />
       <col width="10%" />
-      <col width="12%" />
-      <col width="15%" />
-      <col width="20%" />
+      <col width="11%" />
+      <col width="11%" />
+      <col width="18%" />
+      <col width="13%" />
+      <col width="10%" />
       <col width="8%" />
-      <col width="7%" />
     </colgroup>
 
     <CTableHead :color="headerSecondary">
       <CTableRow class="text-center" align="middle">
-        <CTableHeaderCell scope="col">No</CTableHeaderCell>
+        <CTableHeaderCell scope="col">구분</CTableHeaderCell>
         <CTableHeaderCell scope="col">부서</CTableHeaderCell>
+        <CTableHeaderCell scope="col">직위</CTableHeaderCell>
         <CTableHeaderCell scope="col">직책</CTableHeaderCell>
         <CTableHeaderCell scope="col">성명</CTableHeaderCell>
-        <CTableHeaderCell scope="col">입사일</CTableHeaderCell>
-        <CTableHeaderCell scope="col">휴대전화</CTableHeaderCell>
         <CTableHeaderCell scope="col">이메일</CTableHeaderCell>
+        <CTableHeaderCell scope="col">입사일</CTableHeaderCell>
         <CTableHeaderCell scope="col">상태</CTableHeaderCell>
         <CTableHeaderCell scope="col">비고</CTableHeaderCell>
       </CTableRow>

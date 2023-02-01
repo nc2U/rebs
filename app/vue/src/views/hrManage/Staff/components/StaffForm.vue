@@ -1,11 +1,12 @@
 <script lang="ts" setup="">
 import { ref, computed, onBeforeMount, watch } from 'vue'
-import { isValidate } from '@/utils/helper'
-import { write_human_resource } from '@/utils/pageAuth'
+import { useStore } from 'vuex'
 import { useCompany } from '@/store/pinia/company'
 import { Staff } from '@/store/types/company'
+import { isValidate } from '@/utils/helper'
 import { maska as vMaska } from 'maska'
 import { dateFormat } from '@/utils/baseMixins'
+import { write_human_resource } from '@/utils/pageAuth'
 import Multiselect from '@vueform/multiselect'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
@@ -41,13 +42,14 @@ const form = ref<Staff>({
   grade: '',
   position: '',
   duty: '',
-  date_join: '',
-  date_leave: '',
+  date_join: null,
+  date_leave: null,
   status: '1',
 })
 
 watch(form.value, val => {
   if (val.date_join) form.value.date_join = dateFormat(val.date_join)
+  if (val.date_leave) form.value.date_leave = dateFormat(val.date_leave)
 })
 
 const formsCheck = computed(() => {
@@ -70,6 +72,11 @@ const formsCheck = computed(() => {
   } else return false
 })
 
+const store = useStore()
+const isDark = computed(() => store.state.theme === 'dark')
+const bgLight = computed(() =>
+  !isDark.value ? 'bg-light' : 'bg-grey-darken-2',
+)
 const comStore = useCompany()
 const getSlugDeparts = computed(() => comStore.getSlugDeparts)
 const getGrades = computed(() => comStore.getGrades)
@@ -151,7 +158,9 @@ watch(
         <CRow class="mb-3">
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label">구분</CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label" :class="bgLight">
+                구분
+              </CFormLabel>
               <CCol sm="8">
                 <Multiselect
                   v-model="form.sort"
@@ -165,11 +174,29 @@ watch(
               </CCol>
             </CRow>
           </CCol>
+
+          <CCol sm="6">
+            <CRow>
+              <CFormLabel class="col-sm-4 col-form-label" :class="bgLight">
+                입사일
+              </CFormLabel>
+              <CCol sm="8">
+                <DatePicker
+                  v-model="form.date_join"
+                  maxlength="10"
+                  placeholder="입사일"
+                  required
+                />
+              </CCol>
+            </CRow>
+          </CCol>
         </CRow>
         <CRow class="mb-3">
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label">성명</CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label" :class="bgLight">
+                성명
+              </CFormLabel>
               <CCol sm="8">
                 <CFormInput
                   v-model.number="form.name"
@@ -182,7 +209,7 @@ watch(
 
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label">
+              <CFormLabel class="col-sm-4 col-form-label" :class="bgLight">
                 주민등록번호
               </CFormLabel>
               <CCol sm="8">
@@ -190,6 +217,7 @@ watch(
                   v-model="form.id_number"
                   v-maska="'######-#######'"
                   class="form-control"
+                  required
                   maxlength="14"
                   placeholder="주민등록번호"
                 />
@@ -201,7 +229,9 @@ watch(
         <CRow class="mb-3">
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label">휴대전화</CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label" :class="bgLight">
+                휴대전화
+              </CFormLabel>
               <CCol sm="8">
                 <input
                   v-model="form.personal_phone"
@@ -217,12 +247,13 @@ watch(
 
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label">이메일</CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label" :class="bgLight">
+                이메일
+              </CFormLabel>
               <CCol sm="8">
                 <CFormInput
                   v-model="form.email"
                   type="email"
-                  required
                   placeholder="이메일"
                 />
               </CCol>
@@ -235,7 +266,9 @@ watch(
         <CRow class="mb-3">
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label">부서</CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label" :class="bgLight">
+                부서
+              </CFormLabel>
               <CCol sm="8">
                 <Multiselect
                   v-model.number="form.department"
@@ -252,11 +285,53 @@ watch(
 
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label">직책</CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label" :class="bgLight">
+                직급
+              </CFormLabel>
               <CCol sm="8">
                 <Multiselect
                   v-model.number="form.grade"
                   :options="getGrades"
+                  autocomplete="label"
+                  :classes="{ search: 'form-control multiselect-search' }"
+                  :add-option-on="['enter' | 'tab']"
+                  searchable
+                  placeholder="직급"
+                />
+              </CCol>
+            </CRow>
+          </CCol>
+        </CRow>
+
+        <CRow class="mb-3">
+          <CCol sm="6">
+            <CRow>
+              <CFormLabel class="col-sm-4 col-form-label" :class="bgLight">
+                직위
+              </CFormLabel>
+              <CCol sm="8">
+                <Multiselect
+                  v-model.number="form.position"
+                  :options="[]"
+                  autocomplete="label"
+                  :classes="{ search: 'form-control multiselect-search' }"
+                  :add-option-on="['enter' | 'tab']"
+                  searchable
+                  placeholder="직위"
+                />
+              </CCol>
+            </CRow>
+          </CCol>
+
+          <CCol sm="6">
+            <CRow>
+              <CFormLabel class="col-sm-4 col-form-label" :class="bgLight">
+                직책
+              </CFormLabel>
+              <CCol sm="8">
+                <Multiselect
+                  v-model.number="form.duty"
+                  :options="[]"
                   autocomplete="label"
                   :classes="{ search: 'form-control multiselect-search' }"
                   :add-option-on="['enter' | 'tab']"
@@ -271,21 +346,9 @@ watch(
         <CRow class="mb-3">
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label">입사일</CFormLabel>
-              <CCol sm="8">
-                <DatePicker
-                  v-model="form.date_join"
-                  maxlength="10"
-                  placeholder="입사일"
-                  required
-                />
-              </CCol>
-            </CRow>
-          </CCol>
-
-          <CCol sm="6">
-            <CRow>
-              <CFormLabel class="col-sm-4 col-form-label">상태</CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label" :class="bgLight">
+                상태
+              </CFormLabel>
               <CCol sm="8">
                 <Multiselect
                   v-model.number="form.status"
@@ -295,6 +358,61 @@ watch(
                   :add-option-on="['enter' | 'tab']"
                   searchable
                   placeholder="상태"
+                />
+              </CCol>
+            </CRow>
+          </CCol>
+
+          <CCol sm="6">
+            <CRow>
+              <CFormLabel class="col-sm-4 col-form-label" :class="bgLight">
+                퇴사일
+              </CFormLabel>
+              <CCol sm="8">
+                <DatePicker
+                  v-model="form.date_leave"
+                  maxlength="10"
+                  placeholder="퇴사일"
+                />
+              </CCol>
+            </CRow>
+          </CCol>
+        </CRow>
+
+        <hr />
+
+        <CRow class="mt-3">
+          <CCol sm="6">
+            <CRow>
+              <!--              <CFormLabel class="col-sm-4 col-form-label" :class="bgLight">직책</CFormLabel>-->
+              <!--              <CCol sm="8">-->
+              <!--                <Multiselect-->
+              <!--                  v-model.number="form.duty"-->
+              <!--                  :options="[]"-->
+              <!--                  autocomplete="label"-->
+              <!--                  :classes="{ search: 'form-control multiselect-search' }"-->
+              <!--                  :add-option-on="['enter' | 'tab']"-->
+              <!--                  searchable-->
+              <!--                  placeholder="직책"-->
+              <!--                />-->
+              <!--              </CCol>-->
+            </CRow>
+          </CCol>
+
+          <CCol sm="6">
+            <CRow>
+              <CFormLabel class="col-sm-4 col-form-label" :class="bgLight">
+                유저 정보
+              </CFormLabel>
+              <CCol sm="8">
+                <Multiselect
+                  v-model.number="form.duty"
+                  :options="[]"
+                  autocomplete="label"
+                  :classes="{ search: 'form-control multiselect-search' }"
+                  :add-option-on="['enter' | 'tab']"
+                  searchable
+                  placeholder="유저 정보"
                 />
               </CCol>
             </CRow>
