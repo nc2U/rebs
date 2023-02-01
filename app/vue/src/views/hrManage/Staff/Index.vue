@@ -33,6 +33,8 @@ onMounted(() => {
   fetchStaffList({ com: comId.value })
   fetchAllGradeList(comId.value)
   fetchAllDepartList(comId.value)
+  fetchAllPositionList(comId.value)
+  fetchAllDutyList(comId.value)
 })
 
 const listFiltering = (payload: StaffFilter) => {
@@ -55,6 +57,9 @@ const fetchStaffList = (payload: StaffFilter) =>
 const fetchAllGradeList = (com?: number) => companyStore.fetchAllGradeList(com)
 const fetchAllDepartList = (com?: number) =>
   companyStore.fetchAllDepartList(com)
+const fetchAllPositionList = (com?: number) =>
+  companyStore.fetchAllPositionList(com)
+const fetchAllDutyList = (com?: number) => companyStore.fetchAllDutyList(com)
 
 const createStaff = (payload: Staff, p?: number, c?: number) =>
   companyStore.createStaff(payload, p, c)

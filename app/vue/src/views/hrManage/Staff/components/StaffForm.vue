@@ -80,6 +80,8 @@ const bgLight = computed(() =>
 const comStore = useCompany()
 const getSlugDeparts = computed(() => comStore.getSlugDeparts)
 const getGrades = computed(() => comStore.getGrades)
+const getPositions = computed(() => comStore.getPositions)
+const getDutys = computed(() => comStore.getDutys)
 
 const sorts = [
   { value: '1', label: '임원' },
@@ -308,7 +310,7 @@ watch(
               <CCol sm="8">
                 <Multiselect
                   v-model="form.position"
-                  :options="[]"
+                  :options="getPositions"
                   autocomplete="label"
                   :classes="{ search: 'form-control multiselect-search' }"
                   :add-option-on="['enter' | 'tab']"
@@ -327,7 +329,7 @@ watch(
               <CCol sm="8">
                 <Multiselect
                   v-model="form.duty"
-                  :options="[]"
+                  :options="getDutys"
                   autocomplete="label"
                   :classes="{ search: 'form-control multiselect-search' }"
                   :add-option-on="['enter' | 'tab']"
