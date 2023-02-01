@@ -62,8 +62,8 @@ class StaffSerializer(serializers.ModelSerializer):
     company = serializers.SlugRelatedField(queryset=Company.objects.all(), slug_field='name')
     sort = serializers.ChoiceField(choices=JobRank.SORT_CHOICES)
     sort_desc = serializers.CharField(source='get_sort_display', read_only=True)
-    department = serializers.SlugRelatedField(queryset=Department.objects.all(), slug_field='name')
-    rank = serializers.SlugRelatedField(queryset=JobRank.objects.all(), slug_field='rank')
+    department = serializers.SlugRelatedField(queryset=Department.objects.all(), slug_field='name', allow_null=True)
+    rank = serializers.SlugRelatedField(queryset=JobRank.objects.all(), slug_field='rank', allow_null=True)
     status = serializers.ChoiceField(choices=Staff.STATUS_CHOICES)
     status_desc = serializers.CharField(source='get_status_display', read_only=True)
 
