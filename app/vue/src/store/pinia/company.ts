@@ -7,10 +7,10 @@ import { Company, Logo } from '@/store/types/settings'
 import {
   Staff,
   StaffFilter,
-  Rank,
-  RankFilter,
+  Grade,
   Department,
   DepFilter,
+  ComFilter,
 } from '@/store/types/company'
 
 const accountStore = useAccount()
@@ -99,8 +99,8 @@ export const useCompany = defineStore('company', () => {
       .then(() => message('warning', '', '해당 오브젝트가 삭제되었습니다.'))
       .catch(err => errorHandle(err.response.data))
 
-  const staffList = ref<Rank[]>([])
-  const staff = ref<Rank | null>(null)
+  const staffList = ref<Grade[]>([])
+  const staff = ref<Grade | null>(null)
   const staffsCount = ref<number>(0)
 
   // actions
@@ -257,81 +257,81 @@ export const useCompany = defineStore('company', () => {
       )
       .catch(err => errorHandle(err.response.data))
 
-  const rankList = ref<Rank[]>([])
-  const allRankList = ref<Rank[]>([])
-  const rank = ref<Rank | null>(null)
-  const ranksCount = ref<number>(0)
+  const gradeList = ref<Grade[]>([])
+  const allGradeList = ref<Grade[]>([])
+  const grade = ref<Grade | null>(null)
+  const gradesCount = ref<number>(0)
 
   // getters
-  const getRanks = computed(() =>
-    allRankList.value.map(r => ({
-      value: r.rank,
-      label: r.rank,
+  const getGrades = computed(() =>
+    allGradeList.value.map(r => ({
+      value: r.grade,
+      label: r.grade,
     })),
   )
 
-  const getPkRanks = computed(() =>
-    allRankList.value.map(r => ({
+  const getPkGrades = computed(() =>
+    allGradeList.value.map(r => ({
       value: r.pk,
-      label: r.rank,
+      label: r.grade,
     })),
   )
 
   // actions
-  const rankPages = (itemsPerPage: number) =>
-    Math.ceil(ranksCount.value / itemsPerPage)
+  const gradePages = (itemsPerPage: number) =>
+    Math.ceil(gradesCount.value / itemsPerPage)
 
-  const fetchRankList = (payload: RankFilter) => {
-    const { page = 1, com = 1, sort = '', q = '' } = payload
-    const queryStr = `?page=${page}&company=${com}&sort=${sort}&search=${q}`
+  const fetchGradeList = (payload: ComFilter) => {
+    const { page = 1, com = 1, q = '' } = payload
+    const queryStr = `?page=${page}&company=${com}&search=${q}`
     return api
-      .get(`/rank/${queryStr}`)
+      .get(`/grade/${queryStr}`)
       .then(res => {
-        rankList.value = res.data.results
-        ranksCount.value = res.data.count
+        gradeList.value = res.data.results
+        gradesCount.value = res.data.count
       })
       .catch(err => errorHandle(err.response.data))
   }
 
-  const fetchAllRankList = (com = 1) =>
+  const fetchAllGradeList = (com = 1) =>
     api
-      .get(`/all-ranks/?company=${com}`)
+      .get(`/all-grades/?company=${com}`)
       .then(res => {
-        allRankList.value = res.data.results
+        allGradeList.value = res.data.results
       })
       .catch(err => errorHandle(err.response.data))
 
-  const fetchRank = (pk: number) =>
+  const fetchGrade = (pk: number) =>
     api
-      .get(`/rank/${pk}/`)
-      .then(res => (rank.value = res.data))
+      .get(`/grade/${pk}/`)
+      .then(res => (grade.value = res.data))
       .catch(err => errorHandle(err.response.data))
 
-  const createRank = (payload: Rank, page = 1, com = 1) =>
+  const createGrade = (payload: Grade, page = 1, com = 1) =>
     api
-      .post(`/rank/`, payload)
+      .post(`/grade/`, payload)
       .then(res =>
-        fetchRankList({ page, com }).then(() =>
-          fetchRank(res.data.pk).then(() => message()),
+        fetchGradeList({ page, com }).then(() =>
+          fetchGrade(res.data.pk).then(() => message()),
         ),
       )
       .catch(err => errorHandle(err.response.data))
 
-  const updateRank = (payload: Rank, page = 1, com = 1) =>
+  const updateGrade = (payload: Grade, page = 1, com = 1) =>
     api
-      .put(`/rank/${payload.pk}/`, payload)
+      .put(`/grade/${payload.pk}/`, payload)
       .then(res => {
-        fetchRankList({ page, com }).then(() =>
-          fetchRank(res.data.pk).then(() => message()),
+        fetchGradeList({ page, com }).then(() =>
+          fetchGrade(res.data.pk).then(() => message()),
         )
       })
       .catch(err => errorHandle(err.response.data))
 
-  const deleteRank = (pk: number, com = 1) =>
+  const deleteGrade = (pk: number, com = 1) =>
     api
-      .delete(`/rank/${pk}/`)
+      .delete(`/grade/${pk}/`)
       .then(() =>
-        fetchRankList({ com }).then(() =>
+        fetchGradeList({ com }).then(() =>
           message('warning', '', '해당 오브젝트가 삭제되었습니다.'),
         ),
       )
@@ -378,17 +378,17 @@ export const useCompany = defineStore('company', () => {
     updateDepartment,
     deleteDepartment,
 
-    rankList,
-    rank,
-    ranksCount,
-    getRanks,
-    getPkRanks,
-    rankPages,
-    fetchRankList,
-    fetchAllRankList,
-    fetchRank,
-    createRank,
-    updateRank,
-    deleteRank,
+    gradeList,
+    grade,
+    gradesCount,
+    getGrades,
+    getPkGrades,
+    gradePages,
+    fetchGradeList,
+    fetchAllGradeList,
+    fetchGrade,
+    createGrade,
+    updateGrade,
+    deleteGrade,
   }
 })
