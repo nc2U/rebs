@@ -9,7 +9,7 @@ defineProps({ contractor: { type: Object, default: null } })
       :disabled="!contractor || contractor.status > '2'"
       @click="
         $router.push({
-          name: '계약등록 관리',
+          name: '계약 등록 관리',
           query: { contract: contractor.contract },
         })
       "

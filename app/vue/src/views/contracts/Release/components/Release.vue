@@ -29,7 +29,7 @@ const router = useRouter()
 const callFormModal = () => {
   emit('get-release', props.release.pk)
   router.push({
-    name: '계약해지 관리',
+    name: '계약 해지 관리',
     query: { contractor: props.release.contractor },
   })
   releaseFormModal.value.callModal()

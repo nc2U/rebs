@@ -13,7 +13,7 @@ defineProps({
   <CTableRow v-if="contract" class="text-center">
     <CTableDataCell>
       <router-link
-        :to="{ name: '계약등록 관리', query: { contract: contract.pk } }"
+        :to="{ name: '계약 등록 관리', query: { contract: contract.pk } }"
       >
         {{ contract.serial_number }}
       </router-link>
@@ -38,7 +38,7 @@ defineProps({
     </CTableDataCell>
     <CTableDataCell>
       <router-link
-        :to="{ name: '계약등록 관리', query: { contract: contract.pk } }"
+        :to="{ name: '계약 등록 관리', query: { contract: contract.pk } }"
       >
         {{ contract.contractor }}
       </router-link>
@@ -70,7 +70,7 @@ defineProps({
         size="sm"
         @click="
           $router.push({
-            name: '계약등록 관리',
+            name: '계약 등록 관리',
             query: { contract: contract.pk },
           })
         "

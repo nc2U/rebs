@@ -64,7 +64,7 @@ const statusColor = computed(() => {
       <span v-if="unit && unit.key_unit && unit.key_unit.contract">
         <router-link
           :to="{
-            name: '계약등록 관리',
+            name: '계약 등록 관리',
             query: { contract: unit.key_unit.contract.pk },
           }"
         >

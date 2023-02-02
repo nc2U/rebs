@@ -59,7 +59,7 @@ const onSelectAdd = (target: number) => {
     contractStore.contReleaseList = []
     contractStore.contReleaseCount = 0
   }
-  router.push({ name: '계약해지 관리' })
+  router.push({ name: '계약 해지 관리' })
 }
 const searchContractor = (search: string) => {
   if (search !== '') {
@@ -112,7 +112,7 @@ onBeforeRouteLeave(() => {
       />
       <TableTitleRow
         v-if="project"
-        title="계약해지 현황"
+        title="계약 해지 현황"
         color="grey"
         excel
         :url="downloadUrl"

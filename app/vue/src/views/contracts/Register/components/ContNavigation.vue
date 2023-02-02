@@ -11,7 +11,7 @@ defineProps({ contractor: { type: Number, default: null } })
       color="light"
       @click="
         $router.push({
-          name: '계약해지 관리',
+          name: '계약 해지 관리',
           query: { contractor },
         })
       "

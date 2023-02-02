@@ -139,14 +139,14 @@ const getPayName = (pay_time: number) => {
     </CTableDataCell>
     <CTableDataCell>
       <router-link
-        :to="{ name: '계약등록 관리', query: { contract: contract.pk } }"
+        :to="{ name: '계약 등록 관리', query: { contract: contract.pk } }"
       >
         {{ contract.contractor }}
       </router-link>
     </CTableDataCell>
     <CTableDataCell class="text-right">
       <router-link
-        :to="{ name: '건별수납 관리', query: { contract: contract.pk } }"
+        :to="{ name: '건별 수납 관리', query: { contract: contract.pk } }"
       >
         {{ numFormat(contract.total_paid) }}
       </router-link>

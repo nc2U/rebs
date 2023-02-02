@@ -14,7 +14,7 @@ const searchContractor = () => emit('search-contractor', search.value.trim())
 
 const router = useRouter()
 const setContractor = (pk: number, release: number | null) => {
-  router.push({ name: '계약해지 관리', query: { contractor: pk } })
+  router.push({ name: '계약 해지 관리', query: { contractor: pk } })
   if (release !== null) emit('get-release', release)
   else contractStore.contRelease = null
 
