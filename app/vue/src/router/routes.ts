@@ -30,7 +30,7 @@ const routes: Array<RouteRecordRaw> = [
     children: [
       {
         path: 'dashboard',
-        name: '메인 페이지',
+        name: '대 시 보 드',
         // route level code-splitting
         // this generates a separate chunk (dashboard.[hash].js) for this route
         // which is lazy-loaded when the route is visited.
@@ -38,16 +38,16 @@ const routes: Array<RouteRecordRaw> = [
           import(
             /* webpackChunkName: "dashboard" */ '@/views/_Dashboard/index.vue'
           ),
-        meta: { title: '메인 페이지', affix: true },
+        meta: { title: '대 시 보 드', affix: true },
       },
       {
         path: 'schedule',
-        name: '일정 관리',
+        name: '일 정 관 리',
         component: () =>
           import(
             /* webpackChunkName: "schedule" */ '@/views/_Schedules/index.vue'
           ),
-        meta: { title: '일정 관리', affix: true },
+        meta: { title: '일 정 관 리', affix: true },
       },
       contracts,
       payments,

@@ -1,6 +1,6 @@
 const dashboard = {
   component: 'CNavItem',
-  name: '메인 페이지',
+  name: '대 시 보 드',
   to: '/dashboard',
   icon: 'cil-speedometer',
   badge: {
