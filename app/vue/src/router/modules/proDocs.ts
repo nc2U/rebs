@@ -29,6 +29,15 @@ const proDocs = {
       meta: { title: '현장 일반문서' },
     },
     {
+      path: 'official/letters',
+      name: '현장 공문발송',
+      component: () =>
+        pageViewAuth.value
+          ? import('@/views/proDocs/OfficialLetter/Index.vue')
+          : import('@/views/_Accounts/NoAuth.vue'),
+      meta: { title: '현장 공문발송' },
+    },
+    {
       path: 'lawsuit',
       name: '현장 소송관리',
       redirect: '/project-docs/lawsuit/posts',

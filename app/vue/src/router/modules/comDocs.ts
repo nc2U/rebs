@@ -58,6 +58,44 @@ const comDocs = {
       ],
     },
     {
+      path: 'official/letters',
+      name: '본사 공문발송',
+      component: () =>
+        pageViewAuth.value
+          ? import('@/views/comDocs/OfficialLetter/Index.vue')
+          : import('@/views/_Accounts/NoAuth.vue'),
+      meta: { title: '본사 공문발송' },
+      children: [
+        {
+          path: ':postId(\\d+)',
+          name: '본사 공문발송 - 보기',
+          component: () =>
+            pageViewAuth.value
+              ? import('@/views/comDocs/OfficialLetter/Index.vue')
+              : import('@/views/_Accounts/NoAuth.vue'),
+          meta: { title: '본사 공문발송', except: true },
+        },
+        {
+          path: ':postId(\\d+)/update',
+          name: '본사 공문발송 - 수정',
+          component: () =>
+            pageViewAuth.value
+              ? import('@/views/comDocs/OfficialLetter/Index.vue')
+              : import('@/views/_Accounts/NoAuth.vue'),
+          meta: { title: '본사 공문발송', except: true },
+        },
+        {
+          path: 'create',
+          name: '본사 공문발송 - 작성',
+          component: () =>
+            pageViewAuth.value
+              ? import('@/views/comDocs/OfficialLetter/Index.vue')
+              : import('@/views/_Accounts/NoAuth.vue'),
+          meta: { title: '본사 공문발송', except: true },
+        },
+      ],
+    },
+    {
       path: 'lawsuit',
       name: '본사 소송관리',
       redirect: '/docs/lawsuit/posts',

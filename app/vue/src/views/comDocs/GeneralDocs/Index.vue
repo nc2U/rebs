@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { ref, computed, onBeforeMount, onBeforeUpdate } from 'vue'
+import { pageTitle, navMenu } from '@/views/comDocs/_menu/headermixin1'
 import { useRouter } from 'vue-router'
 import { useDocument, PostFilter } from '@/store/pinia/document'
 import { AFile, Attatches, Link, Post, PatchPost } from '@/store/types/document'
 import { formUtility } from '@/utils/helper'
+import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from './components/ListController.vue'
 import CategoryTabs from './components/CategoryTabs.vue'
@@ -101,6 +103,12 @@ onBeforeUpdate(() => {
 </script>
 
 <template>
+  <ContentHeader
+    :page-title="pageTitle"
+    :nav-menu="navMenu"
+    :selector="'CompanySelect'"
+  />
+
   <ContentBody>
     <CCardBody class="pb-5">
       <div v-if="$route.name === '본사 일반문서'" class="pt-3">

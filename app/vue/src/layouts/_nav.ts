@@ -156,6 +156,15 @@ const project_docs = {
     },
     {
       component: 'CNavItem',
+      name: '현장 공문발송',
+      to: '/project-docs/official/letters',
+      badge: {
+        color: 'danger',
+        text: 'u.c',
+      },
+    },
+    {
+      component: 'CNavItem',
       name: '현장 소송관리',
       to: '/project-docs/lawsuit',
       icon: 'cil-library-building',
@@ -305,6 +314,15 @@ const company_docs = {
       component: 'CNavItem',
       name: '본사 일반문서',
       to: '/docs/general/posts',
+    },
+    {
+      component: 'CNavItem',
+      name: '본사 공문발송',
+      to: '/docs/official/letters',
+      badge: {
+        color: 'danger',
+        text: 'u.c',
+      },
     },
     {
       component: 'CNavItem',

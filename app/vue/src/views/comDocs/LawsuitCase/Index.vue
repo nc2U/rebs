@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onBeforeMount, onBeforeUpdate } from 'vue'
-import { navMenu } from '@/views/comDocs/_menu/headermixin'
+import { navMenu } from '@/views/comDocs/_menu/headermixin2'
 import { SuitCaseFilter as cFilter, useDocument } from '@/store/pinia/document'
 import { SuitCase } from '@/store/types/document'
 import { useRouter } from 'vue-router'

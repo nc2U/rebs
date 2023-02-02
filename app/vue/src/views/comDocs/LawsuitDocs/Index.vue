@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onBeforeMount, onBeforeUpdate } from 'vue'
-import { navMenu } from '@/views/comDocs/_menu/headermixin'
+import { navMenu } from '@/views/comDocs/_menu/headermixin2'
 import { useRouter } from 'vue-router'
 import { PostFilter, useDocument } from '@/store/pinia/document'
 import { AFile, Attatches, Link, PatchPost, Post } from '@/store/types/document'
