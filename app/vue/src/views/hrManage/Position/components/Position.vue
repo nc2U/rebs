@@ -24,6 +24,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
   <CTableRow v-if="position" class="text-center">
     <CTableDataCell>{{ position.pk }}</CTableDataCell>
     <CTableDataCell>{{ position.name }}</CTableDataCell>
+    <CTableDataCell>{{ position.level }}</CTableDataCell>
     <CTableDataCell>{{ position.desc }}</CTableDataCell>
     <CTableDataCell>
       <CButton color="info" size="sm" @click="showDetail">확인</CButton>
