@@ -1,11 +1,11 @@
 <script lang="ts" setup="">
 import { ref } from 'vue'
-import { Grade } from '@/store/types/company'
+import { Duty } from '@/store/types/company'
 import FormModal from '@/components/Modals/FormModal.vue'
-import StaffForm from './GradeForm.vue'
+import StaffForm from './DutyForm.vue'
 
 defineProps({
-  rank: {
+  duty: {
     type: Object,
     required: true,
   },
@@ -16,17 +16,15 @@ const emit = defineEmits(['multi-submit', 'on-delete'])
 const updateFormModal = ref()
 
 const showDetail = () => updateFormModal.value.callModal()
-const multiSubmit = (payload: Grade) => emit('multi-submit', payload)
+const multiSubmit = (payload: Duty) => emit('multi-submit', payload)
 const onDelete = (pk: number) => emit('on-delete', pk)
 </script>
 
 <template>
-  <CTableRow v-if="grade" class="text-center">
-    <CTableDataCell>{{ grade.pk }}</CTableDataCell>
-    <CTableDataCell>{{ grade.sort_desc }}</CTableDataCell>
-    <CTableDataCell>{{ grade.grade }}</CTableDataCell>
-    <CTableDataCell class="text-left">{{ grade.title }}</CTableDataCell>
-    <CTableDataCell class="text-left">{{ grade.description }}</CTableDataCell>
+  <CTableRow v-if="duty" class="text-center">
+    <CTableDataCell>{{ duty.pk }}</CTableDataCell>
+    <CTableDataCell>{{ duty.name }}</CTableDataCell>
+    <CTableDataCell class="text-left">{{ duty.title }}</CTableDataCell>
     <CTableDataCell>
       <CButton color="info" size="sm" @click="showDetail">확인</CButton>
     </CTableDataCell>
@@ -36,7 +34,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
     <template #header>직급 정보 등록</template>
     <template #default>
       <StaffForm
-        :grade="grade"
+        :duty="duty"
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
         @close="updateFormModal.close()"

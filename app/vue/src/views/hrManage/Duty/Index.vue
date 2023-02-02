@@ -6,9 +6,9 @@ import { Duty, ComFilter } from '@/store/types/company'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from './components/ListController.vue'
-import AddGrade from './components/AddGrade.vue'
+import AddDuty from './components/AddDuty.vue'
 import TableTitleRow from '@/components/TableTitleRow.vue'
-import GradeList from './components/GradeList.vue'
+import DutyList from './components/DutyList.vue'
 
 const listControl = ref()
 
@@ -66,9 +66,9 @@ const pageSelect = (num: number) => {
   <ContentBody>
     <CCardBody>
       <ListController ref="listControl" @list-filtering="listFiltering" />
-      <AddGrade :company="comName" @multi-submit="multiSubmit" />
+      <AddDuty :company="comName" @multi-submit="multiSubmit" />
       <TableTitleRow title="직급 목록" excel url="#" disabled />
-      <GradeList
+      <DutyList
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
         @page-select="pageSelect"
