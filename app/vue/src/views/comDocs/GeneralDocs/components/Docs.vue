@@ -26,7 +26,7 @@ const sortFunc = () => emit('sort-filter', props.post.project)
     <CTableDataCell>{{ post.execution_date }}</CTableDataCell>
     <CTableDataCell class="text-left">
       <router-link
-        :to="{ name: '본사 일반문서 - 보기', params: { postId: post.pk } }"
+        :to="{ name: '본사 일반 문서 - 보기', params: { postId: post.pk } }"
       >
         {{ cutString(post.title, 30) }}
       </router-link>

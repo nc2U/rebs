@@ -315,18 +315,18 @@ const company_cash = {
 
 const company_docs = {
   component: 'CNavItem',
-  name: '본사문서 관리',
+  name: '본사 문서 관리',
   to: '/docs/general',
   icon: 'cil-cloud-download',
   items: [
     {
       component: 'CNavItem',
-      name: '본사 일반문서',
+      name: '본사 일반 문서',
       to: '/docs/general/posts',
     },
     {
       component: 'CNavItem',
-      name: '본사 공문발송',
+      name: '본사 공문 발송',
       to: '/docs/official/letters',
       badge: {
         color: 'danger',
@@ -335,18 +335,18 @@ const company_docs = {
     },
     {
       component: 'CNavItem',
-      name: '본사 소송관리',
+      name: '본사 소송 관리',
       to: '/docs/lawsuit',
       icon: 'cil-library-building',
       items: [
         {
           component: 'CNavItem',
-          name: '본사 소송문서',
+          name: '본사 소송 문서',
           to: '/docs/lawsuit/posts',
         },
         {
           component: 'CNavItem',
-          name: '본사 소송사건',
+          name: '본사 소송 사건',
           to: '/docs/lawsuit/case',
         },
       ],

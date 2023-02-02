@@ -53,12 +53,12 @@ const onSubmit = (payload: SuitCase) => {
   if (payload.pk) {
     updateSuitCase(payload)
     router.replace({
-      name: '본사 소송사건 - 보기',
+      name: '본사 소송 사건 - 보기',
       params: { caseId: payload.pk },
     })
   } else {
     createSuitCase(payload)
-    router.replace({ name: '본사 소송사건' })
+    router.replace({ name: '본사 소송 사건' })
   }
 }
 
@@ -107,7 +107,7 @@ onBeforeUpdate(() => {
     <CCardBody class="pb-5">
       <HeaderNav :menus="navMenu" />
 
-      <div v-if="$route.name === '본사 소송사건'" class="pt-3">
+      <div v-if="$route.name === '본사 소송 사건'" class="pt-3">
         <ListController ref="fController" @list-filter="listFiltering" />
 
         <CaseList

@@ -65,7 +65,7 @@ const sortFilter = (project: number | null) => emit('sort-filter', project)
       <CButton
         color="primary"
         class="px-5"
-        @click="$router.push({ name: '본사 일반문서 - 작성' })"
+        @click="$router.push({ name: '본사 일반 문서 - 작성' })"
       >
         등록하기
       </CButton>

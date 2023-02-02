@@ -180,7 +180,7 @@ onBeforeRouteLeave(() => {
       <h5>
         {{ sortName }}
         <v-icon icon="mdi-chevron-double-right" size="xs" />
-        일반문서
+        일반 문서
       </h5>
     </CCol>
   </CRow>
@@ -370,7 +370,10 @@ onBeforeRouteLeave(() => {
 
     <CRow>
       <CCol class="text-right">
-        <CButton color="light" @click="$router.push({ name: '본사 일반문서' })">
+        <CButton
+          color="light"
+          @click="$router.push({ name: '본사 일반 문서' })"
+        >
           목록으로
         </CButton>
         <CButton
@@ -388,7 +391,7 @@ onBeforeRouteLeave(() => {
   </CForm>
 
   <ConfirmModal ref="delModal">
-    <template #header> 본사 일반문서 </template>
+    <template #header> 본사 일반 문서</template>
     <template #default>현재 삭제 기능이 구현되지 않았습니다.</template>
     <template #footer>
       <CButton color="danger" disabled="">삭제</CButton>
@@ -396,8 +399,8 @@ onBeforeRouteLeave(() => {
   </ConfirmModal>
 
   <ConfirmModal ref="confirmModal">
-    <template #header> 본사 일반문서 </template>
-    <template #default> 본사 일반문서 저장을 진행하시겠습니까?</template>
+    <template #header> 본사 일반 문서</template>
+    <template #default> 본사 일반 문서 저장을 진행하시겠습니까?</template>
     <template #footer>
       <CButton :color="btnClass" @click="modalAction">저장</CButton>
     </template>

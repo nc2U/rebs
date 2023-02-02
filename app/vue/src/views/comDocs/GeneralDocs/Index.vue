@@ -67,12 +67,12 @@ const onSubmit = (payload: Post & Attatches) => {
   if (pk) {
     updatePost({ pk, form })
     router.replace({
-      name: '본사 일반문서 - 보기',
+      name: '본사 일반 문서 - 보기',
       params: { postId: pk },
     })
   } else {
     createPost({ form })
-    router.replace({ name: '본사 일반문서' })
+    router.replace({ name: '본사 일반 문서' })
   }
 }
 
@@ -111,7 +111,7 @@ onBeforeUpdate(() => {
 
   <ContentBody>
     <CCardBody class="pb-5">
-      <div v-if="$route.name === '본사 일반문서'" class="pt-3">
+      <div v-if="$route.name === '본사 일반 문서'" class="pt-3">
         <ListController ref="fController" @docs-filter="docsFilter" />
 
         <CategoryTabs

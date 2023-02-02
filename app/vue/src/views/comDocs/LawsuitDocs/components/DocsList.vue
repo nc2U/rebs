@@ -66,7 +66,7 @@ const pageSelect = (page: number) => emit('page-select', page)
       <CButton
         color="primary"
         class="px-5"
-        @click="$router.push({ name: '본사 소송문서 - 작성' })"
+        @click="$router.push({ name: '본사 소송 문서 - 작성' })"
       >
         등록하기
       </CButton>
