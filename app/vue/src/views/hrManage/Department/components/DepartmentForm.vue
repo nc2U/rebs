@@ -138,7 +138,7 @@ watch(
             <CRow>
               <CFormLabel class="col-sm-2 col-form-label">주요업무</CFormLabel>
               <CCol sm="10">
-                <CFormTextarea v-model="form.task" placeholder="주요업무" />
+                <CFormInput v-model="form.task" placeholder="주요업무" />
               </CCol>
             </CRow>
           </CCol>

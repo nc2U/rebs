@@ -28,14 +28,16 @@ const form = ref<Position>({
   company: undefined,
   level: null,
   name: '',
+  desc: '',
 })
 
 const formsCheck = computed(() => {
   if (props.position) {
     const a = form.value.level === props.position.level
     const b = form.value.name === props.position.name
+    const c = form.value.desc === props.position.desc
 
-    return a && b
+    return a && b && c
   } else return false
 })
 
@@ -70,6 +72,7 @@ onBeforeMount(() => {
     form.value.company = props.position.company
     form.value.level = props.position.level
     form.value.name = props.position.name
+    form.value.desc = props.position.desc
   } else form.value.company = props.company
 })
 
@@ -112,6 +115,17 @@ watch(
                   type="number"
                   placeholder="단계"
                 />
+              </CCol>
+            </CRow>
+          </CCol>
+        </CRow>
+
+        <CRow class="mb-3">
+          <CCol sm="12">
+            <CRow>
+              <CFormLabel class="col-sm-2 col-form-label">설명</CFormLabel>
+              <CCol sm="10">
+                <CFormInput v-model="form.desc" placeholder="설명" />
               </CCol>
             </CRow>
           </CCol>

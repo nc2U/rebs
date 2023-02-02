@@ -59,12 +59,14 @@ export interface Position {
   company?: string
   level: number | null
   name: string
+  desc: string
 }
 
 export interface Duty {
   pk?: number
   company?: string
   name: string
+  desc: string
 }
 
 export type ComFilter = {

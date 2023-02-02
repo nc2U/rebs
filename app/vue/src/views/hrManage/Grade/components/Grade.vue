@@ -22,8 +22,9 @@ const onDelete = (pk: number) => emit('on-delete', pk)
 
 <template>
   <CTableRow v-if="grade" class="text-center">
+    <CTableDataCell>{{ grade.pk }}</CTableDataCell>
     <CTableDataCell>{{ grade.name }}</CTableDataCell>
-    <CTableDataCell>{{ grade.promotion_period }} </CTableDataCell>
+    <CTableDataCell>{{ grade.promotion_period }}</CTableDataCell>
     <CTableDataCell class="text-left">{{ grade.criteria_new }}</CTableDataCell>
     <CTableDataCell>
       <CButton color="info" size="sm" @click="showDetail">확인</CButton>

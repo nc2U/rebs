@@ -91,19 +91,21 @@ watch(
         <CRow class="mb-3"></CRow>
 
         <CRow class="mb-3">
-          <CCol sm="6">
+          <CCol sm="12">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label">직책명</CFormLabel>
-              <CCol sm="8">
+              <CFormLabel class="col-sm-2 col-form-label">직책명</CFormLabel>
+              <CCol sm="10">
                 <CFormInput v-model="form.name" required placeholder="등급" />
               </CCol>
             </CRow>
           </CCol>
+        </CRow>
 
-          <CCol sm="6">
+        <CRow class="mb-3">
+          <CCol sm="12">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label"> 설명</CFormLabel>
-              <CCol sm="8">
+              <CFormLabel class="col-sm-2 col-form-label"> 설명</CFormLabel>
+              <CCol sm="10">
                 <CFormInput
                   v-model="form.promotion_period"
                   placeholder="설명"
