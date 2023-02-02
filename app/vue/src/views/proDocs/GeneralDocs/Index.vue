@@ -8,7 +8,6 @@ const msg = ref('')
 </script>
 
 <template>
-  <!--  <ContentHeader :page-title="'현장 문서관리'" :nav-menu="['현장 일반문서']" />-->
   <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
   <ContentBody>
     <CCardBody>

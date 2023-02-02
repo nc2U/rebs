@@ -24,7 +24,7 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <CRow>
+  <CRow class="m-0">
     <CFormLabel class="col-lg-1 col-form-label text-body">회사명</CFormLabel>
     <CCol md="6" lg="3">
       <Multiselect

@@ -8,7 +8,11 @@ const msg = ref(pageTitle)
 </script>
 
 <template>
-  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
+  <ContentHeader
+    :page-title="pageTitle"
+    :nav-menu="navMenu"
+    :selector="'CompanySelect'"
+  />
   <ContentBody>
     <CCardBody>
       {{ msg }}
