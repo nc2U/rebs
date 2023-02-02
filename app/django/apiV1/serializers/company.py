@@ -59,13 +59,13 @@ class JobGradeSerializer(serializers.ModelSerializer):
 class PositionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Position
-        fields = ('pk', 'company', 'level', 'name')
+        fields = ('pk', 'company', 'level', 'name', 'desc')
 
 
 class DutyTitleSerializer(serializers.ModelSerializer):
     class Meta:
         model = DutyTitle
-        fields = ('pk', 'company', 'name')
+        fields = ('pk', 'company', 'name', 'desc')
 
 
 class StaffSerializer(serializers.ModelSerializer):
