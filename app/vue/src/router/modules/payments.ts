@@ -11,7 +11,7 @@ const pageViewAuth = computed(
 
 const payments = {
   path: 'payments',
-  name: '분양수납 관리',
+  name: '분양 수납 관리',
   redirect: '/payments/index',
   component: {
     render() {
@@ -21,21 +21,21 @@ const payments = {
   children: [
     {
       path: 'index',
-      name: '분양수납 내역',
+      name: '분양 수납 내역',
       component: () =>
         pageViewAuth.value
           ? import('@/views/payments/List/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '분양수납 내역' },
+      meta: { title: '분양 수납 내역' },
     },
     {
       path: 'manage',
-      name: '건별수납 관리',
+      name: '건별 수납 관리',
       component: () =>
         pageViewAuth.value
           ? import('@/views/payments/Register/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '건별수납 관리' },
+      meta: { title: '건별 수납 관리' },
     },
   ],
 }

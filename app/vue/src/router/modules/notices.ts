@@ -11,7 +11,7 @@ const pageViewAuth = computed(
 
 const notices = {
   path: 'notices',
-  name: '고객고지 관리',
+  name: '고객 고지 관리',
   redirect: '/notices/bill',
   component: {
     render() {
@@ -21,48 +21,48 @@ const notices = {
   children: [
     {
       path: 'bill',
-      name: '수납고지서 출력',
+      name: '수납 고지서 출력',
       component: () =>
         pageViewAuth.value
           ? import('@/views/notices/Bill/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '수납고지서 출력' },
+      meta: { title: '수납 고지서 출력' },
     },
     {
       path: 'sms',
-      name: 'SMS 발송관리',
+      name: 'SMS 발송 관리',
       component: () =>
         pageViewAuth.value
           ? import('@/views/notices/Sms/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: 'SMS 발송관리' },
+      meta: { title: 'SMS 발송 관리' },
     },
     {
       path: 'mailing',
-      name: 'MAIL 발송관리',
+      name: 'MAIL 발송 관리',
       component: () =>
         pageViewAuth.value
           ? import('@/views/notices/Mailing/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: 'MAIL 발송관리' },
+      meta: { title: 'MAIL 발송 관리' },
     },
     {
       path: 'post-label',
-      name: '우편라벨 관리',
+      name: '우편 라벨 관리',
       component: () =>
         pageViewAuth.value
           ? import('@/views/notices/Label/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '우편라벨 관리' },
+      meta: { title: '우편 라벨 관리' },
     },
     {
       path: 'log',
-      name: '발송기록 관리',
+      name: '발송 기록 관리',
       component: () =>
         pageViewAuth.value
           ? import('@/views/notices/Log/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '발송기록 관리' },
+      meta: { title: '발송 기록 관리' },
     },
   ],
 }

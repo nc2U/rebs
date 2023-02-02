@@ -18,28 +18,28 @@ const schedule = {
 
 const contract = {
   component: 'CNavItem',
-  name: '분양계약 관리',
+  name: '분양 계약 관리',
   to: '/contracts',
   icon: 'cil-spreadsheet',
   items: [
     {
       component: 'CNavItem',
-      name: '계약내역 조회',
+      name: '계약 내역 조회',
       to: '/contracts/index',
     },
     {
       component: 'CNavItem',
-      name: '계약등록 관리',
+      name: '계약 등록 관리',
       to: '/contracts/register',
     },
     {
       component: 'CNavItem',
-      name: '동호수 현황표',
+      name: '동호 배치 현황',
       to: '/contracts/status',
     },
     {
       component: 'CNavItem',
-      name: '계약해지 관리',
+      name: '계약 해지 관리',
       to: '/contracts/release',
     },
   ],
@@ -47,18 +47,18 @@ const contract = {
 
 const payment = {
   component: 'CNavItem',
-  name: '분양수납 관리',
+  name: '분양 수납 관리',
   to: '/payments',
   icon: 'cil-calculator',
   items: [
     {
       component: 'CNavItem',
-      name: '분양수납 내역',
+      name: '분양 수납 내역',
       to: '/payments/index',
     },
     {
       component: 'CNavItem',
-      name: '건별수납 관리',
+      name: '건별 수납 관리',
       to: '/payments/manage',
     },
   ],
@@ -66,18 +66,18 @@ const payment = {
 
 const notice = {
   component: 'CNavItem',
-  name: '고객고지 관리',
+  name: '고객 고지 관리',
   to: '/notices',
   icon: 'cil-envelope-letter',
   items: [
     {
       component: 'CNavItem',
-      name: '수납고지서 출력',
+      name: '수납 고지서 출력',
       to: '/notices/bill',
     },
     {
       component: 'CNavItem',
-      name: 'SMS 발송관리',
+      name: 'SMS 발송 관리',
       to: '/notices/sms',
       badge: {
         color: 'danger',
@@ -86,7 +86,7 @@ const notice = {
     },
     {
       component: 'CNavItem',
-      name: 'MAIL 발송관리',
+      name: 'MAIL 발송 관리',
       to: '/notices/mailing',
       badge: {
         color: 'danger',
@@ -95,7 +95,7 @@ const notice = {
     },
     {
       component: 'CNavItem',
-      name: '우편라벨 관리',
+      name: '우편 라벨 관리',
       to: '/notices/post-label',
       badge: {
         color: 'danger',
@@ -104,7 +104,7 @@ const notice = {
     },
     {
       component: 'CNavItem',
-      name: '발송기록 관리',
+      name: '발송 기록 관리',
       to: '/notices/log',
       badge: {
         color: 'danger',
@@ -116,23 +116,23 @@ const notice = {
 
 const project_cash = {
   component: 'CNavItem',
-  name: '현장자금 관리',
+  name: '현장 자금 관리',
   to: '/project-cash',
   icon: 'cil-money',
   items: [
     {
       component: 'CNavItem',
-      name: '현장자금 현황',
+      name: '현장 자금 현황',
       to: '/project-cash/status',
     },
     {
       component: 'CNavItem',
-      name: '현장출납 관리',
+      name: '현장 출납 관리',
       to: '/project-cash/index',
     },
     {
       component: 'CNavItem',
-      name: '운영비용 관리',
+      name: '운영 비용 관리',
       to: '/project-cash/imprest',
     },
   ],
@@ -140,13 +140,13 @@ const project_cash = {
 
 const project_docs = {
   component: 'CNavItem',
-  name: '현장문서 관리',
+  name: '현장 문서 관리',
   to: '/project-docs',
   icon: 'cil-library',
   items: [
     {
       component: 'CNavItem',
-      name: '현장 일반문서',
+      name: '현장 일반 문서',
       badge: {
         color: 'warning',
         text: 'link',
@@ -156,7 +156,7 @@ const project_docs = {
     },
     {
       component: 'CNavItem',
-      name: '현장 공문발송',
+      name: '현장 공문 발송',
       to: '/project-docs/official/letters',
       badge: {
         color: 'danger',
@@ -165,13 +165,13 @@ const project_docs = {
     },
     {
       component: 'CNavItem',
-      name: '현장 소송관리',
+      name: '현장 소송 관리',
       to: '/project-docs/lawsuit',
       icon: 'cil-library-building',
       items: [
         {
           component: 'CNavItem',
-          name: '현장 소송문서',
+          name: '현장 소송 문서',
           badge: {
             color: 'warning',
             text: 'link',
@@ -180,7 +180,7 @@ const project_docs = {
         },
         {
           component: 'CNavItem',
-          name: '현장 소송사건',
+          name: '현장 소송 사건',
           badge: {
             color: 'warning',
             text: 'link',
@@ -211,19 +211,19 @@ const project = {
         },
         {
           component: 'CNavItem',
-          name: '차수분류 등록',
+          name: '차수 분류 등록',
           to: '/project/manage/order',
         },
         {
           component: 'CNavItem',
-          name: '타입정보 등록',
+          name: '타입 정보 등록',
           to: '/project/manage/type',
         },
       ],
     },
     {
       component: 'CNavItem',
-      name: '세부설정 관리',
+      name: '세부 설정 관리',
       to: '/project/settings',
       icon: 'cil-cog',
       items: [
@@ -239,45 +239,45 @@ const project = {
         },
         {
           component: 'CNavItem',
-          name: '층별조건 등록',
+          name: '층별 조건 등록',
           to: '/project/settings/floor',
         },
         {
           component: 'CNavItem',
-          name: '공급가격 등록',
+          name: '공급 가격 등록',
           to: '/project/settings/price',
         },
         {
           component: 'CNavItem',
-          name: '납부회차 등록',
+          name: '납부 회차 등록',
           to: '/project/settings/payment-order',
         },
         {
           component: 'CNavItem',
-          name: '계약조건 등록',
+          name: '계약 조건 등록',
           to: '/project/settings/down-payment',
         },
       ],
     },
     {
       component: 'CNavItem',
-      name: '사업부지 관리',
+      name: '사업 부지 관리',
       to: '/project/site',
       icon: 'cil-location-pin',
       items: [
         {
           component: 'CNavItem',
-          name: '지번목록 관리',
+          name: '지번 목록 관리',
           to: '/project/site/index',
         },
         {
           component: 'CNavItem',
-          name: '소유자별 관리',
+          name: '소유자 별 관리',
           to: '/project/site/owner',
         },
         {
           component: 'CNavItem',
-          name: '매입계약 관리',
+          name: '매입 계약 관리',
           to: '/project/site/contract',
         },
       ],
@@ -356,33 +356,33 @@ const company_docs = {
 
 const human_resource = {
   component: 'CNavItem',
-  name: '본사인사 관리',
+  name: '본사 인사 관리',
   to: '/hr-manage',
   icon: 'cil-user-follow',
   items: [
     {
       component: 'CNavItem',
-      name: '직원정보 관리',
+      name: '직원 정보 관리',
       to: '/hr-manage/staff',
     },
     {
       component: 'CNavItem',
-      name: '부서정보 관리',
+      name: '부서 정보 관리',
       to: '/hr-manage/department',
     },
     {
       component: 'CNavItem',
-      name: '직위정보 관리',
+      name: '직위 정보 관리',
       to: '/hr-manage/position',
     },
     {
       component: 'CNavItem',
-      name: '직책정보 관리',
+      name: '직책 정보 관리',
       to: '/hr-manage/duty',
     },
     {
       component: 'CNavItem',
-      name: '직급정보 관리',
+      name: '직급 정보 관리',
       to: '/hr-manage/grade',
     },
   ],
@@ -396,12 +396,12 @@ const settings = {
   items: [
     {
       component: 'CNavItem',
-      name: '회사정보 관리',
+      name: '회사 정보 관리',
       to: '/settings/company',
     },
     {
       component: 'CNavItem',
-      name: '권한설정 관리',
+      name: '권한 설정 관리',
       to: '/settings/authorization',
     },
     {

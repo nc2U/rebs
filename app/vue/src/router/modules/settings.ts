@@ -11,7 +11,7 @@ const pageViewAuth = computed(
 
 const settings = {
   path: 'settings',
-  name: '환경설정',
+  name: '환 경 설 정',
   redirect: '/settings/company',
   component: {
     render() {
@@ -21,21 +21,21 @@ const settings = {
   children: [
     {
       path: 'company',
-      name: '회사정보 관리',
+      name: '회사 정보 관리',
       component: () =>
         pageViewAuth.value
           ? import('@/views/settings/Company/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '회사정보 관리' },
+      meta: { title: '회사 정보 관리' },
     },
     {
       path: 'authorization',
-      name: '권한설정 관리',
+      name: '권한 설정 관리',
       component: () =>
         pageViewAuth.value
           ? import('@/views/settings/Authorization/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '권한설정 관리' },
+      meta: { title: '권한 설정 관리' },
     },
     {
       path: 'profile',
