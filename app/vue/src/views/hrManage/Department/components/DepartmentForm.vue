@@ -103,10 +103,10 @@ watch(
     <CModalBody class="p-4">
       <div>
         <CRow class="mb-3">
-          <CCol sm="6">
+          <CCol sm="12">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label">상위부서</CFormLabel>
-              <CCol sm="8">
+              <CFormLabel class="col-sm-2 col-form-label">상위부서</CFormLabel>
+              <CCol sm="10">
                 <Multiselect
                   v-model.number="form.upper_depart"
                   :options="getPkDeparts"
@@ -116,18 +116,16 @@ watch(
                   searchable
                   placeholder="상위부서"
                 />
-                <div class="form-text">
-                  부서 간 상하 소속 관계에 의한 단계, 최상위 부서인 경우 1단계
-                  이후 각 뎁스 마다 1씩 증가
-                </div>
               </CCol>
             </CRow>
           </CCol>
+        </CRow>
 
-          <CCol sm="6">
+        <CRow class="mb-3">
+          <CCol sm="12">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label">부서명</CFormLabel>
-              <CCol sm="8">
+              <CFormLabel class="col-sm-2 col-form-label">부서명</CFormLabel>
+              <CCol sm="10">
                 <CFormInput
                   v-model.number="form.name"
                   required
@@ -137,6 +135,7 @@ watch(
             </CRow>
           </CCol>
         </CRow>
+
         <CRow>
           <CCol sm="12">
             <CRow>
