@@ -3,8 +3,10 @@ import { ref, computed, onBeforeMount, watch } from 'vue'
 import { isValidate } from '@/utils/helper'
 import { write_human_resource } from '@/utils/pageAuth'
 import { Grade } from '@/store/types/company'
+import Multiselect from '@vueform/multiselect'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
+import { useCompany } from '@/store/pinia/company'
 
 const props = defineProps({
   company: {
@@ -28,6 +30,7 @@ const form = ref<Grade>({
   company: undefined,
   name: '',
   promotion_period: null,
+  positions: [],
   criteria_new: '',
 })
 
@@ -35,11 +38,17 @@ const formsCheck = computed(() => {
   if (props.grade) {
     const a = form.value.name === props.grade.name
     const b = form.value.promotion_period === props.grade.promotion_period
-    const c = form.value.criteria_new === props.grade.criteria_new
+    const c =
+      JSON.stringify(form.value.positions) ===
+      JSON.stringify(props.grade.positions)
+    const d = form.value.criteria_new === props.grade.criteria_new
 
-    return a && b && c
+    return a && b && c && d
   } else return false
 })
+
+const comStore = useCompany()
+const getPkPositions = computed(() => comStore.getPkPositions)
 
 const onSubmit = (event: Event) => {
   if (isValidate(event)) {
@@ -72,6 +81,7 @@ onBeforeMount(() => {
     form.value.company = props.grade.company
     form.value.name = props.grade.name
     form.value.promotion_period = props.grade.promotion_period
+    form.value.positions = props.grade.positions
     form.value.criteria_new = props.grade.criteria_new
   } else form.value.company = props.company
 })
@@ -116,6 +126,28 @@ watch(
                   v-model.number="form.promotion_period"
                   type="number"
                   placeholder="승급표준년수"
+                />
+              </CCol>
+            </CRow>
+          </CCol>
+        </CRow>
+
+        <CRow class="mb-3">
+          <CCol sm="12">
+            <CRow>
+              <CFormLabel class="col-sm-2 col-form-label">
+                허용직위
+              </CFormLabel>
+              <CCol sm="10">
+                <Multiselect
+                  v-model="form.positions"
+                  :options="getPkPositions"
+                  mode="tags"
+                  autocomplete="label"
+                  :classes="{ search: 'form-control multiselect-search' }"
+                  :add-option-on="['enter' | 'tab']"
+                  searchable
+                  placeholder="허용직위"
                 />
               </CCol>
             </CRow>

@@ -1,5 +1,6 @@
 <script lang="ts" setup="">
 import { computed, ref } from 'vue'
+import { useCompany } from '@/store/pinia/company'
 import { Grade } from '@/store/types/company'
 import FormModal from '@/components/Modals/FormModal.vue'
 import StaffForm from './GradeForm.vue'
@@ -15,9 +16,16 @@ const emit = defineEmits(['multi-submit', 'on-delete'])
 
 const updateFormModal = ref()
 
-const positions = computed(() =>
-  props.grade.positions.map((p: { name: string }) => p.name).join(', '),
-)
+const comStore = useCompany()
+const pkPositions = computed(() => comStore.getPkPositions)
+
+const positions = computed(() => {
+  const ids = props.grade.positions
+  return pkPositions.value
+    .filter(p => ids.includes(p.value))
+    .map(p => p.label)
+    .join(', ')
+})
 
 const showDetail = () => updateFormModal.value.callModal()
 const multiSubmit = (payload: Grade) => emit('multi-submit', payload)

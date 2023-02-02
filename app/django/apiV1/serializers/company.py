@@ -56,7 +56,6 @@ class PositionsInGradeSerializer(serializers.ModelSerializer):
 
 class JobGradeSerializer(serializers.ModelSerializer):
     company = serializers.SlugRelatedField(queryset=Company.objects.all(), slug_field='name')
-    positions = PositionsInGradeSerializer(many=True, read_only=True)
 
     class Meta:
         model = JobGrade

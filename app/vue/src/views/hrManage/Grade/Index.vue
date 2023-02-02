@@ -18,12 +18,15 @@ const dataFilter = ref<ComFilter>({
   q: '',
 })
 
-const companyStore = useCompany()
-const initComId = computed(() => companyStore.initComId)
-const comId = computed(() => companyStore.company?.pk || initComId.value)
-const comName = computed(() => companyStore.company?.name || undefined)
+const comStore = useCompany()
+const initComId = computed(() => comStore.initComId)
+const comId = computed(() => comStore.company?.pk || initComId.value)
+const comName = computed(() => comStore.company?.name || undefined)
 
-onMounted(() => fetchGradeList({}))
+onMounted(() => {
+  fetchGradeList({})
+  fetchAllPositionList()
+})
 
 const listFiltering = (payload: ComFilter) => {
   dataFilter.value = payload
@@ -34,15 +37,14 @@ const listFiltering = (payload: ComFilter) => {
   })
 }
 
-const fetchGradeList = (payload: ComFilter) =>
-  companyStore.fetchGradeList(payload)
+const fetchGradeList = (payload: ComFilter) => comStore.fetchGradeList(payload)
+const fetchAllPositionList = () => comStore.fetchAllPositionList()
 
 const createGrade = (payload: Grade, p?: number, c?: number) =>
-  companyStore.createGrade(payload, p, c)
+  comStore.createGrade(payload, p, c)
 const updateGrade = (payload: Grade, p?: number, c?: number) =>
-  companyStore.updateGrade(payload, p, c)
-const deleteGrade = (pk: number, com: number) =>
-  companyStore.deleteGrade(pk, com)
+  comStore.updateGrade(payload, p, c)
+const deleteGrade = (pk: number, com: number) => comStore.deleteGrade(pk, com)
 
 const multiSubmit = (payload: Grade) => {
   const { page } = dataFilter.value

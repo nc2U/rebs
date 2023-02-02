@@ -53,7 +53,7 @@ export interface Grade {
   name: string
   promotion_period: number | null
   criteria_new: string
-  positions: { name: string }[]
+  positions?: number[]
 }
 
 export interface Position {
