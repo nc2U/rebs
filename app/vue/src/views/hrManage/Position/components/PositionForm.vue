@@ -3,7 +3,6 @@ import { ref, computed, onBeforeMount, watch } from 'vue'
 import { isValidate } from '@/utils/helper'
 import { write_human_resource } from '@/utils/pageAuth'
 import { Position } from '@/store/types/company'
-// import Multiselect from '@vueform/multiselect'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
@@ -27,18 +26,16 @@ const validated = ref(false)
 const form = ref<Position>({
   pk: undefined,
   company: undefined,
-  position: '',
-  promotion_period: '',
-  criteria_new: '',
+  level: null,
+  name: '',
 })
 
 const formsCheck = computed(() => {
   if (props.position) {
-    const a = form.value.position === props.position.position
-    const b = form.value.promotion_period === props.position.promotion_period
-    const c = form.value.criteria_new === props.position.criteria_new
+    const a = form.value.level === props.position.level
+    const b = form.value.name === props.position.name
 
-    return a && b && c
+    return a && b
   } else return false
 })
 
@@ -71,9 +68,8 @@ onBeforeMount(() => {
   if (props.position) {
     form.value.pk = props.position.pk
     form.value.company = props.position.company
-    form.value.position = props.position.position
-    form.value.promotion_period = props.position.promotion_period
-    form.value.criteria_new = props.position.criteria_new
+    form.value.level = props.position.level
+    form.value.name = props.position.name
   } else form.value.company = props.company
 })
 
@@ -100,43 +96,21 @@ watch(
         <CRow class="mb-3">
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label">등급</CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label">직위명</CFormLabel>
               <CCol sm="8">
-                <CFormInput
-                  v-model="form.position"
-                  required
-                  placeholder="등급"
-                />
+                <CFormInput v-model="form.name" required placeholder="직위명" />
               </CCol>
             </CRow>
           </CCol>
 
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label">
-                승급표준년수
-              </CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label"> 단계</CFormLabel>
               <CCol sm="8">
                 <CFormInput
-                  v-model.number="form.promotion_period"
+                  v-model.number="form.level"
                   type="number"
-                  placeholder="승급표준년수"
-                />
-              </CCol>
-            </CRow>
-          </CCol>
-        </CRow>
-
-        <CRow class="mb-3">
-          <CCol sm="12">
-            <CRow>
-              <CFormLabel class="col-sm-2 col-form-label">
-                신입부여기준
-              </CFormLabel>
-              <CCol sm="10">
-                <CFormInput
-                  v-model="form.criteria_new"
-                  placeholder="신입부여기준"
+                  placeholder="단계"
                 />
               </CCol>
             </CRow>

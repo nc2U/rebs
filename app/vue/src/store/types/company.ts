@@ -57,7 +57,7 @@ export interface Grade {
 export interface Position {
   pk?: number
   company?: string
-  level: number
+  level: number | null
   name: string
 }
 

@@ -1,11 +1,11 @@
 <script lang="ts" setup="">
 import { ref } from 'vue'
-import { Grade } from '@/store/types/company'
+import { Position } from '@/store/types/company'
 import FormModal from '@/components/Modals/FormModal.vue'
-import StaffForm from './PositionForm.vue'
+import PositionForm from './PositionForm.vue'
 
 defineProps({
-  rank: {
+  position: {
     type: Object,
     required: true,
   },
@@ -16,17 +16,19 @@ const emit = defineEmits(['multi-submit', 'on-delete'])
 const updateFormModal = ref()
 
 const showDetail = () => updateFormModal.value.callModal()
-const multiSubmit = (payload: Grade) => emit('multi-submit', payload)
+const multiSubmit = (payload: Position) => emit('multi-submit', payload)
 const onDelete = (pk: number) => emit('on-delete', pk)
 </script>
 
 <template>
-  <CTableRow v-if="grade" class="text-center">
-    <CTableDataCell>{{ grade.pk }}</CTableDataCell>
-    <CTableDataCell>{{ grade.sort_desc }}</CTableDataCell>
-    <CTableDataCell>{{ grade.grade }}</CTableDataCell>
-    <CTableDataCell class="text-left">{{ grade.title }}</CTableDataCell>
-    <CTableDataCell class="text-left">{{ grade.description }}</CTableDataCell>
+  <CTableRow v-if="position" class="text-center">
+    <CTableDataCell>{{ position.pk }}</CTableDataCell>
+    <CTableDataCell>{{ position.level }}</CTableDataCell>
+    <CTableDataCell>{{ position.name }}</CTableDataCell>
+    <CTableDataCell class="text-left">{{ position.title }}</CTableDataCell>
+    <CTableDataCell class="text-left"
+      >{{ position.description }}
+    </CTableDataCell>
     <CTableDataCell>
       <CButton color="info" size="sm" @click="showDetail">확인</CButton>
     </CTableDataCell>
@@ -35,8 +37,8 @@ const onDelete = (pk: number) => emit('on-delete', pk)
   <FormModal ref="updateFormModal" size="lg">
     <template #header>직급 정보 등록</template>
     <template #default>
-      <StaffForm
-        :grade="grade"
+      <PositionForm
+        :position="position"
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
         @close="updateFormModal.close()"
