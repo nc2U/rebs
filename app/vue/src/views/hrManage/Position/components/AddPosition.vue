@@ -26,11 +26,11 @@ const multiSubmit = (payload: Position) => emit('multi-submit', payload)
 
 <template>
   <CAlert :color="AlertSecondary" class="text-right">
-    <CButton color="primary" @click="createConfirm">직급 정보 신규등록</CButton>
+    <CButton color="primary" @click="createConfirm">직위 정보 신규등록</CButton>
   </CAlert>
 
   <FormModal ref="formModal" size="lg">
-    <template #header>직급 정보 등록</template>
+    <template #header>직위 정보 등록</template>
     <template #default>
       <PositionForm
         :company="company"
