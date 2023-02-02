@@ -2,6 +2,7 @@
 import { ref, computed, onBeforeMount, watch } from 'vue'
 import { useStore } from 'vuex'
 import { useCompany } from '@/store/pinia/company'
+import { useAccount } from '@/store/pinia/account'
 import { Staff } from '@/store/types/company'
 import { isValidate } from '@/utils/helper'
 import { maska as vMaska } from 'maska'
@@ -45,6 +46,7 @@ const form = ref<Staff>({
   date_join: null,
   date_leave: null,
   status: '1',
+  user: null,
 })
 
 watch(form.value, val => {
@@ -67,8 +69,9 @@ const formsCheck = computed(() => {
     const k = form.value.date_join === props.staff.date_join
     const l = form.value.date_leave === props.staff.date_leave
     const m = form.value.status === props.staff.status
+    const n = form.value.user === props.staff.user
 
-    return a && b && c && d && e && f && g && h && i && j && k && l && m
+    return a && b && c && d && e && f && g && h && i && j && k && l && m && n
   } else return false
 })
 
@@ -82,6 +85,9 @@ const getSlugDeparts = computed(() => comStore.getSlugDeparts)
 const getGrades = computed(() => comStore.getGrades)
 const getPositions = computed(() => comStore.getPositions)
 const getDutys = computed(() => comStore.getDutys)
+
+const accStore = useAccount()
+const getUsers = computed(() => accStore.getUsers)
 
 const sorts = [
   { value: '1', label: '임원' },
@@ -136,6 +142,7 @@ onBeforeMount(() => {
     form.value.date_join = props.staff.date_join
     form.value.date_leave = props.staff.date_leave
     form.value.status = props.staff.status
+    form.value.user = props.staff.user
   } else form.value.company = props.company
 })
 
@@ -389,8 +396,8 @@ watch(
               </CFormLabel>
               <CCol sm="8">
                 <Multiselect
-                  v-model.number="form.duty"
-                  :options="[]"
+                  v-model.number="form.user"
+                  :options="getUsers"
                   autocomplete="label"
                   :classes="{ search: 'form-control multiselect-search' }"
                   :add-option-on="['enter' | 'tab']"

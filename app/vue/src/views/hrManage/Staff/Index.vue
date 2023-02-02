@@ -9,6 +9,7 @@ import ListController from './components/ListController.vue'
 import AddStaff from './components/AddStaff.vue'
 import TableTitleRow from '@/components/TableTitleRow.vue'
 import StaffList from './components/StaffList.vue'
+import { useAccount } from '@/store/pinia/account'
 
 const listControl = ref()
 
@@ -24,10 +25,13 @@ const dataFilter = ref<StaffFilter>({
   q: '',
 })
 
-const companyStore = useCompany()
-const initComId = computed(() => companyStore.initComId)
-const comId = computed(() => companyStore.company?.pk || initComId.value)
-const comName = computed(() => companyStore.company?.name || undefined)
+const comStore = useCompany()
+const initComId = computed(() => comStore.initComId)
+const comId = computed(() => comStore.company?.pk || initComId.value)
+const comName = computed(() => comStore.company?.name || undefined)
+
+const accStore = useAccount()
+const fetchUsersList = () => accStore.fetchUsersList()
 
 onMounted(() => {
   fetchStaffList({ com: comId.value })
@@ -35,6 +39,7 @@ onMounted(() => {
   fetchAllDepartList(comId.value)
   fetchAllPositionList(comId.value)
   fetchAllDutyList(comId.value)
+  fetchUsersList()
 })
 
 const listFiltering = (payload: StaffFilter) => {
@@ -53,20 +58,18 @@ const listFiltering = (payload: StaffFilter) => {
 }
 
 const fetchStaffList = (payload: StaffFilter) =>
-  companyStore.fetchStaffList(payload)
-const fetchAllGradeList = (com?: number) => companyStore.fetchAllGradeList(com)
-const fetchAllDepartList = (com?: number) =>
-  companyStore.fetchAllDepartList(com)
+  comStore.fetchStaffList(payload)
+const fetchAllGradeList = (com?: number) => comStore.fetchAllGradeList(com)
+const fetchAllDepartList = (com?: number) => comStore.fetchAllDepartList(com)
 const fetchAllPositionList = (com?: number) =>
-  companyStore.fetchAllPositionList(com)
-const fetchAllDutyList = (com?: number) => companyStore.fetchAllDutyList(com)
+  comStore.fetchAllPositionList(com)
+const fetchAllDutyList = (com?: number) => comStore.fetchAllDutyList(com)
 
 const createStaff = (payload: Staff, p?: number, c?: number) =>
-  companyStore.createStaff(payload, p, c)
+  comStore.createStaff(payload, p, c)
 const updateStaff = (payload: Staff, p?: number, c?: number) =>
-  companyStore.updateStaff(payload, p, c)
-const deleteStaff = (pk: number, com: number) =>
-  companyStore.deleteStaff(pk, com)
+  comStore.updateStaff(payload, p, c)
+const deleteStaff = (pk: number, com: number) => comStore.deleteStaff(pk, com)
 
 const multiSubmit = (payload: Staff) => {
   const { page } = dataFilter.value

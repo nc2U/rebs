@@ -15,6 +15,7 @@ export interface Staff {
   date_leave: string | null
   status: '1' | '2' | '3' | '4'
   status_desc?: '근무 중' | '휴직 중' | '퇴직신청' | '퇴사처리'
+  user: number | null
 }
 
 export type StaffFilter = {
