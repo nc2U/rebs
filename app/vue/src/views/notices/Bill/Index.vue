@@ -102,6 +102,7 @@ watch(billIssue, val => {
 
 const onSelectAdd = (target: number) => {
   if (!!target) {
+    fetchSalesBillIssue(target)
     fetchPayOrderList(target)
     fetchOrderGroupList(target)
     fetchTypeList(target)
@@ -118,11 +119,12 @@ const onSelectAdd = (target: number) => {
     contractStore.contractsCount = 0
     contractStore.salesPriceList = []
     contractStore.downPaymentList = []
-
+    noticeStore.billIssue = null
     paymentStore.payOrderList = []
     projectDataStore.unitTypeList = []
     projectDataStore.buildingList = []
   }
+  paymentStore.payOrder = null
 }
 
 const pageSelect = (page: number) => {

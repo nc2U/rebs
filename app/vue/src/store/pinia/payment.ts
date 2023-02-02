@@ -10,7 +10,6 @@ import {
   ContractNum,
   AllPayment,
 } from '@/store/types/payment'
-import { ProjectCashBook } from '@/store/types/proCash'
 
 export type PaymentFilter = {
   project?: number

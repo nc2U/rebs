@@ -22,12 +22,12 @@ const visible = ref(false)
 const validated = ref(false)
 
 const published_date = ref(dateFormat(new Date())) // 발행일자
-const now_due_date = ref<string | null>(null) // 납부기한
 
-const form = reactive<SalesBillIssue>({
+const form = reactive<SalesBillIssue & { now_due_date: string | null }>({
   pk: null,
   project: null,
   now_payment_order: null,
+  now_due_date: null, // 납부기한
   host_name: '',
   host_tel: '',
   agency: '',
@@ -48,7 +48,7 @@ const form = reactive<SalesBillIssue>({
 
 const paymentStore = usePayment()
 const payOrderList = computed(() => paymentStore.payOrderList)
-const now_order = computed(() => paymentStore.payOrder)
+const payOrder = computed(() => paymentStore.payOrder)
 
 const confirmText = computed(() => (props.billIssue ? '업데이트' : '신규등록'))
 const btnClass = computed(() => (props.billIssue ? 'success' : 'primary'))
@@ -56,7 +56,7 @@ const btnClass = computed(() => (props.billIssue ? 'success' : 'primary'))
 const formsCheck = computed(() => {
   if (props.billIssue) {
     const a = form.now_payment_order === props.billIssue.now_payment_order
-    const b = now_due_date.value === now_order.value?.pay_due_date
+    const b = form.now_due_date === payOrder.value?.pay_due_date
     const c = form.host_name === props.billIssue.host_name
     const d = form.host_tel === props.billIssue.host_tel
     const e = form.agency === props.billIssue.agency
@@ -102,15 +102,36 @@ watch(props, value => {
     form.address3 = val.address3
     form.title = val.title
     form.content = val.content
+  } else {
+    form.pk = null
+    form.project = null
+    form.now_payment_order = null
+    form.host_name = ''
+    form.host_tel = ''
+    form.agency = ''
+    form.agency_tel = ''
+    form.bank_account1 = ''
+    form.bank_number1 = ''
+    form.bank_host1 = ''
+    form.bank_account2 = ''
+    form.bank_number2 = ''
+    form.bank_host2 = ''
+    form.zipcode = ''
+    form.address1 = ''
+    form.address2 = ''
+    form.address3 = ''
+    form.title = ''
+    form.content = ''
   }
 })
 
-watch(now_order, val => {
-  if (val?.pay_due_date) now_due_date.value = val.pay_due_date
+watch(payOrder, val => {
+  if (val?.pay_due_date) form.now_due_date = val.pay_due_date
+  else form.now_due_date = null
 })
 
-watch(now_due_date, val => {
-  if (val) now_due_date.value = dateFormat(val)
+watch(form, val => {
+  if (val.now_due_date) form.now_due_date = dateFormat(val.now_due_date)
 })
 
 watch(published_date, val => emit('set-pub-date', dateFormat(val)))
@@ -131,7 +152,7 @@ const onSubmit = (event: Event) => {
 }
 
 const modalAction = () => {
-  emit('on-submit', { now_due_date: now_due_date.value, ...form })
+  emit('on-submit', { ...form })
 
   validated.value = false
   confirmModal.value.close()
@@ -211,7 +232,7 @@ const addressCallback = (data: AddressData) => {
         </CCol>
         <CCol sm="8" md="4" xl="2">
           <DatePicker
-            v-model="now_due_date"
+            v-model="form.now_due_date"
             v-maska="'####-##-##'"
             placeholder="당회 납부기한"
             maxlength="10"
@@ -447,7 +468,7 @@ const addressCallback = (data: AddressData) => {
   <DaumPostcode ref="postCode" @addressCallback="addressCallback" />
 
   <ConfirmModal ref="confirmModal">
-    <template #header> 수납 고지서 발행 정보 </template>
+    <template #header> 수납 고지서 발행 정보</template>
     <template #default>
       수납 고지서 발행 정보 {{ confirmText }}을(를) 진행하시겠습니까?
     </template>

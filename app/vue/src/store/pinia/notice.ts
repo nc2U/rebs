@@ -13,7 +13,10 @@ export const useNotice = defineStore('notice', () => {
     api
       .get(`/sales-bill-issue/${pk}/`)
       .then(res => (billIssue.value = res.data))
-      .catch(err => errorHandle(err.response.data))
+      .catch(err => {
+        billIssue.value = null
+        console.log(err)
+      })
 
   const createSalesBillIssue = (payload: SalesBillIssue) =>
     api
