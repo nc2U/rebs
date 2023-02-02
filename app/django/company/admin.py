@@ -35,7 +35,7 @@ class JobGradeAdmin(ImportExportMixin, admin.ModelAdmin):
 
 
 class PositionAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'company', 'level', 'name', 'desc')
+    list_display = ('id', 'company', 'name', 'desc')
     list_display_links = ('name',)
     list_filter = ('company',)
 

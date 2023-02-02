@@ -23,7 +23,10 @@ const initComId = computed(() => companyStore.initComId)
 const comId = computed(() => companyStore.company?.pk || initComId.value)
 const comName = computed(() => companyStore.company?.name || undefined)
 
-onMounted(() => fetchPositionList({}))
+onMounted(() => {
+  fetchAllGradeList()
+  fetchPositionList({})
+})
 
 const listFiltering = (payload: ComFilter) => {
   dataFilter.value = payload
@@ -34,6 +37,7 @@ const listFiltering = (payload: ComFilter) => {
   })
 }
 
+const fetchAllGradeList = () => companyStore.fetchAllGradeList()
 const fetchPositionList = (payload: ComFilter) =>
   companyStore.fetchPositionList(payload)
 

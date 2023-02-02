@@ -75,8 +75,8 @@ class JobGrade(models.Model):
 
 class Position(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='positions', verbose_name='회사')
-    level = models.PositiveSmallIntegerField('순위', help_text='직위 간 순위 관계에 의한 단계, 최 고위 직원인 경우 1레벨, 이후 각 순위 마다 1씩 증가')
     name = models.CharField('직위', max_length=30)
+    grades = models.ManyToManyField(JobGrade, related_name='positions', verbose_name='직책')
     desc = models.CharField('설명', max_length=255, null=True, blank=True)
 
     def __str__(self):

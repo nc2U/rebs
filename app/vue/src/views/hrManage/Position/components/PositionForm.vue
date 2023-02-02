@@ -3,8 +3,10 @@ import { ref, computed, onBeforeMount, watch } from 'vue'
 import { isValidate } from '@/utils/helper'
 import { write_human_resource } from '@/utils/pageAuth'
 import { Position } from '@/store/types/company'
+import Multiselect from '@vueform/multiselect'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
+import { useCompany } from '@/store/pinia/company'
 
 const props = defineProps({
   company: {
@@ -26,20 +28,23 @@ const validated = ref(false)
 const form = ref<Position>({
   pk: undefined,
   company: undefined,
-  level: null,
   name: '',
+  grades: [],
   desc: '',
 })
 
 const formsCheck = computed(() => {
   if (props.position) {
-    const a = form.value.level === props.position.level
-    const b = form.value.name === props.position.name
+    const a = form.value.name === props.position.name
+    const b = form.value.grades === props.position.grades
     const c = form.value.desc === props.position.desc
 
     return a && b && c
   } else return false
 })
+
+const comCompany = useCompany()
+const getPkGrades = computed(() => comCompany.getPkGrades)
 
 const onSubmit = (event: Event) => {
   if (isValidate(event)) {
@@ -70,8 +75,8 @@ onBeforeMount(() => {
   if (props.position) {
     form.value.pk = props.position.pk
     form.value.company = props.position.company
-    form.value.level = props.position.level
     form.value.name = props.position.name
+    form.value.grades = props.position.grades
     form.value.desc = props.position.desc
   } else form.value.company = props.company
 })
@@ -97,24 +102,30 @@ watch(
         <CRow class="mb-3"></CRow>
 
         <CRow class="mb-3">
-          <CCol sm="6">
+          <CCol sm="12">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label">직위명</CFormLabel>
-              <CCol sm="8">
+              <CFormLabel class="col-sm-2 col-form-label">직위명</CFormLabel>
+              <CCol sm="10">
                 <CFormInput v-model="form.name" required placeholder="직위명" />
               </CCol>
             </CRow>
           </CCol>
+        </CRow>
 
-          <CCol sm="6">
+        <CRow class="mb-3">
+          <CCol sm="12">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label"> 단계</CFormLabel>
-              <CCol sm="8">
-                <CFormInput
-                  v-model.number="form.level"
-                  type="number"
-                  placeholder="단계"
-                  text="직위 간 순위 관계에 의한 단계, 최 고위 직원인 경우 1레벨, 이후 각 순위 마다 1씩 증가"
+              <CFormLabel class="col-sm-2 col-form-label">직급</CFormLabel>
+              <CCol sm="10">
+                <Multiselect
+                  v-model="form.grades"
+                  :options="getPkGrades"
+                  mode="tags"
+                  autocomplete="label"
+                  :classes="{ search: 'form-control multiselect-search' }"
+                  :add-option-on="['enter' | 'tab']"
+                  searchable
+                  placeholder="직급"
                 />
               </CCol>
             </CRow>

@@ -48,12 +48,25 @@ class DepartmentSerializer(serializers.ModelSerializer):
         fields = ('pk', 'company', 'upper_depart', 'level', 'name', 'task', 'staffs')
 
 
+class PositionsInGradeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Position
+        fields = ('name',)
+
+
 class JobGradeSerializer(serializers.ModelSerializer):
     company = serializers.SlugRelatedField(queryset=Company.objects.all(), slug_field='name')
+    positions = PositionsInGradeSerializer(many=True, read_only=True)
 
     class Meta:
         model = JobGrade
-        fields = ('pk', 'company', 'name', 'promotion_period', 'criteria_new')
+        fields = ('pk', 'company', 'name', 'promotion_period', 'criteria_new', 'positions')
+
+
+class GradesInPositionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = JobGrade
+        fields = ('name',)
 
 
 class PositionSerializer(serializers.ModelSerializer):
@@ -61,7 +74,7 @@ class PositionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Position
-        fields = ('pk', 'company', 'level', 'name', 'desc')
+        fields = ('pk', 'company', 'name', 'grades', 'desc')
 
 
 class DutyTitleSerializer(serializers.ModelSerializer):
