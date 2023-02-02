@@ -5,7 +5,7 @@ import FormModal from '@/components/Modals/FormModal.vue'
 import StaffForm from './GradeForm.vue'
 
 defineProps({
-  rank: {
+  grade: {
     type: Object,
     required: true,
   },
@@ -22,11 +22,9 @@ const onDelete = (pk: number) => emit('on-delete', pk)
 
 <template>
   <CTableRow v-if="grade" class="text-center">
-    <CTableDataCell>{{ grade.pk }}</CTableDataCell>
-    <CTableDataCell>{{ grade.sort_desc }}</CTableDataCell>
-    <CTableDataCell>{{ grade.grade }}</CTableDataCell>
-    <CTableDataCell class="text-left">{{ grade.title }}</CTableDataCell>
-    <CTableDataCell class="text-left">{{ grade.description }}</CTableDataCell>
+    <CTableDataCell>{{ grade.name }}</CTableDataCell>
+    <CTableDataCell>{{ grade.promotion_period }} </CTableDataCell>
+    <CTableDataCell class="text-left">{{ grade.criteria_new }}</CTableDataCell>
     <CTableDataCell>
       <CButton color="info" size="sm" @click="showDetail">확인</CButton>
     </CTableDataCell>
