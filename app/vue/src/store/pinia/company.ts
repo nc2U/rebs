@@ -447,7 +447,7 @@ export const useCompany = defineStore('company', () => {
     const { page = 1, com = 1, q = '' } = payload
     const queryStr = `?page=${page}&company=${com}&search=${q}`
     return api
-      .get(`/duty/${queryStr}`)
+      .get(`/duty-title/${queryStr}`)
       .then(res => {
         dutyList.value = res.data.results
         dutysCount.value = res.data.count
@@ -465,13 +465,13 @@ export const useCompany = defineStore('company', () => {
 
   const fetchDuty = (pk: number) =>
     api
-      .get(`/duty/${pk}/`)
+      .get(`/duty-title/${pk}/`)
       .then(res => (duty.value = res.data))
       .catch(err => errorHandle(err.response.data))
 
   const createDuty = (payload: Duty, page = 1, com = 1) =>
     api
-      .post(`/duty/`, payload)
+      .post(`/duty-title/`, payload)
       .then(res =>
         fetchDutyList({ page, com }).then(() =>
           fetchDuty(res.data.pk).then(() => message()),
@@ -481,7 +481,7 @@ export const useCompany = defineStore('company', () => {
 
   const updateDuty = (payload: Duty, page = 1, com = 1) =>
     api
-      .put(`/duty/${payload.pk}/`, payload)
+      .put(`/duty-title/${payload.pk}/`, payload)
       .then(res => {
         fetchDutyList({ page, com }).then(() =>
           fetchDuty(res.data.pk).then(() => message()),
@@ -491,7 +491,7 @@ export const useCompany = defineStore('company', () => {
 
   const deleteDuty = (pk: number, com = 1) =>
     api
-      .delete(`/duty/${pk}/`)
+      .delete(`/duty-title/${pk}/`)
       .then(() =>
         fetchDutyList({ com }).then(() =>
           message('warning', '', '해당 오브젝트가 삭제되었습니다.'),
