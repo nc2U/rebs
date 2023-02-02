@@ -22,8 +22,8 @@ const onDelete = (pk: number) => emit('on-delete', pk)
   <CTable hover responsive bordered align="middle">
     <colgroup>
       <col width="7%" />
-      <col width="10%" />
       <col width="13%" />
+      <col width="73%" />
       <col width="7%" />
     </colgroup>
 

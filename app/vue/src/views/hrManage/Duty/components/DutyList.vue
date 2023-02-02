@@ -23,7 +23,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
     <colgroup>
       <col width="7%" />
       <col width="13%" />
-      <col width="38%" />
+      <col width="73%" />
       <col width="7%" />
     </colgroup>
 
