@@ -24,18 +24,14 @@ const onDelete = (pk: number) => emit('on-delete', pk)
       <col width="7%" />
       <col width="10%" />
       <col width="13%" />
-      <col width="25%" />
-      <col width="38%" />
       <col width="7%" />
     </colgroup>
 
     <CTableHead :color="headerSecondary">
       <CTableRow class="text-center" align="middle">
         <CTableHeaderCell scope="col">No</CTableHeaderCell>
-        <CTableHeaderCell scope="col">구분</CTableHeaderCell>
-        <CTableHeaderCell scope="col">직급</CTableHeaderCell>
-        <CTableHeaderCell scope="col">직함</CTableHeaderCell>
-        <CTableHeaderCell scope="col">설명</CTableHeaderCell>
+        <CTableHeaderCell scope="col">단계</CTableHeaderCell>
+        <CTableHeaderCell scope="col">직위</CTableHeaderCell>
         <CTableHeaderCell scope="col">비고</CTableHeaderCell>
       </CTableRow>
     </CTableHead>

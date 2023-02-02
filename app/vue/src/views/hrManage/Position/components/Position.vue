@@ -25,10 +25,6 @@ const onDelete = (pk: number) => emit('on-delete', pk)
     <CTableDataCell>{{ position.pk }}</CTableDataCell>
     <CTableDataCell>{{ position.level }}</CTableDataCell>
     <CTableDataCell>{{ position.name }}</CTableDataCell>
-    <CTableDataCell class="text-left">{{ position.title }}</CTableDataCell>
-    <CTableDataCell class="text-left"
-      >{{ position.description }}
-    </CTableDataCell>
     <CTableDataCell>
       <CButton color="info" size="sm" @click="showDetail">확인</CButton>
     </CTableDataCell>
