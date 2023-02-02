@@ -57,12 +57,16 @@ class JobGradeSerializer(serializers.ModelSerializer):
 
 
 class PositionSerializer(serializers.ModelSerializer):
+    company = serializers.SlugRelatedField(queryset=Company.objects.all(), slug_field='name')
+
     class Meta:
         model = Position
         fields = ('pk', 'company', 'level', 'name', 'desc')
 
 
 class DutyTitleSerializer(serializers.ModelSerializer):
+    company = serializers.SlugRelatedField(queryset=Company.objects.all(), slug_field='name')
+
     class Meta:
         model = DutyTitle
         fields = ('pk', 'company', 'name', 'desc')
