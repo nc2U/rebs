@@ -287,19 +287,28 @@ const project = {
 
 const company_cash = {
   component: 'CNavItem',
-  name: '본사회계 관리',
+  name: '본사 회계 관리',
   to: '/cashes',
   icon: 'cil-laptop',
   items: [
     {
       component: 'CNavItem',
-      name: '본사자금 현황',
+      name: '본사 자금 현황',
       to: '/cashes/status',
     },
     {
       component: 'CNavItem',
-      name: '본사출납 관리',
+      name: '본사 출납 관리',
       to: '/cashes/index',
+    },
+    {
+      component: 'CNavItem',
+      name: '채권 채무 관리',
+      to: '/cashes/debt',
+      badge: {
+        color: 'danger',
+        text: 'u.c',
+      },
     },
   ],
 }

@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import { useComCash } from '@/store/pinia/comCash'
 import { CashBook } from '@/store/types/comCash'
 import { headerSecondary } from '@/utils/cssMixins'
-import Cashes from '@/views/comCash/Manage/components/Cashes.vue'
+import Cashes from '@/views/comCash/CashManage/components/Cashes.vue'
 import Pagination from '@/components/Pagination'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 

@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import { CashBook } from '@/store/types/comCash'
 import { headerLight } from '@/utils/cssMixins'
 import FormModal from '@/components/Modals/FormModal.vue'
-import CashForm from '@/views/comCash/Manage/components/CashForm.vue'
+import CashForm from '@/views/comCash/CashManage/components/CashForm.vue'
 
 const emit = defineEmits(['multi-submit'])
 

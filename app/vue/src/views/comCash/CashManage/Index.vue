@@ -10,10 +10,10 @@ import {
 import { CashBook, SepItems } from '@/store/types/comCash'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
-import ListController from '@/views/comCash/Manage/components/ListController.vue'
-import AddCash from '@/views/comCash/Manage/components/AddCash.vue'
+import ListController from '@/views/comCash/CashManage/components/ListController.vue'
+import AddCash from '@/views/comCash/CashManage/components/AddCash.vue'
 import TableTitleRow from '@/components/TableTitleRow.vue'
-import CashesList from '@/views/comCash/Manage/components/CashesList.vue'
+import CashesList from '@/views/comCash/CashManage/components/CashesList.vue'
 
 const listControl = ref()
 
