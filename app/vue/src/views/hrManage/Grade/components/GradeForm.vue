@@ -99,9 +99,9 @@ watch(
         <CRow class="mb-3">
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label">등급명</CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label">직급명</CFormLabel>
               <CCol sm="8">
-                <CFormInput v-model="form.name" required placeholder="등급명" />
+                <CFormInput v-model="form.name" required placeholder="직급명" />
               </CCol>
             </CRow>
           </CCol>

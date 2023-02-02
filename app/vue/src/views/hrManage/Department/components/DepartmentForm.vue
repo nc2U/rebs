@@ -116,6 +116,10 @@ watch(
                   searchable
                   placeholder="상위부서"
                 />
+                <div class="form-text">
+                  부서 간 상하 소속 관계에 의한 단계, 최상위 부서인 경우 1단계
+                  이후 각 뎁스 마다 1씩 증가
+                </div>
               </CCol>
             </CRow>
           </CCol>

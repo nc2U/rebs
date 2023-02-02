@@ -27,13 +27,15 @@ const form = ref<Duty>({
   pk: undefined,
   company: undefined,
   name: '',
+  desc: '',
 })
 
 const formsCheck = computed(() => {
   if (props.duty) {
     const a = form.value.name === props.duty.name
+    const b = form.value.desc === props.duty.desc
 
-    return a
+    return a && b
   } else return false
 })
 
@@ -67,6 +69,7 @@ onBeforeMount(() => {
     form.value.pk = props.duty.pk
     form.value.company = props.duty.company
     form.value.name = props.duty.name
+    form.value.desc = props.duty.desc
   } else form.value.company = props.company
 })
 
@@ -95,7 +98,7 @@ watch(
             <CRow>
               <CFormLabel class="col-sm-2 col-form-label">직책명</CFormLabel>
               <CCol sm="10">
-                <CFormInput v-model="form.name" required placeholder="등급" />
+                <CFormInput v-model="form.name" required placeholder="직책명" />
               </CCol>
             </CRow>
           </CCol>
@@ -106,10 +109,7 @@ watch(
             <CRow>
               <CFormLabel class="col-sm-2 col-form-label"> 설명</CFormLabel>
               <CCol sm="10">
-                <CFormInput
-                  v-model="form.promotion_period"
-                  placeholder="설명"
-                />
+                <CFormInput v-model="form.desc" placeholder="설명" />
               </CCol>
             </CRow>
           </CCol>

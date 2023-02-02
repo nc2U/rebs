@@ -114,6 +114,7 @@ watch(
                   v-model.number="form.level"
                   type="number"
                   placeholder="단계"
+                  text="직위 간 순위 관계에 의한 단계, 최 고위 직원인 경우 1레벨, 이후 각 순위 마다 1씩 증가"
                 />
               </CCol>
             </CRow>
