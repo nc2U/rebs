@@ -50,7 +50,7 @@ export interface Grade {
   pk?: number
   company?: string
   name: string
-  promotion_period: number
+  promotion_period: number | null
   criteria_new: string
 }
 

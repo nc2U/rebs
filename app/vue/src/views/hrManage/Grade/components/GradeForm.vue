@@ -3,7 +3,6 @@ import { ref, computed, onBeforeMount, watch } from 'vue'
 import { isValidate } from '@/utils/helper'
 import { write_human_resource } from '@/utils/pageAuth'
 import { Grade } from '@/store/types/company'
-// import Multiselect from '@vueform/multiselect'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
@@ -27,14 +26,14 @@ const validated = ref(false)
 const form = ref<Grade>({
   pk: undefined,
   company: undefined,
-  grade: '',
-  promotion_period: '',
+  name: '',
+  promotion_period: null,
   criteria_new: '',
 })
 
 const formsCheck = computed(() => {
   if (props.grade) {
-    const a = form.value.grade === props.grade.grade
+    const a = form.value.name === props.grade.name
     const b = form.value.promotion_period === props.grade.promotion_period
     const c = form.value.criteria_new === props.grade.criteria_new
 
@@ -71,7 +70,7 @@ onBeforeMount(() => {
   if (props.grade) {
     form.value.pk = props.grade.pk
     form.value.company = props.grade.company
-    form.value.grade = props.grade.grade
+    form.value.name = props.grade.name
     form.value.promotion_period = props.grade.promotion_period
     form.value.criteria_new = props.grade.criteria_new
   } else form.value.company = props.company
@@ -100,9 +99,9 @@ watch(
         <CRow class="mb-3">
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label">등급</CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label">등급명</CFormLabel>
               <CCol sm="8">
-                <CFormInput v-model="form.grade" required placeholder="등급" />
+                <CFormInput v-model="form.name" required placeholder="등급명" />
               </CCol>
             </CRow>
           </CCol>
