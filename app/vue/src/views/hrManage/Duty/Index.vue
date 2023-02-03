@@ -67,7 +67,7 @@ const pageSelect = (num: number) => {
     <CCardBody>
       <ListController ref="listControl" @list-filtering="listFiltering" />
       <AddDuty :company="comName" @multi-submit="multiSubmit" />
-      <TableTitleRow title="직급 목록" excel url="#" disabled />
+      <TableTitleRow title="직책 목록" excel url="#" disabled />
       <DutyList
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
