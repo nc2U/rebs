@@ -374,7 +374,7 @@ const human_resource = {
     },
     {
       component: 'CNavItem',
-      name: '인사 등급 관리',
+      name: '기타 설정 관리',
       icon: 'cil-user-follow',
       items: [
         {
