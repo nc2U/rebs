@@ -33,7 +33,7 @@ defineExpose({ listFiltering })
 </script>
 
 <template>
-  <CCallout class="pb-0 mb-3">
+  <CCallout color="warning" class="pb-0 mb-3">
     <CRow>
       <CCol md="12">
         <CRow class="justify-content-end">
