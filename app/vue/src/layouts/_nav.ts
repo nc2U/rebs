@@ -34,7 +34,7 @@ const contract = {
     },
     {
       component: 'CNavItem',
-      name: '기타 계약 관리',
+      name: '기타 계약 관련',
       icon: 'cilLayers',
       items: [
         {
@@ -360,7 +360,7 @@ const human_resource = {
   component: 'CNavItem',
   name: '본사 인사 관리',
   to: '/hr-manage',
-  icon: 'cil-user-follow',
+  icon: 'cilPeople',
   items: [
     {
       component: 'CNavItem',
@@ -374,18 +374,25 @@ const human_resource = {
     },
     {
       component: 'CNavItem',
-      name: '직위 정보 관리',
-      to: '/hr-manage/position',
-    },
-    {
-      component: 'CNavItem',
-      name: '직책 정보 관리',
-      to: '/hr-manage/duty',
-    },
-    {
-      component: 'CNavItem',
-      name: '직급 정보 관리',
-      to: '/hr-manage/grade',
+      name: '인사 등급 관리',
+      icon: 'cil-user-follow',
+      items: [
+        {
+          component: 'CNavItem',
+          name: '직위 정보 관리',
+          to: '/hr-manage/position',
+        },
+        {
+          component: 'CNavItem',
+          name: '직책 정보 관리',
+          to: '/hr-manage/duty',
+        },
+        {
+          component: 'CNavItem',
+          name: '직급 정보 관리',
+          to: '/hr-manage/grade',
+        },
+      ],
     },
   ],
 }

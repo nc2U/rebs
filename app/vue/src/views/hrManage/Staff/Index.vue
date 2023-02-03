@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, onMounted, computed } from 'vue'
-import { pageTitle, navMenu } from '@/views/hrManage/_menu/headermixin'
+import { pageTitle, navMenu } from '@/views/hrManage/_menu/headermixin1'
 import { useCompany } from '@/store/pinia/company'
 import { Staff, StaffFilter } from '@/store/types/company'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
