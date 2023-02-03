@@ -14,7 +14,7 @@ const form = reactive({
   gra: '',
   pos: '',
   dut: '',
-  sts: '',
+  sts: '1',
   q: '',
 })
 
@@ -25,7 +25,7 @@ const formsCheck = computed(
     form.gra === '' &&
     form.pos === '' &&
     form.dut === '' &&
-    form.sts === '' &&
+    form.sts === '1' &&
     form.q === '',
 )
 
@@ -69,7 +69,7 @@ const resetForm = () => {
   form.gra = ''
   form.pos = ''
   form.dut = ''
-  form.sts = ''
+  form.sts = '1'
   form.q = ''
   listFiltering(1)
 }
@@ -90,7 +90,7 @@ defineExpose({ listFiltering })
               :classes="{ search: 'form-control multiselect-search' }"
               :add-option-on="['enter' | 'tab']"
               searchable
-              placeholder="임직원"
+              placeholder="임직원 전체"
               @change="listFiltering(1)"
             />
           </CCol>
@@ -102,7 +102,7 @@ defineExpose({ listFiltering })
               :classes="{ search: 'form-control multiselect-search' }"
               :add-option-on="['enter' | 'tab']"
               searchable
-              placeholder="부서"
+              placeholder="부서 전체"
               @change="listFiltering(1)"
             />
           </CCol>
@@ -114,7 +114,7 @@ defineExpose({ listFiltering })
               :classes="{ search: 'form-control multiselect-search' }"
               :add-option-on="['enter' | 'tab']"
               searchable
-              placeholder="직급"
+              placeholder="직급 전체"
               @change="listFiltering(1)"
             />
           </CCol>
@@ -126,7 +126,7 @@ defineExpose({ listFiltering })
               :classes="{ search: 'form-control multiselect-search' }"
               :add-option-on="['enter' | 'tab']"
               searchable
-              placeholder="직위"
+              placeholder="직위 전체"
               @change="listFiltering(1)"
             />
           </CCol>
@@ -138,7 +138,7 @@ defineExpose({ listFiltering })
               :classes="{ search: 'form-control multiselect-search' }"
               :add-option-on="['enter' | 'tab']"
               searchable
-              placeholder="직책"
+              placeholder="직책 전체"
               @change="listFiltering(1)"
             />
           </CCol>
@@ -150,7 +150,7 @@ defineExpose({ listFiltering })
               :classes="{ search: 'form-control multiselect-search' }"
               :add-option-on="['enter' | 'tab']"
               searchable
-              placeholder="상태"
+              placeholder="상태 전체"
               @change="listFiltering(1)"
             />
           </CCol>

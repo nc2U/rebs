@@ -21,7 +21,7 @@ const dataFilter = ref<StaffFilter>({
   gra: '',
   pos: '',
   dut: '',
-  sts: '',
+  sts: '1',
   q: '',
 })
 
@@ -34,7 +34,7 @@ const accStore = useAccount()
 const fetchUsersList = () => accStore.fetchUsersList()
 
 onMounted(() => {
-  fetchStaffList({ com: comId.value })
+  fetchStaffList({ com: comId.value, sts: '1' })
   fetchAllGradeList(comId.value)
   fetchAllDepartList(comId.value)
   fetchAllPositionList(comId.value)
