@@ -16,7 +16,7 @@ const listControl = ref()
 const dataFilter = ref<StaffFilter>({
   page: 1,
   com: 1,
-  sort: '2',
+  sort: '',
   dep: '',
   gra: '',
   pos: '',
