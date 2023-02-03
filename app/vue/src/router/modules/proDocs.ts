@@ -38,34 +38,22 @@ const proDocs = {
       meta: { title: '현장 공문 발송' },
     },
     {
-      path: 'lawsuit',
-      name: '현장 소송 관리',
-      redirect: '/project-docs/lawsuit/posts',
-      component: {
-        render() {
-          return h(resolveComponent('router-view'))
-        },
-      },
-      children: [
-        {
-          path: 'posts',
-          name: '현장 소송 문서',
-          component: () =>
-            pageViewAuth.value
-              ? import('@/views/proDocs/LawsuitDocs/Index.vue')
-              : import('@/views/_Accounts/NoAuth.vue'),
-          meta: { title: '현장 소송 문서' },
-        },
-        {
-          path: 'case',
-          name: '현장 소송 사건',
-          component: () =>
-            pageViewAuth.value
-              ? import('@/views/proDocs/LawsuitCase/Index.vue')
-              : import('@/views/_Accounts/NoAuth.vue'),
-          meta: { title: '현장 소송 사건' },
-        },
-      ],
+      path: 'lawsuit/posts',
+      name: '현장 소송 문서',
+      component: () =>
+        pageViewAuth.value
+          ? import('@/views/proDocs/LawsuitDocs/Index.vue')
+          : import('@/views/_Accounts/NoAuth.vue'),
+      meta: { title: '현장 소송 문서' },
+    },
+    {
+      path: 'lawsuit/case',
+      name: '현장 소송 사건',
+      component: () =>
+        pageViewAuth.value
+          ? import('@/views/proDocs/LawsuitCase/Index.vue')
+          : import('@/views/_Accounts/NoAuth.vue'),
+      meta: { title: '현장 소송 사건' },
     },
   ],
 }

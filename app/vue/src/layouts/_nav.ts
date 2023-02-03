@@ -34,13 +34,20 @@ const contract = {
     },
     {
       component: 'CNavItem',
-      name: '동호 배치 현황',
-      to: '/contracts/status',
-    },
-    {
-      component: 'CNavItem',
-      name: '계약 해지 관리',
-      to: '/contracts/release',
+      name: '기타 계약 관리',
+      icon: 'cilLayers',
+      items: [
+        {
+          component: 'CNavItem',
+          name: '동호 배치 현황',
+          to: '/contracts/status',
+        },
+        {
+          component: 'CNavItem',
+          name: '계약 해지 관리',
+          to: '/contracts/release',
+        },
+      ],
     },
   ],
 }
@@ -152,7 +159,6 @@ const project_docs = {
         text: 'link',
       },
       to: '/project-docs/general/posts',
-      icon: 'cil-layers',
     },
     {
       component: 'CNavItem',
@@ -166,7 +172,6 @@ const project_docs = {
     {
       component: 'CNavItem',
       name: '현장 소송 관리',
-      to: '/project-docs/lawsuit',
       icon: 'cil-library-building',
       items: [
         {
@@ -201,7 +206,6 @@ const project = {
     {
       component: 'CNavItem',
       name: '프로젝트 관리',
-      to: '/project/manage',
       icon: 'cilStorage',
       items: [
         {
@@ -224,7 +228,6 @@ const project = {
     {
       component: 'CNavItem',
       name: '세부 설정 관리',
-      to: '/project/settings',
       icon: 'cil-cog',
       items: [
         {
@@ -262,7 +265,6 @@ const project = {
     {
       component: 'CNavItem',
       name: '사업 부지 관리',
-      to: '/project/site',
       icon: 'cil-location-pin',
       items: [
         {
