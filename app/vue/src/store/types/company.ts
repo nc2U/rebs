@@ -21,7 +21,7 @@ export interface Staff {
 export type StaffFilter = {
   page?: number
   com?: number
-  sort?: '1' | '2'
+  sort?: '' | '1' | '2'
   dep?: string
   gra?: string
   pos?: string
