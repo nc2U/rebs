@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref, computed, onBeforeMount, onBeforeUpdate } from 'vue'
-import { navMenu } from '@/views/comDocs/_menu/headermixin2'
+import { pageTitle, navMenu } from '@/views/comDocs/_menu/headermixin2'
 import { SuitCaseFilter as cFilter, useDocument } from '@/store/pinia/document'
 import { SuitCase } from '@/store/types/document'
 import { useRouter } from 'vue-router'
-import HeaderNav from '@/components/HeaderNav.vue'
+import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from './components/ListController.vue'
 import CaseView from './components/CaseView.vue'
@@ -103,10 +103,14 @@ onBeforeUpdate(() => {
 </script>
 
 <template>
+  <ContentHeader
+    :page-title="pageTitle"
+    :nav-menu="navMenu"
+    :selector="'CompanySelect'"
+  />
+
   <ContentBody>
     <CCardBody class="pb-5">
-      <HeaderNav :menus="navMenu" />
-
       <div v-if="$route.name === '본사 소송 사건'" class="pt-3">
         <ListController ref="fController" @list-filter="listFiltering" />
 
