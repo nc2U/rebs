@@ -97,7 +97,7 @@ onBeforeMount(() => fetchProjectList())
                 :key="proj.value"
                 :value="proj.value"
               >
-                {{ proj.text }}
+                {{ proj.label }}
               </option>
             </CFormSelect>
           </CCol>
