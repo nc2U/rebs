@@ -2,6 +2,7 @@
 import { computed, reactive, nextTick } from 'vue'
 import { useContract } from '@/store/pinia/contract'
 import { useProjectData } from '@/store/pinia/project_data'
+import { bgLight } from '@/utils/cssMixins'
 
 defineProps({ nowOrderName: { type: String, default: '' } })
 const emit = defineEmits(['list-filtering'])
@@ -57,7 +58,7 @@ defineExpose({ listFiltering })
 </script>
 
 <template>
-  <CCallout color="primary" class="pb-0 mb-4">
+  <CCallout color="primary" class="pb-0 mb-4" :class="bgLight">
     <CRow>
       <CCol lg="7">
         <CRow>

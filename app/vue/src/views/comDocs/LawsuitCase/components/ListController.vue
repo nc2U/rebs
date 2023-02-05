@@ -3,6 +3,7 @@ import { reactive, computed, nextTick, onBeforeMount } from 'vue'
 import { useProject } from '@/store/pinia/project'
 import { SuitCaseFilter, useDocument } from '@/store/pinia/document'
 import { numFormat } from '@/utils/baseMixins'
+import { bgLight } from '@/utils/cssMixins'
 import { courtChoices } from '@/views/comDocs/LawsuitCase/components/court'
 import Multiselect from '@vueform/multiselect'
 
@@ -84,7 +85,7 @@ onBeforeMount(() => fetchProjectList())
 </script>
 
 <template>
-  <CCallout color="primary" class="pb-0 mb-4">
+  <CCallout color="primary" class="pb-0 mb-4" :class="bgLight">
     <CRow>
       <CCol lg="6">
         <CRow>

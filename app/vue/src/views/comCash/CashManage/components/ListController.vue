@@ -3,6 +3,7 @@ import { ref, reactive, computed, watch, nextTick } from 'vue'
 import { useComCash, DataFilter } from '@/store/pinia/comCash'
 import { numFormat, dateFormat } from '@/utils/baseMixins'
 import { maska as vMaska } from 'maska'
+import { bgLight } from '@/utils/cssMixins'
 import DatePicker from '@/components/DatePicker/index.vue'
 
 const emit = defineEmits(['list-filtering'])
@@ -92,7 +93,7 @@ const resetForm = () => {
 </script>
 
 <template>
-  <CCallout color="primary" class="pb-0 mb-4">
+  <CCallout color="primary" class="pb-0 mb-4" :class="bgLight">
     <CRow>
       <CCol lg="3">
         <CRow>

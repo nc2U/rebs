@@ -3,6 +3,7 @@ import { ref, reactive, computed, watch, nextTick } from 'vue'
 import { useProjectData } from '@/store/pinia/project_data'
 import { useContract, ContFilter } from '@/store/pinia/contract'
 import { numFormat, dateFormat } from '@/utils/baseMixins'
+import { bgLight } from '@/utils/cssMixins'
 import { maska as vMaska } from 'maska'
 import DatePicker from '@/components/DatePicker/index.vue'
 
@@ -86,7 +87,7 @@ const resetForm = () => {
 </script>
 
 <template>
-  <CCallout color="info" class="pb-0 mb-4">
+  <CCallout color="info" class="pb-0 mb-4" :class="bgLight">
     <CRow>
       <CCol lg="6">
         <CRow>

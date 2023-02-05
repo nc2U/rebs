@@ -2,7 +2,7 @@
 import { reactive, computed, nextTick } from 'vue'
 import { numFormat } from '@/utils/baseMixins'
 import { useCompany } from '@/store/pinia/company'
-import Multiselect from '@vueform/multiselect'
+import { bgLight } from '@/utils/cssMixins'
 
 const emit = defineEmits(['list-filtering'])
 
@@ -33,7 +33,7 @@ defineExpose({ listFiltering })
 </script>
 
 <template>
-  <CCallout color="warning" class="pb-0 mb-3">
+  <CCallout color="warning" class="pb-0 mb-3" :class="bgLight">
     <CRow>
       <CCol md="12">
         <CRow class="justify-content-end">

@@ -4,6 +4,7 @@ import { usePayment } from '@/store/pinia/payment'
 import { useProCash } from '@/store/pinia/proCash'
 import { dateFormat } from '@/utils/baseMixins'
 import { maska as vMaska } from 'maska'
+import { bgLight } from '@/utils/cssMixins'
 import DatePicker from '@/components/DatePicker/index.vue'
 
 const emit = defineEmits(['payment-filtering'])
@@ -67,7 +68,7 @@ const resetForm = () => {
 </script>
 
 <template>
-  <CCallout color="warning" class="pb-0 mb-4">
+  <CCallout color="warning" class="pb-0 mb-4" :class="bgLight">
     <CRow>
       <CCol lg="7">
         <CRow>

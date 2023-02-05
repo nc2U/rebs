@@ -3,6 +3,7 @@ import { reactive, computed, nextTick, onBeforeMount } from 'vue'
 import { useProject } from '@/store/pinia/project'
 import { PostFilter, useDocument } from '@/store/pinia/document'
 import { numFormat } from '@/utils/baseMixins'
+import { bgLight } from '@/utils/cssMixins'
 
 defineProps({ tab: { type: Number, default: null } })
 const emit = defineEmits(['list-filter'])
@@ -57,7 +58,7 @@ onBeforeMount(() => fetchProjectList())
 </script>
 
 <template>
-  <CCallout color="primary" class="pb-0 mb-4">
+  <CCallout color="primary" class="pb-0 mb-4" :class="bgLight">
     <CRow>
       <CCol lg="6">
         <CRow>

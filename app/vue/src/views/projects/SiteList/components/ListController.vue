@@ -2,6 +2,7 @@
 import { computed, reactive, nextTick } from 'vue'
 import { useSite } from '@/store/pinia/project_site'
 import { numFormat } from '@/utils/baseMixins'
+import { bgLight } from '@/utils/cssMixins'
 
 defineProps({ project: { type: Number, default: null } })
 const emit = defineEmits(['list-filtering'])
@@ -31,7 +32,7 @@ const resetForm = () => {
 </script>
 
 <template>
-  <CCallout color="info" class="pb-0 mb-3">
+  <CCallout color="info" class="pb-0 mb-3" :class="bgLight">
     <CRow>
       <CCol lg="4" md="6">
         <CRow>
