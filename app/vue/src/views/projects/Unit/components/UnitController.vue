@@ -2,7 +2,7 @@
 import { computed, reactive, ref, watch } from 'vue'
 import { useProjectData } from '@/store/pinia/project_data'
 import { BuildingUnit } from '@/store/types/project'
-import { headerLight } from '@/utils/cssMixins'
+import { AlertLight } from '@/utils/cssMixins'
 import { write_project } from '@/utils/pageAuth'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
@@ -247,7 +247,7 @@ const modalAction = () => {
     신중하게 진행하여 주십시요.
   </CAlert>
 
-  <CAlert :color="headerLight" variant="solid" class="text-right">
+  <CAlert :color="AlertLight" variant="solid" class="text-right">
     <CButton
       color="primary"
       :disabled="form.minFloor === ''"
@@ -258,7 +258,7 @@ const modalAction = () => {
   </CAlert>
 
   <ConfirmModal ref="confirmModal">
-    <template #header> 호수(유니트) 정보 </template>
+    <template #header> 호수(유니트) 정보</template>
     <template #default>
       <p class="text-primary">
         <strong>

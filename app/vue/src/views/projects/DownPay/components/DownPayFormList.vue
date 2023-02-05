@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { usePayment } from '@/store/pinia/payment'
 import { DownPay as dp } from '@/store/types/payment'
-import { headerSecondary } from '@/utils/cssMixins'
+import { TableSecondary } from '@/utils/cssMixins'
 import DownPay from '@/views/projects/DownPay/components/DownPay.vue'
 
 defineProps({
@@ -26,7 +26,7 @@ const onDeleteDownPay = (pk: number) => emit('on-delete', pk)
       <col width="25%" />
       <col width="25%" />
     </colgroup>
-    <CTableHead :color="headerSecondary" class="text-center">
+    <CTableHead :color="TableSecondary" class="text-center">
       <CTableRow>
         <CTableHeaderCell>차수</CTableHeaderCell>
         <CTableHeaderCell>타입</CTableHeaderCell>

@@ -4,7 +4,7 @@ import { useContract } from '@/store/pinia/contract'
 import { ContractRelease } from '@/store/types/contract'
 import Pagination from '@/components/Pagination'
 import Release from '@/views/contracts/Release/components/Release.vue'
-import { headerSecondary } from '@/utils/cssMixins'
+import { TableSecondary } from '@/utils/cssMixins'
 
 const contractStore = useContract()
 
@@ -32,7 +32,7 @@ const onSubmit = (payload: ContractRelease) => emit('on-submit', payload)
       <col width="5%" />
     </colgroup>
 
-    <CTableHead :color="headerSecondary" class="text-center">
+    <CTableHead :color="TableSecondary" class="text-center">
       <CTableRow>
         <CTableHeaderCell>계약 해지자</CTableHeaderCell>
         <CTableHeaderCell>현재상태</CTableHeaderCell>

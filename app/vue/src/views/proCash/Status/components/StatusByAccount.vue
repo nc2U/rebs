@@ -3,7 +3,7 @@ import { computed, onBeforeMount, ref, watch } from 'vue'
 import { useProCash } from '@/store/pinia/proCash'
 import { BalanceByAccount } from '@/store/types/proCash'
 import { numFormat, dateFormat } from '@/utils/baseMixins'
-import { headerSecondary } from '@/utils/cssMixins'
+import { TableSecondary } from '@/utils/cssMixins'
 
 defineProps({ date: { type: String, default: '' } })
 
@@ -77,7 +77,7 @@ const getSumTotal = () => {
         </CTableDataCell>
         <CTableDataCell class="text-right">(단위: 원)</CTableDataCell>
       </CTableRow>
-      <CTableRow :color="headerSecondary" class="text-center">
+      <CTableRow :color="TableSecondary" class="text-center">
         <CTableHeaderCell colspan="2">구분</CTableHeaderCell>
         <CTableHeaderCell>전일잔고</CTableHeaderCell>
         <CTableHeaderCell>금일입금(증가)</CTableHeaderCell>
@@ -112,7 +112,7 @@ const getSumTotal = () => {
         </CTableDataCell>
       </CTableRow>
 
-      <CTableRow :color="headerSecondary" class="text-right">
+      <CTableRow :color="TableSecondary" class="text-right">
         <CTableHeaderCell colspan="2" class="text-center">
           현금성 자산 계
         </CTableHeaderCell>

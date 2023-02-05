@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { useComCash } from '@/store/pinia/comCash'
 import { CashBook } from '@/store/types/comCash'
-import { headerSecondary } from '@/utils/cssMixins'
+import { TableSecondary } from '@/utils/cssMixins'
 import Cashes from '@/views/comCash/CashManage/components/Cashes.vue'
 import Pagination from '@/components/Pagination'
 import AlertModal from '@/components/Modals/AlertModal.vue'
@@ -45,7 +45,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
     </colgroup>
 
     <CTableHead>
-      <CTableRow :color="headerSecondary" class="text-center">
+      <CTableRow :color="TableSecondary" class="text-center">
         <CTableHeaderCell scope="col">거래일자</CTableHeaderCell>
         <CTableHeaderCell scope="col">구분</CTableHeaderCell>
         <CTableHeaderCell scope="col">계정</CTableHeaderCell>

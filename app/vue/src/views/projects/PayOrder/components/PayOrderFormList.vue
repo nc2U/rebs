@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { usePayment } from '@/store/pinia/payment'
 import { PayOrder as po } from '@/store/types/payment'
-import { headerSecondary } from '@/utils/cssMixins'
+import { TableSecondary } from '@/utils/cssMixins'
 import PayOrder from '@/views/projects/PayOrder/components/PayOrder.vue'
 
 const emit = defineEmits(['on-update', 'on-delete'])
@@ -27,7 +27,7 @@ const onDeletePayOrder = (pk: number) => emit('on-delete', pk)
       <col width="11%" />
       <col width="12%" />
     </colgroup>
-    <CTableHead :color="headerSecondary" class="text-center">
+    <CTableHead :color="TableSecondary" class="text-center">
       <CTableRow>
         <CTableHeaderCell>종류</CTableHeaderCell>
         <CTableHeaderCell>납입회차 코드</CTableHeaderCell>

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref, onMounted, computed } from 'vue'
 import { pageTitle, navMenu } from '@/views/hrManage/_menu/headermixin1'
+import { useAccount } from '@/store/pinia/account'
 import { useCompany } from '@/store/pinia/company'
 import { Staff, StaffFilter } from '@/store/types/company'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
@@ -9,7 +10,6 @@ import ListController from './components/ListController.vue'
 import AddStaff from './components/AddStaff.vue'
 import TableTitleRow from '@/components/TableTitleRow.vue'
 import StaffList from './components/StaffList.vue'
-import { useAccount } from '@/store/pinia/account'
 
 const listControl = ref()
 

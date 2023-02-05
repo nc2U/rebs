@@ -2,7 +2,6 @@
 import { reactive, computed, nextTick } from 'vue'
 import { numFormat } from '@/utils/baseMixins'
 import { useCompany } from '@/store/pinia/company'
-import Multiselect from '@vueform/multiselect'
 
 const emit = defineEmits(['list-filtering'])
 

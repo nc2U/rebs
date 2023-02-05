@@ -48,10 +48,14 @@ const proCashStore = useProCash()
 const fetchProBankAccList = (projId: number) =>
   proCashStore.fetchProBankAccList(projId)
 const createPrCashBook = (
-  payload: ProjectCashBook & { filters: CashBookFilter },
+  payload: ProjectCashBook & { sepData: ProjectCashBook | null } & {
+    filters: CashBookFilter
+  },
 ) => proCashStore.createPrCashBook(payload)
 const updatePrCashBook = (
-  payload: ProjectCashBook & { filters: CashBookFilter },
+  payload: ProjectCashBook & { sepData: ProjectCashBook | null } & {
+    filters: CashBookFilter
+  },
 ) => proCashStore.updatePrCashBook(payload)
 const deletePrCashBook = (
   payload: { pk: number; project: number; contract: number } & {
@@ -68,7 +72,7 @@ const [route, router] = [useRoute(), useRouter()]
 onBeforeMount(() => {
   if (route.query.contract) {
     router.replace({
-      name: '건별수납 관리',
+      name: '건별 수납 관리',
       query: { contract: route.query.contract },
     })
     const cont = Number(route.query.contract)
@@ -100,7 +104,7 @@ watch(contract, newVal => {
 })
 
 const onSelectAdd = (target: number) => {
-  router.push({ name: '건별수납 관리' })
+  router.push({ name: '건별 수납 관리' })
   contractStore.contract = null
   contractStore.contractList = []
   projectDataStore.unitTypeList = []
@@ -121,18 +125,26 @@ const onContFiltering = (payload: ContFilter) => {
 
 const getContract = (cont: number) => {
   router.replace({
-    name: '건별수납 관리',
+    name: '건별 수납 관리',
     query: { contract: cont },
   })
   fetchContract(cont)
 }
 
-const onCreate = (payload: ProjectCashBook & { filters: CashBookFilter }) => {
+const onCreate = (
+  payload: ProjectCashBook & { sepData: ProjectCashBook | null } & {
+    filters: CashBookFilter
+  },
+) => {
   payload.project = project.value
   createPrCashBook(payload)
 }
 
-const onUpdate = (payload: ProjectCashBook & { filters: CashBookFilter }) => {
+const onUpdate = (
+  payload: ProjectCashBook & { sepData: ProjectCashBook | null } & {
+    filters: CashBookFilter
+  },
+) => {
   payload.project = project.value
   updatePrCashBook(payload)
 }

@@ -103,7 +103,7 @@ watch(
                   icon="mdi mdi-account-arrow-left"
                   :color="getColor(authData.contract)[0]"
                 />
-                분양계약 관리
+                분양 계약 관리
               </CFormLabel>
               <CCol>
                 <CFormSelect
@@ -129,7 +129,7 @@ watch(
                   icon="mdi mdi-account-arrow-left"
                   :color="getColor(authData.payment)[0]"
                 />
-                분양수납 관리
+                분양 수납 관리
               </CFormLabel>
               <CCol>
                 <CFormSelect
@@ -155,7 +155,7 @@ watch(
                   icon="mdi mdi-account-arrow-left"
                   :color="getColor(authData.notice)[0]"
                 />
-                고객고지 관리
+                고객 고지 관리
               </CFormLabel>
               <CCol>
                 <CFormSelect
@@ -180,7 +180,7 @@ watch(
                   icon="mdi mdi-account-arrow-left"
                   :color="getColor(authData.project_cash)[0]"
                 />
-                현장자금 관리
+                현장 자금 관리
               </CFormLabel>
               <CCol>
                 <CFormSelect
@@ -206,7 +206,7 @@ watch(
                   icon="mdi mdi-account-arrow-left"
                   :color="getColor(authData.project_docs)[0]"
                 />
-                현장문서 관리
+                현장 문서 관리
               </CFormLabel>
               <CCol>
                 <CFormSelect

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, ref, nextTick } from 'vue'
 import { useContract } from '@/store/pinia/contract'
-import { headerSecondary } from '@/utils/cssMixins'
+import { TableSecondary } from '@/utils/cssMixins'
 import Contract from '@/views/notices/Bill/components/Contract.vue'
 import Pagination from '@/components/Pagination'
 
@@ -45,7 +45,7 @@ const onCtorChk = (payload: { chk: boolean; pk: number }) =>
       <col width="12%" />
     </colgroup>
 
-    <CTableHead :color="headerSecondary">
+    <CTableHead :color="TableSecondary">
       <CTableRow class="text-center">
         <CTableHeaderCell scope="col">
           <CFormCheck

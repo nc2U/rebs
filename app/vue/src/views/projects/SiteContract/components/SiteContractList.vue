@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { useSite } from '@/store/pinia/project_site'
 import { SiteContract as siteCont } from '@/store/types/project'
-import { headerSecondary } from '@/utils/cssMixins'
+import { TableSecondary } from '@/utils/cssMixins'
 import SiteContract from './SiteContract.vue'
 import Pagination from '@/components/Pagination'
 
@@ -36,7 +36,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
       <col width="6%" />
     </colgroup>
 
-    <CTableHead :color="headerSecondary">
+    <CTableHead :color="TableSecondary">
       <CTableRow class="text-center" align="middle">
         <CTableHeaderCell rowspan="2" scope="col">
           소유<br />구분

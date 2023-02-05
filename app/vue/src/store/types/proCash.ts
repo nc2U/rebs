@@ -59,16 +59,16 @@ export interface ExecAmountToBudget {
 }
 
 export interface ProSepItems {
-  pk: number | null
+  pk?: number | null
   project_account_d1: number | null
   project_account_d2: number | null
   separated?: number | null
-  is_imprest: boolean
+  is_imprest?: boolean
   content: string
   trader: string
   income?: number | null
   outlay?: number | null
-  evidence: '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | ''
+  evidence?: '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | ''
   note: string
 }
 

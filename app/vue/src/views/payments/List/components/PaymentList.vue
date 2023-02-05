@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { usePayment } from '@/store/pinia/payment'
-import { headerSecondary } from '@/utils/cssMixins'
+import { TableSecondary } from '@/utils/cssMixins'
 import Payment from '@/views/payments/List/components/Payment.vue'
 import Pagination from '@/components/Pagination'
 
@@ -31,7 +31,7 @@ const pageSelect = (page: number) => emit('page-select', page)
     </colgroup>
 
     <CTableHead>
-      <CTableRow :color="headerSecondary" class="text-center">
+      <CTableRow :color="TableSecondary" class="text-center">
         <CTableHeaderCell scope="col">거래일자</CTableHeaderCell>
         <CTableHeaderCell scope="col">차수</CTableHeaderCell>
         <CTableHeaderCell scope="col">타입</CTableHeaderCell>

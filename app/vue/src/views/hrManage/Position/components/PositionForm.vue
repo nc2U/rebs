@@ -1,12 +1,12 @@
 <script lang="ts" setup="">
 import { ref, computed, onBeforeMount, watch } from 'vue'
+import { useCompany } from '@/store/pinia/company'
 import { isValidate } from '@/utils/helper'
 import { write_human_resource } from '@/utils/pageAuth'
 import { Position } from '@/store/types/company'
 import Multiselect from '@vueform/multiselect'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
-import { useCompany } from '@/store/pinia/company'
 
 const props = defineProps({
   company: {

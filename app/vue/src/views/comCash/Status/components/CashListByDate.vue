@@ -3,7 +3,7 @@ import { computed, onBeforeMount, ref, watch } from 'vue'
 import { useComCash } from '@/store/pinia/comCash'
 import { CashBook } from '@/store/types/comCash'
 import { numFormat, dateFormat } from '@/utils/baseMixins'
-import { headerSecondary } from '@/utils/cssMixins'
+import { TableSecondary } from '@/utils/cssMixins'
 
 defineProps({ date: { type: String, default: '' } })
 
@@ -73,7 +73,7 @@ onBeforeMount(() => setData())
         </CTableDataCell>
         <CTableDataCell class="text-right">(단위: 원)</CTableDataCell>
       </CTableRow>
-      <CTableRow :color="headerSecondary" class="text-center">
+      <CTableRow :color="TableSecondary" class="text-center">
         <CTableHeaderCell>구분</CTableHeaderCell>
         <CTableHeaderCell>계정</CTableHeaderCell>
         <CTableHeaderCell>세부 계정</CTableHeaderCell>
@@ -113,7 +113,7 @@ onBeforeMount(() => setData())
         <CTableDataCell></CTableDataCell>
       </CTableRow>
 
-      <CTableRow :color="headerSecondary" class="text-right">
+      <CTableRow :color="TableSecondary" class="text-right">
         <CTableHeaderCell colspan="3" class="text-center">
           합계
         </CTableHeaderCell>
@@ -148,7 +148,7 @@ onBeforeMount(() => setData())
         </CTableDataCell>
         <CTableDataCell class="text-right">(단위: 원)</CTableDataCell>
       </CTableRow>
-      <CTableRow :color="headerSecondary" class="text-center">
+      <CTableRow :color="TableSecondary" class="text-center">
         <CTableHeaderCell>구분</CTableHeaderCell>
         <CTableHeaderCell>계정</CTableHeaderCell>
         <CTableHeaderCell>세부 계정</CTableHeaderCell>
@@ -187,7 +187,7 @@ onBeforeMount(() => setData())
         <CTableDataCell></CTableDataCell>
       </CTableRow>
 
-      <CTableRow :color="headerSecondary" class="text-right">
+      <CTableRow :color="TableSecondary" class="text-right">
         <CTableHeaderCell colspan="3" class="text-center">
           합계
         </CTableHeaderCell>

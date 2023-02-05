@@ -3,7 +3,7 @@ import { computed, onBeforeMount, ref, watch } from 'vue'
 import { useProCash } from '@/store/pinia/proCash'
 import { write_project_cash } from '@/utils/pageAuth'
 import { dateFormat, numFormat } from '@/utils/baseMixins'
-import { headerInfo, headerSecondary } from '@/utils/cssMixins'
+import { TableInfo, TableSecondary } from '@/utils/cssMixins'
 import {
   ProjectBudget,
   ExecAmountToBudget as ExeBudget,
@@ -108,7 +108,7 @@ const patchBudget = (pk: number, budget: string, oldBudget: number) => {
         </CTableDataCell>
         <CTableDataCell class="text-right">(단위: 원)</CTableDataCell>
       </CTableRow>
-      <CTableRow :color="headerSecondary" class="text-center">
+      <CTableRow :color="TableSecondary" class="text-center">
         <CTableHeaderCell colspan="4">구분</CTableHeaderCell>
         <CTableHeaderCell>예산액</CTableHeaderCell>
         <CTableHeaderCell>전월 집행금액 누계</CTableHeaderCell>
@@ -126,7 +126,7 @@ const patchBudget = (pk: number, budget: string, oldBudget: number) => {
       >
         <CTableDataCell
           v-if="i === 0"
-          :color="headerInfo"
+          :color="TableInfo"
           class="text-center"
           :rowspan="proBudgetList.length"
         >
@@ -196,7 +196,7 @@ const patchBudget = (pk: number, budget: string, oldBudget: number) => {
         </CTableDataCell>
       </CTableRow>
 
-      <CTableRow :color="headerSecondary" class="text-right">
+      <CTableRow :color="TableSecondary" class="text-right">
         <CTableHeaderCell colspan="4" class="text-center">
           합계
         </CTableHeaderCell>

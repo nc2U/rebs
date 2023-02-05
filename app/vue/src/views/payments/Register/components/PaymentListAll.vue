@@ -3,7 +3,7 @@ import { computed, PropType } from 'vue'
 import { AllPayment } from '@/store/types/payment'
 import { ProjectCashBook } from '@/store/types/proCash'
 import { numFormat } from '@/utils/baseMixins'
-import { headerSecondary } from '@/utils/cssMixins'
+import { TableSecondary } from '@/utils/cssMixins'
 import Payment from '@/views/payments/Register/components/Payment.vue'
 
 const props = defineProps({
@@ -37,7 +37,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
       <col width="10%" />
     </colgroup>
 
-    <CTableHead :color="headerSecondary">
+    <CTableHead :color="TableSecondary">
       <CTableRow class="text-center">
         <CTableHeaderCell>수납일자</CTableHeaderCell>
         <CTableHeaderCell>납부회차</CTableHeaderCell>
@@ -62,7 +62,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
 
     <CTableHead>
       <CTableRow class="text-right">
-        <CTableHeaderCell :color="headerSecondary" class="text-center">
+        <CTableHeaderCell :color="TableSecondary" class="text-center">
           합계
         </CTableHeaderCell>
         <CTableHeaderCell></CTableHeaderCell>

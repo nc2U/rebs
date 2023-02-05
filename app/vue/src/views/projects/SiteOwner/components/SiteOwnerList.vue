@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { useSite } from '@/store/pinia/project_site'
 import { Relation, SiteOwner as owner } from '@/store/types/project'
-import { headerInfo, headerSuccess, headerSecondary } from '@/utils/cssMixins'
+import { TableInfo, TableSuccess, TableSecondary } from '@/utils/cssMixins'
 import SiteOwner from '@/views/projects/SiteOwner/components/SiteOwner.vue'
 import Pagination from '@/components/Pagination'
 
@@ -41,12 +41,12 @@ const onDelete = (pk: number) => emit('on-delete', pk)
       <col width="4%" />
     </colgroup>
 
-    <CTableHead :color="headerSecondary">
+    <CTableHead :color="TableSecondary">
       <CTableRow class="text-center">
-        <CTableHeaderCell colspan="5" :color="headerInfo">
+        <CTableHeaderCell colspan="5" :color="TableInfo">
           소유자 관련 정보
         </CTableHeaderCell>
-        <CTableHeaderCell colspan="6" :color="headerSuccess">
+        <CTableHeaderCell colspan="6" :color="TableSuccess">
           소유권 관련 정보
         </CTableHeaderCell>
       </CTableRow>

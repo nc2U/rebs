@@ -4,7 +4,7 @@ import { useProjectData } from '@/store/pinia/project_data'
 import { useContract } from '@/store/pinia/contract'
 import { numFormat } from '@/utils/baseMixins'
 import { ratioFormat } from '@/utils/areaMixins'
-import { headerSecondary } from '@/utils/cssMixins'
+import { TableSecondary } from '@/utils/cssMixins'
 import { SubsSummary, ContSummary } from '@/store/types/contract'
 
 const props = defineProps({ project: { type: Object, default: null } })
@@ -37,7 +37,7 @@ const contNum = (order: number | null, type?: number) => {
 
 <template>
   <CTable hover responsive bordered class="mt-3">
-    <CTableHead class="text-center" :color="headerSecondary">
+    <CTableHead class="text-center" :color="TableSecondary">
       <CTableRow align="middle">
         <CTableHeaderCell rowspan="2">프로젝트명</CTableHeaderCell>
         <CTableHeaderCell rowspan="2">타입</CTableHeaderCell>
@@ -116,7 +116,7 @@ const contNum = (order: number | null, type?: number) => {
         </CTableDataCell>
       </CTableRow>
 
-      <CTableRow class="text-right" :color="headerSecondary">
+      <CTableRow class="text-right" :color="TableSecondary">
         <CTableDataCell class="text-center"> 합계</CTableDataCell>
         <CTableDataCell></CTableDataCell>
         <!-- 타입별 세대수 합계-->

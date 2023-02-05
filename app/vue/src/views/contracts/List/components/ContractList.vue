@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { useContract } from '@/store/pinia/contract'
-import { headerSecondary } from '@/utils/cssMixins'
+import { TableSecondary } from '@/utils/cssMixins'
 import Pagination from '@/components/Pagination'
 import Contract from '@/views/contracts/List/components/Contract.vue'
 
@@ -32,7 +32,7 @@ const pageSelect = (page: number) => emit('page-select', page)
     </colgroup>
 
     <CTableHead>
-      <CTableRow :color="headerSecondary" class="text-center">
+      <CTableRow :color="TableSecondary" class="text-center">
         <CTableHeaderCell scope="col">일련번호</CTableHeaderCell>
         <CTableHeaderCell scope="col">차수</CTableHeaderCell>
         <CTableHeaderCell scope="col">타입</CTableHeaderCell>

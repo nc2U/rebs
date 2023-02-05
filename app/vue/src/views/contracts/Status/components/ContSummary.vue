@@ -3,11 +3,7 @@ import { computed } from 'vue'
 import { useProjectData } from '@/store/pinia/project_data'
 import { useContract } from '@/store/pinia/contract'
 import { numFormat } from '@/utils/baseMixins'
-import {
-  headerSecondary,
-  headerSuccess,
-  headerPrimary,
-} from '@/utils/cssMixins'
+import { TableSecondary, TableSuccess, TablePrimary } from '@/utils/cssMixins'
 import { SubsSummary } from '@/store/types/contract'
 
 defineProps({ contractsCount: { type: Number, default: 0 } })
@@ -40,7 +36,7 @@ const subsNum = () => {
         </colgroup>
         <CTableBody>
           <CTableRow>
-            <CTableHeaderCell :color="headerSecondary">
+            <CTableHeaderCell :color="TableSecondary">
               총세대수
             </CTableHeaderCell>
             <CTableDataCell class="text-right" colspan="3">
@@ -49,18 +45,18 @@ const subsNum = () => {
           </CTableRow>
 
           <CTableRow>
-            <CTableHeaderCell :color="headerSuccess">청약세대</CTableHeaderCell>
+            <CTableHeaderCell :color="TableSuccess">청약세대</CTableHeaderCell>
             <CTableDataCell class="text-right">
               {{ numFormat(subsNum()) }}
             </CTableDataCell>
-            <CTableHeaderCell :color="headerPrimary">계약세대</CTableHeaderCell>
+            <CTableHeaderCell :color="TablePrimary">계약세대</CTableHeaderCell>
             <CTableDataCell class="text-right">
               {{ numFormat(contractsCount) }}
             </CTableDataCell>
           </CTableRow>
 
           <CTableRow>
-            <CTableHeaderCell :color="headerSecondary">
+            <CTableHeaderCell :color="TableSecondary">
               동호미배정 세대
             </CTableHeaderCell>
             <CTableDataCell class="text-right">
@@ -73,7 +69,7 @@ const subsNum = () => {
                 )
               }}
             </CTableDataCell>
-            <CTableHeaderCell :color="headerSecondary">
+            <CTableHeaderCell :color="TableSecondary">
               홀딩세대
             </CTableHeaderCell>
             <CTableDataCell class="text-right">
@@ -82,11 +78,11 @@ const subsNum = () => {
           </CTableRow>
 
           <CTableRow>
-            <CTableHeaderCell :color="headerSecondary">합계</CTableHeaderCell>
+            <CTableHeaderCell :color="TableSecondary">합계</CTableHeaderCell>
             <CTableDataCell class="text-right">
               {{ numFormat(contractsCount + subsNum()) }}
             </CTableDataCell>
-            <CTableHeaderCell :color="headerSecondary">
+            <CTableHeaderCell :color="TableSecondary">
               잔여세대
             </CTableHeaderCell>
             <CTableDataCell class="text-right">

@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { useProjectData } from '@/store/pinia/project_data'
 import { BuildingUnit } from '@/store/types/project'
-import { headerSecondary } from '@/utils/cssMixins'
+import { TableSecondary } from '@/utils/cssMixins'
 import Building from '@/views/projects/Building/components/Building.vue'
 
 const emit = defineEmits(['on-update', 'on-delete'])
@@ -20,7 +20,7 @@ const onDeleteBuilding = (pk: number) => emit('on-delete', pk)
       <col width="50%" />
       <col width="50%" />
     </colgroup>
-    <CTableHead :color="headerSecondary" class="text-center">
+    <CTableHead :color="TableSecondary" class="text-center">
       <CTableRow>
         <CTableHeaderCell>동(건물)이름</CTableHeaderCell>
         <CTableHeaderCell>비 고</CTableHeaderCell>

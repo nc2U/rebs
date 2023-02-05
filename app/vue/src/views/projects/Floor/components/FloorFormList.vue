@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { useProjectData } from '@/store/pinia/project_data'
 import { UnitFloorType } from '@/store/types/project'
-import { headerSecondary } from '@/utils/cssMixins'
+import { TableSecondary } from '@/utils/cssMixins'
 import Floor from '@/views/projects/Floor/components/Floor.vue'
 
 const emit = defineEmits(['on-update', 'on-delete'])
@@ -23,7 +23,7 @@ const onDeleteFloor = (pk: number) => emit('on-delete', pk)
       <col width="23%" />
       <col width="8%" />
     </colgroup>
-    <CTableHead :color="headerSecondary" class="text-center">
+    <CTableHead :color="TableSecondary" class="text-center">
       <CTableRow>
         <CTableHeaderCell>시작 층</CTableHeaderCell>
         <CTableHeaderCell>종료 층</CTableHeaderCell>

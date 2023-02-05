@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, computed, onBeforeMount, watch, nextTick } from 'vue'
-import { useStore } from 'vuex'
 import { useProject } from '@/store/pinia/project'
+import { bgLight } from '@/utils/cssMixins'
 import Multiselect from '@vueform/multiselect'
 
 const props = defineProps({
@@ -14,9 +14,6 @@ const allowedProjects = ref<number[]>([])
 const assignedProject = ref<number | null>(null)
 
 const isInActive = computed(() => !props.user)
-
-const store = useStore()
-const isDark = computed(() => store.state.theme === 'dark')
 
 const project = useProject()
 const getProjects = computed(() => project.getProjects)
@@ -46,7 +43,7 @@ onBeforeMount(() => project.fetchProjectList())
 </script>
 
 <template>
-  <CCallout color="secondary" class="mb-4" :class="{ 'bg-light': !isDark }">
+  <CCallout color="secondary" class="mb-4" :class="bgLight">
     <CRow>
       <CCol md="10" lg="8" xl="6">
         <CRow class="m-1">

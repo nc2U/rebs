@@ -1,7 +1,7 @@
 <script lang="ts" setup="">
 import { computed } from 'vue'
 import { useCompany } from '@/store/pinia/company'
-import { headerSecondary } from '@/utils/cssMixins'
+import { TableSecondary } from '@/utils/cssMixins'
 import { Staff as StaffType } from '@/store/types/company'
 import Pagination from '@/components/Pagination'
 import Staff from './Staff.vue'
@@ -32,7 +32,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
       <col width="8%" />
     </colgroup>
 
-    <CTableHead :color="headerSecondary">
+    <CTableHead :color="TableSecondary">
       <CTableRow class="text-center" align="middle">
         <CTableHeaderCell scope="col">구분</CTableHeaderCell>
         <CTableHeaderCell scope="col">부서</CTableHeaderCell>

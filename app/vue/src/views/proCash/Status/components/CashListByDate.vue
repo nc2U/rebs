@@ -2,7 +2,7 @@
 import { computed, onBeforeMount, ref, watch } from 'vue'
 import { useProCash } from '@/store/pinia/proCash'
 import { numFormat, dateFormat } from '@/utils/baseMixins'
-import { headerSecondary } from '@/utils/cssMixins'
+import { TableSecondary } from '@/utils/cssMixins'
 import {
   ProjectAccountD1,
   ProjectAccountD2,
@@ -81,7 +81,7 @@ const setData = () => {
         </CTableDataCell>
         <CTableDataCell class="text-right">(단위: 원)</CTableDataCell>
       </CTableRow>
-      <CTableRow :color="headerSecondary" class="text-center">
+      <CTableRow :color="TableSecondary" class="text-center">
         <CTableHeaderCell>항목</CTableHeaderCell>
         <CTableHeaderCell>세부 항목</CTableHeaderCell>
         <CTableHeaderCell>입금 금액</CTableHeaderCell>
@@ -112,7 +112,7 @@ const setData = () => {
         <CTableDataCell></CTableDataCell>
       </CTableRow>
 
-      <CTableRow :color="headerSecondary" class="text-right">
+      <CTableRow :color="TableSecondary" class="text-right">
         <CTableHeaderCell colspan="2" class="text-center">
           합계
         </CTableHeaderCell>
@@ -146,7 +146,7 @@ const setData = () => {
         </CTableDataCell>
         <CTableDataCell class="text-right">(단위: 원)</CTableDataCell>
       </CTableRow>
-      <CTableRow :color="headerSecondary" class="text-center">
+      <CTableRow :color="TableSecondary" class="text-center">
         <CTableHeaderCell>항목</CTableHeaderCell>
         <CTableHeaderCell>세부 항목</CTableHeaderCell>
         <CTableHeaderCell>출금 금액</CTableHeaderCell>
@@ -176,7 +176,7 @@ const setData = () => {
         <CTableDataCell></CTableDataCell>
       </CTableRow>
 
-      <CTableRow :color="headerSecondary" class="text-right">
+      <CTableRow :color="TableSecondary" class="text-right">
         <CTableHeaderCell colspan="2" class="text-center">
           합계
         </CTableHeaderCell>

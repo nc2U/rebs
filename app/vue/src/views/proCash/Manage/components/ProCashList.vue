@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { useProCash } from '@/store/pinia/proCash'
 import { ProjectCashBook } from '@/store/types/proCash'
-import { headerSecondary } from '@/utils/cssMixins'
+import { TableSecondary } from '@/utils/cssMixins'
 import ProCash from '@/views/proCash/Manage/components/ProCash.vue'
 import Pagination from '@/components/Pagination'
 import AlertModal from '@/components/Modals/AlertModal.vue'
@@ -44,7 +44,7 @@ const onDelete = (payload: { project: number; pk: number }) =>
     </colgroup>
 
     <CTableHead>
-      <CTableRow :color="headerSecondary" class="text-center">
+      <CTableRow :color="TableSecondary" class="text-center">
         <CTableHeaderCell scope="col">거래일자</CTableHeaderCell>
         <CTableHeaderCell scope="col">구분</CTableHeaderCell>
         <CTableHeaderCell scope="col">계정</CTableHeaderCell>

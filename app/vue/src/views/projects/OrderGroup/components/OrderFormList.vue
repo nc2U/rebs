@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { useContract } from '@/store/pinia/contract'
 import { OrderGroup as og } from '@/store/types/contract'
-import { headerSecondary } from '@/utils/cssMixins'
+import { TableSecondary } from '@/utils/cssMixins'
 import OrderGroup from './OrderGroup.vue'
 
 const emit = defineEmits(['on-update', 'on-delete'])
@@ -22,7 +22,7 @@ const onDeleteOrder = (pk: number) => emit('on-delete', pk)
       <col width="25%" />
       <col width="25%" />
     </colgroup>
-    <CTableHead :color="headerSecondary" class="text-center">
+    <CTableHead :color="TableSecondary" class="text-center">
       <CTableRow>
         <CTableHeaderCell>등록차수</CTableHeaderCell>
         <CTableHeaderCell>차수구분</CTableHeaderCell>

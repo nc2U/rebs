@@ -1,7 +1,7 @@
 <script lang="ts" setup="">
 import { computed } from 'vue'
 import { useCompany } from '@/store/pinia/company'
-import { headerSecondary } from '@/utils/cssMixins'
+import { TableSecondary } from '@/utils/cssMixins'
 import { Grade as GradeType } from '@/store/types/company'
 import Pagination from '@/components/Pagination'
 import Grade from './Grade.vue'
@@ -29,7 +29,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
       <col width="10%" />
     </colgroup>
 
-    <CTableHead :color="headerSecondary">
+    <CTableHead :color="TableSecondary">
       <CTableRow class="text-center" align="middle">
         <CTableHeaderCell scope="col">No</CTableHeaderCell>
         <CTableHeaderCell scope="col">직급명</CTableHeaderCell>

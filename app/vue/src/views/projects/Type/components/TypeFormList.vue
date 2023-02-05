@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { useProjectData } from '@/store/pinia/project_data'
 import { UnitType } from '@/store/types/project'
-import { headerSecondary } from '@/utils/cssMixins'
+import { TableSecondary } from '@/utils/cssMixins'
 import Type from '@/views/projects/Type/components/Type.vue'
 
 const emit = defineEmits(['on-update', 'on-delete'])
@@ -26,7 +26,7 @@ const onDeleteType = (pk: number) => emit('on-delete', pk)
       <col width="13%" />
       <col width="12%" />
     </colgroup>
-    <CTableHead :color="headerSecondary" class="text-center">
+    <CTableHead :color="TableSecondary" class="text-center">
       <CTableRow>
         <CTableHeaderCell>타입명칭</CTableHeaderCell>
         <CTableHeaderCell>타입색상</CTableHeaderCell>

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { headerLight } from '@/utils/cssMixins'
+import { AlertLight } from '@/utils/cssMixins'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
 const props = defineProps({
@@ -34,7 +34,7 @@ const printBill = () => {
 </script>
 
 <template>
-  <CAlert :color="headerLight" variant="solid">
+  <CAlert :color="AlertLight" variant="solid">
     <CButton color="primary" :disabled="!contractors.length" @click="printBill">
       선택 건별 고지서 내려받기
     </CButton>

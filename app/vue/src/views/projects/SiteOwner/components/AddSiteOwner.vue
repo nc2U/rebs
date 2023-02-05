@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { SiteOwner } from '@/store/types/project'
 import { write_project } from '@/utils/pageAuth'
-import { headerLight } from '@/utils/cssMixins'
+import { AlertLight } from '@/utils/cssMixins'
 import FormModal from '@/components/Modals/FormModal.vue'
 import SiteOwnerForm from '@/views/projects/SiteOwner/components/SiteOwnerForm.vue'
 
@@ -21,7 +21,7 @@ const multiSubmit = (payload: SiteOwner) => emit('multi-submit', payload)
 </script>
 
 <template>
-  <CAlert :color="headerLight" variant="solid" class="text-right">
+  <CAlert :color="AlertLight" variant="solid" class="text-right">
     <CButton color="primary" :disabled="!project" @click="createConfirm">
       부지 소유자 신규등록
     </CButton>

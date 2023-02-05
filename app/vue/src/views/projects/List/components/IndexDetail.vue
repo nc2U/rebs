@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { write_project } from '@/utils/pageAuth'
-import { headerSecondary } from '@/utils/cssMixins'
+import { TableSecondary } from '@/utils/cssMixins'
 import { numFormat } from '@/utils/baseMixins'
 import { areaM2PyFormat, ratioFormat } from '@/utils/areaMixins'
 import AlertModal from '@/components/Modals/AlertModal.vue'
@@ -49,7 +49,7 @@ const toUpdate = () => {
             </CTableHead>
             <CTableBody>
               <CTableRow>
-                <CTableHeaderCell scope="row" :color="headerSecondary">
+                <CTableHeaderCell scope="row" :color="TableSecondary">
                   프로젝트명
                 </CTableHeaderCell>
                 <CTableDataCell>
@@ -60,7 +60,7 @@ const toUpdate = () => {
                     </span>
                   </span>
                 </CTableDataCell>
-                <CTableHeaderCell scope="row" :color="headerSecondary">
+                <CTableHeaderCell scope="row" :color="TableSecondary">
                   프로젝트 종류
                 </CTableHeaderCell>
                 <CTableDataCell>
@@ -69,7 +69,7 @@ const toUpdate = () => {
               </CTableRow>
 
               <CTableRow>
-                <CTableHeaderCell scope="row" :color="headerSecondary">
+                <CTableHeaderCell scope="row" :color="TableSecondary">
                   현장주소(대표지번)
                 </CTableHeaderCell>
                 <CTableDataCell colspan="3">
@@ -80,13 +80,13 @@ const toUpdate = () => {
                 </CTableDataCell>
               </CTableRow>
               <CTableRow>
-                <CTableHeaderCell scope="row" :color="headerSecondary">
+                <CTableHeaderCell scope="row" :color="TableSecondary">
                   용도지역지구
                 </CTableHeaderCell>
                 <CTableDataCell>
                   <span v-if="project">{{ project.area_usage }}</span>
                 </CTableDataCell>
-                <CTableHeaderCell scope="row" :color="headerSecondary">
+                <CTableHeaderCell scope="row" :color="TableSecondary">
                   건축규모
                 </CTableHeaderCell>
                 <CTableDataCell>
@@ -95,7 +95,7 @@ const toUpdate = () => {
               </CTableRow>
 
               <CTableRow>
-                <CTableHeaderCell scope="row" :color="headerSecondary">
+                <CTableHeaderCell scope="row" :color="TableSecondary">
                   세대(호/실)수
                 </CTableHeaderCell>
                 <CTableDataCell class="text-right pr-3">
@@ -105,7 +105,7 @@ const toUpdate = () => {
                   </span>
                 </CTableDataCell>
 
-                <CTableHeaderCell scope="row" :color="headerSecondary">
+                <CTableHeaderCell scope="row" :color="TableSecondary">
                   대지매입면적
                 </CTableHeaderCell>
                 <CTableDataCell class="text-right pr-3">
@@ -116,7 +116,7 @@ const toUpdate = () => {
               </CTableRow>
 
               <CTableRow>
-                <CTableHeaderCell scope="row" :color="headerSecondary">
+                <CTableHeaderCell scope="row" :color="TableSecondary">
                   계획대지면적
                 </CTableHeaderCell>
                 <CTableDataCell class="text-right pr-3">
@@ -124,7 +124,7 @@ const toUpdate = () => {
                     areaM2PyFormat(project.scheme_land_extent)
                   }}</span>
                 </CTableDataCell>
-                <CTableHeaderCell scope="row" :color="headerSecondary">
+                <CTableHeaderCell scope="row" :color="TableSecondary">
                   기부채납면적
                 </CTableHeaderCell>
                 <CTableDataCell class="text-right pr-3">
@@ -135,7 +135,7 @@ const toUpdate = () => {
               </CTableRow>
 
               <CTableRow>
-                <CTableHeaderCell scope="row" :color="headerSecondary">
+                <CTableHeaderCell scope="row" :color="TableSecondary">
                   지상연면적
                 </CTableHeaderCell>
                 <CTableDataCell class="text-right pr-3">
@@ -143,7 +143,7 @@ const toUpdate = () => {
                     areaM2PyFormat(project.on_floor_area)
                   }}</span>
                 </CTableDataCell>
-                <CTableHeaderCell scope="row" :color="headerSecondary">
+                <CTableHeaderCell scope="row" :color="TableSecondary">
                   지하연면적
                 </CTableHeaderCell>
                 <CTableDataCell class="text-right pr-3">
@@ -154,7 +154,7 @@ const toUpdate = () => {
               </CTableRow>
 
               <CTableRow>
-                <CTableHeaderCell scope="row" :color="headerSecondary">
+                <CTableHeaderCell scope="row" :color="TableSecondary">
                   총 연면적
                 </CTableHeaderCell>
                 <CTableDataCell class="text-right pr-3">
@@ -162,7 +162,7 @@ const toUpdate = () => {
                     areaM2PyFormat(project.total_floor_area)
                   }}</span>
                 </CTableDataCell>
-                <CTableHeaderCell scope="row" :color="headerSecondary">
+                <CTableHeaderCell scope="row" :color="TableSecondary">
                   건축면적
                 </CTableHeaderCell>
                 <CTableDataCell class="text-right pr-3">
@@ -173,7 +173,7 @@ const toUpdate = () => {
               </CTableRow>
 
               <CTableRow>
-                <CTableHeaderCell scope="row" :color="headerSecondary">
+                <CTableHeaderCell scope="row" :color="TableSecondary">
                   용적율
                 </CTableHeaderCell>
                 <CTableDataCell class="text-right pr-3">
@@ -181,7 +181,7 @@ const toUpdate = () => {
                     ratioFormat(project.floor_area_ratio)
                   }}</span>
                 </CTableDataCell>
-                <CTableHeaderCell scope="row" :color="headerSecondary">
+                <CTableHeaderCell scope="row" :color="TableSecondary">
                   건폐율
                 </CTableHeaderCell>
                 <CTableDataCell class="text-right pr-3">
@@ -192,7 +192,7 @@ const toUpdate = () => {
               </CTableRow>
 
               <CTableRow>
-                <CTableHeaderCell scope="row" :color="headerSecondary">
+                <CTableHeaderCell scope="row" :color="TableSecondary">
                   법정주차대수
                 </CTableHeaderCell>
                 <CTableDataCell class="text-right pr-3">
@@ -201,7 +201,7 @@ const toUpdate = () => {
                     <span v-if="project.num_legal_parking">대</span>
                   </span>
                 </CTableDataCell>
-                <CTableHeaderCell scope="row" :color="headerSecondary">
+                <CTableHeaderCell scope="row" :color="TableSecondary">
                   계획주차대수
                 </CTableHeaderCell>
                 <CTableDataCell class="text-right pr-3">

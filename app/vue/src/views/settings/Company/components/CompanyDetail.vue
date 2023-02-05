@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { write_company_settings } from '@/utils/pageAuth'
-import { headerSecondary } from '@/utils/cssMixins'
+import { TableSecondary } from '@/utils/cssMixins'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
 defineProps({
@@ -46,7 +46,7 @@ const toCreate = () => {
           </CTableHead>
           <CTableBody>
             <CTableRow>
-              <CTableHeaderCell scope="row" :color="headerSecondary">
+              <CTableHeaderCell scope="row" :color="TableSecondary">
                 회사명
               </CTableHeaderCell>
               <CTableDataCell>
@@ -54,7 +54,7 @@ const toCreate = () => {
               </CTableDataCell>
             </CTableRow>
             <CTableRow>
-              <CTableHeaderCell scope="row" :color="headerSecondary">
+              <CTableHeaderCell scope="row" :color="TableSecondary">
                 대표자명
               </CTableHeaderCell>
               <CTableDataCell>
@@ -62,7 +62,7 @@ const toCreate = () => {
               </CTableDataCell>
             </CTableRow>
             <CTableRow>
-              <CTableHeaderCell scope="row" :color="headerSecondary">
+              <CTableHeaderCell scope="row" :color="TableSecondary">
                 사업자등록번호
               </CTableHeaderCell>
               <CTableDataCell>
@@ -70,7 +70,7 @@ const toCreate = () => {
               </CTableDataCell>
             </CTableRow>
             <CTableRow>
-              <CTableHeaderCell scope="row" :color="headerSecondary">
+              <CTableHeaderCell scope="row" :color="TableSecondary">
                 법인등록번호
               </CTableHeaderCell>
               <CTableDataCell>
@@ -78,7 +78,7 @@ const toCreate = () => {
               </CTableDataCell>
             </CTableRow>
             <CTableRow>
-              <CTableHeaderCell scope="row" :color="headerSecondary">
+              <CTableHeaderCell scope="row" :color="TableSecondary">
                 업태
               </CTableHeaderCell>
               <CTableDataCell>
@@ -86,7 +86,7 @@ const toCreate = () => {
               </CTableDataCell>
             </CTableRow>
             <CTableRow>
-              <CTableHeaderCell scope="row" :color="headerSecondary">
+              <CTableHeaderCell scope="row" :color="TableSecondary">
                 종목
               </CTableHeaderCell>
               <CTableDataCell>
@@ -94,7 +94,7 @@ const toCreate = () => {
               </CTableDataCell>
             </CTableRow>
             <CTableRow>
-              <CTableHeaderCell scope="row" :color="headerSecondary">
+              <CTableHeaderCell scope="row" :color="TableSecondary">
                 설립일자
               </CTableHeaderCell>
               <CTableDataCell>
@@ -102,7 +102,7 @@ const toCreate = () => {
               </CTableDataCell>
             </CTableRow>
             <CTableRow>
-              <CTableHeaderCell scope="row" :color="headerSecondary">
+              <CTableHeaderCell scope="row" :color="TableSecondary">
                 개업일자
               </CTableHeaderCell>
               <CTableDataCell>
@@ -111,7 +111,7 @@ const toCreate = () => {
             </CTableRow>
 
             <CTableRow>
-              <CTableHeaderCell scope="row" :color="headerSecondary">
+              <CTableHeaderCell scope="row" :color="TableSecondary">
                 회사주소
               </CTableHeaderCell>
               <CTableDataCell>

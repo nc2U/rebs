@@ -4,7 +4,7 @@ import { usePayment } from '@/store/pinia/payment'
 import { useProjectData } from '@/store/pinia/project_data'
 import { UnitType } from '@/store/types/project'
 import { numFormat } from '@/utils/baseMixins'
-import { headerSecondary } from '@/utils/cssMixins'
+import { TableSecondary } from '@/utils/cssMixins'
 
 defineProps({ project: { type: Object, default: null } })
 
@@ -59,7 +59,7 @@ const payByType = (type: number) => {
 
 <template>
   <CTable hover responsive bordered class="mt-3">
-    <CTableHead class="text-center" :color="headerSecondary">
+    <CTableHead class="text-center" :color="TableSecondary">
       <CTableRow align="middle">
         <CTableHeaderCell>프로젝트</CTableHeaderCell>
         <CTableHeaderCell>총 매출예산(A)</CTableHeaderCell>

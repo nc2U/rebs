@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { useProjectData } from '@/store/pinia/project_data'
 import { usePayment } from '@/store/pinia/payment'
-import { headerSecondary } from '@/utils/cssMixins'
+import { TableSecondary } from '@/utils/cssMixins'
 import { Price as P } from '@/store/types/payment'
 import Price from '@/views/projects/Price/components/Price.vue'
 
@@ -39,7 +39,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
       <col width="13%" />
       <col width="13" />
     </colgroup>
-    <CTableHead :color="headerSecondary" class="text-center">
+    <CTableHead :color="TableSecondary" class="text-center">
       <CTableRow>
         <CTableHeaderCell>차수</CTableHeaderCell>
         <CTableHeaderCell>타입</CTableHeaderCell>

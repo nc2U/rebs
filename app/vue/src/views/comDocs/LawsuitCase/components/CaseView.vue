@@ -2,7 +2,7 @@
 import { computed, onBeforeMount, watch } from 'vue'
 import { useDocument } from '@/store/pinia/document'
 import { onBeforeRouteLeave, useRoute } from 'vue-router'
-import { headerSecondary } from '@/utils/cssMixins'
+import { TableSecondary } from '@/utils/cssMixins'
 import { timeFormat } from '@/utils/baseMixins'
 
 const documentStore = useDocument()
@@ -61,7 +61,7 @@ onBeforeRouteLeave(() => {
       <CCol md="10 py-5">
         <CTable bordered responsive align="middle">
           <CTableHead>
-            <CTableRow class="text-center" :color="headerSecondary">
+            <CTableRow class="text-center" :color="TableSecondary">
               <CTableHeaderCell scope="col" class="w-25">
                 구 분
               </CTableHeaderCell>
@@ -71,73 +71,73 @@ onBeforeRouteLeave(() => {
 
           <CTableBody>
             <CTableRow>
-              <CTableHeaderCell class="text-center" :color="headerSecondary">
+              <CTableHeaderCell class="text-center" :color="TableSecondary">
                 유 형
               </CTableHeaderCell>
               <CTableDataCell>{{ suitcase.sort_desc }}</CTableDataCell>
             </CTableRow>
             <CTableRow>
-              <CTableHeaderCell class="text-center" :color="headerSecondary">
+              <CTableHeaderCell class="text-center" :color="TableSecondary">
                 심 급
               </CTableHeaderCell>
               <CTableDataCell>{{ suitcase.level_desc }}</CTableDataCell>
             </CTableRow>
             <CTableRow>
-              <CTableHeaderCell class="text-center" :color="headerSecondary">
+              <CTableHeaderCell class="text-center" :color="TableSecondary">
                 관련 사건
               </CTableHeaderCell>
               <CTableDataCell>{{ suitcase.related_case_name }}</CTableDataCell>
             </CTableRow>
             <CTableRow>
-              <CTableHeaderCell class="text-center" :color="headerSecondary">
+              <CTableHeaderCell class="text-center" :color="TableSecondary">
                 관할 법원
               </CTableHeaderCell>
               <CTableDataCell>{{ suitcase.court_desc }}</CTableDataCell>
             </CTableRow>
             <CTableRow>
-              <CTableHeaderCell class="text-center" :color="headerSecondary">
+              <CTableHeaderCell class="text-center" :color="TableSecondary">
                 기타 처리기관
               </CTableHeaderCell>
               <CTableDataCell>{{ suitcase.other_agency }}</CTableDataCell>
             </CTableRow>
             <CTableRow>
-              <CTableHeaderCell class="text-center" :color="headerSecondary">
+              <CTableHeaderCell class="text-center" :color="TableSecondary">
                 사건 번호
               </CTableHeaderCell>
               <CTableDataCell>{{ suitcase.case_number }}</CTableDataCell>
             </CTableRow>
             <CTableRow>
-              <CTableHeaderCell class="text-center" :color="headerSecondary">
+              <CTableHeaderCell class="text-center" :color="TableSecondary">
                 사건 명
               </CTableHeaderCell>
               <CTableDataCell>{{ suitcase.case_name }}</CTableDataCell>
             </CTableRow>
             <CTableRow>
-              <CTableHeaderCell class="text-center" :color="headerSecondary">
+              <CTableHeaderCell class="text-center" :color="TableSecondary">
                 원고 (신청인)
               </CTableHeaderCell>
               <CTableDataCell>{{ suitcase.plaintiff }}</CTableDataCell>
             </CTableRow>
             <CTableRow>
-              <CTableHeaderCell class="text-center" :color="headerSecondary">
+              <CTableHeaderCell class="text-center" :color="TableSecondary">
                 피고 (피신청인)
               </CTableHeaderCell>
               <CTableDataCell>{{ suitcase.defendant }}</CTableDataCell>
             </CTableRow>
             <CTableRow>
-              <CTableHeaderCell class="text-center" :color="headerSecondary">
+              <CTableHeaderCell class="text-center" :color="TableSecondary">
                 제3 채무자
               </CTableHeaderCell>
               <CTableDataCell>{{ suitcase.related_debtor }}</CTableDataCell>
             </CTableRow>
             <CTableRow>
-              <CTableHeaderCell class="text-center" :color="headerSecondary">
+              <CTableHeaderCell class="text-center" :color="TableSecondary">
                 사건 개시일
               </CTableHeaderCell>
               <CTableDataCell>{{ suitcase.case_start_date }}</CTableDataCell>
             </CTableRow>
             <CTableRow>
-              <CTableHeaderCell class="text-center" :color="headerSecondary">
+              <CTableHeaderCell class="text-center" :color="TableSecondary">
                 개요 및 경과
               </CTableHeaderCell>
               <CTableDataCell>{{ suitcase.summary }}</CTableDataCell>

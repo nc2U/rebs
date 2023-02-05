@@ -3,7 +3,7 @@ import { ref, onMounted } from 'vue'
 import { ProjectCashBook } from '@/store/types/proCash'
 import { useRouter } from 'vue-router'
 import { numFormat } from '@/utils/baseMixins'
-import { headerSecondary } from '@/utils/cssMixins'
+import { TableSecondary } from '@/utils/cssMixins'
 import FormModal from '@/components/Modals/FormModal.vue'
 import PaymentForm from '@/views/payments/Register/components/PaymentForm.vue'
 
@@ -42,7 +42,7 @@ const deleteObject = () => emit('on-delete', props.payment.pk)
 <template>
   <CTableRow
     class="text-center"
-    :color="payment.pk.toString() === paymentId ? headerSecondary : ''"
+    :color="payment.pk.toString() === paymentId ? TableSecondary : ''"
   >
     <CTableDataCell>{{ payment.deal_date }}</CTableDataCell>
     <CTableDataCell>

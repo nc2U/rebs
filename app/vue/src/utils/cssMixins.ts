@@ -1,34 +1,53 @@
 import store from '@/store'
 import { computed } from 'vue'
 
-export const headerSecondary = computed(() =>
-  store.state.theme === 'dark' ? 'dark' : 'secondary',
+const isDark = computed(() => store.state.theme === 'dark')
+
+// -----------------------------------------------------------------------
+export const TableSecondary = computed(() =>
+  isDark.value ? 'dark' : 'secondary',
 )
 
-export const headerPrimary = computed(() =>
-  store.state.theme === 'dark' ? 'dark' : 'primary',
-)
+export const TablePrimary = computed(() => (isDark.value ? 'dark' : 'primary'))
 
-export const headerSuccess = computed(() =>
-  store.state.theme === 'dark' ? 'dark' : 'success',
-)
+export const TableSuccess = computed(() => (isDark.value ? 'dark' : 'success'))
 
-export const headerInfo = computed(() =>
-  store.state.theme === 'dark' ? 'dark' : 'info',
-)
+export const TableInfo = computed(() => (isDark.value ? 'dark' : 'info'))
 
-export const headerWarning = computed(() =>
-  store.state.theme === 'dark' ? 'dark' : 'warning',
-)
+export const TableWarning = computed(() => (isDark.value ? 'dark' : 'warning'))
 
-export const headerDanger = computed(() =>
-  store.state.theme === 'dark' ? 'dark' : 'danger',
-)
+export const TableDanger = computed(() => (isDark.value ? 'dark' : 'danger'))
 
-export const headerLight = computed(() =>
-  store.state.theme === 'dark' ? '' : 'light',
-)
+export const TableLight = computed(() => (isDark.value ? 'dark' : 'light'))
 
-export const AlertSecondary = computed(() =>
-  store.state.theme === 'dark' ? '' : 'secondary',
-)
+// -----------------------------------------------------------------------
+
+export const AlertSecondary = computed(() => (isDark.value ? '' : 'secondary'))
+
+export const AlertPrimary = computed(() => (isDark.value ? '' : 'primary'))
+
+export const AlertSuccess = computed(() => (isDark.value ? '' : 'success'))
+
+export const AlertInfo = computed(() => (isDark.value ? '' : 'info'))
+
+export const AlertWarning = computed(() => (isDark.value ? '' : 'warning'))
+
+export const AlertDanger = computed(() => (isDark.value ? '' : 'danger'))
+
+export const AlertLight = computed(() => (isDark.value ? '' : 'light'))
+
+// -----------------------------------------------------------------------
+
+export const bgSecondary = computed(() => (isDark.value ? '' : 'bg-secondary'))
+
+export const bgPrimary = computed(() => (isDark.value ? '' : 'bg-primary'))
+
+export const bgSuccess = computed(() => (isDark.value ? '' : 'bg-success'))
+
+export const bgInfo = computed(() => (isDark.value ? '' : 'bg-info'))
+
+export const bgWarning = computed(() => (isDark.value ? '' : 'bg-warning'))
+
+export const bgDanger = computed(() => (isDark.value ? '' : 'bg-danger'))
+
+export const bgLight = computed(() => (isDark.value ? '' : 'bg-light'))

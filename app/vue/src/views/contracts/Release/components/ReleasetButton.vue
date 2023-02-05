@@ -2,7 +2,7 @@
 import { ref, computed } from 'vue'
 import { useContract } from '@/store/pinia/contract'
 import { ContractRelease } from '@/store/types/contract'
-import { headerLight } from '@/utils/cssMixins'
+import { AlertLight } from '@/utils/cssMixins'
 import { write_contract } from '@/utils/pageAuth'
 import FormModal from '@/components/Modals/FormModal.vue'
 import ReleaseForm from '@/views/contracts/Release/components/ReleaseForm.vue'
@@ -29,7 +29,7 @@ const onSubmit = (payload: ContractRelease) => {
 </script>
 
 <template>
-  <CAlert :color="headerLight" variant="solid">
+  <CAlert :color="AlertLight" variant="solid">
     <CButton
       :color="contRelease && contRelease.pk ? 'warning' : 'danger'"
       @click="callFormModal"

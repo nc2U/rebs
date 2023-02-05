@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { Site } from '@/store/types/project'
 import { write_project } from '@/utils/pageAuth'
-import { headerLight } from '@/utils/cssMixins'
+import { AlertLight } from '@/utils/cssMixins'
 import FormModal from '@/components/Modals/FormModal.vue'
 import SiteForm from './SiteForm.vue'
 
@@ -20,7 +20,7 @@ const multiSubmit = (payload: Site) => emit('multi-submit', payload)
 </script>
 
 <template>
-  <CAlert :color="headerLight" variant="solid" class="text-right">
+  <CAlert :color="AlertLight" variant="solid" class="text-right">
     <CButton color="primary" :disabled="!project" @click="createConfirm">
       사업 부지 신규등록
     </CButton>

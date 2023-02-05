@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { headerLight } from '@/utils/cssMixins'
+import { AlertLight } from '@/utils/cssMixins'
 import { ProjectCashBook } from '@/store/types/proCash'
 import FormModal from '@/components/Modals/FormModal.vue'
 import ProImprestForm from '@/views/proCash/Imprest/components/ProImprestForm.vue'
@@ -18,7 +18,7 @@ const multiSubmit = (payload: {
 </script>
 
 <template>
-  <CAlert :color="headerLight" variant="solid" class="text-right">
+  <CAlert :color="AlertLight" variant="solid" class="text-right">
     <CButton color="primary" @click="createConfirm">신규등록</CButton>
   </CAlert>
 

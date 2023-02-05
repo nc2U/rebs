@@ -1,16 +1,13 @@
 <script lang="ts" setup="">
 import { ref, computed, nextTick, onBeforeMount, watch } from 'vue'
-import { useStore } from 'vuex'
 import { useAccount } from '@/store/pinia/account'
+import { bgLight } from '@/utils/cssMixins'
 import Multiselect from '@vueform/multiselect'
 
 const props = defineProps({ selUser: { type: Number, default: null } })
 const emit = defineEmits(['select-user'])
 
 const userId = ref<number | null>(null)
-
-const store = useStore()
-const isDark = computed(() => store.state.theme === 'dark')
 
 const accountStore = useAccount()
 const userInfo = computed(() => accountStore.userInfo)
@@ -32,7 +29,7 @@ watch(
 </script>
 
 <template>
-  <CCallout color="dark" :class="{ 'bg-light': !isDark }">
+  <CCallout color="dark" :class="bgLight">
     <CRow>
       <CCol md="10" lg="8" xl="6">
         <CRow class="m-1">

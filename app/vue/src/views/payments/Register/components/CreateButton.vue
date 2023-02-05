@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
 import { ProjectCashBook } from '@/store/types/proCash'
-import { headerLight } from '@/utils/cssMixins'
+import { AlertLight } from '@/utils/cssMixins'
 import FormModal from '@/components/Modals/FormModal.vue'
 import PaymentForm from '@/views/payments/Register/components/PaymentForm.vue'
 
@@ -21,7 +21,7 @@ const createObject = (payload: ProjectCashBook) => {
 </script>
 
 <template>
-  <CAlert :color="headerLight" variant="solid" class="text-right">
+  <CAlert :color="AlertLight" variant="solid" class="text-right">
     <CButton
       type="button"
       color="primary"

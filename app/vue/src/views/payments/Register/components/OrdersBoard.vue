@@ -3,7 +3,7 @@ import { computed, PropType } from 'vue'
 import { usePayment } from '@/store/pinia/payment'
 import { AllPayment, DownPay, PayOrder, Price } from '@/store/types/payment'
 import { numFormat, dateFormat } from '@/utils/baseMixins'
-import { headerSecondary } from '@/utils/cssMixins'
+import { TableSecondary } from '@/utils/cssMixins'
 import Order from '@/views/payments/Register/components/Order.vue'
 
 const props = defineProps({
@@ -100,7 +100,7 @@ const getCommits = (el: number) => {
       <col width="20%" />
     </colgroup>
 
-    <CTableHead :color="headerSecondary" class="text-center">
+    <CTableHead :color="TableSecondary" class="text-center">
       <CTableRow>
         <CTableHeaderCell>납부기일</CTableHeaderCell>
         <CTableHeaderCell>구분</CTableHeaderCell>
@@ -126,7 +126,7 @@ const getCommits = (el: number) => {
 
     <CTableHead>
       <CTableRow class="text-right">
-        <CTableHeaderCell :color="headerSecondary" class="text-center">
+        <CTableHeaderCell :color="TableSecondary" class="text-center">
           합계
         </CTableHeaderCell>
         <CTableHeaderCell></CTableHeaderCell>
