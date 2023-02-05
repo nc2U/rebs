@@ -275,7 +275,7 @@ watch(
                   icon="mdi mdi-account-arrow-left"
                   :color="getColor(authData.company_cash)[0]"
                 />
-                본사회계 관리
+                본사 회계 관리
               </CFormLabel>
               <CCol>
                 <CFormSelect
@@ -301,7 +301,7 @@ watch(
                   icon="mdi mdi-account-arrow-left"
                   :color="getColor(authData.company_docs)[0]"
                 />
-                본사문서 관리
+                본사 문서 관리
               </CFormLabel>
               <CCol>
                 <CFormSelect
@@ -327,7 +327,7 @@ watch(
                   icon="mdi mdi-account-arrow-left"
                   :color="getColor(authData.human_resource)[0]"
                 />
-                본사인사 관리
+                본사 인사 관리
               </CFormLabel>
               <CCol>
                 <CFormSelect
@@ -354,7 +354,7 @@ watch(
                   icon="mdi mdi-account-arrow-left"
                   :color="getColor(authData.company_settings)[0]"
                 />
-                회사관련 설정
+                회사 정보 관리
               </CFormLabel>
               <CCol>
                 <CFormSelect
@@ -380,7 +380,7 @@ watch(
                   icon="mdi mdi-account-arrow-left"
                   :color="getColor(authData.auth_manage)[0]"
                 />
-                권한설정 관리
+                권한 설정 관리
               </CFormLabel>
               <CCol>
                 <CFormSelect
