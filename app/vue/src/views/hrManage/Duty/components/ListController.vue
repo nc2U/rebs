@@ -13,7 +13,7 @@ const form = reactive({
 const formsCheck = computed(() => form.q.trim() === '')
 
 const comStore = useCompany()
-const gradesCount = computed(() => comStore.gradesCount)
+const dutysCount = computed(() => comStore.dutysCount)
 
 const listFiltering = (page = 1) => {
   nextTick(() => {
@@ -54,7 +54,7 @@ defineExpose({ listFiltering })
 
     <CRow>
       <CCol class="p-2 pl-3">
-        <strong> 직책 수 조회 결과 : {{ numFormat(gradesCount) }} 건 </strong>
+        <strong> 직책 수 조회 결과 : {{ numFormat(dutysCount) }} 건 </strong>
       </CCol>
       <CCol v-if="!formsCheck" class="text-right mb-0">
         <CButton color="info" size="sm" @click="resetForm">
