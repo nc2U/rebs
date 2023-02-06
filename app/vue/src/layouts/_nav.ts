@@ -205,25 +205,18 @@ const project = {
   items: [
     {
       component: 'CNavItem',
-      name: '프로젝트 관리',
-      icon: 'cilStorage',
-      items: [
-        {
-          component: 'CNavItem',
-          name: '프로젝트 등록',
-          to: '/project/manage/index',
-        },
-        {
-          component: 'CNavItem',
-          name: '차수 분류 등록',
-          to: '/project/manage/order',
-        },
-        {
-          component: 'CNavItem',
-          name: '타입 정보 등록',
-          to: '/project/manage/type',
-        },
-      ],
+      name: '프로젝트 등록',
+      to: '/project/manage/index',
+    },
+    {
+      component: 'CNavItem',
+      name: '차수 분류 등록',
+      to: '/project/manage/order',
+    },
+    {
+      component: 'CNavItem',
+      name: '타입 정보 등록',
+      to: '/project/manage/type',
     },
     {
       component: 'CNavItem',
