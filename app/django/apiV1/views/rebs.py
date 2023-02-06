@@ -55,7 +55,7 @@ class ProjectAccountD1ViewSet(viewsets.ModelViewSet):
     queryset = ProjectAccountD1.objects.all()
     pagination_class = PageNumberPaginationTwenty
     serializer_class = ProjectAccountD1Serializer
-    filterset_fields = ('projectaccountsort',)
+    filterset_fields = ('projectaccountsort', 'acc')
 
 
 class ProjectAccountD2ViewSet(viewsets.ModelViewSet):
