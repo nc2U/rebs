@@ -35,7 +35,7 @@ class ProjectAccountD1Serializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProjectAccountD1
-        fields = ('pk', 'sort_desc', 'code', 'acc', 'name', 'description')
+        fields = ('pk', 'sort_desc', 'acc', 'code', 'name', 'description')
 
 
 class ProjectAccountD2Serializer(serializers.ModelSerializer):

@@ -62,7 +62,7 @@ class ProjectAccountD2ViewSet(viewsets.ModelViewSet):
     queryset = ProjectAccountD2.objects.all()
     pagination_class = PageNumberPaginationOneHundred
     serializer_class = ProjectAccountD2Serializer
-    filterset_fields = ('d1', 'd1__projectaccountsort')
+    filterset_fields = ('d1__projectaccountsort', 'd1__acc', 'd1')
 
 
 class WiseSayViewSet(viewsets.ModelViewSet):
