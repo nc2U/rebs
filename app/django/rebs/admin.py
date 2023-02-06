@@ -55,7 +55,6 @@ class ProjectAccountSortAdmin(ImportExportMixin, admin.ModelAdmin):
 class ProjectAccountD1Admin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'code', 'acc', 'name', 'description')
     list_display_links = ('name',)
-    list_editable = ('acc',)
     inlines = (ProjectAccountD2Inline,)
 
 
