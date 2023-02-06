@@ -18,10 +18,10 @@ export type DataFilter = {
   company?: number | null
   from_date?: string
   to_date?: string
-  sort?: number | null
-  account_d1?: number | null
-  account_d2?: number | null
-  account_d3?: number | null
+  sort?: string
+  account_d1?: string
+  account_d2?: string
+  account_d3?: string
   bank_account?: number | null
   search?: string
 }
@@ -62,7 +62,7 @@ export const useComCash = defineStore('comCash', () => {
 
   const formAccD1List = ref<AccountD1[]>([])
 
-  const fetchFormAccD1List = (sort: number | null) => {
+  const fetchFormAccD1List = (sort: string) => {
     const uSort = sort ? `?accountsort=${sort}` : ''
     return api
       .get(`/account-depth1/${uSort}`)
@@ -72,27 +72,23 @@ export const useComCash = defineStore('comCash', () => {
 
   const formAccD2List = ref<AccountD2[]>([])
 
-  const fetchFormAccD2List = (sort: number | null, d1: number | null) => {
-    const uSort = sort ? `?d1__accountsort=${sort}` : ''
+  const fetchFormAccD2List = (sort: string, d1: string) => {
+    const uSort = sort ? `d1__accountsort=${sort}` : ''
     const uD1 = d1 ? `&d1=${d1}` : ''
     return api
-      .get(`/account-depth2/${uSort}${uD1}`)
+      .get(`/account-depth2/?${uSort}${uD1}`)
       .then(res => (formAccD2List.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
   }
 
   const formAccD3List = ref<AccountD3[]>([])
 
-  const fetchFormAccD3List = (
-    sort: number | null,
-    d1: number | null,
-    d2: number | null,
-  ) => {
-    const uSort = sort ? `?d2__d1__accountsort=${sort}` : ''
+  const fetchFormAccD3List = (sort: string, d1: string, d2: string) => {
+    const uSort = sort ? `d2__d1__accountsort=${sort}` : ''
     const uD1 = d1 ? `&d2__d1=${d1}` : ''
     const uD2 = d2 ? `&d2=${d2}` : ''
     return api
-      .get(`/account-depth3/${uSort}${uD1}${uD2}`)
+      .get(`/account-depth3/?${uSort}${uD1}${uD2}`)
       .then(res => (formAccD3List.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
   }
