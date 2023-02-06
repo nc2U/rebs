@@ -75,6 +75,7 @@ class ProjectAccountSort(models.Model):
 
 class ProjectAccountD1(models.Model):
     code = models.CharField(max_length=3)
+    acc = models.ForeignKey(AccountSubD1, on_delete=models.CASCADE, related_name='acc_d1s')
     name = models.CharField(max_length=20)
     description = models.CharField(max_length=50, blank=True)
 

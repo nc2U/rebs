@@ -1956,6 +1956,7 @@
     "pk": 1,
     "fields": {
       "code": "810",
+      "acc": 4,
       "name": "분양수입금",
       "description": "매출금 - 일반분양 등"
     }
@@ -1965,6 +1966,7 @@
     "pk": 2,
     "fields": {
       "code": "820",
+      "acc": 3,
       "name": "분(부)담금",
       "description": "출자금 (조합 등 형태인 경우)"
     }
@@ -1974,6 +1976,7 @@
     "pk": 3,
     "fields": {
       "code": "830",
+      "acc": 2,
       "name": "차입금",
       "description": "브리지, PF대출, 중도금 등 기타"
     }
@@ -1983,6 +1986,7 @@
     "pk": 4,
     "fields": {
       "code": "840",
+      "acc": 1,
       "name": "기타자산회수",
       "description": "공탁금, 보증금 등 회수"
     }
@@ -1992,6 +1996,7 @@
     "pk": 5,
     "fields": {
       "code": "850",
+      "acc": 4,
       "name": "기타잡수입",
       "description": "사업목적 외 기타 수입, 위약금 수입"
     }
@@ -2001,6 +2006,7 @@
     "pk": 6,
     "fields": {
       "code": "310",
+      "acc": 5,
       "name": "토지비",
       "description": "토지매입비 및  관련 부대비용"
     }
@@ -2010,6 +2016,7 @@
     "pk": 7,
     "fields": {
       "code": "320",
+      "acc": 5,
       "name": "건축비",
       "description": "건축 공사비"
     }
@@ -2019,6 +2026,7 @@
     "pk": 8,
     "fields": {
       "code": "330",
+      "acc": 5,
       "name": "판매비",
       "description": "분양 광고 홍보비 등"
     }
@@ -2028,6 +2036,7 @@
     "pk": 9,
     "fields": {
       "code": "340",
+      "acc": 5,
       "name": "부대비",
       "description": "기타 부대비용"
     }
@@ -2037,6 +2046,7 @@
     "pk": 10,
     "fields": {
       "code": "360",
+      "acc": 5,
       "name": "금융비",
       "description": "대출 수수료, 이자 등"
     }
@@ -2046,6 +2056,7 @@
     "pk": 11,
     "fields": {
       "code": "410",
+      "acc": 4,
       "name": "분양금반환",
       "description": "매출대금 환불"
     }
@@ -2055,6 +2066,7 @@
     "pk": 12,
     "fields": {
       "code": "420",
+      "acc": 3,
       "name": "분담금반환",
       "description": "분담금 반환/환불"
     }
@@ -2064,6 +2076,7 @@
     "pk": 13,
     "fields": {
       "code": "430",
+      "acc": 2,
       "name": "차입금상환",
       "description": "차입금 등 상환(이자비용 외)"
     }
@@ -2073,6 +2086,7 @@
     "pk": 14,
     "fields": {
       "code": "440",
+      "acc": 1,
       "name": "기타 자산",
       "description": "법원 공탁금 및 기타 보증금 등"
     }
@@ -2082,6 +2096,7 @@
     "pk": 15,
     "fields": {
       "code": "450",
+      "acc": 5,
       "name": "원천세",
       "description": "예금 관련 세금"
     }
@@ -2091,6 +2106,7 @@
     "pk": 16,
     "fields": {
       "code": "460",
+      "acc": 5,
       "name": "기타 잡손실",
       "description": "기타 잡손실"
     }
@@ -2100,6 +2116,7 @@
     "pk": 17,
     "fields": {
       "code": "700",
+      "acc": 6,
       "name": "대체",
       "description": "계좌간 이체"
     }
@@ -2109,6 +2126,7 @@
     "pk": 18,
     "fields": {
       "code": "910",
+      "acc": 7,
       "name": "취소",
       "description": "거래 취소로 인한 출금 및 입금거래"
     }

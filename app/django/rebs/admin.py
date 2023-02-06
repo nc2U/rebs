@@ -1,7 +1,8 @@
 from django.contrib import admin
 from import_export.admin import ImportExportMixin
 
-from .models import AccountSort, AccountSubD1, AccountSubD2, AccountSubD3, ProjectAccountSort, ProjectAccountD1, ProjectAccountD2, \
+from .models import AccountSort, AccountSubD1, AccountSubD2, AccountSubD3, ProjectAccountSort, ProjectAccountD1, \
+    ProjectAccountD2, \
     WiseSaying
 
 
@@ -52,8 +53,9 @@ class ProjectAccountSortAdmin(ImportExportMixin, admin.ModelAdmin):
 
 
 class ProjectAccountD1Admin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'code', 'name', 'description')
+    list_display = ('id', 'code', 'acc', 'name', 'description')
     list_display_links = ('name',)
+    list_editable = ('acc',)
     inlines = (ProjectAccountD2Inline,)
 
 
