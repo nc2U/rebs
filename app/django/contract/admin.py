@@ -32,10 +32,11 @@ class CContactInline(ImportExportMixin, admin.TabularInline):
 
 
 class ContactorAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'name', 'birth_date', 'gender', 'status', 'reservation_date', 'contract_date')
+    list_display = ('id', 'name', 'birth_date', 'gender', 'is_registed', 'status', 'reservation_date', 'contract_date')
     search_fields = ('name',)
     list_display_links = ('name',)
-    list_filter = ('contract_date',)
+    list_filter = ('contract_date', 'gender', 'is_registed', 'status')
+    list_editable = ('gender', 'is_registed')
     inlines = (CContactInline, CAdressInline)
 
 
