@@ -493,7 +493,6 @@ defineExpose({ formReset })
           <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
             <CFormInput
               v-model="form.name"
-              type="text"
               maxlength="20"
               :placeholder="`${contLabel}자명을 입력하세요`"
               required
@@ -566,7 +565,6 @@ defineExpose({ formReset })
             <input
               v-model="form.cell_phone"
               v-maska="['###-###-####', '###-####-####']"
-              type="text"
               class="form-control"
               maxlength="13"
               placeholder="휴대전화번호를 선택하세요"
@@ -583,7 +581,6 @@ defineExpose({ formReset })
             <input
               v-model="form.home_phone"
               v-maska="['###-###-####', '###-####-####']"
-              type="text"
               class="form-control"
               maxlength="13"
               placeholder="집전화번호를 선택하세요"
@@ -598,7 +595,6 @@ defineExpose({ formReset })
             <input
               v-model="form.other_phone"
               v-maska="['###-###-####', '###-####-####']"
-              type="text"
               class="form-control"
               maxlength="13"
               placeholder="기타 연락처를 입력하세요."
@@ -705,7 +701,7 @@ defineExpose({ formReset })
 
               <CCol md="5" lg="2" class="mb-3 mb-lg-0">
                 <CFormInput
-                  v-model="form.income"
+                  v-model.number="form.income"
                   type="number"
                   min="0"
                   placeholder="입금액"
@@ -784,7 +780,6 @@ defineExpose({ formReset })
               <CFormInput
                 v-model="form.id_zipcode"
                 v-maska="'#####'"
-                type="text"
                 maxlength="5"
                 placeholder="우편번호"
                 :required="isContract"
@@ -798,7 +793,6 @@ defineExpose({ formReset })
           <CCol md="7" lg="4" class="mb-3 mb-lg-0">
             <CFormInput
               v-model="form.id_address1"
-              type="text"
               maxlength="35"
               placeholder="주민등록 주소를 입력하세요"
               :required="isContract"
@@ -814,7 +808,6 @@ defineExpose({ formReset })
             <CFormInput
               ref="address21"
               v-model="form.id_address2"
-              type="text"
               maxlength="20"
               placeholder="상세주소를 입력하세요"
               :disabled="!isContract"
@@ -824,7 +817,6 @@ defineExpose({ formReset })
           <CCol md="4" lg="2">
             <CFormInput
               v-model="form.id_address3"
-              type="text"
               maxlength="20"
               placeholder="참고항목을 입력하세요"
               :disabled="!isContract"
@@ -844,7 +836,6 @@ defineExpose({ formReset })
               <CFormInput
                 v-model="form.dm_zipcode"
                 v-maska="'#####'"
-                type="text"
                 maxlength="5"
                 placeholder="우편번호"
                 :required="isContract"
@@ -858,7 +849,6 @@ defineExpose({ formReset })
           <CCol md="7" lg="4" class="mb-3 mb-lg-0">
             <CFormInput
               v-model="form.dm_address1"
-              type="text"
               maxlength="50"
               placeholder="우편물 수령 주소를 입력하세요"
               :required="isContract"
@@ -876,7 +866,6 @@ defineExpose({ formReset })
             <CFormInput
               ref="address22"
               v-model="form.dm_address2"
-              type="text"
               maxlength="30"
               placeholder="상세주소를 입력하세요"
               :disabled="!isContract"
@@ -886,7 +875,6 @@ defineExpose({ formReset })
           <CCol md="4" lg="2">
             <CFormInput
               v-model="form.dm_address3"
-              type="text"
               maxlength="30"
               placeholder="참고항목을 입력하세요"
               :disabled="!isContract"
@@ -912,7 +900,7 @@ defineExpose({ formReset })
           </CFormLabel>
           <CCol md="10" lg="11" class="mb-md-3 mb-lg-0">
             <CFormTextarea
-              v-model.number="form.note"
+              v-model="form.note"
               placeholder="기타 특이사항"
               :disabled="noStatus"
             />
