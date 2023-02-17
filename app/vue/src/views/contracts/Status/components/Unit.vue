@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
 
 const props = defineProps({
   units: { type: Object, default: null },
@@ -8,15 +8,17 @@ const props = defineProps({
   lineList: { type: Array, default: () => [] },
 })
 
+const maxPiloti = ref(3) // 맥스 피로티 층
+
 const unit = computed(
   () =>
     props.units
       .filter((u: { line: number }) => u.line == props.line)
       .filter((u: { floor: number }) => u.floor == props.floor)[0],
 )
-const isPiloti = computed(() => !unit.value && props.floor < 3)
+const isPiloti = computed(() => !unit.value && props.floor < maxPiloti.value)
 const isFirst = computed(() =>
-  !isPiloti.value
+  props.floor > maxPiloti.value
     ? props.units
         .filter((u: { floor: number }) => u.floor == props.floor)
         .map((u: { line: number }) => u.line)
@@ -50,7 +52,7 @@ const statusColor = computed(() => {
     <div
       class="unit-name"
       :class="{
-        firstline: !isPiloti && unit && line === isFirst,
+        firstline: (isPiloti || unit) && line === isFirst,
         restline: (isPiloti || unit) && line !== isFirst,
         piloti: isPiloti,
       }"
