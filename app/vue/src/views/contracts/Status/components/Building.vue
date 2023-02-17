@@ -31,6 +31,7 @@ const bldgName = (bldg: number) =>
         :units="units"
         :floor="maxFloor + 1 - i"
         :line="line"
+        :line-list="lineList"
       />
     </CRow>
     <CRow v-if="lineList">

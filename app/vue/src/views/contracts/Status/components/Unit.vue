@@ -5,6 +5,7 @@ const props = defineProps({
   units: { type: Object, default: null },
   floor: { type: Number, default: 1 },
   line: { type: Number, default: 1 },
+  lineList: { type: Array, default: () => [] },
 })
 
 const unit = computed(
@@ -14,6 +15,14 @@ const unit = computed(
       .filter((u: { floor: number }) => u.floor == props.floor)[0],
 )
 const isPiloti = computed(() => !unit.value && props.floor < 3)
+const isFirst = computed(() =>
+  !isPiloti.value
+    ? props.units
+        .filter((u: { floor: number }) => u.floor == props.floor)
+        .map((u: { line: number }) => u.line)
+        .sort()[0]
+    : 1,
+)
 const isContract = computed(() => !!unit.value.key_unit?.contract)
 const contractor = computed(() =>
   isContract.value ? unit.value.key_unit.contract.contractor.name : '',
@@ -25,7 +34,7 @@ const isHold = computed(() => (isContract.value ? unit.value.is_hold : ''))
 const statusColor = computed(() => {
   let color = ''
   if (unit.value) {
-    color = '#eee'
+    color = ''
     if (isContract.value) {
       if (status.value === '1') color = '#D5F1DE'
       if (status.value === '2') color = '#CBC7EC'
@@ -41,8 +50,8 @@ const statusColor = computed(() => {
     <div
       class="unit-name"
       :class="{
-        firstline: (isPiloti || unit) && line === 1,
-        restline: (isPiloti || unit) && line !== 1,
+        firstline: !isPiloti && unit && line === isFirst,
+        restline: (isPiloti || unit) && line !== isFirst,
         piloti: isPiloti,
       }"
       :style="`background-color: ${unit ? unit.color : ''}`"
@@ -53,8 +62,8 @@ const statusColor = computed(() => {
     <div
       class="status"
       :class="{
-        firstline: unit && line === 1,
-        restline: unit && line !== 1,
+        firstline: unit && line === isFirst,
+        restline: unit && line !== isFirst,
         firstPiloti: isPiloti && line === 1,
         restPiloti: isPiloti && line !== 1,
         piloti: isPiloti,
