@@ -55,8 +55,8 @@ class HouseUnitAdmin(ImportExportMixin, admin.ModelAdmin):
         'id', 'project', 'key_unit', 'unit_type', 'building_unit',
         'name', 'floor_type', 'bldg_line', 'floor_no', 'is_hold', 'hold_reason')
     search_fields = ('name',)
-    list_display_links = ('project', 'key_unit',)
-    list_filter = ('project', 'unit_type', 'building_unit', 'floor_type', 'is_hold', 'key_unit')
+    list_display_links = ('project', 'building_unit', 'name')
+    list_filter = ('project', 'unit_type', 'building_unit', 'bldg_line', 'floor_type', 'is_hold', 'key_unit')
 
 
 class ProjectBudgetAdmin(ImportExportMixin, admin.ModelAdmin):
