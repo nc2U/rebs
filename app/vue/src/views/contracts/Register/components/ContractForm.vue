@@ -640,9 +640,9 @@ defineExpose({ formReset })
                   <CCol>
                     계약금
                     <router-link
-                      v-c-tooltip="'전체 건별수납 관리'"
+                      v-c-tooltip="'전체 건별 수납 관리'"
                       :to="{
-                        name: '건별수납 관리',
+                        name: '건별 수납 관리',
                         query: { contract: contract.pk },
                       }"
                     >
@@ -653,9 +653,9 @@ defineExpose({ formReset })
                   <CCol class="text-right">{{ payment.deal_date }}</CCol>
                   <CCol class="text-right">
                     <router-link
-                      v-c-tooltip="'전체 건별수납 관리'"
+                      v-c-tooltip="'전체 건별 수납 관리'"
                       :to="{
-                        name: '건별수납 관리',
+                        name: '건별 수납 관리',
                         query: { contract: contract.pk },
                       }"
                     >

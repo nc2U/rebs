@@ -429,7 +429,7 @@ const actions = {
     }
 
     router.push({
-      name: '계약등록 관리',
+      name: '계약 등록 관리',
       query: { contract: contractObj.data.pk },
     })
     dispatch('fetchContract', contractObj.data.pk)

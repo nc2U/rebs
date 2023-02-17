@@ -103,7 +103,7 @@ const typeSelect = (type: number) => {
 const onCreate = (payload: Contract) => {
   payload.project = project.value
   contractStore.createContractSet({ ...payload })
-  router.replace({ name: '계약내역 조회' })
+  router.replace({ name: '계약 내역 조회' })
 }
 
 const onUpdate = (payload: Contract) => {

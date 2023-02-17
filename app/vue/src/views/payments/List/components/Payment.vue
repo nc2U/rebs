@@ -26,7 +26,7 @@ const rowClass = computed(() => {
 const toManage = () => (props.payment.contract ? toRegister() : contMatching())
 const toRegister = () => {
   router.push({
-    name: '건별수납 관리',
+    name: '건별 수납 관리',
     query: { contract: props.payment.contract.pk, payment: props.payment.pk },
   })
 }

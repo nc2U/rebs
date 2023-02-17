@@ -106,8 +106,8 @@ onMounted(() => pageInit())
         <strong v-if="contract">
           [일련번호 :
           <router-link
-            v-c-tooltip="'계약등록 관리'"
-            :to="{ name: '계약등록 관리', query: { contract: contract.pk } }"
+            v-c-tooltip="'계약 등록 관리'"
+            :to="{ name: '계약 등록 관리', query: { contract: contract.pk } }"
           >
             {{ contract.serial_number }}
           </router-link>
@@ -120,8 +120,8 @@ onMounted(() => pageInit())
           }}
           |
           <router-link
-            v-c-tooltip="'계약등록 관리'"
-            :to="{ name: '계약등록 관리', query: { contract: contract.pk } }"
+            v-c-tooltip="'계약 등록 관리'"
+            :to="{ name: '계약 등록 관리', query: { contract: contract.pk } }"
           >
             계약자 : {{ contract.contractor.name }})
           </router-link>
