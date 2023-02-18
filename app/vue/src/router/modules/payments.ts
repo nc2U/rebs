@@ -37,6 +37,15 @@ const payments = {
           : import('@/views/_Accounts/NoAuth.vue'),
       meta: { title: '건별 수납 관리' },
     },
+    {
+      path: 'status',
+      name: '분양 수납 현황',
+      component: () =>
+        pageViewAuth.value
+          ? import('@/views/payments/Status/Index.vue')
+          : import('@/views/_Accounts/NoAuth.vue'),
+      meta: { title: '분양 수납 현황' },
+    },
   ],
 }
 

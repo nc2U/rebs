@@ -68,6 +68,11 @@ const payment = {
       name: '건별 수납 관리',
       to: '/payments/manage',
     },
+    {
+      component: 'CNavItem',
+      name: '분양 수납 현황',
+      to: '/payments/status',
+    },
   ],
 }
 
