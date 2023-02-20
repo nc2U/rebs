@@ -1,10 +1,14 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount, ref, watch } from 'vue'
+import { ref, computed, onBeforeMount, watch } from 'vue'
 import { useProCash } from '@/store/pinia/proCash'
 import { numFormat, dateFormat } from '@/utils/baseMixins'
 import { TableSecondary } from '@/utils/cssMixins'
 
-defineProps({ date: { type: String, default: '' } })
+defineProps({
+  date: { type: String, default: '' },
+  orderGroup: { type: Array, default: () => [] },
+  unitType: { type: Array, default: () => [] },
+})
 </script>
 
 <template>
@@ -45,231 +49,61 @@ defineProps({ date: { type: String, default: '' } })
     </CTableHead>
 
     <CTableBody>
-      <CTableRow class="text-right">
-        <CTableHeaderCell class="text-center" rowspan="12">
-          계약
-        </CTableHeaderCell>
-        <CTableHeaderCell class="text-center" rowspan="3">
-          1차 조합원
-        </CTableHeaderCell>
-        <CTableHeaderCell class="text-center">72</CTableHeaderCell>
-        <CTableDataCell>87</CTableDataCell>
-        <CTableDataCell>339,000</CTableDataCell>
-        <CTableDataCell>6,840,060</CTableDataCell>
-        <CTableDataCell>22,664,511</CTableDataCell>
-        <CTableDataCell>29,504,571</CTableDataCell>
-      </CTableRow>
-      <CTableRow class="text-right">
-        <CTableHeaderCell class="text-center">84A</CTableHeaderCell>
-        <CTableDataCell>87</CTableDataCell>
-        <CTableDataCell>339,000</CTableDataCell>
-        <CTableDataCell>6,840,060</CTableDataCell>
-        <CTableDataCell>22,664,511</CTableDataCell>
-        <CTableDataCell>29,504,571</CTableDataCell>
-      </CTableRow>
-      <CTableRow class="text-right">
-        <CTableHeaderCell class="text-center">84B</CTableHeaderCell>
-        <CTableDataCell>87</CTableDataCell>
-        <CTableDataCell>339,000</CTableDataCell>
-        <CTableDataCell>6,840,060</CTableDataCell>
-        <CTableDataCell>22,664,511</CTableDataCell>
-        <CTableDataCell>29,504,571</CTableDataCell>
-      </CTableRow>
-      <CTableRow class="text-right">
-        <CTableHeaderCell class="text-center" rowspan="3">
-          2차 조합원
-        </CTableHeaderCell>
-        <CTableHeaderCell class="text-center">72</CTableHeaderCell>
-        <CTableDataCell>87</CTableDataCell>
-        <CTableDataCell>339,000</CTableDataCell>
-        <CTableDataCell>6,840,060</CTableDataCell>
-        <CTableDataCell>22,664,511</CTableDataCell>
-        <CTableDataCell>29,504,571</CTableDataCell>
-      </CTableRow>
-      <CTableRow class="text-right">
-        <CTableHeaderCell class="text-center">84A</CTableHeaderCell>
-        <CTableDataCell>87</CTableDataCell>
-        <CTableDataCell>339,000</CTableDataCell>
-        <CTableDataCell>6,840,060</CTableDataCell>
-        <CTableDataCell>22,664,511</CTableDataCell>
-        <CTableDataCell>29,504,571</CTableDataCell>
-      </CTableRow>
-      <CTableRow class="text-right">
-        <CTableHeaderCell class="text-center">84B</CTableHeaderCell>
-        <CTableDataCell>87</CTableDataCell>
-        <CTableDataCell>339,000</CTableDataCell>
-        <CTableDataCell>6,840,060</CTableDataCell>
-        <CTableDataCell>22,664,511</CTableDataCell>
-        <CTableDataCell>29,504,571</CTableDataCell>
-      </CTableRow>
-      <CTableRow class="text-right">
-        <CTableHeaderCell class="text-center" rowspan="3">
-          3차 조합원
-        </CTableHeaderCell>
-        <CTableHeaderCell class="text-center">72</CTableHeaderCell>
-        <CTableDataCell>87</CTableDataCell>
-        <CTableDataCell>339,000</CTableDataCell>
-        <CTableDataCell>6,840,060</CTableDataCell>
-        <CTableDataCell>22,664,511</CTableDataCell>
-        <CTableDataCell>29,504,571</CTableDataCell>
-      </CTableRow>
-      <CTableRow class="text-right">
-        <CTableHeaderCell class="text-center">84A</CTableHeaderCell>
-        <CTableDataCell>87</CTableDataCell>
-        <CTableDataCell>339,000</CTableDataCell>
-        <CTableDataCell>6,840,060</CTableDataCell>
-        <CTableDataCell>22,664,511</CTableDataCell>
-        <CTableDataCell>29,504,571</CTableDataCell>
-      </CTableRow>
-      <CTableRow class="text-right">
-        <CTableHeaderCell class="text-center">84B</CTableHeaderCell>
-        <CTableDataCell>87</CTableDataCell>
-        <CTableDataCell>339,000</CTableDataCell>
-        <CTableDataCell>6,840,060</CTableDataCell>
-        <CTableDataCell>22,664,511</CTableDataCell>
-        <CTableDataCell>29,504,571</CTableDataCell>
-      </CTableRow>
+      <template v-for="(order, oi) in orderGroup" :key="oi">
+        <CTableRow v-for="(type, ti) in unitType" :key="ti" class="text-right">
+          <CTableHeaderCell
+            v-if="oi === 0 && ti === 0"
+            class="text-center"
+            :rowspan="orderGroup.length * unitType.length"
+          >
+            계약
+          </CTableHeaderCell>
+          <CTableHeaderCell
+            v-if="ti === 0"
+            class="text-center"
+            :rowspan="unitType.length"
+          >
+            {{ order.order_group_name }}
+          </CTableHeaderCell>
+          <CTableHeaderCell class="text-left" :color="TableSecondary">
+            <v-icon icon="mdi mdi-square" :color="type.color" size="sm" />
+            {{ type.name }}
+          </CTableHeaderCell>
+          <CTableDataCell>87</CTableDataCell>
+          <CTableDataCell>339,000,000</CTableDataCell>
+          <CTableDataCell>6,840,060,000</CTableDataCell>
+          <CTableDataCell>22,664,511,000</CTableDataCell>
+          <CTableDataCell>29,504,571,000</CTableDataCell>
+        </CTableRow>
+      </template>
 
-      <CTableRow class="text-right">
-        <CTableHeaderCell class="text-center" rowspan="3">
-          일반 분양
-        </CTableHeaderCell>
-        <CTableHeaderCell class="text-center">72</CTableHeaderCell>
-        <CTableDataCell>87</CTableDataCell>
-        <CTableDataCell>339,000</CTableDataCell>
-        <CTableDataCell>6,840,060</CTableDataCell>
-        <CTableDataCell>22,664,511</CTableDataCell>
-        <CTableDataCell>29,504,571</CTableDataCell>
-      </CTableRow>
-      <CTableRow class="text-right">
-        <CTableHeaderCell class="text-center">84A</CTableHeaderCell>
-        <CTableDataCell>87</CTableDataCell>
-        <CTableDataCell>339,000</CTableDataCell>
-        <CTableDataCell>6,840,060</CTableDataCell>
-        <CTableDataCell>22,664,511</CTableDataCell>
-        <CTableDataCell>29,504,571</CTableDataCell>
-      </CTableRow>
-      <CTableRow class="text-right">
-        <CTableHeaderCell class="text-center">84B</CTableHeaderCell>
-        <CTableDataCell>87</CTableDataCell>
-        <CTableDataCell>339,000</CTableDataCell>
-        <CTableDataCell>6,840,060</CTableDataCell>
-        <CTableDataCell>22,664,511</CTableDataCell>
-        <CTableDataCell>29,504,571</CTableDataCell>
-      </CTableRow>
-
-      <CTableRow class="text-right">
-        <CTableHeaderCell class="text-center" rowspan="12">
-          미계약
-        </CTableHeaderCell>
-        <CTableHeaderCell class="text-center" rowspan="3">
-          1차 조합원
-        </CTableHeaderCell>
-        <CTableHeaderCell class="text-center">72</CTableHeaderCell>
-        <CTableDataCell>87</CTableDataCell>
-        <CTableDataCell>339,000</CTableDataCell>
-        <CTableDataCell>6,840,060</CTableDataCell>
-        <CTableDataCell>22,664,511</CTableDataCell>
-        <CTableDataCell>29,504,571</CTableDataCell>
-      </CTableRow>
-      <CTableRow class="text-right">
-        <CTableHeaderCell class="text-center">84A</CTableHeaderCell>
-        <CTableDataCell>87</CTableDataCell>
-        <CTableDataCell>339,000</CTableDataCell>
-        <CTableDataCell>6,840,060</CTableDataCell>
-        <CTableDataCell>22,664,511</CTableDataCell>
-        <CTableDataCell>29,504,571</CTableDataCell>
-      </CTableRow>
-      <CTableRow class="text-right">
-        <CTableHeaderCell class="text-center">84B</CTableHeaderCell>
-        <CTableDataCell>87</CTableDataCell>
-        <CTableDataCell>339,000</CTableDataCell>
-        <CTableDataCell>6,840,060</CTableDataCell>
-        <CTableDataCell>22,664,511</CTableDataCell>
-        <CTableDataCell>29,504,571</CTableDataCell>
-      </CTableRow>
-      <CTableRow class="text-right">
-        <CTableHeaderCell class="text-center" rowspan="3">
-          2차 조합원
-        </CTableHeaderCell>
-        <CTableHeaderCell class="text-center">72</CTableHeaderCell>
-        <CTableDataCell>87</CTableDataCell>
-        <CTableDataCell>339,000</CTableDataCell>
-        <CTableDataCell>6,840,060</CTableDataCell>
-        <CTableDataCell>22,664,511</CTableDataCell>
-        <CTableDataCell>29,504,571</CTableDataCell>
-      </CTableRow>
-      <CTableRow class="text-right">
-        <CTableHeaderCell class="text-center">84A</CTableHeaderCell>
-        <CTableDataCell>87</CTableDataCell>
-        <CTableDataCell>339,000</CTableDataCell>
-        <CTableDataCell>6,840,060</CTableDataCell>
-        <CTableDataCell>22,664,511</CTableDataCell>
-        <CTableDataCell>29,504,571</CTableDataCell>
-      </CTableRow>
-      <CTableRow class="text-right">
-        <CTableHeaderCell class="text-center">84B</CTableHeaderCell>
-        <CTableDataCell>87</CTableDataCell>
-        <CTableDataCell>339,000</CTableDataCell>
-        <CTableDataCell>6,840,060</CTableDataCell>
-        <CTableDataCell>22,664,511</CTableDataCell>
-        <CTableDataCell>29,504,571</CTableDataCell>
-      </CTableRow>
-      <CTableRow class="text-right">
-        <CTableHeaderCell class="text-center" rowspan="3">
-          3차 조합원
-        </CTableHeaderCell>
-        <CTableHeaderCell class="text-center">72</CTableHeaderCell>
-        <CTableDataCell>87</CTableDataCell>
-        <CTableDataCell>339,000</CTableDataCell>
-        <CTableDataCell>6,840,060</CTableDataCell>
-        <CTableDataCell>22,664,511</CTableDataCell>
-        <CTableDataCell>29,504,571</CTableDataCell>
-      </CTableRow>
-      <CTableRow class="text-right">
-        <CTableHeaderCell class="text-center">84A</CTableHeaderCell>
-        <CTableDataCell>87</CTableDataCell>
-        <CTableDataCell>339,000</CTableDataCell>
-        <CTableDataCell>6,840,060</CTableDataCell>
-        <CTableDataCell>22,664,511</CTableDataCell>
-        <CTableDataCell>29,504,571</CTableDataCell>
-      </CTableRow>
-      <CTableRow class="text-right">
-        <CTableHeaderCell class="text-center">84B</CTableHeaderCell>
-        <CTableDataCell>87</CTableDataCell>
-        <CTableDataCell>339,000</CTableDataCell>
-        <CTableDataCell>6,840,060</CTableDataCell>
-        <CTableDataCell>22,664,511</CTableDataCell>
-        <CTableDataCell>29,504,571</CTableDataCell>
-      </CTableRow>
-
-      <CTableRow class="text-right">
-        <CTableHeaderCell class="text-center" rowspan="3">
-          일반 분양
-        </CTableHeaderCell>
-        <CTableHeaderCell class="text-center">72</CTableHeaderCell>
-        <CTableDataCell>87</CTableDataCell>
-        <CTableDataCell>339,000</CTableDataCell>
-        <CTableDataCell>6,840,060</CTableDataCell>
-        <CTableDataCell>22,664,511</CTableDataCell>
-        <CTableDataCell>29,504,571</CTableDataCell>
-      </CTableRow>
-      <CTableRow class="text-right">
-        <CTableHeaderCell class="text-center">84A</CTableHeaderCell>
-        <CTableDataCell>87</CTableDataCell>
-        <CTableDataCell>339,000</CTableDataCell>
-        <CTableDataCell>6,840,060</CTableDataCell>
-        <CTableDataCell>22,664,511</CTableDataCell>
-        <CTableDataCell>29,504,571</CTableDataCell>
-      </CTableRow>
-      <CTableRow class="text-right">
-        <CTableHeaderCell class="text-center">84B</CTableHeaderCell>
-        <CTableDataCell>87</CTableDataCell>
-        <CTableDataCell>339,000</CTableDataCell>
-        <CTableDataCell>6,840,060</CTableDataCell>
-        <CTableDataCell>22,664,511</CTableDataCell>
-        <CTableDataCell>29,504,571</CTableDataCell>
-      </CTableRow>
+      <template v-for="(order, oi) in orderGroup" :key="oi">
+        <CTableRow v-for="(type, ti) in unitType" :key="ti" class="text-right">
+          <CTableHeaderCell
+            v-if="oi === 0 && ti === 0"
+            class="text-center"
+            :rowspan="orderGroup.length * unitType.length"
+          >
+            미계약
+          </CTableHeaderCell>
+          <CTableHeaderCell
+            v-if="ti === 0"
+            class="text-center"
+            :rowspan="unitType.length"
+          >
+            {{ order.order_group_name }}
+          </CTableHeaderCell>
+          <CTableHeaderCell class="text-left" :color="TableSecondary">
+            <v-icon icon="mdi mdi-square" :color="type.color" size="sm" />
+            {{ type.name }}
+          </CTableHeaderCell>
+          <CTableDataCell>-</CTableDataCell>
+          <CTableDataCell>-</CTableDataCell>
+          <CTableDataCell>-</CTableDataCell>
+          <CTableDataCell>-</CTableDataCell>
+          <CTableDataCell>-</CTableDataCell>
+        </CTableRow>
+      </template>
     </CTableBody>
 
     <CTableHead>
