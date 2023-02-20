@@ -9,7 +9,7 @@ const emit = defineEmits(['set-date'])
 const date = ref(new Date())
 
 watch(date, val => {
-  if (val === null) date.value = new Date()
+  if (!val) date.value = new Date()
   setDate()
 })
 const setDate = () => emit('set-date', dateFormat(date.value))
