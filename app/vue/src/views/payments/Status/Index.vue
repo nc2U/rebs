@@ -39,7 +39,7 @@ const onSelectAdd = (target: number) => {
   }
 }
 
-const setDate = (date: Date) => date
+const setDate = (d: Date) => (date.value = new Date(d))
 
 onBeforeMount(() => {
   fetchTypeList(project.value)

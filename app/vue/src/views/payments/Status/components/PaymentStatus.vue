@@ -28,7 +28,7 @@ defineProps({
         <CTableDataCell colspan="7">
           <strong>
             <CIcon name="cilFolderOpen" />
-            분양대금 납부현황 등
+            차수 및 타입별 수납 현황
           </strong>
           <small class="text-medium-emphasis">
             ({{ dateFormat(date) }}) 현재

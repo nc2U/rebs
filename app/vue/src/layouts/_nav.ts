@@ -70,7 +70,7 @@ const payment = {
     },
     {
       component: 'CNavItem',
-      name: '분양 수납 현황',
+      name: '수납 현황 집계',
       to: '/payments/status',
     },
   ],

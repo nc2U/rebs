@@ -39,12 +39,12 @@ const payments = {
     },
     {
       path: 'status',
-      name: '분양 수납 현황',
+      name: '수납 현황 집계',
       component: () =>
         pageViewAuth.value
           ? import('@/views/payments/Status/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '분양 수납 현황' },
+      meta: { title: '수납 현황 집계' },
     },
   ],
 }
