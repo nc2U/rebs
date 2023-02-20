@@ -14,14 +14,14 @@ defineProps({
 <template>
   <CTable hover responsive bordered align="middle">
     <colgroup>
-      <col width="10%" />
-      <col width="10%" />
-      <col width="10%" />
-      <col width="10%" />
-      <col width="15%" />
-      <col width="15%" />
-      <col width="15%" />
-      <col width="15%" />
+      <col width="6%" />
+      <col width="9%" />
+      <col width="9%" />
+      <col width="8%" />
+      <col width="16%" />
+      <col width="17%" />
+      <col width="17%" />
+      <col width="18%" />
     </colgroup>
     <CTableHead>
       <CTableRow>
@@ -54,26 +54,27 @@ defineProps({
           <CTableHeaderCell
             v-if="oi === 0 && ti === 0"
             class="text-center"
+            :color="TableSecondary"
             :rowspan="orderGroup.length * unitType.length"
           >
             계약
           </CTableHeaderCell>
-          <CTableHeaderCell
+          <CTableDataCell
             v-if="ti === 0"
             class="text-center"
             :rowspan="unitType.length"
           >
             {{ order.order_group_name }}
-          </CTableHeaderCell>
-          <CTableHeaderCell class="text-left" :color="TableSecondary">
+          </CTableDataCell>
+          <CTableDataCell class="text-left pl-4">
             <v-icon icon="mdi mdi-square" :color="type.color" size="sm" />
             {{ type.name }}
-          </CTableHeaderCell>
-          <CTableDataCell>87</CTableDataCell>
-          <CTableDataCell>339,000,000</CTableDataCell>
-          <CTableDataCell>6,840,060,000</CTableDataCell>
-          <CTableDataCell>22,664,511,000</CTableDataCell>
-          <CTableDataCell>29,504,571,000</CTableDataCell>
+          </CTableDataCell>
+          <CTableDataCell>{{ numFormat(87) }}</CTableDataCell>
+          <CTableDataCell>{{ numFormat(339000000) }}</CTableDataCell>
+          <CTableDataCell>{{ numFormat(6840060000) }}</CTableDataCell>
+          <CTableDataCell>{{ numFormat(22664511000) }}</CTableDataCell>
+          <CTableDataCell>{{ numFormat(29504571000) }}</CTableDataCell>
         </CTableRow>
       </template>
 
@@ -82,26 +83,27 @@ defineProps({
           <CTableHeaderCell
             v-if="oi === 0 && ti === 0"
             class="text-center"
+            :color="TableSecondary"
             :rowspan="orderGroup.length * unitType.length"
           >
             미계약
           </CTableHeaderCell>
-          <CTableHeaderCell
+          <CTableDataCell
             v-if="ti === 0"
             class="text-center"
             :rowspan="unitType.length"
           >
             {{ order.order_group_name }}
-          </CTableHeaderCell>
-          <CTableHeaderCell class="text-left" :color="TableSecondary">
+          </CTableDataCell>
+          <CTableDataCell class="text-left pl-4">
             <v-icon icon="mdi mdi-square" :color="type.color" size="sm" />
             {{ type.name }}
-          </CTableHeaderCell>
-          <CTableDataCell>-</CTableDataCell>
-          <CTableDataCell>-</CTableDataCell>
-          <CTableDataCell>-</CTableDataCell>
-          <CTableDataCell>-</CTableDataCell>
-          <CTableDataCell>-</CTableDataCell>
+          </CTableDataCell>
+          <CTableDataCell>{{ numFormat(0) }}</CTableDataCell>
+          <CTableDataCell>{{ numFormat(0) }}</CTableDataCell>
+          <CTableDataCell>{{ numFormat(0) }}</CTableDataCell>
+          <CTableDataCell>{{ numFormat(0) }}</CTableDataCell>
+          <CTableDataCell>{{ numFormat(0) }}</CTableDataCell>
         </CTableRow>
       </template>
     </CTableBody>
@@ -111,11 +113,11 @@ defineProps({
         <CTableHeaderCell colspan="3" class="text-center">
           합계
         </CTableHeaderCell>
-        <CTableHeaderCell>-</CTableHeaderCell>
-        <CTableHeaderCell>-</CTableHeaderCell>
-        <CTableHeaderCell>-</CTableHeaderCell>
-        <CTableHeaderCell>-</CTableHeaderCell>
-        <CTableHeaderCell>-</CTableHeaderCell>
+        <CTableHeaderCell>{{ numFormat(0) }}</CTableHeaderCell>
+        <CTableHeaderCell>{{ numFormat(0) }}</CTableHeaderCell>
+        <CTableHeaderCell>{{ numFormat(0) }}</CTableHeaderCell>
+        <CTableHeaderCell>{{ numFormat(0) }}</CTableHeaderCell>
+        <CTableHeaderCell>{{ numFormat(0) }}</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
   </CTable>
