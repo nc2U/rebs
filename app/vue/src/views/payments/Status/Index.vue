@@ -11,7 +11,7 @@ import TableTitleRow from '@/components/TableTitleRow.vue'
 import PaymentStatus from './components/PaymentStatus.vue'
 
 const date = ref(new Date())
-const sort = ref('0')
+const sort = ref<null | '2' | '1' | '0'>('2')
 
 const excelUrl = computed(() => '')
 
@@ -41,7 +41,7 @@ const onSelectAdd = (target: number) => {
 }
 
 const setDate = (d: Date) => (date.value = new Date(d))
-const setSort = (s: '0' | '1' | '2') => (sort.value = s)
+const setSort = (s: null | '2' | '1' | '0') => (sort.value = s)
 
 onBeforeMount(() => {
   fetchTypeList(project.value)

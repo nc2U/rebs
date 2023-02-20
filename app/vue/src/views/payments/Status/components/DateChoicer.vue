@@ -7,7 +7,7 @@ import Multiselect from '@vueform/multiselect'
 const emit = defineEmits(['set-date', 'set-sort'])
 
 const date = ref(new Date())
-const sort = ref('0')
+const sort = ref<null | '2' | '1' | '0'>('2')
 
 watch(date, val => {
   if (!val) date.value = new Date()
@@ -17,9 +17,9 @@ const setDate = () => emit('set-date', dateFormat(date.value))
 const setSort = () => nextTick(() => emit('set-sort', sort.value))
 
 const sortOptions = [
-  { value: '0', label: '전체 집계' },
+  { value: '2', label: '전체 집계' },
   { value: '1', label: '계약건 집계' },
-  { value: '2', label: '미계약건 집계' },
+  { value: '0', label: '미계약건 집계' },
 ]
 </script>
 
@@ -33,7 +33,12 @@ const sortOptions = [
 
       <CFormLabel class="col-lg-1 col-form-label">구분</CFormLabel>
       <CCol md="6" lg="3">
-        <Multiselect v-model="sort" :options="sortOptions" @change="setSort" />
+        <Multiselect
+          v-model="sort"
+          :options="sortOptions"
+          placeholder="전체 집계"
+          @change="setSort"
+        />
       </CCol>
     </CRow>
   </CCallout>

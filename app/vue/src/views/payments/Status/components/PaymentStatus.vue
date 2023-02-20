@@ -4,7 +4,7 @@ import { TableSecondary } from '@/utils/cssMixins'
 
 defineProps({
   date: { type: String, default: '' },
-  sort: { type: String, default: '0' },
+  sort: { type: String, default: '2' },
   orderGroup: { type: Array, default: () => [] },
   unitType: { type: Array, default: () => [] },
 })
@@ -48,7 +48,7 @@ defineProps({
     </CTableHead>
 
     <CTableBody>
-      <template v-if="sort !== '2'">
+      <template v-if="sort !== '0'">
         <template v-for="(order, oi) in orderGroup" :key="oi">
           <CTableRow
             v-for="(type, ti) in unitType"
