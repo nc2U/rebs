@@ -17,9 +17,9 @@ const setDate = () => emit('set-date', dateFormat(date.value))
 const setSort = () => nextTick(() => emit('set-sort', sort.value))
 
 const sortOptions = [
-  { value: '0', label: '전체 현황' },
-  { value: '1', label: '계약건 수납현황' },
-  { value: '2', label: '미계약건 수납현황' },
+  { value: '0', label: '전체 집계' },
+  { value: '1', label: '계약건 집계' },
+  { value: '2', label: '미계약건 집계' },
 ]
 </script>
 
@@ -31,7 +31,7 @@ const sortOptions = [
         <DatePicker v-model="date" @keydown.enter="setDate" />
       </CCol>
 
-      <CFormLabel class="col-lg-1 col-form-label">현황구분</CFormLabel>
+      <CFormLabel class="col-lg-1 col-form-label">구분</CFormLabel>
       <CCol md="6" lg="3">
         <Multiselect v-model="sort" :options="sortOptions" @change="setSort" />
       </CCol>
