@@ -37,9 +37,9 @@ defineProps({ date: { type: String, default: '' } })
         <CTableHeaderCell colspan="2">구분</CTableHeaderCell>
         <CTableHeaderCell>타입</CTableHeaderCell>
         <CTableHeaderCell>수량</CTableHeaderCell>
-        <CTableHeaderCell>단가</CTableHeaderCell>
-        <CTableHeaderCell>실수납금액</CTableHeaderCell>
-        <CTableHeaderCell>미수금액</CTableHeaderCell>
+        <CTableHeaderCell>단가(평균)</CTableHeaderCell>
+        <CTableHeaderCell>실수납 금액</CTableHeaderCell>
+        <CTableHeaderCell>미수 금액</CTableHeaderCell>
         <CTableHeaderCell>합계</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
@@ -50,7 +50,7 @@ defineProps({ date: { type: String, default: '' } })
           계약
         </CTableHeaderCell>
         <CTableHeaderCell class="text-center" rowspan="3">
-          1차조합원
+          1차 조합원
         </CTableHeaderCell>
         <CTableHeaderCell class="text-center">72</CTableHeaderCell>
         <CTableDataCell>87</CTableDataCell>
@@ -77,7 +77,7 @@ defineProps({ date: { type: String, default: '' } })
       </CTableRow>
       <CTableRow class="text-right">
         <CTableHeaderCell class="text-center" rowspan="3">
-          2차조합원
+          2차 조합원
         </CTableHeaderCell>
         <CTableHeaderCell class="text-center">72</CTableHeaderCell>
         <CTableDataCell>87</CTableDataCell>
@@ -104,7 +104,7 @@ defineProps({ date: { type: String, default: '' } })
       </CTableRow>
       <CTableRow class="text-right">
         <CTableHeaderCell class="text-center" rowspan="3">
-          3차조합원
+          3차 조합원
         </CTableHeaderCell>
         <CTableHeaderCell class="text-center">72</CTableHeaderCell>
         <CTableDataCell>87</CTableDataCell>
@@ -132,7 +132,120 @@ defineProps({ date: { type: String, default: '' } })
 
       <CTableRow class="text-right">
         <CTableHeaderCell class="text-center" rowspan="3">
-          일반분양
+          일반 분양
+        </CTableHeaderCell>
+        <CTableHeaderCell class="text-center">72</CTableHeaderCell>
+        <CTableDataCell>87</CTableDataCell>
+        <CTableDataCell>339,000</CTableDataCell>
+        <CTableDataCell>6,840,060</CTableDataCell>
+        <CTableDataCell>22,664,511</CTableDataCell>
+        <CTableDataCell>29,504,571</CTableDataCell>
+      </CTableRow>
+      <CTableRow class="text-right">
+        <CTableHeaderCell class="text-center">84A</CTableHeaderCell>
+        <CTableDataCell>87</CTableDataCell>
+        <CTableDataCell>339,000</CTableDataCell>
+        <CTableDataCell>6,840,060</CTableDataCell>
+        <CTableDataCell>22,664,511</CTableDataCell>
+        <CTableDataCell>29,504,571</CTableDataCell>
+      </CTableRow>
+      <CTableRow class="text-right">
+        <CTableHeaderCell class="text-center">84B</CTableHeaderCell>
+        <CTableDataCell>87</CTableDataCell>
+        <CTableDataCell>339,000</CTableDataCell>
+        <CTableDataCell>6,840,060</CTableDataCell>
+        <CTableDataCell>22,664,511</CTableDataCell>
+        <CTableDataCell>29,504,571</CTableDataCell>
+      </CTableRow>
+
+      <CTableRow class="text-right">
+        <CTableHeaderCell class="text-center" rowspan="12">
+          미계약
+        </CTableHeaderCell>
+        <CTableHeaderCell class="text-center" rowspan="3">
+          1차 조합원
+        </CTableHeaderCell>
+        <CTableHeaderCell class="text-center">72</CTableHeaderCell>
+        <CTableDataCell>87</CTableDataCell>
+        <CTableDataCell>339,000</CTableDataCell>
+        <CTableDataCell>6,840,060</CTableDataCell>
+        <CTableDataCell>22,664,511</CTableDataCell>
+        <CTableDataCell>29,504,571</CTableDataCell>
+      </CTableRow>
+      <CTableRow class="text-right">
+        <CTableHeaderCell class="text-center">84A</CTableHeaderCell>
+        <CTableDataCell>87</CTableDataCell>
+        <CTableDataCell>339,000</CTableDataCell>
+        <CTableDataCell>6,840,060</CTableDataCell>
+        <CTableDataCell>22,664,511</CTableDataCell>
+        <CTableDataCell>29,504,571</CTableDataCell>
+      </CTableRow>
+      <CTableRow class="text-right">
+        <CTableHeaderCell class="text-center">84B</CTableHeaderCell>
+        <CTableDataCell>87</CTableDataCell>
+        <CTableDataCell>339,000</CTableDataCell>
+        <CTableDataCell>6,840,060</CTableDataCell>
+        <CTableDataCell>22,664,511</CTableDataCell>
+        <CTableDataCell>29,504,571</CTableDataCell>
+      </CTableRow>
+      <CTableRow class="text-right">
+        <CTableHeaderCell class="text-center" rowspan="3">
+          2차 조합원
+        </CTableHeaderCell>
+        <CTableHeaderCell class="text-center">72</CTableHeaderCell>
+        <CTableDataCell>87</CTableDataCell>
+        <CTableDataCell>339,000</CTableDataCell>
+        <CTableDataCell>6,840,060</CTableDataCell>
+        <CTableDataCell>22,664,511</CTableDataCell>
+        <CTableDataCell>29,504,571</CTableDataCell>
+      </CTableRow>
+      <CTableRow class="text-right">
+        <CTableHeaderCell class="text-center">84A</CTableHeaderCell>
+        <CTableDataCell>87</CTableDataCell>
+        <CTableDataCell>339,000</CTableDataCell>
+        <CTableDataCell>6,840,060</CTableDataCell>
+        <CTableDataCell>22,664,511</CTableDataCell>
+        <CTableDataCell>29,504,571</CTableDataCell>
+      </CTableRow>
+      <CTableRow class="text-right">
+        <CTableHeaderCell class="text-center">84B</CTableHeaderCell>
+        <CTableDataCell>87</CTableDataCell>
+        <CTableDataCell>339,000</CTableDataCell>
+        <CTableDataCell>6,840,060</CTableDataCell>
+        <CTableDataCell>22,664,511</CTableDataCell>
+        <CTableDataCell>29,504,571</CTableDataCell>
+      </CTableRow>
+      <CTableRow class="text-right">
+        <CTableHeaderCell class="text-center" rowspan="3">
+          3차 조합원
+        </CTableHeaderCell>
+        <CTableHeaderCell class="text-center">72</CTableHeaderCell>
+        <CTableDataCell>87</CTableDataCell>
+        <CTableDataCell>339,000</CTableDataCell>
+        <CTableDataCell>6,840,060</CTableDataCell>
+        <CTableDataCell>22,664,511</CTableDataCell>
+        <CTableDataCell>29,504,571</CTableDataCell>
+      </CTableRow>
+      <CTableRow class="text-right">
+        <CTableHeaderCell class="text-center">84A</CTableHeaderCell>
+        <CTableDataCell>87</CTableDataCell>
+        <CTableDataCell>339,000</CTableDataCell>
+        <CTableDataCell>6,840,060</CTableDataCell>
+        <CTableDataCell>22,664,511</CTableDataCell>
+        <CTableDataCell>29,504,571</CTableDataCell>
+      </CTableRow>
+      <CTableRow class="text-right">
+        <CTableHeaderCell class="text-center">84B</CTableHeaderCell>
+        <CTableDataCell>87</CTableDataCell>
+        <CTableDataCell>339,000</CTableDataCell>
+        <CTableDataCell>6,840,060</CTableDataCell>
+        <CTableDataCell>22,664,511</CTableDataCell>
+        <CTableDataCell>29,504,571</CTableDataCell>
+      </CTableRow>
+
+      <CTableRow class="text-right">
+        <CTableHeaderCell class="text-center" rowspan="3">
+          일반 분양
         </CTableHeaderCell>
         <CTableHeaderCell class="text-center">72</CTableHeaderCell>
         <CTableDataCell>87</CTableDataCell>
