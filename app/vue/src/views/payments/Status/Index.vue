@@ -11,6 +11,7 @@ import TableTitleRow from '@/components/TableTitleRow.vue'
 import PaymentStatus from './components/PaymentStatus.vue'
 
 const date = ref(new Date())
+const sort = ref('0')
 
 const excelUrl = computed(() => '')
 
@@ -40,6 +41,7 @@ const onSelectAdd = (target: number) => {
 }
 
 const setDate = (d: Date) => (date.value = new Date(d))
+const setSort = (s: '0' | '1' | '2') => (sort.value = s)
 
 onBeforeMount(() => {
   fetchTypeList(project.value)
@@ -56,11 +58,12 @@ onBeforeMount(() => {
 
   <ContentBody>
     <CCardBody class="pb-5">
-      <DateChoicer @set-date="setDate" />
+      <DateChoicer @set-date="setDate" @set-sort="setSort" />
 
       <TableTitleRow excel :url="excelUrl" :disabled="true" />
       <PaymentStatus
         :date="date"
+        :sort="sort"
         :order-group="orderGroup"
         :unit-type="unitType"
       />
