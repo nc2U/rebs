@@ -72,6 +72,10 @@ const payment = {
       component: 'CNavItem',
       name: '수납 현황 집계',
       to: '/payments/status',
+      badge: {
+        color: 'danger',
+        text: 'u.c',
+      },
     },
   ],
 }
