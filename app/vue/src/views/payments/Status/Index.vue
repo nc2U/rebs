@@ -24,19 +24,24 @@ const unitType = computed(() => prDataStore.unitTypeList)
 
 const contStore = useContract()
 const orderGroup = computed(() => contStore.orderGroupList)
+const contSummaryList = computed(() => contStore.contSummaryList)
 
 const fetchTypeList = (proj: number) => prDataStore.fetchTypeList(proj)
 
 const fetchOrderGroupList = (proj: number) =>
   contStore.fetchOrderGroupList(proj)
+const fetchContSummaryList = (proj: number) =>
+  contStore.fetchContSummaryList(proj)
 
 const onSelectAdd = (target: number) => {
   if (!!target) {
     fetchTypeList(target)
     fetchOrderGroupList(target)
+    fetchContSummaryList(target)
   } else {
     prDataStore.unitTypeList = []
     contStore.orderGroupList = []
+    contStore.contSummaryList = []
   }
 }
 
@@ -46,6 +51,7 @@ const setSort = (s: null | '2' | '1' | '0') => (sort.value = s)
 onBeforeMount(() => {
   fetchTypeList(project.value)
   fetchOrderGroupList(project.value)
+  fetchContSummaryList(project.value)
 })
 </script>
 
@@ -66,6 +72,7 @@ onBeforeMount(() => {
         :sort="sort"
         :order-group="orderGroup"
         :unit-type="unitType"
+        :cont-sum="contSummaryList"
       />
     </CCardBody>
 

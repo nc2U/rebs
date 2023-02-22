@@ -1,13 +1,21 @@
 <script lang="ts" setup>
+import { PropType } from 'vue'
+import { ContSummary } from '@/store/types/contract'
 import { numFormat, dateFormat } from '@/utils/baseMixins'
 import { TableSecondary } from '@/utils/cssMixins'
 
-defineProps({
+const props = defineProps({
   date: { type: String, default: '' },
   sort: { type: String, default: '2' },
   orderGroup: { type: Array, default: () => [] },
   unitType: { type: Array, default: () => [] },
+  contSum: { type: Array as PropType<ContSummary[]>, default: () => [] },
 })
+
+const getNums = (og: number, ut: number) =>
+  props.contSum
+    .filter(c => c.order_group === og && c.unit_type === ut)
+    .map(c => c.num_cont)[0]
 </script>
 
 <template>
@@ -74,7 +82,9 @@ defineProps({
               <v-icon icon="mdi mdi-square" :color="type.color" size="sm" />
               {{ type.name }}
             </CTableDataCell>
-            <CTableDataCell>{{ numFormat(87) }}</CTableDataCell>
+            <CTableDataCell>
+              {{ numFormat(getNums(order.pk, type.pk)) }}
+            </CTableDataCell>
             <CTableDataCell>{{ numFormat(339000000) }}</CTableDataCell>
             <CTableDataCell>{{ numFormat(6840060000) }}</CTableDataCell>
             <CTableDataCell>{{ numFormat(22664511000) }}</CTableDataCell>
@@ -84,38 +94,27 @@ defineProps({
       </template>
 
       <template v-if="sort !== '1'">
-        <template v-for="(order, oi) in orderGroup" :key="oi">
-          <CTableRow
-            v-for="(type, ti) in unitType"
-            :key="ti"
-            class="text-right"
+        <CTableRow v-for="(type, ti) in unitType" :key="ti" class="text-right">
+          <CTableHeaderCell
+            v-if="ti === 0"
+            class="text-center"
+            :color="TableSecondary"
+            :rowspan="unitType.length"
           >
-            <CTableHeaderCell
-              v-if="oi === 0 && ti === 0"
-              class="text-center"
-              :color="TableSecondary"
-              :rowspan="orderGroup.length * unitType.length"
-            >
-              미계약
-            </CTableHeaderCell>
-            <CTableDataCell
-              v-if="ti === 0"
-              class="text-center"
-              :rowspan="unitType.length"
-            >
-              {{ order.order_group_name }}
-            </CTableDataCell>
-            <CTableDataCell class="text-left pl-4">
-              <v-icon icon="mdi mdi-square" :color="type.color" size="sm" />
-              {{ type.name }}
-            </CTableDataCell>
-            <CTableDataCell>{{ numFormat(0) }}</CTableDataCell>
-            <CTableDataCell>{{ numFormat(0) }}</CTableDataCell>
-            <CTableDataCell>{{ numFormat(0) }}</CTableDataCell>
-            <CTableDataCell>{{ numFormat(0) }}</CTableDataCell>
-            <CTableDataCell>{{ numFormat(0) }}</CTableDataCell>
-          </CTableRow>
-        </template>
+            미계약
+          </CTableHeaderCell>
+          <CTableDataCell class="text-left pl-4" colspan="2">
+            <v-icon icon="mdi mdi-square" :color="type.color" size="sm" />
+            {{ type.name }}
+          </CTableDataCell>
+          <CTableDataCell>
+            {{ numFormat(type.num_unit) }}
+          </CTableDataCell>
+          <CTableDataCell>{{ numFormat(0) }}</CTableDataCell>
+          <CTableDataCell>{{ numFormat(0) }}</CTableDataCell>
+          <CTableDataCell>{{ numFormat(0) }}</CTableDataCell>
+          <CTableDataCell>{{ numFormat(0) }}</CTableDataCell>
+        </CTableRow>
       </template>
     </CTableBody>
 
