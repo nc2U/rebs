@@ -16,6 +16,12 @@ const getNums = (og: number, ut: number) =>
   props.contSum
     .filter(c => c.order_group === og && c.unit_type === ut)
     .map(c => c.num_cont)[0]
+
+const typeContNum = (type: number) =>
+  props.contSum
+    ?.filter(c => c.unit_type === type)
+    ?.map(c => c.num_cont)
+    .reduce((pn, cn) => pn + cn, 0)
 </script>
 
 <template>
@@ -100,15 +106,16 @@ const getNums = (og: number, ut: number) =>
             class="text-center"
             :color="TableSecondary"
             :rowspan="unitType.length"
+            colspan="2"
           >
             미계약
           </CTableHeaderCell>
-          <CTableDataCell class="text-left pl-4" colspan="2">
+          <CTableDataCell class="text-left pl-4">
             <v-icon icon="mdi mdi-square" :color="type.color" size="sm" />
             {{ type.name }}
           </CTableDataCell>
           <CTableDataCell>
-            {{ numFormat(type.num_unit) }}
+            {{ numFormat(type.num_unit - typeContNum(type.pk)) }}
           </CTableDataCell>
           <CTableDataCell>{{ numFormat(0) }}</CTableDataCell>
           <CTableDataCell>{{ numFormat(0) }}</CTableDataCell>
@@ -119,15 +126,17 @@ const getNums = (og: number, ut: number) =>
     </CTableBody>
 
     <CTableHead>
-      <CTableRow class="text-right">
+      <CTableRow class="text-right" :color="TableSecondary">
         <CTableHeaderCell colspan="3" class="text-center">
           합계
         </CTableHeaderCell>
-        <CTableHeaderCell>{{ numFormat(0) }}</CTableHeaderCell>
-        <CTableHeaderCell>{{ numFormat(0) }}</CTableHeaderCell>
-        <CTableHeaderCell>{{ numFormat(0) }}</CTableHeaderCell>
-        <CTableHeaderCell>{{ numFormat(0) }}</CTableHeaderCell>
-        <CTableHeaderCell>{{ numFormat(0) }}</CTableHeaderCell>
+        <CTableHeaderCell>{{ numFormat(625) }}</CTableHeaderCell>
+        <CTableHeaderCell>-</CTableHeaderCell>
+        <CTableHeaderCell>{{ numFormat(44000000000) }}</CTableHeaderCell>
+        <CTableHeaderCell>
+          {{ numFormat(330000000000 - 44000000000) }}
+        </CTableHeaderCell>
+        <CTableHeaderCell>{{ numFormat(330000000000) }}</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
   </CTable>
