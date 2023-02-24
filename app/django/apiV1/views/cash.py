@@ -138,7 +138,8 @@ class ProjectCashBookFilterSet(FilterSet):
         model = ProjectCashBook
         fields = ('project', 'sort', 'project_account_d1', 'project_account_d2',
                   'from_deal_date', 'to_deal_date', 'deal_date', 'installment_order',
-                  'bank_account', 'is_contract_payment', 'contract', 'no_contract')
+                  'bank_account', 'is_contract_payment', 'contract', 'contract__order_group',
+                  'contract__unit_type', 'no_contract')
 
 
 class ProjectCashBookViewSet(viewsets.ModelViewSet):
