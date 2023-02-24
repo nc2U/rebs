@@ -646,6 +646,8 @@ def export_payments_xls(request):
     project = Project.objects.get(pk=request.GET.get('project'))
     sd = request.GET.get('sd')
     ed = request.GET.get('ed')
+    og = request.GET.get('og')
+    ut = request.GET.get('ut')
     ipo = request.GET.get('ipo')
     ba = request.GET.get('ba')
     up = request.GET.get('up')
@@ -656,6 +658,12 @@ def export_payments_xls(request):
     ed = ed if ed else today
     obj_list = ProjectCashBook.objects.filter(project=project, project_account_d2__in=(1, 2),
                                               deal_date__range=(sd, ed)).order_by('-deal_date', '-created_at')
+
+    if og:
+        obj_list = obj_list.filter(contract__order_group=og)
+
+    if ut:
+        obj_list = obj_list.filter(contract__unit_type=ut)
 
     if ipo:
         obj_list = obj_list.filter(installment_order_id=ipo)

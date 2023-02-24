@@ -35,6 +35,8 @@ const excelUrl = computed(() => {
   let url = project.value ? `/excel/payments/?project=${project.value.pk}` : ''
   if (dataFilter.value.from_date) url += `&sd=${dataFilter.value.from_date}`
   if (dataFilter.value.to_date) url += `&ed=${dataFilter.value.to_date}`
+  if (dataFilter.value.order_group) url += `&og=${dataFilter.value.order_group}`
+  if (dataFilter.value.unit_type) url += `&ut=${dataFilter.value.unit_type}`
   if (dataFilter.value.pay_order) url += `&ipo=${dataFilter.value.pay_order}`
   if (dataFilter.value.pay_account) url += `&ba=${dataFilter.value.pay_account}`
   if (dataFilter.value.no_contract) url += `&up=on`
