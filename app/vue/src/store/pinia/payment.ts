@@ -15,6 +15,8 @@ export type PaymentFilter = {
   project?: number
   from_date?: string
   to_date?: string
+  order_group?: string
+  unit_type?: string
   pay_order?: string
   pay_account?: string
   contract?: number
@@ -195,6 +197,9 @@ export const usePayment = defineStore('payment', () => {
     let url = `/payment/?project=${project}`
     if (payload.from_date) url += `&from_deal_date=${payload.from_date}`
     if (payload.to_date) url += `&to_deal_date=${payload.to_date}`
+    if (payload.order_group)
+      url += `&contract__order_group=${payload.order_group}`
+    if (payload.unit_type) url += `&contract__unit_type=${payload.unit_type}`
     if (payload.pay_order) url += `&installment_order=${payload.pay_order}`
     if (payload.pay_account) url += `&bank_account=${payload.pay_account}`
     if (payload.contract) url += `&contract=${payload.contract}`

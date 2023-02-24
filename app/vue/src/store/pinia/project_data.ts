@@ -32,6 +32,12 @@ export const useProjectData = defineStore('projectData', () => {
         }))
       : [],
   )
+  const getTypes = computed(() =>
+    unitTypeList.value.map(t => ({
+      value: t.pk,
+      label: t.name,
+    })),
+  )
 
   // actions
   const fetchTypeList = (projId: number) =>
@@ -234,6 +240,7 @@ export const useProjectData = defineStore('projectData', () => {
   return {
     unitTypeList,
     simpleTypes,
+    getTypes,
     fetchTypeList,
     createType,
     updateType,

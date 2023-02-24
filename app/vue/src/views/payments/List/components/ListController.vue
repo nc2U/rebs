@@ -2,9 +2,12 @@
 import { computed, reactive, ref, nextTick, watch } from 'vue'
 import { usePayment } from '@/store/pinia/payment'
 import { useProCash } from '@/store/pinia/proCash'
+import { useContract } from '@/store/pinia/contract'
+import { useProjectData } from '@/store/pinia/project_data'
 import { dateFormat } from '@/utils/baseMixins'
 import { maska as vMaska } from 'maska'
 import { bgLight } from '@/utils/cssMixins'
+import Multiselect from '@vueform/multiselect'
 import DatePicker from '@/components/DatePicker/index.vue'
 
 const emit = defineEmits(['payment-filtering'])
@@ -13,11 +16,19 @@ const from_date = ref('')
 const to_date = ref('')
 
 const form = reactive({
+  order_group: '',
+  unit_type: '',
   pay_order: '',
   pay_account: '',
   no_contract: false,
   search: '',
 })
+
+const contStore = useContract()
+const getOrderGroups = computed(() => contStore.getOrderGroups)
+
+const projectDataStore = useProjectData()
+const getTypes = computed(() => projectDataStore.getTypes)
 
 const paymentStore = usePayment()
 const payOrderList = computed(() => paymentStore.payOrderList)
@@ -29,11 +40,13 @@ const proBankAccountList = computed(() => proCashStore.proBankAccountList)
 const formsCheck = computed(() => {
   const a = !from_date.value
   const b = !to_date.value
-  const c = !form.pay_order
-  const d = !form.pay_account
-  const e = !form.no_contract
-  const f = form.search.trim() === ''
-  return a && b && c && d && e && f
+  const c = !form.order_group
+  const d = !form.unit_type
+  const e = !form.pay_order
+  const f = !form.pay_account
+  const g = !form.no_contract
+  const h = form.search.trim() === ''
+  return a && b && c && d && e && f && g && h
 })
 
 watch(from_date, val => {
@@ -59,6 +72,8 @@ defineExpose({ listFiltering })
 const resetForm = () => {
   from_date.value = ''
   to_date.value = ''
+  form.order_group = ''
+  form.unit_type = ''
   form.pay_order = ''
   form.pay_account = ''
   form.no_contract = false
@@ -70,9 +85,9 @@ const resetForm = () => {
 <template>
   <CCallout color="warning" class="pb-0 mb-4" :class="bgLight">
     <CRow>
-      <CCol lg="7">
+      <CCol lg="8">
         <CRow>
-          <CCol md="6" lg="3" class="mb-3">
+          <CCol md="6" lg="2" class="mb-3">
             <DatePicker
               v-model="from_date"
               v-maska="'####-##-##'"
@@ -81,7 +96,7 @@ const resetForm = () => {
             />
           </CCol>
 
-          <CCol md="6" lg="3" class="mb-3">
+          <CCol md="6" lg="2" class="mb-3">
             <DatePicker
               v-model="to_date"
               v-maska="'####-##-##'"
@@ -90,7 +105,25 @@ const resetForm = () => {
             />
           </CCol>
 
-          <CCol md="6" lg="3" class="mb-3">
+          <CCol md="6" lg="2" class="mb-3">
+            <Multiselect
+              v-model="form.order_group"
+              :options="getOrderGroups"
+              placeholder="차수"
+              @change="listFiltering(1)"
+            />
+          </CCol>
+
+          <CCol md="6" lg="2" class="mb-3">
+            <Multiselect
+              v-model="form.unit_type"
+              :options="getTypes"
+              placeholder="타입"
+              @change="listFiltering(1)"
+            />
+          </CCol>
+
+          <CCol md="6" lg="2" class="mb-3">
             <CFormSelect v-model="form.pay_order" @change="listFiltering(1)">
               <option value="">납부회차 선택</option>
               <option v-for="po in payOrderList" :key="po.pk" :value="po.pk">
@@ -99,7 +132,7 @@ const resetForm = () => {
             </CFormSelect>
           </CCol>
 
-          <CCol md="6" lg="3" class="mb-3">
+          <CCol md="6" lg="2" class="mb-3">
             <CFormSelect v-model="form.pay_account" @change="listFiltering(1)">
               <option value="">납부계좌 선택</option>
               <option
@@ -113,18 +146,18 @@ const resetForm = () => {
           </CCol>
         </CRow>
       </CCol>
-      <CCol lg="5">
+      <CCol lg="4">
         <CRow>
-          <CCol md="6" class="mb-3 pl-4 pt-2">
+          <CCol md="6" lg="5" class="mb-3 pl-4 pt-2">
             <CFormSwitch
               id="no_contract"
               v-model="form.no_contract"
-              label="미등록 납부대금 건"
+              label="계약 미등록 건"
               @change="listFiltering(1)"
             />
           </CCol>
 
-          <CCol md="6" class="mb-3">
+          <CCol md="6" lg="7" class="mb-3">
             <CInputGroup class="flex-nowrap">
               <CFormInput
                 v-model="form.search"

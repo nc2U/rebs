@@ -2,6 +2,7 @@
 import { computed, ref, onMounted } from 'vue'
 import { pageTitle, navMenu } from '@/views/payments/_menu/headermixin'
 import { useProject } from '@/store/pinia/project'
+import { useContract } from '@/store/pinia/contract'
 import { useProjectData } from '@/store/pinia/project_data'
 import { PaymentFilter, usePayment } from '@/store/pinia/payment'
 import { useProCash } from '@/store/pinia/proCash'
@@ -18,6 +19,8 @@ let dataFilter = ref<PaymentFilter>({
   page: 1,
   from_date: '',
   to_date: '',
+  order_group: '',
+  unit_type: '',
   pay_order: '',
   pay_account: '',
   no_contract: false,
@@ -39,6 +42,10 @@ const excelUrl = computed(() => {
   return url
 })
 
+const contStore = useContract()
+const fetchOrderGroupList = (projId: number) =>
+  contStore.fetchOrderGroupList(projId)
+
 const projectDataStore = useProjectData()
 const fetchTypeList = (projId: number) => projectDataStore.fetchTypeList(projId)
 
@@ -57,6 +64,7 @@ const fetchProBankAccList = (projId: number) =>
 
 const onSelectAdd = (target: number) => {
   if (!!target) {
+    fetchOrderGroupList(target)
     fetchTypeList(target)
     fetchPaySumList(target)
     fetchContNumList(target)
@@ -64,6 +72,7 @@ const onSelectAdd = (target: number) => {
     fetchPayOrderList(target)
     fetchProBankAccList(target)
   } else {
+    contStore.orderGroupList = []
     projectDataStore.unitTypeList = []
     proCashStore.proBankAccountList = []
     paymentStore.paySumList = []
@@ -86,6 +95,7 @@ const pageSelect = (page: number) => {
 }
 
 onMounted(() => {
+  fetchOrderGroupList(initProjId.value)
   fetchTypeList(initProjId.value)
   fetchPaySumList(initProjId.value)
   fetchContNumList(initProjId.value)

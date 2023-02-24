@@ -152,6 +152,12 @@ export const useContract = defineStore('contract', () => {
       .catch(err => errorHandle(err.response.data))
 
   const orderGroupList = ref<OrderGroup[]>([])
+  const getOrderGroups = computed(() =>
+    orderGroupList.value.map(o => ({
+      value: o.pk,
+      label: o.order_group_name,
+    })),
+  )
 
   const fetchOrderGroupList = (project: number) =>
     api
@@ -326,6 +332,7 @@ export const useContract = defineStore('contract', () => {
     fetchContSummaryList,
 
     orderGroupList,
+    getOrderGroups,
 
     fetchOrderGroupList,
     createOrderGroup,
