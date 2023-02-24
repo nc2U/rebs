@@ -80,6 +80,7 @@ const typeContNum = (type: number) =>
             <CTableDataCell
               v-if="ti === 0"
               class="text-center"
+              :color="TableSecondary"
               :rowspan="unitType.length"
             >
               {{ order.order_group_name }}
