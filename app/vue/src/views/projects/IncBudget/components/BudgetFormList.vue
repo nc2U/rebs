@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { useProject } from '@/store/pinia/project'
-import { ProIncBudget } from '@/store/types/project'
 import { TableSecondary } from '@/utils/cssMixins'
 import IncBudget from './IncBudget.vue'
 

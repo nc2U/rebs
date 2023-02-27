@@ -6,6 +6,8 @@ import AlertModal from '@/components/Modals/AlertModal.vue'
 
 const d1List = inject('d1List')
 const d2List = inject('d2List')
+const orderGroups = inject('orderGroups')
+const unitTypes = inject('unitTypes')
 
 defineProps({ disabled: Boolean })
 const emit = defineEmits(['on-submit'])
@@ -90,16 +92,22 @@ const resetForm = () => {
           <CCol md="3" lg="3" class="mb-2">
             <CFormSelect v-model="form.order_group">
               <option value="">차수</option>
-              <option value="1">일반분양</option>
-              <option value="2">조합모집</option>
+              <option
+                v-for="og in orderGroups"
+                :key="og.value"
+                :value="og.value"
+              >
+                {{ og.label }}
+              </option>
             </CFormSelect>
           </CCol>
 
           <CCol md="3" lg="3" class="mb-2">
             <CFormSelect v-model="form.unit_type">
               <option value="">타입</option>
-              <option value="1">일반분양</option>
-              <option value="2">조합모집</option>
+              <option v-for="ut in unitTypes" :key="ut.value" :value="ut.value">
+                {{ ut.label }}
+              </option>
             </CFormSelect>
           </CCol>
         </CRow>
