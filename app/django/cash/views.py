@@ -16,7 +16,7 @@ from .models import (CompanyBankAccount, ProjectBankAccount, CashBook, ProjectCa
 from rebs.models import (AccountSort, AccountSubD1, AccountSubD2, AccountSubD3,
                          ProjectAccountSort, ProjectAccountD1, ProjectAccountD2)
 from company.models import Company
-from project.models import Project, UnitType, KeyUnit, ProjectBudget
+from project.models import Project, UnitType, KeyUnit, ProjectOutBudget
 from contract.models import OrderGroup, Contract
 
 TODAY = datetime.today().strftime('%Y-%m-%d')
@@ -317,9 +317,9 @@ class ProjectCashReport(LoginRequiredMixin, TemplateView):
         context['unit_type'] = UnitType.objects.filter(project=self.get_project())
 
         # 예산관련 데이터(집행)
-        context['project_budgets'] = bg = ProjectBudget.objects.filter(project=self.get_project(),
-                                                                       account_d2__d1__projectaccountsort=2,
-                                                                       account_d2__d1__code__startswith="3")
+        context['project_budgets'] = bg = ProjectOutBudget.objects.filter(project=self.get_project(),
+                                                                          account_d2__d1__projectaccountsort=2,
+                                                                          account_d2__d1__code__startswith="3")
         context['rsp1'] = bg.filter(account_d2__code__range=('322', '326')).count()  # 간접공사비
         context['rsp2'] = bg.filter(account_d2__code__range=('327', '329')).count()  # 설계용역비
         context['rsp22'] = 6 + context['rsp1']

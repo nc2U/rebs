@@ -4,7 +4,7 @@ from django.contrib.humanize.templatetags.humanize import intcomma
 from import_export.admin import ImportExportMixin
 
 from .models import (Project, UnitType, UnitFloorType, KeyUnit,
-                     BuildingUnit, HouseUnit, ProjectBudget,
+                     BuildingUnit, HouseUnit, ProjectOutBudget,
                      Site, SiteOwner, SiteOwnshipRelationship, SiteContract)
 
 
@@ -59,7 +59,7 @@ class HouseUnitAdmin(ImportExportMixin, admin.ModelAdmin):
     list_filter = ('project', 'unit_type', 'building_unit', 'bldg_line', 'floor_type', 'is_hold', 'key_unit')
 
 
-class ProjectBudgetAdmin(ImportExportMixin, admin.ModelAdmin):
+class ProjectOutBudgetAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'project', 'account_d1', 'account_d2', 'budget')
     list_display_links = ('project', 'account_d1', 'account_d2')
     list_editable = ('budget',)
@@ -111,7 +111,7 @@ admin.site.register(UnitFloorType, UnitFloorTypeAdmin)
 admin.site.register(KeyUnit, KeyUnitAdmin)
 admin.site.register(BuildingUnit, BuindingUnitAdmin)
 admin.site.register(HouseUnit, HouseUnitAdmin)
-admin.site.register(ProjectBudget, ProjectBudgetAdmin)
+admin.site.register(ProjectOutBudget, ProjectOutBudgetAdmin)
 admin.site.register(Site, SiteAdmin)
 admin.site.register(SiteOwner, SiteOwnerAdmin)
 admin.site.register(SiteOwnshipRelationship, SiteOwnshipRelationshipAdmin)

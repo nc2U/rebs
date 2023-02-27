@@ -3,7 +3,7 @@ from rest_framework import serializers
 
 from notice.models import SalesBillIssue
 from project.models import (Project, UnitType, UnitFloorType,
-                            KeyUnit, BuildingUnit, HouseUnit, ProjectBudget,
+                            KeyUnit, BuildingUnit, HouseUnit, ProjectOutBudget,
                             Site, SiteOwner, SiteOwnshipRelationship, SiteContract)
 from contract.models import Contract, Contractor
 from rebs.models import ProjectAccountD1, ProjectAccountD2
@@ -120,12 +120,12 @@ class ProAccoD1InBudgetSerializer(serializers.ModelSerializer):
         fields = ('name', 'acc_d2s')
 
 
-class ProjectBudgetSerializer(serializers.ModelSerializer):
+class ProjectOutBudgetSerializer(serializers.ModelSerializer):
     account_d1 = ProAccoD1InBudgetSerializer()
     account_d2 = ProAccoD2InBudgetSerializer()
 
     class Meta:
-        model = ProjectBudget
+        model = ProjectOutBudget
         fields = ('pk', 'account_d1', 'account_d2', 'budget')
 
 

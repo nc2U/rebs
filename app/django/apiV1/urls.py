@@ -49,7 +49,7 @@ router.register(r'house-unit', project.HouseUnitViewSet)
 router.register(r'available-house-unit', project.AvailableHouseUnitViewSet,
                 basename='available-house-unit')  # only list
 router.register(r'all-house-unit', project.AllHouseUnitViewSet, basename='all-house-unit')  # only list
-router.register(r'budget', project.ProjectBudgetViewSet)  # only list
+router.register(r'budget', project.ProjectOutBudgetViewSet)  # only list
 router.register(r'exec-amount', project.ExecAmountToBudgetViewSet, basename='exec-amount')  # only list
 router.register(r'site', project.SiteViewSet)
 router.register(r'all-site', project.AllSiteViewSet, basename='all-site')  # only list

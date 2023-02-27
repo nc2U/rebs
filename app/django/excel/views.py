@@ -16,7 +16,7 @@ from django.views.generic import View
 
 from company.models import Company
 from project.models import (Project, Site, SiteOwner, SiteContract,
-                            UnitType, KeyUnit, BuildingUnit, HouseUnit, ProjectBudget)
+                            UnitType, KeyUnit, BuildingUnit, HouseUnit, ProjectOutBudget)
 from contract.models import Contract, Contractor, ContractorRelease
 from cash.models import CashBook, ProjectCashBook
 
@@ -1105,7 +1105,7 @@ class ExportBudgetExecutionStatus(View):
         b_format.set_num_format('#,##0')
         b_format.set_align('end')
 
-        budget = ProjectBudget.objects.filter(project=project)
+        budget = ProjectOutBudget.objects.filter(project=project)
         rsp1 = budget.filter(account_d2__code__range=('322', '326')).count()  # 간접공사비
         rsp2 = budget.filter(account_d2__code__range=('327', '329')).count()  # 설계용역비
         rsp3 = budget.filter(account_d2__code__range=('331', '339')).count()  # 판매비
@@ -1134,7 +1134,8 @@ class ExportBudgetExecutionStatus(View):
                     worksheet.merge_range(row_num, col, budget.count() + 2, col, '사업비', b_format)
                 if col == 1:
                     if int(bg.account_d2.code) == int(bg.account_d1.code) + 1:
-                        worksheet.merge_range(row_num, col, row_num + bg.account_d1.projectbudget_set.count() - 1, col,
+                        worksheet.merge_range(row_num, col, row_num + bg.account_d1.projectoutbudget_set.count() - 1,
+                                              col,
                                               bg.account_d1.name, b_format)
                 if col == 2:
                     if bg.account_d2.sub_title:

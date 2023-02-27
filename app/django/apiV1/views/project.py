@@ -9,7 +9,7 @@ from ..pagination import *
 from ..serializers.project import *
 
 from project.models import (Project, UnitType, UnitFloorType,
-                            KeyUnit, BuildingUnit, HouseUnit, ProjectBudget,
+                            KeyUnit, BuildingUnit, HouseUnit, ProjectOutBudget,
                             Site, SiteOwner, SiteOwnshipRelationship, SiteContract)
 
 from cash.models import (BankCode, CompanyBankAccount, ProjectBankAccount,
@@ -99,9 +99,9 @@ class AllHouseUnitViewSet(HouseUnitViewSet):
     pagination_class = PageNumberPaginationThreeThousand
 
 
-class ProjectBudgetViewSet(viewsets.ModelViewSet):
-    queryset = ProjectBudget.objects.all()
-    serializer_class = ProjectBudgetSerializer
+class ProjectOutBudgetViewSet(viewsets.ModelViewSet):
+    queryset = ProjectOutBudget.objects.all()
+    serializer_class = ProjectOutBudgetSerializer
     pagination_class = PageNumberPaginationFifty
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
     filterset_fields = ('project',)
