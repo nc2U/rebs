@@ -42,6 +42,8 @@ router.register(r'wise-say', rebs.WiseSayViewSet)
 # project
 router.register(r'project', project.ProjectViewSet)
 router.register(r'type', project.UnitTypeViewSet)
+router.register(r'out-budget', project.ProjectOutBudgetViewSet)  # only list
+router.register(r'exec-amount', project.ExecAmountToBudgetViewSet, basename='exec-amount')  # only list
 router.register(r'floor', project.UnitFloorTypeViewSet)
 router.register(r'key-unit', project.KeyUnitViewSet)
 router.register(r'bldg', project.BuildingUnitViewSet)
@@ -49,8 +51,6 @@ router.register(r'house-unit', project.HouseUnitViewSet)
 router.register(r'available-house-unit', project.AvailableHouseUnitViewSet,
                 basename='available-house-unit')  # only list
 router.register(r'all-house-unit', project.AllHouseUnitViewSet, basename='all-house-unit')  # only list
-router.register(r'budget', project.ProjectOutBudgetViewSet)  # only list
-router.register(r'exec-amount', project.ExecAmountToBudgetViewSet, basename='exec-amount')  # only list
 router.register(r'site', project.SiteViewSet)
 router.register(r'all-site', project.AllSiteViewSet, basename='all-site')  # only list
 router.register(r'sites-total', project.TotalSiteAreaViewSet, basename='sites-total')  # only list

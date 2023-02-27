@@ -50,6 +50,37 @@ class SimpleUnitTypeSerializer(serializers.ModelSerializer):
         fields = ('pk', 'name', 'color', 'average_price')
 
 
+class ProAccoD2InBudgetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProjectAccountD2
+        fields = ('pk', 'name', 'sub_title')
+
+
+class ProAccoD1InBudgetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProjectAccountD1
+        fields = ('name', 'acc_d2s')
+
+
+class ProjectOutBudgetSerializer(serializers.ModelSerializer):
+    account_d1 = ProAccoD1InBudgetSerializer()
+    account_d2 = ProAccoD2InBudgetSerializer()
+
+    class Meta:
+        model = ProjectOutBudget
+        fields = ('pk', 'account_d1', 'account_d2', 'budget')
+
+
+class ExecAmountToBudget(serializers.ModelSerializer):
+    acc_d2 = serializers.IntegerField()
+    all_sum = serializers.IntegerField()
+    month_sum = serializers.IntegerField()
+
+    class Meta:
+        model = ProjectCashBook
+        fields = ('acc_d2', 'all_sum', 'month_sum')
+
+
 class UnitFloorTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = UnitFloorType
@@ -106,37 +137,6 @@ class AllHouseUnitSerializer(serializers.ModelSerializer):
         model = HouseUnit
         fields = ('pk', 'unit_type', 'building_unit', 'name',
                   'key_unit', 'bldg_line', 'floor_no', 'is_hold')
-
-
-class ProAccoD2InBudgetSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ProjectAccountD2
-        fields = ('pk', 'name', 'sub_title')
-
-
-class ProAccoD1InBudgetSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ProjectAccountD1
-        fields = ('name', 'acc_d2s')
-
-
-class ProjectOutBudgetSerializer(serializers.ModelSerializer):
-    account_d1 = ProAccoD1InBudgetSerializer()
-    account_d2 = ProAccoD2InBudgetSerializer()
-
-    class Meta:
-        model = ProjectOutBudget
-        fields = ('pk', 'account_d1', 'account_d2', 'budget')
-
-
-class ExecAmountToBudget(serializers.ModelSerializer):
-    acc_d2 = serializers.IntegerField()
-    all_sum = serializers.IntegerField()
-    month_sum = serializers.IntegerField()
-
-    class Meta:
-        model = ProjectCashBook
-        fields = ('acc_d2', 'all_sum', 'month_sum')
 
 
 class AllSiteSerializer(serializers.ModelSerializer):

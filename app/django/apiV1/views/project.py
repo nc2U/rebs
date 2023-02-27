@@ -34,6 +34,44 @@ class UnitTypeViewSet(viewsets.ModelViewSet):
     search_fields = ('name',)
 
 
+class ProjectOutBudgetViewSet(viewsets.ModelViewSet):
+    queryset = ProjectOutBudget.objects.all()
+    serializer_class = ProjectOutBudgetSerializer
+    pagination_class = PageNumberPaginationFifty
+    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    filterset_fields = ('project',)
+
+
+class ExecAmountToBudgetViewSet(viewsets.ModelViewSet):
+    serializer_class = ExecAmountToBudget
+    pagination_class = PageNumberPaginationFifty
+    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    filterset_fields = ('project',)
+
+    def get_queryset(self):
+        date = self.request.query_params.get('date')
+        date = date if date else TODAY
+        month_first = datetime(datetime.strptime(date, '%Y-%m-%d').year,
+                               datetime.strptime(date, '%Y-%m-%d').month,
+                               1).strftime('%Y-%m-%d')
+
+        queryset = ProjectCashBook.objects.all() \
+            .order_by('project_account_d2') \
+            .filter(is_separate=False,
+                    project_account_d2__d1__gte=6,
+                    project_account_d2__d1__lte=10,
+                    bank_account__directpay=False,
+                    deal_date__lte=date)
+
+        return queryset.annotate(acc_d2=F('project_account_d2')) \
+            .values('acc_d2') \
+            .annotate(all_sum=Sum('outlay'),
+                      month_sum=Sum(Case(
+                          When(deal_date__gte=month_first, then=F('outlay')),
+                          default=0
+                      )))
+
+
 class UnitFloorTypeViewSet(viewsets.ModelViewSet):
     queryset = UnitFloorType.objects.all()
     serializer_class = UnitFloorTypeSerializer
@@ -97,44 +135,6 @@ class AvailableHouseUnitViewSet(HouseUnitViewSet):
 class AllHouseUnitViewSet(HouseUnitViewSet):
     serializer_class = AllHouseUnitSerializer
     pagination_class = PageNumberPaginationThreeThousand
-
-
-class ProjectOutBudgetViewSet(viewsets.ModelViewSet):
-    queryset = ProjectOutBudget.objects.all()
-    serializer_class = ProjectOutBudgetSerializer
-    pagination_class = PageNumberPaginationFifty
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-    filterset_fields = ('project',)
-
-
-class ExecAmountToBudgetViewSet(viewsets.ModelViewSet):
-    serializer_class = ExecAmountToBudget
-    pagination_class = PageNumberPaginationFifty
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-    filterset_fields = ('project',)
-
-    def get_queryset(self):
-        date = self.request.query_params.get('date')
-        date = date if date else TODAY
-        month_first = datetime(datetime.strptime(date, '%Y-%m-%d').year,
-                               datetime.strptime(date, '%Y-%m-%d').month,
-                               1).strftime('%Y-%m-%d')
-
-        queryset = ProjectCashBook.objects.all() \
-            .order_by('project_account_d2') \
-            .filter(is_separate=False,
-                    project_account_d2__d1__gte=6,
-                    project_account_d2__d1__lte=10,
-                    bank_account__directpay=False,
-                    deal_date__lte=date)
-
-        return queryset.annotate(acc_d2=F('project_account_d2')) \
-            .values('acc_d2') \
-            .annotate(all_sum=Sum('outlay'),
-                      month_sum=Sum(Case(
-                          When(deal_date__gte=month_first, then=F('outlay')),
-                          default=0
-                      )))
 
 
 class TotalSiteAreaViewSet(viewsets.ModelViewSet):
