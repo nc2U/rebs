@@ -69,8 +69,8 @@ class ProjectIncBudgetSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectIncBudget
         fields = (
-            'pk', 'account_d1', 'account_d2', 'order_group', 'unit_type',
-            'item_name', 'average_price', 'quantity', 'budget')
+            'pk', 'project', 'account_d1', 'account_d2', 'order_group',
+            'unit_type', 'item_name', 'average_price', 'quantity', 'budget')
 
 
 class ProjectOutBudgetSerializer(serializers.ModelSerializer):
@@ -79,7 +79,7 @@ class ProjectOutBudgetSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProjectOutBudget
-        fields = ('pk', 'account_d1', 'account_d2', 'item_name', 'basis_calc', 'budget')
+        fields = ('pk', 'project', 'account_d1', 'account_d2', 'item_name', 'basis_calc', 'budget')
 
 
 class ExecAmountToBudget(serializers.ModelSerializer):
