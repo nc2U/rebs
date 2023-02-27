@@ -8,8 +8,8 @@ from ..permission import *
 from ..pagination import *
 from ..serializers.project import *
 
-from project.models import (Project, UnitType, UnitFloorType,
-                            KeyUnit, BuildingUnit, HouseUnit, ProjectOutBudget,
+from project.models import (Project, UnitType, ProjectIncBudget, ProjectOutBudget,
+                            UnitFloorType, KeyUnit, BuildingUnit, HouseUnit,
                             Site, SiteOwner, SiteOwnshipRelationship, SiteContract)
 
 from cash.models import (BankCode, CompanyBankAccount, ProjectBankAccount,
@@ -32,6 +32,14 @@ class UnitTypeViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
     filterset_fields = ('project',)
     search_fields = ('name',)
+
+
+class ProjectIncBudgetViewSet(viewsets.ModelViewSet):
+    queryset = ProjectIncBudget.objects.all()
+    serializer_class = ProjectIncBudgetSerializer
+    pagination_class = PageNumberPaginationFifty
+    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    filterset_fields = ('project',)
 
 
 class ProjectOutBudgetViewSet(viewsets.ModelViewSet):

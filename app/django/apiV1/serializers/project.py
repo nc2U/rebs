@@ -2,8 +2,8 @@ from django.db import transaction
 from rest_framework import serializers
 
 from notice.models import SalesBillIssue
-from project.models import (Project, UnitType, UnitFloorType,
-                            KeyUnit, BuildingUnit, HouseUnit, ProjectOutBudget,
+from project.models import (Project, UnitType, ProjectIncBudget, ProjectOutBudget,
+                            UnitFloorType, KeyUnit, BuildingUnit, HouseUnit,
                             Site, SiteOwner, SiteOwnshipRelationship, SiteContract)
 from contract.models import Contract, Contractor
 from rebs.models import ProjectAccountD1, ProjectAccountD2
@@ -62,13 +62,24 @@ class ProAccoD1InBudgetSerializer(serializers.ModelSerializer):
         fields = ('name', 'acc_d2s')
 
 
+class ProjectIncBudgetSerializer(serializers.ModelSerializer):
+    account_d1 = ProAccoD1InBudgetSerializer()
+    account_d2 = ProAccoD2InBudgetSerializer()
+
+    class Meta:
+        model = ProjectIncBudget
+        fields = (
+            'pk', 'account_d1', 'account_d2', 'order_group', 'unit_type',
+            'item_name', 'average_price', 'quantity', 'budget')
+
+
 class ProjectOutBudgetSerializer(serializers.ModelSerializer):
     account_d1 = ProAccoD1InBudgetSerializer()
     account_d2 = ProAccoD2InBudgetSerializer()
 
     class Meta:
         model = ProjectOutBudget
-        fields = ('pk', 'account_d1', 'account_d2', 'budget')
+        fields = ('pk', 'account_d1', 'account_d2', 'item_name', 'basis_calc', 'budget')
 
 
 class ExecAmountToBudget(serializers.ModelSerializer):

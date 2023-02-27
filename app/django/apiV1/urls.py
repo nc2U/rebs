@@ -42,6 +42,7 @@ router.register(r'wise-say', rebs.WiseSayViewSet)
 # project
 router.register(r'project', project.ProjectViewSet)
 router.register(r'type', project.UnitTypeViewSet)
+router.register(r'inc-budget', project.ProjectIncBudgetViewSet)  # only list
 router.register(r'out-budget', project.ProjectOutBudgetViewSet)  # only list
 router.register(r'exec-amount', project.ExecAmountToBudgetViewSet, basename='exec-amount')  # only list
 router.register(r'floor', project.UnitFloorTypeViewSet)
