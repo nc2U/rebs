@@ -19,10 +19,10 @@ const compName = ref('StatusByAccount')
 const projectStore = useProject()
 const initProjId = computed(() => projectStore.initProjId)
 const project = computed(() => projectStore.project?.pk || initProjId.value)
-const fetchProOutBudgetList = (proj: number) =>
-  projectStore.fetchProOutBudgetList(proj)
-const patchProOutBudgetList = (proj: number, pk: number, budget: number) =>
-  projectStore.patchProOutBudgetList(proj, pk, budget)
+const fetchOutBudgetList = (proj: number) =>
+  projectStore.fetchOutBudgetList(proj)
+const patchOutBudgetList = (proj: number, pk: number, budget: number) =>
+  projectStore.patchOutBudgetList(proj, pk, budget)
 const fetchExecAmountList = (project: number, date?: string) =>
   projectStore.fetchExecAmountList(project, date)
 
@@ -50,7 +50,7 @@ const excelUrl = computed(() => {
 
 const onSelectAdd = (target: number) => {
   if (!!target) {
-    fetchProOutBudgetList(target)
+    fetchOutBudgetList(target)
     fetchExecAmountList(target, dateFormat(date.value))
     fetchProBankAccList(target)
     fetchBalanceByAccList({ project: target, date: dateFormat(date.value) })
@@ -79,17 +79,17 @@ const showTab = (num: number) => {
 const setDate = (d: Date) => {
   const dt = new Date(d)
   date.value = dt
-  fetchProOutBudgetList(project.value)
+  fetchOutBudgetList(project.value)
   fetchExecAmountList(project.value, dateFormat(dt))
   fetchBalanceByAccList({ project: project.value, date: dateFormat(dt) })
   fetchDateCashBookList({ project: project.value, date: dateFormat(dt) })
 }
 
 const patchBudget = (pk: number, budget: number) =>
-  patchProOutBudgetList(project.value, pk, budget)
+  patchOutBudgetList(project.value, pk, budget)
 
 onBeforeMount(() => {
-  fetchProOutBudgetList(initProjId.value)
+  fetchOutBudgetList(initProjId.value)
   fetchExecAmountList(initProjId.value)
   fetchProAllAccD1List()
   fetchProAllAccD2List()

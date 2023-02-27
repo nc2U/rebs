@@ -5,7 +5,7 @@ import { write_project_cash } from '@/utils/pageAuth'
 import { dateFormat, numFormat } from '@/utils/baseMixins'
 import { TableInfo, TableSecondary } from '@/utils/cssMixins'
 import {
-  ProjectBudget,
+  ProOutBudget,
   ExecAmountToBudget as ExeBudget,
 } from '@/store/types/project'
 
@@ -28,7 +28,7 @@ onBeforeMount(() => getSumTotal())
 watch(proOutBudgetList, () => getSumTotal())
 
 const getD2sInter = (arr: number[]) => {
-  const d2s = proOutBudgetList.value.map((b: ProjectBudget) => b.account_d2.pk)
+  const d2s = proOutBudgetList.value.map((b: ProOutBudget) => b.account_d2.pk)
   return arr.filter(x => d2s.includes(x))
 }
 const getLength = (arr: number[]) => getD2sInter(arr).length
@@ -38,8 +38,8 @@ const getFirst = (arr: number[]) => getD2sInter(arr)[0]
 const getSubTitle = (sub: string) =>
   sub !== ''
     ? proOutBudgetList.value
-        .filter((b: ProjectBudget) => b.account_d2.sub_title === sub)
-        .map((b: ProjectBudget) => b.pk)
+        .filter((b: ProOutBudget) => b.account_d2.sub_title === sub)
+        .map((b: ProOutBudget) => b.pk)
     : []
 
 const getExecAmount = (d2: number) =>
@@ -53,7 +53,7 @@ const getEAMonth = (d2: number) =>
 
 const getSumTotal = () => {
   const totalBudgetCalc = proOutBudgetList.value
-    .map((b: ProjectBudget) => b.budget)
+    .map((b: ProOutBudget) => b.budget)
     .reduce((res: number, val: number) => res + val, 0)
   const monthExecAmtCalc = execAmountList.value
     .map((a: ExeBudget) => a.month_sum)
