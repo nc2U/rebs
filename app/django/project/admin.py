@@ -60,9 +60,9 @@ class HouseUnitAdmin(ImportExportMixin, admin.ModelAdmin):
 
 
 class ProjectIncBudgetAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'project', 'order_group', 'unit_type', 'item_name', 'budget')
+    list_display = ('id', 'project', 'order_group', 'unit_type', 'item_name', 'average_price', 'quantity', 'budget')
     list_display_links = ('project', 'order_group', 'unit_type', 'item_name')
-    list_editable = ('order_group', 'unit_type', 'item_name', 'budget')
+    list_editable = ('average_price', 'quantity', 'budget')
     list_filter = ('project', 'order_group', 'unit_type')
 
 

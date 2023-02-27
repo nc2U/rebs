@@ -145,6 +145,8 @@ class ProjectIncBudget(models.Model):
                                     verbose_name='차수')
     unit_type = models.ForeignKey(UnitType, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='타입')
     item_name = models.CharField('항목명', max_length=20, null=True, blank=True)
+    average_price = models.PositiveIntegerField(verbose_name='평균 가격', null=True, blank=True)
+    quantity = models.PositiveSmallIntegerField(verbose_name='수량')
     budget = models.PositiveBigIntegerField(verbose_name='수입 예산')
 
     class Meta:
