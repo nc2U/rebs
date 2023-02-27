@@ -5,6 +5,7 @@ import { useAccount } from '@/store/pinia/account'
 import { errorHandle, message } from '@/utils/helper'
 import {
   Project,
+  ProIncBudget,
   ProOutBudget,
   ExecAmountToBudget,
 } from '@/store/types/project'
@@ -83,6 +84,21 @@ export const useProject = defineStore('project', () => {
       .catch(err => errorHandle(err.response.data))
 
   // states & getters
+  const proIncBudgetList = ref<ProIncBudget[]>([])
+
+  // actions
+  const fetchProIncBudgetList = (project: number) =>
+    api
+      .get(`/inc-budget/?project=${project}`)
+      .then(res => (proIncBudgetList.value = res.data.results))
+      .catch(err => errorHandle(err.response.data))
+
+  const patchProIncBudgetList = (project: number, pk: number, budget: number) =>
+    api
+      .patch(`/Inc-budget/${pk}/`, { budget })
+      .then(() => fetchProIncBudgetList(project))
+
+  // states & getters
   const proOutBudgetList = ref<ProOutBudget[]>([])
 
   // actions
@@ -120,6 +136,10 @@ export const useProject = defineStore('project', () => {
     createProject,
     updateProject,
     deleteProject,
+
+    proIncBudgetList,
+    fetchProIncBudgetList,
+    patchProIncBudgetList,
 
     proOutBudgetList,
     fetchProOutBudgetList,

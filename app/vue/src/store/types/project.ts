@@ -41,6 +41,25 @@ export interface UnitType {
   num_unit: number
 }
 
+export interface ProIncBudget {
+  pk: number
+  account_d1: {
+    name: string
+    acc_d2s: number[]
+  }
+  account_d2: {
+    pk: number
+    name: string
+    sub_title: string
+  }
+  order_group: number
+  unit_type: number
+  item_name: string | null
+  average_price: number
+  quantity: number
+  budget: number
+}
+
 export interface ProOutBudget {
   pk: number
   account_d1: {
@@ -52,6 +71,8 @@ export interface ProOutBudget {
     name: string
     sub_title: string
   }
+  item_name: string | null
+  basis_calc: string
   budget: number
 }
 
