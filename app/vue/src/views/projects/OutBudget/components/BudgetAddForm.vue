@@ -1,0 +1,175 @@
+<script lang="ts" setup>
+import { ref, reactive } from 'vue'
+import { write_project } from '@/utils/pageAuth'
+import Multiselect from '@vueform/multiselect'
+import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
+import AlertModal from '@/components/Modals/AlertModal.vue'
+
+defineProps({ disabled: Boolean })
+const emit = defineEmits(['on-submit'])
+
+const alertModal = ref()
+const confirmModal = ref()
+
+const validated = ref(false)
+const form = reactive({
+  account_d1: { name: '', acc_d2s: [] },
+  account_d2: { pk: 1, name: '', sub_title: '' },
+  order_group: null,
+  unit_type: null,
+  item_name: '',
+  average_price: null,
+  quantity: null,
+  budget: null,
+})
+
+const onSubmit = (event: Event) => {
+  if (write_project.value) {
+    const e = event.currentTarget as HTMLFormElement
+    if (!e.checkValidity()) {
+      event.preventDefault()
+      event.stopPropagation()
+
+      validated.value = true
+    } else confirmModal.value.callModal()
+  } else {
+    alertModal.value.callModal()
+    resetForm()
+  }
+}
+
+const modalAction = () => {
+  emit('on-submit', form)
+  validated.value = false
+  confirmModal.value.visible = false
+  resetForm()
+}
+
+const resetForm = () => {
+  form.account_d1 = { name: '', acc_d2s: [] }
+  form.account_d2 = { pk: 1, name: '', sub_title: '' }
+  form.order_group = null
+  form.unit_type = null
+  form.item_name = ''
+  form.average_price = null
+  form.quantity = null
+  form.budget = null
+}
+</script>
+
+<template>
+  <CForm
+    novalidate
+    class="needs-validation"
+    :validated="validated"
+    @submit.prevent="onSubmit"
+  >
+    <CRow class="p-2" color="success">
+      <CCol md="12" lg="5">
+        <CRow>
+          <CCol md="3" lg="3" class="mb-2">
+            <Multiselect
+              v-model="form.account_d1"
+              placeholder="대분류"
+              :disabled="disabled"
+              required
+            />
+          </CCol>
+
+          <CCol md="3" lg="3" class="mb-2">
+            <Multiselect
+              v-model="form.account_d2"
+              placeholder="중분류"
+              :disabled="disabled"
+              required
+            />
+          </CCol>
+
+          <CCol md="3" lg="3" class="mb-2">
+            <Multiselect
+              v-model="form.order_group"
+              placeholder="차수"
+              :disabled="disabled"
+            />
+          </CCol>
+
+          <CCol md="3" lg="3" class="mb-2">
+            <Multiselect
+              v-model="form.unit_type"
+              placeholder="타입"
+              :disabled="disabled"
+            >
+              <option value="">타입</option>
+              <option value="1">일반분양</option>
+              <option value="2">조합모집</option>
+            </Multiselect>
+          </CCol>
+        </CRow>
+      </CCol>
+
+      <CCol md="12" lg="5">
+        <CRow>
+          <CCol md="3" lg="3" class="mb-2">
+            <CFormInput
+              v-model="form.item_name"
+              placeholder="항목명"
+              maxlength="20"
+              :disabled="disabled"
+            />
+          </CCol>
+
+          <CCol md="3" lg="3" class="mb-2">
+            <CFormInput
+              v-model.number="form.average_price"
+              min="0"
+              placeholder="평균 가격"
+              type="number"
+              maxlength="18"
+              :disabled="disabled"
+            />
+          </CCol>
+          <CCol md="3" lg="3" class="mb-2">
+            <CFormInput
+              v-model.number="form.quantity"
+              min="0"
+              placeholder="수량"
+              type="number"
+              maxlength="9"
+              required
+              :disabled="disabled"
+            />
+          </CCol>
+          <CCol md="3" lg="3" class="mb-2">
+            <CFormInput
+              v-model.number="form.budget"
+              min="0"
+              placeholder="수입 예산"
+              type="number"
+              maxlength="18"
+              required
+              :disabled="disabled"
+            />
+          </CCol>
+        </CRow>
+      </CCol>
+
+      <CCol md="12" lg="2" class="d-grid gap-2 d-lg-block mb-3">
+        <CButton color="primary" type="submit" :disabled="disabled">
+          수입 예산 추가
+        </CButton>
+      </CCol>
+    </CRow>
+  </CForm>
+
+  <ConfirmModal ref="confirmModal">
+    <template #header> 수입 예산 등록</template>
+    <template #default>
+      프로젝트의 수입 예산 정보 등록을 진행하시겠습니까?
+    </template>
+    <template #footer>
+      <CButton color="primary" @click="modalAction">저장</CButton>
+    </template>
+  </ConfirmModal>
+
+  <AlertModal ref="alertModal" />
+</template>
