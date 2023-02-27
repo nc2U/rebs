@@ -42,7 +42,7 @@ export interface UnitType {
 }
 
 export interface ProIncBudget {
-  pk: number
+  pk?: number
   project: number
   account_d1: {
     name: string
@@ -62,7 +62,7 @@ export interface ProIncBudget {
 }
 
 export interface ProOutBudget {
-  pk: number
+  pk?: number
   project: number
   account_d1: {
     name: string

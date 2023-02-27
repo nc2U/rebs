@@ -84,32 +84,51 @@ export const useProject = defineStore('project', () => {
 
   // states & getters
   const proIncBudgetList = ref<ProIncBudget[]>([])
+  const proIncBudget = ref<ProIncBudget | null>(null)
 
   // actions
-  const fetchProIncBudgetList = (project: number) =>
+  const fetchIncBudgetList = (project: number) =>
     api
       .get(`/inc-budget/?project=${project}`)
       .then(res => (proIncBudgetList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
+  const fetchIncBudget = (pk: number) =>
+    api
+      .get(`/inc-budget/${pk}/`)
+      .then(res => (proIncBudget.value = res.data))
+      .catch(err => errorHandle(err.response.data))
+
   const createIncBudget = (payload: ProIncBudget) =>
     api
       .post('/inc-budget/', payload)
-      .then(res =>
-        fetchProIncBudgetList(res.data.project).then(() => message()),
-      )
+      .then(res => {
+        fetchIncBudget(res.data.pk).then(r =>
+          fetchIncBudgetList(r.data.project).then(() => message()),
+        )
+      })
       .catch(err => errorHandle(err.response.data))
 
-  const patchProIncBudgetList = (project: number, pk: number, budget: number) =>
+  const updateIncBudget = (payload: ProIncBudget) =>
+    api
+      .put(`/inc-budget/${payload.pk}/`, payload)
+      .then(res => {
+        fetchIncBudget(res.data.pk).then(r =>
+          fetchIncBudgetList(r.data.project).then(() => message()),
+        )
+      })
+      .catch(err => errorHandle(err.response.data))
+
+  const patchIncBudgetList = (project: number, pk: number, budget: number) =>
     api
       .patch(`/Inc-budget/${pk}/`, { budget })
-      .then(() => fetchProIncBudgetList(project))
+      .then(() => fetchIncBudgetList(project))
 
   const deleteIncBudget = (pk: number, project: number) =>
     api
       .delete(`/inc-budget/${pk}/`)
       .then(() =>
-        fetchProIncBudgetList(project).then(() =>
+        fetchIncBudgetList(project).then(() =>
           message('warning', '', '해당 오브젝트가 삭제되었습니다.'),
         ),
       )
@@ -117,32 +136,51 @@ export const useProject = defineStore('project', () => {
 
   // states & getters
   const proOutBudgetList = ref<ProOutBudget[]>([])
+  const proOutBudget = ref<ProOutBudget | null>(null)
 
   // actions
-  const fetchProOutBudgetList = (project: number) =>
+  const fetchOutBudgetList = (project: number) =>
     api
       .get(`/out-budget/?project=${project}`)
       .then(res => (proOutBudgetList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
+  const fetchOutBudget = (pk: number) =>
+    api
+      .get(`/out-budget/${pk}/`)
+      .then(res => (proOutBudget.value = res.data))
+      .catch(err => errorHandle(err.response.data))
+
   const createOutBudget = (payload: ProOutBudget) =>
     api
       .post('/out-budget/', payload)
-      .then(res =>
-        fetchProOutBudgetList(res.data.project).then(() => message()),
-      )
+      .then(res => {
+        fetchOutBudget(res.data.pk).then(r =>
+          fetchOutBudgetList(r.data.project).then(() => message()),
+        )
+      })
       .catch(err => errorHandle(err.response.data))
 
-  const patchProOutBudgetList = (project: number, pk: number, budget: number) =>
+  const updateOutBudget = (payload: ProOutBudget) =>
+    api
+      .put(`/out-budget/${payload.pk}/`, payload)
+      .then(res => {
+        fetchOutBudget(res.data.pk).then(r =>
+          fetchOutBudgetList(r.data.project).then(() => message()),
+        )
+      })
+      .catch(err => errorHandle(err.response.data))
+
+  const patchOutBudgetList = (project: number, pk: number, budget: number) =>
     api
       .patch(`/out-budget/${pk}/`, { budget })
-      .then(() => fetchProOutBudgetList(project))
+      .then(() => fetchOutBudgetList(project))
 
   const deleteOutBudget = (pk: number, project: number) =>
     api
       .delete(`/out-budget/${pk}/`)
       .then(() =>
-        fetchProOutBudgetList(project).then(() =>
+        fetchOutBudgetList(project).then(() =>
           message('warning', '', '해당 오브젝트가 삭제되었습니다.'),
         ),
       )
@@ -173,15 +211,21 @@ export const useProject = defineStore('project', () => {
     deleteProject,
 
     proIncBudgetList,
-    fetchProIncBudgetList,
+    proIncBudget,
+    fetchIncBudgetList,
+    fetchIncBudget,
     createIncBudget,
-    patchProIncBudgetList,
+    updateIncBudget,
+    patchIncBudgetList,
     deleteIncBudget,
 
     proOutBudgetList,
-    fetchProOutBudgetList,
+    proOutBudget,
+    fetchOutBudgetList,
+    fetchOutBudget,
     createOutBudget,
-    patchProOutBudgetList,
+    updateOutBudget,
+    patchOutBudgetList,
     deleteOutBudget,
 
     execAmountList,
