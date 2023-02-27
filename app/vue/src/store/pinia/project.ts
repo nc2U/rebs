@@ -5,7 +5,7 @@ import { useAccount } from '@/store/pinia/account'
 import { errorHandle, message } from '@/utils/helper'
 import {
   Project,
-  ProjectBudget,
+  ProOutBudget,
   ExecAmountToBudget,
 } from '@/store/types/project'
 
@@ -42,18 +42,18 @@ export const useProject = defineStore('project', () => {
     projectList.value.map((p: Project) => ({ value: p.pk, label: p.name })),
   )
 
-  const proBudgetList = ref<ProjectBudget[]>([])
+  const proOutBudgetList = ref<ProOutBudget[]>([])
 
-  const fetchProjectBudgetList = (project: number) =>
+  const fetchProOutBudgetList = (project: number) =>
     api
-      .get(`/budget/?project=${project}`)
-      .then(res => (proBudgetList.value = res.data.results))
+      .get(`/out-budget/?project=${project}`)
+      .then(res => (proOutBudgetList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
-  const patchProBudgetList = (project: number, pk: number, budget: number) =>
+  const patchProOutBudgetList = (project: number, pk: number, budget: number) =>
     api
-      .patch(`/budget/${pk}/`, { budget })
-      .then(() => fetchProjectBudgetList(project))
+      .patch(`/out-budget/${pk}/`, { budget })
+      .then(() => fetchProOutBudgetList(project))
 
   const execAmountList = ref<ExecAmountToBudget[]>([])
 
@@ -118,9 +118,9 @@ export const useProject = defineStore('project', () => {
     updateProject,
     deleteProject,
 
-    proBudgetList,
-    fetchProjectBudgetList,
-    patchProBudgetList,
+    proOutBudgetList,
+    fetchProOutBudgetList,
+    patchProOutBudgetList,
 
     execAmountList,
     fetchExecAmountList,

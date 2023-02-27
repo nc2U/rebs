@@ -41,7 +41,7 @@ export interface UnitType {
   num_unit: number
 }
 
-export interface ProjectBudget {
+export interface ProOutBudget {
   pk: number
   account_d1: {
     name: string
