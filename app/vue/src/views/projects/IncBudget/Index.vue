@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount } from 'vue'
+import { computed, onBeforeMount, provide } from 'vue'
 import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin1'
 import { useProject } from '@/store/pinia/project'
 import { ProIncBudget } from '@/store/types/project'
@@ -7,6 +7,7 @@ import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import BudgetAddForm from '@/views/projects/IncBudget/components/BudgetAddForm.vue'
 import BudgetFormList from '@/views/projects/IncBudget/components/BudgetFormList.vue'
+import { useProCash } from '@/store/pinia/proCash'
 
 const projectStore = useProject()
 const initProjId = computed(() => projectStore.initProjId)
@@ -25,6 +26,20 @@ const updateIncBudget = (payload: ProIncBudget) =>
 const deleteIncBudget = (pk: number, project: number) =>
   projectStore.deleteIncBudget(pk, project)
 
+const proCashStore = useProCash()
+const allAccD1List = computed(() =>
+  proCashStore.allAccD1List.filter(d1 => d1.pk <= 2),
+)
+const allAccD2List = computed(() =>
+  proCashStore.allAccD2List.filter(d2 => d2.pk <= 2),
+)
+
+provide('d1List', allAccD1List)
+provide('d2List', allAccD2List)
+
+const fetchProAllAccD1List = () => proCashStore.fetchProAllAccD1List()
+const fetchProAllAccD2List = () => proCashStore.fetchProAllAccD2List()
+
 const onSubmit = (payload: ProIncBudget) =>
   createIncBudget({ ...{ project: project.value }, ...payload })
 
@@ -33,7 +48,11 @@ const onUpdateBudget = (payload: ProIncBudget) =>
 
 const onDeleteBudget = (pk: number) => deleteIncBudget(pk, project.value)
 
-onBeforeMount(() => fetchIncBudgetList(initProjId.value))
+onBeforeMount(() => {
+  fetchProAllAccD1List()
+  fetchProAllAccD2List()
+  fetchIncBudgetList(initProjId.value)
+})
 </script>
 
 <template>

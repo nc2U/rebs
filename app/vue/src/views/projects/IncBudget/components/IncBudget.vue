@@ -1,9 +1,12 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, onBeforeMount } from 'vue'
+import { ref, reactive, computed, onBeforeMount, inject } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { write_project } from '@/utils/pageAuth'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
+
+const d1List = inject('d1List')
+const d2List = inject('d2List')
 
 const props = defineProps({ budget: { type: Object, default: null } })
 const emit = defineEmits(['on-update', 'on-delete'])
@@ -93,13 +96,17 @@ const resetForm = () => {
         @keypress.enter="formCheck(form.account_d1 !== budget.account_d1)"
       >
         <option value="">대분류</option>
+        <option v-for="d1 in d1List" :key="d1.pk" :value="d1.pk">
+          {{ d1.name }}
+        </option>
       </CFormSelect>
     </CTableDataCell>
     <CTableDataCell>
       <CFormSelect v-model="form.account_d2" required>
         <option value="">중분류</option>
-        <option value="1">일반분양</option>
-        <option value="2">조합모집</option>
+        <option v-for="d2 in d2List" :key="d2.pk" :value="d2.pk">
+          {{ d2.name }}
+        </option>
       </CFormSelect>
     </CTableDataCell>
     <CTableDataCell>
