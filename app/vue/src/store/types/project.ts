@@ -41,6 +41,26 @@ export interface UnitType {
   num_unit: number
 }
 
+export interface ProjectBudget {
+  pk: number
+  account_d1: {
+    name: string
+    acc_d2s: Array<number>
+  }
+  account_d2: {
+    pk: number
+    name: string
+    sub_title: string
+  }
+  budget: number
+}
+
+export interface ExecAmountToBudget {
+  acc_d2: number
+  all_sum: number
+  month_sum: number
+}
+
 export interface UnitFloorType {
   pk: number
   project: number
@@ -82,14 +102,6 @@ export interface HouseUnit {
   floor_no: number
   is_hold: boolean
   hold_reason: string
-}
-
-export interface ProjectBudget {
-  pk: number
-  project: number
-  account_d1: number
-  account_d2: number
-  budget: number
 }
 
 export interface AllSite {

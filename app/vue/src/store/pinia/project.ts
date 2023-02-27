@@ -3,7 +3,11 @@ import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import { useAccount } from '@/store/pinia/account'
 import { errorHandle, message } from '@/utils/helper'
-import { Project, ProjectBudget } from '@/store/types/project'
+import {
+  Project,
+  ProjectBudget,
+  ExecAmountToBudget,
+} from '@/store/types/project'
 
 const accountStore = useAccount()
 
@@ -38,7 +42,26 @@ export const useProject = defineStore('project', () => {
     projectList.value.map((p: Project) => ({ value: p.pk, label: p.name })),
   )
 
-  const projectBudgetList = ref<ProjectBudget[]>([])
+  const proBudgetList = ref<ProjectBudget[]>([])
+
+  const fetchProjectBudgetList = (project: number) =>
+    api
+      .get(`/budget/?project=${project}`)
+      .then(res => (proBudgetList.value = res.data.results))
+      .catch(err => errorHandle(err.response.data))
+
+  const patchProBudgetList = (project: number, pk: number, budget: number) =>
+    api
+      .patch(`/budget/${pk}/`, { budget })
+      .then(() => fetchProjectBudgetList(project))
+
+  const execAmountList = ref<ExecAmountToBudget[]>([])
+
+  const fetchExecAmountList = (project: number, date = '') =>
+    api
+      .get(`/exec-amount/?project=${project}&date=${date}`)
+      .then(res => (execAmountList.value = res.data.results))
+      .catch(err => errorHandle(err.response.data))
 
   // actions
   const fetchProjectList = () =>
@@ -82,17 +105,24 @@ export const useProject = defineStore('project', () => {
 
   return {
     projectList,
+    fetchProjectList,
+
     project,
     initProjId,
     allowed_projects,
     projSelect,
     getProjects,
-    projectBudgetList,
 
-    fetchProjectList,
     fetchProject,
     createProject,
     updateProject,
     deleteProject,
+
+    proBudgetList,
+    fetchProjectBudgetList,
+    patchProBudgetList,
+
+    execAmountList,
+    fetchExecAmountList,
   }
 })

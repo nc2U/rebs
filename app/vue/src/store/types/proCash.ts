@@ -38,26 +38,6 @@ export interface BalanceByAccount {
   out_sum: number | null
 }
 
-export interface ProjectBudget {
-  pk: number
-  account_d1: {
-    name: string
-    acc_d2s: Array<number>
-  }
-  account_d2: {
-    pk: number
-    name: string
-    sub_title: string
-  }
-  budget: number
-}
-
-export interface ExecAmountToBudget {
-  acc_d2: number
-  all_sum: number
-  month_sum: number
-}
-
 export interface ProSepItems {
   pk?: number | null
   project_account_d1: number | null

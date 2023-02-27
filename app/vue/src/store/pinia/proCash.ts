@@ -9,8 +9,6 @@ import {
   ProjectBankAccount,
   BalanceByAccount,
   ProjectCashBook,
-  ProjectBudget,
-  ExecAmountToBudget,
 } from '@/store/types/proCash'
 import { usePayment } from '@/store/pinia/payment'
 
@@ -137,27 +135,6 @@ export const useProCash = defineStore('proCash', () => {
       .then(res => (proDateCashBook.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
   }
-
-  const proBudgetList = ref<ProjectBudget[]>([])
-
-  const fetchProjectBudgetList = (project: number) =>
-    api
-      .get(`/budget/?project=${project}`)
-      .then(res => (proBudgetList.value = res.data.results))
-      .catch(err => errorHandle(err.response.data))
-
-  const patchProBudgetList = (project: number, pk: number, budget: number) =>
-    api
-      .patch(`/budget/${pk}/`, { budget })
-      .then(() => fetchProjectBudgetList(project))
-
-  const execAmountList = ref<ExecAmountToBudget[]>([])
-
-  const fetchExecAmountList = (project: number, date = '') =>
-    api
-      .get(`/exec-amount/?project=${project}&date=${date}`)
-      .then(res => (execAmountList.value = res.data.results))
-      .catch(err => errorHandle(err.response.data))
 
   const proCashBookList = ref<ProjectCashBook[]>([])
   const proCashesCount = ref<number>(0)
@@ -444,13 +421,6 @@ export const useProCash = defineStore('proCash', () => {
 
     proDateCashBook,
     fetchDateCashBookList,
-
-    proBudgetList,
-    fetchProjectBudgetList,
-    patchProBudgetList,
-
-    execAmountList,
-    fetchExecAmountList,
 
     proCashBookList,
     proCashesCount,
