@@ -46,6 +46,24 @@ const projects = {
           : import('@/views/_Accounts/NoAuth.vue'),
       meta: { title: '타입 정보 등록' },
     },
+    {
+      path: 'manage/inc-budget',
+      name: '수입 예산 등록',
+      component: () =>
+        pageViewAuth.value
+          ? import('@/views/projects/IncBudget/Index.vue')
+          : import('@/views/_Accounts/NoAuth.vue'),
+      meta: { title: '수입 예산 등록' },
+    },
+    {
+      path: 'manage/out-budget',
+      name: '지출 예산 등록',
+      component: () =>
+        pageViewAuth.value
+          ? import('@/views/projects/OutBudget/Index.vue')
+          : import('@/views/_Accounts/NoAuth.vue'),
+      meta: { title: '지출 예산 등록' },
+    },
 
     {
       path: 'settings/bldg',

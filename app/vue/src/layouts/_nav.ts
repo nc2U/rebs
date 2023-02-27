@@ -229,6 +229,16 @@ const project = {
     },
     {
       component: 'CNavItem',
+      name: '수입 예산 등록',
+      to: '/project/manage/inc-budget',
+    },
+    {
+      component: 'CNavItem',
+      name: '지출 예산 등록',
+      to: '/project/manage/out-budget',
+    },
+    {
+      component: 'CNavItem',
       name: '세부 설정 관리',
       icon: 'cil-cog',
       items: [
