@@ -3,8 +3,8 @@ from django.utils.html import format_html
 from django.contrib.humanize.templatetags.humanize import intcomma
 from import_export.admin import ImportExportMixin
 
-from .models import (Project, UnitType, UnitFloorType, KeyUnit,
-                     BuildingUnit, HouseUnit, ProjectOutBudget,
+from .models import (Project, UnitType, UnitFloorType, KeyUnit, BuildingUnit,
+                     HouseUnit, ProjectIncBudget, ProjectOutBudget,
                      Site, SiteOwner, SiteOwnshipRelationship, SiteContract)
 
 
@@ -59,6 +59,13 @@ class HouseUnitAdmin(ImportExportMixin, admin.ModelAdmin):
     list_filter = ('project', 'unit_type', 'building_unit', 'bldg_line', 'floor_type', 'is_hold', 'key_unit')
 
 
+class ProjectIncBudgetAdmin(ImportExportMixin, admin.ModelAdmin):
+    list_display = ('id', 'project', 'order_group', 'unit_type', 'item_name', 'budget')
+    list_display_links = ('project', 'order_group', 'unit_type', 'item_name')
+    list_editable = ('order_group', 'unit_type', 'item_name', 'budget')
+    list_filter = ('project', 'order_group', 'unit_type')
+
+
 class ProjectOutBudgetAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'project', 'account_d1', 'account_d2', 'budget')
     list_display_links = ('project', 'account_d1', 'account_d2')
@@ -111,6 +118,7 @@ admin.site.register(UnitFloorType, UnitFloorTypeAdmin)
 admin.site.register(KeyUnit, KeyUnitAdmin)
 admin.site.register(BuildingUnit, BuindingUnitAdmin)
 admin.site.register(HouseUnit, HouseUnitAdmin)
+admin.site.register(ProjectIncBudget, ProjectIncBudgetAdmin)
 admin.site.register(ProjectOutBudget, ProjectOutBudgetAdmin)
 admin.site.register(Site, SiteAdmin)
 admin.site.register(SiteOwner, SiteOwnerAdmin)
