@@ -70,6 +70,34 @@ class UnitType(models.Model):
         verbose_name_plural = '02. 타입 정보'
 
 
+class ProjectIncBudget(models.Model):
+    project = models.ForeignKey('project.Project', on_delete=models.CASCADE, verbose_name='프로젝트')
+    order_group = models.ForeignKey('contract.OrderGroup', on_delete=models.SET_NULL, null=True, blank=True,
+                                    verbose_name='차수')
+    unit_type = models.ForeignKey(UnitType, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='타입')
+    item_name = models.CharField('항목명', max_length=20, null=True, blank=True)
+    average_price = models.PositiveIntegerField(verbose_name='평균 가격', null=True, blank=True)
+    quantity = models.PositiveSmallIntegerField(verbose_name='수량')
+    budget = models.PositiveBigIntegerField(verbose_name='수입 예산')
+
+    class Meta:
+        ordering = ('id', '-project')
+        verbose_name = '03. 프로젝트 수입예산'
+        verbose_name_plural = '03. 프로젝트 수입예산'
+
+
+class ProjectOutBudget(models.Model):
+    project = models.ForeignKey('project.Project', on_delete=models.CASCADE, verbose_name='프로젝트')
+    account_d1 = models.ForeignKey('rebs.ProjectAccountD1', on_delete=models.PROTECT, verbose_name='예산항목1')
+    account_d2 = models.ForeignKey('rebs.ProjectAccountD2', on_delete=models.PROTECT, verbose_name='예산항목2')
+    budget = models.PositiveBigIntegerField(verbose_name='지출 예산')
+
+    class Meta:
+        ordering = ('account_d2', '-project')
+        verbose_name = '04. 프로젝트 지출예산'
+        verbose_name_plural = '04. 프로젝트 지출예산'
+
+
 class UnitFloorType(models.Model):  # 층별 타입
     project = models.ForeignKey('Project', on_delete=models.CASCADE, verbose_name='프로젝트', related_name='floors')
     start_floor = models.PositiveIntegerField('시작 층')
@@ -83,8 +111,8 @@ class UnitFloorType(models.Model):  # 층별 타입
 
     class Meta:
         ordering = ['-project', '-end_floor', '-id']
-        verbose_name = '03. 층별 조건'
-        verbose_name_plural = '03. 층별 조건'
+        verbose_name = '05. 층별 조건'
+        verbose_name_plural = '05. 층별 조건'
 
 
 class KeyUnit(models.Model):
@@ -99,8 +127,8 @@ class KeyUnit(models.Model):
 
     class Meta:
         ordering = ['unit_code', '-project']
-        verbose_name = '04. 계약 유닛'
-        verbose_name_plural = '04. 계약 유닛'
+        verbose_name = '06. 계약 유닛'
+        verbose_name_plural = '06. 계약 유닛'
 
 
 class BuildingUnit(models.Model):
@@ -109,8 +137,8 @@ class BuildingUnit(models.Model):
 
     class Meta:
         ordering = ('-project', 'id')
-        verbose_name = '05. 동수'
-        verbose_name_plural = '05. 동수'
+        verbose_name = '07. 동수'
+        verbose_name_plural = '07. 동수'
 
     def __str__(self):
         return self.name
@@ -135,36 +163,8 @@ class HouseUnit(models.Model):
 
     class Meta:
         ordering = ['-project', 'building_unit', '-floor_no']
-        verbose_name = '06. 호수'
-        verbose_name_plural = '06. 호수'
-
-
-class ProjectIncBudget(models.Model):
-    project = models.ForeignKey('project.Project', on_delete=models.CASCADE, verbose_name='프로젝트')
-    order_group = models.ForeignKey('contract.OrderGroup', on_delete=models.SET_NULL, null=True, blank=True,
-                                    verbose_name='차수')
-    unit_type = models.ForeignKey(UnitType, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='타입')
-    item_name = models.CharField('항목명', max_length=20, null=True, blank=True)
-    average_price = models.PositiveIntegerField(verbose_name='평균 가격', null=True, blank=True)
-    quantity = models.PositiveSmallIntegerField(verbose_name='수량')
-    budget = models.PositiveBigIntegerField(verbose_name='수입 예산')
-
-    class Meta:
-        ordering = ('id', '-project')
-        verbose_name = '07. 프로젝트 수입예산'
-        verbose_name_plural = '07. 프로젝트 수입예산'
-
-
-class ProjectOutBudget(models.Model):
-    project = models.ForeignKey('project.Project', on_delete=models.CASCADE, verbose_name='프로젝트')
-    account_d1 = models.ForeignKey('rebs.ProjectAccountD1', on_delete=models.PROTECT, verbose_name='예산항목1')
-    account_d2 = models.ForeignKey('rebs.ProjectAccountD2', on_delete=models.PROTECT, verbose_name='예산항목2')
-    budget = models.PositiveBigIntegerField(verbose_name='지출 예산')
-
-    class Meta:
-        ordering = ('account_d2', '-project')
-        verbose_name = '08. 프로젝트 지출예산'
-        verbose_name_plural = '08. 프로젝트 지출예산'
+        verbose_name = '08. 호수'
+        verbose_name_plural = '08. 호수'
 
 
 class Site(models.Model):

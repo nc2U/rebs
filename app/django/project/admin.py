@@ -29,6 +29,20 @@ class UnitTypeAdmin(ImportExportMixin, admin.ModelAdmin):
     styled_color.short_description = '타입색상'
 
 
+class ProjectIncBudgetAdmin(ImportExportMixin, admin.ModelAdmin):
+    list_display = ('id', 'project', 'order_group', 'unit_type', 'item_name', 'average_price', 'quantity', 'budget')
+    list_display_links = ('project', 'order_group', 'unit_type', 'item_name')
+    list_editable = ('average_price', 'quantity', 'budget')
+    list_filter = ('project', 'order_group', 'unit_type')
+
+
+class ProjectOutBudgetAdmin(ImportExportMixin, admin.ModelAdmin):
+    list_display = ('id', 'project', 'account_d1', 'account_d2', 'budget')
+    list_display_links = ('project', 'account_d1', 'account_d2')
+    list_editable = ('budget',)
+    list_filter = ('project', 'account_d1', 'account_d2')
+
+
 class UnitFloorTypeAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'project', 'start_floor', 'end_floor', 'extra_cond', 'alias_name')
     list_display_links = ('project',)
@@ -57,20 +71,6 @@ class HouseUnitAdmin(ImportExportMixin, admin.ModelAdmin):
     search_fields = ('name',)
     list_display_links = ('project', 'building_unit', 'name')
     list_filter = ('project', 'unit_type', 'building_unit', 'bldg_line', 'floor_type', 'is_hold', 'key_unit')
-
-
-class ProjectIncBudgetAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'project', 'order_group', 'unit_type', 'item_name', 'average_price', 'quantity', 'budget')
-    list_display_links = ('project', 'order_group', 'unit_type', 'item_name')
-    list_editable = ('average_price', 'quantity', 'budget')
-    list_filter = ('project', 'order_group', 'unit_type')
-
-
-class ProjectOutBudgetAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'project', 'account_d1', 'account_d2', 'budget')
-    list_display_links = ('project', 'account_d1', 'account_d2')
-    list_editable = ('budget',)
-    list_filter = ('project', 'account_d1', 'account_d2')
 
 
 class SiteAdmin(ImportExportMixin, admin.ModelAdmin):
@@ -114,12 +114,12 @@ class SiteContractAdmin(ImportExportMixin, admin.ModelAdmin):
 
 admin.site.register(Project, ProjectAdmin)
 admin.site.register(UnitType, UnitTypeAdmin)
+admin.site.register(ProjectIncBudget, ProjectIncBudgetAdmin)
+admin.site.register(ProjectOutBudget, ProjectOutBudgetAdmin)
 admin.site.register(UnitFloorType, UnitFloorTypeAdmin)
 admin.site.register(KeyUnit, KeyUnitAdmin)
 admin.site.register(BuildingUnit, BuindingUnitAdmin)
 admin.site.register(HouseUnit, HouseUnitAdmin)
-admin.site.register(ProjectIncBudget, ProjectIncBudgetAdmin)
-admin.site.register(ProjectOutBudget, ProjectOutBudgetAdmin)
 admin.site.register(Site, SiteAdmin)
 admin.site.register(SiteOwner, SiteOwnerAdmin)
 admin.site.register(SiteOwnshipRelationship, SiteOwnshipRelationshipAdmin)
