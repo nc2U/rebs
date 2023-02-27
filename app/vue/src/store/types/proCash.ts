@@ -1,7 +1,6 @@
 export interface ProjectAccountD1 {
   pk: number
-  sort: string
-  sort_desc: string
+  acc: string
   code: string
   name: string
   description: string
