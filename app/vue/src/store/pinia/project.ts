@@ -14,20 +14,11 @@ const accountStore = useAccount()
 export const useProject = defineStore('project', () => {
   // states & getters
   const projectList = ref<Project[]>([])
-  const project = ref<Project | null>(null)
-
-  const initProjId = computed(() =>
-    accountStore.userInfo?.staffauth?.assigned_project
-      ? accountStore.userInfo.staffauth.assigned_project
-      : 1,
-  )
-
   const allowed_projects = computed(() =>
     accountStore.userInfo && accountStore.userInfo.staffauth
       ? accountStore.userInfo.staffauth.allowed_projects
       : [],
   )
-
   const projSelect = computed(() => {
     const getProject = accountStore.superAuth
       ? projectList.value
@@ -42,27 +33,6 @@ export const useProject = defineStore('project', () => {
     projectList.value.map((p: Project) => ({ value: p.pk, label: p.name })),
   )
 
-  const proOutBudgetList = ref<ProOutBudget[]>([])
-
-  const fetchProOutBudgetList = (project: number) =>
-    api
-      .get(`/out-budget/?project=${project}`)
-      .then(res => (proOutBudgetList.value = res.data.results))
-      .catch(err => errorHandle(err.response.data))
-
-  const patchProOutBudgetList = (project: number, pk: number, budget: number) =>
-    api
-      .patch(`/out-budget/${pk}/`, { budget })
-      .then(() => fetchProOutBudgetList(project))
-
-  const execAmountList = ref<ExecAmountToBudget[]>([])
-
-  const fetchExecAmountList = (project: number, date = '') =>
-    api
-      .get(`/exec-amount/?project=${project}&date=${date}`)
-      .then(res => (execAmountList.value = res.data.results))
-      .catch(err => errorHandle(err.response.data))
-
   // actions
   const fetchProjectList = () =>
     api
@@ -70,6 +40,15 @@ export const useProject = defineStore('project', () => {
       .then(res => (projectList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
+  // states & getters
+  const project = ref<Project | null>(null)
+  const initProjId = computed(() =>
+    accountStore.userInfo?.staffauth?.assigned_project
+      ? accountStore.userInfo.staffauth.assigned_project
+      : 1,
+  )
+
+  // actions
   const fetchProject = (pk: number) =>
     api
       .get(`/project/${pk}/`)
@@ -103,16 +82,40 @@ export const useProject = defineStore('project', () => {
       )
       .catch(err => errorHandle(err.response.data))
 
+  // states & getters
+  const proOutBudgetList = ref<ProOutBudget[]>([])
+
+  // actions
+  const fetchProOutBudgetList = (project: number) =>
+    api
+      .get(`/out-budget/?project=${project}`)
+      .then(res => (proOutBudgetList.value = res.data.results))
+      .catch(err => errorHandle(err.response.data))
+
+  const patchProOutBudgetList = (project: number, pk: number, budget: number) =>
+    api
+      .patch(`/out-budget/${pk}/`, { budget })
+      .then(() => fetchProOutBudgetList(project))
+
+  // states & getters
+  const execAmountList = ref<ExecAmountToBudget[]>([])
+
+  // actions
+  const fetchExecAmountList = (project: number, date = '') =>
+    api
+      .get(`/exec-amount/?project=${project}&date=${date}`)
+      .then(res => (execAmountList.value = res.data.results))
+      .catch(err => errorHandle(err.response.data))
+
   return {
     projectList,
+    allowed_projects,
+    projSelect,
+    getProjects,
     fetchProjectList,
 
     project,
     initProjId,
-    allowed_projects,
-    projSelect,
-    getProjects,
-
     fetchProject,
     createProject,
     updateProject,
