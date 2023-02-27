@@ -98,7 +98,7 @@ class ProjectOutBudget(models.Model):
     budget = models.PositiveBigIntegerField(verbose_name='지출 예산')
 
     class Meta:
-        ordering = ('account_d2', '-project')
+        ordering = ('id', '-project')
         verbose_name = '04. 프로젝트 지출예산'
         verbose_name_plural = '04. 프로젝트 지출예산'
 
