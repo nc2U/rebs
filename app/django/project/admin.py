@@ -30,16 +30,18 @@ class UnitTypeAdmin(ImportExportMixin, admin.ModelAdmin):
 
 
 class ProjectIncBudgetAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'project', 'order_group', 'unit_type', 'item_name', 'average_price', 'quantity', 'budget')
-    list_display_links = ('project', 'order_group', 'unit_type', 'item_name')
-    list_editable = ('average_price', 'quantity', 'budget')
+    list_display = ('id', 'project', 'account_d1', 'account_d2', 'order_group',
+                    'unit_type', 'item_name', 'average_price', 'quantity', 'budget')
+    list_display_links = ('project',)
+    list_editable = ('account_d1', 'account_d2', 'order_group', 'unit_type',
+                     'item_name', 'average_price', 'quantity', 'budget')
     list_filter = ('project', 'order_group', 'unit_type')
 
 
 class ProjectOutBudgetAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'project', 'account_d1', 'account_d2', 'budget')
-    list_display_links = ('project', 'account_d1', 'account_d2')
-    list_editable = ('budget',)
+    list_display = ('id', 'project', 'account_d1', 'account_d2', 'item_name', 'budget', 'basis_calc')
+    list_display_links = ('project',)
+    list_editable = ('account_d1', 'account_d2', 'item_name', 'budget', 'basis_calc')
     list_filter = ('project', 'account_d1', 'account_d2')
 
 

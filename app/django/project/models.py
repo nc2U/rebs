@@ -72,6 +72,8 @@ class UnitType(models.Model):
 
 class ProjectIncBudget(models.Model):
     project = models.ForeignKey('project.Project', on_delete=models.CASCADE, verbose_name='프로젝트')
+    account_d1 = models.ForeignKey('rebs.ProjectAccountD1', on_delete=models.PROTECT, verbose_name='예산항목1')
+    account_d2 = models.ForeignKey('rebs.ProjectAccountD2', on_delete=models.PROTECT, verbose_name='예산항목2')
     order_group = models.ForeignKey('contract.OrderGroup', on_delete=models.SET_NULL, null=True, blank=True,
                                     verbose_name='차수')
     unit_type = models.ForeignKey(UnitType, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='타입')
@@ -89,7 +91,9 @@ class ProjectIncBudget(models.Model):
 class ProjectOutBudget(models.Model):
     project = models.ForeignKey('project.Project', on_delete=models.CASCADE, verbose_name='프로젝트')
     account_d1 = models.ForeignKey('rebs.ProjectAccountD1', on_delete=models.PROTECT, verbose_name='예산항목1')
-    account_d2 = models.ForeignKey('rebs.ProjectAccountD2', on_delete=models.PROTECT, verbose_name='예산항목2')
+    account_d2 = models.ForeignKey('rebs.ProjectAccountD2', on_delete=models.SET_NULL, null=True, blank=True,
+                                   verbose_name='예산항목2')
+    item_name = models.CharField('항목명', max_length=20, null=True, blank=True)
     basis_calc = models.CharField('산출근거', max_length=255, null=True, blank=True)
     budget = models.PositiveBigIntegerField(verbose_name='지출 예산')
 
