@@ -13,8 +13,8 @@ const confirmModal = ref()
 
 const validated = ref(false)
 const form = reactive({
-  account_d1: { name: '', acc_d2s: [] },
-  account_d2: { pk: 1, name: '', sub_title: '' },
+  account_d1: null,
+  account_d2: null,
   order_group: null,
   unit_type: null,
   item_name: '',
@@ -46,8 +46,8 @@ const modalAction = () => {
 }
 
 const resetForm = () => {
-  form.account_d1 = { name: '', acc_d2s: [] }
-  form.account_d2 = { pk: 1, name: '', sub_title: '' }
+  form.account_d1 = null
+  form.account_d2 = null
   form.order_group = null
   form.unit_type = null
   form.item_name = ''
@@ -68,41 +68,35 @@ const resetForm = () => {
       <CCol md="12" lg="5">
         <CRow>
           <CCol md="3" lg="3" class="mb-2">
-            <Multiselect
-              v-model="form.account_d1"
-              placeholder="대분류"
-              :disabled="disabled"
-              required
-            />
+            <CFormSelect v-model="form.account_d1" required>
+              <option value="">대분류</option>
+              <option value="1">일반분양</option>
+              <option value="2">조합모집</option>
+            </CFormSelect>
           </CCol>
 
           <CCol md="3" lg="3" class="mb-2">
-            <Multiselect
-              v-model="form.account_d2"
-              placeholder="중분류"
-              :disabled="disabled"
-              required
-            />
+            <CFormSelect v-model="form.account_d2" required>
+              <option value="">중분류</option>
+              <option value="1">일반분양</option>
+              <option value="2">조합모집</option>
+            </CFormSelect>
           </CCol>
 
           <CCol md="3" lg="3" class="mb-2">
-            <Multiselect
-              v-model="form.order_group"
-              placeholder="차수"
-              :disabled="disabled"
-            />
+            <CFormSelect v-model="form.order_group">
+              <option value="">차수</option>
+              <option value="1">일반분양</option>
+              <option value="2">조합모집</option>
+            </CFormSelect>
           </CCol>
 
           <CCol md="3" lg="3" class="mb-2">
-            <Multiselect
-              v-model="form.unit_type"
-              placeholder="타입"
-              :disabled="disabled"
-            >
+            <CFormSelect v-model="form.unit_type">
               <option value="">타입</option>
               <option value="1">일반분양</option>
               <option value="2">조합모집</option>
-            </Multiselect>
+            </CFormSelect>
           </CCol>
         </CRow>
       </CCol>

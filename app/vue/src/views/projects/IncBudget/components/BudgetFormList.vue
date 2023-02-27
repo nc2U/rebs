@@ -1,14 +1,14 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { useContract } from '@/store/pinia/contract'
-import { OrderGroup as og } from '@/store/types/contract'
+import { useProject } from '@/store/pinia/project'
+import { ProIncBudget } from '@/store/types/project'
 import { TableSecondary } from '@/utils/cssMixins'
 import IncBudget from './IncBudget.vue'
 
 const emit = defineEmits(['on-update', 'on-delete'])
 
-const contractStore = useContract()
-const orderGroupList = computed(() => contractStore.orderGroupList)
+const proStore = useProject()
+const proIncBudgetList = computed(() => proStore.proIncBudgetList)
 
 const onUpdateOrder = (payload: og) => emit('on-update', payload)
 const onDeleteOrder = (pk: number) => emit('on-delete', pk)
@@ -17,24 +17,34 @@ const onDeleteOrder = (pk: number) => emit('on-delete', pk)
 <template>
   <CTable hover responsive>
     <colgroup>
-      <col width="25%" />
-      <col width="25%" />
-      <col width="25%" />
-      <col width="25%" />
+      <col width="11%" />
+      <col width="11%" />
+      <col width="11%" />
+      <col width="11%" />
+      <col width="11%" />
+      <col width="11%" />
+      <col width="11%" />
+      <col width="11%" />
+      <col width="12%" />
     </colgroup>
     <CTableHead :color="TableSecondary" class="text-center">
       <CTableRow>
-        <CTableHeaderCell>등록차수</CTableHeaderCell>
-        <CTableHeaderCell>차수구분</CTableHeaderCell>
+        <CTableHeaderCell>대분류</CTableHeaderCell>
+        <CTableHeaderCell>중분류</CTableHeaderCell>
         <CTableHeaderCell>차수그룹명</CTableHeaderCell>
+        <CTableHeaderCell>타입명</CTableHeaderCell>
+        <CTableHeaderCell>항목명</CTableHeaderCell>
+        <CTableHeaderCell>평균가격</CTableHeaderCell>
+        <CTableHeaderCell>수량</CTableHeaderCell>
+        <CTableHeaderCell>수입예산</CTableHeaderCell>
         <CTableHeaderCell>비 고</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
-    <CTableBody v-if="orderGroupList.length > 0">
+    <CTableBody v-if="proIncBudgetList.length > 0">
       <IncBudget
-        v-for="order in orderGroupList"
-        :key="order.pk"
-        :order="order"
+        v-for="budget in proIncBudgetList"
+        :key="budget.pk"
+        :budget="budget"
         @on-update="onUpdateOrder"
         @on-delete="onDeleteOrder"
       />
