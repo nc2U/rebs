@@ -17,9 +17,14 @@ const date = ref(new Date())
 const compName = ref('StatusByAccount')
 
 const projectStore = useProject()
-
 const initProjId = computed(() => projectStore.initProjId)
 const project = computed(() => projectStore.project?.pk || initProjId.value)
+const fetchProOutBudgetList = (proj: number) =>
+  projectStore.fetchProOutBudgetList(proj)
+const patchProOutBudgetList = (proj: number, pk: number, budget: number) =>
+  projectStore.patchProOutBudgetList(proj, pk, budget)
+const fetchExecAmountList = (project: number, date?: string) =>
+  projectStore.fetchExecAmountList(project, date)
 
 const proCashStore = useProCash()
 const fetchProAllAccD1List = () => proCashStore.fetchProAllAccD1List
@@ -31,12 +36,6 @@ const fetchBalanceByAccList = (payload: { project: number; date?: string }) =>
   proCashStore.fetchBalanceByAccList(payload)
 const fetchDateCashBookList = (payload: { project: number; date: string }) =>
   proCashStore.fetchDateCashBookList(payload)
-const fetchProjectBudgetList = (proj: number) =>
-  proCashStore.fetchProjectBudgetList(proj)
-const patchProBudgetList = (proj: number, pk: number, budget: number) =>
-  proCashStore.patchProBudgetList(proj, pk, budget)
-const fetchExecAmountList = (project: number, date?: string) =>
-  proCashStore.fetchExecAmountList(project, date)
 
 const excelUrl = computed(() => {
   const comp = compName.value
@@ -51,20 +50,20 @@ const excelUrl = computed(() => {
 
 const onSelectAdd = (target: number) => {
   if (!!target) {
+    fetchProOutBudgetList(target)
+    fetchExecAmountList(target, dateFormat(date.value))
     fetchProBankAccList(target)
     fetchBalanceByAccList({ project: target, date: dateFormat(date.value) })
     fetchDateCashBookList({
       project: target,
       date: dateFormat(date.value),
     })
-    fetchProjectBudgetList(target)
-    fetchExecAmountList(target, dateFormat(date.value))
   } else {
+    projectStore.proOutBudgetList = []
+    projectStore.execAmountList = []
     proCashStore.proBankAccountList = []
     proCashStore.balanceByAccList = []
     proCashStore.proDateCashBook = []
-    proCashStore.proBudgetList = []
-    proCashStore.execAmountList = []
   }
 }
 
@@ -80,16 +79,18 @@ const showTab = (num: number) => {
 const setDate = (d: Date) => {
   const dt = new Date(d)
   date.value = dt
+  fetchProOutBudgetList(project.value)
+  fetchExecAmountList(project.value, dateFormat(dt))
   fetchBalanceByAccList({ project: project.value, date: dateFormat(dt) })
   fetchDateCashBookList({ project: project.value, date: dateFormat(dt) })
-  fetchProjectBudgetList(project.value)
-  fetchExecAmountList(project.value, dateFormat(dt))
 }
 
 const patchBudget = (pk: number, budget: number) =>
-  patchProBudgetList(project.value, pk, budget)
+  patchProOutBudgetList(project.value, pk, budget)
 
 onBeforeMount(() => {
+  fetchProOutBudgetList(initProjId.value)
+  fetchExecAmountList(initProjId.value)
   fetchProAllAccD1List()
   fetchProAllAccD2List()
   fetchProBankAccList(initProjId.value)
@@ -101,8 +102,6 @@ onBeforeMount(() => {
     project: initProjId.value,
     date: dateFormat(date.value),
   })
-  fetchProjectBudgetList(initProjId.value)
-  fetchExecAmountList(initProjId.value)
 })
 </script>
 

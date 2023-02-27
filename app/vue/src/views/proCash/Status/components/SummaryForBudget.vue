@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount, ref, watch } from 'vue'
-import { useProCash } from '@/store/pinia/proCash'
+import { useProject } from '@/store/pinia/project'
 import { write_project_cash } from '@/utils/pageAuth'
 import { dateFormat, numFormat } from '@/utils/baseMixins'
 import { TableInfo, TableSecondary } from '@/utils/cssMixins'
 import {
   ProjectBudget,
   ExecAmountToBudget as ExeBudget,
-} from '@/store/types/proCash'
+} from '@/store/types/project'
 
 defineProps({ date: { type: String, default: '' } })
 
@@ -19,16 +19,16 @@ const monthExecAmt = ref(0)
 const totalExecAmt = ref(0)
 const availableBudget = ref(0)
 
-const proCashStore = useProCash()
-const proBudgetList = computed(() => proCashStore.proBudgetList)
-const execAmountList = computed(() => proCashStore.execAmountList)
+const projectStore = useProject()
+const proOutBudgetList = computed(() => projectStore.proOutBudgetList)
+const execAmountList = computed(() => projectStore.execAmountList)
 
 onBeforeMount(() => getSumTotal())
 
-watch(proBudgetList, () => getSumTotal())
+watch(proOutBudgetList, () => getSumTotal())
 
 const getD2sInter = (arr: number[]) => {
-  const d2s = proBudgetList.value.map((b: ProjectBudget) => b.account_d2.pk)
+  const d2s = proOutBudgetList.value.map((b: ProjectBudget) => b.account_d2.pk)
   return arr.filter(x => d2s.includes(x))
 }
 const getLength = (arr: number[]) => getD2sInter(arr).length
@@ -37,7 +37,7 @@ const getFirst = (arr: number[]) => getD2sInter(arr)[0]
 
 const getSubTitle = (sub: string) =>
   sub !== ''
-    ? proBudgetList.value
+    ? proOutBudgetList.value
         .filter((b: ProjectBudget) => b.account_d2.sub_title === sub)
         .map((b: ProjectBudget) => b.pk)
     : []
@@ -52,7 +52,7 @@ const getEAMonth = (d2: number) =>
   getExecAmount(d2).map((e: ExeBudget) => e.month_sum)[0]
 
 const getSumTotal = () => {
-  const totalBudgetCalc = proBudgetList.value
+  const totalBudgetCalc = proOutBudgetList.value
     .map((b: ProjectBudget) => b.budget)
     .reduce((res: number, val: number) => res + val, 0)
   const monthExecAmtCalc = execAmountList.value
@@ -120,7 +120,7 @@ const patchBudget = (pk: number, budget: string, oldBudget: number) => {
 
     <CTableBody>
       <CTableRow
-        v-for="(bdj, i) in proBudgetList"
+        v-for="(bdj, i) in proOutBudgetList"
         :key="bdj.pk"
         class="text-right"
       >
@@ -128,7 +128,7 @@ const patchBudget = (pk: number, budget: string, oldBudget: number) => {
           v-if="i === 0"
           :color="TableInfo"
           class="text-center"
-          :rowspan="proBudgetList.length"
+          :rowspan="proOutBudgetList.length"
         >
           사업비
         </CTableDataCell>
