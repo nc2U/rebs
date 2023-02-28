@@ -103,8 +103,8 @@ export const useProject = defineStore('project', () => {
     api
       .post('/inc-budget/', payload)
       .then(res => {
-        fetchIncBudget(res.data.pk).then(r =>
-          fetchIncBudgetList(r.data.project).then(() => message()),
+        fetchIncBudgetList(res.data.project).then(r =>
+          fetchIncBudget(r.data.pk).then(() => message()),
         )
       })
       .catch(err => errorHandle(err.response.data))
@@ -113,8 +113,8 @@ export const useProject = defineStore('project', () => {
     api
       .put(`/inc-budget/${payload.pk}/`, payload)
       .then(res => {
-        fetchIncBudget(res.data.pk).then(r =>
-          fetchIncBudgetList(r.data.project).then(() => message()),
+        fetchIncBudgetList(res.data.project).then(r =>
+          fetchIncBudget(r.data.pk).then(() => message()),
         )
       })
       .catch(err => errorHandle(err.response.data))
