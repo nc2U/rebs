@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, reactive, inject } from 'vue'
+import { ref, reactive, inject, watch } from 'vue'
 import { write_project } from '@/utils/pageAuth'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
@@ -7,7 +7,7 @@ import AlertModal from '@/components/Modals/AlertModal.vue'
 const d1List = inject('d1List')
 const d2List = inject('d2List')
 
-defineProps({ disabled: Boolean })
+const props = defineProps({ disabled: Boolean })
 const emit = defineEmits(['on-submit'])
 
 const alertModal = ref()
@@ -20,6 +20,10 @@ const form = reactive({
   item_name: '',
   basis_calc: '',
   budget: null,
+})
+
+watch(props, newVal => {
+  if (!!newVal.disabled) resetForm()
 })
 
 const onSubmit = (event: Event) => {
@@ -62,7 +66,7 @@ const resetForm = () => {
   >
     <CRow class="p-2" color="success">
       <CCol md="4" lg="2" class="mb-2">
-        <CFormSelect v-model="form.account_d1" required>
+        <CFormSelect v-model="form.account_d1" required :disabled="disabled">
           <option value="">대분류</option>
           <option v-for="d1 in d1List" :key="d1.pk" :value="d1.pk">
             {{ d1.name }}
@@ -71,7 +75,7 @@ const resetForm = () => {
       </CCol>
 
       <CCol md="4" lg="2" class="mb-2">
-        <CFormSelect v-model="form.account_d2" required>
+        <CFormSelect v-model="form.account_d2" :disabled="disabled">
           <option value="">중분류</option>
           <option v-for="d2 in d2List" :key="d2.pk" :value="d2.pk">
             {{ d2.name }}
@@ -85,6 +89,7 @@ const resetForm = () => {
           placeholder="항목명칭"
           maxlength="20"
           :disabled="disabled"
+          :required="!form.account_d2"
         />
       </CCol>
 

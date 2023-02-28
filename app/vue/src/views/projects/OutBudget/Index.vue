@@ -13,7 +13,7 @@ import BudgetFormList from '@/views/projects/OutBudget/components/BudgetFormList
 
 const projectStore = useProject()
 const initProjId = computed(() => projectStore.initProjId)
-const project = computed(() => projectStore.project?.pk || initProjId.value)
+const project = computed(() => projectStore.project?.pk)
 
 const proCashStore = useProCash()
 const allAccD1List = computed(() =>
@@ -62,13 +62,19 @@ const fetchOrderGroupList = (proj: number) =>
 
 const fetchTypeList = (proj: number) => proDataStore.fetchTypeList(proj)
 
-const onSubmit = (payload: ProOutBudget) =>
-  createOutBudget({ ...{ project: project.value }, ...payload })
+const onSubmit = (payload: ProOutBudget) => {
+  if (project.value)
+    createOutBudget({ ...{ project: project.value }, ...payload })
+}
 
-const onUpdateBudget = (payload: ProOutBudget) =>
-  updateOutBudget({ ...{ project: project.value }, ...payload })
+const onUpdateBudget = (payload: ProOutBudget) => {
+  if (project.value)
+    updateOutBudget({ ...{ project: project.value }, ...payload })
+}
 
-const onDeleteBudget = (pk: number) => deleteOutBudget(pk, project.value)
+const onDeleteBudget = (pk: number) => {
+  if (project.value) deleteOutBudget(pk, project.value)
+}
 
 onBeforeMount(() => {
   fetchProAllAccD1List()

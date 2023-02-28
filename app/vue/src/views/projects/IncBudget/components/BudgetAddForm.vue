@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, reactive, inject } from 'vue'
+import { ref, reactive, inject, watch } from 'vue'
 import { write_project } from '@/utils/pageAuth'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
@@ -9,7 +9,7 @@ const d2List = inject('d2List')
 const orderGroups = inject('orderGroups')
 const unitTypes = inject('unitTypes')
 
-defineProps({ disabled: Boolean })
+const props = defineProps({ disabled: Boolean })
 const emit = defineEmits(['on-submit'])
 
 const alertModal = ref()
@@ -25,6 +25,10 @@ const form = reactive({
   average_price: null,
   quantity: null,
   budget: null,
+})
+
+watch(props, newVal => {
+  if (!!newVal.disabled) resetForm()
 })
 
 const onSubmit = (event: Event) => {
@@ -72,7 +76,11 @@ const resetForm = () => {
       <CCol lg="12" xl="5">
         <CRow>
           <CCol md="3" lg="3" class="mb-2">
-            <CFormSelect v-model="form.account_d1" required>
+            <CFormSelect
+              v-model="form.account_d1"
+              required
+              :disabled="disabled"
+            >
               <option value="">대분류</option>
               <option v-for="d1 in d1List" :key="d1.pk" :value="d1.pk">
                 {{ d1.name }}
@@ -81,7 +89,11 @@ const resetForm = () => {
           </CCol>
 
           <CCol md="3" lg="3" class="mb-2">
-            <CFormSelect v-model="form.account_d2" required>
+            <CFormSelect
+              v-model="form.account_d2"
+              required
+              :disabled="disabled"
+            >
               <option value="">중분류</option>
               <option v-for="d2 in d2List" :key="d2.pk" :value="d2.pk">
                 {{ d2.name }}
@@ -90,7 +102,7 @@ const resetForm = () => {
           </CCol>
 
           <CCol md="3" lg="3" class="mb-2">
-            <CFormSelect v-model="form.order_group">
+            <CFormSelect v-model="form.order_group" :disabled="disabled">
               <option value="">차수</option>
               <option
                 v-for="og in orderGroups"
@@ -103,7 +115,7 @@ const resetForm = () => {
           </CCol>
 
           <CCol md="3" lg="3" class="mb-2">
-            <CFormSelect v-model="form.unit_type">
+            <CFormSelect v-model="form.unit_type" :disabled="disabled">
               <option value="">타입</option>
               <option v-for="ut in unitTypes" :key="ut.value" :value="ut.value">
                 {{ ut.label }}
@@ -121,6 +133,7 @@ const resetForm = () => {
               placeholder="항목명칭"
               maxlength="20"
               :disabled="disabled"
+              :required="!form.unit_type"
             />
           </CCol>
 
