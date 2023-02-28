@@ -1,7 +1,10 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount } from 'vue'
+import { computed, onBeforeMount, provide } from 'vue'
 import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin1'
 import { useProject } from '@/store/pinia/project'
+import { useProCash } from '@/store/pinia/proCash'
+import { useContract } from '@/store/pinia/contract'
+import { useProjectData } from '@/store/pinia/project_data'
 import { ProOutBudget } from '@/store/types/project'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
@@ -12,9 +15,35 @@ const projectStore = useProject()
 const initProjId = computed(() => projectStore.initProjId)
 const project = computed(() => projectStore.project?.pk || initProjId.value)
 
+const proCashStore = useProCash()
+const allAccD1List = computed(() =>
+  proCashStore.allAccD1List.filter(d1 => d1.acc === '비용' && d1.code < '400'),
+)
+const allAccD2List = computed(() =>
+  proCashStore.allAccD2List.filter(d2 => d2.code > '300' && d2.code < '400'),
+)
+
+const contStore = useContract()
+const getOrderGroups = computed(() => contStore.getOrderGroups)
+
+const proDataStore = useProjectData()
+const getTypes = computed(() => proDataStore.getTypes)
+
+provide('d1List', allAccD1List)
+provide('d2List', allAccD2List)
+provide('orderGroups', getOrderGroups)
+provide('unitTypes', getTypes)
+
 const onSelectAdd = (target: number) => {
-  if (!!target) fetchOutBudgetList(target)
-  else projectStore.proOutBudgetList = []
+  if (!!target) {
+    fetchOrderGroupList(target)
+    fetchTypeList(target)
+    fetchOutBudgetList(target)
+  } else {
+    contStore.orderGroupList = []
+    proDataStore.unitTypeList = []
+    projectStore.proOutBudgetList = []
+  }
 }
 
 const fetchOutBudgetList = (pj: number) => projectStore.fetchOutBudgetList(pj)
@@ -25,6 +54,14 @@ const updateOutBudget = (payload: ProOutBudget) =>
 const deleteOutBudget = (pk: number, project: number) =>
   projectStore.deleteOutBudget(pk, project)
 
+const fetchProAllAccD1List = () => proCashStore.fetchProAllAccD1List()
+const fetchProAllAccD2List = () => proCashStore.fetchProAllAccD2List()
+
+const fetchOrderGroupList = (proj: number) =>
+  contStore.fetchOrderGroupList(proj)
+
+const fetchTypeList = (proj: number) => proDataStore.fetchTypeList(proj)
+
 const onSubmit = (payload: ProOutBudget) =>
   createOutBudget({ ...{ project: project.value }, ...payload })
 
@@ -33,7 +70,13 @@ const onUpdateBudget = (payload: ProOutBudget) =>
 
 const onDeleteBudget = (pk: number) => deleteOutBudget(pk, project.value)
 
-onBeforeMount(() => fetchOutBudgetList(initProjId.value))
+onBeforeMount(() => {
+  fetchProAllAccD1List()
+  fetchProAllAccD2List()
+  fetchOrderGroupList(initProjId.value)
+  fetchTypeList(initProjId.value)
+  fetchOutBudgetList(initProjId.value)
+})
 </script>
 
 <template>

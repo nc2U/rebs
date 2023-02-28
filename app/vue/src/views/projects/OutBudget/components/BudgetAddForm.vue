@@ -1,9 +1,13 @@
 <script lang="ts" setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, inject } from 'vue'
 import { write_project } from '@/utils/pageAuth'
-import Multiselect from '@vueform/multiselect'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
+
+const d1List = inject('d1List')
+const d2List = inject('d2List')
+const orderGroups = inject('orderGroups')
+const unitTypes = inject('unitTypes')
 
 defineProps({ disabled: Boolean })
 const emit = defineEmits(['on-submit'])
@@ -13,8 +17,8 @@ const confirmModal = ref()
 
 const validated = ref(false)
 const form = reactive({
-  account_d1: { name: '', acc_d2s: [] },
-  account_d2: { pk: 1, name: '', sub_title: '' },
+  account_d1: null,
+  account_d2: null,
   order_group: null,
   unit_type: null,
   item_name: '',
@@ -41,13 +45,13 @@ const onSubmit = (event: Event) => {
 const modalAction = () => {
   emit('on-submit', form)
   validated.value = false
-  confirmModal.value.visible = false
+  confirmModal.value.close()
   resetForm()
 }
 
 const resetForm = () => {
-  form.account_d1 = { name: '', acc_d2s: [] }
-  form.account_d2 = { pk: 1, name: '', sub_title: '' }
+  form.account_d1 = null
+  form.account_d2 = null
   form.order_group = null
   form.unit_type = null
   form.item_name = ''
@@ -65,49 +69,51 @@ const resetForm = () => {
     @submit.prevent="onSubmit"
   >
     <CRow class="p-2" color="success">
-      <CCol md="12" lg="5">
+      <CCol lg="12" xl="5">
         <CRow>
           <CCol md="3" lg="3" class="mb-2">
-            <Multiselect
-              v-model="form.account_d1"
-              placeholder="대분류"
-              :disabled="disabled"
-              required
-            />
+            <CFormSelect v-model="form.account_d1" required>
+              <option value="">대분류</option>
+              <option v-for="d1 in d1List" :key="d1.pk" :value="d1.pk">
+                {{ d1.name }}
+              </option>
+            </CFormSelect>
           </CCol>
 
           <CCol md="3" lg="3" class="mb-2">
-            <Multiselect
-              v-model="form.account_d2"
-              placeholder="중분류"
-              :disabled="disabled"
-              required
-            />
+            <CFormSelect v-model="form.account_d2" required>
+              <option value="">중분류</option>
+              <option v-for="d2 in d2List" :key="d2.pk" :value="d2.pk">
+                {{ d2.name }}
+              </option>
+            </CFormSelect>
           </CCol>
 
           <CCol md="3" lg="3" class="mb-2">
-            <Multiselect
-              v-model="form.order_group"
-              placeholder="차수"
-              :disabled="disabled"
-            />
+            <CFormSelect v-model="form.order_group">
+              <option value="">차수</option>
+              <option
+                v-for="og in orderGroups"
+                :key="og.value"
+                :value="og.value"
+              >
+                {{ og.label }}
+              </option>
+            </CFormSelect>
           </CCol>
 
           <CCol md="3" lg="3" class="mb-2">
-            <Multiselect
-              v-model="form.unit_type"
-              placeholder="타입"
-              :disabled="disabled"
-            >
+            <CFormSelect v-model="form.unit_type">
               <option value="">타입</option>
-              <option value="1">일반분양</option>
-              <option value="2">조합모집</option>
-            </Multiselect>
+              <option v-for="ut in unitTypes" :key="ut.value" :value="ut.value">
+                {{ ut.label }}
+              </option>
+            </CFormSelect>
           </CCol>
         </CRow>
       </CCol>
 
-      <CCol md="12" lg="5">
+      <CCol lg="12" xl="5">
         <CRow>
           <CCol md="3" lg="3" class="mb-2">
             <CFormInput
@@ -153,7 +159,7 @@ const resetForm = () => {
         </CRow>
       </CCol>
 
-      <CCol md="12" lg="2" class="d-grid gap-2 d-lg-block mb-3">
+      <CCol lg="12" xl="2" class="d-grid gap-2 d-md-block mb-3">
         <CButton color="primary" type="submit" :disabled="disabled">
           수입 예산 추가
         </CButton>

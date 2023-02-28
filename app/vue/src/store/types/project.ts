@@ -43,7 +43,7 @@ export interface UnitType {
 
 export interface ProIncBudget {
   pk?: number
-  project: number
+  project?: number
   account_d1: number
   account_d2: number
   order_group: number | null
@@ -56,7 +56,7 @@ export interface ProIncBudget {
 
 export interface ProOutBudget {
   pk?: number
-  project: number
+  project?: number
   account_d1: {
     name: string
     acc_d2s: Array<number>
@@ -66,7 +66,7 @@ export interface ProOutBudget {
     name: string
     sub_title: string
   }
-  item_name: string | null
+  item_name: string
   basis_calc: string
   budget: number
 }

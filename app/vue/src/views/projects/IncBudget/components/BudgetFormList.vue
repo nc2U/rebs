@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { useProject } from '@/store/pinia/project'
 import { TableSecondary } from '@/utils/cssMixins'
+import { ProIncBudget } from '@/store/types/project'
 import IncBudget from './IncBudget.vue'
 
 const emit = defineEmits(['on-update', 'on-delete'])
@@ -9,7 +10,7 @@ const emit = defineEmits(['on-update', 'on-delete'])
 const proStore = useProject()
 const proIncBudgetList = computed(() => proStore.proIncBudgetList)
 
-const onUpdateOrder = (payload: og) => emit('on-update', payload)
+const onUpdateOrder = (payload: ProIncBudget) => emit('on-update', payload)
 const onDeleteOrder = (pk: number) => emit('on-delete', pk)
 </script>
 

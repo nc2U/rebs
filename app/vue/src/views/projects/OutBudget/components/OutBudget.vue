@@ -7,8 +7,6 @@ import AlertModal from '@/components/Modals/AlertModal.vue'
 
 const d1List = inject('d1List')
 const d2List = inject('d2List')
-const orderGroups = inject('orderGroups')
-const unitTypes = inject('unitTypes')
 
 const props = defineProps({ budget: { type: Object, default: null } })
 const emit = defineEmits(['on-update', 'on-delete'])
@@ -17,11 +15,8 @@ const form = reactive({
   pk: null,
   account_d1: null,
   account_d2: null,
-  order_group: null,
-  unit_type: null,
   item_name: '',
-  average_price: null,
-  quantity: null,
+  basis_calc: null,
   budget: null,
 })
 
@@ -37,13 +32,10 @@ const formsCheck = computed(() => {
     const a = form.pk === props.budget.pk
     const b = form.account_d1 === props.budget.account_d1
     const c = form.account_d2 === props.budget.account_d2
-    const d = form.order_group === props.budget.order_group
-    const e = form.unit_type === props.budget.unit_type
-    const f = form.item_name === props.budget.item_name
-    const g = form.average_price === props.budget.average_price
-    const h = form.quantity === props.budget.quantity
-    const i = form.budget === props.budget.budget
-    return a && b && c && d && e && f && g && h && i
+    const d = form.item_name === props.budget.item_name
+    const e = form.basis_calc === props.budget.basis_calc
+    const f = form.budget === props.budget.budget
+    return a && b && c && d && e && f
   } else return false
 })
 
@@ -54,8 +46,7 @@ const formCheck = (bool: boolean) => {
 
 const onUpdateBudget = () => {
   if (write_project.value) {
-    const pk = props.budget.pk
-    emit('on-update', { ...{ pk }, ...form })
+    emit('on-update', { ...form })
   } else {
     alertModal.value.callModal()
     resetForm()
@@ -80,11 +71,8 @@ const resetForm = () => {
   form.pk = props.budget.pk
   form.account_d1 = props.budget.account_d1
   form.account_d2 = props.budget.account_d2
-  form.order_group = props.budget.order_group
-  form.unit_type = props.budget.unit_type
   form.item_name = props.budget.item_name
-  form.average_price = props.budget.average_price
-  form.quantity = props.budget.quantity
+  form.basis_calc = props.budget.basis_calc
   form.budget = props.budget.budget
 }
 </script>
@@ -108,46 +96,17 @@ const resetForm = () => {
       </CFormSelect>
     </CTableDataCell>
     <CTableDataCell>
-      <CFormSelect v-model="form.order_group">
-        <option value="">차수</option>
-        <option v-for="og in orderGroups" :key="og.value" :value="og.value">
-          {{ og.label }}
-        </option>
-      </CFormSelect>
-    </CTableDataCell>
-    <CTableDataCell>
-      <CFormSelect v-model="form.unit_type">
-        <option value="">타입</option>
-        <option v-for="ut in unitTypes" :key="ut.value" :value="ut.value">
-          {{ ut.label }}
-        </option>
-      </CFormSelect>
-    </CTableDataCell>
-    <CTableDataCell>
       <CFormInput v-model="form.item_name" placeholder="항목명" />
     </CTableDataCell>
     <CTableDataCell>
-      <CFormInput
-        v-model.number="form.average_price"
-        type="number"
-        min="0"
-        placeholder="평균 가격"
-      />
-    </CTableDataCell>
-    <CTableDataCell>
-      <CFormInput
-        v-model.number="form.quantity"
-        type="number"
-        min="0"
-        placeholder="수량"
-      />
+      <CFormInput v-model="form.basis_calc" placeholder="산출 근거" />
     </CTableDataCell>
     <CTableDataCell>
       <CFormInput
         v-model.number="form.budget"
         type="number"
         min="0"
-        placeholder="수입 예산"
+        placeholder="지출 예산"
       />
     </CTableDataCell>
     <CTableDataCell class="text-center">
@@ -164,8 +123,8 @@ const resetForm = () => {
   </CTableRow>
 
   <ConfirmModal ref="confirmModal">
-    <template #header> 수입 예산 삭제</template>
-    <template #default> 해당 수입 예산 항목을 삭제 하시겠습니까?</template>
+    <template #header> 지출 예산 삭제</template>
+    <template #default> 해당 지출 예산 항목을 삭제 하시겠습니까?</template>
     <template #footer>
       <CButton color="danger" @click="modalAction">삭제</CButton>
     </template>
