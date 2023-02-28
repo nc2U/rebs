@@ -71,6 +71,12 @@ class ProjectIncBudgetSerializer(serializers.ModelSerializer):
 
 
 class ProjectOutBudgetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProjectOutBudget
+        fields = ('pk', 'project', 'account_d1', 'account_d2', 'item_name', 'basis_calc', 'budget')
+
+
+class StatusOutBudgetSerializer(serializers.ModelSerializer):
     account_d1 = ProAccoD1InBudgetSerializer()
     account_d2 = ProAccoD2InBudgetSerializer()
 

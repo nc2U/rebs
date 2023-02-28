@@ -50,6 +50,10 @@ class ProjectOutBudgetViewSet(viewsets.ModelViewSet):
     filterset_fields = ('project',)
 
 
+class StatusOutBudgetViewSet(ProjectOutBudgetViewSet):
+    serializer_class = StatusOutBudgetSerializer
+
+
 class ExecAmountToBudgetViewSet(viewsets.ModelViewSet):
     serializer_class = ExecAmountToBudget
     pagination_class = PageNumberPaginationFifty
