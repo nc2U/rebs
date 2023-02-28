@@ -231,19 +231,11 @@ const project = {
       component: 'CNavItem',
       name: '수입 예산 등록',
       to: '/project/manage/inc-budget',
-      badge: {
-        color: 'warning',
-        text: 'u.c',
-      },
     },
     {
       component: 'CNavItem',
       name: '지출 예산 등록',
       to: '/project/manage/out-budget',
-      badge: {
-        color: 'danger',
-        text: 'u.c',
-      },
     },
     {
       component: 'CNavItem',
