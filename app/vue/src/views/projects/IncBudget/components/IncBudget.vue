@@ -47,15 +47,9 @@ const formsCheck = computed(() => {
   } else return false
 })
 
-const formCheck = (bool: boolean) => {
-  if (bool) onUpdateBudget()
-  return
-}
-
 const onUpdateBudget = () => {
   if (write_project.value) {
-    const pk = props.budget.pk
-    emit('on-update', { ...{ pk }, ...form })
+    emit('on-update', { ...form })
   } else {
     alertModal.value.callModal()
     resetForm()

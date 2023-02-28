@@ -30,7 +30,7 @@ const onDeleteOrder = (pk: number) => emit('on-delete', pk)
         <CTableHeaderCell>중분류</CTableHeaderCell>
         <CTableHeaderCell>항목명칭</CTableHeaderCell>
         <CTableHeaderCell>산출근거</CTableHeaderCell>
-        <CTableHeaderCell>수입예산</CTableHeaderCell>
+        <CTableHeaderCell>지출예산</CTableHeaderCell>
         <CTableHeaderCell>비 고</CTableHeaderCell>
       </CTableRow>
     </CTableHead>

@@ -39,11 +39,6 @@ const formsCheck = computed(() => {
   } else return false
 })
 
-const formCheck = (bool: boolean) => {
-  if (bool) onUpdateBudget()
-  return
-}
-
 const onUpdateBudget = () => {
   if (write_project.value) {
     emit('on-update', { ...form })
