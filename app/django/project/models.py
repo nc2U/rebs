@@ -75,10 +75,13 @@ class ProjectIncBudget(models.Model):
     account_d1 = models.ForeignKey('rebs.ProjectAccountD1', on_delete=models.PROTECT, verbose_name='예산항목1')
     account_d2 = models.ForeignKey('rebs.ProjectAccountD2', on_delete=models.PROTECT, verbose_name='예산항목2')
     order_group = models.ForeignKey('contract.OrderGroup', on_delete=models.SET_NULL, null=True, blank=True,
-                                    verbose_name='차수')
-    unit_type = models.ForeignKey(UnitType, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='타입')
-    item_name = models.CharField('항목명', max_length=20, null=True, blank=True)
-    average_price = models.PositiveBigIntegerField(verbose_name='평균 가격', null=True, blank=True)
+                                    verbose_name='차수', help_text='해당 차수가 없는 경우 생략가능')
+    unit_type = models.ForeignKey(UnitType, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='타입',
+                                  help_text='해당 타입이 없는 경우 생략가능')
+    item_name = models.CharField('항목명', max_length=20, null=True, blank=True,
+                                 help_text='차수와 타입을 선택하지 않은 경우 기재. 그렇지 않은 경우 생략할 것')
+    average_price = models.PositiveBigIntegerField(verbose_name='평균 가격', null=True, blank=True,
+                                                   help_text='이 항목 생략 시 수량 및 수입 예산을 바탕으로 자동 계산')
     quantity = models.PositiveSmallIntegerField(verbose_name='수량')
     budget = models.PositiveBigIntegerField(verbose_name='수입 예산')
 
