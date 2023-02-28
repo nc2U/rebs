@@ -34,7 +34,7 @@ const formsCheck = computed(() => {
     const c = form.account_d2 === props.budget.account_d2
     const d = form.item_name === props.budget.item_name
     const e = form.basis_calc === props.budget.basis_calc
-    const f = form.budget === props.budget.budget
+    const f = form.budget === props.budget.budget || !props.budget.budget
     return a && b && c && d && e && f
   } else return false
 })
@@ -68,7 +68,7 @@ const resetForm = () => {
   form.account_d2 = props.budget.account_d2
   form.item_name = props.budget.item_name
   form.basis_calc = props.budget.basis_calc
-  form.budget = props.budget.budget
+  form.budget = props.budget.budget || '0'
 }
 </script>
 
