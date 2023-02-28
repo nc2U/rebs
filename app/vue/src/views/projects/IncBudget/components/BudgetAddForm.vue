@@ -69,7 +69,7 @@ const resetForm = () => {
     @submit.prevent="onSubmit"
   >
     <CRow class="p-2" color="success">
-      <CCol md="12" lg="5">
+      <CCol lg="12" xl="5">
         <CRow>
           <CCol md="3" lg="3" class="mb-2">
             <CFormSelect v-model="form.account_d1" required>
@@ -113,7 +113,7 @@ const resetForm = () => {
         </CRow>
       </CCol>
 
-      <CCol md="12" lg="5">
+      <CCol lg="12" xl="5">
         <CRow>
           <CCol md="3" lg="3" class="mb-2">
             <CFormInput
@@ -159,7 +159,7 @@ const resetForm = () => {
         </CRow>
       </CCol>
 
-      <CCol md="12" lg="2" class="d-grid gap-2 d-lg-block mb-3">
+      <CCol lg="12" xl="2" class="d-grid gap-2 d-md-block mb-3">
         <CButton color="primary" type="submit" :disabled="disabled">
           수입 예산 추가
         </CButton>
