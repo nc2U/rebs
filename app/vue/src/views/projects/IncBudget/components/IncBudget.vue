@@ -48,11 +48,11 @@ const formsCheck = computed(() => {
 })
 
 const formCheck = (bool: boolean) => {
-  if (bool) onUpdatebudget()
+  if (bool) onUpdateBudget()
   return
 }
 
-const onUpdatebudget = () => {
+const onUpdateBudget = () => {
   if (write_project.value) {
     const pk = props.budget.pk
     emit('on-update', { ...{ pk }, ...form })
@@ -63,7 +63,7 @@ const onUpdatebudget = () => {
 }
 
 const accStore = useAccount()
-const onDeletebudget = () => {
+const onDeleteBudget = () => {
   if (accStore.superAuth) confirmModal.value.callModal()
   else {
     alertModal.value.callModal()
@@ -77,26 +77,22 @@ const modalAction = () => {
 }
 
 const resetForm = () => {
-  form.pk = null
-  form.account_d1 = null
-  form.account_d2 = null
-  form.order_group = null
-  form.unit_type = null
-  form.item_name = ''
-  form.average_price = null
-  form.quantity = null
-  form.budget = null
+  form.pk = props.budget.pk
+  form.account_d1 = props.budget.account_d1
+  form.account_d2 = props.budget.account_d2
+  form.order_group = props.budget.order_group
+  form.unit_type = props.budget.unit_type
+  form.item_name = props.budget.item_name
+  form.average_price = props.budget.average_price
+  form.quantity = props.budget.quantity
+  form.budget = props.budget.budget
 }
 </script>
 
 <template>
   <CTableRow>
     <CTableDataCell>
-      <CFormSelect
-        v-model="form.account_d1"
-        required
-        @keypress.enter="formCheck(form.account_d1 !== budget.account_d1)"
-      >
+      <CFormSelect v-model="form.account_d1" required>
         <option value="">대분류</option>
         <option v-for="d1 in d1List" :key="d1.pk" :value="d1.pk">
           {{ d1.name }}
@@ -159,20 +155,17 @@ const resetForm = () => {
         color="success"
         size="sm"
         :disabled="formsCheck"
-        @click="onUpdatebudget"
+        @click="onUpdateBudget"
       >
         수정
       </CButton>
-      <CButton color="danger" size="sm" @click="onDeletebudget">삭제</CButton>
+      <CButton color="danger" size="sm" @click="onDeleteBudget">삭제</CButton>
     </CTableDataCell>
   </CTableRow>
 
   <ConfirmModal ref="confirmModal">
-    <template #header> 차수그룹 삭제</template>
-    <template #default>
-      이 그룹에 종속 데이터가 있는 경우 해당 데이터를 모두 제거한 후 삭제가능
-      합니다. 해당 차수그룹을 삭제 하시겠습니까?
-    </template>
+    <template #header> 수입 예산 삭제</template>
+    <template #default> 해당 수입 예산 항목을 삭제 하시겠습니까?</template>
     <template #footer>
       <CButton color="danger" @click="modalAction">삭제</CButton>
     </template>
