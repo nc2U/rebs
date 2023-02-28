@@ -78,7 +78,7 @@ class ProjectIncBudget(models.Model):
                                     verbose_name='차수', help_text='해당 차수가 없는 경우 생략가능')
     unit_type = models.ForeignKey(UnitType, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='타입',
                                   help_text='해당 타입이 없는 경우 생략가능')
-    item_name = models.CharField('항목명', max_length=20, null=True, blank=True,
+    item_name = models.CharField('항목명', max_length=20, blank=True, default='',
                                  help_text='차수와 타입을 선택하지 않은 경우 기재. 그렇지 않은 경우 생략할 것')
     average_price = models.PositiveBigIntegerField(verbose_name='평균 가격', null=True, blank=True,
                                                    help_text='이 항목 생략 시 수량 및 수입 예산을 바탕으로 자동 계산')

@@ -44,19 +44,12 @@ export interface UnitType {
 export interface ProIncBudget {
   pk?: number
   project: number
-  account_d1: {
-    name: string
-    acc_d2s: number[]
-  }
-  account_d2: {
-    pk: number
-    name: string
-    sub_title: string
-  }
-  order_group: number
-  unit_type: number
-  item_name: string | null
-  average_price: number
+  account_d1: number
+  account_d2: number
+  order_group: number | null
+  unit_type: number | null
+  item_name: string
+  average_price: number | null
   quantity: number
   budget: number
 }
