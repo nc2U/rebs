@@ -7,6 +7,7 @@ import {
   Project,
   ProIncBudget,
   ProOutBudget,
+  StatusOutBudget,
   ExecAmountToBudget,
 } from '@/store/types/project'
 
@@ -187,6 +188,16 @@ export const useProject = defineStore('project', () => {
       .catch(err => errorHandle(err.response.data))
 
   // states & getters
+  const statusOutBudgetList = ref<StatusOutBudget[]>([])
+
+  // actions
+  const fetchStatusOutBudgetList = (project: number) =>
+    api
+      .get(`/status-budget/?project=${project}`)
+      .then(res => (statusOutBudgetList.value = res.data.results))
+      .catch(err => errorHandle(err.response.data))
+
+  // states & getters
   const execAmountList = ref<ExecAmountToBudget[]>([])
 
   // actions
@@ -227,6 +238,9 @@ export const useProject = defineStore('project', () => {
     updateOutBudget,
     patchOutBudgetList,
     deleteOutBudget,
+
+    statusOutBudgetList,
+    fetchStatusOutBudgetList,
 
     execAmountList,
     fetchExecAmountList,

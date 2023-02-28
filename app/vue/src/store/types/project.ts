@@ -57,6 +57,16 @@ export interface ProIncBudget {
 export interface ProOutBudget {
   pk?: number
   project?: number
+  account_d1: number
+  account_d2: number
+  item_name: string
+  basis_calc: string
+  budget: number
+}
+
+export interface StatusOutBudget {
+  pk?: number
+  project?: number
   account_d1: {
     name: string
     acc_d2s: Array<number>
