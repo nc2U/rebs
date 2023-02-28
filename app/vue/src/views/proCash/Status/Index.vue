@@ -19,10 +19,10 @@ const compName = ref('StatusByAccount')
 const projectStore = useProject()
 const initProjId = computed(() => projectStore.initProjId)
 const project = computed(() => projectStore.project?.pk || initProjId.value)
-const fetchOutBudgetList = (proj: number) =>
-  projectStore.fetchOutBudgetList(proj)
-const patchOutBudgetList = (proj: number, pk: number, budget: number) =>
-  projectStore.patchOutBudgetList(proj, pk, budget)
+const fetchStatusOutBudgetList = (proj: number) =>
+  projectStore.fetchStatusOutBudgetList(proj)
+const patchStatusOutBudgetList = (proj: number, pk: number, budget: number) =>
+  projectStore.patchStatusOutBudgetList(proj, pk, budget)
 const fetchExecAmountList = (project: number, date?: string) =>
   projectStore.fetchExecAmountList(project, date)
 
@@ -50,7 +50,7 @@ const excelUrl = computed(() => {
 
 const onSelectAdd = (target: number) => {
   if (!!target) {
-    fetchOutBudgetList(target)
+    fetchStatusOutBudgetList(target)
     fetchExecAmountList(target, dateFormat(date.value))
     fetchProBankAccList(target)
     fetchBalanceByAccList({ project: target, date: dateFormat(date.value) })
@@ -59,7 +59,7 @@ const onSelectAdd = (target: number) => {
       date: dateFormat(date.value),
     })
   } else {
-    projectStore.proOutBudgetList = []
+    projectStore.statusOutBudgetList = []
     projectStore.execAmountList = []
     proCashStore.proBankAccountList = []
     proCashStore.balanceByAccList = []
@@ -79,17 +79,17 @@ const showTab = (num: number) => {
 const setDate = (d: Date) => {
   const dt = new Date(d)
   date.value = dt
-  fetchOutBudgetList(project.value)
+  fetchStatusOutBudgetList(project.value)
   fetchExecAmountList(project.value, dateFormat(dt))
   fetchBalanceByAccList({ project: project.value, date: dateFormat(dt) })
   fetchDateCashBookList({ project: project.value, date: dateFormat(dt) })
 }
 
 const patchBudget = (pk: number, budget: number) =>
-  patchOutBudgetList(project.value, pk, budget)
+  patchStatusOutBudgetList(project.value, pk, budget)
 
 onBeforeMount(() => {
-  fetchOutBudgetList(initProjId.value)
+  fetchStatusOutBudgetList(initProjId.value)
   fetchExecAmountList(initProjId.value)
   fetchProAllAccD1List()
   fetchProAllAccD2List()

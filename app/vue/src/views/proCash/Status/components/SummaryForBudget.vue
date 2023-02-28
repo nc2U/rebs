@@ -20,15 +20,17 @@ const totalExecAmt = ref(0)
 const availableBudget = ref(0)
 
 const projectStore = useProject()
-const proOutBudgetList = computed(() => projectStore.proOutBudgetList)
+const statusOutBudgetList = computed(() => projectStore.statusOutBudgetList)
 const execAmountList = computed(() => projectStore.execAmountList)
 
 onBeforeMount(() => getSumTotal())
 
-watch(proOutBudgetList, () => getSumTotal())
+watch(statusOutBudgetList, () => getSumTotal())
 
 const getD2sInter = (arr: number[]) => {
-  const d2s = proOutBudgetList.value.map((b: ProOutBudget) => b.account_d2.pk)
+  const d2s = statusOutBudgetList.value.map(
+    (b: ProOutBudget) => b.account_d2.pk,
+  )
   return arr.filter(x => d2s.includes(x))
 }
 const getLength = (arr: number[]) => getD2sInter(arr).length
@@ -37,7 +39,7 @@ const getFirst = (arr: number[]) => getD2sInter(arr)[0]
 
 const getSubTitle = (sub: string) =>
   sub !== ''
-    ? proOutBudgetList.value
+    ? statusOutBudgetList.value
         .filter((b: ProOutBudget) => b.account_d2.sub_title === sub)
         .map((b: ProOutBudget) => b.pk)
     : []
@@ -52,7 +54,7 @@ const getEAMonth = (d2: number) =>
   getExecAmount(d2).map((e: ExeBudget) => e.month_sum)[0]
 
 const getSumTotal = () => {
-  const totalBudgetCalc = proOutBudgetList.value
+  const totalBudgetCalc = statusOutBudgetList.value
     .map((b: ProOutBudget) => b.budget)
     .reduce((res: number, val: number) => res + val, 0)
   const monthExecAmtCalc = execAmountList.value
@@ -120,7 +122,7 @@ const patchBudget = (pk: number, budget: string, oldBudget: number) => {
 
     <CTableBody>
       <CTableRow
-        v-for="(bdj, i) in proOutBudgetList"
+        v-for="(bdj, i) in statusOutBudgetList"
         :key="bdj.pk"
         class="text-right"
       >
@@ -128,7 +130,7 @@ const patchBudget = (pk: number, budget: string, oldBudget: number) => {
           v-if="i === 0"
           :color="TableInfo"
           class="text-center"
-          :rowspan="proOutBudgetList.length"
+          :rowspan="statusOutBudgetList.length"
         >
           사업비
         </CTableDataCell>
