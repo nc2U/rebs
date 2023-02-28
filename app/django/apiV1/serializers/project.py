@@ -63,9 +63,6 @@ class ProAccoD1InBudgetSerializer(serializers.ModelSerializer):
 
 
 class ProjectIncBudgetSerializer(serializers.ModelSerializer):
-    account_d1 = ProAccoD1InBudgetSerializer()
-    account_d2 = ProAccoD2InBudgetSerializer()
-
     class Meta:
         model = ProjectIncBudget
         fields = (
