@@ -28,7 +28,7 @@ const onDeleteOrder = (pk: number) => emit('on-delete', pk)
       <CTableRow>
         <CTableHeaderCell>대분류</CTableHeaderCell>
         <CTableHeaderCell>중분류</CTableHeaderCell>
-        <CTableHeaderCell>예산항목명칭</CTableHeaderCell>
+        <CTableHeaderCell>항목명칭</CTableHeaderCell>
         <CTableHeaderCell>산출근거</CTableHeaderCell>
         <CTableHeaderCell>수입예산</CTableHeaderCell>
         <CTableHeaderCell>비 고</CTableHeaderCell>

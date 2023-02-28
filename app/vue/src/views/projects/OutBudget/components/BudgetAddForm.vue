@@ -82,7 +82,7 @@ const resetForm = () => {
       <CCol md="4" lg="2" class="mb-2">
         <CFormInput
           v-model="form.item_name"
-          placeholder="항목명"
+          placeholder="항목명칭"
           maxlength="20"
           :disabled="disabled"
         />
@@ -91,7 +91,7 @@ const resetForm = () => {
       <CCol md="4" lg="2" class="mb-2">
         <CFormInput
           v-model="form.basis_calc"
-          placeholder="산출 근거"
+          placeholder="산출근거"
           maxlength="18"
           :disabled="disabled"
         />
@@ -101,7 +101,7 @@ const resetForm = () => {
         <CFormInput
           v-model.number="form.budget"
           min="0"
-          placeholder="지출 예산"
+          placeholder="지출예산"
           type="number"
           maxlength="18"
           required

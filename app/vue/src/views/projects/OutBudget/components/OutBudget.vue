@@ -96,17 +96,17 @@ const resetForm = () => {
       </CFormSelect>
     </CTableDataCell>
     <CTableDataCell>
-      <CFormInput v-model="form.item_name" placeholder="항목명" />
+      <CFormInput v-model="form.item_name" placeholder="항목명칭" />
     </CTableDataCell>
     <CTableDataCell>
-      <CFormInput v-model="form.basis_calc" placeholder="산출 근거" />
+      <CFormInput v-model="form.basis_calc" placeholder="산출근거" />
     </CTableDataCell>
     <CTableDataCell>
       <CFormInput
         v-model.number="form.budget"
         type="number"
         min="0"
-        placeholder="지출 예산"
+        placeholder="지출예산"
       />
     </CTableDataCell>
     <CTableDataCell class="text-center">
