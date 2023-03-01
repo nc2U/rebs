@@ -32,13 +32,19 @@ const typeContNum = (type: number) =>
     ?.map(c => c.num_cont)
     .reduce((pn, cn) => pn + cn, 0)
 
-const getUnitPrice = (og: number, ut: number) =>
-  budgetList.value.filter(b => b.order_group === og && b.unit_type === ut)[0]
-    .average_price || 0
+const getUnitPrice = (og: number, ut: number) => {
+  const unit = budgetList.value.filter(
+    b => b.order_group === og && b.unit_type === ut,
+  )[0]
+  return unit ? unit.average_price : 0
+}
 
-const getQuantity = (og: number, ut: number) =>
-  budgetList.value.filter(b => b.order_group === og && b.unit_type === ut)[0]
-    .quantity || 0
+const getQuantity = (og: number, ut: number) => {
+  const unit = budgetList.value.filter(
+    b => b.order_group === og && b.unit_type === ut,
+  )[0]
+  return unit ? unit.quantity : 0
+}
 </script>
 
 <template>
@@ -56,7 +62,7 @@ const getQuantity = (og: number, ut: number) =>
     </colgroup>
     <CTableHead>
       <CTableRow>
-        <CTableDataCell colspan="7">
+        <CTableDataCell colspan="8">
           <strong>
             <CIcon name="cilFolderOpen" />
             차수 및 타입별 수납 현황
