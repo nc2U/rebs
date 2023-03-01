@@ -35,6 +35,10 @@ const typeContNum = (type: number) =>
 const getUnitPrice = (og: number, ut: number) =>
   budgetList.value.filter(b => b.order_group === og && b.unit_type === ut)[0]
     .average_price
+
+const getQuantity = (og: number, ut: number) =>
+  budgetList.value.filter(b => b.order_group === og && b.unit_type === ut)[0]
+    .quantity
 </script>
 
 <template>
@@ -44,10 +48,11 @@ const getUnitPrice = (og: number, ut: number) =>
       <col width="9%" />
       <col width="9%" />
       <col width="8%" />
+      <col width="8%" />
+      <col width="14%" />
+      <col width="15%" />
+      <col width="15%" />
       <col width="16%" />
-      <col width="17%" />
-      <col width="17%" />
-      <col width="18%" />
     </colgroup>
     <CTableHead>
       <CTableRow>
@@ -66,7 +71,8 @@ const getUnitPrice = (og: number, ut: number) =>
       <CTableRow :color="TableSecondary" class="text-center">
         <CTableHeaderCell colspan="2">구분</CTableHeaderCell>
         <CTableHeaderCell>타입</CTableHeaderCell>
-        <CTableHeaderCell>수량</CTableHeaderCell>
+        <CTableHeaderCell>계획 세대수</CTableHeaderCell>
+        <CTableHeaderCell>계약 세대수</CTableHeaderCell>
         <CTableHeaderCell>단가(평균)</CTableHeaderCell>
         <CTableHeaderCell>실수납 금액</CTableHeaderCell>
         <CTableHeaderCell>미수 금액</CTableHeaderCell>
@@ -101,6 +107,9 @@ const getUnitPrice = (og: number, ut: number) =>
             <CTableDataCell class="text-left pl-4">
               <v-icon icon="mdi mdi-square" :color="type.color" size="sm" />
               {{ type.name }}
+            </CTableDataCell>
+            <CTableDataCell>
+              {{ numFormat(getQuantity(order.pk, type.pk)) }}
             </CTableDataCell>
             <CTableDataCell>
               {{ numFormat(getNums(order.pk, type.pk)) }}
@@ -143,6 +152,7 @@ const getUnitPrice = (og: number, ut: number) =>
             <v-icon icon="mdi mdi-square" :color="type.color" size="sm" />
             {{ type.name }}
           </CTableDataCell>
+          <CTableDataCell></CTableDataCell>
           <CTableDataCell>
             {{ numFormat(type.num_unit - typeContNum(type.pk)) }}
           </CTableDataCell>
@@ -159,6 +169,7 @@ const getUnitPrice = (og: number, ut: number) =>
         <CTableHeaderCell colspan="3" class="text-center">
           합계
         </CTableHeaderCell>
+        <CTableHeaderCell>{{ numFormat(625) }}</CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(625) }}</CTableHeaderCell>
         <CTableHeaderCell>-</CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(44000000000) }}</CTableHeaderCell>
