@@ -109,27 +109,28 @@ const getQuantity = (og: number, ut: number) =>
               {{ type.name }}
             </CTableDataCell>
             <CTableDataCell>
-              {{ numFormat(getQuantity(order.pk, type.pk)) }}
+              {{ numFormat(getQuantity(order.pk, type.pk) || 0) }}
             </CTableDataCell>
             <CTableDataCell>
-              {{ numFormat(getNums(order.pk, type.pk)) }}
+              {{ numFormat(getNums(order.pk, type.pk) || 0) }}
             </CTableDataCell>
             <CTableDataCell>
-              {{ numFormat(getUnitPrice(order.pk, type.pk)) }}
+              {{ numFormat(getUnitPrice(order.pk, type.pk) || 0) }}
             </CTableDataCell>
             <CTableDataCell>{{ numFormat(100) }}</CTableDataCell>
-            <CTableDataCell
-              >{{
+            <CTableDataCell>
+              {{
                 numFormat(
                   getNums(order.pk, type.pk) * getUnitPrice(order.pk, type.pk) -
-                    100,
+                    100 || 0,
                 )
               }}
             </CTableDataCell>
             <CTableDataCell>
               {{
                 numFormat(
-                  getNums(order.pk, type.pk) * getUnitPrice(order.pk, type.pk),
+                  getNums(order.pk, type.pk) *
+                    getUnitPrice(order.pk, type.pk) || 0,
                 )
               }}
             </CTableDataCell>
