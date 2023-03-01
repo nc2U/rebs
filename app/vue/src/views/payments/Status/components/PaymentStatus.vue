@@ -34,11 +34,11 @@ const typeContNum = (type: number) =>
 
 const getUnitPrice = (og: number, ut: number) =>
   budgetList.value.filter(b => b.order_group === og && b.unit_type === ut)[0]
-    .average_price
+    .average_price || 0
 
 const getQuantity = (og: number, ut: number) =>
   budgetList.value.filter(b => b.order_group === og && b.unit_type === ut)[0]
-    .quantity
+    .quantity || 0
 </script>
 
 <template>
@@ -109,13 +109,13 @@ const getQuantity = (og: number, ut: number) =>
               {{ type.name }}
             </CTableDataCell>
             <CTableDataCell>
-              {{ numFormat(getQuantity(order.pk, type.pk) || 0) }}
+              {{ numFormat(getQuantity(order.pk, type.pk)) }}
             </CTableDataCell>
             <CTableDataCell>
-              {{ numFormat(getNums(order.pk, type.pk) || 0) }}
+              {{ numFormat(getNums(order.pk, type.pk)) }}
             </CTableDataCell>
             <CTableDataCell>
-              {{ numFormat(getUnitPrice(order.pk, type.pk) || 0) }}
+              {{ numFormat(getUnitPrice(order.pk, type.pk)) }}
             </CTableDataCell>
             <CTableDataCell>{{ numFormat(100) }}</CTableDataCell>
             <CTableDataCell>
