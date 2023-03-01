@@ -18,16 +18,12 @@ const excelUrl = computed(() => '')
 const projStore = useProject()
 const initProjId = computed(() => projStore.initProjId)
 const project = computed(() => projStore.project?.pk || initProjId.value)
+const fetchIncBudgetList = (proj: number) => projStore.fetchIncBudgetList(proj)
 
 const prDataStore = useProjectData()
-const unitType = computed(() => prDataStore.unitTypeList)
-
-const contStore = useContract()
-const orderGroup = computed(() => contStore.orderGroupList)
-const contSummaryList = computed(() => contStore.contSummaryList)
-
 const fetchTypeList = (proj: number) => prDataStore.fetchTypeList(proj)
 
+const contStore = useContract()
 const fetchOrderGroupList = (proj: number) =>
   contStore.fetchOrderGroupList(proj)
 const fetchContSummaryList = (proj: number) =>
@@ -38,10 +34,12 @@ const onSelectAdd = (target: number) => {
     fetchTypeList(target)
     fetchOrderGroupList(target)
     fetchContSummaryList(target)
+    fetchIncBudgetList(target)
   } else {
     prDataStore.unitTypeList = []
     contStore.orderGroupList = []
     contStore.contSummaryList = []
+    projStore.proIncBudgetList = []
   }
 }
 
@@ -52,6 +50,7 @@ onBeforeMount(() => {
   fetchTypeList(project.value)
   fetchOrderGroupList(project.value)
   fetchContSummaryList(project.value)
+  fetchIncBudgetList(project.value)
 })
 </script>
 
@@ -67,13 +66,7 @@ onBeforeMount(() => {
       <DateChoicer @set-date="setDate" @set-sort="setSort" />
 
       <TableTitleRow excel :url="excelUrl" :disabled="true" />
-      <PaymentStatus
-        :date="date"
-        :sort="sort"
-        :order-group="orderGroup"
-        :unit-type="unitType"
-        :cont-sum="contSummaryList"
-      />
+      <PaymentStatus :date="date" :sort="sort" />
     </CCardBody>
 
     <CCardFooter>&nbsp;</CCardFooter>

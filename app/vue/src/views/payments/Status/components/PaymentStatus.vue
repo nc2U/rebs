@@ -1,27 +1,40 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
-import { ContSummary } from '@/store/types/contract'
-import { numFormat, dateFormat } from '@/utils/baseMixins'
+import { computed } from 'vue'
+import { useProject } from '@/store/pinia/project'
+import { useContract } from '@/store/pinia/contract'
+import { useProjectData } from '@/store/pinia/project_data'
 import { TableSecondary } from '@/utils/cssMixins'
+import { numFormat, dateFormat } from '@/utils/baseMixins'
 
 const props = defineProps({
   date: { type: String, default: '' },
   sort: { type: String, default: '2' },
-  orderGroup: { type: Array, default: () => [] },
-  unitType: { type: Array, default: () => [] },
-  contSum: { type: Array as PropType<ContSummary[]>, default: () => [] },
 })
 
+const proStore = useProject()
+const budgetList = computed(() => proStore.proIncBudgetList)
+
+const prDataStore = useProjectData()
+const unitType = computed(() => prDataStore.unitTypeList)
+
+const contStore = useContract()
+const orderGroup = computed(() => contStore.orderGroupList)
+const contSum = computed(() => contStore.contSummaryList)
+
 const getNums = (og: number, ut: number) =>
-  props.contSum
+  contSum.value
     .filter(c => c.order_group === og && c.unit_type === ut)
     .map(c => c.num_cont)[0]
 
 const typeContNum = (type: number) =>
-  props.contSum
+  contSum.value
     ?.filter(c => c.unit_type === type)
     ?.map(c => c.num_cont)
     .reduce((pn, cn) => pn + cn, 0)
+
+const getUnitPrice = (og: number, ut: number) =>
+  budgetList.value.filter(b => b.order_group === og && b.unit_type === ut)[0]
+    .average_price
 </script>
 
 <template>
@@ -92,10 +105,25 @@ const typeContNum = (type: number) =>
             <CTableDataCell>
               {{ numFormat(getNums(order.pk, type.pk)) }}
             </CTableDataCell>
-            <CTableDataCell>{{ numFormat(339000000) }}</CTableDataCell>
-            <CTableDataCell>{{ numFormat(6840060000) }}</CTableDataCell>
-            <CTableDataCell>{{ numFormat(22664511000) }}</CTableDataCell>
-            <CTableDataCell>{{ numFormat(29504571000) }}</CTableDataCell>
+            <CTableDataCell>
+              {{ numFormat(getUnitPrice(order.pk, type.pk)) }}
+            </CTableDataCell>
+            <CTableDataCell>{{ numFormat(100) }}</CTableDataCell>
+            <CTableDataCell
+              >{{
+                numFormat(
+                  getNums(order.pk, type.pk) * getUnitPrice(order.pk, type.pk) -
+                    100,
+                )
+              }}
+            </CTableDataCell>
+            <CTableDataCell>
+              {{
+                numFormat(
+                  getNums(order.pk, type.pk) * getUnitPrice(order.pk, type.pk),
+                )
+              }}
+            </CTableDataCell>
           </CTableRow>
         </template>
       </template>
