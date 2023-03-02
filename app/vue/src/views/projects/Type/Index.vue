@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount } from 'vue'
+import { computed, onBeforeMount, provide } from 'vue'
 import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin1'
 import { useProject } from '@/store/pinia/project'
 import { useProjectData } from '@/store/pinia/project_data'
@@ -13,6 +13,17 @@ const projectStore = useProject()
 
 const initProjId = computed(() => projectStore.initProjId)
 const project = computed(() => projectStore.project?.pk || initProjId.value)
+
+const typeSort = [
+  { value: '1', label: '공동주택' },
+  { value: '2', label: '오피스텔' },
+  { value: '3', label: '숙박시설' },
+  { value: '4', label: '지식산업센터' },
+  { value: '5', label: '근린생활시설' },
+  { value: '6', label: '기타' },
+]
+
+provide('typeSort', typeSort)
 
 const projectDataStore = useProjectData()
 const fetchTypeList = (projId: number) => projectDataStore.fetchTypeList(projId)

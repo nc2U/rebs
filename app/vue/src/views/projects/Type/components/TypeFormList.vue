@@ -17,17 +17,19 @@ const onDeleteType = (pk: number) => emit('on-delete', pk)
 <template>
   <CTable hover responsive>
     <colgroup>
+      <col width="11%" />
+      <col width="11%" />
+      <col width="9%" />
+      <col width="12%" />
+      <col width="12%" />
+      <col width="12%" />
       <col width="13%" />
       <col width="10%" />
-      <col width="13%" />
-      <col width="13%" />
-      <col width="13%" />
-      <col width="13%" />
-      <col width="13%" />
-      <col width="12%" />
+      <col width="10%" />
     </colgroup>
     <CTableHead :color="TableSecondary" class="text-center">
       <CTableRow>
+        <CTableHeaderCell>타입종류</CTableHeaderCell>
         <CTableHeaderCell>타입명칭</CTableHeaderCell>
         <CTableHeaderCell>타입색상</CTableHeaderCell>
         <CTableHeaderCell>전용면적(m<sup>2</sup>)</CTableHeaderCell>

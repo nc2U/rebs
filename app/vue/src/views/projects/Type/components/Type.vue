@@ -1,14 +1,16 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, onBeforeMount } from 'vue'
+import { ref, reactive, computed, onBeforeMount, inject } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { write_project } from '@/utils/pageAuth'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
+const typeSort = inject('typeSort')
 const props = defineProps({ type: { type: Object, default: null } })
 const emit = defineEmits(['on-update', 'on-delete'])
 
 const form = reactive({
+  sort: '',
   name: '',
   color: '',
   actual_area: null,
@@ -23,14 +25,15 @@ const confirmModal = ref()
 
 const formsCheck = computed(() => {
   if (props.type) {
-    const a = form.name === props.type.name
-    const b = form.color === props.type.color
-    const c = form.actual_area === props.type.actual_area
-    const d = form.supply_area === props.type.supply_area
-    const e = form.contract_area === props.type.contract_area
-    const f = form.average_price === props.type.average_price
-    const g = form.num_unit === props.type.num_unit
-    return a && b && c && d && e && f && g
+    const a = form.sort === props.type.sort
+    const b = form.name === props.type.name
+    const c = form.color === props.type.color
+    const d = form.actual_area === props.type.actual_area
+    const e = form.supply_area === props.type.supply_area
+    const f = form.contract_area === props.type.contract_area
+    const g = form.average_price === props.type.average_price
+    const h = form.num_unit === props.type.num_unit
+    return a && b && c && d && e && f && g && h
   } else return false
 })
 
@@ -59,6 +62,7 @@ const modalAction = () => {
   confirmModal.value.visible = false
 }
 const resetForm = () => {
+  form.sort = props.type.sort
   form.name = props.type.name
   form.color = props.type.color
   form.actual_area = props.type.actual_area
@@ -75,6 +79,17 @@ onBeforeMount(() => {
 
 <template>
   <CTableRow>
+    <CTableDataCell>
+      <CFormSelect
+        v-model="form.sort"
+        required
+        @change="formCheck(form.sort !== type.sort)"
+      >
+        <option v-for="tp in typeSort" :key="tp.value" :value="tp.value">
+          {{ tp.label }}
+        </option>
+      </CFormSelect>
+    </CTableDataCell>
     <CTableDataCell>
       <CFormInput
         v-model="form.name"

@@ -1,9 +1,10 @@
 <script lang="ts" setup>
-import { reactive, ref } from 'vue'
+import { inject, reactive, ref } from 'vue'
 import { write_project } from '@/utils/pageAuth'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
+const typeSort = inject('typeSort')
 defineProps({ disabled: Boolean })
 const emit = defineEmits(['on-submit'])
 
@@ -12,6 +13,7 @@ const confirmModal = ref()
 
 const validated = ref(false)
 const form = reactive({
+  sort: '',
   name: '',
   color: '',
   actual_area: null,
@@ -41,11 +43,12 @@ const onSubmit = (event: Event) => {
 const modalAction = () => {
   emit('on-submit', form)
   validated.value = false
-  confirmModal.value.visible = false
+  confirmModal.value.close()
   resetForm()
 }
 
 const resetForm = () => {
+  form.sort = ''
   form.name = ''
   form.color = ''
   form.actual_area = null
@@ -64,9 +67,18 @@ const resetForm = () => {
     @submit.prevent="onSubmit"
   >
     <CRow class="p-2">
-      <CCol lg="6">
+      <CCol lg="3">
         <CRow>
-          <CCol lg="4" class="mb-2">
+          <CCol lg="6" class="mb-2">
+            <CFormSelect v-model="form.sort" required :disabled="disabled">
+              <option value="">타입종류</option>
+              <option v-for="tp in typeSort" :key="tp.value" :value="tp.value">
+                {{ tp.label }}
+              </option>
+            </CFormSelect>
+          </CCol>
+
+          <CCol lg="6" class="mb-2">
             <CFormInput
               v-model="form.name"
               maxlength="10"
@@ -75,8 +87,12 @@ const resetForm = () => {
               :disabled="disabled"
             />
           </CCol>
+        </CRow>
+      </CCol>
 
-          <CCol lg="2" class="mb-2">
+      <CCol lg="1">
+        <CRow>
+          <CCol lg="12" class="mb-2">
             <CFormInput
               v-model="form.color"
               title="타입색상"
@@ -85,8 +101,12 @@ const resetForm = () => {
               :disabled="disabled"
             />
           </CCol>
+        </CRow>
+      </CCol>
 
-          <CCol lg="3" class="mb-2">
+      <CCol lg="8">
+        <CRow>
+          <CCol lg="2" class="mb-2">
             <CFormInput
               v-model.number="form.actual_area"
               placeholder="전용면적"
@@ -100,7 +120,7 @@ const resetForm = () => {
             </CFormFeedback>
           </CCol>
 
-          <CCol lg="3" class="mb-2">
+          <CCol lg="2" class="mb-2">
             <CFormInput
               v-model.number="form.supply_area"
               placeholder="공급면적"
@@ -113,11 +133,7 @@ const resetForm = () => {
               공급면적을 소소점4자리 이하로 입력하세요.
             </CFormFeedback>
           </CCol>
-        </CRow>
-      </CCol>
-      <CCol lg="6">
-        <CRow>
-          <CCol lg="3" class="mb-2">
+          <CCol lg="2" class="mb-2">
             <CFormInput
               v-model.number="form.contract_area"
               placeholder="계약면적"
@@ -131,7 +147,7 @@ const resetForm = () => {
             </CFormFeedback>
           </CCol>
 
-          <CCol lg="3" class="mb-2">
+          <CCol lg="2" class="mb-2">
             <CFormInput
               v-model.number="form.average_price"
               placeholder="평균가격"
@@ -142,7 +158,7 @@ const resetForm = () => {
             />
           </CCol>
 
-          <CCol lg="3" class="mb-2">
+          <CCol lg="2" class="mb-2">
             <CFormInput
               v-model.number="form.num_unit"
               placeholder="세대수"
@@ -152,7 +168,7 @@ const resetForm = () => {
             />
           </CCol>
 
-          <CCol lg="3" class="d-grid gap-2 d-lg-block mb-3">
+          <CCol lg="2" class="d-grid gap-2 d-lg-block mb-3">
             <CButton color="primary" type="submit" :disabled="disabled">
               타입추가
             </CButton>
@@ -163,7 +179,7 @@ const resetForm = () => {
   </CForm>
 
   <ConfirmModal ref="confirmModal">
-    <template #header> 타입 정보 등록 </template>
+    <template #header> 타입 정보 등록</template>
     <template #default>
       프로젝트의 타입 정보 등록을 진행하시겠습니까?
     </template>
