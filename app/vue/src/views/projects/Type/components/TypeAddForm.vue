@@ -153,7 +153,6 @@ const resetForm = () => {
               placeholder="평균가격"
               type="number"
               min="0"
-              required
               :disabled="disabled"
             />
           </CCol>

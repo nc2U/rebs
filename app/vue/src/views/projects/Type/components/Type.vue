@@ -140,7 +140,6 @@ onBeforeMount(() => {
         placeholder="평균가격"
         type="number"
         min="0"
-        required
         @keypress.enter="formCheck(form.average_price !== type.average_price)"
       />
     </CTableDataCell>
