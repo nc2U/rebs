@@ -61,7 +61,7 @@ class UnitType(models.Model):
         ('5', '근린생활시설'),
         ('6', '기타')
     )
-    kind = models.CharField('타입종류', max_length=1, choices=SORT_CHOICES)
+    sort = models.CharField('타입종류', max_length=1, choices=SORT_CHOICES)
     name = models.CharField('타입명칭', max_length=10)
     color = models.CharField('타입색상', max_length=20)
     actual_area = models.DecimalField('전용면적(㎡)', max_digits=7, decimal_places=4, null=True, blank=True)
