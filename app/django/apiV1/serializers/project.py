@@ -40,7 +40,7 @@ class UnitTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = UnitType
         fields = (
-            'pk', 'project', 'name', 'color', 'actual_area',
+            'pk', 'project', 'name', 'sort', 'color', 'actual_area',
             'supply_area', 'contract_area', 'average_price', 'num_unit')
 
 
