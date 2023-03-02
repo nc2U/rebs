@@ -17,7 +17,7 @@ class Project(models.Model):
         ('7', '지식산업센터'),
         ('8', '기타')
     )
-    kind = models.CharField('프로젝트종류', max_length=2, choices=KIND_CHOICES)
+    kind = models.CharField('프로젝트종류', max_length=1, choices=KIND_CHOICES)
     start_year = models.CharField('사업개시년도', max_length=4)
     is_direct_manage = models.BooleanField('직영운영여부', default=False,
                                            help_text='본사 직접 운영하는 프로젝트인 경우 체크, 즉 시행대행이나 업무대행이 아닌 경우')
@@ -53,12 +53,21 @@ class Project(models.Model):
 
 class UnitType(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE, verbose_name='프로젝트', related_name='types')
+    SORT_CHOICES = (
+        ('1', '공동주택'),
+        ('2', '오피스텔'),
+        ('3', '숙박시설'),
+        ('4', '지식산업센터'),
+        ('5', '근린생활시설'),
+        ('6', '기타')
+    )
+    kind = models.CharField('타입종류', max_length=1, choices=SORT_CHOICES)
     name = models.CharField('타입명칭', max_length=10)
     color = models.CharField('타입색상', max_length=20)
     actual_area = models.DecimalField('전용면적(㎡)', max_digits=7, decimal_places=4, null=True, blank=True)
     supply_area = models.DecimalField('공급면적(㎡)', max_digits=7, decimal_places=4, null=True, blank=True)
     contract_area = models.DecimalField('계약면적(㎡)', max_digits=7, decimal_places=4, null=True, blank=True)
-    average_price = models.PositiveIntegerField('평균가격')
+    average_price = models.PositiveIntegerField('평균가격', null=True, blank=True)
     num_unit = models.PositiveSmallIntegerField('세대수')
 
     def __str__(self):
