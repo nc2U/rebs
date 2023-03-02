@@ -33,6 +33,7 @@ export interface UnitType {
   pk: number
   project: number
   name: string
+  sort: '' | '1' | '2' | '3' | '4' | '5' | '6'
   color: string
   actual_area: number | null
   supply_area: number | null
