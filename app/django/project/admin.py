@@ -17,10 +17,10 @@ class ProjectAdmin(ImportExportMixin, admin.ModelAdmin):
 class UnitTypeAdmin(ImportExportMixin, admin.ModelAdmin):
     # form = UnitTypeForm
     list_display = (
-        'id', 'project', 'name', 'styled_color', 'actual_area', 'supply_area', 'contract_area', 'average_price',
+        'id', 'project', 'name', 'sort', 'styled_color', 'actual_area', 'supply_area', 'contract_area', 'average_price',
         'num_unit')
     list_display_links = ('project', 'name',)
-    list_editable = ('actual_area', 'supply_area', 'contract_area', 'average_price', 'num_unit')
+    list_editable = ('sort', 'actual_area', 'supply_area', 'contract_area', 'average_price', 'num_unit')
     list_filter = ('project',)
 
     def styled_color(self, obj):
