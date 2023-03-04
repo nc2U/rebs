@@ -34,6 +34,7 @@ jobs:
           target: '/mnt/nfs/prod'
 
       # web pod --> django model migrations & collectstatic
+      # kubectl exec -it -n prod-hrebs $web_pod -- sed -i 's/True/False/g' _config/settings/prod.py
       - name: django model migration & collectstatic
         uses: garygrossgarten/github-action-ssh@release
         with:
@@ -43,7 +44,6 @@ jobs:
           command: |
             web_pod=$(kubectl get pod -n prod-hrebs | grep web | cut -d ' ' -f1)
             kubectl exec -it -n prod-hrebs $web_pod -- cp _config/settings/local.py _config/settings/prod.py
-##            kubectl exec -it -n prod-hrebs $web_pod -- sed -i 's/True/False/g' _config/settings/prod.py
             kubectl exec -it -n prod-hrebs $web_pod -- sed -i '2,6 s/*/${{ secrets.DOMAIN_NAME }}/g' _config/settings/prod.py
             kubectl exec -it -n prod-hrebs $web_pod -- sed -i '/CSRF_TRUSTED_ORIGINS/d' _config/settings/prod.py | sed '/^$/d'
             kubectl exec -it -n prod-hrebs $web_pod -- python manage.py makemigrations accounts book cash company contract document notice project rebs
