@@ -41,7 +41,8 @@
 @function rgba-css-var($identifier, $target) {
   @if $identifier == "body" and $target == "bg" {
     @return rgba(var(--#{$prefix}#{$identifier}-bg-rgb), var(--#{$prefix}#{$target}-opacity));
-  } @if $identifier == "body" and $target == "text" {
+  }
+  @if $identifier == "body" and $target == "text" {
     @return rgba(var(--#{$prefix}#{$identifier}-color-rgb), var(--#{$prefix}#{$target}-opacity));
   } @else {
     @return rgba(var(--#{$prefix}#{$identifier}-rgb), var(--#{$prefix}#{$target}-opacity));
@@ -63,6 +64,7 @@
 
   @return $_map;
 }
+
 // stylelint-enable scss/dollar-variable-pattern
 
 @function varify($list) {
@@ -182,9 +184,9 @@ $_luminance-list: .0008 .001 .0011 .0013 .0015 .0017 .002 .0022 .0025 .0027 .003
 // See https://www.w3.org/TR/WCAG/#dfn-contrast-ratio
 @function luminance($color) {
   $rgb: (
-    "r": red($color),
-    "g": green($color),
-    "b": blue($color)
+          "r": red($color),
+          "g": green($color),
+          "b": blue($color)
   );
 
   @each $name, $value in $rgb {
@@ -216,17 +218,19 @@ $_luminance-list: .0008 .001 .0011 .0013 .0015 .0017 .002 .0022 .0025 .0027 .003
 @function shift-color($color, $weight) {
   @return if($weight > 0, shade-color($color, $weight), tint-color($color, -$weight));
 }
+
 // scss-docs-end color-functions
 
 // scss-docs-start alert-color-functions
 @function alert-color-map($color) {
   @return (
-    "alert-bg": shift-color($color, $alert-bg-scale),
-    "alert-border": shift-color($color, $alert-border-scale),
-    "alert-color": shift-color($color, $alert-color-scale),
-    "base-color": $color
+          "alert-bg": shift-color($color, $alert-bg-scale),
+          "alert-border": shift-color($color, $alert-border-scale),
+          "alert-color": shift-color($color, $alert-color-scale),
+          "base-color": $color
   );
 }
+
 // scss-docs-end alert-color-functions
 
 // scss-docs-start button-color-functions
@@ -236,45 +240,47 @@ $_luminance-list: .0008 .001 .0011 .0013 .0015 .0017 .002 .0022 .0025 .0027 .003
 
 @function btn-color-map($background, $border-color) {
   @return (
-    "bg": $background,
-    "border-color": $border-color,
-    "color": color-contrast($background),
-    "hover-bg": btn-color($background, $btn-hover-bg-shade-amount, $btn-hover-bg-tint-amount),
-    "hover-border-color": btn-color($border-color, $btn-hover-border-shade-amount, $btn-hover-border-tint-amount),
-    "hover-color": color-contrast(btn-color($background, $btn-hover-bg-shade-amount, $btn-hover-bg-tint-amount)),
-    "active-bg": btn-color($background, $btn-active-bg-shade-amount, $btn-active-bg-tint-amount),
-    "active-border-color": btn-color($border-color, $btn-active-border-shade-amount, $btn-active-border-tint-amount),
-    "active-color": color-contrast(btn-color($border-color, $btn-active-border-shade-amount, $btn-active-border-tint-amount)),
-    "disabled-bg": $background,
-    "disabled-border-color": $border-color,
-    "disabled-color": color-contrast($background),
-    "shadow": rgba(mix($background, $border-color, 15%), .5)
+          "bg": $background,
+          "border-color": $border-color,
+          "color": color-contrast($background),
+          "hover-bg": btn-color($background, $btn-hover-bg-shade-amount, $btn-hover-bg-tint-amount),
+          "hover-border-color": btn-color($border-color, $btn-hover-border-shade-amount, $btn-hover-border-tint-amount),
+          "hover-color": color-contrast(btn-color($background, $btn-hover-bg-shade-amount, $btn-hover-bg-tint-amount)),
+          "active-bg": btn-color($background, $btn-active-bg-shade-amount, $btn-active-bg-tint-amount),
+          "active-border-color": btn-color($border-color, $btn-active-border-shade-amount, $btn-active-border-tint-amount),
+          "active-color": color-contrast(btn-color($border-color, $btn-active-border-shade-amount, $btn-active-border-tint-amount)),
+          "disabled-bg": $background,
+          "disabled-border-color": $border-color,
+          "disabled-color": color-contrast($background),
+          "shadow": rgba(mix($background, $border-color, 15%), .5)
   );
 }
 
 @function btn-outline-color-map($background) {
   @return (
-    "color": $background,
-    "hover-bg": btn-color($background, $btn-hover-bg-shade-amount, $btn-hover-bg-tint-amount),
-    "hover-border-color": btn-color($background, $btn-hover-border-shade-amount, $btn-hover-border-tint-amount),
-    "hover-color": color-contrast(btn-color($background, $btn-hover-bg-shade-amount, $btn-hover-bg-tint-amount)),
-    "active-bg": btn-color($background, $btn-active-bg-shade-amount, $btn-active-bg-tint-amount),
-    "active-border-color": btn-color($background, $btn-active-border-shade-amount, $btn-active-border-tint-amount),
-    "active-color": color-contrast(btn-color($background, $btn-active-border-shade-amount, $btn-active-border-tint-amount)),
-    "disabled-color": $background,
-    "shadow": rgba(mix($background, $background, 15%), .5)
+          "color": $background,
+          "hover-bg": btn-color($background, $btn-hover-bg-shade-amount, $btn-hover-bg-tint-amount),
+          "hover-border-color": btn-color($background, $btn-hover-border-shade-amount, $btn-hover-border-tint-amount),
+          "hover-color": color-contrast(btn-color($background, $btn-hover-bg-shade-amount, $btn-hover-bg-tint-amount)),
+          "active-bg": btn-color($background, $btn-active-bg-shade-amount, $btn-active-bg-tint-amount),
+          "active-border-color": btn-color($background, $btn-active-border-shade-amount, $btn-active-border-tint-amount),
+          "active-color": color-contrast(btn-color($background, $btn-active-border-shade-amount, $btn-active-border-tint-amount)),
+          "disabled-color": $background,
+          "shadow": rgba(mix($background, $background, 15%), .5)
   );
 }
+
 // scss-docs-end button-color-functions
 
 // scss-docs-start list-group-color-functions
 @function list-group-color-map($color) {
   @return (
-    "bg": shift-color($color, $list-group-item-bg-scale),
-    "bg-hover": shade-color($color, 10%),
-    "color": shift-color($color, $list-group-item-color-scale)
+          "bg": shift-color($color, $list-group-item-bg-scale),
+          "bg-hover": shade-color($color, 10%),
+          "color": shift-color($color, $list-group-item-color-scale)
   );
 }
+
 // scss-docs-end list-group-color-functions
 
 // scss-docs-start table-color-functions
@@ -285,17 +291,18 @@ $_luminance-list: .0008 .001 .0011 .0013 .0015 .0017 .002 .0022 .0025 .0027 .003
   $hover-bg: mix($color, $background, percentage($table-hover-bg-factor));
 
   @return (
-    "bg": $background,
-    "color": $color,
-    "border-color": mix($color, $background, percentage($table-border-factor)),
-    "striped-bg": $striped-bg,
-    "striped-color": color-contrast($striped-bg),
-    "active-bg": $active-bg,
-    "active-color": color-contrast($active-bg),
-    "hover-bg": $hover-bg,
-    "hover-color": color-contrast($hover-bg)
+          "bg": $background,
+          "color": $color,
+          "border-color": mix($color, $background, percentage($table-border-factor)),
+          "striped-bg": $striped-bg,
+          "striped-color": color-contrast($striped-bg),
+          "active-bg": $active-bg,
+          "active-color": color-contrast($active-bg),
+          "hover-bg": $hover-bg,
+          "hover-color": color-contrast($hover-bg)
   );
 }
+
 // scss-docs-end table-color-functions
 
 // Return valid calc
@@ -375,10 +382,10 @@ $_luminance-list: .0008 .001 .0011 .0013 .0015 .0017 .002 .0022 .0025 .0027 .003
   $dividend-unit: unit($dividend);
   $divisor-unit: unit($divisor);
   $unit-map: (
-    "px": 1px,
-    "rem": 1rem,
-    "em": 1em,
-    "%": 1%
+          "px": 1px,
+          "rem": 1rem,
+          "em": 1em,
+          "%": 1%
   );
   @if ($dividend-unit != $divisor-unit and map-has-key($unit-map, $dividend-unit)) {
     $result: $result * map-get($unit-map, $dividend-unit);
