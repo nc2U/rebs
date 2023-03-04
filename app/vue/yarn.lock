@@ -1120,7 +1120,7 @@
     "@coreui/coreui" "^4.2.6"
     chart.js "^3.9.1"
 
-"@coreui/coreui@^4.2.2", "@coreui/coreui@^4.2.6":
+"@coreui/coreui@^4.2.6":
   version "4.2.6"
   resolved "https://registry.yarnpkg.com/@coreui/coreui/-/coreui-4.2.6.tgz#8ae8aa4c834552328c5748385be5bc33df86aab7"
   integrity sha512-h9j1BVnaDi9vSr1t0H8NL3hlDD4lU9kIdGLXn7g9k5iaFq5EDlRDcSBDer6lR2O4sIEl7W7YqTlevLxFC+1cIA==
@@ -1147,7 +1147,7 @@
   resolved "https://registry.yarnpkg.com/@coreui/vue-chartjs/-/vue-chartjs-2.0.1.tgz#b1e892a072a0e489004117bec1c8523ca93c9b3e"
   integrity sha512-HUMIO4YM8q63AgkbwxQG3TI+BlhzCTZKs/A+wG3FMLR8do5VPk5r3t1kaluV62reZP21jqXE0SPIU1if9a7YkQ==
 
-"@coreui/vue@^4.3.1":
+"@coreui/vue@^4.7.0":
   version "4.7.0"
   resolved "https://registry.yarnpkg.com/@coreui/vue/-/vue-4.7.0.tgz#cf097c52c722258c70c1b8d7151a6176bd00cb05"
   integrity sha512-0LLuo/1f16gM4PWIyMhCpyPD4LMuc+cMyU0YOavpYD/PgKGIsEc4fNXQyv0KgvwVPIAhGg2EQLy70THk0Atc/g==
@@ -1990,9 +1990,9 @@
   integrity sha512-jhuKLIRrhvCPLqwPcx6INqmKeiA5EWrsCOPhrlFSrbrmU4ZMPjj5Ul/oLCMDO98XRUIwVm78xICz4EPCektzeQ==
 
 "@types/node@*":
-  version "18.14.5"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.14.5.tgz#4a13a6445862159303fc38586598a9396fc408b3"
-  integrity sha512-CRT4tMK/DHYhw1fcCEBwME9CSaZNclxfzVMe7GsO6ULSwsttbj70wSiX6rZdIjGblu93sTJxLdhNIT85KKI7Qw==
+  version "18.14.6"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.14.6.tgz#ae1973dd2b1eeb1825695bb11ebfb746d27e3e93"
+  integrity sha512-93+VvleD3mXwlLI/xASjw0FzKcwzl3OdTCzm1LaRfqgS21gfFtK3zDXM5Op9TeeMsJVOaJ2VRDpT9q4Y3d0AvA==
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.1"
@@ -4208,9 +4208,9 @@ ee-first@1.1.1:
   integrity sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==
 
 electron-to-chromium@^1.4.284:
-  version "1.4.318"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.318.tgz#7e0755bb80638175327bd9bc14dc4b9a0dbb62b5"
-  integrity sha512-EQHZE/yO9Sg6gIP9VezPltDWFA8pMnv7dNRb4Y0ukels3iyXTH313gbHvK/tZwUF+jeh5F5fDf1rqWb8ZWX8fw==
+  version "1.4.320"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.320.tgz#4d83a90ff74f93939c5413c2ac5a16c696600632"
+  integrity sha512-h70iRscrNluMZPVICXYl5SSB+rBKo22XfuIS1ER0OQxQZpKTnFpuS6coj7wY9M/3trv7OR88rRMOlKmRvDty7Q==
 
 emittery@^0.10.2:
   version "0.10.2"
@@ -7820,16 +7820,13 @@ safe-buffer@5.2.1, safe-buffer@>=5.1.0, safe-buffer@^5.1.0, safe-buffer@~5.2.0:
   resolved "https://registry.yarnpkg.com/safer-buffer/-/safer-buffer-2.1.2.tgz#44fa161b0187b9549dd84bb91802f9bd8385cd6a"
   integrity sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==
 
-sass-loader@^10.4.1:
-  version "10.4.1"
-  resolved "https://registry.yarnpkg.com/sass-loader/-/sass-loader-10.4.1.tgz#bea4e173ddf512c9d7f53e9ec686186146807cbf"
-  integrity sha512-aX/iJZTTpNUNx/OSYzo2KsjIUQHqvWsAhhUijFjAPdZTEhstjZI9zTNvkTTwsx+uNUJqUwOw5gacxQMx4hJxGQ==
+sass-loader@^13.2.0:
+  version "13.2.0"
+  resolved "https://registry.yarnpkg.com/sass-loader/-/sass-loader-13.2.0.tgz#80195050f58c9aac63b792fa52acb6f5e0f6bdc3"
+  integrity sha512-JWEp48djQA4nbZxmgC02/Wh0eroSUutulROUusYJO9P9zltRbNN80JCBHqRGzjd4cmZCa/r88xgfkjGD0TXsHg==
   dependencies:
     klona "^2.0.4"
-    loader-utils "^2.0.0"
     neo-async "^2.6.2"
-    schema-utils "^3.0.0"
-    semver "^7.3.2"
 
 sass@^1.58.3:
   version "1.58.3"
