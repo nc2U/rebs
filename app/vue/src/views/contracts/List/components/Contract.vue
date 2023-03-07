@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { numFormat, cutString } from '@/utils/baseMixins'
+import { useRouter } from 'vue-router'
 
 defineProps({
   contract: {
@@ -7,6 +8,8 @@ defineProps({
     required: true,
   },
 })
+
+const router = useRouter()
 </script>
 
 <template>
@@ -19,57 +22,57 @@ defineProps({
       </router-link>
     </CTableDataCell>
     <CTableDataCell>
-      {{ contract.order_group.order_group_name }}
+      {{ contract.order_group_desc.order_group_name }}
     </CTableDataCell>
     <CTableDataCell class="text-left">
       <CIcon
         name="cibDiscover"
-        :style="'color:' + contract.type_color"
+        :style="'color:' + contract.unit_type_desc.color"
         size="sm"
         class="mr-1"
       />
-      {{ contract.unit_type }}
+      {{ contract.unit_type_desc.name }}
     </CTableDataCell>
     <CTableDataCell
       class="text-left"
-      :class="contract.house_unit === '[미정]' ? 'text-danger' : ''"
+      :class="contract.keyunit.houseunit !== null ? '' : 'text-danger'"
     >
-      {{ contract.house_unit }}
+      {{
+        contract.keyunit.houseunit ? contract.keyunit.houseunit.__str__ : '미정'
+      }}
     </CTableDataCell>
     <CTableDataCell>
       <router-link
         :to="{ name: '계약 등록 관리', query: { contract: contract.pk } }"
       >
-        {{ contract.contractor }}
+        {{ contract.contractor.name }}
       </router-link>
     </CTableDataCell>
     <CTableDataCell>
-      {{
-        contract.last_paid_order === '-'
-          ? '-'
-          : contract.last_paid_order.__str__
-      }}
+      {{ !contract.last_paid_order ? '-' : contract.last_paid_order.__str__ }}
     </CTableDataCell>
     <CTableDataCell class="text-right">
       {{ numFormat(contract.total_paid) }}
     </CTableDataCell>
     <CTableDataCell>
-      <CBadge :color="contract.is_registed ? 'success' : 'danger'">
-        {{ contract.is_registed ? '인가완료' : '미 인 가' }}
+      <CBadge :color="contract.contractor.is_registed ? 'success' : 'danger'">
+        {{ contract.contractor.is_registed ? '인가완료' : '미 인 가' }}
       </CBadge>
     </CTableDataCell>
     <CTableDataCell class="text-left">
-      {{ cutString(contract.address, 13) }}
+      {{ cutString(contract.contractor.contractoraddress.dm_address1, 13) }}
     </CTableDataCell>
-    <CTableDataCell>{{ contract.cell_phone }}</CTableDataCell>
-    <CTableDataCell>{{ contract.contract_date }}</CTableDataCell>
+    <CTableDataCell
+      >{{ contract.contractor.contractorcontact.cell_phone }}
+    </CTableDataCell>
+    <CTableDataCell>{{ contract.contractor.contract_date }}</CTableDataCell>
     <CTableDataCell>
       <CButton
         type="button"
         color="success"
         size="sm"
         @click="
-          $router.push({
+          router.push({
             name: '계약 등록 관리',
             query: { contract: contract.pk },
           })

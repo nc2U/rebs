@@ -8,7 +8,7 @@ import Contract from '@/views/contracts/List/components/Contract.vue'
 const emit = defineEmits(['page-select'])
 
 const contractStore = useContract()
-const contractIndex = computed(() => contractStore.contractIndex)
+const contractList = computed(() => contractStore.contractList)
 
 const contractPages = (pageNum: number) => contractStore.contractPages(pageNum)
 const pageSelect = (page: number) => emit('page-select', page)
@@ -50,7 +50,7 @@ const pageSelect = (page: number) => emit('page-select', page)
 
     <CTableBody>
       <Contract
-        v-for="contract in contractIndex"
+        v-for="contract in contractList"
         :key="contract.pk"
         :contract="contract"
       />
