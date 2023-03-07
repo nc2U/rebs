@@ -35,7 +35,7 @@ const onSubmit = (event: Event) => {
 const modalAction = () => {
   emit('on-submit', form)
   validated.value = false
-  confirmModal.value.visible = false
+  confirmModal.value.close()
   resetForm()
 }
 
@@ -92,7 +92,7 @@ const resetForm = () => {
   </CForm>
 
   <ConfirmModal ref="confirmModal">
-    <template #header> 차수그룹 등록 </template>
+    <template #header> 차수그룹 등록</template>
     <template #default>
       프로젝트의 차수그룹 정보 등록을 진행하시겠습니까?
     </template>
