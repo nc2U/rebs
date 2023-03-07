@@ -36,12 +36,12 @@ const paidCompleted = computed(() => {
 const price = computed(() => {
   // 해당 건별 분양가 구하기
   const c = props.contract
-  const unit = c.house_unit
+  const unit = c.keyunit.houseunit
   return unit
     ? salesPriceList.value.filter(
         (s: SalesPrice) =>
-          s.order_group === c.order_group.pk &&
-          s.unit_type === c.type_pk &&
+          s.order_group === c.order_group &&
+          s.unit_type === c.unit_type &&
           s.unit_floor_type === unit.floor_type,
       )[0]?.price
     : props.contract.average_price
@@ -62,6 +62,7 @@ const downPay = computed(() => {
 
   return downPay ? downPay.payment_amount : average_downPay
 })
+
 const lastPayName = computed(
   () => payOrderList.value[payOrderList.value.length - 1].pay_time,
 )
@@ -69,7 +70,7 @@ const lastPayName = computed(
 watch(props, (n, o) => {
   if (!paidCompleted.value) {
     checked.value = n.allChecked
-    ctorChk(n.contract.ctor_pk)
+    ctorChk(n.contract.contractor.pk)
   }
   if (n.page !== o.page) checked.value = false
 })
@@ -82,6 +83,7 @@ const ctorChk = (ctorPk: string) =>
 const get_paid_order = () => {
   let paid_amount = 0 // 금회차까지 납부해야할 금액 누계
   const total_paid = props.contract.total_paid // 총 낸돈
+
   let paid_orders: number[] = [] // 완납 회차 리스트
 
   const middle = Number(price.value * 0.1) // 중도금액
@@ -90,16 +92,16 @@ const get_paid_order = () => {
     if (p.pay_sort === '1') paid_amount += downPay.value // 계약금 더하기
     else if (p.pay_sort === '2') paid_amount += middle // 중도금 더하기
 
-    if (total_paid >= paid_amount) paid_orders.push(p.pay_time) // (총 낸돈 >= 총 낼돈)
+    if (total_paid >= paid_amount) paid_orders.push(p.pay_time || 0) // (총 낸돈 >= 총 낼돈)
   })
+
   return total_paid >= price.value ? lastPayName.value : paid_orders.pop()
 }
 
-const getPayName = (pay_time: number) => {
-  return payOrderList.value
+const getPayName = (pay_time: number) =>
+  payOrderList.value
     .filter((p: PayOrder) => p.pay_time === pay_time)
     .map(p => p.pay_name)[0]
-}
 </script>
 
 <template>
@@ -110,38 +112,42 @@ const getPayName = (pay_time: number) => {
   >
     <CTableDataCell>
       <CFormCheck
-        :id="'check_' + contract.ctor_pk"
+        :id="'check_' + contract.contractor.pk"
         v-model="checked"
-        :value="contract.ctor_pk"
+        :value="contract.contractor.pk"
         :disabled="paidCompleted"
         label="선택"
-        @change="ctorChk(contract.ctor_pk)"
+        @change="ctorChk(contract.contractor.pk)"
       />
     </CTableDataCell>
-    <CTableDataCell>{{ contract.order_group.order_group_name }}</CTableDataCell>
+
+    <CTableDataCell>
+      {{ contract.order_group_desc.order_group_name }}
+    </CTableDataCell>
+
     <CTableDataCell class="text-left">
       <CIcon
         name="cibDiscover"
-        :style="'color:' + contract.type_color"
+        :style="'color:' + contract.unit_type_desc.color"
         size="sm"
         class="mr-1"
       />
-      {{ contract.unit_type }}
+      {{ contract.unit_type_desc.name }}
     </CTableDataCell>
     <CTableDataCell>
       {{ contract.serial_number }}
     </CTableDataCell>
     <CTableDataCell
       class="text-center"
-      :class="contract.house_unit_str ? '' : 'text-danger'"
+      :class="contract.keyunit.houseunit ? '' : 'text-danger'"
     >
-      {{ contract.house_unit_str || '미정' }}
+      {{ contract.keyunit.houseunit.__str__ || '미정' }}
     </CTableDataCell>
     <CTableDataCell>
       <router-link
         :to="{ name: '계약 등록 관리', query: { contract: contract.pk } }"
       >
-        {{ contract.contractor }}
+        {{ contract.contractor.name }}
       </router-link>
     </CTableDataCell>
     <CTableDataCell class="text-right">
@@ -155,11 +161,11 @@ const getPayName = (pay_time: number) => {
       <span v-if="paidCompleted" class="text-success">완납중</span>
       <span v-else class="text-danger">미납중</span>
       {{
-        contract.last_paid_order === '-'
+        !contract.last_paid_order
           ? ' (계약금미납)'
           : ' (' + getPayName(get_paid_order()) + ')'
       }}
     </CTableDataCell>
-    <CTableDataCell>{{ contract.contract_date }}</CTableDataCell>
+    <CTableDataCell>{{ contract.contractor.contract_date }}</CTableDataCell>
   </CTableRow>
 </template>

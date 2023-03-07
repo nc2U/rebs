@@ -12,7 +12,7 @@ const page = ref(1)
 const allChecked = ref(false)
 
 const contractStore = useContract()
-const contBillIndex = computed(() => contractStore.contBillIndex)
+const contractList = computed(() => contractStore.contractList)
 const contractPages = computed(() => contractStore.contractPages)
 
 const pageSelect = (page: number) => {
@@ -55,9 +55,9 @@ const onCtorChk = (payload: { chk: boolean; pk: number }) =>
             @change="allUnChecked"
           />
         </CTableHeaderCell>
-        <CTableHeaderCell scope="col">계약 일련번호</CTableHeaderCell>
         <CTableHeaderCell scope="col">차수</CTableHeaderCell>
         <CTableHeaderCell scope="col">타입</CTableHeaderCell>
+        <CTableHeaderCell scope="col">계약 일련번호</CTableHeaderCell>
         <CTableHeaderCell scope="col">동호수</CTableHeaderCell>
         <CTableHeaderCell scope="col">계약자</CTableHeaderCell>
         <CTableHeaderCell scope="col">납입금액합계</CTableHeaderCell>
@@ -68,7 +68,7 @@ const onCtorChk = (payload: { chk: boolean; pk: number }) =>
 
     <CTableBody>
       <Contract
-        v-for="contract in contBillIndex"
+        v-for="contract in contractList"
         :key="contract.pk"
         :page="page"
         :now-order="nowOrder"
