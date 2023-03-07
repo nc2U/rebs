@@ -64,23 +64,5 @@ const setContractor = (pk: number, release: number | null) => {
         </CRow>
       </CCol>
     </CRow>
-    <CRow>
-      <!--      <CCol color="warning" class="p-2 pl-3" v-if="contractIndex.length !== 0">-->
-      <!--        <CButton-->
-      <!--          type="button"-->
-      <!--          color="dark"-->
-      <!--          v-for="cont in contractIndex"-->
-      <!--          :key="cont.pk"-->
-      <!--          @click="getContract(cont.pk)"-->
-      <!--          variant="outline"-->
-      <!--          size="sm"-->
-      <!--        >-->
-      <!--          {{ `${cont.contractor}(${cont.serial_number})` }}-->
-      <!--        </CButton>-->
-      <!--      </CCol>-->
-      <!--      <CCol v-else class="mt-3 m-2" :class="textClass">-->
-      <!--        {{ msg }}-->
-      <!--      </CCol>-->
-    </CRow>
   </CCallout>
 </template>

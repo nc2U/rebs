@@ -12,7 +12,7 @@ const props = defineProps({
 const emit = defineEmits(['list-filtering', 'get-contract'])
 
 const contractStore = useContract()
-const contractIndex = computed(() => contractStore.contractIndex)
+const contractList = computed(() => contractStore.contractList)
 
 const paymentUrl = computed(() => {
   const url = '/rebs/pdf-payments/'
@@ -38,7 +38,7 @@ const listFiltering = (page = 1) => {
     if (form.search === '') pageInit()
     else emit('list-filtering', { ...{ page }, ...form })
   })
-  if (contractIndex.value.length === 0) {
+  if (contractList.value.length === 0) {
     msg.value = `해당 검색어로 등록된 데이터가 없습니다.`
     textClass.value = 'text-danger'
   }
@@ -81,9 +81,9 @@ onMounted(() => pageInit())
       </CCol>
     </CRow>
     <CRow>
-      <CCol v-if="contractIndex.length !== 0" color="warning" class="p-2 pl-3">
+      <CCol v-if="contractList.length !== 0" color="warning" class="p-2 pl-3">
         <CButton
-          v-for="cont in contractIndex"
+          v-for="cont in contractList"
           :key="cont.pk"
           type="button"
           color="dark"
@@ -91,7 +91,7 @@ onMounted(() => pageInit())
           size="sm"
           @click="getContract(cont.pk)"
         >
-          {{ `${cont.contractor}(${cont.serial_number})` }}
+          {{ `${cont.contractor.name}(${cont.serial_number})` }}
         </CButton>
       </CCol>
       <CCol v-else class="mt-3 m-2" :class="textClass">
@@ -112,7 +112,7 @@ onMounted(() => pageInit())
             {{ contract.serial_number }}
           </router-link>
           ] (타입 :
-          {{ contract.unit_type.name }}
+          {{ contract.unit_type_desc.name }}
           {{
             contract.keyunit.houseunit
               ? contract.keyunit.houseunit.__str__
