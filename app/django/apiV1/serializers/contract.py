@@ -85,7 +85,8 @@ class ContractSetSerializer(serializers.ModelSerializer):
             'pk', 'project', 'order_group', 'unit_type', 'serial_number', 'activation',
             'keyunit', 'contractor', 'payments', 'order_group_desc', 'unit_type_desc')
 
-    def get_payments(self, instance):
+    @staticmethod
+    def get_payments(instance):
         payments = instance.payments.filter(project_account_d2__lte=2).order_by('deal_date', 'id')
         return ProjectCashBookInContractSerializer(payments, many=True, read_only=True).data
 
@@ -139,16 +140,16 @@ class ContractSetSerializer(serializers.ModelSerializer):
         address_dm_address2 = self.initial_data.get('dm_address2')
         address_dm_address3 = self.initial_data.get('dm_address3')
 
-        contractorAddress = ContractorAddress(contractor=contractor,
-                                              id_zipcode=address_id_zipcode,
-                                              id_address1=address_id_address1,
-                                              id_address2=address_id_address2,
-                                              id_address3=address_id_address3,
-                                              dm_zipcode=address_dm_zipcode,
-                                              dm_address1=address_dm_address1,
-                                              dm_address2=address_dm_address2,
-                                              dm_address3=address_dm_address3)
-        contractorAddress.save()
+        contractor_address = ContractorAddress(contractor=contractor,
+                                               id_zipcode=address_id_zipcode,
+                                               id_address1=address_id_address1,
+                                               id_address2=address_id_address2,
+                                               id_address3=address_id_address3,
+                                               dm_zipcode=address_dm_zipcode,
+                                               dm_address1=address_dm_address1,
+                                               dm_address2=address_dm_address2,
+                                               dm_address3=address_dm_address3)
+        contractor_address.save()
 
         # 6. 계약자 연락처 테이블 입력
         contact_cell_phone = self.initial_data.get('cell_phone')
@@ -156,12 +157,12 @@ class ContractSetSerializer(serializers.ModelSerializer):
         contact_other_phone = self.initial_data.get('other_phone')
         contact_email = self.initial_data.get('email')
 
-        contractorContact = ContractorContact(contractor=contractor,
-                                              cell_phone=contact_cell_phone,
-                                              home_phone=contact_home_phone,
-                                              other_phone=contact_other_phone,
-                                              email=contact_email)
-        contractorContact.save()
+        contractor_contact = ContractorContact(contractor=contractor,
+                                               cell_phone=contact_cell_phone,
+                                               home_phone=contact_home_phone,
+                                               other_phone=contact_other_phone,
+                                               email=contact_email)
+        contractor_contact.save()
 
         # 7. 계약금 -- 수납 정보 테이블 입력
         if self.initial_data.get('deal_date'):
@@ -404,7 +405,7 @@ class ContractorReleaseSerializer(serializers.ModelSerializer):
 
         try:
             released_done = contractor.contractorrelease.status >= '4'
-        except:
+        except ObjectDoesNotExist:
             released_done = False
 
         # 미완료인 상태에서 4 -> 처리완료, 5 -> 자격상실 :: 최종 해지 확정 요청이 있을 경우
@@ -427,7 +428,7 @@ class ContractorReleaseSerializer(serializers.ModelSerializer):
             # 4. 동호수 연결 해제
             try:  # 동호수 존재 여부 확인
                 unit = keyunit.houseunit
-            except Exception:
+            except ObjectDoesNotExist:
                 unit = None
             if unit:
                 unit.key_unit = None
@@ -435,8 +436,8 @@ class ContractorReleaseSerializer(serializers.ModelSerializer):
 
             # 5. 해당 납부분담금 환불처리
             sort = ProjectAccountSort.objects.get(pk=1)
-            projectCash = ProjectCashBook.objects.filter(sort=sort, contract=contractor.contract)
-            for payment in projectCash:
+            project_cash = ProjectCashBook.objects.filter(sort=sort, contract=contractor.contract)
+            for payment in project_cash:
                 if not released_done:
                     refund_d2 = payment.project_account_d2.id + 63  # 분양대금 or 분담금 환불 건
                     payment.project_account_d2 = ProjectAccountD2.objects.get(pk=refund_d2)
