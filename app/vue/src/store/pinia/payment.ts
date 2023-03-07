@@ -168,7 +168,7 @@ export const usePayment = defineStore('payment', () => {
   const AllPaymentList = ref<AllPayment[]>([])
   const getPayments = computed(() =>
     paymentList.value
-      ? paymentList.value.map((p: any) => ({
+      ? paymentList.value.map((p: AllPayment) => ({
           pk: p.pk,
           deal_date: p.deal_date,
           contract: p.contract,
@@ -217,7 +217,7 @@ export const usePayment = defineStore('payment', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const fetchAllPaymentList = (payload: any) => {
+  const fetchAllPaymentList = (payload: PaymentFilter) => {
     const { project } = payload
     let url = `/all-payment/?project=${project}`
     if (payload.contract) url += `&contract=${payload.contract}`
