@@ -8,6 +8,8 @@ export interface Contract {
   contractor: ContractorInContract | null
   keyunit: KeyUnit | null
   payments: Payment[]
+  total_paid: number
+  last_paid_order: InstallmentOrder | null
   order_group_desc: {
     pk: number
     sort: string
