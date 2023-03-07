@@ -41,23 +41,6 @@ export const useContract = defineStore('contract', () => {
   // state & getters
   const contract = ref<Contract | null>(null)
   const contractList = ref<Contract[]>([])
-  const contractIndex = computed(() =>
-    contractList.value.map(c => ({
-      pk: c.pk,
-      serial_number: c.serial_number,
-      order_group: c.order_group_desc,
-      unit_type: c.unit_type_desc.name,
-      type_color: c.unit_type_desc.color,
-      house_unit: c.keyunit?.houseunit?.__str__ || '미정',
-      contractor: c.contractor?.name,
-      total_paid: c.total_paid,
-      last_paid_order: c.last_paid_order ? c.last_paid_order : '-',
-      is_registed: c.contractor?.is_registed,
-      address: c.contractor?.contractoraddress?.dm_address1,
-      cell_phone: c.contractor?.contractorcontact?.cell_phone,
-      contract_date: c.contractor?.contract_date,
-    })),
-  )
   const contractsCount = ref<number>(0)
 
   // actions
@@ -273,7 +256,6 @@ export const useContract = defineStore('contract', () => {
   return {
     contract,
     contractList,
-    contractIndex,
     contractsCount,
 
     contractPages,
