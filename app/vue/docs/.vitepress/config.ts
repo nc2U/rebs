@@ -13,7 +13,7 @@ export default defineConfig({
   ],
   lastUpdated: true,
   markdown: {
-    theme: 'material-palenight',
+    theme: 'material-theme-palenight',
     // theme: 'Shiki.IThemeRegistration',
     // lineNumbers: true,
   },
