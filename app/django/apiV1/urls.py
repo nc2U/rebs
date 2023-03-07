@@ -76,7 +76,7 @@ router.register(r'project-imprest', cash.ProjectImprestViewSet, basename='pr-imp
 router.register(r'payment', cash.PaymentViewSet, basename='payment')  # only list
 router.register(r'all-payment', cash.AllPaymentViewSet, basename='all-payment')  # only list
 router.register(r'payment-sum', cash.PaymentSummaryViewSet, basename='payment-sum')  # only list
-router.register(r'contract-num', cash.NumContractByTypeViewSet, basename='contract-num')  # only list
+router.register(r'cont-num-type', cash.ContNumByTypeViewSet, basename='cont-num-type')  # only list
 router.register(r'price', cash.SalesPriceViewSet)
 router.register(r'pay-order', cash.InstallmentOrderViewSet)
 router.register(r'down-payment', cash.DownPaymentViewSet)

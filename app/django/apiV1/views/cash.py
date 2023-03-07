@@ -193,7 +193,7 @@ class PaymentSummaryViewSet(viewsets.ModelViewSet):
             .annotate(type_total=Sum('income'))
 
 
-class NumContractByTypeViewSet(viewsets.ModelViewSet):
+class ContNumByTypeViewSet(viewsets.ModelViewSet):
     serializer_class = NumContractByTypeSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
     filterset_fields = ('project',)
