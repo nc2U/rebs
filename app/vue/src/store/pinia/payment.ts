@@ -247,7 +247,7 @@ export const usePayment = defineStore('payment', () => {
   // actions
   const fetchContNumList = (project: number) =>
     api
-      .get(`/contract-num/?project=${project}`)
+      .get(`/cont-num-type/?project=${project}`)
       .then(res => (contNumList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 

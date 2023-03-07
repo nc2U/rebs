@@ -209,7 +209,7 @@ const actions = {
 
   fetchContNumList: ({ commit }: any, project: any) => {
     api
-      .get(`/contract-num/?project=${project}`)
+      .get(`/cont-num-type/?project=${project}`)
       .then(res => {
         commit(FETCH_CONTRACT_NUM_LIST, res.data)
       })
