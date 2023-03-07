@@ -194,7 +194,7 @@ class PaymentSummaryViewSet(viewsets.ModelViewSet):
 
 
 class ContNumByTypeViewSet(viewsets.ModelViewSet):
-    serializer_class = NumContractByTypeSerializer
+    serializer_class = ContNumByTypeSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
     filterset_fields = ('project',)
 

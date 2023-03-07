@@ -361,7 +361,7 @@ class PaymentSummarySerializer(serializers.ModelSerializer):
         fields = ('unit_type', 'type_total')
 
 
-class NumContractByTypeSerializer(serializers.ModelSerializer):
+class ContNumByTypeSerializer(serializers.ModelSerializer):
     unit_type = serializers.IntegerField()
     num_cont = serializers.IntegerField()
 
