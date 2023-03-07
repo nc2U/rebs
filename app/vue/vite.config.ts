@@ -13,7 +13,7 @@ export default defineConfig({
   build: {
     outDir: '../django/static/dist',
     emptyOutDir: true,
-    chunkSizeWarningLimit: 1010,
+    chunkSizeWarningLimit: 1350,
   },
   plugins: [
     vue(),
