@@ -72,10 +72,17 @@ class ProjectCashBookInContractSerializer(serializers.ModelSerializer):
         fields = ('pk', 'deal_date', 'income', 'bank_account', 'trader', 'installment_order')
 
 
+class ProjectCashBookIncsInContractSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProjectCashBook
+        fields = ('income',)
+
+
 class ContractSetSerializer(serializers.ModelSerializer):
     keyunit = KeyUnitInContractSerializer(read_only=True)
     contractor = ContractorInContractSerializer(read_only=True)
     payments = serializers.SerializerMethodField(read_only=True)
+    total_paid = serializers.SerializerMethodField(read_only=True)
     order_group_desc = SimpleOrderGroupSerializer(source='order_group', read_only=True)
     unit_type_desc = SimpleUnitTypeSerializer(source='unit_type', read_only=True)
 
@@ -83,12 +90,18 @@ class ContractSetSerializer(serializers.ModelSerializer):
         model = Contract
         fields = (
             'pk', 'project', 'order_group', 'unit_type', 'serial_number', 'activation',
-            'keyunit', 'contractor', 'payments', 'order_group_desc', 'unit_type_desc')
+            'keyunit', 'contractor', 'payments', 'total_paid', 'order_group_desc', 'unit_type_desc')
 
     @staticmethod
     def get_payments(instance):
         payments = instance.payments.filter(project_account_d2__lte=2).order_by('deal_date', 'id')
         return ProjectCashBookInContractSerializer(payments, many=True, read_only=True).data
+
+    @staticmethod
+    def get_total_paid(instance):
+        total_paid = instance.payments.filter(project_account_d2__lte=2)
+        inc_data = ProjectCashBookIncsInContractSerializer(total_paid, many=True, read_only=True).data
+        return sum([i.get('income') for i in inc_data])
 
     @transaction.atomic
     def create(self, validated_data):
