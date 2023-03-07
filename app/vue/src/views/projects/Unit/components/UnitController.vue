@@ -9,7 +9,7 @@ import AlertModal from '@/components/Modals/AlertModal.vue'
 
 const props = defineProps({
   project: {
-    type: Object,
+    type: Number,
     required: true,
   },
 })
@@ -42,12 +42,20 @@ const typeNameLength = computed(() => {
   return Math.max.apply({}, typeNames)
 })
 
-const maxUnits = computed(() => props.project.num_unit)
+const maxUnits = computed(() =>
+  Math.max.apply(
+    {},
+    unitTypeList.value.map((t: { num_unit: number }) => t.num_unit),
+  ),
+)
 
 const projectDataStore = useProjectData()
 const unitTypeList = computed(() => projectDataStore.unitTypeList)
 const buildingList = computed(() => projectDataStore.buildingList)
 const simpleFloors = computed(() => projectDataStore.simpleFloors)
+
+const fetchNumUnitByType = (projId: number, unit_type: number) =>
+  projectDataStore.fetchNumUnitByType(projId, unit_type)
 
 watch(props, nVal => {
   if (nVal.project) {
@@ -103,6 +111,10 @@ const typeSelect = (event: Event) => {
           t.pk.toString() == (event.target as HTMLSelectElement).value,
       )[0].name
     : ''
+  fetchNumUnitByType(
+    props.project,
+    Number((event.target as HTMLSelectElement).value),
+  )
 }
 
 const unitRegister = () => {

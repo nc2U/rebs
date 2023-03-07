@@ -15,8 +15,7 @@ const bldgName = ref('')
 
 const projectStore = useProject()
 const initProjId = computed(() => projectStore.initProjId)
-const project = computed(() => projectStore.project)
-const projId = computed(() => project.value?.pk || initProjId.value)
+const project = computed(() => projectStore.project?.pk || initProjId.value)
 
 const projectDataStore = useProjectData()
 const numUnitByType = computed(() => projectDataStore.numUnitByType)
@@ -53,7 +52,7 @@ const onSelectAdd = (target: number) => {
 }
 
 const bldgSelect = (bldg: { pk: number; name: string }) => {
-  if (!!bldg.pk) fetchHouseUnitList(projId.value, bldg.pk)
+  if (!!bldg.pk) fetchHouseUnitList(project.value, bldg.pk)
   else projectDataStore.houseUnitList = []
   bldgName.value = bldg.name
 }
@@ -119,11 +118,11 @@ const unitRegister = (payload: OriginalUnit) => {
 
     inputUnits.forEach(unit => {
       createUnit({
-        ...{ project: projId.value, unit_type, building_unit, bldg_line },
+        ...{ project: project.value, unit_type, building_unit, bldg_line },
         ...unit,
       })
     })
-    fetchHouseUnitList(projId.value, building_unit)
+    fetchHouseUnitList(project.value, building_unit)
     message()
   }
 }
