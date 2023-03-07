@@ -6,7 +6,7 @@ import { useProjectData } from '@/store/pinia/project_data'
 import { TableSecondary } from '@/utils/cssMixins'
 import { numFormat, dateFormat } from '@/utils/baseMixins'
 
-const props = defineProps({
+defineProps({
   date: { type: String, default: '' },
   sort: { type: String, default: '2' },
 })
