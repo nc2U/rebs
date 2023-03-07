@@ -21,12 +21,19 @@ const contStore = useContract()
 const orderGroup = computed(() => contStore.orderGroupList)
 const contSum = computed(() => contStore.contSummaryList)
 
-const getNums = (og: number, ut: number) =>
+const getTotalQua = (og: number, ut: number) => {
+  const unit = budgetList.value.filter(
+    b => b.order_group === og && b.unit_type === ut,
+  )[0]
+  return unit ? unit.quantity : 0
+}
+
+const getContNum = (og: number, ut: number) =>
   contSum.value
     .filter(c => c.order_group === og && c.unit_type === ut)
     .map(c => c.num_cont)[0]
 
-const typeContNum = (type: number) =>
+const typeRemainNum = (type: number) =>
   contSum.value
     ?.filter(c => c.unit_type === type)
     ?.map(c => c.num_cont)
@@ -38,16 +45,10 @@ const getUnitPrice = (og: number, ut: number) => {
   )[0]
   return unit ? unit.average_price : 0
 }
-
-const getQuantity = (og: number, ut: number) => {
-  const unit = budgetList.value.filter(
-    b => b.order_group === og && b.unit_type === ut,
-  )[0]
-  return unit ? unit.quantity : 0
-}
 </script>
 
 <template>
+  {{ contSum[0] }}
   <CTable hover responsive bordered align="middle">
     <colgroup>
       <col width="6%" />
@@ -115,27 +116,36 @@ const getQuantity = (og: number, ut: number) => {
               {{ type.name }}
             </CTableDataCell>
             <CTableDataCell>
-              {{ numFormat(getQuantity(order.pk, type.pk)) }}
+              {{ numFormat(getTotalQua(order.pk, type.pk)) }}
             </CTableDataCell>
             <CTableDataCell>
-              {{ numFormat(getNums(order.pk, type.pk)) }}
+              {{ numFormat(getContNum(order.pk, type.pk)) }}
             </CTableDataCell>
             <CTableDataCell>
               {{ numFormat(getUnitPrice(order.pk, type.pk)) }}
             </CTableDataCell>
-            <CTableDataCell>{{ numFormat(100) }}</CTableDataCell>
             <CTableDataCell>
               {{
                 numFormat(
-                  getNums(order.pk, type.pk) * getUnitPrice(order.pk, type.pk) -
-                    100 || 0,
+                  getTotalQua(order.pk, type.pk) *
+                    getUnitPrice(order.pk, type.pk),
                 )
               }}
             </CTableDataCell>
             <CTableDataCell>
               {{
                 numFormat(
-                  getNums(order.pk, type.pk) *
+                  getContNum(order.pk, type.pk) *
+                    getUnitPrice(order.pk, type.pk) -
+                    getTotalQua(order.pk, type.pk) *
+                      getUnitPrice(order.pk, type.pk) || 0,
+                )
+              }}
+            </CTableDataCell>
+            <CTableDataCell>
+              {{
+                numFormat(
+                  getContNum(order.pk, type.pk) *
                     getUnitPrice(order.pk, type.pk) || 0,
                 )
               }}
@@ -161,7 +171,7 @@ const getQuantity = (og: number, ut: number) => {
           </CTableDataCell>
           <CTableDataCell></CTableDataCell>
           <CTableDataCell>
-            {{ numFormat(type.num_unit - typeContNum(type.pk)) }}
+            {{ numFormat(type.num_unit - typeRemainNum(type.pk)) }}
           </CTableDataCell>
           <CTableDataCell>{{ numFormat(0) }}</CTableDataCell>
           <CTableDataCell>{{ numFormat(0) }}</CTableDataCell>
