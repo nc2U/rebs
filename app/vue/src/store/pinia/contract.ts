@@ -270,34 +270,6 @@ export const useContract = defineStore('contract', () => {
       )
       .catch(err => errorHandle(err.response.data))
 
-  const contBillIndex = computed(() =>
-    contractList.value.map(c => ({
-      pk: c.pk,
-      ctor_pk: c.contractor?.pk,
-      serial_number: c.serial_number,
-      order_group: c.order_group_desc,
-      type_pk: c.unit_type,
-      unit_type: c.unit_type_desc.name,
-      type_color: c.unit_type_desc.color,
-      average_price: c.unit_type_desc.average_price,
-      house_unit_str: c.keyunit?.houseunit?.__str__,
-      house_unit: c.keyunit?.houseunit,
-      contractor: c.contractor?.name,
-      total_paid:
-        c.payments.length !== 0
-          ? c.payments.map(o => o.income).reduce((res, item) => res + item)
-          : 0,
-      last_paid_order:
-        c.payments.length !== 0
-          ? c.payments
-              .filter(p => p.installment_order !== null)
-              .map(p => p.installment_order)
-              .pop()
-          : '-',
-      contract_date: c.contractor?.contract_date,
-    })),
-  )
-
   return {
     contract,
     contractList,
@@ -349,7 +321,5 @@ export const useContract = defineStore('contract', () => {
     fetchContReleaseList,
     createRelease,
     updateRelease,
-
-    contBillIndex,
   }
 })
