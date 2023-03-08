@@ -71,20 +71,6 @@ const fetchSalePriceList = (payload: { project: number }) =>
 const fetchDownPayList = (payload: { project: number }) =>
   contractStore.fetchDownPayList(payload)
 
-onBeforeMount(() => {
-  fetchSalesBillIssue(initProjId.value)
-  fetchPayOrderList(initProjId.value)
-  fetchOrderGroupList(initProjId.value)
-  fetchTypeList(initProjId.value)
-  fetchBuildingList(initProjId.value)
-  fetchContractList({
-    project: initProjId.value,
-    ordering: 'contractor__name',
-  })
-  fetchSalePriceList({ project: initProjId.value })
-  fetchDownPayList({ project: initProjId.value })
-})
-
 watch(project, val => {
   if (val) {
     printData.project = val
@@ -169,6 +155,20 @@ const onSubmit = (payload: SalesBillIssue & { now_due_date: string }) => {
   if (pk) patchSalesBillIssue(bill_data)
   else createSalesBillIssue(bill_data)
 }
+
+onBeforeMount(() => {
+  fetchSalesBillIssue(project.value)
+  fetchPayOrderList(project.value)
+  fetchOrderGroupList(project.value)
+  fetchTypeList(project.value)
+  fetchBuildingList(project.value)
+  fetchContractList({
+    project: project.value,
+    ordering: 'contractor__name',
+  })
+  fetchSalePriceList({ project: project.value })
+  fetchDownPayList({ project: project.value })
+})
 </script>
 
 <template>
