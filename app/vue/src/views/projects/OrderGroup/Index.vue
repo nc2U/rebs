@@ -37,9 +37,7 @@ const onUpdateOrder = (payload: OrderGroup) =>
 const onDeleteOrder = (pk: number) =>
   deleteOrderGroup({ pk, project: project.value })
 
-onBeforeMount(() => {
-  fetchOrderGroupList(initProjId.value)
-})
+onBeforeMount(() => fetchOrderGroupList(project.value))
 </script>
 
 <template>

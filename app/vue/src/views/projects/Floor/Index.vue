@@ -37,7 +37,7 @@ const onUpdateFloor = (payload: UnitFloorType) =>
 
 const onDeleteFloor = (pk: number) => deleteFloorType(pk, project.value)
 
-onBeforeMount(() => fetchFloorTypeList(initProjId.value))
+onBeforeMount(() => fetchFloorTypeList(project.value))
 </script>
 
 <template>

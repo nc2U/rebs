@@ -68,12 +68,6 @@ const updatePrice = (payload: Price) => paymentStore.updatePrice(payload)
 const deletePrice = (payload: Ids & { pk: number }) =>
   paymentStore.deletePrice(payload)
 
-onBeforeMount(() => {
-  fetchOrderGroupList(initProjId.value)
-  fetchTypeList(initProjId.value)
-  fetchFloorTypeList(initProjId.value)
-})
-
 const formSelect = ref()
 
 // 프로젝트 선택 시 실행 함수
@@ -119,6 +113,12 @@ const resetPrices = () => (paymentStore.priceList = [])
 const onCreatePrice = (payload: Price) => createPrice(payload)
 const onUpdatePrice = (payload: Price) => updatePrice(payload)
 const onDeletePrice = (pk: number) => deletePrice({ ...{ pk }, ...queryIds })
+
+onBeforeMount(() => {
+  fetchOrderGroupList(project.value)
+  fetchTypeList(project.value)
+  fetchFloorTypeList(project.value)
+})
 </script>
 
 <template>

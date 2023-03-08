@@ -87,8 +87,8 @@ const onDelete = (payload: { pk: number; project: number }) => {
 const excelUrl = 'excel/sites-by-owner/?project=' + project.value
 
 onBeforeMount(() => {
-  siteStore.fetchAllSites(initProjId.value)
-  siteStore.fetchSiteOwnerList(initProjId.value)
+  siteStore.fetchAllSites(project.value)
+  siteStore.fetchSiteOwnerList(project.value)
 })
 </script>
 

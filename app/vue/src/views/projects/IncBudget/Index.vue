@@ -13,7 +13,7 @@ import BudgetFormList from '@/views/projects/IncBudget/components/BudgetFormList
 
 const projectStore = useProject()
 const initProjId = computed(() => projectStore.initProjId)
-const project = computed(() => projectStore.project?.pk)
+const project = computed(() => projectStore.project?.pk || initProjId.value)
 
 const proCashStore = useProCash()
 const allAccD1List = computed(() =>
@@ -79,9 +79,9 @@ const onDeleteBudget = (pk: number) => {
 onBeforeMount(() => {
   fetchProAllAccD1List()
   fetchProAllAccD2List()
-  fetchOrderGroupList(initProjId.value)
-  fetchTypeList(initProjId.value)
-  fetchIncBudgetList(initProjId.value)
+  fetchOrderGroupList(project.value)
+  fetchTypeList(project.value)
+  fetchIncBudgetList(project.value)
 })
 </script>
 

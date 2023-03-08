@@ -24,8 +24,6 @@ const updateBuilding = (payload: BuildingUnit) =>
 const deleteBuilding = (pk: number, projId: number) =>
   projectDataStore.deleteBuilding(pk, projId)
 
-onBeforeMount(() => fetchBuildingList(initProjId.value))
-
 const onSelectAdd = (target: number) => {
   if (!!target) fetchBuildingList(target)
   else projectDataStore.buildingList = []
@@ -38,6 +36,8 @@ const onUpdateBuilding = (payload: BuildingUnit) =>
   updateBuilding({ ...{ project: project.value }, ...payload })
 
 const onDeleteBuilding = (pk: number) => deleteBuilding(pk, project.value)
+
+onBeforeMount(() => fetchBuildingList(project.value))
 </script>
 
 <template>

@@ -42,7 +42,7 @@ const onUpdateType = (payload: UnitType) =>
   updateType({ ...{ project: project.value }, ...payload })
 const onDeleteType = (pk: number) => deleteType(pk, project.value)
 
-onBeforeMount(() => fetchTypeList(initProjId.value))
+onBeforeMount(() => fetchTypeList(project.value))
 </script>
 
 <template>

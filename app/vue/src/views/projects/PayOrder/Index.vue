@@ -27,8 +27,6 @@ const updatePayOrder = (payload: PayOrder) =>
 const deletePayOrder = (pk: number, projId: number) =>
   paymentStore.deletePayOrder(pk, projId)
 
-onBeforeMount(() => fetchPayOrderList(initProjId.value))
-
 const onSelectAdd = (target: number) => {
   if (!!target) fetchPayOrderList(target)
   else paymentStore.payOrderList = []
@@ -40,6 +38,8 @@ const onUpdatePayOrder = (payload: PayOrder) =>
   updatePayOrder({ ...{ project: project.value }, ...payload })
 
 const onDeletePayOrder = (pk: number) => deletePayOrder(pk, project.value)
+
+onBeforeMount(() => fetchPayOrderList(project.value))
 </script>
 
 <template>

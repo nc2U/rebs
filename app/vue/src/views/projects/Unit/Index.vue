@@ -31,13 +31,6 @@ const fetchHouseUnitList = (projId: number, bldg?: number) =>
 
 const createUnit = (payload: CreateUnit) => projectDataStore.createUnit(payload)
 
-onBeforeMount(() => {
-  fetchTypeList(initProjId.value)
-  fetchFloorTypeList(initProjId.value)
-  fetchBuildingList(initProjId.value)
-  projectDataStore.houseUnitList = []
-})
-
 const onSelectAdd = (target: number) => {
   if (!!target) {
     fetchTypeList(target)
@@ -126,6 +119,13 @@ const unitRegister = (payload: OriginalUnit) => {
     message()
   }
 }
+
+onBeforeMount(() => {
+  fetchTypeList(project.value)
+  fetchFloorTypeList(project.value)
+  fetchBuildingList(project.value)
+  projectDataStore.houseUnitList = []
+})
 </script>
 
 <template>
