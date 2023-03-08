@@ -89,17 +89,17 @@ const patchBudget = (pk: number, budget: number) =>
   patchStatusOutBudgetList(project.value, pk, budget)
 
 onBeforeMount(() => {
-  fetchStatusOutBudgetList(initProjId.value)
-  fetchExecAmountList(initProjId.value)
+  fetchStatusOutBudgetList(project.value)
+  fetchExecAmountList(project.value)
   fetchProAllAccD1List()
   fetchProAllAccD2List()
-  fetchProBankAccList(initProjId.value)
+  fetchProBankAccList(project.value)
   fetchBalanceByAccList({
-    project: initProjId.value,
+    project: project.value,
     date: dateFormat(date.value),
   })
   fetchDateCashBookList({
-    project: initProjId.value,
+    project: project.value,
     date: dateFormat(date.value),
   })
 })

@@ -73,16 +73,6 @@ const deletePrImprestBook = (
   },
 ) => proCashStore.deletePrImprestBook(payload)
 
-onBeforeMount(() => {
-  fetchProAccSortList()
-  fetchProAllAccD1List()
-  fetchProAllAccD2List()
-  fetchProFormAccD1List()
-  fetchProFormAccD2List()
-  fetchProBankAccList(initProjId.value)
-  fetchProjectImprestList({ project: initProjId.value })
-})
-
 const onSelectAdd = (target: number) => {
   if (!!target) {
     fetchProBankAccList(target)
@@ -153,6 +143,16 @@ const multiSubmit = (payload: {
 
 const onDelete = (payload: { pk: number; project: number }) =>
   deletePrImprestBook({ ...{ filters: dataFilter.value }, ...payload })
+
+onBeforeMount(() => {
+  fetchProAccSortList()
+  fetchProAllAccD1List()
+  fetchProAllAccD2List()
+  fetchProFormAccD1List()
+  fetchProFormAccD2List()
+  fetchProBankAccList(project.value)
+  fetchProjectImprestList({ project: project.value })
+})
 </script>
 
 <template>

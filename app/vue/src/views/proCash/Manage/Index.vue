@@ -79,8 +79,8 @@ onBeforeMount(() => {
   fetchProAllAccD2List()
   fetchProFormAccD1List()
   fetchProFormAccD2List()
-  fetchProBankAccList(initProjId.value)
-  fetchProjectCashList({ project: initProjId.value })
+  fetchProBankAccList(project.value)
+  fetchProjectCashList({ project: project.value })
 })
 
 const onSelectAdd = (target: number) => {
