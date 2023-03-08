@@ -19,8 +19,8 @@ const departmentsCount = computed(() => comStore.departmentsCount)
 const getPkDeparts = computed(() => comStore.getPkDeparts)
 const uppers = computed(() => comStore.getUpperDeps)
 const getUpperDeps = computed(() =>
-  getPkDeparts.value.filter((d: { value: number & any }) =>
-    uppers.value.includes(d.value),
+  getPkDeparts.value.filter((d: { value?: number }) =>
+    uppers.value.includes(d.value || null),
   ),
 )
 
