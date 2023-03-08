@@ -112,14 +112,14 @@ const onUpdate = (payload: Contract) => {
 }
 
 onBeforeMount(() => {
-  fetchOrderGroupList(initProjId.value)
-  fetchTypeList(initProjId.value)
+  fetchOrderGroupList(project.value)
+  fetchTypeList(project.value)
 
-  fetchProBankAccList(initProjId.value)
-  fetchPayOrderList(initProjId.value)
+  fetchProBankAccList(project.value)
+  fetchPayOrderList(project.value)
 
-  fetchKeyUnitList({ project: initProjId.value })
-  fetchHouseUnitList({ project: initProjId.value })
+  fetchKeyUnitList({ project: project.value })
+  fetchHouseUnitList({ project: project.value })
 
   if (route.query.contract) {
     getContract(route.query.contract as string)

@@ -98,12 +98,13 @@ const onContFiltering = (payload: ContFilter) => {
 const setItems = (arr: string[]) => (printItems.value = arr)
 
 onMounted(() => {
-  fetchOrderGroupList(initProjId.value)
-  fetchTypeList(initProjId.value)
-  fetchBuildingList(initProjId.value)
-  fetchContractList({ project: initProjId.value })
-  fetchSubsSummaryList(initProjId.value)
-  fetchContSummaryList(initProjId.value)
+  const projectPk = project.value?.pk || initProjId.value
+  fetchOrderGroupList(projectPk)
+  fetchTypeList(projectPk)
+  fetchBuildingList(projectPk)
+  fetchContractList({ project: projectPk })
+  fetchSubsSummaryList(projectPk)
+  fetchContSummaryList(projectPk)
 })
 </script>
 
