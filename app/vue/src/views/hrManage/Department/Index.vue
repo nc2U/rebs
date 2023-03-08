@@ -25,11 +25,6 @@ const initComId = computed(() => companyStore.initComId)
 const comId = computed(() => companyStore.company?.pk || initComId.value)
 const comName = computed(() => companyStore.company?.name || undefined)
 
-onMounted(() => {
-  fetchDepartmentList({})
-  fetchAllDepartList()
-})
-
 const listFiltering = (payload: DepFilter) => {
   dataFilter.value = payload
   fetchDepartmentList({
@@ -42,7 +37,8 @@ const listFiltering = (payload: DepFilter) => {
 
 const fetchDepartmentList = (payload: DepFilter) =>
   companyStore.fetchDepartmentList(payload)
-const fetchAllDepartList = () => companyStore.fetchAllDepartList()
+const fetchAllDepartList = (com?: number) =>
+  companyStore.fetchAllDepartList(com)
 
 const createDepartment = (payload: Depart, p?: number, c?: number) =>
   companyStore.createDepartment(payload, p, c)
@@ -69,6 +65,11 @@ const pageSelect = (num: number) => {
 
 const getLevel = (up: number) =>
   getPkDeparts.value.filter(d => d.value === up)[0].level + 1
+
+onMounted(() => {
+  fetchDepartmentList({ com: comId.value })
+  fetchAllDepartList(comId.value)
+})
 </script>
 
 <template>

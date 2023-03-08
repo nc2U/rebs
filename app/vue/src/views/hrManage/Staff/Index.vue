@@ -33,15 +33,6 @@ const comName = computed(() => comStore.company?.name || undefined)
 const accStore = useAccount()
 const fetchUsersList = () => accStore.fetchUsersList()
 
-onMounted(() => {
-  fetchStaffList({ com: comId.value, sts: '1' })
-  fetchAllGradeList(comId.value)
-  fetchAllDepartList(comId.value)
-  fetchAllPositionList(comId.value)
-  fetchAllDutyList(comId.value)
-  fetchUsersList()
-})
-
 const listFiltering = (payload: StaffFilter) => {
   dataFilter.value = payload
   fetchStaffList({
@@ -83,6 +74,15 @@ const pageSelect = (num: number) => {
   dataFilter.value.com = comId.value
   fetchStaffList(dataFilter.value)
 }
+
+onMounted(() => {
+  fetchStaffList({ com: comId.value, sts: '1' })
+  fetchAllGradeList(comId.value)
+  fetchAllDepartList(comId.value)
+  fetchAllPositionList(comId.value)
+  fetchAllDutyList(comId.value)
+  fetchUsersList()
+})
 </script>
 
 <template>

@@ -23,8 +23,6 @@ const initComId = computed(() => companyStore.initComId)
 const comId = computed(() => companyStore.company?.pk || initComId.value)
 const comName = computed(() => companyStore.company?.name || undefined)
 
-onMounted(() => fetchDutyList({}))
-
 const listFiltering = (payload: ComFilter) => {
   dataFilter.value = payload
   fetchDutyList({
@@ -55,6 +53,8 @@ const pageSelect = (num: number) => {
   dataFilter.value.com = comId.value
   fetchDutyList(dataFilter.value)
 }
+
+onMounted(() => fetchDutyList({ com: comId.value }))
 </script>
 
 <template>
