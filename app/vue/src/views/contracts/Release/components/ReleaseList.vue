@@ -6,10 +6,9 @@ import Pagination from '@/components/Pagination'
 import Release from '@/views/contracts/Release/components/Release.vue'
 import { TableSecondary } from '@/utils/cssMixins'
 
-const contractStore = useContract()
-
 const emit = defineEmits(['page-select', 'get-release', 'on-submit'])
 
+const contractStore = useContract()
 const contReleaseList = computed(() => contractStore.contReleaseList)
 const releasePages = computed(() => contractStore.releasePages)
 

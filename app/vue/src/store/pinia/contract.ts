@@ -223,7 +223,7 @@ export const useContract = defineStore('contract', () => {
 
   // actions
   const releasePages = (itemsPerPage: number) =>
-    Math.ceil(contractsCount.value / itemsPerPage)
+    Math.ceil(contReleaseCount.value / itemsPerPage)
 
   const fetchContRelease = (pk: number) =>
     api
@@ -234,7 +234,10 @@ export const useContract = defineStore('contract', () => {
   const fetchContReleaseList = (project: number, page = 1) =>
     api
       .get(`/contractor-release/?project=${project}&page=${page}`)
-      .then(res => (contReleaseList.value = res.data.results))
+      .then(res => {
+        contReleaseList.value = res.data.results
+        contReleaseCount.value = res.data.count
+      })
       .catch(err => errorHandle(err.response.data))
 
   const createRelease = (payload: ContractRelease) =>

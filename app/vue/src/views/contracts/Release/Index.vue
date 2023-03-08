@@ -69,8 +69,10 @@ const searchContractor = (search: string) => {
 
 const getRelease = (release: number) => fetchContRelease(release)
 
-const pageSelect = (p: number) =>
-  fetchContReleaseList(project.value, page.value)
+const pageSelect = (p: number) => {
+  page.value = p
+  fetchContReleaseList(project.value, p)
+}
 
 const onSubmit = (payload: ContractRelease) => {
   payload.project = project.value
