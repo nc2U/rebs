@@ -8,8 +8,8 @@ const emit = defineEmits(['proj-select'])
 const currentProject = ref()
 
 const projectStore = useProject()
-const initProjId = computed(() => projectStore.initProjId)
 const project = computed(() => projectStore.project?.pk)
+const initProjId = computed(() => projectStore.initProjId)
 const projSelectList = computed(() => projectStore.projSelect)
 
 watch(project, val => (currentProject.value = val))
@@ -19,7 +19,7 @@ const projSelect = () =>
 
 onBeforeMount(() => {
   projectStore.fetchProjectList()
-  currentProject.value = initProjId.value
+  currentProject.value = project.value ? project.value : initProjId.value
   projectStore.fetchProject(currentProject.value)
 })
 </script>

@@ -8,8 +8,8 @@ const emit = defineEmits(['com-select'])
 const currentCompany = ref()
 
 const companyStore = useCompany()
-const initComId = computed(() => companyStore.initComId)
 const company = computed(() => companyStore.company?.pk)
+const initComId = computed(() => companyStore.initComId)
 const comSelectList = computed(() => companyStore.comSelect)
 
 watch(company, val => (currentCompany.value = val))
@@ -18,7 +18,7 @@ const comSelect = () => nextTick(() => emit('com-select', currentCompany.value))
 
 onBeforeMount(() => {
   companyStore.fetchCompanyList()
-  currentCompany.value = initComId.value
+  currentCompany.value = company.value ? company.value : initComId.value
   companyStore.fetchCompany(currentCompany.value)
 })
 </script>
