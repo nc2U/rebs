@@ -1,25 +1,10 @@
 import { createPinia } from 'pinia'
 import { createStore } from 'vuex'
-import tagsView from '@/store/modules/tagsView'
-import schedule from '@/store/modules/schedule'
-import accounts from '@/store/modules/accounts'
-import comCash from '@/store/modules/comCash'
-import contract from '@/store/modules/contract'
-import document from '@/store/modules/document'
-import notice from '@/store/modules/notice'
-import payment from '@/store/modules/payment'
-import project from '@/store/modules/project'
-import proCash from '@/store/modules/proCash'
-import settings from '@/store/modules/settings'
 import Cookies from 'js-cookie'
 
 export const pinia = createPinia()
 
-export interface State {
-  [key: string]: any
-}
-
-declare interface RootState extends State {
+declare interface RootState {
   asideVisible: boolean
   sidebarVisible: boolean
   sidebarUnfoldable: boolean
@@ -39,11 +24,6 @@ const state: RootState = {
 }
 
 const mutations = {
-  updateState(state: RootState, payload: any) {
-    Object.keys(payload).forEach(key => {
-      if (state.hasOwnProperty(key)) state[key] = payload[key]
-    })
-  },
   toggleAside(state: RootState) {
     state.asideVisible = !state.asideVisible
   },
@@ -61,9 +41,9 @@ const mutations = {
     state.sidebarUnfoldable = sidebarUnfoldable
     Cookies.set('sidebarUnfoldable', String(sidebarUnfoldable))
   },
-  updateSidebarVisible(state: RootState, payload: any) {
+  updateSidebarVisible(state: RootState, payload: { value: boolean }) {
     state.sidebarVisible = payload.value
-    Cookies.set('sidebarVisible', payload.value)
+    Cookies.set('sidebarVisible', String(payload.value))
   },
   startSpinner(state: RootState) {
     state.LoadingStatus = true
@@ -76,19 +56,6 @@ const mutations = {
 const store = createStore({
   state,
   mutations,
-  modules: {
-    tagsView,
-    schedule,
-    accounts,
-    comCash,
-    contract,
-    document,
-    notice,
-    payment,
-    project,
-    proCash,
-    settings,
-  },
 })
 
 export default store
