@@ -138,10 +138,12 @@ const getPayName = (pay_time: number) =>
       {{ contract.serial_number }}
     </CTableDataCell>
     <CTableDataCell
-      class="text-center"
       :class="contract.keyunit.houseunit ? '' : 'text-danger'"
+      class="text-left"
     >
-      {{ contract.keyunit.houseunit.__str__ || '미정' }}
+      {{
+        contract.keyunit.houseunit ? contract.keyunit.houseunit.__str__ : '미정'
+      }}
     </CTableDataCell>
     <CTableDataCell>
       <router-link
