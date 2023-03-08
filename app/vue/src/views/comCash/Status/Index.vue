@@ -25,22 +25,6 @@ const fetchAllAccD1List = () => comCashStore.fetchAllAccD1List()
 const fetchAllAccD2List = () => comCashStore.fetchAllAccD2List()
 const fetchAllAccD3List = () => comCashStore.fetchAllAccD3List()
 
-onBeforeMount(() => {
-  fetchAccSortList()
-  fetchAllAccD1List()
-  fetchAllAccD2List()
-  fetchAllAccD3List()
-  fetchComBankAccList(initComId.value)
-  fetchComBalanceByAccList({
-    company: initComId.value,
-    date: dateFormat(date.value),
-  })
-  fetchDateCashBookList({
-    company: initComId.value,
-    date: dateFormat(date.value),
-  })
-})
-
 const fetchComBankAccList = (com: number) =>
   comCashStore.fetchComBankAccList(com)
 const fetchComBalanceByAccList = (com: { company: number; date?: string }) =>
@@ -94,6 +78,22 @@ const setDate = (d: string) => {
     date: dateFormat(dt),
   })
 }
+
+onBeforeMount(() => {
+  fetchAccSortList()
+  fetchAllAccD1List()
+  fetchAllAccD2List()
+  fetchAllAccD3List()
+  fetchComBankAccList(company.value)
+  fetchComBalanceByAccList({
+    company: company.value,
+    date: dateFormat(date.value),
+  })
+  fetchDateCashBookList({
+    company: company.value,
+    date: dateFormat(date.value),
+  })
+})
 </script>
 
 <template>

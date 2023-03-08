@@ -141,12 +141,12 @@ onBeforeMount(() => {
   fetchAllAccD1List()
   fetchAllAccD2List()
   fetchAllAccD3List()
-  fetchFormAccD1List(null)
-  fetchFormAccD2List(null, null)
-  fetchFormAccD3List(null, null, null)
-  fetchComBankAccList(initComId.value)
-  fetchCashBookList({ company: initComId.value })
-  dataFilter.value.company = initComId.value
+  fetchFormAccD1List('')
+  fetchFormAccD2List('', '')
+  fetchFormAccD3List('', '', '')
+  fetchComBankAccList(company.value)
+  fetchCashBookList({ company: company.value })
+  dataFilter.value.company = company.value
 })
 </script>
 
