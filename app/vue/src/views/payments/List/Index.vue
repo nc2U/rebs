@@ -97,13 +97,14 @@ const pageSelect = (page: number) => {
 }
 
 onMounted(() => {
-  fetchOrderGroupList(initProjId.value)
-  fetchTypeList(initProjId.value)
-  fetchPaySumList(initProjId.value)
-  fetchContNumList(initProjId.value)
-  fetchPayOrderList(initProjId.value)
-  fetchPaymentList({ project: initProjId.value })
-  fetchProBankAccList(initProjId.value)
+  const projectPk = project.value?.pk || initProjId.value
+  fetchOrderGroupList(projectPk)
+  fetchTypeList(projectPk)
+  fetchPaySumList(projectPk)
+  fetchContNumList(projectPk)
+  fetchPayOrderList(projectPk)
+  fetchPaymentList({ project: projectPk })
+  fetchProBankAccList(projectPk)
 })
 
 onBeforeRouteLeave(() => {

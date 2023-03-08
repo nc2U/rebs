@@ -69,22 +69,6 @@ const fetchContract = (pk: number) => contractStore.fetchContract(pk)
 
 const [route, router] = [useRoute(), useRouter()]
 
-onBeforeMount(() => {
-  if (route.query.contract) {
-    router.replace({
-      name: '건별 수납 관리',
-      query: { contract: route.query.contract },
-    })
-    const cont = Number(route.query.contract)
-    getContract(cont)
-  }
-  if (route.query.payment) paymentId.value = route.query.payment as string
-
-  fetchTypeList(initProjId.value)
-  fetchPayOrderList(initProjId.value)
-  fetchProBankAccList(initProjId.value)
-})
-
 watch(contract, newVal => {
   if (newVal) {
     const order_group = newVal.order_group
@@ -157,6 +141,22 @@ const onDelete = (pk: number) => {
   }
   deletePrCashBook({ ...delFilter, filters: {} })
 }
+
+onBeforeMount(() => {
+  if (route.query.contract) {
+    router.replace({
+      name: '건별 수납 관리',
+      query: { contract: route.query.contract },
+    })
+    const cont = Number(route.query.contract)
+    getContract(cont)
+  }
+  if (route.query.payment) paymentId.value = route.query.payment as string
+
+  fetchTypeList(project.value)
+  fetchPayOrderList(project.value)
+  fetchProBankAccList(project.value)
+})
 
 onBeforeRouteLeave(() => {
   contractStore.contract = null
