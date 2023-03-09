@@ -81,7 +81,7 @@ onBeforeMount(() => {
     <CCardBody class="pb-5">
       <DateChoicer @set-date="setDate" />
 
-      <TableTitleRow excel :url="excelUrl" />
+      <TableTitleRow excel :url="excelUrl" disabled />
       <PaymentStatus :date="dateFormat(date)" />
     </CCardBody>
 
