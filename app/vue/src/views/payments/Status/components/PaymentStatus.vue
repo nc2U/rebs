@@ -54,7 +54,6 @@ const totalBudget = computed(() =>
 </script>
 
 <template>
-  {{ totalContNum }}
   <CTable hover responsive bordered align="middle">
     <colgroup>
       <col width="8%" />
@@ -129,10 +128,10 @@ const totalBudget = computed(() =>
             )
           }}
         </CTableDataCell>
-        <CTableDataCell class="text-danger"
+        <CTableDataCell class="text-warning"
           >{{ numFormat(1 + 1) }}
         </CTableDataCell>
-        <CTableDataCell class="text-danger">
+        <CTableDataCell class="text-warning">
           {{
             numFormat(
               bg.average_price * getContNum(bg.order_group, bg.unit_type) -
@@ -140,7 +139,14 @@ const totalBudget = computed(() =>
             )
           }}
         </CTableDataCell>
-        <CTableDataCell>
+        <CTableDataCell
+          :class="{
+            'text-danger':
+              0 >
+              bg.average_price *
+                (bg.quantity - (getContNum(bg.order_group, bg.unit_type) || 0)),
+          }"
+        >
           {{
             numFormat(
               bg.average_price *
@@ -160,12 +166,12 @@ const totalBudget = computed(() =>
         <CTableHeaderCell></CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(totalBudgetNum) }}</CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(totalContNum) }}</CTableHeaderCell>
-        <CTableHeaderCell class="text-danger">-</CTableHeaderCell>
-        <CTableHeaderCell class="text-danger">-</CTableHeaderCell>
-        <CTableHeaderCell class="text-danger">
+        <CTableHeaderCell class="text-warning">-</CTableHeaderCell>
+        <CTableHeaderCell class="text-warning">-</CTableHeaderCell>
+        <CTableHeaderCell class="text-warning">
           {{ numFormat(44000000000) }}
         </CTableHeaderCell>
-        <CTableHeaderCell class="text-danger">
+        <CTableHeaderCell class="text-warning">
           {{ numFormat(330000000000 - 44000000000) }}
         </CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(totalBudget) }}</CTableHeaderCell>
