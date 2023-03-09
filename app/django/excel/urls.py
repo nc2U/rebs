@@ -9,6 +9,7 @@ urlpatterns = [
     path('releases/', ExportReleases.as_view(), name='releases'),
     path('status/', ExportUnitStatus.as_view(), name='unit-status'),
     path('payments/', export_payments_xls, name='payments'),
+    path('pay-status/', ExportPaymentStatus.as_view(), name='pay-status'),
     path('p-balance/', ExportProjectBalance.as_view(), name='project-balance'),
     path('p-daily-cash/', ExportProjectDateCashbook.as_view(), name='project-daily-cash'),
     path('p-budget/', ExportBudgetExecutionStatus.as_view(), name='budget'),

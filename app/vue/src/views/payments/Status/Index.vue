@@ -14,7 +14,9 @@ import PaymentStatus from './components/PaymentStatus.vue'
 
 const date = ref(new Date())
 
-const excelUrl = computed(() => '')
+const excelUrl = computed(
+  () => `/pay-status/?project=${project.value}&date=${dateFormat(date.value)}`,
+)
 
 const projStore = useProject()
 const initProjId = computed(() => projStore.initProjId)
@@ -76,7 +78,7 @@ onBeforeMount(() => {
     <CCardBody class="pb-5">
       <DateChoicer @set-date="setDate" />
 
-      <TableTitleRow excel :url="excelUrl" :disabled="true" />
+      <TableTitleRow excel :url="excelUrl" />
       <PaymentStatus :date="dateFormat(date)" />
     </CCardBody>
 
