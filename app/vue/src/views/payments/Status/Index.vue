@@ -15,7 +15,10 @@ import PaymentStatus from './components/PaymentStatus.vue'
 const date = ref(new Date())
 
 const excelUrl = computed(
-  () => `/pay-status/?project=${project.value}&date=${dateFormat(date.value)}`,
+  () =>
+    `/excel/pay-status/?project=${project.value}&date=${dateFormat(
+      date.value,
+    )}`,
 )
 
 const projStore = useProject()
