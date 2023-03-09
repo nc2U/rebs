@@ -21,14 +21,6 @@ const contSum = computed(() => contStore.contSummaryList)
 const prDataStore = useProjectData()
 const unitType = computed(() => prDataStore.unitTypeList)
 
-// ---------------------------------------------------------------
-// const getTotalQua = (og: number, ut: number) => {
-//   const unit = budgetList.value.filter(
-//     b => b.order_group === og && b.unit_type === ut,
-//   )[0]
-//   return unit ? unit.quantity : 0
-// }
-
 const getOGName = (og: number) =>
   orderGroup.value.filter(o => o.pk === og)[0].order_group_name
 
@@ -39,19 +31,11 @@ const getContNum = (og: number, ut: number) =>
     .filter(c => c.order_group === og && c.unit_type === ut)
     .map(c => c.num_cont)[0]
 
-// const typeRemainNum = (type: number) =>
-//   contSum.value
-//     ?.filter(c => c.unit_type === type)
-//     ?.map(c => c.num_cont)
-//     .reduce((pn, cn) => pn + cn, 0)
+const getUTbyOGNum = (og: number) =>
+  budgetList.value.filter(b => b.order_group === og).length
 
-// const getUnitPrice = (og: number, ut: number) => {
-//   const unit = budgetList.value.filter(
-//     b => b.order_group === og && b.unit_type === ut,
-//   )[0]
-//   return unit ? unit.average_price : 0
-// }
-// ---------------------------------------------------------------
+const getFirstType = (og: number) =>
+  budgetList.value.filter(b => b.order_group === og)[0].unit_type
 </script>
 
 <template>
@@ -102,7 +86,11 @@ const getContNum = (og: number, ut: number) =>
 
     <CTableBody>
       <CTableRow v-for="bg in budgetList" :key="bg.pk" class="text-right">
-        <CTableDataCell class="text-center">
+        <CTableDataCell
+          v-if="bg.unit_type === getFirstType(bg.order_group)"
+          :rowspan="getUTbyOGNum(bg.order_group)"
+          class="text-center"
+        >
           {{ getOGName(bg.order_group) }}
         </CTableDataCell>
         <CTableDataCell class="text-left pl-4">
