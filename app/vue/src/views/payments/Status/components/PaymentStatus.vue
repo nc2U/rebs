@@ -21,12 +21,12 @@ const prDataStore = useProjectData()
 const unitType = computed(() => prDataStore.unitTypeList)
 
 const getOGName = (og: number) =>
-  orderGroup.value
+  orderGroup.value.length
     ? orderGroup.value.filter(o => o.pk === og)[0]
     : { order_group_name: '' }
 
 const getUTName = (ut: number) =>
-  unitType.value
+  unitType.value.length
     ? unitType.value.filter(u => u.pk === ut)[0]
     : { name: '', color: '' }
 
@@ -48,17 +48,18 @@ const totalContNum = computed(
   () => contSum.value.map(c => c.num_cont).reduce((x, y) => x + y, 0), // 총 계약 세대수
 )
 
-const totalContSales = computed(() => {
-  budgetList.value.map(b => b.average_price || 0).reduce((x, y) => x + y, 0)
-  return contSum.value
+const totalContSales = computed(() =>
+  contSum.value
     .map(c => {
-      const price = budgetList.value.filter(
-        b => b.order_group === b.order_group && b.unit_type === c.unit_type,
-      )[0].average_price
+      const price = budgetList.value.length
+        ? budgetList.value.filter(
+            b => b.order_group === b.order_group && b.unit_type === c.unit_type,
+          )[0].average_price
+        : 0
       return c.num_cont * (price || 0)
     })
-    .reduce((x, y) => x + y, 0)
-}) // 총 계약금액
+    .reduce((x, y) => x + y, 0),
+) // 총 계약금액
 
 const totalBudget = computed(
   () => budgetList.value.map(b => b.budget).reduce((x, y) => x + y, 0), // 총 예산합계
@@ -66,7 +67,6 @@ const totalBudget = computed(
 </script>
 
 <template>
-  {{ totalContSales }}
   <CTable hover responsive bordered align="middle">
     <colgroup>
       <col width="8%" />
