@@ -41,19 +41,32 @@ const getUTbyOGNum = (og: number) =>
 const getFirstType = (og: number) =>
   budgetList.value.filter(b => b.order_group === og)[0].unit_type
 
-const totalBudgetNum = computed(() =>
-  budgetList.value.map(b => b.quantity).reduce((p, n) => p + n, 0),
+const totalBudgetNum = computed(
+  () => budgetList.value.map(b => b.quantity).reduce((p, n) => p + n, 0), // 총 계획 세대수
 )
-const totalContNum = computed(() =>
-  contSum.value.map(c => c.num_cont).reduce((x, y) => x + y, 0),
+const totalContNum = computed(
+  () => contSum.value.map(c => c.num_cont).reduce((x, y) => x + y, 0), // 총 계약 세대수
 )
 
-const totalBudget = computed(() =>
-  budgetList.value.map(b => b.budget).reduce((x, y) => x + y, 0),
+const totalContSales = computed(() => {
+  budgetList.value.map(b => b.average_price || 0).reduce((x, y) => x + y, 0)
+  return contSum.value
+    .map(c => {
+      const price = budgetList.value.filter(
+        b => b.order_group === b.order_group && b.unit_type === c.unit_type,
+      )[0].average_price
+      return c.num_cont * (price || 0)
+    })
+    .reduce((x, y) => x + y, 0)
+}) // 총 계약금액
+
+const totalBudget = computed(
+  () => budgetList.value.map(b => b.budget).reduce((x, y) => x + y, 0), // 총 예산합계
 )
 </script>
 
 <template>
+  {{ totalContSales }}
   <CTable hover responsive bordered align="middle">
     <colgroup>
       <col width="8%" />
@@ -105,6 +118,7 @@ const totalBudget = computed(() =>
           v-if="bg.unit_type === getFirstType(bg.order_group)"
           :rowspan="getUTbyOGNum(bg.order_group)"
           class="text-center"
+          :color="TableSecondary"
         >
           {{ getOGName(bg.order_group).order_group_name }}
         </CTableDataCell>
@@ -128,10 +142,10 @@ const totalBudget = computed(() =>
             )
           }}
         </CTableDataCell>
-        <CTableDataCell class="text-warning"
-          >{{ numFormat(1 + 1) }}
-        </CTableDataCell>
         <CTableDataCell class="text-warning">
+          {{ numFormat(1 + 1) }}
+        </CTableDataCell>
+        <CTableDataCell>
           {{
             numFormat(
               bg.average_price * getContNum(bg.order_group, bg.unit_type) -
@@ -166,13 +180,17 @@ const totalBudget = computed(() =>
         <CTableHeaderCell></CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(totalBudgetNum) }}</CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(totalContNum) }}</CTableHeaderCell>
-        <CTableHeaderCell class="text-warning">-</CTableHeaderCell>
-        <CTableHeaderCell class="text-warning">-</CTableHeaderCell>
-        <CTableHeaderCell class="text-warning">
-          {{ numFormat(44000000000) }}
+        <CTableHeaderCell>
+          {{ numFormat(totalContSales) }}
         </CTableHeaderCell>
         <CTableHeaderCell class="text-warning">
-          {{ numFormat(330000000000 - 44000000000) }}
+          {{ numFormat(5000000) }}
+        </CTableHeaderCell>
+        <CTableHeaderCell>
+          {{ numFormat(totalContSales - 5000000) }}
+        </CTableHeaderCell>
+        <CTableHeaderCell>
+          {{ numFormat(totalBudget - totalContSales) }}
         </CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(totalBudget) }}</CTableHeaderCell>
       </CTableRow>
