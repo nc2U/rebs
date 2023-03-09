@@ -39,7 +39,7 @@ class ProjectIncBudgetViewSet(viewsets.ModelViewSet):
     serializer_class = ProjectIncBudgetSerializer
     pagination_class = PageNumberPaginationFifty
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-    filterset_fields = ('project',)
+    filterset_fields = ('project', 'unit_type__sort')
 
 
 class ProjectOutBudgetViewSet(viewsets.ModelViewSet):
