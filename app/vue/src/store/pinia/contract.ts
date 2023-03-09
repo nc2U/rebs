@@ -119,9 +119,9 @@ export const useContract = defineStore('contract', () => {
       .then(res => (subsSummaryList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
-  const fetchContSummaryList = (project: number) =>
+  const fetchContSummaryList = (project: number, date = '') =>
     api
-      .get(`/cont-sum/?project=${project}`)
+      .get(`/cont-sum/?project=${project}&to_contract_date=${date}`)
       .then(res => (contSummaryList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 

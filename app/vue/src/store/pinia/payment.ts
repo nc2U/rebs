@@ -235,9 +235,9 @@ export const usePayment = defineStore('payment', () => {
   const paySumList = ref<PaySumByType[]>([])
 
   // actions
-  const fetchPaySumList = (project: number) =>
+  const fetchPaySumList = (project: number, date = '') =>
     api
-      .get(`/payment-sum/?project=${project}`)
+      .get(`/payment-sum/?project=${project}&to_deal_date=${date}`)
       .then(res => (paySumList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
