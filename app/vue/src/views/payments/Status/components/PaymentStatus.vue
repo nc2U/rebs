@@ -112,7 +112,7 @@ const totalBudget = computed(
       </CTableRow>
     </CTableHead>
 
-    <CTableBody>
+    <CTableBody v-if="budgetList.length">
       <CTableRow v-for="bg in budgetList" :key="bg.pk" class="text-right">
         <CTableDataCell
           v-if="bg.unit_type === getFirstType(bg.order_group)"
@@ -169,6 +169,18 @@ const totalBudget = computed(
           }}
         </CTableDataCell>
         <CTableDataCell>{{ numFormat(bg.budget) }}</CTableDataCell>
+      </CTableRow>
+    </CTableBody>
+
+    <CTableBody v-else>
+      <CTableRow class="text-center text-danger" style="height: 200px">
+        <CTableDataCell colspan="10">
+          [
+          <router-link :to="{ name: '수입 예산 등록' }">
+            수입 예산 등록
+          </router-link>
+          ] >> [신규 프로젝트] > [수입 예산 항목]에서 데이터를 등록하세요.
+        </CTableDataCell>
       </CTableRow>
     </CTableBody>
 
