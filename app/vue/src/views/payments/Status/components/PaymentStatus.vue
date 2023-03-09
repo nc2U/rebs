@@ -52,18 +52,20 @@ const getUnitPrice = (og: number, ut: number) => {
 <template>
   <CTable hover responsive bordered align="middle">
     <colgroup>
+      <col width="8%" />
+      <col width="8%" />
+      <col width="7%" />
       <col width="10%" />
-      <col width="10%" />
-      <col width="10%" />
-      <col width="10%" />
-      <col width="14%" />
-      <col width="15%" />
-      <col width="15%" />
-      <col width="16%" />
+      <col width="7%" />
+      <col width="12%" />
+      <col width="12%" />
+      <col width="12%" />
+      <col width="12%" />
+      <col width="12%" />
     </colgroup>
     <CTableHead>
       <CTableRow>
-        <CTableDataCell colspan="7">
+        <CTableDataCell colspan="9">
           <strong>
             <CIcon name="cilFolderOpen" />
             차수 및 타입별 수납 현황
@@ -76,13 +78,27 @@ const getUnitPrice = (og: number, ut: number) => {
       </CTableRow>
 
       <CTableRow :color="TableSecondary" class="text-center">
-        <CTableHeaderCell>구분</CTableHeaderCell>
+        <CTableHeaderCell rowspan="2">구분</CTableHeaderCell>
         <CTableHeaderCell>타입</CTableHeaderCell>
         <CTableHeaderCell>계획 세대수</CTableHeaderCell>
-        <CTableHeaderCell>계약 세대수</CTableHeaderCell>
         <CTableHeaderCell>단가(평균)</CTableHeaderCell>
+        <CTableHeaderCell>계약 세대수</CTableHeaderCell>
+        <CTableHeaderCell>계약 금액</CTableHeaderCell>
         <CTableHeaderCell>실수납 금액</CTableHeaderCell>
         <CTableHeaderCell>미수 금액</CTableHeaderCell>
+        <CTableHeaderCell>미계약 금액</CTableHeaderCell>
+        <CTableHeaderCell>합계</CTableHeaderCell>
+      </CTableRow>
+
+      <CTableRow :color="TableSecondary" class="text-center">
+        <CTableHeaderCell>타입</CTableHeaderCell>
+        <CTableHeaderCell>계획 세대수</CTableHeaderCell>
+        <CTableHeaderCell>단가(평균)</CTableHeaderCell>
+        <CTableHeaderCell>계약 세대수</CTableHeaderCell>
+        <CTableHeaderCell>계약 금액</CTableHeaderCell>
+        <CTableHeaderCell>실수납 금액</CTableHeaderCell>
+        <CTableHeaderCell>미수 금액</CTableHeaderCell>
+        <CTableHeaderCell>미계약 금액</CTableHeaderCell>
         <CTableHeaderCell>합계</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
@@ -96,8 +112,10 @@ const getUnitPrice = (og: number, ut: number) => {
           {{ bg.unit_type }}
         </CTableDataCell>
         <CTableDataCell>{{ numFormat(bg.quantity) }}</CTableDataCell>
-        <CTableDataCell>a</CTableDataCell>
         <CTableDataCell>{{ numFormat(bg.average_price) }}</CTableDataCell>
+        <CTableDataCell>-</CTableDataCell>
+        <CTableDataCell>-</CTableDataCell>
+        <CTableDataCell>-</CTableDataCell>
         <CTableDataCell>-</CTableDataCell>
         <CTableDataCell>-</CTableDataCell>
         <CTableDataCell>{{ numFormat(bg.budget) }}</CTableDataCell>
@@ -193,6 +211,8 @@ const getUnitPrice = (og: number, ut: number) => {
         </CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(625) }}</CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(625) }}</CTableHeaderCell>
+        <CTableHeaderCell>-</CTableHeaderCell>
+        <CTableHeaderCell>-</CTableHeaderCell>
         <CTableHeaderCell>-</CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(44000000000) }}</CTableHeaderCell>
         <CTableHeaderCell>
