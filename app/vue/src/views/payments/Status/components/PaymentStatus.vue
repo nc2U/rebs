@@ -51,9 +51,11 @@ const paidSum = (og: number, ut: number) =>
 const totalBudgetNum = computed(
   () => budgetList.value.map(b => b.quantity).reduce((p, n) => p + n, 0), // 총 계획 세대수
 )
-const totalContNum = computed(
-  () => contSum.value.map(c => c.num_cont).reduce((x, y) => x + y, 0), // 총 계약 세대수
-)
+const totalContNum = computed(() =>
+  budgetList.value.length
+    ? contSum.value.map(c => c.num_cont).reduce((x, y) => x + y, 0)
+    : 0,
+) // 총 계약 세대수
 
 const totalContSum = computed(() =>
   contSum.value
