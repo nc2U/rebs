@@ -187,9 +187,10 @@ class PaymentSummaryViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return ProjectCashBook.objects.filter(contract__activation=True, contract__contractor__status=2) \
-            .order_by('contract__unit_type') \
+            .order_by('contract__order_group', 'contract__unit_type') \
+            .annotate(order_group=F('contract__order_group')) \
             .annotate(unit_type=F('contract__unit_type')) \
-            .values('unit_type') \
+            .values('order_group', 'unit_type') \
             .annotate(type_total=Sum('income'))
 
 

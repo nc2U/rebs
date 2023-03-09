@@ -353,12 +353,13 @@ class PaymentSerializer(serializers.ModelSerializer):
 
 
 class PaymentSummarySerializer(serializers.ModelSerializer):
+    order_group = serializers.IntegerField()
     unit_type = serializers.IntegerField()
     type_total = serializers.IntegerField()
 
     class Meta:
         model = Contract
-        fields = ('unit_type', 'type_total')
+        fields = ('order_group', 'unit_type', 'type_total')
 
 
 class ContNumByTypeSerializer(serializers.ModelSerializer):
