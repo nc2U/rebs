@@ -15,7 +15,7 @@ from django.db.models import Q, F, Max, Sum, When, Case
 from django.views.generic import View
 
 from company.models import Company
-from project.models import (Project, Site, SiteOwner, SiteContract,
+from project.models import (Project, ProjectIncBudget, Site, SiteOwner, SiteContract,
                             UnitType, KeyUnit, BuildingUnit, HouseUnit, ProjectOutBudget)
 from contract.models import Contract, Contractor, ContractorRelease
 from cash.models import CashBook, ProjectCashBook
@@ -779,6 +779,147 @@ def export_payments_xls(request):
 
     wb.save(response)
     return response
+
+
+class ExportPaymentStatus(View):
+    """차수 및 타입별 수납 집계 현황"""
+
+    def get(self, request):
+
+        # Create an in-memory output file for the new workbook.
+        output = io.BytesIO()
+
+        # Even though the final file will be in memory the module uses temp
+        # files during assembly for efficiency. To avoid this on servers that
+        # don't allow temp files, for example the Google APP Engine, set the
+        # 'in_memory' Workbook() constructor option as shown in the docs.
+        workbook = xlsxwriter.Workbook(output)
+        worksheet = workbook.add_worksheet('차수_타입별_수납집계')
+
+        worksheet.set_default_row(20)
+
+        ##### ----------------- get_queryset start ----------------- #####
+        project = Project.objects.get(pk=request.GET.get('project'))
+        date = request.GET.get('date')
+        obj_list = ProjectIncBudget.objects.filter(project=project).order_by('order_group', 'unit_type')
+
+        ##### ----------------- get_queryset finish ----------------- #####
+
+        # title_list
+        data_source = [[],
+                       ['차수', 'order_group', 10],
+                       ['타입', 'unit_type', 10],
+                       ['단가(평균)', 'average_price', 7],
+                       ['계획세대수', 'quantity', 10],
+                       ['계약세대수', 'quantity', 10],
+                       ['계약금액', 'quantity', 12],
+                       ['실수납 금액', 'quantity', 14],
+                       ['미수 금액', 'quantity', 14],
+                       ['미계약 금액', 'quantity', 14],
+                       ['합계', 'budget', 45]]
+
+        # 1. Title
+        row_num = 0
+        worksheet.set_row(row_num, 50)
+        title_format = workbook.add_format()
+        title_format.set_bold()
+        title_format.set_font_size(18)
+        title_format.set_align('vcenter')
+        worksheet.merge_range(row_num, 0, row_num, len(data_source) - 1, str(project) + ' 차수 및 타입별 수납 현황', title_format)
+
+        # 2. Pre Header - Date
+        row_num = 1
+        worksheet.set_row(row_num, 18)
+        worksheet.write(row_num, len(data_source) - 1, date + ' 현재', workbook.add_format({'align': 'right'}))
+
+        # 3. Header
+        row_num = 2
+        worksheet.set_row(row_num, 25, workbook.add_format({'bold': True}))
+
+        titles = ['No']  # header titles
+        params = []  # ORM 추출 field
+        widths = [7]  # No. 컬럼 넓이
+
+        for ds in data_source:
+            if ds:
+                titles.append(ds[0])
+                params.append(ds[1])
+                widths.append(ds[2])
+
+        h_format = workbook.add_format()
+        h_format.set_bold()
+        h_format.set_border()
+        h_format.set_align('center')
+        h_format.set_align('vcenter')
+        h_format.set_bg_color('#eeeeee')
+
+        # Adjust the column width.
+        for i, col_width in enumerate(widths):
+            worksheet.set_column(i, i, col_width)
+
+        # Write header
+        for col_num, col in enumerate(titles):
+            worksheet.write(row_num, col_num, titles[col_num], h_format)
+
+        # 4. Body
+        # Get some data to write to the spreadsheet.
+        data = Contract.objects.filter(project=project,
+                                       keyunit__contract__isnull=False,
+                                       contractor__status='1')
+
+        data = data.values_list(*params)
+
+        b_format = workbook.add_format()
+        b_format.set_border()
+        b_format.set_align('center')
+        b_format.set_align('vcenter')
+        b_format.set_num_format('yyyy-mm-dd')
+
+        body_format = {
+            'border': True,
+            'align': 'center',
+            'valign': 'vcenter',
+            'num_format': 'yyyy-mm-dd'
+        }
+
+        is_left = []
+        # Write header
+        for col_num, col in enumerate(titles):
+            if col in ('비고'):
+                is_left.append(col_num)
+
+        # Write header
+        for i, row in enumerate(data):
+            row = list(row)
+            row_num += 1
+            row.insert(0, i + 1)
+            for col_num, cell_data in enumerate(row):
+                if col_num == 0:
+                    body_format['num_format'] = '#,##0'
+                else:
+                    body_format['num_format'] = 'yyyy-mm-dd'
+                if col_num in is_left:
+                    if 'align' in body_format:
+                        del body_format['align']
+                else:
+                    if 'align' not in body_format:
+                        body_format['align'] = 'center'
+                bformat = workbook.add_format(body_format)
+                worksheet.write(row_num, col_num, cell_data, bformat)
+
+        # Close the workbook before sending the data.
+        workbook.close()
+
+        # Rewind the buffer.
+        output.seek(0)
+
+        # Set up the Http response.
+        filename = '{this_date}-payment-status.xlsx'.format(this_date=date)
+        file_format = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        response = HttpResponse(output, content_type=file_format)
+        response['Content-Disposition'] = 'attachment; filename=%s' % filename
+
+        return response
 
 
 class ExportProjectBalance(View):
