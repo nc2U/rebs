@@ -801,8 +801,9 @@ class ExportPaymentStatus(View):
         ##### ----------------- get_queryset start ----------------- #####
         project = Project.objects.get(pk=request.GET.get('project'))
         date = request.GET.get('date')
-        obj_list = ProjectIncBudget.objects.filter(project=project).order_by('order_group', 'unit_type')
 
+        # Get some data to write to the spreadsheet.
+        obj_list = ProjectIncBudget.objects.filter(project=project).order_by('order_group', 'unit_type')
         ##### ----------------- get_queryset finish ----------------- #####
 
         # title_list
@@ -862,12 +863,7 @@ class ExportPaymentStatus(View):
             worksheet.write(row_num, col_num, titles[col_num], h_format)
 
         # 4. Body
-        # Get some data to write to the spreadsheet.
-        data = Contract.objects.filter(project=project,
-                                       keyunit__contract__isnull=False,
-                                       contractor__status='1')
-
-        data = data.values_list(*params)
+        obj_list = obj_list.values_list(*params)
 
         b_format = workbook.add_format()
         b_format.set_border()
@@ -889,7 +885,7 @@ class ExportPaymentStatus(View):
                 is_left.append(col_num)
 
         # Write header
-        for i, row in enumerate(data):
+        for i, row in enumerate(obj_list):
             row = list(row)
             row_num += 1
             row.insert(0, i + 1)
