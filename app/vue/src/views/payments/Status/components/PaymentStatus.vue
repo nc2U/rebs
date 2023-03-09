@@ -77,29 +77,21 @@ const getUnitPrice = (og: number, ut: number) => {
         <CTableDataCell class="text-right">(단위: 원)</CTableDataCell>
       </CTableRow>
 
-      <CTableRow :color="TableSecondary" class="text-center">
+      <CTableRow :color="TableSecondary" class="text-center" align="middle">
         <CTableHeaderCell rowspan="2">구분</CTableHeaderCell>
-        <CTableHeaderCell>타입</CTableHeaderCell>
-        <CTableHeaderCell>계획 세대수</CTableHeaderCell>
-        <CTableHeaderCell>단가(평균)</CTableHeaderCell>
-        <CTableHeaderCell>계약 세대수</CTableHeaderCell>
-        <CTableHeaderCell>계약 금액</CTableHeaderCell>
-        <CTableHeaderCell>실수납 금액</CTableHeaderCell>
-        <CTableHeaderCell>미수 금액</CTableHeaderCell>
-        <CTableHeaderCell>미계약 금액</CTableHeaderCell>
-        <CTableHeaderCell>합계</CTableHeaderCell>
+        <CTableHeaderCell rowspan="2">타입</CTableHeaderCell>
+        <CTableHeaderCell rowspan="2">계획 세대수</CTableHeaderCell>
+        <CTableHeaderCell rowspan="2">단가(평균)</CTableHeaderCell>
+        <CTableHeaderCell colspan="4">계약 현황</CTableHeaderCell>
+        <CTableHeaderCell rowspan="2">미계약 금액</CTableHeaderCell>
+        <CTableHeaderCell rowspan="2">합계</CTableHeaderCell>
       </CTableRow>
 
       <CTableRow :color="TableSecondary" class="text-center">
-        <CTableHeaderCell>타입</CTableHeaderCell>
-        <CTableHeaderCell>계획 세대수</CTableHeaderCell>
-        <CTableHeaderCell>단가(평균)</CTableHeaderCell>
         <CTableHeaderCell>계약 세대수</CTableHeaderCell>
         <CTableHeaderCell>계약 금액</CTableHeaderCell>
         <CTableHeaderCell>실수납 금액</CTableHeaderCell>
         <CTableHeaderCell>미수 금액</CTableHeaderCell>
-        <CTableHeaderCell>미계약 금액</CTableHeaderCell>
-        <CTableHeaderCell>합계</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
 
