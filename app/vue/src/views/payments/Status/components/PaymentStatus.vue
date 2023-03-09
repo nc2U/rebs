@@ -69,12 +69,14 @@ const totalContSum = computed(() =>
 ) // 총 계약금액
 
 const totalPaidSum = computed(() =>
-  paySumList.value.map(s => s.type_total).reduce((x, y) => x + y, 0),
-)
+  budgetList.value.length
+    ? paySumList.value.map(s => s.type_total).reduce((x, y) => x + y, 0)
+    : 0,
+) // 총 실수납 금액
 
 const totalBudget = computed(
   () => budgetList.value.map(b => b.budget).reduce((x, y) => x + y, 0), // 총 예산합계
-)
+) // 총 예산 합계
 </script>
 
 <template>
@@ -219,20 +221,27 @@ const totalBudget = computed(
           합계
         </CTableHeaderCell>
         <CTableHeaderCell></CTableHeaderCell>
+        <!-- 계획 세대수 합계 -->
         <CTableHeaderCell>{{ numFormat(totalBudgetNum) }}</CTableHeaderCell>
+        <!-- 계약 세대수 합계 -->
         <CTableHeaderCell>{{ numFormat(totalContNum) }}</CTableHeaderCell>
         <CTableHeaderCell>
+          <!-- 계약 금액 합계 -->
           {{ numFormat(totalContSum) }}
         </CTableHeaderCell>
         <CTableHeaderCell>
+          <!-- 실수납 금액 합계 -->
           {{ numFormat(totalPaidSum) }}
         </CTableHeaderCell>
         <CTableHeaderCell>
+          <!-- 미수 금액 합계 -->
           {{ numFormat(totalContSum - totalPaidSum) }}
         </CTableHeaderCell>
         <CTableHeaderCell>
+          <!-- 미계약 금액 합계 -->
           {{ numFormat(totalBudget - totalContSum) }}
         </CTableHeaderCell>
+        <!-- 총계 -->
         <CTableHeaderCell>{{ numFormat(totalBudget) }}</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
