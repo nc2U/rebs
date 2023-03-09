@@ -812,11 +812,11 @@ class ExportPaymentStatus(View):
                        ['타입', 'unit_type', 10],
                        ['단가(평균)', 'average_price', 7],
                        ['계획세대수', 'quantity', 10],
-                       ['계약세대수', 'quantity', 10],
-                       ['계약금액', 'quantity', 12],
-                       ['실수납 금액', 'quantity', 14],
-                       ['미수 금액', 'quantity', 14],
-                       ['미계약 금액', 'quantity', 14],
+                       ['계약세대수', '', 10],
+                       ['계약금액', '', 12],
+                       ['실수납 금액', '', 14],
+                       ['미수 금액', '', 14],
+                       ['미계약 금액', '', 14],
                        ['합계', 'budget', 45]]
 
         # 1. Title
@@ -837,9 +837,9 @@ class ExportPaymentStatus(View):
         row_num = 2
         worksheet.set_row(row_num, 25, workbook.add_format({'bold': True}))
 
-        titles = ['No']  # header titles
+        titles = []  # header titles
         params = []  # ORM 추출 field
-        widths = [7]  # No. 컬럼 넓이
+        widths = []  # No. 컬럼 넓이
 
         for ds in data_source:
             if ds:
