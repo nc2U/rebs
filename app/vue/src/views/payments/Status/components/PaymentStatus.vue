@@ -117,8 +117,10 @@ const getFirstType = (og: number) =>
             )
           }}
         </CTableDataCell>
-        <CTableDataCell>{{ numFormat(1 + 1) }}</CTableDataCell>
-        <CTableDataCell>
+        <CTableDataCell class="text-danger"
+          >{{ numFormat(1 + 1) }}
+        </CTableDataCell>
+        <CTableDataCell class="text-danger">
           {{
             numFormat(
               bg.average_price * getContNum(bg.order_group, bg.unit_type) -
@@ -139,7 +141,7 @@ const getFirstType = (og: number) =>
     </CTableBody>
 
     <CTableHead>
-      <CTableRow class="text-right" :color="TableSecondary">
+      <CTableRow class="text-right text-danger" :color="TableSecondary">
         <CTableHeaderCell colspan="2" class="text-center">
           합계
         </CTableHeaderCell>
