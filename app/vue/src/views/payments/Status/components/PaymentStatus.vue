@@ -55,12 +55,12 @@ const totalContNum = computed(
   () => contSum.value.map(c => c.num_cont).reduce((x, y) => x + y, 0), // 총 계약 세대수
 )
 
-const totalContSales = computed(() =>
+const totalContSum = computed(() =>
   contSum.value
     .map(c => {
       const price = budgetList.value.length
         ? budgetList.value.filter(
-            b => b.order_group === b.order_group && b.unit_type === c.unit_type,
+            b => b.order_group === c.order_group && b.unit_type === c.unit_type,
           )[0].average_price
         : 0
       return c.num_cont * (price || 0)
@@ -131,6 +131,7 @@ const totalBudget = computed(
           class="text-center"
           :color="TableSecondary"
         >
+          <!-- 차수명 -->
           {{ getOGName(bg.order_group).order_group_name }}
         </CTableDataCell>
         <CTableDataCell class="text-left pl-4">
@@ -139,14 +140,19 @@ const totalBudget = computed(
             :color="getUTName(bg.unit_type).color"
             size="sm"
           />
+          <!-- 타입명 -->
           {{ getUTName(bg.unit_type).name }}
         </CTableDataCell>
+        <!-- 단가(평균) -->
         <CTableDataCell>{{ numFormat(bg.average_price) }}</CTableDataCell>
+        <!-- 계획세대수 -->
         <CTableDataCell>{{ numFormat(bg.quantity) }}</CTableDataCell>
         <CTableDataCell>
+          <!-- 계약세대수 -->
           {{ numFormat(getContNum(bg.order_group, bg.unit_type)) }}
         </CTableDataCell>
         <CTableDataCell>
+          <!-- 계약금액 -->
           {{
             numFormat(
               bg.average_price * getContNum(bg.order_group, bg.unit_type),
@@ -154,6 +160,7 @@ const totalBudget = computed(
           }}
         </CTableDataCell>
         <CTableDataCell>
+          <!-- 실수납금액 -->
           {{
             numFormat(
               paidSum(bg.order_group, bg.unit_type)
@@ -163,10 +170,13 @@ const totalBudget = computed(
           }}
         </CTableDataCell>
         <CTableDataCell>
+          <!-- 미수금액 -->
           {{
             numFormat(
               bg.average_price * getContNum(bg.order_group, bg.unit_type) -
-                (1 + 1),
+                (paidSum(bg.order_group, bg.unit_type)
+                  ? paidSum(bg.order_group, bg.unit_type).type_total
+                  : 0),
             )
           }}
         </CTableDataCell>
@@ -178,6 +188,7 @@ const totalBudget = computed(
                 (bg.quantity - (getContNum(bg.order_group, bg.unit_type) || 0)),
           }"
         >
+          <!-- 미계약 금액 -->
           {{
             numFormat(
               bg.average_price *
@@ -185,6 +196,7 @@ const totalBudget = computed(
             )
           }}
         </CTableDataCell>
+        <!-- 합계 -->
         <CTableDataCell>{{ numFormat(bg.budget) }}</CTableDataCell>
       </CTableRow>
     </CTableBody>
@@ -210,16 +222,16 @@ const totalBudget = computed(
         <CTableHeaderCell>{{ numFormat(totalBudgetNum) }}</CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(totalContNum) }}</CTableHeaderCell>
         <CTableHeaderCell>
-          {{ numFormat(totalContSales) }}
+          {{ numFormat(totalContSum) }}
         </CTableHeaderCell>
         <CTableHeaderCell>
           {{ numFormat(totalPaidSum) }}
         </CTableHeaderCell>
         <CTableHeaderCell>
-          {{ numFormat(totalContSales - totalPaidSum) }}
+          {{ numFormat(totalContSum - totalPaidSum) }}
         </CTableHeaderCell>
         <CTableHeaderCell>
-          {{ numFormat(totalBudget - totalContSales) }}
+          {{ numFormat(totalBudget - totalContSum) }}
         </CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(totalBudget) }}</CTableHeaderCell>
       </CTableRow>
