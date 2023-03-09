@@ -8,7 +8,6 @@ import { numFormat, dateFormat } from '@/utils/baseMixins'
 
 defineProps({
   date: { type: String, default: '' },
-  sort: { type: String, default: '2' },
 })
 
 const proStore = useProject()
@@ -22,9 +21,14 @@ const prDataStore = useProjectData()
 const unitType = computed(() => prDataStore.unitTypeList)
 
 const getOGName = (og: number) =>
-  orderGroup.value.filter(o => o.pk === og)[0].order_group_name
+  orderGroup.value
+    ? orderGroup.value.filter(o => o.pk === og)[0]
+    : { order_group_name: '' }
 
-const getUTName = (ut: number) => unitType.value.filter(u => u.pk === ut)[0]
+const getUTName = (ut: number) =>
+  unitType.value
+    ? unitType.value.filter(u => u.pk === ut)[0]
+    : { name: '', color: '' }
 
 const getContNum = (og: number, ut: number) =>
   contSum.value
@@ -91,7 +95,7 @@ const getFirstType = (og: number) =>
           :rowspan="getUTbyOGNum(bg.order_group)"
           class="text-center"
         >
-          {{ getOGName(bg.order_group) }}
+          {{ getOGName(bg.order_group).order_group_name }}
         </CTableDataCell>
         <CTableDataCell class="text-left pl-4">
           <v-icon
