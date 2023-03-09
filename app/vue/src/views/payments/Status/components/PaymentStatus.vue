@@ -40,9 +40,21 @@ const getUTbyOGNum = (og: number) =>
 
 const getFirstType = (og: number) =>
   budgetList.value.filter(b => b.order_group === og)[0].unit_type
+
+const totalBudgetNum = computed(() =>
+  budgetList.value.map(b => b.quantity).reduce((p, n) => p + n, 0),
+)
+const totalContNum = computed(() =>
+  contSum.value.map(c => c.num_cont).reduce((x, y) => x + y, 0),
+)
+
+const totalBudget = computed(() =>
+  budgetList.value.map(b => b.budget).reduce((x, y) => x + y, 0),
+)
 </script>
 
 <template>
+  {{ totalContNum }}
   <CTable hover responsive bordered align="middle">
     <colgroup>
       <col width="8%" />
@@ -141,20 +153,22 @@ const getFirstType = (og: number) =>
     </CTableBody>
 
     <CTableHead>
-      <CTableRow class="text-right text-danger" :color="TableSecondary">
+      <CTableRow class="text-right" :color="TableSecondary">
         <CTableHeaderCell colspan="2" class="text-center">
           합계
         </CTableHeaderCell>
         <CTableHeaderCell></CTableHeaderCell>
-        <CTableHeaderCell>{{ numFormat(625) }}</CTableHeaderCell>
-        <CTableHeaderCell>{{ numFormat(625) }}</CTableHeaderCell>
-        <CTableHeaderCell>-</CTableHeaderCell>
-        <CTableHeaderCell>-</CTableHeaderCell>
-        <CTableHeaderCell>{{ numFormat(44000000000) }}</CTableHeaderCell>
-        <CTableHeaderCell>
+        <CTableHeaderCell>{{ numFormat(totalBudgetNum) }}</CTableHeaderCell>
+        <CTableHeaderCell>{{ numFormat(totalContNum) }}</CTableHeaderCell>
+        <CTableHeaderCell class="text-danger">-</CTableHeaderCell>
+        <CTableHeaderCell class="text-danger">-</CTableHeaderCell>
+        <CTableHeaderCell class="text-danger">
+          {{ numFormat(44000000000) }}
+        </CTableHeaderCell>
+        <CTableHeaderCell class="text-danger">
           {{ numFormat(330000000000 - 44000000000) }}
         </CTableHeaderCell>
-        <CTableHeaderCell>{{ numFormat(330000000000) }}</CTableHeaderCell>
+        <CTableHeaderCell>{{ numFormat(totalBudget) }}</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
   </CTable>
