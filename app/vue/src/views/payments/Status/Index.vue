@@ -27,11 +27,12 @@ const fetchTypeList = (proj: number) => prDataStore.fetchTypeList(proj)
 const contStore = useContract()
 const fetchOrderGroupList = (proj: number) =>
   contStore.fetchOrderGroupList(proj)
-const fetchContSummaryList = (proj: number) =>
-  contStore.fetchContSummaryList(proj)
+const fetchContSummaryList = (proj: number, date?: string) =>
+  contStore.fetchContSummaryList(proj, date)
 
 const paymentStore = usePayment()
-const fetchPaySumList = (proj: number) => paymentStore.fetchPaySumList(proj)
+const fetchPaySumList = (proj: number, date?: string) =>
+  paymentStore.fetchPaySumList(proj, date)
 
 const onSelectAdd = (target: number) => {
   if (!!target) {
@@ -49,7 +50,11 @@ const onSelectAdd = (target: number) => {
   }
 }
 
-const setDate = (d: Date) => (date.value = new Date(d))
+const setDate = (d: Date) => {
+  date.value = new Date(d)
+  fetchPaySumList(project.value, dateFormat(date.value))
+  fetchContSummaryList(project.value, dateFormat(date.value))
+}
 
 onBeforeMount(() => {
   fetchTypeList(project.value)
