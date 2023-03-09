@@ -64,10 +64,18 @@ class SubsSummaryViewSet(viewsets.ModelViewSet):
             .annotate(num_cont=Count('unit_type'))
 
 
+class ContSumFilter(FilterSet):
+    to_contract_date = DateFilter(field_name='contractor__contract_date', lookup_expr='lte', label='계약일자까지')
+
+    class Meta:
+        model = Contract
+        fields = ('project', 'to_contract_date')
+
+
 class ContSummaryViewSet(viewsets.ModelViewSet):
     serializer_class = ContSummarySerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-    filterset_fields = ('project',)
+    filterset_class = ContSumFilter
 
     def get_queryset(self):
         return Contract.objects.filter(activation=True, contractor__status=2) \
