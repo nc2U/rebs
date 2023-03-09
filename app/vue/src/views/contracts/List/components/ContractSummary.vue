@@ -15,7 +15,9 @@ const projectDataStore = useProjectData()
 const orderGroupList = computed(() => contractStore.orderGroupList)
 const subsSummaryList = computed(() => contractStore.subsSummaryList)
 const contSummaryList = computed(() => contractStore.contSummaryList)
-const unitTypeList = computed(() => projectDataStore.unitTypeList)
+const unitTypeList = computed(() =>
+  projectDataStore.unitTypeList.filter(t => t.sort < '5'),
+)
 
 const subsNum = (type?: number) => {
   // 청약 수
