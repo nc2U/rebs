@@ -358,7 +358,7 @@ class PaymentSummarySerializer(serializers.ModelSerializer):
     type_total = serializers.IntegerField()
 
     class Meta:
-        model = Contract
+        model = ProjectCashBook
         fields = ('order_group', 'unit_type', 'type_total')
 
 

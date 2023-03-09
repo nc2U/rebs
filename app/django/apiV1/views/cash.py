@@ -180,10 +180,18 @@ class AllPaymentViewSet(PaymentViewSet):
     pagination_class = PageNumberPaginationOneHundred
 
 
+class PaymentSumFilterSet(FilterSet):
+    to_deal_date = DateFilter(field_name='deal_date', lookup_expr='lte', label='납부일자까지')
+
+    class Meta:
+        model = ProjectCashBook
+        fields = ('project', 'to_deal_date')
+
+
 class PaymentSummaryViewSet(viewsets.ModelViewSet):
     serializer_class = PaymentSummarySerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-    filterset_fields = ('project',)
+    filterset_class = PaymentSumFilterSet
 
     def get_queryset(self):
         return ProjectCashBook.objects.filter(contract__activation=True, contract__contractor__status=2) \
