@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import { useProject } from '@/store/pinia/project'
 import { useContract } from '@/store/pinia/contract'
 import { useProjectData } from '@/store/pinia/project_data'
+import { usePayment } from '@/store/pinia/payment'
 import { TableSecondary } from '@/utils/cssMixins'
 import { numFormat, dateFormat } from '@/utils/baseMixins'
 
@@ -19,6 +20,9 @@ const contSum = computed(() => contStore.contSummaryList)
 
 const prDataStore = useProjectData()
 const unitType = computed(() => prDataStore.unitTypeList)
+
+const paymentStore = usePayment()
+const paySumList = computed(() => paymentStore.paySumList)
 
 const getOGName = (og: number) =>
   orderGroup.value.length
@@ -41,6 +45,9 @@ const getUTbyOGNum = (og: number) =>
 const getFirstType = (og: number) =>
   budgetList.value.filter(b => b.order_group === og)[0].unit_type
 
+const paidSum = (og: number, ut: number) =>
+  paySumList.value.filter(s => s.order_group === og && s.unit_type === ut)[0]
+
 const totalBudgetNum = computed(
   () => budgetList.value.map(b => b.quantity).reduce((p, n) => p + n, 0), // 총 계획 세대수
 )
@@ -60,6 +67,10 @@ const totalContSales = computed(() =>
     })
     .reduce((x, y) => x + y, 0),
 ) // 총 계약금액
+
+const totalPaidSum = computed(() =>
+  paySumList.value.map(s => s.type_total).reduce((x, y) => x + y, 0),
+)
 
 const totalBudget = computed(
   () => budgetList.value.map(b => b.budget).reduce((x, y) => x + y, 0), // 총 예산합계
@@ -142,8 +153,14 @@ const totalBudget = computed(
             )
           }}
         </CTableDataCell>
-        <CTableDataCell class="text-warning">
-          {{ numFormat(1 + 1) }}
+        <CTableDataCell>
+          {{
+            numFormat(
+              paidSum(bg.order_group, bg.unit_type)
+                ? paidSum(bg.order_group, bg.unit_type).type_total
+                : 0,
+            )
+          }}
         </CTableDataCell>
         <CTableDataCell>
           {{
@@ -195,11 +212,11 @@ const totalBudget = computed(
         <CTableHeaderCell>
           {{ numFormat(totalContSales) }}
         </CTableHeaderCell>
-        <CTableHeaderCell class="text-warning">
-          {{ numFormat(5000000) }}
+        <CTableHeaderCell>
+          {{ numFormat(totalPaidSum) }}
         </CTableHeaderCell>
         <CTableHeaderCell>
-          {{ numFormat(totalContSales - 5000000) }}
+          {{ numFormat(totalContSales - totalPaidSum) }}
         </CTableHeaderCell>
         <CTableHeaderCell>
           {{ numFormat(totalBudget - totalContSales) }}

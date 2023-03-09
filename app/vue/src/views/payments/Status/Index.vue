@@ -4,6 +4,7 @@ import { navMenu, pageTitle } from '@/views/payments/_menu/headermixin'
 import { useProject } from '@/store/pinia/project'
 import { useContract } from '@/store/pinia/contract'
 import { useProjectData } from '@/store/pinia/project_data'
+import { usePayment } from '@/store/pinia/payment'
 import { dateFormat } from '@/utils/baseMixins'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
@@ -29,17 +30,22 @@ const fetchOrderGroupList = (proj: number) =>
 const fetchContSummaryList = (proj: number) =>
   contStore.fetchContSummaryList(proj)
 
+const paymentStore = usePayment()
+const fetchPaySumList = (proj: number) => paymentStore.fetchPaySumList(proj)
+
 const onSelectAdd = (target: number) => {
   if (!!target) {
     fetchTypeList(target)
     fetchOrderGroupList(target)
     fetchContSummaryList(target)
     fetchIncBudgetList(target)
+    fetchPaySumList(target)
   } else {
     prDataStore.unitTypeList = []
     contStore.orderGroupList = []
     contStore.contSummaryList = []
     projStore.proIncBudgetList = []
+    paymentStore.paySumList = []
   }
 }
 
@@ -50,6 +56,7 @@ onBeforeMount(() => {
   fetchOrderGroupList(project.value)
   fetchContSummaryList(project.value)
   fetchIncBudgetList(project.value)
+  fetchPaySumList(project.value)
 })
 </script>
 
