@@ -22,30 +22,35 @@ const prDataStore = useProjectData()
 const unitType = computed(() => prDataStore.unitTypeList)
 
 // ---------------------------------------------------------------
-const getTotalQua = (og: number, ut: number) => {
-  const unit = budgetList.value.filter(
-    b => b.order_group === og && b.unit_type === ut,
-  )[0]
-  return unit ? unit.quantity : 0
-}
+// const getTotalQua = (og: number, ut: number) => {
+//   const unit = budgetList.value.filter(
+//     b => b.order_group === og && b.unit_type === ut,
+//   )[0]
+//   return unit ? unit.quantity : 0
+// }
+
+const getOGName = (og: number) =>
+  orderGroup.value.filter(o => o.pk === og)[0].order_group_name
+
+const getUTName = (ut: number) => unitType.value.filter(u => u.pk === ut)[0]
 
 const getContNum = (og: number, ut: number) =>
   contSum.value
     .filter(c => c.order_group === og && c.unit_type === ut)
     .map(c => c.num_cont)[0]
 
-const typeRemainNum = (type: number) =>
-  contSum.value
-    ?.filter(c => c.unit_type === type)
-    ?.map(c => c.num_cont)
-    .reduce((pn, cn) => pn + cn, 0)
+// const typeRemainNum = (type: number) =>
+//   contSum.value
+//     ?.filter(c => c.unit_type === type)
+//     ?.map(c => c.num_cont)
+//     .reduce((pn, cn) => pn + cn, 0)
 
-const getUnitPrice = (og: number, ut: number) => {
-  const unit = budgetList.value.filter(
-    b => b.order_group === og && b.unit_type === ut,
-  )[0]
-  return unit ? unit.average_price : 0
-}
+// const getUnitPrice = (og: number, ut: number) => {
+//   const unit = budgetList.value.filter(
+//     b => b.order_group === og && b.unit_type === ut,
+//   )[0]
+//   return unit ? unit.average_price : 0
+// }
 // ---------------------------------------------------------------
 </script>
 
@@ -54,8 +59,8 @@ const getUnitPrice = (og: number, ut: number) => {
     <colgroup>
       <col width="8%" />
       <col width="8%" />
-      <col width="7%" />
       <col width="10%" />
+      <col width="7%" />
       <col width="7%" />
       <col width="12%" />
       <col width="12%" />
@@ -78,10 +83,10 @@ const getUnitPrice = (og: number, ut: number) => {
       </CTableRow>
 
       <CTableRow :color="TableSecondary" class="text-center" align="middle">
-        <CTableHeaderCell rowspan="2">구분</CTableHeaderCell>
+        <CTableHeaderCell rowspan="2">차수</CTableHeaderCell>
         <CTableHeaderCell rowspan="2">타입</CTableHeaderCell>
-        <CTableHeaderCell rowspan="2">계획 세대수</CTableHeaderCell>
         <CTableHeaderCell rowspan="2">단가(평균)</CTableHeaderCell>
+        <CTableHeaderCell rowspan="2">계획 세대수</CTableHeaderCell>
         <CTableHeaderCell colspan="4">계약 현황</CTableHeaderCell>
         <CTableHeaderCell rowspan="2">미계약 금액</CTableHeaderCell>
         <CTableHeaderCell rowspan="2">합계</CTableHeaderCell>
@@ -98,102 +103,47 @@ const getUnitPrice = (og: number, ut: number) => {
     <CTableBody>
       <CTableRow v-for="bg in budgetList" :key="bg.pk" class="text-right">
         <CTableDataCell class="text-center">
-          {{ bg.order_group }}
+          {{ getOGName(bg.order_group) }}
         </CTableDataCell>
         <CTableDataCell class="text-left pl-4">
-          {{ bg.unit_type }}
+          <v-icon
+            icon="mdi mdi-square"
+            :color="getUTName(bg.unit_type).color"
+            size="sm"
+          />
+          {{ getUTName(bg.unit_type).name }}
         </CTableDataCell>
-        <CTableDataCell>{{ numFormat(bg.quantity) }}</CTableDataCell>
         <CTableDataCell>{{ numFormat(bg.average_price) }}</CTableDataCell>
-        <CTableDataCell>-</CTableDataCell>
-        <CTableDataCell>-</CTableDataCell>
-        <CTableDataCell>-</CTableDataCell>
-        <CTableDataCell>-</CTableDataCell>
-        <CTableDataCell>-</CTableDataCell>
+        <CTableDataCell>{{ numFormat(bg.quantity) }}</CTableDataCell>
+        <CTableDataCell>
+          {{ numFormat(getContNum(bg.order_group, bg.unit_type)) }}
+        </CTableDataCell>
+        <CTableDataCell>
+          {{
+            numFormat(
+              bg.average_price * getContNum(bg.order_group, bg.unit_type),
+            )
+          }}
+        </CTableDataCell>
+        <CTableDataCell>{{ numFormat(1 + 1) }}</CTableDataCell>
+        <CTableDataCell>
+          {{
+            numFormat(
+              bg.average_price * getContNum(bg.order_group, bg.unit_type) -
+                (1 + 1),
+            )
+          }}
+        </CTableDataCell>
+        <CTableDataCell>
+          {{
+            numFormat(
+              bg.average_price *
+                (bg.quantity - (getContNum(bg.order_group, bg.unit_type) || 0)),
+            )
+          }}
+        </CTableDataCell>
         <CTableDataCell>{{ numFormat(bg.budget) }}</CTableDataCell>
       </CTableRow>
-      <!--      <template v-if="sort !== '0'">-->
-      <!--        <template v-for="(order, oi) in orderGroup" :key="oi">-->
-      <!--          <CTableRow-->
-      <!--            v-for="(type, ti) in unitType"-->
-      <!--            :key="ti"-->
-      <!--            class="text-right"-->
-      <!--          >-->
-      <!--            <CTableDataCell-->
-      <!--              v-if="ti === 0"-->
-      <!--              class="text-center"-->
-      <!--              :color="TableSecondary"-->
-      <!--              :rowspan="unitType.length"-->
-      <!--            >-->
-      <!--              {{ order.order_group_name }}-->
-      <!--            </CTableDataCell>-->
-      <!--            <CTableDataCell class="text-left pl-4">-->
-      <!--              <v-icon icon="mdi mdi-square" :color="type.color" size="sm" />-->
-      <!--              {{ type.name }}-->
-      <!--            </CTableDataCell>-->
-      <!--            <CTableDataCell>-->
-      <!--              {{ numFormat(getTotalQua(order.pk, type.pk)) }}-->
-      <!--            </CTableDataCell>-->
-      <!--            <CTableDataCell>-->
-      <!--              {{ numFormat(getContNum(order.pk, type.pk)) }}-->
-      <!--            </CTableDataCell>-->
-      <!--            <CTableDataCell>-->
-      <!--              {{ numFormat(getUnitPrice(order.pk, type.pk)) }}-->
-      <!--            </CTableDataCell>-->
-      <!--            <CTableDataCell>-->
-      <!--              {{-->
-      <!--                numFormat(-->
-      <!--                  getTotalQua(order.pk, type.pk) *-->
-      <!--                    getUnitPrice(order.pk, type.pk),-->
-      <!--                )-->
-      <!--              }}-->
-      <!--            </CTableDataCell>-->
-      <!--            <CTableDataCell>-->
-      <!--              {{-->
-      <!--                numFormat(-->
-      <!--                  getContNum(order.pk, type.pk) *-->
-      <!--                    getUnitPrice(order.pk, type.pk) - -->
-      <!--                    getTotalQua(order.pk, type.pk) *-->
-      <!--                      getUnitPrice(order.pk, type.pk) || 0,-->
-      <!--                )-->
-      <!--              }}-->
-      <!--            </CTableDataCell>-->
-      <!--            <CTableDataCell>-->
-      <!--              {{-->
-      <!--                numFormat(-->
-      <!--                  getContNum(order.pk, type.pk) *-->
-      <!--                    getUnitPrice(order.pk, type.pk) || 0,-->
-      <!--                )-->
-      <!--              }}-->
-      <!--            </CTableDataCell>-->
-      <!--          </CTableRow>-->
-      <!--        </template>-->
-      <!--      </template>-->
-
-      <!--      <template v-if="sort !== '1'">-->
-      <!--        <CTableRow v-for="(type, ti) in unitType" :key="ti" class="text-right">-->
-      <!--          <CTableHeaderCell-->
-      <!--            v-if="ti === 0"-->
-      <!--            class="text-center"-->
-      <!--            :color="TableSecondary"-->
-      <!--            :rowspan="unitType.length"-->
-      <!--          >-->
-      <!--            미계약-->
-      <!--          </CTableHeaderCell>-->
-      <!--          <CTableDataCell class="text-left pl-4">-->
-      <!--            <v-icon icon="mdi mdi-square" :color="type.color" size="sm" />-->
-      <!--            {{ type.name }}-->
-      <!--          </CTableDataCell>-->
-      <!--          <CTableDataCell></CTableDataCell>-->
-      <!--          <CTableDataCell>-->
-      <!--            {{ numFormat(type.num_unit - typeRemainNum(type.pk)) }}-->
-      <!--          </CTableDataCell>-->
-      <!--          <CTableDataCell>{{ numFormat(0) }}</CTableDataCell>-->
-      <!--          <CTableDataCell>{{ numFormat(0) }}</CTableDataCell>-->
-      <!--          <CTableDataCell>{{ numFormat(0) }}</CTableDataCell>-->
-      <!--          <CTableDataCell>{{ numFormat(0) }}</CTableDataCell>-->
-      <!--        </CTableRow>-->
-      <!--      </template>-->
     </CTableBody>
 
     <CTableHead>
@@ -201,9 +151,9 @@ const getUnitPrice = (og: number, ut: number) => {
         <CTableHeaderCell colspan="2" class="text-center">
           합계
         </CTableHeaderCell>
+        <CTableHeaderCell></CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(625) }}</CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(625) }}</CTableHeaderCell>
-        <CTableHeaderCell>-</CTableHeaderCell>
         <CTableHeaderCell>-</CTableHeaderCell>
         <CTableHeaderCell>-</CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(44000000000) }}</CTableHeaderCell>
