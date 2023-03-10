@@ -1644,7 +1644,7 @@ class ExportSites(View):
                 if int(col_num) == 5:
                     worksheet.write(row_num, col_num, float(row[col_num - 1]) * 0.3025, bf)
                 elif int(col_num) == 7:
-                    worksheet.write(row_num, col_num, float(row[col_num - 1]) * 0.3025, bf)
+                    worksheet.write(row_num, col_num, float(row[col_num - 2]) * 0.3025, bf)
 
                 if int(col_num) < 5:
                     worksheet.write(row_num, col_num, row[col_num], bf)
