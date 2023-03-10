@@ -978,9 +978,11 @@ class ExportPaymentStatus(View):
 
             if col_num == 0:
                 worksheet.merge_range(row_num, col_num, row_num, col_num + 1, '합계', h_format)
-            elif col_num > 2:
+            else:
                 h_format.set_num_format('#,##0')
-                worksheet.write(row_num, col_num, '', h_format)
+                # sum_format['align'] = 'right'
+                # h_format = workbook.add_format(sum_format)
+                worksheet.write(row_num, col_num, 500, h_format)
 
         # Close the workbook before sending the data.
         workbook.close()
