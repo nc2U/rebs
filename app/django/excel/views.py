@@ -932,7 +932,8 @@ class ExportPaymentStatus(View):
             return len([o for o in rows if o[0] == og])
 
         def get_cont_num(og, ut):
-            return [o for o in cont_num if o.get('order_group') == og and o.get('unit_type') == ut][0].get('num_cont')
+            num = [o for o in cont_num if o.get('order_group') == og and o.get('unit_type') == ut]
+            return num[0].get('num_cont') if num else 0
 
         first_type = unit_type.first()[0]
 
