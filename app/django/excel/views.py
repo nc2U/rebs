@@ -925,8 +925,8 @@ class ExportPaymentStatus(View):
 
         rows = obj_list.values_list(*params)
 
-        def get_value(pk, obj, c):
-            return [o for o in obj if o[0] == pk][0][c]
+        def get_obj_name(pk, obj):
+            return [o for o in obj if o[0] == pk][0][1]
 
         def get_og_num(og):
             return len([o for o in rows if o[0] == og])
@@ -949,18 +949,18 @@ class ExportPaymentStatus(View):
 
                 bformat = workbook.add_format(body_format)
 
-                if col_num == 0 and first_type == get_value(row[1], unit_type, 0):
+                if col_num == 0 and first_type == row[1]:
                     worksheet.merge_range(row_num,
-                                          col_num, row_num + get_og_num(get_value(row[0], order_group, 0)) - 1,
-                                          col_num, get_value(row[0], order_group, 1), bformat)
+                                          col_num, row_num + get_og_num(row[0]) - 1,
+                                          col_num, get_obj_name(row[0], order_group), bformat)
                 elif col_num == 1:
-                    worksheet.write(row_num, col_num, get_value(row[1], unit_type, 1), bformat)
+                    worksheet.write(row_num, col_num, get_obj_name(row[1], unit_type), bformat)
                 elif col_num == 2 or col_num == 3:
                     worksheet.write(row_num, col_num, row[col_num], bformat)
                 elif col_num == 4:
                     worksheet.write(row_num, col_num,
                                     444,
-                                    bformat)
+                                    bformat)  # get_cont_num(row[0], row[1])
                 elif col_num == 5:
                     worksheet.write(row_num, col_num, 555, bformat)
                 elif col_num == 6:
