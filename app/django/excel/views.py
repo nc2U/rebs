@@ -977,7 +977,21 @@ class ExportPaymentStatus(View):
 
             if col_num == 0:
                 worksheet.merge_range(row_num, col_num, row_num, col_num + 1, '합계', h2format)
-            else:
+            elif col_num == 2:
+                worksheet.write(row_num, col_num, None, h2format)
+            elif col_num == 3:
+                worksheet.write(row_num, col_num, 626, h2format)
+            elif col_num == 4:
+                worksheet.write(row_num, col_num, 625, h2format)
+            elif col_num == 5:
+                worksheet.write(row_num, col_num, 500000, h2format)
+            elif col_num == 6:
+                worksheet.write(row_num, col_num, 500000, h2format)
+            elif col_num == 7:
+                worksheet.write(row_num, col_num, 500000, h2format)
+            elif col_num == 8:
+                worksheet.write(row_num, col_num, 500000, h2format)
+            elif col_num == 9:
                 worksheet.write(row_num, col_num, 500000, h2format)
 
         # Close the workbook before sending the data.
