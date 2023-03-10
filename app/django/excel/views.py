@@ -874,8 +874,6 @@ class ExportPaymentStatus(View):
 
         row_num = 3
 
-        area_col1 = (4, 6) if project.is_returned_area else (4,)
-        area_col2 = (5, 7) if project.is_returned_area else (5,)
         for col_num, col in enumerate(titles):
             if int(col_num) == 4:
                 worksheet.write(row_num, col_num, '계약세대수', h_format)
