@@ -955,27 +955,27 @@ class ExportPaymentStatus(View):
                 ut_name = get_obj_name(row[1], unit_type)
 
                 cont_num = get_cont_num(row[0], row[1])
-                cont_sum = cont_num * row[3]
+                cont_sum = cont_num * row[2]
                 paid_sum = 5000000
 
                 if col_num == 0 and first_type == row[1]:
-                    worksheet.merge_range(row_num, col_num, row_num + type_num, col_num, og_name, bformat)
+                    worksheet.merge_range(row_num, col_num, row_num + type_num, col_num, og_name, bformat)  # 차수명
                 elif col_num == 1:
-                    worksheet.write(row_num, col_num, ut_name, bformat)
+                    worksheet.write(row_num, col_num, ut_name, bformat)  # 타입 명
                 elif col_num == 2 or col_num == 3:
-                    worksheet.write(row_num, col_num, row[col_num], bformat)
+                    worksheet.write(row_num, col_num, row[col_num], bformat)  # 단가 - 계획 세대수
                 elif col_num == 4:
-                    worksheet.write(row_num, col_num, cont_num, bformat)
+                    worksheet.write(row_num, col_num, cont_num, bformat)  # 계약 세대수
                 elif col_num == 5:
-                    worksheet.write(row_num, col_num, cont_sum, bformat)
+                    worksheet.write(row_num, col_num, cont_sum, bformat)  # 계약 금액
                 elif col_num == 6:
-                    worksheet.write(row_num, col_num, paid_sum, bformat)
+                    worksheet.write(row_num, col_num, paid_sum, bformat)  # 실수납 금액
                 elif col_num == 7:
-                    worksheet.write(row_num, col_num, cont_sum - paid_sum, bformat)
+                    worksheet.write(row_num, col_num, cont_sum - paid_sum, bformat)  # 미수 금액
                 elif col_num == 8:
-                    worksheet.write(row_num, col_num, row[4] - cont_sum, bformat)
+                    worksheet.write(row_num, col_num, row[4] - cont_sum, bformat)  # 미계약 금액
                 elif col_num == 9:
-                    worksheet.write(row_num, col_num, row[4], bformat)
+                    worksheet.write(row_num, col_num, row[4], bformat)  # 합계
 
         row_num += 1
         worksheet.set_row(row_num, 23)
