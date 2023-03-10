@@ -804,9 +804,6 @@ class ExportPaymentStatus(View):
         # ----------------- get_queryset start ----------------- #
         project = Project.objects.get(pk=request.GET.get('project'))
         date = request.GET.get('date')
-
-        # Get some data to write to the spreadsheet.
-        obj_list = ProjectIncBudget.objects.filter(project=project).order_by('order_group', 'unit_type')
         # ----------------- get_queryset finish ----------------- #
 
         rows_cnt = 9
@@ -907,6 +904,11 @@ class ExportPaymentStatus(View):
         while '' in params:
             params.remove('')
 
+        # ----------------- get_queryset start ----------------- #
+        # Get some data to write to the spreadsheet.
+        obj_list = ProjectIncBudget.objects.filter(project=project).order_by('order_group', 'unit_type')
+        # ----------------- get_queryset finish ----------------- #
+
         rows = obj_list.values_list(*params)
 
         # Write data
@@ -916,10 +918,8 @@ class ExportPaymentStatus(View):
 
             for col_num, title in enumerate(titles):
                 # css 정렬
-                if col_num == 0:
+                if col_num <= 1:
                     body_format['align'] = 'center'
-                elif col_num == 1:
-                    body_format['align'] = 'left'
                 else:
                     body_format['align'] = 'right'
 
