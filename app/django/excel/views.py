@@ -826,12 +826,12 @@ class ExportPaymentStatus(View):
         title_format.set_bold()
         title_format.set_font_size(18)
         title_format.set_align('vcenter')
-        worksheet.merge_range(row_num, 0, row_num, len(data_source) - 1, str(project) + ' 차수 및 타입별 수납 현황', title_format)
+        worksheet.merge_range(row_num, 0, row_num, len(data_source) - 2, str(project) + ' 차수 및 타입별 수납 현황', title_format)
 
         # 2. Pre Header - Date
         row_num = 1
         worksheet.set_row(row_num, 18)
-        worksheet.write(row_num, len(data_source) - 1, date + ' 현재', workbook.add_format({'align': 'right'}))
+        worksheet.write(row_num, len(data_source) - 2, date + ' 현재', workbook.add_format({'align': 'right'}))
 
         # 3. Header
         row_num = 2
@@ -875,13 +875,13 @@ class ExportPaymentStatus(View):
             'border': True,
             'align': 'center',
             'valign': 'vcenter',
-            'num_format': 'yyyy-mm-dd'
+            'num_format': '#,##0'
         }
 
         is_left = []
         # Write header
         for col_num, col in enumerate(titles):
-            if col in ('비고'):
+            if col in '타입':
                 is_left.append(col_num)
 
         # Write header
@@ -890,10 +890,10 @@ class ExportPaymentStatus(View):
             row_num += 1
             # row.insert(0, i + 1)
             for col_num, cell_data in enumerate(row):
-                if col_num == 0:
-                    body_format['num_format'] = '#,##0'
-                else:
-                    body_format['num_format'] = 'yyyy-mm-dd'
+                # if col_num == 0:
+                #     body_format['num_format'] = '#,##0'
+                # else:
+                #     body_format['num_format'] = 'yyyy-mm-dd'
                 if col_num in is_left:
                     if 'align' in body_format:
                         del body_format['align']
