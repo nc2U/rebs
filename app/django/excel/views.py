@@ -845,7 +845,7 @@ class ExportPaymentStatus(View):
                       ['', '', 18],
                       ['', '', 18],
                       ['', '', 18],
-                      ['', '', 18],
+                      ['미계약금액', '', 18],
                       ['합계', 'budget', 18]]
 
         titles = []  # 헤더명
@@ -870,7 +870,7 @@ class ExportPaymentStatus(View):
         cont_col_num = (4, 5, 6, 7)
 
         for col_num, title in enumerate(titles):  # 헤더 줄 제목 세팅
-            if col_num == 4:
+            if int(col_num) == 4:
                 worksheet.merge_range(row_num, col_num, row_num, col_num + 3, title, h_format)
                 # worksheet.merge_range(row_num, col_num, row_num, col_num + 1, titles[col_num], h_format)
             elif int(col_num) not in cont_col_num:
@@ -887,8 +887,6 @@ class ExportPaymentStatus(View):
                 worksheet.write(row_num, col_num, '실수납금액', h_format)
             if int(col_num) == 7:
                 worksheet.write(row_num, col_num, '미수금액', h_format)
-            if int(col_num) == 8:
-                worksheet.write(row_num, col_num, '미계약금액', h_format)
 
         # 4. Body
         # Get some data to write to the spreadsheet.
