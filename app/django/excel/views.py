@@ -932,15 +932,15 @@ class ExportPaymentStatus(View):
                 elif col_num < 4:
                     worksheet.write(row_num, col_num, row[col_num], bformat)
                 elif col_num == 4:
-                    worksheet.write(row_num, col_num, 444, bformat)
+                    worksheet.write(row_num, col_num, title, bformat)
                 elif col_num == 5:
-                    worksheet.write(row_num, col_num, 555, bformat)
+                    worksheet.write(row_num, col_num, title, bformat)
                 elif col_num == 6:
-                    worksheet.write(row_num, col_num, 666, bformat)
+                    worksheet.write(row_num, col_num, title, bformat)
                 elif col_num == 7:
-                    worksheet.write(row_num, col_num, 777, bformat)
+                    worksheet.write(row_num, col_num, title, bformat)
                 elif col_num == 8:
-                    worksheet.write(row_num, col_num, 888, bformat)
+                    worksheet.write(row_num, col_num, title, bformat)
                 else:
                     worksheet.write(row_num, col_num, row[col_num - 5], bformat)
 
