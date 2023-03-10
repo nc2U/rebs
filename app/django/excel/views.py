@@ -923,6 +923,9 @@ class ExportPaymentStatus(View):
 
         rows = obj_list.values_list(*params)
 
+        def get_value(pk, obj, col):
+            return list(filter(lambda o: o[0] == pk, obj))[0][col]
+
         # Write data
         for row in rows:
             row_num += 1
@@ -938,11 +941,9 @@ class ExportPaymentStatus(View):
                 bformat = workbook.add_format(body_format)
 
                 if col_num == 0:
-                    worksheet.write(row_num, col_num, list(filter(lambda o: o[0] == row[col_num], order_group))[0][1],
-                                    bformat)
+                    worksheet.write(row_num, col_num, get_value(row[col_num], order_group, 1), bformat)
                 elif col_num == 1:
-                    worksheet.write(row_num, col_num, list(filter(lambda t: t[0] == row[col_num], unit_type))[0][1],
-                                    bformat)
+                    worksheet.write(row_num, col_num, get_value(row[col_num], unit_type, 1), bformat)
                 elif col_num < 4:
                     worksheet.write(row_num, col_num, row[col_num], bformat)
                 elif col_num == 4:
