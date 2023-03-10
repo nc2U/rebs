@@ -834,9 +834,11 @@ class ExportPaymentStatus(View):
         # h_format.set_bg_color('#eeeeee')
 
         h_format = {
+            'bold': True,
             'border': True,
             'align': 'center',
             'valign': 'vcenter',
+            'bg_color': '#eeeeee',
         }
 
         # Header_contents
@@ -866,31 +868,32 @@ class ExportPaymentStatus(View):
             worksheet.set_column(i, i, col_width)
 
         # Write header
+        h1format = workbook.add_format(h_format)
+
         for col_num, title in enumerate(titles):
-            worksheet.write(row_num, col_num, title, h_format)
+            worksheet.write(row_num, col_num, title, h1format)
 
         # Write header
         cont_col_num = (4, 5, 6, 7)
 
         for col_num, title in enumerate(titles):  # 헤더 줄 제목 세팅
             if int(col_num) == 4:
-                worksheet.merge_range(row_num, col_num, row_num, col_num + 3, title, h_format)
-                # worksheet.merge_range(row_num, col_num, row_num, col_num + 1, titles[col_num], h_format)
+                worksheet.merge_range(row_num, col_num, row_num, col_num + 3, title, h1format)
             elif int(col_num) not in cont_col_num:
-                worksheet.merge_range(row_num, col_num, row_num + 1, col_num, title, h_format)
+                worksheet.merge_range(row_num, col_num, row_num + 1, col_num, title, h1format)
 
         row_num = 3
         worksheet.set_row(row_num, 25)
 
         for col_num, col in enumerate(titles):
             if int(col_num) == 4:
-                worksheet.write(row_num, col_num, '계약세대수', h_format)
+                worksheet.write(row_num, col_num, '계약세대수', h1format)
             if int(col_num) == 5:
-                worksheet.write(row_num, col_num, '계약금액', h_format)
+                worksheet.write(row_num, col_num, '계약금액', h1format)
             if int(col_num) == 6:
-                worksheet.write(row_num, col_num, '실수납금액', h_format)
+                worksheet.write(row_num, col_num, '실수납금액', h1format)
             if int(col_num) == 7:
-                worksheet.write(row_num, col_num, '미수금액', h_format)
+                worksheet.write(row_num, col_num, '미수금액', h1format)
 
         # 4. Body
         # Get some data to write to the spreadsheet.
@@ -977,12 +980,12 @@ class ExportPaymentStatus(View):
                 h_format['align'] = 'right'
                 h_format['num_format'] = '#,##0'
 
-            hformat = workbook.add_format(h_format)
+            h2format = workbook.add_format(h_format)
 
             if col_num == 0:
-                worksheet.merge_range(row_num, col_num, row_num, col_num + 1, '합계', hformat)
+                worksheet.merge_range(row_num, col_num, row_num, col_num + 1, '합계', h2format)
             else:
-                worksheet.write(row_num, col_num, 500000, hformat)
+                worksheet.write(row_num, col_num, 500000, h2format)
 
         # Close the workbook before sending the data.
         workbook.close()
