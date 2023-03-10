@@ -824,14 +824,7 @@ class ExportPaymentStatus(View):
 
         # 3. Header
         row_num = 2
-        worksheet.set_row(row_num, 25)
-
-        # h_format = workbook.add_format()
-        # h_format.set_bold()
-        # h_format.set_border()
-        # h_format.set_align('center')
-        # h_format.set_align('vcenter')
-        # h_format.set_bg_color('#eeeeee')
+        worksheet.set_row(row_num, 23)
 
         h_format = {
             'bold': True,
@@ -883,7 +876,7 @@ class ExportPaymentStatus(View):
                 worksheet.merge_range(row_num, col_num, row_num + 1, col_num, title, h1format)
 
         row_num = 3
-        worksheet.set_row(row_num, 25)
+        worksheet.set_row(row_num, 23)
 
         for col_num, col in enumerate(titles):
             if int(col_num) == 4:
@@ -970,7 +963,7 @@ class ExportPaymentStatus(View):
                     worksheet.write(row_num, col_num, row[col_num - 5], bformat)
 
         row_num += 1
-        worksheet.set_row(row_num, 25)
+        worksheet.set_row(row_num, 23)
 
         for col_num, col in enumerate(titles):
             # css 정렬
