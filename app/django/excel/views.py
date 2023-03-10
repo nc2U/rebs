@@ -1632,9 +1632,6 @@ class ExportSites(View):
             for col_num, cell_data in enumerate(titles):
                 row = list(row)
 
-                # if col_num in (2, 8):
-                #     body_format['num_format'] = 'yyyy-mm-dd'
-
                 if col_num in area_col_num:
                     body_format['align'] = 'right'
                     body_format['num_format'] = '#,##0.00'
@@ -1644,14 +1641,14 @@ class ExportSites(View):
 
                 bf = workbook.add_format(body_format)
 
-                if col_num == 5:
+                if int(col_num) == 5:
                     worksheet.write(row_num, col_num, float(row[col_num - 1]) * 0.3025, bf)
-                elif col_num == 7:
-                    worksheet.write(row_num, col_num, float(row[col_num - 2]) * 0.3025, bf)
+                elif int(col_num) == 7:
+                    worksheet.write(row_num, col_num, float(row[col_num - 1]) * 0.3025, bf)
 
-                if col_num < 5:
+                if int(col_num) < 5:
                     worksheet.write(row_num, col_num, row[col_num], bf)
-                elif col_num < 7:
+                elif int(col_num) < 7:
                     worksheet.write(row_num, col_num, row[col_num - 1], bf)
                 else:
                     worksheet.write(row_num, col_num, row[col_num - 2], bf)
