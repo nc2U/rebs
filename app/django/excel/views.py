@@ -798,26 +798,26 @@ class ExportPaymentStatus(View):
 
         worksheet.set_default_row(20)
 
-        ##### ----------------- get_queryset start ----------------- #####
+        # ----------------- get_queryset start ----------------- #
         project = Project.objects.get(pk=request.GET.get('project'))
         date = request.GET.get('date')
 
         # Get some data to write to the spreadsheet.
         obj_list = ProjectIncBudget.objects.filter(project=project).order_by('order_group', 'unit_type')
-        ##### ----------------- get_queryset finish ----------------- #####
+        # ----------------- get_queryset finish ----------------- #
 
         # title_list
         data_source = [[],
-                       ['차수', 'order_group', 10],
-                       ['타입', 'unit_type', 10],
-                       ['단가(평균)', 'average_price', 7],
-                       ['계획세대수', 'quantity', 10],
-                       ['계약세대수', 'quantity', 10],
-                       ['계약금액', 'quantity', 12],
-                       ['실수납 금액', 'quantity', 14],
-                       ['미수 금액', 'quantity', 14],
-                       ['미계약 금액', 'quantity', 14],
-                       ['합계', 'budget', 45]]
+                       ['차수', 'order_group', 13],
+                       ['타입', 'unit_type', 13],
+                       ['단가(평균)', 'average_price', 15],
+                       ['계획세대수', 'quantity', 11],
+                       ['계약세대수', None, 11],
+                       ['계약금액', None, 18],
+                       ['실수납 금액', 'quantity', 18],
+                       ['미수 금액', 'quantity', 18],
+                       ['미계약 금액', 'quantity', 18],
+                       ['합계', 'budget', 18]]
 
         # 1. Title
         row_num = 0
@@ -888,7 +888,7 @@ class ExportPaymentStatus(View):
         for i, row in enumerate(obj_list):
             row = list(row)
             row_num += 1
-            row.insert(0, i + 1)
+            # row.insert(0, i + 1)
             for col_num, cell_data in enumerate(row):
                 if col_num == 0:
                     body_format['num_format'] = '#,##0'
