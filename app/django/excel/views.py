@@ -958,9 +958,7 @@ class ExportPaymentStatus(View):
                 elif col_num == 2 or col_num == 3:
                     worksheet.write(row_num, col_num, row[col_num], bformat)
                 elif col_num == 4:
-                    worksheet.write(row_num, col_num,
-                                    444,
-                                    bformat)  # get_cont_num(row[0], row[1])
+                    worksheet.write(row_num, col_num, get_cont_num(row[0], row[1]), bformat)
                 elif col_num == 5:
                     worksheet.write(row_num, col_num, 555, bformat)
                 elif col_num == 6:
