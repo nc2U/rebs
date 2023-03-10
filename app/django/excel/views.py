@@ -863,18 +863,18 @@ class ExportPaymentStatus(View):
             worksheet.set_column(i, i, col_width)
 
         # Write header
-        for col_num, col in enumerate(titles):
-            worksheet.write(row_num, col_num, titles[col_num], h_format)
+        for col_num, title in enumerate(titles):
+            worksheet.write(row_num, col_num, title, h_format)
 
         # Write header
-        cont_col_num = (4, 5, 6, 7, 8)
+        cont_col_num = (4, 5, 6, 7)
 
         for col_num, col in enumerate(titles):  # 헤더 줄 제목 세팅
             if col_num == 4:
-                worksheet.merge_range('E3:I3', titles[col_num], h_format)
+                worksheet.merge_range(row_num, col_num, row_num, col_num + 3, title, h_format)
                 # worksheet.merge_range(row_num, col_num, row_num, col_num + 1, titles[col_num], h_format)
             elif int(col_num) not in cont_col_num:
-                worksheet.merge_range(row_num, col_num, row_num + 1, col_num, titles[col_num], h_format)
+                worksheet.merge_range(row_num, col_num, row_num + 1, col_num, title, h_format)
 
         row_num = 3
 
