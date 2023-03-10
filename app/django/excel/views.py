@@ -944,6 +944,10 @@ class ExportPaymentStatus(View):
             num = [o for o in cont_num_list if o.get('order_group') == og and o.get('unit_type') == ut]
             return num[0].get('num_cont') if num else 0
 
+        def get_paid_sum(og, ut):
+            sum = [o for o in paid_sum_list if o.get('order_group') == og and o.get('unit_type') == ut]
+            return sum[0].get('paid_sum') if sum else 0
+
         first_type = unit_type.first()[0]
 
         # Write data
@@ -965,7 +969,7 @@ class ExportPaymentStatus(View):
 
                 cont_num = get_cont_num(row[0], row[1])
                 cont_sum = cont_num * row[2]
-                paid_sum = 5000000
+                paid_sum = get_paid_sum(row[0], row[1])
 
                 if col_num == 0 and first_type == row[1]:
                     worksheet.merge_range(row_num, col_num, row_num + type_num, col_num, og_name, bformat)  # 차수명
