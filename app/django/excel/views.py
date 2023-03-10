@@ -941,9 +941,9 @@ class ExportPaymentStatus(View):
 
                 # if col_num == 0 and row[1] == get_value(row[col_num], unit_type, 0):
                 if col_num == 0:
-                    # worksheet.write(row_num, col_num, get_value(row[col_num], order_group, 1), bformat)
-                    worksheet.merge_range(row_num, col_num, row_num, col_num,
-                                          f'{row[1]} - {get_value(row[col_num], order_group, 0)}', bformat)
+                    worksheet.write(row_num, col_num, get_value(row[col_num], order_group, 1), bformat)
+                    # worksheet.merge_range(row_num, col_num, row_num, col_num,
+                    #                       f'{row[1]} - {get_value(row[col_num], order_group, 0)}', bformat)
                 elif col_num == 1:
                     worksheet.write(row_num, col_num, get_value(row[col_num], unit_type, 1), bformat)
                 elif col_num == 2 or col_num == 3:
