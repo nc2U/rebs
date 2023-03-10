@@ -943,7 +943,7 @@ class ExportPaymentStatus(View):
                 bformat = workbook.add_format(body_format)
 
                 if col_num == 0 and first_type == get_value(row[col_num + 1], unit_type, 0):
-                    worksheet.merge_range(row_num, col_num, row_num, col_num,
+                    worksheet.merge_range(row_num, col_num, row_num + 2, col_num,
                                           get_value(row[col_num], order_group, 1), bformat)
                 elif col_num == 1:
                     worksheet.write(row_num, col_num, get_value(row[col_num], unit_type, 1), bformat)
