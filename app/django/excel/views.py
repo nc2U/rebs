@@ -914,12 +914,21 @@ class ExportPaymentStatus(View):
         unit_type = ut_list.values_list(*ut_params)
 
         cont_num_list = Contract.objects.filter(project=project,
-                                                contractor__status=2,
-                                                contractor__contract_date__lte=date) \
+                                                contractor__contract_date__lte=date,
+                                                activation=True,
+                                                contractor__status=2) \
             .values('order_group', 'unit_type') \
             .annotate(num_cont=Count('order_group'))
 
-        paid_sum_list = [5]
+        paid_sum_list = ProjectCashBook.objects.filter(project=project,
+                                                       deal_date__lte=date,
+                                                       contract__activation=True,
+                                                       contract__contractor__status=2) \
+            .order_by('contract__order_group', 'contract__unit_type') \
+            .annotate(order_group=F('contract__order_group')) \
+            .annotate(unit_type=F('contract__unit_type')) \
+            .values('order_group', 'unit_type') \
+            .annotate(paid_sum=Sum('income'))
 
         # ----------------- get_queryset finish ----------------- #
 
