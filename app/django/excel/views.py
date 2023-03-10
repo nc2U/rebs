@@ -920,7 +920,21 @@ class ExportPaymentStatus(View):
                 else:
                     body_format['align'] = 'right'
                 bformat = workbook.add_format(body_format)
-                worksheet.write(row_num, col_num, cell_data, bformat)
+
+                if int(col_num) < 4:
+                    worksheet.write(row_num, col_num, cell_data, bformat)
+                elif int(col_num) == 4:
+                    worksheet.write(row_num, col_num, 1, bformat)
+                elif int(col_num) == 5:
+                    worksheet.write(row_num, col_num, 2, bformat)
+                elif int(col_num) == 6:
+                    worksheet.write(row_num, col_num, 3, bformat)
+                elif int(col_num) == 7:
+                    worksheet.write(row_num, col_num, 4, bformat)
+                elif int(col_num) == 8:
+                    worksheet.write(row_num, col_num, 5, bformat)
+                else:
+                    worksheet.write(row_num, col_num, cell_data, bformat)
 
         # Close the workbook before sending the data.
         workbook.close()
