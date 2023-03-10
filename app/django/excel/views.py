@@ -921,20 +921,22 @@ class ExportPaymentStatus(View):
                     body_format['align'] = 'right'
                 bformat = workbook.add_format(body_format)
 
-                if int(col_num) < 4:
-                    worksheet.write(row_num, col_num, cell_data, bformat)
-                elif int(col_num) == 4:
-                    worksheet.write(row_num, col_num, 1, bformat)
-                elif int(col_num) == 5:
-                    worksheet.write(row_num, col_num, 2, bformat)
-                elif int(col_num) == 6:
-                    worksheet.write(row_num, col_num, 3, bformat)
-                elif int(col_num) == 7:
-                    worksheet.write(row_num, col_num, 4, bformat)
-                elif int(col_num) == 8:
-                    worksheet.write(row_num, col_num, 5, bformat)
-                else:
-                    worksheet.write(row_num, col_num, cell_data, bformat)
+                worksheet.write(row_num, col_num, cell_data, bformat)
+
+                # if int(col_num) < 4:
+                #     worksheet.write(row_num, col_num, cell_data, bformat)
+                # elif int(col_num) == 4:
+                #     worksheet.write(row_num, col_num, 1, bformat)
+                # elif int(col_num) == 5:
+                #     worksheet.write(row_num, col_num, 2, bformat)
+                # elif int(col_num) == 6:
+                #     worksheet.write(row_num, col_num, 3, bformat)
+                # elif int(col_num) == 7:
+                #     worksheet.write(row_num, col_num, 4, bformat)
+                # elif int(col_num) == 8:
+                #     worksheet.write(row_num, col_num, 5, bformat)
+                # else:
+                #     worksheet.write(row_num, col_num, cell_data, bformat)
 
         # Close the workbook before sending the data.
         workbook.close()
@@ -1654,13 +1656,6 @@ class ExportSites(View):
                     body_format['num_format'] = '#,##0'
 
                 bf = workbook.add_format(body_format)
-
-                # if int(col_num) == 5:
-                #     # worksheet.write(row_num, col_num, float(row[col_num - 1]) * 0.3025, bf)
-                #     worksheet.write(row_num, col_num, 500, bf)
-                # elif int(col_num) == 7:
-                #     # worksheet.write(row_num, col_num, float(row[col_num - 2]) * 0.3025, bf)
-                #     worksheet.write(row_num, col_num, 700, bf)
 
                 if int(col_num) < 5:
                     worksheet.write(row_num, col_num, row[col_num], bf)
