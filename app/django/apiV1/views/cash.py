@@ -199,7 +199,7 @@ class PaymentSummaryViewSet(viewsets.ModelViewSet):
             .annotate(order_group=F('contract__order_group')) \
             .annotate(unit_type=F('contract__unit_type')) \
             .values('order_group', 'unit_type') \
-            .annotate(type_total=Sum('income'))
+            .annotate(paid_sum=Sum('income'))
 
 
 class ContNumByTypeViewSet(viewsets.ModelViewSet):
