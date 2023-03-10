@@ -916,7 +916,7 @@ class ExportPaymentStatus(View):
             row_num += 1
             row = list(row)
 
-            for col_num, cell_data in enumerate(titles):
+            for col_num, title in enumerate(titles):
                 # css 정렬
                 if col_num == 0:
                     body_format['align'] = 'center'
@@ -928,7 +928,7 @@ class ExportPaymentStatus(View):
                 bformat = workbook.add_format(body_format)
 
                 if col_num < 4:
-                    worksheet.write(row_num, col_num, cell_data, bformat)
+                    worksheet.write(row_num, col_num, row[col_num], bformat)
                 elif col_num == 4:
                     worksheet.write(row_num, col_num, 444, bformat)
                 elif col_num == 5:
@@ -940,7 +940,7 @@ class ExportPaymentStatus(View):
                 elif col_num == 8:
                     worksheet.write(row_num, col_num, 888, bformat)
                 else:
-                    worksheet.write(row_num, col_num, cell_data, bformat)
+                    worksheet.write(row_num, col_num, row[col_num], bformat)
 
         # Close the workbook before sending the data.
         workbook.close()
@@ -1651,7 +1651,7 @@ class ExportSites(View):
             row_num += 1
             row = list(row)
 
-            for col_num, cell_data in enumerate(titles):
+            for col_num, title in enumerate(titles):
                 # css 정렬
                 if col_num in area_col_num:
                     body_format['align'] = 'right'
