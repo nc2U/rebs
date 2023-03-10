@@ -929,7 +929,6 @@ class ExportPaymentStatus(View):
         # Write data
         for row in rows:
             row_num += 1
-            row = list(row)
 
             for col_num, title in enumerate(titles):
                 # css 정렬
