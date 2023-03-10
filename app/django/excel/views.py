@@ -214,7 +214,8 @@ class ExportContracts(View):
 class ExportApplicants(View):
     """청약자 리스트"""
 
-    def get(self, request):
+    @staticmethod
+    def get(request):
 
         # Create an in-memory output file for the new workbook.
         output = io.BytesIO()
@@ -356,7 +357,8 @@ class ExportApplicants(View):
 class ExportReleases(View):
     """해지자 리스트"""
 
-    def get(self, request):
+    @staticmethod
+    def get(request):
 
         # Create an in-memory output file for the new workbook.
         output = io.BytesIO()
@@ -499,7 +501,8 @@ class ExportReleases(View):
 class ExportUnitStatus(View):
     """동호수 현황표"""
 
-    def get(self, request):
+    @staticmethod
+    def get(request):
         # Create an in-memory output file for the new workbook.
         output = io.BytesIO()
 
@@ -839,7 +842,7 @@ class ExportPaymentStatus(View):
                       ['단가(평균)', 'average_price', 15],
                       ['계획세대수', 'quantity', 11],
                       ['계약 현황', 'quantity', 11],
-                      ['', '', 18],
+                      ['', 'quantity', 18],
                       ['', 'quantity', 18],
                       ['', 'quantity', 18],
                       ['', 'quantity', 18],
@@ -934,7 +937,8 @@ class ExportPaymentStatus(View):
 class ExportProjectBalance(View):
     """프로젝트 계좌별 잔고 내역"""
 
-    def get(self, request):
+    @staticmethod
+    def get(request):
         # Create an in-memory output file for the new workbook.
         output = io.BytesIO()
 
@@ -1072,7 +1076,8 @@ class ExportProjectBalance(View):
 class ExportProjectDateCashbook(View):
     """프로젝트 일별 입출금 내역"""
 
-    def get(self, request):
+    @staticmethod
+    def get(request):
         # Create an in-memory output file for the new workbook.
         output = io.BytesIO()
 
@@ -1191,7 +1196,8 @@ class ExportProjectDateCashbook(View):
 class ExportBudgetExecutionStatus(View):
     """프로젝트 예산대비 현황"""
 
-    def get(self, request):
+    @staticmethod
+    def get(request):
         # Create an in-memory output file for the new workbook.
         output = io.BytesIO()
 
@@ -1994,7 +2000,8 @@ class ExportSitesContracts(View):
 class ExportBalanceByAcc(View):
     """본사 계좌별 잔고 내역"""
 
-    def get(self, request):
+    @staticmethod
+    def get(request):
         # Create an in-memory output file for the new workbook.
         output = io.BytesIO()
 
@@ -2132,7 +2139,8 @@ class ExportBalanceByAcc(View):
 class ExportDateCashbook(View):
     """본사 일별 입출금 내역"""
 
-    def get(self, request):
+    @staticmethod
+    def get(request):
         # Create an in-memory output file for the new workbook.
         output = io.BytesIO()
 
@@ -2444,7 +2452,8 @@ def export_cashbook_xls(request):
 class ExportExamples(View):
     """Examples"""
 
-    def get(self, request):
+    @staticmethod
+    def get(request):
         # Create an in-memory output file for the new workbook.
         output = io.BytesIO()
 
