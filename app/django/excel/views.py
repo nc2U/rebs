@@ -913,13 +913,13 @@ class ExportPaymentStatus(View):
         ut_params = ['pk', 'name', 'color']
         unit_type = ut_list.values_list(*ut_params)
 
-        cont_num = Contract.objects.filter(project=project,
-                                           contractor__status=2,
-                                           contractor__contract_date__lte=date) \
+        cont_num_list = Contract.objects.filter(project=project,
+                                                contractor__status=2,
+                                                contractor__contract_date__lte=date) \
             .values('order_group', 'unit_type') \
             .annotate(num_cont=Count('order_group'))
 
-        paid_sum = 5
+        paid_sum_list = [5]
 
         # ----------------- get_queryset finish ----------------- #
 
@@ -932,7 +932,7 @@ class ExportPaymentStatus(View):
             return len([o for o in rows if o[0] == og])
 
         def get_cont_num(og, ut):
-            num = [o for o in cont_num if o.get('order_group') == og and o.get('unit_type') == ut]
+            num = [o for o in cont_num_list if o.get('order_group') == og and o.get('unit_type') == ut]
             return num[0].get('num_cont') if num else 0
 
         first_type = unit_type.first()[0]
@@ -950,26 +950,32 @@ class ExportPaymentStatus(View):
 
                 bformat = workbook.add_format(body_format)
 
+                type_num = get_og_num(row[0]) - 1
+                og_name = get_obj_name(row[0], order_group)
+                ut_name = get_obj_name(row[1], unit_type)
+
+                cont_num = get_cont_num(row[0], row[1])
+                cont_sum = cont_num * row[3]
+                paid_sum = 5000000
+
                 if col_num == 0 and first_type == row[1]:
-                    worksheet.merge_range(row_num,
-                                          col_num, row_num + get_og_num(row[0]) - 1,
-                                          col_num, get_obj_name(row[0], order_group), bformat)
+                    worksheet.merge_range(row_num, col_num, row_num + type_num, col_num, og_name, bformat)
                 elif col_num == 1:
-                    worksheet.write(row_num, col_num, get_obj_name(row[1], unit_type), bformat)
+                    worksheet.write(row_num, col_num, ut_name, bformat)
                 elif col_num == 2 or col_num == 3:
                     worksheet.write(row_num, col_num, row[col_num], bformat)
                 elif col_num == 4:
-                    worksheet.write(row_num, col_num, get_cont_num(row[0], row[1]), bformat)
+                    worksheet.write(row_num, col_num, cont_num, bformat)
                 elif col_num == 5:
-                    worksheet.write(row_num, col_num, 555, bformat)
+                    worksheet.write(row_num, col_num, cont_sum, bformat)
                 elif col_num == 6:
-                    worksheet.write(row_num, col_num, 666, bformat)
+                    worksheet.write(row_num, col_num, paid_sum, bformat)
                 elif col_num == 7:
-                    worksheet.write(row_num, col_num, 777, bformat)
+                    worksheet.write(row_num, col_num, cont_sum - paid_sum, bformat)
                 elif col_num == 8:
-                    worksheet.write(row_num, col_num, 888, bformat)
+                    worksheet.write(row_num, col_num, row[4] - cont_sum, bformat)
                 elif col_num == 9:
-                    worksheet.write(row_num, col_num, row[col_num - 5], bformat)
+                    worksheet.write(row_num, col_num, row[4], bformat)
 
         row_num += 1
         worksheet.set_row(row_num, 23)
