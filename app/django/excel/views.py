@@ -997,6 +997,8 @@ class ExportPaymentStatus(View):
 
         total_num = sum([n[3] for n in rows])
         total_cont_num = sum([n.get('num_cont') for n in cont_num_list])
+        total_paid_sum = sum([s.get('paid_sum') for s in paid_sum_list])
+        total_budget = sum([n[4] for n in rows])
 
         for col_num, col in enumerate(titles):
             # css 정렬
@@ -1019,13 +1021,13 @@ class ExportPaymentStatus(View):
             elif col_num == 5:
                 worksheet.write(row_num, col_num, total_cont_sum, h2format)  # 계약 금액 합계
             elif col_num == 6:
-                worksheet.write(row_num, col_num, None, h2format)  # 실수납 금액 합계
+                worksheet.write(row_num, col_num, total_paid_sum, h2format)  # 실수납 금액 합계
             elif col_num == 7:
-                worksheet.write(row_num, col_num, None, h2format)  # 미수 금액 합계
+                worksheet.write(row_num, col_num, total_cont_sum - total_paid_sum, h2format)  # 미수 금액 합계
             elif col_num == 8:
-                worksheet.write(row_num, col_num, None, h2format)  # 미계약 금액 합계
+                worksheet.write(row_num, col_num, total_budget - total_cont_sum, h2format)  # 미계약 금액 합계
             elif col_num == 9:
-                worksheet.write(row_num, col_num, None, h2format)  # 예산 합계
+                worksheet.write(row_num, col_num, total_budget, h2format)  # 예산 합계
 
         # Close the workbook before sending the data.
         workbook.close()
