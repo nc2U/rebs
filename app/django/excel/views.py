@@ -812,11 +812,11 @@ class ExportPaymentStatus(View):
                        ['타입', 'unit_type', 13],
                        ['단가(평균)', 'average_price', 15],
                        ['계획세대수', 'quantity', 11],
-                       ['계약세대수', 'quantity', 11],
-                       ['계약금액', 'quantity', 18],
-                       ['실수납 금액', 'quantity', 18],
-                       ['미수 금액', 'quantity', 18],
-                       ['미계약 금액', 'quantity', 18],
+                       ['계약 현황', 'quantity', 11],
+                       ['', '', 18],
+                       ['', '', 18],
+                       ['', '', 18],
+                       ['', '', 18],
                        ['합계', 'budget', 18]]
 
         # 1. Title
@@ -861,6 +861,31 @@ class ExportPaymentStatus(View):
         # Write header
         for col_num, col in enumerate(titles):
             worksheet.write(row_num, col_num, titles[col_num], h_format)
+
+        # Write header
+        cont_col_num = (4, 5, 6, 7, 8)
+
+        for col_num, col in enumerate(titles):  # 헤더 줄 제목 세팅
+            if col == 4:
+                worksheet.merge_range(row_num, col_num, row_num, col_num + 4, titles[col_num], h_format)
+            elif int(col_num) not in cont_col_num:
+                worksheet.merge_range(row_num, col_num, row_num + 1, col_num, titles[col_num], h_format)
+
+        row_num = 3
+
+        area_col1 = (4, 6) if project.is_returned_area else (4,)
+        area_col2 = (5, 7) if project.is_returned_area else (5,)
+        for col_num, col in enumerate(titles):
+            if int(col_num) == 4:
+                worksheet.write(row_num, col_num, '계약세대수', h_format)
+            if int(col_num) == 5:
+                worksheet.write(row_num, col_num, '계약금액', h_format)
+            if int(col_num) == 6:
+                worksheet.write(row_num, col_num, '실수납금액', h_format)
+            if int(col_num) == 7:
+                worksheet.write(row_num, col_num, '미수금액', h_format)
+            if int(col_num) == 8:
+                worksheet.write(row_num, col_num, '미계약금액', h_format)
 
         # 4. Body
         obj_list = obj_list.values_list(*params)
