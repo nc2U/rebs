@@ -1613,17 +1613,17 @@ class ExportSites(View):
         # Write header
         area_col_num = (4, 5, 6, 7) if project.is_returned_area else (4, 5)
 
-        for col_num, col in enumerate(titles):  # 헤더 줄 제목 세팅
-            if '면적' in col:
-                worksheet.merge_range(row_num, col_num, row_num, col_num + 1, titles[col_num], header_format)
+        for col_num, title in enumerate(titles):  # 헤더 줄 제목 세팅
+            if '면적' in title:
+                worksheet.merge_range(row_num, col_num, row_num, col_num + 1, title, header_format)
             elif int(col_num) not in area_col_num:
-                worksheet.merge_range(row_num, col_num, row_num + 1, col_num, titles[col_num], header_format)
+                worksheet.merge_range(row_num, col_num, row_num + 1, col_num, title, header_format)
 
         row_num = 3
 
         area_col1 = (4, 6) if project.is_returned_area else (4,)
         area_col2 = (5, 7) if project.is_returned_area else (5,)
-        for col_num, col in enumerate(titles):
+        for col_num, title in enumerate(titles):
             if int(col_num) in area_col1:
                 worksheet.write(row_num, col_num, '㎡', header_format)
             elif int(col_num) in area_col2:
