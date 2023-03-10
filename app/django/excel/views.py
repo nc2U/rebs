@@ -949,6 +949,7 @@ class ExportPaymentStatus(View):
             return sum[0].get('paid_sum') if sum else 0
 
         first_type = unit_type.first()[0]
+        total_cont_sum = 0  # 계약 금액 총 합계
 
         # Write data
         for row in rows:
@@ -980,6 +981,7 @@ class ExportPaymentStatus(View):
                 elif col_num == 4:
                     worksheet.write(row_num, col_num, cont_num, bformat)  # 계약 세대수
                 elif col_num == 5:
+                    total_cont_sum += cont_sum
                     worksheet.write(row_num, col_num, cont_sum, bformat)  # 계약 금액
                 elif col_num == 6:
                     worksheet.write(row_num, col_num, paid_sum, bformat)  # 실수납 금액
@@ -992,6 +994,9 @@ class ExportPaymentStatus(View):
 
         row_num += 1
         worksheet.set_row(row_num, 23)
+
+        total_num = sum([n[3] for n in rows])
+        total_cont_num = sum([n.get('num_cont') for n in cont_num_list])
 
         for col_num, col in enumerate(titles):
             # css 정렬
@@ -1008,11 +1013,11 @@ class ExportPaymentStatus(View):
             elif col_num == 2:
                 worksheet.write(row_num, col_num, None, h2format)
             elif col_num == 3:
-                worksheet.write(row_num, col_num, sum([n[3] for n in rows]), h2format)  # 계획 세대수 합계
+                worksheet.write(row_num, col_num, total_num, h2format)  # 계획 세대수 합계
             elif col_num == 4:
-                worksheet.write(row_num, col_num, None, h2format)  # 계약 세대수 합계
+                worksheet.write(row_num, col_num, total_cont_num, h2format)  # 계약 세대수 합계
             elif col_num == 5:
-                worksheet.write(row_num, col_num, None, h2format)  # 계약 금액 합계
+                worksheet.write(row_num, col_num, total_cont_sum, h2format)  # 계약 금액 합계
             elif col_num == 6:
                 worksheet.write(row_num, col_num, None, h2format)  # 실수납 금액 합계
             elif col_num == 7:
