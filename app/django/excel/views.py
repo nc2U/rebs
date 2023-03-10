@@ -867,13 +867,13 @@ class ExportPaymentStatus(View):
 
         b_format = workbook.add_format()
         b_format.set_border()
-        b_format.set_align('center')
+        b_format.set_align('right')
         b_format.set_align('vcenter')
-        b_format.set_num_format('yyyy-mm-dd')
+        b_format.set_num_format('#,##0')
 
         body_format = {
             'border': True,
-            'align': 'center',
+            'align': 'right',
             'valign': 'vcenter',
             'num_format': '#,##0'
         }
