@@ -924,7 +924,10 @@ class ExportPaymentStatus(View):
         rows = obj_list.values_list(*params)
 
         def get_value(pk, obj, col):
-            return list(filter(lambda o: o[0] == pk, obj))[0][col]
+            # return list(filter(lambda o: o[0] == pk, obj))[0][col]
+            return [o for o in obj if o[0] == pk][0][col]
+
+        first_type = unit_type.first()[0]
 
         # Write data
         for row in rows:
@@ -939,10 +942,8 @@ class ExportPaymentStatus(View):
 
                 bformat = workbook.add_format(body_format)
 
-                # if col_num == 0 and row[1] == get_value(row[col_num], unit_type, 0):
-                if col_num == 0:
-                    worksheet.write(row_num, col_num, f'{row[1]} - {get_value(row[col_num + 1], unit_type, 0)}',
-                                    bformat)
+                if col_num == 0 and first_type == get_value(row[col_num + 1], unit_type, 0):
+                    worksheet.write(row_num, col_num, get_value(row[col_num + 1], order_group, 1), bformat)
                     # worksheet.merge_range(row_num, col_num, row_num, col_num,
                     #                       f'{row[1]} - {get_value(row[col_num], order_group, 0)}', bformat)
                 elif col_num == 1:
