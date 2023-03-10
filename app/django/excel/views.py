@@ -806,18 +806,7 @@ class ExportPaymentStatus(View):
         obj_list = ProjectIncBudget.objects.filter(project=project).order_by('order_group', 'unit_type')
         # ----------------- get_queryset finish ----------------- #
 
-        # title_list
-        data_source = [[],
-                       ['차수', 'order_group', 13],
-                       ['타입', 'unit_type', 13],
-                       ['단가(평균)', 'average_price', 15],
-                       ['계획세대수', 'quantity', 11],
-                       ['계약 현황', 'quantity', 11],
-                       ['', '', 18],
-                       ['', '', 18],
-                       ['', '', 18],
-                       ['', '', 18],
-                       ['합계', 'budget', 18]]
+        rows_cnt = 9
 
         # 1. Title
         row_num = 0
@@ -826,26 +815,16 @@ class ExportPaymentStatus(View):
         title_format.set_bold()
         title_format.set_font_size(18)
         title_format.set_align('vcenter')
-        worksheet.merge_range(row_num, 0, row_num, len(data_source) - 2, str(project) + ' 차수 및 타입별 수납 현황', title_format)
+        worksheet.merge_range(row_num, 0, row_num, rows_cnt, str(project) + ' 차수 및 타입별 수납 현황', title_format)
 
         # 2. Pre Header - Date
         row_num = 1
         worksheet.set_row(row_num, 18)
-        worksheet.write(row_num, len(data_source) - 2, date + ' 현재', workbook.add_format({'align': 'right'}))
+        worksheet.write(row_num, rows_cnt, date + ' 현재', workbook.add_format({'align': 'right'}))
 
         # 3. Header
         row_num = 2
         worksheet.set_row(row_num, 25, workbook.add_format({'bold': True}))
-
-        titles = []  # header titles
-        params = []  # ORM 추출 field
-        widths = []  # No. 컬럼 넓이
-
-        for ds in data_source:
-            if ds:
-                titles.append(ds[0])
-                params.append(ds[1])
-                widths.append(ds[2])
 
         h_format = workbook.add_format()
         h_format.set_bold()
@@ -854,8 +833,30 @@ class ExportPaymentStatus(View):
         h_format.set_align('vcenter')
         h_format.set_bg_color('#eeeeee')
 
+        # Header_contents
+        header_src = [['차수', 'order_group', 13],
+                      ['타입', 'unit_type', 13],
+                      ['단가(평균)', 'average_price', 15],
+                      ['계획세대수', 'quantity', 11],
+                      ['계약 현황', 'quantity', 11],
+                      ['', 'quantity', 18],
+                      ['', 'quantity', 18],
+                      ['', 'quantity', 18],
+                      ['', 'quantity', 18],
+                      ['합계', 'budget', 18]]
+
+        titles = []  # 헤더명
+        params = []  # 헤더 컬럼(db)
+        widths = []  # 헤더 넓이
+
+        for ds in header_src:
+            if ds:
+                titles.append(ds[0])
+                params.append(ds[1])
+                widths.append(ds[2])
+
         # Adjust the column width.
-        for i, col_width in enumerate(widths):
+        for i, col_width in enumerate(widths):  # 각 컬럼 넓이 세팅
             worksheet.set_column(i, i, col_width)
 
         # Write header
