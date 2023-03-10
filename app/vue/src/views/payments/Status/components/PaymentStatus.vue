@@ -72,7 +72,7 @@ const totalContSum = computed(() =>
 
 const totalPaidSum = computed(() =>
   budgetList.value.length
-    ? paySumList.value.map(s => s.type_total).reduce((x, y) => x + y, 0)
+    ? paySumList.value.map(s => s.paid_sum).reduce((x, y) => x + y, 0)
     : 0,
 ) // 총 실수납 금액
 
@@ -168,7 +168,7 @@ const totalBudget = computed(
           {{
             numFormat(
               paidSum(bg.order_group, bg.unit_type)
-                ? paidSum(bg.order_group, bg.unit_type).type_total
+                ? paidSum(bg.order_group, bg.unit_type).paid_sum
                 : 0,
             )
           }}
@@ -179,7 +179,7 @@ const totalBudget = computed(
             numFormat(
               bg.average_price * getContNum(bg.order_group, bg.unit_type) -
                 (paidSum(bg.order_group, bg.unit_type)
-                  ? paidSum(bg.order_group, bg.unit_type).type_total
+                  ? paidSum(bg.order_group, bg.unit_type).paid_sum
                   : 0),
             )
           }}
