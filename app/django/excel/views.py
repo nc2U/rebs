@@ -17,7 +17,7 @@ from django.views.generic import View
 from company.models import Company
 from project.models import (Project, ProjectIncBudget, Site, SiteOwner, SiteContract,
                             UnitType, KeyUnit, BuildingUnit, HouseUnit, ProjectOutBudget)
-from contract.models import Contract, Contractor, ContractorRelease
+from contract.models import Contract, Contractor, ContractorRelease, OrderGroup
 from cash.models import CashBook, ProjectCashBook
 
 TODAY = datetime.today().strftime('%Y-%m-%d')
@@ -907,6 +907,18 @@ class ExportPaymentStatus(View):
         # ----------------- get_queryset start ----------------- #
         # Get some data to write to the spreadsheet.
         obj_list = ProjectIncBudget.objects.filter(project=project).order_by('order_group', 'unit_type')
+
+        og_list = OrderGroup.objects.filter(project=project)
+        og_params = ['pk', 'order_group_name']
+        order_group = og_list.values_list(*og_params)
+
+        ut_list = UnitType.objects.filter(project=project)
+        ut_params = ['pk', 'name', 'color']
+        unit_type = ut_list.values_list(*ut_params)
+
+        cont_summary = 2
+        pay_sum_list = 5
+
         # ----------------- get_queryset finish ----------------- #
 
         rows = obj_list.values_list(*params)
@@ -926,9 +938,11 @@ class ExportPaymentStatus(View):
                 bformat = workbook.add_format(body_format)
 
                 if col_num == 0:
-                    worksheet.write(row_num, col_num, '1차 조합원', bformat)
+                    worksheet.write(row_num, col_num, list(filter(lambda o: o[0] == row[col_num], order_group))[0][1],
+                                    bformat)
                 elif col_num == 1:
-                    worksheet.write(row_num, col_num, '84A', bformat)
+                    worksheet.write(row_num, col_num, list(filter(lambda t: t[0] == row[col_num], unit_type))[0][1],
+                                    bformat)
                 elif col_num < 4:
                     worksheet.write(row_num, col_num, row[col_num], bformat)
                 elif col_num == 4:
