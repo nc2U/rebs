@@ -1479,7 +1479,8 @@ def export_project_cash_xls(request):
 class ExportSites(View):
     """프로젝트 지번별 토지목록"""
 
-    def get(self, request):
+    @staticmethod
+    def get(request):
         # Create an in-memory output file for the new workbook.
         output = io.BytesIO()
 
@@ -1494,10 +1495,10 @@ class ExportSites(View):
 
         # data start --------------------------------------------- #
 
-        ##### ----------------- get_queryset start ----------------- #####
+        # -------------------- get_queryset start -------------------- #
         project = Project.objects.get(pk=request.GET.get('project'))
         obj_list = Site.objects.filter(project=project).order_by('order')
-        ##### ----------------- get_queryset finish ----------------- #####
+        # -------------------- get_queryset finish -------------------- #
 
         rows_cnt = 7
 
