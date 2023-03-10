@@ -826,12 +826,21 @@ class ExportPaymentStatus(View):
         row_num = 2
         worksheet.set_row(row_num, 25, workbook.add_format({'bold': True}))
 
-        h_format = workbook.add_format()
-        h_format.set_bold()
-        h_format.set_border()
-        h_format.set_align('center')
-        h_format.set_align('vcenter')
-        h_format.set_bg_color('#eeeeee')
+        # h_format = workbook.add_format()
+        # h_format.set_bold()
+        # h_format.set_border()
+        # h_format.set_align('center')
+        # h_format.set_align('vcenter')
+        # h_format.set_bg_color('#eeeeee')
+
+        h_format = {
+            'bold': True,
+            'border': True,
+            'align': 'right',
+            'valign': 'vcenter',
+            'bg_color': '#eeeeee',
+            'num_format': '#,##0'
+        }
 
         # Header_contents
         header_src = [['차수', 'order_group', 13],
@@ -887,12 +896,6 @@ class ExportPaymentStatus(View):
 
         # 4. Body
         # Get some data to write to the spreadsheet.
-
-        b_format = workbook.add_format()
-        b_format.set_border()
-        b_format.set_align('right')
-        b_format.set_align('vcenter')
-        b_format.set_num_format('#,##0')
 
         body_format = {
             'border': True,
@@ -968,19 +971,17 @@ class ExportPaymentStatus(View):
         row_num += 1
 
         for col_num, col in enumerate(titles):
-            # # css 정렬
-            # if col_num <= 1:
-            #     body_format['align'] = 'center'
-            # else:
-            #     body_format['align'] = 'right'
-            #
-            # h_format = workbook.add_format(body_format)
+            # css 정렬
+            if col_num == 0:
+                h_format['align'] = 'center'
+            else:
+                h_format['align'] = 'right'
+
+            h_format = workbook.add_format(h_format)
 
             if col_num == 0:
                 worksheet.merge_range(row_num, col_num, row_num, col_num + 1, '합계', h_format)
             else:
-                h_format.set_num_format('#,##0')
-                h_format.set_align('right')
                 worksheet.write(row_num, col_num, 500000, h_format)
 
         # Close the workbook before sending the data.
