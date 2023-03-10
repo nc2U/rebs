@@ -37,7 +37,7 @@ export interface DownPay {
 export interface PaySumByType {
   order_group: number
   unit_type: number
-  type_total: number
+  paid_sum: number
 }
 
 export interface ContractNum {
