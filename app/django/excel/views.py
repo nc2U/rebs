@@ -839,7 +839,7 @@ class ExportPaymentStatus(View):
                       ['단가(평균)', 'average_price', 15],
                       ['계획세대수', 'quantity', 11],
                       ['계약 현황', 'quantity', 11],
-                      ['', 'quantity', 18],
+                      ['', '', 18],
                       ['', 'quantity', 18],
                       ['', 'quantity', 18],
                       ['', 'quantity', 18],
@@ -868,7 +868,7 @@ class ExportPaymentStatus(View):
 
         for col_num, col in enumerate(titles):  # 헤더 줄 제목 세팅
             if col == 4:
-                worksheet.merge_range(row_num, col_num, row_num, col_num + 4, titles[col_num], h_format)
+                worksheet.merge_range(row_num, col_num, row_num, col_num + 1, titles[col_num], h_format)
             elif int(col_num) not in cont_col_num:
                 worksheet.merge_range(row_num, col_num, row_num + 1, col_num, titles[col_num], h_format)
 
