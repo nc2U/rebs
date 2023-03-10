@@ -965,6 +965,19 @@ class ExportPaymentStatus(View):
                 elif col_num == 9:
                     worksheet.write(row_num, col_num, row[col_num - 5], bformat)
 
+        row_num += 1
+
+        for col_num, col in enumerate(titles):
+            # # css 정렬
+            # if col_num <= 1:
+            #     body_format['align'] = 'center'
+            # else:
+            #     body_format['align'] = 'right'
+            #
+            # h_format = workbook.add_format(body_format)
+
+            worksheet.write(row_num, col_num, '', h_format)
+
         # Close the workbook before sending the data.
         workbook.close()
 
