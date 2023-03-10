@@ -924,8 +924,10 @@ class ExportPaymentStatus(View):
         rows = obj_list.values_list(*params)
 
         def get_value(pk, obj, col):
-            # return list(filter(lambda o: o[0] == pk, obj))[0][col]
             return [o for o in obj if o[0] == pk][0][col]
+
+        def get_og_num(tp):
+            return len([o for o in rows if o[1] == tp])
 
         first_type = unit_type.first()[0]
 
@@ -943,8 +945,9 @@ class ExportPaymentStatus(View):
                 bformat = workbook.add_format(body_format)
 
                 if col_num == 0 and first_type == get_value(row[col_num + 1], unit_type, 0):
-                    worksheet.merge_range(row_num, col_num, row_num + 2, col_num,
-                                          get_value(row[col_num], order_group, 1), bformat)
+                    worksheet.merge_range(row_num,
+                                          col_num, row_num + get_og_num(get_value(row[col_num + 1], unit_type, 0)),
+                                          col_num, get_value(row[col_num], order_group, 1), bformat)
                 elif col_num == 1:
                     worksheet.write(row_num, col_num, get_value(row[col_num], unit_type, 1), bformat)
                 elif col_num == 2 or col_num == 3:
