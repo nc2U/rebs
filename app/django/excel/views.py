@@ -1008,19 +1008,19 @@ class ExportPaymentStatus(View):
             elif col_num == 2:
                 worksheet.write(row_num, col_num, None, h2format)
             elif col_num == 3:
-                worksheet.write(row_num, col_num, 626, h2format)
+                worksheet.write(row_num, col_num, sum([n[3] for n in rows]), h2format)  # 계획 세대수 합계
             elif col_num == 4:
-                worksheet.write(row_num, col_num, 625, h2format)
+                worksheet.write(row_num, col_num, None, h2format)  # 계약 세대수 합계
             elif col_num == 5:
-                worksheet.write(row_num, col_num, 500000, h2format)
+                worksheet.write(row_num, col_num, None, h2format)  # 계약 금액 합계
             elif col_num == 6:
-                worksheet.write(row_num, col_num, 500000, h2format)
+                worksheet.write(row_num, col_num, None, h2format)  # 실수납 금액 합계
             elif col_num == 7:
-                worksheet.write(row_num, col_num, 500000, h2format)
+                worksheet.write(row_num, col_num, None, h2format)  # 미수 금액 합계
             elif col_num == 8:
-                worksheet.write(row_num, col_num, 500000, h2format)
+                worksheet.write(row_num, col_num, None, h2format)  # 미계약 금액 합계
             elif col_num == 9:
-                worksheet.write(row_num, col_num, 500000, h2format)
+                worksheet.write(row_num, col_num, None, h2format)  # 예산 합계
 
         # Close the workbook before sending the data.
         workbook.close()
