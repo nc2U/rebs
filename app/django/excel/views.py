@@ -917,7 +917,6 @@ class ExportPaymentStatus(View):
             row = list(row)
 
             for col_num, cell_data in enumerate(titles):
-
                 # css 정렬
                 if col_num == 0:
                     body_format['align'] = 'center'
@@ -1650,10 +1649,10 @@ class ExportSites(View):
 
         for row in rows:
             row_num += 1
+            row = list(row)
 
             for col_num, cell_data in enumerate(titles):
-                row = list(row)
-
+                # css 정렬
                 if col_num in area_col_num:
                     body_format['align'] = 'right'
                     body_format['num_format'] = '#,##0.00'
