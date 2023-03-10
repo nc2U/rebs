@@ -870,7 +870,7 @@ class ExportPaymentStatus(View):
         cont_col_num = (4, 5, 6, 7, 8)
 
         for col_num, col in enumerate(titles):  # 헤더 줄 제목 세팅
-            if col == 4:
+            if col_num == 4:
                 worksheet.merge_range('E3:I3', titles[col_num], h_format)
                 # worksheet.merge_range(row_num, col_num, row_num, col_num + 1, titles[col_num], h_format)
             elif int(col_num) not in cont_col_num:
