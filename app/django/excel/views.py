@@ -878,28 +878,18 @@ class ExportPaymentStatus(View):
             'num_format': '#,##0'
         }
 
-        is_left = []
-        # Write header
-        for col_num, col in enumerate(titles):
-            if col in '타입':
-                is_left.append(col_num)
-
         # Write header
         for i, row in enumerate(obj_list):
             row = list(row)
             row_num += 1
-            # row.insert(0, i + 1)
             for col_num, cell_data in enumerate(row):
-                # if col_num == 0:
-                #     body_format['num_format'] = '#,##0'
-                # else:
-                #     body_format['num_format'] = 'yyyy-mm-dd'
-                if col_num in is_left:
-                    if 'align' in body_format:
-                        del body_format['align']
+                if col_num == 0:
+                    body_format['align'] = 'center'
+                elif col_num == 1:
+                    body_format['align'] = 'left'
                 else:
                     if 'align' not in body_format:
-                        body_format['align'] = 'center'
+                        body_format['align'] = 'right'
                 bformat = workbook.add_format(body_format)
                 worksheet.write(row_num, col_num, cell_data, bformat)
 
