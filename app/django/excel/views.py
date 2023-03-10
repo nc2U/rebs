@@ -891,9 +891,7 @@ class ExportPaymentStatus(View):
                 worksheet.write(row_num, col_num, '미계약금액', h_format)
 
         # 4. Body
-        while '' in params:
-            params.remove('')
-        obj_list = obj_list.values_list(*params)
+        # Get some data to write to the spreadsheet.
 
         b_format = workbook.add_format()
         b_format.set_border()
@@ -908,11 +906,19 @@ class ExportPaymentStatus(View):
             'num_format': '#,##0'
         }
 
-        # Write header
-        for i, row in enumerate(obj_list):
-            row = list(row)
+        while '' in params:
+            params.remove('')
+
+        rows = obj_list.values_list(*params)
+
+        # Write data
+        for row in rows:
             row_num += 1
-            for col_num, cell_data in enumerate(row):
+            row = list(row)
+
+            for col_num, cell_data in enumerate(titles):
+
+                # css 정렬
                 if col_num == 0:
                     body_format['align'] = 'center'
                 elif col_num == 1:
@@ -1644,6 +1650,7 @@ class ExportSites(View):
 
         for row in rows:
             row_num += 1
+
             for col_num, cell_data in enumerate(titles):
                 row = list(row)
 
