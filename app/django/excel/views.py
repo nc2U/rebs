@@ -1653,7 +1653,7 @@ class ExportSites(View):
                 # elif int(col_num) < 7:
                 #     worksheet.write(row_num, col_num, row[col_num - 1], bf)
                 else:
-                    worksheet.write(row_num, col_num, row[col_num - 2], bf)
+                    worksheet.write(row_num, col_num, row[col_num], bf)
         #################################################################
 
         # data finish -------------------------------------------- #
