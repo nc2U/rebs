@@ -923,8 +923,8 @@ class ExportPaymentStatus(View):
 
         rows = obj_list.values_list(*params)
 
-        def get_value(pk, obj, col):
-            return [o for o in obj if o[0] == pk][0][col]
+        def get_value(pk, obj, c):
+            return [o for o in obj if o[0] == pk][0][c]
 
         def get_og_num(tp):
             return len([o for o in rows if o[1] == tp])
