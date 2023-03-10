@@ -925,7 +925,11 @@ class ExportPaymentStatus(View):
 
                 bformat = workbook.add_format(body_format)
 
-                if col_num < 4:
+                if col_num == 1:
+                    worksheet.write(row_num, col_num, '1차 조합원', bformat)
+                elif col_num == 2:
+                    worksheet.write(row_num, col_num, '84A', bformat)
+                elif col_num == 3:
                     worksheet.write(row_num, col_num, row[col_num], bformat)
                 elif col_num == 4:
                     worksheet.write(row_num, col_num, 444, bformat)
