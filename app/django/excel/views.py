@@ -943,7 +943,7 @@ class ExportPaymentStatus(View):
                     worksheet.write(row_num, col_num, get_value(row[col_num], order_group, 1), bformat)
                 elif col_num == 1:
                     worksheet.write(row_num, col_num, get_value(row[col_num], unit_type, 1), bformat)
-                elif col_num < 4:
+                elif col_num == 2 or col_num == 3:
                     worksheet.write(row_num, col_num, row[col_num], bformat)
                 elif col_num == 4:
                     worksheet.write(row_num, col_num, title, bformat)
