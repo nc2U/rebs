@@ -888,8 +888,7 @@ class ExportPaymentStatus(View):
                 elif col_num == 1:
                     body_format['align'] = 'left'
                 else:
-                    if 'align' not in body_format:
-                        body_format['align'] = 'right'
+                    body_format['align'] = 'right'
                 bformat = workbook.add_format(body_format)
                 worksheet.write(row_num, col_num, cell_data, bformat)
 
