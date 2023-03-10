@@ -841,11 +841,11 @@ class ExportPaymentStatus(View):
                       ['타입', 'unit_type', 13],
                       ['단가(평균)', 'average_price', 15],
                       ['계획세대수', 'quantity', 11],
-                      ['계약 현황', 'quantity', 11],
-                      ['', 'quantity', 18],
-                      ['', 'quantity', 18],
-                      ['', 'quantity', 18],
-                      ['', 'quantity', 18],
+                      ['계약 현황', '', 11],
+                      ['', '', 18],
+                      ['', '', 18],
+                      ['', '', 18],
+                      ['', '', 18],
                       ['합계', 'budget', 18]]
 
         titles = []  # 헤더명
@@ -891,6 +891,8 @@ class ExportPaymentStatus(View):
                 worksheet.write(row_num, col_num, '미계약금액', h_format)
 
         # 4. Body
+        while '' in params:
+            params.remove('')
         obj_list = obj_list.values_list(*params)
 
         b_format = workbook.add_format()
