@@ -940,7 +940,7 @@ class ExportPaymentStatus(View):
                 elif col_num == 8:
                     worksheet.write(row_num, col_num, 888, bformat)
                 else:
-                    worksheet.write(row_num, col_num, row[col_num], bformat)
+                    worksheet.write(row_num, col_num, row[col_num - 5], bformat)
 
         # Close the workbook before sending the data.
         workbook.close()
