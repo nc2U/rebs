@@ -836,10 +836,9 @@ class ExportPaymentStatus(View):
         h_format = {
             'bold': True,
             'border': True,
-            'align': 'right',
+            'align': 'center',
             'valign': 'vcenter',
             'bg_color': '#eeeeee',
-            'num_format': '#,##0'
         }
 
         # Header_contents
@@ -976,13 +975,14 @@ class ExportPaymentStatus(View):
                 h_format['align'] = 'center'
             else:
                 h_format['align'] = 'right'
+                h_format['num_format'] = '#,##0'
 
-            h_format = workbook.add_format(h_format)
+            hformat = workbook.add_format(h_format)
 
             if col_num == 0:
-                worksheet.merge_range(row_num, col_num, row_num, col_num + 1, '합계', h_format)
+                worksheet.merge_range(row_num, col_num, row_num, col_num + 1, '합계', hformat)
             else:
-                worksheet.write(row_num, col_num, 500000, h_format)
+                worksheet.write(row_num, col_num, 500000, hformat)
 
         # Close the workbook before sending the data.
         workbook.close()
