@@ -11,7 +11,7 @@ import xlsxwriter
 import xlwt
 
 from datetime import datetime
-from django.db.models import Q, F, Max, Sum, When, Case
+from django.db.models import Q, F, Max, Sum, Count, When, Case
 from django.views.generic import View
 
 from company.models import Company
@@ -913,8 +913,13 @@ class ExportPaymentStatus(View):
         ut_params = ['pk', 'name', 'color']
         unit_type = ut_list.values_list(*ut_params)
 
-        cont_summary = 2
-        pay_sum_list = 5
+        cont_num = Contract.objects.filter(project=project,
+                                           contractor__status=2,
+                                           contractor__contract_date__lte=date) \
+            .values('order_group', 'unit_type') \
+            .annotate(num_cont=Count('order_group'))
+
+        paid_sum = 5
 
         # ----------------- get_queryset finish ----------------- #
 
@@ -925,6 +930,9 @@ class ExportPaymentStatus(View):
 
         def get_og_num(og):
             return len([o for o in rows if o[0] == og])
+
+        def get_cont_num(og, ut):
+            return [o for o in cont_num if o.get('order_group') == og and o.get('unit_type') == ut][0].get('num_cont')
 
         first_type = unit_type.first()[0]
 
@@ -941,16 +949,17 @@ class ExportPaymentStatus(View):
 
                 bformat = workbook.add_format(body_format)
 
-                if col_num == 0 and first_type == get_value(row[col_num + 1], unit_type, 0):
+                if col_num == 0 and first_type == get_value(row[1], unit_type, 0):
                     worksheet.merge_range(row_num,
-                                          col_num, row_num + get_og_num(get_value(row[col_num], order_group, 0)) - 1,
-                                          col_num, get_value(row[col_num], order_group, 1), bformat)
+                                          col_num, row_num + get_og_num(get_value(row[0], order_group, 0)) - 1,
+                                          col_num, get_value(row[0], order_group, 1), bformat)
                 elif col_num == 1:
-                    worksheet.write(row_num, col_num, get_value(row[col_num], unit_type, 1), bformat)
+                    worksheet.write(row_num, col_num, get_value(row[1], unit_type, 1), bformat)
                 elif col_num == 2 or col_num == 3:
                     worksheet.write(row_num, col_num, row[col_num], bformat)
                 elif col_num == 4:
-                    worksheet.write(row_num, col_num, 444, bformat)
+                    worksheet.write(row_num, col_num, get_cont_num(get_value(row[0], order_group, 0),
+                                                                   get_value(row[1], unit_type, 0)), bformat)
                 elif col_num == 5:
                     worksheet.write(row_num, col_num, 555, bformat)
                 elif col_num == 6:
