@@ -187,6 +187,7 @@ class ExportContracts(View):
 
         for i, row in enumerate(data):
             row_num += 1
+            row = list(row)
             row.insert(0, i + 1)  # 순서 삽입
 
             is_paid = 0
