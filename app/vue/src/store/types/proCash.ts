@@ -80,6 +80,7 @@ export type CashBookFilter = {
   pay_account?: string
   contract?: number
   no_contract?: boolean
+  no_install?: boolean
   ordering?: string
   search?: string
 }
