@@ -194,12 +194,13 @@ class ExportContracts(View):
         for i, row in enumerate(data):
             row_num += 1
             row = list(row)
-            # row.insert(0, i + 1)  # 순서 삽입
+            row[0] = i + 1  # pk 대신 순서 삽입
 
-            paid_data = paid_data.filter(contract=row[0])
-            paid = paid_data.values_list(*paid_params)
-            paid_sum = sum([i[0] for i in paid])
-            row.insert(sum_col, paid_sum)  # 순서 삽입
+            if sum_col:
+                paid_data = paid_data.filter(contract=row[0])
+                paid = paid_data.values_list(*paid_params)
+                paid_sum = sum([i[0] for i in paid])
+                row.insert(sum_col, paid_sum)  # 순서 삽입
 
             for col_num, cell_data in enumerate(row):
 
