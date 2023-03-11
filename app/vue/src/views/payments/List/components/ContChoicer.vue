@@ -112,7 +112,7 @@ const modalAction = () => {
               size="sm"
               @click="contMatching(cont)"
             >
-              {{ `${cont.contractor}(${cont.serial_number})` }}
+              {{ `${cont.contractor.name}(${cont.serial_number})` }}
             </CButton>
           </CCol>
           <CCol v-else class="mt-3 m-2" :class="textClass">
@@ -144,7 +144,7 @@ const modalAction = () => {
     <template #header>건별 수납 매칭</template>
     <template #default>
       해당 수납 항목을 이 계약 건 &lt;{{
-        `${cont.contractor}(${cont.serial_number})`
+        `${cont.contractor.name}(${cont.serial_number})`
       }}&gt; 에 등록하시겠습니까?
     </template>
     <template #footer>
