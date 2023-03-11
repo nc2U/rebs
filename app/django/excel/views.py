@@ -52,49 +52,14 @@ class ExportContracts(View):
         title_format.set_bold()
         worksheet.merge_range(row_num, 0, row_num, len(cols), str(project) + ' 계약자 리스트', title_format)
 
-        # 2. Header
+        # 2. Pre Header - Date
         row_num = 1
         worksheet.set_row(row_num, 18)
         worksheet.write(row_num, len(cols), TODAY + ' 현재', workbook.add_format({'align': 'right'}))
 
         # 3. Header
         row_num = 2
-        worksheet.set_row(row_num, 25, workbook.add_format({'bold': True}))
-
-        # title_list
-        data_source = [[],
-                       ['일련번호', 'serial_number', 10],
-                       ['인가여부', 'contractor__is_registed', 8],
-                       ['차수', 'order_group__order_group_name', 10],
-                       ['타입', 'keyunit__unit_type__name', 7],
-                       ['동', 'keyunit__houseunit__building_unit__name', 7],
-                       ['호수', 'keyunit__houseunit__name', 7],
-                       ['계약자', 'contractor__name', 10],
-                       ['생년월일', 'contractor__birth_date', 12],
-                       ['계약일자', 'contractor__contract_date', 12],
-                       ['납입금액합계', 'contractor__contract_date', 12],
-                       ['연락처[1]', 'contractor__contractorcontact__cell_phone', 14],
-                       ['연락처[2]', 'contractor__contractorcontact__home_phone', 14],
-                       ['연락처[3]', 'contractor__contractorcontact__other_phone', 14],
-                       ['이메일', 'contractor__contractorcontact__email', 15],
-                       ['주소[등본]', 'contractor__contractoraddress__id_zipcode', 7],
-                       ['', 'contractor__contractoraddress__id_address1', 35],
-                       ['', 'contractor__contractoraddress__id_address2', 20],
-                       ['', 'contractor__contractoraddress__id_address3', 40],
-                       ['주소[우편]', 'contractor__contractoraddress__dm_zipcode', 7],
-                       ['', 'contractor__contractoraddress__dm_address1', 35],
-                       ['', 'contractor__contractoraddress__dm_address2', 20],
-                       ['', 'contractor__contractoraddress__dm_address3', 40],
-                       ['비고', 'contractor__note', 45]]
-
-        titles = ['No']
-        params = []
-        widths = [7]
-
-        for i in cols:  # 요청된 컬럼 개수 만큼 반복 (1-2-3... -> i)
-            titles.append(data_source[i][0])  # 일련번호
-            params.append(data_source[i][1])  # serial_number
-            widths.append(data_source[i][2])  # 10
+        worksheet.set_row(row_num, 23, workbook.add_format({'bold': True}))
 
         h_format = workbook.add_format()
         h_format.set_bold()
@@ -102,6 +67,44 @@ class ExportContracts(View):
         h_format.set_align('center')
         h_format.set_align('vcenter')
         h_format.set_bg_color('#eeeeee')
+
+        # title_list
+        header_src = [[],
+                      ['일련번호', 'serial_number', 10],
+                      ['인가여부', 'contractor__is_registed', 8],
+                      ['차수', 'order_group__order_group_name', 10],
+                      ['타입', 'keyunit__unit_type__name', 7],
+                      ['동', 'keyunit__houseunit__building_unit__name', 7],
+                      ['호수', 'keyunit__houseunit__name', 7],
+                      ['계약자', 'contractor__name', 10],
+                      ['생년월일', 'contractor__birth_date', 12],
+                      ['계약일자', 'contractor__contract_date', 12],
+                      ['납입금액합계', '', 12],
+                      ['연락처[1]', 'contractor__contractorcontact__cell_phone', 14],
+                      ['연락처[2]', 'contractor__contractorcontact__home_phone', 14],
+                      ['연락처[3]', 'contractor__contractorcontact__other_phone', 14],
+                      ['이메일', 'contractor__contractorcontact__email', 15],
+                      ['주소[등본]', 'contractor__contractoraddress__id_zipcode', 7],
+                      ['', 'contractor__contractoraddress__id_address1', 35],
+                      ['', 'contractor__contractoraddress__id_address2', 20],
+                      ['', 'contractor__contractoraddress__id_address3', 40],
+                      ['주소[우편]', 'contractor__contractoraddress__dm_zipcode', 7],
+                      ['', 'contractor__contractoraddress__dm_address1', 35],
+                      ['', 'contractor__contractoraddress__dm_address2', 20],
+                      ['', 'contractor__contractoraddress__dm_address3', 40],
+                      ['비고', 'contractor__note', 45]]
+
+        titles = ['No']
+        params = []
+        widths = [7]
+
+        for i in cols:  # 요청된 컬럼 개수 만큼 반복 (1-2-3... -> i)
+            titles.append(header_src[i][0])  # 일련번호
+            params.append(header_src[i][1])  # serial_number
+            widths.append(header_src[i][2])  # 10
+
+        while '' in params:
+            params.remove('')
 
         # Adjust the column width.
         for i, cw in enumerate(widths):  # 각 컬럼 넙이 세팅
@@ -151,8 +154,8 @@ class ExportContracts(View):
         data = data.values_list(*params)
 
         b_format = workbook.add_format()
-        b_format.set_align('vcenter')
         b_format.set_border()
+        b_format.set_align('vcenter')
         b_format.set_num_format('yyyy-mm-dd')
         b_format.set_align('center')
 
@@ -233,20 +236,20 @@ class ExportApplicants(View):
         project = Project.objects.get(pk=request.GET.get('project'))
 
         # title_list
-        data_source = [[],
-                       ['일련번호', 'serial_number', 10],
-                       ['차수', 'order_group__order_group_name', 10],
-                       ['타입', 'keyunit__unit_type__name', 7],
-                       ['청약자', 'contractor__name', 10],
-                       ['청약일자', 'contractor__reservation_date', 12],
-                       ['연락처[1]', 'contractor__contractorcontact__cell_phone', 14],
-                       ['연락처[2]', 'contractor__contractorcontact__home_phone', 14],
-                       ['연락처[3]', 'contractor__contractorcontact__other_phone', 14],
-                       ['이메일', 'contractor__contractorcontact__email', 15],
-                       ['비고', 'contractor__note', 45]]
+        header_src = [[],
+                      ['일련번호', 'serial_number', 10],
+                      ['차수', 'order_group__order_group_name', 10],
+                      ['타입', 'keyunit__unit_type__name', 7],
+                      ['청약자', 'contractor__name', 10],
+                      ['청약일자', 'contractor__reservation_date', 12],
+                      ['연락처[1]', 'contractor__contractorcontact__cell_phone', 14],
+                      ['연락처[2]', 'contractor__contractorcontact__home_phone', 14],
+                      ['연락처[3]', 'contractor__contractorcontact__other_phone', 14],
+                      ['이메일', 'contractor__contractorcontact__email', 15],
+                      ['비고', 'contractor__note', 45]]
 
         if project.is_unit_set:
-            data_source.append(
+            header_src.append(
                 ['동', 'keyunit__houseunit__building_unit', 7],
                 ['호수', 'keyunit__houseunit__name', 7]
             )
@@ -258,12 +261,12 @@ class ExportApplicants(View):
         title_format.set_bold()
         title_format.set_font_size(18)
         title_format.set_align('vcenter')
-        worksheet.merge_range(row_num, 0, row_num, len(data_source) - 1, str(project) + ' 청약자 리스트', title_format)
+        worksheet.merge_range(row_num, 0, row_num, len(header_src) - 1, str(project) + ' 청약자 리스트', title_format)
 
         # 2. Pre Header - Date
         row_num = 1
         worksheet.set_row(row_num, 18)
-        worksheet.write(row_num, len(data_source) - 1, TODAY + ' 현재', workbook.add_format({'align': 'right'}))
+        worksheet.write(row_num, len(header_src) - 1, TODAY + ' 현재', workbook.add_format({'align': 'right'}))
 
         # 3. Header
         row_num = 2
@@ -273,7 +276,7 @@ class ExportApplicants(View):
         params = []  # ORM 추출 field
         widths = [7]  # No. 컬럼 넓이
 
-        for ds in data_source:
+        for ds in header_src:
             if ds:
                 titles.append(ds[0])
                 params.append(ds[1])
@@ -376,17 +379,17 @@ class ExportReleases(View):
         project = Project.objects.get(pk=request.GET.get('project'))
 
         # title_list
-        data_source = [[],
-                       ['해지자', 'contractor__name', 10],
-                       ['해지일련번호', 'contractor__contract__serial_number', 30],
-                       ['현재상태', 'status', 12],
-                       ['환불(예정)금액', 'refund_amount', 15],
-                       ['은행', 'refund_account_bank', 15],
-                       ['계좌번호', 'refund_account_number', 18],
-                       ['예금주', 'refund_account_depositor', 12],
-                       ['해지신청일', 'request_date', 14],
-                       ['환불처리일', 'completion_date', 14],
-                       ['비고', 'note', 45]]
+        header_src = [[],
+                      ['해지자', 'contractor__name', 10],
+                      ['해지일련번호', 'contractor__contract__serial_number', 30],
+                      ['현재상태', 'status', 12],
+                      ['환불(예정)금액', 'refund_amount', 15],
+                      ['은행', 'refund_account_bank', 15],
+                      ['계좌번호', 'refund_account_number', 18],
+                      ['예금주', 'refund_account_depositor', 12],
+                      ['해지신청일', 'request_date', 14],
+                      ['환불처리일', 'completion_date', 14],
+                      ['비고', 'note', 45]]
 
         # 1. Title
         row_num = 0
@@ -395,12 +398,12 @@ class ExportReleases(View):
         title_format.set_bold()
         title_format.set_font_size(18)
         title_format.set_align('vcenter')
-        worksheet.merge_range(row_num, 0, row_num, len(data_source) - 1, str(project) + ' 해지자 리스트', title_format)
+        worksheet.merge_range(row_num, 0, row_num, len(header_src) - 1, str(project) + ' 해지자 리스트', title_format)
 
         # 2. Pre Header - Date
         row_num = 1
         worksheet.set_row(row_num, 18)
-        worksheet.write(row_num, len(data_source) - 1, TODAY + ' 현재', workbook.add_format({'align': 'right'}))
+        worksheet.write(row_num, len(header_src) - 1, TODAY + ' 현재', workbook.add_format({'align': 'right'}))
 
         # 3. Header - 1
         row_num = 2
@@ -410,7 +413,7 @@ class ExportReleases(View):
         params = []  # ORM 추출 field
         widths = [7]  # No. 컬럼 넓이
 
-        for ds in data_source:
+        for ds in header_src:
             if ds:
                 titles.append(ds[0])
                 params.append(ds[1])
@@ -864,6 +867,9 @@ class ExportPaymentStatus(View):
                 params.append(ds[1])
                 widths.append(ds[2])
 
+        while '' in params:
+            params.remove('')
+
         # Adjust the column width.
         for i, col_width in enumerate(widths):  # 각 컬럼 넓이 세팅
             worksheet.set_column(i, i, col_width)
@@ -905,9 +911,6 @@ class ExportPaymentStatus(View):
             'valign': 'vcenter',
             'num_format': '#,##0'
         }
-
-        while '' in params:
-            params.remove('')
 
         # ----------------- get_queryset start ----------------- #
         # Get some data to write to the spreadsheet.
