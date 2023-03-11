@@ -187,7 +187,7 @@ class ExportContracts(View):
             row.insert(0, i + 1)  # 순서 삽입
 
             is_paid = 0
-            for col_num, title in enumerate(row):
+            for col_num, cell_data in enumerate(row):
 
                 # css 설정
                 if col_num == 0 or col_num in is_num:
@@ -203,7 +203,7 @@ class ExportContracts(View):
                         body_format['align'] = 'center'
 
                 # 인가 여부 데이터 치환
-                cell_data = cn  # ('미인가', '인가')[int(row[col_num + 1])] if title == '인가여부' else row[col_num + 1]
+                # ('미인가', '인가')[int(row[col_num + 1])] if title == '인가여부' else row[col_num + 1]
 
                 bf = workbook.add_format(body_format)
 
