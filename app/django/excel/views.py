@@ -168,16 +168,12 @@ class ExportContracts(View):
 
         data = data.values_list(*params)
 
-        is_reg = []  # ('인가여부',)
         is_date = []  # ('생년월일', '계약일자')
-        reg_data = ('미인가', '인가')
         is_left = []
         is_num = []
 
         # Write body
         for col_num, col in enumerate(titles):
-            if col == '인가여부':
-                is_reg.append(col_num)
             if col in ('생년월일', '계약일자'):
                 is_date.append(col_num)
             if col in '납입금액합계':
@@ -196,6 +192,7 @@ class ExportContracts(View):
                     is_paid = 1
                 cn = col_num + is_paid
 
+                # css 설정
                 if col_num == 0 or col_num in is_num:
                     body_format['num_format'] = '#,##0'
                 else:
@@ -209,7 +206,7 @@ class ExportContracts(View):
                         body_format['align'] = 'center'
 
                 # 인가 여부 데이터 치환
-                cell_data = reg_data[int(row[col_num + 1])] if col_num in is_reg else row[col_num + 1]
+                cell_data = ('미인가', '인가')[int(row[col_num + 1])] if title == '인가여부' else row[col_num + 1]
 
                 bf = workbook.add_format(body_format)
 
