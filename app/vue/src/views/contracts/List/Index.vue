@@ -18,7 +18,7 @@ const visible = ref(false)
 const unitSet = ref(false)
 
 const filteredStr = ref('')
-const printItems = ref(['1', '2', '3', '4', '7', '8', '9', '10', '18-19-20-21'])
+const printItems = ref(['1', '2', '3', '4', '7', '8', '9', '11', '19-20-21-22'])
 
 const childListFiltering = (page: number) =>
   listControl.value.listFiltering(page)

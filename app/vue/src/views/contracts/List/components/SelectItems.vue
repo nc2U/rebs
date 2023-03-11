@@ -6,7 +6,7 @@ const props = defineProps({
   visible: { type: Boolean, default: false },
 })
 
-const printItems = ref(['1', '2', '3', '4', '7', '8', '9', '10', '18-19-20-21'])
+const printItems = ref(['1', '2', '3', '4', '7', '8', '9', '11', '19-20-21-22'])
 const emit = defineEmits(['print-items'])
 
 watch(printItems, newVal => {
@@ -99,7 +99,7 @@ onMounted(() => {
         <v-checkbox-btn
           id="printItems10"
           v-model="printItems"
-          label="연락처[1]"
+          label="납입금액합계"
           value="10"
           color="indigo"
           hide-details
@@ -107,7 +107,7 @@ onMounted(() => {
         <v-checkbox-btn
           id="printItems11"
           v-model="printItems"
-          label="연락처[2]"
+          label="연락처[1]"
           value="11"
           color="indigo"
           hide-details
@@ -115,7 +115,7 @@ onMounted(() => {
         <v-checkbox-btn
           id="printItems12"
           v-model="printItems"
-          label="연락처[3]"
+          label="연락처[2]"
           value="12"
           color="indigo"
           hide-details
@@ -123,7 +123,7 @@ onMounted(() => {
         <v-checkbox-btn
           id="printItems13"
           v-model="printItems"
-          label="이메일"
+          label="연락처[3]"
           value="13"
           color="indigo"
           hide-details
@@ -131,24 +131,32 @@ onMounted(() => {
         <v-checkbox-btn
           id="printItems14"
           v-model="printItems"
-          label="주소[등본]"
-          value="14-15-16-17"
+          label="이메일"
+          value="14"
           color="indigo"
           hide-details
         />
         <v-checkbox-btn
-          id="printItems18"
+          id="printItems15"
+          v-model="printItems"
+          label="주소[등본]"
+          value="15-16-17-18"
+          color="indigo"
+          hide-details
+        />
+        <v-checkbox-btn
+          id="printItems19"
           v-model="printItems"
           label="주소[우편]"
-          value="18-19-20-21"
+          value="19-20-21-22"
           color="indigo"
           hide-details
         />
         <v-checkbox-btn
-          id="printItems22"
+          id="printItems23"
           v-model="printItems"
           label="비고"
-          value="22"
+          value="23"
           color="indigo"
           hide-details
         />

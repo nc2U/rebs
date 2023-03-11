@@ -72,6 +72,7 @@ class ExportContracts(View):
                        ['계약자', 'contractor__name', 10],
                        ['생년월일', 'contractor__birth_date', 12],
                        ['계약일자', 'contractor__contract_date', 12],
+                       ['납입금액합계', 'contractor__contract_date', 12],
                        ['연락처[1]', 'contractor__contractorcontact__cell_phone', 14],
                        ['연락처[2]', 'contractor__contractorcontact__home_phone', 14],
                        ['연락처[3]', 'contractor__contractorcontact__other_phone', 14],
