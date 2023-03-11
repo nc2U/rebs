@@ -210,7 +210,7 @@ class ExportContracts(View):
 
                 bf = workbook.add_format(body_format)
 
-                worksheet.write(row_num, cell_data, '1', bf)
+                worksheet.write(row_num, col_num, cell_data, bf)
 
         # Close the workbook before sending the data.
         workbook.close()
