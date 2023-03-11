@@ -263,6 +263,7 @@ class ProjectCashBookSerializer(serializers.ModelSerializer):
         instance.__dict__.update(**validated_data)
         instance.project_account_d1 = validated_data.get('project_account_d1', instance.project_account_d1)
         instance.project_account_d2 = validated_data.get('project_account_d2', instance.project_account_d2)
+        instance.contract = validated_data.get('contract', instance.contract)
         instance.save()
 
         # 2. sep 정보 확인
