@@ -209,11 +209,13 @@ class ExportContracts(View):
 
                 bf = workbook.add_format(body_format)
 
-                worksheet.write(row_num, col_num, row[col_num], bf)
-
                 if col_num == sum_col:
                     is_paid = 1
-                    worksheet.write(row_num, col_num, 5555, bf)
+                    # worksheet.write(row_num, col_num, 5555, bf)
+
+                cn = col_num + is_paid
+
+                worksheet.write(row_num, col_num, cn, bf)
 
         # Close the workbook before sending the data.
         workbook.close()
