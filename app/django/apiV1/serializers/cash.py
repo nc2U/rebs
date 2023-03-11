@@ -264,6 +264,9 @@ class ProjectCashBookSerializer(serializers.ModelSerializer):
         instance.project_account_d1 = validated_data.get('project_account_d1', instance.project_account_d1)
         instance.project_account_d2 = validated_data.get('project_account_d2', instance.project_account_d2)
         instance.contract = validated_data.get('contract', instance.contract)
+        instance.installment_order = validated_data.get('installment_order', instance.installment_order)
+        instance.refund_contractor = validated_data.get('refund_contractor', instance.refund_contractor)
+        instance.bank_account = validated_data.get('bank_account', instance.bank_account)
         instance.save()
 
         # 2. sep 정보 확인
