@@ -187,7 +187,7 @@ class ExportContracts(View):
             row.insert(0, i + 1)  # 순서 삽입
 
             is_paid = 0
-            for col_num, title in enumerate(data):
+            for col_num, title in enumerate(row):
                 if title == '납입금액합계':
                     is_paid = 1
                 cn = col_num + is_paid
@@ -206,7 +206,7 @@ class ExportContracts(View):
                         body_format['align'] = 'center'
 
                 # 인가 여부 데이터 치환
-                cell_data = cn  # ('미인가', '인가')[int(row[col_num + 1])] if title == '인가여부' else row[col_num + 1]
+                cell_data = cn + 1  # ('미인가', '인가')[int(row[col_num + 1])] if title == '인가여부' else row[col_num + 1]
 
                 bf = workbook.add_format(body_format)
 
