@@ -2,6 +2,8 @@
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { numFormat } from '@/utils/baseMixins'
+import FormModal from '@/components/Modals/FormModal.vue'
+import ContChoicer from './ContChoicer.vue'
 
 const props = defineProps({
   payment: {
@@ -24,6 +26,7 @@ const rowClass = computed(() => {
 })
 
 const toManage = () => (props.payment.contract ? toRegister() : contMatching())
+
 const toRegister = () => {
   router.push({
     name: '건별 수납 관리',
@@ -34,6 +37,8 @@ const contMatching = () => {
   if (!props.payment.contract) contMatchingModal.value.callModal()
   return
 }
+
+const onPatch = () => 1
 </script>
 
 <template>
@@ -82,4 +87,15 @@ const contMatching = () => {
       </CButton>
     </CTableDataCell>
   </CTableRow>
+
+  <FormModal ref="contMatchingModal" size="lg">
+    <template #header> 수납 건별 계약 건 매칭</template>
+    <template #default class="p-5">
+      <ContChoicer
+        :payment="payment"
+        @on-patch="onPatch"
+        @close="contMatchingModal.close()"
+      />
+    </template>
+  </FormModal>
 </template>
