@@ -41,9 +41,12 @@ const getBudgetByType = (ut: number) =>
     .map(b => b.budget)
     .reduce((x, y) => x + y, 0)
 
-const getAveragePrice = (og: number, ut: number) =>
-  budgetList.value.filter(b => b.order_group === og && b.unit_type === ut)[0]
-    .average_price
+const getAveragePrice = (og: number, ut: number) => {
+  const bg = budgetList.value.filter(
+    b => b.order_group === og && b.unit_type === ut,
+  )
+  return bg ? bg[0].average_price : 0
+}
 
 const getContByType = (ut: number) =>
   contSum.value
