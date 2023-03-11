@@ -1,67 +1,53 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
+import { useProject } from '@/store/pinia/project'
+import { useContract } from '@/store/pinia/contract'
 import { usePayment } from '@/store/pinia/payment'
 import { useProjectData } from '@/store/pinia/project_data'
-import { UnitType } from '@/store/types/project'
 import { numFormat } from '@/utils/baseMixins'
 import { TableSecondary } from '@/utils/cssMixins'
 
 defineProps({ project: { type: Object, default: null } })
 
-const projectDataStore = useProjectData()
-const unitTypeList = computed(() => projectDataStore.unitTypeList)
+const proStore = useProject()
+const budgetList = computed(() => proStore.proIncBudgetList)
+
+const contStore = useContract()
+const contSum = computed(() => contStore.contSummaryList)
+
+const proDataStore = useProjectData()
+const unitTypeList = computed(() => proDataStore.unitTypeList)
 
 const paymentStore = usePayment()
 const paySumList = computed(() => paymentStore.paySumList)
-const contNumList = computed(() => paymentStore.contNumList)
 
-const total_budget = computed(() => {
-  return unitTypeList.value.length !== 0
-    ? unitTypeList.value
-        .map((t: UnitType) => t.average_price * t.num_unit)
-        .reduce((x: number, y: number) => x + y)
-    : 0
-})
-const totalAmount = computed(() => {
-  const types = unitTypeList.value.map((t: UnitType) => t.average_price)
-  const nums = contNumList.value.map((c: { num_cont: number }) => c.num_cont)
+const getTotalBudget = computed(() =>
+  budgetList.value.map(b => b.budget).reduce((x, y) => x + y, 0),
+)
 
-  let total = 0
-  for (let i in types) {
-    const type = types[i]
-    if (typeof type === 'number' && typeof nums[i] === 'number')
-      total += type * nums[i]
-  }
-  return total
-})
-const totalPayment = computed(() => {
-  return paySumList.value.length !== 0
-    ? paySumList.value
-        .map((p: { type_total: number }) => p.type_total)
-        .reduce((x: number, y: number) => x + y, 0)
-    : 0
-})
+const getTotalPaid = computed(() =>
+  paySumList.value.map(b => b.paid_sum).reduce((x, y) => x + y, 0),
+)
 
-const sellAmount = (type: number, price = 0) => {
-  const nums = contNumList.value
-    .filter((c: { unit_type: number }) => c.unit_type === type)
-    .map((c: { num_cont: number }) => c.num_cont)
-  const num = typeof nums[0] === 'number' ? nums[0] : 0
-  return num * price
-}
+const getBudgetByType = (ut: number) =>
+  budgetList.value
+    .filter(b => b.unit_type === ut)
+    .map(b => b.budget)
+    .reduce((x, y) => x + y, 0)
 
-const payByType = (type: number) => {
-  return paySumList.value
-    .filter((p: { unit_type: number }) => p.unit_type === type)
-    .map((p: { type_total: number }) => p.type_total)[0]
-}
+const getPaidByType = (ut: number) =>
+  paySumList.value
+    .filter(b => b.unit_type === ut)
+    .map(b => b.paid_sum)
+    .reduce((x, y) => x + y, 0)
 </script>
 
 <template>
+  {{ contSum }}
   <CTable hover responsive bordered class="mt-3">
     <CTableHead class="text-center" :color="TableSecondary">
       <CTableRow align="middle">
-        <CTableHeaderCell>프로젝트</CTableHeaderCell>
+        <CTableHeaderCell>타 입</CTableHeaderCell>
         <CTableHeaderCell>총 매출예산(A)</CTableHeaderCell>
         <CTableHeaderCell>총 분양금액(B)</CTableHeaderCell>
         <CTableHeaderCell>총 수납금액(C)</CTableHeaderCell>
@@ -70,24 +56,7 @@ const payByType = (type: number) => {
       </CTableRow>
     </CTableHead>
 
-    <CTableBody>
-      <CTableRow v-if="project" class="text-right" color="light">
-        <CTableHeaderCell class="text-center">
-          {{ project.name }}
-        </CTableHeaderCell>
-        <CTableHeaderCell>{{ numFormat(total_budget) }}</CTableHeaderCell>
-        <CTableHeaderCell>
-          {{ numFormat(totalAmount) }}
-        </CTableHeaderCell>
-        <CTableHeaderCell>{{ numFormat(totalPayment) }}</CTableHeaderCell>
-        <CTableHeaderCell>
-          {{ numFormat(totalAmount - totalPayment) }}
-        </CTableHeaderCell>
-        <CTableHeaderCell>
-          {{ numFormat(total_budget - totalAmount) }}
-        </CTableHeaderCell>
-      </CTableRow>
-
+    <CTableBody v-if="project">
       <CTableRow v-for="type in unitTypeList" :key="type.pk" class="text-right">
         <CTableHeaderCell class="text-left pl-5">
           <CIcon
@@ -99,38 +68,23 @@ const payByType = (type: number) => {
           {{ type.name }}
         </CTableHeaderCell>
         <CTableDataCell>
-          {{ numFormat(type.average_price * type.num_unit) }}
+          {{ numFormat(getBudgetByType(type.pk)) }}
         </CTableDataCell>
-        <CTableDataCell>
-          {{ numFormat(sellAmount(type.pk, type.average_price)) }}
-        </CTableDataCell>
+        <CTableDataCell></CTableDataCell>
         <CTableDataCell class="text-primary">
-          {{ numFormat(payByType(type.pk)) }}
+          {{ numFormat(getPaidByType(type.pk)) }}
         </CTableDataCell>
-        <CTableDataCell class="text-danger">
-          {{
-            numFormat(
-              sellAmount(type.pk, type.average_price) - payByType(type.pk),
-            )
-          }}
-        </CTableDataCell>
-        <CTableDataCell>
-          {{
-            numFormat(
-              type.average_price * type.num_unit -
-                sellAmount(type.pk, type.average_price),
-            )
-          }}
-        </CTableDataCell>
+        <CTableDataCell class="text-danger"></CTableDataCell>
+        <CTableDataCell>{{ type.pk }}</CTableDataCell>
       </CTableRow>
 
       <CTableRow class="text-right" color="light">
-        <CTableHeaderCell class="text-left pl-5">근린생활시설</CTableHeaderCell>
-        <CTableDataCell>{{ numFormat(0) }}</CTableDataCell>
-        <CTableDataCell>{{ numFormat(0) }}</CTableDataCell>
-        <CTableDataCell>{{ numFormat(0) }}</CTableDataCell>
-        <CTableDataCell>{{ numFormat(0) }}</CTableDataCell>
-        <CTableDataCell>{{ numFormat(0) }}</CTableDataCell>
+        <CTableHeaderCell class="text-center">합 계</CTableHeaderCell>
+        <CTableHeaderCell>{{ numFormat(getTotalBudget) }}</CTableHeaderCell>
+        <CTableHeaderCell></CTableHeaderCell>
+        <CTableHeaderCell>{{ numFormat(getTotalPaid) }}</CTableHeaderCell>
+        <CTableHeaderCell></CTableHeaderCell>
+        <CTableHeaderCell></CTableHeaderCell>
       </CTableRow>
     </CTableBody>
   </CTable>

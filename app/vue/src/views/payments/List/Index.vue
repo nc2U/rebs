@@ -30,6 +30,8 @@ let dataFilter = ref<PaymentFilter>({
 const projectStore = useProject()
 const project = computed(() => projectStore.project)
 const initProjId = computed(() => projectStore.initProjId)
+const fetchIncBudgetList = (proj: number) =>
+  projectStore.fetchIncBudgetList(proj)
 
 const excelUrl = computed(() => {
   let url = project.value ? `/excel/payments/?project=${project.value.pk}` : ''
@@ -68,6 +70,7 @@ const onSelectAdd = (target: number) => {
   if (!!target) {
     fetchOrderGroupList(target)
     fetchTypeList(target)
+    fetchIncBudgetList(target)
     fetchPaySumList(target)
     fetchContNumList(target)
     fetchPaymentList({ project: target })
@@ -75,6 +78,7 @@ const onSelectAdd = (target: number) => {
     fetchProBankAccList(target)
   } else {
     contStore.orderGroupList = []
+    projectStore.proIncBudgetList = []
     projectDataStore.unitTypeList = []
     proCashStore.proBankAccountList = []
     paymentStore.paySumList = []
@@ -100,6 +104,7 @@ onMounted(() => {
   const projectPk = project.value?.pk || initProjId.value
   fetchOrderGroupList(projectPk)
   fetchTypeList(projectPk)
+  fetchIncBudgetList(projectPk)
   fetchPaySumList(projectPk)
   fetchContNumList(projectPk)
   fetchPayOrderList(projectPk)
