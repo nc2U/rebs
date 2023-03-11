@@ -157,7 +157,7 @@ class ExportContracts(View):
                 Q(serial_number__icontains=request.GET.get('q')) |
                 Q(contractor__name__icontains=request.GET.get('q')) |
                 Q(contractor__note__icontains=request.GET.get('q')))
-            
+
         order_list = ['-created_at', 'created_at', '-contractor__contract_date',
                       'contractor__contract_date', '-serial_number',
                       'serial_number', '-contractor__name', 'contractor__name']
@@ -195,11 +195,11 @@ class ExportContracts(View):
             row_num += 1
             row = list(row)
 
-            if sum_col is not None:
-                paid_data = paid_data.filter(contract=row[0])
-                paid = paid_data.values_list(*paid_params)
-                paid_sum = sum([i[0] for i in paid])
-                row.insert(sum_col, paid_sum)  # 순서 삽입
+            # if sum_col is not None:
+            paid_data = paid_data.filter(contract=row[0])
+            paid = paid_data.values_list(*paid_params)
+            paid_sum = sum([i[0] for i in paid])
+            row.insert(sum_col, paid_sum)  # 순서 삽입
 
             row[0] = i + 1  # pk 대신 순서 삽입
 
