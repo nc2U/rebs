@@ -2,6 +2,7 @@ import api from '@/api'
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { message, errorHandle } from '@/utils/helper'
+import { CashBookFilter } from '@/store/types/proCash'
 import {
   Price,
   PayOrder,
@@ -10,21 +11,6 @@ import {
   ContractNum,
   AllPayment,
 } from '@/store/types/payment'
-
-export type PaymentFilter = {
-  project?: number
-  from_date?: string
-  to_date?: string
-  order_group?: string
-  unit_type?: string
-  pay_order?: string
-  pay_account?: string
-  contract?: number
-  no_contract?: boolean
-  ordering?: string
-  search?: string
-  page?: number
-}
 
 export type DownPayFilter = {
   project: number
@@ -192,7 +178,7 @@ export const usePayment = defineStore('payment', () => {
   const paymentsCount = ref<number>(0)
 
   // actions
-  const fetchPaymentList = (payload: PaymentFilter) => {
+  const fetchPaymentList = (payload: CashBookFilter) => {
     const { project } = payload
     let url = `/payment/?project=${project}`
     if (payload.from_date) url += `&from_deal_date=${payload.from_date}`
@@ -217,7 +203,7 @@ export const usePayment = defineStore('payment', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const fetchAllPaymentList = (payload: PaymentFilter) => {
+  const fetchAllPaymentList = (payload: CashBookFilter) => {
     const { project } = payload
     let url = `/all-payment/?project=${project}`
     if (payload.contract) url += `&contract=${payload.contract}`

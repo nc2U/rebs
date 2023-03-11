@@ -64,3 +64,22 @@ export interface ProjectCashBook extends ProSepItems {
   evidence_desc?: string
   deal_date: string
 }
+
+export type CashBookFilter = {
+  project?: number
+  page?: number
+  from_date?: string
+  to_date?: string
+  order_group?: string
+  unit_type?: string
+  sort?: number | null
+  pro_acc_d1?: number | null
+  pro_acc_d2?: number | null
+  bank_account?: number | null
+  pay_order?: string
+  pay_account?: string
+  contract?: number
+  no_contract?: boolean
+  ordering?: string
+  search?: string
+}

@@ -9,22 +9,9 @@ import {
   ProjectBankAccount,
   BalanceByAccount,
   ProjectCashBook,
+  CashBookFilter,
 } from '@/store/types/proCash'
 import { usePayment } from '@/store/pinia/payment'
-
-export type CashBookFilter = {
-  project?: number
-  page?: number
-  from_date?: string
-  to_date?: string
-  sort?: number | null
-  pro_acc_d1?: number | null
-  pro_acc_d2?: number | null
-  bank_account?: number | null
-  pay_order?: string
-  pay_account?: string
-  search?: string
-}
 
 export const useProCash = defineStore('proCash', () => {
   // state & getters
@@ -220,6 +207,7 @@ export const useProCash = defineStore('proCash', () => {
             project: res.data.project,
             contract: res.data.contract,
             ordering: 'deal_date',
+            ...filters,
           })
           message()
         })
@@ -241,11 +229,13 @@ export const useProCash = defineStore('proCash', () => {
           paymentStore.fetchPaymentList({
             project: res.data.project,
             contract: res.data.contract,
+            ...filters,
           })
           paymentStore.fetchAllPaymentList({
             project: res.data.project,
             contract: res.data.contract,
             ordering: 'deal_date',
+            ...filters,
           })
           message()
         })
