@@ -171,12 +171,15 @@ class ExportContracts(View):
         is_date = []  # ('생년월일', '계약일자')
         is_left = []
         is_num = []
+        reg_col = None
         sum_col = None
 
         # Write body
         for col_num, title in enumerate(titles):
             if title in ('생년월일', '계약일자'):
                 is_date.append(col_num)
+            if title == '인가여부':
+                reg_col = col_num
             if title == '납입금액합계':
                 is_num.append(col_num)
                 sum_col = col_num
@@ -187,6 +190,7 @@ class ExportContracts(View):
             row_num += 1
             row = list(row)
             row.insert(0, i + 1)  # 순서 삽입
+            row.insert(sum_col, 555)  # 순서 삽입
 
             is_paid = 0
             for col_num, cell_data in enumerate(row):
@@ -205,17 +209,11 @@ class ExportContracts(View):
                         body_format['align'] = 'center'
 
                 # 인가 여부 데이터 치환
-                # ('미인가', '인가')[int(row[col_num + 1])] if title == '인가여부' else row[col_num + 1]
+                cell_value = ('미인가', '인가')[int(cell_data)] if reg_col == col_num else cell_data
 
                 bf = workbook.add_format(body_format)
 
-                if col_num == sum_col:
-                    is_paid = 1
-                    # worksheet.write(row_num, col_num, 5555, bf)
-
-                cn = col_num + is_paid
-
-                worksheet.write(row_num, col_num, cn, bf)
+                worksheet.write(row_num, col_num, cell_value, bf)
 
         # Close the workbook before sending the data.
         workbook.close()
