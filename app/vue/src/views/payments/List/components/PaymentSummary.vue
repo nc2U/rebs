@@ -25,9 +25,10 @@ const getTotalBudget = computed(() =>
   budgetList.value.map(b => b.budget).reduce((x, y) => x + y, 0),
 )
 
-const getTotalCont = computed(
-  () =>
-    budgetList.value.map(b => b.budget).reduce((x, y) => x + y, 0) - 5000000000,
+const getTotalCont = computed(() =>
+  contSum.value
+    .map(s => (getAveragePrice(s.order_group, s.unit_type) || 0) * s.num_cont)
+    .reduce((x, y) => x + y, 0),
 )
 
 const getTotalPaid = computed(() =>
@@ -40,7 +41,15 @@ const getBudgetByType = (ut: number) =>
     .map(b => b.budget)
     .reduce((x, y) => x + y, 0)
 
-const getContByType = (ut: number) => 11
+const getAveragePrice = (og: number, ut: number) =>
+  budgetList.value.filter(b => b.order_group === og && b.unit_type === ut)[0]
+    .average_price
+
+const getContByType = (ut: number) =>
+  contSum.value
+    .filter(s => s.unit_type === ut)
+    .map(s => (getAveragePrice(s.order_group, s.unit_type) || 0) * s.num_cont)
+    .reduce((x, y) => x + y, 0)
 
 const getPaidByType = (ut: number) =>
   paySumList.value
@@ -50,7 +59,6 @@ const getPaidByType = (ut: number) =>
 </script>
 
 <template>
-  {{ contSum }}
   <CTable hover responsive bordered class="mt-3">
     <CTableHead class="text-center" :color="TableSecondary">
       <CTableRow align="middle">

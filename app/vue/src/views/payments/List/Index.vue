@@ -27,31 +27,19 @@ let dataFilter = ref<PaymentFilter>({
   search: '',
 })
 
-const projectStore = useProject()
-const project = computed(() => projectStore.project)
-const initProjId = computed(() => projectStore.initProjId)
-const fetchIncBudgetList = (proj: number) =>
-  projectStore.fetchIncBudgetList(proj)
-
-const excelUrl = computed(() => {
-  let url = project.value ? `/excel/payments/?project=${project.value.pk}` : ''
-  if (dataFilter.value.from_date) url += `&sd=${dataFilter.value.from_date}`
-  if (dataFilter.value.to_date) url += `&ed=${dataFilter.value.to_date}`
-  if (dataFilter.value.order_group) url += `&og=${dataFilter.value.order_group}`
-  if (dataFilter.value.unit_type) url += `&ut=${dataFilter.value.unit_type}`
-  if (dataFilter.value.pay_order) url += `&ipo=${dataFilter.value.pay_order}`
-  if (dataFilter.value.pay_account) url += `&ba=${dataFilter.value.pay_account}`
-  if (dataFilter.value.no_contract) url += `&up=on`
-  if (dataFilter.value.search) url += `&q=${dataFilter.value.search}`
-  return url
-})
+const projStore = useProject()
+const project = computed(() => projStore.project)
+const initProjId = computed(() => projStore.initProjId)
+const fetchIncBudgetList = (proj: number) => projStore.fetchIncBudgetList(proj)
 
 const contStore = useContract()
 const fetchOrderGroupList = (projId: number) =>
   contStore.fetchOrderGroupList(projId)
+const fetchContSummaryList = (projId: number) =>
+  contStore.fetchContSummaryList(projId)
 
-const projectDataStore = useProjectData()
-const fetchTypeList = (projId: number) => projectDataStore.fetchTypeList(projId)
+const proDataStore = useProjectData()
+const fetchTypeList = (projId: number) => proDataStore.fetchTypeList(projId)
 
 const paymentStore = usePayment()
 const fetchPaySumList = (projId: number) => paymentStore.fetchPaySumList(projId)
@@ -71,6 +59,7 @@ const onSelectAdd = (target: number) => {
     fetchOrderGroupList(target)
     fetchTypeList(target)
     fetchIncBudgetList(target)
+    fetchContSummaryList(target)
     fetchPaySumList(target)
     fetchContNumList(target)
     fetchPaymentList({ project: target })
@@ -78,9 +67,10 @@ const onSelectAdd = (target: number) => {
     fetchProBankAccList(target)
   } else {
     contStore.orderGroupList = []
-    projectStore.proIncBudgetList = []
-    projectDataStore.unitTypeList = []
+    proDataStore.unitTypeList = []
     proCashStore.proBankAccountList = []
+    projStore.proIncBudgetList = []
+    contStore.contSummaryList = []
     paymentStore.paySumList = []
     paymentStore.contNumList = []
     paymentStore.paymentList = []
@@ -100,11 +90,25 @@ const pageSelect = (page: number) => {
   listControl.value.listFiltering(page)
 }
 
+const excelUrl = computed(() => {
+  let url = project.value ? `/excel/payments/?project=${project.value.pk}` : ''
+  if (dataFilter.value.from_date) url += `&sd=${dataFilter.value.from_date}`
+  if (dataFilter.value.to_date) url += `&ed=${dataFilter.value.to_date}`
+  if (dataFilter.value.order_group) url += `&og=${dataFilter.value.order_group}`
+  if (dataFilter.value.unit_type) url += `&ut=${dataFilter.value.unit_type}`
+  if (dataFilter.value.pay_order) url += `&ipo=${dataFilter.value.pay_order}`
+  if (dataFilter.value.pay_account) url += `&ba=${dataFilter.value.pay_account}`
+  if (dataFilter.value.no_contract) url += `&up=on`
+  if (dataFilter.value.search) url += `&q=${dataFilter.value.search}`
+  return url
+})
+
 onMounted(() => {
   const projectPk = project.value?.pk || initProjId.value
   fetchOrderGroupList(projectPk)
   fetchTypeList(projectPk)
   fetchIncBudgetList(projectPk)
+  fetchContSummaryList(projectPk)
   fetchPaySumList(projectPk)
   fetchContNumList(projectPk)
   fetchPayOrderList(projectPk)
