@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, onMounted, computed, nextTick } from 'vue'
+import { ref, onMounted, computed, nextTick, inject } from 'vue'
 import { ContFilter, useContract } from '@/store/pinia/contract'
 import { write_payment } from '@/utils/pageAuth'
 import { numFormat } from '@/utils/baseMixins'
@@ -7,10 +7,8 @@ import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
 const props = defineProps({
-  payment: {
-    type: Object,
-    required: true,
-  },
+  project: { type: Number, required: true },
+  payment: { type: Object, required: true },
 })
 
 const emit = defineEmits(['on-patch', 'close'])
@@ -22,7 +20,7 @@ const form = ref({
   search: '',
 })
 
-const cont = ref({})
+const contract = ref()
 const msg = ref('')
 const textClass = ref('')
 
@@ -40,14 +38,11 @@ const pageInit = () => {
   contStore.contractList = []
 }
 
-// ...mapGetters('contract', ['contractIndex']),
-const project = 1
-
-const listFiltering = () => {
+const searchCont = () => {
   nextTick(() => {
     if (form.value.search === '') pageInit()
     else {
-      fetchContractList({ ...{ project }, ...form.value })
+      fetchContractList({ ...{ project: props.project }, ...form.value })
     }
   })
   if (contactList.value.length === 0) {
@@ -55,9 +50,9 @@ const listFiltering = () => {
     textClass.value = 'text-danger'
   }
 }
-const contMatching = (contract: number) => {
+const contMatching = (cont: number) => {
   if (write_payment) {
-    cont.value = contract
+    contract.value = cont
     confirmModal.value.callModal()
   } else alertModal.value.callModal()
 }
@@ -65,9 +60,9 @@ const contMatching = (contract: number) => {
 const modalAction = () => {
   const pk = props.payment.pk
   const is_contract_payment = true
-  const contract = cont.value.pk
-  const content = `${cont.value.contractor}[${cont.value.serial_number}] 대금납부`
-  emit('on-patch', { pk, is_contract_payment, contract, content })
+  const cont = contract.value.pk
+  const content = `${contract.value.contractor.name}[${contract.value.serial_number}] 대금납부`
+  emit('on-patch', { pk, is_contract_payment, contract: cont, content })
   pageInit()
   emit('close')
 }
@@ -87,9 +82,9 @@ const modalAction = () => {
                     placeholder="계약자, 비고, 계약 일련번호"
                     aria-label="Search"
                     aria-describedby="addon-wrapping"
-                    @keydown.enter="listFiltering(1)"
+                    @keydown.enter="searchCont"
                   />
-                  <CInputGroupText @click="listFiltering(1)">
+                  <CInputGroupText @click="searchCont">
                     계약 건 찾기
                   </CInputGroupText>
                 </CInputGroup>
@@ -144,7 +139,7 @@ const modalAction = () => {
     <template #header>건별 수납 매칭</template>
     <template #default>
       해당 수납 항목을 이 계약 건 &lt;{{
-        `${cont.contractor.name}(${cont.serial_number})`
+        `${contract.contractor.name}(${contract.serial_number})`
       }}&gt; 에 등록하시겠습니까?
     </template>
     <template #footer>

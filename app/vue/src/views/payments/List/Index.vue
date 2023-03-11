@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, ref, onMounted } from 'vue'
+import { computed, ref, onMounted, provide } from 'vue'
 import { pageTitle, navMenu } from '@/views/payments/_menu/headermixin'
 import { useProject } from '@/store/pinia/project'
 import { useContract } from '@/store/pinia/contract'
@@ -134,7 +134,7 @@ onBeforeRouteLeave(() => {
     <CCardBody class="pb-5">
       <ListController ref="listControl" @payment-filtering="listFiltering" />
       <TableTitleRow excel :url="excelUrl" />
-      <PaymentList @page-select="pageSelect" />
+      <PaymentList :project="project" @page-select="pageSelect" />
     </CCardBody>
 
     <CCardFooter>&nbsp;</CCardFooter>

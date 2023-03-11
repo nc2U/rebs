@@ -6,10 +6,8 @@ import FormModal from '@/components/Modals/FormModal.vue'
 import ContChoicer from './ContChoicer.vue'
 
 const props = defineProps({
-  payment: {
-    type: Object,
-    required: true,
-  },
+  project: { type: Number, required: true },
+  payment: { type: Object, required: true },
 })
 
 const router = useRouter()
@@ -92,6 +90,7 @@ const onPatch = () => 1
     <template #header> 수납 건별 계약 건 매칭</template>
     <template #default class="p-5">
       <ContChoicer
+        :project="project"
         :payment="payment"
         @on-patch="onPatch"
         @close="contMatchingModal.close()"

@@ -7,6 +7,8 @@ import Pagination from '@/components/Pagination'
 
 const emit = defineEmits(['page-select'])
 
+defineProps({ project: { type: Number, required: true } })
+
 const paymentStore = usePayment()
 const getPayments = computed(() => paymentStore.getPayments)
 const paymentPages = computed(() => paymentStore.paymentPages)
@@ -48,6 +50,7 @@ const pageSelect = (page: number) => emit('page-select', page)
       <Payment
         v-for="(payment, i) in getPayments"
         :key="i"
+        :project="project"
         :payment="payment"
       />
     </CTableBody>
