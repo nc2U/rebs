@@ -118,6 +118,7 @@ class ExportContracts(View):
                 worksheet.write(row_num, col_num, titles[col_num], h_format)
 
         # 4. Body
+        # ----------------- get_queryset start ----------------- #
         # Get some data to write to the spreadsheet.
         data = Contract.objects.filter(project=project,
                                        keyunit__contract__isnull=False,
@@ -150,6 +151,7 @@ class ExportContracts(View):
                 Q(serial_number__icontains=request.GET.get('q')) |
                 Q(contractor__name__icontains=request.GET.get('q')) |
                 Q(contractor__note__icontains=request.GET.get('q')))
+        # ----------------- get_queryset finish ----------------- #
 
         data = data.values_list(*params)
 
@@ -170,6 +172,7 @@ class ExportContracts(View):
         is_date = []  # ('생년월일', '계약일자')
         reg_data = ('미인가', '인가')
         is_left = []
+        is_num = []
 
         # Write body
         for col_num, col in enumerate(titles):
@@ -177,15 +180,18 @@ class ExportContracts(View):
                 is_reg.append(col_num)
             if col in ('생년월일', '계약일자'):
                 is_date.append(col_num)
+            if col in '납입금액합계':
+                is_num.append(col_num)
             if col in ('', '비고'):
                 is_left.append(col_num)
 
         for i, row in enumerate(data):
-            row = list(row)
             row_num += 1
-            row.insert(0, i + 1)
-            for col_num, cell_data in enumerate(row):
-                if col_num == 0:
+            row.insert(0, i + 1)  # 순서 삽입
+
+            is_paid = 0
+            for col_num, cell_data in enumerate(titles):
+                if col_num == 0 or col_num in is_num:
                     body_format['num_format'] = '#,##0'
                 else:
                     body_format['num_format'] = 'yyyy-mm-dd'
@@ -198,7 +204,12 @@ class ExportContracts(View):
                     if 'align' not in body_format:
                         body_format['align'] = 'center'
                 bf = workbook.add_format(body_format)
-                worksheet.write(row_num, col_num, cell_data, bf)
+
+                if cell_data == '납입금액합계':
+                    is_paid = 1
+                    worksheet.write(row_num, col_num + is_paid, cell_data, bf)
+                else:
+                    worksheet.write(row_num, col_num + is_paid, cell_data, bf)
 
         # Close the workbook before sending the data.
         workbook.close()
