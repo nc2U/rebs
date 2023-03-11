@@ -45,7 +45,7 @@ const getAveragePrice = (og: number, ut: number) => {
   const bg = budgetList.value.filter(
     b => b.order_group === og && b.unit_type === ut,
   )
-  return bg ? bg[0].average_price : 0
+  return bg.length ? bg[0].average_price : 0
 }
 
 const getContByType = (ut: number) =>
