@@ -21,6 +21,7 @@ const form = reactive({
   pay_order: '',
   pay_account: '',
   no_contract: false,
+  no_install: false,
   search: '',
 })
 
@@ -45,8 +46,9 @@ const formsCheck = computed(() => {
   const e = !form.pay_order
   const f = !form.pay_account
   const g = !form.no_contract
-  const h = form.search.trim() === ''
-  return a && b && c && d && e && f && g && h
+  const h = !form.no_install
+  const i = form.search.trim() === ''
+  return a && b && c && d && e && f && g && h && i
 })
 
 watch(from_date, val => {
@@ -77,6 +79,7 @@ const resetForm = () => {
   form.pay_order = ''
   form.pay_account = ''
   form.no_contract = false
+  form.no_install = false
   form.search = ''
   listFiltering(1)
 }
@@ -85,9 +88,9 @@ const resetForm = () => {
 <template>
   <CCallout color="warning" class="pb-0 mb-4" :class="bgLight">
     <CRow>
-      <CCol lg="8">
+      <CCol xl="8">
         <CRow>
-          <CCol md="6" lg="2" class="mb-3">
+          <CCol lg="6" xl="2" class="mb-3">
             <DatePicker
               v-model="from_date"
               v-maska="'####-##-##'"
@@ -96,7 +99,7 @@ const resetForm = () => {
             />
           </CCol>
 
-          <CCol md="6" lg="2" class="mb-3">
+          <CCol lg="6" xl="2" class="mb-3">
             <DatePicker
               v-model="to_date"
               v-maska="'####-##-##'"
@@ -105,7 +108,7 @@ const resetForm = () => {
             />
           </CCol>
 
-          <CCol md="6" lg="2" class="mb-3">
+          <CCol lg="6" xl="2" class="mb-3">
             <Multiselect
               v-model="form.order_group"
               :options="getOrderGroups"
@@ -114,7 +117,7 @@ const resetForm = () => {
             />
           </CCol>
 
-          <CCol md="6" lg="2" class="mb-3">
+          <CCol lg="6" xl="2" class="mb-3">
             <Multiselect
               v-model="form.unit_type"
               :options="getTypes"
@@ -123,7 +126,7 @@ const resetForm = () => {
             />
           </CCol>
 
-          <CCol md="6" lg="2" class="mb-3">
+          <CCol lg="6" xl="2" class="mb-3">
             <CFormSelect v-model="form.pay_order" @change="listFiltering(1)">
               <option value="">납부회차 선택</option>
               <option v-for="po in payOrderList" :key="po.pk" :value="po.pk">
@@ -132,7 +135,7 @@ const resetForm = () => {
             </CFormSelect>
           </CCol>
 
-          <CCol md="6" lg="2" class="mb-3">
+          <CCol lg="6" xl="2" class="mb-3">
             <CFormSelect v-model="form.pay_account" @change="listFiltering(1)">
               <option value="">납부계좌 선택</option>
               <option
@@ -146,18 +149,27 @@ const resetForm = () => {
           </CCol>
         </CRow>
       </CCol>
-      <CCol lg="4">
+      <CCol xl="4">
         <CRow>
-          <CCol md="6" lg="5" class="mb-3 pl-4 pt-2">
+          <CCol md="6" lg="3" class="mb-3 pl-4 pt-2">
             <CFormSwitch
               id="no_contract"
               v-model="form.no_contract"
-              label="계약 미등록 건"
+              label="계약 미등록"
               @change="listFiltering(1)"
             />
           </CCol>
 
-          <CCol md="6" lg="7" class="mb-3">
+          <CCol md="6" lg="3" class="mb-3 pl-4 pt-2">
+            <CFormSwitch
+              id="no_install"
+              v-model="form.no_install"
+              label="회차 미등록"
+              @change="listFiltering(1)"
+            />
+          </CCol>
+
+          <CCol lg="6" xl="6" class="mb-3">
             <CInputGroup class="flex-nowrap">
               <CFormInput
                 v-model="form.search"

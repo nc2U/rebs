@@ -25,6 +25,7 @@ let dataFilter = ref<PaymentFilter>({
   pay_order: '',
   pay_account: '',
   no_contract: false,
+  no_install: false,
   search: '',
 })
 
@@ -105,7 +106,8 @@ const excelUrl = computed(() => {
   if (dataFilter.value.unit_type) url += `&ut=${dataFilter.value.unit_type}`
   if (dataFilter.value.pay_order) url += `&ipo=${dataFilter.value.pay_order}`
   if (dataFilter.value.pay_account) url += `&ba=${dataFilter.value.pay_account}`
-  if (dataFilter.value.no_contract) url += `&up=on`
+  if (dataFilter.value.no_contract) url += `&nc=on`
+  if (dataFilter.value.no_install) url += `&ni=on`
   if (dataFilter.value.search) url += `&q=${dataFilter.value.search}`
   return url
 })

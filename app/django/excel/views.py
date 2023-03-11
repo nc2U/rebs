@@ -653,7 +653,8 @@ def export_payments_xls(request):
     ut = request.GET.get('ut')
     ipo = request.GET.get('ipo')
     ba = request.GET.get('ba')
-    up = request.GET.get('up')
+    nc = request.GET.get('nc')
+    ni = request.GET.get('ni')
     q = request.GET.get('q')
 
     today = TODAY
@@ -674,9 +675,15 @@ def export_payments_xls(request):
     if ba:
         obj_list = obj_list.filter(bank_account__id=ba)
 
-    if up:
+    if nc:
         obj_list = obj_list.filter(
             (Q(is_contract_payment=False) | Q(contract__isnull=True)) &
+            (Q(project_account_d1_id__in=(1, 2)) | Q(project_account_d2_id__in=(1, 2)))
+        )
+
+    if ni:
+        obj_list = obj_list.filter(
+            (Q(is_contract_payment=False) | Q(installment_order__isnull=True)) &
             (Q(project_account_d1_id__in=(1, 2)) | Q(project_account_d2_id__in=(1, 2)))
         )
 
