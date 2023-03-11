@@ -132,14 +132,15 @@ class PrBalanceByAccountViewSet(viewsets.ModelViewSet):
 class ProjectCashBookFilterSet(FilterSet):
     from_deal_date = DateFilter(field_name='deal_date', lookup_expr='gte', label='납부일자부터')
     to_deal_date = DateFilter(field_name='deal_date', lookup_expr='lte', label='납부일자까지')
-    no_contract = BooleanFilter(field_name='contract', lookup_expr='isnull', label='미등록')
+    no_contract = BooleanFilter(field_name='contract', lookup_expr='isnull', label='계약 미등록')
+    no_install = BooleanFilter(field_name='installment_order', lookup_expr='isnull', label='회차 미등록')
 
     class Meta:
         model = ProjectCashBook
         fields = ('project', 'sort', 'project_account_d1', 'project_account_d2',
                   'from_deal_date', 'to_deal_date', 'deal_date', 'installment_order',
                   'bank_account', 'is_contract_payment', 'contract', 'contract__order_group',
-                  'contract__unit_type', 'no_contract')
+                  'contract__unit_type', 'no_contract', 'no_install')
 
 
 class ProjectCashBookViewSet(viewsets.ModelViewSet):
