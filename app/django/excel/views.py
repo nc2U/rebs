@@ -134,27 +134,20 @@ class ExportContracts(View):
         # ----------------- get_queryset start ----------------- #
         # Get some data to write to the spreadsheet.
         data = Contract.objects.filter(project=project,
-                                       keyunit__contract__isnull=False,
+                                       activation=True,
                                        contractor__status='2').order_by('contractor__contract_date')
         if request.GET.get('group'):
             data = data.filter(order_group=request.GET.get('group'))
         if request.GET.get('type'):
-            data = data.filter(keyunit__unit_type=request.GET.get('type'))
+            data = data.filter(unit_type=request.GET.get('type'))
         if self.request.GET.get('dong'):
             data = data.filter(keyunit__houseunit__building_unit=self.request.GET.get('dong'))
-        if request.GET.get('status'):
-            data = data.filter(contractor__status=request.GET.get('status'))
-        if request.GET.get('null'):
-            is_null = True if request.GET.get('null') == '1' else False
+        if request.GET.get('is_null'):
+            is_null = True if request.GET.get('is_null') == '1' else False
             data = data.filter(keyunit__houseunit__isnull=is_null)
         if request.GET.get('reg'):
             result = True if request.GET.get('reg') == '1' else False
             data = data.filter(contractor__is_registed=result)
-        order_list = ['-created_at', 'created_at', '-contractor__contract_date',
-                      'contractor__contract_date', '-serial_number',
-                      'serial_number', '-contractor__name', 'contractor__name']
-        if self.request.GET.get('order'):
-            data = data.order_by(order_list[int(self.request.GET.get('order'))])
         if request.GET.get('sdate'):
             data = data.filter(contractor__contract_date__gte=request.GET.get('sdate'))
         if request.GET.get('edate'):
@@ -164,6 +157,13 @@ class ExportContracts(View):
                 Q(serial_number__icontains=request.GET.get('q')) |
                 Q(contractor__name__icontains=request.GET.get('q')) |
                 Q(contractor__note__icontains=request.GET.get('q')))
+            
+        order_list = ['-created_at', 'created_at', '-contractor__contract_date',
+                      'contractor__contract_date', '-serial_number',
+                      'serial_number', '-contractor__name', 'contractor__name']
+        if self.request.GET.get('order'):
+            data = data.order_by(order_list[int(self.request.GET.get('order'))])
+
         # ----------------- get_queryset finish ----------------- #
 
         data = data.values_list(*params)

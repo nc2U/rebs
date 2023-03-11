@@ -55,23 +55,22 @@ export const useContract = defineStore('contract', () => {
 
   const fetchContractList = (payload: ContFilter) => {
     const status = payload.status || '2'
-    let apiuri = `/contract-set/?project=${payload.project}&activation=true&contractor__status=${status}`
-    if (payload.order_group) apiuri += `&order_group=${payload.order_group}`
-    if (payload.unit_type) apiuri += `&unit_type=${payload.unit_type}`
-    if (payload.null_unit) apiuri += '&houseunit__isnull=true'
+    let url = `/contract-set/?project=${payload.project}&activation=true&contractor__status=${status}`
+    if (payload.order_group) url += `&order_group=${payload.order_group}`
+    if (payload.unit_type) url += `&unit_type=${payload.unit_type}`
     if (payload.building)
-      apiuri += `&keyunit__houseunit__building_unit=${payload.building}`
-    if (payload.registed)
-      apiuri += `&contractor__is_registed=${payload.registed}`
-    if (payload.from_date) apiuri += `&from_contract_date=${payload.from_date}`
-    if (payload.to_date) apiuri += `&to_contract_date=${payload.to_date}`
-    if (payload.search) apiuri += `&search=${payload.search}`
+      url += `&keyunit__houseunit__building_unit=${payload.building}`
+    if (payload.null_unit) url += '&houseunit__isnull=true'
+    if (payload.registed) url += `&contractor__is_registed=${payload.registed}`
+    if (payload.from_date) url += `&from_contract_date=${payload.from_date}`
+    if (payload.to_date) url += `&to_contract_date=${payload.to_date}`
+    if (payload.search) url += `&search=${payload.search}`
     const ordering = payload.ordering ? payload.ordering : '-created_at'
     const page = payload.page ? payload.page : 1
-    apiuri += `&ordering=${ordering}&page=${page}`
+    url += `&ordering=${ordering}&page=${page}`
 
     return api
-      .get(apiuri)
+      .get(url)
       .then(res => {
         contractList.value = res.data.results
         contractsCount.value = res.data.count
