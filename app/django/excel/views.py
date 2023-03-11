@@ -197,7 +197,7 @@ class ExportContracts(View):
             row = list(row)
 
             if sum_col is not None:
-                paid_sum = sum([i[1] for i in paid_data if i[0] == row[0]])
+                paid_sum = sum([ps[1] for ps in paid_data if ps[0] == row[0]])
                 row.insert(sum_col, paid_sum)  # 순서 삽입
 
             row[0] = i + 1  # pk 대신 순서 삽입
