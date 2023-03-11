@@ -90,7 +90,7 @@ const listFiltering = (payload: PaymentFilter) => {
 }
 
 const payMatch = (payload: ProjectCashBook) =>
-  patchPrCashBook({ ...payload, filters: {} })
+  patchPrCashBook({ ...payload, filters: { no_contract: true } }) // const & payment 매칭
 
 const pageSelect = (page: number) => {
   dataFilter.value.page = page

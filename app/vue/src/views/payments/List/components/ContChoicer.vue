@@ -138,9 +138,11 @@ const modalAction = () => {
   <ConfirmModal ref="confirmModal">
     <template #header>건별 수납 매칭</template>
     <template #default>
-      해당 수납 항목을 이 계약 건 &lt;{{
-        `${cont.contractor.name}(${cont.serial_number})`
-      }}&gt; 에 등록하시겠습니까?
+      해당 수납 항목을 이 계약 건
+      <span class="text-primary" style="font-weight: bold">
+        "{{ `${cont.contractor.name} [${cont.serial_number}]` }}"
+      </span>
+      대금납부로 등록하시겠습니까?
     </template>
     <template #footer>
       <CButton color="primary" @click="modalAction">저장</CButton>

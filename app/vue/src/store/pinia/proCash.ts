@@ -219,7 +219,7 @@ export const useProCash = defineStore('proCash', () => {
     payload: ProjectCashBook & { filters: CashBookFilter },
   ) => {
     const { pk, filters, ...formData } = payload
-    api
+    return api
       .patch(`/project-cashbook/${pk}/`, formData)
       .then(res => {
         fetchProjectCashList({
