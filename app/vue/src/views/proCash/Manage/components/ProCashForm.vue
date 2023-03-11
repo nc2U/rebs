@@ -516,7 +516,7 @@ onBeforeMount(() => {
               <CFormLabel class="col-sm-2 col-form-label">비고</CFormLabel>
               <CCol sm="10">
                 <CFormTextarea
-                  v-model.number="form.note"
+                  v-model="form.note"
                   placeholder="특이사항"
                   :disabled="!form.sort"
                 />
