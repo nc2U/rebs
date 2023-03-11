@@ -98,10 +98,10 @@ class ExportContracts(View):
         params = []
         widths = [7]
 
-        for i in cols:  # 요청된 컬럼 개수 만큼 반복 (1-2-3... -> i)
-            titles.append(header_src[i][0])  # 일련번호
-            params.append(header_src[i][1])  # serial_number
-            widths.append(header_src[i][2])  # 10
+        for n in cols:  # 요청된 컬럼 개수 만큼 반복 (1-2-3... -> i)
+            titles.append(header_src[n][0])  # 일련번호
+            params.append(header_src[n][1])  # serial_number
+            widths.append(header_src[n][2])  # 10
 
         while '' in params:
             params.remove('')
@@ -174,13 +174,13 @@ class ExportContracts(View):
         sum_col = None
 
         # Write body
-        for col_num, col in enumerate(titles):
-            if col in ('생년월일', '계약일자'):
+        for col_num, title in enumerate(titles):
+            if title in ('생년월일', '계약일자'):
                 is_date.append(col_num)
-            if col in '납입금액합계':
+            if title == '납입금액합계':
                 is_num.append(col_num)
                 sum_col = col_num
-            if col in ('', '비고'):
+            if title in ('', '비고'):
                 is_left.append(col_num)
 
         for i, row in enumerate(data):
