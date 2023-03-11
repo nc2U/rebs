@@ -118,6 +118,19 @@ class ExportContracts(View):
                 worksheet.write(row_num, col_num, titles[col_num], h_format)
 
         # 4. Body
+        b_format = workbook.add_format()
+        b_format.set_border()
+        b_format.set_align('vcenter')
+        b_format.set_num_format('yyyy-mm-dd')
+        b_format.set_align('center')
+
+        body_format = {
+            'border': True,
+            'valign': 'vcenter',
+            'num_format': 'yyyy-mm-dd',
+            'align': 'center',
+        }
+
         # ----------------- get_queryset start ----------------- #
         # Get some data to write to the spreadsheet.
         data = Contract.objects.filter(project=project,
@@ -155,19 +168,6 @@ class ExportContracts(View):
 
         data = data.values_list(*params)
 
-        b_format = workbook.add_format()
-        b_format.set_border()
-        b_format.set_align('vcenter')
-        b_format.set_num_format('yyyy-mm-dd')
-        b_format.set_align('center')
-
-        body_format = {
-            'border': True,
-            'valign': 'vcenter',
-            'num_format': 'yyyy-mm-dd',
-            'align': 'center',
-        }
-
         is_reg = []  # ('인가여부',)
         is_date = []  # ('생년월일', '계약일자')
         reg_data = ('미인가', '인가')
@@ -191,7 +191,9 @@ class ExportContracts(View):
             row.insert(0, i + 1)  # 순서 삽입
 
             is_paid = 0
-            for col_num, cell_data in enumerate(titles):
+            for col_num, cell_data in enumerate(data):
+                if cell_data == '납입금액합계':
+                    is_paid = 1
                 if col_num == 0 or col_num in is_num:
                     body_format['num_format'] = '#,##0'
                 else:
@@ -206,11 +208,8 @@ class ExportContracts(View):
                         body_format['align'] = 'center'
                 bf = workbook.add_format(body_format)
 
-                if cell_data == '납입금액합계':
-                    is_paid = 1
-                    worksheet.write(row_num, col_num + is_paid, cell_data, bf)
-                else:
-                    worksheet.write(row_num, col_num + is_paid, cell_data, bf)
+                cn = col_num + is_paid
+                worksheet.write(row_num, cn, cell_data, bf)
 
         # Close the workbook before sending the data.
         workbook.close()
