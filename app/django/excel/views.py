@@ -127,7 +127,7 @@ class ExportContracts(View):
         body_format = {
             'border': True,
             'valign': 'vcenter',
-            'num_format': 'yyyy-mm-dd',
+            'num_format': '#,##0',
             'align': 'center',
         }
 
@@ -195,8 +195,8 @@ class ExportContracts(View):
                 # css 설정
                 if col_num == 0 or col_num in is_num:
                     body_format['num_format'] = '#,##0'
-                else:
-                    body_format['num_format'] = 'yyyy-mm-dd'
+                # else:
+                #     body_format['num_format'] = 'yyyy-mm-dd'
 
                 if col_num in is_left:
                     if 'align' in body_format:
@@ -206,7 +206,7 @@ class ExportContracts(View):
                         body_format['align'] = 'center'
 
                 # 인가 여부 데이터 치환
-                cell_data = cn + 1  # ('미인가', '인가')[int(row[col_num + 1])] if title == '인가여부' else row[col_num + 1]
+                cell_data = cn  # ('미인가', '인가')[int(row[col_num + 1])] if title == '인가여부' else row[col_num + 1]
 
                 bf = workbook.add_format(body_format)
 
