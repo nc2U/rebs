@@ -186,19 +186,18 @@ class ExportContracts(View):
             if title in ('', '비고'):
                 is_left.append(col_num)
 
-        paid_params = ['income']
+        paid_params = ['pk', 'income']
         paid_data = ProjectCashBook.objects.filter(project_account_d2__lte=2,
                                                    income__isnull=False,
                                                    is_contract_payment=True)
+        paid_data = paid_data.values_list(*paid_params)
 
         for i, row in enumerate(data):
             row_num += 1
             row = list(row)
 
             if sum_col is not None:
-                paid_data = paid_data.filter(contract=row[0])
-                paid = paid_data.values_list(*paid_params)
-                paid_sum = sum([i[0] for i in paid])
+                paid_sum = [i[1] for i in paid_data if i[0] == row[0]]
                 row.insert(sum_col, paid_sum)  # 순서 삽입
 
             row[0] = i + 1  # pk 대신 순서 삽입
