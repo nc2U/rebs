@@ -188,9 +188,6 @@ class ExportContracts(View):
 
             is_paid = 0
             for col_num, title in enumerate(row):
-                if title == '납입금액합계':
-                    is_paid = 1
-                cn = col_num + is_paid
 
                 # css 설정
                 if col_num == 0 or col_num in is_num:
