@@ -5,7 +5,6 @@ import { TableSecondary } from '@/utils/cssMixins'
 import Payment from '@/views/payments/List/components/Payment.vue'
 import Pagination from '@/components/Pagination'
 
-defineProps({ project: { type: Object, default: null } })
 const emit = defineEmits(['page-select'])
 
 const paymentStore = usePayment()

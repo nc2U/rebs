@@ -7,7 +7,7 @@ import { useProjectData } from '@/store/pinia/project_data'
 import { numFormat } from '@/utils/baseMixins'
 import { TableSecondary } from '@/utils/cssMixins'
 
-defineProps({ project: { type: Object, default: null } })
+defineProps({ project: { type: Number, default: null } })
 
 const proStore = useProject()
 const budgetList = computed(() => proStore.proIncBudgetList)

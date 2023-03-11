@@ -28,8 +28,8 @@ let dataFilter = ref<PaymentFilter>({
 })
 
 const projStore = useProject()
-const project = computed(() => projStore.project)
 const initProjId = computed(() => projStore.initProjId)
+const project = computed(() => projStore.project?.pk || initProjId.value)
 const fetchIncBudgetList = (proj: number) => projStore.fetchIncBudgetList(proj)
 
 const contStore = useContract()
@@ -81,7 +81,7 @@ const onSelectAdd = (target: number) => {
 
 const listFiltering = (payload: PaymentFilter) => {
   dataFilter.value = payload
-  payload.project = project.value?.pk || initProjId.value
+  payload.project = project.value
   fetchPaymentList(payload)
 }
 
@@ -91,7 +91,7 @@ const pageSelect = (page: number) => {
 }
 
 const excelUrl = computed(() => {
-  let url = project.value ? `/excel/payments/?project=${project.value.pk}` : ''
+  let url = project.value ? `/excel/payments/?project=${project.value}` : ''
   if (dataFilter.value.from_date) url += `&sd=${dataFilter.value.from_date}`
   if (dataFilter.value.to_date) url += `&ed=${dataFilter.value.to_date}`
   if (dataFilter.value.order_group) url += `&og=${dataFilter.value.order_group}`
@@ -104,16 +104,15 @@ const excelUrl = computed(() => {
 })
 
 onMounted(() => {
-  const projectPk = project.value?.pk || initProjId.value
-  fetchOrderGroupList(projectPk)
-  fetchTypeList(projectPk)
-  fetchIncBudgetList(projectPk)
-  fetchContSummaryList(projectPk)
-  fetchPaySumList(projectPk)
-  fetchContNumList(projectPk)
-  fetchPayOrderList(projectPk)
-  fetchPaymentList({ project: projectPk })
-  fetchProBankAccList(projectPk)
+  fetchOrderGroupList(project.value)
+  fetchTypeList(project.value)
+  fetchIncBudgetList(project.value)
+  fetchContSummaryList(project.value)
+  fetchPaySumList(project.value)
+  fetchContNumList(project.value)
+  fetchPayOrderList(project.value)
+  fetchPaymentList({ project: project.value })
+  fetchProBankAccList(project.value)
 })
 
 onBeforeRouteLeave(() => {
@@ -135,7 +134,7 @@ onBeforeRouteLeave(() => {
     <CCardBody class="pb-5">
       <ListController ref="listControl" @payment-filtering="listFiltering" />
       <TableTitleRow excel :url="excelUrl" />
-      <PaymentList :project="project" @page-select="pageSelect" />
+      <PaymentList @page-select="pageSelect" />
     </CCardBody>
 
     <CCardFooter>&nbsp;</CCardFooter>
