@@ -200,23 +200,21 @@ class ExportContracts(View):
                 paid = paid_data.values_list(*paid_params)
                 paid_sum = sum([i[0] for i in paid])
                 row.insert(sum_col, paid_sum)  # 순서 삽입
-                
+
             row[0] = i + 1  # pk 대신 순서 삽입
 
             for col_num, cell_data in enumerate(row):
-
                 # css 설정
-                if col_num == 0 or col_num in is_num:
+                if col_num == 0:
                     body_format['num_format'] = '#,##0'
+                elif col_num == sum_col:
+                    body_format['align'] = 'right'
+                    body_format['num_format'] = '#,##0'
+                elif col_num in is_left:
+                    body_format['align'] = 'left'
                 else:
                     body_format['num_format'] = 'yyyy-mm-dd'
-
-                if col_num in is_left:
-                    if 'align' in body_format:
-                        del body_format['align']
-                else:
-                    if 'align' not in body_format:
-                        body_format['align'] = 'center'
+                    body_format['align'] = 'center'
 
                 # 인가 여부 데이터 치환
                 cell_value = ('미인가', '인가')[int(cell_data)] if reg_col == col_num else cell_data
