@@ -116,9 +116,13 @@ const modalAction = () => {
         </CRow>
       </CCallout>
 
-      <CAlert v-if="contactList.length !== 0" color="default" class="pt-0 pb-0">
-        상기 계약 건 중 아래 수납 항목을 매칭 등록할 계약 건을 클릭하여
-        주십시요.
+      <CAlert
+        v-if="contactList.length !== 0"
+        color="default"
+        class="pt-0 pb-0 text-primary"
+      >
+        상기 계약 건 중 아래 수납 항목을 매칭 등록할 계약 건을 선택한 후
+        클릭하여 주십시요.
       </CAlert>
 
       <CAlert color="info">
@@ -138,11 +142,9 @@ const modalAction = () => {
   <ConfirmModal ref="confirmModal">
     <template #header>건별 수납 매칭</template>
     <template #default>
-      해당 수납 항목을 이 계약 건
-      <span class="text-primary" style="font-weight: bold">
-        "{{ `${cont.contractor.name} [${cont.serial_number}]` }}"
-      </span>
-      대금납부로 등록하시겠습니까?
+      해당 수납 항목을 &lt;<span class="text-primary" style="font-weight: bold">
+        {{ `${cont.contractor.name} [${cont.serial_number}]` }} </span
+      >&gt; 계약 건의 납부대금으로 등록합니다.
     </template>
     <template #footer>
       <CButton color="primary" @click="modalAction">저장</CButton>
