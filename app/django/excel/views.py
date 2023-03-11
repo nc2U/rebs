@@ -192,14 +192,13 @@ class ExportContracts(View):
             row.insert(0, i + 1)  # 순서 삽입
             row.insert(sum_col, 555)  # 순서 삽입
 
-            is_paid = 0
             for col_num, cell_data in enumerate(row):
 
                 # css 설정
                 if col_num == 0 or col_num in is_num:
                     body_format['num_format'] = '#,##0'
-                # else:
-                #     body_format['num_format'] = 'yyyy-mm-dd'
+                else:
+                    body_format['num_format'] = 'yyyy-mm-dd'
 
                 if col_num in is_left:
                     if 'align' in body_format:
