@@ -95,7 +95,7 @@ class ExportContracts(View):
                       ['비고', 'contractor__note', 45]]
 
         titles = ['No']
-        params = []
+        params = ['pk']
         widths = [7]
 
         for n in cols:  # 요청된 컬럼 개수 만큼 반복 (1-2-3... -> i)
@@ -186,10 +186,14 @@ class ExportContracts(View):
             if title in ('', '비고'):
                 is_left.append(col_num)
 
+        paid_data = ProjectCashBook.objects.filter(project_account_d2__lte=2,
+                                                   income__isnull=False,
+                                                   is_contract_payment=True)
+
         for i, row in enumerate(data):
             row_num += 1
             row = list(row)
-            row.insert(0, i + 1)  # 순서 삽입
+            # row.insert(0, i + 1)  # 순서 삽입
             row.insert(sum_col, 555)  # 순서 삽입
 
             for col_num, cell_data in enumerate(row):
