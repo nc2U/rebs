@@ -25,6 +25,11 @@ const getTotalBudget = computed(() =>
   budgetList.value.map(b => b.budget).reduce((x, y) => x + y, 0),
 )
 
+const getTotalCont = computed(
+  () =>
+    budgetList.value.map(b => b.budget).reduce((x, y) => x + y, 0) - 5000000000,
+)
+
 const getTotalPaid = computed(() =>
   paySumList.value.map(b => b.paid_sum).reduce((x, y) => x + y, 0),
 )
@@ -34,6 +39,8 @@ const getBudgetByType = (ut: number) =>
     .filter(b => b.unit_type === ut)
     .map(b => b.budget)
     .reduce((x, y) => x + y, 0)
+
+const getContByType = (ut: number) => 11
 
 const getPaidByType = (ut: number) =>
   paySumList.value
@@ -70,21 +77,31 @@ const getPaidByType = (ut: number) =>
         <CTableDataCell>
           {{ numFormat(getBudgetByType(type.pk)) }}
         </CTableDataCell>
-        <CTableDataCell></CTableDataCell>
+        <CTableDataCell>
+          {{ numFormat(getContByType(type.pk)) }}
+        </CTableDataCell>
         <CTableDataCell class="text-primary">
           {{ numFormat(getPaidByType(type.pk)) }}
         </CTableDataCell>
-        <CTableDataCell class="text-danger"></CTableDataCell>
-        <CTableDataCell>{{ type.pk }}</CTableDataCell>
+        <CTableDataCell class="text-danger">
+          {{ numFormat(getContByType(type.pk) - getPaidByType(type.pk)) }}
+        </CTableDataCell>
+        <CTableDataCell>
+          {{ numFormat(getBudgetByType(type.pk) - getContByType(type.pk)) }}
+        </CTableDataCell>
       </CTableRow>
 
       <CTableRow class="text-right" color="light">
         <CTableHeaderCell class="text-center">합 계</CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(getTotalBudget) }}</CTableHeaderCell>
-        <CTableHeaderCell></CTableHeaderCell>
+        <CTableHeaderCell>{{ numFormat(getTotalCont) }}</CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(getTotalPaid) }}</CTableHeaderCell>
-        <CTableHeaderCell></CTableHeaderCell>
-        <CTableHeaderCell></CTableHeaderCell>
+        <CTableHeaderCell>
+          {{ numFormat(getTotalCont - getTotalPaid) }}
+        </CTableHeaderCell>
+        <CTableHeaderCell>
+          {{ numFormat(getTotalBudget - getTotalCont) }}
+        </CTableHeaderCell>
       </CTableRow>
     </CTableBody>
   </CTable>
