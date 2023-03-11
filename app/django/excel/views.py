@@ -191,24 +191,28 @@ class ExportContracts(View):
             row.insert(0, i + 1)  # 순서 삽입
 
             is_paid = 0
-            for col_num, cell_data in enumerate(data):
-                if cell_data == '납입금액합계':
+            for col_num, title in enumerate(titles):
+                if title == '납입금액합계':
                     is_paid = 1
+                cn = col_num + is_paid
+
                 if col_num == 0 or col_num in is_num:
                     body_format['num_format'] = '#,##0'
                 else:
                     body_format['num_format'] = 'yyyy-mm-dd'
-                if col_num in is_reg:  # 인가 여부 데이터 치환
-                    cell_data = reg_data[int(cell_data)]
+
                 if col_num in is_left:
                     if 'align' in body_format:
                         del body_format['align']
                 else:
                     if 'align' not in body_format:
                         body_format['align'] = 'center'
+
+                # 인가 여부 데이터 치환
+                cell_data = reg_data[int(row[col_num + 1])] if col_num in is_reg else row[col_num + 1]
+
                 bf = workbook.add_format(body_format)
 
-                cn = col_num + is_paid
                 worksheet.write(row_num, cn, cell_data, bf)
 
         # Close the workbook before sending the data.
