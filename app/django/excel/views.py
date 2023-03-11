@@ -206,12 +206,11 @@ class ExportContracts(View):
                         body_format['align'] = 'center'
 
                 # 인가 여부 데이터 치환
-                cell_data = (
-                col_num, cn)  # ('미인가', '인가')[int(row[col_num + 1])] if title == '인가여부' else row[col_num + 1]
+                # cell_data = cn  # ('미인가', '인가')[int(row[col_num + 1])] if title == '인가여부' else row[col_num + 1]
 
                 bf = workbook.add_format(body_format)
 
-                worksheet.write(row_num, cn, cell_data, bf)
+                worksheet.write(row_num, cn, '1', bf)
 
         # Close the workbook before sending the data.
         workbook.close()
