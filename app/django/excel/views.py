@@ -186,18 +186,18 @@ class ExportContracts(View):
             if title in ('', '비고'):
                 is_left.append(col_num)
 
-        paid_params = ['pk', 'income']
+        paid_params = ['contract', 'income']
         paid_data = ProjectCashBook.objects.filter(project_account_d2__lte=2,
                                                    income__isnull=False,
                                                    is_contract_payment=True)
-        paid_data = paid_data.values_list(*paid_params)
+        paid_dict = paid_data.values_list(*paid_params)
 
         for i, row in enumerate(data):
             row_num += 1
             row = list(row)
 
             if sum_col is not None:
-                paid_sum = sum([ps[1] for ps in paid_data if ps[0] == row[0]])
+                paid_sum = sum([ps[1] for ps in paid_dict if ps[0] == row[0]])
                 row.insert(sum_col, paid_sum)  # 순서 삽입
 
             row[0] = i + 1  # pk 대신 순서 삽입
@@ -205,6 +205,7 @@ class ExportContracts(View):
             for col_num, cell_data in enumerate(row):
                 # css 설정
                 if col_num == 0:
+                    body_format['align'] = 'center'
                     body_format['num_format'] = '#,##0'
                 elif col_num == sum_col:
                     body_format['align'] = 'right'
@@ -212,8 +213,8 @@ class ExportContracts(View):
                 elif col_num in is_left:
                     body_format['align'] = 'left'
                 else:
-                    body_format['num_format'] = 'yyyy-mm-dd'
                     body_format['align'] = 'center'
+                    body_format['num_format'] = 'yyyy-mm-dd'
 
                 # 인가 여부 데이터 치환
                 cell_value = ('미인가', '인가')[int(cell_data)] if reg_col == col_num else cell_data
