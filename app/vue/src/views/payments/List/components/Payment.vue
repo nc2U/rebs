@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { numFormat } from '@/utils/baseMixins'
+import { ProjectCashBook } from '@/store/types/proCash'
 import FormModal from '@/components/Modals/FormModal.vue'
 import ContChoicer from './ContChoicer.vue'
 
@@ -9,6 +10,8 @@ const props = defineProps({
   project: { type: Number, required: true },
   payment: { type: Object, required: true },
 })
+
+const emit = defineEmits(['pay-match'])
 
 const router = useRouter()
 const contMatchingModal = ref()
@@ -36,7 +39,7 @@ const contMatching = () => {
   return
 }
 
-const onPatch = () => 1
+const payMatch = (payload: ProjectCashBook) => emit('pay-match', payload)
 </script>
 
 <template>
@@ -92,7 +95,7 @@ const onPatch = () => 1
       <ContChoicer
         :project="project"
         :payment="payment"
-        @on-patch="onPatch"
+        @pay-match="payMatch"
         @close="contMatchingModal.close()"
       />
     </template>

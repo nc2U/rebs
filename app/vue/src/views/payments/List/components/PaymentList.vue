@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { usePayment } from '@/store/pinia/payment'
+import { ProjectCashBook } from '@/store/types/proCash'
 import { TableSecondary } from '@/utils/cssMixins'
 import Payment from '@/views/payments/List/components/Payment.vue'
 import Pagination from '@/components/Pagination'
 
-const emit = defineEmits(['page-select'])
+const emit = defineEmits(['page-select', 'pay-match'])
 
 defineProps({ project: { type: Number, required: true } })
 
@@ -13,6 +14,7 @@ const paymentStore = usePayment()
 const getPayments = computed(() => paymentStore.getPayments)
 const paymentPages = computed(() => paymentStore.paymentPages)
 
+const payMatch = (payload: ProjectCashBook) => emit('pay-match', payload)
 const pageSelect = (page: number) => emit('page-select', page)
 </script>
 
@@ -52,6 +54,7 @@ const pageSelect = (page: number) => emit('page-select', page)
         :key="i"
         :project="project"
         :payment="payment"
+        @pay-match="payMatch"
       />
     </CTableBody>
   </CTable>

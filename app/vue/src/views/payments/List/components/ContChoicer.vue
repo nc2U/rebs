@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, onMounted, computed, nextTick, inject } from 'vue'
+import { ref, onMounted, computed, nextTick } from 'vue'
 import { ContFilter, useContract } from '@/store/pinia/contract'
 import { write_payment } from '@/utils/pageAuth'
 import { numFormat } from '@/utils/baseMixins'
@@ -11,7 +11,7 @@ const props = defineProps({
   payment: { type: Object, required: true },
 })
 
-const emit = defineEmits(['on-patch', 'close'])
+const emit = defineEmits(['pay-match', 'close'])
 
 const alertModal = ref()
 const confirmModal = ref()
@@ -20,7 +20,7 @@ const form = ref({
   search: '',
 })
 
-const contract = ref()
+const cont = ref()
 const msg = ref('')
 const textClass = ref('')
 
@@ -50,9 +50,9 @@ const searchCont = () => {
     textClass.value = 'text-danger'
   }
 }
-const contMatching = (cont: number) => {
+const contMatching = (contract: number) => {
   if (write_payment) {
-    contract.value = cont
+    cont.value = contract
     confirmModal.value.callModal()
   } else alertModal.value.callModal()
 }
@@ -60,9 +60,9 @@ const contMatching = (cont: number) => {
 const modalAction = () => {
   const pk = props.payment.pk
   const is_contract_payment = true
-  const cont = contract.value.pk
-  const content = `${contract.value.contractor.name}[${contract.value.serial_number}] 대금납부`
-  emit('on-patch', { pk, is_contract_payment, contract: cont, content })
+  const contract = cont.value.pk
+  const content = `${cont.value.contractor.name}[${cont.value.serial_number}] 대금납부`
+  emit('pay-match', { pk, is_contract_payment, contract, content })
   pageInit()
   emit('close')
 }
@@ -99,15 +99,15 @@ const modalAction = () => {
             class="p-2 pl-3"
           >
             <CButton
-              v-for="cont in contactList"
-              :key="cont.pk"
+              v-for="c in contactList"
+              :key="c.pk"
               type="button"
               color="dark"
               variant="outline"
               size="sm"
-              @click="contMatching(cont)"
+              @click="contMatching(c)"
             >
-              {{ `${cont.contractor.name}(${cont.serial_number})` }}
+              {{ `${c.contractor.name}(${c.serial_number})` }}
             </CButton>
           </CCol>
           <CCol v-else class="mt-3 m-2" :class="textClass">
@@ -139,7 +139,7 @@ const modalAction = () => {
     <template #header>건별 수납 매칭</template>
     <template #default>
       해당 수납 항목을 이 계약 건 &lt;{{
-        `${contract.contractor.name}(${contract.serial_number})`
+        `${cont.contractor.name}(${cont.serial_number})`
       }}&gt; 에 등록하시겠습니까?
     </template>
     <template #footer>

@@ -52,26 +52,15 @@ export interface ProSepItems {
 }
 
 export interface ProjectCashBook extends ProSepItems {
-  // pk?: number | null
   project: number | null
   sort: number | null
-  // project_account_d1: number | null
-  // project_account_d2: number | null
   is_separate?: boolean
-  // separated?: number | null
-  // is_imprest?: boolean
   sepItems?: []
   is_contract_payment?: boolean
   contract?: number | null
   installment_order?: number | null
   refund_contractor?: number | null
-  // content: string
-  // trader: string
   bank_account: number | null
-  // income?: number | null
-  // outlay?: number | null
-  // evidence?: string
   evidence_desc?: string
-  // note: string
   deal_date: string
 }

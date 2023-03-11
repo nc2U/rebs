@@ -5,7 +5,7 @@ import { useProject } from '@/store/pinia/project'
 import { useContract } from '@/store/pinia/contract'
 import { useProjectData } from '@/store/pinia/project_data'
 import { PaymentFilter, usePayment } from '@/store/pinia/payment'
-import { useProCash } from '@/store/pinia/proCash'
+import { CashBookFilter, useProCash } from '@/store/pinia/proCash'
 import { onBeforeRouteLeave } from 'vue-router'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
@@ -13,6 +13,7 @@ import PaymentSummary from '@/views/payments/List/components/PaymentSummary.vue'
 import ListController from '@/views/payments/List/components/ListController.vue'
 import PaymentList from '@/views/payments/List/components/PaymentList.vue'
 import TableTitleRow from '@/components/TableTitleRow.vue'
+import { ProjectCashBook } from '@/store/types/proCash'
 
 const listControl = ref()
 let dataFilter = ref<PaymentFilter>({
@@ -53,6 +54,9 @@ const fetchPaymentList = (payload: PaymentFilter) =>
 const proCashStore = useProCash()
 const fetchProBankAccList = (projId: number) =>
   proCashStore.fetchProBankAccList(projId)
+const patchPrCashBook = (
+  payload: ProjectCashBook & { filters: CashBookFilter },
+) => proCashStore.patchPrCashBook(payload)
 
 const onSelectAdd = (target: number) => {
   if (!!target) {
@@ -84,6 +88,9 @@ const listFiltering = (payload: PaymentFilter) => {
   payload.project = project.value
   fetchPaymentList(payload)
 }
+
+const payMatch = (payload: ProjectCashBook) =>
+  patchPrCashBook({ ...payload, filters: {} })
 
 const pageSelect = (page: number) => {
   dataFilter.value.page = page
@@ -134,7 +141,11 @@ onBeforeRouteLeave(() => {
     <CCardBody class="pb-5">
       <ListController ref="listControl" @payment-filtering="listFiltering" />
       <TableTitleRow excel :url="excelUrl" />
-      <PaymentList :project="project" @page-select="pageSelect" />
+      <PaymentList
+        :project="project"
+        @pay-match="payMatch"
+        @page-select="pageSelect"
+      />
     </CCardBody>
 
     <CCardFooter>&nbsp;</CCardFooter>
