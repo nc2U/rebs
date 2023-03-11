@@ -171,6 +171,7 @@ class ExportContracts(View):
         is_date = []  # ('생년월일', '계약일자')
         is_left = []
         is_num = []
+        sum_col = None
 
         # Write body
         for col_num, col in enumerate(titles):
@@ -178,6 +179,7 @@ class ExportContracts(View):
                 is_date.append(col_num)
             if col in '납입금액합계':
                 is_num.append(col_num)
+                sum_col = col_num
             if col in ('', '비고'):
                 is_left.append(col_num)
 
@@ -207,7 +209,7 @@ class ExportContracts(View):
 
                 bf = workbook.add_format(body_format)
 
-                worksheet.write(row_num, col_num, cell_data, bf)
+                worksheet.write(row_num, col_num, f'{col_num}-{sum_col}', bf)
 
         # Close the workbook before sending the data.
         workbook.close()
