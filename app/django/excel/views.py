@@ -877,7 +877,7 @@ class ExportPaymentsByCont(View):
             if i == 0:
                 worksheet.merge_range(row_num, i, row_num, i + 2, '계약자 인적사항', h_format)
             elif i == 3:
-                worksheet.merge_range(row_num, i, row_num, i + 3 + is_us_cn, '가입 세부사항', h_format)
+                worksheet.merge_range(row_num, i, row_num, i + 2 + is_us_cn, '가입 세부사항', h_format)
             elif i == 6 + is_us_cn:
                 worksheet.merge_range(row_num, i, row_num, i + 9, '분양대금 납부내역', h_format)
 
