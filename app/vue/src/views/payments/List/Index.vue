@@ -1,13 +1,12 @@
 <script lang="ts" setup>
-import { computed, ref, onMounted, watch } from 'vue'
-import { pageTitle, navMenu } from '@/views/payments/_menu/headermixin'
+import { computed, onMounted, ref } from 'vue'
+import { navMenu, pageTitle } from '@/views/payments/_menu/headermixin'
 import { useProject } from '@/store/pinia/project'
 import { useContract } from '@/store/pinia/contract'
 import { useProjectData } from '@/store/pinia/project_data'
 import { usePayment } from '@/store/pinia/payment'
 import { useProCash } from '@/store/pinia/proCash'
-import { CashBookFilter } from '@/store/types/proCash'
-import { ProjectCashBook } from '@/store/types/proCash'
+import { CashBookFilter, ProjectCashBook } from '@/store/types/proCash'
 import { onBeforeRouteLeave } from 'vue-router'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
@@ -115,16 +114,17 @@ const byPayment = computed(() => {
   return pUrl
 })
 
-const byContract = computed(() => {
-  let cUrl = project.value
+const byContract = computed(() =>
+  project.value
     ? `/excel/paid-by-cont/?project=${project.value}&date=${filterItems.value.to_date}`
-    : ''
-
-  return cUrl
-})
+    : '',
+)
 
 const excelSelect = ref('1') // 다운로드할 파일 선택
-const excelUrl = excelSelect.value === '1' ? byPayment.value : byContract.value
+
+const excelUrl = computed(() =>
+  excelSelect.value === '1' ? byPayment.value : byContract.value,
+)
 
 onMounted(() => {
   fetchOrderGroupList(project.value)

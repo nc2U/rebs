@@ -215,8 +215,7 @@ defineExpose({ listFiltering })
     </CRow>
     <CRow>
       <CCol color="warning" class="p-2 pl-3">
-        <strong>납부 건수 조회 결과 : {{ paymentsCount }} 건</strong> //
-        {{ byCont }}
+        <strong>납부 건수 조회 결과 : {{ paymentsCount }} 건</strong>
       </CCol>
       <CCol v-if="!formsCheck" class="text-right mb-0">
         <CButton color="info" size="sm" @click="resetForm">
