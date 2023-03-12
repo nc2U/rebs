@@ -861,7 +861,6 @@ class ExportPaymentsByCont(View):
         worksheet.write(row_num, col_cnt, date + ' 현재', workbook.add_format({'align': 'right'}))
 
         # 3. Header
-        # Line1
         worksheet.set_row(row_num, 23)
 
         h_format = workbook.add_format()
@@ -871,8 +870,10 @@ class ExportPaymentsByCont(View):
         h_format.set_align('vcenter')
         h_format.set_bg_color('#eeeeee')
 
+        # Line --------------------- 1
         row_num = 2
 
+        # Write header
         for i in range(col_cnt):
             if i == 0:
                 worksheet.merge_range(row_num, i, row_num, i + 2, '계약자 인적사항', h_format)
@@ -880,10 +881,6 @@ class ExportPaymentsByCont(View):
                 worksheet.merge_range(row_num, i, row_num, i + 2 + is_us_cn, '가입 세부사항', h_format)
             elif i == 6 + is_us_cn:
                 worksheet.merge_range(row_num, i, row_num, i + 9, '분양대금 납부내역', h_format)
-
-        # Line2
-        row_num = 3
-        worksheet.set_row(row_num, 23)
 
         # title_list
         header_src = [
@@ -927,14 +924,13 @@ class ExportPaymentsByCont(View):
         for i, cw in enumerate(widths):  # 각 컬럼 넙이 세팅
             worksheet.set_column(i, i, cw)
 
+        # Line --------------------- 2
+        row_num = 3
+        worksheet.set_row(row_num, 23)
+
         # Write header
-        # for col_num, title in enumerate(titles):  # 헤더 줄 제목 세팅
-        #     if col_num < 7 + is_us_cn:
-        #         worksheet.merge_range(row_num, col_num, 2, col_num, title, h_format)
-        #     elif col_num < 15 + is_us_cn:
-        #         worksheet.merge_range(row_num, col_num, row_num, 2, '계약금n차', h_format)
-        #     else:
-        #         worksheet.merge_range(row_num, col_num, 2, col_num, '미납내역', h_format)
+        for col_num in range(col_cnt):  # 헤더 줄 제목 세팅
+            worksheet.merge_range(row_num, col_num, 2, col_num, titles[col_num], h_format)
 
         # Line3
         row_num = 4
