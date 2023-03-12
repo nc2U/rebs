@@ -841,8 +841,8 @@ class ExportPaymentsByCont(View):
         date = TODAY if not request.GET.get('date') else request.GET.get('date')
         # ----------------- get_queryset finish ----------------- #
 
-        col_cnt = 10
-        is_us_cn = 2 if project.is_unit_set else 0
+        col_cnt = 7 + 8  # 기본 컬럼수 + 납부회차 * 2
+        is_us_cn = 2 if project.is_unit_set else 0  # 동호 표시할 경우 2라인 추가
         if project.is_unit_set:
             col_cnt += is_us_cn
 
