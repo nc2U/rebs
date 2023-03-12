@@ -17,7 +17,7 @@ import PaymentList from '@/views/payments/List/components/PaymentList.vue'
 import TableTitleRow from '@/components/TableTitleRow.vue'
 
 const listControl = ref()
-let dataFilter = ref<CashBookFilter>({
+let filterItems = ref<CashBookFilter>({
   page: 1,
   from_date: '',
   to_date: '',
@@ -86,7 +86,7 @@ const onSelectAdd = (target: number) => {
 }
 
 const listFiltering = (payload: CashBookFilter) => {
-  dataFilter.value = payload
+  filterItems.value = payload
   payload.project = project.value
   fetchPaymentList(payload)
 }
@@ -95,29 +95,29 @@ const payMatch = (payload: ProjectCashBook) =>
   patchPrCashBook({ ...payload, filters: { no_contract: true } }) // const & payment 매칭
 
 const pageSelect = (page: number) => {
-  dataFilter.value.page = page
+  filterItems.value.page = page
   listControl.value.listFiltering(page)
 }
 
 const byPayment = computed(() => {
   let pUrl = project.value ? `/excel/payments/?project=${project.value}` : ''
-  if (dataFilter.value.from_date) pUrl += `&sd=${dataFilter.value.from_date}`
-  if (dataFilter.value.to_date) pUrl += `&ed=${dataFilter.value.to_date}`
-  if (dataFilter.value.order_group)
-    pUrl += `&og=${dataFilter.value.order_group}`
-  if (dataFilter.value.unit_type) pUrl += `&ut=${dataFilter.value.unit_type}`
-  if (dataFilter.value.pay_order) pUrl += `&ipo=${dataFilter.value.pay_order}`
-  if (dataFilter.value.pay_account)
-    pUrl += `&ba=${dataFilter.value.pay_account}`
-  if (dataFilter.value.no_contract) pUrl += `&nc=on`
-  if (dataFilter.value.no_install) pUrl += `&ni=on`
-  if (dataFilter.value.search) pUrl += `&q=${dataFilter.value.search}`
+  if (filterItems.value.from_date) pUrl += `&sd=${filterItems.value.from_date}`
+  if (filterItems.value.to_date) pUrl += `&ed=${filterItems.value.to_date}`
+  if (filterItems.value.order_group)
+    pUrl += `&og=${filterItems.value.order_group}`
+  if (filterItems.value.unit_type) pUrl += `&ut=${filterItems.value.unit_type}`
+  if (filterItems.value.pay_order) pUrl += `&ipo=${filterItems.value.pay_order}`
+  if (filterItems.value.pay_account)
+    pUrl += `&ba=${filterItems.value.pay_account}`
+  if (filterItems.value.no_contract) pUrl += `&nc=on`
+  if (filterItems.value.no_install) pUrl += `&ni=on`
+  if (filterItems.value.search) pUrl += `&q=${filterItems.value.search}`
   return pUrl
 })
 
 const byContract = computed(() => {
   let cUrl = project.value
-    ? `/excel/paid-by-cont/?project=${project.value}&date=${dataFilter.value.to_date}`
+    ? `/excel/paid-by-cont/?project=${project.value}&date=${filterItems.value.to_date}`
     : ''
 
   return cUrl
@@ -125,21 +125,6 @@ const byContract = computed(() => {
 
 const excelSelect = ref('1') // 다운로드할 파일 선택
 const excelUrl = excelSelect.value === '1' ? byPayment.value : byContract.value
-
-watch(excelSelect, nVal => {
-  if (nVal === '2') {
-    dataFilter.value.page = 1
-    dataFilter.value.from_date = ''
-    dataFilter.value.order_group = ''
-    dataFilter.value.unit_type = ''
-    dataFilter.value.pay_order = ''
-    dataFilter.value.pay_account = ''
-    dataFilter.value.no_contract = false
-    dataFilter.value.no_install = false
-    dataFilter.value.search = ''
-    listFiltering(dataFilter.value)
-  }
-})
 
 onMounted(() => {
   fetchOrderGroupList(project.value)
@@ -170,7 +155,11 @@ onBeforeRouteLeave(() => {
 
   <ContentBody>
     <CCardBody class="pb-5">
-      <ListController ref="listControl" @payment-filtering="listFiltering" />
+      <ListController
+        ref="listControl"
+        :by-cont="excelSelect === '2'"
+        @payment-filtering="listFiltering"
+      />
       <TableTitleRow excel :url="excelUrl">
         <v-radio-group
           v-model="excelSelect"
@@ -185,7 +174,7 @@ onBeforeRouteLeave(() => {
         </v-radio-group>
       </TableTitleRow>
       <PaymentList
-        :page="dataFilter.page"
+        :page="filterItems.page"
         :project="project"
         @pay-match="payMatch"
         @page-select="pageSelect"

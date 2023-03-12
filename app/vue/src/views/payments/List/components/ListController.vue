@@ -10,6 +10,7 @@ import { bgLight } from '@/utils/cssMixins'
 import Multiselect from '@vueform/multiselect'
 import DatePicker from '@/components/DatePicker/index.vue'
 
+const props = defineProps({ byCont: { type: Boolean, default: false } })
 const emit = defineEmits(['payment-filtering'])
 
 const from_date = ref('')
@@ -60,6 +61,20 @@ watch(to_date, val => {
   listFiltering(1)
 })
 
+watch(props, nVal => {
+  if (!!nVal.byCont) {
+    from_date.value = ''
+    form.order_group = ''
+    form.unit_type = ''
+    form.pay_order = ''
+    form.pay_account = ''
+    form.no_contract = false
+    form.no_install = false
+    form.search = ''
+    listFiltering(1)
+  }
+})
+
 const listFiltering = (page = 1) => {
   nextTick(() => {
     form.search = form.search.trim()
@@ -69,7 +84,6 @@ const listFiltering = (page = 1) => {
     })
   })
 }
-defineExpose({ listFiltering })
 
 const resetForm = () => {
   from_date.value = ''
@@ -83,6 +97,7 @@ const resetForm = () => {
   form.search = ''
   listFiltering(1)
 }
+defineExpose({ listFiltering })
 </script>
 
 <template>
@@ -95,6 +110,7 @@ const resetForm = () => {
               v-model="from_date"
               v-maska="'####-##-##'"
               placeholder="납부일자 (From)"
+              :disabled="byCont"
               @keydown.enter="listFiltering(1)"
             />
           </CCol>
@@ -113,6 +129,7 @@ const resetForm = () => {
               v-model="form.order_group"
               :options="getOrderGroups"
               placeholder="차수"
+              :disabled="byCont"
               @change="listFiltering(1)"
             />
           </CCol>
@@ -122,12 +139,17 @@ const resetForm = () => {
               v-model="form.unit_type"
               :options="getTypes"
               placeholder="타입"
+              :disabled="byCont"
               @change="listFiltering(1)"
             />
           </CCol>
 
           <CCol lg="6" xl="2" class="mb-3">
-            <CFormSelect v-model="form.pay_order" @change="listFiltering(1)">
+            <CFormSelect
+              v-model="form.pay_order"
+              :disabled="byCont"
+              @change="listFiltering(1)"
+            >
               <option value="">납부회차 선택</option>
               <option v-for="po in payOrderList" :key="po.pk" :value="po.pk">
                 {{ po.__str__ }}
@@ -136,7 +158,11 @@ const resetForm = () => {
           </CCol>
 
           <CCol lg="6" xl="2" class="mb-3">
-            <CFormSelect v-model="form.pay_account" @change="listFiltering(1)">
+            <CFormSelect
+              v-model="form.pay_account"
+              :disabled="byCont"
+              @change="listFiltering(1)"
+            >
               <option value="">납부계좌 선택</option>
               <option
                 v-for="ba in proBankAccountList"
@@ -156,6 +182,7 @@ const resetForm = () => {
               id="no_contract"
               v-model="form.no_contract"
               label="계약 미등록"
+              :disabled="byCont"
               @change="listFiltering(1)"
             />
           </CCol>
@@ -165,6 +192,7 @@ const resetForm = () => {
               id="no_install"
               v-model="form.no_install"
               label="회차 미등록"
+              :disabled="byCont"
               @change="listFiltering(1)"
             />
           </CCol>
@@ -173,6 +201,7 @@ const resetForm = () => {
             <CInputGroup class="flex-nowrap">
               <CFormInput
                 v-model="form.search"
+                :disabled="byCont"
                 placeholder="계약자, 입금자, 적요, 비고"
                 aria-label="Username"
                 aria-describedby="addon-wrapping"
@@ -186,7 +215,8 @@ const resetForm = () => {
     </CRow>
     <CRow>
       <CCol color="warning" class="p-2 pl-3">
-        <strong>납부 건수 조회 결과 : {{ paymentsCount }} 건</strong>
+        <strong>납부 건수 조회 결과 : {{ paymentsCount }} 건</strong> //
+        {{ byCont }}
       </CCol>
       <CCol v-if="!formsCheck" class="text-right mb-0">
         <CButton color="info" size="sm" @click="resetForm">
