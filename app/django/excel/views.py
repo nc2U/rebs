@@ -841,7 +841,9 @@ class ExportPaymentsByCont(View):
         date = TODAY if not request.GET.get('date') else request.GET.get('date')
         # ----------------- get_queryset finish ----------------- #
 
-        col_cnt = 12
+        col_cnt = 10
+        if project.is_unit_set:
+            col_cnt += 2
 
         # 1. Title
         row_num = 0
@@ -857,9 +859,9 @@ class ExportPaymentsByCont(View):
         worksheet.set_row(row_num, 18)
         worksheet.write(row_num, col_cnt, date + ' 현재', workbook.add_format({'align': 'right'}))
 
-        # 3. Header
+        # 3. Header Line1
         row_num = 2
-        worksheet.set_row(row_num, 23, workbook.add_format({'bold': True}))
+        worksheet.set_row(row_num, 23)
 
         h_format = workbook.add_format()
         h_format.set_bold()
@@ -869,20 +871,23 @@ class ExportPaymentsByCont(View):
         h_format.set_bg_color('#eeeeee')
 
         # title_list
-        header_src = [['일련번호', 'serial_number', 10],
-                      ['차수', 'order_group__order_group_name', 10],
-                      ['타입', 'keyunit__unit_type__name', 7],
-                      ['동', 'keyunit__houseunit__building_unit__name', 7],
-                      ['호수', 'keyunit__houseunit__name', 7],
-                      ['계약자', 'contractor__name', 10],
-                      ['계약일자', 'contractor__contract_date', 12],
-                      ['계약금1차', '', 12],
-                      ['계약금2차', '', 12],
-                      ['계약금3차', '', 12],
-                      ['계약금4차', '', 12],
-                      ['납입금액합계', '', 12]]
+        header_src = [
+            ['계약번호', 'serial_number', 10],
+            ['성명', 'contractor__name', 10],
+            ['차수', 'order_group__order_group_name', 10],
+            ['타입', 'keyunit__unit_type__name', 7],
+            ['동', 'keyunit__houseunit__building_unit__name', 7],
+            ['호수', 'keyunit__houseunit__name', 7],
+            ['계약일', 'contractor__contract_date', 12],
+            ['기납부 총액', '', 12],
+            ['미납내역', '', 12],
+        ]
 
-        titles = ['No']
+        if project.is_unit_set:
+            header_src.insert(4, ['동', 'keyunit__houseunit__building_unit', 7])
+            header_src.insert(5, ['호수', 'keyunit__houseunit__name', 7])
+
+        titles = ['번호']
         params = ['pk']
         widths = [7]
 
