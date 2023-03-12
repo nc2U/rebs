@@ -975,7 +975,7 @@ class ExportPaymentsByCont(View):
         output.seek(0)
 
         # Set up the Http response.
-        filename = '{date}-pment-by-cont.xlsx'.format(date)
+        filename = f'{date}-payment-by-cont.xlsx'
         file_format = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         response = HttpResponse(output, content_type=file_format)
         response['Content-Disposition'] = 'attachment; filename=%s' % filename
