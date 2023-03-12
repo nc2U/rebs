@@ -861,7 +861,7 @@ class ExportPaymentsByCont(View):
         worksheet.write(row_num, col_cnt, date + ' 현재', workbook.add_format({'align': 'right'}))
 
         # 3. Header
-        worksheet.set_row(row_num, 23)
+        worksheet.set_row(row_num, 25)
 
         h_format = workbook.add_format()
         h_format.set_bold()
