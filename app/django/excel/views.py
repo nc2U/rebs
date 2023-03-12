@@ -930,7 +930,11 @@ class ExportPaymentsByCont(View):
 
         # Write header
         for col_num in range(col_cnt):  # 헤더 줄 제목 세팅
-            worksheet.merge_range(row_num, col_num, 2, col_num, titles[col_num], h_format)
+            try:
+                title = titles[col_num]
+            except IndexError:
+                title = None
+            worksheet.merge_range(row_num, col_num, row_num + 1, col_num, title, h_format)
 
         # Line3
         row_num = 4
