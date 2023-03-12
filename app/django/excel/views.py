@@ -841,7 +841,7 @@ class ExportPaymentsByCont(View):
         date = TODAY if not request.GET.get('edate') else request.GET.get('edate')
         # ----------------- get_queryset finish ----------------- #
 
-        col_cnt = 13
+        col_cnt = 12
 
         # 1. Title
         row_num = 0
@@ -975,7 +975,7 @@ class ExportPaymentsByCont(View):
         output.seek(0)
 
         # Set up the Http response.
-        filename = '{date}-contracts.xlsx'.format(date=datetime.now().strftime('%Y-%m-%d'))
+        filename = '{date}-pment-by-cont.xlsx'.format(date)
         file_format = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         response = HttpResponse(output, content_type=file_format)
         response['Content-Disposition'] = 'attachment; filename=%s' % filename
