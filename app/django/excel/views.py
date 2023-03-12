@@ -899,7 +899,7 @@ class ExportPaymentsByCont(View):
             worksheet.set_column(i, i, cw)
 
         # Write header
-        for col_num, title in titles:  # 헤더 줄 제목 세팅
+        for col_num, title in enumerate(titles):  # 헤더 줄 제목 세팅
             worksheet.write(row_num, col_num, title, h_format)
 
         # 4. Body
