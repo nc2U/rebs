@@ -821,7 +821,8 @@ def export_payments_xls(request):
 class ExportPaymentsByCont(View):
     """계약자별 수납내역 리스트"""
 
-    def get(self, request):
+    @staticmethod
+    def get(request):
 
         # Create an in-memory output file for the new workbook.
         output = io.BytesIO()
@@ -835,9 +836,12 @@ class ExportPaymentsByCont(View):
 
         worksheet.set_default_row(20)
 
+        # ----------------- get_queryset start ----------------- #
         project = Project.objects.get(pk=request.GET.get('project'))
+        date = TODAY if not request.GET.get('edate') else request.GET.get('edate')
+        # ----------------- get_queryset finish ----------------- #
 
-        col_cnt = 10
+        col_cnt = 13
 
         # 1. Title
         row_num = 0
@@ -851,7 +855,7 @@ class ExportPaymentsByCont(View):
         # 2. Pre Header - Date
         row_num = 1
         worksheet.set_row(row_num, 18)
-        worksheet.write(row_num, col_cnt, TODAY + ' 현재', workbook.add_format({'align': 'right'}))
+        worksheet.write(row_num, col_cnt, date + ' 현재', workbook.add_format({'align': 'right'}))
 
         # 3. Header
         row_num = 2
@@ -871,18 +875,21 @@ class ExportPaymentsByCont(View):
                       ['동', 'keyunit__houseunit__building_unit__name', 7],
                       ['호수', 'keyunit__houseunit__name', 7],
                       ['계약자', 'contractor__name', 10],
-                      ['생년월일', 'contractor__birth_date', 12],
                       ['계약일자', 'contractor__contract_date', 12],
+                      ['계약금1차', '', 12],
+                      ['계약금2차', '', 12],
+                      ['계약금3차', '', 12],
+                      ['계약금4차', '', 12],
                       ['납입금액합계', '', 12]]
 
         titles = ['No']
         params = ['pk']
         widths = [7]
 
-        for n in cols:  # 요청된 컬럼 개수 만큼 반복 (1-2-3... -> i)
-            titles.append(header_src[n][0])  # 일련번호
-            params.append(header_src[n][1])  # serial_number
-            widths.append(header_src[n][2])  # 10
+        for header in header_src:  # 요청된 컬럼 개수 만큼 반복 (1-2-3... -> i)
+            titles.append(header[0])  # 일련번호
+            params.append(header[1])  # serial_number
+            widths.append(header[2])  # 10
 
         while '' in params:
             params.remove('')
@@ -892,11 +899,8 @@ class ExportPaymentsByCont(View):
             worksheet.set_column(i, i, cw)
 
         # Write header
-        for col_num, col in enumerate(titles):  # 헤더 줄 제목 세팅
-            if '주소' in col:
-                worksheet.merge_range(row_num, col_num, row_num, col_num + 3, titles[col_num], h_format)
-            else:
-                worksheet.write(row_num, col_num, titles[col_num], h_format)
+        for col_num, title in titles:  # 헤더 줄 제목 세팅
+            worksheet.write(row_num, col_num, title, h_format)
 
         # 4. Body
         b_format = workbook.add_format()
@@ -914,72 +918,35 @@ class ExportPaymentsByCont(View):
 
         # ----------------- get_queryset start ----------------- #
         # Get some data to write to the spreadsheet.
-        data = Contract.objects.filter(project=project,
-                                       activation=True,
-                                       contractor__status='2').order_by('contractor__contract_date')
-        if request.GET.get('group'):
-            data = data.filter(order_group=request.GET.get('group'))
-        if request.GET.get('type'):
-            data = data.filter(unit_type=request.GET.get('type'))
-        if self.request.GET.get('dong'):
-            data = data.filter(keyunit__houseunit__building_unit=self.request.GET.get('dong'))
-        if request.GET.get('is_null'):
-            is_null = True if request.GET.get('is_null') == '1' else False
-            data = data.filter(keyunit__houseunit__isnull=is_null)
-        if request.GET.get('reg'):
-            result = True if request.GET.get('reg') == '1' else False
-            data = data.filter(contractor__is_registed=result)
-        if request.GET.get('sdate'):
-            data = data.filter(contractor__contract_date__gte=request.GET.get('sdate'))
-        if request.GET.get('edate'):
-            data = data.filter(contractor__contract_date__lte=request.GET.get('edate'))
-        if request.GET.get('q'):
-            data = data.filter(
-                Q(serial_number__icontains=request.GET.get('q')) |
-                Q(contractor__name__icontains=request.GET.get('q')) |
-                Q(contractor__note__icontains=request.GET.get('q')))
-
-        order_list = ['-created_at', 'created_at', '-contractor__contract_date',
-                      'contractor__contract_date', '-serial_number',
-                      'serial_number', '-contractor__name', 'contractor__name']
-        if self.request.GET.get('order'):
-            data = data.order_by(order_list[int(self.request.GET.get('order'))])
+        obj_list = Contract.objects.filter(project=project,
+                                           activation=True,
+                                           contractor__status='2',
+                                           contractor__contract_date__lte=date) \
+            .order_by('contractor__contract_date')
 
         # ----------------- get_queryset finish ----------------- #
 
-        data = data.values_list(*params)
+        data = obj_list.values_list(*params)
 
-        is_date = []  # ('생년월일', '계약일자')
-        is_left = []
-        is_num = []
         reg_col = None
         sum_col = None
 
         # Write body
-        for col_num, title in enumerate(titles):
-            if title in ('생년월일', '계약일자'):
-                is_date.append(col_num)
-            if title == '인가여부':
-                reg_col = col_num
-            if title == '납입금액합계':
-                is_num.append(col_num)
-                sum_col = col_num
-            if title in ('', '비고'):
-                is_left.append(col_num)
-
+        # ----------------------------------------------------------------- #
         paid_params = ['contract', 'income']
         paid_data = ProjectCashBook.objects.filter(project_account_d2__lte=2,
                                                    income__isnull=False,
                                                    is_contract_payment=True)
         paid_dict = paid_data.values_list(*paid_params)
+        # ----------------------------------------------------------------- #
 
         for i, row in enumerate(data):
             row_num += 1
             row = list(row)
 
-            if sum_col is not None:
-                paid_sum = sum([ps[1] for ps in paid_dict if ps[0] == row[0]])
-                row.insert(sum_col, paid_sum)  # 순서 삽입
+            # if sum_col is not None:
+            #     paid_sum = sum([ps[1] for ps in paid_dict if ps[0] == row[0]])
+            #     row.insert(sum_col, paid_sum)  # 순서 삽입
 
             row[0] = i + 1  # pk 대신 순서 삽입
 
@@ -991,18 +958,15 @@ class ExportPaymentsByCont(View):
                 elif col_num == sum_col:
                     body_format['align'] = 'right'
                     body_format['num_format'] = '#,##0'
-                elif col_num in is_left:
-                    body_format['align'] = 'left'
+                # elif col_num in is_left:
+                #     body_format['align'] = 'left'
                 else:
                     body_format['align'] = 'center'
                     body_format['num_format'] = 'yyyy-mm-dd'
 
-                # 인가 여부 데이터 치환
-                cell_value = ('미인가', '인가')[int(cell_data)] if reg_col == col_num else cell_data
-
                 bf = workbook.add_format(body_format)
 
-                worksheet.write(row_num, col_num, cell_value, bf)
+                worksheet.write(row_num, col_num, cell_data, bf)
 
         # Close the workbook before sending the data.
         workbook.close()
@@ -1022,7 +986,8 @@ class ExportPaymentsByCont(View):
 class ExportPaymentStatus(View):
     """차수 및 타입별 수납 집계 현황"""
 
-    def get(self, request):
+    @staticmethod
+    def get(request):
 
         # Create an in-memory output file for the new workbook.
         output = io.BytesIO()
