@@ -99,9 +99,7 @@ const pageSelect = (page: number) => {
   listControl.value.listFiltering(page)
 }
 
-const excelSelect = ref('1') // 다운로드할 파일 선택
-
-const excelUrl = computed(() => {
+const byPayment = computed(() => {
   let url = project.value ? `/excel/payments/?project=${project.value}` : ''
   if (dataFilter.value.from_date) url += `&sd=${dataFilter.value.from_date}`
   if (dataFilter.value.to_date) url += `&ed=${dataFilter.value.to_date}`
@@ -114,6 +112,11 @@ const excelUrl = computed(() => {
   if (dataFilter.value.search) url += `&q=${dataFilter.value.search}`
   return url
 })
+
+const byContract = computed(() => 1)
+
+const excelSelect = ref('1') // 다운로드할 파일 선택
+const excelUrl = excelSelect.value === '1' ? byPayment.value : byContract.value
 
 onMounted(() => {
   fetchOrderGroupList(project.value)
@@ -154,7 +157,7 @@ onBeforeRouteLeave(() => {
           class="d-flex flex-row-reverse"
         >
           <v-radio label="수납건별" value="1" class="pr-3" />
-          <v-radio label="조합원별" value="2" disabled />
+          <v-radio label="조합원별" value="2" />
         </v-radio-group>
       </TableTitleRow>
       <PaymentList
