@@ -930,7 +930,10 @@ class ExportPaymentsByCont(View):
 
         # Write header
         for col_num, title in enumerate(titles):  # 헤더 줄 제목 세팅
-            worksheet.merge_range(row_num, col_num, row_num + 1, col_num, title, h_format)
+            if col_num < 7 + is_us_cn or col_num == 15 + is_us_cn:
+                worksheet.merge_range(row_num, col_num, row_num + 1, col_num, title, h_format)
+            else:
+                worksheet.merge_range(row_num, col_num, row_num, col_num + 1, title, h_format)
 
         # Line3
         row_num = 4
