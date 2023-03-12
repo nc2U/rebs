@@ -939,13 +939,6 @@ class ExportPaymentsByCont(View):
         row_num = 4
         worksheet.set_row(row_num, 23)
 
-        # Write header
-        for col_num, title in enumerate(titles):  # 헤더 줄 제목 세팅
-            if col_num < 7 + is_us_cn or col_num == 15 + is_us_cn:
-                worksheet.merge_range(row_num, col_num, row_num + 1, col_num, title, h_format)
-            else:
-                worksheet.merge_range(row_num, col_num, row_num, col_num + 1, title, h_format)
-
         for col_num in range(col_cnt):
             if col_num <= 7 + is_us_cn and col_num <= 14 + is_us_cn:
                 if col_num % 2 == 1:
