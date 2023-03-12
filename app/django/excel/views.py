@@ -936,15 +936,15 @@ class ExportPaymentsByCont(View):
                 worksheet.merge_range(row_num, col_num, row_num, col_num + 1, title, h_format)
 
         # Line --------------------- 3
-        row_num = 4
-        worksheet.set_row(row_num, 23)
-
-        for col_num in range(col_cnt):
-            if col_num <= 7 + is_us_cn and col_num <= 14 + is_us_cn:
-                if col_num % 2 == 1:
-                    worksheet.write(row_num, col_num, '거래일', h_format)
-                else:
-                    worksheet.write(row_num, col_num, '금액', h_format)
+        # row_num = 4
+        # worksheet.set_row(row_num, 23)
+        #
+        # for col_num in range(col_cnt):
+        #     if col_num <= 7 + is_us_cn and col_num <= 14 + is_us_cn:
+        #         if col_num % 2 == 1:
+        #             worksheet.write(row_num, col_num, '거래일', h_format)
+        #         else:
+        #             worksheet.write(row_num, col_num, '금액', h_format)
 
         # 4. Body
         b_format = workbook.add_format()
