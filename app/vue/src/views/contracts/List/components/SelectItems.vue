@@ -6,7 +6,7 @@ const props = defineProps({
   visible: { type: Boolean, default: false },
 })
 
-const printItems = ref(['1', '2', '3', '4', '7', '8', '9', '11', '19-20-21-22'])
+const printItems = ref(['1', '2', '3', '4', '7', '8', '9', '10', '11'])
 const emit = defineEmits(['print-items'])
 
 watch(printItems, newVal => {
