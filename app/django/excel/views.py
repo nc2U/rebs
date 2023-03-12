@@ -891,7 +891,7 @@ class ExportPaymentsByCont(View):
             # ['동', 'keyunit__houseunit__building_unit__name', 7],
             # ['호수', 'keyunit__houseunit__name', 7],
             ['계약일', 'contractor__contract_date', 12],
-            ['기납부 총액', '', 12],
+            ['기납부 총액', '', 13],
             ['미납내역', '', 12],
         ]
 
@@ -899,14 +899,14 @@ class ExportPaymentsByCont(View):
             header_src.insert(4, ['동', 'keyunit__houseunit__building_unit', 7])
             header_src.insert(5, ['호수', 'keyunit__houseunit__name', 7])
 
-        header_src.insert(6 + is_us_cn, ['계약금1차', '', 7])
-        header_src.insert(7 + is_us_cn, ['', '', 7])
-        header_src.insert(8 + is_us_cn, ['계약금2차', '', 7])
-        header_src.insert(9 + is_us_cn, ['', '', 7])
-        header_src.insert(10 + is_us_cn, ['계약금3차', '', 7])
-        header_src.insert(11 + is_us_cn, ['', '', 7])
-        header_src.insert(12 + is_us_cn, ['계약금4차', '', 7])
-        header_src.insert(13 + is_us_cn, ['', '', 7])
+        header_src.insert(6 + is_us_cn, ['계약금1차', '', 12])
+        header_src.insert(7 + is_us_cn, ['', '', 12])
+        header_src.insert(8 + is_us_cn, ['계약금2차', '', 12])
+        header_src.insert(9 + is_us_cn, ['', '', 12])
+        header_src.insert(10 + is_us_cn, ['계약금3차', '', 12])
+        header_src.insert(11 + is_us_cn, ['', '', 12])
+        header_src.insert(12 + is_us_cn, ['계약금4차', '', 12])
+        header_src.insert(13 + is_us_cn, ['', '', 12])
 
         titles = ['번호']
         params = ['pk']
@@ -932,8 +932,9 @@ class ExportPaymentsByCont(View):
         for col_num, title in enumerate(titles):  # 헤더 줄 제목 세팅
             if col_num < 7 + is_us_cn or col_num == 15 + is_us_cn:
                 worksheet.merge_range(row_num, col_num, row_num + 1, col_num, title, h_format)
-            # else:
-            #     worksheet.merge_range(row_num, col_num, row_num, col_num + 1, title, h_format)
+            else:
+                if col_num % 2 == 1:
+                    worksheet.merge_range(row_num, col_num, row_num, col_num + 1, title, h_format)
 
         # Line --------------------- 3
         # row_num = 4
