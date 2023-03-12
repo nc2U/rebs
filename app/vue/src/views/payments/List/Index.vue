@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, ref, onMounted } from 'vue'
+import { computed, ref, onMounted, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/payments/_menu/headermixin'
 import { useProject } from '@/store/pinia/project'
 import { useContract } from '@/store/pinia/contract'
@@ -7,6 +7,7 @@ import { useProjectData } from '@/store/pinia/project_data'
 import { usePayment } from '@/store/pinia/payment'
 import { useProCash } from '@/store/pinia/proCash'
 import { CashBookFilter } from '@/store/types/proCash'
+import { ProjectCashBook } from '@/store/types/proCash'
 import { onBeforeRouteLeave } from 'vue-router'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
@@ -14,7 +15,6 @@ import PaymentSummary from '@/views/payments/List/components/PaymentSummary.vue'
 import ListController from '@/views/payments/List/components/ListController.vue'
 import PaymentList from '@/views/payments/List/components/PaymentList.vue'
 import TableTitleRow from '@/components/TableTitleRow.vue'
-import { ProjectCashBook } from '@/store/types/proCash'
 
 const listControl = ref()
 let dataFilter = ref<CashBookFilter>({
@@ -117,7 +117,7 @@ const byPayment = computed(() => {
 
 const byContract = computed(() => {
   let cUrl = project.value
-    ? `/excel/paid-by-cont/?project=${project.value}`
+    ? `/excel/paid-by-cont/?project=${project.value}&date=${dataFilter.value.to_date}`
     : ''
 
   return cUrl
@@ -125,6 +125,21 @@ const byContract = computed(() => {
 
 const excelSelect = ref('1') // 다운로드할 파일 선택
 const excelUrl = excelSelect.value === '1' ? byPayment.value : byContract.value
+
+watch(excelSelect, nVal => {
+  if (nVal === '2') {
+    dataFilter.value.page = 1
+    dataFilter.value.from_date = ''
+    dataFilter.value.order_group = ''
+    dataFilter.value.unit_type = ''
+    dataFilter.value.pay_order = ''
+    dataFilter.value.pay_account = ''
+    dataFilter.value.no_contract = false
+    dataFilter.value.no_install = false
+    dataFilter.value.search = ''
+    listFiltering(dataFilter.value)
+  }
+})
 
 onMounted(() => {
   fetchOrderGroupList(project.value)
@@ -170,6 +185,7 @@ onBeforeRouteLeave(() => {
         </v-radio-group>
       </TableTitleRow>
       <PaymentList
+        :page="dataFilter.page"
         :project="project"
         @pay-match="payMatch"
         @page-select="pageSelect"

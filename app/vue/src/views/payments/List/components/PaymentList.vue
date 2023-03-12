@@ -8,7 +8,10 @@ import Pagination from '@/components/Pagination'
 
 const emit = defineEmits(['page-select', 'pay-match'])
 
-defineProps({ project: { type: Number, required: true } })
+defineProps({
+  page: { type: Number, required: true },
+  project: { type: Number, required: true },
+})
 
 const paymentStore = usePayment()
 const getPayments = computed(() => paymentStore.getPayments)
@@ -60,7 +63,7 @@ const pageSelect = (page: number) => emit('page-select', page)
   </CTable>
 
   <Pagination
-    :active-page="1"
+    :active-page="page"
     :limit="8"
     :pages="paymentPages(10)"
     class="mt-3"
