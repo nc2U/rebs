@@ -1,11 +1,12 @@
 <script lang="ts" setup>
-import { computed, ref, onMounted, provide } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 import { pageTitle, navMenu } from '@/views/payments/_menu/headermixin'
 import { useProject } from '@/store/pinia/project'
 import { useContract } from '@/store/pinia/contract'
 import { useProjectData } from '@/store/pinia/project_data'
-import { PaymentFilter, usePayment } from '@/store/pinia/payment'
-import { CashBookFilter, useProCash } from '@/store/pinia/proCash'
+import { usePayment } from '@/store/pinia/payment'
+import { useProCash } from '@/store/pinia/proCash'
+import { CashBookFilter } from '@/store/types/proCash'
 import { onBeforeRouteLeave } from 'vue-router'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
@@ -16,7 +17,7 @@ import TableTitleRow from '@/components/TableTitleRow.vue'
 import { ProjectCashBook } from '@/store/types/proCash'
 
 const listControl = ref()
-let dataFilter = ref<PaymentFilter>({
+let dataFilter = ref<CashBookFilter>({
   page: 1,
   from_date: '',
   to_date: '',
@@ -49,7 +50,7 @@ const fetchContNumList = (projId: number) =>
   paymentStore.fetchContNumList(projId)
 const fetchPayOrderList = (projId: number) =>
   paymentStore.fetchPayOrderList(projId)
-const fetchPaymentList = (payload: PaymentFilter) =>
+const fetchPaymentList = (payload: CashBookFilter) =>
   paymentStore.fetchPaymentList(payload)
 
 const proCashStore = useProCash()
@@ -84,7 +85,7 @@ const onSelectAdd = (target: number) => {
   }
 }
 
-const listFiltering = (payload: PaymentFilter) => {
+const listFiltering = (payload: CashBookFilter) => {
   dataFilter.value = payload
   payload.project = project.value
   fetchPaymentList(payload)
@@ -97,6 +98,8 @@ const pageSelect = (page: number) => {
   dataFilter.value.page = page
   listControl.value.listFiltering(page)
 }
+
+const excelSelect = ref('1') // 다운로드할 파일 선택
 
 const excelUrl = computed(() => {
   let url = project.value ? `/excel/payments/?project=${project.value}` : ''
@@ -142,7 +145,18 @@ onBeforeRouteLeave(() => {
   <ContentBody>
     <CCardBody class="pb-5">
       <ListController ref="listControl" @payment-filtering="listFiltering" />
-      <TableTitleRow excel :url="excelUrl" />
+      <TableTitleRow excel :url="excelUrl">
+        <v-radio-group
+          v-model="excelSelect"
+          inline
+          size="sm"
+          density="compact"
+          class="d-flex flex-row-reverse"
+        >
+          <v-radio label="수납건별" value="1" class="pr-3" />
+          <v-radio label="조합원별" value="2" disabled />
+        </v-radio-group>
+      </TableTitleRow>
       <PaymentList
         :project="project"
         @pay-match="payMatch"
