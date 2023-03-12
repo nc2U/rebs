@@ -838,7 +838,7 @@ class ExportPaymentsByCont(View):
 
         # ----------------- get_queryset start ----------------- #
         project = Project.objects.get(pk=request.GET.get('project'))
-        date = TODAY if not request.GET.get('edate') else request.GET.get('edate')
+        date = TODAY if not request.GET.get('date') else request.GET.get('date')
         # ----------------- get_queryset finish ----------------- #
 
         col_cnt = 12
