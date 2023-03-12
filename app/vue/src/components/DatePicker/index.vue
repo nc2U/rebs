@@ -2,7 +2,6 @@
 import { ref, computed } from 'vue'
 import { useStore } from 'vuex'
 import { maska as vMaska } from 'maska'
-import { dateFormat } from '@/utils/baseMixins'
 import Datepicker from '@vuepic/vue-datepicker'
 
 const store = useStore()
@@ -22,7 +21,7 @@ const textInputOptions = ref({
     name="date-picker"
     text-input
     auto-apply
-    :format="dateFormat"
+    format="yyyy-MM-dd"
     position="left"
     :text-input-options="textInputOptions"
     input-class-name="form-control"
