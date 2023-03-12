@@ -16,7 +16,7 @@ const date = ref(new Date())
 
 const excelUrl = computed(
   () =>
-    `/excel/pay-status/?project=${project.value}&date=${dateFormat(
+    `/excel/paid-status/?project=${project.value}&date=${dateFormat(
       date.value,
     )}`,
 )

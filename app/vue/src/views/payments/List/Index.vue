@@ -100,20 +100,28 @@ const pageSelect = (page: number) => {
 }
 
 const byPayment = computed(() => {
-  let url = project.value ? `/excel/payments/?project=${project.value}` : ''
-  if (dataFilter.value.from_date) url += `&sd=${dataFilter.value.from_date}`
-  if (dataFilter.value.to_date) url += `&ed=${dataFilter.value.to_date}`
-  if (dataFilter.value.order_group) url += `&og=${dataFilter.value.order_group}`
-  if (dataFilter.value.unit_type) url += `&ut=${dataFilter.value.unit_type}`
-  if (dataFilter.value.pay_order) url += `&ipo=${dataFilter.value.pay_order}`
-  if (dataFilter.value.pay_account) url += `&ba=${dataFilter.value.pay_account}`
-  if (dataFilter.value.no_contract) url += `&nc=on`
-  if (dataFilter.value.no_install) url += `&ni=on`
-  if (dataFilter.value.search) url += `&q=${dataFilter.value.search}`
-  return url
+  let pUrl = project.value ? `/excel/payments/?project=${project.value}` : ''
+  if (dataFilter.value.from_date) pUrl += `&sd=${dataFilter.value.from_date}`
+  if (dataFilter.value.to_date) pUrl += `&ed=${dataFilter.value.to_date}`
+  if (dataFilter.value.order_group)
+    pUrl += `&og=${dataFilter.value.order_group}`
+  if (dataFilter.value.unit_type) pUrl += `&ut=${dataFilter.value.unit_type}`
+  if (dataFilter.value.pay_order) pUrl += `&ipo=${dataFilter.value.pay_order}`
+  if (dataFilter.value.pay_account)
+    pUrl += `&ba=${dataFilter.value.pay_account}`
+  if (dataFilter.value.no_contract) pUrl += `&nc=on`
+  if (dataFilter.value.no_install) pUrl += `&ni=on`
+  if (dataFilter.value.search) pUrl += `&q=${dataFilter.value.search}`
+  return pUrl
 })
 
-const byContract = computed(() => 1)
+const byContract = computed(() => {
+  let cUrl = project.value
+    ? `/excel/paid-by-cont/?project=${project.value}`
+    : ''
+
+  return cUrl
+})
 
 const excelSelect = ref('1') // 다운로드할 파일 선택
 const excelUrl = excelSelect.value === '1' ? byPayment.value : byContract.value
@@ -154,10 +162,11 @@ onBeforeRouteLeave(() => {
           inline
           size="sm"
           density="compact"
+          color="success"
           class="d-flex flex-row-reverse"
         >
           <v-radio label="수납건별" value="1" class="pr-3" />
-          <v-radio label="조합원별" value="2" />
+          <v-radio label="계약자별" value="2" />
         </v-radio-group>
       </TableTitleRow>
       <PaymentList

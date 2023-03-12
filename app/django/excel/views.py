@@ -664,13 +664,13 @@ class ExportUnitStatus(View):
 
 
 def export_payments_xls(request):
-    """분양대금 수납 내역"""
+    """수납건별 수납내역 리스트"""
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = 'attachment; filename={date}-payments.xls'.format(
         date=datetime.now().strftime('%Y-%m-%d'))
 
     wb = xlwt.Workbook(encoding='utf-8')
-    ws = wb.add_sheet('분양대금납부_내역')  # 시트 이름
+    ws = wb.add_sheet('수납건별_납부내역')  # 시트 이름
 
     # get_data: ?project=1&sd=2020-12-01&ed=2020-12-02&ipo=4&ba=5&up=on&q=#
     project = Project.objects.get(pk=request.GET.get('project'))
@@ -816,6 +816,207 @@ def export_payments_xls(request):
 
     wb.save(response)
     return response
+
+
+class ExportPaymentsByCont(View):
+    """계약자별 수납내역 리스트"""
+
+    def get(self, request):
+
+        # Create an in-memory output file for the new workbook.
+        output = io.BytesIO()
+
+        # Even though the final file will be in memory the module uses temp
+        # files during assembly for efficiency. To avoid this on servers that
+        # don't allow temp files, for example the Google APP Engine, set the
+        # 'in_memory' Workbook() constructor option as shown in the docs.
+        workbook = xlsxwriter.Workbook(output)
+        worksheet = workbook.add_worksheet('계약자별_납부내역')
+
+        worksheet.set_default_row(20)
+
+        project = Project.objects.get(pk=request.GET.get('project'))
+
+        col_cnt = 10
+
+        # 1. Title
+        row_num = 0
+        title_format = workbook.add_format()
+        worksheet.set_row(row_num, 50)
+        title_format.set_font_size(18)
+        title_format.set_align('vcenter')
+        title_format.set_bold()
+        worksheet.merge_range(row_num, 0, row_num, col_cnt, str(project) + ' 계약자별 납부내역', title_format)
+
+        # 2. Pre Header - Date
+        row_num = 1
+        worksheet.set_row(row_num, 18)
+        worksheet.write(row_num, col_cnt, TODAY + ' 현재', workbook.add_format({'align': 'right'}))
+
+        # 3. Header
+        row_num = 2
+        worksheet.set_row(row_num, 23, workbook.add_format({'bold': True}))
+
+        h_format = workbook.add_format()
+        h_format.set_bold()
+        h_format.set_border()
+        h_format.set_align('center')
+        h_format.set_align('vcenter')
+        h_format.set_bg_color('#eeeeee')
+
+        # title_list
+        header_src = [['일련번호', 'serial_number', 10],
+                      ['차수', 'order_group__order_group_name', 10],
+                      ['타입', 'keyunit__unit_type__name', 7],
+                      ['동', 'keyunit__houseunit__building_unit__name', 7],
+                      ['호수', 'keyunit__houseunit__name', 7],
+                      ['계약자', 'contractor__name', 10],
+                      ['생년월일', 'contractor__birth_date', 12],
+                      ['계약일자', 'contractor__contract_date', 12],
+                      ['납입금액합계', '', 12]]
+
+        titles = ['No']
+        params = ['pk']
+        widths = [7]
+
+        for n in cols:  # 요청된 컬럼 개수 만큼 반복 (1-2-3... -> i)
+            titles.append(header_src[n][0])  # 일련번호
+            params.append(header_src[n][1])  # serial_number
+            widths.append(header_src[n][2])  # 10
+
+        while '' in params:
+            params.remove('')
+
+        # Adjust the column width.
+        for i, cw in enumerate(widths):  # 각 컬럼 넙이 세팅
+            worksheet.set_column(i, i, cw)
+
+        # Write header
+        for col_num, col in enumerate(titles):  # 헤더 줄 제목 세팅
+            if '주소' in col:
+                worksheet.merge_range(row_num, col_num, row_num, col_num + 3, titles[col_num], h_format)
+            else:
+                worksheet.write(row_num, col_num, titles[col_num], h_format)
+
+        # 4. Body
+        b_format = workbook.add_format()
+        b_format.set_border()
+        b_format.set_align('vcenter')
+        b_format.set_num_format('yyyy-mm-dd')
+        b_format.set_align('center')
+
+        body_format = {
+            'border': True,
+            'valign': 'vcenter',
+            'num_format': '#,##0',
+            'align': 'center',
+        }
+
+        # ----------------- get_queryset start ----------------- #
+        # Get some data to write to the spreadsheet.
+        data = Contract.objects.filter(project=project,
+                                       activation=True,
+                                       contractor__status='2').order_by('contractor__contract_date')
+        if request.GET.get('group'):
+            data = data.filter(order_group=request.GET.get('group'))
+        if request.GET.get('type'):
+            data = data.filter(unit_type=request.GET.get('type'))
+        if self.request.GET.get('dong'):
+            data = data.filter(keyunit__houseunit__building_unit=self.request.GET.get('dong'))
+        if request.GET.get('is_null'):
+            is_null = True if request.GET.get('is_null') == '1' else False
+            data = data.filter(keyunit__houseunit__isnull=is_null)
+        if request.GET.get('reg'):
+            result = True if request.GET.get('reg') == '1' else False
+            data = data.filter(contractor__is_registed=result)
+        if request.GET.get('sdate'):
+            data = data.filter(contractor__contract_date__gte=request.GET.get('sdate'))
+        if request.GET.get('edate'):
+            data = data.filter(contractor__contract_date__lte=request.GET.get('edate'))
+        if request.GET.get('q'):
+            data = data.filter(
+                Q(serial_number__icontains=request.GET.get('q')) |
+                Q(contractor__name__icontains=request.GET.get('q')) |
+                Q(contractor__note__icontains=request.GET.get('q')))
+
+        order_list = ['-created_at', 'created_at', '-contractor__contract_date',
+                      'contractor__contract_date', '-serial_number',
+                      'serial_number', '-contractor__name', 'contractor__name']
+        if self.request.GET.get('order'):
+            data = data.order_by(order_list[int(self.request.GET.get('order'))])
+
+        # ----------------- get_queryset finish ----------------- #
+
+        data = data.values_list(*params)
+
+        is_date = []  # ('생년월일', '계약일자')
+        is_left = []
+        is_num = []
+        reg_col = None
+        sum_col = None
+
+        # Write body
+        for col_num, title in enumerate(titles):
+            if title in ('생년월일', '계약일자'):
+                is_date.append(col_num)
+            if title == '인가여부':
+                reg_col = col_num
+            if title == '납입금액합계':
+                is_num.append(col_num)
+                sum_col = col_num
+            if title in ('', '비고'):
+                is_left.append(col_num)
+
+        paid_params = ['contract', 'income']
+        paid_data = ProjectCashBook.objects.filter(project_account_d2__lte=2,
+                                                   income__isnull=False,
+                                                   is_contract_payment=True)
+        paid_dict = paid_data.values_list(*paid_params)
+
+        for i, row in enumerate(data):
+            row_num += 1
+            row = list(row)
+
+            if sum_col is not None:
+                paid_sum = sum([ps[1] for ps in paid_dict if ps[0] == row[0]])
+                row.insert(sum_col, paid_sum)  # 순서 삽입
+
+            row[0] = i + 1  # pk 대신 순서 삽입
+
+            for col_num, cell_data in enumerate(row):
+                # css 설정
+                if col_num == 0:
+                    body_format['align'] = 'center'
+                    body_format['num_format'] = '#,##0'
+                elif col_num == sum_col:
+                    body_format['align'] = 'right'
+                    body_format['num_format'] = '#,##0'
+                elif col_num in is_left:
+                    body_format['align'] = 'left'
+                else:
+                    body_format['align'] = 'center'
+                    body_format['num_format'] = 'yyyy-mm-dd'
+
+                # 인가 여부 데이터 치환
+                cell_value = ('미인가', '인가')[int(cell_data)] if reg_col == col_num else cell_data
+
+                bf = workbook.add_format(body_format)
+
+                worksheet.write(row_num, col_num, cell_value, bf)
+
+        # Close the workbook before sending the data.
+        workbook.close()
+
+        # Rewind the buffer.
+        output.seek(0)
+
+        # Set up the Http response.
+        filename = '{date}-contracts.xlsx'.format(date=datetime.now().strftime('%Y-%m-%d'))
+        file_format = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        response = HttpResponse(output, content_type=file_format)
+        response['Content-Disposition'] = 'attachment; filename=%s' % filename
+
+        return response
 
 
 class ExportPaymentStatus(View):
