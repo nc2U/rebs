@@ -935,12 +935,23 @@ class ExportPaymentsByCont(View):
             else:
                 worksheet.merge_range(row_num, col_num, row_num, col_num + 1, title, h_format)
 
-        # Line3
+        # Line --------------------- 3
         row_num = 4
         worksheet.set_row(row_num, 23)
 
-        # for i in range(col_cnt):
-        #     worksheet.merge_range(row_num, i, row_num, 9, '분양대금 납부내역', h_format)
+        # Write header
+        for col_num, title in enumerate(titles):  # 헤더 줄 제목 세팅
+            if col_num < 7 + is_us_cn or col_num == 15 + is_us_cn:
+                worksheet.merge_range(row_num, col_num, row_num + 1, col_num, title, h_format)
+            else:
+                worksheet.merge_range(row_num, col_num, row_num, col_num + 1, title, h_format)
+
+        for col_num in range(col_cnt):
+            if col_num <= 7 + is_us_cn and col_num <= 14 + is_us_cn:
+                if col_num % 2 == 1:
+                    worksheet.write(row_num, col_num, '거래일', h_format)
+                else:
+                    worksheet.write(row_num, col_num, '금액', h_format)
 
         # 4. Body
         b_format = workbook.add_format()
