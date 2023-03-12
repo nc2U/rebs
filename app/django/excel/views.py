@@ -899,14 +899,14 @@ class ExportPaymentsByCont(View):
             header_src.insert(4, ['동', 'keyunit__houseunit__building_unit', 7])
             header_src.insert(5, ['호수', 'keyunit__houseunit__name', 7])
 
-        # header_src.insert(6 + is_us_cn, ['계약금1차', '', 7])
-        # header_src.insert(6 + is_us_cn, ['', '', 7])
-        # header_src.insert(8 + is_us_cn, ['계약금2차', '', 7])
-        # header_src.insert(8 + is_us_cn, ['', '', 7])
-        # header_src.insert(10 + is_us_cn, ['계약금3차', '', 7])
-        # header_src.insert(10 + is_us_cn, ['', '', 7])
-        # header_src.insert(12 + is_us_cn, ['계약금4차', '', 7])
-        # header_src.insert(12 + is_us_cn, ['', '', 7])
+        header_src.insert(6 + is_us_cn, ['계약금1차', '', 7])
+        header_src.insert(7 + is_us_cn, ['', '', 7])
+        header_src.insert(8 + is_us_cn, ['계약금2차', '', 7])
+        header_src.insert(9 + is_us_cn, ['', '', 7])
+        header_src.insert(10 + is_us_cn, ['계약금3차', '', 7])
+        header_src.insert(11 + is_us_cn, ['', '', 7])
+        header_src.insert(12 + is_us_cn, ['계약금4차', '', 7])
+        header_src.insert(13 + is_us_cn, ['', '', 7])
 
         titles = ['번호']
         params = ['pk']
@@ -929,11 +929,7 @@ class ExportPaymentsByCont(View):
         worksheet.set_row(row_num, 23)
 
         # Write header
-        for col_num in range(col_cnt):  # 헤더 줄 제목 세팅
-            try:
-                title = titles[col_num]
-            except IndexError:
-                title = None
+        for col_num, title in enumerate(titles):  # 헤더 줄 제목 세팅
             worksheet.merge_range(row_num, col_num, row_num + 1, col_num, title, h_format)
 
         # Line3
