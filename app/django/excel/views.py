@@ -941,12 +941,8 @@ class ExportPaymentsByCont(View):
         worksheet.set_row(row_num, 23)
 
         for col_num in range(col_cnt):
-            if col_num <= 7 + is_us_cn and col_num <= 14 + is_us_cn:
-                worksheet.write(row_num, col_num, '거래일', h_format)
-                # if col_num % 2 == 1:
-                #     worksheet.write(row_num, col_num, '거래일', h_format)
-                # else:
-                #     worksheet.write(row_num, col_num, '금액', h_format)
+            if col_num <= 7 + is_us_cn or col_num <= 14 + is_us_cn:
+                worksheet.write(row_num, col_num, ('거래일', '금액')[col_num % 2], h_format)
 
         # 4. Body
         b_format = workbook.add_format()
