@@ -842,8 +842,9 @@ class ExportPaymentsByCont(View):
         # ----------------- get_queryset finish ----------------- #
 
         col_cnt = 10
+        is_us_cn = 2 if project.is_unit_set else 0
         if project.is_unit_set:
-            col_cnt += 2
+            col_cnt += is_us_cn
 
         # 1. Title
         row_num = 0
@@ -859,8 +860,8 @@ class ExportPaymentsByCont(View):
         worksheet.set_row(row_num, 18)
         worksheet.write(row_num, col_cnt, date + ' 현재', workbook.add_format({'align': 'right'}))
 
-        # 3. Header Line1
-        row_num = 2
+        # 3. Header
+        # Line1
         worksheet.set_row(row_num, 23)
 
         h_format = workbook.add_format()
@@ -870,14 +871,28 @@ class ExportPaymentsByCont(View):
         h_format.set_align('vcenter')
         h_format.set_bg_color('#eeeeee')
 
+        row_num = 2
+
+        for i in range(col_cnt):
+            if i == 0:
+                worksheet.merge_range(row_num, i, row_num, 3, '계약자 인적사항', h_format)
+            elif i == 3:
+                worksheet.merge_range(row_num, i, row_num, 3 + is_us_cn, '가입 세부사항', h_format)
+            elif i == 6 + is_us_cn:
+                worksheet.merge_range(row_num, i, row_num, 9, '분양대금 납부내역', h_format)
+
+        # Line2
+        row_num = 3
+        worksheet.set_row(row_num, 23)
+
         # title_list
         header_src = [
             ['계약번호', 'serial_number', 10],
             ['성명', 'contractor__name', 10],
             ['차수', 'order_group__order_group_name', 10],
             ['타입', 'keyunit__unit_type__name', 7],
-            ['동', 'keyunit__houseunit__building_unit__name', 7],
-            ['호수', 'keyunit__houseunit__name', 7],
+            # ['동', 'keyunit__houseunit__building_unit__name', 7],
+            # ['호수', 'keyunit__houseunit__name', 7],
             ['계약일', 'contractor__contract_date', 12],
             ['기납부 총액', '', 12],
             ['미납내역', '', 12],
@@ -886,6 +901,15 @@ class ExportPaymentsByCont(View):
         if project.is_unit_set:
             header_src.insert(4, ['동', 'keyunit__houseunit__building_unit', 7])
             header_src.insert(5, ['호수', 'keyunit__houseunit__name', 7])
+
+        header_src.insert(6 + is_us_cn, ['계약금1차', '', 7])
+        header_src.insert(6 + is_us_cn, ['', '', 7])
+        header_src.insert(8 + is_us_cn, ['계약금2차', '', 7])
+        header_src.insert(8 + is_us_cn, ['', '', 7])
+        header_src.insert(10 + is_us_cn, ['계약금3차', '', 7])
+        header_src.insert(10 + is_us_cn, ['', '', 7])
+        header_src.insert(12 + is_us_cn, ['계약금4차', '', 7])
+        header_src.insert(12 + is_us_cn, ['', '', 7])
 
         titles = ['번호']
         params = ['pk']
@@ -905,7 +929,19 @@ class ExportPaymentsByCont(View):
 
         # Write header
         for col_num, title in enumerate(titles):  # 헤더 줄 제목 세팅
-            worksheet.write(row_num, col_num, title, h_format)
+            if col_num < 7 + is_us_cn:
+                worksheet.merge_range(row_num, col_num, 2, col_num, title, h_format)
+            elif col_num < 15 + is_us_cn:
+                worksheet.merge_range(row_num, col_num, row_num, 2, '계약금n차', h_format)
+            else:
+                worksheet.merge_range(row_num, col_num, 2, col_num, '미납내역', h_format)
+
+        # Line3
+        row_num = 4
+        worksheet.set_row(row_num, 23)
+
+        for i in range(col_cnt):
+            worksheet.merge_range(row_num, i, row_num, 9, '분양대금 납부내역', h_format)
 
         # 4. Body
         b_format = workbook.add_format()
