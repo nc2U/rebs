@@ -907,17 +907,8 @@ class ExportPaymentsByCont(View):
 
         # PayOrders columns insert
         for i, po in enumerate(pay_orders):
-            header_src.insert(6 + i + is_us_cn, [po.pay_name, '', 12])
-            header_src.insert(7 + i + is_us_cn, ['', '', 12])
-
-        # header_src.insert(6 + is_us_cn, ['계약금1차', '', 12])
-        # header_src.insert(7 + is_us_cn, ['', '', 12])
-        # header_src.insert(8 + is_us_cn, ['계약금2차', '', 12])
-        # header_src.insert(9 + is_us_cn, ['', '', 12])
-        # header_src.insert(10 + is_us_cn, ['계약금3차', '', 12])
-        # header_src.insert(11 + is_us_cn, ['', '', 12])
-        # header_src.insert(12 + is_us_cn, ['계약금4차', '', 12])
-        # header_src.insert(13 + is_us_cn, ['', '', 12])
+            header_src.insert(6 + (i * 2) + is_us_cn, [po.pay_name, '', 12])
+            header_src.insert(7 + (i * 2) + is_us_cn, ['', '', 12])
 
         titles = ['번호']
         params = ['pk']
