@@ -24,6 +24,19 @@ const getStatus = (num: string) => {
   ]
   return status.filter(s => s.code === num).map(s => s.text)[0]
 }
+
+const textColor = computed(() => {
+  if (props.release.status === '0') return 'text-primary'
+  else if (props.release.status === '3') return 'text-danger'
+  else return ''
+})
+
+const buttonColor = computed(() => {
+  if (props.release.status === '0') return 'info'
+  else if (props.release.status === '3') return 'danger'
+  else return 'secondary'
+})
+
 const router = useRouter()
 
 const callFormModal = () => {
@@ -47,7 +60,9 @@ const onSubmit = (payload: ContractRelease) => {
       {{ cutString(release.__str__, 25) }}
     </router-link>
   </CTableDataCell>
-  <CTableDataCell>{{ getStatus(release.status) }}</CTableDataCell>
+  <CTableDataCell :class="textColor">
+    {{ getStatus(release.status) }}
+  </CTableDataCell>
   <CTableDataCell class="text-right">
     {{ numFormat(release.refund_amount) }}
   </CTableDataCell>
@@ -63,7 +78,7 @@ const onSubmit = (payload: ContractRelease) => {
   <CTableDataCell>
     <CButton
       type="button"
-      :color="release.status >= '4' ? 'secondary' : 'warning'"
+      :color="buttonColor"
       size="sm"
       @click="callFormModal"
     >
