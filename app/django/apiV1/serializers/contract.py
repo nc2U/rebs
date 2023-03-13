@@ -465,11 +465,11 @@ class ContractorReleaseSerializer(serializers.ModelSerializer):
                 unit.save()
 
             # 5. 해당 납부분담금 환불처리
-            sort = ProjectAccountSort.objects.get(pk=1)
-            project_cash = ProjectCashBook.objects.filter(sort=sort, contract=contractor.contract)
-            for payment in project_cash:
-                if not released_done:
-                    refund_d2 = payment.project_account_d2.id + 63  # 분양대금 or 분담금 환불 건
+            sort = ProjectAccountSort.objects.get(pk=1)  # 입금 종류 선택
+            payments = ProjectCashBook.objects.filter(sort=sort, contract=contractor.contract)  # 해당 계약 입금건 전체
+            for payment in payments:
+                if not released_done:  # 해지 확정 전일 때만 실행
+                    refund_d2 = int(payment.project_account_d2.id) + 63  # 분양대금 or 분담금 환불 건으로 계정 변경
                     payment.project_account_d2 = ProjectAccountD2.objects.get(pk=refund_d2)
                     payment.refund_contractor = contractor  # 환불 계약자 등록
                 if completion_date:

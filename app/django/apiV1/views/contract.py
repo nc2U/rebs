@@ -116,7 +116,7 @@ class ContReleaseViewSet(viewsets.ModelViewSet):
     queryset = ContractorRelease.objects.all().order_by('-request_date')
     serializer_class = ContractorReleaseSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-    filterset_fields = ('project',)
+    filterset_fields = ('project', 'status')
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
