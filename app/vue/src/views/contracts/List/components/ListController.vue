@@ -93,9 +93,8 @@ const resetForm = () => {
         <CRow>
           <CCol md="4" xl="2" class="mb-3">
             <CFormSelect v-model="form.status" @change="listFiltering(1)">
-              <option value="2">계약 현황</option>
               <option value="1">청약 현황</option>
-              <option value="3">해지 신청</option>
+              <option value="2">계약 현황</option>
             </CFormSelect>
           </CCol>
 
