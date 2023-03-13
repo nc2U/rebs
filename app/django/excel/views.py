@@ -896,7 +896,7 @@ class ExportPaymentsByCont(View):
         ]
 
         if project.is_unit_set:
-            header_src.insert(4, ['동', 'keyunit__houseunit__building_unit', 7])
+            header_src.insert(4, ['동', 'keyunit__houseunit__building_unit__name', 7])
             header_src.insert(5, ['호수', 'keyunit__houseunit__name', 7])
 
         header_src.insert(6 + is_us_cn, ['계약금1차', '', 12])
