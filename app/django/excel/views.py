@@ -988,14 +988,12 @@ class ExportPaymentsByCont(View):
 
             for col_num, cell_data in enumerate(row):
                 # css 설정
-                if col_num == 0:
+                if col_num < 5:
                     body_format['align'] = 'center'
                     body_format['num_format'] = '#,##0'
                 elif col_num == sum_col:
                     body_format['align'] = 'right'
                     body_format['num_format'] = '#,##0'
-                # elif col_num in is_left:
-                #     body_format['align'] = 'left'
                 elif col_num == 5 + is_us_cn:  # 계약일 일때
                     body_format['align'] = 'center'
                     body_format['num_format'] = 'yyyy-mm-dd'
