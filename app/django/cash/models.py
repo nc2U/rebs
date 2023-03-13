@@ -95,9 +95,9 @@ class ProjectCashBook(models.Model):
     sort = models.ForeignKey('rebs.ProjectAccountSort', on_delete=models.PROTECT,
                              verbose_name='구분')  # icp=True -> 1=수납 or 2=환불
     project_account_d1 = models.ForeignKey('rebs.ProjectAccountD1', on_delete=models.PROTECT, null=True, blank=True,
-                                           verbose_name='현장 계정')
+                                           verbose_name='프로젝트 계정')
     project_account_d2 = models.ForeignKey('rebs.ProjectAccountD2', on_delete=models.PROTECT, null=True, blank=True,
-                                           verbose_name='현장 세부계정')
+                                           verbose_name='프로젝트 세부계정')
     is_separate = models.BooleanField('상세 분리기록 등록', default=False,
                                       help_text='각기 다른 계정 항목이 1회에 같이 출금된 경우 이 항목을 체크')
     separated = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='sepItems',
