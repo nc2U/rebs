@@ -18,7 +18,7 @@ from company.models import Company
 from project.models import (Project, ProjectIncBudget, Site, SiteOwner, SiteContract,
                             UnitType, KeyUnit, BuildingUnit, HouseUnit, ProjectOutBudget)
 from contract.models import Contract, Contractor, ContractorRelease, OrderGroup
-from cash.models import CashBook, ProjectCashBook
+from cash.models import CashBook, ProjectCashBook, InstallmentPaymentOrder
 
 TODAY = datetime.today().strftime('%Y-%m-%d')
 
@@ -841,7 +841,13 @@ class ExportPaymentsByCont(View):
         date = TODAY if not request.GET.get('date') else request.GET.get('date')
         # ----------------- get_queryset finish ----------------- #
 
-        col_cnt = 7 + 8  # 기본 컬럼수 + 납부회차 * 2
+        # get pay order
+        max_order = ProjectCashBook.objects \
+            .filter(project=project, installment_order__isnull=False) \
+            .order_by('-installment_order').first().installment_order.id
+        pay_orders = InstallmentPaymentOrder.objects.filter(project=project, id__lte=max_order)
+
+        col_cnt = 7 + (len(pay_orders) * 2)  # 기본 컬럼수 + 납부회차 * 2
         is_us_cn = 2 if project.is_unit_set else 0  # 동호 표시할 경우 2라인 추가
         if project.is_unit_set:
             col_cnt += is_us_cn
@@ -899,14 +905,19 @@ class ExportPaymentsByCont(View):
             header_src.insert(4, ['동', 'keyunit__houseunit__building_unit__name', 7])
             header_src.insert(5, ['호수', 'keyunit__houseunit__name', 7])
 
-        header_src.insert(6 + is_us_cn, ['계약금1차', '', 12])
-        header_src.insert(7 + is_us_cn, ['', '', 12])
-        header_src.insert(8 + is_us_cn, ['계약금2차', '', 12])
-        header_src.insert(9 + is_us_cn, ['', '', 12])
-        header_src.insert(10 + is_us_cn, ['계약금3차', '', 12])
-        header_src.insert(11 + is_us_cn, ['', '', 12])
-        header_src.insert(12 + is_us_cn, ['계약금4차', '', 12])
-        header_src.insert(13 + is_us_cn, ['', '', 12])
+        # PayOrders columns insert
+        for i, po in enumerate(pay_orders):
+            header_src.insert(6 + i + is_us_cn, [po.pay_name, '', 12])
+            header_src.insert(7 + i + is_us_cn, ['', '', 12])
+
+        # header_src.insert(6 + is_us_cn, ['계약금1차', '', 12])
+        # header_src.insert(7 + is_us_cn, ['', '', 12])
+        # header_src.insert(8 + is_us_cn, ['계약금2차', '', 12])
+        # header_src.insert(9 + is_us_cn, ['', '', 12])
+        # header_src.insert(10 + is_us_cn, ['계약금3차', '', 12])
+        # header_src.insert(11 + is_us_cn, ['', '', 12])
+        # header_src.insert(12 + is_us_cn, ['계약금4차', '', 12])
+        # header_src.insert(13 + is_us_cn, ['', '', 12])
 
         titles = ['번호']
         params = ['pk']
