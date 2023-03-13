@@ -18,9 +18,9 @@ const contractor = computed(() => contractStore.contractor)
 const getStatus = (num: string) => {
   const status = [
     { code: '0', text: '신청 취소' },
-    { code: '3', text: '신청 중' },
-    { code: '4', text: '처리완료' },
-    { code: '5', text: '자격상실(제명)' },
+    { code: '3', text: '해지 신청' },
+    { code: '4', text: '해지 완료' },
+    { code: '5', text: '자격 상실' },
   ]
   return status.filter(s => s.code === num).map(s => s.text)[0]
 }

@@ -118,15 +118,15 @@ onBeforeMount(() => {
                 <option v-if="!release || release.status < '4'" value="3">
                   해지 신청
                 </option>
-                <option v-if="release" value="4">해지 종결</option>
-                <option v-if="release" value="5">자격 상실(제명)</option>
+                <option v-if="release" value="4">해지 완료</option>
+                <option v-if="release" value="5">자격 상실</option>
               </CFormSelect>
               <small
                 v-if="form.status >= '4' && release.status < '4'"
                 class="text-danger"
               >
-                해지 종결, 자격 상실(제명) 처리된 계약 건은 계약상태로 되돌릴 수
-                없으므로 해지 확정상태에서만 진행하십시요.
+                해지 완료, 자격 상실 처리된 계약 건은 계약상태로 되돌릴 수
+                없으므로 최종 확정된 상태에서만 진행하십시요.
               </small>
             </CCol>
           </CRow>
@@ -265,7 +265,7 @@ onBeforeMount(() => {
   </CForm>
 
   <ConfirmModal ref="confirmModal">
-    <template #header> 계약 해지 정보 - [삭제] </template>
+    <template #header> 계약 해지 정보 - [삭제]</template>
     <template #default>
       삭제 후 복구할 수 없습니다. 해당 건별 수납 정보 삭제를 진행하시겠습니까?
     </template>
