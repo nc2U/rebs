@@ -14,7 +14,8 @@ class ContractorInline(admin.StackedInline):
 
 
 class ContractAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'project', 'serial_number', 'order_group', 'unit_type', 'user', 'activation')
+    list_display = ('id', 'project', 'serial_number', 'order_group',
+                    'unit_type', 'user', 'activation')
     list_display_links = ('project', 'serial_number',)
     list_filter = ('activation',)
     search_fields = ('serial_number',)
@@ -32,7 +33,8 @@ class CContactInline(ImportExportMixin, admin.TabularInline):
 
 
 class ContactorAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'name', 'birth_date', 'gender', 'is_registed', 'status', 'reservation_date', 'contract_date')
+    list_display = ('id', 'name', 'birth_date', 'gender', 'is_registed',
+                    'status', 'reservation_date', 'contract_date')
     search_fields = ('name',)
     list_display_links = ('name',)
     list_filter = ('contract_date', 'gender', 'is_registed', 'status')
@@ -41,10 +43,8 @@ class ContactorAdmin(ImportExportMixin, admin.ModelAdmin):
 
 
 class CAdressAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = (
-        '__str__', 'id_zipcode', 'id_address1', 'id_address2', 'id_address3', 'dm_zipcode', 'dm_address1',
-        'dm_address2',
-        'dm_address3')
+    list_display = ('__str__', 'id_zipcode', 'id_address1', 'id_address2', 'id_address3',
+                    'dm_zipcode', 'dm_address1', 'dm_address2', 'dm_address3')
 
 
 class CContactAdmin(ImportExportMixin, admin.ModelAdmin):
@@ -52,10 +52,9 @@ class CContactAdmin(ImportExportMixin, admin.ModelAdmin):
 
 
 class ContractorReleaseAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = (
-        'contractor', 'status', 'refund_amount', 'refund_account_bank', 'refund_account_number',
-        'refund_account_depositor',
-        'request_date', 'completion_date')
+    list_display = ('id', 'contractor', 'status', 'refund_amount',
+                    'refund_account_bank', 'refund_account_number',
+                    'refund_account_depositor', 'request_date', 'completion_date')
     list_editable = ('request_date', 'completion_date')
 
 
