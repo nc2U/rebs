@@ -33,7 +33,7 @@ const textColor = computed(() => {
 
 const buttonColor = computed(() => {
   if (props.release.status === '0') return 'info'
-  else if (props.release.status === '3') return 'danger'
+  else if (props.release.status === '3') return 'warning'
   else return 'secondary'
 })
 
