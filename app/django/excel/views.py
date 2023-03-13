@@ -929,12 +929,19 @@ class ExportPaymentsByCont(View):
         worksheet.set_row(row_num, 23)
 
         # Write header
+        digit_col = []  # 숫자(#,##0) 서식 적용 컬럼
+        date_col = []  # 날짜(yyyy-mm-dd) 서식 적용 컬럼
+
         for col_num, title in enumerate(titles):  # 헤더 줄 제목 세팅
             if col_num < 7 + is_us_cn or col_num == 15 + is_us_cn:
                 worksheet.merge_range(row_num, col_num, row_num + 1, col_num, title, h_format)
             else:
                 if col_num % 2 == 1:
                     worksheet.merge_range(row_num, col_num, row_num, col_num + 1, title, h_format)
+            if title in '기납부':
+                digit_col.append(col_num)
+            if title in '계약일':
+                date_col.append(col_num)
 
         # Line --------------------- 3
         row_num = 4
@@ -943,6 +950,10 @@ class ExportPaymentsByCont(View):
         for col_num in range(col_cnt):
             if col_num <= 7 + is_us_cn or col_num <= 14 + is_us_cn:
                 worksheet.write(row_num, col_num, ('금액', '거래일')[col_num % 2], h_format)
+                if col_num % 2:
+                    digit_col.append(col_num)
+                else:
+                    date_col.append(col_num)
 
         # 4. Body
         body_format = {
@@ -963,9 +974,6 @@ class ExportPaymentsByCont(View):
         # ----------------- get_queryset finish ----------------- #
 
         data = obj_list.values_list(*params)
-
-        reg_col = None
-        sum_col = None
 
         # Write body
         # ----------------------------------------------------------------- #
@@ -991,10 +999,10 @@ class ExportPaymentsByCont(View):
                 if col_num <= 4 + is_us_cn:
                     body_format['align'] = 'center'
                     body_format['num_format'] = '#,##0'
-                elif col_num == 5 + is_us_cn:  # 계약일 일때
+                elif col_num in date_col:  # 계약일 일때
                     body_format['align'] = 'center'
                     body_format['num_format'] = 'yyyy-mm-dd'
-                else:
+                elif col_num in digit_col:
                     body_format['align'] = 'right'
                     body_format['num_format'] = '#,##0'
 
