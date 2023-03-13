@@ -44,7 +44,7 @@ class Contractor(models.Model):
     GENDER_CHOICES = (('M', '남자'), ('F', '여자'))
     gender = models.CharField('성별', max_length=1, choices=GENDER_CHOICES, blank=True)
     is_registed = models.BooleanField('인가등록여부', default=False)
-    STATUS_CHOICES = (('1', '청약'), ('2', '계약'), ('3', '해지 신청'), ('4', '해지 완료'), ('5', '자격 상실'))
+    STATUS_CHOICES = (('1', '청약'), ('2', '계약'), ('3', '해지 신청'), ('4', '해지 완료'))
     status = models.CharField('현재상태', max_length=1, choices=STATUS_CHOICES)
     reservation_date = models.DateField('청약일자', null=True, blank=True)
     contract_date = models.DateField('계약일자', null=True, blank=True)
@@ -104,7 +104,7 @@ class ContractorContact(models.Model):
 class ContractorRelease(models.Model):
     project = models.ForeignKey('project.Project', on_delete=models.CASCADE, verbose_name='프로젝트')
     contractor = models.OneToOneField('Contractor', on_delete=models.CASCADE, verbose_name='계약자 정보')
-    STATUS_CHOICES = (('0', '신청 취소'), ('3', '신청 중'), ('4', '처리완료'), ('5', '자격상실(제명)'))
+    STATUS_CHOICES = (('0', '신청 취소'), ('3', '해지 신청'), ('4', '해지 완료'), ('5', '자격 상실'))
     status = models.CharField('상태', choices=STATUS_CHOICES, max_length=1)
     refund_amount = models.PositiveIntegerField('환불(예정)금액', null=True, blank=True)
     refund_account_bank = models.CharField('환불계좌(은행)', max_length=20, blank=True)
