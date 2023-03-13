@@ -945,12 +945,6 @@ class ExportPaymentsByCont(View):
                 worksheet.write(row_num, col_num, ('금액', '거래일')[col_num % 2], h_format)
 
         # 4. Body
-        b_format = workbook.add_format()
-        b_format.set_border()
-        b_format.set_align('vcenter')
-        b_format.set_num_format('yyyy-mm-dd')
-        b_format.set_align('center')
-
         body_format = {
             'border': True,
             'valign': 'vcenter',
@@ -1002,9 +996,12 @@ class ExportPaymentsByCont(View):
                     body_format['num_format'] = '#,##0'
                 # elif col_num in is_left:
                 #     body_format['align'] = 'left'
-                else:
+                elif col_num == 5 + is_us_cn:  # 계약일 일때
                     body_format['align'] = 'center'
                     body_format['num_format'] = 'yyyy-mm-dd'
+                else:
+                    body_format['align'] = 'right'
+                    body_format['num_format'] = '#,##0'
 
                 bf = workbook.add_format(body_format)
 
