@@ -1002,7 +1002,7 @@ class ExportPaymentsByCont(View):
                 row.insert(sum_col + 2 + pi, pi)  # 납부 금액 정보
                 last_col += 1
 
-            row.insert(last_col, 0)
+            row.insert(last_col, 5000000)
 
             row[0] = i + 1  # pk 대신 순서 삽입
 
