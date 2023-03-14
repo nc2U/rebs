@@ -998,8 +998,8 @@ class ExportPaymentsByCont(View):
 
             last_col = sum_col
             for pi, po in enumerate(pay_orders):  # 회차별 납입 내역 삽입
-                row.insert(sum_col + pi + 1, date)  # 거래일 정보
-                row.insert(sum_col + pi + 2, 5000)  # 납부 금액 정보
+                row.insert(sum_col + 1, date)  # 거래일 정보
+                row.insert(sum_col + 2, pi)  # 납부 금액 정보
                 last_col += 1
 
             row.insert(last_col, 0)
