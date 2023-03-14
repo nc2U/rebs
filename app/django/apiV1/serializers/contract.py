@@ -233,47 +233,47 @@ class ContractSetSerializer(serializers.ModelSerializer):
         instance.save()
 
         # 1-2. 종전 동호수 연결 해제
-        keyunit_data = self.initial_data.get('keyunit')
+        keyunit_data = self.initial_data.get('keyunit')  # keyunit => pk
         keyunit = KeyUnit.objects.get(pk=keyunit_data)
 
-        house_unit_data = self.initial_data.get('houseunit')
+        house_unit_data = self.initial_data.get('houseunit')  # house_unit => pk
         house_unit = HouseUnit.objects.get(pk=house_unit_data)
 
-        if instance.keyunit.pk != keyunit_data:  # 키유닛이 수정된 경우
-            try:
+        if instance.keyunit.pk != keyunit_data:  # 계약유닛이 수정된 경우
+            try:  # 종전 동호수가 있는 경우
                 old_houseunit = instance.keyunit.houseunit
-                if old_houseunit != house_unit_data:  # 동호수도 수정된 경우
-                    old_houseunit.key_unit = None
+                if old_houseunit != house_unit_data:  # 동호수가 수정된 경우
+                    old_houseunit.key_unit = None  # 해당 동호수를 삭제
                     old_houseunit.save()
-            except ObjectDoesNotExist:
+            except ObjectDoesNotExist:  # 종전 동호수가 없는 경우
                 pass
 
             # 2. 계약 유닛 연결
             old_keyunit = instance.keyunit
             old_keyunit.contract = None  # 종전 계약의 계약유닛 삭제
             old_keyunit.save()
-            keyunit.contract = instance
+            keyunit.contract = instance  # 현재 계약건과 변경 유닛을 연결
             keyunit.save()
 
             # 3. 동호수 연결
             if house_unit_data:
-                house_unit.key_unit = keyunit  # 동호수를 키유닛과 연결
+                house_unit.key_unit = keyunit  # 동호수를 계약유닛과 연결
                 house_unit.save()
-        else:
-            try:
+        else:  # 계약유닛이 수정되지 않은 경우
+            try:  # 종전 동호수가 있는 경우
                 old_houseunit = instance.keyunit.houseunit
-                if old_houseunit != house_unit_data:  # 동호수만 수정된 경우
-                    old_houseunit.key_unit = None
+                if old_houseunit != house_unit_data:  # 동호수가 수정된 경우
+                    old_houseunit.key_unit = None  # 먼저 종전 동호수 삭제
                     old_houseunit.save()
 
                     # 3. 동호수 연결
                     if house_unit_data:
-                        house_unit.key_unit = instance.keyunit  # 동호수를 기존 키유닛과 연결
+                        house_unit.key_unit = instance.keyunit  # 변경 동호수를 기존 계약유닛과 연결
                         house_unit.save()
-            except ObjectDoesNotExist:
+            except ObjectDoesNotExist:  # 종전 동호수가 없는 경우
                 # 3. 동호수 연결
                 if house_unit_data:
-                    house_unit.key_unit = keyunit  # 동호수를 키유닛과 연결
+                    house_unit.key_unit = keyunit  # 동호수를 계약유닛과 연결
                     house_unit.save()
 
         # 4. 계약자 정보 테이블 입력
