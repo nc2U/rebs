@@ -996,6 +996,8 @@ class ExportPaymentsByCont(View):
             if sum_col is not None:
                 paid_sum = sum([ps[1] for ps in paid_dict if ps[0] == row[0]])
                 row.insert(sum_col, paid_sum)  # 순서 삽입
+            for pi, po in pay_orders:
+                row.insert(sum_col + pi, po)
 
             row[0] = i + 1  # pk 대신 순서 삽입
 
