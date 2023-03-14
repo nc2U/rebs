@@ -1009,7 +1009,7 @@ class ExportPaymentsByCont(View):
                 row.insert(next_col + 2 + pi, paid_amount)  # 납부 금액 정보 삽입
                 next_col += 1
 
-            row.insert(next_col + len(pay_orders) + 1, None)  # 미납 내역 상입
+            row.insert(next_col + len(pay_orders) + 1, 0)  # 미납 내역 상입
 
             row[0] = i + 1  # pk 대신 순서 삽입
 
