@@ -1022,7 +1022,7 @@ class ExportPaymentsByCont(View):
                     body_format['align'] = 'center'
                     body_format['num_format'] = 'yyyy-mm-dd'
                 elif col_num in digit_col:
-                    body_format['align'] = 'right'
+                    # body_format['align'] = 'right'
                     body_format['num_format'] = 41
 
                 bf = workbook.add_format(body_format)
