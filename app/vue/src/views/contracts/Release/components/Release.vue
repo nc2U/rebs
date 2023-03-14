@@ -74,7 +74,9 @@ const onSubmit = (payload: ContractRelease) => {
   </CTableDataCell>
   <CTableDataCell>{{ release.refund_account_depositor }}</CTableDataCell>
   <CTableDataCell>{{ release.request_date }}</CTableDataCell>
-  <CTableDataCell>{{ release.completion_date }}</CTableDataCell>
+  <CTableDataCell class="text-primary">
+    <strong>{{ release.completion_date }}</strong>
+  </CTableDataCell>
   <CTableDataCell>
     <CButton
       type="button"
