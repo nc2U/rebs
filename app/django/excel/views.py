@@ -981,7 +981,7 @@ class ExportPaymentsByCont(View):
 
         # Write body
         # ----------------------------------------------------------------- #
-        paid_params = ['contract', 'income']
+        paid_params = ['contract', 'income', 'installment_order', 'deal_date']
         paid_data = ProjectCashBook.objects.filter(project_account_d2__lte=2,
                                                    income__isnull=False,
                                                    is_contract_payment=True)
