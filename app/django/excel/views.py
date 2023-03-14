@@ -999,10 +999,10 @@ class ExportPaymentsByCont(View):
             next_col = sum_col
             for pi, po in enumerate(pay_orders):  # 회차별 납입 내역 삽입
                 dates = [p[3] for p in paid_dict if p[0] == row[0] and p[2] == po.pay_code]
-                paid_date = max(dates) if dates else None
+                paid_date = max(dates).strftime('%Y-%m-%d') if dates else None
                 paid_amount = sum([p[1] for p in paid_dict if p[0] == row[0] and p[2] == po.pay_code])
 
-                row.insert(next_col + 1 + pi, paid_date.strftime('%Y-%m-%d'))  # 거래일 정보 삽입
+                row.insert(next_col + 1 + pi, paid_date)  # 거래일 정보 삽입
                 row.insert(next_col + 2 + pi, paid_amount)  # 납부 금액 정보 삽입
                 next_col += 1
 
