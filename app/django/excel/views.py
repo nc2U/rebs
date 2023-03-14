@@ -894,8 +894,6 @@ class ExportPaymentsByCont(View):
             ['성명', 'contractor__name', 10],
             ['차수', 'order_group__order_group_name', 10],
             ['타입', 'keyunit__unit_type__name', 7],
-            # ['동', 'keyunit__houseunit__building_unit__name', 7],
-            # ['호수', 'keyunit__houseunit__name', 7],
             ['계약일', 'contractor__contract_date', 12],
             ['기납부 총액', '', 13],
             ['미납내역', '', 12],
@@ -934,13 +932,18 @@ class ExportPaymentsByCont(View):
         digit_col = []  # 숫자(#,##0) 서식 적용 컬럼
         date_col = []  # 날짜(yyyy-mm-dd) 서식 적용 컬럼
 
+        sum_col = None  # 기납부총액 컬럼 위치
+
         for col_num, title in enumerate(titles):  # 헤더 줄 제목 세팅
             if col_num < 7 + is_us_cn or col_num == 15 + is_us_cn:
                 worksheet.merge_range(row_num, col_num, row_num + 1, col_num, title, h_format)
             else:
                 if col_num % 2 == 1:
                     worksheet.merge_range(row_num, col_num, row_num, col_num + 1, title, h_format)
-            if title in ('기납부 총액', '미납내역'):
+            if title == '기납부 총액':
+                digit_col.append(col_num)
+                sum_col = col_num
+            if title == '미납내역':
                 digit_col.append(col_num)
             if title == '계약일':
                 date_col.append(col_num)
@@ -990,9 +993,9 @@ class ExportPaymentsByCont(View):
             row_num += 1
             row = list(row)
 
-            # if sum_col is not None:
-            #     paid_sum = sum([ps[1] for ps in paid_dict if ps[0] == row[0]])
-            #     row.insert(sum_col, paid_sum)  # 순서 삽입
+            if sum_col is not None:
+                paid_sum = sum([ps[1] for ps in paid_dict if ps[0] == row[0]])
+                row.insert(sum_col, paid_sum)  # 순서 삽입
 
             row[0] = i + 1  # pk 대신 순서 삽입
 
