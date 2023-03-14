@@ -942,11 +942,10 @@ class ExportPaymentsByCont(View):
                     worksheet.merge_range(row_num, col_num, row_num, col_num + 1, title, h_format)
             if title == '계약일':
                 date_col.append(col_num)
-            if title == '기납부 총액':
-                sum_col = col_num
+            if title in ('기납부 총액', '미납내역'):
                 digit_col.append(col_num)
-            if title == '미납내역':
-                digit_col.append(col_num)
+                if title == '기납부 총액':
+                    sum_col = col_num
 
         # Line --------------------- 3
         row_num = 4
@@ -956,9 +955,9 @@ class ExportPaymentsByCont(View):
             if col_num <= 7 + is_us_cn or col_num <= 14 + is_us_cn:
                 worksheet.write(row_num, col_num, ('금액', '거래일')[col_num % 2], h_format)
                 if col_num % 2:
-                    digit_col.append(col_num)
-                else:
                     date_col.append(col_num)
+                else:
+                    digit_col.append(col_num)
 
         # 4. Body
         body_format = {
@@ -1000,7 +999,7 @@ class ExportPaymentsByCont(View):
             last_col = sum_col
             for pi, po in enumerate(pay_orders):  # 회차별 납입 내역 삽입
                 row.insert(sum_col + pi + 1, date)  # 거래일 정보
-                row.insert(sum_col + pi + 2, 500)  # 납부 금액 정보
+                row.insert(sum_col + pi + 2, 5000)  # 납부 금액 정보
                 last_col += 1
 
             row.insert(last_col, 0)
