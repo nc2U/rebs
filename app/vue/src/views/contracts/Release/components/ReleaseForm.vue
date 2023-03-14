@@ -220,7 +220,7 @@ onBeforeMount(() => {
             <CCol sm="8">
               <DatePicker
                 v-model="form.completion_date"
-                :required="form.status >= '4'"
+                :required="form.status === '4'"
                 placeholder="해지종결일"
               />
             </CCol>
