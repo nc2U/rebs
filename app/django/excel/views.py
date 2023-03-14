@@ -1157,7 +1157,7 @@ class ExportPaymentStatus(View):
             'border': True,
             'align': 'right',
             'valign': 'vcenter',
-            'num_format': 41
+            'num_format': '#,##0'
         }
 
         # Turn off some of the warnings:
@@ -1221,6 +1221,8 @@ class ExportPaymentStatus(View):
                 # css 정렬
                 if col_num <= 1:
                     body_format['align'] = 'center'
+                else:
+                    body_format['num_format'] = 41
 
                 bformat = workbook.add_format(body_format)
 
