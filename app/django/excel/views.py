@@ -1161,7 +1161,7 @@ class ExportPaymentStatus(View):
         }
 
         # Turn off some of the warnings:
-        worksheet.ignore_errors({'number_stored_as_text': 'B'})
+        worksheet.ignore_errors({'number_stored_as_text': 'B:C'})
 
         # ----------------- get_queryset start ----------------- #
         # Get some data to write to the spreadsheet.
@@ -1267,8 +1267,8 @@ class ExportPaymentStatus(View):
             if col_num == 0:
                 h_format['align'] = 'center'
             else:
-                # h_format['align'] = 'right'
-                h_format['num_format'] = 41  # '#,##0'
+                h_format['align'] = 'right'
+                h_format['num_format'] = '#,##0'
 
             h2format = workbook.add_format(h_format)
 
