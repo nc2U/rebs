@@ -208,8 +208,7 @@ class ExportContracts(View):
                     body_format['align'] = 'center'
                     body_format['num_format'] = '#,##0'
                 elif col_num == sum_col:
-                    body_format['align'] = 'right'
-                    body_format['num_format'] = '#,##0'
+                    body_format['num_format'] = 41
                 elif col_num in is_left:
                     body_format['align'] = 'left'
                 else:
@@ -1022,7 +1021,6 @@ class ExportPaymentsByCont(View):
                     body_format['align'] = 'center'
                     body_format['num_format'] = 'yyyy-mm-dd'
                 elif col_num in digit_col:
-                    # body_format['align'] = 'right'
                     body_format['num_format'] = 41
 
                 bf = workbook.add_format(body_format)
@@ -1159,8 +1157,11 @@ class ExportPaymentStatus(View):
             'border': True,
             'align': 'right',
             'valign': 'vcenter',
-            'num_format': '#,##0'
+            'num_format': 41
         }
+
+        # Turn off some of the warnings:
+        worksheet.ignore_errors({'number_stored_as_text': 'B'})
 
         # ----------------- get_queryset start ----------------- #
         # Get some data to write to the spreadsheet.
@@ -1220,8 +1221,6 @@ class ExportPaymentStatus(View):
                 # css 정렬
                 if col_num <= 1:
                     body_format['align'] = 'center'
-                else:
-                    body_format['align'] = 'right'
 
                 bformat = workbook.add_format(body_format)
 
