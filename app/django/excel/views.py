@@ -996,13 +996,13 @@ class ExportPaymentsByCont(View):
                 paid_sum = sum([ps[1] for ps in paid_dict if ps[0] == row[0]])
                 row.insert(sum_col, paid_sum)  # 순서 삽입
 
-            last_col = sum_col
+            next_col = sum_col
             for pi, po in enumerate(pay_orders):  # 회차별 납입 내역 삽입
-                row.insert(last_col + 1 + pi, date)  # 거래일 정보 삽입
-                row.insert(last_col + 2 + pi, pi)  # 납부 금액 정보 삽입
-                last_col += 1
+                row.insert(next_col + 1 + pi, date)  # 거래일 정보 삽입
+                row.insert(next_col + 2 + pi, pi)  # 납부 금액 정보 삽입
+                next_col += 1
 
-            row.insert(last_col + 1, 5000000)  # 미납 내역 상입
+            row.insert(next_col + len(pay_orders) + 1, 5000000)  # 미납 내역 상입
 
             row[0] = i + 1  # pk 대신 순서 삽입
 
