@@ -1222,7 +1222,7 @@ class ExportPaymentStatus(View):
                 if col_num <= 1:
                     body_format['align'] = 'center'
                 else:
-                    body_format['num_format'] = 41
+                    body_format['align'] = 'right'
 
                 bformat = workbook.add_format(body_format)
 
@@ -1267,8 +1267,8 @@ class ExportPaymentStatus(View):
             if col_num == 0:
                 h_format['align'] = 'center'
             else:
-                h_format['align'] = 'right'
-                h_format['num_format'] = '#,##0'
+                # h_format['align'] = 'right'
+                h_format['num_format'] = 41  # '#,##0'
 
             h2format = workbook.add_format(h_format)
 
