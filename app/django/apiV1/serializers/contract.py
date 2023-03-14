@@ -230,6 +230,8 @@ class ContractSetSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         # 1. 계약정보 테이블 입력
         instance.__dict__.update(**validated_data)
+        instance.order_group = validated_data.get('order_group', instance.order_group)
+        instance.unit_type = validated_data.get('unit_type', instance.unit_type)
         instance.save()
 
         # 1-2. 종전 동호수 연결 해제
@@ -237,7 +239,7 @@ class ContractSetSerializer(serializers.ModelSerializer):
         keyunit = KeyUnit.objects.get(pk=keyunit_data)
 
         house_unit_data = self.initial_data.get('houseunit')  # house_unit => pk
-        house_unit = HouseUnit.objects.get(pk=house_unit_data)
+        house_unit = HouseUnit.objects.get(pk=house_unit_data) if house_unit_data else None
 
         if instance.keyunit.pk != keyunit_data:  # 계약유닛이 수정된 경우
             try:  # 종전 동호수가 있는 경우
