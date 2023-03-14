@@ -967,6 +967,9 @@ class ExportPaymentsByCont(View):
             'align': 'center',
         }
 
+        # Turn off some of the warnings:
+        worksheet.ignore_errors({'number_stored_as_text': 'E:G'})
+
         # ----------------- get_queryset start ----------------- #
         # Get some data to write to the spreadsheet.
         obj_list = Contract.objects.filter(project=project,
