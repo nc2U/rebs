@@ -940,13 +940,13 @@ class ExportPaymentsByCont(View):
             else:
                 if col_num % 2 == 1:
                     worksheet.merge_range(row_num, col_num, row_num, col_num + 1, title, h_format)
-            if title == '기납부 총액':
-                digit_col.append(col_num)
-                sum_col = col_num
-            if title == '미납내역':
-                digit_col.append(col_num)
             if title == '계약일':
                 date_col.append(col_num)
+            if title == '기납부 총액':
+                sum_col = col_num
+                digit_col.append(col_num)
+            if title == '미납내역':
+                digit_col.append(col_num)
 
         # Line --------------------- 3
         row_num = 4
