@@ -235,7 +235,9 @@ class ContractSetSerializer(serializers.ModelSerializer):
         # 1-2. 종전 동호수 연결 해제
         keyunit_data = self.initial_data.get('keyunit')
         keyunit = KeyUnit.objects.get(pk=keyunit_data)
+
         house_unit_data = self.initial_data.get('houseunit')
+        house_unit = HouseUnit.objects.get(pk=house_unit_data)
 
         if instance.keyunit.pk != keyunit_data:  # 키유닛이 수정된 경우
             try:
@@ -255,7 +257,6 @@ class ContractSetSerializer(serializers.ModelSerializer):
 
             # 3. 동호수 연결
             if house_unit_data:
-                house_unit = HouseUnit.objects.get(pk=house_unit_data)
                 house_unit.key_unit = keyunit  # 동호수를 키유닛과 연결
                 house_unit.save()
         else:
@@ -267,13 +268,11 @@ class ContractSetSerializer(serializers.ModelSerializer):
 
                     # 3. 동호수 연결
                     if house_unit_data:
-                        house_unit = HouseUnit.objects.get(pk=house_unit_data)
                         house_unit.key_unit = instance.keyunit  # 동호수를 기존 키유닛과 연결
                         house_unit.save()
             except ObjectDoesNotExist:
                 # 3. 동호수 연결
                 if house_unit_data:
-                    house_unit = HouseUnit.objects.get(pk=house_unit_data)
                     house_unit.key_unit = keyunit  # 동호수를 키유닛과 연결
                     house_unit.save()
 
