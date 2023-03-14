@@ -895,8 +895,8 @@ class ExportPaymentsByCont(View):
             ['차수', 'order_group__order_group_name', 10],
             ['타입', 'keyunit__unit_type__name', 7],
             ['계약일', 'contractor__contract_date', 12],
-            ['기납부 총액', '', 13],
-            ['미납내역', '', 12],
+            ['기납부 총액', '', 14],
+            ['미납내역', '', 13],
         ]
 
         if project.is_unit_set:
@@ -906,7 +906,7 @@ class ExportPaymentsByCont(View):
         # PayOrders columns insert
         for i, po in enumerate(pay_orders):
             header_src.insert(6 + (i * 2) + is_us_cn, [po.pay_name, '', 12])
-            header_src.insert(7 + (i * 2) + is_us_cn, ['', '', 12])
+            header_src.insert(7 + (i * 2) + is_us_cn, ['', '', 13])
 
         titles = ['번호']
         params = ['pk']
