@@ -845,15 +845,15 @@ class ExportPayments(View):
         # title_list
         header_src = [
             [],
-            ['거래일자', 'deal_date', 10],
-            ['차수', 'contract__order_group__order_group_name', 10],
+            ['거래일자', 'deal_date', 12],
+            ['차수', 'contract__order_group__order_group_name', 12],
             ['타입', 'contract__keyunit__unit_type__name', 10],
-            ['일련번호', 'contract__serial_number', 10],
-            ['계약자', 'contract__contractor__name', 10],
+            ['일련번호', 'contract__serial_number', 12],
+            ['계약자', 'contract__contractor__name', 11],
             ['입금 금액', 'income', 12],
             ['납입회차', 'installment_order__pay_name', 12],
-            ['수납계좌', 'bank_account__alias_name', 15],
-            ['입금자', 'trader', 10]
+            ['수납계좌', 'bank_account__alias_name', 18],
+            ['입금자', 'trader', 14]
         ]
 
         # 1. Title
@@ -956,38 +956,33 @@ class ExportPayments(View):
 
         data = obj_list.values_list(*params)
 
-        b_format = workbook.add_format()
-        b_format.set_border()
-        b_format.set_align('center')
-        b_format.set_align('vcenter')
-        b_format.set_num_format('yyyy-mm-dd')
+        # Turn off some of the warnings:
+        worksheet.ignore_errors({'number_stored_as_text': 'D:E'})
 
+        # Default CSS setting
         body_format = {
             'border': True,
+            'align': 'center',
             'valign': 'vcenter',
             'num_format': 'yyyy-mm-dd'
         }
-
-        # Turn off some of the warnings:
-        worksheet.ignore_errors({'number_stored_as_text': 'F:G'})
 
         # Write header
         for i, row in enumerate(data):
             row = list(row)
             row_num += 1
             row.insert(0, i + 1)
+
             for col_num, cell_data in enumerate(row):
                 if col_num == 0:
                     body_format['num_format'] = '#,##0'
                 else:
                     body_format['num_format'] = 'yyyy-mm-dd'
-                if col_num == 4:
+                if col_num == 6:
                     body_format['num_format'] = 41
-                elif col_num == 10:
-                    body_format['align'] = 'left'
-                else:
-                    body_format['align'] = 'center'
+                    
                 bformat = workbook.add_format(body_format)
+
                 worksheet.write(row_num, col_num, cell_data, bformat)
 
         # Close the workbook before sending the data.
