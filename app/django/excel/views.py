@@ -1614,7 +1614,7 @@ class ExportProjectBalance(View):
         output.seek(0)
 
         # Set up the Http response.
-        filename = f'{datetime.now().strftime("%Y-%m-%d")}-project-balance.xlsx'
+        filename = f'{date}-project-balance.xlsx'
         file_format = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         response = HttpResponse(output, content_type=file_format)
         response['Content-Disposition'] = f'attachment; filename={filename}'
@@ -1734,7 +1734,7 @@ class ExportProjectDateCashbook(View):
         output.seek(0)
 
         # Set up the Http response.
-        filename = f'{datetime.now().strftime("%Y-%m-%d")}-project-date-cashbook.xlsx'
+        filename = f'{date}-project-date-cashbook.xlsx'
         file_format = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         response = HttpResponse(output, content_type=file_format)
         response['Content-Disposition'] = f'attachment; filename={filename}'
@@ -1807,8 +1807,8 @@ class ExportBudgetExecutionStatus(View):
         b_format = workbook.add_format()
         b_format.set_valign('vcenter')
         b_format.set_border()
-        b_format.set_num_format('#,##0')
-        b_format.set_align('end')
+        b_format.set_num_format(41)
+        b_format.set_align('left')
 
         budget = ProjectOutBudget.objects.filter(project=project)
         rsp1 = budget.filter(account_d2__code__range=('322', '326')).count()  # 간접공사비
@@ -1894,7 +1894,7 @@ class ExportBudgetExecutionStatus(View):
         output.seek(0)
 
         # Set up the Http response.
-        filename = f'{datetime.now().strftime("%Y-%m-%d")}-budget_status.xlsx'
+        filename = f'{date}-budget_status.xlsx'
         file_format = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         response = HttpResponse(output, content_type=file_format)
         response['Content-Disposition'] = f'attachment; filename={filename}'
