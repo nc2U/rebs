@@ -1544,7 +1544,7 @@ class ExportProjectBalance(View):
         b_format = workbook.add_format()
         b_format.set_valign('vcenter')
         b_format.set_border()
-        b_format.set_num_format('#,##0')
+        b_format.set_num_format(41)
         b_format.set_align('end')
 
         qs = ProjectCashBook.objects.all() \
