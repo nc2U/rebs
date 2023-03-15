@@ -1686,8 +1686,8 @@ class ExportProjectDateCashbook(View):
         b_format = workbook.add_format()
         b_format.set_valign('vcenter')
         b_format.set_border()
-        b_format.set_num_format('#,##0')
-        b_format.set_align('end')
+        b_format.set_num_format(41)
+        b_format.set_align('center')
 
         date_cashes = ProjectCashBook.objects.filter(is_separate=False, deal_date__exact=date).order_by('deal_date',
                                                                                                         'created_at',
