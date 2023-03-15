@@ -855,7 +855,7 @@ class ExportPayments(View):
         sd = sd if sd else '1900-01-01'
         ed = ed if ed else TODAY
         obj_list = ProjectCashBook.objects.filter(project=project, project_account_d2__in=(1, 2),
-                                                  deal_date__range=(sd, ed)).order_by('-deal_date', '-created_at')
+                                                  deal_date__range=(sd, ed)).order_by('deal_date', 'created_at')
 
         if og:
             obj_list = obj_list.filter(contract__order_group=og)
@@ -885,15 +885,15 @@ class ExportPayments(View):
         # title_list
         header_src = [
             [],
-            ['거래일자', 'deal_date'],
-            ['차수', 'contract__order_group__order_group_name'],
-            ['타입', 'contract__keyunit__unit_type__name'],
-            ['일련번호', 'contract__serial_number'],
-            ['계약자', 'contract__contractor__name'],
-            ['입금 금액', 'income'],
-            ['납입회차', 'installment_order__pay_name'],
-            ['수납계좌', 'bank_account__alias_name'],
-            ['입금자', 'trader']
+            ['거래일자', 'deal_date', 10],
+            ['차수', 'contract__order_group__order_group_name', 10],
+            ['타입', 'contract__keyunit__unit_type__name', 10],
+            ['일련번호', 'contract__serial_number', 10],
+            ['계약자', 'contract__contractor__name', 10],
+            ['입금 금액', 'income', 12],
+            ['납입회차', 'installment_order__pay_name', 12],
+            ['수납계좌', 'bank_account__alias_name', 15],
+            ['입금자', 'trader', 10]
         ]
 
         # 1. Title
@@ -2384,7 +2384,8 @@ class ExportSitesByOwner(View):
 
         return response
 
-    def get_sort(self, code):
+    @staticmethod
+    def get_sort(code):
         sort = ('', '개인', '법인', '국공유지')
         return sort[int(code)]
 
