@@ -972,7 +972,6 @@ class ExportPayments(View):
         worksheet.ignore_errors({'number_stored_as_text': 'F:G'})
 
         # Write header
-        choice = dict(ContractorRelease.STATUS_CHOICES)
         for i, row in enumerate(data):
             row = list(row)
             row_num += 1
@@ -988,8 +987,6 @@ class ExportPayments(View):
                     body_format['align'] = 'left'
                 else:
                     body_format['align'] = 'center'
-                if col_num == 3:
-                    cell_data = choice[cell_data]
                 bformat = workbook.add_format(body_format)
                 worksheet.write(row_num, col_num, cell_data, bformat)
 
