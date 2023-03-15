@@ -856,7 +856,7 @@ class ExportPayments(View):
             ['입금 금액', 'income', 12],
             ['납입회차', 'installment_order__pay_name', 13],
             ['수납계좌', 'bank_account__alias_name', 20],
-            ['입금자', 'trader', 16]
+            ['입금자', 'trader', 18]
         ]
 
         # 1. Title
