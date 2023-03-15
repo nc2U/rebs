@@ -232,7 +232,7 @@ class ExportContracts(View):
         output.seek(0)
 
         # Set up the Http response.
-        filename = '{date}-contracts.xlsx'.format(date=datetime.now().strftime('%Y-%m-%d'))
+        filename = '{date}-contracts.xlsx'.format(date=TODAY)
         file_format = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         response = HttpResponse(output, content_type=file_format)
         response['Content-Disposition'] = 'attachment; filename=%s' % filename
