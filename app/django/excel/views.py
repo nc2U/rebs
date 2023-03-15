@@ -956,7 +956,7 @@ class ExportPayments(View):
         data = obj_list.values_list(*params)
 
         # Turn off some of the warnings:
-        worksheet.ignore_errors({'number_stored_as_text': 'D:E'})
+        worksheet.ignore_errors({'number_stored_as_text': 'C:D'})
 
         # Default CSS setting
         body_format = {
@@ -971,7 +971,9 @@ class ExportPayments(View):
             row_num += 1
 
             for col_num, cell_data in enumerate(row):
-                if col_num == 6:
+                if col_num == 0:
+                    body_format['num_format'] = 'yyyy-mm-dd'
+                else:
                     body_format['num_format'] = 41
 
                 bformat = workbook.add_format(body_format)
