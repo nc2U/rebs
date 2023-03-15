@@ -822,6 +822,194 @@ def export_payments_xls(request):
     return response
 
 
+class ExportPayments(View):
+    """수납건별 수납내역 리스트"""
+
+    @staticmethod
+    def get(request):
+
+        # Create an in-memory output file for the new workbook.
+        output = io.BytesIO()
+
+        # Even though the final file will be in memory the module uses temp
+        # files during assembly for efficiency. To avoid this on servers that
+        # don't allow temp files, for example the Google APP Engine, set the
+        # 'in_memory' Workbook() constructor option as shown in the docs.
+        workbook = xlsxwriter.Workbook(output)
+        worksheet = workbook.add_worksheet('수납건별_납부내역')
+
+        worksheet.set_default_row(20)
+
+        project = Project.objects.get(pk=request.GET.get('project'))
+
+        sd = request.GET.get('sd')
+        ed = request.GET.get('ed')
+        og = request.GET.get('og')
+        ut = request.GET.get('ut')
+        ipo = request.GET.get('ipo')
+        ba = request.GET.get('ba')
+        nc = request.GET.get('nc')
+        ni = request.GET.get('ni')
+        q = request.GET.get('q')
+
+        sd = sd if sd else '1900-01-01'
+        ed = ed if ed else TODAY
+        obj_list = ProjectCashBook.objects.filter(project=project, project_account_d2__in=(1, 2),
+                                                  deal_date__range=(sd, ed)).order_by('-deal_date', '-created_at')
+
+        if og:
+            obj_list = obj_list.filter(contract__order_group=og)
+        if ut:
+            obj_list = obj_list.filter(contract__unit_type=ut)
+        if ipo:
+            obj_list = obj_list.filter(installment_order_id=ipo)
+        if ba:
+            obj_list = obj_list.filter(bank_account__id=ba)
+        if nc:
+            obj_list = obj_list.filter(
+                (Q(is_contract_payment=False) | Q(contract__isnull=True)) &
+                (Q(project_account_d1_id__in=(1, 2)) | Q(project_account_d2_id__in=(1, 2)))
+            )
+        if ni:
+            obj_list = obj_list.filter(
+                (Q(is_contract_payment=False) | Q(installment_order__isnull=True)) &
+                (Q(project_account_d1_id__in=(1, 2)) | Q(project_account_d2_id__in=(1, 2)))
+            )
+        if q:
+            obj_list = obj_list.filter(
+                Q(contract__contractor__name__icontains=q) |
+                Q(trader__icontains=q) |
+                Q(content__icontains=q) |
+                Q(note__icontains=q))
+
+        # title_list
+        header_src = [
+            [],
+            ['거래일자', 'deal_date'],
+            ['차수', 'contract__order_group__order_group_name'],
+            ['타입', 'contract__keyunit__unit_type__name'],
+            ['일련번호', 'contract__serial_number'],
+            ['계약자', 'contract__contractor__name'],
+            ['입금 금액', 'income'],
+            ['납입회차', 'installment_order__pay_name'],
+            ['수납계좌', 'bank_account__alias_name'],
+            ['입금자', 'trader']
+        ]
+
+        # 1. Title
+        row_num = 0
+        worksheet.set_row(row_num, 50)
+        title_format = workbook.add_format()
+        title_format.set_bold()
+        title_format.set_font_size(18)
+        title_format.set_align('vcenter')
+        worksheet.merge_range(row_num, 0, row_num, len(header_src) - 1, str(project) + ' 해지자 리스트', title_format)
+
+        # 2. Pre Header - Date
+        row_num = 1
+        worksheet.set_row(row_num, 18)
+        worksheet.write(row_num, len(header_src) - 1, TODAY + ' 현재', workbook.add_format({'align': 'right'}))
+
+        # 3. Header - 1
+        row_num = 2
+        worksheet.set_row(row_num, 20, workbook.add_format({'bold': True}))
+
+        titles = ['No']  # header titles
+        params = []  # ORM 추출 field
+        widths = [7]  # No. 컬럼 넓이
+
+        for ds in header_src:
+            if ds:
+                titles.append(ds[0])
+                params.append(ds[1])
+                widths.append(ds[2])
+
+        h_format = workbook.add_format()
+        h_format.set_bold()
+        h_format.set_border()
+        h_format.set_align('center')
+        h_format.set_align('vcenter')
+        h_format.set_bg_color('#eeeeee')
+
+        # Adjust the column width.
+        for i, col_width in enumerate(widths):
+            worksheet.set_column(i, i, col_width)
+
+        # Write header - 1
+        for col_num, title in enumerate(titles):
+            if col_num == 5:
+                worksheet.merge_range(row_num, col_num, row_num, col_num + 2, '환불 계좌', h_format)
+            elif col_num in [6, 7]:
+                pass
+            else:
+                worksheet.write(row_num, col_num, title, h_format)
+
+        # Write Header - 2
+        row_num = 3
+        for col_num, title in enumerate(titles):
+            if col_num in [5, 6, 7]:
+                worksheet.write(row_num, col_num, title, h_format)
+            else:
+                worksheet.merge_range(row_num - 1, col_num, row_num, col_num, title, h_format)
+
+        # 4. Body
+        # Get some data to write to the spreadsheet.
+        data = ContractorRelease.objects.filter(project=project, status__gte='3')
+
+        data = data.values_list(*params)
+
+        b_format = workbook.add_format()
+        b_format.set_border()
+        b_format.set_align('center')
+        b_format.set_align('vcenter')
+        b_format.set_num_format('yyyy-mm-dd')
+
+        body_format = {
+            'border': True,
+            'valign': 'vcenter',
+            'num_format': 'yyyy-mm-dd'
+        }
+
+        # Turn off some of the warnings:
+        worksheet.ignore_errors({'number_stored_as_text': 'F:G'})
+
+        # Write header
+        choice = dict(ContractorRelease.STATUS_CHOICES)
+        for i, row in enumerate(data):
+            row = list(row)
+            row_num += 1
+            row.insert(0, i + 1)
+            for col_num, cell_data in enumerate(row):
+                if col_num == 0:
+                    body_format['num_format'] = '#,##0'
+                else:
+                    body_format['num_format'] = 'yyyy-mm-dd'
+                if col_num == 4:
+                    body_format['num_format'] = 41
+                elif col_num == 10:
+                    body_format['align'] = 'left'
+                else:
+                    body_format['align'] = 'center'
+                if col_num == 3:
+                    cell_data = choice[cell_data]
+                bformat = workbook.add_format(body_format)
+                worksheet.write(row_num, col_num, cell_data, bformat)
+
+        # Close the workbook before sending the data.
+        workbook.close()
+
+        # Rewind the buffer.
+        output.seek(0)
+
+        # Set up the Http response.
+        filename = '{date}-payments.xlsx'.format(date=TODAY)
+        file_format = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        response = HttpResponse(output, content_type=file_format)
+        response['Content-Disposition'] = 'attachment; filename=%s' % filename
+
+        return response
+
+
 class ExportPaymentsByCont(View):
     """계약자별 수납내역 리스트"""
 
