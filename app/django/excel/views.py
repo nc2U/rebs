@@ -688,9 +688,8 @@ def export_payments_xls(request):
     ni = request.GET.get('ni')
     q = request.GET.get('q')
 
-    today = TODAY
     sd = sd if sd else '1900-01-01'
-    ed = ed if ed else today
+    ed = ed if ed else TODAY
     obj_list = ProjectCashBook.objects.filter(project=project, project_account_d2__in=(1, 2),
                                               deal_date__range=(sd, ed)).order_by('-deal_date', '-created_at')
 
