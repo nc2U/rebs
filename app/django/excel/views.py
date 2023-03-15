@@ -490,6 +490,9 @@ class ExportReleases(View):
             'num_format': 'yyyy-mm-dd'
         }
 
+        # Turn off some of the warnings:
+        worksheet.ignore_errors({'number_stored_as_text': 'F:G'})
+
         # Write header
         choice = dict(ContractorRelease.STATUS_CHOICES)
         for i, row in enumerate(data):
@@ -497,12 +500,12 @@ class ExportReleases(View):
             row_num += 1
             row.insert(0, i + 1)
             for col_num, cell_data in enumerate(row):
-                if col_num in [0, 4]:
+                if col_num == 0:
                     body_format['num_format'] = '#,##0'
                 else:
                     body_format['num_format'] = 'yyyy-mm-dd'
                 if col_num == 4:
-                    body_format['align'] = 'right'
+                    body_format['num_format'] = 41
                 elif col_num == 10:
                     body_format['align'] = 'left'
                 else:
