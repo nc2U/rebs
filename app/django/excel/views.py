@@ -805,15 +805,18 @@ def export_payments_xls(request):
             if '금액' in col:
                 style.num_format_str = '#,##'
                 ws.col(col_num).width = 110 * 30
+                style.alignment.horz = style.alignment.HORZ_RIGHT
 
             if col == '차수' or col == '납입회차' or col == '일련번호':
                 ws.col(col_num).width = 110 * 30
+                style.alignment.horz = style.alignment.HORZ_CENTER
 
             if col == '수납계좌':
                 ws.col(col_num).width = 170 * 30
 
             if col == '입금자' or col == '계약자':
                 ws.col(col_num).width = 110 * 30
+                style.alignment.horz = style.alignment.HORZ_LEFT
 
             ws.write(row_num, col_num, row[col_num], style)
 
