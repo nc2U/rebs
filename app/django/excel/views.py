@@ -842,46 +842,6 @@ class ExportPayments(View):
 
         project = Project.objects.get(pk=request.GET.get('project'))
 
-        sd = request.GET.get('sd')
-        ed = request.GET.get('ed')
-        og = request.GET.get('og')
-        ut = request.GET.get('ut')
-        ipo = request.GET.get('ipo')
-        ba = request.GET.get('ba')
-        nc = request.GET.get('nc')
-        ni = request.GET.get('ni')
-        q = request.GET.get('q')
-
-        sd = sd if sd else '1900-01-01'
-        ed = ed if ed else TODAY
-        obj_list = ProjectCashBook.objects.filter(project=project, project_account_d2__in=(1, 2),
-                                                  deal_date__range=(sd, ed)).order_by('deal_date', 'created_at')
-
-        if og:
-            obj_list = obj_list.filter(contract__order_group=og)
-        if ut:
-            obj_list = obj_list.filter(contract__unit_type=ut)
-        if ipo:
-            obj_list = obj_list.filter(installment_order_id=ipo)
-        if ba:
-            obj_list = obj_list.filter(bank_account__id=ba)
-        if nc:
-            obj_list = obj_list.filter(
-                (Q(is_contract_payment=False) | Q(contract__isnull=True)) &
-                (Q(project_account_d1_id__in=(1, 2)) | Q(project_account_d2_id__in=(1, 2)))
-            )
-        if ni:
-            obj_list = obj_list.filter(
-                (Q(is_contract_payment=False) | Q(installment_order__isnull=True)) &
-                (Q(project_account_d1_id__in=(1, 2)) | Q(project_account_d2_id__in=(1, 2)))
-            )
-        if q:
-            obj_list = obj_list.filter(
-                Q(contract__contractor__name__icontains=q) |
-                Q(trader__icontains=q) |
-                Q(content__icontains=q) |
-                Q(note__icontains=q))
-
         # title_list
         header_src = [
             [],
@@ -954,9 +914,47 @@ class ExportPayments(View):
 
         # 4. Body
         # Get some data to write to the spreadsheet.
-        data = ContractorRelease.objects.filter(project=project, status__gte='3')
+        sd = request.GET.get('sd')
+        ed = request.GET.get('ed')
+        og = request.GET.get('og')
+        ut = request.GET.get('ut')
+        ipo = request.GET.get('ipo')
+        ba = request.GET.get('ba')
+        nc = request.GET.get('nc')
+        ni = request.GET.get('ni')
+        q = request.GET.get('q')
 
-        data = data.values_list(*params)
+        sd = sd if sd else '1900-01-01'
+        ed = ed if ed else TODAY
+        obj_list = ProjectCashBook.objects.filter(project=project, project_account_d2__in=(1, 2),
+                                                  deal_date__range=(sd, ed)).order_by('deal_date', 'created_at')
+
+        if og:
+            obj_list = obj_list.filter(contract__order_group=og)
+        if ut:
+            obj_list = obj_list.filter(contract__unit_type=ut)
+        if ipo:
+            obj_list = obj_list.filter(installment_order_id=ipo)
+        if ba:
+            obj_list = obj_list.filter(bank_account__id=ba)
+        if nc:
+            obj_list = obj_list.filter(
+                (Q(is_contract_payment=False) | Q(contract__isnull=True)) &
+                (Q(project_account_d1_id__in=(1, 2)) | Q(project_account_d2_id__in=(1, 2)))
+            )
+        if ni:
+            obj_list = obj_list.filter(
+                (Q(is_contract_payment=False) | Q(installment_order__isnull=True)) &
+                (Q(project_account_d1_id__in=(1, 2)) | Q(project_account_d2_id__in=(1, 2)))
+            )
+        if q:
+            obj_list = obj_list.filter(
+                Q(contract__contractor__name__icontains=q) |
+                Q(trader__icontains=q) |
+                Q(content__icontains=q) |
+                Q(note__icontains=q))
+
+        data = obj_list.values_list(*params)
 
         b_format = workbook.add_format()
         b_format.set_border()
