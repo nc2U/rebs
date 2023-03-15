@@ -855,9 +855,9 @@ class ExportPayments(View):
             ['일련번호', 'contract__serial_number', 12],
             ['계약자', 'contract__contractor__name', 11],
             ['입금 금액', 'income', 12],
-            ['납입회차', 'installment_order__pay_name', 12],
-            ['수납계좌', 'bank_account__alias_name', 18],
-            ['입금자', 'trader', 14]
+            ['납입회차', 'installment_order__pay_name', 13],
+            ['수납계좌', 'bank_account__alias_name', 20],
+            ['입금자', 'trader', 15]
         ]
 
         # 1. Title
@@ -976,9 +976,7 @@ class ExportPayments(View):
             for col_num, cell_data in enumerate(row):
                 if col_num == 0:
                     body_format['num_format'] = '#,##0'
-                else:
-                    body_format['num_format'] = 'yyyy-mm-dd'
-                if col_num == 6:
+                elif col_num == 6:
                     body_format['num_format'] = 41
 
                 bformat = workbook.add_format(body_format)
