@@ -375,7 +375,7 @@ class ExportApplicants(View):
         output.seek(0)
 
         # Set up the Http response.
-        filename = '{date}-applicants.xlsx'.format(date=datetime.now().strftime('%Y-%m-%d'))
+        filename = '{date}-applicants.xlsx'.format(date=TODAY)
         file_format = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         response = HttpResponse(output, content_type=file_format)
         response['Content-Disposition'] = 'attachment; filename=%s' % filename
@@ -522,7 +522,7 @@ class ExportReleases(View):
         output.seek(0)
 
         # Set up the Http response.
-        filename = '{date}-releases.xlsx'.format(date=datetime.now().strftime('%Y-%m-%d'))
+        filename = '{date}-releases.xlsx'.format(date=TODAY)
         file_format = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         response = HttpResponse(output, content_type=file_format)
         response['Content-Disposition'] = 'attachment; filename=%s' % filename
@@ -660,7 +660,7 @@ class ExportUnitStatus(View):
         output.seek(0)
 
         # Set up the Http response.
-        filename = '{date}-unit-status-board.xlsx'.format(date=datetime.now().strftime('%Y-%m-%d'))
+        filename = '{date}-unit-status-board.xlsx'.format(date=TODAY)
         file_format = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         response = HttpResponse(output, content_type=file_format)
         response['Content-Disposition'] = 'attachment; filename=%s' % filename
@@ -671,8 +671,7 @@ class ExportUnitStatus(View):
 def export_payments_xls(request):
     """수납건별 수납내역 리스트"""
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    response['Content-Disposition'] = 'attachment; filename={date}-payments.xls'.format(
-        date=datetime.now().strftime('%Y-%m-%d'))
+    response['Content-Disposition'] = 'attachment; filename={date}-payments.xls'.format(date=TODAY)
 
     wb = xlwt.Workbook(encoding='utf-8')
     ws = wb.add_sheet('수납건별_납부내역')  # 시트 이름
@@ -1733,8 +1732,7 @@ class ExportBudgetExecutionStatus(View):
 def export_project_cash_xls(request):
     """프로젝트별 입출금 내역"""
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    response['Content-Disposition'] = 'attachment; filename={date}-project-cashbook.xls'.format(
-        date=datetime.now().strftime('%Y-%m-%d'))
+    response['Content-Disposition'] = 'attachment; filename={date}-project-cashbook.xls'.format(date=TODAY)
 
     wb = xlwt.Workbook(encoding='utf-8')
     ws = wb.add_sheet('프로젝트_입출금_내역')  # 시트 이름
@@ -2636,8 +2634,7 @@ class ExportDateCashbook(View):
 def export_cashbook_xls(request):
     """본사 입출금 내역"""
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    response['Content-Disposition'] = 'attachment; filename={date}-cashbook.xls'.format(
-        date=datetime.now().strftime('%Y-%m-%d'))
+    response['Content-Disposition'] = 'attachment; filename={date}-cashbook.xls'.format(date=TODAY)
 
     wb = xlwt.Workbook(encoding='utf-8')
     ws = wb.add_sheet('본사_입출금_내역')  # 시트 이름
