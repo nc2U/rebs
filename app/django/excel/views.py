@@ -848,7 +848,6 @@ class ExportPayments(View):
 
         # title_list
         header_src = [
-            [],
             ['거래일자', 'deal_date', 12],
             ['차수', 'contract__order_group__order_group_name', 12],
             ['타입', 'contract__keyunit__unit_type__name', 10],
@@ -878,9 +877,9 @@ class ExportPayments(View):
         row_num = 2
         worksheet.set_row(row_num, 20, workbook.add_format({'bold': True}))
 
-        titles = ['No']  # header titles
+        titles = []  # header titles
         params = []  # ORM 추출 field
-        widths = [7]  # No. 컬럼 넓이
+        widths = []  # No. 컬럼 넓이
 
         for ds in header_src:
             if ds:
@@ -969,14 +968,10 @@ class ExportPayments(View):
 
         # Write header
         for i, row in enumerate(data):
-            row = list(row)
             row_num += 1
-            row.insert(0, i + 1)
 
             for col_num, cell_data in enumerate(row):
-                if col_num == 0:
-                    body_format['num_format'] = '#,##0'
-                elif col_num == 6:
+                if col_num == 6:
                     body_format['num_format'] = 41
 
                 bformat = workbook.add_format(body_format)
