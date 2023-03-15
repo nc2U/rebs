@@ -841,6 +841,10 @@ class ExportPayments(View):
         worksheet.set_default_row(20)
 
         project = Project.objects.get(pk=request.GET.get('project'))
+        sd = request.GET.get('sd')
+        ed = request.GET.get('ed')
+        sd = sd if sd else '1900-01-01'
+        ed = ed if ed else TODAY
 
         # title_list
         header_src = [
@@ -863,12 +867,12 @@ class ExportPayments(View):
         title_format.set_bold()
         title_format.set_font_size(18)
         title_format.set_align('vcenter')
-        worksheet.merge_range(row_num, 0, row_num, len(header_src) - 1, str(project) + ' 해지자 리스트', title_format)
+        worksheet.merge_range(row_num, 0, row_num, len(header_src) - 1, str(project) + ' 계약자 대금 납부내역', title_format)
 
         # 2. Pre Header - Date
         row_num = 1
         worksheet.set_row(row_num, 18)
-        worksheet.write(row_num, len(header_src) - 1, TODAY + ' 현재', workbook.add_format({'align': 'right'}))
+        worksheet.write(row_num, len(header_src) - 1, ed + ' 현재', workbook.add_format({'align': 'right'}))
 
         # 3. Header - 1
         row_num = 2
@@ -914,8 +918,6 @@ class ExportPayments(View):
 
         # 4. Body
         # Get some data to write to the spreadsheet.
-        sd = request.GET.get('sd')
-        ed = request.GET.get('ed')
         og = request.GET.get('og')
         ut = request.GET.get('ut')
         ipo = request.GET.get('ipo')
@@ -924,8 +926,6 @@ class ExportPayments(View):
         ni = request.GET.get('ni')
         q = request.GET.get('q')
 
-        sd = sd if sd else '1900-01-01'
-        ed = ed if ed else TODAY
         obj_list = ProjectCashBook.objects.filter(project=project, project_account_d2__in=(1, 2),
                                                   deal_date__range=(sd, ed)).order_by('deal_date', 'created_at')
 
@@ -980,7 +980,7 @@ class ExportPayments(View):
                     body_format['num_format'] = 'yyyy-mm-dd'
                 if col_num == 6:
                     body_format['num_format'] = 41
-                    
+
                 bformat = workbook.add_format(body_format)
 
                 worksheet.write(row_num, col_num, cell_data, bformat)
@@ -992,7 +992,7 @@ class ExportPayments(View):
         output.seek(0)
 
         # Set up the Http response.
-        filename = '{date}-payments.xlsx'.format(date=TODAY)
+        filename = '{date}-payments.xlsx'.format(date=ed)
         file_format = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         response = HttpResponse(output, content_type=file_format)
         response['Content-Disposition'] = 'attachment; filename=%s' % filename
