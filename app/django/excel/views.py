@@ -804,6 +804,7 @@ def export_payments_xls(request):
 
             if '금액' in col:
                 style.num_format_str = '#,##'
+                style.alignment.horz = style.alignment.HORZ_RIGHT
                 ws.col(col_num).width = 110 * 30
 
             if col == '차수' or col == '납입회차' or col == '일련번호':
