@@ -791,11 +791,11 @@ def export_payments_xls(request):
     style.borders.bottom = 1
 
     style.alignment.vert = style.alignment.VERT_CENTER  # 수직정렬
-    # style.alignment.horz = style.alignment.HORZ_CENTER  # 수평정렬
+    style.alignment.horz = style.alignment.HORZ_CENTER  # 수평정렬
 
     for row in rows:
         row_num += 1
-        for col_num, col in enumerate((columns)):
+        for col_num, col in enumerate(columns):
             row = list(row)
 
             if col_num == 0:
