@@ -800,25 +800,32 @@ def export_payments_xls(request):
 
             if col_num == 0:
                 style.num_format_str = 'yyyy-mm-dd'
+                style.alignment.horz = style.alignment.HORZ_CENTER
                 ws.col(col_num).width = 110 * 30
+                ws.write(row_num, col_num, row[col_num], style)
 
             if '금액' in col:
                 style.num_format_str = '#,##'
-                ws.col(col_num).width = 110 * 30
                 style.alignment.horz = style.alignment.HORZ_RIGHT
+                ws.col(col_num).width = 110 * 30
+                ws.write(row_num, col_num, row[col_num], style)
 
             if col == '차수' or col == '납입회차' or col == '일련번호':
-                ws.col(col_num).width = 110 * 30
                 style.alignment.horz = style.alignment.HORZ_CENTER
+                ws.col(col_num).width = 110 * 30
+                ws.write(row_num, col_num, row[col_num], style)
 
             if col == '수납계좌':
+                style.alignment.horz = style.alignment.HORZ_CENTER
                 ws.col(col_num).width = 170 * 30
+                ws.write(row_num, col_num, row[col_num], style)
 
             if col == '입금자' or col == '계약자':
-                ws.col(col_num).width = 110 * 30
                 style.alignment.horz = style.alignment.HORZ_LEFT
+                ws.col(col_num).width = 110 * 30
+                ws.write(row_num, col_num, row[col_num], style)
 
-            ws.write(row_num, col_num, row[col_num], style)
+            # ws.write(row_num, col_num, row[col_num], style)
 
     wb.save(response)
     return response
