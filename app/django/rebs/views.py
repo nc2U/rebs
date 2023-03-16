@@ -2,6 +2,7 @@ from itertools import accumulate
 from django.views import generic
 from django.shortcuts import render
 from django.views.generic import View, TemplateView
+from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.mixins import LoginRequiredMixin
 # --------------------------------------------------------
 from datetime import date, datetime, timedelta
@@ -74,6 +75,7 @@ class PdfExportBill(View):
         :param cont_id: 계약자 아이디
         :param inspay_order: 전체 납부 회차
         :param now_due_order: 금회 납부 회차
+        :param issue_date: 발행일
         :return dict(bill_data: 계약 건당 데이터):
         """
         bill_data = {}  # 현재 계약 정보 딕셔너리
@@ -83,7 +85,7 @@ class PdfExportBill(View):
 
         try:
             unit = contract.keyunit.houseunit
-        except Exception:
+        except ObjectDoesNotExist:
             unit = None
 
         # 동호수
