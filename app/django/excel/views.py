@@ -2023,13 +2023,13 @@ def export_project_cash_xls(request):
                 ws.col(col_num).width = 110 * 30
 
             if col == '구분':
-                row[col_num] = ('', '입금', '출금', '대체')[int(row[col_num])]
-                # if row[col_num] == '1':
-                #     row[col_num] = '입금'
-                # if row[col_num] == '2':
-                #     row[col_num] = '출금'
-                # if row[col_num] == '3':
-                #     row[col_num] = '대체'
+                # row[col_num] = ('', '입금', '출금', '대체')[int(row[col_num])]
+                if row[col_num] == '1':
+                    row[col_num] = '입금'
+                if row[col_num] == '2':
+                    row[col_num] = '출금'
+                if row[col_num] == '3':
+                    row[col_num] = '대체'
 
             if col == '현장 계정':
                 ws.col(col_num).width = 110 * 30
