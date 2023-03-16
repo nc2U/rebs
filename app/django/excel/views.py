@@ -2161,7 +2161,7 @@ class ExportSites(View):
             'border': True,
             'align': 'center',
             'valign': 'vcenter',
-            'num_format': '#,##0.00',
+            'num_format': '#,##0',
         }
 
         while '' in params:
@@ -2172,9 +2172,10 @@ class ExportSites(View):
         # Turn off some of the warnings:
         worksheet.ignore_errors({'number_stored_as_text': 'C:D'})
 
-        for row in rows:
+        for i, row in enumerate(rows):
             row_num += 1
             row = list(row)
+            row.insert(0, 1 + i)
 
             for col_num, title in enumerate(titles):
                 # css 정렬
@@ -2183,9 +2184,7 @@ class ExportSites(View):
 
                 bf = workbook.add_format(body_format)
 
-                if int(col_num) == 0:
-                    body_format['num_format'] = '#,##0'
-                elif int(col_num) < 5:
+                if int(col_num) < 5:
                     worksheet.write(row_num, col_num, row[col_num], bf)
                 elif int(col_num) == 5:
                     worksheet.write(row_num, col_num, float(row[col_num - 1]) * 0.3025, bf)
