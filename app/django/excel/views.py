@@ -2498,7 +2498,7 @@ class ExportSitesContracts(View):
                     body_format['num_format'] = 'yyyy-mm-dd'
                 elif col_num in (3, 4):
                     body_format['align'] = 'right'
-                    body_format['num_format'] = '#,##0.00'
+                    body_format['num_format'] = 43
                 else:
                     body_format['align'] = 'center'
                     body_format['num_format'] = 41
