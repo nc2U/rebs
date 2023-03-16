@@ -1910,8 +1910,11 @@ def export_project_cash_xls(request):
     sdate = sdate if sdate else '1900-01-01'
     edate = edate if edate else TODAY
 
+    is_imp = request.GET.get('imp')
+    filename = 'imprest' if is_imp == '1' else 'cashbook'
+
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    response['Content-Disposition'] = 'attachment; filename={date}-project-cashbook.xls'.format(date=edate)
+    response['Content-Disposition'] = f'attachment; filename={edate}-project-{filename}.xls'
 
     wb = xlwt.Workbook(encoding='utf-8')
     ws = wb.add_sheet('프로젝트_입출금_내역')  # 시트 이름
@@ -1926,7 +1929,6 @@ def export_project_cash_xls(request):
 
     obj_list = ProjectCashBook.objects.filter(project=project, deal_date__range=(sdate, edate)).order_by('deal_date',
                                                                                                          'created_at')
-    is_imp = request.GET.get('imp')
     obj_list = obj_list.filter(is_imprest=True) if is_imp == '1' else obj_list.filter(is_imprest=False)
 
     if sort:
@@ -2023,13 +2025,13 @@ def export_project_cash_xls(request):
                 ws.col(col_num).width = 110 * 30
 
             if col == '구분':
-                # row[col_num] = ('', '입금', '출금', '대체')[int(row[col_num])]
-                if row[col_num] == '1':
-                    row[col_num] = '입금'
-                if row[col_num] == '2':
-                    row[col_num] = '출금'
-                if row[col_num] == '3':
-                    row[col_num] = '대체'
+                row[col_num] = ('', '입금', '출금', '대체')[int(row[col_num])]
+                # if row[col_num] == '1':
+                #     row[col_num] = '입금'
+                # if row[col_num] == '2':
+                #     row[col_num] = '출금'
+                # if row[col_num] == '3':
+                #     row[col_num] = '대체'
 
             if col == '현장 계정':
                 ws.col(col_num).width = 110 * 30
