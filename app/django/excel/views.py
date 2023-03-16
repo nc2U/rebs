@@ -2497,10 +2497,8 @@ class ExportSitesContracts(View):
                 if col_num == 2:
                     body_format['num_format'] = 'yyyy-mm-dd'
                 elif col_num in (3, 4):
-                    body_format['align'] = 'right'
                     body_format['num_format'] = 43
                 else:
-                    body_format['align'] = 'center'
                     body_format['num_format'] = 41
 
                 bf = workbook.add_format(body_format)
