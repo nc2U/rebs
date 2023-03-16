@@ -2178,11 +2178,7 @@ class ExportSites(View):
             for col_num, title in enumerate(titles):
                 # css 정렬
                 if col_num in area_col_num:
-                    body_format['align'] = 'right'
-                    body_format['num_format'] = '#,##0.00'
-                else:
-                    body_format['align'] = 'center'
-                    body_format['num_format'] = '#,##0'
+                    body_format['num_format'] = 43
 
                 bf = workbook.add_format(body_format)
 
@@ -2337,10 +2333,7 @@ class ExportSitesByOwner(View):
                     body_format['num_format'] = 'yyyy-mm-dd'
 
                 if col_num in (5, 6, 7):
-                    body_format['align'] = 'right'
-                    body_format['num_format'] = '#,##0.00'
-                else:
-                    body_format['align'] = 'center'
+                    body_format['num_format'] = 43
 
                 bf = workbook.add_format(body_format)
 
