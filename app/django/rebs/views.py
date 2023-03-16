@@ -24,7 +24,7 @@ class Dashboard(LoginRequiredMixin, TemplateView):
     template_name = 'rebs/main/1_1_dashboard.html'
 
 
-def memu2_1(request):
+def menu2_1(request):
     return render(request, 'rebs/main/2_1_schedule.html')
 
 

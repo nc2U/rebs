@@ -5,7 +5,7 @@ app_name = 'rebs'
 
 urlpatterns = [
     path('dashboard/', Dashboard.as_view(), name='dashboard'),
-    path('schedule/', memu2_1, name='menu2_1'),
+    path('schedule/', menu2_1, name='menu2_1'),
 
     path('cash/', include('cash.urls')),
     path('company/', include('company.urls')),
