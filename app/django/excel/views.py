@@ -2395,10 +2395,10 @@ class ExportSitesContracts(View):
 
         # data start --------------------------------------------- #
 
-        # ----------------- get_queryset start ----------------- #
+        # --------------------- get_queryset start --------------------- #
         project = Project.objects.get(pk=request.GET.get('project'))
         obj_list = SiteContract.objects.filter(project=project).order_by('contract_date', 'id')
-        # ----------------- get_queryset finish ----------------- #
+        # --------------------- get_queryset finish --------------------- #
 
         rows_cnt = 12
 
@@ -2537,7 +2537,10 @@ class ExportSitesContracts(View):
 
     @staticmethod
     def get_row_content(cont):
-        return '완료' if cont else ''
+        if str(type(cont)) == "<class 'bool'>":
+            return '완료' if cont else ''
+        else:
+            return cont
 
 
 class ExportBalanceByAcc(View):
