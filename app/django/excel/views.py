@@ -2573,16 +2573,18 @@ class ExportSitesContracts(View):
             sum_format = workbook.add_format(body_format)
             sum_format.set_bold()
             sum_format.set_border()
-            sum_format.set_num_format(43)
+            sum_format.set_num_format(41)
             sum_format.set_bg_color('#eeeeee')
 
             if col_num == 0:
                 worksheet.merge_range(row_num, 0, row_num, 1, '합계', sum_format)
             elif col_num == 3:
+                sum_format.set_num_format(43)
                 worksheet.write(row_num, col_num, sum_cont_area, sum_format)
             elif col_num == 4:
                 worksheet.write(row_num, col_num, float(sum_cont_area) * 0.3025, sum_format)
             elif col_num == 5:
+                sum_format.set_num_format(41)
                 worksheet.write(row_num, col_num, sum_cont_price, sum_format)
             elif col_num == 6:
                 worksheet.write(row_num, col_num, sum_cont_down1, sum_format)
