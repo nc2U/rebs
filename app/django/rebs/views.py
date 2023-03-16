@@ -600,29 +600,31 @@ class PdfExportPayments(View):
             response['Content-Disposition'] = f'attachment; filename="payments_contractor.pdf"'
             return response
 
-    def get_contract(self, cont_id):
+    @staticmethod
+    def get_contract(cont_id):
         """ ■ 계약 가져오기
         :param cont_id: 계약자 아이디
         :return object(contract: 계약 건):
         """
         return Contract.objects.get(pk=cont_id)
 
-    def get_this_price(self, project, contract, unit, inspay_orders):
+    @staticmethod
+    def get_this_price(project, contract, unit, inspay_orders):
         """ ■ 해당 계약 건 분양가 구하기
         :param project: 프로젝트 정보
         :param contract: 계약 정보
         :param unit: 동호수 정보
-        :param inspay_order: 전체 회차 정보
+        :param inspay_orders: 전체 회차 정보
         :return int(this_price: 분양가), int(down: 계약금), int(medium: 중도금), int(balance: 잔금):
         """
         # 총 공급가액(분양가) 구하기
-        group = contract.order_group  # 차수
-        type = contract.unit_type  # 타입
+        og = contract.order_group  # 차수
+        ut = contract.unit_type  # 타입
 
         # 해당 계약건 분양가 # this_price = '동호 지정 후 고지'
         this_price = contract.keyunit.unit_type.average_price
 
-        prices = SalesPriceByGT.objects.filter(project_id=project, order_group=group, unit_type=type)
+        prices = SalesPriceByGT.objects.filter(project_id=project, order_group=og, unit_type=ut)
 
         if unit:
             floor = contract.keyunit.houseunit.floor_type
@@ -656,10 +658,12 @@ class PdfExportPayments(View):
 
         return this_price, down, medium, balance
 
-    def get_paid(self, contract, simple_orders):
+    @staticmethod
+    def get_paid(contract, simple_orders):
         """
         :: ■ 기 납부금액 구하기
         :param contract: 계약정보
+        :param simple_orders: 회차정보
         :return list(paid_list: 납부 건 리스트), int(paid_sum_total: 납부 총액):
         """
         paid_list = ProjectCashBook.objects.filter(
@@ -676,14 +680,14 @@ class PdfExportPayments(View):
 
         ord_list = []
         for i, paid in enumerate(paid_list):
-            sum = paid_sum_list[i]
-            ord = [o['name'] for o in list(filter(lambda o: o['amount_total'] <= sum, simple_orders))]
-            order = ord[len(ord) - 1] if len(ord) > 0 else None
+            sums = paid_sum_list[i]
+            ords = [o['name'] for o in list(filter(lambda o: o['amount_total'] <= sums, simple_orders))]
+            order = ords[len(ords) - 1] if len(ords) > 0 else None
             order = order if order not in ord_list else None
             ord_list.append(order)
-            diff = [sum - o['amount_total'] for o in simple_orders if o['amount_total'] <= sum]
+            diff = [sums - o['amount_total'] for o in simple_orders if o['amount_total'] <= sums]
             diff = diff[len(diff) - 1] if len(diff) else 0
-            paid_dict = {'paid': paid, 'sum': sum, 'order': order, 'diff': diff}
+            paid_dict = {'paid': paid, 'sum': sums, 'order': order, 'diff': diff}
             paid_dict_list.append(paid_dict)
         paid_sum_total = paid_list.aggregate(Sum('income'))['income__sum']  # 완납 총금액
         paid_sum_total = paid_sum_total if paid_sum_total else 0
