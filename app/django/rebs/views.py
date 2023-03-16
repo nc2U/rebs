@@ -153,14 +153,16 @@ class PdfExportBill(View):
         # --------------------------------------------------------------
         return bill_data
 
-    def get_contract(self, cont_id):
+    @staticmethod
+    def get_contract(cont_id):
         """ ■ 계약 가져오기
         :param cont_id: 계약자 아이디
         :return object(contract: 계약 건):
         """
         return Contract.objects.get(contractor__id=cont_id)
 
-    def get_this_price(self, project, contract, unit, inspay_order):
+    @staticmethod
+    def get_this_price(project, contract, unit, inspay_order):
         """ ■ 해당 계약 건 분양가 구하기
         :param project: 프로젝트 정보
         :param contract: 계약 정보
@@ -169,13 +171,13 @@ class PdfExportBill(View):
         :return int(this_price: 분양가), int(down: 계약금), int(medium: 중도금), int(balance: 잔금):
         """
         # 총 공급가액(분양가) 구하기
-        group = contract.order_group  # 차수
-        type = contract.unit_type  # 타입
+        og = contract.order_group  # 차수
+        ut = contract.unit_type  # 타입
 
         # 해당 계약건 분양가 # this_price = '동호 지정 후 고지'
         this_price = contract.keyunit.unit_type.average_price
 
-        prices = SalesPriceByGT.objects.filter(project_id=project, order_group=group, unit_type=type)
+        prices = SalesPriceByGT.objects.filter(project_id=project, order_group=og, unit_type=ut)
 
         if unit:
             floor = contract.keyunit.houseunit.floor_type
@@ -184,13 +186,13 @@ class PdfExportBill(View):
         # 계약금 구하기 ----------------------------------------------------------------
         down_num = inspay_order.filter(pay_sort='1').count()
         try:
-            dp = DownPayment.objects.get(
+            down_pay = DownPayment.objects.get(
                 project_id=project,
                 order_group=contract.order_group,
                 unit_type=contract.keyunit.unit_type
             )
-            down = dp.payment_amount
-        except:
+            down = down_pay.payment_amount
+        except ObjectDoesNotExist:
             pn = round(down_num / 2)
             down = int(this_price * 0.1 / pn)
         down_total = down * down_num
@@ -209,7 +211,8 @@ class PdfExportBill(View):
 
         return this_price, down, medium, balance
 
-    def get_paid(self, contract):
+    @staticmethod
+    def get_paid(contract):
         """
         :: ■ 기 납부금액 구하기
         :param contract: 계약정보
@@ -227,10 +230,12 @@ class PdfExportBill(View):
         paid_sum_total = paid_sum_total if paid_sum_total else 0
         return paid_list, paid_sum_total
 
-    def get_cont_content(self, contract, price, unit):
+    @staticmethod
+    def get_cont_content(contract, price, unit):
         """
         :: ■ 계약 내용
         :param contract: 계약정보
+        :param price: 가격정보
         :param unit: 동호수 정보
         :return dict(contractor: 계약자명, cont_date: 계약일, cont_no: 계약번호, cont_type: 평형):
         """
@@ -245,7 +250,8 @@ class PdfExportBill(View):
             'cont_type': cont_type,
         }
 
-    def get_paid_code(self, orders_info, paid_sum_total):
+    @staticmethod
+    def get_paid_code(orders_info, paid_sum_total):
         """
         :: 완납 회차 구하기
         :param orders_info: 전체 납부 회차
