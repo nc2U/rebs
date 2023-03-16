@@ -2196,6 +2196,9 @@ class ExportSites(View):
         row_num += 1
         worksheet.set_row(row_num, 23)
 
+        sum_area = sum([a[4] for a in rows])
+        sum_ret_area = sum([a[5] for a in rows])
+
         for col_num, title in enumerate(titles):
             # css 정렬
             sum_format = workbook.add_format(body_format)
@@ -2210,13 +2213,13 @@ class ExportSites(View):
             elif col_num in (2, 3):
                 worksheet.write(row_num, col_num, '', sum_format)
             elif col_num == 4:
-                worksheet.write(row_num, col_num, 0, sum_format)
+                worksheet.write(row_num, col_num, sum_area, sum_format)
             elif col_num == 5:
-                worksheet.write(row_num, col_num, float(0) * 0.3025, sum_format)
+                worksheet.write(row_num, col_num, float(sum_area) * 0.3025, sum_format)
             elif col_num == 6:
-                worksheet.write(row_num, col_num, 0, sum_format)
+                worksheet.write(row_num, col_num, sum_ret_area, sum_format)
             elif col_num == 7:
-                worksheet.write(row_num, col_num, float(0) * 0.3025, sum_format)
+                worksheet.write(row_num, col_num, float(sum_ret_area) * 0.3025, sum_format)
         #################################################################
 
         # data finish -------------------------------------------- #
