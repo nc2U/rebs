@@ -2183,7 +2183,9 @@ class ExportSites(View):
 
                 bf = workbook.add_format(body_format)
 
-                if int(col_num) < 5:
+                if int(col_num) == 0:
+                    body_format['num_format'] = '#,##0'
+                elif int(col_num) < 5:
                     worksheet.write(row_num, col_num, row[col_num], bf)
                 elif int(col_num) == 5:
                     worksheet.write(row_num, col_num, float(row[col_num - 1]) * 0.3025, bf)
