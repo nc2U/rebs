@@ -2197,21 +2197,25 @@ class ExportSites(View):
 
         for col_num, title in enumerate(titles):
             # css 정렬
+            sum_format = workbook.add_format(body_format)
+            sum_format.set_border()
+            sum_format.set_bg_color('#eeeeee')
+
             if col_num in area_col_num:
-                header_format['num_format'] = 43
+                sum_format.set_num_format(43)
 
             if col_num == 0:
-                worksheet.merge_range(row_num, 0, row_num, 1, '합계', header_format)
+                worksheet.merge_range(row_num, 0, row_num, 1, '합계', sum_format)
             elif col_num in (2, 3):
-                worksheet.write(row_num, col_num, '', header_format)
+                worksheet.write(row_num, col_num, '', sum_format)
             elif col_num == 4:
-                worksheet.write(row_num, col_num, 0, header_format)
+                worksheet.write(row_num, col_num, 0, sum_format)
             elif col_num == 5:
-                worksheet.write(row_num, col_num, float(0) * 0.3025, header_format)
+                worksheet.write(row_num, col_num, float(0) * 0.3025, sum_format)
             elif col_num == 6:
-                worksheet.write(row_num, col_num, 0, header_format)
+                worksheet.write(row_num, col_num, 0, sum_format)
             elif col_num == 7:
-                worksheet.write(row_num, col_num, float(0) * 0.3025, header_format)
+                worksheet.write(row_num, col_num, float(0) * 0.3025, sum_format)
         #################################################################
 
         # data finish -------------------------------------------- #
