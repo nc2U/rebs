@@ -2497,6 +2497,7 @@ class ExportSitesContracts(View):
                 if col_num == 2:
                     body_format['num_format'] = 'yyyy-mm-dd'
                 elif col_num in (3, 4):
+                    body_format['align'] = 'right'
                     body_format['num_format'] = '#,##0.00'
                 else:
                     body_format['num_format'] = 41
@@ -2537,7 +2538,7 @@ class ExportSitesContracts(View):
 
     @staticmethod
     def get_row_content(cont):
-        if str(type(cont)) == "<class 'bool'>":
+        if type(cont) == bool:
             return '완료' if cont else ''
         else:
             return cont
