@@ -691,7 +691,7 @@ def export_payments_xls(request):
     sd = sd if sd else '1900-01-01'
     ed = ed if ed else TODAY
     obj_list = ProjectCashBook.objects.filter(project=project, project_account_d2__in=(1, 2),
-                                              deal_date__range=(sd, ed)).order_by('-deal_date', '-created_at')
+                                              deal_date__range=(sd, ed)).order_by('deal_date', 'created_at')
 
     if og:
         obj_list = obj_list.filter(contract__order_group=og)
@@ -791,7 +791,7 @@ def export_payments_xls(request):
     style.borders.bottom = 1
 
     style.alignment.vert = style.alignment.VERT_CENTER  # 수직정렬
-    style.alignment.horz = style.alignment.HORZ_CENTER  # 수평정렬
+    # style.alignment.horz = style.alignment.HORZ_CENTER  # 수평정렬
 
     for row in rows:
         row_num += 1
