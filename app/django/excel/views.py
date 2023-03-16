@@ -2582,6 +2582,7 @@ class ExportSitesContracts(View):
                 sum_format.set_num_format(43)
                 worksheet.write(row_num, col_num, sum_cont_area, sum_format)
             elif col_num == 4:
+                sum_format.set_num_format(43)
                 worksheet.write(row_num, col_num, float(sum_cont_area) * 0.3025, sum_format)
             elif col_num == 5:
                 sum_format.set_num_format(41)
