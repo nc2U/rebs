@@ -2759,7 +2759,7 @@ class ExportBalanceByAcc(View):
         output.seek(0)
 
         # Set up the Http response.
-        filename = f'{TODAY}-project-balance.xlsx'
+        filename = f'{date}-balance.xlsx'
         file_format = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         response = HttpResponse(output, content_type=file_format)
         response['Content-Disposition'] = f'attachment; filename={filename}'
@@ -2833,8 +2833,8 @@ class ExportDateCashbook(View):
         b_format = workbook.add_format()
         b_format.set_valign('vcenter')
         b_format.set_border()
-        b_format.set_num_format('#,##0')
-        b_format.set_align('end')
+        b_format.set_num_format(41)
+        b_format.set_align()
 
         date_cashes = CashBook.objects.filter(is_separate=False, deal_date__exact=date).order_by('deal_date',
                                                                                                  'created_at',
@@ -2884,7 +2884,7 @@ class ExportDateCashbook(View):
         output.seek(0)
 
         # Set up the Http response.
-        filename = f'{TODAY}-project-date-cashbook.xlsx'
+        filename = f'{date}-project-date-cashbook.xlsx'
         file_format = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         response = HttpResponse(output, content_type=file_format)
         response['Content-Disposition'] = f'attachment; filename={filename}'
