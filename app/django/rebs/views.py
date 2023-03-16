@@ -741,8 +741,9 @@ class PdfExportPayments(View):
         return max([(o.pay_code, o.alias_name) for o in due_orders])
 
 
-class customHandler404(generic.View):
-    def get(self, request, *args, **kwargs):
+class CustomHandler404(generic.View):
+    @staticmethod
+    def get(request):
         context = {}
         return render(request, "errors/404.html", context)
 
