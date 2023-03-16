@@ -2396,6 +2396,8 @@ class ExportSitesByOwner(View):
                 worksheet.write(row_num, col_num, sum_area, sum_format)
             elif col_num == 7:
                 worksheet.write(row_num, col_num, float(sum_area) * 0.3025, sum_format)
+            else:
+                worksheet.write(row_num, col_num, None, sum_format)
         #################################################################
 
         # data finish -------------------------------------------- #
