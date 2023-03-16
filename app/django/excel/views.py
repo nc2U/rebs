@@ -2001,8 +2001,8 @@ def export_project_cash_xls(request):
     style.alignment.vert = style.alignment.VERT_CENTER  # 수직정렬
     style.alignment.horz = style.alignment.HORZ_CENTER  # 수평정렬
 
-    for col_num in range(len(columns)):
-        ws.write(row_num, col_num, columns[col_num], style)
+    for col_num, col in enumerate(columns):
+        ws.write(row_num, col_num, col, style)
 
     # Sheet body, remaining rows
     style = xlwt.XFStyle()
@@ -2025,30 +2025,25 @@ def export_project_cash_xls(request):
                 ws.col(col_num).width = 110 * 30
 
             if col == '구분':
-                row[col_num] = ('', '입금', '출금', '대체')[int(row[col_num])]
-                # if row[col_num] == '1':
-                #     row[col_num] = '입금'
-                # if row[col_num] == '2':
-                #     row[col_num] = '출금'
-                # if row[col_num] == '3':
-                #     row[col_num] = '대체'
+                # row[col_num] = ('', '입금', '출금', '대체')[int(row[col_num])]
+                if row[col_num] == '1':
+                    row[col_num] = '입금'
+                if row[col_num] == '2':
+                    row[col_num] = '출금'
+                if row[col_num] == '3':
+                    row[col_num] = '대체'
 
             if col == '현장 계정':
                 ws.col(col_num).width = 110 * 30
-
             if col == '현장 세부계정':
                 ws.col(col_num).width = 160 * 30
-
             if col == '적요' or col == '거래처':
                 ws.col(col_num).width = 180 * 30
-
             if col == '거래 계좌':
                 ws.col(col_num).width = 170 * 30
-
             if '금액' in col:
                 style.num_format_str = '#,##'
                 ws.col(col_num).width = 110 * 30
-
             if col == '비고':
                 ws.col(col_num).width = 256 * 30
 
