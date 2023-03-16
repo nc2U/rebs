@@ -2562,8 +2562,8 @@ class ExportSitesContracts(View):
         worksheet.set_row(row_num, 23)
 
         sum_cont_area = sum([a[3] for a in rows])
-        sum_cont_price = sum(int([a[4]) for a in rows])
-        sum_cont_down1 = sum(int([a[5]) for a in rows])
+        sum_cont_price = sum((int[a[4]) for a in rows])
+        sum_cont_down1 = sum((int[a[5]) for a in rows])
         sum_cont_down2 = sum([int(a[7]) for a in rows])
         sum_cont_inter = sum([int(a[8]) for a in rows])
         sum_cont_rmain = sum([int(a[9]) for a in rows])
