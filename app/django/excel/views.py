@@ -2170,15 +2170,16 @@ class ExportSites(View):
         # Turn off some of the warnings:
         worksheet.ignore_errors({'number_stored_as_text': 'C:D'})
 
-        for i, row in enumerate(rows):
+        for row in rows:
             row_num += 1
             row = list(row)
-            row.insert(0, 1 + i)
 
             for col_num, title in enumerate(titles):
                 # css 정렬
                 if col_num in area_col_num:
                     body_format['num_format'] = 43
+                else:
+                    body_format['num_format'] = '#,##0'
 
                 bf = workbook.add_format(body_format)
 
