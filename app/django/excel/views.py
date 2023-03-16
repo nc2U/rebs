@@ -2093,7 +2093,7 @@ class ExportSites(View):
 
         # 3. Header
         row_num = 2
-        worksheet.set_row(row_num, 25, workbook.add_format({'bold': True}))
+        worksheet.set_row(row_num, 23, workbook.add_format({'bold': True}))
 
         header_format = workbook.add_format()
         header_format.set_bold()
@@ -2141,6 +2141,7 @@ class ExportSites(View):
                 worksheet.merge_range(row_num, col_num, row_num + 1, col_num, title, header_format)
 
         row_num = 3
+        worksheet.set_row(row_num, 23, workbook.add_format({'bold': True}))
 
         area_col1 = (4, 6) if project.is_returned_area else (4,)
         area_col2 = (5, 7) if project.is_returned_area else (5,)
