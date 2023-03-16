@@ -2395,10 +2395,10 @@ class ExportSitesContracts(View):
 
         # data start --------------------------------------------- #
 
-        ##### ----------------- get_queryset start ----------------- #####
+        # ----------------- get_queryset start ----------------- #
         project = Project.objects.get(pk=request.GET.get('project'))
         obj_list = SiteContract.objects.filter(project=project).order_by('contract_date', 'id')
-        ##### ----------------- get_queryset finish ----------------- #####
+        # ----------------- get_queryset finish ----------------- #
 
         rows_cnt = 12
 
@@ -2499,7 +2499,7 @@ class ExportSitesContracts(View):
                 elif col_num in (3, 4):
                     body_format['num_format'] = '#,##0.00'
                 else:
-                    body_format['num_format'] = '#,##0'
+                    body_format['num_format'] = 41
 
                 bf = workbook.add_format(body_format)
 
@@ -2530,17 +2530,14 @@ class ExportSitesContracts(View):
 
         return response
 
-    def get_sort(self, code):
+    @staticmethod
+    def get_sort(code):
         sort = ('', '개인', '법인', '국공유지')
         return sort[int(code)]
 
-    def get_row_content(self, cont):
-        if cont == True:
-            return '완료'
-        elif cont == False:
-            return ''
-        else:
-            return cont
+    @staticmethod
+    def get_row_content(cont):
+        return '완료' if cont else ''
 
 
 class ExportBalanceByAcc(View):
