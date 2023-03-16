@@ -2690,7 +2690,6 @@ class ExportBalanceByAcc(View):
         b_format.set_valign('vcenter')
         b_format.set_border()
         b_format.set_num_format(41)
-        b_format.set_align()
 
         qs = CashBook.objects.all() \
             .order_by('bank_account') \
@@ -2834,7 +2833,6 @@ class ExportDateCashbook(View):
         b_format.set_valign('vcenter')
         b_format.set_border()
         b_format.set_num_format(41)
-        b_format.set_align()
 
         date_cashes = CashBook.objects.filter(is_separate=False, deal_date__exact=date).order_by('deal_date',
                                                                                                  'created_at',
