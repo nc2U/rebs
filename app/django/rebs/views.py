@@ -107,7 +107,7 @@ class PdfExportBill(View):
         paid_code = self.get_paid_code(orders_info, paid_sum_total)
 
         # ■ 계약 내용 -----------------------------------------------------
-        bill_data['cont_content'] = self.get_cont_content(contract, this_price, unit)
+        bill_data['cont_content'] = self.get_cont_content(contract, unit, this_price)
 
         # ■ 납부대금 안내 ----------------------------------------------
         bill_data['this_pay_info'] = self.get_this_pay_info(cont_id,
@@ -231,12 +231,12 @@ class PdfExportBill(View):
         return paid_list, paid_sum_total
 
     @staticmethod
-    def get_cont_content(contract, price, unit):
+    def get_cont_content(contract, unit, price):
         """
         :: ■ 계약 내용
         :param contract: 계약정보
-        :param price: 가격정보
         :param unit: 동호수 정보
+        :param price: 가격정보
         :return dict(contractor: 계약자명, cont_date: 계약일, cont_no: 계약번호, cont_type: 평형):
         """
         contractor = contract.contractor.name
