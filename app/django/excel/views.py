@@ -2562,11 +2562,11 @@ class ExportSitesContracts(View):
         worksheet.set_row(row_num, 23)
 
         sum_cont_area = sum([a[3] for a in rows])
-        sum_cont_price = sum([int(bool(a[4])) for a in rows])
-        sum_cont_down1 = sum([int(bool(a[5])) for a in rows])
-        sum_cont_down2 = sum([int(bool(a[7])) for a in rows])
-        sum_cont_inter = sum([int(bool(a[8])) for a in rows])
-        sum_cont_rmain = sum([int(bool(a[9])) for a in rows])
+        sum_cont_price = sum([a[4] for a in rows])
+        sum_cont_down1 = sum([a[5] for a in rows if a[5]])
+        sum_cont_down2 = sum([a[7] for a in rows if a[7]])
+        sum_cont_inter = sum([a[8] for a in rows if a[8]])
+        sum_cont_rmain = sum([a[9] for a in rows])
 
         for col_num, title in enumerate(titles):
             # css 정렬
@@ -2586,11 +2586,11 @@ class ExportSitesContracts(View):
                 worksheet.write(row_num, col_num, sum_cont_price, sum_format)
             elif col_num == 6:
                 worksheet.write(row_num, col_num, sum_cont_down1, sum_format)
-            elif col_num == 7:
-                worksheet.write(row_num, col_num, sum_cont_down2, sum_format)
             elif col_num == 8:
-                worksheet.write(row_num, col_num, sum_cont_inter, sum_format)
+                worksheet.write(row_num, col_num, sum_cont_down2, sum_format)
             elif col_num == 9:
+                worksheet.write(row_num, col_num, sum_cont_inter, sum_format)
+            elif col_num == 10:
                 worksheet.write(row_num, col_num, sum_cont_rmain, sum_format)
             else:
                 worksheet.write(row_num, col_num, None, sum_format)
