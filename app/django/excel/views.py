@@ -2565,8 +2565,8 @@ class ExportSitesContracts(View):
         sum_cont_price = sum([int(bool(a[4])) for a in rows])
         sum_cont_down1 = sum([int(bool(a[5])) for a in rows])
         sum_cont_down2 = sum([int(bool(a[7])) for a in rows])
-        sum_cont_inter = sum([int(bool((a[8])) for a in rows])
-        sum_cont_rmain = sum([int(bool((a[9])) for a in rows])
+        sum_cont_inter = sum([int(bool(a[8])) for a in rows])
+        sum_cont_rmain = sum([int(bool(a[9])) for a in rows])
 
         for col_num, title in enumerate(titles):
             # css 정렬
