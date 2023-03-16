@@ -1904,27 +1904,28 @@ class ExportBudgetExecutionStatus(View):
 
 def export_project_cash_xls(request):
     """프로젝트별 입출금 내역"""
+    sdate = request.GET.get('sdate')
+    edate = request.GET.get('edate')
+
+    sdate = sdate if sdate else '1900-01-01'
+    edate = edate if edate else TODAY
+
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    response['Content-Disposition'] = 'attachment; filename={date}-project-cashbook.xls'.format(date=TODAY)
+    response['Content-Disposition'] = 'attachment; filename={date}-project-cashbook.xls'.format(date=edate)
 
     wb = xlwt.Workbook(encoding='utf-8')
     ws = wb.add_sheet('프로젝트_입출금_내역')  # 시트 이름
 
     # get_data: ?project=1&sdate=2020-12-01&edate=2020-12-31&sort=1&d1=1&d2=1&bank_acc=5&q=ㅁ
     project = Project.objects.get(pk=request.GET.get('project'))
-    sdate = request.GET.get('sdate')
-    edate = request.GET.get('edate')
     sort = request.GET.get('sort')
     d1 = request.GET.get('d1')
     d2 = request.GET.get('d2')
     bank_acc = request.GET.get('bank_acc')
     q = request.GET.get('q')
 
-    today = TODAY
-    sdate = sdate if sdate else '1900-01-01'
-    edate = edate if edate else today
-    obj_list = ProjectCashBook.objects.filter(project=project, deal_date__range=(sdate, edate)).order_by('-deal_date',
-                                                                                                         '-created_at')
+    obj_list = ProjectCashBook.objects.filter(project=project, deal_date__range=(sdate, edate)).order_by('deal_date',
+                                                                                                         'created_at')
     is_imp = request.GET.get('imp')
     obj_list = obj_list.filter(is_imprest=True) if is_imp == '1' else obj_list.filter(is_imprest=False)
 
@@ -2014,7 +2015,7 @@ def export_project_cash_xls(request):
 
     for row in rows:
         row_num += 1
-        for col_num, col in enumerate((columns)):
+        for col_num, col in enumerate(columns):
             row = list(row)
 
             if col == '거래일자':
@@ -2022,12 +2023,13 @@ def export_project_cash_xls(request):
                 ws.col(col_num).width = 110 * 30
 
             if col == '구분':
-                if row[col_num] == '1':
-                    row[col_num] = '입금'
-                if row[col_num] == '2':
-                    row[col_num] = '출금'
-                if row[col_num] == '3':
-                    row[col_num] = '대체'
+                row[col_num] = ('', '입금', '출금', '대체')[int(row[col_num])]
+                # if row[col_num] == '1':
+                #     row[col_num] = '입금'
+                # if row[col_num] == '2':
+                #     row[col_num] = '출금'
+                # if row[col_num] == '3':
+                #     row[col_num] = '대체'
 
             if col == '현장 계정':
                 ws.col(col_num).width = 110 * 30
