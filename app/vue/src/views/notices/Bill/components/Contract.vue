@@ -1,10 +1,6 @@
 <script lang="ts" setup>
 import { computed, ref, nextTick, watch } from 'vue'
-import { usePayment } from '@/store/pinia/payment'
-import { useContract } from '@/store/pinia/contract'
-import { DownPayment, SalesPrice } from '@/store/types/contract'
 import { numFormat } from '@/utils/baseMixins'
-import { PayOrder } from '@/store/types/payment'
 
 const props = defineProps({
   contract: {
@@ -20,52 +16,17 @@ const emit = defineEmits(['on-ctor-chk'])
 
 const checked = ref(false)
 
-const paymentStore = usePayment()
-const payOrderList = computed(() => paymentStore.payOrderList)
-
-const contractStore = useContract()
-const salesPriceList = computed(() => contractStore.salesPriceList)
-const downPaymentList = computed(() => contractStore.downPaymentList)
-
 const paidCompleted = computed(() => {
   const due: number = props.nowOrder || 2
-  const paid: number = get_paid_order() || 0
+  const last_order = props.contract.last_paid_order
+  const paid: number = last_order ? last_order.pay_time : 0
   return paid >= due
 })
 
-const price = computed(() => {
-  // 해당 건별 분양가 구하기
-  const c = props.contract
-  const unit = c.keyunit.houseunit
-  return unit
-    ? salesPriceList.value.filter(
-        (s: SalesPrice) =>
-          s.order_group === c.order_group &&
-          s.unit_type === c.unit_type &&
-          s.unit_floor_type === unit.floor_type,
-      )[0]?.price
-    : props.contract.average_price
+const get_paid_name = computed(() => {
+  const last_order = props.contract.last_paid_order
+  return last_order ? last_order.pay_name : '계약금미납'
 })
-
-const downPay = computed(() => {
-  // 계약금 구하기
-  const c = props.contract
-  const pay_num = payOrderList.value.filter(
-    (p: PayOrder) => p.pay_sort === '1',
-  ).length
-  const average_downPay = Number((price.value * 0.1) / Math.round(pay_num / 2))
-
-  const downPay = downPaymentList.value.filter(
-    (d: DownPayment) =>
-      d.order_group === c.order_group.pk && d.unit_type === c.type_pk,
-  )[0]
-
-  return downPay ? downPay.payment_amount : average_downPay
-})
-
-const lastPayName = computed(
-  () => payOrderList.value[payOrderList.value.length - 1].pay_time,
-)
 
 watch(props, (n, o) => {
   if (!paidCompleted.value) {
@@ -79,29 +40,6 @@ const ctorChk = (ctorPk: string) =>
   nextTick(() => {
     emit('on-ctor-chk', { chk: checked.value, pk: ctorPk })
   })
-
-const get_paid_order = () => {
-  let paid_amount = 0 // 금회차까지 납부해야할 금액 누계
-  const total_paid = props.contract.total_paid // 총 낸돈
-
-  let paid_orders: number[] = [] // 완납 회차 리스트
-
-  const middle = Number(price.value * 0.1) // 중도금액
-
-  payOrderList.value.forEach((p: PayOrder) => {
-    if (p.pay_sort === '1') paid_amount += downPay.value // 계약금 더하기
-    else if (p.pay_sort === '2') paid_amount += middle // 중도금 더하기
-
-    if (total_paid >= paid_amount) paid_orders.push(p.pay_time || 0) // (총 낸돈 >= 총 낼돈)
-  })
-
-  return total_paid >= price.value ? lastPayName.value : paid_orders.pop()
-}
-
-const getPayName = (pay_time: number) =>
-  payOrderList.value
-    .filter((p: PayOrder) => p.pay_time === pay_time)
-    .map(p => p.pay_name)[0]
 </script>
 
 <template>
@@ -162,11 +100,7 @@ const getPayName = (pay_time: number) =>
     <CTableDataCell>
       <span v-if="paidCompleted" class="text-success">완납중</span>
       <span v-else class="text-danger">미납중</span>
-      {{
-        !contract.last_paid_order
-          ? ' (계약금미납)'
-          : ' (' + getPayName(get_paid_order()) + ')'
-      }}
+      ({{ get_paid_name }})
     </CTableDataCell>
     <CTableDataCell>{{ contract.contractor.contract_date }}</CTableDataCell>
   </CTableRow>
