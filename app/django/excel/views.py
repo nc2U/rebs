@@ -2557,6 +2557,43 @@ class ExportSitesContracts(View):
                         worksheet.write(row_num, col_num, self.get_row_content(row[col_num]), bf)
                     else:
                         worksheet.write(row_num, col_num, self.get_row_content(row[col_num - 1]), bf)
+
+        row_num += 1
+        worksheet.set_row(row_num, 23)
+
+        sum_cont_area = sum([a[3] for a in rows])
+        sum_cont_price = sum([a[4] for a in rows])
+        sum_cont_down1 = sum([a[5] for a in rows])
+        sum_cont_down2 = sum([a[7] for a in rows])
+        sum_cont_inter = sum([a[8] for a in rows])
+        sum_cont_rmain = sum([a[9] for a in rows])
+
+        for col_num, title in enumerate(titles):
+            # css 정렬
+            sum_format = workbook.add_format(body_format)
+            sum_format.set_bold()
+            sum_format.set_border()
+            sum_format.set_num_format(43)
+            sum_format.set_bg_color('#eeeeee')
+
+            if col_num == 0:
+                worksheet.merge_range(row_num, 0, row_num, 1, '합계', sum_format)
+            elif col_num == 3:
+                worksheet.write(row_num, col_num, sum_cont_area, sum_format)
+            elif col_num == 4:
+                worksheet.write(row_num, col_num, float(sum_cont_area) * 0.3025, sum_format)
+            elif col_num == 5:
+                worksheet.write(row_num, col_num, sum_cont_price, sum_format)
+            elif col_num == 6:
+                worksheet.write(row_num, col_num, sum_cont_down1, sum_format)
+            elif col_num == 7:
+                worksheet.write(row_num, col_num, sum_cont_down2, sum_format)
+            elif col_num == 8:
+                worksheet.write(row_num, col_num, sum_cont_inter, sum_format)
+            elif col_num == 9:
+                worksheet.write(row_num, col_num, sum_cont_rmain, sum_format)
+            else:
+                worksheet.write(row_num, col_num, None, sum_format)
         #################################################################
 
         # data end ----------------------------------------------- #
