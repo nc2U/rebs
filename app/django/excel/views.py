@@ -2194,11 +2194,12 @@ class ExportSites(View):
                     worksheet.write(row_num, col_num, float(row[col_num - 2]) * 0.3025, bf)
 
         row_num += 1
-        worksheet.set_row(row_num, 23, workbook.add_format({'bold': True}))
+        worksheet.set_row(row_num, 23)
 
         for col_num, title in enumerate(titles):
             # css 정렬
             sum_format = workbook.add_format(body_format)
+            sum_format.set_bold()
             sum_format.set_bg_color('#eeeeee')
 
             if col_num in area_col_num:
