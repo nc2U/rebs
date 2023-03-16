@@ -2203,7 +2203,7 @@ class ExportSites(View):
         output.seek(0)
 
         # Set up the Http response.
-        filename = f'{datetime.now().strftime("%Y-%m-%d")}-sites.xlsx'
+        filename = f'{TODAY}-sites.xlsx'
         file_format = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         response = HttpResponse(output, content_type=file_format)
         response['Content-Disposition'] = f'attachment; filename={filename}'
@@ -2359,7 +2359,7 @@ class ExportSitesByOwner(View):
         output.seek(0)
 
         # Set up the Http response.
-        filename = f'{datetime.now().strftime("%Y-%m-%d")}-sites-by-owner.xlsx'
+        filename = f'{TODAY}-sites-by-owner.xlsx'
         file_format = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         response = HttpResponse(output, content_type=file_format)
         response['Content-Disposition'] = f'attachment; filename={filename}'
@@ -2518,7 +2518,7 @@ class ExportSitesContracts(View):
         output.seek(0)
 
         # Set up the Http response.
-        filename = f'{datetime.now().strftime("%Y-%m-%d")}-sites-contracts.xlsx'
+        filename = f'{TODAY}-sites-contracts.xlsx'
         file_format = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         response = HttpResponse(output, content_type=file_format)
         response['Content-Disposition'] = f'attachment; filename={filename}'
@@ -2669,7 +2669,7 @@ class ExportBalanceByAcc(View):
         output.seek(0)
 
         # Set up the Http response.
-        filename = f'{datetime.now().strftime("%Y-%m-%d")}-project-balance.xlsx'
+        filename = f'{TODAY}-project-balance.xlsx'
         file_format = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         response = HttpResponse(output, content_type=file_format)
         response['Content-Disposition'] = f'attachment; filename={filename}'
@@ -2794,7 +2794,7 @@ class ExportDateCashbook(View):
         output.seek(0)
 
         # Set up the Http response.
-        filename = f'{datetime.now().strftime("%Y-%m-%d")}-project-date-cashbook.xlsx'
+        filename = f'{TODAY}-project-date-cashbook.xlsx'
         file_format = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         response = HttpResponse(output, content_type=file_format)
         response['Content-Disposition'] = f'attachment; filename={filename}'
@@ -3017,7 +3017,7 @@ class ExportExamples(View):
         output.seek(0)
 
         # Set up the Http response.
-        filename = f'{datetime.now().strftime("%Y-%m-%d")}-file_title.xlsx'
+        filename = f'{TODAY}-file_title.xlsx'
         file_format = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         response = HttpResponse(output, content_type=file_format)
         response['Content-Disposition'] = f'attachment; filename={filename}'
