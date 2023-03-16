@@ -2865,6 +2865,7 @@ class ExportDateCashbook(View):
 
         # 5. Sum row
         row_num += 1
+        b_format.set_bg_color('#eeeeee')
         worksheet.merge_range(row_num, 0, row_num, 1, '합계', b_format)
         worksheet.write(row_num, 2, '', b_format)
         worksheet.write(row_num, 3, inc_sum, b_format)
@@ -2882,7 +2883,7 @@ class ExportDateCashbook(View):
         output.seek(0)
 
         # Set up the Http response.
-        filename = f'{date}-project-date-cashbook.xlsx'
+        filename = f'{date}-date-cashbook.xlsx'
         file_format = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         response = HttpResponse(output, content_type=file_format)
         response['Content-Disposition'] = f'attachment; filename={filename}'
