@@ -2023,7 +2023,6 @@ def export_project_cash_xls(request):
             if col == '거래일자':
                 style.num_format_str = 'yyyy-mm-dd'
                 ws.col(col_num).width = 110 * 30
-
             if col == '구분':
                 if row[col_num] == '1':
                     row[col_num] = '입금'
@@ -2031,7 +2030,6 @@ def export_project_cash_xls(request):
                     row[col_num] = '출금'
                 if row[col_num] == '3':
                     row[col_num] = '대체'
-
             if col == '현장 계정':
                 ws.col(col_num).width = 110 * 30
             if col == '현장 세부계정':
@@ -2169,6 +2167,9 @@ class ExportSites(View):
             params.remove('')
 
         rows = obj_list.values_list(*params)
+
+        # Turn off some of the warnings:
+        worksheet.ignore_errors({'number_stored_as_text': 'C:D'})
 
         for row in rows:
             row_num += 1
