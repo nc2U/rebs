@@ -2175,7 +2175,7 @@ class ExportSites(View):
         for i, row in enumerate(rows):
             row_num += 1
             row = list(row)
-            row.insert(0, 1 + i)
+            # row.insert(0, 1 + i)
 
             for col_num, title in enumerate(titles):
                 # css 정렬
