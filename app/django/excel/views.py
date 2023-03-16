@@ -2101,6 +2101,7 @@ class ExportSites(View):
         header_format.set_align('center')
         header_format.set_align('vcenter')
         header_format.set_bg_color('#eeeeee')
+        header_format.set_num_format('#,##0')
 
         # Header_contents
         at = '소유면적'
