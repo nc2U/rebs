@@ -2914,7 +2914,7 @@ def export_cashbook_xls(request):
     s_date = s_date if s_date else '1900-01-01'
     e_date = e_date if e_date else today
 
-    obj_list = CashBook.objects.filter(company=company, deal_date__range=(s_date, e_date))
+    obj_list = CashBook.objects.filter(company=company, deal_date__range=(s_date, e_date)).order_by('deal_date', 'id')
 
     if sort:
         obj_list = obj_list.filter(sort_id=sort)
