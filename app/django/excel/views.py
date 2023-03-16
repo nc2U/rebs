@@ -2325,6 +2325,9 @@ class ExportSitesByOwner(View):
 
         rows = obj_list.values_list(*params)
 
+        # Turn off some of the warnings:
+        worksheet.ignore_errors({'number_stored_as_text': 'D:E'})
+
         for row in rows:
             row_num += 1
             for col_num, cell_data in enumerate(titles):
