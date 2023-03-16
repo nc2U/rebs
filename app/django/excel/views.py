@@ -1170,7 +1170,7 @@ class ExportPaymentsByCont(View):
 
         for i, row in enumerate(data):
             row_num += 1
-            row = list(row)
+            row = list(row)  # tuple -> list
 
             if sum_col is not None:
                 paid_sum = sum([ps[1] for ps in paid_dict if ps[0] == row[0]])
@@ -1193,12 +1193,10 @@ class ExportPaymentsByCont(View):
             for col_num, cell_data in enumerate(row):
                 # css 설정
                 if col_num <= 4 + is_us_cn:
-                    body_format['align'] = 'center'
                     body_format['num_format'] = '#,##0'
-                elif col_num in date_col:  # 계약일 일때
-                    body_format['align'] = 'center'
+                elif col_num in date_col:  # 날짜 컬럼 일때
                     body_format['num_format'] = 'yyyy-mm-dd'
-                elif col_num in digit_col:
+                elif col_num in digit_col:  # 숫자(금액) 컬럼 일때
                     body_format['num_format'] = 41
 
                 bf = workbook.add_format(body_format)
