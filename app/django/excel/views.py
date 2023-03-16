@@ -2500,6 +2500,7 @@ class ExportSitesContracts(View):
                     body_format['align'] = 'right'
                     body_format['num_format'] = '#,##0.00'
                 else:
+                    body_format['align'] = 'center'
                     body_format['num_format'] = 41
 
                 bf = workbook.add_format(body_format)
