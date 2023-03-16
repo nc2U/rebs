@@ -2191,6 +2191,26 @@ class ExportSites(View):
                     worksheet.write(row_num, col_num, row[col_num - 1], bf)
                 else:
                     worksheet.write(row_num, col_num, float(row[col_num - 2]) * 0.3025, bf)
+
+        row_num += 1
+
+        for col_num, title in enumerate(titles):
+            # css 정렬
+            if col_num in area_col_num:
+                body_format['num_format'] = 43
+
+            if col_num < 0:
+                worksheet.merge_range(row_num, 0, row_num, 1, '합계', header_format)
+            elif col_num in (2, 3):
+                worksheet.write(row_num, col_num, '', header_format)
+            elif col_num == 4:
+                worksheet.write(row_num, col_num, 0, header_format)
+            elif col_num == 5:
+                worksheet.write(row_num, col_num, float(0) * 0.3025, header_format)
+            elif col_num == 6:
+                worksheet.write(row_num, col_num, 0, header_format)
+            elif col_num == 7:
+                worksheet.write(row_num, col_num, float(0) * 0.3025, header_format)
         #################################################################
 
         # data finish -------------------------------------------- #
