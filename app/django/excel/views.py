@@ -929,6 +929,8 @@ class ExportPayments(View):
         q = request.GET.get('q')
 
         obj_list = ProjectCashBook.objects.filter(project=project, project_account_d2__in=(1, 2),
+                                                  income__isnull=False,
+                                                  is_contract_payment=True,
                                                   deal_date__range=(sd, ed)).order_by('deal_date', 'created_at')
 
         if og:
@@ -1165,7 +1167,7 @@ class ExportPaymentsByCont(View):
         # Write body
         # ----------------------------------------------------------------- #
         paid_params = ['contract', 'income', 'installment_order', 'deal_date']
-        paid_data = ProjectCashBook.objects.filter(project_account_d2__lte=2,
+        paid_data = ProjectCashBook.objects.filter(project=project, project_account_d2__lte=2,
                                                    income__isnull=False,
                                                    is_contract_payment=True)
         paid_dict = paid_data.values_list(*paid_params)
