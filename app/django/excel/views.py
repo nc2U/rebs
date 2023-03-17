@@ -6,11 +6,11 @@
 # Copyright 2013-2020, John McNamara, jmcnamara@cpan.org
 #
 import io
-from django.http import HttpResponse
-import xlsxwriter
 import xlwt
-
+import xlsxwriter
 from datetime import datetime
+
+from django.http import HttpResponse
 from django.db.models import Q, F, Max, Sum, Count, When, Case
 from django.views.generic import View
 
@@ -19,6 +19,7 @@ from project.models import (Project, ProjectIncBudget, Site, SiteOwner, SiteCont
                             UnitType, KeyUnit, BuildingUnit, HouseUnit, ProjectOutBudget)
 from contract.models import Contract, Contractor, ContractorRelease, OrderGroup
 from cash.models import CashBook, ProjectCashBook, InstallmentPaymentOrder
+from notice.models import SalesBillIssue
 
 TODAY = datetime.today().strftime('%Y-%m-%d')
 
@@ -1166,6 +1167,12 @@ class ExportPaymentsByCont(View):
                                                    income__isnull=False,
                                                    is_contract_payment=True)
         paid_dict = paid_data.values_list(*paid_params)
+
+        bill_data = SalesBillIssue.objects.get(project=project)
+        try:
+            now_order = bill_data.now_payment_order
+        except SalesBillIssue.DoesNotExist:
+            now_order = pay_orders.first()
         # ----------------------------------------------------------------- #
 
         for i, row in enumerate(data):
@@ -1177,6 +1184,8 @@ class ExportPaymentsByCont(View):
                 row.insert(sum_col, paid_sum)  # 순서 삽입
 
             next_col = sum_col
+            due_amount = 0
+            unpaid_amt = 0
             for pi, po in enumerate(pay_orders):  # 회차별 납입 내역 삽입
                 dates = [p[3] for p in paid_dict if p[0] == row[0] and p[2] == po.pay_code]
                 paid_date = max(dates).strftime('%Y-%m-%d') if dates else None
@@ -1184,9 +1193,14 @@ class ExportPaymentsByCont(View):
 
                 row.insert(next_col + 1 + pi, paid_date)  # 거래일 정보 삽입
                 row.insert(next_col + 2 + pi, paid_amount)  # 납부 금액 정보 삽입
+
+                # due_amount adding
+                amt = 1000
+                due_amount += amt if po.id <= now_order.id else 0
+                unpaid_amt = due_amount - paid_amount if due_amount > paid_amount else 0
                 next_col += 1
 
-            row.insert(next_col + len(pay_orders) + 1, 0)  # 미납 내역 상입
+            row.insert(next_col + len(pay_orders) + 1, unpaid_amt)  # 미납 내역 상입
 
             row[0] = i + 1  # pk 대신 순서 삽입
 
