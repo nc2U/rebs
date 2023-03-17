@@ -423,7 +423,8 @@ class PdfExportBill(View):
 
         return remain_amt_list
 
-    def get_orders_info(self, inspay_order, amount, paid_sum_total):
+    @staticmethod
+    def get_orders_info(inspay_order, amount, paid_sum_total):
         """
         :: 회차별 부가정보
         :param inspay_order: 회차 정보
@@ -470,7 +471,8 @@ class PdfExportBill(View):
                 due_date = None if order.pay_code > 2 else due_date
         return due_date
 
-    def get_late_fee(self, late_amt, days):
+    @staticmethod
+    def get_late_fee(late_amt, days):
         """
         :: 회차별 지연 가산금 계산 함수
         :param late_amt: 지연금액
