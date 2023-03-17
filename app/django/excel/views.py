@@ -1185,7 +1185,7 @@ class ExportPaymentsByCont(View):
                 row.insert(sum_col, paid_sum)  # 순서 삽입
 
             next_col = sum_col
-            due_amount = 0
+            due_amt_sum = 0
             unpaid_amt = 0
             for pi, po in enumerate(pay_orders):  # 회차별 납입 내역 삽입
                 dates = [p[3] for p in paid_dict if p[0] == row[0] and p[2] == po.pay_code]
@@ -1196,9 +1196,9 @@ class ExportPaymentsByCont(View):
                 row.insert(next_col + 2 + pi, paid_amount)  # 납부 금액 정보 삽입
 
                 # due_amount adding
-                amt = 20000000
-                due_amount += amt if po.id <= now_order.id else 0
-                unpaid_amt = due_amount - paid_sum if due_amount > paid_sum else 0
+                due_amt = 20000000
+                due_amt_sum += due_amt if po.id <= now_order.id else 0
+                unpaid_amt = due_amt_sum - paid_sum if due_amt_sum > paid_sum else 0
                 next_col += 1
 
             row.insert(next_col + len(pay_orders) + 1, unpaid_amt)  # 미납 내역 상입
