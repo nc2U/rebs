@@ -928,7 +928,7 @@ class ExportPayments(View):
         ni = request.GET.get('ni')
         q = request.GET.get('q')
 
-        obj_list = ProjectCashBook.objects.filter(project=project, project_account_d2__in=(1, 2),
+        obj_list = ProjectCashBook.objects.filter(project=project, project_account_d2__lte=2,
                                                   income__isnull=False,
                                                   is_contract_payment=True,
                                                   deal_date__range=(sd, ed)).order_by('deal_date', 'created_at')
@@ -944,12 +944,12 @@ class ExportPayments(View):
         if nc:
             obj_list = obj_list.filter(
                 (Q(is_contract_payment=False) | Q(contract__isnull=True)) &
-                (Q(project_account_d1_id__in=(1, 2)) | Q(project_account_d2_id__in=(1, 2)))
+                (Q(project_account_d1_id__lte=2) | Q(project_account_d2_id__lte=2))
             )
         if ni:
             obj_list = obj_list.filter(
                 (Q(is_contract_payment=False) | Q(installment_order__isnull=True)) &
-                (Q(project_account_d1_id__in=(1, 2)) | Q(project_account_d2_id__in=(1, 2)))
+                (Q(project_account_d1_id__lte=2) | Q(project_account_d2_id__lte=2))
             )
         if q:
             obj_list = obj_list.filter(
@@ -1411,9 +1411,10 @@ class ExportPaymentStatus(View):
             .annotate(num_cont=Count('order_group'))
 
         paid_sum_list = ProjectCashBook.objects.filter(project=project,
-                                                       deal_date__lte=date,
+                                                       project_account_d2__lte=2,
                                                        contract__activation=True,
-                                                       contract__contractor__status=2) \
+                                                       contract__contractor__status=2,
+                                                       deal_date__lte=date) \
             .order_by('contract__order_group', 'contract__unit_type') \
             .annotate(order_group=F('contract__order_group')) \
             .annotate(unit_type=F('contract__unit_type')) \
