@@ -1172,7 +1172,9 @@ class ExportPaymentsByCont(View):
         paid_data = ProjectCashBook.objects.filter(project=project,
                                                    income__isnull=False,
                                                    project_account_d2__lte=2,
-                                                   is_contract_payment=True)
+                                                   is_contract_payment=True,
+                                                   contract__activation=True,
+                                                   contract__contractor__status=2)
         paid_dict = paid_data.values_list(*paid_params)
 
         # 현재 납부 회차 구하기
@@ -1414,7 +1416,9 @@ class ExportPaymentStatus(View):
             .annotate(num_cont=Count('order_group'))
 
         paid_sum_list = ProjectCashBook.objects.filter(project=project,
+                                                       income__isnull=False,
                                                        project_account_d2__lte=2,
+                                                       is_contract_payment=True,
                                                        contract__activation=True,
                                                        contract__contractor__status=2,
                                                        deal_date__lte=date) \
