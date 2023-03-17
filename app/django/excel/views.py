@@ -1003,6 +1003,7 @@ class ExportPaymentsByCont(View):
     def get(request):
 
         # Create an in-memory output file for the new workbook.
+        global paid_sum
         output = io.BytesIO()
 
         # Even though the final file will be in memory the module uses temp
@@ -1197,7 +1198,7 @@ class ExportPaymentsByCont(View):
                 # due_amount adding
                 amt = 1000
                 due_amount += amt if po.id <= now_order.id else 0
-                unpaid_amt = due_amount - paid_amount if due_amount > paid_amount else 0
+                unpaid_amt = due_amount - paid_sum if due_amount > paid_sum else 0
                 next_col += 1
 
             row.insert(next_col + len(pay_orders) + 1, unpaid_amt)  # 미납 내역 상입
