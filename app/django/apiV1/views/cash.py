@@ -174,7 +174,9 @@ class PaymentViewSet(ProjectCashBookViewSet):
     pagination_class = PageNumberPaginationTen
 
     def get_queryset(self):
-        return ProjectCashBook.objects.filter(project_account_d2__in=(1, 2), refund_contractor=None)
+        return ProjectCashBook.objects.filter(project_account_d2__lte=2,
+                                              income__isnull=False,
+                                              is_contract_payment=True)
 
 
 class AllPaymentViewSet(PaymentViewSet):

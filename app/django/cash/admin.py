@@ -47,7 +47,7 @@ class ProjectCashBookAdmin(ImportExportMixin, admin.ModelAdmin):
     search_fields = ('content', 'trader', 'note')
     list_display_links = ('project', 'deal_date')
     list_filter = (
-        'sort', ('deal_date', DateRangeFilter), 'project_account_d1',
+        'project', 'sort', ('deal_date', DateRangeFilter), 'project_account_d1',
         'project_account_d2', 'is_imprest', 'is_contract_payment', 'bank_account')
 
     def formatted_income(self, obj):
