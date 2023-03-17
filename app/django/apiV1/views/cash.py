@@ -174,9 +174,8 @@ class PaymentViewSet(ProjectCashBookViewSet):
     pagination_class = PageNumberPaginationTen
 
     def get_queryset(self):
-        return ProjectCashBook.objects.filter(project_account_d2__lte=2,
-                                              income__isnull=False,
-                                              is_contract_payment=True)
+        return ProjectCashBook.objects.filter(income__isnull=False,
+                                              project_account_d2__lte=2)
 
 
 class AllPaymentViewSet(PaymentViewSet):
@@ -197,7 +196,11 @@ class PaymentSummaryViewSet(viewsets.ModelViewSet):
     filterset_class = PaymentSumFilterSet
 
     def get_queryset(self):
-        return ProjectCashBook.objects.filter(contract__activation=True, contract__contractor__status=2) \
+        return ProjectCashBook.objects.filter(income__isnull=False,
+                                              project_account_d2__lte=2,
+                                              is_contract_payment=True,
+                                              contract__activation=True,
+                                              contract__contractor__status=2) \
             .order_by('contract__order_group', 'contract__unit_type') \
             .annotate(order_group=F('contract__order_group')) \
             .annotate(unit_type=F('contract__unit_type')) \

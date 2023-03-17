@@ -693,7 +693,9 @@ def export_payments_xls(request):
 
     sd = sd if sd else '1900-01-01'
     ed = ed if ed else TODAY
-    obj_list = ProjectCashBook.objects.filter(project=project, project_account_d2__in=(1, 2),
+    obj_list = ProjectCashBook.objects.filter(project=project,
+                                              income__isnull=False,
+                                              project_account_d2__lte=2,
                                               deal_date__range=(sd, ed)).order_by('deal_date', 'created_at')
 
     if og:
@@ -928,9 +930,9 @@ class ExportPayments(View):
         ni = request.GET.get('ni')
         q = request.GET.get('q')
 
-        obj_list = ProjectCashBook.objects.filter(project=project, project_account_d2__lte=2,
+        obj_list = ProjectCashBook.objects.filter(project=project,
                                                   income__isnull=False,
-                                                  is_contract_payment=True,
+                                                  project_account_d2__lte=2,
                                                   deal_date__range=(sd, ed)).order_by('deal_date', 'created_at')
 
         if og:
@@ -1167,8 +1169,9 @@ class ExportPaymentsByCont(View):
         # Write body
         # ----------------------------------------------------------------- #
         paid_params = ['contract', 'income', 'installment_order', 'deal_date']
-        paid_data = ProjectCashBook.objects.filter(project=project, project_account_d2__lte=2,
+        paid_data = ProjectCashBook.objects.filter(project=project,
                                                    income__isnull=False,
+                                                   project_account_d2__lte=2,
                                                    is_contract_payment=True)
         paid_dict = paid_data.values_list(*paid_params)
 
