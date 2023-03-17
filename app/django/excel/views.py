@@ -1003,7 +1003,6 @@ class ExportPaymentsByCont(View):
     def get(request):
 
         # Create an in-memory output file for the new workbook.
-        global paid_sum
         output = io.BytesIO()
 
         # Even though the final file will be in memory the module uses temp
@@ -1169,6 +1168,7 @@ class ExportPaymentsByCont(View):
                                                    is_contract_payment=True)
         paid_dict = paid_data.values_list(*paid_params)
 
+        # 현재 납부 회차 구하기
         bill_data = SalesBillIssue.objects.get(project=project)
         try:
             now_order = bill_data.now_payment_order
@@ -1180,13 +1180,14 @@ class ExportPaymentsByCont(View):
             row_num += 1
             row = list(row)  # tuple -> list
 
+            paid_sum = 0  # 기납부 총액
             if sum_col is not None:
                 paid_sum = sum([ps[1] for ps in paid_dict if ps[0] == row[0]])
                 row.insert(sum_col, paid_sum)  # 순서 삽입
 
             next_col = sum_col
-            due_amt_sum = 0
-            unpaid_amt = 0
+            due_amt_sum = 0  # 납부 약정액 합계
+            unpaid_amt = 0  # 미납액
             for pi, po in enumerate(pay_orders):  # 회차별 납입 내역 삽입
                 dates = [p[3] for p in paid_dict if p[0] == row[0] and p[2] == po.pay_code]
                 paid_date = max(dates).strftime('%Y-%m-%d') if dates else None
@@ -1196,7 +1197,7 @@ class ExportPaymentsByCont(View):
                 row.insert(next_col + 2 + pi, paid_amount)  # 납부 금액 정보 삽입
 
                 # due_amount adding
-                due_amt = 20000000
+                due_amt = 0  # 금회 납부 약정액
                 due_amt_sum += due_amt if po.id <= now_order.id else 0
                 unpaid_amt = due_amt_sum - paid_sum if due_amt_sum > paid_sum else 0
                 next_col += 1
