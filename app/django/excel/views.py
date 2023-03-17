@@ -1200,7 +1200,7 @@ class ExportPaymentsByCont(View):
             try:
                 floor = contract.keyunit.houseunit.floor_type
                 cont_price = prices.get(unit_floor_type=floor).price  # 분양가
-            except HouseUnit.DoesNotExsist:
+            except KeyUnit.DoesNotExsist:
                 cont_price = ProjectIncBudget.objects.get(order_group__order_group_name=row[3],
                                                           unit_type__name=row[4]).average_price
             except ProjectIncBudget.DoesNotExsist:
