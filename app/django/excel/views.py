@@ -11,8 +11,9 @@ import xlsxwriter
 from datetime import datetime
 
 from django.http import HttpResponse
-from django.db.models import Q, F, Max, Sum, Count, When, Case
 from django.views.generic import View
+from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Q, F, Max, Sum, Count, When, Case
 
 from company.models import Company
 from project.models import (Project, ProjectIncBudget, Site, SiteOwner, SiteContract,
@@ -1200,7 +1201,7 @@ class ExportPaymentsByCont(View):
             try:
                 floor = contract.keyunit.houseunit.floor_type
                 cont_price = prices.get(unit_floor_type=floor).price  # 분양가
-            except KeyUnit.DoesNotExsist:
+            except ObjectDoesNotExist:
                 cont_price = ProjectIncBudget.objects.get(order_group__order_group_name=row[3],
                                                           unit_type__name=row[4]).average_price
             except ProjectIncBudget.DoesNotExsist:
