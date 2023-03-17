@@ -27,7 +27,6 @@ const form = reactive<ProjectCashBook>({
   sort: 1, // hidden -> always
   project_account_d1: null, // hidden
   project_account_d2: null, // hidden
-  is_contract_payment: true, // hidden -> always
   contract: null, //  hidden -> 예외 및 신규 매칭 시 코드 확인
   content: '', // hidden
   installment_order: null,

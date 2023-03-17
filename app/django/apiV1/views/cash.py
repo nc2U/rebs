@@ -139,7 +139,7 @@ class ProjectCashBookFilterSet(FilterSet):
         model = ProjectCashBook
         fields = ('project', 'sort', 'project_account_d1', 'project_account_d2',
                   'from_deal_date', 'to_deal_date', 'deal_date', 'installment_order',
-                  'bank_account', 'is_contract_payment', 'contract', 'contract__order_group',
+                  'bank_account', 'contract', 'contract__order_group',
                   'contract__unit_type', 'no_contract', 'no_install')
 
 
@@ -198,7 +198,6 @@ class PaymentSummaryViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return ProjectCashBook.objects.filter(income__isnull=False,
                                               project_account_d2__lte=2,
-                                              is_contract_payment=True,
                                               contract__activation=True,
                                               contract__contractor__status=2) \
             .order_by('contract__order_group', 'contract__unit_type') \

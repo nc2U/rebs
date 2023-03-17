@@ -402,7 +402,6 @@ class ContractRegisterView(LoginRequiredMixin, FormView):
                         dSort = int(contract.order_group.sort)
                         pCashbook.project_account_d1 = ProjectAccountD1.objects.get(pk=dSort)
                         pCashbook.project_account_d2 = ProjectAccountD2.objects.get(pk=dSort)
-                        pCashbook.is_contract_payment = True
                         if not cont_id:
                             pCashbook.contract = contract
                         pCashbook.note = cont_note

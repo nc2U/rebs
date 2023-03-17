@@ -570,7 +570,7 @@ class SalesPaymentLV(LoginRequiredMixin, ListView, FormView):
 
         if self.request.GET.get('up'):
             results = results.filter(
-                (Q(is_contract_payment=False) | Q(contract__isnull=True)) &
+                Q(contract__isnull=True) &
                 (Q(project_account_d1_id__in=(1, 2)) | Q(project_account_d2_id__in=(1, 2)))
             )
 
@@ -787,7 +787,6 @@ class SalesPaymentRegister(LoginRequiredMixin, FormView):
         if form.is_valid():
             payment = form.save(commit=False)
             payment.sort = ProjectAccountSort.objects.get(pk=1)
-            payment.is_contract_payment = True
             payment.recoder = self.request.user
             payment.save()
             return redirect(self.get_success_url())

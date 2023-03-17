@@ -219,10 +219,9 @@ class PdfExportBill(View):
         :return list(paid_list: 납부 건 리스트), int(paid_sum_total: 납부 총액):
         """
         paid_list = ProjectCashBook.objects.filter(
+            income__isnull=False,
             project_account_d2__lte=2,
-            is_contract_payment=True,
-            contract=contract,
-            income__isnull=False
+            contract=contract
         )  # 해당 계약 건 납부 데이터
 
         paid_sum_total = paid_list.aggregate(Sum('income'))['income__sum']  # 완납 총금액
@@ -669,10 +668,9 @@ class PdfExportPayments(View):
         :return list(paid_list: 납부 건 리스트), int(paid_sum_total: 납부 총액):
         """
         paid_list = ProjectCashBook.objects.filter(
+            income__isnull=False,
             project_account_d2__lte=2,
-            is_contract_payment=True,
-            contract=contract,
-            income__isnull=False
+            contract=contract
         ).order_by('deal_date', 'id')  # 해당 계약 건 납부 데이터
 
         paid_list = paid_list if paid_list else []

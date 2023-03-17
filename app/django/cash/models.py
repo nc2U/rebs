@@ -103,7 +103,6 @@ class ProjectCashBook(models.Model):
     separated = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='sepItems',
                                   verbose_name='분할 계정')
     is_imprest = models.BooleanField('운영비 항목 여부', default=False, help_text='전도금 대체 후 해당 전도금(운영비) 항목을 상세 기록하는 경우 이 항목')
-    is_contract_payment = models.BooleanField('분양/분담금 여부', default=False)  # 분양대금여부(납입, 환불 모두 True)
     contract = models.ForeignKey('contract.Contract', on_delete=models.SET_NULL, null=True, blank=True,
                                  related_name='payments', verbose_name='계약일련번호')  # 계약일련번호  (프로젝트 귀속)
     installment_order = models.ForeignKey('InstallmentPaymentOrder', on_delete=models.CASCADE, null=True, blank=True,
