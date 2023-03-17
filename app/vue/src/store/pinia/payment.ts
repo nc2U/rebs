@@ -190,7 +190,8 @@ export const usePayment = defineStore('payment', () => {
     if (payload.pay_account) url += `&bank_account=${payload.pay_account}`
     if (payload.contract) url += `&contract=${payload.contract}`
     if (payload.no_contract) url += `&no_contract=${payload.no_contract}`
-    if (payload.no_install) url += `&no_install=${payload.no_install}`
+    if (payload.no_install)
+      url += `&no_install=${payload.no_install}&no_contract=false`
     if (payload.ordering) url += `&ordering=${payload.ordering}`
     if (payload.search) url += `&search=${payload.search}`
     const page = payload.page ? payload.page : 1

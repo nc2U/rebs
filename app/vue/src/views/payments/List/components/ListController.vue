@@ -52,15 +52,6 @@ const formsCheck = computed(() => {
   return a && b && c && d && e && f && g && h && i
 })
 
-watch(from_date, val => {
-  if (val) from_date.value = dateFormat(val)
-  listFiltering(1)
-})
-watch(to_date, val => {
-  if (val) to_date.value = dateFormat(val)
-  listFiltering(1)
-})
-
 watch(props, nVal => {
   if (!!nVal.byCont) {
     from_date.value = ''
@@ -75,6 +66,15 @@ watch(props, nVal => {
   }
 })
 
+watch(from_date, val => {
+  if (val) from_date.value = dateFormat(val)
+  listFiltering(1)
+})
+watch(to_date, val => {
+  if (val) to_date.value = dateFormat(val)
+  listFiltering(1)
+})
+
 const listFiltering = (page = 1) => {
   nextTick(() => {
     form.search = form.search.trim()
@@ -83,6 +83,20 @@ const listFiltering = (page = 1) => {
       ...form,
     })
   })
+}
+
+const noContractFn = () => {
+  nextTick(() => {
+    if (form.no_contract) form.no_install = false
+  })
+  listFiltering(1)
+}
+
+const noInstallFn = () => {
+  nextTick(() => {
+    if (form.no_install) form.no_contract = false
+  })
+  listFiltering(1)
 }
 
 const resetForm = () => {
@@ -183,7 +197,7 @@ defineExpose({ listFiltering })
               v-model="form.no_contract"
               label="계약 미등록"
               :disabled="byCont"
-              @change="listFiltering(1)"
+              @change="noContractFn"
             />
           </CCol>
 
@@ -193,7 +207,7 @@ defineExpose({ listFiltering })
               v-model="form.no_install"
               label="회차 미등록"
               :disabled="byCont"
-              @change="listFiltering(1)"
+              @change="noInstallFn"
             />
           </CCol>
 
