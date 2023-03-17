@@ -1196,7 +1196,7 @@ class ExportPaymentsByCont(View):
                 row.insert(next_col + 2 + pi, paid_amount)  # 납부 금액 정보 삽입
 
                 # due_amount adding
-                amt = 1000
+                amt = 20000000
                 due_amount += amt if po.id <= now_order.id else 0
                 unpaid_amt = due_amount - paid_sum if due_amount > paid_sum else 0
                 next_col += 1
