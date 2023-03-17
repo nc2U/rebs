@@ -297,7 +297,7 @@ const project = {
 
 const company_cash = {
   component: 'CNavItem',
-  name: '본사 회계 관리',
+  name: '본사 자금 관리',
   to: '/cashes',
   icon: 'cil-laptop',
   items: [

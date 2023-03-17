@@ -11,7 +11,7 @@ const pageViewAuth = computed(
 
 const comCash = {
   path: 'cashes',
-  name: '본사 회계 관리',
+  name: '본사 자금 관리',
   redirect: '/cashes/status',
   component: {
     render() {

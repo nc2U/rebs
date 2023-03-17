@@ -275,7 +275,7 @@ watch(
                   icon="mdi mdi-account-arrow-left"
                   :color="getColor(authData.company_cash)[0]"
                 />
-                본사 회계 관리
+                본사 자금 관리
               </CFormLabel>
               <CCol>
                 <CFormSelect
