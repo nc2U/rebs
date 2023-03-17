@@ -18,7 +18,8 @@ from company.models import Company
 from project.models import (Project, ProjectIncBudget, Site, SiteOwner, SiteContract,
                             UnitType, KeyUnit, BuildingUnit, HouseUnit, ProjectOutBudget)
 from contract.models import Contract, Contractor, ContractorRelease, OrderGroup
-from cash.models import CashBook, ProjectCashBook, InstallmentPaymentOrder
+from cash.models import (CashBook, ProjectCashBook, SalesPriceByGT,
+                         InstallmentPaymentOrder, DownPayment)
 from notice.models import SalesBillIssue
 
 TODAY = datetime.today().strftime('%Y-%m-%d')
@@ -1154,7 +1155,7 @@ class ExportPaymentsByCont(View):
                                            activation=True,
                                            contractor__status='2',
                                            contractor__contract_date__lte=date) \
-            .order_by('contractor__contract_date')
+            .order_by('contractor__contract_date', 'created_at')
 
         # ----------------- get_queryset finish ----------------- #
 
@@ -1174,6 +1175,9 @@ class ExportPaymentsByCont(View):
             now_order = bill_data.now_payment_order
         except SalesBillIssue.DoesNotExist:
             now_order = pay_orders.first()
+
+        # 계약금 분납 횟수
+        down_num = pay_orders.filter(pay_sort='1').count()
         # ----------------------------------------------------------------- #
 
         for i, row in enumerate(data):
@@ -1188,6 +1192,21 @@ class ExportPaymentsByCont(View):
             next_col = sum_col
             due_amt_sum = 0  # 납부 약정액 합계
             unpaid_amt = 0  # 미납액
+
+            contract = Contract.objects.get(serial_number=row[1], contractor__name=row[2])
+            prices = SalesPriceByGT.objects.filter(project_id=project,
+                                                   order_group__order_group_name=row[3],
+                                                   unit_type__name=row[4])
+            try:
+                floor = contract.keyunit.houseunit.floor_type
+                cont_price = prices.get(unit_floor_type=floor).price  # 분양가
+            except HouseUnit.DoesNotExsist:
+                cont_price = ProjectIncBudget.objects.get(order_group__order_group_name=row[3],
+                                                          unit_type__name=row[4]).average_price
+            except ProjectIncBudget.DoesNotExsist:
+                price = contract.keyunit.unit_type.average_price
+                cont_price = price if price else 0  # 분양가
+
             for pi, po in enumerate(pay_orders):  # 회차별 납입 내역 삽입
                 dates = [p[3] for p in paid_dict if p[0] == row[0] and p[2] == po.pay_code]
                 paid_date = max(dates).strftime('%Y-%m-%d') if dates else None
@@ -1197,7 +1216,21 @@ class ExportPaymentsByCont(View):
                 row.insert(next_col + 2 + pi, paid_amount)  # 납부 금액 정보 삽입
 
                 # due_amount adding
-                due_amt = 0  # 금회 납부 약정액
+                if po.pay_sort == '1':  # 계약금일 때
+                    try:
+                        down_pay = DownPayment.objects.get(
+                            project_id=project,
+                            order_group=contract.order_group,
+                            unit_type=contract.keyunit.unit_type)
+                        due_amt = down_pay.payment_amount
+                    except DownPayment.DoesNotExist:
+                        pn = round(down_num / 2)
+                        due_amt = int(cont_price * 0.1 / pn)
+                elif po.pay_sort == '2':  # 중도금일 때
+                    due_amt = cont_price * 0.1
+                else:  # 잔금일 때
+                    due_amt = cont_price - due_amt_sum
+
                 due_amt_sum += due_amt if po.id <= now_order.id else 0
                 unpaid_amt = due_amt_sum - paid_sum if due_amt_sum > paid_sum else 0
                 next_col += 1
