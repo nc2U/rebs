@@ -46,7 +46,7 @@ jobs:
                   kubectl apply -f ./deploy/kubectl/ns-prod.yaml
                   bash
                   helm upgrade ${{ secrets.DATABASE_USER }} ./deploy/helm --install -f ./deploy/helm/values-prod.yaml -n prod-hrebs \
-                  --set global.password=${{ secrets.DATABASE_PASSWORD }} \
+                  --set global.password = ${{ secrets.DATABASE_PASSWORD }} \
                   --set global.nfsPath=${{ secrets.NFS_PATH }} \
                   --set global.nfsServerHost=${{ secrets.CICD_HOST }} \
                   --set nginx.ingress.tls[0].hosts[0]=${{ secrets.DOMAIN_NAME }} \
