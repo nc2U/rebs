@@ -267,6 +267,7 @@ SIMPLE_JWT = {
 APP_ORDER = [
     'company',
     'project',
+    'payment',
     'contract',
     'cash',
     'rebs',
