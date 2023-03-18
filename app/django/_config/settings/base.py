@@ -75,6 +75,7 @@ INSTALLED_APPS += [  # app
     'company.apps.CompanyConfig',
     'contract.apps.ContractConfig',
     'document.apps.DocumentConfig',
+    'items.apps.ItemsConfig',
     'notice.apps.NoticeConfig',
     'payment.apps.PaymentConfig',
     'project.apps.ProjectConfig',
@@ -267,6 +268,7 @@ SIMPLE_JWT = {
 APP_ORDER = [
     'company',
     'project',
+    'items',
     'payment',
     'contract',
     'cash',
