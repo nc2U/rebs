@@ -43,8 +43,7 @@ jobs:
           password: ${{ secrets.CICD_PASSWORD }}
           command: |
             cd ${{ secrets.NFS_PATH }}/prod/
-                  kubectl apply -f ./deploy/kubectl/ns-prod.yaml
-                  bash
+                  kubectl apply -f ./deploy/kubectl/ns-prod.yaml && bash
                   helm upgrade ${{ secrets.DATABASE_USER }} ./deploy/helm --install -f ./deploy/helm/values-prod.yaml -n prod-hrebs \
                   --set global.dbPassword=${{ secrets.DATABASE_PASSWORD }} \
                   --set global.nfsPath=${{ secrets.NFS_PATH }} \
