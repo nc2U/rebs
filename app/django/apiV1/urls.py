@@ -4,6 +4,7 @@ from .views import accounts
 from .views import company
 from .views import rebs
 from .views import project
+from .views import payment
 from .views import cash
 from .views import contract
 from .views import notice
@@ -62,6 +63,14 @@ router.register(r'owners-total', project.TotalOwnerAreaViewSet, basename='owners
 router.register(r'site-relation', project.SiteRelationViewSet)
 router.register(r'site-contract', project.SiteContractViewSet)
 router.register(r'conts-total', project.TotalContractedAreaViewSet, basename='conts-total')  # only list
+# payment
+router.register(r'payment', payment.PaymentViewSet, basename='payment')  # only list
+router.register(r'all-payment', payment.AllPaymentViewSet, basename='all-payment')  # only list
+router.register(r'payment-sum', payment.PaymentSummaryViewSet, basename='payment-sum')  # only list
+router.register(r'cont-num-type', payment.ContNumByTypeViewSet, basename='cont-num-type')  # only list
+router.register(r'price', payment.SalesPriceViewSet)
+router.register(r'pay-order', payment.InstallmentOrderViewSet)
+router.register(r'down-payment', payment.DownPaymentViewSet)
 # cash
 router.register(r'bank-code', cash.BankCodeViewSet)
 router.register(r'company-bank-account', cash.ComBankAccountViewSet)
@@ -73,13 +82,6 @@ router.register(r'pr-balance-by-acc', cash.PrBalanceByAccountViewSet, basename='
 router.register(r'project-cashbook', cash.ProjectCashBookViewSet)
 router.register(r'pr-date-cashbook', cash.ProjectDateCashBookViewSet, basename='pr-date-cashbook')  # only list
 router.register(r'project-imprest', cash.ProjectImprestViewSet, basename='pr-imprest')  # only list
-router.register(r'payment', cash.PaymentViewSet, basename='payment')  # only list
-router.register(r'all-payment', cash.AllPaymentViewSet, basename='all-payment')  # only list
-router.register(r'payment-sum', cash.PaymentSummaryViewSet, basename='payment-sum')  # only list
-router.register(r'cont-num-type', cash.ContNumByTypeViewSet, basename='cont-num-type')  # only list
-router.register(r'price', cash.SalesPriceViewSet)
-router.register(r'pay-order', cash.InstallmentOrderViewSet)
-router.register(r'down-payment', cash.DownPaymentViewSet)
 # contract
 router.register(r'order-group', contract.OrderGroupViewSet)
 router.register(r'contract', contract.ContractViewSet)

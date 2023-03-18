@@ -4,11 +4,12 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from contract.models import (OrderGroup, Contract, Contractor,
                              ContractorAddress, ContractorContact, ContractorRelease)
-from cash.models import ProjectBankAccount, ProjectCashBook, InstallmentPaymentOrder
+from cash.models import ProjectBankAccount, ProjectCashBook
+from payment.models import InstallmentPaymentOrder
 from project.models import Project, HouseUnit, KeyUnit
 from rebs.models import ProjectAccountSort, ProjectAccountD1, ProjectAccountD2
 from .project import SimpleUnitTypeSerializer
-from .cash import SimpleInstallmentOrderSerializer, SimpleOrderGroupSerializer
+from .payment import SimpleInstallmentOrderSerializer, SimpleOrderGroupSerializer
 
 
 # Contract --------------------------------------------------------------------------

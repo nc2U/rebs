@@ -19,8 +19,8 @@ from company.models import Company
 from project.models import (Project, ProjectIncBudget, Site, SiteOwner, SiteContract,
                             UnitType, KeyUnit, BuildingUnit, HouseUnit, ProjectOutBudget)
 from contract.models import Contract, Contractor, ContractorRelease, OrderGroup
-from cash.models import (CashBook, ProjectCashBook, SalesPriceByGT,
-                         InstallmentPaymentOrder, DownPayment)
+from cash.models import CashBook, ProjectCashBook
+from payment.models import SalesPriceByGT, InstallmentPaymentOrder, DownPayment
 from notice.models import SalesBillIssue
 
 TODAY = datetime.today().strftime('%Y-%m-%d')

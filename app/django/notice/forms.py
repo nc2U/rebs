@@ -1,6 +1,5 @@
 from django import forms
-from .models import SalesBillIssue
-from cash.models import InstallmentPaymentOrder
+from payment.models import InstallmentPaymentOrder
 
 
 class SalesBillIssueForm(forms.Form):

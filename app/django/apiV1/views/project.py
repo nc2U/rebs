@@ -12,9 +12,7 @@ from project.models import (Project, UnitType, ProjectIncBudget, ProjectOutBudge
                             UnitFloorType, KeyUnit, BuildingUnit, HouseUnit,
                             Site, SiteOwner, SiteOwnshipRelationship, SiteContract)
 
-from cash.models import (BankCode, CompanyBankAccount, ProjectBankAccount,
-                         CashBook, ProjectCashBook, SalesPriceByGT,
-                         InstallmentPaymentOrder, DownPayment, OverDueRule)
+from cash.models import BankCode, CompanyBankAccount, ProjectBankAccount, CashBook, ProjectCashBook
 
 TODAY = datetime.today().strftime('%Y-%m-%d')
 

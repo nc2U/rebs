@@ -5,7 +5,7 @@ from .models import Project, UnitType, UnitFloorType, Site, SiteOwner, SiteContr
 
 from contract.models import OrderGroup
 
-from cash.models import SalesPriceByGT, InstallmentPaymentOrder, DownPayment
+from payment.models import SalesPriceByGT, InstallmentPaymentOrder, DownPayment
 
 
 class ProjectForm(forms.ModelForm):

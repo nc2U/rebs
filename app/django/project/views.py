@@ -15,7 +15,7 @@ from project.models import (Project, UnitType, UnitFloorType, Site,
                             SiteOwner, SiteContract, SiteOwnshipRelationship)
 
 from contract.models import OrderGroup
-from cash.models import SalesPriceByGT, InstallmentPaymentOrder, DownPayment
+from payment.models import SalesPriceByGT, InstallmentPaymentOrder, DownPayment
 
 
 class ProjectList(LoginRequiredMixin, ListView):

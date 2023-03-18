@@ -11,7 +11,8 @@ from .models import (OrderGroup, Contract, Contractor,
                      ContractorAddress, ContractorContact, ContractorRelease)
 from rebs.models import ProjectAccountSort, ProjectAccountD1, ProjectAccountD2
 from project.models import Project, UnitType, KeyUnit, BuildingUnit, HouseUnit
-from cash.models import ProjectBankAccount, ProjectCashBook, InstallmentPaymentOrder
+from cash.models import ProjectBankAccount, ProjectCashBook
+from payment.models import InstallmentPaymentOrder
 
 from .forms import ContractRegisterForm, ContractPaymentForm, ContractorReleaseForm
 

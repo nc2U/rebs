@@ -1,7 +1,8 @@
 from django import forms
 from django.forms.models import modelformset_factory
 
-from .models import CompanyBankAccount, CashBook, ProjectBankAccount, ProjectCashBook, InstallmentPaymentOrder
+from .models import CompanyBankAccount, CashBook, ProjectBankAccount, ProjectCashBook
+from payment.models import InstallmentPaymentOrder
 from rebs.models import ProjectAccountD1, ProjectAccountD2
 
 CashBookFormSet = modelformset_factory(

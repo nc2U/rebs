@@ -11,7 +11,8 @@ from .models import SalesBillIssue
 from .forms import SalesBillIssueForm
 from project.models import Project, UnitType, BuildingUnit, HouseUnit
 from contract.models import OrderGroup, Contractor
-from cash.models import ProjectCashBook, SalesPriceByGT, InstallmentPaymentOrder, DownPayment
+from cash.models import ProjectCashBook
+from payment.models import SalesPriceByGT, InstallmentPaymentOrder, DownPayment
 
 TODAY = datetime.today().strftime('%Y-%m-%d')
 

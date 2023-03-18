@@ -1,7 +1,8 @@
 from django import forms
 
 from .models import ContractorRelease
-from cash.models import ProjectBankAccount, ProjectCashBook, InstallmentPaymentOrder
+from cash.models import ProjectBankAccount, ProjectCashBook
+from payment.models import InstallmentPaymentOrder
 
 
 class ContractRegisterForm(forms.Form):

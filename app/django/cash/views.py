@@ -11,8 +11,8 @@ from django.db.models import Q, Sum
 from .forms import (CashSearchForm, ProjectCashSearchForm, PaymentSearchForm, PaymentForm,
                     CashBookFormSet, ProjectCashBookFormSet)
 
-from .models import (CompanyBankAccount, ProjectBankAccount, CashBook, ProjectCashBook,
-                     SalesPriceByGT, InstallmentPaymentOrder, DownPayment)
+from .models import CompanyBankAccount, ProjectBankAccount, CashBook, ProjectCashBook
+from payment.models import SalesPriceByGT, InstallmentPaymentOrder, DownPayment
 from rebs.models import (AccountSort, AccountSubD1, AccountSubD2, AccountSubD3,
                          ProjectAccountSort, ProjectAccountD1, ProjectAccountD2)
 from company.models import Company

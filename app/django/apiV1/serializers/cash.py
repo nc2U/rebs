@@ -1,14 +1,8 @@
 from django.db import transaction
 from rest_framework import serializers
 
-from cash.models import (BankCode, CompanyBankAccount, ProjectBankAccount,
-                         CashBook, ProjectCashBook, SalesPriceByGT,
-                         InstallmentPaymentOrder, DownPayment, OverDueRule)
-from contract.models import OrderGroup, Contract, Contractor
-from project.models import UnitType
+from cash.models import BankCode, CompanyBankAccount, ProjectBankAccount, CashBook, ProjectCashBook
 from rebs.models import AccountSort, AccountSubD1, AccountSubD2, AccountSubD3, ProjectAccountD1, ProjectAccountD2
-
-from .project import SimpleUnitTypeSerializer
 
 
 # Cash --------------------------------------------------------------------------
@@ -315,87 +309,3 @@ class ProjectCashBookSerializer(serializers.ModelSerializer):
                 sep_pr_cashbook.deal_date = instance.deal_date
                 sep_pr_cashbook.save()
         return instance
-
-
-class SimpleOrderGroupSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = OrderGroup
-        fields = ('pk', 'sort', 'order_group_name')
-
-
-class SimpleContractSerializer(serializers.ModelSerializer):
-    order_group = SimpleOrderGroupSerializer()
-    unit_type = SimpleUnitTypeSerializer()
-    contractor = serializers.SlugRelatedField(queryset=Contractor.objects.all(), slug_field='name')
-
-    class Meta:
-        model = Contract
-        fields = ('pk', 'order_group', 'unit_type', 'serial_number', 'contractor')
-
-
-class SimpleInstallmentOrderSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = InstallmentPaymentOrder
-        fields = ('pk', 'pay_sort', 'pay_time', 'pay_name', '__str__')
-
-
-class SimpleProjectBankAccountSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ProjectBankAccount
-        fields = ('pk', 'alias_name')
-
-
-class PaymentSerializer(serializers.ModelSerializer):
-    contract = SimpleContractSerializer()
-    installment_order = SimpleInstallmentOrderSerializer()
-    bank_account = SimpleProjectBankAccountSerializer()
-
-    class Meta:
-        model = ProjectCashBook
-        fields = ('pk', 'deal_date', 'contract', 'income', 'installment_order',
-                  'bank_account', 'trader', 'note')
-
-
-class PaymentSummarySerializer(serializers.ModelSerializer):
-    order_group = serializers.IntegerField()
-    unit_type = serializers.IntegerField()
-    paid_sum = serializers.IntegerField()
-
-    class Meta:
-        model = ProjectCashBook
-        fields = ('order_group', 'unit_type', 'paid_sum')
-
-
-class ContNumByTypeSerializer(serializers.ModelSerializer):
-    unit_type = serializers.IntegerField()
-    num_cont = serializers.IntegerField()
-
-    class Meta:
-        model = UnitType
-        fields = ('unit_type', 'num_cont')
-
-
-class SalesPriceSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = SalesPriceByGT
-        fields = ('pk', 'project', 'order_group', 'unit_type', 'unit_floor_type',
-                  'price_build', 'price_land', 'price_tax', 'price')
-
-
-class InstallmentOrderSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = InstallmentPaymentOrder
-        fields = ('pk', 'project', '__str__', 'pay_sort', 'pay_code', 'pay_time', 'pay_ratio',
-                  'pay_name', 'alias_name', 'is_pm_cost', 'pay_due_date', 'extra_due_date')
-
-
-class DownPaymentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = DownPayment
-        fields = ('pk', 'project', 'order_group', 'unit_type', 'number_payments', 'payment_amount')
-
-
-class OverDueRuleSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = OverDueRule
-        fields = ('pk', 'project', 'term_start', 'term_end', 'rate_year')

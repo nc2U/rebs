@@ -14,8 +14,8 @@ from weasyprint import HTML
 from django.db.models import Sum
 from contract.models import Contract
 from notice.models import SalesBillIssue
-from cash.models import (SalesPriceByGT, ProjectCashBook,
-                         InstallmentPaymentOrder, DownPayment)
+from cash.models import ProjectCashBook
+from payment.models import SalesPriceByGT, InstallmentPaymentOrder, DownPayment
 
 TODAY = date.today()
 
