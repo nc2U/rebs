@@ -20,13 +20,14 @@ class InstallmentPaymentOrderAdmin(ImportExportMixin, admin.ModelAdmin):
     search_fields = ('pay_name', 'alias_name',)
     list_editable = ('alias_name', 'is_pm_cost', 'pay_due_date', 'extra_due_date')
     list_display_links = ('project', 'pay_name',)
+    list_filter = ('project', 'pay_sort')
 
 
 class DownPaymentAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'project', 'order_group', 'unit_type', 'number_payments', 'payment_amount')
     list_display_links = ('project', 'order_group', 'unit_type')
     list_editable = ('number_payments', 'payment_amount')
-    list_filter = ('order_group', 'unit_type')
+    list_filter = ('project', 'order_group', 'unit_type')
 
 
 class OverDueRuleAdmin(ImportExportMixin, admin.ModelAdmin):
