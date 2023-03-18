@@ -52,7 +52,7 @@ class Project(models.Model):
 
 
 class UnitType(models.Model):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE, verbose_name='프로젝트', related_name='types')
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, verbose_name='프로젝트', related_name='typess')
     SORT_CHOICES = (
         ('1', '공동주택'),
         ('2', '오피스텔'),
@@ -118,7 +118,7 @@ class ProjectOutBudget(models.Model):
 
 
 class UnitFloorType(models.Model):  # 층별 타입
-    project = models.ForeignKey('Project', on_delete=models.CASCADE, verbose_name='프로젝트', related_name='floors')
+    project = models.ForeignKey('Project', on_delete=models.CASCADE, verbose_name='프로젝트', related_name='floorss')
     start_floor = models.PositiveIntegerField('시작 층')
     end_floor = models.PositiveIntegerField('종료 층')
     extra_cond = models.CharField('방향/위치', max_length=20, blank=True,
@@ -135,11 +135,11 @@ class UnitFloorType(models.Model):  # 층별 타입
 
 
 class KeyUnit(models.Model):
-    project = models.ForeignKey(Project, on_delete=models.PROTECT, verbose_name='프로젝트', related_name='units')
-    unit_type = models.ForeignKey(UnitType, on_delete=models.PROTECT, verbose_name='타입')
+    project = models.ForeignKey(Project, on_delete=models.PROTECT, verbose_name='프로젝트', related_name='keyunits')
+    unit_type = models.ForeignKey(UnitType, on_delete=models.PROTECT, verbose_name='타입', related_name='keyunits')
     unit_code = models.CharField('코드번호', max_length=8)
     contract = models.OneToOneField('contract.Contract', on_delete=models.SET_NULL, null=True, blank=True,
-                                    verbose_name='계약')
+                                    verbose_name='계약', related_name='keyunits')
 
     def __str__(self):
         return f'{self.unit_code}'
@@ -151,7 +151,8 @@ class KeyUnit(models.Model):
 
 
 class BuildingUnit(models.Model):
-    project = models.ForeignKey('project.Project', on_delete=models.PROTECT, verbose_name='프로젝트')
+    project = models.ForeignKey('project.Project', on_delete=models.PROTECT, verbose_name='프로젝트',
+                                related_name='buildings')
     name = models.CharField('동(건물)이름', max_length=10)
 
     class Meta:
@@ -164,11 +165,12 @@ class BuildingUnit(models.Model):
 
 
 class HouseUnit(models.Model):
-    project = models.ForeignKey('project.Project', on_delete=models.PROTECT, verbose_name='프로젝트')
-    unit_type = models.ForeignKey(UnitType, on_delete=models.PROTECT, verbose_name='타입')
+    project = models.ForeignKey('project.Project', on_delete=models.PROTECT, verbose_name='프로젝트', related_name='unitss')
+    unit_type = models.ForeignKey(UnitType, on_delete=models.PROTECT, verbose_name='타입', related_name='units')
     floor_type = models.ForeignKey('UnitFloorType', on_delete=models.SET_NULL, null=True, blank=True,
-                                   verbose_name='층범위 타입')
-    building_unit = models.ForeignKey('project.BuildingUnit', on_delete=models.PROTECT, verbose_name='동수')
+                                   verbose_name='층범위 타입', related_name='units')
+    building_unit = models.ForeignKey('project.BuildingUnit', on_delete=models.PROTECT, verbose_name='동수',
+                                      related_name='units')
     name = models.CharField('호수', max_length=5, blank=True)
     key_unit = models.OneToOneField(KeyUnit, on_delete=models.SET_NULL, null=True, blank=True,
                                     verbose_name='계약유닛')

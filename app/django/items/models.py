@@ -1,3 +1,98 @@
 from django.db import models
 
-# Create your models here.
+
+class UnitType(models.Model):
+    project = models.ForeignKey('project.Project', on_delete=models.CASCADE, verbose_name='프로젝트', related_name='types')
+    SORT_CHOICES = (
+        ('1', '공동주택'),
+        ('2', '오피스텔'),
+        ('3', '숙박시설'),
+        ('4', '지식산업센터'),
+        ('5', '근린생활시설'),
+        ('6', '기타')
+    )
+    sort = models.CharField('타입종류', max_length=1, choices=SORT_CHOICES)
+    name = models.CharField('타입명칭', max_length=10)
+    color = models.CharField('타입색상', max_length=20)
+    actual_area = models.DecimalField('전용면적(㎡)', max_digits=7, decimal_places=4, null=True, blank=True)
+    supply_area = models.DecimalField('공급면적(㎡)', max_digits=7, decimal_places=4, null=True, blank=True)
+    contract_area = models.DecimalField('계약면적(㎡)', max_digits=7, decimal_places=4, null=True, blank=True)
+    average_price = models.PositiveIntegerField('평균가격', null=True, blank=True)
+    num_unit = models.PositiveSmallIntegerField('세대수')
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ['id']
+        verbose_name = '01. 타입 정보'
+        verbose_name_plural = '01. 타입 정보'
+
+
+class UnitFloorType(models.Model):  # 층별 타입
+    project = models.ForeignKey('project.Project', on_delete=models.CASCADE, verbose_name='프로젝트', related_name='floors')
+    start_floor = models.PositiveIntegerField('시작 층')
+    end_floor = models.PositiveIntegerField('종료 층')
+    extra_cond = models.CharField('방향/위치', max_length=20, blank=True,
+                                  help_text='동일범위의 층범위를 방향/위치 등으로 구분해야 할 필요가 있는 경우 입력')
+    alias_name = models.CharField('층별 범위 명칭', max_length=20)
+
+    def __str__(self):
+        return self.alias_name
+
+    class Meta:
+        ordering = ['-project', '-end_floor', '-id']
+        verbose_name = '02. 층별 조건'
+        verbose_name_plural = '02. 층별 조건'
+
+
+class KeyUnit(models.Model):
+    project = models.ForeignKey('project.Project', on_delete=models.PROTECT, verbose_name='프로젝트', related_name='units')
+    unit_type = models.ForeignKey(UnitType, on_delete=models.PROTECT, verbose_name='타입')
+    unit_code = models.CharField('코드번호', max_length=8)
+    contract = models.OneToOneField('contract.Contract', on_delete=models.SET_NULL, null=True, blank=True,
+                                    verbose_name='계약')
+
+    def __str__(self):
+        return f'{self.unit_code}'
+
+    class Meta:
+        ordering = ['unit_code', '-project']
+        verbose_name = '06. 계약 유닛'
+        verbose_name_plural = '06. 계약 유닛'
+
+
+class BuildingUnit(models.Model):
+    project = models.ForeignKey('project.Project', on_delete=models.PROTECT, verbose_name='프로젝트')
+    name = models.CharField('동(건물)이름', max_length=10)
+
+    class Meta:
+        ordering = ('-project', 'id')
+        verbose_name = '03. 동수'
+        verbose_name_plural = '03. 동수'
+
+    def __str__(self):
+        return self.name
+
+
+class HouseUnit(models.Model):
+    project = models.ForeignKey('project.Project', on_delete=models.PROTECT, verbose_name='프로젝트')
+    unit_type = models.ForeignKey(UnitType, on_delete=models.PROTECT, verbose_name='타입')
+    floor_type = models.ForeignKey('UnitFloorType', on_delete=models.SET_NULL, null=True, blank=True,
+                                   verbose_name='층범위 타입')
+    building_unit = models.ForeignKey('project.BuildingUnit', on_delete=models.PROTECT, verbose_name='동수')
+    name = models.CharField('호수', max_length=5, blank=True)
+    key_unit = models.OneToOneField(KeyUnit, on_delete=models.SET_NULL, null=True, blank=True,
+                                    verbose_name='계약유닛')
+    bldg_line = models.PositiveSmallIntegerField('라인')
+    floor_no = models.PositiveSmallIntegerField('층수')
+    is_hold = models.BooleanField('홀딩 여부', default=False)
+    hold_reason = models.CharField('홀딩 사유', max_length=100, blank=True)
+
+    def __str__(self):
+        return f'{self.building_unit}-{self.name}'
+
+    class Meta:
+        ordering = ['-project', 'building_unit', '-floor_no']
+        verbose_name = '04. 호수'
+        verbose_name_plural = '04. 호수'
