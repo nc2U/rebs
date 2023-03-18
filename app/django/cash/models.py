@@ -138,10 +138,13 @@ class ProjectCashBook(models.Model):
 
 
 class SalesPriceByGT(models.Model):  # 차수별 타입별 분양가격
-    project = models.ForeignKey('project.Project', on_delete=models.CASCADE, verbose_name='프로젝트')
-    order_group = models.ForeignKey('contract.OrderGroup', on_delete=models.CASCADE, verbose_name='차수')
-    unit_type = models.ForeignKey('project.UnitType', on_delete=models.CASCADE, verbose_name='타입')
-    unit_floor_type = models.ForeignKey('project.UnitFloorType', on_delete=models.PROTECT, verbose_name='층별타입')
+    project = models.ForeignKey('project.Project', on_delete=models.CASCADE, verbose_name='프로젝트', related_name='prices')
+    order_group = models.ForeignKey('contract.OrderGroup', on_delete=models.CASCADE, verbose_name='차수',
+                                    related_name='prices')
+    unit_type = models.ForeignKey('project.UnitType', on_delete=models.CASCADE, verbose_name='타입',
+                                  related_name='prices')
+    unit_floor_type = models.ForeignKey('project.UnitFloorType', on_delete=models.PROTECT, verbose_name='층별타입',
+                                        related_name='prices')
     price_build = models.PositiveIntegerField('건물가', null=True, blank=True)
     price_land = models.PositiveIntegerField('대지가', null=True, blank=True)
     price_tax = models.PositiveIntegerField('부가세', null=True, blank=True)
@@ -157,7 +160,8 @@ class SalesPriceByGT(models.Model):  # 차수별 타입별 분양가격
 
 
 class InstallmentPaymentOrder(models.Model):  # 분할 납부 차수 등록
-    project = models.ForeignKey('project.Project', on_delete=models.CASCADE, verbose_name='프로젝트')
+    project = models.ForeignKey('project.Project', on_delete=models.CASCADE, verbose_name='프로젝트',
+                                related_name='installs')
     SORT_CHOICES = (('1', '계약금'), ('2', '중도금'), ('3', '잔금'))
     pay_sort = models.CharField('종류', max_length=1, choices=SORT_CHOICES, default='1')
     pay_code = models.PositiveSmallIntegerField('납입회차 코드', help_text='프로젝트 내에서 모든 납부회차를 고유 순서대로 숫자로 부여한다.')
@@ -182,9 +186,12 @@ class InstallmentPaymentOrder(models.Model):  # 분할 납부 차수 등록
 
 
 class DownPayment(models.Model):
-    project = models.ForeignKey('project.Project', on_delete=models.CASCADE, verbose_name='프로젝트')
-    order_group = models.ForeignKey('contract.OrderGroup', on_delete=models.CASCADE, verbose_name='차수정보')
-    unit_type = models.ForeignKey('project.UnitType', on_delete=models.CASCADE, verbose_name='타입정보')
+    project = models.ForeignKey('project.Project', on_delete=models.CASCADE, verbose_name='프로젝트',
+                                related_name='down_payments')
+    order_group = models.ForeignKey('contract.OrderGroup', on_delete=models.CASCADE, verbose_name='차수정보',
+                                    related_name='down_payments')
+    unit_type = models.ForeignKey('project.UnitType', on_delete=models.CASCADE, verbose_name='타입정보',
+                                  related_name='down_payments')
     number_payments = models.PositiveSmallIntegerField('분할 납부회수')
     payment_amount = models.PositiveIntegerField('회별 납부금액')
 
@@ -198,7 +205,7 @@ class DownPayment(models.Model):
 
 
 class OverDueRule(models.Model):
-    project = models.ForeignKey('project.Project', on_delete=models.CASCADE, verbose_name='프로젝트')
+    project = models.ForeignKey('project.Project', on_delete=models.CASCADE, verbose_name='프로젝트', related_name='rules')
     term_start = models.IntegerField('최소연체일', null=True, blank=True, help_text='비어있을 경우 최대 음수')
     term_end = models.IntegerField('최대연체일', null=True, blank=True, help_text='비어있을 경우 최대 양수')
     rate_year = models.DecimalField('연체이율', max_digits=4, decimal_places=2)
