@@ -58,8 +58,8 @@ class KeyUnit(models.Model):
 
     class Meta:
         ordering = ['unit_code', '-project']
-        verbose_name = '06. 계약 유닛'
-        verbose_name_plural = '06. 계약 유닛'
+        verbose_name = '03. 계약 유닛'
+        verbose_name_plural = '03. 계약 유닛'
 
 
 class BuildingUnit(models.Model):
@@ -68,8 +68,8 @@ class BuildingUnit(models.Model):
 
     class Meta:
         ordering = ('-project', 'id')
-        verbose_name = '03. 동수'
-        verbose_name_plural = '03. 동수'
+        verbose_name = '04. 동수'
+        verbose_name_plural = '04. 동수'
 
     def __str__(self):
         return self.name
@@ -94,5 +94,5 @@ class HouseUnit(models.Model):
 
     class Meta:
         ordering = ['-project', 'building_unit', '-floor_no']
-        verbose_name = '04. 호수'
-        verbose_name_plural = '04. 호수'
+        verbose_name = '05. 호수'
+        verbose_name_plural = '05. 호수'
