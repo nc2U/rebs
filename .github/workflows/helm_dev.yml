@@ -46,12 +46,12 @@ jobs:
             --set global.dbPassword=${{ secrets.DATABASE_PASSWORD }} \
             --set global.nfsPath=${{ secrets.NFS_PATH }} \
             --set global.nfsServerHost=${{ secrets.CICD_HOST }} \
-            --set nginx.ingress.tls[0].hosts[0]=dev.${{ secrets.DOMAIN_NAME }} \
-            --set nginx.ingress.hosts[0].host=dev.${{ secrets.DOMAIN_NAME }} \
-            --set nginx.ingress.hosts[1].paths[0].path=/ \
-            --set nginx.ingress.hosts[1].paths[0].pathType=ImplementationSpecific \
-            --set nginx.ingress.hosts[2].paths[0].path=/ \
-            --set nginx.ingress.hosts[2].paths[0].pathType=ImplementationSpecific
+            --set 'nginx.ingress.tls[0].hosts[0]'=dev.${{ secrets.DOMAIN_NAME }} \
+            --set 'nginx.ingress.hosts[0].host'=dev.${{ secrets.DOMAIN_NAME }} \
+            --set 'nginx.ingress.hosts[1].paths[0].path'=/ \
+            --set 'nginx.ingress.hosts[1].paths[0].pathType'=ImplementationSpecific \
+            --set 'nginx.ingress.hosts[2].paths[0].path'=/ \
+            --set 'nginx.ingress.hosts[2].paths[0].pathType'=ImplementationSpecific
 
       - name: Send slack when failed
         if: ${{ failure() }}                    # 실패했을 때 실행
