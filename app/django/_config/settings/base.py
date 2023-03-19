@@ -68,7 +68,7 @@ INSTALLED_APPS += [  # plugin
 ]
 
 INSTALLED_APPS += [  # app
-    'apiV1.apps.ApiV1Config',
+    'api_v1.apps.ApiV1Config',
     'accounts.apps.AccountsConfig',
     'book.apps.BookConfig',
     'cash.apps.CashConfig',
