@@ -74,12 +74,12 @@ class ExportContracts(View):
         # title_list
         header_src = [[],
                       ['일련번호', 'serial_number', 10],
+                      ['계약자', 'contractor__name', 10],
                       ['인가여부', 'contractor__is_registed', 8],
                       ['차수', 'order_group__order_group_name', 10],
                       ['타입', 'keyunit__unit_type__name', 7],
                       ['동', 'keyunit__houseunit__building_unit__name', 7],
                       ['호수', 'keyunit__houseunit__name', 7],
-                      ['계약자', 'contractor__name', 10],
                       ['생년월일', 'contractor__birth_date', 12],
                       ['계약일자', 'contractor__contract_date', 12],
                       ['납입금액합계', '', 12],

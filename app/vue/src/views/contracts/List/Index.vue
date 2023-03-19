@@ -18,7 +18,7 @@ const visible = ref(false)
 const unitSet = ref(false)
 
 const filteredStr = ref('')
-const printItems = ref(['1', '2', '3', '4', '7', '8', '9', '10', '11'])
+const printItems = ref(['1', '2', '4', '5', '8', '9', '10', '11'])
 
 const childListFiltering = (page: number) =>
   listControl.value.listFiltering(page)
@@ -29,8 +29,8 @@ const project = computed(() => projectStore.project)
 const initProjId = computed(() => projectStore.initProjId)
 
 watch(project, nVal => {
-  if (nVal?.is_unit_set && !printItems.value.includes('5-6'))
-    printItems.value.splice(4, 0, '5-6')
+  if (nVal?.is_unit_set && !printItems.value.includes('6-7'))
+    printItems.value.splice(4, 0, '6-7')
   unitSet.value = nVal?.is_unit_set || false
 })
 

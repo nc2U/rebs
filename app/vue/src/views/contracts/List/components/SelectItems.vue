@@ -6,7 +6,7 @@ const props = defineProps({
   visible: { type: Boolean, default: false },
 })
 
-const printItems = ref(['1', '2', '3', '4', '7', '8', '9', '10', '11'])
+const printItems = ref(['1', '2', '4', '5', '8', '9', '10', '11'])
 const emit = defineEmits(['print-items'])
 
 watch(printItems, newVal => {
@@ -14,13 +14,13 @@ watch(printItems, newVal => {
 })
 
 watch(props, val => {
-  if (val.unitSet && !printItems.value.includes('5-6'))
-    printItems.value.splice(4, 0, '5-6')
+  if (val.unitSet && !printItems.value.includes('6-7'))
+    printItems.value.splice(4, 0, '6-7')
 })
 
 onMounted(() => {
-  if (props.unitSet && !printItems.value.includes('5-6'))
-    printItems.value.splice(4, 0, '5-6')
+  if (props.unitSet && !printItems.value.includes('6-7'))
+    printItems.value.splice(4, 0, '6-7')
 })
 </script>
 
@@ -38,10 +38,18 @@ onMounted(() => {
           hide-details
         />
         <v-checkbox-btn
+          id="printItems7"
+          v-model="printItems"
+          label="계약자"
+          value="2"
+          color="indigo"
+          hide-details
+        />
+        <v-checkbox-btn
           id="printItems2"
           v-model="printItems"
           label="인가여부"
-          value="2"
+          value="3"
           color="indigo"
           inline
           hide-details
@@ -50,7 +58,7 @@ onMounted(() => {
           id="printItems3"
           v-model="printItems"
           label="차수"
-          value="3"
+          value="4"
           color="indigo"
           inline
           hide-details
@@ -59,7 +67,7 @@ onMounted(() => {
           id="printItems4"
           v-model="printItems"
           label="타입"
-          value="4"
+          value="5"
           color="indigo"
           hide-details
         />
@@ -68,15 +76,7 @@ onMounted(() => {
           id="printItems5"
           v-model="printItems"
           label="동호수"
-          value="5-6"
-          color="indigo"
-          hide-details
-        />
-        <v-checkbox-btn
-          id="printItems7"
-          v-model="printItems"
-          label="계약자"
-          value="7"
+          value="6-7"
           color="indigo"
           hide-details
         />

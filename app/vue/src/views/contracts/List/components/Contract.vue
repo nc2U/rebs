@@ -22,6 +22,18 @@ const router = useRouter()
       </router-link>
     </CTableDataCell>
     <CTableDataCell>
+      <router-link
+        :to="{ name: '계약 등록 관리', query: { contract: contract.pk } }"
+      >
+        {{ contract.contractor.name }}
+      </router-link>
+    </CTableDataCell>
+    <CTableDataCell>
+      <CBadge :color="contract.contractor.is_registed ? 'success' : 'danger'">
+        {{ contract.contractor.is_registed ? '인가완료' : '미 인 가' }}
+      </CBadge>
+    </CTableDataCell>
+    <CTableDataCell>
       {{ contract.order_group_desc.order_group_name }}
     </CTableDataCell>
     <CTableDataCell class="text-left">
@@ -41,31 +53,19 @@ const router = useRouter()
         contract.keyunit.houseunit ? contract.keyunit.houseunit.__str__ : '미정'
       }}
     </CTableDataCell>
-    <CTableDataCell>
-      <router-link
-        :to="{ name: '계약 등록 관리', query: { contract: contract.pk } }"
-      >
-        {{ contract.contractor.name }}
-      </router-link>
-    </CTableDataCell>
+    <CTableDataCell>{{ contract.contractor.contract_date }}</CTableDataCell>
     <CTableDataCell>
       {{ !contract.last_paid_order ? '-' : contract.last_paid_order.__str__ }}
     </CTableDataCell>
     <CTableDataCell class="text-right">
       {{ numFormat(contract.total_paid) }}
     </CTableDataCell>
-    <CTableDataCell>
-      <CBadge :color="contract.contractor.is_registed ? 'success' : 'danger'">
-        {{ contract.contractor.is_registed ? '인가완료' : '미 인 가' }}
-      </CBadge>
+    <CTableDataCell
+      >{{ contract.contractor.contractorcontact.cell_phone }}
     </CTableDataCell>
     <CTableDataCell class="text-left">
       {{ cutString(contract.contractor.contractoraddress.dm_address1, 13) }}
     </CTableDataCell>
-    <CTableDataCell
-      >{{ contract.contractor.contractorcontact.cell_phone }}
-    </CTableDataCell>
-    <CTableDataCell>{{ contract.contractor.contract_date }}</CTableDataCell>
     <CTableDataCell>
       <CButton
         type="button"
