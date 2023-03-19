@@ -89,23 +89,6 @@ class ProjectOutBudget(models.Model):
         verbose_name_plural = '03. 프로젝트 지출예산'
 
 
-class UnitFloorType(models.Model):  # 층별 타입
-    project = models.ForeignKey('Project', on_delete=models.CASCADE, verbose_name='프로젝트', related_name='floorss')
-    start_floor = models.PositiveIntegerField('시작 층')
-    end_floor = models.PositiveIntegerField('종료 층')
-    extra_cond = models.CharField('방향/위치', max_length=20, blank=True,
-                                  help_text='동일범위의 층범위를 방향/위치 등으로 구분해야 할 필요가 있는 경우 입력')
-    alias_name = models.CharField('층별 범위 명칭', max_length=20)
-
-    def __str__(self):
-        return self.alias_name
-
-    class Meta:
-        ordering = ['-project', '-end_floor', '-id']
-        verbose_name = '05. 층별 조건'
-        verbose_name_plural = '05. 층별 조건'
-
-
 class Site(models.Model):
     project = models.ForeignKey('project.Project', on_delete=models.PROTECT, verbose_name='프로젝트')
     order = models.PositiveSmallIntegerField('순서')
