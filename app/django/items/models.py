@@ -76,7 +76,6 @@ class BuildingUnit(models.Model):
 
 
 class HouseUnit(models.Model):
-    project = models.ForeignKey('project.Project', on_delete=models.PROTECT, verbose_name='프로젝트')
     unit_type = models.ForeignKey(UnitType, on_delete=models.PROTECT, verbose_name='타입')
     floor_type = models.ForeignKey(UnitFloorType, on_delete=models.SET_NULL, null=True, blank=True,
                                    verbose_name='층범위 타입')
@@ -93,6 +92,6 @@ class HouseUnit(models.Model):
         return f'{self.building_unit}-{self.name}'
 
     class Meta:
-        ordering = ['-project', 'building_unit', '-floor_no']
+        ordering = ['-building_unit__project', 'building_unit', '-floor_no']
         verbose_name = '05. 호수'
         verbose_name_plural = '05. 호수'
