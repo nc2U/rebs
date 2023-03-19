@@ -1,10 +1,10 @@
 from rest_framework import serializers
 
-from items.models import UnitType, UnitFloorType, KeyUnit, BuildingUnit, HouseUnit
 from contract.models import Contract, Contractor
+from items.models import UnitType, UnitFloorType, KeyUnit, BuildingUnit, HouseUnit
 
 
-# Project --------------------------------------------------------------------------
+# Items --------------------------------------------------------------------------
 class UnitTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = UnitType
