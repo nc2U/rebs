@@ -16,8 +16,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q, F, Max, Sum, Count, When, Case
 
 from company.models import Company
-from project.models import (Project, ProjectIncBudget, Site, SiteOwner, SiteContract,
-                            UnitType, KeyUnit, BuildingUnit, HouseUnit, ProjectOutBudget)
+from project.models import Project, ProjectIncBudget, ProjectOutBudget, Site, SiteOwner, SiteContract
+from items.models import UnitType, KeyUnit, BuildingUnit, HouseUnit
 from contract.models import Contract, Contractor, ContractorRelease, OrderGroup
 from cash.models import CashBook, ProjectCashBook
 from payment.models import SalesPriceByGT, InstallmentPaymentOrder, DownPayment

@@ -1,7 +1,8 @@
 from django import forms
 from django.forms.models import modelformset_factory
 from django.forms.widgets import TextInput
-from .models import Project, UnitType, UnitFloorType, Site, SiteOwner, SiteContract
+from .models import Project, Site, SiteOwner, SiteContract
+from items.models import UnitType, UnitFloorType
 
 from contract.models import OrderGroup
 

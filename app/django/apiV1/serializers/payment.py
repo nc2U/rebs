@@ -1,12 +1,11 @@
 from rest_framework import serializers
 
-from project.models import UnitType
+from items.models import UnitType
 from contract.models import OrderGroup, Contract, Contractor
 from payment.models import SalesPriceByGT, InstallmentPaymentOrder, DownPayment, OverDueRule
 from cash.models import ProjectBankAccount, ProjectCashBook
-# from cash.models import BankCode, CompanyBankAccount, ProjectBankAccount, CashBook, ProjectCashBook
 
-from .project import SimpleUnitTypeSerializer
+from .items import SimpleUnitTypeSerializer
 
 
 # Payment --------------------------------------------------------------------------

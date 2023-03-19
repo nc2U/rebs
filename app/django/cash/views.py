@@ -16,7 +16,8 @@ from payment.models import SalesPriceByGT, InstallmentPaymentOrder, DownPayment
 from rebs.models import (AccountSort, AccountSubD1, AccountSubD2, AccountSubD3,
                          ProjectAccountSort, ProjectAccountD1, ProjectAccountD2)
 from company.models import Company
-from project.models import Project, UnitType, KeyUnit, ProjectOutBudget
+from project.models import Project, ProjectOutBudget
+from items.models import UnitType, KeyUnit
 from contract.models import OrderGroup, Contract
 
 TODAY = datetime.today().strftime('%Y-%m-%d')

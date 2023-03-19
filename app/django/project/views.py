@@ -2,7 +2,6 @@ from django.db.models import Sum
 from django.urls import reverse_lazy
 from django.db.utils import IntegrityError
 from django.shortcuts import redirect, render
-from django.core.paginator import Paginator
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, FormView, TemplateView
@@ -11,8 +10,8 @@ from project.forms import (ProjectForm, OrderGroupFormSet, UnitTypeFormSet, Unit
                            SalesPriceByGTFormSet, InstallmentPaymentOrderFormSet, DownPaymentFormSet,
                            SiteForm, SiteOwnerForm, SiteContractForm)
 from company.models import Company
-from project.models import (Project, UnitType, UnitFloorType, Site,
-                            SiteOwner, SiteContract, SiteOwnshipRelationship)
+from items.models import UnitType, UnitFloorType
+from project.models import Project, Site, SiteOwner, SiteContract, SiteOwnshipRelationship
 
 from contract.models import OrderGroup
 from payment.models import SalesPriceByGT, InstallmentPaymentOrder, DownPayment

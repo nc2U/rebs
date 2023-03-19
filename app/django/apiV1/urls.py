@@ -4,6 +4,7 @@ from .views import accounts
 from .views import company
 from .views import rebs
 from .views import project
+from .views import items
 from .views import payment
 from .views import cash
 from .views import contract
@@ -42,18 +43,10 @@ router.register(r'project-account-depth2', rebs.ProjectAccountD2ViewSet)  # only
 router.register(r'wise-say', rebs.WiseSayViewSet)
 # project
 router.register(r'project', project.ProjectViewSet)
-router.register(r'type', project.UnitTypeViewSet)
 router.register(r'inc-budget', project.ProjectIncBudgetViewSet)  # only list
 router.register(r'out-budget', project.ProjectOutBudgetViewSet)  # only list
 router.register(r'status-budget', project.StatusOutBudgetViewSet, basename='status-budget')  # only list
 router.register(r'exec-amount', project.ExecAmountToBudgetViewSet, basename='exec-amount')  # only list
-router.register(r'floor', project.UnitFloorTypeViewSet)
-router.register(r'key-unit', project.KeyUnitViewSet)
-router.register(r'bldg', project.BuildingUnitViewSet)
-router.register(r'house-unit', project.HouseUnitViewSet)
-router.register(r'available-house-unit', project.AvailableHouseUnitViewSet,
-                basename='available-house-unit')  # only list
-router.register(r'all-house-unit', project.AllHouseUnitViewSet, basename='all-house-unit')  # only list
 router.register(r'site', project.SiteViewSet)
 router.register(r'all-site', project.AllSiteViewSet, basename='all-site')  # only list
 router.register(r'sites-total', project.TotalSiteAreaViewSet, basename='sites-total')  # only list
@@ -63,6 +56,15 @@ router.register(r'owners-total', project.TotalOwnerAreaViewSet, basename='owners
 router.register(r'site-relation', project.SiteRelationViewSet)
 router.register(r'site-contract', project.SiteContractViewSet)
 router.register(r'conts-total', project.TotalContractedAreaViewSet, basename='conts-total')  # only list
+# items
+router.register(r'type', items.UnitTypeViewSet)
+router.register(r'floor', items.UnitFloorTypeViewSet)
+router.register(r'key-unit', items.KeyUnitViewSet)
+router.register(r'bldg', items.BuildingUnitViewSet)
+router.register(r'house-unit', items.HouseUnitViewSet)
+router.register(r'available-house-unit', items.AvailableHouseUnitViewSet,
+                basename='available-house-unit')  # only list
+router.register(r'all-house-unit', items.AllHouseUnitViewSet, basename='all-house-unit')  # only list
 # payment
 router.register(r'payment', payment.PaymentViewSet, basename='payment')  # only list
 router.register(r'all-payment', payment.AllPaymentViewSet, basename='all-payment')  # only list

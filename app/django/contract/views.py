@@ -9,10 +9,11 @@ from django.views.generic import ListView, FormView, TemplateView
 
 from .models import (OrderGroup, Contract, Contractor,
                      ContractorAddress, ContractorContact, ContractorRelease)
-from rebs.models import ProjectAccountSort, ProjectAccountD1, ProjectAccountD2
-from project.models import Project, UnitType, KeyUnit, BuildingUnit, HouseUnit
+from project.models import Project
+from items.models import UnitType, KeyUnit, BuildingUnit, HouseUnit
 from cash.models import ProjectBankAccount, ProjectCashBook
 from payment.models import InstallmentPaymentOrder
+from rebs.models import ProjectAccountSort, ProjectAccountD1, ProjectAccountD2
 
 from .forms import ContractRegisterForm, ContractPaymentForm, ContractorReleaseForm
 

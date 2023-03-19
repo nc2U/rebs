@@ -9,7 +9,8 @@ from django.views.generic import ListView, FormView
 
 from .models import SalesBillIssue
 from .forms import SalesBillIssueForm
-from project.models import Project, UnitType, BuildingUnit, HouseUnit
+from project.models import Project
+from items.models import UnitType, BuildingUnit, HouseUnit
 from contract.models import OrderGroup, Contractor
 from cash.models import ProjectCashBook
 from payment.models import SalesPriceByGT, InstallmentPaymentOrder, DownPayment

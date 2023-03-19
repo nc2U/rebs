@@ -78,9 +78,9 @@ class BuildingUnit(models.Model):
 class HouseUnit(models.Model):
     project = models.ForeignKey('project.Project', on_delete=models.PROTECT, verbose_name='프로젝트')
     unit_type = models.ForeignKey(UnitType, on_delete=models.PROTECT, verbose_name='타입')
-    floor_type = models.ForeignKey('UnitFloorType', on_delete=models.SET_NULL, null=True, blank=True,
+    floor_type = models.ForeignKey(UnitFloorType, on_delete=models.SET_NULL, null=True, blank=True,
                                    verbose_name='층범위 타입')
-    building_unit = models.ForeignKey('project.BuildingUnit', on_delete=models.PROTECT, verbose_name='동수')
+    building_unit = models.ForeignKey(BuildingUnit, on_delete=models.PROTECT, verbose_name='동수')
     name = models.CharField('호수', max_length=5, blank=True)
     key_unit = models.OneToOneField(KeyUnit, on_delete=models.SET_NULL, null=True, blank=True,
                                     verbose_name='계약유닛')

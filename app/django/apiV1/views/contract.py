@@ -8,7 +8,7 @@ from ..serializers.contract import *
 
 from contract.models import (OrderGroup, Contract, Contractor,
                              ContractorAddress, ContractorContact, ContractorRelease)
-from project.models import BuildingUnit
+from items.models import BuildingUnit
 
 
 # Contract --------------------------------------------------------------------------

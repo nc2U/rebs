@@ -2,13 +2,15 @@ from django.db import transaction
 from rest_framework import serializers
 from django.core.exceptions import ObjectDoesNotExist
 
+from cash.models import ProjectBankAccount, ProjectCashBook
+from project.models import Project
+from items.models import HouseUnit, KeyUnit
+from payment.models import InstallmentPaymentOrder
+from rebs.models import ProjectAccountSort, ProjectAccountD1, ProjectAccountD2
 from contract.models import (OrderGroup, Contract, Contractor,
                              ContractorAddress, ContractorContact, ContractorRelease)
-from cash.models import ProjectBankAccount, ProjectCashBook
-from payment.models import InstallmentPaymentOrder
-from project.models import Project, HouseUnit, KeyUnit
-from rebs.models import ProjectAccountSort, ProjectAccountD1, ProjectAccountD2
-from .project import SimpleUnitTypeSerializer
+
+from .items import SimpleUnitTypeSerializer
 from .payment import SimpleInstallmentOrderSerializer, SimpleOrderGroupSerializer
 
 
