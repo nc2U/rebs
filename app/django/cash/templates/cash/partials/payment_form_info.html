@@ -12,7 +12,7 @@
         </h5>
 
         <span class="ml-2"> (<a
-                href="{% url 'rebs:pdf-payments' %}?project={{ this_project.id }}&contract={{ this_contract.id }}"
+                href="{% url 'pdf:payments' %}?project={{ this_project.id }}&contract={{ this_contract.id }}"
                 style="text-decoration: underline;">납부내역서 출력</a>)</span>
     {% endif %}
 </div>

@@ -26,7 +26,7 @@ const printBill = () => {
       const project = props.printData.project
       const pub_date = props.printData.pub_date
       const seq = props.contractors.join('-')
-      const url = 'rebs/pdf-bill/'
+      const url = 'pdf/bill/'
       location.href = `${url}?project=${project}&date=${pub_date}&seq=${seq}`
     }
   }

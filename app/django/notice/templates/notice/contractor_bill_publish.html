@@ -119,7 +119,7 @@
           return;
         } else /* if (confirm('선택하신 건별 고지서를 다운로드하시겠습니까?')) */ {
           var pDate = document.bill_set.published_date.value;
-          var uri = "{% url 'rebs:pdf-bill' %}" + "?project=" + {{ this_project.id }} +"&date=" + pDate + "&seq=" + seq;
+          var uri = "{% url 'pdf:bill' %}" + "?project=" + {{ this_project.id }} +"&date=" + pDate + "&seq=" + seq;
           location.href = uri;
         }
       }
