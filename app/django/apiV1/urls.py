@@ -11,7 +11,7 @@ from .views import contract
 from .views import notice
 from .views import document
 
-app_name = 'api_v1'
+app_name = 'api'
 
 router = DefaultRouter()
 # accounts
