@@ -54,7 +54,7 @@ url = [
 
     path('book/', include('book.urls')),
 
-    path('excel/', include('excel.urls')),
+    path('excel/', include('_excel.urls')),
     path('mdeditor/', include('mdeditor.urls')),
     path('tinymce/', include('tinymce.urls')),
 ]

@@ -80,7 +80,7 @@ INSTALLED_APPS += [  # app
     'payment.apps.PaymentConfig',
     'project.apps.ProjectConfig',
     'rebs.apps.RebsConfig',
-    'excel.apps.ExcelConfig',
+    '_excel.apps.ExcelConfig',
 ]
 
 MIDDLEWARE = [
