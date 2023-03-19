@@ -10,11 +10,10 @@ from project.forms import (ProjectForm, OrderGroupFormSet, UnitTypeFormSet, Unit
                            SalesPriceByGTFormSet, InstallmentPaymentOrderFormSet, DownPaymentFormSet,
                            SiteForm, SiteOwnerForm, SiteContractForm)
 from company.models import Company
-from items.models import UnitType, UnitFloorType
-from project.models import Project, Site, SiteOwner, SiteContract, SiteOwnshipRelationship
-
 from contract.models import OrderGroup
+from items.models import UnitType, UnitFloorType
 from payment.models import SalesPriceByGT, InstallmentPaymentOrder, DownPayment
+from project.models import Project, Site, SiteOwner, SiteContract, SiteOwnshipRelationship
 
 
 class ProjectList(LoginRequiredMixin, ListView):
@@ -380,7 +379,7 @@ class SiteManage(LoginRequiredMixin, ListView, FormView):
         return render(request, 'project/site_manage.html', {'form': form})
 
 
-def siteDelete(*args, **kwargs):
+def site_delete(*args, **kwargs):
     instance = Site.objects.get(pk=kwargs['pk'])
     instance.delete()
     query_str = '?' + str(args[0]).split('?')[1].split('\'')[0] if len(str(args[0]).split('?')) > 1 else ''
@@ -455,7 +454,7 @@ class SiteOwnerManage(LoginRequiredMixin, ListView, FormView):
         return render(request, 'project/site_owner_manage.html', {'form': form})
 
 
-def siteRelationshipUpdate(request):
+def site_relationship_update(request):
     instance = SiteOwnshipRelationship.objects.get(pk=request.GET.get('pk'))
     if request.GET.get('ratio'):
         instance.ownership_ratio = request.GET.get('ratio')
@@ -472,7 +471,7 @@ def siteRelationshipUpdate(request):
     return redirect(reverse_lazy('rebs:project:site-owner') + query_str)
 
 
-def siteRelationshipDelete(*args, **kwargs):
+def site_relationship_delete(*args, **kwargs):
     instance = SiteOwnshipRelationship.objects.get(pk=kwargs['pk'])
     instance.delete()
     query_str = '?' + str(args[0]).split('?')[1].split('\'')[0] if len(str(args[0]).split('?')) > 1 else ''
@@ -569,7 +568,7 @@ class SiteContractManage(LoginRequiredMixin, ListView, FormView):
         return render(request, 'project/site_contract_manage.html', {'form': form})
 
 
-def siteContractDelete(*args, **kwargs):
+def site_contract_delete(*args, **kwargs):
     instance = SiteContract.objects.get(pk=kwargs['pk'])
     instance.delete()
     query_str = '?' + str(args[0]).split('?')[1].split('\'')[0] if len(str(args[0]).split('?')) > 1 else ''

@@ -42,7 +42,7 @@ class KeyUnitSerializer(serializers.ModelSerializer):
 class HouseUnitSerializer(serializers.ModelSerializer):
     class Meta:
         model = HouseUnit
-        fields = ('pk', 'project', 'unit_type', 'floor_type', '__str__', 'building_unit',
+        fields = ('pk', 'unit_type', 'floor_type', '__str__', 'building_unit',
                   'name', 'key_unit', 'bldg_line', 'floor_no', 'is_hold', 'hold_reason')
 
 

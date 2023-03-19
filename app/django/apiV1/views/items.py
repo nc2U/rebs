@@ -58,7 +58,7 @@ class HouseUnitViewSet(viewsets.ModelViewSet):
     queryset = HouseUnit.objects.all()
     serializer_class = HouseUnitSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-    filterset_fields = ('project', 'building_unit')
+    filterset_fields = ('building_unit__project', 'building_unit')
     search_fields = ('hold_reason',)
 
 
@@ -72,12 +72,12 @@ class AvailableHouseUnitViewSet(HouseUnitViewSet):
         unit_type = self.request.query_params.get('unit_type', None)
 
         if project and unit_type:
-            queryset = houseunit.filter(project=project, unit_type=unit_type, key_unit__isnull=True)
+            queryset = houseunit.filter(building_unit__project=project, unit_type=unit_type, key_unit__isnull=True)
 
         contract = self.request.query_params.get('contract', None)
         if contract is not None:
             queryset = houseunit.filter(
-                Q(project=project, unit_type=unit_type, key_unit__isnull=True) |
+                Q(building_unit__project=project, unit_type=unit_type, key_unit__isnull=True) |
                 Q(key_unit__contract=contract))
         return queryset
 
