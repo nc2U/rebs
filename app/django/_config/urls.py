@@ -41,20 +41,21 @@ url = [
     path('api/v1/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
     path('api/v1/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
+    path('pdf/', include('_pdf.urls')),
+    path('excel/', include('_excel.urls')),
+
     path('accounts/', include('allauth.urls')),  # path('accounts/', include('accounts.urls')),
     path('robots.txt', TemplateView.as_view(template_name='robots.txt', content_type='text/plain')),
+
     path('', include('django.contrib.auth.urls')),
+    path('', TemplateView.as_view(template_name='base-vue.html')),
 
     path('rebs/', RedirectView.as_view(url='/rebs/dashboard/'), name='home'),
     path('rebs/', include('rebs.urls')),
-
-    path('', TemplateView.as_view(template_name='base-vue.html')),
+    path('book/', include('book.urls')),
 
     path('svelte/', TemplateView.as_view(template_name='base-svelte.html')),
 
-    path('book/', include('book.urls')),
-
-    path('excel/', include('_excel.urls')),
     path('mdeditor/', include('mdeditor.urls')),
     path('tinymce/', include('tinymce.urls')),
 ]
