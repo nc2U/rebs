@@ -81,6 +81,7 @@ INSTALLED_APPS += [  # app
     'project.apps.ProjectConfig',
     'rebs.apps.RebsConfig',
     'excel.apps.ExcelConfig',
+    'exports.apps.ExportsConfig',
 ]
 
 MIDDLEWARE = [
