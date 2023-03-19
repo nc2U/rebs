@@ -2,10 +2,8 @@ from django.db import transaction
 from rest_framework import serializers
 
 from notice.models import SalesBillIssue
-from project.models import (Project, UnitType, ProjectIncBudget, ProjectOutBudget,
-                            UnitFloorType, KeyUnit, BuildingUnit, HouseUnit,
+from project.models import (Project, ProjectIncBudget, ProjectOutBudget,
                             Site, SiteOwner, SiteOwnshipRelationship, SiteContract)
-from contract.models import Contract, Contractor
 from rebs.models import ProjectAccountD1, ProjectAccountD2
 from cash.models import ProjectCashBook
 
@@ -36,32 +34,6 @@ class ProjectSerializer(serializers.ModelSerializer):
                   'num_legal_parking', 'num_planed_parking', 'salesbillissue')
 
 
-class UnitTypeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = UnitType
-        fields = (
-            'pk', 'project', 'name', 'sort', 'color', 'actual_area',
-            'supply_area', 'contract_area', 'average_price', 'num_unit')
-
-
-class SimpleUnitTypeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = UnitType
-        fields = ('pk', 'name', 'color', 'average_price')
-
-
-class ProAccoD2InBudgetSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ProjectAccountD2
-        fields = ('pk', 'name', 'sub_title')
-
-
-class ProAccoD1InBudgetSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ProjectAccountD1
-        fields = ('name', 'acc_d2s')
-
-
 class ProjectIncBudgetSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectIncBudget
@@ -74,6 +46,18 @@ class ProjectOutBudgetSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectOutBudget
         fields = ('pk', 'project', 'account_d1', 'account_d2', 'item_name', 'basis_calc', 'budget')
+
+
+class ProAccoD2InBudgetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProjectAccountD2
+        fields = ('pk', 'name', 'sub_title')
+
+
+class ProAccoD1InBudgetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProjectAccountD1
+        fields = ('name', 'acc_d2s')
 
 
 class StatusOutBudgetSerializer(serializers.ModelSerializer):
@@ -93,70 +77,6 @@ class ExecAmountToBudget(serializers.ModelSerializer):
     class Meta:
         model = ProjectCashBook
         fields = ('acc_d2', 'all_sum', 'month_sum')
-
-
-class UnitFloorTypeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = UnitFloorType
-        fields = ('pk', 'project', 'start_floor', 'end_floor', 'extra_cond', 'alias_name')
-
-
-class BuildingUnitSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = BuildingUnit
-        fields = ('pk', 'project', 'name')
-
-
-class KeyUnitSerializer(serializers.ModelSerializer):
-    houseunit = serializers.PrimaryKeyRelatedField(read_only=True)
-
-    class Meta:
-        model = KeyUnit
-        fields = ('pk', 'project', 'unit_type', 'unit_code', 'houseunit', 'contract')
-
-
-class HouseUnitSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = HouseUnit
-        fields = ('pk', 'project', 'unit_type', 'floor_type', '__str__', 'building_unit',
-                  'name', 'key_unit', 'bldg_line', 'floor_no', 'is_hold', 'hold_reason')
-
-
-class ContractorInContractSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Contractor
-        fields = ('status', 'name')
-
-
-class ContractInKeyUnitSerializer(serializers.ModelSerializer):
-    contractor = ContractorInContractSerializer()
-
-    class Meta:
-        model = Contract
-        fields = ('pk', 'contractor')
-
-
-class KeyUnitInHouseUnitSerializer(serializers.ModelSerializer):
-    contract = ContractInKeyUnitSerializer()
-
-    class Meta:
-        model = KeyUnit
-        fields = ('pk', 'contract')
-
-
-class AllHouseUnitSerializer(serializers.ModelSerializer):
-    key_unit = KeyUnitInHouseUnitSerializer()
-
-    class Meta:
-        model = HouseUnit
-        fields = ('pk', 'unit_type', 'building_unit', 'name',
-                  'key_unit', 'bldg_line', 'floor_no', 'is_hold')
-
-
-class AllSiteSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Site
-        fields = ('pk', '__str__')
 
 
 class TotalSiteAreaSerializer(serializers.ModelSerializer):
@@ -186,19 +106,10 @@ class SiteSerializer(serializers.ModelSerializer):
                   'official_area', 'returned_area', 'rights_restrictions', 'dup_issue_date', 'owners')
 
 
-class RelationsInSiteOwnerSerializer(serializers.ModelSerializer):
-    site = serializers.ReadOnlyField(source='site.pk')
-    __str__ = serializers.ReadOnlyField(source='site.__str__')
-
+class AllSiteSerializer(serializers.ModelSerializer):
     class Meta:
-        model = SiteOwnshipRelationship
-        fields = ('pk', 'site', '__str__', 'ownership_ratio', 'owned_area', 'acquisition_date')
-
-
-class AllOwnerSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = SiteOwner
-        fields = ('pk', 'owner')
+        model = Site
+        fields = ('pk', '__str__')
 
 
 class TotalOwnerAreaSerializer(serializers.ModelSerializer):
@@ -208,6 +119,15 @@ class TotalOwnerAreaSerializer(serializers.ModelSerializer):
     class Meta:
         model = SiteOwner
         fields = ('project', 'owned_area')
+
+
+class RelationsInSiteOwnerSerializer(serializers.ModelSerializer):
+    site = serializers.ReadOnlyField(source='site.pk')
+    __str__ = serializers.ReadOnlyField(source='site.__str__')
+
+    class Meta:
+        model = SiteOwnshipRelationship
+        fields = ('pk', 'site', '__str__', 'ownership_ratio', 'owned_area', 'acquisition_date')
 
 
 class SiteOwnerSerializer(serializers.ModelSerializer):
@@ -258,6 +178,12 @@ class SiteOwnerSerializer(serializers.ModelSerializer):
         instance.__dict__.update(**validated_data)
         instance.save()
         return instance
+
+
+class AllOwnerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SiteOwner
+        fields = ('pk', 'owner')
 
 
 class SiteOwnshipRelationshipSerializer(serializers.ModelSerializer):
