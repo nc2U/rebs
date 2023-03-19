@@ -15,7 +15,7 @@ const contractStore = useContract()
 const contractList = computed(() => contractStore.contractList)
 
 const paymentUrl = computed(() => {
-  const url = '/pad/payments/'
+  const url = '/pdf/payments/'
   const project = props.project ? props.project : ''
   const contract = props.contract ? props.contract.pk : ''
   return `${url}?project=${project}&contract=${contract}`
