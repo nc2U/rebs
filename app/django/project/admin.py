@@ -1,10 +1,8 @@
 from django.contrib import admin
-from django.utils.html import format_html
 from django.contrib.humanize.templatetags.humanize import intcomma
 from import_export.admin import ImportExportMixin
 
-from .models import (Project, UnitType, UnitFloorType, KeyUnit, BuildingUnit,
-                     HouseUnit, ProjectIncBudget, ProjectOutBudget,
+from .models import (Project, ProjectIncBudget, ProjectOutBudget,
                      Site, SiteOwner, SiteOwnshipRelationship, SiteContract)
 
 
@@ -12,21 +10,6 @@ class ProjectAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'name', 'order', 'kind', 'num_unit', 'build_size', 'area_usage')
     list_display_links = ('name',)
     list_editable = ('order', 'kind', 'num_unit', 'build_size', 'area_usage')
-
-
-class UnitTypeAdmin(ImportExportMixin, admin.ModelAdmin):
-    # form = UnitTypeForm
-    list_display = (
-        'id', 'project', 'name', 'sort', 'styled_color', 'actual_area', 'supply_area', 'contract_area', 'average_price',
-        'num_unit')
-    list_display_links = ('project', 'name',)
-    list_editable = ('sort', 'actual_area', 'supply_area', 'contract_area', 'average_price', 'num_unit')
-    list_filter = ('project',)
-
-    def styled_color(self, obj):
-        return format_html(f'<div style="width:15px; background:{obj.color};">&nbsp;</div>')
-
-    styled_color.short_description = '타입색상'
 
 
 class ProjectIncBudgetAdmin(ImportExportMixin, admin.ModelAdmin):
@@ -43,36 +26,6 @@ class ProjectOutBudgetAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display_links = ('project',)
     list_editable = ('account_d1', 'account_d2', 'item_name', 'budget', 'basis_calc')
     list_filter = ('project', 'account_d1', 'account_d2')
-
-
-class UnitFloorTypeAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'project', 'start_floor', 'end_floor', 'extra_cond', 'alias_name')
-    list_display_links = ('project',)
-    list_editable = ('start_floor', 'end_floor', 'extra_cond', 'alias_name')
-    list_filter = ('project',)
-
-
-class KeyUnitAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'project', 'unit_code', 'unit_type', 'contract')
-    search_fields = ('unit_code',)
-    list_display_links = ('project', 'unit_code',)
-    list_filter = ('project', 'unit_type', 'contract')
-
-
-class BuindingUnitAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'project', 'name')
-    list_display_links = ('project',)
-    list_editable = ('name',)
-    list_filter = ('project',)
-
-
-class HouseUnitAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = (
-        'id', 'project', 'key_unit', 'unit_type', 'building_unit',
-        'name', 'floor_type', 'bldg_line', 'floor_no', 'is_hold', 'hold_reason')
-    search_fields = ('name',)
-    list_display_links = ('project', 'building_unit', 'name')
-    list_filter = ('project', 'unit_type', 'building_unit', 'bldg_line', 'floor_type', 'is_hold', 'key_unit')
 
 
 class SiteAdmin(ImportExportMixin, admin.ModelAdmin):
@@ -115,13 +68,8 @@ class SiteContractAdmin(ImportExportMixin, admin.ModelAdmin):
 
 
 admin.site.register(Project, ProjectAdmin)
-admin.site.register(UnitType, UnitTypeAdmin)
 admin.site.register(ProjectIncBudget, ProjectIncBudgetAdmin)
 admin.site.register(ProjectOutBudget, ProjectOutBudgetAdmin)
-admin.site.register(UnitFloorType, UnitFloorTypeAdmin)
-admin.site.register(KeyUnit, KeyUnitAdmin)
-admin.site.register(BuildingUnit, BuindingUnitAdmin)
-admin.site.register(HouseUnit, HouseUnitAdmin)
 admin.site.register(Site, SiteAdmin)
 admin.site.register(SiteOwner, SiteOwnerAdmin)
 admin.site.register(SiteOwnshipRelationship, SiteOwnshipRelationshipAdmin)

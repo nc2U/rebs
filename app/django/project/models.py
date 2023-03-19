@@ -51,41 +51,13 @@ class Project(models.Model):
         verbose_name_plural = '01. 프로젝트'
 
 
-class UnitType(models.Model):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE, verbose_name='프로젝트', related_name='typess')
-    SORT_CHOICES = (
-        ('1', '공동주택'),
-        ('2', '오피스텔'),
-        ('3', '숙박시설'),
-        ('4', '지식산업센터'),
-        ('5', '근린생활시설'),
-        ('6', '기타')
-    )
-    sort = models.CharField('타입종류', max_length=1, choices=SORT_CHOICES)
-    name = models.CharField('타입명칭', max_length=10)
-    color = models.CharField('타입색상', max_length=20)
-    actual_area = models.DecimalField('전용면적(㎡)', max_digits=7, decimal_places=4, null=True, blank=True)
-    supply_area = models.DecimalField('공급면적(㎡)', max_digits=7, decimal_places=4, null=True, blank=True)
-    contract_area = models.DecimalField('계약면적(㎡)', max_digits=7, decimal_places=4, null=True, blank=True)
-    average_price = models.PositiveIntegerField('평균가격', null=True, blank=True)
-    num_unit = models.PositiveSmallIntegerField('세대수')
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        ordering = ['id']
-        verbose_name = '02. 타입 정보'
-        verbose_name_plural = '02. 타입 정보'
-
-
 class ProjectIncBudget(models.Model):
     project = models.ForeignKey('project.Project', on_delete=models.CASCADE, verbose_name='프로젝트')
     account_d1 = models.ForeignKey('rebs.ProjectAccountD1', on_delete=models.PROTECT, verbose_name='대분류')
     account_d2 = models.ForeignKey('rebs.ProjectAccountD2', on_delete=models.PROTECT, verbose_name='중분류')
     order_group = models.ForeignKey('contract.OrderGroup', on_delete=models.SET_NULL, null=True, blank=True,
                                     verbose_name='차수', help_text='해당 차수가 없는 경우 생략가능')
-    unit_type = models.ForeignKey(UnitType, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='타입',
+    unit_type = models.ForeignKey('items.UnitType', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='타입',
                                   help_text='해당 타입이 없는 경우 생략가능')
     item_name = models.CharField('항목명칭', max_length=20, blank=True, default='',
                                  help_text='차수와 타입을 선택하지 않은 경우 기재. 그렇지 않은 경우 생략할 것')
@@ -96,8 +68,8 @@ class ProjectIncBudget(models.Model):
 
     class Meta:
         ordering = ('id', '-project')
-        verbose_name = '03. 프로젝트 수입예산'
-        verbose_name_plural = '03. 프로젝트 수입예산'
+        verbose_name = '02. 프로젝트 수입예산'
+        verbose_name_plural = '02. 프로젝트 수입예산'
 
 
 class ProjectOutBudget(models.Model):
@@ -113,8 +85,8 @@ class ProjectOutBudget(models.Model):
 
     class Meta:
         ordering = ('id', '-project')
-        verbose_name = '04. 프로젝트 지출예산'
-        verbose_name_plural = '04. 프로젝트 지출예산'
+        verbose_name = '03. 프로젝트 지출예산'
+        verbose_name_plural = '03. 프로젝트 지출예산'
 
 
 class UnitFloorType(models.Model):  # 층별 타입
@@ -132,60 +104,6 @@ class UnitFloorType(models.Model):  # 층별 타입
         ordering = ['-project', '-end_floor', '-id']
         verbose_name = '05. 층별 조건'
         verbose_name_plural = '05. 층별 조건'
-
-
-class KeyUnit(models.Model):
-    project = models.ForeignKey(Project, on_delete=models.PROTECT, verbose_name='프로젝트', related_name='keyunits')
-    unit_type = models.ForeignKey(UnitType, on_delete=models.PROTECT, verbose_name='타입', related_name='keyunits')
-    unit_code = models.CharField('코드번호', max_length=8)
-    contract = models.OneToOneField('contract.Contract', on_delete=models.SET_NULL, null=True, blank=True,
-                                    verbose_name='계약', related_name='keyunits')
-
-    def __str__(self):
-        return f'{self.unit_code}'
-
-    class Meta:
-        ordering = ['unit_code', '-project']
-        verbose_name = '06. 계약 유닛'
-        verbose_name_plural = '06. 계약 유닛'
-
-
-class BuildingUnit(models.Model):
-    project = models.ForeignKey('project.Project', on_delete=models.PROTECT, verbose_name='프로젝트',
-                                related_name='buildings')
-    name = models.CharField('동(건물)이름', max_length=10)
-
-    class Meta:
-        ordering = ('-project', 'id')
-        verbose_name = '07. 동수'
-        verbose_name_plural = '07. 동수'
-
-    def __str__(self):
-        return self.name
-
-
-class HouseUnit(models.Model):
-    project = models.ForeignKey('project.Project', on_delete=models.PROTECT, verbose_name='프로젝트', related_name='unitss')
-    unit_type = models.ForeignKey(UnitType, on_delete=models.PROTECT, verbose_name='타입', related_name='units')
-    floor_type = models.ForeignKey('UnitFloorType', on_delete=models.SET_NULL, null=True, blank=True,
-                                   verbose_name='층범위 타입', related_name='units')
-    building_unit = models.ForeignKey('project.BuildingUnit', on_delete=models.PROTECT, verbose_name='동수',
-                                      related_name='units')
-    name = models.CharField('호수', max_length=5, blank=True)
-    key_unit = models.OneToOneField(KeyUnit, on_delete=models.SET_NULL, null=True, blank=True,
-                                    verbose_name='계약유닛')
-    bldg_line = models.PositiveSmallIntegerField('라인')
-    floor_no = models.PositiveSmallIntegerField('층수')
-    is_hold = models.BooleanField('홀딩 여부', default=False)
-    hold_reason = models.CharField('홀딩 사유', max_length=100, blank=True)
-
-    def __str__(self):
-        return f'{self.building_unit}-{self.name}'
-
-    class Meta:
-        ordering = ['-project', 'building_unit', '-floor_no']
-        verbose_name = '08. 호수'
-        verbose_name_plural = '08. 호수'
 
 
 class Site(models.Model):
@@ -207,8 +125,8 @@ class Site(models.Model):
 
     class Meta:
         ordering = ('-project', '-order', 'lot_number')
-        verbose_name = '09. 사업부지 목록'
-        verbose_name_plural = '09. 사업부지 목록'
+        verbose_name = '04. 사업부지 목록'
+        verbose_name_plural = '04. 사업부지 목록'
 
 
 class SiteOwner(models.Model):
@@ -235,8 +153,8 @@ class SiteOwner(models.Model):
 
     class Meta:
         ordering = ('-id',)
-        verbose_name = '10. 사업부지 소유자'
-        verbose_name_plural = '10. 사업부지 소유자'
+        verbose_name = '05. 사업부지 소유자'
+        verbose_name_plural = '05. 사업부지 소유자'
 
 
 class SiteOwnshipRelationship(models.Model):
@@ -251,8 +169,8 @@ class SiteOwnshipRelationship(models.Model):
 
     class Meta:
         ordering = ('-id',)
-        verbose_name = '11. 사업부지 소유관계'
-        verbose_name_plural = '11. 사업부지 소유관계'
+        verbose_name = '06. 사업부지 소유관계'
+        verbose_name_plural = '06. 사업부지 소유관계'
 
 
 class SiteContract(models.Model):
@@ -289,5 +207,5 @@ class SiteContract(models.Model):
 
     class Meta:
         ordering = ('-id',)
-        verbose_name = '12. 사업부지 계약현황'
-        verbose_name_plural = '12. 사업부지 계약현황'
+        verbose_name = '07. 사업부지 계약현황'
+        verbose_name_plural = '07. 사업부지 계약현황'
