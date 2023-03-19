@@ -1,4 +1,4 @@
-name: Svelte_app_action
+name: Svelte_prod
 
 on:
   push:

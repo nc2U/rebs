@@ -1,4 +1,4 @@
-name: Helm_dev_action
+name: Helm_dev
 
 on:
   push:
