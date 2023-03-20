@@ -85,7 +85,7 @@ class InstallmentOrderSerializer(serializers.ModelSerializer):
 class DownPaymentSerializer(serializers.ModelSerializer):
     class Meta:
         model = DownPayment
-        fields = ('pk', 'project', 'order_group', 'unit_type', 'number_payments', 'payment_amount')
+        fields = ('pk', 'project', 'order_group', 'unit_type', 'payment_amount')
 
 
 class OverDueRuleSerializer(serializers.ModelSerializer):
