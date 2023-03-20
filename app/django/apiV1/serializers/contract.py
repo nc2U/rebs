@@ -3,11 +3,11 @@ from rest_framework import serializers
 from django.core.exceptions import ObjectDoesNotExist
 
 from cash.models import ProjectBankAccount, ProjectCashBook
-from project.models import Project
-from items.models import HouseUnit, KeyUnit
-from payment.models import InstallmentPaymentOrder
+from project.models import Project, ProjectIncBudget
+from items.models import UnitType, HouseUnit, KeyUnit
+from payment.models import SalesPriceByGT, InstallmentPaymentOrder, DownPayment
 from rebs.models import ProjectAccountSort, ProjectAccountD1, ProjectAccountD2
-from contract.models import (OrderGroup, Contract, Contractor,
+from contract.models import (OrderGroup, Contract, ContractPrice, Contractor,
                              ContractorAddress, ContractorContact, ContractorRelease)
 
 from .items import SimpleUnitTypeSerializer
@@ -135,6 +135,20 @@ class ContractSetSerializer(serializers.ModelSerializer):
         keyunit.contract = contract
         keyunit.save()
 
+        # # 분양가격 설정 데이터 불러오기
+        # try:
+        #     price = ProjectIncBudget.objects.get(project=contract.project,
+        #                                          order_group=contract.order_group,
+        #                                          unit_type=contract.unit_type).average_price
+        # except ProjectIncBudget.DoesNotExist:
+        #     price = UnitType.objects.get(pk=contract.unit_type).average_price
+        # except UnitType.DoesNotExist:
+        #     price = 1000
+        #
+        # price_build = None
+        # price_land = None
+        # price_tax = None
+
         # 3. 동호수 연결
         if self.initial_data.get('houseunit'):
             house_unit_data = self.initial_data.get('houseunit')
@@ -142,7 +156,52 @@ class ContractSetSerializer(serializers.ModelSerializer):
             house_unit.key_unit = keyunit
             house_unit.save()
 
-        # 4. 계약자 정보 테이블 입력
+        #     # 가격정보 구하기
+        #     sales_price = SalesPriceByGT.objects.get(order_group=contract.order_group,
+        #                                              unit_type=contract.unit_type,
+        #                                              unit_floor_type=house_unit.floor_type)
+        #     price = sales_price.price
+        #     price_build = sales_price.price_build
+        #     price_land = sales_price.price_land
+        #     price_tax = sales_price.price_tax
+        #
+        # # 4. 가격정보 등록
+        # # ### 회차 데이터
+        # install_order = InstallmentPaymentOrder.objects.filter(project=contract.project)
+        #
+        # downs = install_order.filter(pay_sort='1')
+        # middles = install_order.filter(pay_sort='2')
+        # remains = install_order.filter(pay_sort='3')
+        #
+        # down_num = len(downs.distinct().values_list('pay_code'))
+        # middle_num = len(middles.distinct().values_list('pay_code'))
+        #
+        # down_ratio = downs.first().pay_ratio / 100 if downs.first().pay_ratio else 0.1
+        # middle_ratio = middles.first().pay_ratio / 100 if middles.first().pay_ratio else 0.1
+        # remain_ratio = remains.first().pay_ratio / 100 if remains.first().pay_ratio else 0.1
+        #
+        # try:
+        #     down_data = DownPayment.objects.get(order_group=contract.order_group,
+        #                                         unit_type=contract.unit_type)
+        #     down = down_data.payment_amount
+        #     remain = price - (price * middle_ratio * middle_num) - (down * down_num)
+        # except DownPayment.DoesNotExist:
+        #     down = price * down_ratio
+        #     remain = down * remain_ratio
+        #
+        # middle = price * middle_ratio
+        #
+        # cont_price = ContractPrice(contract=contract,
+        #                            price=price,
+        #                            price_build=price_build,
+        #                            price_land=price_land,
+        #                            price_tax=price_tax,
+        #                            down_pay=down,
+        #                            middle_pay=middle,
+        #                            remain_pay=remain)
+        # cont_price.save()
+
+        # 5. 계약자 정보 테이블 입력
         contractor_name = self.initial_data.get('name')
         contractor_birth_date = self.initial_data.get('birth_date')
         contractor_gender = self.initial_data.get('gender')
@@ -163,7 +222,7 @@ class ContractSetSerializer(serializers.ModelSerializer):
                                 note=contractor_note)
         contractor.save()
 
-        # 5. 계약자 주소 테이블 입력
+        # 6. 계약자 주소 테이블 입력
         address_id_zipcode = self.initial_data.get('id_zipcode')
         address_id_address1 = self.initial_data.get('id_address1')
         address_id_address2 = self.initial_data.get('id_address2')
@@ -184,7 +243,7 @@ class ContractSetSerializer(serializers.ModelSerializer):
                                                dm_address3=address_dm_address3)
         contractor_address.save()
 
-        # 6. 계약자 연락처 테이블 입력
+        # 7. 계약자 연락처 테이블 입력
         contact_cell_phone = self.initial_data.get('cell_phone')
         contact_home_phone = self.initial_data.get('home_phone')
         contact_other_phone = self.initial_data.get('other_phone')
@@ -197,7 +256,7 @@ class ContractSetSerializer(serializers.ModelSerializer):
                                                email=contact_email)
         contractor_contact.save()
 
-        # 7. 계약금 -- 수납 정보 테이블 입력
+        # 8. 계약금 -- 수납 정보 테이블 입력
         if self.initial_data.get('deal_date'):
             project = self.initial_data.get('project')
             payment_project = Project.objects.get(pk=project)
