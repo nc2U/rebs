@@ -40,6 +40,9 @@ class Contract(models.Model):
 class ContractPrice(models.Model):
     contract = models.OneToOneField(Contract, on_delete=models.SET_NULL, null=True)
     price = models.PositiveIntegerField('분양가격')
+    price_build = models.PositiveIntegerField('건물가', null=True, blank=True)
+    price_land = models.PositiveIntegerField('대지가', null=True, blank=True)
+    price_tax = models.PositiveIntegerField('부가세', null=True, blank=True)
     down_pay = models.PositiveIntegerField('계약금', help_text='계약금 분납 시 회당 납부하는 금액 기재')
     middle_pay = models.PositiveIntegerField('중도금', help_text='중도금 분납 시 회당 납부하는 금액 기재')
     remain_pay = models.PositiveIntegerField('잔금', help_text='잔금 분납 시 회당 납부하는 금액 기재')
