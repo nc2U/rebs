@@ -46,9 +46,6 @@ class ContractPrice(models.Model):
     down_pay = models.PositiveIntegerField('계약금', help_text='계약금 분납 시 회당 납부하는 금액 기재')
     middle_pay = models.PositiveIntegerField('중도금', help_text='중도금 분납 시 회당 납부하는 금액 기재')
     remain_pay = models.PositiveIntegerField('잔금', help_text='잔금 분납 시 회당 납부하는 금액 기재')
-    down_pay_num = models.PositiveSmallIntegerField('계약금 분납회수', default=2)
-    middle_pay_num = models.PositiveSmallIntegerField('중도금 분납회수', default=6)
-    remain_pay_num = models.PositiveSmallIntegerField('잔금 분납회수', default=1)
 
     def __str__(self):
         return f'{self.price}'
