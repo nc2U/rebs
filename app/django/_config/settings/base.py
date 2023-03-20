@@ -136,24 +136,24 @@ DATABASES = {
         'HOST': 'master',
         'PORT': 3306,
     },
-    'slave1': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv('DATABASE_NAME'),
-        'USER': os.getenv('DATABASE_USER'),
-        'PASSWORD': os.getenv('DATABASE_PASSWORD'),
-        "DEFAULT-CHARACTER-SET": 'utf8',
-        'HOST': 'slave',
-        'PORT': 3306,
-    },
-    'slave2': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv('DATABASE_NAME'),
-        'USER': os.getenv('DATABASE_USER'),
-        'PASSWORD': os.getenv('DATABASE_PASSWORD'),
-        "DEFAULT-CHARACTER-SET": 'utf8',
-        'HOST': 'slave',
-        'PORT': 3306,
-    }
+    # 'slave1': {
+    #     'ENGINE': 'django.db.backends.mysql',
+    #     'NAME': os.getenv('DATABASE_NAME'),
+    #     'USER': os.getenv('DATABASE_USER'),
+    #     'PASSWORD': os.getenv('DATABASE_PASSWORD'),
+    #     "DEFAULT-CHARACTER-SET": 'utf8',
+    #     'HOST': 'slave',
+    #     'PORT': 3306,
+    # },
+    # 'slave2': {
+    #     'ENGINE': 'django.db.backends.mysql',
+    #     'NAME': os.getenv('DATABASE_NAME'),
+    #     'USER': os.getenv('DATABASE_USER'),
+    #     'PASSWORD': os.getenv('DATABASE_PASSWORD'),
+    #     "DEFAULT-CHARACTER-SET": 'utf8',
+    #     'HOST': 'slave',
+    #     'PORT': 3306,
+    # }
 }
 
 # Password validation
