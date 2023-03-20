@@ -51,7 +51,6 @@ class DownPayment(models.Model):
     order_group = models.ForeignKey('contract.OrderGroup', on_delete=models.CASCADE, verbose_name='차수정보')
     unit_type = models.ForeignKey('items.UnitType', on_delete=models.CASCADE, verbose_name='타입정보')
     payment_amount = models.PositiveIntegerField('회별 납부금액')
-    number_payments = models.PositiveSmallIntegerField('분할 납부회수')
 
     def __str__(self):
         return f'{self.payment_amount}'
