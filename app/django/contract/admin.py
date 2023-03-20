@@ -1,6 +1,7 @@
 from django.contrib import admin
 from import_export.admin import ImportExportMixin
-from .models import OrderGroup, Contract, Contractor, ContractorAddress, ContractorContact, ContractorRelease
+from .models import (OrderGroup, Contract, ContractPrice, Contractor,
+                     ContractorAddress, ContractorContact, ContractorRelease)
 
 
 class OrderGroupAdmin(ImportExportMixin, admin.ModelAdmin):
@@ -13,13 +14,18 @@ class ContractorInline(admin.StackedInline):
     extra = 0
 
 
+class ContractPriceInline(admin.StackedInline):
+    model = ContractPrice
+    extra = 0
+
+
 class ContractAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'project', 'serial_number', 'order_group',
-                    'unit_type', 'user', 'activation')
+    list_display = ('id', 'project', 'serial_number',
+                    'order_group', 'unit_type', 'user', 'activation')
     list_display_links = ('project', 'serial_number',)
     list_filter = ('activation',)
     search_fields = ('serial_number',)
-    inlines = [ContractorInline]
+    inlines = [ContractorInline, ContractPriceInline]
 
 
 class CAdressInline(ImportExportMixin, admin.StackedInline):

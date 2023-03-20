@@ -37,6 +37,25 @@ class Contract(models.Model):
         verbose_name_plural = '02. 계약 정보'
 
 
+class ContractPrice(models.Model):
+    contract = models.OneToOneField(Contract, on_delete=models.SET_NULL, null=True)
+    price = models.PositiveIntegerField('분양가격')
+    down_pay = models.PositiveIntegerField('계약금', help_text='계약금 분납 시 회당 납부하는 금액 기재')
+    middle_pay = models.PositiveIntegerField('중도금', help_text='중도금 분납 시 회당 납부하는 금액 기재')
+    remain_pay = models.PositiveIntegerField('잔금', help_text='잔금 분납 시 회당 납부하는 금액 기재')
+    down_pay_num = models.PositiveSmallIntegerField('계약금 분납회수')
+    middle_pay_num = models.PositiveSmallIntegerField('중도금 분납회수')
+    remain_pay_num = models.PositiveSmallIntegerField('잔금 분납회수')
+
+    def __str__(self):
+        return self.price
+
+    class Meta:
+        ordering = ('-contract__project', 'contract')
+        verbose_name = '분양대금 정보'
+        verbose_name_plural = '분양대금 정보'
+
+
 class Contractor(models.Model):
     contract = models.OneToOneField('Contract', on_delete=models.PROTECT, verbose_name='계약 정보')
     name = models.CharField('계약자명', max_length=20)
