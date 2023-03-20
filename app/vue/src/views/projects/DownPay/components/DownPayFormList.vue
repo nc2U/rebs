@@ -23,14 +23,13 @@ const onDeleteDownPay = (pk: number) => emit('on-delete', pk)
     <colgroup>
       <col width="25%" />
       <col width="25%" />
-      <col width="25%" />
-      <col width="25%" />
+      <col width="35%" />
+      <col width="15%" />
     </colgroup>
     <CTableHead :color="TableSecondary" class="text-center">
       <CTableRow>
         <CTableHeaderCell>차수</CTableHeaderCell>
         <CTableHeaderCell>타입</CTableHeaderCell>
-        <CTableHeaderCell>분할 납부회수</CTableHeaderCell>
         <CTableHeaderCell>회별 납부금액</CTableHeaderCell>
         <CTableHeaderCell>비고</CTableHeaderCell>
       </CTableRow>

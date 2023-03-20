@@ -30,7 +30,6 @@ export interface DownPay {
   project: number
   order_group: number
   unit_type: number
-  number_payments: number
   payment_amount: number
 }
 

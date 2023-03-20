@@ -15,7 +15,6 @@ const emit = defineEmits(['on-update', 'on-delete'])
 const form = reactive({
   order_group: null,
   unit_type: null,
-  number_payments: null,
   payment_amount: null,
 })
 
@@ -30,9 +29,8 @@ const formsCheck = computed(() => {
   if (props.downPay) {
     const a = form.order_group === props.downPay.order_group
     const b = form.unit_type === props.downPay.unit_type
-    const c = form.number_payments === props.downPay.number_payments
-    const d = form.payment_amount === props.downPay.payment_amount
-    return a && b && c && d
+    const c = form.payment_amount === props.downPay.payment_amount
+    return a && b && c
   } else return false
 })
 
@@ -64,7 +62,6 @@ const modalAction = () => {
 const resetForm = () => {
   form.order_group = props.downPay.order_group
   form.unit_type = props.downPay.unit_type
-  form.number_payments = props.downPay.number_payments
   form.payment_amount = props.downPay.payment_amount
 }
 </script>
@@ -86,18 +83,6 @@ const resetForm = () => {
           {{ type.name }}
         </option>
       </CFormSelect>
-    </CTableDataCell>
-    <CTableDataCell>
-      <CFormInput
-        v-model.number="form.number_payments"
-        placeholder="납입회차 코드"
-        type="number"
-        min="0"
-        required
-        @keypress.enter="
-          formCheck(form.number_payments !== downPay.number_payments)
-        "
-      />
     </CTableDataCell>
     <CTableDataCell>
       <CFormInput
@@ -126,7 +111,7 @@ const resetForm = () => {
   </CTableRow>
 
   <ConfirmModal ref="confirmModal">
-    <template #header> 층별 타입 삭제 </template>
+    <template #header> 층별 타입 삭제</template>
     <template #default>
       이 타입에 종속된 분양가 데이터가 있는 경우 해당 데이터를 모두 제거한 후
       삭제가능 합니다. 해당 층별 타입을 삭제 하시겠습니까?
