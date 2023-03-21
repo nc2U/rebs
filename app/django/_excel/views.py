@@ -142,6 +142,8 @@ class ExportContracts(View):
         data = Contract.objects.filter(project=project,
                                        activation=True,
                                        contractor__status='2').order_by('contractor__contract_date')
+        if request.GET.get('status'):
+            data = data.filter(contractor__status=request.GET.get('status'))
         if request.GET.get('group'):
             data = data.filter(order_group=request.GET.get('group'))
         if request.GET.get('type'):
@@ -158,11 +160,13 @@ class ExportContracts(View):
             data = data.filter(contractor__contract_date__gte=request.GET.get('sdate'))
         if request.GET.get('edate'):
             data = data.filter(contractor__contract_date__lte=request.GET.get('edate'))
-        if request.GET.get('q'):
+        q = request.GET.get('q')
+        if q:
             data = data.filter(
-                Q(serial_number__icontains=request.GET.get('q')) |
-                Q(contractor__name__icontains=request.GET.get('q')) |
-                Q(contractor__note__icontains=request.GET.get('q')))
+                Q(serial_number__icontains=q) |
+                Q(contractor__name__icontains=q) |
+                Q(contractor__note__icontains=q) |
+                Q(contractor__contractorcontact__cell_phone__icontains=q))
 
         order_list = ['-created_at', 'created_at', '-contractor__contract_date',
                       'contractor__contract_date', '-serial_number',
