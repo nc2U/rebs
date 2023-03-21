@@ -75,3 +75,9 @@ class AllHouseUnitSerializer(serializers.ModelSerializer):
         model = HouseUnit
         fields = ('pk', 'unit_type', 'building_unit', 'name',
                   'key_unit', 'bldg_line', 'floor_no', 'is_hold')
+
+
+class HouseUnitSummarySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HouseUnit
+        fields = ('pk', 'unit_type', 'building_unit', 'name')

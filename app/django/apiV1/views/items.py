@@ -1,5 +1,5 @@
 from datetime import datetime
-from django.db.models import Q
+from django.db.models import Q, F, Count, Sum
 from rest_framework import viewsets
 from django_filters.rest_framework import FilterSet
 from django_filters import BooleanFilter
@@ -13,7 +13,7 @@ from items.models import UnitType, UnitFloorType, KeyUnit, BuildingUnit, HouseUn
 TODAY = datetime.today().strftime('%Y-%m-%d')
 
 
-# Project --------------------------------------------------------------------------
+# Items --------------------------------------------------------------------------
 class UnitTypeViewSet(viewsets.ModelViewSet):
     queryset = UnitType.objects.all()
     serializer_class = UnitTypeSerializer
@@ -58,7 +58,8 @@ class HouseUnitViewSet(viewsets.ModelViewSet):
     queryset = HouseUnit.objects.all()
     serializer_class = HouseUnitSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-    filterset_fields = ('building_unit__project', 'building_unit')
+    filterset_fields = ('building_unit__project', 'unit_type',
+                        'floor_type', 'building_unit', 'is_hold')
     search_fields = ('hold_reason',)
 
 
@@ -85,3 +86,13 @@ class AvailableHouseUnitViewSet(HouseUnitViewSet):
 class AllHouseUnitViewSet(HouseUnitViewSet):
     serializer_class = AllHouseUnitSerializer
     pagination_class = PageNumberPaginationThreeThousand
+
+
+class HouseUnitSummaryViewSet(viewsets.ModelViewSet):
+    serializer_class = HouseUnitSummarySerializer
+    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    filterset_fields = ('building_unit__project', 'unit_type',
+                        'floor_type', 'building_unit', 'is_hold')
+
+    def get_queryset(self):
+        return HouseUnit.objects.all()

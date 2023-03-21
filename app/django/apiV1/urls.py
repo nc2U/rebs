@@ -65,6 +65,7 @@ router.register(r'house-unit', items.HouseUnitViewSet)
 router.register(r'available-house-unit', items.AvailableHouseUnitViewSet,
                 basename='available-house-unit')  # only list
 router.register(r'all-house-unit', items.AllHouseUnitViewSet, basename='all-house-unit')  # only list
+router.register(r'unit-summary', items.HouseUnitSummaryViewSet, basename='unit-summary')
 # payment
 router.register(r'payment', payment.PaymentViewSet, basename='payment')  # only list
 router.register(r'all-payment', payment.AllPaymentViewSet, basename='all-payment')  # only list
