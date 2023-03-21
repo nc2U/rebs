@@ -706,23 +706,16 @@ def export_payments_xls(request):
 
     if og:
         obj_list = obj_list.filter(contract__order_group=og)
-
     if ut:
         obj_list = obj_list.filter(contract__unit_type=ut)
-
     if ipo:
         obj_list = obj_list.filter(installment_order_id=ipo)
-
     if ba:
         obj_list = obj_list.filter(bank_account__id=ba)
-
-    if nc == 'true':
+    if nc:
         obj_list = obj_list.filter(contract__isnull=True)
-
-    if ni == 'true':
-        obj_list = obj_list.filter(contract__isnull=False)
-        # obj_list = obj_list.filter(installment_order__isnull=True, contract__isnull=False)
-
+    if ni:
+        obj_list = obj_list.filter(installment_order__isnull=True, contract__isnull=False)
     if q:
         obj_list = obj_list.filter(
             Q(contract__contractor__name__icontains=q) |
@@ -945,20 +938,14 @@ class ExportPayments(View):
         if ba:
             obj_list = obj_list.filter(bank_account__id=ba)
         if nc:
-            obj_list = obj_list.filter(
-                Q(contract__isnull=True) &
-                (Q(project_account_d1_id__lte=2) | Q(project_account_d2_id__lte=2))
-            )
+            obj_list = obj_list.filter(contract__isnull=True)
         if ni:
-            obj_list = obj_list.filter(
-                Q(installment_order__isnull=True) &
-                (Q(project_account_d1_id__lte=2) | Q(project_account_d2_id__lte=2))
-            )
+            obj_list = obj_list.filter(installment_order__isnull=True, contract__isnull=False)
         if q:
             obj_list = obj_list.filter(
                 Q(contract__contractor__name__icontains=q) |
-                Q(trader__icontains=q) |
                 Q(content__icontains=q) |
+                Q(trader__icontains=q) |
                 Q(note__icontains=q))
 
         data = obj_list.values_list(*params)
