@@ -483,7 +483,7 @@ class ExportReleases(View):
 
         # 4. Body
         # Get some data to write to the spreadsheet.
-        data = ContractorRelease.objects.filter(project=project, status__gte='3')
+        data = ContractorRelease.objects.filter(project=project)
 
         data = data.values_list(*params)
 
