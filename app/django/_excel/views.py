@@ -717,16 +717,10 @@ def export_payments_xls(request):
         obj_list = obj_list.filter(bank_account__id=ba)
 
     if nc:
-        obj_list = obj_list.filter(
-            Q(contract__isnull=True) &
-            (Q(project_account_d1_id__in=(1, 2)) | Q(project_account_d2_id__in=(1, 2)))
-        )
+        obj_list = obj_list.filter(contract__isnull=True)
 
     if ni:
-        obj_list = obj_list.filter(
-            Q(installment_order__isnull=True) & Q(contract__isnull=False) &
-            (Q(project_account_d1_id__in=(1, 2)) | Q(project_account_d2_id__in=(1, 2)))
-        )
+        obj_list = obj_list.filter(installment_order__isnull=True, contract__isnull=False)
 
     if q:
         obj_list = obj_list.filter(
