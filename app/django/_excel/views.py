@@ -53,7 +53,8 @@ class ExportContracts(View):
         title_format.set_font_size(18)
         title_format.set_align('vcenter')
         title_format.set_bold()
-        worksheet.merge_range(row_num, 0, row_num, len(cols), str(project) + ' 계약자 리스트', title_format)
+        data_name = '계약' if request.GET.get('status') == '2' else '청약'
+        worksheet.merge_range(row_num, 0, row_num, len(cols), str(project) + f' {data_name}자 리스트', title_format)
 
         # 2. Pre Header - Date
         row_num = 1
