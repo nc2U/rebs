@@ -4,24 +4,23 @@ import { useProjectData } from '@/store/pinia/project_data'
 import { useContract } from '@/store/pinia/contract'
 import { numFormat } from '@/utils/baseMixins'
 import { TableSecondary, TableSuccess, TablePrimary } from '@/utils/cssMixins'
-import { SubsSummary } from '@/store/types/contract'
+import { ContSummary } from '@/store/types/contract'
 
 defineProps({ contractsCount: { type: Number, default: 0 } })
 
 const projectDataStore = useProjectData()
 
 const simpleTypes = computed(() => projectDataStore.simpleTypes)
-const unitSummary = computed(() => projectDataStore.unitSummary)
+const unitSum = computed(() => projectDataStore.unitSummary)
 
-const contractStore = useContract()
-const subsSummaryList = computed(() => contractStore.subsSummaryList)
+const contStore = useContract()
+const contSum = computed(() =>
+  contStore.contSummaryList.map(c => c.num_cont).reduce((x, y) => x + y, 0),
+)
 
-const subsNum = () => {
-  // 청약 수
-  let subs: SubsSummary[] | number[] = subsSummaryList.value
-  subs = subs.map((s: SubsSummary) => s.num_cont)
-  return subs.reduce((o: number, n: number) => o + n, 0)
-}
+const subsSum = computed(() =>
+  contStore.subsSummaryList.map(c => c.num_cont).reduce((x, y) => x + y, 0),
+)
 </script>
 
 <template>
@@ -40,18 +39,18 @@ const subsNum = () => {
               총세대수
             </CTableHeaderCell>
             <CTableDataCell class="text-right" colspan="3">
-              {{ numFormat(unitSummary.totalNum) }}
+              {{ numFormat(unitSum.totalNum) }}
             </CTableDataCell>
           </CTableRow>
 
           <CTableRow>
             <CTableHeaderCell :color="TableSuccess">청약세대</CTableHeaderCell>
             <CTableDataCell class="text-right">
-              {{ numFormat(subsNum()) }}
+              {{ numFormat(subsSum) }}
             </CTableDataCell>
             <CTableHeaderCell :color="TablePrimary">계약세대</CTableHeaderCell>
             <CTableDataCell class="text-right">
-              {{ numFormat(contractsCount) }}
+              {{ numFormat(contSum) }}
             </CTableDataCell>
           </CTableRow>
 
@@ -62,10 +61,7 @@ const subsNum = () => {
             <CTableDataCell class="text-right">
               {{
                 numFormat(
-                  contractsCount -
-                    unitSummary.contNum +
-                    subsNum() -
-                    unitSummary.appNum,
+                  subsSum + contSum - (unitSum.contNum + unitSum.appNum),
                 )
               }}
             </CTableDataCell>
@@ -73,20 +69,24 @@ const subsNum = () => {
               홀딩세대
             </CTableHeaderCell>
             <CTableDataCell class="text-right">
-              {{ numFormat(unitSummary.holdNum) }}
+              {{ numFormat(unitSum.holdNum) }}
             </CTableDataCell>
           </CTableRow>
 
           <CTableRow>
             <CTableHeaderCell :color="TableSecondary">합계</CTableHeaderCell>
             <CTableDataCell class="text-right">
-              {{ numFormat(contractsCount + subsNum()) }}
+              {{ numFormat(subsSum + contSum) }}
             </CTableDataCell>
             <CTableHeaderCell :color="TableSecondary">
               잔여세대
             </CTableHeaderCell>
             <CTableDataCell class="text-right">
-              {{ numFormat(contractsCount - subsNum() - unitSummary.contNum) }}
+              {{
+                numFormat(
+                  unitSum.totalNum - unitSum.holdNum - (subsSum + contSum),
+                )
+              }}
             </CTableDataCell>
           </CTableRow>
         </CTableBody>
