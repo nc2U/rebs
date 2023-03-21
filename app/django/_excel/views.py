@@ -2000,7 +2000,7 @@ def export_project_cash_xls(request):
         obj_list = obj_list.filter(bank_account_id=bank_acc)
 
     if q:
-        obj_list = obj_list.filter(Q(content__icontains=q) | Q(trader__icontains=q))
+        obj_list = obj_list.filter(Q(content__icontains=q) | Q(trader__icontains=q) | Q(note__icontains=q))
 
     # Sheet Title, first row
     row_num = 0
