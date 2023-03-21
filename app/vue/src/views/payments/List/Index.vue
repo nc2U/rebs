@@ -108,8 +108,8 @@ const byPayment = computed(() => {
   if (filterItems.value.pay_order) pUrl += `&ipo=${filterItems.value.pay_order}`
   if (filterItems.value.pay_account)
     pUrl += `&ba=${filterItems.value.pay_account}`
-  if (filterItems.value.no_contract) pUrl += `&nc=on`
-  if (filterItems.value.no_install) pUrl += `&ni=on`
+  if (filterItems.value.no_contract) pUrl += `&nc=true`
+  if (filterItems.value.no_install) pUrl += `&ni=true`
   if (filterItems.value.search) pUrl += `&q=${filterItems.value.search}`
   return pUrl
 })
