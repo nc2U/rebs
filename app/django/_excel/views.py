@@ -724,15 +724,15 @@ def export_payments_xls(request):
 
     if ni:
         obj_list = obj_list.filter(
-            Q(installment_order__isnull=True) &
+            Q(installment_order__isnull=True) & Q(contract__isnull=False) &
             (Q(project_account_d1_id__in=(1, 2)) | Q(project_account_d2_id__in=(1, 2)))
         )
 
     if q:
         obj_list = obj_list.filter(
             Q(contract__contractor__name__icontains=q) |
-            Q(trader__icontains=q) |
             Q(content__icontains=q) |
+            Q(trader__icontains=q) |
             Q(note__icontains=q))
 
     # Sheet Title, first row
