@@ -720,7 +720,7 @@ def export_payments_xls(request):
         obj_list = obj_list.filter(contract__isnull=True)
 
     if ni:
-        obj_list = obj_list.filter(installment_order__isnull=True, contract__isnull=False)
+        obj_list = obj_list.filter(Q(installment_order__isnull=True) & Q(contract__isnull=False))
 
     if q:
         obj_list = obj_list.filter(
