@@ -38,8 +38,10 @@ class ExportContracts(View):
         # files during assembly for efficiency. To avoid this on servers that
         # don't allow temp files, for example the Google APP Engine, set the
         # 'in_memory' Workbook() constructor option as shown in the docs.
+        t_name = '계약' if request.GET.get('status') == '2' else '청약'
+
         workbook = xlsxwriter.Workbook(output)
-        worksheet = workbook.add_worksheet('계약목록_정보')
+        worksheet = workbook.add_worksheet(f'{t_name}목록_정보')
 
         worksheet.set_default_row(20)
 
@@ -53,8 +55,7 @@ class ExportContracts(View):
         title_format.set_font_size(18)
         title_format.set_align('vcenter')
         title_format.set_bold()
-        data_name = '계약' if request.GET.get('status') == '2' else '청약'
-        worksheet.merge_range(row_num, 0, row_num, len(cols), str(project) + f' {data_name}자 리스트', title_format)
+        worksheet.merge_range(row_num, 0, row_num, len(cols), str(project) + f' {t_name}자 리스트', title_format)
 
         # 2. Pre Header - Date
         row_num = 1
@@ -75,14 +76,14 @@ class ExportContracts(View):
         # title_list
         header_src = [[],
                       ['일련번호', 'serial_number', 10],
-                      ['계약자', 'contractor__name', 10],
+                      [f'{t_name}자', 'contractor__name', 10],
                       ['인가여부', 'contractor__is_registed', 8],
                       ['차수', 'order_group__order_group_name', 10],
                       ['타입', 'keyunit__unit_type__name', 7],
                       ['동', 'keyunit__houseunit__building_unit__name', 7],
                       ['호수', 'keyunit__houseunit__name', 7],
                       ['생년월일', 'contractor__birth_date', 12],
-                      ['계약일자', 'contractor__contract_date', 12],
+                      [f'{t_name}일자', 'contractor__contract_date', 12],
                       ['납입금액합계', '', 12],
                       ['연락처[1]', 'contractor__contractorcontact__cell_phone', 14],
                       ['연락처[2]', 'contractor__contractorcontact__home_phone', 14],
@@ -187,7 +188,7 @@ class ExportContracts(View):
 
         # Write body
         for col_num, title in enumerate(titles):
-            if title in ('생년월일', '계약일자'):
+            if title in ('생년월일', f'{t_name}일자'):
                 is_date.append(col_num)
             if title == '인가여부':
                 reg_col = col_num
