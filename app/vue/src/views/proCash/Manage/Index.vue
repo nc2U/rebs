@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import { ref, computed, onBeforeMount } from 'vue'
 import { pageTitle, navMenu } from '@/views/proCash/_menu/headermixin'
-import { CashBookFilter, useProCash } from '@/store/pinia/proCash'
+import { useProCash } from '@/store/pinia/proCash'
 import { useProject } from '@/store/pinia/project'
+import { CashBookFilter } from '@/store/types/proCash'
 import { ProjectCashBook as PrCashBook } from '@/store/types/proCash'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
