@@ -1160,6 +1160,7 @@ class ExportPaymentsByCont(View):
         paid_data = ProjectCashBook.objects.filter(project=project,
                                                    income__isnull=False,
                                                    project_account_d2__lte=2,
+                                                   deal_date_lte=date,
                                                    contract__activation=True,
                                                    contract__contractor__status=2)
         paid_dict = paid_data.values_list(*paid_params)
