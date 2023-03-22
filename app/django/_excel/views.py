@@ -2963,26 +2963,21 @@ def export_cashbook_xls(request):
     search_word = request.GET.get('search_word')
 
     company = Company.objects.first()
-    s_date = '1900-01-01' if not s_date or s_date == 'null' else s_date
-    e_date = TODAY if not e_date or e_date == 'null' else e_date
+    sd = '1900-01-01' if not s_date or s_date == 'null' else s_date
+    ed = TODAY if not e_date or e_date == 'null' else e_date
 
-    obj_list = CashBook.objects.filter(company=company, deal_date__range=(s_date, e_date)).order_by('deal_date', 'id')
+    obj_list = CashBook.objects.filter(company=company, deal_date__range=(sd, ed)).order_by('deal_date', 'id')
 
     if sort:
         obj_list = obj_list.filter(sort_id=sort)
-
     if account_d1:
         obj_list = obj_list.filter(account_d1_id=account_d1)
-
     if account_d2:
         obj_list = obj_list.filter(account_d2_id=account_d2)
-
     if account_d3:
         obj_list = obj_list.filter(account_d3_id=account_d3)
-
     if bank_account:
         obj_list = obj_list.filter(bank_account_id=bank_account)
-
     if search_word:
         obj_list = obj_list.filter(
             Q(content__icontains=search_word) |
