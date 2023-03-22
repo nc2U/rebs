@@ -698,7 +698,7 @@ def export_payments_xls(request):
     q = request.GET.get('q')
 
     sd = sd if sd else '1900-01-01'
-    ed = ed if ed else TODAY
+    ed = TODAY if not ed or ed == 'null' else ed
     obj_list = ProjectCashBook.objects.filter(project=project,
                                               income__isnull=False,
                                               project_account_d2__lte=2,
@@ -843,7 +843,7 @@ class ExportPayments(View):
         sd = request.GET.get('sd')
         ed = request.GET.get('ed')
         sd = sd if sd else '1900-01-01'
-        ed = ed if ed else TODAY
+        ed = TODAY if not ed or ed == 'null' else ed
 
         # title_list
         header_src = [
@@ -1548,7 +1548,8 @@ class ExportProjectBalance(View):
         # data start --------------------------------------------- #
 
         project = Project.objects.get(pk=request.GET.get('project'))
-        date = request.GET.get('date') if request.GET.get('date') else TODAY
+        date = request.GET.get('date')
+        date = TODAY if not date or date == 'null' else date
 
         # 1. Title
         row_num = 0
@@ -1687,7 +1688,8 @@ class ExportProjectDateCashbook(View):
         # data start --------------------------------------------- #
 
         project = Project.objects.get(pk=request.GET.get('project'))
-        date = request.GET.get('date') if request.GET.get('date') else TODAY
+        date = request.GET.get('date')
+        date = TODAY if not date or date == 'null' else date
 
         # 1. Title
         row_num = 0
@@ -1952,8 +1954,8 @@ def export_project_cash_xls(request):
     sdate = request.GET.get('sdate')
     edate = request.GET.get('edate')
 
-    sdate = sdate if sdate else '1900-01-01'
-    edate = edate if edate else TODAY
+    sdate = '1900-01-01' if not sdate or sdate == 'null' else sdate
+    edate = TODAY if not edate or edate == 'null' else edate
 
     is_imp = request.GET.get('imp')
     filename = 'imprest' if is_imp == '1' else 'cashbook'
@@ -2697,7 +2699,8 @@ class ExportBalanceByAcc(View):
         # data start --------------------------------------------- #
 
         company = Company.objects.first()
-        date = request.GET.get('date') if request.GET.get('date') else TODAY
+        date = request.GET.get('date')
+        date = TODAY if not date or date == 'null' else date
 
         # 1. Title
         row_num = 0
@@ -2835,7 +2838,8 @@ class ExportDateCashbook(View):
         # data start --------------------------------------------- #
 
         company = Company.objects.first()
-        date = request.GET.get('date') if request.GET.get('date') else TODAY
+        date = request.GET.get('date')
+        date = TODAY if not date or date == 'null' else date
 
         # 1. Title
         row_num = 0
@@ -2959,9 +2963,8 @@ def export_cashbook_xls(request):
     search_word = request.GET.get('search_word')
 
     company = Company.objects.first()
-    today = TODAY
-    s_date = s_date if s_date else '1900-01-01'
-    e_date = e_date if e_date else today
+    s_date = '1900-01-01' if not s_date or s_date == 'null' else s_date
+    e_date = TODAY if not e_date or e_date == 'null' else e_date
 
     obj_list = CashBook.objects.filter(company=company, deal_date__range=(s_date, e_date)).order_by('deal_date', 'id')
 
