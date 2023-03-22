@@ -1974,8 +1974,9 @@ def export_project_cash_xls(request):
     bank_acc = request.GET.get('bank_acc')
     q = request.GET.get('q')
 
-    obj_list = ProjectCashBook.objects.filter(project=project, deal_date__range=(sdate, edate)).order_by('deal_date',
-                                                                                                         'created_at')
+    obj_list = ProjectCashBook.objects.filter(project=project, is_separate=False,
+                                              deal_date__range=(sdate, edate)).order_by('deal_date',
+                                                                                        'created_at')
     obj_list = obj_list.filter(is_imprest=True) if is_imp == '1' else obj_list.filter(is_imprest=False)
 
     if sort:
@@ -2966,7 +2967,8 @@ def export_cashbook_xls(request):
     sd = '1900-01-01' if not s_date or s_date == 'null' else s_date
     ed = TODAY if not e_date or e_date == 'null' else e_date
 
-    obj_list = CashBook.objects.filter(company=company, deal_date__range=(sd, ed)).order_by('deal_date', 'id')
+    obj_list = CashBook.objects.filter(company=company, is_separate=False,
+                                       deal_date__range=(sd, ed)).order_by('deal_date', 'id')
 
     if sort:
         obj_list = obj_list.filter(sort_id=sort)
