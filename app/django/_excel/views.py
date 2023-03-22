@@ -1163,8 +1163,6 @@ class ExportPaymentsByCont(View):
                                                    project_account_d2__lte=2,
                                                    deal_date__lte=date,
                                                    contract__isnull=False)
-        # contract__activation=True,
-        # contract__contractor__status=2)
         paid_dict = paid_data.values_list(*paid_params)
 
         # 현재 납부 회차 구하기
