@@ -1010,7 +1010,8 @@ class ExportPaymentsByCont(View):
 
         # ----------------- get_queryset start ----------------- #
         project = Project.objects.get(pk=request.GET.get('project'))
-        date = TODAY if not request.GET.get('date') else request.GET.get('date')
+        date = request.GET.get('date')
+        date = TODAY if not date or date == 'null' else date
         # ----------------- get_queryset finish ----------------- #
 
         # get pay order
