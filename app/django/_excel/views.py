@@ -950,7 +950,7 @@ class ExportPayments(View):
 
         data = obj_list.values_list(*params)
 
-        # Turn off some of the warnings:
+        # Turn off the warnings:
         worksheet.ignore_errors({'number_stored_as_text': 'C:D'})
 
         # Default CSS setting
@@ -1618,6 +1618,9 @@ class ExportProjectBalance(View):
         total_out = 0
         total_inc_sum = 0
         total_out_sum = 0
+
+        # Turn off the warnings:
+        worksheet.ignore_errors({'number_stored_as_text': 'B:C'})
 
         for row, balance in enumerate(balance_set):
             row_num += 1
@@ -2777,6 +2780,9 @@ class ExportBalanceByAcc(View):
         total_out = 0
         total_inc_sum = 0
         total_out_sum = 0
+
+        # Turn off the warnings:
+        worksheet.ignore_errors({'number_stored_as_text': 'B:C'})
 
         for row, balance in enumerate(balance_set):
             row_num += 1
