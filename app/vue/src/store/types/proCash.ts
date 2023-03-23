@@ -31,6 +31,7 @@ export interface ProjectBankAccount {
 
 export interface BalanceByAccount {
   bank_acc: string
+  bank_num: string
   date_inc: number
   date_out: number
   inc_sum: number | null

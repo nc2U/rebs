@@ -54,8 +54,9 @@ watch(comBalanceByAccList, () => getSumTotal())
 <template>
   <CTable hover responsive bordered align="middle">
     <colgroup>
-      <col width="10%" />
-      <col width="30%" />
+      <col width="8%" />
+      <col width="16%" />
+      <col width="16%" />
       <col width="15%" />
       <col width="15%" />
       <col width="15%" />
@@ -63,7 +64,7 @@ watch(comBalanceByAccList, () => getSumTotal())
     </colgroup>
     <CTableHead>
       <CTableRow>
-        <CTableDataCell colspan="5">
+        <CTableDataCell colspan="6">
           <strong>
             <CIcon name="cilFolderOpen" />
             본사 계좌별 자금현황
@@ -75,7 +76,7 @@ watch(comBalanceByAccList, () => getSumTotal())
         <CTableDataCell class="text-right">(단위: 원)</CTableDataCell>
       </CTableRow>
       <CTableRow :color="TableSecondary" class="text-center">
-        <CTableHeaderCell colspan="2">구분</CTableHeaderCell>
+        <CTableHeaderCell colspan="3">구분</CTableHeaderCell>
         <CTableHeaderCell>전일잔고</CTableHeaderCell>
         <CTableHeaderCell>금일입금(증가)</CTableHeaderCell>
         <CTableHeaderCell>금일출금(감소)</CTableHeaderCell>
@@ -97,6 +98,7 @@ watch(comBalanceByAccList, () => getSumTotal())
           보통예금
         </CTableDataCell>
         <CTableDataCell class="text-left">{{ bal.bank_acc }}</CTableDataCell>
+        <CTableDataCell class="text-left">{{ bal.bank_num }}</CTableDataCell>
         <CTableDataCell>
           {{
             numFormat(bal.inc_sum - bal.out_sum - (bal.date_inc - bal.date_out))
@@ -110,7 +112,7 @@ watch(comBalanceByAccList, () => getSumTotal())
       </CTableRow>
 
       <CTableRow :color="TableSecondary" class="text-right">
-        <CTableHeaderCell colspan="2" class="text-center">
+        <CTableHeaderCell colspan="3" class="text-center">
           현금성 자산 계
         </CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(preBalance) }}</CTableHeaderCell>
