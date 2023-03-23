@@ -1772,12 +1772,13 @@ class ExportProjectDateCashbook(View):
 
         # 5. Sum row
         row_num += 1
-        worksheet.merge_range(row_num, 0, row_num, 1, '합계', b_format)
-        worksheet.write(row_num, 2, inc_sum, b_format)
-        worksheet.write(row_num, 3, out_sum, b_format)
-        worksheet.write(row_num, 4, '', b_format)
-        worksheet.write(row_num, 5, '', b_format)
-        worksheet.write(row_num, 6, '', b_format)
+        h_format.set_num_format(41)
+        worksheet.merge_range(row_num, 0, row_num, 1, '합계', h_format)
+        worksheet.write(row_num, 2, inc_sum, h_format)
+        worksheet.write(row_num, 3, out_sum, h_format)
+        worksheet.write(row_num, 4, '', h_format)
+        worksheet.write(row_num, 5, '', h_format)
+        worksheet.write(row_num, 6, '', h_format)
 
         # data end ----------------------------------------------- #
 
@@ -2939,18 +2940,14 @@ class ExportDateCashbook(View):
 
         # 5. Sum row
         row_num += 1
-        s_format = workbook.add_format()
-        s_format.set_valign('vcenter')
-        s_format.set_border()
-        s_format.set_num_format(41)
-        s_format.set_bg_color('#eeeeee')
-        worksheet.merge_range(row_num, 0, row_num, 1, '합계', s_format)
-        worksheet.write(row_num, 2, '', s_format)
-        worksheet.write(row_num, 3, inc_sum, s_format)
-        worksheet.write(row_num, 4, out_sum, s_format)
-        worksheet.write(row_num, 5, '', s_format)
-        worksheet.write(row_num, 6, '', s_format)
-        worksheet.write(row_num, 7, '', s_format)
+        h_format.set_num_format(41)
+        worksheet.merge_range(row_num, 0, row_num, 1, '합계', h_format)
+        worksheet.write(row_num, 2, '', h_format)
+        worksheet.write(row_num, 3, inc_sum, h_format)
+        worksheet.write(row_num, 4, out_sum, h_format)
+        worksheet.write(row_num, 5, '', h_format)
+        worksheet.write(row_num, 6, '', h_format)
+        worksheet.write(row_num, 7, '', h_format)
 
         # data end ----------------------------------------------- #
 
