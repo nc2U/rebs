@@ -52,12 +52,17 @@ spec:
           volumeMounts:
             - name: django-source
               mountPath: /app/django
+            - name: tz-seoul
+              mountPath: /etc/localtime
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
         - name: django-source
           persistentVolumeClaim:
             claimName: {{ include "web.fullname" . }}-django-{{ .Values.global.appMode }}-nfs-pvc
+        - name: tz-seoul
+          hostPath:
+            path: /usr/share/zoneinfo/Asia/Seoul
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
