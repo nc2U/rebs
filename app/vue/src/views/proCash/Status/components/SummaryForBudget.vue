@@ -5,7 +5,7 @@ import { write_project_cash } from '@/utils/pageAuth'
 import { dateFormat, numFormat } from '@/utils/baseMixins'
 import { TableInfo, TableSecondary } from '@/utils/cssMixins'
 import {
-  ProOutBudget,
+  StatusOutBudget,
   ExecAmountToBudget as ExeBudget,
 } from '@/store/types/project'
 
@@ -29,7 +29,7 @@ watch(statusOutBudgetList, () => getSumTotal())
 
 const getD2sInter = (arr: number[]) => {
   const d2s = statusOutBudgetList.value.map(
-    (b: ProOutBudget) => b.account_d2.pk,
+    (b: StatusOutBudget) => b.account_d2.pk,
   )
   return arr.filter(x => d2s.includes(x))
 }
@@ -40,8 +40,8 @@ const getFirst = (arr: number[]) => getD2sInter(arr)[0]
 const getSubTitle = (sub: string) =>
   sub !== ''
     ? statusOutBudgetList.value
-        .filter((b: ProOutBudget) => b.account_d2.sub_title === sub)
-        .map((b: ProOutBudget) => b.pk)
+        .filter((b: StatusOutBudget) => b.account_d2.sub_title === sub)
+        .map(b => b.pk)
     : []
 
 const getExecAmount = (d2: number) =>
@@ -55,7 +55,7 @@ const getEAMonth = (d2: number) =>
 
 const getSumTotal = () => {
   const totalBudgetCalc = statusOutBudgetList.value
-    .map((b: ProOutBudget) => b.budget)
+    .map((b: StatusOutBudget) => b.budget)
     .reduce((res: number, val: number) => res + val, 0)
   const monthExecAmtCalc = execAmountList.value
     .map((a: ExeBudget) => a.month_sum)
@@ -169,7 +169,6 @@ const patchBudget = (pk: number, budget: string, oldBudget: number) => {
             <CFormInput
               type="text"
               class="form-control text-right"
-              size="sm"
               :value="bdj.budget"
               @blur="patchBudget(bdj.pk, $event.target.value, bdj.budget)"
               @keydown.enter="
