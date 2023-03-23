@@ -1563,7 +1563,7 @@ class ExportProjectBalance(View):
         # 2. Header
         row_num = 1
         worksheet.set_row(row_num, 18)
-        worksheet.write(row_num, 5, date + ' 현재', workbook.add_format({'align': 'right'}))
+        worksheet.write(row_num, 6, date + ' 현재', workbook.add_format({'align': 'right'}))
 
         # 3. Header
         row_num = 2
@@ -1575,7 +1575,7 @@ class ExportProjectBalance(View):
         h_format.set_bg_color('#eeeeee')
 
         worksheet.set_column(0, 0, 10)
-        worksheet.merge_range(row_num, 0, row_num, 1, '구분', h_format)
+        worksheet.merge_range(row_num, 0, row_num, 2, '계좌 구분', h_format)
         worksheet.set_column(1, 1, 30)
         worksheet.set_column(2, 2, 20)
         worksheet.write(row_num, 2, '전일잔고', h_format)
@@ -1599,8 +1599,9 @@ class ExportProjectBalance(View):
                     bank_account__directpay=False,
                     deal_date__lte=date)
 
-        balance_set = qs.annotate(bank_acc=F('bank_account__alias_name')) \
-            .values('bank_acc') \
+        balance_set = qs.annotate(bank_acc=F('bank_account__alias_name'),
+                                  bank_num=F('bank_account__number')) \
+            .values('bank_acc', 'bank_num') \
             .annotate(inc_sum=Sum('income'),
                       out_sum=Sum('outlay'),
                       date_inc=Sum(Case(
@@ -1629,23 +1630,25 @@ class ExportProjectBalance(View):
             total_inc_sum += inc_sum
             total_out_sum += out_sum
 
-            for col in range(6):
+            for col in range(7):
                 if col == 0 and row == 0:
                     worksheet.merge_range(row_num, col, balance_set.count() + 2, col, '보통예금', b_format)
                 if col == 1:
                     worksheet.write(row_num, col, balance['bank_acc'], b_format)
                 if col == 2:
-                    worksheet.write(row_num, col, inc_sum - out_sum - date_inc + date_out, b_format)
+                    worksheet.write(row_num, col, balance['bank_num'], b_format)
                 if col == 3:
-                    worksheet.write(row_num, col, date_inc, b_format)
+                    worksheet.write(row_num, col, inc_sum - out_sum - date_inc + date_out, b_format)
                 if col == 4:
-                    worksheet.write(row_num, col, date_out, b_format)
+                    worksheet.write(row_num, col, date_inc, b_format)
                 if col == 5:
+                    worksheet.write(row_num, col, date_out, b_format)
+                if col == 6:
                     worksheet.write(row_num, col, inc_sum - out_sum, b_format)
 
         # 5. Sum row
         row_num += 1
-        worksheet.merge_range(row_num, 0, row_num, 1, '현금성 자산 계', b_format)
+        worksheet.merge_range(row_num, 0, row_num, 2, '현금성 자산 계', b_format)
         worksheet.write(row_num, 2, total_inc_sum - total_out_sum - total_inc + total_out, b_format)
         worksheet.write(row_num, 3, total_inc, b_format)
         worksheet.write(row_num, 4, total_out, b_format)
@@ -2722,7 +2725,7 @@ class ExportBalanceByAcc(View):
         # 2. Header
         row_num = 1
         worksheet.set_row(row_num, 18)
-        worksheet.write(row_num, 5, date + ' 현재', workbook.add_format({'align': 'right'}))
+        worksheet.write(row_num, 6, date + ' 현재', workbook.add_format({'align': 'right'}))
 
         # 3. Header
         row_num = 2
@@ -2734,7 +2737,7 @@ class ExportBalanceByAcc(View):
         h_format.set_bg_color('#eeeeee')
 
         worksheet.set_column(0, 0, 10)
-        worksheet.merge_range(row_num, 0, row_num, 1, '구분', h_format)
+        worksheet.merge_range(row_num, 0, row_num, 2, '계좌 구분', h_format)
         worksheet.set_column(1, 1, 30)
         worksheet.set_column(2, 2, 20)
         worksheet.write(row_num, 2, '전일잔고', h_format)
@@ -2785,7 +2788,7 @@ class ExportBalanceByAcc(View):
             total_inc_sum += inc_sum
             total_out_sum += out_sum
 
-            for col in range(6):
+            for col in range(7):
                 if col == 0 and row == 0:
                     worksheet.write(row_num, col, '현금', b_format)
                 if col == 0 and row == 1:
@@ -2793,17 +2796,19 @@ class ExportBalanceByAcc(View):
                 if col == 1:
                     worksheet.write(row_num, col, balance['bank_acc'], b_format)
                 if col == 2:
-                    worksheet.write(row_num, col, inc_sum - out_sum - date_inc + date_out, b_format)
+                    worksheet.write(row_num, col, balance['bank_num'], b_format)
                 if col == 3:
-                    worksheet.write(row_num, col, date_inc, b_format)
+                    worksheet.write(row_num, col, inc_sum - out_sum - date_inc + date_out, b_format)
                 if col == 4:
-                    worksheet.write(row_num, col, date_out, b_format)
+                    worksheet.write(row_num, col, date_inc, b_format)
                 if col == 5:
+                    worksheet.write(row_num, col, date_out, b_format)
+                if col == 6:
                     worksheet.write(row_num, col, inc_sum - out_sum, b_format)
 
         # 5. Sum row
         row_num += 1
-        worksheet.merge_range(row_num, 0, row_num, 1, '현금성 자산 계', b_format)
+        worksheet.merge_range(row_num, 0, row_num, 2, '현금성 자산 계', b_format)
         worksheet.write(row_num, 2, total_inc_sum - total_out_sum - total_inc + total_out, b_format)
         worksheet.write(row_num, 3, total_inc, b_format)
         worksheet.write(row_num, 4, total_out, b_format)

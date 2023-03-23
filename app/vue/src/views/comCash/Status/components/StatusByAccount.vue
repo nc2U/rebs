@@ -76,7 +76,7 @@ watch(comBalanceByAccList, () => getSumTotal())
         <CTableDataCell class="text-right">(단위: 원)</CTableDataCell>
       </CTableRow>
       <CTableRow :color="TableSecondary" class="text-center">
-        <CTableHeaderCell colspan="3">구분</CTableHeaderCell>
+        <CTableHeaderCell colspan="3">계좌 구분</CTableHeaderCell>
         <CTableHeaderCell>전일잔고</CTableHeaderCell>
         <CTableHeaderCell>금일입금(증가)</CTableHeaderCell>
         <CTableHeaderCell>금일출금(감소)</CTableHeaderCell>
