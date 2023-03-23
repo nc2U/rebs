@@ -1974,12 +1974,16 @@ def export_project_cash_xls(request):
     bank_acc = request.GET.get('bank_acc')
     q = request.GET.get('q')
 
-    obj_list = ProjectCashBook.objects.filter(Q(project=project) &
-                                              (Q(is_imprest=False) |
-                                               Q(project_account_d2=63, income__isnull=True)) &
-                                              Q(deal_date__range=(sdate, edate))) \
+    cash_list = ProjectCashBook.objects.filter(Q(project=project) &
+                                               (Q(is_imprest=False) |
+                                                Q(project_account_d2=63, income__isnull=True)) &
+                                               Q(deal_date__range=(sdate, edate))) \
         .order_by('deal_date', 'created_at')
-    obj_list = obj_list.filter(is_imprest=True) if is_imp == '1' else obj_list.filter(is_imprest=False)
+    imp_list = ProjectCashBook.objects.filter(project=project, is_imprest=True,
+                                              deal_date__range=(sdate, edate)).exclude(project_account_d2=63,
+                                                                                       income__isnull=True)
+
+    obj_list = imp_list if is_imp == '1' else cash_list
 
     if sort:
         obj_list = obj_list.filter(sort_id=sort)
