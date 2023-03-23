@@ -1578,13 +1578,14 @@ class ExportProjectBalance(View):
         worksheet.merge_range(row_num, 0, row_num, 2, '계좌 구분', h_format)
         worksheet.set_column(1, 1, 30)
         worksheet.set_column(2, 2, 20)
-        worksheet.write(row_num, 2, '전일잔고', h_format)
         worksheet.set_column(3, 3, 20)
-        worksheet.write(row_num, 3, '금일입금(증가)', h_format)
+        worksheet.write(row_num, 3, '전일잔고', h_format)
         worksheet.set_column(4, 4, 20)
-        worksheet.write(row_num, 4, '금일출금(감소)', h_format)
+        worksheet.write(row_num, 4, '금일입금(증가)', h_format)
         worksheet.set_column(5, 5, 20)
-        worksheet.write(row_num, 5, '금일잔고', h_format)
+        worksheet.write(row_num, 5, '금일출금(감소)', h_format)
+        worksheet.set_column(6, 6, 20)
+        worksheet.write(row_num, 6, '금일잔고', h_format)
 
         # 4. Contents
         b_format = workbook.add_format()
@@ -1649,10 +1650,10 @@ class ExportProjectBalance(View):
         # 5. Sum row
         row_num += 1
         worksheet.merge_range(row_num, 0, row_num, 2, '현금성 자산 계', b_format)
-        worksheet.write(row_num, 2, total_inc_sum - total_out_sum - total_inc + total_out, b_format)
-        worksheet.write(row_num, 3, total_inc, b_format)
-        worksheet.write(row_num, 4, total_out, b_format)
-        worksheet.write(row_num, 5, total_inc_sum - total_out_sum, b_format)
+        worksheet.write(row_num, 3, total_inc_sum - total_out_sum - total_inc + total_out, b_format)
+        worksheet.write(row_num, 4, total_inc, b_format)
+        worksheet.write(row_num, 5, total_out, b_format)
+        worksheet.write(row_num, 6, total_inc_sum - total_out_sum, b_format)
 
         # data end ----------------------------------------------- #
 
@@ -2739,14 +2740,15 @@ class ExportBalanceByAcc(View):
         worksheet.set_column(0, 0, 10)
         worksheet.merge_range(row_num, 0, row_num, 2, '계좌 구분', h_format)
         worksheet.set_column(1, 1, 30)
-        worksheet.set_column(2, 2, 20)
-        worksheet.write(row_num, 2, '전일잔고', h_format)
+        worksheet.set_column(2, 2, 30)
         worksheet.set_column(3, 3, 20)
-        worksheet.write(row_num, 3, '금알입금(증가)', h_format)
+        worksheet.write(row_num, 3, '전일잔고', h_format)
         worksheet.set_column(4, 4, 20)
-        worksheet.write(row_num, 4, '금일출금(감소)', h_format)
+        worksheet.write(row_num, 4, '금알입금(증가)', h_format)
         worksheet.set_column(5, 5, 20)
-        worksheet.write(row_num, 5, '금일잔고', h_format)
+        worksheet.write(row_num, 5, '금일출금(감소)', h_format)
+        worksheet.set_column(6, 6, 20)
+        worksheet.write(row_num, 6, '금일잔고', h_format)
 
         # 4. Contents
         b_format = workbook.add_format()
@@ -2809,10 +2811,10 @@ class ExportBalanceByAcc(View):
         # 5. Sum row
         row_num += 1
         worksheet.merge_range(row_num, 0, row_num, 2, '현금성 자산 계', b_format)
-        worksheet.write(row_num, 2, total_inc_sum - total_out_sum - total_inc + total_out, b_format)
-        worksheet.write(row_num, 3, total_inc, b_format)
-        worksheet.write(row_num, 4, total_out, b_format)
-        worksheet.write(row_num, 5, total_inc_sum - total_out_sum, b_format)
+        worksheet.write(row_num, 3, total_inc_sum - total_out_sum - total_inc + total_out, b_format)
+        worksheet.write(row_num, 4, total_inc, b_format)
+        worksheet.write(row_num, 5, total_out, b_format)
+        worksheet.write(row_num, 6, total_inc_sum - total_out_sum, b_format)
 
         # data end ----------------------------------------------- #
 
