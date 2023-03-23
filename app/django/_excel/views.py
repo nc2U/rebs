@@ -1976,10 +1976,11 @@ def export_project_cash_xls(request):
 
     cash_list = ProjectCashBook.objects.filter(Q(project=project) &
                                                (Q(is_imprest=False) |
-                                                Q(project_account_d2=63, income__isnull=True)) &
-                                               Q(deal_date__range=(sdate, edate))) \
+                                                Q(project_account_d2=63, income__isnull=True)),
+                                               is_separate=False,
+                                               deal_date__range=(sdate, edate)) \
         .order_by('deal_date', 'created_at')
-    imp_list = ProjectCashBook.objects.filter(project=project, is_imprest=True,
+    imp_list = ProjectCashBook.objects.filter(project=project, is_imprest=True, is_separate=False,
                                               deal_date__range=(sdate, edate)).exclude(project_account_d2=63,
                                                                                        income__isnull=True)
 
