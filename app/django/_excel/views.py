@@ -2909,9 +2909,8 @@ class ExportDateCashbook(View):
         b_format.set_border()
         b_format.set_num_format(41)
 
-        date_cashes = CashBook.objects.filter(is_separate=False, deal_date__exact=date).order_by('deal_date',
-                                                                                                 'created_at',
-                                                                                                 'id')
+        date_cashes = CashBook.objects.filter(is_separate=False,
+                                              deal_date__exact=date).order_by('deal_date', 'created_at', 'id')
 
         inc_sum = 0
         out_sum = 0
@@ -2940,14 +2939,18 @@ class ExportDateCashbook(View):
 
         # 5. Sum row
         row_num += 1
-        b_format.set_bg_color('#eeeeee')
-        worksheet.merge_range(row_num, 0, row_num, 1, '합계', b_format)
-        worksheet.write(row_num, 2, '', b_format)
-        worksheet.write(row_num, 3, inc_sum, b_format)
-        worksheet.write(row_num, 4, out_sum, b_format)
-        worksheet.write(row_num, 5, '', b_format)
-        worksheet.write(row_num, 6, '', b_format)
-        worksheet.write(row_num, 7, '', b_format)
+        s_format = workbook.add_format()
+        s_format.set_valign('vcenter')
+        s_format.set_border()
+        s_format.set_num_format(41)
+        s_format.set_bg_color('#eeeeee')
+        worksheet.merge_range(row_num, 0, row_num, 1, '합계', s_format)
+        worksheet.write(row_num, 2, '', s_format)
+        worksheet.write(row_num, 3, inc_sum, s_format)
+        worksheet.write(row_num, 4, out_sum, s_format)
+        worksheet.write(row_num, 5, '', s_format)
+        worksheet.write(row_num, 6, '', s_format)
+        worksheet.write(row_num, 7, '', s_format)
 
         # data end ----------------------------------------------- #
 
