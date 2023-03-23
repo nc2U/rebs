@@ -21,6 +21,7 @@ class CompanyBankAccountSerializer(serializers.ModelSerializer):
 
 class BalanceByAccountSerializer(serializers.ModelSerializer):
     bank_acc = serializers.CharField()
+    bank_num = serializers.CharField()
     date_inc = serializers.IntegerField()
     date_out = serializers.IntegerField()
     inc_sum = serializers.IntegerField()
@@ -28,7 +29,7 @@ class BalanceByAccountSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProjectCashBook
-        fields = ('bank_acc', 'date_inc', 'date_out', 'inc_sum', 'out_sum')
+        fields = ('bank_acc', 'bank_num', 'date_inc', 'date_out', 'inc_sum', 'out_sum')
 
 
 class SepItemsInCashBookSerializer(serializers.ModelSerializer):
@@ -174,6 +175,7 @@ class SepItemsInPrCashBookSerializer(serializers.ModelSerializer):
 
 class PrBalanceByAccountSerializer(serializers.ModelSerializer):
     bank_acc = serializers.CharField()
+    bank_num = serializers.CharField()
     date_inc = serializers.IntegerField()
     date_out = serializers.IntegerField()
     inc_sum = serializers.IntegerField()
@@ -181,7 +183,7 @@ class PrBalanceByAccountSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProjectCashBook
-        fields = ('bank_acc', 'date_inc', 'date_out', 'inc_sum', 'out_sum')
+        fields = ('bank_acc', 'bank_num', 'date_inc', 'date_out', 'inc_sum', 'out_sum')
 
 
 class ProjectCashBookSerializer(serializers.ModelSerializer):

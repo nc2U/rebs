@@ -42,8 +42,9 @@ class BalanceByAccountViewSet(viewsets.ModelViewSet):
             .order_by('bank_account') \
             .filter(is_separate=False, deal_date__lte=date)
 
-        return queryset.annotate(bank_acc=F('bank_account__alias_name')) \
-            .values('bank_acc') \
+        return queryset.annotate(bank_acc=F('bank_account__alias_name'),
+                                 bank_num=F('bank_account__number')) \
+            .values('bank_acc', 'bank_num') \
             .annotate(inc_sum=Sum('income'),
                       out_sum=Sum('outlay'),
                       date_inc=Sum(Case(
@@ -84,8 +85,8 @@ class DateCashBookViewSet(CashBookViewSet):
     def get_queryset(self):
         date = self.request.query_params.get('date')
         date = date if date else TODAY
-        return CashBook.objects.filter(is_separate=False, deal_date__exact=date).order_by('deal_date', 'created_at',
-                                                                                          'id')
+        return CashBook.objects.filter(is_separate=False,
+                                       deal_date__exact=date).order_by('deal_date', 'created_at', 'id')
 
 
 class ProjectBankAccountViewSet(viewsets.ModelViewSet):
@@ -109,11 +110,11 @@ class PrBalanceByAccountViewSet(viewsets.ModelViewSet):
         queryset = ProjectCashBook.objects.all() \
             .order_by('bank_account') \
             .filter(is_separate=False,
-                    bank_account__directpay=False,
                     deal_date__lte=date)
 
-        return queryset.annotate(bank_acc=F('bank_account__alias_name')) \
-            .values('bank_acc') \
+        return queryset.annotate(bank_acc=F('bank_account__alias_name'),
+                                 bank_num=F('bank_account__number')) \
+            .values('bank_acc', 'bank_num') \
             .annotate(inc_sum=Sum('income'),
                       out_sum=Sum('outlay'),
                       date_inc=Sum(Case(
@@ -158,8 +159,8 @@ class ProjectDateCashBookViewSet(ProjectCashBookViewSet):
     def get_queryset(self):
         date = self.request.query_params.get('date')
         date = date if date else TODAY
-        return ProjectCashBook.objects.filter(is_separate=False, deal_date__exact=date).order_by('deal_date',
-                                                                                                 'created_at', 'id')
+        return ProjectCashBook.objects.filter(is_separate=False,
+                                              deal_date__exact=date).order_by('deal_date', 'created_at', 'id')
 
 
 class ProjectImprestViewSet(ProjectCashBookViewSet):
