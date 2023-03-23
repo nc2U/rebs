@@ -2763,8 +2763,9 @@ class ExportBalanceByAcc(View):
             .order_by('bank_account') \
             .filter(is_separate=False, deal_date__lte=date)
 
-        balance_set = qs.annotate(bank_acc=F('bank_account__alias_name')) \
-            .values('bank_acc') \
+        balance_set = qs.annotate(bank_acc=F('bank_account__alias_name'),
+                                  bank_num=F('bank_account__number')) \
+            .values('bank_acc', 'bank_num') \
             .annotate(inc_sum=Sum('income'),
                       out_sum=Sum('outlay'),
                       date_inc=Sum(Case(
