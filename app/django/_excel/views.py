@@ -1973,7 +1973,7 @@ def export_project_cash_xls(request):
     d2 = request.GET.get('d2')
     bank_acc = request.GET.get('bank_acc')
     q = request.GET.get('q')
-    # ProjectCashBook.objects.filter(Q(is_imprest=False) | Q(project_account_d2=63, income__isnull=True))
+    
     obj_list = ProjectCashBook.objects.filter(Q(project=project) &
                                               Q(is_imprest=False) |
                                               Q(project_account_d2=63, income__isnull=True),
