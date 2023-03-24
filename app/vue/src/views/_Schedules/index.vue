@@ -110,7 +110,8 @@ const removeConfirm = () => {
 }
 
 const eventRemove = () => {
-  scheduleStore.deleteSchedule(eventId.value)
+  const mon = newEvent.start.substr(0, 7)
+  scheduleStore.deleteSchedule(eventId.value, mon)
   confirmModal.value.close()
 }
 
