@@ -1982,12 +1982,16 @@ def export_project_cash_xls(request):
     bank_acc = request.GET.get('bank_acc')
     q = request.GET.get('q')
 
-    cash_list = ProjectCashBook.objects.filter(Q(project=project) &
-                                               (Q(is_imprest=False) |
-                                                Q(project_account_d2=63, income__isnull=True)),
+    cash_list = ProjectCashBook.objects.filter(project=project,
                                                is_separate=False,
                                                deal_date__range=(sdate, edate)) \
         .order_by('deal_date', 'created_at')
+    # cash_list = ProjectCashBook.objects.filter(Q(project=project) &
+    #                                            (Q(is_imprest=False) |
+    #                                             Q(project_account_d2=63, income__isnull=True)),
+    #                                            is_separate=False,
+    #                                            deal_date__range=(sdate, edate)) \
+    #     .order_by('deal_date', 'created_at')
     imp_list = ProjectCashBook.objects.filter(project=project, is_imprest=True, is_separate=False,
                                               deal_date__range=(sdate, edate)).exclude(project_account_d2=63,
                                                                                        income__isnull=True)
