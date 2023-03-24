@@ -25,6 +25,8 @@ const dataFilter = ref<CashBookFilter>({
   search: '',
 })
 
+const excelSelect = '1'
+
 const excelUrl = computed(() => {
   const pj = project.value
   const sd = dataFilter.value.from_date
@@ -168,7 +170,18 @@ const onDelete = (payload: { pk: number; project: number }) =>
         color="indigo"
         excel
         :url="excelUrl"
-      />
+      >
+        <v-radio-group
+          v-model="excelSelect"
+          inline
+          size="sm"
+          density="compact"
+          class="d-flex flex-row-reverse"
+          style="font-size: 0.8em"
+        >
+          <v-radio label="전체(운영비용 포함)" value="1" />
+        </v-radio-group>
+      </TableTitleRow>
       <ProCashList
         @page-select="pageSelect"
         @multi-submit="multiSubmit"
