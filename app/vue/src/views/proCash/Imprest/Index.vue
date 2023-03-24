@@ -167,7 +167,7 @@ onBeforeMount(() => {
       <ListController ref="listControl" @list-filtering="listFiltering" />
       <AddProImprest @multi-submit="multiSubmit" />
       <TableTitleRow
-        title="프로젝트 전도금 내역"
+        title="운영비용(전도금) 사용 내역"
         color="success"
         excel
         :url="excelUrl"
