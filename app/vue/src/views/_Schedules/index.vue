@@ -5,6 +5,7 @@ import { useSchedule } from '@/store/pinia/schedule'
 import { addDays, diffDate } from '@/utils/baseMixins'
 import '@fullcalendar/core/vdom' // solve problem with Vite
 import { EventApi } from '@fullcalendar/common'
+import { Event } from '@/store/types/schedule'
 import FullCalendar, { DateSelectArg, EventClickArg } from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
@@ -20,6 +21,9 @@ const scheduleStore = useSchedule()
 const currentEvents = computed(() => scheduleStore.events)
 
 const fetchScheduleList = (mon = '') => scheduleStore.fetchScheduleList(mon)
+const createSchedule = (payload: Event) => scheduleStore.createSchedule(payload)
+const updateSchedule = (payload: { pk: string; data: Event }) =>
+  scheduleStore.updateSchedule(payload)
 
 const mode = ref<'create' | 'update'>('create')
 
@@ -60,9 +64,9 @@ const handleDateSelect = (selectInfo: DateSelectArg) => {
 
 const eventManagement = () => {
   const eventData = { title: eventTitle.value, ...newEvent }
-  if (mode.value === 'create') scheduleStore.createSchedule(eventData)
+  if (mode.value === 'create') createSchedule(eventData)
   else if (mode.value === 'update')
-    scheduleStore.updateSchedule({
+    updateSchedule({
       pk: eventId.value,
       ...{ data: eventData },
     })
