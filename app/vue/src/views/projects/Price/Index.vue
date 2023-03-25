@@ -41,7 +41,6 @@ const orderGroupList = computed(() => contractStore.orderGroupList)
 
 const projectDataStore = useProjectData()
 const unitTypeList = computed(() => projectDataStore.unitTypeList)
-// const floorTypeList = computed(() => projectDataStore.floorTypeList)
 
 const condTexts = computed(() => {
   // 차수명과 타입명 구하기
@@ -56,6 +55,7 @@ const condTexts = computed(() => {
 
 const fetchOrderGroupList = (projId: number) =>
   contractStore.fetchOrderGroupList(projId)
+const allContPriceSet = () => contractStore.allContPriceSet()
 
 const fetchTypeList = (projId: number) => projectDataStore.fetchTypeList(projId)
 const fetchFloorTypeList = (projId: number) =>
@@ -114,6 +114,8 @@ const onCreatePrice = (payload: Price) => createPrice(payload)
 const onUpdatePrice = (payload: Price) => updatePrice(payload)
 const onDeletePrice = (pk: number) => deletePrice({ ...{ pk }, ...queryIds })
 
+const contPriceSet = () => allContPriceSet()
+
 onBeforeMount(() => {
   fetchOrderGroupList(project.value)
   fetchTypeList(project.value)
@@ -136,6 +138,7 @@ onBeforeMount(() => {
         :types="unitTypeList"
         @on-order-select="orderSelect"
         @on-type-select="typeSelect"
+        @cont-price-set="contPriceSet"
       />
       <PriceFormList
         :msg="priceMessage"

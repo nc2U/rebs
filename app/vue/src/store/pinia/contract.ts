@@ -90,6 +90,8 @@ export const useContract = defineStore('contract', () => {
       .then(() => message())
       .catch(err => errorHandle(err.response.data))
 
+  const allContPriceSet = () => alert('okbary!')
+
   const contractor = ref<Contractor | null>(null)
   const contractorList = ref<Contractor[]>([])
 
@@ -265,6 +267,7 @@ export const useContract = defineStore('contract', () => {
     fetchContractList,
     createContractSet,
     updateContractSet,
+    allContPriceSet,
 
     contractor,
     contractorList,
