@@ -125,26 +125,30 @@ class ContractSetSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_cont_price(instance, houseunit=None):
-        if not houseunit:
+        try:
+            price = ProjectIncBudget.objects.get(project=instance.project,
+                                                 order_group=instance.order_group,
+                                                 unit_type=instance.unit_type).average_price
+        except ProjectIncBudget.DoesNotExist:
+            price = UnitType.objects.get(pk=instance.unit_type).average_price
+        except UnitType.DoesNotExist:
+            price = 1000
+        price_build = None
+        price_land = None
+        price_tax = None
+
+        if houseunit:
             try:
-                price = ProjectIncBudget.objects.get(project=instance.project,
-                                                     order_group=instance.order_group,
-                                                     unit_type=instance.unit_type).average_price
-            except ProjectIncBudget.DoesNotExist:
-                price = UnitType.objects.get(pk=instance.unit_type).average_price
-            except UnitType.DoesNotExist:
-                price = 1000
-            price_build = None
-            price_land = None
-            price_tax = None
-        else:
-            sales_price = SalesPriceByGT.objects.get(order_group=instance.order_group,
-                                                     unit_type=instance.unit_type,
-                                                     unit_floor_type=houseunit.floor_type)
-            price = sales_price.price
-            price_build = sales_price.price_build
-            price_land = sales_price.price_land
-            price_tax = sales_price.price_tax
+                sales_price = SalesPriceByGT.objects.get(order_group=instance.order_group,
+                                                         unit_type=instance.unit_type,
+                                                         unit_floor_type=houseunit.floor_type)
+                price = sales_price.price
+                price_build = sales_price.price_build
+                price_land = sales_price.price_land
+                price_tax = sales_price.price_tax
+            except SalesPriceByGT.DoesNotExist:
+                pass
+
         return price, price_build, price_land, price_tax
 
     @staticmethod
