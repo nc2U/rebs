@@ -135,19 +135,19 @@ class ContractSetSerializer(serializers.ModelSerializer):
         keyunit.contract = contract
         keyunit.save()
 
-        # # 분양가격 설정 데이터 불러오기
-        # try:
-        #     price = ProjectIncBudget.objects.get(project=contract.project,
-        #                                          order_group=contract.order_group,
-        #                                          unit_type=contract.unit_type).average_price
-        # except ProjectIncBudget.DoesNotExist:
-        #     price = UnitType.objects.get(pk=contract.unit_type).average_price
-        # except UnitType.DoesNotExist:
-        #     price = 1000
-        #
-        # price_build = None
-        # price_land = None
-        # price_tax = None
+        # 분양가격 설정 데이터 불러오기
+        try:
+            price = ProjectIncBudget.objects.get(project=contract.project,
+                                                 order_group=contract.order_group,
+                                                 unit_type=contract.unit_type).average_price
+        except ProjectIncBudget.DoesNotExist:
+            price = UnitType.objects.get(pk=contract.unit_type).average_price
+        except UnitType.DoesNotExist:
+            price = 1000
+
+        price_build = None
+        price_land = None
+        price_tax = None
 
         # 3. 동호수 연결
         if self.initial_data.get('houseunit'):
@@ -156,50 +156,50 @@ class ContractSetSerializer(serializers.ModelSerializer):
             house_unit.key_unit = keyunit
             house_unit.save()
 
-        #     # 가격정보 구하기
-        #     sales_price = SalesPriceByGT.objects.get(order_group=contract.order_group,
-        #                                              unit_type=contract.unit_type,
-        #                                              unit_floor_type=house_unit.floor_type)
-        #     price = sales_price.price
-        #     price_build = sales_price.price_build
-        #     price_land = sales_price.price_land
-        #     price_tax = sales_price.price_tax
-        #
-        # # 4. 가격정보 등록
-        # # ### 회차 데이터
-        # install_order = InstallmentPaymentOrder.objects.filter(project=contract.project)
-        #
-        # downs = install_order.filter(pay_sort='1')
-        # middles = install_order.filter(pay_sort='2')
-        # remains = install_order.filter(pay_sort='3')
-        #
-        # down_num = len(downs.distinct().values_list('pay_code'))
-        # middle_num = len(middles.distinct().values_list('pay_code'))
-        #
-        # down_ratio = downs.first().pay_ratio / 100 if downs.first().pay_ratio else 0.1
-        # middle_ratio = middles.first().pay_ratio / 100 if middles.first().pay_ratio else 0.1
-        # remain_ratio = remains.first().pay_ratio / 100 if remains.first().pay_ratio else 0.1
-        #
-        # try:
-        #     down_data = DownPayment.objects.get(order_group=contract.order_group,
-        #                                         unit_type=contract.unit_type)
-        #     down = down_data.payment_amount
-        #     remain = price - (price * middle_ratio * middle_num) - (down * down_num)
-        # except DownPayment.DoesNotExist:
-        #     down = price * down_ratio
-        #     remain = down * remain_ratio
-        #
-        # middle = price * middle_ratio
-        #
-        # cont_price = ContractPrice(contract=contract,
-        #                            price=price,
-        #                            price_build=price_build,
-        #                            price_land=price_land,
-        #                            price_tax=price_tax,
-        #                            down_pay=down,
-        #                            middle_pay=middle,
-        #                            remain_pay=remain)
-        # cont_price.save()
+            # 가격정보 구하기
+            sales_price = SalesPriceByGT.objects.get(order_group=contract.order_group,
+                                                     unit_type=contract.unit_type,
+                                                     unit_floor_type=house_unit.floor_type)
+            price = sales_price.price
+            price_build = sales_price.price_build
+            price_land = sales_price.price_land
+            price_tax = sales_price.price_tax
+
+        # 4. 가격정보 등록
+        # ### 회차 데이터
+        install_order = InstallmentPaymentOrder.objects.filter(project=contract.project)
+
+        downs = install_order.filter(pay_sort='1')
+        middles = install_order.filter(pay_sort='2')
+        remains = install_order.filter(pay_sort='3')
+
+        down_num = len(downs.distinct().values_list('pay_code'))
+        middle_num = len(middles.distinct().values_list('pay_code'))
+
+        down_ratio = downs.first().pay_ratio / 100 if downs.first().pay_ratio else 0.1
+        middle_ratio = middles.first().pay_ratio / 100 if middles.first().pay_ratio else 0.1
+        remain_ratio = remains.first().pay_ratio / 100 if remains.first().pay_ratio else 0.1
+
+        try:
+            down_data = DownPayment.objects.get(order_group=contract.order_group,
+                                                unit_type=contract.unit_type)
+            down = down_data.payment_amount
+            remain = price - (price * middle_ratio * middle_num) - (down * down_num)
+        except DownPayment.DoesNotExist:
+            down = price * down_ratio
+            remain = down * remain_ratio
+
+        middle = price * middle_ratio
+
+        cont_price = ContractPrice(contract=contract,
+                                   price=price,
+                                   price_build=price_build,
+                                   price_land=price_land,
+                                   price_tax=price_tax,
+                                   down_pay=down,
+                                   middle_pay=middle,
+                                   remain_pay=remain)
+        cont_price.save()
 
         # 5. 계약자 정보 테이블 입력
         contractor_name = self.initial_data.get('name')
@@ -295,17 +295,17 @@ class ContractSetSerializer(serializers.ModelSerializer):
         instance.unit_type = validated_data.get('unit_type', instance.unit_type)
         instance.save()
 
-        # 1-2. 종전 동호수 연결 해제
-        keyunit_data = self.initial_data.get('keyunit')  # keyunit => pk
-        keyunit = KeyUnit.objects.get(pk=keyunit_data)
+        # 1-2. 동호수 변경 여부 확인 및 변경 사항 적용
+        keyunit_pk = self.initial_data.get('keyunit')  # keyunit => pk
+        houseunit_pk = self.initial_data.get('houseunit')  # house_unit => pk
 
-        house_unit_data = self.initial_data.get('houseunit')  # house_unit => pk
-        house_unit = HouseUnit.objects.get(pk=house_unit_data) if house_unit_data else None
+        keyunit = KeyUnit.objects.get(pk=keyunit_pk)
+        house_unit = HouseUnit.objects.get(pk=houseunit_pk) if houseunit_pk else None
 
-        if instance.keyunit.pk != keyunit_data:  # 계약유닛이 수정된 경우
+        if instance.keyunit.pk != keyunit_pk:  # 계약유닛(keyunit)이 수정된 경우
             try:  # 종전 동호수가 있는 경우
                 old_houseunit = instance.keyunit.houseunit
-                if old_houseunit != house_unit_data:  # 동호수가 수정된 경우
+                if old_houseunit != houseunit_pk:  # 동호수가 수정된 경우
                     old_houseunit.key_unit = None  # 해당 동호수를 삭제
                     old_houseunit.save()
             except ObjectDoesNotExist:  # 종전 동호수가 없는 경우
@@ -319,25 +319,31 @@ class ContractSetSerializer(serializers.ModelSerializer):
             keyunit.save()
 
             # 3. 동호수 연결
-            if house_unit_data:
+            if houseunit_pk:
                 house_unit.key_unit = keyunit  # 동호수를 계약유닛과 연결
                 house_unit.save()
-        else:  # 계약유닛이 수정되지 않은 경우
+        else:  # 계약유닛(keyunit)이 수정되지 않은 경우
             try:  # 종전 동호수가 있는 경우
                 old_houseunit = instance.keyunit.houseunit
-                if old_houseunit != house_unit_data:  # 동호수가 수정된 경우
+                if old_houseunit != houseunit_pk:  # 동호수가 수정된 경우
                     old_houseunit.key_unit = None  # 먼저 종전 동호수 삭제
                     old_houseunit.save()
 
                     # 3. 동호수 연결
-                    if house_unit_data:
+                    if houseunit_pk:
                         house_unit.key_unit = instance.keyunit  # 변경 동호수를 기존 계약유닛과 연결
                         house_unit.save()
             except ObjectDoesNotExist:  # 종전 동호수가 없는 경우
                 # 3. 동호수 연결
-                if house_unit_data:
+                if houseunit_pk:
                     house_unit.key_unit = keyunit  # 동호수를 계약유닛과 연결
                     house_unit.save()
+
+        # 계약가격 정보 여부 확인
+        try:
+            a = 1
+        except:
+            a = 2
 
         # 4. 계약자 정보 테이블 입력
         contractor_name = self.initial_data.get('name')
