@@ -227,7 +227,7 @@ onBeforeMount(() => {
         </CRow>
       </CModalBody>
       <CModalFooter>
-        <CButton color="light" @click="formModal.close()"> 닫기</CButton>
+        <CButton color="light" @click="formModal.close"> 닫기</CButton>
         <CButton
           v-if="mode === 'create'"
           color="primary"
@@ -251,7 +251,12 @@ onBeforeMount(() => {
 
   <ConfirmModal ref="confirmModal">
     <template #icon>
-      <v-icon icon="mdi-trash-can-outline" size="small" />
+      <v-icon
+        icon="mdi-trash-can-outline"
+        color="blue-grey-darken-1"
+        class="mr-2"
+        size="small"
+      />
     </template>
     <template #header> 진행 일정 - 이벤트 삭제</template>
     [{{ eventTitle }}] - 삭제 후 복구할 수 없습니다. 해당 일정을 삭제

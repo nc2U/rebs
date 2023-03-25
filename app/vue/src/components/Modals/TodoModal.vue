@@ -10,12 +10,7 @@ defineExpose({ callModal, close })
 </script>
 
 <template>
-  <CModal
-    :visible="visible"
-    scrollable
-    @close="() => (visible = false)"
-    @keydown.esc="() => (visible = false)"
-  >
+  <CModal :visible="visible" scrollable @close="close" @keydown.esc="close">
     <CModalHeader>
       <CModalTitle class="text-body">
         <CIcon name="cilCalendarCheck" class="mr-2" />
