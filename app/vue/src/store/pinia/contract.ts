@@ -90,11 +90,11 @@ export const useContract = defineStore('contract', () => {
       .then(() => message())
       .catch(err => errorHandle(err.response.data))
 
-  const allContPriceSet = () =>
-    api
-      .post('cont-price')
-      .then(() => message())
-      .catch(err => errorHandle(err.response.data))
+  const allContPriceSet = () => alert('ready for set!')
+  // api
+  //   .post('/cont-price/')
+  //   .then(() => message())
+  //   .catch(err => errorHandle(err.response.data))
 
   const contractor = ref<Contractor | null>(null)
   const contractorList = ref<Contractor[]>([])

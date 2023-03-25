@@ -493,13 +493,6 @@ class ContractPriceSerializer(serializers.ModelSerializer):
         fields = ('pk', 'contract', 'price', 'price_build', 'price_land',
                   'price_tax', 'down_pay', 'middle_pay', 'remain_pay')
 
-    @transaction.atomic
-    def create(self, validated_data):
-        # 1. 계약정보 테이블 입력
-        # cont_price = ContractPrice.objects.create(**validated_data)
-        # cont_price.save()
-        pass
-
 
 class SubsSummarySerializer(serializers.ModelSerializer):
     unit_type = serializers.IntegerField()
