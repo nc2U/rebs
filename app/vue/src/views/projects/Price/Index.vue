@@ -5,7 +5,7 @@ import { useProject } from '@/store/pinia/project'
 import { useContract } from '@/store/pinia/contract'
 import { usePayment } from '@/store/pinia/payment'
 import { useProjectData } from '@/store/pinia/project_data'
-import { OrderGroup, UnitType } from '@/store/types/contract'
+import { OrderGroup, SimpleCont, UnitType } from '@/store/types/contract'
 import { Price } from '@/store/types/payment'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
@@ -37,6 +37,7 @@ const initProjId = computed(() => projectStore.initProjId)
 const project = computed(() => projectStore.project?.pk || initProjId.value)
 
 const contractStore = useContract()
+const contList = computed(() => contractStore.contList)
 const orderGroupList = computed(() => contractStore.orderGroupList)
 
 const projectDataStore = useProjectData()
@@ -53,9 +54,11 @@ const condTexts = computed(() => {
   return { orderText, typeText }
 })
 
+const fetchContList = (projId: number) => contractStore.fetchContList(projId)
 const fetchOrderGroupList = (projId: number) =>
   contractStore.fetchOrderGroupList(projId)
-const allContPriceSet = () => contractStore.allContPriceSet()
+const allContPriceSet = (payload: SimpleCont) =>
+  contractStore.allContPriceSet(payload)
 
 const fetchTypeList = (projId: number) => projectDataStore.fetchTypeList(projId)
 const fetchFloorTypeList = (projId: number) =>
@@ -73,12 +76,13 @@ const formSelect = ref()
 // 프로젝트 선택 시 실행 함수
 const onSelectAdd = (target: number) => {
   if (!!target) {
-    console.log(formSelect.value)
+    fetchContList(target)
     fetchOrderGroupList(target)
     fetchTypeList(target)
     fetchFloorTypeList(target)
     formSelect.value.orderDisabled = false
   } else {
+    contractStore.contList = []
     contractStore.orderGroupList = []
     projectDataStore.unitTypeList = []
     projectDataStore.floorTypeList = []
@@ -114,9 +118,13 @@ const onCreatePrice = (payload: Price) => createPrice(payload)
 const onUpdatePrice = (payload: Price) => updatePrice(payload)
 const onDeletePrice = (pk: number) => deletePrice({ ...{ pk }, ...queryIds })
 
-const contPriceSet = () => allContPriceSet()
+const contPriceSet = () => {
+  const cont = contList.value[0]
+  allContPriceSet({ ...cont })
+}
 
 onBeforeMount(() => {
+  fetchContList(project.value)
   fetchOrderGroupList(project.value)
   fetchTypeList(project.value)
   fetchFloorTypeList(project.value)

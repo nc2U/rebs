@@ -1,3 +1,12 @@
+export interface SimpleCont {
+  pk: number
+  project: number
+  order_group: number
+  unit_type: number
+  serial_number: string
+  activation: boolean
+}
+
 export interface Contract {
   pk: number
   project: number

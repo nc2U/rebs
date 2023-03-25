@@ -4,6 +4,7 @@ import { defineStore } from 'pinia'
 import { message, errorHandle } from '@/utils/helper'
 import {
   Contract,
+  SimpleCont,
   Contractor,
   SubsSummary,
   ContSummary,
@@ -90,11 +91,22 @@ export const useContract = defineStore('contract', () => {
       .then(() => message())
       .catch(err => errorHandle(err.response.data))
 
-  const allContPriceSet = () => alert('ready for set!')
-  // api
-  //   .post('/cont-price/')
-  //   .then(() => message())
-  //   .catch(err => errorHandle(err.response.data))
+  const contList = ref<SimpleCont[]>([])
+  const fetchContList = (project: number) =>
+    api
+      .get(`/contract/?project=${project}`)
+      .then(res => {
+        contList.value = res.data.results
+      })
+      .catch(err => errorHandle(err.response.data))
+
+  const allContPriceSet = (payload: SimpleCont) =>
+    api
+      .put(`/contract/${payload.pk}/`, payload)
+      .then(() =>
+        message('info', '', '개별 계약건 공급가가 재설정 되었습니다.', 5000),
+      )
+      .catch(err => errorHandle(err.response.data))
 
   const contractor = ref<Contractor | null>(null)
   const contractorList = ref<Contractor[]>([])
@@ -271,6 +283,9 @@ export const useContract = defineStore('contract', () => {
     fetchContractList,
     createContractSet,
     updateContractSet,
+
+    contList,
+    fetchContList,
     allContPriceSet,
 
     contractor,
