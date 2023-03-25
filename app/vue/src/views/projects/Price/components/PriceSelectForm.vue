@@ -1,11 +1,20 @@
 <script lang="ts" setup>
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
+import { useAccount } from '@/store/pinia/account'
+import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
 const props = defineProps({
   orders: { type: Object, default: null },
   types: { type: Object, default: null },
 })
-const emit = defineEmits(['on-order-select', 'on-type-select'])
+
+const emit = defineEmits([
+  'on-order-select',
+  'on-type-select',
+  'cont-price-set',
+])
+
+const confirmModal = ref()
 
 const order = ref<number | null>(null)
 const type = ref<number | null>(null)
@@ -21,6 +30,16 @@ const onOrderSelect = (e: Event) => {
 }
 const onTypeSelect = (e: Event) =>
   emit('on-type-select', (e.target as HTMLSelectElement).value)
+
+const accStore = useAccount()
+const superAuth = computed(() => accStore.superAuth)
+
+const contPriceSet = () => confirmModal.value.callModal()
+
+const modalAction = () => {
+  emit('cont-price-set')
+  confirmModal.value.close()
+}
 </script>
 
 <template>
@@ -62,6 +81,34 @@ const onTypeSelect = (e: Event) =>
           </CCol>
         </CRow>
       </CCol>
+
+      <CCol md="4" class="mb-2">
+        <CRow class="justify-content-end">
+          <CCol xl="6" class="d-grid gap-2">
+            <CButton
+              v-if="superAuth"
+              type="button"
+              color="dark"
+              @click="contPriceSet"
+            >
+              전체 계약건 공급가 재설정
+            </CButton>
+          </CCol>
+        </CRow>
+      </CCol>
     </CRow>
   </CCallout>
+
+  <ConfirmModal ref="confirmModal">
+    <template #icon>
+      <v-icon icon="mdi mdi-sync-alert" color="danger" class="mr-2" />
+    </template>
+    <template #header> 전체 계약건 공급가 재설정</template>
+    <template #default>
+      전체 계약 건 개별 공급가를 현재 등록된 가격 정보로 재설정하시겠습니까?
+    </template>
+    <template #footer>
+      <CButton color="dark" @click="modalAction">재설정</CButton>
+    </template>
+  </ConfirmModal>
 </template>
