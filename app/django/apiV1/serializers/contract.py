@@ -122,14 +122,6 @@ class ContractSerializer(serializers.ModelSerializer):
         model = Contract
         fields = ('pk', 'project', 'order_group', 'unit_type', 'serial_number', 'activation')
 
-    @transaction.atomic
-    def create(self, validated_data):
-        pass
-
-    @transaction.atomic
-    def update(self, instance, validated_data):
-        pass
-
 
 class ProjectCashBookInContractSerializer(serializers.ModelSerializer):
     installment_order = SimpleInstallmentOrderSerializer()
@@ -500,6 +492,13 @@ class ContractPriceSerializer(serializers.ModelSerializer):
         model = ContractPrice
         fields = ('pk', 'contract', 'price', 'price_build', 'price_land',
                   'price_tax', 'down_pay', 'middle_pay', 'remain_pay')
+
+    @transaction.atomic
+    def create(self, validated_data):
+        # 1. 계약정보 테이블 입력
+        # cont_price = ContractPrice.objects.create(**validated_data)
+        # cont_price.save()
+        pass
 
 
 class SubsSummarySerializer(serializers.ModelSerializer):
