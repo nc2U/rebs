@@ -89,6 +89,7 @@ router.register(r'project-imprest', cash.ProjectImprestViewSet, basename='pr-imp
 router.register(r'order-group', contract.OrderGroupViewSet)
 router.register(r'contract', contract.ContractViewSet)
 router.register(r'contract-set', contract.ContractSetViewSet, basename='cont-set')
+router.register(r'cont-price', contract.ContractPriceViewSet)
 router.register(r'subs-sum', contract.SubsSummaryViewSet, basename='subs-sum')  # only list
 router.register(r'cont-sum', contract.ContSummaryViewSet, basename='cont-sum')  # only list
 router.register(r'contractor', contract.ContractorViewSet)

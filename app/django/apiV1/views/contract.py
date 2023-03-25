@@ -6,7 +6,7 @@ from django_filters import ChoiceFilter, ModelChoiceFilter, DateFilter, BooleanF
 from ..permission import *
 from ..serializers.contract import *
 
-from contract.models import (OrderGroup, Contract, Contractor,
+from contract.models import (OrderGroup, Contract, ContractPrice, Contractor,
                              ContractorAddress, ContractorContact, ContractorRelease)
 from items.models import BuildingUnit
 
@@ -40,10 +40,10 @@ class ContractViewSet(viewsets.ModelViewSet):
     serializer_class = ContractSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
     filterset_class = ContractFilter
-    search_fields = (
-        'serial_number', 'contractor__name', 'contractor__note', 'contractor__contractorcontact__cell_phone')
-    ordering_fields = (
-        'created_at', 'contractor__contract_date', 'serial_number', 'contractor__name')
+    search_fields = ('serial_number', 'contractor__name', 'contractor__note',
+                     'contractor__contractorcontact__cell_phone')
+    ordering_fields = ('created_at', 'contractor__contract_date',
+                       'serial_number', 'contractor__name')
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -51,6 +51,15 @@ class ContractViewSet(viewsets.ModelViewSet):
 
 class ContractSetViewSet(ContractViewSet):
     serializer_class = ContractSetSerializer
+
+
+class ContractPriceViewSet(viewsets.ModelViewSet):
+    queryset = ContractPrice.objects.all()
+    serializer_class = ContractPriceSerializer
+    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    filterset_fields = ('contract__project', 'contract__order_group',
+                        'contract__unit_type', 'contract__activation',
+                        'contract__contractor__status')
 
 
 class SubsSummaryViewSet(viewsets.ModelViewSet):

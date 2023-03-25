@@ -487,6 +487,13 @@ class ContractSetSerializer(serializers.ModelSerializer):
         return instance
 
 
+class ContractPriceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ContractPrice
+        fields = ('pk', 'contract', 'price', 'price_build', 'price_land',
+                  'price_tax', 'down_pay', 'middle_pay', 'remain_pay')
+
+
 class SubsSummarySerializer(serializers.ModelSerializer):
     unit_type = serializers.IntegerField()
     num_cont = serializers.IntegerField()
