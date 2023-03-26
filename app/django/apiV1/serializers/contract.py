@@ -557,11 +557,11 @@ class SubsSummarySerializer(serializers.ModelSerializer):
 class ContSummarySerializer(serializers.ModelSerializer):
     order_group = serializers.IntegerField()
     unit_type = serializers.IntegerField()
-    num_cont = serializers.IntegerField()
+    conts_num = serializers.IntegerField()
 
     class Meta:
         model = Contract
-        fields = ('order_group', 'unit_type', 'num_cont')
+        fields = ('order_group', 'unit_type', 'conts_num')
 
 
 class ContractInContractorSerializer(serializers.ModelSerializer):

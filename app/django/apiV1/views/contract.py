@@ -89,7 +89,7 @@ class ContSummaryViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return Contract.objects.filter(activation=True, contractor__status=2) \
             .values('order_group', 'unit_type') \
-            .annotate(num_cont=Count('order_group'))
+            .annotate(conts_num=Count('order_group'))
 
 
 class ContractorViewSet(viewsets.ModelViewSet):
