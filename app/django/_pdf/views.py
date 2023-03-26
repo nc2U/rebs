@@ -84,8 +84,8 @@ class PdfExportBill(View):
         cont_price = contract.contractprice
         price = cont_price.price
         down = cont_price.down_pay
-        medium = cont_price.middle_pay
-        balance = cont_price.remain_pay
+        middle = cont_price.middle_pay
+        remain = cont_price.remain_pay
 
         bill_data['price'] = price if unit else '동호 지정 후 고지'  # 이 건 분양가격
 
@@ -94,7 +94,7 @@ class PdfExportBill(View):
         # --------------------------------------------------------------
 
         # 해당 계약 건의 회차별 관련 정보
-        amount = {'1': down, '2': medium, '3': balance}
+        amount = {'1': down, '2': middle, '3': remain}
         orders_info = self.get_orders_info(inspay_order, amount, paid_sum_total)
         # 완납 회차
         paid_code = self.get_paid_code(orders_info, paid_sum_total)
@@ -119,8 +119,7 @@ class PdfExportBill(View):
 
         # ■ 납부방법 안내 ------------------------------------------------
         pm_cost_sum = sum([pm['pm_cost_sum'] for pm in orders_info])
-        bill_data['pay_method'] = (bill_data['this_pay_sum']['amount_total'],
-                                   pm_cost_sum)
+        bill_data['pay_method'] = (bill_data['this_pay_sum']['amount_total'], pm_cost_sum)
 
         # ■ 납부약정 및 납입내역 -------------------------------------------
         bill_data['due_orders'] = self.get_due_orders(contract, orders_info,
@@ -242,7 +241,7 @@ class PdfExportBill(View):
 
     def get_due_orders(self, contract, orders_info,
                        inspay_order, now_due_order,
-                       paid_code, issue_date, **kwargs):
+                       paid_code, issue_date, is_late_fee=False):
         """
         :: ■ 납부약정 및 납입내역 - 납입내역
         :param contract: 계약 건
@@ -250,6 +249,8 @@ class PdfExportBill(View):
         :param inspay_order: 전체 납부회차
         :param now_due_order: 금회 납부 회차
         :param paid_code: 완납회차
+        :param issue_date: 발행일자
+        :param is_late_fee: 연체료 발행여부
         :return list(paid_list: 왼납 회차 목록):
         """
 
@@ -329,7 +330,7 @@ class PdfExportBill(View):
             }
             paid_amt_list.append(paid_dict)
 
-        if kwargs['is_late_fee']:
+        if is_late_fee:
             return late_fee_sum
         else:
             return paid_amt_list
@@ -471,11 +472,11 @@ class PdfExportPayments(View):
         # 1. 이 계약 건 분양가격 (계약금, 중도금, 잔금 약정액)
         cont_price = contract.contractprice
         down = cont_price.down_pay
-        medium = cont_price.middle_pay
-        balance = cont_price.remain_pay
+        middle = cont_price.middle_pay
+        remain = cont_price.remain_pay
 
         context['price'] = cont_price.price if unit else '동호 지정 후 고지'  # 이 건 분양가격
-        amount = {'1': down, '2': medium, '3': balance}
+        amount = {'1': down, '2': middle, '3': remain}
 
         # 2. 요약 테이블 데이터
         context['due_amount'] = self.get_due_amount(inspay_orders, contract, amount)
