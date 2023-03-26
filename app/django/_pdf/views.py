@@ -9,7 +9,8 @@ from django.template.loader import render_to_string
 from weasyprint import HTML
 
 from django.db.models import Sum
-from project.models import UnitType, ProjectIncBudget
+from project.models import ProjectIncBudget
+from items.models import UnitType
 from contract.models import Contract
 from notice.models import SalesBillIssue
 from cash.models import ProjectCashBook
@@ -567,7 +568,7 @@ class PdfExportPayments(View):
 
         try:
             unit = contract.keyunit.houseunit
-        except Exception:
+        except ObjectDoesNotExist:
             unit = None
 
         # 동호수
