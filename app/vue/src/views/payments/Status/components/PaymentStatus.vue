@@ -24,24 +24,30 @@ const unitType = computed(() => prDataStore.unitTypeList)
 const paymentStore = usePayment()
 const paySumList = computed(() => paymentStore.paySumList)
 
+// 차수명
 const getOGName = (og: number) =>
   orderGroup.value.length
     ? orderGroup.value.filter(o => o.pk === og)[0]
     : { order_group_name: '' }
-
+// 타입명
 const getUTName = (ut: number) =>
   unitType.value.length
     ? unitType.value.filter(u => u.pk === ut)[0]
     : { name: '', color: '' }
-
+// 차수 및 타입별 계약 건수
 const getContNum = (og: number, ut: number) =>
   contSum.value
     .filter(c => c.order_group === og && c.unit_type === ut)
     .map(c => c.conts_num)[0]
-
+// 차수 및 타입별 계약 가격 총액
+const getContSum = (og: number, ut: number) =>
+  contSum.value
+    .filter(c => c.order_group === og && c.unit_type === ut)
+    .map(c => c.price_sum)[0]
+// 차수별 타입수
 const getUTbyOGNum = (og: number) =>
   budgetList.value.filter(b => b.order_group === og).length
-
+// 차수별 첫번째 타입
 const getFirstType = (og: number) =>
   budgetList.value.filter(b => b.order_group === og)[0].unit_type
 
@@ -58,16 +64,7 @@ const totalContNum = computed(() =>
 ) // 총 계약 세대수
 
 const totalContSum = computed(() =>
-  contSum.value
-    .map(c => {
-      const price = budgetList.value.length
-        ? budgetList.value.filter(
-            b => b.order_group === c.order_group && b.unit_type === c.unit_type,
-          )[0].average_price
-        : 0
-      return c.conts_num * (price || 0)
-    })
-    .reduce((x, y) => x + y, 0),
+  contSum.value.map(c => c.price_sum || 0).reduce((x, y) => x + y, 0),
 ) // 총 계약금액
 
 const totalPaidSum = computed(() =>
@@ -157,11 +154,7 @@ const totalBudget = computed(
         </CTableDataCell>
         <CTableDataCell>
           <!-- 계약금액 -->
-          {{
-            numFormat(
-              bg.average_price * getContNum(bg.order_group, bg.unit_type),
-            )
-          }}
+          {{ numFormat(getContSum(bg.order_group, bg.unit_type)) }}
         </CTableDataCell>
         <CTableDataCell>
           <!-- 실수납금액 -->
@@ -177,7 +170,7 @@ const totalBudget = computed(
           <!-- 미수금액 -->
           {{
             numFormat(
-              bg.average_price * getContNum(bg.order_group, bg.unit_type) -
+              getContSum(bg.order_group, bg.unit_type) -
                 (paidSum(bg.order_group, bg.unit_type)
                   ? paidSum(bg.order_group, bg.unit_type).paid_sum
                   : 0),

@@ -133,6 +133,7 @@ export interface SubsSummary {
   order_group: number
   unit_type: number
   conts_num: number
+  price_sum: number
 }
 
 export type ContSummary = SubsSummary
