@@ -2,11 +2,18 @@ import { computed, h, resolveComponent } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 
 const account = computed(() => useAccount())
-const pageViewAuth = computed(
+const compViewAuth = computed(
   () =>
     account.value.userInfo?.is_superuser ||
     (account.value.userInfo?.staffauth &&
       account.value.userInfo.staffauth?.company_settings > '0'),
+)
+
+const authViewAuth = computed(
+  () =>
+    account.value.userInfo?.is_superuser ||
+    (account.value.userInfo?.staffauth &&
+      account.value.userInfo.staffauth?.auth_manage > '0'),
 )
 
 const settings = {
@@ -23,7 +30,7 @@ const settings = {
       path: 'company',
       name: '회사 정보 관리',
       component: () =>
-        pageViewAuth.value
+        compViewAuth.value
           ? import('@/views/settings/Company/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
       meta: { title: '회사 정보 관리' },
@@ -32,7 +39,7 @@ const settings = {
       path: 'authorization',
       name: '권한 설정 관리',
       component: () =>
-        pageViewAuth.value
+        authViewAuth.value
           ? import('@/views/settings/Authorization/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
       meta: { title: '권한 설정 관리' },
