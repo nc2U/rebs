@@ -77,9 +77,7 @@ export const useSite = defineStore('site', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const updateSite = (
-    payload: { pk: number; page: number; search: string } & Site,
-  ) => {
+  const updateSite = (payload: { page: number; search: string } & Site) => {
     const { pk, page, search, ...formData } = payload
     api
       .put(`/site/${pk}/`, formData)
