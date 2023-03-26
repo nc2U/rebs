@@ -9,12 +9,69 @@ from django.template.loader import render_to_string
 from weasyprint import HTML
 
 from django.db.models import Sum
+from project.models import UnitType, ProjectIncBudget
 from contract.models import Contract
 from notice.models import SalesBillIssue
 from cash.models import ProjectCashBook
 from payment.models import SalesPriceByGT, InstallmentPaymentOrder, DownPayment
 
 TODAY = date.today()
+
+
+def get_cont_price(instance, houseunit=None):
+    try:
+        price = ProjectIncBudget.objects.get(project=instance.project,
+                                             order_group=instance.order_group,
+                                             unit_type=instance.unit_type).average_price
+    except ProjectIncBudget.DoesNotExist:
+        price = UnitType.objects.get(pk=instance.unit_type).average_price
+    except UnitType.DoesNotExist:
+        price = 1000
+    price_build = None
+    price_land = None
+    price_tax = None
+
+    if houseunit:
+        try:
+            sales_price = SalesPriceByGT.objects.get(order_group=instance.order_group,
+                                                     unit_type=instance.unit_type,
+                                                     unit_floor_type=houseunit.floor_type)
+            price = sales_price.price
+            price_build = sales_price.price_build
+            price_land = sales_price.price_land
+            price_tax = sales_price.price_tax
+        except SalesPriceByGT.DoesNotExist:
+            pass
+
+    return price, price_build, price_land, price_tax
+
+
+def get_pay_amount(instance, price):
+    # ### 회차 데이터
+    install_order = InstallmentPaymentOrder.objects.filter(project=instance.project)
+
+    downs = install_order.filter(pay_sort='1')
+    middles = install_order.filter(pay_sort='2')
+    remains = install_order.filter(pay_sort='3')
+
+    down_num = len(downs.distinct().values_list('pay_code'))
+    middle_num = len(middles.distinct().values_list('pay_code'))
+
+    down_ratio = downs.first().pay_ratio / 100 if downs.first().pay_ratio else 0.1
+    middle_ratio = middles.first().pay_ratio / 100 if middles.first().pay_ratio else 0.1
+    remain_ratio = remains.first().pay_ratio / 100 if remains.first().pay_ratio else 0.1
+
+    try:
+        down_data = DownPayment.objects.get(order_group=instance.order_group,
+                                            unit_type=instance.unit_type)
+        down = down_data.payment_amount
+        remain = price - (price * middle_ratio * middle_num) - (down * down_num)
+    except DownPayment.DoesNotExist:
+        down = price * down_ratio
+        remain = down * remain_ratio
+
+    middle = price * middle_ratio
+    return down, middle, remain
 
 
 class PdfExportBill(View):
@@ -81,8 +138,9 @@ class PdfExportBill(View):
         bill_data['unit'] = unit
 
         # 이 계약 건 분양가 (계약금, 중도금, 잔금 약정액)
-        this_price, down, medium, balance = self.get_this_price(project, contract,
-                                                                unit, inspay_order)
+        this_price, price_build, price_land, price_tax = get_cont_price(contract, unit)
+        down, medium, balance = get_pay_amount(contract, this_price)
+
         bill_data['price'] = this_price if unit else '동호 지정 후 고지'  # 이 건 분양가격
 
         # 납부목록, 완납금액 구하기 ------------------------------------------
@@ -149,56 +207,6 @@ class PdfExportBill(View):
         :return object(contract: 계약 건):
         """
         return Contract.objects.get(contractor__id=cont_id)
-
-    @staticmethod
-    def get_this_price(project, contract, unit, inspay_order):
-        """ ■ 해당 계약 건 분양가 구하기
-        :param project: 프로젝트 정보
-        :param contract: 계약 정보
-        :param unit: 동호수 정보
-        :param inspay_order: 전체 회차 정보
-        :return int(this_price: 분양가), int(down: 계약금), int(medium: 중도금), int(balance: 잔금):
-        """
-        # 총 공급가액(분양가) 구하기
-        og = contract.order_group  # 차수
-        ut = contract.unit_type  # 타입
-
-        # 해당 계약건 분양가 # this_price = '동호 지정 후 고지'
-        this_price = contract.keyunit.unit_type.average_price
-
-        prices = SalesPriceByGT.objects.filter(project_id=project, order_group=og, unit_type=ut)
-
-        if unit:
-            floor = contract.keyunit.houseunit.floor_type
-            this_price = prices.get(unit_floor_type=floor).price
-
-        # 계약금 구하기 ----------------------------------------------------------------
-        down_num = inspay_order.filter(pay_sort='1').count()
-        try:
-            down_pay = DownPayment.objects.get(
-                project_id=project,
-                order_group=contract.order_group,
-                unit_type=contract.keyunit.unit_type
-            )
-            down = down_pay.payment_amount
-        except ObjectDoesNotExist:
-            pn = round(down_num / 2)
-            down = int(this_price * 0.1 / pn)
-        down_total = down * down_num
-        # ---------------------------------------------------------------------------
-
-        # 중도금 구하기 ----------------------------------------------------------------
-        med_num = inspay_order.filter(pay_sort='2').count()
-        medium = int(this_price * 0.1)
-        medium_total = medium * med_num
-        # ---------------------------------------------------------------------------
-
-        # 잔금 구하기 -----------------------------------------------------------------
-        bal_num = inspay_order.filter(pay_sort='3').count()
-        balance = int((this_price - down_total - medium_total) / bal_num)
-        # ---------------------------------------------------------------------------
-
-        return this_price, down, medium, balance
 
     @staticmethod
     def get_paid(contract):
@@ -516,8 +524,8 @@ class PdfExportPayments(View):
         context['unit'] = unit
 
         # 1. 이 계약 건 분양가격 (계약금, 중도금, 잔금 약정액)
-        this_price, down, medium, balance = self.get_this_price(project, contract,
-                                                                unit, inspay_orders)
+        this_price, price_build, price_land, price_tax = get_cont_price(contract, unit)
+        down, medium, balance = get_pay_amount(contract, this_price)
         context['price'] = this_price if unit else '동호 지정 후 고지'  # 이 건 분양가격
         amount = {'1': down, '2': medium, '3': balance}
 
@@ -597,56 +605,6 @@ class PdfExportPayments(View):
         :return object(contract: 계약 건):
         """
         return Contract.objects.get(pk=cont_id)
-
-    @staticmethod
-    def get_this_price(project, contract, unit, inspay_orders):
-        """ ■ 해당 계약 건 분양가 구하기
-        :param project: 프로젝트 정보
-        :param contract: 계약 정보
-        :param unit: 동호수 정보
-        :param inspay_orders: 전체 회차 정보
-        :return int(this_price: 분양가), int(down: 계약금), int(medium: 중도금), int(balance: 잔금):
-        """
-        # 총 공급가액(분양가) 구하기
-        og = contract.order_group  # 차수
-        ut = contract.unit_type  # 타입
-
-        # 해당 계약건 분양가 # this_price = '동호 지정 후 고지'
-        this_price = contract.keyunit.unit_type.average_price
-
-        prices = SalesPriceByGT.objects.filter(project_id=project, order_group=og, unit_type=ut)
-
-        if unit:
-            floor = contract.keyunit.houseunit.floor_type
-            this_price = prices.get(unit_floor_type=floor).price
-
-        # 계약금 구하기 ----------------------------------------------------------------
-        down_num = inspay_orders.filter(pay_sort='1').count()
-        try:
-            dp = DownPayment.objects.get(
-                project_id=project,
-                order_group=contract.order_group,
-                unit_type=contract.keyunit.unit_type
-            )
-            down = dp.payment_amount
-        except:
-            pn = round(down_num / 2)
-            down = int(this_price * 0.1 / pn)
-        down_total = down * down_num
-        # ---------------------------------------------------------------------------
-
-        # 중도금 구하기 ----------------------------------------------------------------
-        med_num = inspay_orders.filter(pay_sort='2').count()
-        medium = int(this_price * 0.1)
-        medium_total = medium * med_num
-        # ---------------------------------------------------------------------------
-
-        # 잔금 구하기 -----------------------------------------------------------------
-        bal_num = inspay_orders.filter(pay_sort='3').count()
-        balance = int((this_price - down_total - medium_total) / bal_num)
-        # ---------------------------------------------------------------------------
-
-        return this_price, down, medium, balance
 
     @staticmethod
     def get_paid(contract, simple_orders):
