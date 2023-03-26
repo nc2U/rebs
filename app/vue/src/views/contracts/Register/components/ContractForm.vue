@@ -172,7 +172,7 @@ const contLabel = computed(() => (form.status !== '1' ? '계약' : '청약'))
 const isContract = computed(() => form.status === '2')
 const noStatus = computed(() => form.status === '' && !props.contract)
 const downPayOrder = computed(() =>
-  payOrderList.value.filter((po: PayOrder) => po.pay_time <= 1),
+  payOrderList.value.filter((po: PayOrder) => po.pay_time && po.pay_time <= 1),
 )
 
 const downPayments = computed(() =>
