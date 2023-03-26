@@ -1,4 +1,4 @@
-from django.db.models import Count
+from django.db.models import Count, Sum
 from rest_framework import viewsets
 from django_filters.rest_framework import FilterSet
 from django_filters import ChoiceFilter, ModelChoiceFilter, DateFilter, BooleanFilter
@@ -89,7 +89,8 @@ class ContSummaryViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return Contract.objects.filter(activation=True, contractor__status=2) \
             .values('order_group', 'unit_type') \
-            .annotate(conts_num=Count('order_group'))
+            .annotate(conts_num=Count('order_group')) \
+            .annotate(price_sum=Sum('contractprice__price'))
 
 
 class ContractorViewSet(viewsets.ModelViewSet):
