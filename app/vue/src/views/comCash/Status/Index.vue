@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount, ref } from 'vue'
-import { pageTitle, navMenu } from '@/views/comCash/_menu/headermixin'
-import { useCompany } from '@/store/pinia/company'
-import { useComCash } from '@/store/pinia/comCash'
-import { dateFormat } from '@/utils/baseMixins'
+import {computed, onBeforeMount, ref} from 'vue'
+import {pageTitle, navMenu} from '@/views/comCash/_menu/headermixin'
+import {useCompany} from '@/store/pinia/company'
+import {useComCash} from '@/store/pinia/comCash'
+import {dateFormat} from '@/utils/baseMixins'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import DateChoicer from '@/views/comCash/Status/components/DateChoicer.vue'
@@ -26,11 +26,11 @@ const fetchAllAccD2List = () => comCashStore.fetchAllAccD2List()
 const fetchAllAccD3List = () => comCashStore.fetchAllAccD3List()
 
 const fetchComBankAccList = (com: number) =>
-  comCashStore.fetchComBankAccList(com)
-const fetchComBalanceByAccList = (com: { company: number; date?: string }) =>
-  comCashStore.fetchComBalanceByAccList(com)
+    comCashStore.fetchComBankAccList(com)
+const fetchComBalanceByAccList = (com: { company: number; date: string }) =>
+    comCashStore.fetchComBalanceByAccList(com)
 const fetchDateCashBookList = (payload: { company: number; date: string }) =>
-  comCashStore.fetchDateCashBookList(payload)
+    comCashStore.fetchDateCashBookList(payload)
 
 const excelUrl = computed(() => {
   const comp = compName.value
@@ -98,21 +98,21 @@ onBeforeMount(() => {
 
 <template>
   <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    selector="CompanySelect"
-    @header-select="onSelectAdd"
+      :page-title="pageTitle"
+      :nav-menu="navMenu"
+      selector="CompanySelect"
+      @header-select="onSelectAdd"
   />
   <ContentBody>
     <CCardBody class="pb-5">
-      <DateChoicer @set-date="setDate" />
+      <DateChoicer @set-date="setDate"/>
 
-      <TabSelect @tab-select="showTab" />
+      <TabSelect @tab-select="showTab"/>
 
-      <TableTitleRow excel :url="excelUrl" />
+      <TableTitleRow excel :url="excelUrl"/>
 
-      <StatusByAccount v-if="compName === 'StatusByAccount'" :date="date" />
-      <CashListByDate v-if="compName === 'CashListByDate'" :date="date" />
+      <StatusByAccount v-if="compName === 'StatusByAccount'" :date="date"/>
+      <CashListByDate v-if="compName === 'CashListByDate'" :date="date"/>
     </CCardBody>
 
     <CCardFooter>&nbsp;</CCardFooter>
