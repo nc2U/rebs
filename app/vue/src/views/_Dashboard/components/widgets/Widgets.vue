@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { reactive } from 'vue'
-import { getStyle } from '@coreui/utils'
-import { CChart } from '@coreui/vue-chartjs'
+import {reactive} from 'vue'
+import getStyle from '@coreui/utils/src/get-style.js'
+import {CChart} from '@coreui/vue-chartjs'
 import WidgetsStatsA from './WidgetsStatsTypeA.vue'
 import WidgetsStatsD from './WidgetsStatsTypeD.vue'
 
@@ -83,14 +83,14 @@ const widgetStatsE = reactive({
         </CCardHeader>
         <CCardBody>
           <DocsExample href="">
-            <WidgetsStatsA />
+            <WidgetsStatsA/>
           </DocsExample>
           <DocsExample href="">
             <CRow>
               <CCol :xs="3">
                 <CWidgetStatsB
-                  class="mb-3"
-                  :progress="{ color: 'success', value: 75 }"
+                    class="mb-3"
+                    :progress="{ color: 'success', value: 75 }"
                 >
                   <template #text>Widget helper text</template>
                   <template #title>Widget title</template>
@@ -99,29 +99,29 @@ const widgetStatsE = reactive({
               </CCol>
               <CCol :xs="3">
                 <CWidgetStatsB
-                  class="mb-3"
-                  :progress="{ color: 'info', value: 75 }"
-                  text="Widget helper text"
-                  title="Widget title"
-                  value="12.124"
+                    class="mb-3"
+                    :progress="{ color: 'info', value: 75 }"
+                    text="Widget helper text"
+                    title="Widget title"
+                    value="12.124"
                 />
               </CCol>
               <CCol :xs="3">
                 <CWidgetStatsB
-                  class="mb-3"
-                  :progress="{ color: 'warning', value: 75 }"
-                  text="Widget helper text"
-                  title="Widget title"
-                  value="$98.111,00"
+                    class="mb-3"
+                    :progress="{ color: 'warning', value: 75 }"
+                    text="Widget helper text"
+                    title="Widget title"
+                    value="$98.111,00"
                 />
               </CCol>
               <CCol :xs="3">
                 <CWidgetStatsB
-                  class="mb-3"
-                  :progress="{ color: 'primary', value: 75 }"
-                  text="Widget helper text"
-                  title="Widget title"
-                  value="2TB"
+                    class="mb-3"
+                    :progress="{ color: 'primary', value: 75 }"
+                    text="Widget helper text"
+                    title="Widget title"
+                    value="2TB"
                 />
               </CCol>
             </CRow>
@@ -130,10 +130,10 @@ const widgetStatsE = reactive({
             <CRow>
               <CCol :xs="3">
                 <CWidgetStatsB
-                  class="mb-3"
-                  color="success"
-                  inverse
-                  :progress="{ value: 75 }"
+                    class="mb-3"
+                    color="success"
+                    inverse
+                    :progress="{ value: 75 }"
                 >
                   <template #text>Widget helper text</template>
                   <template #title>Widget title</template>
@@ -142,35 +142,35 @@ const widgetStatsE = reactive({
               </CCol>
               <CCol :xs="3">
                 <CWidgetStatsB
-                  class="mb-3"
-                  color="info"
-                  inverse
-                  :progress="{ value: 75 }"
-                  text="Widget helper text"
-                  title="Widget title"
-                  value="12.124"
+                    class="mb-3"
+                    color="info"
+                    inverse
+                    :progress="{ value: 75 }"
+                    text="Widget helper text"
+                    title="Widget title"
+                    value="12.124"
                 />
               </CCol>
               <CCol :xs="3">
                 <CWidgetStatsB
-                  class="mb-3"
-                  color="warning"
-                  inverse
-                  :progress="{ value: 75 }"
-                  text="Widget helper text"
-                  title="Widget title"
-                  value="$98.111,00"
+                    class="mb-3"
+                    color="warning"
+                    inverse
+                    :progress="{ value: 75 }"
+                    text="Widget helper text"
+                    title="Widget title"
+                    value="$98.111,00"
                 />
               </CCol>
               <CCol :xs="3">
                 <CWidgetStatsB
-                  class="mb-3"
-                  color="primary"
-                  inverse
-                  :progress="{ value: 75 }"
-                  text="Widget helper text"
-                  title="Widget title"
-                  value="2TB"
+                    class="mb-3"
+                    color="primary"
+                    inverse
+                    :progress="{ value: 75 }"
+                    text="Widget helper text"
+                    title="Widget title"
+                    value="2TB"
                 />
               </CCol>
             </CRow>
@@ -181,10 +181,10 @@ const widgetStatsE = reactive({
               <CCol :xs="2">
                 <CWidgetStatsE title="title" value="1,123">
                   <CChart
-                    class="mx-auto"
-                    type="bar"
-                    style="height: 40px; width: 80px"
-                    :data="{
+                      class="mx-auto"
+                      type="bar"
+                      style="height: 40px; width: 80px"
+                      :data="{
                       labels: widgetStatsE.labels,
                       datasets: [
                         {
@@ -198,17 +198,17 @@ const widgetStatsE = reactive({
                         },
                       ],
                     }"
-                    :options="widgetStatsE.optionsBar"
+                      :options="widgetStatsE.optionsBar"
                   />
                 </CWidgetStatsE>
               </CCol>
               <CCol :xs="2">
                 <CWidgetStatsE title="title" value="1,123">
                   <CChart
-                    class="mx-auto"
-                    type="bar"
-                    style="height: 40px; width: 80px"
-                    :data="{
+                      class="mx-auto"
+                      type="bar"
+                      style="height: 40px; width: 80px"
+                      :data="{
                       labels: widgetStatsE.labels,
                       datasets: [
                         {
@@ -222,17 +222,17 @@ const widgetStatsE = reactive({
                         },
                       ],
                     }"
-                    :options="widgetStatsE.optionsBar"
+                      :options="widgetStatsE.optionsBar"
                   />
                 </CWidgetStatsE>
               </CCol>
               <CCol :xs="2">
                 <CWidgetStatsE title="title" value="1,123">
                   <CChart
-                    class="mx-auto"
-                    type="bar"
-                    style="height: 40px; width: 80px"
-                    :data="{
+                      class="mx-auto"
+                      type="bar"
+                      style="height: 40px; width: 80px"
+                      :data="{
                       labels: widgetStatsE.labels,
                       datasets: [
                         {
@@ -246,17 +246,17 @@ const widgetStatsE = reactive({
                         },
                       ],
                     }"
-                    :options="widgetStatsE.optionsBar"
+                      :options="widgetStatsE.optionsBar"
                   />
                 </CWidgetStatsE>
               </CCol>
               <CCol :xs="2">
                 <CWidgetStatsE title="title" value="1,123">
                   <CChart
-                    class="mx-auto"
-                    type="line"
-                    style="height: 40px; width: 80px"
-                    :data="{
+                      class="mx-auto"
+                      type="line"
+                      style="height: 40px; width: 80px"
+                      :data="{
                       labels: widgetStatsE.labels,
                       datasets: [
                         {
@@ -270,17 +270,17 @@ const widgetStatsE = reactive({
                         },
                       ],
                     }"
-                    :options="widgetStatsE.optionsLine"
+                      :options="widgetStatsE.optionsLine"
                   />
                 </CWidgetStatsE>
               </CCol>
               <CCol :xs="2">
                 <CWidgetStatsE title="title" value="1,123">
                   <CChart
-                    class="mx-auto"
-                    type="line"
-                    style="height: 40px; width: 80px"
-                    :data="{
+                      class="mx-auto"
+                      type="line"
+                      style="height: 40px; width: 80px"
+                      :data="{
                       labels: widgetStatsE.labels,
                       datasets: [
                         {
@@ -294,17 +294,17 @@ const widgetStatsE = reactive({
                         },
                       ],
                     }"
-                    :options="widgetStatsE.optionsLine"
+                      :options="widgetStatsE.optionsLine"
                   />
                 </CWidgetStatsE>
               </CCol>
               <CCol :xs="2">
                 <CWidgetStatsE title="title" value="1,123">
                   <CChart
-                    class="mx-auto"
-                    type="line"
-                    style="height: 40px; width: 80px"
-                    :data="{
+                      class="mx-auto"
+                      type="line"
+                      style="height: 40px; width: 80px"
+                      :data="{
                       labels: widgetStatsE.labels,
                       datasets: [
                         {
@@ -318,7 +318,7 @@ const widgetStatsE = reactive({
                         },
                       ],
                     }"
-                    :options="widgetStatsE.optionsLine"
+                      :options="widgetStatsE.optionsLine"
                   />
                 </CWidgetStatsE>
               </CCol>
@@ -329,28 +329,28 @@ const widgetStatsE = reactive({
               <CCol :xs="3">
                 <CWidgetStatsF color="primary" title="Title" value="$1.999,50">
                   <template #icon>
-                    <CIcon icon="cil-settings" size="xl" />
+                    <CIcon icon="cil-settings" size="xl"/>
                   </template>
                 </CWidgetStatsF>
               </CCol>
               <CCol :xs="3">
                 <CWidgetStatsF color="info" title="Title" value="$1.999,50">
                   <template #icon>
-                    <CIcon icon="cil-user" size="xl" />
+                    <CIcon icon="cil-user" size="xl"/>
                   </template>
                 </CWidgetStatsF>
               </CCol>
               <CCol :xs="3">
                 <CWidgetStatsF color="warning" title="Title" value="$1.999,50">
                   <template #icon>
-                    <CIcon icon="cil-moon" size="xl" />
+                    <CIcon icon="cil-moon" size="xl"/>
                   </template>
                 </CWidgetStatsF>
               </CCol>
               <CCol :xs="3">
                 <CWidgetStatsF color="danger" title="Title" value="$1.999,50">
                   <template #icon>
-                    <CIcon icon="cil-bell" size="xl" />
+                    <CIcon icon="cil-bell" size="xl"/>
                   </template>
                 </CWidgetStatsF>
               </CCol>
@@ -361,20 +361,20 @@ const widgetStatsE = reactive({
               <CCol :xs="3">
                 <CWidgetStatsF color="primary" title="Title" value="$1.999,50">
                   <template #icon>
-                    <CIcon icon="cil-settings" size="xl" />
+                    <CIcon icon="cil-settings" size="xl"/>
                   </template>
                   <template #footer>
                     <CLink
-                      class="font-weight-bold font-xs text-medium-emphasis"
-                      href="https://coreui.io/"
-                      rel="noopener norefferer"
-                      target="_blank"
+                        class="font-weight-bold font-xs text-medium-emphasis"
+                        href="https://coreui.io/"
+                        rel="noopener norefferer"
+                        target="_blank"
                     >
                       View more
                       <CIcon
-                        icon="cil-arrow-right"
-                        class="ms-auto"
-                        width="16"
+                          icon="cil-arrow-right"
+                          class="ms-auto"
+                          width="16"
                       />
                     </CLink>
                   </template>
@@ -383,20 +383,20 @@ const widgetStatsE = reactive({
               <CCol :xs="3">
                 <CWidgetStatsF color="info" title="Title" value="$1.999,50">
                   <template #icon>
-                    <CIcon icon="cil-user" size="xl" />
+                    <CIcon icon="cil-user" size="xl"/>
                   </template>
                   <template #footer>
                     <CLink
-                      class="font-weight-bold font-xs text-medium-emphasis"
-                      href="https://coreui.io/"
-                      rel="noopener norefferer"
-                      target="_blank"
+                        class="font-weight-bold font-xs text-medium-emphasis"
+                        href="https://coreui.io/"
+                        rel="noopener norefferer"
+                        target="_blank"
                     >
                       View more
                       <CIcon
-                        icon="cil-arrow-right"
-                        class="ms-auto"
-                        width="16"
+                          icon="cil-arrow-right"
+                          class="ms-auto"
+                          width="16"
                       />
                     </CLink>
                   </template>
@@ -405,20 +405,20 @@ const widgetStatsE = reactive({
               <CCol :xs="3">
                 <CWidgetStatsF color="warning" title="Title" value="$1.999,50">
                   <template #icon>
-                    <CIcon icon="cil-moon" size="xl" />
+                    <CIcon icon="cil-moon" size="xl"/>
                   </template>
                   <template #footer>
                     <CLink
-                      class="font-weight-bold font-xs text-medium-emphasis"
-                      href="https://coreui.io/"
-                      rel="noopener norefferer"
-                      target="_blank"
+                        class="font-weight-bold font-xs text-medium-emphasis"
+                        href="https://coreui.io/"
+                        rel="noopener norefferer"
+                        target="_blank"
                     >
                       View more
                       <CIcon
-                        icon="cil-arrow-right"
-                        class="ms-auto"
-                        width="16"
+                          icon="cil-arrow-right"
+                          class="ms-auto"
+                          width="16"
                       />
                     </CLink>
                   </template>
@@ -427,20 +427,20 @@ const widgetStatsE = reactive({
               <CCol :xs="3">
                 <CWidgetStatsF color="danger" title="Title" value="$1.999,50">
                   <template #icon>
-                    <CIcon icon="cil-bell" size="xl" />
+                    <CIcon icon="cil-bell" size="xl"/>
                   </template>
                   <template #footer>
                     <CLink
-                      class="font-weight-bold font-xs text-medium-emphasis"
-                      href="https://coreui.io/"
-                      rel="noopener norefferer"
-                      target="_blank"
+                        class="font-weight-bold font-xs text-medium-emphasis"
+                        href="https://coreui.io/"
+                        rel="noopener norefferer"
+                        target="_blank"
                     >
                       View more
                       <CIcon
-                        icon="cil-arrow-right"
-                        class="ms-auto"
-                        width="16"
+                          icon="cil-arrow-right"
+                          class="ms-auto"
+                          width="16"
                       />
                     </CLink>
                   </template>
@@ -452,107 +452,107 @@ const widgetStatsE = reactive({
             <CRow>
               <CCol :xs="3">
                 <CWidgetStatsF
-                  color="primary"
-                  :padding="false"
-                  title="Title"
-                  value="$1.999,50"
+                    color="primary"
+                    :padding="false"
+                    title="Title"
+                    value="$1.999,50"
                 >
                   <template #icon>
-                    <CIcon icon="cil-settings" size="xl" />
+                    <CIcon icon="cil-settings" size="xl"/>
                   </template>
                 </CWidgetStatsF>
               </CCol>
               <CCol :xs="3">
                 <CWidgetStatsF
-                  color="info"
-                  :padding="false"
-                  title="Title"
-                  value="$1.999,50"
+                    color="info"
+                    :padding="false"
+                    title="Title"
+                    value="$1.999,50"
                 >
                   <template #icon>
-                    <CIcon icon="cil-user" size="xl" />
+                    <CIcon icon="cil-user" size="xl"/>
                   </template>
                 </CWidgetStatsF>
               </CCol>
               <CCol :xs="3">
                 <CWidgetStatsF
-                  color="warning"
-                  :padding="false"
-                  title="Title"
-                  value="$1.999,50"
+                    color="warning"
+                    :padding="false"
+                    title="Title"
+                    value="$1.999,50"
                 >
                   <template #icon>
-                    <CIcon icon="cil-moon" size="xl" />
+                    <CIcon icon="cil-moon" size="xl"/>
                   </template>
                 </CWidgetStatsF>
               </CCol>
               <CCol :xs="3">
                 <CWidgetStatsF
-                  color="danger"
-                  :padding="false"
-                  title="Title"
-                  value="$1.999,50"
+                    color="danger"
+                    :padding="false"
+                    title="Title"
+                    value="$1.999,50"
                 >
                   <template #icon>
-                    <CIcon icon="cil-bell" size="xl" />
+                    <CIcon icon="cil-bell" size="xl"/>
                   </template>
                 </CWidgetStatsF>
               </CCol>
             </CRow>
           </DocsExample>
           <DocsExample href="">
-            <WidgetsStatsD />
+            <WidgetsStatsD/>
           </DocsExample>
           <DocsExample href="">
             <CCardGroup>
               <CWidgetStatsC
-                class="mb-3"
-                :progress="{ color: 'info', value: 75 }"
-                title="Visitors"
-                value="87.500"
+                  class="mb-3"
+                  :progress="{ color: 'info', value: 75 }"
+                  title="Visitors"
+                  value="87.500"
               >
                 <template #icon>
-                  <CIcon icon="cil-people" height="36" />
+                  <CIcon icon="cil-people" height="36"/>
                 </template>
               </CWidgetStatsC>
               <CWidgetStatsC
-                class="mb-3"
-                :progress="{ color: 'success', value: 75 }"
-                title="New Clients"
-                value="385"
+                  class="mb-3"
+                  :progress="{ color: 'success', value: 75 }"
+                  title="New Clients"
+                  value="385"
               >
                 <template #icon>
-                  <CIcon icon="cil-user-follow" height="36" />
+                  <CIcon icon="cil-user-follow" height="36"/>
                 </template>
               </CWidgetStatsC>
               <CWidgetStatsC
-                class="mb-3"
-                :progress="{ color: 'warning', value: 75 }"
-                title="Products sold"
-                value="1238"
+                  class="mb-3"
+                  :progress="{ color: 'warning', value: 75 }"
+                  title="Products sold"
+                  value="1238"
               >
                 <template #icon>
-                  <CIcon icon="cil-basket" height="36" />
+                  <CIcon icon="cil-basket" height="36"/>
                 </template>
               </CWidgetStatsC>
               <CWidgetStatsC
-                class="mb-3"
-                :progress="{ color: 'primary', value: 75 }"
-                title="Returning Visitors"
-                value="28%"
+                  class="mb-3"
+                  :progress="{ color: 'primary', value: 75 }"
+                  title="Returning Visitors"
+                  value="28%"
               >
                 <template #icon>
-                  <CIcon icon="cil-chart-pie" height="36" />
+                  <CIcon icon="cil-chart-pie" height="36"/>
                 </template>
               </CWidgetStatsC>
               <CWidgetStatsC
-                class="mb-3"
-                :progress="{ color: 'danger', value: 75 }"
-                title="Avg. Time"
-                value="5:34:11"
+                  class="mb-3"
+                  :progress="{ color: 'danger', value: 75 }"
+                  title="Avg. Time"
+                  value="5:34:11"
               >
                 <template #icon>
-                  <CIcon icon="cil-speedometer" height="36" />
+                  <CIcon icon="cil-speedometer" height="36"/>
                 </template>
               </CWidgetStatsC>
             </CCardGroup>
@@ -561,73 +561,73 @@ const widgetStatsE = reactive({
             <CRow>
               <CCol :xs="2">
                 <CWidgetStatsC
-                  class="mb-3"
-                  :progress="{ color: 'info', value: 75 }"
-                  title="Visitors"
-                  value="87.500"
+                    class="mb-3"
+                    :progress="{ color: 'info', value: 75 }"
+                    title="Visitors"
+                    value="87.500"
                 >
                   <template #icon>
-                    <CIcon icon="cil-people" height="36" />
+                    <CIcon icon="cil-people" height="36"/>
                   </template>
                 </CWidgetStatsC>
               </CCol>
               <CCol :xs="2">
                 <CWidgetStatsC
-                  class="mb-3"
-                  :progress="{ color: 'success', value: 75 }"
-                  title="New Clients"
-                  value="385"
+                    class="mb-3"
+                    :progress="{ color: 'success', value: 75 }"
+                    title="New Clients"
+                    value="385"
                 >
                   <template #icon>
-                    <CIcon icon="cil-user-follow" height="36" />
+                    <CIcon icon="cil-user-follow" height="36"/>
                   </template>
                 </CWidgetStatsC>
               </CCol>
               <CCol :xs="2">
                 <CWidgetStatsC
-                  class="mb-3"
-                  :progress="{ color: 'warning', value: 75 }"
-                  title="Products sold"
-                  value="1238"
+                    class="mb-3"
+                    :progress="{ color: 'warning', value: 75 }"
+                    title="Products sold"
+                    value="1238"
                 >
                   <template #icon>
-                    <CIcon icon="cil-basket" height="36" />
+                    <CIcon icon="cil-basket" height="36"/>
                   </template>
                 </CWidgetStatsC>
               </CCol>
               <CCol :xs="2">
                 <CWidgetStatsC
-                  class="mb-3"
-                  :progress="{ color: 'primary', value: 75 }"
-                  title="Returning Visitors"
-                  value="28%"
+                    class="mb-3"
+                    :progress="{ color: 'primary', value: 75 }"
+                    title="Returning Visitors"
+                    value="28%"
                 >
                   <template #icon>
-                    <CIcon icon="cil-chart-pie" height="36" />
+                    <CIcon icon="cil-chart-pie" height="36"/>
                   </template>
                 </CWidgetStatsC>
               </CCol>
               <CCol :xs="2">
                 <CWidgetStatsC
-                  class="mb-3"
-                  :progress="{ color: 'danger', value: 75 }"
-                  title="Avg. Time"
-                  value="5:34:11"
+                    class="mb-3"
+                    :progress="{ color: 'danger', value: 75 }"
+                    title="Avg. Time"
+                    value="5:34:11"
                 >
                   <template #icon>
-                    <CIcon icon="cil-speedometer" height="36" />
+                    <CIcon icon="cil-speedometer" height="36"/>
                   </template>
                 </CWidgetStatsC>
               </CCol>
               <CCol :xs="2">
                 <CWidgetStatsC
-                  class="mb-3"
-                  :progress="{ color: 'info', value: 75 }"
-                  title="Comments"
-                  value="972"
+                    class="mb-3"
+                    :progress="{ color: 'info', value: 75 }"
+                    title="Comments"
+                    value="972"
                 >
                   <template #icon>
-                    <CIcon icon="cil-speech" height="36" />
+                    <CIcon icon="cil-speech" height="36"/>
                   </template>
                 </CWidgetStatsC>
               </CCol>
@@ -637,85 +637,85 @@ const widgetStatsE = reactive({
             <CRow>
               <CCol :xs="2">
                 <CWidgetStatsC
-                  class="mb-3"
-                  color="info"
-                  inverse
-                  :progress="{ value: 75 }"
-                  title="Visitors"
-                  value="87.500"
+                    class="mb-3"
+                    color="info"
+                    inverse
+                    :progress="{ value: 75 }"
+                    title="Visitors"
+                    value="87.500"
                 >
                   <template #icon>
-                    <CIcon icon="cil-people" height="36" />
+                    <CIcon icon="cil-people" height="36"/>
                   </template>
                 </CWidgetStatsC>
               </CCol>
               <CCol :xs="2">
                 <CWidgetStatsC
-                  class="mb-3"
-                  color="success"
-                  inverse
-                  :progress="{ value: 75 }"
-                  title="New Clients"
-                  value="385"
+                    class="mb-3"
+                    color="success"
+                    inverse
+                    :progress="{ value: 75 }"
+                    title="New Clients"
+                    value="385"
                 >
                   <template #icon>
-                    <CIcon icon="cil-user-follow" height="36" />
+                    <CIcon icon="cil-user-follow" height="36"/>
                   </template>
                 </CWidgetStatsC>
               </CCol>
               <CCol :xs="2">
                 <CWidgetStatsC
-                  class="mb-3"
-                  color="warning"
-                  inverse
-                  :progress="{ value: 75 }"
-                  title="Products sold"
-                  value="1238"
+                    class="mb-3"
+                    color="warning"
+                    inverse
+                    :progress="{ value: 75 }"
+                    title="Products sold"
+                    value="1238"
                 >
                   <template #icon>
-                    <CIcon icon="cil-basket" height="36" />
+                    <CIcon icon="cil-basket" height="36"/>
                   </template>
                 </CWidgetStatsC>
               </CCol>
               <CCol :xs="2">
                 <CWidgetStatsC
-                  class="mb-3"
-                  color="primary"
-                  inverse
-                  :progress="{ value: 75 }"
-                  title="Returning Visitors"
-                  value="28%"
+                    class="mb-3"
+                    color="primary"
+                    inverse
+                    :progress="{ value: 75 }"
+                    title="Returning Visitors"
+                    value="28%"
                 >
                   <template #icon>
-                    <CIcon icon="cil-chart-pie" height="36" />
+                    <CIcon icon="cil-chart-pie" height="36"/>
                   </template>
                 </CWidgetStatsC>
               </CCol>
               <CCol :xs="2">
                 <CWidgetStatsC
-                  class="mb-3"
-                  color="danger"
-                  inverse
-                  :progress="{ value: 75 }"
-                  title="Avg. Time"
-                  value="5:34:11"
+                    class="mb-3"
+                    color="danger"
+                    inverse
+                    :progress="{ value: 75 }"
+                    title="Avg. Time"
+                    value="5:34:11"
                 >
                   <template #icon>
-                    <CIcon icon="cil-speedometer" height="36" />
+                    <CIcon icon="cil-speedometer" height="36"/>
                   </template>
                 </CWidgetStatsC>
               </CCol>
               <CCol :xs="2">
                 <CWidgetStatsC
-                  class="mb-3"
-                  color="info"
-                  inverse
-                  :progress="{ value: 75 }"
-                  title="Comments"
-                  value="972"
+                    class="mb-3"
+                    color="info"
+                    inverse
+                    :progress="{ value: 75 }"
+                    title="Comments"
+                    value="972"
                 >
                   <template #icon>
-                    <CIcon icon="cil-speech" height="36" />
+                    <CIcon icon="cil-speech" height="36"/>
                   </template>
                 </CWidgetStatsC>
               </CCol>
