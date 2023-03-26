@@ -100,7 +100,7 @@ class PdfExportBill(View):
         paid_code = self.get_paid_code(orders_info, paid_sum_total)
 
         # ■ 계약 내용 -----------------------------------------------------
-        bill_data['cont_content'] = self.get_cont_content(contract, unit, price)
+        bill_data['cont_content'] = self.get_cont_content(contract, unit)
 
         # ■ 납부대금 안내 ----------------------------------------------
         bill_data['this_pay_info'] = self.get_this_pay_info(cont_id,
