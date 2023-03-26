@@ -2,8 +2,11 @@
 import { ref, computed, onBeforeMount } from 'vue'
 import { pageTitle, navMenu } from '@/views/proCash/_menu/headermixin'
 import { useProject } from '@/store/pinia/project'
-import { CashBookFilter, useProCash } from '@/store/pinia/proCash'
-import { ProjectCashBook as PrCashBook } from '@/store/types/proCash'
+import { useProCash } from '@/store/pinia/proCash'
+import {
+  CashBookFilter,
+  ProjectCashBook as PrCashBook,
+} from '@/store/types/proCash'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from '@/views/proCash/Imprest/components/ListController.vue'
