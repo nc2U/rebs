@@ -76,7 +76,8 @@ def get_cont_price(instance, houseunit=None):
     except ProjectIncBudget.DoesNotExist:
         price = UnitType.objects.get(pk=instance.unit_type).average_price
     except UnitType.DoesNotExist:
-        price = 1000
+        price = 0
+
     price_build = None
     price_land = None
     price_tax = None
