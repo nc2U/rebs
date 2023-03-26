@@ -105,6 +105,7 @@ const modalAction = () => {
     </template>
     <template #header> 전체 계약건 공급가 재설정</template>
     <template #default>
+      이 작업은 수 분 정도 소요될 수 있습니다.<br />
       전체 계약 건 개별 공급가를 현재 등록된 가격 정보로 재설정하시겠습니까?
     </template>
     <template #footer>
