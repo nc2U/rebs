@@ -26,9 +26,7 @@ const getTotalBudget = computed(() =>
 )
 
 const getTotalCont = computed(() =>
-  contSum.value
-    .map(s => (getAveragePrice(s.order_group, s.unit_type) || 0) * s.conts_num)
-    .reduce((x, y) => x + y, 0),
+  contSum.value.map(s => s.price_sum || 0).reduce((x, y) => x + y, 0),
 )
 
 const getTotalPaid = computed(() =>
@@ -51,7 +49,7 @@ const getAveragePrice = (og: number, ut: number) => {
 const getContByType = (ut: number) =>
   contSum.value
     .filter(s => s.unit_type === ut)
-    .map(s => (getAveragePrice(s.order_group, s.unit_type) || 0) * s.conts_num)
+    .map(s => s.price_sum || 0)
     .reduce((x, y) => x + y, 0)
 
 const getPaidByType = (ut: number) =>
