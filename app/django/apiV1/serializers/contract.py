@@ -122,6 +122,49 @@ class ContractSerializer(serializers.ModelSerializer):
         model = Contract
         fields = ('pk', 'project', 'order_group', 'unit_type', 'serial_number', 'activation')
 
+    @transaction.atomic
+    def update(self, instance, validated_data):
+        # instance.__dict__.update(**validated_data)
+        # instance.save()
+        contracts = Contract.objects.filter(project=instance.project, activation=True)
+
+        for contract in contracts:
+            try:
+                house_unit = contract.keyunit.houseunit
+            except ObjectDoesNotExist:
+                house_unit = None
+            price = get_cont_price(contract, house_unit)
+            pay_amount = get_pay_amount(contract, price[0])
+
+            try:  # 계약가격 정보 존재 여부 확인
+                cont_price = contract.contractprice
+            except ContractPrice.DoesNotExist:
+                cont_price = None
+
+            if cont_price:  # 계약가격 데이터가 존재하는 경우
+                # 계약 가격 정보 업데이트
+                cont_price.price = price[0]
+                cont_price.price_build = price[1]
+                cont_price.price_land = price[2]
+                cont_price.price_tax = price[3]
+                cont_price.down_pay = pay_amount[0]
+                cont_price.middle_pay = pay_amount[1]
+                cont_price.remain_pay = pay_amount[2]
+                cont_price.save()
+
+            else:  # 계약가격 데이터가 존재하지 않는 경우 계약 가격 정보 생성
+                cont_price = ContractPrice(contract=contract,
+                                           price=price[0],
+                                           price_build=price[1],
+                                           price_land=price[2],
+                                           price_tax=price[3],
+                                           down_pay=pay_amount[0],
+                                           middle_pay=pay_amount[1],
+                                           remain_pay=pay_amount[2])
+                cont_price.save()
+
+        return instance
+
 
 class ProjectCashBookInContractSerializer(serializers.ModelSerializer):
     installment_order = SimpleInstallmentOrderSerializer()
