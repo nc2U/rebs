@@ -4,14 +4,9 @@ import { pageTitle, navMenu } from '@/views/payments/_menu/headermixin'
 import { useProject } from '@/store/pinia/project'
 import { useProjectData } from '@/store/pinia/project_data'
 import { ContFilter, useContract } from '@/store/pinia/contract'
-import { CashBookFilter, useProCash } from '@/store/pinia/proCash'
-import { ProjectCashBook } from '@/store/types/proCash'
-import {
-  DownPayFilter,
-  PaymentFilter,
-  PriceFilter,
-  usePayment,
-} from '@/store/pinia/payment'
+import { useProCash } from '@/store/pinia/proCash'
+import { ProjectCashBook, CashBookFilter } from '@/store/types/proCash'
+import { DownPayFilter, PriceFilter, usePayment } from '@/store/pinia/payment'
 import { useRouter, useRoute, onBeforeRouteLeave } from 'vue-router'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
@@ -35,7 +30,7 @@ const AllPaymentList = computed(() => paymentStore.AllPaymentList)
 const projectDataStore = useProjectData()
 const fetchTypeList = (projId: number) => projectDataStore.fetchTypeList(projId)
 
-const fetchAllPaymentList = (payload: PaymentFilter) =>
+const fetchAllPaymentList = (payload: CashBookFilter) =>
   paymentStore.fetchAllPaymentList(payload)
 const fetchPayOrderList = (projId: number) =>
   paymentStore.fetchPayOrderList(projId)
