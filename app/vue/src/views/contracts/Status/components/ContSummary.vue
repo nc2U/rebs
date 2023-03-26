@@ -15,11 +15,11 @@ const unitSum = computed(() => projectDataStore.unitSummary)
 
 const contStore = useContract()
 const contSum = computed(() =>
-  contStore.contSummaryList.map(c => c.num_cont).reduce((x, y) => x + y, 0),
+  contStore.contSummaryList.map(c => c.conts_num).reduce((x, y) => x + y, 0),
 )
 
 const subsSum = computed(() =>
-  contStore.subsSummaryList.map(c => c.num_cont).reduce((x, y) => x + y, 0),
+  contStore.subsSummaryList.map(c => c.conts_num).reduce((x, y) => x + y, 0),
 )
 </script>
 
