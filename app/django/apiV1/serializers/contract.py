@@ -50,6 +50,13 @@ class ContactInContractorSerializer(serializers.ModelSerializer):
         fields = ('pk', 'cell_phone', 'home_phone', 'other_phone', 'email')
 
 
+class ContPriceInContractSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ContractPrice
+        fields = ('pk', 'price', 'price_build', 'price_land',
+                  'price_tax', 'down_pay', 'middle_pay', 'remain_pay')
+
+
 class ContractorInContractSerializer(serializers.ModelSerializer):
     contractoraddress = AddressInContractorSerializer()
     contractorcontact = ContactInContractorSerializer()
@@ -190,6 +197,7 @@ class ProjectCashBookIncsInContractSerializer(serializers.ModelSerializer):
 
 class ContractSetSerializer(serializers.ModelSerializer):
     keyunit = KeyUnitInContractSerializer(read_only=True)
+    contractprice = ContPriceInContractSerializer(read_only=True)
     contractor = ContractorInContractSerializer(read_only=True)
     payments = serializers.SerializerMethodField(read_only=True)
     last_paid_order = serializers.SerializerMethodField(read_only=True)
@@ -200,7 +208,7 @@ class ContractSetSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contract
         fields = ('pk', 'project', 'order_group', 'unit_type', 'serial_number',
-                  'activation', 'keyunit', 'contractor', 'payments', 'last_paid_order',
+                  'activation', 'keyunit', 'contractprice', 'contractor', 'payments', 'last_paid_order',
                   'total_paid', 'order_group_desc', 'unit_type_desc')
 
     @staticmethod
