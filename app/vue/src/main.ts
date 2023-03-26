@@ -22,7 +22,7 @@ init().then(() => {
     app.use(store)
     app.use(router)
     app.use(vuetify)
-    app.use(CoreuiVue)
+    app.use(CoreuiVue, {})
     app.provide('icons', icons)
     app.component('CIcon', CIcon)
     app.mount('#app')
