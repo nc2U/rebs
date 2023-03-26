@@ -37,7 +37,7 @@ const getUTName = (ut: number) =>
 const getContNum = (og: number, ut: number) =>
   contSum.value
     .filter(c => c.order_group === og && c.unit_type === ut)
-    .map(c => c.num_cont)[0]
+    .map(c => c.conts_num)[0]
 
 const getUTbyOGNum = (og: number) =>
   budgetList.value.filter(b => b.order_group === og).length
@@ -53,7 +53,7 @@ const totalBudgetNum = computed(
 )
 const totalContNum = computed(() =>
   budgetList.value.length
-    ? contSum.value.map(c => c.num_cont).reduce((x, y) => x + y, 0)
+    ? contSum.value.map(c => c.conts_num).reduce((x, y) => x + y, 0)
     : 0,
 ) // 총 계약 세대수
 
@@ -65,7 +65,7 @@ const totalContSum = computed(() =>
             b => b.order_group === c.order_group && b.unit_type === c.unit_type,
           )[0].average_price
         : 0
-      return c.num_cont * (price || 0)
+      return c.conts_num * (price || 0)
     })
     .reduce((x, y) => x + y, 0),
 ) // 총 계약금액

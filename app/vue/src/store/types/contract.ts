@@ -132,7 +132,7 @@ export interface Contractor {
 export interface SubsSummary {
   order_group: number
   unit_type: number
-  num_cont: number
+  conts_num: number
 }
 
 export type ContSummary = SubsSummary
