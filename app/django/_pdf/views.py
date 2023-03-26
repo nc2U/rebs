@@ -189,7 +189,7 @@ class PdfExportBill(View):
         bill_data['unit'] = unit
 
         # 이 계약 건 분양가 (계약금, 중도금, 잔금 약정액)
-        this_price, down, medium, balance = get_this_price(contract, unit, inspay_order)
+        this_price, down, medium, balance = (1, 2, 3, 4)  # get_this_price(contract, unit, inspay_order)
 
         bill_data['price'] = this_price if unit else '동호 지정 후 고지'  # 이 건 분양가격
 
@@ -574,7 +574,7 @@ class PdfExportPayments(View):
         context['unit'] = unit
 
         # 1. 이 계약 건 분양가격 (계약금, 중도금, 잔금 약정액)
-        this_price, down, medium, balance = get_this_price(contract, unit, inspay_orders)
+        this_price, down, medium, balance = (1, 2, 3, 4)  # get_this_price(contract, unit, inspay_orders)
         context['price'] = this_price if unit else '동호 지정 후 고지'  # 이 건 분양가격
         amount = {'1': down, '2': medium, '3': balance}
 
