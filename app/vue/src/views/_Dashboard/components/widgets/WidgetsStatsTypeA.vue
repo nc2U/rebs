@@ -5,10 +5,10 @@ import { CChart } from '@coreui/vue-chartjs'
 <template>
   <CCol>
     <CRow>
-      <CCol :xs="6">
+      <CCol xs="6">
         <CWidgetStatsA class="mb-4" color="primary">
-          <template #value
-            >26K
+          <template #value>
+            26K
             <span class="fs-6 fw-normal">
               (-12.4% <CIcon icon="cil-arrow-bottom" />)
             </span>
