@@ -13,6 +13,12 @@ const accountStore = useAccount()
 const userInfo = computed(() => accountStore.userInfo)
 const getUsers = computed(() => accountStore.getUsers)
 
+const allowGetUsers = computed(() =>
+  userInfo.value?.is_superuser
+    ? getUsers.value
+    : getUsers.value.filter(u => u.value === userInfo.value?.pk),
+)
+
 const selectUser = () => nextTick(() => emit('select-user', userId.value))
 
 onBeforeMount(() => {
@@ -37,7 +43,7 @@ watch(
           <CCol>
             <Multiselect
               v-model="userId"
-              :options="getUsers"
+              :options="allowGetUsers"
               placeholder="사용자"
               autocomplete="label"
               :classes="{ search: 'form-control multiselect-search' }"
