@@ -22,10 +22,10 @@ const dataFilter = ref<Filter>({
   company: null,
   from_date: '',
   to_date: '',
-  sort: '',
-  account_d1: '',
-  account_d2: '',
-  account_d3: '',
+  sort: null,
+  account_d1: null,
+  account_d2: null,
+  account_d3: null,
   bank_account: null,
   search: '',
 })
@@ -52,12 +52,15 @@ const fetchAccSortList = () => comCashStore.fetchAccSortList()
 const fetchAllAccD1List = () => comCashStore.fetchAllAccD1List()
 const fetchAllAccD2List = () => comCashStore.fetchAllAccD2List()
 const fetchAllAccD3List = () => comCashStore.fetchAllAccD3List()
-const fetchFormAccD1List = (sort: string) =>
+const fetchFormAccD1List = (sort: number | null) =>
   comCashStore.fetchFormAccD1List(sort)
-const fetchFormAccD2List = (sort: string, d1: string) =>
+const fetchFormAccD2List = (sort: number | null, d1: number | null) =>
   comCashStore.fetchFormAccD2List(sort, d1)
-const fetchFormAccD3List = (sort: string, d1: string, d2: string) =>
-  comCashStore.fetchFormAccD3List(sort, d1, d2)
+const fetchFormAccD3List = (
+  sort: number | null,
+  d1: number | null,
+  d2: number | null,
+) => comCashStore.fetchFormAccD3List(sort, d1, d2)
 const fetchComBankAccList = (pk: number) => comCashStore.fetchComBankAccList(pk)
 
 const fetchCashBookList = (payload: Filter) =>
@@ -88,9 +91,9 @@ const pageSelect = (page: number) => listControl.value.listFiltering(page)
 const listFiltering = (payload: Filter) => {
   if (company.value) payload.company = company.value
   dataFilter.value = payload
-  const sort = payload.sort || ''
-  const d1 = payload.account_d1 || ''
-  const d2 = payload.account_d2 || ''
+  const sort = payload.sort || null
+  const d1 = payload.account_d1 || null
+  const d2 = payload.account_d2 || null
   fetchFormAccD1List(sort)
   fetchFormAccD2List(sort, d1)
   fetchFormAccD3List(sort, d1, d2)
@@ -141,9 +144,9 @@ onBeforeMount(() => {
   fetchAllAccD1List()
   fetchAllAccD2List()
   fetchAllAccD3List()
-  fetchFormAccD1List('')
-  fetchFormAccD2List('', '')
-  fetchFormAccD3List('', '', '')
+  fetchFormAccD1List(null)
+  fetchFormAccD2List(null, null)
+  fetchFormAccD3List(null, null, null)
   fetchComBankAccList(company.value)
   fetchCashBookList({ company: company.value })
   dataFilter.value.company = company.value
