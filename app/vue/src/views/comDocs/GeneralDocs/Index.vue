@@ -85,8 +85,8 @@ const onSubmit = (payload: Post & Attatches) => {
       params: { postId: pk },
     })
   } else {
-    // createPost({ form })
-    // router.replace({ name: '본사 일반 문서' })
+    createPost({ form })
+    router.replace({ name: '본사 일반 문서' })
   }
 }
 
