@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import {ref, reactive, computed, onBeforeMount, watch} from 'vue'
-import {onBeforeRouteLeave, useRoute} from 'vue-router'
-import {useDocument, SuitCaseFilter} from '@/store/pinia/document'
-import {Post, Attatches} from '@/store/types/document'
-import {write_company_docs} from '@/utils/pageAuth'
-import {dateFormat} from '@/utils/baseMixins'
-import {AlertSecondary} from '@/utils/cssMixins'
+import { ref, reactive, computed, onBeforeMount, watch } from 'vue'
+import { onBeforeRouteLeave, useRoute } from 'vue-router'
+import { useDocument, SuitCaseFilter } from '@/store/pinia/document'
+import { Post, Attatches } from '@/store/types/document'
+import { write_company_docs } from '@/utils/pageAuth'
+import { dateFormat } from '@/utils/baseMixins'
+import { AlertSecondary } from '@/utils/cssMixins'
 import ToastEditor from '@/components/ToastEditor/index.vue'
 import FileUpload from '@/components/FileUpload.vue'
 import DatePicker from '@/components/DatePicker/index.vue'
@@ -13,7 +13,7 @@ import Multiselect from '@vueform/multiselect'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-defineProps({categoryList: {type: Object, default: null}})
+defineProps({ categoryList: { type: Object, default: null } })
 
 const emit = defineEmits(['on-submit', 'close'])
 
@@ -96,12 +96,12 @@ const enableStore = (event: Event) => {
 }
 
 const sortName = computed(() =>
-    post.value && post.value.project ? post.value.proj_name : '본사',
+  post.value && post.value.project ? post.value.proj_name : '본사',
 )
 
 const fetchPost = (pk: number) => documentStore.fetchPost(pk)
 const fetchAllSuitCaseList = (payload: SuitCaseFilter) =>
-    documentStore.fetchAllSuitCaseList(payload)
+  documentStore.fetchAllSuitCaseList(payload)
 
 const route = useRoute()
 const btnClass = computed(() => (route.params.postId ? 'success' : 'primary'))
@@ -119,7 +119,7 @@ const onSubmit = (event: Event) => {
 }
 
 const modalAction = () => {
-  emit('on-submit', {...form})
+  emit('on-submit', { ...form })
   validated.value = false
   confirmModal.value.close()
 }
@@ -136,9 +136,10 @@ watch(form, val => {
 watch(post, val => {
   if (val) {
     form.pk = val.pk
+    form.company = val.company
+    form.project = val.project
     form.board = val.board
     form.is_notice = val.is_notice
-    form.project = val.project
     form.category = val.category
     form.lawsuit = val.lawsuit
     form.title = val.title
@@ -183,29 +184,29 @@ onBeforeRouteLeave(() => {
     <CCol>
       <h5>
         {{ sortName }}
-        <v-icon icon="mdi-chevron-double-right" size="xs"/>
+        <v-icon icon="mdi-chevron-double-right" size="xs" />
         소송 문서
       </h5>
     </CCol>
   </CRow>
 
-  <hr/>
+  <hr />
 
   <CForm
-      enctype="multipart/form-data"
-      class="needs-validation"
-      novalidate
-      :validated="validated"
-      @submit.prevent="onSubmit"
+    enctype="multipart/form-data"
+    class="needs-validation"
+    novalidate
+    :validated="validated"
+    @submit.prevent="onSubmit"
   >
     <CRow class="mb-3">
       <CFormLabel for="title" class="col-md-2 col-form-label">제목</CFormLabel>
       <CCol md="9">
         <CFormInput
-            id="title"
-            v-model="form.title"
-            required
-            placeholder="게시물 제목"
+          id="title"
+          v-model="form.title"
+          required
+          placeholder="게시물 제목"
         />
       </CCol>
     </CRow>
@@ -216,14 +217,14 @@ onBeforeRouteLeave(() => {
       </CFormLabel>
       <CCol md="3">
         <Multiselect
-            v-model="form.lawsuit"
-            :options="getSuitCase"
-            placeholder="사건번호 선택"
-            autocomplete="label"
-            :classes="{ search: 'form-control multiselect-search' }"
-            :attrs="form.lawsuit ? {} : { required: true }"
-            :add-option-on="['enter' | 'tab']"
-            searchable
+          v-model="form.lawsuit"
+          :options="getSuitCase"
+          placeholder="사건번호 선택"
+          autocomplete="label"
+          :classes="{ search: 'form-control multiselect-search' }"
+          :attrs="form.lawsuit ? {} : { required: true }"
+          :add-option-on="['enter' | 'tab']"
+          searchable
         />
       </CCol>
 
@@ -244,9 +245,9 @@ onBeforeRouteLeave(() => {
       </CFormLabel>
       <CCol md="2">
         <DatePicker
-            v-model="form.execution_date"
-            placeholder="문서 발행일자"
-            required
+          v-model="form.execution_date"
+          placeholder="문서 발행일자"
+          required
         />
       </CCol>
     </CRow>
@@ -254,7 +255,7 @@ onBeforeRouteLeave(() => {
     <CRow class="mb-3">
       <CFormLabel for="title" class="col-md-2 col-form-label">내용</CFormLabel>
       <CCol md="10">
-        <ToastEditor v-model="form.content" placeholder="본문 내용"/>
+        <ToastEditor v-model="form.content" placeholder="본문 내용" />
       </CCol>
     </CRow>
 
@@ -265,24 +266,24 @@ onBeforeRouteLeave(() => {
           <CAlert :color="AlertSecondary">
             <CCol>
               <CInputGroup
-                  v-for="(link, i) in form.oldLinks"
-                  :key="link.pk"
-                  class="mb-2"
+                v-for="(link, i) in form.oldLinks"
+                :key="link.pk"
+                class="mb-2"
               >
                 <CFormInput
-                    :id="`post-link-${link.pk}`"
-                    v-model="form.oldLinks[i].link"
-                    size="sm"
-                    placeholder="파일 링크"
-                    @input="enableStore"
+                  :id="`post-link-${link.pk}`"
+                  v-model="form.oldLinks[i].link"
+                  size="sm"
+                  placeholder="파일 링크"
+                  @input="enableStore"
                 />
                 <CInputGroupText id="basic-addon1" class="py-0">
                   <CFormCheck
-                      :id="`del-link-${link.pk}`"
-                      v-model="form.oldLinks[i].del"
-                      :value="false"
-                      label="삭제"
-                      @input="enableStore"
+                    :id="`del-link-${link.pk}`"
+                    v-model="form.oldLinks[i].del"
+                    :value="false"
+                    label="삭제"
+                    @input="enableStore"
                   />
                 </CInputGroupText>
               </CInputGroup>
@@ -293,22 +294,22 @@ onBeforeRouteLeave(() => {
         <CRow class="mb-2">
           <CCol>
             <CInputGroup
-                v-for="lNum in newLinkRange"
-                :key="`ln-${lNum}`"
-                class="mb-2"
+              v-for="lNum in newLinkRange"
+              :key="`ln-${lNum}`"
+              class="mb-2"
             >
               <CFormInput
-                  :id="`link-${lNum}`"
-                  v-model="form.newLinks[lNum]"
-                  placeholder="파일 링크"
-                  @input="enableStore"
+                :id="`link-${lNum}`"
+                v-model="form.newLinks[lNum]"
+                placeholder="파일 링크"
+                @input="enableStore"
               />
               <CInputGroupText id="basic-addon1" @click="ctlLinkNum(lNum)">
                 <v-icon
-                    :icon="`mdi-${
+                  :icon="`mdi-${
                     lNum + 1 < newLinkNum ? 'minus' : 'plus'
                   }-thick`"
-                    :color="lNum + 1 < newLinkNum ? 'error' : 'primary'"
+                  :color="lNum + 1 < newLinkNum ? 'error' : 'primary'"
                 />
               </CInputGroupText>
             </CInputGroup>
@@ -324,10 +325,10 @@ onBeforeRouteLeave(() => {
           <CAlert :color="AlertSecondary">
             <small>{{ devideUri(form.oldFiles[0].file)[0] }}</small>
             <CCol
-                v-for="(file, i) in form.oldFiles"
-                :key="file.pk"
-                xs="12"
-                color="primary"
+              v-for="(file, i) in form.oldFiles"
+              :key="file.pk"
+              xs="12"
+              color="primary"
             >
               <small>
                 현재 :
@@ -339,20 +340,20 @@ onBeforeRouteLeave(() => {
                     <CInputGroup>
                       변경 : &nbsp;
                       <FileUpload
-                          :id="`post-file-${file.pk}`"
-                          v-model="form.oldFiles[i].newFile"
-                          size="sm"
-                          type="file"
-                          @input="enableStore"
+                        :id="`post-file-${file.pk}`"
+                        v-model="form.oldFiles[i].newFile"
+                        size="sm"
+                        type="file"
+                        @input="enableStore"
                       />
                       <CInputGroupText id="basic-addon2" class="py-0">
                         <CFormCheck
-                            :id="`del-file-${file.pk}`"
-                            v-model="form.oldFiles[i].del"
-                            :value="false"
-                            label="삭제"
-                            :disabled="!!form.oldFiles[i].newFile"
-                            @input="enableStore"
+                          :id="`del-file-${file.pk}`"
+                          v-model="form.oldFiles[i].del"
+                          :value="false"
+                          label="삭제"
+                          :disabled="!!form.oldFiles[i].newFile"
+                          @input="enableStore"
                         />
                       </CInputGroupText>
                     </CInputGroup>
@@ -366,22 +367,22 @@ onBeforeRouteLeave(() => {
         <CRow class="mb-2">
           <CCol>
             <CInputGroup
-                v-for="fNum in newFileRange"
-                :key="`fn-${fNum}`"
-                class="mb-2"
+              v-for="fNum in newFileRange"
+              :key="`fn-${fNum}`"
+              class="mb-2"
             >
               <FileUpload
-                  :id="`file-${fNum}`"
-                  v-model="form.newFiles[fNum]"
-                  type="file"
-                  @input="enableStore"
+                :id="`file-${fNum}`"
+                v-model="form.newFiles[fNum]"
+                type="file"
+                @input="enableStore"
               />
               <CInputGroupText id="basic-addon2" @click="ctlFileNum(fNum)">
                 <v-icon
-                    :icon="`mdi-${
+                  :icon="`mdi-${
                     fNum + 1 < newFileNum ? 'minus' : 'plus'
                   }-thick`"
-                    :color="fNum + 1 < newFileNum ? 'error' : 'primary'"
+                  :color="fNum + 1 < newFileNum ? 'error' : 'primary'"
                 />
               </CInputGroupText>
             </CInputGroup>
@@ -393,15 +394,15 @@ onBeforeRouteLeave(() => {
     <CRow>
       <CCol class="text-right">
         <CButton
-            color="light"
-            @click="$router.push({ name: '본사 소송 문서' })"
+          color="light"
+          @click="$router.push({ name: '본사 소송 문서' })"
         >
           목록으로
         </CButton>
         <CButton
-            v-if="route.params.postId"
-            color="light"
-            @click="$router.go(-1)"
+          v-if="route.params.postId"
+          color="light"
+          @click="$router.go(-1)"
         >
           뒤로
         </CButton>
@@ -428,5 +429,5 @@ onBeforeRouteLeave(() => {
     </template>
   </ConfirmModal>
 
-  <AlertModal ref="alertModal"/>
+  <AlertModal ref="alertModal" />
 </template>
