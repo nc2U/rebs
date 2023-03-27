@@ -38,7 +38,7 @@ class LawSuitCaseFilterSet(FilterSet):
 
     class Meta:
         model = LawsuitCase
-        fields = ('is_com', 'project', 'sort', 'level', 'court')
+        fields = ('company', 'is_com', 'project', 'sort', 'level', 'court')
 
 
 class LawSuitCaseBase(viewsets.ModelViewSet):
@@ -71,7 +71,7 @@ class PostFilterSet(FilterSet):
 
     class Meta:
         model = Post
-        fields = ('board', 'is_notice', 'is_com', 'project', 'category', 'lawsuit')
+        fields = ('company', 'project', 'board', 'is_notice', 'is_com', 'category', 'lawsuit')
 
 
 class PostViewSet(viewsets.ModelViewSet):
