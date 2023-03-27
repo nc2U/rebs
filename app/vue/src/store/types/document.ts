@@ -23,6 +23,7 @@ export interface Category {
 
 export interface SuitCase {
   pk: number | null
+  company: number | null
   project: number | null
   proj_name?: string
   sort: '' | '1' | '2' | '3' | '4' | '5'
@@ -61,9 +62,10 @@ export type Post = {
     | Link[]
     | AFile[]
   pk?: number | null
+  company: number | null
+  project: number | null | string
   board: number | null
   is_notice: boolean
-  project: number | null | string
   proj_name?: string | null
   category: number | null
   cate_name?: string | null

@@ -15,17 +15,18 @@ import {
 } from '@/store/types/document'
 
 export type SuitCaseFilter = {
-  page?: number
-  is_com?: '' | boolean
   project?: '' | 'com' | number
+  is_com?: '' | boolean
   court?: string
   related_case?: '' | number
   sort?: '' | '1' | '2' | '3' | '4' | '5'
   level?: '' | '1' | '2' | '3' | '4'
   search?: string
+  page?: number
 }
 
 export type PostFilter = {
+  company?: number | null
   board?: number
   is_notice?: boolean
   is_com?: '' | boolean
@@ -196,8 +197,8 @@ export const useDocument = defineStore('document', () => {
       .catch(err => errorHandle(err.response.data))
 
   const fetchPostList = (payload: PostFilter) => {
-    const { board, page } = payload
-    let url = `/post/?board=${board}&page=${page || 1}`
+    const { company, board, page } = payload
+    let url = `/post/?company=${company}&board=${board}&page=${page || 1}`
     if (payload.is_com) url += `&is_com=${payload.is_com}`
     if (payload.project) url += `&project=${payload.project}`
     if (payload.category) url += `&category=${payload.category}`
