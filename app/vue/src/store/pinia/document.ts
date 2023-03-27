@@ -1,7 +1,7 @@
 import api from '@/api'
-import {computed, ref} from 'vue'
-import {defineStore} from 'pinia'
-import {message, errorHandle} from '@/utils/helper'
+import { computed, ref } from 'vue'
+import { defineStore } from 'pinia'
+import { message, errorHandle } from '@/utils/helper'
 import {
   Group,
   Board,
@@ -108,7 +108,7 @@ export const useDocument = defineStore('document', () => {
       .catch(err => errorHandle(err.response.data))
 
   const getQueryStr = (payload: SuitCaseFilter) => {
-    const {is_com, project, court, related_case, sort, level, search} =
+    const { is_com, project, court, related_case, sort, level, search } =
       payload
     let queryStr = ''
     if (is_com) queryStr += `&is_com=${is_com}`
@@ -197,7 +197,7 @@ export const useDocument = defineStore('document', () => {
       .catch(err => errorHandle(err.response.data))
 
   const fetchPostList = (payload: PostFilter) => {
-    const {company, board, page} = payload
+    const { company, board, page } = payload
     let url = `/post/?company=${company}&board=${board}&page=${page || 1}`
     if (payload.is_com) url += `&is_com=${payload.is_com}`
     if (payload.project) url += `&project=${payload.project}`
@@ -218,12 +218,12 @@ export const useDocument = defineStore('document', () => {
   const createPost = (payload: { form: FormData }) =>
     api
       .post(`/post/`, payload.form, {
-        headers: {'Content-Type': 'multipart/form-data'},
+        headers: { 'Content-Type': 'multipart/form-data' },
       })
       .then(res =>
         fetchPostList({
           company: res.data.company,
-          board: res.data.board
+          board: res.data.board,
         }).then(() => message()),
       )
       .catch(err => errorHandle(err.response.data))
@@ -231,7 +231,7 @@ export const useDocument = defineStore('document', () => {
   const updatePost = (payload: { pk: number; form: FormData }) =>
     api
       .put(`/post/${payload.pk}/`, payload.form, {
-        headers: {'Content-Type': 'multipart/form-data'},
+        headers: { 'Content-Type': 'multipart/form-data' },
       })
       .then(() => message())
       .catch(err => errorHandle(err.response.data))
