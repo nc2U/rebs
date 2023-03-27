@@ -61,7 +61,7 @@ const patchPost = (payload: PatchPost) => documentStore.patchPost(payload)
 const patchLink = (payload: Link) => documentStore.patchLink(payload)
 const patchFile = (payload: AFile) => documentStore.patchFile(payload)
 
-const headerSelect = () => (target: number) => {
+const headerSelect = (target: number) => {
   if (!!target) {
     fetchPostList({ company: target, board: 2 })
   } else {
