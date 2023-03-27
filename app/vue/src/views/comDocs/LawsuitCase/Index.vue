@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { ref, computed, onBeforeMount, onBeforeUpdate } from 'vue'
 import { pageTitle, navMenu } from '@/views/comDocs/_menu/headermixin2'
+import { useRouter } from 'vue-router'
+import { useCompany } from '@/store/pinia/company'
 import { SuitCaseFilter as cFilter, useDocument } from '@/store/pinia/document'
 import { SuitCase } from '@/store/types/document'
-import { useRouter } from 'vue-router'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from './components/ListController.vue'
@@ -13,18 +14,23 @@ import CaseForm from './components/CaseForm.vue'
 
 const fController = ref()
 const caseFilter = ref<cFilter>({
-  page: 1,
-  is_com: '',
+  company: '',
   project: '',
+  is_com: '',
   court: '',
   related_case: '',
   sort: '',
   level: '',
   search: '',
+  page: 1,
 })
 
 const documentStore = useDocument()
 const suitcaseList = computed(() => documentStore.suitcaseList)
+
+const comStore = useCompany()
+const initComId = computed(() => comStore.initComId)
+const company = computed(() => comStore.company?.pk || initComId.value)
 
 const listFiltering = (payload: cFilter) => {
   caseFilter.value = payload
@@ -57,6 +63,7 @@ const onSubmit = (payload: SuitCase) => {
       params: { caseId: payload.pk },
     })
   } else {
+    payload.company = company.value
     createSuitCase(payload)
     router.replace({ name: '본사 소송 사건' })
   }

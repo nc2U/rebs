@@ -15,6 +15,7 @@ import {
 } from '@/store/types/document'
 
 export type SuitCaseFilter = {
+  company?: ''
   project?: '' | 'com' | number
   is_com?: '' | boolean
   court?: string
