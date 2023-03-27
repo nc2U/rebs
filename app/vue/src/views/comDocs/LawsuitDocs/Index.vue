@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { ref, computed, onBeforeMount, onBeforeUpdate } from 'vue'
 import { pageTitle, navMenu } from '@/views/comDocs/_menu/headermixin2'
+import { formUtility } from '@/utils/helper'
 import { useRouter } from 'vue-router'
+import { useCompany } from '@/store/pinia/company'
 import { PostFilter, useDocument } from '@/store/pinia/document'
 import { AFile, Attatches, Link, PatchPost, Post } from '@/store/types/document'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
@@ -11,7 +13,6 @@ import CategoryTabs from './components/CategoryTabs.vue'
 import DocsView from './components/DocsView.vue'
 import DocsList from './components/DocsList.vue'
 import DocsForm from './components/DocsForm.vue'
-import { formUtility } from '@/utils/helper'
 
 const fController = ref()
 const caseFilter = ref<PostFilter>({
@@ -42,6 +43,10 @@ const pageSelect = (page: number) => {
   listFiltering(caseFilter.value)
 }
 
+const comStore = useCompany()
+const initComId = computed(() => comStore.initComId)
+const company = computed(() => comStore.company?.pk || initComId.value)
+
 const documentStore = useDocument()
 const postList = computed(() => documentStore.postList)
 const categoryList = computed(() => documentStore.categoryList)
@@ -62,7 +67,7 @@ const patchFile = (payload: AFile) => documentStore.patchFile(payload)
 const router = useRouter()
 const onSubmit = (payload: Post & Attatches) => {
   const { pk, ...formData } = payload
-
+  formData.company = company.value
   const form = formUtility.getFormData(formData)
 
   console.log(formData, ...form)
@@ -93,11 +98,12 @@ const sortFilter = (project: number | null) => {
 
 onBeforeMount(() => {
   fetchCategoryList(3)
-  fetchPostList({ board: 3 })
+  fetchPostList({ company: company.value, board: 3 })
 })
 
 onBeforeUpdate(() => {
   fetchPostList({
+    company: company.value,
     board: 3,
     page: caseFilter.value.page,
     category: caseFilter.value.category,
