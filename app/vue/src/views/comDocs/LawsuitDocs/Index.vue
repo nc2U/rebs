@@ -64,6 +64,15 @@ const patchPost = (payload: PatchPost) => documentStore.patchPost(payload)
 const patchLink = (payload: Link) => documentStore.patchLink(payload)
 const patchFile = (payload: AFile) => documentStore.patchFile(payload)
 
+const headerSelect = (target: number) => {
+  if (!!target) {
+    fetchPostList({ company: target, board: 3 })
+  } else {
+    documentStore.postList = []
+    documentStore.postCount = 0
+  }
+}
+
 const router = useRouter()
 const onSubmit = (payload: Post & Attatches) => {
   const { pk, ...formData } = payload
@@ -116,6 +125,7 @@ onBeforeUpdate(() => {
     :page-title="pageTitle"
     :nav-menu="navMenu"
     :selector="'CompanySelect'"
+    @header-select="headerSelect"
   />
 
   <ContentBody>
