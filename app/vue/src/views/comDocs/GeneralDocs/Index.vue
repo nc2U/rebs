@@ -72,7 +72,7 @@ const headerSelect = (target: number) => {
 const router = useRouter()
 const onSubmit = (payload: Post & Attatches) => {
   const { pk, ...formData } = payload
-
+  formData.company = company.value
   const form = formUtility.getFormData(formData)
 
   console.log(formData)
@@ -85,8 +85,8 @@ const onSubmit = (payload: Post & Attatches) => {
       params: { postId: pk },
     })
   } else {
-    createPost({ form, ...{ company: company.value } })
-    router.replace({ name: '본사 일반 문서' })
+    // createPost({ form })
+    // router.replace({ name: '본사 일반 문서' })
   }
 }
 

@@ -70,7 +70,7 @@ class PostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ('pk', 'board', 'is_notice', 'project', 'proj_name', 'category', 'cate_name',
+        fields = ('pk', 'company', 'project', 'board', 'is_notice', 'proj_name', 'category', 'cate_name',
                   'lawsuit', 'lawsuit_name', 'title', 'execution_date', 'is_hide_comment',
                   'content', 'hit', 'blame', 'ip', 'device', 'secret', 'password', 'links',
                   'files', 'comments', 'user', 'soft_delete', 'created', 'updated', 'is_new')

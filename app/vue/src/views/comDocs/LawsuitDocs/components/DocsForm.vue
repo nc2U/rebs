@@ -25,7 +25,7 @@ const form = reactive<Post & Attatches>({
   pk: null,
   company: null,
   project: null,
-  board: 2,
+  board: 3,
   is_notice: false,
   category: null,
   lawsuit: null,
