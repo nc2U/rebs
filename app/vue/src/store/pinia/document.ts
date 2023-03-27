@@ -147,8 +147,8 @@ export const useDocument = defineStore('document', () => {
     api
       .post(`/suitcase/`, payload)
       .then(() =>
-        fetchAllSuitCaseList({}).then(() =>
-          fetchSuitCaseList({}).then(() => message()),
+        fetchAllSuitCaseList({ company: payload.company }).then(() =>
+          fetchSuitCaseList({ company: payload.company }).then(() => message()),
         ),
       )
       .catch(err => errorHandle(err.response.data))
