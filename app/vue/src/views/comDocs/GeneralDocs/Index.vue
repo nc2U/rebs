@@ -66,6 +66,7 @@ const headerSelect = (target: number) => {
     fetchPostList({ company: target, board: 2 })
   } else {
     documentStore.postList = []
+    documentStore.postCount = 0
   }
 }
 

@@ -14,7 +14,7 @@ import CaseForm from './components/CaseForm.vue'
 
 const fController = ref()
 const caseFilter = ref<cFilter>({
-  company: '',
+  company: null,
   project: '',
   is_com: '',
   court: '',
@@ -53,6 +53,15 @@ const createSuitCase = (payload: SuitCase) =>
 const updateSuitCase = (payload: SuitCase) =>
   documentStore.updateSuitCase(payload)
 const deleteSuitCase = (pk: number) => documentStore.deleteSuitCase(pk)
+
+const headerSelect = (target: number) => {
+  if (!!target) {
+    fetchSuitCaseList({ company: target })
+  } else {
+    documentStore.suitcaseList = []
+    documentStore.suitcaseCount = 0
+  }
+}
 
 const router = useRouter()
 const onSubmit = (payload: SuitCase) => {
@@ -100,12 +109,12 @@ const sortFilter = (project: number | null) => {
 }
 
 onBeforeMount(() => {
-  fetchSuitCaseList({})
+  fetchSuitCaseList({ company: company.value })
   fetchAllSuitCaseList({})
 })
 
 onBeforeUpdate(() => {
-  fetchSuitCaseList({ page: caseFilter.value.page })
+  fetchSuitCaseList({ company: company.value, page: caseFilter.value.page })
 })
 </script>
 
@@ -114,6 +123,7 @@ onBeforeUpdate(() => {
     :page-title="pageTitle"
     :nav-menu="navMenu"
     :selector="'CompanySelect'"
+    @header-select="headerSelect"
   />
 
   <ContentBody>

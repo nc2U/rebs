@@ -11,7 +11,6 @@ defineProps({ tab: { type: Number, default: null } })
 const emit = defineEmits(['list-filter'])
 
 const form = reactive<SuitCaseFilter>({
-  page: 1,
   is_com: '',
   project: '',
   court: '',
@@ -19,6 +18,7 @@ const form = reactive<SuitCaseFilter>({
   sort: '',
   level: '',
   search: '',
+  page: 1,
 })
 
 const formsCheck = computed(() => {

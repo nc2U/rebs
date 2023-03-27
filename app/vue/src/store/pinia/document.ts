@@ -15,9 +15,9 @@ import {
 } from '@/store/types/document'
 
 export type SuitCaseFilter = {
-  company?: ''
-  project?: '' | 'com' | number
+  company?: number | null
   is_com?: '' | boolean
+  project?: '' | 'com' | number
   court?: string
   related_case?: '' | number
   sort?: '' | '1' | '2' | '3' | '4' | '5'
@@ -124,9 +124,10 @@ export const useDocument = defineStore('document', () => {
 
   const fetchSuitCaseList = (payload: SuitCaseFilter) => {
     const page = payload.page || 1
+    const company = payload.company || ''
     const queryStr = getQueryStr(payload)
     return api
-      .get(`/suitcase/?page=${page}${queryStr}`)
+      .get(`/suitcase/?company=${company}&page=${page}${queryStr}`)
       .then(res => {
         suitcaseList.value = res.data.results
         suitcaseCount.value = res.data.count
@@ -137,7 +138,7 @@ export const useDocument = defineStore('document', () => {
   const fetchAllSuitCaseList = (payload: SuitCaseFilter) => {
     const queryStr = getQueryStr(payload)
     return api
-      .get(`/all-suitcase/?i=1${queryStr}`)
+      .get(`/all-suitcase/?company=${payload.company || ''}&${queryStr}`)
       .then(res => (allSuitCaseList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
   }
