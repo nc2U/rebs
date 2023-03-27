@@ -50,6 +50,7 @@ class Category(models.Model):
 
 
 class LawsuitCase(models.Model):
+    company = models.ForeignKey('company.Company', on_delete=models.CASCADE, verbose_name='회사')
     project = models.ForeignKey('project.Project', on_delete=models.SET_NULL, null=True, blank=True,
                                 verbose_name='프로젝트')
     SORT_CHOICES = (('1', '민사'), ('2', '형사'), ('3', '행정'), ('4', '가사'), ('5', '신청/집행'))
@@ -307,10 +308,11 @@ class LawsuitCase(models.Model):
 
 
 class Post(models.Model):
+    company = models.ForeignKey('company.Company', on_delete=models.CASCADE, verbose_name='회사')
+    project = models.ForeignKey('project.Project', on_delete=models.SET_NULL,
+                                null=True, blank=True, verbose_name='프로젝트')
     board = models.ForeignKey(Board, on_delete=models.PROTECT, verbose_name='게시판')
     is_notice = models.BooleanField('공지', default=False)
-    project = models.ForeignKey('project.Project', on_delete=models.SET_NULL, null=True, blank=True,
-                                verbose_name='프로젝트')
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='카테고리')
     lawsuit = models.ForeignKey(LawsuitCase, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='사건번호')
     title = models.CharField('제목', max_length=255)
