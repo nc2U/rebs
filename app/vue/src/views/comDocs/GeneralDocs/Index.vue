@@ -2,6 +2,7 @@
 import { ref, computed, onBeforeMount, onBeforeUpdate } from 'vue'
 import { pageTitle, navMenu } from '@/views/comDocs/_menu/headermixin1'
 import { useRouter } from 'vue-router'
+import { useCompany } from '@/store/pinia/company'
 import { useDocument, PostFilter } from '@/store/pinia/document'
 import { AFile, Attatches, Link, Post, PatchPost } from '@/store/types/document'
 import { formUtility } from '@/utils/helper'
@@ -15,6 +16,7 @@ import DocsForm from './components/DocsForm.vue'
 
 const fController = ref()
 const postFilter = ref<PostFilter>({
+  company: null,
   board: 2,
   category: null,
   is_com: false,
@@ -38,6 +40,10 @@ const selectCate = (cate: number) => {
 }
 const pageSelect = (page: number) => console.log(page)
 
+const comStore = useCompany()
+const initComId = computed(() => comStore.initComId)
+const company = computed(() => comStore.company?.pk || initComId.value)
+
 const documentStore = useDocument()
 const postList = computed(() => documentStore.postList)
 const categoryList = computed(() => documentStore.categoryList)
@@ -54,6 +60,14 @@ const updatePost = (payload: { pk: number; form: FormData }) =>
 const patchPost = (payload: PatchPost) => documentStore.patchPost(payload)
 const patchLink = (payload: Link) => documentStore.patchLink(payload)
 const patchFile = (payload: AFile) => documentStore.patchFile(payload)
+
+const headerSelect = () => (target: number) => {
+  if (!!target) {
+    fetchPostList({ company: target, board: 2 })
+  } else {
+    documentStore.postList = []
+  }
+}
 
 const router = useRouter()
 const onSubmit = (payload: Post & Attatches) => {
@@ -90,11 +104,12 @@ const sortFilter = (project: number | null) => {
 
 onBeforeMount(() => {
   fetchCategoryList(2)
-  fetchPostList({ board: 2 })
+  fetchPostList({ company: company.value, board: 2 })
 })
 
 onBeforeUpdate(() => {
   fetchPostList({
+    company: company.value,
     board: 2,
     page: postFilter.value.page,
     category: postFilter.value.category,
@@ -107,6 +122,7 @@ onBeforeUpdate(() => {
     :page-title="pageTitle"
     :nav-menu="navMenu"
     :selector="'CompanySelect'"
+    @header-select="headerSelect"
   />
 
   <ContentBody>

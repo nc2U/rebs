@@ -22,9 +22,10 @@ const confirmModal = ref()
 
 const form = reactive<Post & Attatches>({
   pk: null,
+  company: null,
+  project: null,
   board: 1,
   is_notice: false,
-  project: null,
   category: null,
   lawsuit: null,
   title: '',
@@ -38,7 +39,6 @@ const form = reactive<Post & Attatches>({
   secret: false,
   password: '',
   links: [],
-
   oldLinks: [],
   oldFiles: [],
   newLinks: [],
@@ -133,9 +133,10 @@ watch(form, val => {
 watch(post, val => {
   if (val) {
     form.pk = val.pk
+    form.company = val.company
+    form.project = val.project
     form.board = val.board
     form.is_notice = val.is_notice
-    form.project = val.project
     form.category = val.category
     form.lawsuit = val.lawsuit
     form.title = val.title
