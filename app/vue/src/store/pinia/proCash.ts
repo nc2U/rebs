@@ -65,6 +65,7 @@ export const useProCash = defineStore('proCash', () => {
   }
 
   const proBankAccountList = ref<ProjectBankAccount[]>([])
+  const allProBankAccountList = ref<ProjectBankAccount[]>([])
 
   const fetchProBankAccList = (project: number) =>
     api
@@ -75,7 +76,7 @@ export const useProCash = defineStore('proCash', () => {
   const fetchAllProBankAccList = (project: number) =>
     api
       .get(`/project-bank-account/?project=${project}`)
-      .then(res => (proBankAccountList.value = res.data.results))
+      .then(res => (allProBankAccountList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
   const createProBankAcc = (payload: ProjectBankAccount) =>
@@ -429,6 +430,7 @@ export const useProCash = defineStore('proCash', () => {
     fetchProFormAccD2List,
 
     proBankAccountList,
+    allProBankAccountList,
     fetchProBankAccList,
     fetchAllProBankAccList,
     createProBankAcc,

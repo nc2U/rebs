@@ -110,6 +110,7 @@ export const useComCash = defineStore('comCash', () => {
   }
 
   const comBankList = ref<CompanyBank[]>([])
+  const allComBankList = ref<CompanyBank[]>([])
 
   const fetchComBankAccList = (company: number) =>
     api
@@ -120,7 +121,7 @@ export const useComCash = defineStore('comCash', () => {
   const fetchAllComBankAccList = (company: number) =>
     api
       .get(`/company-bank-account/?company=${company}`)
-      .then(res => (comBankList.value = res.data.results))
+      .then(res => (allComBankList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
   const createCompanyBankAccount = (payload: CompanyBank) =>
@@ -322,6 +323,7 @@ export const useComCash = defineStore('comCash', () => {
     fetchFormAccD3List,
 
     comBankList,
+    allComBankList,
     fetchComBankAccList,
     fetchAllComBankAccList,
     createCompanyBankAccount,
