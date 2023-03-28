@@ -68,6 +68,12 @@ export const useProCash = defineStore('proCash', () => {
 
   const fetchProBankAccList = (project: number) =>
     api
+      .get(`/project-bank-account/?project=${project}&is_hide=false`)
+      .then(res => (proBankAccountList.value = res.data.results))
+      .catch(err => errorHandle(err.response.data))
+
+  const fetchAllProBankAccList = (project: number) =>
+    api
       .get(`/project-bank-account/?project=${project}`)
       .then(res => (proBankAccountList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
@@ -75,20 +81,32 @@ export const useProCash = defineStore('proCash', () => {
   const createProBankAcc = (payload: ProjectBankAccount) =>
     api
       .post(`/project-bank-account/`, payload)
-      .then(res => fetchProBankAccList(res.data.project).then(() => message()))
+      .then(res =>
+        fetchAllProBankAccList(res.data.project).then(() =>
+          fetchProBankAccList(res.data.project).then(() => message()),
+        ),
+      )
       .catch(err => errorHandle(err.response.data))
 
   const updateProBankAcc = (payload: ProjectBankAccount) =>
     api
       .put(`/project-bank-account/${payload.pk}/`, payload)
-      .then(res => fetchProBankAccList(res.data.project).then(() => message()))
+      .then(res =>
+        fetchAllProBankAccList(res.data.project).then(() =>
+          fetchProBankAccList(res.data.project).then(() => message()),
+        ),
+      )
       .catch(err => errorHandle(err.response.data))
 
   const patchProBankAcc = (payload: { pk: number; is_hide: boolean }) => {
     const { pk, ...hideData } = payload
     return api
       .patch(`project-bank-account/${pk}/`, hideData)
-      .then(res => fetchProBankAccList(res.data.project).then(() => message()))
+      .then(res =>
+        fetchAllProBankAccList(res.data.project).then(() =>
+          fetchProBankAccList(res.data.project).then(() => message()),
+        ),
+      )
       .catch(err => errorHandle(err.response.data))
   }
 
@@ -96,8 +114,10 @@ export const useProCash = defineStore('proCash', () => {
     api
       .delete(`/project-bank-account/${pk}/`)
       .then(() =>
-        fetchProBankAccList(project).then(() =>
-          message('danger', '알림!', '해당 오브젝트가 삭제되었습니다.'),
+        fetchAllProBankAccList(project).then(() =>
+          fetchProBankAccList(project).then(() =>
+            message('danger', '알림!', '해당 오브젝트가 삭제되었습니다.'),
+          ),
         ),
       )
       .catch(err => errorHandle(err.response.data))
@@ -410,6 +430,7 @@ export const useProCash = defineStore('proCash', () => {
 
     proBankAccountList,
     fetchProBankAccList,
+    fetchAllProBankAccList,
     createProBankAcc,
     updateProBankAcc,
     patchProBankAcc,

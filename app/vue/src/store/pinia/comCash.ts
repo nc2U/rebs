@@ -113,6 +113,12 @@ export const useComCash = defineStore('comCash', () => {
 
   const fetchComBankAccList = (company: number) =>
     api
+      .get(`/company-bank-account/?company=${company}&is_hide=false`)
+      .then(res => (comBankList.value = res.data.results))
+      .catch(err => errorHandle(err.response.data))
+
+  const fetchAllComBankAccList = (company: number) =>
+    api
       .get(`/company-bank-account/?company=${company}`)
       .then(res => (comBankList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
@@ -120,29 +126,43 @@ export const useComCash = defineStore('comCash', () => {
   const createCompanyBankAccount = (payload: CompanyBank) =>
     api
       .post(`/company-bank-account/`, payload)
-      .then(res => fetchComBankAccList(res.data.project).then(() => message()))
+      .then(res =>
+        fetchAllComBankAccList(res.data.company).then(() =>
+          fetchComBankAccList(res.data.company).then(() => message()),
+        ),
+      )
       .catch(err => errorHandle(err.response.data))
 
   const updateCompanyBankAccount = (payload: CompanyBank) =>
     api
       .put(`/company-bank-account/${payload.pk}/`, payload)
-      .then(res => fetchComBankAccList(res.data.project).then(() => message()))
+      .then(res =>
+        fetchAllComBankAccList(res.data.company).then(() =>
+          fetchComBankAccList(res.data.company).then(() => message()),
+        ),
+      )
       .catch(err => errorHandle(err.response.data))
 
   const patchComBankAcc = (payload: { pk: number; is_hide: boolean }) => {
     const { pk, ...hideData } = payload
     return api
       .patch(`company-bank-account/${pk}/`, hideData)
-      .then(res => fetchComBankAccList(res.data.company).then(() => message()))
+      .then(res =>
+        fetchAllComBankAccList(res.data.company).then(() =>
+          fetchComBankAccList(res.data.company).then(() => message()),
+        ),
+      )
       .catch(err => errorHandle(err.response.data))
   }
 
-  const deleteCompanyBankAccount = (pk: number, project: number) =>
+  const deleteCompanyBankAccount = (pk: number, company: number) =>
     api
       .delete(`/company-bank-account/${pk}/`)
       .then(() =>
-        fetchComBankAccList(project).then(() =>
-          message('danger', '알림!', '해당 오브젝트가 삭제되었습니다.'),
+        fetchAllComBankAccList(company).then(() =>
+          fetchComBankAccList(company).then(() =>
+            message('danger', '알림!', '해당 오브젝트가 삭제되었습니다.'),
+          ),
         ),
       )
       .catch(err => errorHandle(err.response.data))
@@ -303,6 +323,7 @@ export const useComCash = defineStore('comCash', () => {
 
     comBankList,
     fetchComBankAccList,
+    fetchAllComBankAccList,
     createCompanyBankAccount,
     updateCompanyBankAccount,
     patchComBankAcc,
