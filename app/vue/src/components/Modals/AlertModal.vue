@@ -25,7 +25,7 @@ defineExpose({ callModal, close })
         <slot name="icon">
           <v-icon
             icon="mdi mdi-alert-circle"
-            color="teal-darken-2"
+            color="indigo-lighten-2"
             class="mr-2"
           />
         </slot>
