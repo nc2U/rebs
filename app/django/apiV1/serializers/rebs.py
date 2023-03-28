@@ -26,7 +26,7 @@ class AccountSubD2Serializer(serializers.ModelSerializer):
 class AccountSubD3Serializer(serializers.ModelSerializer):
     class Meta:
         model = AccountSubD3
-        fields = ('pk', 'd2', 'code', 'name', 'is_special', 'description')
+        fields = ('pk', 'd2', 'code', 'name', 'description', 'is_hide', 'is_special')
 
 
 class ProjectAccountD1Serializer(serializers.ModelSerializer):
