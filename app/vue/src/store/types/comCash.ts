@@ -39,6 +39,7 @@ export interface CompanyBank {
   holder: string
   open_date: string | null
   note: string
+  is_hide: boolean
   inactive: boolean
 }
 

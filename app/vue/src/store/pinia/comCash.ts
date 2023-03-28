@@ -129,6 +129,14 @@ export const useComCash = defineStore('comCash', () => {
       .then(res => fetchComBankAccList(res.data.project).then(() => message()))
       .catch(err => errorHandle(err.response.data))
 
+  const patchComBankAcc = (payload: { pk: number; is_hide: boolean }) => {
+    const { pk, ...hideData } = payload
+    return api
+      .patch(`company-bank-account/${pk}/`, hideData)
+      .then(res => fetchComBankAccList(res.data.company).then(() => message()))
+      .catch(err => errorHandle(err.response.data))
+  }
+
   const deleteCompanyBankAccount = (pk: number, project: number) =>
     api
       .delete(`/company-bank-account/${pk}/`)
@@ -297,6 +305,7 @@ export const useComCash = defineStore('comCash', () => {
     fetchComBankAccList,
     createCompanyBankAccount,
     updateCompanyBankAccount,
+    patchComBankAcc,
     deleteCompanyBankAccount,
 
     comBalanceByAccList,

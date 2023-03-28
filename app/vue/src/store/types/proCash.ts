@@ -24,6 +24,7 @@ export interface ProjectBankAccount {
   holder: string
   open_date: string | null
   note: string
+  is_hide: boolean
   inactive: boolean
   directpay: boolean
   is_imprest: boolean
