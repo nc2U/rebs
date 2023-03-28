@@ -16,7 +16,7 @@ class CompanyBankAccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = CompanyBankAccount
         fields = ('pk', 'company', 'division', 'bankcode', 'alias_name', 'number',
-                  'holder', 'open_date', 'note', 'inactive')
+                  'holder', 'open_date', 'note', 'is_hide', 'inactive')
 
 
 class BalanceByAccountSerializer(serializers.ModelSerializer):
@@ -163,7 +163,7 @@ class ProjectBankAccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectBankAccount
         fields = ('pk', 'project', 'bankcode', 'alias_name', 'number', 'holder',
-                  'open_date', 'note', 'inactive', 'directpay', 'is_imprest')
+                  'open_date', 'note', 'is_hide', 'inactive', 'directpay', 'is_imprest')
 
 
 class SepItemsInPrCashBookSerializer(serializers.ModelSerializer):

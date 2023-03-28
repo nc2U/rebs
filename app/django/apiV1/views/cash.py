@@ -26,6 +26,7 @@ class ComBankAccountViewSet(viewsets.ModelViewSet):
     serializer_class = CompanyBankAccountSerializer
     pagination_class = PageNumberPaginationFifty
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    filterset_fields = ('company', 'is_hide', 'inactive')
 
 
 class BalanceByAccountViewSet(viewsets.ModelViewSet):
@@ -94,7 +95,7 @@ class ProjectBankAccountViewSet(viewsets.ModelViewSet):
     serializer_class = ProjectBankAccountSerializer
     pagination_class = PageNumberPaginationFifty
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-    filterset_fields = ('project',)
+    filterset_fields = ('project', 'is_hide', 'inactive', 'directpay', 'is_imprest')
 
 
 class PrBalanceByAccountViewSet(viewsets.ModelViewSet):
