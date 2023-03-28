@@ -24,8 +24,9 @@ export interface AccountD3 {
   d2: number
   code: string
   name: string
-  is_special: boolean
   description: string
+  is_hide: boolean
+  is_special: boolean
 }
 
 export interface CompanyBank {
