@@ -104,7 +104,7 @@ export const useComCash = defineStore('comCash', () => {
     const uD1 = d1 ? `&d2__d1=${d1}` : ''
     const uD2 = d2 ? `&d2=${d2}` : ''
     return api
-      .get(`/account-depth3/?${uSort}${uD1}${uD2}`)
+      .get(`/account-depth3/?${uSort}${uD1}${uD2}&is_hide=false`)
       .then(res => (formAccD3List.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
   }
