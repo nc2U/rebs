@@ -48,6 +48,7 @@ class AccountSubD3(models.Model):
     d2 = models.ForeignKey(AccountSubD2, on_delete=models.CASCADE, related_name='acc_d3s')
     code = models.CharField(max_length=3)
     name = models.CharField(max_length=20)
+    is_hide = models.BooleanField(default=False)
     is_special = models.BooleanField(default=False)
     description = models.CharField(max_length=50)
 
