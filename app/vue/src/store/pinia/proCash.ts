@@ -99,17 +99,15 @@ export const useProCash = defineStore('proCash', () => {
       )
       .catch(err => errorHandle(err.response.data))
 
-  const patchProBankAcc = (payload: { pk: number; is_hide: boolean }) => {
-    const { pk, ...hideData } = payload
-    return api
-      .patch(`project-bank-account/${pk}/`, hideData)
+  const patchProBankAcc = (payload: ProjectBankAccount) =>
+    api
+      .patch(`project-bank-account/${payload.pk}/`, payload)
       .then(res =>
         fetchAllProBankAccList(res.data.project).then(() =>
           fetchProBankAccList(res.data.project).then(() => message()),
         ),
       )
       .catch(err => errorHandle(err.response.data))
-  }
 
   const deleteProBankAcc = (pk: number, project: number) =>
     api
