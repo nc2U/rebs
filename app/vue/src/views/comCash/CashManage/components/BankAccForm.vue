@@ -7,6 +7,7 @@ import { isValidate } from '@/utils/helper'
 import { dateFormat, diffDate } from '@/utils/baseMixins'
 import DatePicker from '@/components/DatePicker/index.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
+import { useCompany } from '@/store/pinia/company'
 
 const props = defineProps({ bankAcc: { type: Object, required: true } })
 const emit = defineEmits([
@@ -24,7 +25,7 @@ const validated = ref(false)
 
 const form = reactive<CompanyBank>({
   pk: undefined,
-  division: null,
+  depart: null,
   bankcode: null,
   alias_name: '',
   number: '',
@@ -43,7 +44,7 @@ const formsCheck = computed(() => {
   if (props.bankAcc) {
     const a = form.pk === props.bankAcc.pk
     const b = form.pk === props.bankAcc.pk
-    const c = form.division === props.bankAcc.division
+    const c = form.depart === props.bankAcc.depart
     const d = form.bankcode === props.bankAcc.bankcode
     const e = form.alias_name === props.bankAcc.alias_name
     const f = form.number === props.bankAcc.number
@@ -61,6 +62,9 @@ const accountStore = useAccount()
 const allowedPeriod = computed(
   () => accountStore.superAuth || diffDate(props.bankAcc.deal_date) <= 30,
 )
+
+const comStore = useCompany()
+const getSlugDeparts = computed(() => comStore.getSlugDeparts)
 
 const onSubmit = (event: Event) => {
   if (isValidate(event)) {
@@ -102,7 +106,7 @@ onBeforeMount(() => {
   if (props.bankAcc) {
     form.pk = props.bankAcc.pk
     form.company = props.bankAcc.company
-    form.division = props.bankAcc.division
+    form.depart = props.bankAcc.depart
     form.bankcode = props.bankAcc.bankcode
     form.alias_name = props.bankAcc.alias_name
     form.number = props.bankAcc.number
@@ -130,14 +134,19 @@ onBeforeMount(() => {
               <CFormLabel class="col-sm-4 col-form-label">부서정보</CFormLabel>
               <CCol sm="8">
                 <CFormSelect
-                  v-model="form.division"
+                  v-model="form.depart"
                   maxlength="10"
                   required
                   placeholder="부서정보"
                 >
                   <option value="">---------</option>
-                  <option value="1">입금</option>
-                  <option value="2">출금</option>
+                  <option
+                    v-for="dep in getSlugDeparts"
+                    :key="dep.value"
+                    :value="dep.value"
+                  >
+                    {{ dep.label }}
+                  </option>
                 </CFormSelect>
               </CCol>
             </CRow>

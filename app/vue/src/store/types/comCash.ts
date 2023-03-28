@@ -32,7 +32,7 @@ export interface AccountD3 {
 export interface CompanyBank {
   pk?: number
   company?: number
-  division: number | null
+  depart: number | null
   bankcode: number | null
   alias_name: string
   number: string

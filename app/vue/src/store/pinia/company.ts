@@ -529,6 +529,7 @@ export const useCompany = defineStore('company', () => {
     departmentList,
     department,
     departmentsCount,
+    allDepartList,
     getPkDeparts,
     getSlugDeparts,
     getUpperDeps,
