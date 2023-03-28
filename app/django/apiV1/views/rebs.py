@@ -43,7 +43,7 @@ class AccountSubD3ViewSet(viewsets.ModelViewSet):
     queryset = AccountSubD3.objects.all()
     serializer_class = AccountSubD3Serializer
     pagination_class = PageNumberPaginationTwoHundred
-    filterset_fields = ('d2__d1__accountsort', 'd2__d1', 'd2')
+    filterset_fields = ('d2__d1__accountsort', 'd2__d1', 'd2', 'is_hide', 'is_special')
 
 
 class ProjectAccountSortViewSet(viewsets.ModelViewSet):
