@@ -26,7 +26,7 @@ class ComBankAccountViewSet(viewsets.ModelViewSet):
     serializer_class = CompanyBankAccountSerializer
     pagination_class = PageNumberPaginationFifty
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-    filterset_fields = ('company', 'is_hide', 'inactive')
+    filterset_fields = ('company', 'depart', 'is_hide', 'inactive')
 
 
 class BalanceByAccountViewSet(viewsets.ModelViewSet):

@@ -7,9 +7,9 @@ from .models import CompanyBankAccount, ProjectBankAccount, CashBook, ProjectCas
 
 
 class CompanyBankAccountAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'alias_name', 'division', 'bankcode', 'number', 'holder', 'open_date', 'note', 'inactive')
+    list_display = ('id', 'depart', 'bankcode', 'alias_name', 'number', 'holder', 'open_date', 'note', 'inactive')
     list_display_links = ('alias_name',)
-    list_filter = ('division', 'bankcode', 'holder')
+    list_filter = ('depart', 'bankcode', 'holder')
 
 
 class ProjectBankAccountAdmin(ImportExportMixin, admin.ModelAdmin):

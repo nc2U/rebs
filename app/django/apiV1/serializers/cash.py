@@ -15,7 +15,7 @@ class BankCodeSerializer(serializers.ModelSerializer):
 class CompanyBankAccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = CompanyBankAccount
-        fields = ('pk', 'company', 'division', 'bankcode', 'alias_name', 'number',
+        fields = ('pk', 'company', 'depart', 'bankcode', 'alias_name', 'number',
                   'holder', 'open_date', 'note', 'is_hide', 'inactive')
 
 
