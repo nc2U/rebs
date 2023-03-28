@@ -17,7 +17,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['multi-submit', 'on-delete'])
+const emit = defineEmits(['multi-submit', 'on-delete', 'patch-d3-hide'])
 
 const delModal = ref()
 const alertModal = ref()
@@ -64,6 +64,9 @@ const deleteObject = () => {
   emit('on-delete', { company: props.cash.company, pk: props.cash.pk })
   delModal.value.close()
 }
+
+const patchD3Hide = (payload: { pk: number; is_hide: boolean }) =>
+  emit('patch-d3-hide', payload)
 </script>
 
 <template>
@@ -117,6 +120,7 @@ const deleteObject = () => {
         :cash="cash"
         @multi-submit="multiSubmit"
         @on-delete="deleteConfirm"
+        @patchD3Hide="patchD3Hide"
         @close="updateFormModal.close()"
       />
     </template>

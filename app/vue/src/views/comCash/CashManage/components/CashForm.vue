@@ -9,9 +9,15 @@ import { dateFormat, diffDate, cutString, numFormat } from '@/utils/baseMixins'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
+import AccountView from './AccountView.vue'
 
 const props = defineProps({ cash: { type: Object, required: true } })
-const emit = defineEmits(['multi-submit', 'on-delete', 'close'])
+const emit = defineEmits([
+  'multi-submit',
+  'on-delete',
+  'close',
+  'patch-d3-hide',
+])
 
 const delModal = ref()
 const alertModal = ref()
@@ -284,6 +290,9 @@ const deleteObject = () => {
   emit('close')
 }
 
+const patchD3Hide = (payload: { pk: number; is_hide: boolean }) =>
+  emit('patch-d3-hide', payload)
+
 onBeforeMount(() => {
   if (props.cash) {
     form.pk = props.cash.pk
@@ -406,6 +415,9 @@ onBeforeMount(() => {
             <CRow>
               <CFormLabel class="col-sm-4 col-form-label">
                 계정[소분류]
+                <a href="javascript:void(0)">
+                  <CIcon name="cilCog" @click="$refs.accView.callModal()" />
+                </a>
               </CFormLabel>
               <CCol sm="8">
                 <CFormSelect
@@ -911,7 +923,7 @@ onBeforeMount(() => {
   </CForm>
 
   <ConfirmModal ref="delModal">
-    <template #header> 프로젝트 입출금 거래 정보 삭제 </template>
+    <template #header> 프로젝트 입출금 거래 정보 삭제</template>
     <template #default>
       삭제한 데이터는 복구할 수 없습니다. 해당 입출금 거래 정보를
       삭제하시겠습니까?
@@ -922,4 +934,6 @@ onBeforeMount(() => {
   </ConfirmModal>
 
   <AlertModal ref="alertModal" />
+
+  <AccountView ref="accView" @patchD3Hide="patchD3Hide" />
 </template>

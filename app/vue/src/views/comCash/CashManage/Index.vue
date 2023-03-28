@@ -168,7 +168,7 @@ onBeforeMount(() => {
   <ContentBody>
     <CCardBody class="pb-5">
       <ListController ref="listControl" @list-filtering="listFiltering" />
-      <AddCash @multi-submit="multiSubmit" />
+      <AddCash @multi-submit="multiSubmit" @patchD3Hide="patchD3Hide" />
       <TableTitleRow
         title="본사 입출금 관리"
         color="indigo"

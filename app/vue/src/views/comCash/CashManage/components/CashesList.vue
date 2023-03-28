@@ -77,6 +77,7 @@ const patchD3Hide = (payload: { pk: number; is_hide: boolean }) =>
         :cash="cash"
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
+        @patchD3Hide="patchD3Hide"
       />
     </CTableBody>
   </CTable>

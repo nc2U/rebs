@@ -5,7 +5,7 @@ import { AlertLight } from '@/utils/cssMixins'
 import FormModal from '@/components/Modals/FormModal.vue'
 import CashForm from '@/views/comCash/CashManage/components/CashForm.vue'
 
-const emit = defineEmits(['multi-submit'])
+const emit = defineEmits(['multi-submit', 'patch-d3-hide'])
 
 const createFormModal = ref()
 
@@ -15,6 +15,9 @@ const multiSubmit = (payload: {
   formData: CashBook
   sepData: CashBook | null
 }) => emit('multi-submit', payload)
+
+const patchD3Hide = (payload: { pk: number; is_hide: boolean }) =>
+  emit('patch-d3-hide', payload)
 </script>
 
 <template>
@@ -25,7 +28,11 @@ const multiSubmit = (payload: {
   <FormModal ref="createFormModal" size="lg">
     <template #header>본사 입출금 거래 건별 등록</template>
     <template #default>
-      <CashForm @multi-submit="multiSubmit" @close="createFormModal.close()" />
+      <CashForm
+        @multi-submit="multiSubmit"
+        @patchD3Hide="patchD3Hide"
+        @close="createFormModal.close()"
+      />
     </template>
   </FormModal>
 </template>
