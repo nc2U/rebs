@@ -5,7 +5,8 @@ import { CashBook } from '@/store/types/comCash'
 import { TableSecondary } from '@/utils/cssMixins'
 import Cashes from '@/views/comCash/CashManage/components/Cashes.vue'
 import Pagination from '@/components/Pagination'
-import AccountView from './AccountView.vue'
+import AccDepth from './AccDepth.vue'
+import BankAcc from './BankAcc.vue'
 
 defineProps({ company: { type: Object, default: null } })
 
@@ -14,6 +15,7 @@ const emit = defineEmits([
   'multi-submit',
   'on-delete',
   'patch-d3-hide',
+  'patch-bank-hide',
 ])
 
 const useComCashStore = useComCash()
@@ -31,6 +33,8 @@ const onDelete = (pk: number) => emit('on-delete', pk)
 
 const patchD3Hide = (payload: { pk: number; is_hide: boolean }) =>
   emit('patch-d3-hide', payload)
+
+const patchBankHide = (payload: any) => emit('patch-bank-hide', payload)
 </script>
 
 <template>
@@ -57,12 +61,17 @@ const patchD3Hide = (payload: { pk: number; is_hide: boolean }) =>
         <CTableHeaderCell scope="col">
           세부계정
           <a href="javascript:void(0)">
-            <CIcon name="cilCog" @click="$refs.accView.callModal()" />
+            <CIcon name="cilCog" @click="$refs.accDepth.callModal()" />
           </a>
         </CTableHeaderCell>
         <CTableHeaderCell scope="col">적요</CTableHeaderCell>
         <CTableHeaderCell scope="col">거래처</CTableHeaderCell>
-        <CTableHeaderCell scope="col">거래계좌</CTableHeaderCell>
+        <CTableHeaderCell scope="col">
+          거래계좌
+          <a href="javascript:void(0)">
+            <CIcon name="cilCog" @click="$refs.bankAcc.callModal()" />
+          </a>
+        </CTableHeaderCell>
         <CTableHeaderCell scope="col">입금액</CTableHeaderCell>
         <CTableHeaderCell scope="col">출금액</CTableHeaderCell>
         <CTableHeaderCell scope="col">지출증빙</CTableHeaderCell>
@@ -90,5 +99,7 @@ const patchD3Hide = (payload: { pk: number; is_hide: boolean }) =>
     @active-page-change="pageSelect"
   />
 
-  <AccountView ref="accView" @patchD3Hide="patchD3Hide" />
+  <AccDepth ref="accDepth" @patchD3Hide="patchD3Hide" />
+
+  <BankAcc ref="bankAcc" @patchBankHide="patchBankHide" />
 </template>

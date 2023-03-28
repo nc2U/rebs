@@ -9,7 +9,8 @@ import { dateFormat, diffDate, cutString, numFormat } from '@/utils/baseMixins'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
-import AccountView from './AccountView.vue'
+import AccDepth from './AccDepth.vue'
+import BankAcc from './BankAcc.vue'
 
 const props = defineProps({ cash: { type: Object, required: true } })
 const emit = defineEmits([
@@ -17,6 +18,7 @@ const emit = defineEmits([
   'on-delete',
   'close',
   'patch-d3-hide',
+  'patch-bank-hide',
 ])
 
 const delModal = ref()
@@ -293,6 +295,8 @@ const deleteObject = () => {
 const patchD3Hide = (payload: { pk: number; is_hide: boolean }) =>
   emit('patch-d3-hide', payload)
 
+const patchBankHide = (payload: any) => emit('patch-bank-hide', payload)
+
 onBeforeMount(() => {
   if (props.cash) {
     form.pk = props.cash.pk
@@ -416,7 +420,7 @@ onBeforeMount(() => {
               <CFormLabel class="col-sm-4 col-form-label">
                 계정[소분류]
                 <a href="javascript:void(0)">
-                  <CIcon name="cilCog" @click="$refs.accView.callModal()" />
+                  <CIcon name="cilCog" @click="$refs.accDepth.callModal()" />
                 </a>
               </CFormLabel>
               <CCol sm="8">
@@ -474,6 +478,9 @@ onBeforeMount(() => {
             <CRow>
               <CFormLabel class="col-sm-4 col-form-label">
                 {{ !cash && form.sort === 3 ? '출금' : '거래' }}계좌
+                <a href="javascript:void(0)">
+                  <CIcon name="cilCog" @click="$refs.bankAcc.callModal()" />
+                </a>
               </CFormLabel>
               <CCol sm="8">
                 <CFormSelect
@@ -718,7 +725,7 @@ onBeforeMount(() => {
               <CCol sm="6">
                 <CRow>
                   <CFormLabel class="col-sm-4 col-form-label">
-                    계정[소분류]/{{ sepItem.account_d3 }}
+                    계정[소분류]
                   </CFormLabel>
                   <CCol sm="8">
                     <CFormSelect
@@ -935,5 +942,7 @@ onBeforeMount(() => {
 
   <AlertModal ref="alertModal" />
 
-  <AccountView ref="accView" @patchD3Hide="patchD3Hide" />
+  <AccDepth ref="accDepth" @patchD3Hide="patchD3Hide" />
+
+  <BankAcc ref="bankAcc" @patchBankHide="patchBankHide" />
 </template>
