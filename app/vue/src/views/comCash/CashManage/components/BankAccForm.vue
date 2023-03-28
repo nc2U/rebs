@@ -8,6 +8,7 @@ import { dateFormat, diffDate } from '@/utils/baseMixins'
 import DatePicker from '@/components/DatePicker/index.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 import { useCompany } from '@/store/pinia/company'
+import { useComCash } from '@/store/pinia/comCash'
 
 const props = defineProps({ bankAcc: { type: Object, required: true } })
 const emit = defineEmits([
@@ -65,6 +66,9 @@ const allowedPeriod = computed(
 
 const comStore = useCompany()
 const getSlugDeparts = computed(() => comStore.getSlugDeparts)
+
+const comCashStore = useComCash()
+const bankCodeList = computed(() => comCashStore.bankCodeList)
 
 const onSubmit = (event: Event) => {
   if (isValidate(event)) {
@@ -158,8 +162,13 @@ onBeforeMount(() => {
               <CCol sm="8">
                 <CFormSelect v-model.number="form.bankcode" required>
                   <option value="">---------</option>
-                  <option value="1">입금</option>
-                  <option value="2">출금</option>
+                  <option
+                    v-for="bank in bankCodeList"
+                    :key="bank.pk"
+                    :value="bank.pk"
+                  >
+                    {{ bank.name }}
+                  </option>
                 </CFormSelect>
               </CCol>
             </CRow>

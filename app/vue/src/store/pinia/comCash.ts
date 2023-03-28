@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { errorHandle, message } from '@/utils/helper'
 import {
+  BankCode,
   AccountSort,
   AccountD1,
   AccountD2,
@@ -28,6 +29,14 @@ export type DataFilter = {
 
 export const useComCash = defineStore('comCash', () => {
   // state & getters
+  const bankCodeList = ref<BankCode[]>([])
+
+  const fetchBankCodeList = () =>
+    api
+      .get('/bank-code/')
+      .then(res => (bankCodeList.value = res.data.results))
+      .catch(err => errorHandle(err.response.data))
+
   const sortList = ref<AccountSort[]>([])
 
   const fetchAccSortList = () =>
@@ -304,6 +313,9 @@ export const useComCash = defineStore('comCash', () => {
   }
 
   return {
+    bankCodeList,
+    fetchBankCodeList,
+
     sortList,
     fetchAccSortList,
 

@@ -46,10 +46,11 @@ const companyStore = useCompany()
 const initComId = computed(() => companyStore.initComId)
 const company = computed(() => companyStore.company?.pk || initComId.value)
 
+const fetchCompany = (pk: number) => companyStore.fetchCompany(pk)
 const fetchAllDepartList = (com: number) => companyStore.fetchAllDepartList(com)
 
 const comCashStore = useComCash()
-const fetchCompany = (pk: number) => companyStore.fetchCompany(pk)
+const fetchBankCodeList = () => comCashStore.fetchBankCodeList()
 const fetchAccSortList = () => comCashStore.fetchAccSortList()
 const fetchAllAccD1List = () => comCashStore.fetchAllAccD1List()
 const fetchAllAccD2List = () => comCashStore.fetchAllAccD2List()
@@ -154,6 +155,7 @@ const patchD3Hide = (payload: { pk: number; is_hide: boolean }) =>
 onBeforeMount(() => {
   fetchCompany(company.value)
   fetchAllDepartList(company.value)
+  fetchBankCodeList()
   fetchAccSortList()
   fetchAllAccD1List()
   fetchAllAccD2List()

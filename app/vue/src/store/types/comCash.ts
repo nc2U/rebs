@@ -1,3 +1,9 @@
+export interface BankCode {
+  pk: number
+  code: string
+  name: string
+}
+
 export interface AccountSort {
   pk: number
   name: string
