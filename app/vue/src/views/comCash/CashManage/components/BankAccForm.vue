@@ -1,25 +1,19 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, onBeforeMount, watch } from 'vue'
-import { useAccount } from '@/store/pinia/account'
+import { useCompany } from '@/store/pinia/company'
+import { useComCash } from '@/store/pinia/comCash'
 import { CompanyBank } from '@/store/types/comCash'
 import { write_company_cash } from '@/utils/pageAuth'
 import { isValidate } from '@/utils/helper'
-import { dateFormat, diffDate } from '@/utils/baseMixins'
+import { dateFormat } from '@/utils/baseMixins'
 import DatePicker from '@/components/DatePicker/index.vue'
+import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
-import { useCompany } from '@/store/pinia/company'
-import { useComCash } from '@/store/pinia/comCash'
 
 const props = defineProps({ bankAcc: { type: Object, required: true } })
-const emit = defineEmits([
-  'multi-submit',
-  'on-delete',
-  'close',
-  'patch-d3-hide',
-  'patch-bank-hide',
-])
+const emit = defineEmits(['on-bank-update'])
 
-const delModal = ref()
+const confirmModal = ref()
 const alertModal = ref()
 
 const validated = ref(false)
@@ -59,11 +53,6 @@ const formsCheck = computed(() => {
   } else return false
 })
 
-const accountStore = useAccount()
-const allowedPeriod = computed(
-  () => accountStore.superAuth || diffDate(props.bankAcc.deal_date) <= 30,
-)
-
 const comStore = useCompany()
 const getSlugDeparts = computed(() => comStore.getSlugDeparts)
 
@@ -74,37 +63,13 @@ const onSubmit = (event: Event) => {
   if (isValidate(event)) {
     validated.value = true
   } else {
-    // const payload = !form.is_separate
-    //   ? { formData: form, sepData: null }
-    //   : { formData: form, sepData: sepItem }
-
-    // if (write_company_cash.value) {
-    //   if (props.bankAcc) {
-    //     if (allowedPeriod.value) emit('multi-submit', payload)
-    //     else
-    //       alertModal.value.callModal(
-    //         null,
-    //         '거래일로부터 30일이 경과한 건은 수정할 수 없습니다. 관리자에게 문의바랍니다.',
-    //       )
-    //   } else emit('multi-submit', payload)
-    // } else alertModal.value.callModal()
-    emit('close')
+    if (write_company_cash.value) {
+      confirmModal.value.callModal()
+    } else alertModal.value.callModal()
   }
 }
 
-const deleteObject = () => {
-  emit('on-delete', {
-    project: props.bankAcc.project,
-    pk: props.bankAcc.pk,
-  })
-  delModal.value.close()
-  emit('close')
-}
-
-const patchD3Hide = (payload: { pk: number; is_hide: boolean }) =>
-  emit('patch-d3-hide', payload)
-
-const patchBankHide = (payload: any) => emit('patch-bank-hide', payload)
+const onBankUpdate = () => emit('on-bank-update', { ...form })
 
 onBeforeMount(() => {
   if (props.bankAcc) {
@@ -284,6 +249,14 @@ onBeforeMount(() => {
       </div>
     </CModalBody>
   </CForm>
+
+  <ConfirmModal ref="confirmModal">
+    <template #header>거래계좌 정보 업데이트</template>
+    <template #default> 거래계좌 정보를 업데이트하시겠습니까?</template>
+    <template #footer>
+      <CButton color="success" @click="onBankUpdate">저장</CButton>
+    </template>
+  </ConfirmModal>
 
   <AlertModal ref="alertModal" />
 </template>
