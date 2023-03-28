@@ -30,10 +30,10 @@ export interface AccountD3 {
 }
 
 export interface CompanyBank {
-  pk: number
-  company: number
+  pk?: number
+  company?: number
   division: number | null
-  bankcode: number
+  bankcode: number | null
   alias_name: string
   number: string
   holder: string

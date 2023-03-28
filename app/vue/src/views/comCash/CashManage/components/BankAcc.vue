@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
 import { useComCash } from '@/store/pinia/comCash'
+import BankAccForm from './BankAccForm.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
 // const emit = defineEmits(['patch-bank-hide'])
@@ -32,7 +33,7 @@ defineExpose({ callModal })
             {{ `${bank.alias_name}  :: ${bank.number}` }}
           </CAccordionHeader>
           <CAccordionBody class="pl-3">
-            {{ bank.alias_name }}
+            <BankAccForm :bank-acc="bank" />
           </CAccordionBody>
         </CAccordionItem>
       </CAccordion>
