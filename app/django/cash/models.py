@@ -13,8 +13,8 @@ class BankCode(models.Model):
 class CompanyBankAccount(models.Model):
     company = models.ForeignKey('company.Company', on_delete=models.CASCADE, verbose_name='회사정보')
     depart = models.ForeignKey('company.Department', on_delete=models.SET_NULL, null=True, blank=True,
-                               verbose_name='부서정보')
-    bankcode = models.ForeignKey(BankCode, on_delete=models.PROTECT, verbose_name='은행코드')
+                               verbose_name='관리부서')
+    bankcode = models.ForeignKey(BankCode, on_delete=models.PROTECT, verbose_name='거래은행')
     alias_name = models.CharField('계좌별칭', max_length=20)
     number = models.CharField('계좌번호', max_length=30, blank=True)
     holder = models.CharField('예금주', max_length=20, blank=True)

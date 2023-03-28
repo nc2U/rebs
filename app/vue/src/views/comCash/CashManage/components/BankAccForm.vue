@@ -135,29 +135,6 @@ onBeforeMount(() => {
         <CRow class="mb-3">
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label">부서정보</CFormLabel>
-              <CCol sm="8">
-                <CFormSelect
-                  v-model="form.depart"
-                  maxlength="10"
-                  required
-                  placeholder="부서정보"
-                >
-                  <option value="">---------</option>
-                  <option
-                    v-for="dep in getSlugDeparts"
-                    :key="dep.value"
-                    :value="dep.value"
-                  >
-                    {{ dep.label }}
-                  </option>
-                </CFormSelect>
-              </CCol>
-            </CRow>
-          </CCol>
-
-          <CCol sm="6">
-            <CRow>
               <CFormLabel class="col-sm-4 col-form-label">거래은행</CFormLabel>
               <CCol sm="8">
                 <CFormSelect v-model.number="form.bankcode" required>
@@ -173,6 +150,24 @@ onBeforeMount(() => {
               </CCol>
             </CRow>
           </CCol>
+
+          <CCol sm="6">
+            <CRow>
+              <CFormLabel class="col-sm-4 col-form-label">관리부서</CFormLabel>
+              <CCol sm="8">
+                <CFormSelect v-model.number="form.depart">
+                  <option value="">---------</option>
+                  <option
+                    v-for="dep in getSlugDeparts"
+                    :key="dep.value"
+                    :value="dep.value"
+                  >
+                    {{ dep.label }}
+                  </option>
+                </CFormSelect>
+              </CCol>
+            </CRow>
+          </CCol>
         </CRow>
 
         <CRow class="mb-3">
@@ -182,7 +177,12 @@ onBeforeMount(() => {
                 계좌별칭
               </CFormLabel>
               <CCol sm="8">
-                <CFormInput v-model="form.alias_name" />
+                <CFormInput
+                  v-model="form.alias_name"
+                  maxlength="20"
+                  placeholder="계좌별칭"
+                  required
+                />
               </CCol>
             </CRow>
           </CCol>
@@ -192,7 +192,11 @@ onBeforeMount(() => {
                 계좌번호
               </CFormLabel>
               <CCol sm="8">
-                <CFormInput v-model="form.number" />
+                <CFormInput
+                  v-model="form.number"
+                  maxlength="30"
+                  placeholder="계좌번호"
+                />
               </CCol>
             </CRow>
           </CCol>
@@ -203,7 +207,11 @@ onBeforeMount(() => {
             <CRow>
               <CFormLabel class="col-sm-4 col-form-label"> 예금주</CFormLabel>
               <CCol sm="8">
-                <CFormInput v-model="form.holder" />
+                <CFormInput
+                  v-model="form.holder"
+                  maxlength="20"
+                  placeholder="예금주"
+                />
               </CCol>
             </CRow>
           </CCol>
@@ -213,9 +221,8 @@ onBeforeMount(() => {
               <CCol sm="8">
                 <DatePicker
                   v-model="form.open_date"
-                  maxlength="50"
+                  maxlength="10"
                   placeholder="개설일자"
-                  required
                 />
               </CCol>
             </CRow>
@@ -227,7 +234,11 @@ onBeforeMount(() => {
             <CRow>
               <CFormLabel class="col-sm-2 col-form-label">비고</CFormLabel>
               <CCol sm="10">
-                <CFormTextarea v-model="form.note" placeholder="비고" />
+                <CFormTextarea
+                  v-model="form.note"
+                  maxlength="50"
+                  placeholder="비고"
+                />
               </CCol>
             </CRow>
           </CCol>
