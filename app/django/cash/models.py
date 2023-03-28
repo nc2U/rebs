@@ -20,6 +20,7 @@ class CompanyBankAccount(models.Model):
     holder = models.CharField('예금주', max_length=20, blank=True)
     open_date = models.DateField('개설일자', null=True, blank=True)
     note = models.CharField('비고', max_length=50, blank=True)
+    is_hide = models.BooleanField('숨기기 여부', default=False)
     inactive = models.BooleanField('비활성 여부', default=False)
 
     def __str__(self):
@@ -77,6 +78,7 @@ class ProjectBankAccount(models.Model):
     holder = models.CharField('예금주', max_length=20, blank=True)
     open_date = models.DateField('개설일자', null=True, blank=True)
     note = models.CharField('비고', max_length=50, blank=True)
+    is_hide = models.BooleanField('숨기기 여부', default=False)
     inactive = models.BooleanField('비활성 여부', default=False)
     directpay = models.BooleanField('용역비 직불 여부', default=False)
     is_imprest = models.BooleanField('운영비 계좌 여부', default=False)
