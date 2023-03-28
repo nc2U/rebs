@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { useComCash } from '@/store/pinia/comCash'
 import { CashBook } from '@/store/types/comCash'
+import { cutString } from '@/utils/baseMixins'
 import { TableSecondary } from '@/utils/cssMixins'
 import Cashes from '@/views/comCash/CashManage/components/Cashes.vue'
 import Pagination from '@/components/Pagination'
@@ -9,7 +10,12 @@ import AlertModal from '@/components/Modals/AlertModal.vue'
 
 defineProps({ company: { type: Object, default: null } })
 
-const emit = defineEmits(['page-select', 'multi-submit', 'on-delete'])
+const emit = defineEmits([
+  'page-select',
+  'multi-submit',
+  'on-delete',
+  'patch-d3-hide',
+])
 
 const useComCashStore = useComCash()
 const cashesPages = computed(() => useComCashStore.cashesPages)
@@ -26,6 +32,9 @@ const multiSubmit = (payload: {
 }) => emit('multi-submit', payload)
 
 const onDelete = (pk: number) => emit('on-delete', pk)
+
+const patchD3Hide = (pk: number, is_hide: boolean) =>
+  emit('patch-d3-hide', { pk, is_hide })
 </script>
 
 <template>
@@ -93,8 +102,8 @@ const onDelete = (pk: number) => emit('on-delete', pk)
           :key="d1.pk"
           :item-key="d1.pk"
         >
-          <CAccordionHeader
-            >{{ `[${d1.code}] ${d1.name} (${d1.description})` }}
+          <CAccordionHeader>
+            {{ `[${d1.code}] ${d1.name} (${d1.description})` }}
           </CAccordionHeader>
           <CAccordionBody class="pl-3">
             <CAccordion>
@@ -103,8 +112,8 @@ const onDelete = (pk: number) => emit('on-delete', pk)
                 :key="d2.pk"
                 :item-key="d2.pk"
               >
-                <CAccordionHeader
-                  >[{{ d2.code }}] {{ d2.name }} ------ ({{ d2.description }})
+                <CAccordionHeader>
+                  [{{ d2.code }}] {{ d2.name }} - ({{ d2.description }})
                 </CAccordionHeader>
                 <CAccordionBody class="pl-3">
                   <CRow
@@ -112,10 +121,17 @@ const onDelete = (pk: number) => emit('on-delete', pk)
                     :key="d3.pk"
                     class="pl-3 mb-2"
                   >
-                    <CCol>
-                      [{{ d3.code }}] {{ d3.name }} ------ ({{
-                        d3.description
-                      }})
+                    <CCol lg="10">
+                      [{{ d3.code }}] {{ d3.name }} ::
+                      {{ cutString(d3.description, 35) }}
+                    </CCol>
+                    <CCol lg="2" class="text-right">
+                      <CFormCheck
+                        :id="d3.code"
+                        :checked="d3.is_hide"
+                        label="미사용 계정"
+                        @change="patchD3Hide(d3.pk, $event.target.checked)"
+                      />
                     </CCol>
                   </CRow>
                 </CAccordionBody>

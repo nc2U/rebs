@@ -60,6 +60,18 @@ export const useComCash = defineStore('comCash', () => {
       .then(res => (listAccD3List.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
+  const patchAccD3 = (payload: { pk: number; is_hide: boolean }) => {
+    const { pk, ...hideData } = payload
+    return api
+      .patch(`account-depth3/${pk}/`, hideData)
+      .then(() => {
+        fetchAllAccD3List().then(() =>
+          fetchFormAccD3List(null, null, null).then(() => message()),
+        )
+      })
+      .catch(err => errorHandle(err.response.data))
+  }
+
   const formAccD1List = ref<AccountD1[]>([])
 
   const fetchFormAccD1List = (sort: number | null) => {
@@ -272,6 +284,7 @@ export const useComCash = defineStore('comCash', () => {
     fetchAllAccD2List,
     formAccD3List,
     fetchAllAccD3List,
+    patchAccD3,
 
     listAccD1List,
     fetchFormAccD1List,

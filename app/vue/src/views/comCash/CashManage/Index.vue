@@ -72,6 +72,8 @@ const updateCashBook = (
 ) => comCashStore.updateCashBook(payload)
 const deleteCashBook = (payload: CashBook & { filters: Filter }) =>
   comCashStore.deleteCashBook(payload)
+const patchAccD3 = (payload: { pk: number; is_hide: boolean }) =>
+  comCashStore.patchAccD3(payload)
 
 const onSelectAdd = (target: number) => {
   if (!!target) {
@@ -138,6 +140,9 @@ const multiSubmit = (payload: {
 const onDelete = (payload: CashBook) =>
   deleteCashBook({ ...{ filters: dataFilter.value }, ...payload })
 
+const patchD3Hide = (payload: { pk: number; is_hide: boolean }) =>
+  patchAccD3(payload)
+
 onBeforeMount(() => {
   fetchCompany(initComId.value)
   fetchAccSortList()
@@ -175,6 +180,7 @@ onBeforeMount(() => {
         @page-select="pageSelect"
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
+        @patchD3Hide="patchD3Hide"
       />
     </CCardBody>
 
