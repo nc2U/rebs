@@ -205,34 +205,6 @@ onBeforeMount(() => {
         </CRow>
 
         <CRow class="mb-3">
-          <CCol sm="6">
-            <CRow>
-              <CFormLabel class="col-sm-4 col-form-label"></CFormLabel>
-              <CCol sm="8" class="pt-1">
-                <CFormSwitch
-                  id="formSwitchCheckDefault"
-                  v-model="form.is_hide"
-                  label="목록에서 숨김 여부"
-                />
-              </CCol>
-            </CRow>
-          </CCol>
-
-          <CCol sm="6">
-            <CRow>
-              <CFormLabel class="col-sm-4 col-form-label"></CFormLabel>
-              <CCol sm="8" class="pt-1">
-                <CFormSwitch
-                  id="formSwitchCheckDefault"
-                  v-model="form.inactive"
-                  label="사용 종료 및 비활성 여부"
-                />
-              </CCol>
-            </CRow>
-          </CCol>
-        </CRow>
-
-        <CRow class="mb-3">
           <CCol sm="12">
             <CRow>
               <CFormLabel class="col-sm-2 col-form-label">비고</CFormLabel>
@@ -243,8 +215,38 @@ onBeforeMount(() => {
           </CCol>
         </CRow>
 
+        <CRow class="mb-3">
+          <CCol sm="6">
+            <CRow>
+              <CFormLabel class="col-sm-4 col-form-label"></CFormLabel>
+              <CCol sm="8">
+                <v-switch
+                  v-model="form.is_hide"
+                  label="목록에서 숨김 여부"
+                  color="indigo"
+                  hide-details
+                />
+              </CCol>
+            </CRow>
+          </CCol>
+
+          <CCol sm="6">
+            <CRow>
+              <CFormLabel class="col-sm-4 col-form-label"></CFormLabel>
+              <CCol sm="8">
+                <v-switch
+                  v-model="form.inactive"
+                  label="사용 종료 및 비활성 여부"
+                  color="danger"
+                  hide-details
+                />
+              </CCol>
+            </CRow>
+          </CCol>
+        </CRow>
+
         <CRow>
-          <CCol sm="12" class="text-right pt-2">
+          <CCol sm="12" class="text-right pt-1">
             <CButton color="success" type="submit">
               거래 계좌 정보 저장하기
             </CButton>
