@@ -2,11 +2,10 @@
 import { computed } from 'vue'
 import { useComCash } from '@/store/pinia/comCash'
 import { CashBook } from '@/store/types/comCash'
-import { cutString } from '@/utils/baseMixins'
 import { TableSecondary } from '@/utils/cssMixins'
 import Cashes from '@/views/comCash/CashManage/components/Cashes.vue'
 import Pagination from '@/components/Pagination'
-import AlertModal from '@/components/Modals/AlertModal.vue'
+import AccountView from './AccountView.vue'
 
 defineProps({ company: { type: Object, default: null } })
 
@@ -20,9 +19,6 @@ const emit = defineEmits([
 const useComCashStore = useComCash()
 const cashesPages = computed(() => useComCashStore.cashesPages)
 const getCashLogs = computed(() => useComCashStore.getCashLogs)
-const listAccD1List = computed(() => useComCashStore.listAccD1List)
-const listAccD2List = computed(() => useComCashStore.listAccD2List)
-const listAccD3List = computed(() => useComCashStore.listAccD3List)
 
 const pageSelect = (page: number) => emit('page-select', page)
 
@@ -33,8 +29,8 @@ const multiSubmit = (payload: {
 
 const onDelete = (pk: number) => emit('on-delete', pk)
 
-const patchD3Hide = (pk: number, is_hide: boolean) =>
-  emit('patch-d3-hide', { pk, is_hide })
+const patchD3Hide = (payload: { pk: number; is_hide: boolean }) =>
+  emit('patch-d3-hide', payload)
 </script>
 
 <template>
@@ -60,9 +56,9 @@ const patchD3Hide = (pk: number, is_hide: boolean) =>
         <CTableHeaderCell scope="col">계정</CTableHeaderCell>
         <CTableHeaderCell scope="col">
           세부계정
-          <router-link to="" @click="showD1">
-            <CIcon name="cilCog" @click="$refs.DAccount.callModal()" />
-          </router-link>
+          <a href="javascript:void(0)">
+            <CIcon name="cilCog" @click="$refs.accView.callModal()" />
+          </a>
         </CTableHeaderCell>
         <CTableHeaderCell scope="col">적요</CTableHeaderCell>
         <CTableHeaderCell scope="col">거래처</CTableHeaderCell>
@@ -93,58 +89,5 @@ const patchD3Hide = (pk: number, is_hide: boolean) =>
     @active-page-change="pageSelect"
   />
 
-  <AlertModal ref="DAccount" size="lg">
-    <template #header> 계정 분류 보기</template>
-    <template #default>
-      <CAccordion>
-        <CAccordionItem
-          v-for="d1 in listAccD1List"
-          :key="d1.pk"
-          :item-key="d1.pk"
-        >
-          <CAccordionHeader>
-            {{ `[${d1.code}] ${d1.name} (${d1.description})` }}
-          </CAccordionHeader>
-          <CAccordionBody class="pl-3">
-            <CAccordion>
-              <CAccordionItem
-                v-for="d2 in listAccD2List.filter(a => a.d1 === d1.pk)"
-                :key="d2.pk"
-                :item-key="d2.pk"
-              >
-                <CAccordionHeader>
-                  [{{ d2.code }}] {{ d2.name }} - ({{ d2.description }})
-                </CAccordionHeader>
-                <CAccordionBody class="pl-3">
-                  <CRow
-                    v-for="d3 in listAccD3List.filter(a => a.d2 === d2.pk)"
-                    :key="d3.pk"
-                    class="pl-3 mb-2"
-                  >
-                    <CCol lg="10">
-                      [{{ d3.code }}] {{ d3.name }} ::
-                      {{ cutString(d3.description, 35) }}
-                    </CCol>
-                    <CCol lg="2" class="text-right">
-                      <CFormCheck
-                        :id="d3.code"
-                        :checked="d3.is_hide"
-                        label="미사용 계정"
-                        @change="patchD3Hide(d3.pk, $event.target.checked)"
-                      />
-                      <v-tooltip activator="parent" location="start">
-                        이 항목을 활성화 하면 입출금 등록 시 이 계정 항목을 숨길
-                        수 있습니다.
-                      </v-tooltip>
-                    </CCol>
-                  </CRow>
-                </CAccordionBody>
-              </CAccordionItem>
-            </CAccordion>
-          </CAccordionBody>
-        </CAccordionItem>
-      </CAccordion>
-    </template>
-    <template #footer></template>
-  </AlertModal>
+  <AccountView ref="accView" @patchD3Hide="patchD3Hide" />
 </template>
