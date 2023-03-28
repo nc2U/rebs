@@ -1,75 +1,38 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
 import { useComCash } from '@/store/pinia/comCash'
-import { cutString } from '@/utils/baseMixins'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-const emit = defineEmits(['patch-d3-hide'])
+// const emit = defineEmits(['patch-bank-hide'])
 
-const dAccount = ref()
+const comBankAcc = ref()
 
-const useComCashStore = useComCash()
-const listAccD1List = computed(() => useComCashStore.listAccD1List)
-const listAccD2List = computed(() => useComCashStore.listAccD2List)
-const listAccD3List = computed(() => useComCashStore.listAccD3List)
+const comCashStore = useComCash()
+const allComBankList = computed(() => comCashStore.allComBankList)
 
-const patchD3Hide = (pk: number, is_hide: boolean) =>
-  emit('patch-d3-hide', { pk, is_hide })
+// const patchBankHide = (pk: number, is_hide: boolean) =>
+//   emit('patch-bank-hide', { pk, is_hide })
 
-const callModal = () => dAccount.value.callModal()
+const callModal = () => comBankAcc.value.callModal()
 
 defineExpose({ callModal })
 </script>
 
 <template>
-  <AlertModal ref="dAccount" size="lg">
-    <template #header> 계정 분류 보기</template>
+  <AlertModal ref="comBankAcc" size="lg">
+    <template #header> 본사 거래 계좌 관리</template>
     <template #default>
       <CAccordion>
         <CAccordionItem
-          v-for="d1 in listAccD1List"
-          :key="d1.pk"
-          :item-key="d1.pk"
+          v-for="bank in allComBankList"
+          :key="bank.pk"
+          :item-key="bank.pk"
         >
           <CAccordionHeader>
-            {{ `[${d1.code}] ${d1.name} (${d1.description})` }}
+            {{ `${bank.alias_name}  :: ${bank.number}` }}
           </CAccordionHeader>
           <CAccordionBody class="pl-3">
-            <CAccordion>
-              <CAccordionItem
-                v-for="d2 in listAccD2List.filter(a => a.d1 === d1.pk)"
-                :key="d2.pk"
-                :item-key="d2.pk"
-              >
-                <CAccordionHeader>
-                  [{{ d2.code }}] {{ d2.name }} - ({{ d2.description }})
-                </CAccordionHeader>
-                <CAccordionBody class="pl-3">
-                  <CRow
-                    v-for="d3 in listAccD3List.filter(a => a.d2 === d2.pk)"
-                    :key="d3.pk"
-                    class="pl-3 mb-2"
-                  >
-                    <CCol lg="10">
-                      [{{ d3.code }}] {{ d3.name }} ::
-                      {{ cutString(d3.description, 35) }}
-                    </CCol>
-                    <CCol lg="2" class="text-right">
-                      <CFormCheck
-                        :id="d3.code"
-                        :checked="d3.is_hide"
-                        label="미사용 계정"
-                        @change="patchD3Hide(d3.pk, $event.target.checked)"
-                      />
-                      <v-tooltip activator="parent" location="start">
-                        이 항목을 활성화 하면 입출금 등록 시 이 계정 항목을 숨길
-                        수 있습니다.
-                      </v-tooltip>
-                    </CCol>
-                  </CRow>
-                </CAccordionBody>
-              </CAccordionItem>
-            </CAccordion>
+            {{ bank.alias_name }}
           </CAccordionBody>
         </CAccordionItem>
       </CAccordion>

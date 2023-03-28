@@ -62,6 +62,8 @@ const fetchFormAccD3List = (
   d2: number | null,
 ) => comCashStore.fetchFormAccD3List(sort, d1, d2)
 const fetchComBankAccList = (pk: number) => comCashStore.fetchComBankAccList(pk)
+const fetchAllComBankAccList = (pk: number) =>
+  comCashStore.fetchAllComBankAccList(pk)
 
 const fetchCashBookList = (payload: Filter) =>
   comCashStore.fetchCashBookList(payload)
@@ -79,10 +81,12 @@ const onSelectAdd = (target: number) => {
   if (!!target) {
     fetchCompany(target)
     fetchComBankAccList(target)
+    fetchAllComBankAccList(target)
     fetchCashBookList({ company: target })
   } else {
     companyStore.company = null
     comCashStore.comBankList = []
+    comCashStore.allComBankList = []
     comCashStore.cashBookList = []
     comCashStore.cashBookCount = 0
   }
@@ -153,6 +157,7 @@ onBeforeMount(() => {
   fetchFormAccD2List(null, null)
   fetchFormAccD3List(null, null, null)
   fetchComBankAccList(company.value)
+  fetchAllComBankAccList(company.value)
   fetchCashBookList({ company: company.value })
   dataFilter.value.company = company.value
 })
