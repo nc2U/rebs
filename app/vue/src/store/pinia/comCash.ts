@@ -114,7 +114,9 @@ export const useComCash = defineStore('comCash', () => {
 
   const fetchComBankAccList = (company: number) =>
     api
-      .get(`/company-bank-account/?company=${company}&is_hide=false`)
+      .get(
+        `/company-bank-account/?company=${company}&is_hide=false&inactive=false`,
+      )
       .then(res => (comBankList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 

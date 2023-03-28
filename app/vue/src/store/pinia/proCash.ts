@@ -69,7 +69,9 @@ export const useProCash = defineStore('proCash', () => {
 
   const fetchProBankAccList = (project: number) =>
     api
-      .get(`/project-bank-account/?project=${project}&is_hide=false`)
+      .get(
+        `/project-bank-account/?project=${project}&is_hide=false&inactive=false`,
+      )
       .then(res => (proBankAccountList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
