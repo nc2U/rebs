@@ -6,6 +6,7 @@ import { useProCash } from '@/store/pinia/proCash'
 import { useProject } from '@/store/pinia/project'
 import {
   CashBookFilter,
+  ProBankAcc,
   ProjectCashBook as PrCashBook,
 } from '@/store/types/proCash'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
@@ -153,6 +154,8 @@ const multiSubmit = (payload: {
 const onDelete = (payload: { pk: number; project: number }) =>
   deletePrCashBook({ ...{ filters: dataFilter.value }, ...payload })
 
+const onBankUpdate = (payload: ProBankAcc) => alert('aaa') // payload
+
 onBeforeMount(() => {
   fetchBankCodeList()
   fetchProAccSortList()
@@ -176,7 +179,7 @@ onBeforeMount(() => {
   <ContentBody>
     <CCardBody class="pb-5">
       <ListController ref="listControl" @list-filtering="listFiltering" />
-      <AddProCash @multi-submit="multiSubmit" />
+      <AddProCash @multi-submit="multiSubmit" @onBankUpdate="onBankUpdate" />
       <TableTitleRow
         title="프로젝트 입출금 내역"
         color="indigo"
@@ -198,6 +201,7 @@ onBeforeMount(() => {
         @page-select="pageSelect"
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
+        @onBankUpdate="onBankUpdate"
       />
     </CCardBody>
 

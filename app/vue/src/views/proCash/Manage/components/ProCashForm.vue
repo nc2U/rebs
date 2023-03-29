@@ -4,11 +4,12 @@ import { useProCash } from '@/store/pinia/proCash'
 import { useAccount } from '@/store/pinia/account'
 import { diffDate, dateFormat, cutString, numFormat } from '@/utils/baseMixins'
 import { write_project_cash } from '@/utils/pageAuth'
-import { ProjectCashBook, ProSepItems } from '@/store/types/proCash'
+import { ProBankAcc, ProjectCashBook, ProSepItems } from '@/store/types/proCash'
 import { isValidate } from '@/utils/helper'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
+import BankAcc from './BankAcc.vue'
 
 const props = defineProps({
   proCash: {
@@ -17,7 +18,12 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['multi-submit', 'on-delete', 'close'])
+const emit = defineEmits([
+  'multi-submit',
+  'on-delete',
+  'close',
+  'on-bank-update',
+])
 
 const delModal = ref()
 const alertModal = ref()
@@ -248,6 +254,8 @@ const deleteObject = () => {
   emit('close')
 }
 
+const onBankUpdate = (payload: ProBankAcc) => emit('on-bank-update', payload)
+
 onBeforeMount(() => {
   if (props.proCash) {
     form.pk = props.proCash.pk
@@ -404,6 +412,9 @@ onBeforeMount(() => {
             <CRow>
               <CFormLabel class="col-sm-4 col-form-label">
                 {{ !proCash && form.sort === 3 ? '출금' : '거래' }}계좌
+                <a href="javascript:void(0)">
+                  <CIcon name="cilCog" @click="$refs.bankAcc.callModal()" />
+                </a>
               </CFormLabel>
               <CCol sm="8">
                 <CFormSelect
@@ -833,4 +844,6 @@ onBeforeMount(() => {
   </ConfirmModal>
 
   <AlertModal ref="alertModal" />
+
+  <BankAcc ref="bankAcc" @onBankUpdate="onBankUpdate" />
 </template>
