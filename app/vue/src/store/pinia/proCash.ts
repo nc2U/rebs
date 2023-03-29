@@ -75,9 +75,9 @@ export const useProCash = defineStore('proCash', () => {
       .then(res => (proBankAccountList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
-  const fetchAllProBankAccList = (project: number) =>
+  const fetchAllProBankAccList = (project: number, imp = false) =>
     api
-      .get(`/project-bank-account/?project=${project}`)
+      .get(`/project-bank-account/?project=${project}&is_imprest=${imp || ''}`)
       .then(res => (allProBankAccountList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 

@@ -13,6 +13,7 @@ import ListController from '@/views/proCash/Imprest/components/ListController.vu
 import AddProImprest from '@/views/proCash/Imprest/components/AddProImprest.vue'
 import TableTitleRow from '@/components/TableTitleRow.vue'
 import ProImprestList from '@/views/proCash/Imprest/components/ProImprestList.vue'
+import { useComCash } from '@/store/pinia/comCash'
 
 const listControl = ref()
 
@@ -43,6 +44,9 @@ const projectStore = useProject()
 const initProjId = computed(() => projectStore.initProjId)
 const project = computed(() => projectStore.project?.pk || initProjId.value)
 
+const comCashStore = useComCash()
+const fetchBankCodeList = () => comCashStore.fetchBankCodeList()
+
 const proCashStore = useProCash()
 const fetchProAccSortList = () => proCashStore.fetchProAccSortList()
 const fetchProAllAccD1List = () => proCashStore.fetchProAllAccD1List()
@@ -55,6 +59,8 @@ const fetchProFormAccD2List = (d1?: number | null, sort?: number | null) =>
 
 const fetchProBankAccList = (projId: number) =>
   proCashStore.fetchProBankAccList(projId)
+const fetchAllProBankAccList = (projId: number, imp = false) =>
+  proCashStore.fetchAllProBankAccList(projId, imp)
 const fetchProjectImprestList = (payload: { project: number }) =>
   proCashStore.fetchProjectImprestList(payload)
 
@@ -79,9 +85,11 @@ const deletePrImprestBook = (
 const onSelectAdd = (target: number) => {
   if (!!target) {
     fetchProBankAccList(target)
+    fetchAllProBankAccList(target, true)
     fetchProjectImprestList({ project: target })
   } else {
     proCashStore.balanceByAccList = []
+    proCashStore.allProBankAccountList = []
     proCashStore.proImprestList = []
     proCashStore.proImprestCount = 0
   }
@@ -148,12 +156,14 @@ const onDelete = (payload: { pk: number; project: number }) =>
   deletePrImprestBook({ ...{ filters: dataFilter.value }, ...payload })
 
 onBeforeMount(() => {
+  fetchBankCodeList()
   fetchProAccSortList()
   fetchProAllAccD1List()
   fetchProAllAccD2List()
   fetchProFormAccD1List()
   fetchProFormAccD2List()
   fetchProBankAccList(project.value)
+  fetchAllProBankAccList(project.value, true)
   fetchProjectImprestList({ project: project.value })
 })
 </script>
