@@ -92,7 +92,22 @@ const formsCheck = computed(() => {
 const proCashStore = useProCash()
 const formAccD1List = computed(() => proCashStore.formAccD1List)
 const formAccD2List = computed(() => proCashStore.formAccD2List)
-const proBankAccountList = computed(() => proCashStore.proBankAccountList)
+const getProBanks = computed(() => proCashStore.getProBanks)
+const allProBankAccList = computed(() => proCashStore.allProBankAccountList)
+
+const proBankAccs = computed(() => {
+  const ba = props.proCash.bank_account
+  const isExist = !!getProBanks.value.filter(b => b.value === ba).length
+
+  return isExist
+    ? getProBanks.value
+    : [...getProBanks.value, ...[{ value: ba, label: getAccName(ba) }]].sort(
+        (a, b) => a.value - b.value,
+      )
+})
+
+const getAccName = (pk: number) =>
+  allProBankAccList.value.filter(b => b.pk === pk).map(b => b.alias_name)[0]
 
 const fetchProFormAccD1List = (sort: number | null) =>
   proCashStore.fetchProFormAccD1List(sort)
@@ -424,11 +439,11 @@ onBeforeMount(() => {
                 >
                   <option value="">---------</option>
                   <option
-                    v-for="ba in proBankAccountList"
-                    :key="ba.pk"
-                    :value="ba.pk"
+                    v-for="ba in proBankAccs"
+                    :key="ba.value"
+                    :value="ba.value"
                   >
-                    {{ ba.alias_name }}
+                    {{ ba.label }}
                   </option>
                 </CFormSelect>
               </CCol>
@@ -467,11 +482,11 @@ onBeforeMount(() => {
                 >
                   <option value="">---------</option>
                   <option
-                    v-for="ba in proBankAccountList"
-                    :key="ba.pk"
-                    :value="ba.pk"
+                    v-for="ba in proBankAccs"
+                    :key="ba.value"
+                    :value="ba.value"
                   >
-                    {{ ba.alias_name }}
+                    {{ ba.label }}
                   </option>
                 </CFormSelect>
               </CCol>

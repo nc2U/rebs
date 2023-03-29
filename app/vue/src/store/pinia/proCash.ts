@@ -65,6 +65,12 @@ export const useProCash = defineStore('proCash', () => {
   }
 
   const proBankAccountList = ref<ProBankAcc[]>([])
+  const getProBanks = computed(() =>
+    proBankAccountList.value.map(bk => ({
+      value: bk.pk,
+      label: bk.alias_name,
+    })),
+  )
   const allProBankAccountList = ref<ProBankAcc[]>([])
 
   const fetchProBankAccList = (project: number) =>
@@ -430,6 +436,7 @@ export const useProCash = defineStore('proCash', () => {
     fetchProFormAccD2List,
 
     proBankAccountList,
+    getProBanks,
     allProBankAccountList,
     fetchProBankAccList,
     fetchAllProBankAccList,
