@@ -7,7 +7,7 @@ import {
   DataFilter as Filter,
   DataFilter,
 } from '@/store/pinia/comCash'
-import { CashBook, SepItems } from '@/store/types/comCash'
+import { BankCode, CashBook, SepItems } from '@/store/types/comCash'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from '@/views/comCash/CashManage/components/ListController.vue'
@@ -152,6 +152,8 @@ const onDelete = (payload: CashBook) =>
 const patchD3Hide = (payload: { pk: number; is_hide: boolean }) =>
   patchAccD3(payload)
 
+const onBankUpdate = (payload: BankCode) => alert('finished!')
+
 onBeforeMount(() => {
   fetchCompany(company.value)
   fetchAllDepartList(company.value)
@@ -193,6 +195,7 @@ onBeforeMount(() => {
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
         @patchD3Hide="patchD3Hide"
+        @onBankUpdate="onBankUpdate"
       />
     </CCardBody>
 
