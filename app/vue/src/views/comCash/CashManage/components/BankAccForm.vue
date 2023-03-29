@@ -223,6 +223,9 @@ onBeforeMount(() => {
                   color="indigo"
                   hide-details
                 />
+                <v-tooltip activator="parent" location="end">
+                  입출금 등록 시 이 계좌 항목을 숨김.
+                </v-tooltip>
               </CCol>
             </CRow>
           </CCol>
@@ -237,6 +240,9 @@ onBeforeMount(() => {
                   color="danger"
                   hide-details
                 />
+                <v-tooltip activator="parent" location="start">
+                  해지된 계좌로 내역만 확인 가능.
+                </v-tooltip>
               </CCol>
             </CRow>
           </CCol>
