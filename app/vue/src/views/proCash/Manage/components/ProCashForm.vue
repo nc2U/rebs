@@ -96,10 +96,10 @@ const getProBanks = computed(() => proCashStore.getProBanks)
 const allProBankAccList = computed(() => proCashStore.allProBankAccountList)
 
 const proBankAccs = computed(() => {
-  const ba = props.proCash.bank_account
+  const ba = props.proCash ? props.proCash.bank_account : 0
   const isExist = !!getProBanks.value.filter(b => b.value === ba).length
 
-  return isExist
+  return !ba || isExist
     ? getProBanks.value
     : [...getProBanks.value, ...[{ value: ba, label: getAccName(ba) }]].sort(
         (a, b) => a.value - b.value,

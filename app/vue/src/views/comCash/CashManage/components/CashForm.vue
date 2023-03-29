@@ -92,10 +92,10 @@ const allComBankList = computed(() => comCashStore.allComBankList)
 const getComBanks = computed(() => comCashStore.getComBanks)
 
 const comBankAccs = computed(() => {
-  const ba = props.cash.bank_account
+  const ba = props.cash ? props.cash.bank_account : 0
   const isExist = !!getComBanks.value.filter(b => b.value === ba).length
 
-  return isExist
+  return !ba || isExist
     ? getComBanks.value
     : [...getComBanks.value, ...[{ value: ba, label: getAccName(ba) }]].sort(
         (a, b) => a.value - b.value,

@@ -95,12 +95,27 @@ const formsCheck = computed(() => {
 const proCashStore = useProCash()
 const formAccD1List = computed(() => proCashStore.formAccD1List)
 const formAccD2List = computed(() => proCashStore.formAccD2List)
-const imprestBAccount = computed(() => proCashStore.imprestBAccount)
-const proBankAccountList = computed(() => proCashStore.proBankAccountList)
+
+const getImpBankAccs = computed(() => proCashStore.getImpBankAccs)
+const allProBankAccList = computed(() => proCashStore.allProBankAccountList)
+
+const proImpBankAccs = computed(() => {
+  const ba = props.imprest ? props.imprest.bank_account : 0
+  const isExist = !!getImpBankAccs.value.filter(b => b.value === ba).length
+
+  return !ba || isExist
+    ? getImpBankAccs.value
+    : [...getImpBankAccs.value, ...[{ value: ba, label: getAccName(ba) }]].sort(
+        (a, b) => a.value - b.value,
+      )
+})
+
+const getAccName = (pk: number) =>
+  allProBankAccList.value.filter(b => b.pk === pk).map(b => b.alias_name)[0]
 
 const isImprest = computed(() =>
   form.bank_account_to
-    ? proBankAccountList.value.filter(ba => ba.pk === form.bank_account_to)[0]
+    ? allProBankAccList.value.filter(ba => ba.pk === form.bank_account_to)[0]
         .is_imprest
     : true,
 )
@@ -431,11 +446,11 @@ onBeforeMount(() => {
                 >
                   <option value="">---------</option>
                   <option
-                    v-for="ba in imprestBAccount"
-                    :key="ba.pk"
-                    :value="ba.pk"
+                    v-for="ba in proImpBankAccs"
+                    :key="ba.value"
+                    :value="ba.value"
                   >
-                    {{ ba.alias_name }}
+                    {{ ba.label }}
                   </option>
                 </CFormSelect>
               </CCol>
@@ -475,7 +490,7 @@ onBeforeMount(() => {
                 >
                   <option value="">---------</option>
                   <option
-                    v-for="ba in proBankAccountList"
+                    v-for="ba in allProBankAccList"
                     :key="ba.pk"
                     :value="ba.pk"
                   >
@@ -711,11 +726,11 @@ onBeforeMount(() => {
                     <CFormSelect v-model.number="form.bank_account" disabled>
                       <option value="">---------</option>
                       <option
-                        v-for="ba in imprestBAccount"
-                        :key="ba.pk"
-                        :value="ba.pk"
+                        v-for="ba in proImpBankAccs"
+                        :key="ba.value"
+                        :value="ba.value"
                       >
-                        {{ ba.alias_name }}
+                        {{ ba.label }}
                       </option>
                     </CFormSelect>
                   </CCol>
