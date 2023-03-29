@@ -52,13 +52,13 @@ defineExpose({ callModal })
                   >
                     <CCol lg="10">
                       [{{ d3.code }}] {{ d3.name }} ::
-                      {{ cutString(d3.description, 35) }}
+                      {{ cutString(d3.description, 32) }}
                     </CCol>
                     <CCol lg="2" class="text-right">
                       <CFormCheck
                         :id="d3.code"
                         :checked="d3.is_hide"
-                        label="미사용 계정"
+                        label="미사용"
                         @change="patchD3Hide(d3.pk, $event.target.checked)"
                       />
                       <v-tooltip activator="parent" location="start">

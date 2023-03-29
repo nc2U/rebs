@@ -219,7 +219,7 @@ onBeforeMount(() => {
               <CCol sm="8">
                 <v-switch
                   v-model="form.is_hide"
-                  label="목록에서 숨김 여부"
+                  label="입출금 등록시 숨김"
                   color="indigo"
                   hide-details
                 />
@@ -233,7 +233,7 @@ onBeforeMount(() => {
               <CCol sm="8">
                 <v-switch
                   v-model="form.inactive"
-                  label="사용 종료 및 비활성 여부"
+                  label="사용종료 계좌"
                   color="danger"
                   hide-details
                 />
