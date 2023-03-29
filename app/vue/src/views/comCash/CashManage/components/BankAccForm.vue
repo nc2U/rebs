@@ -69,7 +69,10 @@ const onSubmit = (event: Event) => {
   }
 }
 
-const onBankUpdate = () => emit('on-bank-update', { ...form })
+const onBankUpdate = () => {
+  emit('on-bank-update', { ...form })
+  confirmModal.value.close()
+}
 
 onBeforeMount(() => {
   if (props.bankAcc) {
@@ -241,7 +244,7 @@ onBeforeMount(() => {
 
         <CRow>
           <CCol sm="12" class="text-right pt-1">
-            <CButton color="success" type="submit">
+            <CButton color="success" type="submit" :disabled="formsCheck">
               거래 계좌 정보 저장하기
             </CButton>
           </CCol>

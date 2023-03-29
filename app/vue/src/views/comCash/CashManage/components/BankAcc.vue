@@ -1,18 +1,18 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
 import { useComCash } from '@/store/pinia/comCash'
+import { BankCode } from '@/store/types/comCash'
 import BankAccForm from './BankAccForm.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-// const emit = defineEmits(['patch-bank-hide'])
+const emit = defineEmits(['on-bank-update'])
 
 const comBankAcc = ref()
 
 const comCashStore = useComCash()
 const allComBankList = computed(() => comCashStore.allComBankList)
 
-// const patchBankHide = (pk: number, is_hide: boolean) =>
-//   emit('patch-bank-hide', { pk, is_hide })
+const onBankUpdate = (payload: BankCode) => emit('on-bank-update', payload)
 
 const callModal = () => comBankAcc.value.callModal()
 
@@ -33,7 +33,7 @@ defineExpose({ callModal })
             {{ `${bank.alias_name}  :: ${bank.number}` }}
           </CAccordionHeader>
           <CAccordionBody class="pl-3">
-            <BankAccForm :bank-acc="bank" />
+            <BankAccForm :bank-acc="bank" @onBankUpdate="onBankUpdate" />
           </CAccordionBody>
         </CAccordionItem>
       </CAccordion>
