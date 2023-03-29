@@ -119,6 +119,9 @@ export const useComCash = defineStore('comCash', () => {
   }
 
   const comBankList = ref<CompanyBank[]>([])
+  const getComBanks = computed(() =>
+    comBankList.value.map(bk => ({ value: bk.pk, label: bk.alias_name })),
+  )
   const allComBankList = ref<CompanyBank[]>([])
 
   const fetchComBankAccList = (company: number) =>
@@ -335,6 +338,7 @@ export const useComCash = defineStore('comCash', () => {
     fetchFormAccD3List,
 
     comBankList,
+    getComBanks,
     allComBankList,
     fetchComBankAccList,
     fetchAllComBankAccList,

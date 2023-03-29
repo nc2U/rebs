@@ -84,21 +84,36 @@ const formsCheck = computed(() => {
   } else return false
 })
 
-const useComCashStore = useComCash()
-const formAccD1List = computed(() => useComCashStore.formAccD1List)
-const formAccD2List = computed(() => useComCashStore.formAccD2List)
-const formAccD3List = computed(() => useComCashStore.formAccD3List)
-const comBankList = computed(() => useComCashStore.comBankList)
+const comCashStore = useComCash()
+const formAccD1List = computed(() => comCashStore.formAccD1List)
+const formAccD2List = computed(() => comCashStore.formAccD2List)
+const formAccD3List = computed(() => comCashStore.formAccD3List)
+const allComBankList = computed(() => comCashStore.allComBankList)
+const getComBanks = computed(() => comCashStore.getComBanks)
+
+const comBankAccs = computed(() => {
+  const ba = props.cash.bank_account
+  const isExist = !!getComBanks.value.filter(b => b.value === ba).length
+
+  return isExist
+    ? getComBanks.value
+    : [...getComBanks.value, ...[{ value: ba, label: getAccName(ba) }]].sort(
+        (a, b) => a.value - b.value,
+      )
+})
+
+const getAccName = (pk: number) =>
+  allComBankList.value.filter(b => b.pk === pk).map(b => b.alias_name)[0]
 
 const fetchFormAccD1List = (sort: number | null) =>
-  useComCashStore.fetchFormAccD1List(sort)
+  comCashStore.fetchFormAccD1List(sort)
 const fetchFormAccD2List = (sort: number | null, d1: number | null) =>
-  useComCashStore.fetchFormAccD2List(sort, d1)
+  comCashStore.fetchFormAccD2List(sort, d1)
 const fetchFormAccD3List = (
   sort: number | null,
   d1: number | null,
   d2: number | null,
-) => useComCashStore.fetchFormAccD3List(sort, d1, d2)
+) => comCashStore.fetchFormAccD3List(sort, d1, d2)
 
 const requireItem = computed(
   () => !!form.account_d1 && !!form.account_d2 && !!form.account_d3,
@@ -489,8 +504,12 @@ onBeforeMount(() => {
                   :disabled="!form.sort"
                 >
                   <option value="">---------</option>
-                  <option v-for="ba in comBankList" :key="ba.pk" :value="ba.pk">
-                    {{ ba.alias_name }}
+                  <option
+                    v-for="ba in comBankAccs"
+                    :key="ba.value"
+                    :value="ba.value"
+                  >
+                    {{ ba.label }}
                   </option>
                 </CFormSelect>
               </CCol>
@@ -528,8 +547,12 @@ onBeforeMount(() => {
                   :disabled="form.sort !== 3"
                 >
                   <option value="">---------</option>
-                  <option v-for="ba in comBankList" :key="ba.pk" :value="ba.pk">
-                    {{ ba.alias_name }}
+                  <option
+                    v-for="ba in comBankAccs"
+                    :key="ba.value"
+                    :value="ba.value"
+                  >
+                    {{ ba.label }}
                   </option>
                 </CFormSelect>
               </CCol>
