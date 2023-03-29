@@ -2216,7 +2216,7 @@
       "code": "851",
       "sub_title": "",
       "name": "기타수입",
-      "description": "사업목적 외 기타 수입, 위약금 수입"
+      "description": "사업목적 외 기타 수입"
     }
   },
   {
@@ -2798,8 +2798,8 @@
       "d1": 16,
       "code": "461",
       "sub_title": "",
-      "name": "기타 잡손실",
-      "description": "기타 잡손실"
+      "name": "기타 손실",
+      "description": "기타 손실"
     }
   },
   {
