@@ -51,6 +51,7 @@ const fetchAllDepartList = (com: number) => companyStore.fetchAllDepartList(com)
 
 const comCashStore = useComCash()
 const fetchBankCodeList = () => comCashStore.fetchBankCodeList()
+const patchBankCode = (payload: BankCode) => comCashStore.patchBankCode(payload)
 const fetchAccSortList = () => comCashStore.fetchAccSortList()
 const fetchAllAccD1List = () => comCashStore.fetchAllAccD1List()
 const fetchAllAccD2List = () => comCashStore.fetchAllAccD2List()
@@ -152,10 +153,7 @@ const onDelete = (payload: CashBook) =>
 const patchD3Hide = (payload: { pk: number; is_hide: boolean }) =>
   patchAccD3(payload)
 
-const onBankUpdate = (payload: BankCode) => {
-  alert('finished!')
-  console.log(payload)
-}
+const onBankUpdate = (payload: BankCode) => patchBankCode(payload)
 
 onBeforeMount(() => {
   fetchCompany(company.value)

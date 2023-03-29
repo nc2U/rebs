@@ -37,6 +37,12 @@ export const useComCash = defineStore('comCash', () => {
       .then(res => (bankCodeList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
+  const patchBankCode = (payload: BankCode) =>
+    api
+      .patch(`/bank-code/${payload.pk}/`, payload)
+      .then(() => fetchBankCodeList().then(() => message()))
+      .catch(err => errorHandle(err.response.data))
+
   const sortList = ref<AccountSort[]>([])
 
   const fetchAccSortList = () =>
@@ -72,7 +78,7 @@ export const useComCash = defineStore('comCash', () => {
   const patchAccD3 = (payload: { pk: number; is_hide: boolean }) => {
     const { pk, ...hideData } = payload
     return api
-      .patch(`account-depth3/${pk}/`, hideData)
+      .patch(`/account-depth3/${pk}/`, hideData)
       .then(() => {
         fetchAllAccD3List().then(() =>
           fetchFormAccD3List(null, null, null).then(() => message()),
@@ -315,6 +321,7 @@ export const useComCash = defineStore('comCash', () => {
   return {
     bankCodeList,
     fetchBankCodeList,
+    patchBankCode,
 
     sortList,
     fetchAccSortList,
