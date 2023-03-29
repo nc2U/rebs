@@ -42,9 +42,8 @@ export const useProCash = defineStore('proCash', () => {
   const formAccD1List = ref<ProjectAccountD1[]>([])
 
   const fetchProFormAccD1List = (sort: number | null = null) => {
-    const sortUri = sort ? `?projectaccountsort=${sort}` : ''
     api
-      .get(`/project-account-depth1/${sortUri}`)
+      .get(`/project-account-depth1/?sort=${sort}`)
       .then(res => (formAccD1List.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
   }
@@ -54,12 +53,11 @@ export const useProCash = defineStore('proCash', () => {
   const fetchProFormAccD2List = (
     d1: number | null = null,
     sort: number | null = null,
+    acc: number | null = null,
   ) => {
-    const sortUri = sort
-      ? `&d1__projectaccountsort=${sort}`
-      : '&d1__projectaccountsort=1&d1__projectaccountsort=2&d1__projectaccountsort=3'
+    const uri = `?d1__acc=${acc || ''}&d1=${d1 || ''}&sort=${sort || ''}`
     return api
-      .get(`/project-account-depth2/?d1=${d1 || ''}${sortUri}`)
+      .get(`/project-account-depth2/${uri}`)
       .then(res => (formAccD2List.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
   }

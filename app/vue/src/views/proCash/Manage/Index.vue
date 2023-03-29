@@ -29,6 +29,20 @@ const dataFilter = ref<CashBookFilter>({
   search: '',
 })
 
+const pageSelect = (page: number) => {
+  dataFilter.value.page = page
+  listControl.value.listFiltering(page)
+}
+
+const listFiltering = (payload: CashBookFilter) => {
+  dataFilter.value = payload
+  const sort = payload.sort ? payload.sort : null
+  const d1 = payload.pro_acc_d1 ? payload.pro_acc_d1 : null
+  fetchProFormAccD1List(sort)
+  fetchProFormAccD2List(d1, sort)
+  fetchProjectCashList({ ...{ project: project.value }, ...payload })
+}
+
 const excelSelect = '1'
 
 const excelUrl = computed(() => {
@@ -99,20 +113,6 @@ const onSelectAdd = (target: number) => {
     proCashStore.proCashBookList = []
     proCashStore.proCashesCount = 0
   }
-}
-
-const pageSelect = (page: number) => {
-  dataFilter.value.page = page
-  listControl.value.listFiltering(page)
-}
-
-const listFiltering = (payload: CashBookFilter) => {
-  dataFilter.value = payload
-  const sort = payload.sort ? payload.sort : null
-  const d1 = payload.pro_acc_d1 ? payload.pro_acc_d1 : null
-  fetchProFormAccD1List(sort)
-  fetchProFormAccD2List(d1, sort)
-  fetchProjectCashList({ ...{ project: project.value }, ...payload })
 }
 
 const onCreate = (
