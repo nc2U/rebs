@@ -97,8 +97,8 @@ const onDelete = (payload: { project: number; pk: number }) =>
           :key="d1.pk"
           :item-key="d1.pk"
         >
-          <CAccordionHeader
-            >{{ `[${d1.code}] ${d1.name} (${d1.description})` }}
+          <CAccordionHeader>
+            {{ `[${d1.code}] ${d1.name} (${d1.description})` }}
           </CAccordionHeader>
           <CAccordionBody class="pl-3">
             <CRow
@@ -107,7 +107,7 @@ const onDelete = (payload: { project: number; pk: number }) =>
               class="pl-2 mb-2"
             >
               <CCol>
-                [{{ d2.code }}] {{ d2.name }} ------ ({{ d2.description }})
+                [{{ d2.code }}] {{ d2.name }} :: {{ d2.description }}
               </CCol>
             </CRow>
           </CAccordionBody>

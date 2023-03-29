@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { useProCash } from '@/store/pinia/proCash'
 import { ProjectCashBook } from '@/store/types/proCash'
+import { cutString } from '@/utils/baseMixins'
 import { TableSecondary } from '@/utils/cssMixins'
 import ProImprest from '@/views/proCash/Imprest/components/ProImprest.vue'
 import Pagination from '@/components/Pagination'
@@ -98,7 +99,7 @@ const onDelete = (payload: { project: number; pk: number }) =>
           :item-key="d1.pk"
         >
           <CAccordionHeader>
-            {{ `[${d1.code}] ${d1.name} (${d1.description})` }}
+            {{ `[${d1.code}] ${d1.name} :: ${cutString(d1.description, 45)}` }}
           </CAccordionHeader>
           <CAccordionBody class="pl-3">
             <CRow
@@ -107,7 +108,8 @@ const onDelete = (payload: { project: number; pk: number }) =>
               class="pl-2 mb-2"
             >
               <CCol>
-                [{{ d2.code }}] {{ d2.name }} ------ ({{ d2.description }})
+                [{{ d2.code }}] {{ d2.name }} ::
+                {{ cutString(d2.description, 38) }}
               </CCol>
             </CRow>
           </CAccordionBody>
