@@ -7,7 +7,7 @@ import {
   DataFilter as Filter,
   DataFilter,
 } from '@/store/pinia/comCash'
-import { BankCode, CashBook, SepItems } from '@/store/types/comCash'
+import { CashBook, CompanyBank, SepItems } from '@/store/types/comCash'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from '@/views/comCash/CashManage/components/ListController.vue'
@@ -51,7 +51,6 @@ const fetchAllDepartList = (com: number) => companyStore.fetchAllDepartList(com)
 
 const comCashStore = useComCash()
 const fetchBankCodeList = () => comCashStore.fetchBankCodeList()
-const patchBankCode = (payload: BankCode) => comCashStore.patchBankCode(payload)
 const fetchAccSortList = () => comCashStore.fetchAccSortList()
 const fetchAllAccD1List = () => comCashStore.fetchAllAccD1List()
 const fetchAllAccD2List = () => comCashStore.fetchAllAccD2List()
@@ -68,6 +67,8 @@ const fetchFormAccD3List = (
 const fetchComBankAccList = (pk: number) => comCashStore.fetchComBankAccList(pk)
 const fetchAllComBankAccList = (pk: number) =>
   comCashStore.fetchAllComBankAccList(pk)
+const patchComBankAcc = (payload: CompanyBank) =>
+  comCashStore.patchComBankAcc(payload)
 
 const fetchCashBookList = (payload: Filter) =>
   comCashStore.fetchCashBookList(payload)
@@ -153,7 +154,7 @@ const onDelete = (payload: CashBook) =>
 const patchD3Hide = (payload: { pk: number; is_hide: boolean }) =>
   patchAccD3(payload)
 
-const onBankUpdate = (payload: BankCode) => patchBankCode(payload)
+const onBankUpdate = (payload: CompanyBank) => patchComBankAcc(payload)
 
 onBeforeMount(() => {
   fetchCompany(company.value)

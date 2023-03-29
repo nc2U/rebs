@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { useComCash } from '@/store/pinia/comCash'
-import { BankCode, CashBook } from '@/store/types/comCash'
+import { CompanyBank, CashBook } from '@/store/types/comCash'
 import { TableSecondary } from '@/utils/cssMixins'
 import Cashes from '@/views/comCash/CashManage/components/Cashes.vue'
 import Pagination from '@/components/Pagination'
@@ -35,7 +35,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
 const patchD3Hide = (payload: { pk: number; is_hide: boolean }) =>
   emit('patch-d3-hide', payload)
 
-const onBankUpdate = (payload: BankCode) => emit('on-bank-update', payload)
+const onBankUpdate = (payload: CompanyBank) => emit('on-bank-update', payload)
 </script>
 
 <template>

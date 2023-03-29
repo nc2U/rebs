@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
 import { useComCash } from '@/store/pinia/comCash'
-import { BankCode } from '@/store/types/comCash'
+import { CompanyBank } from '@/store/types/comCash'
 import BankAccForm from './BankAccForm.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
@@ -12,7 +12,7 @@ const comBankAcc = ref()
 const comCashStore = useComCash()
 const allComBankList = computed(() => comCashStore.allComBankList)
 
-const onBankUpdate = (payload: BankCode) => emit('on-bank-update', payload)
+const onBankUpdate = (payload: CompanyBank) => emit('on-bank-update', payload)
 
 const callModal = () => comBankAcc.value.callModal()
 

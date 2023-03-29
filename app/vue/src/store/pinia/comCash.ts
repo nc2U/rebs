@@ -37,12 +37,6 @@ export const useComCash = defineStore('comCash', () => {
       .then(res => (bankCodeList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
-  const patchBankCode = (payload: BankCode) =>
-    api
-      .patch(`/bank-code/${payload.pk}/`, payload)
-      .then(() => fetchBankCodeList().then(() => message()))
-      .catch(err => errorHandle(err.response.data))
-
   const sortList = ref<AccountSort[]>([])
 
   const fetchAccSortList = () =>
@@ -321,7 +315,6 @@ export const useComCash = defineStore('comCash', () => {
   return {
     bankCodeList,
     fetchBankCodeList,
-    patchBankCode,
 
     sortList,
     fetchAccSortList,

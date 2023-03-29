@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { BankCode, CashBook } from '@/store/types/comCash'
+import { CompanyBank, CashBook } from '@/store/types/comCash'
 import { AlertLight } from '@/utils/cssMixins'
 import FormModal from '@/components/Modals/FormModal.vue'
 import CashForm from '@/views/comCash/CashManage/components/CashForm.vue'
@@ -19,7 +19,7 @@ const multiSubmit = (payload: {
 const patchD3Hide = (payload: { pk: number; is_hide: boolean }) =>
   emit('patch-d3-hide', payload)
 
-const onBankUpdate = (payload: BankCode) => emit('on-bank-update', payload)
+const onBankUpdate = (payload: CompanyBank) => emit('on-bank-update', payload)
 </script>
 
 <template>

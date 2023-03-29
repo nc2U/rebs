@@ -2,7 +2,7 @@
 import { computed, ref } from 'vue'
 import { useStore } from 'vuex'
 import { useAccount } from '@/store/pinia/account'
-import { BankCode, CashBook } from '@/store/types/comCash'
+import { CompanyBank, CashBook } from '@/store/types/comCash'
 import { write_company_cash } from '@/utils/pageAuth'
 import { numFormat, cutString, diffDate } from '@/utils/baseMixins'
 import FormModal from '@/components/Modals/FormModal.vue'
@@ -73,7 +73,7 @@ const deleteObject = () => {
 const patchD3Hide = (payload: { pk: number; is_hide: boolean }) =>
   emit('patch-d3-hide', payload)
 
-const onBankUpdate = (payload: BankCode) => emit('on-bank-update', payload)
+const onBankUpdate = (payload: CompanyBank) => emit('on-bank-update', payload)
 </script>
 
 <template>

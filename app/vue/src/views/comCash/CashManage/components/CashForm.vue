@@ -2,7 +2,7 @@
 import { ref, reactive, computed, nextTick, onBeforeMount, watch } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { useComCash } from '@/store/pinia/comCash'
-import { BankCode, CashBook, SepItems } from '@/store/types/comCash'
+import { CashBook, CompanyBank, SepItems } from '@/store/types/comCash'
 import { write_company_cash } from '@/utils/pageAuth'
 import { isValidate } from '@/utils/helper'
 import { dateFormat, diffDate, cutString, numFormat } from '@/utils/baseMixins'
@@ -295,7 +295,7 @@ const deleteObject = () => {
 const patchD3Hide = (payload: { pk: number; is_hide: boolean }) =>
   emit('patch-d3-hide', payload)
 
-const onBankUpdate = (payload: BankCode) => emit('on-bank-update', payload)
+const onBankUpdate = (payload: CompanyBank) => emit('on-bank-update', payload)
 
 onBeforeMount(() => {
   if (props.cash) {
