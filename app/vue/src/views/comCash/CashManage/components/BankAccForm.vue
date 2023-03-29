@@ -103,7 +103,11 @@ onBeforeMount(() => {
             <CRow>
               <CFormLabel class="col-sm-4 col-form-label">거래은행</CFormLabel>
               <CCol sm="8">
-                <CFormSelect v-model.number="form.bankcode" required>
+                <CFormSelect
+                  v-model.number="form.bankcode"
+                  required
+                  :disabled="form.alias_name === '현금'"
+                >
                   <option value="">---------</option>
                   <option
                     v-for="bank in bankCodeList"
@@ -121,7 +125,10 @@ onBeforeMount(() => {
             <CRow>
               <CFormLabel class="col-sm-4 col-form-label">관리부서</CFormLabel>
               <CCol sm="8">
-                <CFormSelect v-model.number="form.depart">
+                <CFormSelect
+                  v-model.number="form.depart"
+                  :disabled="form.alias_name === '현금'"
+                >
                   <option value="">---------</option>
                   <option
                     v-for="dep in getSlugDeparts"
@@ -148,6 +155,7 @@ onBeforeMount(() => {
                   maxlength="20"
                   placeholder="계좌별칭"
                   required
+                  :disabled="form.alias_name === '현금'"
                 />
               </CCol>
             </CRow>
@@ -162,6 +170,7 @@ onBeforeMount(() => {
                   v-model="form.number"
                   maxlength="30"
                   placeholder="계좌번호"
+                  :disabled="form.alias_name === '현금'"
                 />
               </CCol>
             </CRow>
@@ -177,6 +186,7 @@ onBeforeMount(() => {
                   v-model="form.holder"
                   maxlength="20"
                   placeholder="예금주"
+                  :disabled="form.alias_name === '현금'"
                 />
               </CCol>
             </CRow>
@@ -189,6 +199,7 @@ onBeforeMount(() => {
                   v-model="form.open_date"
                   maxlength="10"
                   placeholder="개설일자"
+                  :disabled="form.alias_name === '현금'"
                 />
               </CCol>
             </CRow>
@@ -204,6 +215,7 @@ onBeforeMount(() => {
                   v-model="form.note"
                   maxlength="50"
                   placeholder="비고"
+                  :disabled="form.alias_name === '현금'"
                 />
               </CCol>
             </CRow>
@@ -220,6 +232,7 @@ onBeforeMount(() => {
                   label="입출금 등록시 숨김"
                   color="indigo"
                   hide-details
+                  :disabled="form.alias_name === '현금'"
                 />
                 <v-tooltip activator="parent" location="end">
                   입출금 등록 시 이 계좌 항목을 숨김.
@@ -237,6 +250,7 @@ onBeforeMount(() => {
                   label="사용종료 계좌"
                   color="danger"
                   hide-details
+                  :disabled="form.alias_name === '현금'"
                 />
                 <v-tooltip activator="parent" location="start">
                   해지된 계좌로 내역만 확인 가능.
@@ -248,7 +262,12 @@ onBeforeMount(() => {
 
         <CRow>
           <CCol sm="12" class="text-right pt-1">
-            <CButton color="success" type="submit" :disabled="formsCheck">
+            <CButton
+              v-if="form.alias_name !== '현금'"
+              color="success"
+              type="submit"
+              :disabled="formsCheck"
+            >
               거래 계좌 정보 저장하기
             </CButton>
           </CCol>
