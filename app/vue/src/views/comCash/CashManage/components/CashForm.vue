@@ -2,7 +2,7 @@
 import { ref, reactive, computed, nextTick, onBeforeMount, watch } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { useComCash } from '@/store/pinia/comCash'
-import { CashBook, SepItems } from '@/store/types/comCash'
+import { BankCode, CashBook, SepItems } from '@/store/types/comCash'
 import { write_company_cash } from '@/utils/pageAuth'
 import { isValidate } from '@/utils/helper'
 import { dateFormat, diffDate, cutString, numFormat } from '@/utils/baseMixins'
@@ -18,7 +18,7 @@ const emit = defineEmits([
   'on-delete',
   'close',
   'patch-d3-hide',
-  'patch-bank-hide',
+  'on-bank-update',
 ])
 
 const delModal = ref()
@@ -295,7 +295,7 @@ const deleteObject = () => {
 const patchD3Hide = (payload: { pk: number; is_hide: boolean }) =>
   emit('patch-d3-hide', payload)
 
-const patchBankHide = (payload: any) => emit('patch-bank-hide', payload)
+const onBankUpdate = (payload: BankCode) => emit('on-bank-update', payload)
 
 onBeforeMount(() => {
   if (props.cash) {
@@ -944,5 +944,5 @@ onBeforeMount(() => {
 
   <AccDepth ref="accDepth" @patchD3Hide="patchD3Hide" />
 
-  <BankAcc ref="bankAcc" @patchBankHide="patchBankHide" />
+  <BankAcc ref="bankAcc" @onBankUpdate="onBankUpdate" />
 </template>

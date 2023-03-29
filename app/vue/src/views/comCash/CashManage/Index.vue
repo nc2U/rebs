@@ -152,7 +152,10 @@ const onDelete = (payload: CashBook) =>
 const patchD3Hide = (payload: { pk: number; is_hide: boolean }) =>
   patchAccD3(payload)
 
-const onBankUpdate = (payload: BankCode) => alert('finished!')
+const onBankUpdate = (payload: BankCode) => {
+  alert('finished!')
+  console.log(payload)
+}
 
 onBeforeMount(() => {
   fetchCompany(company.value)
@@ -182,7 +185,11 @@ onBeforeMount(() => {
   <ContentBody>
     <CCardBody class="pb-5">
       <ListController ref="listControl" @list-filtering="listFiltering" />
-      <AddCash @multi-submit="multiSubmit" @patchD3Hide="patchD3Hide" />
+      <AddCash
+        @multi-submit="multiSubmit"
+        @patchD3Hide="patchD3Hide"
+        @onBankUpdate="onBankUpdate"
+      />
       <TableTitleRow
         title="본사 입출금 관리"
         color="indigo"

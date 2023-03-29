@@ -88,6 +88,7 @@ const onBankUpdate = (payload: BankCode) => emit('on-bank-update', payload)
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
         @patchD3Hide="patchD3Hide"
+        @onBankUpdate="onBankUpdate"
       />
     </CTableBody>
   </CTable>

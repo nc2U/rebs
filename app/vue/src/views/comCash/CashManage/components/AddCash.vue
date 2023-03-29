@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { CashBook } from '@/store/types/comCash'
+import { BankCode, CashBook } from '@/store/types/comCash'
 import { AlertLight } from '@/utils/cssMixins'
 import FormModal from '@/components/Modals/FormModal.vue'
 import CashForm from '@/views/comCash/CashManage/components/CashForm.vue'
 
-const emit = defineEmits(['multi-submit', 'patch-d3-hide'])
+const emit = defineEmits(['multi-submit', 'patch-d3-hide', 'on-bank-update'])
 
 const createFormModal = ref()
 
@@ -18,6 +18,8 @@ const multiSubmit = (payload: {
 
 const patchD3Hide = (payload: { pk: number; is_hide: boolean }) =>
   emit('patch-d3-hide', payload)
+
+const onBankUpdate = (payload: BankCode) => emit('on-bank-update', payload)
 </script>
 
 <template>
@@ -31,6 +33,7 @@ const patchD3Hide = (payload: { pk: number; is_hide: boolean }) =>
       <CashForm
         @multi-submit="multiSubmit"
         @patchD3Hide="patchD3Hide"
+        @onBankUpdate="onBankUpdate"
         @close="createFormModal.close()"
       />
     </template>

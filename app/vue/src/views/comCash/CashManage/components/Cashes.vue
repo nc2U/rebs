@@ -2,7 +2,7 @@
 import { computed, ref } from 'vue'
 import { useStore } from 'vuex'
 import { useAccount } from '@/store/pinia/account'
-import { CashBook } from '@/store/types/comCash'
+import { BankCode, CashBook } from '@/store/types/comCash'
 import { write_company_cash } from '@/utils/pageAuth'
 import { numFormat, cutString, diffDate } from '@/utils/baseMixins'
 import FormModal from '@/components/Modals/FormModal.vue'
@@ -17,7 +17,12 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['multi-submit', 'on-delete', 'patch-d3-hide'])
+const emit = defineEmits([
+  'multi-submit',
+  'on-delete',
+  'patch-d3-hide',
+  'on-bank-update',
+])
 
 const delModal = ref()
 const alertModal = ref()
@@ -67,6 +72,8 @@ const deleteObject = () => {
 
 const patchD3Hide = (payload: { pk: number; is_hide: boolean }) =>
   emit('patch-d3-hide', payload)
+
+const onBankUpdate = (payload: BankCode) => emit('on-bank-update', payload)
 </script>
 
 <template>
@@ -121,6 +128,7 @@ const patchD3Hide = (payload: { pk: number; is_hide: boolean }) =>
         @multi-submit="multiSubmit"
         @on-delete="deleteConfirm"
         @patchD3Hide="patchD3Hide"
+        @onBankUpdate="onBankUpdate"
         @close="updateFormModal.close()"
       />
     </template>
