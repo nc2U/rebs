@@ -30,12 +30,11 @@ class AccountSubD3Serializer(serializers.ModelSerializer):
 
 
 class ProjectAccountD1Serializer(serializers.ModelSerializer):
-    sort_desc = serializers.CharField(source='get_sort_display', read_only=True)
     acc = serializers.SlugRelatedField(queryset=AccountSubD1.objects.all(), slug_field='name')
 
     class Meta:
         model = ProjectAccountD1
-        fields = ('pk', 'sort_desc', 'acc', 'code', 'name', 'description')
+        fields = ('pk', 'acc', 'code', 'name', 'description')
 
 
 class ProjectAccountD2Serializer(serializers.ModelSerializer):
