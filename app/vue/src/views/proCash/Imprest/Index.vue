@@ -65,6 +65,9 @@ const fetchAllProBankAccList = (projId: number, imp = false) =>
 const fetchProjectImprestList = (payload: { project: number }) =>
   proCashStore.fetchProjectImprestList(payload)
 
+const patchProBankAcc = (payload: ProBankAcc) =>
+  proCashStore.patchProBankAcc(payload)
+
 const createPrCashBook = (
   payload: PrCashBook & { sepData: PrCashBook | null } & {
     filters: CashBookFilter
@@ -156,7 +159,7 @@ const multiSubmit = (payload: {
 const onDelete = (payload: { pk: number; project: number }) =>
   deletePrImprestBook({ ...{ filters: dataFilter.value }, ...payload })
 
-const onBankUpdate = (payload: ProBankAcc) => alert('aaa') // payload
+const onBankUpdate = (payload: ProBankAcc) => patchProBankAcc(payload)
 
 onBeforeMount(() => {
   fetchBankCodeList()
