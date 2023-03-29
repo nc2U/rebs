@@ -37,19 +37,17 @@ watch(form, val => {
 
 const formsCheck = computed(() => {
   if (props.bankAcc) {
-    const a = form.pk === props.bankAcc.pk
-    const b = form.pk === props.bankAcc.pk
-    const c = form.depart === props.bankAcc.depart
-    const d = form.bankcode === props.bankAcc.bankcode
-    const e = form.alias_name === props.bankAcc.alias_name
-    const f = form.number === props.bankAcc.number
-    const g = form.holder === props.bankAcc.holder
-    const h = form.open_date === props.bankAcc.open_date
-    const i = form.note === props.bankAcc.note
-    const j = form.is_hide === props.bankAcc.is_hide
-    const k = form.inactive === props.bankAcc.inactive
+    const a = form.depart === props.bankAcc.depart
+    const b = form.bankcode === props.bankAcc.bankcode
+    const c = form.alias_name === props.bankAcc.alias_name
+    const d = form.number === props.bankAcc.number
+    const e = form.holder === props.bankAcc.holder
+    const f = form.open_date === props.bankAcc.open_date
+    const g = form.note === props.bankAcc.note
+    const h = form.is_hide === props.bankAcc.is_hide
+    const i = form.inactive === props.bankAcc.inactive
 
-    return a && b && c && d && e && f && g && h && i && j && k
+    return a && b && c && d && e && f && g && h && i
   } else return false
 })
 
