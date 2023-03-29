@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref, computed, onBeforeMount } from 'vue'
 import { pageTitle, navMenu } from '@/views/proCash/_menu/headermixin'
+import { useComCash } from '@/store/pinia/comCash'
 import { useProCash } from '@/store/pinia/proCash'
 import { useProject } from '@/store/pinia/project'
 import {
@@ -45,6 +46,9 @@ const projectStore = useProject()
 const initProjId = computed(() => projectStore.initProjId)
 const project = computed(() => projectStore.project?.pk || initProjId.value)
 
+const comCashStore = useComCash()
+const fetchBankCodeList = () => comCashStore.fetchBankCodeList()
+
 const proCashStore = useProCash()
 const fetchProAccSortList = () => proCashStore.fetchProAccSortList()
 const fetchProAllAccD1List = () => proCashStore.fetchProAllAccD1List()
@@ -57,6 +61,8 @@ const fetchProFormAccD2List = (d1?: number | null, sort?: number | null) =>
 
 const fetchProBankAccList = (projId: number) =>
   proCashStore.fetchProBankAccList(projId)
+const fetchAllProBankAccList = (projId: number) =>
+  proCashStore.fetchAllProBankAccList(projId)
 const fetchProjectCashList = (payload: { project: number }) =>
   proCashStore.fetchProjectCashList(payload)
 
@@ -78,22 +84,14 @@ const deletePrCashBook = (
   },
 ) => proCashStore.deletePrCashBook(payload)
 
-onBeforeMount(() => {
-  fetchProAccSortList()
-  fetchProAllAccD1List()
-  fetchProAllAccD2List()
-  fetchProFormAccD1List()
-  fetchProFormAccD2List()
-  fetchProBankAccList(project.value)
-  fetchProjectCashList({ project: project.value })
-})
-
 const onSelectAdd = (target: number) => {
   if (!!target) {
     fetchProBankAccList(target)
+    fetchAllProBankAccList(target)
     fetchProjectCashList({ project: target })
   } else {
     proCashStore.proBankAccountList = []
+    proCashStore.allProBankAccountList = []
     proCashStore.proCashBookList = []
     proCashStore.proCashesCount = 0
   }
@@ -154,6 +152,18 @@ const multiSubmit = (payload: {
 
 const onDelete = (payload: { pk: number; project: number }) =>
   deletePrCashBook({ ...{ filters: dataFilter.value }, ...payload })
+
+onBeforeMount(() => {
+  fetchBankCodeList()
+  fetchProAccSortList()
+  fetchProAllAccD1List()
+  fetchProAllAccD2List()
+  fetchProFormAccD1List()
+  fetchProFormAccD2List()
+  fetchProBankAccList(project.value)
+  fetchAllProBankAccList(project.value)
+  fetchProjectCashList({ project: project.value })
+})
 </script>
 
 <template>

@@ -15,10 +15,10 @@ export interface ProjectAccountD2 {
   description: string
 }
 
-export interface ProjectBankAccount {
-  pk: number
-  project: number
-  bankcode: number
+export interface ProBankAcc {
+  pk?: number
+  project: number | null
+  bankcode: number | null
   alias_name: string
   number: string
   holder: string

@@ -6,6 +6,7 @@ import { TableSecondary } from '@/utils/cssMixins'
 import ProImprest from '@/views/proCash/Imprest/components/ProImprest.vue'
 import Pagination from '@/components/Pagination'
 import AccDepth from '../../Manage/components/AccDepth.vue'
+import BankAcc from '../../Manage/components/BankAcc.vue'
 
 const emit = defineEmits(['page-select', 'multi-submit', 'on-delete'])
 
@@ -55,9 +56,9 @@ const onDelete = (payload: { project: number; pk: number }) =>
         <CTableHeaderCell scope="col">거래처</CTableHeaderCell>
         <CTableHeaderCell scope="col">
           거래계좌
-          <!--          <router-link to="" @click="showD1">-->
-          <CIcon name="cilCog" />
-          <!--          </router-link>-->
+          <a href="javascript:void(0)">
+            <CIcon name="cilCog" @click="$refs.bankAcc.callModal()" />
+          </a>
         </CTableHeaderCell>
         <CTableHeaderCell scope="col">입금액</CTableHeaderCell>
         <CTableHeaderCell scope="col">출금액</CTableHeaderCell>
@@ -86,4 +87,6 @@ const onDelete = (payload: { project: number; pk: number }) =>
   />
 
   <AccDepth ref="accDepth" />
+
+  <BankAcc ref="bankAcc" @onBankUpdate="onBankUpdate" />
 </template>

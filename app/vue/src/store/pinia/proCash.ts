@@ -6,7 +6,7 @@ import { AccountSort } from '@/store/types/comCash'
 import {
   ProjectAccountD1,
   ProjectAccountD2,
-  ProjectBankAccount,
+  ProBankAcc,
   BalanceByAccount,
   ProjectCashBook,
   CashBookFilter,
@@ -64,8 +64,8 @@ export const useProCash = defineStore('proCash', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const proBankAccountList = ref<ProjectBankAccount[]>([])
-  const allProBankAccountList = ref<ProjectBankAccount[]>([])
+  const proBankAccountList = ref<ProBankAcc[]>([])
+  const allProBankAccountList = ref<ProBankAcc[]>([])
 
   const fetchProBankAccList = (project: number) =>
     api
@@ -81,7 +81,7 @@ export const useProCash = defineStore('proCash', () => {
       .then(res => (allProBankAccountList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
-  const createProBankAcc = (payload: ProjectBankAccount) =>
+  const createProBankAcc = (payload: ProBankAcc) =>
     api
       .post(`/project-bank-account/`, payload)
       .then(res =>
@@ -91,7 +91,7 @@ export const useProCash = defineStore('proCash', () => {
       )
       .catch(err => errorHandle(err.response.data))
 
-  const updateProBankAcc = (payload: ProjectBankAccount) =>
+  const updateProBankAcc = (payload: ProBankAcc) =>
     api
       .put(`/project-bank-account/${payload.pk}/`, payload)
       .then(res =>
@@ -101,7 +101,7 @@ export const useProCash = defineStore('proCash', () => {
       )
       .catch(err => errorHandle(err.response.data))
 
-  const patchProBankAcc = (payload: ProjectBankAccount) =>
+  const patchProBankAcc = (payload: ProBankAcc) =>
     api
       .patch(`project-bank-account/${payload.pk}/`, payload)
       .then(res =>
