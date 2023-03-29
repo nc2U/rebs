@@ -41,7 +41,7 @@ class ProjectAccountD1Serializer(serializers.ModelSerializer):
 class ProjectAccountD2Serializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectAccountD2
-        fields = ('pk', 'd1__sorts', 'd1', 'code', 'sub_title', 'name', 'description')
+        fields = ('pk', 'd1', 'code', 'sub_title', 'name', 'description')
 
 
 class CalendarScheduleSerializer(serializers.ModelSerializer):
