@@ -5,14 +5,11 @@ import { ProjectCashBook } from '@/store/types/proCash'
 import { TableSecondary } from '@/utils/cssMixins'
 import ProCash from '@/views/proCash/Manage/components/ProCash.vue'
 import Pagination from '@/components/Pagination'
-import AlertModal from '@/components/Modals/AlertModal.vue'
+import AccDepth from './AccDepth.vue'
 
 const emit = defineEmits(['page-select', 'on-delete', 'multi-submit'])
 
 const proCashStore = useProCash()
-const allAccD1List = computed(() => proCashStore.allAccD1List)
-const allAccD2List = computed(() => proCashStore.allAccD2List)
-
 const proCashPages = computed(() => proCashStore.proCashPages)
 const proCashBookList = computed(() => proCashStore.proCashBookList)
 
@@ -51,7 +48,7 @@ const onDelete = (payload: { project: number; pk: number }) =>
         <CTableHeaderCell scope="col">
           세부계정
           <router-link to="" @click="showD1">
-            <CIcon name="cilCog" @click="$refs.DAccount.callModal()" />
+            <CIcon name="cilCog" @click="$refs.accDepth.callModal()" />
           </router-link>
         </CTableHeaderCell>
         <CTableHeaderCell scope="col">적요</CTableHeaderCell>
@@ -87,33 +84,5 @@ const onDelete = (payload: { project: number; pk: number }) =>
     class="mt-3"
     @active-page-change="pageSelect"
   />
-
-  <AlertModal ref="DAccount" size="lg">
-    <template #header> 프로젝트 계정 분류 보기</template>
-    <template #default>
-      <CAccordion>
-        <CAccordionItem
-          v-for="d1 in allAccD1List"
-          :key="d1.pk"
-          :item-key="d1.pk"
-        >
-          <CAccordionHeader>
-            {{ `[${d1.code}] ${d1.name} (${d1.description})` }}
-          </CAccordionHeader>
-          <CAccordionBody class="pl-3">
-            <CRow
-              v-for="d2 in allAccD2List.filter(d2 => d2.d1 === d1.pk)"
-              :key="d2.pk"
-              class="pl-2 mb-2"
-            >
-              <CCol>
-                [{{ d2.code }}] {{ d2.name }} :: {{ d2.description }}
-              </CCol>
-            </CRow>
-          </CAccordionBody>
-        </CAccordionItem>
-      </CAccordion>
-    </template>
-    <template #footer></template>
-  </AlertModal>
+  <AccDepth ref="accDepth" />
 </template>
