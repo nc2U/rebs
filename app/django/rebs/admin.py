@@ -1,9 +1,9 @@
 from django.contrib import admin
 from import_export.admin import ImportExportMixin
 
-from .models import AccountSort, AccountSubD1, AccountSubD2, AccountSubD3, ProjectAccountSort, ProjectAccountD1, \
-    ProjectAccountD2, \
-    WiseSaying
+from .models import (AccountSort, AccountSubD1, AccountSubD2, AccountSubD3,
+                     ProjectAccountSort, ProjectAccountD1, ProjectAccountD2,
+                     WiseSaying)
 
 
 class AccountSortAdmin(ImportExportMixin, admin.ModelAdmin):
