@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { AlertLight } from '@/utils/cssMixins'
-import { ProjectCashBook } from '@/store/types/proCash'
+import { ProBankAcc, ProjectCashBook } from '@/store/types/proCash'
 import FormModal from '@/components/Modals/FormModal.vue'
 import ProImprestForm from '@/views/proCash/Imprest/components/ProImprestForm.vue'
 
-const emit = defineEmits(['multi-submit'])
+const emit = defineEmits(['multi-submit', 'on-bank-update'])
 
 const createFormModal = ref()
 
@@ -15,6 +15,8 @@ const multiSubmit = (payload: {
   formData: ProjectCashBook
   sepData: ProjectCashBook | null
 }) => emit('multi-submit', payload)
+
+const onBankUpdate = (payload: ProBankAcc) => emit('on-bank-update', payload)
 </script>
 
 <template>
@@ -27,6 +29,7 @@ const multiSubmit = (payload: {
     <template #default>
       <ProImprestForm
         @multi-submit="multiSubmit"
+        @onBankUpdate="onBankUpdate"
         @close="createFormModal.close()"
       />
     </template>

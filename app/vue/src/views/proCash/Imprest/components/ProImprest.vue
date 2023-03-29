@@ -2,7 +2,7 @@
 import { ref, computed } from 'vue'
 import { useStore } from 'vuex'
 import { numFormat, cutString } from '@/utils/baseMixins'
-import { ProjectCashBook } from '@/store/types/proCash'
+import { ProBankAcc, ProjectCashBook } from '@/store/types/proCash'
 import FormModal from '@/components/Modals/FormModal.vue'
 import ProImprestForm from '@/views/proCash/Imprest/components/ProImprestForm.vue'
 
@@ -13,7 +13,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['multi-submit', 'on-delete'])
+const emit = defineEmits(['multi-submit', 'on-delete', 'on-bank-update'])
 
 const updateFormModal = ref()
 
@@ -44,6 +44,8 @@ const multiSubmit = (payload: {
 
 const onDelete = (payload: { project: number; pk: number }) =>
   emit('on-delete', payload)
+
+const onBankUpdate = (payload: ProBankAcc) => emit('on-bank-update', payload)
 </script>
 
 <template>
@@ -99,6 +101,7 @@ const onDelete = (payload: { project: number; pk: number }) =>
         :imprest="imprest"
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
+        @onBankUpdate="onBankUpdate"
         @close="updateFormModal.close()"
       />
     </template>

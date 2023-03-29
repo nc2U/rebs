@@ -1,14 +1,19 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { useProCash } from '@/store/pinia/proCash'
-import { ProjectCashBook } from '@/store/types/proCash'
+import { ProBankAcc, ProjectCashBook } from '@/store/types/proCash'
 import { TableSecondary } from '@/utils/cssMixins'
 import ProImprest from '@/views/proCash/Imprest/components/ProImprest.vue'
 import Pagination from '@/components/Pagination'
 import AccDepth from '../../Manage/components/AccDepth.vue'
 import BankAcc from '../../Manage/components/BankAcc.vue'
 
-const emit = defineEmits(['page-select', 'multi-submit', 'on-delete'])
+const emit = defineEmits([
+  'page-select',
+  'multi-submit',
+  'on-delete',
+  'on-bank-update',
+])
 
 const proCashStore = useProCash()
 const proImprestList = computed(() => proCashStore.proImprestList)
@@ -23,6 +28,8 @@ const multiSubmit = (payload: {
 
 const onDelete = (payload: { project: number; pk: number }) =>
   emit('on-delete', payload)
+
+const onBankUpdate = (payload: ProBankAcc) => emit('on-bank-update', payload)
 </script>
 
 <template>
@@ -74,6 +81,7 @@ const onDelete = (payload: { project: number; pk: number }) =>
         :imprest="imprest"
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
+        @onBankUpdate="onBankUpdate"
       />
     </CTableBody>
   </CTable>
