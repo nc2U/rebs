@@ -4,7 +4,6 @@ from django.conf import settings
 
 class AccountSort(models.Model):
     name = models.CharField(max_length=2)
-    accounts = models.ManyToManyField('rebs.AccountSubD1')
 
     def __str__(self):
         return self.name
@@ -16,6 +15,7 @@ class AccountSort(models.Model):
 
 
 class AccountSubD1(models.Model):
+    sorts = models.ManyToManyField('rebs.AccountSort')
     code = models.CharField(max_length=3)
     name = models.CharField(max_length=10)
     description = models.CharField(max_length=20)
@@ -63,7 +63,6 @@ class AccountSubD3(models.Model):
 
 class ProjectAccountSort(models.Model):
     name = models.CharField(max_length=2)
-    accounts = models.ManyToManyField('rebs.ProjectAccountD1')
 
     def __str__(self):
         return self.name
@@ -75,6 +74,7 @@ class ProjectAccountSort(models.Model):
 
 
 class ProjectAccountD1(models.Model):
+    sorts = models.ManyToManyField('rebs.ProjectAccountSort')
     code = models.CharField(max_length=3)
     acc = models.ForeignKey(AccountSubD1, on_delete=models.CASCADE, related_name='acc_d1s')
     name = models.CharField(max_length=20)
@@ -90,6 +90,7 @@ class ProjectAccountD1(models.Model):
 
 
 class ProjectAccountD2(models.Model):
+    sort = models.ForeignKey(ProjectAccountSort, on_delete=models.CASCADE)
     d1 = models.ForeignKey(ProjectAccountD1, on_delete=models.CASCADE, related_name='acc_d2s')
     code = models.CharField(max_length=3)
     sub_title = models.CharField(max_length=20, blank=True, help_text='중분류 항목이 존재할 경우 기재')

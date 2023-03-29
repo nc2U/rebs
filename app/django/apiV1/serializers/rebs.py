@@ -8,13 +8,13 @@ from rebs.models import (AccountSort, AccountSubD1, AccountSubD2, AccountSubD3,
 class AccountSortSerializer(serializers.ModelSerializer):
     class Meta:
         model = AccountSort
-        fields = ('pk', 'name', 'accounts')
+        fields = ('pk', 'name')
 
 
 class AccountSubD1Serializer(serializers.ModelSerializer):
     class Meta:
         model = AccountSubD1
-        fields = ('pk', 'code', 'name', 'description')
+        fields = ('pk', 'sorts', 'code', 'name', 'description')
 
 
 class AccountSubD2Serializer(serializers.ModelSerializer):
@@ -41,7 +41,7 @@ class ProjectAccountD1Serializer(serializers.ModelSerializer):
 class ProjectAccountD2Serializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectAccountD2
-        fields = ('pk', 'd1', 'code', 'sub_title', 'name', 'description')
+        fields = ('pk', 'd1__sorts', 'd1', 'code', 'sub_title', 'name', 'description')
 
 
 class CalendarScheduleSerializer(serializers.ModelSerializer):

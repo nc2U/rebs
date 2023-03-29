@@ -29,21 +29,21 @@ class AccountSortViewSet(viewsets.ModelViewSet):
 class AccountSubD1ViewSet(viewsets.ModelViewSet):
     queryset = AccountSubD1.objects.all()
     serializer_class = AccountSubD1Serializer
-    filterset_fields = ('accountsort',)
+    filterset_fields = ('sorts',)
 
 
 class AccountSubD2ViewSet(viewsets.ModelViewSet):
     queryset = AccountSubD2.objects.all()
     serializer_class = AccountSubD2Serializer
     pagination_class = PageNumberPaginationTwenty
-    filterset_fields = ('d1__accountsort', 'd1')
+    filterset_fields = ('d1__sorts', 'd1')
 
 
 class AccountSubD3ViewSet(viewsets.ModelViewSet):
     queryset = AccountSubD3.objects.all()
     serializer_class = AccountSubD3Serializer
     pagination_class = PageNumberPaginationTwoHundred
-    filterset_fields = ('d2__d1__accountsort', 'd2__d1', 'd2', 'is_hide', 'is_special')
+    filterset_fields = ('d2__d1__sorts', 'd2__d1', 'd2', 'is_hide', 'is_special')
 
 
 class ProjectAccountSortViewSet(viewsets.ModelViewSet):
@@ -55,14 +55,14 @@ class ProjectAccountD1ViewSet(viewsets.ModelViewSet):
     queryset = ProjectAccountD1.objects.all()
     pagination_class = PageNumberPaginationTwenty
     serializer_class = ProjectAccountD1Serializer
-    filterset_fields = ('projectaccountsort', 'acc')
+    filterset_fields = ('sorts', 'acc')
 
 
 class ProjectAccountD2ViewSet(viewsets.ModelViewSet):
     queryset = ProjectAccountD2.objects.all()
     pagination_class = PageNumberPaginationOneHundred
     serializer_class = ProjectAccountD2Serializer
-    filterset_fields = ('d1__projectaccountsort', 'd1__acc', 'd1')
+    filterset_fields = ('d1__sorts', 'd1__acc', 'd1')
 
 
 class WiseSayViewSet(viewsets.ModelViewSet):
