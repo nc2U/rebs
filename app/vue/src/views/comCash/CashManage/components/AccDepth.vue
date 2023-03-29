@@ -62,8 +62,7 @@ defineExpose({ callModal })
                         @change="patchD3Hide(d3.pk, $event.target.checked)"
                       />
                       <v-tooltip activator="parent" location="start">
-                        이 항목을 활성화 하면 입출금 등록 시 이 계정 항목을 숨길
-                        수 있습니다.
+                        입출금 등록 시 이 계정 항목을 숨길
                       </v-tooltip>
                     </CCol>
                   </CRow>
