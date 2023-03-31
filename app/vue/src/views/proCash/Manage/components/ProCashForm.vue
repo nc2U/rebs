@@ -43,7 +43,9 @@ const sepItem = reactive<ProSepItems>({
 
 const validated = ref(false)
 
-const form = reactive<ProjectCashBook & { bank_account_to: null | number }>({
+const form = reactive<
+  ProjectCashBook & { bank_account_to: null | number; charge: null | number }
+>({
   pk: null,
   project: null,
   sort: null,
@@ -60,6 +62,7 @@ const form = reactive<ProjectCashBook & { bank_account_to: null | number }>({
   bank_account_to: null,
   income: null,
   outlay: null,
+  charge: null,
   evidence: '',
   note: '',
   deal_date: dateFormat(new Date()),
@@ -420,7 +423,7 @@ onBeforeMount(() => {
                   }"
                   maxlength="20"
                   placeholder="거래처 (수납자)"
-                  required
+                  :required="form.sort === 1 || form.sort === 2"
                   :disabled="!form.sort"
                 />
               </CCol>
@@ -503,14 +506,14 @@ onBeforeMount(() => {
         <CRow class="mb-3">
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label">출금액</CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label"> 출금액</CFormLabel>
               <CCol sm="8">
                 <CFormInput
                   v-model.number="form.outlay"
                   type="number"
                   min="0"
                   placeholder="출금 금액"
-                  :required="form.sort === 2"
+                  :required="form.sort !== 1"
                   :disabled="
                     form.sort === 1 ||
                     !form.sort ||
@@ -522,7 +525,7 @@ onBeforeMount(() => {
           </CCol>
 
           <CCol sm="6">
-            <CRow>
+            <CRow v-if="form.sort === 1">
               <CFormLabel class="col-sm-4 col-form-label">입금액</CFormLabel>
               <CCol sm="8">
                 <CFormInput
@@ -536,6 +539,20 @@ onBeforeMount(() => {
                     !form.sort ||
                     (proCash && !proCash.income)
                   "
+                />
+              </CCol>
+            </CRow>
+            <CRow v-else>
+              <CFormLabel class="col-sm-4 col-form-label">
+                출금 수수료
+              </CFormLabel>
+              <CCol sm="8">
+                <CFormInput
+                  v-model.number="form.charge"
+                  type="number"
+                  min="0"
+                  placeholder="출금 수수료"
+                  :disabled="form.sort === 4 || form.is_separate"
                 />
               </CCol>
             </CRow>

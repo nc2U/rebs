@@ -115,6 +115,8 @@ const onSelectAdd = (target: number) => {
   }
 }
 
+const chargeCreate = (charge: number) => alert(charge)
+
 const onCreate = (
   payload: PrCashBook & { sepData: PrCashBook | null } & {
     filters: CashBookFilter
@@ -122,14 +124,18 @@ const onCreate = (
 ) => {
   payload.project = project.value
   if (payload.sort === 3 && payload.bank_account_to) {
-    const { bank_account_to, income, ...inputData } = payload
+    const { bank_account_to, ...inputData } = payload
 
+    inputData.sort = 2
     createPrCashBook(inputData)
 
-    delete inputData.outlay
+    inputData.sort = 1
+    if (!!inputData.project_account_d2) inputData.project_account_d2 += 1
     inputData.bank_account = bank_account_to
+    inputData.income = inputData.outlay
+    delete inputData.outlay
 
-    createPrCashBook({ ...{ income }, ...inputData })
+    createPrCashBook({ ...inputData })
   } else createPrCashBook(payload)
 }
 
