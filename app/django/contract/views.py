@@ -534,7 +534,7 @@ class ContractorReleaseRegister(LoginRequiredMixin, ListView, FormView):
                     projectCash = ProjectCashBook.objects.filter(sort=sort, contract=contractor.contract)
                     for pc in projectCash:
                         if not released_done:
-                            refund_d2 = pc.project_account_d2.id + 63  # 분양대금 or 분담금 환불 건
+                            refund_d2 = pc.project_account_d2.id + 1  # 분양대금 or 분담금 환불 건
                             pc.project_account_d2 = ProjectAccountD2.objects.get(pk=refund_d2)
                             pc.refund_contractor = contractor  # 환불 계약자 등록
                         if form.cleaned_data.get('completion_date'):
