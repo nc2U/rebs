@@ -170,7 +170,7 @@ const isModify = computed(() => {
 
 const callAccount = () => {
   nextTick(() => {
-    const sort = form.sort
+    const sort = form.sort === 3 ? null : form.sort
     const d1 = form.project_account_d1
     fetchProFormAccD1List(sort)
     fetchProFormAccD2List(d1, sort)
@@ -183,8 +183,8 @@ const sort_change = (event: Event) => {
     if (el.value === '1') form.outlay = null
     if (el.value === '2') form.income = null
     if (el.value === '3') {
-      form.project_account_d1 = 17
-      form.project_account_d2 = 62
+      form.project_account_d1 = 12
+      form.project_account_d2 = 67
     } else {
       form.project_account_d1 = null
       form.project_account_d2 = null
