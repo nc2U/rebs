@@ -122,6 +122,7 @@ const chargeCreate = (
   },
   charge: number,
 ) => {
+  payload.sort = 2
   payload.project_account_d1 = 9
   payload.project_account_d2 = 43
   payload.content = cutString(payload.content, 8) + ' - 이체수수료'
