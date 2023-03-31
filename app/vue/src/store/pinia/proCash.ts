@@ -332,7 +332,7 @@ export const useProCash = defineStore('proCash', () => {
     Math.ceil(proImprestCount.value / itemsPerPage)
 
   const imprestBAccount = computed(() =>
-    proBankAccountList.value.filter(b => b.is_imprest),
+    allProBankAccountList.value.filter(b => b.is_imprest),
   )
 
   const getImpBankAccs = computed(() =>

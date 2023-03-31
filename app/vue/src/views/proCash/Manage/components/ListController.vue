@@ -23,7 +23,7 @@ const proCashStore = useProCash()
 const sortList = computed(() => proCashStore.sortList)
 const formAccD1List = computed(() => proCashStore.formAccD1List)
 const formAccD2List = computed(() => proCashStore.formAccD2List)
-const proBankAccountList = computed(() => proCashStore.proBankAccountList)
+const allProBankAccs = computed(() => proCashStore.allProBankAccountList)
 const proCashesCount = computed(() => proCashStore.proCashesCount)
 
 const formsCheck = computed(() => {
@@ -136,7 +136,7 @@ const resetForm = () => {
             <CFormSelect v-model="form.bank_account" @change="listFiltering(1)">
               <option value="">거래계좌</option>
               <option
-                v-for="acc in proBankAccountList"
+                v-for="acc in allProBankAccs"
                 :key="acc.pk"
                 :value="acc.pk"
               >
