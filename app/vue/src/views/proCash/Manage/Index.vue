@@ -127,6 +127,7 @@ const chargeCreate = (
   payload.trader = '지급수수료'
   payload.outlay = charge
   payload.content = cutString(payload.content, 10) + ' - 이체수수료'
+  payload.evidence = '0'
   payload.note = ''
 
   createPrCashBook(payload)
