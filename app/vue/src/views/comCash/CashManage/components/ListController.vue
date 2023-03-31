@@ -38,7 +38,7 @@ const useComCashStore = useComCash()
 const formAccD1List = computed(() => useComCashStore.formAccD1List)
 const formAccD2List = computed(() => useComCashStore.formAccD2List)
 const formAccD3List = computed(() => useComCashStore.formAccD3List)
-const comBankList = computed(() => useComCashStore.comBankList)
+const allComBankList = computed(() => useComCashStore.allComBankList)
 const cashBookCount = computed(() => useComCashStore.cashBookCount)
 
 watch(from_date, val => {
@@ -181,7 +181,11 @@ const resetForm = () => {
           <CCol md="6" lg="4" class="mb-3">
             <CFormSelect v-model="form.bank_account" @change="listFiltering(1)">
               <option value="">거래계좌</option>
-              <option v-for="acc in comBankList" :key="acc.pk" :value="acc.pk">
+              <option
+                v-for="acc in allComBankList"
+                :key="acc.pk"
+                :value="acc.pk"
+              >
                 {{ acc.alias_name }}
               </option>
             </CFormSelect>
