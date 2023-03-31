@@ -162,7 +162,7 @@ class PdfExportBill(View):
         """
         paid_list = ProjectCashBook.objects.filter(
             income__isnull=False,
-            project_account_d2__lte=2,
+            project_account_d2__in=(1, 4),
             contract=contract
         )  # 해당 계약 건 납부 데이터
 
@@ -565,7 +565,7 @@ class PdfExportPayments(View):
         """
         paid_list = ProjectCashBook.objects.filter(
             income__isnull=False,
-            project_account_d2__lte=2,
+            project_account_d2__in=(1, 4),
             contract=contract
         ).order_by('deal_date', 'id')  # 해당 계약 건 납부 데이터
 

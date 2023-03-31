@@ -688,7 +688,7 @@ class SalesPaymentRegister(LoginRequiredMixin, FormView):
             if self.request.GET.get('contract') else 0
         if not context['this_contract'] or context['this_contract'].activation:
             payments = ProjectCashBook.objects.filter(contract=context['this_contract'],
-                                                      project_account_d2__lte=2)
+                                                      project_account_d2__in=(1, 4))
         else:
             payments = ProjectCashBook.objects.filter(contract=context['this_contract'])
 

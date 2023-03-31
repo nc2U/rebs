@@ -199,7 +199,7 @@ class ExportContracts(View):
                 is_left.append(col_num)
 
         paid_params = ['contract', 'income']
-        paid_data = ProjectCashBook.objects.filter(project_account_d2__lte=2,
+        paid_data = ProjectCashBook.objects.filter(project_account_d2__in=(1, 4),
                                                    income__isnull=False,
                                                    contract__activation=True)
         paid_dict = paid_data.values_list(*paid_params)
@@ -701,7 +701,7 @@ def export_payments_xls(request):
     ed = TODAY if not ed or ed == 'null' else ed
     obj_list = ProjectCashBook.objects.filter(project=project,
                                               income__isnull=False,
-                                              project_account_d2__lte=2,
+                                              project_account_d2__in=(1, 4),
                                               deal_date__range=(sd, ed)).order_by('deal_date', 'created_at')
 
     if og:
@@ -926,7 +926,7 @@ class ExportPayments(View):
 
         obj_list = ProjectCashBook.objects.filter(project=project,
                                                   income__isnull=False,
-                                                  project_account_d2__lte=2,
+                                                  project_account_d2__in=(1, 4),
                                                   deal_date__range=(sd, ed)).order_by('deal_date', 'created_at')
 
         if og:
@@ -1160,7 +1160,7 @@ class ExportPaymentsByCont(View):
         paid_params = ['contract', 'income', 'installment_order', 'deal_date']
         paid_data = ProjectCashBook.objects.filter(project=project,
                                                    income__isnull=False,
-                                                   project_account_d2__lte=2,
+                                                   project_account_d2__in=(1, 4),
                                                    deal_date__lte=date,
                                                    contract__isnull=False)
         paid_dict = paid_data.values_list(*paid_params)
@@ -1405,7 +1405,7 @@ class ExportPaymentStatus(View):
 
         paid_sum_list = ProjectCashBook.objects.filter(project=project,
                                                        income__isnull=False,
-                                                       project_account_d2__lte=2,
+                                                       project_account_d2__in=(1, 4),
                                                        contract__activation=True,
                                                        contract__contractor__status=2,
                                                        deal_date__lte=date) \

@@ -214,7 +214,7 @@ class ContractSetSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_payment_list(instance):
-        return instance.payments.filter(project_account_d2__lte=2)
+        return instance.payments.filter(project_account_d2__in=(1, 4))
 
     def get_payments(self, instance):
         payments = self.get_payment_list(instance).order_by('deal_date', 'id')
