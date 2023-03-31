@@ -15,6 +15,7 @@ import AddProImprest from '@/views/proCash/Imprest/components/AddProImprest.vue'
 import TableTitleRow from '@/components/TableTitleRow.vue'
 import ProImprestList from '@/views/proCash/Imprest/components/ProImprestList.vue'
 import { useComCash } from '@/store/pinia/comCash'
+import { cutString } from '@/utils/baseMixins'
 
 const listControl = ref()
 
@@ -113,23 +114,64 @@ const listFiltering = (payload: CashBookFilter) => {
   fetchProjectImprestList({ ...{ project: project.value }, ...payload })
 }
 
+const chargeCreate = (
+  payload: PrCashBook & { sepData: PrCashBook | null } & {
+    filters: CashBookFilter
+  },
+  charge: number,
+) => {
+  payload.project_account_d1 = 9
+  payload.project_account_d2 = 43
+  payload.trader = '지급수수료'
+  payload.outlay = charge
+  payload.content = cutString(payload.content, 8) + ' - 이체수수료'
+  payload.evidence = '0'
+  payload.note = ''
+
+  createPrCashBook(payload)
+}
+
 const onCreate = (
   payload: PrCashBook & { sepData: PrCashBook | null } & {
     filters: CashBookFilter
-  } & { bank_account_to: null | number; ba_is_imprest: boolean },
+  } & {
+    bank_account_to: null | number
+    ba_is_imprest: boolean
+    charge: null | number
+  },
 ) => {
   payload.project = project.value
   if (payload.sort === 3 && payload.bank_account_to) {
-    const { bank_account_to, ba_is_imprest, income, ...inputData } = payload
+    const { bank_account_to, ba_is_imprest, charge, ...inputData } = payload
 
+    inputData.sort = 2
+    inputData.trader = '내부대체'
     createPrCashBook(inputData)
+    if (!!charge) chargeCreate(inputData, charge)
 
-    delete inputData.outlay
+    inputData.sort = 1
+    if (!!inputData.project_account_d2) inputData.project_account_d2 += 1
     if (!ba_is_imprest) inputData.is_imprest = ba_is_imprest
     inputData.bank_account = bank_account_to
-
-    createPrCashBook({ ...{ income }, ...inputData })
-  } else createPrCashBook(payload)
+    inputData.income = inputData.outlay
+    delete inputData.outlay
+    createPrCashBook({ ...inputData })
+  } else if (payload.sort === 4) {
+    // 취소 거래일 때
+    payload.sort = 2
+    payload.evidence = '0'
+    createPrCashBook(payload)
+    payload.sort = 1
+    if (!!payload.project_account_d2) payload.project_account_d2 += 1
+    payload.income = payload.outlay
+    delete payload.outlay
+    payload.evidence = ''
+    createPrCashBook(payload)
+  } else {
+    const { charge, ...inputData } = payload
+    createPrCashBook(inputData)
+    if (!!charge) chargeCreate(inputData, charge)
+  }
 }
 
 const onUpdate = (
