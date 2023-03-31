@@ -170,7 +170,7 @@ const isModify = computed(() => {
 
 const callAccount = () => {
   nextTick(() => {
-    const sort = form.sort === 3 ? null : form.sort
+    const sort = form.sort === 1 || form.sort === 2 ? form.sort : null
     const d1 = form.project_account_d1
     fetchProFormAccD1List(sort)
     fetchProFormAccD2List(d1, sort)
@@ -185,6 +185,9 @@ const sort_change = (event: Event) => {
     if (el.value === '3') {
       form.project_account_d1 = 12
       form.project_account_d2 = 67
+    } else if (el.value === '4') {
+      form.project_account_d1 = 13
+      form.project_account_d2 = 69
     } else {
       form.project_account_d1 = null
       form.project_account_d2 = null
@@ -331,6 +334,7 @@ onBeforeMount(() => {
                   <option value="1">입금</option>
                   <option value="2">출금</option>
                   <option v-if="!form.is_separate" value="3">대체</option>
+                  <option v-if="!form.is_separate" value="4">취소</option>
                 </CFormSelect>
               </CCol>
             </CRow>
@@ -379,7 +383,9 @@ onBeforeMount(() => {
                     :key="d2.pk"
                     :value="d2.pk"
                   >
-                    {{ d2.name }}
+                    <template v-if="form.sort === 3">대체</template>
+                    <template v-else-if="form.sort === 4">취소</template>
+                    <template v-else>{{ d2.name }}</template>
                   </option>
                 </CFormSelect>
               </CCol>
