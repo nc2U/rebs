@@ -424,7 +424,7 @@ onBeforeMount(() => {
                   }"
                   maxlength="20"
                   placeholder="거래처 (수납자)"
-                  :required="form.sort === 1 || form.sort === 2"
+                  :required="form.sort && form.sort !== 3"
                   :disabled="!form.sort || form.sort === 3"
                 />
               </CCol>

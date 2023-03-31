@@ -126,7 +126,7 @@ const chargeCreate = (
   payload.project_account_d2 = 43
   payload.trader = '지급수수료'
   payload.outlay = charge
-  payload.content = cutString(payload.content, 10) + ' - 이체수수료'
+  payload.content = cutString(payload.content, 8) + ' - 이체수수료'
   payload.evidence = '0'
   payload.note = ''
 
@@ -157,6 +157,14 @@ const onCreate = (
     createPrCashBook({ ...inputData })
   } else if (payload.sort === 4) {
     // 취소 거래일 때
+    payload.sort = 2
+    payload.evidence = '0'
+    createPrCashBook(payload)
+    payload.sort = 1
+    if (!!payload.project_account_d2) payload.project_account_d2 += 1
+    payload.income = payload.outlay
+    delete payload.outlay
+    payload.evidence = ''
     createPrCashBook(payload)
   } else {
     const { charge, ...inputData } = payload
