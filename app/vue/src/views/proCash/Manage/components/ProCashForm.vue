@@ -526,7 +526,7 @@ onBeforeMount(() => {
           </CCol>
 
           <CCol sm="6">
-            <CRow v-if="form.sort === 1">
+            <CRow v-if="form.sort === 1 || proCash">
               <CFormLabel class="col-sm-4 col-form-label">입금액</CFormLabel>
               <CCol sm="8">
                 <CFormInput
@@ -536,7 +536,7 @@ onBeforeMount(() => {
                   placeholder="입금 금액"
                   :required="form.sort === 1"
                   :disabled="
-                    form.sort === 2 ||
+                    form.sort !== 1 ||
                     !form.sort ||
                     (proCash && !proCash.income)
                   "
@@ -553,7 +553,7 @@ onBeforeMount(() => {
                   type="number"
                   min="0"
                   placeholder="출금 수수료"
-                  :disabled="form.sort === 4 || form.is_separate"
+                  :disabled="!form.sort || form.sort === 4 || form.is_separate"
                 />
               </CCol>
             </CRow>
