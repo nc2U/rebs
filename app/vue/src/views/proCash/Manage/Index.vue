@@ -9,6 +9,7 @@ import {
   ProBankAcc,
   ProjectCashBook as PrCashBook,
 } from '@/store/types/proCash'
+import { cutString } from '@/utils/baseMixins'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from '@/views/proCash/Manage/components/ListController.vue'
@@ -115,19 +116,36 @@ const onSelectAdd = (target: number) => {
   }
 }
 
-const chargeCreate = (charge: number) => alert(charge)
+const chargeCreate = (
+  payload: PrCashBook & { sepData: PrCashBook | null } & {
+    filters: CashBookFilter
+  },
+  charge: number,
+) => {
+  payload.project_account_d1 = 9
+  payload.project_account_d2 = 43
+  payload.trader = '지급수수료'
+  payload.outlay = charge
+  payload.content = cutString(payload.content, 10) + ' - 이체수수료'
+  payload.note = ''
+
+  createPrCashBook(payload)
+}
 
 const onCreate = (
   payload: PrCashBook & { sepData: PrCashBook | null } & {
     filters: CashBookFilter
-  } & { bank_account_to?: number },
+  } & { bank_account_to: null | number; charge: null | number },
 ) => {
   payload.project = project.value
   if (payload.sort === 3 && payload.bank_account_to) {
-    const { bank_account_to, ...inputData } = payload
+    // 대체 거래일 때
+    const { bank_account_to, charge, ...inputData } = payload
 
     inputData.sort = 2
+    inputData.trader = '내부대체'
     createPrCashBook(inputData)
+    if (!!charge) chargeCreate(inputData, charge)
 
     inputData.sort = 1
     if (!!inputData.project_account_d2) inputData.project_account_d2 += 1
@@ -136,7 +154,14 @@ const onCreate = (
     delete inputData.outlay
 
     createPrCashBook({ ...inputData })
-  } else createPrCashBook(payload)
+  } else if (payload.sort === 4) {
+    // 취소 거래일 때
+    createPrCashBook(payload)
+  } else {
+    const { charge, ...inputData } = payload
+    createPrCashBook(inputData)
+    if (!!charge) chargeCreate(inputData, charge)
+  }
 }
 
 const onUpdate = (

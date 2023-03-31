@@ -188,6 +188,7 @@ const sort_change = (event: Event) => {
     if (el.value === '3') {
       form.project_account_d1 = 12
       form.project_account_d2 = 67
+      form.trader = ''
     } else if (el.value === '4') {
       form.project_account_d1 = 13
       form.project_account_d2 = 69
@@ -424,7 +425,7 @@ onBeforeMount(() => {
                   maxlength="20"
                   placeholder="거래처 (수납자)"
                   :required="form.sort === 1 || form.sort === 2"
-                  :disabled="!form.sort"
+                  :disabled="!form.sort || form.sort === 3"
                 />
               </CCol>
             </CRow>
@@ -868,10 +869,10 @@ onBeforeMount(() => {
   </CForm>
 
   <ConfirmModal ref="delModal">
-    <template #header>
-      <CIcon name="cilWarning" />
-      프로젝트 입출금 거래 정보 삭제
+    <template #icon>
+      <v-icon icon="mdi mdi-alert-box" color="warning" class="mr-2" />
     </template>
+    <template #header> 프로젝트 입출금 거래 정보 삭제</template>
     <template #default>
       삭제한 데이터는 복구할 수 없습니다. 해당 입출금 거래 정보를
       삭제하시겠습니까?
