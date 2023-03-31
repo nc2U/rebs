@@ -142,6 +142,9 @@ const onCreate = (
   if (payload.sort === 3 && payload.bank_account_to) {
     // 대체 거래일 때
     const { bank_account_to, charge, ...inputData } = payload
+    const d2 = inputData.project_account_d2
+    const inc = inputData.outlay
+    const note = inputData.note
 
     inputData.sort = 2
     inputData.trader = '내부대체'
@@ -149,9 +152,10 @@ const onCreate = (
     if (!!charge) chargeCreate(inputData, charge)
 
     inputData.sort = 1
-    if (!!inputData.project_account_d2) inputData.project_account_d2 += 1
+    if (!!d2) inputData.project_account_d2 = d2 + 1
     inputData.bank_account = bank_account_to
-    inputData.income = inputData.outlay
+    inputData.income = inc
+    inputData.note = note
     delete inputData.outlay
 
     createPrCashBook({ ...inputData })

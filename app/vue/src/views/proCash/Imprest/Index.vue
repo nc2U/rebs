@@ -143,6 +143,9 @@ const onCreate = (
   payload.project = project.value
   if (payload.sort === 3 && payload.bank_account_to) {
     const { bank_account_to, ba_is_imprest, charge, ...inputData } = payload
+    const d2 = inputData.project_account_d2
+    const inc = inputData.outlay
+    const note = inputData.note
 
     inputData.sort = 2
     inputData.trader = '내부대체'
@@ -150,11 +153,13 @@ const onCreate = (
     if (!!charge) chargeCreate(inputData, charge)
 
     inputData.sort = 1
-    if (!!inputData.project_account_d2) inputData.project_account_d2 += 1
+    if (!!d2) inputData.project_account_d2 = d2 + 1
     if (!ba_is_imprest) inputData.is_imprest = ba_is_imprest
     inputData.bank_account = bank_account_to
-    inputData.income = inputData.outlay
+    inputData.income = inc
+    inputData.note = note
     delete inputData.outlay
+
     createPrCashBook({ ...inputData })
   } else if (payload.sort === 4) {
     // 취소 거래일 때
