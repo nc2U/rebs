@@ -554,7 +554,7 @@ class SalesPaymentLV(LoginRequiredMixin, ListView, FormView):
         return kwargs
 
     def get_queryset(self):
-        results = ProjectCashBook.objects.filter(project=self.get_project(), project_account_d2__in=(1, 2),
+        results = ProjectCashBook.objects.filter(project=self.get_project(), project_account_d2__in=(1, 4),
                                                  refund_contractor=None).order_by('-deal_date', '-id')
 
         if self.request.GET.get('sd'):
