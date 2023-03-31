@@ -122,9 +122,10 @@ const chargeCreate = (
 ) => {
   payload.project_account_d1 = 9
   payload.project_account_d2 = 43
+  payload.content = cutString(payload.content, 8) + ' - 이체수수료'
   payload.trader = '지급수수료'
   payload.outlay = charge
-  payload.content = cutString(payload.content, 8) + ' - 이체수수료'
+  payload.income = null
   payload.evidence = '0'
   payload.note = ''
 
@@ -143,24 +144,20 @@ const onCreate = (
   payload.project = project.value
   if (payload.sort === 3 && payload.bank_account_to) {
     const { bank_account_to, ba_is_imprest, charge, ...inputData } = payload
-    const d2 = inputData.project_account_d2
-    const inc = inputData.outlay
-    const note = inputData.note
 
     inputData.sort = 2
     inputData.trader = '내부대체'
     createPrCashBook(inputData)
-    if (!!charge) chargeCreate(inputData, charge)
 
     inputData.sort = 1
-    if (!!d2) inputData.project_account_d2 = d2 + 1
+    if (!!inputData.project_account_d2) inputData.project_account_d2 += 1
     if (!ba_is_imprest) inputData.is_imprest = ba_is_imprest
     inputData.bank_account = bank_account_to
-    inputData.income = inc
-    inputData.note = note
-    delete inputData.outlay
+    inputData.income = inputData.outlay
+    inputData.outlay = null
 
-    createPrCashBook({ ...inputData })
+    setTimeout(() => createPrCashBook({ ...inputData }), 300)
+    if (!!charge) setTimeout(() => chargeCreate(inputData, charge), 600)
   } else if (payload.sort === 4) {
     // 취소 거래일 때
     payload.sort = 2
@@ -171,7 +168,7 @@ const onCreate = (
     payload.income = payload.outlay
     delete payload.outlay
     payload.evidence = ''
-    createPrCashBook(payload)
+    setTimeout(() => createPrCashBook(payload), 300)
   } else {
     const { charge, ...inputData } = payload
     createPrCashBook(inputData)
