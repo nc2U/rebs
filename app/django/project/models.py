@@ -74,17 +74,19 @@ class ProjectIncBudget(models.Model):
 
 class ProjectOutBudget(models.Model):
     project = models.ForeignKey('project.Project', on_delete=models.CASCADE, verbose_name='프로젝트')
+    order = models.PositiveSmallIntegerField('순서', blank=True, null=True)
     account_d1 = models.ForeignKey('rebs.ProjectAccountD1', on_delete=models.PROTECT, verbose_name='대분류')
     account_d2 = models.ForeignKey('rebs.ProjectAccountD2', on_delete=models.SET_NULL, null=True, blank=True,
-                                   verbose_name='중분류')
+                                   verbose_name='소분류')
+    account_opt = models.CharField('중분류', max_length=10, blank=True, default='')
     item_name = models.CharField('항목명칭', max_length=20, blank=True, default='',
-                                 help_text='중분류 항목을 선택하지 않은 경우 기재. 그렇지 않은 경우 생략할 것')
+                                 help_text='소분류 항목을 선택하지 않은 경우 기재. 그렇지 않은 경우 생략할 것')
     basis_calc = models.CharField('산출근거', max_length=255, blank=True, default='',
                                   help_text='사업수지표 항목 상 해당 금액의 산출 근거 기재')
     budget = models.PositiveBigIntegerField(verbose_name='지출 예산')
 
     class Meta:
-        ordering = ('id', '-project')
+        ordering = ('order', 'id', '-project')
         verbose_name = '03. 프로젝트 지출예산'
         verbose_name_plural = '03. 프로젝트 지출예산'
 

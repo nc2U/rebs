@@ -37,6 +37,13 @@ const getLength = (arr: number[]) => getD2sInter(arr).length
 
 const getFirst = (arr: number[]) => getD2sInter(arr)[0]
 
+// const getSubTitle = (sub: string) =>
+//   sub !== ''
+//     ? statusOutBudgetList.value
+//         .filter((b: StatusOutBudget) => b.account_d2.sub_title === sub)
+//         .map(b => b.pk)
+//     : []
+
 const getSubTitle = (sub: string) =>
   sub !== ''
     ? statusOutBudgetList.value
