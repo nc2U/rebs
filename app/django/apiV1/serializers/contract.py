@@ -221,19 +221,21 @@ class ContractSetSerializer(serializers.ModelSerializer):
         return ProjectCashBookInContractSerializer(payments, many=True, read_only=True).data
 
     def get_last_paid_order(self, instance):
-        install_order = InstallmentPaymentOrder.objects.filter(project=instance.project)
-        price = get_cont_price(instance)
-        total_paid = self.get_total_paid(instance)
-        amount = get_pay_amount(instance, price[0])
         due_amt = 0
-        order_data = None
+        order_data = {}
+        install_order = InstallmentPaymentOrder.objects.filter(project=instance.project)
 
-        # for order in install_order:
-        #     due_amt += amount[int(order.pay_sort) - 1]
-        #     if total_paid >= due_amt:
-        #         order_data = ProjectCashBookOrderInContractSerializer(order, read_only=True).data
-        #     else:
-        #         break
+        total_paid = self.get_total_paid(instance)
+        price = get_cont_price(instance)
+        amount = get_pay_amount(instance, price[0])
+
+        for order in install_order:
+            due_amt += amount[int(order.pay_sort) - 1]
+            if total_paid >= due_amt:
+                project_cash = ProjectCashBook.objects.filter(installment_order=order).first()
+                order_data = ProjectCashBookOrderInContractSerializer(project_cash, read_only=True).data
+            else:
+                break
 
         return order_data.get('installment_order') if order_data else None
 
