@@ -92,7 +92,6 @@ class ProjectAccountD2(models.Model):
     sort = models.ForeignKey(ProjectAccountSort, on_delete=models.CASCADE)
     d1 = models.ForeignKey(ProjectAccountD1, on_delete=models.CASCADE, related_name='acc_d2s')
     code = models.CharField(max_length=3)
-    sub_title = models.CharField(max_length=20, blank=True, help_text='중분류 항목이 존재할 경우 기재')
     name = models.CharField(max_length=20)
     description = models.CharField(max_length=50, blank=True)
 
