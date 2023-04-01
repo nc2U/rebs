@@ -4,10 +4,10 @@ import { useProCash } from '@/store/pinia/proCash'
 import { numFormat, dateFormat } from '@/utils/baseMixins'
 import { TableSecondary } from '@/utils/cssMixins'
 import {
+  ProBankAcc,
   ProjectAccountD1,
   ProjectAccountD2,
   ProjectCashBook,
-  ProjectBankAccount,
 } from '@/store/types/proCash'
 
 defineProps({ date: { type: String, default: '' } })
@@ -39,8 +39,8 @@ const getD2Text = (num: number) =>
 
 const getBankAcc = (num: number) =>
   proBankAccountList.value
-    .filter((b: ProjectBankAccount) => b.pk === num)
-    .map((b: ProjectBankAccount) => b.alias_name)[0]
+    .filter((b: ProBankAcc) => b.pk === num)
+    .map((b: ProBankAcc) => b.alias_name)[0]
 
 const setData = () => {
   dateIncSet.value = proDateCashBook.value.filter(
