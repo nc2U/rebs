@@ -14,6 +14,7 @@ import CashListByDate from '@/views/proCash/Status/components/CashListByDate.vue
 import SummaryForBudget from '@/views/proCash/Status/components/SummaryForBudget.vue'
 
 const date = ref(new Date())
+const direct = ref('0')
 const compName = ref('StatusByAccount')
 
 const projectStore = useProject()
@@ -43,12 +44,16 @@ const fetchDateCashBookList = (payload: { project: number; date: string }) =>
 const excelUrl = computed(() => {
   const comp = compName.value
   const pj = project.value
+  const dr = direct.value
   const dt = dateFormat(date.value)
   let url = ''
-  if (comp === 'StatusByAccount') url = `/excel/p-balance/`
-  else if (comp === 'CashListByDate') url = `/excel/p-daily-cash/`
-  else if (comp === 'SummaryForBudget') url = `/excel/p-budget/`
-  return `${url}?project=${pj}&date=${dt}`
+  if (comp === 'StatusByAccount')
+    url = `/excel/p-balance/?project=${pj}&date=${dt}&bank_account__directpay=${dr}`
+  else if (comp === 'CashListByDate')
+    url = `/excel/p-daily-cash/?project=${pj}&date=${dt}`
+  else if (comp === 'SummaryForBudget')
+    url = `/excel/p-budget/?project=${pj}&date=${dt}`
+  return `${url}`
 })
 
 const onSelectAdd = (target: number) => {
@@ -92,10 +97,10 @@ const patchBudget = (pk: number, budget: number) =>
   patchStatusOutBudgetList(project.value, pk, budget)
 
 const directBalance = (val: boolean) => {
-  const direct = val ? 'i' : '0'
+  direct.value = val ? 'i' : '0'
   fetchBalanceByAccList({
     project: project.value,
-    direct,
+    direct: direct.value,
     date: dateFormat(date.value),
   })
 }
