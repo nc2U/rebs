@@ -147,6 +147,7 @@ export const useContract = defineStore('contract', () => {
     orderGroupList.value.map(o => ({
       value: o.pk,
       label: o.order_group_name,
+      sort: o.sort,
     })),
   )
 

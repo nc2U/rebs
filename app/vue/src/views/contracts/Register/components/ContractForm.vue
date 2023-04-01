@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { reactive, ref, watch, nextTick, computed } from 'vue'
+import { reactive, ref, computed, watch, nextTick } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { useContract } from '@/store/pinia/contract'
 import { useProjectData } from '@/store/pinia/project_data'
@@ -50,6 +50,7 @@ const form = reactive({
   keyunit: null as number | null | string, // 4
   keyunit_code: '',
   houseunit: null as number | null | string, // 5
+  houseunit_code: '',
   // cont_keyunit: '', // 디비 계약 유닛
   // cont_houseunit: '', // 디비 동호 유닛
 
@@ -93,8 +94,10 @@ watch(form, nVal => {
     form.serial_number = `${nVal.keyunit_code}-${form.order_group}`
   if (nVal.order_group)
     form.serial_number = `${form.keyunit_code}-${nVal.order_group}`
-  if (nVal.keyunit === '') form.keyunit = null
-  if (nVal.houseunit === '') form.houseunit = null
+  if (nVal.status === null) form.order_group = null
+  if (nVal.order_group === null) form.unit_type = null
+  if (nVal.unit_type === null) form.keyunit = null
+  if (nVal.keyunit === null) form.houseunit = null
 
   formsCheck.value = false
 })
@@ -156,12 +159,12 @@ watch(props, nVal => {
 })
 
 const contractStore = useContract()
-const orderGroupList = computed(() => contractStore.orderGroupList)
+const getOrderGroups = computed(() => contractStore.getOrderGroups)
 const keyUnitList = computed(() => contractStore.keyUnitList)
 const getHouseUnits = computed(() => contractStore.getHouseUnits)
 
 const projectDataStore = useProjectData()
-const unitTypeList = computed(() => projectDataStore.unitTypeList)
+const getTypes = computed(() => projectDataStore.getTypes)
 
 const proCashStore = useProCash()
 const proBankAccountList = computed(() => proCashStore.proBankAccountList)
@@ -171,7 +174,9 @@ const payOrderList = computed(() => paymentStore.payOrderList)
 
 const contLabel = computed(() => (form.status !== '1' ? '계약' : '청약'))
 const isContract = computed(() => form.status === '2')
-const noStatus = computed(() => form.status === null && !props.contract)
+const noStatus = computed(
+  () => (form.status === null || form.status === '') && !props.contract,
+)
 const downPayOrder = computed(() =>
   payOrderList.value.filter((po: PayOrder) => po.pay_time && po.pay_time <= 1),
 )
@@ -213,12 +218,13 @@ const payReset = () => {
 }
 
 const getOGSort = (pk: number): string =>
-  orderGroupList.value.filter(o => o.pk == pk)[0].sort
+  getOrderGroups.value.filter(o => o.value == pk)[0].sort
 
-const setOGSort = (e: Event) => {
-  const pk = Number((e.target as HTMLSelectElement).value)
-  form.order_group_sort = getOGSort(pk)
-  unitReset()
+const setOGSort = () => {
+  nextTick(() => {
+    const pk = Number(form.order_group)
+    form.order_group_sort = getOGSort(pk)
+  })
 }
 
 const setKeyCode = (e: Event) => {
@@ -232,10 +238,12 @@ const unitReset = () => {
   })
 }
 
-const typeSelect = (event: Event) => {
-  emit('type-select', (event.target as HTMLSelectElement).value)
-  form.keyunit = null
-  form.houseunit = null
+const typeSelect = () => {
+  nextTick(() => {
+    emit('type-select', form.unit_type)
+    form.keyunit = null
+    form.houseunit = null
+  })
 }
 
 const onSubmit = (event: Event) => {
@@ -391,21 +399,20 @@ defineExpose({ formReset })
             차수
           </CFormLabel>
           <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
-            <CFormSelect
-              v-model.number="form.order_group"
+            <Multiselect
+              v-model="form.order_group"
+              :options="getOrderGroups"
+              placeholder="---------"
               required
+              autocomplete="label"
+              :classes="{
+                search: 'form-control multiselect-search',
+              }"
+              :add-option-on="['enter' | 'tab']"
+              searchable
               :disabled="noStatus"
               @change="setOGSort"
-            >
-              <option value="">---------</option>
-              <option
-                v-for="order in orderGroupList"
-                :key="order.pk"
-                :value="order.pk"
-              >
-                {{ order.order_group_name }}
-              </option>
-            </CFormSelect>
+            />
             <CFormFeedback invalid>차수그룹을 선택하세요.</CFormFeedback>
           </CCol>
 
@@ -413,21 +420,36 @@ defineExpose({ formReset })
             타입
           </CFormLabel>
           <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
-            <CFormSelect
+            <!--            <CFormSelect-->
+            <!--              v-model="form.unit_type"-->
+            <!--              required-->
+            <!--              :disabled="form.order_group === null && !contract"-->
+            <!--              @change="typeSelect"-->
+            <!--            >-->
+            <!--              <option value="">-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;</option>-->
+            <!--              <option-->
+            <!--                v-for="type in unitTypeList"-->
+            <!--                :key="type.pk"-->
+            <!--                :value="type.pk"-->
+            <!--              >-->
+            <!--                {{ type.name }}-->
+            <!--              </option>-->
+            <!--            </CFormSelect>-->
+
+            <Multiselect
               v-model="form.unit_type"
+              :options="getTypes"
+              placeholder="---------"
               required
+              autocomplete="label"
+              :classes="{
+                search: 'form-control multiselect-search',
+              }"
+              :add-option-on="['enter' | 'tab']"
+              searchable
               :disabled="form.order_group === null && !contract"
               @change="typeSelect"
-            >
-              <option value="">---------</option>
-              <option
-                v-for="type in unitTypeList"
-                :key="type.pk"
-                :value="type.pk"
-              >
-                {{ type.name }}
-              </option>
-            </CFormSelect>
+            />
             <CFormFeedback invalid>유니트 타입을 선택하세요.</CFormFeedback>
           </CCol>
 
