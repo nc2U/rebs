@@ -17,17 +17,18 @@ const pageSelect = (page: number) => emit('page-select', page)
 <template>
   <CTable hover responsive align="middle">
     <colgroup>
-      <col width="8%" />
-      <col width="8%" />
+      <col width="7%" />
+      <col width="6%" />
       <col width="6%" />
       <col width="8%" />
       <col width="7%" />
       <col width="7%" />
-      <col width="10%" />
+      <col width="8%" />
       <col width="9%" />
-      <col width="9%" />
+      <col width="8%" />
+      <col width="13%" />
+      <col width="8%" />
       <col width="10%" />
-      <col width="15%" />
       <col width="3%" />
     </colgroup>
 
@@ -40,10 +41,11 @@ const pageSelect = (page: number) => emit('page-select', page)
         <CTableHeaderCell scope="col">타입</CTableHeaderCell>
         <CTableHeaderCell scope="col">동호수</CTableHeaderCell>
         <CTableHeaderCell scope="col">계약일자</CTableHeaderCell>
+        <CTableHeaderCell scope="col">계약가격</CTableHeaderCell>
+        <CTableHeaderCell scope="col">회당 계약금</CTableHeaderCell>
         <CTableHeaderCell scope="col">최종납입회차</CTableHeaderCell>
         <CTableHeaderCell scope="col">납입금액합계</CTableHeaderCell>
         <CTableHeaderCell scope="col">연락처</CTableHeaderCell>
-        <CTableHeaderCell scope="col">주소</CTableHeaderCell>
         <CTableHeaderCell scope="col">비고</CTableHeaderCell>
       </CTableRow>
     </CTableHead>

@@ -54,6 +54,12 @@ const router = useRouter()
       }}
     </CTableDataCell>
     <CTableDataCell>{{ contract.contractor.contract_date }}</CTableDataCell>
+    <CTableDataCell class="text-right">
+      {{ numFormat(contract.contractprice?.price || 0) }}
+    </CTableDataCell>
+    <CTableDataCell class="text-right">
+      {{ numFormat(contract.contractprice?.down_pay || 0) }}
+    </CTableDataCell>
     <CTableDataCell>
       {{ !contract.last_paid_order ? '-' : contract.last_paid_order.__str__ }}
     </CTableDataCell>
@@ -62,9 +68,6 @@ const router = useRouter()
     </CTableDataCell>
     <CTableDataCell
       >{{ contract.contractor.contractorcontact.cell_phone }}
-    </CTableDataCell>
-    <CTableDataCell class="text-left">
-      {{ cutString(contract.contractor.contractoraddress.dm_address1, 13) }}
     </CTableDataCell>
     <CTableDataCell>
       <CButton
