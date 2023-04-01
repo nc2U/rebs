@@ -58,7 +58,7 @@ const form = reactive({
   birth_date: null as string | Date | null, // 8
   gender: '', // 9
   is_registed: false, // 10
-  status: '', // 1
+  status: null as null | string, // 1
   reservation_date: null as string | Date | null, // 6-1
   contract_date: null as string | Date | null, // 6-2
   note: '', // 28
@@ -171,7 +171,7 @@ const payOrderList = computed(() => paymentStore.payOrderList)
 
 const contLabel = computed(() => (form.status !== '1' ? '계약' : '청약'))
 const isContract = computed(() => form.status === '2')
-const noStatus = computed(() => form.status === '' && !props.contract)
+const noStatus = computed(() => form.status === null && !props.contract)
 const downPayOrder = computed(() =>
   payOrderList.value.filter((po: PayOrder) => po.pay_time && po.pay_time <= 1),
 )
@@ -218,7 +218,7 @@ const getOGSort = (pk: number): string =>
 const setOGSort = (e: Event) => {
   const pk = Number((e.target as HTMLSelectElement).value)
   form.order_group_sort = getOGSort(pk)
-  unitReset(e)
+  unitReset()
 }
 
 const setKeyCode = (e: Event) => {
@@ -226,8 +226,10 @@ const setKeyCode = (e: Event) => {
   form.keyunit_code = (e.target as HTMLSelectElement).selectedOptions[0].text
 }
 
-const unitReset = (event: Event) => {
-  if ((event.target as HTMLSelectElement).value === '') formReset()
+const unitReset = () => {
+  nextTick(() => {
+    if (form.status === null) formReset()
+  })
 }
 
 const typeSelect = (event: Event) => {
@@ -364,11 +366,22 @@ defineExpose({ formReset })
             구분
           </CFormLabel>
           <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
-            <CFormSelect v-model="form.status" required @change="unitReset">
-              <option value="">---------</option>
-              <option value="1">청약</option>
-              <option value="2">계약</option>
-            </CFormSelect>
+            <Multiselect
+              v-model="form.status"
+              :options="[
+                { value: '1', label: '청약' },
+                { value: '2', label: '계약' },
+              ]"
+              required
+              placeholder="---------"
+              autocomplete="label"
+              :classes="{
+                search: 'form-control multiselect-search',
+              }"
+              :add-option-on="['enter' | 'tab']"
+              searchable
+              @change="unitReset"
+            />
             <CFormFeedback invalid>구분 항목을 선택하세요.</CFormFeedback>
           </CCol>
         </CRow>
@@ -384,7 +397,7 @@ defineExpose({ formReset })
               :disabled="noStatus"
               @change="setOGSort"
             >
-              <option :value="null">---------</option>
+              <option value="">---------</option>
               <option
                 v-for="order in orderGroupList"
                 :key="order.pk"
@@ -406,7 +419,7 @@ defineExpose({ formReset })
               :disabled="form.order_group === null && !contract"
               @change="typeSelect"
             >
-              <option :value="null">---------</option>
+              <option value="">---------</option>
               <option
                 v-for="type in unitTypeList"
                 :key="type.pk"
