@@ -10,7 +10,6 @@ export interface ProjectAccountD2 {
   pk: number
   d1: number
   code: string
-  sub_title: string
   name: string
   description: string
 }
