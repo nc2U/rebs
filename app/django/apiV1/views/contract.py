@@ -123,7 +123,7 @@ class ContContactViewSet(viewsets.ModelViewSet):
 
 
 class ContReleaseViewSet(viewsets.ModelViewSet):
-    queryset = ContractorRelease.objects.all().order_by('-request_date')
+    queryset = ContractorRelease.objects.all().order_by('-request_date', '-created_at')
     serializer_class = ContractorReleaseSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
     filterset_fields = ('project', 'status')
