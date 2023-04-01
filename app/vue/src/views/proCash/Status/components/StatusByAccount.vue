@@ -80,6 +80,7 @@ const directBalance = (val: boolean) => emit('direct-balance', val)
             ({{ dateFormat(date) }}) 현재
           </small>
         </CTableDataCell>
+        <CTableDataCell>(단위: 원)</CTableDataCell>
         <CTableDataCell class="text-right">
           <CFormSwitch
             id="select-directpay"
@@ -87,7 +88,6 @@ const directBalance = (val: boolean) => emit('direct-balance', val)
             @change="directBalance($event.target.checked)"
           />
         </CTableDataCell>
-        <CTableDataCell class="text-right">(단위: 원)</CTableDataCell>
       </CTableRow>
       <CTableRow :color="TableSecondary" class="text-center">
         <CTableHeaderCell colspan="3">계좌 구분</CTableHeaderCell>
