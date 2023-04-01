@@ -427,16 +427,18 @@ onBeforeMount(() => {
               <CCol sm="8">
                 <CFormInput
                   v-model="form.trader"
-                  v-c-tooltip="{
-                    content:
-                      '분양대금(분담금) 수납 건인 경우 반드시 해당 계좌에 기재된 입금자를 기재',
-                    placement: 'top',
-                  }"
+                  :text="
+                    form.project_account_d2 === 1 ||
+                    form.project_account_d2 === 4
+                      ? '분양대금(분담금) 수납 건인 경우 반드시 해당 계좌에 기재된 입금자를 기재'
+                      : ''
+                  "
                   maxlength="20"
                   placeholder="거래처 (수납자)"
                   :required="form.sort && form.sort !== 3"
                   :disabled="!form.sort || form.sort === 3"
-                />
+                >
+                </CFormInput>
               </CCol>
             </CRow>
           </CCol>
