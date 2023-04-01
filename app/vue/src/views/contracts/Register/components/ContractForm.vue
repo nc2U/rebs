@@ -94,10 +94,10 @@ watch(form, nVal => {
     form.serial_number = `${nVal.keyunit_code}-${form.order_group}`
   if (nVal.order_group)
     form.serial_number = `${form.keyunit_code}-${nVal.order_group}`
-  if (nVal.status === null) form.order_group = null
-  if (nVal.order_group === null) form.unit_type = null
-  if (nVal.unit_type === null) form.keyunit = null
-  if (nVal.keyunit === null) form.houseunit = null
+  if (!nVal.status) form.order_group = null
+  if (!nVal.order_group) form.unit_type = null
+  if (!nVal.unit_type) form.keyunit = null
+  if (!nVal.keyunit) form.houseunit = null
 
   formsCheck.value = false
 })
@@ -218,7 +218,10 @@ const payReset = () => {
 }
 
 const getOGSort = (pk: number): string =>
-  getOrderGroups.value.filter(o => o.value == pk)[0].sort
+  pk ? getOrderGroups.value.filter(o => o.value == pk)[0].sort : ''
+
+const getKUCode = (pk: number) =>
+  getKeyUnits.value.filter(k => k.value === pk).map(k => k.label)[0]
 
 const setOGSort = () => {
   nextTick(() => {
@@ -227,13 +230,10 @@ const setOGSort = () => {
   })
 }
 
-const getKUCode = (pk: number) =>
-  getKeyUnits.value.filter(k => k.value === pk)[0].label
-
 const setKeyCode = () => {
   nextTick(() => {
     form.houseunit = null
-    form.keyunit_code = form.keyunit ? getKUCode(form.keyunit) : ''
+    form.keyunit_code = form.keyunit ? getKUCode(Number(form.keyunit)) : ''
   })
 }
 
@@ -404,20 +404,35 @@ defineExpose({ formReset })
             차수
           </CFormLabel>
           <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
-            <Multiselect
+            <CFormSelect
               v-model="form.order_group"
-              :options="getOrderGroups"
-              placeholder="---------"
               required
-              autocomplete="label"
-              :classes="{
-                search: 'form-control multiselect-search',
-              }"
-              :add-option-on="['enter' | 'tab']"
-              searchable
               :disabled="noStatus"
               @change="setOGSort"
-            />
+            >
+              <option value="">---------</option>
+              <option
+                v-for="og in getOrderGroups"
+                :key="og.value"
+                :value="og.value"
+              >
+                {{ og.label }}
+              </option>
+            </CFormSelect>
+            <!--            <Multiselect-->
+            <!--              v-model="form.order_group"-->
+            <!--              :options="getOrderGroups"-->
+            <!--              placeholder="-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;"-->
+            <!--              required-->
+            <!--              autocomplete="label"-->
+            <!--              :classes="{-->
+            <!--                search: 'form-control multiselect-search',-->
+            <!--              }"-->
+            <!--              :add-option-on="['enter' | 'tab']"-->
+            <!--              searchable-->
+            <!--              :disabled="noStatus"-->
+            <!--              @change="setOGSort"-->
+            <!--            />-->
             <CFormFeedback invalid>차수그룹을 선택하세요.</CFormFeedback>
           </CCol>
 
@@ -425,36 +440,31 @@ defineExpose({ formReset })
             타입
           </CFormLabel>
           <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
-            <!--            <CFormSelect-->
-            <!--              v-model="form.unit_type"-->
-            <!--              required-->
-            <!--              :disabled="form.order_group === null && !contract"-->
-            <!--              @change="typeSelect"-->
-            <!--            >-->
-            <!--              <option value="">-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;</option>-->
-            <!--              <option-->
-            <!--                v-for="type in unitTypeList"-->
-            <!--                :key="type.pk"-->
-            <!--                :value="type.pk"-->
-            <!--              >-->
-            <!--                {{ type.name }}-->
-            <!--              </option>-->
-            <!--            </CFormSelect>-->
-
-            <Multiselect
+            <CFormSelect
               v-model="form.unit_type"
-              :options="getTypes"
-              placeholder="---------"
               required
-              autocomplete="label"
-              :classes="{
-                search: 'form-control multiselect-search',
-              }"
-              :add-option-on="['enter' | 'tab']"
-              searchable
               :disabled="form.order_group === null && !contract"
               @change="typeSelect"
-            />
+            >
+              <option value="">---------</option>
+              <option v-for="ut in getTypes" :key="ut.value" :value="ut.value">
+                {{ ut.label }}
+              </option>
+            </CFormSelect>
+            <!--            <Multiselect-->
+            <!--              v-model="form.unit_type"-->
+            <!--              :options="getTypes"-->
+            <!--              placeholder="-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;"-->
+            <!--              :required="true"-->
+            <!--              autocomplete="label"-->
+            <!--              :classes="{-->
+            <!--                search: 'form-control multiselect-search',-->
+            <!--              }"-->
+            <!--              :add-option-on="['enter' | 'tab']"-->
+            <!--              searchable-->
+            <!--              :disabled="form.order_group === null && !contract"-->
+            <!--              @change="typeSelect"-->
+            <!--            />-->
             <CFormFeedback invalid>유니트 타입을 선택하세요.</CFormFeedback>
           </CCol>
 
@@ -462,35 +472,35 @@ defineExpose({ formReset })
             {{ contLabel }}코드
           </CFormLabel>
           <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
-            <!--            <CFormSelect-->
-            <!--              v-model="form.keyunit"-->
-            <!--              required-->
-            <!--              :disabled="form.unit_type === null && !contract"-->
-            <!--              @change="setKeyCode"-->
-            <!--            >-->
-            <!--              <option value="">-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;</option>-->
-            <!--              <option-->
-            <!--                v-for="unit in keyUnitList"-->
-            <!--                :key="unit.pk"-->
-            <!--                :value="unit.pk"-->
-            <!--              >-->
-            <!--                {{ unit.unit_code }}-->
-            <!--              </option>-->
-            <!--            </CFormSelect>-->
-            <Multiselect
+            <CFormSelect
               v-model="form.keyunit"
-              :options="getKeyUnits"
-              placeholder="---------"
               required
-              autocomplete="label"
-              :classes="{
-                search: 'form-control multiselect-search',
-              }"
-              :add-option-on="['enter' | 'tab']"
-              searchable
               :disabled="form.unit_type === null && !contract"
               @change="setKeyCode"
-            />
+            >
+              <option value="">---------</option>
+              <option
+                v-for="ku in getKeyUnits"
+                :key="ku.value"
+                :value="ku.value"
+              >
+                {{ ku.label }}
+              </option>
+            </CFormSelect>
+            <!--            <Multiselect-->
+            <!--              v-model="form.keyunit"-->
+            <!--              :options="getKeyUnits"-->
+            <!--              placeholder="-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;"-->
+            <!--              required-->
+            <!--              autocomplete="label"-->
+            <!--              :classes="{-->
+            <!--                search: 'form-control multiselect-search',-->
+            <!--              }"-->
+            <!--              :add-option-on="['enter' | 'tab']"-->
+            <!--              searchable-->
+            <!--              :disabled="form.unit_type === null && !contract"-->
+            <!--              @change="setKeyCode"-->
+            <!--            />-->
             <CFormFeedback invalid>
               {{ contLabel }}코드를 선택하세요.
             </CFormFeedback>
