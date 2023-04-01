@@ -7,6 +7,8 @@ import { TableSecondary } from '@/utils/cssMixins'
 
 defineProps({ date: { type: String, default: '' } })
 
+const emit = defineEmits(['direct-balance'])
+
 const preBalance = ref(0)
 const dateIncSum = ref(0)
 const dateOutSum = ref(0)
@@ -52,6 +54,8 @@ const getSumTotal = () => {
   preBalance.value =
     dateIncTotalCalc - dateOutTotalCalc - (dateIncSumCalc - dateOutSumCalc)
 }
+
+const directBalance = (val: boolean) => emit('direct-balance', val)
 </script>
 
 <template>
@@ -67,7 +71,7 @@ const getSumTotal = () => {
     </colgroup>
     <CTableHead>
       <CTableRow>
-        <CTableDataCell colspan="6">
+        <CTableDataCell colspan="5">
           <strong>
             <CIcon name="cilFolderOpen" />
             프로젝트 계좌별 자금현황
@@ -75,6 +79,13 @@ const getSumTotal = () => {
           <small class="text-medium-emphasis">
             ({{ dateFormat(date) }}) 현재
           </small>
+        </CTableDataCell>
+        <CTableDataCell class="text-right">
+          <CFormSwitch
+            id="select-directpay"
+            label="직불 용역비 계좌 포함"
+            @change="directBalance($event.target.checked)"
+          />
         </CTableDataCell>
         <CTableDataCell class="text-right">(단위: 원)</CTableDataCell>
       </CTableRow>

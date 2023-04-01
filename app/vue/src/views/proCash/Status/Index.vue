@@ -32,8 +32,11 @@ const fetchProAllAccD2List = () => proCashStore.fetchProAllAccD2List
 const fetchProBankAccList = (proj: number) =>
   proCashStore.fetchProBankAccList(proj)
 
-const fetchBalanceByAccList = (payload: { project: number; date?: string }) =>
-  proCashStore.fetchBalanceByAccList(payload)
+const fetchBalanceByAccList = (payload: {
+  project: number
+  direct?: string
+  date?: string
+}) => proCashStore.fetchBalanceByAccList(payload)
 const fetchDateCashBookList = (payload: { project: number; date: string }) =>
   proCashStore.fetchDateCashBookList(payload)
 
@@ -88,6 +91,15 @@ const setDate = (d: Date) => {
 const patchBudget = (pk: number, budget: number) =>
   patchStatusOutBudgetList(project.value, pk, budget)
 
+const directBalance = (val: boolean) => {
+  const direct = val ? 'i' : '0'
+  fetchBalanceByAccList({
+    project: project.value,
+    direct,
+    date: dateFormat(date.value),
+  })
+}
+
 onBeforeMount(() => {
   fetchStatusOutBudgetList(project.value)
   fetchExecAmountList(project.value)
@@ -120,7 +132,11 @@ onBeforeMount(() => {
 
       <TableTitleRow excel :url="excelUrl" />
 
-      <StatusByAccount v-if="compName === 'StatusByAccount'" :date="date" />
+      <StatusByAccount
+        v-if="compName === 'StatusByAccount'"
+        :date="date"
+        @direct-balance="directBalance"
+      />
       <CashListByDate v-if="compName === 'CashListByDate'" :date="date" />
       <SummaryForBudget
         v-if="compName === 'SummaryForBudget'"

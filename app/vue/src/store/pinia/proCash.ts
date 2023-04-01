@@ -131,10 +131,11 @@ export const useProCash = defineStore('proCash', () => {
 
   const fetchBalanceByAccList = (payload: {
     project: number
+    direct?: string
     date?: string
   }) => {
-    const { project, date } = payload
-    let url = `/pr-balance-by-acc/?project=${project}`
+    const { project, date, direct = '0' } = payload
+    let url = `/pr-balance-by-acc/?project=${project}&bank_account__directpay=${direct}`
     if (date) url += `&date=${date}`
     return api
       .get(url)
