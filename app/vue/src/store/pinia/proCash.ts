@@ -204,8 +204,7 @@ export const useProCash = defineStore('proCash', () => {
           }).then(() => {
             paymentStore.fetchPaymentList({
               project: res.data.project,
-              contract: res.data.contract,
-              ordering: 'deal_date',
+              ...filters,
             })
             paymentStore.fetchAllPaymentList({
               project: res.data.project,
@@ -261,7 +260,6 @@ export const useProCash = defineStore('proCash', () => {
         }).then(() => {
           paymentStore.fetchPaymentList({
             project: res.data.project,
-            contract: res.data.contract,
             ...filters,
           })
           paymentStore.fetchAllPaymentList({
@@ -291,7 +289,10 @@ export const useProCash = defineStore('proCash', () => {
           ...filters,
         }).then(() => {
           if (contract) {
-            paymentStore.fetchPaymentList({ project, contract })
+            paymentStore.fetchPaymentList({
+              project,
+              ...filters,
+            })
             paymentStore.fetchAllPaymentList({
               project,
               contract,
@@ -380,7 +381,7 @@ export const useProCash = defineStore('proCash', () => {
         }).then(() => {
           paymentStore.fetchPaymentList({
             project: res.data.project,
-            contract: res.data.contract,
+            ...filters,
           })
           paymentStore.fetchAllPaymentList({
             project: res.data.project,
@@ -408,7 +409,10 @@ export const useProCash = defineStore('proCash', () => {
           ...filters,
         }).then(() => {
           if (contract) {
-            paymentStore.fetchPaymentList({ project, contract })
+            paymentStore.fetchPaymentList({
+              project,
+              ...filters,
+            })
             paymentStore.fetchAllPaymentList({
               project,
               contract,

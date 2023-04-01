@@ -91,7 +91,7 @@ const listFiltering = (payload: CashBookFilter) => {
 }
 
 const payMatch = (payload: ProjectCashBook) =>
-  patchPrCashBook({ ...payload, filters: { no_contract: true } }) // const & payment 매칭
+  patchPrCashBook({ ...payload, filters: filterItems.value }) // const & payment 매칭
 
 const pageSelect = (page: number) => {
   filterItems.value.page = page
