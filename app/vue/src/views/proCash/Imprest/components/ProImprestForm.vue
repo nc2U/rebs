@@ -364,7 +364,12 @@ onBeforeMount(() => {
                 <CFormSelect
                   v-model.number="form.project_account_d1"
                   :required="!form.is_separate"
-                  :disabled="!form.sort || form.is_separate"
+                  :disabled="
+                    !form.sort ||
+                    form.is_separate ||
+                    form.sort === 3 ||
+                    form.sort === 4
+                  "
                   @change="d1_change"
                 >
                   <option value="">---------</option>
@@ -388,7 +393,12 @@ onBeforeMount(() => {
                 <CFormSelect
                   v-model.number="form.project_account_d2"
                   :required="!form.is_separate"
-                  :disabled="!form.project_account_d1 || form.is_separate"
+                  :disabled="
+                    !form.project_account_d1 ||
+                    form.is_separate ||
+                    form.sort === 3 ||
+                    form.sort === 4
+                  "
                 >
                   <option value="">---------</option>
                   <option
