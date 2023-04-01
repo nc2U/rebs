@@ -102,7 +102,7 @@ class PrBalanceByAccountViewSet(viewsets.ModelViewSet):
     serializer_class = PrBalanceByAccountSerializer
     pagination_class = PageNumberPaginationOneHundred
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-    filterset_fields = ('project',)
+    filterset_fields = ('project', 'bank_account__directpay')
 
     def get_queryset(self):
         date = self.request.query_params.get('date')
