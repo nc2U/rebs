@@ -26,7 +26,9 @@ const dark = computed(() => store.state.theme === 'dark')
 const rowColor = computed(() => {
   let color = ''
   color =
-    props.proCash.contract && props.proCash.project_account_d2 <= '2'
+    props.proCash.contract &&
+    (props.proCash.project_account_d2 === 1 ||
+      props.proCash.project_account_d2 === 4)
       ? 'info'
       : color
   color = dark.value ? '' : color
