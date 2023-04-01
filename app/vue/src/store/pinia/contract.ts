@@ -183,6 +183,9 @@ export const useContract = defineStore('contract', () => {
   // state & getters
   const keyUnitList = ref<KeyUnit[]>([])
   const houseUnitList = ref<HouseUnit[]>([])
+  const getHouseUnits = computed(() =>
+    houseUnitList.value.map(h => ({ value: h.pk, label: h.__str__ })),
+  )
   const salesPriceList = ref<SalesPrice[]>([])
   const downPaymentList = ref<DownPayment[]>([])
 
@@ -310,6 +313,7 @@ export const useContract = defineStore('contract', () => {
 
     keyUnitList,
     houseUnitList,
+    getHouseUnits,
     salesPriceList,
     downPaymentList,
 

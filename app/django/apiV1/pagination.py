@@ -13,6 +13,10 @@ class PageNumberPaginationThreeThousand(PageNumberPagination):
     page_size = 3000
 
 
+class PageNumberPaginationOneThousand(PageNumberPagination):
+    page_size = 1000
+
+
 class PageNumberPaginationFiveHundred(PageNumberPagination):
     page_size = 500
 

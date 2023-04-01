@@ -64,6 +64,7 @@ class HouseUnitViewSet(viewsets.ModelViewSet):
 
 
 class AvailableHouseUnitViewSet(HouseUnitViewSet):
+    pagination_class = PageNumberPaginationThreeHundred
 
     def get_queryset(self):
         houseunit = HouseUnit.objects.all()

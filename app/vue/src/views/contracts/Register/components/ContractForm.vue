@@ -13,8 +13,9 @@ import { numFormat, dateFormat, diffDate } from '@/utils/baseMixins'
 import { write_contract } from '@/utils/pageAuth'
 import { maska as vMaska } from 'maska'
 import { AddressData, callAddress } from '@/components/DaumPostcode/address'
-import DaumPostcode from '@/components/DaumPostcode/index.vue'
+import Multiselect from '@vueform/multiselect'
 import ContNavigation from './ContNavigation.vue'
+import DaumPostcode from '@/components/DaumPostcode/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 import DatePicker from '@/components/DatePicker/index.vue'
@@ -157,7 +158,7 @@ watch(props, nVal => {
 const contractStore = useContract()
 const orderGroupList = computed(() => contractStore.orderGroupList)
 const keyUnitList = computed(() => contractStore.keyUnitList)
-const houseUnitList = computed(() => contractStore.houseUnitList)
+const getHouseUnits = computed(() => contractStore.getHouseUnits)
 
 const projectDataStore = useProjectData()
 const unitTypeList = computed(() => projectDataStore.unitTypeList)
@@ -445,19 +446,18 @@ defineExpose({ formReset })
             동호수
           </CFormLabel>
           <CCol v-if="unitSet" md="10" lg="2" class="mb-md-3 mb-lg-0">
-            <CFormSelect
+            <Multiselect
               v-model="form.houseunit"
+              :options="getHouseUnits"
+              placeholder="---------"
+              autocomplete="label"
+              :classes="{
+                search: 'form-control multiselect-search',
+              }"
+              :add-option-on="['enter' | 'tab']"
+              searchable
               :disabled="form.keyunit === null && !contract"
-            >
-              <option value="">---------</option>
-              <option
-                v-for="house in houseUnitList"
-                :key="house.pk"
-                :value="house.pk"
-              >
-                {{ house.__str__ }}
-              </option>
-            </CFormSelect>
+            />
             <CFormFeedback invalid>동호수를 선택하세요.</CFormFeedback>
           </CCol>
         </CRow>
