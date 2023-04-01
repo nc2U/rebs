@@ -21,8 +21,8 @@ import DatePicker from '@/components/DatePicker/index.vue'
 
 const props = defineProps({
   contract: { type: Object, default: null },
-  unitSet: Boolean,
-  isUnion: Boolean,
+  unitSet: Boolean, // 동호 지정 여부
+  isUnion: Boolean, // 조합인지 일반분양 프로젝트인지 여부
 })
 
 const emit = defineEmits(['type-select', 'on-create', 'on-update'])
