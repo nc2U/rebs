@@ -68,6 +68,7 @@ export interface ProOutBudget {
 export interface StatusOutBudget {
   pk?: number
   project?: number
+  order?: number
   account_d1: {
     name: string
     acc_d2s: Array<number>
@@ -77,6 +78,7 @@ export interface StatusOutBudget {
     name: string
     sub_title: string
   }
+  account_opt: string
   item_name: string
   basis_calc: string
   budget: number

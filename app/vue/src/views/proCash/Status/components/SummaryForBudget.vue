@@ -47,7 +47,7 @@ const getFirst = (arr: number[]) => getD2sInter(arr)[0]
 const getSubTitle = (sub: string) =>
   sub !== ''
     ? statusOutBudgetList.value
-        .filter((b: StatusOutBudget) => b.account_d2.sub_title === sub)
+        .filter((b: StatusOutBudget) => b.account_opt === sub)
         .map(b => b.pk)
     : []
 
@@ -149,19 +149,13 @@ const patchBudget = (pk: number, budget: string, oldBudget: number) => {
           {{ obj.account_d1.name }}
         </CTableDataCell>
         <CTableDataCell
-          v-if="
-            obj.account_d2.sub_title &&
-            obj.pk === getSubTitle(obj.account_d2.sub_title)[0]
-          "
+          v-if="obj.account_opt && obj.pk === getSubTitle(obj.account_opt)[0]"
           class="text-left"
-          :rowspan="getSubTitle(obj.account_d2.sub_title).length"
+          :rowspan="getSubTitle(obj.account_opt).length"
         >
-          {{ obj.account_d2.sub_title }}
+          {{ obj.account_opt }}
         </CTableDataCell>
-        <CTableDataCell
-          class="text-left"
-          :colspan="obj.account_d2.sub_title ? 1 : 2"
-        >
+        <CTableDataCell class="text-left" :colspan="obj.account_opt ? 1 : 2">
           {{ obj.account_d2.name }}
         </CTableDataCell>
         <CTableDataCell
