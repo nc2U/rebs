@@ -47,9 +47,9 @@ const form = reactive({
   activation: true,
 
   // keyunit & houseunit
-  keyunit: null as number | null | string, // 4
+  keyunit: null as number | null, // 4
   keyunit_code: '',
-  houseunit: null as number | null | string, // 5
+  houseunit: null as number | null, // 5
   houseunit_code: '',
   // cont_keyunit: '', // 디비 계약 유닛
   // cont_houseunit: '', // 디비 동호 유닛
@@ -160,7 +160,7 @@ watch(props, nVal => {
 
 const contractStore = useContract()
 const getOrderGroups = computed(() => contractStore.getOrderGroups)
-const keyUnitList = computed(() => contractStore.keyUnitList)
+const getKeyUnits = computed(() => contractStore.getKeyUnits)
 const getHouseUnits = computed(() => contractStore.getHouseUnits)
 
 const projectDataStore = useProjectData()
@@ -227,9 +227,14 @@ const setOGSort = () => {
   })
 }
 
-const setKeyCode = (e: Event) => {
-  form.houseunit = null
-  form.keyunit_code = (e.target as HTMLSelectElement).selectedOptions[0].text
+const getKUCode = (pk: number) =>
+  getKeyUnits.value.filter(k => k.value === pk)[0].label
+
+const setKeyCode = () => {
+  nextTick(() => {
+    form.houseunit = null
+    form.keyunit_code = form.keyunit ? getKUCode(form.keyunit) : ''
+  })
 }
 
 const unitReset = () => {
@@ -457,21 +462,35 @@ defineExpose({ formReset })
             {{ contLabel }}코드
           </CFormLabel>
           <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
-            <CFormSelect
+            <!--            <CFormSelect-->
+            <!--              v-model="form.keyunit"-->
+            <!--              required-->
+            <!--              :disabled="form.unit_type === null && !contract"-->
+            <!--              @change="setKeyCode"-->
+            <!--            >-->
+            <!--              <option value="">-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;</option>-->
+            <!--              <option-->
+            <!--                v-for="unit in keyUnitList"-->
+            <!--                :key="unit.pk"-->
+            <!--                :value="unit.pk"-->
+            <!--              >-->
+            <!--                {{ unit.unit_code }}-->
+            <!--              </option>-->
+            <!--            </CFormSelect>-->
+            <Multiselect
               v-model="form.keyunit"
+              :options="getKeyUnits"
+              placeholder="---------"
               required
+              autocomplete="label"
+              :classes="{
+                search: 'form-control multiselect-search',
+              }"
+              :add-option-on="['enter' | 'tab']"
+              searchable
               :disabled="form.unit_type === null && !contract"
               @change="setKeyCode"
-            >
-              <option value="">---------</option>
-              <option
-                v-for="unit in keyUnitList"
-                :key="unit.pk"
-                :value="unit.pk"
-              >
-                {{ unit.unit_code }}
-              </option>
-            </CFormSelect>
+            />
             <CFormFeedback invalid>
               {{ contLabel }}코드를 선택하세요.
             </CFormFeedback>
