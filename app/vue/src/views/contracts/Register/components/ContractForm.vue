@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { reactive, ref, computed, watch, nextTick } from 'vue'
+import { reactive, ref, computed, watch, nextTick, onUpdated } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { useContract } from '@/store/pinia/contract'
 import { useProjectData } from '@/store/pinia/project_data'
@@ -115,10 +115,6 @@ watch(props, nVal => {
     form.houseunit = props.contract.keyunit.houseunit
       ? props.contract.keyunit.houseunit.pk
       : ''
-    // form.cont_keyunit = props.contract.keyunit.pk
-    // form.cont_houseunit = props.contract.keyunit.houseunit
-    //   ? props.contract.keyunit.houseunit.pk
-    //   : ''
 
     // contractor
     form.name = props.contract.contractor.name
@@ -273,7 +269,7 @@ const modalAction = () => {
   else emit('on-update', form)
   validated.value = false
   confirmModal.value.close()
-  // formReset()
+  nextTick(() => (formsCheck.value = true))
 }
 
 const deleteContract = () => {
@@ -419,20 +415,6 @@ defineExpose({ formReset })
                 {{ og.label }}
               </option>
             </CFormSelect>
-            <!--            <Multiselect-->
-            <!--              v-model="form.order_group"-->
-            <!--              :options="getOrderGroups"-->
-            <!--              placeholder="-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;"-->
-            <!--              required-->
-            <!--              autocomplete="label"-->
-            <!--              :classes="{-->
-            <!--                search: 'form-control multiselect-search',-->
-            <!--              }"-->
-            <!--              :add-option-on="['enter' | 'tab']"-->
-            <!--              searchable-->
-            <!--              :disabled="noStatus"-->
-            <!--              @change="setOGSort"-->
-            <!--            />-->
             <CFormFeedback invalid>차수그룹을 선택하세요.</CFormFeedback>
           </CCol>
 
@@ -451,20 +433,6 @@ defineExpose({ formReset })
                 {{ ut.label }}
               </option>
             </CFormSelect>
-            <!--            <Multiselect-->
-            <!--              v-model="form.unit_type"-->
-            <!--              :options="getTypes"-->
-            <!--              placeholder="-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;"-->
-            <!--              :required="true"-->
-            <!--              autocomplete="label"-->
-            <!--              :classes="{-->
-            <!--                search: 'form-control multiselect-search',-->
-            <!--              }"-->
-            <!--              :add-option-on="['enter' | 'tab']"-->
-            <!--              searchable-->
-            <!--              :disabled="form.order_group === null && !contract"-->
-            <!--              @change="typeSelect"-->
-            <!--            />-->
             <CFormFeedback invalid>유니트 타입을 선택하세요.</CFormFeedback>
           </CCol>
 
@@ -487,20 +455,6 @@ defineExpose({ formReset })
                 {{ ku.label }}
               </option>
             </CFormSelect>
-            <!--            <Multiselect-->
-            <!--              v-model="form.keyunit"-->
-            <!--              :options="getKeyUnits"-->
-            <!--              placeholder="-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;"-->
-            <!--              required-->
-            <!--              autocomplete="label"-->
-            <!--              :classes="{-->
-            <!--                search: 'form-control multiselect-search',-->
-            <!--              }"-->
-            <!--              :add-option-on="['enter' | 'tab']"-->
-            <!--              searchable-->
-            <!--              :disabled="form.unit_type === null && !contract"-->
-            <!--              @change="setKeyCode"-->
-            <!--            />-->
             <CFormFeedback invalid>
               {{ contLabel }}코드를 선택하세요.
             </CFormFeedback>
