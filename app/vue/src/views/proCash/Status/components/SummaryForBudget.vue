@@ -122,8 +122,8 @@ const patchBudget = (pk: number, budget: string, oldBudget: number) => {
 
     <CTableBody>
       <CTableRow
-        v-for="(bdj, i) in statusOutBudgetList"
-        :key="bdj.pk"
+        v-for="(obj, i) in statusOutBudgetList"
+        :key="obj.pk"
         class="text-right"
       >
         <CTableDataCell
@@ -135,27 +135,27 @@ const patchBudget = (pk: number, budget: string, oldBudget: number) => {
           사업비
         </CTableDataCell>
         <CTableDataCell
-          v-if="getFirst(bdj.account_d1.acc_d2s) === bdj.account_d2.pk"
+          v-if="getFirst(obj.account_d1.acc_d2s) === obj.account_d2.pk"
           class="text-center"
-          :rowspan="getLength(bdj.account_d1.acc_d2s)"
+          :rowspan="getLength(obj.account_d1.acc_d2s)"
         >
-          {{ bdj.account_d1.name }}
+          {{ obj.account_d1.name }}
         </CTableDataCell>
         <CTableDataCell
           v-if="
-            bdj.account_d2.sub_title &&
-            bdj.pk === getSubTitle(bdj.account_d2.sub_title)[0]
+            obj.account_d2.sub_title &&
+            obj.pk === getSubTitle(obj.account_d2.sub_title)[0]
           "
           class="text-left"
-          :rowspan="getSubTitle(bdj.account_d2.sub_title).length"
+          :rowspan="getSubTitle(obj.account_d2.sub_title).length"
         >
-          {{ bdj.account_d2.sub_title }}
+          {{ obj.account_d2.sub_title }}
         </CTableDataCell>
         <CTableDataCell
           class="text-left"
-          :colspan="bdj.account_d2.sub_title ? 1 : 2"
+          :colspan="obj.account_d2.sub_title ? 1 : 2"
         >
-          {{ bdj.account_d2.name }}
+          {{ obj.account_d2.name }}
         </CTableDataCell>
         <CTableDataCell
           class="py-0 bg-blue-grey-lighten-5"
@@ -163,16 +163,16 @@ const patchBudget = (pk: number, budget: string, oldBudget: number) => {
           @dblclick="formNumber = i"
         >
           <span v-if="formNumber !== i">
-            {{ numFormat(bdj.budget) }}
+            {{ numFormat(obj.budget) }}
           </span>
           <span v-else class="p-0">
             <CFormInput
               type="text"
               class="form-control text-right"
-              :value="bdj.budget"
-              @blur="patchBudget(bdj.pk, $event.target.value, bdj.budget)"
+              :value="obj.budget"
+              @blur="patchBudget(obj.pk, $event.target.value, obj.budget)"
               @keydown.enter="
-                patchBudget(bdj.pk, $event.target.value, bdj.budget)
+                patchBudget(obj.pk, $event.target.value, obj.budget)
               "
             />
           </span>
@@ -180,20 +180,20 @@ const patchBudget = (pk: number, budget: string, oldBudget: number) => {
         <CTableDataCell>
           {{
             numFormat(
-              getEASum(bdj.account_d2.pk) - getEAMonth(bdj.account_d2.pk),
+              getEASum(obj.account_d2.pk) - getEAMonth(obj.account_d2.pk),
             )
           }}
         </CTableDataCell>
         <CTableDataCell>
-          {{ numFormat(getEAMonth(bdj.account_d2.pk) || 0) }}
+          {{ numFormat(getEAMonth(obj.account_d2.pk) || 0) }}
         </CTableDataCell>
         <CTableDataCell>
-          {{ numFormat(getEASum(bdj.account_d2.pk) || 0) }}
+          {{ numFormat(getEASum(obj.account_d2.pk) || 0) }}
         </CTableDataCell>
         <CTableDataCell
-          :class="bdj.budget < getEASum(bdj.account_d2.pk) ? 'text-danger' : ''"
+          :class="obj.budget < getEASum(obj.account_d2.pk) ? 'text-danger' : ''"
         >
-          {{ numFormat(bdj.budget - (getEASum(bdj.account_d2.pk) || 0)) }}
+          {{ numFormat(obj.budget - (getEASum(obj.account_d2.pk) || 0)) }}
         </CTableDataCell>
       </CTableRow>
 
