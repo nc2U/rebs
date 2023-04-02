@@ -61,7 +61,7 @@ class ProAccoD3InBudgetSerializer(serializers.ModelSerializer):
 
 
 class StatusOutBudgetSerializer(serializers.ModelSerializer):
-    account_d1 = ProAccoD1InBudgetSerializer()
+    account_d2 = ProAccoD1InBudgetSerializer()
     account_d3 = ProAccoD3InBudgetSerializer()
 
     class Meta:
