@@ -202,6 +202,7 @@ const multiSubmit = (payload: {
   formData: PrCashBook & {
     bank_account_to: null | number
     ba_is_imprest: boolean
+    charge: null | number
   }
   sepData: PrCashBook | null
 }) => {

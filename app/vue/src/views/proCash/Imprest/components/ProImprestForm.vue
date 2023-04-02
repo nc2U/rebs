@@ -443,7 +443,6 @@ onBeforeMount(() => {
                   }"
                   maxlength="20"
                   placeholder="거래처 (수납자)"
-                  required
                   :required="form.sort && form.sort !== 3"
                   :disabled="!form.sort || form.sort === 3"
                 />
