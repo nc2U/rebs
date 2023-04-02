@@ -69,9 +69,9 @@ export interface StatusOutBudget {
   pk?: number
   project?: number
   order?: number
-  account_d1: {
+  account_d2: {
     name: string
-    acc_d3s: Array<number>
+    pro_d3s: Array<number>
   }
   account_d3: {
     pk: number

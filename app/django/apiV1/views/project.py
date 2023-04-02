@@ -57,8 +57,8 @@ class ExecAmountToBudgetViewSet(viewsets.ModelViewSet):
         queryset = ProjectCashBook.objects.all() \
             .order_by('project_account_d3') \
             .filter(is_separate=False,
-                    project_account_d3__d1__gte=6,
-                    project_account_d3__d1__lte=10,
+                    project_account_d3__d2__gte=6,
+                    project_account_d3__d2__lte=10,
                     bank_account__directpay=False,
                     deal_date__lte=date)
 

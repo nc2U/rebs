@@ -142,11 +142,11 @@ const patchBudget = (pk: number, budget: string, oldBudget: number) => {
           사업비
         </CTableDataCell>
         <CTableDataCell
-          v-if="getFirst(obj.account_d1.acc_d3s) === obj.account_d3.pk"
+          v-if="getFirst(obj.account_d2.pro_d3s) === obj.account_d3.pk"
           class="text-center"
-          :rowspan="getLength(obj.account_d1.acc_d3s)"
+          :rowspan="getLength(obj.account_d2.pro_d3s)"
         >
-          {{ obj.account_d1.name }}
+          {{ obj.account_d2.name }}
         </CTableDataCell>
         <CTableDataCell
           v-if="obj.account_opt && obj.pk === getSubTitle(obj.account_opt)[0]"
