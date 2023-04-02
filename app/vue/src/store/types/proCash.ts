@@ -1,6 +1,6 @@
 export interface ProjectAccountD2 {
   pk: number
-  acc: string
+  d1: string
   code: string
   name: string
   description: string
@@ -8,7 +8,7 @@ export interface ProjectAccountD2 {
 
 export interface ProjectAccountD3 {
   pk: number
-  d1: number
+  d2: number
   code: string
   name: string
   description: string
