@@ -16,8 +16,8 @@ const initProjId = computed(() => projectStore.initProjId)
 const project = computed(() => projectStore.project?.pk || initProjId.value)
 
 const proCashStore = useProCash()
-const allAccD1List = computed(() =>
-  proCashStore.allAccD1List.filter(d1 => d1.acc === '비용' && d1.code < '400'),
+const allAccD2List = computed(() =>
+  proCashStore.allAccD2List.filter(d2 => d2.acc === '비용' && d2.code < '400'),
 )
 const allAccD3List = computed(() =>
   proCashStore.allAccD3List.filter(d3 => d3.code > '300' && d3.code < '400'),
@@ -29,7 +29,7 @@ const getOrderGroups = computed(() => contStore.getOrderGroups)
 const proDataStore = useProjectData()
 const getTypes = computed(() => proDataStore.getTypes)
 
-provide('d1List', allAccD1List)
+provide('d1List', allAccD2List)
 provide('d3List', allAccD3List)
 provide('orderGroups', getOrderGroups)
 provide('unitTypes', getTypes)
@@ -54,7 +54,7 @@ const updateOutBudget = (payload: ProOutBudget) =>
 const deleteOutBudget = (pk: number, project: number) =>
   projectStore.deleteOutBudget(pk, project)
 
-const fetchProAllAccD1List = () => proCashStore.fetchProAllAccD1List()
+const fetchProAllAccD2List = () => proCashStore.fetchProAllAccD2List()
 const fetchProAllAccD3List = () => proCashStore.fetchProAllAccD3List()
 
 const fetchOrderGroupList = (proj: number) =>
@@ -77,7 +77,7 @@ const onDeleteBudget = (pk: number) => {
 }
 
 onBeforeMount(() => {
-  fetchProAllAccD1List()
+  fetchProAllAccD2List()
   fetchProAllAccD3List()
   fetchOrderGroupList(project.value)
   fetchTypeList(project.value)

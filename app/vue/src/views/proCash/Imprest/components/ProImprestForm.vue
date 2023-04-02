@@ -98,7 +98,7 @@ const formsCheck = computed(() => {
 })
 
 const proCashStore = useProCash()
-const formAccD1List = computed(() => proCashStore.formAccD1List)
+const formAccD2List = computed(() => proCashStore.formAccD2List)
 const formAccD3List = computed(() => proCashStore.formAccD3List)
 
 const getImpBankAccs = computed(() => proCashStore.getImpBankAccs)
@@ -125,8 +125,8 @@ const isImprest = computed(() =>
     : true,
 )
 
-const fetchProFormAccD1List = (sort: number | null) =>
-  proCashStore.fetchProFormAccD1List(sort)
+const fetchProFormAccD2List = (sort: number | null) =>
+  proCashStore.fetchProFormAccD2List(sort)
 const fetchProFormAccD3List = (d1: number | null, sort: number | null) =>
   proCashStore.fetchProFormAccD3List(d1, sort)
 
@@ -188,7 +188,7 @@ const callAccount = () => {
   nextTick(() => {
     const sort = form.sort === 1 || form.sort === 2 ? form.sort : null
     const d1 = form.project_account_d2
-    fetchProFormAccD1List(sort)
+    fetchProFormAccD2List(sort)
     fetchProFormAccD3List(d1, sort)
   })
 }
@@ -232,7 +232,7 @@ const sepD1_change = () => {
   nextTick(() => {
     const sort = form.sort
     const d1 = sepItem.project_account_d2
-    fetchProFormAccD1List(sort)
+    fetchProFormAccD2List(sort)
     fetchProFormAccD3List(d1, sort)
   })
 }
@@ -374,7 +374,7 @@ onBeforeMount(() => {
                 >
                   <option value="">---------</option>
                   <option
-                    v-for="d1 in formAccD1List"
+                    v-for="d1 in formAccD2List"
                     :key="d1.pk"
                     :value="d1.pk"
                   >
@@ -671,7 +671,7 @@ onBeforeMount(() => {
                     >
                       <option value="">---------</option>
                       <option
-                        v-for="d1 in formAccD1List"
+                        v-for="d1 in formAccD2List"
                         :key="d1.pk"
                         :value="d1.pk"
                       >

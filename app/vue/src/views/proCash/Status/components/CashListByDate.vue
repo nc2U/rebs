@@ -5,7 +5,7 @@ import { numFormat, dateFormat } from '@/utils/baseMixins'
 import { TableSecondary } from '@/utils/cssMixins'
 import {
   ProBankAcc,
-  ProjectAccountD1,
+  ProjectAccountD2,
   ProjectAccountD3,
   ProjectCashBook,
 } from '@/store/types/proCash'
@@ -18,7 +18,7 @@ const dateIncTotal = ref<number>(0)
 const dateOutTotal = ref<number>(0)
 
 const proCashStore = useProCash()
-const allAccD1List = computed(() => proCashStore.allAccD1List)
+const allAccD2List = computed(() => proCashStore.allAccD2List)
 const allAccD3List = computed(() => proCashStore.allAccD3List)
 const proBankAccountList = computed(() => proCashStore.proBankAccountList)
 const proDateCashBook = computed(() => proCashStore.proDateCashBook)
@@ -28,9 +28,9 @@ watch(proDateCashBook, () => setData())
 onBeforeMount(() => setData())
 
 const getD1Text = (num: number) =>
-  allAccD1List.value
-    .filter((d: ProjectAccountD1) => d.pk === num)
-    .map((d: ProjectAccountD1) => d.name)[0]
+  allAccD2List.value
+    .filter((d: ProjectAccountD2) => d.pk === num)
+    .map((d: ProjectAccountD2) => d.name)[0]
 
 const getD3Text = (num: number) =>
   allAccD3List.value

@@ -109,7 +109,7 @@ const listFiltering = (payload: CashBookFilter) => {
   dataFilter.value = payload
   const sort = payload.sort ? payload.sort : null
   const d2 = payload.pro_acc_d2 ? payload.pro_acc_d2 : null
-  fetchProFormAccd2List(sort)
+  fetchProFormAccD2List(sort)
   fetchProFormAccD3List(d2, sort)
   fetchProjectImprestList({ ...{ project: project.value }, ...payload })
 }
@@ -225,9 +225,9 @@ const onBankUpdate = (payload: ProBankAcc) => patchProBankAcc(payload)
 onBeforeMount(() => {
   fetchBankCodeList()
   fetchProAccSortList()
-  fetchProAllAccd2List()
+  fetchProAllAccD2List()
   fetchProAllAccD3List()
-  fetchProFormAccd2List()
+  fetchProFormAccD2List()
   fetchProFormAccD3List()
   fetchProBankAccList(project.value)
   fetchAllProBankAccList(project.value)

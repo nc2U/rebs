@@ -7,7 +7,7 @@ import AlertModal from '@/components/Modals/AlertModal.vue'
 const dAccount = ref()
 
 const proCashStore = useProCash()
-const allAccD1List = computed(() => proCashStore.allAccD1List)
+const allAccD2List = computed(() => proCashStore.allAccD2List)
 const allAccD3List = computed(() => proCashStore.allAccD3List)
 
 const callModal = () => dAccount.value.callModal()
@@ -21,7 +21,7 @@ defineExpose({ callModal })
     <template #default>
       <CAccordion>
         <CAccordionItem
-          v-for="d1 in allAccD1List"
+          v-for="d1 in allAccD2List"
           :key="d1.pk"
           :item-key="d1.pk"
         >
