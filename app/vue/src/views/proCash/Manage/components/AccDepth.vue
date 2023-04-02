@@ -8,7 +8,7 @@ const dAccount = ref()
 
 const proCashStore = useProCash()
 const allAccD1List = computed(() => proCashStore.allAccD1List)
-const allAccD2List = computed(() => proCashStore.allAccD2List)
+const allAccD3List = computed(() => proCashStore.allAccD3List)
 
 const callModal = () => dAccount.value.callModal()
 
@@ -30,13 +30,13 @@ defineExpose({ callModal })
           </CAccordionHeader>
           <CAccordionBody class="pl-3">
             <CRow
-              v-for="d2 in allAccD2List.filter(d2 => d2.d1 === d1.pk)"
-              :key="d2.pk"
+              v-for="d3 in allAccD3List.filter(d3 => d3.d1 === d1.pk)"
+              :key="d3.pk"
               class="pl-2 mb-2"
             >
               <CCol>
-                [{{ d2.code }}] {{ d2.name }} ::
-                {{ cutString(d2.description, 38) }}
+                [{{ d3.code }}] {{ d3.name }} ::
+                {{ cutString(d3.description, 38) }}
               </CCol>
             </CRow>
           </CAccordionBody>
