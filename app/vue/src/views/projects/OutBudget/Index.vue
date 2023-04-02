@@ -17,10 +17,10 @@ const project = computed(() => projectStore.project?.pk || initProjId.value)
 
 const proCashStore = useProCash()
 const allAccD2List = computed(() =>
-  proCashStore.allAccD2List.filter(d2 => d2.d1 === '비용' && d2.code < '400'),
+  proCashStore.allAccD2List.filter(d2 => d2.d1 === '비용' && d2.code < '680'),
 )
 const allAccD3List = computed(() =>
-  proCashStore.allAccD3List.filter(d3 => d3.code > '300' && d3.code < '400'),
+  proCashStore.allAccD3List.filter(d3 => d3.code > '600' && d3.code < '680'),
 )
 
 const contStore = useContract()
