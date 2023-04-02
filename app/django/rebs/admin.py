@@ -54,9 +54,9 @@ class ProjectAccountSortAdmin(ImportExportMixin, admin.ModelAdmin):
 
 
 class ProjectAccountD2Admin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'acc', 'code', 'name', 'description')
+    list_display = ('id', 'd1', 'code', 'name', 'description')
     list_display_links = ('code', 'name')
-    list_filter = ('acc', 'acc__sorts')
+    list_filter = ('d1', 'd1__sorts')
     search_fields = ('name', 'description')
     inlines = (ProjectAccountD3Inline,)
 
@@ -64,7 +64,7 @@ class ProjectAccountD2Admin(ImportExportMixin, admin.ModelAdmin):
 class ProjectAccountD3Admin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'sort', 'd2', 'code', 'name', 'description')
     list_display_links = ('code', 'name')
-    list_filter = ('d2__acc', 'sort', 'd2')
+    list_filter = ('d2__d1', 'sort', 'd2')
     search_fields = ('name', 'description')
 
 
