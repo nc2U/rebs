@@ -199,7 +199,7 @@ class ExportContracts(View):
                 is_left.append(col_num)
 
         paid_params = ['contract', 'income']
-        paid_data = ProjectCashBook.objects.filter(project_account_d2__in=(1, 4),
+        paid_data = ProjectCashBook.objects.filter(project_account_d3__in=(1, 4),
                                                    income__isnull=False,
                                                    contract__activation=True)
         paid_dict = paid_data.values_list(*paid_params)
@@ -701,7 +701,7 @@ def export_payments_xls(request):
     ed = TODAY if not ed or ed == 'null' else ed
     obj_list = ProjectCashBook.objects.filter(project=project,
                                               income__isnull=False,
-                                              project_account_d2__in=(1, 4),
+                                              project_account_d3__in=(1, 4),
                                               deal_date__range=(sd, ed)).order_by('deal_date', 'created_at')
 
     if og:
@@ -926,7 +926,7 @@ class ExportPayments(View):
 
         obj_list = ProjectCashBook.objects.filter(project=project,
                                                   income__isnull=False,
-                                                  project_account_d2__in=(1, 4),
+                                                  project_account_d3__in=(1, 4),
                                                   deal_date__range=(sd, ed)).order_by('deal_date', 'created_at')
 
         if og:
@@ -1160,7 +1160,7 @@ class ExportPaymentsByCont(View):
         paid_params = ['contract', 'income', 'installment_order', 'deal_date']
         paid_data = ProjectCashBook.objects.filter(project=project,
                                                    income__isnull=False,
-                                                   project_account_d2__in=(1, 4),
+                                                   project_account_d3__in=(1, 4),
                                                    deal_date__lte=date,
                                                    contract__isnull=False)
         paid_dict = paid_data.values_list(*paid_params)
@@ -1405,7 +1405,7 @@ class ExportPaymentStatus(View):
 
         paid_sum_list = ProjectCashBook.objects.filter(project=project,
                                                        income__isnull=False,
-                                                       project_account_d2__in=(1, 4),
+                                                       project_account_d3__in=(1, 4),
                                                        contract__activation=True,
                                                        contract__contractor__status=2,
                                                        deal_date__lte=date) \
@@ -1758,7 +1758,7 @@ class ExportProjectDateCashbook(View):
                 if col == 0:
                     worksheet.write(row_num, col, cash.project_account_d1.name, b_format)
                 if col == 1:
-                    worksheet.write(row_num, col, cash.project_account_d2.name, b_format)
+                    worksheet.write(row_num, col, cash.project_account_d3.name, b_format)
                 if col == 2:
                     worksheet.write(row_num, col, cash.income, b_format)
                 if col == 3:
@@ -1878,7 +1878,7 @@ class ExportBudgetExecutionStatus(View):
         for row, bg in enumerate(budget):
             row_num += 1
             co_budget = ProjectCashBook.objects.filter(project=project,
-                                                       project_account_d2=bg.account_d2,
+                                                       project_account_d3=bg.account_d2,
                                                        deal_date__lte=date)
 
             co_budget_month = co_budget.filter(deal_date__gte=date[:8] + '01').aggregate(Sum('outlay'))['outlay__sum']
@@ -1988,12 +1988,12 @@ def export_project_cash_xls(request):
         .order_by('deal_date', 'created_at')
     # cash_list = ProjectCashBook.objects.filter(Q(project=project) &
     #                                            (Q(is_imprest=False) |
-    #                                             Q(project_account_d2=63, income__isnull=True)),
+    #                                             Q(project_account_d3=63, income__isnull=True)),
     #                                            is_separate=False,
     #                                            deal_date__range=(sdate, edate)) \
     #     .order_by('deal_date', 'created_at')
     imp_list = ProjectCashBook.objects.filter(project=project, is_imprest=True, is_separate=False,
-                                              deal_date__range=(sdate, edate)).exclude(project_account_d2=63,
+                                              deal_date__range=(sdate, edate)).exclude(project_account_d3=63,
                                                                                        income__isnull=True)
 
     obj_list = imp_list if is_imp == '1' else cash_list
@@ -2005,7 +2005,7 @@ def export_project_cash_xls(request):
         obj_list = obj_list.filter(project_account_d1_id=d1)
 
     if d2:
-        obj_list = obj_list.filter(project_account_d2_id=d2)
+        obj_list = obj_list.filter(project_account_d3_id=d2)
 
     if bank_acc:
         obj_list = obj_list.filter(bank_account_id=bank_acc)
@@ -2035,7 +2035,7 @@ def export_project_cash_xls(request):
         ['거래일자', 'deal_date'],
         ['구분', 'sort__name'],
         ['현장 계정', 'project_account_d1__name'],
-        ['현장 세부계정', 'project_account_d2__name'],
+        ['현장 세부계정', 'project_account_d3__name'],
         ['적요', 'content'],
         ['거래처', 'trader'],
         ['거래 계좌', 'bank_account__alias_name'],

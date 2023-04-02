@@ -2,7 +2,7 @@ from django.db import transaction
 from rest_framework import serializers
 
 from cash.models import BankCode, CompanyBankAccount, ProjectBankAccount, CashBook, ProjectCashBook
-from rebs.models import AccountSort, AccountSubD1, AccountSubD2, AccountSubD3, ProjectAccountD1, ProjectAccountD2
+from rebs.models import AccountSort, AccountSubD1, AccountSubD2, AccountSubD3, ProjectAccountD1, ProjectAccountD3
 
 
 # Cash --------------------------------------------------------------------------
@@ -169,7 +169,7 @@ class ProjectBankAccountSerializer(serializers.ModelSerializer):
 class SepItemsInPrCashBookSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectCashBook
-        fields = ('pk', 'project', 'project_account_d1', 'project_account_d2', 'separated',
+        fields = ('pk', 'project', 'project_account_d1', 'project_account_d3', 'separated',
                   'content', 'trader', 'income', 'outlay', 'evidence', 'note',)
 
 
@@ -189,7 +189,7 @@ class PrBalanceByAccountSerializer(serializers.ModelSerializer):
 class ProjectCashBookSerializer(serializers.ModelSerializer):
     sort_desc = serializers.SlugField(source='sort', read_only=True)
     project_account_d1_desc = serializers.SlugField(source='project_account_d1', read_only=True)
-    project_account_d2_desc = serializers.SlugField(source='project_account_d2', read_only=True)
+    project_account_d3_desc = serializers.SlugField(source='project_account_d3', read_only=True)
     bank_account_desc = serializers.SlugField(source='bank_account', read_only=True)
     evidence_desc = serializers.CharField(source='get_evidence_display', read_only=True)
     sepItems = SepItemsInPrCashBookSerializer(many=True, read_only=True)
@@ -197,7 +197,7 @@ class ProjectCashBookSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectCashBook
         fields = ('pk', 'project', 'sort', 'sort_desc', 'project_account_d1',
-                  'project_account_d1_desc', 'project_account_d2', 'project_account_d2_desc',
+                  'project_account_d1_desc', 'project_account_d3', 'project_account_d3_desc',
                   'is_separate', 'separated', 'is_imprest', 'sepItems', 'contract', 'installment_order',
                   'refund_contractor', 'content', 'trader', 'bank_account', 'bank_account_desc',
                   'income', 'outlay', 'evidence', 'evidence_desc', 'note', 'deal_date')
@@ -211,7 +211,7 @@ class ProjectCashBookSerializer(serializers.ModelSerializer):
         sep_data = self.initial_data.get('sepData')
         if sep_data:
             sep_pr_cashbook_project_account_d1 = ProjectAccountD1.objects.get(pk=sep_data.get('project_account_d1'))
-            sep_pr_cashbook_project_account_d2 = ProjectAccountD2.objects.get(pk=sep_data.get('project_account_d2'))
+            sep_pr_cashbook_project_account_d3 = ProjectAccountD3.objects.get(pk=sep_data.get('project_account_d3'))
             sep_pr_cashbook_is_imprest = sep_data.get('is_imprest')
             sep_pr_cashbook_content = sep_data.get('content')
             sep_pr_cashbook_trader = sep_data.get('trader')
@@ -223,7 +223,7 @@ class ProjectCashBookSerializer(serializers.ModelSerializer):
                 sep_pr_cashbook = ProjectCashBook(project=pr_cashbook.project,
                                                   sort=pr_cashbook.sort,
                                                   project_account_d1=sep_pr_cashbook_project_account_d1,
-                                                  project_account_d2=sep_pr_cashbook_project_account_d2,
+                                                  project_account_d3=sep_pr_cashbook_project_account_d3,
                                                   separated=pr_cashbook,
                                                   is_imprest=sep_pr_cashbook_is_imprest,
                                                   content=sep_pr_cashbook_content,
@@ -240,7 +240,7 @@ class ProjectCashBookSerializer(serializers.ModelSerializer):
                 sep_pr_cashbook.project = pr_cashbook.project
                 sep_pr_cashbook.sort = pr_cashbook.sort
                 sep_pr_cashbook.project_account_d1 = sep_pr_cashbook_project_account_d1
-                sep_pr_cashbook.project_account_d2 = sep_pr_cashbook_project_account_d2
+                sep_pr_cashbook.project_account_d3 = sep_pr_cashbook_project_account_d3
                 sep_pr_cashbook.separated = pr_cashbook
                 sep_pr_cashbook.is_imprest = sep_pr_cashbook_is_imprest
                 sep_pr_cashbook.content = sep_pr_cashbook_content
@@ -258,7 +258,7 @@ class ProjectCashBookSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         instance.__dict__.update(**validated_data)
         instance.project_account_d1 = validated_data.get('project_account_d1', instance.project_account_d1)
-        instance.project_account_d2 = validated_data.get('project_account_d2', instance.project_account_d2)
+        instance.project_account_d3 = validated_data.get('project_account_d3', instance.project_account_d3)
         instance.contract = validated_data.get('contract', instance.contract)
         instance.installment_order = validated_data.get('installment_order', instance.installment_order)
         instance.refund_contractor = validated_data.get('refund_contractor', instance.refund_contractor)
@@ -269,7 +269,7 @@ class ProjectCashBookSerializer(serializers.ModelSerializer):
         sep_data = self.initial_data.get('sepData')
         if sep_data:
             sep_pr_cashbook_project_account_d1 = ProjectAccountD1.objects.get(pk=sep_data.get('project_account_d1'))
-            sep_pr_cashbook_project_account_d2 = ProjectAccountD2.objects.get(pk=sep_data.get('project_account_d2'))
+            sep_pr_cashbook_project_account_d3 = ProjectAccountD3.objects.get(pk=sep_data.get('project_account_d3'))
             sep_pr_cashbook_is_imprest = sep_data.get('is_imprest')
             sep_pr_cashbook_content = sep_data.get('content')
             sep_pr_cashbook_trader = sep_data.get('trader')
@@ -281,7 +281,7 @@ class ProjectCashBookSerializer(serializers.ModelSerializer):
                 sep_pr_cashbook = ProjectCashBook(project=instance.project,
                                                   sort=instance.sort,
                                                   project_account_d1=sep_pr_cashbook_project_account_d1,
-                                                  project_account_d2=sep_pr_cashbook_project_account_d2,
+                                                  project_account_d3=sep_pr_cashbook_project_account_d3,
                                                   separated=instance,
                                                   is_imprest=sep_pr_cashbook_is_imprest,
                                                   content=sep_pr_cashbook_content,
@@ -298,7 +298,7 @@ class ProjectCashBookSerializer(serializers.ModelSerializer):
                 sep_pr_cashbook.project = instance.project
                 sep_pr_cashbook.sort = instance.sort
                 sep_pr_cashbook.project_account_d1 = sep_pr_cashbook_project_account_d1
-                sep_pr_cashbook.project_account_d2 = sep_pr_cashbook_project_account_d2
+                sep_pr_cashbook.project_account_d3 = sep_pr_cashbook_project_account_d3
                 sep_pr_cashbook.separated = instance
                 sep_pr_cashbook.is_imprest = sep_pr_cashbook_is_imprest
                 sep_pr_cashbook.content = sep_pr_cashbook_content

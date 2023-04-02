@@ -24,7 +24,7 @@ class PaymentViewSet(ProjectCashBookViewSet):
 
     def get_queryset(self):
         return ProjectCashBook.objects.filter(income__isnull=False,
-                                              project_account_d2__in=(1, 4))
+                                              project_account_d3__in=(1, 4))
 
 
 class AllPaymentViewSet(PaymentViewSet):
@@ -46,7 +46,7 @@ class PaymentSummaryViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return ProjectCashBook.objects.filter(income__isnull=False,
-                                              project_account_d2__in=(1, 4),
+                                              project_account_d3__in=(1, 4),
                                               contract__activation=True,
                                               contract__contractor__status=2) \
             .order_by('contract__order_group', 'contract__unit_type') \

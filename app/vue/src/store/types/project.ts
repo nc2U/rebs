@@ -71,9 +71,9 @@ export interface StatusOutBudget {
   order?: number
   account_d1: {
     name: string
-    acc_d2s: Array<number>
+    acc_d3s: Array<number>
   }
-  account_d2: {
+  account_d3: {
     pk: number
     name: string
     sub_title: string
@@ -85,7 +85,7 @@ export interface StatusOutBudget {
 }
 
 export interface ExecAmountToBudget {
-  acc_d2: number
+  acc_d3: number
   all_sum: number
   month_sum: number
 }

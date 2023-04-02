@@ -55,15 +55,15 @@ class ExecAmountToBudgetViewSet(viewsets.ModelViewSet):
                                1).strftime('%Y-%m-%d')
 
         queryset = ProjectCashBook.objects.all() \
-            .order_by('project_account_d2') \
+            .order_by('project_account_d3') \
             .filter(is_separate=False,
-                    project_account_d2__d1__gte=6,
-                    project_account_d2__d1__lte=10,
+                    project_account_d3__d1__gte=6,
+                    project_account_d3__d1__lte=10,
                     bank_account__directpay=False,
                     deal_date__lte=date)
 
-        return queryset.annotate(acc_d2=F('project_account_d2')) \
-            .values('acc_d2') \
+        return queryset.annotate(acc_d3=F('project_account_d3')) \
+            .values('acc_d3') \
             .annotate(all_sum=Sum('outlay'),
                       month_sum=Sum(Case(
                           When(deal_date__gte=month_first, then=F('outlay')),

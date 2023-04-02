@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from rebs.models import (AccountSort, AccountSubD1, AccountSubD2, AccountSubD3,
-                         ProjectAccountD1, ProjectAccountD2, CalendarSchedule, WiseSaying)
+                         ProjectAccountD1, ProjectAccountD3, CalendarSchedule, WiseSaying)
 
 
 # Rebs --------------------------------------------------------------------------
@@ -37,9 +37,9 @@ class ProjectAccountD1Serializer(serializers.ModelSerializer):
         fields = ('pk', 'acc', 'code', 'name', 'description')
 
 
-class ProjectAccountD2Serializer(serializers.ModelSerializer):
+class ProjectAccountD3Serializer(serializers.ModelSerializer):
     class Meta:
-        model = ProjectAccountD2
+        model = ProjectAccountD3
         fields = ('pk', 'd1', 'code', 'name', 'description')
 
 

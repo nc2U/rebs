@@ -27,20 +27,20 @@ onBeforeMount(() => getSumTotal())
 
 watch(statusOutBudgetList, () => getSumTotal())
 
-const getD2sInter = (arr: number[]) => {
-  const d2s = statusOutBudgetList.value.map(
-    (b: StatusOutBudget) => b.account_d2.pk,
+const getD3sInter = (arr: number[]) => {
+  const d3s = statusOutBudgetList.value.map(
+    (b: StatusOutBudget) => b.account_d3.pk,
   )
-  return arr.filter(x => d2s.includes(x))
+  return arr.filter(x => d3s.includes(x))
 }
-const getLength = (arr: number[]) => getD2sInter(arr).length
+const getLength = (arr: number[]) => getD3sInter(arr).length
 
-const getFirst = (arr: number[]) => getD2sInter(arr)[0]
+const getFirst = (arr: number[]) => getD3sInter(arr)[0]
 
 // const getSubTitle = (sub: string) =>
 //   sub !== ''
 //     ? statusOutBudgetList.value
-//         .filter((b: StatusOutBudget) => b.account_d2.sub_title === sub)
+//         .filter((b: StatusOutBudget) => b.account_d3.sub_title === sub)
 //         .map(b => b.pk)
 //     : []
 
@@ -51,14 +51,14 @@ const getSubTitle = (sub: string) =>
         .map(b => b.pk)
     : []
 
-const getExecAmount = (d2: number) =>
-  execAmountList.value.filter((e: ExeBudget) => e.acc_d2 === d2)
+const getExecAmount = (d3: number) =>
+  execAmountList.value.filter((e: ExeBudget) => e.acc_d3 === d3)
 
-const getEASum = (d2: number) =>
-  getExecAmount(d2).map((e: ExeBudget) => e.all_sum)[0]
+const getEASum = (d3: number) =>
+  getExecAmount(d3).map((e: ExeBudget) => e.all_sum)[0]
 
-const getEAMonth = (d2: number) =>
-  getExecAmount(d2).map((e: ExeBudget) => e.month_sum)[0]
+const getEAMonth = (d3: number) =>
+  getExecAmount(d3).map((e: ExeBudget) => e.month_sum)[0]
 
 const getSumTotal = () => {
   const totalBudgetCalc = statusOutBudgetList.value
@@ -142,9 +142,9 @@ const patchBudget = (pk: number, budget: string, oldBudget: number) => {
           사업비
         </CTableDataCell>
         <CTableDataCell
-          v-if="getFirst(obj.account_d1.acc_d2s) === obj.account_d2.pk"
+          v-if="getFirst(obj.account_d1.acc_d3s) === obj.account_d3.pk"
           class="text-center"
-          :rowspan="getLength(obj.account_d1.acc_d2s)"
+          :rowspan="getLength(obj.account_d1.acc_d3s)"
         >
           {{ obj.account_d1.name }}
         </CTableDataCell>
@@ -156,7 +156,7 @@ const patchBudget = (pk: number, budget: string, oldBudget: number) => {
           {{ obj.account_opt }}
         </CTableDataCell>
         <CTableDataCell class="text-left" :colspan="obj.account_opt ? 1 : 2">
-          {{ obj.account_d2.name }}
+          {{ obj.account_d3.name }}
         </CTableDataCell>
         <CTableDataCell
           class="py-0 bg-blue-grey-lighten-5"
@@ -181,20 +181,20 @@ const patchBudget = (pk: number, budget: string, oldBudget: number) => {
         <CTableDataCell>
           {{
             numFormat(
-              getEASum(obj.account_d2.pk) - getEAMonth(obj.account_d2.pk),
+              getEASum(obj.account_d3.pk) - getEAMonth(obj.account_d3.pk),
             )
           }}
         </CTableDataCell>
         <CTableDataCell>
-          {{ numFormat(getEAMonth(obj.account_d2.pk) || 0) }}
+          {{ numFormat(getEAMonth(obj.account_d3.pk) || 0) }}
         </CTableDataCell>
         <CTableDataCell>
-          {{ numFormat(getEASum(obj.account_d2.pk) || 0) }}
+          {{ numFormat(getEASum(obj.account_d3.pk) || 0) }}
         </CTableDataCell>
         <CTableDataCell
-          :class="obj.budget < getEASum(obj.account_d2.pk) ? 'text-danger' : ''"
+          :class="obj.budget < getEASum(obj.account_d3.pk) ? 'text-danger' : ''"
         >
-          {{ numFormat(obj.budget - (getEASum(obj.account_d2.pk) || 0)) }}
+          {{ numFormat(obj.budget - (getEASum(obj.account_d3.pk) || 0)) }}
         </CTableDataCell>
       </CTableRow>
 

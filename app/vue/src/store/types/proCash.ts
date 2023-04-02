@@ -6,7 +6,7 @@ export interface ProjectAccountD1 {
   description: string
 }
 
-export interface ProjectAccountD2 {
+export interface ProjectAccountD3 {
   pk: number
   d1: number
   code: string
@@ -41,7 +41,7 @@ export interface BalanceByAccount {
 export interface ProSepItems {
   pk?: number | null
   project_account_d1: number | null
-  project_account_d2: number | null
+  project_account_d3: number | null
   separated?: number | null
   is_imprest?: boolean
   content: string
@@ -74,7 +74,7 @@ export type CashBookFilter = {
   unit_type?: string
   sort?: number | null
   pro_acc_d1?: number | null
-  pro_acc_d2?: number | null
+  pro_acc_d3?: number | null
   bank_account?: number | null
   pay_order?: string
   pay_account?: string

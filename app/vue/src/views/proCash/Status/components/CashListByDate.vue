@@ -94,7 +94,7 @@ const setData = () => {
     <CTableBody>
       <CTableRow v-for="inc in dateIncSet" :key="inc.pk" class="text-center">
         <CTableDataCell>{{ getD1Text(inc.project_account_d1) }}</CTableDataCell>
-        <CTableDataCell>{{ getD2Text(inc.project_account_d2) }}</CTableDataCell>
+        <CTableDataCell>{{ getD2Text(inc.project_account_d3) }}</CTableDataCell>
         <CTableDataCell class="text-right" color="success">
           {{ numFormat(inc.income) }}
         </CTableDataCell>
@@ -159,7 +159,7 @@ const setData = () => {
     <CTableBody>
       <CTableRow v-for="out in dateOutSet" :key="out.pk" class="text-center">
         <CTableDataCell>{{ getD1Text(out.project_account_d1) }}</CTableDataCell>
-        <CTableDataCell>{{ getD2Text(out.project_account_d2) }}</CTableDataCell>
+        <CTableDataCell>{{ getD2Text(out.project_account_d3) }}</CTableDataCell>
         <CTableDataCell class="text-right" color="danger">
           {{ numFormat(out.outlay) }}
         </CTableDataCell>

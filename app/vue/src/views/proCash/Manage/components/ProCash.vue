@@ -27,8 +27,8 @@ const rowColor = computed(() => {
   let color = ''
   color =
     props.proCash.contract &&
-    (props.proCash.project_account_d2 === 1 ||
-      props.proCash.project_account_d2 === 4)
+    (props.proCash.project_account_d3 === 1 ||
+      props.proCash.project_account_d3 === 4)
       ? 'info'
       : color
   color = dark.value ? '' : color
@@ -65,8 +65,8 @@ const onBankUpdate = (payload: ProBankAcc) => emit('on-bank-update', payload)
       {{ proCash.project_account_d1_desc }}
     </CTableDataCell>
     <CTableDataCell class="text-left">
-      <span v-if="proCash.project_account_d2_desc">
-        {{ cutString(proCash.project_account_d2_desc, 9) }}
+      <span v-if="proCash.project_account_d3_desc">
+        {{ cutString(proCash.project_account_d3_desc, 9) }}
       </span>
     </CTableDataCell>
     <CTableDataCell class="text-left">

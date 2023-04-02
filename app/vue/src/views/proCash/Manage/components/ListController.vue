@@ -14,7 +14,7 @@ const to_date = ref('')
 const form = reactive({
   sort: '',
   pro_acc_d1: '',
-  pro_acc_d2: '',
+  pro_acc_d3: '',
   bank_account: '',
   search: '',
 })
@@ -31,7 +31,7 @@ const formsCheck = computed(() => {
   const b = !to_date.value
   const c = !form.sort
   const d = !form.pro_acc_d1
-  const e = !form.pro_acc_d2
+  const e = !form.pro_acc_d3
   const f = !form.bank_account
   const g = form.search.trim() === ''
   return a && b && c && d && e && f && g
@@ -49,12 +49,12 @@ watch(to_date, val => {
 const sortSelect = () => {
   listFiltering(1)
   form.pro_acc_d1 = ''
-  form.pro_acc_d2 = ''
+  form.pro_acc_d3 = ''
 }
 
 const proAccD1Select = () => {
   listFiltering(1)
-  form.pro_acc_d2 = ''
+  form.pro_acc_d3 = ''
 }
 
 const listFiltering = (page = 1) => {
@@ -75,7 +75,7 @@ const resetForm = () => {
   to_date.value = ''
   form.sort = ''
   form.pro_acc_d1 = ''
-  form.pro_acc_d2 = ''
+  form.pro_acc_d3 = ''
   form.bank_account = ''
   form.search = ''
   listFiltering(1)
@@ -124,7 +124,7 @@ const resetForm = () => {
           </CCol>
 
           <CCol md="6" lg="2" class="mb-3">
-            <CFormSelect v-model="form.pro_acc_d2" @change="listFiltering(1)">
+            <CFormSelect v-model="form.pro_acc_d3" @change="listFiltering(1)">
               <option value="">하위 항목</option>
               <option v-for="d2 in formAccD2List" :key="d2.pk" :value="d2.pk">
                 {{ d2.name }}

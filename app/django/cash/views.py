@@ -14,7 +14,7 @@ from .forms import (CashSearchForm, ProjectCashSearchForm, PaymentSearchForm, Pa
 from .models import CompanyBankAccount, ProjectBankAccount, CashBook, ProjectCashBook
 from payment.models import SalesPriceByGT, InstallmentPaymentOrder, DownPayment
 from rebs.models import (AccountSort, AccountSubD1, AccountSubD2, AccountSubD3,
-                         ProjectAccountSort, ProjectAccountD1, ProjectAccountD2)
+                         ProjectAccountSort, ProjectAccountD1, ProjectAccountD3)
 from company.models import Company
 from project.models import Project, ProjectOutBudget
 from items.models import UnitType, KeyUnit
@@ -338,7 +338,7 @@ class ProjectCashReport(LoginRequiredMixin, TemplateView):
             # 예산항목별 출금액
             pcash_budget_data = ProjectCashBook.objects.filter(project=self.get_project(),
                                                                is_separate=False,
-                                                               project_account_d2=budget.account_d2,
+                                                               project_account_d3=budget.account_d3,
                                                                deal_date__lte=context['confirm_date'])
             pcash_budget_month = pcash_budget_data.filter(deal_date__gte=context['confirm_date'][:8] + '01').aggregate(
                 Sum('outlay'))
@@ -390,7 +390,7 @@ class ProjectCashInoutLV(LoginRequiredMixin, ListView, FormView):
         context['pa_d1_inc'] = ProjectAccountD1.objects.filter(projectaccountsort=1)
         context['pa_d1_out'] = ProjectAccountD1.objects.filter(projectaccountsort=2)
         context['pa_d1_trans'] = ProjectAccountD1.objects.filter(projectaccountsort=3)
-        pa_d2 = ProjectAccountD2.objects.all()
+        pa_d2 = ProjectAccountD3.objects.all()
         if self.request.GET.get('d1'):
             pa_d2 = pa_d2.filter(d1_id__exact=int(self.request.GET.get('d1')))
         context['pa_d2'] = pa_d2
@@ -415,7 +415,7 @@ class ProjectCashInoutLV(LoginRequiredMixin, ListView, FormView):
             results = results.filter(project_account_d1__id=self.request.GET.get('d1'))
 
         if self.request.GET.get('d2'):
-            results = results.filter(project_account_d2__id=self.request.GET.get('d2'))
+            results = results.filter(project_account_d3__id=self.request.GET.get('d2'))
 
         if self.request.GET.get('bank_acc'):
             results = results.filter(bank_account__id=self.request.GET.get('bank_acc'))
@@ -454,12 +454,12 @@ class ProjectCashInoutCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
         context['pa_d1_inc'] = ProjectAccountD1.objects.filter(projectaccountsort=1)
         context['pa_d1_out'] = ProjectAccountD1.objects.filter(projectaccountsort=2)
         context['pa_d1_trans'] = ProjectAccountD1.objects.filter(projectaccountsort=3)
-        context['pa_d2_inc'] = ProjectAccountD2.objects.filter(d1__projectaccountsort=1)
-        context['pa_d2_out'] = ProjectAccountD2.objects.filter(d1__projectaccountsort=2)
-        context['pa_d2_trans'] = ProjectAccountD2.objects.filter(d1__projectaccountsort=3)
+        context['pa_d2_inc'] = ProjectAccountD3.objects.filter(d1__projectaccountsort=1)
+        context['pa_d2_out'] = ProjectAccountD3.objects.filter(d1__projectaccountsort=2)
+        context['pa_d2_trans'] = ProjectAccountD3.objects.filter(d1__projectaccountsort=3)
         context['d1s'] = ProjectAccountD1.objects.all()
         for d1 in context['d1s']:
-            context['d2_' + str(d1.id)] = ProjectAccountD2.objects.filter(d1=d1.id)
+            context['d2_' + str(d1.id)] = ProjectAccountD3.objects.filter(d1=d1.id)
         project_id = self.get_project().id if self.get_project() else None
         context['pb_account'] = ProjectBankAccount.objects.filter(project=project_id)
         context['formset'] = ProjectCashBookFormSet(queryset=ProjectCashBook.objects.none(),
@@ -504,12 +504,12 @@ class ProjectCashInoutUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
         context['pa_d1_inc'] = ProjectAccountD1.objects.filter(projectaccountsort=1)
         context['pa_d1_out'] = ProjectAccountD1.objects.filter(projectaccountsort=2)
         context['pa_d1_trans'] = ProjectAccountD1.objects.filter(projectaccountsort=3)
-        context['pa_d2_inc'] = ProjectAccountD2.objects.filter(d1__projectaccountsort=1)
-        context['pa_d2_out'] = ProjectAccountD2.objects.filter(d1__projectaccountsort=2)
-        context['pa_d2_trans'] = ProjectAccountD2.objects.filter(d1__projectaccountsort=3)
+        context['pa_d2_inc'] = ProjectAccountD3.objects.filter(d1__projectaccountsort=1)
+        context['pa_d2_out'] = ProjectAccountD3.objects.filter(d1__projectaccountsort=2)
+        context['pa_d2_trans'] = ProjectAccountD3.objects.filter(d1__projectaccountsort=3)
         context['d1s'] = ProjectAccountD1.objects.all()
         for d1 in context['d1s']:
-            context['d2_' + str(d1.id)] = ProjectAccountD2.objects.filter(d1=d1.id)
+            context['d2_' + str(d1.id)] = ProjectAccountD3.objects.filter(d1=d1.id)
         project_id = self.get_project().id if self.get_project() else None
         context['pb_account'] = ProjectBankAccount.objects.filter(project=project_id)
         context['formset'] = ProjectCashBookFormSet(queryset=ProjectCashBook.objects.none(),
@@ -554,7 +554,7 @@ class SalesPaymentLV(LoginRequiredMixin, ListView, FormView):
         return kwargs
 
     def get_queryset(self):
-        results = ProjectCashBook.objects.filter(project=self.get_project(), project_account_d2__in=(1, 4),
+        results = ProjectCashBook.objects.filter(project=self.get_project(), project_account_d3__in=(1, 4),
                                                  refund_contractor=None).order_by('-deal_date', '-id')
 
         if self.request.GET.get('sd'):
@@ -572,7 +572,7 @@ class SalesPaymentLV(LoginRequiredMixin, ListView, FormView):
         if self.request.GET.get('up'):
             results = results.filter(
                 Q(contract__isnull=True) &
-                (Q(project_account_d1_id__in=(1, 2)) | Q(project_account_d2_id__in=(1, 2)))
+                (Q(project_account_d1_id__in=(1, 2)) | Q(project_account_d3_id__in=(1, 2)))
             )
 
         if self.request.GET.get('q'):
@@ -648,7 +648,7 @@ class SalesPaymentRegister(LoginRequiredMixin, FormView):
         initial = {
             'project': self.get_project().id if self.get_project() else None,
             'project_account_d1': contract.order_group.sort if contract_id else None,
-            'project_account_d2': contract.order_group.sort if contract_id else None,
+            'project_account_d3': contract.order_group.sort if contract_id else None,
             'contract': contract.id if contract_id else None
         }
         payment_id = self.request.GET.get('payment_id')
@@ -688,7 +688,7 @@ class SalesPaymentRegister(LoginRequiredMixin, FormView):
             if self.request.GET.get('contract') else 0
         if not context['this_contract'] or context['this_contract'].activation:
             payments = ProjectCashBook.objects.filter(contract=context['this_contract'],
-                                                      project_account_d2__in=(1, 4))
+                                                      project_account_d3__in=(1, 4))
         else:
             payments = ProjectCashBook.objects.filter(contract=context['this_contract'])
 

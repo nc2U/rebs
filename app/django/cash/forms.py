@@ -3,7 +3,7 @@ from django.forms.models import modelformset_factory
 
 from .models import CompanyBankAccount, CashBook, ProjectBankAccount, ProjectCashBook
 from payment.models import InstallmentPaymentOrder
-from rebs.models import ProjectAccountD1, ProjectAccountD2
+from rebs.models import ProjectAccountD1, ProjectAccountD3
 
 CashBookFormSet = modelformset_factory(
     CashBook,
@@ -27,7 +27,7 @@ class CashSearchForm(forms.Form):
 class ProjectCashBookForm(forms.ModelForm):
     class Meta:
         model = ProjectCashBook
-        fields = ('sort', 'project_account_d1', 'project_account_d2',
+        fields = ('sort', 'project_account_d1', 'project_account_d3',
                   'content', 'trader', 'bank_account', 'income', 'outlay', 'note')
 
     def __init__(self, project, *args, **kwargs):
@@ -44,7 +44,7 @@ class ProjectCashSearchForm(forms.Form):
     SORT_CHOICES = (('', '전체'), ('1', '입금'), ('2', '출금'), ('3', '대체'))
     sort = forms.ChoiceField(choices=SORT_CHOICES, required=False, label='구분')
     d1 = forms.ModelChoiceField(queryset=ProjectAccountD1.objects.all(), required=False)
-    d2 = forms.ModelChoiceField(queryset=ProjectAccountD2.objects.all(), required=False)
+    d2 = forms.ModelChoiceField(queryset=ProjectAccountD3.objects.all(), required=False)
     bank_acc = forms.ModelChoiceField(queryset=None, required=False)
     q = forms.CharField(max_length=20, required=False, label='검색어')
 
@@ -72,11 +72,11 @@ class PaymentSearchForm(forms.Form):
 class PaymentForm(forms.ModelForm):
     class Meta:
         model = ProjectCashBook
-        fields = ('project', 'project_account_d1', 'project_account_d2', 'contract',
+        fields = ('project', 'project_account_d1', 'project_account_d3', 'contract',
                   'deal_date', 'installment_order', 'income', 'bank_account', 'trader', 'note')
         widgets = {
             'project': forms.HiddenInput(), 'contract': forms.HiddenInput(),
-            'project_account_d1': forms.HiddenInput(), 'project_account_d2': forms.HiddenInput(),
+            'project_account_d1': forms.HiddenInput(), 'project_account_d3': forms.HiddenInput(),
         }
 
     def __init__(self, project, *args, **kwargs):

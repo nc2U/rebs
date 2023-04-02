@@ -4,7 +4,7 @@ from rest_framework import serializers
 from notice.models import SalesBillIssue
 from project.models import (Project, ProjectIncBudget, ProjectOutBudget,
                             Site, SiteOwner, SiteOwnshipRelationship, SiteContract)
-from rebs.models import ProjectAccountD1, ProjectAccountD2
+from rebs.models import ProjectAccountD1, ProjectAccountD3
 from cash.models import ProjectCashBook
 
 
@@ -37,47 +37,47 @@ class ProjectSerializer(serializers.ModelSerializer):
 class ProjectIncBudgetSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectIncBudget
-        fields = (
-            'pk', 'project' 'order', 'account_d1', 'account_d2', 'account_opt',
-            'order_group', 'unit_type', 'item_name', 'average_price', 'quantity', 'budget')
+        fields = ('pk', 'project', 'account_d1', 'account_d3', 'order_group',
+                  'unit_type', 'item_name', 'average_price', 'quantity', 'budget')
 
 
 class ProjectOutBudgetSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectOutBudget
-        fields = ('pk', 'project', 'account_d1', 'account_d2', 'item_name', 'basis_calc', 'budget')
+        fields = ('pk', 'project', 'order', 'account_d1', 'account_d3',
+                  'account_opt', 'item_name', 'basis_calc', 'budget')
 
 
 class ProAccoD1InBudgetSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectAccountD1
-        fields = ('name', 'acc_d2s')
+        fields = ('name', 'acc_d3s')
 
 
-class ProAccoD2InBudgetSerializer(serializers.ModelSerializer):
+class ProAccoD3InBudgetSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ProjectAccountD2
+        model = ProjectAccountD3
         fields = ('pk', 'name')
 
 
 class StatusOutBudgetSerializer(serializers.ModelSerializer):
     account_d1 = ProAccoD1InBudgetSerializer()
-    account_d2 = ProAccoD2InBudgetSerializer()
+    account_d3 = ProAccoD3InBudgetSerializer()
 
     class Meta:
         model = ProjectOutBudget
-        fields = ('pk', 'project', 'order', 'account_d1', 'account_d2',
+        fields = ('pk', 'project', 'order', 'account_d1', 'account_d3',
                   'account_opt', 'item_name', 'basis_calc', 'budget')
 
 
 class ExecAmountToBudget(serializers.ModelSerializer):
-    acc_d2 = serializers.IntegerField()
+    acc_d3 = serializers.IntegerField()
     all_sum = serializers.IntegerField()
     month_sum = serializers.IntegerField()
 
     class Meta:
         model = ProjectCashBook
-        fields = ('acc_d2', 'all_sum', 'month_sum')
+        fields = ('acc_d3', 'all_sum', 'month_sum')
 
 
 class TotalSiteAreaSerializer(serializers.ModelSerializer):

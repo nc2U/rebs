@@ -26,7 +26,7 @@ const dark = computed(() => store.state.theme === 'dark')
 const rowColor = computed(() => {
   let color = ''
   color =
-    props.imprest.contract && props.imprest.project_account_d2 <= '2'
+    props.imprest.contract && props.imprest.project_account_d3 <= '2'
       ? 'info'
       : color
   color = dark.value ? '' : color
@@ -63,8 +63,8 @@ const onBankUpdate = (payload: ProBankAcc) => emit('on-bank-update', payload)
       {{ imprest.project_account_d1_desc }}
     </CTableDataCell>
     <CTableDataCell class="text-left">
-      <span v-if="imprest.project_account_d2_desc">
-        {{ cutString(imprest.project_account_d2_desc, 9) }}
+      <span v-if="imprest.project_account_d3_desc">
+        {{ cutString(imprest.project_account_d3_desc, 9) }}
       </span>
     </CTableDataCell>
     <CTableDataCell class="text-left">

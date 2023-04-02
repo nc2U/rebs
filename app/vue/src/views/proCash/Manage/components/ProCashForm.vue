@@ -31,7 +31,7 @@ const alertModal = ref()
 const sepItem = reactive<ProSepItems>({
   pk: null,
   project_account_d1: null,
-  project_account_d2: null,
+  project_account_d3: null,
   is_imprest: false,
   content: '',
   trader: '',
@@ -50,7 +50,7 @@ const form = reactive<
   project: null,
   sort: null,
   project_account_d1: null,
-  project_account_d2: null,
+  project_account_d3: null,
 
   is_separate: false,
   separated: null as null | number,
@@ -77,7 +77,7 @@ const formsCheck = computed(() => {
     const a = form.project === props.proCash.project
     const b = form.sort === props.proCash.sort
     const c = form.project_account_d1 === props.proCash.project_account_d1
-    const d = form.project_account_d2 === props.proCash.project_account_d2
+    const d = form.project_account_d3 === props.proCash.project_account_d3
     const e = form.content === props.proCash.content
     const f = form.trader === props.proCash.trader
     const g = form.bank_account === props.proCash.bank_account
@@ -118,11 +118,11 @@ const fetchProFormAccD2List = (d1: number | null, sort: number | null) =>
   proCashStore.fetchProFormAccD2List(d1, sort)
 
 const requireItem = computed(
-  () => !!form.project_account_d1 && !!form.project_account_d2,
+  () => !!form.project_account_d1 && !!form.project_account_d3,
 )
 
 const sepDisabled = computed(() => {
-  const disabled = !!form.project_account_d1 || !!form.project_account_d2
+  const disabled = !!form.project_account_d1 || !!form.project_account_d3
   return props.proCash ? disabled || props.proCash.sepItems.length : disabled
 })
 
@@ -145,7 +145,7 @@ const sepSummary = computed(() => {
 const sepUpdate = (sep: ProjectCashBook) => {
   sepItem.pk = sep.pk
   sepItem.project_account_d1 = sep.project_account_d1
-  sepItem.project_account_d2 = sep.project_account_d2
+  sepItem.project_account_d3 = sep.project_account_d3
   sepItem.content = sep.content
   sepItem.trader = sep.trader
   sepItem.evidence = sep.evidence
@@ -157,7 +157,7 @@ const sepUpdate = (sep: ProjectCashBook) => {
 const sepRemove = () => {
   sepItem.pk = null
   sepItem.project_account_d1 = null
-  sepItem.project_account_d2 = null
+  sepItem.project_account_d3 = null
   sepItem.content = ''
   sepItem.trader = ''
   sepItem.evidence = ''
@@ -187,19 +187,19 @@ const sort_change = (event: Event) => {
     if (el.value === '2') form.income = null
     if (el.value === '3') {
       form.project_account_d1 = 12
-      form.project_account_d2 = 67
+      form.project_account_d3 = 67
       form.trader = ''
     } else if (el.value === '4') {
       form.project_account_d1 = 13
-      form.project_account_d2 = 69
+      form.project_account_d3 = 69
     } else {
       form.project_account_d1 = null
-      form.project_account_d2 = null
+      form.project_account_d3 = null
     }
   } else {
     const el = event.target as HTMLSelectElement
     sepItem.project_account_d1 = null
-    sepItem.project_account_d2 = null
+    sepItem.project_account_d3 = null
     if (el.value === '1') sepItem.outlay = null
     if (el.value === '2') {
       form.evidence = '0'
@@ -210,12 +210,12 @@ const sort_change = (event: Event) => {
 }
 
 const d1_change = () => {
-  form.project_account_d2 = null
+  form.project_account_d3 = null
   callAccount()
 }
 
 const sepD1_change = () => {
-  sepItem.project_account_d2 = null
+  sepItem.project_account_d3 = null
   nextTick(() => {
     const sort = form.sort
     const d1 = sepItem.project_account_d1
@@ -225,7 +225,7 @@ const sepD1_change = () => {
 }
 
 watch(form, val => {
-  if (val.project_account_d2 === 63) form.is_imprest = true
+  if (val.project_account_d3 === 63) form.is_imprest = true
   else form.is_imprest = false
 })
 
@@ -284,7 +284,7 @@ onBeforeMount(() => {
     form.project = props.proCash.project
     form.sort = props.proCash.sort
     form.project_account_d1 = props.proCash.project_account_d1
-    form.project_account_d2 = props.proCash.project_account_d2
+    form.project_account_d3 = props.proCash.project_account_d3
     form.content = props.proCash.content
     form.trader = props.proCash.trader
     form.bank_account = props.proCash.bank_account
@@ -382,7 +382,7 @@ onBeforeMount(() => {
               </CFormLabel>
               <CCol sm="8">
                 <CFormSelect
-                  v-model.number="form.project_account_d2"
+                  v-model.number="form.project_account_d3"
                   :required="!form.is_separate"
                   :disabled="
                     !form.project_account_d1 ||
@@ -428,8 +428,8 @@ onBeforeMount(() => {
                 <CFormInput
                   v-model="form.trader"
                   :text="
-                    form.project_account_d2 === 1 ||
-                    form.project_account_d2 === 4
+                    form.project_account_d3 === 1 ||
+                    form.project_account_d3 === 4
                       ? '분양대금(분담금) 수납 건인 경우 반드시 해당 계좌에 기재된 입금자를 기재'
                       : ''
                   "
@@ -681,7 +681,7 @@ onBeforeMount(() => {
                   </CFormLabel>
                   <CCol sm="8">
                     <CFormSelect
-                      v-model.number="sepItem.project_account_d2"
+                      v-model.number="sepItem.project_account_d3"
                       :disabled="!sepItem.project_account_d1"
                       required
                     >

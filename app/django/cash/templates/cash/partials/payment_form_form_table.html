@@ -22,7 +22,7 @@
                     <td class="text-center">{{ pay.installment_order|default:"-" }}</td>
                     <td class="text-right">
                         <a href="{% url 'rebs:cash-inout:payment-register' %}?project={{ this_project.id }}&type={{ request.GET.type }}&contract={{ request.GET.contract }}&payment_id={{ pay.id }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}"
-                           class="{% if pay.project_account_d2.id >= 62 %}text-danger{% endif %}">
+                           class="{% if pay.project_account_d3.id >= 62 %}text-danger{% endif %}">
                             {{ pay.income|default:"-"|intcomma }}
                         </a>
                     </td>
@@ -46,7 +46,7 @@
         {% csrf_token %}
         {{ form.project }}
         {{ form.project_account_d1 }}
-        {{ form.project_account_d2 }}
+        {{ form.project_account_d3 }}
         {{ form.contract }}
         {{ form.errors }}
         {% if not request.GET.delete %}
