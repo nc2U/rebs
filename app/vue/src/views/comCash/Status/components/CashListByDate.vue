@@ -27,7 +27,7 @@ const getDAccText = <T extends { pk: number; name: string }>(
 
 const getBankAcc = (num: number) => {
   return comBankList.value
-    .filter((b: { pk: number }) => b.pk === num)
+    .filter((b: { pk?: number }) => b.pk === num)
     .map((b: { alias_name: string }) => b.alias_name)[0]
 }
 const setData = () => {

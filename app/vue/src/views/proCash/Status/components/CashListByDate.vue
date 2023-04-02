@@ -6,7 +6,7 @@ import { TableSecondary } from '@/utils/cssMixins'
 import {
   ProBankAcc,
   ProjectAccountD1,
-  ProjectAccountD2,
+  ProjectAccountD3,
   ProjectCashBook,
 } from '@/store/types/proCash'
 
@@ -19,7 +19,7 @@ const dateOutTotal = ref<number>(0)
 
 const proCashStore = useProCash()
 const allAccD1List = computed(() => proCashStore.allAccD1List)
-const allAccD2List = computed(() => proCashStore.allAccD2List)
+const allAccD3List = computed(() => proCashStore.allAccD3List)
 const proBankAccountList = computed(() => proCashStore.proBankAccountList)
 const proDateCashBook = computed(() => proCashStore.proDateCashBook)
 
@@ -32,10 +32,10 @@ const getD1Text = (num: number) =>
     .filter((d: ProjectAccountD1) => d.pk === num)
     .map((d: ProjectAccountD1) => d.name)[0]
 
-const getD2Text = (num: number) =>
-  allAccD2List.value
-    .filter((d: ProjectAccountD2) => d.pk === num)
-    .map((d: ProjectAccountD2) => d.name)[0]
+const getD3Text = (num: number) =>
+  allAccD3List.value
+    .filter((d: ProjectAccountD3) => d.pk === num)
+    .map((d: ProjectAccountD3) => d.name)[0]
 
 const getBankAcc = (num: number) =>
   proBankAccountList.value
@@ -94,7 +94,7 @@ const setData = () => {
     <CTableBody>
       <CTableRow v-for="inc in dateIncSet" :key="inc.pk" class="text-center">
         <CTableDataCell>{{ getD1Text(inc.project_account_d1) }}</CTableDataCell>
-        <CTableDataCell>{{ getD2Text(inc.project_account_d3) }}</CTableDataCell>
+        <CTableDataCell>{{ getD3Text(inc.project_account_d3) }}</CTableDataCell>
         <CTableDataCell class="text-right" color="success">
           {{ numFormat(inc.income) }}
         </CTableDataCell>
@@ -159,7 +159,7 @@ const setData = () => {
     <CTableBody>
       <CTableRow v-for="out in dateOutSet" :key="out.pk" class="text-center">
         <CTableDataCell>{{ getD1Text(out.project_account_d1) }}</CTableDataCell>
-        <CTableDataCell>{{ getD2Text(out.project_account_d3) }}</CTableDataCell>
+        <CTableDataCell>{{ getD3Text(out.project_account_d3) }}</CTableDataCell>
         <CTableDataCell class="text-right" color="danger">
           {{ numFormat(out.outlay) }}
         </CTableDataCell>

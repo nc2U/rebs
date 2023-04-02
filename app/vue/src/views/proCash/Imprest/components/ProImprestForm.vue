@@ -99,7 +99,7 @@ const formsCheck = computed(() => {
 
 const proCashStore = useProCash()
 const formAccD1List = computed(() => proCashStore.formAccD1List)
-const formAccD2List = computed(() => proCashStore.formAccD2List)
+const formAccD3List = computed(() => proCashStore.formAccD3List)
 
 const getImpBankAccs = computed(() => proCashStore.getImpBankAccs)
 const allProBankAccList = computed(() => proCashStore.allProBankAccountList)
@@ -127,8 +127,8 @@ const isImprest = computed(() =>
 
 const fetchProFormAccD1List = (sort: number | null) =>
   proCashStore.fetchProFormAccD1List(sort)
-const fetchProFormAccD2List = (d1: number | null, sort: number | null) =>
-  proCashStore.fetchProFormAccD2List(d1, sort)
+const fetchProFormAccD3List = (d1: number | null, sort: number | null) =>
+  proCashStore.fetchProFormAccD3List(d1, sort)
 
 const requireItem = computed(
   () => !!form.project_account_d1 && !!form.project_account_d3,
@@ -189,7 +189,7 @@ const callAccount = () => {
     const sort = form.sort === 1 || form.sort === 2 ? form.sort : null
     const d1 = form.project_account_d1
     fetchProFormAccD1List(sort)
-    fetchProFormAccD2List(d1, sort)
+    fetchProFormAccD3List(d1, sort)
   })
 }
 
@@ -233,7 +233,7 @@ const sepD1_change = () => {
     const sort = form.sort
     const d1 = sepItem.project_account_d1
     fetchProFormAccD1List(sort)
-    fetchProFormAccD2List(d1, sort)
+    fetchProFormAccD3List(d1, sort)
   })
 }
 
@@ -402,7 +402,7 @@ onBeforeMount(() => {
                 >
                   <option value="">---------</option>
                   <option
-                    v-for="d2 in formAccD2List"
+                    v-for="d2 in formAccD3List"
                     :key="d2.pk"
                     :value="d2.pk"
                   >
@@ -694,7 +694,7 @@ onBeforeMount(() => {
                     >
                       <option value="">---------</option>
                       <option
-                        v-for="d2 in formAccD2List"
+                        v-for="d2 in formAccD3List"
                         :key="d2.pk"
                         :value="d2.pk"
                       >

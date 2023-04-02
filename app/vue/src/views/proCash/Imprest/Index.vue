@@ -61,8 +61,8 @@ const fetchProFormAccD3List = (d1?: number | null, sort?: number | null) =>
 
 const fetchProBankAccList = (projId: number) =>
   proCashStore.fetchProBankAccList(projId)
-const fetchAllProBankAccList = (projId: number, imp = false) =>
-  proCashStore.fetchAllProBankAccList(projId, imp)
+const fetchAllProBankAccList = (projId: number) =>
+  proCashStore.fetchAllProBankAccList(projId)
 const fetchProjectImprestList = (payload: { project: number }) =>
   proCashStore.fetchProjectImprestList(payload)
 
@@ -90,7 +90,7 @@ const deletePrImprestBook = (
 const onSelectAdd = (target: number) => {
   if (!!target) {
     fetchProBankAccList(target)
-    fetchAllProBankAccList(target, true)
+    fetchAllProBankAccList(target)
     fetchProjectImprestList({ project: target })
   } else {
     proCashStore.balanceByAccList = []
@@ -230,7 +230,7 @@ onBeforeMount(() => {
   fetchProFormAccD1List()
   fetchProFormAccD3List()
   fetchProBankAccList(project.value)
-  fetchAllProBankAccList(project.value, true)
+  fetchAllProBankAccList(project.value)
   fetchProjectImprestList({ project: project.value })
 })
 </script>

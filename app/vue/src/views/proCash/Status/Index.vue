@@ -29,7 +29,7 @@ const fetchExecAmountList = (project: number, date?: string) =>
 
 const proCashStore = useProCash()
 const fetchProAllAccD1List = () => proCashStore.fetchProAllAccD1List
-const fetchProAllAccD2List = () => proCashStore.fetchProAllAccD2List
+const fetchProAllAccD3List = () => proCashStore.fetchProAllAccD3List
 const fetchProBankAccList = (proj: number) =>
   proCashStore.fetchProBankAccList(proj)
 
@@ -109,7 +109,7 @@ onBeforeMount(() => {
   fetchStatusOutBudgetList(project.value)
   fetchExecAmountList(project.value)
   fetchProAllAccD1List()
-  fetchProAllAccD2List()
+  fetchProAllAccD3List()
   fetchProBankAccList(project.value)
   fetchBalanceByAccList({
     project: project.value,

@@ -193,6 +193,8 @@ const onUpdate = (
 const multiSubmit = (payload: {
   formData: PrCashBook
   sepData: PrCashBook | null
+  bank_account_to: null | number
+  charge: null | number
 }) => {
   const { formData, ...sepData } = payload
   const submitData = {

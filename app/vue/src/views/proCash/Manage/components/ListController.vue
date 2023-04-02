@@ -22,7 +22,7 @@ const form = reactive({
 const proCashStore = useProCash()
 const sortList = computed(() => proCashStore.sortList)
 const formAccD1List = computed(() => proCashStore.formAccD1List)
-const formAccD2List = computed(() => proCashStore.formAccD2List)
+const formAccD3List = computed(() => proCashStore.formAccD3List)
 const allProBankAccs = computed(() => proCashStore.allProBankAccountList)
 const proCashesCount = computed(() => proCashStore.proCashesCount)
 
@@ -126,7 +126,7 @@ const resetForm = () => {
           <CCol md="6" lg="2" class="mb-3">
             <CFormSelect v-model="form.pro_acc_d3" @change="listFiltering(1)">
               <option value="">하위 항목</option>
-              <option v-for="d2 in formAccD2List" :key="d2.pk" :value="d2.pk">
+              <option v-for="d2 in formAccD3List" :key="d2.pk" :value="d2.pk">
                 {{ d2.name }}
               </option>
             </CFormSelect>
