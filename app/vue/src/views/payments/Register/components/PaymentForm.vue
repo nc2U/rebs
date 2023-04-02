@@ -25,7 +25,7 @@ const validated = ref(false)
 const form = reactive<ProjectCashBook>({
   project: null, // hidden -> index에서 처리
   sort: 1, // hidden -> always
-  project_account_d1: null, // hidden
+  project_account_d2: null, // hidden
   project_account_d3: null, // hidden
   contract: null, //  hidden -> 예외 및 신규 매칭 시 코드 확인
   content: '', // hidden
@@ -116,7 +116,7 @@ onMounted(() => {
     form.note = props.payment.note
     form.deal_date = props.payment.deal_date
   }
-  form.project_account_d1 = props.contract.order_group.sort
+  form.project_account_d2 = props.contract.order_group.sort
   form.project_account_d3 = props.contract.order_group.sort
   form.contract = props.contract.pk
   form.content = `${props.contract.contractor.name}[${props.contract.serial_number}] 대금납부`

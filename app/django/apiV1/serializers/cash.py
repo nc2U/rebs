@@ -169,7 +169,7 @@ class ProjectBankAccountSerializer(serializers.ModelSerializer):
 class SepItemsInPrCashBookSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectCashBook
-        fields = ('pk', 'project', 'project_account_d1', 'project_account_d3', 'separated',
+        fields = ('pk', 'project', 'project_account_d2', 'project_account_d3', 'separated',
                   'content', 'trader', 'income', 'outlay', 'evidence', 'note',)
 
 
@@ -188,7 +188,7 @@ class PrBalanceByAccountSerializer(serializers.ModelSerializer):
 
 class ProjectCashBookSerializer(serializers.ModelSerializer):
     sort_desc = serializers.SlugField(source='sort', read_only=True)
-    project_account_d1_desc = serializers.SlugField(source='project_account_d1', read_only=True)
+    project_account_d2_desc = serializers.SlugField(source='project_account_d2', read_only=True)
     project_account_d3_desc = serializers.SlugField(source='project_account_d3', read_only=True)
     bank_account_desc = serializers.SlugField(source='bank_account', read_only=True)
     evidence_desc = serializers.CharField(source='get_evidence_display', read_only=True)
@@ -196,8 +196,8 @@ class ProjectCashBookSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProjectCashBook
-        fields = ('pk', 'project', 'sort', 'sort_desc', 'project_account_d1',
-                  'project_account_d1_desc', 'project_account_d3', 'project_account_d3_desc',
+        fields = ('pk', 'project', 'sort', 'sort_desc', 'project_account_d2',
+                  'project_account_d2_desc', 'project_account_d3', 'project_account_d3_desc',
                   'is_separate', 'separated', 'is_imprest', 'sepItems', 'contract', 'installment_order',
                   'refund_contractor', 'content', 'trader', 'bank_account', 'bank_account_desc',
                   'income', 'outlay', 'evidence', 'evidence_desc', 'note', 'deal_date')

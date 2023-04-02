@@ -30,7 +30,7 @@ const alertModal = ref()
 
 let sepItem = reactive<ProSepItems>({
   pk: null,
-  project_account_d1: null,
+  project_account_d2: null,
   project_account_d3: null,
   is_imprest: true,
   content: '',
@@ -53,7 +53,7 @@ const form = reactive<
   pk: null,
   project: null,
   sort: null,
-  project_account_d1: null,
+  project_account_d2: null,
   project_account_d3: null,
 
   is_separate: false,
@@ -81,7 +81,7 @@ const formsCheck = computed(() => {
   if (props.imprest) {
     const a = form.project === props.imprest.project
     const b = form.sort === props.imprest.sort
-    const c = form.project_account_d1 === props.imprest.project_account_d1
+    const c = form.project_account_d2 === props.imprest.project_account_d2
     const d = form.project_account_d3 === props.imprest.project_account_d3
     const e = form.content === props.imprest.content
     const f = form.trader === props.imprest.trader
@@ -131,11 +131,11 @@ const fetchProFormAccD3List = (d1: number | null, sort: number | null) =>
   proCashStore.fetchProFormAccD3List(d1, sort)
 
 const requireItem = computed(
-  () => !!form.project_account_d1 && !!form.project_account_d3,
+  () => !!form.project_account_d2 && !!form.project_account_d3,
 )
 
 const sepDisabled = computed(() => {
-  const disabled = !!form.project_account_d1 || !!form.project_account_d3
+  const disabled = !!form.project_account_d2 || !!form.project_account_d3
   return props.imprest ? disabled || props.imprest.sepItems.length : disabled
 })
 
@@ -157,7 +157,7 @@ const sepSummary = computed(() => {
 
 const sepUpdate = (sep: ProjectCashBook) => {
   sepItem.pk = sep.pk
-  sepItem.project_account_d1 = sep.project_account_d1
+  sepItem.project_account_d2 = sep.project_account_d2
   sepItem.project_account_d3 = sep.project_account_d3
   sepItem.content = sep.content
   sepItem.trader = sep.trader
@@ -169,7 +169,7 @@ const sepUpdate = (sep: ProjectCashBook) => {
 
 const sepRemove = () => {
   sepItem.pk = null
-  sepItem.project_account_d1 = null
+  sepItem.project_account_d2 = null
   sepItem.project_account_d3 = null
   sepItem.content = ''
   sepItem.trader = ''
@@ -187,7 +187,7 @@ const isModify = computed(() => {
 const callAccount = () => {
   nextTick(() => {
     const sort = form.sort === 1 || form.sort === 2 ? form.sort : null
-    const d1 = form.project_account_d1
+    const d1 = form.project_account_d2
     fetchProFormAccD1List(sort)
     fetchProFormAccD3List(d1, sort)
   })
@@ -199,19 +199,19 @@ const sort_change = (event: Event) => {
     if (el.value === '1') form.outlay = null
     if (el.value === '2') form.income = null
     if (el.value === '3') {
-      form.project_account_d1 = 12
+      form.project_account_d2 = 12
       form.project_account_d3 = 67
       form.trader = ''
     } else if (el.value === '4') {
-      form.project_account_d1 = 13
+      form.project_account_d2 = 13
       form.project_account_d3 = 69
     } else {
-      form.project_account_d1 = null
+      form.project_account_d2 = null
       form.project_account_d3 = null
     }
   } else {
     const el = event.target as HTMLSelectElement
-    sepItem.project_account_d1 = null
+    sepItem.project_account_d2 = null
     sepItem.project_account_d3 = null
     if (el.value === '1') sepItem.outlay = null
     if (el.value === '2') {
@@ -231,7 +231,7 @@ const sepD1_change = () => {
   sepItem.project_account_d3 = null
   nextTick(() => {
     const sort = form.sort
-    const d1 = sepItem.project_account_d1
+    const d1 = sepItem.project_account_d2
     fetchProFormAccD1List(sort)
     fetchProFormAccD3List(d1, sort)
   })
@@ -292,7 +292,7 @@ onBeforeMount(() => {
     form.pk = props.imprest.pk
     form.project = props.imprest.project
     form.sort = props.imprest.sort
-    form.project_account_d1 = props.imprest.project_account_d1
+    form.project_account_d2 = props.imprest.project_account_d2
     form.project_account_d3 = props.imprest.project_account_d3
     form.content = props.imprest.content
     form.trader = props.imprest.trader
@@ -362,7 +362,7 @@ onBeforeMount(() => {
               </CFormLabel>
               <CCol sm="8">
                 <CFormSelect
-                  v-model.number="form.project_account_d1"
+                  v-model.number="form.project_account_d2"
                   :required="!form.is_separate"
                   :disabled="
                     !form.sort ||
@@ -394,7 +394,7 @@ onBeforeMount(() => {
                   v-model.number="form.project_account_d3"
                   :required="!form.is_separate"
                   :disabled="
-                    !form.project_account_d1 ||
+                    !form.project_account_d2 ||
                     form.is_separate ||
                     form.sort === 3 ||
                     form.sort === 4
@@ -664,7 +664,7 @@ onBeforeMount(() => {
                   </CFormLabel>
                   <CCol sm="8">
                     <CFormSelect
-                      v-model.number="sepItem.project_account_d1"
+                      v-model.number="sepItem.project_account_d2"
                       required
                       :disabled="!form.sort"
                       @change="sepD1_change"
@@ -689,7 +689,7 @@ onBeforeMount(() => {
                   <CCol sm="8">
                     <CFormSelect
                       v-model.number="sepItem.project_account_d3"
-                      :disabled="!sepItem.project_account_d1"
+                      :disabled="!sepItem.project_account_d2"
                       required
                     >
                       <option value="">---------</option>

@@ -160,7 +160,7 @@
 
                                             {% for inc in day_inc_list %}
                                                 <tr>
-                                                    <td class="text-center">{{ inc.project_account_d1 }}</td>
+                                                    <td class="text-center">{{ inc.project_account_d2 }}</td>
                                                     <td class="text-center">{{ inc.project_account_d3 }}</td>
                                                     <td class="text-right bg-success-lighten">{{ inc.income|default:"-"|intcomma }}</td>
                                                     <td class="text-center">{{ inc.bank_account }}</td>
@@ -214,7 +214,7 @@
 
                                             {% for out in day_out_list %}
                                                 <tr>
-                                                    <td class="text-center">{{ out.project_account_d1 }}</td>
+                                                    <td class="text-center">{{ out.project_account_d2 }}</td>
                                                     <td class="text-center">{{ out.project_account_d3 }}</td>
                                                     <td class="text-right bg-info-lighten">{{ out.outlay|default:"-"|intcomma }}</td>
                                                     <td class="text-center">{{ out.bank_account }}</td>

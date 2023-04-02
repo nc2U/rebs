@@ -412,7 +412,7 @@ class ProjectCashInoutLV(LoginRequiredMixin, ListView, FormView):
             results = results.filter(sort=self.request.GET.get('sort'))
 
         if self.request.GET.get('d2'):
-            results = results.filter(project_account_d1__id=self.request.GET.get('d2'))
+            results = results.filter(project_account_d2__id=self.request.GET.get('d2'))
 
         if self.request.GET.get('d3'):
             results = results.filter(project_account_d3__id=self.request.GET.get('d3'))

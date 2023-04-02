@@ -24,7 +24,7 @@ const dataFilter = ref<CashBookFilter>({
   from_date: '',
   to_date: '',
   sort: null,
-  pro_acc_d1: null,
+  pro_acc_d2: null,
   pro_acc_d3: null,
   bank_account: null,
   search: '',
@@ -38,7 +38,7 @@ const pageSelect = (page: number) => {
 const listFiltering = (payload: CashBookFilter) => {
   dataFilter.value = payload
   const sort = payload.sort ? payload.sort : null
-  const d1 = payload.pro_acc_d1 ? payload.pro_acc_d1 : null
+  const d1 = payload.pro_acc_d2 ? payload.pro_acc_d2 : null
   fetchProFormAccD1List(sort)
   fetchProFormAccD3List(d1, sort)
   fetchProjectCashList({ ...{ project: project.value }, ...payload })
@@ -51,7 +51,7 @@ const excelUrl = computed(() => {
   const sd = dataFilter.value.from_date
   const ed = dataFilter.value.to_date
   const st = dataFilter.value.sort || ''
-  const d1 = dataFilter.value.pro_acc_d1 || ''
+  const d1 = dataFilter.value.pro_acc_d2 || ''
   const d2 = dataFilter.value.pro_acc_d3 || ''
   const ba = dataFilter.value.bank_account || ''
   const q = dataFilter.value.search
@@ -123,7 +123,7 @@ const chargeCreate = (
   charge: number,
 ) => {
   payload.sort = 2
-  payload.project_account_d1 = 9
+  payload.project_account_d2 = 9
   payload.project_account_d3 = 43
   payload.content = cutString(payload.content, 8) + ' - 이체수수료'
   payload.trader = '지급수수료'

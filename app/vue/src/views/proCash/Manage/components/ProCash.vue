@@ -62,7 +62,7 @@ const onBankUpdate = (payload: ProBankAcc) => emit('on-bank-update', payload)
       {{ proCash.sort_desc }}
     </CTableDataCell>
     <CTableDataCell class="text-left">
-      {{ proCash.project_account_d1_desc }}
+      {{ proCash.project_account_d2_desc }}
     </CTableDataCell>
     <CTableDataCell class="text-left">
       <span v-if="proCash.project_account_d3_desc">

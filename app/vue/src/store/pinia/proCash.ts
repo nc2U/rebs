@@ -4,7 +4,7 @@ import { defineStore } from 'pinia'
 import { message, errorHandle } from '@/utils/helper'
 import { AccountSort } from '@/store/types/comCash'
 import {
-  ProjectAccountD1,
+  ProjectAccountD2,
   ProjectAccountD3,
   ProBankAcc,
   BalanceByAccount,
@@ -23,12 +23,12 @@ export const useProCash = defineStore('proCash', () => {
       .then(res => (sortList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
-  const allAccD1List = ref<ProjectAccountD1[]>([])
+  const allAccD2List = ref<ProjectAccountD2[]>([])
 
-  const fetchProAllAccD1List = () =>
+  const fetchProAllAccD2List = () =>
     api
-      .get(`/project-account-depth1/`)
-      .then(res => (allAccD1List.value = res.data.results))
+      .get(`/project-account-depth2/`)
+      .then(res => (allAccD2List.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
   const allAccD3List = ref<ProjectAccountD3[]>([])
@@ -39,23 +39,23 @@ export const useProCash = defineStore('proCash', () => {
       .then(res => (allAccD3List.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
-  const formAccD1List = ref<ProjectAccountD1[]>([])
+  const formAccD2List = ref<ProjectAccountD2[]>([])
 
-  const fetchProFormAccD1List = (sort: number | null = null) => {
+  const fetchProFormAccD2List = (sort: number | null = null) => {
     const queryStr = sort ? `?acc__sorts=${sort}` : ''
     api
-      .get(`/project-account-depth1/${queryStr}`)
-      .then(res => (formAccD1List.value = res.data.results))
+      .get(`/project-account-depth2/${queryStr}`)
+      .then(res => (formAccD2List.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
   }
 
   const formAccD3List = ref<ProjectAccountD3[]>([])
 
   const fetchProFormAccD3List = (
-    d1: number | null = null,
+    d2: number | null = null,
     sort: number | null = null,
   ) => {
-    const uri = `?sort=${sort || ''}&d1=${d1 || ''}`
+    const uri = `?sort=${sort || ''}&d2=${d2 || ''}`
     return api
       .get(`/project-account-depth3/${uri}`)
       .then(res => (formAccD3List.value = res.data.results))
@@ -166,7 +166,7 @@ export const useProCash = defineStore('proCash', () => {
     if (payload.from_date) url += `&from_deal_date=${payload.from_date}`
     if (payload.to_date) url += `&to_deal_date=${payload.to_date}`
     if (payload.sort) url += `&sort=${payload.sort}`
-    if (payload.pro_acc_d1) url += `&project_account_d1=${payload.pro_acc_d1}`
+    if (payload.pro_acc_d2) url += `&project_account_d2=${payload.pro_acc_d2}`
     if (payload.pro_acc_d3) url += `&project_account_d3=${payload.pro_acc_d3}`
     if (payload.bank_account) url += `&bank_account=${payload.bank_account}`
     if (payload.search) url += `&search=${payload.search}`
@@ -315,7 +315,7 @@ export const useProCash = defineStore('proCash', () => {
     if (payload.from_date) url += `&from_deal_date=${payload.from_date}`
     if (payload.to_date) url += `&to_deal_date=${payload.to_date}`
     if (payload.sort) url += `&sort=${payload.sort}`
-    if (payload.pro_acc_d1) url += `&project_account_d1=${payload.pro_acc_d1}`
+    if (payload.pro_acc_d2) url += `&project_account_d2=${payload.pro_acc_d2}`
     if (payload.pro_acc_d3) url += `&project_account_d3=${payload.pro_acc_d3}`
     if (payload.bank_account) url += `&bank_account=${payload.bank_account}`
     if (payload.search) url += `&search=${payload.search}`
@@ -430,14 +430,14 @@ export const useProCash = defineStore('proCash', () => {
     sortList,
     fetchProAccSortList,
 
-    allAccD1List,
-    fetchProAllAccD1List,
+    allAccD2List,
+    fetchProAllAccD2List,
 
     allAccD3List,
     fetchProAllAccD3List,
 
-    formAccD1List,
-    fetchProFormAccD1List,
+    formAccD2List,
+    fetchProFormAccD2List,
 
     formAccD3List,
     fetchProFormAccD3List,
