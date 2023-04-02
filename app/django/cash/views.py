@@ -390,10 +390,10 @@ class ProjectCashInoutLV(LoginRequiredMixin, ListView, FormView):
         context['pa_d1_inc'] = ProjectAccountD1.objects.filter(projectaccountsort=1)
         context['pa_d1_out'] = ProjectAccountD1.objects.filter(projectaccountsort=2)
         context['pa_d1_trans'] = ProjectAccountD1.objects.filter(projectaccountsort=3)
-        pa_d2 = ProjectAccountD3.objects.all()
+        pa_d3 = ProjectAccountD3.objects.all()
         if self.request.GET.get('d1'):
-            pa_d2 = pa_d2.filter(d1_id__exact=int(self.request.GET.get('d1')))
-        context['pa_d2'] = pa_d2
+            pa_d3 = pa_d3.filter(d1_id__exact=int(self.request.GET.get('d1')))
+        context['pa_d3'] = pa_d3
         context['bank_account'] = ProjectBankAccount.objects.filter(project=self.get_project())
         context['auth_date'] = datetime.today().date() - timedelta(days=10)
         return context
@@ -454,12 +454,12 @@ class ProjectCashInoutCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
         context['pa_d1_inc'] = ProjectAccountD1.objects.filter(projectaccountsort=1)
         context['pa_d1_out'] = ProjectAccountD1.objects.filter(projectaccountsort=2)
         context['pa_d1_trans'] = ProjectAccountD1.objects.filter(projectaccountsort=3)
-        context['pa_d2_inc'] = ProjectAccountD3.objects.filter(d1__projectaccountsort=1)
-        context['pa_d2_out'] = ProjectAccountD3.objects.filter(d1__projectaccountsort=2)
-        context['pa_d2_trans'] = ProjectAccountD3.objects.filter(d1__projectaccountsort=3)
+        context['pa_d3_inc'] = ProjectAccountD3.objects.filter(d1__projectaccountsort=1)
+        context['pa_d3_out'] = ProjectAccountD3.objects.filter(d1__projectaccountsort=2)
+        context['pa_d3_trans'] = ProjectAccountD3.objects.filter(d1__projectaccountsort=3)
         context['d1s'] = ProjectAccountD1.objects.all()
         for d1 in context['d1s']:
-            context['d2_' + str(d1.id)] = ProjectAccountD3.objects.filter(d1=d1.id)
+            context['d3_' + str(d1.id)] = ProjectAccountD3.objects.filter(d1=d1.id)
         project_id = self.get_project().id if self.get_project() else None
         context['pb_account'] = ProjectBankAccount.objects.filter(project=project_id)
         context['formset'] = ProjectCashBookFormSet(queryset=ProjectCashBook.objects.none(),
@@ -504,12 +504,12 @@ class ProjectCashInoutUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
         context['pa_d1_inc'] = ProjectAccountD1.objects.filter(projectaccountsort=1)
         context['pa_d1_out'] = ProjectAccountD1.objects.filter(projectaccountsort=2)
         context['pa_d1_trans'] = ProjectAccountD1.objects.filter(projectaccountsort=3)
-        context['pa_d2_inc'] = ProjectAccountD3.objects.filter(d1__projectaccountsort=1)
-        context['pa_d2_out'] = ProjectAccountD3.objects.filter(d1__projectaccountsort=2)
-        context['pa_d2_trans'] = ProjectAccountD3.objects.filter(d1__projectaccountsort=3)
+        context['pa_d3_inc'] = ProjectAccountD3.objects.filter(d1__projectaccountsort=1)
+        context['pa_d3_out'] = ProjectAccountD3.objects.filter(d1__projectaccountsort=2)
+        context['pa_d3_trans'] = ProjectAccountD3.objects.filter(d1__projectaccountsort=3)
         context['d1s'] = ProjectAccountD1.objects.all()
         for d1 in context['d1s']:
-            context['d2_' + str(d1.id)] = ProjectAccountD3.objects.filter(d1=d1.id)
+            context['d3_' + str(d1.id)] = ProjectAccountD3.objects.filter(d1=d1.id)
         project_id = self.get_project().id if self.get_project() else None
         context['pb_account'] = ProjectBankAccount.objects.filter(project=project_id)
         context['formset'] = ProjectCashBookFormSet(queryset=ProjectCashBook.objects.none(),
