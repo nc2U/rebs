@@ -73,8 +73,8 @@ class ProjectAccountSort(models.Model):
         verbose_name_plural = "04. 현장계정 구분"
 
 
-class ProjectAccountD1(models.Model):
-    acc = models.ForeignKey(AccountSubD1, on_delete=models.CASCADE, related_name='acc_d1s')
+class ProjectAccountD2(models.Model):
+    acc = models.ForeignKey(AccountSubD1, on_delete=models.CASCADE, related_name='pro_d2s')
     code = models.CharField(max_length=3)
     name = models.CharField(max_length=20)
     description = models.CharField(max_length=50, blank=True)
@@ -90,7 +90,7 @@ class ProjectAccountD1(models.Model):
 
 class ProjectAccountD3(models.Model):
     sort = models.ForeignKey(ProjectAccountSort, on_delete=models.CASCADE)
-    d1 = models.ForeignKey(ProjectAccountD1, on_delete=models.CASCADE, related_name='acc_d3s')
+    d2 = models.ForeignKey(ProjectAccountD2, on_delete=models.CASCADE, related_name='pro_d3s')
     code = models.CharField(max_length=3)
     name = models.CharField(max_length=20)
     description = models.CharField(max_length=50, blank=True)

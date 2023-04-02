@@ -2,7 +2,7 @@ from django.contrib import admin
 from import_export.admin import ImportExportMixin
 
 from .models import (AccountSort, AccountSubD1, AccountSubD2, AccountSubD3,
-                     ProjectAccountSort, ProjectAccountD1, ProjectAccountD3,
+                     ProjectAccountSort, ProjectAccountD2, ProjectAccountD3,
                      WiseSaying)
 
 
@@ -53,7 +53,7 @@ class ProjectAccountSortAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display_links = ('name',)
 
 
-class ProjectAccountD1Admin(ImportExportMixin, admin.ModelAdmin):
+class ProjectAccountD2Admin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'acc', 'code', 'name', 'description')
     list_display_links = ('code', 'name')
     list_filter = ('acc', 'acc__sorts')
@@ -62,9 +62,9 @@ class ProjectAccountD1Admin(ImportExportMixin, admin.ModelAdmin):
 
 
 class ProjectAccountD3Admin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'sort', 'd1', 'code', 'name', 'description')
+    list_display = ('id', 'sort', 'd2', 'code', 'name', 'description')
     list_display_links = ('code', 'name')
-    list_filter = ('d1__acc', 'sort', 'd1')
+    list_filter = ('d2__acc', 'sort', 'd2')
     search_fields = ('name', 'description')
 
 
@@ -77,6 +77,6 @@ admin.site.register(AccountSubD1, AccountSubD1Admin)
 admin.site.register(AccountSubD2, AccountSubD2Admin)
 admin.site.register(AccountSubD3, AccountSubD3Admin)
 admin.site.register(ProjectAccountSort, ProjectAccountSortAdmin)
-admin.site.register(ProjectAccountD1, ProjectAccountD1Admin)
+admin.site.register(ProjectAccountD2, ProjectAccountD2Admin)
 admin.site.register(ProjectAccountD3, ProjectAccountD3Admin)
 admin.site.register(WiseSaying, WiseSayingAdmin)

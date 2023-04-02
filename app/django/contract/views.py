@@ -13,7 +13,7 @@ from project.models import Project
 from items.models import UnitType, KeyUnit, BuildingUnit, HouseUnit
 from cash.models import ProjectBankAccount, ProjectCashBook
 from payment.models import InstallmentPaymentOrder
-from rebs.models import ProjectAccountSort, ProjectAccountD1, ProjectAccountD3
+from rebs.models import ProjectAccountSort, ProjectAccountD2, ProjectAccountD3
 
 from .forms import ContractRegisterForm, ContractPaymentForm, ContractorReleaseForm
 
@@ -402,7 +402,7 @@ class ContractRegisterView(LoginRequiredMixin, FormView):
                         pCashbook.project = Project.objects.get(pk=self.request.POST.get('project'))
                         pCashbook.sort = ProjectAccountSort.objects.get(pk=1)
                         dSort = int(contract.order_group.sort)
-                        pCashbook.project_account_d1 = ProjectAccountD1.objects.get(pk=dSort)
+                        pCashbook.project_account_d2 = ProjectAccountD2.objects.get(pk=dSort)
                         pCashbook.project_account_d3 = ProjectAccountD3.objects.get(pk=dSort)
                         if not cont_id:
                             pCashbook.contract = contract

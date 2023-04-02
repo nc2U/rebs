@@ -1756,7 +1756,7 @@ class ExportProjectDateCashbook(View):
 
             for col in range(7):
                 if col == 0:
-                    worksheet.write(row_num, col, cash.project_account_d1.name, b_format)
+                    worksheet.write(row_num, col, cash.project_account_d2.name, b_format)
                 if col == 1:
                     worksheet.write(row_num, col, cash.project_account_d3.name, b_format)
                 if col == 2:
@@ -2002,7 +2002,7 @@ def export_project_cash_xls(request):
         obj_list = obj_list.filter(sort_id=sort)
 
     if d1:
-        obj_list = obj_list.filter(project_account_d1_id=d1)
+        obj_list = obj_list.filter(project_account_d2_id=d1)
 
     if d2:
         obj_list = obj_list.filter(project_account_d3_id=d2)
@@ -2034,7 +2034,7 @@ def export_project_cash_xls(request):
     resources = [
         ['거래일자', 'deal_date'],
         ['구분', 'sort__name'],
-        ['현장 계정', 'project_account_d1__name'],
+        ['현장 계정', 'project_account_d2__name'],
         ['현장 세부계정', 'project_account_d3__name'],
         ['적요', 'content'],
         ['거래처', 'trader'],

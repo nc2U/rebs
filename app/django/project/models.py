@@ -53,7 +53,7 @@ class Project(models.Model):
 
 class ProjectIncBudget(models.Model):
     project = models.ForeignKey('project.Project', on_delete=models.CASCADE, verbose_name='프로젝트')
-    account_d1 = models.ForeignKey('rebs.ProjectAccountD1', on_delete=models.PROTECT, verbose_name='대분류')
+    account_d2 = models.ForeignKey('rebs.ProjectAccountD2', on_delete=models.PROTECT, verbose_name='대분류')
     account_d3 = models.ForeignKey('rebs.ProjectAccountD3', on_delete=models.PROTECT, verbose_name='소분류')
     order_group = models.ForeignKey('contract.OrderGroup', on_delete=models.SET_NULL, null=True, blank=True,
                                     verbose_name='차수', help_text='해당 차수가 없는 경우 생략가능')
@@ -75,7 +75,7 @@ class ProjectIncBudget(models.Model):
 class ProjectOutBudget(models.Model):
     project = models.ForeignKey('project.Project', on_delete=models.CASCADE, verbose_name='프로젝트')
     order = models.PositiveSmallIntegerField('순서', blank=True, null=True)
-    account_d1 = models.ForeignKey('rebs.ProjectAccountD1', on_delete=models.PROTECT, verbose_name='대분류')
+    account_d2 = models.ForeignKey('rebs.ProjectAccountD2', on_delete=models.PROTECT, verbose_name='대분류')
     account_d3 = models.ForeignKey('rebs.ProjectAccountD3', on_delete=models.SET_NULL, null=True, blank=True,
                                    verbose_name='소분류')
     account_opt = models.CharField('중분류', max_length=10, blank=True, default='')

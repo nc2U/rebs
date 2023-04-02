@@ -6,7 +6,7 @@ from cash.models import ProjectBankAccount, ProjectCashBook
 from project.models import Project, ProjectIncBudget
 from items.models import UnitType, HouseUnit, KeyUnit
 from payment.models import SalesPriceByGT, InstallmentPaymentOrder, DownPayment
-from rebs.models import ProjectAccountSort, ProjectAccountD1, ProjectAccountD3
+from rebs.models import ProjectAccountSort, ProjectAccountD2, ProjectAccountD3
 from contract.models import (OrderGroup, Contract, ContractPrice, Contractor,
                              ContractorAddress, ContractorContact, ContractorRelease)
 
@@ -343,9 +343,9 @@ class ContractSetSerializer(serializers.ModelSerializer):
             project = self.initial_data.get('project')
             payment_project = Project.objects.get(pk=project)
             order_group_sort = self.initial_data.get('order_group_sort')
-            payment_account_d1 = ProjectAccountD1.objects.get(pk=order_group_sort)
-            acc_d2 = 1 if order_group_sort == 1 else 4  # 분양대금일 경우 1, 분담금일 경우 4
-            payment_account_d2 = ProjectAccountD3.objects.get(pk=acc_d2)
+            payment_account_d2 = ProjectAccountD2.objects.get(pk=order_group_sort)
+            acc_d3 = 1 if order_group_sort == 1 else 4  # 분양대금일 경우 1, 분담금일 경우 4
+            payment_account_d3 = ProjectAccountD3.objects.get(pk=acc_d3)
             ins_order = self.initial_data.get('installment_order')
             payment_installment_order = InstallmentPaymentOrder.objects.get(pk=ins_order)
             payment_serial_number = self.initial_data.get('serial_number')
@@ -357,8 +357,8 @@ class ContractSetSerializer(serializers.ModelSerializer):
 
             down_payment = ProjectCashBook(project=payment_project,
                                            sort=ProjectAccountSort.objects.get(pk=1),
-                                           project_account_d1=payment_account_d1,
-                                           project_account_d3=payment_account_d2,
+                                           project_account_d2=payment_account_d2,
+                                           project_account_d3=payment_account_d3,
                                            contract=contract,
                                            installment_order=payment_installment_order,
                                            content=f'{contractor_name}[{payment_serial_number}] 대금납부',
@@ -519,9 +519,9 @@ class ContractSetSerializer(serializers.ModelSerializer):
             project = self.initial_data.get('project')
             payment_project = Project.objects.get(pk=project)
             order_group_sort = self.initial_data.get('order_group_sort')
-            payment_account_d1 = ProjectAccountD1.objects.get(pk=order_group_sort)
-            acc_d2 = 1 if order_group_sort == 1 else 4  # 분양대금일 경우 1, 분담금일 경우 4
-            payment_account_d2 = ProjectAccountD3.objects.get(pk=acc_d2)
+            payment_account_d2 = ProjectAccountD2.objects.get(pk=order_group_sort)
+            acc_d3 = 1 if order_group_sort == 1 else 4  # 분양대금일 경우 1, 분담금일 경우 4
+            payment_account_d3 = ProjectAccountD3.objects.get(pk=acc_d3)
             ins_order = self.initial_data.get('installment_order')
             payment_installment_order = InstallmentPaymentOrder.objects.get(pk=ins_order)
             payment_serial_number = self.initial_data.get('serial_number')
@@ -541,8 +541,8 @@ class ContractSetSerializer(serializers.ModelSerializer):
             else:
                 create_payment = ProjectCashBook(project=payment_project,
                                                  sort=ProjectAccountSort.objects.get(pk=1),
-                                                 project_account_d1=payment_account_d1,
-                                                 project_account_d3=payment_account_d2,
+                                                 project_account_d2=payment_account_d2,
+                                                 project_account_d3=payment_account_d3,
                                                  contract=instance,
                                                  installment_order=payment_installment_order,
                                                  content=f'{contractor_name}[{payment_serial_number}] 대금납부',
@@ -662,8 +662,8 @@ class ContractorReleaseSerializer(serializers.ModelSerializer):
             payments = ProjectCashBook.objects.filter(sort=sort, contract=contractor.contract)  # 해당 계약 입금건 전체
             for payment in payments:
                 if not released_done:  # 해지 확정 전일 때만 실행
-                    refund_d2 = int(payment.project_account_d3.id) + 1  # 분양대금 or 분담금 환불 건으로 계정 변경
-                    payment.project_account_d3 = ProjectAccountD3.objects.get(pk=refund_d2)
+                    refund_d3 = int(payment.project_account_d3.id) + 1  # 분양대금 or 분담금 환불 건으로 계정 변경
+                    payment.project_account_d3 = ProjectAccountD3.objects.get(pk=refund_d3)
                     payment.refund_contractor = contractor  # 환불 계약자 등록
                 if completion_date:
                     msg = f'환불 계약 건 - {payment.contract.serial_number} ({completion_date} 환불완료)'

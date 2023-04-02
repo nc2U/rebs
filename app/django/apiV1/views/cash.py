@@ -136,7 +136,7 @@ class ProjectCashBookFilterSet(FilterSet):
 
     class Meta:
         model = ProjectCashBook
-        fields = ('project', 'sort', 'project_account_d1', 'project_account_d3',
+        fields = ('project', 'sort', 'project_account_d2', 'project_account_d3',
                   'from_deal_date', 'to_deal_date', 'deal_date', 'installment_order',
                   'bank_account', 'contract', 'contract__order_group',
                   'contract__unit_type', 'no_contract', 'no_install')

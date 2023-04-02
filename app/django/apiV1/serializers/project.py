@@ -4,7 +4,7 @@ from rest_framework import serializers
 from notice.models import SalesBillIssue
 from project.models import (Project, ProjectIncBudget, ProjectOutBudget,
                             Site, SiteOwner, SiteOwnshipRelationship, SiteContract)
-from rebs.models import ProjectAccountD1, ProjectAccountD3
+from rebs.models import ProjectAccountD2, ProjectAccountD3
 from cash.models import ProjectCashBook
 
 
@@ -50,7 +50,7 @@ class ProjectOutBudgetSerializer(serializers.ModelSerializer):
 
 class ProAccoD1InBudgetSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ProjectAccountD1
+        model = ProjectAccountD2
         fields = ('name', 'acc_d3s')
 
 

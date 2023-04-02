@@ -5,7 +5,7 @@ from ..pagination import *
 from ..serializers.rebs import *
 
 from rebs.models import (AccountSort, AccountSubD1, AccountSubD2, AccountSubD3,
-                         ProjectAccountSort, ProjectAccountD1, ProjectAccountD3,
+                         ProjectAccountSort, ProjectAccountD2, ProjectAccountD3,
                          CalendarSchedule, WiseSaying)
 
 
@@ -51,10 +51,10 @@ class ProjectAccountSortViewSet(viewsets.ModelViewSet):
     serializer_class = AccountSortSerializer
 
 
-class ProjectAccountD1ViewSet(viewsets.ModelViewSet):
-    queryset = ProjectAccountD1.objects.all()
+class ProjectAccountD2ViewSet(viewsets.ModelViewSet):
+    queryset = ProjectAccountD2.objects.all()
     pagination_class = PageNumberPaginationTwenty
-    serializer_class = ProjectAccountD1Serializer
+    serializer_class = ProjectAccountD2Serializer
     filterset_fields = ('acc', 'acc__sorts')
 
 
@@ -62,7 +62,7 @@ class ProjectAccountD3ViewSet(viewsets.ModelViewSet):
     queryset = ProjectAccountD3.objects.all()
     pagination_class = PageNumberPaginationOneHundred
     serializer_class = ProjectAccountD3Serializer
-    filterset_fields = ('d1__acc', 'sort', 'd1')
+    filterset_fields = ('d2__acc', 'sort', 'd2')
 
 
 class WiseSayViewSet(viewsets.ModelViewSet):
