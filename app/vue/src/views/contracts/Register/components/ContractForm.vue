@@ -163,7 +163,7 @@ const projectDataStore = useProjectData()
 const getTypes = computed(() => projectDataStore.getTypes)
 
 const proCashStore = useProCash()
-const proBankAccountList = computed(() => proCashStore.proBankAccountList)
+const allProBankAccountList = computed(() => proCashStore.allProBankAccountList)
 
 const paymentStore = usePayment()
 const payOrderList = computed(() => paymentStore.payOrderList)
@@ -678,7 +678,7 @@ defineExpose({ formReset })
                   </CCol>
                   <CCol>
                     {{
-                      proBankAccountList
+                      allProBankAccountList
                         .filter(b => b.pk === payment.bank_account)
                         .map(b => b.alias_name)[0]
                     }}
@@ -737,7 +737,7 @@ defineExpose({ formReset })
                 >
                   <option value="">납부계좌 선택</option>
                   <option
-                    v-for="pb in proBankAccountList"
+                    v-for="pb in allProBankAccountList"
                     :key="pb.pk"
                     :value="pb.pk"
                   >

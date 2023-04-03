@@ -40,8 +40,8 @@ const projectDataStore = useProjectData()
 const fetchTypeList = (projId: number) => projectDataStore.fetchTypeList(projId)
 
 const proCashStore = useProCash()
-const fetchProBankAccList = (projId: number) =>
-  proCashStore.fetchProBankAccList(projId)
+const fetchAllProBankAccList = (projId: number) =>
+  proCashStore.fetchAllProBankAccList(projId)
 
 const paymentStore = usePayment()
 const fetchPayOrderList = (projId: number) =>
@@ -79,7 +79,7 @@ const onSelectAdd = (target: number) => {
     fetchHouseUnitList({ project: target })
     fetchTypeList(target)
     fetchPayOrderList(target)
-    fetchProBankAccList(target)
+    fetchAllProBankAccList(target)
   } else {
     contractStore.contract = null
     contractStore.orderGroupList = []
@@ -115,7 +115,7 @@ onBeforeMount(() => {
   fetchOrderGroupList(project.value)
   fetchTypeList(project.value)
 
-  fetchProBankAccList(project.value)
+  fetchAllProBankAccList(project.value)
   fetchPayOrderList(project.value)
 
   fetchKeyUnitList({ project: project.value })
