@@ -342,7 +342,7 @@ class ContractSetSerializer(serializers.ModelSerializer):
         if self.initial_data.get('deal_date'):
             project = self.initial_data.get('project')
             payment_project = Project.objects.get(pk=project)
-            order_group_sort = self.initial_data.get('order_group_sort')
+            order_group_sort = int(self.initial_data.get('order_group_sort'))
             payment_account_d2 = ProjectAccountD2.objects.get(pk=order_group_sort)
             acc_d3 = 1 if order_group_sort == 1 else 4  # 분양대금일 경우 1, 분담금일 경우 4
             payment_account_d3 = ProjectAccountD3.objects.get(pk=acc_d3)
@@ -518,7 +518,7 @@ class ContractSetSerializer(serializers.ModelSerializer):
             payment_id = self.initial_data.get('payment')
             project = self.initial_data.get('project')
             payment_project = Project.objects.get(pk=project)
-            order_group_sort = self.initial_data.get('order_group_sort')
+            order_group_sort = int(self.initial_data.get('order_group_sort'))
             payment_account_d2 = ProjectAccountD2.objects.get(pk=order_group_sort)
             acc_d3 = 1 if order_group_sort == 1 else 4  # 분양대금일 경우 1, 분담금일 경우 4
             payment_account_d3 = ProjectAccountD3.objects.get(pk=acc_d3)
