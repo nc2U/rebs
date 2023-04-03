@@ -11,4 +11,4 @@ PASSWORD=${MYSQL_PASSWORD}
 rm -rf $(find ./ -name "*.sql"  -mtime +2 -delete)
 
 # (3) do the mysql database backup (dump)
-mysqldump -u"${USER}" -p"${PASSWORD}" "${DATABASE}" --ignore-table="${DATABASE}".django_migrations > "${SQL_FILE}"
+mysqldump -u"${USER}" -p"${PASSWORD}" -t "${DATABASE}" --ignore-table="${DATABASE}".django_migrations > "${SQL_FILE}"
