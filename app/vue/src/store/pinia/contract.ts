@@ -88,7 +88,7 @@ export const useContract = defineStore('contract', () => {
   const updateContractSet = (payload: Contract) =>
     api
       .put(`/contract-set/${payload.pk}/`, payload)
-      .then(() => message())
+      .then(res => fetchContract(res.data.pk).then(() => message()))
       .catch(err => errorHandle(err.response.data))
 
   const contList = ref<SimpleCont[]>([])
