@@ -208,8 +208,8 @@ class ContractSetSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Contract
-        fields = ('pk', 'project', 'order_group', 'unit_type', 'serial_number',
-                  'activation', 'keyunit', 'contractprice', 'contractor', 'payments', 'last_paid_order',
+        fields = ('pk', 'project', 'order_group', 'unit_type', 'serial_number', 'activation',
+                  'keyunit', 'contractprice', 'contractor', 'payments', 'last_paid_order',
                   'total_paid', 'order_group_desc', 'unit_type_desc')
 
     @staticmethod
