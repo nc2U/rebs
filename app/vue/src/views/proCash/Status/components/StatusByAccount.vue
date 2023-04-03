@@ -71,7 +71,7 @@ const directBalance = (val: boolean) => emit('direct-balance', val)
     </colgroup>
     <CTableHead>
       <CTableRow>
-        <CTableDataCell colspan="5">
+        <CTableDataCell colspan="2">
           <strong>
             <CIcon name="cilFolderOpen" />
             프로젝트 계좌별 자금현황
@@ -80,14 +80,14 @@ const directBalance = (val: boolean) => emit('direct-balance', val)
             ({{ dateFormat(date) }}) 현재
           </small>
         </CTableDataCell>
-        <CTableDataCell>(단위: 원)</CTableDataCell>
-        <CTableDataCell class="text-right">
+        <CTableDataCell colspan="4">
           <CFormSwitch
             id="select-directpay"
             label="직불 용역비 계좌 포함"
             @change="directBalance($event.target.checked)"
           />
         </CTableDataCell>
+        <CTableDataCell class="text-right">(단위: 원)</CTableDataCell>
       </CTableRow>
       <CTableRow :color="TableSecondary" class="text-center">
         <CTableHeaderCell colspan="3">계좌 구분</CTableHeaderCell>
