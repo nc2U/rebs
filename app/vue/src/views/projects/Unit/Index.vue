@@ -8,6 +8,7 @@ import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import UnitController from '@/views/projects/Unit/components/UnitController.vue'
 import UnitTable from '@/views/projects/Unit/components/UnitTable.vue'
+import { HouseUnit } from '@/store/types/project'
 
 const alertModal = ref()
 
@@ -120,6 +121,12 @@ const unitRegister = (payload: OriginalUnit) => {
   }
 }
 
+const onUpdate = (payload: HouseUnit) => {
+  alert('update!')
+  console.log(payload)
+}
+const onDelete = (pk: number) => alert('delete! -- ' + pk)
+
 onBeforeMount(() => {
   fetchTypeList(project.value)
   fetchFloorTypeList(project.value)
@@ -142,7 +149,11 @@ onBeforeMount(() => {
         @bldg-select="bldgSelect"
         @unit-register="unitRegister"
       />
-      <UnitTable :bldg-name="bldgName" />
+      <UnitTable
+        :bldg-name="bldgName"
+        @on-update="onUpdate"
+        @on-delete="onDelete"
+      />
     </CCardBody>
 
     <CCardFooter>&nbsp;</CCardFooter>

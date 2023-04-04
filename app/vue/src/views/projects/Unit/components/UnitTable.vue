@@ -1,10 +1,12 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { useProjectData } from '@/store/pinia/project_data'
+import { HouseUnit } from '@/store/types/project'
 import Unit from '@/views/projects/Unit/components/Unit.vue'
 import UnitForm from './UnitForm.vue'
 
 defineProps({ bldgName: { type: String, default: '' } })
+const emit = defineEmits(['on-update', 'on-delete'])
 
 const maxFloor = computed(() =>
   Math.max(...simpleUnits.value.map((u: { floor: number }) => u.floor)),
@@ -28,6 +30,9 @@ const getUnit = (line: number, floor: number) =>
   simpleUnits.value
     .filter((u: { line: number }) => u.line === line)
     .filter((u: { floor: number }) => u.floor === floor)[0]
+
+const onUpdate = (payload: HouseUnit) => emit('on-update', payload)
+const onDelete = (pk: number) => emit('on-delete', pk)
 </script>
 
 <template>
@@ -91,6 +96,8 @@ const getUnit = (line: number, floor: number) =>
               v-for="unit in houseUnitList"
               :key="unit.pk"
               :unit="unit"
+              @on-update="onUpdate"
+              @on-delete="onDelete"
             />
           </CTableBody>
         </CTable>

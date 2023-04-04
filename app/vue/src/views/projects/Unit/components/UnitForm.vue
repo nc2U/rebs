@@ -1,10 +1,13 @@
 <script lang="ts" setup="">
 import { computed, onMounted, ref } from 'vue'
+import { useAccount } from '@/store/pinia/account'
 import { useProjectData } from '@/store/pinia/project_data'
+import { write_project } from '@/utils/pageAuth'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
 const props = defineProps({ unit: { type: Object, required: true } })
+const emit = defineEmits(['on-update', 'on-delete'])
 
 const alertModal = ref()
 const confirmModal = ref()
@@ -19,9 +22,40 @@ const form = ref({
   hold_reason: '',
 })
 
+const formCheck = computed(() => {
+  if (props.unit) {
+    const a = form.value.unit_type === props.unit.unit_type
+    const b = form.value.floor_type === props.unit.floor_type
+    const c = form.value.name === props.unit.name
+    const d = form.value.bldg_line === props.unit.bldg_line
+    const e = form.value.floor_no === props.unit.floor_no
+    const f = form.value.is_hold === props.unit.is_hold
+    const g = form.value.hold_reason === props.unit.hold_reason
+
+    return a && b && c && d && e && f && g
+  } else return false
+})
+
 const proDataStore = useProjectData()
 const getTypes = computed(() => proDataStore.getTypes)
 const getFloorTypes = computed(() => proDataStore.getFloorTypes)
+
+const onUpdateUnit = () => {
+  if (write_project) {
+    const pk = props.unit.pk
+    emit('on-update', { ...{ pk }, ...form.value })
+  } else alertModal.value.callModal()
+}
+
+const onDeleteUnit = () => {
+  if (useAccount().superAuth) confirmModal.value.callModal()
+  else alertModal.value.callModal()
+}
+
+const delConfirm = () => {
+  emit('on-delete', props.unit.pk)
+  confirmModal.value.close()
+}
 
 onMounted(() => {
   if (props.unit) {
@@ -91,8 +125,15 @@ onMounted(() => {
       />
     </CTableDataCell>
     <CTableDataCell>
-      <CButton color="success" size="sm">수정</CButton>
-      <CButton color="danger" size="sm">삭제</CButton>
+      <CButton
+        color="success"
+        size="sm"
+        :disabled="formCheck"
+        @click="onUpdateUnit"
+      >
+        수정
+      </CButton>
+      <CButton color="danger" size="sm" @click="onDeleteUnit">삭제</CButton>
     </CTableDataCell>
   </CTableRow>
 
@@ -103,7 +144,7 @@ onMounted(() => {
       삭제가능 합니다. 해당 호수 유닛을 삭제 하시겠습니까?
     </template>
     <template #footer>
-      <CButton color="danger" @click="modalAction">삭제</CButton>
+      <CButton color="danger" @click="delConfirm">삭제</CButton>
     </template>
   </ConfirmModal>
 
