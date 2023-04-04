@@ -26,13 +26,13 @@ const formCheck = computed(() => {
   if (props.unit) {
     const a = form.value.unit_type === props.unit.unit_type
     // const b = form.value.floor_type === props.unit.floor_type
-    const c = form.value.name === props.unit.name
+    const b = form.value.name === props.unit.name
     // const d = form.value.bldg_line === props.unit.bldg_line
     // const e = form.value.floor_no === props.unit.floor_no
-    const f = form.value.is_hold === props.unit.is_hold
-    const g = form.value.hold_reason === props.unit.hold_reason
+    const c = form.value.is_hold === props.unit.is_hold
+    const d = form.value.hold_reason === props.unit.hold_reason
 
-    return a && b && c && d && e && f && g
+    return a && b && c && d
   } else return false
 })
 
