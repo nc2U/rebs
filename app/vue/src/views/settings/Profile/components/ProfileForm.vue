@@ -85,6 +85,17 @@ const resetForm = () => {
   image.value = ''
 }
 
+watch(props, nVal => {
+  if (!!nVal) {
+    form.pk = nVal.profile.pk
+    form.user = nVal.profile.user
+    form.name = nVal.profile.name
+    form.birth_date = nVal.profile.birth_date
+    form.cell_phone = nVal.profile.cell_phone
+    image.value = nVal.profile.image
+  }
+})
+
 onMounted(() => {
   if (props.profile) {
     form.pk = props.profile.pk

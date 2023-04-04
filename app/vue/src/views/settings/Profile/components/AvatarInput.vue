@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import CropperModal from './CropperModal.vue'
 
 const props = defineProps({
@@ -9,12 +9,6 @@ const props = defineProps({
 const emit = defineEmits(['file-upload'])
 
 const imgUrl = ref('')
-
-watch(props, val => {
-  if (val) {
-    imgUrl.value = val.image
-  }
-})
 
 const modalImg = ref()
 const cropModal = ref()
@@ -47,6 +41,18 @@ const fileUpload = (img: File) => {
 }
 
 const delModalImg = () => (modalImg.value = null)
+
+watch(props, val => {
+  if (val) {
+    imgUrl.value = val.image
+  }
+})
+
+onMounted(() => {
+  if (props.image) {
+    imgUrl.value = props.image
+  }
+})
 </script>
 
 <template>
