@@ -34,6 +34,10 @@ admin.site.site_header = '관리자 페이지'  # default: "Django Administratio
 admin.site.site_title = 'Rebs 사이트 관리'  # default: "Django site admin"
 
 url = [
+    path('setup/', include('accounts.urls')),
+    
+    path('book/', include('book.urls')),
+
     path('admin/', admin.site.urls),
     path('api/v1/', include('apiV1.urls')),
     path('api-auth/', include('rest_framework.urls')),
@@ -44,15 +48,14 @@ url = [
     path('pdf/', include('_pdf.urls')),
     path('excel/', include('_excel.urls')),
 
-    path('accounts/', include('allauth.urls')),  # path('accounts/', include('accounts.urls')),
+    path('accounts/', include('allauth.urls')),
     path('robots.txt', TemplateView.as_view(template_name='robots.txt', content_type='text/plain')),
 
     path('', include('django.contrib.auth.urls')),
     path('', TemplateView.as_view(template_name='base-vue.html')),
 
-    path('rebs/', RedirectView.as_view(url='/rebs/dashboard/'), name='home'),
     path('rebs/', include('rebs.urls')),
-    path('book/', include('book.urls')),
+    path('rebs/', RedirectView.as_view(url='/rebs/dashboard/'), name='home'),
 
     path('svelte/', TemplateView.as_view(template_name='base-svelte.html')),
 
