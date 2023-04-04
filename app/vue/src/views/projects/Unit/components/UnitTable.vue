@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { useProjectData } from '@/store/pinia/project_data'
 import Unit from '@/views/projects/Unit/components/Unit.vue'
+import UnitFormList from './UnitFormList.vue'
 
 defineProps({ bldgName: { type: String, default: '' } })
 
@@ -30,7 +31,7 @@ const getUnit = (line: number, floor: number) =>
     </CRow>
 
     <CRow v-else>
-      <CCol class="p-5">
+      <CCol xl="5" class="p-5">
         <CRow v-for="i in maxFloor" :key="i">
           <Unit
             v-for="line in lineList"
@@ -50,6 +51,10 @@ const getUnit = (line: number, floor: number) =>
             {{ bldgName }}동
           </div>
         </CRow>
+      </CCol>
+
+      <CCol xl="7">
+        <UnitFormList />
       </CCol>
     </CRow>
   </CContainer>

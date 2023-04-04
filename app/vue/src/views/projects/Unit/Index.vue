@@ -7,7 +7,8 @@ import { message } from '@/utils/helper'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import UnitController from '@/views/projects/Unit/components/UnitController.vue'
-import UnitListTable from '@/views/projects/Unit/components/UnitListTable.vue'
+import UnitTable from '@/views/projects/Unit/components/UnitTable.vue'
+import UnitList from '@/views/projects/Unit/components/UnitFormList.vue'
 
 const alertModal = ref()
 
@@ -142,7 +143,7 @@ onBeforeMount(() => {
         @bldg-select="bldgSelect"
         @unit-register="unitRegister"
       />
-      <UnitListTable :bldg-name="bldgName" />
+      <UnitTable :bldg-name="bldgName" />
     </CCardBody>
 
     <CCardFooter>&nbsp;</CCardFooter>
