@@ -189,7 +189,7 @@ export const useProjectData = defineStore('projectData', () => {
 
   // actions
   const fetchHouseUnitList = (project: number, bldg?: number) => {
-    let apiUri = `/all-house-unit/?project=${project}`
+    let apiUri = `/all-house-unit/?building_unit__project=${project}`
     if (bldg) apiUri += `&building_unit=${bldg}`
     return api
       .get(apiUri)
@@ -199,7 +199,9 @@ export const useProjectData = defineStore('projectData', () => {
 
   const fetchNumUnitByType = (project: number, unit_type: number) =>
     api
-      .get(`/house-unit/?project=${project}&unit_type=${unit_type}`)
+      .get(
+        `/house-unit/?building_unit__project=${project}&unit_type=${unit_type}`,
+      )
       .then(res => (numUnitByType.value = res.data.count))
       .catch(err => errorHandle(err.response.data))
 
@@ -210,8 +212,8 @@ export const useProjectData = defineStore('projectData', () => {
     const keyUnits = { project, unit_type, unit_code }
     api
       .post(`/house-unit/`, houseUnits)
-      .then(res =>
-        fetchNumUnitByType(res.data.project, res.data.building_unit).then(() =>
+      .then(() =>
+        fetchNumUnitByType(project, unit_type).then(() =>
           api
             .post(`/key-unit/`, keyUnits)
             .catch(err => errorHandle(err.response.data)),

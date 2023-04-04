@@ -8,7 +8,6 @@ import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import UnitController from '@/views/projects/Unit/components/UnitController.vue'
 import UnitTable from '@/views/projects/Unit/components/UnitTable.vue'
-import UnitList from '@/views/projects/Unit/components/UnitForm.vue'
 
 const alertModal = ref()
 
@@ -18,19 +17,19 @@ const projectStore = useProject()
 const initProjId = computed(() => projectStore.initProjId)
 const project = computed(() => projectStore.project?.pk || initProjId.value)
 
-const projectDataStore = useProjectData()
-const numUnitByType = computed(() => projectDataStore.numUnitByType)
-const simpleUnits = computed(() => projectDataStore.simpleUnits)
+const proDataStore = useProjectData()
+const numUnitByType = computed(() => proDataStore.numUnitByType)
+const simpleUnits = computed(() => proDataStore.simpleUnits)
 
-const fetchTypeList = (projId: number) => projectDataStore.fetchTypeList(projId)
+const fetchTypeList = (projId: number) => proDataStore.fetchTypeList(projId)
 const fetchFloorTypeList = (projId: number) =>
-  projectDataStore.fetchFloorTypeList(projId)
+  proDataStore.fetchFloorTypeList(projId)
 const fetchBuildingList = (projId: number) =>
-  projectDataStore.fetchBuildingList(projId)
+  proDataStore.fetchBuildingList(projId)
 const fetchHouseUnitList = (projId: number, bldg?: number) =>
-  projectDataStore.fetchHouseUnitList(projId, bldg)
+  proDataStore.fetchHouseUnitList(projId, bldg)
 
-const createUnit = (payload: CreateUnit) => projectDataStore.createUnit(payload)
+const createUnit = (payload: CreateUnit) => proDataStore.createUnit(payload)
 
 const onSelectAdd = (target: number) => {
   if (!!target) {
@@ -38,16 +37,16 @@ const onSelectAdd = (target: number) => {
     fetchFloorTypeList(target)
     fetchBuildingList(target)
   } else {
-    projectDataStore.unitTypeList = []
-    projectDataStore.floorTypeList = []
-    projectDataStore.buildingList = []
+    proDataStore.unitTypeList = []
+    proDataStore.floorTypeList = []
+    proDataStore.buildingList = []
   }
-  projectDataStore.houseUnitList = []
+  proDataStore.houseUnitList = []
 }
 
 const bldgSelect = (bldg: { pk: number; name: string }) => {
   if (!!bldg.pk) fetchHouseUnitList(project.value, bldg.pk)
-  else projectDataStore.houseUnitList = []
+  else proDataStore.houseUnitList = []
   bldgName.value = bldg.name
 }
 
@@ -125,7 +124,7 @@ onBeforeMount(() => {
   fetchTypeList(project.value)
   fetchFloorTypeList(project.value)
   fetchBuildingList(project.value)
-  projectDataStore.houseUnitList = []
+  proDataStore.houseUnitList = []
 })
 </script>
 
