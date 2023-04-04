@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { useProjectData } from '@/store/pinia/project_data'
 import Unit from '@/views/projects/Unit/components/Unit.vue'
-import UnitFormList from './UnitFormList.vue'
+import UnitForm from './UnitForm.vue'
 
 defineProps({ bldgName: { type: String, default: '' } })
 
@@ -10,11 +10,12 @@ const maxFloor = computed(() =>
   Math.max(...simpleUnits.value.map((u: { floor: number }) => u.floor)),
 )
 
-const projectDataStore = useProjectData()
-const simpleUnits = computed(() => projectDataStore.simpleUnits)
+const proDataStore = useProjectData()
+const simpleUnits = computed(() => proDataStore.simpleUnits)
 const lineList = computed(() =>
   [...new Set(simpleUnits.value.map((u: { line: number }) => u.line))].sort(),
 )
+const houseUnitList = computed(() => proDataStore.houseUnitList)
 
 const getUnit = (line: number, floor: number) =>
   simpleUnits.value
@@ -31,7 +32,7 @@ const getUnit = (line: number, floor: number) =>
     </CRow>
 
     <CRow v-else>
-      <CCol xl="5" class="p-5">
+      <CCol xl="4" class="p-5">
         <CRow v-for="i in maxFloor" :key="i">
           <Unit
             v-for="line in lineList"
@@ -53,8 +54,39 @@ const getUnit = (line: number, floor: number) =>
         </CRow>
       </CCol>
 
-      <CCol xl="7">
-        <UnitFormList />
+      <CCol xl="8">
+        <CTable hover responsive align="middle">
+          <colgroup>
+            <col width="10%" />
+            <col width="10%" />
+            <col width="10%" />
+            <col width="10%" />
+            <col width="10%" />
+            <col width="10%" />
+            <col width="25%" />
+            <col width="15%" />
+          </colgroup>
+          <CTableHead>
+            <CTableRow class="text-center">
+              <CTableHeaderCell>타입</CTableHeaderCell>
+              <CTableHeaderCell>층범위 타입</CTableHeaderCell>
+              <CTableHeaderCell>호수</CTableHeaderCell>
+              <CTableHeaderCell>라인</CTableHeaderCell>
+              <CTableHeaderCell>층수</CTableHeaderCell>
+              <CTableHeaderCell>홀딩여부</CTableHeaderCell>
+              <CTableHeaderCell>홀딩사유</CTableHeaderCell>
+              <CTableHeaderCell>비고</CTableHeaderCell>
+            </CTableRow>
+          </CTableHead>
+
+          <CTableBody>
+            <UnitForm
+              v-for="unit in houseUnitList"
+              :key="unit.pk"
+              :unit="unit"
+            />
+          </CTableBody>
+        </CTable>
       </CCol>
     </CRow>
   </CContainer>
