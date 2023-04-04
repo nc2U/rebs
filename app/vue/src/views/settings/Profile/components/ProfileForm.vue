@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { reactive, ref, computed, onBeforeMount, watch } from 'vue'
+import { ref, reactive, computed, watch, onBeforeMount } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { maska as vMaska } from 'maska'
 import { dateFormat } from '@/utils/baseMixins'
@@ -18,8 +18,6 @@ const emit = defineEmits(['file-upload', 'on-submit', 'reset-form'])
 const alertModal = ref()
 const confirmModal = ref()
 
-const image = ref()
-
 const form = reactive<Profile>({
   pk: null,
   user: null,
@@ -28,28 +26,28 @@ const form = reactive<Profile>({
   cell_phone: '',
 })
 
-watch(form, val => {
-  if (val.birth_date) form.birth_date = dateFormat(val.birth_date)
-})
-
+const image = ref('')
 const validated = ref(false)
 
 const accountStore = useAccount()
 const userInfo = computed(() => accountStore.userInfo)
 
-const formsCheck = computed(() => (props.profile?.pk ? isChanged() : false))
+const formsCheck = computed(() => {
+  if (props.profile) {
+    const a = form.name === props.profile.name
+    const b = form.birth_date === props.profile.birth_date
+    const c = form.cell_phone === props.profile.cell_phone
+    const d = !image.value || image.value === props.profile.image
+    return a && b && c && d
+  } else return false
+})
 
 const confirmText = computed(() => (props.profile?.pk ? '변경' : '등록'))
-
 const btnClass = computed(() => (props.profile?.pk ? 'success' : 'primary'))
 
-const isChanged = () => {
-  const a = form.name === props.profile.name
-  const b = form.birth_date === props.profile.birth_date
-  const c = form.cell_phone === props.profile.cell_phone
-  const d = !image.value || image.value === props.profile.image
-  return a && b && c && d
-}
+watch(form, val => {
+  if (val.birth_date) form.birth_date = dateFormat(val.birth_date)
+})
 
 const fileUpload = (img: File) => {
   image.value = img.name
@@ -79,26 +77,24 @@ const modalAction = () => {
 }
 
 const resetForm = () => {
-  if (props.profile) {
-    if (props.profile) {
-      form.pk = props.profile.pk
-      form.user = props.profile.user
-      form.name = props.profile.name
-      form.birth_date = props.profile.birth_date
-      form.cell_phone = props.profile.cell_phone
-      image.value = props.profile.image
-    }
-  } else {
-    form.pk = null
-    form.user = null
-    form.name = ''
-    form.birth_date = ''
-    form.cell_phone = ''
-    image.value = ''
-  }
+  form.pk = null
+  form.user = null
+  form.name = ''
+  form.birth_date = ''
+  form.cell_phone = ''
+  image.value = ''
 }
 
-onBeforeMount(() => resetForm())
+onBeforeMount(() => {
+  if (props.profile) {
+    form.pk = props.profile.pk
+    form.user = props.profile.user
+    form.name = props.profile.name
+    form.birth_date = props.profile.birth_date
+    form.cell_phone = props.profile.cell_phone
+    image.value = props.profile.image
+  }
+})
 </script>
 
 <template>
@@ -118,10 +114,7 @@ onBeforeMount(() => resetForm())
               아이디
             </CFormLabel>
 
-            <CCol md="8">
-              {{ userInfo?.username || '' }}
-              <CFormFeedback invalid>아이디를 입력하세요.</CFormFeedback>
-            </CCol>
+            <CCol md="8">{{ userInfo?.username || '' }}</CCol>
           </CRow>
 
           <CRow class="mb-3">
@@ -129,10 +122,7 @@ onBeforeMount(() => resetForm())
               이메일 주소
             </CFormLabel>
 
-            <CCol md="8">
-              {{ userInfo?.email || '' }}
-              <CFormFeedback invalid>이메일을 입력하세요.</CFormFeedback>
-            </CCol>
+            <CCol md="8">{{ userInfo?.email || '' }}</CCol>
           </CRow>
 
           <hr />
@@ -188,11 +178,7 @@ onBeforeMount(() => resetForm())
           </CRow>
         </CCol>
         <CCol md="6">
-          <AvatarInput
-            ref="avatar"
-            :default-src="image"
-            @file-upload="fileUpload"
-          />
+          <AvatarInput ref="avatar" :image="image" @file-upload="fileUpload" />
         </CCol>
       </CRow>
     </CCardBody>

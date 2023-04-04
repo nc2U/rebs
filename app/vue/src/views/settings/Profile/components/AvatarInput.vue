@@ -1,14 +1,15 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, onBeforeMount } from 'vue'
 import CropperModal from './CropperModal.vue'
 
 const props = defineProps({
-  defaultSrc: { type: String, default: '' },
+  image: { type: String, default: '/static/dist/img/NoImage.jpeg' },
 })
 
 const emit = defineEmits(['file-upload'])
 
-const imgUrl = ref(props.defaultSrc || '/static/dist/img/NoImage.jpeg')
+const imgUrl = ref('')
+
 const modalImg = ref()
 const cropModal = ref()
 
@@ -40,6 +41,10 @@ const fileUpload = (img: File) => {
 }
 
 const delModalImg = () => (modalImg.value = null)
+
+onBeforeMount(() => {
+  imgUrl.value = props.image
+})
 </script>
 
 <template>
