@@ -17,6 +17,13 @@ const lineList = computed(() =>
 )
 const houseUnitList = computed(() => proDataStore.houseUnitList)
 
+const lineClass = computed(() =>
+  lineList.value.length > 6 ? 'col-xl-12' : 'col-xl-4',
+)
+const listsClass = computed(() =>
+  lineList.value.length > 6 ? 'col-xl-12' : 'col-xl-8',
+)
+
 const getUnit = (line: number, floor: number) =>
   simpleUnits.value
     .filter((u: { line: number }) => u.line === line)
@@ -32,7 +39,7 @@ const getUnit = (line: number, floor: number) =>
     </CRow>
 
     <CRow v-else>
-      <CCol xl="4" class="p-5">
+      <CCol class="p-5" :class="lineClass">
         <CRow v-for="i in maxFloor" :key="i">
           <Unit
             v-for="line in lineList"
@@ -54,7 +61,7 @@ const getUnit = (line: number, floor: number) =>
         </CRow>
       </CCol>
 
-      <CCol xl="8">
+      <CCol :class="listsClass">
         <CTable hover responsive align="middle">
           <colgroup>
             <col width="12%" />
