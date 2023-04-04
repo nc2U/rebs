@@ -42,7 +42,7 @@ export const useProCash = defineStore('proCash', () => {
   const formAccD2List = ref<ProjectAccountD2[]>([])
 
   const fetchProFormAccD2List = (sort: number | null = null) => {
-    const queryStr = sort ? `?acc__sorts=${sort}` : ''
+    const queryStr = sort ? `?d1__sorts=${sort}` : ''
     api
       .get(`/project-account-depth2/${queryStr}`)
       .then(res => (formAccD2List.value = res.data.results))
