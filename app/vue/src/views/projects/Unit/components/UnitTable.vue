@@ -57,19 +57,19 @@ const getUnit = (line: number, floor: number) =>
       <CCol xl="8">
         <CTable hover responsive align="middle">
           <colgroup>
-            <col width="10%" />
-            <col width="10%" />
-            <col width="10%" />
-            <col width="10%" />
-            <col width="10%" />
-            <col width="10%" />
-            <col width="25%" />
+            <col width="12%" />
             <col width="15%" />
+            <col width="12%" />
+            <col width="9%" />
+            <col width="10%" />
+            <col width="8%" />
+            <col width="20%" />
+            <col width="14%" />
           </colgroup>
           <CTableHead>
             <CTableRow class="text-center">
               <CTableHeaderCell>타입</CTableHeaderCell>
-              <CTableHeaderCell>층범위 타입</CTableHeaderCell>
+              <CTableHeaderCell>층범위타입</CTableHeaderCell>
               <CTableHeaderCell>호수</CTableHeaderCell>
               <CTableHeaderCell>라인</CTableHeaderCell>
               <CTableHeaderCell>층수</CTableHeaderCell>

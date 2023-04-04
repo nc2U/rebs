@@ -82,6 +82,9 @@ export const useProjectData = defineStore('projectData', () => {
         }))
       : [],
   )
+  const getFloorTypes = computed(() =>
+    floorTypeList.value.map(f => ({ valume: f.pk, label: f.alias_name })),
+  )
 
   // actions
   const fetchFloorTypeList = (projId: number) =>
@@ -248,6 +251,7 @@ export const useProjectData = defineStore('projectData', () => {
 
     floorTypeList,
     simpleFloors,
+    getFloorTypes,
     fetchFloorTypeList,
     createFloorType,
     updateFloorType,
