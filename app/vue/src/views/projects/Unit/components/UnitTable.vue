@@ -20,10 +20,10 @@ const lineList = computed(() =>
 const houseUnitList = computed(() => proDataStore.houseUnitList)
 
 const lineClass = computed(() =>
-  lineList.value.length > 6 ? 'col-xl-12' : 'col-xl-4',
+  lineList.value.length > 8 ? 'col-xl-12' : 'col-xl-6',
 )
 const listsClass = computed(() =>
-  lineList.value.length > 6 ? 'col-xl-12' : 'col-xl-8',
+  lineList.value.length > 8 ? 'col-xl-12' : 'col-xl-6',
 )
 
 const getUnit = (line: number, floor: number) =>
@@ -70,10 +70,10 @@ const onDelete = (pk: number) => emit('on-delete', pk)
         <CTable hover responsive align="middle">
           <colgroup>
             <col width="12%" />
-            <col width="15%" />
+            <!--            <col width="15%" />-->
             <col width="12%" />
-            <col width="9%" />
-            <col width="10%" />
+            <!--            <col width="9%" />-->
+            <!--            <col width="10%" />-->
             <col width="8%" />
             <col width="20%" />
             <col width="14%" />
@@ -81,10 +81,10 @@ const onDelete = (pk: number) => emit('on-delete', pk)
           <CTableHead>
             <CTableRow class="text-center">
               <CTableHeaderCell>타입</CTableHeaderCell>
-              <CTableHeaderCell>층범위타입</CTableHeaderCell>
+              <!--              <CTableHeaderCell>층범위타입</CTableHeaderCell>-->
               <CTableHeaderCell>호수</CTableHeaderCell>
-              <CTableHeaderCell>라인</CTableHeaderCell>
-              <CTableHeaderCell>층수</CTableHeaderCell>
+              <!--              <CTableHeaderCell>라인</CTableHeaderCell>-->
+              <!--              <CTableHeaderCell>층수</CTableHeaderCell>-->
               <CTableHeaderCell>홀딩여부</CTableHeaderCell>
               <CTableHeaderCell>홀딩사유</CTableHeaderCell>
               <CTableHeaderCell>비고</CTableHeaderCell>
