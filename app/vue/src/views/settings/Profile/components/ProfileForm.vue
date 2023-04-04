@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, watch, onBeforeMount } from 'vue'
+import { ref, reactive, computed, watch, onMounted } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { maska as vMaska } from 'maska'
 import { dateFormat } from '@/utils/baseMixins'
@@ -85,7 +85,7 @@ const resetForm = () => {
   image.value = ''
 }
 
-onBeforeMount(() => {
+onMounted(() => {
   if (props.profile) {
     form.pk = props.profile.pk
     form.user = props.profile.user
