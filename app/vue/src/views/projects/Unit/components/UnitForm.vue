@@ -1,8 +1,13 @@
 <script lang="ts" setup="">
 import { computed, onMounted, ref } from 'vue'
 import { useProjectData } from '@/store/pinia/project_data'
+import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
+import AlertModal from '@/components/Modals/AlertModal.vue'
 
 const props = defineProps({ unit: { type: Object, required: true } })
+
+const alertModal = ref()
+const confirmModal = ref()
 
 const form = ref({
   unit_type: null,
@@ -90,4 +95,17 @@ onMounted(() => {
       <CButton color="danger" size="sm">삭제</CButton>
     </CTableDataCell>
   </CTableRow>
+
+  <ConfirmModal ref="confirmModal">
+    <template #header> 호수 유닛 삭제</template>
+    <template #default>
+      이 호수에 종속된 계약 건 데이터가 있는 경우 해당 데이터를 모두 제거한 후
+      삭제가능 합니다. 해당 호수 유닛을 삭제 하시겠습니까?
+    </template>
+    <template #footer>
+      <CButton color="danger" @click="modalAction">삭제</CButton>
+    </template>
+  </ConfirmModal>
+
+  <AlertModal ref="alertModal" />
 </template>

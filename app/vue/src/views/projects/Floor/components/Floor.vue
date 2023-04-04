@@ -56,7 +56,7 @@ const onDeleteFloor = () => {
 }
 const modalAction = () => {
   emit('on-delete', props.floor.pk)
-  confirmModal.value.visible = false
+  confirmModal.value.close()
 }
 const resetForm = () => {
   form.start_floor = props.floor.start_floor

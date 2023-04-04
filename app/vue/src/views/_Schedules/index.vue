@@ -109,7 +109,7 @@ const handleEventClick = (clickInfo: EventClickArg) => {
 }
 
 const removeConfirm = () => {
-  formModal.value.visible = false
+  formModal.value.close()
   confirmModal.value.callModal()
 }
 

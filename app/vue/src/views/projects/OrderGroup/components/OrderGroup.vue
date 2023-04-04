@@ -56,7 +56,7 @@ const onDeleteOrder = () => {
 
 const modalAction = () => {
   emit('on-delete', props.order.pk)
-  confirmModal.value.visible = false
+  confirmModal.value.close()
 }
 
 const resetForm = () => {
@@ -109,7 +109,7 @@ const resetForm = () => {
   </CTableRow>
 
   <ConfirmModal ref="confirmModal">
-    <template #header> 차수그룹 삭제 </template>
+    <template #header> 차수그룹 삭제</template>
     <template #default>
       이 그룹에 종속 데이터가 있는 경우 해당 데이터를 모두 제거한 후 삭제가능
       합니다. 해당 차수그룹을 삭제 하시겠습니까?

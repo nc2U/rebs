@@ -281,7 +281,7 @@ const deleteObject = () => {
     project: props.imprest.project,
     pk: props.imprest.pk,
   })
-  delModal.value.visible = false
+  delModal.value.close()
   emit('close')
 }
 

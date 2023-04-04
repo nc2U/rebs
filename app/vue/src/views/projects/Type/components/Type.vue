@@ -59,7 +59,7 @@ const onDeleteType = () => {
 }
 const modalAction = () => {
   emit('on-delete', props.type.pk)
-  confirmModal.value.visible = false
+  confirmModal.value.close()
 }
 const resetForm = () => {
   form.sort = props.type.sort
