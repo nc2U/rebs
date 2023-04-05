@@ -34,8 +34,8 @@ const form = reactive<Company>({
   org_number: '',
   business_cond: '',
   business_even: '',
-  es_date: dateFormat(new Date()),
-  op_date: dateFormat(new Date()),
+  es_date: '',
+  op_date: '',
   zipcode: '',
   address1: '',
   address2: '',
@@ -72,7 +72,7 @@ const onSubmit = (event: Event) => {
 
 watch(form, val => {
   if (val.es_date) form.es_date = dateFormat(val.es_date)
-  if (val.op_date) form.es_date = dateFormat(val.op_date)
+  if (val.op_date) form.op_date = dateFormat(val.op_date)
 })
 
 const modalAction = () => {
