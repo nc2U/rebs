@@ -44,7 +44,11 @@ def create_superuser(request):
                                       password=password)
         return redirect('/install/create/company/')
     else:
-        return render(request, 'install/create_superuser.html')
+        is_superuser = User.objects.filter(is_superuser=True).exists()
+        if is_superuser:
+            return redirect('/install/create/company/')
+        else:
+            return render(request, 'install/create_superuser.html')
 
 
 def create_company(request):
@@ -60,10 +64,13 @@ def create_company(request):
         return redirect('/install/create/project/')
     else:
         is_superuser = User.objects.filter(is_superuser=True).exists()
-        if is_superuser:
-            return render(request, 'install/create_company.html')
-        else:
+        is_company = Company.objects.all().exists()
+        if not is_superuser:
             return redirect('/install/create/superuser/')
+        elif is_company:
+            return redirect('/install/create/project/')
+        else:
+            return render(request, 'install/create_company.html')
 
 
 def data_seeding(request):
