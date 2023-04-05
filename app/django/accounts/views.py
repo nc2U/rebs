@@ -73,7 +73,7 @@ def create_company(request):
             return render(request, 'install/create_company.html')
 
 
-def data_seeding(request):
+def data_seeding():
     pass
 
 
@@ -104,8 +104,11 @@ def create_project(request):
         return redirect('/')
     else:
         is_company = Company.objects.all().exists()
-        if is_company:
+        is_project = Project.objects.all().exists()
+        if not is_company:
+            return redirect('/install/create/company/')
+        elif not is_project:
             companies = Company.objects.all()
             return render(request, 'install/create_project.html', {'companies': companies})
         else:
-            return redirect('/install/create/company/')
+            return redirect('/')
