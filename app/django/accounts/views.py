@@ -34,6 +34,19 @@ def create_superuser(request):
         User.objects.create_superuser(username=username,
                                       email=email,
                                       password=password)
-        return redirect('home')
+        return redirect('/install/create/company/')
     else:
         return render(request, 'install/create_superuser.html')
+
+
+def create_company(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        User.objects.create_superuser(username=username,
+                                      email=email,
+                                      password=password)
+        return redirect('/')
+    else:
+        return render(request, 'install/create_company.html')
