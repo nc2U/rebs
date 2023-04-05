@@ -89,7 +89,7 @@ def create_project(request):
         local_address3 = request.POST.get('local_address3')
         area_usage = request.POST.get('area_usage')
         build_size = request.POST.get('build_size')
-        Project.objects.create(company=company,
+        Project.objects.create(company_id=company,
                                name=name,
                                kind=kind,
                                start_year=start_year,
