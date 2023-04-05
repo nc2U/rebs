@@ -4,13 +4,13 @@ from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 # --------------------------------------------------------
-from accounts.models import User
+from project.models import Project
 
 TODAY = date.today()
 
 
 def install_check(request):
-    is_installed = User.objects.filter(is_superuser=True).exists()
+    is_installed = Project.objects.all().exists()
 
     if is_installed:
         return render(request, 'base-vue.html')

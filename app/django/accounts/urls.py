@@ -1,10 +1,10 @@
 from django.urls import path
-from .views import superuser_check, create_superuser, create_company, create_project
+from .views import install_check_step, create_superuser, create_company, create_project
 
 app_name = 'install'
 
 urlpatterns = [
-    path('', superuser_check),
+    path('', install_check_step),
     path('create/superuser/', create_superuser, name='create_superuser'),
     path('create/company/', create_company, name='create_company'),
     path('create/project/', create_project, name='create_project'),

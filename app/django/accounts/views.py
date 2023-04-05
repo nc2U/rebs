@@ -19,13 +19,19 @@ class UserCreateDoneTV(TemplateView):
     template_name = 'registration/register_done.html'
 
 
-def superuser_check(request):
+def install_check_step(request):
+    is_project = Project.objects.all().exists()
+    is_company = Company.objects.all().exists()
     is_superuser = User.objects.filter(is_superuser=True).exists()
 
-    if is_superuser:
+    if is_project:
         return redirect('/')
-    else:
+    elif not is_superuser:
         return redirect('/install/create/superuser/')
+    elif not is_company:
+        return redirect('/install/create/company/')
+    else:
+        return redirect('/install/create/project/')
 
 
 def create_superuser(request):
@@ -56,6 +62,10 @@ def create_company(request):
         return render(request, 'install/create_company.html')
 
 
+def data_seeding(request):
+    pass
+
+
 def create_project(request):
     if request.method == 'POST':
         company = request.POST.get('company')
@@ -78,6 +88,8 @@ def create_project(request):
                                local_address3=local_address3,
                                area_usage=area_usage,
                                build_size=build_size)
+
+        data_seeding()
         return redirect('/')
     else:
         companies = Company.objects.all()
