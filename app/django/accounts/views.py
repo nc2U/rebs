@@ -67,10 +67,10 @@ def create_company(request):
         is_company = Company.objects.all().exists()
         if not is_superuser:
             return redirect('/install/create/superuser/')
-        elif is_company:
-            return redirect('/install/create/project/')
-        else:
+        elif not is_company:
             return render(request, 'install/create_company.html')
+        else:
+            return redirect('/install/create/project/')
 
 
 def data_seeding():
