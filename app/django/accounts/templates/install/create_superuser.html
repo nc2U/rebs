@@ -18,25 +18,29 @@
         <div class="col-xl-6 mb-3 row">
             <label for="email" class="col-sm-3 col-form-label">이메일</label>
             <div class="col-sm-9">
-                <input type="email" class="form-control" id="email" name="email" required placeholder="최고관리자 이메일">
+                <input type="email" maxlength="255" class="form-control" id="email" name="email" required
+                       placeholder="최고관리자 이메일">
             </div>
         </div>
         <div class="col-xl-6 mb-3 row">
             <label for="username" class="col-sm-3 col-form-label">이름(아이디)</label>
             <div class="col-sm-9">
-                <input type="text" class="form-control" id="username" name="username" required placeholder="최고관리자 이름">
+                <input type="text" maxlength="150" class="form-control" id="username" name="username" required
+                       placeholder="최고관리자 이름">
             </div>
         </div>
         <div class="col-xl-6 mb-3 row">
             <label for="password" class="col-sm-3 col-form-label">패스워드</label>
             <div class="col-sm-9">
-                <input type="password" class="form-control" id="password" name="password" required placeholder="패스워드">
+                <input type="password" maxlength="20" class="form-control" id="password" name="password" required
+                       placeholder="패스워드">
             </div>
         </div>
         <div class="col-xl-6 mb-3 row">
             <label for="passwordConfirm" class="col-sm-3 col-form-label">패스워드 확인</label>
             <div class="col-sm-9">
-                <input type="password" class="form-control" id="passwordConfirm" required placeholder="패스워드 확인">
+                <input type="password" maxlength="20" class="form-control" id="passwordConfirm" required
+                       placeholder="패스워드 확인">
             </div>
         </div>
         <div class="mb-3 d-grid gap-2 d-md-flex justify-content-end">

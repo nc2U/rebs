@@ -59,7 +59,11 @@ def create_company(request):
                                org_number=org_number)
         return redirect('/install/create/project/')
     else:
-        return render(request, 'install/create_company.html')
+        is_superuser = User.objects.filter(is_superuser=True).exists()
+        if is_superuser:
+            return render(request, 'install/create_company.html')
+        else:
+            return redirect('/install/create/superuser/')
 
 
 def data_seeding(request):
@@ -92,5 +96,9 @@ def create_project(request):
         data_seeding()
         return redirect('/')
     else:
-        companies = Company.objects.all()
-        return render(request, 'install/create_project.html', {'companies': companies})
+        is_company = Company.objects.all().exists()
+        if is_company:
+            companies = Company.objects.all()
+            return render(request, 'install/create_project.html', {'companies': companies})
+        else:
+            return redirect('/install/create/company/')

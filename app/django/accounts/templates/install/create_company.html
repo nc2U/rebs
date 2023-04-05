@@ -18,27 +18,28 @@
         <div class="col-xl-6 mb-3 row">
             <label for="name" class="col-sm-3 col-form-label">회사이름</label>
             <div class="col-sm-9">
-                <input type="text" class="form-control" id="name" name="name" required placeholder="회사이름">
+                <input type="text" maxlength="30" class="form-control" id="name" name="name" required
+                       placeholder="회사이름">
             </div>
         </div>
         <div class="col-xl-6 mb-3 row">
             <label for="tax_number" class="col-sm-3 col-form-label">사업자등록번호</label>
             <div class="col-sm-9">
-                <input type="text" class="form-control" id="tax_number" name="tax_number" required
+                <input type="text" maxlength="12" class="form-control" id="tax_number" name="tax_number" required
                        placeholder="사업자등록번호">
             </div>
         </div>
         <div class="col-xl-6 mb-3 row">
             <label for="ceo" class="col-sm-3 col-form-label">대표자명</label>
             <div class="col-sm-9">
-                <input type="text" class="form-control" id="ceo" name="ceo" required placeholder="대표자명">
+                <input type="text" maxlength="20" class="form-control" id="ceo" name="ceo" required placeholder="대표자명">
             </div>
         </div>
         <div class="col-xl-6 mb-3 row">
             <label for="org_number" class="col-sm-3 col-form-label">법인등록번호</label>
             <div class="col-sm-9">
-                <input type="text" class="form-control" id="org_number" name="org_number" required
-                       placeholder="법인등록번호">
+                <input type="text" maxlength="14" class="form-control" id="org_number" name="org_number"
+                       required placeholder="법인등록번호">
             </div>
         </div>
         <div class="mb-3 d-grid gap-2 d-md-flex justify-content-end">
