@@ -17,6 +17,15 @@ class UserCreateDoneTV(TemplateView):
     template_name = 'registration/register_done.html'
 
 
+def superuser_check(request):
+    is_superuser = User.objects.filter(is_superuser=True).exists()
+
+    if is_superuser:
+        return redirect('/')
+    else:
+        return redirect('/install/create/superuser/')
+
+
 def create_superuser(request):
     if request.method == 'POST':
         username = request.POST.get('username')

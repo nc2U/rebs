@@ -24,8 +24,7 @@ from rest_framework_simplejwt.views import (
 from django.views.generic import RedirectView, TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
-
-from rebs.views import CustomHandler404
+from rebs.views import CustomHandler404, install_check
 
 handler404 = CustomHandler404.as_view()
 handler500 = 'rebs.views.handler500'
@@ -34,7 +33,7 @@ admin.site.site_header = '관리자 페이지'  # default: "Django Administratio
 admin.site.site_title = 'Rebs 사이트 관리'  # default: "Django site admin"
 
 url = [
-    path('install/', include('accounts.urls')),
+    path('install/', include('accounts.urls'), name='install'),
 
     path('book/', include('book.urls')),
 
@@ -52,7 +51,7 @@ url = [
     path('robots.txt', TemplateView.as_view(template_name='robots.txt', content_type='text/plain')),
 
     path('', include('django.contrib.auth.urls')),  # 로그아웃 등 페이지 코드에 필요
-    path('', TemplateView.as_view(template_name='base-vue.html')),
+    path('', install_check, name='home'),
     path('rebs/', include('rebs.urls')),
     path('svelte/', TemplateView.as_view(template_name='base-svelte.html')),
 
