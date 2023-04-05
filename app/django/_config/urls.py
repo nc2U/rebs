@@ -51,6 +51,7 @@ url = [
     path('accounts/', include('allauth.urls')),
     path('robots.txt', TemplateView.as_view(template_name='robots.txt', content_type='text/plain')),
 
+    path('', include('django.contrib.auth.urls')),  # 로그아웃 등 페이지 코드에 필요
     path('', TemplateView.as_view(template_name='base-vue.html')),
     path('rebs/', include('rebs.urls')),
     path('svelte/', TemplateView.as_view(template_name='base-svelte.html')),
