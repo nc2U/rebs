@@ -1,10 +1,11 @@
-from django.urls import path, include
+from django.urls import path
+from django.views.generic import RedirectView
+from .views import create_superuser
 
-from .views import UserCreateView, UserCreateDoneTV, create_superuser
-
-app_name = 'setup'
+app_name = 'install'
 
 urlpatterns = [
+    path('', RedirectView.as_view(url='/install/create/superuser/'), name='install'),
     path('create/superuser/', create_superuser, name='create_superuser')
     # path('', include('django.contrib.auth.urls')),
     # path('register/', UserCreateView.as_view(), name='register'),

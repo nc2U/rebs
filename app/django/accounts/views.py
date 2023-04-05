@@ -27,4 +27,4 @@ def create_superuser(request):
                                       password=password)
         return redirect('home')
     else:
-        return render(request, 'setup/create_superuser.html')
+        return render(request, 'install/create_superuser.html')

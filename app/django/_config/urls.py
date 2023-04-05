@@ -34,8 +34,8 @@ admin.site.site_header = '관리자 페이지'  # default: "Django Administratio
 admin.site.site_title = 'Rebs 사이트 관리'  # default: "Django site admin"
 
 url = [
-    path('setup/', include('accounts.urls')),
-    
+    path('install/', include('accounts.urls')),
+
     path('book/', include('book.urls')),
 
     path('admin/', admin.site.urls),
