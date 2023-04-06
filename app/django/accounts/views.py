@@ -1,3 +1,4 @@
+import subprocess
 from django.views.generic import TemplateView
 from django.views.generic.edit import CreateView
 from django.urls import reverse_lazy
@@ -73,8 +74,9 @@ def create_company(request):
             return redirect('/install/create/project/')
 
 
-def data_seeding():
-    pass
+def load_seed_data():
+    cmd = 'python manage.py loaddata rebs/fixtures/seeds-data.json'
+    subprocess.call(cmd, shell=True)
 
 
 def create_project(request):
@@ -100,7 +102,7 @@ def create_project(request):
                                area_usage=area_usage,
                                build_size=build_size)
 
-        data_seeding()
+        load_seed_data()
         return redirect('/')
     else:
         is_company = Company.objects.all().exists()
