@@ -34,7 +34,7 @@ export interface StaffAuth {
 export type Profile = {
   [key: string]: undefined | number | null | string
   pk?: number | null
-  user: number | null
+  user?: number | null
   name: string
   birth_date: string
   cell_phone: string

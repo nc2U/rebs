@@ -20,6 +20,8 @@ const patchProfile = (payload: { pk: number; form: FormData }) =>
 const onSubmit = (payload: Profile) => {
   if (image.value) payload.image = image.value
   const { pk, ...formData } = payload
+  if (!formData.user && accountStore.userInfo)
+    formData.user = accountStore.userInfo.pk
   const form = new FormData()
 
   for (const key in formData) {
