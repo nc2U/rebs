@@ -23,6 +23,8 @@ const excelUrl = computed(
 
 const projStore = useProject()
 const project = computed(() => projStore.project?.pk)
+const initProjId = computed(() => projStore.initProjId)
+
 const fetchIncBudgetList = (proj: number) => projStore.fetchIncBudgetList(proj)
 
 const prDataStore = useProjectData()
@@ -63,12 +65,12 @@ const setDate = (d: Date) => {
 }
 
 onBeforeMount(() => {
-  if (project.value) {
-    fetchTypeList(project.value)
-    fetchOrderGroupList(project.value)
-    fetchContSummaryList(project.value)
-    fetchIncBudgetList(project.value)
-    fetchPaySumList(project.value)
+  if (initProjId.value) {
+    fetchTypeList(initProjId.value)
+    fetchOrderGroupList(initProjId.value)
+    fetchContSummaryList(initProjId.value)
+    fetchIncBudgetList(initProjId.value)
+    fetchPaySumList(initProjId.value)
   }
 })
 </script>

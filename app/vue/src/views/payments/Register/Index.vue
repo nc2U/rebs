@@ -19,6 +19,7 @@ const paymentId = ref<string>('')
 
 const projectStore = useProject()
 const project = computed(() => projectStore.project?.pk)
+const initProjId = computed(() => projectStore.initProjId)
 
 const contractStore = useContract()
 const contract = computed(() => contractStore.contract)
@@ -147,10 +148,10 @@ onBeforeMount(() => {
   }
   if (route.query.payment) paymentId.value = route.query.payment as string
 
-  if (project.value) {
-    fetchTypeList(project.value)
-    fetchPayOrderList(project.value)
-    fetchProBankAccList(project.value)
+  if (initProjId.value) {
+    fetchTypeList(initProjId.value)
+    fetchPayOrderList(initProjId.value)
+    fetchProBankAccList(initProjId.value)
   }
 })
 

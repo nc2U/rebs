@@ -31,6 +31,8 @@ let filterItems = ref<CashBookFilter>({
 
 const projStore = useProject()
 const project = computed(() => projStore.project?.pk)
+const initProjId = computed(() => projStore.initProjId)
+
 const fetchIncBudgetList = (proj: number) => projStore.fetchIncBudgetList(proj)
 
 const contStore = useContract()
@@ -126,16 +128,16 @@ const excelUrl = computed(() =>
 )
 
 onMounted(() => {
-  if (project.value) {
-    fetchOrderGroupList(project.value)
-    fetchTypeList(project.value)
-    fetchIncBudgetList(project.value)
-    fetchContSummaryList(project.value)
-    fetchPaySumList(project.value)
-    fetchContNumList(project.value)
-    fetchPayOrderList(project.value)
-    fetchPaymentList({ project: project.value })
-    fetchProBankAccList(project.value)
+  if (initProjId.value) {
+    fetchOrderGroupList(initProjId.value)
+    fetchTypeList(initProjId.value)
+    fetchIncBudgetList(initProjId.value)
+    fetchContSummaryList(initProjId.value)
+    fetchPaySumList(initProjId.value)
+    fetchContNumList(initProjId.value)
+    fetchPayOrderList(initProjId.value)
+    fetchPaymentList({ project: initProjId.value })
+    fetchProBankAccList(initProjId.value)
   }
 })
 
