@@ -12,8 +12,7 @@ import ContractBoard from '@/views/contracts/Status/components/ContractBoard.vue
 
 const projectStore = useProject()
 
-const initProjId = computed(() => projectStore.initProjId)
-const project = computed(() => projectStore.project?.pk || initProjId.value)
+const project = computed(() => projectStore.project?.pk)
 const excelUrl = computed(() =>
   project.value ? `excel/status/?project=${project.value}` : '',
 )
@@ -35,15 +34,6 @@ const fetchSubsSummaryList = (projId: number) =>
 const fetchContSummaryList = (projId: number) =>
   contractStore.fetchContSummaryList(projId)
 
-onMounted(() => {
-  fetchTypeList(project.value)
-  fetchBuildingList(project.value)
-  fetchHouseUnitList(project.value)
-  fetchSubsSummaryList(project.value)
-  fetchContractList({ project: project.value })
-  fetchContSummaryList(project.value)
-})
-
 const onSelectAdd = (target: number) => {
   if (!!target) {
     fetchTypeList(target)
@@ -61,6 +51,17 @@ const onSelectAdd = (target: number) => {
     contractStore.contractsCount = 0
   }
 }
+
+onMounted(() => {
+  if (project.value) {
+    fetchTypeList(project.value)
+    fetchBuildingList(project.value)
+    fetchHouseUnitList(project.value)
+    fetchSubsSummaryList(project.value)
+    fetchContractList({ project: project.value })
+    fetchContSummaryList(project.value)
+  }
+})
 </script>
 
 <template>

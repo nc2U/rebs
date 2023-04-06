@@ -17,8 +17,7 @@ import ReleaseList from '@/views/contracts/Release/components/ReleaseList.vue'
 const page = ref(1)
 
 const projectStore = useProject()
-const initProjId = computed(() => projectStore.initProjId)
-const project = computed(() => projectStore.project?.pk || initProjId.value)
+const project = computed(() => projectStore.project?.pk)
 const downloadUrl = computed(() => `/excel/releases/?project=${project.value}`)
 
 const contractStore = useContract()
@@ -62,7 +61,7 @@ const onSelectAdd = (target: number) => {
   router.push({ name: '계약 해지 관리' })
 }
 const searchContractor = (search: string) => {
-  if (search !== '') {
+  if (search !== '' && project.value) {
     fetchContractorList(project.value, search)
   } else contractStore.contractorList = []
 }
@@ -71,17 +70,17 @@ const getRelease = (release: number) => fetchContRelease(release)
 
 const pageSelect = (p: number) => {
   page.value = p
-  fetchContReleaseList(project.value, p)
+  if (project.value) fetchContReleaseList(project.value, p)
 }
 
 const onSubmit = (payload: ContractRelease) => {
-  payload.project = project.value
+  if (project.value) payload.project = project.value
   if (!payload.pk) createRelease({ ...payload })
   else updateRelease({ page: page.value, ...payload })
 }
 
 onBeforeMount(() => {
-  fetchContReleaseList(project.value)
+  if (project.value) fetchContReleaseList(project.value)
   if (route.query.contractor) fetchContractor(Number(route.query.contractor))
   else contractStore.contractor = null
 })

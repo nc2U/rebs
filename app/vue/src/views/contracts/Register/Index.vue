@@ -20,8 +20,7 @@ const contractStore = useContract()
 const contract = computed(() => contractStore.contract)
 
 const projectStore = useProject()
-const initProjId = computed(() => projectStore.initProjId)
-const project = computed(() => projectStore.project?.pk || initProjId.value)
+const project = computed(() => projectStore.project?.pk)
 const unitSet = computed(() => projectStore.project?.is_unit_set)
 const isUnion = computed(() => !projectStore.project?.is_direct_manage)
 
@@ -48,7 +47,7 @@ const fetchPayOrderList = (projId: number) =>
   paymentStore.fetchPayOrderList(projId)
 
 watch(contract, newVal => {
-  if (newVal) {
+  if (newVal && project.value) {
     fetchKeyUnitList({
       project: project.value,
       unit_type: newVal.unit_type,
@@ -96,30 +95,34 @@ const getContract = (cont: string) => fetchContract(parseInt(cont))
 
 const typeSelect = (type: number) => {
   const unit_type = type
-  fetchKeyUnitList({ project: project.value, unit_type })
-  fetchHouseUnitList({ project: project.value, unit_type })
+  if (project.value) {
+    fetchKeyUnitList({ project: project.value, unit_type })
+    fetchHouseUnitList({ project: project.value, unit_type })
+  }
 }
 
 const onCreate = (payload: Contract) => {
-  payload.project = project.value
+  if (project.value) payload.project = project.value
   contractStore.createContractSet({ ...payload })
   router.replace({ name: '계약 내역 조회' })
 }
 
 const onUpdate = (payload: Contract) => {
-  payload.project = project.value
+  if (project.value) payload.project = project.value
   contractStore.updateContractSet({ ...payload })
 }
 
 onBeforeMount(() => {
-  fetchOrderGroupList(project.value)
-  fetchTypeList(project.value)
+  if (project.value) {
+    fetchOrderGroupList(project.value)
+    fetchTypeList(project.value)
 
-  fetchAllProBankAccList(project.value)
-  fetchPayOrderList(project.value)
+    fetchAllProBankAccList(project.value)
+    fetchPayOrderList(project.value)
 
-  fetchKeyUnitList({ project: project.value })
-  fetchHouseUnitList({ project: project.value })
+    fetchKeyUnitList({ project: project.value })
+    fetchHouseUnitList({ project: project.value })
+  }
 
   if (route.query.contract) {
     getContract(route.query.contract as string)
