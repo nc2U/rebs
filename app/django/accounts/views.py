@@ -7,6 +7,7 @@ from django.shortcuts import render, redirect
 from .models import User
 from company.models import Company
 from project.models import Project
+from rebs.models import ProjectAccountD3
 
 from .forms import UserCreationForm
 
@@ -85,29 +86,31 @@ def load_seed_data():
 
 
 def create_project(request):
+    d3 = ProjectAccountD3.objects.exists()
     if request.method == 'POST':
-        # company = request.POST.get('company')
-        # name = request.POST.get('name')
-        # kind = request.POST.get('kind')
-        # start_year = request.POST.get('start_year')
-        # local_zipcode = request.POST.get('local_zipcode')
-        # local_address1 = request.POST.get('local_address1')
-        # local_address2 = request.POST.get('local_address2')
-        # local_address3 = request.POST.get('local_address3')
-        # area_usage = request.POST.get('area_usage')
-        # build_size = request.POST.get('build_size')
-        # Project.objects.create(company_id=company,
-        #                        name=name,
-        #                        kind=kind,
-        #                        start_year=start_year,
-        #                        local_zipcode=local_zipcode,
-        #                        local_address1=local_address1,
-        #                        local_address2=local_address2,
-        #                        local_address3=local_address3,
-        #                        area_usage=area_usage,
-        #                        build_size=build_size)
+        company = request.POST.get('company')
+        name = request.POST.get('name')
+        kind = request.POST.get('kind')
+        start_year = request.POST.get('start_year')
+        local_zipcode = request.POST.get('local_zipcode')
+        local_address1 = request.POST.get('local_address1')
+        local_address2 = request.POST.get('local_address2')
+        local_address3 = request.POST.get('local_address3')
+        area_usage = request.POST.get('area_usage')
+        build_size = request.POST.get('build_size')
+        Project.objects.create(company_id=company,
+                               name=name,
+                               kind=kind,
+                               start_year=start_year,
+                               local_zipcode=local_zipcode,
+                               local_address1=local_address1,
+                               local_address2=local_address2,
+                               local_address3=local_address3,
+                               area_usage=area_usage,
+                               build_size=build_size)
 
-        load_seed_data()
+        if not d3:
+            load_seed_data()
         return redirect('/')
     else:
         is_company = Company.objects.all().exists()
@@ -118,4 +121,6 @@ def create_project(request):
             companies = Company.objects.all()
             return render(request, 'install/create_project.html', {'companies': companies})
         else:
+            if not d3:
+                load_seed_data()
             return redirect('/')

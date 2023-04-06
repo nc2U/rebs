@@ -55,8 +55,8 @@
         <div class="col-xl-6 mb-3 row">
             <label for="start_year" class="col-sm-3 col-form-label">사업개시년도</label>
             <div class="col-sm-9">
-                <input type="number" min="2015" maxlength="4" class="form-control" id="start_year" name="start_year"
-                       required placeholder="사업개시년도">
+                <input type="number" min="2015" max="9999" maxlength="4" class="form-control"
+                       id="start_year" name="start_year" required placeholder="사업개시년도">
                 <div class="invalid-feedback">Please provide a project open year.</div>
             </div>
         </div>
@@ -86,24 +86,24 @@
     </form>
 
     <script>
-      (() => {
-        'use strict'
+        (() => {
+            'use strict'
 
-        // Fetch all the forms we want to apply custom Bootstrap validation styles to
-        const forms = document.querySelectorAll('.needs-validation')
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            const forms = document.querySelectorAll('.needs-validation')
 
-        // Loop over them and prevent submission
-        Array.from(forms).forEach(form => {
-          form.addEventListener('submit', event => {
-            if (!form.checkValidity()) {
-              event.preventDefault()
-              event.stopPropagation()
-            }
+            // Loop over them and prevent submission
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
 
-            form.classList.add('was-validated')
-          }, false)
-        })
-      })()
+                    form.classList.add('was-validated')
+                }, false)
+            })
+        })()
     </script>
 </div>
 </body>
