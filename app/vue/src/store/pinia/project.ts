@@ -16,6 +16,7 @@ const accountStore = useAccount()
 export const useProject = defineStore('project', () => {
   // states & getters
   const projectList = ref<Project[]>([])
+  const projectsCount = ref(0)
   const allowed_projects = computed(() =>
     accountStore.userInfo && accountStore.userInfo.staffauth
       ? accountStore.userInfo.staffauth.allowed_projects
@@ -39,15 +40,22 @@ export const useProject = defineStore('project', () => {
   const fetchProjectList = () =>
     api
       .get('/project/')
-      .then(res => (projectList.value = res.data.results))
+      .then(res => {
+        projectList.value = res.data.results
+        projectsCount.value = res.data.count
+      })
       .catch(err => errorHandle(err.response.data))
 
   // states & getters
   const project = ref<Project | null>(null)
-  const initProjId = computed(() =>
+  const assingedProject = computed(() =>
     accountStore.userInfo?.staffauth?.assigned_project
       ? accountStore.userInfo.staffauth.assigned_project
-      : 1,
+      : 0,
+  )
+  const firstProject = computed(() => (projectsCount.value ? 1 : 0))
+  const initProjId = computed(() =>
+    assingedProject.value ? assingedProject.value : firstProject.value,
   )
 
   // actions
@@ -218,6 +226,7 @@ export const useProject = defineStore('project', () => {
 
   return {
     projectList,
+    projectsCount,
     allowed_projects,
     projSelect,
     getProjects,
