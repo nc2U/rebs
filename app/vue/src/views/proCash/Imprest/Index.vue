@@ -44,6 +44,7 @@ const excelUrl = computed(() => {
 
 const projectStore = useProject()
 const project = computed(() => projectStore.project?.pk)
+const initProjId = computed(() => projectStore.initProjId)
 
 const comCashStore = useComCash()
 const fetchBankCodeList = () => comCashStore.fetchBankCodeList()
@@ -229,10 +230,10 @@ onBeforeMount(() => {
   fetchProAllAccD3List()
   fetchProFormAccD2List()
   fetchProFormAccD3List()
-  if (project.value) {
-    fetchProBankAccList(project.value)
-    fetchAllProBankAccList(project.value)
-    fetchProjectImprestList({ project: project.value })
+  if (initProjId.value) {
+    fetchProBankAccList(initProjId.value)
+    fetchAllProBankAccList(initProjId.value)
+    fetchProjectImprestList({ project: initProjId.value })
   }
 })
 </script>

@@ -32,6 +32,7 @@ const dataFilter = ref<CashBookFilter>({
 
 const projectStore = useProject()
 const project = computed(() => projectStore.project?.pk)
+const initProjId = computed(() => projectStore.initProjId)
 
 const pageSelect = (page: number) => {
   dataFilter.value.page = page
@@ -44,8 +45,10 @@ const listFiltering = (payload: CashBookFilter) => {
   const d1 = payload.pro_acc_d2 ? payload.pro_acc_d2 : null
   fetchProFormAccD2List(sort)
   fetchProFormAccD3List(d1, sort)
-  if (project.value)
-    fetchProjectCashList({ ...{ project: project.value }, ...payload })
+  fetchProjectCashList({
+    ...{ project: project.value },
+    ...payload,
+  })
 }
 
 const excelSelect = '1'
@@ -79,7 +82,7 @@ const fetchProBankAccList = (projId: number) =>
   proCashStore.fetchProBankAccList(projId)
 const fetchAllProBankAccList = (projId: number) =>
   proCashStore.fetchAllProBankAccList(projId)
-const fetchProjectCashList = (payload: { project: number }) =>
+const fetchProjectCashList = (payload: CashBookFilter) =>
   proCashStore.fetchProjectCashList(payload)
 
 const patchProBankAcc = (payload: ProBankAcc) =>
@@ -219,10 +222,10 @@ onBeforeMount(() => {
   fetchProAllAccD3List()
   fetchProFormAccD2List()
   fetchProFormAccD3List()
-  if (project.value) {
-    fetchProBankAccList(project.value)
-    fetchAllProBankAccList(project.value)
-    fetchProjectCashList({ project: project.value })
+  if (initProjId.value) {
+    fetchProBankAccList(initProjId.value)
+    fetchAllProBankAccList(initProjId.value)
+    fetchProjectCashList({ project: initProjId.value })
   }
 })
 </script>

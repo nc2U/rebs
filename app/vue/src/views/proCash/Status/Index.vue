@@ -19,6 +19,8 @@ const compName = ref('StatusByAccount')
 
 const projectStore = useProject()
 const project = computed(() => projectStore.project?.pk)
+const initProjId = computed(() => projectStore.initProjId)
+
 const fetchStatusOutBudgetList = (proj: number) =>
   projectStore.fetchStatusOutBudgetList(proj)
 const patchStatusOutBudgetList = (proj: number, pk: number, budget: number) =>
@@ -111,16 +113,16 @@ const directBalance = (val: boolean) => {
 onBeforeMount(() => {
   fetchProAllAccD2List()
   fetchProAllAccD3List()
-  if (project.value) {
-    fetchExecAmountList(project.value)
-    fetchStatusOutBudgetList(project.value)
-    fetchProBankAccList(project.value)
+  if (initProjId.value) {
+    fetchExecAmountList(initProjId.value)
+    fetchStatusOutBudgetList(initProjId.value)
+    fetchProBankAccList(initProjId.value)
     fetchBalanceByAccList({
-      project: project.value,
+      project: initProjId.value,
       date: dateFormat(date.value),
     })
     fetchDateCashBookList({
-      project: project.value,
+      project: initProjId.value,
       date: dateFormat(date.value),
     })
   }
