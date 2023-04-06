@@ -20,7 +20,7 @@
             <div class="col-sm-9">
                 <input type="email" maxlength="255" class="form-control" id="email" name="email" required
                        placeholder="최고관리자 이메일">
-                <div class="invalid-feedback">Please choose a email.</div>
+                <div class="invalid-feedback">Please provide a email.</div>
             </div>
         </div>
         <div class="col-xl-6 mb-3 row">
@@ -28,7 +28,7 @@
             <div class="col-sm-9">
                 <input type="text" maxlength="150" class="form-control" id="username" name="username" required
                        placeholder="최고관리자 이름">
-                <div class="invalid-feedback">Please choose a username.</div>
+                <div class="invalid-feedback">Please provide a username.</div>
             </div>
         </div>
         <div class="col-xl-6 mb-3 row">
@@ -53,26 +53,27 @@
     </form>
 
     <script>
-      (() => {
-        'use strict'
+        (() => {
+            'use strict'
 
-        // Fetch all the forms we want to apply custom Bootstrap validation styles to
-        const forms = document.querySelectorAll('.needs-validation')
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            const forms = document.querySelectorAll('.needs-validation')
 
-        // Loop over them and prevent submission
-        Array.prototype.slice.call(forms).forEach(function (form) {
-          form.addEventListener('submit', event => {
-            const wrong_confirm = form.password.value !== form.password_confirm.value
-            if (!form.checkValidity() || wrong_confirm) {
-              if (wrong_confirm) form.password_confirm.setCustomValidity("Passwords don't match")
-              event.preventDefault()
-              event.stopPropagation()
-            }
+            // Loop over them and prevent submission
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    const wrong_confirm = form.password.value !== form['password_confirm'].value
+                    if (!form.checkValidity() || wrong_confirm) {
+                        if (wrong_confirm) form['password_confirm'].setCustomValidity("Passwords don't match")
+                        else form['password_confirm'].setCustomValidity('')
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
 
-            form.classList.add('was-validated')
-          }, false)
-        })
-      })()
+                    form.classList.add('was-validated')
+                }, false)
+            })
+        })()
     </script>
 </div>
 </body>
