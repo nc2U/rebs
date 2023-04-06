@@ -18,8 +18,8 @@ const projSelect = () =>
   nextTick(() => emit('proj-select', currentProject.value))
 
 onBeforeMount(() => {
-  projectStore.fetchProjectList()
   projectStore.fetchProject(initProjId.value)
+  projectStore.fetchProjectList()
 })
 </script>
 
