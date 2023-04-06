@@ -7,7 +7,7 @@ import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ProfileForm from '@/views/settings/Profile/components/ProfileForm.vue'
 
-const image = ref()
+const image = ref<File | null>(null)
 const accountStore = useAccount()
 const profile = computed(() => accountStore.profile)
 
@@ -17,7 +17,7 @@ const createProfile = (payload: FormData) => accountStore.createProfile(payload)
 const patchProfile = (payload: { pk: number; form: FormData }) =>
   accountStore.patchProfile(payload)
 
-const onSubmit = (payload: Profile) => {
+const onSubmit = (payload: Profile & { image: File | null }) => {
   if (image.value) payload.image = image.value
   const { pk, ...formData } = payload
   if (!formData.user && accountStore.userInfo)
