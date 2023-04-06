@@ -21,6 +21,7 @@ const contract = computed(() => contractStore.contract)
 
 const projectStore = useProject()
 const project = computed(() => projectStore.project?.pk)
+const initProjId = computed(() => projectStore.initProjId)
 const unitSet = computed(() => projectStore.project?.is_unit_set)
 const isUnion = computed(() => !projectStore.project?.is_direct_manage)
 
@@ -113,15 +114,13 @@ const onUpdate = (payload: Contract) => {
 }
 
 onBeforeMount(() => {
-  if (project.value) {
-    fetchOrderGroupList(project.value)
-    fetchTypeList(project.value)
-
-    fetchAllProBankAccList(project.value)
-    fetchPayOrderList(project.value)
-
-    fetchKeyUnitList({ project: project.value })
-    fetchHouseUnitList({ project: project.value })
+  if (initProjId.value) {
+    fetchOrderGroupList(initProjId.value)
+    fetchTypeList(initProjId.value)
+    fetchAllProBankAccList(initProjId.value)
+    fetchPayOrderList(initProjId.value)
+    fetchKeyUnitList({ project: initProjId.value })
+    fetchHouseUnitList({ project: initProjId.value })
   }
 
   if (route.query.contract) {

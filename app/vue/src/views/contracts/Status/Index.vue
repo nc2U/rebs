@@ -13,6 +13,8 @@ import ContractBoard from '@/views/contracts/Status/components/ContractBoard.vue
 const projectStore = useProject()
 
 const project = computed(() => projectStore.project?.pk)
+const initProjId = computed(() => projectStore.initProjId)
+
 const excelUrl = computed(() =>
   project.value ? `excel/status/?project=${project.value}` : '',
 )
@@ -53,13 +55,13 @@ const onSelectAdd = (target: number) => {
 }
 
 onMounted(() => {
-  if (project.value) {
-    fetchTypeList(project.value)
-    fetchBuildingList(project.value)
-    fetchHouseUnitList(project.value)
-    fetchSubsSummaryList(project.value)
-    fetchContractList({ project: project.value })
-    fetchContSummaryList(project.value)
+  if (initProjId.value) {
+    fetchTypeList(initProjId.value)
+    fetchBuildingList(initProjId.value)
+    fetchHouseUnitList(initProjId.value)
+    fetchSubsSummaryList(initProjId.value)
+    fetchContractList({ project: initProjId.value })
+    fetchContSummaryList(initProjId.value)
   }
 })
 </script>

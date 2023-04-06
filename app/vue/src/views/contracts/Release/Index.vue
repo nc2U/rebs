@@ -18,6 +18,8 @@ const page = ref(1)
 
 const projectStore = useProject()
 const project = computed(() => projectStore.project?.pk)
+const initProjId = computed(() => projectStore.initProjId)
+
 const downloadUrl = computed(() => `/excel/releases/?project=${project.value}`)
 
 const contractStore = useContract()
@@ -80,7 +82,7 @@ const onSubmit = (payload: ContractRelease) => {
 }
 
 onBeforeMount(() => {
-  if (project.value) fetchContReleaseList(project.value)
+  if (initProjId.value) fetchContReleaseList(initProjId.value)
   if (route.query.contractor) fetchContractor(Number(route.query.contractor))
   else contractStore.contractor = null
 })
