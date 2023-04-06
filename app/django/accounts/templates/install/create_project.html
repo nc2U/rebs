@@ -13,7 +13,7 @@
     <div class="my-5">
         <h2 class="pb-3">Rebs 시스템 설정 :: Step3 - 프로젝트 생성</h2>
     </div>
-    <form class="row g-3" method="POST">
+    <form class="row g-3 needs-validation" method="POST" novalidate>
         {% csrf_token %}
         <div class="col-xl-6 mb-3 row">
             <label for="company" class="col-sm-3 col-form-label">회사정보</label>
@@ -24,6 +24,7 @@
                         <option value="{{ company.pk }}">{{ company.name }}</option>
                     {% endfor %}
                 </select>
+                <div class="invalid-feedback">Please choose a company.</div>
             </div>
         </div>
         <div class="col-xl-6 mb-3 row">
@@ -40,7 +41,7 @@
                     <option value="7">지식산업센터</option>
                     <option value="8">기타</option>
                 </select>
-
+                <div class="invalid-feedback">Please choose a project kind.</div>
             </div>
         </div>
         <div class="col-xl-6 mb-3 row">
@@ -48,6 +49,7 @@
             <div class="col-sm-9">
                 <input type="text" class="form-control" id="name" name="name" maxlength="30"
                        required placeholder="프로젝트이름">
+                <div class="invalid-feedback">Please provide a project name.</div>
             </div>
         </div>
         <div class="col-xl-6 mb-3 row">
@@ -55,6 +57,7 @@
             <div class="col-sm-9">
                 <input type="number" min="2015" maxlength="4" class="form-control" id="start_year" name="start_year"
                        required placeholder="사업개시년도">
+                <div class="invalid-feedback">Please provide a project open year.</div>
             </div>
         </div>
         <div class="col-xl-6 mb-3 row">
@@ -62,6 +65,7 @@
             <div class="col-sm-9">
                 <input type="text" maxlength="50" class="form-control" id="area_usage" name="area_usage"
                        required placeholder="용도지역지구">
+                <div class="invalid-feedback">Please provide a area usage.</div>
             </div>
         </div>
         <div class="col-xl-6 mb-3 row">
@@ -69,6 +73,7 @@
             <div class="col-sm-9">
                 <input type="text" maxlength="50" class="form-control" id="build_size" name="build_size"
                        required placeholder="건축규모">
+                <div class="invalid-feedback">Please provide a building size.</div>
             </div>
         </div>
 
@@ -79,6 +84,27 @@
             </div>
         </div>
     </form>
+
+    <script>
+      (() => {
+        'use strict'
+
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        const forms = document.querySelectorAll('.needs-validation')
+
+        // Loop over them and prevent submission
+        Array.from(forms).forEach(form => {
+          form.addEventListener('submit', event => {
+            if (!form.checkValidity()) {
+              event.preventDefault()
+              event.stopPropagation()
+            }
+
+            form.classList.add('was-validated')
+          }, false)
+        })
+      })()
+    </script>
 </div>
 </body>
 </html>
