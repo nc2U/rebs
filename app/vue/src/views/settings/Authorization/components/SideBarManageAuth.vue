@@ -33,7 +33,9 @@ const auths = reactive([
   { label: '읽기권한', value: '1' },
   { label: '쓰기권한', value: '2' },
 ])
-const isInActive = computed(() => !props.user || props.allowed?.length === 0)
+
+const isPrInActive = computed(() => !props.user || props.allowed?.length === 0)
+const isCoInActive = computed(() => !props.user)
 
 const getColor = (status: '0' | '1' | '2') => {
   if (status === '1') return ['yellow-darken-2', '#fcfced']
@@ -109,7 +111,7 @@ watch(
                 <CFormSelect
                   v-model="authData.contract"
                   :options="auths"
-                  :disabled="isInActive"
+                  :disabled="isPrInActive"
                   :style="{
                     backgroundColor: isDark
                       ? ''
@@ -135,7 +137,7 @@ watch(
                 <CFormSelect
                   v-model="authData.payment"
                   :options="auths"
-                  :disabled="isInActive"
+                  :disabled="isPrInActive"
                   :style="{
                     backgroundColor: isDark
                       ? ''
@@ -161,7 +163,7 @@ watch(
                 <CFormSelect
                   v-model="authData.notice"
                   :options="auths"
-                  :disabled="isInActive"
+                  :disabled="isPrInActive"
                   :style="{
                     backgroundColor: isDark ? '' : getColor(authData.notice)[1],
                   }"
@@ -186,7 +188,7 @@ watch(
                 <CFormSelect
                   v-model="authData.project_cash"
                   :options="auths"
-                  :disabled="isInActive"
+                  :disabled="isPrInActive"
                   :style="{
                     backgroundColor: isDark
                       ? ''
@@ -212,7 +214,7 @@ watch(
                 <CFormSelect
                   v-model="authData.project_docs"
                   :options="auths"
-                  :disabled="isInActive"
+                  :disabled="isPrInActive"
                   :style="{
                     backgroundColor: isDark
                       ? ''
@@ -238,7 +240,7 @@ watch(
                 <CFormSelect
                   v-model="authData.project"
                   :options="auths"
-                  :disabled="isInActive"
+                  :disabled="isPrInActive"
                   :style="{
                     backgroundColor: isDark
                       ? ''
@@ -281,7 +283,7 @@ watch(
                 <CFormSelect
                   v-model="authData.company_cash"
                   :options="auths"
-                  :disabled="isInActive"
+                  :disabled="isCoInActive"
                   :style="{
                     backgroundColor: isDark
                       ? ''
@@ -307,7 +309,7 @@ watch(
                 <CFormSelect
                   v-model="authData.company_docs"
                   :options="auths"
-                  :disabled="isInActive"
+                  :disabled="isCoInActive"
                   :style="{
                     backgroundColor: isDark
                       ? ''
@@ -333,7 +335,7 @@ watch(
                 <CFormSelect
                   v-model="authData.human_resource"
                   :options="auths"
-                  :disabled="isInActive"
+                  :disabled="isCoInActive"
                   :style="{
                     backgroundColor: isDark
                       ? ''
@@ -360,7 +362,7 @@ watch(
                 <CFormSelect
                   v-model="authData.company_settings"
                   :options="auths"
-                  :disabled="isInActive"
+                  :disabled="isCoInActive"
                   :style="{
                     backgroundColor: isDark
                       ? ''
@@ -386,7 +388,7 @@ watch(
                 <CFormSelect
                   v-model="authData.auth_manage"
                   :options="auths"
-                  :disabled="isInActive"
+                  :disabled="isCoInActive"
                   :style="{
                     backgroundColor: isDark
                       ? ''
