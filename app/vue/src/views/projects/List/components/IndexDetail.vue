@@ -220,7 +220,12 @@ const toUpdate = () => {
     <CCardFooter>
       <CRow class="justify-content-between">
         <CCol xs="auto">
-          <CButton type="button" color="success" @click="toUpdate">
+          <CButton
+            type="button"
+            color="success"
+            :disabled="!project"
+            @click="toUpdate"
+          >
             <CIcon name="cil-check-circle" />
             수정하기
           </CButton>

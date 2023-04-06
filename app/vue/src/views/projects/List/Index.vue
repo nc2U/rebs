@@ -11,7 +11,6 @@ import IndexDetail from '@/views/projects/List/components/IndexDetail.vue'
 const compName = ref('IndexDetail')
 
 const projectStore = useProject()
-
 const project = computed(() => projectStore.project)
 
 watch(project, () => (compName.value = 'IndexDetail'))

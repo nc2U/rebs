@@ -15,8 +15,7 @@ const alertModal = ref()
 const bldgName = ref('')
 
 const projectStore = useProject()
-const initProjId = computed(() => projectStore.initProjId)
-const project = computed(() => projectStore.project?.pk || initProjId.value)
+const project = computed(() => projectStore.project?.pk)
 
 const proDataStore = useProjectData()
 const numUnitByType = computed(() => proDataStore.numUnitByType)
@@ -46,7 +45,7 @@ const onSelectAdd = (target: number) => {
 }
 
 const bldgSelect = (bldg: { pk: number; name: string }) => {
-  if (!!bldg.pk) fetchHouseUnitList(project.value, bldg.pk)
+  if (!!bldg.pk && project.value) fetchHouseUnitList(project.value, bldg.pk)
   else proDataStore.houseUnitList = []
   bldgName.value = bldg.name
 }
@@ -69,55 +68,62 @@ type OriginalUnit = {
 }
 
 const unitRegister = (payload: OriginalUnit) => {
-  const unit_type = payload.type
-  const building_unit = payload.building
-  const bldg_line = payload.line
-  const midWord = bldg_line < 10 ? '0' : ''
-  const size = payload.maxFloor - payload.minFloor + 1
-  const range = (size: number, min: number): number[] =>
-    [...Array(size).keys()].map(key => key + min)
-  const between = (x: number, min: number, max: number): boolean =>
-    x >= min && x <= max
-  const getCode = (num: number, digit: number) => {
-    const prefix = '0'.repeat(digit - `${num}`.length)
-    const typeStr = payload.typeName.replace(/[^0-9a-zA-Z]/g, '')
-    const typeDigit = payload.maxLength - typeStr.length
-    const suffix = typeDigit >= 1 ? '0'.repeat(typeDigit - 1) + '1' : ''
-    return `${typeStr}${suffix}${prefix}${num}`
-  }
+  if (!!project.value) {
+    const unit_type = payload.type
+    const building_unit = payload.building
+    const bldg_line = payload.line
+    const midWord = bldg_line < 10 ? '0' : ''
+    const size = payload.maxFloor - payload.minFloor + 1
+    const range = (size: number, min: number): number[] =>
+      [...Array(size).keys()].map(key => key + min)
+    const between = (x: number, min: number, max: number): boolean =>
+      x >= min && x <= max
+    const getCode = (num: number, digit: number) => {
+      const prefix = '0'.repeat(digit - `${num}`.length)
+      const typeStr = payload.typeName.replace(/[^0-9a-zA-Z]/g, '')
+      const typeDigit = payload.maxLength - typeStr.length
+      const suffix = typeDigit >= 1 ? '0'.repeat(typeDigit - 1) + '1' : ''
+      return `${typeStr}${suffix}${prefix}${num}`
+    }
 
-  let num = numUnitByType.value
+    let num = numUnitByType.value
 
-  const isExist = range(size, payload.minFloor).map(i =>
-    simpleUnits.value
-      .filter((u: { line: number }) => u.line === bldg_line)
-      .map((u: { floor: number }) => u.floor)
-      .includes(i),
-  )
+    const isExist = range(size, payload.minFloor).map(i =>
+      simpleUnits.value
+        .filter((u: { line: number }) => u.line === bldg_line)
+        .map((u: { floor: number }) => u.floor)
+        .includes(i),
+    )
 
-  if (isExist.includes(true)) {
-    alert('해당 범위의 호수 중 이미 등록되어 있는 유니트가 있습니다.')
-    return
-  } else {
-    const inputUnits = range(size, payload.minFloor).map(i => ({
-      floor_no: i,
-      name: `${i}${midWord}${bldg_line}`,
-      floor_type: payload.floors
-        .filter((f: { start: number; end: number }) =>
-          between(i, f.start, f.end),
-        )
-        .map((f: { pk: number }) => f.pk)[0],
-      unit_code: getCode((num += 1), `${payload.maxUnits}`.length),
-    }))
+    if (isExist.includes(true)) {
+      alert('해당 범위의 호수 중 이미 등록되어 있는 유니트가 있습니다.')
+      return
+    } else {
+      const inputUnits = range(size, payload.minFloor).map(i => ({
+        floor_no: i,
+        name: `${i}${midWord}${bldg_line}`,
+        floor_type: payload.floors
+          .filter((f: { start: number; end: number }) =>
+            between(i, f.start, f.end),
+          )
+          .map((f: { pk: number }) => f.pk)[0],
+        unit_code: getCode((num += 1), `${payload.maxUnits}`.length),
+      }))
 
-    inputUnits.forEach(unit => {
-      createUnit({
-        ...{ project: project.value, unit_type, building_unit, bldg_line },
-        ...unit,
+      inputUnits.forEach(unit => {
+        createUnit({
+          ...{
+            project: Number(project.value),
+            unit_type,
+            building_unit,
+            bldg_line,
+          },
+          ...unit,
+        })
       })
-    })
-    fetchHouseUnitList(project.value, building_unit)
-    message()
+      fetchHouseUnitList(project.value, building_unit)
+      message()
+    }
   }
 }
 
@@ -128,9 +134,11 @@ const onUpdate = (payload: HouseUnit) => {
 const onDelete = (pk: number) => alert('delete! -- ' + pk)
 
 onBeforeMount(() => {
-  fetchTypeList(project.value)
-  fetchFloorTypeList(project.value)
-  fetchBuildingList(project.value)
+  if (project.value) {
+    fetchTypeList(project.value)
+    fetchFloorTypeList(project.value)
+    fetchBuildingList(project.value)
+  }
   proDataStore.houseUnitList = []
 })
 </script>

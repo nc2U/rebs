@@ -10,9 +10,7 @@ import PayOrderAddForm from '@/views/projects/PayOrder/components/PayOrderAddFor
 import PayOrderFormList from '@/views/projects/PayOrder/components/PayOrderFormList.vue'
 
 const projectStore = useProject()
-
-const initProjId = computed(() => projectStore.initProjId)
-const project = computed(() => projectStore.project?.pk || initProjId.value)
+const project = computed(() => projectStore.project?.pk)
 
 const paymentStore = usePayment()
 const fetchPayOrderList = (projId: number) =>
@@ -37,9 +35,13 @@ const onSubmit = (payload: PayOrder) =>
 const onUpdatePayOrder = (payload: PayOrder) =>
   updatePayOrder({ ...{ project: project.value }, ...payload })
 
-const onDeletePayOrder = (pk: number) => deletePayOrder(pk, project.value)
+const onDeletePayOrder = (pk: number) => {
+  if (project.value) deletePayOrder(pk, project.value)
+}
 
-onBeforeMount(() => fetchPayOrderList(project.value))
+onBeforeMount(() => {
+  if (project.value) fetchPayOrderList(project.value)
+})
 </script>
 
 <template>

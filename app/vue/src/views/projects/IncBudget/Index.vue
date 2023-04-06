@@ -12,8 +12,7 @@ import BudgetAddForm from '@/views/projects/IncBudget/components/BudgetAddForm.v
 import BudgetFormList from '@/views/projects/IncBudget/components/BudgetFormList.vue'
 
 const projectStore = useProject()
-const initProjId = computed(() => projectStore.initProjId)
-const project = computed(() => projectStore.project?.pk || initProjId.value)
+const project = computed(() => projectStore.project?.pk)
 
 const proCashStore = useProCash()
 const allAccD2List = computed(() =>
@@ -79,9 +78,11 @@ const onDeleteBudget = (pk: number) => {
 onBeforeMount(() => {
   fetchProAllAccD2List()
   fetchProAllAccD3List()
-  fetchOrderGroupList(project.value)
-  fetchTypeList(project.value)
-  fetchIncBudgetList(project.value)
+  if (project.value) {
+    fetchOrderGroupList(project.value)
+    fetchTypeList(project.value)
+    fetchIncBudgetList(project.value)
+  }
 })
 </script>
 

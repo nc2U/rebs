@@ -11,8 +11,7 @@ import TypeFormList from '@/views/projects/Type/components/TypeFormList.vue'
 
 const projectStore = useProject()
 
-const initProjId = computed(() => projectStore.initProjId)
-const project = computed(() => projectStore.project?.pk || initProjId.value)
+const project = computed(() => projectStore.project?.pk)
 
 const typeSort = [
   { value: '1', label: '공동주택' },
@@ -40,9 +39,13 @@ const onSubmit = (payload: UnitType) =>
   createType({ ...{ project: project.value }, ...payload })
 const onUpdateType = (payload: UnitType) =>
   updateType({ ...{ project: project.value }, ...payload })
-const onDeleteType = (pk: number) => deleteType(pk, project.value)
+const onDeleteType = (pk: number) => {
+  if (project.value) deleteType(pk, project.value)
+}
 
-onBeforeMount(() => fetchTypeList(project.value))
+onBeforeMount(() => {
+  if (project.value) fetchTypeList(project.value)
+})
 </script>
 
 <template>

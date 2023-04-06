@@ -32,9 +32,7 @@ const priceMessage = ref(
 )
 
 const projectStore = useProject()
-
-const initProjId = computed(() => projectStore.initProjId)
-const project = computed(() => projectStore.project?.pk || initProjId.value)
+const project = computed(() => projectStore.project?.pk)
 
 const contractStore = useContract()
 const contList = computed(() => contractStore.contList)
@@ -106,10 +104,12 @@ const typeSelect = (type: number) => {
   priceMessage.value = !type
     ? '공급가격을 입력하기 위해 [타입 정보]를 선택하여 주십시요.'
     : ''
-  queryIds.project = project.value
-  queryIds.order_group = order_group.value
-  queryIds.unit_type = unit_type.value
-  fetchPriceList(queryIds) // 가격 상태 저장 실행
+  if (project.value) {
+    queryIds.project = project.value
+    queryIds.order_group = order_group.value
+    queryIds.unit_type = unit_type.value
+    fetchPriceList(queryIds) // 가격 상태 저장 실행
+  }
 }
 // 프로젝트 또는 차수 선택 변경 시 가격 데이터 초기화
 const resetPrices = () => (paymentStore.priceList = [])
@@ -124,10 +124,12 @@ const contPriceSet = () => {
 }
 
 onBeforeMount(() => {
-  fetchContList(project.value)
-  fetchOrderGroupList(project.value)
-  fetchTypeList(project.value)
-  fetchFloorTypeList(project.value)
+  if (project.value) {
+    fetchContList(project.value)
+    fetchOrderGroupList(project.value)
+    fetchTypeList(project.value)
+    fetchFloorTypeList(project.value)
+  }
 })
 </script>
 

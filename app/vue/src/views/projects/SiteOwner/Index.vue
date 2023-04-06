@@ -27,8 +27,7 @@ const dataFilter = ref<filter>({
 })
 
 const projectStore = useProject()
-const initProjId = computed(() => projectStore.initProjId)
-const project = computed(() => projectStore.project?.pk || initProjId.value)
+const project = computed(() => projectStore.project?.pk)
 const isReturned = computed(() => projectStore.project?.is_returned_area)
 
 const siteStore = useSite()
@@ -46,17 +45,18 @@ const onSelectAdd = (target: number) => {
 
 const listFiltering = (payload: filter) => {
   dataFilter.value = payload
-  siteStore.fetchSiteOwnerList(
-    project.value || initProjId.value,
-    payload.page,
-    payload.own_sort,
-    payload.search,
-  )
+  if (project.value)
+    siteStore.fetchSiteOwnerList(
+      project.value,
+      payload.page,
+      payload.own_sort,
+      payload.search,
+    )
 }
 
 const pageSelect = (page: number) => {
   dataFilter.value.page = page
-  siteStore.fetchSiteOwnerList(project.value || initProjId.value, page)
+  if (project.value) siteStore.fetchSiteOwnerList(project.value, page)
   listControl.value.listFiltering(page)
 }
 
@@ -68,8 +68,10 @@ const onUpdate = (payload: SiteOwner & filter) =>
 
 const relationPatch = (payload: Relation) => {
   const { page, own_sort, search } = dataFilter.value
-  const data = { project: project.value, page, own_sort, search, ...payload }
-  siteStore.patchRelation(data)
+  if (project.value) {
+    const data = { project: project.value, page, own_sort, search, ...payload }
+    siteStore.patchRelation(data)
+  }
 }
 
 const multiSubmit = (payload: SiteOwner) => {
@@ -87,8 +89,10 @@ const onDelete = (payload: { pk: number; project: number }) => {
 const excelUrl = 'excel/sites-by-owner/?project=' + project.value
 
 onBeforeMount(() => {
-  siteStore.fetchAllSites(project.value)
-  siteStore.fetchSiteOwnerList(project.value)
+  if (project.value) {
+    siteStore.fetchAllSites(project.value)
+    siteStore.fetchSiteOwnerList(project.value)
+  }
 })
 </script>
 

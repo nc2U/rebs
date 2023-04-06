@@ -10,9 +10,7 @@ import FloorAddForm from '@/views/projects/Floor/components/FloorAddForm.vue'
 import FloorFormList from '@/views/projects/Floor/components/FloorFormList.vue'
 
 const projectStore = useProject()
-
-const initProjId = computed(() => projectStore.initProjId)
-const project = computed(() => projectStore.project?.pk || initProjId.value)
+const project = computed(() => projectStore.project?.pk)
 
 const projectDataStore = useProjectData()
 const fetchFloorTypeList = (projId: number) =>
@@ -35,9 +33,13 @@ const onSubmit = (payload: UnitFloorType) =>
 const onUpdateFloor = (payload: UnitFloorType) =>
   updateFloorType({ ...{ project: project.value }, ...payload })
 
-const onDeleteFloor = (pk: number) => deleteFloorType(pk, project.value)
+const onDeleteFloor = (pk: number) => {
+  if (project.value) deleteFloorType(pk, project.value)
+}
 
-onBeforeMount(() => fetchFloorTypeList(project.value))
+onBeforeMount(() => {
+  if (project.value) fetchFloorTypeList(project.value)
+})
 </script>
 
 <template>

@@ -200,7 +200,9 @@ export const useProjectData = defineStore('projectData', () => {
   const fetchNumUnitByType = (project: number, unit_type: number) =>
     api
       .get(
-        `/house-unit/?building_unit__project=${project}&unit_type=${unit_type}`,
+        `/house-unit/?building_unit__project=${
+          project || ''
+        }&unit_type=${unit_type}`,
       )
       .then(res => (numUnitByType.value = res.data.count))
       .catch(err => errorHandle(err.response.data))

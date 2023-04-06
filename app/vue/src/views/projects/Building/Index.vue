@@ -10,9 +10,7 @@ import BuildingAddForm from '@/views/projects/Building/components/BuildingAddFor
 import BuildingFormList from '@/views/projects/Building/components/BuildingFormList.vue'
 
 const projectStore = useProject()
-
-const initProjId = computed(() => projectStore.initProjId)
-const project = computed(() => projectStore.project?.pk || initProjId.value)
+const project = computed(() => projectStore.project?.pk)
 
 const projectDataStore = useProjectData()
 const fetchBuildingList = (projId: number) =>
@@ -35,9 +33,13 @@ const onCreateBuilding = (payload: BuildingUnit) =>
 const onUpdateBuilding = (payload: BuildingUnit) =>
   updateBuilding({ ...{ project: project.value }, ...payload })
 
-const onDeleteBuilding = (pk: number) => deleteBuilding(pk, project.value)
+const onDeleteBuilding = (pk: number) => {
+  if (project.value) deleteBuilding(pk, project.value)
+}
 
-onBeforeMount(() => fetchBuildingList(project.value))
+onBeforeMount(() => {
+  if (project.value) fetchBuildingList(project.value)
+})
 </script>
 
 <template>

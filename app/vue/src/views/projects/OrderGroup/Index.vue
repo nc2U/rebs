@@ -10,8 +10,7 @@ import OrderAddForm from '@/views/projects/OrderGroup/components/OrderAddForm.vu
 import OrderFormList from '@/views/projects/OrderGroup/components/OrderFormList.vue'
 
 const projectStore = useProject()
-const initProjId = computed(() => projectStore.initProjId)
-const project = computed(() => projectStore.project?.pk || initProjId.value)
+const project = computed(() => projectStore.project?.pk)
 
 const contractStore = useContract()
 const onSelectAdd = (target: number) => {
@@ -37,7 +36,9 @@ const onUpdateOrder = (payload: OrderGroup) =>
 const onDeleteOrder = (pk: number) =>
   deleteOrderGroup({ pk, project: project.value })
 
-onBeforeMount(() => fetchOrderGroupList(project.value))
+onBeforeMount(() => {
+  if (project.value) fetchOrderGroupList(project.value)
+})
 </script>
 
 <template>

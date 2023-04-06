@@ -12,9 +12,7 @@ import DownPayAddForm from '@/views/projects/DownPay/components/DownPayAddForm.v
 import DownPayFormList from '@/views/projects/DownPay/components/DownPayFormList.vue'
 
 const projectStore = useProject()
-
-const initProjId = computed(() => projectStore.initProjId)
-const project = computed(() => projectStore.project?.pk || initProjId.value)
+const project = computed(() => projectStore.project?.pk)
 
 const contractStore = useContract()
 const orderGroupList = computed(() => contractStore.orderGroupList)
@@ -56,12 +54,16 @@ const onCreateDownPay = (payload: DownPay) =>
 const onUpdateDownPay = (payload: DownPay) =>
   updateDownPay({ ...{ project: project.value }, ...payload })
 
-const onDeleteDownPay = (pk: number) => deleteDownPay(pk, project.value)
+const onDeleteDownPay = (pk: number) => {
+  if (project.value) deleteDownPay(pk, project.value)
+}
 
 onBeforeMount(() => {
-  fetchDownPayList({ project: project.value })
-  fetchOrderGroupList(project.value)
-  fetchTypeList(project.value)
+  if (project.value) {
+    fetchDownPayList({ project: project.value })
+    fetchOrderGroupList(project.value)
+    fetchTypeList(project.value)
+  }
 })
 </script>
 <template>
