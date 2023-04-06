@@ -1,4 +1,5 @@
 from rest_framework import permissions
+from accounts.models import StaffAuth
 
 
 class IsSuperUserOnly(permissions.BasePermission):
@@ -8,7 +9,13 @@ class IsSuperUserOnly(permissions.BasePermission):
 
 class IsStaffOnly(permissions.BasePermission):
     def has_permission(self, request, view):
-        return request.user.staffauth.is_staff or request.user.is_superuser
+        if request.user.is_superuser:
+            return True
+        else:
+            try:
+                return request.user.staffauth.is_staff
+            except StaffAuth.DoesNotExist:
+                return False
 
 
 class IsOwnerOnly(permissions.BasePermission):
@@ -29,7 +36,13 @@ class IsStaffOrReadOnly(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             return True
         else:
-            return request.user.staffauth.is_staff or request.user.is_superuser
+            if request.user.is_superuser:
+                return True
+            else:
+                try:
+                    return request.user.staffauth.is_staff
+                except StaffAuth.DoesNotExist:
+                    return False
 
 
 class IsOwnerOrReadOnly(permissions.BasePermission):
