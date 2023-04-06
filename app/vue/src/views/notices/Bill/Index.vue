@@ -29,6 +29,7 @@ const printData = reactive({
 
 const projectStore = useProject()
 const project = computed(() => projectStore.project?.pk)
+const initProjId = computed(() => projectStore.initProjId)
 
 const noticeStore = useNotice()
 const billIssue = computed(() => noticeStore.billIssue)
@@ -156,18 +157,18 @@ const onSubmit = (payload: SalesBillIssue & { now_due_date: string }) => {
 }
 
 onBeforeMount(() => {
-  if (project.value) {
-    fetchSalesBillIssue(project.value)
-    fetchPayOrderList(project.value)
-    fetchOrderGroupList(project.value)
-    fetchTypeList(project.value)
-    fetchBuildingList(project.value)
+  if (initProjId.value) {
+    fetchSalesBillIssue(initProjId.value)
+    fetchPayOrderList(initProjId.value)
+    fetchOrderGroupList(initProjId.value)
+    fetchTypeList(initProjId.value)
+    fetchBuildingList(initProjId.value)
     fetchContractList({
-      project: project.value,
+      project: initProjId.value,
       ordering: 'contractor__name',
     })
-    fetchSalePriceList({ project: project.value })
-    fetchDownPayList({ project: project.value })
+    fetchSalePriceList({ project: initProjId.value })
+    fetchDownPayList({ project: initProjId.value })
   }
 })
 </script>
