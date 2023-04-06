@@ -11,6 +11,7 @@ import OrderFormList from '@/views/projects/OrderGroup/components/OrderFormList.
 
 const projectStore = useProject()
 const project = computed(() => projectStore.project?.pk)
+const initProjId = computed(() => projectStore.initProjId)
 
 const contractStore = useContract()
 const onSelectAdd = (target: number) => {
@@ -37,7 +38,7 @@ const onDeleteOrder = (pk: number) =>
   deleteOrderGroup({ pk, project: project.value })
 
 onBeforeMount(() => {
-  if (project.value) fetchOrderGroupList(project.value)
+  if (initProjId.value) fetchOrderGroupList(initProjId.value)
 })
 </script>
 

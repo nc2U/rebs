@@ -13,6 +13,7 @@ import DownPayFormList from '@/views/projects/DownPay/components/DownPayFormList
 
 const projectStore = useProject()
 const project = computed(() => projectStore.project?.pk)
+const initProjId = computed(() => projectStore.initProjId)
 
 const contractStore = useContract()
 const orderGroupList = computed(() => contractStore.orderGroupList)
@@ -59,10 +60,10 @@ const onDeleteDownPay = (pk: number) => {
 }
 
 onBeforeMount(() => {
-  if (project.value) {
-    fetchDownPayList({ project: project.value })
-    fetchOrderGroupList(project.value)
-    fetchTypeList(project.value)
+  if (initProjId.value) {
+    fetchDownPayList({ project: initProjId.value })
+    fetchOrderGroupList(initProjId.value)
+    fetchTypeList(initProjId.value)
   }
 })
 </script>

@@ -16,6 +16,7 @@ const bldgName = ref('')
 
 const projectStore = useProject()
 const project = computed(() => projectStore.project?.pk)
+const initProjId = computed(() => projectStore.initProjId)
 
 const proDataStore = useProjectData()
 const numUnitByType = computed(() => proDataStore.numUnitByType)
@@ -134,10 +135,10 @@ const onUpdate = (payload: HouseUnit) => {
 const onDelete = (pk: number) => alert('delete! -- ' + pk)
 
 onBeforeMount(() => {
-  if (project.value) {
-    fetchTypeList(project.value)
-    fetchFloorTypeList(project.value)
-    fetchBuildingList(project.value)
+  if (initProjId.value) {
+    fetchTypeList(initProjId.value)
+    fetchFloorTypeList(initProjId.value)
+    fetchBuildingList(initProjId.value)
   }
   proDataStore.houseUnitList = []
 })

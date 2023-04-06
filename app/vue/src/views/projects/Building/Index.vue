@@ -11,6 +11,7 @@ import BuildingFormList from '@/views/projects/Building/components/BuildingFormL
 
 const projectStore = useProject()
 const project = computed(() => projectStore.project?.pk)
+const initProjId = computed(() => projectStore.initProjId)
 
 const projectDataStore = useProjectData()
 const fetchBuildingList = (projId: number) =>
@@ -38,7 +39,7 @@ const onDeleteBuilding = (pk: number) => {
 }
 
 onBeforeMount(() => {
-  if (project.value) fetchBuildingList(project.value)
+  if (initProjId.value) fetchBuildingList(initProjId.value)
 })
 </script>
 

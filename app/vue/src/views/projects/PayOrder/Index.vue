@@ -11,6 +11,7 @@ import PayOrderFormList from '@/views/projects/PayOrder/components/PayOrderFormL
 
 const projectStore = useProject()
 const project = computed(() => projectStore.project?.pk)
+const initProjId = computed(() => projectStore.initProjId)
 
 const paymentStore = usePayment()
 const fetchPayOrderList = (projId: number) =>
@@ -40,7 +41,7 @@ const onDeletePayOrder = (pk: number) => {
 }
 
 onBeforeMount(() => {
-  if (project.value) fetchPayOrderList(project.value)
+  if (initProjId.value) fetchPayOrderList(initProjId.value)
 })
 </script>
 

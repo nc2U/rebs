@@ -28,6 +28,8 @@ const dataFilter = ref<filter>({
 
 const projectStore = useProject()
 const project = computed(() => projectStore.project?.pk)
+const initProjId = computed(() => projectStore.initProjId)
+
 const isReturned = computed(() => projectStore.project?.is_returned_area)
 
 const siteStore = useSite()
@@ -89,9 +91,9 @@ const onDelete = (payload: { pk: number; project: number }) => {
 const excelUrl = 'excel/sites-by-owner/?project=' + project.value
 
 onBeforeMount(() => {
-  if (project.value) {
-    siteStore.fetchAllSites(project.value)
-    siteStore.fetchSiteOwnerList(project.value)
+  if (initProjId.value) {
+    siteStore.fetchAllSites(initProjId.value)
+    siteStore.fetchSiteOwnerList(initProjId.value)
   }
 })
 </script>

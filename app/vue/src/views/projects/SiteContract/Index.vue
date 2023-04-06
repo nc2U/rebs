@@ -28,6 +28,7 @@ const dataFilter = ref<filter>({
 
 const projectStore = useProject()
 const project = computed(() => projectStore.project?.pk)
+const initProjId = computed(() => projectStore.initProjId)
 
 const siteStore = useSite()
 const getContsTotal = computed(() => siteStore.getContsTotal?.contracted_area)
@@ -76,9 +77,9 @@ const onDelete = (payload: { pk: number; project: number }) => {
 const excelUrl = 'excel/sites-contracts/?project=' + project.value
 
 onBeforeMount(() => {
-  if (project.value) {
-    siteStore.fetchAllOwners(project.value)
-    siteStore.fetchSiteContList(project.value)
+  if (initProjId.value) {
+    siteStore.fetchAllOwners(initProjId.value)
+    siteStore.fetchSiteContList(initProjId.value)
   }
 })
 </script>

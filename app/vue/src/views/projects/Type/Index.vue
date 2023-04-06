@@ -10,8 +10,8 @@ import TypeAddForm from '@/views/projects/Type/components/TypeAddForm.vue'
 import TypeFormList from '@/views/projects/Type/components/TypeFormList.vue'
 
 const projectStore = useProject()
-
 const project = computed(() => projectStore.project?.pk)
+const initProjId = computed(() => projectStore.initProjId)
 
 const typeSort = [
   { value: '1', label: '공동주택' },
@@ -44,7 +44,7 @@ const onDeleteType = (pk: number) => {
 }
 
 onBeforeMount(() => {
-  if (project.value) fetchTypeList(project.value)
+  if (initProjId.value) fetchTypeList(initProjId.value)
 })
 </script>
 

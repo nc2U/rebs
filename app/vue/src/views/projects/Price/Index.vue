@@ -33,6 +33,7 @@ const priceMessage = ref(
 
 const projectStore = useProject()
 const project = computed(() => projectStore.project?.pk)
+const initProjId = computed(() => projectStore.initProjId)
 
 const contractStore = useContract()
 const contList = computed(() => contractStore.contList)
@@ -124,11 +125,11 @@ const contPriceSet = () => {
 }
 
 onBeforeMount(() => {
-  if (project.value) {
-    fetchContList(project.value)
-    fetchOrderGroupList(project.value)
-    fetchTypeList(project.value)
-    fetchFloorTypeList(project.value)
+  if (initProjId.value) {
+    fetchContList(initProjId.value)
+    fetchOrderGroupList(initProjId.value)
+    fetchTypeList(initProjId.value)
+    fetchFloorTypeList(initProjId.value)
   }
 })
 </script>
