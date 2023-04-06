@@ -99,12 +99,14 @@ const setItems = (arr: string[]) => (printItems.value = arr)
 
 onMounted(() => {
   const projectPk = project.value?.pk || initProjId.value
-  fetchOrderGroupList(projectPk)
-  fetchTypeList(projectPk)
-  fetchBuildingList(projectPk)
-  fetchContractList({ project: projectPk })
-  fetchSubsSummaryList(projectPk)
-  fetchContSummaryList(projectPk)
+  if (project.value) {
+    fetchOrderGroupList(projectPk)
+    fetchTypeList(projectPk)
+    fetchBuildingList(projectPk)
+    fetchContractList({ project: projectPk })
+    fetchSubsSummaryList(projectPk)
+    fetchContSummaryList(projectPk)
+  }
 })
 </script>
 
