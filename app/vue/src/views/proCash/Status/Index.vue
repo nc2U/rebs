@@ -18,8 +18,7 @@ const direct = ref('0')
 const compName = ref('StatusByAccount')
 
 const projectStore = useProject()
-const initProjId = computed(() => projectStore.initProjId)
-const project = computed(() => projectStore.project?.pk || initProjId.value)
+const project = computed(() => projectStore.project?.pk)
 const fetchStatusOutBudgetList = (proj: number) =>
   projectStore.fetchStatusOutBudgetList(proj)
 const patchStatusOutBudgetList = (proj: number, pk: number, budget: number) =>
@@ -87,38 +86,44 @@ const showTab = (num: number) => {
 const setDate = (d: Date) => {
   const dt = new Date(d)
   date.value = dt
-  fetchStatusOutBudgetList(project.value)
-  fetchExecAmountList(project.value, dateFormat(dt))
-  fetchBalanceByAccList({ project: project.value, date: dateFormat(dt) })
-  fetchDateCashBookList({ project: project.value, date: dateFormat(dt) })
+  if (project.value) {
+    fetchStatusOutBudgetList(project.value)
+    fetchExecAmountList(project.value, dateFormat(dt))
+    fetchBalanceByAccList({ project: project.value, date: dateFormat(dt) })
+    fetchDateCashBookList({ project: project.value, date: dateFormat(dt) })
+  }
 }
 
-const patchBudget = (pk: number, budget: number) =>
-  patchStatusOutBudgetList(project.value, pk, budget)
+const patchBudget = (pk: number, budget: number) => {
+  if (project.value) patchStatusOutBudgetList(project.value, pk, budget)
+}
 
 const directBalance = (val: boolean) => {
   direct.value = val ? 'i' : '0'
-  fetchBalanceByAccList({
-    project: project.value,
-    direct: direct.value,
-    date: dateFormat(date.value),
-  })
+  if (project.value)
+    fetchBalanceByAccList({
+      project: project.value,
+      direct: direct.value,
+      date: dateFormat(date.value),
+    })
 }
 
 onBeforeMount(() => {
-  fetchStatusOutBudgetList(project.value)
-  fetchExecAmountList(project.value)
   fetchProAllAccD2List()
   fetchProAllAccD3List()
-  fetchProBankAccList(project.value)
-  fetchBalanceByAccList({
-    project: project.value,
-    date: dateFormat(date.value),
-  })
-  fetchDateCashBookList({
-    project: project.value,
-    date: dateFormat(date.value),
-  })
+  if (project.value) {
+    fetchExecAmountList(project.value)
+    fetchStatusOutBudgetList(project.value)
+    fetchProBankAccList(project.value)
+    fetchBalanceByAccList({
+      project: project.value,
+      date: dateFormat(date.value),
+    })
+    fetchDateCashBookList({
+      project: project.value,
+      date: dateFormat(date.value),
+    })
+  }
 })
 </script>
 

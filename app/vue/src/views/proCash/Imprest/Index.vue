@@ -43,8 +43,7 @@ const excelUrl = computed(() => {
 })
 
 const projectStore = useProject()
-const initProjId = computed(() => projectStore.initProjId)
-const project = computed(() => projectStore.project?.pk || initProjId.value)
+const project = computed(() => projectStore.project?.pk)
 
 const comCashStore = useComCash()
 const fetchBankCodeList = () => comCashStore.fetchBankCodeList()
@@ -63,7 +62,7 @@ const fetchProBankAccList = (projId: number) =>
   proCashStore.fetchProBankAccList(projId)
 const fetchAllProBankAccList = (projId: number) =>
   proCashStore.fetchAllProBankAccList(projId)
-const fetchProjectImprestList = (payload: { project: number }) =>
+const fetchProjectImprestList = (payload: CashBookFilter) =>
   proCashStore.fetchProjectImprestList(payload)
 
 const patchProBankAcc = (payload: ProBankAcc) =>
@@ -111,7 +110,8 @@ const listFiltering = (payload: CashBookFilter) => {
   const d2 = payload.pro_acc_d2 ? payload.pro_acc_d2 : null
   fetchProFormAccD2List(sort)
   fetchProFormAccD3List(d2, sort)
-  fetchProjectImprestList({ ...{ project: project.value }, ...payload })
+  if (project.value)
+    fetchProjectImprestList({ ...{ project: project.value }, ...payload })
 }
 
 const chargeCreate = (
@@ -142,7 +142,7 @@ const onCreate = (
     charge: null | number
   },
 ) => {
-  payload.project = project.value
+  if (project.value) payload.project = project.value
   if (payload.sort === 3 && payload.bank_account_to) {
     const {
       bank_account,
@@ -229,9 +229,11 @@ onBeforeMount(() => {
   fetchProAllAccD3List()
   fetchProFormAccD2List()
   fetchProFormAccD3List()
-  fetchProBankAccList(project.value)
-  fetchAllProBankAccList(project.value)
-  fetchProjectImprestList({ project: project.value })
+  if (project.value) {
+    fetchProBankAccList(project.value)
+    fetchAllProBankAccList(project.value)
+    fetchProjectImprestList({ project: project.value })
+  }
 })
 </script>
 

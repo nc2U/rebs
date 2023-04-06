@@ -30,6 +30,9 @@ const dataFilter = ref<CashBookFilter>({
   search: '',
 })
 
+const projectStore = useProject()
+const project = computed(() => projectStore.project?.pk)
+
 const pageSelect = (page: number) => {
   dataFilter.value.page = page
   listControl.value.listFiltering(page)
@@ -41,7 +44,8 @@ const listFiltering = (payload: CashBookFilter) => {
   const d1 = payload.pro_acc_d2 ? payload.pro_acc_d2 : null
   fetchProFormAccD2List(sort)
   fetchProFormAccD3List(d1, sort)
-  fetchProjectCashList({ ...{ project: project.value }, ...payload })
+  if (project.value)
+    fetchProjectCashList({ ...{ project: project.value }, ...payload })
 }
 
 const excelSelect = '1'
@@ -57,10 +61,6 @@ const excelUrl = computed(() => {
   const q = dataFilter.value.search
   return `/excel/p-cashbook/?project=${pj}&sdate=${sd}&edate=${ed}&sort=${st}&d1=${d1}&d2=${d2}&bank_acc=${ba}&q=${q}`
 })
-
-const projectStore = useProject()
-const initProjId = computed(() => projectStore.initProjId)
-const project = computed(() => projectStore.project?.pk || initProjId.value)
 
 const comCashStore = useComCash()
 const fetchBankCodeList = () => comCashStore.fetchBankCodeList()
@@ -140,7 +140,7 @@ const onCreate = (
     filters: CashBookFilter
   } & { bank_account_to: null | number; charge: null | number },
 ) => {
-  payload.project = project.value
+  if (project.value) payload.project = project.value
   if (payload.sort === 3 && payload.bank_account_to) {
     // 대체 거래일 때
     const { bank_account, bank_account_to, charge, ...inputData } = payload
@@ -219,9 +219,11 @@ onBeforeMount(() => {
   fetchProAllAccD3List()
   fetchProFormAccD2List()
   fetchProFormAccD3List()
-  fetchProBankAccList(project.value)
-  fetchAllProBankAccList(project.value)
-  fetchProjectCashList({ project: project.value })
+  if (project.value) {
+    fetchProBankAccList(project.value)
+    fetchAllProBankAccList(project.value)
+    fetchProjectCashList({ project: project.value })
+  }
 })
 </script>
 
