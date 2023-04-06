@@ -114,13 +114,15 @@ def create_project(request):
         return redirect('/')
     else:
         is_company = Company.objects.all().exists()
-        is_project = Project.objects.all().exists()
         if not is_company:
             return redirect('/install/create/company/')
-        elif not is_project:
+        else:
             companies = Company.objects.all()
             return render(request, 'install/create_project.html', {'companies': companies})
-        else:
-            if not d3:
-                load_seed_data()
-            return redirect('/')
+
+
+def pass_create_project(request):
+    d3 = ProjectAccountD3.objects.exists()
+    if not d3:
+        load_seed_data()
+    return redirect('/')

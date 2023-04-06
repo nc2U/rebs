@@ -79,13 +79,22 @@
 
         <div class="pr-5 mr-5 bg-amber">
             <div class="mb-3 d-grid gap-2 d-md-flex justify-content-end">
-                <button type="button" class="btn btn-secondary">건너뛰기</button>
+                <button type="button" class="btn btn-secondary"
+                        onclick="pass_create_project()">
+                    건너뛰기
+                </button>
                 <button type="submit" class="btn btn-primary">프로젝트 생성</button>
             </div>
         </div>
     </form>
 
     <script>
+        function pass_create_project() {
+            if (confirm('사이트에서 필요 시 프로젝트를 생성할 수 있습니다. 프로젝트 생성을 건너뛰시겠습니까?')) {
+                location.replace('{% url 'install:pass_create_project' %}')
+            }
+        }
+        
         (() => {
             'use strict'
 
