@@ -69,7 +69,8 @@ class ProjectAccountD3Admin(ImportExportMixin, admin.ModelAdmin):
 
 
 class WiseSayingAdmin(ImportExportMixin, admin.ModelAdmin):
-    pass
+    list_display = ('pk', 'saying_ko', 'spoked_by')
+    list_display_links = ('saying_ko',)
 
 
 admin.site.register(AccountSort, AccountSortAdmin)
