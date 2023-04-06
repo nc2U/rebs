@@ -1,4 +1,5 @@
 import subprocess
+from django import forms
 from django.views.generic import TemplateView
 from django.views.generic.edit import CreateView
 from django.urls import reverse_lazy
@@ -40,9 +41,13 @@ def create_superuser(request):
         username = request.POST.get('username')
         email = request.POST.get('email')
         password = request.POST.get('password')
-        User.objects.create_superuser(username=username,
-                                      email=email,
-                                      password=password)
+        password_confirm = request.POST.get('password_confirm')
+        if password and password_confirm and password != password_confirm:
+            raise forms.ValidationError("Passwords don't match!")
+        else:
+            User.objects.create_superuser(username=username,
+                                          email=email,
+                                          password=password)
         return redirect('/install/create/company/')
     else:
         is_superuser = User.objects.filter(is_superuser=True).exists()
@@ -81,26 +86,26 @@ def load_seed_data():
 
 def create_project(request):
     if request.method == 'POST':
-        company = request.POST.get('company')
-        name = request.POST.get('name')
-        kind = request.POST.get('kind')
-        start_year = request.POST.get('start_year')
-        local_zipcode = request.POST.get('local_zipcode')
-        local_address1 = request.POST.get('local_address1')
-        local_address2 = request.POST.get('local_address2')
-        local_address3 = request.POST.get('local_address3')
-        area_usage = request.POST.get('area_usage')
-        build_size = request.POST.get('build_size')
-        Project.objects.create(company_id=company,
-                               name=name,
-                               kind=kind,
-                               start_year=start_year,
-                               local_zipcode=local_zipcode,
-                               local_address1=local_address1,
-                               local_address2=local_address2,
-                               local_address3=local_address3,
-                               area_usage=area_usage,
-                               build_size=build_size)
+        # company = request.POST.get('company')
+        # name = request.POST.get('name')
+        # kind = request.POST.get('kind')
+        # start_year = request.POST.get('start_year')
+        # local_zipcode = request.POST.get('local_zipcode')
+        # local_address1 = request.POST.get('local_address1')
+        # local_address2 = request.POST.get('local_address2')
+        # local_address3 = request.POST.get('local_address3')
+        # area_usage = request.POST.get('area_usage')
+        # build_size = request.POST.get('build_size')
+        # Project.objects.create(company_id=company,
+        #                        name=name,
+        #                        kind=kind,
+        #                        start_year=start_year,
+        #                        local_zipcode=local_zipcode,
+        #                        local_address1=local_address1,
+        #                        local_address2=local_address2,
+        #                        local_address3=local_address3,
+        #                        area_usage=area_usage,
+        #                        build_size=build_size)
 
         load_seed_data()
         return redirect('/')

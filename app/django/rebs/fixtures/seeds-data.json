@@ -3130,21 +3130,6 @@
     }
   },
   {
-    "model": "rebs.calendarschedule",
-    "pk": 1,
-    "fields": {
-      "title": "[인천동춘] 사업계획승인신청 접수",
-      "all_day": true,
-      "start_date": "2022-12-21",
-      "end_date": "2022-12-22",
-      "start_time": null,
-      "end_time": null,
-      "user": 1,
-      "created_at": "2022-12-28T00:56:24.934Z",
-      "updated_at": "2022-12-28T00:56:24.934Z"
-    }
-  },
-  {
     "model": "rebs.wisesaying",
     "pk": 1,
     "fields": {
