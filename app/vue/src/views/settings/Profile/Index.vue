@@ -22,6 +22,8 @@ const onSubmit = (payload: Profile & { image: File | null }) => {
   const { pk, ...formData } = payload
   if (!formData.user && accountStore.userInfo)
     formData.user = accountStore.userInfo.pk
+  if (!formData.birth_date) formData.birth_date = ''
+
   const form = new FormData()
 
   for (const key in formData) {
