@@ -66,7 +66,7 @@ export interface ProjectCashBook extends ProSepItems {
 }
 
 export type CashBookFilter = {
-  project?: number
+  project?: number | null
   page?: number
   from_date?: string
   to_date?: string

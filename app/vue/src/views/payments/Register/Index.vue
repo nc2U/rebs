@@ -18,8 +18,7 @@ import CreateButton from '@/views/payments/Register/components/CreateButton.vue'
 const paymentId = ref<string>('')
 
 const projectStore = useProject()
-const initProjId = computed(() => projectStore.initProjId)
-const project = computed(() => projectStore.project?.pk || initProjId.value)
+const project = computed(() => projectStore.project?.pk)
 
 const contractStore = useContract()
 const contract = computed(() => contractStore.contract)
@@ -65,7 +64,7 @@ const fetchContract = (pk: number) => contractStore.fetchContract(pk)
 const [route, router] = [useRoute(), useRouter()]
 
 watch(contract, newVal => {
-  if (newVal) {
+  if (newVal && project.value) {
     const order_group = newVal.order_group
     const unit_type = newVal.unit_type
     fetchPriceList({ project: project.value, order_group, unit_type })
@@ -115,7 +114,7 @@ const onCreate = (
     filters: CashBookFilter
   },
 ) => {
-  payload.project = project.value
+  if (project.value) payload.project = project.value
   createPrCashBook(payload)
 }
 
@@ -124,17 +123,17 @@ const onUpdate = (
     filters: CashBookFilter
   },
 ) => {
-  payload.project = project.value
+  if (project.value) payload.project = project.value
   updatePrCashBook(payload)
 }
 
 const onDelete = (pk: number) => {
   const delFilter = {
-    project: project.value,
     pk,
+    project: project.value || 1,
     contract: contract.value?.pk || 1,
   }
-  deletePrCashBook({ ...delFilter, filters: {} })
+  deletePrCashBook({ ...delFilter, ...{ filters: {} } })
 }
 
 onBeforeMount(() => {
@@ -148,9 +147,11 @@ onBeforeMount(() => {
   }
   if (route.query.payment) paymentId.value = route.query.payment as string
 
-  fetchTypeList(project.value)
-  fetchPayOrderList(project.value)
-  fetchProBankAccList(project.value)
+  if (project.value) {
+    fetchTypeList(project.value)
+    fetchPayOrderList(project.value)
+    fetchProBankAccList(project.value)
+  }
 })
 
 onBeforeRouteLeave(() => {

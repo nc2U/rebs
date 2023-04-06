@@ -22,8 +22,7 @@ const excelUrl = computed(
 )
 
 const projStore = useProject()
-const initProjId = computed(() => projStore.initProjId)
-const project = computed(() => projStore.project?.pk || initProjId.value)
+const project = computed(() => projStore.project?.pk)
 const fetchIncBudgetList = (proj: number) => projStore.fetchIncBudgetList(proj)
 
 const prDataStore = useProjectData()
@@ -57,16 +56,20 @@ const onSelectAdd = (target: number) => {
 
 const setDate = (d: Date) => {
   date.value = new Date(d)
-  fetchPaySumList(project.value, dateFormat(date.value))
-  fetchContSummaryList(project.value, dateFormat(date.value))
+  if (project.value) {
+    fetchPaySumList(project.value, dateFormat(date.value))
+    fetchContSummaryList(project.value, dateFormat(date.value))
+  }
 }
 
 onBeforeMount(() => {
-  fetchTypeList(project.value)
-  fetchOrderGroupList(project.value)
-  fetchContSummaryList(project.value)
-  fetchIncBudgetList(project.value)
-  fetchPaySumList(project.value)
+  if (project.value) {
+    fetchTypeList(project.value)
+    fetchOrderGroupList(project.value)
+    fetchContSummaryList(project.value)
+    fetchIncBudgetList(project.value)
+    fetchPaySumList(project.value)
+  }
 })
 </script>
 

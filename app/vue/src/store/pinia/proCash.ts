@@ -276,7 +276,11 @@ export const useProCash = defineStore('proCash', () => {
   }
 
   const deletePrCashBook = (
-    payload: { pk: number; project: number; contract?: number | null } & {
+    payload: {
+      pk: number
+      project: number
+      contract?: number | null
+    } & {
       filters?: CashBookFilter
     },
   ) => {

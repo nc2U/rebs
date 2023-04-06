@@ -30,8 +30,7 @@ let filterItems = ref<CashBookFilter>({
 })
 
 const projStore = useProject()
-const initProjId = computed(() => projStore.initProjId)
-const project = computed(() => projStore.project?.pk || initProjId.value)
+const project = computed(() => projStore.project?.pk)
 const fetchIncBudgetList = (proj: number) => projStore.fetchIncBudgetList(proj)
 
 const contStore = useContract()
@@ -86,7 +85,7 @@ const onSelectAdd = (target: number) => {
 
 const listFiltering = (payload: CashBookFilter) => {
   filterItems.value = payload
-  payload.project = project.value
+  if (project.value) payload.project = project.value
   fetchPaymentList(payload)
 }
 
@@ -127,15 +126,17 @@ const excelUrl = computed(() =>
 )
 
 onMounted(() => {
-  fetchOrderGroupList(project.value)
-  fetchTypeList(project.value)
-  fetchIncBudgetList(project.value)
-  fetchContSummaryList(project.value)
-  fetchPaySumList(project.value)
-  fetchContNumList(project.value)
-  fetchPayOrderList(project.value)
-  fetchPaymentList({ project: project.value })
-  fetchProBankAccList(project.value)
+  if (project.value) {
+    fetchOrderGroupList(project.value)
+    fetchTypeList(project.value)
+    fetchIncBudgetList(project.value)
+    fetchContSummaryList(project.value)
+    fetchPaySumList(project.value)
+    fetchContNumList(project.value)
+    fetchPayOrderList(project.value)
+    fetchPaymentList({ project: project.value })
+    fetchProBankAccList(project.value)
+  }
 })
 
 onBeforeRouteLeave(() => {
