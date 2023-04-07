@@ -4,15 +4,15 @@ from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 # --------------------------------------------------------
-from project.models import Project
+from rebs.models import ProjectAccountD3
 
 TODAY = date.today()
 
 
 def install_check(request):
-    is_installed = Project.objects.all().exists()
+    is_d3 = ProjectAccountD3.objects.exists()
 
-    if is_installed:
+    if is_d3:
         return render(request, 'base-vue.html')
     else:
         return redirect('/install/')

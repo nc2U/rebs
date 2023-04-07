@@ -23,18 +23,18 @@ class UserCreateDoneTV(TemplateView):
 
 
 def install_check_step(request):
-    is_project = Project.objects.all().exists()
-    is_company = Company.objects.all().exists()
     is_superuser = User.objects.filter(is_superuser=True).exists()
+    is_company = Company.objects.exists()
+    is_project = Project.objects.exists()
 
-    if is_project:
-        return redirect('/')
-    elif not is_superuser:
+    if not is_superuser:
         return redirect('/install/create/superuser/')
     elif not is_company:
         return redirect('/install/create/company/')
-    else:
+    elif not is_project:
         return redirect('/install/create/project/')
+    else:
+        return redirect('/')
 
 
 def create_superuser(request):
