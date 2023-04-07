@@ -40,7 +40,7 @@ const isCoInActive = computed(() => !props.user)
 const getColor = (status: '0' | '1' | '2') => {
   if (status === '1') return ['yellow-darken-2', '#fcfced']
   else if (status === '2') return ['success', '#edf7f2']
-  else return ['blue-grey-lighten-1', '#EEEEEE']
+  else return ['blue-grey-lighten-1', '']
 }
 
 const selectAuth = () =>
