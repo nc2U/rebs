@@ -84,7 +84,7 @@ export const useComCash = defineStore('comCash', () => {
   const formAccD1List = ref<AccountD1[]>([])
 
   const fetchFormAccD1List = (sort: number | null) => {
-    const uSort = sort ? `?accountsort=${sort}` : ''
+    const uSort = sort ? `?sorts=${sort}` : ''
     return api
       .get(`/account-depth1/${uSort}`)
       .then(res => (formAccD1List.value = res.data.results))
@@ -94,7 +94,7 @@ export const useComCash = defineStore('comCash', () => {
   const formAccD2List = ref<AccountD2[]>([])
 
   const fetchFormAccD2List = (sort: number | null, d1: number | null) => {
-    const uSort = sort ? `d1__accountsort=${sort}` : ''
+    const uSort = sort ? `d1__sorts=${sort}` : ''
     const uD1 = d1 ? `&d1=${d1}` : ''
     return api
       .get(`/account-depth2/?${uSort}${uD1}`)
@@ -109,7 +109,7 @@ export const useComCash = defineStore('comCash', () => {
     d1: number | null,
     d2: number | null,
   ) => {
-    const uSort = sort ? `d2__d1__accountsort=${sort}` : ''
+    const uSort = sort ? `d2__d1__sorts=${sort}` : ''
     const uD1 = d1 ? `&d2__d1=${d1}` : ''
     const uD2 = d2 ? `&d2=${d2}` : ''
     return api
