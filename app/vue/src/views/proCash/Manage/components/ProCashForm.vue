@@ -181,8 +181,9 @@ const callAccount = () => {
 }
 
 const sort_change = (event: Event) => {
+  const el = event.target as HTMLSelectElement
+
   if (!form.is_separate) {
-    const el = event.target as HTMLSelectElement
     if (el.value === '1') form.outlay = null
     if (el.value === '2') form.income = null
     if (el.value === '3') {
@@ -197,7 +198,6 @@ const sort_change = (event: Event) => {
       form.project_account_d3 = null
     }
   } else {
-    const el = event.target as HTMLSelectElement
     sepItem.project_account_d2 = null
     sepItem.project_account_d3 = null
     if (el.value === '1') sepItem.outlay = null

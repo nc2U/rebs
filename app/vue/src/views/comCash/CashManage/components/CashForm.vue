@@ -198,7 +198,11 @@ const sort_change = (event: Event) => {
     } else if (el.value === '3') {
       form.account_d1 = 6
       form.account_d2 = 19
-      form.account_d3 = 128
+      form.account_d3 = 131
+    } else if (el.value === '4') {
+      form.account_d1 = 7
+      form.account_d2 = 20
+      form.account_d3 = 133
     } else {
       form.account_d1 = null
       form.account_d2 = null
@@ -375,6 +379,7 @@ onBeforeMount(() => {
                   <option value="1">입금</option>
                   <option value="2">출금</option>
                   <option v-if="!form.is_separate" value="3">대체</option>
+                  <option v-if="!form.is_separate" value="4">취소</option>
                 </CFormSelect>
               </CCol>
             </CRow>
@@ -388,7 +393,12 @@ onBeforeMount(() => {
                 <CFormSelect
                   v-model.number="form.account_d1"
                   :required="!form.is_separate"
-                  :disabled="!form.sort || form.is_separate"
+                  :disabled="
+                    !form.sort ||
+                    form.is_separate ||
+                    form.sort === 3 ||
+                    form.sort === 4
+                  "
                   @change="d1_change"
                 >
                   <option value="">---------</option>
