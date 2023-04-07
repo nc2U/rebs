@@ -372,13 +372,6 @@
     }
   },
   {
-    "model": "rebs.accountsort",
-    "pk": 3,
-    "fields": {
-      "name": "대체"
-    }
-  },
-  {
     "model": "rebs.accountsubd1",
     "pk": 1,
     "fields": {
@@ -732,11 +725,11 @@
     "pk": 6,
     "fields": {
       "d2": 1,
-      "code": "121",
-      "name": "단기대여금",
+      "code": "122",
+      "name": "관계회사 대여금",
       "is_hide": false,
       "is_special": false,
-      "description": "타인에게 대여한 대여금(대여기간 1년이내)"
+      "description": "관계회사 대여금(조합 사업비 대여 또는 대지급금)"
     }
   },
   {
@@ -744,11 +737,11 @@
     "pk": 7,
     "fields": {
       "d2": 1,
-      "code": "122",
-      "name": "관계회사 대여금",
+      "code": "121",
+      "name": "단기대여금",
       "is_hide": false,
       "is_special": false,
-      "description": "조합 사업비 대여 또는 대지급금"
+      "description": "타인에게 대여한 대여금(대여기간 1년이내)"
     }
   },
   {
@@ -1212,6 +1205,18 @@
     "pk": 46,
     "fields": {
       "d2": 7,
+      "code": "226",
+      "name": "관계회사 차입금",
+      "is_hide": false,
+      "is_special": false,
+      "description": "관계회사 차입금"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 47,
+    "fields": {
+      "d2": 7,
       "code": "212",
       "name": "단기차입금",
       "is_hide": false,
@@ -1221,7 +1226,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 47,
+    "pk": 48,
     "fields": {
       "d2": 7,
       "code": "213",
@@ -1233,7 +1238,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 48,
+    "pk": 49,
     "fields": {
       "d2": 7,
       "code": "214",
@@ -1245,11 +1250,11 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 49,
+    "pk": 50,
     "fields": {
       "d2": 7,
       "code": "215",
-      "name": "부가세예수금",
+      "name": "부가세",
       "is_hide": false,
       "is_special": false,
       "description": "매출 시 매입자로부터 받아 둔 부가가치세"
@@ -1257,7 +1262,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 50,
+    "pk": 51,
     "fields": {
       "d2": 7,
       "code": "221",
@@ -1269,7 +1274,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 51,
+    "pk": 52,
     "fields": {
       "d2": 7,
       "code": "222",
@@ -1281,7 +1286,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 52,
+    "pk": 53,
     "fields": {
       "d2": 7,
       "code": "223",
@@ -1293,7 +1298,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 53,
+    "pk": 54,
     "fields": {
       "d2": 7,
       "code": "224",
@@ -1305,7 +1310,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 54,
+    "pk": 55,
     "fields": {
       "d2": 7,
       "code": "225",
@@ -1317,7 +1322,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 55,
+    "pk": 56,
     "fields": {
       "d2": 8,
       "code": "231",
@@ -1329,7 +1334,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 56,
+    "pk": 57,
     "fields": {
       "d2": 8,
       "code": "232",
@@ -1341,7 +1346,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 57,
+    "pk": 58,
     "fields": {
       "d2": 8,
       "code": "233",
@@ -1353,7 +1358,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 58,
+    "pk": 59,
     "fields": {
       "d2": 8,
       "code": "234",
@@ -1365,7 +1370,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 59,
+    "pk": 60,
     "fields": {
       "d2": 8,
       "code": "235",
@@ -1377,7 +1382,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 60,
+    "pk": 61,
     "fields": {
       "d2": 9,
       "code": "511",
@@ -1389,7 +1394,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 61,
+    "pk": 62,
     "fields": {
       "d2": 9,
       "code": "512",
@@ -1401,7 +1406,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 62,
+    "pk": 63,
     "fields": {
       "d2": 10,
       "code": "521",
@@ -1413,7 +1418,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 63,
+    "pk": 64,
     "fields": {
       "d2": 11,
       "code": "531",
@@ -1425,7 +1430,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 64,
+    "pk": 65,
     "fields": {
       "d2": 11,
       "code": "532",
@@ -1437,7 +1442,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 65,
+    "pk": 66,
     "fields": {
       "d2": 11,
       "code": "533",
@@ -1449,7 +1454,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 66,
+    "pk": 67,
     "fields": {
       "d2": 11,
       "code": "534",
@@ -1461,7 +1466,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 67,
+    "pk": 68,
     "fields": {
       "d2": 11,
       "code": "535",
@@ -1473,7 +1478,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 68,
+    "pk": 69,
     "fields": {
       "d2": 11,
       "code": "536",
@@ -1485,7 +1490,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 69,
+    "pk": 70,
     "fields": {
       "d2": 12,
       "code": "541",
@@ -1497,7 +1502,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 70,
+    "pk": 71,
     "fields": {
       "d2": 12,
       "code": "542",
@@ -1509,7 +1514,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 71,
+    "pk": 72,
     "fields": {
       "d2": 12,
       "code": "543",
@@ -1521,7 +1526,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 72,
+    "pk": 73,
     "fields": {
       "d2": 12,
       "code": "544",
@@ -1533,7 +1538,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 73,
+    "pk": 74,
     "fields": {
       "d2": 12,
       "code": "545",
@@ -1545,7 +1550,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 74,
+    "pk": 75,
     "fields": {
       "d2": 12,
       "code": "546",
@@ -1557,7 +1562,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 75,
+    "pk": 76,
     "fields": {
       "d2": 13,
       "code": "551",
@@ -1569,7 +1574,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 76,
+    "pk": 77,
     "fields": {
       "d2": 13,
       "code": "552",
@@ -1581,7 +1586,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 77,
+    "pk": 78,
     "fields": {
       "d2": 14,
       "code": "711",
@@ -1593,7 +1598,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 78,
+    "pk": 79,
     "fields": {
       "d2": 14,
       "code": "712",
@@ -1605,7 +1610,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 79,
+    "pk": 80,
     "fields": {
       "d2": 14,
       "code": "713",
@@ -1617,7 +1622,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 80,
+    "pk": 81,
     "fields": {
       "d2": 14,
       "code": "714",
@@ -1629,7 +1634,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 81,
+    "pk": 82,
     "fields": {
       "d2": 14,
       "code": "715",
@@ -1641,7 +1646,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 82,
+    "pk": 83,
     "fields": {
       "d2": 15,
       "code": "721",
@@ -1653,7 +1658,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 83,
+    "pk": 84,
     "fields": {
       "d2": 15,
       "code": "722",
@@ -1665,7 +1670,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 84,
+    "pk": 85,
     "fields": {
       "d2": 15,
       "code": "723",
@@ -1677,7 +1682,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 85,
+    "pk": 86,
     "fields": {
       "d2": 15,
       "code": "731",
@@ -1689,7 +1694,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 86,
+    "pk": 87,
     "fields": {
       "d2": 15,
       "code": "732",
@@ -1701,7 +1706,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 87,
+    "pk": 88,
     "fields": {
       "d2": 15,
       "code": "733",
@@ -1713,7 +1718,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 88,
+    "pk": 89,
     "fields": {
       "d2": 15,
       "code": "734",
@@ -1725,7 +1730,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 89,
+    "pk": 90,
     "fields": {
       "d2": 15,
       "code": "735",
@@ -1737,7 +1742,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 90,
+    "pk": 91,
     "fields": {
       "d2": 15,
       "code": "736",
@@ -1749,7 +1754,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 91,
+    "pk": 92,
     "fields": {
       "d2": 15,
       "code": "737",
@@ -1761,7 +1766,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 92,
+    "pk": 93,
     "fields": {
       "d2": 16,
       "code": "811",
@@ -1773,7 +1778,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 93,
+    "pk": 94,
     "fields": {
       "d2": 16,
       "code": "812",
@@ -1785,7 +1790,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 94,
+    "pk": 95,
     "fields": {
       "d2": 17,
       "code": "821",
@@ -1797,7 +1802,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 95,
+    "pk": 96,
     "fields": {
       "d2": 17,
       "code": "822",
@@ -1809,7 +1814,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 96,
+    "pk": 97,
     "fields": {
       "d2": 17,
       "code": "823",
@@ -1821,7 +1826,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 97,
+    "pk": 98,
     "fields": {
       "d2": 17,
       "code": "824",
@@ -1833,7 +1838,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 98,
+    "pk": 99,
     "fields": {
       "d2": 17,
       "code": "825",
@@ -1845,7 +1850,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 99,
+    "pk": 100,
     "fields": {
       "d2": 17,
       "code": "826",
@@ -1857,7 +1862,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 100,
+    "pk": 101,
     "fields": {
       "d2": 17,
       "code": "827",
@@ -1869,7 +1874,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 101,
+    "pk": 102,
     "fields": {
       "d2": 17,
       "code": "828",
@@ -1881,7 +1886,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 102,
+    "pk": 103,
     "fields": {
       "d2": 17,
       "code": "831",
@@ -1893,7 +1898,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 103,
+    "pk": 104,
     "fields": {
       "d2": 17,
       "code": "832",
@@ -1905,7 +1910,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 104,
+    "pk": 105,
     "fields": {
       "d2": 17,
       "code": "833",
@@ -1917,7 +1922,19 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 105,
+    "pk": 106,
+    "fields": {
+      "d2": 17,
+      "code": "828",
+      "name": "건물관리비",
+      "is_hide": false,
+      "is_special": false,
+      "description": "건물관리비"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 107,
     "fields": {
       "d2": 17,
       "code": "834",
@@ -1929,7 +1946,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 106,
+    "pk": 108,
     "fields": {
       "d2": 17,
       "code": "835",
@@ -1941,7 +1958,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 107,
+    "pk": 109,
     "fields": {
       "d2": 17,
       "code": "836",
@@ -1953,7 +1970,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 108,
+    "pk": 110,
     "fields": {
       "d2": 17,
       "code": "837",
@@ -1965,7 +1982,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 109,
+    "pk": 111,
     "fields": {
       "d2": 17,
       "code": "838",
@@ -1977,7 +1994,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 110,
+    "pk": 112,
     "fields": {
       "d2": 17,
       "code": "839",
@@ -1989,7 +2006,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 111,
+    "pk": 113,
     "fields": {
       "d2": 17,
       "code": "841",
@@ -2001,7 +2018,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 112,
+    "pk": 114,
     "fields": {
       "d2": 17,
       "code": "842",
@@ -2013,7 +2030,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 113,
+    "pk": 115,
     "fields": {
       "d2": 17,
       "code": "843",
@@ -2025,7 +2042,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 114,
+    "pk": 116,
     "fields": {
       "d2": 17,
       "code": "844",
@@ -2037,7 +2054,19 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 115,
+    "pk": 117,
+    "fields": {
+      "d2": 17,
+      "code": "130",
+      "name": "사무용품비",
+      "is_hide": false,
+      "is_special": false,
+      "description": "사무용품"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 118,
     "fields": {
       "d2": 17,
       "code": "845",
@@ -2049,7 +2078,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 116,
+    "pk": 119,
     "fields": {
       "d2": 17,
       "code": "846",
@@ -2061,7 +2090,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 117,
+    "pk": 120,
     "fields": {
       "d2": 17,
       "code": "847",
@@ -2073,7 +2102,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 118,
+    "pk": 121,
     "fields": {
       "d2": 17,
       "code": "848",
@@ -2085,7 +2114,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 119,
+    "pk": 122,
     "fields": {
       "d2": 18,
       "code": "851",
@@ -2097,7 +2126,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 120,
+    "pk": 123,
     "fields": {
       "d2": 18,
       "code": "852",
@@ -2109,7 +2138,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 121,
+    "pk": 124,
     "fields": {
       "d2": 18,
       "code": "853",
@@ -2121,7 +2150,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 122,
+    "pk": 125,
     "fields": {
       "d2": 18,
       "code": "854",
@@ -2133,7 +2162,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 123,
+    "pk": 126,
     "fields": {
       "d2": 18,
       "code": "855",
@@ -2145,7 +2174,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 124,
+    "pk": 127,
     "fields": {
       "d2": 18,
       "code": "856",
@@ -2157,7 +2186,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 125,
+    "pk": 128,
     "fields": {
       "d2": 18,
       "code": "857",
@@ -2169,7 +2198,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 126,
+    "pk": 129,
     "fields": {
       "d2": 18,
       "code": "858",
@@ -2181,7 +2210,7 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 127,
+    "pk": 130,
     "fields": {
       "d2": 18,
       "code": "859",
@@ -2193,26 +2222,50 @@
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 128,
+    "pk": 131,
     "fields": {
       "d2": 19,
       "code": "911",
-      "name": "대체",
+      "name": "대체(출금)",
       "is_hide": false,
       "is_special": false,
-      "description": "대체"
+      "description": "대체 출금"
     }
   },
   {
     "model": "rebs.accountsubd3",
-    "pk": 129,
+    "pk": 132,
+    "fields": {
+      "d2": 19,
+      "code": "912",
+      "name": "대체(입금)",
+      "is_hide": false,
+      "is_special": false,
+      "description": "대체 입금"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 133,
     "fields": {
       "d2": 20,
       "code": "311",
-      "name": "거래취소",
+      "name": "거래취소(출금)",
       "is_hide": false,
       "is_special": false,
-      "description": "취소된 출금 및 입금거래"
+      "description": "취소된 출금거래"
+    }
+  },
+  {
+    "model": "rebs.accountsubd3",
+    "pk": 134,
+    "fields": {
+      "d2": 20,
+      "code": "312",
+      "name": "거래취소(입금)",
+      "is_hide": false,
+      "is_special": false,
+      "description": "취소된 입금거래"
     }
   },
   {
