@@ -109,7 +109,7 @@ export const useComCash = defineStore('comCash', () => {
     d1: number | null,
     d2: number | null,
   ) => {
-    const uSort = sort ? `d2__d1__sorts=${sort}` : ''
+    const uSort = sort ? `sort=${sort}` : ''
     const uD1 = d1 ? `&d2__d1=${d1}` : ''
     const uD2 = d2 ? `&d2=${d2}` : ''
     return api
