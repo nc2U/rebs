@@ -20,7 +20,7 @@ const allAccD2List = computed(() =>
   proCashStore.allAccD2List.filter(d1 => d1.pk <= 2),
 )
 const allAccD3List = computed(() =>
-  proCashStore.allAccD3List.filter(d3 => d3.pk <= 2),
+  proCashStore.allAccD3List.filter(d3 => d3.pk === 1 || d3.pk === 4),
 )
 
 const contStore = useContract()
@@ -29,7 +29,7 @@ const getOrderGroups = computed(() => contStore.getOrderGroups)
 const proDataStore = useProjectData()
 const getTypes = computed(() => proDataStore.getTypes)
 
-provide('d1List', allAccD2List)
+provide('d2List', allAccD2List)
 provide('d3List', allAccD3List)
 provide('orderGroups', getOrderGroups)
 provide('unitTypes', getTypes)
