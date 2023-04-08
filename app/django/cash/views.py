@@ -14,7 +14,7 @@ from .forms import (CashSearchForm, ProjectCashSearchForm, PaymentSearchForm, Pa
 from .models import CompanyBankAccount, ProjectBankAccount, CashBook, ProjectCashBook
 from payment.models import SalesPriceByGT, InstallmentPaymentOrder, DownPayment
 from rebs.models import (AccountSort, AccountSubD1, AccountSubD2, AccountSubD3,
-                         ProjectAccountSort, ProjectAccountD2, ProjectAccountD3)
+                         ProjectAccountD2, ProjectAccountD3)
 from company.models import Company
 from project.models import Project, ProjectOutBudget
 from items.models import UnitType, KeyUnit
@@ -319,7 +319,7 @@ class ProjectCashReport(LoginRequiredMixin, TemplateView):
 
         # 예산관련 데이터(집행)
         context['project_budgets'] = bg = ProjectOutBudget.objects.filter(project=self.get_project(),
-                                                                          account_d2__d1__projectaccountsort=2,
+                                                                          account_d2__d1__accountsort=2,
                                                                           account_d2__d1__code__startswith="3")
         context['rsp1'] = bg.filter(account_d2__code__range=('322', '326')).count()  # 간접공사비
         context['rsp2'] = bg.filter(account_d2__code__range=('327', '329')).count()  # 설계용역비
@@ -386,10 +386,10 @@ class ProjectCashInoutLV(LoginRequiredMixin, ListView, FormView):
         context['pa_d2'] = ProjectAccountD2.objects.all() \
             if self.request.GET.get('sort') == '' \
             else ProjectAccountD2.objects.filter(
-            projectaccountsort=self.request.GET.get('sort'))
-        context['pa_d2_inc'] = ProjectAccountD2.objects.filter(projectaccountsort=1)
-        context['pa_d2_out'] = ProjectAccountD2.objects.filter(projectaccountsort=2)
-        context['pa_d2_trans'] = ProjectAccountD2.objects.filter(projectaccountsort=3)
+            accountsort=self.request.GET.get('sort'))
+        context['pa_d2_inc'] = ProjectAccountD2.objects.filter(accountsort=1)
+        context['pa_d2_out'] = ProjectAccountD2.objects.filter(accountsort=2)
+        context['pa_d2_trans'] = ProjectAccountD2.objects.filter(accountsort=3)
         pa_d3 = ProjectAccountD3.objects.all()
         if self.request.GET.get('d2'):
             pa_d3 = pa_d3.filter(d1_id__exact=int(self.request.GET.get('d2')))
@@ -451,12 +451,12 @@ class ProjectCashInoutCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
         user = self.request.user
         context['project_list'] = Project.objects.all() if user.is_superuser else user.staffauth.allowed_projects.all()
         context['this_project'] = self.get_project()
-        context['pa_d2_inc'] = ProjectAccountD2.objects.filter(projectaccountsort=1)
-        context['pa_d2_out'] = ProjectAccountD2.objects.filter(projectaccountsort=2)
-        context['pa_d2_trans'] = ProjectAccountD2.objects.filter(projectaccountsort=3)
-        context['pa_d3_inc'] = ProjectAccountD3.objects.filter(d1__projectaccountsort=1)
-        context['pa_d3_out'] = ProjectAccountD3.objects.filter(d1__projectaccountsort=2)
-        context['pa_d3_trans'] = ProjectAccountD3.objects.filter(d1__projectaccountsort=3)
+        context['pa_d2_inc'] = ProjectAccountD2.objects.filter(accountsort=1)
+        context['pa_d2_out'] = ProjectAccountD2.objects.filter(accountsort=2)
+        context['pa_d2_trans'] = ProjectAccountD2.objects.filter(accountsort=3)
+        context['pa_d3_inc'] = ProjectAccountD3.objects.filter(d1__accountsort=1)
+        context['pa_d3_out'] = ProjectAccountD3.objects.filter(d1__accountsort=2)
+        context['pa_d3_trans'] = ProjectAccountD3.objects.filter(d1__accountsort=3)
         context['d2s'] = ProjectAccountD2.objects.all()
         for d1 in context['d2s']:
             context['d3_' + str(d1.id)] = ProjectAccountD3.objects.filter(d1=d1.id)
@@ -501,12 +501,12 @@ class ProjectCashInoutUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
         user = self.request.user
         context['project_list'] = Project.objects.all() if user.is_superuser else user.staffauth.allowed_projects.all()
         context['this_project'] = self.get_project()
-        context['pa_d2_inc'] = ProjectAccountD2.objects.filter(projectaccountsort=1)
-        context['pa_d2_out'] = ProjectAccountD2.objects.filter(projectaccountsort=2)
-        context['pa_d2_trans'] = ProjectAccountD2.objects.filter(projectaccountsort=3)
-        context['pa_d3_inc'] = ProjectAccountD3.objects.filter(d1__projectaccountsort=1)
-        context['pa_d3_out'] = ProjectAccountD3.objects.filter(d1__projectaccountsort=2)
-        context['pa_d3_trans'] = ProjectAccountD3.objects.filter(d1__projectaccountsort=3)
+        context['pa_d2_inc'] = ProjectAccountD2.objects.filter(accountsort=1)
+        context['pa_d2_out'] = ProjectAccountD2.objects.filter(accountsort=2)
+        context['pa_d2_trans'] = ProjectAccountD2.objects.filter(accountsort=3)
+        context['pa_d3_inc'] = ProjectAccountD3.objects.filter(d1__accountsort=1)
+        context['pa_d3_out'] = ProjectAccountD3.objects.filter(d1__accountsort=2)
+        context['pa_d3_trans'] = ProjectAccountD3.objects.filter(d1__accountsort=3)
         context['d2s'] = ProjectAccountD2.objects.all()
         for d2 in context['d2s']:
             context['d3_' + str(d2.id)] = ProjectAccountD3.objects.filter(d2=d2.id)
@@ -787,7 +787,7 @@ class SalesPaymentRegister(LoginRequiredMixin, FormView):
 
         if form.is_valid():
             payment = form.save(commit=False)
-            payment.sort = ProjectAccountSort.objects.get(pk=1)
+            payment.sort = AccountSort.objects.get(pk=1)
             payment.recoder = self.request.user
             payment.save()
             return redirect(self.get_success_url())

@@ -13,7 +13,7 @@ from project.models import Project
 from items.models import UnitType, KeyUnit, BuildingUnit, HouseUnit
 from cash.models import ProjectBankAccount, ProjectCashBook
 from payment.models import InstallmentPaymentOrder
-from rebs.models import ProjectAccountSort, ProjectAccountD2, ProjectAccountD3
+from rebs.models import AccountSort, ProjectAccountD2, ProjectAccountD3
 
 from .forms import ContractRegisterForm, ContractPaymentForm, ContractorReleaseForm
 
@@ -400,7 +400,7 @@ class ContractRegisterView(LoginRequiredMixin, FormView):
                     for form in formset:
                         pCashbook = form.save(commit=False)
                         pCashbook.project = Project.objects.get(pk=self.request.POST.get('project'))
-                        pCashbook.sort = ProjectAccountSort.objects.get(pk=1)
+                        pCashbook.sort = AccountSort.objects.get(pk=1)
                         dSort = int(contract.order_group.sort)
                         pCashbook.project_account_d2 = ProjectAccountD2.objects.get(pk=dSort)
                         pCashbook.project_account_d3 = ProjectAccountD3.objects.get(pk=dSort)
@@ -530,7 +530,7 @@ class ContractorReleaseRegister(LoginRequiredMixin, ListView, FormView):
                         unit.save()
 
                     # 5. 해당 납부분담금 환불처리
-                    sort = ProjectAccountSort.objects.get(pk=1)
+                    sort = AccountSort.objects.get(pk=1)
                     projectCash = ProjectCashBook.objects.filter(sort=sort, contract=contractor.contract)
                     for pc in projectCash:
                         if not released_done:

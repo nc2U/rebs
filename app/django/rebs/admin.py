@@ -2,8 +2,7 @@ from django.contrib import admin
 from import_export.admin import ImportExportMixin
 
 from .models import (AccountSort, AccountSubD1, AccountSubD2, AccountSubD3,
-                     ProjectAccountSort, ProjectAccountD2, ProjectAccountD3,
-                     WiseSaying)
+                     ProjectAccountD2, ProjectAccountD3, WiseSaying)
 
 
 class AccountSortAdmin(ImportExportMixin, admin.ModelAdmin):
@@ -48,11 +47,6 @@ class ProjectAccountD3Inline(ImportExportMixin, admin.TabularInline):
     model = ProjectAccountD3
 
 
-class ProjectAccountSortAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'name')
-    list_display_links = ('name',)
-
-
 class ProjectAccountD2Admin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'd1', 'code', 'name', 'description')
     list_display_links = ('code', 'name')
@@ -77,7 +71,6 @@ admin.site.register(AccountSort, AccountSortAdmin)
 admin.site.register(AccountSubD1, AccountSubD1Admin)
 admin.site.register(AccountSubD2, AccountSubD2Admin)
 admin.site.register(AccountSubD3, AccountSubD3Admin)
-admin.site.register(ProjectAccountSort, ProjectAccountSortAdmin)
 admin.site.register(ProjectAccountD2, ProjectAccountD2Admin)
 admin.site.register(ProjectAccountD3, ProjectAccountD3Admin)
 admin.site.register(WiseSaying, WiseSayingAdmin)

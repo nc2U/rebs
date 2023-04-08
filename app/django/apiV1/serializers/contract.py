@@ -6,7 +6,7 @@ from cash.models import ProjectBankAccount, ProjectCashBook
 from project.models import Project, ProjectIncBudget
 from items.models import UnitType, HouseUnit, KeyUnit
 from payment.models import SalesPriceByGT, InstallmentPaymentOrder, DownPayment
-from rebs.models import ProjectAccountSort, ProjectAccountD2, ProjectAccountD3
+from rebs.models import AccountSort, ProjectAccountD2, ProjectAccountD3
 from contract.models import (OrderGroup, Contract, ContractPrice, Contractor,
                              ContractorAddress, ContractorContact, ContractorRelease)
 
@@ -356,7 +356,7 @@ class ContractSetSerializer(serializers.ModelSerializer):
             payment_deal_date = self.initial_data.get('deal_date')
 
             down_payment = ProjectCashBook(project=payment_project,
-                                           sort=ProjectAccountSort.objects.get(pk=1),
+                                           sort=AccountSort.objects.get(pk=1),
                                            project_account_d2=payment_account_d2,
                                            project_account_d3=payment_account_d3,
                                            contract=contract,
@@ -540,7 +540,7 @@ class ContractSetSerializer(serializers.ModelSerializer):
                 update_payment.save()
             else:
                 create_payment = ProjectCashBook(project=payment_project,
-                                                 sort=ProjectAccountSort.objects.get(pk=1),
+                                                 sort=AccountSort.objects.get(pk=1),
                                                  project_account_d2=payment_account_d2,
                                                  project_account_d3=payment_account_d3,
                                                  contract=instance,
@@ -658,7 +658,7 @@ class ContractorReleaseSerializer(serializers.ModelSerializer):
                 unit.save()
 
             # 5. 해당 납부분담금 환불처리
-            sort = ProjectAccountSort.objects.get(pk=1)  # 입금 종류 선택
+            sort = AccountSort.objects.get(pk=1)  # 입금 종류 선택
             payments = ProjectCashBook.objects.filter(sort=sort, contract=contractor.contract)  # 해당 계약 입금건 전체
             for payment in payments:
                 if not released_done:  # 해지 확정 전일 때만 실행

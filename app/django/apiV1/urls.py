@@ -37,7 +37,6 @@ router.register(r'account-sort', rebs.AccountSortViewSet)  # only list
 router.register(r'account-depth1', rebs.AccountSubD1ViewSet)  # only list
 router.register(r'account-depth2', rebs.AccountSubD2ViewSet)  # only list
 router.register(r'account-depth3', rebs.AccountSubD3ViewSet)  # only list
-router.register(r'project-acc-sort', rebs.ProjectAccountSortViewSet)  # only list
 router.register(r'project-account-depth2', rebs.ProjectAccountD2ViewSet)  # only list
 router.register(r'project-account-depth3', rebs.ProjectAccountD3ViewSet)  # only list
 router.register(r'wise-say', rebs.WiseSayViewSet)
