@@ -19,7 +19,7 @@ export const useProCash = defineStore('proCash', () => {
 
   const fetchProAccSortList = () =>
     api
-      .get(`/project-acc-sort/`)
+      .get(`/account-sort/`)
       .then(res => (sortList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
