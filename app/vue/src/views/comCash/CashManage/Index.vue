@@ -120,9 +120,7 @@ const listFiltering = (payload: Filter) => {
 }
 
 const chargeCreate = (
-  payload: CashBook & { sepData: SepItems | null } & {
-    bank_account_to?: number
-  },
+  payload: CashBook & { sepData: SepItems | null },
   charge: number,
 ) => {
   payload.sort = 2
@@ -177,7 +175,11 @@ const onCreate = (
     payload.outlay = null
     payload.evidence = ''
     setTimeout(() => createCashBook(payload), 300)
-  } else createCashBook(payload)
+  } else {
+    const { charge, ...inputData } = payload
+    createCashBook(inputData)
+    if (!!charge) chargeCreate(inputData, charge)
+  }
 }
 
 const onUpdate = (
@@ -187,6 +189,8 @@ const onUpdate = (
 const multiSubmit = (payload: {
   formData: CashBook
   sepData: SepItems | null
+  bank_account_to: null | number
+  charge: null | number
 }) => {
   const { formData, ...sepData } = payload
   const createData = { ...formData, ...sepData }
