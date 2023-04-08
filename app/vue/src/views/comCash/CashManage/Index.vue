@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref, computed, onBeforeMount } from 'vue'
 import { navMenu, pageTitle } from '@/views/comCash/_menu/headermixin'
+import { cutString } from '@/utils/baseMixins'
 import { useCompany } from '@/store/pinia/company'
 import {
   useComCash,
@@ -13,12 +14,7 @@ import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from '@/views/comCash/CashManage/components/ListController.vue'
 import AddCash from '@/views/comCash/CashManage/components/AddCash.vue'
 import TableTitleRow from '@/components/TableTitleRow.vue'
-import CashesList from '@/views/comCash/CashManage/components/CashesList.vue'
-import {
-  CashBookFilter,
-  ProjectCashBook as PrCashBook,
-} from '@/store/types/proCash'
-import { cutString } from '@/utils/baseMixins'
+import CashList from '@/views/comCash/CashManage/components/CashList.vue'
 
 const listControl = ref()
 
@@ -247,7 +243,7 @@ onBeforeMount(() => {
         excel
         :url="excelUrl"
       />
-      <CashesList
+      <CashList
         :company="company"
         @page-select="pageSelect"
         @multi-submit="multiSubmit"

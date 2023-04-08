@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import { useComCash } from '@/store/pinia/comCash'
 import { CompanyBank, CashBook } from '@/store/types/comCash'
 import { TableSecondary } from '@/utils/cssMixins'
-import Cashes from '@/views/comCash/CashManage/components/Cashes.vue'
+import Cash from '@/views/comCash/CashManage/components/Cash.vue'
 import Pagination from '@/components/Pagination'
 import AccDepth from './AccDepth.vue'
 import BankAcc from './BankAcc.vue'
@@ -81,7 +81,7 @@ const onBankUpdate = (payload: CompanyBank) => emit('on-bank-update', payload)
     </CTableHead>
 
     <CTableBody>
-      <Cashes
+      <Cash
         v-for="cash in getCashLogs"
         :key="cash.pk"
         :cash="cash"

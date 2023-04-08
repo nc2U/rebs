@@ -239,8 +239,8 @@ export const useComCash = defineStore('comCash', () => {
           content: c.content,
           trader: c.trader,
           bank_account: c.bank_account,
-          bank_account_desc: comBankList.value
-            ? comBankList.value
+          bank_account_desc: allComBankList.value
+            ? allComBankList.value
                 .filter((b: CompanyBank) => b.pk === c.bank_account)
                 .map((b: CompanyBank) => b.alias_name)[0]
             : [],
