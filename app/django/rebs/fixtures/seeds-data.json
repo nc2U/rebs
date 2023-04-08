@@ -1304,7 +1304,7 @@
       "sort": 1,
       "d2": 7,
       "code": "215",
-      "name": "부가세(예수금)",
+      "name": "부가세예수금",
       "is_hide": false,
       "is_special": false,
       "description": "매출 시 매입자로부터 받아 둔 부가가치세"
@@ -3046,7 +3046,7 @@
       "sort": 2,
       "d2": 7,
       "code": "215",
-      "name": "[환불] - 부가세(예수금)",
+      "name": "[환불] - 부가세예수금",
       "is_hide": true,
       "is_special": false,
       "description": "매출 시 매입자로부터 받아 둔 부가가치세"
