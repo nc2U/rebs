@@ -172,7 +172,7 @@ const isModify = computed(() => {
 
 const callAccount = () => {
   nextTick(() => {
-    const sort = form.sort
+    const sort = form.sort === 1 || form.sort === 2 ? form.sort : null
     const d1 = form.account_d1 || null
     const d2 = form.account_d2 || null
     fetchFormAccD1List(sort)
@@ -693,7 +693,6 @@ onBeforeMount(() => {
                       <option value="">---------</option>
                       <option value="1">입금</option>
                       <option value="2">출금</option>
-                      <option value="3">대체</option>
                     </CFormSelect>
                   </CCol>
                 </CRow>
@@ -837,11 +836,11 @@ onBeforeMount(() => {
                     <CFormSelect v-model.number="form.bank_account" disabled>
                       <option value="">---------</option>
                       <option
-                        v-for="ba in comBankList"
-                        :key="ba.pk"
-                        :value="ba.pk"
+                        v-for="ba in comBankAccs"
+                        :key="ba.value"
+                        :value="ba.value"
                       >
-                        {{ ba.alias_name }}
+                        {{ ba.label }}
                       </option>
                     </CFormSelect>
                   </CCol>

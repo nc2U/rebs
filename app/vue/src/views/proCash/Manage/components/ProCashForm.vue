@@ -174,7 +174,7 @@ const isModify = computed(() => {
 const callAccount = () => {
   nextTick(() => {
     const sort = form.sort === 1 || form.sort === 2 ? form.sort : null
-    const d1 = form.project_account_d2
+    const d1 = form.project_account_d2 || null
     fetchProformAccD2List(sort)
     fetchProFormAccD3List(d1, sort)
   })
@@ -755,11 +755,11 @@ onBeforeMount(() => {
                     <CFormSelect v-model.number="form.bank_account" disabled>
                       <option value="">---------</option>
                       <option
-                        v-for="ba in proBankAccountList"
-                        :key="ba.pk"
-                        :value="ba.pk"
+                        v-for="ba in proBankAccs"
+                        :key="ba.value"
+                        :value="ba.value"
                       >
-                        {{ ba.alias_name }}
+                        {{ ba.label }}
                       </option>
                     </CFormSelect>
                   </CCol>
