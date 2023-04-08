@@ -36,8 +36,8 @@ class AccountSubD2Admin(ImportExportMixin, admin.ModelAdmin):
 
 
 class AccountSubD3Admin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'd2', 'name', 'code', 'description', 'is_hide', 'is_special')
-    list_display_links = ('name',)
+    list_display = ('id', 'sort', 'd2', 'name', 'code', 'description', 'is_hide', 'is_special')
+    list_display_links = ('sort', 'd2', 'name')
     list_editable = ('is_hide', 'is_special')
     search_fields = ('name', 'description')
     list_filter = ('d2__d1', 'd2')

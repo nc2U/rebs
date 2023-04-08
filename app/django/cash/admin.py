@@ -24,7 +24,7 @@ class CashBookAdmin(ImportExportMixin, admin.ModelAdmin):
                     'trader', 'bank_account', 'formatted_income', 'formatted_outlay', 'evidence', 'user')
     list_editable = ('account_d1', 'account_d2', 'account_d3', 'content', 'trader', 'evidence')
     search_fields = ('account_d3', 'content', 'trader', 'note')
-    list_display_links = ('deal_date', 'sort', 'content')
+    list_display_links = ('deal_date', 'sort', 'bank_account')
     list_filter = (('deal_date', DateRangeFilter), 'sort', 'account_d1', 'account_d2', 'account_d3', 'evidence')
 
     def formatted_income(self, obj):
