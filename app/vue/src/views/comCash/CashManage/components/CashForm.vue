@@ -39,7 +39,9 @@ const sepItem = reactive<SepItems>({
 
 const validated = ref(false)
 
-const form = reactive<CashBook>({
+const form = reactive<
+  CashBook & { bank_account_to: null | number; charge: null | number }
+>({
   pk: null,
   company: null,
   sort: null,
@@ -53,8 +55,10 @@ const form = reactive<CashBook>({
   content: '',
   trader: '',
   bank_account: null,
+  bank_account_to: null,
   income: null,
   outlay: null,
+  charge: null,
   evidence: '',
   note: '',
   deal_date: dateFormat(new Date()),
@@ -589,7 +593,7 @@ onBeforeMount(() => {
             </CRow>
           </CCol>
           <CCol sm="6">
-            <CRow>
+            <CRow v-if="form.sort === 1 || cash">
               <CFormLabel class="col-sm-4 col-form-label">입금액</CFormLabel>
               <CCol sm="8">
                 <CFormInput
@@ -601,6 +605,20 @@ onBeforeMount(() => {
                   :disabled="
                     form.sort === 2 || !form.sort || (cash && !cash.income)
                   "
+                />
+              </CCol>
+            </CRow>
+            <CRow v-else>
+              <CFormLabel class="col-sm-4 col-form-label">
+                출금 수수료
+              </CFormLabel>
+              <CCol sm="8">
+                <CFormInput
+                  v-model.number="form.charge"
+                  type="number"
+                  min="0"
+                  placeholder="출금 수수료"
+                  :disabled="!form.sort || form.sort === 4 || form.is_separate"
                 />
               </CCol>
             </CRow>

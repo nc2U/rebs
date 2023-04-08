@@ -14,6 +14,11 @@ import ListController from '@/views/comCash/CashManage/components/ListController
 import AddCash from '@/views/comCash/CashManage/components/AddCash.vue'
 import TableTitleRow from '@/components/TableTitleRow.vue'
 import CashesList from '@/views/comCash/CashManage/components/CashesList.vue'
+import {
+  CashBookFilter,
+  ProjectCashBook as PrCashBook,
+} from '@/store/types/proCash'
+import { cutString } from '@/utils/baseMixins'
 
 const listControl = ref()
 
@@ -114,21 +119,64 @@ const listFiltering = (payload: Filter) => {
   fetchCashBookList(payload)
 }
 
-const onCreate = (
+const chargeCreate = (
   payload: CashBook & { sepData: SepItems | null } & {
     bank_account_to?: number
+  },
+  charge: number,
+) => {
+  payload.sort = 2
+  payload.account_d1 = 5
+  payload.account_d2 = 17
+  payload.account_d3 = 118
+  payload.content = cutString(payload.content, 8) + ' - 이체수수료'
+  payload.trader = '지급수수료'
+  payload.outlay = charge
+  payload.income = null
+  payload.evidence = '0'
+  payload.note = ''
+
+  createCashBook(payload)
+}
+
+const onCreate = (
+  payload: CashBook & { sepData: SepItems | null } & {
+    bank_account_to: null | number
+    charge: null | number
   },
 ) => {
   payload.company = company.value
   if (payload.sort === 3 && payload.bank_account_to) {
-    const { bank_account_to, income, ...inputData } = payload
+    // 대체 거래일 때
+    const { bank_account_to, charge, ...inputData } = payload
 
+    inputData.sort = 2
+    inputData.trader = '내부대체'
+    inputData.account_d3 = 131
     createCashBook(inputData)
 
-    delete inputData.outlay
+    inputData.sort = 1
+    inputData.account_d3 = 132
+    inputData.income = inputData.outlay
+    inputData.outlay = null
     inputData.bank_account = bank_account_to
 
-    createCashBook({ ...{ income }, ...inputData })
+    setTimeout(() => createCashBook({ ...inputData }), 300)
+    if (!!charge) {
+      setTimeout(() => chargeCreate({ ...inputData }, charge), 600)
+    }
+  } else if (payload.sort === 4) {
+    // 취소 거래일 때
+    payload.sort = 2
+    payload.account_d3 = 133
+    payload.evidence = '0'
+    createCashBook(payload)
+    payload.sort = 1
+    payload.account_d3 = 134
+    payload.income = payload.outlay
+    payload.outlay = null
+    payload.evidence = ''
+    setTimeout(() => createCashBook(payload), 300)
   } else createCashBook(payload)
 }
 

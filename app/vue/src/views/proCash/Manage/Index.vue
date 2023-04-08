@@ -146,27 +146,22 @@ const onCreate = (
   if (project.value) payload.project = project.value
   if (payload.sort === 3 && payload.bank_account_to) {
     // 대체 거래일 때
-    const { bank_account, bank_account_to, charge, ...inputData } = payload
+    const { bank_account_to, charge, ...inputData } = payload
 
     inputData.sort = 2
     inputData.trader = '내부대체'
     inputData.project_account_d3 = 67
-    createPrCashBook({ bank_account, ...inputData })
+    createPrCashBook({ ...inputData })
 
     inputData.sort = 1
-    inputData.project_account_d3 += 1
+    inputData.project_account_d3 = 68
     inputData.income = inputData.outlay
     inputData.outlay = null
+    inputData.bank_account = bank_account_to
 
-    setTimeout(
-      () => createPrCashBook({ bank_account: bank_account_to, ...inputData }),
-      300,
-    )
+    setTimeout(() => createPrCashBook({ ...inputData }), 300)
     if (!!charge) {
-      setTimeout(
-        () => chargeCreate({ bank_account, ...inputData }, charge),
-        600,
-      )
+      setTimeout(() => chargeCreate({ ...inputData }, charge), 600)
     }
   } else if (payload.sort === 4) {
     // 취소 거래일 때
@@ -175,7 +170,7 @@ const onCreate = (
     payload.evidence = '0'
     createPrCashBook(payload)
     payload.sort = 1
-    payload.project_account_d3 += 1
+    payload.project_account_d3 = 70
     payload.income = payload.outlay
     delete payload.outlay
     payload.evidence = ''
