@@ -64,28 +64,28 @@ const routes: Array<RouteRecordRaw> = [
         name: 'NotFound',
         component: () => import('@/components/NotFound.vue'),
         meta: { title: 'Not-Found', except: true },
-        // beforeEnter: (to, from, next) => {
-        //   if (!!isAuth.value) {
-        //     next()
-        //   } else {
-        //     next({
-        //       path: '/accounts/login',
-        //       query: { redirect: to.fullPath },
-        //     })
-        //   }
-        // },
+        beforeEnter: (to, from, next) => {
+          if (!!isAuth.value) {
+            next()
+          } else {
+            next({
+              path: '/accounts/login',
+              query: { redirect: to.fullPath },
+            })
+          }
+        },
       },
     ],
-    // beforeEnter: (to, from, next) => {
-    //   if (!!isAuth.value) {
-    //     next()
-    //   } else {
-    //     next({
-    //       path: '/accounts/login',
-    //       query: { redirect: to.fullPath },
-    //     })
-    //   }
-    // },
+    beforeEnter: (to, from, next) => {
+      if (!!isAuth.value) {
+        next()
+      } else {
+        next({
+          path: '/accounts/login',
+          query: { redirect: to.fullPath },
+        })
+      }
+    },
   },
   {
     path: '/accounts/login',
