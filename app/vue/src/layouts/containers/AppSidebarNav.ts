@@ -1,4 +1,4 @@
-import { defineComponent, h, ref, resolveComponent } from 'vue'
+import { defineComponent, h, ref, resolveComponent, onMounted } from 'vue'
 import { RouterLink, useRoute, RouteLocation } from 'vue-router'
 
 import {
@@ -63,9 +63,9 @@ const AppSidebarNav = defineComponent({
     const route = useRoute()
     const firstRender = ref(true)
 
-    // onMounted(() => {
-    //   firstRender.value = false
-    // })
+    onMounted(() => {
+      firstRender.value = true
+    })
 
     const renderItem = (item: Item) => {
       if (item.items) {
