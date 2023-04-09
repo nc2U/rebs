@@ -24,7 +24,7 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <CRow class="m-0">
+  <CRow class="m-0 align-items-center">
     <CFormLabel class="col-lg-1 col-form-label text-body">회사명</CFormLabel>
     <CCol md="6" lg="3">
       <Multiselect
@@ -37,6 +37,9 @@ onBeforeMount(() => {
         searchable
         @change="comSelect"
       />
+    </CCol>
+    <CCol v-if="comSelectList.length === 0" class="pl-0 align-middle">
+      <v-icon icon="mdi mdi-plus-thick" color="primary" />
     </CCol>
   </CRow>
 </template>

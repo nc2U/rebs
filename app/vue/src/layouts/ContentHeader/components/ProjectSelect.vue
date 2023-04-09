@@ -25,7 +25,7 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <CRow class="m-0">
+  <CRow class="m-0 align-items-center">
     <CFormLabel class="col-lg-1 col-form-label text-body">프로젝트</CFormLabel>
     <CCol md="6" lg="3">
       <Multiselect
@@ -37,6 +37,13 @@ onBeforeMount(() => {
         :add-option-on="['enter' | 'tab']"
         searchable
         @change="projSelect"
+      />
+    </CCol>
+    <CCol v-if="projSelectList.length === 0" class="pl-0 align-middle">
+      <v-icon
+        icon="mdi mdi-plus-thick"
+        color="success"
+        @click="$router.push({ name: '프로젝트 등록' })"
       />
     </CCol>
   </CRow>

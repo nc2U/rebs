@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin1'
 import { useProject } from '@/store/pinia/project'
 import { Project } from '@/store/types/project'
@@ -28,6 +28,10 @@ const toSubmit = (payload: Project) => {
   if (payload.pk) toUpdate(payload)
   else toCreate(payload)
 }
+
+onMounted(() => {
+  if (projectStore.projectList.length === 0) createForm()
+})
 </script>
 
 <template>
