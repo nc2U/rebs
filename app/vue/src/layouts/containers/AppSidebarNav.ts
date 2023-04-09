@@ -1,4 +1,5 @@
-import { defineComponent, h, ref, resolveComponent, onMounted } from 'vue'
+import { defineComponent, h, ref, resolveComponent, computed } from 'vue'
+import { useAccount } from '@/store/pinia/account'
 import { RouterLink, useRoute, RouteLocation } from 'vue-router'
 
 import {
@@ -24,6 +25,12 @@ type Item = {
   name?: string
   to?: string
 }
+
+const isCash = computed(
+  () =>
+    useAccount().superAuth ||
+    Number(useAccount().staffAuth?.company_cash || null),
+)
 
 const normalizePath = (path: string) =>
   decodeURI(path)
@@ -62,10 +69,6 @@ const AppSidebarNav = defineComponent({
   setup() {
     const route = useRoute()
     const firstRender = ref(true)
-
-    onMounted(() => {
-      firstRender.value = true
-    })
 
     const renderItem = (item: Item) => {
       if (item.items) {
@@ -129,6 +132,8 @@ const AppSidebarNav = defineComponent({
           )
         : h(resolveComponent(item.component), {}, () => item.name)
     }
+
+    if (!isCash.value) nav.splice(10, 1)
 
     return () =>
       h(
