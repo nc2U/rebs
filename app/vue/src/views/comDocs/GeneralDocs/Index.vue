@@ -38,11 +38,15 @@ const selectCate = (cate: number) => {
   postFilter.value.category = cate
   docsFilter(postFilter.value)
 }
-const pageSelect = (page: number) => console.log(page)
+
+const pageSelect = (page: number) => {
+  postFilter.value.page = page
+  docsFilter(postFilter.value)
+}
 
 const comStore = useCompany()
 const initComId = computed(() => comStore.initComId)
-const company = computed(() => comStore.company?.pk)
+const company = computed(() => comStore.company?.pk || null)
 
 const documentStore = useDocument()
 const postList = computed(() => documentStore.postList)
@@ -61,16 +65,19 @@ const patchPost = (payload: PatchPost) => documentStore.patchPost(payload)
 const patchLink = (payload: Link) => documentStore.patchLink(payload)
 const patchFile = (payload: AFile) => documentStore.patchFile(payload)
 
-const headerSelect = (target: number) => {
+const router = useRouter()
+
+const companySelect = (target: number) => {
   if (!!target) {
     fetchPostList({ company: target, board: 2 })
   } else {
+    comStore.company = null
     documentStore.postList = []
     documentStore.postCount = 0
+    router.replace({ name: '본사 일반 문서' })
   }
 }
 
-const router = useRouter()
 const onSubmit = (payload: Post & Attatches) => {
   const { pk, ...formData } = payload
   formData.company = company.value || null
@@ -105,16 +112,20 @@ const sortFilter = (project: number | null) => {
 
 onBeforeMount(() => {
   fetchCategoryList(2)
-  if (initComId.value) fetchPostList({ company: initComId.value, board: 2 })
+  if (initComId.value) {
+    postFilter.value.company = initComId.value
+    fetchPostList({ company: initComId.value, board: 2 })
+  }
 })
 
 onBeforeUpdate(() => {
-  fetchPostList({
-    company: company.value,
-    board: 2,
-    page: postFilter.value.page,
-    category: postFilter.value.category,
-  })
+  if (company.value)
+    fetchPostList({
+      company: company.value,
+      board: 2,
+      page: postFilter.value.page,
+      category: postFilter.value.category,
+    })
 })
 </script>
 
@@ -123,7 +134,7 @@ onBeforeUpdate(() => {
     :page-title="pageTitle"
     :nav-menu="navMenu"
     :selector="'CompanySelect'"
-    @header-select="headerSelect"
+    @header-select="companySelect"
   />
 
   <ContentBody>
@@ -138,6 +149,7 @@ onBeforeUpdate(() => {
         />
 
         <DocsList
+          :company="company"
           :page="postFilter.page"
           :post-list="postList"
           @page-select="pageSelect"

@@ -4,6 +4,7 @@ import Docs from './Docs.vue'
 import Pagination from '@/components/Pagination'
 
 defineProps({
+  company: { type: Number, default: null },
   page: { type: Number, default: 1 },
   postList: { type: Array, default: () => [] },
 })
@@ -65,6 +66,7 @@ const sortFilter = (project: number | null) => emit('sort-filter', project)
       <CButton
         color="primary"
         class="px-5"
+        :disabled="!company"
         @click="$router.push({ name: '본사 일반 문서 - 작성' })"
       >
         등록하기

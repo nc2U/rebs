@@ -16,6 +16,7 @@ import DocsForm from './components/DocsForm.vue'
 
 const fController = ref()
 const caseFilter = ref<PostFilter>({
+  company: null,
   board: 3,
   category: null,
   is_com: '',
@@ -45,7 +46,7 @@ const pageSelect = (page: number) => {
 
 const comStore = useCompany()
 const initComId = computed(() => comStore.initComId)
-const company = computed(() => comStore.company?.pk || initComId.value)
+const company = computed(() => comStore.company?.pk || null)
 
 const documentStore = useDocument()
 const postList = computed(() => documentStore.postList)
@@ -64,16 +65,19 @@ const patchPost = (payload: PatchPost) => documentStore.patchPost(payload)
 const patchLink = (payload: Link) => documentStore.patchLink(payload)
 const patchFile = (payload: AFile) => documentStore.patchFile(payload)
 
-const headerSelect = (target: number) => {
+const router = useRouter()
+
+const companySelect = (target: number) => {
   if (!!target) {
     fetchPostList({ company: target, board: 3 })
   } else {
+    comStore.company = null
     documentStore.postList = []
     documentStore.postCount = 0
+    router.replace({ name: '본사 소송 문서' })
   }
 }
 
-const router = useRouter()
 const onSubmit = (payload: Post & Attatches) => {
   const { pk, ...formData } = payload
   formData.company = company.value
@@ -107,16 +111,20 @@ const sortFilter = (project: number | null) => {
 
 onBeforeMount(() => {
   fetchCategoryList(3)
-  fetchPostList({ company: company.value, board: 3 })
+  if (initComId.value) {
+    caseFilter.value.company = initComId.value
+    fetchPostList({ company: initComId.value, board: 3 })
+  }
 })
 
 onBeforeUpdate(() => {
-  fetchPostList({
-    company: company.value,
-    board: 3,
-    page: caseFilter.value.page,
-    category: caseFilter.value.category,
-  })
+  if (company.value)
+    fetchPostList({
+      company: company.value,
+      board: 3,
+      page: caseFilter.value.page,
+      category: caseFilter.value.category,
+    })
 })
 </script>
 
@@ -125,7 +133,7 @@ onBeforeUpdate(() => {
     :page-title="pageTitle"
     :nav-menu="navMenu"
     :selector="'CompanySelect'"
-    @header-select="headerSelect"
+    @header-select="companySelect"
   />
 
   <ContentBody>
@@ -140,6 +148,7 @@ onBeforeUpdate(() => {
         />
 
         <DocsList
+          :company="company"
           :page="caseFilter.page"
           :post-list="postList"
           @page-select="pageSelect"

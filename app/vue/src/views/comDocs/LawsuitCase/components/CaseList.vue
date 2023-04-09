@@ -4,6 +4,7 @@ import Case from './Case.vue'
 import Pagination from '@/components/Pagination'
 
 defineProps({
+  company: { type: Number, default: null },
   page: { type: Number, default: 1 },
   caseList: { type: Array, default: () => [] },
 })
@@ -82,6 +83,7 @@ const pageSelect = (page: number) => emit('page-select', page)
       <CButton
         color="primary"
         class="px-5"
+        :disabled="!company"
         @click="$router.push({ name: '본사 소송 사건 - 작성' })"
       >
         등록하기

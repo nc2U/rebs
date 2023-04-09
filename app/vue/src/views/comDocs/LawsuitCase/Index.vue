@@ -25,23 +25,23 @@ const caseFilter = ref<cFilter>({
   page: 1,
 })
 
-const documentStore = useDocument()
-const suitcaseList = computed(() => documentStore.suitcaseList)
-
-const comStore = useCompany()
-const initComId = computed(() => comStore.initComId)
-const company = computed(() => comStore.company?.pk || initComId.value)
-
 const listFiltering = (payload: cFilter) => {
   caseFilter.value = payload
   caseFilter.value.project = payload.is_com ? '' : payload.project
-  fetchSuitCaseList({ ...caseFilter.value })
+  if (company.value) fetchSuitCaseList({ ...caseFilter.value })
 }
 
 const pageSelect = (page: number) => {
   caseFilter.value.page = page
   listFiltering(caseFilter.value)
 }
+
+const comStore = useCompany()
+const initComId = computed(() => comStore.initComId)
+const company = computed(() => comStore.company?.pk || null)
+
+const documentStore = useDocument()
+const suitcaseList = computed(() => documentStore.suitcaseList)
 
 const fetchSuitCaseList = (payload: cFilter) =>
   documentStore.fetchSuitCaseList(payload)
@@ -54,16 +54,19 @@ const updateSuitCase = (payload: SuitCase) =>
   documentStore.updateSuitCase(payload)
 const deleteSuitCase = (pk: number) => documentStore.deleteSuitCase(pk)
 
-const headerSelect = (target: number) => {
+const router = useRouter()
+
+const companySelect = (target: number) => {
   if (!!target) {
     fetchSuitCaseList({ company: target })
   } else {
+    comStore.company = null
     documentStore.suitcaseList = []
     documentStore.suitcaseCount = 0
+    router.replace({ name: '본사 소송 사건' })
   }
 }
 
-const router = useRouter()
 const onSubmit = (payload: SuitCase) => {
   if (payload.pk) {
     updateSuitCase(payload)
@@ -109,12 +112,13 @@ const sortFilter = (project: number | null) => {
 }
 
 onBeforeMount(() => {
-  fetchSuitCaseList({ company: company.value })
+  if (initComId.value) fetchSuitCaseList({ company: initComId.value })
   fetchAllSuitCaseList({})
 })
 
 onBeforeUpdate(() => {
-  fetchSuitCaseList({ company: company.value, page: caseFilter.value.page })
+  if (company.value)
+    fetchSuitCaseList({ company: company.value, page: caseFilter.value.page })
 })
 </script>
 
@@ -123,7 +127,7 @@ onBeforeUpdate(() => {
     :page-title="pageTitle"
     :nav-menu="navMenu"
     :selector="'CompanySelect'"
-    @header-select="headerSelect"
+    @header-select="companySelect"
   />
 
   <ContentBody>
@@ -132,6 +136,7 @@ onBeforeUpdate(() => {
         <ListController ref="fController" @list-filter="listFiltering" />
 
         <CaseList
+          :company="company"
           :page="caseFilter.page"
           :case-list="suitcaseList"
           @page-select="pageSelect"
