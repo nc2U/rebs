@@ -1,9 +1,9 @@
 import { computed } from 'vue'
+import { useAccount } from '@/store/pinia/account'
 import { createRouter, createWebHashHistory } from 'vue-router'
 import { start, close } from '@/utils/nprogress'
 import routes from '@/router/routes'
 import store from '@/store'
-import { useAccount } from '@/store/pinia/account'
 
 const isAuth = computed(() => useAccount().isAuthorized)
 
