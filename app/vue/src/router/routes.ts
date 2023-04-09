@@ -1,6 +1,4 @@
 import store from '@/store'
-// import { computed } from 'vue'
-// import { useAccount } from '@/store/pinia/account'
 import { hashCode } from '@/utils/helper'
 import { RouteRecordRaw } from 'vue-router'
 
@@ -18,8 +16,6 @@ import comCash from '@/router/modules/comCash'
 import comDocs from '@/router/modules/comDocs'
 import hrManage from '@/router/modules/hrManage'
 import settings from '@/router/modules/settings'
-
-// const isAuth = computed(() => useAccount().isAuthorized)
 
 const routes: Array<RouteRecordRaw> = [
   {
