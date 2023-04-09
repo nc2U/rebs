@@ -12,7 +12,14 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
   const isAuth = await computed(() => useAccount().isAuthorized)
-  if (!isAuth.value && to.name !== 'Login')
+  if (
+    !isAuth.value &&
+    !(
+      to.name === 'Login' ||
+      to.name === 'Register' ||
+      to.name === 'RegisterCode'
+    )
+  )
     next({ name: 'Login', query: { redirect: to.fullPath } })
 
   start()
