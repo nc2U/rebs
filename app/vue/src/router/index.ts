@@ -12,9 +12,9 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
   const isAuth = await computed(() => useAccount().isAuthorized)
-  if (!isAuth.value && to.name !== 'Login') {
-    return { name: 'Login', query: { redirect: to.fullPath } }
-  }
+  if (!isAuth.value && to.name !== 'Login')
+    next({ name: 'Login', query: { redirect: to.fullPath } })
+
   start()
   store.commit('startSpinner')
   next()
