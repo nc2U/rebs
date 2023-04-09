@@ -100,7 +100,19 @@ const formsCheck = computed(() => {
 })
 
 const companyStore = useCompany()
-const comId = computed(() => companyStore.company?.pk || null)
+const initComId = computed(() => companyStore.initComId)
+const comId = computed(() => companyStore.company?.pk)
+const fetchCompany = (pk: number) => companyStore.fetchCompany(pk)
+
+const companySelect = (target: number) => {
+  if (!!target) {
+    fetchCompany(target)
+    comInfo.value.company = target
+  } else {
+    comInfo.value.company = null
+    companyStore.company = null
+  }
+}
 
 const accountStore = useAccount()
 const user = computed(() => accountStore.user)
@@ -157,23 +169,6 @@ const modalAction = () => {
   }
 }
 
-onBeforeMount(() => {
-  accountStore.fetchUsersList()
-  if (accountStore?.userInfo) selectUser(accountStore.userInfo.pk as number)
-  if (companyStore.company) comInfo.value.company = companyStore.company.pk
-})
-
-watch(
-  () => comId.value,
-  nVal => {
-    if (!!nVal) comInfo.value.company = nVal
-    else {
-      comInfo.value.company = null
-      accountStore.user = null
-    }
-  },
-)
-
 watch(
   () => user.value,
   nVal => {
@@ -196,6 +191,12 @@ watch(
     }
   },
 )
+
+onBeforeMount(() => {
+  accountStore.fetchUsersList()
+  comInfo.value.company = initComId.value
+  if (accountStore?.userInfo) selectUser(accountStore.userInfo.pk as number)
+})
 </script>
 
 <template>
@@ -203,6 +204,7 @@ watch(
     :page-title="pageTitle"
     :nav-menu="navMenu"
     :selector="'CompanySelect'"
+    @header-select="companySelect"
   />
   <ContentBody>
     <CCardBody>
@@ -223,7 +225,7 @@ watch(
       <CButton
         type="button"
         :color="isStaffAuth ? 'success' : 'primary'"
-        :disabled="formsCheck"
+        :disabled="!comId || formsCheck"
         @click="onSubmit"
       >
         <CIcon name="cil-check-circle" />
