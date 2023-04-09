@@ -1,11 +1,11 @@
-import { computed } from 'vue'
-import { useAccount } from '@/store/pinia/account'
+// import { computed } from 'vue'
+// import { useAccount } from '@/store/pinia/account'
 import { createRouter, createWebHashHistory } from 'vue-router'
 import { start, close } from '@/utils/nprogress'
 import routes from '@/router/routes'
 import store from '@/store'
 
-const isAuth = computed(() => useAccount().isAuthorized)
+// const isAuth = computed(() => useAccount().isAuthorized)
 
 const router = createRouter({
   history: createWebHashHistory(),
@@ -13,9 +13,9 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
-  if (!isAuth.value && to.name !== 'Login') {
-    return { name: 'Login', query: { redirect: to.fullPath } }
-  }
+  // if (!isAuth.value && to.name !== 'Login') {
+  //   return { name: 'Login', query: { redirect: to.fullPath } }
+  // }
   start()
   store.commit('startSpinner')
   next()
