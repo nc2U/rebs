@@ -141,17 +141,25 @@ yarn build
 - kubernetes cluster with helm installed
 - nfs server(ip)
 - domain(to deploy)
-- GitHub account
+- GitHub account(for using GitHub Actions)
 
 ### Usage
 
 #### 1. Building a deployment environment
 
+... update coming soon
+
 #### 2. Create a GitHub account
+
+... update coming soon
 
 #### 3. Source fork & Create secret data
 
+... update coming soon
+
 #### 4. deploy
+
+... update coming soon
 
 #### Reference
 
