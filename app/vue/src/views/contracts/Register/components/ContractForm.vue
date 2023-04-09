@@ -21,6 +21,7 @@ import AlertModal from '@/components/Modals/AlertModal.vue'
 import DatePicker from '@/components/DatePicker/index.vue'
 
 const props = defineProps({
+  project: { type: Number, default: null },
   contract: { type: Object, default: null },
   unitSet: Boolean, // 동호 지정 여부
   isUnion: Boolean, // 조합인지 일반분양 프로젝트인지 여부
@@ -389,6 +390,7 @@ defineExpose({ formReset })
               }"
               :add-option-on="['enter' | 'tab']"
               searchable
+              :disabled="!project"
               @change="unitReset"
             />
             <CFormFeedback invalid>구분 항목을 선택하세요.</CFormFeedback>

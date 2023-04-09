@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
-import { useContract } from '@/store/pinia/contract'
 import { useRouter } from 'vue-router'
+import { useContract } from '@/store/pinia/contract'
 
+defineProps({ project: { type: Number, default: null } })
 const emit = defineEmits(['search-contractor', 'get-release'])
 
 const search = ref('')
@@ -35,6 +36,7 @@ const setContractor = (pk: number, release: number | null) => {
                 placeholder="계약자, 비고, 계약 일련번호"
                 aria-label="Search"
                 aria-describedby="addon-wrapping"
+                :disabled="!project"
                 @keydown.enter="searchContractor"
               />
               <CInputGroupText @click="searchContractor">

@@ -143,6 +143,7 @@ onBeforeRouteLeave(() => {
   <ContentBody>
     <ContractForm
       ref="contForm"
+      :project="project"
       :contract="contract"
       :unit-set="unitSet"
       :is-union="isUnion"

@@ -87,8 +87,10 @@ const onSelectAdd = (target: number) => {
 
 const listFiltering = (payload: CashBookFilter) => {
   filterItems.value = payload
-  if (project.value) payload.project = project.value
-  fetchPaymentList(payload)
+  if (project.value) {
+    payload.project = project.value
+    fetchPaymentList(payload)
+  }
 }
 
 const payMatch = (payload: ProjectCashBook) =>
