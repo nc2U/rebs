@@ -27,25 +27,42 @@ const dataFilter = ref<StaffFilter>({
 
 const comStore = useCompany()
 const initComId = computed(() => comStore.initComId)
-const comId = computed(() => comStore.company?.pk || initComId.value)
+const comId = computed(() => comStore.company?.pk)
 const comName = computed(() => comStore.company?.name || undefined)
 
 const accStore = useAccount()
 const fetchUsersList = () => accStore.fetchUsersList()
 
+const companySelect = (target: number) => {
+  if (!!target) {
+    fetchStaffList({ com: target, sts: '1' })
+    fetchAllGradeList(target)
+    fetchAllDepartList(target)
+    fetchAllPositionList(target)
+    fetchAllDutyList(target)
+  } else {
+    comStore.staffList = []
+    comStore.allGradeList = []
+    comStore.allDepartList = []
+    comStore.allPositionList = []
+    comStore.allDutyList = []
+  }
+}
+
 const listFiltering = (payload: StaffFilter) => {
   dataFilter.value = payload
-  fetchStaffList({
-    page: payload.page,
-    com: payload.com,
-    sort: payload.sort,
-    dep: payload.dep,
-    gra: payload.gra,
-    pos: payload.pos,
-    dut: payload.dut,
-    sts: payload.sts,
-    q: payload.q,
-  })
+  if (comId.value)
+    fetchStaffList({
+      page: payload.page,
+      com: payload.com,
+      sort: payload.sort,
+      dep: payload.dep,
+      gra: payload.gra,
+      pos: payload.pos,
+      dut: payload.dut,
+      sts: payload.sts,
+      q: payload.q,
+    })
 }
 
 const fetchStaffList = (payload: StaffFilter) =>
@@ -64,23 +81,31 @@ const deleteStaff = (pk: number, com: number) => comStore.deleteStaff(pk, com)
 
 const multiSubmit = (payload: Staff) => {
   const { page } = dataFilter.value
-  if (!!payload.pk) updateStaff(payload, page, comId.value)
-  else createStaff(payload, page, comId.value)
+  if (comId.value) {
+    if (payload.pk) updateStaff(payload, page, comId.value)
+    else createStaff(payload, page, comId.value)
+  }
 }
-const onDelete = (pk: number) => deleteStaff(pk, comId.value)
+const onDelete = (pk: number) => {
+  if (comId.value) deleteStaff(pk, comId.value)
+}
 
 const pageSelect = (num: number) => {
-  dataFilter.value.page = num
-  dataFilter.value.com = comId.value
-  fetchStaffList(dataFilter.value)
+  if (comId.value) {
+    dataFilter.value.page = num
+    dataFilter.value.com = comId.value
+    fetchStaffList(dataFilter.value)
+  }
 }
 
 onMounted(() => {
-  fetchStaffList({ com: comId.value, sts: '1' })
-  fetchAllGradeList(comId.value)
-  fetchAllDepartList(comId.value)
-  fetchAllPositionList(comId.value)
-  fetchAllDutyList(comId.value)
+  if (initComId.value) {
+    fetchStaffList({ com: initComId.value, sts: '1' })
+    fetchAllGradeList(initComId.value)
+    fetchAllDepartList(initComId.value)
+    fetchAllPositionList(initComId.value)
+    fetchAllDutyList(initComId.value)
+  }
   fetchUsersList()
 })
 </script>
@@ -90,6 +115,7 @@ onMounted(() => {
     :page-title="pageTitle"
     :nav-menu="navMenu"
     :selector="'CompanySelect'"
+    @header-select="companySelect"
   />
   <ContentBody>
     <CCardBody>

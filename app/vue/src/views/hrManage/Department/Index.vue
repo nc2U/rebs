@@ -22,17 +22,28 @@ const dataFilter = ref<DepFilter>({
 const companyStore = useCompany()
 const getPkDeparts = computed(() => companyStore.getPkDeparts)
 const initComId = computed(() => companyStore.initComId)
-const comId = computed(() => companyStore.company?.pk || initComId.value)
+const comId = computed(() => companyStore.company?.pk)
 const comName = computed(() => companyStore.company?.name || undefined)
+
+const companySelect = (target: number) => {
+  if (!!target) {
+    fetchDepartmentList({ com: target })
+    fetchAllDepartList(target)
+  } else {
+    companyStore.departmentList = []
+    companyStore.allDepartList = []
+  }
+}
 
 const listFiltering = (payload: DepFilter) => {
   dataFilter.value = payload
-  fetchDepartmentList({
-    page: payload.page,
-    com: payload.com,
-    upp: payload.upp,
-    q: payload.q,
-  })
+  if (comId.value)
+    fetchDepartmentList({
+      page: payload.page,
+      com: payload.com,
+      upp: payload.upp,
+      q: payload.q,
+    })
 }
 
 const fetchDepartmentList = (payload: DepFilter) =>
@@ -55,20 +66,26 @@ const multiSubmit = (payload: Depart) => {
     createDepartment(payload, page)
   }
 }
-const onDelete = (pk: number) => deleteDepartment(pk, comId.value)
+const onDelete = (pk: number) => {
+  if (comId.value) deleteDepartment(pk, comId.value)
+}
 
 const pageSelect = (num: number) => {
   dataFilter.value.page = num
-  dataFilter.value.com = comId.value
-  fetchDepartmentList(dataFilter.value)
+  if (comId.value) {
+    dataFilter.value.com = comId.value
+    fetchDepartmentList(dataFilter.value)
+  }
 }
 
 const getLevel = (up: number) =>
   getPkDeparts.value.filter(d => d.value === up)[0].level + 1
 
 onMounted(() => {
-  fetchDepartmentList({ com: comId.value })
-  fetchAllDepartList(comId.value)
+  if (initComId.value) {
+    fetchDepartmentList({ com: initComId.value })
+    fetchAllDepartList(initComId.value)
+  }
 })
 </script>
 
@@ -77,6 +94,7 @@ onMounted(() => {
     :page-title="pageTitle"
     :nav-menu="navMenu"
     :selector="'CompanySelect'"
+    @header-select="companySelect"
   />
   <ContentBody>
     <CCardBody>

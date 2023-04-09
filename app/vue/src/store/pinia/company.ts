@@ -542,6 +542,7 @@ export const useCompany = defineStore('company', () => {
     deleteDepartment,
 
     gradeList,
+    allGradeList,
     grade,
     gradesCount,
     getGrades,
@@ -555,6 +556,7 @@ export const useCompany = defineStore('company', () => {
     deleteGrade,
 
     positionList,
+    allPositionList,
     position,
     positionsCount,
     getPositions,
@@ -568,6 +570,7 @@ export const useCompany = defineStore('company', () => {
     deletePosition,
 
     dutyList,
+    allDutyList,
     duty,
     dutysCount,
     getDutys,

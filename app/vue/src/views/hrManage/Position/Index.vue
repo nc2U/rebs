@@ -20,16 +20,27 @@ const dataFilter = ref<ComFilter>({
 
 const companyStore = useCompany()
 const initComId = computed(() => companyStore.initComId)
-const comId = computed(() => companyStore.company?.pk || initComId.value)
+const comId = computed(() => companyStore.company?.pk)
 const comName = computed(() => companyStore.company?.name || undefined)
+
+const companySelect = (target: number) => {
+  if (!!target) {
+    fetchAllGradeList(target)
+    fetchPositionList({ com: target })
+  } else {
+    companyStore.allGradeList = []
+    companyStore.positionList = []
+  }
+}
 
 const listFiltering = (payload: ComFilter) => {
   dataFilter.value = payload
-  fetchPositionList({
-    page: payload.page,
-    com: payload.com,
-    q: payload.q,
-  })
+  if (comId.value)
+    fetchPositionList({
+      page: payload.page,
+      com: payload.com,
+      q: payload.q,
+    })
 }
 
 const fetchAllGradeList = (com?: number) => companyStore.fetchAllGradeList(com)
@@ -45,20 +56,28 @@ const deletePosition = (pk: number, com: number) =>
 
 const multiSubmit = (payload: Position) => {
   const { page } = dataFilter.value
-  if (!!payload.pk) updatePosition(payload, page, comId.value)
-  else createPosition(payload, page, comId.value)
+  if (comId.value) {
+    if (!!payload.pk) updatePosition(payload, page, comId.value)
+    else createPosition(payload, page, comId.value)
+  }
 }
-const onDelete = (pk: number) => deletePosition(pk, comId.value)
+const onDelete = (pk: number) => {
+  if (comId.value) deletePosition(pk, comId.value)
+}
 
 const pageSelect = (num: number) => {
   dataFilter.value.page = num
-  dataFilter.value.com = comId.value
-  fetchPositionList(dataFilter.value)
+  if (comId.value) {
+    dataFilter.value.com = comId.value
+    fetchPositionList(dataFilter.value)
+  }
 }
 
 onMounted(() => {
-  fetchAllGradeList(comId.value)
-  fetchPositionList({ com: comId.value })
+  if (initComId.value) {
+    fetchAllGradeList(initComId.value)
+    fetchPositionList({ com: initComId.value })
+  }
 })
 </script>
 
@@ -67,6 +86,7 @@ onMounted(() => {
     :page-title="pageTitle"
     :nav-menu="navMenu"
     :selector="'CompanySelect'"
+    @header-select="companySelect"
   />
   <ContentBody>
     <CCardBody>

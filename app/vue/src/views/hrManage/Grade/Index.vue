@@ -20,16 +20,27 @@ const dataFilter = ref<ComFilter>({
 
 const comStore = useCompany()
 const initComId = computed(() => comStore.initComId)
-const comId = computed(() => comStore.company?.pk || initComId.value)
+const comId = computed(() => comStore.company?.pk)
 const comName = computed(() => comStore.company?.name || undefined)
+
+const companySelect = (target: number) => {
+  if (!!target) {
+    fetchGradeList({ com: target })
+    fetchAllPositionList(target)
+  } else {
+    comStore.gradeList = []
+    comStore.allPositionList = []
+  }
+}
 
 const listFiltering = (payload: ComFilter) => {
   dataFilter.value = payload
-  fetchGradeList({
-    page: payload.page,
-    com: payload.com,
-    q: payload.q,
-  })
+  if (comId.value)
+    fetchGradeList({
+      page: payload.page,
+      com: payload.com,
+      q: payload.q,
+    })
 }
 
 const fetchGradeList = (payload: ComFilter) => comStore.fetchGradeList(payload)
@@ -44,20 +55,28 @@ const deleteGrade = (pk: number, com: number) => comStore.deleteGrade(pk, com)
 
 const multiSubmit = (payload: Grade) => {
   const { page } = dataFilter.value
-  if (!!payload.pk) updateGrade(payload, page, comId.value)
-  else createGrade(payload, page, comId.value)
+  if (comId.value) {
+    if (!!payload.pk) updateGrade(payload, page, comId.value)
+    else createGrade(payload, page, comId.value)
+  }
 }
-const onDelete = (pk: number) => deleteGrade(pk, comId.value)
+const onDelete = (pk: number) => {
+  if (comId.value) deleteGrade(pk, comId.value)
+}
 
 const pageSelect = (num: number) => {
   dataFilter.value.page = num
-  dataFilter.value.com = comId.value
-  fetchGradeList(dataFilter.value)
+  if (comId.value) {
+    dataFilter.value.com = comId.value
+    fetchGradeList(dataFilter.value)
+  }
 }
 
 onMounted(() => {
-  fetchGradeList({ com: comId.value })
-  fetchAllPositionList(comId.value)
+  if (initComId.value) {
+    fetchGradeList({ com: initComId.value })
+    fetchAllPositionList(initComId.value)
+  }
 })
 </script>
 
@@ -66,6 +85,7 @@ onMounted(() => {
     :page-title="pageTitle"
     :nav-menu="navMenu"
     :selector="'CompanySelect'"
+    @header-select="companySelect"
   />
   <ContentBody>
     <CCardBody>

@@ -20,8 +20,14 @@ const dataFilter = ref<ComFilter>({
 
 const companyStore = useCompany()
 const initComId = computed(() => companyStore.initComId)
-const comId = computed(() => companyStore.company?.pk || initComId.value)
+const comId = computed(() => companyStore.company?.pk)
 const comName = computed(() => companyStore.company?.name || undefined)
+
+const companySelect = (target: number) => {
+  if (!!target) {
+    fetchDutyList({ com: target })
+  } else companyStore.dutyList = []
+}
 
 const listFiltering = (payload: ComFilter) => {
   dataFilter.value = payload
@@ -43,18 +49,26 @@ const deleteDuty = (pk: number, com: number) => companyStore.deleteDuty(pk, com)
 
 const multiSubmit = (payload: Duty) => {
   const { page } = dataFilter.value
-  if (!!payload.pk) updateDuty(payload, page, comId.value)
-  else createDuty(payload, page, comId.value)
+  if (comId.value) {
+    if (!!payload.pk) updateDuty(payload, page, comId.value)
+    else createDuty(payload, page, comId.value)
+  }
 }
-const onDelete = (pk: number) => deleteDuty(pk, comId.value)
+const onDelete = (pk: number) => {
+  if (comId.value) deleteDuty(pk, comId.value)
+}
 
 const pageSelect = (num: number) => {
   dataFilter.value.page = num
-  dataFilter.value.com = comId.value
-  fetchDutyList(dataFilter.value)
+  if (comId.value) {
+    dataFilter.value.com = comId.value
+    fetchDutyList(dataFilter.value)
+  }
 }
 
-onMounted(() => fetchDutyList({ com: comId.value }))
+onMounted(() => {
+  if (initComId.value) fetchDutyList({ com: initComId.value })
+})
 </script>
 
 <template>
@@ -62,6 +76,7 @@ onMounted(() => fetchDutyList({ com: comId.value }))
     :page-title="pageTitle"
     :nav-menu="navMenu"
     :selector="'CompanySelect'"
+    @header-select="companySelect"
   />
   <ContentBody>
     <CCardBody>

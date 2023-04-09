@@ -26,7 +26,9 @@ const multiSubmit = (payload: Staff) => emit('multi-submit', payload)
 
 <template>
   <CAlert :color="AlertSecondary" class="text-right">
-    <CButton color="primary" @click="createConfirm">직원 정보 신규등록</CButton>
+    <CButton color="primary" :disabled="!company" @click="createConfirm">
+      직원 정보 신규등록
+    </CButton>
   </CAlert>
 
   <FormModal ref="formModal" size="lg">
