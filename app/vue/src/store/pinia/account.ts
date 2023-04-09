@@ -120,10 +120,9 @@ export const useAccount = defineStore('account', () => {
     return api
       .post(`/staff-auth/`, payload)
       .then(() => {
-        return api.get(`/user/${userPk}`).then(res => {
-          setUser(res.data)
-          fetchUser(userPk).then(() => message())
-        })
+        return api
+          .get(`/user/${userPk}`)
+          .then(() => fetchUser(userPk).then(() => message()))
       })
       .catch(err => errorHandle(err.response.data))
   }
@@ -133,10 +132,9 @@ export const useAccount = defineStore('account', () => {
     return api
       .patch(`/staff-auth/${pk}/`, authData)
       .then(() => {
-        return api.get(`/user/${userPk}`).then(res => {
-          setUser(res.data)
-          fetchUser(userPk).then(() => message())
-        })
+        return api
+          .get(`/user/${userPk}`)
+          .then(() => fetchUser(userPk).then(() => message()))
       })
       .catch(err => errorHandle(err.response.data))
   }
