@@ -13,11 +13,11 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
+  if (!isAuth.value && to.name !== 'Login') {
+    return { name: 'Login', query: { redirect: to.fullPath } }
+  }
   start()
   store.commit('startSpinner')
-  // if (!isAuth.value && to.name !== 'Login') {
-  //   return { name: 'Login', query: { redirect: to.fullPath } }
-  // }
   next()
 })
 
