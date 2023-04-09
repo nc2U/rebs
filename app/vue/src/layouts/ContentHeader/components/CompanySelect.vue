@@ -39,7 +39,11 @@ onBeforeMount(() => {
       />
     </CCol>
     <CCol v-if="comSelectList.length === 0" class="pl-0 align-middle">
-      <v-icon icon="mdi mdi-plus-thick" color="primary" />
+      <v-icon
+        icon="mdi mdi-plus-thick"
+        color="primary"
+        @click="$router.push({ name: '회사 정보 관리' })"
+      />
     </CCol>
   </CRow>
 </template>
