@@ -76,18 +76,18 @@ const logout = () => {
         프로필
       </CDropdownItem>
       <CDropdownItem
-        v-if="userInfo.pk === 1"
-        @click="locationBlank('https://nc2u.github.io/rebs/')"
-      >
-        <CIcon icon="cil-description" />
-        사용자 매뉴얼
-      </CDropdownItem>
-      <CDropdownItem
         v-if="userInfo.is_superuser"
         @click="locationBlank('/admin/')"
       >
         <CIcon icon="cil-settings" />
         관리자 페이지
+      </CDropdownItem>
+      <CDropdownItem
+        v-if="userInfo.pk === 1"
+        @click="locationBlank('https://nc2u.github.io/rebs/')"
+      >
+        <CIcon icon="cil-description" />
+        사용자 매뉴얼
       </CDropdownItem>
       <CDropdownDivider />
       <CDropdownItem style="cursor: pointer" @click="logout">
