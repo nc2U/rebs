@@ -76,7 +76,7 @@ onMounted(() => {
   <ContentBody>
     <CCardBody class="pb-5">
       <ContSummary :contracts-count="contractsCount" />
-      <TableTitleRow v-if="project" excel :url="excelUrl" />
+      <TableTitleRow excel :url="excelUrl" :disabled="!project" />
       <v-divider color="grey" class="my-0" />
       <ContractBoard />
     </CCardBody>

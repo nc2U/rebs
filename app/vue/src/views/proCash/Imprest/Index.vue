@@ -248,12 +248,17 @@ onBeforeMount(() => {
   <ContentBody>
     <CCardBody class="pb-5">
       <ListController ref="listControl" @list-filtering="listFiltering" />
-      <AddProImprest @multi-submit="multiSubmit" @onBankUpdate="onBankUpdate" />
+      <AddProImprest
+        :project="project"
+        @multi-submit="multiSubmit"
+        @onBankUpdate="onBankUpdate"
+      />
       <TableTitleRow
         title="운영비용(전도금) 사용 내역"
         color="success"
         excel
         :url="excelUrl"
+        :disabled="!project"
       />
       <ProImprestList
         @page-select="pageSelect"

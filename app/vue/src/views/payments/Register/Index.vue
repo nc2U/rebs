@@ -99,7 +99,7 @@ const onSelectAdd = (target: number) => {
 
 const onContFiltering = (payload: ContFilter) => {
   payload.project = project.value
-  fetchContractList({ ...payload })
+  if (payload.project) fetchContractList({ ...payload })
 }
 
 const getContract = (cont: number) => {

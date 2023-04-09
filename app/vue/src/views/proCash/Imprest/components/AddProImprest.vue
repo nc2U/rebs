@@ -5,6 +5,7 @@ import { ProBankAcc, ProjectCashBook } from '@/store/types/proCash'
 import FormModal from '@/components/Modals/FormModal.vue'
 import ProImprestForm from '@/views/proCash/Imprest/components/ProImprestForm.vue'
 
+defineProps({ project: { type: Number, default: null } })
 const emit = defineEmits(['multi-submit', 'on-bank-update'])
 
 const createFormModal = ref()
@@ -21,7 +22,9 @@ const onBankUpdate = (payload: ProBankAcc) => emit('on-bank-update', payload)
 
 <template>
   <CAlert :color="AlertLight" variant="solid" class="text-right">
-    <CButton color="primary" @click="createConfirm">신규등록</CButton>
+    <CButton color="primary" :disabled="!project" @click="createConfirm">
+      신규등록
+    </CButton>
   </CAlert>
 
   <FormModal ref="createFormModal" size="lg">

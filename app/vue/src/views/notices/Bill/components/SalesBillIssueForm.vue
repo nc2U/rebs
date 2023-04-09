@@ -12,7 +12,10 @@ import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-const props = defineProps({ billIssue: { type: Object, default: null } })
+const props = defineProps({
+  project: { type: Number, default: null },
+  billIssue: { type: Object, default: null },
+})
 
 const emit = defineEmits(['on-submit', 'get-now-order', 'set-pub-date'])
 
@@ -104,7 +107,7 @@ watch(props, value => {
     form.content = val.content
   } else {
     form.pk = null
-    form.project = null
+    form.project = props.project
     form.now_payment_order = null
     form.host_name = ''
     form.host_tel = ''
@@ -458,7 +461,11 @@ const addressCallback = (data: AddressData) => {
       </CRow>
 
       <CAlert color="secondary" class="text-right">
-        <CButton type="submit" :color="btnClass" :disabled="formsCheck">
+        <CButton
+          type="submit"
+          :color="btnClass"
+          :disabled="!project || formsCheck"
+        >
           {{ confirmText }}
         </CButton>
       </CAlert>

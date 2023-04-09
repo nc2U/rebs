@@ -165,7 +165,7 @@ onBeforeRouteLeave(() => {
         :by-cont="excelSelect === '2'"
         @payment-filtering="listFiltering"
       />
-      <TableTitleRow excel :url="excelUrl">
+      <TableTitleRow excel :url="excelUrl" :disabled="!project">
         <v-radio-group
           v-model="excelSelect"
           inline

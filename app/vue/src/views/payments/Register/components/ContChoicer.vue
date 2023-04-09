@@ -137,5 +137,5 @@ onMounted(() => pageInit())
       </CCol>
     </CRow>
   </CAlert>
-  <TableTitleRow :disabled="!contract" pdf :url="paymentUrl" />
+  <TableTitleRow :disabled="!project || !contract" pdf :url="paymentUrl" />
 </template>

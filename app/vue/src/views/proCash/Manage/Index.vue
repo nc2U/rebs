@@ -45,10 +45,12 @@ const listFiltering = (payload: CashBookFilter) => {
   const d1 = payload.pro_acc_d2 ? payload.pro_acc_d2 : null
   fetchProFormAccD2List(sort)
   fetchProFormAccD3List(d1, sort)
-  fetchProjectCashList({
-    ...{ project: project.value },
-    ...payload,
-  })
+  if (project.value) {
+    fetchProjectCashList({
+      ...{ project: project.value },
+      ...payload,
+    })
+  }
 }
 
 const excelSelect = '1'
@@ -235,11 +237,16 @@ onBeforeMount(() => {
   <ContentBody>
     <CCardBody class="pb-5">
       <ListController ref="listControl" @list-filtering="listFiltering" />
-      <AddProCash @multi-submit="multiSubmit" @onBankUpdate="onBankUpdate" />
+      <AddProCash
+        :project="project"
+        @multi-submit="multiSubmit"
+        @onBankUpdate="onBankUpdate"
+      />
       <TableTitleRow
         title="프로젝트 입출금 내역"
         color="indigo"
         excel
+        :disabled="!project"
         :url="excelUrl"
       >
         <v-radio-group
@@ -249,6 +256,7 @@ onBeforeMount(() => {
           density="compact"
           class="d-flex flex-row-reverse"
           style="font-size: 0.8em"
+          :disabled="!project"
         >
           <v-radio label="전체(운영비용 포함)" value="1" />
         </v-radio-group>

@@ -142,7 +142,7 @@ onBeforeMount(() => {
 
       <TabSelect @tab-select="showTab" />
 
-      <TableTitleRow excel :url="excelUrl" />
+      <TableTitleRow excel :url="excelUrl" :disabled="!project" />
 
       <StatusByAccount
         v-if="compName === 'StatusByAccount'"

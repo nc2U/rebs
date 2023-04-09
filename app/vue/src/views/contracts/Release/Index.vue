@@ -115,11 +115,11 @@ onBeforeRouteLeave(() => {
         @on-submit="onSubmit"
       />
       <TableTitleRow
-        v-if="project"
         title="계약 해지 현황"
         color="grey"
         excel
         :url="downloadUrl"
+        :disabled="!project"
       />
       <ReleaseList
         @page-select="pageSelect"

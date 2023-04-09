@@ -121,7 +121,7 @@ const pageSelect = (page: number) => {
 const listFiltering = (payload: ContFilter) => {
   ctor_ids.value = []
   payload.project = project.value
-  fetchContractList(payload)
+  if (payload.project) fetchContractList(payload)
 }
 
 const onCtorChk = (payload: { chk: boolean; pk: number }) => {
@@ -141,7 +141,6 @@ const getNowOrder = (orderPk: number) => fetchPayOrder(orderPk)
 const setPubDate = (payload: string) => (printData.pub_date = payload)
 
 const onSubmit = (payload: SalesBillIssue & { now_due_date: string }) => {
-  console.log(payload)
   const { pk, now_payment_order } = payload
   const { now_due_date, ...bill_data } = payload
 
@@ -183,6 +182,7 @@ onBeforeMount(() => {
   <ContentBody>
     <CCardBody class="pb-5">
       <SalesBillIssueForm
+        :project="project"
         :bill-issue="billIssue"
         @get-now-order="getNowOrder"
         @set-pub-date="setPubDate"

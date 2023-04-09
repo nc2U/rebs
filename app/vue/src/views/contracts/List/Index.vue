@@ -122,7 +122,12 @@ onMounted(() => {
   <ContentBody>
     <CCardBody class="pb-5">
       <ListController ref="listControl" @cont-filtering="onContFiltering" />
-      <TableTitleRow title="계약현황" excel :url="excelUrl">
+      <TableTitleRow
+        title="계약현황"
+        excel
+        :url="excelUrl"
+        :disabled="!project"
+      >
         <v-btn
           size="small"
           rounded="pill"
