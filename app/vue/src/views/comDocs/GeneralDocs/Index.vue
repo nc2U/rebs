@@ -31,7 +31,7 @@ const docsFilter = (payload: PostFilter) => {
   if (!payload.is_com) postFilter.value.project = payload.project
   postFilter.value.ordering = payload.ordering
   postFilter.value.search = payload.search
-  fetchPostList({ ...postFilter.value })
+  if (company.value) fetchPostList({ ...postFilter.value })
 }
 
 const selectCate = (cate: number) => {
@@ -42,7 +42,7 @@ const pageSelect = (page: number) => console.log(page)
 
 const comStore = useCompany()
 const initComId = computed(() => comStore.initComId)
-const company = computed(() => comStore.company?.pk || initComId.value)
+const company = computed(() => comStore.company?.pk)
 
 const documentStore = useDocument()
 const postList = computed(() => documentStore.postList)
@@ -73,7 +73,7 @@ const headerSelect = (target: number) => {
 const router = useRouter()
 const onSubmit = (payload: Post & Attatches) => {
   const { pk, ...formData } = payload
-  formData.company = company.value
+  formData.company = company.value || null
   const form = formUtility.getFormData(formData)
 
   console.log(formData)
@@ -105,7 +105,7 @@ const sortFilter = (project: number | null) => {
 
 onBeforeMount(() => {
   fetchCategoryList(2)
-  fetchPostList({ company: company.value, board: 2 })
+  if (initComId.value) fetchPostList({ company: initComId.value, board: 2 })
 })
 
 onBeforeUpdate(() => {

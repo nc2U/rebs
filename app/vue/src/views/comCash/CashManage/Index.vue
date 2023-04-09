@@ -45,7 +45,7 @@ const excelUrl = computed(() => {
 
 const companyStore = useCompany()
 const initComId = computed(() => companyStore.initComId)
-const company = computed(() => companyStore.company?.pk || initComId.value)
+const company = computed(() => companyStore.company?.pk)
 
 const fetchCompany = (pk: number) => companyStore.fetchCompany(pk)
 const fetchAllDepartList = (com: number) => companyStore.fetchAllDepartList(com)
@@ -111,8 +111,7 @@ const listFiltering = (payload: Filter) => {
   fetchFormAccD1List(sort)
   fetchFormAccD2List(sort, d1)
   fetchFormAccD3List(sort, d1, d2)
-
-  fetchCashBookList(payload)
+  if (company.value) fetchCashBookList(payload)
 }
 
 const chargeCreate = (
@@ -139,7 +138,7 @@ const onCreate = (
     charge: null | number
   },
 ) => {
-  payload.company = company.value
+  payload.company = company.value || null
   if (payload.sort === 3 && payload.bank_account_to) {
     // 대체 거래일 때
     const { bank_account_to, charge, ...inputData } = payload
@@ -205,8 +204,6 @@ const patchD3Hide = (payload: { pk: number; is_hide: boolean }) =>
 const onBankUpdate = (payload: CompanyBank) => patchComBankAcc(payload)
 
 onBeforeMount(() => {
-  fetchCompany(company.value)
-  fetchAllDepartList(company.value)
   fetchBankCodeList()
   fetchAccSortList()
   fetchAllAccD1List()
@@ -215,10 +212,14 @@ onBeforeMount(() => {
   fetchFormAccD1List(null)
   fetchFormAccD2List(null, null)
   fetchFormAccD3List(null, null, null)
-  fetchComBankAccList(company.value)
-  fetchAllComBankAccList(company.value)
-  fetchCashBookList({ company: company.value })
-  dataFilter.value.company = company.value
+  if (initComId.value) {
+    fetchCompany(initComId.value)
+    fetchAllDepartList(initComId.value)
+    fetchComBankAccList(initComId.value)
+    fetchAllComBankAccList(initComId.value)
+    fetchCashBookList({ company: initComId.value })
+    dataFilter.value.company = initComId.value
+  }
 })
 </script>
 
@@ -233,6 +234,7 @@ onBeforeMount(() => {
     <CCardBody class="pb-5">
       <ListController ref="listControl" @list-filtering="listFiltering" />
       <AddCash
+        :company="company"
         @multi-submit="multiSubmit"
         @patchD3Hide="patchD3Hide"
         @onBankUpdate="onBankUpdate"
@@ -242,6 +244,7 @@ onBeforeMount(() => {
         color="indigo"
         excel
         :url="excelUrl"
+        :disabled="!company"
       />
       <CashList
         :company="company"

@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import {computed, onBeforeMount, ref} from 'vue'
-import {pageTitle, navMenu} from '@/views/comCash/_menu/headermixin'
-import {useCompany} from '@/store/pinia/company'
-import {useComCash} from '@/store/pinia/comCash'
-import {dateFormat} from '@/utils/baseMixins'
+import { computed, onBeforeMount, ref } from 'vue'
+import { pageTitle, navMenu } from '@/views/comCash/_menu/headermixin'
+import { useCompany } from '@/store/pinia/company'
+import { useComCash } from '@/store/pinia/comCash'
+import { dateFormat } from '@/utils/baseMixins'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import DateChoicer from '@/views/comCash/Status/components/DateChoicer.vue'
@@ -17,7 +17,7 @@ const compName = ref('StatusByAccount')
 
 const companyStore = useCompany()
 const initComId = computed(() => companyStore.initComId)
-const company = computed(() => companyStore.company?.pk || initComId.value)
+const company = computed(() => companyStore.company?.pk)
 
 const comCashStore = useComCash()
 const fetchAccSortList = () => comCashStore.fetchAccSortList()
@@ -26,11 +26,11 @@ const fetchAllAccD2List = () => comCashStore.fetchAllAccD2List()
 const fetchAllAccD3List = () => comCashStore.fetchAllAccD3List()
 
 const fetchComBankAccList = (com: number) =>
-    comCashStore.fetchComBankAccList(com)
+  comCashStore.fetchComBankAccList(com)
 const fetchComBalanceByAccList = (com: { company: number; date: string }) =>
-    comCashStore.fetchComBalanceByAccList(com)
+  comCashStore.fetchComBalanceByAccList(com)
 const fetchDateCashBookList = (payload: { company: number; date: string }) =>
-    comCashStore.fetchDateCashBookList(payload)
+  comCashStore.fetchDateCashBookList(payload)
 
 const excelUrl = computed(() => {
   const comp = compName.value
@@ -69,14 +69,16 @@ const showTab = (num: number) => {
 const setDate = (d: string) => {
   const dt = new Date(d)
   date.value = new Date(dt)
-  fetchComBalanceByAccList({
-    company: company.value,
-    date: dateFormat(dt),
-  })
-  fetchDateCashBookList({
-    company: company.value,
-    date: dateFormat(dt),
-  })
+  if (company.value) {
+    fetchComBalanceByAccList({
+      company: company.value,
+      date: dateFormat(dt),
+    })
+    fetchDateCashBookList({
+      company: company.value,
+      date: dateFormat(dt),
+    })
+  }
 }
 
 onBeforeMount(() => {
@@ -84,35 +86,37 @@ onBeforeMount(() => {
   fetchAllAccD1List()
   fetchAllAccD2List()
   fetchAllAccD3List()
-  fetchComBankAccList(company.value)
-  fetchComBalanceByAccList({
-    company: company.value,
-    date: dateFormat(date.value),
-  })
-  fetchDateCashBookList({
-    company: company.value,
-    date: dateFormat(date.value),
-  })
+  if (initComId.value) {
+    fetchComBankAccList(initComId.value)
+    fetchComBalanceByAccList({
+      company: initComId.value,
+      date: dateFormat(date.value),
+    })
+    fetchDateCashBookList({
+      company: initComId.value,
+      date: dateFormat(date.value),
+    })
+  }
 })
 </script>
 
 <template>
   <ContentHeader
-      :page-title="pageTitle"
-      :nav-menu="navMenu"
-      selector="CompanySelect"
-      @header-select="onSelectAdd"
+    :page-title="pageTitle"
+    :nav-menu="navMenu"
+    selector="CompanySelect"
+    @header-select="onSelectAdd"
   />
   <ContentBody>
     <CCardBody class="pb-5">
-      <DateChoicer @set-date="setDate"/>
+      <DateChoicer @set-date="setDate" />
 
-      <TabSelect @tab-select="showTab"/>
+      <TabSelect @tab-select="showTab" />
 
-      <TableTitleRow excel :url="excelUrl"/>
+      <TableTitleRow excel :url="excelUrl" :disabled="!company" />
 
-      <StatusByAccount v-if="compName === 'StatusByAccount'" :date="date"/>
-      <CashListByDate v-if="compName === 'CashListByDate'" :date="date"/>
+      <StatusByAccount v-if="compName === 'StatusByAccount'" :date="date" />
+      <CashListByDate v-if="compName === 'CashListByDate'" :date="date" />
     </CCardBody>
 
     <CCardFooter>&nbsp;</CCardFooter>

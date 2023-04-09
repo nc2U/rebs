@@ -30,7 +30,7 @@ const listFiltering = (payload: PostFilter) => {
   if (!payload.is_com) caseFilter.value.project = payload.project
   caseFilter.value.ordering = payload.ordering
   caseFilter.value.search = payload.search
-  fetchPostList({ ...caseFilter.value })
+  if (company.value) fetchPostList({ ...caseFilter.value })
 }
 
 const selectCate = (cate: number) => {
