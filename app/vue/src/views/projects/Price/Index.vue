@@ -145,6 +145,7 @@ onBeforeMount(() => {
     <CCardBody class="pb-5">
       <PriceSelectForm
         ref="formSelect"
+        :project="project"
         :orders="orderGroupList"
         :types="unitTypeList"
         @on-order-select="orderSelect"

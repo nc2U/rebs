@@ -98,7 +98,12 @@ onBeforeMount(() => {
         @list-filtering="listFiltering"
       />
       <AddSite :project="project" @multi-submit="multiSubmit" />
-      <TableTitleRow title="사업 부지 목록" excel :url="excelUrl">
+      <TableTitleRow
+        title="사업 부지 목록"
+        excel
+        :url="excelUrl"
+        :disabled="!project"
+      >
         <span class="pt-1 text-success">
           총 면적 : {{ numFormat(totalArea, 2) }}m<sup>2</sup> ({{
             numFormat(totalArea * 0.3025, 2)

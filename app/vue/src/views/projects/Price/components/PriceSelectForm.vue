@@ -4,6 +4,7 @@ import { useAccount } from '@/store/pinia/account'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
 const props = defineProps({
+  project: { type: Number, default: null },
   orders: { type: Object, default: null },
   types: { type: Object, default: null },
 })
@@ -89,6 +90,7 @@ const modalAction = () => {
               v-if="superAuth"
               type="button"
               color="dark"
+              :disabled="!project"
               @click="contPriceSet"
             >
               전체 계약건 공급가 재설정
@@ -105,6 +107,8 @@ const modalAction = () => {
     </template>
     <template #header> 전체 계약건 공급가 재설정</template>
     <template #default>
+      이 작업은 현재 등록된 전체 계약 건의 공급가를 현재 가격 데이터로 일괄
+      변경합니다.<br /><br />
       이 작업은 수 분 정도 소요될 수 있습니다.<br />
       전체 계약 건 개별 공급가를 현재 등록된 가격 정보로 재설정하시겠습니까?
     </template>

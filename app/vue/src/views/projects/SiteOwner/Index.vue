@@ -113,7 +113,12 @@ onBeforeMount(() => {
         @list-filtering="listFiltering"
       />
       <AddSiteOwner :project="project" @multi-submit="multiSubmit" />
-      <TableTitleRow title="부지 소유자 목록" excel :url="excelUrl">
+      <TableTitleRow
+        title="부지 소유자 목록"
+        excel
+        :url="excelUrl"
+        :disabled="!project"
+      >
         <span class="pt-1 text-success">
           소유자 면적 : {{ numFormat(getOwnersTotal, 2) }}m<sup>2</sup> ({{
             numFormat(getOwnersTotal * 0.3025, 2)

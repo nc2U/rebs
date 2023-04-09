@@ -99,7 +99,12 @@ onBeforeMount(() => {
         @list-filtering="listFiltering"
       />
       <AddSiteContract :project="project" @multi-submit="multiSubmit" />
-      <TableTitleRow title="부지 매입계약 목록" excel :url="excelUrl">
+      <TableTitleRow
+        title="부지 매입계약 목록"
+        excel
+        :url="excelUrl"
+        :disabled="!project"
+      >
         <span class="pt-1 text-success">
           총 계약 면적 : {{ numFormat(getContsTotal, 2) }}m<sup>2</sup> ({{
             numFormat(getContsTotal * 0.3025, 2)
