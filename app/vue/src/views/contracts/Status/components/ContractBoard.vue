@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
 import { useProjectData } from '@/store/pinia/project_data'
 import Building from '@/views/contracts/Status/components/Building.vue'
 
@@ -16,8 +16,8 @@ type UnitType = {
 }
 
 const projectDataStore = useProjectData()
-
 const simpleUnits = computed(() => projectDataStore.simpleUnits)
+const isHouseLoading = computed(() => projectDataStore.isHouseLoading)
 
 const getBldg = computed(() =>
   [...new Set(simpleUnits.value.map((u: UnitType) => u.bldg))].sort(),
@@ -32,12 +32,17 @@ const getUnits = (bldg: number): UnitType[] =>
 
 <template>
   <CContainer>
-    <div
-      v-if="simpleUnits.length === 0"
-      class="row justify-content-center pt-5 m-5"
-    >
-      <CSpinner color="grey" />
-    </div>
+    <CRow v-if="isHouseLoading">
+      <CCol class="row justify-content-center pt-5">
+        <CSpinner color="grey" />
+      </CCol>
+    </CRow>
+
+    <CRow v-if="simpleUnits.length === 0">
+      <CCol class="text-center p-5 text-danger">
+        등록된 데이터가 없습니다.
+      </CCol>
+    </CRow>
 
     <CRow v-else>
       <Building
