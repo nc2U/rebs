@@ -17,7 +17,7 @@ type UnitType = {
 
 const projectDataStore = useProjectData()
 const simpleUnits = computed(() => projectDataStore.simpleUnits)
-const isHouseLoading = computed(() => projectDataStore.isHouseLoading)
+const isLoading = computed(() => projectDataStore.isLoading)
 
 const getBldg = computed(() =>
   [...new Set(simpleUnits.value.map((u: UnitType) => u.bldg))].sort(),
@@ -32,7 +32,7 @@ const getUnits = (bldg: number): UnitType[] =>
 
 <template>
   <CContainer>
-    <CRow v-if="isHouseLoading">
+    <CRow v-if="isLoading">
       <CCol class="row justify-content-center pt-5">
         <CSpinner color="grey" />
       </CCol>
