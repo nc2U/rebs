@@ -36,7 +36,7 @@ const isHold = computed(() => (isContract.value ? unit.value.is_hold : ''))
 const statusColor = computed(() => {
   let color = ''
   if (unit.value) {
-    color = ''
+    color = '#FFF'
     if (isContract.value) {
       if (status.value === '1') color = '#D5F1DE'
       if (status.value === '2') color = '#CBC7EC'
@@ -58,7 +58,7 @@ const statusColor = computed(() => {
       }"
       :style="`background-color: ${unit ? unit.color : ''}`"
     >
-      <span v-if="unit">{{ unit.name }}</span>
+      <span v-if="unit" style="color: #666">{{ unit.name }}</span>
     </div>
 
     <div
