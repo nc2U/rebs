@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
 import { useProjectData } from '@/store/pinia/project_data'
 import Building from '@/views/contracts/Status/components/Building.vue'
 
