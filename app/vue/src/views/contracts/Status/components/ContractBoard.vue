@@ -33,12 +33,12 @@ const getUnits = (bldg: number): UnitType[] =>
 <template>
   <CContainer>
     <CRow v-if="isLoading">
-      <CCol class="row justify-content-center pt-5">
+      <CCol class="row justify-content-center pt-5 m-5">
         <CSpinner color="grey" />
       </CCol>
     </CRow>
 
-    <CRow v-if="simpleUnits.length === 0">
+    <CRow v-if="!isLoading && simpleUnits.length === 0">
       <CCol class="text-center p-5 text-danger">
         등록된 데이터가 없습니다.
       </CCol>
