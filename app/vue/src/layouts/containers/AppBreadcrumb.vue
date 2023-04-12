@@ -28,15 +28,15 @@ onMounted(() => {
 
 <template>
   <CBreadcrumb class="d-md-down-none me-auto mb-0">
-    <!--    <TransitionGroup name="breadcrumb">-->
-    <CBreadcrumbItem
-      v-for="item in breadcrumbs"
-      :key="item"
-      :href="item.active ? '' : item.path"
-      :active="item.active"
-    >
-      {{ item.name }}
-    </CBreadcrumbItem>
-    <!--    </TransitionGroup>-->
+    <TransitionGroup name="breadcrumb">
+      <CBreadcrumbItem
+        v-for="item in breadcrumbs"
+        :key="item"
+        :href="item.active ? '' : item.path"
+        :active="item.active"
+      >
+        {{ item.name }}
+      </CBreadcrumbItem>
+    </TransitionGroup>
   </CBreadcrumb>
 </template>

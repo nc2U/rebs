@@ -40,7 +40,10 @@ const isAuthorized = computed(() => accountStore.isAuthorized)
         <AppBreadcrumb />
       </CHeaderNav>
       <CHeaderNav class="ms-auto me-4">
-        <CHeaderToggler v-fullscreen.teleport="options">
+        <CHeaderToggler
+          v-fullscreen.teleport="options"
+          class="d-none d-lg-block"
+        >
           <v-icon large :icon="screenIcon" />
           <v-tooltip activator="parent" location="bottom">
             {{ screenGuide }}
