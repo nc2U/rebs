@@ -5,8 +5,8 @@ import { write_project } from '@/utils/pageAuth'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-const d1List = inject('d1List')
 const d2List = inject('d2List')
+const d3List = inject('d3List')
 const orderGroups = inject('orderGroups')
 const unitTypes = inject('unitTypes')
 
@@ -15,8 +15,8 @@ const emit = defineEmits(['on-update', 'on-delete'])
 
 const form = reactive({
   pk: null,
-  account_d1: null,
   account_d2: null,
+  account_d3: null,
   order_group: null,
   unit_type: null,
   item_name: '',
@@ -35,8 +35,8 @@ onBeforeMount(() => {
 const formsCheck = computed(() => {
   if (props.budget) {
     const a = form.pk === props.budget.pk
-    const b = form.account_d1 === props.budget.account_d1
-    const c = form.account_d2 === props.budget.account_d2
+    const b = form.account_d2 === props.budget.account_d2
+    const c = form.account_d3 === props.budget.account_d3
     const d = form.order_group === props.budget.order_group
     const e = form.unit_type === props.budget.unit_type
     const f = form.item_name === props.budget.item_name
@@ -72,8 +72,8 @@ const modalAction = () => {
 
 const resetForm = () => {
   form.pk = props.budget.pk
-  form.account_d1 = props.budget.account_d1
   form.account_d2 = props.budget.account_d2
+  form.account_d3 = props.budget.account_d3
   form.order_group = props.budget.order_group
   form.unit_type = props.budget.unit_type
   form.item_name = props.budget.item_name
@@ -86,17 +86,17 @@ const resetForm = () => {
 <template>
   <CTableRow>
     <CTableDataCell>
-      <CFormSelect v-model="form.account_d1" required>
+      <CFormSelect v-model="form.account_d2" required>
         <option value="">대분류</option>
-        <option v-for="d1 in d1List" :key="d1.pk" :value="d1.pk">
+        <option v-for="d1 in d2List" :key="d1.pk" :value="d1.pk">
           {{ d1.name }}
         </option>
       </CFormSelect>
     </CTableDataCell>
     <CTableDataCell>
-      <CFormSelect v-model="form.account_d2" required>
+      <CFormSelect v-model="form.account_d3" required>
         <option value="">중분류</option>
-        <option v-for="d2 in d2List" :key="d2.pk" :value="d2.pk">
+        <option v-for="d2 in d3List" :key="d2.pk" :value="d2.pk">
           {{ d2.name }}
         </option>
       </CFormSelect>
