@@ -174,9 +174,7 @@ export const useProject = defineStore('project', () => {
     api
       .put(`/out-budget/${payload.pk}/`, payload)
       .then(res => {
-        fetchOutBudgetList(res.data.project).then(() =>
-          fetchOutBudget(res.data.pk).then(() => message()),
-        )
+        fetchOutBudgetList(res.data.project).then(() => message())
       })
       .catch(err => errorHandle(err.response.data))
 

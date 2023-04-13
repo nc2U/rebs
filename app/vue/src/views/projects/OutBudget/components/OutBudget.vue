@@ -75,18 +75,18 @@ const resetForm = () => {
 <template>
   <CTableRow>
     <CTableDataCell>
-      <CFormSelect v-model="form.account_d2" required>
+      <CFormSelect v-model.number="form.account_d2" required>
         <option value="">대분류</option>
-        <option v-for="d1 in d2List" :key="d1.pk" :value="d1.pk">
-          {{ d1.name }}
+        <option v-for="d2 in d2List" :key="d2.pk" :value="d2.pk">
+          {{ d2.name }}
         </option>
       </CFormSelect>
     </CTableDataCell>
     <CTableDataCell>
-      <CFormSelect v-model="form.account_d3" required>
+      <CFormSelect v-model.number="form.account_d3" required>
         <option value="">중분류</option>
-        <option v-for="d2 in d3List" :key="d2.pk" :value="d2.pk">
-          {{ d2.name }}
+        <option v-for="d3 in d3List" :key="d3.pk" :value="d3.pk">
+          {{ d3.name }}
         </option>
       </CFormSelect>
     </CTableDataCell>
