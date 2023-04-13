@@ -35,7 +35,7 @@ const getD3sInter = (arr: number[]) => {
 }
 const getLength = (arr: number[]) => getD3sInter(arr).length
 
-const getFirst = (arr: number[]) => getD3sInter(arr)[0]
+const isFirst = (arr: number[], d3Pk: number) => getD3sInter(arr)[0] === d3Pk
 
 // const getSubTitle = (sub: string) =>
 //   sub !== ''
@@ -142,7 +142,7 @@ const patchBudget = (pk: number, budget: string, oldBudget: number) => {
           사업비
         </CTableDataCell>
         <CTableDataCell
-          v-if="getFirst(obj.account_d2.pro_d3s) === obj.account_d3.pk"
+          v-if="isFirst(obj.account_d2.pro_d3s, obj.account_d3.pk)"
           class="text-center"
           :rowspan="getLength(obj.account_d2.pro_d3s)"
         >
