@@ -180,7 +180,7 @@ export const useProject = defineStore('project', () => {
       })
       .catch(err => errorHandle(err.response.data))
 
-  const patchOutBudgetList = (project: number, pk: number, budget: number) =>
+  const patchOutBudget = (project: number, pk: number, budget: number) =>
     api
       .patch(`/out-budget/${pk}/`, { budget })
       .then(() => fetchOutBudgetList(project))
@@ -254,7 +254,7 @@ export const useProject = defineStore('project', () => {
     fetchOutBudget,
     createOutBudget,
     updateOutBudget,
-    patchOutBudgetList,
+    patchOutBudget,
     deleteOutBudget,
 
     statusOutBudgetList,
