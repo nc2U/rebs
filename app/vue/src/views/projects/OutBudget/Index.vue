@@ -29,7 +29,7 @@ const getOrderGroups = computed(() => contStore.getOrderGroups)
 const proDataStore = useProjectData()
 const getTypes = computed(() => proDataStore.getTypes)
 
-provide('d1List', allAccD2List)
+provide('d2List', allAccD2List)
 provide('d3List', allAccD3List)
 provide('orderGroups', getOrderGroups)
 provide('unitTypes', getTypes)
