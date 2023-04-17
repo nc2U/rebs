@@ -1895,8 +1895,8 @@ class ExportBudgetExecutionStatus(View):
                 if col == 2:
                     if bg.account_opt:
                         if bg.account_d3.pk == opt_budgets[0][4]:
-                            worksheet.merge_range(row_num, col, row_num + len(opt_budgets), col, bg.account_opt,
-                                                  b_format)
+                            worksheet.merge_range(row_num, col, row_num + len(opt_budgets) - 1,
+                                                  col, bg.account_opt, b_format)
                     else:
                         worksheet.merge_range(row_num, col, row_num, col + 1, bg.account_d3.name, b_format)
                 if col == 3:
