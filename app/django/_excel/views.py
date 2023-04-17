@@ -1865,13 +1865,6 @@ class ExportBudgetExecutionStatus(View):
         b_format.set_align('left')
 
         budget = ProjectOutBudget.objects.filter(project=project)
-
-        rsp1 = budget.filter(account_d3__code__range=('622', '626')).count()  # 간접공사비
-        rsp2 = budget.filter(account_d3__code__range=('627', '629')).count()  # 설계용역비
-        rsp3 = budget.filter(account_d3__code__range=('631', '639')).count()  # 판매비
-        rsp4 = budget.filter(account_d3__code__range=('641', '649')).count()  # 일반관리비
-        rsp5 = budget.filter(account_d3__code__range=('651', '659')).count()  # 제세공과금
-
         budget_sum = budget.aggregate(Sum('budget'))['budget__sum']
         budget_month_sum = 0
         budget_total_sum = 0
@@ -1902,28 +1895,11 @@ class ExportBudgetExecutionStatus(View):
                     middles = self.get_sub_title(project, bg.account_d3.name, bg.account_d2.pk)
                     if bg.account_opt:
                         try:
-                            if bg.pk == middles[0][3]:
+                            if bg.pk == middles[0][0]:
                                 worksheet.merge_range(row_num, col, row_num + len(middles), col, bg.account_opt,
                                                       b_format)
                         except IndexError:
                             pass
-
-                        # crow = 5
-                        # if row == crow:
-                        #     worksheet.merge_range(row_num, col, row_num + rsp1 - 1, col, bg.account_opt,
-                        #                           b_format)
-                        # crow += rsp1
-                        # if row == crow:
-                        #     worksheet.merge_range(row_num, col, row_num + rsp2 - 1, col, bg.account_opt,
-                        #                           b_format)
-                        # crow = crow + rsp2 + rsp3
-                        # if row == crow:
-                        #     worksheet.merge_range(row_num, col, row_num + rsp4 - 1, col, bg.account_opt,
-                        #                           b_format)
-                        # crow += rsp4
-                        # if row == crow:
-                        #     worksheet.merge_range(row_num, col, row_num + rsp5 - 1, col, bg.account_opt,
-                        #                           b_format)
                     else:
                         worksheet.merge_range(row_num, col, row_num, col + 1, bg.account_d3.name, b_format)
                 if col == 3:
