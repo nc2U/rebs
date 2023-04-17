@@ -1756,7 +1756,7 @@ class ExportProjectDateCashbook(View):
 
             for col in range(7):
                 if col == 0:
-                    worksheet.write(row_num, col, cash.project_account_d2.name, b_format)
+                    worksheet.write(row_num, col, cash.project_account_d3.name, b_format)
                 if col == 1:
                     worksheet.write(row_num, col, cash.project_account_d3.name, b_format)
                 if col == 2:
@@ -1866,11 +1866,11 @@ class ExportBudgetExecutionStatus(View):
         b_format.set_align('left')
 
         budget = ProjectOutBudget.objects.filter(project=project)
-        rsp1 = budget.filter(account_d2__code__range=('322', '326')).count()  # 간접공사비
-        rsp2 = budget.filter(account_d2__code__range=('327', '329')).count()  # 설계용역비
-        rsp3 = budget.filter(account_d2__code__range=('331', '339')).count()  # 판매비
-        rsp4 = budget.filter(account_d2__code__range=('341', '349')).count()  # 일반관리비
-        rsp5 = budget.filter(account_d2__code__range=('351', '359')).count()  # 제세공과금
+        rsp1 = budget.filter(account_d3__code__range=('622', '626')).count()  # 간접공사비
+        rsp2 = budget.filter(account_d3__code__range=('627', '629')).count()  # 설계용역비
+        rsp3 = budget.filter(account_d3__code__range=('631', '639')).count()  # 판매비
+        rsp4 = budget.filter(account_d3__code__range=('641', '649')).count()  # 일반관리비
+        rsp5 = budget.filter(account_d3__code__range=('651', '659')).count()  # 제세공과금
         budget_sum = budget.aggregate(Sum('budget'))['budget__sum']
         budget_month_sum = 0
         budget_total_sum = 0
@@ -1893,33 +1893,33 @@ class ExportBudgetExecutionStatus(View):
                 if col == 0 and row == 0:
                     worksheet.merge_range(row_num, col, budget.count() + 2, col, '사업비', b_format)
                 if col == 1:
-                    if int(bg.account_d2.code) == int(bg.account_d1.code) + 1:
-                        worksheet.merge_range(row_num, col, row_num + bg.account_d1.projectoutbudget_set.count() - 1,
+                    if int(bg.account_d3.code) == int(bg.account_d2.code) + 1:
+                        worksheet.merge_range(row_num, col, row_num + bg.account_d2.projectoutbudget_set.count() - 1,
                                               col,
-                                              bg.account_d1.name, b_format)
+                                              bg.account_d2.name, b_format)
                 if col == 2:
-                    if bg.account_d2.sub_title:
+                    if bg.account_d3.sub_title:
                         crow = 5
                         if row == crow:
-                            worksheet.merge_range(row_num, col, row_num + rsp1 - 1, col, bg.account_d2.sub_title,
+                            worksheet.merge_range(row_num, col, row_num + rsp1 - 1, col, bg.account_d3.sub_title,
                                                   b_format)
                         crow += rsp1
                         if row == crow:
-                            worksheet.merge_range(row_num, col, row_num + rsp2 - 1, col, bg.account_d2.sub_title,
+                            worksheet.merge_range(row_num, col, row_num + rsp2 - 1, col, bg.account_d3.sub_title,
                                                   b_format)
                         crow = crow + rsp2 + rsp3
                         if row == crow:
-                            worksheet.merge_range(row_num, col, row_num + rsp4 - 1, col, bg.account_d2.sub_title,
+                            worksheet.merge_range(row_num, col, row_num + rsp4 - 1, col, bg.account_d3.sub_title,
                                                   b_format)
                         crow += rsp4
                         if row == crow:
-                            worksheet.merge_range(row_num, col, row_num + rsp5 - 1, col, bg.account_d2.sub_title,
+                            worksheet.merge_range(row_num, col, row_num + rsp5 - 1, col, bg.account_d3.sub_title,
                                                   b_format)
                     else:
-                        worksheet.merge_range(row_num, col, row_num, col + 1, bg.account_d2.name, b_format)
+                        worksheet.merge_range(row_num, col, row_num, col + 1, bg.account_d3.name, b_format)
                 if col == 3:
-                    if bg.account_d2.sub_title:
-                        worksheet.write(row_num, col, bg.account_d2.name, b_format)
+                    if bg.account_d3.sub_title:
+                        worksheet.write(row_num, col, bg.account_d3.name, b_format)
                 if col == 4:
                     worksheet.write(row_num, col, bg.budget, b_format)
                 if col == 5:
