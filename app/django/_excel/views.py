@@ -1898,27 +1898,27 @@ class ExportBudgetExecutionStatus(View):
                                               col,
                                               bg.account_d2.name, b_format)
                 if col == 2:
-                    # if bg.account_d3.sub_title:
-                    #     crow = 5
-                    #     if row == crow:
-                    #         worksheet.merge_range(row_num, col, row_num + rsp1 - 1, col, bg.account_d3.sub_title,
-                    #                               b_format)
-                    #     crow += rsp1
-                    #     if row == crow:
-                    #         worksheet.merge_range(row_num, col, row_num + rsp2 - 1, col, bg.account_d3.sub_title,
-                    #                               b_format)
-                    #     crow = crow + rsp2 + rsp3
-                    #     if row == crow:
-                    #         worksheet.merge_range(row_num, col, row_num + rsp4 - 1, col, bg.account_d3.sub_title,
-                    #                               b_format)
-                    #     crow += rsp4
-                    #     if row == crow:
-                    #         worksheet.merge_range(row_num, col, row_num + rsp5 - 1, col, bg.account_d3.sub_title,
-                    #                               b_format)
-                    # else:
-                    worksheet.merge_range(row_num, col, row_num, col + 1, bg.account_d3.name, b_format)
+                    if bg.account_d3.account_opt:
+                        crow = 5
+                        if row == crow:
+                            worksheet.merge_range(row_num, col, row_num + rsp1 - 1, col, bg.account_d3.account_opt,
+                                                  b_format)
+                        crow += rsp1
+                        if row == crow:
+                            worksheet.merge_range(row_num, col, row_num + rsp2 - 1, col, bg.account_d3.account_opt,
+                                                  b_format)
+                        crow = crow + rsp2 + rsp3
+                        if row == crow:
+                            worksheet.merge_range(row_num, col, row_num + rsp4 - 1, col, bg.account_d3.account_opt,
+                                                  b_format)
+                        crow += rsp4
+                        if row == crow:
+                            worksheet.merge_range(row_num, col, row_num + rsp5 - 1, col, bg.account_d3.account_opt,
+                                                  b_format)
+                    else:
+                        worksheet.merge_range(row_num, col, row_num, col + 1, bg.account_d3.name, b_format)
                 if col == 3:
-                    if bg.account_d3.sub_title:
+                    if bg.account_d3.account_opt:
                         worksheet.write(row_num, col, bg.account_d3.name, b_format)
                 if col == 4:
                     worksheet.write(row_num, col, bg.budget, b_format)
