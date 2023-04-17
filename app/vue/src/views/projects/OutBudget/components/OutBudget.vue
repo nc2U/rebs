@@ -14,8 +14,8 @@ const emit = defineEmits(['on-update', 'on-delete'])
 const form = reactive({
   pk: null,
   account_d2: null,
+  account_opt: '',
   account_d3: null,
-  item_name: '',
   basis_calc: null,
   budget: null,
 })
@@ -31,8 +31,8 @@ const formsCheck = computed(() => {
   if (props.budget) {
     const a = form.pk === props.budget.pk
     const b = form.account_d2 === props.budget.account_d2
-    const c = form.account_d3 === props.budget.account_d3
-    const d = form.item_name === props.budget.item_name
+    const c = form.account_opt === props.budget.account_opt
+    const d = form.account_d3 === props.budget.account_d3
     const e = form.basis_calc === props.budget.basis_calc
     const f = form.budget === props.budget.budget || !props.budget.budget
     return a && b && c && d && e && f
@@ -65,6 +65,7 @@ const modalAction = () => {
 const resetForm = () => {
   form.pk = props.budget.pk
   form.account_d2 = props.budget.account_d2
+  form.account_opt = props.budget.account_opt
   form.account_d3 = props.budget.account_d3
   form.item_name = props.budget.item_name
   form.basis_calc = props.budget.basis_calc
@@ -83,19 +84,19 @@ const resetForm = () => {
       </CFormSelect>
     </CTableDataCell>
     <CTableDataCell>
+      <CFormInput
+        v-model="form.account_opt"
+        placeholder="중분류(필요시 기재)"
+        @keydown.enter="onUpdateBudget"
+      />
+    </CTableDataCell>
+    <CTableDataCell>
       <CFormSelect v-model.number="form.account_d3" required>
-        <option value="">중분류</option>
+        <option value="">소분류</option>
         <option v-for="d3 in d3List" :key="d3.pk" :value="d3.pk">
           {{ d3.name }}
         </option>
       </CFormSelect>
-    </CTableDataCell>
-    <CTableDataCell>
-      <CFormInput
-        v-model="form.item_name"
-        placeholder="항목명칭"
-        @keydown.enter="onUpdateBudget"
-      />
     </CTableDataCell>
     <CTableDataCell>
       <CFormInput
