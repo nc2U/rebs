@@ -1894,13 +1894,10 @@ class ExportBudgetExecutionStatus(View):
                                               col,
                                               bg.account_d2.name, b_format)
                 if col == 2:
-                    if bg.account_opt:
-                        try:
-                            if bg.account_d3.pk == middles[0][4]:
-                                worksheet.merge_range(row_num, col, row_num + len(middles), col, bg.account_opt,
-                                                      b_format)
-                        except IndexError:
-                            pass
+                    if bg.account_opt and middles:
+                        if bg.account_d3.pk == middles[0][4]:
+                            worksheet.merge_range(row_num, col, row_num + len(middles), col, bg.account_opt,
+                                                  b_format)
                     else:
                         worksheet.merge_range(row_num, col, row_num, col + 1, bg.account_d3.name, b_format)
                 if col == 3:
