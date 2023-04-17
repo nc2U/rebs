@@ -1895,7 +1895,7 @@ class ExportBudgetExecutionStatus(View):
                     middles = self.get_sub_title(project, bg.account_d3.name, bg.account_d2.pk)
                     if bg.account_opt:
                         try:
-                            if bg.pk == middles[0][0]:
+                            if bg.pk == middles[0][4]:
                                 worksheet.merge_range(row_num, col, row_num + len(middles), col, bg.account_opt,
                                                       b_format)
                         except IndexError:
