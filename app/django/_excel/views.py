@@ -1846,7 +1846,7 @@ class ExportBudgetExecutionStatus(View):
         worksheet.set_column(1, 1, 10)
         worksheet.set_column(2, 2, 12)
         worksheet.set_column(3, 3, 18)
-        worksheet.merge_range(row_num, 0, row_num, 2, '구분', h_format)
+        worksheet.merge_range(row_num, 0, row_num, 3, '구분', h_format)
         worksheet.set_column(4, 4, 20)
         worksheet.write(row_num, 4, '예산', h_format)
         worksheet.set_column(5, 5, 20)
