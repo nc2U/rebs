@@ -1883,6 +1883,8 @@ class ExportBudgetExecutionStatus(View):
             co_budget_total = co_budget_total if co_budget_total else 0
             budget_total_sum += co_budget_total
 
+            middles = self.get_sub_title(project, bg.account_d3.name, bg.account_d2.pk)
+
             for col in range(9):
                 if col == 0 and row == 0:
                     worksheet.merge_range(row_num, col, budget.count() + 2, col, '사업비', b_format)
@@ -1892,7 +1894,6 @@ class ExportBudgetExecutionStatus(View):
                                               col,
                                               bg.account_d2.name, b_format)
                 if col == 2:
-                    middles = self.get_sub_title(project, bg.account_d3.name, bg.account_d2.pk)
                     if bg.account_opt:
                         try:
                             if bg.account_d3.pk == middles[0][4]:
@@ -1943,7 +1944,8 @@ class ExportBudgetExecutionStatus(View):
 
     @staticmethod
     def get_sub_title(project, sub, d2):
-        return ProjectOutBudget.objects.filter(project=project, account_opt=sub, account_d2__id=d2).values_list()
+        return ProjectOutBudget.objects.filter(project=project, account_opt=sub, account_d2__id=d2).order_by(
+            'account_d3').values_list()
 
 
 def export_project_cash_xls(request):
