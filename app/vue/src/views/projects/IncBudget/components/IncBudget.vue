@@ -118,7 +118,11 @@ const resetForm = () => {
       </CFormSelect>
     </CTableDataCell>
     <CTableDataCell>
-      <CFormInput v-model="form.item_name" placeholder="항목명칭" />
+      <CFormInput
+        v-model="form.item_name"
+        placeholder="항목명칭"
+        @keydown.enter="onUpdateBudget"
+      />
     </CTableDataCell>
     <CTableDataCell>
       <CFormInput
@@ -126,6 +130,7 @@ const resetForm = () => {
         type="number"
         min="0"
         placeholder="평균가격"
+        @keydown.enter="onUpdateBudget"
       />
     </CTableDataCell>
     <CTableDataCell>
@@ -134,6 +139,7 @@ const resetForm = () => {
         type="number"
         min="0"
         placeholder="수량"
+        @keydown.enter="onUpdateBudget"
       />
     </CTableDataCell>
     <CTableDataCell>
@@ -142,6 +148,7 @@ const resetForm = () => {
         type="number"
         min="0"
         placeholder="수입예산"
+        @keydown.enter="onUpdateBudget"
       />
     </CTableDataCell>
     <CTableDataCell class="text-center">
