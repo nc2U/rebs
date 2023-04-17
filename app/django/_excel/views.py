@@ -1896,8 +1896,7 @@ class ExportBudgetExecutionStatus(View):
                 if col == 2:
                     if bg.account_opt:
                         try:
-                            worksheet.merge_range(row_num, col, row_num, col + 0, f'{bg.account_d3.pk}-{middles[0][4]}',
-                                                  b_format)
+                            worksheet.write(row_num, col, f'{bg.account_d3.pk}-{middles[0][4]}', b_format)
                         except IndexError:
                             pass
                         # if middles and bg.account_d3.pk == middles[0][4]:
