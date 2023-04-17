@@ -51,7 +51,7 @@ class ProjectOutBudgetSerializer(serializers.ModelSerializer):
 class ProAccoD2InBudgetSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectAccountD2
-        fields = ('name', 'pro_d3s')
+        fields = ('pk', 'name', 'pro_d3s')
 
 
 class ProAccoD3InBudgetSerializer(serializers.ModelSerializer):
