@@ -29,8 +29,8 @@ const fetchExecAmountList = (project: number, date?: string) =>
   projectStore.fetchExecAmountList(project, date)
 
 const proCashStore = useProCash()
-const fetchProAllAccD2List = () => proCashStore.fetchProAllAccD2List
-const fetchProAllAccD3List = () => proCashStore.fetchProAllAccD3List
+const fetchProAllAccD2List = () => proCashStore.fetchProAllAccD2List()
+const fetchProAllAccD3List = () => proCashStore.fetchProAllAccD3List()
 const fetchProBankAccList = (proj: number) =>
   proCashStore.fetchProBankAccList(proj)
 
