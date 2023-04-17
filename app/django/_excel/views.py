@@ -1878,7 +1878,7 @@ class ExportBudgetExecutionStatus(View):
         for row, bg in enumerate(budget):
             row_num += 1
             co_budget = ProjectCashBook.objects.filter(project=project,
-                                                       project_account_d3=bg.account_d2,
+                                                       project_account_d3=bg.account_d3,
                                                        deal_date__lte=date)
 
             co_budget_month = co_budget.filter(deal_date__gte=date[:8] + '01').aggregate(Sum('outlay'))['outlay__sum']
