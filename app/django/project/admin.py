@@ -23,10 +23,10 @@ class ProjectIncBudgetAdmin(ImportExportMixin, admin.ModelAdmin):
 
 class ProjectOutBudgetAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'project', 'order', 'account_d2', 'account_d3',
-                    'account_opt', 'item_name', 'budget', 'basis_calc')
+                    'account_opt', 'budget', 'basis_calc')
     list_display_links = ('project',)
     list_editable = ('order', 'account_d2', 'account_d3', 'account_opt',
-                     'item_name', 'budget', 'basis_calc')
+                     'budget', 'basis_calc')
     list_filter = ('project', 'account_d2', 'account_d3')
 
 

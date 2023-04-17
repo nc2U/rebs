@@ -79,8 +79,6 @@ class ProjectOutBudget(models.Model):
     account_d3 = models.ForeignKey('rebs.ProjectAccountD3', on_delete=models.SET_NULL, null=True, blank=True,
                                    verbose_name='소분류')
     account_opt = models.CharField('중분류', max_length=10, blank=True, default='')
-    item_name = models.CharField('항목명칭', max_length=20, blank=True, default='',
-                                 help_text='소분류 항목을 선택하지 않은 경우 기재. 그렇지 않은 경우 생략할 것')
     basis_calc = models.CharField('산출근거', max_length=255, blank=True, default='',
                                   help_text='사업수지표 항목 상 해당 금액의 산출 근거 기재')
     budget = models.PositiveBigIntegerField(verbose_name='지출 예산')
