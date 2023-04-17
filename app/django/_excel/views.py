@@ -1883,7 +1883,7 @@ class ExportBudgetExecutionStatus(View):
             co_budget_total = co_budget_total if co_budget_total else 0
             budget_total_sum += co_budget_total
 
-            middles = self.get_sub_title(project, bg.account_d3.name, bg.account_d2.pk)
+            middles = self.get_sub_title(project, bg.account_d3.account_opt, bg.account_d2.pk)
 
             for col in range(9):
                 if col == 0 and row == 0:
@@ -1895,7 +1895,7 @@ class ExportBudgetExecutionStatus(View):
                                               bg.account_d2.name, b_format)
                 if col == 2:
                     if bg.account_opt:
-                        worksheet.write(row_num, col, f'{bg.account_d3.pk}', b_format)
+                        worksheet.write(row_num, col, f'{bg.account_d3.pk}-{middles[0][4]}', b_format)
                         # if middles and bg.account_d3.pk == middles[0][4]:
                         #     worksheet.merge_range(row_num, col, row_num + len(middles), col, bg.account_opt,
                         #                           b_format)
