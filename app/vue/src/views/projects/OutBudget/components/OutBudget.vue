@@ -94,14 +94,14 @@ const resetForm = () => {
       <CFormInput
         v-model="form.item_name"
         placeholder="항목명칭"
-        @keydown.enter="onDeleteBudget"
+        @keydown.enter="onUpdateBudget"
       />
     </CTableDataCell>
     <CTableDataCell>
       <CFormInput
         v-model="form.basis_calc"
         placeholder="산출근거"
-        @keydown.enter="onDeleteBudget"
+        @keydown.enter="onUpdateBudget"
       />
     </CTableDataCell>
     <CTableDataCell>
@@ -110,7 +110,7 @@ const resetForm = () => {
         type="number"
         min="0"
         placeholder="지출예산"
-        @keydown.enter="onDeleteBudget"
+        @keydown.enter="onUpdateBudget"
       />
     </CTableDataCell>
     <CTableDataCell class="text-center">
