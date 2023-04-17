@@ -1831,7 +1831,7 @@ class ExportBudgetExecutionStatus(View):
         # 2. Header
         row_num = 1
         worksheet.set_row(row_num, 18)
-        worksheet.write(row_num, 8, date + ' 현재', workbook.add_format({'align': 'right'}))
+        worksheet.write(row_num, 7, date + ' 현재', workbook.add_format({'align': 'right'}))
 
         # 3. Header
         row_num = 2
@@ -1845,7 +1845,6 @@ class ExportBudgetExecutionStatus(View):
         worksheet.set_column(0, 0, 10)
         worksheet.set_column(1, 1, 10)
         worksheet.set_column(2, 2, 30)
-        # worksheet.set_column(3, 3, 18)
         worksheet.merge_range(row_num, 0, row_num, 2, '구분', h_format)
         worksheet.set_column(3, 3, 20)
         worksheet.write(row_num, 3, '예산', h_format)
@@ -1866,11 +1865,6 @@ class ExportBudgetExecutionStatus(View):
         b_format.set_align('left')
 
         budget = ProjectOutBudget.objects.filter(project=project)
-        # rsp1 = budget.filter(account_d3__code__range=('622', '626')).count()  # 간접공사비
-        # rsp2 = budget.filter(account_d3__code__range=('627', '629')).count()  # 설계용역비
-        # rsp3 = budget.filter(account_d3__code__range=('631', '639')).count()  # 판매비
-        # rsp4 = budget.filter(account_d3__code__range=('641', '649')).count()  # 일반관리비
-        # rsp5 = budget.filter(account_d3__code__range=('651', '659')).count()  # 제세공과금
         budget_sum = budget.aggregate(Sum('budget'))['budget__sum']
         budget_month_sum = 0
         budget_total_sum = 0
@@ -1898,29 +1892,7 @@ class ExportBudgetExecutionStatus(View):
                                               col,
                                               bg.account_d2.name, b_format)
                 if col == 2:
-                    #     if bg.account_opt:
-                    #         crow = 5
-                    #         if row == crow:
-                    #             worksheet.merge_range(row_num, col, row_num + rsp1 - 1, col, bg.account_opt,
-                    #                                   b_format)
-                    #         crow += rsp1
-                    #         if row == crow:
-                    #             worksheet.merge_range(row_num, col, row_num + rsp2 - 1, col, bg.account_opt,
-                    #                                   b_format)
-                    #         crow = crow + rsp2 + rsp3
-                    #         if row == crow:
-                    #             worksheet.merge_range(row_num, col, row_num + rsp4 - 1, col, bg.account_opt,
-                    #                                   b_format)
-                    #         crow += rsp4
-                    #         if row == crow:
-                    #             worksheet.merge_range(row_num, col, row_num + rsp5 - 1, col, bg.account_opt,
-                    #                                   b_format)
-                    #     else:
-                    # worksheet.merge_range(row_num, col, row_num, col + 1, bg.account_d3.name, b_format)
                     worksheet.write(row_num, col, bg.account_d3.name, b_format)
-                # if col == 3:
-                #     if bg.account_opt:
-                #         worksheet.write(row_num, col, bg.account_d3.name, b_format)
                 if col == 3:
                     worksheet.write(row_num, col, bg.budget, b_format)
                 if col == 4:
