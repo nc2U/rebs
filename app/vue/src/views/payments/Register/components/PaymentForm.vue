@@ -65,7 +65,7 @@ const paymentStore = usePayment()
 const payOrderList = computed(() => paymentStore.payOrderList)
 
 const proCashStore = useProCash()
-const proBankAccountList = computed(() => proCashStore.proBankAccountList)
+const allProBankAccountList = computed(() => proCashStore.allProBankAccountList)
 
 const onSubmit = (event: Event) => {
   if (write_payment.value) {
@@ -183,7 +183,7 @@ onMounted(() => {
               <CFormSelect v-model="form.bank_account" required>
                 <option value="">---------</option>
                 <option
-                  v-for="pb in proBankAccountList"
+                  v-for="pb in allProBankAccountList"
                   :key="pb.pk"
                   :value="pb.pk"
                 >
