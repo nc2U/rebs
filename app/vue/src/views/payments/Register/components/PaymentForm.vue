@@ -242,7 +242,7 @@ onMounted(() => {
               <CFormCheck
                 :id="`cont-change`"
                 v-model="removeCont"
-                label="계약건 변경 (현재 계약건 귀속에서 해제 되며 수납목록에서 재 지정요)."
+                label="계약건 변경 (현재 계약 건 귀속에서 해제 되며 분양 수납 내역에서 재 지정요)"
               />
             </CCol>
           </CRow>

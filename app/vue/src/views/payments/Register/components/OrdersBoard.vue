@@ -1,14 +1,14 @@
 <script lang="ts" setup>
-import {computed, PropType} from 'vue'
-import {usePayment} from '@/store/pinia/payment'
-import {AllPayment, DownPay, PayOrder, Price} from '@/store/types/payment'
-import {numFormat, dateFormat} from '@/utils/baseMixins'
-import {TableSecondary} from '@/utils/cssMixins'
+import { computed, PropType } from 'vue'
+import { usePayment } from '@/store/pinia/payment'
+import { AllPayment, DownPay, PayOrder, Price } from '@/store/types/payment'
+import { numFormat, dateFormat } from '@/utils/baseMixins'
+import { TableSecondary } from '@/utils/cssMixins'
 import Order from '@/views/payments/Register/components/Order.vue'
 
 const props = defineProps({
-  contract: {type: Object, default: null},
-  paymentList: {type: Array as PropType<AllPayment[]>, default: () => []},
+  contract: { type: Object, default: null },
+  paymentList: { type: Array as PropType<AllPayment[]>, default: () => [] },
 })
 
 const paymentStore = usePayment()
@@ -19,23 +19,23 @@ const downPayList = computed(() => paymentStore.downPayList)
 const thisPrice = computed(() => {
   if (props.contract) {
     return props.contract.keyunit.houseunit
-        ? priceList.value
-            .filter(
-                (p: Price) =>
-                    p.unit_floor_type === props.contract.keyunit.houseunit.floor_type,
-            )
-            .map((p: Price) => p.price)[0]
-        : Math.ceil(props.contract.unit_type.average_price / 10000) * 10000
+      ? priceList.value
+          .filter(
+            (p: Price) =>
+              p.unit_floor_type === props.contract.keyunit.houseunit.floor_type,
+          )
+          .map((p: Price) => p.price)[0]
+      : Math.ceil(props.contract.unit_type.average_price / 10000) * 10000
   }
   return 0
 })
 
 const numDown = computed(
-    () => payOrderList.value.filter((o: PayOrder) => o.pay_sort === '1').length,
+  () => payOrderList.value.filter((o: PayOrder) => o.pay_sort === '1').length,
 )
 
 const numMid = computed(
-    () => payOrderList.value.filter((o: PayOrder) => o.pay_sort === '2').length,
+  () => payOrderList.value.filter((o: PayOrder) => o.pay_sort === '2').length,
 )
 
 const paidTotal = computed(() => {
@@ -48,12 +48,12 @@ const dueTotal = computed(() => {
   let commitment: number[] = []
   const today = dateFormat(new Date())
   const dueOrder = payOrderList.value
-      .filter(
-          (o: PayOrder) =>
-              ((o.pay_due_date && o.pay_due_date <= today) && !o.extra_due_date) ||
-              (o.extra_due_date && o.extra_due_date <= today),
-      )
-      .map((o: PayOrder) => o.pay_time)
+    .filter(
+      (o: PayOrder) =>
+        (o.pay_due_date && o.pay_due_date <= today && !o.extra_due_date) ||
+        (o.extra_due_date && o.extra_due_date <= today),
+    )
+    .map((o: PayOrder) => o.pay_time)
   dueOrder.forEach((el: number | undefined) => {
     commitment.push(getCommits(el))
   })
@@ -64,21 +64,21 @@ const commit = (pay_time: number) => getCommits(pay_time)
 
 const getCommits = (el: number | undefined) => {
   const down = downPayList.value
-      .filter((d: DownPay) => d.order_group === props.contract.order_group)
-      .filter(d => d.unit_type === props.contract.unit_type)
-      .map(d => d.payment_amount)[0] // 1. downPayList, 2. payByOrder, 3. 분양가 / 총회차수
+    .filter((d: DownPay) => d.order_group === props.contract.order_group)
+    .filter(d => d.unit_type === props.contract.unit_type)
+    .map(d => d.payment_amount)[0] // 1. downPayList, 2. payByOrder, 3. 분양가 / 총회차수
 
   const order = payOrderList.value.find((o: PayOrder) => o.pay_time === el)
 
   const payByOrder = order?.pay_ratio
-      ? (thisPrice.value * Number(order.pay_ratio)) / 100
-      : thisPrice.value * 0.1 // 1. payByOrder === '중도금' (지정된 비율이 없으면 회당 10%)
+    ? (thisPrice.value * Number(order.pay_ratio)) / 100
+    : thisPrice.value * 0.1 // 1. payByOrder === '중도금' (지정된 비율이 없으면 회당 10%)
   const downPay = down ? down : payByOrder
   const balace =
-      thisPrice.value - downPay * numDown.value - payByOrder * numMid.value // 분양가 - (계약금 + 중도금), 2. payByOrder
+    thisPrice.value - downPay * numDown.value - payByOrder * numMid.value // 분양가 - (계약금 + 중도금), 2. payByOrder
   const balacePay = balace
-      ? balace
-      : (payByOrder * Number(order?.pay_ratio)) / 100
+    ? balace
+    : (payByOrder * Number(order?.pay_ratio)) / 100
 
   if (order?.pay_sort === '1') {
     return downPay // 계약금
@@ -93,11 +93,11 @@ const getCommits = (el: number | undefined) => {
 <template>
   <CTable hover responsive>
     <colgroup>
-      <col width="20%"/>
-      <col width="20%"/>
-      <col width="20%"/>
-      <col width="20%"/>
-      <col width="20%"/>
+      <col width="20%" />
+      <col width="20%" />
+      <col width="20%" />
+      <col width="20%" />
+      <col width="20%" />
     </colgroup>
 
     <CTableHead :color="TableSecondary" class="text-center">
@@ -113,13 +113,13 @@ const getCommits = (el: number | undefined) => {
     <CTableBody v-if="contract">
       <CTableRow v-for="po in payOrderList" :key="po.pk" class="text-right">
         <Order
-            :contract="contract"
-            :price="thisPrice"
-            :order="po"
-            :commit="commit(po.pay_time)"
-            :num-down="numDown"
-            :num-mid="numMid"
-            :payment-list="paymentList"
+          :contract="contract"
+          :price="thisPrice"
+          :order="po"
+          :commit="commit(po.pay_time)"
+          :num-down="numDown"
+          :num-mid="numMid"
+          :payment-list="paymentList"
         />
       </CTableRow>
     </CTableBody>
@@ -133,7 +133,7 @@ const getCommits = (el: number | undefined) => {
         <CTableHeaderCell>{{ numFormat(thisPrice || 0) }}</CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(paidTotal) }}</CTableHeaderCell>
         <CTableHeaderCell
-            :class="paidTotal - dueTotal < 0 ? 'text-danger' : ''"
+          :class="paidTotal - dueTotal < 0 ? 'text-danger' : ''"
         >
           {{ numFormat(paidTotal - dueTotal) }}
         </CTableHeaderCell>

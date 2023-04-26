@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed, onMounted, onUpdated, watch } from 'vue'
+import { ref, computed, onBeforeMount, onMounted, onUpdated, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/payments/_menu/headermixin'
 import { useProject } from '@/store/pinia/project'
 import { useProjectData } from '@/store/pinia/project_data'
@@ -136,6 +136,15 @@ const onDelete = (pk: number) => {
   deletePrCashBook({ ...delFilter, ...{ filters: {} } })
 }
 
+onBeforeMount(() => {
+  if (initProjId.value) {
+    fetchTypeList(initProjId.value)
+    fetchPayOrderList(initProjId.value)
+    fetchAllProBankAccList(initProjId.value)
+  }
+  if (route.query.payment) paymentId.value = route.query.payment as string
+})
+
 onMounted(() => {
   if (route.query.contract) {
     router.replace({
@@ -144,13 +153,9 @@ onMounted(() => {
     })
     const cont = Number(route.query.contract)
     fetchContract(cont)
-  }
-  if (route.query.payment) paymentId.value = route.query.payment as string
-
-  if (initProjId.value) {
-    fetchTypeList(initProjId.value)
-    fetchPayOrderList(initProjId.value)
-    fetchAllProBankAccList(initProjId.value)
+  } else {
+    contractStore.contract = null
+    paymentStore.AllPaymentList = []
   }
 })
 
@@ -167,6 +172,7 @@ onUpdated(() => {
 
 onBeforeRouteLeave(() => {
   contractStore.contract = null
+  paymentStore.AllPaymentList = []
 })
 </script>
 
