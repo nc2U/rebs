@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed, onBeforeMount, onUpdated, watch } from 'vue'
+import { ref, computed, onMounted, onUpdated, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/payments/_menu/headermixin'
 import { useProject } from '@/store/pinia/project'
 import { useProjectData } from '@/store/pinia/project_data'
@@ -136,7 +136,7 @@ const onDelete = (pk: number) => {
   deletePrCashBook({ ...delFilter, ...{ filters: {} } })
 }
 
-onBeforeMount(() => {
+onMounted(() => {
   if (route.query.contract) {
     router.replace({
       name: '건별 수납 관리',
