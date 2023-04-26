@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { ref, onBeforeMount } from 'vue'
 import { RouteLocationMatched } from 'vue-router'
 import router from '@/router'
 
@@ -17,13 +17,9 @@ const getBreadcrumbs = () => {
   )
 }
 
-router.afterEach(() => {
-  breadcrumbs.value = getBreadcrumbs()
-})
+router.afterEach(() => (breadcrumbs.value = getBreadcrumbs()))
 
-onMounted(() => {
-  breadcrumbs.value = getBreadcrumbs()
-})
+onBeforeMount(() => (breadcrumbs.value = getBreadcrumbs()))
 </script>
 
 <template>
