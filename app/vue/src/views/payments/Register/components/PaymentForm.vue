@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { usePayment } from '@/store/pinia/payment'
 import { useProCash } from '@/store/pinia/proCash'
@@ -19,9 +19,12 @@ const props = defineProps({
 const emit = defineEmits(['on-submit', 'on-delete', 'close'])
 
 const alertModal = ref()
-const confirmModal = ref()
+const delConfirmModal = ref()
+const cngConfirmModal = ref()
 
 const validated = ref(false)
+
+const removeCont = ref(false)
 const form = reactive<ProjectCashBook>({
   project: null, // hidden -> index에서 처리
   sort: 1, // hidden -> always
@@ -74,10 +77,13 @@ const onSubmit = (event: Event) => {
         validated.value = true
       } else {
         form.deal_date = dateFormat(form.deal_date)
-        const payload = props.payment
-          ? { ...{ pk: props.payment.pk }, ...form }
-          : form
-        emit('on-submit', payload)
+
+        if (!props.payment) modalAction()
+        else {
+          if (removeCont.value) {
+            cngConfirmModal.value.callModal()
+          } else modalAction()
+        }
       }
     } else
       alertModal.value.callModal(
@@ -87,10 +93,13 @@ const onSubmit = (event: Event) => {
   } else alertModal.value.callModal()
 }
 
+const modalAction = () =>
+  emit('on-submit', { rmCont: removeCont.value, ...form })
+
 const deleteConfirm = () => {
   if (write_payment.value) {
     if (allowedPeriod.value) {
-      confirmModal.value.callModal()
+      delConfirmModal.value.callModal()
     } else
       alertModal.value.callModal(
         null,
@@ -99,7 +108,7 @@ const deleteConfirm = () => {
   } else alertModal.value.callModal()
 }
 
-const modalAction = () => {
+const onDelete = () => {
   emit('on-delete')
   emit('close')
 }
@@ -116,8 +125,8 @@ onMounted(() => {
     form.note = props.payment.note
     form.deal_date = props.payment.deal_date
   }
-  form.project_account_d2 = props.contract.order_group.sort
-  form.project_account_d3 = props.contract.order_group.sort
+  form.project_account_d2 = props.contract.order_group_desc.sort
+  form.project_account_d3 = props.contract.order_group_desc.sort === '1' ? 1 : 4
   form.contract = props.contract.pk
   form.content = `${props.contract.contractor.name}[${props.contract.serial_number}] 대금납부`
 })
@@ -131,7 +140,7 @@ onMounted(() => {
     @submit.prevent="onSubmit"
   >
     <CModalBody class="p-4">
-      <CRow class="mb-3">
+      <CRow class="mb-2">
         <CCol xs="6">
           <CRow>
             <CFormLabel class="col-sm-4 col-form-label"> 수납일자</CFormLabel>
@@ -162,22 +171,6 @@ onMounted(() => {
         </CCol>
         <CCol xs="6">
           <CRow>
-            <CFormLabel class="col-sm-4 col-form-label">수납금액</CFormLabel>
-            <CCol sm="8">
-              <CFormInput
-                v-model.number="form.income"
-                type="number"
-                min="0"
-                required
-              />
-            </CCol>
-          </CRow>
-        </CCol>
-      </CRow>
-
-      <CRow class="mb-2">
-        <CCol xs="6">
-          <CRow>
             <CFormLabel class="col-sm-4 col-form-label">수납계좌</CFormLabel>
             <CCol sm="8">
               <CFormSelect v-model="form.bank_account" required>
@@ -193,6 +186,23 @@ onMounted(() => {
             </CCol>
           </CRow>
         </CCol>
+      </CRow>
+
+      <CRow class="mb-2">
+        <CCol xs="6">
+          <CRow>
+            <CFormLabel class="col-sm-4 col-form-label">수납금액</CFormLabel>
+            <CCol sm="8">
+              <CFormInput
+                v-model.number="form.income"
+                type="number"
+                min="0"
+                required
+              />
+            </CCol>
+          </CRow>
+        </CCol>
+
         <CCol xs="6">
           <CRow>
             <CFormLabel class="col-sm-4 col-form-label">입금자명</CFormLabel>
@@ -223,6 +233,21 @@ onMounted(() => {
           </CRow>
         </CCol>
       </CRow>
+
+      <CRow v-if="payment">
+        <CCol>
+          <CRow>
+            <CFormLabel class="col-sm-2 col-form-label"></CFormLabel>
+            <CCol sm="10">
+              <CFormCheck
+                :id="`cont-change`"
+                v-model="removeCont"
+                label="계약건 변경 (현재 계약건 귀속에서 해제 되며 수납목록에서 재 지정요)."
+              />
+            </CCol>
+          </CRow>
+        </CCol>
+      </CRow>
     </CModalBody>
 
     <CModalFooter>
@@ -249,13 +274,24 @@ onMounted(() => {
     </CModalFooter>
   </CForm>
 
-  <ConfirmModal ref="confirmModal">
+  <ConfirmModal ref="cngConfirmModal">
+    <template #header> 건별 수납 정보 - [변경]</template>
+    <template #default>
+      현재 계약 건 귀속을 해제합니다. 해당 건별 수납 정보 변경을
+      진행하시겠습니까?
+    </template>
+    <template #footer>
+      <CButton color="success" @click="modalAction">변경</CButton>
+    </template>
+  </ConfirmModal>
+
+  <ConfirmModal ref="delConfirmModal">
     <template #header> 건별 수납 정보 - [삭제]</template>
     <template #default>
       삭제 후 복구할 수 없습니다. 해당 건별 수납 정보 삭제를 진행하시겠습니까?
     </template>
     <template #footer>
-      <CButton color="danger" @click="modalAction">삭제</CButton>
+      <CButton color="danger" @click="onDelete">삭제</CButton>
     </template>
   </ConfirmModal>
 

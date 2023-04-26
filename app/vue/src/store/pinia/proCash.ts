@@ -224,7 +224,9 @@ export const useProCash = defineStore('proCash', () => {
       filters: CashBookFilter
     },
   ) => {
+    const cont = payload.contract
     const { pk, filters, ...formData } = payload
+    if (formData.rmCont) formData.contract = null
     api
       .put(`/project-cashbook/${pk}/`, formData)
       .then(res => {
@@ -238,7 +240,7 @@ export const useProCash = defineStore('proCash', () => {
           })
           paymentStore.fetchAllPaymentList({
             project: res.data.project,
-            contract: res.data.contract,
+            contract: cont || undefined,
             ordering: 'deal_date',
             ...filters,
           })
@@ -251,7 +253,9 @@ export const useProCash = defineStore('proCash', () => {
   const patchPrCashBook = (
     payload: ProjectCashBook & { filters: CashBookFilter },
   ) => {
+    const cont = payload.contract
     const { pk, filters, ...formData } = payload
+    if (formData.rmCont) formData.contract = null
     return api
       .patch(`/project-cashbook/${pk}/`, formData)
       .then(res => {
@@ -265,7 +269,7 @@ export const useProCash = defineStore('proCash', () => {
           })
           paymentStore.fetchAllPaymentList({
             project: res.data.project,
-            contract: res.data.contract,
+            contract: cont || undefined,
             ordering: 'deal_date',
             ...filters,
           })

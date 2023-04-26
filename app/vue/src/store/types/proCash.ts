@@ -57,6 +57,7 @@ export interface ProjectCashBook extends ProSepItems {
   sort: number | null
   is_separate?: boolean
   sepItems?: []
+  rmCont?: boolean
   contract?: number | null
   installment_order?: number | null
   refund_contractor?: number | null
