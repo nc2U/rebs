@@ -37,7 +37,7 @@ const payOrderList = computed(() => paymentStore.payOrderList)
 const paymentsCount = computed(() => paymentStore.paymentsCount)
 
 const proCashStore = useProCash()
-const proBankAccountList = computed(() => proCashStore.proBankAccountList)
+const allProBankAccountList = computed(() => proCashStore.allProBankAccountList)
 
 const formsCheck = computed(() => {
   const a = !from_date.value
@@ -179,7 +179,7 @@ defineExpose({ listFiltering })
             >
               <option value="">납부계좌 선택</option>
               <option
-                v-for="ba in proBankAccountList"
+                v-for="ba in allProBankAccountList"
                 :key="ba.pk"
                 :value="ba.pk"
               >

@@ -54,8 +54,8 @@ const fetchPaymentList = (payload: CashBookFilter) =>
   paymentStore.fetchPaymentList(payload)
 
 const proCashStore = useProCash()
-const fetchProBankAccList = (projId: number) =>
-  proCashStore.fetchProBankAccList(projId)
+const fetchAllProBankAccList = (projId: number) =>
+  proCashStore.fetchAllProBankAccList(projId)
 const patchPrCashBook = (
   payload: ProjectCashBook & { filters: CashBookFilter },
 ) => proCashStore.patchPrCashBook(payload)
@@ -70,7 +70,7 @@ const onSelectAdd = (target: number) => {
     fetchContNumList(target)
     fetchPaymentList({ project: target })
     fetchPayOrderList(target)
-    fetchProBankAccList(target)
+    fetchAllProBankAccList(target)
   } else {
     contStore.orderGroupList = []
     proDataStore.unitTypeList = []
@@ -139,7 +139,7 @@ onMounted(() => {
     fetchContNumList(initProjId.value)
     fetchPayOrderList(initProjId.value)
     fetchPaymentList({ project: initProjId.value })
-    fetchProBankAccList(initProjId.value)
+    fetchAllProBankAccList(initProjId.value)
   }
 })
 
