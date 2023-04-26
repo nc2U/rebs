@@ -51,10 +51,10 @@ const formsCheck = computed(() => {
       form.bank_account && form.bank_account === props.payment.bank_account.pk
     const d = form.income && form.income === props.payment.income
     const e = form.note === props.payment.note
-    const f =
-      form.deal_date.toString() === new Date(props.payment.deal_date).toString()
+    const f = form.deal_date === props.payment.deal_date
+    const g = removeCont.value === false
 
-    return a && b && c && d && e && f
+    return a && b && c && d && e && f && g
   } else return false
 })
 
@@ -277,8 +277,8 @@ onMounted(() => {
   <ConfirmModal ref="cngConfirmModal">
     <template #header> 건별 수납 정보 - [변경]</template>
     <template #default>
-      현재 계약 건 귀속을 해제합니다. 해당 건별 수납 정보 변경을
-      진행하시겠습니까?
+      이 수납 건에 대한 현재 계약 건 귀속을 해제합니다. <br /><br />
+      해당 건별 수납 정보 계약 건 귀속 해제(변경)를 진행하시겠습니까?
     </template>
     <template #footer>
       <CButton color="success" @click="modalAction">변경</CButton>

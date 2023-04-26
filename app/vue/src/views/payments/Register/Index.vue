@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount, ref, watch } from 'vue'
+import { ref, computed, onBeforeMount, onUpdated, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/payments/_menu/headermixin'
 import { useProject } from '@/store/pinia/project'
 import { useProjectData } from '@/store/pinia/project_data'
@@ -107,7 +107,6 @@ const getContract = (cont: number) => {
     name: '건별 수납 관리',
     query: { contract: cont },
   })
-  fetchContract(cont)
 }
 
 const onCreate = (
@@ -144,7 +143,7 @@ onBeforeMount(() => {
       query: { contract: route.query.contract },
     })
     const cont = Number(route.query.contract)
-    getContract(cont)
+    fetchContract(cont)
   }
   if (route.query.payment) paymentId.value = route.query.payment as string
 
@@ -152,6 +151,17 @@ onBeforeMount(() => {
     fetchTypeList(initProjId.value)
     fetchPayOrderList(initProjId.value)
     fetchAllProBankAccList(initProjId.value)
+  }
+})
+
+onUpdated(() => {
+  if (route.query.contract) {
+    router.replace({
+      name: '건별 수납 관리',
+      query: { contract: route.query.contract },
+    })
+    const cont = Number(route.query.contract)
+    fetchContract(cont)
   }
 })
 
