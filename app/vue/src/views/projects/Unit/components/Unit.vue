@@ -7,17 +7,19 @@ const props = defineProps({
   line: { type: Number, default: 1 },
 })
 
-const isBuild = computed(() => props.unit || props.floor < 3)
-const color = computed(() => (props.unit ? props.unit.color : '#ccc'))
+const color = computed(() => {
+  let color = ''
+  color = props.floor < 3 ? '#ccc' : color
+  color = props.unit ? props.unit.color : color
+  return color
+})
 </script>
 
 <template>
   <div
-    v-if="isBuild"
     class="unit"
     :class="{
-      first: line === 1,
-      rest: line !== 1,
+      border: unit || floor < 3,
     }"
     :style="{ background: color }"
   >
@@ -33,17 +35,5 @@ const color = computed(() => (props.unit ? props.unit.color : '#ccc'))
   font-size: 10px;
   text-align: center;
   vertical-align: middle;
-}
-
-.first {
-  border-width: 1px 1px 0 1px;
-  border-style: solid;
-  border-color: #999;
-}
-
-.rest {
-  border-width: 1px 1px 0 0;
-  border-style: solid;
-  border-color: #999;
 }
 </style>
