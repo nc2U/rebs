@@ -5,7 +5,6 @@ const props = defineProps({
   units: { type: Object, default: null },
   floor: { type: Number, default: 1 },
   line: { type: Number, default: 1 },
-  lineList: { type: Array, default: () => [] },
 })
 
 const maxPiloti = ref(3) // 맥스 피로티 층
