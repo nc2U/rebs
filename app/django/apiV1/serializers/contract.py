@@ -666,7 +666,7 @@ class ContractorReleaseSerializer(serializers.ModelSerializer):
                     payment.project_account_d3 = ProjectAccountD3.objects.get(pk=refund_d3)
                     payment.refund_contractor = contractor  # 환불 계약자 등록
                 if completion_date:
-                    msg = f'환불 계약 건 - {payment.contract.serial_number} ({completion_date} 환불완료)'
+                    msg = f'환불 계약 건 - {payment.contract.serial_number[:13]} ({completion_date} {contractor.name} 환불완료)'
                     append_note = ', ' + msg if payment.note else msg
                     payment.note = payment.note + append_note
                 payment.save()
