@@ -57,7 +57,9 @@ const proCashStore = useProCash()
 const fetchAllProBankAccList = (projId: number) =>
   proCashStore.fetchAllProBankAccList(projId)
 const patchPrCashBook = (
-  payload: ProjectCashBook & { filters: CashBookFilter },
+  payload: ProjectCashBook & { isPayment?: boolean } & {
+    filters: CashBookFilter
+  },
 ) => proCashStore.patchPrCashBook(payload)
 
 const onSelectAdd = (target: number) => {
@@ -94,7 +96,7 @@ const listFiltering = (payload: CashBookFilter) => {
 }
 
 const payMatch = (payload: ProjectCashBook) =>
-  patchPrCashBook({ ...payload, filters: filterItems.value }) // const & payment 매칭
+  patchPrCashBook({ ...payload, isPayment: true, filters: filterItems.value }) // const & payment 매칭
 
 const pageSelect = (page: number) => {
   filterItems.value.page = page

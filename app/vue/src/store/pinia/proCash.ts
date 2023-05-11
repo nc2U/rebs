@@ -221,60 +221,68 @@ export const useProCash = defineStore('proCash', () => {
 
   const updatePrCashBook = (
     payload: ProjectCashBook & { sepData: ProjectCashBook | null } & {
+      isPayment?: boolean
+    } & {
       filters: CashBookFilter
     },
   ) => {
     const cont = payload.contract
-    const { pk, filters, ...formData } = payload
+    const { pk, isPayment, filters, ...formData } = payload
     if (formData.rmCont) formData.contract = null
     api
       .put(`/project-cashbook/${pk}/`, formData)
       .then(res => {
-        fetchProjectCashList({
-          project: res.data.project,
-          ...filters,
-        }).then(() => {
+        if (isPayment) {
           paymentStore.fetchPaymentList({
             project: res.data.project,
             ...filters,
           })
-          paymentStore.fetchAllPaymentList({
+          paymentStore
+            .fetchAllPaymentList({
+              project: res.data.project,
+              contract: cont || undefined,
+              ordering: 'deal_date',
+              ...filters,
+            })
+            .then(() => message())
+        } else
+          fetchProjectCashList({
             project: res.data.project,
-            contract: cont || undefined,
-            ordering: 'deal_date',
             ...filters,
-          })
-          message()
-        })
+          }).then(() => message())
       })
       .catch(err => errorHandle(err.response.data))
   }
 
   const patchPrCashBook = (
-    payload: ProjectCashBook & { filters: CashBookFilter },
+    payload: ProjectCashBook & { isPayment?: boolean } & {
+      filters: CashBookFilter
+    },
   ) => {
     const cont = payload.contract
-    const { pk, filters, ...formData } = payload
+    const { pk, isPayment, filters, ...formData } = payload
     if (formData.rmCont) formData.contract = null
     return api
       .patch(`/project-cashbook/${pk}/`, formData)
       .then(res => {
-        fetchProjectCashList({
-          project: res.data.project,
-          ...filters,
-        }).then(() => {
+        if (isPayment) {
           paymentStore.fetchPaymentList({
             project: res.data.project,
             ...filters,
           })
-          paymentStore.fetchAllPaymentList({
+          paymentStore
+            .fetchAllPaymentList({
+              project: res.data.project,
+              contract: cont || undefined,
+              ordering: 'deal_date',
+              ...filters,
+            })
+            .then(() => message())
+        } else
+          fetchProjectCashList({
             project: res.data.project,
-            contract: cont || undefined,
-            ordering: 'deal_date',
             ...filters,
-          })
-          message()
-        })
+          }).then(() => message())
       })
       .catch(err => errorHandle(err.response.data))
   }

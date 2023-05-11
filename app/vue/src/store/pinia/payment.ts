@@ -209,7 +209,7 @@ export const usePayment = defineStore('payment', () => {
     let url = `/all-payment/?project=${project}`
     if (payload.contract) url += `&contract=${payload.contract}`
     if (payload.ordering) url += `&ordering=${payload.ordering}`
-    api
+    return api
       .get(url)
       .then(res => (AllPaymentList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
