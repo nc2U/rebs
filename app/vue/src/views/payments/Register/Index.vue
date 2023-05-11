@@ -48,7 +48,9 @@ const createPrCashBook = (
   },
 ) => proCashStore.createPrCashBook(payload)
 const updatePrCashBook = (
-  payload: ProjectCashBook & { sepData: ProjectCashBook | null } & {
+  payload: ProjectCashBook & {
+    sepData: ProjectCashBook | null
+  } & { isPayment?: boolean } & {
     filters: CashBookFilter
   },
 ) => proCashStore.updatePrCashBook(payload)
@@ -124,7 +126,7 @@ const onUpdate = (
   },
 ) => {
   if (project.value) payload.project = project.value
-  updatePrCashBook(payload)
+  updatePrCashBook({ ...payload, isPayment: true })
 }
 
 const onDelete = (pk: number) => {
