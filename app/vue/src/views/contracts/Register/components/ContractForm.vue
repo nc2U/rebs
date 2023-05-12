@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { reactive, ref, computed, watch, nextTick, onUpdated } from 'vue'
+import { reactive, ref, computed, watch, nextTick } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { useContract } from '@/store/pinia/contract'
 import { useProjectData } from '@/store/pinia/project_data'
@@ -712,9 +712,9 @@ defineExpose({ formReset })
                   v-maska="'####-##-##'"
                   placeholder="입금일자"
                   maxlength="10"
-                  :required="!contract"
                   :disabled="noStatus"
                 />
+                <!--                :required="!contract"-->
               </CCol>
 
               <CCol md="2" class="d-none d-md-block d-lg-none"></CCol>
@@ -725,7 +725,7 @@ defineExpose({ formReset })
                   type="number"
                   min="0"
                   placeholder="입금액"
-                  :required="!contract || form.deal_date"
+                  :required="form.deal_date"
                   :disabled="noStatus"
                 />
                 <CFormFeedback invalid>입금액을 입력하세요.</CFormFeedback>
@@ -734,7 +734,7 @@ defineExpose({ formReset })
               <CCol md="5" lg="2" class="mb-3 mb-lg-0">
                 <CFormSelect
                   v-model="form.bank_account"
-                  :required="!contract || form.deal_date"
+                  :required="form.deal_date"
                   :disabled="noStatus"
                 >
                   <option value="">납부계좌 선택</option>
@@ -756,7 +756,7 @@ defineExpose({ formReset })
                   v-model="form.trader"
                   maxlength="20"
                   placeholder="입금자명을 입력하세요"
-                  :required="!contract || form.deal_date"
+                  :required="form.deal_date"
                   :disabled="noStatus"
                 />
                 <CFormFeedback invalid>입금자명을 입력하세요.</CFormFeedback>
@@ -764,7 +764,7 @@ defineExpose({ formReset })
               <CCol md="5" lg="2" class="mb-md-3 mb-lg-0">
                 <CFormSelect
                   v-model="form.installment_order"
-                  :required="!contract || form.deal_date"
+                  :required="form.deal_date"
                   :disabled="noStatus"
                 >
                   <option value="">납부회차 선택</option>
