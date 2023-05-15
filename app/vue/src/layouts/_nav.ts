@@ -46,6 +46,10 @@ const contract = {
           component: 'CNavItem',
           name: '권리 의무 승계',
           to: '/contracts/succession',
+          badge: {
+            color: 'warning',
+            text: 'u.c',
+          },
         },
         {
           component: 'CNavItem',
