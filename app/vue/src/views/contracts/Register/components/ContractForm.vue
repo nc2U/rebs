@@ -369,7 +369,7 @@ defineExpose({ formReset })
       @submit.prevent="onSubmit"
     >
       <CCardBody>
-        <ContNavigation />
+        <ContNavigation :contract="form.pk" />
         <hr />
         <CRow class="mb-3">
           <CFormLabel class="col-md-2 col-lg-1 col-form-label">

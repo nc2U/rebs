@@ -101,7 +101,7 @@ onBeforeRouteLeave(() => {
 
   <ContentBody>
     <CCardBody class="pb-5">
-      <ContNavigation />
+      <ContNavigation :contract="contractor?.contract" />
       <ContController
         :project="project"
         @search-contractor="searchContractor"
