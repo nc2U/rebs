@@ -47,6 +47,15 @@ const contract = {
       meta: { title: '동호 배치 현황' },
     },
     {
+      path: 'inheritance',
+      name: '권리 승계 관리',
+      component: () =>
+        pageViewAuth.value
+          ? import('@/views/contracts/Inheritance/Index.vue')
+          : import('@/views/_Accounts/NoAuth.vue'),
+      meta: { title: '권리 승계 관리' },
+    },
+    {
       path: 'release',
       name: '계약 해지 관리',
       component: () =>
