@@ -9,7 +9,7 @@ const [route, router] = [useRoute(), useRouter()]
 const contractor = computed(() => route.query.contractor)
 
 const isRegister = computed(() => route.name === '계약 등록 관리')
-const isContorInfo = computed(() => route.name === '계약자 정보 변경')
+// const isContorInfo = computed(() => route.name === '계약자 정보 변경')
 const isSuccession = computed(() => route.name === '권리 의무 승계')
 const isRelease = computed(() => route.name === '계약 해지 관리')
 </script>
@@ -28,9 +28,9 @@ const isRelease = computed(() => route.name === '계약 해지 관리')
     >
       계약 등록 관리
     </CButton>
-    <CButton :color="isContorInfo ? 'info' : 'light'" disabled>
-      계약자 정보 변경
-    </CButton>
+    <!--    <CButton :color="isContorInfo ? 'info' : 'light'" disabled>-->
+    <!--      계약자 정보 변경-->
+    <!--    </CButton>-->
     <CButton
       :color="isSuccession ? 'success' : 'light'"
       :disabled="!contOn || !contractor"

@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router'
 import { useContract } from '@/store/pinia/contract'
 
 defineProps({ project: { type: Number, default: null } })
-const emit = defineEmits(['search-contractor', 'get-release'])
+const emit = defineEmits(['search-contractor', 'get-succession'])
 
 const search = ref('')
 
@@ -14,9 +14,9 @@ const contractorList = computed(() => contractStore.contractorList)
 const searchContractor = () => emit('search-contractor', search.value.trim())
 
 const router = useRouter()
-const setContractor = (pk: number, release: number | null) => {
-  router.push({ name: '계약 해지 관리', query: { contractor: pk } })
-  if (release !== null) emit('get-release', release)
+const setContractor = (pk: number, succession: number | null) => {
+  router.push({ name: '권리 의무 승계', query: { contractor: pk } })
+  if (succession !== null) emit('get-succession', succession)
   else contractStore.contRelease = null
 
   search.value = ''
@@ -25,7 +25,7 @@ const setContractor = (pk: number, release: number | null) => {
 </script>
 
 <template>
-  <CCallout color="danger" class="pb-0 mb-4">
+  <CCallout color="success" class="pb-0 mb-4">
     <CRow>
       <CCol>
         <CRow>
@@ -53,7 +53,7 @@ const setContractor = (pk: number, release: number | null) => {
               v-for="contractor in contractorList"
               :key="contractor.pk"
               type="button"
-              color="dark"
+              color="primary"
               variant="outline"
               size="sm"
               @click="
