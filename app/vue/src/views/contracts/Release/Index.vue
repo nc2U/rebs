@@ -24,7 +24,7 @@ const downloadUrl = computed(() => `/excel/releases/?project=${project.value}`)
 
 const contractStore = useContract()
 const contractor = computed(() => contractStore.contractor)
-const contract = computed(() => contractor.value?.contract)
+const contOn = computed(() => contractor.value && contractor.value.status < '3')
 
 const fetchContractor = (contor: number) =>
   contractStore.fetchContractor(contor)
@@ -104,7 +104,7 @@ onBeforeRouteLeave(() => {
 
   <ContentBody>
     <CCardBody class="pb-5">
-      <ContNavigation :contract="contract" />
+      <ContNavigation :cont-on="contOn" />
       <ContController
         :project="project"
         @search-contractor="searchContractor"

@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
-defineProps({ contract: { type: Number, default: null } })
+defineProps({ contOn: { type: Boolean, default: false } })
 
 const [route, router] = [useRoute(), useRouter()]
 
@@ -18,7 +18,7 @@ const isRelease = computed(() => route.name === '계약 해지 관리')
   <CButtonGroup role="group" aria-label="Basic example" class="mb-3">
     <CButton
       :color="isRegister ? 'primary' : 'light'"
-      :disabled="!contract || !contractor"
+      :disabled="!contOn || !contractor"
       @click="
         router.push({
           name: '계약 등록 관리',
@@ -33,7 +33,7 @@ const isRelease = computed(() => route.name === '계약 해지 관리')
     </CButton>
     <CButton
       :color="isSuccession ? 'success' : 'light'"
-      :disabled="!contract || !contractor"
+      :disabled="!contOn || !contractor"
       @click="
         router.push({
           name: '권리 의무 승계',
