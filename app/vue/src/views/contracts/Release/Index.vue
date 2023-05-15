@@ -23,9 +23,12 @@ const initProjId = computed(() => projectStore.initProjId)
 const downloadUrl = computed(() => `/excel/releases/?project=${project.value}`)
 
 const contractStore = useContract()
-const contractor = computed(() => contractStore.contract?.contractor)
+const contractor = computed(() => contractStore.contractor)
+const contract = computed(() => contractor.value?.contract)
 
-const fetchContract = (cont: number) => contractStore.fetchContract(cont)
+const fetchContractor = (contor: number) =>
+  contractStore.fetchContractor(contor)
+
 const fetchContractorList = (projId: number, search?: string) =>
   contractStore.fetchContractorList(projId, search)
 const fetchContRelease = (pk: number) => contractStore.fetchContRelease(pk)
@@ -39,7 +42,7 @@ const updateRelease = (payload: ContractRelease & { page: number }) =>
 
 const route = useRoute()
 watch(route, val => {
-  if (val.query.contract) fetchContract(Number(val.query.contract))
+  if (val.query.contractor) fetchContractor(Number(val.query.contractor))
   else contractStore.contractor = null
 })
 
@@ -82,7 +85,7 @@ const onSubmit = (payload: ContractRelease) => {
 
 onBeforeMount(() => {
   if (initProjId.value) fetchContReleaseList(initProjId.value)
-  if (route.query.contract) fetchContract(Number(route.query.contract))
+  if (route.query.contractor) fetchContractor(Number(route.query.contractor))
   else contractStore.contractor = null
 })
 
@@ -101,7 +104,7 @@ onBeforeRouteLeave(() => {
 
   <ContentBody>
     <CCardBody class="pb-5">
-      <ContNavigation />
+      <ContNavigation :contract="contract" />
       <ContController
         :project="project"
         @search-contractor="searchContractor"
@@ -113,6 +116,7 @@ onBeforeRouteLeave(() => {
         :contractor="contractor"
         @on-submit="onSubmit"
       />
+      {{ contract }}
       <TableTitleRow
         title="계약 해지 현황"
         color="grey"

@@ -1,13 +1,16 @@
 <script lang="ts" setup>
-import { numFormat, cutString } from '@/utils/baseMixins'
+import { computed } from 'vue'
+import { numFormat } from '@/utils/baseMixins'
 import { useRouter } from 'vue-router'
 
-defineProps({
+const props = defineProps({
   contract: {
     type: Object,
     required: true,
   },
 })
+
+const contractor = computed(() => props.contract.contractor.pk)
 
 const router = useRouter()
 </script>
@@ -15,16 +18,12 @@ const router = useRouter()
 <template>
   <CTableRow v-if="contract" class="text-center">
     <CTableDataCell>
-      <router-link
-        :to="{ name: '계약 등록 관리', query: { contract: contract.pk } }"
-      >
+      <router-link :to="{ name: '계약 등록 관리', query: { contractor } }">
         {{ contract.serial_number }}
       </router-link>
     </CTableDataCell>
     <CTableDataCell>
-      <router-link
-        :to="{ name: '계약 등록 관리', query: { contract: contract.pk } }"
-      >
+      <router-link :to="{ name: '계약 등록 관리', query: { contractor } }">
         {{ contract.contractor.name }}
       </router-link>
     </CTableDataCell>
@@ -77,7 +76,7 @@ const router = useRouter()
         @click="
           router.push({
             name: '계약 등록 관리',
-            query: { contract: contract.pk },
+            query: { contractor },
           })
         "
       >

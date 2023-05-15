@@ -2,12 +2,14 @@
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
+defineProps({ contract: { type: Number, default: null } })
+
 const [route, router] = [useRoute(), useRouter()]
 
-const isContract = computed(() => route.query.contract)
+const contractor = computed(() => route.query.contractor)
 
 const isRegister = computed(() => route.name === '계약 등록 관리')
-const isContractor = computed(() => route.name === '계약자 정보 변경')
+const isContorInfo = computed(() => route.name === '계약자 정보 변경')
 const isSuccession = computed(() => route.name === '권리 의무 승계')
 const isRelease = computed(() => route.name === '계약 해지 관리')
 </script>
@@ -16,26 +18,26 @@ const isRelease = computed(() => route.name === '계약 해지 관리')
   <CButtonGroup role="group" aria-label="Basic example" class="mb-3">
     <CButton
       :color="isRegister ? 'primary' : 'light'"
-      :disabled="!isContract"
+      :disabled="!contract || !contractor"
       @click="
         router.push({
           name: '계약 등록 관리',
-          query: { contract: route.query.contract },
+          query: { contractor },
         })
       "
     >
       계약 등록 관리
     </CButton>
-    <CButton :color="isContractor ? 'info' : 'light'" disabled>
+    <CButton :color="isContorInfo ? 'info' : 'light'" disabled>
       계약자 정보 변경
     </CButton>
     <CButton
       :color="isSuccession ? 'success' : 'light'"
-      :disabled="!isContract"
+      :disabled="!contract || !contractor"
       @click="
         router.push({
           name: '권리 의무 승계',
-          query: { contract: route.query.contract },
+          query: { contractor },
         })
       "
     >
@@ -43,11 +45,11 @@ const isRelease = computed(() => route.name === '계약 해지 관리')
     </CButton>
     <CButton
       :color="isRelease ? 'danger' : 'light'"
-      :disabled="!isContract"
+      :disabled="!contractor"
       @click="
         router.push({
           name: '계약 해지 관리',
-          query: { contract: route.query.contract },
+          query: { contractor },
         })
       "
     >

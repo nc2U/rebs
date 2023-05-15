@@ -27,6 +27,9 @@ const isUnion = computed(() => !projectStore.project?.is_direct_manage)
 
 const fetchContract = (cont: number) => contractStore.fetchContract(cont)
 
+const fetchContractor = (contor: number) =>
+  contractStore.fetchContractor(contor)
+
 const fetchOrderGroupList = (projId: number) =>
   contractStore.fetchOrderGroupList(projId)
 
@@ -92,7 +95,8 @@ const onSelectAdd = (target: number) => {
   }
 }
 
-const getContract = (cont: string) => fetchContract(parseInt(cont))
+const getContract = (contor: string) =>
+  fetchContractor(parseInt(contor)).then(res => fetchContract(res.contract))
 
 const typeSelect = (type: number) => {
   const unit_type = type
@@ -123,8 +127,8 @@ onBeforeMount(() => {
     fetchHouseUnitList({ project: initProjId.value })
   }
 
-  if (route.query.contract) {
-    getContract(route.query.contract as string)
+  if (route.query.contractor) {
+    getContract(route.query.contractor as string)
   }
 })
 
