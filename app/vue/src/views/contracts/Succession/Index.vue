@@ -1,18 +1,17 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount, ref, watch } from 'vue'
-import { pageTitle, navMenu } from '@/views/contracts/_menu/headermixin2'
+import { pageTitle, navMenu } from '@/views/contracts/_menu/headermixin1'
 import { useProject } from '@/store/pinia/project'
 import { useContract } from '@/store/pinia/contract'
 import { ContractRelease } from '@/store/types/contract'
 import { useRoute, useRouter, onBeforeRouteLeave } from 'vue-router'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
-import ReleasetButton from '@/views/contracts/Release/components/ReleasetButton.vue'
-import ContNavigation from '@/views/contracts/Release/components/ContNavigation.vue'
-import ContractorAlert from '@/views/contracts/Release/components/ContractorAlert.vue'
-import ContController from '@/views/contracts/Release/components/ContController.vue'
+// import ReleasetButton from '@/views/contracts/Succession/components/ReleasetButton.vue'
+import ContNavigation from '@/views/contracts/Succession/components/ContNavigation.vue'
+import ContractorAlert from '@/views/contracts/Succession/components/ContractorAlert.vue'
+import ContController from '@/views/contracts/Succession/components/ContController.vue'
 import TableTitleRow from '@/components/TableTitleRow.vue'
-import ReleaseList from '@/views/contracts/Release/components/ReleaseList.vue'
 
 const page = ref(1)
 
@@ -109,22 +108,17 @@ onBeforeRouteLeave(() => {
         @get-release="getRelease"
       />
       <ContractorAlert v-if="contractor" :contractor="contractor" />
-      <ReleasetButton
-        v-if="contractor"
-        :contractor="contractor"
-        @on-submit="onSubmit"
-      />
+      <!--      <ReleasetButton-->
+      <!--        v-if="contractor"-->
+      <!--        :contractor="contractor"-->
+      <!--        @on-submit="onSubmit"-->
+      <!--      />-->
       <TableTitleRow
         title="계약 해지 현황"
         color="grey"
         excel
         :url="downloadUrl"
         :disabled="!project"
-      />
-      <ReleaseList
-        @page-select="pageSelect"
-        @get-release="getRelease"
-        @on-submit="onSubmit"
       />
     </CCardBody>
 

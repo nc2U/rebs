@@ -5,8 +5,17 @@ defineProps({ contractor: { type: Number, default: null } })
 <template>
   <CButtonGroup role="group" aria-label="Basic example" class="mb-3">
     <CButton color="primary"> 등록 계약 변경</CButton>
-    <CButton color="light" disabled>권리 의무 승계</CButton>
     <CButton color="light" disabled>주소(연락처) 변경</CButton>
+    <CButton
+      color="light"
+      @click="
+        $router.push({
+          name: '권리 의무 승계',
+          query: { contract: contractor.contract },
+        })
+      "
+      >권리 의무 승계
+    </CButton>
     <CButton
       color="light"
       @click="

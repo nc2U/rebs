@@ -38,15 +38,6 @@ const contract = {
       meta: { title: '계약 등록 관리' },
     },
     {
-      path: 'status',
-      name: '동호 배치 현황',
-      component: () =>
-        pageViewAuth.value
-          ? import('@/views/contracts/Status/Index.vue')
-          : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '동호 배치 현황' },
-    },
-    {
       path: 'succession',
       name: '권리 의무 승계',
       component: () =>
@@ -63,6 +54,15 @@ const contract = {
           ? import('@/views/contracts/Release/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
       meta: { title: '계약 해지 관리' },
+    },
+    {
+      path: 'status',
+      name: '동호 배치 현황',
+      component: () =>
+        pageViewAuth.value
+          ? import('@/views/contracts/Status/Index.vue')
+          : import('@/views/_Accounts/NoAuth.vue'),
+      meta: { title: '동호 배치 현황' },
     },
   ],
 }
