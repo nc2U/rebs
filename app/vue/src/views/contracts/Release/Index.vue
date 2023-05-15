@@ -42,12 +42,14 @@ const updateRelease = (payload: ContractRelease & { page: number }) =>
 
 const route = useRoute()
 watch(route, val => {
-  if (val.query.contractor) fetchContractor(Number(val.query.contractor))
-  else contractStore.contractor = null
+  if (val.query.contractor) {
+    fetchContractor(Number(val.query.contractor))
+  } else contractStore.contractor = null
 })
 
 watch(contractor, val => {
   if (val?.contractorrelease) fetchContRelease(val.contractorrelease)
+  else contractStore.contRelease = null
 })
 
 const router = useRouter()
@@ -116,7 +118,6 @@ onBeforeRouteLeave(() => {
         :contractor="contractor"
         @on-submit="onSubmit"
       />
-      {{ contract }}
       <TableTitleRow
         title="계약 해지 현황"
         color="grey"
