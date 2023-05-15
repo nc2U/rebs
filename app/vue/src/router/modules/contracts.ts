@@ -51,7 +51,7 @@ const contract = {
       name: '권리 승계 관리',
       component: () =>
         pageViewAuth.value
-          ? import('@/views/contracts/Inheritance/Index.vue')
+          ? import('@/views/contracts/Succession/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
       meta: { title: '권리 승계 관리' },
     },
