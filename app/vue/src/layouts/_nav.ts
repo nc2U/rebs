@@ -44,8 +44,8 @@ const contract = {
         },
         {
           component: 'CNavItem',
-          name: '권리 승계 관리',
-          to: '/contracts/inheritance',
+          name: '권리 의무 승계',
+          to: '/contracts/succession',
         },
         {
           component: 'CNavItem',
