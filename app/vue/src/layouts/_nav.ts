@@ -29,28 +29,28 @@ const contract = {
     },
     {
       component: 'CNavItem',
-      name: '계약 등록 관리',
-      to: '/contracts/register',
+      name: '동호 배치 현황',
+      to: '/contracts/status',
     },
     {
       component: 'CNavItem',
-      name: '권리 의무 승계',
-      to: '/contracts/succession',
-    },
-    {
-      component: 'CNavItem',
-      name: '계약 해지 관리',
-      to: '/contracts/release',
-    },
-    {
-      component: 'CNavItem',
-      name: '기타 계약 관련',
+      name: '현장 계약 관리',
       icon: 'cilLayers',
       items: [
         {
           component: 'CNavItem',
-          name: '동호 배치 현황',
-          to: '/contracts/status',
+          name: '계약 등록 관리',
+          to: '/contracts/register',
+        },
+        {
+          component: 'CNavItem',
+          name: '권리 의무 승계',
+          to: '/contracts/succession',
+        },
+        {
+          component: 'CNavItem',
+          name: '계약 해지 관리',
+          to: '/contracts/release',
         },
       ],
     },
