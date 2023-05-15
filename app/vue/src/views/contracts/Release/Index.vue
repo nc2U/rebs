@@ -8,7 +8,7 @@ import { useRoute, useRouter, onBeforeRouteLeave } from 'vue-router'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ReleasetButton from '@/views/contracts/Release/components/ReleasetButton.vue'
-import ContNavigation from '@/views/contracts/Release/components/ContNavigation.vue'
+import ContNavigation from '@/views/contracts/Register/components/ContNavigation.vue'
 import ContractorAlert from '@/views/contracts/Release/components/ContractorAlert.vue'
 import ContController from '@/views/contracts/Release/components/ContController.vue'
 import TableTitleRow from '@/components/TableTitleRow.vue'
@@ -102,7 +102,7 @@ onBeforeRouteLeave(() => {
 
   <ContentBody>
     <CCardBody class="pb-5">
-      <ContNavigation :contractor="contractor" />
+      <ContNavigation />
       <ContController
         :project="project"
         @search-contractor="searchContractor"

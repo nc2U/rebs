@@ -10,7 +10,7 @@ import { useProCash } from '@/store/pinia/proCash'
 import { useRoute, useRouter, onBeforeRouteLeave } from 'vue-router'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
-import ContractForm from '@/views/contracts/Register/components/ContractForm.vue'
+import ContractForm from './components/ContractForm.vue'
 
 const contForm = ref()
 
