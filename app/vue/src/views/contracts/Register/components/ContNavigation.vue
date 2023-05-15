@@ -1,5 +1,7 @@
 <script lang="ts" setup>
-defineProps({ contractor: { type: Number, default: null } })
+import { useRoute, useRouter } from 'vue-router'
+
+const [route, router] = [useRoute(), useRouter()]
 </script>
 
 <template>
@@ -8,20 +10,23 @@ defineProps({ contractor: { type: Number, default: null } })
     <CButton color="light" disabled>주소(연락처) 변경</CButton>
     <CButton
       color="light"
+      :disabled="!route.query.contract"
       @click="
-        $router.push({
+        router.push({
           name: '권리 의무 승계',
-          query: { contract: contractor.contract },
+          query: { contract: route.query.contract },
         })
       "
-      >권리 의무 승계
+    >
+      권리 의무 승계
     </CButton>
     <CButton
       color="light"
+      :disabled="!route.query.contract"
       @click="
-        $router.push({
+        router.push({
           name: '계약 해지 관리',
-          query: { contractor },
+          query: { contract: route.query.contract },
         })
       "
     >
