@@ -9,7 +9,7 @@ import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ContNavigation from '@/views/contracts/Register/components/ContNavigation.vue'
 import ContController from './components/ContController.vue'
 import ContractorAlert from './components/ContractorAlert.vue'
-import ContractForm from './components/ContractForm.vue'
+import SuccessionForm from './components/SuccessionForm.vue'
 
 const projectStore = useProject()
 const project = computed(() => projectStore.project?.pk)
@@ -70,7 +70,7 @@ onBeforeRouteLeave(() => {
         @search-contractor="searchContractor"
       />
       <ContractorAlert v-if="contractor" :contractor="contractor" />
-      <ContractForm />
+      <SuccessionForm />
     </CCardBody>
 
     <CCardFooter>&nbsp;</CCardFooter>
