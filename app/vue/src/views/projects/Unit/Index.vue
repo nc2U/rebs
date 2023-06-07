@@ -15,8 +15,8 @@ const alertModal = ref()
 const bldgName = ref('')
 
 const projectStore = useProject()
-const project = computed(() => projectStore.project?.pk)
 const initProjId = computed(() => projectStore.initProjId)
+const project = computed(() => projectStore.project?.pk || initProjId.value)
 
 const proDataStore = useProjectData()
 const numUnitByType = computed(() => proDataStore.numUnitByType)
@@ -31,6 +31,7 @@ const fetchHouseUnitList = (projId: number, bldg?: number) =>
   proDataStore.fetchHouseUnitList(projId, bldg)
 
 const createUnit = (payload: CreateUnit) => proDataStore.createUnit(payload)
+const patchUnit = (payload: HouseUnit) => proDataStore.patchUnit(payload)
 
 const onSelectAdd = (target: number) => {
   if (!!target) {
@@ -128,17 +129,16 @@ const unitRegister = (payload: OriginalUnit) => {
   }
 }
 
-const onUpdate = (payload: HouseUnit) => {
-  alert('update!')
-  console.log(payload)
-}
+const onUpdate = (payload: HouseUnit & { project: number }) =>
+  patchUnit({ ...payload, ...{ project: project.value } })
+
 const onDelete = (pk: number) => alert('delete! -- ' + pk)
 
 onBeforeMount(() => {
-  if (initProjId.value) {
-    fetchTypeList(initProjId.value)
-    fetchFloorTypeList(initProjId.value)
-    fetchBuildingList(initProjId.value)
+  if (project.value) {
+    fetchTypeList(project.value)
+    fetchFloorTypeList(project.value)
+    fetchBuildingList(project.value)
   }
   proDataStore.houseUnitList = []
 })

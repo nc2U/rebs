@@ -227,15 +227,27 @@ export const useProjectData = defineStore('projectData', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const updateUnit = (payload: HouseUnit) =>
-    api
-      .put(`/house-unit/${payload.pk}/`, payload)
+  const updateUnit = (payload: HouseUnit) => {
+    const { pk, project, ...unitData } = payload
+    return api
+      .put(`/house-unit/${pk}/`, unitData)
       .then(res =>
-        fetchNumUnitByType(res.data.project, res.data.building_unit).then(() =>
+        fetchNumUnitByType(project, res.data.unit_type).then(() => message()),
+      )
+      .catch(err => errorHandle(err.response.data))
+  }
+
+  const patchUnit = (payload: HouseUnit) => {
+    const { pk, project, ...unitData } = payload
+    return api
+      .put(`/house-unit/${pk}/`, unitData)
+      .then(res =>
+        fetchHouseUnitList(project, res.data.building_unit).then(() =>
           message(),
         ),
       )
       .catch(err => errorHandle(err.response.data))
+  }
 
   const deleteUnit = (pk: number, project: number, unit_type: number) =>
     api
@@ -279,6 +291,7 @@ export const useProjectData = defineStore('projectData', () => {
     fetchNumUnitByType,
     createUnit,
     updateUnit,
+    patchUnit,
     deleteUnit,
   }
 })

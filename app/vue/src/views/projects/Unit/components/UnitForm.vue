@@ -106,6 +106,7 @@ onMounted(() => {
         maxlength="5"
         placeholder="호수"
         reqired
+        @keydown.enter="onUpdateUnit"
       />
     </CTableDataCell>
     <CTableDataCell>
@@ -115,6 +116,7 @@ onMounted(() => {
         num="0"
         placeholder="라인"
         reqired
+        @keydown.enter="onUpdateUnit"
       />
     </CTableDataCell>
     <CTableDataCell>
@@ -124,6 +126,7 @@ onMounted(() => {
         num="0"
         placeholder="층수"
         reqired
+        @keydown.enter="onUpdateUnit"
       />
     </CTableDataCell>
     <CTableDataCell>
@@ -134,6 +137,7 @@ onMounted(() => {
         v-model="form.hold_reason"
         maxlength="100"
         placeholder="홀딩 사유"
+        @keydown.enter="onUpdateUnit"
       />
     </CTableDataCell>
     <CTableDataCell>
