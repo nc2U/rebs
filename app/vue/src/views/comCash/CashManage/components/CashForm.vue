@@ -125,7 +125,7 @@ const requireItem = computed(
 
 const sepDisabled = computed(() => {
   const disabled = !!form.account_d1 || !!form.account_d2 || !!form.account_d3
-  return props.cash ? disabled || props.cash.sepItems.length === 0 : disabled
+  return props.cash ? disabled && props.cash.sepItems.length === 0 : disabled
 })
 
 const sepSummary = computed(() => {
