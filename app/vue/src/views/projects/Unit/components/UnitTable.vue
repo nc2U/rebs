@@ -19,12 +19,8 @@ const lineList = computed(() =>
 )
 const houseUnitList = computed(() => proDataStore.houseUnitList)
 
-const lineClass = computed(() =>
-  lineList.value.length > 8 ? 'col-xl-12' : 'col-xl-6',
-)
-const listsClass = computed(() =>
-  lineList.value.length > 8 ? 'col-xl-12' : 'col-xl-6',
-)
+const unitCol = computed(() => (lineList.value.length > 8 ? 12 : 5))
+const formCol = computed(() => (lineList.value.length > 8 ? 12 : 7))
 
 const getUnit = (line: number, floor: number) =>
   simpleUnits.value
@@ -44,7 +40,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
     </CRow>
 
     <CRow v-else>
-      <CCol class="p-5" :class="lineClass">
+      <CCol :lg="unitCol" class="p-5">
         <CRow v-for="i in maxFloor" :key="i">
           <Unit
             v-for="line in lineList"
@@ -66,7 +62,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
         </CRow>
       </CCol>
 
-      <CCol :class="listsClass">
+      <CCol :lg="formCol">
         <CTable hover responsive align="middle">
           <colgroup>
             <col width="11%" />
