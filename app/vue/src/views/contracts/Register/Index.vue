@@ -55,14 +55,14 @@ watch(contract, newVal => {
     fetchKeyUnitList({
       project: project.value,
       unit_type: newVal.unit_type,
-      contract: route.query.contract as string,
+      contract: newVal.pk,
       available: 'false',
     })
     if (newVal.keyunit?.houseunit) {
       fetchHouseUnitList({
         project: project.value,
         unit_type: newVal.unit_type,
-        contract: route.query.contract as string,
+        contract: newVal.pk,
       })
     } else {
       fetchHouseUnitList({
