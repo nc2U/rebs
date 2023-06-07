@@ -14,10 +14,10 @@ const confirmModal = ref()
 
 const form = ref({
   unit_type: null,
-  // floor_type: null,
+  floor_type: null,
   name: '',
-  // bldg_line: null,
-  // floor_no: null,
+  bldg_line: null,
+  floor_no: null,
   is_hold: false,
   hold_reason: '',
 })
@@ -25,14 +25,14 @@ const form = ref({
 const formCheck = computed(() => {
   if (props.unit) {
     const a = form.value.unit_type === props.unit.unit_type
-    // const b = form.value.floor_type === props.unit.floor_type
-    const b = form.value.name === props.unit.name
-    // const d = form.value.bldg_line === props.unit.bldg_line
-    // const e = form.value.floor_no === props.unit.floor_no
-    const c = form.value.is_hold === props.unit.is_hold
-    const d = form.value.hold_reason === props.unit.hold_reason
+    const b = form.value.floor_type === props.unit.floor_type
+    const c = form.value.name === props.unit.name
+    const d = form.value.bldg_line === props.unit.bldg_line
+    const e = form.value.floor_no === props.unit.floor_no
+    const f = form.value.is_hold === props.unit.is_hold
+    const g = form.value.hold_reason === props.unit.hold_reason
 
-    return a && b && c && d
+    return a && b && c && d && e && f && g
   } else return false
 })
 
@@ -60,10 +60,10 @@ const delConfirm = () => {
 onMounted(() => {
   if (props.unit) {
     form.value.unit_type = props.unit.unit_type
-    // form.value.floor_type = props.unit.floor_type
+    form.value.floor_type = props.unit.floor_type
     form.value.name = props.unit.name
-    // form.value.bldg_line = props.unit.bldg_line
-    // form.value.floor_no = props.unit.floor_no
+    form.value.bldg_line = props.unit.bldg_line
+    form.value.floor_no = props.unit.floor_no
     form.value.is_hold = props.unit.is_hold
     form.value.hold_reason = props.unit.hold_reason
   }
@@ -80,14 +80,17 @@ onMounted(() => {
         </option>
       </CFormSelect>
     </CTableDataCell>
-    <!--    <CTableDataCell>-->
-    <!--      <CFormSelect v-model="form.floor_type" reqired>-->
-    <!--        <option value="">층범위타입</option>-->
-    <!--        <option v-for="fl in getFloorTypes" :key="fl.value" :value="fl.value">-->
-    <!--          {{ fl.label }}-->
-    <!--        </option>-->
-    <!--      </CFormSelect>-->
-    <!--    </CTableDataCell>-->
+    <CTableDataCell>
+      <CFormSelect v-model="form.floor_type" reqired>
+        <option value="">층범위타입</option>
+        <option v-for="fl in getFloorTypes" :key="fl.value" :value="fl.value">
+          {{ fl.label }}
+        </option>
+      </CFormSelect>
+    </CTableDataCell>
+    <CTableDataCell>
+      <CFormInput v-model="form.name" maxlength="5" placeholder="동" reqired />
+    </CTableDataCell>
     <CTableDataCell>
       <CFormInput
         v-model="form.name"
@@ -96,24 +99,24 @@ onMounted(() => {
         reqired
       />
     </CTableDataCell>
-    <!--    <CTableDataCell>-->
-    <!--      <CFormInput-->
-    <!--        v-model.number="form.bldg_line"-->
-    <!--        type="number"-->
-    <!--        num="0"-->
-    <!--        placeholder="라인"-->
-    <!--        reqired-->
-    <!--      />-->
-    <!--    </CTableDataCell>-->
-    <!--    <CTableDataCell>-->
-    <!--      <CFormInput-->
-    <!--        v-model.number="form.floor_no"-->
-    <!--        type="number"-->
-    <!--        num="0"-->
-    <!--        placeholder="층수"-->
-    <!--        reqired-->
-    <!--      />-->
-    <!--    </CTableDataCell>-->
+    <CTableDataCell>
+      <CFormInput
+        v-model.number="form.bldg_line"
+        type="number"
+        num="0"
+        placeholder="라인"
+        reqired
+      />
+    </CTableDataCell>
+    <CTableDataCell>
+      <CFormInput
+        v-model.number="form.floor_no"
+        type="number"
+        num="0"
+        placeholder="층수"
+        reqired
+      />
+    </CTableDataCell>
     <CTableDataCell>
       <CFormCheck v-model="form.is_hold" />
     </CTableDataCell>

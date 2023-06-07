@@ -36,7 +36,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
 </script>
 
 <template>
-  <CContainer>
+  <CContainer fluid>
     <CRow v-if="simpleUnits.length === 0">
       <CCol class="text-center p-5 text-danger">
         등록된 데이터가 없습니다.
@@ -69,22 +69,24 @@ const onDelete = (pk: number) => emit('on-delete', pk)
       <CCol :class="listsClass">
         <CTable hover responsive align="middle">
           <colgroup>
-            <col width="12%" />
-            <!--            <col width="15%" />-->
-            <col width="12%" />
-            <!--            <col width="9%" />-->
-            <!--            <col width="10%" />-->
-            <col width="8%" />
-            <col width="20%" />
-            <col width="14%" />
+            <col width="11%" />
+            <col width="15%" />
+            <col width="10%" />
+            <col width="11%" />
+            <col width="9%" />
+            <col width="10%" />
+            <col width="6%" />
+            <col width="18%" />
+            <col width="10%" />
           </colgroup>
           <CTableHead>
             <CTableRow class="text-center">
               <CTableHeaderCell>타입</CTableHeaderCell>
-              <!--              <CTableHeaderCell>층범위타입</CTableHeaderCell>-->
+              <CTableHeaderCell>층범위타입</CTableHeaderCell>
+              <CTableHeaderCell>동</CTableHeaderCell>
               <CTableHeaderCell>호수</CTableHeaderCell>
-              <!--              <CTableHeaderCell>라인</CTableHeaderCell>-->
-              <!--              <CTableHeaderCell>층수</CTableHeaderCell>-->
+              <CTableHeaderCell>라인</CTableHeaderCell>
+              <CTableHeaderCell>층수</CTableHeaderCell>
               <CTableHeaderCell>홀딩여부</CTableHeaderCell>
               <CTableHeaderCell>홀딩사유</CTableHeaderCell>
               <CTableHeaderCell>비고</CTableHeaderCell>
