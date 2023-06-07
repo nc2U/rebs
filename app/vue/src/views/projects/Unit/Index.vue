@@ -12,6 +12,7 @@ import { HouseUnit } from '@/store/types/project'
 
 const alertModal = ref()
 
+const bldgPk = ref<null | number>(null)
 const bldgName = ref('')
 
 const projectStore = useProject()
@@ -49,6 +50,7 @@ const onSelectAdd = (target: number) => {
 const bldgSelect = (bldg: { pk: number; name: string }) => {
   if (!!bldg.pk && project.value) fetchHouseUnitList(project.value, bldg.pk)
   else proDataStore.houseUnitList = []
+  bldgPk.value = bldg.pk
   bldgName.value = bldg.name
 }
 
@@ -129,8 +131,8 @@ const unitRegister = (payload: OriginalUnit) => {
   }
 }
 
-const onUpdate = (payload: HouseUnit & { project: number }) =>
-  patchUnit({ ...payload, ...{ project: project.value } })
+const onUpdate = (payload: HouseUnit & { bldg: number }) =>
+  patchUnit({ ...payload, ...{ project: project.value, bldg: bldgPk.value } })
 
 const onDelete = (pk: number) => alert('delete! -- ' + pk)
 

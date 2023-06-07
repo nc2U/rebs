@@ -237,15 +237,11 @@ export const useProjectData = defineStore('projectData', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const patchUnit = (payload: HouseUnit) => {
-    const { pk, project, ...unitData } = payload
+  const patchUnit = (payload: HouseUnit & { bldg: number }) => {
+    const { pk, project, bldg, ...unitData } = payload
     return api
       .put(`/house-unit/${pk}/`, unitData)
-      .then(res =>
-        fetchHouseUnitList(project, res.data.building_unit).then(() =>
-          message(),
-        ),
-      )
+      .then(() => fetchHouseUnitList(project, bldg).then(() => message()))
       .catch(err => errorHandle(err.response.data))
   }
 
