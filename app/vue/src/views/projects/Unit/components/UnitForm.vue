@@ -15,6 +15,7 @@ const confirmModal = ref()
 const form = ref({
   unit_type: null,
   floor_type: null,
+  building_unit: null,
   name: '',
   bldg_line: null,
   floor_no: null,
@@ -26,19 +27,21 @@ const formCheck = computed(() => {
   if (props.unit) {
     const a = form.value.unit_type === props.unit.unit_type
     const b = form.value.floor_type === props.unit.floor_type
-    const c = form.value.name === props.unit.name
-    const d = form.value.bldg_line === props.unit.bldg_line
-    const e = form.value.floor_no === props.unit.floor_no
-    const f = form.value.is_hold === props.unit.is_hold
-    const g = form.value.hold_reason === props.unit.hold_reason
+    const c = form.value.building_unit === props.unit.building_unit
+    const d = form.value.name === props.unit.name
+    const e = form.value.bldg_line === props.unit.bldg_line
+    const f = form.value.floor_no === props.unit.floor_no
+    const g = form.value.is_hold === props.unit.is_hold
+    const h = form.value.hold_reason === props.unit.hold_reason
 
-    return a && b && c && d && e && f && g
+    return a && b && c && d && e && f && g && h
   } else return false
 })
 
 const proDataStore = useProjectData()
 const getTypes = computed(() => proDataStore.getTypes)
-// const getFloorTypes = computed(() => proDataStore.getFloorTypes)
+const getFloorTypes = computed(() => proDataStore.getFloorTypes)
+const buildingList = computed(() => proDataStore.buildingList)
 
 const onUpdateUnit = () => {
   if (write_project) {
@@ -61,6 +64,7 @@ onMounted(() => {
   if (props.unit) {
     form.value.unit_type = props.unit.unit_type
     form.value.floor_type = props.unit.floor_type
+    form.value.building_unit = props.unit.building_unit
     form.value.name = props.unit.name
     form.value.bldg_line = props.unit.bldg_line
     form.value.floor_no = props.unit.floor_no
@@ -89,7 +93,12 @@ onMounted(() => {
       </CFormSelect>
     </CTableDataCell>
     <CTableDataCell>
-      <CFormInput v-model="form.name" maxlength="5" placeholder="동" reqired />
+      <CFormSelect v-model.number="form.building_unit" reqired>
+        <option value="">동</option>
+        <option v-for="bd in buildingList" :key="bd.pk" :value="bd.pk">
+          {{ bd.name }}
+        </option>
+      </CFormSelect>
     </CTableDataCell>
     <CTableDataCell>
       <CFormInput
