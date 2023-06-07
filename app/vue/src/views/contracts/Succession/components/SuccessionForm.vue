@@ -19,12 +19,13 @@ import { write_contract } from '@/utils/pageAuth'
 // import AlertModal from '@/components/Modals/AlertModal.vue'
 // import DatePicker from '@/components/DatePicker/index.vue'
 
-// const props = defineProps({
-//   project: { type: Number, default: null },
-//   contract: { type: Object, default: null },
-//   unitSet: Boolean, // 동호 지정 여부
-//   isUnion: Boolean, // 조합인지 일반분양 프로젝트인지 여부
-// })
+const props = defineProps({
+  // project: { type: Number, default: null },
+  contract: { type: Object, default: null },
+  contractor: { type: Object, default: null },
+  // unitSet: Boolean, // 동호 지정 여부
+  // isUnion: Boolean, // 조합인지 일반분양 프로젝트인지 여부
+})
 //
 // const emit = defineEmits(['type-select', 'on-create', 'on-update'])
 //
@@ -367,6 +368,9 @@ const onSubmit = (event: Event) => {
       :validated="validated"
       @submit.prevent="onSubmit"
     >
+      {{ contract }}
+      <hr />
+      {{ contractor }}
       <!--      <CCardBody>-->
       <!--        <CRow class="mb-3">-->
       <!--          <CFormLabel class="col-md-2 col-lg-1 col-form-label">-->

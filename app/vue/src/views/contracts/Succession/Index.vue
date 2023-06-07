@@ -15,8 +15,10 @@ const projectStore = useProject()
 const project = computed(() => projectStore.project?.pk)
 
 const contractStore = useContract()
+const contract = computed(() => contractStore.contract)
 const contractor = computed(() => contractStore.contractor)
 
+const fetchContract = (cont: number) => contractStore.fetchContract(cont)
 const fetchContractor = (contor: number) =>
   contractStore.fetchContractor(contor)
 const fetchContractorList = (projId: number, search?: string) =>
@@ -25,13 +27,22 @@ const fetchContractorList = (projId: number, search?: string) =>
 const route = useRoute()
 watch(route, val => {
   if (val.query.contractor) fetchContractor(Number(val.query.contractor))
-  else contractStore.contractor = null
+  else {
+    contractStore.contract = null
+    contractStore.contractor = null
+  }
+})
+
+watch(contractor, val => {
+  if (val) fetchContract(val.contract)
+  else console.log('nop!')
 })
 
 const router = useRouter()
 
 const onSelectAdd = (target: number) => {
   if (!target) {
+    contractStore.contract = null
     contractStore.contractor = null
     contractStore.contractorList = []
   }
@@ -50,6 +61,7 @@ onBeforeMount(() => {
 })
 
 onBeforeRouteLeave(() => {
+  contractStore.contract = null
   contractStore.contractor = null
   contractStore.contRelease = null
 })
@@ -70,7 +82,7 @@ onBeforeRouteLeave(() => {
         @search-contractor="searchContractor"
       />
       <ContractorAlert v-if="contractor" :contractor="contractor" />
-      <SuccessionForm />
+      <SuccessionForm :contract="contract" :contractor="contractor" />
     </CCardBody>
 
     <CCardFooter>&nbsp;</CCardFooter>
