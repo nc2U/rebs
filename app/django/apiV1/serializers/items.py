@@ -49,7 +49,7 @@ class HouseUnitSerializer(serializers.ModelSerializer):
 class ContractorInContractSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contractor
-        fields = ('status', 'name')
+        fields = ('pk', 'name', 'status')
 
 
 class ContractInKeyUnitSerializer(serializers.ModelSerializer):

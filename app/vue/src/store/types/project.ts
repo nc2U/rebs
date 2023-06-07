@@ -113,8 +113,9 @@ export interface KeyUnit {
 interface Contract {
   pk: number
   contractor: {
-    status: string
+    pk: number
     name: string
+    status: string
   }
 }
 

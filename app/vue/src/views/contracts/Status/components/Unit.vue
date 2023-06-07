@@ -28,6 +28,9 @@ const isContract = computed(() => !!unit.value.key_unit?.contract)
 const contractor = computed(() =>
   isContract.value ? unit.value.key_unit.contract.contractor.name : '',
 )
+const contractorPk = computed(() =>
+  isContract.value ? unit.value.key_unit.contract.contractor.pk : '',
+)
 const status = computed(() =>
   isContract.value ? unit.value.key_unit.contract.contractor.status : '',
 )
@@ -75,7 +78,7 @@ const statusColor = computed(() => {
         <router-link
           :to="{
             name: '계약 등록 관리',
-            query: { contract: unit.key_unit.contract.pk },
+            query: { contractor: contractorPk },
           }"
         >
           {{ contractor }}
