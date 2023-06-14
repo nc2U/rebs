@@ -157,10 +157,6 @@ onBeforeMount(() => {
     contractStore.contractor = null
   }
 })
-
-onBeforeRouteLeave(() => {
-  contractStore.contract = null
-})
 </script>
 
 <template>
