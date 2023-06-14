@@ -6,9 +6,6 @@ import { useContract } from '@/store/pinia/contract'
 import { useRoute, useRouter, onBeforeRouteLeave } from 'vue-router'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
-import ContNavigation from '@/views/contracts/Register/components/ContNavigation.vue'
-import ContController from './components/ContController.vue'
-import ContractorAlert from './components/ContractorAlert.vue'
 import SuccessionForm from './components/SuccessionForm.vue'
 
 const projectStore = useProject()
@@ -75,16 +72,11 @@ onBeforeRouteLeave(() => {
   />
 
   <ContentBody>
-    <CCardBody class="pb-5">
-      <ContNavigation :cont-on="contractor?.status < '3'" />
-      <ContController
-        :project="project"
-        @search-contractor="searchContractor"
-      />
-      <ContractorAlert v-if="contractor" :contractor="contractor" />
-      <SuccessionForm :contract="contract" :contractor="contractor" />
-    </CCardBody>
-
-    <CCardFooter>&nbsp;</CCardFooter>
+    <SuccessionForm
+      :project="project"
+      :contract="contract"
+      :contractor="contractor"
+      @search-contractor="searchContractor"
+    />
   </ContentBody>
 </template>
