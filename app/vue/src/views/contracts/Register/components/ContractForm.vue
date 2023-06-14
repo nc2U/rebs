@@ -15,6 +15,7 @@ import { maska as vMaska } from 'maska'
 import { AddressData, callAddress } from '@/components/DaumPostcode/address'
 import Multiselect from '@vueform/multiselect'
 import ContNavigation from './ContNavigation.vue'
+import ContController from './ContController.vue'
 import DaumPostcode from '@/components/DaumPostcode/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
@@ -27,7 +28,12 @@ const props = defineProps({
   isUnion: Boolean, // 조합인지 일반분양 프로젝트인지 여부
 })
 
-const emit = defineEmits(['type-select', 'on-create', 'on-update'])
+const emit = defineEmits([
+  'type-select',
+  'on-create',
+  'on-update',
+  'search-contractor',
+])
 
 const address21 = ref()
 const address22 = ref()
@@ -151,7 +157,7 @@ watch(props, nVal => {
     form.home_phone = props.contract.contractor.contractorcontact.home_phone // 11 // 12
     form.other_phone = props.contract.contractor.contractorcontact.other_phone // 13
     form.email = props.contract.contractor.contractorcontact.email // 14
-  }
+  } else formReset()
   nextTick(() => (formsCheck.value = true))
 })
 
@@ -309,6 +315,8 @@ const toSame = () => {
   }
 }
 
+const searchContractor = (contor: string) => emit('search-contractor', contor)
+
 const router = useRouter()
 
 const formReset = () => {
@@ -370,6 +378,10 @@ defineExpose({ formReset })
     >
       <CCardBody>
         <ContNavigation :cont-on="!!form.pk" />
+        <ContController
+          :project="project"
+          @search-contractor="searchContractor"
+        />
         <hr />
         <CRow class="mb-3">
           <CFormLabel class="col-md-2 col-lg-1 col-form-label">

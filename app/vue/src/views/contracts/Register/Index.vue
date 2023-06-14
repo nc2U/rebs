@@ -18,6 +18,7 @@ const [route, router] = [useRoute(), useRouter()]
 
 const contractStore = useContract()
 const contract = computed(() => contractStore.contract)
+const contractor = computed(() => contractStore.contractor)
 
 const projectStore = useProject()
 const project = computed(() => projectStore.project?.pk)
@@ -29,6 +30,9 @@ const fetchContract = (cont: number) => contractStore.fetchContract(cont)
 
 const fetchContractor = (contor: number) =>
   contractStore.fetchContractor(contor)
+
+const fetchContractorList = (projId: number, search = '') =>
+  contractStore.fetchContractorList(projId, search)
 
 const fetchOrderGroupList = (projId: number) =>
   contractStore.fetchOrderGroupList(projId)
@@ -49,6 +53,19 @@ const fetchAllProBankAccList = (projId: number) =>
 const paymentStore = usePayment()
 const fetchPayOrderList = (projId: number) =>
   paymentStore.fetchPayOrderList(projId)
+
+watch(route, val => {
+  if (val.query.contractor) fetchContractor(Number(val.query.contractor))
+  else {
+    contractStore.contract = null
+    contractStore.contractor = null
+  }
+})
+
+watch(contractor, val => {
+  if (val) fetchContract(val.contract)
+  else console.log('nop!')
+})
 
 watch(contract, newVal => {
   if (newVal && project.value) {
@@ -117,6 +134,12 @@ const onUpdate = (payload: Contract) => {
   contractStore.updateContractSet({ ...payload })
 }
 
+const searchContractor = (search: string) => {
+  if (search !== '' && project.value) {
+    fetchContractorList(project.value, search)
+  } else contractStore.contractorList = []
+}
+
 onBeforeMount(() => {
   if (initProjId.value) {
     fetchOrderGroupList(initProjId.value)
@@ -129,6 +152,9 @@ onBeforeMount(() => {
 
   if (route.query.contractor) {
     getContract(route.query.contractor as string)
+  } else {
+    contractStore.contract = null
+    contractStore.contractor = null
   }
 })
 
@@ -154,6 +180,7 @@ onBeforeRouteLeave(() => {
       @type-select="typeSelect"
       @on-create="onCreate"
       @on-update="onUpdate"
+      @search-contractor="searchContractor"
     />
   </ContentBody>
 </template>
