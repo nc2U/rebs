@@ -219,11 +219,11 @@ onBeforeMount(() => {
   fetchProAllAccD3List()
   fetchProFormAccD2List()
   fetchProFormAccD3List()
-  if (initProjId.value) {
-    fetchProBankAccList(initProjId.value)
-    fetchAllProBankAccList(initProjId.value)
-    fetchProjectCashList({ project: initProjId.value })
-  }
+
+  const projectPk = project.value || initProjId.value
+  fetchProBankAccList(projectPk)
+  fetchAllProBankAccList(projectPk)
+  fetchProjectCashList({ project: projectPk })
 })
 </script>
 

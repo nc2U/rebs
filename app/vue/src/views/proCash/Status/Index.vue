@@ -113,19 +113,19 @@ const directBalance = (val: boolean) => {
 onBeforeMount(() => {
   fetchProAllAccD2List()
   fetchProAllAccD3List()
-  if (initProjId.value) {
-    fetchExecAmountList(initProjId.value)
-    fetchStatusOutBudgetList(initProjId.value)
-    fetchProBankAccList(initProjId.value)
-    fetchBalanceByAccList({
-      project: initProjId.value,
-      date: dateFormat(date.value),
-    })
-    fetchDateCashBookList({
-      project: initProjId.value,
-      date: dateFormat(date.value),
-    })
-  }
+
+  const projectPk = project.value || initProjId.value
+  fetchExecAmountList(projectPk)
+  fetchStatusOutBudgetList(projectPk)
+  fetchProBankAccList(projectPk)
+  fetchBalanceByAccList({
+    project: projectPk,
+    date: dateFormat(date.value),
+  })
+  fetchDateCashBookList({
+    project: projectPk,
+    date: dateFormat(date.value),
+  })
 })
 </script>
 
