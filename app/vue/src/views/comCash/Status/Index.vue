@@ -86,17 +86,17 @@ onBeforeMount(() => {
   fetchAllAccD1List()
   fetchAllAccD2List()
   fetchAllAccD3List()
-  if (initComId.value) {
-    fetchComBankAccList(initComId.value)
-    fetchComBalanceByAccList({
-      company: initComId.value,
-      date: dateFormat(date.value),
-    })
-    fetchDateCashBookList({
-      company: initComId.value,
-      date: dateFormat(date.value),
-    })
-  }
+
+  const companyPk = company.value || initComId.value
+  fetchComBankAccList(companyPk)
+  fetchComBalanceByAccList({
+    company: companyPk,
+    date: dateFormat(date.value),
+  })
+  fetchDateCashBookList({
+    company: companyPk,
+    date: dateFormat(date.value),
+  })
 })
 </script>
 

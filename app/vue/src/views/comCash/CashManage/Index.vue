@@ -212,14 +212,14 @@ onBeforeMount(() => {
   fetchFormAccD1List(null)
   fetchFormAccD2List(null, null)
   fetchFormAccD3List(null, null, null)
-  if (initComId.value) {
-    fetchCompany(initComId.value)
-    fetchAllDepartList(initComId.value)
-    fetchComBankAccList(initComId.value)
-    fetchAllComBankAccList(initComId.value)
-    fetchCashBookList({ company: initComId.value })
-    dataFilter.value.company = initComId.value
-  }
+
+  const companyPk = company.value || initComId.value
+  fetchCompany(companyPk)
+  fetchAllDepartList(companyPk)
+  fetchComBankAccList(companyPk)
+  fetchAllComBankAccList(companyPk)
+  fetchCashBookList({ company: companyPk })
+  dataFilter.value.company = companyPk
 })
 </script>
 
