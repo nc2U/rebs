@@ -121,40 +121,40 @@ class ContractorContact(models.Model):
         verbose_name_plural = '05. 계약자 연락처'
 
 
-# class Succession(models.Model):
-#     contract = models.OneToOneField('Contract', on_delete=models.PROTECT, verbose_name='계약 정보')
-#     seller = models.OneToOneField('Contractor', on_delete=models.PROTECT, verbose_name='양도계약자')
-#     buyer = models.OneToOneField('SuccessionBuyer', on_delete=models.PROTECT, verbose_name='양수계약자')
-#     apply_date = models.DateField('승계신청일')
-#     trading_date = models.DateField('매매계약일')
-#     approval_date = models.DateField('변경인가일', null=True, blank=True)
-#     is_approval = models.BooleanField('변경인가여부', default=False)
-#     note = models.TextField('비고', blank=True)
-#     created_at = models.DateTimeField('등록일', auto_now_add=True)
-#     updated_at = models.DateTimeField('수정일', auto_now=True)
-#     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
-#
-#
-# class SuccessionBuyer(models.Model):
-#     name = models.CharField('계약자명', max_length=20)
-#     birth_date = models.DateField('생년월일', null=True, blank=True)
-#     GENDER_CHOICES = (('M', '남자'), ('F', '여자'))
-#     gender = models.CharField('성별', max_length=1, choices=GENDER_CHOICES, blank=True)
-#     id_zipcode = models.CharField('우편번호', max_length=5)
-#     id_address1 = models.CharField('주민등록 주소', max_length=35)
-#     id_address2 = models.CharField('상세주소', max_length=20, blank=True)
-#     id_address3 = models.CharField('참고항목', max_length=20, blank=True)
-#     dm_zipcode = models.CharField('우편번호', max_length=5)
-#     dm_address1 = models.CharField('우편송부 주소', max_length=50)
-#     dm_address2 = models.CharField('상세주소', max_length=30, blank=True)
-#     dm_address3 = models.CharField('참고항목', max_length=30, blank=True)
-#     cell_phone = models.CharField('휴대전화', max_length=13)
-#     home_phone = models.CharField('집 전화', max_length=13, blank=True)
-#     other_phone = models.CharField('기타 전화', max_length=13, blank=True)
-#     email = models.EmailField('이메일', max_length=30, blank=True)
-#     created_at = models.DateTimeField('등록일', auto_now_add=True)
-#     updated_at = models.DateTimeField('수정일', auto_now=True)
-#     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
+class Succession(models.Model):
+    contract = models.OneToOneField('Contract', on_delete=models.PROTECT, verbose_name='계약 정보')
+    seller = models.OneToOneField('Contractor', on_delete=models.PROTECT, verbose_name='양도계약자')
+    buyer = models.OneToOneField('SuccessionBuyer', on_delete=models.PROTECT, verbose_name='양수계약자')
+    apply_date = models.DateField('승계신청일')
+    trading_date = models.DateField('매매계약일')
+    approval_date = models.DateField('변경인가일', null=True, blank=True)
+    is_approval = models.BooleanField('변경인가여부', default=False)
+    note = models.TextField('비고', blank=True)
+    created_at = models.DateTimeField('등록일', auto_now_add=True)
+    updated_at = models.DateTimeField('수정일', auto_now=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
+
+
+class SuccessionBuyer(models.Model):
+    name = models.CharField('계약자명', max_length=20)
+    birth_date = models.DateField('생년월일', null=True, blank=True)
+    GENDER_CHOICES = (('M', '남자'), ('F', '여자'))
+    gender = models.CharField('성별', max_length=1, choices=GENDER_CHOICES, blank=True)
+    id_zipcode = models.CharField('우편번호', max_length=5)
+    id_address1 = models.CharField('주민등록 주소', max_length=35)
+    id_address2 = models.CharField('상세주소', max_length=20, blank=True)
+    id_address3 = models.CharField('참고항목', max_length=20, blank=True)
+    dm_zipcode = models.CharField('우편번호', max_length=5)
+    dm_address1 = models.CharField('우편송부 주소', max_length=50)
+    dm_address2 = models.CharField('상세주소', max_length=30, blank=True)
+    dm_address3 = models.CharField('참고항목', max_length=30, blank=True)
+    cell_phone = models.CharField('휴대전화', max_length=13)
+    home_phone = models.CharField('집 전화', max_length=13, blank=True)
+    other_phone = models.CharField('기타 전화', max_length=13, blank=True)
+    email = models.EmailField('이메일', max_length=30, blank=True)
+    created_at = models.DateTimeField('등록일', auto_now_add=True)
+    updated_at = models.DateTimeField('수정일', auto_now=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
 
 
 class ContractorRelease(models.Model):
