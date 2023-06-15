@@ -125,12 +125,11 @@ const contPriceSet = () => {
 }
 
 onBeforeMount(() => {
-  if (initProjId.value) {
-    fetchContList(initProjId.value)
-    fetchOrderGroupList(initProjId.value)
-    fetchTypeList(initProjId.value)
-    fetchFloorTypeList(initProjId.value)
-  }
+  const projectPk = project.value || initProjId.value
+  fetchContList(projectPk)
+  fetchOrderGroupList(projectPk)
+  fetchTypeList(projectPk)
+  fetchFloorTypeList(projectPk)
 })
 </script>
 

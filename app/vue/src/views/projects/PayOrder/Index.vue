@@ -40,9 +40,7 @@ const onDeletePayOrder = (pk: number) => {
   if (project.value) deletePayOrder(pk, project.value)
 }
 
-onBeforeMount(() => {
-  if (initProjId.value) fetchPayOrderList(initProjId.value)
-})
+onBeforeMount(() => fetchPayOrderList(project.value || initProjId.value))
 </script>
 
 <template>

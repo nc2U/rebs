@@ -60,11 +60,10 @@ const onDeleteDownPay = (pk: number) => {
 }
 
 onBeforeMount(() => {
-  if (initProjId.value) {
-    fetchDownPayList({ project: initProjId.value })
-    fetchOrderGroupList(initProjId.value)
-    fetchTypeList(initProjId.value)
-  }
+  const projectPk = project.value || initProjId.value
+  fetchDownPayList({ project: projectPk })
+  fetchOrderGroupList(projectPk)
+  fetchTypeList(projectPk)
 })
 </script>
 <template>

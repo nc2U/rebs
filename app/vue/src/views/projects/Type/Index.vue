@@ -43,9 +43,7 @@ const onDeleteType = (pk: number) => {
   if (project.value) deleteType(pk, project.value)
 }
 
-onBeforeMount(() => {
-  if (initProjId.value) fetchTypeList(initProjId.value)
-})
+onBeforeMount(() => fetchTypeList(project.value || initProjId.value))
 </script>
 
 <template>

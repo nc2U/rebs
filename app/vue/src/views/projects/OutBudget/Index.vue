@@ -79,11 +79,11 @@ const onDeleteBudget = (pk: number) => {
 onBeforeMount(() => {
   fetchProAllAccD2List()
   fetchProAllAccD3List()
-  if (initProjId.value) {
-    fetchOrderGroupList(initProjId.value)
-    fetchTypeList(initProjId.value)
-    fetchOutBudgetList(initProjId.value)
-  }
+
+  const projectPk = project.value || initProjId.value
+  fetchOrderGroupList(projectPk)
+  fetchTypeList(projectPk)
+  fetchOutBudgetList(projectPk)
 })
 </script>
 

@@ -38,9 +38,7 @@ const onDeleteBuilding = (pk: number) => {
   if (project.value) deleteBuilding(pk, project.value)
 }
 
-onBeforeMount(() => {
-  if (initProjId.value) fetchBuildingList(initProjId.value)
-})
+onBeforeMount(() => fetchBuildingList(project.value || initProjId.value))
 </script>
 
 <template>

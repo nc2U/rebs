@@ -38,9 +38,7 @@ const onDeleteFloor = (pk: number) => {
   if (project.value) deleteFloorType(pk, project.value)
 }
 
-onBeforeMount(() => {
-  if (initProjId.value) fetchFloorTypeList(initProjId.value)
-})
+onBeforeMount(() => fetchFloorTypeList(project.value || initProjId.value))
 </script>
 
 <template>
