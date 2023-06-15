@@ -67,6 +67,7 @@ class Contractor(models.Model):
     status = models.CharField('현재상태', max_length=1, choices=STATUS_CHOICES)
     reservation_date = models.DateField('청약일자', null=True, blank=True)
     contract_date = models.DateField('계약일자', null=True, blank=True)
+    is_active = models.BooleanField('유효계약자여부', default=True)
     note = models.TextField('비고', blank=True)
     created_at = models.DateTimeField('등록일', auto_now_add=True)
     updated_at = models.DateTimeField('수정일', auto_now=True)
@@ -118,6 +119,20 @@ class ContractorContact(models.Model):
     class Meta:
         verbose_name = '05. 계약자 연락처'
         verbose_name_plural = '05. 계약자 연락처'
+
+
+class Succession(models.Model):
+    contract = models.OneToOneField('Contract', on_delete=models.PROTECT, verbose_name='계약 정보')
+    seller = models.OneToOneField('Contractor', on_delete=models.PROTECT, verbose_name='양도자', related_name='sellers')
+    buyer = models.OneToOneField('Contractor', on_delete=models.PROTECT, verbose_name='양수자', related_name='buyers')
+    apply_date = models.DateField('승계신청일')
+    trading_date = models.DateField('매매계약일')
+    approval_date = models.DateField('변경인가일', null=True, blank=True)
+    is_approval = models.BooleanField('변경인가여부', default=False)
+    note = models.TextField('비고', blank=True)
+    created_at = models.DateTimeField('등록일', auto_now_add=True)
+    updated_at = models.DateTimeField('수정일', auto_now=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
 
 
 class ContractorRelease(models.Model):
