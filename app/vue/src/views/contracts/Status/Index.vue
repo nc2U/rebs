@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onMounted } from 'vue'
+import { computed, onBeforeMount } from 'vue'
 import { pageTitle, navMenu } from '@/views/contracts/_menu/headermixin1'
 import { useProject } from '@/store/pinia/project'
 import { useProjectData } from '@/store/pinia/project_data'
@@ -54,15 +54,14 @@ const onSelectAdd = (target: number) => {
   }
 }
 
-onMounted(() => {
-  if (initProjId.value) {
-    fetchTypeList(initProjId.value)
-    fetchBuildingList(initProjId.value)
-    fetchHouseUnitList(initProjId.value)
-    fetchSubsSummaryList(initProjId.value)
-    fetchContractList({ project: initProjId.value })
-    fetchContSummaryList(initProjId.value)
-  }
+onBeforeMount(() => {
+  const projectPk = project.value || initProjId.value
+  fetchTypeList(projectPk)
+  fetchBuildingList(projectPk)
+  fetchHouseUnitList(projectPk)
+  fetchSubsSummaryList(projectPk)
+  fetchContractList({ project: projectPk })
+  fetchContSummaryList(projectPk)
 })
 </script>
 

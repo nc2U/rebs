@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, watch, onBeforeMount } from 'vue'
 import { useProject } from '@/store/pinia/project'
 import { useProjectData } from '@/store/pinia/project_data'
 import { useContract, ContFilter } from '@/store/pinia/contract'
@@ -97,16 +97,14 @@ const onContFiltering = (payload: ContFilter) => {
 }
 const setItems = (arr: string[]) => (printItems.value = arr)
 
-onMounted(() => {
-  const projectPk = initProjId.value
-  if (initProjId.value) {
-    fetchOrderGroupList(projectPk)
-    fetchTypeList(projectPk)
-    fetchBuildingList(projectPk)
-    fetchContractList({ project: projectPk })
-    fetchSubsSummaryList(projectPk)
-    fetchContSummaryList(projectPk)
-  }
+onBeforeMount(() => {
+  const projectPk = project.value?.pk || initProjId.value
+  fetchOrderGroupList(projectPk)
+  fetchTypeList(projectPk)
+  fetchBuildingList(projectPk)
+  fetchContractList({ project: projectPk })
+  fetchSubsSummaryList(projectPk)
+  fetchContSummaryList(projectPk)
 })
 </script>
 

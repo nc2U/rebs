@@ -56,12 +56,6 @@ onBeforeMount(() => {
   if (route.query.contractor) fetchContractor(Number(route.query.contractor))
   else contractStore.contractor = null
 })
-
-onBeforeRouteLeave(() => {
-  contractStore.contract = null
-  contractStore.contractor = null
-  contractStore.contRelease = null
-})
 </script>
 
 <template>

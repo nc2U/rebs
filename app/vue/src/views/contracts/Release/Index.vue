@@ -86,14 +86,9 @@ const onSubmit = (payload: ContractRelease) => {
 }
 
 onBeforeMount(() => {
-  if (initProjId.value) fetchContReleaseList(initProjId.value)
+  fetchContReleaseList(project.value || initProjId.value)
   if (route.query.contractor) fetchContractor(Number(route.query.contractor))
   else contractStore.contractor = null
-})
-
-onBeforeRouteLeave(() => {
-  contractStore.contractor = null
-  contractStore.contRelease = null
 })
 </script>
 

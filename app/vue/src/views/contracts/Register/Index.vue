@@ -7,7 +7,7 @@ import { useProject } from '@/store/pinia/project'
 import { useProjectData } from '@/store/pinia/project_data'
 import { usePayment } from '@/store/pinia/payment'
 import { useProCash } from '@/store/pinia/proCash'
-import { useRoute, useRouter, onBeforeRouteLeave } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ContractForm from './components/ContractForm.vue'
@@ -141,14 +141,13 @@ const searchContractor = (search: string) => {
 }
 
 onBeforeMount(() => {
-  if (initProjId.value) {
-    fetchOrderGroupList(initProjId.value)
-    fetchTypeList(initProjId.value)
-    fetchAllProBankAccList(initProjId.value)
-    fetchPayOrderList(initProjId.value)
-    fetchKeyUnitList({ project: initProjId.value })
-    fetchHouseUnitList({ project: initProjId.value })
-  }
+  const projectPk = project.value || initProjId.value
+  fetchOrderGroupList(projectPk)
+  fetchTypeList(projectPk)
+  fetchAllProBankAccList(projectPk)
+  fetchPayOrderList(projectPk)
+  fetchKeyUnitList({ project: projectPk })
+  fetchHouseUnitList({ project: projectPk })
 
   if (route.query.contractor) {
     getContract(route.query.contractor as string)
