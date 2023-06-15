@@ -194,7 +194,7 @@ watch(
 
 onBeforeMount(() => {
   accountStore.fetchUsersList()
-  comInfo.value.company = initComId.value
+  comInfo.value.company = comId.value || initComId.value
   if (accountStore?.userInfo) selectUser(accountStore.userInfo.pk as number)
 })
 </script>
