@@ -139,11 +139,10 @@ const onDelete = (pk: number) => {
 }
 
 onBeforeMount(() => {
-  if (initProjId.value) {
-    fetchTypeList(initProjId.value)
-    fetchPayOrderList(initProjId.value)
-    fetchAllProBankAccList(initProjId.value)
-  }
+  const projectPk = project.value || initProjId.value
+  fetchTypeList(projectPk)
+  fetchPayOrderList(projectPk)
+  fetchAllProBankAccList(projectPk)
   if (route.query.payment) paymentId.value = route.query.payment as string
 })
 

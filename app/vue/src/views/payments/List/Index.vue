@@ -132,17 +132,16 @@ const excelUrl = computed(() =>
 )
 
 onMounted(() => {
-  if (initProjId.value) {
-    fetchOrderGroupList(initProjId.value)
-    fetchTypeList(initProjId.value)
-    fetchIncBudgetList(initProjId.value)
-    fetchContSummaryList(initProjId.value)
-    fetchPaySumList(initProjId.value)
-    fetchContNumList(initProjId.value)
-    fetchPayOrderList(initProjId.value)
-    fetchPaymentList({ project: initProjId.value })
-    fetchAllProBankAccList(initProjId.value)
-  }
+  const projectPk = project.value || initProjId.value
+  fetchOrderGroupList(projectPk)
+  fetchTypeList(projectPk)
+  fetchIncBudgetList(projectPk)
+  fetchContSummaryList(projectPk)
+  fetchPaySumList(projectPk)
+  fetchContNumList(projectPk)
+  fetchPayOrderList(projectPk)
+  fetchPaymentList({ project: projectPk })
+  fetchAllProBankAccList(projectPk)
 })
 
 onBeforeRouteLeave(() => {

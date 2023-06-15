@@ -65,13 +65,12 @@ const setDate = (d: Date) => {
 }
 
 onBeforeMount(() => {
-  if (initProjId.value) {
-    fetchTypeList(initProjId.value)
-    fetchOrderGroupList(initProjId.value)
-    fetchContSummaryList(initProjId.value)
-    fetchIncBudgetList(initProjId.value)
-    fetchPaySumList(initProjId.value)
-  }
+  const projectPk = project.value || initProjId.value
+  fetchTypeList(projectPk)
+  fetchOrderGroupList(projectPk)
+  fetchContSummaryList(projectPk)
+  fetchIncBudgetList(projectPk)
+  fetchPaySumList(projectPk)
 })
 </script>
 
