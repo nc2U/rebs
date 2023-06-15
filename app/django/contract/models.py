@@ -57,7 +57,7 @@ class ContractPrice(models.Model):
 
 
 class Contractor(models.Model):
-    contract = models.OneToOneField('Contract', on_delete=models.PROTECT, verbose_name='계약 정보')
+    contract = models.OneToOneField('Contract', on_delete=models.PROTECT, null=True, verbose_name='계약 정보')
     name = models.CharField('계약자명', max_length=20)
     birth_date = models.DateField('생년월일', null=True, blank=True)
     GENDER_CHOICES = (('M', '남자'), ('F', '여자'))
@@ -123,8 +123,8 @@ class ContractorContact(models.Model):
 
 class Succession(models.Model):
     contract = models.OneToOneField('Contract', on_delete=models.PROTECT, verbose_name='계약 정보')
-    seller = models.OneToOneField('Contractor', on_delete=models.PROTECT, verbose_name='양도자', related_name='seller')
-    buyer = models.OneToOneField('Contractor', on_delete=models.PROTECT, verbose_name='양수자', related_name='buyer')
+    seller = models.OneToOneField('Contractor', on_delete=models.PROTECT, verbose_name='양도계약자', related_name='seller')
+    buyer = models.OneToOneField('Contractor', on_delete=models.PROTECT, verbose_name='양수계약자', related_name='buyer')
     apply_date = models.DateField('승계신청일')
     trading_date = models.DateField('매매계약일')
     approval_date = models.DateField('변경인가일', null=True, blank=True)
