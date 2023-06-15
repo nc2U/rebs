@@ -73,10 +73,9 @@ const pageSelect = (num: number) => {
 }
 
 onMounted(() => {
-  if (initComId.value) {
-    fetchGradeList({ com: initComId.value })
-    fetchAllPositionList(initComId.value)
-  }
+  const companyPk = comId.value || initComId.value
+  fetchGradeList({ com: companyPk })
+  fetchAllPositionList(companyPk)
 })
 </script>
 

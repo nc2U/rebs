@@ -66,9 +66,7 @@ const pageSelect = (num: number) => {
   }
 }
 
-onMounted(() => {
-  if (initComId.value) fetchDutyList({ com: initComId.value })
-})
+onMounted(() => fetchDutyList({ com: comId.value || initComId.value }))
 </script>
 
 <template>

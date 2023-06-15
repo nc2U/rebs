@@ -82,10 +82,9 @@ const getLevel = (up: number) =>
   getPkDeparts.value.filter(d => d.value === up)[0].level + 1
 
 onMounted(() => {
-  if (initComId.value) {
-    fetchDepartmentList({ com: initComId.value })
-    fetchAllDepartList(initComId.value)
-  }
+  const companyPk = comId.value || initComId.value
+  fetchDepartmentList({ com: companyPk })
+  fetchAllDepartList(companyPk)
 })
 </script>
 

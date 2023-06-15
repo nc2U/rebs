@@ -99,13 +99,12 @@ const pageSelect = (num: number) => {
 }
 
 onMounted(() => {
-  if (initComId.value) {
-    fetchStaffList({ com: initComId.value, sts: '1' })
-    fetchAllGradeList(initComId.value)
-    fetchAllDepartList(initComId.value)
-    fetchAllPositionList(initComId.value)
-    fetchAllDutyList(initComId.value)
-  }
+  const companyPk = comId.value || initComId.value
+  fetchStaffList({ com: companyPk, sts: '1' })
+  fetchAllGradeList(companyPk)
+  fetchAllDepartList(companyPk)
+  fetchAllPositionList(companyPk)
+  fetchAllDutyList(companyPk)
   fetchUsersList()
 })
 </script>
