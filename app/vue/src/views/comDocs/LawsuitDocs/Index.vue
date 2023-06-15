@@ -111,10 +111,8 @@ const sortFilter = (project: number | null) => {
 
 onBeforeMount(() => {
   fetchCategoryList(3)
-  if (initComId.value) {
-    caseFilter.value.company = initComId.value
-    fetchPostList({ company: initComId.value, board: 3 })
-  }
+  caseFilter.value.company = company.value || initComId.value
+  fetchPostList({ company: company.value || initComId.value, board: 3 })
 })
 
 onBeforeUpdate(() => {

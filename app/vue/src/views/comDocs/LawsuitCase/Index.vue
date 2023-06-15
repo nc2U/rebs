@@ -112,7 +112,7 @@ const sortFilter = (project: number | null) => {
 }
 
 onBeforeMount(() => {
-  if (initComId.value) fetchSuitCaseList({ company: initComId.value })
+  fetchSuitCaseList({ company: company.value || initComId.value })
   fetchAllSuitCaseList({})
 })
 
