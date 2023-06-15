@@ -156,19 +156,18 @@ const onSubmit = (payload: SalesBillIssue & { now_due_date: string }) => {
 }
 
 onBeforeMount(() => {
-  if (initProjId.value) {
-    fetchSalesBillIssue(initProjId.value)
-    fetchPayOrderList(initProjId.value)
-    fetchOrderGroupList(initProjId.value)
-    fetchTypeList(initProjId.value)
-    fetchBuildingList(initProjId.value)
-    fetchContractList({
-      project: initProjId.value,
-      ordering: 'contractor__name',
-    })
-    fetchSalePriceList({ project: initProjId.value })
-    fetchDownPayList({ project: initProjId.value })
-  }
+  const projectPk = project.value || initProjId.value
+  fetchSalesBillIssue(projectPk)
+  fetchPayOrderList(projectPk)
+  fetchOrderGroupList(projectPk)
+  fetchTypeList(projectPk)
+  fetchBuildingList(projectPk)
+  fetchContractList({
+    project: projectPk,
+    ordering: 'contractor__name',
+  })
+  fetchSalePriceList({ project: projectPk })
+  fetchDownPayList({ project: projectPk })
 })
 </script>
 
