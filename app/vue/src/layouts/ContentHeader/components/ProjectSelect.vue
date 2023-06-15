@@ -18,9 +18,9 @@ const projSelect = () =>
   nextTick(() => emit('proj-select', currentProject.value))
 
 onBeforeMount(() => {
-  currentProject.value = initProjId.value
+  currentProject.value = project.value ? project.value : initProjId.value
   projectStore.fetchProjectList()
-  if (initProjId.value) projectStore.fetchProject(initProjId.value)
+  if (!project.value) projectStore.fetchProject(initProjId.value)
 })
 </script>
 

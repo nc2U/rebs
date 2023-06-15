@@ -17,9 +17,9 @@ watch(company, val => (currentCompany.value = val))
 const comSelect = () => nextTick(() => emit('com-select', currentCompany.value))
 
 onBeforeMount(() => {
-  currentCompany.value = initComId.value
+  currentCompany.value = company.value ? company.value : initComId.value
   companyStore.fetchCompanyList()
-  if (initComId.value) companyStore.fetchCompany(initComId.value)
+  if (!company.value) companyStore.fetchCompany(initComId.value)
 })
 </script>
 
