@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useContract } from '@/store/pinia/contract'
 
-defineProps({ project: { type: Number, default: null } })
+const props = defineProps({ project: { type: Number, default: null } })
 const emit = defineEmits(['search-contractor', 'get-succession'])
 
 const search = ref('')
@@ -12,6 +12,10 @@ const contractStore = useContract()
 const contractorList = computed(() => contractStore.contractorList)
 
 const searchContractor = () => emit('search-contractor', search.value.trim())
+
+watch(props, nVal => {
+  if (nVal.project) searchContractor()
+})
 
 const router = useRouter()
 const setContractor = (pk: number, succession: number | null) => {
