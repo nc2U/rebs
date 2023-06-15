@@ -65,7 +65,7 @@ class ContractorInContractSerializer(serializers.ModelSerializer):
         model = Contractor
         fields = (
             'pk', 'name', 'birth_date', 'gender', 'is_registed', 'contractoraddress',
-            'contractorcontact', 'status', 'reservation_date', 'contract_date', 'note')
+            'contractorcontact', 'status', 'reservation_date', 'contract_date', 'is_active', 'note')
 
 
 def get_cont_price(instance, houseunit=None):
@@ -595,8 +595,8 @@ class ContractorSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Contractor
-        fields = ('pk', 'contract', 'name', '__str__', 'birth_date', 'gender', 'is_registed',
-                  'status', 'reservation_date', 'contract_date', 'note', 'contractorrelease')
+        fields = ('pk', 'contract', 'name', '__str__', 'birth_date', 'gender', 'is_registed', 'status',
+                  'reservation_date', 'contract_date', 'is_active', 'note', 'contractorrelease')
 
 
 class ContractorAddressSerializer(serializers.ModelSerializer):
@@ -673,6 +673,7 @@ class ContractorReleaseSerializer(serializers.ModelSerializer):
 
             # 6. 최종 해지상태로 변경
             contractor.is_registed = False  # 인가 등록 취소
+            contractor.is_active = False  # 비활성 상태로 변경
             contractor.status = '4'  # 해지 상태로 변경
             contractor.save()
 

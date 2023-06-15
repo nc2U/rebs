@@ -97,7 +97,7 @@ class ContractorViewSet(viewsets.ModelViewSet):
     queryset = Contractor.objects.all()
     serializer_class = ContractorSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-    filterset_fields = ('contract__project', 'gender', 'is_registed', 'status')
+    filterset_fields = ('contract__project', 'gender', 'is_registed', 'status', 'is_active')
     search_fields = ('name', 'note', 'contract__serial_number')
 
     def perform_create(self, serializer):
