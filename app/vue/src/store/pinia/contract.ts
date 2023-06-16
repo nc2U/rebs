@@ -244,6 +244,20 @@ export const useContract = defineStore('contract', () => {
   }
 
   // state & getters
+  const Succession = ref()
+  const SuccessionList = ref([])
+  const SuccessionCount = ref<number>(0)
+
+  // actions
+  const successionPages = (itemsPerPage: number) =>
+    Math.ceil(SuccessionCount.value / itemsPerPage)
+
+  const fetchSuccession = () => 1
+  const fetchSuccessionList = () => 2
+  const createSuccession = () => 3
+  const updateSuccession = () => 4
+
+  // state & getters
   const contRelease = ref<ContractRelease | null>(null)
   const contReleaseList = ref<ContractRelease[]>([])
   const contReleaseCount = ref<number>(0)
@@ -329,6 +343,16 @@ export const useContract = defineStore('contract', () => {
     fetchHouseUnitList,
     fetchSalePriceList,
     fetchDownPayList,
+
+    Succession,
+    SuccessionList,
+    SuccessionCount,
+
+    successionPages,
+    fetchSuccession,
+    fetchSuccessionList,
+    createSuccession,
+    updateSuccession,
 
     contRelease,
     contReleaseList,
