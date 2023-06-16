@@ -127,6 +127,7 @@ class SuccessionViewSet(viewsets.ModelViewSet):
     queryset = Succession.objects.all()
     serializer_class = SuccessionSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    filterset_fields = ('contract__project',)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
