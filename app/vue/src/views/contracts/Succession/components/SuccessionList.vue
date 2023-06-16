@@ -1,20 +1,20 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { useContract } from '@/store/pinia/contract'
-import { ContractRelease } from '@/store/types/contract'
+import { Succession as SuccessType } from '@/store/types/contract'
+import { TableSecondary } from '@/utils/cssMixins'
 import Pagination from '@/components/Pagination'
 import Succession from '@/views/contracts/Succession/components/Succession.vue'
-import { TableSecondary } from '@/utils/cssMixins'
 
-const emit = defineEmits(['page-select', 'get-release', 'on-submit'])
+const emit = defineEmits(['page-select', 'get-succession', 'on-submit'])
 
 const contractStore = useContract()
-const contReleaseList = computed(() => contractStore.contReleaseList)
-const releasePages = computed(() => contractStore.releasePages)
+const successionList = computed(() => contractStore.successionList)
+const successionPages = computed(() => contractStore.successionPages)
 
 const pageSelect = (page: number) => emit('page-select', page)
-const getRelease = (release: number) => emit('get-release', release)
-const onSubmit = (payload: ContractRelease) => emit('on-submit', payload)
+const getSuccession = (succession: number) => emit('get-succession', succession)
+const onSubmit = (payload: SuccessType) => emit('on-submit', payload)
 </script>
 
 <template>
@@ -43,10 +43,10 @@ const onSubmit = (payload: ContractRelease) => emit('on-submit', payload)
       </CTableRow>
     </CTableHead>
     <CTableBody class="text-center">
-      <CTableRow v-for="release in contReleaseList" :key="release.pk">
+      <CTableRow v-for="succession in successionList" :key="succession.pk">
         <Succession
-          :release="release"
-          @get-release="getRelease"
+          :succession="succession"
+          @get-succession="getSuccession"
           @on-submit="onSubmit"
         />
       </CTableRow>
@@ -56,7 +56,7 @@ const onSubmit = (payload: ContractRelease) => emit('on-submit', payload)
   <Pagination
     :active-page="1"
     :limit="8"
-    :pages="releasePages(10)"
+    :pages="successionPages(10)"
     class="mt-3"
     @active-page-change="pageSelect"
   />

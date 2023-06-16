@@ -15,6 +15,7 @@ import SuccessionList from './components/SuccessionList.vue'
 
 const projectStore = useProject()
 const project = computed(() => projectStore.project?.pk)
+const initProjId = computed(() => projectStore.initProjId)
 
 const contractStore = useContract()
 const contract = computed(() => contractStore.contract)
@@ -25,6 +26,9 @@ const fetchContractor = (contor: number) =>
   contractStore.fetchContractor(contor)
 const fetchContractorList = (projId: number, search?: string) =>
   contractStore.fetchContractorList(projId, search)
+
+const fetchSuccessionList = (projId: number, page?: number) =>
+  contractStore.fetchSuccessionList(projId, page)
 
 const route = useRoute()
 watch(route, val => {
@@ -43,7 +47,9 @@ watch(contractor, val => {
 const router = useRouter()
 
 const onSelectAdd = (target: number) => {
-  if (!target) {
+  if (!!target) {
+    fetchSuccessionList(target)
+  } else {
     contractStore.contract = null
     contractStore.contractor = null
     contractStore.contractorList = []
@@ -60,6 +66,7 @@ const searchContractor = (search: string) => {
 onBeforeMount(() => {
   if (route.query.contractor) fetchContractor(Number(route.query.contractor))
   else contractStore.contractor = null
+  fetchSuccessionList(project.value || initProjId.value)
 })
 </script>
 
@@ -82,7 +89,7 @@ onBeforeMount(() => {
         title="승계 진행 건 목록"
         excel
         :url="''"
-        :disabled="!project"
+        :disabled="!project || project"
       />
       <SuccessionList />
     </CCardBody>

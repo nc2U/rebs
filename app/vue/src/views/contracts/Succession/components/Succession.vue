@@ -1,82 +1,62 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
 import { useContract } from '@/store/pinia/contract'
-import { ContractRelease } from '@/store/types/contract'
+import { Succession } from '@/store/types/contract'
 import { useRouter } from 'vue-router'
-import { numFormat, cutString } from '@/utils/baseMixins'
 import FormModal from '@/components/Modals/FormModal.vue'
-import ReleaseForm from '@/views/contracts/Release/components/ReleaseForm.vue'
+import SuccessionForm from '@/views/contracts/Succession/components/SuccessionForm.vue'
 
-const props = defineProps({ release: { type: Object, default: null } })
-const emit = defineEmits(['on-submit', 'get-release'])
+const props = defineProps({ succession: { type: Object, default: null } })
+const emit = defineEmits(['on-submit', 'get-succession'])
 
-const releaseFormModal = ref()
+const successionFormModal = ref()
 
 const contractStore = useContract()
 const contractor = computed(() => contractStore.contractor)
 
-const getStatus = (num: string) => {
-  const status = [
-    { code: '0', text: '신청 취소' },
-    { code: '3', text: '해지 신청' },
-    { code: '4', text: '해지 완료' },
-    { code: '5', text: '자격 상실' },
-  ]
-  return status.filter(s => s.code === num).map(s => s.text)[0]
-}
-
-const textColor = computed(() => {
-  if (props.release.status === '0') return 'text-primary'
-  else if (props.release.status === '3') return 'text-danger'
-  else return ''
-})
-
 const buttonColor = computed(() => {
-  if (props.release.status === '0') return 'info'
-  else if (props.release.status === '3') return 'warning'
+  if (props.succession.status === '0') return 'info'
+  else if (props.succession.status === '3') return 'warning'
   else return 'secondary'
 })
 
 const router = useRouter()
 
 const callFormModal = () => {
-  emit('get-release', props.release.pk)
+  emit('get-succession', props.succession.pk)
   router.push({
-    name: '계약 해지 관리',
-    query: { contractor: props.release.contractor },
+    name: '권리 의무 승계',
+    query: { contractor: props.succession.contractor },
   })
-  releaseFormModal.value.callModal()
+  successionFormModal.value.callModal()
 }
 
-const onSubmit = (payload: ContractRelease) => {
+const onSubmit = (payload: Succession) => {
   emit('on-submit', payload)
-  releaseFormModal.value.close()
+  successionFormModal.value.close()
 }
 </script>
 
 <template>
   <CTableDataCell>
     <router-link to="" @click="callFormModal">
-      {{ cutString(release.__str__, 15) }}
+      {{ succession.contract }}
     </router-link>
   </CTableDataCell>
-  <CTableDataCell :class="textColor">
-    {{ getStatus(release.status) }}
+  <CTableDataCell>
+    {{ succession.seller }}
   </CTableDataCell>
-  <CTableDataCell class="text-right">
-    {{ numFormat(release.refund_amount) }}
+  <CTableDataCell>
+    {{ succession.buyer.name }}
   </CTableDataCell>
-  <CTableDataCell class="text-left">
-    {{ release.refund_account_bank }}
+  <CTableDataCell>
+    {{ succession.apply_date }}
   </CTableDataCell>
-  <CTableDataCell class="text-left">
-    {{ release.refund_account_number }}
+  <CTableDataCell>
+    {{ succession.trading_date }}
   </CTableDataCell>
-  <CTableDataCell>{{ release.refund_account_depositor }}</CTableDataCell>
-  <CTableDataCell>{{ release.request_date }}</CTableDataCell>
-  <!--  <CTableDataCell class="text-primary">-->
-  <!--    <strong>{{ release.completion_date }}</strong>-->
-  <!--  </CTableDataCell>-->
+  <CTableDataCell>{{ succession.is_approval }}</CTableDataCell>
+  <CTableDataCell>{{ succession.approval_date }}</CTableDataCell>
   <CTableDataCell>
     <CButton
       type="button"
@@ -88,14 +68,14 @@ const onSubmit = (payload: ContractRelease) => {
     </CButton>
   </CTableDataCell>
 
-  <FormModal ref="releaseFormModal" size="lg">
+  <FormModal ref="successionFormModal" size="lg">
     <template #header>계약 해지 수정 등록</template>
     <template #default>
-      <ReleaseForm
-        :release="release"
+      <SuccessionForm
+        :succession="succession"
         :contractor="contractor"
         @on-submit="onSubmit"
-        @close="releaseFormModal.close()"
+        @close="successionFormModal.close()"
       />
     </template>
   </FormModal>
