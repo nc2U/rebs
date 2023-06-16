@@ -13,6 +13,7 @@ import {
   HouseUnit,
   SalesPrice,
   DownPayment,
+  Succession,
   ContractRelease,
 } from '@/store/types/contract'
 
@@ -244,16 +245,29 @@ export const useContract = defineStore('contract', () => {
   }
 
   // state & getters
-  const Succession = ref()
-  const SuccessionList = ref([])
-  const SuccessionCount = ref<number>(0)
+  const succession = ref<Succession>()
+  const successionList = ref<Succession[]>([])
+  const successionCount = ref<number>(0)
 
   // actions
   const successionPages = (itemsPerPage: number) =>
-    Math.ceil(SuccessionCount.value / itemsPerPage)
+    Math.ceil(successionCount.value / itemsPerPage)
 
-  const fetchSuccession = () => 1
-  const fetchSuccessionList = () => 2
+  const fetchSuccession = (pk: number) =>
+    api
+      .get(`/succession/${pk}/`)
+      .then(res => (succession.value = res.data))
+      .catch(err => errorHandle(err.response.data))
+
+  const fetchSuccessionList = (project: number, page = 1) =>
+    api
+      .get(`/succession/?contract__project=${project}&page=${page}`)
+      .then(res => {
+        successionList.value = res.data.results
+        successionCount.value = res.data.count
+      })
+      .catch(err => errorHandle(err.response.data))
+
   const createSuccession = () => 3
   const updateSuccession = () => 4
 
@@ -344,9 +358,9 @@ export const useContract = defineStore('contract', () => {
     fetchSalePriceList,
     fetchDownPayList,
 
-    Succession,
-    SuccessionList,
-    SuccessionCount,
+    succession,
+    successionList,
+    successionCount,
 
     successionPages,
     fetchSuccession,

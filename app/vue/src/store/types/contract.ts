@@ -138,6 +138,37 @@ export interface SubsSummary {
 
 export type ContSummary = SubsSummary
 
+export interface Succession {
+  pk: number
+  contract: 661
+  seller: 657
+  buyer: Buyer
+  apply_date: '2023-06-16'
+  trading_date: '2023-06-16'
+  is_approval: false
+  approval_date: null
+  note: ''
+}
+
+export interface Buyer {
+  pk: 1
+  name: string
+  birth_date: string
+  gender: 'M' | 'F'
+  id_zipcode: string
+  id_address1: string
+  id_address2: string
+  id_address3: string
+  dm_zipcode: string
+  dm_address1: string
+  dm_address2: string
+  dm_address3: string
+  cell_phone: string
+  home_phone: string
+  other_phone: string
+  email: string
+}
+
 export interface ContractRelease {
   pk: number
   project: number
