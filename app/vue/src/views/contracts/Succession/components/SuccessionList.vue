@@ -20,10 +20,10 @@ const onSubmit = (payload: SuccessType) => emit('on-submit', payload)
 <template>
   <CTable hover responsive align="middle">
     <colgroup>
-      <col width="12%" />
-      <col width="12%" />
-      <col width="12%" />
       <col width="15%" />
+      <col width="12%" />
+      <col width="12%" />
+      <col width="12%" />
       <col width="15%" />
       <col width="11%" />
       <col width="15%" />
@@ -32,10 +32,10 @@ const onSubmit = (payload: SuccessType) => emit('on-submit', payload)
 
     <CTableHead :color="TableSecondary" class="text-center">
       <CTableRow>
+        <CTableHeaderCell>승계신청일</CTableHeaderCell>
         <CTableHeaderCell>계약 정보</CTableHeaderCell>
         <CTableHeaderCell>양도계약자</CTableHeaderCell>
         <CTableHeaderCell>양수계약자</CTableHeaderCell>
-        <CTableHeaderCell>승계신청일</CTableHeaderCell>
         <CTableHeaderCell>매매계약일</CTableHeaderCell>
         <CTableHeaderCell>변경인가여부</CTableHeaderCell>
         <CTableHeaderCell>변경인가일</CTableHeaderCell>

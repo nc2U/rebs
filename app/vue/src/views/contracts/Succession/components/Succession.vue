@@ -15,8 +15,7 @@ const contractStore = useContract()
 const contractor = computed(() => contractStore.contractor)
 
 const buttonColor = computed(() => {
-  if (props.succession.status === '0') return 'info'
-  else if (props.succession.status === '3') return 'warning'
+  if (!props.succession.is_approval) return 'success'
   else return 'secondary'
 })
 
@@ -40,6 +39,11 @@ const onSubmit = (payload: Succession) => {
 <template>
   <CTableDataCell>
     <router-link to="" @click="callFormModal">
+      {{ succession.apply_date }}
+    </router-link>
+  </CTableDataCell>
+  <CTableDataCell>
+    <router-link to="" @click="callFormModal">
       {{ succession.contract }}
     </router-link>
   </CTableDataCell>
@@ -48,9 +52,6 @@ const onSubmit = (payload: Succession) => {
   </CTableDataCell>
   <CTableDataCell>
     {{ succession.buyer.name }}
-  </CTableDataCell>
-  <CTableDataCell>
-    {{ succession.apply_date }}
   </CTableDataCell>
   <CTableDataCell>
     {{ succession.trading_date }}

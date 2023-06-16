@@ -18,10 +18,10 @@ watch(props, nVal => {
 })
 
 const router = useRouter()
-const setContractor = (pk: number, succession: number | null) => {
+const setContractor = (pk: number) => {
   router.push({ name: '권리 의무 승계', query: { contractor: pk } })
-  if (succession !== null) emit('get-succession', succession)
-  else contractStore.contRelease = null
+  // if (!!succession) emit('get-succession', succession)
+  // else contractStore.succession = null
 
   search.value = ''
   contractStore.contractorList = []
@@ -60,9 +60,7 @@ const setContractor = (pk: number, succession: number | null) => {
               color="primary"
               variant="outline"
               size="sm"
-              @click="
-                setContractor(contractor.pk, contractor.contractorrelease)
-              "
+              @click="setContractor(contractor.pk)"
             >
               {{ contractor.__str__ }}
             </CButton>

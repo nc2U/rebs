@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed, onBeforeMount, watch } from 'vue'
+import { ref, computed, watch, onBeforeMount, onBeforeUpdate } from 'vue'
 import { pageTitle, navMenu } from '@/views/contracts/_menu/headermixin2'
 import { UnitFilter, useContract } from '@/store/pinia/contract'
 import { Contract } from '@/store/types/contract'
@@ -55,7 +55,8 @@ const fetchPayOrderList = (projId: number) =>
   paymentStore.fetchPayOrderList(projId)
 
 watch(route, val => {
-  if (val.query.contractor) fetchContractor(Number(val.query.contractor))
+  const { contractor } = val.query
+  if (!!contractor) getContract(contractor as string)
   else {
     contractStore.contract = null
     contractStore.contractor = null
@@ -110,10 +111,12 @@ const onSelectAdd = (target: number) => {
     paymentStore.payOrderList = []
     proCashStore.proBankAccountList = []
   }
+  router.push({ name: '계약 등록 관리' })
 }
 
-const getContract = (contor: string) =>
-  fetchContractor(parseInt(contor)).then(res => fetchContract(res.contract))
+const getContract = (contor: string) => {
+  fetchContractor(parseInt(contor)) //.then(res => fetchContract(res.contract))
+}
 
 const typeSelect = (type: number) => {
   const unit_type = type
@@ -149,9 +152,8 @@ onBeforeMount(() => {
   fetchKeyUnitList({ project: projectPk })
   fetchHouseUnitList({ project: projectPk })
 
-  if (route.query.contractor) {
-    getContract(route.query.contractor as string)
-  } else {
+  if (route.query.contractor) getContract(route.query.contractor as string)
+  else {
     contractStore.contract = null
     contractStore.contractor = null
   }

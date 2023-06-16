@@ -47,12 +47,12 @@ watch(contractor, val => {
 const router = useRouter()
 
 const onSelectAdd = (target: number) => {
-  if (!!target) {
-    fetchSuccessionList(target)
-  } else {
+  if (!!target) fetchSuccessionList(target)
+  else {
     contractStore.contract = null
     contractStore.contractor = null
     contractStore.contractorList = []
+    contractStore.successionList = []
   }
   router.push({ name: '권리 의무 승계' })
 }
