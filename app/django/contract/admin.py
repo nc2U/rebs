@@ -1,7 +1,8 @@
 from django.contrib import admin
 from import_export.admin import ImportExportMixin
-from .models import (OrderGroup, Contract, ContractPrice, Contractor,
-                     ContractorAddress, ContractorContact, ContractorRelease)
+from .models import (OrderGroup, Contract, ContractPrice,
+                     Contractor, ContractorAddress, ContractorContact,
+                     Succession, SuccessionBuyer, ContractorRelease)
 
 
 class OrderGroupAdmin(ImportExportMixin, admin.ModelAdmin):
@@ -57,6 +58,20 @@ class CContactAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('__str__', 'cell_phone', 'home_phone', 'other_phone', 'email')
 
 
+class SuccessionAdmin(ImportExportMixin, admin.ModelAdmin):
+    list_display = ('pk', 'contract', 'seller', 'buyer', 'apply_date', 'trading_date',
+                    'is_approval', 'approval_date', 'user')
+    search_fields = ('seller', 'buyer')
+    list_display_links = ('contract', 'seller', 'buyer')
+    list_editable = ('is_approval', 'approval_date')
+
+
+class SuccessionBuyerAdmin(ImportExportMixin, admin.ModelAdmin):
+    list_display = ('pk', 'name', 'birth_date', 'gender', 'cell_phone', 'email', 'user')
+    search_fields = ('name', 'cell_phone', 'email')
+    list_display_links = ('name', 'birth_date')
+
+
 class ContractorReleaseAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'contractor', 'status', 'refund_amount',
                     'refund_account_bank', 'refund_account_number',
@@ -67,7 +82,8 @@ class ContractorReleaseAdmin(ImportExportMixin, admin.ModelAdmin):
 admin.site.register(OrderGroup, OrderGroupAdmin)
 admin.site.register(Contract, ContractAdmin)
 admin.site.register(Contractor, ContactorAdmin)
-
 admin.site.register(ContractorAddress, CAdressAdmin)
 admin.site.register(ContractorContact, CContactAdmin)
+admin.site.register(Succession, SuccessionAdmin)
+admin.site.register(SuccessionBuyer, SuccessionBuyerAdmin)
 admin.site.register(ContractorRelease, ContractorReleaseAdmin)

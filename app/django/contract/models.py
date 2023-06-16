@@ -127,12 +127,19 @@ class Succession(models.Model):
     buyer = models.OneToOneField('SuccessionBuyer', on_delete=models.PROTECT, verbose_name='양수계약자')
     apply_date = models.DateField('승계신청일')
     trading_date = models.DateField('매매계약일')
-    approval_date = models.DateField('변경인가일', null=True, blank=True)
     is_approval = models.BooleanField('변경인가여부', default=False)
+    approval_date = models.DateField('변경인가일', null=True, blank=True)
     note = models.TextField('비고', blank=True)
     created_at = models.DateTimeField('등록일', auto_now_add=True)
     updated_at = models.DateTimeField('수정일', auto_now=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
+
+    def __str__(self):
+        return f'{self.seller}'
+
+    class Meta:
+        verbose_name = '06. 권리 의무 승계'
+        verbose_name_plural = '06. 권리 의무 승계'
 
 
 class SuccessionBuyer(models.Model):
@@ -156,6 +163,13 @@ class SuccessionBuyer(models.Model):
     updated_at = models.DateTimeField('수정일', auto_now=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
 
+    def __str__(self):
+        return f'{self.name}'
+
+    class Meta:
+        verbose_name = '07. 양(매)수 승계자'
+        verbose_name_plural = '07. 양(매)수 승계자'
+
 
 class ContractorRelease(models.Model):
     project = models.ForeignKey('project.Project', on_delete=models.CASCADE, verbose_name='프로젝트')
@@ -177,5 +191,5 @@ class ContractorRelease(models.Model):
         return f'{self.contractor}'
 
     class Meta:
-        verbose_name = '06. 계약 해지 정보'
-        verbose_name_plural = '06. 계약 해지 정보'
+        verbose_name = '08. 계약 해지 정보'
+        verbose_name_plural = '08. 계약 해지 정보'
