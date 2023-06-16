@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { useContract } from '@/store/pinia/contract'
+
 defineProps({ contractor: { type: Object, default: null } })
 
 const getStatus = (num: string) => {
@@ -10,16 +12,31 @@ const getStatus = (num: string) => {
   ]
   return status.filter(s => s.code === num).map(s => s.text)[0]
 }
+
+const contractStore = useContract()
+const removeContractor = () => {
+  contractStore.contract = null
+  contractStore.contractor = null
+}
 </script>
 
 <template>
   <CAlert :color="contractor.status < '3' ? 'success' : 'danger'">
-    <strong>
-      <CIcon name="cilTask" />
-      계약자명 :
-      {{ contractor.__str__ }} :::::: 현재상태 : [{{
-        getStatus(contractor.status)
-      }}]
-    </strong>
+    <CRow>
+      <CCol xs="10">
+        <strong>
+          <CIcon name="cilTask" />
+          계약자명 :
+          {{ contractor.__str__ }} :::::: 현재상태 : [{{
+            getStatus(contractor.status)
+          }}]
+        </strong>
+      </CCol>
+      <CCol v-if="contractor" class="text-right">
+        <router-link to="">
+          <CIcon name="cilX" @click="removeContractor" />
+        </router-link>
+      </CCol>
+    </CRow>
   </CAlert>
 </template>
