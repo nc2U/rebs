@@ -1,26 +1,14 @@
 <script lang="ts" setup>
-import { reactive, ref, computed, watch, nextTick } from 'vue'
-// import { useAccount } from '@/store/pinia/account'
-// import { useContract } from '@/store/pinia/contract'
-// import { useProjectData } from '@/store/pinia/project_data'
-// import { usePayment } from '@/store/pinia/payment'
-// import { useProCash } from '@/store/pinia/proCash'
-// import { PayOrder } from '@/store/types/payment'
-// import { Payment } from '@/store/types/contract'
-// import { useRouter } from 'vue-router'
+import { reactive, ref } from 'vue'
 import { isValidate } from '@/utils/helper'
-// import { numFormat, dateFormat, diffDate } from '@/utils/baseMixins'
 import { write_contract } from '@/utils/pageAuth'
-// import { maska as vMaska } from 'maska'
-// import { AddressData, callAddress } from '@/components/DaumPostcode/address'
-// import Multiselect from '@vueform/multiselect'
 import ContNavigation from '@/views/contracts/Register/components/ContNavigation.vue'
 import ContController from './ContController.vue'
-// import ContractorAlert from './ContractorAlert.vue'
-// import DaumPostcode from '@/components/DaumPostcode/index.vue'
-// import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
-// import AlertModal from '@/components/Modals/AlertModal.vue'
-// import DatePicker from '@/components/DatePicker/index.vue'
+import ContractorAlert from './ContractorAlert.vue'
+import DaumPostcode from '@/components/DaumPostcode/index.vue'
+import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
+import AlertModal from '@/components/Modals/AlertModal.vue'
+import DatePicker from '@/components/DatePicker/index.vue'
 
 const props = defineProps({
   project: { type: Number, default: null },
@@ -46,58 +34,58 @@ const confirmModal = ref()
 // const sameAddr = ref(false)
 // const formsCheck = ref(true)
 const validated = ref(false)
-// const form = reactive({
-//   // contract
-//   pk: null as number | null,
-//   order_group: null as number | null,
-//   order_group_sort: '',
-//   unit_type: null as number | null,
-//   serial_number: '',
-//   activation: true,
-//
-//   // keyunit & houseunit
-//   keyunit: null as number | null, // 4
-//   keyunit_code: '',
-//   houseunit: null as number | null, // 5
-//   houseunit_code: '',
-//   // cont_keyunit: '', // 디비 계약 유닛
-//   // cont_houseunit: '', // 디비 동호 유닛
-//
-//   // contractor
-//   name: '', // 7
-//   birth_date: null as string | Date | null, // 8
-//   gender: '', // 9
-//   is_registed: false, // 10
-//   status: null as null | string, // 1
-//   reservation_date: null as string | Date | null, // 6-1
-//   contract_date: null as string | Date | null, // 6-2
-//   note: '', // 28
-//
-//   // address
-//   id_zipcode: '', // 20
-//   id_address1: '', // 21
-//   id_address2: '', // 22
-//   id_address3: '', // 23
-//   dm_zipcode: '', // 24
-//   dm_address1: '', // 25
-//   dm_address2: '', // 26
-//   dm_address3: '', // 27
-//
-//   // contact
-//   cell_phone: '', // 11
-//   home_phone: '', // 12
-//   other_phone: '', // 13
-//   email: '', // 14
-//
-//   // proCash
-//   payment: null as number | null,
-//   deal_date: null as string | Date | null, // 15
-//   income: null as number | null, // 16
-//   bank_account: null as number | null, // 17
-//   trader: '', // 18
-//   installment_order: null as number | null, // 19
-// })
-//
+const form = reactive({
+  // contract
+  pk: null as number | null,
+  order_group: null as number | null,
+  order_group_sort: '',
+  unit_type: null as number | null,
+  serial_number: '',
+  activation: true,
+
+  // keyunit & houseunit
+  keyunit: null as number | null, // 4
+  keyunit_code: '',
+  houseunit: null as number | null, // 5
+  houseunit_code: '',
+  // cont_keyunit: '', // 디비 계약 유닛
+  // cont_houseunit: '', // 디비 동호 유닛
+
+  // contractor
+  name: '', // 7
+  birth_date: null as string | Date | null, // 8
+  gender: '', // 9
+  is_registed: false, // 10
+  status: null as null | string, // 1
+  reservation_date: null as string | Date | null, // 6-1
+  contract_date: null as string | Date | null, // 6-2
+  note: '', // 28
+
+  // address
+  id_zipcode: '', // 20
+  id_address1: '', // 21
+  id_address2: '', // 22
+  id_address3: '', // 23
+  dm_zipcode: '', // 24
+  dm_address1: '', // 25
+  dm_address2: '', // 26
+  dm_address3: '', // 27
+
+  // contact
+  cell_phone: '', // 11
+  home_phone: '', // 12
+  other_phone: '', // 13
+  email: '', // 14
+
+  // proCash
+  payment: null as number | null,
+  deal_date: null as string | Date | null, // 15
+  income: null as number | null, // 16
+  bank_account: null as number | null, // 17
+  trader: '', // 18
+  installment_order: null as number | null, // 19
+})
+
 // watch(form, nVal => {
 //   if (nVal.keyunit_code)
 //     form.serial_number = `${nVal.keyunit_code}-${form.order_group}`
@@ -264,7 +252,7 @@ const onSubmit = (event: Event) => {
     else alertModal.value.callModal()
   }
 }
-//
+
 // const modalAction = () => {
 //   form.birth_date = form.birth_date ? dateFormat(form.birth_date) : null
 //   form.reservation_date = form.reservation_date
@@ -385,34 +373,31 @@ const searchContractor = (contor: string) => emit('search-contractor', contor)
       />
       <hr />
       <!--        <ContractorAlert v-if="contractor" :contractor="contractor" />-->
-      {{ contract }}
-      <hr v-if="contract" />
-      {{ contractor }}
-      <!--        <CRow class="mb-3">-->
-      <!--          <CFormLabel class="col-md-2 col-lg-1 col-form-label">-->
-      <!--            구분-->
-      <!--          </CFormLabel>-->
-      <!--          <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">-->
-      <!--            <Multiselect-->
-      <!--              v-model="form.status"-->
-      <!--              :options="[-->
-      <!--                { value: '1', label: '청약' },-->
-      <!--                { value: '2', label: '계약' },-->
-      <!--              ]"-->
-      <!--              required-->
-      <!--              placeholder="-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;"-->
-      <!--              autocomplete="label"-->
-      <!--              :classes="{-->
-      <!--                search: 'form-control multiselect-search',-->
-      <!--              }"-->
-      <!--              :add-option-on="['enter' | 'tab']"-->
-      <!--              searchable-->
-      <!--              :disabled="!project"-->
-      <!--              @change="unitReset"-->
-      <!--            />-->
-      <!--            <CFormFeedback invalid>구분 항목을 선택하세요.</CFormFeedback>-->
-      <!--          </CCol>-->
-      <!--        </CRow>-->
+      <!--      {{ contract }}-->
+      <CRow class="mb-3">
+        <CFormLabel class="col-lg-2 col-form-label"> 계약자 정보</CFormLabel>
+        <CCol lg="10" class="mb-md-3 mb-lg-0">
+          <!--          <Multiselect-->
+          <!--            v-model="form.status"-->
+          <!--            :options="[-->
+          <!--              { value: '1', label: '청약' },-->
+          <!--              { value: '2', label: '계약' },-->
+          <!--            ]"-->
+          <!--            required-->
+          <!--            placeholder="-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;"-->
+          <!--            autocomplete="label"-->
+          <!--            :classes="{-->
+          <!--              search: 'form-control multiselect-search',-->
+          <!--            }"-->
+          <!--            :add-option-on="['enter' | 'tab']"-->
+          <!--            searchable-->
+          <!--            :disabled="!project"-->
+          <!--            @change="unitReset"-->
+          <!--          />-->
+          <!--          <CFormFeedback invalid>구분 항목을 선택하세요.</CFormFeedback>-->
+          {{ contractor }}
+        </CCol>
+      </CRow>
 
       <!--        <CRow class="mb-3">-->
       <!--          <CFormLabel class="col-md-2 col-lg-1 col-form-label">-->

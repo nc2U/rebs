@@ -3,10 +3,15 @@ import { computed, onBeforeMount, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/contracts/_menu/headermixin2'
 import { useProject } from '@/store/pinia/project'
 import { useContract } from '@/store/pinia/contract'
-import { useRoute, useRouter, onBeforeRouteLeave } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
-import SuccessionForm from './components/SuccessionForm.vue'
+import ContNavigation from '@/views/contracts/Register/components/ContNavigation.vue'
+import ContController from './components/ContController.vue'
+import ContractorAlert from './components/ContractorAlert.vue'
+import TableTitleRow from '@/components/TableTitleRow.vue'
+import SuccessionList from './components/SuccessionList.vue'
+// import SuccessionForm from './components/SuccessionForm.vue'
 
 const projectStore = useProject()
 const project = computed(() => projectStore.project?.pk)
@@ -66,11 +71,26 @@ onBeforeMount(() => {
   />
 
   <ContentBody>
-    <SuccessionForm
-      :project="project"
-      :contract="contract"
-      :contractor="contractor"
-      @search-contractor="searchContractor"
-    />
+    <CCardBody class="pb-5">
+      <ContNavigation :cont-on="contractor?.status < '3'" />
+      <ContController
+        :project="project"
+        @search-contractor="searchContractor"
+      />
+      <ContractorAlert v-if="contractor" :contractor="contractor" />
+      <TableTitleRow
+        title="승계 진행 건 목록"
+        excel
+        :url="''"
+        :disabled="!project"
+      />
+      <SuccessionList />
+    </CCardBody>
+    <!--    <SuccessionForm-->
+    <!--      :project="project"-->
+    <!--      :contract="contract"-->
+    <!--      :contractor="contractor"-->
+    <!--      @search-contractor="searchContractor"-->
+    <!--    />-->
   </ContentBody>
 </template>

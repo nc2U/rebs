@@ -64,7 +64,7 @@ const setContractor = (pk: number, succession: number | null) => {
                 setContractor(contractor.pk, contractor.contractorrelease)
               "
             >
-              {{ `${contractor.name}(${contractor.__str__})` }}
+              {{ contractor.__str__ }}
             </CButton>
           </CCol>
         </CRow>
