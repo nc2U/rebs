@@ -170,6 +170,7 @@ onBeforeMount(() => {
       ref="contForm"
       :project="project"
       :contract="contract"
+      :contractor="contractor"
       :unit-set="unitSet"
       :is-union="isUnion"
       @type-select="typeSelect"

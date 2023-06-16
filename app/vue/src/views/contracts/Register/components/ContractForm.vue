@@ -16,6 +16,7 @@ import { AddressData, callAddress } from '@/components/DaumPostcode/address'
 import Multiselect from '@vueform/multiselect'
 import ContNavigation from './ContNavigation.vue'
 import ContController from './ContController.vue'
+import ContractorAlert from './ContractorAlert.vue'
 import DaumPostcode from '@/components/DaumPostcode/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
@@ -24,6 +25,7 @@ import DatePicker from '@/components/DatePicker/index.vue'
 const props = defineProps({
   project: { type: Number, default: null },
   contract: { type: Object, default: null },
+  contractor: { type: Object, default: null },
   unitSet: Boolean, // 동호 지정 여부
   isUnion: Boolean, // 조합인지 일반분양 프로젝트인지 여부
 })
@@ -381,9 +383,10 @@ defineExpose({ formReset })
         :project="project"
         @search-contractor="searchContractor"
       />
+      <ContractorAlert v-if="contractor" :contractor="contractor" />
       <hr />
       <CRow class="mb-3">
-        <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 구분 </CFormLabel>
+        <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 구분</CFormLabel>
         <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
           <Multiselect
             v-model="form.status"
@@ -407,7 +410,7 @@ defineExpose({ formReset })
       </CRow>
 
       <CRow class="mb-3">
-        <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 차수 </CFormLabel>
+        <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 차수</CFormLabel>
         <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
           <CFormSelect
             v-model="form.order_group"
@@ -427,7 +430,7 @@ defineExpose({ formReset })
           <CFormFeedback invalid>차수그룹을 선택하세요.</CFormFeedback>
         </CCol>
 
-        <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 타입 </CFormLabel>
+        <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 타입</CFormLabel>
         <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
           <CFormSelect
             v-model="form.unit_type"
@@ -912,7 +915,7 @@ defineExpose({ formReset })
       </CRow>
 
       <CRow class="mb-3">
-        <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 비고 </CFormLabel>
+        <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 비고</CFormLabel>
         <CCol md="10" lg="11" class="mb-md-3 mb-lg-0">
           <CFormTextarea
             v-model="form.note"

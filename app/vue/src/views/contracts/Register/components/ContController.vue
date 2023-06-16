@@ -58,11 +58,9 @@ const setContractor = (pk: number) => {
               color="primary"
               variant="outline"
               size="sm"
-              @click="
-                setContractor(contractor.pk, contractor.contractorrelease)
-              "
+              @click="setContractor(contractor.pk)"
             >
-              {{ `${contractor.name}(${contractor.__str__})` }}
+              {{ contractor.__str__ }}
             </CButton>
           </CCol>
         </CRow>

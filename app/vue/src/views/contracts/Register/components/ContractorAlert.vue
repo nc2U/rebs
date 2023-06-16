@@ -17,7 +17,7 @@ const getStatus = (num: string) => {
     <strong>
       <CIcon name="cilTask" />
       계약자명 :
-      {{ contractor.name }}({{ contractor.__str__ }}) :::::: 현재상태 : [{{
+      {{ contractor.__str__ }} :::::: 현재상태 : [{{
         getStatus(contractor.status)
       }}]
     </strong>
