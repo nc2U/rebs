@@ -8,7 +8,8 @@ from items.models import UnitType, HouseUnit, KeyUnit
 from payment.models import SalesPriceByGT, InstallmentPaymentOrder, DownPayment
 from rebs.models import AccountSort, ProjectAccountD2, ProjectAccountD3
 from contract.models import (OrderGroup, Contract, ContractPrice, Contractor,
-                             ContractorAddress, ContractorContact, ContractorRelease)
+                             ContractorAddress, ContractorContact,
+                             Succession, SuccessionBuyer, ContractorRelease)
 
 from .items import SimpleUnitTypeSerializer
 from .payment import SimpleInstallmentOrderSerializer, SimpleOrderGroupSerializer
@@ -610,6 +611,33 @@ class ContractorContactSerializer(serializers.ModelSerializer):
     class Meta:
         model = ContractorContact
         fields = ('pk', 'contractor', 'cell_phone', 'home_phone', 'other_phone', 'email')
+
+
+class BuyerInSuccessionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SuccessionBuyer
+        fields = ('pk', 'name', 'birth_date', 'gender',
+                  'id_zipcode', 'id_address1', 'id_address2', 'id_address3',
+                  'dm_zipcode', 'dm_address1', 'dm_address2', 'dm_address3',
+                  'cell_phone', 'home_phone', 'other_phone', 'email')
+
+
+class SuccessionSerializer(serializers.ModelSerializer):
+    buyer = BuyerInSuccessionSerializer()
+
+    class Meta:
+        model = Succession
+        fields = ('pk', 'contract', 'seller', 'buyer', 'apply_date',
+                  'trading_date', 'is_approval', 'approval_date', 'note')
+
+
+class SuccessionBuyerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SuccessionBuyer
+        fields = ('pk', 'name', 'birth_date', 'gender',
+                  'id_zipcode', 'id_address1', 'id_address2', 'id_address3',
+                  'dm_zipcode', 'dm_address1', 'dm_address2', 'dm_address3',
+                  'cell_phone', 'home_phone', 'other_phone', 'email')
 
 
 class ContractorReleaseSerializer(serializers.ModelSerializer):

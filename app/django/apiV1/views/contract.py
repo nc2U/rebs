@@ -7,7 +7,8 @@ from ..permission import *
 from ..serializers.contract import *
 
 from contract.models import (OrderGroup, Contract, ContractPrice, Contractor,
-                             ContractorAddress, ContractorContact, ContractorRelease)
+                             ContractorAddress, ContractorContact,
+                             Succession, SuccessionBuyer, ContractorRelease)
 from items.models import BuildingUnit
 
 
@@ -116,6 +117,24 @@ class ContAddressViewSet(viewsets.ModelViewSet):
 class ContContactViewSet(viewsets.ModelViewSet):
     queryset = ContractorContact.objects.all()
     serializer_class = ContractorContactSerializer
+    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
+class SuccessionViewSet(viewsets.ModelViewSet):
+    queryset = Succession.objects.all()
+    serializer_class = SuccessionSerializer
+    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
+class SuccessionBuyerViewSet(viewsets.ModelViewSet):
+    queryset = SuccessionBuyer.objects.all()
+    serializer_class = SuccessionBuyerSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
     def perform_create(self, serializer):

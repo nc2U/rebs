@@ -94,6 +94,8 @@ router.register(r'cont-sum', contract.ContSummaryViewSet, basename='cont-sum')  
 router.register(r'contractor', contract.ContractorViewSet)
 router.register(r'contractor-address', contract.ContAddressViewSet)
 router.register(r'contractor-contact', contract.ContContactViewSet)
+router.register(r'succession', contract.SuccessionViewSet)
+router.register(r'succession-buyer', contract.SuccessionBuyerViewSet)
 router.register(r'contractor-release', contract.ContReleaseViewSet)
 # notice
 router.register(r'sales-bill-issue', notice.BillIssueViewSet)
