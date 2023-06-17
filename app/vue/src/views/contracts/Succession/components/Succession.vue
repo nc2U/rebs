@@ -38,9 +38,7 @@ const onSubmit = (payload: Succession) => {
 
 <template>
   <CTableDataCell>
-    <router-link to="" @click="callFormModal">
-      {{ succession.apply_date }}
-    </router-link>
+    {{ succession.apply_date }}
   </CTableDataCell>
   <CTableDataCell>
     <router-link to="" @click="callFormModal">
@@ -56,8 +54,12 @@ const onSubmit = (payload: Succession) => {
   <CTableDataCell>
     {{ succession.trading_date }}
   </CTableDataCell>
-  <CTableDataCell>{{ succession.is_approval }}</CTableDataCell>
-  <CTableDataCell>{{ succession.approval_date }}</CTableDataCell>
+  <CTableDataCell class="text-primary fw-bold">
+    {{ succession.is_approval ? '완료' : '' }}
+  </CTableDataCell>
+  <CTableDataCell class="text-primary fw-bold">
+    {{ succession.approval_date }}
+  </CTableDataCell>
   <CTableDataCell>
     <CButton
       type="button"
