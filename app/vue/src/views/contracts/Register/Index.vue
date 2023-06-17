@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed, watch, onBeforeMount, onBeforeUpdate } from 'vue'
+import { ref, computed, watch, onBeforeMount } from 'vue'
 import { pageTitle, navMenu } from '@/views/contracts/_menu/headermixin2'
 import { UnitFilter, useContract } from '@/store/pinia/contract'
 import { Contract } from '@/store/types/contract'
@@ -64,8 +64,9 @@ watch(route, val => {
 })
 
 watch(contractor, val => {
-  if (val) fetchContract(val.contract)
-  else console.log('nop!')
+  if (!!val)
+    if (!!contract.value && contract.value.pk !== val.contract)
+      fetchContract(val.contract)
 })
 
 watch(contract, newVal => {
@@ -114,9 +115,8 @@ const onSelectAdd = (target: number) => {
   router.push({ name: '계약 등록 관리' })
 }
 
-const getContract = (contor: string) => {
-  fetchContractor(parseInt(contor)) //.then(res => fetchContract(res.contract))
-}
+const getContract = (contor: string) =>
+  fetchContractor(Number(contor)).then(res => fetchContract(res.contract))
 
 const typeSelect = (type: number) => {
   const unit_type = type
