@@ -139,15 +139,15 @@ export interface SubsSummary {
 export type ContSummary = SubsSummary
 
 export interface Succession {
-  pk: number
-  contract: 661
-  seller: 657
+  pk?: number
+  contract: number
+  seller: number
   buyer: Buyer
-  apply_date: '2023-06-16'
-  trading_date: '2023-06-16'
-  is_approval: false
-  approval_date: null
-  note: ''
+  apply_date: string
+  trading_date: string
+  is_approval: boolean
+  approval_date: string | null
+  note: string
 }
 
 export interface Buyer {

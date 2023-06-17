@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
 import { useContract } from '@/store/pinia/contract'
-import { ContractRelease } from '@/store/types/contract'
+import { Succession } from '@/store/types/contract'
 import { AlertLight } from '@/utils/cssMixins'
 import { write_contract } from '@/utils/pageAuth'
 import FormModal from '@/components/Modals/FormModal.vue'
@@ -11,44 +11,44 @@ import AlertModal from '@/components/Modals/AlertModal.vue'
 defineProps({ contractor: { type: Object, default: null } })
 const emit = defineEmits(['on-submit'])
 
-const releaseFormModal = ref()
-const releaseAlertModal = ref()
+const successionFormModal = ref()
+const successionAlertModal = ref()
 
 const contractStore = useContract()
-const contRelease = computed(() => contractStore.contRelease)
+const succession = computed(() => contractStore.succession)
 
 const callFormModal = () => {
-  if (write_contract.value) releaseFormModal.value.callModal()
-  else releaseAlertModal.value.callModal()
+  if (write_contract.value) successionFormModal.value.callModal()
+  else successionAlertModal.value.callModal()
 }
 
-const onSubmit = (payload: ContractRelease) => {
+const onSubmit = (payload: Succession) => {
   emit('on-submit', payload)
-  releaseFormModal.value.close()
+  successionFormModal.value.close()
 }
 </script>
 
 <template>
   <CAlert :color="AlertLight" variant="solid" class="text-right">
     <CButton
-      :color="contRelease && contRelease.pk ? 'warning' : 'danger'"
+      :color="succession && succession.pk ? 'success' : 'primary'"
       @click="callFormModal"
     >
-      {{ contRelease && contRelease.pk ? '수정하기' : '등록하기' }}
+      {{ succession && succession.pk ? '수정하기' : '등록하기' }}
     </CButton>
   </CAlert>
 
-  <FormModal ref="releaseFormModal" size="lg">
-    <template #header>계약 해지 신규 등록</template>
+  <FormModal ref="successionFormModal" size="lg">
+    <template #header>권리 의무 승계 등록</template>
     <template #default>
       <ReleaseForm
         :contractor="contractor"
-        :release="contRelease"
+        :succession="succession"
         @on-submit="onSubmit"
-        @close="releaseFormModal.close()"
+        @close="successionFormModal.close()"
       />
     </template>
   </FormModal>
 
-  <AlertModal ref="releaseAlertModal" />
+  <AlertModal ref="successionAlertModal" />
 </template>

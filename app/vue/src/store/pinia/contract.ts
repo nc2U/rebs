@@ -268,8 +268,25 @@ export const useContract = defineStore('contract', () => {
       })
       .catch(err => errorHandle(err.response.data))
 
-  const createSuccession = () => 3
-  const updateSuccession = () => 4
+  const createSuccession = (payload: Succession & { project: number }) => {
+    const { project, ...dbData } = payload
+    return api
+      .post(`/succession/`, dbData)
+      .then(() => fetchSuccessionList(project).then(() => message()))
+      .catch(err => errorHandle(err.response.data))
+  }
+
+  const updateSuccession = (
+    payload: Succession & { project: number; page: number },
+  ) => {
+    const { project, pk, ...dbData } = payload
+    return api
+      .post(`/succession/${pk}/`, dbData)
+      .then(() =>
+        fetchSuccessionList(project, dbData.page).then(() => message()),
+      )
+      .catch(err => errorHandle(err.response.data))
+  }
 
   // state & getters
   const contRelease = ref<ContractRelease | null>(null)
