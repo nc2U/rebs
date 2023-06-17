@@ -613,6 +613,18 @@ class ContractorContactSerializer(serializers.ModelSerializer):
         fields = ('pk', 'contractor', 'cell_phone', 'home_phone', 'other_phone', 'email')
 
 
+class ContractInSuccessionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Contract
+        fields = ('pk', 'serial_number')
+
+
+class ContractorInSuccessionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Contractor
+        fields = ('pk', 'name')
+
+
 class BuyerInSuccessionSerializer(serializers.ModelSerializer):
     class Meta:
         model = SuccessionBuyer
@@ -623,6 +635,8 @@ class BuyerInSuccessionSerializer(serializers.ModelSerializer):
 
 
 class SuccessionSerializer(serializers.ModelSerializer):
+    contract = ContractInSuccessionSerializer()
+    seller = ContractorInSuccessionSerializer()
     buyer = BuyerInSuccessionSerializer()
 
     class Meta:
