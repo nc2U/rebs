@@ -1,361 +1,90 @@
 <script lang="ts" setup>
-import { reactive, ref } from 'vue'
-import { isValidate } from '@/utils/helper'
+import { reactive, ref, watch, onBeforeMount, computed } from 'vue'
 import { write_contract } from '@/utils/pageAuth'
-import ContNavigation from '@/views/contracts/Register/components/ContNavigation.vue'
-import ContController from './ContController.vue'
-import ContractorAlert from './ContractorAlert.vue'
-import DaumPostcode from '@/components/DaumPostcode/index.vue'
-import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
-import AlertModal from '@/components/Modals/AlertModal.vue'
+import { isValidate } from '@/utils/helper'
+import { dateFormat } from '@/utils/baseMixins'
 import DatePicker from '@/components/DatePicker/index.vue'
+import AlertModal from '@/components/Modals/AlertModal.vue'
+import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
 const props = defineProps({
-  project: { type: Number, default: null },
-  contract: { type: Object, default: null },
+  succession: { type: Object, default: null },
   contractor: { type: Object, default: null },
-  // unitSet: Boolean, // 동호 지정 여부
-  // isUnion: Boolean, // 조합인지 일반분양 프로젝트인지 여부
 })
 
-const emit = defineEmits([
-  // 'type-select',
-  // 'on-create',
-  // 'on-update',
-  'search-contractor',
-])
+const emit = defineEmits(['on-submit', 'close'])
 
-// const address21 = ref()
-// const address22 = ref()
-// const delModal = ref()
 const alertModal = ref()
 const confirmModal = ref()
-//
-// const sameAddr = ref(false)
-// const formsCheck = ref(true)
+
 const validated = ref(false)
 const form = reactive({
-  // contract
   pk: null as number | null,
-  order_group: null as number | null,
-  order_group_sort: '',
-  unit_type: null as number | null,
-  serial_number: '',
-  activation: true,
-
-  // keyunit & houseunit
-  keyunit: null as number | null, // 4
-  keyunit_code: '',
-  houseunit: null as number | null, // 5
-  houseunit_code: '',
-  // cont_keyunit: '', // 디비 계약 유닛
-  // cont_houseunit: '', // 디비 동호 유닛
-
-  // contractor
-  name: '', // 7
-  birth_date: null as string | Date | null, // 8
-  gender: '', // 9
-  is_registed: false, // 10
-  status: null as null | string, // 1
-  reservation_date: null as string | Date | null, // 6-1
-  contract_date: null as string | Date | null, // 6-2
-  note: '', // 28
-
-  // address
-  id_zipcode: '', // 20
-  id_address1: '', // 21
-  id_address2: '', // 22
-  id_address3: '', // 23
-  dm_zipcode: '', // 24
-  dm_address1: '', // 25
-  dm_address2: '', // 26
-  dm_address3: '', // 27
-
-  // contact
-  cell_phone: '', // 11
-  home_phone: '', // 12
-  other_phone: '', // 13
-  email: '', // 14
-
-  // proCash
-  payment: null as number | null,
-  deal_date: null as string | Date | null, // 15
-  income: null as number | null, // 16
-  bank_account: null as number | null, // 17
-  trader: '', // 18
-  installment_order: null as number | null, // 19
+  contractor: '',
+  status: '',
+  refund_amount: null as number | null,
+  refund_account_bank: '',
+  refund_account_number: '',
+  refund_account_depositor: '',
+  request_date: null as string | null,
+  completion_date: null as string | null,
+  note: '',
 })
 
-// watch(form, nVal => {
-//   if (nVal.keyunit_code)
-//     form.serial_number = `${nVal.keyunit_code}-${form.order_group}`
-//   if (nVal.order_group)
-//     form.serial_number = `${form.keyunit_code}-${nVal.order_group}`
-//   if (!nVal.status) form.order_group = null
-//   if (!nVal.order_group) form.unit_type = null
-//   if (!nVal.unit_type) form.keyunit = null
-//   if (!nVal.keyunit) form.houseunit = null
-//
-//   formsCheck.value = false
-// })
-//
-// watch(props, nVal => {
-//   if (nVal.contract) {
-//     // contract
-//     form.pk = props.contract.pk
-//     form.order_group = props.contract.order_group
-//     form.order_group_sort = props.contract.order_group_desc.sort
-//     form.unit_type = props.contract.unit_type
-//     form.serial_number = props.contract.serial_number
-//     form.keyunit = props.contract.keyunit.pk
-//     form.keyunit_code = props.contract.keyunit.unit_code
-//     form.houseunit = props.contract.keyunit.houseunit
-//       ? props.contract.keyunit.houseunit.pk
-//       : ''
-//
-//     // contractor
-//     form.name = props.contract.contractor.name
-//     form.birth_date = new Date(props.contract.contractor.birth_date)
-//     form.gender = props.contract.contractor.gender // 9
-//     form.is_registed = props.contract.contractor.is_registed // 10
-//     form.status = props.contract.contractor.status
-//     form.reservation_date =
-//       props.contract.contractor.reservation_date === null
-//         ? null
-//         : new Date(props.contract.contractor.reservation_date)
-//     form.contract_date =
-//       props.contract.contractor.contract_date === null
-//         ? null
-//         : new Date(props.contract.contractor.contract_date)
-//     form.note = props.contract.contractor.note
-//
-//     // address
-//     if (nVal.contract.contractor.status === '2') {
-//       // form.addressPk = props.contract.contractor.contractoraddress.pk
-//       form.id_zipcode = props.contract.contractor.contractoraddress.id_zipcode // 20
-//       form.id_address1 = props.contract.contractor.contractoraddress.id_address1 // 21
-//       form.id_address2 = props.contract.contractor.contractoraddress.id_address2 // 22
-//       form.id_address3 = props.contract.contractor.contractoraddress.id_address3 // 23
-//       form.dm_zipcode = props.contract.contractor.contractoraddress.dm_zipcode // 24
-//       form.dm_address1 = props.contract.contractor.contractoraddress.dm_address1
-//       form.dm_address2 = props.contract.contractor.contractoraddress.dm_address2 // 26
-//       form.dm_address3 = props.contract.contractor.contractoraddress.dm_address3 // 27
-//     }
-//     // contact
-//     // form.contactPk = props.contract.contractor.contractorcontact.pk //
-//     form.cell_phone = props.contract.contractor.contractorcontact.cell_phone
-//     form.home_phone = props.contract.contractor.contractorcontact.home_phone // 11 // 12
-//     form.other_phone = props.contract.contractor.contractorcontact.other_phone // 13
-//     form.email = props.contract.contractor.contractorcontact.email // 14
-//   }
-//   nextTick(() => (formsCheck.value = true))
-// })
-//
-// const contractStore = useContract()
-// const getOrderGroups = computed(() => contractStore.getOrderGroups)
-// const getKeyUnits = computed(() => contractStore.getKeyUnits)
-// const getHouseUnits = computed(() => contractStore.getHouseUnits)
-//
-// const projectDataStore = useProjectData()
-// const getTypes = computed(() => projectDataStore.getTypes)
-//
-// const proCashStore = useProCash()
-// const allProBankAccountList = computed(() => proCashStore.allProBankAccountList)
-//
-// const paymentStore = usePayment()
-// const payOrderList = computed(() => paymentStore.payOrderList)
-//
-// const contLabel = computed(() => (form.status !== '1' ? '계약' : '청약'))
-// const isContract = computed(() => form.status === '2')
-// const noStatus = computed(
-//   () => (form.status === null || form.status === '') && !props.contract,
-// )
-// const downPayOrder = computed(() =>
-//   payOrderList.value.filter((po: PayOrder) => po.pay_time && po.pay_time <= 1),
-// )
-//
-// const downPayments = computed(() =>
-//   props.contract && props.contract.payments.length > 0
-//     ? props.contract.payments.filter(
-//         (p: Payment) => p.installment_order.pay_time === 1,
-//       )
-//     : [],
-// )
-//
-// const allowedPeriod = (paidDate: string) =>
-//   useAccount().superAuth || diffDate(paidDate) <= 90
-//
-// const payUpdate = (payment: Payment) => {
-//   if (allowedPeriod(payment.deal_date)) {
-//     form.payment = payment.pk
-//     form.deal_date = new Date(payment.deal_date)
-//     form.income = payment.income
-//     form.bank_account = payment.bank_account
-//     form.trader = payment.trader
-//     form.installment_order = payment.installment_order.pk
-//   } else {
-//     alertModal.value.callModal(
-//       null,
-//       '거래일로부터 90일이 경과한 입력 데이터는 수정할 수 없습니다. 관리자에게 문의바랍니다.',
-//     )
-//   }
-// }
-//
-// const payReset = () => {
-//   form.payment = null
-//   form.deal_date = null
-//   form.income = null
-//   form.bank_account = null
-//   form.trader = ''
-//   form.installment_order = null
-// }
-//
-// const getOGSort = (pk: number): string =>
-//   pk ? getOrderGroups.value.filter(o => o.value == pk)[0].sort : ''
-//
-// const getKUCode = (pk: number) =>
-//   getKeyUnits.value.filter(k => k.value === pk).map(k => k.label)[0]
-//
-// const setOGSort = () => {
-//   nextTick(() => {
-//     const pk = Number(form.order_group)
-//     form.order_group_sort = getOGSort(pk)
-//   })
-// }
-//
-// const setKeyCode = () => {
-//   nextTick(() => {
-//     form.houseunit = null
-//     form.keyunit_code = form.keyunit ? getKUCode(Number(form.keyunit)) : ''
-//   })
-// }
-//
-// const unitReset = () => {
-//   nextTick(() => {
-//     if (form.status === null) formReset()
-//   })
-// }
-//
-// const typeSelect = () => {
-//   nextTick(() => {
-//     emit('type-select', form.unit_type)
-//     form.keyunit = null
-//     form.houseunit = null
-//   })
-// }
-//
+const formsCheck = computed(() => {
+  if (props.succession) {
+    const a = form.status === props.succession.status
+    const b =
+      !form.refund_amount ||
+      form.refund_amount === props.succession.refund_amount
+    const c = form.refund_account_bank === props.succession.refund_account_bank
+    const d =
+      form.refund_account_number === props.succession.refund_account_number
+    const e =
+      form.refund_account_depositor ===
+      props.succession.refund_account_depositor
+    const f = form.request_date === props.succession.request_date
+    const g = form.completion_date === props.succession.completion_date
+    const h = form.note === props.succession.note
+    return a && b && c && d && e && f && g && h
+  } else return false
+})
+
+watch(form, val => {
+  if (val.request_date) form.request_date = dateFormat(val.request_date)
+  if (val.completion_date)
+    form.completion_date = dateFormat(val.completion_date)
+})
+
 const onSubmit = (event: Event) => {
-  if (isValidate(event)) {
-    validated.value = true
-  } else {
-    if (write_contract.value) confirmModal.value.callModal()
-    else alertModal.value.callModal()
-  }
+  if (write_contract.value) {
+    if (isValidate(event)) {
+      validated.value = true
+    } else emit('on-submit', { ...form })
+  } else alertModal.value.callModal()
 }
 
-// const modalAction = () => {
-//   form.birth_date = form.birth_date ? dateFormat(form.birth_date) : null
-//   form.reservation_date = form.reservation_date
-//     ? dateFormat(form.reservation_date)
-//     : null
-//   form.contract_date = form.contract_date
-//     ? dateFormat(form.contract_date)
-//     : null
-//   form.deal_date = form.deal_date ? dateFormat(form.deal_date) : null
-//   if (!props.contract) emit('on-create', form)
-//   else emit('on-update', form)
-//   validated.value = false
-//   confirmModal.value.close()
-//   nextTick(() => (formsCheck.value = true))
-// }
-//
-// const deleteContract = () => {
-//   if (useAccount().superAuth) delModal.value.callModal()
-//   else alertModal.value.callModal()
-// }
-//
-// const addressCallback = (data: AddressData) => {
-//   const { formNum, zipcode, address1, address3 } = callAddress(data)
-//   if (formNum === 2) {
-//     form.id_zipcode = zipcode
-//     form.id_address1 = address1
-//     form.id_address2 = ''
-//     form.id_address3 = address3
-//     address21.value.$el.nextElementSibling.focus()
-//   } else if (formNum === 3) {
-//     form.dm_zipcode = zipcode
-//     form.dm_address1 = address1
-//     form.dm_address2 = ''
-//     form.dm_address3 = address3
-//     address22.value.$el.nextElementSibling.focus()
-//   }
-// }
-//
-// const toSame = () => {
-//   if (!sameAddr.value) {
-//     form.dm_zipcode = form.id_zipcode
-//     form.dm_address1 = form.id_address1
-//     form.dm_address2 = form.id_address2
-//     form.dm_address3 = form.id_address3
-//   } else {
-//     form.dm_zipcode = ''
-//     form.dm_address1 = ''
-//     form.dm_address2 = ''
-//     form.dm_address3 = ''
-//   }
-// }
+const deleteConfirm = () => {
+  if (write_contract.value) confirmModal.value.callModal()
+  else alertModal.value.callModal()
+}
 
-const searchContractor = (contor: string) => emit('search-contractor', contor)
+const modalAction = () => alert('this is ready!')
 
-// const router = useRouter()
-//
-// const formReset = () => {
-//   form.pk = null
-//   form.order_group = null
-//   form.order_group_sort = ''
-//   form.unit_type = null
-//   form.keyunit = null
-//   form.houseunit = null
-//   form.keyunit_code = ''
-//
-//   // form.contractor = null
-//   form.name = ''
-//   form.birth_date = null
-//   form.gender = ''
-//   form.is_registed = false
-//   form.status = ''
-//   form.reservation_date = null
-//   form.contract_date = null
-//   form.note = ''
-//
-//   form.payment = null
-//   form.deal_date = null
-//   form.income = null
-//   form.bank_account = null
-//   form.trader = ''
-//   form.installment_order = null
-//
-//   // form.addressPk = null
-//   form.id_zipcode = ''
-//   form.id_address1 = ''
-//   form.id_address2 = ''
-//   form.id_address3 = ''
-//   form.dm_zipcode = ''
-//   form.dm_address1 = ''
-//   form.dm_address2 = ''
-//   form.dm_address3 = ''
-//
-//   // form.contactPk = null
-//   form.cell_phone = ''
-//   form.home_phone = ''
-//   form.other_phone = ''
-//   form.email = ''
-//   contractStore.contract = null
-//   router.replace({ name: '계약 등록 관리' })
-//   nextTick(() => (formsCheck.value = true))
-// }
-//
-// defineExpose({ formReset })
+onBeforeMount(() => {
+  if (props.succession) {
+    form.pk = props.succession.pk
+    form.contractor = props.succession.contractor
+    form.status = props.succession.status
+    form.refund_amount = props.succession.refund_amount
+    form.refund_account_bank = props.succession.refund_account_bank
+    form.refund_account_number = props.succession.refund_account_number
+    form.refund_account_depositor = props.succession.refund_account_depositor
+    form.request_date = props.succession.request_date
+    form.completion_date = props.succession.completion_date
+    form.note = props.succession.note
+  } else form.contractor = props.contractor.pk
+})
 </script>
 
 <template>
@@ -365,618 +94,192 @@ const searchContractor = (contor: string) => emit('search-contractor', contor)
     :validated="validated"
     @submit.prevent="onSubmit"
   >
-    <CCardBody>
-      <ContNavigation :cont-on="contractor?.status < '3'" />
-      <ContController
-        :project="project"
-        @search-contractor="searchContractor"
-      />
-      <hr />
-      <!--        <ContractorAlert v-if="contractor" :contractor="contractor" />-->
-      <!--      {{ contract }}-->
-      <CRow class="mb-3">
-        <CFormLabel class="col-lg-2 col-form-label"> 계약자 정보</CFormLabel>
-        <CCol lg="10" class="mb-md-3 mb-lg-0">
-          <!--          <Multiselect-->
-          <!--            v-model="form.status"-->
-          <!--            :options="[-->
-          <!--              { value: '1', label: '청약' },-->
-          <!--              { value: '2', label: '계약' },-->
-          <!--            ]"-->
-          <!--            required-->
-          <!--            placeholder="-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;"-->
-          <!--            autocomplete="label"-->
-          <!--            :classes="{-->
-          <!--              search: 'form-control multiselect-search',-->
-          <!--            }"-->
-          <!--            :add-option-on="['enter' | 'tab']"-->
-          <!--            searchable-->
-          <!--            :disabled="!project"-->
-          <!--            @change="unitReset"-->
-          <!--          />-->
-          <!--          <CFormFeedback invalid>구분 항목을 선택하세요.</CFormFeedback>-->
-          {{ contractor }}
+    <CModalBody class="p-4">
+      <CRow class="mb-2">
+        <CCol xs="6">
+          <CRow>
+            <CFormLabel class="col-sm-4 col-form-label">계약자</CFormLabel>
+            <CCol sm="8">
+              <CFormSelect v-model="form.contractor" required readonly>
+                <option :value="form.contractor">
+                  {{ contractor ? contractor.name : succession.__str__ }}
+                </option>
+              </CFormSelect>
+            </CCol>
+          </CRow>
+        </CCol>
+
+        <CCol xs="6">
+          <CRow>
+            <CFormLabel class="col-sm-4 col-form-label">구분</CFormLabel>
+            <CCol sm="8" class="text-left">
+              <CFormSelect v-model="form.status" required>
+                <option value="">---------</option>
+                <option v-if="succession && succession.status < '4'" value="0">
+                  신청 취소
+                </option>
+                <option v-if="!succession || succession.status < '4'" value="3">
+                  해지 신청
+                </option>
+                <option v-if="succession" value="4">해지 완료</option>
+                <option v-if="succession" value="5">자격 상실</option>
+              </CFormSelect>
+              <small
+                v-if="form.status >= '4' && succession.status < '4'"
+                class="text-danger"
+              >
+                해지 완료, 자격 상실 처리된 계약 건은 계약상태로 되돌릴 수
+                없으므로 최종 확정된 상태에서만 진행하십시요.
+              </small>
+            </CCol>
+          </CRow>
         </CCol>
       </CRow>
 
-      <!--        <CRow class="mb-3">-->
-      <!--          <CFormLabel class="col-md-2 col-lg-1 col-form-label">-->
-      <!--            차수-->
-      <!--          </CFormLabel>-->
-      <!--          <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">-->
-      <!--            <CFormSelect-->
-      <!--              v-model="form.order_group"-->
-      <!--              required-->
-      <!--              :disabled="noStatus"-->
-      <!--              @change="setOGSort"-->
-      <!--            >-->
-      <!--              <option value="">-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;</option>-->
-      <!--              <option-->
-      <!--                v-for="og in getOrderGroups"-->
-      <!--                :key="og.value"-->
-      <!--                :value="og.value"-->
-      <!--              >-->
-      <!--                {{ og.label }}-->
-      <!--              </option>-->
-      <!--            </CFormSelect>-->
-      <!--            <CFormFeedback invalid>차수그룹을 선택하세요.</CFormFeedback>-->
-      <!--          </CCol>-->
+      <CRow class="mb-2">
+        <CCol xs="6">
+          <CRow>
+            <CFormLabel class="col-sm-4 col-form-label">
+              환불(예정)금액
+            </CFormLabel>
+            <CCol sm="8">
+              <CFormInput
+                v-model.number="form.refund_amount"
+                type="number"
+                min="0"
+                required
+                placeholder="환불(예정)금액"
+              />
+            </CCol>
+          </CRow>
+        </CCol>
 
-      <!--          <CFormLabel class="col-md-2 col-lg-1 col-form-label">-->
-      <!--            타입-->
-      <!--          </CFormLabel>-->
-      <!--          <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">-->
-      <!--            <CFormSelect-->
-      <!--              v-model="form.unit_type"-->
-      <!--              required-->
-      <!--              :disabled="form.order_group === null && !contract"-->
-      <!--              @change="typeSelect"-->
-      <!--            >-->
-      <!--              <option value="">-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;</option>-->
-      <!--              <option v-for="ut in getTypes" :key="ut.value" :value="ut.value">-->
-      <!--                {{ ut.label }}-->
-      <!--              </option>-->
-      <!--            </CFormSelect>-->
-      <!--            <CFormFeedback invalid>유니트 타입을 선택하세요.</CFormFeedback>-->
-      <!--          </CCol>-->
+        <CCol xs="6">
+          <CRow>
+            <CFormLabel class="col-sm-4 col-form-label">
+              거래은행(환불계좌)
+            </CFormLabel>
+            <CCol sm="8">
+              <CFormInput
+                v-model="form.refund_account_bank"
+                maxlength="20"
+                required
+                placeholder="거래은행(환불계좌)"
+              />
+            </CCol>
+          </CRow>
+        </CCol>
+      </CRow>
 
-      <!--          <CFormLabel class="col-md-2 col-lg-1 col-form-label">-->
-      <!--            {{ contLabel }}코드-->
-      <!--          </CFormLabel>-->
-      <!--          <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">-->
-      <!--            <CFormSelect-->
-      <!--              v-model="form.keyunit"-->
-      <!--              required-->
-      <!--              :disabled="form.unit_type === null && !contract"-->
-      <!--              @change="setKeyCode"-->
-      <!--            >-->
-      <!--              <option value="">-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;</option>-->
-      <!--              <option-->
-      <!--                v-for="ku in getKeyUnits"-->
-      <!--                :key="ku.value"-->
-      <!--                :value="ku.value"-->
-      <!--              >-->
-      <!--                {{ ku.label }}-->
-      <!--              </option>-->
-      <!--            </CFormSelect>-->
-      <!--            <CFormFeedback invalid>-->
-      <!--              {{ contLabel }}코드를 선택하세요.-->
-      <!--            </CFormFeedback>-->
-      <!--          </CCol>-->
+      <CRow class="mb-2">
+        <CCol xs="6">
+          <CRow>
+            <CFormLabel class="col-sm-4 col-form-label">
+              계좌번호(환불계좌)
+            </CFormLabel>
+            <CCol sm="8">
+              <CFormInput
+                v-model="form.refund_account_number"
+                maxlength="25"
+                required
+                placeholder="계좌번호(환불계좌)"
+              />
+            </CCol>
+          </CRow>
+        </CCol>
 
-      <!--          <CFormLabel v-if="unitSet" class="col-md-2 col-lg-1 col-form-label">-->
-      <!--            동호수-->
-      <!--          </CFormLabel>-->
-      <!--          <CCol v-if="unitSet" md="10" lg="2" class="mb-md-3 mb-lg-0">-->
-      <!--            <Multiselect-->
-      <!--              v-model="form.houseunit"-->
-      <!--              :options="getHouseUnits"-->
-      <!--              placeholder="-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;"-->
-      <!--              autocomplete="label"-->
-      <!--              :classes="{-->
-      <!--                search: 'form-control multiselect-search',-->
-      <!--              }"-->
-      <!--              :add-option-on="['enter' | 'tab']"-->
-      <!--              searchable-->
-      <!--              :disabled="form.keyunit === null && !contract"-->
-      <!--            />-->
-      <!--            <CFormFeedback invalid>동호수를 선택하세요.</CFormFeedback>-->
-      <!--          </CCol>-->
-      <!--        </CRow>-->
+        <CCol xs="6">
+          <CRow>
+            <CFormLabel class="col-sm-4 col-form-label">
+              예금주(환불계좌)
+            </CFormLabel>
+            <CCol sm="8">
+              <CFormInput
+                v-model="form.refund_account_depositor"
+                maxlength="20"
+                required
+                placeholder="예금주(환불계좌)"
+              />
+            </CCol>
+          </CRow>
+        </CCol>
+      </CRow>
 
-      <!--        <hr />-->
+      <CRow class="mb-3">
+        <CCol xs="6">
+          <CRow>
+            <CFormLabel class="col-sm-4 col-form-label"> 해지신청일</CFormLabel>
+            <CCol sm="8">
+              <DatePicker
+                v-model="form.request_date"
+                required
+                placeholder="해지신청일"
+              />
+            </CCol>
+          </CRow>
+        </CCol>
 
-      <!--        <CRow class="mb-3">-->
-      <!--          <CFormLabel class="col-md-2 col-lg-1 col-form-label">-->
-      <!--            {{ contLabel }}일자-->
-      <!--          </CFormLabel>-->
-      <!--          <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">-->
-      <!--            <DatePicker-->
-      <!--              v-show="form.status === '1'"-->
-      <!--              v-model="form.reservation_date"-->
-      <!--              v-maska="'####-##-##'"-->
-      <!--              placeholder="청약일자"-->
-      <!--              :required="form.status === '1'"-->
-      <!--              :disabled="noStatus"-->
-      <!--            />-->
-      <!--            <DatePicker-->
-      <!--              v-show="form.status !== '1'"-->
-      <!--              v-model="form.contract_date"-->
-      <!--              v-maska="'####-##-##'"-->
-      <!--              placeholder="계약일자"-->
-      <!--              :required="isContract"-->
-      <!--              :disabled="noStatus"-->
-      <!--            />-->
-      <!--          </CCol>-->
+        <CCol xs="6">
+          <CRow>
+            <CFormLabel class="col-sm-4 col-form-label">
+              해지(환불)처리일
+            </CFormLabel>
+            <CCol sm="8">
+              <DatePicker
+                v-model="form.completion_date"
+                :required="form.status === '4'"
+                placeholder="해지종결일"
+              />
+            </CCol>
+          </CRow>
+        </CCol>
+      </CRow>
 
-      <!--          <CFormLabel class="col-md-2 col-lg-1 col-form-label">-->
-      <!--            {{ contLabel }}자명-->
-      <!--          </CFormLabel>-->
-      <!--          <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">-->
-      <!--            <CFormInput-->
-      <!--              v-model="form.name"-->
-      <!--              maxlength="20"-->
-      <!--              :placeholder="`${contLabel}자명을 입력하세요`"-->
-      <!--              required-->
-      <!--              :disabled="noStatus"-->
-      <!--            />-->
-      <!--            <CFormFeedback invalid>-->
-      <!--              {{ contLabel }}자명을 입력하세요.-->
-      <!--            </CFormFeedback>-->
-      <!--          </CCol>-->
+      <CRow class="mb-2">
+        <CCol>
+          <CRow>
+            <CFormLabel class="col-sm-2 col-form-label">비고</CFormLabel>
+            <CCol sm="10">
+              <CFormTextarea v-model="form.note" placeholder="기타 특이사항" />
+            </CCol>
+          </CRow>
+        </CCol>
+      </CRow>
+    </CModalBody>
 
-      <!--          <CFormLabel class="col-md-2 col-lg-1 col-form-label">-->
-      <!--            생년월일-->
-      <!--          </CFormLabel>-->
-      <!--          <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">-->
-      <!--            <DatePicker-->
-      <!--              v-model="form.birth_date"-->
-      <!--              v-maska="'####-##-##'"-->
-      <!--              maxlength="10"-->
-      <!--              placeholder="생년월일"-->
-      <!--              :required="isContract"-->
-      <!--              :disabled="noStatus"-->
-      <!--            />-->
-      <!--            <CFormFeedback invalid>생년월일 입력하세요.</CFormFeedback>-->
-      <!--          </CCol>-->
-
-      <!--          <CCol v-show="isContract" xs="5" lg="1" class="pt-2 p-0 text-center">-->
-      <!--            <div class="form-check form-check-inline">-->
-      <!--              <input-->
-      <!--                id="male"-->
-      <!--                v-model="form.gender"-->
-      <!--                class="form-check-input"-->
-      <!--                type="radio"-->
-      <!--                value="M"-->
-      <!--                name="gender"-->
-      <!--                :required="isContract"-->
-      <!--                :disabled="!isContract"-->
-      <!--              />-->
-      <!--              <label class="form-check-label" for="male">남</label>-->
-      <!--            </div>-->
-      <!--            <div class="form-check form-check-inline">-->
-      <!--              <input-->
-      <!--                id="female"-->
-      <!--                v-model="form.gender"-->
-      <!--                class="form-check-input"-->
-      <!--                type="radio"-->
-      <!--                value="F"-->
-      <!--                name="gender"-->
-      <!--                :disabled="!isContract"-->
-      <!--              />-->
-      <!--              <label class="form-check-label" for="female">여</label>-->
-      <!--            </div>-->
-      <!--            <CFormFeedback invalid>성별을 선택하세요.</CFormFeedback>-->
-      <!--          </CCol>-->
-
-      <!--          <CCol v-show="isContract && isUnion" xs="6" lg="2" class="pt-2 p-0">-->
-      <!--            <CFormSwitch-->
-      <!--              id="is_registed"-->
-      <!--              v-model="form.is_registed"-->
-      <!--              label="인가등록여부"-->
-      <!--              :disabled="!isContract"-->
-      <!--            />-->
-      <!--          </CCol>-->
-      <!--        </CRow>-->
-
-      <!--        <CRow class="mb-3">-->
-      <!--          <CFormLabel class="col-md-2 col-lg-1 col-form-label">-->
-      <!--            휴대전화-->
-      <!--          </CFormLabel>-->
-      <!--          <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">-->
-      <!--            <input-->
-      <!--              v-model="form.cell_phone"-->
-      <!--              v-maska="['###-###-####', '###-####-####']"-->
-      <!--              class="form-control"-->
-      <!--              maxlength="13"-->
-      <!--              placeholder="휴대전화번호를 선택하세요"-->
-      <!--              required-->
-      <!--              :disabled="noStatus"-->
-      <!--            />-->
-      <!--            <CFormFeedback invalid>휴대전화번호를 입력하세요.</CFormFeedback>-->
-      <!--          </CCol>-->
-
-      <!--          <CFormLabel class="col-md-2 col-lg-1 col-form-label">-->
-      <!--            집전화-->
-      <!--          </CFormLabel>-->
-      <!--          <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">-->
-      <!--            <input-->
-      <!--              v-model="form.home_phone"-->
-      <!--              v-maska="['###-###-####', '###-####-####']"-->
-      <!--              class="form-control"-->
-      <!--              maxlength="13"-->
-      <!--              placeholder="집전화번호를 선택하세요"-->
-      <!--              :disabled="noStatus"-->
-      <!--            />-->
-      <!--          </CCol>-->
-
-      <!--          <CFormLabel class="col-md-2 col-lg-1 col-form-label">-->
-      <!--            기타 연락처-->
-      <!--          </CFormLabel>-->
-      <!--          <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">-->
-      <!--            <input-->
-      <!--              v-model="form.other_phone"-->
-      <!--              v-maska="['###-###-####', '###-####-####']"-->
-      <!--              class="form-control"-->
-      <!--              maxlength="13"-->
-      <!--              placeholder="기타 연락처를 입력하세요."-->
-      <!--              :disabled="noStatus"-->
-      <!--            />-->
-      <!--          </CCol>-->
-
-      <!--          <CFormLabel class="col-md-2 col-lg-1 col-form-label">-->
-      <!--            이메일-->
-      <!--          </CFormLabel>-->
-      <!--          <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">-->
-      <!--            <CFormInput-->
-      <!--              v-model="form.email"-->
-      <!--              type="email"-->
-      <!--              maxlength="30"-->
-      <!--              placeholder="이메일 주소를 입력하세요."-->
-      <!--              :disabled="noStatus"-->
-      <!--            />-->
-      <!--          </CCol>-->
-      <!--        </CRow>-->
-
-      <!--        <CRow class="mb-0">-->
-      <!--          <CAlert-->
-      <!--            :color="$store.state.theme === 'dark' ? 'default' : 'secondary'"-->
-      <!--            class="pb-0"-->
-      <!--          >-->
-      <!--            <CRow v-if="downPayments.length" class="mb-3">-->
-      <!--              <CCol>-->
-      <!--                <CRow-->
-      <!--                  v-for="(payment, i) in downPayments"-->
-      <!--                  :key="payment.pk"-->
-      <!--                  class="text-center mb-1"-->
-      <!--                  :class="-->
-      <!--                    form.payment === payment.pk-->
-      <!--                      ? 'text-success text-decoration-underline'-->
-      <!--                      : ''-->
-      <!--                  "-->
-      <!--                >-->
-      <!--                  <CCol>-->
-      <!--                    계약금-->
-      <!--                    <router-link-->
-      <!--                      v-c-tooltip="'전체 건별 수납 관리'"-->
-      <!--                      :to="{-->
-      <!--                        name: '건별 수납 관리',-->
-      <!--                        query: { contract: contract.pk },-->
-      <!--                      }"-->
-      <!--                    >-->
-      <!--                      납부내역-->
-      <!--                    </router-link>-->
-      <!--                    [{{ i + 1 }}]-->
-      <!--                  </CCol>-->
-      <!--                  <CCol class="text-right">{{ payment.deal_date }}</CCol>-->
-      <!--                  <CCol class="text-right">-->
-      <!--                    <router-link-->
-      <!--                      v-c-tooltip="'전체 건별 수납 관리'"-->
-      <!--                      :to="{-->
-      <!--                        name: '건별 수납 관리',-->
-      <!--                        query: { contract: contract.pk },-->
-      <!--                      }"-->
-      <!--                    >-->
-      <!--                      {{ numFormat(payment.income) }}-->
-      <!--                    </router-link>-->
-      <!--                  </CCol>-->
-      <!--                  <CCol>-->
-      <!--                    {{-->
-      <!--                      allProBankAccountList-->
-      <!--                        .filter(b => b.pk === payment.bank_account)-->
-      <!--                        .map(b => b.alias_name)[0]-->
-      <!--                    }}-->
-      <!--                  </CCol>-->
-      <!--                  <CCol>{{ payment.trader }}</CCol>-->
-      <!--                  <CCol>-->
-      <!--                    {{ payment.installment_order.__str__ }}-->
-      <!--                  </CCol>-->
-      <!--                  <CCol>-->
-      <!--                    <CButton-->
-      <!--                      type="button"-->
-      <!--                      color="success"-->
-      <!--                      size="sm"-->
-      <!--                      @click="payUpdate(payment)"-->
-      <!--                    >-->
-      <!--                      수정-->
-      <!--                    </CButton>-->
-      <!--                  </CCol>-->
-      <!--                </CRow>-->
-      <!--              </CCol>-->
-      <!--            </CRow>-->
-      <!--            <CRow>-->
-      <!--              <CFormLabel class="col-md-2 col-lg-1 col-form-label">-->
-      <!--                {{ contLabel }}금 {{ !form.payment ? '등록' : '수정' }}-->
-      <!--              </CFormLabel>-->
-      <!--              <CCol md="10" lg="2" class="mb-3 mb-lg-0">-->
-      <!--                <DatePicker-->
-      <!--                  v-model="form.deal_date"-->
-      <!--                  v-maska="'####-##-##'"-->
-      <!--                  placeholder="입금일자"-->
-      <!--                  maxlength="10"-->
-      <!--                  :disabled="noStatus"-->
-      <!--                />-->
-      <!--                &lt;!&ndash;                :required="!contract"&ndash;&gt;-->
-      <!--              </CCol>-->
-
-      <!--              <CCol md="2" class="d-none d-md-block d-lg-none"></CCol>-->
-
-      <!--              <CCol md="5" lg="2" class="mb-3 mb-lg-0">-->
-      <!--                <CFormInput-->
-      <!--                  v-model.number="form.income"-->
-      <!--                  type="number"-->
-      <!--                  min="0"-->
-      <!--                  placeholder="입금액"-->
-      <!--                  :required="form.deal_date"-->
-      <!--                  :disabled="noStatus"-->
-      <!--                />-->
-      <!--                <CFormFeedback invalid>입금액을 입력하세요.</CFormFeedback>-->
-      <!--              </CCol>-->
-
-      <!--              <CCol md="5" lg="2" class="mb-3 mb-lg-0">-->
-      <!--                <CFormSelect-->
-      <!--                  v-model="form.bank_account"-->
-      <!--                  :required="form.deal_date"-->
-      <!--                  :disabled="noStatus"-->
-      <!--                >-->
-      <!--                  <option value="">납부계좌 선택</option>-->
-      <!--                  <option-->
-      <!--                    v-for="pb in allProBankAccountList"-->
-      <!--                    :key="pb.pk"-->
-      <!--                    :value="pb.pk"-->
-      <!--                  >-->
-      <!--                    {{ pb.alias_name }}-->
-      <!--                  </option>-->
-      <!--                </CFormSelect>-->
-      <!--                <CFormFeedback invalid>납부계좌를 선택하세요.</CFormFeedback>-->
-      <!--              </CCol>-->
-
-      <!--              <CCol md="2" class="d-none d-md-block d-lg-none"></CCol>-->
-
-      <!--              <CCol md="5" lg="2" class="mb-3 mb-lg-0">-->
-      <!--                <CFormInput-->
-      <!--                  v-model="form.trader"-->
-      <!--                  maxlength="20"-->
-      <!--                  placeholder="입금자명을 입력하세요"-->
-      <!--                  :required="form.deal_date"-->
-      <!--                  :disabled="noStatus"-->
-      <!--                />-->
-      <!--                <CFormFeedback invalid>입금자명을 입력하세요.</CFormFeedback>-->
-      <!--              </CCol>-->
-      <!--              <CCol md="5" lg="2" class="mb-md-3 mb-lg-0">-->
-      <!--                <CFormSelect-->
-      <!--                  v-model="form.installment_order"-->
-      <!--                  :required="form.deal_date"-->
-      <!--                  :disabled="noStatus"-->
-      <!--                >-->
-      <!--                  <option value="">납부회차 선택</option>-->
-      <!--                  <option-->
-      <!--                    v-for="po in downPayOrder"-->
-      <!--                    :key="po.pk"-->
-      <!--                    :value="po.pk"-->
-      <!--                  >-->
-      <!--                    {{ po.__str__ }}-->
-      <!--                  </option>-->
-      <!--                </CFormSelect>-->
-      <!--                <CFormFeedback invalid>납부회차를 선택하세요.</CFormFeedback>-->
-      <!--              </CCol>-->
-
-      <!--              <CCol md="2" class="d-none d-md-block d-lg-none"></CCol>-->
-
-      <!--              <CCol v-if="form.payment" xs="3" md="2" lg="1" class="pt-2 mb-3">-->
-      <!--                <router-link to="" @click="payReset">Reset</router-link>-->
-      <!--              </CCol>-->
-      <!--            </CRow>-->
-      <!--          </CAlert>-->
-      <!--        </CRow>-->
-
-      <!--        <CRow v-show="isContract" class="mb-0">-->
-      <!--          <CFormLabel class="col-md-2 col-lg-1 col-form-label">-->
-      <!--            주민등록 주소-->
-      <!--          </CFormLabel>-->
-      <!--          <CCol md="3" lg="2" class="mb-3 mb-lg-0">-->
-      <!--            <CInputGroup>-->
-      <!--              <CInputGroupText @click="$refs.postCode.initiate(2)">-->
-      <!--                우편번호-->
-      <!--              </CInputGroupText>-->
-      <!--              <CFormInput-->
-      <!--                v-model="form.id_zipcode"-->
-      <!--                v-maska="'#####'"-->
-      <!--                maxlength="5"-->
-      <!--                placeholder="우편번호"-->
-      <!--                :required="isContract"-->
-      <!--                :disabled="!isContract"-->
-      <!--                @focus="$refs.postCode.initiate(2)"-->
-      <!--              />-->
-      <!--              <CFormFeedback invalid>우편번호를 입력하세요.</CFormFeedback>-->
-      <!--            </CInputGroup>-->
-      <!--          </CCol>-->
-
-      <!--          <CCol md="7" lg="4" class="mb-3 mb-lg-0">-->
-      <!--            <CFormInput-->
-      <!--              v-model="form.id_address1"-->
-      <!--              maxlength="35"-->
-      <!--              placeholder="주민등록 주소를 입력하세요"-->
-      <!--              :required="isContract"-->
-      <!--              :disabled="!isContract"-->
-      <!--              @focus="$refs.postCode.initiate(2)"-->
-      <!--            />-->
-      <!--            <CFormFeedback invalid>주민등록 주소를 입력하세요.</CFormFeedback>-->
-      <!--          </CCol>-->
-
-      <!--          <CCol md="2" class="d-none d-md-block d-lg-none"></CCol>-->
-
-      <!--          <CCol md="6" lg="2" class="mb-3 mb-lg-0">-->
-      <!--            <CFormInput-->
-      <!--              ref="address21"-->
-      <!--              v-model="form.id_address2"-->
-      <!--              maxlength="20"-->
-      <!--              placeholder="상세주소를 입력하세요"-->
-      <!--              :disabled="!isContract"-->
-      <!--            />-->
-      <!--            <CFormFeedback invalid>상세주소를 입력하세요.</CFormFeedback>-->
-      <!--          </CCol>-->
-      <!--          <CCol md="4" lg="2">-->
-      <!--            <CFormInput-->
-      <!--              v-model="form.id_address3"-->
-      <!--              maxlength="20"-->
-      <!--              placeholder="참고항목을 입력하세요"-->
-      <!--              :disabled="!isContract"-->
-      <!--            />-->
-      <!--          </CCol>-->
-      <!--        </CRow>-->
-
-      <!--        <CRow v-show="isContract" class="mb-0">-->
-      <!--          <CFormLabel class="col-md-2 col-lg-1 col-form-label">-->
-      <!--            우편수령 주소-->
-      <!--          </CFormLabel>-->
-      <!--          <CCol md="3" lg="2" class="mb-3 mb-lg-0">-->
-      <!--            <CInputGroup>-->
-      <!--              <CInputGroupText @click="$refs.postCode.initiate(3)">-->
-      <!--                우편번호-->
-      <!--              </CInputGroupText>-->
-      <!--              <CFormInput-->
-      <!--                v-model="form.dm_zipcode"-->
-      <!--                v-maska="'#####'"-->
-      <!--                maxlength="5"-->
-      <!--                placeholder="우편번호"-->
-      <!--                :required="isContract"-->
-      <!--                :disabled="!isContract"-->
-      <!--                @focus="$refs.postCode.initiate(3)"-->
-      <!--              />-->
-      <!--              <CFormFeedback invalid>우편번호를 입력하세요.</CFormFeedback>-->
-      <!--            </CInputGroup>-->
-      <!--          </CCol>-->
-
-      <!--          <CCol md="7" lg="4" class="mb-3 mb-lg-0">-->
-      <!--            <CFormInput-->
-      <!--              v-model="form.dm_address1"-->
-      <!--              maxlength="50"-->
-      <!--              placeholder="우편물 수령 주소를 입력하세요"-->
-      <!--              :required="isContract"-->
-      <!--              :disabled="!isContract"-->
-      <!--              @focus="$refs.postCode.initiate(3)"-->
-      <!--            />-->
-      <!--            <CFormFeedback invalid>-->
-      <!--              우편물 수령 주소를 입력하세요.-->
-      <!--            </CFormFeedback>-->
-      <!--          </CCol>-->
-
-      <!--          <CCol md="2" class="d-none d-md-block d-lg-none"></CCol>-->
-
-      <!--          <CCol md="6" lg="2" class="mb-3 mb-lg-0">-->
-      <!--            <CFormInput-->
-      <!--              ref="address22"-->
-      <!--              v-model="form.dm_address2"-->
-      <!--              maxlength="30"-->
-      <!--              placeholder="상세주소를 입력하세요"-->
-      <!--              :disabled="!isContract"-->
-      <!--            />-->
-      <!--            <CFormFeedback invalid>상세주소를 입력하세요.</CFormFeedback>-->
-      <!--          </CCol>-->
-      <!--          <CCol md="4" lg="2">-->
-      <!--            <CFormInput-->
-      <!--              v-model="form.dm_address3"-->
-      <!--              maxlength="30"-->
-      <!--              placeholder="참고항목을 입력하세요"-->
-      <!--              :disabled="!isContract"-->
-      <!--            />-->
-      <!--          </CCol>-->
-
-      <!--          <CCol md="2" class="d-none d-md-block d-lg-none"></CCol>-->
-
-      <!--          <CCol md="10" lg="1" class="pt-2 mb-3">-->
-      <!--            <CFormCheck-->
-      <!--              id="to-same"-->
-      <!--              v-model="sameAddr"-->
-      <!--              label="상동"-->
-      <!--              :disabled="!isContract || !form.id_zipcode"-->
-      <!--              @click="toSame"-->
-      <!--            />-->
-      <!--          </CCol>-->
-      <!--        </CRow>-->
-
-      <!--        <CRow class="mb-3">-->
-      <!--          <CFormLabel class="col-md-2 col-lg-1 col-form-label">-->
-      <!--            비고-->
-      <!--          </CFormLabel>-->
-      <!--          <CCol md="10" lg="11" class="mb-md-3 mb-lg-0">-->
-      <!--            <CFormTextarea-->
-      <!--              v-model="form.note"-->
-      <!--              placeholder="기타 특이사항"-->
-      <!--              :disabled="noStatus"-->
-      <!--            />-->
-      <!--          </CCol>-->
-      <!--        </CRow>-->
-    </CCardBody>
-
-    <CCardFooter class="text-right">
-      <CButton type="button" color="light" @click="formReset"> 취소</CButton>
-      <CButton
-        v-if="contract"
-        type="button"
-        color="danger"
-        @click="deleteContract"
-      >
-        삭제
+    <CModalFooter>
+      <CButton type="button" color="light" @click="emit('close')">
+        닫기
       </CButton>
-      <CButton
-        type="submit"
-        :color="contract ? 'success' : 'primary'"
-        :disabled="formsCheck"
-      >
-        <CIcon name="cil-check-circle" />
-        저장
-      </CButton>
-    </CCardFooter>
+      <slot name="footer">
+        <CButton
+          type="submit"
+          :color="succession ? 'success' : 'primary'"
+          :disabled="formsCheck"
+        >
+          저장
+        </CButton>
+        <CButton
+          v-if="succession"
+          type="button"
+          color="danger"
+          @click="deleteConfirm"
+        >
+          삭제
+        </CButton>
+      </slot>
+    </CModalFooter>
   </CForm>
 
-  <!--  <DaumPostcode ref="postCode" @addressCallback="addressCallback" />-->
-
-  <!--  <ConfirmModal ref="delModal">-->
-  <!--    <template #header>프로젝트정보 삭제</template>-->
-  <!--    <template #default>현재 삭제 기능이 구현되지 않았습니다.</template>-->
-  <!--    <template #footer>-->
-  <!--      <CButton color="danger" disabled="">삭제</CButton>-->
-  <!--    </template>-->
-  <!--  </ConfirmModal>-->
-
-  <!--  <ConfirmModal ref="confirmModal">-->
-  <!--    <template #header> {{ contLabel }} 정보 등록</template>-->
-  <!--    <template #default>-->
-  <!--      {{ contLabel }} 정보 {{ contract ? '수정등록' : '신규등록' }}을-->
-  <!--      진행하시겠습니까?-->
-  <!--    </template>-->
-  <!--    <template #footer>-->
-  <!--      <CButton-->
-  <!--        :color="contract ? 'success' : 'primary'"-->
-  <!--        :disabled="formsCheck"-->
-  <!--        @click="modalAction"-->
-  <!--      >-->
-  <!--        저장-->
-  <!--      </CButton>-->
-  <!--    </template>-->
-  <!--  </ConfirmModal>-->
+  <ConfirmModal ref="confirmModal">
+    <template #header> 계약 해지 정보 - [삭제]</template>
+    <template #default>
+      삭제 후 복구할 수 없습니다. 해당 건별 수납 정보 삭제를 진행하시겠습니까?
+    </template>
+    <template #footer>
+      <CButton color="danger" @click="modalAction">삭제</CButton>
+    </template>
+  </ConfirmModal>
 
   <AlertModal ref="alertModal" />
 </template>

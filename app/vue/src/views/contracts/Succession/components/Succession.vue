@@ -25,7 +25,7 @@ const callFormModal = () => {
   emit('get-succession', props.succession.pk)
   router.push({
     name: '권리 의무 승계',
-    query: { contractor: props.succession.contractor },
+    query: { contractor: props.succession.seller.pk },
   })
   successionFormModal.value.callModal()
 }
@@ -72,7 +72,7 @@ const onSubmit = (payload: Succession) => {
   </CTableDataCell>
 
   <FormModal ref="successionFormModal" size="lg">
-    <template #header>계약 해지 수정 등록</template>
+    <template #header>권리 의무 승계 수정 등록</template>
     <template #default>
       <SuccessionForm
         :succession="succession"

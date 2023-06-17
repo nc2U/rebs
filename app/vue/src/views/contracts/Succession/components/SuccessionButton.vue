@@ -39,7 +39,7 @@ const onSubmit = (payload: Succession) => {
   </CAlert>
 
   <FormModal ref="successionFormModal" size="lg">
-    <template #header>권리 의무 승계 등록</template>
+    <template #header>권리 의무 승계 신규 등록</template>
     <template #default>
       <ReleaseForm
         :contractor="contractor"
