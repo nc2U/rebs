@@ -13,7 +13,6 @@ import ContController from './components/ContController.vue'
 import SuccessionButton from './components/SuccessionButton.vue'
 import TableTitleRow from '@/components/TableTitleRow.vue'
 import SuccessionList from './components/SuccessionList.vue'
-// import SuccessionForm from './components/SuccessionForm.vue'
 
 const page = ref(1)
 
@@ -117,11 +116,5 @@ onBeforeMount(() => {
       />
       <SuccessionList />
     </CCardBody>
-    <!--    <SuccessionForm-->
-    <!--      :project="project"-->
-    <!--      :contract="contract"-->
-    <!--      :contractor="contractor"-->
-    <!--      @search-contractor="searchContractor"-->
-    <!--    />-->
   </ContentBody>
 </template>
