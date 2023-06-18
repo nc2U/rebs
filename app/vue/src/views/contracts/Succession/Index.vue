@@ -79,9 +79,9 @@ const searchContractor = (search: string) => {
 
 const onSubmit = (payload: Succession) => {
   const projId = project.value || initProjId.value
-  if (!payload.pk)
-    alert('create!') // createSuccession({ project: projId, ...payload })
-  else alert('update!') // updateSuccession({ page: page.value, project: projId, ...payload })
+  if (!payload.pk) alert('create! ready!!')
+  // createSuccession({ project: projId, ...payload })
+  else alert('update! ready!!') // updateSuccession({ page: page.value, project: projId, ...payload })
   console.log(payload)
 }
 
