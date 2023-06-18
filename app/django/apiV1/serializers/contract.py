@@ -596,8 +596,9 @@ class ContractorSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Contractor
-        fields = ('pk', 'contract', 'name', '__str__', 'birth_date', 'gender', 'is_registed', 'status',
-                  'reservation_date', 'contract_date', 'is_active', 'note', 'contractorrelease')
+        fields = ('pk', 'contract', 'name', '__str__', 'birth_date', 'gender',
+                  'is_registed', 'status', 'reservation_date', 'contract_date',
+                  'is_active', 'note', 'succession', 'contractorrelease')
 
 
 class ContractorAddressSerializer(serializers.ModelSerializer):
