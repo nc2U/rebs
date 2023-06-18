@@ -41,30 +41,30 @@ const onSubmit = (payload: Succession) => {
 </script>
 
 <template>
-  <CTableDataCell>
+  <CTableDataCell class="text-center">
     {{ succession.apply_date }}
   </CTableDataCell>
-  <CTableDataCell>
+  <CTableDataCell class="text-center">
     <router-link to="" @click="callFormModal">
       {{ succession.contract.serial_number }}
     </router-link>
   </CTableDataCell>
-  <CTableDataCell>
+  <CTableDataCell class="text-center">
     {{ succession.seller.name }}
   </CTableDataCell>
-  <CTableDataCell>
+  <CTableDataCell class="text-center">
     {{ succession.buyer.name }}
   </CTableDataCell>
-  <CTableDataCell>
+  <CTableDataCell class="text-center">
     {{ succession.trading_date }}
   </CTableDataCell>
-  <CTableDataCell class="text-primary fw-bold">
+  <CTableDataCell class="text-primary text-center fw-bold">
     {{ succession.is_approval ? '완료' : '' }}
   </CTableDataCell>
-  <CTableDataCell class="text-primary fw-bold">
+  <CTableDataCell class="text-primary text-center fw-bold">
     {{ succession.approval_date }}
   </CTableDataCell>
-  <CTableDataCell>
+  <CTableDataCell class="text-center">
     <CButton
       type="button"
       :color="buttonColor"
