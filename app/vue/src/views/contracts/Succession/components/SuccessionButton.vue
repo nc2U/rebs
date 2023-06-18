@@ -30,16 +30,15 @@ const onSubmit = (payload: Succession) => {
 
 <template>
   <CAlert :color="AlertLight" variant="solid" class="text-right">
-    <CButton
-      :color="succession && succession.pk ? 'success' : 'primary'"
-      @click="callFormModal"
-    >
-      {{ succession && succession.pk ? '수정하기' : '등록하기' }}
+    <CButton :color="succession ? 'success' : 'primary'" @click="callFormModal">
+      {{ succession ? '수정하기' : '등록하기' }}
     </CButton>
   </CAlert>
 
   <FormModal ref="successionFormModal" size="lg">
-    <template #header>권리 의무 승계 신규 등록</template>
+    <template #header>
+      권리 의무 승계 {{ succession ? '수정' : '신규' }} 등록
+    </template>
     <template #default>
       <ReleaseForm
         :contractor="contractor"
