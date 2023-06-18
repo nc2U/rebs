@@ -17,8 +17,8 @@ const getStatus = (num: string) => {
 const contractStore = useContract()
 
 const alertColor = computed(() => {
-  let aColor = 'success'
-  if (!!props.contractor.succession) aColor = 'info'
+  let aColor = 'info'
+  if (!!props.contractor.succession) aColor = 'success'
   else if (
     !!props.contractor.contractorrelease &&
     props.contractor.status >= '3'
