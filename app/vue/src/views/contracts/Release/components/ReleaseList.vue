@@ -44,7 +44,7 @@ const onSubmit = (payload: ContractRelease) => emit('on-submit', payload)
         <CTableHeaderCell>비고</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
-    <CTableBody class="text-center">
+    <CTableBody>
       <CTableRow v-for="release in contReleaseList" :key="release.pk">
         <Release
           :release="release"

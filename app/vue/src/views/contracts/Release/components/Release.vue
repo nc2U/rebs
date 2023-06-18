@@ -60,12 +60,12 @@ const onSubmit = (payload: ContractRelease) => {
 </script>
 
 <template>
-  <CTableDataCell>
+  <CTableDataCell class="text-center">
     <router-link to="" @click="callFormModal">
       {{ cutString(release.__str__, 25) }}
     </router-link>
   </CTableDataCell>
-  <CTableDataCell :class="textColor">
+  <CTableDataCell :class="textColor" class="text-center">
     {{ getStatus(release.status) }}
   </CTableDataCell>
   <CTableDataCell class="text-right">
@@ -77,12 +77,16 @@ const onSubmit = (payload: ContractRelease) => {
   <CTableDataCell class="text-left">
     {{ release.refund_account_number }}
   </CTableDataCell>
-  <CTableDataCell>{{ release.refund_account_depositor }}</CTableDataCell>
-  <CTableDataCell>{{ release.request_date }}</CTableDataCell>
-  <CTableDataCell class="text-primary">
-    <strong>{{ release.completion_date }}</strong>
+  <CTableDataCell class="text-center">
+    {{ release.refund_account_depositor }}
   </CTableDataCell>
-  <CTableDataCell>
+  <CTableDataCell class="text-center">
+    {{ release.request_date }}
+  </CTableDataCell>
+  <CTableDataCell class="fw-bold text-primary text-center">
+    {{ release.completion_date }}
+  </CTableDataCell>
+  <CTableDataCell class="text-center">
     <CButton
       type="button"
       :color="buttonColor"

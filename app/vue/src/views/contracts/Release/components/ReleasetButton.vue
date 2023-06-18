@@ -30,16 +30,15 @@ const onSubmit = (payload: ContractRelease) => {
 
 <template>
   <CAlert :color="AlertLight" variant="solid" class="text-right">
-    <CButton
-      :color="contRelease && contRelease.pk ? 'warning' : 'danger'"
-      @click="callFormModal"
-    >
-      {{ contRelease && contRelease.pk ? '수정하기' : '등록하기' }}
+    <CButton :color="contRelease ? 'warning' : 'danger'" @click="callFormModal">
+      {{ contRelease ? '수정하기' : '등록하기' }}
     </CButton>
   </CAlert>
 
   <FormModal ref="releaseFormModal" size="lg">
-    <template #header>계약 해지 신규 등록</template>
+    <template #header>
+      계약 해지 {{ contRelease ? '수정' : '신규' }} 등록
+    </template>
     <template #default>
       <ReleaseForm
         :contractor="contractor"

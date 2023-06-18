@@ -42,7 +42,7 @@ const onSubmit = (payload: SuccessType) => emit('on-submit', payload)
         <CTableHeaderCell>확인</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
-    <CTableBody class="text-center">
+    <CTableBody>
       <CTableRow v-for="succession in successionList" :key="succession.pk">
         <Succession
           :succession="succession"
