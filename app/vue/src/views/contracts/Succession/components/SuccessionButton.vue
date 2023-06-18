@@ -5,7 +5,7 @@ import { Succession } from '@/store/types/contract'
 import { AlertLight } from '@/utils/cssMixins'
 import { write_contract } from '@/utils/pageAuth'
 import FormModal from '@/components/Modals/FormModal.vue'
-import ReleaseForm from '@/views/contracts/Release/components/ReleaseForm.vue'
+import SuccessionForm from '@/views/contracts/Succession/components/SuccessionForm.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
 defineProps({ contractor: { type: Object, default: null } })
@@ -30,7 +30,11 @@ const onSubmit = (payload: Succession) => {
 
 <template>
   <CAlert :color="AlertLight" variant="solid" class="text-right">
-    <CButton :color="succession ? 'success' : 'primary'" @click="callFormModal">
+    <CButton
+      :color="succession ? 'success' : 'primary'"
+      :disabled="!contractor"
+      @click="callFormModal"
+    >
       {{ succession ? '수정하기' : '등록하기' }}
     </CButton>
   </CAlert>
@@ -40,7 +44,7 @@ const onSubmit = (payload: Succession) => {
       권리 의무 승계 {{ succession ? '수정' : '신규' }} 등록
     </template>
     <template #default>
-      <ReleaseForm
+      <SuccessionForm
         :contractor="contractor"
         :succession="succession"
         @on-submit="onSubmit"
