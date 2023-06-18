@@ -99,7 +99,10 @@ const onSubmit = (event: Event) => {
   if (write_contract.value) {
     if (isValidate(event)) {
       validated.value = true
-    } else emit('on-submit', { form, buyer })
+    } else {
+      const bData = { ...buyer }
+      emit('on-submit', { ...form, ...{ buyer: bData } })
+    }
   } else alertModal.value.callModal()
 }
 
@@ -154,6 +157,7 @@ onBeforeMount(() => {
 
     buyer.pk = props.succession.buyer.pk
     buyer.name = props.succession.buyer.name
+    buyer.birth_date = props.succession.buyer.birth_date
     buyer.gender = props.succession.buyer.gender
     buyer.id_zipcode = props.succession.buyer.id_zipcode
     buyer.id_address1 = props.succession.buyer.id_address1

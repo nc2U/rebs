@@ -4,13 +4,16 @@ import { useContract } from '@/store/pinia/contract'
 import { ContractRelease } from '@/store/types/contract'
 import { useRouter } from 'vue-router'
 import { numFormat, cutString } from '@/utils/baseMixins'
+import { write_contract } from '@/utils/pageAuth'
 import FormModal from '@/components/Modals/FormModal.vue'
 import ReleaseForm from '@/views/contracts/Release/components/ReleaseForm.vue'
+import AlertModal from '@/components/Modals/AlertModal.vue'
 
 const props = defineProps({ release: { type: Object, default: null } })
 const emit = defineEmits(['on-submit', 'get-release'])
 
 const releaseFormModal = ref()
+const releaseAlertModal = ref()
 
 const contractStore = useContract()
 const contractor = computed(() => contractStore.contractor)
@@ -45,7 +48,9 @@ const callFormModal = () => {
     name: '계약 해지 관리',
     query: { contractor: props.release.contractor },
   })
-  releaseFormModal.value.callModal()
+
+  if (write_contract.value) releaseFormModal.value.callModal()
+  else releaseAlertModal.value.callModal()
 }
 
 const onSubmit = (payload: ContractRelease) => {
@@ -99,4 +104,6 @@ const onSubmit = (payload: ContractRelease) => {
       />
     </template>
   </FormModal>
+
+  <AlertModal ref="releaseAlertModal" />
 </template>

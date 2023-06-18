@@ -3,13 +3,16 @@ import { ref, computed } from 'vue'
 import { useContract } from '@/store/pinia/contract'
 import { Succession } from '@/store/types/contract'
 import { useRouter } from 'vue-router'
+import { write_contract } from '@/utils/pageAuth'
 import FormModal from '@/components/Modals/FormModal.vue'
 import SuccessionForm from '@/views/contracts/Succession/components/SuccessionForm.vue'
+import AlertModal from '@/components/Modals/AlertModal.vue'
 
 const props = defineProps({ succession: { type: Object, default: null } })
 const emit = defineEmits(['on-submit', 'get-succession'])
 
 const successionFormModal = ref()
+const successionAlertModal = ref()
 
 const contractStore = useContract()
 const contractor = computed(() => contractStore.contractor)
@@ -27,7 +30,8 @@ const callFormModal = () => {
     name: '권리 의무 승계',
     query: { contractor: props.succession.seller.pk },
   })
-  successionFormModal.value.callModal()
+  if (write_contract.value) successionFormModal.value.callModal()
+  else successionAlertModal.value.callModal()
 }
 
 const onSubmit = (payload: Succession) => {
@@ -82,4 +86,6 @@ const onSubmit = (payload: Succession) => {
       />
     </template>
   </FormModal>
+
+  <AlertModal ref="successionAlertModal" />
 </template>
