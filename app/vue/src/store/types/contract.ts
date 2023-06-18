@@ -126,7 +126,8 @@ export interface Contractor {
   reservation_date: string | null
   contract_date: string | null
   note: string
-  contractorrelease: number
+  succession: number | null
+  contractorrelease: number | null
 }
 
 export interface SubsSummary {

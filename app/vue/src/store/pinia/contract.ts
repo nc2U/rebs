@@ -245,7 +245,7 @@ export const useContract = defineStore('contract', () => {
   }
 
   // state & getters
-  const succession = ref<Succession>()
+  const succession = ref<Succession | null>(null)
   const successionList = ref<Succession[]>([])
   const successionCount = ref<number>(0)
 
