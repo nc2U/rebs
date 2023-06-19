@@ -21,9 +21,9 @@ class UnitTypeAdmin(ImportExportMixin, admin.ModelAdmin):
 
 
 class UnitFloorTypeAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'project', 'start_floor', 'end_floor', 'extra_cond', 'alias_name')
+    list_display = ('id', 'project', 'sort', 'start_floor', 'end_floor', 'extra_cond', 'alias_name')
     list_display_links = ('project',)
-    list_editable = ('start_floor', 'end_floor', 'extra_cond', 'alias_name')
+    list_editable = ('sort', 'start_floor', 'end_floor', 'extra_cond', 'alias_name')
     list_filter = ('project',)
 
 
