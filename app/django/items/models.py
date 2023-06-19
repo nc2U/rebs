@@ -31,6 +31,7 @@ class UnitType(models.Model):
 
 class UnitFloorType(models.Model):  # 층별 타입
     project = models.ForeignKey('project.Project', on_delete=models.CASCADE, verbose_name='프로젝트', related_name='floors')
+    sort = models.CharField('타입종류', max_length=1, choices=UnitType.SORT_CHOICES)
     start_floor = models.PositiveIntegerField('시작 층')
     end_floor = models.PositiveIntegerField('종료 층')
     extra_cond = models.CharField('방향/위치', max_length=20, blank=True,
