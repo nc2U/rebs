@@ -17,14 +17,16 @@ const onDeleteFloor = (pk: number) => emit('on-delete', pk)
 <template>
   <CTable hover responsive>
     <colgroup>
-      <col width="23%" />
-      <col width="23%" />
-      <col width="23%" />
-      <col width="23%" />
-      <col width="8%" />
+      <col width="18%" />
+      <col width="18%" />
+      <col width="18%" />
+      <col width="18%" />
+      <col width="18%" />
+      <col width="10%" />
     </colgroup>
     <CTableHead :color="TableSecondary" class="text-center">
       <CTableRow>
+        <CTableHeaderCell>타입종류</CTableHeaderCell>
         <CTableHeaderCell>시작 층</CTableHeaderCell>
         <CTableHeaderCell>종료 층</CTableHeaderCell>
         <CTableHeaderCell>방향/위치(옵션)</CTableHeaderCell>

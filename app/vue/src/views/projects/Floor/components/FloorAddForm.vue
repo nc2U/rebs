@@ -11,6 +11,7 @@ const alertModal = ref()
 const confirmModal = ref()
 
 const form = reactive({
+  sort: '',
   start_floor: '',
   end_floor: '',
   extra_cond: '',
@@ -44,6 +45,7 @@ const modalAction = () => {
 }
 
 const resetForm = () => {
+  form.sort = ''
   form.start_floor = ''
   form.end_floor = ''
   form.extra_cond = ''
@@ -59,6 +61,18 @@ const resetForm = () => {
     @submit.prevent="onSubmit"
   >
     <CRow class="p-2">
+      <CCol md="2" class="mb-2">
+        <CFormSelect v-model="form.sort" required :disabled="disabled">
+          <option value="">---------</option>
+          <option value="1">공동주택</option>
+          <option value="2">오피스텔</option>
+          <option value="3">숙박시설</option>
+          <option value="4">지식산업센터</option>
+          <option value="5">근린생활시설</option>
+          <option value="6">기타</option>
+        </CFormSelect>
+      </CCol>
+
       <CCol md="2" class="mb-2">
         <CFormInput
           v-model.number="form.start_floor"
