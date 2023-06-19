@@ -22,7 +22,7 @@ class SimpleUnitTypeSerializer(serializers.ModelSerializer):
 class UnitFloorTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = UnitFloorType
-        fields = ('pk', 'project', 'start_floor', 'end_floor', 'extra_cond', 'alias_name')
+        fields = ('pk', 'project', 'sort', 'start_floor', 'end_floor', 'extra_cond', 'alias_name')
 
 
 class BuildingUnitSerializer(serializers.ModelSerializer):

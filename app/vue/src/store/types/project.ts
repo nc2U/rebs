@@ -93,6 +93,7 @@ export interface ExecAmountToBudget {
 export interface UnitFloorType {
   pk: number
   project: number
+  sort: '' | '1' | '2' | '3' | '4' | '5' | '6'
   start_floor: number
   end_floor: number
   extra_cond: string
