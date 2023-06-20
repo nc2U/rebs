@@ -645,6 +645,20 @@ class SuccessionSerializer(serializers.ModelSerializer):
         fields = ('pk', 'contract', 'seller', 'buyer', 'apply_date',
                   'trading_date', 'is_approval', 'approval_date', 'note')
 
+    @transaction.atomic
+    def create(self, validated_data):
+        # 1. 권리의무승계 정보 테이블 입력
+        succession = Succession.objects.create(**validated_data)
+        succession.save()
+
+    @transaction.atomic
+    def update(self, instance, validated_data):
+        # 1. 권리의무승계 정보 테이블 입력
+        instance.__dict__.update(**validated_data)
+        # instance.order_group = validated_data.get('order_group', instance.order_group)
+        # instance.unit_type = validated_data.get('unit_type', instance.unit_type)
+        instance.save()
+
 
 class SuccessionBuyerSerializer(serializers.ModelSerializer):
     class Meta:
