@@ -31,7 +31,7 @@ const form = reactive({
   apply_date: '',
   trading_date: '',
   is_approval: false,
-  approval_date: '',
+  approval_date: null as string | null,
   note: '',
 })
 
