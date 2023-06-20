@@ -1401,7 +1401,8 @@ class ExportPaymentStatus(View):
                                                 activation=True,
                                                 contractor__status=2) \
             .values('order_group', 'unit_type') \
-            .annotate(num_cont=Count('order_group'))
+            .annotate(conts_num=Count('order_group')) \
+            .annotate(price_sum=Sum('contractprice__price'))
 
         paid_sum_list = ProjectCashBook.objects.filter(project=project,
                                                        income__isnull=False,
@@ -1427,7 +1428,11 @@ class ExportPaymentStatus(View):
 
         def get_cont_num(og, ut):
             num = [o for o in cont_num_list if o.get('order_group') == og and o.get('unit_type') == ut]
-            return num[0].get('num_cont') if num else 0
+            return num[0].get('conts_num') if num else 0
+
+        def get_price_sum(og, ut):
+            sum = [o for o in cont_num_list if o.get('order_group') == og and o.get('unit_type') == ut]
+            return sum[0].get('price_sum') if sum else 0
 
         def get_paid_sum(og, ut):
             sum = [o for o in paid_sum_list if o.get('order_group') == og and o.get('unit_type') == ut]
@@ -1454,7 +1459,7 @@ class ExportPaymentStatus(View):
                 ut_name = get_obj_name(row[1], unit_type)
 
                 cont_num = get_cont_num(row[0], row[1])
-                cont_sum = cont_num * row[2]
+                cont_sum = get_price_sum(row[0], row[1])  # cont_num * row[2] ## 계약세대수 * 단가평균
                 paid_sum = get_paid_sum(row[0], row[1])
 
                 if col_num == 0 and first_type == row[1]:
@@ -1481,7 +1486,7 @@ class ExportPaymentStatus(View):
         worksheet.set_row(row_num, 23)
 
         total_num = sum([n[3] for n in rows])
-        total_cont_num = sum([n.get('num_cont') for n in cont_num_list])
+        total_cont_num = sum([n.get('conts_num') for n in cont_num_list])
         total_paid_sum = sum([s.get('paid_sum') for s in paid_sum_list])
         total_budget = sum([n[4] for n in rows])
 
