@@ -281,7 +281,7 @@ export const useContract = defineStore('contract', () => {
   ) => {
     const { project, pk, ...dbData } = payload
     return api
-      .post(`/succession/${pk}/`, dbData)
+      .put(`/succession/${pk}/`, dbData)
       .then(() =>
         fetchSuccessionList(project, dbData.page).then(() => message()),
       )
