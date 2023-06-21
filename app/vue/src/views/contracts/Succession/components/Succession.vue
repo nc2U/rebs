@@ -30,8 +30,11 @@ const callFormModal = () => {
     name: '권리 의무 승계',
     query: { contractor: props.succession.seller.pk },
   })
-  if (write_contract.value) successionFormModal.value.callModal()
-  else successionAlertModal.value.callModal()
+  setTimeout(() => {
+    if (contractor.value)
+      if (write_contract.value) successionFormModal.value.callModal()
+      else successionAlertModal.value.callModal()
+  }, 300)
 }
 
 const onSubmit = (payload: Succession) => {

@@ -145,10 +145,10 @@ const toSame = () => {
 }
 
 onBeforeMount(() => {
+  form.contract = props.contractor.contract
+  form.seller = props.contractor.pk
   if (props.succession) {
     form.pk = props.succession.pk
-    form.contract = props.succession.contract.pk
-    form.seller = props.succession.seller.pk
     form.apply_date = props.succession.apply_date
     form.trading_date = props.succession.trading_date
     form.is_approval = props.succession.is_approval
