@@ -81,8 +81,8 @@ const searchContractor = (search: string) => {
 const onSubmit = (payload: Succession) => {
   const projId = project.value || initProjId.value
   payload.contract.serial_number = contract.value?.serial_number || ''
-  // if (!payload.pk) createSuccession({ project: projId, ...payload })
-  // else updateSuccession({ page: page.value, project: projId, ...payload })
+  if (!payload.pk) createSuccession({ project: projId, ...payload })
+  else updateSuccession({ page: page.value, project: projId, ...payload })
   console.log({ project: projId, ...payload })
 }
 

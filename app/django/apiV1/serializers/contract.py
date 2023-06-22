@@ -636,9 +636,9 @@ class BuyerInSuccessionSerializer(serializers.ModelSerializer):
 
 
 class SuccessionSerializer(serializers.ModelSerializer):
-    contract = ContractInSuccessionSerializer()
-    seller = ContractorInSuccessionSerializer()
-    buyer = BuyerInSuccessionSerializer()
+    contract = ContractInSuccessionSerializer(read_only=True)
+    seller = ContractorInSuccessionSerializer(read_only=True)
+    buyer = BuyerInSuccessionSerializer(read_only=True)
 
     class Meta:
         model = Succession
