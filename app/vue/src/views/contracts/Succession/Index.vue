@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { ref, computed, onBeforeMount, watch } from 'vue'
-import { pageTitle, navMenu } from '@/views/contracts/_menu/headermixin2'
+import { computed, onBeforeMount, ref, watch } from 'vue'
+import { navMenu, pageTitle } from '@/views/contracts/_menu/headermixin2'
 import { useProject } from '@/store/pinia/project'
 import { useContract } from '@/store/pinia/contract'
 import { useRoute, useRouter } from 'vue-router'
@@ -25,6 +25,7 @@ const downloadUrl = computed(
 )
 
 const contractStore = useContract()
+const contract = computed(() => contractStore.contract)
 const contractor = computed(() => contractStore.contractor)
 
 const fetchContract = (cont: number) => contractStore.fetchContract(cont)
@@ -79,8 +80,9 @@ const searchContractor = (search: string) => {
 
 const onSubmit = (payload: Succession) => {
   const projId = project.value || initProjId.value
-  if (!payload.pk) createSuccession({ project: projId, ...payload })
-  else updateSuccession({ page: page.value, project: projId, ...payload })
+  payload.contract.serial_number = contract.value?.serial_number || ''
+  // if (!payload.pk) createSuccession({ project: projId, ...payload })
+  // else updateSuccession({ page: page.value, project: projId, ...payload })
   console.log({ project: projId, ...payload })
 }
 
@@ -111,6 +113,9 @@ onBeforeMount(() => {
         :contractor="contractor"
         @on-submit="onSubmit"
       />
+      {{ contractor }}
+      <hr />
+      {{ contract }}
       <TableTitleRow
         title="승계 진행 건 목록"
         excel

@@ -26,13 +26,21 @@ const confirmModal = ref()
 const validated = ref(false)
 const form = reactive({
   pk: undefined,
-  contract: null,
-  seller: null,
   apply_date: '',
   trading_date: '',
   is_approval: false,
   approval_date: null as string | null,
   note: '',
+})
+
+const contract = reactive({
+  pk: undefined,
+  serial_number: '',
+})
+
+const seller = reactive({
+  pk: undefined,
+  name: '',
 })
 
 const buyer = reactive({
@@ -56,31 +64,33 @@ const buyer = reactive({
 
 const formsCheck = computed(() => {
   if (props.succession) {
-    const a = form.contract === props.succession.contract.pk
-    const b = form.seller === props.succession.seller.pk
-    const c = form.apply_date === props.succession.apply_date
-    const d = form.trading_date === props.succession.trading_date
-    const e = form.is_approval === props.succession.is_approval
-    const f = form.approval_date === props.succession.approval_date
-    const g = form.note === props.succession.note
-    const h = buyer.name === props.succession.buyer.name
-    const i = buyer.birth_date === props.succession.buyer.birth_date
-    const j = buyer.gender === props.succession.buyer.gender
-    const k = buyer.id_zipcode === props.succession.buyer.id_zipcode
-    const l = buyer.id_address1 === props.succession.buyer.id_address1
-    const m = buyer.id_address2 === props.succession.buyer.id_address2
-    const n = buyer.id_address3 === props.succession.buyer.id_address3
-    const o = buyer.dm_zipcode === props.succession.buyer.dm_zipcode
-    const p = buyer.dm_address1 === props.succession.buyer.dm_address1
-    const q = buyer.dm_address2 === props.succession.buyer.dm_address2
-    const r = buyer.dm_address3 === props.succession.buyer.dm_address3
-    const s = buyer.cell_phone === props.succession.buyer.cell_phone
-    const t = buyer.home_phone === props.succession.buyer.home_phone
-    const u = buyer.other_phone === props.succession.buyer.other_phone
-    const v = buyer.email === props.succession.buyer.email
+    const a = contract.pk === props.succession.contract.pk
+    const b = contract.serial_number === props.succession.contract.serial_number
+    const c = seller.pk === props.succession.seller.pk
+    const d = seller.name === props.succession.seller.name
+    const e = form.apply_date === props.succession.apply_date
+    const f = form.trading_date === props.succession.trading_date
+    const g = form.is_approval === props.succession.is_approval
+    const h = form.approval_date === props.succession.approval_date
+    const i = form.note === props.succession.note
+    const j = buyer.name === props.succession.buyer.name
+    const k = buyer.birth_date === props.succession.buyer.birth_date
+    const l = buyer.gender === props.succession.buyer.gender
+    const m = buyer.id_zipcode === props.succession.buyer.id_zipcode
+    const n = buyer.id_address1 === props.succession.buyer.id_address1
+    const o = buyer.id_address2 === props.succession.buyer.id_address2
+    const p = buyer.id_address3 === props.succession.buyer.id_address3
+    const q = buyer.dm_zipcode === props.succession.buyer.dm_zipcode
+    const r = buyer.dm_address1 === props.succession.buyer.dm_address1
+    const s = buyer.dm_address2 === props.succession.buyer.dm_address2
+    const t = buyer.dm_address3 === props.succession.buyer.dm_address3
+    const u = buyer.cell_phone === props.succession.buyer.cell_phone
+    const v = buyer.home_phone === props.succession.buyer.home_phone
+    const w = buyer.other_phone === props.succession.buyer.other_phone
+    const x = buyer.email === props.succession.buyer.email
     const fc = a && b && c && d && e && f && g
     const bc = h && i && j && k && l && m && n && o && p && q && r
-    const cc = s && t && u && v
+    const cc = s && t && u && v && w && x
     return fc && bc && cc
   } else return false
 })
@@ -100,8 +110,13 @@ const onSubmit = (event: Event) => {
     if (isValidate(event)) {
       validated.value = true
     } else {
+      const cData = { ...contract }
+      const sData = { ...seller }
       const bData = { ...buyer }
-      emit('on-submit', { ...form, ...{ buyer: bData } })
+      emit('on-submit', {
+        ...form,
+        ...{ contract: cData, seller: sData, buyer: bData },
+      })
     }
   } else alertModal.value.callModal()
 }
@@ -145,8 +160,9 @@ const toSame = () => {
 }
 
 onBeforeMount(() => {
-  form.contract = props.contractor.contract
-  form.seller = props.contractor.pk
+  contract.pk = props.contractor.contract
+  seller.pk = props.contractor.pk
+  seller.name = props.contractor.name
   if (props.succession) {
     form.pk = props.succession.pk
     form.apply_date = props.succession.apply_date
@@ -188,7 +204,7 @@ onBeforeMount(() => {
           <CRow>
             <CFormLabel class="col-sm-4 col-form-label">양도계약자</CFormLabel>
             <CCol sm="8">
-              <CFormSelect v-model="form.seller" required readonly>
+              <CFormSelect v-model="seller.pk" required readonly>
                 <option :value="contractor.pk">
                   {{ contractor.name }}
                 </option>
@@ -201,7 +217,7 @@ onBeforeMount(() => {
           <CRow>
             <CFormLabel class="col-sm-4 col-form-label">계약건</CFormLabel>
             <CCol sm="8" class="text-left">
-              <CFormSelect v-model="form.contract" required readonly>
+              <CFormSelect v-model="contract.pk" required readonly>
                 <option :value="contractor.contract">
                   {{ contractor.__str__ }}
                 </option>
