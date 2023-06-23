@@ -614,7 +614,32 @@ class ContractorContactSerializer(serializers.ModelSerializer):
         fields = ('pk', 'contractor', 'cell_phone', 'home_phone', 'other_phone', 'email')
 
 
+class ContractInSuccessionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Contract
+        fields = ('pk', 'serial_number')
+
+
+class SellerInSuccessionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SuccessionBuyer
+        fields = ('id', 'name')
+
+
+class BuyerInSuccessionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SuccessionBuyer
+        fields = ('id', 'name', 'birth_date', 'gender',
+                  'id_zipcode', 'id_address1', 'id_address2', 'id_address3',
+                  'dm_zipcode', 'dm_address1', 'dm_address2', 'dm_address3',
+                  'cell_phone', 'home_phone', 'other_phone', 'email')
+
+
 class SuccessionSerializer(serializers.ModelSerializer):
+    contract = ContractInSuccessionSerializer(read_only=True)
+    seller = SellerInSuccessionSerializer(read_only=True)
+    buyer = BuyerInSuccessionSerializer(read_only=True)
+
     class Meta:
         model = Succession
         fields = ('pk', 'contract', 'seller', 'buyer', 'apply_date',
@@ -624,6 +649,9 @@ class SuccessionSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         # 1. 권리의무승계 정보 테이블 입력
         instance.__dict__.update(**validated_data)
+        instance.contract = validated_data.get('contract_id', instance.contract)
+        instance.seller = validated_data.get('seller_id', instance.seller)
+        instance.buyer = validated_data.get('buyer_id', instance.buyer)
         instance.save()
 
         # 2. 양수자 데이터 업데이트
