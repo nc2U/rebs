@@ -269,15 +269,7 @@ export const useContract = defineStore('contract', () => {
       })
       .catch(err => errorHandle(err.response.data))
 
-  const createSuccession = (payload: Succession & { project: number }) => {
-    const { project, ...dbData } = payload
-    return api
-      .post(`/succession/`, dbData)
-      .then(() => fetchSuccessionList(project).then(() => message()))
-      .catch(err => errorHandle(err.response.data))
-  }
-
-  const updateSuccession = (
+  const patchSuccession = (
     payload: Succession & {
       project: number
       page: number
@@ -309,17 +301,13 @@ export const useContract = defineStore('contract', () => {
       .then(res => (buyerList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
-  const createBuyer = (payload: Buyer) =>
-    api
-      .post(`/succession-buyer/`, payload)
-      // .then(res => console.log(res.data, '==='))
+  const createBuyer = (payload: Succession & Buyer & { project: number }) => {
+    const { project, ...dbData } = payload
+    return api
+      .post(`/succession-buyer/`, dbData)
+      .then(() => fetchSuccessionList(project).then(() => message()))
       .catch(err => errorHandle(err.response.data))
-
-  const patchBuyer = (payload: Buyer & { page: number }) =>
-    api
-      .patch(`/succession-buyer/${payload.pk}/`, payload)
-      .then(() => message())
-      .catch(err => errorHandle(err.response.data))
+  }
 
   // state & getters
   const contRelease = ref<ContractRelease | null>(null)
@@ -415,8 +403,7 @@ export const useContract = defineStore('contract', () => {
     successionPages,
     fetchSuccession,
     fetchSuccessionList,
-    createSuccession,
-    updateSuccession,
+    patchSuccession,
 
     buyer,
     buyerList,
@@ -424,7 +411,6 @@ export const useContract = defineStore('contract', () => {
     fetchBuyer,
     fetchBuyerList,
     createBuyer,
-    patchBuyer,
 
     contRelease,
     contReleaseList,
