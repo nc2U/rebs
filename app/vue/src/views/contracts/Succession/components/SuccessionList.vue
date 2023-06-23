@@ -6,18 +6,13 @@ import { TableSecondary } from '@/utils/cssMixins'
 import Pagination from '@/components/Pagination'
 import Succession from '@/views/contracts/Succession/components/Succession.vue'
 
-const emit = defineEmits(['page-select', 'get-succession', 'on-submit'])
+const emit = defineEmits(['page-select', 'on-submit'])
 
 const contractStore = useContract()
-const buyerList = computed(() => contractStore.buyerList)
 const successionList = computed(() => contractStore.successionList)
 const successionPages = computed(() => contractStore.successionPages)
 
-const getBuyerName = (bPk: number) =>
-  buyerList.value.filter(b => b.pk === bPk).map(b => b.name)[0]
-
 const pageSelect = (page: number) => emit('page-select', page)
-const getSuccession = (succession: number) => emit('get-succession', succession)
 const onSubmit = (payload: SuccessType) => emit('on-submit', payload)
 </script>
 
@@ -48,12 +43,7 @@ const onSubmit = (payload: SuccessType) => emit('on-submit', payload)
     </CTableHead>
     <CTableBody>
       <CTableRow v-for="succession in successionList" :key="succession.pk">
-        <Succession
-          :succession="succession"
-          :buyer-name="getBuyerName(succession.buyer)"
-          @get-succession="getSuccession"
-          @on-submit="onSubmit"
-        />
+        <Succession :succession="succession" @on-submit="onSubmit" />
       </CTableRow>
     </CTableBody>
   </CTable>

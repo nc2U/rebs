@@ -116,12 +116,6 @@ onBeforeMount(() => {
       />
       <ContractorAlert v-if="contractor" :contractor="contractor" />
       <SuccessionButton v-if="contractor" @on-submit="onSubmit" />
-      contractor : {{ contractor }}
-      <hr />
-      succession : {{ contractStore.successionList }}
-      <hr />
-      buyer : {{ contractStore.buyerList }}
-      <hr />
       <TableTitleRow
         title="승계 진행 건 목록"
         excel

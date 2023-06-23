@@ -7,10 +7,7 @@ import FormModal from '@/components/Modals/FormModal.vue'
 import SuccessionForm from '@/views/contracts/Succession/components/SuccessionForm.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-const props = defineProps({
-  succession: { type: Object, required: true },
-  buyerName: { type: String, default: '' },
-})
+const props = defineProps({ succession: { type: Object, required: true } })
 const emit = defineEmits(['on-submit', 'get-succession'])
 
 const successionFormModal = ref()
@@ -47,14 +44,14 @@ const onSubmit = (payload: Succession) => {
   </CTableDataCell>
   <CTableDataCell class="text-center">
     <router-link to="" @click="callFormModal">
-      {{ succession.contract }}
+      {{ succession.contract.serial_number }}
     </router-link>
   </CTableDataCell>
   <CTableDataCell class="text-center">
-    {{ succession.seller }}
+    {{ succession.seller.name }}
   </CTableDataCell>
   <CTableDataCell class="text-center">
-    {{ buyerName }}
+    {{ succession.buyer.name }}
   </CTableDataCell>
   <CTableDataCell class="text-center">
     {{ succession.trading_date }}
