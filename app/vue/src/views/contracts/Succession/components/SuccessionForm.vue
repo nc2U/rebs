@@ -36,7 +36,7 @@ const form = reactive<Succession>({
 })
 
 const buyer_data = reactive<Buyer>({
-  pk: undefined,
+  id: undefined,
   name: '',
   birth_date: '',
   gender: 'M',
@@ -99,7 +99,7 @@ watch(form, val => {
 
 watch(buyer, val => {
   if (val) {
-    buyer_data.pk = val.pk
+    buyer_data.id = val.id
     buyer_data.name = val.name
     buyer_data.birth_date = val.birth_date
     buyer_data.gender = val.gender

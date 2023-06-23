@@ -634,7 +634,7 @@ class SuccessionSerializer(serializers.ModelSerializer):
 class SuccessionBuyerSerializer(serializers.ModelSerializer):
     class Meta:
         model = SuccessionBuyer
-        fields = ('pk', 'name', 'birth_date', 'gender',
+        fields = ('id', 'name', 'birth_date', 'gender',
                   'id_zipcode', 'id_address1', 'id_address2', 'id_address3',
                   'dm_zipcode', 'dm_address1', 'dm_address2', 'dm_address3',
                   'cell_phone', 'home_phone', 'other_phone', 'email')

@@ -43,11 +43,8 @@ const fetchBuyerList = (projId: number) => contractStore.fetchBuyerList(projId)
 const createBuyer = (payload: Succession & Buyer & { project: number }) =>
   contractStore.createBuyer(payload)
 
-// const createSuccession = (payload: Succession & Buyer & { project: number }) =>
-//   contractStore.createSuccession(payload)
-
 const patchSuccession = (
-  payload: Succession & { project: number; page: number },
+  payload: Succession & Buyer & { project: number; page: number },
 ) => contractStore.patchSuccession(payload)
 
 const route = useRoute()
@@ -90,8 +87,8 @@ const searchContractor = (search: string) => {
 const onSubmit = (payload: { s_data: Succession; b_data: Buyer }) => {
   const { s_data, b_data } = payload
   const dbData = { ...s_data, ...b_data }
-  if (!s_data.pk) createBuyer({ project: project.value, ...dbData })
-  else patchSuccession({ page: page.value, project: project.value, ...s_data })
+  if (!s_data.pk) createBuyer({ ...dbData, project: project.value })
+  else patchSuccession({ ...dbData, project: project.value, page: page.value })
   console.log({ project: project.value, ...dbData })
 }
 
@@ -131,7 +128,7 @@ onBeforeMount(() => {
         :url="downloadUrl"
         :disabled="true"
       />
-      <SuccessionList />
+      <SuccessionList @on-submit="onSubmit" />
     </CCardBody>
   </ContentBody>
 </template>
