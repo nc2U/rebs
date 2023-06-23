@@ -614,31 +614,31 @@ class ContractorContactSerializer(serializers.ModelSerializer):
         fields = ('pk', 'contractor', 'cell_phone', 'home_phone', 'other_phone', 'email')
 
 
-class ContractInSuccessionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Contract
-        fields = ('pk', 'serial_number')
-
-
-class ContractorInSuccessionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Contractor
-        fields = ('pk', 'name')
-
-
-class BuyerInSuccessionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = SuccessionBuyer
-        fields = ('pk', 'name', 'birth_date', 'gender',
-                  'id_zipcode', 'id_address1', 'id_address2', 'id_address3',
-                  'dm_zipcode', 'dm_address1', 'dm_address2', 'dm_address3',
-                  'cell_phone', 'home_phone', 'other_phone', 'email')
+# class ContractInSuccessionSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Contract
+#         fields = ('pk', 'serial_number')
+#
+#
+# class ContractorInSuccessionSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Contractor
+#         fields = ('pk', 'name')
+#
+#
+# class BuyerInSuccessionSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = SuccessionBuyer
+#         fields = ('pk', 'name', 'birth_date', 'gender',
+#                   'id_zipcode', 'id_address1', 'id_address2', 'id_address3',
+#                   'dm_zipcode', 'dm_address1', 'dm_address2', 'dm_address3',
+#                   'cell_phone', 'home_phone', 'other_phone', 'email')
 
 
 class SuccessionSerializer(serializers.ModelSerializer):
-    contract = ContractInSuccessionSerializer(read_only=True)
-    seller = ContractorInSuccessionSerializer(read_only=True)
-    buyer = BuyerInSuccessionSerializer(read_only=True)
+    # contract = ContractInSuccessionSerializer(read_only=True)
+    # seller = ContractorInSuccessionSerializer(read_only=True)
+    # buyer = BuyerInSuccessionSerializer(read_only=True)
 
     class Meta:
         model = Succession
