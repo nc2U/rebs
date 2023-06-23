@@ -623,7 +623,7 @@ class ContractInSuccessionSerializer(serializers.ModelSerializer):
 class SellerInSuccessionSerializer(serializers.ModelSerializer):
     class Meta:
         model = SuccessionBuyer
-        fields = ('id', 'name')
+        fields = ('pk', 'name')
 
 
 class BuyerInSuccessionSerializer(serializers.ModelSerializer):
