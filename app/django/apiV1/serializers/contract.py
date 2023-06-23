@@ -649,9 +649,9 @@ class SuccessionSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         # 1. 권리의무승계 정보 테이블 입력
         instance.__dict__.update(**validated_data)
-        instance.contract = validated_data.get('contract_id', instance.contract)
-        instance.seller = validated_data.get('seller_id', instance.seller)
-        instance.buyer = validated_data.get('buyer_id', instance.buyer)
+        # instance.contract = validated_data.get('contract_id', instance.contract)
+        # instance.seller = validated_data.get('seller_id', instance.seller)
+        # instance.buyer = validated_data.get('buyer_id', instance.buyer)
         instance.save()
 
         # 2. 양수자 데이터 업데이트
