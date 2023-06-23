@@ -278,7 +278,10 @@ export const useContract = defineStore('contract', () => {
   }
 
   const updateSuccession = (
-    payload: Succession & { project: number; page: number },
+    payload: Succession & {
+      project: number
+      page: number
+    },
   ) => {
     const { project, pk, ...dbData } = payload
     return api
@@ -309,7 +312,7 @@ export const useContract = defineStore('contract', () => {
   const createBuyer = (payload: Buyer) =>
     api
       .post(`/succession-buyer/`, payload)
-      .then(() => message())
+      // .then(res => console.log(res.data, '==='))
       .catch(err => errorHandle(err.response.data))
 
   const patchBuyer = (payload: Buyer & { page: number }) =>

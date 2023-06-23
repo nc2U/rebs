@@ -152,7 +152,7 @@ export interface Succession {
 }
 
 export interface Buyer {
-  pk: 1
+  pk?: number
   name: string
   birth_date: string
   gender: 'M' | 'F'

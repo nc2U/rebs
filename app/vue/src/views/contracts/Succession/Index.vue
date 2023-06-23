@@ -4,7 +4,7 @@ import { navMenu, pageTitle } from '@/views/contracts/_menu/headermixin2'
 import { useProject } from '@/store/pinia/project'
 import { useContract } from '@/store/pinia/contract'
 import { useRoute, useRouter } from 'vue-router'
-import { Succession } from '@/store/types/contract'
+import { Buyer, Succession } from '@/store/types/contract'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ContNavigation from '@/views/contracts/Register/components/ContNavigation.vue'
@@ -17,8 +17,9 @@ import SuccessionList from './components/SuccessionList.vue'
 const page = ref(1)
 
 const projectStore = useProject()
-const project = computed(() => projectStore.project?.pk)
-const initProjId = computed(() => projectStore.initProjId)
+const project = computed(
+  () => projectStore.project?.pk || projectStore.initProjId,
+)
 
 const downloadUrl = computed(
   () => `/excel/succession/?project=${project.value}`,
@@ -38,8 +39,13 @@ const fetchSuccession = (pk: number) => contractStore.fetchSuccession(pk)
 const fetchSuccessionList = (projId: number, page?: number) =>
   contractStore.fetchSuccessionList(projId, page)
 
+const fetchBuyerList = (projId: number) => contractStore.fetchBuyerList(projId)
+
+const createBuyer = (payload: Buyer) => contractStore.createBuyer(payload)
+
 const createSuccession = (payload: Succession & { project: number }) =>
   contractStore.createSuccession(payload)
+
 const updateSuccession = (
   payload: Succession & { project: number; page: number },
 ) => contractStore.updateSuccession(payload)
@@ -62,12 +68,15 @@ watch(contractor, val => {
 const router = useRouter()
 
 const onSelectAdd = (target: number) => {
-  if (!!target) fetchSuccessionList(target)
-  else {
+  if (!!target) {
+    fetchSuccessionList(target)
+    fetchBuyerList(target)
+  } else {
     contractStore.contract = null
     contractStore.contractor = null
     contractStore.contractorList = []
     contractStore.successionList = []
+    contractStore.buyerList = []
   }
   router.push({ name: '권리 의무 승계' })
 }
@@ -78,18 +87,23 @@ const searchContractor = (search: string) => {
   } else contractStore.contractorList = []
 }
 
-const onSubmit = (payload: Succession) => {
-  const projId = project.value || initProjId.value
-  payload.contract.serial_number = contract.value?.serial_number || ''
-  if (!payload.pk) createSuccession({ project: projId, ...payload })
-  else updateSuccession({ page: page.value, project: projId, ...payload })
-  console.log({ project: projId, ...payload })
+const onSubmit = (payload: { s_data: Succession; b_data: Buyer }) => {
+  const { b_data, s_data } = payload
+  if (!s_data.pk) {
+    createBuyer({ ...b_data }).then(res => {
+      s_data.buyer = res?.data.pk
+      createSuccession({ project: project.value, ...s_data })
+    })
+  } else
+    updateSuccession({ page: page.value, project: project.value, ...s_data })
+  console.log({ project: project.value, ...payload })
 }
 
 onBeforeMount(() => {
   if (route.query.contractor) fetchContractor(Number(route.query.contractor))
   else contractStore.contractor = null
-  fetchSuccessionList(project.value || initProjId.value)
+  fetchSuccessionList(project.value)
+  fetchBuyerList(project.value)
 })
 </script>
 
