@@ -56,7 +56,7 @@ const buyer_data = reactive<Buyer>({
 
 const formsCheck = computed(() => {
   if (props.succession && buyer.value) {
-    const a = form.buyer === props.succession.buyer
+    const a = form.buyer === props.succession.buyer.id
     const b = form.apply_date === props.succession.apply_date
     const c = form.trading_date === props.succession.trading_date
     const d = form.is_approval === props.succession.is_approval
@@ -172,16 +172,16 @@ const toSame = () => {
 onBeforeMount(() => {
   if (props.succession) {
     form.pk = props.succession.pk
-    form.contract = props.succession.contract
-    form.seller = props.succession.seller
-    form.buyer = props.succession.buyer
+    form.contract = props.succession.contract.pk
+    form.seller = props.succession.seller.pk
+    form.buyer = props.succession.buyer.id
     form.apply_date = props.succession.apply_date
     form.trading_date = props.succession.trading_date
     form.is_approval = props.succession.is_approval
     form.approval_date = props.succession.approval_date
     form.note = props.succession.note
 
-    fetchBuyer(props.succession.buyer)
+    fetchBuyer(props.succession.buyer.id)
   } else {
     form.contract = contractor.value?.contract || null
     form.seller = contractor.value?.pk || null
