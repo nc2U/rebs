@@ -5,7 +5,7 @@ import { isValidate } from '@/utils/helper'
 import { dateFormat } from '@/utils/baseMixins'
 import { maska as vMaska } from 'maska'
 import { useContract } from '@/store/pinia/contract'
-import { Buyer } from '@/store/types/contract'
+import { Succession, Buyer } from '@/store/types/contract'
 import { AddressData, callAddress } from '@/components/DaumPostcode/address'
 import DaumPostcode from '@/components/DaumPostcode/index.vue'
 import DatePicker from '@/components/DatePicker/index.vue'
@@ -23,15 +23,15 @@ const alertModal = ref()
 const confirmModal = ref()
 
 const validated = ref(false)
-const form = reactive({
+const form = reactive<Succession>({
   pk: undefined,
-  contract: null as number | null,
-  seller: null as number | null,
-  buyer: null as number | null,
+  contract: null,
+  seller: null,
+  buyer: null,
   apply_date: '',
   trading_date: '',
   is_approval: false,
-  approval_date: null as string | null,
+  approval_date: null,
   note: '',
 })
 

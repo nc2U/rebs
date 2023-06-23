@@ -26,7 +26,6 @@ const downloadUrl = computed(
 )
 
 const contractStore = useContract()
-const contract = computed(() => contractStore.contract)
 const contractor = computed(() => contractStore.contractor)
 
 const fetchContract = (cont: number) => contractStore.fetchContract(cont)
@@ -41,14 +40,15 @@ const fetchSuccessionList = (projId: number, page?: number) =>
 
 const fetchBuyerList = (projId: number) => contractStore.fetchBuyerList(projId)
 
-const createBuyer = (payload: Buyer) => contractStore.createBuyer(payload)
+const createBuyer = (payload: Succession & Buyer & { project: number }) =>
+  contractStore.createBuyer(payload)
 
-const createSuccession = (payload: Succession & { project: number }) =>
-  contractStore.createSuccession(payload)
+// const createSuccession = (payload: Succession & Buyer & { project: number }) =>
+//   contractStore.createSuccession(payload)
 
-const updateSuccession = (
+const patchSuccession = (
   payload: Succession & { project: number; page: number },
-) => contractStore.updateSuccession(payload)
+) => contractStore.patchSuccession(payload)
 
 const route = useRoute()
 watch(route, val => {
@@ -88,15 +88,11 @@ const searchContractor = (search: string) => {
 }
 
 const onSubmit = (payload: { s_data: Succession; b_data: Buyer }) => {
-  const { b_data, s_data } = payload
-  if (!s_data.pk) {
-    createBuyer({ ...b_data }).then(res => {
-      s_data.buyer = res?.data.pk
-      createSuccession({ project: project.value, ...s_data })
-    })
-  } else
-    updateSuccession({ page: page.value, project: project.value, ...s_data })
-  console.log({ project: project.value, ...payload })
+  const { s_data, b_data } = payload
+  const dbData = { ...s_data, ...b_data }
+  if (!s_data.pk) createBuyer({ project: project.value, ...dbData })
+  else patchSuccession({ page: page.value, project: project.value, ...s_data })
+  console.log({ project: project.value, ...dbData })
 }
 
 onBeforeMount(() => {
@@ -123,14 +119,17 @@ onBeforeMount(() => {
       />
       <ContractorAlert v-if="contractor" :contractor="contractor" />
       <SuccessionButton v-if="contractor" @on-submit="onSubmit" />
-      {{ contractor }}
+      contractor : {{ contractor }}
       <hr />
-      {{ contract }}
+      succession : {{ contractStore.successionList }}
+      <hr />
+      buyer : {{ contractStore.buyerList }}
+      <hr />
       <TableTitleRow
         title="승계 진행 건 목록"
         excel
         :url="downloadUrl"
-        :disabled="!project || project"
+        :disabled="true"
       />
       <SuccessionList />
     </CCardBody>
