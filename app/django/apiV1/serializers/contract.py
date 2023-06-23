@@ -624,9 +624,29 @@ class SuccessionSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         # 1. 권리의무승계 정보 테이블 입력
         instance.__dict__.update(**validated_data)
-        # instance.order_group = validated_data.get('order_group', instance.order_group)
-        # instance.unit_type = validated_data.get('unit_type', instance.unit_type)
         instance.save()
+
+        # 2. 양수자 데이터 업데이트
+        buyer_id = self.initial_data.get('id')
+        buyer = SuccessionBuyer.objects.get(pk=buyer_id)
+
+        buyer.name = self.initial_data.get('name')
+        buyer.birth_date = self.initial_data.get('birth_date')
+        buyer.gender = self.initial_data.get('gender')
+        buyer.id_zipcode = self.initial_data.get('id_zipcode')
+        buyer.id_address1 = self.initial_data.get('id_address1')
+        buyer.id_address2 = self.initial_data.get('id_address2')
+        buyer.id_address3 = self.initial_data.get('id_address3')
+        buyer.dm_zipcode = self.initial_data.get('dm_zipcode')
+        buyer.dm_address1 = self.initial_data.get('dm_address1')
+        buyer.dm_address2 = self.initial_data.get('dm_address2')
+        buyer.dm_address3 = self.initial_data.get('dm_address3')
+        buyer.cell_phone = self.initial_data.get('cell_phone')
+        buyer.home_phone = self.initial_data.get('home_phone')
+        buyer.other_phone = self.initial_data.get('other_phone')
+        buyer.email = self.initial_data.get('email')
+
+        buyer.save()
 
         return instance
 
