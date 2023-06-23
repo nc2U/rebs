@@ -620,20 +620,6 @@ class SuccessionSerializer(serializers.ModelSerializer):
         fields = ('pk', 'contract', 'seller', 'buyer', 'apply_date',
                   'trading_date', 'is_approval', 'approval_date', 'note')
 
-    # @transaction.atomic
-    # def create(self, validated_data):
-    #     # 1. 양수자 데이터 입력
-    #     b_data = self.initial_data.get('b_data')
-    #     buyer = SuccessionBuyer.objects.create(**b_data)
-    #     buyer.save()
-    #
-    #     # s_data = self.initial_data.get('s_data')
-    #     # s_data.buyer = buyer.pk
-    #     #
-    #     # # # 1. 권리의무승계 정보 테이블 입력
-    #     # succession = Succession.objects.create(**s_data)
-    #     # succession.save()
-
     @transaction.atomic
     def update(self, instance, validated_data):
         # 1. 권리의무승계 정보 테이블 입력
@@ -641,6 +627,8 @@ class SuccessionSerializer(serializers.ModelSerializer):
         # instance.order_group = validated_data.get('order_group', instance.order_group)
         # instance.unit_type = validated_data.get('unit_type', instance.unit_type)
         instance.save()
+
+        return instance
 
 
 class SuccessionBuyerSerializer(serializers.ModelSerializer):
@@ -650,6 +638,25 @@ class SuccessionBuyerSerializer(serializers.ModelSerializer):
                   'id_zipcode', 'id_address1', 'id_address2', 'id_address3',
                   'dm_zipcode', 'dm_address1', 'dm_address2', 'dm_address3',
                   'cell_phone', 'home_phone', 'other_phone', 'email')
+
+    @transaction.atomic
+    def create(self, validated_data):
+        # 1. 양수자 데이터 입력
+        buyer = SuccessionBuyer.objects.create(**validated_data)
+        buyer.save()
+
+        # 2. 권리의무승계 정보 테이블 입력
+        succession = Succession(contract_id=self.initial_data.get('contract'),
+                                seller_id=self.initial_data.get('seller'),
+                                buyer=buyer,
+                                apply_date=self.initial_data.get('apply_date'),
+                                trading_date=self.initial_data.get('trading_date'),
+                                is_approval=self.initial_data.get('is_approval'),
+                                approval_date=self.initial_data.get('approval_date'),
+                                note=self.initial_data.get('note'))
+        succession.save()
+
+        return buyer
 
 
 class ContractorReleaseSerializer(serializers.ModelSerializer):
