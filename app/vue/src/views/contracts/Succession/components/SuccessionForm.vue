@@ -55,34 +55,31 @@ const buyer_data = reactive<Buyer>({
 })
 
 const formsCheck = computed(() => {
-  if (props.succession) {
-    const a = form.contract === props.succession.contract
-    const b = form.seller === props.succession.seller
-    const c = form.buyer === props.succession.buyer
-    const d = form.apply_date === props.succession.apply_date
-    const e = form.trading_date === props.succession.trading_date
-    const f = form.is_approval === props.succession.is_approval
-    const g = form.approval_date === props.succession.approval_date
-    const h = form.note === props.succession.note
-    const i = buyer_data.name === buyer.value?.name || ''
-    const j = buyer_data.birth_date === buyer.value?.birth_date || ''
-    const k = buyer_data.gender === buyer.value?.gender || 'M'
-    const l = buyer_data.id_zipcode === buyer.value?.id_zipcode || ''
-    const m = buyer_data.id_address1 === buyer.value?.id_address1 || ''
-    const n = buyer_data.id_address2 === buyer.value?.id_address2 || ''
-    const o = buyer_data.id_address3 === buyer.value?.id_address3 || ''
-    const p = buyer_data.dm_zipcode === buyer.value?.dm_zipcode || ''
-    const q = buyer_data.dm_address1 === buyer.value?.dm_address1 || ''
-    const r = buyer_data.dm_address2 === buyer.value?.dm_address2 || ''
-    const s = buyer_data.dm_address3 === buyer.value?.dm_address3 || ''
-    const t = buyer_data.cell_phone === buyer.value?.cell_phone || ''
-    const u = buyer_data.home_phone === buyer.value?.home_phone || ''
-    const v = buyer_data.other_phone === buyer.value?.other_phone || ''
-    const w = buyer_data.email === buyer.value?.email || ''
-    const fc = a && b && c && d && e && f && g && h && i
-    const bc = j && k && l && m && n && o && p && q && r
-    const cc = s && t && u && v && w
-    return fc && bc && cc
+  if (props.succession && buyer.value) {
+    const a = form.buyer === props.succession.buyer
+    const b = form.apply_date === props.succession.apply_date
+    const c = form.trading_date === props.succession.trading_date
+    const d = form.is_approval === props.succession.is_approval
+    const e = form.approval_date === props.succession.approval_date
+    const f = form.note === props.succession.note
+    const g = buyer_data.name === buyer.value.name
+    const h = buyer_data.birth_date === buyer.value.birth_date
+    const i = buyer_data.gender === buyer.value.gender
+    const j = buyer_data.id_zipcode === buyer.value.id_zipcode
+    const k = buyer_data.id_address1 === buyer.value.id_address1
+    const l = buyer_data.id_address2 === buyer.value.id_address2
+    const m = buyer_data.id_address3 === buyer.value.id_address3
+    const n = buyer_data.dm_zipcode === buyer.value.dm_zipcode
+    const o = buyer_data.dm_address1 === buyer.value.dm_address1
+    const p = buyer_data.dm_address2 === buyer.value.dm_address2
+    const q = buyer_data.dm_address3 === buyer.value.dm_address3
+    const r = buyer_data.cell_phone === buyer.value.cell_phone
+    const s = buyer_data.home_phone === buyer.value.home_phone
+    const t = buyer_data.other_phone === buyer.value.other_phone
+    const u = buyer_data.email === buyer.value.email
+    const fc = a && b && c && d && e && f && g && h && i && j
+    const bc = k && l && m && n && o && p && q && r && s && t && u
+    return fc && bc
   } else return false
 })
 
