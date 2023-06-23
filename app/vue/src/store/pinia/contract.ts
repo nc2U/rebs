@@ -270,10 +270,7 @@ export const useContract = defineStore('contract', () => {
       .catch(err => errorHandle(err.response.data))
 
   const patchSuccession = (
-    payload: Succession & {
-      project: number
-      page: number
-    },
+    payload: Succession & Buyer & { project: number; page: number },
   ) => {
     const { project, pk, ...dbData } = payload
     return api
