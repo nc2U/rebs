@@ -14,6 +14,7 @@ import {
   SalesPrice,
   DownPayment,
   Succession,
+  Buyer,
   ContractRelease,
 } from '@/store/types/contract'
 
@@ -289,6 +290,35 @@ export const useContract = defineStore('contract', () => {
   }
 
   // state & getters
+  const buyer = ref<Buyer | null>(null)
+  const buyerList = ref<Buyer[]>([])
+
+  // actions
+  const fetchBuyer = (pk: number) =>
+    api
+      .get(`/succession-buyer/${pk}/`)
+      .then(res => (buyer.value = res.data))
+      .catch(err => errorHandle(err.response.data))
+
+  const fetchBuyerList = (project: number) =>
+    api
+      .get(`/succession-buyer/?project=${project}`)
+      .then(res => (buyerList.value = res.data.results))
+      .catch(err => errorHandle(err.response.data))
+
+  const createBuyer = (payload: Buyer) =>
+    api
+      .post(`/succession-buyer/`, payload)
+      .then(() => message())
+      .catch(err => errorHandle(err.response.data))
+
+  const patchBuyer = (payload: Buyer & { page: number }) =>
+    api
+      .patch(`/succession-buyer/${payload.pk}/`, payload)
+      .then(() => message())
+      .catch(err => errorHandle(err.response.data))
+
+  // state & getters
   const contRelease = ref<ContractRelease | null>(null)
   const contReleaseList = ref<ContractRelease[]>([])
   const contReleaseCount = ref<number>(0)
@@ -384,6 +414,14 @@ export const useContract = defineStore('contract', () => {
     fetchSuccessionList,
     createSuccession,
     updateSuccession,
+
+    buyer,
+    buyerList,
+
+    fetchBuyer,
+    fetchBuyerList,
+    createBuyer,
+    patchBuyer,
 
     contRelease,
     contReleaseList,
