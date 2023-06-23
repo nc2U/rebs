@@ -12,10 +12,7 @@ import DatePicker from '@/components/DatePicker/index.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
-const props = defineProps({
-  succession: { type: Object, default: null },
-  contractor: { type: Object, default: null },
-})
+const props = defineProps({ succession: { type: Object, default: null } })
 
 const emit = defineEmits(['on-submit', 'close'])
 
@@ -91,6 +88,7 @@ const formsCheck = computed(() => {
 
 const contStore = useContract()
 const buyer = computed(() => contStore.buyer)
+const contractor = computed(() => contStore.contractor)
 const fetchBuyer = (pk: number) => contStore.fetchBuyer(pk)
 
 watch(form, val => {
@@ -188,8 +186,8 @@ onBeforeMount(() => {
 
     fetchBuyer(props.succession.buyer)
   } else {
-    form.contract = props.contractor.contract
-    form.seller = props.contractor.pk
+    form.contract = contractor.value?.contract || null
+    form.seller = contractor.value?.pk || null
   }
 })
 </script>
@@ -207,7 +205,12 @@ onBeforeMount(() => {
           <CRow>
             <CFormLabel class="col-sm-4 col-form-label">양도계약자</CFormLabel>
             <CCol sm="8">
-              <CFormSelect v-model="form.seller" required readonly>
+              <CFormSelect
+                v-if="contractor"
+                v-model="form.seller"
+                required
+                readonly
+              >
                 <option :value="contractor.pk">
                   {{ contractor.name }}
                 </option>
@@ -220,7 +223,12 @@ onBeforeMount(() => {
           <CRow>
             <CFormLabel class="col-sm-4 col-form-label">계약건</CFormLabel>
             <CCol sm="8" class="text-left">
-              <CFormSelect v-model="form.contract" required readonly>
+              <CFormSelect
+                v-if="contractor"
+                v-model="form.contract"
+                required
+                readonly
+              >
                 <option :value="contractor.contract">
                   {{ contractor.__str__ }}
                 </option>

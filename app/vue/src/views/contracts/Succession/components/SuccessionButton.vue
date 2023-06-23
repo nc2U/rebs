@@ -8,7 +8,6 @@ import FormModal from '@/components/Modals/FormModal.vue'
 import SuccessionForm from '@/views/contracts/Succession/components/SuccessionForm.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-defineProps({ contractor: { type: Object, default: null } })
 const emit = defineEmits(['on-submit'])
 
 const successionFormModal = ref()
@@ -30,11 +29,7 @@ const onSubmit = (payload: Succession) => {
 
 <template>
   <CAlert :color="AlertLight" variant="solid" class="text-right">
-    <CButton
-      :color="succession ? 'success' : 'primary'"
-      :disabled="!contractor"
-      @click="callFormModal"
-    >
+    <CButton :color="succession ? 'success' : 'primary'" @click="callFormModal">
       {{ succession ? '수정하기' : '등록하기' }}
     </CButton>
   </CAlert>
@@ -45,7 +40,6 @@ const onSubmit = (payload: Succession) => {
     </template>
     <template #default>
       <SuccessionForm
-        :contractor="contractor"
         :succession="succession"
         @on-submit="onSubmit"
         @close="successionFormModal.close()"

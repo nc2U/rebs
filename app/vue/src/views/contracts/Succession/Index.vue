@@ -122,11 +122,7 @@ onBeforeMount(() => {
         @search-contractor="searchContractor"
       />
       <ContractorAlert v-if="contractor" :contractor="contractor" />
-      <SuccessionButton
-        v-if="contractor"
-        :contractor="contractor"
-        @on-submit="onSubmit"
-      />
+      <SuccessionButton v-if="contractor" @on-submit="onSubmit" />
       {{ contractor }}
       <hr />
       {{ contract }}

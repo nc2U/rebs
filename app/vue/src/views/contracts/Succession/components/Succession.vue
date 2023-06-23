@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
-import { useContract } from '@/store/pinia/contract'
 import { Succession } from '@/store/types/contract'
 import { useRouter } from 'vue-router'
 import { write_contract } from '@/utils/pageAuth'
@@ -14,9 +13,6 @@ const emit = defineEmits(['on-submit', 'get-succession'])
 const successionFormModal = ref()
 const successionAlertModal = ref()
 
-const contractStore = useContract()
-const contractor = computed(() => contractStore.contractor)
-
 const buttonColor = computed(() => {
   if (!props.succession.is_approval) return 'success'
   else return 'secondary'
@@ -28,12 +24,11 @@ const callFormModal = () => {
   emit('get-succession', props.succession.pk)
   router.push({
     name: '권리 의무 승계',
-    query: { contractor: props.succession.seller.pk },
+    query: { contractor: props.succession.seller },
   })
   setTimeout(() => {
-    if (contractor.value)
-      if (write_contract.value) successionFormModal.value.callModal()
-      else successionAlertModal.value.callModal()
+    if (write_contract.value) successionFormModal.value.callModal()
+    else successionAlertModal.value.callModal()
   }, 300)
 }
 
@@ -83,7 +78,6 @@ const onSubmit = (payload: Succession) => {
     <template #default>
       <SuccessionForm
         :succession="succession"
-        :contractor="contractor"
         @on-submit="onSubmit"
         @close="successionFormModal.close()"
       />
