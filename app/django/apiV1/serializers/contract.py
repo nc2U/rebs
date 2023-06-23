@@ -649,10 +649,6 @@ class SuccessionSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         # 1. 권리의무승계 정보 테이블 입력
         instance.__dict__.update(**validated_data)
-        # instance.contract = validated_data.get('contract_id', instance.contract)
-        # instance.seller = validated_data.get('seller_id', instance.seller)
-        # instance.buyer = validated_data.get('buyer_id', instance.buyer)
-        instance.save()
 
         # 2. 양수자 데이터 업데이트
         buyer_id = self.initial_data.get('id')
@@ -675,6 +671,57 @@ class SuccessionSerializer(serializers.ModelSerializer):
         buyer.email = self.initial_data.get('email')
 
         buyer.save()
+
+        is_approval = validated_data.get('is_approval')
+
+        if is_approval:
+            # # 1. 양도자(seller) 계약 해지 처리
+            # seller_id = validated_data.get('seller')
+            # seller = Contractor.objects.get(pk=seller_id)
+            # seller.contract = None  # --- contract ????? 어떻게 처리할까?
+            # seller.is_registed = False  # 인가 등록 취소
+            # seller.is_active = False  # 비활성 상태로 변경
+            # seller.status = '4'  # 해지 상태로 변경
+            # seller.save()
+            #
+            # approval_date = self.initial_data.get('approval_date')
+            #
+            # contract = Contract.objects.get(pk=seller.contract.id)
+            #
+            # # 2. 양수자(buyer) 신규 계약자 등록 및 인가 처리
+            # contract_id = validated_data.get('contract')
+            # new_contractor = Contractor(contract=contract,
+            #                             name=buyer.name,
+            #                             birth_date=buyer.birth_date,
+            #                             gender=buyer.gender,
+            #                             is_registed=True,
+            #                             status='2',
+            #                             contract_date=approval_date,
+            #                             is_active=True,
+            #                             note=self.initial_data.get('note'))
+            # # new_contractor.save()
+            # # 3. 양수자 주소 등록
+            # address = ContractorAddress(contractor=new_contractor,
+            #                             id_zipcode=buyer.id_zipcode,
+            #                             id_address1=buyer.id_address1,
+            #                             id_address2=buyer.id_address2,
+            #                             id_address3=buyer.id_address3,
+            #                             dm_zipcode=buyer.dm_zipcode,
+            #                             dm_address1=buyer.dm_address1,
+            #                             dm_address2=buyer.dm_address2,
+            #                             dm_address3=buyer.dm_address3)
+            # address.save()
+            # # 4. 양수자 연락처 등록
+            # contact = ContractorContact(contractor=new_contractor,
+            #                             cell_phone=buyer.cell_phone,
+            #                             home_phone=buyer.home_phone,
+            #                             other_phone=buyer.other_phone,
+            #                             email=buyer.email)
+            # contact.save()
+
+            pass
+
+        instance.save()
 
         return instance
 
