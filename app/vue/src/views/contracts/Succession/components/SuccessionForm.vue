@@ -533,6 +533,7 @@ onBeforeMount(() => {
             <CCol sm="8">
               <DatePicker
                 v-model="form.approval_date"
+                :required="form.is_approval"
                 placeholder="변경인가일"
               />
             </CCol>
