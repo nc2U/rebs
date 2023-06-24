@@ -598,14 +598,14 @@ class SuccessionInContractorSerializer(serializers.ModelSerializer):
 
 
 class ContractorSerializer(serializers.ModelSerializer):
-    succession = SuccessionInContractorSerializer(read_only=True)
+    successions = SuccessionInContractorSerializer(read_only=True, many=True)
     contractorrelease = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = Contractor
         fields = ('pk', 'contract', 'name', '__str__', 'birth_date', 'gender',
                   'is_registed', 'status', 'reservation_date', 'contract_date',
-                  'is_active', 'note', 'succession', 'contractorrelease')
+                  'is_active', 'note', 'successions', 'contractorrelease')
 
 
 class ContractorAddressSerializer(serializers.ModelSerializer):
