@@ -8,20 +8,17 @@ import SuccessionForm from '@/views/contracts/Succession/components/SuccessionFo
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
 const props = defineProps({ succession: { type: Object, required: true } })
-const emit = defineEmits(['on-submit', 'get-succession'])
+const emit = defineEmits(['on-submit'])
 
 const successionFormModal = ref()
 const successionAlertModal = ref()
 
-const buttonColor = computed(() => {
-  if (!props.succession.is_approval) return 'success'
-  else return 'secondary'
-})
+const done = computed(() => props.succession.is_approval)
+const buttonColor = computed(() => (!done.value ? 'success' : 'secondary'))
 
 const router = useRouter()
 
 const callFormModal = () => {
-  emit('get-succession', props.succession.pk)
   router.push({
     name: '권리 의무 승계',
     query: { contractor: props.succession.seller.pk },
@@ -46,16 +43,12 @@ const onSubmit = (payload: Succession) => {
   </CTableDataCell>
   <CTableDataCell class="text-center">
     <router-link to="" @click="callFormModal">
-      {{
-        succession.is_approval ? succession.buyer.name : succession.seller.name
-      }}
+      {{ done ? succession.buyer.name : succession.seller.name }}
     </router-link>
   </CTableDataCell>
   <CTableDataCell class="text-center">
     <router-link to="" @click="callFormModal">
-      {{
-        succession.is_approval ? succession.seller.name : succession.buyer.name
-      }}
+      {{ done ? succession.seller.name : succession.buyer.name }}
     </router-link>
   </CTableDataCell>
   <CTableDataCell class="text-center">
@@ -65,7 +58,7 @@ const onSubmit = (payload: Succession) => {
     {{ succession.trading_date }}
   </CTableDataCell>
   <CTableDataCell class="text-primary text-center fw-bold">
-    {{ succession.is_approval ? '완료' : '' }}
+    {{ done ? '완료' : '' }}
   </CTableDataCell>
   <CTableDataCell class="text-primary text-center fw-bold">
     {{ succession.approval_date }}

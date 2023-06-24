@@ -20,8 +20,6 @@ watch(props, nVal => {
 const router = useRouter()
 const setContractor = (pk: number) => {
   router.push({ name: '권리 의무 승계', query: { contractor: pk } })
-  // if (!!succession) emit('get-succession', succession)
-  // else contractStore.succession = null
 
   search.value = ''
   contractStore.contractorList = []
