@@ -83,7 +83,7 @@ const formsCheck = computed(() => {
   } else return false
 })
 
-const done = computed(() => props.succession.is_approval)
+const done = computed(() => !!props.succession && props.succession.is_approval)
 
 const contStore = useContract()
 const buyer = computed(() => contStore.buyer)
