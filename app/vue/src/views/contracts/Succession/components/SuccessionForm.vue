@@ -83,6 +83,8 @@ const formsCheck = computed(() => {
   } else return false
 })
 
+const done = computed(() => props.succession.is_approval)
+
 const contStore = useContract()
 const buyer = computed(() => contStore.buyer)
 const contractor = computed(() => contStore.contractor)
@@ -206,7 +208,9 @@ onBeforeMount(() => {
       <CRow class="mb-2">
         <CCol xs="6">
           <CRow>
-            <CFormLabel class="col-sm-4 col-form-label">양도계약자</CFormLabel>
+            <CFormLabel class="col-sm-4 col-form-label">
+              양{{ done ? '수' : '도' }}계약자
+            </CFormLabel>
             <CCol sm="8">
               <CFormSelect
                 v-if="contractor"
@@ -274,17 +278,20 @@ onBeforeMount(() => {
       </CRow>
 
       <hr />
-      <h6 class="pb-2">◼︎ 양수계약자 인적사항</h6>
+      <h6 class="pb-2">◼︎ 양{{ done ? '도' : '수' }}계약자 인적사항</h6>
 
       <CRow class="mb-2">
         <CCol xs="6">
           <CRow>
-            <CFormLabel class="col-sm-4 col-form-label">양수계약자</CFormLabel>
+            <CFormLabel class="col-sm-4 col-form-label">
+              양{{ done ? '도' : '수' }}계약자
+            </CFormLabel>
             <CCol sm="8">
               <CFormInput
                 v-model="buyer_data.name"
                 required
                 placeholder="양수계약자 성명"
+                :disabled="done"
               />
             </CCol>
           </CRow>
@@ -300,6 +307,7 @@ onBeforeMount(() => {
                 v-model="buyer_data.birth_date"
                 required
                 placeholder="생년월일"
+                :disabled="done"
               />
             </CCol>
           </CRow>
@@ -317,6 +325,7 @@ onBeforeMount(() => {
                   type="radio"
                   value="M"
                   name="gender"
+                  :disabled="done"
                 />
                 <label class="form-check-label" for="male">남성</label>
               </div>
@@ -328,6 +337,7 @@ onBeforeMount(() => {
                   type="radio"
                   value="F"
                   name="gender"
+                  :disabled="done"
                 />
                 <label class="form-check-label" for="female">여성</label>
               </div>
@@ -348,6 +358,7 @@ onBeforeMount(() => {
                 maxlength="13"
                 required
                 placeholder="휴대전화"
+                :disabled="done"
               />
             </CCol>
           </CRow>
@@ -363,6 +374,7 @@ onBeforeMount(() => {
                 class="form-control"
                 maxlength="13"
                 placeholder="집전화"
+                :disabled="done"
               />
             </CCol>
           </CRow>
@@ -380,6 +392,7 @@ onBeforeMount(() => {
                 class="form-control"
                 maxlength="13"
                 placeholder="기타연락처"
+                :disabled="done"
               />
             </CCol>
           </CRow>
@@ -393,6 +406,7 @@ onBeforeMount(() => {
                 v-model="buyer_data.email"
                 type="email"
                 placeholder="이메일"
+                :disabled="done"
               />
             </CCol>
           </CRow>
@@ -416,6 +430,7 @@ onBeforeMount(() => {
                   maxlength="5"
                   placeholder="우편번호"
                   required
+                  :disabled="done"
                   @focus="$refs.postCode.initiate(2)"
                 />
               </CInputGroup>
@@ -426,6 +441,7 @@ onBeforeMount(() => {
                 maxlength="35"
                 placeholder="주민등록 메인 주소"
                 required
+                :disabled="done"
                 @focus="$refs.postCode.initiate(2)"
               />
             </CCol>
@@ -437,6 +453,7 @@ onBeforeMount(() => {
                 ref="address21"
                 v-model="buyer_data.id_address2"
                 maxlength="20"
+                :disabled="done"
                 placeholder="상세주소(지번, 동호수)"
               />
             </CCol>
@@ -444,6 +461,7 @@ onBeforeMount(() => {
               <CFormInput
                 v-model="buyer_data.id_address3"
                 maxlength="20"
+                :disabled="done"
                 placeholder="참고항목(동, 건물)"
               />
             </CCol>
@@ -468,6 +486,7 @@ onBeforeMount(() => {
                   maxlength="5"
                   placeholder="우편번호"
                   required
+                  :disabled="done"
                   @focus="$refs.postCode.initiate(3)"
                 />
               </CInputGroup>
@@ -478,6 +497,7 @@ onBeforeMount(() => {
                 maxlength="35"
                 placeholder="우편송달 메인 주소"
                 required
+                :disabled="done"
                 @focus="$refs.postCode.initiate(3)"
               />
             </CCol>
@@ -489,6 +509,7 @@ onBeforeMount(() => {
                 ref="address22"
                 v-model="buyer_data.dm_address2"
                 maxlength="20"
+                :disabled="done"
                 placeholder="상세주소(지번, 동호수)"
               />
             </CCol>
@@ -497,6 +518,7 @@ onBeforeMount(() => {
                 <CFormInput
                   v-model="buyer_data.dm_address3"
                   maxlength="20"
+                  :disabled="done"
                   placeholder="참고항목(동, 건물)"
                 />
                 <CInputGroupText>
@@ -504,6 +526,7 @@ onBeforeMount(() => {
                     id="toSame"
                     v-model="sameAddr"
                     label="상동"
+                    :disabled="done"
                     @click="toSame"
                   />
                 </CInputGroupText>

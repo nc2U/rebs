@@ -46,12 +46,16 @@ const onSubmit = (payload: Succession) => {
   </CTableDataCell>
   <CTableDataCell class="text-center">
     <router-link to="" @click="callFormModal">
-      {{ succession.seller.name }}
+      {{
+        succession.is_approval ? succession.buyer.name : succession.seller.name
+      }}
     </router-link>
   </CTableDataCell>
   <CTableDataCell class="text-center">
     <router-link to="" @click="callFormModal">
-      {{ succession.buyer.name }}
+      {{
+        succession.is_approval ? succession.seller.name : succession.buyer.name
+      }}
     </router-link>
   </CTableDataCell>
   <CTableDataCell class="text-center">
