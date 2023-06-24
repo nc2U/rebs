@@ -28,10 +28,10 @@ const downloadUrl = computed(
 const contractStore = useContract()
 const contractor = computed(() => contractStore.contractor)
 
-const is_succession = computed(() => {
-  const s = contractor.value?.successions
-  return !!s && !s[s.length - 1].is_approval
-})
+const is_succession = computed(
+  () =>
+    !!contractor.value?.succession && !contractor.value?.succession.is_approval,
+)
 
 const fetchContract = (cont: number) => contractStore.fetchContract(cont)
 const fetchContractor = (contor: number) =>
@@ -63,8 +63,11 @@ watch(route, val => {
 
 watch(contractor, val => {
   if (val) fetchContract(val.contract)
-  if (val?.successions) fetchSuccession(val.successions[0].pk)
-  else contractStore.succession = null
+  if (val?.succession) fetchSuccession(val.succession.pk)
+  else {
+    contractStore.contract = null
+    contractStore.succession = null
+  }
 })
 
 const router = useRouter()
