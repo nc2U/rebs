@@ -138,6 +138,7 @@ class Succession(models.Model):
         return f'{self.seller}'
 
     class Meta:
+        ordering = ['-apply_date', '-trading_date']
         verbose_name = '06. 권리 의무 승계'
         verbose_name_plural = '06. 권리 의무 승계'
 
