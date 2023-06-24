@@ -656,10 +656,43 @@ class SuccessionSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         # 1. 권리의무승계 정보 테이블 입력
         instance.__dict__.update(**validated_data)
+        instance.save()
 
         # 2. 양수계약자 데이터
         buyer_id = self.initial_data.get('id')
+        buyer_name = self.initial_data.get('name')
+        buyer_birth_date = self.initial_data.get('birth_date')
+        buyer_gender = self.initial_data.get('gender')
+        buyer_id_zipcode = self.initial_data.get('id_zipcode')
+        buyer_id_address1 = self.initial_data.get('id_address1')
+        buyer_id_address2 = self.initial_data.get('id_address2')
+        buyer_id_address3 = self.initial_data.get('id_address3')
+        buyer_dm_zipcode = self.initial_data.get('dm_zipcode')
+        buyer_dm_address1 = self.initial_data.get('dm_address1')
+        buyer_dm_address2 = self.initial_data.get('dm_address2')
+        buyer_dm_address3 = self.initial_data.get('dm_address3')
+        buyer_cell_phone = self.initial_data.get('cell_phone')
+        buyer_home_phone = self.initial_data.get('home_phone')
+        buyer_other_phone = self.initial_data.get('other_phone')
+        buyer_email = self.initial_data.get('email')
+
         buyer = SuccessionBuyer.objects.get(pk=buyer_id)
+        buyer.name = buyer_name
+        buyer.birth_date = buyer_birth_date
+        buyer.gender = buyer_gender
+        buyer.id_zipcode = buyer_id_zipcode
+        buyer.id_address1 = buyer_id_address1
+        buyer.id_address2 = buyer_id_address2
+        buyer.id_address3 = buyer_id_address3
+        buyer.dm_zipcode = buyer_dm_zipcode
+        buyer.dm_address1 = buyer_dm_address1
+        buyer.dm_address2 = buyer_dm_address2
+        buyer.dm_address3 = buyer_dm_address3
+        buyer.cell_phone = buyer_cell_phone
+        buyer.home_phone = buyer_home_phone
+        buyer.other_phone = buyer_other_phone
+        buyer.email = buyer_email
+        buyer.save()
 
         # 3. 양도계약자 데이터
         seller_id = self.initial_data.get('seller')
@@ -692,44 +725,30 @@ class SuccessionSerializer(serializers.ModelSerializer):
             # 2. 기존 양수계약자 데이터를 양도계약자 데이터로 이동
             # msg = f'{seller} => (양수계약자 : {buyer.name}) 양도 승계'
             # append_note = '\n ' + msg if seller.note else msg
-            seller.name = self.initial_data.get('name')
-            seller.birth_date = self.initial_data.get('birth_date')
-            seller.gender = self.initial_data.get('gender')
+            seller.name = buyer_name
+            seller.birth_date = buyer_birth_date
+            seller.gender = buyer_gender
             seller.save()
 
             # 3. 주소정보 변경
-            id_zipcode = self.initial_data.get('id_zipcode')
-            id_address1 = self.initial_data.get('id_address1')
-            id_address2 = self.initial_data.get('id_address2')
-            id_address3 = self.initial_data.get('id_address3')
-            dm_zipcode = self.initial_data.get('dm_zipcode')
-            dm_address1 = self.initial_data.get('dm_address1')
-            dm_address2 = self.initial_data.get('dm_address2')
-            dm_address3 = self.initial_data.get('dm_address3')
             address = ContractorAddress.objects.get(contractor=seller)
-            address.id_zipcode = id_zipcode
-            address.id_address1 = id_address1
-            address.id_address2 = id_address2
-            address.id_address3 = id_address3
-            address.dm_zipcode = dm_zipcode
-            address.dm_address1 = dm_address1
-            address.dm_address2 = dm_address2
-            address.dm_address3 = dm_address3
+            address.id_zipcode = buyer_id_zipcode
+            address.id_address1 = buyer_id_address1
+            address.id_address2 = buyer_id_address2
+            address.id_address3 = buyer_id_address3
+            address.dm_zipcode = buyer_dm_zipcode
+            address.dm_address1 = buyer_dm_address1
+            address.dm_address2 = buyer_dm_address2
+            address.dm_address3 = buyer_dm_address3
             address.save()
 
             # 4. 연락처 정보 변경
-            cell_phone = self.initial_data.get('cell_phone')
-            home_phone = self.initial_data.get('home_phone')
-            other_phone = self.initial_data.get('other_phone')
-            email = self.initial_data.get('email')
             contact = ContractorContact.objects.get(contractor=seller)
-            contact.cell_phone = cell_phone
-            contact.home_phone = home_phone
-            contact.other_phone = other_phone
-            contact.email = email
+            contact.cell_phone = buyer_cell_phone
+            contact.home_phone = buyer_home_phone
+            contact.other_phone = buyer_other_phone
+            contact.email = buyer_email
             contact.save()
-
-        instance.save()
 
         return instance
 
