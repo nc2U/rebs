@@ -650,81 +650,81 @@ class SuccessionSerializer(serializers.ModelSerializer):
         # 1. 권리의무승계 정보 테이블 입력
         instance.__dict__.update(**validated_data)
 
-        # 2. 양수자 데이터 업데이트
+        # 2. 양수계약자 데이터
         buyer_id = self.initial_data.get('id')
         buyer = SuccessionBuyer.objects.get(pk=buyer_id)
 
-        buyer.name = self.initial_data.get('name')
-        buyer.birth_date = self.initial_data.get('birth_date')
-        buyer.gender = self.initial_data.get('gender')
-        buyer.id_zipcode = self.initial_data.get('id_zipcode')
-        buyer.id_address1 = self.initial_data.get('id_address1')
-        buyer.id_address2 = self.initial_data.get('id_address2')
-        buyer.id_address3 = self.initial_data.get('id_address3')
-        buyer.dm_zipcode = self.initial_data.get('dm_zipcode')
-        buyer.dm_address1 = self.initial_data.get('dm_address1')
-        buyer.dm_address2 = self.initial_data.get('dm_address2')
-        buyer.dm_address3 = self.initial_data.get('dm_address3')
-        buyer.cell_phone = self.initial_data.get('cell_phone')
-        buyer.home_phone = self.initial_data.get('home_phone')
-        buyer.other_phone = self.initial_data.get('other_phone')
-        buyer.email = self.initial_data.get('email')
-
-        buyer.save()
+        # 3. 양도계약자 데이터
+        seller_id = self.initial_data.get('seller')
+        seller = Contractor.objects.get(pk=seller_id)
 
         # 변경인가완료 처리 여부 확인
         before_is_approval = Succession.objects.get(pk=instance.pk).is_approval
         after_is_approval = validated_data.get('is_approval')
 
-        # # 최초 변경인가 처리 완료 시
-        # if not before_is_approval and after_is_approval:
-        #     # 1. 양도자(seller) 계약 해지 처리
-        #     seller_id = self.initial_data.get('seller')
-        #     seller = Contractor.objects.get(pk=seller_id)
-        #     # msg = f'{seller.__str__} >> {buyer.name} 양도 승계'
-        #     msg = f'{seller.name} >> {buyer.name} 양도 승계'
-        #     seller.contract = None  # contract --> null
-        #     seller.is_registed = False  # 인가 등록 취소
-        #     seller.status = '5'  # 양도 승계 상태로 변경
-        #     seller.is_active = False  # 비활성 상태로 변경
-        #     append_note = ', ' + msg if seller.note else msg
-        #     seller.note = seller.note + append_note
-        #     seller.save()
-        #
-        #     # 2. 양수자(buyer) 신규 계약자 등록 및 인가 처리
-        #     contract_id = validated_data.get('contract')
-        #     note = self.initial_data.get('note')
-        #     append_note = ', ' + msg if note else msg
-        #     new_contractor = Contractor(contract_id=contract_id,
-        #                                 name=buyer.name,
-        #                                 birth_date=buyer.birth_date,
-        #                                 gender=buyer.gender,
-        #                                 is_registed=True,
-        #                                 status='2',
-        #                                 contract_date=self.initial_data.get('trading_date'),
-        #                                 is_active=True,
-        #                                 note=note + append_note)
-        #     new_contractor.save()
-        #
-        #     # 3. 양수자 주소 등록
-        #     new_address = ContractorAddress(contractor=new_contractor,
-        #                                     id_zipcode=buyer.id_zipcode,
-        #                                     id_address1=buyer.id_address1,
-        #                                     id_address2=buyer.id_address2,
-        #                                     id_address3=buyer.id_address3,
-        #                                     dm_zipcode=buyer.dm_zipcode,
-        #                                     dm_address1=buyer.dm_address1,
-        #                                     dm_address2=buyer.dm_address2,
-        #                                     dm_address3=buyer.dm_address3)
-        #     new_address.save()
-        #
-        #     # 4. 양수자 연락처 등록
-        #     new_contact = ContractorContact(contractor=new_contractor,
-        #                                     cell_phone=buyer.cell_phone,
-        #                                     home_phone=buyer.home_phone,
-        #                                     other_phone=buyer.other_phone,
-        #                                     email=buyer.email)
-        #     new_contact.save()
+        # 최초 변경인가 처리 완료 시
+        if before_is_approval is not after_is_approval:
+            # 1. 기존 양도계약자(seller) 데이터를 양수계약자 데이터로 이동
+            buyer.name = seller.name
+            buyer.birth_date = seller.birth_date
+            buyer.gender = seller.gender
+            buyer.id_zipcode = seller.contractoraddress.id_zipcode
+            buyer.id_address1 = seller.contractoraddress.id_address1
+            buyer.id_address2 = seller.contractoraddress.id_address2
+            buyer.id_address3 = seller.contractoraddress.id_address3
+            buyer.dm_zipcode = seller.contractoraddress.dm_zipcode
+            buyer.dm_address1 = seller.contractoraddress.dm_address1
+            buyer.dm_address2 = seller.contractoraddress.dm_address2
+            buyer.dm_address3 = seller.contractoraddress.dm_address3
+            buyer.cell_phone = seller.contractorcontact.cell_phone
+            buyer.home_phone = seller.contractorcontact.home_phone
+            buyer.other_phone = seller.contractorcontact.other_phone
+            buyer.email = seller.contractorcontact.email
+            buyer.save()
+
+            # 2. 기존 양수계약자 데이터를 양도계약자 데이터로 이동
+            seller.name = self.initial_data.get('name')
+            seller.birth_date = self.initial_data.get('birth_date')
+            seller.gender = self.initial_data.get('gender')
+            seller.save()
+
+            # 3. 주소정보 변경
+            id_zipcode = self.initial_data.get('id_zipcode')
+            id_address1 = self.initial_data.get('id_address1')
+            id_address2 = self.initial_data.get('id_address2')
+            id_address3 = self.initial_data.get('id_address3')
+            dm_zipcode = self.initial_data.get('dm_zipcode')
+            dm_address1 = self.initial_data.get('dm_address1')
+            dm_address2 = self.initial_data.get('dm_address2')
+            dm_address3 = self.initial_data.get('dm_address3')
+            address = ContractorAddress.objects.get(contractor=seller)
+            address.id_zipcode = id_zipcode
+            address.id_address1 = id_address1
+            address.id_address2 = id_address2
+            address.id_address3 = id_address3
+            address.dm_zipcode = dm_zipcode
+            address.dm_address1 = dm_address1
+            address.dm_address2 = dm_address2
+            address.dm_address3 = dm_address3
+            address.save()
+
+            # 4. 연락처 정보 변경
+            cell_phone = self.initial_data.get('cell_phone')
+            home_phone = self.initial_data.get('home_phone')
+            other_phone = self.initial_data.get('other_phone')
+            email = self.initial_data.get('email')
+            contact = ContractorContact.objects.get(contractor=seller)
+            contact.cell_phone = cell_phone
+            contact.home_phone = home_phone
+            contact.other_phone = other_phone
+            contact.email = email
+            contact.save()
+
+            # msg = f'{seller} => (양수계약자 : {buyer.name}) 양도 승계'
+            # append_note = '\n ' + msg if seller.note else msg
+            # seller.note = seller.note + append_note
+            # note = self.initial_data.get('note')
+            # append_note = '\n ' + msg if note else msg
 
         instance.save()
 

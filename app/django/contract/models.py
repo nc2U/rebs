@@ -57,7 +57,7 @@ class ContractPrice(models.Model):
 
 
 class Contractor(models.Model):
-    contract = models.OneToOneField('Contract', on_delete=models.SET_NULL, null=True, verbose_name='계약 정보')
+    contract = models.OneToOneField('Contract', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='계약 정보')
     name = models.CharField('계약자명', max_length=20)
     birth_date = models.DateField('생년월일', null=True, blank=True)
     GENDER_CHOICES = (('M', '남자'), ('F', '여자'))
@@ -84,9 +84,9 @@ class Contractor(models.Model):
 class ContractorAddress(models.Model):
     contractor = models.OneToOneField('Contractor', on_delete=models.CASCADE, verbose_name='계약자 정보')
     id_zipcode = models.CharField('우편번호', max_length=5)
-    id_address1 = models.CharField('주민등록 주소', max_length=35)
-    id_address2 = models.CharField('상세주소', max_length=20, blank=True)
-    id_address3 = models.CharField('참고항목', max_length=20, blank=True)
+    id_address1 = models.CharField('주민등록 주소', max_length=50)
+    id_address2 = models.CharField('상세주소', max_length=30, blank=True)
+    id_address3 = models.CharField('참고항목', max_length=30, blank=True)
     dm_zipcode = models.CharField('우편번호', max_length=5)
     dm_address1 = models.CharField('우편송부 주소', max_length=50)
     dm_address2 = models.CharField('상세주소', max_length=30, blank=True)
@@ -149,9 +149,9 @@ class SuccessionBuyer(models.Model):
     GENDER_CHOICES = (('M', '남자'), ('F', '여자'))
     gender = models.CharField('성별', max_length=1, choices=GENDER_CHOICES, blank=True)
     id_zipcode = models.CharField('우편번호', max_length=5)
-    id_address1 = models.CharField('주민등록 주소', max_length=35)
-    id_address2 = models.CharField('상세주소', max_length=20, blank=True)
-    id_address3 = models.CharField('참고항목', max_length=20, blank=True)
+    id_address1 = models.CharField('주민등록 주소', max_length=50)
+    id_address2 = models.CharField('상세주소', max_length=30, blank=True)
+    id_address3 = models.CharField('참고항목', max_length=30, blank=True)
     dm_zipcode = models.CharField('우편번호', max_length=5)
     dm_address1 = models.CharField('우편송부 주소', max_length=50)
     dm_address2 = models.CharField('상세주소', max_length=30, blank=True)
