@@ -28,6 +28,11 @@ const downloadUrl = computed(
 const contractStore = useContract()
 const contractor = computed(() => contractStore.contractor)
 
+const is_succession = computed(
+  () =>
+    !!contractor.value?.succession && !contractor.value.succession.is_approval,
+)
+
 const fetchContract = (cont: number) => contractStore.fetchContract(cont)
 const fetchContractor = (contor: number) =>
   contractStore.fetchContractor(contor)
@@ -58,7 +63,7 @@ watch(route, val => {
 
 watch(contractor, val => {
   if (val) fetchContract(val.contract)
-  if (val?.succession) fetchSuccession(val.succession)
+  if (val?.succession) fetchSuccession(val.succession.pk)
   else contractStore.succession = null
 })
 
@@ -117,8 +122,16 @@ onBeforeMount(() => {
         :project="project"
         @search-contractor="searchContractor"
       />
-      <ContractorAlert v-if="contractor" :contractor="contractor" />
-      <SuccessionButton v-if="contractor" @on-submit="onSubmit" />
+      <ContractorAlert
+        v-if="contractor"
+        :contractor="contractor"
+        :is-succession="is_succession"
+      />
+      <SuccessionButton
+        v-if="contractor"
+        :is-succession="is_succession"
+        @on-submit="onSubmit"
+      />
       <TableTitleRow
         title="승계 진행 건 목록"
         excel

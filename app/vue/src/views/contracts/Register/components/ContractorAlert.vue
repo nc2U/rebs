@@ -2,7 +2,23 @@
 import { useContract } from '@/store/pinia/contract'
 import { computed } from 'vue'
 
-const props = defineProps({ contractor: { type: Object, default: null } })
+const props = defineProps({
+  contractor: { type: Object, default: null },
+  isSuccession: { type: Boolean, default: false },
+})
+
+const contractStore = useContract()
+
+const alertColor = computed(() => {
+  let aColor = 'info'
+  if (props.isSuccession) aColor = 'success'
+  else if (
+    !!props.contractor.contractorrelease &&
+    props.contractor.status >= '3'
+  )
+    aColor = 'danger'
+  return aColor
+})
 
 const getStatus = (num: string) => {
   const status = [
@@ -13,19 +29,6 @@ const getStatus = (num: string) => {
   ]
   return status.filter(s => s.code === num).map(s => s.text)[0]
 }
-
-const contractStore = useContract()
-
-const alertColor = computed(() => {
-  let aColor = 'info'
-  if (!!props.contractor.succession) aColor = 'success'
-  else if (
-    !!props.contractor.contractorrelease &&
-    props.contractor.status >= '3'
-  )
-    aColor = 'danger'
-  return aColor
-})
 
 const removeContractor = () => {
   contractStore.contract = null
@@ -42,7 +45,7 @@ const removeContractor = () => {
           계약자명 :
           {{ contractor.__str__ }} :::::: 현재상태 : [{{
             getStatus(contractor.status)
-          }}] {{ contractor.succession ? '--- (권리 의무 승계 진행 중!)' : '' }}
+          }}] {{ isSuccession ? '--- (권리 의무 승계 진행 중!)' : '' }}
         </strong>
       </CCol>
       <CCol v-if="contractor" class="text-right">
