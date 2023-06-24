@@ -89,7 +89,6 @@ const onSubmit = (payload: { s_data: Succession; b_data: Buyer }) => {
   const dbData = { ...s_data, ...b_data }
   if (!s_data.pk) createBuyer({ ...dbData, project: project.value })
   else patchSuccession({ ...dbData, project: project.value, page: page.value })
-  console.log({ project: project.value, ...dbData })
 }
 
 onBeforeMount(() => {

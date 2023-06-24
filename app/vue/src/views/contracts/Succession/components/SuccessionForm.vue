@@ -519,6 +519,7 @@ onBeforeMount(() => {
               <CFormSwitch
                 id="isApproval"
                 v-model="form.is_approval"
+                :disabled="!succession"
                 label="변경인가완료"
               />
             </CCol>
@@ -534,6 +535,7 @@ onBeforeMount(() => {
               <DatePicker
                 v-model="form.approval_date"
                 :required="form.is_approval"
+                :disabled="!succession"
                 placeholder="변경인가일"
               />
             </CCol>
