@@ -8,7 +8,7 @@ import FormModal from '@/components/Modals/FormModal.vue'
 import ReleaseForm from '@/views/contracts/Release/components/ReleaseForm.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-defineProps({ contractor: { type: Object, default: null } })
+const props = defineProps({ contractor: { type: Object, default: null } })
 const emit = defineEmits(['on-submit'])
 
 const releaseFormModal = ref()
@@ -30,7 +30,11 @@ const onSubmit = (payload: ContractRelease) => {
 
 <template>
   <CAlert :color="AlertLight" variant="solid" class="text-right">
-    <CButton :color="contRelease ? 'warning' : 'danger'" @click="callFormModal">
+    <CButton
+      :color="contRelease ? 'warning' : 'danger'"
+      :disabled="!!props.contractor.succession"
+      @click="callFormModal"
+    >
       {{ contRelease ? '수정하기' : '등록하기' }}
     </CButton>
   </CAlert>
