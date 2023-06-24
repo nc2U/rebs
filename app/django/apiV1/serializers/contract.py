@@ -591,7 +591,14 @@ class ContractInContractorSerializer(serializers.ModelSerializer):
         fields = ('pk', 'serial_number', 'keyunit')
 
 
+class SuccessionInContractorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Succession
+        fields = ('pk', 'is_approval')
+
+
 class ContractorSerializer(serializers.ModelSerializer):
+    succession = SuccessionInContractorSerializer(read_only=True)
     contractorrelease = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
