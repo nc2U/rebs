@@ -683,6 +683,8 @@ class SuccessionSerializer(serializers.ModelSerializer):
             buyer.save()
 
             # 2. 기존 양수계약자 데이터를 양도계약자 데이터로 이동
+            # msg = f'{seller} => (양수계약자 : {buyer.name}) 양도 승계'
+            # append_note = '\n ' + msg if seller.note else msg
             seller.name = self.initial_data.get('name')
             seller.birth_date = self.initial_data.get('birth_date')
             seller.gender = self.initial_data.get('gender')
@@ -719,12 +721,6 @@ class SuccessionSerializer(serializers.ModelSerializer):
             contact.other_phone = other_phone
             contact.email = email
             contact.save()
-
-            # msg = f'{seller} => (양수계약자 : {buyer.name}) 양도 승계'
-            # append_note = '\n ' + msg if seller.note else msg
-            # seller.note = seller.note + append_note
-            # note = self.initial_data.get('note')
-            # append_note = '\n ' + msg if note else msg
 
         instance.save()
 
