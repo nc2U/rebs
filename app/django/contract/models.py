@@ -122,7 +122,7 @@ class ContractorContact(models.Model):
 
 
 class Succession(models.Model):
-    contract = models.OneToOneField('Contract', on_delete=models.PROTECT, verbose_name='계약 정보')
+    contract = models.ForeignKey('Contract', on_delete=models.PROTECT, verbose_name='계약 정보')
     seller = models.OneToOneField('Contractor', on_delete=models.PROTECT, verbose_name='양도계약자')
     buyer = models.OneToOneField('SuccessionBuyer', on_delete=models.PROTECT, verbose_name='양수계약자')
     apply_date = models.DateField('승계신청일')
