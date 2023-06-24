@@ -126,8 +126,13 @@ export interface Contractor {
   reservation_date: string | null
   contract_date: string | null
   note: string
-  succession: number | null
+  succession: SimpleSuccession | null
   contractorrelease: number | null
+}
+
+interface SimpleSuccession {
+  pk: number
+  is_approval: boolean
 }
 
 export interface SubsSummary {
