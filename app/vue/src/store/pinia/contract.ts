@@ -272,11 +272,13 @@ export const useContract = defineStore('contract', () => {
   const patchSuccession = (
     payload: Succession & Buyer & { project: number; page: number },
   ) => {
-    const { project, pk, ...dbData } = payload
+    const { pk, project, page, ...dbData } = payload
     return api
       .put(`/succession/${pk}/`, dbData)
-      .then(() =>
-        fetchSuccessionList(project, dbData.page).then(() => message()),
+      .then(res =>
+        fetchSuccessionList(project, page).then(() =>
+          fetchContractor(res.data.seller.pk).then(() => message()),
+        ),
       )
       .catch(err => errorHandle(err.response.data))
   }
