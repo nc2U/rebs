@@ -672,54 +672,59 @@ class SuccessionSerializer(serializers.ModelSerializer):
 
         buyer.save()
 
-        is_approval = validated_data.get('is_approval')
+        # 변경인가완료 처리 여부 확인
+        before_is_approval = Succession.objects.get(pk=instance.pk).is_approval
+        after_is_approval = validated_data.get('is_approval')
 
-        if is_approval:
-            # # 1. 양도자(seller) 계약 해지 처리
-            # seller_id = validated_data.get('seller')
-            # seller = Contractor.objects.get(pk=seller_id)
-            # seller.contract = None  # --- contract ????? 어떻게 처리할까?
-            # seller.is_registed = False  # 인가 등록 취소
-            # seller.is_active = False  # 비활성 상태로 변경
-            # seller.status = '4'  # 해지 상태로 변경
-            # seller.save()
-            #
-            # approval_date = self.initial_data.get('approval_date')
-            #
-            # contract = Contract.objects.get(pk=seller.contract.id)
-            #
-            # # 2. 양수자(buyer) 신규 계약자 등록 및 인가 처리
-            # contract_id = validated_data.get('contract')
-            # new_contractor = Contractor(contract=contract,
-            #                             name=buyer.name,
-            #                             birth_date=buyer.birth_date,
-            #                             gender=buyer.gender,
-            #                             is_registed=True,
-            #                             status='2',
-            #                             contract_date=approval_date,
-            #                             is_active=True,
-            #                             note=self.initial_data.get('note'))
-            # # new_contractor.save()
-            # # 3. 양수자 주소 등록
-            # address = ContractorAddress(contractor=new_contractor,
-            #                             id_zipcode=buyer.id_zipcode,
-            #                             id_address1=buyer.id_address1,
-            #                             id_address2=buyer.id_address2,
-            #                             id_address3=buyer.id_address3,
-            #                             dm_zipcode=buyer.dm_zipcode,
-            #                             dm_address1=buyer.dm_address1,
-            #                             dm_address2=buyer.dm_address2,
-            #                             dm_address3=buyer.dm_address3)
-            # address.save()
-            # # 4. 양수자 연락처 등록
-            # contact = ContractorContact(contractor=new_contractor,
-            #                             cell_phone=buyer.cell_phone,
-            #                             home_phone=buyer.home_phone,
-            #                             other_phone=buyer.other_phone,
-            #                             email=buyer.email)
-            # contact.save()
-
-            pass
+        # # 최초 변경인가 처리 완료 시
+        # if not before_is_approval and after_is_approval:
+        #     # 1. 양도자(seller) 계약 해지 처리
+        #     seller_id = self.initial_data.get('seller')
+        #     seller = Contractor.objects.get(pk=seller_id)
+        #     # msg = f'{seller.__str__} >> {buyer.name} 양도 승계'
+        #     msg = f'{seller.name} >> {buyer.name} 양도 승계'
+        #     seller.contract = None  # contract --> null
+        #     seller.is_registed = False  # 인가 등록 취소
+        #     seller.status = '5'  # 양도 승계 상태로 변경
+        #     seller.is_active = False  # 비활성 상태로 변경
+        #     append_note = ', ' + msg if seller.note else msg
+        #     seller.note = seller.note + append_note
+        #     seller.save()
+        #
+        #     # 2. 양수자(buyer) 신규 계약자 등록 및 인가 처리
+        #     contract_id = validated_data.get('contract')
+        #     note = self.initial_data.get('note')
+        #     append_note = ', ' + msg if note else msg
+        #     new_contractor = Contractor(contract_id=contract_id,
+        #                                 name=buyer.name,
+        #                                 birth_date=buyer.birth_date,
+        #                                 gender=buyer.gender,
+        #                                 is_registed=True,
+        #                                 status='2',
+        #                                 contract_date=self.initial_data.get('trading_date'),
+        #                                 is_active=True,
+        #                                 note=note + append_note)
+        #     new_contractor.save()
+        #
+        #     # 3. 양수자 주소 등록
+        #     new_address = ContractorAddress(contractor=new_contractor,
+        #                                     id_zipcode=buyer.id_zipcode,
+        #                                     id_address1=buyer.id_address1,
+        #                                     id_address2=buyer.id_address2,
+        #                                     id_address3=buyer.id_address3,
+        #                                     dm_zipcode=buyer.dm_zipcode,
+        #                                     dm_address1=buyer.dm_address1,
+        #                                     dm_address2=buyer.dm_address2,
+        #                                     dm_address3=buyer.dm_address3)
+        #     new_address.save()
+        #
+        #     # 4. 양수자 연락처 등록
+        #     new_contact = ContractorContact(contractor=new_contractor,
+        #                                     cell_phone=buyer.cell_phone,
+        #                                     home_phone=buyer.home_phone,
+        #                                     other_phone=buyer.other_phone,
+        #                                     email=buyer.email)
+        #     new_contact.save()
 
         instance.save()
 
@@ -750,6 +755,15 @@ class SuccessionBuyerSerializer(serializers.ModelSerializer):
                                 approval_date=self.initial_data.get('approval_date'),
                                 note=self.initial_data.get('note'))
         succession.save()
+
+        # 3. 해지신청 계약자인지 확인
+        try:
+            release = succession.seller.contractorrelease
+            if release:
+                release.status = '0'
+                release.save()
+        except ObjectDoesNotExist:
+            pass
 
         return buyer
 
