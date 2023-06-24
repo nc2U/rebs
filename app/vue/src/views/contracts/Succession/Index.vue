@@ -28,9 +28,10 @@ const downloadUrl = computed(
 const contractStore = useContract()
 const contractor = computed(() => contractStore.contractor)
 
-const is_succession = computed(
+const isSuccession = computed(
   () =>
-    !!contractor.value?.succession && !contractor.value?.succession.is_approval,
+    !!contractor.value?.successions &&
+    !contractor.value?.successions[0].is_approval,
 )
 
 const fetchContract = (cont: number) => contractStore.fetchContract(cont)
@@ -63,7 +64,7 @@ watch(route, val => {
 
 watch(contractor, val => {
   if (val) fetchContract(val.contract)
-  if (val?.succession) fetchSuccession(val.succession.pk)
+  if (val?.successions) fetchSuccession(val.successions[0].pk)
   else {
     contractStore.contract = null
     contractStore.succession = null
@@ -128,13 +129,18 @@ onBeforeMount(() => {
       <ContractorAlert
         v-if="contractor"
         :contractor="contractor"
-        :is-succession="is_succession"
+        :is-succession="isSuccession"
       />
       <SuccessionButton
         v-if="contractor"
-        :is-succession="is_succession"
+        :is-succession="isSuccession"
         @on-submit="onSubmit"
       />
+      {{ contractor }}
+      <hr />
+      계약자 승계 상태에 따른 구분 로직 작성 / 페이지 관련 로직 작성 / 엑셀 로직
+      작성
+      <hr />
       <TableTitleRow
         title="승계 진행 건 목록"
         excel
