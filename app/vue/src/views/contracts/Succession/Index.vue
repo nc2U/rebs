@@ -87,8 +87,12 @@ const searchContractor = (search: string) => {
 const onSubmit = (payload: { s_data: Succession; b_data: Buyer }) => {
   const { s_data, b_data } = payload
   const dbData = { ...s_data, ...b_data }
-  if (!s_data.pk) createBuyer({ ...dbData, project: project.value })
-  else patchSuccession({ ...dbData, project: project.value, page: page.value })
+  if (!s_data.pk) {
+    createBuyer({ ...dbData, project: project.value })
+    router.push({ name: '권리 의무 승계' })
+  } else
+    patchSuccession({ ...dbData, project: project.value, page: page.value })
+  console.log({ ...dbData })
 }
 
 onBeforeMount(() => {

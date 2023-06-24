@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { reactive, ref, watch, onBeforeMount, computed } from 'vue'
+import { reactive, ref, watch, onBeforeMount, computed, nextTick } from 'vue'
 import { write_contract } from '@/utils/pageAuth'
 import { isValidate } from '@/utils/helper'
 import { dateFormat } from '@/utils/baseMixins'
@@ -167,6 +167,12 @@ const toSame = () => {
     buyer_data.dm_address2 = ''
     buyer_data.dm_address3 = ''
   }
+}
+
+const chkApproval = () => {
+  nextTick(() => {
+    if (!form.is_approval) form.approval_date = null
+  })
 }
 
 onBeforeMount(() => {
@@ -521,6 +527,7 @@ onBeforeMount(() => {
                 v-model="form.is_approval"
                 :disabled="!succession"
                 label="변경인가완료"
+                @change="chkApproval"
               />
             </CCol>
           </CRow>
