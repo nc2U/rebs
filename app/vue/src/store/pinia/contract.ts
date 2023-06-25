@@ -122,7 +122,9 @@ export const useContract = defineStore('contract', () => {
 
   const fetchContractorList = (project: number, search = '') => {
     api
-      .get(`/contractor/?contract__project=${project}&search=${search}`)
+      .get(
+        `/contractor/?contract__project=${project}&search=${search}&is_active=true`,
+      )
       .then(res => (contractorList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
   }
