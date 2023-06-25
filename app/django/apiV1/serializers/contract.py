@@ -722,11 +722,13 @@ class SuccessionSerializer(serializers.ModelSerializer):
             buyer.save()
 
             # 2. 기존 양수계약자 데이터를 양도계약자 데이터로 이동
-            # msg = f'{seller} => (양수계약자 : {buyer.name}) 양도 승계'
-            # append_note = '\n ' + msg if seller.note else msg
+            msg = f'{seller}에서 [{validated_data["approval_date"]}] 승계 처리'
+            append_note = '\n' + msg if seller.note else msg
             seller.name = buyer_name
             seller.birth_date = buyer_birth_date
             seller.gender = buyer_gender
+            if after_is_approval:
+                seller.note = seller.note + append_note
             seller.save()
 
             # 3. 주소정보 변경
