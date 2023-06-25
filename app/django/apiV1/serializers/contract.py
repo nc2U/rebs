@@ -656,7 +656,6 @@ class SuccessionSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         # 1. 권리의무승계 정보 테이블 입력
         instance.__dict__.update(**validated_data)
-        instance.save()
 
         # 2. 양수계약자 데이터
         buyer_id = self.initial_data.get('id')
@@ -749,6 +748,8 @@ class SuccessionSerializer(serializers.ModelSerializer):
             contact.other_phone = buyer_other_phone
             contact.email = buyer_email
             contact.save()
+
+        instance.save()
 
         return instance
 
