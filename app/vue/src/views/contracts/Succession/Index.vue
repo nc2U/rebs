@@ -28,12 +28,6 @@ const downloadUrl = computed(
 const contractStore = useContract()
 const contractor = computed(() => contractStore.contractor)
 
-const isSuccession = computed(
-  () =>
-    !!contractor.value?.successions.length &&
-    !contractor.value?.successions[0].is_approval,
-)
-
 const fetchContract = (cont: number) => contractStore.fetchContract(cont)
 const fetchContractor = (contor: number) =>
   contractStore.fetchContractor(contor)
@@ -131,16 +125,8 @@ onBeforeMount(() => {
         :project="project"
         @search-contractor="searchContractor"
       />
-      <ContractorAlert
-        v-if="contractor"
-        :contractor="contractor"
-        :is-succession="isSuccession"
-      />
-      <SuccessionButton
-        v-if="contractor"
-        :is-succession="isSuccession"
-        @on-submit="onSubmit"
-      />
+      <ContractorAlert v-if="contractor" :contractor="contractor" />
+      <SuccessionButton v-if="contractor" @on-submit="onSubmit" />
       <TableTitleRow
         title="승계 진행 건 목록"
         excel

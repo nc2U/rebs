@@ -2,16 +2,19 @@
 import { useContract } from '@/store/pinia/contract'
 import { computed } from 'vue'
 
-const props = defineProps({
-  contractor: { type: Object, default: null },
-  isSuccession: { type: Boolean, default: false },
-})
+const props = defineProps({ contractor: { type: Object, default: null } })
 
 const contractStore = useContract()
 
+const isSuccession = computed(
+  () =>
+    !!props.contractor?.successions.length &&
+    !props.contractor?.successions[0].is_approval,
+)
+
 const alertColor = computed(() => {
   let aColor = 'info'
-  if (props.isSuccession) aColor = 'success'
+  if (isSuccession.value) aColor = 'success'
   else if (
     !!props.contractor.contractorrelease &&
     props.contractor.status >= '3'
@@ -45,7 +48,8 @@ const removeContractor = () => {
           계약자명 :
           {{ contractor.__str__ }} :::::: 현재상태 : [{{
             getStatus(contractor.status)
-          }}] {{ isSuccession ? '--- (권리 의무 승계 진행 중!)' : '' }}
+          }}]
+          {{ isSuccession ? '-> (!!!-권리 의무 승계 진행 중-!!!)' : '' }}
         </strong>
       </CCol>
       <CCol v-if="contractor" class="text-right">

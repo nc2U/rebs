@@ -8,7 +8,6 @@ import FormModal from '@/components/Modals/FormModal.vue'
 import SuccessionForm from '@/views/contracts/Succession/components/SuccessionForm.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-defineProps({ isSuccession: { type: Boolean, default: false } })
 const emit = defineEmits(['on-submit'])
 
 const successionFormModal = ref()
@@ -16,6 +15,10 @@ const successionAlertModal = ref()
 
 const contractStore = useContract()
 const succession = computed(() => contractStore.succession)
+
+const isSuccession = computed(
+  () => !!succession.value && !succession.value.is_approval,
+)
 
 const callFormModal = () => {
   if (write_contract.value) successionFormModal.value.callModal()

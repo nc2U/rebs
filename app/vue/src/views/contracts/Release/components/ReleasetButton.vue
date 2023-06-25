@@ -17,6 +17,12 @@ const releaseAlertModal = ref()
 const contractStore = useContract()
 const contRelease = computed(() => contractStore.contRelease)
 
+const isSuccession = computed(
+  () =>
+    !!props.contractor?.successions.length &&
+    !props.contractor?.successions[0].is_approval,
+)
+
 const callFormModal = () => {
   if (write_contract.value) releaseFormModal.value.callModal()
   else releaseAlertModal.value.callModal()
@@ -32,7 +38,7 @@ const onSubmit = (payload: ContractRelease) => {
   <CAlert :color="AlertLight" variant="solid" class="text-right">
     <CButton
       :color="contRelease ? 'warning' : 'danger'"
-      :disabled="!!props.contractor.succession"
+      :disabled="isSuccession"
       @click="callFormModal"
     >
       {{ contRelease ? '수정하기' : '등록하기' }}
