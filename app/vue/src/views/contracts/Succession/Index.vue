@@ -30,7 +30,7 @@ const contractor = computed(() => contractStore.contractor)
 
 const isSuccession = computed(
   () =>
-    !!contractor.value?.successions &&
+    !!contractor.value?.successions.length &&
     !contractor.value?.successions[0].is_approval,
 )
 
@@ -64,7 +64,7 @@ watch(route, val => {
 
 watch(contractor, val => {
   if (val) fetchContract(val.contract)
-  if (val?.successions) fetchSuccession(val.successions[0].pk)
+  if (val?.successions.length) fetchSuccession(val.successions[0].pk)
   else {
     contractStore.contract = null
     contractStore.succession = null
