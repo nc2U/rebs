@@ -42,8 +42,12 @@ const onSubmit = (payload: SuccessType) => emit('on-submit', payload)
       </CTableRow>
     </CTableHead>
     <CTableBody>
-      <CTableRow v-for="succession in successionList" :key="succession.pk">
-        <Succession :succession="succession" @on-submit="onSubmit" />
+      <CTableRow
+        v-for="suc in successionList"
+        :key="suc.pk"
+        :class="suc.is_approval ? 'bg-light' : ''"
+      >
+        <Succession :succession="suc" @on-submit="onSubmit" />
       </CTableRow>
     </CTableBody>
   </CTable>
