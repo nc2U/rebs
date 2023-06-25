@@ -93,6 +93,11 @@ const searchContractor = (search: string) => {
   } else contractStore.contractorList = []
 }
 
+const pageSelect = (p: number) => {
+  page.value = p
+  if (project.value) fetchSuccessionList(project.value, p)
+}
+
 const onSubmit = (payload: { s_data: Succession; b_data: Buyer }) => {
   const { s_data, b_data } = payload
   const dbData = { ...s_data, ...b_data }
@@ -136,18 +141,13 @@ onBeforeMount(() => {
         :is-succession="isSuccession"
         @on-submit="onSubmit"
       />
-      {{ contractor }}
-      <hr />
-      계약자 승계 상태에 따른 구분 로직 작성 / 페이지 관련 로직 작성 / 엑셀 로직
-      작성
-      <hr />
       <TableTitleRow
         title="승계 진행 건 목록"
         excel
         :url="downloadUrl"
         :disabled="true"
       />
-      <SuccessionList @on-submit="onSubmit" />
+      <SuccessionList @page-select="pageSelect" @on-submit="onSubmit" />
     </CCardBody>
   </ContentBody>
 </template>
