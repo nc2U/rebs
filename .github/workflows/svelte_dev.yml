@@ -52,7 +52,7 @@ jobs:
           host: ${{ secrets.CICD_HOST }}
           username: ${{ secrets.CICD_USERNAME }}
           password: ${{ secrets.CICD_PASSWORD }}
-          source: 'app/django/static/svelte'
+          source: 'app/django/static/svelte/'
           target: '/mnt/nfs/dev/app/django/static'
 
       # slack --> notification

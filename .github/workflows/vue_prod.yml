@@ -65,7 +65,7 @@ jobs:
           host: ${{ secrets.CICD_HOST }}
           username: ${{ secrets.CICD_USERNAME }}
           password: ${{ secrets.CICD_PASSWORD }}
-          source: 'app/django/static/dist'
+          source: 'app/django/static/dist/'
           target: '/mnt/nfs/prod/app/django/static'
 
       # slack --> notification
