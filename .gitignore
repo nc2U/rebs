@@ -30,7 +30,7 @@ __pycache__
 migrations
 media
 static
-!.gitkeep
+!static/.gitkeep
 settings/prod.py
 prod.py
 db.sqlite3
