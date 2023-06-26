@@ -41,7 +41,7 @@ jobs:
           password: ${{ secrets.CICD_PASSWORD }}
           command: |
             master_pod=$(kubectl get pod -n prod-hrebs | grep master | cut -d ' ' -f1)
-            kubectl exec -it -n prod-hrebs $master_pod -- sh /var/backups/script.sh
+            kubectl exec -it -n prod-hrebs $master_pod -- sh /var/backups/db_backup.sh
 
       # slack --> notification
       - name: Send slack when failed
