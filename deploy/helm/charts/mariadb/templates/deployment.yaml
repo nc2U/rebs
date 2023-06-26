@@ -46,7 +46,7 @@ spec:
           livenessProbe:
             exec:
               command:
-                - mysql
+                - mariadb
                 - --version
             initialDelaySeconds: 30
             failureThreshold: 2
@@ -54,7 +54,7 @@ spec:
           readinessProbe:
             exec:
               command:
-                - mysql
+                - mariadb
                 - --version
           volumeMounts:
             - name: mysql-data
