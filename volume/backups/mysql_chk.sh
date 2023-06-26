@@ -1,5 +1,5 @@
 #!/bin/bash
-dir_name="../mysql/"
+dir_name="./volume/mysql/"
 if ! test -d $dir_name
-then mkdir "../mysql/"
+then mkdir "./volume/mysql/"
 fi
