@@ -30,7 +30,7 @@ jobs:
           host: ${{ secrets.CICD_HOST }}
           username: ${{ secrets.CICD_USERNAME }}
           password: ${{ secrets.CICD_PASSWORD }}
-          source: 'deploy/helm,deploy/kubectl'
+          source: '.'
           target: '/mnt/nfs/dev/'
 
       - name: SSH Remote Commands from ci/cd server
