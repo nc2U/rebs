@@ -47,6 +47,7 @@ deploy/docker/nginx/log/
 venv/
 
 docker-compose.yml
+cluster-issuer.yml
 
 /coverage
 
