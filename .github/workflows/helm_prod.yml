@@ -58,7 +58,7 @@ jobs:
               --set 'nginx.ingress.hosts[2].host'=api.${{ secrets.DOMAIN_NAME }} \
               --set 'nginx.ingress.hosts[1].paths[0].path'=/ \
               --set 'nginx.ingress.hosts[1].paths[0].pathType'=ImplementationSpecific \
-              --set 'nginx.ingress.hosts[2].paths[0].path'=/ \
+              --set 'nginx.ingress.hosts[2].paths[0].path'=/api/v1/ \
               --set 'nginx.ingress.hosts[2].paths[0].pathType'=ImplementationSpecific
 
       # slack --> notification
