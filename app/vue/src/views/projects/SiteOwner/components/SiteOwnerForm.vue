@@ -274,6 +274,7 @@ onBeforeMount(() => {
                   v-model="form.address1"
                   maxlength="35"
                   placeholder="메인 주소"
+                  @click="postCode.initiate()"
                 />
               </CCol>
             </CRow>
