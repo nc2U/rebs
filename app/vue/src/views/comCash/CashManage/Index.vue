@@ -43,45 +43,44 @@ const excelUrl = computed(() => {
   return `/excel/cashbook/?s_date=${sd}&e_date=${ed}&sort=${st}&account_d1=${d1}&account_d2=${d2}&account_d3=${d3}&bank_account=${ba}&search_word=${q}`
 })
 
-const companyStore = useCompany()
-const initComId = computed(() => companyStore.initComId)
-const company = computed(() => companyStore.company?.pk)
+const comStore = useCompany()
+const company = computed(() => comStore.company?.pk || comStore.initComId)
 
-const fetchCompany = (pk: number) => companyStore.fetchCompany(pk)
-const fetchAllDepartList = (com: number) => companyStore.fetchAllDepartList(com)
+const fetchCompany = (pk: number) => comStore.fetchCompany(pk)
+const fetchAllDepartList = (com: number) => comStore.fetchAllDepartList(com)
 
-const comCashStore = useComCash()
-const fetchBankCodeList = () => comCashStore.fetchBankCodeList()
-const fetchAccSortList = () => comCashStore.fetchAccSortList()
-const fetchAllAccD1List = () => comCashStore.fetchAllAccD1List()
-const fetchAllAccD2List = () => comCashStore.fetchAllAccD2List()
-const fetchAllAccD3List = () => comCashStore.fetchAllAccD3List()
+const cashStore = useComCash()
+const fetchBankCodeList = () => cashStore.fetchBankCodeList()
+const fetchAccSortList = () => cashStore.fetchAccSortList()
+const fetchAllAccD1List = () => cashStore.fetchAllAccD1List()
+const fetchAllAccD2List = () => cashStore.fetchAllAccD2List()
+const fetchAllAccD3List = () => cashStore.fetchAllAccD3List()
 const fetchFormAccD1List = (sort: number | null) =>
-  comCashStore.fetchFormAccD1List(sort)
+  cashStore.fetchFormAccD1List(sort)
 const fetchFormAccD2List = (sort: number | null, d1: number | null) =>
-  comCashStore.fetchFormAccD2List(sort, d1)
+  cashStore.fetchFormAccD2List(sort, d1)
 const fetchFormAccD3List = (
   sort: number | null,
   d1: number | null,
   d2: number | null,
-) => comCashStore.fetchFormAccD3List(sort, d1, d2)
-const fetchComBankAccList = (pk: number) => comCashStore.fetchComBankAccList(pk)
+) => cashStore.fetchFormAccD3List(sort, d1, d2)
+const fetchComBankAccList = (pk: number) => cashStore.fetchComBankAccList(pk)
 const fetchAllComBankAccList = (pk: number) =>
-  comCashStore.fetchAllComBankAccList(pk)
+  cashStore.fetchAllComBankAccList(pk)
 const patchComBankAcc = (payload: CompanyBank) =>
-  comCashStore.patchComBankAcc(payload)
+  cashStore.patchComBankAcc(payload)
 
 const fetchCashBookList = (payload: Filter) =>
-  comCashStore.fetchCashBookList(payload)
+  cashStore.fetchCashBookList(payload)
 const createCashBook = (payload: CashBook & { sepData: SepItems | null }) =>
-  comCashStore.createCashBook(payload)
+  cashStore.createCashBook(payload)
 const updateCashBook = (
   payload: CashBook & { sepData: SepItems | null } & { filters: DataFilter },
-) => comCashStore.updateCashBook(payload)
+) => cashStore.updateCashBook(payload)
 const deleteCashBook = (payload: CashBook & { filters: Filter }) =>
-  comCashStore.deleteCashBook(payload)
+  cashStore.deleteCashBook(payload)
 const patchAccD3 = (payload: { pk: number; is_hide: boolean }) =>
-  comCashStore.patchAccD3(payload)
+  cashStore.patchAccD3(payload)
 
 const onSelectAdd = (target: number) => {
   if (!!target) {
@@ -91,12 +90,12 @@ const onSelectAdd = (target: number) => {
     fetchAllComBankAccList(target)
     fetchCashBookList({ company: target })
   } else {
-    companyStore.allDepartList = []
-    companyStore.company = null
-    comCashStore.comBankList = []
-    comCashStore.allComBankList = []
-    comCashStore.cashBookList = []
-    comCashStore.cashBookCount = 0
+    comStore.allDepartList = []
+    comStore.company = null
+    cashStore.comBankList = []
+    cashStore.allComBankList = []
+    cashStore.cashBookList = []
+    cashStore.cashBookCount = 0
   }
 }
 
@@ -213,7 +212,7 @@ onBeforeMount(() => {
   fetchFormAccD2List(null, null)
   fetchFormAccD3List(null, null, null)
 
-  const companyPk = company.value || initComId.value
+  const companyPk = company.value
   fetchCompany(companyPk)
   fetchAllDepartList(companyPk)
   fetchComBankAccList(companyPk)

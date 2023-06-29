@@ -37,22 +37,19 @@ const pageSelect = (page: number) => {
 }
 
 const comStore = useCompany()
-const initComId = computed(() => comStore.initComId)
-const company = computed(() => comStore.company?.pk || null)
+const company = computed(() => comStore.company?.pk || comStore.initComId)
 
-const documentStore = useDocument()
-const suitcaseList = computed(() => documentStore.suitcaseList)
+const docStore = useDocument()
+const suitcaseList = computed(() => docStore.suitcaseList)
 
 const fetchSuitCaseList = (payload: cFilter) =>
-  documentStore.fetchSuitCaseList(payload)
+  docStore.fetchSuitCaseList(payload)
 const fetchAllSuitCaseList = (payload: cFilter) =>
-  documentStore.fetchAllSuitCaseList(payload)
+  docStore.fetchAllSuitCaseList(payload)
 
-const createSuitCase = (payload: SuitCase) =>
-  documentStore.createSuitCase(payload)
-const updateSuitCase = (payload: SuitCase) =>
-  documentStore.updateSuitCase(payload)
-const deleteSuitCase = (pk: number) => documentStore.deleteSuitCase(pk)
+const createSuitCase = (payload: SuitCase) => docStore.createSuitCase(payload)
+const updateSuitCase = (payload: SuitCase) => docStore.updateSuitCase(payload)
+const deleteSuitCase = (pk: number) => docStore.deleteSuitCase(pk)
 
 const router = useRouter()
 
@@ -61,8 +58,8 @@ const companySelect = (target: number) => {
     fetchSuitCaseList({ company: target })
   } else {
     comStore.company = null
-    documentStore.suitcaseList = []
-    documentStore.suitcaseCount = 0
+    docStore.suitcaseList = []
+    docStore.suitcaseCount = 0
     router.replace({ name: '본사 소송 사건' })
   }
 }
@@ -112,7 +109,7 @@ const sortFilter = (project: number | null) => {
 }
 
 onBeforeMount(() => {
-  fetchSuitCaseList({ company: company.value || initComId.value })
+  fetchSuitCaseList({ company: company.value })
   fetchAllSuitCaseList({})
 })
 

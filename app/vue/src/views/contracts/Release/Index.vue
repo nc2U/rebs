@@ -16,9 +16,8 @@ import ReleaseList from '@/views/contracts/Release/components/ReleaseList.vue'
 
 const page = ref(1)
 
-const projectStore = useProject()
-const project = computed(() => projectStore.project?.pk)
-const initProjId = computed(() => projectStore.initProjId)
+const projStore = useProject()
+const project = computed(() => projStore.project?.pk || projStore.initProjId)
 
 const downloadUrl = computed(() => `/excel/releases/?project=${project.value}`)
 
@@ -86,7 +85,7 @@ const onSubmit = (payload: ContractRelease) => {
 }
 
 onBeforeMount(() => {
-  fetchContReleaseList(project.value || initProjId.value)
+  fetchContReleaseList(project.value)
   if (route.query.contractor) fetchContractor(Number(route.query.contractor))
   else contractStore.contractor = null
 })

@@ -17,30 +17,29 @@ const date = ref(new Date())
 const direct = ref('0')
 const compName = ref('StatusByAccount')
 
-const projectStore = useProject()
-const project = computed(() => projectStore.project?.pk)
-const initProjId = computed(() => projectStore.initProjId)
+const projStore = useProject()
+const project = computed(() => projStore.project?.pk || projStore.initProjId)
 
 const fetchStatusOutBudgetList = (proj: number) =>
-  projectStore.fetchStatusOutBudgetList(proj)
+  projStore.fetchStatusOutBudgetList(proj)
 const patchStatusOutBudgetList = (proj: number, pk: number, budget: number) =>
-  projectStore.patchStatusOutBudgetList(proj, pk, budget)
+  projStore.patchStatusOutBudgetList(proj, pk, budget)
 const fetchExecAmountList = (project: number, date?: string) =>
-  projectStore.fetchExecAmountList(project, date)
+  projStore.fetchExecAmountList(project, date)
 
-const proCashStore = useProCash()
-const fetchProAllAccD2List = () => proCashStore.fetchProAllAccD2List()
-const fetchProAllAccD3List = () => proCashStore.fetchProAllAccD3List()
+const pCashStore = useProCash()
+const fetchProAllAccD2List = () => pCashStore.fetchProAllAccD2List()
+const fetchProAllAccD3List = () => pCashStore.fetchProAllAccD3List()
 const fetchProBankAccList = (proj: number) =>
-  proCashStore.fetchProBankAccList(proj)
+  pCashStore.fetchProBankAccList(proj)
 
 const fetchBalanceByAccList = (payload: {
   project: number
   direct?: string
   date?: string
-}) => proCashStore.fetchBalanceByAccList(payload)
+}) => pCashStore.fetchBalanceByAccList(payload)
 const fetchDateCashBookList = (payload: { project: number; date: string }) =>
-  proCashStore.fetchDateCashBookList(payload)
+  pCashStore.fetchDateCashBookList(payload)
 
 const excelUrl = computed(() => {
   const comp = compName.value
@@ -68,11 +67,11 @@ const onSelectAdd = (target: number) => {
       date: dateFormat(date.value),
     })
   } else {
-    projectStore.statusOutBudgetList = []
-    projectStore.execAmountList = []
-    proCashStore.proBankAccountList = []
-    proCashStore.balanceByAccList = []
-    proCashStore.proDateCashBook = []
+    projStore.statusOutBudgetList = []
+    projStore.execAmountList = []
+    pCashStore.proBankAccountList = []
+    pCashStore.balanceByAccList = []
+    pCashStore.proDateCashBook = []
   }
 }
 
@@ -114,7 +113,7 @@ onBeforeMount(() => {
   fetchProAllAccD2List()
   fetchProAllAccD3List()
 
-  const projectPk = project.value || initProjId.value
+  const projectPk = project.value
   fetchExecAmountList(projectPk)
   fetchStatusOutBudgetList(projectPk)
   fetchProBankAccList(projectPk)

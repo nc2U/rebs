@@ -10,10 +10,8 @@ import ContSummary from '@/views/contracts/Status/components/ContSummary.vue'
 import TableTitleRow from '@/components/TableTitleRow.vue'
 import ContractBoard from '@/views/contracts/Status/components/ContractBoard.vue'
 
-const projectStore = useProject()
-
-const project = computed(() => projectStore.project?.pk)
-const initProjId = computed(() => projectStore.initProjId)
+const projStore = useProject()
+const project = computed(() => projStore.project?.pk || projStore.initProjId)
 
 const excelUrl = computed(() =>
   project.value ? `excel/status/?project=${project.value}` : '',
@@ -55,7 +53,7 @@ const onSelectAdd = (target: number) => {
 }
 
 onBeforeMount(() => {
-  const projectPk = project.value || initProjId.value
+  const projectPk = project.value
   fetchTypeList(projectPk)
   fetchBuildingList(projectPk)
   fetchHouseUnitList(projectPk)

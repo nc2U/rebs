@@ -23,10 +23,10 @@ const printItems = ref(['1', '2', '4', '5', '8', '9', '10', '11'])
 const childListFiltering = (page: number) =>
   listControl.value.listFiltering(page)
 
-const projectStore = useProject()
+const projStore = useProject()
 
-const project = computed(() => projectStore.project)
-const initProjId = computed(() => projectStore.initProjId)
+const project = computed(() => projStore.project)
+const initProjId = computed(() => projStore.initProjId)
 
 watch(project, nVal => {
   if (nVal?.is_unit_set && !printItems.value.includes('6-7'))

@@ -11,31 +11,30 @@ import ContentBody from '@/layouts/ContentBody/Index.vue'
 import DownPayAddForm from '@/views/projects/DownPay/components/DownPayAddForm.vue'
 import DownPayFormList from '@/views/projects/DownPay/components/DownPayFormList.vue'
 
-const projectStore = useProject()
-const project = computed(() => projectStore.project?.pk)
-const initProjId = computed(() => projectStore.initProjId)
+const projStore = useProject()
+const project = computed(() => projStore.project?.pk || projStore.initProjId)
 
-const contractStore = useContract()
-const orderGroupList = computed(() => contractStore.orderGroupList)
+const contStore = useContract()
+const orderGroupList = computed(() => contStore.orderGroupList)
 
-const projectDataStore = useProjectData()
-const unitTypeList = computed(() => projectDataStore.unitTypeList)
+const pDataStore = useProjectData()
+const unitTypeList = computed(() => pDataStore.unitTypeList)
 
 const fetchOrderGroupList = (projId: number) =>
-  contractStore.fetchOrderGroupList(projId)
+  contStore.fetchOrderGroupList(projId)
 
-const fetchTypeList = (projId: number) => projectDataStore.fetchTypeList(projId)
+const fetchTypeList = (projId: number) => pDataStore.fetchTypeList(projId)
 
-const paymentStore = usePayment()
+const payStore = usePayment()
 const fetchDownPayList = (payload: {
   project: number
   order_group?: number
   unit_type?: number
-}) => paymentStore.fetchDownPayList(payload)
-const createDownPay = (payload: DownPay) => paymentStore.createDownPay(payload)
-const updateDownPay = (payload: DownPay) => paymentStore.updateDownPay(payload)
+}) => payStore.fetchDownPayList(payload)
+const createDownPay = (payload: DownPay) => payStore.createDownPay(payload)
+const updateDownPay = (payload: DownPay) => payStore.updateDownPay(payload)
 const deleteDownPay = (pk: number, projId: number) =>
-  paymentStore.deleteDownPay(pk, projId)
+  payStore.deleteDownPay(pk, projId)
 
 const onSelectAdd = (target: number) => {
   if (!!target) {
@@ -43,9 +42,9 @@ const onSelectAdd = (target: number) => {
     fetchTypeList(target)
     fetchDownPayList({ project: target })
   } else {
-    contractStore.orderGroupList = []
-    projectDataStore.unitTypeList = []
-    paymentStore.downPayList = []
+    contStore.orderGroupList = []
+    pDataStore.unitTypeList = []
+    payStore.downPayList = []
   }
 }
 
@@ -60,7 +59,7 @@ const onDeleteDownPay = (pk: number) => {
 }
 
 onBeforeMount(() => {
-  const projectPk = project.value || initProjId.value
+  const projectPk = project.value
   fetchDownPayList({ project: projectPk })
   fetchOrderGroupList(projectPk)
   fetchTypeList(projectPk)

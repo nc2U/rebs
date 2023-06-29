@@ -15,22 +15,20 @@ import CashListByDate from '@/views/comCash/Status/components/CashListByDate.vue
 const date = ref(new Date())
 const compName = ref('StatusByAccount')
 
-const companyStore = useCompany()
-const initComId = computed(() => companyStore.initComId)
-const company = computed(() => companyStore.company?.pk)
+const comStore = useCompany()
+const company = computed(() => comStore.company?.pk || comStore.initComId)
 
-const comCashStore = useComCash()
-const fetchAccSortList = () => comCashStore.fetchAccSortList()
-const fetchAllAccD1List = () => comCashStore.fetchAllAccD1List()
-const fetchAllAccD2List = () => comCashStore.fetchAllAccD2List()
-const fetchAllAccD3List = () => comCashStore.fetchAllAccD3List()
+const cashStore = useComCash()
+const fetchAccSortList = () => cashStore.fetchAccSortList()
+const fetchAllAccD1List = () => cashStore.fetchAllAccD1List()
+const fetchAllAccD2List = () => cashStore.fetchAllAccD2List()
+const fetchAllAccD3List = () => cashStore.fetchAllAccD3List()
 
-const fetchComBankAccList = (com: number) =>
-  comCashStore.fetchComBankAccList(com)
+const fetchComBankAccList = (com: number) => cashStore.fetchComBankAccList(com)
 const fetchComBalanceByAccList = (com: { company: number; date: string }) =>
-  comCashStore.fetchComBalanceByAccList(com)
+  cashStore.fetchComBalanceByAccList(com)
 const fetchDateCashBookList = (payload: { company: number; date: string }) =>
-  comCashStore.fetchDateCashBookList(payload)
+  cashStore.fetchDateCashBookList(payload)
 
 const excelUrl = computed(() => {
   const comp = compName.value
@@ -52,9 +50,9 @@ const onSelectAdd = (target: number) => {
       date: dateFormat(date.value),
     })
   } else {
-    comCashStore.comBankList = []
-    comCashStore.comBalanceByAccList = []
-    comCashStore.dateCashBook = []
+    cashStore.comBankList = []
+    cashStore.comBalanceByAccList = []
+    cashStore.dateCashBook = []
   }
 }
 
@@ -87,7 +85,7 @@ onBeforeMount(() => {
   fetchAllAccD2List()
   fetchAllAccD3List()
 
-  const companyPk = company.value || initComId.value
+  const companyPk = company.value
   fetchComBankAccList(companyPk)
   fetchComBalanceByAccList({
     company: companyPk,

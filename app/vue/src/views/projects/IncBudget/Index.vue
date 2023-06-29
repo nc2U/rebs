@@ -11,23 +11,22 @@ import ContentBody from '@/layouts/ContentBody/Index.vue'
 import BudgetAddForm from '@/views/projects/IncBudget/components/BudgetAddForm.vue'
 import BudgetFormList from '@/views/projects/IncBudget/components/BudgetFormList.vue'
 
-const projectStore = useProject()
-const project = computed(() => projectStore.project?.pk)
-const initProjId = computed(() => projectStore.initProjId)
+const projStore = useProject()
+const project = computed(() => projStore.project?.pk || projStore.initProjId)
 
-const proCashStore = useProCash()
+const pCashStore = useProCash()
 const allAccD2List = computed(() =>
-  proCashStore.allAccD2List.filter(d1 => d1.pk <= 2),
+  pCashStore.allAccD2List.filter(d1 => d1.pk <= 2),
 )
 const allAccD3List = computed(() =>
-  proCashStore.allAccD3List.filter(d3 => d3.pk === 1 || d3.pk === 4),
+  pCashStore.allAccD3List.filter(d3 => d3.pk === 1 || d3.pk === 4),
 )
 
 const contStore = useContract()
 const getOrderGroups = computed(() => contStore.getOrderGroups)
 
-const proDataStore = useProjectData()
-const getTypes = computed(() => proDataStore.getTypes)
+const pDataStore = useProjectData()
+const getTypes = computed(() => pDataStore.getTypes)
 
 provide('d2List', allAccD2List)
 provide('d3List', allAccD3List)
@@ -41,26 +40,26 @@ const onSelectAdd = (target: number) => {
     fetchIncBudgetList(target)
   } else {
     contStore.orderGroupList = []
-    proDataStore.unitTypeList = []
-    projectStore.proIncBudgetList = []
+    pDataStore.unitTypeList = []
+    projStore.proIncBudgetList = []
   }
 }
 
-const fetchIncBudgetList = (pj: number) => projectStore.fetchIncBudgetList(pj)
+const fetchIncBudgetList = (pj: number) => projStore.fetchIncBudgetList(pj)
 const createIncBudget = (payload: ProIncBudget) =>
-  projectStore.createIncBudget(payload)
+  projStore.createIncBudget(payload)
 const updateIncBudget = (payload: ProIncBudget) =>
-  projectStore.updateIncBudget(payload)
+  projStore.updateIncBudget(payload)
 const deleteIncBudget = (pk: number, project: number) =>
-  projectStore.deleteIncBudget(pk, project)
+  projStore.deleteIncBudget(pk, project)
 
-const fetchProAllAccD2List = () => proCashStore.fetchProAllAccD2List()
-const fetchProAllAccD3List = () => proCashStore.fetchProAllAccD3List()
+const fetchProAllAccD2List = () => pCashStore.fetchProAllAccD2List()
+const fetchProAllAccD3List = () => pCashStore.fetchProAllAccD3List()
 
 const fetchOrderGroupList = (proj: number) =>
   contStore.fetchOrderGroupList(proj)
 
-const fetchTypeList = (proj: number) => proDataStore.fetchTypeList(proj)
+const fetchTypeList = (proj: number) => pDataStore.fetchTypeList(proj)
 
 const onSubmit = (payload: ProIncBudget) => {
   if (project.value)
@@ -80,7 +79,7 @@ onBeforeMount(() => {
   fetchProAllAccD2List()
   fetchProAllAccD3List()
 
-  const projectPk = project.value || initProjId.value
+  const projectPk = project.value
   fetchOrderGroupList(projectPk)
   fetchTypeList(projectPk)
   fetchIncBudgetList(projectPk)

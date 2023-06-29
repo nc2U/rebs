@@ -42,50 +42,49 @@ const excelUrl = computed(() => {
   return `/excel/p-cashbook/?project=${pj}&imp=1&sdate=${sd}&edate=${ed}&sort=${st}&d2=${d2}&d3=${d3}&bank_acc=${ba}&q=${q}`
 })
 
-const projectStore = useProject()
-const project = computed(() => projectStore.project?.pk)
-const initProjId = computed(() => projectStore.initProjId)
+const projStore = useProject()
+const project = computed(() => projStore.project?.pk || projStore.initProjId)
 
 const comCashStore = useComCash()
 const fetchBankCodeList = () => comCashStore.fetchBankCodeList()
 
-const proCashStore = useProCash()
-const fetchProAccSortList = () => proCashStore.fetchProAccSortList()
-const fetchProAllAccD2List = () => proCashStore.fetchProAllAccD2List()
-const fetchProAllAccD3List = () => proCashStore.fetchProAllAccD3List()
+const pCashStore = useProCash()
+const fetchProAccSortList = () => pCashStore.fetchProAccSortList()
+const fetchProAllAccD2List = () => pCashStore.fetchProAllAccD2List()
+const fetchProAllAccD3List = () => pCashStore.fetchProAllAccD3List()
 
 const fetchProFormAccD2List = (sort?: number | null) =>
-  proCashStore.fetchProFormAccD2List(sort)
+  pCashStore.fetchProFormAccD2List(sort)
 const fetchProFormAccD3List = (d2?: number | null, sort?: number | null) =>
-  proCashStore.fetchProFormAccD3List(d2, sort)
+  pCashStore.fetchProFormAccD3List(d2, sort)
 
 const fetchProBankAccList = (projId: number) =>
-  proCashStore.fetchProBankAccList(projId)
+  pCashStore.fetchProBankAccList(projId)
 const fetchAllProBankAccList = (projId: number) =>
-  proCashStore.fetchAllProBankAccList(projId)
+  pCashStore.fetchAllProBankAccList(projId)
 const fetchProjectImprestList = (payload: CashBookFilter) =>
-  proCashStore.fetchProjectImprestList(payload)
+  pCashStore.fetchProjectImprestList(payload)
 
 const patchProBankAcc = (payload: ProBankAcc) =>
-  proCashStore.patchProBankAcc(payload)
+  pCashStore.patchProBankAcc(payload)
 
 const createPrCashBook = (
   payload: PrCashBook & { sepData: PrCashBook | null } & {
     filters: CashBookFilter
   },
-) => proCashStore.createPrCashBook(payload)
+) => pCashStore.createPrCashBook(payload)
 
 const updatePrImprestBook = (
   payload: PrCashBook & { sepData: PrCashBook | null } & {
     filters: CashBookFilter
   },
-) => proCashStore.updatePrImprestBook(payload)
+) => pCashStore.updatePrImprestBook(payload)
 
 const deletePrImprestBook = (
   payload: { pk: number; project: number } & {
     filters?: CashBookFilter
   },
-) => proCashStore.deletePrImprestBook(payload)
+) => pCashStore.deletePrImprestBook(payload)
 
 const onSelectAdd = (target: number) => {
   if (!!target) {
@@ -93,10 +92,10 @@ const onSelectAdd = (target: number) => {
     fetchAllProBankAccList(target)
     fetchProjectImprestList({ project: target })
   } else {
-    proCashStore.balanceByAccList = []
-    proCashStore.allProBankAccountList = []
-    proCashStore.proImprestList = []
-    proCashStore.proImprestCount = 0
+    pCashStore.balanceByAccList = []
+    pCashStore.allProBankAccountList = []
+    pCashStore.proImprestList = []
+    pCashStore.proImprestCount = 0
   }
 }
 
@@ -231,7 +230,7 @@ onBeforeMount(() => {
   fetchProFormAccD2List()
   fetchProFormAccD3List()
 
-  const projectPk = project.value || initProjId.value
+  const projectPk = project.value
   fetchProBankAccList(projectPk)
   fetchAllProBankAccList(projectPk)
   fetchProjectImprestList({ project: projectPk })

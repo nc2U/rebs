@@ -16,10 +16,8 @@ import SuccessionList from './components/SuccessionList.vue'
 
 const page = ref(1)
 
-const projectStore = useProject()
-const project = computed(
-  () => projectStore.project?.pk || projectStore.initProjId,
-)
+const projStore = useProject()
+const project = computed(() => projStore.project?.pk || projStore.initProjId)
 
 const downloadUrl = computed(
   () => `/excel/succession/?project=${project.value}`,

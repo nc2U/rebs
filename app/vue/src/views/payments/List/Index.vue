@@ -30,8 +30,7 @@ let filterItems = ref<CashBookFilter>({
 })
 
 const projStore = useProject()
-const project = computed(() => projStore.project?.pk)
-const initProjId = computed(() => projStore.initProjId)
+const project = computed(() => projStore.project?.pk || projStore.initProjId)
 
 const fetchIncBudgetList = (proj: number) => projStore.fetchIncBudgetList(proj)
 
@@ -132,7 +131,7 @@ const excelUrl = computed(() =>
 )
 
 onMounted(() => {
-  const projectPk = project.value || initProjId.value
+  const projectPk = project.value
   fetchOrderGroupList(projectPk)
   fetchTypeList(projectPk)
   fetchIncBudgetList(projectPk)

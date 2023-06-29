@@ -19,12 +19,9 @@ const dataFilter = ref({
   search: '',
 })
 
-const projectStore = useProject()
-const project = computed(
-  () => projectStore.project?.pk || projectStore.initProjId,
-)
-
-const isReturned = computed(() => projectStore.project?.is_returned_area)
+const projStore = useProject()
+const project = computed(() => projStore.project?.pk || projStore.initProjId)
+const isReturned = computed(() => projStore.project?.is_returned_area)
 
 const siteStore = useSite()
 const getSitesTotal = computed(() => siteStore.getSitesTotal)

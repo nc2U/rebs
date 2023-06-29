@@ -10,13 +10,13 @@ import IndexDetail from '@/views/projects/List/components/IndexDetail.vue'
 
 const compName = ref('IndexDetail')
 
-const projectStore = useProject()
-const project = computed(() => projectStore.project)
+const projStore = useProject()
+const project = computed(() => projStore.project)
 
 watch(project, () => (compName.value = 'IndexDetail'))
 
-const createProject = (payload: Project) => projectStore.createProject(payload)
-const updateProject = (payload: Project) => projectStore.updateProject(payload)
+const createProject = (payload: Project) => projStore.createProject(payload)
+const updateProject = (payload: Project) => projStore.updateProject(payload)
 
 const createForm = () => (compName.value = 'CreateForm')
 const updateForm = () => (compName.value = 'UpdateForm')
@@ -30,7 +30,7 @@ const toSubmit = (payload: Project) => {
 }
 
 onMounted(() => {
-  if (projectStore.projectList.length === 0) createForm()
+  if (projStore.projectList.length === 0) createForm()
 })
 </script>
 

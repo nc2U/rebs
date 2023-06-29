@@ -18,15 +18,14 @@ const dataFilter = ref<ComFilter>({
   q: '',
 })
 
-const companyStore = useCompany()
-const initComId = computed(() => companyStore.initComId)
-const comId = computed(() => companyStore.company?.pk)
-const comName = computed(() => companyStore.company?.name || undefined)
+const comStore = useCompany()
+const comId = computed(() => comStore.company?.pk || comStore.initComId)
+const comName = computed(() => comStore.company?.name || undefined)
 
 const companySelect = (target: number) => {
   if (!!target) {
     fetchDutyList({ com: target })
-  } else companyStore.dutyList = []
+  } else comStore.dutyList = []
 }
 
 const listFiltering = (payload: ComFilter) => {
@@ -38,14 +37,13 @@ const listFiltering = (payload: ComFilter) => {
   })
 }
 
-const fetchDutyList = (payload: ComFilter) =>
-  companyStore.fetchDutyList(payload)
+const fetchDutyList = (payload: ComFilter) => comStore.fetchDutyList(payload)
 
 const createDuty = (payload: Duty, p?: number, c?: number) =>
-  companyStore.createDuty(payload, p, c)
+  comStore.createDuty(payload, p, c)
 const updateDuty = (payload: Duty, p?: number, c?: number) =>
-  companyStore.updateDuty(payload, p, c)
-const deleteDuty = (pk: number, com: number) => companyStore.deleteDuty(pk, com)
+  comStore.updateDuty(payload, p, c)
+const deleteDuty = (pk: number, com: number) => comStore.deleteDuty(pk, com)
 
 const multiSubmit = (payload: Duty) => {
   const { page } = dataFilter.value
@@ -66,7 +64,7 @@ const pageSelect = (num: number) => {
   }
 }
 
-onMounted(() => fetchDutyList({ com: comId.value || initComId.value }))
+onMounted(() => fetchDutyList({ com: comId.value }))
 </script>
 
 <template>

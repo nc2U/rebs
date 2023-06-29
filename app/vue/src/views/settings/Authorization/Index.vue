@@ -99,10 +99,9 @@ const formsCheck = computed(() => {
   } else return true
 })
 
-const companyStore = useCompany()
-const initComId = computed(() => companyStore.initComId)
-const comId = computed(() => companyStore.company?.pk)
-const fetchCompany = (pk: number) => companyStore.fetchCompany(pk)
+const comStore = useCompany()
+const comId = computed(() => comStore.company?.pk || comStore.initComId)
+const fetchCompany = (pk: number) => comStore.fetchCompany(pk)
 
 const companySelect = (target: number) => {
   if (!!target) {
@@ -110,20 +109,20 @@ const companySelect = (target: number) => {
     comInfo.value.company = target
   } else {
     comInfo.value.company = null
-    companyStore.company = null
+    comStore.company = null
   }
 }
 
-const accountStore = useAccount()
-const user = computed(() => accountStore.user)
+const accStore = useAccount()
+const user = computed(() => accStore.user)
 const isStaffAuth = computed(() => !!user.value?.staffauth)
 
 const selectUser = (pk: number | null) => {
   if (pk === null) {
-    accountStore.user = null
+    accStore.user = null
     dataReset()
   } else {
-    accountStore.fetchUser(pk).then(() => {
+    accStore.fetchUser(pk).then(() => {
       if (user.value && !user.value.staffauth) dataReset()
     })
   }
@@ -161,8 +160,8 @@ const modalAction = () => {
   const authData = { ...comInfo.value, ...projectAuth.value, ...menuAuth.value }
   if (user.value && user.value.pk) {
     if (!!authData.pk)
-      accountStore.patchAuth(authData, user.value.pk) // staffauth patch
-    else accountStore.createAuth(authData, user.value.pk) // staffauth create
+      accStore.patchAuth(authData, user.value.pk) // staffauth patch
+    else accStore.createAuth(authData, user.value.pk) // staffauth create
     confirmModal.value.close()
   } else {
     alertModal.value.callModal()
@@ -193,9 +192,9 @@ watch(
 )
 
 onBeforeMount(() => {
-  accountStore.fetchUsersList()
-  comInfo.value.company = comId.value || initComId.value
-  if (accountStore?.userInfo) selectUser(accountStore.userInfo.pk as number)
+  accStore.fetchUsersList()
+  comInfo.value.company = comId.value
+  if (accStore?.userInfo) selectUser(accStore.userInfo.pk as number)
 })
 </script>
 

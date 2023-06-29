@@ -9,23 +9,22 @@ import ContentBody from '@/layouts/ContentBody/Index.vue'
 import BuildingAddForm from '@/views/projects/Building/components/BuildingAddForm.vue'
 import BuildingFormList from '@/views/projects/Building/components/BuildingFormList.vue'
 
-const projectStore = useProject()
-const project = computed(() => projectStore.project?.pk)
-const initProjId = computed(() => projectStore.initProjId)
+const projStore = useProject()
+const project = computed(() => projStore.project?.pk || projStore.initProjId)
 
-const projectDataStore = useProjectData()
+const pDataStore = useProjectData()
 const fetchBuildingList = (projId: number) =>
-  projectDataStore.fetchBuildingList(projId)
+  pDataStore.fetchBuildingList(projId)
 const createBuilding = (payload: BuildingUnit) =>
-  projectDataStore.createBuilding(payload)
+  pDataStore.createBuilding(payload)
 const updateBuilding = (payload: BuildingUnit) =>
-  projectDataStore.updateBuilding(payload)
+  pDataStore.updateBuilding(payload)
 const deleteBuilding = (pk: number, projId: number) =>
-  projectDataStore.deleteBuilding(pk, projId)
+  pDataStore.deleteBuilding(pk, projId)
 
 const onSelectAdd = (target: number) => {
   if (!!target) fetchBuildingList(target)
-  else projectDataStore.buildingList = []
+  else pDataStore.buildingList = []
 }
 
 const onCreateBuilding = (payload: BuildingUnit) =>
@@ -38,7 +37,7 @@ const onDeleteBuilding = (pk: number) => {
   if (project.value) deleteBuilding(pk, project.value)
 }
 
-onBeforeMount(() => fetchBuildingList(project.value || initProjId.value))
+onBeforeMount(() => fetchBuildingList(project.value))
 </script>
 
 <template>

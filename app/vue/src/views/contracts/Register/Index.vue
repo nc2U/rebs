@@ -20,11 +20,10 @@ const contractStore = useContract()
 const contract = computed(() => contractStore.contract)
 const contractor = computed(() => contractStore.contractor)
 
-const projectStore = useProject()
-const project = computed(() => projectStore.project?.pk)
-const initProjId = computed(() => projectStore.initProjId)
-const unitSet = computed(() => projectStore.project?.is_unit_set)
-const isUnion = computed(() => !projectStore.project?.is_direct_manage)
+const projStore = useProject()
+const project = computed(() => projStore.project?.pk || projStore.initProjId)
+const unitSet = computed(() => projStore.project?.is_unit_set)
+const isUnion = computed(() => !projStore.project?.is_direct_manage)
 
 const fetchContract = (cont: number) => contractStore.fetchContract(cont)
 
@@ -144,7 +143,7 @@ const searchContractor = (search: string) => {
 }
 
 onBeforeMount(() => {
-  const projectPk = project.value || initProjId.value
+  const projectPk = project.value
   fetchOrderGroupList(projectPk)
   fetchTypeList(projectPk)
   fetchAllProBankAccList(projectPk)

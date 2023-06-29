@@ -9,23 +9,22 @@ import ContentBody from '@/layouts/ContentBody/Index.vue'
 import FloorAddForm from '@/views/projects/Floor/components/FloorAddForm.vue'
 import FloorFormList from '@/views/projects/Floor/components/FloorFormList.vue'
 
-const projectStore = useProject()
-const project = computed(() => projectStore.project?.pk)
-const initProjId = computed(() => projectStore.initProjId)
+const projStore = useProject()
+const project = computed(() => projStore.project?.pk || projStore.initProjId)
 
-const projectDataStore = useProjectData()
+const pDataStore = useProjectData()
 const fetchFloorTypeList = (projId: number) =>
-  projectDataStore.fetchFloorTypeList(projId)
+  pDataStore.fetchFloorTypeList(projId)
 const createFloorType = (payload: UnitFloorType) =>
-  projectDataStore.createFloorType(payload)
+  pDataStore.createFloorType(payload)
 const updateFloorType = (payload: UnitFloorType) =>
-  projectDataStore.updateFloorType(payload)
+  pDataStore.updateFloorType(payload)
 const deleteFloorType = (pk: number, project: number) =>
-  projectDataStore.deleteFloorType(pk, project)
+  pDataStore.deleteFloorType(pk, project)
 
 const onSelectAdd = (target: number) => {
   if (!!target) fetchFloorTypeList(target)
-  else projectDataStore.floorTypeList = []
+  else pDataStore.floorTypeList = []
 }
 
 const onSubmit = (payload: UnitFloorType) =>
@@ -38,7 +37,7 @@ const onDeleteFloor = (pk: number) => {
   if (project.value) deleteFloorType(pk, project.value)
 }
 
-onBeforeMount(() => fetchFloorTypeList(project.value || initProjId.value))
+onBeforeMount(() => fetchFloorTypeList(project.value))
 </script>
 
 <template>

@@ -17,9 +17,8 @@ import CreateButton from '@/views/payments/Register/components/CreateButton.vue'
 
 const paymentId = ref<string>('')
 
-const projectStore = useProject()
-const project = computed(() => projectStore.project?.pk)
-const initProjId = computed(() => projectStore.initProjId)
+const projStore = useProject()
+const project = computed(() => projStore.project?.pk || projStore.initProjId)
 
 const contractStore = useContract()
 const contract = computed(() => contractStore.contract)
@@ -139,7 +138,7 @@ const onDelete = (pk: number) => {
 }
 
 onBeforeMount(() => {
-  const projectPk = project.value || initProjId.value
+  const projectPk = project.value
   fetchTypeList(projectPk)
   fetchPayOrderList(projectPk)
   fetchAllProBankAccList(projectPk)

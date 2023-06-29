@@ -26,8 +26,7 @@ const dataFilter = ref<StaffFilter>({
 })
 
 const comStore = useCompany()
-const initComId = computed(() => comStore.initComId)
-const comId = computed(() => comStore.company?.pk)
+const comId = computed(() => comStore.company?.pk || comStore.initComId)
 const comName = computed(() => comStore.company?.name || undefined)
 
 const accStore = useAccount()
@@ -99,7 +98,7 @@ const pageSelect = (num: number) => {
 }
 
 onMounted(() => {
-  const companyPk = comId.value || initComId.value
+  const companyPk = comId.value
   fetchStaffList({ com: companyPk, sts: '1' })
   fetchAllGradeList(companyPk)
   fetchAllDepartList(companyPk)

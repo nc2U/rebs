@@ -18,18 +18,17 @@ const dataFilter = ref<ComFilter>({
   q: '',
 })
 
-const companyStore = useCompany()
-const initComId = computed(() => companyStore.initComId)
-const comId = computed(() => companyStore.company?.pk)
-const comName = computed(() => companyStore.company?.name || undefined)
+const comStore = useCompany()
+const comId = computed(() => comStore.company?.pk || comStore.initComId)
+const comName = computed(() => comStore.company?.name || undefined)
 
 const companySelect = (target: number) => {
   if (!!target) {
     fetchAllGradeList(target)
     fetchPositionList({ com: target })
   } else {
-    companyStore.allGradeList = []
-    companyStore.positionList = []
+    comStore.allGradeList = []
+    comStore.positionList = []
   }
 }
 
@@ -43,16 +42,16 @@ const listFiltering = (payload: ComFilter) => {
     })
 }
 
-const fetchAllGradeList = (com?: number) => companyStore.fetchAllGradeList(com)
+const fetchAllGradeList = (com?: number) => comStore.fetchAllGradeList(com)
 const fetchPositionList = (payload: ComFilter) =>
-  companyStore.fetchPositionList(payload)
+  comStore.fetchPositionList(payload)
 
 const createPosition = (payload: Position, p?: number, c?: number) =>
-  companyStore.createPosition(payload, p, c)
+  comStore.createPosition(payload, p, c)
 const updatePosition = (payload: Position, p?: number, c?: number) =>
-  companyStore.updatePosition(payload, p, c)
+  comStore.updatePosition(payload, p, c)
 const deletePosition = (pk: number, com: number) =>
-  companyStore.deletePosition(pk, com)
+  comStore.deletePosition(pk, com)
 
 const multiSubmit = (payload: Position) => {
   const { page } = dataFilter.value
@@ -74,7 +73,7 @@ const pageSelect = (num: number) => {
 }
 
 onMounted(() => {
-  const companyPk = comId.value || initComId.value
+  const companyPk = comId.value
   fetchAllGradeList(companyPk)
   fetchPositionList({ com: companyPk })
 })

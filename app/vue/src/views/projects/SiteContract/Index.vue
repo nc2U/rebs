@@ -26,9 +26,8 @@ const dataFilter = ref<filter>({
   search: '',
 })
 
-const projectStore = useProject()
-const project = computed(() => projectStore.project?.pk)
-const initProjId = computed(() => projectStore.initProjId)
+const projStore = useProject()
+const project = computed(() => projStore.project?.pk || projStore.initProjId)
 
 const siteStore = useSite()
 const getContsTotal = computed(() => siteStore.getContsTotal?.contracted_area)
@@ -79,7 +78,7 @@ const onDelete = (payload: { pk: number; project: number }) => {
 }
 
 onBeforeMount(() => {
-  const projectPk = project.value || initProjId.value
+  const projectPk = project.value
   siteStore.fetchAllOwners(projectPk)
   siteStore.fetchSiteContList(projectPk)
 })

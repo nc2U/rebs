@@ -22,8 +22,7 @@ const excelUrl = computed(
 )
 
 const projStore = useProject()
-const project = computed(() => projStore.project?.pk)
-const initProjId = computed(() => projStore.initProjId)
+const project = computed(() => projStore.project?.pk || projStore.initProjId)
 
 const fetchIncBudgetList = (proj: number) => projStore.fetchIncBudgetList(proj)
 
@@ -65,7 +64,7 @@ const setDate = (d: Date) => {
 }
 
 onBeforeMount(() => {
-  const projectPk = project.value || initProjId.value
+  const projectPk = project.value
   fetchTypeList(projectPk)
   fetchOrderGroupList(projectPk)
   fetchContSummaryList(projectPk)

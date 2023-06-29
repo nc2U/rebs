@@ -19,19 +19,18 @@ const dataFilter = ref<DepFilter>({
   q: '',
 })
 
-const companyStore = useCompany()
-const getPkDeparts = computed(() => companyStore.getPkDeparts)
-const initComId = computed(() => companyStore.initComId)
-const comId = computed(() => companyStore.company?.pk)
-const comName = computed(() => companyStore.company?.name || undefined)
+const comStore = useCompany()
+const getPkDeparts = computed(() => comStore.getPkDeparts)
+const comId = computed(() => comStore.company?.pk || comStore.initComId)
+const comName = computed(() => comStore.company?.name || undefined)
 
 const companySelect = (target: number) => {
   if (!!target) {
     fetchDepartmentList({ com: target })
     fetchAllDepartList(target)
   } else {
-    companyStore.departmentList = []
-    companyStore.allDepartList = []
+    comStore.departmentList = []
+    comStore.allDepartList = []
   }
 }
 
@@ -47,16 +46,15 @@ const listFiltering = (payload: DepFilter) => {
 }
 
 const fetchDepartmentList = (payload: DepFilter) =>
-  companyStore.fetchDepartmentList(payload)
-const fetchAllDepartList = (com?: number) =>
-  companyStore.fetchAllDepartList(com)
+  comStore.fetchDepartmentList(payload)
+const fetchAllDepartList = (com?: number) => comStore.fetchAllDepartList(com)
 
 const createDepartment = (payload: Depart, p?: number, c?: number) =>
-  companyStore.createDepartment(payload, p, c)
+  comStore.createDepartment(payload, p, c)
 const updateDepartment = (payload: Depart, p?: number, c?: number) =>
-  companyStore.updateDepartment(payload, p, c)
+  comStore.updateDepartment(payload, p, c)
 const deleteDepartment = (pk: number, com: number) =>
-  companyStore.deleteDepartment(pk, com)
+  comStore.deleteDepartment(pk, com)
 
 const multiSubmit = (payload: Depart) => {
   const { page } = dataFilter.value
@@ -82,7 +80,7 @@ const getLevel = (up: number) =>
   getPkDeparts.value.filter(d => d.value === up)[0].level + 1
 
 onMounted(() => {
-  const companyPk = comId.value || initComId.value
+  const companyPk = comId.value
   fetchDepartmentList({ com: companyPk })
   fetchAllDepartList(companyPk)
 })

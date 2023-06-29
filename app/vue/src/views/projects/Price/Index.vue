@@ -31,16 +31,15 @@ const priceMessage = ref(
   '공급가격을 입력하기 위해 [차수 정보]를 선택하여 주십시요.',
 )
 
-const projectStore = useProject()
-const project = computed(() => projectStore.project?.pk)
-const initProjId = computed(() => projectStore.initProjId)
+const projStore = useProject()
+const project = computed(() => projStore.project?.pk || projStore.initProjId)
 
-const contractStore = useContract()
-const contList = computed(() => contractStore.contList)
-const orderGroupList = computed(() => contractStore.orderGroupList)
+const contStore = useContract()
+const contList = computed(() => contStore.contList)
+const orderGroupList = computed(() => contStore.orderGroupList)
 
-const projectDataStore = useProjectData()
-const unitTypeList = computed(() => projectDataStore.unitTypeList)
+const pDataStore = useProjectData()
+const unitTypeList = computed(() => pDataStore.unitTypeList)
 
 const condTexts = computed(() => {
   // 차수명과 타입명 구하기
@@ -53,22 +52,22 @@ const condTexts = computed(() => {
   return { orderText, typeText }
 })
 
-const fetchContList = (projId: number) => contractStore.fetchContList(projId)
+const fetchContList = (projId: number) => contStore.fetchContList(projId)
 const fetchOrderGroupList = (projId: number) =>
-  contractStore.fetchOrderGroupList(projId)
+  contStore.fetchOrderGroupList(projId)
 const allContPriceSet = (payload: SimpleCont) =>
-  contractStore.allContPriceSet(payload)
+  contStore.allContPriceSet(payload)
 
-const fetchTypeList = (projId: number) => projectDataStore.fetchTypeList(projId)
+const fetchTypeList = (projId: number) => pDataStore.fetchTypeList(projId)
 const fetchFloorTypeList = (projId: number) =>
-  projectDataStore.fetchFloorTypeList(projId)
+  pDataStore.fetchFloorTypeList(projId)
 
-const paymentStore = usePayment()
-const fetchPriceList = (queryIds: Ids) => paymentStore.fetchPriceList(queryIds)
-const createPrice = (payload: Price) => paymentStore.createPrice(payload)
-const updatePrice = (payload: Price) => paymentStore.updatePrice(payload)
+const payStore = usePayment()
+const fetchPriceList = (queryIds: Ids) => payStore.fetchPriceList(queryIds)
+const createPrice = (payload: Price) => payStore.createPrice(payload)
+const updatePrice = (payload: Price) => payStore.updatePrice(payload)
 const deletePrice = (payload: Ids & { pk: number }) =>
-  paymentStore.deletePrice(payload)
+  payStore.deletePrice(payload)
 
 const formSelect = ref()
 
@@ -81,10 +80,10 @@ const onSelectAdd = (target: number) => {
     fetchFloorTypeList(target)
     formSelect.value.orderDisabled = false
   } else {
-    contractStore.contList = []
-    contractStore.orderGroupList = []
-    projectDataStore.unitTypeList = []
-    projectDataStore.floorTypeList = []
+    contStore.contList = []
+    contStore.orderGroupList = []
+    pDataStore.unitTypeList = []
+    pDataStore.floorTypeList = []
     formSelect.value.orderDisabled = true
   }
   // 프로젝트 change 이벤트 발생 시 항상 실행
@@ -113,7 +112,7 @@ const typeSelect = (type: number) => {
   }
 }
 // 프로젝트 또는 차수 선택 변경 시 가격 데이터 초기화
-const resetPrices = () => (paymentStore.priceList = [])
+const resetPrices = () => (payStore.priceList = [])
 
 const onCreatePrice = (payload: Price) => createPrice(payload)
 const onUpdatePrice = (payload: Price) => updatePrice(payload)
@@ -125,7 +124,7 @@ const contPriceSet = () => {
 }
 
 onBeforeMount(() => {
-  const projectPk = project.value || initProjId.value
+  const projectPk = project.value
   fetchContList(projectPk)
   fetchOrderGroupList(projectPk)
   fetchTypeList(projectPk)

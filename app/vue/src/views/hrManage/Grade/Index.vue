@@ -19,8 +19,7 @@ const dataFilter = ref<ComFilter>({
 })
 
 const comStore = useCompany()
-const initComId = computed(() => comStore.initComId)
-const comId = computed(() => comStore.company?.pk)
+const comId = computed(() => comStore.company?.pk || comStore.initComId)
 const comName = computed(() => comStore.company?.name || undefined)
 
 const companySelect = (target: number) => {
@@ -73,7 +72,7 @@ const pageSelect = (num: number) => {
 }
 
 onMounted(() => {
-  const companyPk = comId.value || initComId.value
+  const companyPk = comId.value
   fetchGradeList({ com: companyPk })
   fetchAllPositionList(companyPk)
 })

@@ -10,13 +10,13 @@ import CompanyDetail from './components/CompanyDetail.vue'
 
 const compName = ref('CompanyDetail')
 
-const companyStore = useCompany()
-const company = computed(() => companyStore.company)
+const comStore = useCompany()
+const company = computed(() => comStore.company)
 
 watch(company, () => (compName.value = 'CompanyDetail'))
 
-const createCompany = (payload: Company) => companyStore.createCompany(payload)
-const updateCompany = (payload: Company) => companyStore.updateCompany(payload)
+const createCompany = (payload: Company) => comStore.createCompany(payload)
+const updateCompany = (payload: Company) => comStore.updateCompany(payload)
 
 const createForm = () => (compName.value = 'CreateForm')
 const updateForm = () => (compName.value = 'UpdateForm')
@@ -31,7 +31,7 @@ const onSubmit = (payload: Company) => {
 }
 
 onMounted(() => {
-  if (companyStore.companyList.length === 0) createForm()
+  if (comStore.companyList.length === 0) createForm()
 })
 </script>
 

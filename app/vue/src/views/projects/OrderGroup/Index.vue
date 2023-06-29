@@ -9,24 +9,22 @@ import ContentBody from '@/layouts/ContentBody/Index.vue'
 import OrderAddForm from '@/views/projects/OrderGroup/components/OrderAddForm.vue'
 import OrderFormList from '@/views/projects/OrderGroup/components/OrderFormList.vue'
 
-const projectStore = useProject()
-const project = computed(() => projectStore.project?.pk)
-const initProjId = computed(() => projectStore.initProjId)
+const projStore = useProject()
+const project = computed(() => projStore.project?.pk || projStore.initProjId)
 
-const contractStore = useContract()
+const contStore = useContract()
 const onSelectAdd = (target: number) => {
   if (!!target) fetchOrderGroupList(target)
-  else contractStore.orderGroupList = []
+  else contStore.orderGroupList = []
 }
 
-const fetchOrderGroupList = (pk: number) =>
-  contractStore.fetchOrderGroupList(pk)
+const fetchOrderGroupList = (pk: number) => contStore.fetchOrderGroupList(pk)
 const createOrderGroup = (payload: OrderGroup) =>
-  contractStore.createOrderGroup(payload)
+  contStore.createOrderGroup(payload)
 const updateOrderGroup = (payload: OrderGroup) =>
-  contractStore.updateOrderGroup(payload)
+  contStore.updateOrderGroup(payload)
 const deleteOrderGroup = (payload: { pk: number; project: number }) =>
-  contractStore.deleteOrderGroup(payload)
+  contStore.deleteOrderGroup(payload)
 
 const onSubmit = (payload: OrderGroup) =>
   createOrderGroup({ ...{ project: project.value }, ...payload })
@@ -37,7 +35,7 @@ const onUpdateOrder = (payload: OrderGroup) =>
 const onDeleteOrder = (pk: number) =>
   deleteOrderGroup({ pk, project: project.value })
 
-onBeforeMount(() => fetchOrderGroupList(project.value || initProjId.value))
+onBeforeMount(() => fetchOrderGroupList(project.value))
 </script>
 
 <template>

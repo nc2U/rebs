@@ -30,9 +30,8 @@ const dataFilter = ref<CashBookFilter>({
   search: '',
 })
 
-const projectStore = useProject()
-const project = computed(() => projectStore.project?.pk)
-const initProjId = computed(() => projectStore.initProjId)
+const projStore = useProject()
+const project = computed(() => projStore.project?.pk || projStore.initProjId)
 
 const pageSelect = (page: number) => {
   dataFilter.value.page = page
@@ -220,7 +219,7 @@ onBeforeMount(() => {
   fetchProFormAccD2List()
   fetchProFormAccD3List()
 
-  const projectPk = project.value || initProjId.value
+  const projectPk = project.value
   fetchProBankAccList(projectPk)
   fetchAllProBankAccList(projectPk)
   fetchProjectCashList({ project: projectPk })

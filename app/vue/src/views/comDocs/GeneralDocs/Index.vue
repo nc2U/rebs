@@ -45,25 +45,21 @@ const pageSelect = (page: number) => {
 }
 
 const comStore = useCompany()
-const initComId = computed(() => comStore.initComId)
-const company = computed(() => comStore.company?.pk || null)
+const company = computed(() => comStore.company?.pk || comStore.initComId)
 
-const documentStore = useDocument()
-const postList = computed(() => documentStore.postList)
-const categoryList = computed(() => documentStore.categoryList)
+const docStore = useDocument()
+const postList = computed(() => docStore.postList)
+const categoryList = computed(() => docStore.categoryList)
 
-const fetchPostList = (payload: PostFilter) =>
-  documentStore.fetchPostList(payload)
-const fetchCategoryList = (board: number) =>
-  documentStore.fetchCategoryList(board)
+const fetchPostList = (payload: PostFilter) => docStore.fetchPostList(payload)
+const fetchCategoryList = (board: number) => docStore.fetchCategoryList(board)
 
-const createPost = (payload: { form: FormData }) =>
-  documentStore.createPost(payload)
+const createPost = (payload: { form: FormData }) => docStore.createPost(payload)
 const updatePost = (payload: { pk: number; form: FormData }) =>
-  documentStore.updatePost(payload)
-const patchPost = (payload: PatchPost) => documentStore.patchPost(payload)
-const patchLink = (payload: Link) => documentStore.patchLink(payload)
-const patchFile = (payload: AFile) => documentStore.patchFile(payload)
+  docStore.updatePost(payload)
+const patchPost = (payload: PatchPost) => docStore.patchPost(payload)
+const patchLink = (payload: Link) => docStore.patchLink(payload)
+const patchFile = (payload: AFile) => docStore.patchFile(payload)
 
 const router = useRouter()
 
@@ -72,8 +68,8 @@ const companySelect = (target: number) => {
     fetchPostList({ company: target, board: 2 })
   } else {
     comStore.company = null
-    documentStore.postList = []
-    documentStore.postCount = 0
+    docStore.postList = []
+    docStore.postCount = 0
     router.replace({ name: '본사 일반 문서' })
   }
 }
@@ -112,7 +108,7 @@ const sortFilter = (project: number | null) => {
 
 onBeforeMount(() => {
   fetchCategoryList(2)
-  const companyPk = company.value || initComId.value
+  const companyPk = company.value
   postFilter.value.company = companyPk
   fetchPostList({ company: companyPk, board: 2 })
 })
