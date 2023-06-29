@@ -35,6 +35,10 @@ const isReturned = computed(() => projectStore.project?.is_returned_area)
 const siteStore = useSite()
 const getOwnersTotal = computed(() => siteStore.getOwnersTotal?.owned_area)
 
+const excelUrl = computed(
+  () => 'excel/sites-by-owner/?project=' + project.value,
+)
+
 const onSelectAdd = (target: number) => {
   if (!!target) {
     siteStore.fetchAllSites(target)
@@ -87,8 +91,6 @@ const onDelete = (payload: { pk: number; project: number }) => {
   const { pk, project } = payload
   siteStore.deleteSiteOwner(pk, project)
 }
-
-const excelUrl = 'excel/sites-by-owner/?project=' + project.value
 
 onBeforeMount(() => {
   const projectPk = project.value || initProjId.value

@@ -33,6 +33,10 @@ const initProjId = computed(() => projectStore.initProjId)
 const siteStore = useSite()
 const getContsTotal = computed(() => siteStore.getContsTotal?.contracted_area)
 
+const excelUrl = computed(
+  () => 'excel/sites-contracts/?project=' + project.value,
+)
+
 const onSelectAdd = (target: number) => {
   if (!!target) {
     siteStore.fetchAllOwners(target)
@@ -73,8 +77,6 @@ const onDelete = (payload: { pk: number; project: number }) => {
   const { pk, project } = payload
   siteStore.deleteSiteCont(pk, project)
 }
-
-const excelUrl = 'excel/sites-contracts/?project=' + project.value
 
 onBeforeMount(() => {
   const projectPk = project.value || initProjId.value

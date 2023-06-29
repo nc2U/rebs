@@ -34,6 +34,8 @@ const totalArea = computed(() =>
     : getSitesTotal.value?.official,
 )
 
+const excelUrl = computed(() => 'excel/sites/?project=' + project.value)
+
 const onSelectAdd = (target: number) => {
   if (!!target) {
     siteStore.fetchSiteList(target)
@@ -75,8 +77,6 @@ const onDelete = (payload: { pk: number; project: number }) => {
   const { pk, project } = payload
   siteStore.deleteSite(pk, project)
 }
-
-const excelUrl = computed(() => 'excel/sites/?project=' + project.value)
 
 onBeforeMount(() => siteStore.fetchSiteList(project.value))
 </script>
