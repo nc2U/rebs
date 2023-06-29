@@ -2259,8 +2259,9 @@ class ExportSites(View):
         row_num += 1
         worksheet.set_row(row_num, 23)
 
-        sum_area = sum([a[4] for a in rows])
-        sum_ret_area = sum([a[5] for a in rows])
+        ra = 1 if project.is_returned_area else 0
+        sum_area = sum([a[3 + ra] for a in rows])
+        sum_ret_area = sum([a[4 + ra] for a in rows])
 
         for col_num, title in enumerate(titles):
             # css 정렬
