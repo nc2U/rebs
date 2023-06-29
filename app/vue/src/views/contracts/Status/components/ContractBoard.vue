@@ -15,9 +15,9 @@ type UnitType = {
   floor: number
 }
 
-const projectDataStore = useProjectData()
-const simpleUnits = computed(() => projectDataStore.simpleUnits)
-const isLoading = computed(() => projectDataStore.isLoading)
+const pDataStore = useProjectData()
+const simpleUnits = computed(() => pDataStore.simpleUnits)
+const isLoading = computed(() => pDataStore.isLoading)
 
 const getBldg = computed(() =>
   [...new Set(simpleUnits.value.map((u: UnitType) => u.bldg))].sort(),

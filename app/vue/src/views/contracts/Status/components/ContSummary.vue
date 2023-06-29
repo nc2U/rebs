@@ -8,10 +8,10 @@ import { ContSummary } from '@/store/types/contract'
 
 defineProps({ contractsCount: { type: Number, default: 0 } })
 
-const projectDataStore = useProjectData()
+const pDataStore = useProjectData()
 
-const simpleTypes = computed(() => projectDataStore.simpleTypes)
-const unitSum = computed(() => projectDataStore.unitSummary)
+const simpleTypes = computed(() => pDataStore.simpleTypes)
+const unitSum = computed(() => pDataStore.unitSummary)
 
 const contStore = useContract()
 const contSum = computed(() =>

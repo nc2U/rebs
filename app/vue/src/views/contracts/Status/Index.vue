@@ -17,22 +17,22 @@ const excelUrl = computed(() =>
   project.value ? `excel/status/?project=${project.value}` : '',
 )
 
-const projectDataStore = useProjectData()
+const pDataStore = useProjectData()
 
-const fetchTypeList = (projId: number) => projectDataStore.fetchTypeList(projId)
+const fetchTypeList = (projId: number) => pDataStore.fetchTypeList(projId)
 const fetchBuildingList = (projId: number) =>
-  projectDataStore.fetchBuildingList(projId)
+  pDataStore.fetchBuildingList(projId)
 const fetchHouseUnitList = (projId: number) =>
-  projectDataStore.fetchHouseUnitList(projId)
+  pDataStore.fetchHouseUnitList(projId)
 
-const contractStore = useContract()
-const contractsCount = computed(() => contractStore.contractsCount)
+const contStore = useContract()
+const contractsCount = computed(() => contStore.contractsCount)
 const fetchContractList = (payload: { project: number }) =>
-  contractStore.fetchContractList(payload)
+  contStore.fetchContractList(payload)
 const fetchSubsSummaryList = (projId: number) =>
-  contractStore.fetchSubsSummaryList(projId)
+  contStore.fetchSubsSummaryList(projId)
 const fetchContSummaryList = (projId: number) =>
-  contractStore.fetchContSummaryList(projId)
+  contStore.fetchContSummaryList(projId)
 
 const onSelectAdd = (target: number) => {
   if (!!target) {
@@ -43,13 +43,14 @@ const onSelectAdd = (target: number) => {
     fetchContractList({ project: target })
     fetchContSummaryList(target)
   } else {
-    projectDataStore.unitTypeList = []
-    projectDataStore.buildingList = []
-    projectDataStore.houseUnitList = []
-    contractStore.subsSummaryList = []
-    contractStore.contSummaryList = []
-    contractStore.contractsCount = 0
+    pDataStore.unitTypeList = []
+    pDataStore.buildingList = []
+    pDataStore.houseUnitList = []
+    contStore.subsSummaryList = []
+    contStore.contSummaryList = []
+    contStore.contractsCount = 0
   }
+  pDataStore.isLoading = true
 }
 
 onBeforeMount(() => {
