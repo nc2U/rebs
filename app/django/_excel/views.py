@@ -2137,7 +2137,7 @@ class ExportSites(View):
         obj_list = Site.objects.filter(project=project).order_by('order')
         # -------------------- get_queryset finish -------------------- #
 
-        rows_cnt = 7
+        rows_cnt = 7 if project.is_returned_area else 5
 
         # 1. Title
         row_num = 0
