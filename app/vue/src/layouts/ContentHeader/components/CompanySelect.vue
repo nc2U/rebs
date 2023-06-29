@@ -1,25 +1,23 @@
 <script lang="ts" setup>
-import { ref, computed, nextTick, onBeforeMount, watch } from 'vue'
+import { computed, onBeforeMount } from 'vue'
 import { useCompany } from '@/store/pinia/company'
 import Multiselect from '@vueform/multiselect'
 
 const emit = defineEmits(['com-select'])
 
-const currentCompany = ref()
-
 const companyStore = useCompany()
-const company = computed(() => companyStore.company?.pk)
-const initComId = computed(() => companyStore.initComId)
+const company = computed(
+  () => companyStore.company?.pk || companyStore.initComId,
+)
 const comSelectList = computed(() => companyStore.comSelect)
 
-watch(company, val => (currentCompany.value = val))
-
-const comSelect = () => nextTick(() => emit('com-select', currentCompany.value))
+const comSelect = (target: number) => {
+  if (!!target) emit('com-select', target)
+}
 
 onBeforeMount(() => {
-  currentCompany.value = company.value ? company.value : initComId.value
   companyStore.fetchCompanyList()
-  if (!company.value) companyStore.fetchCompany(initComId.value)
+  companyStore.fetchCompany(company.value)
 })
 </script>
 
@@ -28,7 +26,7 @@ onBeforeMount(() => {
     <CFormLabel class="col-lg-1 col-form-label text-body">회사명</CFormLabel>
     <CCol md="6" lg="3">
       <Multiselect
-        v-model="currentCompany"
+        :value="company"
         :options="comSelectList"
         placeholder="회사선택"
         autocomplete="label"

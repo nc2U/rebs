@@ -1,26 +1,23 @@
 <script lang="ts" setup>
-import { ref, computed, onBeforeMount, nextTick, watch } from 'vue'
+import { computed, onBeforeMount } from 'vue'
 import { useProject } from '@/store/pinia/project'
 import Multiselect from '@vueform/multiselect'
 
 const emit = defineEmits(['proj-select'])
 
-const currentProject = ref()
-
 const projectStore = useProject()
-const project = computed(() => projectStore.project?.pk)
-const initProjId = computed(() => projectStore.initProjId)
+const project = computed(
+  () => projectStore.project?.pk || projectStore.initProjId,
+)
 const projSelectList = computed(() => projectStore.projSelect)
 
-watch(project, val => (currentProject.value = val))
-
-const projSelect = () =>
-  nextTick(() => emit('proj-select', currentProject.value))
+const projSelect = (target: number) => {
+  if (!!target) emit('proj-select', target)
+}
 
 onBeforeMount(() => {
-  currentProject.value = project.value ? project.value : initProjId.value
   projectStore.fetchProjectList()
-  if (!project.value) projectStore.fetchProject(initProjId.value)
+  projectStore.fetchProject(project.value)
 })
 </script>
 
@@ -29,7 +26,7 @@ onBeforeMount(() => {
     <CFormLabel class="col-lg-1 col-form-label text-body">프로젝트</CFormLabel>
     <CCol md="6" lg="3">
       <Multiselect
-        v-model="currentProject"
+        :value="project"
         :options="projSelectList"
         placeholder="프로젝트선택"
         autocomplete="label"
