@@ -20,8 +20,9 @@ const dataFilter = ref({
 })
 
 const projectStore = useProject()
-const project = computed(() => projectStore.project?.pk)
-const initProjId = computed(() => projectStore.initProjId)
+const project = computed(
+  () => projectStore.project?.pk || projectStore.initProjId,
+)
 
 const isReturned = computed(() => projectStore.project?.is_returned_area)
 
@@ -77,7 +78,7 @@ const onDelete = (payload: { pk: number; project: number }) => {
 
 const excelUrl = 'excel/sites/?project=' + project.value
 
-onBeforeMount(() => siteStore.fetchSiteList(project.value || initProjId.value))
+onBeforeMount(() => siteStore.fetchSiteList(project.value))
 </script>
 
 <template>
