@@ -91,15 +91,6 @@ watch(contract, newVal => {
   }
 })
 
-watch(project, val => {
-  contForm.value.formReset()
-  if (!!val) {
-    contractStore.contract = null
-    contractStore.contractor = null
-    dataSet(val)
-  } else dataReset()
-})
-
 const getContract = (contor: string) =>
   fetchContractor(Number(contor), project.value).then(res =>
     fetchContract(res.contract),
@@ -130,13 +121,13 @@ const searchContractor = (search: string) => {
   } else contractStore.contractorList = []
 }
 
-const dataSet = (pk: number) => {
-  fetchOrderGroupList(pk)
-  fetchKeyUnitList({ project: pk })
-  fetchHouseUnitList({ project: pk })
+const dataSetup = (pk: number) => {
   fetchTypeList(pk)
   fetchPayOrderList(pk)
+  fetchOrderGroupList(pk)
   fetchAllProBankAccList(pk)
+  fetchKeyUnitList({ project: pk })
+  fetchHouseUnitList({ project: pk })
 }
 
 const dataReset = () => {
@@ -150,14 +141,16 @@ const dataReset = () => {
   proCashStore.proBankAccountList = []
 }
 
+const projSelect = (target: number | null) => {
+  dataReset()
+  if (!!target) {
+    contForm.value.formReset()
+    dataSetup(target)
+  }
+}
+
 onBeforeMount(() => {
-  const projectPk = project.value || projStore.initProjId
-  fetchOrderGroupList(projectPk)
-  fetchTypeList(projectPk)
-  fetchAllProBankAccList(projectPk)
-  fetchPayOrderList(projectPk)
-  fetchKeyUnitList({ project: projectPk })
-  fetchHouseUnitList({ project: projectPk })
+  dataSetup(project.value || projStore.initProjId)
 
   if (route.query.contractor) getContract(route.query.contractor as string)
   else {
@@ -168,7 +161,11 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
+  <ContentHeader
+    :page-title="pageTitle"
+    :nav-menu="navMenu"
+    @proj-select="projSelect"
+  />
 
   <ContentBody>
     <ContractForm

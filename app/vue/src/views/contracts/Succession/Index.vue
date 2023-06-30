@@ -62,12 +62,6 @@ watch(contractor, val => {
   }
 })
 
-watch(project, val => {
-  router.replace({ name: '권리 의무 승계' })
-  if (!!val) dataSet(val)
-  else dataReset()
-})
-
 const router = useRouter()
 
 const searchContractor = (search: string) => {
@@ -97,7 +91,7 @@ const onSubmit = (payload: { s_data: Succession; b_data: Buyer }) => {
   } else alert('프로젝트를 선택하여 주세요!')
 }
 
-const dataSet = (pk: number) => {
+const dataSetup = (pk: number) => {
   fetchSuccessionList(pk)
   fetchBuyerList(pk)
 }
@@ -110,15 +104,25 @@ const dataReset = () => {
   contStore.buyerList = []
 }
 
+const projSelect = (target: number | null) => {
+  router.replace({ name: '권리 의무 승계' })
+  dataReset()
+  if (!!target) dataSetup(target)
+}
+
 onBeforeMount(() => {
   if (route.query.contractor) fetchContractor(Number(route.query.contractor))
   else contStore.contractor = null
-  dataSet(project.value || projStore.initProjId)
+  dataSetup(project.value || projStore.initProjId)
 })
 </script>
 
 <template>
-  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
+  <ContentHeader
+    :page-title="pageTitle"
+    :nav-menu="navMenu"
+    @proj-select="projSelect"
+  />
 
   <ContentBody>
     <CCardBody class="pb-5">

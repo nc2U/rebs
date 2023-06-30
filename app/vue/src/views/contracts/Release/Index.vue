@@ -52,12 +52,6 @@ watch(contractor, val => {
   else contStore.contRelease = null
 })
 
-watch(project, val => {
-  router.replace({ name: '계약 해지 관리' })
-  if (!!val) dataSet(val)
-  else dataReset()
-})
-
 const searchContractor = (search: string) => {
   if (search !== '' && project.value) {
     fetchContractorList(project.value, search)
@@ -77,7 +71,7 @@ const onSubmit = (payload: ContractRelease) => {
   else updateRelease({ page: page.value, ...payload })
 }
 
-const dataSet = (pk: number) => fetchContReleaseList(pk)
+const dataSetup = (pk: number) => fetchContReleaseList(pk)
 
 const dataReset = () => {
   contStore.contractor = null
@@ -87,8 +81,14 @@ const dataReset = () => {
   contStore.contReleaseCount = 0
 }
 
+const projSelect = (target: number | null) => {
+  router.replace({ name: '계약 해지 관리' })
+  dataReset()
+  if (!!target) dataSetup(target)
+}
+
 onBeforeMount(() => {
-  dataSet(project.value || projStore.initProjId)
+  dataSetup(project.value || projStore.initProjId)
   if (route.query.contractor) fetchContractor(Number(route.query.contractor))
   else {
     contStore.contract = null
@@ -98,7 +98,11 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
+  <ContentHeader
+    :page-title="pageTitle"
+    :nav-menu="navMenu"
+    @proj-select="projSelect"
+  />
 
   <ContentBody>
     <CCardBody class="pb-5">
