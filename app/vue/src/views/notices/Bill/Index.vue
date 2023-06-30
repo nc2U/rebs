@@ -30,12 +30,6 @@ const printData = reactive({
 const projStore = useProject()
 const project = computed(() => projStore.project?.pk)
 
-watch(project, val => {
-  if (!!val) dataSet(val)
-  else dataReset()
-  paymentStore.payOrder = null
-})
-
 const noticeStore = useNotice()
 const billIssue = computed(() => noticeStore.billIssue)
 
@@ -75,13 +69,6 @@ const fetchSalePriceList = (payload: { project: number }) =>
   contractStore.fetchSalePriceList(payload)
 const fetchDownPayList = (payload: { project: number }) =>
   contractStore.fetchDownPayList(payload)
-
-watch(project, val => {
-  if (val) {
-    printData.project = val
-    fetchSalesBillIssue(val)
-  }
-})
 
 watch(billIssue, val => {
   if (val) {
@@ -133,7 +120,7 @@ const onSubmit = (payload: SalesBillIssue & { now_due_date: string }) => {
   else createSalesBillIssue(bill_data)
 }
 
-const dataSet = (pk: number) => {
+const dataSetup = (pk: number) => {
   fetchSalesBillIssue(pk)
   fetchPayOrderList(pk)
   fetchOrderGroupList(pk)
@@ -145,6 +132,7 @@ const dataSet = (pk: number) => {
   })
   fetchSalePriceList({ project: pk })
   fetchDownPayList({ project: pk })
+  printData.project = pk
 }
 
 const dataReset = () => {
@@ -157,13 +145,23 @@ const dataReset = () => {
   paymentStore.payOrderList = []
   projectDataStore.unitTypeList = []
   projectDataStore.buildingList = []
+  printData.project = null
 }
 
-onBeforeMount(() => dataSet(project.value || projStore.initProjId))
+const projSelect = (target: number | null) => {
+  dataReset()
+  if (!!target) dataSetup(target)
+}
+
+onBeforeMount(() => dataSetup(project.value || projStore.initProjId))
 </script>
 
 <template>
-  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
+  <ContentHeader
+    :page-title="pageTitle"
+    :nav-menu="navMenu"
+    @proj-select="projSelect"
+  />
 
   <ContentBody>
     <CCardBody class="pb-5">
