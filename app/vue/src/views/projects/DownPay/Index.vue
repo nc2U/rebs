@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount } from 'vue'
+import { computed, onBeforeMount, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin2'
 import { useProject } from '@/store/pinia/project'
 import { useProjectData } from '@/store/pinia/project_data'
@@ -12,7 +12,8 @@ import DownPayAddForm from '@/views/projects/DownPay/components/DownPayAddForm.v
 import DownPayFormList from '@/views/projects/DownPay/components/DownPayFormList.vue'
 
 const projStore = useProject()
-const project = computed(() => projStore.project?.pk || projStore.initProjId)
+const project = computed(() => projStore.project?.pk)
+watch(project, val => (!!val ? dataSet(val) : dataReset()))
 
 const contStore = useContract()
 const orderGroupList = computed(() => contStore.orderGroupList)
@@ -36,18 +37,6 @@ const updateDownPay = (payload: DownPay) => payStore.updateDownPay(payload)
 const deleteDownPay = (pk: number, projId: number) =>
   payStore.deleteDownPay(pk, projId)
 
-const onSelectAdd = (target: number) => {
-  if (!!target) {
-    fetchOrderGroupList(target)
-    fetchTypeList(target)
-    fetchDownPayList({ project: target })
-  } else {
-    contStore.orderGroupList = []
-    pDataStore.unitTypeList = []
-    payStore.downPayList = []
-  }
-}
-
 const onCreateDownPay = (payload: DownPay) =>
   createDownPay({ ...{ project: project.value }, ...payload })
 
@@ -58,19 +47,22 @@ const onDeleteDownPay = (pk: number) => {
   if (project.value) deleteDownPay(pk, project.value)
 }
 
-onBeforeMount(() => {
-  const projectPk = project.value
-  fetchDownPayList({ project: projectPk })
-  fetchOrderGroupList(projectPk)
-  fetchTypeList(projectPk)
-})
+const dataSet = (pk: number) => {
+  fetchOrderGroupList(pk)
+  fetchTypeList(pk)
+  fetchDownPayList({ project: pk })
+}
+
+const dataReset = () => {
+  contStore.orderGroupList = []
+  pDataStore.unitTypeList = []
+  payStore.downPayList = []
+}
+
+onBeforeMount(() => dataSet(project.value || projStore.initProjId))
 </script>
 <template>
-  <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    @header-select="onSelectAdd"
-  />
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
 
   <ContentBody>
     <CCardBody class="pb-5">

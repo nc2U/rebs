@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount } from 'vue'
+import { computed, onBeforeMount, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin2'
 import { useProject } from '@/store/pinia/project'
 import { usePayment } from '@/store/pinia/payment'
@@ -10,22 +10,18 @@ import PayOrderAddForm from '@/views/projects/PayOrder/components/PayOrderAddFor
 import PayOrderFormList from '@/views/projects/PayOrder/components/PayOrderFormList.vue'
 
 const projStore = useProject()
-const project = computed(() => projStore.project?.pk || projStore.initProjId)
+const project = computed(() => projStore.project?.pk)
+watch(project, val =>
+  !!val ? fetchPayOrderList(val) : (payStore.payOrderList = []),
+)
 
 const payStore = usePayment()
 const fetchPayOrderList = (projId: number) => payStore.fetchPayOrderList(projId)
-
 const createPayOrder = (payload: PayOrder) => payStore.createPayOrder(payload)
-
 const updatePayOrder = (payload: PayOrder) => payStore.updatePayOrder(payload)
-
 const deletePayOrder = (pk: number, projId: number) =>
   payStore.deletePayOrder(pk, projId)
 
-const onSelectAdd = (target: number) => {
-  if (!!target) fetchPayOrderList(target)
-  else payStore.payOrderList = []
-}
 const onSubmit = (payload: PayOrder) =>
   createPayOrder({ ...{ project: project.value }, ...payload })
 
@@ -36,15 +32,11 @@ const onDeletePayOrder = (pk: number) => {
   if (project.value) deletePayOrder(pk, project.value)
 }
 
-onBeforeMount(() => fetchPayOrderList(project.value))
+onBeforeMount(() => fetchPayOrderList(project.value || projStore.initProjId))
 </script>
 
 <template>
-  <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    @header-select="onSelectAdd"
-  />
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
 
   <ContentBody>
     <CCardBody class="pb-5">

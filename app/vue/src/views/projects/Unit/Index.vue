@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount, ref } from 'vue'
+import { computed, onBeforeMount, ref, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin2'
 import { useProject } from '@/store/pinia/project'
 import { CreateUnit, useProjectData } from '@/store/pinia/project_data'
@@ -16,7 +16,12 @@ const bldgPk = ref<null | number>(null)
 const bldgName = ref('')
 
 const projStore = useProject()
-const project = computed(() => projStore.project?.pk || projStore.initProjId)
+const project = computed(() => projStore.project?.pk)
+watch(project, val => {
+  if (!!val) dataSet(val)
+  else dataReset()
+  pDataStore.houseUnitList = []
+})
 
 const pDataStore = useProjectData()
 const numUnitByType = computed(() => pDataStore.numUnitByType)
@@ -31,20 +36,8 @@ const fetchHouseUnitList = (projId: number, bldg?: number) =>
   pDataStore.fetchHouseUnitList(projId, bldg)
 
 const createUnit = (payload: CreateUnit) => pDataStore.createUnit(payload)
-const patchUnit = (payload: HouseUnit) => pDataStore.patchUnit(payload)
-
-const onSelectAdd = (target: number) => {
-  if (!!target) {
-    fetchTypeList(target)
-    fetchFloorTypeList(target)
-    fetchBuildingList(target)
-  } else {
-    pDataStore.unitTypeList = []
-    pDataStore.floorTypeList = []
-    pDataStore.buildingList = []
-  }
-  pDataStore.houseUnitList = []
-}
+const patchUnit = (payload: HouseUnit & { bldg: number }) =>
+  pDataStore.patchUnit(payload)
 
 const bldgSelect = (bldg: { pk: number; name: string }) => {
   if (!!bldg.pk && project.value) fetchHouseUnitList(project.value, bldg.pk)
@@ -130,25 +123,39 @@ const unitRegister = (payload: OriginalUnit) => {
   }
 }
 
-const onUpdate = (payload: HouseUnit & { bldg: number }) =>
-  patchUnit({ ...payload, ...{ project: project.value, bldg: bldgPk.value } })
+const onUpdate = (payload: HouseUnit) =>
+  !!bldgPk.value
+    ? patchUnit({
+        ...payload,
+        ...{
+          project: project.value || projStore.initProjId,
+          bldg: bldgPk.value,
+        },
+      })
+    : alert('동(건물)을 선택하세요!')
 
 const onDelete = (pk: number) => alert('delete! -- ' + pk)
 
+const dataSet = (pk: number) => {
+  fetchTypeList(pk)
+  fetchFloorTypeList(pk)
+  fetchBuildingList(pk)
+}
+
+const dataReset = () => {
+  pDataStore.unitTypeList = []
+  pDataStore.floorTypeList = []
+  pDataStore.buildingList = []
+}
+
 onBeforeMount(() => {
-  fetchTypeList(project.value)
-  fetchFloorTypeList(project.value)
-  fetchBuildingList(project.value)
+  dataSet(project.value || projStore.initProjId)
   pDataStore.houseUnitList = []
 })
 </script>
 
 <template>
-  <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    @header-select="onSelectAdd"
-  />
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
 
   <ContentBody>
     <CCardBody class="pb-5">

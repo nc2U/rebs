@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount } from 'vue'
+import { computed, onBeforeMount, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin2'
 import { useProject } from '@/store/pinia/project'
 import { useProjectData } from '@/store/pinia/project_data'
@@ -10,7 +10,10 @@ import FloorAddForm from '@/views/projects/Floor/components/FloorAddForm.vue'
 import FloorFormList from '@/views/projects/Floor/components/FloorFormList.vue'
 
 const projStore = useProject()
-const project = computed(() => projStore.project?.pk || projStore.initProjId)
+const project = computed(() => projStore.project?.pk)
+watch(project, val =>
+  !!val ? fetchFloorTypeList(val) : (pDataStore.floorTypeList = []),
+)
 
 const pDataStore = useProjectData()
 const fetchFloorTypeList = (projId: number) =>
@@ -22,11 +25,6 @@ const updateFloorType = (payload: UnitFloorType) =>
 const deleteFloorType = (pk: number, project: number) =>
   pDataStore.deleteFloorType(pk, project)
 
-const onSelectAdd = (target: number) => {
-  if (!!target) fetchFloorTypeList(target)
-  else pDataStore.floorTypeList = []
-}
-
 const onSubmit = (payload: UnitFloorType) =>
   createFloorType({ ...{ project: project.value }, ...payload })
 
@@ -37,15 +35,11 @@ const onDeleteFloor = (pk: number) => {
   if (project.value) deleteFloorType(pk, project.value)
 }
 
-onBeforeMount(() => fetchFloorTypeList(project.value))
+onBeforeMount(() => fetchFloorTypeList(project.value || projStore.initProjId))
 </script>
 
 <template>
-  <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    @header-select="onSelectAdd"
-  />
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
 
   <ContentBody>
     <CCardBody class="pb-5">

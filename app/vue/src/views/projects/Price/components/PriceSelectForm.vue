@@ -52,7 +52,12 @@ const modalAction = () => {
             차수선택
           </CFormLabel>
           <CCol sm="9">
-            <CFormSelect id="sel1" v-model="order" @change="onOrderSelect">
+            <CFormSelect
+              id="sel1"
+              v-model="order"
+              :disabled="!project"
+              @change="onOrderSelect"
+            >
               <option value="">---------</option>
               <option v-for="o in orders" :key="o.pk" :value="o.pk">
                 {{ o.order_group_name }}

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount, reactive, ref } from 'vue'
+import { computed, onBeforeMount, reactive, ref, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin2'
 import { useProject } from '@/store/pinia/project'
 import { useContract } from '@/store/pinia/contract'
@@ -32,7 +32,12 @@ const priceMessage = ref(
 )
 
 const projStore = useProject()
-const project = computed(() => projStore.project?.pk || projStore.initProjId)
+const project = computed(() => projStore.project?.pk)
+watch(project, val => {
+  if (!!val) dataSet(val)
+  else dataReset()
+  payStore.priceList = [] // 가격 상태 초기화
+})
 
 const contStore = useContract()
 const contList = computed(() => contStore.contList)
@@ -69,34 +74,13 @@ const updatePrice = (payload: Price) => payStore.updatePrice(payload)
 const deletePrice = (payload: Ids & { pk: number }) =>
   payStore.deletePrice(payload)
 
-const formSelect = ref()
-
-// 프로젝트 선택 시 실행 함수
-const onSelectAdd = (target: number) => {
-  if (!!target) {
-    fetchContList(target)
-    fetchOrderGroupList(target)
-    fetchTypeList(target)
-    fetchFloorTypeList(target)
-    formSelect.value.orderDisabled = false
-  } else {
-    contStore.contList = []
-    contStore.orderGroupList = []
-    pDataStore.unitTypeList = []
-    pDataStore.floorTypeList = []
-    formSelect.value.orderDisabled = true
-  }
-  // 프로젝트 change 이벤트 발생 시 항상 실행
-  resetPrices() // 가격 상태 초기화
-}
-
 // 차수 선택 시 실행 함수
 const orderSelect = (order: number) => {
   order_group.value = order // order_group pk 값 할당
   priceMessage.value = !order
     ? '공급가격을 입력하기 위해 [차수 정보]를 선택하여 주십시요.'
     : '공급가격을 입력하기 위해 [타입 정보]를 선택하여 주십시요.'
-  resetPrices() // 가격 상태 초기화
+  payStore.priceList = [] // 가격 상태 초기화
 }
 // 타입 선택 시 실행 함수
 const typeSelect = (type: number) => {
@@ -111,8 +95,6 @@ const typeSelect = (type: number) => {
     fetchPriceList(queryIds) // 가격 상태 저장 실행
   }
 }
-// 프로젝트 또는 차수 선택 변경 시 가격 데이터 초기화
-const resetPrices = () => (payStore.priceList = [])
 
 const onCreatePrice = (payload: Price) => createPrice(payload)
 const onUpdatePrice = (payload: Price) => updatePrice(payload)
@@ -123,26 +105,29 @@ const contPriceSet = () => {
   allContPriceSet({ ...cont })
 }
 
-onBeforeMount(() => {
-  const projectPk = project.value
-  fetchContList(projectPk)
-  fetchOrderGroupList(projectPk)
-  fetchTypeList(projectPk)
-  fetchFloorTypeList(projectPk)
-})
+const dataSet = (pk: number) => {
+  fetchContList(pk)
+  fetchOrderGroupList(pk)
+  fetchTypeList(pk)
+  fetchFloorTypeList(pk)
+}
+
+const dataReset = () => {
+  contStore.contList = []
+  contStore.orderGroupList = []
+  pDataStore.unitTypeList = []
+  pDataStore.floorTypeList = []
+}
+
+onBeforeMount(() => dataSet(project.value || projStore.initProjId))
 </script>
 
 <template>
-  <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    @header-select="onSelectAdd"
-  />
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
 
   <ContentBody>
     <CCardBody class="pb-5">
       <PriceSelectForm
-        ref="formSelect"
         :project="project"
         :orders="orderGroupList"
         :types="unitTypeList"

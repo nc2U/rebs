@@ -250,7 +250,7 @@ const modalAction = () => {
   <CAlert :color="AlertLight" variant="solid" class="text-right">
     <CButton
       color="primary"
-      :disabled="!project || form.minFloor === ''"
+      :disabled="!project || !form.maxFloor"
       @click="unitRegister"
     >
       호수(유니트) 일괄등록
