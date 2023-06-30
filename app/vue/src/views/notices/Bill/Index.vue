@@ -28,7 +28,13 @@ const printData = reactive({
 })
 
 const projStore = useProject()
-const project = computed(() => projStore.project?.pk || projStore.initProjId)
+const project = computed(() => projStore.project?.pk)
+
+watch(project, val => {
+  if (!!val) dataSet(val)
+  else dataReset()
+  paymentStore.payOrder = null
+})
 
 const noticeStore = useNotice()
 const billIssue = computed(() => noticeStore.billIssue)
@@ -85,33 +91,6 @@ watch(billIssue, val => {
   }
 })
 
-const onSelectAdd = (target: number) => {
-  if (!!target) {
-    fetchSalesBillIssue(target)
-    fetchPayOrderList(target)
-    fetchOrderGroupList(target)
-    fetchTypeList(target)
-    fetchBuildingList(target)
-    fetchContractList({
-      project: target,
-      ordering: 'contractor__name',
-    })
-    fetchSalePriceList({ project: target })
-    fetchDownPayList({ project: target })
-  } else {
-    contractStore.orderGroupList = []
-    contractStore.contractList = []
-    contractStore.contractsCount = 0
-    contractStore.salesPriceList = []
-    contractStore.downPaymentList = []
-    noticeStore.billIssue = null
-    paymentStore.payOrderList = []
-    projectDataStore.unitTypeList = []
-    projectDataStore.buildingList = []
-  }
-  paymentStore.payOrder = null
-}
-
 const pageSelect = (page: number) => {
   ctor_ids.value = []
   listControl.value.listFiltering(page)
@@ -154,28 +133,37 @@ const onSubmit = (payload: SalesBillIssue & { now_due_date: string }) => {
   else createSalesBillIssue(bill_data)
 }
 
-onBeforeMount(() => {
-  const projectPk = project.value
-  fetchSalesBillIssue(projectPk)
-  fetchPayOrderList(projectPk)
-  fetchOrderGroupList(projectPk)
-  fetchTypeList(projectPk)
-  fetchBuildingList(projectPk)
+const dataSet = (pk: number) => {
+  fetchSalesBillIssue(pk)
+  fetchPayOrderList(pk)
+  fetchOrderGroupList(pk)
+  fetchTypeList(pk)
+  fetchBuildingList(pk)
   fetchContractList({
-    project: projectPk,
+    project: pk,
     ordering: 'contractor__name',
   })
-  fetchSalePriceList({ project: projectPk })
-  fetchDownPayList({ project: projectPk })
-})
+  fetchSalePriceList({ project: pk })
+  fetchDownPayList({ project: pk })
+}
+
+const dataReset = () => {
+  contractStore.orderGroupList = []
+  contractStore.contractList = []
+  contractStore.contractsCount = 0
+  contractStore.salesPriceList = []
+  contractStore.downPaymentList = []
+  noticeStore.billIssue = null
+  paymentStore.payOrderList = []
+  projectDataStore.unitTypeList = []
+  projectDataStore.buildingList = []
+}
+
+onBeforeMount(() => dataSet(project.value || projStore.initProjId))
 </script>
 
 <template>
-  <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    @header-select="onSelectAdd"
-  />
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
 
   <ContentBody>
     <CCardBody class="pb-5">
