@@ -80,7 +80,7 @@ onMounted(() => dataSetup(comId.value || comStore.initComId))
   <ContentHeader
     :page-title="pageTitle"
     :nav-menu="navMenu"
-    :selector="'CompanySelect'"
+    selector="CompanySelect"
   />
   <ContentBody>
     <CCardBody>

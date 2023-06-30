@@ -223,7 +223,7 @@ onBeforeMount(() => {
   <ContentHeader
     :page-title="pageTitle"
     :nav-menu="navMenu"
-    :selector="'CompanySelect'"
+    selector="CompanySelect"
   />
   <ContentBody>
     <CCardBody class="pb-5">

@@ -11,7 +11,7 @@ const msg = ref(pageTitle)
   <ContentHeader
     :page-title="pageTitle"
     :nav-menu="navMenu"
-    :selector="'CompanySelect'"
+    selector="CompanySelect"
   />
   <ContentBody>
     <CCardBody>
