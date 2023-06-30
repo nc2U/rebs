@@ -20,7 +20,7 @@ const projStore = useProject()
 const project = computed(() => projStore.project?.pk || projStore.initProjId)
 
 const downloadUrl = computed(
-  () => `/excel/succession/?project=${project.value}`,
+  () => `/excel/successions/?project=${project.value}`,
 )
 
 const contractStore = useContract()
@@ -129,7 +129,7 @@ onBeforeMount(() => {
         title="승계 진행 건 목록"
         excel
         :url="downloadUrl"
-        :disabled="true"
+        :disabled="!project"
       />
       <SuccessionList @page-select="pageSelect" @on-submit="onSubmit" />
     </CCardBody>

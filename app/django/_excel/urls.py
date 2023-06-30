@@ -6,6 +6,7 @@ app_name = 'excel'
 urlpatterns = [
     path('contracts/', ExportContracts.as_view(), name='contracts'),
     path('reservations/', ExportApplicants.as_view(), name='reservations'),
+    path('successions/', ExportSuccessions.as_view(), name='successions'),
     path('releases/', ExportReleases.as_view(), name='releases'),
     path('status/', ExportUnitStatus.as_view(), name='unit-status'),
     # path('payments/', export_payments_xls, name='payments'),
