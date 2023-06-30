@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount, ref } from 'vue'
+import { ref, computed, onBeforeMount, watch } from 'vue'
 import { useProject } from '@/store/pinia/project'
 import { useSite } from '@/store/pinia/project_site'
 import { Site } from '@/store/types/project'
@@ -20,8 +20,10 @@ const dataFilter = ref({
 })
 
 const projStore = useProject()
-const project = computed(() => projStore.project?.pk || projStore.initProjId)
+const project = computed(() => projStore.project?.pk)
 const isReturned = computed(() => projStore.project?.is_returned_area)
+
+watch(project, val => (!!val ? dataSet(val) : dataReset()))
 
 const siteStore = useSite()
 const getSitesTotal = computed(() => siteStore.getSitesTotal)
@@ -32,15 +34,6 @@ const totalArea = computed(() =>
 )
 
 const excelUrl = computed(() => 'excel/sites/?project=' + project.value)
-
-const onSelectAdd = (target: number) => {
-  if (!!target) {
-    siteStore.fetchSiteList(target)
-  } else {
-    siteStore.siteList = []
-    siteStore.siteCount = 0
-  }
-}
 
 type filter = {
   page: number
@@ -75,15 +68,17 @@ const onDelete = (payload: { pk: number; project: number }) => {
   siteStore.deleteSite(pk, project)
 }
 
-onBeforeMount(() => siteStore.fetchSiteList(project.value))
+const dataSet = (pk: number) => siteStore.fetchSiteList(pk)
+const dataReset = () => {
+  siteStore.siteList = []
+  siteStore.siteCount = 0
+}
+
+onBeforeMount(() => dataSet(project.value || projStore.initProjId))
 </script>
 
 <template>
-  <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    @header-select="onSelectAdd"
-  />
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
 
   <ContentBody>
     <CCardBody class="pb-5">

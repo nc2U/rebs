@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount, ref } from 'vue'
+import { ref, computed, onBeforeMount, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin3'
 import { useProject } from '@/store/pinia/project'
 import { useSite } from '@/store/pinia/project_site'
@@ -27,7 +27,8 @@ const dataFilter = ref<filter>({
 })
 
 const projStore = useProject()
-const project = computed(() => projStore.project?.pk || projStore.initProjId)
+const project = computed(() => projStore.project?.pk)
+watch(project, val => (!!val ? dataSet(val) : dataReset()))
 
 const siteStore = useSite()
 const getContsTotal = computed(() => siteStore.getContsTotal?.contracted_area)
@@ -35,16 +36,6 @@ const getContsTotal = computed(() => siteStore.getContsTotal?.contracted_area)
 const excelUrl = computed(
   () => 'excel/sites-contracts/?project=' + project.value,
 )
-
-const onSelectAdd = (target: number) => {
-  if (!!target) {
-    siteStore.fetchAllOwners(target)
-    siteStore.fetchSiteContList(target)
-  } else {
-    siteStore.siteContList = []
-    siteStore.siteContCount = 0
-  }
-}
 
 const listFiltering = (payload: filter) => {
   dataFilter.value = payload
@@ -77,19 +68,21 @@ const onDelete = (payload: { pk: number; project: number }) => {
   siteStore.deleteSiteCont(pk, project)
 }
 
-onBeforeMount(() => {
-  const projectPk = project.value
-  siteStore.fetchAllOwners(projectPk)
-  siteStore.fetchSiteContList(projectPk)
-})
+const dataSet = (pk: number) => {
+  siteStore.fetchAllOwners(pk)
+  siteStore.fetchSiteContList(pk)
+}
+
+const dataReset = () => {
+  siteStore.siteContList = []
+  siteStore.siteContCount = 0
+}
+
+onBeforeMount(() => dataSet(project.value || projStore.initProjId))
 </script>
 
 <template>
-  <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    @header-select="onSelectAdd"
-  />
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
 
   <ContentBody>
     <CCardBody class="pb-5">
