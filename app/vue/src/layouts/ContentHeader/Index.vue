@@ -19,16 +19,12 @@ defineProps({
     default: 'ProjectSelect',
   },
 })
-const emit = defineEmits(['header-select'])
 
 const companyStore = useCompany()
 const projectStore = useProject()
 
-const comSelect = (com: number) => {
-  if (!!com) companyStore.fetchCompany(com)
-  else companyStore.company = null
-  emit('header-select', com)
-}
+const comSelect = (com: number) =>
+  !!com ? companyStore.fetchCompany(com) : (companyStore.company = null)
 
 const projSelect = (proj: number) =>
   !!proj ? projectStore.fetchProject(proj) : (projectStore.project = null)
