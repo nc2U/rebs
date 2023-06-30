@@ -18,7 +18,13 @@ import CreateButton from '@/views/payments/Register/components/CreateButton.vue'
 const paymentId = ref<string>('')
 
 const projStore = useProject()
-const project = computed(() => projStore.project?.pk || projStore.initProjId)
+const project = computed(() => projStore.project?.pk)
+
+watch(project, val => {
+  router.replace({ name: '건별 수납 관리' })
+  dataReset()
+  if (!!val) dataSet(val)
+})
 
 const contractStore = useContract()
 const contract = computed(() => contractStore.contract)
@@ -83,21 +89,6 @@ watch(contract, newVal => {
   }
 })
 
-const onSelectAdd = (target: number) => {
-  router.push({ name: '건별 수납 관리' })
-  contractStore.contract = null
-  contractStore.contractList = []
-  projectDataStore.unitTypeList = []
-  paymentStore.AllPaymentList = []
-  paymentStore.payOrderList = []
-  proCashStore.proBankAccountList = []
-  if (!!target) {
-    fetchTypeList(target)
-    fetchPayOrderList(target)
-    fetchAllProBankAccList(target)
-  }
-}
-
 const onContFiltering = (payload: ContFilter) => {
   payload.project = project.value
   if (payload.project) fetchContractList({ ...payload })
@@ -137,11 +128,23 @@ const onDelete = (pk: number) => {
   deletePrCashBook({ ...delFilter, ...{ filters: {} } })
 }
 
+const dataSet = (pk: number) => {
+  fetchTypeList(pk)
+  fetchPayOrderList(pk)
+  fetchAllProBankAccList(pk)
+}
+
+const dataReset = () => {
+  contractStore.contract = null
+  contractStore.contractList = []
+  projectDataStore.unitTypeList = []
+  paymentStore.AllPaymentList = []
+  paymentStore.payOrderList = []
+  proCashStore.proBankAccountList = []
+}
+
 onBeforeMount(() => {
-  const projectPk = project.value
-  fetchTypeList(projectPk)
-  fetchPayOrderList(projectPk)
-  fetchAllProBankAccList(projectPk)
+  dataSet(project.value || projStore.initProjId)
   if (route.query.payment) paymentId.value = route.query.payment as string
 })
 
@@ -177,11 +180,7 @@ onBeforeRouteLeave(() => {
 </script>
 
 <template>
-  <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    @header-select="onSelectAdd"
-  />
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
 
   <ContentBody>
     <CCardBody class="pb-5">

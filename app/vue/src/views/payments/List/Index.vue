@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { navMenu, pageTitle } from '@/views/payments/_menu/headermixin'
 import { useProject } from '@/store/pinia/project'
 import { useContract } from '@/store/pinia/contract'
@@ -30,7 +30,12 @@ let filterItems = ref<CashBookFilter>({
 })
 
 const projStore = useProject()
-const project = computed(() => projStore.project?.pk || projStore.initProjId)
+const project = computed(() => projStore.project?.pk)
+
+watch(project, val => {
+  if (!!val) dataSet(val)
+  else dataReset()
+})
 
 const fetchIncBudgetList = (proj: number) => projStore.fetchIncBudgetList(proj)
 
@@ -60,31 +65,6 @@ const patchPrCashBook = (
     filters: CashBookFilter
   },
 ) => proCashStore.patchPrCashBook(payload)
-
-const onSelectAdd = (target: number) => {
-  if (!!target) {
-    fetchOrderGroupList(target)
-    fetchTypeList(target)
-    fetchIncBudgetList(target)
-    fetchContSummaryList(target)
-    fetchPaySumList(target)
-    fetchContNumList(target)
-    fetchPaymentList({ project: target })
-    fetchPayOrderList(target)
-    fetchAllProBankAccList(target)
-  } else {
-    contStore.orderGroupList = []
-    proDataStore.unitTypeList = []
-    proCashStore.proBankAccountList = []
-    projStore.proIncBudgetList = []
-    contStore.contSummaryList = []
-    paymentStore.paySumList = []
-    paymentStore.contNumList = []
-    paymentStore.paymentList = []
-    paymentStore.payOrderList = []
-    paymentStore.paymentsCount = 0
-  }
-}
 
 const listFiltering = (payload: CashBookFilter) => {
   filterItems.value = payload
@@ -130,18 +110,32 @@ const excelUrl = computed(() =>
   excelSelect.value === '1' ? byPayment.value : byContract.value,
 )
 
-onMounted(() => {
-  const projectPk = project.value
-  fetchOrderGroupList(projectPk)
-  fetchTypeList(projectPk)
-  fetchIncBudgetList(projectPk)
-  fetchContSummaryList(projectPk)
-  fetchPaySumList(projectPk)
-  fetchContNumList(projectPk)
-  fetchPayOrderList(projectPk)
-  fetchPaymentList({ project: projectPk })
-  fetchAllProBankAccList(projectPk)
-})
+const dataSet = (pk: number) => {
+  fetchOrderGroupList(pk)
+  fetchTypeList(pk)
+  fetchIncBudgetList(pk)
+  fetchContSummaryList(pk)
+  fetchPaySumList(pk)
+  fetchContNumList(pk)
+  fetchPaymentList({ project: pk })
+  fetchPayOrderList(pk)
+  fetchAllProBankAccList(pk)
+}
+
+const dataReset = () => {
+  contStore.orderGroupList = []
+  proDataStore.unitTypeList = []
+  proCashStore.proBankAccountList = []
+  projStore.proIncBudgetList = []
+  contStore.contSummaryList = []
+  paymentStore.paySumList = []
+  paymentStore.contNumList = []
+  paymentStore.paymentList = []
+  paymentStore.payOrderList = []
+  paymentStore.paymentsCount = 0
+}
+
+onMounted(() => dataSet(project.value || projStore.initProjId))
 
 onBeforeRouteLeave(() => {
   paymentStore.paymentList = []
@@ -150,11 +144,7 @@ onBeforeRouteLeave(() => {
 </script>
 
 <template>
-  <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    @header-select="onSelectAdd"
-  >
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu">
     <PaymentSummary :project="project" />
   </ContentHeader>
 

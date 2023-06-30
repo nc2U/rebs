@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount, ref } from 'vue'
+import { computed, onBeforeMount, ref, watch } from 'vue'
 import { navMenu, pageTitle } from '@/views/payments/_menu/headermixin'
 import { useProject } from '@/store/pinia/project'
 import { useContract } from '@/store/pinia/contract'
@@ -22,7 +22,12 @@ const excelUrl = computed(
 )
 
 const projStore = useProject()
-const project = computed(() => projStore.project?.pk || projStore.initProjId)
+const project = computed(() => projStore.project?.pk)
+
+watch(project, val => {
+  if (!!val) dataSet(val)
+  else dataReset()
+})
 
 const fetchIncBudgetList = (proj: number) => projStore.fetchIncBudgetList(proj)
 
@@ -35,24 +40,24 @@ const fetchOrderGroupList = (proj: number) =>
 const fetchContSummaryList = (proj: number, date?: string) =>
   contStore.fetchContSummaryList(proj, date)
 
-const paymentStore = usePayment()
+const payStore = usePayment()
 const fetchPaySumList = (proj: number, date?: string) =>
-  paymentStore.fetchPaySumList(proj, date)
+  payStore.fetchPaySumList(proj, date)
 
-const onSelectAdd = (target: number) => {
-  if (!!target) {
-    fetchTypeList(target)
-    fetchOrderGroupList(target)
-    fetchContSummaryList(target)
-    fetchIncBudgetList(target)
-    fetchPaySumList(target)
-  } else {
-    prDataStore.unitTypeList = []
-    contStore.orderGroupList = []
-    contStore.contSummaryList = []
-    projStore.proIncBudgetList = []
-    paymentStore.paySumList = []
-  }
+const dataSet = (pk: number) => {
+  fetchTypeList(pk)
+  fetchOrderGroupList(pk)
+  fetchContSummaryList(pk)
+  fetchIncBudgetList(pk)
+  fetchPaySumList(pk)
+}
+
+const dataReset = () => {
+  prDataStore.unitTypeList = []
+  contStore.orderGroupList = []
+  contStore.contSummaryList = []
+  projStore.proIncBudgetList = []
+  payStore.paySumList = []
 }
 
 const setDate = (d: Date) => {
@@ -64,7 +69,7 @@ const setDate = (d: Date) => {
 }
 
 onBeforeMount(() => {
-  const projectPk = project.value
+  const projectPk = project.value || projStore.initProjId
   fetchTypeList(projectPk)
   fetchOrderGroupList(projectPk)
   fetchContSummaryList(projectPk)
@@ -74,11 +79,7 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    @header-select="onSelectAdd"
-  />
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
 
   <ContentBody>
     <CCardBody class="pb-5">
