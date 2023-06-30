@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/hrManage/_menu/headermixin1'
 import { useCompany } from '@/store/pinia/company'
 import { Department as Depart, DepFilter } from '@/store/types/company'
@@ -21,18 +21,9 @@ const dataFilter = ref<DepFilter>({
 
 const comStore = useCompany()
 const getPkDeparts = computed(() => comStore.getPkDeparts)
-const comId = computed(() => comStore.company?.pk || comStore.initComId)
+const comId = computed(() => comStore.company?.pk)
+watch(comId, val => (!!val ? dataSetup(val) : dataReset()))
 const comName = computed(() => comStore.company?.name || undefined)
-
-const companySelect = (target: number) => {
-  if (!!target) {
-    fetchDepartmentList({ com: target })
-    fetchAllDepartList(target)
-  } else {
-    comStore.departmentList = []
-    comStore.allDepartList = []
-  }
-}
 
 const listFiltering = (payload: DepFilter) => {
   dataFilter.value = payload
@@ -79,11 +70,17 @@ const pageSelect = (num: number) => {
 const getLevel = (up: number) =>
   getPkDeparts.value.filter(d => d.value === up)[0].level + 1
 
-onMounted(() => {
-  const companyPk = comId.value
-  fetchDepartmentList({ com: companyPk })
-  fetchAllDepartList(companyPk)
-})
+const dataSetup = (pk: number) => {
+  fetchAllDepartList(pk)
+  fetchDepartmentList({ com: pk })
+}
+
+const dataReset = () => {
+  comStore.departmentList = []
+  comStore.allDepartList = []
+}
+
+onMounted(() => dataSetup(comId.value || comStore.initComId))
 </script>
 
 <template>
@@ -91,7 +88,6 @@ onMounted(() => {
     :page-title="pageTitle"
     :nav-menu="navMenu"
     :selector="'CompanySelect'"
-    @header-select="companySelect"
   />
   <ContentBody>
     <CCardBody>

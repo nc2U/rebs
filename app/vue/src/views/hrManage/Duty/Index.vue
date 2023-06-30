@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/hrManage/_menu/headermixin2'
 import { useCompany } from '@/store/pinia/company'
 import { Duty, ComFilter } from '@/store/types/company'
@@ -10,6 +10,7 @@ import AddDuty from './components/AddDuty.vue'
 import TableTitleRow from '@/components/TableTitleRow.vue'
 import DutyList from './components/DutyList.vue'
 
+// 직책 = Duty
 const listControl = ref()
 
 const dataFilter = ref<ComFilter>({
@@ -19,14 +20,11 @@ const dataFilter = ref<ComFilter>({
 })
 
 const comStore = useCompany()
-const comId = computed(() => comStore.company?.pk || comStore.initComId)
+const comId = computed(() => comStore.company?.pk)
+watch(comId, val =>
+  !!val ? fetchDutyList({ com: val }) : (comStore.dutyList = []),
+)
 const comName = computed(() => comStore.company?.name || undefined)
-
-const companySelect = (target: number) => {
-  if (!!target) {
-    fetchDutyList({ com: target })
-  } else comStore.dutyList = []
-}
 
 const listFiltering = (payload: ComFilter) => {
   dataFilter.value = payload
@@ -64,7 +62,7 @@ const pageSelect = (num: number) => {
   }
 }
 
-onMounted(() => fetchDutyList({ com: comId.value }))
+onMounted(() => fetchDutyList({ com: comId.value || comStore.initComId }))
 </script>
 
 <template>
@@ -72,7 +70,6 @@ onMounted(() => fetchDutyList({ com: comId.value }))
     :page-title="pageTitle"
     :nav-menu="navMenu"
     :selector="'CompanySelect'"
-    @header-select="companySelect"
   />
   <ContentBody>
     <CCardBody>

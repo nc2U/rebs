@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/hrManage/_menu/headermixin2'
 import { useCompany } from '@/store/pinia/company'
 import { Grade, ComFilter } from '@/store/types/company'
@@ -10,6 +10,7 @@ import AddGrade from './components/AddGrade.vue'
 import TableTitleRow from '@/components/TableTitleRow.vue'
 import GradeList from './components/GradeList.vue'
 
+// 직급 = Grade
 const listControl = ref()
 
 const dataFilter = ref<ComFilter>({
@@ -19,18 +20,9 @@ const dataFilter = ref<ComFilter>({
 })
 
 const comStore = useCompany()
-const comId = computed(() => comStore.company?.pk || comStore.initComId)
+const comId = computed(() => comStore.company?.pk)
+watch(comId, val => (!!val ? dataSetup(val) : dataReset()))
 const comName = computed(() => comStore.company?.name || undefined)
-
-const companySelect = (target: number) => {
-  if (!!target) {
-    fetchGradeList({ com: target })
-    fetchAllPositionList(target)
-  } else {
-    comStore.gradeList = []
-    comStore.allPositionList = []
-  }
-}
 
 const listFiltering = (payload: ComFilter) => {
   dataFilter.value = payload
@@ -71,11 +63,17 @@ const pageSelect = (num: number) => {
   }
 }
 
-onMounted(() => {
-  const companyPk = comId.value
-  fetchGradeList({ com: companyPk })
-  fetchAllPositionList(companyPk)
-})
+const dataSetup = (pk: number) => {
+  fetchGradeList({ com: pk })
+  fetchAllPositionList(pk)
+}
+
+const dataReset = () => {
+  comStore.gradeList = []
+  comStore.allPositionList = []
+}
+
+onMounted(() => dataSetup(comId.value || comStore.initComId))
 </script>
 
 <template>
@@ -83,7 +81,6 @@ onMounted(() => {
     :page-title="pageTitle"
     :nav-menu="navMenu"
     :selector="'CompanySelect'"
-    @header-select="companySelect"
   />
   <ContentBody>
     <CCardBody>
