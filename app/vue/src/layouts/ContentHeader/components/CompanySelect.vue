@@ -9,10 +9,7 @@ const comStore = useCompany()
 const company = computed(() => comStore.company?.pk || comStore.initComId)
 const comSelectList = computed(() => comStore.comSelect)
 
-const comSelect = (target: number | null) => {
-  if (!!target) emit('com-select', target)
-  else comStore.company = null
-}
+const comSelect = (target: number | null) => emit('com-select', target)
 
 onBeforeMount(() => {
   comStore.fetchCompanyList()

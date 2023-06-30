@@ -9,10 +9,7 @@ const projStore = useProject()
 const project = computed(() => projStore.project?.pk || projStore.initProjId)
 const projSelectList = computed(() => projStore.projSelect)
 
-const projSelect = (target: number | null) => {
-  if (!!target) emit('proj-select', target)
-  else projStore.project = null
-}
+const projSelect = (target: number | null) => emit('proj-select', target)
 
 onBeforeMount(() => {
   projStore.fetchProjectList()
