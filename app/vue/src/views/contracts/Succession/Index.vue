@@ -17,7 +17,7 @@ import SuccessionList from './components/SuccessionList.vue'
 const page = ref(1)
 
 const projStore = useProject()
-const project = computed(() => projStore.project?.pk || projStore.initProjId)
+const project = computed(() => projStore.project?.pk)
 
 const downloadUrl = computed(
   () => `/excel/successions/?project=${project.value}`,
@@ -62,21 +62,13 @@ watch(contractor, val => {
   }
 })
 
-const router = useRouter()
+watch(project, val => {
+  router.replace({ name: '권리 의무 승계' })
+  if (!!val) dataSet(val)
+  else dataReset()
+})
 
-const onSelectAdd = (target: number) => {
-  if (!!target) {
-    fetchSuccessionList(target)
-    fetchBuyerList(target)
-  } else {
-    contStore.contract = null
-    contStore.contractor = null
-    contStore.contractorList = []
-    contStore.successionList = []
-    contStore.buyerList = []
-  }
-  router.push({ name: '권리 의무 승계' })
-}
+const router = useRouter()
 
 const searchContractor = (search: string) => {
   if (search !== '' && project.value) {
@@ -92,28 +84,41 @@ const pageSelect = (p: number) => {
 const onSubmit = (payload: { s_data: Succession; b_data: Buyer }) => {
   const { s_data, b_data } = payload
   const dbData = { ...s_data, ...b_data }
-  if (!s_data.pk) {
-    createBuyer({ ...dbData, project: project.value })
-    router.push({ name: '권리 의무 승계' })
-  } else
-    patchSuccession({ ...dbData, project: project.value, page: page.value })
-  console.log({ ...dbData })
+  if (!!project.value) {
+    if (!s_data.pk) {
+      createBuyer({ ...dbData, project: project.value })
+      router.push({ name: '권리 의무 승계' })
+    } else
+      patchSuccession({
+        ...dbData,
+        project: project.value,
+        page: page.value,
+      })
+  } else alert('프로젝트를 선택하여 주세요!')
+}
+
+const dataSet = (pk: number) => {
+  fetchSuccessionList(pk)
+  fetchBuyerList(pk)
+}
+
+const dataReset = () => {
+  contStore.contract = null
+  contStore.contractor = null
+  contStore.contractorList = []
+  contStore.successionList = []
+  contStore.buyerList = []
 }
 
 onBeforeMount(() => {
   if (route.query.contractor) fetchContractor(Number(route.query.contractor))
   else contStore.contractor = null
-  fetchSuccessionList(project.value)
-  fetchBuyerList(project.value)
+  dataSet(project.value || projStore.initProjId)
 })
 </script>
 
 <template>
-  <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    @header-select="onSelectAdd"
-  />
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
 
   <ContentBody>
     <CCardBody class="pb-5">

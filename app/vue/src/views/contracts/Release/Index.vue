@@ -17,58 +17,51 @@ import ReleaseList from '@/views/contracts/Release/components/ReleaseList.vue'
 const page = ref(1)
 
 const projStore = useProject()
-const project = computed(() => projStore.project?.pk || projStore.initProjId)
+const project = computed(() => projStore.project?.pk)
 
 const downloadUrl = computed(() => `/excel/releases/?project=${project.value}`)
 
-const contractStore = useContract()
-const contractor = computed(() => contractStore.contractor)
+const contStore = useContract()
+const contractor = computed(() => contStore.contractor)
 const contOn = computed(() => contractor.value && contractor.value.status < '3')
 
-const fetchContractor = (contor: number) =>
-  contractStore.fetchContractor(contor)
+const fetchContractor = (contor: number) => contStore.fetchContractor(contor)
 
 const fetchContractorList = (projId: number, search?: string) =>
-  contractStore.fetchContractorList(projId, search)
-const fetchContRelease = (pk: number) => contractStore.fetchContRelease(pk)
+  contStore.fetchContractorList(projId, search)
+const fetchContRelease = (pk: number) => contStore.fetchContRelease(pk)
 const fetchContReleaseList = (projId: number, page?: number) =>
-  contractStore.fetchContReleaseList(projId, page)
+  contStore.fetchContReleaseList(projId, page)
 
 const createRelease = (payload: ContractRelease) =>
-  contractStore.createRelease(payload)
+  contStore.createRelease(payload)
 const updateRelease = (payload: ContractRelease & { page: number }) =>
-  contractStore.updateRelease(payload)
+  contStore.updateRelease(payload)
 
 const route = useRoute()
+const router = useRouter()
+
 watch(route, val => {
   if (val.query.contractor) {
     fetchContractor(Number(val.query.contractor))
-  } else contractStore.contractor = null
+  } else contStore.contractor = null
 })
 
 watch(contractor, val => {
   if (val?.contractorrelease) fetchContRelease(val.contractorrelease)
-  else contractStore.contRelease = null
+  else contStore.contRelease = null
 })
 
-const router = useRouter()
+watch(project, val => {
+  router.replace({ name: '계약 해지 관리' })
+  if (!!val) dataSet(val)
+  else dataReset()
+})
 
-const onSelectAdd = (target: number) => {
-  if (!!target) {
-    fetchContReleaseList(target)
-  } else {
-    contractStore.contractor = null
-    contractStore.contractorList = []
-    contractStore.contRelease = null
-    contractStore.contReleaseList = []
-    contractStore.contReleaseCount = 0
-  }
-  router.push({ name: '계약 해지 관리' })
-}
 const searchContractor = (search: string) => {
   if (search !== '' && project.value) {
     fetchContractorList(project.value, search)
-  } else contractStore.contractorList = []
+  } else contStore.contractorList = []
 }
 
 const getRelease = (release: number) => fetchContRelease(release)
@@ -84,19 +77,28 @@ const onSubmit = (payload: ContractRelease) => {
   else updateRelease({ page: page.value, ...payload })
 }
 
+const dataSet = (pk: number) => fetchContReleaseList(pk)
+
+const dataReset = () => {
+  contStore.contractor = null
+  contStore.contractorList = []
+  contStore.contRelease = null
+  contStore.contReleaseList = []
+  contStore.contReleaseCount = 0
+}
+
 onBeforeMount(() => {
-  fetchContReleaseList(project.value)
+  dataSet(project.value || projStore.initProjId)
   if (route.query.contractor) fetchContractor(Number(route.query.contractor))
-  else contractStore.contractor = null
+  else {
+    contStore.contract = null
+    contStore.contractor = null
+  }
 })
 </script>
 
 <template>
-  <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    @header-select="onSelectAdd"
-  />
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
 
   <ContentBody>
     <CCardBody class="pb-5">

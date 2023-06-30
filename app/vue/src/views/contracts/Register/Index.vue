@@ -21,14 +21,14 @@ const contract = computed(() => contractStore.contract)
 const contractor = computed(() => contractStore.contractor)
 
 const projStore = useProject()
-const project = computed(() => projStore.project?.pk || projStore.initProjId)
+const project = computed(() => projStore.project?.pk)
 const unitSet = computed(() => projStore.project?.is_unit_set)
 const isUnion = computed(() => !projStore.project?.is_direct_manage)
 
 const fetchContract = (cont: number) => contractStore.fetchContract(cont)
 
-const fetchContractor = (contor: number) =>
-  contractStore.fetchContractor(contor)
+const fetchContractor = (contor: number, proj?: number) =>
+  contractStore.fetchContractor(contor, proj)
 
 const fetchContractorList = (projId: number, search = '') =>
   contractStore.fetchContractorList(projId, search)
@@ -91,31 +91,19 @@ watch(contract, newVal => {
   }
 })
 
-const onSelectAdd = (target: number) => {
+watch(project, val => {
   contForm.value.formReset()
-
-  if (!!target) {
-    fetchOrderGroupList(target)
-    fetchKeyUnitList({ project: target })
-    fetchHouseUnitList({ project: target })
-    fetchTypeList(target)
-    fetchPayOrderList(target)
-    fetchAllProBankAccList(target)
-  } else {
+  if (!!val) {
     contractStore.contract = null
-    contractStore.orderGroupList = []
-    contractStore.keyUnitList = []
-    contractStore.houseUnitList = []
-
-    projectDataStore.unitTypeList = []
-    paymentStore.payOrderList = []
-    proCashStore.proBankAccountList = []
-  }
-  router.push({ name: '계약 등록 관리' })
-}
+    contractStore.contractor = null
+    dataSet(val)
+  } else dataReset()
+})
 
 const getContract = (contor: string) =>
-  fetchContractor(Number(contor)).then(res => fetchContract(res.contract))
+  fetchContractor(Number(contor), project.value).then(res =>
+    fetchContract(res.contract),
+  )
 
 const typeSelect = (type: number) => {
   const unit_type = type
@@ -142,8 +130,28 @@ const searchContractor = (search: string) => {
   } else contractStore.contractorList = []
 }
 
+const dataSet = (pk: number) => {
+  fetchOrderGroupList(pk)
+  fetchKeyUnitList({ project: pk })
+  fetchHouseUnitList({ project: pk })
+  fetchTypeList(pk)
+  fetchPayOrderList(pk)
+  fetchAllProBankAccList(pk)
+}
+
+const dataReset = () => {
+  contractStore.contract = null
+  contractStore.contractor = null
+  contractStore.orderGroupList = []
+  contractStore.keyUnitList = []
+  contractStore.houseUnitList = []
+  projectDataStore.unitTypeList = []
+  paymentStore.payOrderList = []
+  proCashStore.proBankAccountList = []
+}
+
 onBeforeMount(() => {
-  const projectPk = project.value
+  const projectPk = project.value || projStore.initProjId
   fetchOrderGroupList(projectPk)
   fetchTypeList(projectPk)
   fetchAllProBankAccList(projectPk)
@@ -160,11 +168,7 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    @header-select="onSelectAdd"
-  />
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
 
   <ContentBody>
     <ContractForm
