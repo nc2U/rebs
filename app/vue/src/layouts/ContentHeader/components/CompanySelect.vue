@@ -6,14 +6,14 @@ import Multiselect from '@vueform/multiselect'
 const emit = defineEmits(['com-select'])
 
 const comStore = useCompany()
-const company = computed(() => comStore.company?.pk || comStore.initComId)
+const company = computed(() => comStore.company?.pk)
 const comSelectList = computed(() => comStore.comSelect)
 
 const comSelect = (target: number | null) => emit('com-select', target)
 
 onBeforeMount(() => {
   comStore.fetchCompanyList()
-  comStore.fetchCompany(company.value)
+  comStore.fetchCompany(company.value || comStore.initComId)
 })
 </script>
 
