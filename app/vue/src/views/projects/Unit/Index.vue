@@ -17,11 +17,6 @@ const bldgName = ref('')
 
 const projStore = useProject()
 const project = computed(() => projStore.project?.pk)
-watch(project, val => {
-  if (!!val) dataSet(val)
-  else dataReset()
-  pDataStore.houseUnitList = []
-})
 
 const pDataStore = useProjectData()
 const numUnitByType = computed(() => pDataStore.numUnitByType)
@@ -136,7 +131,7 @@ const onUpdate = (payload: HouseUnit) =>
 
 const onDelete = (pk: number) => alert('delete! -- ' + pk)
 
-const dataSet = (pk: number) => {
+const dataSetup = (pk: number) => {
   fetchTypeList(pk)
   fetchFloorTypeList(pk)
   fetchBuildingList(pk)
@@ -148,14 +143,24 @@ const dataReset = () => {
   pDataStore.buildingList = []
 }
 
+const projSelect = (target: number | null) => {
+  dataReset()
+  if (!!target) dataSetup(target)
+  pDataStore.houseUnitList = []
+}
+
 onBeforeMount(() => {
-  dataSet(project.value || projStore.initProjId)
+  dataSetup(project.value || projStore.initProjId)
   pDataStore.houseUnitList = []
 })
 </script>
 
 <template>
-  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
+  <ContentHeader
+    :page-title="pageTitle"
+    :nav-menu="navMenu"
+    @proj-select="projSelect"
+  />
 
   <ContentBody>
     <CCardBody class="pb-5">

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount, watch } from 'vue'
+import { computed, onBeforeMount } from 'vue'
 import { useProject } from '@/store/pinia/project'
 import { useProjectData } from '@/store/pinia/project_data'
 import { BuildingUnit } from '@/store/types/project'
@@ -11,9 +11,6 @@ import BuildingFormList from '@/views/projects/Building/components/BuildingFormL
 
 const projStore = useProject()
 const project = computed(() => projStore.project?.pk)
-watch(project, val =>
-  !!val ? fetchBuildingList(val) : (pDataStore.buildingList = []),
-)
 
 const pDataStore = useProjectData()
 const fetchBuildingList = (projId: number) =>
@@ -35,11 +32,20 @@ const onDeleteBuilding = (pk: number) => {
   if (project.value) deleteBuilding(pk, project.value)
 }
 
+const projSelect = (target: number | null) => {
+  pDataStore.buildingList = []
+  if (!!target) fetchBuildingList(target)
+}
+
 onBeforeMount(() => fetchBuildingList(project.value || projStore.initProjId))
 </script>
 
 <template>
-  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
+  <ContentHeader
+    :page-title="pageTitle"
+    :nav-menu="navMenu"
+    @proj-select="projSelect"
+  />
 
   <ContentBody>
     <CCardBody class="pb-5">

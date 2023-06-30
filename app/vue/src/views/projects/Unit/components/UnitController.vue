@@ -30,8 +30,6 @@ const form = reactive({
   maxFloor: null,
 })
 
-watch(props, () => (form.building = null))
-
 const warning = computed(() => !!form.maxFloor)
 
 const typeNameLength = computed(() => {
@@ -57,11 +55,10 @@ const simpleFloors = computed(() => projectDataStore.simpleFloors)
 const fetchNumUnitByType = (projId: number, unit_type: number) =>
   projectDataStore.fetchNumUnitByType(projId, unit_type)
 
-watch(props, nVal => {
-  if (nVal.project) {
-    form.building = null
-    form.type = null
-  }
+watch(props, () => {
+  // form.building = null
+  // form.type = null
+  reset(1)
 })
 
 watch(form, val => {
@@ -154,7 +151,7 @@ const modalAction = () => {
               :disabled="!project"
               @change="bldgSelect"
             >
-              <option value>---------</option>
+              <option value="">---------</option>
               <option
                 v-for="bldg in buildingList"
                 :key="bldg.pk"
@@ -195,7 +192,7 @@ const modalAction = () => {
               :disabled="!form.line"
               @change="typeSelect"
             >
-              <option value>---------</option>
+              <option value="">---------</option>
               <option
                 v-for="type in unitTypeList"
                 :key="type.pk"
