@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount, provide } from 'vue'
+import { computed, onBeforeMount, provide, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin1'
 import { useProject } from '@/store/pinia/project'
 import { useProCash } from '@/store/pinia/proCash'
@@ -12,7 +12,8 @@ import BudgetAddForm from '@/views/projects/OutBudget/components/BudgetAddForm.v
 import BudgetFormList from '@/views/projects/OutBudget/components/BudgetFormList.vue'
 
 const projStore = useProject()
-const project = computed(() => projStore.project?.pk || projStore.initProjId)
+const project = computed(() => projStore.project?.pk)
+watch(project, val => (!!val ? dataSet(val) : dataReset()))
 
 const pCashStore = useProCash()
 const allAccD2List = computed(() =>
@@ -32,18 +33,6 @@ provide('d2List', allAccD2List)
 provide('d3List', allAccD3List)
 provide('orderGroups', getOrderGroups)
 provide('unitTypes', getTypes)
-
-const onSelectAdd = (target: number) => {
-  if (!!target) {
-    fetchOrderGroupList(target)
-    fetchTypeList(target)
-    fetchOutBudgetList(target)
-  } else {
-    contStore.orderGroupList = []
-    pDataStore.unitTypeList = []
-    projStore.proOutBudgetList = []
-  }
-}
 
 const fetchOutBudgetList = (pj: number) => projStore.fetchOutBudgetList(pj)
 const createOutBudget = (payload: ProOutBudget) =>
@@ -75,23 +64,27 @@ const onDeleteBudget = (pk: number) => {
   if (project.value) deleteOutBudget(pk, project.value)
 }
 
+const dataSet = (pk: number) => {
+  fetchOrderGroupList(pk)
+  fetchTypeList(pk)
+  fetchOutBudgetList(pk)
+}
+
+const dataReset = () => {
+  contStore.orderGroupList = []
+  pDataStore.unitTypeList = []
+  projStore.proOutBudgetList = []
+}
+
 onBeforeMount(() => {
   fetchProAllAccD2List()
   fetchProAllAccD3List()
-
-  const projectPk = project.value
-  fetchOrderGroupList(projectPk)
-  fetchTypeList(projectPk)
-  fetchOutBudgetList(projectPk)
+  dataSet(project.value || projStore.initProjId)
 })
 </script>
 
 <template>
-  <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    @header-select="onSelectAdd"
-  />
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
 
   <ContentBody>
     <CCardBody class="pb-5">

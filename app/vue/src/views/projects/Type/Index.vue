@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount, provide } from 'vue'
+import { computed, onBeforeMount, provide, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin1'
 import { useProject } from '@/store/pinia/project'
 import { useProjectData } from '@/store/pinia/project_data'
@@ -10,7 +10,10 @@ import TypeAddForm from '@/views/projects/Type/components/TypeAddForm.vue'
 import TypeFormList from '@/views/projects/Type/components/TypeFormList.vue'
 
 const projStore = useProject()
-const project = computed(() => projStore.project?.pk || projStore.initProjId)
+const project = computed(() => projStore.project?.pk)
+watch(project, val =>
+  !!val ? fetchTypeList(val) : (pDataStore.unitTypeList = []),
+)
 
 const typeSort = [
   { value: '1', label: '공동주택' },
@@ -23,17 +26,13 @@ const typeSort = [
 
 provide('typeSort', typeSort)
 
-const projectDataStore = useProjectData()
-const fetchTypeList = (projId: number) => projectDataStore.fetchTypeList(projId)
-const createType = (payload: UnitType) => projectDataStore.createType(payload)
-const updateType = (payload: UnitType) => projectDataStore.updateType(payload)
+const pDataStore = useProjectData()
+const fetchTypeList = (projId: number) => pDataStore.fetchTypeList(projId)
+const createType = (payload: UnitType) => pDataStore.createType(payload)
+const updateType = (payload: UnitType) => pDataStore.updateType(payload)
 const deleteType = (pk: number, project: number) =>
-  projectDataStore.deleteType(pk, project)
+  pDataStore.deleteType(pk, project)
 
-const onSelectAdd = (target: number) => {
-  if (!!target) fetchTypeList(target)
-  else projectDataStore.unitTypeList = []
-}
 const onSubmit = (payload: UnitType) =>
   createType({ ...{ project: project.value }, ...payload })
 const onUpdateType = (payload: UnitType) =>
@@ -42,15 +41,11 @@ const onDeleteType = (pk: number) => {
   if (project.value) deleteType(pk, project.value)
 }
 
-onBeforeMount(() => fetchTypeList(project.value))
+onBeforeMount(() => fetchTypeList(project.value || projStore.initProjId))
 </script>
 
 <template>
-  <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    @header-select="onSelectAdd"
-  />
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
 
   <ContentBody>
     <CCardBody class="pb-5">

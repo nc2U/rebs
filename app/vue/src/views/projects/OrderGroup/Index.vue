@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount } from 'vue'
+import { computed, onBeforeMount, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin1'
 import { useProject } from '@/store/pinia/project'
 import { useContract } from '@/store/pinia/contract'
@@ -10,13 +10,12 @@ import OrderAddForm from '@/views/projects/OrderGroup/components/OrderAddForm.vu
 import OrderFormList from '@/views/projects/OrderGroup/components/OrderFormList.vue'
 
 const projStore = useProject()
-const project = computed(() => projStore.project?.pk || projStore.initProjId)
+const project = computed(() => projStore.project?.pk)
+watch(project, val =>
+  !!val ? fetchOrderGroupList(val) : (contStore.orderGroupList = []),
+)
 
 const contStore = useContract()
-const onSelectAdd = (target: number) => {
-  if (!!target) fetchOrderGroupList(target)
-  else contStore.orderGroupList = []
-}
 
 const fetchOrderGroupList = (pk: number) => contStore.fetchOrderGroupList(pk)
 const createOrderGroup = (payload: OrderGroup) =>
@@ -33,17 +32,13 @@ const onUpdateOrder = (payload: OrderGroup) =>
   updateOrderGroup({ ...{ project: project.value }, ...payload })
 
 const onDeleteOrder = (pk: number) =>
-  deleteOrderGroup({ pk, project: project.value })
+  deleteOrderGroup({ pk, project: project.value || projStore.initProjId })
 
-onBeforeMount(() => fetchOrderGroupList(project.value))
+onBeforeMount(() => fetchOrderGroupList(project.value || projStore.initProjId))
 </script>
 
 <template>
-  <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    @header-select="onSelectAdd"
-  />
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
 
   <ContentBody>
     <CCardBody class="pb-5">
