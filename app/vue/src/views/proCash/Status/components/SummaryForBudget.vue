@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount, ref, watch } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useProject } from '@/store/pinia/project'
 import { write_project_cash } from '@/utils/pageAuth'
 import { dateFormat, numFormat } from '@/utils/baseMixins'
@@ -19,12 +19,11 @@ const monthExecAmt = ref(0)
 const totalExecAmt = ref(0)
 const availableBudget = ref(0)
 
-const projectStore = useProject()
-const statusOutBudgetList = computed(() => projectStore.statusOutBudgetList)
-const execAmountList = computed(() => projectStore.execAmountList)
+const projStore = useProject()
+const execAmountList = computed(() => projStore.execAmountList)
+const statusOutBudgetList = computed(() => projStore.statusOutBudgetList)
 
-onBeforeMount(() => getSumTotal())
-
+watch(execAmountList, () => getSumTotal())
 watch(statusOutBudgetList, () => getSumTotal())
 
 const getD3sInter = (arr: number[]) => {

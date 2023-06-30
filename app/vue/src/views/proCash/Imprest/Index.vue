@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed, onBeforeMount } from 'vue'
+import { ref, computed, onBeforeMount, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/proCash/_menu/headermixin'
 import { useProject } from '@/store/pinia/project'
 import { useProCash } from '@/store/pinia/proCash'
@@ -43,7 +43,8 @@ const excelUrl = computed(() => {
 })
 
 const projStore = useProject()
-const project = computed(() => projStore.project?.pk || projStore.initProjId)
+const project = computed(() => projStore.project?.pk)
+watch(project, val => (!!val ? dataSet(val) : dataReset()))
 
 const comCashStore = useComCash()
 const fetchBankCodeList = () => comCashStore.fetchBankCodeList()
@@ -85,19 +86,6 @@ const deletePrImprestBook = (
     filters?: CashBookFilter
   },
 ) => pCashStore.deletePrImprestBook(payload)
-
-const onSelectAdd = (target: number) => {
-  if (!!target) {
-    fetchProBankAccList(target)
-    fetchAllProBankAccList(target)
-    fetchProjectImprestList({ project: target })
-  } else {
-    pCashStore.balanceByAccList = []
-    pCashStore.allProBankAccountList = []
-    pCashStore.proImprestList = []
-    pCashStore.proImprestCount = 0
-  }
-}
 
 const pageSelect = (page: number) => {
   dataFilter.value.page = page
@@ -222,6 +210,19 @@ const onDelete = (payload: { pk: number; project: number }) =>
 
 const onBankUpdate = (payload: ProBankAcc) => patchProBankAcc(payload)
 
+const dataSet = (pk: number) => {
+  fetchProBankAccList(pk)
+  fetchAllProBankAccList(pk)
+  fetchProjectImprestList({ project: pk })
+}
+
+const dataReset = () => {
+  pCashStore.balanceByAccList = []
+  pCashStore.allProBankAccountList = []
+  pCashStore.proImprestList = []
+  pCashStore.proImprestCount = 0
+}
+
 onBeforeMount(() => {
   fetchBankCodeList()
   fetchProAccSortList()
@@ -229,20 +230,12 @@ onBeforeMount(() => {
   fetchProAllAccD3List()
   fetchProFormAccD2List()
   fetchProFormAccD3List()
-
-  const projectPk = project.value
-  fetchProBankAccList(projectPk)
-  fetchAllProBankAccList(projectPk)
-  fetchProjectImprestList({ project: projectPk })
+  dataSet(project.value || projStore.initProjId)
 })
 </script>
 
 <template>
-  <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    @header-select="onSelectAdd"
-  />
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
 
   <ContentBody>
     <CCardBody class="pb-5">

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed, onBeforeMount } from 'vue'
+import { ref, computed, onBeforeMount, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/proCash/_menu/headermixin'
 import { useComCash } from '@/store/pinia/comCash'
 import { useProCash } from '@/store/pinia/proCash'
@@ -31,7 +31,9 @@ const dataFilter = ref<CashBookFilter>({
 })
 
 const projStore = useProject()
-const project = computed(() => projStore.project?.pk || projStore.initProjId)
+const project = computed(() => projStore.project?.pk)
+
+watch(project, val => (!!val ? dataSet(val) : dataReset()))
 
 const pageSelect = (page: number) => {
   dataFilter.value.page = page
@@ -106,19 +108,6 @@ const deletePrCashBook = (
     filters?: CashBookFilter
   },
 ) => proCashStore.deletePrCashBook(payload)
-
-const onSelectAdd = (target: number) => {
-  if (!!target) {
-    fetchProBankAccList(target)
-    fetchAllProBankAccList(target)
-    fetchProjectCashList({ project: target })
-  } else {
-    proCashStore.proBankAccountList = []
-    proCashStore.allProBankAccountList = []
-    proCashStore.proCashBookList = []
-    proCashStore.proCashesCount = 0
-  }
-}
 
 const chargeCreate = (
   payload: PrCashBook & { sepData: PrCashBook | null } & {
@@ -211,6 +200,19 @@ const onDelete = (payload: { pk: number; project: number }) =>
 
 const onBankUpdate = (payload: ProBankAcc) => patchProBankAcc(payload)
 
+const dataSet = (pk: number) => {
+  fetchProBankAccList(pk)
+  fetchAllProBankAccList(pk)
+  fetchProjectCashList({ project: pk })
+}
+
+const dataReset = () => {
+  proCashStore.proBankAccountList = []
+  proCashStore.allProBankAccountList = []
+  proCashStore.proCashBookList = []
+  proCashStore.proCashesCount = 0
+}
+
 onBeforeMount(() => {
   fetchBankCodeList()
   fetchProAccSortList()
@@ -218,20 +220,12 @@ onBeforeMount(() => {
   fetchProAllAccD3List()
   fetchProFormAccD2List()
   fetchProFormAccD3List()
-
-  const projectPk = project.value
-  fetchProBankAccList(projectPk)
-  fetchAllProBankAccList(projectPk)
-  fetchProjectCashList({ project: projectPk })
+  dataSet(project.value || projStore.initProjId)
 })
 </script>
 
 <template>
-  <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    @header-select="onSelectAdd"
-  />
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
 
   <ContentBody>
     <CCardBody class="pb-5">

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed, onBeforeMount } from 'vue'
+import { ref, computed, onBeforeMount, watch } from 'vue'
 import { useProject } from '@/store/pinia/project'
 import { useProCash } from '@/store/pinia/proCash'
 import { dateFormat } from '@/utils/baseMixins'
@@ -18,7 +18,12 @@ const direct = ref('0')
 const compName = ref('StatusByAccount')
 
 const projStore = useProject()
-const project = computed(() => projStore.project?.pk || projStore.initProjId)
+const project = computed(() => projStore.project?.pk)
+
+watch(project, val => {
+  dataReset()
+  if (!!val) dataSet(val)
+})
 
 const fetchStatusOutBudgetList = (proj: number) =>
   projStore.fetchStatusOutBudgetList(proj)
@@ -56,25 +61,6 @@ const excelUrl = computed(() => {
   return `${url}`
 })
 
-const onSelectAdd = (target: number) => {
-  if (!!target) {
-    fetchStatusOutBudgetList(target)
-    fetchExecAmountList(target, dateFormat(date.value))
-    fetchProBankAccList(target)
-    fetchBalanceByAccList({ project: target, date: dateFormat(date.value) })
-    fetchDateCashBookList({
-      project: target,
-      date: dateFormat(date.value),
-    })
-  } else {
-    projStore.statusOutBudgetList = []
-    projStore.execAmountList = []
-    pCashStore.proBankAccountList = []
-    pCashStore.balanceByAccList = []
-    pCashStore.proDateCashBook = []
-  }
-}
-
 const showTab = (num: number) => {
   const comp: { [key: number]: string } = {
     1: 'StatusByAccount',
@@ -109,31 +95,34 @@ const directBalance = (val: boolean) => {
     })
 }
 
+const dataSet = (pk: number) => {
+  fetchStatusOutBudgetList(pk)
+  fetchExecAmountList(pk, dateFormat(date.value))
+  fetchProBankAccList(pk)
+  fetchBalanceByAccList({ project: pk, date: dateFormat(date.value) })
+  fetchDateCashBookList({
+    project: pk,
+    date: dateFormat(date.value),
+  })
+}
+
+const dataReset = () => {
+  projStore.statusOutBudgetList = []
+  projStore.execAmountList = []
+  pCashStore.proBankAccountList = []
+  pCashStore.balanceByAccList = []
+  pCashStore.proDateCashBook = []
+}
+
 onBeforeMount(() => {
   fetchProAllAccD2List()
   fetchProAllAccD3List()
-
-  const projectPk = project.value
-  fetchExecAmountList(projectPk)
-  fetchStatusOutBudgetList(projectPk)
-  fetchProBankAccList(projectPk)
-  fetchBalanceByAccList({
-    project: projectPk,
-    date: dateFormat(date.value),
-  })
-  fetchDateCashBookList({
-    project: projectPk,
-    date: dateFormat(date.value),
-  })
+  dataSet(project.value || projStore.initProjId)
 })
 </script>
 
 <template>
-  <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    @header-select="onSelectAdd"
-  />
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
 
   <ContentBody>
     <CCardBody class="pb-5">
