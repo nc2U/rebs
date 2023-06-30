@@ -5,19 +5,18 @@ import Multiselect from '@vueform/multiselect'
 
 const emit = defineEmits(['proj-select'])
 
-const projectStore = useProject()
-const project = computed(
-  () => projectStore.project?.pk || projectStore.initProjId,
-)
-const projSelectList = computed(() => projectStore.projSelect)
+const projStore = useProject()
+const project = computed(() => projStore.project?.pk || projStore.initProjId)
+const projSelectList = computed(() => projStore.projSelect)
 
-const projSelect = (target: number) => {
+const projSelect = (target: number | null) => {
   if (!!target) emit('proj-select', target)
+  else projStore.project = null
 }
 
 onBeforeMount(() => {
-  projectStore.fetchProjectList()
-  projectStore.fetchProject(project.value)
+  projStore.fetchProjectList()
+  projStore.fetchProject(project.value)
 })
 </script>
 
