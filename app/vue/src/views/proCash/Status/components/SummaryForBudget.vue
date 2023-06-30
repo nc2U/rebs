@@ -13,18 +13,9 @@ defineProps({ date: { type: String, default: '' } })
 
 const formNumber = ref(1000)
 
-const totalBudget = ref(0)
-const preExecAmt = ref(0)
-const monthExecAmt = ref(0)
-const totalExecAmt = ref(0)
-const availableBudget = ref(0)
-
 const projStore = useProject()
 const execAmountList = computed(() => projStore.execAmountList)
 const statusOutBudgetList = computed(() => projStore.statusOutBudgetList)
-
-watch(execAmountList, () => getSumTotal())
-watch(statusOutBudgetList, () => getSumTotal())
 
 const getD3sInter = (arr: number[]) => {
   const d3s = statusOutBudgetList.value.map(
@@ -55,7 +46,7 @@ const getEASum = (d3: number) =>
 const getEAMonth = (d3: number) =>
   getExecAmount(d3).map((e: ExeBudget) => e.month_sum)[0]
 
-const getSumTotal = () => {
+const sumTotal = computed(() => {
   const totalBudgetCalc = statusOutBudgetList.value
     .map((b: StatusOutBudget) => b.budget)
     .reduce((res: number, val: number) => res + val, 0)
@@ -66,12 +57,19 @@ const getSumTotal = () => {
     .map((a: ExeBudget) => a.all_sum)
     .reduce((r: number, v: number) => r + v, 0)
 
-  totalBudget.value = totalBudgetCalc
-  preExecAmt.value = totalExecAmtCalc - monthExecAmtCalc
-  monthExecAmt.value = monthExecAmtCalc
-  totalExecAmt.value = totalExecAmtCalc
-  availableBudget.value = totalBudgetCalc - totalExecAmtCalc
-}
+  const totalBudget = totalBudgetCalc
+  const preExecAmt = totalExecAmtCalc - monthExecAmtCalc
+  const monthExecAmt = monthExecAmtCalc
+  const totalExecAmt = totalExecAmtCalc
+  const availableBudget = totalBudgetCalc - totalExecAmtCalc
+  return {
+    totalBudget,
+    preExecAmt,
+    monthExecAmt,
+    totalExecAmt,
+    availableBudget,
+  }
+})
 
 const emit = defineEmits(['patch-budget'])
 
@@ -200,11 +198,21 @@ const patchBudget = (pk: number, budget: string, oldBudget: number) => {
         <CTableHeaderCell colspan="4" class="text-center">
           합계
         </CTableHeaderCell>
-        <CTableHeaderCell>{{ numFormat(totalBudget) }}</CTableHeaderCell>
-        <CTableHeaderCell>{{ numFormat(preExecAmt) }}</CTableHeaderCell>
-        <CTableHeaderCell>{{ numFormat(monthExecAmt) }}</CTableHeaderCell>
-        <CTableHeaderCell>{{ numFormat(totalExecAmt) }}</CTableHeaderCell>
-        <CTableHeaderCell>{{ numFormat(availableBudget) }}</CTableHeaderCell>
+        <CTableHeaderCell
+          >{{ numFormat(sumTotal.totalBudget) }}
+        </CTableHeaderCell>
+        <CTableHeaderCell
+          >{{ numFormat(sumTotal.preExecAmt) }}
+        </CTableHeaderCell>
+        <CTableHeaderCell
+          >{{ numFormat(sumTotal.monthExecAmt) }}
+        </CTableHeaderCell>
+        <CTableHeaderCell
+          >{{ numFormat(sumTotal.totalExecAmt) }}
+        </CTableHeaderCell>
+        <CTableHeaderCell
+          >{{ numFormat(sumTotal.availableBudget) }}
+        </CTableHeaderCell>
       </CTableRow>
     </CTableBody>
   </CTable>

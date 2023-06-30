@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed, onBeforeMount, watch } from 'vue'
+import { ref, computed, onBeforeMount } from 'vue'
 import { useProject } from '@/store/pinia/project'
 import { useProCash } from '@/store/pinia/proCash'
 import { dateFormat } from '@/utils/baseMixins'
@@ -19,11 +19,6 @@ const compName = ref('StatusByAccount')
 
 const projStore = useProject()
 const project = computed(() => projStore.project?.pk)
-
-watch(project, val => {
-  dataReset()
-  if (!!val) dataSet(val)
-})
 
 const fetchStatusOutBudgetList = (proj: number) =>
   projStore.fetchStatusOutBudgetList(proj)
@@ -74,28 +69,35 @@ const setDate = (d: Date) => {
   const dt = new Date(d)
   date.value = dt
   if (project.value) {
-    fetchStatusOutBudgetList(project.value)
-    fetchExecAmountList(project.value, dateFormat(dt))
-    fetchBalanceByAccList({ project: project.value, date: dateFormat(dt) })
-    fetchDateCashBookList({ project: project.value, date: dateFormat(dt) })
+    fetchStatusOutBudgetList(project.value as number)
+    fetchExecAmountList(project.value as number, dateFormat(dt))
+    fetchBalanceByAccList({
+      project: project.value as number,
+      date: dateFormat(dt),
+    })
+    fetchDateCashBookList({
+      project: project.value as number,
+      date: dateFormat(dt),
+    })
   }
 }
 
 const patchBudget = (pk: number, budget: number) => {
-  if (project.value) patchStatusOutBudgetList(project.value, pk, budget)
+  if (project.value)
+    patchStatusOutBudgetList(project.value as number, pk, budget)
 }
 
 const directBalance = (val: boolean) => {
   direct.value = val ? 'i' : '0'
   if (project.value)
     fetchBalanceByAccList({
-      project: project.value,
+      project: project.value as number,
       direct: direct.value,
       date: dateFormat(date.value),
     })
 }
 
-const dataSet = (pk: number) => {
+const dataSetup = (pk: number) => {
   fetchStatusOutBudgetList(pk)
   fetchExecAmountList(pk, dateFormat(date.value))
   fetchProBankAccList(pk)
@@ -114,15 +116,24 @@ const dataReset = () => {
   pCashStore.proDateCashBook = []
 }
 
+const projSelect = (target: number | null) => {
+  dataReset()
+  if (!!target) dataSetup(target)
+}
+
 onBeforeMount(() => {
   fetchProAllAccD2List()
   fetchProAllAccD3List()
-  dataSet(project.value || projStore.initProjId)
+  dataSetup(project.value || projStore.initProjId)
 })
 </script>
 
 <template>
-  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
+  <ContentHeader
+    :page-title="pageTitle"
+    :nav-menu="navMenu"
+    @proj-select="projSelect"
+  />
 
   <ContentBody>
     <CCardBody class="pb-5">
@@ -134,13 +145,16 @@ onBeforeMount(() => {
 
       <StatusByAccount
         v-if="compName === 'StatusByAccount'"
-        :date="date"
+        :date="date as string | undefined"
         @direct-balance="directBalance"
       />
-      <CashListByDate v-if="compName === 'CashListByDate'" :date="date" />
+      <CashListByDate
+        v-if="compName === 'CashListByDate'"
+        :date="date as string | undefined"
+      />
       <SummaryForBudget
         v-if="compName === 'SummaryForBudget'"
-        :date="date"
+        :date="date as string | undefined"
         @patch-budget="patchBudget"
       />
     </CCardBody>

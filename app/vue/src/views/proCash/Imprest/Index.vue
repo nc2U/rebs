@@ -44,7 +44,6 @@ const excelUrl = computed(() => {
 
 const projStore = useProject()
 const project = computed(() => projStore.project?.pk)
-watch(project, val => (!!val ? dataSet(val) : dataReset()))
 
 const comCashStore = useComCash()
 const fetchBankCodeList = () => comCashStore.fetchBankCodeList()
@@ -210,7 +209,7 @@ const onDelete = (payload: { pk: number; project: number }) =>
 
 const onBankUpdate = (payload: ProBankAcc) => patchProBankAcc(payload)
 
-const dataSet = (pk: number) => {
+const dataSetup = (pk: number) => {
   fetchProBankAccList(pk)
   fetchAllProBankAccList(pk)
   fetchProjectImprestList({ project: pk })
@@ -223,6 +222,11 @@ const dataReset = () => {
   pCashStore.proImprestCount = 0
 }
 
+const projSelect = (target: number | null) => {
+  dataReset()
+  if (!!target) dataSetup(target)
+}
+
 onBeforeMount(() => {
   fetchBankCodeList()
   fetchProAccSortList()
@@ -230,12 +234,16 @@ onBeforeMount(() => {
   fetchProAllAccD3List()
   fetchProFormAccD2List()
   fetchProFormAccD3List()
-  dataSet(project.value || projStore.initProjId)
+  dataSetup(project.value || projStore.initProjId)
 })
 </script>
 
 <template>
-  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
+  <ContentHeader
+    :page-title="pageTitle"
+    :nav-menu="navMenu"
+    @proj-select="projSelect"
+  />
 
   <ContentBody>
     <CCardBody class="pb-5">
