@@ -30,11 +30,8 @@ const comSelect = (com: number) => {
   emit('header-select', com)
 }
 
-const projSelect = (proj: number) => {
-  if (!!proj) projectStore.fetchProject(proj)
-  else projectStore.project = null
-  emit('header-select', proj)
-}
+const projSelect = (proj: number) =>
+  !!proj ? projectStore.fetchProject(proj) : (projectStore.project = null)
 </script>
 
 <template>
