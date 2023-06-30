@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount, watch } from 'vue'
+import { computed, onBeforeMount } from 'vue'
 import { pageTitle, navMenu } from '@/views/contracts/_menu/headermixin1'
 import { useProject } from '@/store/pinia/project'
 import { useProjectData } from '@/store/pinia/project_data'
@@ -13,12 +13,7 @@ import ContractBoard from '@/views/contracts/Status/components/ContractBoard.vue
 const projStore = useProject()
 const project = computed(() => projStore.project?.pk)
 
-const excelUrl = computed(() =>
-  project.value ? `excel/status/?project=${project.value}` : '',
-)
-
 const pDataStore = useProjectData()
-
 const fetchTypeList = (projId: number) => pDataStore.fetchTypeList(projId)
 const fetchBuildingList = (projId: number) =>
   pDataStore.fetchBuildingList(projId)
@@ -34,14 +29,11 @@ const fetchSubsSummaryList = (projId: number) =>
 const fetchContSummaryList = (projId: number) =>
   contStore.fetchContSummaryList(projId)
 
-watch(project, val => {
-  if (!!val) {
-    pDataStore.isLoading = true
-    dataSet(val)
-  } else dataReset()
-})
+const excelUrl = computed(() =>
+  project.value ? `excel/status/?project=${project.value}` : '',
+)
 
-const dataSet = (pk: number) => {
+const dataSetup = (pk: number) => {
   fetchTypeList(pk)
   fetchBuildingList(pk)
   fetchHouseUnitList(pk)
@@ -59,14 +51,20 @@ const dataReset = () => {
   contStore.contractsCount = 0
 }
 
-onBeforeMount(() => {
-  const projectPk = project.value || projStore.initProjId
-  dataSet(projectPk)
-})
+const projSelect = (target: number | null) => {
+  dataReset()
+  if (!!target) dataSetup(target)
+}
+
+onBeforeMount(() => dataSetup(project.value || projStore.initProjId))
 </script>
 
 <template>
-  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
+  <ContentHeader
+    :page-title="pageTitle"
+    :nav-menu="navMenu"
+    @proj-select="projSelect"
+  />
 
   <ContentBody>
     <CCardBody class="pb-5">

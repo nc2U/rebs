@@ -149,7 +149,7 @@ export const useProjectData = defineStore('projectData', () => {
 
   // states & getters
   const houseUnitList = ref<HouseUnit[]>([])
-  const isLoading = ref(true)
+  const isLoading = ref(false)
   const simpleUnits = computed(() =>
     houseUnitList.value
       ? houseUnitList.value.map((u: HouseUnit) => ({
@@ -189,6 +189,7 @@ export const useProjectData = defineStore('projectData', () => {
 
   // actions
   const fetchHouseUnitList = (project: number, bldg?: number) => {
+    if (houseUnitList.value.length === 0) isLoading.value = true
     let apiUri = `/all-house-unit/?building_unit__project=${project}`
     if (bldg) apiUri += `&building_unit=${bldg}`
     return api

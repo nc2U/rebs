@@ -26,14 +26,11 @@ const childListFiltering = (page: number) =>
 const projStore = useProject()
 
 const project = computed(() => projStore.project)
-
 watch(project, nVal => {
   unitSet.value = nVal?.is_unit_set || false
-  if (!!nVal) {
+  if (!!nVal)
     if (nVal?.is_unit_set && !printItems.value.includes('6-7'))
       printItems.value.splice(4, 0, '6-7')
-    dataSet(nVal?.pk || projStore.initProjId)
-  } else dataReset()
 })
 
 const excelUrl = computed(() => {
@@ -82,7 +79,7 @@ const onContFiltering = (payload: ContFilter) => {
 }
 const setItems = (arr: string[]) => (printItems.value = arr)
 
-const dataSet = (proj: number) => {
+const dataSetup = (proj: number) => {
   fetchOrderGroupList(proj)
   fetchTypeList(proj)
   fetchBuildingList(proj)
@@ -100,14 +97,20 @@ const dataReset = () => {
   projectDataStore.buildingList = []
 }
 
-onBeforeMount(() => {
-  const projectPk = project.value?.pk || projStore.initProjId
-  dataSet(projectPk)
-})
+const projSelect = (target: number | null) => {
+  dataReset()
+  if (!!target) dataSetup(target)
+}
+
+onBeforeMount(() => dataSetup(project.value?.pk || projStore.initProjId))
 </script>
 
 <template>
-  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu">
+  <ContentHeader
+    :page-title="pageTitle"
+    :nav-menu="navMenu"
+    @proj-select="projSelect"
+  >
     <ContractSummary :project="project" />
   </ContentHeader>
 
