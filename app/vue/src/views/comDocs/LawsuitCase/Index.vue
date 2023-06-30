@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onBeforeMount, onBeforeUpdate } from 'vue'
+import { ref, computed, onBeforeMount, onBeforeUpdate, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/comDocs/_menu/headermixin2'
 import { useRouter } from 'vue-router'
 import { useCompany } from '@/store/pinia/company'
@@ -37,7 +37,8 @@ const pageSelect = (page: number) => {
 }
 
 const comStore = useCompany()
-const company = computed(() => comStore.company?.pk || comStore.initComId)
+const company = computed(() => comStore.company?.pk)
+watch(company, val => (!!val ? dataSet(val) : dataReset()))
 
 const docStore = useDocument()
 const suitcaseList = computed(() => docStore.suitcaseList)
@@ -53,29 +54,19 @@ const deleteSuitCase = (pk: number) => docStore.deleteSuitCase(pk)
 
 const router = useRouter()
 
-const companySelect = (target: number) => {
-  if (!!target) {
-    fetchSuitCaseList({ company: target })
-  } else {
-    comStore.company = null
-    docStore.suitcaseList = []
-    docStore.suitcaseCount = 0
-    router.replace({ name: '본사 소송 사건' })
-  }
-}
-
 const onSubmit = (payload: SuitCase) => {
-  if (payload.pk) {
-    updateSuitCase(payload)
-    router.replace({
-      name: '본사 소송 사건 - 보기',
-      params: { caseId: payload.pk },
-    })
-  } else {
-    payload.company = company.value
-    createSuitCase(payload)
-    router.replace({ name: '본사 소송 사건' })
-  }
+  if (!!company.value)
+    if (payload.pk) {
+      updateSuitCase(payload)
+      router.replace({
+        name: '본사 소송 사건 - 보기',
+        params: { caseId: payload.pk },
+      })
+    } else {
+      payload.company = company.value
+      createSuitCase(payload)
+      router.replace({ name: '본사 소송 사건' })
+    }
 }
 
 const onDelete = (pk: number) => deleteSuitCase(pk)
@@ -108,14 +99,20 @@ const sortFilter = (project: number | null) => {
   listFiltering(caseFilter.value)
 }
 
-onBeforeMount(() => {
-  fetchSuitCaseList({ company: company.value })
-  fetchAllSuitCaseList({})
-})
+const dataSet = (pk: number) => {
+  fetchSuitCaseList({ company: pk, page: caseFilter.value.page })
+}
 
-onBeforeUpdate(() => {
-  if (company.value)
-    fetchSuitCaseList({ company: company.value, page: caseFilter.value.page })
+const dataReset = () => {
+  comStore.company = null
+  docStore.suitcaseList = []
+  docStore.suitcaseCount = 0
+  router.replace({ name: '본사 소송 사건' })
+}
+
+onBeforeMount(() => {
+  fetchAllSuitCaseList({})
+  dataSet(company.value || comStore.initComId)
 })
 </script>
 
@@ -124,7 +121,6 @@ onBeforeUpdate(() => {
     :page-title="pageTitle"
     :nav-menu="navMenu"
     :selector="'CompanySelect'"
-    @header-select="companySelect"
   />
 
   <ContentBody>

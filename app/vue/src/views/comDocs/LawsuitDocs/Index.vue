@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onBeforeMount, onBeforeUpdate } from 'vue'
+import { ref, computed, onBeforeMount, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/comDocs/_menu/headermixin2'
 import { formUtility } from '@/utils/helper'
 import { useRouter } from 'vue-router'
@@ -45,7 +45,8 @@ const pageSelect = (page: number) => {
 }
 
 const comStore = useCompany()
-const company = computed(() => comStore.company?.pk || comStore.initComId)
+const company = computed(() => comStore.company?.pk)
+watch(company, val => (!!val ? dataSet(val) : dataReset()))
 
 const docStore = useDocument()
 const postList = computed(() => docStore.postList)
@@ -63,33 +64,24 @@ const patchFile = (payload: AFile) => docStore.patchFile(payload)
 
 const router = useRouter()
 
-const companySelect = (target: number) => {
-  if (!!target) {
-    fetchPostList({ company: target, board: 3 })
-  } else {
-    comStore.company = null
-    docStore.postList = []
-    docStore.postCount = 0
-    router.replace({ name: '본사 소송 문서' })
-  }
-}
-
 const onSubmit = (payload: Post & Attatches) => {
-  const { pk, ...formData } = payload
-  formData.company = company.value
-  const form = formUtility.getFormData(formData)
+  if (!!company.value) {
+    const { pk, ...formData } = payload
+    formData.company = company.value
+    const form = formUtility.getFormData(formData)
 
-  console.log(formData, ...form)
+    console.log(formData, ...form)
 
-  if (pk) {
-    updatePost({ pk, form })
-    router.replace({
-      name: '본사 소송 문서 - 보기',
-      params: { postId: pk },
-    })
-  } else {
-    createPost({ form })
-    router.replace({ name: '본사 소송 문서' })
+    if (pk) {
+      updatePost({ pk, form })
+      router.replace({
+        name: '본사 소송 문서 - 보기',
+        params: { postId: pk },
+      })
+    } else {
+      createPost({ form })
+      router.replace({ name: '본사 소송 문서' })
+    }
   }
 }
 
@@ -105,20 +97,26 @@ const sortFilter = (project: number | null) => {
   listFiltering(caseFilter.value)
 }
 
+const dataSet = (pk: number) => {
+  fetchPostList({
+    company: pk,
+    board: 3,
+    page: caseFilter.value.page,
+    category: caseFilter.value.category,
+  })
+  caseFilter.value.company = pk
+}
+const dataReset = () => {
+  comStore.company = null
+  docStore.postList = []
+  docStore.postCount = 0
+  caseFilter.value.company = null
+  router.replace({ name: '본사 소송 문서' })
+}
+
 onBeforeMount(() => {
   fetchCategoryList(3)
-  caseFilter.value.company = company.value
-  fetchPostList({ company: company.value, board: 3 })
-})
-
-onBeforeUpdate(() => {
-  if (company.value)
-    fetchPostList({
-      company: company.value,
-      board: 3,
-      page: caseFilter.value.page,
-      category: caseFilter.value.category,
-    })
+  dataSet(company.value || comStore.initComId)
 })
 </script>
 
@@ -127,7 +125,6 @@ onBeforeUpdate(() => {
     :page-title="pageTitle"
     :nav-menu="navMenu"
     :selector="'CompanySelect'"
-    @header-select="companySelect"
   />
 
   <ContentBody>

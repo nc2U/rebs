@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onBeforeMount, onBeforeUpdate } from 'vue'
+import { ref, computed, onBeforeMount, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/comDocs/_menu/headermixin1'
 import { useRouter } from 'vue-router'
 import { useCompany } from '@/store/pinia/company'
@@ -45,7 +45,8 @@ const pageSelect = (page: number) => {
 }
 
 const comStore = useCompany()
-const company = computed(() => comStore.company?.pk || comStore.initComId)
+const company = computed(() => comStore.company?.pk)
+watch(company, val => (!!val ? dataSet(val) : dataReset()))
 
 const docStore = useDocument()
 const postList = computed(() => docStore.postList)
@@ -62,17 +63,6 @@ const patchLink = (payload: Link) => docStore.patchLink(payload)
 const patchFile = (payload: AFile) => docStore.patchFile(payload)
 
 const router = useRouter()
-
-const companySelect = (target: number) => {
-  if (!!target) {
-    fetchPostList({ company: target, board: 2 })
-  } else {
-    comStore.company = null
-    docStore.postList = []
-    docStore.postCount = 0
-    router.replace({ name: '본사 일반 문서' })
-  }
-}
 
 const onSubmit = (payload: Post & Attatches) => {
   const { pk, ...formData } = payload
@@ -106,21 +96,27 @@ const sortFilter = (project: number | null) => {
   docsFilter(postFilter.value)
 }
 
+const dataSet = (pk: number) => {
+  fetchPostList({
+    company: pk,
+    board: 2,
+    page: postFilter.value.page,
+    category: postFilter.value.category,
+  })
+  postFilter.value.company = pk
+}
+
+const dataReset = () => {
+  comStore.company = null
+  docStore.postList = []
+  docStore.postCount = 0
+  postFilter.value.company = null
+  router.replace({ name: '본사 일반 문서' })
+}
+
 onBeforeMount(() => {
   fetchCategoryList(2)
-  const companyPk = company.value
-  postFilter.value.company = companyPk
-  fetchPostList({ company: companyPk, board: 2 })
-})
-
-onBeforeUpdate(() => {
-  if (company.value)
-    fetchPostList({
-      company: company.value,
-      board: 2,
-      page: postFilter.value.page,
-      category: postFilter.value.category,
-    })
+  dataSet(company.value || comStore.initComId)
 })
 </script>
 
@@ -129,7 +125,6 @@ onBeforeUpdate(() => {
     :page-title="pageTitle"
     :nav-menu="navMenu"
     :selector="'CompanySelect'"
-    @header-select="companySelect"
   />
 
   <ContentBody>
