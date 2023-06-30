@@ -29,9 +29,12 @@ const project = computed(() => projStore.project)
 const initProjId = computed(() => projStore.initProjId)
 
 watch(project, nVal => {
-  if (nVal?.is_unit_set && !printItems.value.includes('6-7'))
-    printItems.value.splice(4, 0, '6-7')
   unitSet.value = nVal?.is_unit_set || false
+  if (!!nVal) {
+    if (nVal?.is_unit_set && !printItems.value.includes('6-7'))
+      printItems.value.splice(4, 0, '6-7')
+    dataSet(nVal?.pk || initProjId.value)
+  } else dataReset()
 })
 
 const excelUrl = computed(() => {
@@ -59,21 +62,26 @@ const fetchBuildingList = (projId: number) =>
   projectDataStore.fetchBuildingList(projId)
 
 const onSelectAdd = (target: number) => {
-  if (!!target) {
-    fetchOrderGroupList(target)
-    fetchTypeList(target)
-    fetchBuildingList(target)
-    fetchContractList({ project: target })
-    fetchSubsSummaryList(target)
-    fetchContSummaryList(target)
-  } else {
-    contractStore.orderGroupList = []
-    contractStore.subsSummaryList = []
-    contractStore.contSummaryList = []
-    contractStore.contractList = []
-    contractStore.contractsCount = 0
-    projectDataStore.buildingList = []
-  }
+  if (!!target) dataSet(target)
+  else dataReset()
+}
+
+const dataSet = (proj: number) => {
+  fetchOrderGroupList(proj)
+  fetchTypeList(proj)
+  fetchBuildingList(proj)
+  fetchContractList({ project: proj })
+  fetchSubsSummaryList(proj)
+  fetchContSummaryList(proj)
+}
+
+const dataReset = () => {
+  contractStore.orderGroupList = []
+  contractStore.subsSummaryList = []
+  contractStore.contSummaryList = []
+  contractStore.contractList = []
+  contractStore.contractsCount = 0
+  projectDataStore.buildingList = []
 }
 const pageSelect = (page: number) => childListFiltering(page)
 
@@ -99,12 +107,7 @@ const setItems = (arr: string[]) => (printItems.value = arr)
 
 onBeforeMount(() => {
   const projectPk = project.value?.pk || initProjId.value
-  fetchOrderGroupList(projectPk)
-  fetchTypeList(projectPk)
-  fetchBuildingList(projectPk)
-  fetchContractList({ project: projectPk })
-  fetchSubsSummaryList(projectPk)
-  fetchContSummaryList(projectPk)
+  dataSet(projectPk)
 })
 </script>
 
