@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, ref, watch, onMounted } from 'vue'
+import { computed, ref, onMounted, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/settings/_menu/headermixin'
 import { useCompany } from '@/store/pinia/company'
 import { Company } from '@/store/types/settings'
@@ -12,8 +12,6 @@ const compName = ref('CompanyDetail')
 
 const comStore = useCompany()
 const company = computed(() => comStore.company)
-
-watch(company, () => (compName.value = 'CompanyDetail'))
 
 const createCompany = (payload: Company) => comStore.createCompany(payload)
 const updateCompany = (payload: Company) => comStore.updateCompany(payload)
@@ -29,12 +27,8 @@ const onSubmit = (payload: Company) => {
   if (payload.pk) onUpdate(payload)
   else onCreate(payload)
 }
-
-onMounted(() => {
-  if (comStore.companyList.length === 0) createForm()
-})
 </script>
-
+comLength
 <template>
   <ContentHeader
     :page-title="pageTitle"

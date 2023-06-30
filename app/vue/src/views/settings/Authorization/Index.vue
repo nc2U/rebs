@@ -100,31 +100,21 @@ const formsCheck = computed(() => {
 })
 
 const comStore = useCompany()
-const comId = computed(() => comStore.company?.pk || comStore.initComId)
+const comId = computed(() => comStore.company?.pk)
 const fetchCompany = (pk: number) => comStore.fetchCompany(pk)
-
-const companySelect = (target: number) => {
-  if (!!target) {
-    fetchCompany(target)
-    comInfo.value.company = target
-  } else {
-    comInfo.value.company = null
-    comStore.company = null
-  }
-}
 
 const accStore = useAccount()
 const user = computed(() => accStore.user)
 const isStaffAuth = computed(() => !!user.value?.staffauth)
 
 const selectUser = (pk: number | null) => {
-  if (pk === null) {
-    accStore.user = null
-    dataReset()
-  } else {
+  if (!!pk) {
     accStore.fetchUser(pk).then(() => {
-      if (user.value && !user.value.staffauth) dataReset()
+      if (user.value && !user.value.staffauth) authReset()
     })
+  } else {
+    accStore.user = null
+    authReset()
   }
 }
 
@@ -134,7 +124,7 @@ const getAssigned = (payload: number | null) =>
   (projectAuth.value.assigned_project = payload)
 const selectAuth = (payload: UserAuth) => (menuAuth.value = payload)
 
-const dataReset = () => {
+const authReset = () => {
   projectAuth.value.assigned_project = null
   projectAuth.value.allowed_projects = []
   menuAuth.value.pk = undefined
@@ -191,9 +181,21 @@ watch(
   },
 )
 
+watch(comId, val => (!!val ? dataSetup(val) : dataReset()))
+
+const dataSetup = (pk: number) => {
+  fetchCompany(pk)
+  comInfo.value.company = pk
+}
+
+const dataReset = () => {
+  comInfo.value.company = null
+  comStore.company = null
+}
+
 onBeforeMount(() => {
   accStore.fetchUsersList()
-  comInfo.value.company = comId.value
+  comInfo.value.company = comId.value || comStore.initComId
   if (accStore?.userInfo) selectUser(accStore.userInfo.pk as number)
 })
 </script>
@@ -203,7 +205,6 @@ onBeforeMount(() => {
     :page-title="pageTitle"
     :nav-menu="navMenu"
     :selector="'CompanySelect'"
-    @header-select="companySelect"
   />
   <ContentBody>
     <CCardBody>
