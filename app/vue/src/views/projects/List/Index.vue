@@ -13,8 +13,6 @@ const compName = ref('IndexDetail')
 const projStore = useProject()
 const project = computed(() => projStore.project)
 
-watch(project, () => (compName.value = 'IndexDetail'))
-
 const createProject = (payload: Project) => projStore.createProject(payload)
 const updateProject = (payload: Project) => projStore.updateProject(payload)
 
@@ -28,10 +26,6 @@ const toSubmit = (payload: Project) => {
   if (payload.pk) toUpdate(payload)
   else toCreate(payload)
 }
-
-onMounted(() => {
-  if (projStore.projectList.length === 0) createForm()
-})
 </script>
 
 <template>

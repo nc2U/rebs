@@ -13,7 +13,6 @@ import BudgetFormList from '@/views/projects/IncBudget/components/BudgetFormList
 
 const projStore = useProject()
 const project = computed(() => projStore.project?.pk)
-watch(project, val => (!!val ? dataSet(val) : dataReset()))
 
 const pCashStore = useProCash()
 const allAccD2List = computed(() =>
@@ -64,7 +63,7 @@ const onDeleteBudget = (pk: number) => {
   if (project.value) deleteIncBudget(pk, project.value)
 }
 
-const dataSet = (pk: number) => {
+const dataSetup = (pk: number) => {
   fetchOrderGroupList(pk)
   fetchTypeList(pk)
   fetchIncBudgetList(pk)
@@ -76,15 +75,24 @@ const dataReset = () => {
   projStore.proIncBudgetList = []
 }
 
+const projSelect = (target: number | null) => {
+  dataReset()
+  if (!!target) dataSetup(target)
+}
+
 onBeforeMount(() => {
   fetchProAllAccD2List()
   fetchProAllAccD3List()
-  dataSet(project.value || projStore.initProjId)
+  dataSetup(project.value || projStore.initProjId)
 })
 </script>
 
 <template>
-  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
+  <ContentHeader
+    :page-title="pageTitle"
+    :nav-menu="navMenu"
+    @proj-select="projSelect"
+  />
 
   <ContentBody>
     <CCardBody class="pb-5">

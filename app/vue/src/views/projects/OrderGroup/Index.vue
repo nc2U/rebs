@@ -11,9 +11,6 @@ import OrderFormList from '@/views/projects/OrderGroup/components/OrderFormList.
 
 const projStore = useProject()
 const project = computed(() => projStore.project?.pk)
-watch(project, val =>
-  !!val ? fetchOrderGroupList(val) : (contStore.orderGroupList = []),
-)
 
 const contStore = useContract()
 
@@ -34,11 +31,20 @@ const onUpdateOrder = (payload: OrderGroup) =>
 const onDeleteOrder = (pk: number) =>
   deleteOrderGroup({ pk, project: project.value || projStore.initProjId })
 
+const projSelect = (target: number | null) => {
+  contStore.orderGroupList = []
+  if (!!target) fetchOrderGroupList(target)
+}
+
 onBeforeMount(() => fetchOrderGroupList(project.value || projStore.initProjId))
 </script>
 
 <template>
-  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
+  <ContentHeader
+    :page-title="pageTitle"
+    :nav-menu="navMenu"
+    @proj-select="projSelect"
+  />
 
   <ContentBody>
     <CCardBody class="pb-5">

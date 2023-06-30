@@ -11,9 +11,6 @@ import TypeFormList from '@/views/projects/Type/components/TypeFormList.vue'
 
 const projStore = useProject()
 const project = computed(() => projStore.project?.pk)
-watch(project, val =>
-  !!val ? fetchTypeList(val) : (pDataStore.unitTypeList = []),
-)
 
 const typeSort = [
   { value: '1', label: '공동주택' },
@@ -41,11 +38,20 @@ const onDeleteType = (pk: number) => {
   if (project.value) deleteType(pk, project.value)
 }
 
+const projSelect = (target: number | null) => {
+  pDataStore.unitTypeList = []
+  if (!!target) fetchTypeList(target)
+}
+
 onBeforeMount(() => fetchTypeList(project.value || projStore.initProjId))
 </script>
 
 <template>
-  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
+  <ContentHeader
+    :page-title="pageTitle"
+    :nav-menu="navMenu"
+    @proj-select="projSelect"
+  />
 
   <ContentBody>
     <CCardBody class="pb-5">
