@@ -38,7 +38,7 @@ const onSubmit = (payload: Profile & { image: File | null }) => {
   <ContentHeader
     :page-title="pageTitle"
     :nav-menu="navMenu"
-    :selector="'CompanySelect'"
+    selector="CompanySelect"
   />
 
   <ContentBody>
