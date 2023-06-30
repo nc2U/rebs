@@ -20,7 +20,7 @@ defineProps({
   },
 })
 
-const emit = defineEmits(['header-select'])
+const emit = defineEmits(['com-select', 'proj-select'])
 
 const companyStore = useCompany()
 const projectStore = useProject()
@@ -28,13 +28,13 @@ const projectStore = useProject()
 const comSelect = (com: number | null) => {
   if (!!com) companyStore.fetchCompany(com)
   else companyStore.company = null
-  emit('header-select', com)
+  emit('com-select', com)
 }
 
 const projSelect = (proj: number | null) => {
   if (!!proj) projectStore.fetchProject(proj)
   else projectStore.project = null
-  emit('header-select', proj)
+  emit('proj-select', proj)
 }
 </script>
 
