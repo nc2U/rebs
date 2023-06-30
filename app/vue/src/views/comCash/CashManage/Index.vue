@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed, onBeforeMount } from 'vue'
+import { ref, computed, onBeforeMount, watch } from 'vue'
 import { navMenu, pageTitle } from '@/views/comCash/_menu/headermixin'
 import { cutString } from '@/utils/baseMixins'
 import { useCompany } from '@/store/pinia/company'
@@ -44,7 +44,8 @@ const excelUrl = computed(() => {
 })
 
 const comStore = useCompany()
-const company = computed(() => comStore.company?.pk || comStore.initComId)
+const company = computed(() => comStore.company?.pk)
+watch(company, val => (!!val ? dataSet(val) : dataReset()))
 
 const fetchCompany = (pk: number) => comStore.fetchCompany(pk)
 const fetchAllDepartList = (com: number) => comStore.fetchAllDepartList(com)
@@ -81,23 +82,6 @@ const deleteCashBook = (payload: CashBook & { filters: Filter }) =>
   cashStore.deleteCashBook(payload)
 const patchAccD3 = (payload: { pk: number; is_hide: boolean }) =>
   cashStore.patchAccD3(payload)
-
-const onSelectAdd = (target: number) => {
-  if (!!target) {
-    fetchCompany(target)
-    fetchAllDepartList(target)
-    fetchComBankAccList(target)
-    fetchAllComBankAccList(target)
-    fetchCashBookList({ company: target })
-  } else {
-    comStore.allDepartList = []
-    comStore.company = null
-    cashStore.comBankList = []
-    cashStore.allComBankList = []
-    cashStore.cashBookList = []
-    cashStore.cashBookCount = 0
-  }
-}
 
 const pageSelect = (page: number) => listControl.value.listFiltering(page)
 
@@ -202,6 +186,25 @@ const patchD3Hide = (payload: { pk: number; is_hide: boolean }) =>
 
 const onBankUpdate = (payload: CompanyBank) => patchComBankAcc(payload)
 
+const dataSet = (pk: number) => {
+  fetchCompany(pk)
+  fetchAllDepartList(pk)
+  fetchComBankAccList(pk)
+  fetchAllComBankAccList(pk)
+  fetchCashBookList({ company: pk })
+  dataFilter.value.company = pk
+}
+
+const dataReset = () => {
+  comStore.allDepartList = []
+  comStore.company = null
+  cashStore.comBankList = []
+  cashStore.allComBankList = []
+  cashStore.cashBookList = []
+  cashStore.cashBookCount = 0
+  dataFilter.value.company = null
+}
+
 onBeforeMount(() => {
   fetchBankCodeList()
   fetchAccSortList()
@@ -212,13 +215,7 @@ onBeforeMount(() => {
   fetchFormAccD2List(null, null)
   fetchFormAccD3List(null, null, null)
 
-  const companyPk = company.value
-  fetchCompany(companyPk)
-  fetchAllDepartList(companyPk)
-  fetchComBankAccList(companyPk)
-  fetchAllComBankAccList(companyPk)
-  fetchCashBookList({ company: companyPk })
-  dataFilter.value.company = companyPk
+  dataSet(company.value || comStore.initComId)
 })
 </script>
 
@@ -227,7 +224,6 @@ onBeforeMount(() => {
     :page-title="pageTitle"
     :nav-menu="navMenu"
     :selector="'CompanySelect'"
-    @header-select="onSelectAdd"
   />
   <ContentBody>
     <CCardBody class="pb-5">

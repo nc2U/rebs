@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount, ref } from 'vue'
+import { computed, onBeforeMount, ref, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/comCash/_menu/headermixin'
 import { useCompany } from '@/store/pinia/company'
 import { useComCash } from '@/store/pinia/comCash'
@@ -16,7 +16,8 @@ const date = ref(new Date())
 const compName = ref('StatusByAccount')
 
 const comStore = useCompany()
-const company = computed(() => comStore.company?.pk || comStore.initComId)
+const company = computed(() => comStore.company?.pk)
+watch(company, val => (!!val ? dataSet(val) : dataReset()))
 
 const cashStore = useComCash()
 const fetchAccSortList = () => cashStore.fetchAccSortList()
@@ -37,24 +38,6 @@ const excelUrl = computed(() => {
   else if (comp === 'CashListByDate') url = `/excel/daily-cash/`
   return `${url}?&date=${dateFormat(date.value)}`
 })
-
-const onSelectAdd = (target: number) => {
-  if (!!target) {
-    fetchComBankAccList(target)
-    fetchComBalanceByAccList({
-      company: target,
-      date: dateFormat(date.value),
-    })
-    fetchDateCashBookList({
-      company: target,
-      date: dateFormat(date.value),
-    })
-  } else {
-    cashStore.comBankList = []
-    cashStore.comBalanceByAccList = []
-    cashStore.dateCashBook = []
-  }
-}
 
 const showTab = (num: number) => {
   const comp: { [key: number]: string } = {
@@ -79,22 +62,30 @@ const setDate = (d: string) => {
   }
 }
 
+const dataSet = (pk: number) => {
+  fetchComBankAccList(pk)
+  fetchComBalanceByAccList({
+    company: pk,
+    date: dateFormat(date.value),
+  })
+  fetchDateCashBookList({
+    company: pk,
+    date: dateFormat(date.value),
+  })
+}
+
+const dataReset = () => {
+  cashStore.comBankList = []
+  cashStore.comBalanceByAccList = []
+  cashStore.dateCashBook = []
+}
+
 onBeforeMount(() => {
   fetchAccSortList()
   fetchAllAccD1List()
   fetchAllAccD2List()
   fetchAllAccD3List()
-
-  const companyPk = company.value
-  fetchComBankAccList(companyPk)
-  fetchComBalanceByAccList({
-    company: companyPk,
-    date: dateFormat(date.value),
-  })
-  fetchDateCashBookList({
-    company: companyPk,
-    date: dateFormat(date.value),
-  })
+  dataSet(company.value || comStore.initComId)
 })
 </script>
 
@@ -103,7 +94,6 @@ onBeforeMount(() => {
     :page-title="pageTitle"
     :nav-menu="navMenu"
     selector="CompanySelect"
-    @header-select="onSelectAdd"
   />
   <ContentBody>
     <CCardBody class="pb-5">
