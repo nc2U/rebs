@@ -23,34 +23,33 @@ const downloadUrl = computed(
   () => `/excel/successions/?project=${project.value}`,
 )
 
-const contractStore = useContract()
-const contractor = computed(() => contractStore.contractor)
+const contStore = useContract()
+const contractor = computed(() => contStore.contractor)
 
-const fetchContract = (cont: number) => contractStore.fetchContract(cont)
-const fetchContractor = (contor: number) =>
-  contractStore.fetchContractor(contor)
+const fetchContract = (cont: number) => contStore.fetchContract(cont)
+const fetchContractor = (contor: number) => contStore.fetchContractor(contor)
 const fetchContractorList = (projId: number, search?: string) =>
-  contractStore.fetchContractorList(projId, search)
+  contStore.fetchContractorList(projId, search)
 
-const fetchSuccession = (pk: number) => contractStore.fetchSuccession(pk)
+const fetchSuccession = (pk: number) => contStore.fetchSuccession(pk)
 const fetchSuccessionList = (projId: number, page?: number) =>
-  contractStore.fetchSuccessionList(projId, page)
+  contStore.fetchSuccessionList(projId, page)
 
-const fetchBuyerList = (projId: number) => contractStore.fetchBuyerList(projId)
+const fetchBuyerList = (projId: number) => contStore.fetchBuyerList(projId)
 
 const createBuyer = (payload: Succession & Buyer & { project: number }) =>
-  contractStore.createBuyer(payload)
+  contStore.createBuyer(payload)
 
 const patchSuccession = (
   payload: Succession & Buyer & { project: number; page: number },
-) => contractStore.patchSuccession(payload)
+) => contStore.patchSuccession(payload)
 
 const route = useRoute()
 watch(route, val => {
   if (val.query.contractor) fetchContractor(Number(val.query.contractor))
   else {
-    contractStore.contract = null
-    contractStore.contractor = null
+    contStore.contract = null
+    contStore.contractor = null
   }
 })
 
@@ -58,8 +57,8 @@ watch(contractor, val => {
   if (val) fetchContract(val.contract)
   if (val?.successions.length) fetchSuccession(val.successions[0].pk)
   else {
-    contractStore.contract = null
-    contractStore.succession = null
+    contStore.contract = null
+    contStore.succession = null
   }
 })
 
@@ -70,11 +69,11 @@ const onSelectAdd = (target: number) => {
     fetchSuccessionList(target)
     fetchBuyerList(target)
   } else {
-    contractStore.contract = null
-    contractStore.contractor = null
-    contractStore.contractorList = []
-    contractStore.successionList = []
-    contractStore.buyerList = []
+    contStore.contract = null
+    contStore.contractor = null
+    contStore.contractorList = []
+    contStore.successionList = []
+    contStore.buyerList = []
   }
   router.push({ name: '권리 의무 승계' })
 }
@@ -82,7 +81,7 @@ const onSelectAdd = (target: number) => {
 const searchContractor = (search: string) => {
   if (search !== '' && project.value) {
     fetchContractorList(project.value, search)
-  } else contractStore.contractorList = []
+  } else contStore.contractorList = []
 }
 
 const pageSelect = (p: number) => {
@@ -103,7 +102,7 @@ const onSubmit = (payload: { s_data: Succession; b_data: Buyer }) => {
 
 onBeforeMount(() => {
   if (route.query.contractor) fetchContractor(Number(route.query.contractor))
-  else contractStore.contractor = null
+  else contStore.contractor = null
   fetchSuccessionList(project.value)
   fetchBuyerList(project.value)
 })

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount } from 'vue'
+import { computed, onBeforeMount, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/contracts/_menu/headermixin1'
 import { useProject } from '@/store/pinia/project'
 import { useProjectData } from '@/store/pinia/project_data'
@@ -11,7 +11,7 @@ import TableTitleRow from '@/components/TableTitleRow.vue'
 import ContractBoard from '@/views/contracts/Status/components/ContractBoard.vue'
 
 const projStore = useProject()
-const project = computed(() => projStore.project?.pk || projStore.initProjId)
+const project = computed(() => projStore.project?.pk)
 
 const excelUrl = computed(() =>
   project.value ? `excel/status/?project=${project.value}` : '',
@@ -34,42 +34,39 @@ const fetchSubsSummaryList = (projId: number) =>
 const fetchContSummaryList = (projId: number) =>
   contStore.fetchContSummaryList(projId)
 
-const onSelectAdd = (target: number) => {
-  if (!!target) {
-    fetchTypeList(target)
-    fetchBuildingList(target)
-    fetchHouseUnitList(target)
-    fetchSubsSummaryList(target)
-    fetchContractList({ project: target })
-    fetchContSummaryList(target)
-  } else {
-    pDataStore.unitTypeList = []
-    pDataStore.buildingList = []
-    pDataStore.houseUnitList = []
-    contStore.subsSummaryList = []
-    contStore.contSummaryList = []
-    contStore.contractsCount = 0
-  }
-  pDataStore.isLoading = true
+watch(project, val => {
+  if (!!val) {
+    pDataStore.isLoading = true
+    dataSet(val)
+  } else dataReset()
+})
+
+const dataSet = (pk: number) => {
+  fetchTypeList(pk)
+  fetchBuildingList(pk)
+  fetchHouseUnitList(pk)
+  fetchSubsSummaryList(pk)
+  fetchContractList({ project: pk })
+  fetchContSummaryList(pk)
+}
+
+const dataReset = () => {
+  pDataStore.unitTypeList = []
+  pDataStore.buildingList = []
+  pDataStore.houseUnitList = []
+  contStore.subsSummaryList = []
+  contStore.contSummaryList = []
+  contStore.contractsCount = 0
 }
 
 onBeforeMount(() => {
-  const projectPk = project.value
-  fetchTypeList(projectPk)
-  fetchBuildingList(projectPk)
-  fetchHouseUnitList(projectPk)
-  fetchSubsSummaryList(projectPk)
-  fetchContractList({ project: projectPk })
-  fetchContSummaryList(projectPk)
+  const projectPk = project.value || projStore.initProjId
+  dataSet(projectPk)
 })
 </script>
 
 <template>
-  <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    @header-select="onSelectAdd"
-  />
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
 
   <ContentBody>
     <CCardBody class="pb-5">

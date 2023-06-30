@@ -26,14 +26,13 @@ const childListFiltering = (page: number) =>
 const projStore = useProject()
 
 const project = computed(() => projStore.project)
-const initProjId = computed(() => projStore.initProjId)
 
 watch(project, nVal => {
   unitSet.value = nVal?.is_unit_set || false
   if (!!nVal) {
     if (nVal?.is_unit_set && !printItems.value.includes('6-7'))
       printItems.value.splice(4, 0, '6-7')
-    dataSet(nVal?.pk || initProjId.value)
+    dataSet(nVal?.pk || projStore.initProjId)
   } else dataReset()
 })
 
@@ -61,28 +60,6 @@ const fetchTypeList = (projId: number) => projectDataStore.fetchTypeList(projId)
 const fetchBuildingList = (projId: number) =>
   projectDataStore.fetchBuildingList(projId)
 
-const onSelectAdd = (target: number) => {
-  if (!!target) dataSet(target)
-  else dataReset()
-}
-
-const dataSet = (proj: number) => {
-  fetchOrderGroupList(proj)
-  fetchTypeList(proj)
-  fetchBuildingList(proj)
-  fetchContractList({ project: proj })
-  fetchSubsSummaryList(proj)
-  fetchContSummaryList(proj)
-}
-
-const dataReset = () => {
-  contractStore.orderGroupList = []
-  contractStore.subsSummaryList = []
-  contractStore.contSummaryList = []
-  contractStore.contractList = []
-  contractStore.contractsCount = 0
-  projectDataStore.buildingList = []
-}
 const pageSelect = (page: number) => childListFiltering(page)
 
 const onContFiltering = (payload: ContFilter) => {
@@ -105,18 +82,32 @@ const onContFiltering = (payload: ContFilter) => {
 }
 const setItems = (arr: string[]) => (printItems.value = arr)
 
+const dataSet = (proj: number) => {
+  fetchOrderGroupList(proj)
+  fetchTypeList(proj)
+  fetchBuildingList(proj)
+  fetchContractList({ project: proj })
+  fetchSubsSummaryList(proj)
+  fetchContSummaryList(proj)
+}
+
+const dataReset = () => {
+  contractStore.orderGroupList = []
+  contractStore.subsSummaryList = []
+  contractStore.contSummaryList = []
+  contractStore.contractList = []
+  contractStore.contractsCount = 0
+  projectDataStore.buildingList = []
+}
+
 onBeforeMount(() => {
-  const projectPk = project.value?.pk || initProjId.value
+  const projectPk = project.value?.pk || projStore.initProjId
   dataSet(projectPk)
 })
 </script>
 
 <template>
-  <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    @header-select="onSelectAdd"
-  >
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu">
     <ContractSummary :project="project" />
   </ContentHeader>
 
