@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onMounted, ref, watch } from 'vue'
+import { ref, computed, onBeforeMount } from 'vue'
 import { navMenu, pageTitle } from '@/views/payments/_menu/headermixin'
 import { useProject } from '@/store/pinia/project'
 import { useContract } from '@/store/pinia/contract'
@@ -31,11 +31,6 @@ let filterItems = ref<CashBookFilter>({
 
 const projStore = useProject()
 const project = computed(() => projStore.project?.pk)
-
-watch(project, val => {
-  if (!!val) dataSet(val)
-  else dataReset()
-})
 
 const fetchIncBudgetList = (proj: number) => projStore.fetchIncBudgetList(proj)
 
@@ -110,7 +105,7 @@ const excelUrl = computed(() =>
   excelSelect.value === '1' ? byPayment.value : byContract.value,
 )
 
-const dataSet = (pk: number) => {
+const dataSetup = (pk: number) => {
   fetchOrderGroupList(pk)
   fetchTypeList(pk)
   fetchIncBudgetList(pk)
@@ -135,7 +130,12 @@ const dataReset = () => {
   paymentStore.paymentsCount = 0
 }
 
-onMounted(() => dataSet(project.value || projStore.initProjId))
+const projSelect = (target: number | null) => {
+  dataReset()
+  if (!!target) dataSetup(target)
+}
+
+onBeforeMount(() => dataSetup(project.value || projStore.initProjId))
 
 onBeforeRouteLeave(() => {
   paymentStore.paymentList = []
@@ -144,7 +144,11 @@ onBeforeRouteLeave(() => {
 </script>
 
 <template>
-  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu">
+  <ContentHeader
+    :page-title="pageTitle"
+    :nav-menu="navMenu"
+    @proj-select="projSelect"
+  >
     <PaymentSummary :project="project" />
   </ContentHeader>
 

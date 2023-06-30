@@ -20,12 +20,6 @@ const paymentId = ref<string>('')
 const projStore = useProject()
 const project = computed(() => projStore.project?.pk)
 
-watch(project, val => {
-  router.replace({ name: '건별 수납 관리' })
-  dataReset()
-  if (!!val) dataSet(val)
-})
-
 const contractStore = useContract()
 const contract = computed(() => contractStore.contract)
 
@@ -128,7 +122,7 @@ const onDelete = (pk: number) => {
   deletePrCashBook({ ...delFilter, ...{ filters: {} } })
 }
 
-const dataSet = (pk: number) => {
+const dataSetup = (pk: number) => {
   fetchTypeList(pk)
   fetchPayOrderList(pk)
   fetchAllProBankAccList(pk)
@@ -143,8 +137,14 @@ const dataReset = () => {
   proCashStore.proBankAccountList = []
 }
 
+const projSelect = (target: number | null) => {
+  router.replace({ name: '건별 수납 관리' })
+  dataReset()
+  if (!!target) dataSetup(target)
+}
+
 onBeforeMount(() => {
-  dataSet(project.value || projStore.initProjId)
+  dataSetup(project.value || projStore.initProjId)
   if (route.query.payment) paymentId.value = route.query.payment as string
 })
 
@@ -180,7 +180,11 @@ onBeforeRouteLeave(() => {
 </script>
 
 <template>
-  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
+  <ContentHeader
+    :page-title="pageTitle"
+    :nav-menu="navMenu"
+    @proj-select="projSelect"
+  />
 
   <ContentBody>
     <CCardBody class="pb-5">

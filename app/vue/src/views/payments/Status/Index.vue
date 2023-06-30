@@ -24,11 +24,6 @@ const excelUrl = computed(
 const projStore = useProject()
 const project = computed(() => projStore.project?.pk)
 
-watch(project, val => {
-  if (!!val) dataSet(val)
-  else dataReset()
-})
-
 const fetchIncBudgetList = (proj: number) => projStore.fetchIncBudgetList(proj)
 
 const prDataStore = useProjectData()
@@ -44,7 +39,15 @@ const payStore = usePayment()
 const fetchPaySumList = (proj: number, date?: string) =>
   payStore.fetchPaySumList(proj, date)
 
-const dataSet = (pk: number) => {
+const setDate = (d: Date) => {
+  date.value = new Date(d)
+  if (project.value) {
+    fetchPaySumList(project.value, dateFormat(date.value))
+    fetchContSummaryList(project.value, dateFormat(date.value))
+  }
+}
+
+const dataSetup = (pk: number) => {
   fetchTypeList(pk)
   fetchOrderGroupList(pk)
   fetchContSummaryList(pk)
@@ -60,26 +63,20 @@ const dataReset = () => {
   payStore.paySumList = []
 }
 
-const setDate = (d: Date) => {
-  date.value = new Date(d)
-  if (project.value) {
-    fetchPaySumList(project.value, dateFormat(date.value))
-    fetchContSummaryList(project.value, dateFormat(date.value))
-  }
+const projSelect = (target: number | null) => {
+  dataReset()
+  if (!!target) dataSetup(target)
 }
 
-onBeforeMount(() => {
-  const projectPk = project.value || projStore.initProjId
-  fetchTypeList(projectPk)
-  fetchOrderGroupList(projectPk)
-  fetchContSummaryList(projectPk)
-  fetchIncBudgetList(projectPk)
-  fetchPaySumList(projectPk)
-})
+onBeforeMount(() => dataSetup(project.value || projStore.initProjId))
 </script>
 
 <template>
-  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
+  <ContentHeader
+    :page-title="pageTitle"
+    :nav-menu="navMenu"
+    @proj-select="projSelect"
+  />
 
   <ContentBody>
     <CCardBody class="pb-5">
