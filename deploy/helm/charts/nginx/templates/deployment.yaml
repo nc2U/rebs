@@ -43,16 +43,16 @@ spec:
             - name: https
               containerPort: 443
               protocol: TCP
-{{/*          livenessProbe:*/}}
-{{/*            httpGet:*/}}
-{{/*              path: /rebs*/}}
-{{/*              port: http*/}}
-{{/*            initialDelaySeconds: 20*/}}
-{{/*            periodSeconds: 30*/}}
-#          readinessProbe:
-#            httpGet:
-#              path: /rebs
-#              port: http
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
