@@ -47,15 +47,15 @@ spec:
             exec:
               command:
                 - mariadb
-                - --version
+                - -V
+            periodSeconds: 60
             initialDelaySeconds: 30
             failureThreshold: 2
-            periodSeconds: 30
           readinessProbe:
             exec:
               command:
                 - mariadb
-                - --version
+                - -V
           volumeMounts:
             - name: mysql-data
               mountPath: /var/lib/mysql

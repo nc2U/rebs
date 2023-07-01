@@ -44,18 +44,16 @@ spec:
               containerPort: 443
               protocol: TCP
           livenessProbe:
-            exec:
-              command:
-                - nginx
-                - -V
-              periodSeconds: 30
+            httpGet: # Http 리퀘스트 반환 값에 따라 체크함
+              path: /
+              port: 8000
+              periodSeconds: 60
               initialDelaySeconds: 30
               failureThreshold: 2
           readinessProbe:
-            exec:
-              command:
-                - nginx
-                - -V
+            httpGet: # Http 리퀘스트 반환 값에 따라 체크함
+              path: /
+              port: 8000
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
