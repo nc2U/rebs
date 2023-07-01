@@ -46,14 +46,14 @@ spec:
           livenessProbe:
             httpGet: # Http 리퀘스트 반환 값에 따라 체크함
               path: /
-              port: 8881
+              port: {{ .Values.service.port }}
               periodSeconds: 60
               initialDelaySeconds: 30
               failureThreshold: 2
           readinessProbe:
             httpGet: # Http 리퀘스트 반환 값에 따라 체크함
               path: /
-              port: 8881
+              port: {{ .Values.service.port }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
