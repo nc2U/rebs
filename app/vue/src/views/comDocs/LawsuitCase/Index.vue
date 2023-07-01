@@ -38,7 +38,6 @@ const pageSelect = (page: number) => {
 
 const comStore = useCompany()
 const company = computed(() => comStore.company?.pk)
-watch(company, val => (!!val ? dataSet(val) : dataReset()))
 
 const docStore = useDocument()
 const suitcaseList = computed(() => docStore.suitcaseList)
@@ -99,7 +98,7 @@ const sortFilter = (project: number | null) => {
   listFiltering(caseFilter.value)
 }
 
-const dataSet = (pk: number) => {
+const dataSetup = (pk: number) => {
   fetchSuitCaseList({ company: pk, page: caseFilter.value.page })
 }
 
@@ -110,9 +109,14 @@ const dataReset = () => {
   router.replace({ name: '본사 소송 사건' })
 }
 
+const comSelect = (target: number | null) => {
+  dataReset()
+  if (!!target) dataSetup(target)
+}
+
 onBeforeMount(() => {
   fetchAllSuitCaseList({})
-  dataSet(company.value || comStore.initComId)
+  dataSetup(company.value || comStore.initComId)
 })
 </script>
 
@@ -121,6 +125,7 @@ onBeforeMount(() => {
     :page-title="pageTitle"
     :nav-menu="navMenu"
     selector="CompanySelect"
+    @com-select="comSelect"
   />
 
   <ContentBody>

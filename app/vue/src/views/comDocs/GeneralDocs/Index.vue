@@ -46,7 +46,6 @@ const pageSelect = (page: number) => {
 
 const comStore = useCompany()
 const company = computed(() => comStore.company?.pk)
-watch(company, val => (!!val ? dataSet(val) : dataReset()))
 
 const docStore = useDocument()
 const postList = computed(() => docStore.postList)
@@ -96,7 +95,7 @@ const sortFilter = (project: number | null) => {
   docsFilter(postFilter.value)
 }
 
-const dataSet = (pk: number) => {
+const dataSetup = (pk: number) => {
   fetchPostList({
     company: pk,
     board: 2,
@@ -114,9 +113,14 @@ const dataReset = () => {
   router.replace({ name: '본사 일반 문서' })
 }
 
+const comSelect = (target: number | null) => {
+  dataReset()
+  if (!!target) dataSetup(target)
+}
+
 onBeforeMount(() => {
   fetchCategoryList(2)
-  dataSet(company.value || comStore.initComId)
+  dataSetup(company.value || comStore.initComId)
 })
 </script>
 
@@ -125,6 +129,7 @@ onBeforeMount(() => {
     :page-title="pageTitle"
     :nav-menu="navMenu"
     selector="CompanySelect"
+    @com-select="comSelect"
   />
 
   <ContentBody>
