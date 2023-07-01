@@ -21,9 +21,6 @@ const dataFilter = ref<ComFilter>({
 
 const comStore = useCompany()
 const comId = computed(() => comStore.company?.pk)
-watch(comId, val =>
-  !!val ? fetchDutyList({ com: val }) : (comStore.dutyList = []),
-)
 const comName = computed(() => comStore.company?.name || undefined)
 
 const listFiltering = (payload: ComFilter) => {
@@ -62,6 +59,11 @@ const pageSelect = (num: number) => {
   }
 }
 
+const comSelect = (target: number | null) => {
+  comStore.dutyList = []
+  if (!!target) fetchDutyList({ com: target })
+}
+
 onMounted(() => fetchDutyList({ com: comId.value || comStore.initComId }))
 </script>
 
@@ -70,6 +72,7 @@ onMounted(() => fetchDutyList({ com: comId.value || comStore.initComId }))
     :page-title="pageTitle"
     :nav-menu="navMenu"
     selector="CompanySelect"
+    @com-select="comSelect"
   />
   <ContentBody>
     <CCardBody>

@@ -27,7 +27,6 @@ const dataFilter = ref<StaffFilter>({
 
 const comStore = useCompany()
 const company = computed(() => comStore.company?.pk)
-watch(company, val => (!!val ? dataSetup(val) : dataReset()))
 const comName = computed(() => comStore.company?.name || undefined)
 
 const accStore = useAccount()
@@ -97,6 +96,11 @@ const dataReset = () => {
   comStore.allDutyList = []
 }
 
+const comSelect = (target: number | null) => {
+  dataReset()
+  if (!!target) dataSetup(target)
+}
+
 onMounted(() => {
   fetchUsersList()
   dataSetup(company.value || comStore.initComId)
@@ -108,6 +112,7 @@ onMounted(() => {
     :page-title="pageTitle"
     :nav-menu="navMenu"
     selector="CompanySelect"
+    @com-select="comSelect"
   />
   <ContentBody>
     <CCardBody>

@@ -22,7 +22,6 @@ const dataFilter = ref<DepFilter>({
 const comStore = useCompany()
 const getPkDeparts = computed(() => comStore.getPkDeparts)
 const comId = computed(() => comStore.company?.pk)
-watch(comId, val => (!!val ? dataSetup(val) : dataReset()))
 const comName = computed(() => comStore.company?.name || undefined)
 
 const listFiltering = (payload: DepFilter) => {
@@ -80,6 +79,11 @@ const dataReset = () => {
   comStore.allDepartList = []
 }
 
+const comSelect = (target: number | null) => {
+  dataReset()
+  if (!!target) dataSetup(target)
+}
+
 onMounted(() => dataSetup(comId.value || comStore.initComId))
 </script>
 
@@ -88,6 +92,7 @@ onMounted(() => dataSetup(comId.value || comStore.initComId))
     :page-title="pageTitle"
     :nav-menu="navMenu"
     selector="CompanySelect"
+    @com-select="comSelect"
   />
   <ContentBody>
     <CCardBody>

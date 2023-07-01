@@ -21,7 +21,6 @@ const dataFilter = ref<ComFilter>({
 
 const comStore = useCompany()
 const comId = computed(() => comStore.company?.pk)
-watch(comId, val => (!!val ? dataSetup(val) : dataReset()))
 const comName = computed(() => comStore.company?.name || undefined)
 
 const listFiltering = (payload: ComFilter) => {
@@ -74,6 +73,11 @@ const dataReset = () => {
   comStore.positionList = []
 }
 
+const comSelect = (target: number | null) => {
+  dataReset()
+  if (!!target) dataSetup(target)
+}
+
 onMounted(() => dataSetup(comId.value || comStore.initComId))
 </script>
 
@@ -82,6 +86,7 @@ onMounted(() => dataSetup(comId.value || comStore.initComId))
     :page-title="pageTitle"
     :nav-menu="navMenu"
     selector="CompanySelect"
+    @com-select="comSelect"
   />
   <ContentBody>
     <CCardBody>
