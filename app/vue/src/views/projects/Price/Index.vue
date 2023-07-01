@@ -21,9 +21,7 @@ const pFilters = reactive<PriceFilter>({
   unit_type: null,
 })
 
-const priceMessage = ref(
-  '공급가격을 입력하기 위해 [차수 정보]를 선택하여 주십시요.',
-)
+const priceMessage = ref('')
 
 const projStore = useProject()
 const project = computed(() => projStore.project?.pk)
@@ -100,6 +98,8 @@ const dataSetup = (pk: number) => {
   fetchOrderGroupList(pk)
   fetchTypeList(pk)
   fetchFloorTypeList(pk)
+  priceMessage.value =
+    '공급가격을 입력하기 위해 [차수 정보]를 선택하여 주십시요.'
 }
 
 const dataReset = () => {
