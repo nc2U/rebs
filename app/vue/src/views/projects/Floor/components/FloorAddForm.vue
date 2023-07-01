@@ -78,7 +78,7 @@ const resetForm = () => {
           v-model.number="form.start_floor"
           placeholder="시작 층"
           type="number"
-          min="0"
+          min="-10"
           required
           :disabled="disabled"
         />
@@ -89,7 +89,7 @@ const resetForm = () => {
           v-model.number="form.end_floor"
           placeholder="종료 층"
           type="number"
-          min="0"
+          min="-10"
           required
           :disabled="disabled"
         />
