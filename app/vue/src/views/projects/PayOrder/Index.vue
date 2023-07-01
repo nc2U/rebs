@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount, watch } from 'vue'
+import { computed, onBeforeMount } from 'vue'
 import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin2'
 import { useProject } from '@/store/pinia/project'
 import { usePayment } from '@/store/pinia/payment'
@@ -11,9 +11,6 @@ import PayOrderFormList from '@/views/projects/PayOrder/components/PayOrderFormL
 
 const projStore = useProject()
 const project = computed(() => projStore.project?.pk)
-watch(project, val =>
-  !!val ? fetchPayOrderList(val) : (payStore.payOrderList = []),
-)
 
 const payStore = usePayment()
 const fetchPayOrderList = (projId: number) => payStore.fetchPayOrderList(projId)
@@ -32,11 +29,20 @@ const onDeletePayOrder = (pk: number) => {
   if (project.value) deletePayOrder(pk, project.value)
 }
 
+const projSelect = (target: number | null) => {
+  payStore.payOrderList = []
+  if (!!target) fetchPayOrderList(target)
+}
+
 onBeforeMount(() => fetchPayOrderList(project.value || projStore.initProjId))
 </script>
 
 <template>
-  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
+  <ContentHeader
+    :page-title="pageTitle"
+    :nav-menu="navMenu"
+    @proj-select="projSelect"
+  />
 
   <ContentBody>
     <CCardBody class="pb-5">

@@ -13,7 +13,6 @@ import DownPayFormList from '@/views/projects/DownPay/components/DownPayFormList
 
 const projStore = useProject()
 const project = computed(() => projStore.project?.pk)
-watch(project, val => (!!val ? dataSet(val) : dataReset()))
 
 const contStore = useContract()
 const orderGroupList = computed(() => contStore.orderGroupList)
@@ -47,7 +46,7 @@ const onDeleteDownPay = (pk: number) => {
   if (project.value) deleteDownPay(pk, project.value)
 }
 
-const dataSet = (pk: number) => {
+const dataSetup = (pk: number) => {
   fetchOrderGroupList(pk)
   fetchTypeList(pk)
   fetchDownPayList({ project: pk })
@@ -59,10 +58,19 @@ const dataReset = () => {
   payStore.downPayList = []
 }
 
-onBeforeMount(() => dataSet(project.value || projStore.initProjId))
+const projSelect = (target: number | null) => {
+  dataReset()
+  if (!!target) dataSetup(target)
+}
+
+onBeforeMount(() => dataSetup(project.value || projStore.initProjId))
 </script>
 <template>
-  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
+  <ContentHeader
+    :page-title="pageTitle"
+    :nav-menu="navMenu"
+    @proj-select="projSelect"
+  />
 
   <ContentBody>
     <CCardBody class="pb-5">
