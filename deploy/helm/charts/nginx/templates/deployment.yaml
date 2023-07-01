@@ -45,6 +45,7 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet: # Http 리퀘스트 반환 값에 따라 체크함
+              host: brdnc.co.kr
               path: /
               port: {{ .Values.service.port }}
               periodSeconds: 60
@@ -52,6 +53,7 @@ spec:
               failureThreshold: 2
           readinessProbe:
             httpGet: # Http 리퀘스트 반환 값에 따라 체크함
+              host: brdnc.co.kr
               path: /
               port: {{ .Values.service.port }}
           resources:
