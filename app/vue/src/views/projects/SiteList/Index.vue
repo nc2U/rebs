@@ -23,8 +23,6 @@ const projStore = useProject()
 const project = computed(() => projStore.project?.pk)
 const isReturned = computed(() => projStore.project?.is_returned_area)
 
-watch(project, val => (!!val ? dataSet(val) : dataReset()))
-
 const siteStore = useSite()
 const getSitesTotal = computed(() => siteStore.getSitesTotal)
 const totalArea = computed(() =>
@@ -68,17 +66,27 @@ const onDelete = (payload: { pk: number; project: number }) => {
   siteStore.deleteSite(pk, project)
 }
 
-const dataSet = (pk: number) => siteStore.fetchSiteList(pk)
+const dataSetup = (pk: number) => siteStore.fetchSiteList(pk)
+
 const dataReset = () => {
   siteStore.siteList = []
   siteStore.siteCount = 0
 }
 
-onBeforeMount(() => dataSet(project.value || projStore.initProjId))
+const projSelect = (target: number | null) => {
+  dataReset()
+  if (!!target) dataSetup(target)
+}
+
+onBeforeMount(() => dataSetup(project.value || projStore.initProjId))
 </script>
 
 <template>
-  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
+  <ContentHeader
+    :page-title="pageTitle"
+    :nav-menu="navMenu"
+    @proj-select="projSelect"
+  />
 
   <ContentBody>
     <CCardBody class="pb-5">
@@ -95,7 +103,7 @@ onBeforeMount(() => dataSet(project.value || projStore.initProjId))
         :url="excelUrl"
         :disabled="!project"
       >
-        <span class="pt-1 text-success">
+        <span v-if="project" class="pt-1 text-success">
           총 면적 : {{ numFormat(totalArea, 2) }}m<sup>2</sup> ({{
             numFormat(totalArea * 0.3025, 2)
           }}

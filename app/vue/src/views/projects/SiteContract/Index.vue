@@ -28,7 +28,6 @@ const dataFilter = ref<filter>({
 
 const projStore = useProject()
 const project = computed(() => projStore.project?.pk)
-watch(project, val => (!!val ? dataSet(val) : dataReset()))
 
 const siteStore = useSite()
 const getContsTotal = computed(() => siteStore.getContsTotal?.contracted_area)
@@ -68,7 +67,7 @@ const onDelete = (payload: { pk: number; project: number }) => {
   siteStore.deleteSiteCont(pk, project)
 }
 
-const dataSet = (pk: number) => {
+const dataSetup = (pk: number) => {
   siteStore.fetchAllOwners(pk)
   siteStore.fetchSiteContList(pk)
 }
@@ -78,11 +77,20 @@ const dataReset = () => {
   siteStore.siteContCount = 0
 }
 
-onBeforeMount(() => dataSet(project.value || projStore.initProjId))
+const projSelect = (target: number | null) => {
+  dataReset()
+  if (!!target) dataSetup(target)
+}
+
+onBeforeMount(() => dataSetup(project.value || projStore.initProjId))
 </script>
 
 <template>
-  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
+  <ContentHeader
+    :page-title="pageTitle"
+    :nav-menu="navMenu"
+    @proj-select="projSelect"
+  />
 
   <ContentBody>
     <CCardBody class="pb-5">
@@ -98,7 +106,7 @@ onBeforeMount(() => dataSet(project.value || projStore.initProjId))
         :url="excelUrl"
         :disabled="!project"
       >
-        <span class="pt-1 text-success">
+        <span v-if="project" class="pt-1 text-success">
           총 계약 면적 : {{ numFormat(getContsTotal, 2) }}m<sup>2</sup> ({{
             numFormat(getContsTotal * 0.3025, 2)
           }}
