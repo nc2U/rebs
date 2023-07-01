@@ -44,15 +44,18 @@ spec:
               containerPort: 443
               protocol: TCP
           livenessProbe:
-            httpGet:
-              path: /
-              port: http
-            initialDelaySeconds: 30
-            periodSeconds: 30
+            exec:
+              command:
+                - nginx
+                - -V
+              periodSeconds: 30
+              initialDelaySeconds: 30
+              failureThreshold: 2
           readinessProbe:
-            httpGet:
-              path: /
-              port: http
+            exec:
+              command:
+                - nginx
+                - -V
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
