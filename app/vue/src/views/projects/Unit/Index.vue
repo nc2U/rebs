@@ -64,11 +64,11 @@ const unitRegister = (payload: OriginalUnit) => {
     const building_unit = payload.building
     const bldg_line = payload.line
     const midWord = bldg_line < 10 ? '0' : ''
-    const size = payload.maxFloor - payload.minFloor + 1
+    const size = payload.maxFloor - payload.minFloor + 1 // 둘중 하나만 있는 경우는?
     const range = (size: number, min: number): number[] =>
       [...Array(size).keys()].map(key => key + min)
     const between = (x: number, min: number, max: number): boolean =>
-      x >= min && x <= max
+      x >= min && x <= max // 주어진 x가 범위 내에 있늕지 확인하는 변수
     const getCode = (num: number, digit: number) => {
       const prefix = '0'.repeat(digit - `${num}`.length)
       const typeStr = payload.typeName.replace(/[^0-9a-zA-Z]/g, '')
@@ -77,19 +77,21 @@ const unitRegister = (payload: OriginalUnit) => {
       return `${typeStr}${suffix}${prefix}${num}`
     }
 
-    let num = numUnitByType.value
+    let num = numUnitByType.value // 해당 타입의 개수 구하기
 
     const isExist = range(size, payload.minFloor).map(i =>
       simpleUnits.value
         .filter((u: { line: number }) => u.line === bldg_line)
         .map((u: { floor: number }) => u.floor)
         .includes(i),
-    )
+    ) // 들록하려는 호수가 기존에 등록되어 있어 중복되고 있지 않은지 확인
 
     if (isExist.includes(true)) {
+      // 중복되어 있는 경우 경고 후 로직 중단
       alert('해당 범위의 호수 중 이미 등록되어 있는 유니트가 있습니다.')
       return
     } else {
+      // 중복되어 있지 않은 경우 로직 진행
       const inputUnits = range(size, payload.minFloor).map(i => ({
         floor_no: i,
         name: `${i}${midWord}${bldg_line}`,
@@ -99,7 +101,7 @@ const unitRegister = (payload: OriginalUnit) => {
           )
           .map((f: { pk: number }) => f.pk)[0],
         unit_code: getCode((num += 1), `${payload.maxUnits}`.length),
-      }))
+      })) // 입력할 유닛 데이터 배열 생성
 
       inputUnits.forEach(unit => {
         createUnit({
@@ -111,9 +113,9 @@ const unitRegister = (payload: OriginalUnit) => {
           },
           ...unit,
         })
-      })
-      fetchHouseUnitList(project.value, building_unit)
-      message()
+      }) // 생성된 배열을 디비에 등록
+      fetchHouseUnitList(project.value, building_unit) // 입력된 유닛 데이터 가져오기 후
+      message() // 처리되었다는 메시지 송출
     }
   }
 }

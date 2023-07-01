@@ -123,6 +123,7 @@ const unitRegister = () => {
 }
 
 const modalAction = () => {
+  if (!form.maxFloor) form.maxFloor = form.minFloor
   emit('unit-register', {
     ...form,
     ...{
@@ -240,14 +241,14 @@ const modalAction = () => {
   <CAlert v-if="warning" color="danger">
     <CIcon name="cilWarning" />
     <strong> 주의</strong> : 해당 라인에서 시작층부터 종료층까지 범위의
-    호수(유니트)가 일괄등록됩니다. 해당 동, 타입과 층을 다시 한번 확인하고
-    신중하게 진행하여 주십시요.
+    호수(유니트)가 <strong>"일괄등록"</strong>됩니다. 해당 동, 타입과 층을 다시
+    한번 확인하고 불필요한 유니트가 등록되지 않도록 신중하게 진행하여 주십시요.
   </CAlert>
 
   <CAlert :color="AlertLight" variant="solid" class="text-right">
     <CButton
       color="primary"
-      :disabled="!project || !form.maxFloor"
+      :disabled="!project || !form.minFloor"
       @click="unitRegister"
     >
       호수(유니트) 일괄등록
@@ -260,7 +261,8 @@ const modalAction = () => {
       <p class="text-primary">
         <strong>
           [{{ bldgName }}동] ({{ form.type }} 타입) {{ form.line }}호 라인,
-          층범위 : {{ form.minFloor }}층 - {{ form.maxFloor }}층
+          층<span v-if="form.maxFloor">범위</span> : {{ form.minFloor }}층
+          <span v-if="form.maxFloor">- {{ form.maxFloor }}층</span>
         </strong>
       </p>
       <p>상기 호수(유니트)정보의 일괄등록을 진행하시겠습니까?</p>
