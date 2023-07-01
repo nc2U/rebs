@@ -27,7 +27,7 @@ class UnitFloorTypeViewSet(viewsets.ModelViewSet):
     serializer_class = UnitFloorTypeSerializer
     pagination_class = PageNumberPaginationFifty
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-    filterset_fields = ('project',)
+    filterset_fields = ('project', 'sort')
     search_fields = ('alias_name',)
 
 
