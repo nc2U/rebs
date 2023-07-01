@@ -1,4 +1,4 @@
-name: Pikube_nginx
+name: Sever(Nginx) Image update
 
 on:
   push:

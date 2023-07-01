@@ -1,4 +1,4 @@
-name: Pikube_web
+name: Web(Python) Image Update
 
 on:
   push:

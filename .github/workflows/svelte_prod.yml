@@ -1,4 +1,4 @@
-name: Svelte_prod
+name: Svelte Update [Prod]
 
 on:
   push:
