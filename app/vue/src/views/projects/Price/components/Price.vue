@@ -8,7 +8,7 @@ import AlertModal from '@/components/Modals/AlertModal.vue'
 const props = defineProps({
   floor: { type: Object, default: null },
   condTexts: { type: Object, default: null },
-  queryIds: { type: Object, default: null },
+  pFilters: { type: Object, default: null },
   price: { type: Object, default: null },
 })
 
@@ -61,7 +61,7 @@ const formsCheck = computed(() => {
 const onStorePrice = () => {
   if (write_project.value) {
     const payload = {
-      ...props.queryIds,
+      ...props.pFilters,
       ...{ unit_floor_type: props.floor.pk },
       ...form,
     }

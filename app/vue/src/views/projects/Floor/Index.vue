@@ -11,9 +11,6 @@ import FloorFormList from '@/views/projects/Floor/components/FloorFormList.vue'
 
 const projStore = useProject()
 const project = computed(() => projStore.project?.pk)
-watch(project, val =>
-  !!val ? fetchFloorTypeList(val) : (pDataStore.floorTypeList = []),
-)
 
 const pDataStore = useProjectData()
 const fetchFloorTypeList = (projId: number) =>
@@ -35,11 +32,20 @@ const onDeleteFloor = (pk: number) => {
   if (project.value) deleteFloorType(pk, project.value)
 }
 
+const projSelect = (target: number | null) => {
+  pDataStore.floorTypeList = []
+  if (!!target) fetchFloorTypeList(target)
+}
+
 onBeforeMount(() => fetchFloorTypeList(project.value || projStore.initProjId))
 </script>
 
 <template>
-  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
+  <ContentHeader
+    :page-title="pageTitle"
+    :nav-menu="navMenu"
+    @proj-select="projSelect"
+  />
 
   <ContentBody>
     <CCardBody class="pb-5">

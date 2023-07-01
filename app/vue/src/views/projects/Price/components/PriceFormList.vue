@@ -9,7 +9,7 @@ import Price from '@/views/projects/Price/components/Price.vue'
 defineProps({
   msg: { type: String, default: '' },
   condTexts: { type: Object, default: null },
-  queryIds: { type: Object, default: null },
+  pFilters: { type: Object, default: null },
 })
 const emit = defineEmits(['on-create', 'on-update', 'on-delete'])
 
@@ -56,7 +56,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
         v-for="floor in floorTypeList"
         :key="floor.pk"
         :cond-texts="condTexts"
-        :query-ids="queryIds"
+        :p-filters="pFilters"
         :floor="floor"
         :price="getPrice(floor.pk)"
         @on-create="onCreate"

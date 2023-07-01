@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount, reactive, ref, watch } from 'vue'
+import { ref, reactive, computed, onBeforeMount } from 'vue'
 import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin2'
 import { useProject } from '@/store/pinia/project'
 import { useContract } from '@/store/pinia/contract'
-import { usePayment } from '@/store/pinia/payment'
+import { usePayment, PriceFilter } from '@/store/pinia/payment'
 import { useProjectData } from '@/store/pinia/project_data'
 import { OrderGroup, SimpleCont, UnitType } from '@/store/types/contract'
 import { Price } from '@/store/types/payment'
@@ -15,13 +15,7 @@ import PriceFormList from '@/views/projects/Price/components/PriceFormList.vue'
 const order_group = ref<number | null>(null)
 const unit_type = ref<number | null>(null)
 
-type Ids = {
-  project: number | null
-  order_group: number | null
-  unit_type: number | null
-}
-
-const queryIds = reactive<Ids>({
+const pFilters = reactive<PriceFilter>({
   project: null,
   order_group: null,
   unit_type: null,
@@ -33,11 +27,6 @@ const priceMessage = ref(
 
 const projStore = useProject()
 const project = computed(() => projStore.project?.pk)
-watch(project, val => {
-  if (!!val) dataSet(val)
-  else dataReset()
-  payStore.priceList = [] // 가격 상태 초기화
-})
 
 const contStore = useContract()
 const contList = computed(() => contStore.contList)
@@ -68,10 +57,11 @@ const fetchFloorTypeList = (projId: number) =>
   pDataStore.fetchFloorTypeList(projId)
 
 const payStore = usePayment()
-const fetchPriceList = (queryIds: Ids) => payStore.fetchPriceList(queryIds)
+const fetchPriceList = (pFilters: PriceFilter) =>
+  payStore.fetchPriceList(pFilters)
 const createPrice = (payload: Price) => payStore.createPrice(payload)
 const updatePrice = (payload: Price) => payStore.updatePrice(payload)
-const deletePrice = (payload: Ids & { pk: number }) =>
+const deletePrice = (payload: PriceFilter & { pk: number }) =>
   payStore.deletePrice(payload)
 
 // 차수 선택 시 실행 함수
@@ -89,23 +79,23 @@ const typeSelect = (type: number) => {
     ? '공급가격을 입력하기 위해 [타입 정보]를 선택하여 주십시요.'
     : ''
   if (project.value) {
-    queryIds.project = project.value
-    queryIds.order_group = order_group.value
-    queryIds.unit_type = unit_type.value
-    fetchPriceList(queryIds) // 가격 상태 저장 실행
+    pFilters.project = project.value
+    pFilters.order_group = order_group.value
+    pFilters.unit_type = unit_type.value
+    fetchPriceList(pFilters) // 가격 상태 저장 실행
   }
 }
 
 const onCreatePrice = (payload: Price) => createPrice(payload)
 const onUpdatePrice = (payload: Price) => updatePrice(payload)
-const onDeletePrice = (pk: number) => deletePrice({ ...{ pk }, ...queryIds })
+const onDeletePrice = (pk: number) => deletePrice({ ...{ pk }, ...pFilters })
 
 const contPriceSet = () => {
   const cont = contList.value[0]
   allContPriceSet({ ...cont })
 }
 
-const dataSet = (pk: number) => {
+const dataSetup = (pk: number) => {
   fetchContList(pk)
   fetchOrderGroupList(pk)
   fetchTypeList(pk)
@@ -119,11 +109,21 @@ const dataReset = () => {
   pDataStore.floorTypeList = []
 }
 
-onBeforeMount(() => dataSet(project.value || projStore.initProjId))
+const projSelect = (target: number | null) => {
+  payStore.priceList = []
+  dataReset()
+  if (!!target) dataSetup(target)
+}
+
+onBeforeMount(() => dataSetup(project.value || projStore.initProjId))
 </script>
 
 <template>
-  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
+  <ContentHeader
+    :page-title="pageTitle"
+    :nav-menu="navMenu"
+    @proj-select="projSelect"
+  />
 
   <ContentBody>
     <CCardBody class="pb-5">
@@ -138,7 +138,7 @@ onBeforeMount(() => dataSet(project.value || projStore.initProjId))
       <PriceFormList
         :msg="priceMessage"
         :cond-texts="condTexts"
-        :query-ids="queryIds"
+        :p-filters="pFilters"
         @on-create="onCreatePrice"
         @on-update="onUpdatePrice"
         @on-delete="onDeletePrice"
