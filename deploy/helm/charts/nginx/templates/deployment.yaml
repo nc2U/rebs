@@ -44,9 +44,8 @@ spec:
               containerPort: 443
               protocol: TCP
           livenessProbe:
-            {{- $hostname := .Values.ingress.hosts | first -}}
             httpGet: # Http 리퀘스트 반환 값에 따라 체크함
-              host: {{ $hostname.host | first }}
+              host: {{ first .Values.ingress.hosts.host }}
               path: /
               port: {{ .Values.service.port }}
               periodSeconds: 60
@@ -54,7 +53,7 @@ spec:
               failureThreshold: 2
           readinessProbe:
             httpGet: # Http 리퀘스트 반환 값에 따라 체크함
-              host: {{ .Values.ingress.hosts | first }}
+              host: {{ .Values.ingress.hosts.host | first }}
               path: /
               port: {{ .Values.service.port }}
           resources:
