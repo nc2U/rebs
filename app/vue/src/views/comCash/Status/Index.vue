@@ -17,7 +17,6 @@ const compName = ref('StatusByAccount')
 
 const comStore = useCompany()
 const company = computed(() => comStore.company?.pk)
-watch(company, val => (!!val ? dataSet(val) : dataReset()))
 
 const cashStore = useComCash()
 const fetchAccSortList = () => cashStore.fetchAccSortList()
@@ -62,7 +61,7 @@ const setDate = (d: string) => {
   }
 }
 
-const dataSet = (pk: number) => {
+const dataSetup = (pk: number) => {
   fetchComBankAccList(pk)
   fetchComBalanceByAccList({
     company: pk,
@@ -80,12 +79,17 @@ const dataReset = () => {
   cashStore.dateCashBook = []
 }
 
+const comSelect = (target: number | null) => {
+  dataReset()
+  if (!!target) dataSetup(target)
+}
+
 onBeforeMount(() => {
   fetchAccSortList()
   fetchAllAccD1List()
   fetchAllAccD2List()
   fetchAllAccD3List()
-  dataSet(company.value || comStore.initComId)
+  dataSetup(company.value || comStore.initComId)
 })
 </script>
 
@@ -94,6 +98,7 @@ onBeforeMount(() => {
     :page-title="pageTitle"
     :nav-menu="navMenu"
     selector="CompanySelect"
+    @com-select="comSelect"
   />
   <ContentBody>
     <CCardBody class="pb-5">

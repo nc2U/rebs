@@ -45,7 +45,6 @@ const excelUrl = computed(() => {
 
 const comStore = useCompany()
 const company = computed(() => comStore.company?.pk)
-watch(company, val => (!!val ? dataSet(val) : dataReset()))
 
 const fetchCompany = (pk: number) => comStore.fetchCompany(pk)
 const fetchAllDepartList = (com: number) => comStore.fetchAllDepartList(com)
@@ -186,7 +185,7 @@ const patchD3Hide = (payload: { pk: number; is_hide: boolean }) =>
 
 const onBankUpdate = (payload: CompanyBank) => patchComBankAcc(payload)
 
-const dataSet = (pk: number) => {
+const dataSetup = (pk: number) => {
   fetchCompany(pk)
   fetchAllDepartList(pk)
   fetchComBankAccList(pk)
@@ -205,6 +204,11 @@ const dataReset = () => {
   dataFilter.value.company = null
 }
 
+const comSelect = (target: number | null) => {
+  dataReset()
+  if (!!target) dataSetup(target)
+}
+
 onBeforeMount(() => {
   fetchBankCodeList()
   fetchAccSortList()
@@ -214,8 +218,7 @@ onBeforeMount(() => {
   fetchFormAccD1List(null)
   fetchFormAccD2List(null, null)
   fetchFormAccD3List(null, null, null)
-
-  dataSet(company.value || comStore.initComId)
+  dataSetup(company.value || comStore.initComId)
 })
 </script>
 
@@ -224,6 +227,7 @@ onBeforeMount(() => {
     :page-title="pageTitle"
     :nav-menu="navMenu"
     selector="CompanySelect"
+    @com-select="comSelect"
   />
   <ContentBody>
     <CCardBody class="pb-5">
