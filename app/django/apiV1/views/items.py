@@ -18,7 +18,7 @@ class UnitTypeViewSet(viewsets.ModelViewSet):
     queryset = UnitType.objects.all()
     serializer_class = UnitTypeSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-    filterset_fields = ('project',)
+    filterset_fields = ('project', 'sort')
     search_fields = ('name',)
 
 
