@@ -14,6 +14,13 @@ const props = defineProps({
   },
 })
 
+const projReset = () => {
+  form.building = null
+  reset(1)
+}
+
+defineExpose({ projReset })
+
 const emit = defineEmits(['bldg-select', 'unit-register'])
 
 const confirmModal = ref()
@@ -54,12 +61,6 @@ const simpleFloors = computed(() => projectDataStore.simpleFloors)
 
 const fetchNumUnitByType = (projId: number, unit_type: number) =>
   projectDataStore.fetchNumUnitByType(projId, unit_type)
-
-watch(props, () => {
-  // form.building = null
-  // form.type = null
-  reset(1)
-})
 
 watch(form, val => {
   if (!val.building) reset(1)
@@ -152,7 +153,7 @@ const modalAction = () => {
               :disabled="!project"
               @change="bldgSelect"
             >
-              <option value="">---------</option>
+              <option value>---------</option>
               <option
                 v-for="bldg in buildingList"
                 :key="bldg.pk"
@@ -193,7 +194,7 @@ const modalAction = () => {
               :disabled="!form.line"
               @change="typeSelect"
             >
-              <option value="">---------</option>
+              <option value>---------</option>
               <option
                 v-for="type in unitTypeList"
                 :key="type.pk"

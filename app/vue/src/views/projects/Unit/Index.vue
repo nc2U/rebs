@@ -11,6 +11,7 @@ import UnitTable from '@/views/projects/Unit/components/UnitTable.vue'
 import { HouseUnit } from '@/store/types/project'
 
 const alertModal = ref()
+const unitController = ref()
 
 const bldgPk = ref<null | number>(null)
 const bldgName = ref('')
@@ -146,9 +147,10 @@ const dataReset = () => {
 }
 
 const projSelect = (target: number | null) => {
+  unitController.value.projReset()
   dataReset()
-  if (!!target) dataSetup(target)
   pDataStore.houseUnitList = []
+  if (!!target) dataSetup(target)
 }
 
 onBeforeMount(() => {
@@ -167,6 +169,7 @@ onBeforeMount(() => {
   <ContentBody>
     <CCardBody class="pb-5">
       <UnitController
+        ref="unitController"
         :project="project"
         @bldg-select="bldgSelect"
         @unit-register="unitRegister"
