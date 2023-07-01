@@ -214,6 +214,7 @@ const modalAction = () => {
             <CFormInput
               v-model.number="form.minFloor"
               type="number"
+              min="-10"
               placeholder="시작층(피로티 제외)"
               :disabled="!form.type"
             />
@@ -228,7 +229,7 @@ const modalAction = () => {
             <CFormInput
               v-model.number="form.maxFloor"
               type="number"
-              min="0"
+              min="-10"
               placeholder="입력 범위 종료층"
               :disabled="!form.minFloor"
               @keydown.enter="unitRegister"

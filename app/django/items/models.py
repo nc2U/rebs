@@ -85,7 +85,7 @@ class HouseUnit(models.Model):
     key_unit = models.OneToOneField(KeyUnit, on_delete=models.SET_NULL, null=True, blank=True,
                                     verbose_name='계약유닛')
     bldg_line = models.PositiveSmallIntegerField('라인')
-    floor_no = models.PositiveSmallIntegerField('층수')
+    floor_no = models.SmallIntegerField('층수')
     is_hold = models.BooleanField('홀딩 여부', default=False)
     hold_reason = models.CharField('홀딩 사유', max_length=100, blank=True)
 
