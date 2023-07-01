@@ -40,9 +40,9 @@ export const useProjectData = defineStore('projectData', () => {
   )
 
   // actions
-  const fetchTypeList = (projId: number) =>
+  const fetchTypeList = (projId: number, sort?: number) =>
     api
-      .get(`/type/?project=${projId}`)
+      .get(`/type/?project=${projId}&sort=${sort || ''}`)
       .then(res => {
         unitTypeList.value = res.data.results
       })
@@ -87,9 +87,9 @@ export const useProjectData = defineStore('projectData', () => {
   )
 
   // actions
-  const fetchFloorTypeList = (projId: number) =>
+  const fetchFloorTypeList = (projId: number, sort?: number) =>
     api
-      .get(`/floor/?project=${projId}`)
+      .get(`/floor/?project=${projId}&sort=${sort || ''}`)
       .then(res => (floorTypeList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
