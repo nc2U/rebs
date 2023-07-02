@@ -3,10 +3,12 @@ import Cookies from 'js-cookie'
 import { Buffer } from 'buffer'
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
+import { useRouter } from 'vue-router'
 import { errorHandle, message } from '@/utils/helper'
 import { User, StaffAuth, Profile, Todo } from '@/store/types/accounts'
 
 type LoginUser = { email: string; password: string }
+const router = useRouter()
 
 const extractId = (token: string) => {
   const base64Payload = token.split('.')[1]
@@ -94,8 +96,13 @@ export const useAccount = defineStore('account', () => {
       return api
         .get(`/user/${extractId(token)}`)
         .then(res => setUser(res.data))
-        .catch(err => {
-          console.log(err.response.data)
+        .catch(() => {
+          userInfo.value = null
+          profile.value = null
+          todoList.value = []
+          accessToken.value = ''
+          delete api.defaults.headers.common.Authorization
+          Cookies.remove('accessToken')
         })
     } else return Promise.resolve()
   }

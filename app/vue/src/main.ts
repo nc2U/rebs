@@ -15,7 +15,8 @@ import '@/styles/style.scss'
 const app = createApp(App)
 app.use(pinia)
 const account = useAccount()
-const init = () => account.loginByToken(Cookies.get('accessToken'))
+const cookie = Cookies.get('accessToken')
+const init = () => account.loginByToken(cookie)
 
 init().then(() => {
   loadFonts().then(() => {

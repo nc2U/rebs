@@ -1,6 +1,9 @@
 import axios from 'axios'
-import store from '@/store'
+import { start, close } from '@/utils/nprogress'
 import router from '@/router'
+// import store from '@/store'
+// store.commit('startSpinner')
+// store.commit('endSpinner')
 
 const api = axios.create({
   baseURL: '/api/v1/',
@@ -8,27 +11,21 @@ const api = axios.create({
 
 api.interceptors.request.use(
   config => {
-    store.commit('startSpinner')
+    start()
     return config
   },
-  error => {
-    // alert('데이터 요청 실패!')
-    return Promise.reject(error)
-  },
+  err => Promise.reject(err),
 )
 
 api.interceptors.response.use(
-  response => {
-    store.commit('endSpinner')
-    return response
+  res => {
+    close()
+    return res
   },
-  error => {
-    if (error.response.status == 401) {
-      router.push('Login')
-    }
-    // alert('데이터 응답 실패!')
-    store.commit('endSpinner')
-    return Promise.reject(error)
+  err => {
+    if (err.response.status == 401) return router.replace({ name: 'Login' })
+    close()
+    return Promise.reject(err)
   },
 )
 
