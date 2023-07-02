@@ -42,7 +42,6 @@ jobs:
           command: |
             cd ${{ secrets.NFS_PATH }}/dev/
             sh ./volume/backups/mysql_chk.sh
-            rm -rf .git* README.md app/vue app/svelte deploy/docker*
             kubectl apply -f ./deploy/kubectl/ns-dev.yaml
             helm upgrade ${{ secrets.DATABASE_USER }} ./deploy/helm --install -f ./deploy/helm/values-dev.yaml -n dev-hrebs \
               --set global.dbPassword=${{ secrets.DATABASE_PASSWORD }} \
