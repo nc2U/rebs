@@ -43,15 +43,15 @@ spec:
             - name: https
               containerPort: 443
               protocol: TCP
-          livenessProbe:
-            {{- $hosts := .Values.ingress.hosts | first -}}
-            httpGet: # Http 리퀘스트 반환 값에 따라 체크함
-              host: {{ get $hosts "host" }}
-              path: /
-              port: {{ .Values.service.port }}
-              periodSeconds: 60
-              initialDelaySeconds: 30
-              failureThreshold: 2
+{{/*          livenessProbe:*/}}
+{{/*            {{- $hosts := .Values.ingress.hosts | first -}}*/}}
+{{/*            httpGet: # Http 리퀘스트 반환 값에 따라 체크함*/}}
+{{/*              host: {{ get $hosts "host" }}*/}}
+{{/*              path: /*/}}
+{{/*              port: {{ .Values.service.port }}*/}}
+{{/*              periodSeconds: 60*/}}
+{{/*              initialDelaySeconds: 30*/}}
+{{/*              failureThreshold: 2*/}}
 {{/*          readinessProbe:*/}}
 {{/*            httpGet: # Http 리퀘스트 반환 값에 따라 체크함*/}}
 {{/*              host: {{ get $hosts "host" }}*/}}
@@ -64,18 +64,9 @@ spec:
             mountPath: /etc/nginx/nginx.conf
             readOnly: true
             subPath: nginx.conf
-          - name: log-conf
+          - name: conf-d
             mountPath: /etc/nginx/conf.d
             readOnly: true
-            subPath: log.conf
-          - name: upstream-conf
-            mountPath: /etc/nginx/conf.d
-            readOnly: true
-            subPath: upstream.conf
-          - name: public-conf
-            mountPath: /etc/nginx/conf.d
-            readOnly: true
-            subPath: public.conf
           - name: static
             mountPath: /static
           - name: tz-seoul
@@ -87,22 +78,14 @@ spec:
           items:
           - key: NGINX.CONF
             path: nginx.conf
-      - name: log-conf
+      - name: conf-d
         configMap:
           name: {{ include "nginx.fullname" . }}-config
           items:
           - key: LOG.CONF
             path: log.conf
-      - name: upstream-conf
-        configMap:
-          name: {{ include "nginx.fullname" . }}-config
-          items:
           - key: UPSTREAM.CONF
             path: upstream.conf
-      - name: public-conf
-        configMap:
-          name: {{ include "nginx.fullname" . }}-config
-          items:
           - key: PUBLIC.CONF
             path: public.conf
       - name: static
