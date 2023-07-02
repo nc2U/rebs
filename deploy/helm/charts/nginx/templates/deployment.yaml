@@ -52,11 +52,11 @@ spec:
               periodSeconds: 60
               initialDelaySeconds: 30
               failureThreshold: 2
-          readinessProbe:
-            httpGet: # Http 리퀘스트 반환 값에 따라 체크함
-              host: {{ get $hosts "host" }}
-              path: /
-              port: {{ .Values.service.port }}
+{{/*          readinessProbe:*/}}
+{{/*            httpGet: # Http 리퀘스트 반환 값에 따라 체크함*/}}
+{{/*              host: {{ get $hosts "host" }}*/}}
+{{/*              path: /*/}}
+{{/*              port: {{ .Values.service.port }}*/}}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
