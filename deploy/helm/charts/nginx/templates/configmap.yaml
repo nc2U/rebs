@@ -3,15 +3,16 @@ kind: ConfigMap
 metadata:
   name: {{ include "nginx.fullname" . }}-config
 data:
+  {{- with .Values.imageConfigMaps }}
   NGINX.CONF: |
     user  nginx;
-    worker_processes {{ .Values.imageConfigMaps.workerProcesses | quote | default "1" }};
+    worker_processes {{ .workerProcesses | quote | default "1" }};
 
     error_log  /var/log/nginx/error.log warn;
     pid        /var/run/nginx.pid;
 
     events {
-        worker_connections  {{ .Values.imageConfigMaps.workerConnections | quote | default "1024" }};
+        worker_connections  {{ .workerConnections | quote | default "1024" }};
     }
 
     http {
@@ -27,7 +28,7 @@ data:
         sendfile        on;
         #tcp_nopush     on;
 
-        keepalive_timeout  {{ .Values.imageConfigMaps.keepaliveTimeout | quote | default "65" }};
+        keepalive_timeout  {{ .keepaliveTimeout | quote | default "65" }};
         client_max_body_size 100M;
 
         gzip  on;
@@ -36,7 +37,7 @@ data:
         include /etc/nginx/conf.d/upstream.conf;
         include /etc/nginx/conf.d/public.conf;
     }
-  LOG.CONF: |
+    LOG.CONF: |
     log_format json '{'
                  '"time":"$time_iso8601",'
                  '"remote_addr":"$remote_addr",'
@@ -55,12 +56,13 @@ data:
                  '"request_time":"$request_time",'
                  '"upstream_response_time":"$upstream_response_time"'
                 '}';
-  UPSTREAM.CONF: |
+    UPSTREAM.CONF: |
     upstream django_uwsgi {
         ip_hash;
-        server {{ .Values.imageConfigMaps.backendHost | quote }} max_fails={{ .Values.imageConfigMaps.backendMaxTimeout | default "3" }} {{ .Values.imageConfigMaps.backendMaxFails | quote | default "3" }} fail_timeout={{ .Values.imageConfigMaps.backendMaxTimeout | default "10s" }};
+        server {{ .backendHost | quote }} max_fails={{ .backendMaxTimeout | default "3" }} {{ .backendMaxFails | quote | default "3" }} fail_timeout={{ .backendMaxTimeout | default "10s" }};
     }
-  PUBLIC.CONF: |
+    {{- end }}
+    PUBLIC.CONF: |
     server {
         listen          {{ .Values.service.port | quote | default "80" }}default_server;
         server_name     $host www.$host;
