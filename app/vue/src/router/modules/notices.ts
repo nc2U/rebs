@@ -26,7 +26,7 @@ const notices = {
         pageViewAuth.value
           ? import('@/views/notices/Bill/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '수납 고지서 출력' },
+      meta: { title: '수납 고지서 출력', auth: true },
     },
     {
       path: 'sms',
@@ -35,7 +35,7 @@ const notices = {
         pageViewAuth.value
           ? import('@/views/notices/Sms/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: 'SMS 발송 관리' },
+      meta: { title: 'SMS 발송 관리', auth: true },
     },
     {
       path: 'mailing',
@@ -44,7 +44,7 @@ const notices = {
         pageViewAuth.value
           ? import('@/views/notices/Mailing/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: 'MAIL 발송 관리' },
+      meta: { title: 'MAIL 발송 관리', auth: true },
     },
     {
       path: 'post-label',
@@ -53,7 +53,7 @@ const notices = {
         pageViewAuth.value
           ? import('@/views/notices/Label/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '우편 라벨 관리' },
+      meta: { title: '우편 라벨 관리', auth: true },
     },
     {
       path: 'log',
@@ -62,7 +62,7 @@ const notices = {
         pageViewAuth.value
           ? import('@/views/notices/Log/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '발송 기록 관리' },
+      meta: { title: '발송 기록 관리', auth: true },
     },
   ],
 }

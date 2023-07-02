@@ -26,7 +26,7 @@ const comDocs = {
         pageViewAuth.value
           ? import('@/views/comDocs/GeneralDocs/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '본사 일반 문서' },
+      meta: { title: '본사 일반 문서', auth: true },
       children: [
         {
           path: ':postId(\\d+)',
@@ -35,7 +35,7 @@ const comDocs = {
             pageViewAuth.value
               ? import('@/views/comDocs/GeneralDocs/Index.vue')
               : import('@/views/_Accounts/NoAuth.vue'),
-          meta: { title: '본사 일반 문서', except: true },
+          meta: { title: '본사 일반 문서', auth: true, except: true },
         },
         {
           path: ':postId(\\d+)/update',
@@ -44,7 +44,7 @@ const comDocs = {
             pageViewAuth.value
               ? import('@/views/comDocs/GeneralDocs/Index.vue')
               : import('@/views/_Accounts/NoAuth.vue'),
-          meta: { title: '본사 일반 문서', except: true },
+          meta: { title: '본사 일반 문서', auth: true, except: true },
         },
         {
           path: 'create',
@@ -53,7 +53,7 @@ const comDocs = {
             pageViewAuth.value
               ? import('@/views/comDocs/GeneralDocs/Index.vue')
               : import('@/views/_Accounts/NoAuth.vue'),
-          meta: { title: '본사 일반 문서', except: true },
+          meta: { title: '본사 일반 문서', auth: true, except: true },
         },
       ],
     },
@@ -64,7 +64,7 @@ const comDocs = {
         pageViewAuth.value
           ? import('@/views/comDocs/OfficialLetter/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '본사 공문 발송' },
+      meta: { title: '본사 공문 발송', auth: true },
       children: [
         {
           path: ':postId(\\d+)',
@@ -73,7 +73,7 @@ const comDocs = {
             pageViewAuth.value
               ? import('@/views/comDocs/OfficialLetter/Index.vue')
               : import('@/views/_Accounts/NoAuth.vue'),
-          meta: { title: '본사 공문 발송', except: true },
+          meta: { title: '본사 공문 발송', auth: true, except: true },
         },
         {
           path: ':postId(\\d+)/update',
@@ -82,7 +82,7 @@ const comDocs = {
             pageViewAuth.value
               ? import('@/views/comDocs/OfficialLetter/Index.vue')
               : import('@/views/_Accounts/NoAuth.vue'),
-          meta: { title: '본사 공문 발송', except: true },
+          meta: { title: '본사 공문 발송', auth: true, except: true },
         },
         {
           path: 'create',
@@ -91,7 +91,7 @@ const comDocs = {
             pageViewAuth.value
               ? import('@/views/comDocs/OfficialLetter/Index.vue')
               : import('@/views/_Accounts/NoAuth.vue'),
-          meta: { title: '본사 공문 발송', except: true },
+          meta: { title: '본사 공문 발송', auth: true, except: true },
         },
       ],
     },
@@ -112,7 +112,7 @@ const comDocs = {
             pageViewAuth.value
               ? import('@/views/comDocs/LawsuitDocs/Index.vue')
               : import('@/views/_Accounts/NoAuth.vue'),
-          meta: { title: '본사 소송 문서' },
+          meta: { title: '본사 소송 문서', auth: true },
           children: [
             {
               path: ':postId(\\d+)',
@@ -121,7 +121,7 @@ const comDocs = {
                 pageViewAuth.value
                   ? import('@/views/comDocs/LawsuitDocs/Index.vue')
                   : import('@/views/_Accounts/NoAuth.vue'),
-              meta: { title: '본사 소송 문서', except: true },
+              meta: { title: '본사 소송 문서', auth: true, except: true },
             },
             {
               path: ':postId(\\d+)/update',
@@ -130,7 +130,7 @@ const comDocs = {
                 pageViewAuth.value
                   ? import('@/views/comDocs/LawsuitDocs/Index.vue')
                   : import('@/views/_Accounts/NoAuth.vue'),
-              meta: { title: '본사 소송 문서', except: true },
+              meta: { title: '본사 소송 문서', auth: true, except: true },
             },
             {
               path: 'create',
@@ -139,7 +139,7 @@ const comDocs = {
                 pageViewAuth.value
                   ? import('@/views/comDocs/LawsuitDocs/Index.vue')
                   : import('@/views/_Accounts/NoAuth.vue'),
-              meta: { title: '본사 소송 문서', except: true },
+              meta: { title: '본사 소송 문서', auth: true, except: true },
             },
           ],
         },
@@ -150,7 +150,7 @@ const comDocs = {
             pageViewAuth.value
               ? import('@/views/comDocs/LawsuitCase/Index.vue')
               : import('@/views/_Accounts/NoAuth.vue'),
-          meta: { title: '본사 소송 사건' },
+          meta: { title: '본사 소송 사건', auth: true },
           children: [
             {
               path: ':caseId(\\d+)',
@@ -159,7 +159,7 @@ const comDocs = {
                 pageViewAuth.value
                   ? import('@/views/comDocs/LawsuitCase/Index.vue')
                   : import('@/views/_Accounts/NoAuth.vue'),
-              meta: { title: '본사 소송 사건', except: true },
+              meta: { title: '본사 소송 사건', auth: true, except: true },
             },
             {
               path: ':caseId(\\d+)/update',
@@ -168,7 +168,7 @@ const comDocs = {
                 pageViewAuth.value
                   ? import('@/views/comDocs/LawsuitCase/Index.vue')
                   : import('@/views/_Accounts/NoAuth.vue'),
-              meta: { title: '본사 소송 사건', except: true },
+              meta: { title: '본사 소송 사건', auth: true, except: true },
             },
             {
               path: 'create',
@@ -177,7 +177,7 @@ const comDocs = {
                 pageViewAuth.value
                   ? import('@/views/comDocs/LawsuitCase/Index.vue')
                   : import('@/views/_Accounts/NoAuth.vue'),
-              meta: { title: '본사 소송 사건', except: true },
+              meta: { title: '본사 소송 사건', auth: true, except: true },
             },
           ],
         },

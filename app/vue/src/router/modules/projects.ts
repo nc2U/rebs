@@ -26,7 +26,7 @@ const projects = {
         pageViewAuth.value
           ? import('@/views/projects/List/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '프로젝트 등록' },
+      meta: { title: '프로젝트 등록', auth: true },
     },
     {
       path: 'manage/order',
@@ -35,7 +35,7 @@ const projects = {
         pageViewAuth.value
           ? import('@/views/projects/OrderGroup/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '차수 분류 등록' },
+      meta: { title: '차수 분류 등록', auth: true },
     },
     {
       path: 'manage/type',
@@ -44,7 +44,7 @@ const projects = {
         pageViewAuth.value
           ? import('@/views/projects/Type/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '타입 정보 등록' },
+      meta: { title: '타입 정보 등록', auth: true },
     },
     {
       path: 'manage/inc-budget',
@@ -53,7 +53,7 @@ const projects = {
         pageViewAuth.value
           ? import('@/views/projects/IncBudget/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '수입 예산 등록' },
+      meta: { title: '수입 예산 등록', auth: true },
     },
     {
       path: 'manage/out-budget',
@@ -62,7 +62,7 @@ const projects = {
         pageViewAuth.value
           ? import('@/views/projects/OutBudget/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '지출 예산 등록' },
+      meta: { title: '지출 예산 등록', auth: true },
     },
 
     {
@@ -72,7 +72,7 @@ const projects = {
         pageViewAuth.value
           ? import('@/views/projects/Building/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '동(건물) 등록' },
+      meta: { title: '동(건물) 등록', auth: true },
     },
     {
       path: 'settings/unit',
@@ -81,7 +81,7 @@ const projects = {
         pageViewAuth.value
           ? import('@/views/projects/Unit/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '호(유닛) 등록' },
+      meta: { title: '호(유닛) 등록', auth: true },
     },
     {
       path: 'settings/floor',
@@ -90,7 +90,7 @@ const projects = {
         pageViewAuth.value
           ? import('@/views/projects/Floor/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '층별 조건 등록' },
+      meta: { title: '층별 조건 등록', auth: true },
     },
     {
       path: 'settings/price',
@@ -99,7 +99,7 @@ const projects = {
         pageViewAuth.value
           ? import('@/views/projects/Price/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '공급 가격 등록' },
+      meta: { title: '공급 가격 등록', auth: true },
     },
     {
       path: 'settings/payment-order',
@@ -108,7 +108,7 @@ const projects = {
         pageViewAuth.value
           ? import('@/views/projects/PayOrder/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '납부 회차 등록' },
+      meta: { title: '납부 회차 등록', auth: true },
     },
     {
       path: 'settings/down-payment',
@@ -117,7 +117,7 @@ const projects = {
         pageViewAuth.value
           ? import('@/views/projects/DownPay/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '계약 조건 등록' },
+      meta: { title: '계약 조건 등록', auth: true },
     },
     {
       path: 'site/index',
@@ -126,7 +126,7 @@ const projects = {
         pageViewAuth.value
           ? import('@/views/projects/SiteList/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '지번 목록 관리' },
+      meta: { title: '지번 목록 관리', auth: true },
     },
     {
       path: 'site/owner',
@@ -135,7 +135,7 @@ const projects = {
         pageViewAuth.value
           ? import('@/views/projects/SiteOwner/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '소유자 별 관리' },
+      meta: { title: '소유자 별 관리', auth: true },
     },
     {
       path: 'site/contract',
@@ -144,7 +144,7 @@ const projects = {
         pageViewAuth.value
           ? import('@/views/projects/SiteContract/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '매입 계약 관리' },
+      meta: { title: '매입 계약 관리', auth: true },
     },
   ],
 }

@@ -26,7 +26,7 @@ const hrManage = {
         pageViewAuth.value
           ? import('@/views/hrManage/Staff/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '직원 정보 관리' },
+      meta: { title: '직원 정보 관리', auth: true },
     },
     {
       path: 'department',
@@ -35,7 +35,7 @@ const hrManage = {
         pageViewAuth.value
           ? import('@/views/hrManage/Department/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '부서 정보 관리' },
+      meta: { title: '부서 정보 관리', auth: true },
     },
     {
       path: 'position',
@@ -44,7 +44,7 @@ const hrManage = {
         pageViewAuth.value
           ? import('@/views/hrManage/Position/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '직위 정보 관리' },
+      meta: { title: '직위 정보 관리', auth: true },
     },
     {
       path: 'duty',
@@ -53,7 +53,7 @@ const hrManage = {
         pageViewAuth.value
           ? import('@/views/hrManage/Duty/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '직책 정보 관리' },
+      meta: { title: '직책 정보 관리', auth: true },
     },
     {
       path: 'grade',
@@ -62,7 +62,7 @@ const hrManage = {
         pageViewAuth.value
           ? import('@/views/hrManage/Grade/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '직급 정보 관리' },
+      meta: { title: '직급 정보 관리', auth: true },
     },
   ],
 }

@@ -26,7 +26,7 @@ const proDocs = {
         pageViewAuth.value
           ? import('@/views/proDocs/GeneralDocs/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '현장 일반 문서' },
+      meta: { title: '현장 일반 문서', auth: true },
     },
     {
       path: 'official/letters',
@@ -35,7 +35,7 @@ const proDocs = {
         pageViewAuth.value
           ? import('@/views/proDocs/OfficialLetter/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '현장 공문 발송' },
+      meta: { title: '현장 공문 발송', auth: true },
     },
     {
       path: 'lawsuit/posts',
@@ -44,7 +44,7 @@ const proDocs = {
         pageViewAuth.value
           ? import('@/views/proDocs/LawsuitDocs/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '현장 소송 문서' },
+      meta: { title: '현장 소송 문서', auth: true },
     },
     {
       path: 'lawsuit/case',
@@ -53,7 +53,7 @@ const proDocs = {
         pageViewAuth.value
           ? import('@/views/proDocs/LawsuitCase/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '현장 소송 사건' },
+      meta: { title: '현장 소송 사건', auth: true },
     },
   ],
 }

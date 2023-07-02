@@ -26,7 +26,7 @@ const payments = {
         pageViewAuth.value
           ? import('@/views/payments/List/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '분양 수납 내역' },
+      meta: { title: '분양 수납 내역', auth: true },
     },
     {
       path: 'manage',
@@ -35,7 +35,7 @@ const payments = {
         pageViewAuth.value
           ? import('@/views/payments/Register/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '건별 수납 관리' },
+      meta: { title: '건별 수납 관리', auth: true },
     },
     {
       path: 'status',
@@ -44,7 +44,7 @@ const payments = {
         pageViewAuth.value
           ? import('@/views/payments/Status/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '수납 현황 집계' },
+      meta: { title: '수납 현황 집계', auth: true },
     },
   ],
 }

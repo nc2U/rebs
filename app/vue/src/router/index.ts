@@ -5,15 +5,16 @@ import { start, close } from '@/utils/nprogress'
 import routes from '@/router/routes'
 import store from '@/store'
 
+const token = computed(() => useAccount().accessToken)
+
 const router = createRouter({
   history: createWebHashHistory(),
   routes,
 })
 
-router.beforeEach((to, from, next) => {
-  const isAuth = computed(() => useAccount().isAuthorized)
+router.beforeEach(async (to, from, next) => {
   if (
-    !isAuth.value &&
+    !token.value &&
     !(
       to.name === 'Login' ||
       to.name === 'Register' ||

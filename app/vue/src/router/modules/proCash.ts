@@ -26,7 +26,7 @@ const proCash = {
         pageViewAuth.value
           ? import('@/views/proCash/Status/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '현장 자금 현황' },
+      meta: { title: '현장 자금 현황', auth: true },
     },
     {
       path: 'index',
@@ -35,7 +35,7 @@ const proCash = {
         pageViewAuth.value
           ? import('@/views/proCash/Manage/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '현장 출납 관리' },
+      meta: { title: '현장 출납 관리', auth: true },
     },
     {
       path: 'imprest',
@@ -44,7 +44,7 @@ const proCash = {
         pageViewAuth.value
           ? import('@/views/proCash/Imprest/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '운영 비용 관리' },
+      meta: { title: '운영 비용 관리', auth: true },
     },
   ],
 }

@@ -26,7 +26,7 @@ const comCash = {
         pageViewAuth.value
           ? import('@/views/comCash/Status/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '본사 자금 현황' },
+      meta: { title: '본사 자금 현황', auth: true },
     },
     {
       path: 'index',
@@ -35,7 +35,7 @@ const comCash = {
         pageViewAuth.value
           ? import('@/views/comCash/CashManage/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '본사 출납 관리' },
+      meta: { title: '본사 출납 관리', auth: true },
     },
     {
       path: 'debt',
@@ -44,7 +44,7 @@ const comCash = {
         pageViewAuth.value
           ? import('@/views/comCash/DebtManage/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '채권 채무 관리' },
+      meta: { title: '채권 채무 관리', auth: true },
     },
   ],
 }

@@ -33,7 +33,7 @@ const settings = {
         compViewAuth.value
           ? import('@/views/settings/Company/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '회사 정보 관리' },
+      meta: { title: '회사 정보 관리', auth: true },
     },
     {
       path: 'authorization',
@@ -42,13 +42,13 @@ const settings = {
         authViewAuth.value
           ? import('@/views/settings/Authorization/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '권한 설정 관리' },
+      meta: { title: '권한 설정 관리', auth: true },
     },
     {
       path: 'profile',
       name: '프로필 관리',
       component: () => import('@/views/settings/Profile/Index.vue'),
-      meta: { title: '프로필 관리' },
+      meta: { title: '프로필 관리', auth: true },
     },
   ],
 }

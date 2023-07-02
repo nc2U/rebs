@@ -26,7 +26,7 @@ const contract = {
         pageViewAuth.value
           ? import('@/views/contracts/List/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '계약 내역 조회' },
+      meta: { title: '계약 내역 조회', auth: true },
     },
     {
       path: 'status',
@@ -35,7 +35,7 @@ const contract = {
         pageViewAuth.value
           ? import('@/views/contracts/Status/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '동호 배치 현황' },
+      meta: { title: '동호 배치 현황', auth: true },
     },
     {
       path: 'register',
@@ -44,7 +44,7 @@ const contract = {
         pageViewAuth.value
           ? import('@/views/contracts/Register/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '계약 등록 관리' },
+      meta: { title: '계약 등록 관리', auth: true },
     },
     {
       path: 'succession',
@@ -53,7 +53,7 @@ const contract = {
         pageViewAuth.value
           ? import('@/views/contracts/Succession/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '권리 의무 승계' },
+      meta: { title: '권리 의무 승계', auth: true },
     },
     {
       path: 'release',
@@ -62,7 +62,7 @@ const contract = {
         pageViewAuth.value
           ? import('@/views/contracts/Release/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '계약 해지 관리' },
+      meta: { title: '계약 해지 관리', auth: true },
     },
   ],
 }
