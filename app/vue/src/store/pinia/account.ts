@@ -179,7 +179,10 @@ export const useAccount = defineStore('account', () => {
       .then(res => {
         todoList.value = res.data.results
       })
-      .catch(err => errorHandle(err.response.data))
+      .catch(err => {
+        errorHandle(err.response.data)
+        logout()
+      })
   }
 
   const createTodo = (payload: Todo) =>
