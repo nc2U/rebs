@@ -52,7 +52,7 @@ export const useAccount = defineStore('account', () => {
     api
       .get(`/user/${pk}/`)
       .then(res => (user.value = res.data))
-      .catch(err => errorHandle(err.response.data))
+      .catch(() => logout())
 
   const signup = (payload: LoginUser & { username: string }) =>
     api
@@ -179,10 +179,7 @@ export const useAccount = defineStore('account', () => {
       .then(res => {
         todoList.value = res.data.results
       })
-      .catch(err => {
-        errorHandle(err.response.data)
-        logout()
-      })
+      .catch(() => logout())
   }
 
   const createTodo = (payload: Todo) =>
