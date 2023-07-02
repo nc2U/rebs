@@ -30,13 +30,13 @@ type Error = {
   stack?: string
 }
 
-export const errorHandle = (error: Error) => {
-  if (error.code === 'token_not_valid') {
+export const errorHandle = (err: Error) => {
+  if (err.code === 'token_not_valid') {
     console.log('token_not_valid')
   } else {
-    console.log(error)
-    for (const key in error) {
-      message('danger', `${key} - 에러`, `${error[key]}`, 10000)
+    console.log(err)
+    for (const key in err) {
+      message('danger', `${key} - 에러`, `${err[key]}`, 10000)
     }
   }
 }
