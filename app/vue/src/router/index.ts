@@ -5,7 +5,7 @@ import { start, close } from '@/utils/nprogress'
 import routes from '@/router/routes'
 // import store from '@/store'
 
-const accessToken = computed(() => useAccount().accessToken)
+const isAuth = computed(() => useAccount().isAuthorized)
 
 const router = createRouter({
   history: createWebHashHistory(),
@@ -14,9 +14,9 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
   // store.commit('startSpinner')
-  const token = await accessToken.value
+  const auth = await isAuth.value
   if (to.matched.some(r => r.meta.auth))
-    if (!token) next({ name: 'Login', query: { redirect: to.fullPath } })
+    if (!auth) next({ name: 'Login', query: { redirect: to.fullPath } })
     else {
       next()
       start()

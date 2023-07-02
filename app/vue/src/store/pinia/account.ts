@@ -29,9 +29,7 @@ export const useAccount = defineStore('account', () => {
   const staffAuth = computed(() =>
     userInfo.value?.staffauth ? userInfo.value.staffauth : null,
   )
-  const isAuthorized = computed(
-    () => accessToken.value.length && !!userInfo.value,
-  )
+  const isAuthorized = computed(() => !!accessToken.value && !!userInfo.value)
   const myTodos = computed(() =>
     todoList.value.filter(
       todo => !todo.soft_deleted && todo.user === userInfo.value?.pk,
@@ -52,16 +50,13 @@ export const useAccount = defineStore('account', () => {
     api
       .get(`/user/${pk}/`)
       .then(res => (user.value = res.data))
-      .catch(() => logout())
+      .catch(err => errorHandle(err.response.data))
 
   const signup = (payload: LoginUser & { username: string }) =>
     api
       .post('/user/', payload)
       .then(() => message('info', '', '회원가입이 완료되었습니다.'))
-      .catch(err => {
-        errorHandle(err.response.data)
-        console.log(err)
-      })
+      .catch(err => errorHandle(err.response.data))
 
   const setToken = (token: string) => {
     accessToken.value = token
@@ -179,7 +174,7 @@ export const useAccount = defineStore('account', () => {
       .then(res => {
         todoList.value = res.data.results
       })
-      .catch(() => logout())
+      .catch(err => errorHandle(err.response.data))
   }
 
   const createTodo = (payload: Todo) =>
