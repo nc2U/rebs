@@ -88,23 +88,23 @@ spec:
           - key: NGINX.CONF
             path: nginx.conf
       - name: log-conf
-          configMap:
-            name: {{ include "nginx.fullname" . }}-config
-            items:
-            - key: LOG.CONF
-              path: log.conf
+        configMap:
+          name: {{ include "nginx.fullname" . }}-config
+          items:
+          - key: LOG.CONF
+            path: log.conf
       - name: upstream-conf
-          configMap:
-            name: {{ include "nginx.fullname" . }}-config
-            items:
-            - key: UPSTREAM.CONF
-              path: upstream.conf
+        configMap:
+          name: {{ include "nginx.fullname" . }}-config
+          items:
+          - key: UPSTREAM.CONF
+            path: upstream.conf
       - name: public-conf
-          configMap:
-            name: {{ include "nginx.fullname" . }}-config
-            items:
-            - key: PUBLIC.CONF
-              path: public.conf
+        configMap:
+          name: {{ include "nginx.fullname" . }}-config
+          items:
+          - key: PUBLIC.CONF
+            path: public.conf
       - name: static
         persistentVolumeClaim:
           claimName: {{ include "nginx.fullname" . }}-static-{{ .Values.global.appMode }}-nfs-pvc
