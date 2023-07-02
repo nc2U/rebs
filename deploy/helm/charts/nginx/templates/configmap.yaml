@@ -6,13 +6,13 @@ data:
   {{- with .Values.imageConfigMaps }}
   NGINX.CONF: |
     user  nginx;
-    worker_processes {{ .workerProcesses | default 1 }};
+    worker_processes {{ .workerProcesses | default "1" }};
 
     error_log  /var/log/nginx/error.log warn;
     pid        /var/run/nginx.pid;
 
     events {
-        worker_connections  {{ .workerConnections | default 1024 }};
+        worker_connections  {{ .workerConnections | default "1024" }};
     }
 
     http {
@@ -28,7 +28,7 @@ data:
         sendfile        on;
         #tcp_nopush     on;
 
-        keepalive_timeout  {{ .keepaliveTimeout | default 65 }};
+        keepalive_timeout  {{ .keepaliveTimeout | default "65" }};
         client_max_body_size 100M;
 
         gzip  on;
@@ -59,12 +59,12 @@ data:
   UPSTREAM.CONF: |
     upstream django_uwsgi {
         ip_hash;
-        server {{ .backendHost }} max_fails={{ .backendMaxFails | default 3 }} fail_timeout={{ .backendMaxTimeout | default 10s }};
+        server {{ .backendHost }} max_fails={{ .backendMaxFails | default "3" }} fail_timeout={{ .backendMaxTimeout | default "10s" }};
     }
   {{- end }}
   PUBLIC.CONF: |
     server {
-        listen          {{ .Values.service.port | default 80 }} default_server;
+        listen          {{ .Values.service.port | default "80" }} default_server;
         server_name     $host www.$host;
         charset         utf-8;
 
