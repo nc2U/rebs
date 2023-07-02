@@ -64,7 +64,7 @@ data:
   {{- end }}
   PUBLIC.CONF: |
     server {
-        listen          {{ .Values.service.port | quote | default "80" }}default_server;
+        listen          {{ .Values.service.port | quote | default "80" }} default_server;
         server_name     $host www.$host;
         charset         utf-8;
 
