@@ -1,4 +1,7 @@
 apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "nginx.fullname" . }}-config
 data:
   {{- with .Values.imageConfigMaps }}
   BACKEND_HOST: {{ .backendHost | quote }}
@@ -10,6 +13,3 @@ data:
   LOG_STDOUT: {{ .logStdout | quote }}
   {{- end }}
   SERVER_PORT: {{ .Values.service.port | quote }}
-kind: ConfigMap
-metadata:
-  name: {{ include "nginx.fullname" . }}-config
