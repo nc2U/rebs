@@ -58,7 +58,7 @@ data:
   UPSTREAM.CONF: |
     upstream django_uwsgi {
         ip_hash;
-        server {{ .Values.imageConfigMaps.backendHost | quote }} max_fails=BACKEND_MAX_FAILS: {{ .Values.imageConfigMaps.backendMaxFails | quote | default "3" }} fail_timeout={{ .Values.imageConfigMaps.backendMaxTimeout | default "10s" }};
+        server {{ .Values.imageConfigMaps.backendHost | quote }} max_fails={{ .Values.imageConfigMaps.backendMaxTimeout | default "3" }} {{ .Values.imageConfigMaps.backendMaxFails | quote | default "3" }} fail_timeout={{ .Values.imageConfigMaps.backendMaxTimeout | default "10s" }};
     }
   PUBLIC.CONF: |
     server {
