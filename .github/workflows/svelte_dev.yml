@@ -22,6 +22,8 @@ jobs:
       # 레파지터리 체크 아웃
       - name: Check out source code
         uses: actions/checkout@v3
+        with:
+          ref: 'dev'
 
       # Node.js 사용
       - name: Use Node.js
