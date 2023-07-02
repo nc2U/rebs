@@ -3,7 +3,7 @@ import { useAccount } from '@/store/pinia/account'
 import { createRouter, createWebHashHistory } from 'vue-router'
 import { start, close } from '@/utils/nprogress'
 import routes from '@/router/routes'
-import store from '@/store'
+// import store from '@/store'
 
 const accessToken = computed(() => useAccount().accessToken)
 
@@ -13,9 +13,9 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
-  const token = await accessToken.value
   start()
-  store.commit('startSpinner')
+  // store.commit('startSpinner')
+  const token = await accessToken.value
   if (to.matched.some(r => r.meta.auth))
     if (!token) next({ name: 'Login', query: { redirect: to.fullPath } })
     else next()
@@ -23,7 +23,7 @@ router.beforeEach(async (to, from, next) => {
 })
 
 router.afterEach(() => {
-  store.commit('endSpinner')
+  // store.commit('endSpinner')
   close()
 })
 
