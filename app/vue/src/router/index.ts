@@ -10,8 +10,8 @@ const router = createRouter({
   routes,
 })
 
-router.beforeEach(async (to, from, next) => {
-  const isAuth = await computed(() => useAccount().isAuthorized)
+router.beforeEach((to, from, next) => {
+  const isAuth = computed(() => useAccount().isAuthorized)
   if (
     !isAuth.value &&
     !(
