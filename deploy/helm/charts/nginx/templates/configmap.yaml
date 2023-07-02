@@ -59,7 +59,7 @@ data:
   UPSTREAM.CONF: |
     upstream django_uwsgi {
         ip_hash;
-        server {{ .backendHost | quote }} max_fails={{ .backendMaxTimeout | default "3" }} {{ .backendMaxFails | quote | default "3" }} fail_timeout={{ .backendMaxTimeout | default "10s" }};
+        server {{ .backendHost | quote }} max_fails={{ .backendMaxFails | quote | default "3" }} fail_timeout={{ .backendMaxTimeout | default "10s" }};
     }
   {{- end }}
   PUBLIC.CONF: |
