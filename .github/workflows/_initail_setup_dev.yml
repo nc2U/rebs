@@ -49,10 +49,11 @@ jobs:
               --set 'nginx.ingress.hosts[1].paths[0].pathType'=ImplementationSpecific \
               --set 'nginx.ingress.hosts[2].paths[0].path'=/ \
               --set 'nginx.ingress.hosts[2].paths[0].pathType'=ImplementationSpecific
+            
             web_pod=$(kubectl get pod -n dev-hrebs | grep web | cut -d ' ' -f1)
+            kubectl exec -it -n dev-hrebs $web_pod -- python manage.py collectstatic --no-input
             kubectl exec -it -n dev-hrebs $web_pod -- python manage.py makemigrations accounts book cash company contract document items notice payment project rebs
             kubectl exec -it -n dev-hrebs $web_pod -- python manage.py migrate
-            kubectl exec -it -n dev-hrebs $web_pod -- python manage.py collectstatic --no-input
 
       # Node.js 사용
       - name: Use Node.js
