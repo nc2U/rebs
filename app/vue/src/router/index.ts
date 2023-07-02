@@ -3,12 +3,12 @@ import { useAccount } from '@/store/pinia/account'
 import { createRouter, createWebHashHistory } from 'vue-router'
 import routes from '@/router/routes'
 
-const isAuth = computed(() => useAccount().isAuthorized)
-
 const router = createRouter({
   history: createWebHashHistory(),
   routes,
 })
+
+const isAuth = computed(() => useAccount().isAuthorized)
 
 router.beforeEach((to, from, next) => {
   if (to.matched.some(r => r.meta.auth))
