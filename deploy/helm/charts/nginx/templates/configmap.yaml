@@ -3,25 +3,15 @@ kind: ConfigMap
 metadata:
   name: {{ include "nginx.fullname" . }}-config
 data:
-  {{- with .Values.imageConfigMaps }}
-  BACKEND_HOST: {{ .backendHost | quote }}
-  WORKER_PROCESSES: {{ .workerProcesses | quote }}
-  WORKER_CONNECTIONS: {{ .workerConnections | quote }}
-  KEEPALIVE_TIMEOUT: {{ .keepaliveTimeout | quote }}
-  BACKEND_MAX_FAILS: {{ .backendMaxFails | quote }}
-  BACKEND_MAX_TIMEOUT: {{ .backendMaxTimeout }}
-  LOG_STDOUT: {{ .logStdout | quote }}
-  {{- end }}
-  SERVER_PORT: {{ .Values.service.port | quote }}
   NGINX.CONF: |
     user  nginx;
-    worker_processes  {{ var "WORKER_PROCESSES" | default "1" }};
+    worker_processes {{ .Values.imageConfigMaps.workerProcesses | quote | default "1" }};
 
     error_log  /var/log/nginx/error.log warn;
     pid        /var/run/nginx.pid;
 
     events {
-        worker_connections  {{ var "WORKER_CONNECTIONS" | default "1024" }};
+        worker_connections  {{ .Values.imageConfigMaps.workerConnections | quote | default "1024" }};
     }
 
     http {
@@ -37,10 +27,10 @@ data:
         sendfile        on;
         #tcp_nopush     on;
 
-        keepalive_timeout  {{ var "KEEPALIVE_TIMEOUT" | default "65" }};
+        keepalive_timeout  {{ .Values.imageConfigMaps.keepaliveTimeout | quote | default "65" }};
         client_max_body_size 100M;
 
-        gzip  {{ var "GZIP" | default "on" }};
+        gzip  on;
 
         include /etc/nginx/conf.d/log.conf;
         include /etc/nginx/conf.d/upstream.conf;
@@ -68,11 +58,11 @@ data:
   UPSTREAM.CONF: |
     upstream django_uwsgi {
         ip_hash;
-        server {{ var "BACKEND_HOST" }} max_fails={{ var "BACKEND_MAX_FAILS" | default "3" }} fail_timeout={{ var "BACKEND_FAIL_TIMEOUT" | default "10s" }};
+        server {{ .Values.imageConfigMaps.backendHost | quote }} max_fails=BACKEND_MAX_FAILS: {{ .Values.imageConfigMaps.backendMaxFails | quote | default "3" }} fail_timeout={{ .Values.imageConfigMaps.backendMaxTimeout | default "10s" }};
     }
   PUBLIC.CONF: |
     server {
-        listen          {{ var "NGINX_SERVICE_PORT" | default "80" }} default_server;
+        listen          {{ .Values.service.port | quote | default "80" }}default_server;
         server_name     $host www.$host;
         charset         utf-8;
 
