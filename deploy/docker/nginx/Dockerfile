@@ -1,4 +1,4 @@
-FROM nginx:1.21.6
+FROM nginx:1.25.1
 
 RUN apt update && apt upgrade -y && apt install -y wget \
     && wget https://github.com/progrium/entrykit/releases/download/v0.4.0/entrykit_0.4.0_linux_x86_64.tgz  \
