@@ -13,3 +13,79 @@ data:
   LOG_STDOUT: {{ .logStdout | quote }}
   {{- end }}
   SERVER_PORT: {{ .Values.service.port | quote }}
+  NGINX.CONF: |
+    user  nginx;
+    worker_processes  {{ var "WORKER_PROCESSES" | default "1" }};
+
+    error_log  /var/log/nginx/error.log warn;
+    pid        /var/run/nginx.pid;
+
+    events {
+        worker_connections  {{ var "WORKER_CONNECTIONS" | default "1024" }};
+    }
+
+    http {
+        include       /etc/nginx/mime.types;
+        default_type  application/octet-stream;
+
+        log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                          '$status $body_bytes_sent "$http_referer" '
+                          '"$http_user_agent" "$http_x_forwarded_for"';
+
+        access_log  /var/log/nginx/access.log  main;
+
+        sendfile        on;
+        #tcp_nopush     on;
+
+        keepalive_timeout  {{ var "KEEPALIVE_TIMEOUT" | default "65" }};
+        client_max_body_size 100M;
+
+        gzip  {{ var "GZIP" | default "on" }};
+
+        include /etc/nginx/conf.d/log.conf;
+        include /etc/nginx/conf.d/upstream.conf;
+        include /etc/nginx/conf.d/public.conf;
+    }
+  LOG.CONF: |
+    log_format json '{'
+                 '"time":"$time_iso8601",'
+                 '"remote_addr":"$remote_addr",'
+                 '"request":"$request",'
+                 '"request_method":"$request_method",'
+                 '"request_length":"$request_length",'
+                 '"request_uri":"$request_uri",'
+                 '"uri":"$uri",'
+                 '"query_string":"$query_string",'
+                 '"status":"$status",'
+                 '"bytes_sent":"$bytes_sent",'
+                 '"body_bytes_sent":"$body_bytes_sent",'
+                 '"referer":"$http_referer",'
+                 '"useragent":"$http_user_agent",'
+                 '"forwardedfor":"$http_x_forwarded_for",'
+                 '"request_time":"$request_time",'
+                 '"upstream_response_time":"$upstream_response_time"'
+                '}';
+  UPSTREAM.CONF: |
+    upstream django_uwsgi {
+        ip_hash;
+        server {{ var "BACKEND_HOST" }} max_fails={{ var "BACKEND_MAX_FAILS" | default "3" }} fail_timeout={{ var "BACKEND_FAIL_TIMEOUT" | default "10s" }};
+    }
+  PUBLIC.CONF: |
+    server {
+        listen          {{ var "NGINX_SERVICE_PORT" | default "80" }} default_server;
+        server_name     $host www.$host;
+        charset         utf-8;
+
+        location / {
+            uwsgi_pass  django_uwsgi;
+            include     /etc/nginx/uwsgi_params;
+            proxy_hide_header Access-Control-Allow-Origin;
+            add_header 'Access-Control-Allow-Origin' '*';
+        }
+
+        location /static/ {
+            alias /static/;
+        }
+    }
+
+    server_tokens off;

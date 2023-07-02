@@ -60,11 +60,51 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
+          - name: nginx-conf
+            mountPath: /etc/nginx/nginx.conf
+            readOnly: true
+            subPath: nginx.conf
+          - name: log-conf
+            mountPath: /etc/nginx/conf.d
+            readOnly: true
+            subPath: log.conf
+          - name: upstream-conf
+            mountPath: /etc/nginx/conf.d
+            readOnly: true
+            subPath: upstream.conf
+          - name: public-conf
+            mountPath: /etc/nginx/conf.d
+            readOnly: true
+            subPath: public.conf
           - name: static
             mountPath: /static
           - name: tz-seoul
             mountPath: /etc/localtime
       volumes:
+      - name: nginx-conf
+        configMap:
+          name: {{ include "nginx.fullname" . }}-config
+          items:
+          - key: NGINX.CONF
+            path: nginx.conf
+      - name: log-conf
+          configMap:
+            name: {{ include "nginx.fullname" . }}-config
+            items:
+            - key: LOG.CONF
+              path: log.conf
+      - name: upstream-conf
+          configMap:
+            name: {{ include "nginx.fullname" . }}-config
+            items:
+            - key: UPSTREAM.CONF
+              path: upstream.conf
+      - name: public-conf
+          configMap:
+            name: {{ include "nginx.fullname" . }}-config
+            items:
+            - key: PUBLIC.CONF
+              path: public.conf
       - name: static
         persistentVolumeClaim:
           claimName: {{ include "nginx.fullname" . }}-static-{{ .Values.global.appMode }}-nfs-pvc
