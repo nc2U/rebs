@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useProject } from '@/store/pinia/project'
 import { useCompany } from '@/store/pinia/company'
-import HeaderNav from '@/components/HeaderNav.vue'
+import HeaderNav from '@/layouts/ContentHeader/components/HeaderNav.vue'
 import CompanySelect from '@/layouts/ContentHeader/components/CompanySelect.vue'
 import ProjectSelect from '@/layouts/ContentHeader/components/ProjectSelect.vue'
 
@@ -46,7 +46,7 @@ const projSelect = (proj: number | null) => {
     </CCardHeader>
 
     <CCardBody>
-      <HeaderNav :menus="navMenu" />
+      <HeaderNav :menus="navMenu" :query="$route.query" />
 
       <CompanySelect
         v-if="selector === 'CompanySelect'"
