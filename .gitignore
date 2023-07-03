@@ -41,7 +41,8 @@ mysql
 # virtualize
 venv/
 
-requirements.txt
+Dockerdev
+requirements_dev.txt
 docker-compose.yml
 cluster-issuer.yml
 
