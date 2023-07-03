@@ -41,7 +41,7 @@ mysql
 # virtualize
 venv/
 
-python/dev/
+**/python/dev/
 docker-compose.yml
 cluster-issuer.yml
 
