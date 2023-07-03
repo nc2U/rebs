@@ -85,7 +85,10 @@ const ctorChk = (ctorPk: string) =>
     </CTableDataCell>
     <CTableDataCell>
       <router-link
-        :to="{ name: '계약 등록 관리', query: { contract: contract.pk } }"
+        :to="{
+          name: '계약 등록 관리',
+          query: { contractor: contract.contractor.pk },
+        }"
       >
         {{ contract.contractor.name }}
       </router-link>
