@@ -12,7 +12,7 @@ const pageViewAuth = computed(
 const hrManage = {
   path: 'hr-manage',
   name: '본사 인사 관리',
-  redirect: '/hr-manage/employee',
+  redirect: '/hr-manage/staff',
   component: {
     render() {
       return h(resolveComponent('router-view'))
