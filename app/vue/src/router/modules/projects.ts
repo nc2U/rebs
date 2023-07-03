@@ -12,7 +12,7 @@ const pageViewAuth = computed(
 const projects = {
   path: 'project',
   name: '신규 프로젝트',
-  redirect: '/project/manage',
+  redirect: '/project/manage/index',
   component: {
     render() {
       return h(resolveComponent('router-view'))
