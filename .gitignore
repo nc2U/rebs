@@ -37,15 +37,11 @@ dist
 
 # mysql data
 mysql
-mysql-dev
-
-# ssl cert
-deploy/docker/nginx/ssl/
-deploy/docker/nginx/log/
 
 # virtualize
 venv/
 
+requirements.txt
 docker-compose.yml
 cluster-issuer.yml
 
