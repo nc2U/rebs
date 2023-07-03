@@ -62,13 +62,10 @@ const initTags = () => {
   )
 }
 
-const addTags = () => {
-  const { meta } = route
-  if (meta.title && !meta.except) tagsViewStore.addView(route)
-  return false
-}
+const addTags = () =>
+  route.meta.title && !route.meta.except ? tagsViewStore.addView(route) : false
 
-const moveToCurrentTag = () => {
+const moveToCurrentTag = () =>
   nextTick(() => {
     for (const tag of currentTag.value) {
       if (tag.to.path === route.path) {
@@ -79,45 +76,30 @@ const moveToCurrentTag = () => {
       }
     }
   })
-}
 
-const toLastView = (visitedViews: VisitedViews[], view: VisitedViews) => {
+const toLastView = (visitedViews: VisitedViews[]) => {
   const latestView = visitedViews.slice(-1)[0]
-  if (latestView) router.push(latestView.fullPath)
-  else {
-    // now the default is to redirect to the home page if there is no tags-view,
-    // you can adjust it according to your needs.
-    if (view.name === 'Dashboard') {
-      // to reload home page
-      router.replace({ path: '/redirect' + view.fullPath })
-    } else {
-      router.push('/')
-    }
-  }
+  if (visitedViews.length > 2) router.push({ path: latestView.fullPath })
+  else router.push({ name: '일 정 관 리' })
 }
 
-const closeSelectedTag = (view: VisitedViews) => {
+const closeSelectedTag = (view: VisitedViews) =>
   tagsViewStore.delView(view).then(({ visitedViews }: any) => {
-    if (isActive(view)) toLastView(visitedViews, view)
+    if (isActive(view)) toLastView(visitedViews)
   })
-}
 
-const closeMenu = () => {
-  visible.value = false
-}
+const closeMenu = () => (visible.value = false)
 
 watch(route, () => {
   addTags()
   moveToCurrentTag()
 })
 
-watch(visible, value => {
-  if (value) {
-    document.body.addEventListener('click', closeMenu)
-  } else {
-    document.body.removeEventListener('click', closeMenu)
-  }
-})
+watch(visible, value =>
+  value
+    ? document.body.addEventListener('click', closeMenu)
+    : document.body.removeEventListener('click', closeMenu),
+)
 
 onMounted(() => {
   initTags()
