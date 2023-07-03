@@ -77,7 +77,7 @@ export const useAccount = defineStore('account', () => {
       .post('/token/', payload)
       .then(res => {
         setToken(res.data.access)
-        return api.get(`/user/${extractId(accessToken.value)}`)
+        return api.get(`/user/${extractId(accessToken.value)}/`)
       })
       .then(res => {
         setUser(res.data)
@@ -94,7 +94,7 @@ export const useAccount = defineStore('account', () => {
     if (token) {
       setToken(token)
       return api
-        .get(`/user/${extractId(token)}`)
+        .get(`/user/${extractId(token)}/`)
         .then(res => setUser(res.data))
         .catch(() => {
           userInfo.value = null
@@ -123,7 +123,7 @@ export const useAccount = defineStore('account', () => {
       .post(`/staff-auth/`, payload)
       .then(() => {
         return api
-          .get(`/user/${userPk}`)
+          .get(`/user/${userPk}/`)
           .then(() => fetchUser(userPk).then(() => message()))
       })
       .catch(err => errorHandle(err.response.data))
@@ -135,7 +135,7 @@ export const useAccount = defineStore('account', () => {
       .patch(`/staff-auth/${pk}/`, authData)
       .then(() => {
         return api
-          .get(`/user/${userPk}`)
+          .get(`/user/${userPk}/`)
           .then(() => fetchUser(userPk).then(() => message()))
       })
       .catch(err => errorHandle(err.response.data))
