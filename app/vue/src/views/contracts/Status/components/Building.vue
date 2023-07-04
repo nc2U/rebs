@@ -60,7 +60,7 @@ const bldgName = (bldg: number) =>
     </CRow>
     <CRow :style="{ width: `${bldgWidth}px` }">
       <CCol class="text-center build-base">
-        <strong>{{ bldgName(bldg) }} 동</strong> - {{ lineList.length }}
+        <strong>{{ bldgName(bldg) }} 동</strong>
       </CCol>
     </CRow>
   </CCol>
