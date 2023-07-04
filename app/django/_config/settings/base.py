@@ -65,6 +65,7 @@ INSTALLED_APPS += [  # plugin
     'allauth.socialaccount',
     'django_filters',
     'crispy_forms',
+    'crispy_bootstrap4',
 ]
 
 INSTALLED_APPS += [  # app
@@ -194,19 +195,16 @@ AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
 AWS_REGION = 'ap-northeast-2'
 AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.{AWS_REGION}.amazonaws.com'
 AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400', }
-DEFAULT_FILE_STORAGE = '_config.asset_storage.MediaStorage'
-
 AWS_DEFAULT_ACL = 'public-read'
 
+DEFAULT_FILE_STORAGE = '_config.asset_storage.MediaStorage'
+
 STATIC_URL = 'static/'
-
 STATIC_ROOT = BASE_DIR / 'static'
-
 STATICFILES_DIRS = ('./_assets',)
 
 MEDIA_URL = 'https://%s/media/' % (
     AWS_S3_CUSTOM_DOMAIN) if AWS_STORAGE_BUCKET_NAME else '/media/'  # 각 media 파일에 관한 URL prefix
-
 MEDIA_ROOT = BASE_DIR / 'media'  # 업로드된 파일을 저장할 디렉토리 경로
 
 # Default primary key field type
@@ -215,13 +213,15 @@ MEDIA_ROOT = BASE_DIR / 'media'  # 업로드된 파일을 저장할 디렉토리
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_REDIRECT_URL = '/'
-
 LOGOUT_REDIRECT_URL = '/'
 
 ACCOUNT_EMAIL_REQUIRED = True  # email 필드 사용 o
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 # ACCOUNT_USER_MODEL_USERNAME_FIELD = None  # username 필드 사용 x
 # ACCOUNT_USERNAME_REQUIRED = False  # username 필드 사용 x
+
+CRISPY_TEMPLATE_PACK = "bootstrap4"
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
 
 REST_FRAMEWORK = {
     # 'DEFAULT_PAGINATION_CLASS': 'apiV1.pagination.LimitOffsetPaginationWithMaxLimit',
