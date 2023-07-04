@@ -25,7 +25,7 @@ const form = ref({
 
 const formCheck = computed(() => {
   if (props.unit) {
-    const a = form.value.unit_type === props.unit.unit_type
+    const a = form.value.unit_type === props.unit.unit_type.pk
     const b = form.value.floor_type === props.unit.floor_type
     const c = form.value.building_unit === props.unit.building_unit
     const d = form.value.name === props.unit.name
@@ -62,7 +62,7 @@ const delConfirm = () => {
 
 onMounted(() => {
   if (props.unit) {
-    form.value.unit_type = props.unit.unit_type
+    form.value.unit_type = props.unit.unit_type.pk
     form.value.floor_type = props.unit.floor_type
     form.value.building_unit = props.unit.building_unit
     form.value.name = props.unit.name

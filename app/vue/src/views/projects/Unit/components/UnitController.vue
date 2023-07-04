@@ -217,6 +217,7 @@ const modalAction = () => {
               min="-10"
               placeholder="시작층(피로티 제외)"
               :disabled="!form.type"
+              @keydown.enter="unitRegister"
             />
           </CCol>
         </CRow>
