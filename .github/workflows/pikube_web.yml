@@ -1,4 +1,4 @@
-name: Web(Python) Image Update
+name: Image [web:python] Update
 
 on:
   push:

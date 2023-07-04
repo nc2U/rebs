@@ -1,4 +1,4 @@
-name: Helm Update [Prod]
+name: Helm Update [1. Prod]
 
 on:
   push:

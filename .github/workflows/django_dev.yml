@@ -1,4 +1,4 @@
-name: Django Update [Dev]
+name: Django Update [2. Dev]
 
 on:
   push:
