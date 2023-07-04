@@ -9,12 +9,12 @@ defineProps({ bldgName: { type: String, default: '' } })
 const emit = defineEmits(['on-update', 'on-delete'])
 
 const proDataStore = useProjectData()
-const simpleUnits = computed(() => proDataStore.simpleUnits)
-const floorList = computed(() => [
-  ...new Set(simpleUnits.value.map(u => u.floor)),
-])
+const units = computed(() => proDataStore.simpleUnits)
+const floorList = computed(() =>
+  [...new Set(units.value.map(u => u.floor))].sort((a, b) => b - a),
+)
 const lineList = computed(() =>
-  [...new Set(simpleUnits.value.map((u: { line: number }) => u.line))].sort(),
+  [...new Set(units.value.map(u => u.line))].sort((a, b) => a - b),
 )
 const houseUnitList = computed(() => proDataStore.houseUnitList)
 
@@ -22,7 +22,7 @@ const unitCol = computed(() => (lineList.value.length > 8 ? 12 : 5))
 const formCol = computed(() => (lineList.value.length > 8 ? 12 : 7))
 
 const getUnit = (line: number, floor: number) =>
-  simpleUnits.value
+  units.value
     .filter((u: { line: number }) => u.line === line)
     .filter((u: { floor: number }) => u.floor === floor)[0]
 
@@ -32,7 +32,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
 
 <template>
   <CContainer fluid>
-    <CRow v-if="simpleUnits.length === 0">
+    <CRow v-if="units.length === 0">
       <CCol class="text-center p-5 text-danger">
         등록된 데이터가 없습니다.
       </CCol>
