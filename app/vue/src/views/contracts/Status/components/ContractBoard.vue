@@ -44,7 +44,7 @@ const getUnits = (bldg: number): UnitType[] =>
       </CCol>
     </CRow>
 
-    <CRow v-else>
+    <CRow v-else class="align-items-end">
       <Building
         v-for="bldg in getBldg"
         :key="bldg"

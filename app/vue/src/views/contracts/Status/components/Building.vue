@@ -13,14 +13,16 @@ const maxPiloti = ref(3) // 맥스 피로티 층
 
 const pDataStore = useProjectData()
 const lineList = computed(() =>
-  [...new Set(props.units.map((u: { line: number }) => u.line))].sort(),
+  [...new Set(props.units.map((u: { line: number }) => u.line))].sort(
+    (a: any, b: any) => a - b,
+  ),
 )
 const floorList = computed(() =>
-  [...new Set(props.units.map((u: { floor: number }) => u.floor))]
-    .sort(sortNum)
-    .reverse(),
+  [...new Set(props.units.map((u: { floor: number }) => u.floor))].sort(
+    (a: any, b: any) => b - a,
+  ),
 )
-const sortNum = (a: number, b: number) => a - b
+
 const buildingList = computed(() => pDataStore.buildingList)
 
 const getUnit = (line: number, floor: number) =>
@@ -44,8 +46,6 @@ const bldgName = (bldg: number) =>
 
 <template>
   <CCol class="ml-4 mt-5">
-    {{ floorList }}
-    <hr />
     <CRow v-for="i in floorList" :key="i">
       <Unit
         v-for="line in lineList"
