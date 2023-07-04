@@ -1,4 +1,4 @@
-name: Vue Update [1. Prod]
+name: Vue Update [Prod]
 
 on:
   push:
