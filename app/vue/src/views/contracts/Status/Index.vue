@@ -21,7 +21,6 @@ const fetchHouseUnitList = (projId: number) =>
   pDataStore.fetchHouseUnitList(projId)
 
 const contStore = useContract()
-const contractsCount = computed(() => contStore.contractsCount)
 const fetchContractList = (payload: { project: number }) =>
   contStore.fetchContractList(payload)
 const fetchSubsSummaryList = (projId: number) =>
@@ -68,7 +67,7 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId))
 
   <ContentBody>
     <CCardBody class="pb-5">
-      <ContSummary :contracts-count="contractsCount" />
+      <ContSummary />
       <TableTitleRow excel :url="excelUrl" :disabled="!project" />
       <v-divider color="grey" class="my-0" />
       <ContractBoard />

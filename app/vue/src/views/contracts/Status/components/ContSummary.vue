@@ -4,12 +4,8 @@ import { useProjectData } from '@/store/pinia/project_data'
 import { useContract } from '@/store/pinia/contract'
 import { numFormat } from '@/utils/baseMixins'
 import { TableSecondary, TableSuccess, TablePrimary } from '@/utils/cssMixins'
-import { ContSummary } from '@/store/types/contract'
-
-defineProps({ contractsCount: { type: Number, default: 0 } })
 
 const pDataStore = useProjectData()
-
 const simpleTypes = computed(() => pDataStore.simpleTypes)
 const unitSum = computed(() => pDataStore.unitSummary)
 
@@ -17,7 +13,6 @@ const contStore = useContract()
 const contSum = computed(() =>
   contStore.contSummaryList.map(c => c.conts_num).reduce((x, y) => x + y, 0),
 )
-
 const subsSum = computed(() =>
   contStore.subsSummaryList.map(c => c.conts_num).reduce((x, y) => x + y, 0),
 )
