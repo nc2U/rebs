@@ -23,6 +23,7 @@ const floorList = computed(() =>
     (a: any, b: any) => b - a,
   ),
 )
+const bldgWidth = computed(() => 40 * lineList.value.length)
 
 const getUnit = (line: number, floor: number) =>
   props.units
@@ -44,8 +45,8 @@ const bldgName = (bldg: number) =>
 </script>
 
 <template>
-  <CCol class="ml-4 mt-5">
-    <CRow v-for="i in floorList" :key="i">
+  <CCol class="ml-4 mt-5" :style="{ width: `${bldgWidth}px` }">
+    <CRow v-for="i in floorList" :key="i" :style="{ width: `${bldgWidth}px` }">
       <Unit
         v-for="line in lineList"
         :key="line"
@@ -57,15 +58,10 @@ const bldgName = (bldg: number) =>
         :first-line="getFirst(line, i)"
       />
     </CRow>
-    <CRow v-if="lineList">
-      <div
-        class="text-center build-base"
-        :style="{
-          width: `${40 * lineList.length}px`,
-        }"
-      >
-        <strong>{{ bldgName(bldg) }} 동</strong>
-      </div>
+    <CRow :style="{ width: `${bldgWidth}px` }">
+      <CCol class="text-center build-base">
+        <strong>{{ bldgName(bldg) }} 동</strong> - {{ lineList.length }}
+      </CCol>
     </CRow>
   </CCol>
 </template>
