@@ -65,7 +65,7 @@ const unitRegister = (payload: OriginalUnit) => {
     const building_unit = payload.building
     const bldg_line = payload.line
     const midWord = bldg_line < 10 ? '0' : ''
-    const size = payload.maxFloor - payload.minFloor + 1 // 둘중 하나만 있는 경우는?
+    const size = payload.maxFloor - payload.minFloor + 1
     const range = (size: number, min: number): number[] =>
       [...Array(size).keys()].map(key => key + min)
     const between = (x: number, min: number, max: number): boolean =>
@@ -95,7 +95,7 @@ const unitRegister = (payload: OriginalUnit) => {
       // 중복되어 있지 않은 경우 로직 진행
       const inputUnits = range(size, payload.minFloor).map(i => ({
         floor_no: i,
-        name: `${i}${midWord}${bldg_line}`,
+        name: `${i < 0 ? `B${i * -1}` : i}${midWord}${bldg_line}`,
         floor_type: payload.floors
           .filter((f: { start: number; end: number }) =>
             between(i, f.start, f.end),
@@ -115,8 +115,7 @@ const unitRegister = (payload: OriginalUnit) => {
           ...unit,
         })
       }) // 생성된 배열을 디비에 등록
-      fetchHouseUnitList(project.value, building_unit) // 입력된 유닛 데이터 가져오기 후
-      message() // 처리되었다는 메시지 송출
+      fetchHouseUnitList(project.value, building_unit).then(() => message())
     }
   }
 }
@@ -144,12 +143,12 @@ const dataReset = () => {
   pDataStore.unitTypeList = []
   pDataStore.floorTypeList = []
   pDataStore.buildingList = []
+  pDataStore.houseUnitList = []
 }
 
 const projSelect = (target: number | null) => {
   unitController.value.projReset()
   dataReset()
-  pDataStore.houseUnitList = []
   if (!!target) dataSetup(target)
 }
 
