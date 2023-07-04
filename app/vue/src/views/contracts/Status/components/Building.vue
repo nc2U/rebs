@@ -15,6 +15,9 @@ const pDataStore = useProjectData()
 const lineList = computed(() =>
   [...new Set(props.units.map((u: { line: number }) => u.line))].sort(),
 )
+const floorList = computed(() => [
+  ...new Set(props.units.map((u: { floor: number }) => u.floor)),
+])
 const buildingList = computed(() => pDataStore.buildingList)
 
 const getUnit = (line: number, floor: number) =>
@@ -38,16 +41,16 @@ const bldgName = (bldg: number) =>
 
 <template>
   <CCol class="ml-4 mt-5">
-    <CRow v-for="i in maxFloor" :key="i">
+    <CRow v-for="i in floorList" :key="i">
       <Unit
         v-for="line in lineList"
         :key="line"
         :units="units"
-        :unit="getUnit(line, maxFloor + 1 - i)"
-        :floor="maxFloor + 1 - i"
+        :unit="getUnit(line, i)"
+        :floor="i"
         :line="line"
         :max-piloti="maxPiloti"
-        :first-line="getFirst(line, maxFloor + 1 - i)"
+        :first-line="getFirst(line, i)"
       />
     </CRow>
     <CRow v-if="lineList">
