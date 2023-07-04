@@ -8,12 +8,11 @@ import UnitForm from './UnitForm.vue'
 defineProps({ bldgName: { type: String, default: '' } })
 const emit = defineEmits(['on-update', 'on-delete'])
 
-const maxFloor = computed(() =>
-  Math.max(...simpleUnits.value.map((u: { floor: number }) => u.floor)),
-)
-
 const proDataStore = useProjectData()
 const simpleUnits = computed(() => proDataStore.simpleUnits)
+const floorList = computed(() => [
+  ...new Set(simpleUnits.value.map(u => u.floor)),
+])
 const lineList = computed(() =>
   [...new Set(simpleUnits.value.map((u: { line: number }) => u.line))].sort(),
 )
@@ -41,12 +40,12 @@ const onDelete = (pk: number) => emit('on-delete', pk)
 
     <CRow v-else>
       <CCol :lg="unitCol" class="p-5">
-        <CRow v-for="i in maxFloor" :key="i">
+        <CRow v-for="i in floorList" :key="i">
           <Unit
             v-for="line in lineList"
             :key="`${line}-${i}`"
-            :unit="getUnit(line, maxFloor + 1 - i)"
-            :floor="maxFloor + 1 - i"
+            :unit="getUnit(line, i)"
+            :floor="i"
             :line="line"
           />
         </CRow>
