@@ -135,6 +135,32 @@ export interface HouseUnit {
   hold_reason: string
 }
 
+export interface AllHouseUnit {
+  pk: number
+  unit_type: {
+    pk: number
+    sort: '1' | '2' | '3' | '4' | '5' | '6'
+  }
+  floor_type: number
+  building_unit: number
+  name: string
+  key_unit: {
+    pk: number
+    contract: {
+      pk: number
+      contractor: {
+        pk: number
+        name: string
+        status: '1' | '2' | '3' | '4' | '5'
+      }
+    }
+  }
+  bldg_line: number
+  floor_no: number
+  is_hold: boolean
+  hold_reason: string
+}
+
 export interface AllSite {
   pk: number
   __str__: string

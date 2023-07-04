@@ -4,6 +4,7 @@ import {
   UnitType,
   UnitFloorType,
   BuildingUnit,
+  AllHouseUnit,
   HouseUnit,
 } from '@/store/types/project'
 import api from '@/api'
@@ -148,14 +149,14 @@ export const useProjectData = defineStore('projectData', () => {
       .catch(err => errorHandle(err.response.data))
 
   // states & getters
-  const houseUnitList = ref<HouseUnit[]>([])
+  const houseUnitList = ref<AllHouseUnit[]>([])
   const isLoading = ref(false)
   const simpleUnits = computed(() =>
     houseUnitList.value
-      ? houseUnitList.value.map((u: HouseUnit) => ({
+      ? houseUnitList.value.map(u => ({
           bldg: u.building_unit,
           color: simpleTypes.value
-            .filter((t: { pk: number }) => t.pk === u.unit_type)
+            .filter((t: { pk: number }) => t.pk === u.unit_type.pk)
             .map((t: { color: string }) => t.color)[0],
           name: u.name,
           key_unit: u.key_unit,
@@ -165,18 +166,21 @@ export const useProjectData = defineStore('projectData', () => {
         }))
       : [],
   )
+  const mallExcludedUnits = computed(() =>
+    houseUnitList.value.filter(u => u.unit_type.sort < '5'),
+  )
   const unitSummary = computed(() =>
-    houseUnitList.value
+    mallExcludedUnits.value
       ? {
-          totalNum: houseUnitList.value.length,
-          holdNum: houseUnitList.value.filter(u => u.is_hold).length,
-          appNum: houseUnitList.value.filter(
+          totalNum: mallExcludedUnits.value.length,
+          holdNum: mallExcludedUnits.value.filter(u => u.is_hold).length,
+          appNum: mallExcludedUnits.value.filter(
             u =>
               u.key_unit &&
               u.key_unit.contract &&
               u.key_unit.contract.contractor.status === '1',
           ).length,
-          contNum: houseUnitList.value.filter(
+          contNum: mallExcludedUnits.value.filter(
             u =>
               u.key_unit &&
               u.key_unit.contract &&
