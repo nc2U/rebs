@@ -7,17 +7,10 @@ const props = defineProps({
   floor: { type: Number, default: 1 },
   line: { type: Number, default: 1 },
   maxPiloti: { type: Number, default: 1 },
+  firstLine: { type: Number, default: 1 },
 })
 
 const isPiloti = computed(() => !props.unit && props.floor < props.maxPiloti)
-const isFirst = computed(() =>
-  props.floor > props.maxPiloti
-    ? props.units
-        .filter((u: { floor: number }) => u.floor == props.floor)
-        .map((u: { line: number }) => u.line)
-        .sort()[0]
-    : 1,
-)
 const isContract = computed(() => !!props.unit.key_unit?.contract)
 const contractor = computed(() =>
   isContract.value ? props.unit.key_unit.contract.contractor.name : '',
@@ -48,8 +41,8 @@ const statusColor = computed(() => {
     <div
       class="unit-name"
       :class="{
-        firstline: (isPiloti || unit) && line === isFirst,
-        restline: (isPiloti || unit) && line !== isFirst,
+        firstClass: (isPiloti || unit) && line === firstLine,
+        restClass: (isPiloti || unit) && line !== firstLine,
         piloti: isPiloti,
       }"
       :style="`background-color: ${unit ? unit.color : ''}`"
@@ -60,8 +53,8 @@ const statusColor = computed(() => {
     <div
       class="status"
       :class="{
-        firstline: unit && line === isFirst,
-        restline: unit && line !== isFirst,
+        firstClass: unit && line === firstLine,
+        restClass: unit && line !== firstLine,
         firstPiloti: isPiloti && line === 1,
         restPiloti: isPiloti && line !== 1,
         piloti: isPiloti,
@@ -104,7 +97,7 @@ const statusColor = computed(() => {
   padding: 0;
 }
 
-.firstline {
+.firstClass {
   border-width: 1px 1px 0 1px;
   border-style: solid;
   border-color: #999;
@@ -116,7 +109,7 @@ const statusColor = computed(() => {
   border-color: #999;
 }
 
-.restline {
+.restClass {
   border-width: 1px 1px 0 0;
   border-style: solid;
   border-color: #999;

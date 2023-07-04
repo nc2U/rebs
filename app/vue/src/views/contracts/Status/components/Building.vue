@@ -22,6 +22,14 @@ const getUnit = (line: number, floor: number) =>
     .filter((u: { line: number }) => u.line === line)
     .filter((u: { floor: number }) => u.floor === floor)[0]
 
+const getFirst = (line: number, floor: number) =>
+  floor > maxPiloti.value
+    ? props.units
+        .filter((u: { floor: number }) => u.floor == floor)
+        .map((u: { line: number }) => u.line)
+        .sort()[0]
+    : 1
+
 const bldgName = (bldg: number) =>
   buildingList.value
     .filter((b: { pk: number; name: string }) => b.pk === bldg)
@@ -39,6 +47,7 @@ const bldgName = (bldg: number) =>
         :floor="maxFloor + 1 - i"
         :line="line"
         :max-piloti="maxPiloti"
+        :first-line="getFirst(line, maxFloor + 1 - i)"
       />
     </CRow>
     <CRow v-if="lineList">
