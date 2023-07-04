@@ -68,13 +68,20 @@ class KeyUnitInHouseUnitSerializer(serializers.ModelSerializer):
         fields = ('pk', 'contract')
 
 
+class SortCheckUnitTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UnitType
+        fields = ('pk', 'sort')
+
+
 class AllHouseUnitSerializer(serializers.ModelSerializer):
+    unit_type = SortCheckUnitTypeSerializer()
     key_unit = KeyUnitInHouseUnitSerializer()
 
     class Meta:
         model = HouseUnit
-        fields = ('pk', 'unit_type', 'floor_type', 'building_unit', 'name',
-                  'key_unit', 'bldg_line', 'floor_no', 'is_hold', 'hold_reason')
+        fields = ('pk', 'unit_type', 'floor_type', 'building_unit',
+                  'name', 'key_unit', 'bldg_line', 'floor_no', 'is_hold', 'hold_reason')
 
 
 class HouseUnitSummarySerializer(serializers.ModelSerializer):
