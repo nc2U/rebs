@@ -12,6 +12,7 @@ const props = defineProps({
 const maxPiloti = ref(3) // 맥스 피로티 층
 
 const pDataStore = useProjectData()
+const buildingList = computed(() => pDataStore.buildingList)
 const lineList = computed(() =>
   [...new Set(props.units.map((u: { line: number }) => u.line))].sort(
     (a: any, b: any) => a - b,
@@ -22,8 +23,6 @@ const floorList = computed(() =>
     (a: any, b: any) => b - a,
   ),
 )
-
-const buildingList = computed(() => pDataStore.buildingList)
 
 const getUnit = (line: number, floor: number) =>
   props.units
