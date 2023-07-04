@@ -1,43 +1,37 @@
 <script lang="ts" setup>
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
 
 const props = defineProps({
   units: { type: Object, default: null },
+  unit: { type: Object, default: null },
   floor: { type: Number, default: 1 },
   line: { type: Number, default: 1 },
+  maxPiloti: { type: Number, default: 1 },
 })
 
-const maxPiloti = ref(3) // 맥스 피로티 층
-
-const unit = computed(
-  () =>
-    props.units
-      .filter((u: { line: number }) => u.line == props.line)
-      .filter((u: { floor: number }) => u.floor == props.floor)[0],
-)
-const isPiloti = computed(() => !unit.value && props.floor < maxPiloti.value)
+const isPiloti = computed(() => !props.unit && props.floor < props.maxPiloti)
 const isFirst = computed(() =>
-  props.floor > maxPiloti.value
+  props.floor > props.maxPiloti
     ? props.units
         .filter((u: { floor: number }) => u.floor == props.floor)
         .map((u: { line: number }) => u.line)
         .sort()[0]
     : 1,
 )
-const isContract = computed(() => !!unit.value.key_unit?.contract)
+const isContract = computed(() => !!props.unit.key_unit?.contract)
 const contractor = computed(() =>
-  isContract.value ? unit.value.key_unit.contract.contractor.name : '',
+  isContract.value ? props.unit.key_unit.contract.contractor.name : '',
 )
 const contractorPk = computed(() =>
-  isContract.value ? unit.value.key_unit.contract.contractor.pk : '',
+  isContract.value ? props.unit.key_unit.contract.contractor.pk : '',
 )
 const status = computed(() =>
-  isContract.value ? unit.value.key_unit.contract.contractor.status : '',
+  isContract.value ? props.unit.key_unit.contract.contractor.status : '',
 )
-const isHold = computed(() => (isContract.value ? unit.value.is_hold : ''))
+const isHold = computed(() => (isContract.value ? props.unit.is_hold : ''))
 const statusColor = computed(() => {
   let color = ''
-  if (unit.value) {
+  if (props.unit) {
     color = '#FFF'
     if (isContract.value) {
       if (status.value === '1') color = '#D5F1DE'

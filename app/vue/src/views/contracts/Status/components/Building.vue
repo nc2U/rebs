@@ -1,9 +1,7 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
 import { useProjectData } from '@/store/pinia/project_data'
 import Unit from '@/views/contracts/Status/components/Unit.vue'
-
-const pDataStore = useProjectData()
 
 const props = defineProps({
   bldg: { type: Number, default: null },
@@ -11,10 +9,18 @@ const props = defineProps({
   units: { type: Object, default: null },
 })
 
+const maxPiloti = ref(3) // 맥스 피로티 층
+
+const pDataStore = useProjectData()
 const lineList = computed(() =>
   [...new Set(props.units.map((u: { line: number }) => u.line))].sort(),
 )
 const buildingList = computed(() => pDataStore.buildingList)
+
+const getUnit = (line: number, floor: number) =>
+  props.units
+    .filter((u: { line: number }) => u.line === line)
+    .filter((u: { floor: number }) => u.floor === floor)[0]
 
 const bldgName = (bldg: number) =>
   buildingList.value
@@ -29,8 +35,10 @@ const bldgName = (bldg: number) =>
         v-for="line in lineList"
         :key="line"
         :units="units"
+        :unit="getUnit(line, maxFloor + 1 - i)"
         :floor="maxFloor + 1 - i"
         :line="line"
+        :max-piloti="maxPiloti"
       />
     </CRow>
     <CRow v-if="lineList">
