@@ -166,18 +166,21 @@ export const useProjectData = defineStore('projectData', () => {
         }))
       : [],
   )
+  const mallExcludedUnits = computed(() =>
+    houseUnitList.value.filter(u => u.unit_type.sort < '5'),
+  )
   const unitSummary = computed(() =>
-    houseUnitList.value
+    mallExcludedUnits.value
       ? {
-          totalNum: houseUnitList.value.length,
-          holdNum: houseUnitList.value.filter(u => u.is_hold).length,
-          appNum: houseUnitList.value.filter(
+          totalNum: mallExcludedUnits.value.length,
+          holdNum: mallExcludedUnits.value.filter(u => u.is_hold).length,
+          appNum: mallExcludedUnits.value.filter(
             u =>
               u.key_unit &&
               u.key_unit.contract &&
               u.key_unit.contract.contractor.status === '1',
           ).length,
-          contNum: houseUnitList.value.filter(
+          contNum: mallExcludedUnits.value.filter(
             u =>
               u.key_unit &&
               u.key_unit.contract &&
