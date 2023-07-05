@@ -88,7 +88,10 @@ export const useProjectData = defineStore('projectData', () => {
   )
 
   // actions
-  const fetchFloorTypeList = (projId: number, sort?: number) =>
+  const fetchFloorTypeList = (
+    projId: number,
+    sort?: '1' | '2' | '3' | '4' | '5' | '6',
+  ) =>
     api
       .get(`/floor/?project=${projId}&sort=${sort || ''}`)
       .then(res => (floorTypeList.value = res.data.results))
