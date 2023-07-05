@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue'
+import { ref, computed } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
-const props = defineProps({
+defineProps({
   project: { type: Number, default: null },
   orders: { type: Object, default: null },
   types: { type: Object, default: null },
@@ -20,10 +20,11 @@ const confirmModal = ref()
 const order = ref<number | null>(null)
 const type = ref<number | null>(null)
 
-watch(props, () => {
+const dataReset = () => {
   order.value = null
   type.value = null
-})
+}
+defineExpose({ dataReset })
 
 const onOrderSelect = (e: Event) => {
   type.value = null
