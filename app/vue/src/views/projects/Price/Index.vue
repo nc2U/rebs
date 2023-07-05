@@ -52,8 +52,10 @@ const allContPriceSet = (payload: SimpleCont) =>
 
 const fetchTypeList = (projId: number, sort?: number) =>
   pDataStore.fetchTypeList(projId, sort)
-const fetchFloorTypeList = (projId: number, sort?: number) =>
-  pDataStore.fetchFloorTypeList(projId, sort)
+const fetchFloorTypeList = (
+  projId: number,
+  sort?: '1' | '2' | '3' | '4' | '5' | '6',
+) => pDataStore.fetchFloorTypeList(projId, sort)
 
 const payStore = usePayment()
 const fetchPriceList = (pFilters: PriceFilter) =>
@@ -73,17 +75,18 @@ const orderSelect = (order: number) => {
 }
 // 타입 선택 시 실행 함수
 const typeSelect = (type: number) => {
-  // const sort = 1
+  const sort = unitTypeList.value.filter(tp => tp.pk == type)[0].sort || ''
   unit_type.value = type // unit_type pk 값 할당
   priceMessage.value = !type
     ? '공급가격을 입력하기 위해 [타입 정보]를 선택하여 주십시요.'
     : ''
-  if (project.value) {
-    // fetchFloorTypeList(project.value, sort)
-    pFilters.project = project.value
-    pFilters.order_group = order_group.value
-    pFilters.unit_type = unit_type.value
-    fetchPriceList(pFilters) // 가격 상태 저장 실행
+  if (project.value && sort) {
+    fetchFloorTypeList(project.value, sort).then(() => {
+      pFilters.project = project.value
+      pFilters.order_group = order_group.value
+      pFilters.unit_type = unit_type.value
+      fetchPriceList(pFilters) // 가격 상태 저장 실행
+    })
   }
 }
 
