@@ -12,6 +12,7 @@ import ContentBody from '@/layouts/ContentBody/Index.vue'
 import PriceSelectForm from '@/views/projects/Price/components/PriceSelectForm.vue'
 import PriceFormList from '@/views/projects/Price/components/PriceFormList.vue'
 
+const selectForm = ref()
 const order_group = ref<number | null>(null)
 const unit_type = ref<number | null>(null)
 
@@ -50,10 +51,14 @@ const fetchOrderGroupList = (projId: number) =>
 const allContPriceSet = (payload: SimpleCont) =>
   contStore.allContPriceSet(payload)
 
-const fetchTypeList = (projId: number, sort?: number) =>
-  pDataStore.fetchTypeList(projId, sort)
-const fetchFloorTypeList = (projId: number, sort?: number) =>
-  pDataStore.fetchFloorTypeList(projId, sort)
+const fetchTypeList = (
+  projId: number,
+  sort?: '1' | '2' | '3' | '4' | '5' | '6',
+) => pDataStore.fetchTypeList(projId, sort)
+const fetchFloorTypeList = (
+  projId: number,
+  sort?: '1' | '2' | '3' | '4' | '5' | '6',
+) => pDataStore.fetchFloorTypeList(projId, sort)
 
 const payStore = usePayment()
 const fetchPriceList = (pFilters: PriceFilter) =>
@@ -66,6 +71,11 @@ const deletePrice = (payload: PriceFilter & { pk: number }) =>
 // 차수 선택 시 실행 함수
 const orderSelect = (order: number) => {
   order_group.value = order // order_group pk 값 할당
+  const sort = orderGroupList.value
+    .filter(o => o.pk == order)
+    .map(o => o.sort)[0]
+  if (project.value)
+    fetchTypeList(project.value, sort === '2' ? '1' : undefined)
   priceMessage.value = !order
     ? '공급가격을 입력하기 위해 [차수 정보]를 선택하여 주십시요.'
     : '공급가격을 입력하기 위해 [타입 정보]를 선택하여 주십시요.'
@@ -73,17 +83,18 @@ const orderSelect = (order: number) => {
 }
 // 타입 선택 시 실행 함수
 const typeSelect = (type: number) => {
-  // const sort = 1
+  const sort = unitTypeList.value.filter(tp => tp.pk == type)[0].sort || ''
   unit_type.value = type // unit_type pk 값 할당
   priceMessage.value = !type
     ? '공급가격을 입력하기 위해 [타입 정보]를 선택하여 주십시요.'
     : ''
-  if (project.value) {
-    // fetchFloorTypeList(project.value, sort)
-    pFilters.project = project.value
-    pFilters.order_group = order_group.value
-    pFilters.unit_type = unit_type.value
-    fetchPriceList(pFilters) // 가격 상태 저장 실행
+  if (project.value && sort) {
+    fetchFloorTypeList(project.value, sort).then(() => {
+      pFilters.project = project.value
+      pFilters.order_group = order_group.value
+      pFilters.unit_type = unit_type.value
+      fetchPriceList(pFilters) // 가격 상태 저장 실행
+    })
   }
 }
 
@@ -110,6 +121,7 @@ const dataReset = () => {
   contStore.orderGroupList = []
   pDataStore.unitTypeList = []
   pDataStore.floorTypeList = []
+  selectForm.value.dataReset()
 }
 
 const projSelect = (target: number | null) => {
@@ -131,6 +143,7 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId))
   <ContentBody>
     <CCardBody class="pb-5">
       <PriceSelectForm
+        ref="selectForm"
         :project="project"
         :orders="orderGroupList"
         :types="unitTypeList"

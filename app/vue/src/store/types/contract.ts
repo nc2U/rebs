@@ -88,7 +88,7 @@ export interface OrderGroup {
   pk: number
   project: number
   order_number: number
-  sort: string
+  sort: '1' | '2'
   sort_desc: string
   order_group_name: string
 }

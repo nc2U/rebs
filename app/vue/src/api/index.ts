@@ -23,9 +23,9 @@ api.interceptors.response.use(
     return res
   },
   err => {
-    if (err.response.status == 401) return router.replace({ name: 'Login' })
-    close()
-    return Promise.reject(err)
+    if (err.response.status == 401)
+      return router.replace({ name: 'Login' }).then(() => close())
+    return Promise.reject(err).then(() => close())
   },
 )
 
