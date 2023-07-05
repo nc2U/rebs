@@ -41,7 +41,10 @@ export const useProjectData = defineStore('projectData', () => {
   )
 
   // actions
-  const fetchTypeList = (projId: number, sort?: number) =>
+  const fetchTypeList = (
+    projId: number,
+    sort?: '1' | '2' | '3' | '4' | '5' | '6',
+  ) =>
     api
       .get(`/type/?project=${projId}&sort=${sort || ''}`)
       .then(res => {
