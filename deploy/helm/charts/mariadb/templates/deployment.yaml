@@ -43,6 +43,11 @@ spec:
             - name: mysql
               containerPort: 3306
               protocol: TCP
+          startupProbe:
+            exec:
+              command:
+                - mariadb
+                - -V
           livenessProbe:
             exec:
               command:
@@ -51,7 +56,7 @@ spec:
             periodSeconds: 60
             initialDelaySeconds: 30
             failureThreshold: 2
-          startupProbe:
+          readinessProbe:
             exec:
               command:
                 - mariadb
