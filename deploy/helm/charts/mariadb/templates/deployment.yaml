@@ -62,8 +62,7 @@ spec:
             exec:
               command:
                 - mariadb
-                - -u {{ .Release.Name }}
-                - -p {{ .Values.global.dbPassword }}
+                - -V
             initialDelaySeconds: 10
             periodSeconds: 5
           volumeMounts:
