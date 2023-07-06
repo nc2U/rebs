@@ -64,7 +64,6 @@ spec:
                 - mariadb
                 - -u {{ .Release.Name }}
                 - -p {{ .Values.global.dbPassword }}
-                - -e "SELECT 1"
             initialDelaySeconds: 10
             periodSeconds: 5
           volumeMounts:
