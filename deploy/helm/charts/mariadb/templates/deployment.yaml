@@ -47,7 +47,9 @@ spec:
             exec:
               command:
                 - mariadb
-                - -V
+                - -u {{ .Release.Name }}
+                - -p {{ .Values.global.dbPassword }}
+                - -e "SELECT 1"
             failureThreshold: 30
             periodSeconds: 10
           livenessProbe:
