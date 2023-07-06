@@ -46,8 +46,9 @@ spec:
           startupProbe:
             tcpSocket:
               port: 3306
+              host: master
             failureThreshold: 30
-            periodSeconds: 10
+            periodSeconds: 15
           livenessProbe:
             exec:
               command:
