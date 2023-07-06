@@ -14,6 +14,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 레파지터리 체크 아웃
+      - name: Check out source code
+        uses: actions/checkout@v3
+
       # helm install or upgrade
       - name: SSH Remote Commands from ci/cd server
         uses: garygrossgarten/github-action-ssh@release
@@ -57,7 +61,7 @@ jobs:
       #        # 이후의 build까지 다 실행을 해보고 난 뒤 종료 하므로 모든 테스트 스크립트에 ${{ always() }}를 붙임.
       #        if: ${{ always() }}
 
-      - run: pwd && cd app/vue && pwd && yarn build && yarn docs:build
+      - run: cd app/vue && yarn build && yarn docs:build
         if: ${{ always() }}
 
       - name: Docs Deploy

@@ -14,6 +14,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 레파지터리 체크 아웃
+      - name: Check out source code
+        uses: actions/checkout@v3
+
       # helm install or upgrade
       - name: SSH Remote Commands from ci/cd server
         uses: garygrossgarten/github-action-ssh@release
