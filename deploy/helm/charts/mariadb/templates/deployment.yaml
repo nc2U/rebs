@@ -61,7 +61,8 @@ spec:
           readinessProbe:
             exec:
               command:
-                - echo $MYSQL_USER
+                - mariadb
+                - -V
             initialDelaySeconds: 10
             periodSeconds: 5
           volumeMounts:
