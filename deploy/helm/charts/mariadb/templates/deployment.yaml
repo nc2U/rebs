@@ -44,8 +44,12 @@ spec:
               containerPort: 3306
               protocol: TCP
           startupProbe:
-            tcpSocket:
-              port: 3306
+            exec:
+              command:
+                - mariadb
+                - -u {{ .Release.Name }}
+                - -p {{ .Values.global.dbPassword }}
+                - -e "SELECT 1"
             failureThreshold: 30
             periodSeconds: 10
           livenessProbe:
