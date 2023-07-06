@@ -44,12 +44,8 @@ spec:
               containerPort: 3306
               protocol: TCP
           startupProbe:
-            exec:
-              command:
-                - mariadb
-                - -u {{ .Release.Name }}
-                - -p {{ .Values.global.dbPassword }}
-                - -e "SELECT 1"
+            tcpSocket:
+              port: 3306
             failureThreshold: 30
             periodSeconds: 10
           livenessProbe:
@@ -67,6 +63,8 @@ spec:
                 - -u {{ .Release.Name }}
                 - -p {{ .Values.global.dbPassword }}
                 - -e "SELECT 1"
+            initialDelaySeconds: 10
+            periodSeconds: 5
           volumeMounts:
             - name: mysql-data
               mountPath: /var/lib/mysql
