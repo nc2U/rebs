@@ -44,9 +44,10 @@ spec:
               containerPort: 3306
               protocol: TCP
           startupProbe:
-            tcpSocket:
-              port: 3306
-              host: master
+            exec:
+              command:
+                - mariadb
+                - -V
             failureThreshold: 30
             periodSeconds: 15
           livenessProbe:
