@@ -51,14 +51,11 @@ spec:
             periodSeconds: 60
             initialDelaySeconds: 30
             failureThreshold: 2
-          readinessProbe:
-            tcpSocket:
-              port: 3306
-            initialDelaySeconds: 10
-            periodSeconds: 5
-            timeoutSeconds: 1
-            successThreshold: 1
-            failureThreshold: 3
+          startupProbe:
+            exec:
+              command:
+                - mariadb
+                - -u {{.Release.Name}} -p {{.Values.global.dbPassword}}
           volumeMounts:
             - name: mysql-data
               mountPath: /var/lib/mysql
