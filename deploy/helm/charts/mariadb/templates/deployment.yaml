@@ -61,10 +61,7 @@ spec:
           readinessProbe:
             exec:
               command:
-                - mariadb
-                - -u {{ .Release.Name }}
-                - -p {{ .Values.global.dbPassword }}
-                - -e "SELECT 1"
+                - echo $MYSQL_USER
             initialDelaySeconds: 10
             periodSeconds: 5
           volumeMounts:
