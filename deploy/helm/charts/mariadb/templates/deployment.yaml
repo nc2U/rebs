@@ -51,7 +51,7 @@ spec:
             periodSeconds: 60
             initialDelaySeconds: 30
             failureThreshold: 2
-          readinessProbe:
+          startupProbe:
             exec:
               command:
                 - mariadb
