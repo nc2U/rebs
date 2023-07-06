@@ -39,8 +39,7 @@ jobs:
             cd ${{ secrets.NFS_PATH }}/prod/
             sh ./volume/backups/mysql_chk.sh
             rm -rf .git* README.md app/vue app/svelte deploy/docker*
-            kubectl apply -f ./deploy/kubectl/ns-prod.yaml
-            helm upgrade ${{ secrets.DATABASE_USER }} ./deploy/helm --install -f ./deploy/helm/values-prod.yaml -n prod-hrebs \
+            helm upgrade ${{ secrets.DATABASE_USER }} ./deploy/helm --install -f ./deploy/helm/values-prod.yaml -n prod-hrebs --create-namespace --wait \
               --set global.dbPassword=${{ secrets.DATABASE_PASSWORD }} \
               --set global.nfsPath=${{ secrets.NFS_PATH }} \
               --set global.nfsServerHost=${{ secrets.CICD_HOST }} \
