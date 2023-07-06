@@ -48,6 +48,8 @@ spec:
               command:
                 - mariadb
                 - -V
+            failureThreshold: 30
+            periodSeconds: 10
           livenessProbe:
             exec:
               command:
