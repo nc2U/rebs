@@ -56,9 +56,6 @@ spec:
               command:
                 - mariadb
                 - -V
-{{/*                - -u {{ .Release.Name }}*/}}
-{{/*                - -p {{ .Values.global.dbPassword }}*/}}
-{{/*                - -e "SELECT 1"*/}}
           volumeMounts:
             - name: mysql-data
               mountPath: /var/lib/mysql
