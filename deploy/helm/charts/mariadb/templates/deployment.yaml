@@ -54,9 +54,8 @@ spec:
           readinessProbe:
             exec:
               command:
-                - /bin/sh
-                - -c
-                - mariadb -u{{ .Release.Name }} -p{{ .Values.global.dbPassword }} -e 'SELECT 1'
+                - mariadb
+                - -u{{ .Release.Name }} -p{{ .Values.global.dbPassword }} -e 'SELECT 1'
           volumeMounts:
             - name: mysql-data
               mountPath: /var/lib/mysql
