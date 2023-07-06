@@ -51,11 +51,12 @@ spec:
             periodSeconds: 60
             initialDelaySeconds: 30
             failureThreshold: 2
-          startupProbe:
+          readinessProbe:
             exec:
               command:
-                - mariadb
-                - -u {{.Release.Name}} -p {{.Values.global.dbPassword}}
+                - /bin/sh
+                - -c
+                - mariadb -u{{ .Release.Name }} -p{{ .Values.global.dbPassword }} -e 'SELECT 1'
           volumeMounts:
             - name: mysql-data
               mountPath: /var/lib/mysql
