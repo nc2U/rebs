@@ -3298,6 +3298,7 @@ class ExportStaffs(View):
 
         # data start --------------------------------------------- #
         company = Company.objects.get(pk=request.GET.get('company'))
+        com_name = company.name.replace('주식회사 ', '(주)')
 
         # title_list
         header_src = [[],
@@ -3330,7 +3331,7 @@ class ExportStaffs(View):
         title_format.set_bold()
         title_format.set_font_size(18)
         title_format.set_align('vcenter')
-        worksheet.merge_range(row_num, 0, row_num, len(header_src) - 1, str(company) + ' 직원 정보 목록', title_format)
+        worksheet.merge_range(row_num, 0, row_num, len(header_src) - 1, com_name + ' 직원 정보 목록', title_format)
 
         # 2. Pre Header - Date
         row_num = 1
@@ -3466,7 +3467,7 @@ class ExportDeparts(View):
 
         # data start --------------------------------------------- #
         company = Company.objects.get(pk=request.GET.get('company'))
-        comName = company.name.replace('주식회사 ', '(주)')
+        com_name = company.name.replace('주식회사 ', '(주)')
 
         # title_list
         header_src = [[],
@@ -3490,7 +3491,7 @@ class ExportDeparts(View):
         title_format.set_bold()
         title_format.set_font_size(18)
         title_format.set_align('vcenter')
-        worksheet.merge_range(row_num, 0, row_num, len(header_src) - 1, comName + ' 부서 정보 목록', title_format)
+        worksheet.merge_range(row_num, 0, row_num, len(header_src) - 1, com_name + ' 부서 정보 목록', title_format)
 
         # 2. Pre Header - Date
         row_num = 1
@@ -3531,7 +3532,7 @@ class ExportDeparts(View):
         body_format = {
             'border': True,
             'valign': 'vcenter',
-            'num_format': 'yyyy-mm-dd'
+            'num_format': '#,##0'
         }
 
         # Turn off some of the warnings:
@@ -3543,6 +3544,11 @@ class ExportDeparts(View):
             row_num += 1
             row.insert(0, i + 1)
             for col_num, cell_data in enumerate(row):
+                if col_num is 3:
+                    body_format['align'] = 'left'
+                else:
+                    body_format['align'] = 'center'
+
                 bformat = workbook.add_format(body_format)
                 worksheet.write(row_num, col_num, cell_data, bformat)
 
