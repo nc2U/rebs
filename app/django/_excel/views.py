@@ -3383,20 +3383,28 @@ class ExportStaffs(View):
         status = dict(Staff.STATUS_CHOICES)
 
         def get_department(pk):
-            obj = Department.objects.get(pk=pk)
-            return obj.name if obj else None
+            try:
+                return Department.objects.get(pk=pk).name
+            except ObjectDoesNotExist:
+                return None
 
         def get_grade(pk):
-            obj = JobGrade.objects.get(pk=pk)
-            return obj.name if obj else None
+            try:
+                return JobGrade.objects.get(pk=pk).name
+            except ObjectDoesNotExist:
+                return None
 
         def get_position(pk):
-            obj = Position.objects.get(pk=pk)
-            return obj.name if obj else None
+            try:
+                return Position.objects.get(pk=pk).name
+            except ObjectDoesNotExist:
+                return None
 
         def get_duty(pk):
-            obj = DutyTitle.objects.get(pk=pk)
-            return obj.name if obj else None
+            try:
+                return DutyTitle.objects.get(pk=pk).name
+            except ObjectDoesNotExist:
+                return None
 
         for i, row in enumerate(data):
             row = list(row)
