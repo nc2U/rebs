@@ -3303,15 +3303,15 @@ class ExportStaffs(View):
         header_src = [[],
                       ['구분', 'sort', 10],
                       ['직원명', 'name', 12],
-                      ['주민등록번호', 'id_number', 15],
-                      ['휴대전화', 'personal_phone', 18],
-                      ['이메일', 'email', 18],
-                      ['부서', 'department', 18],
-                      ['직급', 'grade', 15],
-                      ['직위', 'position', 15],
-                      ['직책', 'duty', 15],
+                      ['주민등록번호', 'id_number', 18],
+                      ['휴대전화', 'personal_phone', 17],
+                      ['이메일', 'email', 22],
+                      ['부서', 'department', 12],
+                      ['직급', 'grade', 12],
+                      ['직위', 'position', 13],
+                      ['직책', 'duty', 13],
                       ['입사일', 'date_join', 15],
-                      ['상태', 'status', 12],
+                      ['상태', 'status', 13],
                       ['퇴사일', 'date_leave', 15]]
         titles = ['No']  # header titles
         params = []  # ORM 추출 field
