@@ -94,7 +94,12 @@ onMounted(() => dataSetup(company.value || comStore.initComId))
     <CCardBody>
       <ListController ref="listControl" @list-filtering="listFiltering" />
       <AddPosition :company="comName" @multi-submit="multiSubmit" />
-      <TableTitleRow title="직위 목록" excel url="#" disabled />
+      <TableTitleRow
+        title="직위 목록"
+        excel
+        :url="excelUrl"
+        :disabled="!company"
+      />
       <PositionList
         @multi-submit="multiSubmit"
         @on-delete="onDelete"

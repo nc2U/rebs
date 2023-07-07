@@ -3547,7 +3547,7 @@ class ExportDeparts(View):
 
 
 class ExportPositions(View):
-    """Examples"""
+    """직위 목록 정보"""
 
     @staticmethod
     def get(request):
@@ -3559,27 +3559,19 @@ class ExportPositions(View):
         # don't allow temp files, for example the Google APP Engine, set the
         # 'in_memory' Workbook() constructor option as shown in the docs.
         workbook = xlsxwriter.Workbook(output)
-        worksheet = workbook.add_worksheet('시트 타이틀')
+        worksheet = workbook.add_worksheet('직위 정보')
 
         worksheet.set_default_row(20)  # 기본 행 높이
 
         # data start --------------------------------------------- #
         company = Company.objects.get(pk=request.GET.get('company'))
+        com_name = company.name.replace('주식회사 ', '(주)')
 
         # title_list
         header_src = [[],
-                      ['구분', 'sort', 10],
-                      ['직원명', 'name', 12],
-                      ['주민등록번호', 'id_number', 15],
-                      ['휴대전화', 'personal_phone', 18],
-                      ['이메일', 'email', 18],
-                      ['부서', 'department', 18],
-                      ['직급', 'grade', 15],
-                      ['직위', 'position', 15],
-                      ['직책', 'duty', 15],
-                      ['입사일', 'date_join', 15],
-                      ['상태', 'status', 12],
-                      ['퇴사일', 'date_leave', 15]]
+                      ['직위명', 'name', 15],
+                      ['직급', 'grades', 25],
+                      ['설명', 'desc', 50]]
         titles = ['No']  # header titles
         params = []  # ORM 추출 field
         widths = [7]  # No. 컬럼 넓이
@@ -3597,7 +3589,7 @@ class ExportPositions(View):
         title_format.set_bold()
         title_format.set_font_size(18)
         title_format.set_align('vcenter')
-        worksheet.merge_range(row_num, 0, row_num, len(header_src) - 1, str(company) + ' 직원 정보 목록', title_format)
+        worksheet.merge_range(row_num, 0, row_num, len(header_src) - 1, com_name + ' 직원 정보 목록', title_format)
 
         # 2. Pre Header - Date
         row_num = 1
@@ -3625,7 +3617,7 @@ class ExportPositions(View):
 
         # 4. Body
         # Get some data to write to the spreadsheet.
-        obj_list = Staff.objects.filter(company=company)
+        obj_list = Position.objects.filter(company=company)
 
         data = obj_list.values_list(*params)
 
@@ -3638,7 +3630,7 @@ class ExportPositions(View):
         body_format = {
             'border': True,
             'valign': 'vcenter',
-            'num_format': 'yyyy-mm-dd'
+            'num_format': '#,##0'
         }
 
         # Turn off some of the warnings:
@@ -3650,6 +3642,10 @@ class ExportPositions(View):
             row_num += 1
             row.insert(0, i + 1)
             for col_num, cell_data in enumerate(row):
+                if col_num == 3:
+                    body_format['align'] = 'left'
+                else:
+                    body_format['align'] = 'center'
                 bformat = workbook.add_format(body_format)
                 worksheet.write(row_num, col_num, cell_data, bformat)
         # data finish -------------------------------------------- #
@@ -3996,7 +3992,7 @@ class ExportExamples(View):
         body_format = {
             'border': True,
             'valign': 'vcenter',
-            'num_format': 'yyyy-mm-dd'
+            'num_format': '#,##0'
         }
 
         # Turn off some of the warnings:
