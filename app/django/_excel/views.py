@@ -499,11 +499,11 @@ class ExportSuccessions(View):
             row.insert(0, i + 1)
             for col_num, cell_data in enumerate(row):
                 if col_num == 2:
-                    cell_data = obj_list.filter(contract_id=cell_data).contract
+                    cell_data = obj_list.get(contract_id=cell_data).contract
                 if col_num == 3:
-                    cell_data = obj_list.filter(seller=cell_data).contract.contractor
+                    cell_data = obj_list.get(seller=cell_data).contract.contractor
                 if col_num == 4:
-                    cell_data = obj_list.filter(buyer=cell_data).successionbuyer
+                    cell_data = obj_list.get(buyer=cell_data).successionbuyer
                 if col_num not in (4, 5, 7):
                     body_format['num_format'] = '#,##0'
                 else:
