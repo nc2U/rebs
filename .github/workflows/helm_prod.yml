@@ -45,7 +45,7 @@ jobs:
             cd ${{ secrets.NFS_PATH }}/prod/
             sh ./volume/backups/mysql_chk.sh
             helm upgrade ${{ secrets.DATABASE_USER }} ./deploy/helm -f ./deploy/helm/values-prod.yaml \
-              --install -n prod-hrebs --create-namespace --wait  --timeout 10m \
+              --install -n prod-hrebs --create-namespace --wait --timeout 10m \
               --set global.dbPassword=${{ secrets.DATABASE_PASSWORD }} \
               --set global.nfsPath=${{ secrets.NFS_PATH }} \
               --set global.nfsServerHost=${{ secrets.CICD_HOST }} \
