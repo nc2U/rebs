@@ -29,6 +29,8 @@ const comStore = useCompany()
 const company = computed(() => comStore.company?.pk)
 const comName = computed(() => comStore.company?.name || undefined)
 
+const excelUrl = computed(() => `/excel/staffs/?company=${company.value}`)
+
 const accStore = useAccount()
 const fetchUsersList = () => accStore.fetchUsersList()
 
@@ -118,7 +120,12 @@ onMounted(() => {
     <CCardBody>
       <ListController ref="listControl" @list-filtering="listFiltering" />
       <AddStaff :company="comName" @multi-submit="multiSubmit" />
-      <TableTitleRow title="직원 목록" excel url="#" disabled />
+      <TableTitleRow
+        title="직원 목록"
+        excel
+        :url="excelUrl"
+        :disabled="!company"
+      />
       <StaffList
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
