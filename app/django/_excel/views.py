@@ -414,13 +414,13 @@ class ExportSuccessions(View):
 
         # title_list
         header_src = [[],
-                      ['계약 정보', 'contract', 10],
-                      ['양도계약자', 'seller', 30],
-                      ['양수계약자', 'buyer', 12],
+                      ['계약 정보', 'contract', 15],
+                      ['양도계약자', 'seller', 13],
+                      ['양수계약자', 'buyer', 13],
                       ['승계신청일', 'apply_date', 15],
                       ['매매계약일', 'trading_date', 15],
-                      ['변경인가여부', 'is_approval', 18],
-                      ['변경인가일', 'approval_date', 12],
+                      ['변경인가여부', 'is_approval', 10],
+                      ['변경인가일', 'approval_date', 15],
                       ['비고', 'note', 45]]
 
         # 1. Title
