@@ -3280,7 +3280,7 @@ def export_cashbook_xls(request):
 
 
 class ExportStaffs(View):
-    """직원 정보 목록"""
+    """직원 목록 정보"""
 
     @staticmethod
     def get(request):
@@ -3448,7 +3448,7 @@ class ExportStaffs(View):
 
 
 class ExportDeparts(View):
-    """Examples"""
+    """부서 목록 정보"""
 
     @staticmethod
     def get(request):
@@ -3460,27 +3460,19 @@ class ExportDeparts(View):
         # don't allow temp files, for example the Google APP Engine, set the
         # 'in_memory' Workbook() constructor option as shown in the docs.
         workbook = xlsxwriter.Workbook(output)
-        worksheet = workbook.add_worksheet('시트 타이틀')
+        worksheet = workbook.add_worksheet('부서 정보')
 
         worksheet.set_default_row(20)  # 기본 행 높이
 
         # data start --------------------------------------------- #
         company = Company.objects.get(pk=request.GET.get('company'))
+        comName = company.name.replace('주식회사 ', '(주)')
 
         # title_list
         header_src = [[],
-                      ['구분', 'sort', 10],
-                      ['직원명', 'name', 12],
-                      ['주민등록번호', 'id_number', 15],
-                      ['휴대전화', 'personal_phone', 18],
-                      ['이메일', 'email', 18],
-                      ['부서', 'department', 18],
-                      ['직급', 'grade', 15],
-                      ['직위', 'position', 15],
-                      ['직책', 'duty', 15],
-                      ['입사일', 'date_join', 15],
-                      ['상태', 'status', 12],
-                      ['퇴사일', 'date_leave', 15]]
+                      ['상위부서', 'upper_depart', 15],
+                      ['부서명', 'name', 15],
+                      ['주요 업무', 'task', 50]]
         titles = ['No']  # header titles
         params = []  # ORM 추출 field
         widths = [7]  # No. 컬럼 넓이
@@ -3498,7 +3490,7 @@ class ExportDeparts(View):
         title_format.set_bold()
         title_format.set_font_size(18)
         title_format.set_align('vcenter')
-        worksheet.merge_range(row_num, 0, row_num, len(header_src) - 1, str(company) + ' 직원 정보 목록', title_format)
+        worksheet.merge_range(row_num, 0, row_num, len(header_src) - 1, comName + ' 부서 정보 목록', title_format)
 
         # 2. Pre Header - Date
         row_num = 1
@@ -3526,7 +3518,7 @@ class ExportDeparts(View):
 
         # 4. Body
         # Get some data to write to the spreadsheet.
-        obj_list = Staff.objects.filter(company=company)
+        obj_list = Department.objects.filter(company=company)
 
         data = obj_list.values_list(*params)
 
