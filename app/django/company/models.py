@@ -53,7 +53,7 @@ class Department(models.Model):
         return self.name
 
     class Meta:
-        ordering = ['upper_depart', 'id']
+        ordering = ['id']
         verbose_name = '02. 부서 정보'
         verbose_name_plural = '02. 부서 정보'
 
