@@ -498,8 +498,10 @@ class ExportSuccessions(View):
             row_num += 1
             row.insert(0, i + 1)
             for col_num, cell_data in enumerate(row):
-                if col_num == 0:
+                if col_num not in (4, 5, 7):
                     body_format['num_format'] = '#,##0'
+                else:
+                    body_format['num_format'] = 'yyyy-mm-dd'
                 if col_num == 6:
                     cell_data = '완료' if cell_data else ''
                 if col_num == 8:
