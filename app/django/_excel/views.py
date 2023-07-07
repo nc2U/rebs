@@ -3652,6 +3652,8 @@ class ExportPositions(View):
             row_data.insert(2, row['grades'])
             row_data.insert(3, row['desc'])
             for col_num, cell_data in enumerate(row_data):
+                if type(cell_data) == list:
+                    cell_data = ', '.join(cell_data)
                 if col_num in (2, 3):
                     body_format['align'] = 'left'
                 else:
