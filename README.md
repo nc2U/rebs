@@ -39,7 +39,6 @@ Check what must be defined in docker-compose.yml file.
     - DATABASE_USER
     - DATABASE_PASSWORD
     - DJANGO_SETTINGS_MODULE
-    - SERVER_NAME
 
 Enter the actual data for your environment as described in the following items.
 
@@ -56,16 +55,6 @@ Enter the actual data for your environment as described in the following items.
     - AWS_ACCESS_KEY_ID: aws-access-key-id # **your amazon s3 setup information**
     - AWS_SECRET_ACCESS_KEY: aws-secret-access-key # **your amazon s3 setup information**
     - DJANGO_SETTINGS_MODULE: app.settings.prod # **settings mode -> app.settings.prod** or **app.settings.local**
-- nginx:
-    - SERVER_NAME: example.com # **server hostname**
-    - BACKEND_HOST: web:8000
-    - WORKER_PROCESSES: 1
-    - WORKER_CONNECTIONS: 1024
-    - KEEPALIVE_TIMEOUT: 65
-    - BACKEND_MAX_FAILS: 3
-    - BACKEND_MAX_TIMEOUT: 10s
-    - LOG_STDOUT: "true"
-    - ADMIN_EMAIL: admin@example.com # **edit with real data**
 
 #### 4. Django setting
 
@@ -94,18 +83,6 @@ docker-compose exec web python manage.py makemigrations
 docker-compose exec web python manage.py migrate
 ```
 
-#### Create Superuser => your username & email & password settings
-
-```bash
-docker-compose exec web python manage.py createsuperuser
-```
-
-#### Data Seeding
-
-```
-docker-compose exec web python manage.py loaddata rebs/fixtures/seeds-data.json 
-```
-
 #### Static file Setting
 
 ```
@@ -125,7 +102,27 @@ yarn
 Vue application development -> webpack dev server on.
 
 ```bash
-yarn serve
+yarn dev
+```
+
+or Vue application deploy -> yarn build
+
+```bash
+yarn build
+```
+
+#### Svelte (Single Page Application) Development
+
+```bash
+cd ..
+cd app/svelte
+yarn
+```
+
+Vue application development -> webpack dev server on.
+
+```bash
+yarn dev
 ```
 
 or Vue application deploy -> yarn build

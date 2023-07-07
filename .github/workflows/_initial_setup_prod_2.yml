@@ -93,7 +93,7 @@ jobs:
         if: steps.cache_svelte.outputs.cache-hit != 'true'
         run: cd app/svelte && yarn
 
-      - run: pwd && cd app/svelte && pwd && yarn build
+      - run: cd app/svelte && yarn build
         if: ${{ always() }}
 
       # data to server copy transfer
