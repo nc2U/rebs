@@ -3280,7 +3280,7 @@ def export_cashbook_xls(request):
 
 
 class ExportStaffs(View):
-    """Examples"""
+    """직원 정보 목록"""
 
     @staticmethod
     def get(request):
@@ -3370,6 +3370,7 @@ class ExportStaffs(View):
 
         body_format = {
             'border': True,
+            'align': 'center',
             'valign': 'vcenter',
             'num_format': 'yyyy-mm-dd'
         }
@@ -3383,6 +3384,10 @@ class ExportStaffs(View):
             row_num += 1
             row.insert(0, i + 1)
             for col_num, cell_data in enumerate(row):
+                if col_num in (10, 12):
+                    body_format['num_format'] = 'yyyy-mm-dd'
+                else:
+                    body_format['num_format'] = '#,##0'
                 bformat = workbook.add_format(body_format)
                 worksheet.write(row_num, col_num, cell_data, bformat)
 
@@ -3395,7 +3400,7 @@ class ExportStaffs(View):
         output.seek(0)
 
         # Set up the Http response.
-        filename = f'{TODAY}-file_title.xlsx'
+        filename = f'{TODAY}-staffs.xlsx'
         file_format = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         response = HttpResponse(output, content_type=file_format)
         response['Content-Disposition'] = f'attachment; filename={filename}'
@@ -3519,7 +3524,7 @@ class ExportDeparts(View):
         output.seek(0)
 
         # Set up the Http response.
-        filename = f'{TODAY}-file_title.xlsx'
+        filename = f'{TODAY}-departs.xlsx'
         file_format = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         response = HttpResponse(output, content_type=file_format)
         response['Content-Disposition'] = f'attachment; filename={filename}'
@@ -3642,7 +3647,7 @@ class ExportPositions(View):
         output.seek(0)
 
         # Set up the Http response.
-        filename = f'{TODAY}-file_title.xlsx'
+        filename = f'{TODAY}-positions.xlsx'
         file_format = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         response = HttpResponse(output, content_type=file_format)
         response['Content-Disposition'] = f'attachment; filename={filename}'
@@ -3765,7 +3770,7 @@ class ExportDuties(View):
         output.seek(0)
 
         # Set up the Http response.
-        filename = f'{TODAY}-file_title.xlsx'
+        filename = f'{TODAY}-duties.xlsx'
         file_format = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         response = HttpResponse(output, content_type=file_format)
         response['Content-Disposition'] = f'attachment; filename={filename}'
@@ -3888,7 +3893,7 @@ class ExportGrades(View):
         output.seek(0)
 
         # Set up the Http response.
-        filename = f'{TODAY}-file_title.xlsx'
+        filename = f'{TODAY}-grades.xlsx'
         file_format = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         response = HttpResponse(output, content_type=file_format)
         response['Content-Disposition'] = f'attachment; filename={filename}'
