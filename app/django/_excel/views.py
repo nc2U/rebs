@@ -3376,14 +3376,20 @@ class ExportStaffs(View):
         }
 
         # Turn off some of the warnings:
-        # worksheet.ignore_errors({'number_stored_as_text': 'F:G'})
+        worksheet.ignore_errors({'number_stored_as_text': 'B:L'})
 
         # Write body
+        sort = dict(Staff.SORT_CHOICES)
+        status = dict(Staff.STATUS_CHOICES)
         for i, row in enumerate(data):
             row = list(row)
             row_num += 1
             row.insert(0, i + 1)
             for col_num, cell_data in enumerate(row):
+                if col_num == 1:
+                    cell_data = sort[cell_data]
+                if col_num == 11:
+                    cell_data = status[cell_data]
                 if col_num in (10, 12):
                     body_format['num_format'] = 'yyyy-mm-dd'
                 else:
