@@ -3643,11 +3643,9 @@ class ExportPositions(View):
         # Write body
         params.insert(0, 'num')
         for i, row in enumerate(data):
-            # row = list(row)
             row_num += 1
             row['num'] = i + 1
-            for col_num, cell_data in enumerate(row):
-                cell_data = cell_data[params[col_num]]
+            for col_num, cell_data in enumerate(row.values()):
                 if col_num in (2, 3):
                     body_format['align'] = 'left'
                 else:
