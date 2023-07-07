@@ -3857,7 +3857,7 @@ class ExportGrades(View):
 
         # 4. Body
         # Get some data to write to the spreadsheet.
-        obj_list = Staff.objects.filter(company=company)
+        obj_list = JobGrade.objects.filter(company=company)
 
         data = obj_list.values_list(*params)
 
