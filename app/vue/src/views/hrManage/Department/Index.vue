@@ -21,12 +21,14 @@ const dataFilter = ref<DepFilter>({
 
 const comStore = useCompany()
 const getPkDeparts = computed(() => comStore.getPkDeparts)
-const comId = computed(() => comStore.company?.pk)
+const company = computed(() => comStore.company?.pk)
 const comName = computed(() => comStore.company?.name || undefined)
+
+const excelUrl = computed(() => `/excel/departs/?company=${company.value}`)
 
 const listFiltering = (payload: DepFilter) => {
   dataFilter.value = payload
-  if (comId.value)
+  if (company.value)
     fetchDepartmentList({
       page: payload.page,
       com: payload.com,
@@ -55,13 +57,13 @@ const multiSubmit = (payload: Depart) => {
   }
 }
 const onDelete = (pk: number) => {
-  if (comId.value) deleteDepartment(pk, comId.value)
+  if (company.value) deleteDepartment(pk, company.value)
 }
 
 const pageSelect = (num: number) => {
   dataFilter.value.page = num
-  if (comId.value) {
-    dataFilter.value.com = comId.value
+  if (company.value) {
+    dataFilter.value.com = company.value
     fetchDepartmentList(dataFilter.value)
   }
 }
@@ -84,7 +86,7 @@ const comSelect = (target: number | null) => {
   if (!!target) dataSetup(target)
 }
 
-onMounted(() => dataSetup(comId.value || comStore.initComId))
+onMounted(() => dataSetup(company.value || comStore.initComId))
 </script>
 
 <template>
@@ -98,7 +100,12 @@ onMounted(() => dataSetup(comId.value || comStore.initComId))
     <CCardBody>
       <ListController ref="listControl" @list-filtering="listFiltering" />
       <AddDepartment :company="comName" @multi-submit="multiSubmit" />
-      <TableTitleRow title="부서 목록" excel url="#" disabled />
+      <TableTitleRow
+        title="부서 목록"
+        excel
+        :url="excelUrl"
+        :disabled="!company"
+      />
       <DepartmentList
         @multi-submit="multiSubmit"
         @on-delete="onDelete"

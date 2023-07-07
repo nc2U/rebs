@@ -20,12 +20,14 @@ const dataFilter = ref<ComFilter>({
 })
 
 const comStore = useCompany()
-const comId = computed(() => comStore.company?.pk)
+const company = computed(() => comStore.company?.pk)
 const comName = computed(() => comStore.company?.name || undefined)
+
+const excelUrl = computed(() => `/excel/positions/?company=${company.value}`)
 
 const listFiltering = (payload: ComFilter) => {
   dataFilter.value = payload
-  if (comId.value)
+  if (company.value)
     fetchPositionList({
       page: payload.page,
       com: payload.com,
@@ -46,19 +48,19 @@ const deletePosition = (pk: number, com: number) =>
 
 const multiSubmit = (payload: Position) => {
   const { page } = dataFilter.value
-  if (comId.value) {
-    if (!!payload.pk) updatePosition(payload, page, comId.value)
-    else createPosition(payload, page, comId.value)
+  if (company.value) {
+    if (!!payload.pk) updatePosition(payload, page, company.value)
+    else createPosition(payload, page, company.value)
   }
 }
 const onDelete = (pk: number) => {
-  if (comId.value) deletePosition(pk, comId.value)
+  if (company.value) deletePosition(pk, company.value)
 }
 
 const pageSelect = (num: number) => {
   dataFilter.value.page = num
-  if (comId.value) {
-    dataFilter.value.com = comId.value
+  if (company.value) {
+    dataFilter.value.com = company.value
     fetchPositionList(dataFilter.value)
   }
 }
@@ -78,7 +80,7 @@ const comSelect = (target: number | null) => {
   if (!!target) dataSetup(target)
 }
 
-onMounted(() => dataSetup(comId.value || comStore.initComId))
+onMounted(() => dataSetup(company.value || comStore.initComId))
 </script>
 
 <template>
@@ -92,7 +94,12 @@ onMounted(() => dataSetup(comId.value || comStore.initComId))
     <CCardBody>
       <ListController ref="listControl" @list-filtering="listFiltering" />
       <AddPosition :company="comName" @multi-submit="multiSubmit" />
-      <TableTitleRow title="직위 목록" excel url="#" disabled />
+      <TableTitleRow
+        title="직위 목록"
+        excel
+        :url="excelUrl"
+        :disabled="!company"
+      />
       <PositionList
         @multi-submit="multiSubmit"
         @on-delete="onDelete"

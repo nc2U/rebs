@@ -23,4 +23,9 @@ urlpatterns = [
     path('balance/', ExportBalanceByAcc.as_view(), name='balance'),
     path('daily-cash/', ExportDateCashbook.as_view(), name='daily-cash'),
     path('cashbook/', export_cashbook_xls, name='cashbook'),
+    path('staffs/', ExportStaffs.as_view(), name='staffs'),
+    path('departs/', ExportDeparts.as_view(), name='departs'),
+    path('positions/', ExportPositions.as_view(), name='positions'),
+    path('duties/', ExportDuties.as_view(), name='duties'),
+    path('grades/', ExportGrades.as_view(), name='grades'),
 ]
