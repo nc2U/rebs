@@ -501,24 +501,11 @@ class ExportSuccessions(View):
         worksheet.ignore_errors({'number_stored_as_text': 'F:G'})
 
         # Write header
-        choice = dict(ContractorRelease.STATUS_CHOICES)
         for i, row in enumerate(data):
             row = list(row)
             row_num += 1
             row.insert(0, i + 1)
             for col_num, cell_data in enumerate(row):
-                if col_num == 0:
-                    body_format['num_format'] = '#,##0'
-                else:
-                    body_format['num_format'] = 'yyyy-mm-dd'
-                if col_num == 4:
-                    body_format['num_format'] = 41
-                elif col_num == 10:
-                    body_format['align'] = 'left'
-                else:
-                    body_format['align'] = 'center'
-                if col_num == 3:
-                    cell_data = choice[cell_data]
                 bformat = workbook.add_format(body_format)
                 worksheet.write(row_num, col_num, cell_data, bformat)
 
