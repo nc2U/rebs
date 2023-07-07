@@ -419,8 +419,8 @@ class ExportSuccessions(View):
                       ['양수계약자', 'buyer', 13],
                       ['승계신청일', 'apply_date', 15],
                       ['매매계약일', 'trading_date', 15],
-                      ['변경인가여부', 'is_approval', 12],
                       ['변경인가일', 'approval_date', 15],
+                      ['변경인가여부', 'is_approval', 13],
                       ['비고', 'note', 45]]
 
         # 1. Title
@@ -499,11 +499,11 @@ class ExportSuccessions(View):
                     cell_data = obj_list.get(seller=cell_data).contract.contractor.name
                 if col_num == 3:
                     cell_data = obj_list.get(buyer=cell_data).buyer.name
-                if col_num not in (4, 5, 7):
+                if col_num not in (4, 5, 6):
                     body_format['num_format'] = '#,##0'
                 else:
                     body_format['num_format'] = 'yyyy-mm-dd'
-                if col_num == 6:
+                if col_num == 7:
                     cell_data = '완료' if cell_data else ''
                 if col_num == 8:
                     body_format['align'] = 'left'
