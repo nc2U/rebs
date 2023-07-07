@@ -3647,7 +3647,7 @@ class ExportPositions(View):
             row.insert(0, i + 1)
             for col_num, cell_data in enumerate(row):
                 idx = col_num - 1
-                cell_data = cell_data[params[idx]] if idx > 0 else None
+                cell_data = cell_data[params[idx]] if idx >= 0 else None
                 if col_num in (2, 3):
                     body_format['align'] = 'left'
                 else:
