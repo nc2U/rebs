@@ -473,9 +473,9 @@ class ExportSuccessions(View):
 
         # 4. Body
         # Get some data to write to the spreadsheet.
-        data = Succession.objects.filter(contract__project=project)
+        obj_list = Succession.objects.filter(contract__project=project)
 
-        data = data.values_list(*params)
+        data = obj_list.values_list(*params)
 
         b_format = workbook.add_format()
         b_format.set_border()
@@ -498,6 +498,12 @@ class ExportSuccessions(View):
             row_num += 1
             row.insert(0, i + 1)
             for col_num, cell_data in enumerate(row):
+                if col_num == 2:
+                    cell_data = obj_list.filter(contract_id=cell_data).contract
+                if col_num == 3:
+                    cell_data = obj_list.filter(seller=cell_data).contract.contractor
+                if col_num == 4:
+                    cell_data = obj_list.filter(buyer=cell_data).successionbuyer
                 if col_num not in (4, 5, 7):
                     body_format['num_format'] = '#,##0'
                 else:
