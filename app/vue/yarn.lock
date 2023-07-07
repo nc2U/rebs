@@ -1125,7 +1125,7 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@coreui/chartjs@^3.1.1":
+"@coreui/chartjs@^3.1.2":
   version "3.1.2"
   resolved "https://registry.yarnpkg.com/@coreui/chartjs/-/chartjs-3.1.2.tgz#985fdc9bddff752befdf72fec99da948ce5a3ed9"
   integrity sha512-d3MGk3KZNAt29VRKP/XYiGmT56KTqtuOhLEg5HNwb7P7ZmEgOJoHxFHVCVE4I36hfgQCjZZVknsuk2ZTfF/2fw==
@@ -1155,15 +1155,15 @@
   resolved "https://registry.yarnpkg.com/@coreui/utils/-/utils-1.3.1.tgz#ebe6fa00ae7f46d166b26f116e74d55dfc89f5e0"
   integrity sha512-WuWHX7bg89cJH34TWVsLe9RsxzBhTApj+X2Ja19xhjcpxt5Gv11Ozm+fwYt6DD7DgncTvpwYrMcnNlpp701UOg==
 
-"@coreui/vue-chartjs@^2.0.1":
+"@coreui/vue-chartjs@^2.1.0":
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/@coreui/vue-chartjs/-/vue-chartjs-2.1.0.tgz#a839c2c3827c22cf8d815508ed998d80a56e9539"
   integrity sha512-1WeAizLdQvAhjRC+SaJ3RB8w8ia8m/kV+j6U124mfhuFGgC2GbzeX9q5jwbYK1ZkuNdpM1HuGJoaVXkNTJmNyQ==
 
-"@coreui/vue@^4.7.0":
-  version "4.8.1"
-  resolved "https://registry.yarnpkg.com/@coreui/vue/-/vue-4.8.1.tgz#8d8355721c4a674bdbf500fbd51c8b2e5578109d"
-  integrity sha512-ZZrgo2giXGQP5Ua+/AWJT8gKBjF/aGg+l7Vd2W5CVUJgcxynL9jv7wDYjbRfhimbc5GQD0tnzZVlwyfHgjf2sg==
+"@coreui/vue@^4.8.1":
+  version "4.9.0"
+  resolved "https://registry.yarnpkg.com/@coreui/vue/-/vue-4.9.0.tgz#dee427cb52ac82ab2149f9d3bae681a591275c9b"
+  integrity sha512-uDCPiNCA02i00ohxVIPbAddlScUDFZsWA+qjnrvkhMr6boaMHdcVpdYFv79lDgNUwA6k5nM7boP+B2zSr/db5g==
 
 "@discoveryjs/json-ext@0.5.7":
   version "0.5.7"
