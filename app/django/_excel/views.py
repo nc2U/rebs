@@ -506,6 +506,8 @@ class ExportSuccessions(View):
                     cell_data = '완료' if cell_data else ''
                 if col_num == 8:
                     body_format['align'] = 'left'
+                else:
+                    body_format['align'] = 'center'
                 bformat = workbook.add_format(body_format)
                 worksheet.write(row_num, col_num, cell_data, bformat)
 
