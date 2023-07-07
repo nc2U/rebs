@@ -3638,7 +3638,7 @@ class ExportPositions(View):
         }
 
         # Turn off some of the warnings:
-        # worksheet.ignore_errors({'number_stored_as_text': 'F:G'})
+        worksheet.ignore_errors({'number_stored_as_text': 'A:C'})
 
         # Write body
         params.insert(0, 'num')
