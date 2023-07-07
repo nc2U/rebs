@@ -7,9 +7,11 @@
 #
 import io
 import xlwt
+import json
 import xlsxwriter
 from datetime import datetime
 
+from django.core import serializers
 from django.http import HttpResponse
 from django.views.generic import View
 from django.core.exceptions import ObjectDoesNotExist
@@ -3619,7 +3621,9 @@ class ExportPositions(View):
         # Get some data to write to the spreadsheet.
         obj_list = Position.objects.filter(company=company)
 
-        data = obj_list.values_list(*params)
+        json_data = serializers.serialize('json', obj_list)
+        data = [i['fields'] for i in json.loads(json_data)]
+        # data = obj_list.values_list(*params)
 
         b_format = workbook.add_format()
         b_format.set_border()
@@ -3642,8 +3646,7 @@ class ExportPositions(View):
             row_num += 1
             row.insert(0, i + 1)
             for col_num, cell_data in enumerate(row):
-                if col_num == 1:
-                    cell_data = cell_data
+                cell_data = cell_data[params[col_num + 1]]
                 if col_num in (2, 3):
                     body_format['align'] = 'left'
                 else:
