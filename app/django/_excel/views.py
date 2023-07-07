@@ -3382,31 +3382,6 @@ class ExportStaffs(View):
         # Write body
         sort = dict(Staff.SORT_CHOICES)
         status = dict(Staff.STATUS_CHOICES)
-
-        def get_department(pk):
-            try:
-                return Department.objects.get(pk=pk).name
-            except ObjectDoesNotExist:
-                return None
-
-        def get_grade(pk):
-            try:
-                return JobGrade.objects.get(pk=pk).name
-            except ObjectDoesNotExist:
-                return None
-
-        def get_position(pk):
-            try:
-                return Position.objects.get(pk=pk).name
-            except ObjectDoesNotExist:
-                return None
-
-        def get_duty(pk):
-            try:
-                return DutyTitle.objects.get(pk=pk).name
-            except ObjectDoesNotExist:
-                return None
-
         for i, row in enumerate(data):
             row = list(row)
             row_num += 1
@@ -3415,13 +3390,13 @@ class ExportStaffs(View):
                 if col_num == 1:
                     cell_data = sort[cell_data]
                 if col_num == 6:
-                    cell_data = get_department(cell_data)
+                    cell_data = Department.objects.get(pk=cell_data).name if cell_data else None
                 if col_num == 7:
-                    cell_data = get_grade(cell_data)
+                    cell_data = JobGrade.objects.get(pk=cell_data).name if cell_data else None
                 if col_num == 8:
-                    cell_data = get_position(cell_data)
+                    cell_data = Position.objects.get(pk=cell_data).name if cell_data else None
                 if col_num == 9:
-                    cell_data = get_duty(cell_data)
+                    cell_data = DutyTitle.objects.get(pk=cell_data).name if cell_data else None
                 if col_num == 11:
                     cell_data = status[cell_data]
                 if col_num in (10, 12):
