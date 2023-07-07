@@ -3762,6 +3762,10 @@ class ExportDuties(View):
             row_num += 1
             row.insert(0, i + 1)
             for col_num, cell_data in enumerate(row):
+                if col_num is 3:
+                    body_format['align'] = 'left'
+                else:
+                    body_format['align'] = 'center'
                 bformat = workbook.add_format(body_format)
                 worksheet.write(row_num, col_num, cell_data, bformat)
         # data finish -------------------------------------------- #
@@ -3878,6 +3882,10 @@ class ExportGrades(View):
             row_num += 1
             row.insert(0, i + 1)
             for col_num, cell_data in enumerate(row):
+                if col_num in (3, 4):
+                    body_format['align'] = 'left'
+                else:
+                    body_format['align'] = 'center'
                 bformat = workbook.add_format(body_format)
                 worksheet.write(row_num, col_num, cell_data, bformat)
         # data finish -------------------------------------------- #
