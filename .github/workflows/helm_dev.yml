@@ -44,8 +44,8 @@ jobs:
           command: |
             cd ${{ secrets.NFS_PATH }}/dev/
             sh ./volume/backups/mysql_chk.sh
-            kubectl apply -f ./deploy/kubectl/ns-dev.yaml
-            helm upgrade ${{ secrets.DATABASE_USER }} ./deploy/helm --install -f ./deploy/helm/values-dev.yaml -n dev-hrebs \
+            helm upgrade ${{ secrets.DATABASE_USER }} ./deploy/helm --install -f ./deploy/helm/values-dev.yaml \
+              --install -n dev-hrebs --create-namespace --wait --timeout 10m \
               --set global.dbPassword=${{ secrets.DATABASE_PASSWORD }} \
               --set global.nfsPath=${{ secrets.NFS_PATH }} \
               --set global.nfsServerHost=${{ secrets.CICD_HOST }} \
