@@ -494,7 +494,7 @@ class ExportSuccessions(View):
             row.insert(0, i + 1)
             for col_num, cell_data in enumerate(row):
                 if col_num == 1:
-                    cell_data = obj_list.get(contract_id=cell_data).contract.__str__()
+                    cell_data = obj_list.get(contract=cell_data).contract.__str__()
                 if col_num == 2:
                     cell_data = obj_list.get(seller=cell_data).contract.contractor.name
                 if col_num == 3:
@@ -3389,13 +3389,13 @@ class ExportStaffs(View):
                 if col_num == 1:
                     cell_data = sort[cell_data]
                 if col_num == 6:
-                    cell_data = obj_list.get(department=cell_data).name
+                    cell_data = obj_list.get(department=cell_data).department.name
                 if col_num == 7:
-                    cell_data = obj_list.get(grade=cell_data).name
+                    cell_data = obj_list.get(grade=cell_data).grade.name
                 if col_num == 8:
-                    cell_data = obj_list.get(position=cell_data).name
+                    cell_data = obj_list.get(position=cell_data).position.name
                 if col_num == 9:
-                    cell_data = obj_list.get(duty=cell_data).name
+                    cell_data = obj_list.get(duty=cell_data).duty.name
                 if col_num == 11:
                     cell_data = status[cell_data]
                 if col_num in (10, 12):
