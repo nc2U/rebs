@@ -3388,6 +3388,14 @@ class ExportStaffs(View):
             for col_num, cell_data in enumerate(row):
                 if col_num == 1:
                     cell_data = sort[cell_data]
+                if col_num == 6:
+                    cell_data = obj_list.get(department=cell_data).name
+                if col_num == 7:
+                    cell_data = obj_list.get(grade=cell_data).name
+                if col_num == 8:
+                    cell_data = obj_list.get(position=cell_data).name
+                if col_num == 9:
+                    cell_data = obj_list.get(duty=cell_data).name
                 if col_num == 11:
                     cell_data = status[cell_data]
                 if col_num in (10, 12):
