@@ -3654,6 +3654,8 @@ class ExportPositions(View):
             for col_num, cell_data in enumerate(row_data):
                 if type(cell_data) == list:
                     cell_data = ', '.join(cell_data)
+                else:
+                    cell_data = str(cell_data)
                 if col_num in (2, 3):
                     body_format['align'] = 'left'
                 else:
