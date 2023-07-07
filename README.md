@@ -119,13 +119,13 @@ cd app/svelte
 yarn
 ```
 
-Vue application development -> webpack dev server on.
+Svelte application development -> webpack dev server on.
 
 ```bash
 yarn dev
 ```
 
-or Vue application deploy -> yarn build
+or Svelte application deploy -> yarn build
 
 ```bash
 yarn build
