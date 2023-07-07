@@ -12,7 +12,6 @@ from datetime import datetime
 
 from django.http import HttpResponse
 from django.views.generic import View
-from django.contrib.postgres.aggregates import ArrayAgg
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q, F, Max, Sum, Count, When, Case
 
@@ -3571,7 +3570,7 @@ class ExportPositions(View):
         # title_list
         header_src = [[],
                       ['직위명', 'name', 15],
-                      ['직급', 'grade_list', 25],
+                      ['직급', 'grades', 25],
                       ['설명', 'desc', 50]]
         titles = ['No']  # header titles
         params = []  # ORM 추출 field
@@ -3618,7 +3617,7 @@ class ExportPositions(View):
 
         # 4. Body
         # Get some data to write to the spreadsheet.
-        obj_list = Position.objects.filter(company=company).annotate(grade_list=ArrayAgg('grades'))
+        obj_list = Position.objects.filter(company=company)
 
         data = obj_list.values_list(*params)
 
