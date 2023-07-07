@@ -406,7 +406,7 @@ class ExportSuccessions(View):
         # don't allow temp files, for example the Google APP Engine, set the
         # 'in_memory' Workbook() constructor option as shown in the docs.
         workbook = xlsxwriter.Workbook(output)
-        worksheet = workbook.add_worksheet('권리의무승계_정보')
+        worksheet = workbook.add_worksheet('권리의무승계_목록')
 
         worksheet.set_default_row(20)
 
@@ -414,13 +414,13 @@ class ExportSuccessions(View):
 
         # title_list
         header_src = [[],
-                      ['계약 정보', 'contract', 10],
-                      ['양도계약자', 'seller', 30],
-                      ['양수계약자', 'buyer', 12],
+                      ['계약 정보', 'contract', 15],
+                      ['양도계약자', 'seller', 13],
+                      ['양수계약자', 'buyer', 13],
                       ['승계신청일', 'apply_date', 15],
                       ['매매계약일', 'trading_date', 15],
-                      ['변경인가여부', 'is_approval', 18],
-                      ['변경인가일', 'approval_date', 12],
+                      ['변경인가일', 'approval_date', 15],
+                      ['변경인가여부', 'is_approval', 13],
                       ['비고', 'note', 45]]
 
         # 1. Title
@@ -464,26 +464,13 @@ class ExportSuccessions(View):
 
         # Write header - 1
         for col_num, title in enumerate(titles):
-            # if col_num == 5:
-            #     worksheet.merge_range(row_num, col_num, row_num, col_num + 2, '환불 계좌', h_format)
-            # elif col_num in [6, 7]:
-            #     pass
-            # else:
             worksheet.write(row_num, col_num, title, h_format)
-
-        # Write Header - 2
-        row_num = 3
-        # for col_num, title in enumerate(titles):
-        #     if col_num in [5, 6, 7]:
-        #         worksheet.write(row_num, col_num, title, h_format)
-        #     else:
-        #         worksheet.merge_range(row_num - 1, col_num, row_num, col_num, title, h_format)
 
         # 4. Body
         # Get some data to write to the spreadsheet.
-        data = Succession.objects.filter(project=project)
+        obj_list = Succession.objects.filter(contract__project=project)
 
-        data = data.values_list(*params)
+        data = obj_list.values_list(*params)
 
         b_format = workbook.add_format()
         b_format.set_border()
@@ -501,24 +488,27 @@ class ExportSuccessions(View):
         worksheet.ignore_errors({'number_stored_as_text': 'F:G'})
 
         # Write header
-        choice = dict(ContractorRelease.STATUS_CHOICES)
         for i, row in enumerate(data):
             row = list(row)
             row_num += 1
             row.insert(0, i + 1)
             for col_num, cell_data in enumerate(row):
-                if col_num == 0:
+                if col_num == 1:
+                    cell_data = obj_list.get(contract_id=cell_data).contract.__str__()
+                if col_num == 2:
+                    cell_data = obj_list.get(seller=cell_data).contract.contractor.name
+                if col_num == 3:
+                    cell_data = obj_list.get(buyer=cell_data).buyer.name
+                if col_num not in (4, 5, 6):
                     body_format['num_format'] = '#,##0'
                 else:
                     body_format['num_format'] = 'yyyy-mm-dd'
-                if col_num == 4:
-                    body_format['num_format'] = 41
-                elif col_num == 10:
+                if col_num == 7:
+                    cell_data = '완료' if cell_data else ''
+                if col_num == 8:
                     body_format['align'] = 'left'
                 else:
                     body_format['align'] = 'center'
-                if col_num == 3:
-                    cell_data = choice[cell_data]
                 bformat = workbook.add_format(body_format)
                 worksheet.write(row_num, col_num, cell_data, bformat)
 
