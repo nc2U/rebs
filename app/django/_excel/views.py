@@ -498,12 +498,12 @@ class ExportSuccessions(View):
             row_num += 1
             row.insert(0, i + 1)
             for col_num, cell_data in enumerate(row):
+                if col_num == 1:
+                    cell_data = obj_list.get(contract_id=cell_data).contract.__str__()
                 if col_num == 2:
-                    cell_data = f'{cell_data} - {type(cell_data)}'  # obj_list.get(contract_id=cell_data).contract.__str__()
+                    cell_data = obj_list.get(seller=cell_data).contract.contractor
                 if col_num == 3:
-                    pass  # cell_data = obj_list.get(seller=cell_data).contract.contractor
-                if col_num == 4:
-                    pass  # cell_data = obj_list.get(buyer=cell_data).successionbuyer
+                    cell_data = obj_list.get(buyer=cell_data).successionbuyer
                 if col_num not in (4, 5, 7):
                     body_format['num_format'] = '#,##0'
                 else:
