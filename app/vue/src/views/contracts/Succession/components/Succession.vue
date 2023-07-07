@@ -58,10 +58,10 @@ const onSubmit = (payload: Succession) => {
     {{ succession.trading_date }}
   </CTableDataCell>
   <CTableDataCell class="text-primary text-center fw-bold">
-    {{ done ? '완료' : '' }}
+    {{ succession.approval_date }}
   </CTableDataCell>
   <CTableDataCell class="text-primary text-center fw-bold">
-    {{ succession.approval_date }}
+    {{ done ? '완료' : '' }}
   </CTableDataCell>
   <CTableDataCell class="text-center">
     <CButton

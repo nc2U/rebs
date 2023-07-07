@@ -24,8 +24,8 @@ const onSubmit = (payload: SuccessType) => emit('on-submit', payload)
       <col width="12%" />
       <col width="15%" />
       <col width="15%" />
-      <col width="11%" />
       <col width="15%" />
+      <col width="11%" />
       <col width="8%" />
     </colgroup>
 
@@ -36,8 +36,8 @@ const onSubmit = (payload: SuccessType) => emit('on-submit', payload)
         <CTableHeaderCell>양수계약자</CTableHeaderCell>
         <CTableHeaderCell>승계신청일</CTableHeaderCell>
         <CTableHeaderCell>매매계약일</CTableHeaderCell>
-        <CTableHeaderCell>변경인가여부</CTableHeaderCell>
         <CTableHeaderCell>변경인가일</CTableHeaderCell>
+        <CTableHeaderCell>변경인가여부</CTableHeaderCell>
         <CTableHeaderCell>확인</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
