@@ -3389,13 +3389,13 @@ class ExportStaffs(View):
                 if col_num == 1:
                     cell_data = sort[cell_data]
                 if col_num == 6:
-                    cell_data = obj_list.get(department=cell_data).first().department.name
+                    cell_data = Department.objects.get(pk=cell_data).name
                 if col_num == 7:
-                    cell_data = obj_list.get(grade=cell_data).first().grade.name
+                    cell_data = JobGrade.objects.get(pk=cell_data).name
                 if col_num == 8:
-                    cell_data = obj_list.get(position=cell_data).first().position.name
+                    cell_data = Position.objects.get(pk=cell_data).name
                 if col_num == 9:
-                    cell_data = obj_list.get(duty=cell_data).first().duty.name
+                    cell_data = DutyTitle.objects.get(pk=cell_data).name
                 if col_num == 11:
                     cell_data = status[cell_data]
                 if col_num in (10, 12):
