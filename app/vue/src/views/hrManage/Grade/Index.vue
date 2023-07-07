@@ -20,12 +20,14 @@ const dataFilter = ref<ComFilter>({
 })
 
 const comStore = useCompany()
-const comId = computed(() => comStore.company?.pk)
+const company = computed(() => comStore.company?.pk)
 const comName = computed(() => comStore.company?.name || undefined)
+
+const excelUrl = computed(() => `/excel/grades/?company=${company.value}`)
 
 const listFiltering = (payload: ComFilter) => {
   dataFilter.value = payload
-  if (comId.value)
+  if (company.value)
     fetchGradeList({
       page: payload.page,
       com: payload.com,
@@ -45,19 +47,19 @@ const deleteGrade = (pk: number, com: number) => comStore.deleteGrade(pk, com)
 
 const multiSubmit = (payload: Grade) => {
   const { page } = dataFilter.value
-  if (comId.value) {
-    if (!!payload.pk) updateGrade(payload, page, comId.value)
-    else createGrade(payload, page, comId.value)
+  if (company.value) {
+    if (!!payload.pk) updateGrade(payload, page, company.value)
+    else createGrade(payload, page, company.value)
   }
 }
 const onDelete = (pk: number) => {
-  if (comId.value) deleteGrade(pk, comId.value)
+  if (company.value) deleteGrade(pk, company.value)
 }
 
 const pageSelect = (num: number) => {
   dataFilter.value.page = num
-  if (comId.value) {
-    dataFilter.value.com = comId.value
+  if (company.value) {
+    dataFilter.value.com = company.value
     fetchGradeList(dataFilter.value)
   }
 }
@@ -77,7 +79,7 @@ const comSelect = (target: number | null) => {
   if (!!target) dataSetup(target)
 }
 
-onMounted(() => dataSetup(comId.value || comStore.initComId))
+onMounted(() => dataSetup(company.value || comStore.initComId))
 </script>
 
 <template>
@@ -91,7 +93,12 @@ onMounted(() => dataSetup(comId.value || comStore.initComId))
     <CCardBody>
       <ListController ref="listControl" @list-filtering="listFiltering" />
       <AddGrade :company="comName" @multi-submit="multiSubmit" />
-      <TableTitleRow title="직급 목록" excel url="#" disabled />
+      <TableTitleRow
+        title="직급 목록"
+        excel
+        :url="excelUrl"
+        :disabled="!company"
+      />
       <GradeList
         @multi-submit="multiSubmit"
         @on-delete="onDelete"

@@ -20,8 +20,10 @@ const dataFilter = ref<ComFilter>({
 })
 
 const comStore = useCompany()
-const comId = computed(() => comStore.company?.pk)
+const company = computed(() => comStore.company?.pk)
 const comName = computed(() => comStore.company?.name || undefined)
+
+const excelUrl = computed(() => `/excel/duties/?company=${company.value}`)
 
 const listFiltering = (payload: ComFilter) => {
   dataFilter.value = payload
@@ -42,19 +44,19 @@ const deleteDuty = (pk: number, com: number) => comStore.deleteDuty(pk, com)
 
 const multiSubmit = (payload: Duty) => {
   const { page } = dataFilter.value
-  if (comId.value) {
-    if (!!payload.pk) updateDuty(payload, page, comId.value)
-    else createDuty(payload, page, comId.value)
+  if (company.value) {
+    if (!!payload.pk) updateDuty(payload, page, company.value)
+    else createDuty(payload, page, company.value)
   }
 }
 const onDelete = (pk: number) => {
-  if (comId.value) deleteDuty(pk, comId.value)
+  if (company.value) deleteDuty(pk, company.value)
 }
 
 const pageSelect = (num: number) => {
   dataFilter.value.page = num
-  if (comId.value) {
-    dataFilter.value.com = comId.value
+  if (company.value) {
+    dataFilter.value.com = company.value
     fetchDutyList(dataFilter.value)
   }
 }
@@ -64,7 +66,7 @@ const comSelect = (target: number | null) => {
   if (!!target) fetchDutyList({ com: target })
 }
 
-onMounted(() => fetchDutyList({ com: comId.value || comStore.initComId }))
+onMounted(() => fetchDutyList({ com: company.value || comStore.initComId }))
 </script>
 
 <template>
@@ -78,7 +80,12 @@ onMounted(() => fetchDutyList({ com: comId.value || comStore.initComId }))
     <CCardBody>
       <ListController ref="listControl" @list-filtering="listFiltering" />
       <AddDuty :company="comName" @multi-submit="multiSubmit" />
-      <TableTitleRow title="직책 목록" excel url="#" disabled />
+      <TableTitleRow
+        title="직책 목록"
+        excel
+        :url="excelUrl"
+        :disabled="!company"
+      />
       <DutyList
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
