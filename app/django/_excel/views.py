@@ -481,7 +481,7 @@ class ExportSuccessions(View):
 
         # 4. Body
         # Get some data to write to the spreadsheet.
-        data = Succession.objects.filter(project=project)
+        data = Succession.objects.filter(contract__project=project)
 
         data = data.values_list(*params)
 
