@@ -406,7 +406,7 @@ class ExportSuccessions(View):
         # don't allow temp files, for example the Google APP Engine, set the
         # 'in_memory' Workbook() constructor option as shown in the docs.
         workbook = xlsxwriter.Workbook(output)
-        worksheet = workbook.add_worksheet('권리의무승계_정보')
+        worksheet = workbook.add_worksheet('권리의무승계_목록')
 
         worksheet.set_default_row(20)
 
@@ -499,7 +499,7 @@ class ExportSuccessions(View):
             row.insert(0, i + 1)
             for col_num, cell_data in enumerate(row):
                 if col_num == 2:
-                    pass  # cell_data = obj_list.get(contract_id=cell_data).contract
+                    cell_data = obj_list.get(contract_id=cell_data).contract.__str__()
                 if col_num == 3:
                     pass  # cell_data = obj_list.get(seller=cell_data).contract.contractor
                 if col_num == 4:
