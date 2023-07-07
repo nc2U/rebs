@@ -471,14 +471,6 @@ class ExportSuccessions(View):
             # else:
             worksheet.write(row_num, col_num, title, h_format)
 
-        # Write Header - 2
-        row_num = 3
-        # for col_num, title in enumerate(titles):
-        #     if col_num in [5, 6, 7]:
-        #         worksheet.write(row_num, col_num, title, h_format)
-        #     else:
-        #         worksheet.merge_range(row_num - 1, col_num, row_num, col_num, title, h_format)
-
         # 4. Body
         # Get some data to write to the spreadsheet.
         data = Succession.objects.filter(contract__project=project)
@@ -506,6 +498,12 @@ class ExportSuccessions(View):
             row_num += 1
             row.insert(0, i + 1)
             for col_num, cell_data in enumerate(row):
+                if col_num == 0:
+                    body_format['num_format'] = '#,##0'
+                if col_num == 6:
+                    cell_data = '완료' if cell_data else ''
+                if col_num == 8:
+                    body_format['align'] = 'left'
                 bformat = workbook.add_format(body_format)
                 worksheet.write(row_num, col_num, cell_data, bformat)
 
