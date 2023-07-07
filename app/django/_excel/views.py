@@ -419,7 +419,7 @@ class ExportSuccessions(View):
                       ['양수계약자', 'buyer', 13],
                       ['승계신청일', 'apply_date', 15],
                       ['매매계약일', 'trading_date', 15],
-                      ['변경인가여부', 'is_approval', 10],
+                      ['변경인가여부', 'is_approval', 12],
                       ['변경인가일', 'approval_date', 15],
                       ['비고', 'note', 45]]
 
@@ -464,11 +464,6 @@ class ExportSuccessions(View):
 
         # Write header - 1
         for col_num, title in enumerate(titles):
-            # if col_num == 5:
-            #     worksheet.merge_range(row_num, col_num, row_num, col_num + 2, '환불 계좌', h_format)
-            # elif col_num in [6, 7]:
-            #     pass
-            # else:
             worksheet.write(row_num, col_num, title, h_format)
 
         # 4. Body
