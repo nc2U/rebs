@@ -3686,6 +3686,7 @@ class ExportDuties(View):
 
         # data start --------------------------------------------- #
         company = Company.objects.get(pk=request.GET.get('company'))
+        com_name = company.name.replace('주식회사 ', '(주)')
 
         # title_list
         header_src = [[],
@@ -3718,7 +3719,7 @@ class ExportDuties(View):
         title_format.set_bold()
         title_format.set_font_size(18)
         title_format.set_align('vcenter')
-        worksheet.merge_range(row_num, 0, row_num, len(header_src) - 1, str(company) + ' 직원 정보 목록', title_format)
+        worksheet.merge_range(row_num, 0, row_num, len(header_src) - 1, com_name + ' 직원 정보 목록', title_format)
 
         # 2. Pre Header - Date
         row_num = 1
@@ -3809,6 +3810,7 @@ class ExportGrades(View):
 
         # data start --------------------------------------------- #
         company = Company.objects.get(pk=request.GET.get('company'))
+        com_name = company.name.replace('주식회사 ', '(주)')
 
         # title_list
         header_src = [[],
@@ -3841,7 +3843,7 @@ class ExportGrades(View):
         title_format.set_bold()
         title_format.set_font_size(18)
         title_format.set_align('vcenter')
-        worksheet.merge_range(row_num, 0, row_num, len(header_src) - 1, str(company) + ' 직원 정보 목록', title_format)
+        worksheet.merge_range(row_num, 0, row_num, len(header_src) - 1, com_name + ' 직원 정보 목록', title_format)
 
         # 2. Pre Header - Date
         row_num = 1
