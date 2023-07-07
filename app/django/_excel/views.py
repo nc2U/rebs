@@ -501,9 +501,9 @@ class ExportSuccessions(View):
                 if col_num == 2:
                     pass  # cell_data = obj_list.get(contract_id=cell_data).contract
                 if col_num == 3:
-                    cell_data = obj_list.get(seller=cell_data).contract.contractor
+                    pass  # cell_data = obj_list.get(seller=cell_data).contract.contractor
                 if col_num == 4:
-                    cell_data = obj_list.get(buyer=cell_data).successionbuyer
+                    pass  # cell_data = obj_list.get(buyer=cell_data).successionbuyer
                 if col_num not in (4, 5, 7):
                     body_format['num_format'] = '#,##0'
                 else:
