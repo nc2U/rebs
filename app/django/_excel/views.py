@@ -2434,10 +2434,20 @@ class ExportSitesByOwner(View):
 
         # data start --------------------------------------------- #
 
-        ##### ----------------- get_queryset start ----------------- #####
+        # -------------------- get_queryset start -------------------- #
         project = Project.objects.get(pk=request.GET.get('project'))
         obj_list = SiteOwner.objects.filter(project=project).order_by('owner', 'id')
-        ##### ----------------- get_queryset finish ----------------- #####
+        own_sort = request.GET.get('own_sort')
+        search = request.GET.get('search')
+        obj_list = obj_list.filter(own_sort=own_sort) if own_sort else obj_list
+        obj_list = obj_list.filter(
+            Q(owner__icontains=search) |
+            Q(phone1__icontains=search) |
+            Q(phone2__icontains=search) |
+            Q(sites__lot_number__icontains=search) |
+            Q(counsel_record__icontains=search)
+        ) if search else obj_list
+        # -------------------- get_queryset finish -------------------- #
 
         rows_cnt = 8
 
