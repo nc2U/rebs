@@ -31,7 +31,10 @@ const totalArea = computed(() =>
     : getSitesTotal.value?.official,
 )
 
-const excelUrl = computed(() => 'excel/sites/?project=' + project.value)
+const excelUrl = computed(
+  () =>
+    `excel/sites/?project=${project.value}&search=${dataFilter.value.search}`,
+)
 
 type filter = {
   page: number

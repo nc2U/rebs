@@ -2241,7 +2241,14 @@ class ExportSites(View):
 
         # -------------------- get_queryset start -------------------- #
         project = Project.objects.get(pk=request.GET.get('project'))
+        search = request.GET.get('search')
         obj_list = Site.objects.filter(project=project).order_by('order')
+        obj_list = obj_list.filter(
+            Q(district__icontains=search) |
+            Q(lot_number__icontains=search) |
+            Q(site_purpose__icontains=search) |
+            Q(owners__owner__icontains=search)
+        ) if search else obj_list
         # -------------------- get_queryset finish -------------------- #
 
         rows_cnt = 7 if project.is_returned_area else 5
