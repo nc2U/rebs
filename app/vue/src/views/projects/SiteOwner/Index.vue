@@ -33,9 +33,13 @@ const isReturned = computed(() => projStore.project?.is_returned_area)
 const siteStore = useSite()
 const getOwnersTotal = computed(() => siteStore.getOwnersTotal?.owned_area)
 
-const excelUrl = computed(
-  () => 'excel/sites-by-owner/?project=' + project.value,
-)
+const excelUrl = computed(() => {
+  const url = `excel/sites-by-owner/?project=${project.value}`
+  const filter = dataFilter.value
+  let queryStr = filter.own_sort ? `&own_sort=${filter.own_sort}` : ''
+  queryStr = filter.search ? `${queryStr}&search=${filter.search}` : queryStr
+  return `${url}${queryStr}`
+})
 
 const listFiltering = (payload: filter) => {
   dataFilter.value = payload

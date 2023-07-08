@@ -31,7 +31,8 @@ TODAY = datetime.today().strftime('%Y-%m-%d')
 class ExportContracts(View):
     """계약자 리스트"""
 
-    def get(self, request):
+    @staticmethod
+    def get(request):
 
         # Create an in-memory output file for the new workbook.
         output = io.BytesIO()
@@ -143,44 +144,43 @@ class ExportContracts(View):
 
         # ----------------- get_queryset start ----------------- #
         # Get some data to write to the spreadsheet.
-        data = Contract.objects.filter(project=project,
-                                       activation=True,
-                                       contractor__status='2').order_by('contractor__contract_date')
-        if request.GET.get('status'):
-            data = data.filter(contractor__status=request.GET.get('status'))
-        if request.GET.get('group'):
-            data = data.filter(order_group=request.GET.get('group'))
-        if request.GET.get('type'):
-            data = data.filter(unit_type=request.GET.get('type'))
-        if self.request.GET.get('dong'):
-            data = data.filter(keyunit__houseunit__building_unit=self.request.GET.get('dong'))
-        if request.GET.get('is_null'):
-            is_null = True if request.GET.get('is_null') == '1' else False
-            data = data.filter(keyunit__houseunit__isnull=is_null)
-        if request.GET.get('reg'):
-            result = True if request.GET.get('reg') == '1' else False
-            data = data.filter(contractor__is_registed=result)
-        if request.GET.get('sdate'):
-            data = data.filter(contractor__contract_date__gte=request.GET.get('sdate'))
-        if request.GET.get('edate'):
-            data = data.filter(contractor__contract_date__lte=request.GET.get('edate'))
+        queryset = Contract.objects.filter(project=project,
+                                           activation=True,
+                                           contractor__status='2').order_by('contractor__contract_date')
+        status = request.GET.get('status')
+        group = request.GET.get('group')
+        type = request.GET.get('type')
+        dong = request.GET.get('dong')
+        is_null = request.GET.get('is_null')
+        reg = request.GET.get('reg')
+        sdate = request.GET.get('sdate')
+        edate = request.GET.get('edate')
         q = request.GET.get('q')
-        if q:
-            data = data.filter(
-                Q(serial_number__icontains=q) |
-                Q(contractor__name__icontains=q) |
-                Q(contractor__note__icontains=q) |
-                Q(contractor__contractorcontact__cell_phone__icontains=q))
 
+        queryset = queryset.filter(contractor__status=status) if status else queryset
+        queryset = queryset.filter(order_group=group) if group else queryset
+        queryset = queryset.filter(unit_type=type) if type else queryset
+        queryset = queryset.filter(keyunit__houseunit__building_unit=dong) if dong else queryset
+        null_qry = True if is_null == '1' else False
+        queryset = queryset.filter(keyunit__houseunit__isnull=null_qry) if is_null else queryset
+        reg_qry = True if reg == '1' else False
+        queryset = queryset.filter(contractor__is_registed=reg_qry) if reg else queryset
+        queryset = queryset.filter(contractor__contract_date__gte=sdate) if sdate else queryset
+        queryset = queryset.filter(contractor__contract_date__lte=edate) if edate else queryset
+        queryset = queryset.filter(
+            Q(serial_number__icontains=q) |
+            Q(contractor__name__icontains=q) |
+            Q(contractor__note__icontains=q) |
+            Q(contractor__contractorcontact__cell_phone__icontains=q)) if q else queryset
+
+        order_qry = request.GET.get('order')
         order_list = ['-created_at', 'created_at', '-contractor__contract_date',
                       'contractor__contract_date', '-serial_number',
                       'serial_number', '-contractor__name', 'contractor__name']
-        if self.request.GET.get('order'):
-            data = data.order_by(order_list[int(self.request.GET.get('order'))])
+        queryset = queryset.order_by(order_list[int(order_qry)]) if order_qry else queryset
 
         # ----------------- get_queryset finish ----------------- #
-
-        data = data.values_list(*params)
+        data = queryset.values_list(*params)
 
         is_date = []  # ('생년월일', '계약일자')
         is_left = []
@@ -620,9 +620,9 @@ class ExportReleases(View):
 
         # 4. Body
         # Get some data to write to the spreadsheet.
-        data = ContractorRelease.objects.filter(project=project)
+        queryset = ContractorRelease.objects.filter(project=project)
 
-        data = data.values_list(*params)
+        data = queryset.values_list(*params)
 
         b_format = workbook.add_format()
         b_format.set_border()
@@ -693,7 +693,7 @@ class ExportUnitStatus(View):
 
         worksheet.set_default_row(15)
 
-        ### data start --------------------------------------------- #
+        # data start --------------------------------------------- #
         project = Project.objects.get(pk=request.GET.get('project'))
         max_floor = HouseUnit.objects.aggregate(Max('floor_no'))
         floor_no__max = max_floor['floor_no__max'] if max_floor['floor_no__max'] else 1
@@ -797,7 +797,7 @@ class ExportUnitStatus(View):
 
             col_num = col_num + lines.count() + 1
 
-        ### data end ----------------------------------------------- #
+        # data end ----------------------------------------------- #
 
         # Close the workbook before sending the data.
         workbook.close()
@@ -841,24 +841,17 @@ def export_payments_xls(request):
                                               project_account_d3__in=(1, 4),
                                               deal_date__range=(sd, ed)).order_by('deal_date', 'created_at')
 
-    if og:
-        obj_list = obj_list.filter(contract__order_group=og)
-    if ut:
-        obj_list = obj_list.filter(contract__unit_type=ut)
-    if ipo:
-        obj_list = obj_list.filter(installment_order_id=ipo)
-    if ba:
-        obj_list = obj_list.filter(bank_account__id=ba)
-    if nc:
-        obj_list = obj_list.filter(contract__isnull=True)
-    if ni:
-        obj_list = obj_list.filter(installment_order__isnull=True, contract__isnull=False)
-    if q:
-        obj_list = obj_list.filter(
-            Q(contract__contractor__name__icontains=q) |
-            Q(content__icontains=q) |
-            Q(trader__icontains=q) |
-            Q(note__icontains=q))
+    obj_list = obj_list.filter(contract__order_group=og) if og else obj_list
+    obj_list = obj_list.filter(contract__unit_type=ut) if ut else obj_list
+    obj_list = obj_list.filter(installment_order_id=ipo) if ipo else obj_list
+    obj_list = obj_list.filter(bank_account__id=ba) if ba else obj_list
+    obj_list = obj_list.filter(contract__isnull=True) if nc else obj_list
+    obj_list = obj_list.filter(installment_order__isnull=True, contract__isnull=False) if ni else obj_list
+    obj_list = obj_list = obj_list.filter(
+        Q(contract__contractor__name__icontains=q) |
+        Q(content__icontains=q) |
+        Q(trader__icontains=q) |
+        Q(note__icontains=q)) if q else obj_list
 
     # Sheet Title, first row
     row_num = 0
@@ -1066,24 +1059,17 @@ class ExportPayments(View):
                                                   project_account_d3__in=(1, 4),
                                                   deal_date__range=(sd, ed)).order_by('deal_date', 'created_at')
 
-        if og:
-            obj_list = obj_list.filter(contract__order_group=og)
-        if ut:
-            obj_list = obj_list.filter(contract__unit_type=ut)
-        if ipo:
-            obj_list = obj_list.filter(installment_order_id=ipo)
-        if ba:
-            obj_list = obj_list.filter(bank_account__id=ba)
-        if nc:
-            obj_list = obj_list.filter(contract__isnull=True)
-        if ni:
-            obj_list = obj_list.filter(installment_order__isnull=True, contract__isnull=False)
-        if q:
-            obj_list = obj_list.filter(
-                Q(contract__contractor__name__icontains=q) |
-                Q(content__icontains=q) |
-                Q(trader__icontains=q) |
-                Q(note__icontains=q))
+        obj_list = obj_list.filter(contract__order_group=og) if og else obj_list
+        obj_list = obj_list.filter(contract__unit_type=ut) if ut else obj_list
+        obj_list = obj_list.filter(installment_order_id=ipo) if ipo else obj_list
+        obj_list = obj_list.filter(bank_account__id=ba) if ba else obj_list
+        obj_list = obj_list.filter(contract__isnull=True) if nc else obj_list
+        obj_list = obj_list.filter(installment_order__isnull=True, contract__isnull=False) if ni else obj_list
+        obj_list = obj_list.filter(
+            Q(contract__contractor__name__icontains=q) |
+            Q(content__icontains=q) |
+            Q(trader__icontains=q) |
+            Q(note__icontains=q)) if q else obj_list
 
         data = obj_list.values_list(*params)
 
@@ -2115,36 +2101,20 @@ def export_project_cash_xls(request):
                                                is_separate=False,
                                                deal_date__range=(sdate, edate)) \
         .order_by('deal_date', 'created_at')
-    # cash_list = ProjectCashBook.objects.filter(Q(project=project) &
-    #                                            (Q(is_imprest=False) |
-    #                                             Q(project_account_d3=63, income__isnull=True)),
-    #                                            is_separate=False,
-    #                                            deal_date__range=(sdate, edate)) \
-    #     .order_by('deal_date', 'created_at')
+
     imp_list = ProjectCashBook.objects.filter(project=project, is_imprest=True, is_separate=False,
                                               deal_date__range=(sdate, edate)).exclude(project_account_d3=63,
                                                                                        income__isnull=True)
-
     obj_list = imp_list if is_imp == '1' else cash_list
-
-    if sort:
-        obj_list = obj_list.filter(sort_id=sort)
-
-    if d1:
-        obj_list = obj_list.filter(project_account_d2_id=d1)
-
-    if d2:
-        obj_list = obj_list.filter(project_account_d3_id=d2)
-
-    if bank_acc:
-        obj_list = obj_list.filter(bank_account_id=bank_acc)
-
-    if q:
-        obj_list = obj_list.filter(
-            Q(contract__contractor__name__icontains=q) |
-            Q(content__icontains=q) |
-            Q(trader__icontains=q) |
-            Q(note__icontains=q))
+    obj_list = obj_list.filter(sort_id=sort) if sort else obj_list
+    obj_list = obj_list.filter(project_account_d2_id=d1) if d1 else obj_list
+    obj_list = obj_list.filter(project_account_d3_id=d2) if d2 else obj_list
+    obj_list = obj_list.filter(bank_account_id=bank_acc) if bank_acc else obj_list
+    obj_list = obj_list.filter(
+        Q(contract__contractor__name__icontains=q) |
+        Q(content__icontains=q) |
+        Q(trader__icontains=q) |
+        Q(note__icontains=q)) if q else obj_list
 
     # Sheet Title, first row
     row_num = 0
@@ -2271,7 +2241,14 @@ class ExportSites(View):
 
         # -------------------- get_queryset start -------------------- #
         project = Project.objects.get(pk=request.GET.get('project'))
+        search = request.GET.get('search')
         obj_list = Site.objects.filter(project=project).order_by('order')
+        obj_list = obj_list.filter(
+            Q(district__icontains=search) |
+            Q(lot_number__icontains=search) |
+            Q(site_purpose__icontains=search) |
+            Q(owners__owner__icontains=search)
+        ) if search else obj_list
         # -------------------- get_queryset finish -------------------- #
 
         rows_cnt = 7 if project.is_returned_area else 5
@@ -2457,10 +2434,20 @@ class ExportSitesByOwner(View):
 
         # data start --------------------------------------------- #
 
-        ##### ----------------- get_queryset start ----------------- #####
+        # -------------------- get_queryset start -------------------- #
         project = Project.objects.get(pk=request.GET.get('project'))
+        own_sort = request.GET.get('own_sort')
+        search = request.GET.get('search')
         obj_list = SiteOwner.objects.filter(project=project).order_by('owner', 'id')
-        ##### ----------------- get_queryset finish ----------------- #####
+        obj_list = obj_list.filter(own_sort=own_sort) if own_sort else obj_list
+        obj_list = obj_list.filter(
+            Q(owner__icontains=search) |
+            Q(phone1__icontains=search) |
+            Q(phone2__icontains=search) |
+            Q(sites__lot_number__icontains=search) |
+            Q(counsel_record__icontains=search)
+        ) if search else obj_list
+        # -------------------- get_queryset finish -------------------- #
 
         rows_cnt = 8
 
@@ -2495,7 +2482,7 @@ class ExportSitesByOwner(View):
         area_title = at + '(환지면적 기준)' if project.is_returned_area else at
         header_src = [
             ['소유구분', 'own_sort', 10],
-            ['소유자', 'owner', 15],
+            ['소유자', 'owner', 18],
             ['생년월일', 'date_of_birth', 15],
             ['주연락처', 'phone1', 18],
             ['소유부지(지번)', 'sites__lot_number', 12],
@@ -2642,7 +2629,17 @@ class ExportSitesContracts(View):
 
         # --------------------- get_queryset start --------------------- #
         project = Project.objects.get(pk=request.GET.get('project'))
+        own_sort = request.GET.get('own_sort')
+        search = request.GET.get('search')
         obj_list = SiteContract.objects.filter(project=project).order_by('contract_date', 'id')
+        obj_list = obj_list.filter(owner__own_sort=own_sort) if own_sort else obj_list
+        obj_list = obj_list.filter(
+            Q(owner__owner__icontains=search) |
+            Q(owner__phone1__icontains=search) |
+            Q(acc_bank__icontains=search) |
+            Q(acc_owner__icontains=search) |
+            Q(note__icontains=search)
+        ) if search else obj_list
         # --------------------- get_queryset finish --------------------- #
 
         rows_cnt = 12
@@ -2675,18 +2672,18 @@ class ExportSitesContracts(View):
 
         # Header_contents
         header_src = [['소유구분', 'owner__own_sort', 8],
-                      ['소유자', 'owner__owner', 12],
+                      ['소유자', 'owner__owner', 18],
                       ['계약일', 'contract_date', 15],
-                      ['총 계약면적', 'contract_area', 8],
-                      ['', '', 8],
-                      ['총 매매대금', 'total_price', 15],
-                      ['계약금1', 'down_pay1', 12],
-                      ['지급여부', 'down_pay1_is_paid', 8],
-                      ['계약금2', 'down_pay2', 12],
-                      ['중도금', 'inter_pay1', 12],
+                      ['총 계약면적', 'contract_area', 10],
+                      ['', '', 10],
+                      ['총 매매대금', 'total_price', 16],
+                      ['계약금1', 'down_pay1', 13],
+                      ['지급여부', 'down_pay1_is_paid', 9],
+                      ['계약금2', 'down_pay2', 13],
+                      ['중도금', 'inter_pay1', 13],
                       ['잔금', 'remain_pay', 15],
-                      ['지급여부', 'remain_pay_is_paid', 8],
-                      ['비고', 'note', 25]]
+                      ['지급여부', 'remain_pay_is_paid', 9],
+                      ['비고', 'note', 30]]
 
         titles = []  # 헤더명
         params = []  # 헤더 컬럼(db)
@@ -2702,11 +2699,14 @@ class ExportSitesContracts(View):
             worksheet.set_column(i, i, cw)
 
         # Write header
+        last_col = 0
         for col_num, col in enumerate(titles):  # 헤더 줄 제목 세팅
             if '면적' in col:
                 worksheet.merge_range(row_num, col_num, row_num, col_num + 1, titles[col_num], header_format)
             elif int(col_num) not in (3, 4):
                 worksheet.merge_range(row_num, col_num, row_num + 1, col_num, titles[col_num], header_format)
+            if '비고' in col:
+                last_col = col_num
 
         row_num = 3
 
@@ -2719,8 +2719,6 @@ class ExportSitesContracts(View):
         #################################################################
         # 4. Body
         # Get some data to write to the spreadsheet.
-
-        # data = obj_list.values_list(*params)
 
         body_format = {
             'border': True,
@@ -2738,14 +2736,16 @@ class ExportSitesContracts(View):
             row_num += 1
             for col_num, cell_data in enumerate(titles):
                 row = list(row)
-
+                if col_num == last_col:
+                    body_format['align'] = 'left'
+                else:
+                    body_format['align'] = 'center'
                 if col_num == 2:
                     body_format['num_format'] = 'yyyy-mm-dd'
                 elif col_num in (3, 4):
                     body_format['num_format'] = 43
                 else:
                     body_format['num_format'] = 41
-
                 bf = workbook.add_format(body_format)
 
                 if col_num == 0:
@@ -2847,7 +2847,8 @@ class ExportBalanceByAcc(View):
 
         # data start --------------------------------------------- #
 
-        company = Company.objects.first()
+        company = Company.objects.get(pk=request.GET.get('company'))
+        com_name = company.name.replace('주식회사 ', '(주)')
         date = request.GET.get('date')
         date = TODAY if not date or date == 'null' else date
 
@@ -2858,7 +2859,7 @@ class ExportBalanceByAcc(View):
         title_format.set_font_size(18)
         title_format.set_align('vcenter')
         title_format.set_bold()
-        worksheet.write(row_num, 0, str(company) + ' 계좌별 자금현황', title_format)
+        worksheet.write(row_num, 0, com_name + ' 계좌별 자금현황', title_format)
 
         # 2. Header
         row_num = 1
@@ -2893,7 +2894,7 @@ class ExportBalanceByAcc(View):
         b_format.set_border()
         b_format.set_num_format(41)
 
-        qs = CashBook.objects.all() \
+        qs = CashBook.objects.filter(company=company) \
             .order_by('bank_account') \
             .filter(is_separate=False, deal_date__lte=date)
 
@@ -2993,7 +2994,8 @@ class ExportDateCashbook(View):
 
         # data start --------------------------------------------- #
 
-        company = Company.objects.first()
+        company = Company.objects.get(pk=request.GET.get('company'))
+        com_name = company.name.replace('주식회사 ', '(주)')
         date = request.GET.get('date')
         date = TODAY if not date or date == 'null' else date
 
@@ -3004,7 +3006,7 @@ class ExportDateCashbook(View):
         title_format.set_font_size(18)
         title_format.set_align('vcenter')
         title_format.set_bold()
-        worksheet.write(row_num, 0, str(company) + ' 당일 입출금내역 [' + date + ' 기준]', title_format)
+        worksheet.write(row_num, 0, com_name + ' 당일 입출금내역 [' + date + ' 기준]', title_format)
 
         # 2. Header
         row_num = 1
@@ -3043,7 +3045,7 @@ class ExportDateCashbook(View):
         b_format.set_border()
         b_format.set_num_format(41)
 
-        date_cashes = CashBook.objects.filter(is_separate=False,
+        date_cashes = CashBook.objects.filter(company=company, is_separate=False,
                                               deal_date__exact=date).order_by('deal_date', 'created_at', 'id')
 
         inc_sum = 0
@@ -3117,28 +3119,23 @@ def export_cashbook_xls(request):
     bank_account = request.GET.get('bank_account')
     search_word = request.GET.get('search_word')
 
-    company = Company.objects.first()
+    company = Company.objects.get(pk=request.GET.get('company'))
+    com_name = company.name.replace('주식회사 ', '(주)')
     sd = '1900-01-01' if not s_date or s_date == 'null' else s_date
     ed = TODAY if not e_date or e_date == 'null' else e_date
 
     obj_list = CashBook.objects.filter(company=company, is_separate=False,
                                        deal_date__range=(sd, ed)).order_by('deal_date', 'id')
 
-    if sort:
-        obj_list = obj_list.filter(sort_id=sort)
-    if account_d1:
-        obj_list = obj_list.filter(account_d1_id=account_d1)
-    if account_d2:
-        obj_list = obj_list.filter(account_d2_id=account_d2)
-    if account_d3:
-        obj_list = obj_list.filter(account_d3_id=account_d3)
-    if bank_account:
-        obj_list = obj_list.filter(bank_account_id=bank_account)
-    if search_word:
-        obj_list = obj_list.filter(
-            Q(content__icontains=search_word) |
-            Q(trader__icontains=search_word) |
-            Q(note__icontains=search_word))
+    obj_list = obj_list.filter(sort_id=sort) if sort else obj_list
+    obj_list = obj_list.filter(account_d1_id=account_d1) if account_d1 else obj_list
+    obj_list = obj_list.filter(account_d2_id=account_d2) if account_d2 else obj_list
+    obj_list = obj_list.filter(account_d3_id=account_d3) if account_d3 else obj_list
+    obj_list = obj_list.filter(bank_account_id=bank_account) if bank_account else obj_list
+    obj_list = obj_list.filter(
+        Q(content__icontains=search_word) |
+        Q(trader__icontains=search_word) |
+        Q(note__icontains=search_word)) if search_word else obj_list
 
     # Sheet Title, first row
     row_num = 0
@@ -3148,7 +3145,7 @@ def export_cashbook_xls(request):
     style.font.height = 300
     style.alignment.vert = style.alignment.VERT_CENTER  # 수직정렬
 
-    ws.write(row_num, 0, str(company) + ' 입출금 내역', style)
+    ws.write(row_num, 0, com_name + ' 입출금 내역', style)
     ws.row(0).height_mismatch = True
     ws.row(0).height = 38 * 20
 
@@ -3363,6 +3360,27 @@ class ExportStaffs(View):
         # Get some data to write to the spreadsheet.
         obj_list = Staff.objects.filter(company=company)
 
+        # get query list
+        sort = request.GET.get('sort')
+        department = request.GET.get('department')
+        grade = request.GET.get('grade')
+        position = request.GET.get('position')
+        duty = request.GET.get('duty')
+        status = request.GET.get('status')
+        search = request.GET.get('search')
+
+        obj_list = obj_list.filter(sort=sort) if sort else obj_list
+        obj_list = obj_list.filter(department_id=department) if department else obj_list
+        obj_list = obj_list.filter(grade_id=grade) if grade else obj_list
+        obj_list = obj_list.filter(position_id=position) if position else obj_list
+        obj_list = obj_list.filter(duty_id=duty) if duty else obj_list
+        obj_list = obj_list.filter(status=status) if status else obj_list
+        obj_list = obj_list.filter(
+            Q(name__icontains=search) |
+            Q(id_number__icontains=search) |
+            Q(personal_phone__icontains=search) |
+            Q(email__icontains=search)) if search else obj_list
+
         data = obj_list.values_list(*params)
 
         b_format = workbook.add_format()
@@ -3496,7 +3514,14 @@ class ExportDeparts(View):
 
         # 4. Body
         # Get some data to write to the spreadsheet.
+        upper_depart = request.GET.get('upper_depart')
+        search = request.GET.get('search')
         obj_list = Department.objects.filter(company=company)
+
+        obj_list = obj_list.filter(upper_depart_id=upper_depart) if upper_depart else obj_list
+        obj_list = obj_list.filter(
+            Q(name__icontains=search) |
+            Q(task__icontains=search)) if search else obj_list
 
         data = obj_list.values_list(*params)
 
@@ -3619,7 +3644,9 @@ class ExportPositions(View):
 
         # 4. Body
         # Get some data to write to the spreadsheet.
+        search = request.GET.get('search')
         obj_list = Position.objects.filter(company=company)
+        obj_list = obj_list.filter(name__icontains=search) if search else obj_list
 
         json_data = serializers.serialize('json', obj_list)
         data = [i['fields'] for i in json.loads(json_data)]
@@ -3752,7 +3779,9 @@ class ExportDuties(View):
 
         # 4. Body
         # Get some data to write to the spreadsheet.
+        search = request.GET.get('search')
         obj_list = DutyTitle.objects.filter(company=company)
+        obj_list = obj_list.filter(name__icontains=search) if search else obj_list
 
         data = obj_list.values_list(*params)
 
@@ -3872,7 +3901,13 @@ class ExportGrades(View):
 
         # 4. Body
         # Get some data to write to the spreadsheet.
+        search = request.GET.get('search')
         obj_list = JobGrade.objects.filter(company=company)
+        obj_list = obj_list.filter(
+            Q(name__icontains=search) |
+            Q(promotion_period__icontains=search) |
+            Q(positions__name__icontains=search) |
+            Q(criteria_new__icontains=search)) if search else obj_list
 
         base_data = obj_list.values(*params)
         data = []

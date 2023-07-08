@@ -40,7 +40,8 @@ const excelUrl = computed(() => {
   const d3 = dataFilter.value.account_d3 || ''
   const ba = dataFilter.value.bank_account || ''
   const q = dataFilter.value.search
-  return `/excel/cashbook/?s_date=${sd}&e_date=${ed}&sort=${st}&account_d1=${d1}&account_d2=${d2}&account_d3=${d3}&bank_account=${ba}&search_word=${q}`
+  const url = `/excel/cashbook/?company=${company.value}`
+  return `${url}&s_date=${sd}&e_date=${ed}&sort=${st}&account_d1=${d1}&account_d2=${d2}&account_d3=${d3}&bank_account=${ba}&search_word=${q}`
 })
 
 const comStore = useCompany()
