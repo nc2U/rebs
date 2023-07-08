@@ -59,13 +59,13 @@ const contract = {
 
 const payment = {
   component: 'CNavItem',
-  name: '대금 수납 관리',
+  name: '분양 수납 관리',
   to: '/payments',
   icon: 'cil-calculator',
   items: [
     {
       component: 'CNavItem',
-      name: '분양 수납 내역',
+      name: '전체 납부 내역',
       to: '/payments/index',
     },
     {
