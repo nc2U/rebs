@@ -1,7 +1,6 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, onBeforeMount, watch } from 'vue'
-import { onBeforeRouteLeave, useRoute } from 'vue-router'
-import { useDocument } from '@/store/pinia/document'
+import { ref, reactive, computed, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import { Post, Attatches } from '@/store/types/document'
 import { write_company_docs } from '@/utils/pageAuth'
 import { dateFormat } from '@/utils/baseMixins'
@@ -12,7 +11,10 @@ import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-defineProps({ categoryList: { type: Object, default: null } })
+const props = defineProps({
+  categoryList: { type: Object, default: null },
+  post: { type: Object, default: null },
+})
 
 const emit = defineEmits(['on-submit', 'close'])
 
@@ -45,6 +47,9 @@ const form = reactive<Post & Attatches>({
   newFiles: [],
 })
 
+const attach = ref(true)
+const validated = ref(false)
+
 const newLinkNum = ref(1)
 const newLinkRange = computed(() => {
   let array = []
@@ -59,6 +64,26 @@ const newFileRange = computed(() => {
   return array
 })
 
+const formsCheck = computed(() => {
+  if (props.post) {
+    const a = form.is_notice === props.post.is_notice
+    const b = form.category === props.post.category
+    const c = form.lawsuit === props.post.lawsuit
+    const d = form.title === props.post.title
+    const e = form.execution_date === props.post.execution_date
+    const f = form.content === props.post.content
+
+    return a && b && c && d && e && f && attach.value
+  } else return false
+})
+
+const sortName = computed(() =>
+  props.post && props.post.project ? props.post.proj_name : '본사',
+)
+
+const route = useRoute()
+const btnClass = computed(() => (route.params.postId ? 'success' : 'primary'))
+
 const ctlLinkNum = (n: number) => {
   if (n + 1 >= newLinkNum.value) newLinkNum.value = newLinkNum.value + 1
   else newLinkNum.value = newLinkNum.value - 1
@@ -69,39 +94,10 @@ const ctlFileNum = (n: number) => {
   else newFileNum.value = newFileNum.value - 1
 }
 
-const validated = ref(false)
-
-const documentStore = useDocument()
-const post = computed(() => documentStore.post)
-
-const attach = ref(true)
-
-const formsCheck = computed(() => {
-  if (post.value) {
-    const a = form.is_notice === post.value.is_notice
-    const b = form.category === post.value.category
-    const c = form.lawsuit === post.value.lawsuit
-    const d = form.title === post.value.title
-    const e = form.execution_date === post.value.execution_date
-    const f = form.content === post.value.content
-
-    return a && b && c && d && e && f && attach.value
-  } else return false
-})
-
 const enableStore = (event: Event) => {
   const el = event.target as HTMLInputElement
   attach.value = !el.value
 }
-
-const sortName = computed(() =>
-  post.value && post.value.project ? post.value.proj_name : '본사',
-)
-
-const fetchPost = (pk: number) => documentStore.fetchPost(pk)
-
-const route = useRoute()
-const btnClass = computed(() => (route.params.postId ? 'success' : 'primary'))
 
 const onSubmit = (event: Event) => {
   if (write_company_docs.value) {
@@ -130,7 +126,7 @@ watch(form, val => {
   if (val.execution_date) form.execution_date = dateFormat(val.execution_date)
 })
 
-watch(post, val => {
+watch(props.post, val => {
   if (val) {
     form.pk = val.pk
     form.company = val.company
@@ -159,19 +155,6 @@ watch(post, val => {
       }))
     }
   }
-})
-
-watch(route, val => {
-  if (val.params.postId) fetchPost(Number(val.params.postId))
-  else documentStore.post = null
-})
-
-onBeforeMount(() => {
-  if (route.params.postId) fetchPost(Number(route.params.postId))
-})
-
-onBeforeRouteLeave(() => {
-  documentStore.post = null
 })
 </script>
 

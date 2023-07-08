@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref, computed, onBeforeMount, watch } from 'vue'
+import { ref, computed, onBeforeMount } from 'vue'
 import { pageTitle, navMenu } from '@/views/comDocs/_menu/headermixin1'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useCompany } from '@/store/pinia/company'
 import { useDocument, PostFilter } from '@/store/pinia/document'
 import { AFile, Attatches, Link, Post, PatchPost } from '@/store/types/document'
@@ -48,6 +48,7 @@ const comStore = useCompany()
 const company = computed(() => comStore.company?.pk)
 
 const docStore = useDocument()
+const post = computed(() => docStore.post)
 const postList = computed(() => docStore.postList)
 const categoryList = computed(() => docStore.categoryList)
 
@@ -61,7 +62,7 @@ const patchPost = (payload: PatchPost) => docStore.patchPost(payload)
 const patchLink = (payload: Link) => docStore.patchLink(payload)
 const patchFile = (payload: AFile) => docStore.patchFile(payload)
 
-const router = useRouter()
+const [route, router] = [useRoute(), useRouter()]
 
 const onSubmit = (payload: Post & Attatches) => {
   const { pk, ...formData } = payload
@@ -134,7 +135,7 @@ onBeforeMount(() => {
 
   <ContentBody>
     <CCardBody class="pb-5">
-      <div v-if="$route.name === '본사 일반 문서'" class="pt-3">
+      <div v-if="route.name === '본사 일반 문서'" class="pt-3">
         <ListController ref="fController" @docs-filter="docsFilter" />
 
         <CategoryTabs
@@ -152,21 +153,26 @@ onBeforeMount(() => {
         />
       </div>
 
-      <div v-else-if="$route.name.includes('보기')">
+      <div v-else-if="route.name.includes('보기')">
         <DocsView
           :category="postFilter.category"
+          :post="post"
           @post-hit="postHit"
           @link-hit="linkHit"
           @file-hit="fileHit"
         />
       </div>
 
-      <div v-else-if="$route.name.includes('작성')">
+      <div v-else-if="route.name.includes('작성')">
         <DocsForm :category-list="categoryList" @on-submit="onSubmit" />
       </div>
 
-      <div v-else-if="$route.name.includes('수정')">
-        <DocsForm :category-list="categoryList" @on-submit="onSubmit" />
+      <div v-else-if="route.name.includes('수정')">
+        <DocsForm
+          :category-list="categoryList"
+          :post="post"
+          @on-submit="onSubmit"
+        />
       </div>
     </CCardBody>
 
