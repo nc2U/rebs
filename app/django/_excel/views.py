@@ -2672,18 +2672,18 @@ class ExportSitesContracts(View):
 
         # Header_contents
         header_src = [['소유구분', 'owner__own_sort', 8],
-                      ['소유자', 'owner__owner', 15],
+                      ['소유자', 'owner__owner', 18],
                       ['계약일', 'contract_date', 15],
-                      ['총 계약면적', 'contract_area', 8],
-                      ['', '', 8],
-                      ['총 매매대금', 'total_price', 15],
-                      ['계약금1', 'down_pay1', 12],
-                      ['지급여부', 'down_pay1_is_paid', 8],
-                      ['계약금2', 'down_pay2', 12],
-                      ['중도금', 'inter_pay1', 12],
+                      ['총 계약면적', 'contract_area', 10],
+                      ['', '', 10],
+                      ['총 매매대금', 'total_price', 16],
+                      ['계약금1', 'down_pay1', 13],
+                      ['지급여부', 'down_pay1_is_paid', 9],
+                      ['계약금2', 'down_pay2', 13],
+                      ['중도금', 'inter_pay1', 13],
                       ['잔금', 'remain_pay', 15],
-                      ['지급여부', 'remain_pay_is_paid', 8],
-                      ['비고', 'note', 25]]
+                      ['지급여부', 'remain_pay_is_paid', 9],
+                      ['비고', 'note', 30]]
 
         titles = []  # 헤더명
         params = []  # 헤더 컬럼(db)
@@ -2699,11 +2699,14 @@ class ExportSitesContracts(View):
             worksheet.set_column(i, i, cw)
 
         # Write header
+        last_col = 0
         for col_num, col in enumerate(titles):  # 헤더 줄 제목 세팅
             if '면적' in col:
                 worksheet.merge_range(row_num, col_num, row_num, col_num + 1, titles[col_num], header_format)
             elif int(col_num) not in (3, 4):
                 worksheet.merge_range(row_num, col_num, row_num + 1, col_num, titles[col_num], header_format)
+            if '비고' in col:
+                last_col = col_num
 
         row_num = 3
 
@@ -2716,8 +2719,6 @@ class ExportSitesContracts(View):
         #################################################################
         # 4. Body
         # Get some data to write to the spreadsheet.
-
-        # data = obj_list.values_list(*params)
 
         body_format = {
             'border': True,
@@ -2735,14 +2736,16 @@ class ExportSitesContracts(View):
             row_num += 1
             for col_num, cell_data in enumerate(titles):
                 row = list(row)
-
+                if col_num == last_col:
+                    body_format['align'] = 'left'
+                else:
+                    body_format['align'] = 'center'
                 if col_num == 2:
                     body_format['num_format'] = 'yyyy-mm-dd'
                 elif col_num in (3, 4):
                     body_format['num_format'] = 43
                 else:
                     body_format['num_format'] = 41
-
                 bf = workbook.add_format(body_format)
 
                 if col_num == 0:
