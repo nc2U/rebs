@@ -33,9 +33,11 @@ const fetchDateCashBookList = (payload: { company: number; date: string }) =>
 const excelUrl = computed(() => {
   const comp = compName.value
   let url = ''
-  if (comp === 'StatusByAccount') url = `/excel/balance/`
-  else if (comp === 'CashListByDate') url = `/excel/daily-cash/`
-  return `${url}?&date=${dateFormat(date.value)}`
+  if (comp === 'StatusByAccount')
+    url = `/excel/balance/?company=${company.value}`
+  else if (comp === 'CashListByDate')
+    url = `/excel/daily-cash/?company=${company.value}`
+  return `${url}&date=${dateFormat(date.value)}`
 })
 
 const showTab = (num: number) => {

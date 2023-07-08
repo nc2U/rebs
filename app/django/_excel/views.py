@@ -2847,7 +2847,8 @@ class ExportBalanceByAcc(View):
 
         # data start --------------------------------------------- #
 
-        company = Company.objects.first()
+        company = Company.objects.get(pk=request.GET.get('company'))
+        com_name = company.name.replace('주식회사 ', '(주)')
         date = request.GET.get('date')
         date = TODAY if not date or date == 'null' else date
 
@@ -2858,7 +2859,7 @@ class ExportBalanceByAcc(View):
         title_format.set_font_size(18)
         title_format.set_align('vcenter')
         title_format.set_bold()
-        worksheet.write(row_num, 0, str(company) + ' 계좌별 자금현황', title_format)
+        worksheet.write(row_num, 0, com_name + ' 계좌별 자금현황', title_format)
 
         # 2. Header
         row_num = 1
@@ -2893,7 +2894,7 @@ class ExportBalanceByAcc(View):
         b_format.set_border()
         b_format.set_num_format(41)
 
-        qs = CashBook.objects.all() \
+        qs = CashBook.objects.filter(company=company) \
             .order_by('bank_account') \
             .filter(is_separate=False, deal_date__lte=date)
 
@@ -2993,7 +2994,8 @@ class ExportDateCashbook(View):
 
         # data start --------------------------------------------- #
 
-        company = Company.objects.first()
+        company = Company.objects.get(pk=request.GET.get('company'))
+        com_name = company.name.replace('주식회사 ', '(주)')
         date = request.GET.get('date')
         date = TODAY if not date or date == 'null' else date
 
@@ -3004,7 +3006,7 @@ class ExportDateCashbook(View):
         title_format.set_font_size(18)
         title_format.set_align('vcenter')
         title_format.set_bold()
-        worksheet.write(row_num, 0, str(company) + ' 당일 입출금내역 [' + date + ' 기준]', title_format)
+        worksheet.write(row_num, 0, com_name + ' 당일 입출금내역 [' + date + ' 기준]', title_format)
 
         # 2. Header
         row_num = 1
@@ -3043,7 +3045,7 @@ class ExportDateCashbook(View):
         b_format.set_border()
         b_format.set_num_format(41)
 
-        date_cashes = CashBook.objects.filter(is_separate=False,
+        date_cashes = CashBook.objects.filter(company=company, is_separate=False,
                                               deal_date__exact=date).order_by('deal_date', 'created_at', 'id')
 
         inc_sum = 0
@@ -3117,7 +3119,8 @@ def export_cashbook_xls(request):
     bank_account = request.GET.get('bank_account')
     search_word = request.GET.get('search_word')
 
-    company = Company.objects.first()
+    company = Company.objects.get(pk=request.GET.get('company'))
+    com_name = company.name.replace('주식회사 ', '(주)')
     sd = '1900-01-01' if not s_date or s_date == 'null' else s_date
     ed = TODAY if not e_date or e_date == 'null' else e_date
 
@@ -3148,7 +3151,7 @@ def export_cashbook_xls(request):
     style.font.height = 300
     style.alignment.vert = style.alignment.VERT_CENTER  # 수직정렬
 
-    ws.write(row_num, 0, str(company) + ' 입출금 내역', style)
+    ws.write(row_num, 0, com_name + ' 입출금 내역', style)
     ws.row(0).height_mismatch = True
     ws.row(0).height = 38 * 20
 
