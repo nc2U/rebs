@@ -3779,7 +3779,9 @@ class ExportDuties(View):
 
         # 4. Body
         # Get some data to write to the spreadsheet.
+        search = request.GET.get('search')
         obj_list = DutyTitle.objects.filter(company=company)
+        obj_list = obj_list.filter(name__icontains=search) if search else obj_list
 
         data = obj_list.values_list(*params)
 

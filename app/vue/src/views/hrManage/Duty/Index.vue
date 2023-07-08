@@ -23,7 +23,9 @@ const comStore = useCompany()
 const company = computed(() => comStore.company?.pk)
 const comName = computed(() => comStore.company?.name || undefined)
 
-const excelUrl = computed(() => `/excel/duties/?company=${company.value}`)
+const excelUrl = computed(
+  () => `/excel/duties/?company=${company.value}&search=${dataFilter.value.q}`,
+)
 
 const listFiltering = (payload: ComFilter) => {
   dataFilter.value = payload
