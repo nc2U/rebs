@@ -3654,6 +3654,7 @@ class ExportPositions(View):
             row_data.insert(1, row['name'])
             row_data.insert(2, row['grades'])
             row_data.insert(3, row['desc'])
+
             for col_num, cell_data in enumerate(row_data):
                 if type(cell_data) == list:
                     grades = [getGrade(i) for i in cell_data]
@@ -3890,8 +3891,10 @@ class ExportGrades(View):
                     bd['p_list'].append(bd['positions'])
                     data.append(bd)
 
-        for dt in data:
+        for i, dt in enumerate(data):
+            dt['num'] = i + 1
             dt['positions'] = dt['p_list']
+            del dt['p_list']
 
         b_format = workbook.add_format()
         b_format.set_border()
@@ -3910,10 +3913,15 @@ class ExportGrades(View):
 
         # Write body
         for i, row in enumerate(data):
-            row = list(row)
             row_num += 1
-            row.insert(0, i + 1)
-            for col_num, cell_data in enumerate(row):
+            row_data = []
+            row_data.append(row['num'])
+            row_data.append(row['name'])
+            row_data.append(row['promotion_period'])
+            row_data.append(row['positions'])
+            row_data.append(row['criteria_new'])
+
+            for col_num, cell_data in enumerate(row_data):
                 if col_num in (3, 4):
                     body_format['align'] = 'left'
                 else:
