@@ -62,9 +62,7 @@ spec:
             exec:
               command:
                 - mariadb
-                - -V #u root
-{{/*                - -p {{ .Values.global.dbPassword }}*/}}
-{{/*                - -e "SELECT 1"*/}}
+                - -V
             initialDelaySeconds: 10
             periodSeconds: 5
           volumeMounts:
