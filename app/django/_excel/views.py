@@ -3873,7 +3873,7 @@ class ExportGrades(View):
         # Get some data to write to the spreadsheet.
         obj_list = JobGrade.objects.filter(company=company)
 
-        base_data = obj_list.values_list(*params)
+        base_data = obj_list.values(*params)
         data = []
         for bd in base_data:
             bd['p_list'] = []
