@@ -62,7 +62,7 @@ spec:
             exec:
               command:
                 - mariadb
-                - -u {{ .Release.Name }}
+                - -u root
                 - -p {{ .Values.global.dbPassword }}
                 - -e "SELECT 1"
             initialDelaySeconds: 10
