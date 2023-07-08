@@ -363,10 +363,10 @@ const formReset = () => {
   form.other_phone = ''
   form.email = ''
   contractStore.contract = null
-  if (!props.contractor) router.replace({ name: '계약 등록 관리' })
+  if (!props.contractor) router.replace({ name: '계약 등록 수정' })
   else
     router.replace({
-      name: '계약 등록 관리',
+      name: '계약 등록 수정',
       query: { contractor: props.contractor.pk },
     })
   nextTick(() => (formsCheck.value = true))

@@ -8,7 +8,7 @@ const [route, router] = [useRoute(), useRouter()]
 
 const contractor = computed(() => route.query.contractor)
 
-const isRegister = computed(() => route.name === '계약 등록 관리')
+const isRegister = computed(() => route.name === '계약 등록 수정')
 // const isContorInfo = computed(() => route.name === '계약자 정보 변경')
 const isSuccession = computed(() => route.name === '권리 의무 승계')
 const isRelease = computed(() => route.name === '계약 해지 관리')
@@ -21,12 +21,12 @@ const isRelease = computed(() => route.name === '계약 해지 관리')
       :disabled="!contOn || !contractor"
       @click="
         router.push({
-          name: '계약 등록 관리',
+          name: '계약 등록 수정',
           query: { contractor },
         })
       "
     >
-      계약 등록 관리
+      계약 등록 수정
     </CButton>
     <!--    <CButton :color="isContorInfo ? 'info' : 'light'" disabled>-->
     <!--      계약자 정보 변경-->
