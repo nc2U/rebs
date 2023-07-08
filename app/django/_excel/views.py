@@ -3911,17 +3911,18 @@ class ExportGrades(View):
         # Turn off some of the warnings:
         # worksheet.ignore_errors({'number_stored_as_text': 'F:G'})
 
+        def getPosition(pk):
+            return Position.objects.get(pk=pk).name
+
         # Write body
         for i, row in enumerate(data):
             row_num += 1
-            row_data = []
-            row_data.append(row['num'])
-            row_data.append(row['name'])
-            row_data.append(row['promotion_period'])
-            row_data.append(row['positions'])
-            row_data.append(row['criteria_new'])
+            row_data = [row['num'], row['name'], row['promotion_period'], row['positions'], row['criteria_new']]
 
             for col_num, cell_data in enumerate(row_data):
+                if type(cell_data) == list:
+                    positions = [getPosition(i) for i in cell_data]
+                    cell_data = ', '.join(sorted(positions))
                 if col_num in (3, 4):
                     body_format['align'] = 'left'
                 else:
