@@ -3640,7 +3640,7 @@ class ExportPositions(View):
         # Turn off some of the warnings:
         worksheet.ignore_errors({'number_stored_as_text': 'A:D'})
 
-        def getGrade(pk):
+        def get_grade(pk):
             return JobGrade.objects.get(pk=pk).name
 
         # Write body
@@ -3657,7 +3657,7 @@ class ExportPositions(View):
 
             for col_num, cell_data in enumerate(row_data):
                 if type(cell_data) == list:
-                    grades = [getGrade(i) for i in cell_data]
+                    grades = [get_grade(i) for i in cell_data]
                     cell_data = ', '.join(sorted(grades))
                 if col_num in (2, 3):
                     body_format['align'] = 'left'
@@ -3823,10 +3823,10 @@ class ExportGrades(View):
 
         # title_list
         header_src = [[],
-                      ['직급명', 'name', 15],
-                      ['승급표준년수', 'promotion_period', 15],
-                      ['허용직위', 'positions', 25],
-                      ['신입부여기준', 'criteria_new', 30]]
+                      ['직급명', 'name', 14],
+                      ['승급표준년수', 'promotion_period', 14],
+                      ['허용직위', 'positions', 28],
+                      ['신입부여기준', 'criteria_new', 32]]
         titles = ['No']  # header titles
         params = []  # ORM 추출 field
         widths = [7]  # No. 컬럼 넓이
@@ -3909,9 +3909,9 @@ class ExportGrades(View):
         }
 
         # Turn off some of the warnings:
-        # worksheet.ignore_errors({'number_stored_as_text': 'F:G'})
+        worksheet.ignore_errors({'number_stored_as_text': 'A:D'})
 
-        def getPosition(pk):
+        def get_position(pk):
             return Position.objects.get(pk=pk).name
 
         # Write body
@@ -3921,7 +3921,7 @@ class ExportGrades(View):
 
             for col_num, cell_data in enumerate(row_data):
                 if type(cell_data) == list:
-                    positions = [getPosition(i) for i in cell_data]
+                    positions = [get_position(i) for i in cell_data]
                     cell_data = ', '.join(sorted(positions))
                 if col_num in (3, 4):
                     body_format['align'] = 'left'
