@@ -3644,7 +3644,9 @@ class ExportPositions(View):
 
         # 4. Body
         # Get some data to write to the spreadsheet.
+        search = request.GET.get('search')
         obj_list = Position.objects.filter(company=company)
+        obj_list = obj_list.filter(name__icontains=search) if search else obj_list
 
         json_data = serializers.serialize('json', obj_list)
         data = [i['fields'] for i in json.loads(json_data)]
