@@ -31,7 +31,8 @@ TODAY = datetime.today().strftime('%Y-%m-%d')
 class ExportContracts(View):
     """계약자 리스트"""
 
-    def get(self, request):
+    @staticmethod
+    def get(request):
 
         # Create an in-memory output file for the new workbook.
         output = io.BytesIO()
@@ -619,9 +620,9 @@ class ExportReleases(View):
 
         # 4. Body
         # Get some data to write to the spreadsheet.
-        data = ContractorRelease.objects.filter(project=project)
+        queryset = ContractorRelease.objects.filter(project=project)
 
-        data = data.values_list(*params)
+        data = queryset.values_list(*params)
 
         b_format = workbook.add_format()
         b_format.set_border()
@@ -692,7 +693,7 @@ class ExportUnitStatus(View):
 
         worksheet.set_default_row(15)
 
-        ### data start --------------------------------------------- #
+        # data start --------------------------------------------- #
         project = Project.objects.get(pk=request.GET.get('project'))
         max_floor = HouseUnit.objects.aggregate(Max('floor_no'))
         floor_no__max = max_floor['floor_no__max'] if max_floor['floor_no__max'] else 1
@@ -796,7 +797,7 @@ class ExportUnitStatus(View):
 
             col_num = col_num + lines.count() + 1
 
-        ### data end ----------------------------------------------- #
+        # data end ----------------------------------------------- #
 
         # Close the workbook before sending the data.
         workbook.close()
@@ -840,24 +841,17 @@ def export_payments_xls(request):
                                               project_account_d3__in=(1, 4),
                                               deal_date__range=(sd, ed)).order_by('deal_date', 'created_at')
 
-    if og:
-        obj_list = obj_list.filter(contract__order_group=og)
-    if ut:
-        obj_list = obj_list.filter(contract__unit_type=ut)
-    if ipo:
-        obj_list = obj_list.filter(installment_order_id=ipo)
-    if ba:
-        obj_list = obj_list.filter(bank_account__id=ba)
-    if nc:
-        obj_list = obj_list.filter(contract__isnull=True)
-    if ni:
-        obj_list = obj_list.filter(installment_order__isnull=True, contract__isnull=False)
-    if q:
-        obj_list = obj_list.filter(
-            Q(contract__contractor__name__icontains=q) |
-            Q(content__icontains=q) |
-            Q(trader__icontains=q) |
-            Q(note__icontains=q))
+    obj_list = obj_list.filter(contract__order_group=og) if og else obj_list
+    obj_list = obj_list.filter(contract__unit_type=ut) if ut else obj_list
+    obj_list = obj_list.filter(installment_order_id=ipo) if ipo else obj_list
+    obj_list = obj_list.filter(bank_account__id=ba) if ba else obj_list
+    obj_list = obj_list.filter(contract__isnull=True) if nc else obj_list
+    obj_list = obj_list.filter(installment_order__isnull=True, contract__isnull=False) if ni else obj_list
+    obj_list = obj_list = obj_list.filter(
+        Q(contract__contractor__name__icontains=q) |
+        Q(content__icontains=q) |
+        Q(trader__icontains=q) |
+        Q(note__icontains=q)) if q else obj_list
 
     # Sheet Title, first row
     row_num = 0
@@ -1065,24 +1059,17 @@ class ExportPayments(View):
                                                   project_account_d3__in=(1, 4),
                                                   deal_date__range=(sd, ed)).order_by('deal_date', 'created_at')
 
-        if og:
-            obj_list = obj_list.filter(contract__order_group=og)
-        if ut:
-            obj_list = obj_list.filter(contract__unit_type=ut)
-        if ipo:
-            obj_list = obj_list.filter(installment_order_id=ipo)
-        if ba:
-            obj_list = obj_list.filter(bank_account__id=ba)
-        if nc:
-            obj_list = obj_list.filter(contract__isnull=True)
-        if ni:
-            obj_list = obj_list.filter(installment_order__isnull=True, contract__isnull=False)
-        if q:
-            obj_list = obj_list.filter(
-                Q(contract__contractor__name__icontains=q) |
-                Q(content__icontains=q) |
-                Q(trader__icontains=q) |
-                Q(note__icontains=q))
+        obj_list = obj_list.filter(contract__order_group=og) if og else obj_list
+        obj_list = obj_list.filter(contract__unit_type=ut) if ut else obj_list
+        obj_list = obj_list.filter(installment_order_id=ipo) if ipo else obj_list
+        obj_list = obj_list.filter(bank_account__id=ba) if ba else obj_list
+        obj_list = obj_list.filter(contract__isnull=True) if nc else obj_list
+        obj_list = obj_list.filter(installment_order__isnull=True, contract__isnull=False) if ni else obj_list
+        obj_list = obj_list.filter(
+            Q(contract__contractor__name__icontains=q) |
+            Q(content__icontains=q) |
+            Q(trader__icontains=q) |
+            Q(note__icontains=q)) if q else obj_list
 
         data = obj_list.values_list(*params)
 
@@ -2114,36 +2101,20 @@ def export_project_cash_xls(request):
                                                is_separate=False,
                                                deal_date__range=(sdate, edate)) \
         .order_by('deal_date', 'created_at')
-    # cash_list = ProjectCashBook.objects.filter(Q(project=project) &
-    #                                            (Q(is_imprest=False) |
-    #                                             Q(project_account_d3=63, income__isnull=True)),
-    #                                            is_separate=False,
-    #                                            deal_date__range=(sdate, edate)) \
-    #     .order_by('deal_date', 'created_at')
+
     imp_list = ProjectCashBook.objects.filter(project=project, is_imprest=True, is_separate=False,
                                               deal_date__range=(sdate, edate)).exclude(project_account_d3=63,
                                                                                        income__isnull=True)
-
     obj_list = imp_list if is_imp == '1' else cash_list
-
-    if sort:
-        obj_list = obj_list.filter(sort_id=sort)
-
-    if d1:
-        obj_list = obj_list.filter(project_account_d2_id=d1)
-
-    if d2:
-        obj_list = obj_list.filter(project_account_d3_id=d2)
-
-    if bank_acc:
-        obj_list = obj_list.filter(bank_account_id=bank_acc)
-
-    if q:
-        obj_list = obj_list.filter(
-            Q(contract__contractor__name__icontains=q) |
-            Q(content__icontains=q) |
-            Q(trader__icontains=q) |
-            Q(note__icontains=q))
+    obj_list = obj_list.filter(sort_id=sort) if sort else obj_list
+    obj_list = obj_list.filter(project_account_d2_id=d1) if d1 else obj_list
+    obj_list = obj_list.filter(project_account_d3_id=d2) if d2 else obj_list
+    obj_list = obj_list.filter(bank_account_id=bank_acc) if bank_acc else obj_list
+    obj_list = obj_list.filter(
+        Q(contract__contractor__name__icontains=q) |
+        Q(content__icontains=q) |
+        Q(trader__icontains=q) |
+        Q(note__icontains=q)) if q else obj_list
 
     # Sheet Title, first row
     row_num = 0
