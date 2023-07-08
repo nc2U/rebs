@@ -2436,9 +2436,9 @@ class ExportSitesByOwner(View):
 
         # -------------------- get_queryset start -------------------- #
         project = Project.objects.get(pk=request.GET.get('project'))
-        obj_list = SiteOwner.objects.filter(project=project).order_by('owner', 'id')
         own_sort = request.GET.get('own_sort')
         search = request.GET.get('search')
+        obj_list = SiteOwner.objects.filter(project=project).order_by('owner', 'id')
         obj_list = obj_list.filter(own_sort=own_sort) if own_sort else obj_list
         obj_list = obj_list.filter(
             Q(owner__icontains=search) |
