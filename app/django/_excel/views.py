@@ -3375,12 +3375,12 @@ class ExportStaffs(View):
         status = request.GET.get('status')
         search = request.GET.get('search')
 
-        obj_list = obj_list.filter(sort_id=sort) if sort else obj_list
+        obj_list = obj_list.filter(sort=sort) if sort else obj_list
         obj_list = obj_list.filter(department_id=department) if department else obj_list
         obj_list = obj_list.filter(grade_id=grade) if grade else obj_list
         obj_list = obj_list.filter(position_id=position) if position else obj_list
         obj_list = obj_list.filter(duty_id=duty) if duty else obj_list
-        obj_list = obj_list.filter(status_id=status) if status else obj_list
+        obj_list = obj_list.filter(status=status) if status else obj_list
         obj_list = obj_list.filter(
             Q(name__icontains=search) |
             Q(id_number__icontains=search) |
