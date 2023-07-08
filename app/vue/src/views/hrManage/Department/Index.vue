@@ -24,7 +24,13 @@ const getPkDeparts = computed(() => comStore.getPkDeparts)
 const company = computed(() => comStore.company?.pk)
 const comName = computed(() => comStore.company?.name || undefined)
 
-const excelUrl = computed(() => `/excel/departs/?company=${company.value}`)
+const excelUrl = computed(() => {
+  const url = `/excel/departs/?company=${company.value}`
+  const filter = dataFilter.value
+  let queryStr = filter.upp ? `&upper_depart=${filter.upp}` : ''
+  queryStr = filter.q ? `${queryStr}&search=${filter.q}` : queryStr
+  return `${url}${queryStr}`
+})
 
 const listFiltering = (payload: DepFilter) => {
   dataFilter.value = payload

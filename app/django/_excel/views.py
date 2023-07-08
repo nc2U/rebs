@@ -3514,7 +3514,14 @@ class ExportDeparts(View):
 
         # 4. Body
         # Get some data to write to the spreadsheet.
+        upper_depart = request.GET.get('upper_depart')
+        search = request.GET.get('search')
         obj_list = Department.objects.filter(company=company)
+
+        obj_list = obj_list.filter(upper_depart_id=upper_depart) if upper_depart else obj_list
+        obj_list = obj_list.filter(
+            Q(name__icontains=search) |
+            Q(task__icontains=search)) if search else obj_list
 
         data = obj_list.values_list(*params)
 
