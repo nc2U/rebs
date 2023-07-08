@@ -18,7 +18,7 @@ const schedule = {
 
 const contract = {
   component: 'CNavItem',
-  name: '분양 계약 관리',
+  name: '공급 계약 관리',
   to: '/contracts',
   icon: 'cil-spreadsheet',
   items: [
@@ -34,12 +34,12 @@ const contract = {
     },
     {
       component: 'CNavItem',
-      name: '현장 계약 관리',
+      name: '계약 등록 관리',
       icon: 'cilLayers',
       items: [
         {
           component: 'CNavItem',
-          name: '계약 등록 관리',
+          name: '계약 등록 수정',
           to: '/contracts/register',
         },
         {
@@ -65,7 +65,7 @@ const payment = {
   items: [
     {
       component: 'CNavItem',
-      name: '분양 수납 내역',
+      name: '전체 납부 내역',
       to: '/payments/index',
     },
     {

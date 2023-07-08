@@ -11,7 +11,7 @@ const pageViewAuth = computed(
 
 const contract = {
   path: 'contracts',
-  name: '분양 계약 관리',
+  name: '공급 계약 관리',
   redirect: '/contracts/index',
   component: {
     render() {
@@ -39,12 +39,12 @@ const contract = {
     },
     {
       path: 'register',
-      name: '계약 등록 관리',
+      name: '계약 등록 수정',
       component: () =>
         pageViewAuth.value
           ? import('@/views/contracts/Register/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '계약 등록 관리', auth: true },
+      meta: { title: '계약 등록 수정', auth: true },
     },
     {
       path: 'succession',

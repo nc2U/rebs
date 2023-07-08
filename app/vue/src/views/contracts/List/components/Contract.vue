@@ -18,12 +18,12 @@ const router = useRouter()
 <template>
   <CTableRow v-if="contract" class="text-center">
     <CTableDataCell>
-      <router-link :to="{ name: '계약 등록 관리', query: { contractor } }">
+      <router-link :to="{ name: '계약 등록 수정', query: { contractor } }">
         {{ contract.serial_number }}
       </router-link>
     </CTableDataCell>
     <CTableDataCell>
-      <router-link :to="{ name: '계약 등록 관리', query: { contractor } }">
+      <router-link :to="{ name: '계약 등록 수정', query: { contractor } }">
         {{ contract.contractor.name }}
       </router-link>
     </CTableDataCell>
@@ -75,7 +75,7 @@ const router = useRouter()
         size="sm"
         @click="
           router.push({
-            name: '계약 등록 관리',
+            name: '계약 등록 수정',
             query: { contractor },
           })
         "

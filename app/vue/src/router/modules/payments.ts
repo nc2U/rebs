@@ -21,12 +21,12 @@ const payments = {
   children: [
     {
       path: 'index',
-      name: '분양 수납 내역',
+      name: '전체 납부 내역',
       component: () =>
         pageViewAuth.value
           ? import('@/views/payments/List/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '분양 수납 내역', auth: true },
+      meta: { title: '전체 납부 내역', auth: true },
     },
     {
       path: 'manage',
