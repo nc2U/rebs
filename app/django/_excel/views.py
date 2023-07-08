@@ -3366,6 +3366,27 @@ class ExportStaffs(View):
         # Get some data to write to the spreadsheet.
         obj_list = Staff.objects.filter(company=company)
 
+        # get query list
+        sort = request.GET.get('sort')
+        department = request.GET.get('department')
+        grade = request.GET.get('grade')
+        position = request.GET.get('position')
+        duty = request.GET.get('duty')
+        status = request.GET.get('status')
+        search = request.GET.get('search')
+
+        obj_list = obj_list.filter(sort_id=sort) if sort else obj_list
+        obj_list = obj_list.filter(department_id=department) if department else obj_list
+        obj_list = obj_list.filter(grade_id=grade) if grade else obj_list
+        obj_list = obj_list.filter(position_id=position) if position else obj_list
+        obj_list = obj_list.filter(duty_id=duty) if duty else obj_list
+        obj_list = obj_list.filter(status_id=status) if status else obj_list
+        obj_list = obj_list.filter(
+            Q(name__icontains=search) |
+            Q(id_number__icontains=search) |
+            Q(personal_phone__icontains=search) |
+            Q(email__icontains=search)) if search else obj_list
+
         data = obj_list.values_list(*params)
 
         b_format = workbook.add_format()
