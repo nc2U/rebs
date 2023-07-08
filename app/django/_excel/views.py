@@ -143,44 +143,43 @@ class ExportContracts(View):
 
         # ----------------- get_queryset start ----------------- #
         # Get some data to write to the spreadsheet.
-        data = Contract.objects.filter(project=project,
-                                       activation=True,
-                                       contractor__status='2').order_by('contractor__contract_date')
-        if request.GET.get('status'):
-            data = data.filter(contractor__status=request.GET.get('status'))
-        if request.GET.get('group'):
-            data = data.filter(order_group=request.GET.get('group'))
-        if request.GET.get('type'):
-            data = data.filter(unit_type=request.GET.get('type'))
-        if self.request.GET.get('dong'):
-            data = data.filter(keyunit__houseunit__building_unit=self.request.GET.get('dong'))
-        if request.GET.get('is_null'):
-            is_null = True if request.GET.get('is_null') == '1' else False
-            data = data.filter(keyunit__houseunit__isnull=is_null)
-        if request.GET.get('reg'):
-            result = True if request.GET.get('reg') == '1' else False
-            data = data.filter(contractor__is_registed=result)
-        if request.GET.get('sdate'):
-            data = data.filter(contractor__contract_date__gte=request.GET.get('sdate'))
-        if request.GET.get('edate'):
-            data = data.filter(contractor__contract_date__lte=request.GET.get('edate'))
+        queryset = Contract.objects.filter(project=project,
+                                           activation=True,
+                                           contractor__status='2').order_by('contractor__contract_date')
+        status = request.GET.get('status')
+        group = request.GET.get('group')
+        type = request.GET.get('type')
+        dong = request.GET.get('dong')
+        is_null = request.GET.get('is_null')
+        reg = request.GET.get('reg')
+        sdate = request.GET.get('sdate')
+        edate = request.GET.get('edate')
         q = request.GET.get('q')
-        if q:
-            data = data.filter(
-                Q(serial_number__icontains=q) |
-                Q(contractor__name__icontains=q) |
-                Q(contractor__note__icontains=q) |
-                Q(contractor__contractorcontact__cell_phone__icontains=q))
 
+        queryset = queryset.filter(contractor__status=status) if status else queryset
+        queryset = queryset.filter(order_group=group) if group else queryset
+        queryset = queryset.filter(unit_type=type) if type else queryset
+        queryset = queryset.filter(keyunit__houseunit__building_unit=dong) if dong else queryset
+        null_qry = True if is_null == '1' else False
+        queryset = queryset.filter(keyunit__houseunit__isnull=null_qry) if is_null else queryset
+        reg_qry = True if reg == '1' else False
+        queryset = queryset.filter(contractor__is_registed=reg_qry) if reg else queryset
+        queryset = queryset.filter(contractor__contract_date__gte=sdate) if sdate else queryset
+        queryset = queryset.filter(contractor__contract_date__lte=edate) if edate else queryset
+        queryset = queryset.filter(
+            Q(serial_number__icontains=q) |
+            Q(contractor__name__icontains=q) |
+            Q(contractor__note__icontains=q) |
+            Q(contractor__contractorcontact__cell_phone__icontains=q)) if q else queryset
+
+        order_qry = request.GET.get('order')
         order_list = ['-created_at', 'created_at', '-contractor__contract_date',
                       'contractor__contract_date', '-serial_number',
                       'serial_number', '-contractor__name', 'contractor__name']
-        if self.request.GET.get('order'):
-            data = data.order_by(order_list[int(self.request.GET.get('order'))])
+        queryset = queryset.order_by(order_list[int(order_qry)]) if order_qry else queryset
 
         # ----------------- get_queryset finish ----------------- #
-
-        data = data.values_list(*params)
+        data = queryset.values_list(*params)
 
         is_date = []  # ('생년월일', '계약일자')
         is_left = []
