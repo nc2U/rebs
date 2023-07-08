@@ -3638,7 +3638,10 @@ class ExportPositions(View):
         }
 
         # Turn off some of the warnings:
-        worksheet.ignore_errors({'number_stored_as_text': 'A:C'})
+        worksheet.ignore_errors({'number_stored_as_text': 'A:D'})
+
+        def getGrade(pk):
+            return JobGrade.objects.get(pk=pk).name
 
         # Write body
         params.insert(0, 'num')
@@ -3653,7 +3656,8 @@ class ExportPositions(View):
             row_data.insert(3, row['desc'])
             for col_num, cell_data in enumerate(row_data):
                 if type(cell_data) == list:
-                    cell_data = ', '.join(map(str, cell_data))
+                    grades = [getGrade(i) for i in cell_data]
+                    cell_data = ', '.join(map(str, grades))
                 if col_num in (2, 3):
                     body_format['align'] = 'left'
                 else:
