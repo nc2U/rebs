@@ -2482,7 +2482,7 @@ class ExportSitesByOwner(View):
         area_title = at + '(환지면적 기준)' if project.is_returned_area else at
         header_src = [
             ['소유구분', 'own_sort', 10],
-            ['소유자', 'owner', 15],
+            ['소유자', 'owner', 18],
             ['생년월일', 'date_of_birth', 15],
             ['주연락처', 'phone1', 18],
             ['소유부지(지번)', 'sites__lot_number', 12],
@@ -2629,7 +2629,17 @@ class ExportSitesContracts(View):
 
         # --------------------- get_queryset start --------------------- #
         project = Project.objects.get(pk=request.GET.get('project'))
+        own_sort = request.GET.get('own_sort')
+        search = request.GET.get('search')
         obj_list = SiteContract.objects.filter(project=project).order_by('contract_date', 'id')
+        obj_list = obj_list.filter(owner__own_sort=own_sort) if own_sort else obj_list
+        obj_list = obj_list.filter(
+            Q(owner__owner__icontains=search) |
+            Q(owner__phone1__icontains=search) |
+            Q(acc_bank__icontains=search) |
+            Q(acc_owner__icontains=search) |
+            Q(note__icontains=search)
+        ) if search else obj_list
         # --------------------- get_queryset finish --------------------- #
 
         rows_cnt = 12
@@ -2662,7 +2672,7 @@ class ExportSitesContracts(View):
 
         # Header_contents
         header_src = [['소유구분', 'owner__own_sort', 8],
-                      ['소유자', 'owner__owner', 12],
+                      ['소유자', 'owner__owner', 15],
                       ['계약일', 'contract_date', 15],
                       ['총 계약면적', 'contract_area', 8],
                       ['', '', 8],

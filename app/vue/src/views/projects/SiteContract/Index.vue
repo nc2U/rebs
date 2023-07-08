@@ -32,9 +32,13 @@ const project = computed(() => projStore.project?.pk)
 const siteStore = useSite()
 const getContsTotal = computed(() => siteStore.getContsTotal?.contracted_area)
 
-const excelUrl = computed(
-  () => 'excel/sites-contracts/?project=' + project.value,
-)
+const excelUrl = computed(() => {
+  const url = `excel/sites-contracts/?project=${project.value}`
+  const filter = dataFilter.value
+  let queryStr = filter.own_sort ? `&own_sort=${filter.own_sort}` : ''
+  queryStr = filter.search ? `${queryStr}&search=${filter.search}` : queryStr
+  return `${url}${queryStr}`
+})
 
 const listFiltering = (payload: filter) => {
   dataFilter.value = payload
