@@ -38,7 +38,7 @@ class JobGradeViewSet(viewsets.ModelViewSet):
     serializer_class = JobGradeSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
     filterset_fields = ('company',)
-    search_fields = ('name', 'promotion_period', 'criteria_new')
+    search_fields = ('name', 'promotion_period', 'positions__name', 'criteria_new')
 
 
 class AllGradesViewSet(JobGradeViewSet):

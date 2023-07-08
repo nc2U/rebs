@@ -3906,6 +3906,7 @@ class ExportGrades(View):
         obj_list = obj_list.filter(
             Q(name__icontains=search) |
             Q(promotion_period__icontains=search) |
+            Q(positions__name__icontains=search) |
             Q(criteria_new__icontains=search)) if search else obj_list
 
         base_data = obj_list.values(*params)
