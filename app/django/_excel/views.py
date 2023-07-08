@@ -3127,21 +3127,15 @@ def export_cashbook_xls(request):
     obj_list = CashBook.objects.filter(company=company, is_separate=False,
                                        deal_date__range=(sd, ed)).order_by('deal_date', 'id')
 
-    if sort:
-        obj_list = obj_list.filter(sort_id=sort)
-    if account_d1:
-        obj_list = obj_list.filter(account_d1_id=account_d1)
-    if account_d2:
-        obj_list = obj_list.filter(account_d2_id=account_d2)
-    if account_d3:
-        obj_list = obj_list.filter(account_d3_id=account_d3)
-    if bank_account:
-        obj_list = obj_list.filter(bank_account_id=bank_account)
-    if search_word:
-        obj_list = obj_list.filter(
-            Q(content__icontains=search_word) |
-            Q(trader__icontains=search_word) |
-            Q(note__icontains=search_word))
+    obj_list = obj_list.filter(sort_id=sort) if sort else obj_list
+    obj_list = obj_list.filter(account_d1_id=account_d1) if account_d1 else obj_list
+    obj_list = obj_list.filter(account_d2_id=account_d2) if account_d2 else obj_list
+    obj_list = obj_list.filter(account_d3_id=account_d3) if account_d3 else obj_list
+    obj_list = obj_list.filter(bank_account_id=bank_account) if bank_account else obj_list
+    obj_list = obj_list.filter(
+        Q(content__icontains=search_word) |
+        Q(trader__icontains=search_word) |
+        Q(note__icontains=search_word)) if search_word else obj_list
 
     # Sheet Title, first row
     row_num = 0
