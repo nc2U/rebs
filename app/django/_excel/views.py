@@ -3901,7 +3901,12 @@ class ExportGrades(View):
 
         # 4. Body
         # Get some data to write to the spreadsheet.
+        search = request.GET.get('search')
         obj_list = JobGrade.objects.filter(company=company)
+        obj_list = obj_list.filter(
+            Q(name__icontains=search) |
+            Q(promotion_period=search) |
+            Q(criteria_new__icontains=search)) if search else obj_list
 
         base_data = obj_list.values(*params)
         data = []
