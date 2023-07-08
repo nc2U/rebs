@@ -29,7 +29,19 @@ const comStore = useCompany()
 const company = computed(() => comStore.company?.pk)
 const comName = computed(() => comStore.company?.name || undefined)
 
-const excelUrl = computed(() => `/excel/staffs/?company=${company.value}`)
+const excelUrl = computed(() => {
+  const url = `/excel/staffs/?company=${company.value}`
+  const filter = dataFilter.value
+  let query = ''
+  query = filter.sort ? `${query}&sort=${filter.sort}` : query
+  query = filter.dep ? `${query}&department=${filter.dep}` : query
+  query = filter.gra ? `${query}&grade=${filter.gra}` : query
+  query = filter.pos ? `${query}&position=${filter.pos}` : query
+  query = filter.dut ? `${query}&duty=${filter.dut}` : query
+  query = filter.sts ? `${query}&status=${filter.sts}` : query
+  query = filter.q ? `${query}&search=${filter.q}` : query
+  return `${url}${query}`
+})
 
 const accStore = useAccount()
 const fetchUsersList = () => accStore.fetchUsersList()
