@@ -3873,7 +3873,25 @@ class ExportGrades(View):
         # Get some data to write to the spreadsheet.
         obj_list = JobGrade.objects.filter(company=company)
 
-        data = obj_list.values_list(*params)
+        base_data = obj_list.values_list(*params)
+        data = []
+        for bd in base_data:
+            bd['p_list'] = []
+            if len(data) == 0:
+                bd['p_list'].append(bd['positions'])
+                data.append(bd)
+            else:
+                is_exist = False
+                for dt in data:
+                    if dt['name'] == bd['name']:
+                        is_exist = True
+                        dt['p_list'].append(bd['positions'])
+                if not is_exist:
+                    bd['p_list'].append(bd['positions'])
+                    data.append(bd)
+
+        for dt in data:
+            dt['positions'] = dt['p_list']
 
         b_format = workbook.add_format()
         b_format.set_border()
