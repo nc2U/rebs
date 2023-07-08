@@ -3640,7 +3640,7 @@ class ExportPositions(View):
         # Turn off some of the warnings:
         worksheet.ignore_errors({'number_stored_as_text': 'A:D'})
 
-        def getGrade(pk):
+        def get_grade(pk):
             return JobGrade.objects.get(pk=pk).name
 
         # Write body
@@ -3654,10 +3654,11 @@ class ExportPositions(View):
             row_data.insert(1, row['name'])
             row_data.insert(2, row['grades'])
             row_data.insert(3, row['desc'])
+
             for col_num, cell_data in enumerate(row_data):
                 if type(cell_data) == list:
-                    grades = [getGrade(i) for i in cell_data]
-                    cell_data = ', '.join(map(str, grades))
+                    grades = [get_grade(i) for i in cell_data]
+                    cell_data = ', '.join(sorted(grades))
                 if col_num in (2, 3):
                     body_format['align'] = 'left'
                 else:
@@ -3822,10 +3823,10 @@ class ExportGrades(View):
 
         # title_list
         header_src = [[],
-                      ['직급명', 'name', 15],
-                      ['승급표준년수', 'promotion_period', 15],
-                      ['허용직위', 'positions', 25],
-                      ['신입부여기준', 'criteria_new', 30]]
+                      ['직급명', 'name', 14],
+                      ['승급표준년수', 'promotion_period', 14],
+                      ['허용직위', 'positions', 28],
+                      ['신입부여기준', 'criteria_new', 32]]
         titles = ['No']  # header titles
         params = []  # ORM 추출 field
         widths = [7]  # No. 컬럼 넓이
@@ -3873,7 +3874,27 @@ class ExportGrades(View):
         # Get some data to write to the spreadsheet.
         obj_list = JobGrade.objects.filter(company=company)
 
-        data = obj_list.values_list(*params)
+        base_data = obj_list.values(*params)
+        data = []
+        for bd in base_data:
+            bd['p_list'] = []
+            if len(data) == 0:
+                bd['p_list'].append(bd['positions'])
+                data.append(bd)
+            else:
+                is_exist = False
+                for dt in data:
+                    if dt['name'] == bd['name']:
+                        is_exist = True
+                        dt['p_list'].append(bd['positions'])
+                if not is_exist:
+                    bd['p_list'].append(bd['positions'])
+                    data.append(bd)
+
+        for i, dt in enumerate(data):
+            dt['num'] = i + 1
+            dt['positions'] = dt['p_list']
+            del dt['p_list']
 
         b_format = workbook.add_format()
         b_format.set_border()
@@ -3888,14 +3909,20 @@ class ExportGrades(View):
         }
 
         # Turn off some of the warnings:
-        # worksheet.ignore_errors({'number_stored_as_text': 'F:G'})
+        worksheet.ignore_errors({'number_stored_as_text': 'A:D'})
+
+        def get_position(pk):
+            return Position.objects.get(pk=pk).name
 
         # Write body
         for i, row in enumerate(data):
-            row = list(row)
             row_num += 1
-            row.insert(0, i + 1)
-            for col_num, cell_data in enumerate(row):
+            row_data = [row['num'], row['name'], row['promotion_period'], row['positions'], row['criteria_new']]
+
+            for col_num, cell_data in enumerate(row_data):
+                if type(cell_data) == list:
+                    positions = [get_position(i) for i in cell_data]
+                    cell_data = ', '.join(sorted(positions))
                 if col_num in (3, 4):
                     body_format['align'] = 'left'
                 else:
