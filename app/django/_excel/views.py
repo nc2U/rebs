@@ -3657,7 +3657,7 @@ class ExportPositions(View):
             for col_num, cell_data in enumerate(row_data):
                 if type(cell_data) == list:
                     grades = [getGrade(i) for i in cell_data]
-                    cell_data = ', '.join(map(str, grades))
+                    cell_data = ', '.join(map(str, sorted(grades)))
                 if col_num in (2, 3):
                     body_format['align'] = 'left'
                 else:
