@@ -2,9 +2,9 @@
 import { ref, computed, onBeforeMount, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/comDocs/_menu/headermixin2'
 import { formUtility } from '@/utils/helper'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useCompany } from '@/store/pinia/company'
-import { PostFilter, useDocument } from '@/store/pinia/document'
+import { PostFilter, SuitCaseFilter, useDocument } from '@/store/pinia/document'
 import { AFile, Attatches, Link, PatchPost, Post } from '@/store/types/document'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
@@ -48,11 +48,16 @@ const comStore = useCompany()
 const company = computed(() => comStore.company?.pk)
 
 const docStore = useDocument()
+const post = computed(() => docStore.post)
 const postList = computed(() => docStore.postList)
 const categoryList = computed(() => docStore.categoryList)
+const getSuitCase = computed(() => docStore.getSuitCase)
 
+const fetchPost = (pk: number) => docStore.fetchPost(pk)
 const fetchPostList = (payload: PostFilter) => docStore.fetchPostList(payload)
 const fetchCategoryList = (board: number) => docStore.fetchCategoryList(board)
+const fetchAllSuitCaseList = (payload: SuitCaseFilter) =>
+  docStore.fetchAllSuitCaseList(payload)
 
 const createPost = (payload: { form: FormData }) => docStore.createPost(payload)
 const updatePost = (payload: { pk: number; form: FormData }) =>
@@ -61,7 +66,12 @@ const patchPost = (payload: PatchPost) => docStore.patchPost(payload)
 const patchLink = (payload: Link) => docStore.patchLink(payload)
 const patchFile = (payload: AFile) => docStore.patchFile(payload)
 
-const router = useRouter()
+const [route, router] = [useRoute(), useRouter()]
+
+watch(route, val => {
+  if (val.params.postId) fetchPost(Number(val.params.postId))
+  else docStore.post = null
+})
 
 const onSubmit = (payload: Post & Attatches) => {
   if (!!company.value) {
@@ -96,17 +106,20 @@ const sortFilter = (project: number | null) => {
   listFiltering(caseFilter.value)
 }
 
-const dataSetup = (pk: number) => {
+const dataSetup = (pk: number, postId?: string | string[]) => {
   fetchPostList({
     company: pk,
     board: 3,
     page: caseFilter.value.page,
     category: caseFilter.value.category,
   })
+  fetchAllSuitCaseList({})
+  if (postId) fetchPost(Number(postId))
   caseFilter.value.company = pk
 }
 const dataReset = () => {
   comStore.company = null
+  docStore.post = null
   docStore.postList = []
   docStore.postCount = 0
   caseFilter.value.company = null
@@ -120,7 +133,7 @@ const comSelect = (target: number | null) => {
 
 onBeforeMount(() => {
   fetchCategoryList(3)
-  dataSetup(company.value || comStore.initComId)
+  dataSetup(company.value || comStore.initComId, route.params?.postId)
 })
 </script>
 
@@ -134,7 +147,7 @@ onBeforeMount(() => {
 
   <ContentBody>
     <CCardBody class="pb-5">
-      <div v-if="$route.name === '본사 소송 문서'" class="pt-3">
+      <div v-if="route.name === '본사 소송 문서'" class="pt-3">
         <ListController ref="fController" @list-filter="listFiltering" />
 
         <CategoryTabs
@@ -152,21 +165,31 @@ onBeforeMount(() => {
         />
       </div>
 
-      <div v-else-if="$route.name.includes('보기')">
+      <div v-else-if="route.name.includes('보기')">
         <DocsView
           :category="caseFilter.category"
+          :post="post"
           @post-hit="postHit"
           @link-hit="linkHit"
           @file-hit="fileHit"
         />
       </div>
 
-      <div v-else-if="$route.name.includes('작성')">
-        <DocsForm :category-list="categoryList" @on-submit="onSubmit" />
+      <div v-else-if="route.name.includes('작성')">
+        <DocsForm
+          :category-list="categoryList"
+          :get-suit-case="getSuitCase"
+          @on-submit="onSubmit"
+        />
       </div>
 
-      <div v-else-if="$route.name.includes('수정')">
-        <DocsForm :category-list="categoryList" @on-submit="onSubmit" />
+      <div v-else-if="route.name.includes('수정')">
+        <DocsForm
+          :category-list="categoryList"
+          :get-suit-case="getSuitCase"
+          :post="post"
+          @on-submit="onSubmit"
+        />
       </div>
     </CCardBody>
 

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, onBeforeMount, watch } from 'vue'
-import { onBeforeRouteLeave, useRoute } from 'vue-router'
-import { useDocument, SuitCaseFilter } from '@/store/pinia/document'
+import { useRoute } from 'vue-router'
+import { useDocument } from '@/store/pinia/document'
 import { Post, Attatches } from '@/store/types/document'
 import { write_company_docs } from '@/utils/pageAuth'
 import { dateFormat } from '@/utils/baseMixins'
@@ -13,7 +13,11 @@ import Multiselect from '@vueform/multiselect'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-defineProps({ categoryList: { type: Object, default: null } })
+const props = defineProps({
+  categoryList: { type: Object, required: true },
+  getSuitCase: { type: Object, required: true },
+  post: { type: Object, default: null },
+})
 
 const emit = defineEmits(['on-submit', 'close'])
 
@@ -45,6 +49,25 @@ const form = reactive<Post & Attatches>({
   newFiles: [],
 })
 
+const formsCheck = computed(() => {
+  if (props.post) {
+    const a = form.is_notice === props.post.is_notice
+    const b = form.category === props.post.category
+    const c = form.lawsuit === props.post.lawsuit
+    const d = form.title === props.post.title
+    const e = form.execution_date === props.post.execution_date
+    const f = form.content === props.post.content
+
+    return a && b && c && d && e && f && attach.value
+  } else return false
+})
+
+const attach = ref(true)
+const validated = ref(false)
+
+const documentStore = useDocument()
+const getSuitCase = computed(() => documentStore.getSuitCase)
+
 const newLinkNum = ref(1)
 const newLinkRange = computed(() => {
   let array = []
@@ -59,6 +82,13 @@ const newFileRange = computed(() => {
   return array
 })
 
+const sortName = computed(() =>
+  props.post && props.post.project ? props.post.proj_name : '본사',
+)
+
+const route = useRoute()
+const btnClass = computed(() => (route.params.postId ? 'success' : 'primary'))
+
 const ctlLinkNum = (n: number) => {
   if (n + 1 >= newLinkNum.value) newLinkNum.value = newLinkNum.value + 1
   else newLinkNum.value = newLinkNum.value - 1
@@ -69,42 +99,10 @@ const ctlFileNum = (n: number) => {
   else newFileNum.value = newFileNum.value - 1
 }
 
-const validated = ref(false)
-
-const documentStore = useDocument()
-const post = computed(() => documentStore.post)
-const getSuitCase = computed(() => documentStore.getSuitCase)
-
-const attach = ref(true)
-
-const formsCheck = computed(() => {
-  if (post.value) {
-    const a = form.is_notice === post.value.is_notice
-    const b = form.category === post.value.category
-    const c = form.lawsuit === post.value.lawsuit
-    const d = form.title === post.value.title
-    const e = form.execution_date === post.value.execution_date
-    const f = form.content === post.value.content
-
-    return a && b && c && d && e && f && attach.value
-  } else return false
-})
-
 const enableStore = (event: Event) => {
   const el = event.target as HTMLInputElement
   attach.value = !el.value
 }
-
-const sortName = computed(() =>
-  post.value && post.value.project ? post.value.proj_name : '본사',
-)
-
-const fetchPost = (pk: number) => documentStore.fetchPost(pk)
-const fetchAllSuitCaseList = (payload: SuitCaseFilter) =>
-  documentStore.fetchAllSuitCaseList(payload)
-
-const route = useRoute()
-const btnClass = computed(() => (route.params.postId ? 'success' : 'primary'))
 
 const onSubmit = (event: Event) => {
   if (write_company_docs) {
@@ -133,28 +131,28 @@ watch(form, val => {
   if (val.execution_date) form.execution_date = dateFormat(val.execution_date)
 })
 
-watch(post, val => {
-  if (val) {
-    form.pk = val.pk
-    form.company = val.company
-    form.project = val.project
-    form.board = val.board
-    form.is_notice = val.is_notice
-    form.category = val.category
-    form.lawsuit = val.lawsuit
-    form.title = val.title
-    form.execution_date = val.execution_date
-    form.content = val.content
-    form.is_hide_comment = val.is_hide_comment
-    form.hit = val.hit
-    form.blame = val.blame
-    form.blame = val.blame
-    form.device = val.device
-    form.secret = val.secret
-    form.password = val.password
-    if (val.links) form.oldLinks = val.links
-    if (val.files) {
-      form.oldFiles = val.files.map(file => ({
+onBeforeMount(() => {
+  if (props.post) {
+    form.pk = props.post.pk
+    form.company = props.post.company
+    form.project = props.post.project
+    form.board = props.post.board
+    form.is_notice = props.post.is_notice
+    form.category = props.post.category
+    form.lawsuit = props.post.lawsuit
+    form.title = props.post.title
+    form.execution_date = props.post.execution_date
+    form.content = props.post.content
+    form.is_hide_comment = props.post.is_hide_comment
+    form.hit = props.post.hit
+    form.blame = props.post.blame
+    form.blame = props.post.blame
+    form.device = props.post.device
+    form.secret = props.post.secret
+    form.password = props.post.password
+    if (props.post.links) form.oldLinks = props.post.links
+    if (props.post.files) {
+      form.oldFiles = props.post.files.map((file: any) => ({
         pk: file.pk,
         file: file.file,
         newFile: '',
@@ -162,20 +160,6 @@ watch(post, val => {
       }))
     }
   }
-})
-
-watch(route, val => {
-  if (val.params.postId) fetchPost(Number(val.params.postId))
-  else documentStore.post = null
-})
-
-onBeforeMount(() => {
-  if (route.params.postId) fetchPost(Number(route.params.postId))
-  fetchAllSuitCaseList({})
-})
-
-onBeforeRouteLeave(() => {
-  documentStore.post = null
 })
 </script>
 
