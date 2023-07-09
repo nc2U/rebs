@@ -47,6 +47,19 @@ const form = reactive<Post & Attatches>({
   newFiles: [],
 })
 
+const formsCheck = computed(() => {
+  if (props.post) {
+    const a = form.is_notice === props.post.is_notice
+    const b = form.category === props.post.category
+    const c = form.lawsuit === props.post.lawsuit
+    const d = form.title === props.post.title
+    const e = form.execution_date === props.post.execution_date
+    const f = form.content === props.post.content
+
+    return a && b && c && d && e && f && attach.value
+  } else return false
+})
+
 const attach = ref(true)
 const validated = ref(false)
 
@@ -62,19 +75,6 @@ const newFileRange = computed(() => {
   let array = []
   for (let i = 0; i < newFileNum.value; ++i) array.push(i)
   return array
-})
-
-const formsCheck = computed(() => {
-  if (props.post) {
-    const a = form.is_notice === props.post.is_notice
-    const b = form.category === props.post.category
-    const c = form.lawsuit === props.post.lawsuit
-    const d = form.title === props.post.title
-    const e = form.execution_date === props.post.execution_date
-    const f = form.content === props.post.content
-
-    return a && b && c && d && e && f && attach.value
-  } else return false
 })
 
 const sortName = computed(() =>

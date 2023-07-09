@@ -109,8 +109,8 @@ const dataSetup = (pk: number, postId?: string | string[]) => {
     page: postFilter.value.page,
     category: postFilter.value.category,
   })
-  postFilter.value.company = pk
   if (postId) fetchPost(Number(postId))
+  postFilter.value.company = pk
 }
 
 const dataReset = () => {
