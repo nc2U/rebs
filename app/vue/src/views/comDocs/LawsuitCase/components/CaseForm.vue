@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, onBeforeMount, watch } from 'vue'
+import { ref, reactive, computed, onBeforeMount, onUpdated, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { SuitCase } from '@/store/types/document'
 import { write_company_docs } from '@/utils/pageAuth'
@@ -20,6 +20,7 @@ const delModal = ref()
 const alertModal = ref()
 const confirmModal = ref()
 
+const validated = ref(false)
 const form = reactive<SuitCase>({
   pk: null,
   company: null,
@@ -38,7 +39,11 @@ const form = reactive<SuitCase>({
   summary: '',
 })
 
-const validated = ref(false)
+watch(form, val => {
+  if (val.case_start_date)
+    form.case_start_date = dateFormat(val.case_start_date)
+  else form.case_start_date = null
+})
 
 const formsCheck = computed(() => {
   if (props.suitcase) {
@@ -88,13 +93,7 @@ const modalAction = () => {
   confirmModal.value.close()
 }
 
-watch(form, val => {
-  if (val.case_start_date)
-    form.case_start_date = dateFormat(val.case_start_date)
-  else form.case_start_date = null
-})
-
-onBeforeMount(() => {
+const dataSetup = () => {
   if (props.suitcase) {
     form.pk = props.suitcase.pk
     form.company = props.suitcase.company
@@ -112,7 +111,10 @@ onBeforeMount(() => {
     form.case_start_date = props.suitcase.case_start_date
     form.summary = props.suitcase.summary
   }
-})
+}
+
+onUpdated(() => dataSetup())
+onBeforeMount(() => dataSetup())
 </script>
 
 <template>
