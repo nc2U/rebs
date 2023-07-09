@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, watch } from 'vue'
+import { ref, reactive, computed, onBeforeMount, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { Post, Attatches } from '@/store/types/document'
 import { write_company_docs } from '@/utils/pageAuth'
@@ -126,28 +126,28 @@ watch(form, val => {
   if (val.execution_date) form.execution_date = dateFormat(val.execution_date)
 })
 
-watch(props.post, val => {
-  if (val) {
-    form.pk = val.pk
-    form.company = val.company
-    form.project = val.project
-    form.board = val.board
-    form.is_notice = val.is_notice
-    form.category = val.category
-    form.lawsuit = val.lawsuit
-    form.title = val.title
-    form.execution_date = val.execution_date
-    form.content = val.content
-    form.is_hide_comment = val.is_hide_comment
-    form.hit = val.hit
-    form.blame = val.blame
-    form.blame = val.blame
-    form.device = val.device
-    form.secret = val.secret
-    form.password = val.password
-    if (val.links) form.oldLinks = val.links
-    if (val.files) {
-      form.oldFiles = val.files.map(file => ({
+onBeforeMount(() => {
+  if (props.post) {
+    form.pk = props.post.pk
+    form.company = props.post.company
+    form.project = props.post.project
+    form.board = props.post.board
+    form.is_notice = props.post.is_notice
+    form.category = props.post.category
+    form.lawsuit = props.post.lawsuit
+    form.title = props.post.title
+    form.execution_date = props.post.execution_date
+    form.content = props.post.content
+    form.is_hide_comment = props.post.is_hide_comment
+    form.hit = props.post.hit
+    form.blame = props.post.blame
+    form.blame = props.post.blame
+    form.device = props.post.device
+    form.secret = props.post.secret
+    form.password = props.post.password
+    if (props.post.links) form.oldLinks = props.post.links
+    if (props.post.files) {
+      form.oldFiles = props.post.files.map((file: any) => ({
         pk: file.pk,
         file: file.file,
         newFile: '',

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onBeforeMount } from 'vue'
+import { ref, computed, onBeforeMount, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/comDocs/_menu/headermixin1'
 import { useRoute, useRouter } from 'vue-router'
 import { useCompany } from '@/store/pinia/company'
@@ -52,6 +52,7 @@ const post = computed(() => docStore.post)
 const postList = computed(() => docStore.postList)
 const categoryList = computed(() => docStore.categoryList)
 
+const fetchPost = (pk: number) => docStore.fetchPost(pk)
 const fetchPostList = (payload: PostFilter) => docStore.fetchPostList(payload)
 const fetchCategoryList = (board: number) => docStore.fetchCategoryList(board)
 
@@ -63,6 +64,11 @@ const patchLink = (payload: Link) => docStore.patchLink(payload)
 const patchFile = (payload: AFile) => docStore.patchFile(payload)
 
 const [route, router] = [useRoute(), useRouter()]
+
+watch(route, val => {
+  if (val.params.postId) fetchPost(Number(val.params.postId))
+  else docStore.post = null
+})
 
 const onSubmit = (payload: Post & Attatches) => {
   const { pk, ...formData } = payload
@@ -96,7 +102,7 @@ const sortFilter = (project: number | null) => {
   docsFilter(postFilter.value)
 }
 
-const dataSetup = (pk: number) => {
+const dataSetup = (pk: number, postId?: string | string[]) => {
   fetchPostList({
     company: pk,
     board: 2,
@@ -104,10 +110,12 @@ const dataSetup = (pk: number) => {
     category: postFilter.value.category,
   })
   postFilter.value.company = pk
+  if (postId) fetchPost(Number(postId))
 }
 
 const dataReset = () => {
   comStore.company = null
+  docStore.post = null
   docStore.postList = []
   docStore.postCount = 0
   postFilter.value.company = null
@@ -121,7 +129,7 @@ const comSelect = (target: number | null) => {
 
 onBeforeMount(() => {
   fetchCategoryList(2)
-  dataSetup(company.value || comStore.initComId)
+  dataSetup(company.value || comStore.initComId, route.params?.postId)
 })
 </script>
 
