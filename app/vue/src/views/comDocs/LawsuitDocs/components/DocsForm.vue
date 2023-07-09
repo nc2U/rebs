@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, onBeforeMount, watch } from 'vue'
+import { ref, reactive, computed, onBeforeMount, onUpdated, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useDocument } from '@/store/pinia/document'
 import { Post, Attatches } from '@/store/types/document'
@@ -25,6 +25,8 @@ const delModal = ref()
 const alertModal = ref()
 const confirmModal = ref()
 
+const attach = ref(true)
+const validated = ref(false)
 const form = reactive<Post & Attatches>({
   pk: null,
   company: null,
@@ -49,6 +51,10 @@ const form = reactive<Post & Attatches>({
   newFiles: [],
 })
 
+watch(form, val => {
+  if (val.execution_date) form.execution_date = dateFormat(val.execution_date)
+})
+
 const formsCheck = computed(() => {
   if (props.post) {
     const a = form.is_notice === props.post.is_notice
@@ -61,9 +67,6 @@ const formsCheck = computed(() => {
     return a && b && c && d && e && f && attach.value
   } else return false
 })
-
-const attach = ref(true)
-const validated = ref(false)
 
 const documentStore = useDocument()
 const getSuitCase = computed(() => documentStore.getSuitCase)
@@ -127,11 +130,7 @@ const devideUri = (uri: string) => {
   return [devidedUri[0] + 'media/', devidedUri[1]]
 }
 
-watch(form, val => {
-  if (val.execution_date) form.execution_date = dateFormat(val.execution_date)
-})
-
-onBeforeMount(() => {
+const dataSetup = () => {
   if (props.post) {
     form.pk = props.post.pk
     form.company = props.post.company
@@ -160,7 +159,10 @@ onBeforeMount(() => {
       }))
     }
   }
-})
+}
+
+onUpdated(() => dataSetup())
+onBeforeMount(() => dataSetup())
 </script>
 
 <template>
