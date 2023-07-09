@@ -10,7 +10,7 @@ import AlertModal from '@/components/Modals/AlertModal.vue'
 const props = defineProps({
   project: {
     type: Number,
-    required: true,
+    default: null,
   },
 })
 
