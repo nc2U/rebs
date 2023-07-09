@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, onBeforeMount, onUpdated, watch } from 'vue'
+import { ref, reactive, computed, onMounted, onUpdated, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useDocument } from '@/store/pinia/document'
 import { Post, Attatches } from '@/store/types/document'
@@ -161,8 +161,8 @@ const dataSetup = () => {
   }
 }
 
+onMounted(() => dataSetup())
 onUpdated(() => dataSetup())
-onBeforeMount(() => dataSetup())
 </script>
 
 <template>

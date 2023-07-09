@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, onBeforeMount, onUpdated, watch } from 'vue'
+import { ref, reactive, computed, onMounted, onUpdated, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { Post, Attatches } from '@/store/types/document'
 import { write_company_docs } from '@/utils/pageAuth'
@@ -156,8 +156,8 @@ const dataSetup = () => {
   }
 }
 
+onMounted(() => dataSetup())
 onUpdated(() => dataSetup())
-onBeforeMount(() => dataSetup())
 </script>
 
 <template>
