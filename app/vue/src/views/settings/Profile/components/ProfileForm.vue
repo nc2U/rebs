@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, watch, onMounted } from 'vue'
+import { ref, reactive, computed, onMounted, watch } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { maska as vMaska } from 'maska'
 import { dateFormat } from '@/utils/baseMixins'
@@ -85,18 +85,7 @@ const resetForm = () => {
   image.value = ''
 }
 
-watch(props, nVal => {
-  if (!!nVal) {
-    form.pk = nVal.profile.pk
-    form.user = nVal.profile.user
-    form.name = nVal.profile.name
-    form.birth_date = nVal.profile.birth_date
-    form.cell_phone = nVal.profile.cell_phone
-    image.value = nVal.profile.image
-  }
-})
-
-onMounted(() => {
+const formDataSet = () => {
   if (props.profile) {
     form.pk = props.profile.pk
     form.user = props.profile.user
@@ -105,7 +94,9 @@ onMounted(() => {
     form.cell_phone = props.profile.cell_phone
     image.value = props.profile.image
   }
-})
+}
+
+onMounted(() => formDataSet())
 </script>
 
 <template>
