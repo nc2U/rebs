@@ -1,29 +1,8 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount, watch } from 'vue'
-import { useDocument } from '@/store/pinia/document'
-import { onBeforeRouteLeave, useRoute } from 'vue-router'
-import { TableSecondary } from '@/utils/cssMixins'
 import { timeFormat } from '@/utils/baseMixins'
+import { TableSecondary } from '@/utils/cssMixins'
 
-const documentStore = useDocument()
-const suitcase = computed(() => documentStore.suitcase)
-
-const fetchSuitCase = (pk: number) => documentStore.fetchSuitCase(pk)
-
-const route = useRoute()
-
-watch(route, val => {
-  if (val.params.caseId) fetchSuitCase(Number(val.params.caseId))
-  else documentStore.post = null
-})
-
-onBeforeMount(() => {
-  if (route.params.caseId) fetchSuitCase(Number(route.params.caseId))
-})
-
-onBeforeRouteLeave(() => {
-  documentStore.suitcase = null
-})
+defineProps({ suitcase: { type: Object, required: true } })
 </script>
 
 <template>

@@ -1,21 +1,21 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount, watch } from 'vue'
+import { computed } from 'vue'
 import { timeFormat } from '@/utils/baseMixins'
 import { useDocument } from '@/store/pinia/document'
-import { onBeforeRouteLeave, useRoute } from 'vue-router'
 import { cutString } from '@/utils/baseMixins'
 
-defineProps({ category: { type: Number, default: undefined } })
+const props = defineProps({
+  category: { type: Number, default: undefined },
+  post: { type: Object, default: null },
+})
 const emit = defineEmits(['post-hit', 'link-hit', 'file-hit'])
 
 const documentStore = useDocument()
-const post = computed(() => documentStore.post)
 const getPrev = computed(() => documentStore.getPrev)
 const getNext = computed(() => documentStore.getNext)
 
-const sortName = computed(() => post.value?.proj_name || '본사')
+const sortName = computed(() => props.post?.proj_name || '본사')
 
-const fetchPost = (pk: number) => documentStore.fetchPost(pk)
 const fetchLink = (pk: number) => documentStore.fetchLink(pk)
 const fetchFile = (pk: number) => documentStore.fetchFile(pk)
 
@@ -39,26 +39,6 @@ const getFileName = (file: string) => {
   if (file) return decodeURI(file.split('/').slice(-1)[0])
   else return
 }
-
-const route = useRoute()
-
-watch(route, val => {
-  if (val.params.postId) fetchPost(Number(val.params.postId))
-  else documentStore.post = null
-})
-
-onBeforeMount(() => {
-  if (route.params.postId) fetchPost(Number(route.params.postId))
-
-  setTimeout(() => {
-    if (post.value)
-      emit('post-hit', { pk: post.value.pk, hit: post.value.hit + 1 })
-  }, 500)
-})
-
-onBeforeRouteLeave(() => {
-  documentStore.post = null
-})
 </script>
 
 <template>
