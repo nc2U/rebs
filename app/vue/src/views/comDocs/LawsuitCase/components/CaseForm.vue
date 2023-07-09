@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, onBeforeMount, watch } from 'vue'
-import { onBeforeRouteLeave, useRoute } from 'vue-router'
-import { useDocument } from '@/store/pinia/document'
+import { useRoute } from 'vue-router'
 import { SuitCase } from '@/store/types/document'
 import { write_company_docs } from '@/utils/pageAuth'
 import { dateFormat } from '@/utils/baseMixins'
@@ -11,6 +10,10 @@ import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
+const props = defineProps({
+  getSuitCase: { type: Object, required: true },
+  suitcase: { type: Object, default: null },
+})
 const emit = defineEmits(['on-submit', 'close'])
 
 const delModal = ref()
@@ -37,26 +40,22 @@ const form = reactive<SuitCase>({
 
 const validated = ref(false)
 
-const documentStore = useDocument()
-const suitcase = computed(() => documentStore.suitcase)
-const getSuitCase = computed(() => documentStore.getSuitCase)
-
 const formsCheck = computed(() => {
-  if (suitcase.value) {
-    const a = form.company === suitcase.value.company
-    const b = form.project === suitcase.value.project
-    const c = form.sort === suitcase.value.sort
-    const d = form.level === suitcase.value.level
-    const e = form.related_case === suitcase.value.related_case
-    const f = form.court === suitcase.value.court
-    const g = form.other_agency === suitcase.value.other_agency
-    const h = form.case_number === suitcase.value.case_number
-    const i = form.case_name === suitcase.value.case_name
-    const j = form.plaintiff === suitcase.value.plaintiff
-    const k = form.defendant === suitcase.value.defendant
-    const l = form.related_debtor === suitcase.value.related_debtor
-    const m = form.case_start_date === suitcase.value.case_start_date
-    const n = form.summary === suitcase.value.summary
+  if (props.suitcase) {
+    const a = form.company === props.suitcase.company
+    const b = form.project === props.suitcase.project
+    const c = form.sort === props.suitcase.sort
+    const d = form.level === props.suitcase.level
+    const e = form.related_case === props.suitcase.related_case
+    const f = form.court === props.suitcase.court
+    const g = form.other_agency === props.suitcase.other_agency
+    const h = form.case_number === props.suitcase.case_number
+    const i = form.case_name === props.suitcase.case_name
+    const j = form.plaintiff === props.suitcase.plaintiff
+    const k = form.defendant === props.suitcase.defendant
+    const l = form.related_debtor === props.suitcase.related_debtor
+    const m = form.case_start_date === props.suitcase.case_start_date
+    const n = form.summary === props.suitcase.summary
 
     const group1 = a && b && c && d && e && f && g
     const group2 = h && i && j && k && l && m && n
@@ -65,10 +64,8 @@ const formsCheck = computed(() => {
 })
 
 const sortName = computed(() =>
-  suitcase.value && suitcase.value.project ? suitcase.value.proj_name : '본사',
+  props.suitcase && props.suitcase.project ? props.suitcase.proj_name : '본사',
 )
-
-const fetchSuitCase = (pk: number) => documentStore.fetchSuitCase(pk)
 
 const route = useRoute()
 const btnClass = computed(() => (route.params.caseId ? 'success' : 'primary'))
@@ -97,37 +94,24 @@ watch(form, val => {
   else form.case_start_date = null
 })
 
-watch(suitcase, val => {
-  if (val) {
-    form.pk = val.pk
-    form.company = val.company
-    form.project = val.project
-    form.sort = val.sort
-    form.level = val.level
-    form.related_case = val.related_case
-    form.court = val.court
-    form.other_agency = val.other_agency
-    form.case_number = val.case_number
-    form.case_name = val.case_name
-    form.plaintiff = val.plaintiff
-    form.defendant = val.defendant
-    form.related_debtor = val.related_debtor
-    form.case_start_date = val.case_start_date
-    form.summary = val.summary
-  }
-})
-
-watch(route, val => {
-  if (val.params.caseId) fetchSuitCase(Number(val.params.caseId))
-  else documentStore.suitcase = null
-})
-
 onBeforeMount(() => {
-  if (route.params.caseId) fetchSuitCase(Number(route.params.caseId))
-})
-
-onBeforeRouteLeave(() => {
-  documentStore.suitcase = null
+  if (props.suitcase) {
+    form.pk = props.suitcase.pk
+    form.company = props.suitcase.company
+    form.project = props.suitcase.project
+    form.sort = props.suitcase.sort
+    form.level = props.suitcase.level
+    form.related_case = props.suitcase.related_case
+    form.court = props.suitcase.court
+    form.other_agency = props.suitcase.other_agency
+    form.case_number = props.suitcase.case_number
+    form.case_name = props.suitcase.case_name
+    form.plaintiff = props.suitcase.plaintiff
+    form.defendant = props.suitcase.defendant
+    form.related_debtor = props.suitcase.related_debtor
+    form.case_start_date = props.suitcase.case_start_date
+    form.summary = props.suitcase.summary
+  }
 })
 </script>
 

@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref, computed, onBeforeMount, onBeforeUpdate, watch } from 'vue'
+import { ref, computed, onBeforeMount, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/comDocs/_menu/headermixin2'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useCompany } from '@/store/pinia/company'
 import { SuitCaseFilter as cFilter, useDocument } from '@/store/pinia/document'
 import { SuitCase } from '@/store/types/document'
@@ -40,8 +40,11 @@ const comStore = useCompany()
 const company = computed(() => comStore.company?.pk)
 
 const docStore = useDocument()
+const suitcase = computed(() => docStore.suitcase)
 const suitcaseList = computed(() => docStore.suitcaseList)
+const getSuitCase = computed(() => docStore.getSuitCase)
 
+const fetchSuitCase = (pk: number) => docStore.fetchSuitCase(pk)
 const fetchSuitCaseList = (payload: cFilter) =>
   docStore.fetchSuitCaseList(payload)
 const fetchAllSuitCaseList = (payload: cFilter) =>
@@ -51,7 +54,12 @@ const createSuitCase = (payload: SuitCase) => docStore.createSuitCase(payload)
 const updateSuitCase = (payload: SuitCase) => docStore.updateSuitCase(payload)
 const deleteSuitCase = (pk: number) => docStore.deleteSuitCase(pk)
 
-const router = useRouter()
+const [route, router] = [useRoute(), useRouter()]
+
+watch(route, val => {
+  if (val.params.caseId) fetchSuitCase(Number(val.params.caseId))
+  else docStore.suitcase = null
+})
 
 const onSubmit = (payload: SuitCase) => {
   if (!!company.value)
@@ -98,8 +106,9 @@ const sortFilter = (project: number | null) => {
   listFiltering(caseFilter.value)
 }
 
-const dataSetup = (pk: number) => {
+const dataSetup = (pk: number, caseId?: string | string[]) => {
   fetchSuitCaseList({ company: pk, page: caseFilter.value.page })
+  if (caseId) fetchSuitCase(Number(caseId))
 }
 
 const dataReset = () => {
@@ -116,7 +125,7 @@ const comSelect = (target: number | null) => {
 
 onBeforeMount(() => {
   fetchAllSuitCaseList({})
-  dataSetup(company.value || comStore.initComId)
+  dataSetup(company.value || comStore.initComId, route.params?.caseId)
 })
 </script>
 
@@ -130,7 +139,7 @@ onBeforeMount(() => {
 
   <ContentBody>
     <CCardBody class="pb-5">
-      <div v-if="$route.name === '본사 소송 사건'" class="pt-3">
+      <div v-if="route.name === '본사 소송 사건'" class="pt-3">
         <ListController ref="fController" @list-filter="listFiltering" />
 
         <CaseList
@@ -145,16 +154,21 @@ onBeforeMount(() => {
         />
       </div>
 
-      <div v-else-if="$route.name.includes('보기')">
-        <CaseView />
+      <div v-else-if="route.name.includes('보기')">
+        <CaseView :suitcase="suitcase" />
       </div>
 
-      <div v-else-if="$route.name.includes('작성')">
-        <CaseForm @on-submit="onSubmit" />
+      <div v-else-if="route.name.includes('작성')">
+        <CaseForm :get-suit-case="getSuitCase" @on-submit="onSubmit" />
       </div>
 
-      <div v-else-if="$route.name.includes('수정')">
-        <CaseForm @on-submit="onSubmit" @on-delete="onDelete" />
+      <div v-else-if="route.name.includes('수정')">
+        <CaseForm
+          :get-suit-case="getSuitCase"
+          :suitcase="suitcase"
+          @on-submit="onSubmit"
+          @on-delete="onDelete"
+        />
       </div>
     </CCardBody>
 
