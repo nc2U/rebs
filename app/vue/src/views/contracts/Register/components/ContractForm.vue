@@ -819,7 +819,7 @@ onUpdated(() => formDataSet())
             <CCol md="2" class="d-none d-md-block d-lg-none"></CCol>
 
             <CCol v-if="form.payment" xs="3" md="2" lg="1" class="pt-2 mb-3">
-              <router-link to="" @click="payReset">Reset</router-link>
+              <a href="javascript:void(0)" @click="payReset">Reset</a>
             </CCol>
           </CRow>
         </CAlert>
