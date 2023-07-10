@@ -96,11 +96,14 @@ const getContract = (contor: string) =>
     fetchContract(res.contract),
   )
 
-const typeSelect = (type: number) => {
-  const unit_type = type
+const typeSelect = (payload: {
+  unit_type?: number
+  contract?: number
+  available?: 'true' | ''
+}) => {
   if (project.value) {
-    fetchKeyUnitList({ project: project.value, unit_type })
-    fetchHouseUnitList({ project: project.value, unit_type })
+    fetchKeyUnitList({ project: project.value, ...payload })
+    fetchHouseUnitList({ project: project.value, ...payload })
   }
 }
 

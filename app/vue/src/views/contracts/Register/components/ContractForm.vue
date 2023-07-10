@@ -186,7 +186,12 @@ const unitReset = () => {
 
 const typeSelect = () => {
   nextTick(() => {
-    emit('type-select', form.unit_type)
+    const payload =
+      !!props.contract && form.unit_type === props.contract.unit_type
+        ? { unit_type: form.unit_type, contract: props.contract.pk }
+        : { unit_type: form.unit_type, available: 'true' }
+
+    emit('type-select', payload)
     form.keyunit = null
     form.houseunit = null
   })
@@ -434,6 +439,7 @@ onUpdated(() => formDataSet())
         :project="project"
         @search-contractor="searchContractor"
       />
+      {{ typeof form.keyunit }}
       <ContractorAlert v-if="contractor" :contractor="contractor" />
       <hr />
       <CRow class="mb-3">
@@ -464,7 +470,7 @@ onUpdated(() => formDataSet())
         <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 차수</CFormLabel>
         <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
           <CFormSelect
-            v-model="form.order_group"
+            v-model.number="form.order_group"
             required
             :disabled="noStatus"
             @change="setOGSort"
@@ -484,7 +490,7 @@ onUpdated(() => formDataSet())
         <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 타입</CFormLabel>
         <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
           <CFormSelect
-            v-model="form.unit_type"
+            v-model.number="form.unit_type"
             required
             :disabled="form.order_group === null && !contract"
             @change="typeSelect"
@@ -502,7 +508,7 @@ onUpdated(() => formDataSet())
         </CFormLabel>
         <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
           <CFormSelect
-            v-model="form.keyunit"
+            v-model.number="form.keyunit"
             required
             :disabled="form.unit_type === null && !contract"
             @change="setKeyCode"
@@ -522,7 +528,7 @@ onUpdated(() => formDataSet())
         </CFormLabel>
         <CCol v-if="unitSet" md="10" lg="2" class="mb-md-3 mb-lg-0">
           <Multiselect
-            v-model="form.houseunit"
+            v-model.number="form.houseunit"
             :options="getHouseUnits"
             placeholder="---------"
             autocomplete="label"
