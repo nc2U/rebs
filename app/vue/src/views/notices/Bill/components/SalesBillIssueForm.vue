@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, reactive, ref, watch } from 'vue'
+import { ref, reactive, computed, watch, onMounted, onUpdated } from 'vue'
 import { usePayment } from '@/store/pinia/payment'
 import { SalesBillIssue } from '@/store/types/notice'
 import { write_notice } from '@/utils/pageAuth'
@@ -20,11 +20,13 @@ const props = defineProps({
 const emit = defineEmits(['on-submit', 'get-now-order', 'set-pub-date'])
 
 const address2 = ref()
-
+const alertModal = ref()
+const confirmModal = ref()
 const visible = ref(false)
 const validated = ref(false)
 
 const published_date = ref(dateFormat(new Date())) // 발행일자
+watch(published_date, val => emit('set-pub-date', dateFormat(val)))
 
 const form = reactive<SalesBillIssue & { now_due_date: string | null }>({
   pk: null,
@@ -49,9 +51,18 @@ const form = reactive<SalesBillIssue & { now_due_date: string | null }>({
   content: '',
 })
 
+watch(form, val => {
+  if (val.now_due_date) form.now_due_date = dateFormat(val.now_due_date)
+})
+
 const paymentStore = usePayment()
 const payOrderList = computed(() => paymentStore.payOrderList)
 const payOrder = computed(() => paymentStore.payOrder)
+
+watch(payOrder, val => {
+  if (val?.pay_due_date) form.now_due_date = val.pay_due_date
+  else form.now_due_date = null
+})
 
 const confirmText = computed(() => (props.billIssue ? '업데이트' : '신규등록'))
 const btnClass = computed(() => (props.billIssue ? 'success' : 'primary'))
@@ -82,66 +93,6 @@ const formsCheck = computed(() => {
   } else return false
 })
 
-watch(props, value => {
-  if (value.billIssue) {
-    const val = value.billIssue
-    emit('get-now-order', val.now_payment_order)
-    form.pk = val.pk
-    form.project = val.project
-    form.now_payment_order = val.now_payment_order
-    form.host_name = val.host_name
-    form.host_tel = val.host_tel
-    form.agency = val.agency
-    form.agency_tel = val.agency_tel
-    form.bank_account1 = val.bank_account1
-    form.bank_number1 = val.bank_number1
-    form.bank_host1 = val.bank_host1
-    form.bank_account2 = val.bank_account2
-    form.bank_number2 = val.bank_number2
-    form.bank_host2 = val.bank_host2
-    form.zipcode = val.zipcode
-    form.address1 = val.address1
-    form.address2 = val.address2
-    form.address3 = val.address3
-    form.title = val.title
-    form.content = val.content
-  } else {
-    form.pk = null
-    form.project = props.project
-    form.now_payment_order = null
-    form.host_name = ''
-    form.host_tel = ''
-    form.agency = ''
-    form.agency_tel = ''
-    form.bank_account1 = ''
-    form.bank_number1 = ''
-    form.bank_host1 = ''
-    form.bank_account2 = ''
-    form.bank_number2 = ''
-    form.bank_host2 = ''
-    form.zipcode = ''
-    form.address1 = ''
-    form.address2 = ''
-    form.address3 = ''
-    form.title = ''
-    form.content = ''
-  }
-})
-
-watch(payOrder, val => {
-  if (val?.pay_due_date) form.now_due_date = val.pay_due_date
-  else form.now_due_date = null
-})
-
-watch(form, val => {
-  if (val.now_due_date) form.now_due_date = dateFormat(val.now_due_date)
-})
-
-watch(published_date, val => emit('set-pub-date', dateFormat(val)))
-
-const alertModal = ref()
-const confirmModal = ref()
-
 const onSubmit = (event: Event) => {
   if (write_notice.value) {
     if (isValidate(event)) {
@@ -171,6 +122,57 @@ const addressCallback = (data: AddressData) => {
     address2.value.$el.nextElementSibling.focus()
   }
 }
+
+const formDataReset = () => {
+  form.pk = null
+  form.project = props.project
+  form.now_payment_order = null
+  form.host_name = ''
+  form.host_tel = ''
+  form.agency = ''
+  form.agency_tel = ''
+  form.bank_account1 = ''
+  form.bank_number1 = ''
+  form.bank_host1 = ''
+  form.bank_account2 = ''
+  form.bank_number2 = ''
+  form.bank_host2 = ''
+  form.zipcode = ''
+  form.address1 = ''
+  form.address2 = ''
+  form.address3 = ''
+  form.title = ''
+  form.content = ''
+}
+
+const formDataSetup = () => {
+  if (props.billIssue) {
+    const val = props.billIssue
+    emit('get-now-order', val.now_payment_order)
+    form.pk = val.pk
+    form.project = val.project
+    form.now_payment_order = val.now_payment_order
+    form.host_name = val.host_name
+    form.host_tel = val.host_tel
+    form.agency = val.agency
+    form.agency_tel = val.agency_tel
+    form.bank_account1 = val.bank_account1
+    form.bank_number1 = val.bank_number1
+    form.bank_host1 = val.bank_host1
+    form.bank_account2 = val.bank_account2
+    form.bank_number2 = val.bank_number2
+    form.bank_host2 = val.bank_host2
+    form.zipcode = val.zipcode
+    form.address1 = val.address1
+    form.address2 = val.address2
+    form.address3 = val.address3
+    form.title = val.title
+    form.content = val.content
+  } else formDataReset()
+}
+
+onMounted(() => formDataSetup())
+onUpdated(() => formDataSetup())
 </script>
 
 <template>
