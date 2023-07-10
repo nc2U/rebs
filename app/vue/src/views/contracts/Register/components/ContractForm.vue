@@ -180,7 +180,7 @@ const setKeyCode = () => {
 
 const unitReset = () => {
   nextTick(() => {
-    if (form.status === null) formReset()
+    if (!form.status) formReset()
   })
 }
 
@@ -310,36 +310,59 @@ const formsCheck = computed(() => {
   if (props.contract) {
     const a = form.order_group === props.contract.order_group
     const b = form.unit_type === props.contract.unit_type
-    const c = form.keyunit == props.contract.keyunit?.pk
-    const d = form.houseunit == props.contract.houseunit?.pk
-    const e = form.reservation_date === props.contract.reservation_date
-    const f = form.contract_date === props.contract.contract_date
-    const g = form.name === props.contract.name
-    const h = form.birth_date === props.contract.birth_date
-    const i = form.gender === props.contract.gender
-    const j = form.is_registed === props.contract.is_registed
-    const k = form.cell_phone === props.contract.cell_phone
-    const l = form.home_phone === props.contract.home_phone
-    const m = form.other_phone === props.contract.other_phone
-    const n = form.email === props.contract.email
-    const o = form.deal_date === props.contract.deal_date
-    const p = form.income === props.contract.income
-    const q = form.bank_account === props.contract.bank_account
-    const r = form.trader === props.contract.trader
-    const s = form.installment_order === props.contract.installment_order
-    const t = form.id_zipcode === props.contract.id_zipcode
-    const u = form.id_address1 === props.contract.id_address1
-    const v = form.id_address2 === props.contract.id_address2
-    const w = form.id_address3 === props.contract.id_address3
-    const x = form.dm_zipcode === props.contract.dm_zipcode
-    const y = form.dm_address1 === props.contract.dm_address1
-    const z = form.dm_address2 === props.contract.dm_address2
-    const aa = form.dm_address3 === props.contract.dm_address3
+    const c = form.keyunit == props.contract.keyunit.pk
+    const d = form.houseunit == props.contract.keyunit?.houseunit?.pk || ''
 
-    const cond1 = a && b && c && d && e && f && g && h && i
-    const cond2 = j && k && l && m && n && o && p && q && r
-    const cond3 = s && t && u && v && w && x && y && z && aa
-    return d // cond1 && cond2 && cond3
+    // const e =
+    //   form.reservation_date === props.contractor.reservation_date || null
+    // const f = form.contract_date === props.contractor?.contract_date || null
+
+    const g = form.name === props.contractor.name
+    // const h = form.birth_date === props.contract.birth_date
+    const i = form.gender === props.contractor?.gender
+    const j = form.is_registed === props.contractor?.is_registed
+    const k =
+      form.cell_phone === props.contract.contractor.contractorcontact.cell_phone
+    const l =
+      form.home_phone ===
+      props.contract.contractor?.contractorcontact?.home_phone
+    const m =
+      form.other_phone ===
+      props.contract.contractor?.contractorcontact?.other_phone
+    const n = form.email === props.contract.contractor?.contractorcontact?.email
+    // const o = form.deal_date === props.contract.deal_date
+    // const p = form.income === props.contract.income
+    // const q = form.bank_account === props.contract.bank_account
+    // const r = form.trader === props.contract.trader
+    // const s = form.installment_order === props.contract.installment_order
+    const t =
+      form.id_zipcode === props.contract.contractor.contractoraddress.id_zipcode
+    const u =
+      form.id_address1 ===
+      props.contract.contractor.contractoraddress.id_address1
+    const v =
+      form.id_address2 ===
+      props.contract.contractor.contractoraddress.id_address2
+    const w =
+      form.id_address3 ===
+      props.contract.contractor.contractoraddress.id_address3
+    const x =
+      form.dm_zipcode === props.contract.contractor.contractoraddress.dm_zipcode
+    const y =
+      form.dm_address1 ===
+      props.contract.contractor.contractoraddress.dm_address1
+    const z =
+      form.dm_address2 ===
+      props.contract.contractor.contractoraddress.dm_address2
+    const a1 =
+      form.dm_address3 ===
+      props.contract.contractor.contractoraddress.dm_address3
+    const b1 = form.note === props.contract.contractor.note
+
+    const cond1 = a && b && c && d && g && i
+    const cond2 = j && k && l && m && n //&& o && p && q && r
+    const cond3 = t && u && v && w && x && y && z && a1 && b1
+    return cond1 && cond2 && cond3
   } else return false
 })
 
@@ -955,7 +978,6 @@ onUpdated(() => formDataSet())
     </CCardBody>
 
     <CCardFooter class="text-right">
-      {{ formsCheck }}/{{ form.houseunit }}/{{ contract?.houseunit }}
       <CButton type="button" color="light" @click="formReset"> 취소</CButton>
       <CButton
         v-if="contract"
@@ -968,7 +990,7 @@ onUpdated(() => formDataSet())
       <CButton
         type="submit"
         :color="contract ? 'success' : 'primary'"
-        :disabled="formsCheck"
+        :disabled="!form.status || formsCheck"
       >
         <CIcon name="cil-check-circle" />
         저장
@@ -993,11 +1015,7 @@ onUpdated(() => formDataSet())
       진행하시겠습니까?
     </template>
     <template #footer>
-      <CButton
-        :color="contract ? 'success' : 'primary'"
-        :disabled="formsCheck"
-        @click="modalAction"
-      >
+      <CButton :color="contract ? 'success' : 'primary'" @click="modalAction">
         저장
       </CButton>
     </template>
