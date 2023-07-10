@@ -126,7 +126,7 @@ const deleteConfirm = () => {
   else alertModal.value.callModal()
 }
 
-onBeforeMount(() => {
+const formDataSetup = () => {
   if (props.staff) {
     form.value.pk = props.staff.pk
     form.value.company = props.staff.company
@@ -144,7 +144,9 @@ onBeforeMount(() => {
     form.value.status = props.staff.status
     form.value.user = props.staff.user
   } else form.value.company = props.company
-})
+}
+
+onBeforeMount(() => formDataSetup())
 
 watch(
   () => props.company,
