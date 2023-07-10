@@ -152,7 +152,7 @@ const allowedPeriod = (paidDate: string) =>
 const payUpdate = (payment: Payment) => {
   if (allowedPeriod(payment.deal_date)) {
     form.payment = payment.pk
-    form.deal_date = new Date(payment.deal_date)
+    form.deal_date = payment.deal_date
     form.income = payment.income
     form.bank_account = payment.bank_account
     form.trader = payment.trader
@@ -338,11 +338,11 @@ const formsCheck = computed(() => {
     const l = form.home_phone === contact?.home_phone
     const m = form.other_phone === contact?.other_phone
     const n = form.email === contact?.email
-    // const o = form.deal_date === props.contract.deal_date
-    // const p = form.income === props.contract.income
-    // const q = form.bank_account === props.contract.bank_account
-    // const r = form.trader === props.contract.trader
-    // const s = form.installment_order === props.contract.installment_order
+    const o = !form.deal_date
+    const p = !form.income
+    const q = !form.bank_account
+    const r = !form.trader
+    const s = !form.installment_order
     const t = form.id_zipcode === address.id_zipcode
     const u = form.id_address1 === address.id_address1
     const v = form.id_address2 === address.id_address2
@@ -354,7 +354,7 @@ const formsCheck = computed(() => {
     const b1 = form.note === props.contract.contractor.note
 
     const cond1 = a && b && c && d && e && f && g && h && i
-    const cond2 = j && k && l && m && n //&& o && p && q && r
+    const cond2 = j && k && l && m && n && o && p && q && r && s
     const cond3 = t && u && v && w && x && y && z && a1 && b1
     return cond1 && cond2 && cond3
   } else return false
@@ -420,7 +420,6 @@ onUpdated(() => formDataSet())
         :project="project"
         @search-contractor="searchContractor"
       />
-      {{ contractor }}
       <ContractorAlert v-if="contractor" :contractor="contractor" />
       <hr />
       <CRow class="mb-3">
