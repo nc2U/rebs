@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, onBeforeMount, watch } from 'vue'
-import { useCompany } from '@/store/pinia/company'
+import { ref, reactive, computed, watch, onMounted, onUpdated } from 'vue'
 import { useComCash } from '@/store/pinia/comCash'
 import { ProBankAcc } from '@/store/types/proCash'
 import { write_project_cash } from '@/utils/pageAuth'
@@ -54,9 +53,6 @@ const formsCheck = computed(() => {
   } else return false
 })
 
-const comStore = useCompany()
-const getSlugDeparts = computed(() => comStore.getSlugDeparts)
-
 const comCashStore = useComCash()
 const bankCodeList = computed(() => comCashStore.bankCodeList)
 
@@ -75,7 +71,7 @@ const onBankUpdate = () => {
   confirmModal.value.close()
 }
 
-onBeforeMount(() => {
+const formDataSetup = () => {
   if (props.bankAcc) {
     form.pk = props.bankAcc.pk
     form.project = props.bankAcc.project
@@ -90,7 +86,10 @@ onBeforeMount(() => {
     form.directpay = props.bankAcc.directpay
     form.is_imprest = props.bankAcc.is_imprest
   }
-})
+}
+
+onMounted(() => formDataSetup())
+onUpdated(() => formDataSetup())
 </script>
 
 <template>
