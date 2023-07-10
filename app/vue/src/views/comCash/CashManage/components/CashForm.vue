@@ -12,7 +12,7 @@ import AlertModal from '@/components/Modals/AlertModal.vue'
 import AccDepth from './AccDepth.vue'
 import BankAcc from './BankAcc.vue'
 
-const props = defineProps({ cash: { type: Object, required: true } })
+const props = defineProps({ cash: { type: Object, default: null } })
 const emit = defineEmits([
   'multi-submit',
   'on-delete',
@@ -320,7 +320,7 @@ const patchD3Hide = (payload: { pk: number; is_hide: boolean }) =>
 
 const onBankUpdate = (payload: CompanyBank) => emit('on-bank-update', payload)
 
-onBeforeMount(() => {
+const dataSetup = () => {
   if (props.cash) {
     form.pk = props.cash.pk
     form.company = props.cash.company
@@ -340,7 +340,9 @@ onBeforeMount(() => {
     form.deal_date = props.cash.deal_date
   }
   callAccount()
-})
+}
+
+onBeforeMount(() => dataSetup())
 </script>
 
 <template>

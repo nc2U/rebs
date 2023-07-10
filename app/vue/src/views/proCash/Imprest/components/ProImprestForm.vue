@@ -14,7 +14,7 @@ import BankAcc from '../../Manage/components/BankAcc.vue'
 const props = defineProps({
   imprest: {
     type: Object,
-    required: true,
+    default: null,
   },
 })
 

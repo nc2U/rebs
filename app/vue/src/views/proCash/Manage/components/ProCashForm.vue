@@ -14,7 +14,7 @@ import BankAcc from './BankAcc.vue'
 const props = defineProps({
   proCash: {
     type: Object,
-    required: true,
+    default: null,
   },
 })
 
