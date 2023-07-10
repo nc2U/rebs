@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue'
+import { ref, reactive, computed, onBeforeMount } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { usePayment } from '@/store/pinia/payment'
 import { useProCash } from '@/store/pinia/proCash'
@@ -113,12 +113,11 @@ const onDelete = () => {
   emit('close')
 }
 
-onMounted(() => {
+const formDataSet = () => {
   if (props.payment) {
-    const io = props.payment.installment_order
+    form.installment_order = props.payment.installment_order
       ? props.payment.installment_order.pk
       : null
-    form.installment_order = io
     form.trader = props.payment.trader
     form.bank_account = props.payment.bank_account.pk
     form.income = props.payment.income
@@ -129,7 +128,9 @@ onMounted(() => {
   form.project_account_d3 = props.contract.order_group_desc.sort === '1' ? 1 : 4
   form.contract = props.contract.pk
   form.content = `${props.contract.contractor.name}[${props.contract.serial_number}] 대금납부`
-})
+}
+
+onBeforeMount(() => formDataSet())
 </script>
 
 <template>
