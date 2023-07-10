@@ -112,7 +112,7 @@ const formsCheck = computed(() => {
   } else return false
 })
 
-onBeforeMount(() => {
+const formDataSetup = () => {
   if (props.company) {
     form.pk = props.company.pk
     form.name = props.company.name
@@ -128,7 +128,9 @@ onBeforeMount(() => {
     form.address2 = props.company.address2
     form.address3 = props.company.address3
   }
-})
+}
+
+onBeforeMount(() => formDataSetup())
 </script>
 
 <template>

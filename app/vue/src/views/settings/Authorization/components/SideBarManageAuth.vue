@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, watch, nextTick } from 'vue'
+import { ref, reactive, computed, nextTick, onMounted, onUpdated } from 'vue'
 import { useStore } from 'vuex'
 import { UserAuth } from '../index.vue'
 
@@ -51,38 +51,38 @@ const selectAuth = () =>
     emit('select-auth', auth)
   })
 
-watch(
-  () => props.user,
-  newValue => {
-    if (newValue && newValue?.staffauth) {
-      authData.value.pk = newValue.staffauth.pk
-      authData.value.contract = newValue.staffauth.contract
-      authData.value.payment = newValue.staffauth.payment
-      authData.value.notice = newValue.staffauth.notice
-      authData.value.project_cash = newValue.staffauth.project_cash
-      authData.value.project_docs = newValue.staffauth.project_docs
-      authData.value.project = newValue.staffauth.project
-      authData.value.company_cash = newValue.staffauth.company_cash
-      authData.value.company_docs = newValue.staffauth.company_docs
-      authData.value.human_resource = newValue.staffauth.human_resource
-      authData.value.company_settings = newValue.staffauth.company_settings
-      authData.value.auth_manage = newValue.staffauth.auth_manage
-    } else {
-      authData.value.pk = undefined
-      authData.value.contract = '0'
-      authData.value.payment = '0'
-      authData.value.notice = '0'
-      authData.value.project_cash = '0'
-      authData.value.project_docs = '0'
-      authData.value.project = '0'
-      authData.value.company_cash = '0'
-      authData.value.company_docs = '0'
-      authData.value.human_resource = '0'
-      authData.value.company_settings = '0'
-      authData.value.auth_manage = '0'
-    }
-  },
-)
+const dataSetup = () => {
+  if (props.user && props.user?.staffauth) {
+    authData.value.pk = props.user.staffauth.pk
+    authData.value.contract = props.user.staffauth.contract
+    authData.value.payment = props.user.staffauth.payment
+    authData.value.notice = props.user.staffauth.notice
+    authData.value.project_cash = props.user.staffauth.project_cash
+    authData.value.project_docs = props.user.staffauth.project_docs
+    authData.value.project = props.user.staffauth.project
+    authData.value.company_cash = props.user.staffauth.company_cash
+    authData.value.company_docs = props.user.staffauth.company_docs
+    authData.value.human_resource = props.user.staffauth.human_resource
+    authData.value.company_settings = props.user.staffauth.company_settings
+    authData.value.auth_manage = props.user.staffauth.auth_manage
+  } else {
+    authData.value.pk = undefined
+    authData.value.contract = '0'
+    authData.value.payment = '0'
+    authData.value.notice = '0'
+    authData.value.project_cash = '0'
+    authData.value.project_docs = '0'
+    authData.value.project = '0'
+    authData.value.company_cash = '0'
+    authData.value.company_docs = '0'
+    authData.value.human_resource = '0'
+    authData.value.company_settings = '0'
+    authData.value.auth_manage = '0'
+  }
+}
+
+onMounted(() => dataSetup())
+onUpdated(() => dataSetup())
 </script>
 
 <template>
