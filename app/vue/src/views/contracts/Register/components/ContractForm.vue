@@ -26,8 +26,8 @@ const props = defineProps({
   project: { type: Number, default: null },
   contract: { type: Object, default: null },
   contractor: { type: Object, default: null },
-  unitSet: Boolean, // 동호 지정 여부
-  isUnion: Boolean, // 조합인지 일반분양 프로젝트인지 여부
+  unitSet: { type: Boolean, default: false },
+  isUnion: { type: Boolean, default: false },
 })
 
 const emit = defineEmits([
@@ -162,6 +162,8 @@ watch(props, nVal => {
   } else formReset()
   nextTick(() => (formsCheck.value = true))
 })
+
+const router = useRouter()
 
 const contractStore = useContract()
 const getOrderGroups = computed(() => contractStore.getOrderGroups)
@@ -318,8 +320,6 @@ const toSame = () => {
 }
 
 const searchContractor = (contor: string) => emit('search-contractor', contor)
-
-const router = useRouter()
 
 const formReset = () => {
   form.pk = null
