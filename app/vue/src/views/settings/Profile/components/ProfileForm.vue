@@ -76,7 +76,7 @@ const modalAction = () => {
   confirmModal.value.close()
 }
 
-const resetForm = () => {
+const formDataReset = () => {
   form.pk = null
   form.user = null
   form.name = ''
@@ -85,7 +85,7 @@ const resetForm = () => {
   image.value = ''
 }
 
-const formDataSet = () => {
+const formDataSetup = () => {
   if (props.profile) {
     form.pk = props.profile.pk
     form.user = props.profile.user
@@ -96,7 +96,7 @@ const formDataSet = () => {
   }
 }
 
-onMounted(() => formDataSet())
+onMounted(() => formDataSetup())
 </script>
 
 <template>
@@ -186,7 +186,9 @@ onMounted(() => formDataSet())
     </CCardBody>
 
     <CCardFooter class="text-right">
-      <CButton type="button" color="light" @click="resetForm"> 취소</CButton>
+      <CButton type="button" color="light" @click="formDataReset">
+        취소</CButton
+      >
       <CButton type="submit" :color="btnClass" :disabled="formsCheck">
         <CIcon name="cil-check-circle" />
         {{ confirmText }}
