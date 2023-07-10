@@ -5,7 +5,7 @@ import { write_project } from '@/utils/pageAuth'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-const props = defineProps({ order: { type: Object, default: null } })
+const props = defineProps({ order: { type: Object, required: true } })
 const emit = defineEmits(['on-update', 'on-delete'])
 
 const form = reactive({
@@ -17,17 +17,11 @@ const form = reactive({
 const alertModal = ref()
 const confirmModal = ref()
 
-onBeforeMount(() => {
-  if (props.order) resetForm()
-})
-
 const formsCheck = computed(() => {
-  if (props.order) {
-    const a = form.order_number === props.order.order_number
-    const b = form.sort === props.order.sort
-    const c = form.order_group_name === props.order.order_group_name
-    return a && b && c
-  } else return false
+  const a = form.order_number === props.order.order_number
+  const b = form.sort === props.order.sort
+  const c = form.order_group_name === props.order.order_group_name
+  return a && b && c
 })
 
 const formCheck = (bool: boolean) => {
@@ -41,7 +35,7 @@ const onUpdateOrder = () => {
     emit('on-update', { ...{ pk }, ...form })
   } else {
     alertModal.value.callModal()
-    resetForm()
+    dataSetup()
   }
 }
 
@@ -50,7 +44,7 @@ const onDeleteOrder = () => {
   if (accStore.superAuth) confirmModal.value.callModal()
   else {
     alertModal.value.callModal()
-    resetForm()
+    dataSetup()
   }
 }
 
@@ -59,11 +53,13 @@ const modalAction = () => {
   confirmModal.value.close()
 }
 
-const resetForm = () => {
+const dataSetup = () => {
   form.order_number = props.order.order_number
   form.sort = props.order.sort
   form.order_group_name = props.order.order_group_name
 }
+
+onBeforeMount(() => dataSetup())
 </script>
 
 <template>

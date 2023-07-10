@@ -5,7 +5,7 @@ import { write_project } from '@/utils/pageAuth'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-const props = defineProps({ building: { type: Object, default: null } })
+const props = defineProps({ building: { type: Object, required: true } })
 const emit = defineEmits(['on-update', 'on-delete'])
 
 const alertModal = ref()
@@ -14,10 +14,6 @@ const confirmModal = ref()
 const form = reactive({ name: '' })
 
 const formsCheck = computed(() => form.name === props.building.name)
-
-onBeforeMount(() => {
-  if (props.building) resetForm()
-})
 
 const formCheck = (bool: boolean) => {
   if (bool) onUpdateBuilding()
@@ -30,7 +26,7 @@ const onUpdateBuilding = () => {
     emit('on-update', { ...{ pk }, ...form })
   } else {
     alertModal.value.callModal()
-    resetForm()
+    dataSetup()
   }
 }
 
@@ -38,7 +34,7 @@ const onDeleteBuilding = () => {
   if (useAccount().superAuth) confirmModal.value.callModal()
   else {
     alertModal.value.callModal()
-    resetForm()
+    dataSetup()
   }
 }
 
@@ -47,7 +43,9 @@ const modalAction = () => {
   confirmModal.value.close()
 }
 
-const resetForm = () => (form.name = props.building.name)
+const dataSetup = () => (form.name = props.building.name)
+
+onBeforeMount(() => dataSetup())
 </script>
 
 <template>

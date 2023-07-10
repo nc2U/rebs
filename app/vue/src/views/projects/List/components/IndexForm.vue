@@ -143,7 +143,7 @@ const addressCallback = (data: AddressData) => {
   }
 }
 
-onBeforeMount(() => {
+const formDataSetup = () => {
   if (props.project) {
     form.pk = props.project.pk
     form.company = props.project.company
@@ -173,7 +173,9 @@ onBeforeMount(() => {
     form.num_legal_parking = props.project.num_legal_parking
     form.num_planed_parking = props.project.num_planed_parking
   } else form.company = accountStore.staffAuth?.company || null
-})
+}
+
+onBeforeMount(() => formDataSetup())
 </script>
 
 <template>
@@ -560,7 +562,7 @@ onBeforeMount(() => {
   <DaumPostcode ref="postCode" @address-callback="addressCallback" />
 
   <ConfirmModal ref="delModal">
-    <template #header> 프로젝트정보 삭제 </template>
+    <template #header> 프로젝트정보 삭제</template>
     <template #default>현재 삭제 기능이 구현되지 않았습니다.</template>
     <template #footer>
       <CButton color="danger" disabled="">삭제</CButton>
@@ -568,7 +570,7 @@ onBeforeMount(() => {
   </ConfirmModal>
 
   <ConfirmModal ref="confirmModal">
-    <template #header> 프로젝트정보 {{ confirmText }} </template>
+    <template #header> 프로젝트정보 {{ confirmText }}</template>
     <template #default>
       프로젝트정보 {{ confirmText }}을 진행하시겠습니까?
     </template>

@@ -24,18 +24,15 @@ const form = ref({
 })
 
 const formCheck = computed(() => {
-  if (props.unit) {
-    const a = form.value.unit_type === props.unit.unit_type.pk
-    const b = form.value.floor_type === props.unit.floor_type
-    const c = form.value.building_unit === props.unit.building_unit
-    const d = form.value.name === props.unit.name
-    const e = form.value.bldg_line === props.unit.bldg_line
-    const f = form.value.floor_no === props.unit.floor_no
-    const g = form.value.is_hold === props.unit.is_hold
-    const h = form.value.hold_reason === props.unit.hold_reason
-
-    return a && b && c && d && e && f && g && h
-  } else return false
+  const a = form.value.unit_type === props.unit.unit_type.pk
+  const b = form.value.floor_type === props.unit.floor_type
+  const c = form.value.building_unit === props.unit.building_unit
+  const d = form.value.name === props.unit.name
+  const e = form.value.bldg_line === props.unit.bldg_line
+  const f = form.value.floor_no === props.unit.floor_no
+  const g = form.value.is_hold === props.unit.is_hold
+  const h = form.value.hold_reason === props.unit.hold_reason
+  return a && b && c && d && e && f && g && h
 })
 
 const proDataStore = useProjectData()
@@ -60,18 +57,18 @@ const delConfirm = () => {
   confirmModal.value.close()
 }
 
-onMounted(() => {
-  if (props.unit) {
-    form.value.unit_type = props.unit.unit_type.pk
-    form.value.floor_type = props.unit.floor_type
-    form.value.building_unit = props.unit.building_unit
-    form.value.name = props.unit.name
-    form.value.bldg_line = props.unit.bldg_line
-    form.value.floor_no = props.unit.floor_no
-    form.value.is_hold = props.unit.is_hold
-    form.value.hold_reason = props.unit.hold_reason
-  }
-})
+const dataSetup = () => {
+  form.value.unit_type = props.unit.unit_type.pk
+  form.value.floor_type = props.unit.floor_type
+  form.value.building_unit = props.unit.building_unit
+  form.value.name = props.unit.name
+  form.value.bldg_line = props.unit.bldg_line
+  form.value.floor_no = props.unit.floor_no
+  form.value.is_hold = props.unit.is_hold
+  form.value.hold_reason = props.unit.hold_reason
+}
+
+onMounted(() => dataSetup())
 </script>
 
 <template>

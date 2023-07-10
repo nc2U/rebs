@@ -119,7 +119,7 @@ const deleteConfirm = () => {
   else alertModal.value.callModal()
 }
 
-onBeforeMount(() => {
+const dataSetup = () => {
   if (props.owner) {
     form.pk = props.owner.pk
     form.project = props.owner.project
@@ -136,7 +136,9 @@ onBeforeMount(() => {
     form.own_sort_desc = props.owner.own_sort_desc
     form.counsel_record = props.owner.counsel_record
   } else form.project = project.value
-})
+}
+
+onBeforeMount(() => dataSetup())
 </script>
 
 <template>

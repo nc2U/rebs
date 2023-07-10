@@ -10,7 +10,7 @@ const d3List = inject('d3List')
 const orderGroups = inject('orderGroups')
 const unitTypes = inject('unitTypes')
 
-const props = defineProps({ budget: { type: Object, default: null } })
+const props = defineProps({ budget: { type: Object, required: true } })
 const emit = defineEmits(['on-update', 'on-delete'])
 
 const form = reactive({
@@ -28,23 +28,17 @@ const form = reactive({
 const alertModal = ref()
 const confirmModal = ref()
 
-onBeforeMount(() => {
-  if (props.budget) resetForm()
-})
-
 const formsCheck = computed(() => {
-  if (props.budget) {
-    const a = form.pk === props.budget.pk
-    const b = form.account_d2 === props.budget.account_d2
-    const c = form.account_d3 === props.budget.account_d3
-    const d = form.order_group === props.budget.order_group
-    const e = form.unit_type === props.budget.unit_type
-    const f = form.item_name === props.budget.item_name
-    const g = form.average_price === props.budget.average_price
-    const h = form.quantity === props.budget.quantity
-    const i = form.budget === props.budget.budget
-    return a && b && c && d && e && f && g && h && i
-  } else return false
+  const a = form.pk === props.budget.pk
+  const b = form.account_d2 === props.budget.account_d2
+  const c = form.account_d3 === props.budget.account_d3
+  const d = form.order_group === props.budget.order_group
+  const e = form.unit_type === props.budget.unit_type
+  const f = form.item_name === props.budget.item_name
+  const g = form.average_price === props.budget.average_price
+  const h = form.quantity === props.budget.quantity
+  const i = form.budget === props.budget.budget
+  return a && b && c && d && e && f && g && h && i
 })
 
 const onUpdateBudget = () => {
@@ -52,7 +46,7 @@ const onUpdateBudget = () => {
     emit('on-update', { ...form })
   } else {
     alertModal.value.callModal()
-    resetForm()
+    dataSetup()
   }
 }
 
@@ -61,7 +55,7 @@ const onDeleteBudget = () => {
   if (accStore.superAuth) confirmModal.value.callModal()
   else {
     alertModal.value.callModal()
-    resetForm()
+    dataSetup()
   }
 }
 
@@ -70,7 +64,7 @@ const modalAction = () => {
   confirmModal.value.close()
 }
 
-const resetForm = () => {
+const dataSetup = () => {
   form.pk = props.budget.pk
   form.account_d2 = props.budget.account_d2
   form.account_d3 = props.budget.account_d3
@@ -81,6 +75,8 @@ const resetForm = () => {
   form.quantity = props.budget.quantity
   form.budget = props.budget.budget
 }
+
+onBeforeMount(() => dataSetup())
 </script>
 
 <template>

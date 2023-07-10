@@ -8,7 +8,7 @@ import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
 const emit = defineEmits(['on-update', 'on-delete'])
-const props = defineProps({ payOrder: { type: Object, default: null } })
+const props = defineProps({ payOrder: { type: Object, required: true } })
 
 const form = reactive({
   pay_sort: '',
@@ -29,22 +29,16 @@ watch(form, val => {
 const alertModal = ref()
 const confirmModal = ref()
 
-onBeforeMount(() => {
-  if (props.payOrder) resetForm()
-})
-
 const formsCheck = computed(() => {
-  if (props.payOrder) {
-    const a = form.pay_sort === props.payOrder.pay_sort
-    const b = form.pay_code === props.payOrder.pay_code
-    const c = form.pay_time === props.payOrder.pay_time
-    const d = form.pay_name === props.payOrder.pay_name
-    const e = form.alias_name === props.payOrder.alias_name
-    const f = form.is_pm_cost === props.payOrder.is_pm_cost
-    const g = form.pay_due_date === props.payOrder.pay_due_date
-    const h = form.extra_due_date === props.payOrder.extra_due_date
-    return a && b && c && d && e && f && g && h
-  } else return false
+  const a = form.pay_sort === props.payOrder.pay_sort
+  const b = form.pay_code === props.payOrder.pay_code
+  const c = form.pay_time === props.payOrder.pay_time
+  const d = form.pay_name === props.payOrder.pay_name
+  const e = form.alias_name === props.payOrder.alias_name
+  const f = form.is_pm_cost === props.payOrder.is_pm_cost
+  const g = form.pay_due_date === props.payOrder.pay_due_date
+  const h = form.extra_due_date === props.payOrder.extra_due_date
+  return a && b && c && d && e && f && g && h
 })
 
 const formCheck = (bool: boolean) => {
@@ -57,14 +51,14 @@ const onUpdatePayOrder = () => {
     emit('on-update', { ...{ pk }, ...form })
   } else {
     alertModal.value.callModal()
-    resetForm()
+    dataSetup()
   }
 }
 const onDeletePayOrder = () => {
   if (useAccount().superAuth) confirmModal.value.callModal()
   else {
     alertModal.value.callModal()
-    resetForm()
+    dataSetup()
   }
 }
 const modalAction = () => {
@@ -72,7 +66,7 @@ const modalAction = () => {
   confirmModal.value.close()
 }
 
-const resetForm = () => {
+const dataSetup = () => {
   form.pay_sort = props.payOrder.pay_sort
   form.pay_code = props.payOrder.pay_code
   form.pay_time = props.payOrder.pay_time
@@ -82,6 +76,8 @@ const resetForm = () => {
   form.pay_due_date = props.payOrder.pay_due_date
   form.extra_due_date = props.payOrder.extra_due_date
 }
+
+onBeforeMount(() => dataSetup())
 </script>
 
 <template>
