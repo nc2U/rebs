@@ -1,5 +1,13 @@
 <script lang="ts" setup>
-import { reactive, ref, computed, watch, nextTick } from 'vue'
+import {
+  ref,
+  reactive,
+  computed,
+  nextTick,
+  watch,
+  onMounted,
+  onUpdated,
+} from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { useContract } from '@/store/pinia/contract'
 import { useProjectData } from '@/store/pinia/project_data'
@@ -44,7 +52,6 @@ const alertModal = ref()
 const confirmModal = ref()
 
 const sameAddr = ref(false)
-const formsCheck = ref(true)
 const validated = ref(false)
 const form = reactive({
   // contract
@@ -65,12 +72,12 @@ const form = reactive({
 
   // contractor
   name: '', // 7
-  birth_date: null as string | Date | null, // 8
+  birth_date: null as string | null, // 8
   gender: '', // 9
   is_registed: false, // 10
   status: null as null | string, // 1
-  reservation_date: null as string | Date | null, // 6-1
-  contract_date: null as string | Date | null, // 6-2
+  reservation_date: null as string | null, // 6-1
+  contract_date: null as string | null, // 6-2
   note: '', // 28
 
   // address
@@ -91,76 +98,19 @@ const form = reactive({
 
   // proCash
   payment: null as number | null,
-  deal_date: null as string | Date | null, // 15
+  deal_date: null as string | null, // 15
   income: null as number | null, // 16
   bank_account: null as number | null, // 17
   trader: '', // 18
   installment_order: null as number | null, // 19
 })
 
-watch(form, nVal => {
-  if (nVal.keyunit_code)
-    form.serial_number = `${nVal.keyunit_code}-${form.order_group}`
-  if (nVal.order_group)
-    form.serial_number = `${form.keyunit_code}-${nVal.order_group}`
-  if (!nVal.status) form.order_group = null
-  if (!nVal.order_group) form.unit_type = null
-  if (!nVal.unit_type) form.keyunit = null
-  if (!nVal.keyunit) form.houseunit = null
-
-  formsCheck.value = false
-})
-
-watch(props, nVal => {
-  if (nVal.contract) {
-    // contract
-    form.pk = props.contract.pk
-    form.order_group = props.contract.order_group
-    form.order_group_sort = props.contract.order_group_desc.sort
-    form.unit_type = props.contract.unit_type
-    form.serial_number = props.contract.serial_number
-    form.keyunit = props.contract.keyunit.pk
-    form.keyunit_code = props.contract.keyunit.unit_code
-    form.houseunit = props.contract.keyunit.houseunit
-      ? props.contract.keyunit.houseunit.pk
-      : ''
-
-    // contractor
-    form.name = props.contract.contractor.name
-    form.birth_date = new Date(props.contract.contractor.birth_date)
-    form.gender = props.contract.contractor.gender // 9
-    form.is_registed = props.contract.contractor.is_registed // 10
-    form.status = props.contract.contractor.status
-    form.reservation_date =
-      props.contract.contractor.reservation_date === null
-        ? null
-        : new Date(props.contract.contractor.reservation_date)
-    form.contract_date =
-      props.contract.contractor.contract_date === null
-        ? null
-        : new Date(props.contract.contractor.contract_date)
-    form.note = props.contract.contractor.note
-
-    // address
-    if (nVal.contract.contractor.status === '2') {
-      // form.addressPk = props.contract.contractor.contractoraddress.pk
-      form.id_zipcode = props.contract.contractor.contractoraddress.id_zipcode // 20
-      form.id_address1 = props.contract.contractor.contractoraddress.id_address1 // 21
-      form.id_address2 = props.contract.contractor.contractoraddress.id_address2 // 22
-      form.id_address3 = props.contract.contractor.contractoraddress.id_address3 // 23
-      form.dm_zipcode = props.contract.contractor.contractoraddress.dm_zipcode // 24
-      form.dm_address1 = props.contract.contractor.contractoraddress.dm_address1
-      form.dm_address2 = props.contract.contractor.contractoraddress.dm_address2 // 26
-      form.dm_address3 = props.contract.contractor.contractoraddress.dm_address3 // 27
-    }
-    // contact
-    // form.contactPk = props.contract.contractor.contractorcontact.pk //
-    form.cell_phone = props.contract.contractor.contractorcontact.cell_phone
-    form.home_phone = props.contract.contractor.contractorcontact.home_phone // 11 // 12
-    form.other_phone = props.contract.contractor.contractorcontact.other_phone // 13
-    form.email = props.contract.contractor.contractorcontact.email // 14
-  } else formReset()
-  nextTick(() => (formsCheck.value = true))
+watch(form, val => {
+  if (val.birth_date) form.birth_date = dateFormat(val.birth_date)
+  if (val.reservation_date)
+    form.reservation_date = dateFormat(val.reservation_date)
+  if (val.contract_date) form.contract_date = dateFormat(val.contract_date)
+  if (val.deal_date) form.deal_date = dateFormat(val.deal_date)
 })
 
 const router = useRouter()
@@ -202,7 +152,7 @@ const allowedPeriod = (paidDate: string) =>
 const payUpdate = (payment: Payment) => {
   if (allowedPeriod(payment.deal_date)) {
     form.payment = payment.pk
-    form.deal_date = new Date(payment.deal_date)
+    form.deal_date = payment.deal_date
     form.income = payment.income
     form.bank_account = payment.bank_account
     form.trader = payment.trader
@@ -246,13 +196,18 @@ const setKeyCode = () => {
 
 const unitReset = () => {
   nextTick(() => {
-    if (form.status === null) formReset()
+    if (!form.status) formReset()
   })
 }
 
 const typeSelect = () => {
   nextTick(() => {
-    emit('type-select', form.unit_type)
+    const payload =
+      !!props.contract && form.unit_type === props.contract.unit_type
+        ? { unit_type: form.unit_type, contract: props.contract.pk }
+        : { unit_type: form.unit_type, available: 'true' }
+
+    emit('type-select', payload)
     form.keyunit = null
     form.houseunit = null
   })
@@ -268,19 +223,10 @@ const onSubmit = (event: Event) => {
 }
 
 const modalAction = () => {
-  form.birth_date = form.birth_date ? dateFormat(form.birth_date) : null
-  form.reservation_date = form.reservation_date
-    ? dateFormat(form.reservation_date)
-    : null
-  form.contract_date = form.contract_date
-    ? dateFormat(form.contract_date)
-    : null
-  form.deal_date = form.deal_date ? dateFormat(form.deal_date) : null
   if (!props.contract) emit('on-create', form)
   else emit('on-update', form)
   validated.value = false
   confirmModal.value.close()
-  nextTick(() => (formsCheck.value = true))
 }
 
 const deleteContract = () => {
@@ -369,10 +315,96 @@ const formReset = () => {
       name: '계약 등록 수정',
       query: { contractor: props.contractor.pk },
     })
-  nextTick(() => (formsCheck.value = true))
 }
 
 defineExpose({ formReset })
+
+const formsCheck = computed(() => {
+  if (props.contract && props.contractor) {
+    const contact = props.contract.contractor?.contractorcontact
+    const address = props.contract.contractor?.contractoraddress
+
+    const a = form.order_group === props.contract.order_group
+    const b = form.unit_type === props.contract.unit_type
+    const c = form.keyunit === props.contract.keyunit.pk
+    const d = form.houseunit === props.contract.keyunit?.houseunit?.pk
+    const e = form.reservation_date === props.contractor.reservation_date
+    const f = form.contract_date === props.contractor?.contract_date
+    const g = form.name === props.contractor.name
+    const h = form.birth_date === props.contractor.birth_date
+    const i = form.gender === props.contractor?.gender
+    const j = form.is_registed === props.contractor?.is_registed
+    const k = form.cell_phone === contact.cell_phone
+    const l = form.home_phone === contact?.home_phone
+    const m = form.other_phone === contact?.other_phone
+    const n = form.email === contact?.email
+    const o = !form.deal_date
+    const p = !form.income
+    const q = !form.bank_account
+    const r = !form.trader
+    const s = !form.installment_order
+    const t = form.id_zipcode === address.id_zipcode
+    const u = form.id_address1 === address.id_address1
+    const v = form.id_address2 === address.id_address2
+    const w = form.id_address3 === address.id_address3
+    const x = form.dm_zipcode === address.dm_zipcode
+    const y = form.dm_address1 === address.dm_address1
+    const z = form.dm_address2 === address.dm_address2
+    const a1 = form.dm_address3 === address.dm_address3
+    const b1 = form.note === props.contract.contractor.note
+
+    const cond1 = a && b && c && d && e && f && g && h && i
+    const cond2 = j && k && l && m && n && o && p && q && r && s
+    const cond3 = t && u && v && w && x && y && z && a1 && b1
+    return cond1 && cond2 && cond3
+  } else return false
+})
+
+const formDataSet = () => {
+  if (props.contract) {
+    // contract
+    form.pk = props.contract.pk
+    form.order_group = props.contract.order_group
+    form.order_group_sort = props.contract.order_group_desc.sort
+    form.unit_type = props.contract.unit_type
+    form.serial_number = props.contract.serial_number
+    form.keyunit = props.contract.keyunit.pk
+    form.keyunit_code = props.contract.keyunit.unit_code
+    form.houseunit = props.contract.keyunit.houseunit?.pk
+
+    // contractor
+    form.name = props.contract.contractor.name
+    form.birth_date = props.contract.contractor.birth_date
+    form.gender = props.contract.contractor.gender // 9
+    form.is_registed = props.contract.contractor.is_registed // 10
+    form.status = props.contract.contractor.status
+    form.reservation_date = props.contractor.reservation_date
+    form.contract_date = props.contractor.contract_date
+    form.note = props.contract.contractor.note
+
+    // address
+    if (props.contract.contractor.status === '2') {
+      const address = props.contract.contractor.contractoraddress
+      form.id_zipcode = address.id_zipcode // 20
+      form.id_address1 = address.id_address1 // 21
+      form.id_address2 = address.id_address2 // 22
+      form.id_address3 = address.id_address3 // 23
+      form.dm_zipcode = address.dm_zipcode // 24
+      form.dm_address1 = address.dm_address1
+      form.dm_address2 = address.dm_address2 // 26
+      form.dm_address3 = address.dm_address3 // 27
+    }
+    // contact
+    const contact = props.contract.contractor?.contractorcontact
+    form.cell_phone = contact.cell_phone
+    form.home_phone = contact.home_phone // 11 // 12
+    form.other_phone = contact.other_phone // 13
+    form.email = contact.email // 14
+  } else formReset()
+}
+
+onMounted(() => formDataSet())
+onUpdated(() => formDataSet())
 </script>
 
 <template>
@@ -418,7 +450,7 @@ defineExpose({ formReset })
         <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 차수</CFormLabel>
         <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
           <CFormSelect
-            v-model="form.order_group"
+            v-model.number="form.order_group"
             required
             :disabled="noStatus"
             @change="setOGSort"
@@ -438,7 +470,7 @@ defineExpose({ formReset })
         <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 타입</CFormLabel>
         <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
           <CFormSelect
-            v-model="form.unit_type"
+            v-model.number="form.unit_type"
             required
             :disabled="form.order_group === null && !contract"
             @change="typeSelect"
@@ -456,7 +488,7 @@ defineExpose({ formReset })
         </CFormLabel>
         <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
           <CFormSelect
-            v-model="form.keyunit"
+            v-model.number="form.keyunit"
             required
             :disabled="form.unit_type === null && !contract"
             @change="setKeyCode"
@@ -476,7 +508,7 @@ defineExpose({ formReset })
         </CFormLabel>
         <CCol v-if="unitSet" md="10" lg="2" class="mb-md-3 mb-lg-0">
           <Multiselect
-            v-model="form.houseunit"
+            v-model.number="form.houseunit"
             :options="getHouseUnits"
             placeholder="---------"
             autocomplete="label"
@@ -787,7 +819,7 @@ defineExpose({ formReset })
             <CCol md="2" class="d-none d-md-block d-lg-none"></CCol>
 
             <CCol v-if="form.payment" xs="3" md="2" lg="1" class="pt-2 mb-3">
-              <router-link to="" @click="payReset">Reset</router-link>
+              <a href="javascript:void(0)" @click="payReset">Reset</a>
             </CCol>
           </CRow>
         </CAlert>
@@ -944,7 +976,7 @@ defineExpose({ formReset })
       <CButton
         type="submit"
         :color="contract ? 'success' : 'primary'"
-        :disabled="formsCheck"
+        :disabled="!form.status || formsCheck"
       >
         <CIcon name="cil-check-circle" />
         저장
@@ -969,11 +1001,7 @@ defineExpose({ formReset })
       진행하시겠습니까?
     </template>
     <template #footer>
-      <CButton
-        :color="contract ? 'success' : 'primary'"
-        :disabled="formsCheck"
-        @click="modalAction"
-      >
+      <CButton :color="contract ? 'success' : 'primary'" @click="modalAction">
         저장
       </CButton>
     </template>

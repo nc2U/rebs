@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { reactive, ref, watch, onBeforeMount, computed, nextTick } from 'vue'
+import { ref, reactive, computed, watch, onBeforeMount, nextTick } from 'vue'
 import { write_contract } from '@/utils/pageAuth'
 import { isValidate } from '@/utils/helper'
 import { dateFormat } from '@/utils/baseMixins'
@@ -177,7 +177,7 @@ const chkApproval = () => {
   })
 }
 
-onBeforeMount(() => {
+const formDataSet = () => {
   if (props.succession) {
     form.pk = props.succession.pk
     form.contract = props.succession.contract.pk
@@ -194,7 +194,9 @@ onBeforeMount(() => {
     form.contract = contractor.value?.contract || null
     form.seller = contractor.value?.pk || null
   }
-})
+}
+
+onBeforeMount(() => formDataSet())
 </script>
 
 <template>

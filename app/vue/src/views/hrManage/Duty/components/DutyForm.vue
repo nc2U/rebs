@@ -16,6 +16,15 @@ const props = defineProps({
     default: null,
   },
 })
+
+watch(
+  () => props.company,
+  newVal => {
+    if (!!newVal) form.value.company = newVal
+    else form.value.company = undefined
+  },
+)
+
 const emit = defineEmits(['multi-submit', 'on-delete', 'close'])
 
 const delModal = ref()
@@ -64,22 +73,16 @@ const deleteConfirm = () => {
   else alertModal.value.callModal()
 }
 
-onBeforeMount(() => {
+const formDataSetup = () => {
   if (props.duty) {
     form.value.pk = props.duty.pk
     form.value.company = props.duty.company
     form.value.name = props.duty.name
     form.value.desc = props.duty.desc
   } else form.value.company = props.company
-})
+}
 
-watch(
-  () => props.company,
-  newVal => {
-    if (!!newVal) form.value.company = newVal
-    else form.value.company = undefined
-  },
-)
+onBeforeMount(() => formDataSetup())
 </script>
 
 <template>

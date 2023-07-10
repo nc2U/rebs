@@ -72,7 +72,7 @@ const onBankUpdate = () => {
   confirmModal.value.close()
 }
 
-onBeforeMount(() => {
+const dataSetup = () => {
   if (props.bankAcc) {
     form.pk = props.bankAcc.pk
     form.company = props.bankAcc.company
@@ -86,7 +86,9 @@ onBeforeMount(() => {
     form.is_hide = props.bankAcc.is_hide
     form.inactive = props.bankAcc.inactive
   }
-})
+}
+
+onBeforeMount(() => dataSetup())
 </script>
 
 <template>

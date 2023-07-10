@@ -6,7 +6,7 @@ import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
 const typeSort = inject('typeSort')
-const props = defineProps({ type: { type: Object, default: null } })
+const props = defineProps({ type: { type: Object, required: true } })
 const emit = defineEmits(['on-update', 'on-delete'])
 
 const form = reactive({
@@ -24,17 +24,15 @@ const alertModal = ref()
 const confirmModal = ref()
 
 const formsCheck = computed(() => {
-  if (props.type) {
-    const a = form.sort === props.type.sort
-    const b = form.name === props.type.name
-    const c = form.color === props.type.color
-    const d = form.actual_area === props.type.actual_area
-    const e = form.supply_area === props.type.supply_area
-    const f = form.contract_area === props.type.contract_area
-    const g = form.average_price === props.type.average_price
-    const h = form.num_unit === props.type.num_unit
-    return a && b && c && d && e && f && g && h
-  } else return false
+  const a = form.sort === props.type.sort
+  const b = form.name === props.type.name
+  const c = form.color === props.type.color
+  const d = form.actual_area === props.type.actual_area
+  const e = form.supply_area === props.type.supply_area
+  const f = form.contract_area === props.type.contract_area
+  const g = form.average_price === props.type.average_price
+  const h = form.num_unit === props.type.num_unit
+  return a && b && c && d && e && f && g && h
 })
 
 const formCheck = (bool: boolean) => {
@@ -47,21 +45,21 @@ const onUpdateType = () => {
     emit('on-update', { ...{ pk }, ...form })
   } else {
     alertModal.value.callModal()
-    resetForm()
+    dataSetup()
   }
 }
 const onDeleteType = () => {
   if (useAccount().superAuth) confirmModal.value.callModal()
   else {
     alertModal.value.callModal()
-    resetForm()
+    dataSetup()
   }
 }
 const modalAction = () => {
   emit('on-delete', props.type.pk)
   confirmModal.value.close()
 }
-const resetForm = () => {
+const dataSetup = () => {
   form.sort = props.type.sort
   form.name = props.type.name
   form.color = props.type.color
@@ -72,9 +70,7 @@ const resetForm = () => {
   form.num_unit = props.type.num_unit
 }
 
-onBeforeMount(() => {
-  if (props.type) resetForm()
-})
+onBeforeMount(() => dataSetup())
 </script>
 
 <template>

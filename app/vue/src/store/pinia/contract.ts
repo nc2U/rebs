@@ -37,7 +37,7 @@ export type UnitFilter = {
   project: number
   unit_type?: number
   contract?: number | string
-  available?: 'true' | 'false'
+  available?: 'true' | ''
 }
 
 export const useContract = defineStore('contract', () => {
@@ -203,9 +203,9 @@ export const useContract = defineStore('contract', () => {
   // actions
   const fetchKeyUnitList = (payload: UnitFilter) => {
     const { project } = payload
-    const unit_type = payload.unit_type ? payload.unit_type : ''
-    const contract = payload.contract ? payload.contract : ''
-    const available = payload.available ? payload.available : 'true'
+    const unit_type = payload.unit_type || ''
+    const contract = payload.contract || ''
+    const available = payload.available || ''
     return api
       .get(
         `/key-unit/?project=${project}&unit_type=${unit_type}&contract=${contract}&available=${available}`,

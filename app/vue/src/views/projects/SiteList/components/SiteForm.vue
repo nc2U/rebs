@@ -88,7 +88,7 @@ const deleteConfirm = () => {
   else alertModal.value.callModal()
 }
 
-onBeforeMount(() => {
+const dataSetup = () => {
   if (props.site) {
     form.pk = props.site.pk
     form.project = props.site.project
@@ -104,7 +104,9 @@ onBeforeMount(() => {
     form.project = project.value
     form.order = siteStore.siteCount + 1
   }
-})
+}
+
+onBeforeMount(() => dataSetup())
 </script>
 
 <template>
@@ -292,7 +294,7 @@ onBeforeMount(() => {
   </CForm>
 
   <ConfirmModal ref="delModal">
-    <template #header> 사업 부지 정보 삭제 </template>
+    <template #header> 사업 부지 정보 삭제</template>
     <template #default>
       삭제한 데이터는 복구할 수 없습니다. 해당 사업 부지 정보를
       삭제하시겠습니까?

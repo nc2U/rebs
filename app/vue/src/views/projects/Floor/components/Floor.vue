@@ -5,7 +5,7 @@ import { write_project } from '@/utils/pageAuth'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-const props = defineProps({ floor: { type: Object, default: null } })
+const props = defineProps({ floor: { type: Object, required: true } })
 const emit = defineEmits(['on-update', 'on-delete'])
 
 const alertModal = ref()
@@ -19,19 +19,13 @@ const form = reactive({
   alias_name: '',
 })
 
-onBeforeMount(() => {
-  if (props.floor) resetForm()
-})
-
 const formsCheck = computed(() => {
-  if (props.floor) {
-    const a = form.sort === props.floor.sort
-    const b = form.start_floor === props.floor.start_floor
-    const c = form.end_floor === props.floor.end_floor
-    const d = form.extra_cond === props.floor.extra_cond
-    const e = form.alias_name === props.floor.alias_name
-    return a && b && c && d && e
-  } else return false
+  const a = form.sort === props.floor.sort
+  const b = form.start_floor === props.floor.start_floor
+  const c = form.end_floor === props.floor.end_floor
+  const d = form.extra_cond === props.floor.extra_cond
+  const e = form.alias_name === props.floor.alias_name
+  return a && b && c && d && e
 })
 
 const formCheck = (bool: boolean) => {
@@ -45,7 +39,7 @@ const onUpdateFloor = () => {
     emit('on-update', { ...{ pk }, ...form })
   } else {
     alertModal.value.callModal()
-    resetForm()
+    dataSetup()
   }
 }
 
@@ -53,20 +47,22 @@ const onDeleteFloor = () => {
   if (useAccount().superAuth) confirmModal.value.callModal()
   else {
     alertModal.value.callModal()
-    resetForm()
+    dataSetup()
   }
 }
 const modalAction = () => {
   emit('on-delete', props.floor.pk)
   confirmModal.value.close()
 }
-const resetForm = () => {
+const dataSetup = () => {
   form.sort = props.floor.sort
   form.start_floor = props.floor.start_floor
   form.end_floor = props.floor.end_floor
   form.extra_cond = props.floor.extra_cond
   form.alias_name = props.floor.alias_name
 }
+
+onBeforeMount(() => dataSetup())
 </script>
 
 <template>

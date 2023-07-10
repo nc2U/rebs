@@ -6,7 +6,7 @@ import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
 const props = defineProps({
-  downPay: { type: Object, default: null },
+  downPay: { type: Object, required: true },
   orders: { type: Array, default: () => [] },
   types: { type: Array, default: () => [] },
 })
@@ -21,17 +21,11 @@ const form = reactive({
 const alertModal = ref()
 const confirmModal = ref()
 
-onBeforeMount(() => {
-  if (props.downPay) resetForm()
-})
-
 const formsCheck = computed(() => {
-  if (props.downPay) {
-    const a = form.order_group === props.downPay.order_group
-    const b = form.unit_type === props.downPay.unit_type
-    const c = form.payment_amount === props.downPay.payment_amount
-    return a && b && c
-  } else return false
+  const a = form.order_group === props.downPay.order_group
+  const b = form.unit_type === props.downPay.unit_type
+  const c = form.payment_amount === props.downPay.payment_amount
+  return a && b && c
 })
 
 const formCheck = (bool: boolean) => {
@@ -44,14 +38,14 @@ const onUpdateDownPay = () => {
     emit('on-update', { ...{ pk }, ...form })
   } else {
     alertModal.value.callModal()
-    resetForm()
+    dataSetup()
   }
 }
 const onDeleteDownPay = () => {
   if (useAccount().superAuth) confirmModal.value.callModal()
   else {
     alertModal.value.callModal()
-    resetForm()
+    dataSetup()
   }
 }
 const modalAction = () => {
@@ -59,11 +53,13 @@ const modalAction = () => {
   confirmModal.value.close()
 }
 
-const resetForm = () => {
+const dataSetup = () => {
   form.order_group = props.downPay.order_group
   form.unit_type = props.downPay.unit_type
   form.payment_amount = props.downPay.payment_amount
 }
+
+onBeforeMount(() => dataSetup())
 </script>
 
 <template>

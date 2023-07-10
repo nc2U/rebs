@@ -14,7 +14,7 @@ import BankAcc from './BankAcc.vue'
 const props = defineProps({
   proCash: {
     type: Object,
-    required: true,
+    default: null,
   },
 })
 
@@ -278,7 +278,7 @@ const deleteObject = () => {
 
 const onBankUpdate = (payload: ProBankAcc) => emit('on-bank-update', payload)
 
-onBeforeMount(() => {
+const formDataSetup = () => {
   if (props.proCash) {
     form.pk = props.proCash.pk
     form.project = props.proCash.project
@@ -297,7 +297,9 @@ onBeforeMount(() => {
     form.separated = props.proCash.separated
   }
   callAccount()
-})
+}
+
+onBeforeMount(() => formDataSetup())
 </script>
 
 <template>

@@ -14,7 +14,7 @@ import BankAcc from '../../Manage/components/BankAcc.vue'
 const props = defineProps({
   imprest: {
     type: Object,
-    required: true,
+    default: null,
   },
 })
 
@@ -287,7 +287,7 @@ const deleteObject = () => {
 
 const onBankUpdate = (payload: ProBankAcc) => emit('on-bank-update', payload)
 
-onBeforeMount(() => {
+const formDataSetup = () => {
   if (props.imprest) {
     form.pk = props.imprest.pk
     form.project = props.imprest.project
@@ -306,7 +306,9 @@ onBeforeMount(() => {
     form.separated = props.imprest.separated
   }
   callAccount()
-})
+}
+
+onBeforeMount(() => formDataSetup())
 </script>
 
 <template>

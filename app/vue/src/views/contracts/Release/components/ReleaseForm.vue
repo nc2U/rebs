@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { reactive, ref, watch, onBeforeMount, computed } from 'vue'
+import { ref, reactive, computed, watch, onBeforeMount } from 'vue'
 import { write_contract } from '@/utils/pageAuth'
 import { isValidate } from '@/utils/helper'
 import { dateFormat } from '@/utils/baseMixins'
@@ -68,7 +68,7 @@ const deleteConfirm = () => {
 
 const modalAction = () => alert('this is ready!')
 
-onBeforeMount(() => {
+const formDataSet = () => {
   if (props.release) {
     form.pk = props.release.pk
     form.contractor = props.release.contractor
@@ -81,7 +81,9 @@ onBeforeMount(() => {
     form.completion_date = props.release.completion_date
     form.note = props.release.note
   } else form.contractor = props.contractor.pk
-})
+}
+
+onBeforeMount(() => formDataSet())
 </script>
 
 <template>

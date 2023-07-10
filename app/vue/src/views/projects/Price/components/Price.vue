@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, watch, onBeforeMount, onUpdated } from 'vue'
+import { ref, reactive, computed, watch, onMounted, onUpdated } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { write_project } from '@/utils/pageAuth'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
 const props = defineProps({
-  floor: { type: Object, default: null },
+  floor: { type: Object, required: true },
   condTexts: { type: Object, default: null },
   pFilters: { type: Object, default: null },
   price: { type: Object, default: null },
@@ -32,13 +32,7 @@ watch(form, val => {
 })
 
 watch(props, val => {
-  if (val.price) initForm()
-})
-
-onBeforeMount(() => initForm())
-onUpdated(() => {
-  resetForm()
-  initForm()
+  if (val.price) dataSetup()
 })
 
 const btnColor = computed(() => (props.price ? 'success' : 'primary'))
@@ -80,10 +74,10 @@ const deletePrice = () => {
 const modalAction = () => {
   emit('on-delete', props.price.pk)
   confirmModal.value.close()
-  resetForm()
+  dataReset()
 }
 
-const initForm = () => {
+const dataSetup = () => {
   if (props.price) {
     form.price_build = props.price.price_build
     form.price_land = props.price.price_land
@@ -92,12 +86,18 @@ const initForm = () => {
   }
 }
 
-const resetForm = () => {
+const dataReset = () => {
   form.price_build = null
   form.price_land = null
   form.price_tax = null
   form.price = null
 }
+
+onMounted(() => dataSetup())
+onUpdated(() => {
+  dataReset()
+  dataSetup()
+})
 </script>
 
 <template>
