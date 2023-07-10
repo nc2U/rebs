@@ -1,5 +1,13 @@
 <script lang="ts" setup>
-import { reactive, ref, computed, nextTick, onMounted, onUpdated } from 'vue'
+import {
+  ref,
+  reactive,
+  computed,
+  nextTick,
+  watch,
+  onMounted,
+  onUpdated,
+} from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { useContract } from '@/store/pinia/contract'
 import { useProjectData } from '@/store/pinia/project_data'
@@ -64,12 +72,12 @@ const form = reactive({
 
   // contractor
   name: '', // 7
-  birth_date: null as string | Date | null, // 8
+  birth_date: null as string | null, // 8
   gender: '', // 9
   is_registed: false, // 10
   status: null as null | string, // 1
-  reservation_date: null as string | Date | null, // 6-1
-  contract_date: null as string | Date | null, // 6-2
+  reservation_date: null as string | null, // 6-1
+  contract_date: null as string | null, // 6-2
   note: '', // 28
 
   // address
@@ -90,11 +98,19 @@ const form = reactive({
 
   // proCash
   payment: null as number | null,
-  deal_date: null as string | Date | null, // 15
+  deal_date: null as string | null, // 15
   income: null as number | null, // 16
   bank_account: null as number | null, // 17
   trader: '', // 18
   installment_order: null as number | null, // 19
+})
+
+watch(form, val => {
+  if (val.birth_date) form.birth_date = dateFormat(val.birth_date)
+  if (val.reservation_date)
+    form.reservation_date = dateFormat(val.reservation_date)
+  if (val.contract_date) form.contract_date = dateFormat(val.contract_date)
+  if (val.deal_date) form.deal_date = dateFormat(val.deal_date)
 })
 
 const router = useRouter()
@@ -207,14 +223,6 @@ const onSubmit = (event: Event) => {
 }
 
 const modalAction = () => {
-  form.birth_date = form.birth_date ? dateFormat(form.birth_date) : null
-  form.reservation_date = form.reservation_date
-    ? dateFormat(form.reservation_date)
-    : null
-  form.contract_date = form.contract_date
-    ? dateFormat(form.contract_date)
-    : null
-  form.deal_date = form.deal_date ? dateFormat(form.deal_date) : null
   if (!props.contract) emit('on-create', form)
   else emit('on-update', form)
   validated.value = false
@@ -312,59 +320,40 @@ const formReset = () => {
 defineExpose({ formReset })
 
 const formsCheck = computed(() => {
-  if (props.contract) {
+  if (props.contract && props.contractor) {
+    const contact = props.contract.contractor?.contractorcontact
+    const address = props.contract.contractor?.contractoraddress
+
     const a = form.order_group === props.contract.order_group
     const b = form.unit_type === props.contract.unit_type
-    const c = form.keyunit == props.contract.keyunit.pk
-    const d = form.houseunit == props.contract.keyunit?.houseunit?.pk || ''
-
-    // const e =
-    //   form.reservation_date === props.contractor.reservation_date || null
-    // const f = form.contract_date === props.contractor?.contract_date || null
-
+    const c = form.keyunit === props.contract.keyunit.pk
+    const d = form.houseunit === props.contract.keyunit?.houseunit?.pk
+    const e = form.reservation_date === props.contractor.reservation_date
+    const f = form.contract_date === props.contractor?.contract_date
     const g = form.name === props.contractor.name
-    // const h = form.birth_date === props.contract.birth_date
+    const h = form.birth_date === props.contractor.birth_date
     const i = form.gender === props.contractor?.gender
     const j = form.is_registed === props.contractor?.is_registed
-    const k =
-      form.cell_phone === props.contract.contractor.contractorcontact.cell_phone
-    const l =
-      form.home_phone ===
-      props.contract.contractor?.contractorcontact?.home_phone
-    const m =
-      form.other_phone ===
-      props.contract.contractor?.contractorcontact?.other_phone
-    const n = form.email === props.contract.contractor?.contractorcontact?.email
+    const k = form.cell_phone === contact.cell_phone
+    const l = form.home_phone === contact?.home_phone
+    const m = form.other_phone === contact?.other_phone
+    const n = form.email === contact?.email
     // const o = form.deal_date === props.contract.deal_date
     // const p = form.income === props.contract.income
     // const q = form.bank_account === props.contract.bank_account
     // const r = form.trader === props.contract.trader
     // const s = form.installment_order === props.contract.installment_order
-    const t =
-      form.id_zipcode === props.contract.contractor.contractoraddress.id_zipcode
-    const u =
-      form.id_address1 ===
-      props.contract.contractor.contractoraddress.id_address1
-    const v =
-      form.id_address2 ===
-      props.contract.contractor.contractoraddress.id_address2
-    const w =
-      form.id_address3 ===
-      props.contract.contractor.contractoraddress.id_address3
-    const x =
-      form.dm_zipcode === props.contract.contractor.contractoraddress.dm_zipcode
-    const y =
-      form.dm_address1 ===
-      props.contract.contractor.contractoraddress.dm_address1
-    const z =
-      form.dm_address2 ===
-      props.contract.contractor.contractoraddress.dm_address2
-    const a1 =
-      form.dm_address3 ===
-      props.contract.contractor.contractoraddress.dm_address3
+    const t = form.id_zipcode === address.id_zipcode
+    const u = form.id_address1 === address.id_address1
+    const v = form.id_address2 === address.id_address2
+    const w = form.id_address3 === address.id_address3
+    const x = form.dm_zipcode === address.dm_zipcode
+    const y = form.dm_address1 === address.dm_address1
+    const z = form.dm_address2 === address.dm_address2
+    const a1 = form.dm_address3 === address.dm_address3
     const b1 = form.note === props.contract.contractor.note
 
-    const cond1 = a && b && c && d && g && i
+    const cond1 = a && b && c && d && e && f && g && h && i
     const cond2 = j && k && l && m && n //&& o && p && q && r
     const cond3 = t && u && v && w && x && y && z && a1 && b1
     return cond1 && cond2 && cond3
@@ -381,44 +370,36 @@ const formDataSet = () => {
     form.serial_number = props.contract.serial_number
     form.keyunit = props.contract.keyunit.pk
     form.keyunit_code = props.contract.keyunit.unit_code
-    form.houseunit = props.contract.keyunit.houseunit
-      ? props.contract.keyunit.houseunit.pk
-      : ''
+    form.houseunit = props.contract.keyunit.houseunit?.pk
 
     // contractor
     form.name = props.contract.contractor.name
-    form.birth_date = new Date(props.contract.contractor.birth_date)
+    form.birth_date = props.contract.contractor.birth_date
     form.gender = props.contract.contractor.gender // 9
     form.is_registed = props.contract.contractor.is_registed // 10
     form.status = props.contract.contractor.status
-    form.reservation_date =
-      props.contract.contractor.reservation_date === null
-        ? null
-        : new Date(props.contract.contractor.reservation_date)
-    form.contract_date =
-      props.contract.contractor.contract_date === null
-        ? null
-        : new Date(props.contract.contractor.contract_date)
+    form.reservation_date = props.contractor.reservation_date
+    form.contract_date = props.contractor.contract_date
     form.note = props.contract.contractor.note
 
     // address
     if (props.contract.contractor.status === '2') {
-      // form.addressPk = props.contract.contractor.contractoraddress.pk
-      form.id_zipcode = props.contract.contractor.contractoraddress.id_zipcode // 20
-      form.id_address1 = props.contract.contractor.contractoraddress.id_address1 // 21
-      form.id_address2 = props.contract.contractor.contractoraddress.id_address2 // 22
-      form.id_address3 = props.contract.contractor.contractoraddress.id_address3 // 23
-      form.dm_zipcode = props.contract.contractor.contractoraddress.dm_zipcode // 24
-      form.dm_address1 = props.contract.contractor.contractoraddress.dm_address1
-      form.dm_address2 = props.contract.contractor.contractoraddress.dm_address2 // 26
-      form.dm_address3 = props.contract.contractor.contractoraddress.dm_address3 // 27
+      const address = props.contract.contractor.contractoraddress
+      form.id_zipcode = address.id_zipcode // 20
+      form.id_address1 = address.id_address1 // 21
+      form.id_address2 = address.id_address2 // 22
+      form.id_address3 = address.id_address3 // 23
+      form.dm_zipcode = address.dm_zipcode // 24
+      form.dm_address1 = address.dm_address1
+      form.dm_address2 = address.dm_address2 // 26
+      form.dm_address3 = address.dm_address3 // 27
     }
     // contact
-    // form.contactPk = props.contract.contractor.contractorcontact.pk //
-    form.cell_phone = props.contract.contractor.contractorcontact.cell_phone
-    form.home_phone = props.contract.contractor.contractorcontact.home_phone // 11 // 12
-    form.other_phone = props.contract.contractor.contractorcontact.other_phone // 13
-    form.email = props.contract.contractor.contractorcontact.email // 14
+    const contact = props.contract.contractor?.contractorcontact
+    form.cell_phone = contact.cell_phone
+    form.home_phone = contact.home_phone // 11 // 12
+    form.other_phone = contact.other_phone // 13
+    form.email = contact.email // 14
   } else formReset()
 }
 
@@ -439,7 +420,7 @@ onUpdated(() => formDataSet())
         :project="project"
         @search-contractor="searchContractor"
       />
-      {{ typeof form.keyunit }}
+      {{ contractor }}
       <ContractorAlert v-if="contractor" :contractor="contractor" />
       <hr />
       <CRow class="mb-3">
