@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { reactive, ref, computed, watch, nextTick } from 'vue'
+import { reactive, ref, computed, nextTick, onMounted, onUpdated } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { useContract } from '@/store/pinia/contract'
 import { useProjectData } from '@/store/pinia/project_data'
@@ -96,71 +96,6 @@ const form = reactive({
   bank_account: null as number | null, // 17
   trader: '', // 18
   installment_order: null as number | null, // 19
-})
-
-watch(form, nVal => {
-  if (nVal.keyunit_code)
-    form.serial_number = `${nVal.keyunit_code}-${form.order_group}`
-  if (nVal.order_group)
-    form.serial_number = `${form.keyunit_code}-${nVal.order_group}`
-  if (!nVal.status) form.order_group = null
-  if (!nVal.order_group) form.unit_type = null
-  if (!nVal.unit_type) form.keyunit = null
-  if (!nVal.keyunit) form.houseunit = null
-
-  formsCheck.value = false
-})
-
-watch(props, nVal => {
-  if (nVal.contract) {
-    // contract
-    form.pk = props.contract.pk
-    form.order_group = props.contract.order_group
-    form.order_group_sort = props.contract.order_group_desc.sort
-    form.unit_type = props.contract.unit_type
-    form.serial_number = props.contract.serial_number
-    form.keyunit = props.contract.keyunit.pk
-    form.keyunit_code = props.contract.keyunit.unit_code
-    form.houseunit = props.contract.keyunit.houseunit
-      ? props.contract.keyunit.houseunit.pk
-      : ''
-
-    // contractor
-    form.name = props.contract.contractor.name
-    form.birth_date = new Date(props.contract.contractor.birth_date)
-    form.gender = props.contract.contractor.gender // 9
-    form.is_registed = props.contract.contractor.is_registed // 10
-    form.status = props.contract.contractor.status
-    form.reservation_date =
-      props.contract.contractor.reservation_date === null
-        ? null
-        : new Date(props.contract.contractor.reservation_date)
-    form.contract_date =
-      props.contract.contractor.contract_date === null
-        ? null
-        : new Date(props.contract.contractor.contract_date)
-    form.note = props.contract.contractor.note
-
-    // address
-    if (nVal.contract.contractor.status === '2') {
-      // form.addressPk = props.contract.contractor.contractoraddress.pk
-      form.id_zipcode = props.contract.contractor.contractoraddress.id_zipcode // 20
-      form.id_address1 = props.contract.contractor.contractoraddress.id_address1 // 21
-      form.id_address2 = props.contract.contractor.contractoraddress.id_address2 // 22
-      form.id_address3 = props.contract.contractor.contractoraddress.id_address3 // 23
-      form.dm_zipcode = props.contract.contractor.contractoraddress.dm_zipcode // 24
-      form.dm_address1 = props.contract.contractor.contractoraddress.dm_address1
-      form.dm_address2 = props.contract.contractor.contractoraddress.dm_address2 // 26
-      form.dm_address3 = props.contract.contractor.contractoraddress.dm_address3 // 27
-    }
-    // contact
-    // form.contactPk = props.contract.contractor.contractorcontact.pk //
-    form.cell_phone = props.contract.contractor.contractorcontact.cell_phone
-    form.home_phone = props.contract.contractor.contractorcontact.home_phone // 11 // 12
-    form.other_phone = props.contract.contractor.contractorcontact.other_phone // 13
-    form.email = props.contract.contractor.contractorcontact.email // 14
-  } else formReset()
-  nextTick(() => (formsCheck.value = true))
 })
 
 const router = useRouter()
@@ -373,6 +308,61 @@ const formReset = () => {
 }
 
 defineExpose({ formReset })
+
+const formDataSet = () => {
+  if (props.contract) {
+    // contract
+    form.pk = props.contract.pk
+    form.order_group = props.contract.order_group
+    form.order_group_sort = props.contract.order_group_desc.sort
+    form.unit_type = props.contract.unit_type
+    form.serial_number = props.contract.serial_number
+    form.keyunit = props.contract.keyunit.pk
+    form.keyunit_code = props.contract.keyunit.unit_code
+    form.houseunit = props.contract.keyunit.houseunit
+      ? props.contract.keyunit.houseunit.pk
+      : ''
+
+    // contractor
+    form.name = props.contract.contractor.name
+    form.birth_date = new Date(props.contract.contractor.birth_date)
+    form.gender = props.contract.contractor.gender // 9
+    form.is_registed = props.contract.contractor.is_registed // 10
+    form.status = props.contract.contractor.status
+    form.reservation_date =
+      props.contract.contractor.reservation_date === null
+        ? null
+        : new Date(props.contract.contractor.reservation_date)
+    form.contract_date =
+      props.contract.contractor.contract_date === null
+        ? null
+        : new Date(props.contract.contractor.contract_date)
+    form.note = props.contract.contractor.note
+
+    // address
+    if (props.contract.contractor.status === '2') {
+      // form.addressPk = props.contract.contractor.contractoraddress.pk
+      form.id_zipcode = props.contract.contractor.contractoraddress.id_zipcode // 20
+      form.id_address1 = props.contract.contractor.contractoraddress.id_address1 // 21
+      form.id_address2 = props.contract.contractor.contractoraddress.id_address2 // 22
+      form.id_address3 = props.contract.contractor.contractoraddress.id_address3 // 23
+      form.dm_zipcode = props.contract.contractor.contractoraddress.dm_zipcode // 24
+      form.dm_address1 = props.contract.contractor.contractoraddress.dm_address1
+      form.dm_address2 = props.contract.contractor.contractoraddress.dm_address2 // 26
+      form.dm_address3 = props.contract.contractor.contractoraddress.dm_address3 // 27
+    }
+    // contact
+    // form.contactPk = props.contract.contractor.contractorcontact.pk //
+    form.cell_phone = props.contract.contractor.contractorcontact.cell_phone
+    form.home_phone = props.contract.contractor.contractorcontact.home_phone // 11 // 12
+    form.other_phone = props.contract.contractor.contractorcontact.other_phone // 13
+    form.email = props.contract.contractor.contractorcontact.email // 14
+  } else formReset()
+  nextTick(() => (formsCheck.value = true))
+}
+
+onMounted(() => formDataSet())
+onUpdated(() => formDataSet())
 </script>
 
 <template>
