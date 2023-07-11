@@ -1,8 +1,13 @@
 <script lang="ts" setup>
-import { useContract } from '@/store/pinia/contract'
 import { computed } from 'vue'
+import { useRoute } from 'vue-router'
+import { useContract } from '@/store/pinia/contract'
 
-const props = defineProps({ contractor: { type: Object, default: null } })
+const props = defineProps({
+  formSet: { type: Number, default: null },
+  contractor: { type: Object, default: null },
+})
+const emit = defineEmits(['resume-form'])
 
 const contractStore = useContract()
 
@@ -37,6 +42,11 @@ const removeContractor = () => {
   contractStore.contract = null
   contractStore.contractor = null
 }
+const route = useRoute()
+const resumeForm = () => {
+  const { contractor } = route.query
+  if (!!contractor) emit('resume-form', contractor)
+}
 </script>
 
 <template>
@@ -53,9 +63,18 @@ const removeContractor = () => {
         </strong>
       </CCol>
       <CCol v-if="contractor" class="text-right">
-        <router-link to="">
-          <CIcon name="cilX" @click="removeContractor" />
+        <router-link v-if="formSet" to="">
+          <v-icon icon="mdi mdi-close" @click="removeContractor" />
+          <v-tooltip activator="parent" location="start">
+            계약자 선택 해제
+          </v-tooltip>
         </router-link>
+        <a v-else href="javascript:void(0)">
+          <v-icon icon="mdi mdi-refresh" @click="resumeForm" />
+          <v-tooltip activator="parent" location="start">
+            계약자 정보 채우기
+          </v-tooltip>
+        </a>
       </CCol>
     </CRow>
   </CAlert>
