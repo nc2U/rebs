@@ -65,9 +65,15 @@ const resumeForm = () => {
       <CCol v-if="contractor" class="text-right">
         <router-link v-if="formSet" to="">
           <v-icon icon="mdi mdi-close" @click="removeContractor" />
+          <v-tooltip activator="parent" location="start">
+            계약자 선택 해제
+          </v-tooltip>
         </router-link>
         <a v-else href="javascript:void(0)">
-          <v-icon icon="mdi mdi-restart" @click="resumeForm" />
+          <v-icon icon="mdi mdi-refresh" @click="resumeForm" />
+          <v-tooltip activator="parent" location="start">
+            계약자 정보 채우기
+          </v-tooltip>
         </a>
       </CCol>
     </CRow>
