@@ -43,6 +43,7 @@ const emit = defineEmits([
   'on-create',
   'on-update',
   'search-contractor',
+  'resume-form',
 ])
 
 const address21 = ref()
@@ -196,7 +197,7 @@ const setKeyCode = () => {
 
 const unitReset = () => {
   nextTick(() => {
-    if (!form.status) formReset()
+    if (!form.status) formDataReset()
   })
 }
 
@@ -267,7 +268,48 @@ const toSame = () => {
 
 const searchContractor = (contor: string) => emit('search-contractor', contor)
 
-const formReset = () => {
+const formsCheck = computed(() => {
+  if (props.contract && props.contractor) {
+    const contact = props.contract.contractor?.contractorcontact
+    const address = props.contract.contractor?.contractoraddress
+
+    const a = form.order_group === props.contract.order_group
+    const b = form.unit_type === props.contract.unit_type
+    const c = form.keyunit === props.contract.keyunit.pk
+    const d = form.houseunit === props.contract.keyunit?.houseunit?.pk
+    const e = form.reservation_date === props.contractor.reservation_date
+    const f = form.contract_date === props.contractor?.contract_date
+    const g = form.name === props.contractor.name
+    const h = form.birth_date === props.contractor.birth_date
+    const i = form.gender === props.contractor?.gender
+    const j = form.is_registed === props.contractor?.is_registed
+    const k = form.cell_phone === contact.cell_phone
+    const l = form.home_phone === contact?.home_phone
+    const m = form.other_phone === contact?.other_phone
+    const n = form.email === contact?.email
+    const o = !form.deal_date
+    const p = !form.income
+    const q = !form.bank_account
+    const r = !form.trader
+    const s = !form.installment_order
+    const t = form.id_zipcode === address.id_zipcode
+    const u = form.id_address1 === address.id_address1
+    const v = form.id_address2 === address.id_address2
+    const w = form.id_address3 === address.id_address3
+    const x = form.dm_zipcode === address.dm_zipcode
+    const y = form.dm_address1 === address.dm_address1
+    const z = form.dm_address2 === address.dm_address2
+    const a1 = form.dm_address3 === address.dm_address3
+    const b1 = form.note === props.contract.contractor.note
+
+    const cond1 = a && b && c && d && e && f && g && h && i
+    const cond2 = j && k && l && m && n && o && p && q && r && s
+    const cond3 = t && u && v && w && x && y && z && a1 && b1
+    return cond1 && cond2 && cond3
+  } else return false
+})
+
+const formDataReset = () => {
   form.pk = null
   form.order_group = null
   form.order_group_sort = ''
@@ -317,50 +359,7 @@ const formReset = () => {
     })
 }
 
-defineExpose({ formReset })
-
-const formsCheck = computed(() => {
-  if (props.contract && props.contractor) {
-    const contact = props.contract.contractor?.contractorcontact
-    const address = props.contract.contractor?.contractoraddress
-
-    const a = form.order_group === props.contract.order_group
-    const b = form.unit_type === props.contract.unit_type
-    const c = form.keyunit === props.contract.keyunit.pk
-    const d = form.houseunit === props.contract.keyunit?.houseunit?.pk
-    const e = form.reservation_date === props.contractor.reservation_date
-    const f = form.contract_date === props.contractor?.contract_date
-    const g = form.name === props.contractor.name
-    const h = form.birth_date === props.contractor.birth_date
-    const i = form.gender === props.contractor?.gender
-    const j = form.is_registed === props.contractor?.is_registed
-    const k = form.cell_phone === contact.cell_phone
-    const l = form.home_phone === contact?.home_phone
-    const m = form.other_phone === contact?.other_phone
-    const n = form.email === contact?.email
-    const o = !form.deal_date
-    const p = !form.income
-    const q = !form.bank_account
-    const r = !form.trader
-    const s = !form.installment_order
-    const t = form.id_zipcode === address.id_zipcode
-    const u = form.id_address1 === address.id_address1
-    const v = form.id_address2 === address.id_address2
-    const w = form.id_address3 === address.id_address3
-    const x = form.dm_zipcode === address.dm_zipcode
-    const y = form.dm_address1 === address.dm_address1
-    const z = form.dm_address2 === address.dm_address2
-    const a1 = form.dm_address3 === address.dm_address3
-    const b1 = form.note === props.contract.contractor.note
-
-    const cond1 = a && b && c && d && e && f && g && h && i
-    const cond2 = j && k && l && m && n && o && p && q && r && s
-    const cond3 = t && u && v && w && x && y && z && a1 && b1
-    return cond1 && cond2 && cond3
-  } else return false
-})
-
-const formDataSet = () => {
+const formDataSetup = () => {
   if (props.contract) {
     // contract
     form.pk = props.contract.pk
@@ -400,11 +399,15 @@ const formDataSet = () => {
     form.home_phone = contact.home_phone // 11 // 12
     form.other_phone = contact.other_phone // 13
     form.email = contact.email // 14
-  } else formReset()
+  } else formDataReset()
 }
 
-onMounted(() => formDataSet())
-onUpdated(() => formDataSet())
+const resumeForm = (contor: string) => emit('resume-form', contor)
+
+defineExpose({ formDataReset })
+
+onMounted(() => formDataSetup())
+onUpdated(() => formDataSetup())
 </script>
 
 <template>
@@ -420,7 +423,12 @@ onUpdated(() => formDataSet())
         :project="project"
         @search-contractor="searchContractor"
       />
-      <ContractorAlert v-if="contractor" :contractor="contractor" />
+      <ContractorAlert
+        v-if="contractor"
+        :form-set="form.pk"
+        :contractor="contractor"
+        @resume-form="resumeForm"
+      />
       <hr />
       <CRow class="mb-3">
         <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 구분</CFormLabel>
@@ -964,7 +972,9 @@ onUpdated(() => formDataSet())
     </CCardBody>
 
     <CCardFooter class="text-right">
-      <CButton type="button" color="light" @click="formReset"> 취소</CButton>
+      <CButton type="button" color="light" @click="formDataReset">
+        취소
+      </CButton>
       <CButton
         v-if="contract"
         type="button"

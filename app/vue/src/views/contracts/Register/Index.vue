@@ -62,6 +62,8 @@ watch(route, val => {
   }
 })
 
+const resumeForm = (contor: string) => getContract(contor)
+
 watch(contractor, val => {
   if (!!val)
     if (!!contract.value && contract.value.pk !== val.contract)
@@ -74,7 +76,6 @@ watch(contract, newVal => {
       project: project.value,
       unit_type: newVal.unit_type,
       contract: newVal.pk,
-      available: 'false',
     })
     if (newVal.keyunit?.houseunit) {
       fetchHouseUnitList({
@@ -181,6 +182,7 @@ onBeforeMount(() => {
       @type-select="typeSelect"
       @on-create="onCreate"
       @on-update="onUpdate"
+      @resume-form="resumeForm"
       @search-contractor="searchContractor"
     />
   </ContentBody>
