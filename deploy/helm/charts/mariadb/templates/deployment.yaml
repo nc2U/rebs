@@ -62,7 +62,7 @@ spec:
             exec:
               command:
                 - ls
-                - /var/lib/mysql/rebs
+                - /var/lib/mysql/{{ .Release.Name }}
             initialDelaySeconds: 10
             periodSeconds: 5
           volumeMounts:
