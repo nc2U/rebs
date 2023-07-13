@@ -61,8 +61,8 @@ spec:
           readinessProbe:
             exec:
               command:
-                - mariadb
-                - -V
+                - ls
+                - /var/lib/mysql/rebs
             initialDelaySeconds: 10
             periodSeconds: 5
           volumeMounts:
