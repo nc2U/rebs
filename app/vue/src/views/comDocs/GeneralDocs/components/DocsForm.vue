@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, onMounted, onUpdated, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { Post, Attatches } from '@/store/types/document'
 import { write_company_docs } from '@/utils/pageAuth'
 import { dateFormat } from '@/utils/baseMixins'
@@ -34,8 +34,8 @@ const form = reactive<Post & Attatches>({
   lawsuit: null,
   title: '',
   execution_date: null,
-  content: '',
   is_hide_comment: false,
+  content: '',
   hit: 0,
   blame: 0,
   ip: null,
@@ -84,7 +84,7 @@ const sortName = computed(() =>
   props.post && props.post.project ? props.post.proj_name : '본사',
 )
 
-const route = useRoute()
+const [route, router] = [useRoute(), useRouter()]
 const btnClass = computed(() => (route.params.postId ? 'success' : 'primary'))
 
 const ctlLinkNum = (n: number) => {
@@ -356,16 +356,13 @@ onUpdated(() => dataSetup())
 
     <CRow>
       <CCol class="text-right">
-        <CButton
-          color="light"
-          @click="$router.push({ name: '본사 일반 문서' })"
-        >
+        <CButton color="light" @click="router.push({ name: '본사 일반 문서' })">
           목록으로
         </CButton>
         <CButton
           v-if="route.params.postId"
           color="light"
-          @click="$router.go(-1)"
+          @click="router.go(-1)"
         >
           뒤로
         </CButton>
