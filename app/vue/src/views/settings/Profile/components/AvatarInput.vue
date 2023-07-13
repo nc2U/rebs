@@ -58,7 +58,7 @@ onMounted(() => {
 <template>
   <CRow class="mb-4">
     <CCol>
-      <h6>Profile picture</h6>
+      <h6>프로필 이미지</h6>
       <input
         id="file"
         type="file"
