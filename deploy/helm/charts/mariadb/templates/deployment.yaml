@@ -48,23 +48,23 @@ spec:
               command:
                 - mariadb
                 - -V
-            failureThreshold: 30
             periodSeconds: 15
+            failureThreshold: 5
           livenessProbe:
             exec:
               command:
                 - mariadb
                 - -V
-            periodSeconds: 60
-            initialDelaySeconds: 30
+            periodSeconds: 30
             failureThreshold: 2
           readinessProbe:
             exec:
               command:
                 - ls
                 - /var/lib/mysql/{{ .Release.Name }}
-            initialDelaySeconds: 10
-            periodSeconds: 5
+            initialDelaySeconds: 30
+            periodSeconds: 60
+            failureThreshold: 5
           volumeMounts:
             - name: mysql-data
               mountPath: /var/lib/mysql
