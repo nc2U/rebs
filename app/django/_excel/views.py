@@ -752,10 +752,10 @@ class ExportUnitStatus(View):
                 for line in lines:
                     try:
                         unit = units.get(floor_no=floor_no, bldg_line=line['bldg_line'])
-                    except:
+                    except ObjectDoesNotExist:
                         unit = None
                     if unit or floor_no <= 2:
-                        unit_format['bg_color'] = unit.unit_type.color if unit else '#dddddd'
+                        unit_format['bg_color'] = unit.unit_type.color if unit else '#DDD'
                         unit_formats = workbook.add_format(unit_format)
                         if not unit:
                             worksheet.merge_range(row_num, col_num, row_num + 1, col_num, '', unit_formats)
@@ -763,11 +763,14 @@ class ExportUnitStatus(View):
                             worksheet.write(row_num, col_num, int(unit.name), unit_formats)
                             if unit.key_unit:
                                 if int(unit.key_unit.contract.contractor.status) % 2 == 0:
-                                    status_format['bg_color'] = '#85929E'
-                                    status_format['font_color'] = 'white'
-                                else:
-                                    status_format['bg_color'] = '#DAF7A6'
+                                    status_format['bg_color'] = '#DDD'
                                     status_format['font_color'] = 'black'
+                                else:
+                                    status_format['bg_color'] = '#FFFF99'
+                                    status_format['font_color'] = 'black'
+                            elif unit.is_hold:
+                                status_format['bg_color'] = '#999'
+                                status_format['font_color'] = 'black'
                             else:
                                 status_format['bg_color'] = 'white'
                             cont = unit.key_unit.contract.contractor.name if unit.key_unit else ''
