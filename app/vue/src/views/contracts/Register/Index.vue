@@ -57,7 +57,6 @@ watch(route, val => {
   const { contractor } = val.query
   if (!!contractor) getContract(contractor as string)
   else {
-    contractStore.contract = null
     contractStore.contractor = null
     contForm.value.formDataReset()
   }
