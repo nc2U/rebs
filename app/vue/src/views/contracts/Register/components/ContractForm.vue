@@ -219,6 +219,9 @@ const setKeyCode = () => {
   nextTick(() => {
     form.houseunit = null
     form.keyunit_code = form.keyunit ? getKUCode(Number(form.keyunit)) : ''
+    form.serial_number = form.keyunit
+      ? `${form.keyunit_code}-${form.order_group}`
+      : ''
   })
 }
 
