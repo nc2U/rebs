@@ -698,7 +698,7 @@ class ExportUnitStatus(View):
         max_floor = HouseUnit.objects.aggregate(Max('floor_no'))
         floor_no__max = max_floor['floor_no__max'] if max_floor['floor_no__max'] else 1
         max_floor_range = range(0, floor_no__max)
-        unit_numbers = HouseUnit.objects.filter(project=project)
+        unit_numbers = HouseUnit.objects.filter(building_unit__project=project)
         dong_obj = BuildingUnit.objects.filter(project=project).values('name')
 
         # 1. Title
