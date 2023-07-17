@@ -57,8 +57,8 @@ watch(route, val => {
   const { contractor } = val.query
   if (!!contractor) getContract(contractor as string)
   else {
-    contractStore.contract = null
     contractStore.contractor = null
+    contForm.value.formDataReset()
   }
 })
 
@@ -108,10 +108,12 @@ const typeSelect = (payload: {
   }
 }
 
-const onCreate = (payload: Contract) => {
+const onCreate = (payload: Contract & { status: '1' | '2' }) => {
   if (project.value) payload.project = project.value
   contractStore.createContractSet({ ...payload })
-  router.replace({ name: '계약 내역 조회' })
+  if (payload.status === '1') {
+    router.replace({ name: '계약 내역 조회', query: { status: '1' } })
+  } else router.replace({ name: '계약 내역 조회' })
 }
 
 const onUpdate = (payload: Contract) => {

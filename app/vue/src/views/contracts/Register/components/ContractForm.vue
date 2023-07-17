@@ -114,6 +114,33 @@ watch(form, val => {
   if (val.deal_date) form.deal_date = dateFormat(val.deal_date)
 })
 
+const matchAddr = computed(() => {
+  const zi = form.id_zipcode === form.dm_zipcode
+  const a1 = form.id_address1 === form.dm_address1
+  const a2 = form.id_address2 === form.dm_address2
+  const a3 = form.id_address3 === form.dm_address3
+  return zi && a1 && a2 && a3
+})
+
+watch(matchAddr, val => sameAddrBtnSet(val))
+
+const sameAddrBtnSet = (chk: boolean) => (sameAddr.value = chk)
+
+const toSame = () => {
+  sameAddr.value = !sameAddr.value
+  if (sameAddr.value) {
+    form.dm_zipcode = form.id_zipcode
+    form.dm_address1 = form.id_address1
+    form.dm_address2 = form.id_address2
+    form.dm_address3 = form.id_address3
+  } else {
+    form.dm_zipcode = ''
+    form.dm_address1 = ''
+    form.dm_address2 = ''
+    form.dm_address3 = ''
+  }
+}
+
 const router = useRouter()
 
 const contractStore = useContract()
@@ -192,6 +219,9 @@ const setKeyCode = () => {
   nextTick(() => {
     form.houseunit = null
     form.keyunit_code = form.keyunit ? getKUCode(Number(form.keyunit)) : ''
+    form.serial_number = form.keyunit
+      ? `${form.keyunit_code}-${form.order_group}`
+      : ''
   })
 }
 
@@ -249,20 +279,6 @@ const addressCallback = (data: AddressData) => {
     form.dm_address2 = ''
     form.dm_address3 = address3
     address22.value.$el.nextElementSibling.focus()
-  }
-}
-
-const toSame = () => {
-  if (!sameAddr.value) {
-    form.dm_zipcode = form.id_zipcode
-    form.dm_address1 = form.id_address1
-    form.dm_address2 = form.id_address2
-    form.dm_address3 = form.id_address3
-  } else {
-    form.dm_zipcode = ''
-    form.dm_address1 = ''
-    form.dm_address2 = ''
-    form.dm_address3 = ''
   }
 }
 
@@ -351,12 +367,7 @@ const formDataReset = () => {
   form.other_phone = ''
   form.email = ''
   contractStore.contract = null
-  if (!props.contractor) router.replace({ name: '계약 등록 수정' })
-  else
-    router.replace({
-      name: '계약 등록 수정',
-      query: { contractor: props.contractor.pk },
-    })
+  sameAddr.value = false
 }
 
 const formDataSetup = () => {
@@ -399,7 +410,9 @@ const formDataSetup = () => {
     form.home_phone = contact.home_phone // 11 // 12
     form.other_phone = contact.other_phone // 13
     form.email = contact.email // 14
-  } else formDataReset()
+
+    sameAddrBtnSet(matchAddr.value)
+  }
 }
 
 const resumeForm = (contor: string) => emit('resume-form', contor)
@@ -948,11 +961,13 @@ onUpdated(() => formDataSetup())
 
         <CCol md="2" class="d-none d-md-block d-lg-none"></CCol>
 
-        <CCol md="10" lg="1" class="pt-2 mb-3">
-          <CFormCheck
+        <CCol md="10" lg="1">
+          <v-checkbox-btn
             id="to-same"
             v-model="sameAddr"
             label="상동"
+            color="indigo-darken-3"
+            hide-details
             :disabled="!isContract || !form.id_zipcode"
             @click="toSame"
           />
