@@ -788,7 +788,8 @@ class ExportUnitStatus(View):
         dong_title_format.set_font_size(11)
         dong_title_format.set_align('center')
         dong_title_format.set_align('vcenter')
-        dong_title_format.set_bg_color('#bbbbbb')
+        dong_title_format.set_bg_color('#777')
+        dong_title_format.set_font_color('#FFF')
 
         # 동 수 만큼 반복
         for dong in dong_obj:  # 호수 상태 표시 라인
