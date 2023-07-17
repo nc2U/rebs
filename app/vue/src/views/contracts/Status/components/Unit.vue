@@ -27,9 +27,9 @@ const statusColor = computed(() => {
   if (props.unit) {
     color = '#FFF'
     if (isContract.value) {
-      if (status.value === '1') color = '#D5F1DE'
-      if (status.value === '2') color = '#CBC7EC'
-      if (isHold.value) color = '#555'
+      if (status.value === '1') color = '#FFFF99'
+      if (status.value === '2') color = '#DDD'
+      if (isHold.value) color = '#999'
     }
   }
   return color
