@@ -122,7 +122,7 @@ const statusColor = computed(() => {
 }
 
 .piloti {
-  background-color: #ccc;
+  background-color: #bbb;
   border-color: #999;
 }
 </style>
