@@ -59,6 +59,7 @@ watch(route, val => {
   else {
     contractStore.contract = null
     contractStore.contractor = null
+    contForm.value.formDataReset()
   }
 })
 
