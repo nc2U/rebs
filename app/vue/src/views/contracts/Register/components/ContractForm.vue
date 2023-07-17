@@ -364,12 +364,6 @@ const formDataReset = () => {
   form.other_phone = ''
   form.email = ''
   contractStore.contract = null
-  if (!props.contractor) router.replace({ name: '계약 등록 수정' })
-  else
-    router.replace({
-      name: '계약 등록 수정',
-      query: { contractor: props.contractor.pk },
-    })
   sameAddr.value = false
 }
 
