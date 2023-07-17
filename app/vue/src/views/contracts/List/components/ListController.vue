@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, watch, nextTick } from 'vue'
+import { ref, reactive, computed, watch, nextTick, onMounted } from 'vue'
 import { useProjectData } from '@/store/pinia/project_data'
 import { useContract, ContFilter } from '@/store/pinia/contract'
 import { numFormat, dateFormat } from '@/utils/baseMixins'
@@ -7,13 +7,14 @@ import { bgLight } from '@/utils/cssMixins'
 import { maska as vMaska } from 'maska'
 import DatePicker from '@/components/DatePicker/index.vue'
 
+const props = defineProps({ status: { type: String, default: '2' } })
 const emit = defineEmits(['cont-filtering'])
 
 const from_date = ref('')
 const to_date = ref('')
 
 const form = reactive<ContFilter>({
-  status: '2',
+  status: props.status,
   order_group: '',
   unit_type: '',
   null_unit: false,
@@ -84,6 +85,10 @@ const resetForm = () => {
   form.search = ''
   listFiltering(1)
 }
+
+onMounted(() => {
+  if (props.status === '1') listFiltering(1)
+})
 </script>
 
 <template>

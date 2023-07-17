@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { ref, computed, watch, onBeforeMount } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { useProject } from '@/store/pinia/project'
 import { useProjectData } from '@/store/pinia/project_data'
 import { useContract, ContFilter } from '@/store/pinia/contract'
@@ -12,6 +13,7 @@ import TableTitleRow from '@/components/TableTitleRow.vue'
 import SelectItems from '@/views/contracts/List/components/SelectItems.vue'
 import ContractList from '@/views/contracts/List/components/ContractList.vue'
 
+const status = ref('2')
 const listControl = ref()
 
 const visible = ref(false)
@@ -20,11 +22,7 @@ const unitSet = ref(false)
 const filteredStr = ref('')
 const printItems = ref(['1', '2', '4', '5', '8', '9', '10', '11'])
 
-const childListFiltering = (page: number) =>
-  listControl.value.listFiltering(page)
-
 const projStore = useProject()
-
 const project = computed(() => projStore.project)
 watch(project, nVal => {
   unitSet.value = nVal?.is_unit_set || false
@@ -39,25 +37,22 @@ const excelUrl = computed(() => {
   return `/excel/contracts/?project=${pk}${filteredStr.value}&col=${items}`
 })
 
-const contractStore = useContract()
+const contStore = useContract()
 
-const fetchOrderGroupList = (pk: number) =>
-  contractStore.fetchOrderGroupList(pk)
+const fetchOrderGroupList = (pk: number) => contStore.fetchOrderGroupList(pk)
 
 const fetchContractList = (payload: ContFilter) =>
-  contractStore.fetchContractList(payload)
-const fetchSubsSummaryList = (pk: number) =>
-  contractStore.fetchSubsSummaryList(pk)
-const fetchContSummaryList = (pk: number) =>
-  contractStore.fetchContSummaryList(pk)
+  contStore.fetchContractList(payload)
+const fetchSubsSummaryList = (pk: number) => contStore.fetchSubsSummaryList(pk)
+const fetchContSummaryList = (pk: number) => contStore.fetchContSummaryList(pk)
 
-const projectDataStore = useProjectData()
+const proDataStore = useProjectData()
 
-const fetchTypeList = (projId: number) => projectDataStore.fetchTypeList(projId)
+const fetchTypeList = (projId: number) => proDataStore.fetchTypeList(projId)
 const fetchBuildingList = (projId: number) =>
-  projectDataStore.fetchBuildingList(projId)
+  proDataStore.fetchBuildingList(projId)
 
-const pageSelect = (page: number) => childListFiltering(page)
+const pageSelect = (page: number) => listControl.value.listFiltering(page)
 
 const onContFiltering = (payload: ContFilter) => {
   const {
@@ -89,12 +84,12 @@ const dataSetup = (proj: number) => {
 }
 
 const dataReset = () => {
-  contractStore.orderGroupList = []
-  contractStore.subsSummaryList = []
-  contractStore.contSummaryList = []
-  contractStore.contractList = []
-  contractStore.contractsCount = 0
-  projectDataStore.buildingList = []
+  contStore.orderGroupList = []
+  contStore.subsSummaryList = []
+  contStore.contSummaryList = []
+  contStore.contractList = []
+  contStore.contractsCount = 0
+  proDataStore.buildingList = []
 }
 
 const projSelect = (target: number | null) => {
@@ -102,7 +97,14 @@ const projSelect = (target: number | null) => {
   if (!!target) dataSetup(target)
 }
 
-onBeforeMount(() => dataSetup(project.value?.pk || projStore.initProjId))
+const [route, router] = [useRoute(), useRouter()]
+onBeforeMount(() => {
+  if (route.query?.status) {
+    router.replace({ name: '계약 내역 조회' })
+    status.value = '1'
+  }
+  dataSetup(project.value?.pk || projStore.initProjId)
+})
 </script>
 
 <template>
@@ -116,7 +118,11 @@ onBeforeMount(() => dataSetup(project.value?.pk || projStore.initProjId))
 
   <ContentBody>
     <CCardBody class="pb-5">
-      <ListController ref="listControl" @cont-filtering="onContFiltering" />
+      <ListController
+        ref="listControl"
+        :status="status"
+        @cont-filtering="onContFiltering"
+      />
       <TableTitleRow
         title="계약현황"
         excel
