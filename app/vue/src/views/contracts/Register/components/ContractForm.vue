@@ -399,7 +399,7 @@ const formDataSetup = () => {
     form.home_phone = contact.home_phone // 11 // 12
     form.other_phone = contact.other_phone // 13
     form.email = contact.email // 14
-  } else formDataReset()
+  }
 }
 
 const resumeForm = (contor: string) => emit('resume-form', contor)
