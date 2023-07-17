@@ -755,7 +755,7 @@ class ExportUnitStatus(View):
                     except ObjectDoesNotExist:
                         unit = None
                     if unit or floor_no <= 2:
-                        unit_format['bg_color'] = unit.unit_type.color if unit else '#CCCCCC'
+                        unit_format['bg_color'] = unit.unit_type.color if unit else '#BBBBBB'
                         unit_formats = workbook.add_format(unit_format)
                         if not unit:
                             worksheet.merge_range(row_num, col_num, row_num + 1, col_num, '', unit_formats)
