@@ -253,7 +253,8 @@ const addressCallback = (data: AddressData) => {
 }
 
 const toSame = () => {
-  if (!sameAddr.value) {
+  sameAddr.value = !sameAddr.value
+  if (sameAddr.value) {
     form.dm_zipcode = form.id_zipcode
     form.dm_address1 = form.id_address1
     form.dm_address2 = form.id_address2
@@ -948,11 +949,13 @@ onUpdated(() => formDataSetup())
 
         <CCol md="2" class="d-none d-md-block d-lg-none"></CCol>
 
-        <CCol md="10" lg="1" class="pt-2 mb-3">
-          <CFormCheck
+        <CCol md="10" lg="1">
+          <v-checkbox-btn
             id="to-same"
             v-model="sameAddr"
             label="상동"
+            color="indigo-darken-3"
+            hide-details
             :disabled="!isContract || !form.id_zipcode"
             @click="toSame"
           />
