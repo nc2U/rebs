@@ -33,11 +33,14 @@
     </tr>
 </table>
 
-<table style="width:100%; font-size:12px; table-layout: fixed;">
-    <tr>
-        <td style="padding: 5px 15px; height: 140px; word-break: break-all;">{{ bill_info.content|linebreaks }}</td>
-    </tr>
-</table>
+{#<table style="width:100%; font-size:12px; table-layout: fixed;">#}
+{#    <tr>#}
+{#        <td style="padding: 5px 15px; height: 140px; word-break: break-all;">{{ bill_info.content|linebreaks }}</td>#}
+{#    </tr>#}
+{#</table>#}
+<div style="padding: 5px 15px; height: 140px; font-size:12px;">
+    {{ bill_info.content|linebreaks }}
+</div>
 
 <table style="margin-top: 5px;">
     <tr>
