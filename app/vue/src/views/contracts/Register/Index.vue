@@ -16,34 +16,34 @@ const contForm = ref()
 
 const [route, router] = [useRoute(), useRouter()]
 
-const contractStore = useContract()
-const contract = computed(() => contractStore.contract)
-const contractor = computed(() => contractStore.contractor)
+const contStore = useContract()
+const contract = computed(() => contStore.contract)
+const contractor = computed(() => contStore.contractor)
 
 const projStore = useProject()
 const project = computed(() => projStore.project?.pk)
 const unitSet = computed(() => projStore.project?.is_unit_set)
 const isUnion = computed(() => !projStore.project?.is_direct_manage)
 
-const fetchContract = (cont: number) => contractStore.fetchContract(cont)
+const fetchContract = (cont: number) => contStore.fetchContract(cont)
 
 const fetchContractor = (contor: number, proj?: number) =>
-  contractStore.fetchContractor(contor, proj)
+  contStore.fetchContractor(contor, proj)
 
 const fetchContractorList = (projId: number, search = '') =>
-  contractStore.fetchContractorList(projId, search)
+  contStore.fetchContractorList(projId, search)
 
 const fetchOrderGroupList = (projId: number) =>
-  contractStore.fetchOrderGroupList(projId)
+  contStore.fetchOrderGroupList(projId)
 
 const fetchKeyUnitList = (payload: UnitFilter) =>
-  contractStore.fetchKeyUnitList(payload)
+  contStore.fetchKeyUnitList(payload)
 
 const fetchHouseUnitList = (payload: UnitFilter) =>
-  contractStore.fetchHouseUnitList(payload)
+  contStore.fetchHouseUnitList(payload)
 
-const projectDataStore = useProjectData()
-const fetchTypeList = (projId: number) => projectDataStore.fetchTypeList(projId)
+const projDataStore = useProjectData()
+const fetchTypeList = (projId: number) => projDataStore.fetchTypeList(projId)
 
 const proCashStore = useProCash()
 const fetchAllProBankAccList = (projId: number) =>
@@ -57,7 +57,7 @@ watch(route, val => {
   const { contractor } = val.query
   if (!!contractor) getContract(contractor as string)
   else {
-    contractStore.contractor = null
+    contStore.contractor = null
     contForm.value.formDataReset()
   }
 })
@@ -110,7 +110,7 @@ const typeSelect = (payload: {
 
 const onCreate = (payload: Contract & { status: '1' | '2' }) => {
   if (project.value) payload.project = project.value
-  contractStore.createContractSet({ ...payload })
+  contStore.createContractSet({ ...payload })
   if (payload.status === '1') {
     router.replace({ name: '계약 내역 조회', query: { status: '1' } })
   } else router.replace({ name: '계약 내역 조회' })
@@ -118,13 +118,13 @@ const onCreate = (payload: Contract & { status: '1' | '2' }) => {
 
 const onUpdate = (payload: Contract) => {
   if (project.value) payload.project = project.value
-  contractStore.updateContractSet({ ...payload })
+  contStore.updateContractSet({ ...payload })
 }
 
 const searchContractor = (search: string) => {
   if (search !== '' && project.value) {
     fetchContractorList(project.value, search)
-  } else contractStore.contractorList = []
+  } else contStore.contractorList = []
 }
 
 const dataSetup = (pk: number) => {
@@ -137,12 +137,12 @@ const dataSetup = (pk: number) => {
 }
 
 const dataReset = () => {
-  contractStore.contract = null
-  contractStore.contractor = null
-  contractStore.orderGroupList = []
-  contractStore.keyUnitList = []
-  contractStore.houseUnitList = []
-  projectDataStore.unitTypeList = []
+  contStore.contract = null
+  contStore.contractor = null
+  contStore.orderGroupList = []
+  contStore.keyUnitList = []
+  contStore.houseUnitList = []
+  projDataStore.unitTypeList = []
   paymentStore.payOrderList = []
   proCashStore.proBankAccountList = []
 }
@@ -160,8 +160,8 @@ onBeforeMount(() => {
 
   if (route.query.contractor) getContract(route.query.contractor as string)
   else {
-    contractStore.contract = null
-    contractStore.contractor = null
+    contStore.contract = null
+    contStore.contractor = null
   }
 })
 </script>
