@@ -27,8 +27,9 @@ class PdfExportBill(View):
         :return:
         """
         project = request.GET.get('project')  # 프로젝트 ID
-
         issue_date = datetime.strptime(request.GET.get('date'), '%Y-%m-%d').date()
+        np = request.GET.get('np')
+        nl = request.GET.get('nl')
 
         context = {
             'issue_date': issue_date,
@@ -42,7 +43,7 @@ class PdfExportBill(View):
 
         # 해당 계약건에 대한 데이터 정리 --------------------------------------- start
 
-        context['data_list'] = (self.get_bill_data(project, cont_id, inspay_order, now_due_order, issue_date) \
+        context['data_list'] = (self.get_bill_data(cont_id, inspay_order, now_due_order, issue_date, np, nl) \
                                 for cont_id in contractor_list)
 
         # 해당 계약건에 대한 데이터 정리 --------------------------------------- end
@@ -57,14 +58,15 @@ class PdfExportBill(View):
             response['Content-Disposition'] = f'attachment; filename="payment_bill({len(contractor_list)}).pdf"'
             return response
 
-    def get_bill_data(self, project, cont_id, inspay_order, now_due_order, issue_date):
+    def get_bill_data(self, cont_id, inspay_order, now_due_order, issue_date, np, nl):
         """
         :: 계약 건 당 전달 데이터 생성 함수
-        :param project: 프로젝트
         :param cont_id: 계약자 아이디
         :param inspay_order: 전체 납부 회차
         :param now_due_order: 금회 납부 회차
         :param issue_date: 발행일
+        :param np: no price 가격 미표시 여부
+        :param nl: no late 연체 미표시 여부
         :return dict(bill_data: 계약 건당 데이터):
         """
         bill_data = {}  # 현재 계약 정보 딕셔너리
@@ -133,6 +135,10 @@ class PdfExportBill(View):
         bill_data['late_fee_sum'] = self.get_due_orders(contract, orders_info,
                                                         inspay_order, now_due_order,
                                                         paid_code, issue_date, is_late_fee=True)
+
+        # 표시 정보 제한 여부
+        bill_data['no_price'] = np
+        bill_data['no_late'] = nl
 
         # 공백 개수 구하기
         unpaid_count = len(bill_data['this_pay_info'])
