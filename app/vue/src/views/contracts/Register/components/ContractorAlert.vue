@@ -1,20 +1,19 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { computed, PropType } from 'vue'
 import { useRoute } from 'vue-router'
 import { useContract } from '@/store/pinia/contract'
+import { Contractor } from '@/store/types/contract'
 
 const props = defineProps({
-  formSet: { type: Number, default: null },
-  contractor: { type: Object, default: null },
+  isBlank: { type: Boolean, default: false },
+  contractor: { type: Object as PropType<Contractor>, required: true },
 })
 const emit = defineEmits(['resume-form'])
 
-const contractStore = useContract()
-
 const isSuccession = computed(
   () =>
-    !!props.contractor?.successions.length &&
-    !props.contractor?.successions[0].is_approval,
+    !!props.contractor.successions.length &&
+    !props.contractor.successions[0].is_approval,
 )
 
 const alertColor = computed(() => {
@@ -38,10 +37,12 @@ const getStatus = (num: string) => {
   return status.filter(s => s.code === num).map(s => s.text)[0]
 }
 
+const contStore = useContract()
 const removeContractor = () => {
-  contractStore.contract = null
-  contractStore.contractor = null
+  contStore.contract = null
+  contStore.contractor = null
 }
+
 const route = useRoute()
 const resumeForm = () => {
   const { contractor } = route.query
@@ -62,8 +63,8 @@ const resumeForm = () => {
           {{ isSuccession ? '-> (!!!-권리 의무 승계 진행 중-!!!)' : '' }}
         </strong>
       </CCol>
-      <CCol v-if="contractor" class="text-right">
-        <router-link v-if="formSet" to="">
+      <CCol class="text-right">
+        <router-link v-if="!isBlank" to="">
           <v-icon icon="mdi mdi-close" @click="removeContractor" />
           <v-tooltip activator="parent" location="start">
             계약자 선택 해제
