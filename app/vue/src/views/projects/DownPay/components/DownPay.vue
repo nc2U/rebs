@@ -83,7 +83,7 @@ onBeforeMount(() => dataSetup())
     <CTableDataCell>
       <CFormInput
         v-model.number="form.payment_amount"
-        placeholder="납부순서"
+        placeholder="회별 납부 계약금액"
         type="number"
         min="0"
         required
