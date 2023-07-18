@@ -445,7 +445,7 @@ class PdfExportBill(View):
         :return str(. * 공백라인 수):
         """
         num = unpaid_count + 1 if pm else unpaid_count
-        blank_line = (15 - (num + total_orders_count))
+        blank_line = (14 - (num + total_orders_count))
         return '.' * blank_line
 
 
