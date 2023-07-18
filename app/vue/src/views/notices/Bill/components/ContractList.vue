@@ -20,12 +20,10 @@ const pageSelect = (page: number) => {
   emit('page-select', page)
 }
 
-const allUnChecked = () =>
-  nextTick(() => {
-    if (!allChecked.value) {
-      emit('all-un-checked')
-    }
-  })
+const allUnChecked = () => {
+  allChecked.value = !allChecked.value
+  if (!allChecked.value) emit('all-un-checked')
+}
 
 const onCtorChk = (payload: { chk: boolean; pk: number }) =>
   emit('on-ctor-chk', payload)

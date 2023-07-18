@@ -1,15 +1,12 @@
 <script lang="ts" setup>
-import { computed, ref, nextTick, watch } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { numFormat } from '@/utils/baseMixins'
 
 const props = defineProps({
-  contract: {
-    type: Object,
-    required: true,
-  },
+  contract: { type: Object, required: true },
   page: { type: Number, default: 1 },
   nowOrder: { type: Number, default: null },
-  allChecked: Boolean,
+  allChecked: { type: Boolean, default: false },
 })
 
 const emit = defineEmits(['on-ctor-chk'])
@@ -30,16 +27,16 @@ const get_paid_name = computed(() => {
 
 watch(props, (n, o) => {
   if (!paidCompleted.value) {
-    checked.value = n.allChecked
+    checked.value = !n.allChecked
     ctorChk(n.contract.contractor.pk)
   }
   if (n.page !== o.page) checked.value = false
 })
 
-const ctorChk = (ctorPk: string) =>
-  nextTick(() => {
-    emit('on-ctor-chk', { chk: checked.value, pk: ctorPk })
-  })
+const ctorChk = (ctorPk: string) => {
+  checked.value = !checked.value
+  emit('on-ctor-chk', { chk: checked.value, pk: ctorPk })
+}
 </script>
 
 <template>
