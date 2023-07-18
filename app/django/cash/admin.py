@@ -46,7 +46,7 @@ class ProjectCashBookAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display_links = ('project', 'deal_date')
     list_filter = (
         'project', 'sort', ('deal_date', DateRangeFilter), 'project_account_d2',
-        'project_account_d3', 'is_imprest', 'bank_account')
+        'project_account_d3', 'is_imprest', 'installment_order', 'bank_account')
 
     def formatted_income(self, obj):
         return f'{intcomma(obj.income)} 원' if obj.income else '-'
