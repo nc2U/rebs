@@ -15,7 +15,6 @@ import { usePayment } from '@/store/pinia/payment'
 import { useProCash } from '@/store/pinia/proCash'
 import { PayOrder } from '@/store/types/payment'
 import { Payment } from '@/store/types/contract'
-import { useRouter } from 'vue-router'
 import { isValidate } from '@/utils/helper'
 import { numFormat, dateFormat, diffDate } from '@/utils/baseMixins'
 import { write_contract } from '@/utils/pageAuth'
@@ -140,8 +139,6 @@ const toSame = () => {
     form.dm_address3 = ''
   }
 }
-
-const router = useRouter()
 
 const contractStore = useContract()
 const getOrderGroups = computed(() => contractStore.getOrderGroups)
