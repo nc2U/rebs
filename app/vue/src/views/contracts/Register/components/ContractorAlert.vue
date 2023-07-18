@@ -10,16 +10,20 @@ const props = defineProps({
 })
 const emit = defineEmits(['resume-form'])
 
-const isSuccession = computed(() => {
-  const { successions } = props.contractor
-  return !!successions.length && !successions[0].is_approval
-})
+const isSuccession = computed(
+  () =>
+    !!props.contractor.successions.length &&
+    !props.contractor.successions[0].is_approval,
+)
 
 const alertColor = computed(() => {
-  const { status, contractorrelease } = props.contractor
   let aColor = 'info'
   if (isSuccession.value) aColor = 'success'
-  else if (!!contractorrelease && status >= '3') aColor = 'danger'
+  else if (
+    !!props.contractor.contractorrelease &&
+    props.contractor.status >= '3'
+  )
+    aColor = 'danger'
   return aColor
 })
 
