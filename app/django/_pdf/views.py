@@ -28,8 +28,8 @@ class PdfExportBill(View):
         """
         project = request.GET.get('project')  # 프로젝트 ID
         issue_date = datetime.strptime(request.GET.get('date'), '%Y-%m-%d').date()
-        np = request.GET.get('np')
-        nl = request.GET.get('nl')
+        np = True if request.GET.get('np') else False
+        nl = True if request.GET.get('nl') else False
 
         context = {
             'issue_date': issue_date,
