@@ -444,10 +444,9 @@ class PdfExportBill(View):
         :param total_orders_count: 전체 납부회차 개수
         :return str(. * 공백라인 수):
         """
-        # content_lines = 9
         num = unpaid_count + 1 if pm else unpaid_count
-        blank_line = (14 - (num + total_orders_count))
-        return range(blank_line)
+        blank_line = (15 - (num + total_orders_count))
+        return '.' * blank_line
 
 
 class PdfExportPayments(View):
