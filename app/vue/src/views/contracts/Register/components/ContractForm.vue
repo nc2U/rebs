@@ -288,7 +288,7 @@ const formsCheck = computed(() => {
 
     const a = form.order_group === props.contract.order_group
     const b = form.unit_type === props.contract.unit_type
-    const c = form.keyunit === props.contract.keyunit.pk
+    const c = form.keyunit === props.contract.keyunit?.pk
     const d = form.houseunit === props.contract.keyunit?.houseunit?.pk
     const e = form.reservation_date === props.contractor.reservation_date
     const f = form.contract_date === props.contractor?.contract_date
@@ -375,9 +375,9 @@ const formDataSetup = () => {
     form.order_group_sort = props.contract.order_group_desc.sort
     form.unit_type = props.contract.unit_type
     form.serial_number = props.contract.serial_number
-    form.keyunit = props.contract.keyunit.pk
-    form.keyunit_code = props.contract.keyunit.unit_code
-    form.houseunit = props.contract.keyunit.houseunit?.pk
+    form.keyunit = props.contract.keyunit?.pk
+    form.keyunit_code = props.contract.keyunit?.unit_code
+    form.houseunit = props.contract.keyunit?.houseunit?.pk
 
     // contractor
     form.name = props.contract.contractor.name
@@ -435,7 +435,7 @@ onUpdated(() => formDataSetup())
       />
       <ContractorAlert
         v-if="contractor"
-        :form-set="form.pk"
+        :is-blank="!form.pk"
         :contractor="contractor"
         @resume-form="resumeForm"
       />

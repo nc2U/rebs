@@ -5,7 +5,7 @@ import { useContract } from '@/store/pinia/contract'
 import { Contractor } from '@/store/types/contract'
 
 const props = defineProps({
-  formSet: { type: Number, default: null },
+  isBlank: { type: Boolean, default: false },
   contractor: { type: Object as PropType<Contractor>, required: true },
 })
 const emit = defineEmits(['resume-form'])
@@ -60,7 +60,7 @@ const resumeForm = () => {
         </strong>
       </CCol>
       <CCol class="text-right">
-        <router-link v-if="formSet" to="">
+        <router-link v-if="!isBlank" to="">
           <v-icon icon="mdi mdi-close" @click="removeContractor" />
           <v-tooltip activator="parent" location="start">
             계약자 선택 해제
