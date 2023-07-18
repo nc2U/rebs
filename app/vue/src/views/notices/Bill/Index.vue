@@ -17,8 +17,6 @@ import DownloadButton from '@/views/notices/Bill/components/DownloadButton.vue'
 import ContractList from '@/views/notices/Bill/components/ContractList.vue'
 
 const listControl = ref()
-const contractList = ref()
-defineExpose({ listControl, contractList })
 
 const ctor_ids = ref([])
 const printData = reactive({
@@ -179,7 +177,6 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId))
       />
       <DownloadButton :print-data="printData" :contractors="ctor_ids" />
       <ContractList
-        ref="contractList"
         :now-order="payOrderTime"
         @on-ctor-chk="onCtorChk"
         @page-select="pageSelect"
