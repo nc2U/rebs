@@ -99,7 +99,7 @@ const modalAction = () => {
               :disabled="!project"
               @click="contPriceSet"
             >
-              전체 계약건 공급가 재설정
+              전체 계약건 공급가격 재설정
             </CButton>
           </CCol>
         </CRow>
@@ -111,12 +111,16 @@ const modalAction = () => {
     <template #icon>
       <v-icon icon="mdi mdi-sync-alert" color="danger" class="mr-2" />
     </template>
-    <template #header> 전체 계약건 공급가 재설정</template>
+    <template #header> 전체 계약건 공급가격 / 계약금액 재설정</template>
     <template #default>
-      이 작업은 현재 등록된 전체 계약 건의 공급가를 현재 가격 데이터로 일괄
-      변경합니다.<br /><br />
-      이 작업은 수 분 정도 소요될 수 있습니다.<br />
-      전체 계약 건 개별 공급가를 현재 등록된 가격 정보로 재설정하시겠습니까?
+      <p>
+        이 작업은 현재 등록된 전체 계약 건의 공급 가격 및 계약 금액 정보를 현재
+        등록된 공급 가격 및 계약 금액 데이터로 일괄 변경합니다. <br />
+      </p>
+      <p>
+        이 작업은 수 분 정도 소요될 수 있습니다. 전체 계약 건 개별 공급가격 및
+        계약금액을 현재 등록된 정보로 재설정하시겠습니까?
+      </p>
     </template>
     <template #footer>
       <CButton color="dark" @click="modalAction">재설정</CButton>

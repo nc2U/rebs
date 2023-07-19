@@ -260,11 +260,6 @@ const project = {
         },
         {
           component: 'CNavItem',
-          name: '공급 가격 등록',
-          to: '/project/settings/price',
-        },
-        {
-          component: 'CNavItem',
           name: '납부 회차 등록',
           to: '/project/settings/payment-order',
         },
@@ -272,6 +267,11 @@ const project = {
           component: 'CNavItem',
           name: '계약 금액 등록',
           to: '/project/settings/down-payment',
+        },
+        {
+          component: 'CNavItem',
+          name: '공급 가격 등록',
+          to: '/project/settings/price',
         },
       ],
     },

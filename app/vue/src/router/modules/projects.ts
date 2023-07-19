@@ -93,15 +93,6 @@ const projects = {
       meta: { title: '층별 조건 등록', auth: true },
     },
     {
-      path: 'settings/price',
-      name: '공급 가격 등록',
-      component: () =>
-        pageViewAuth.value
-          ? import('@/views/projects/Price/Index.vue')
-          : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '공급 가격 등록', auth: true },
-    },
-    {
       path: 'settings/payment-order',
       name: '납부 회차 등록',
       component: () =>
@@ -118,6 +109,15 @@ const projects = {
           ? import('@/views/projects/DownPay/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
       meta: { title: '계약 금액 등록', auth: true },
+    },
+    {
+      path: 'settings/price',
+      name: '공급 가격 등록',
+      component: () =>
+        pageViewAuth.value
+          ? import('@/views/projects/Price/Index.vue')
+          : import('@/views/_Accounts/NoAuth.vue'),
+      meta: { title: '공급 가격 등록', auth: true },
     },
     {
       path: 'site/index',
