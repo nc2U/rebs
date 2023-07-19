@@ -3,8 +3,8 @@ from django.db import models
 
 class SalesPriceByGT(models.Model):  # 차수별 타입별 분양가격
     project = models.ForeignKey('project.Project', on_delete=models.CASCADE, verbose_name='프로젝트')
-    order_group = models.ForeignKey('contract.OrderGroup', on_delete=models.CASCADE, verbose_name='차수')
-    unit_type = models.ForeignKey('items.UnitType', on_delete=models.CASCADE, verbose_name='타입')
+    order_group = models.ForeignKey('contract.OrderGroup', on_delete=models.PROTECT, verbose_name='차수')
+    unit_type = models.ForeignKey('items.UnitType', on_delete=models.PROTECT, verbose_name='타입')
     unit_floor_type = models.ForeignKey('items.UnitFloorType', on_delete=models.PROTECT, verbose_name='층별타입')
     price_build = models.PositiveIntegerField('건물가', null=True, blank=True)
     price_land = models.PositiveIntegerField('대지가', null=True, blank=True)
