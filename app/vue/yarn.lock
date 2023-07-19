@@ -1639,17 +1639,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@coreui/icons@npm:^2.1.0":
-  version: 2.1.0
-  resolution: "@coreui/icons@npm:2.1.0"
-  checksum: b3133895be0a81c16a59743ff38dd08dbde4c7e4592824517dd5284f737db5f8b896d562a87468d4d15a697fe7dcb245c781d9b5d9062c5457ecd97b6b032b67
+"@coreui/icons@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "@coreui/icons@npm:3.0.1"
+  checksum: 0459828569dfee56c5002640987bedb9e8f5a25a89596de47de5a9dda0be965a33e57a1e8f48e40e883b65bc3ff2311ea0b0c22cbb4fa672896b6db04c543355
   languageName: node
   linkType: hard
 
-"@coreui/utils@npm:^1.3.1":
-  version: 1.3.1
-  resolution: "@coreui/utils@npm:1.3.1"
-  checksum: 2767399fad4c99006f935dc2abf6d2264bfed9b4c6692e3162fb9d143ca1a027f6e7210cfbff5e8233644e5baaad7c31153bec7fd1dab5070f536ba5e293d363
+"@coreui/utils@npm:^2.0.2":
+  version: 2.0.2
+  resolution: "@coreui/utils@npm:2.0.2"
+  checksum: e43a06fbc22ce1200093ff41e0a30a71dc221e4df70fe73b83915f15136012a627e9feb8aabf594239881516154e8ec44d6309cfe0ab2b7824c858a687416461
   languageName: node
   linkType: hard
 
@@ -11552,9 +11552,9 @@ __metadata:
   dependencies:
     "@coreui/chartjs": ^3.1.2
     "@coreui/coreui": ^4.2.6
-    "@coreui/icons": ^2.1.0
+    "@coreui/icons": ^3.0.1
     "@coreui/icons-vue": ^2.0.0
-    "@coreui/utils": ^1.3.1
+    "@coreui/utils": ^2.0.2
     "@coreui/vue": ^4.10.0
     "@coreui/vue-chartjs": ^2.1.0
     "@fullcalendar/core": ^6.1.8
