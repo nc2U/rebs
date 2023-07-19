@@ -5,6 +5,7 @@ import {useCompany} from '@/store/pinia/company'
 import {useAccount} from '@/store/pinia/account'
 import {Staff} from '@/store/types/company'
 import {isValidate} from '@/utils/helper'
+import {maska as vMaska} from "maska"
 import {dateFormat} from '@/utils/baseMixins'
 import {write_human_resource} from '@/utils/pageAuth'
 import Multiselect from '@vueform/multiselect'

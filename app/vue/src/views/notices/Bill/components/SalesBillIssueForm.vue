@@ -1,19 +1,20 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, watch, onMounted, onUpdated } from 'vue'
-import { usePayment } from '@/store/pinia/payment'
-import { SalesBillIssue } from '@/store/types/notice'
-import { write_notice } from '@/utils/pageAuth'
-import { isValidate } from '@/utils/helper'
-import { dateFormat } from '@/utils/baseMixins'
-import { AddressData, callAddress } from '@/components/DaumPostcode/address'
+import {ref, reactive, computed, watch, onMounted, onUpdated} from 'vue'
+import {usePayment} from '@/store/pinia/payment'
+import {SalesBillIssue} from '@/store/types/notice'
+import {maska as vMaska} from "maska"
+import {write_notice} from '@/utils/pageAuth'
+import {isValidate} from '@/utils/helper'
+import {dateFormat} from '@/utils/baseMixins'
+import {AddressData, callAddress} from '@/components/DaumPostcode/address'
 import DaumPostcode from '@/components/DaumPostcode/index.vue'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
 const props = defineProps({
-  project: { type: Number, default: null },
-  billIssue: { type: Object, default: null },
+  project: {type: Number, default: null},
+  billIssue: {type: Object, default: null},
 })
 
 const emit = defineEmits(['on-submit', 'get-now-order', 'set-pub-date'])
@@ -105,14 +106,14 @@ const onSubmit = (event: Event) => {
 }
 
 const modalAction = () => {
-  emit('on-submit', { ...form })
+  emit('on-submit', {...form})
 
   validated.value = false
   confirmModal.value.close()
 }
 
 const addressCallback = (data: AddressData) => {
-  const { formNum, zipcode, address1, address3 } = callAddress(data)
+  const {formNum, zipcode, address1, address3} = callAddress(data)
   if (formNum === 1) {
     form.zipcode = zipcode
     form.address1 = address1
@@ -178,25 +179,25 @@ onUpdated(() => formDataSetup())
   <CAlert color="info">
     <CRow>
       <CCol xs="6" sm="7" md="8" lg="9" xl="10">
-        <CIcon name="cibAddthis" />
+        <CIcon name="cibAddthis"/>
         <strong class="title"> 수납 고지서 발행</strong>
       </CCol>
       <CCol>
         <CFormSwitch
-          id="formSwitch"
-          label="고지서 관련정보 설정"
-          :model-value="visible"
-          @click="visible = !visible"
+            id="formSwitch"
+            label="고지서 관련정보 설정"
+            :model-value="visible"
+            @click="visible = !visible"
         />
       </CCol>
     </CRow>
   </CAlert>
 
   <CForm
-    class="needs-validation"
-    novalidate
-    :validated="validated"
-    @submit.prevent="onSubmit"
+      class="needs-validation"
+      novalidate
+      :validated="validated"
+      @submit.prevent="onSubmit"
   >
     <CRow class="mb-1">
       <CCol sm="4" md="2" xl="1">
@@ -204,11 +205,11 @@ onUpdated(() => formDataSetup())
       </CCol>
       <CCol sm="8" md="4" xl="2">
         <DatePicker
-          v-model="published_date"
-          v-maska="'####-##-##'"
-          placeholder="발행일자"
-          maxlength="10"
-          required
+            v-model="published_date"
+            v-maska="'####-##-##'"
+            placeholder="발행일자"
+            maxlength="10"
+            required
         />
       </CCol>
     </CRow>
@@ -220,9 +221,9 @@ onUpdated(() => formDataSetup())
         </CCol>
         <CCol sm="8" md="4" xl="2">
           <CFormSelect
-            v-model="form.now_payment_order"
-            placeholder="발행회차"
-            required
+              v-model="form.now_payment_order"
+              placeholder="발행회차"
+              required
           >
             <option value="">--------</option>
             <option v-for="po in payOrderList" :key="po.pk" :value="po.pk">
@@ -236,11 +237,11 @@ onUpdated(() => formDataSetup())
         </CCol>
         <CCol sm="8" md="4" xl="2">
           <DatePicker
-            v-model="form.now_due_date"
-            v-maska="'####-##-##'"
-            placeholder="당회 납부기한"
-            maxlength="10"
-            :required="false"
+              v-model="form.now_due_date"
+              v-maska="'####-##-##'"
+              placeholder="당회 납부기한"
+              maxlength="10"
+              :required="false"
           />
         </CCol>
       </CRow>
@@ -251,10 +252,10 @@ onUpdated(() => formDataSetup())
         </CCol>
         <CCol sm="8" md="4" xl="2">
           <CFormInput
-            v-model="form.host_name"
-            placeholder="시행자명"
-            maxlength="20"
-            required
+              v-model="form.host_name"
+              placeholder="시행자명"
+              maxlength="20"
+              required
           />
         </CCol>
 
@@ -263,13 +264,13 @@ onUpdated(() => formDataSetup())
         </CCol>
         <CCol sm="8" md="4" xl="2">
           <input
-            v-model="form.host_tel"
-            v-maska="['###-###-####', '###-####-####']"
-            type="text"
-            class="form-control"
-            placeholder="시행자 전화"
-            maxlength="13"
-            required
+              v-model="form.host_tel"
+              v-maska="['###-###-####', '###-####-####']"
+              type="text"
+              class="form-control"
+              placeholder="시행자 전화"
+              maxlength="13"
+              required
           />
         </CCol>
 
@@ -278,9 +279,9 @@ onUpdated(() => formDataSetup())
         </CCol>
         <CCol sm="8" md="4" xl="2">
           <CFormInput
-            v-model="form.agency"
-            placeholder="대행사명"
-            maxlength="20"
+              v-model="form.agency"
+              placeholder="대행사명"
+              maxlength="20"
           />
         </CCol>
 
@@ -289,12 +290,12 @@ onUpdated(() => formDataSetup())
         </CCol>
         <CCol sm="8" md="4" xl="2">
           <input
-            v-model="form.agency_tel"
-            v-maska="['###-###-####', '###-####-####']"
-            type="text"
-            class="form-control"
-            placeholder="대행사 전화"
-            maxlength="13"
+              v-model="form.agency_tel"
+              v-maska="['###-###-####', '###-####-####']"
+              type="text"
+              class="form-control"
+              placeholder="대행사 전화"
+              maxlength="13"
           />
         </CCol>
       </CRow>
@@ -305,10 +306,10 @@ onUpdated(() => formDataSetup())
         </CCol>
         <CCol sm="8" md="4" xl="3">
           <CFormInput
-            v-model="form.bank_account1"
-            placeholder="수납은행[1]"
-            maxlength="20"
-            required
+              v-model="form.bank_account1"
+              placeholder="수납은행[1]"
+              maxlength="20"
+              required
           />
         </CCol>
 
@@ -317,10 +318,10 @@ onUpdated(() => formDataSetup())
         </CCol>
         <CCol sm="8" md="4" xl="3">
           <CFormInput
-            v-model="form.bank_number1"
-            placeholder="계좌번호[1]"
-            maxlength="25"
-            required
+              v-model="form.bank_number1"
+              placeholder="계좌번호[1]"
+              maxlength="25"
+              required
           />
         </CCol>
 
@@ -329,10 +330,10 @@ onUpdated(() => formDataSetup())
         </CCol>
         <CCol sm="8" md="4" xl="3">
           <CFormInput
-            v-model="form.bank_host1"
-            placeholder="예금주[1]"
-            maxlength="20"
-            required
+              v-model="form.bank_host1"
+              placeholder="예금주[1]"
+              maxlength="20"
+              required
           />
         </CCol>
       </CRow>
@@ -343,9 +344,9 @@ onUpdated(() => formDataSetup())
         </CCol>
         <CCol sm="8" md="4" xl="3">
           <CFormInput
-            v-model="form.bank_account2"
-            placeholder="수납은행[2]"
-            maxlength="20"
+              v-model="form.bank_account2"
+              placeholder="수납은행[2]"
+              maxlength="20"
           />
         </CCol>
 
@@ -354,9 +355,9 @@ onUpdated(() => formDataSetup())
         </CCol>
         <CCol sm="8" md="4" xl="3">
           <CFormInput
-            v-model="form.bank_number2"
-            placeholder="계좌번호[2]"
-            maxlength="25"
+              v-model="form.bank_number2"
+              placeholder="계좌번호[2]"
+              maxlength="25"
           />
         </CCol>
 
@@ -365,9 +366,9 @@ onUpdated(() => formDataSetup())
         </CCol>
         <CCol sm="8" md="4" xl="3">
           <CFormInput
-            v-model="form.bank_host2"
-            placeholder="예금주[2]"
-            maxlength="20"
+              v-model="form.bank_host2"
+              placeholder="예금주[2]"
+              maxlength="20"
           />
         </CCol>
       </CRow>
@@ -383,50 +384,50 @@ onUpdated(() => formDataSetup())
               우편번호
             </CInputGroupText>
             <CFormInput
-              v-model="form.zipcode"
-              v-maska="'#####'"
-              type="text"
-              placeholder="우편번호"
-              maxlength="5"
-              required
-              @focus="$refs.postCode.initiate()"
+                v-model="form.zipcode"
+                v-maska="'#####'"
+                type="text"
+                placeholder="우편번호"
+                maxlength="5"
+                required
+                @focus="$refs.postCode.initiate()"
             />
             <!--            <CFormFeedback invalid>우편번호를 입력하세요.</CFormFeedback>-->
           </CInputGroup>
         </CCol>
 
-        <CCol class="d-none d-sm-block d-md-none" sm="4" />
+        <CCol class="d-none d-sm-block d-md-none" sm="4"/>
 
         <CCol sm="8" md="6" xl="4" class="mb-1">
           <CFormInput
-            v-model="form.address1"
-            placeholder="메인 주소"
-            maxlength="35"
-            required
-            @click="$refs.postCode.initiate()"
+              v-model="form.address1"
+              placeholder="메인 주소"
+              maxlength="35"
+              required
+              @click="$refs.postCode.initiate()"
           />
         </CCol>
 
-        <CCol class="d-none d-sm-block d-md-block d-xl-none" sm="4" md="2" />
+        <CCol class="d-none d-sm-block d-md-block d-xl-none" sm="4" md="2"/>
 
         <CCol sm="8" md="5" xl="2" class="mb-1">
           <CFormInput
-            ref="address2"
-            v-model="form.address2"
-            placeholder="상세 주소"
-            maxlngth="20"
-            required
+              ref="address2"
+              v-model="form.address2"
+              placeholder="상세 주소"
+              maxlngth="20"
+              required
           />
         </CCol>
 
-        <CCol class="d-none d-sm-block d-md-none" sm="4" />
+        <CCol class="d-none d-sm-block d-md-none" sm="4"/>
 
         <CCol sm="8" md="5" xl="3" class="mb-1">
           <CFormInput
-            v-model="form.address3"
-            placeholder="참고항목"
-            maxlength="20"
-            required
+              v-model="form.address3"
+              placeholder="참고항목"
+              maxlength="20"
+              required
           />
         </CCol>
       </CRow>
@@ -438,13 +439,13 @@ onUpdated(() => formDataSetup())
 
         <CCol sm="8" md="10" lg="12" xl="11">
           <CFormInput
-            v-model="form.title"
-            placeholder="고재서 제목"
-            maxlength="80"
-            required
+              v-model="form.title"
+              placeholder="고재서 제목"
+              maxlength="80"
+              required
           />
         </CCol>
-        <CCol class="d-none d-md-block d-lg-none" md="6" />
+        <CCol class="d-none d-md-block d-lg-none" md="6"/>
       </CRow>
 
       <CRow class="mb-3">
@@ -453,19 +454,19 @@ onUpdated(() => formDataSetup())
         </CCol>
         <CCol sm="8" md="10" lg="12" xl="11">
           <CFormTextarea
-            v-model="form.content"
-            placeholder="고지서 내용"
-            rows="4"
+              v-model="form.content"
+              placeholder="고지서 내용"
+              rows="4"
           />
         </CCol>
-        <CCol class="d-none d-md-block d-lg-none" md="6" />
+        <CCol class="d-none d-md-block d-lg-none" md="6"/>
       </CRow>
 
       <CAlert color="secondary" class="text-right">
         <CButton
-          type="submit"
-          :color="btnClass"
-          :disabled="!project || formsCheck"
+            type="submit"
+            :color="btnClass"
+            :disabled="!project || formsCheck"
         >
           {{ confirmText }}
         </CButton>
@@ -473,7 +474,7 @@ onUpdated(() => formDataSetup())
     </CCollapse>
   </CForm>
 
-  <DaumPostcode ref="postCode" @addressCallback="addressCallback" />
+  <DaumPostcode ref="postCode" @addressCallback="addressCallback"/>
 
   <ConfirmModal ref="confirmModal">
     <template #header> 수납 고지서 발행 정보</template>
@@ -485,5 +486,5 @@ onUpdated(() => formDataSetup())
     </template>
   </ConfirmModal>
 
-  <AlertModal ref="alertModal" />
+  <AlertModal ref="alertModal"/>
 </template>

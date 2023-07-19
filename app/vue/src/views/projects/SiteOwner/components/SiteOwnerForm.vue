@@ -1,12 +1,13 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, watch, onBeforeMount } from 'vue'
-import { useProject } from '@/store/pinia/project'
-import { useSite } from '@/store/pinia/project_site'
-import { SimpleSite, SiteOwner } from '@/store/types/project'
-import { dateFormat } from '@/utils/baseMixins'
-import { write_project } from '@/utils/pageAuth'
-import { isValidate } from '@/utils/helper'
-import { AddressData, callAddress } from '@/components/DaumPostcode/address'
+import {ref, reactive, computed, watch, onBeforeMount} from 'vue'
+import {useProject} from '@/store/pinia/project'
+import {useSite} from '@/store/pinia/project_site'
+import {maska as vMaska} from "maska"
+import {SimpleSite, SiteOwner} from '@/store/types/project'
+import {dateFormat} from '@/utils/baseMixins'
+import {write_project} from '@/utils/pageAuth'
+import {isValidate} from '@/utils/helper'
+import {AddressData, callAddress} from '@/components/DaumPostcode/address'
 import DaumPostcode from '@/components/DaumPostcode/index.vue'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
@@ -47,9 +48,9 @@ const form = reactive<SiteOwner>({
 })
 
 const own_sort_select = [
-  { val: '1', text: '개인' },
-  { val: '2', text: '법인' },
-  { val: '3', text: '국공유지' },
+  {val: '1', text: '개인'},
+  {val: '2', text: '법인'},
+  {val: '3', text: '국공유지'},
 ]
 
 const projectStore = useProject()
@@ -82,7 +83,7 @@ watch(form, val => {
 })
 
 const addressCallback = (data: AddressData) => {
-  const { formNum, zipcode, address1, address3 } = callAddress(data)
+  const {formNum, zipcode, address1, address3} = callAddress(data)
   if (formNum === 1) {
     // 입력할 데이터와 focus 폼 지정
     form.zipcode = zipcode
@@ -108,7 +109,7 @@ const multiSubmit = (multiPayload: SiteOwner) => {
 }
 
 const deleteObject = () => {
-  emit('on-delete', { pk: props.owner.pk, project: props.owner.project })
+  emit('on-delete', {pk: props.owner.pk, project: props.owner.project})
   delModal.value.close()
   emit('close')
 }
@@ -142,10 +143,10 @@ onBeforeMount(() => dataSetup())
 
 <template>
   <CForm
-    class="needs-validation"
-    novalidate
-    :validated="validated"
-    @submit.prevent="onSubmit"
+      class="needs-validation"
+      novalidate
+      :validated="validated"
+      @submit.prevent="onSubmit"
   >
     <CModalBody class="p-4">
       <div>
@@ -156,9 +157,9 @@ onBeforeMount(() => dataSetup())
               <CCol sm="8">
                 <CFormSelect v-model="form.own_sort">
                   <option
-                    v-for="sort in own_sort_select"
-                    :key="sort.val"
-                    :value="sort.val"
+                      v-for="sort in own_sort_select"
+                      :key="sort.val"
+                      :value="sort.val"
                   >
                     {{ sort.text }}
                   </option>
@@ -174,10 +175,10 @@ onBeforeMount(() => dataSetup())
               <CFormLabel class="col-sm-4 col-form-label">소유자</CFormLabel>
               <CCol sm="8">
                 <CFormInput
-                  v-model="form.owner"
-                  maxlength="10"
-                  required
-                  placeholder="소유자"
+                    v-model="form.owner"
+                    maxlength="10"
+                    required
+                    placeholder="소유자"
                 />
               </CCol>
             </CRow>
@@ -188,10 +189,10 @@ onBeforeMount(() => dataSetup())
               <CFormLabel class="col-sm-4 col-form-label">생년월일</CFormLabel>
               <CCol sm="8">
                 <DatePicker
-                  v-model="form.date_of_birth"
-                  maxlength="10"
-                  :required="false"
-                  placeholder="생년월일"
+                    v-model="form.date_of_birth"
+                    maxlength="10"
+                    :required="false"
+                    placeholder="생년월일"
                 />
               </CCol>
             </CRow>
@@ -206,11 +207,11 @@ onBeforeMount(() => dataSetup())
               </CFormLabel>
               <CCol sm="10">
                 <Multiselect
-                  v-model="form.sites"
-                  :options="getSites"
-                  placeholder="소유부지 :: 필수 입력"
-                  :attrs="form.sites.length ? {} : { required: true }"
-                  :classes="{ search: 'form-control multiselect-search' }"
+                    v-model="form.sites"
+                    :options="getSites"
+                    placeholder="소유부지 :: 필수 입력"
+                    :attrs="form.sites.length ? {} : { required: true }"
+                    :classes="{ search: 'form-control multiselect-search' }"
                 />
               </CCol>
             </CRow>
@@ -223,11 +224,11 @@ onBeforeMount(() => dataSetup())
               <CFormLabel class="col-sm-4 col-form-label">주 연락처</CFormLabel>
               <CCol sm="8">
                 <input
-                  v-model="form.phone1"
-                  v-maska="['###-###-####', '###-####-####']"
-                  class="form-control"
-                  maxlength="13"
-                  placeholder="주 연락처"
+                    v-model="form.phone1"
+                    v-maska="['###-###-####', '###-####-####']"
+                    class="form-control"
+                    maxlength="13"
+                    placeholder="주 연락처"
                 />
               </CCol>
             </CRow>
@@ -240,11 +241,11 @@ onBeforeMount(() => dataSetup())
               </CFormLabel>
               <CCol sm="8">
                 <input
-                  v-model="form.phone2"
-                  v-maska="['###-###-####', '###-####-####']"
-                  class="form-control"
-                  maxlength="13"
-                  placeholder="보조 연락처"
+                    v-model="form.phone2"
+                    v-maska="['###-###-####', '###-####-####']"
+                    class="form-control"
+                    maxlength="13"
+                    placeholder="보조 연락처"
                 />
               </CCol>
             </CRow>
@@ -261,21 +262,21 @@ onBeforeMount(() => dataSetup())
                     우편번호
                   </CInputGroupText>
                   <CFormInput
-                    v-model="form.zipcode"
-                    v-maska="'#####'"
-                    placeholder="우편번호"
-                    maxlength="5"
-                    @focus="postCode.initiate()"
+                      v-model="form.zipcode"
+                      v-maska="'#####'"
+                      placeholder="우편번호"
+                      maxlength="5"
+                      @focus="postCode.initiate()"
                   />
                   <CFormFeedback invalid>우편번호를 입력하세요.</CFormFeedback>
                 </CInputGroup>
               </CCol>
               <CCol sm="7">
                 <CFormInput
-                  v-model="form.address1"
-                  maxlength="35"
-                  placeholder="메인 주소"
-                  @click="postCode.initiate()"
+                    v-model="form.address1"
+                    maxlength="35"
+                    placeholder="메인 주소"
+                    @click="postCode.initiate()"
                 />
               </CCol>
             </CRow>
@@ -288,17 +289,17 @@ onBeforeMount(() => dataSetup())
               <CFormLabel class="col-sm-2 col-form-label"></CFormLabel>
               <CCol sm="5">
                 <CFormInput
-                  ref="address2"
-                  v-model="form.address2"
-                  maxlength="20"
-                  placeholder="상세 주소"
+                    ref="address2"
+                    v-model="form.address2"
+                    maxlength="20"
+                    placeholder="상세 주소"
                 />
               </CCol>
               <CCol sm="5">
                 <CFormInput
-                  v-model="form.address3"
-                  maxlength="20"
-                  placeholder="나머지 주소"
+                    v-model="form.address3"
+                    maxlength="20"
+                    placeholder="나머지 주소"
                 />
               </CCol>
             </CRow>
@@ -313,9 +314,9 @@ onBeforeMount(() => dataSetup())
               </CFormLabel>
               <CCol sm="10">
                 <CFormTextarea
-                  v-model="form.counsel_record"
-                  rows="4"
-                  placeholder="주요 상담 기록"
+                    v-model="form.counsel_record"
+                    rows="4"
+                    placeholder="주요 상담 기록"
                 />
               </CCol>
             </CRow>
@@ -330,24 +331,24 @@ onBeforeMount(() => dataSetup())
       </CButton>
       <slot name="footer">
         <CButton
-          type="submit"
-          :color="owner ? 'success' : 'primary'"
-          :disabled="formsCheck"
+            type="submit"
+            :color="owner ? 'success' : 'primary'"
+            :disabled="formsCheck"
         >
           저장
         </CButton>
         <CButton
-          v-if="owner"
-          type="button"
-          color="danger"
-          @click="deleteConfirm"
+            v-if="owner"
+            type="button"
+            color="danger"
+            @click="deleteConfirm"
         >
           삭제
         </CButton>
       </slot>
     </CModalFooter>
 
-    <DaumPostcode ref="postCode" @address-callback="addressCallback" />
+    <DaumPostcode ref="postCode" @address-callback="addressCallback"/>
   </CForm>
 
   <ConfirmModal ref="delModal">
@@ -361,5 +362,5 @@ onBeforeMount(() => dataSetup())
     </template>
   </ConfirmModal>
 
-  <AlertModal ref="alertModal" />
+  <AlertModal ref="alertModal"/>
 </template>

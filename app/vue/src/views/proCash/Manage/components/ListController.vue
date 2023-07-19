@@ -1,9 +1,8 @@
 <script lang="ts" setup>
-import { computed, reactive, ref, watch, nextTick } from 'vue'
-import { useProCash } from '@/store/pinia/proCash'
-import { numFormat, dateFormat } from '@/utils/baseMixins'
-import { vMaska } from 'maska'
-import { bgLight } from '@/utils/cssMixins'
+import {computed, reactive, ref, watch, nextTick} from 'vue'
+import {useProCash} from '@/store/pinia/proCash'
+import {numFormat, dateFormat} from '@/utils/baseMixins'
+import {bgLight} from '@/utils/cssMixins'
 import DatePicker from '@/components/DatePicker/index.vue'
 
 const emit = defineEmits(['list-filtering'])
@@ -62,13 +61,13 @@ const listFiltering = (page = 1) => {
     form.search = form.search.trim()
 
     emit('list-filtering', {
-      ...{ page, from_date: from_date.value, to_date: to_date.value },
+      ...{page, from_date: from_date.value, to_date: to_date.value},
       ...form,
     })
   })
 }
 
-defineExpose({ listFiltering })
+defineExpose({listFiltering})
 
 const resetForm = () => {
   from_date.value = ''
@@ -89,19 +88,17 @@ const resetForm = () => {
         <CRow>
           <CCol md="6" lg="2" class="mb-3">
             <DatePicker
-              v-model="from_date"
-              v-maska="'####-##-##'"
-              placeholder="시작일 (From)"
-              @keydown.enter="listFiltering(1)"
+                v-model="from_date"
+                placeholder="시작일 (From)"
+                @keydown.enter="listFiltering(1)"
             />
           </CCol>
 
           <CCol md="6" lg="2" class="mb-3">
             <DatePicker
-              v-model="to_date"
-              v-maska="'####-##-##'"
-              placeholder="종료일 (To)"
-              @keydown.enter="listFiltering(1)"
+                v-model="to_date"
+                placeholder="종료일 (To)"
+                @keydown.enter="listFiltering(1)"
             />
           </CCol>
 
@@ -136,9 +133,9 @@ const resetForm = () => {
             <CFormSelect v-model="form.bank_account" @change="listFiltering(1)">
               <option value="">거래계좌</option>
               <option
-                v-for="acc in allProBankAccs"
-                :key="acc.pk"
-                :value="acc.pk"
+                  v-for="acc in allProBankAccs"
+                  :key="acc.pk"
+                  :value="acc.pk"
               >
                 {{ acc.alias_name }}
               </option>
@@ -152,11 +149,11 @@ const resetForm = () => {
           <CCol class="mb-3">
             <CInputGroup class="flex-nowrap">
               <CFormInput
-                v-model="form.search"
-                placeholder="적요, 거래처 검색"
-                aria-label="Username"
-                aria-describedby="addon-wrapping"
-                @keydown.enter="listFiltering(1)"
+                  v-model="form.search"
+                  placeholder="적요, 거래처 검색"
+                  aria-label="Username"
+                  aria-describedby="addon-wrapping"
+                  @keydown.enter="listFiltering(1)"
               />
               <CInputGroupText @click="listFiltering(1)">검색</CInputGroupText>
             </CInputGroup>

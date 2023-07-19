@@ -2,6 +2,7 @@
 import {ref, reactive, computed, watch, onBeforeMount, nextTick} from 'vue'
 import {write_contract} from '@/utils/pageAuth'
 import {isValidate} from '@/utils/helper'
+import {maska as vMaska} from "maska"
 import {dateFormat} from '@/utils/baseMixins'
 import {useContract} from '@/store/pinia/contract'
 import {Succession, Buyer} from '@/store/types/contract'

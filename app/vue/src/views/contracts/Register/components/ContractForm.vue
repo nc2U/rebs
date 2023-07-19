@@ -16,6 +16,7 @@ import {useProCash} from '@/store/pinia/proCash'
 import {PayOrder} from '@/store/types/payment'
 import {Payment} from '@/store/types/contract'
 import {isValidate} from '@/utils/helper'
+import {maska as vMaska} from "maska"
 import {numFormat, dateFormat, diffDate} from '@/utils/baseMixins'
 import {write_contract} from '@/utils/pageAuth'
 import {AddressData, callAddress} from '@/components/DaumPostcode/address'
@@ -550,7 +551,6 @@ onUpdated(() => formDataSetup())
           <DatePicker
               v-show="form.status === '1'"
               v-model="form.reservation_date"
-              v-maska="'####-##-##'"
               placeholder="청약일자"
               :required="form.status === '1'"
               :disabled="noStatus"
@@ -558,7 +558,6 @@ onUpdated(() => formDataSetup())
           <DatePicker
               v-show="form.status !== '1'"
               v-model="form.contract_date"
-              v-maska="'####-##-##'"
               placeholder="계약일자"
               :required="isContract"
               :disabled="noStatus"
@@ -587,7 +586,6 @@ onUpdated(() => formDataSetup())
         <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
           <DatePicker
               v-model="form.birth_date"
-              v-maska="'####-##-##'"
               maxlength="10"
               placeholder="생년월일"
               :required="isContract"
@@ -767,7 +765,6 @@ onUpdated(() => formDataSetup())
             <CCol md="10" lg="2" class="mb-3 mb-lg-0">
               <DatePicker
                   v-model="form.deal_date"
-                  v-maska="'####-##-##'"
                   placeholder="입금일자"
                   maxlength="10"
                   :disabled="noStatus"
