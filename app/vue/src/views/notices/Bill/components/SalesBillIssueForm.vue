@@ -206,7 +206,6 @@ onUpdated(() => formDataSetup())
       <CCol sm="8" md="4" xl="2">
         <DatePicker
             v-model="published_date"
-            v-maska="'####-##-##'"
             placeholder="발행일자"
             maxlength="10"
             required
@@ -238,7 +237,6 @@ onUpdated(() => formDataSetup())
         <CCol sm="8" md="4" xl="2">
           <DatePicker
               v-model="form.now_due_date"
-              v-maska="'####-##-##'"
               placeholder="당회 납부기한"
               maxlength="10"
               :required="false"

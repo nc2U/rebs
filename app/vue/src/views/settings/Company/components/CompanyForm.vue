@@ -1,10 +1,11 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount, reactive, ref, watch } from 'vue'
-import { useAccount } from '@/store/pinia/account'
-import { Company } from '@/store/types/settings'
-import { write_company_settings } from '@/utils/pageAuth'
-import { dateFormat } from '@/utils/baseMixins'
-import { callAddress, AddressData } from '@/components/DaumPostcode/address'
+import {computed, onBeforeMount, reactive, ref, watch} from 'vue'
+import {useAccount} from '@/store/pinia/account'
+import {Company} from '@/store/types/settings'
+import {write_company_settings} from '@/utils/pageAuth'
+import {maska as vMaska} from "maska"
+import {dateFormat} from '@/utils/baseMixins'
+import {callAddress, AddressData} from '@/components/DaumPostcode/address'
 import DaumPostcode from '@/components/DaumPostcode/index.vue'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
@@ -15,7 +16,7 @@ const emit = defineEmits(['on-submit', 'reset-form'])
 const account = useAccount()
 
 const props = defineProps({
-  company: { type: Object, default: null },
+  company: {type: Object, default: null},
 })
 
 const delModal = ref()
@@ -42,7 +43,7 @@ const form = reactive<Company>({
 })
 
 const addressCallback = (data: AddressData) => {
-  const { formNum, zipcode, address1, address3 } = callAddress(data)
+  const {formNum, zipcode, address1, address3} = callAddress(data)
   if (formNum === 1) {
     // 입력할 데이터와 focus 폼 지정
     form.zipcode = zipcode
@@ -75,7 +76,7 @@ watch(form, val => {
 })
 
 const modalAction = () => {
-  emit('on-submit', { ...form })
+  emit('on-submit', {...form})
   validated.value = false
   confirmModal.value.close()
 }
@@ -97,11 +98,11 @@ const formsCheck = computed(() => {
     const e = form.business_cond === props.company.business_cond
     const f = form.business_even === props.company.business_even
     const g =
-      new Date(form.es_date).toString() ===
-      new Date(props.company.es_date).toString()
+        new Date(form.es_date).toString() ===
+        new Date(props.company.es_date).toString()
     const h =
-      new Date(form.op_date).toString() ===
-      new Date(props.company.op_date).toString()
+        new Date(form.op_date).toString() ===
+        new Date(props.company.op_date).toString()
     const i = form.zipcode === props.company.zipcode
     const j = form.address1 === props.company.address1
     const k = form.address2 === props.company.address2
@@ -134,10 +135,10 @@ onBeforeMount(() => formDataSetup())
 
 <template>
   <CForm
-    class="needs-validation"
-    novalidate
-    :validated="validated"
-    @submit.prevent="onSubmit"
+      class="needs-validation"
+      novalidate
+      :validated="validated"
+      @submit.prevent="onSubmit"
   >
     <CCardBody>
       <CRow class="mb-3">
@@ -147,11 +148,11 @@ onBeforeMount(() => formDataSetup())
 
         <CCol md="4">
           <CFormInput
-            v-model="form.name"
-            type="text"
-            placeholder="회사명을 입력하세요"
-            maxlength="30"
-            required
+              v-model="form.name"
+              type="text"
+              placeholder="회사명을 입력하세요"
+              maxlength="30"
+              required
           />
           <CFormFeedback invalid>회사명을 입력하세요.</CFormFeedback>
         </CCol>
@@ -162,11 +163,11 @@ onBeforeMount(() => formDataSetup())
 
         <CCol md="4">
           <CFormInput
-            v-model="form.ceo"
-            type="text"
-            placeholder="대표자명을 입력하세요"
-            maxlength="20"
-            required
+              v-model="form.ceo"
+              type="text"
+              placeholder="대표자명을 입력하세요"
+              maxlength="20"
+              required
           />
           <CFormFeedback invalid>대표자명을 입력하세요.</CFormFeedback>
         </CCol>
@@ -178,13 +179,13 @@ onBeforeMount(() => formDataSetup())
         </CFormLabel>
         <CCol md="4">
           <input
-            v-model="form.tax_number"
-            v-maska="'###-##-#####'"
-            type="text"
-            class="form-control"
-            placeholder="사업자번호를 입력하세요"
-            maxlength="12"
-            required
+              v-model="form.tax_number"
+              v-maska="'###-##-#####'"
+              type="text"
+              class="form-control"
+              placeholder="사업자번호를 입력하세요"
+              maxlength="12"
+              required
           />
           <CFormFeedback invalid>사업자등록번호를 입력하세요.</CFormFeedback>
         </CCol>
@@ -193,13 +194,13 @@ onBeforeMount(() => formDataSetup())
         </CFormLabel>
         <CCol md="4">
           <input
-            v-model="form.org_number"
-            v-maska="'######-#######'"
-            type="text"
-            class="form-control"
-            placeholder="법인등록번호를 입력하세요"
-            maxlength="14"
-            required
+              v-model="form.org_number"
+              v-maska="'######-#######'"
+              type="text"
+              class="form-control"
+              placeholder="법인등록번호를 입력하세요"
+              maxlength="14"
+              required
           />
           <CFormFeedback invalid>법인등록번호를 입력하세요.</CFormFeedback>
         </CCol>
@@ -211,11 +212,11 @@ onBeforeMount(() => formDataSetup())
         </CFormLabel>
         <CCol md="4">
           <CFormInput
-            v-model="form.business_cond"
-            type="text"
-            placeholder="업태를 입력하세요"
-            maxlength="20"
-            required
+              v-model="form.business_cond"
+              type="text"
+              placeholder="업태를 입력하세요"
+              maxlength="20"
+              required
           />
           <CFormFeedback invalid>업태를 입력하세요.</CFormFeedback>
         </CCol>
@@ -224,11 +225,11 @@ onBeforeMount(() => formDataSetup())
         </CFormLabel>
         <CCol md="4">
           <CFormInput
-            v-model="form.business_even"
-            type="text"
-            placeholder="종목을 입력하세요"
-            maxlength="20"
-            required
+              v-model="form.business_even"
+              type="text"
+              placeholder="종목을 입력하세요"
+              maxlength="20"
+              required
           />
           <CFormFeedback invalid>종목을 입력하세요.</CFormFeedback>
         </CCol>
@@ -240,10 +241,10 @@ onBeforeMount(() => formDataSetup())
         </CFormLabel>
         <CCol md="4">
           <DatePicker
-            v-model="form.es_date"
-            maxlength="10"
-            placeholder="설립일자를 입력하세요"
-            required
+              v-model="form.es_date"
+              maxlength="10"
+              placeholder="설립일자를 입력하세요"
+              required
           />
           <CFormFeedback invalid>설립일자를 입력하세요.</CFormFeedback>
         </CCol>
@@ -252,16 +253,16 @@ onBeforeMount(() => formDataSetup())
         </CFormLabel>
         <CCol md="4">
           <DatePicker
-            v-model="form.op_date"
-            maxlength="10"
-            placeholder="개업일자를 입력하세요"
-            required
+              v-model="form.op_date"
+              maxlength="10"
+              placeholder="개업일자를 입력하세요"
+              required
           />
           <CFormFeedback invalid>개업일자를 입력하세요.</CFormFeedback>
         </CCol>
       </CRow>
 
-      <hr />
+      <hr/>
 
       <CRow>
         <CFormLabel for="zipcode" class="col-md-2 col-form-label">
@@ -270,12 +271,12 @@ onBeforeMount(() => formDataSetup())
         <CCol md="4" xl="2" class="mb-3">
           <CInputGroup>
             <CFormInput
-              v-model="form.zipcode"
-              type="text"
-              placeholder="우편번호"
-              maxlength="5"
-              required
-              @focus="postCode.initiate()"
+                v-model="form.zipcode"
+                type="text"
+                placeholder="우편번호"
+                maxlength="5"
+                required
+                @focus="postCode.initiate()"
             />
             <CInputGroupText @click="postCode.initiate()">
               우편번호
@@ -288,33 +289,33 @@ onBeforeMount(() => formDataSetup())
         <CCol sm="2"></CCol>
         <CCol md="10" lg="4" class="mb-3">
           <CFormInput
-            v-model="form.address1"
-            type="text"
-            placeholder="회사주소를 입력하세요"
-            maxlength="35"
-            required
-            @focus="postCode.initiate()"
+              v-model="form.address1"
+              type="text"
+              placeholder="회사주소를 입력하세요"
+              maxlength="35"
+              required
+              @focus="postCode.initiate()"
           />
           <CFormFeedback invalid>회사주소를 입력하세요.</CFormFeedback>
         </CCol>
         <CCol xs="2" class="d-none d-md-block d-lg-none"></CCol>
         <CCol md="5" lg="3" class="mb-3">
           <CFormInput
-            ref="address2"
-            v-model="form.address2"
-            type="text"
-            placeholder="상세주소를 입력하세요"
-            maxlength="20"
-            required
+              ref="address2"
+              v-model="form.address2"
+              type="text"
+              placeholder="상세주소를 입력하세요"
+              maxlength="20"
+              required
           />
           <CFormFeedback invalid>상세주소를 입력하세요.</CFormFeedback>
         </CCol>
         <CCol md="5" lg="3" class="mb-3">
           <CFormInput
-            v-model="form.address3"
-            type="text"
-            placeholder="나머지 주소를 입력하세요"
-            maxlength="20"
+              v-model="form.address3"
+              type="text"
+              placeholder="나머지 주소를 입력하세요"
+              maxlength="20"
           />
           <CFormFeedback invalid>나머지 주소를 입력하세요.</CFormFeedback>
         </CCol>
@@ -326,21 +327,21 @@ onBeforeMount(() => formDataSetup())
         취소
       </CButton>
       <CButton
-        v-if="update"
-        type="button"
-        color="danger"
-        @click="deleteCompany"
+          v-if="update"
+          type="button"
+          color="danger"
+          @click="deleteCompany"
       >
         삭제
       </CButton>
       <CButton type="submit" :color="btnClass" :disabled="formsCheck">
-        <CIcon name="cil-check-circle" />
+        <CIcon name="cil-check-circle"/>
         저장
       </CButton>
     </CCardFooter>
   </CForm>
 
-  <DaumPostcode ref="postCode" @address-callback="addressCallback" />
+  <DaumPostcode ref="postCode" @address-callback="addressCallback"/>
 
   <ConfirmModal ref="delModal">
     <template #header> 회사정보</template>
@@ -360,5 +361,5 @@ onBeforeMount(() => formDataSetup())
     </template>
   </ConfirmModal>
 
-  <AlertModal ref="alertModal" />
+  <AlertModal ref="alertModal"/>
 </template>
