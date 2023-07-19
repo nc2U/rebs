@@ -74,8 +74,8 @@ onBeforeMount(() => dataSetup())
   <ConfirmModal ref="confirmModal">
     <template #header> 동(건물) 삭제</template>
     <template #default>
-      이 동(건물)에 종속 데이터가 있는 경우 해당 데이터를 모두 제거한 후
-      삭제가능 합니다. 해당 동(건물)을 삭제 하시겠습니까?
+      이 동(건물)에 종속된 유니트(호수) 데이터가 있는 경우 해당 데이터를 모두
+      제거한 후 삭제가능 합니다. 해당 동(건물)을 삭제 하시겠습니까?
     </template>
     <template #footer>
       <CButton color="danger" @click="modalAction">삭제</CButton>

@@ -166,7 +166,8 @@ onUpdated(() => {
   <ConfirmModal ref="confirmModal">
     <template #header> 공급가격 삭제</template>
     <template #default>
-      삭제 후 복구할 수 없습니다. 해당 공급가격 정보를 삭제 하시겠습니까?
+      해당 데이터를 삭제하면 이후 복구할 수 없습니다. 이 공급가격 정보를 삭제
+      하시겠습니까?
     </template>
     <template #footer>
       <CButton color="danger" @click="modalAction">삭제</CButton>

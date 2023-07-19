@@ -80,11 +80,12 @@ const resetForm = () => {
       <CCol md="4" class="mb-2">
         <CFormInput
           v-model.number="form.payment_amount"
-          placeholder="납부 계약금액"
+          placeholder="회차별 납부 계약금액"
           type="number"
           min="0"
           required
           :disabled="disabled"
+          text="차수 및 타입별 고정 납부 계약금액, 납부 회수는 납부 회차 모델에서 별도 등록/설정"
         />
       </CCol>
 
@@ -92,7 +93,7 @@ const resetForm = () => {
         <CRow>
           <CCol md="12" class="d-grid gap-2 d-lg-block mb-3">
             <CButton color="primary" type="submit" :disabled="disabled">
-              계약금 추가
+              계약금액 추가
             </CButton>
           </CCol>
         </CRow>

@@ -83,7 +83,7 @@ onBeforeMount(() => dataSetup())
     <CTableDataCell>
       <CFormInput
         v-model.number="form.payment_amount"
-        placeholder="회별 납부 계약금액"
+        placeholder="회차별 납부 계약금액"
         type="number"
         min="0"
         required
@@ -107,10 +107,10 @@ onBeforeMount(() => dataSetup())
   </CTableRow>
 
   <ConfirmModal ref="confirmModal">
-    <template #header> 층별 타입 삭제</template>
+    <template #header> 계약 조건 삭제</template>
     <template #default>
-      이 타입에 종속된 분양가 데이터가 있는 경우 해당 데이터를 모두 제거한 후
-      삭제가능 합니다. 해당 층별 타입을 삭제 하시겠습니까?
+      해당 데이터를 삭제하면 이후 복구할 수 없습니다. 이 계약 조건 정보를 삭제
+      하시겠습니까?
     </template>
     <template #footer>
       <CButton color="danger" @click="modalAction">삭제</CButton>

@@ -27,7 +27,7 @@ defineExpose({ callModal, close })
         <slot name="header">Title</slot>
       </CModalTitle>
     </CModalHeader>
-    <CModalBody class="text-body">
+    <CModalBody class="text-body" style="line-height: 26px">
       <slot>
         Cras mattis consectetur purus sit amet fermentum. Cras justo odio,
         dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac

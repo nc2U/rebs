@@ -153,8 +153,8 @@ onMounted(() => dataSetup())
   <ConfirmModal ref="confirmModal">
     <template #header> 호수 유닛 삭제</template>
     <template #default>
-      이 호수에 종속된 계약 건 데이터가 있는 경우 해당 데이터를 모두 제거한 후
-      삭제가능 합니다. 해당 호수 유닛을 삭제 하시겠습니까?
+      이 호수에 등록된 계약 건 데이터가 있는 경우 해당 계약 데이터의 동호수
+      유니트 정보가 삭제됩니다. 해당 호수 유닛을 삭제 하시겠습니까?
     </template>
     <template #footer>
       <CButton color="danger" @click="delConfirm">삭제</CButton>
