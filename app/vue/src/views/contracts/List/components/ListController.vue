@@ -4,7 +4,6 @@ import { useProjectData } from '@/store/pinia/project_data'
 import { useContract, ContFilter } from '@/store/pinia/contract'
 import { numFormat, dateFormat } from '@/utils/baseMixins'
 import { bgLight } from '@/utils/cssMixins'
-import { maska as vMaska } from 'maska'
 import DatePicker from '@/components/DatePicker/index.vue'
 
 const props = defineProps({ status: { type: String, default: '2' } })

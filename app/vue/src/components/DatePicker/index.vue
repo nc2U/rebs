@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
 import { useStore } from 'vuex'
-import { maska as vMaska } from 'maska'
+import { vMaska } from "maska"
 import Datepicker from '@vuepic/vue-datepicker'
+import '@vuepic/vue-datepicker/dist/main.css';
 
 const store = useStore()
 const isDark = computed(() => store.state.theme === 'dark')
@@ -17,7 +18,8 @@ const textInputOptions = ref({
 
 <template>
   <Datepicker
-    v-maska="'####-##-##'"
+    v-maska
+    data-maska="'####-##-##'"
     name="date-picker"
     text-input
     auto-apply

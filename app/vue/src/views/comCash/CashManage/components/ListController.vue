@@ -2,7 +2,6 @@
 import { ref, reactive, computed, watch, nextTick } from 'vue'
 import { useComCash, DataFilter } from '@/store/pinia/comCash'
 import { numFormat, dateFormat } from '@/utils/baseMixins'
-import { maska as vMaska } from 'maska'
 import { bgLight } from '@/utils/cssMixins'
 import DatePicker from '@/components/DatePicker/index.vue'
 

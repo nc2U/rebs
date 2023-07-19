@@ -2,7 +2,7 @@
 import { computed, reactive, ref, watch, nextTick } from 'vue'
 import { useProCash } from '@/store/pinia/proCash'
 import { numFormat, dateFormat } from '@/utils/baseMixins'
-import { maska as vMaska } from 'maska'
+import { vMaska } from 'maska'
 import { bgLight } from '@/utils/cssMixins'
 import DatePicker from '@/components/DatePicker/index.vue'
 
