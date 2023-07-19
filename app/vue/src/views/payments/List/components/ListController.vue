@@ -1,16 +1,15 @@
 <script lang="ts" setup>
-import { computed, reactive, ref, nextTick, watch } from 'vue'
-import { usePayment } from '@/store/pinia/payment'
-import { useProCash } from '@/store/pinia/proCash'
-import { useContract } from '@/store/pinia/contract'
-import { useProjectData } from '@/store/pinia/project_data'
-import { dateFormat } from '@/utils/baseMixins'
-import { maska as vMaska } from 'maska'
-import { bgLight } from '@/utils/cssMixins'
+import {computed, reactive, ref, nextTick, watch} from 'vue'
+import {usePayment} from '@/store/pinia/payment'
+import {useProCash} from '@/store/pinia/proCash'
+import {useContract} from '@/store/pinia/contract'
+import {useProjectData} from '@/store/pinia/project_data'
+import {dateFormat} from '@/utils/baseMixins'
+import {bgLight} from '@/utils/cssMixins'
 import Multiselect from '@vueform/multiselect'
 import DatePicker from '@/components/DatePicker/index.vue'
 
-const props = defineProps({ byCont: { type: Boolean, default: false } })
+const props = defineProps({byCont: {type: Boolean, default: false}})
 const emit = defineEmits(['payment-filtering'])
 
 const from_date = ref('')
@@ -79,7 +78,7 @@ const listFiltering = (page = 1) => {
   nextTick(() => {
     form.search = form.search.trim()
     emit('payment-filtering', {
-      ...{ page, from_date: from_date.value, to_date: to_date.value },
+      ...{page, from_date: from_date.value, to_date: to_date.value},
       ...form,
     })
   })
@@ -111,7 +110,7 @@ const resetForm = () => {
   form.search = ''
   listFiltering(1)
 }
-defineExpose({ listFiltering })
+defineExpose({listFiltering})
 </script>
 
 <template>
@@ -121,48 +120,46 @@ defineExpose({ listFiltering })
         <CRow>
           <CCol lg="6" xl="2" class="mb-3">
             <DatePicker
-              v-model="from_date"
-              v-maska="'####-##-##'"
-              placeholder="납부일자 (From)"
-              :disabled="byCont"
-              @keydown.enter="listFiltering(1)"
+                v-model="from_date"
+                placeholder="납부일자 (From)"
+                :disabled="byCont"
+                @keydown.enter="listFiltering(1)"
             />
           </CCol>
 
           <CCol lg="6" xl="2" class="mb-3">
             <DatePicker
-              v-model="to_date"
-              v-maska="'####-##-##'"
-              placeholder="납부일자 (To)"
-              @keydown.enter="listFiltering(1)"
+                v-model="to_date"
+                placeholder="납부일자 (To)"
+                @keydown.enter="listFiltering(1)"
             />
           </CCol>
 
           <CCol lg="6" xl="2" class="mb-3">
             <Multiselect
-              v-model="form.order_group"
-              :options="getOrderGroups"
-              placeholder="차수"
-              :disabled="byCont"
-              @change="listFiltering(1)"
+                v-model="form.order_group"
+                :options="getOrderGroups"
+                placeholder="차수"
+                :disabled="byCont"
+                @change="listFiltering(1)"
             />
           </CCol>
 
           <CCol lg="6" xl="2" class="mb-3">
             <Multiselect
-              v-model="form.unit_type"
-              :options="getTypes"
-              placeholder="타입"
-              :disabled="byCont"
-              @change="listFiltering(1)"
+                v-model="form.unit_type"
+                :options="getTypes"
+                placeholder="타입"
+                :disabled="byCont"
+                @change="listFiltering(1)"
             />
           </CCol>
 
           <CCol lg="6" xl="2" class="mb-3">
             <CFormSelect
-              v-model="form.pay_order"
-              :disabled="byCont"
-              @change="listFiltering(1)"
+                v-model="form.pay_order"
+                :disabled="byCont"
+                @change="listFiltering(1)"
             >
               <option value="">납부회차 선택</option>
               <option v-for="po in payOrderList" :key="po.pk" :value="po.pk">
@@ -173,15 +170,15 @@ defineExpose({ listFiltering })
 
           <CCol lg="6" xl="2" class="mb-3">
             <CFormSelect
-              v-model="form.pay_account"
-              :disabled="byCont"
-              @change="listFiltering(1)"
+                v-model="form.pay_account"
+                :disabled="byCont"
+                @change="listFiltering(1)"
             >
               <option value="">납부계좌 선택</option>
               <option
-                v-for="ba in allProBankAccountList"
-                :key="ba.pk"
-                :value="ba.pk"
+                  v-for="ba in allProBankAccountList"
+                  :key="ba.pk"
+                  :value="ba.pk"
               >
                 {{ ba.alias_name }}
               </option>
@@ -193,33 +190,33 @@ defineExpose({ listFiltering })
         <CRow>
           <CCol md="6" lg="3" class="mb-3 pl-4 pt-2">
             <CFormSwitch
-              id="no_contract"
-              v-model="form.no_contract"
-              label="계약 미등록"
-              :disabled="byCont"
-              @change="noContractFn"
+                id="no_contract"
+                v-model="form.no_contract"
+                label="계약 미등록"
+                :disabled="byCont"
+                @change="noContractFn"
             />
           </CCol>
 
           <CCol md="6" lg="3" class="mb-3 pl-4 pt-2">
             <CFormSwitch
-              id="no_install"
-              v-model="form.no_install"
-              label="회차 미등록"
-              :disabled="byCont"
-              @change="noInstallFn"
+                id="no_install"
+                v-model="form.no_install"
+                label="회차 미등록"
+                :disabled="byCont"
+                @change="noInstallFn"
             />
           </CCol>
 
           <CCol lg="6" xl="6" class="mb-3">
             <CInputGroup class="flex-nowrap">
               <CFormInput
-                v-model="form.search"
-                :disabled="byCont"
-                placeholder="계약자, 입금자, 적요, 비고"
-                aria-label="Username"
-                aria-describedby="addon-wrapping"
-                @keydown.enter="listFiltering(1)"
+                  v-model="form.search"
+                  :disabled="byCont"
+                  placeholder="계약자, 입금자, 적요, 비고"
+                  aria-label="Username"
+                  aria-describedby="addon-wrapping"
+                  @keydown.enter="listFiltering(1)"
               />
               <CInputGroupText @click="listFiltering(1)">검색</CInputGroupText>
             </CInputGroup>

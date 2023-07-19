@@ -8,18 +8,18 @@ import {
   onMounted,
   onUpdated,
 } from 'vue'
-import { useAccount } from '@/store/pinia/account'
-import { useContract } from '@/store/pinia/contract'
-import { useProjectData } from '@/store/pinia/project_data'
-import { usePayment } from '@/store/pinia/payment'
-import { useProCash } from '@/store/pinia/proCash'
-import { PayOrder } from '@/store/types/payment'
-import { Payment } from '@/store/types/contract'
-import { isValidate } from '@/utils/helper'
-import { numFormat, dateFormat, diffDate } from '@/utils/baseMixins'
-import { write_contract } from '@/utils/pageAuth'
-import { maska as vMaska } from 'maska'
-import { AddressData, callAddress } from '@/components/DaumPostcode/address'
+import {useAccount} from '@/store/pinia/account'
+import {useContract} from '@/store/pinia/contract'
+import {useProjectData} from '@/store/pinia/project_data'
+import {usePayment} from '@/store/pinia/payment'
+import {useProCash} from '@/store/pinia/proCash'
+import {PayOrder} from '@/store/types/payment'
+import {Payment} from '@/store/types/contract'
+import {isValidate} from '@/utils/helper'
+import {maska as vMaska} from "maska"
+import {numFormat, dateFormat, diffDate} from '@/utils/baseMixins'
+import {write_contract} from '@/utils/pageAuth'
+import {AddressData, callAddress} from '@/components/DaumPostcode/address'
 import Multiselect from '@vueform/multiselect'
 import ContNavigation from './ContNavigation.vue'
 import ContController from './ContController.vue'
@@ -30,11 +30,11 @@ import AlertModal from '@/components/Modals/AlertModal.vue'
 import DatePicker from '@/components/DatePicker/index.vue'
 
 const props = defineProps({
-  project: { type: Number, default: null },
-  contract: { type: Object, default: null },
-  contractor: { type: Object, default: null },
-  unitSet: { type: Boolean, default: false },
-  isUnion: { type: Boolean, default: false },
+  project: {type: Number, default: null},
+  contract: {type: Object, default: null},
+  contractor: {type: Object, default: null},
+  unitSet: {type: Boolean, default: false},
+  isUnion: {type: Boolean, default: false},
 })
 
 const emit = defineEmits([
@@ -157,22 +157,22 @@ const payOrderList = computed(() => paymentStore.payOrderList)
 const contLabel = computed(() => (form.status !== '1' ? '계약' : '청약'))
 const isContract = computed(() => form.status === '2')
 const noStatus = computed(
-  () => (form.status === null || form.status === '') && !props.contract,
+    () => (form.status === null || form.status === '') && !props.contract,
 )
 const downPayOrder = computed(() =>
-  payOrderList.value.filter((po: PayOrder) => po.pay_time && po.pay_time <= 1),
+    payOrderList.value.filter((po: PayOrder) => po.pay_time && po.pay_time <= 1),
 )
 
 const downPayments = computed(() =>
-  props.contract && props.contract.payments.length > 0
-    ? props.contract.payments.filter(
-        (p: Payment) => p.installment_order.pay_time === 1,
-      )
-    : [],
+    props.contract && props.contract.payments.length > 0
+        ? props.contract.payments.filter(
+            (p: Payment) => p.installment_order.pay_time === 1,
+        )
+        : [],
 )
 
 const allowedPeriod = (paidDate: string) =>
-  useAccount().superAuth || diffDate(paidDate) <= 90
+    useAccount().superAuth || diffDate(paidDate) <= 90
 
 const payUpdate = (payment: Payment) => {
   if (allowedPeriod(payment.deal_date)) {
@@ -184,8 +184,8 @@ const payUpdate = (payment: Payment) => {
     form.installment_order = payment.installment_order.pk
   } else {
     alertModal.value.callModal(
-      null,
-      '거래일로부터 90일이 경과한 입력 데이터는 수정할 수 없습니다. 관리자에게 문의바랍니다.',
+        null,
+        '거래일로부터 90일이 경과한 입력 데이터는 수정할 수 없습니다. 관리자에게 문의바랍니다.',
     )
   }
 }
@@ -200,10 +200,10 @@ const payReset = () => {
 }
 
 const getOGSort = (pk: number): string =>
-  pk ? getOrderGroups.value.filter(o => o.value == pk)[0].sort : ''
+    pk ? getOrderGroups.value.filter(o => o.value == pk)[0].sort : ''
 
 const getKUCode = (pk: number) =>
-  getKeyUnits.value.filter(k => k.value === pk).map(k => k.label)[0]
+    getKeyUnits.value.filter(k => k.value === pk).map(k => k.label)[0]
 
 const setOGSort = () => {
   nextTick(() => {
@@ -217,8 +217,8 @@ const setKeyCode = () => {
     form.houseunit = null
     form.keyunit_code = form.keyunit ? getKUCode(Number(form.keyunit)) : ''
     form.serial_number = form.keyunit
-      ? `${form.keyunit_code}-${form.order_group}`
-      : ''
+        ? `${form.keyunit_code}-${form.order_group}`
+        : ''
   })
 }
 
@@ -231,9 +231,9 @@ const unitReset = () => {
 const typeSelect = () => {
   nextTick(() => {
     const payload =
-      !!props.contract && form.unit_type === props.contract.unit_type
-        ? { unit_type: form.unit_type, contract: props.contract.pk }
-        : { unit_type: form.unit_type, available: 'true' }
+        !!props.contract && form.unit_type === props.contract.unit_type
+            ? {unit_type: form.unit_type, contract: props.contract.pk}
+            : {unit_type: form.unit_type, available: 'true'}
 
     emit('type-select', payload)
     form.keyunit = null
@@ -263,7 +263,7 @@ const deleteContract = () => {
 }
 
 const addressCallback = (data: AddressData) => {
-  const { formNum, zipcode, address1, address3 } = callAddress(data)
+  const {formNum, zipcode, address1, address3} = callAddress(data)
   if (formNum === 2) {
     form.id_zipcode = zipcode
     form.id_address1 = address1
@@ -414,7 +414,7 @@ const formDataSetup = () => {
 
 const resumeForm = (contor: string) => emit('resume-form', contor)
 
-defineExpose({ formDataReset })
+defineExpose({formDataReset})
 
 onMounted(() => formDataSetup())
 onUpdated(() => formDataSetup())
@@ -422,43 +422,43 @@ onUpdated(() => formDataSetup())
 
 <template>
   <CForm
-    class="needs-validation"
-    novalidate
-    :validated="validated"
-    @submit.prevent="onSubmit"
+      class="needs-validation"
+      novalidate
+      :validated="validated"
+      @submit.prevent="onSubmit"
   >
     <CCardBody>
-      <ContNavigation :cont-on="!!form.pk" />
+      <ContNavigation :cont-on="!!form.pk"/>
       <ContController
-        :project="project"
-        @search-contractor="searchContractor"
+          :project="project"
+          @search-contractor="searchContractor"
       />
       <ContractorAlert
-        v-if="contractor"
-        :is-blank="!form.pk"
-        :contractor="contractor"
-        @resume-form="resumeForm"
+          v-if="contractor"
+          :is-blank="!form.pk"
+          :contractor="contractor"
+          @resume-form="resumeForm"
       />
-      <hr />
+      <hr/>
       <CRow class="mb-3">
         <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 구분</CFormLabel>
         <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
           <Multiselect
-            v-model="form.status"
-            :options="[
+              v-model="form.status"
+              :options="[
               { value: '1', label: '청약' },
               { value: '2', label: '계약' },
             ]"
-            required
-            placeholder="---------"
-            autocomplete="label"
-            :classes="{
+              required
+              placeholder="---------"
+              autocomplete="label"
+              :classes="{
               search: 'form-control multiselect-search',
             }"
-            :add-option-on="['enter' | 'tab']"
-            searchable
-            :disabled="!project"
-            @change="unitReset"
+              :add-option-on="['enter' | 'tab']"
+              searchable
+              :disabled="!project"
+              @change="unitReset"
           />
           <CFormFeedback invalid>구분 항목을 선택하세요.</CFormFeedback>
         </CCol>
@@ -468,16 +468,16 @@ onUpdated(() => formDataSetup())
         <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 차수</CFormLabel>
         <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
           <CFormSelect
-            v-model.number="form.order_group"
-            required
-            :disabled="noStatus"
-            @change="setOGSort"
+              v-model.number="form.order_group"
+              required
+              :disabled="noStatus"
+              @change="setOGSort"
           >
             <option value="">---------</option>
             <option
-              v-for="og in getOrderGroups"
-              :key="og.value"
-              :value="og.value"
+                v-for="og in getOrderGroups"
+                :key="og.value"
+                :value="og.value"
             >
               {{ og.label }}
             </option>
@@ -488,10 +488,10 @@ onUpdated(() => formDataSetup())
         <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 타입</CFormLabel>
         <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
           <CFormSelect
-            v-model.number="form.unit_type"
-            required
-            :disabled="form.order_group === null && !contract"
-            @change="typeSelect"
+              v-model.number="form.unit_type"
+              required
+              :disabled="form.order_group === null && !contract"
+              @change="typeSelect"
           >
             <option value="">---------</option>
             <option v-for="ut in getTypes" :key="ut.value" :value="ut.value">
@@ -506,10 +506,10 @@ onUpdated(() => formDataSetup())
         </CFormLabel>
         <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
           <CFormSelect
-            v-model.number="form.keyunit"
-            required
-            :disabled="form.unit_type === null && !contract"
-            @change="setKeyCode"
+              v-model.number="form.keyunit"
+              required
+              :disabled="form.unit_type === null && !contract"
+              @change="setKeyCode"
           >
             <option value="">---------</option>
             <option v-for="ku in getKeyUnits" :key="ku.value" :value="ku.value">
@@ -526,22 +526,22 @@ onUpdated(() => formDataSetup())
         </CFormLabel>
         <CCol v-if="unitSet" md="10" lg="2" class="mb-md-3 mb-lg-0">
           <Multiselect
-            v-model.number="form.houseunit"
-            :options="getHouseUnits"
-            placeholder="---------"
-            autocomplete="label"
-            :classes="{
+              v-model.number="form.houseunit"
+              :options="getHouseUnits"
+              placeholder="---------"
+              autocomplete="label"
+              :classes="{
               search: 'form-control multiselect-search',
             }"
-            :add-option-on="['enter' | 'tab']"
-            searchable
-            :disabled="form.keyunit === null && !contract"
+              :add-option-on="['enter' | 'tab']"
+              searchable
+              :disabled="form.keyunit === null && !contract"
           />
           <CFormFeedback invalid>동호수를 선택하세요.</CFormFeedback>
         </CCol>
       </CRow>
 
-      <hr />
+      <hr/>
 
       <CRow class="mb-3">
         <CFormLabel class="col-md-2 col-lg-1 col-form-label">
@@ -549,20 +549,18 @@ onUpdated(() => formDataSetup())
         </CFormLabel>
         <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
           <DatePicker
-            v-show="form.status === '1'"
-            v-model="form.reservation_date"
-            v-maska="'####-##-##'"
-            placeholder="청약일자"
-            :required="form.status === '1'"
-            :disabled="noStatus"
+              v-show="form.status === '1'"
+              v-model="form.reservation_date"
+              placeholder="청약일자"
+              :required="form.status === '1'"
+              :disabled="noStatus"
           />
           <DatePicker
-            v-show="form.status !== '1'"
-            v-model="form.contract_date"
-            v-maska="'####-##-##'"
-            placeholder="계약일자"
-            :required="isContract"
-            :disabled="noStatus"
+              v-show="form.status !== '1'"
+              v-model="form.contract_date"
+              placeholder="계약일자"
+              :required="isContract"
+              :disabled="noStatus"
           />
         </CCol>
 
@@ -571,11 +569,11 @@ onUpdated(() => formDataSetup())
         </CFormLabel>
         <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
           <CFormInput
-            v-model="form.name"
-            maxlength="20"
-            :placeholder="`${contLabel}자명을 입력하세요`"
-            required
-            :disabled="noStatus"
+              v-model="form.name"
+              maxlength="20"
+              :placeholder="`${contLabel}자명을 입력하세요`"
+              required
+              :disabled="noStatus"
           />
           <CFormFeedback invalid>
             {{ contLabel }}자명을 입력하세요.
@@ -587,12 +585,11 @@ onUpdated(() => formDataSetup())
         </CFormLabel>
         <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
           <DatePicker
-            v-model="form.birth_date"
-            v-maska="'####-##-##'"
-            maxlength="10"
-            placeholder="생년월일"
-            :required="isContract"
-            :disabled="noStatus"
+              v-model="form.birth_date"
+              maxlength="10"
+              placeholder="생년월일"
+              :required="isContract"
+              :disabled="noStatus"
           />
           <CFormFeedback invalid>생년월일 입력하세요.</CFormFeedback>
         </CCol>
@@ -600,26 +597,26 @@ onUpdated(() => formDataSetup())
         <CCol v-show="isContract" xs="5" lg="1" class="pt-2 p-0 text-center">
           <div class="form-check form-check-inline">
             <input
-              id="male"
-              v-model="form.gender"
-              class="form-check-input"
-              type="radio"
-              value="M"
-              name="gender"
-              :required="isContract"
-              :disabled="!isContract"
+                id="male"
+                v-model="form.gender"
+                class="form-check-input"
+                type="radio"
+                value="M"
+                name="gender"
+                :required="isContract"
+                :disabled="!isContract"
             />
             <label class="form-check-label" for="male">남</label>
           </div>
           <div class="form-check form-check-inline">
             <input
-              id="female"
-              v-model="form.gender"
-              class="form-check-input"
-              type="radio"
-              value="F"
-              name="gender"
-              :disabled="!isContract"
+                id="female"
+                v-model="form.gender"
+                class="form-check-input"
+                type="radio"
+                value="F"
+                name="gender"
+                :disabled="!isContract"
             />
             <label class="form-check-label" for="female">여</label>
           </div>
@@ -628,10 +625,10 @@ onUpdated(() => formDataSetup())
 
         <CCol v-show="isContract && isUnion" xs="6" lg="2" class="pt-2 p-0">
           <CFormSwitch
-            id="is_registed"
-            v-model="form.is_registed"
-            label="인가등록여부"
-            :disabled="!isContract"
+              id="is_registed"
+              v-model="form.is_registed"
+              label="인가등록여부"
+              :disabled="!isContract"
           />
         </CCol>
       </CRow>
@@ -642,13 +639,13 @@ onUpdated(() => formDataSetup())
         </CFormLabel>
         <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
           <input
-            v-model="form.cell_phone"
-            v-maska="['###-###-####', '###-####-####']"
-            class="form-control"
-            maxlength="13"
-            placeholder="휴대전화번호를 선택하세요"
-            required
-            :disabled="noStatus"
+              v-model="form.cell_phone"
+              v-maska="['###-###-####', '###-####-####']"
+              class="form-control"
+              maxlength="13"
+              placeholder="휴대전화번호를 선택하세요"
+              required
+              :disabled="noStatus"
           />
           <CFormFeedback invalid>휴대전화번호를 입력하세요.</CFormFeedback>
         </CCol>
@@ -658,12 +655,12 @@ onUpdated(() => formDataSetup())
         </CFormLabel>
         <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
           <input
-            v-model="form.home_phone"
-            v-maska="['###-###-####', '###-####-####']"
-            class="form-control"
-            maxlength="13"
-            placeholder="집전화번호를 선택하세요"
-            :disabled="noStatus"
+              v-model="form.home_phone"
+              v-maska="['###-###-####', '###-####-####']"
+              class="form-control"
+              maxlength="13"
+              placeholder="집전화번호를 선택하세요"
+              :disabled="noStatus"
           />
         </CCol>
 
@@ -672,12 +669,12 @@ onUpdated(() => formDataSetup())
         </CFormLabel>
         <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
           <input
-            v-model="form.other_phone"
-            v-maska="['###-###-####', '###-####-####']"
-            class="form-control"
-            maxlength="13"
-            placeholder="기타 연락처를 입력하세요."
-            :disabled="noStatus"
+              v-model="form.other_phone"
+              v-maska="['###-###-####', '###-####-####']"
+              class="form-control"
+              maxlength="13"
+              placeholder="기타 연락처를 입력하세요."
+              :disabled="noStatus"
           />
         </CCol>
 
@@ -686,27 +683,27 @@ onUpdated(() => formDataSetup())
         </CFormLabel>
         <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
           <CFormInput
-            v-model="form.email"
-            type="email"
-            maxlength="30"
-            placeholder="이메일 주소를 입력하세요."
-            :disabled="noStatus"
+              v-model="form.email"
+              type="email"
+              maxlength="30"
+              placeholder="이메일 주소를 입력하세요."
+              :disabled="noStatus"
           />
         </CCol>
       </CRow>
 
       <CRow class="mb-0">
         <CAlert
-          :color="$store.state.theme === 'dark' ? 'default' : 'secondary'"
-          class="pb-0"
+            :color="$store.state.theme === 'dark' ? 'default' : 'secondary'"
+            class="pb-0"
         >
           <CRow v-if="downPayments.length" class="mb-3">
             <CCol>
               <CRow
-                v-for="(payment, i) in downPayments"
-                :key="payment.pk"
-                class="text-center mb-1"
-                :class="
+                  v-for="(payment, i) in downPayments"
+                  :key="payment.pk"
+                  class="text-center mb-1"
+                  :class="
                   form.payment === payment.pk
                     ? 'text-success text-decoration-underline'
                     : ''
@@ -715,8 +712,8 @@ onUpdated(() => formDataSetup())
                 <CCol>
                   계약금
                   <router-link
-                    v-c-tooltip="'전체 건별 수납 관리'"
-                    :to="{
+                      v-c-tooltip="'전체 건별 수납 관리'"
+                      :to="{
                       name: '건별 수납 관리',
                       query: { contract: contract.pk },
                     }"
@@ -728,8 +725,8 @@ onUpdated(() => formDataSetup())
                 <CCol class="text-right">{{ payment.deal_date }}</CCol>
                 <CCol class="text-right">
                   <router-link
-                    v-c-tooltip="'전체 건별 수납 관리'"
-                    :to="{
+                      v-c-tooltip="'전체 건별 수납 관리'"
+                      :to="{
                       name: '건별 수납 관리',
                       query: { contract: contract.pk },
                     }"
@@ -740,8 +737,8 @@ onUpdated(() => formDataSetup())
                 <CCol>
                   {{
                     allProBankAccountList
-                      .filter(b => b.pk === payment.bank_account)
-                      .map(b => b.alias_name)[0]
+                        .filter(b => b.pk === payment.bank_account)
+                        .map(b => b.alias_name)[0]
                   }}
                 </CCol>
                 <CCol>{{ payment.trader }}</CCol>
@@ -750,10 +747,10 @@ onUpdated(() => formDataSetup())
                 </CCol>
                 <CCol>
                   <CButton
-                    type="button"
-                    color="success"
-                    size="sm"
-                    @click="payUpdate(payment)"
+                      type="button"
+                      color="success"
+                      size="sm"
+                      @click="payUpdate(payment)"
                   >
                     수정
                   </CButton>
@@ -767,11 +764,10 @@ onUpdated(() => formDataSetup())
             </CFormLabel>
             <CCol md="10" lg="2" class="mb-3 mb-lg-0">
               <DatePicker
-                v-model="form.deal_date"
-                v-maska="'####-##-##'"
-                placeholder="입금일자"
-                maxlength="10"
-                :disabled="noStatus"
+                  v-model="form.deal_date"
+                  placeholder="입금일자"
+                  maxlength="10"
+                  :disabled="noStatus"
               />
               <!--                :required="!contract"-->
             </CCol>
@@ -780,27 +776,27 @@ onUpdated(() => formDataSetup())
 
             <CCol md="5" lg="2" class="mb-3 mb-lg-0">
               <CFormInput
-                v-model.number="form.income"
-                type="number"
-                min="0"
-                placeholder="입금액"
-                :required="form.deal_date"
-                :disabled="noStatus"
+                  v-model.number="form.income"
+                  type="number"
+                  min="0"
+                  placeholder="입금액"
+                  :required="form.deal_date"
+                  :disabled="noStatus"
               />
               <CFormFeedback invalid>입금액을 입력하세요.</CFormFeedback>
             </CCol>
 
             <CCol md="5" lg="2" class="mb-3 mb-lg-0">
               <CFormSelect
-                v-model="form.bank_account"
-                :required="form.deal_date"
-                :disabled="noStatus"
+                  v-model="form.bank_account"
+                  :required="form.deal_date"
+                  :disabled="noStatus"
               >
                 <option value="">납부계좌 선택</option>
                 <option
-                  v-for="pb in allProBankAccountList"
-                  :key="pb.pk"
-                  :value="pb.pk"
+                    v-for="pb in allProBankAccountList"
+                    :key="pb.pk"
+                    :value="pb.pk"
                 >
                   {{ pb.alias_name }}
                 </option>
@@ -812,19 +808,19 @@ onUpdated(() => formDataSetup())
 
             <CCol md="5" lg="2" class="mb-3 mb-lg-0">
               <CFormInput
-                v-model="form.trader"
-                maxlength="20"
-                placeholder="입금자명을 입력하세요"
-                :required="form.deal_date"
-                :disabled="noStatus"
+                  v-model="form.trader"
+                  maxlength="20"
+                  placeholder="입금자명을 입력하세요"
+                  :required="form.deal_date"
+                  :disabled="noStatus"
               />
               <CFormFeedback invalid>입금자명을 입력하세요.</CFormFeedback>
             </CCol>
             <CCol md="5" lg="2" class="mb-md-3 mb-lg-0">
               <CFormSelect
-                v-model="form.installment_order"
-                :required="form.deal_date"
-                :disabled="noStatus"
+                  v-model="form.installment_order"
+                  :required="form.deal_date"
+                  :disabled="noStatus"
               >
                 <option value="">납부회차 선택</option>
                 <option v-for="po in downPayOrder" :key="po.pk" :value="po.pk">
@@ -853,13 +849,13 @@ onUpdated(() => formDataSetup())
               우편번호
             </CInputGroupText>
             <CFormInput
-              v-model="form.id_zipcode"
-              v-maska="'#####'"
-              maxlength="5"
-              placeholder="우편번호"
-              :required="isContract"
-              :disabled="!isContract"
-              @focus="$refs.postCode.initiate(2)"
+                v-model="form.id_zipcode"
+                v-maska="'#####'"
+                maxlength="5"
+                placeholder="우편번호"
+                :required="isContract"
+                :disabled="!isContract"
+                @focus="$refs.postCode.initiate(2)"
             />
             <CFormFeedback invalid>우편번호를 입력하세요.</CFormFeedback>
           </CInputGroup>
@@ -867,12 +863,12 @@ onUpdated(() => formDataSetup())
 
         <CCol md="7" lg="4" class="mb-3 mb-lg-0">
           <CFormInput
-            v-model="form.id_address1"
-            maxlength="35"
-            placeholder="주민등록 주소를 입력하세요"
-            :required="isContract"
-            :disabled="!isContract"
-            @focus="$refs.postCode.initiate(2)"
+              v-model="form.id_address1"
+              maxlength="35"
+              placeholder="주민등록 주소를 입력하세요"
+              :required="isContract"
+              :disabled="!isContract"
+              @focus="$refs.postCode.initiate(2)"
           />
           <CFormFeedback invalid>주민등록 주소를 입력하세요.</CFormFeedback>
         </CCol>
@@ -881,20 +877,20 @@ onUpdated(() => formDataSetup())
 
         <CCol md="6" lg="2" class="mb-3 mb-lg-0">
           <CFormInput
-            ref="address21"
-            v-model="form.id_address2"
-            maxlength="20"
-            placeholder="상세주소를 입력하세요"
-            :disabled="!isContract"
+              ref="address21"
+              v-model="form.id_address2"
+              maxlength="20"
+              placeholder="상세주소를 입력하세요"
+              :disabled="!isContract"
           />
           <CFormFeedback invalid>상세주소를 입력하세요.</CFormFeedback>
         </CCol>
         <CCol md="4" lg="2">
           <CFormInput
-            v-model="form.id_address3"
-            maxlength="20"
-            placeholder="참고항목을 입력하세요"
-            :disabled="!isContract"
+              v-model="form.id_address3"
+              maxlength="20"
+              placeholder="참고항목을 입력하세요"
+              :disabled="!isContract"
           />
         </CCol>
       </CRow>
@@ -909,13 +905,13 @@ onUpdated(() => formDataSetup())
               우편번호
             </CInputGroupText>
             <CFormInput
-              v-model="form.dm_zipcode"
-              v-maska="'#####'"
-              maxlength="5"
-              placeholder="우편번호"
-              :required="isContract"
-              :disabled="!isContract"
-              @focus="$refs.postCode.initiate(3)"
+                v-model="form.dm_zipcode"
+                v-maska="'#####'"
+                maxlength="5"
+                placeholder="우편번호"
+                :required="isContract"
+                :disabled="!isContract"
+                @focus="$refs.postCode.initiate(3)"
             />
             <CFormFeedback invalid>우편번호를 입력하세요.</CFormFeedback>
           </CInputGroup>
@@ -923,12 +919,12 @@ onUpdated(() => formDataSetup())
 
         <CCol md="7" lg="4" class="mb-3 mb-lg-0">
           <CFormInput
-            v-model="form.dm_address1"
-            maxlength="50"
-            placeholder="우편물 수령 주소를 입력하세요"
-            :required="isContract"
-            :disabled="!isContract"
-            @focus="$refs.postCode.initiate(3)"
+              v-model="form.dm_address1"
+              maxlength="50"
+              placeholder="우편물 수령 주소를 입력하세요"
+              :required="isContract"
+              :disabled="!isContract"
+              @focus="$refs.postCode.initiate(3)"
           />
           <CFormFeedback invalid>
             우편물 수령 주소를 입력하세요.
@@ -939,20 +935,20 @@ onUpdated(() => formDataSetup())
 
         <CCol md="6" lg="2" class="mb-3 mb-lg-0">
           <CFormInput
-            ref="address22"
-            v-model="form.dm_address2"
-            maxlength="30"
-            placeholder="상세주소를 입력하세요"
-            :disabled="!isContract"
+              ref="address22"
+              v-model="form.dm_address2"
+              maxlength="30"
+              placeholder="상세주소를 입력하세요"
+              :disabled="!isContract"
           />
           <CFormFeedback invalid>상세주소를 입력하세요.</CFormFeedback>
         </CCol>
         <CCol md="4" lg="2">
           <CFormInput
-            v-model="form.dm_address3"
-            maxlength="30"
-            placeholder="참고항목을 입력하세요"
-            :disabled="!isContract"
+              v-model="form.dm_address3"
+              maxlength="30"
+              placeholder="참고항목을 입력하세요"
+              :disabled="!isContract"
           />
         </CCol>
 
@@ -960,13 +956,13 @@ onUpdated(() => formDataSetup())
 
         <CCol md="10" lg="1">
           <v-checkbox-btn
-            id="to-same"
-            v-model="sameAddr"
-            label="상동"
-            color="indigo-darken-3"
-            hide-details
-            :disabled="!isContract || !form.id_zipcode"
-            @click="toSame"
+              id="to-same"
+              v-model="sameAddr"
+              label="상동"
+              color="indigo-darken-3"
+              hide-details
+              :disabled="!isContract || !form.id_zipcode"
+              @click="toSame"
           />
         </CCol>
       </CRow>
@@ -975,9 +971,9 @@ onUpdated(() => formDataSetup())
         <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 비고</CFormLabel>
         <CCol md="10" lg="11" class="mb-md-3 mb-lg-0">
           <CFormTextarea
-            v-model="form.note"
-            placeholder="기타 특이사항"
-            :disabled="noStatus"
+              v-model="form.note"
+              placeholder="기타 특이사항"
+              :disabled="noStatus"
           />
         </CCol>
       </CRow>
@@ -988,25 +984,25 @@ onUpdated(() => formDataSetup())
         취소
       </CButton>
       <CButton
-        v-if="contract"
-        type="button"
-        color="danger"
-        @click="deleteContract"
+          v-if="contract"
+          type="button"
+          color="danger"
+          @click="deleteContract"
       >
         삭제
       </CButton>
       <CButton
-        type="submit"
-        :color="contract ? 'success' : 'primary'"
-        :disabled="!form.status || formsCheck"
+          type="submit"
+          :color="contract ? 'success' : 'primary'"
+          :disabled="!form.status || formsCheck"
       >
-        <CIcon name="cil-check-circle" />
+        <CIcon name="cil-check-circle"/>
         저장
       </CButton>
     </CCardFooter>
   </CForm>
 
-  <DaumPostcode ref="postCode" @addressCallback="addressCallback" />
+  <DaumPostcode ref="postCode" @addressCallback="addressCallback"/>
 
   <ConfirmModal ref="delModal">
     <template #header>프로젝트정보 삭제</template>
@@ -1029,5 +1025,5 @@ onUpdated(() => formDataSetup())
     </template>
   </ConfirmModal>
 
-  <AlertModal ref="alertModal" />
+  <AlertModal ref="alertModal"/>
 </template>

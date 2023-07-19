@@ -1,13 +1,13 @@
 <script lang="ts" setup="">
-import { ref, computed, onBeforeMount, watch } from 'vue'
-import { useStore } from 'vuex'
-import { useCompany } from '@/store/pinia/company'
-import { useAccount } from '@/store/pinia/account'
-import { Staff } from '@/store/types/company'
-import { isValidate } from '@/utils/helper'
-import { maska as vMaska } from 'maska'
-import { dateFormat } from '@/utils/baseMixins'
-import { write_human_resource } from '@/utils/pageAuth'
+import {ref, computed, onBeforeMount, watch} from 'vue'
+import {useStore} from 'vuex'
+import {useCompany} from '@/store/pinia/company'
+import {useAccount} from '@/store/pinia/account'
+import {Staff} from '@/store/types/company'
+import {isValidate} from '@/utils/helper'
+import {maska as vMaska} from "maska"
+import {dateFormat} from '@/utils/baseMixins'
+import {write_human_resource} from '@/utils/pageAuth'
 import Multiselect from '@vueform/multiselect'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
@@ -78,7 +78,7 @@ const formsCheck = computed(() => {
 const store = useStore()
 const isDark = computed(() => store.state.theme === 'dark')
 const bgLight = computed(() =>
-  !isDark.value ? 'bg-light' : 'bg-grey-darken-2',
+    !isDark.value ? 'bg-light' : 'bg-grey-darken-2',
 )
 const comStore = useCompany()
 const getSlugDeparts = computed(() => comStore.getSlugDeparts)
@@ -90,22 +90,22 @@ const accStore = useAccount()
 const getUsers = computed(() => accStore.getUsers)
 
 const sorts = [
-  { value: '1', label: '임원' },
-  { value: '2', label: '직원' },
+  {value: '1', label: '임원'},
+  {value: '2', label: '직원'},
 ]
 
 const statuses = [
-  { value: '1', label: '근무 중' },
-  { value: '2', label: '휴직 중' },
-  { value: '3', label: '퇴직신청' },
-  { value: '4', label: '퇴사처리' },
+  {value: '1', label: '근무 중'},
+  {value: '2', label: '휴직 중'},
+  {value: '3', label: '퇴직신청'},
+  {value: '4', label: '퇴사처리'},
 ]
 
 const onSubmit = (event: Event) => {
   if (isValidate(event)) {
     validated.value = true
   } else {
-    if (write_human_resource.value) multiSubmit({ ...form.value })
+    if (write_human_resource.value) multiSubmit({...form.value})
     else alertModal.value.callModal()
   }
 }
@@ -149,20 +149,20 @@ const formDataSetup = () => {
 onBeforeMount(() => formDataSetup())
 
 watch(
-  () => props.company,
-  newVal => {
-    if (!!newVal) form.value.company = newVal
-    else form.value.company = undefined
-  },
+    () => props.company,
+    newVal => {
+      if (!!newVal) form.value.company = newVal
+      else form.value.company = undefined
+    },
 )
 </script>
 
 <template>
   <CForm
-    class="needs-validation"
-    novalidate
-    :validated="validated"
-    @submit.prevent="onSubmit"
+      class="needs-validation"
+      novalidate
+      :validated="validated"
+      @submit.prevent="onSubmit"
   >
     <CModalBody class="p-4">
       <div>
@@ -174,13 +174,13 @@ watch(
               </CFormLabel>
               <CCol sm="8">
                 <Multiselect
-                  v-model="form.sort"
-                  :options="sorts"
-                  autocomplete="label"
-                  :classes="{ search: 'form-control multiselect-search' }"
-                  :add-option-on="['enter' | 'tab']"
-                  searchable
-                  placeholder="구분"
+                    v-model="form.sort"
+                    :options="sorts"
+                    autocomplete="label"
+                    :classes="{ search: 'form-control multiselect-search' }"
+                    :add-option-on="['enter' | 'tab']"
+                    searchable
+                    placeholder="구분"
                 />
               </CCol>
             </CRow>
@@ -193,10 +193,10 @@ watch(
               </CFormLabel>
               <CCol sm="8">
                 <DatePicker
-                  v-model="form.date_join"
-                  maxlength="10"
-                  placeholder="입사일"
-                  required
+                    v-model="form.date_join"
+                    maxlength="10"
+                    placeholder="입사일"
+                    required
                 />
               </CCol>
             </CRow>
@@ -209,7 +209,7 @@ watch(
                 성명
               </CFormLabel>
               <CCol sm="8">
-                <CFormInput v-model="form.name" required placeholder="성명" />
+                <CFormInput v-model="form.name" required placeholder="성명"/>
               </CCol>
             </CRow>
           </CCol>
@@ -221,12 +221,12 @@ watch(
               </CFormLabel>
               <CCol sm="8">
                 <input
-                  v-model="form.id_number"
-                  v-maska="'######-#######'"
-                  class="form-control"
-                  required
-                  maxlength="14"
-                  placeholder="주민등록번호"
+                    v-model="form.id_number"
+                    v-maska="'######-#######'"
+                    class="form-control"
+                    required
+                    maxlength="14"
+                    placeholder="주민등록번호"
                 />
               </CCol>
             </CRow>
@@ -241,12 +241,12 @@ watch(
               </CFormLabel>
               <CCol sm="8">
                 <input
-                  v-model="form.personal_phone"
-                  v-maska="['###-###-####', '###-####-####']"
-                  class="form-control"
-                  maxlength="13"
-                  required
-                  placeholder="휴대전화"
+                    v-model="form.personal_phone"
+                    v-maska="['###-###-####', '###-####-####']"
+                    class="form-control"
+                    maxlength="13"
+                    required
+                    placeholder="휴대전화"
                 />
               </CCol>
             </CRow>
@@ -259,16 +259,16 @@ watch(
               </CFormLabel>
               <CCol sm="8">
                 <CFormInput
-                  v-model="form.email"
-                  type="email"
-                  placeholder="이메일"
+                    v-model="form.email"
+                    type="email"
+                    placeholder="이메일"
                 />
               </CCol>
             </CRow>
           </CCol>
         </CRow>
 
-        <hr />
+        <hr/>
 
         <CRow class="mb-3">
           <CCol sm="6">
@@ -278,13 +278,13 @@ watch(
               </CFormLabel>
               <CCol sm="8">
                 <Multiselect
-                  v-model="form.department"
-                  :options="getSlugDeparts"
-                  autocomplete="label"
-                  :classes="{ search: 'form-control multiselect-search' }"
-                  :add-option-on="['enter' | 'tab']"
-                  searchable
-                  placeholder="부서"
+                    v-model="form.department"
+                    :options="getSlugDeparts"
+                    autocomplete="label"
+                    :classes="{ search: 'form-control multiselect-search' }"
+                    :add-option-on="['enter' | 'tab']"
+                    searchable
+                    placeholder="부서"
                 />
               </CCol>
             </CRow>
@@ -297,13 +297,13 @@ watch(
               </CFormLabel>
               <CCol sm="8">
                 <Multiselect
-                  v-model="form.grade"
-                  :options="getGrades"
-                  autocomplete="label"
-                  :classes="{ search: 'form-control multiselect-search' }"
-                  :add-option-on="['enter' | 'tab']"
-                  searchable
-                  placeholder="직급"
+                    v-model="form.grade"
+                    :options="getGrades"
+                    autocomplete="label"
+                    :classes="{ search: 'form-control multiselect-search' }"
+                    :add-option-on="['enter' | 'tab']"
+                    searchable
+                    placeholder="직급"
                 />
               </CCol>
             </CRow>
@@ -318,13 +318,13 @@ watch(
               </CFormLabel>
               <CCol sm="8">
                 <Multiselect
-                  v-model="form.position"
-                  :options="getPositions"
-                  autocomplete="label"
-                  :classes="{ search: 'form-control multiselect-search' }"
-                  :add-option-on="['enter' | 'tab']"
-                  searchable
-                  placeholder="직위"
+                    v-model="form.position"
+                    :options="getPositions"
+                    autocomplete="label"
+                    :classes="{ search: 'form-control multiselect-search' }"
+                    :add-option-on="['enter' | 'tab']"
+                    searchable
+                    placeholder="직위"
                 />
               </CCol>
             </CRow>
@@ -337,13 +337,13 @@ watch(
               </CFormLabel>
               <CCol sm="8">
                 <Multiselect
-                  v-model="form.duty"
-                  :options="getDutys"
-                  autocomplete="label"
-                  :classes="{ search: 'form-control multiselect-search' }"
-                  :add-option-on="['enter' | 'tab']"
-                  searchable
-                  placeholder="직책"
+                    v-model="form.duty"
+                    :options="getDutys"
+                    autocomplete="label"
+                    :classes="{ search: 'form-control multiselect-search' }"
+                    :add-option-on="['enter' | 'tab']"
+                    searchable
+                    placeholder="직책"
                 />
               </CCol>
             </CRow>
@@ -358,13 +358,13 @@ watch(
               </CFormLabel>
               <CCol sm="8">
                 <Multiselect
-                  v-model="form.status"
-                  :options="statuses"
-                  autocomplete="label"
-                  :classes="{ search: 'form-control multiselect-search' }"
-                  :add-option-on="['enter' | 'tab']"
-                  searchable
-                  placeholder="상태"
+                    v-model="form.status"
+                    :options="statuses"
+                    autocomplete="label"
+                    :classes="{ search: 'form-control multiselect-search' }"
+                    :add-option-on="['enter' | 'tab']"
+                    searchable
+                    placeholder="상태"
                 />
               </CCol>
             </CRow>
@@ -377,16 +377,16 @@ watch(
               </CFormLabel>
               <CCol sm="8">
                 <DatePicker
-                  v-model="form.date_leave"
-                  maxlength="10"
-                  placeholder="퇴사일"
+                    v-model="form.date_leave"
+                    maxlength="10"
+                    placeholder="퇴사일"
                 />
               </CCol>
             </CRow>
           </CCol>
         </CRow>
 
-        <hr />
+        <hr/>
 
         <CRow class="mt-3">
           <CCol sm="6"></CCol>
@@ -398,13 +398,13 @@ watch(
               </CFormLabel>
               <CCol sm="8">
                 <Multiselect
-                  v-model.number="form.user"
-                  :options="getUsers"
-                  autocomplete="label"
-                  :classes="{ search: 'form-control multiselect-search' }"
-                  :add-option-on="['enter' | 'tab']"
-                  searchable
-                  placeholder="유저 정보"
+                    v-model.number="form.user"
+                    :options="getUsers"
+                    autocomplete="label"
+                    :classes="{ search: 'form-control multiselect-search' }"
+                    :add-option-on="['enter' | 'tab']"
+                    searchable
+                    placeholder="유저 정보"
                 />
               </CCol>
             </CRow>
@@ -419,17 +419,17 @@ watch(
       </CButton>
       <slot name="footer">
         <CButton
-          type="submit"
-          :color="staff ? 'success' : 'primary'"
-          :disabled="formsCheck"
+            type="submit"
+            :color="staff ? 'success' : 'primary'"
+            :disabled="formsCheck"
         >
           저장
         </CButton>
         <CButton
-          v-if="staff"
-          type="button"
-          color="danger"
-          @click="deleteConfirm"
+            v-if="staff"
+            type="button"
+            color="danger"
+            @click="deleteConfirm"
         >
           삭제
         </CButton>
@@ -447,5 +447,5 @@ watch(
     </template>
   </ConfirmModal>
 
-  <AlertModal ref="alertModal" />
+  <AlertModal ref="alertModal"/>
 </template>

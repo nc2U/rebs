@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { ref, computed } from 'vue'
-import { useStore } from 'vuex'
-import { maska as vMaska } from 'maska'
+import {ref, computed} from 'vue'
+import {useStore} from 'vuex'
+import {maska as vMaska} from "maska"
 import Datepicker from '@vuepic/vue-datepicker'
 
 const store = useStore()
@@ -17,17 +17,17 @@ const textInputOptions = ref({
 
 <template>
   <Datepicker
-    v-maska="'####-##-##'"
-    name="date-picker"
-    text-input
-    auto-apply
-    format="yyyy-MM-dd"
-    position="left"
-    :text-input-options="textInputOptions"
-    input-class-name="form-control"
-    :enable-time-picker="false"
-    teleport="#app"
-    :dark="isDark"
-    locale="ko"
+      name="date-picker"
+      v-maska="'####-##-##'"
+      text-input
+      auto-apply
+      format="yyyy-MM-dd"
+      position="left"
+      :text-input-options="textInputOptions"
+      input-class-name="form-control"
+      :enable-time-picker="false"
+      teleport="#app"
+      :dark="isDark"
+      locale="ko"
   />
 </template>
