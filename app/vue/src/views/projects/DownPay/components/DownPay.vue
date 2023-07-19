@@ -109,7 +109,7 @@ onBeforeMount(() => dataSetup())
   <ConfirmModal ref="confirmModal">
     <template #header> 계약 조건 삭제</template>
     <template #default>
-      삭제 후 이 데이터를 복구할 수 없습니다. 해당 계약 조건 정보를 삭제
+      해당 데이터를 삭제하면 이후 복구할 수 없습니다. 이 계약 조건 정보를 삭제
       하시겠습니까?
     </template>
     <template #footer>
