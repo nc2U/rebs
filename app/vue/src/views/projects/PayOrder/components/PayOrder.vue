@@ -176,10 +176,11 @@ onBeforeMount(() => dataSetup())
   </CTableRow>
 
   <ConfirmModal ref="confirmModal">
-    <template #header> 층별 타입 삭제</template>
+    <template #header> 납부 회차 삭제</template>
     <template #default>
-      이 타입에 종속된 분양가 데이터가 있는 경우 해당 데이터를 모두 제거한 후
-      삭제가능 합니다. 해당 층별 타입을 삭제 하시겠습니까?
+      프로젝트 입출금 데이터에 이 납부 회차 정보가 등록되어 있는 경우 해당
+      데이터에서 납부 회차 정보가 삭제됩니다. 이 납부 회차 정보를 삭제
+      하시겠습니까?
     </template>
     <template #footer>
       <CButton color="danger" @click="modalAction">삭제</CButton>

@@ -107,9 +107,8 @@ class ProjectCashBook(models.Model):
     is_imprest = models.BooleanField('운영비 항목 여부', default=False, help_text='전도금 대체 후 해당 전도금(운영비) 항목을 상세 기록하는 경우 이 항목')
     contract = models.ForeignKey('contract.Contract', on_delete=models.SET_NULL, null=True, blank=True,
                                  related_name='payments', verbose_name='계약일련번호')  # 계약일련번호  (프로젝트 귀속)
-    installment_order = models.ForeignKey('payment.InstallmentPaymentOrder', on_delete=models.CASCADE, null=True,
-                                          blank=True,
-                                          verbose_name='납부회차')  # 분할납부차수  (프로젝트 귀속)
+    installment_order = models.ForeignKey('payment.InstallmentPaymentOrder', on_delete=models.SET_NULL,
+                                          null=True, blank=True, verbose_name='납부회차')  # 분할납부차수  (프로젝트 귀속)
     refund_contractor = models.ForeignKey('contract.Contractor', on_delete=models.PROTECT, null=True,
                                           blank=True, verbose_name='환불 계약자',
                                           help_text='이 건 거래가 환불금 출금인 경우 이 건을 납부한 계약자를 선택')  # 환불 종결 여부
