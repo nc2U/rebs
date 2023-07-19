@@ -112,12 +112,12 @@ const projects = {
     },
     {
       path: 'settings/down-payment',
-      name: '계약 조건 등록',
+      name: '계약 금액 등록',
       component: () =>
         pageViewAuth.value
           ? import('@/views/projects/DownPay/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '계약 조건 등록', auth: true },
+      meta: { title: '계약 금액 등록', auth: true },
     },
     {
       path: 'site/index',

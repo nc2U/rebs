@@ -270,7 +270,7 @@ const project = {
         },
         {
           component: 'CNavItem',
-          name: '계약 조건 등록',
+          name: '계약 금액 등록',
           to: '/project/settings/down-payment',
         },
       ],
