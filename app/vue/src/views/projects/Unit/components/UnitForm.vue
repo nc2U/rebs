@@ -1,12 +1,12 @@
 <script lang="ts" setup="">
-import { computed, onMounted, ref } from 'vue'
-import { useAccount } from '@/store/pinia/account'
-import { useProjectData } from '@/store/pinia/project_data'
-import { write_project } from '@/utils/pageAuth'
+import {computed, onMounted, ref} from 'vue'
+import {useAccount} from '@/store/pinia/account'
+import {useProjectData} from '@/store/pinia/project_data'
+import {write_project} from '@/utils/pageAuth'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-const props = defineProps({ unit: { type: Object, required: true } })
+const props = defineProps({unit: {type: Object, required: true}})
 const emit = defineEmits(['on-update', 'on-delete'])
 
 const alertModal = ref()
@@ -43,7 +43,7 @@ const buildingList = computed(() => proDataStore.buildingList)
 const onUpdateUnit = () => {
   if (write_project) {
     const pk = props.unit.pk
-    emit('on-update', { ...{ pk }, ...form.value })
+    emit('on-update', {...{pk}, ...form.value})
   } else alertModal.value.callModal()
 }
 
@@ -53,7 +53,7 @@ const onDeleteUnit = () => {
 }
 
 const delConfirm = () => {
-  emit('on-delete', props.unit.pk)
+  emit('on-delete', {pk: props.unit.pk, type: props.unit.unit_type.pk})
   confirmModal.value.close()
 }
 
@@ -99,50 +99,50 @@ onMounted(() => dataSetup())
     </CTableDataCell>
     <CTableDataCell>
       <CFormInput
-        v-model="form.name"
-        maxlength="5"
-        placeholder="호수"
-        reqired
-        @keydown.enter="onUpdateUnit"
+          v-model="form.name"
+          maxlength="5"
+          placeholder="호수"
+          reqired
+          @keydown.enter="onUpdateUnit"
       />
     </CTableDataCell>
     <CTableDataCell>
       <CFormInput
-        v-model.number="form.bldg_line"
-        type="number"
-        num="0"
-        placeholder="라인"
-        reqired
-        @keydown.enter="onUpdateUnit"
+          v-model.number="form.bldg_line"
+          type="number"
+          num="0"
+          placeholder="라인"
+          reqired
+          @keydown.enter="onUpdateUnit"
       />
     </CTableDataCell>
     <CTableDataCell>
       <CFormInput
-        v-model.number="form.floor_no"
-        type="number"
-        num="0"
-        placeholder="층수"
-        reqired
-        @keydown.enter="onUpdateUnit"
+          v-model.number="form.floor_no"
+          type="number"
+          num="0"
+          placeholder="층수"
+          reqired
+          @keydown.enter="onUpdateUnit"
       />
     </CTableDataCell>
     <CTableDataCell>
-      <CFormCheck v-model="form.is_hold" />
+      <CFormCheck v-model="form.is_hold"/>
     </CTableDataCell>
     <CTableDataCell>
       <CFormInput
-        v-model="form.hold_reason"
-        maxlength="100"
-        placeholder="홀딩 사유"
-        @keydown.enter="onUpdateUnit"
+          v-model="form.hold_reason"
+          maxlength="100"
+          placeholder="홀딩 사유"
+          @keydown.enter="onUpdateUnit"
       />
     </CTableDataCell>
     <CTableDataCell>
       <CButton
-        color="success"
-        size="sm"
-        :disabled="formCheck"
-        @click="onUpdateUnit"
+          color="success"
+          size="sm"
+          :disabled="formCheck"
+          @click="onUpdateUnit"
       >
         수정
       </CButton>
@@ -161,5 +161,5 @@ onMounted(() => dataSetup())
     </template>
   </ConfirmModal>
 
-  <AlertModal ref="alertModal" />
+  <AlertModal ref="alertModal"/>
 </template>
