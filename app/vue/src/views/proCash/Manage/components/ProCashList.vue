@@ -81,7 +81,7 @@ const onBankUpdate = (payload: ProBankAcc) => emit('on-bank-update', payload)
         :pro-cash="proCash"
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
-        @onBankUpdate="onBankUpdate"
+        @on-bank-update="onBankUpdate"
       />
     </CTableBody>
   </CTable>
@@ -95,5 +95,5 @@ const onBankUpdate = (payload: ProBankAcc) => emit('on-bank-update', payload)
   />
   <AccDepth ref="accDepth" />
 
-  <BankAcc ref="bankAcc" @onBankUpdate="onBankUpdate" />
+  <BankAcc ref="bankAcc" @on-bank-update="onBankUpdate" />
 </template>
