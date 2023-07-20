@@ -46,7 +46,7 @@ export const useSchedule = defineStore('schedule', () => {
         return api
             .post('/schedule/', eventData)
             .then(res =>
-                fetchScheduleList(res.data.start_date.substr(0, 7))
+                fetchScheduleList(res.data.start_date.substring(0, 7))
                     .then(() => fetchSchedule(res.data.pk))
                     .then(() => message()),
             )
@@ -65,7 +65,7 @@ export const useSchedule = defineStore('schedule', () => {
         return api
             .put(`/schedule/${pk}/`, eventData)
             .then(res =>
-                fetchScheduleList(res.data.start_date.substr(0, 7))
+                fetchScheduleList(res.data.start_date.substring(0, 7))
                     .then(() => fetchSchedule(res.data.pk))
                     .then(() => message()),
             )
