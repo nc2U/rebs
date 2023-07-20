@@ -3805,7 +3805,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vue/eslint-config-prettier@npm:^6":
+"@vue/eslint-config-prettier@npm:^6.0.0":
   version: 6.0.0
   resolution: "@vue/eslint-config-prettier@npm:6.0.0"
   dependencies:
@@ -11578,7 +11578,7 @@ __metadata:
     "@vue/cli-plugin-vuex": ^5.0.8
     "@vue/cli-service": ^5.0.8
     "@vue/compiler-sfc": ^3.3.4
-    "@vue/eslint-config-prettier": ^6
+    "@vue/eslint-config-prettier": ^6.0.0
     "@vue/eslint-config-typescript": ^11.0.3
     "@vue/test-utils": ^2.4.0
     "@vue/vue3-jest": ^29.2.4
