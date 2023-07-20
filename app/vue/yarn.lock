@@ -11598,6 +11598,7 @@ __metadata:
     eslint-plugin-prettier: ^5.0.0
     eslint-plugin-vue: ^9.15.1
     js-cookie: ^3.0.5
+    json5: ^2.2.3
     maska: ^1.5.2
     mosha-vue-toastify: ^1.0.23
     nprogress: ^0.2.0
