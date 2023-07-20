@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed } from 'vue'
+import { ref, computed, PropType } from 'vue'
 import { useStore } from 'vuex'
 import { numFormat, cutString } from '@/utils/baseMixins'
 import { ProBankAcc, ProjectCashBook } from '@/store/types/proCash'
@@ -8,7 +8,7 @@ import ProImprestForm from '@/views/proCash/Imprest/components/ProImprestForm.vu
 
 const props = defineProps({
   imprest: {
-    type: Object,
+    type: Object as PropType<ProjectCashBook>,
     required: true,
   },
 })
@@ -18,7 +18,7 @@ const emit = defineEmits(['multi-submit', 'on-delete', 'on-bank-update'])
 const updateFormModal = ref()
 
 const sortClass = computed(
-  () => ['', 'text-primary', 'text-danger', 'text-info'][props.imprest.sort],
+  () => ['', 'text-primary', 'text-danger', 'text-info'][props.imprest?.sort],
 )
 
 const store = useStore()
@@ -26,12 +26,12 @@ const dark = computed(() => store.state.theme === 'dark')
 const rowColor = computed(() => {
   let color = ''
   color =
-    props.imprest.contract && props.imprest.project_account_d3 <= '2'
+    props.imprest?.contract && props.imprest.project_account_d3 <= '2'
       ? 'info'
       : color
   color = dark.value ? '' : color
-  color = props.imprest.is_separate ? 'primary' : color
-  color = props.imprest.separated ? 'secondary' : color
+  color = props.imprest?.is_separate ? 'primary' : color
+  color = props.imprest?.separated ? 'secondary' : color
   return color
 })
 
@@ -101,7 +101,7 @@ const onBankUpdate = (payload: ProBankAcc) => emit('on-bank-update', payload)
         :imprest="imprest"
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
-        @onBankUpdate="onBankUpdate"
+        @on-bank-update="onBankUpdate"
         @close="updateFormModal.close()"
       />
     </template>

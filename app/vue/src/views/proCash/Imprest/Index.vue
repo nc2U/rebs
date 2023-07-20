@@ -129,7 +129,7 @@ const onCreate = (
     charge: null | number
   },
 ) => {
-  if (project.value) payload.project = project.value
+  if (project.value) payload.project = project.value || null
   if (payload.sort === 3 && payload.bank_account_to) {
     const {
       bank_account,
@@ -251,7 +251,7 @@ onBeforeMount(() => {
       <AddProImprest
         :project="project"
         @multi-submit="multiSubmit"
-        @onBankUpdate="onBankUpdate"
+        @on-bank-update="onBankUpdate"
       />
       <TableTitleRow
         title="운영비용(전도금) 사용 내역"
@@ -264,7 +264,7 @@ onBeforeMount(() => {
         @page-select="pageSelect"
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
-        @onBankUpdate="onBankUpdate"
+        @on-bank-update="onBankUpdate"
       />
     </CCardBody>
 
