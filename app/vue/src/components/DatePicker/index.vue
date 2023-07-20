@@ -1,7 +1,6 @@
 <script lang="ts" setup>
-import {ref, computed} from 'vue'
-import {useStore} from 'vuex'
-import {maska as vMaska} from "maska"
+import { ref, reactive, computed } from 'vue'
+import { useStore } from 'vuex'
 import Datepicker from '@vuepic/vue-datepicker'
 
 const store = useStore()
@@ -13,21 +12,26 @@ const textInputOptions = ref({
   openMenu: true,
   format: 'yyyy-MM-dd',
 })
+
+const dateOptions = reactive({
+  mask: '####-##-##',
+  eager: true,
+})
 </script>
 
 <template>
   <Datepicker
-      name="date-picker"
-      v-maska="'####-##-##'"
-      text-input
-      auto-apply
-      format="yyyy-MM-dd"
-      position="left"
-      :text-input-options="textInputOptions"
-      input-class-name="form-control"
-      :enable-time-picker="false"
-      teleport="#app"
-      :dark="isDark"
-      locale="ko"
+    v-maska:[dateOptions]
+    name="date-picker"
+    text-input
+    auto-apply
+    format="yyyy-MM-dd"
+    position="left"
+    :text-input-options="textInputOptions"
+    input-class-name="form-control"
+    :enable-time-picker="false"
+    teleport="#app"
+    :dark="isDark"
+    locale="ko"
   />
 </template>
