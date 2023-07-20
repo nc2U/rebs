@@ -9663,10 +9663,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"maska@npm:^1.5.2":
-  version: 1.5.2
-  resolution: "maska@npm:1.5.2"
-  checksum: e3c7d5ada403ac6a222ed520fe7ebd6bda8065e3c946c272940e1c5e0e46c325a69d4f017ba9562aa5f3a170c6a5a874fd413cd4977d2e3c562bfff6e8c7ccee
+"maska@npm:^2.1.9":
+  version: 2.1.9
+  resolution: "maska@npm:2.1.9"
+  checksum: 52b14f49118f63187613a58e57f34793c2e78d2ef145e908a14730c30f2b503be7dfe2c6f921b99da664dd74a23e173b3a7c6a38302d6dfad574d6f1396866a8
   languageName: node
   linkType: hard
 
@@ -11593,7 +11593,7 @@ __metadata:
     eslint-plugin-vue: ^9.15.1
     js-cookie: ^3.0.5
     json5: ^2.2.3
-    maska: ^1.5.2
+    maska: ^2.1.9
     mosha-vue-toastify: ^1.0.23
     nprogress: ^0.2.0
     pinia: ^2.1.4
