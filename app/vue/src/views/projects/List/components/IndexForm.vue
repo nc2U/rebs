@@ -1,23 +1,23 @@
 <script setup lang="ts">
-import { ref, reactive, computed, onBeforeMount } from 'vue'
+import { ref, reactive, computed, onBeforeMount, PropType } from 'vue'
 import { useAccount } from '@/store/pinia/account'
+import { useStore } from 'vuex'
 import { Project } from '@/store/types/project'
 import { callAddress, AddressData } from '@/components/DaumPostcode/address'
 import { write_project } from '@/utils/pageAuth'
+import Datepicker from '@vuepic/vue-datepicker'
 import DaumPostcode from '@/components/DaumPostcode/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
 const props = defineProps({
   project: {
-    type: Object,
+    type: Object as PropType<Project>,
     default: null,
   },
 })
 
 const emit = defineEmits(['to-submit', 'reset-form', 'close'])
-
-const accountStore = useAccount()
 
 const form = reactive<Project>({
   pk: null,
@@ -105,6 +105,9 @@ const delModal = ref()
 const alertModal = ref()
 const confirmModal = ref()
 const address2 = ref()
+
+const store = useStore()
+const accountStore = useAccount()
 
 const onSubmit = (event: Event) => {
   if (write_project.value) {
@@ -231,11 +234,13 @@ onBeforeMount(() => formDataSetup())
 
           <CFormLabel class="col-md-2 col-form-label"> 사업개시년도</CFormLabel>
           <CCol md="10" lg="4">
-            <CFormInput
+            <Datepicker
               v-model.number="form.start_year"
-              type="number"
-              min="1990"
               placeholder="사업개시년도를 입력하세요"
+              input-class-name="form-control"
+              year-picker
+              auto-apply
+              :dark="store.state.theme === 'dark'"
               required
             />
             <CFormFeedback invalid>

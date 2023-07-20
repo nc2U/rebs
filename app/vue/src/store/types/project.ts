@@ -1,5 +1,5 @@
 export interface Project {
-  pk?: number
+  pk?: number | null
   company: number | null
   name: string
   order: number | null
