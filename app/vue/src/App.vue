@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { onMounted, watch } from 'vue'
 import { useStore } from 'vuex'
-import Spinner from '@/components/Spinner/index.vue'
 
 const store = useStore()
 
@@ -22,7 +21,6 @@ onMounted(() =>
   <v-app>
     <v-main>
       <router-view />
-      <Spinner :loading="store.state.LoadingStatus" />
     </v-main>
   </v-app>
 </template>
