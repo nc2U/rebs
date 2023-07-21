@@ -102,12 +102,12 @@ onBeforeMount(() => account.fetchTodoList())
       <label for="toggle-all" />
       <ul class="todo-list">
         <Todo
-          v-for="todo in filteredTodos"
+          v-for="todo in filteredTodos as T[]"
           :key="todo.pk"
           :todo="todo"
-          @toggleTodo="toggleTodo"
-          @editTodo="editTodo"
-          @delTodo="delTodo"
+          @toggle-todo="toggleTodo"
+          @edit-todo="editTodo"
+          @del-todo="delTodo"
         />
       </ul>
     </section>
