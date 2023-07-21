@@ -61,7 +61,16 @@ export const isValidate = (event: Event) => {
 }
 
 export const formUtility = {
-  getFormData(val: any, formData = new FormData(), namespace = '') {
+  getFormData(
+    val:
+      | Date
+      | Array<{ [key: string]: string }>
+      | { [key: string]: string }
+      | File
+      | string,
+    formData = new FormData(),
+    namespace = '',
+  ) {
     if (typeof val !== 'undefined' && val !== null) {
       if (val instanceof Date) {
         formData.append(namespace, val.toISOString())
@@ -70,12 +79,12 @@ export const formUtility = {
           this.getFormData(val[i], formData, namespace + '[' + i + ']')
         }
       } else if (typeof val === 'object' && !(val instanceof File)) {
-        for (const propertyName in val) {
-          if (val.hasOwnProperty(propertyName)) {
+        for (const key in val) {
+          if (val.hasOwnProperty(key)) {
             this.getFormData(
-              val[propertyName],
+              val[key],
               formData,
-              namespace ? `${namespace}[${propertyName}]` : propertyName,
+              namespace ? `${namespace}[${key}]` : key,
             )
           }
         }
