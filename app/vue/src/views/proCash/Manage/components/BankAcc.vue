@@ -33,7 +33,7 @@ defineExpose({ callModal })
             {{ `${bank.alias_name}  :: ${bank.number}` }}
           </CAccordionHeader>
           <CAccordionBody class="pl-3">
-            <BankAccForm :bank-acc="bank" @onBankUpdate="onBankUpdate" />
+            <BankAccForm :bank-acc="bank" @on-bank-update="onBankUpdate" />
           </CAccordionBody>
         </CAccordionItem>
       </CAccordion>

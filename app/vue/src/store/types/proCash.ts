@@ -15,7 +15,7 @@ export interface ProjectAccountD3 {
 }
 
 export interface ProBankAcc {
-  pk?: number
+  pk: number | null
   project: number | null
   bankcode: number | null
   alias_name: string
@@ -41,7 +41,9 @@ export interface BalanceByAccount {
 export interface ProSepItems {
   pk?: number | null
   project_account_d2: number | null
+  project_account_d2_desc?: string
   project_account_d3: number | null
+  project_account_d3_desc?: string
   separated?: number | null
   is_imprest?: boolean
   content: string
@@ -55,13 +57,15 @@ export interface ProSepItems {
 export interface ProjectCashBook extends ProSepItems {
   project: number | null
   sort: number | null
+  sort_desc?: string
   is_separate?: boolean
-  sepItems?: []
+  sepItems: Array<ProSepItems>
   rmCont?: boolean
   contract?: number | null
   installment_order?: number | null
   refund_contractor?: number | null
   bank_account: number | null
+  bank_account_desc?: string
   evidence_desc?: string
   deal_date: string
 }

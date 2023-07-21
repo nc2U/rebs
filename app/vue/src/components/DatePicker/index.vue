@@ -30,8 +30,9 @@ const dateOptions = reactive({
     :text-input-options="textInputOptions"
     input-class-name="form-control"
     :enable-time-picker="false"
-    teleport="#app"
+    :teleport="true"
     :dark="isDark"
     locale="ko"
+    allow-prevent-default
   />
 </template>

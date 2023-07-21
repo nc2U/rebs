@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import {ref, reactive, computed, watch, nextTick, onMounted} from 'vue'
-import {useProjectData} from '@/store/pinia/project_data'
-import {useContract, ContFilter} from '@/store/pinia/contract'
-import {numFormat, dateFormat} from '@/utils/baseMixins'
-import {bgLight} from '@/utils/cssMixins'
+import { ref, reactive, computed, watch, nextTick, onMounted } from 'vue'
+import { useProjectData } from '@/store/pinia/project_data'
+import { useContract, ContFilter } from '@/store/pinia/contract'
+import { numFormat, dateFormat } from '@/utils/baseMixins'
+import { bgLight } from '@/utils/cssMixins'
 import DatePicker from '@/components/DatePicker/index.vue'
 
-const props = defineProps({status: {type: String, default: '2'}})
+const props = defineProps({ status: { type: String, default: '2' } })
 const emit = defineEmits(['cont-filtering'])
 
 const from_date = ref('')
@@ -63,13 +63,13 @@ const listFiltering = (page = 1) => {
   form.to_date = to_date.value
   nextTick(() => {
     emit('cont-filtering', {
-      ...{page},
+      ...{ page },
       ...form,
     })
   })
 }
 
-defineExpose({listFiltering})
+defineExpose({ listFiltering })
 
 const resetForm = () => {
   form.status = '2'
@@ -106,9 +106,9 @@ onMounted(() => {
             <CFormSelect v-model="form.order_group" @change="listFiltering(1)">
               <option value="">차수선택</option>
               <option
-                  v-for="order in orderGroupList"
-                  :key="order.pk"
-                  :value="order.pk"
+                v-for="order in orderGroupList"
+                :key="order.pk"
+                :value="order.pk"
               >
                 {{ order.order_group_name }}
               </option>
@@ -119,9 +119,9 @@ onMounted(() => {
             <CFormSelect v-model="form.unit_type" @change="listFiltering(1)">
               <option value="">타입선택</option>
               <option
-                  v-for="type in simpleTypes"
-                  :key="type.pk"
-                  :value="type.pk"
+                v-for="type in simpleTypes"
+                :key="type.pk"
+                :value="type.pk"
               >
                 {{ type.name }}
               </option>
@@ -132,9 +132,9 @@ onMounted(() => {
             <CFormSelect v-model="form.building" @change="listFiltering(1)">
               <option value="">동 선택</option>
               <option
-                  v-for="bldg in buildingList"
-                  :key="bldg.pk"
-                  :value="bldg.pk"
+                v-for="bldg in buildingList"
+                :key="bldg.pk"
+                :value="bldg.pk"
               >
                 {{ bldg.name }}동
               </option>
@@ -143,10 +143,10 @@ onMounted(() => {
 
           <CCol md="4" xl="2" class="pt-1 mb-3">
             <CFormSwitch
-                id="null_unit"
-                v-model="form.null_unit"
-                label="동호 미지정"
-                @change="listFiltering(1)"
+              id="null_unit"
+              v-model="form.null_unit"
+              label="동호 미지정"
+              @change="listFiltering(1)"
             />
           </CCol>
 
@@ -181,17 +181,17 @@ onMounted(() => {
 
           <CCol md="4" lg="6" xl="4" class="mb-3">
             <DatePicker
-                v-model="from_date"
-                placeholder="계약일 (From)"
-                @keydown.enter="listFiltering(1)"
+              v-model="from_date"
+              placeholder="계약일 (From)"
+              @keydown.enter="listFiltering(1)"
             />
           </CCol>
 
           <CCol md="4" lg="6" xl="4" class="mb-3">
             <DatePicker
-                v-model="to_date"
-                placeholder="계약일 (To)"
-                @keydown.enter="listFiltering(1)"
+              v-model="to_date"
+              placeholder="계약일 (To)"
+              @keydown.enter="listFiltering(1)"
             />
           </CCol>
         </CRow>
@@ -202,11 +202,11 @@ onMounted(() => {
           <CCol class="mb-3">
             <CInputGroup class="flex-nowrap">
               <CFormInput
-                  v-model="form.search"
-                  placeholder="계약자, 전화번호, 일련번호, 비고"
-                  aria-label="Username"
-                  aria-describedby="addon-wrapping"
-                  @keydown.enter="listFiltering(1)"
+                v-model="form.search"
+                placeholder="계약자, 전화번호, 일련번호, 비고"
+                aria-label="Username"
+                aria-describedby="addon-wrapping"
+                @keydown.enter="listFiltering(1)"
               />
               <CInputGroupText @click="listFiltering(1)">검색</CInputGroupText>
             </CInputGroup>

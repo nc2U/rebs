@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed } from 'vue'
+import { ref, computed, PropType } from 'vue'
 import { useStore } from 'vuex'
 import { numFormat, cutString } from '@/utils/baseMixins'
 import { ProBankAcc, ProjectCashBook } from '@/store/types/proCash'
@@ -8,7 +8,7 @@ import ProCashForm from '@/views/proCash/Manage/components/ProCashForm.vue'
 
 const props = defineProps({
   proCash: {
-    type: Object,
+    type: Object as PropType<ProjectCashBook>,
     required: true,
   },
 })
@@ -18,7 +18,7 @@ const emit = defineEmits(['multi-submit', 'on-delete', 'on-bank-update'])
 const updateFormModal = ref()
 
 const sortClass = computed(
-  () => ['', 'text-primary', 'text-danger', 'text-info'][props.proCash.sort],
+  () => ['', 'text-primary', 'text-danger', 'text-info'][props.proCash?.sort],
 )
 
 const store = useStore()
@@ -26,14 +26,14 @@ const dark = computed(() => store.state.theme === 'dark')
 const rowColor = computed(() => {
   let color = ''
   color =
-    props.proCash.contract &&
+    props.proCash?.contract &&
     (props.proCash.project_account_d3 === 1 ||
       props.proCash.project_account_d3 === 4)
       ? 'info'
       : color
   color = dark.value ? '' : color
-  color = props.proCash.is_separate ? 'primary' : color
-  color = props.proCash.separated ? 'secondary' : color
+  color = props.proCash?.is_separate ? 'primary' : color
+  color = props.proCash?.separated ? 'secondary' : color
   return color
 })
 
@@ -59,7 +59,7 @@ const onBankUpdate = (payload: ProBankAcc) => emit('on-bank-update', payload)
   >
     <CTableDataCell>{{ proCash.deal_date }}</CTableDataCell>
     <CTableDataCell :class="sortClass">
-      {{ proCash.sort_desc }}
+      {{ proCash?.sort_desc }}
     </CTableDataCell>
     <CTableDataCell class="text-left">
       {{ proCash.project_account_d2_desc }}
@@ -104,7 +104,7 @@ const onBankUpdate = (payload: ProBankAcc) => emit('on-bank-update', payload)
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
         @close="updateFormModal.close()"
-        @onBankUpdate="onBankUpdate"
+        @on-bank-update="onBankUpdate"
       />
     </template>
   </FormModal>

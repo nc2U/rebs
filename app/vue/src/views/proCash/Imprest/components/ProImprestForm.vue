@@ -1,5 +1,13 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, nextTick, watch, onBeforeMount } from 'vue'
+import {
+  ref,
+  reactive,
+  computed,
+  nextTick,
+  watch,
+  onBeforeMount,
+  PropType,
+} from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { useProCash } from '@/store/pinia/proCash'
 import { isValidate } from '@/utils/helper'
@@ -13,7 +21,7 @@ import BankAcc from '../../Manage/components/BankAcc.vue'
 
 const props = defineProps({
   imprest: {
-    type: Object,
+    type: Object as PropType<ProjectCashBook>,
     default: null,
   },
 })
@@ -28,7 +36,7 @@ const emit = defineEmits([
 const delModal = ref()
 const alertModal = ref()
 
-let sepItem = reactive<ProSepItems>({
+const sepItem = reactive<ProSepItems>({
   pk: null,
   project_account_d2: null,
   project_account_d3: null,
@@ -136,19 +144,19 @@ const requireItem = computed(
 
 const sepDisabled = computed(() => {
   const disabled = !!form.project_account_d2 || !!form.project_account_d3
-  return props.imprest ? disabled || props.imprest.sepItems.length : disabled
+  return props.imprest ? disabled || props.imprest.sepItems?.length : disabled
 })
 
 const sepSummary = computed(() => {
   const inc =
-    props.imprest.sepItems.length !== 0
-      ? props.imprest.sepItems
+    props.imprest?.sepItems.length !== 0
+      ? props.imprest?.sepItems
           .map((s: ProjectCashBook) => s.income || 0)
           .reduce((res: number, el: number) => res + el, 0)
       : 0
   const out =
-    props.imprest.sepItems.length !== 0
-      ? props.imprest.sepItems
+    props.imprest?.sepItems.length !== 0
+      ? props.imprest?.sepItems
           .map((s: ProSepItems) => s.outlay || 0)
           .reduce((res: number, el: number) => res + el, 0)
       : 0
@@ -238,8 +246,10 @@ const sepD1_change = () => {
 }
 
 const accountStore = useAccount()
-const allowedPeriod = computed(
-  () => accountStore.superAuth || diffDate(props.imprest.deal_date) <= 30,
+const allowedPeriod = computed(() =>
+  props.imprest?.deal_date
+    ? accountStore.superAuth || diffDate(props.imprest.deal_date) <= 30
+    : 0,
 )
 
 const onSubmit = (event: Event) => {
@@ -278,8 +288,8 @@ const deleteConfirm = () => {
 
 const deleteObject = () => {
   emit('on-delete', {
-    project: props.imprest.project,
-    pk: props.imprest.pk,
+    project: props.imprest?.project,
+    pk: props.imprest?.pk,
   })
   delModal.value.close()
   emit('close')

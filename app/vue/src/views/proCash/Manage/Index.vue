@@ -240,7 +240,7 @@ onBeforeMount(() => {
       <AddProCash
         :project="project"
         @multi-submit="multiSubmit"
-        @onBankUpdate="onBankUpdate"
+        @on-bank-update="onBankUpdate"
       />
       <TableTitleRow
         title="프로젝트 입출금 내역"
@@ -265,7 +265,7 @@ onBeforeMount(() => {
         @page-select="pageSelect"
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
-        @onBankUpdate="onBankUpdate"
+        @on-bank-update="onBankUpdate"
       />
     </CCardBody>
 
