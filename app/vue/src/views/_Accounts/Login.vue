@@ -25,7 +25,7 @@ const onSubmit = (payload: {
         <CCol md="8" lg="6" xl="4">
           <CCard class="p-4">
             <CCardBody class="text-body">
-              <LoginForm @onSubmit="onSubmit" />
+              <LoginForm @on-submit="onSubmit" />
               <CRow>
                 <CCol xs="12" class="mt-3">
                   <p class="text-medium-emphasis">Sign with</p>
