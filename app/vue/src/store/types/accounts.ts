@@ -38,6 +38,7 @@ export type Profile = {
   name: string
   birth_date: string
   cell_phone: string
+  image: string | null
 }
 
 export interface Todo {

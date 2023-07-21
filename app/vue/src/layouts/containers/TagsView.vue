@@ -2,10 +2,22 @@
 import { ref, computed, onMounted, nextTick, watch } from 'vue'
 import { useStore } from 'vuex'
 import { useTagsView } from '@/store/pinia/tagsView'
-import { VisitedViews } from '@/store/types/tagsView'
-import { RouteRecordRaw, useRoute, useRouter } from 'vue-router'
+import { Meta, VisitedViews } from '@/store/types/tagsView'
+import {
+  RouteLocationNormalizedLoaded as RouteNormal,
+  RouteRecordRaw,
+  useRoute,
+  useRouter,
+} from 'vue-router'
 
-const [route, router] = [useRoute(), useRouter()]
+const [route, router] = [
+  useRoute() as RouteNormal & {
+    matched: RouteNormal[]
+    fullPath: string
+    meta: Meta
+  },
+  useRouter(),
+]
 
 const routes = route.matched
 
@@ -31,7 +43,7 @@ const isAffix = (tag: { meta: { affix: boolean } }) =>
 
 const filterAffixTags = (routes: RouteRecordRaw[]) => {
   let tags: Array<VisitedViews> = []
-  routes.forEach((r: RouteRecordRaw) => {
+  routes.forEach((r: RouteRecordRaw & { meta: { affix: boolean } }) => {
     if (r.meta && r.meta.affix) {
       tags.push({
         fullPath: r.path,
@@ -84,7 +96,7 @@ const toLastView = (visitedViews: VisitedViews[]) => {
 }
 
 const closeSelectedTag = (view: VisitedViews) =>
-  tagsViewStore.delView(view).then(({ visitedViews }: any) => {
+  tagsViewStore.delView(view).then(({ visitedViews }: VisitedViews[]) => {
     if (isActive(view)) toLastView(visitedViews)
   })
 
@@ -126,7 +138,7 @@ onMounted(() => {
           :border="true"
           :rounded="0"
           :color="isActive(tag) ? 'success' : btnColor"
-          :to="{ name: tag.name, query: tag.query, fullPath: tag.fullPath }"
+          :to="{ path: tag.fullPath, query: tag.query }"
         >
           <v-icon
             v-if="isActive(tag)"

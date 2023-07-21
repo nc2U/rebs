@@ -9,7 +9,7 @@ const comStore = useCompany()
 const company = computed(() => comStore.company?.pk)
 const comSelectList = computed(() => comStore.comSelect)
 
-const comSelect = (target: number) => emit('com-select', target)
+const comSelect = (com: number) => emit('com-select', com)
 const comClear = () => emit('com-select', null)
 
 onBeforeMount(() => {
@@ -30,7 +30,7 @@ onBeforeMount(() => {
         :classes="{ search: 'form-control multiselect-search' }"
         :add-option-on="['enter' | 'tab']"
         searchable
-        @select="comSelect"
+        @select="comSelect as (c: number) => void"
         @clear="comClear"
       />
     </CCol>

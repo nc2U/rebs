@@ -9,7 +9,7 @@ export const useTagsView = defineStore('tags-view', () => {
   const cachedViews = ref<CachedViews[]>([])
 
   // actions
-  const addView = (view: any) => {
+  const addView = (view: VisitedViews) => {
     addVisitedView(view)
     addCachedView(view)
   }

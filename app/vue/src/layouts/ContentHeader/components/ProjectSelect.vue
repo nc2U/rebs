@@ -9,7 +9,7 @@ const projStore = useProject()
 const project = computed(() => projStore.project?.pk)
 const projSelectList = computed(() => projStore.projSelect)
 
-const projSelect = (target: number) => emit('proj-select', target)
+const projSelect = (proj: number) => emit('proj-select', proj)
 const projClear = () => emit('proj-select', null)
 
 onBeforeMount(() => {
@@ -30,7 +30,7 @@ onBeforeMount(() => {
         :classes="{ search: 'form-control multiselect-search' }"
         :add-option-on="['enter' | 'tab']"
         searchable
-        @select="projSelect"
+        @select="projSelect as (p: number) => void"
         @clear="projClear"
       />
     </CCol>
