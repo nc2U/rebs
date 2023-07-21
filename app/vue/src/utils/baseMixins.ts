@@ -10,7 +10,7 @@ export const numFormat = (
 }
 
 export const cutString = (str = '', len = 0) =>
-  str.length > len ? `${str.substr(0, len)}..` : str
+  str.length > len ? `${str.substring(0, len)}..` : str
 
 export const diffDate = (date1: Date | string, date2?: Date) => {
   const start = typeof date1 === 'string' ? new Date(date1) : date1
