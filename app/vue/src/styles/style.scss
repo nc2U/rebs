@@ -19,6 +19,12 @@ $enable-rtl: true;
 // Transition
 @import "transition";
 
+// datepicker
+@import "datepicker";
+
+// multi-select
+@import "multi_select";
+
 // Plugins
 @import "calendar";
 @import "mosha-vue-toastify/dist/style";
