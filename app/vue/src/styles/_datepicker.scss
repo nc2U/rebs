@@ -12,30 +12,20 @@
 
 :root {
   /*General*/
-  --dp-font-family: -apple-system, blinkmacsystemfont, "Segoe UI", roboto, oxygen, ubuntu, cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   --dp-border-radius: 6px; /*Configurable border-radius*/
-  --dp-cell-border-radius: 4px; /*Specific border radius for the calendar cell*/
-  --dp-common-transition: all 0.1s ease-in; /*Generic transition applied on buttons and calendar cells*/
 
   /*Sizing*/
-  --dp-button-height: 30px; /*Size for buttons in overlays*/
-  --dp-month-year-row-height: 30px; /*Height of the month-year select row*/
-  --dp-month-year-row-button-size: 30px; /*Specific height for the next/previous buttons*/
-  --dp-button-icon-height: 18px; /*Icon sizing in buttons*/
+  --dp-button-height: 32px; /*Size for buttons in overlays*/
+  --dp-month-year-row-height: 32px; /*Height of the month-year select row*/
+  --dp-month-year-row-button-size: 32px; /*Specific height for the next/previous buttons*/
   --dp-cell-size: 30px; /*Width and height of calendar cell*/
-  --dp-cell-padding: 5px; /*Padding in the cell*/
-  --dp-common-padding: 10px; /*Common padding used*/
-  --dp-input-icon-padding: 30px; /*Padding on the left side of the input if icon is present*/
-  --dp-input-padding: 5px 30px 5px 10px; /*Padding in the input*/
-  --dp-menu-min-width: 250px; /*Adjust the min width of the menu*/
-  --dp-action-buttons-padding: 2px 5px; /*Adjust padding for the action buttons in action row*/
-  --dp-row-maring: 5px 0; /*Adjust the spacing between rows in the calendar*/
-  --dp-calendar-header-cell-padding: 0.5rem; /*Adjust padding in calendar header cells*/
-  --dp-overlay-col-padding: 3px; /*Padding in the overlay column*/
-  --dp-time-inc-dec-button-size: 32px; /*Sizing for arrow buttons in the time picker*/
-  --dp-menu-padding: 6px 8px; /*Menu padding*/
+  --dp-cell-padding: 3px; /*Padding in the cell*/
+  --dp-common-padding: 6px; /*Common padding used*/
+  --dp-input-icon-padding: 32px; /*Padding on the left side of the input if icon is present*/
+  --dp-input-padding: 6px 20px 6px 10px; /*Padding in the input*/
+  --dp-menu-min-width: 220px; /*Adjust the min width of the menu*/
+  --dp-row-maring: 2px 0; /*Adjust the spacing between rows in the calendar*/
 
   /*Font sizes*/
   --dp-font-size: .875rem; /*Default font-size*/
-  --dp-preview-font-size: 0.8rem; /*Font size of the date preview in the action row*/
 }
