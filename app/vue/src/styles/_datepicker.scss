@@ -1,0 +1,31 @@
+// DatePicker scss
+.dp__theme_dark {
+  --dp-background-color: #353641 !important; // #474850
+  --dp-border-color: #42434C !important;
+  --dp-menu-border-color: #42434C !important;
+}
+
+.dp__theme_light {
+  --dp-border-color: #B1B7C1 !important;
+  --dp-menu-border-color: #B1B7C1 !important;
+}
+
+:root {
+  /*General*/
+  --dp-border-radius: 6px; /*Configurable border-radius*/
+
+  /*Sizing*/
+  --dp-button-height: 32px; /*Size for buttons in overlays*/
+  --dp-month-year-row-height: 32px; /*Height of the month-year select row*/
+  --dp-month-year-row-button-size: 32px; /*Specific height for the next/previous buttons*/
+  --dp-cell-size: 30px; /*Width and height of calendar cell*/
+  --dp-cell-padding: 3px; /*Padding in the cell*/
+  --dp-common-padding: 6px; /*Common padding used*/
+  --dp-input-icon-padding: 32px; /*Padding on the left side of the input if icon is present*/
+  --dp-input-padding: 6px 20px 6px 10px; /*Padding in the input*/
+  --dp-menu-min-width: 220px; /*Adjust the min width of the menu*/
+  --dp-row-maring: 2px 0; /*Adjust the spacing between rows in the calendar*/
+
+  /*Font sizes*/
+  --dp-font-size: .875rem; /*Default font-size*/
+}
