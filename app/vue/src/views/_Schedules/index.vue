@@ -4,8 +4,12 @@ import { useAccount } from '@/store/pinia/account'
 import { useSchedule } from '@/store/pinia/schedule'
 import { addDays, diffDate } from '@/utils/baseMixins'
 import { Event } from '@/store/types/schedule'
-// import '@fullcalendar/core/vdom' // solve problem with Vite
-import { EventApi, DateSelectArg, EventClickArg } from '@fullcalendar/core'
+import {
+  EventApi,
+  DateSelectArg,
+  EventClickArg,
+  CalendarOptions,
+} from '@fullcalendar/core'
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
@@ -73,7 +77,9 @@ const eventManagement = () => {
   formModal.value.close()
 }
 
-const transformData = (event: EventApi) => {
+type CurrEvent = EventApi & { _instance: { range: { start: Date; end: Date } } }
+
+const transformData = (event: CurrEvent) => {
   const title = event.title
   const allDay = event.allDay
   const s = event._instance?.range.start
@@ -85,7 +91,7 @@ const transformData = (event: EventApi) => {
   return { title, allDay, start, end }
 }
 
-const handleChange = (el: EventClickArg) => {
+const handleChange = (el: EventClickArg & { event: CurrEvent }) => {
   const pk = el.event.id
   const eventDate = transformData(el.event)
   scheduleStore.updateSchedule({ pk, data: eventDate })
@@ -114,7 +120,7 @@ const removeConfirm = () => {
 }
 
 const eventRemove = () => {
-  const mon = newEvent.start.substr(0, 7)
+  const mon = newEvent.start.substring(0, 7)
   scheduleStore.deleteSchedule(eventId.value, mon)
   confirmModal.value.close()
 }
@@ -123,7 +129,7 @@ const handleMonthChange = (payload: CalEvent) => {
   const diff = diffDate(payload.start, new Date(payload.end))
   const addDay = diff > 10 ? 7 : 1
   const date = new Date(addDays(new Date(payload.start), addDay))
-  month.value = date.toISOString().substr(0, 7)
+  month.value = date.toISOString().substring(0, 7)
 }
 
 watch(month, val => fetchScheduleList(val))
@@ -173,9 +179,9 @@ onBeforeMount(() => {
       <CCol md="9">
         <CCard>
           <CCardHeader class="text-body">
-            <CIcon name="cil-calendar" />
-            Calendar
-            <CBadge color="primary">Rebs</CBadge>
+            <CIcon name="cil-calendar" class="mr-2" />
+            <h6 class="d-inline">Calendar</h6>
+            <CBadge color="primary" class="ml-2">Rebs</CBadge>
           </CCardHeader>
           <CCardBody>
             <div class="demo-app text-body">
@@ -183,11 +189,11 @@ onBeforeMount(() => {
                 <FullCalendar
                   ref="cal"
                   class="demo-app-calendar"
-                  :options="calendarOptions"
+                  :options="calendarOptions as CalendarOptions"
                 >
                   <template #eventContent="arg">
                     <b>{{ arg.timeText }} </b>
-                    <i>{{ arg.event.title }}</i>
+                    <i class="ml-1">{{ arg.event.title }}</i>
                   </template>
                 </FullCalendar>
               </div>
