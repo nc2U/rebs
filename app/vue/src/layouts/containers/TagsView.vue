@@ -2,7 +2,7 @@
 import { ref, computed, onMounted, nextTick, watch } from 'vue'
 import { useStore } from 'vuex'
 import { useTagsView } from '@/store/pinia/tagsView'
-import { VisitedViews } from '@/store/types/tagsView'
+import { Meta, VisitedViews } from '@/store/types/tagsView'
 import {
   RouteLocationNormalizedLoaded as RouteNormal,
   RouteRecordRaw,
@@ -14,7 +14,7 @@ const [route, router] = [
   useRoute() as RouteNormal & {
     matched: RouteNormal[]
     fullPath: string
-    meta: { affix: boolean; title: string }
+    meta: Meta
   },
   useRouter(),
 ]

@@ -1,4 +1,4 @@
-interface Meta {
+export interface Meta {
   title: string
   affix: boolean
   noCache: boolean
