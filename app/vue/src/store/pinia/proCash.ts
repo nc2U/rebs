@@ -160,9 +160,8 @@ export const useProCash = defineStore('proCash', () => {
   const proCashBookList = ref<ProjectCashBook[]>([])
   const proCashesCount = ref<number>(0)
 
-  const fetchProjectCashList = (payload: CashBookFilter) => {
-    const { project } = payload
-    let url = `/project-cashbook/?project=${project}`
+  const getUrl = (payload: CashBookFilter) => {
+    let url = ''
     if (payload.from_date) url += `&from_deal_date=${payload.from_date}`
     if (payload.to_date) url += `&to_deal_date=${payload.to_date}`
     if (payload.sort) url += `&sort=${payload.sort}`
@@ -172,6 +171,14 @@ export const useProCash = defineStore('proCash', () => {
     if (payload.search) url += `&search=${payload.search}`
     const page = payload.page ? payload.page : 1
     if (payload.page) url += `&page=${page}`
+    return url
+  }
+
+  const fetchProjectCashList = (payload: CashBookFilter) => {
+    const { project } = payload
+    let url = `/project-cashbook/?project=${project}`
+    url += getUrl(payload)
+
     return api
       .get(url)
       .then(res => {
@@ -203,16 +210,20 @@ export const useProCash = defineStore('proCash', () => {
             project: res.data.project,
             ...filters,
           }).then(() => {
-            paymentStore.fetchPaymentList({
-              project: res.data.project,
-              ...filters,
-            })
-            paymentStore.fetchAllPaymentList({
-              project: res.data.project,
-              contract: res.data.contract,
-              ordering: 'deal_date',
-            })
-            message()
+            paymentStore
+              .fetchAllPaymentList({
+                project: res.data.project,
+                contract: res.data.contract,
+                ordering: 'deal_date',
+              })
+              .then(() =>
+                paymentStore
+                  .fetchPaymentList({
+                    project: res.data.project,
+                    ...filters,
+                  })
+                  .then(() => message()),
+              )
           })
         })
       })
@@ -233,10 +244,6 @@ export const useProCash = defineStore('proCash', () => {
       .put(`/project-cashbook/${pk}/`, formData)
       .then(res => {
         if (isPayment) {
-          paymentStore.fetchPaymentList({
-            project: res.data.project,
-            ...filters,
-          })
           paymentStore
             .fetchAllPaymentList({
               project: res.data.project,
@@ -244,7 +251,14 @@ export const useProCash = defineStore('proCash', () => {
               ordering: 'deal_date',
               ...filters,
             })
-            .then(() => message())
+            .then(() =>
+              paymentStore
+                .fetchPaymentList({
+                  project: res.data.project,
+                  ...filters,
+                })
+                .then(() => message()),
+            )
         } else
           fetchProjectCashList({
             project: res.data.project,
@@ -266,10 +280,6 @@ export const useProCash = defineStore('proCash', () => {
       .patch(`/project-cashbook/${pk}/`, formData)
       .then(res => {
         if (isPayment) {
-          paymentStore.fetchPaymentList({
-            project: res.data.project,
-            ...filters,
-          })
           paymentStore
             .fetchAllPaymentList({
               project: res.data.project,
@@ -277,7 +287,14 @@ export const useProCash = defineStore('proCash', () => {
               ordering: 'deal_date',
               ...filters,
             })
-            .then(() => message())
+            .then(() =>
+              paymentStore
+                .fetchPaymentList({
+                  project: res.data.project,
+                  ...filters,
+                })
+                .then(() => message()),
+            )
         } else
           fetchProjectCashList({
             project: res.data.project,
@@ -306,17 +323,27 @@ export const useProCash = defineStore('proCash', () => {
           ...filters,
         }).then(() => {
           if (contract) {
-            paymentStore.fetchPaymentList({
-              project,
-              ...filters,
-            })
-            paymentStore.fetchAllPaymentList({
-              project,
-              contract,
-              ordering: 'deal_date',
-            })
+            paymentStore
+              .fetchAllPaymentList({
+                project,
+                contract,
+                ordering: 'deal_date',
+              })
+              .then(() =>
+                paymentStore
+                  .fetchPaymentList({
+                    project,
+                    ...filters,
+                  })
+                  .then(() =>
+                    message(
+                      'warning',
+                      '알림!',
+                      '해당 오브젝트가 삭제되었습니다.',
+                    ),
+                  ),
+              )
           }
-          message('warning', '알림!', '해당 오브젝트가 삭제되었습니다.')
         })
       })
       .catch(err => errorHandle(err.response.data))
@@ -328,15 +355,8 @@ export const useProCash = defineStore('proCash', () => {
   const fetchProjectImprestList = (payload: CashBookFilter) => {
     const { project } = payload
     let url = `/project-imprest/?project=${project}`
-    if (payload.from_date) url += `&from_deal_date=${payload.from_date}`
-    if (payload.to_date) url += `&to_deal_date=${payload.to_date}`
-    if (payload.sort) url += `&sort=${payload.sort}`
-    if (payload.pro_acc_d2) url += `&project_account_d2=${payload.pro_acc_d2}`
-    if (payload.pro_acc_d3) url += `&project_account_d3=${payload.pro_acc_d3}`
-    if (payload.bank_account) url += `&bank_account=${payload.bank_account}`
-    if (payload.search) url += `&search=${payload.search}`
-    const page = payload.page ? payload.page : 1
-    if (payload.page) url += `&page=${page}`
+    url += getUrl(payload)
+
     return api
       .get(url)
       .then(res => {
@@ -370,16 +390,20 @@ export const useProCash = defineStore('proCash', () => {
           project: res.data.project,
           ...filters,
         }).then(() => {
-          paymentStore.fetchPaymentList({
-            project: res.data.project,
-            ...filters,
-          })
-          paymentStore.fetchAllPaymentList({
-            project: res.data.project,
-            contract: res.data.contract,
-            ordering: 'deal_date',
-          })
-          message()
+          paymentStore
+            .fetchAllPaymentList({
+              project: res.data.project,
+              contract: res.data.contract,
+              ordering: 'deal_date',
+            })
+            .then(() =>
+              paymentStore
+                .fetchPaymentList({
+                  project: res.data.project,
+                  ...filters,
+                })
+                .then(() => message()),
+            )
         })
       })
       .catch(err => errorHandle(err.response.data))
@@ -396,16 +420,20 @@ export const useProCash = defineStore('proCash', () => {
           project: res.data.project,
           ...filters,
         }).then(() => {
-          paymentStore.fetchPaymentList({
-            project: res.data.project,
-            ...filters,
-          })
-          paymentStore.fetchAllPaymentList({
-            project: res.data.project,
-            contract: res.data.contract,
-            ordering: 'deal_date',
-          })
-          message()
+          paymentStore
+            .fetchAllPaymentList({
+              project: res.data.project,
+              contract: res.data.contract,
+              ordering: 'deal_date',
+            })
+            .then(() =>
+              paymentStore
+                .fetchPaymentList({
+                  project: res.data.project,
+                  ...filters,
+                })
+                .then(() => message()),
+            )
         })
       })
       .catch(err => errorHandle(err.response.data))
@@ -426,17 +454,27 @@ export const useProCash = defineStore('proCash', () => {
           ...filters,
         }).then(() => {
           if (contract) {
-            paymentStore.fetchPaymentList({
-              project,
-              ...filters,
-            })
-            paymentStore.fetchAllPaymentList({
-              project,
-              contract,
-              ordering: 'deal_date',
-            })
+            paymentStore
+              .fetchAllPaymentList({
+                project,
+                contract,
+                ordering: 'deal_date',
+              })
+              .then(() =>
+                paymentStore
+                  .fetchPaymentList({
+                    project,
+                    ...filters,
+                  })
+                  .then(() =>
+                    message(
+                      'warning',
+                      '알림!',
+                      '해당 오브젝트가 삭제되었습니다.',
+                    ),
+                  ),
+              )
           }
-          message('warning', '알림!', '해당 오브젝트가 삭제되었습니다.')
         })
       })
       .catch(err => errorHandle(err.response.data))
