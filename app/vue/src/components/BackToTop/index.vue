@@ -1,3 +1,67 @@
+<script setup lang="ts">
+import { PropType, ref, onMounted, onBeforeUnmount } from 'vue'
+
+const props = defineProps({
+  visibilityHeight: { type: Number as PropType<number>, default: 400 },
+  backPosition: { type: Number, default: 0 },
+  customStyle: {
+    type: Object,
+    default: () => ({
+      right: '50px',
+      bottom: '50px',
+      width: '46px',
+      height: '46px',
+      'border-radius': '50%',
+      'line-height': '46px', // Please keep consistent with height to center vertically
+      background: 'rgba( 255, 255, 255, 0.3 )',
+      boxShadow:
+        '0 10px 35px rgba(0, 0, 0, 0.05), 0 2px 2px rgba(0, 0, 0, 0.1)',
+    }),
+  },
+  transitionName: {
+    type: String as PropType<string>,
+    default: 'fade',
+  },
+})
+
+const visible = ref(false)
+const interval = ref<number | undefined>(undefined)
+const isMoving = ref(false)
+
+const handleScroll = () =>
+  (visible.value = window.pageYOffset > props.visibilityHeight)
+
+const backToTop = () => {
+  if (isMoving.value) return
+  const start = window.pageYOffset
+  let i = 0
+  isMoving.value = true
+  interval.value = setInterval(() => {
+    const next = Math.floor(easeInOutQuad(10 * i, start, -start, 10))
+    if (next <= props.backPosition) {
+      window.scrollTo(0, props.backPosition as number)
+      clearInterval(interval.value)
+      isMoving.value = false
+    } else {
+      window.scrollTo(0, next)
+    }
+    i++
+  }, 100)
+}
+
+const easeInOutQuad = (t, b, c, d) => {
+  if ((t /= d / 2) < 1) return (c / 2) * t * t + b
+  return (-c / 2) * (--t * (t - 2) - 1) + b
+}
+
+onMounted(() => window.addEventListener('scroll', handleScroll))
+
+onBeforeUnmount(() => {
+  window.removeEventListener('scroll', handleScroll)
+  if (interval.value) clearInterval(interval.value)
+})
+</script>
+
 <template>
   <transition :name="transitionName">
     <div
@@ -22,84 +86,6 @@
     </div>
   </transition>
 </template>
-
-<script>
-export default {
-  name: 'BackToTop',
-  props: {
-    visibilityHeight: {
-      type: Number,
-      default: 400,
-    },
-    backPosition: {
-      type: Number,
-      default: 0,
-    },
-    customStyle: {
-      type: Object,
-      default: function () {
-        return {
-          right: '50px',
-          bottom: '50px',
-          width: '46px',
-          height: '46px',
-          'border-radius': '50%',
-          'line-height': '46px', // Please keep consistent with height to center vertically
-          background: 'rgba( 255, 255, 255, 0.5 )',
-          boxShadow:
-            '0 10px 35px rgba(0, 0, 0, 0.05), 0 2px 2px rgba(0, 0, 0, 0.1)',
-        }
-      },
-    },
-    transitionName: {
-      type: String,
-      default: 'fade',
-    },
-  },
-  data() {
-    return {
-      visible: false,
-      interval: null,
-      isMoving: false,
-    }
-  },
-  mounted() {
-    window.addEventListener('scroll', this.handleScroll)
-  },
-  beforeUnmount() {
-    window.removeEventListener('scroll', this.handleScroll)
-    if (this.interval) {
-      clearInterval(this.interval)
-    }
-  },
-  methods: {
-    handleScroll() {
-      this.visible = window.pageYOffset > this.visibilityHeight
-    },
-    backToTop() {
-      if (this.isMoving) return
-      const start = window.pageYOffset
-      let i = 0
-      this.isMoving = true
-      this.interval = setInterval(() => {
-        const next = Math.floor(this.easeInOutQuad(10 * i, start, -start, 10))
-        if (next <= this.backPosition) {
-          window.scrollTo(0, this.backPosition)
-          clearInterval(this.interval)
-          this.isMoving = false
-        } else {
-          window.scrollTo(0, next)
-        }
-        i++
-      }, 100)
-    },
-    easeInOutQuad(t, b, c, d) {
-      if ((t /= d / 2) < 1) return (c / 2) * t * t + b
-      return (-c / 2) * (--t * (t - 2) - 1) + b
-    },
-  },
-}
-</script>
 
 <style scoped>
 .back-to-ceiling {
