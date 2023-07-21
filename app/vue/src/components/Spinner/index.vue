@@ -65,7 +65,7 @@ export default defineComponent({
 
 .lds-facebook div:nth-child(3) {
   left: 45px;
-  animation-delay: 0;
+  animation-delay: 0s;
 }
 
 @keyframes lds-facebook {
