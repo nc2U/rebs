@@ -13,7 +13,7 @@ const textInputOptions = ref({
   format: 'yyyy-MM-dd',
 })
 
-const dateOptions = reactive({
+const options = reactive({
   mask: '####-##-##',
   eager: true,
 })
@@ -21,7 +21,7 @@ const dateOptions = reactive({
 
 <template>
   <Datepicker
-    v-maska:[dateOptions]
+    v-maska:[options]
     text-input
     auto-apply
     format="yyyy-MM-dd"
