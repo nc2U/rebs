@@ -1,9 +1,6 @@
 import axios from 'axios'
 import { start, close } from '@/utils/nprogress'
 import router from '@/router'
-// import store from '@/store'
-// store.commit('startSpinner')
-// store.commit('endSpinner')
 
 const api = axios.create({
   baseURL: '/api/v1/',
