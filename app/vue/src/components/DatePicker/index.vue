@@ -22,7 +22,6 @@ const dateOptions = reactive({
 <template>
   <Datepicker
     v-maska:[dateOptions]
-    name="date-picker"
     text-input
     auto-apply
     format="yyyy-MM-dd"
