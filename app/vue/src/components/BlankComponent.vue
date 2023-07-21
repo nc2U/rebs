@@ -10,15 +10,7 @@
   </CCard>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
-
-export default defineComponent({
-  name: 'BlankComponent',
-  components: {},
-})
-</script>
-
+<script setup></script>
 <style lang="scss" scoped>
 .blank-body {
   height: 460px;
