@@ -82,7 +82,11 @@ b {
   //display: flex;
   min-height: 100%;
   width: 100%;
-  font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+  font-family:
+    Arial,
+    Helvetica Neue,
+    Helvetica,
+    sans-serif;
   font-size: 14px;
 }
 

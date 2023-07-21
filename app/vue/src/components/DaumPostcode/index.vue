@@ -67,8 +67,34 @@ const theme = computed(() => {
 })
 
 const initiate = (formNum = 1) => {
-  ;(window as any).daum.postcode.load(() => {
-    new (window as any).daum.Postcode({
+  ;(
+    window as { daum: { postcode: { load: (p: () => void) => void } } }
+  ).daum.postcode.load(() => {
+    new (
+      window as {
+        daum: {
+          Postcode: (p: {
+            hideMapBtn: boolean | undefined
+            maxSuggestItems: number | undefined
+            pleaseReadGuideTimer: number | undefined
+            showMoreHName: boolean | undefined
+            alwaysShowEngAddr: boolean | undefined
+            submitMode: boolean | undefined
+            autoResize: boolean | undefined
+            shorthand: boolean | undefined
+            hideEngBtn: boolean | undefined
+            animation: boolean | undefined
+            useSuggest: boolean | undefined
+            pleaseReadGuide: number | undefined
+            width: string
+            theme: { searchBgColor: string; queryTextColor: string } | null
+            oncomplete: (data: AddressData) => void
+            autoMapping: boolean | undefined
+            height: string
+          }) => void
+        }
+      }
+    ).daum.Postcode({
       oncomplete: function oncomplete(data: AddressData) {
         emit('address-callback', { ...{ formNum }, ...data })
         displayVal.value = 'none'
@@ -104,7 +130,7 @@ onMounted(() => {
   const isExist = !!document.getElementById(scriptId)
   if (!isExist) {
     const script = document.createElement('script')
-    script.src = props.scriptUrl
+    script.src = props.scriptUrl as string
     script.id = scriptId
     document.body.appendChild(script)
   }

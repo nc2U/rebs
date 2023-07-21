@@ -16,7 +16,7 @@ import PaymentList from '@/views/payments/List/components/PaymentList.vue'
 import TableTitleRow from '@/components/TableTitleRow.vue'
 
 const listControl = ref()
-let filterItems = ref<CashBookFilter>({
+const filterItems = ref<CashBookFilter>({
   page: 1,
   from_date: '',
   to_date: '',

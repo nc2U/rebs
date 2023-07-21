@@ -8,7 +8,7 @@ const props = defineProps({
 <template>
   <v-btn
     size="small"
-    :href="props.url"
+    :href="props.url as string"
     flat
     width="160"
     :disabled="props.disabled"

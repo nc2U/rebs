@@ -21,7 +21,7 @@ const browse = () => {
 const loadFile = (event: { target: { files: File[] } }) => {
   const img = event.target.files[0]
   emit('file-upload', img)
-  let reader = new FileReader()
+  const reader = new FileReader()
   reader.readAsDataURL(img)
   reader.onload = e => {
     modalImg.value = e.target?.result
@@ -33,7 +33,7 @@ const loadFile = (event: { target: { files: File[] } }) => {
 
 const fileUpload = (img: File) => {
   emit('file-upload', img)
-  let reader = new FileReader()
+  const reader = new FileReader()
   reader.readAsDataURL(img)
   reader.onload = e => {
     imgUrl.value = String(e.target?.result)

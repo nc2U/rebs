@@ -45,7 +45,7 @@ const paidTotal = computed(() => {
 
 // 납부해야할 총액
 const dueTotal = computed(() => {
-  let commitment: number[] = []
+  const commitment: number[] = []
   const today = dateFormat(new Date())
   const dueOrder = payOrderList.value
     .filter(
