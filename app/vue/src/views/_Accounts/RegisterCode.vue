@@ -3,7 +3,6 @@ import { ref } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import { hashCode } from '@/utils/helper'
-import AlertModal from '@/components/Modals/AlertModal.vue'
 
 const alertModal = ref()
 
