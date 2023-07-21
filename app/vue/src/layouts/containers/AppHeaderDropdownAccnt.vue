@@ -1,20 +1,21 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { computed, PropType } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
+import { User, Profile } from '@/store/types/accounts'
 import { useAccount } from '@/store/pinia/account'
 import TodoModal from '@/components/Modals/TodoModal.vue'
 
 const props = defineProps({
-  userInfo: { type: Object, required: true },
-  profile: { type: Object, default: null },
+  userInfo: { type: Object as PropType<User>, required: true },
+  profile: { type: Object as PropType<Profile>, default: null },
 })
 
 const router = useRouter()
 
-const avatarSrc = computed(() => {
-  return props.profile?.image ? props.profile?.image : ''
-})
+const avatarSrc = computed(() =>
+  props.profile?.image ? props.profile?.image : '',
+)
 
 const avatarText = computed(() =>
   props.userInfo ? props.userInfo.username.substring(0, 1).toUpperCase() : 'A',
@@ -43,7 +44,7 @@ const logout = () => {
         color="blue-grey-lighten-3"
         text-color="white"
         size="md"
-        :src="avatarSrc"
+        :src="avatarSrc as string"
         status="success"
       >
         {{ avatarText }}

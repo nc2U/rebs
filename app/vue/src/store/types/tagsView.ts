@@ -5,9 +5,10 @@ interface Meta {
 }
 
 export interface VisitedViews {
-  fullPath: string
-  path: string
   name: string
+  path: string
+  fullPath: string
+  query?: { [key: string]: string }
   meta: Meta
 }
 
