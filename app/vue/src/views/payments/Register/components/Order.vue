@@ -32,7 +32,7 @@ const calculated = computed(() => {
   return dueDate.value !== '-' && dueDate.value <= today ? duePay : 0
 })
 const calcClass = () => {
-  let calc = calculated.value > 0 ? 'text-primary' : 'text-danger'
+  const calc = calculated.value > 0 ? 'text-primary' : 'text-danger'
   return calculated.value === 0 ? '' : calc
 }
 </script>

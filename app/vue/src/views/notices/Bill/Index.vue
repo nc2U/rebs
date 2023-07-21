@@ -92,7 +92,7 @@ const onCtorChk = (payload: { chk: boolean; pk: number }) => {
   if (payload.chk) {
     if (!contractors.includes(payload.pk)) contractors.push(payload.pk)
   } else {
-    let i = contractors.indexOf(payload.pk)
+    const i = contractors.indexOf(payload.pk)
     contractors.splice(i, 1)
   }
 }

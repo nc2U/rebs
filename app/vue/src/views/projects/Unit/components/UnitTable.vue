@@ -1,20 +1,20 @@
 <script lang="ts" setup>
-import {computed} from 'vue'
-import {useProjectData} from '@/store/pinia/project_data'
-import {HouseUnit} from '@/store/types/project'
+import { computed } from 'vue'
+import { useProjectData } from '@/store/pinia/project_data'
+import { HouseUnit } from '@/store/types/project'
 import Unit from '@/views/projects/Unit/components/Unit.vue'
 import UnitForm from './UnitForm.vue'
 
-defineProps({bldgName: {type: String, default: ''}})
+defineProps({ bldgName: { type: String, default: '' } })
 const emit = defineEmits(['on-update', 'on-delete'])
 
 const proDataStore = useProjectData()
 const units = computed(() => proDataStore.simpleUnits)
 const floorList = computed(() =>
-    [...new Set(units.value.map(u => u.floor))].sort((a, b) => b - a),
+  [...new Set(units.value.map(u => u.floor))].sort((a, b) => b - a),
 )
 const lineList = computed(() =>
-    [...new Set(units.value.map(u => u.line))].sort((a, b) => a - b),
+  [...new Set(units.value.map(u => u.line))].sort((a, b) => a - b),
 )
 const houseUnitList = computed(() => proDataStore.houseUnitList)
 
@@ -22,12 +22,13 @@ const unitCol = computed(() => (lineList.value.length > 8 ? 12 : 5))
 const formCol = computed(() => (lineList.value.length > 8 ? 12 : 7))
 
 const getUnit = (line: number, floor: number) =>
-    units.value
-        .filter((u: { line: number }) => u.line === line)
-        .filter((u: { floor: number }) => u.floor === floor)[0]
+  units.value
+    .filter((u: { line: number }) => u.line === line)
+    .filter((u: { floor: number }) => u.floor === floor)[0]
 
 const onUpdate = (payload: HouseUnit) => emit('on-update', payload)
-const onDelete = (payload: { pk: number; type: number }) => emit('on-delete', payload)
+const onDelete = (payload: { pk: number; type: number }) =>
+  emit('on-delete', payload)
 </script>
 
 <template>
@@ -42,17 +43,17 @@ const onDelete = (payload: { pk: number; type: number }) => emit('on-delete', pa
       <CCol :lg="unitCol" class="p-5">
         <CRow v-for="i in floorList" :key="i">
           <Unit
-              v-for="line in lineList"
-              :key="`${line}-${i}`"
-              :unit="getUnit(line, i)"
-              :floor="i"
-              :line="line"
+            v-for="line in lineList"
+            :key="`${line}-${i}`"
+            :unit="getUnit(line, i)"
+            :floor="i"
+            :line="line"
           />
         </CRow>
         <CRow v-if="lineList">
           <div
-              class="text-center build-base"
-              :style="{
+            class="text-center build-base"
+            :style="{
               width: `${60 * lineList.length}px`,
             }"
           >
@@ -64,15 +65,15 @@ const onDelete = (payload: { pk: number; type: number }) => emit('on-delete', pa
       <CCol :lg="formCol">
         <CTable hover responsive align="middle">
           <colgroup>
-            <col width="11%"/>
-            <col width="15%"/>
-            <col width="10%"/>
-            <col width="11%"/>
-            <col width="9%"/>
-            <col width="10%"/>
-            <col width="6%"/>
-            <col width="18%"/>
-            <col width="10%"/>
+            <col width="11%" />
+            <col width="15%" />
+            <col width="10%" />
+            <col width="11%" />
+            <col width="9%" />
+            <col width="10%" />
+            <col width="6%" />
+            <col width="18%" />
+            <col width="10%" />
           </colgroup>
           <CTableHead>
             <CTableRow class="text-center">
@@ -90,11 +91,11 @@ const onDelete = (payload: { pk: number; type: number }) => emit('on-delete', pa
 
           <CTableBody>
             <UnitForm
-                v-for="unit in houseUnitList"
-                :key="unit.pk"
-                :unit="unit"
-                @on-update="onUpdate"
-                @on-delete="onDelete"
+              v-for="unit in houseUnitList"
+              :key="unit.pk"
+              :unit="unit"
+              @on-update="onUpdate"
+              @on-delete="onDelete"
             />
           </CTableBody>
         </CTable>

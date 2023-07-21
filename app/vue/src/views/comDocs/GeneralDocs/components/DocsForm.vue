@@ -68,14 +68,14 @@ const formsCheck = computed(() => {
 
 const newLinkNum = ref(1)
 const newLinkRange = computed(() => {
-  let array = []
+  const array = []
   for (let i = 0; i < newLinkNum.value; ++i) array.push(i)
   return array
 })
 
 const newFileNum = ref(1)
 const newFileRange = computed(() => {
-  let array = []
+  const array = []
   for (let i = 0; i < newFileNum.value; ++i) array.push(i)
   return array
 })

@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import {computed, onBeforeMount, reactive, ref, watch} from 'vue'
-import {useAccount} from '@/store/pinia/account'
-import {useSchedule} from '@/store/pinia/schedule'
-import {addDays, diffDate} from '@/utils/baseMixins'
-import {Event} from '@/store/types/schedule'
+import { computed, onBeforeMount, reactive, ref, watch } from 'vue'
+import { useAccount } from '@/store/pinia/account'
+import { useSchedule } from '@/store/pinia/schedule'
+import { addDays, diffDate } from '@/utils/baseMixins'
+import { Event } from '@/store/types/schedule'
 // import '@fullcalendar/core/vdom' // solve problem with Vite
-import {EventApi, DateSelectArg, EventClickArg} from '@fullcalendar/core'
+import { EventApi, DateSelectArg, EventClickArg } from '@fullcalendar/core'
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
@@ -23,7 +23,7 @@ const currentEvents = computed(() => scheduleStore.events)
 const fetchScheduleList = (mon = '') => scheduleStore.fetchScheduleList(mon)
 const createSchedule = (payload: Event) => scheduleStore.createSchedule(payload)
 const updateSchedule = (payload: { pk: string; data: Event }) =>
-    scheduleStore.updateSchedule(payload)
+  scheduleStore.updateSchedule(payload)
 
 const mode = ref<'create' | 'update'>('create')
 
@@ -50,25 +50,25 @@ const handleDateSelect = (selectInfo: DateSelectArg) => {
     mode.value = 'create'
     eventTitle.value = ''
     formModal.value.callModal()
-    let calendarApi = selectInfo.view.calendar
+    const calendarApi = selectInfo.view.calendar
     calendarApi.unselect() // clear date selection
     newEvent.start = selectInfo.startStr
     newEvent.end = selectInfo.endStr
     newEvent.allDay = selectInfo.allDay
   } else
     alertModal.value.callModal(
-        '',
-        '스태프(일정 등록) 권한이 없습니다. 관리자에게 문의하여 주십시요.',
+      '',
+      '스태프(일정 등록) 권한이 없습니다. 관리자에게 문의하여 주십시요.',
     )
 }
 
 const eventManagement = () => {
-  const eventData = {title: eventTitle.value, ...newEvent}
+  const eventData = { title: eventTitle.value, ...newEvent }
   if (mode.value === 'create') createSchedule(eventData)
   else if (mode.value === 'update')
     updateSchedule({
       pk: eventId.value,
-      ...{data: eventData},
+      ...{ data: eventData },
     })
   formModal.value.close()
 }
@@ -77,18 +77,18 @@ const transformData = (event: EventApi) => {
   const title = event.title
   const allDay = event.allDay
   const s = event._instance?.range.start
-      .toISOString()
-      .replace('.000Z', '+09:00')
+    .toISOString()
+    .replace('.000Z', '+09:00')
   const e = event._instance?.range.end.toISOString().replace('.000Z', '+09:00')
   const start = allDay ? s?.substr(0, 10) : s
   const end = allDay ? e?.substr(0, 10) : e
-  return {title, allDay, start, end}
+  return { title, allDay, start, end }
 }
 
 const handleChange = (el: EventClickArg) => {
   const pk = el.event.id
   const eventDate = transformData(el.event)
-  scheduleStore.updateSchedule({pk, data: eventDate})
+  scheduleStore.updateSchedule({ pk, data: eventDate })
 }
 
 const confirmModal = ref()
@@ -103,8 +103,8 @@ const handleEventClick = (clickInfo: EventClickArg) => {
     formModal.value.callModal()
   } else
     alertModal.value.callModal(
-        '',
-        '스태프(일정 수정) 권한이 없습니다. 관리자에게 문의하여 주십시요.',
+      '',
+      '스태프(일정 수정) 권한이 없습니다. 관리자에게 문의하여 주십시요.',
     )
 }
 
@@ -173,7 +173,7 @@ onBeforeMount(() => {
       <CCol md="9">
         <CCard>
           <CCardHeader class="text-body">
-            <CIcon name="cil-calendar"/>
+            <CIcon name="cil-calendar" />
             Calendar
             <CBadge color="primary">Rebs</CBadge>
           </CCardHeader>
@@ -181,9 +181,9 @@ onBeforeMount(() => {
             <div class="demo-app text-body">
               <div class="demo-app-main">
                 <FullCalendar
-                    ref="cal"
-                    class="demo-app-calendar"
-                    :options="calendarOptions"
+                  ref="cal"
+                  class="demo-app-calendar"
+                  :options="calendarOptions"
                 >
                   <template #eventContent="arg">
                     <b>{{ arg.timeText }} </b>
@@ -197,9 +197,9 @@ onBeforeMount(() => {
       </CCol>
 
       <CalendarInfo
-          :calendar-options="calendarOptions"
-          :current-events="currentEvents"
-          @weekends-toggle="handleWeekendsToggle"
+        :calendar-options="calendarOptions"
+        :current-events="currentEvents"
+        @weekends-toggle="handleWeekendsToggle"
       />
     </CRow>
   </div>
@@ -207,10 +207,10 @@ onBeforeMount(() => {
   <FormModal ref="formModal">
     <template #icon>
       <v-icon
-          icon="mdi-calendar-clock-outline"
-          color="blue-grey-darken-1"
-          class="mr-2"
-          size="small"
+        icon="mdi-calendar-clock-outline"
+        color="blue-grey-darken-1"
+        class="mr-2"
+        size="small"
       />
     </template>
     <template #header>
@@ -221,11 +221,11 @@ onBeforeMount(() => {
         <CRow>
           <CCol>
             <CFormInput
-                id="event-title"
-                v-model="eventTitle"
-                type="text"
-                placeholder="진행 일정"
-                @keydown.enter="eventManagement"
+              id="event-title"
+              v-model="eventTitle"
+              type="text"
+              placeholder="진행 일정"
+              @keydown.enter="eventManagement"
             />
           </CCol>
         </CRow>
@@ -233,16 +233,16 @@ onBeforeMount(() => {
       <CModalFooter>
         <CButton color="light" @click="formModal.close"> 닫기</CButton>
         <CButton
-            v-if="mode === 'create'"
-            color="primary"
-            @click="eventManagement"
+          v-if="mode === 'create'"
+          color="primary"
+          @click="eventManagement"
         >
           등록
         </CButton>
         <CButton
-            v-if="mode === 'update'"
-            color="success"
-            @click="eventManagement"
+          v-if="mode === 'update'"
+          color="success"
+          @click="eventManagement"
         >
           수정
         </CButton>
@@ -256,10 +256,10 @@ onBeforeMount(() => {
   <ConfirmModal ref="confirmModal">
     <template #icon>
       <v-icon
-          icon="mdi-trash-can-outline"
-          color="blue-grey-darken-1"
-          class="mr-2"
-          size="small"
+        icon="mdi-trash-can-outline"
+        color="blue-grey-darken-1"
+        class="mr-2"
+        size="small"
       />
     </template>
     <template #header> 진행 일정 - 이벤트 삭제</template>
@@ -270,5 +270,5 @@ onBeforeMount(() => {
     </template>
   </ConfirmModal>
 
-  <AlertModal ref="alertModal"/>
+  <AlertModal ref="alertModal" />
 </template>
