@@ -3552,7 +3552,7 @@ class ExportDeparts(View):
             for col_num, cell_data in enumerate(row):
                 if col_num == 1:
                     cell_data = obj_list.get(pk=cell_data).name if cell_data else None
-                if col_num is 3:
+                if col_num == 3:
                     body_format['align'] = 'left'
                 else:
                     body_format['align'] = 'center'
@@ -3810,7 +3810,7 @@ class ExportDuties(View):
             row_num += 1
             row.insert(0, i + 1)
             for col_num, cell_data in enumerate(row):
-                if col_num is 3:
+                if col_num == 3:
                     body_format['align'] = 'left'
                 else:
                     body_format['align'] = 'center'
