@@ -5,14 +5,14 @@ import Building from '@/views/contracts/Status/components/Building.vue'
 
 import { KeyUnit } from '@/store/types/project'
 
-type UnitType = {
+export type SimpleUnit = {
   bldg: number
-  is_hold: boolean
   color: string
-  line: number
   name: string
   key_unit: KeyUnit
+  line: number
   floor: number
+  is_hold: boolean
 }
 
 const pDataStore = useProjectData()
@@ -20,14 +20,14 @@ const simpleUnits = computed(() => pDataStore.simpleUnits)
 const isLoading = computed(() => pDataStore.isLoading)
 
 const getBldg = computed(() =>
-  [...new Set(simpleUnits.value.map((u: UnitType) => u.bldg))].sort(),
+  [...new Set(simpleUnits.value.map((u: SimpleUnit) => u.bldg))].sort(),
 )
 const maxFloor = computed(() =>
-  Math.max(...simpleUnits.value.map((u: UnitType) => u.floor)),
+  Math.max(...simpleUnits.value.map((u: SimpleUnit) => u.floor)),
 )
 
-const getUnits = (bldg: number): UnitType[] =>
-  simpleUnits.value.filter((u: UnitType) => u.bldg === bldg)
+const getUnits = (bldg: number): SimpleUnit[] =>
+  simpleUnits.value.filter((u: SimpleUnit) => u.bldg === bldg)
 </script>
 
 <template>
