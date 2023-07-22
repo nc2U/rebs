@@ -1,15 +1,12 @@
 <script lang="ts" setup="">
-import { ref, computed } from 'vue'
+import { ref, computed, PropType } from 'vue'
 import { useCompany } from '@/store/pinia/company'
 import { Position } from '@/store/types/company'
 import FormModal from '@/components/Modals/FormModal.vue'
 import PositionForm from './PositionForm.vue'
 
 const props = defineProps({
-  position: {
-    type: Object,
-    required: true,
-  },
+  position: { type: Object as PropType<Position>, required: true },
 })
 
 const emit = defineEmits(['multi-submit', 'on-delete'])
@@ -22,7 +19,7 @@ const getPkGrades = computed(() => comStore.getPkGrades)
 const grades = computed(() => {
   const ids = props.position.grades
   return getPkGrades.value
-    .filter(g => ids.includes(g.value))
+    .filter(g => ids.includes(g.value as number))
     .map(g => g.label)
     .join(', ')
 })
@@ -33,7 +30,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
 </script>
 
 <template>
-  <CTableRow v-if="position" class="text-center">
+  <CTableRow class="text-center">
     <CTableDataCell>{{ position.pk }}</CTableDataCell>
     <CTableDataCell>{{ position.name }}</CTableDataCell>
     <CTableDataCell class="text-left">{{ grades }}</CTableDataCell>
