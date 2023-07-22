@@ -164,8 +164,8 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId))
   <ContentBody>
     <CCardBody class="pb-5">
       <SalesBillIssueForm
-        :project="project"
-        :bill-issue="billIssue"
+        :project="project || undefined"
+        :bill-issue="billIssue as SalesBillIssue"
         @get-now-order="getNowOrder"
         @set-pub-date="setPubDate"
         @on-submit="onSubmit"
@@ -177,7 +177,7 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId))
       />
       <DownloadButton :print-data="printData" :contractors="ctor_ids" />
       <ContractList
-        :now-order="payOrderTime"
+        :now-order="payOrderTime || undefined"
         @on-ctor-chk="onCtorChk"
         @page-select="pageSelect"
         @all-un-checked="allUnChecked"

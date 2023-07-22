@@ -8,7 +8,7 @@ const props = defineProps({
   contractors: { type: Array, default: () => [] },
 })
 
-const alertModal = ref()
+const refAlertModal = ref()
 
 const noPrice = ref(false)
 const noLate = ref(false)
@@ -16,13 +16,13 @@ const noLate = ref(false)
 const printBill = () => {
   const { is_bill_issue } = props.printData
   if (!is_bill_issue) {
-    alertModal.value.callModal(
+    refAlertModal.value.callModal(
       '',
       '고지서 관련 기본 설정 데이터를 입력하여 주십시요.',
     )
   } else {
     if (props.contractors?.length === 0) {
-      alertModal.value.callModal(
+      refAlertModal.value.callModal(
         '',
         '다운로드(출력)할 계약 건을 선택하여 주십시요.',
       )
@@ -54,8 +54,7 @@ const printBill = () => {
         <v-checkbox-btn
           v-model="noPrice"
           color="success"
-          label="가격정보
-        미표시"
+          label="가격정보 미표시"
           inline
         />
         <v-checkbox-btn
@@ -68,5 +67,5 @@ const printBill = () => {
     </CRow>
   </CAlert>
 
-  <AlertModal ref="alertModal" />
+  <AlertModal ref="refAlertModal" />
 </template>
