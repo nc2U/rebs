@@ -9,14 +9,8 @@ import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
 const props = defineProps({
-  company: {
-    type: String,
-    default: null,
-  },
-  department: {
-    type: Object,
-    default: null,
-  },
+  company: { type: String, default: null },
+  department: { type: Object, default: null },
 })
 
 watch(
@@ -29,8 +23,8 @@ watch(
 
 const emit = defineEmits(['multi-submit', 'on-delete', 'close'])
 
-const delModal = ref()
-const alertModal = ref()
+const refDelModal = ref()
+const refAlertModal = ref()
 
 const validated = ref(false)
 
@@ -61,7 +55,7 @@ const onSubmit = (event: Event) => {
     validated.value = true
   } else {
     if (write_human_resource.value) multiSubmit({ ...form.value })
-    else alertModal.value.callModal()
+    else refAlertModal.value.callModal()
   }
 }
 
@@ -72,13 +66,13 @@ const multiSubmit = (payload: Department) => {
 
 const deleteObject = (pk: number) => {
   emit('on-delete', pk)
-  delModal.value.close()
+  refDelModal.value.close()
   emit('close')
 }
 
 const deleteConfirm = () => {
-  if (write_human_resource.value) delModal.value.callModal()
-  else alertModal.value.callModal()
+  if (write_human_resource.value) refDelModal.value.callModal()
+  else refAlertModal.value.callModal()
 }
 
 const formDataSetup = () => {
@@ -114,7 +108,7 @@ onBeforeMount(() => formDataSetup())
                   :options="getPkDeparts"
                   autocomplete="label"
                   :classes="{ search: 'form-control multiselect-search' }"
-                  :add-option-on="['enter' | 'tab']"
+                  :add-option-on="['enter', 'tab']"
                   searchable
                   placeholder="상위부서"
                 />
@@ -175,7 +169,7 @@ onBeforeMount(() => formDataSetup())
     </CModalFooter>
   </CForm>
 
-  <ConfirmModal ref="delModal">
+  <ConfirmModal ref="refDelModal">
     <template #header>부서 정보 삭제</template>
     <template #default>
       삭제한 데이터는 복구할 수 없습니다. 해당 정보를 삭제하시겠습니까?
@@ -187,5 +181,5 @@ onBeforeMount(() => formDataSetup())
     </template>
   </ConfirmModal>
 
-  <AlertModal ref="alertModal" />
+  <AlertModal ref="refAlertModal" />
 </template>

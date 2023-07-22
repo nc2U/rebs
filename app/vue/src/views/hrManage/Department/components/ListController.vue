@@ -54,7 +54,7 @@ defineExpose({ listFiltering })
               :options="getUpperDeps"
               autocomplete="label"
               :classes="{ search: 'form-control multiselect-search' }"
-              :add-option-on="['enter' | 'tab']"
+              :add-option-on="['enter', 'tab']"
               searchable
               placeholder="상위부서"
               @change="listFiltering(1)"
