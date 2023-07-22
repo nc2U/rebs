@@ -1,13 +1,16 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { computed, PropType } from 'vue'
 import { useProjectData } from '@/store/pinia/project_data'
 import { useContract } from '@/store/pinia/contract'
 import { numFormat } from '@/utils/baseMixins'
 import { ratioFormat } from '@/utils/areaMixins'
 import { TableSecondary } from '@/utils/cssMixins'
 import { SubsSummary, ContSummary } from '@/store/types/contract'
+import { Project } from '@/store/types/project'
 
-const props = defineProps({ project: { type: Object, default: null } })
+const props = defineProps({
+  project: { type: Object as PropType<Project>, default: null },
+})
 
 const contractStore = useContract()
 const projectDataStore = useProjectData()
@@ -33,7 +36,7 @@ const contNum = (order: number | null, type?: number) => {
   cont = order ? cont.filter((c: ContSummary) => c.order_group === order) : cont
   cont = type ? cont.filter((c: ContSummary) => c.unit_type === type) : cont
   cont = cont.map((c: ContSummary) => c.conts_num)
-  return cont.reduce((o: number, n: number) => o + n, 0)
+  return cont.reduce((p: number, c: number) => p + c, 0)
 }
 </script>
 
@@ -134,21 +137,26 @@ const contNum = (order: number | null, type?: number) => {
         </CTableDataCell>
         <!-- 차수별 타입별 계약건수 총계-->
         <CTableDataCell v-if="orderGroupList.length > 1">
-          {{ numFormat(contNum()) }}
+          {{ numFormat(contNum(null, null)) }}
         </CTableDataCell>
         <!-- 타입별 잔여세대 합계-->
         <CTableDataCell>
-          {{ numFormat(props.project.num_unit - contNum() - subsNum()) }}
+          {{
+            numFormat(props.project.num_unit - contNum(null, null) - subsNum())
+          }}
         </CTableDataCell>
         <!-- 타입별 계약율 합계-->
         <CTableDataCell
-          >{{ ratioFormat((contNum() / props.project.num_unit) * 100) }}
+          >{{
+            ratioFormat((contNum(null, null) / props.project.num_unit) * 100)
+          }}
         </CTableDataCell>
         <!-- 타입별 분양율(청약+계약) 합계-->
         <CTableDataCell>
           {{
             ratioFormat(
-              ((contNum() + subsNum()) / props.project.num_unit) * 100,
+              ((contNum(null, null) + subsNum()) / props.project.num_unit) *
+                100,
             )
           }}
         </CTableDataCell>

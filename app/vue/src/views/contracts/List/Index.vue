@@ -32,7 +32,7 @@ watch(project, nVal => {
 })
 
 const excelUrl = computed(() => {
-  const pk = project.value ? project.value.pk : ''
+  const pk = project.value ? project.value?.pk : ''
   const items = printItems.value.join('-')
   return `/excel/contracts/?project=${pk}${filteredStr.value}&col=${items}`
 })

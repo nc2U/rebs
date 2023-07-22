@@ -14,8 +14,9 @@ export interface Contract {
   unit_type: number
   serial_number: string
   activation: boolean
-  contractor: ContractorInContract | null
   keyunit: KeyUnit | null
+  contractprice: ContPrice | null
+  contractor: ContractorInContract | null
   payments: Payment[]
   total_paid: number
   last_paid_order: InstallmentOrder | null
@@ -25,13 +26,6 @@ export interface Contract {
     order_group_name: string
   }
   unit_type_desc: UnitType
-}
-
-export interface UnitType {
-  pk: number
-  name: string
-  color: string
-  average_price: number
 }
 
 export interface KeyUnit {
@@ -44,6 +38,38 @@ export interface HouseUnit {
   pk: number
   __str__: string
   floor_type: number
+}
+
+export interface ContPrice {
+  pk: number
+  price: number
+  price_build: number | null
+  price_land: number | null
+  price_tax: number | null
+  down_pay: number
+  middle_pay: number
+  remain_pay: number
+}
+
+interface ContractorInContract {
+  pk: number
+  name: string
+  is_registed: boolean
+  contractoraddress: ContractorAddress | null
+  contractorcontact: ContractorContact | null
+  status: string
+  contract_date: string | null
+}
+
+interface ContractorAddress {
+  pk: number
+  dm_address1: string
+}
+
+interface ContractorContact {
+  pk: number
+  cell_phone: string
+  email: string
 }
 
 export interface Payment {
@@ -63,25 +89,11 @@ interface InstallmentOrder {
   __str__: string
 }
 
-interface ContractorInContract {
+export interface UnitType {
   pk: number
   name: string
-  is_registed: boolean
-  contractoraddress: ContractorAddress | null
-  contractorcontact: ContractorContact | null
-  status: string
-  contract_date: string | null
-}
-
-interface ContractorContact {
-  pk: number
-  cell_phone: string
-  email: string
-}
-
-interface ContractorAddress {
-  pk: number
-  dm_address1: string
+  color: string
+  average_price: number
 }
 
 export interface OrderGroup {

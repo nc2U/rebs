@@ -1,16 +1,14 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { computed, PropType } from 'vue'
 import { numFormat } from '@/utils/baseMixins'
 import { useRouter } from 'vue-router'
+import { Contract } from '@/store/types/contract'
 
 const props = defineProps({
-  contract: {
-    type: Object,
-    required: true,
-  },
+  contract: { type: Object as PropType<Contract>, required: true },
 })
 
-const contractor = computed(() => props.contract.contractor.pk)
+const contractor = computed(() => props.contract?.contractor?.pk)
 
 const router = useRouter()
 </script>
@@ -28,7 +26,7 @@ const router = useRouter()
       </router-link>
     </CTableDataCell>
     <CTableDataCell>
-      <CBadge :color="contract.contractor.is_registed ? 'success' : 'danger'">
+      <CBadge :color="contract.contractor?.is_registed ? 'success' : 'danger'">
         {{ contract.contractor.is_registed ? '인가완료' : '미 인 가' }}
       </CBadge>
     </CTableDataCell>
@@ -46,7 +44,7 @@ const router = useRouter()
     </CTableDataCell>
     <CTableDataCell
       class="text-left"
-      :class="contract.keyunit.houseunit !== null ? '' : 'text-danger'"
+      :class="contract.keyunit?.houseunit !== null ? '' : 'text-danger'"
     >
       {{
         contract.keyunit.houseunit ? contract.keyunit.houseunit.__str__ : '미정'
