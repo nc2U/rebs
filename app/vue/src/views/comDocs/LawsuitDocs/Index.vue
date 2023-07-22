@@ -2,7 +2,11 @@
 import { ref, computed, onBeforeMount, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/comDocs/_menu/headermixin2'
 import { formUtility } from '@/utils/helper'
-import { useRoute, useRouter } from 'vue-router'
+import {
+  RouteLocationNormalizedLoaded as LoadedRoute,
+  useRoute,
+  useRouter,
+} from 'vue-router'
 import { useCompany } from '@/store/pinia/company'
 import { PostFilter, SuitCaseFilter, useDocument } from '@/store/pinia/document'
 import { AFile, Attatches, Link, PatchPost, Post } from '@/store/types/document'
@@ -66,7 +70,10 @@ const patchPost = (payload: PatchPost) => docStore.patchPost(payload)
 const patchLink = (payload: Link) => docStore.patchLink(payload)
 const patchFile = (payload: AFile) => docStore.patchFile(payload)
 
-const [route, router] = [useRoute(), useRouter()]
+const [route, router] = [
+  useRoute() as LoadedRoute & { name: string },
+  useRouter(),
+]
 
 watch(route, val => {
   if (val.params.postId) fetchPost(Number(val.params.postId))
@@ -76,8 +83,15 @@ watch(route, val => {
 const onSubmit = (payload: Post & Attatches) => {
   if (!!company.value) {
     const { pk, ...formData } = payload
-    formData.company = company.value
-    const form = formUtility.getFormData(formData)
+    formData.company = company.value || null
+    const form = formUtility.getFormData(
+      formData as
+        | Date
+        | Array<{ [key: string]: string }>
+        | { [key: string]: string }
+        | File
+        | string,
+    )
 
     console.log(formData, ...form)
 
@@ -151,13 +165,13 @@ onBeforeMount(() => {
         <ListController ref="fController" @list-filter="listFiltering" />
 
         <CategoryTabs
-          :category="caseFilter.category"
+          :category="caseFilter.category || undefined"
           :category-list="categoryList"
           @select-cate="selectCate"
         />
 
         <DocsList
-          :company="company"
+          :company="company || undefined"
           :page="caseFilter.page"
           :post-list="postList"
           @page-select="pageSelect"
@@ -167,8 +181,8 @@ onBeforeMount(() => {
 
       <div v-else-if="route.name.includes('보기')">
         <DocsView
-          :category="caseFilter.category"
-          :post="post"
+          :category="caseFilter.category as undefined"
+          :post="post as Post"
           @post-hit="postHit"
           @link-hit="linkHit"
           @file-hit="fileHit"
@@ -187,7 +201,7 @@ onBeforeMount(() => {
         <DocsForm
           :category-list="categoryList"
           :get-suit-case="getSuitCase"
-          :post="post"
+          :post="post as Post"
           @on-submit="onSubmit"
         />
       </div>

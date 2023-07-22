@@ -9,10 +9,10 @@ const props = defineProps({
 
 const emit = defineEmits(['sort-filter'])
 
-const sortName = computed(() => props.post.proj_name || '본사')
-const sortColor = computed(() => (props.post.project ? 'success' : 'info'))
+const sortName = computed(() => props.post?.proj_name || '본사')
+const sortColor = computed(() => (props.post?.project ? 'success' : 'info'))
 const lawsuitName = computed(() =>
-  props.post.lawsuit_name
+  props.post?.lawsuit_name
     ? props.post.lawsuit_name
         .replace('지방법원', '지법')
         .replace('고등법원', '고법')
@@ -20,7 +20,7 @@ const lawsuitName = computed(() =>
     : '',
 )
 
-const sortFunc = () => emit('sort-filter', props.post.project)
+const sortFunc = () => emit('sort-filter', props.post?.project)
 </script>
 
 <template>

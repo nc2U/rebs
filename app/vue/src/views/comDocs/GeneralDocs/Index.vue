@@ -175,7 +175,7 @@ onBeforeMount(() => {
       <div v-else-if="route.name.includes('보기')">
         <DocsView
           :category="postFilter.category as number"
-          :post="post"
+          :post="post as Post"
           @post-hit="postHit"
           @link-hit="linkHit"
           @file-hit="fileHit"
@@ -189,7 +189,7 @@ onBeforeMount(() => {
       <div v-else-if="route.name.includes('수정')">
         <DocsForm
           :category-list="categoryList"
-          :post="post"
+          :post="post as Post"
           @on-submit="onSubmit"
         />
       </div>

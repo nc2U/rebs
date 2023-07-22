@@ -1,12 +1,14 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { computed, PropType } from 'vue'
 import { timeFormat } from '@/utils/baseMixins'
 import { useDocument } from '@/store/pinia/document'
 import { cutString } from '@/utils/baseMixins'
+import { Post, Link, AFile } from '@/store/types/document'
+import sanitizeHtml from 'sanitize-html'
 
 const props = defineProps({
   category: { type: Number, default: undefined },
-  post: { type: Object, default: null },
+  post: { type: Object as PropType<Post>, default: null },
 })
 const emit = defineEmits(['post-hit', 'link-hit', 'file-hit'])
 
@@ -24,13 +26,13 @@ const toSocial = () => alert('준비중!')
 const toDelete = () => alert('준비중!')
 
 const linkHitUp = async (pk: number) => {
-  const link = await fetchLink(pk)
+  const link = (await fetchLink(pk)) as Link
   link.hit = link.hit + 1
   emit('link-hit', link)
 }
 
 const fileHitUp = async (pk: number) => {
-  const file = await fetchFile(pk)
+  const file = (await fetchFile(pk)) as AFile
   const hit = file.hit + 1
   emit('file-hit', { pk, hit })
 }
@@ -100,7 +102,7 @@ const getFileName = (file: string) => {
       </CCol>
 
       <CCol md="7" lg="6" xl="5">
-        <CRow v-if="post.links.length" class="mb-3">
+        <CRow v-if="post.links && post.links.length" class="mb-3">
           <CCol>
             <CListGroup>
               <CListGroupItem>Link</CListGroupItem>
@@ -109,7 +111,11 @@ const getFileName = (file: string) => {
                 :key="l.pk"
                 class="d-flex justify-content-between align-items-center"
               >
-                <a :href="l.link" target="_blank" @click="linkHitUp(l.pk)">
+                <a
+                  :href="l.link"
+                  target="_blank"
+                  @click="linkHitUp(l.pk as number)"
+                >
                   {{ cutString(l.link, 45) }}
                 </a>
                 <small>
@@ -123,7 +129,7 @@ const getFileName = (file: string) => {
           </CCol>
         </CRow>
 
-        <CRow v-if="post.files.length">
+        <CRow v-if="post.files && post.files.length">
           <CCol>
             <CListGroup>
               <CListGroupItem>File</CListGroupItem>
@@ -132,7 +138,11 @@ const getFileName = (file: string) => {
                 :key="f.pk"
                 class="d-flex justify-content-between align-items-center"
               >
-                <a :href="f.file" target="_blank" @click="fileHitUp(f.pk)">
+                <a
+                  :href="f.file"
+                  target="_blank"
+                  @click="fileHitUp(f.pk as number)"
+                >
                   {{ cutString(getFileName(f.file), 29) }}
                 </a>
                 <small>
@@ -150,7 +160,7 @@ const getFileName = (file: string) => {
 
     <CRow class="my-5 p-3">
       <CCol>
-        <div v-html="post.content" />
+        <div v-html="sanitizeHtml(post.content)" />
       </CCol>
     </CRow>
 
