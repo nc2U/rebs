@@ -7,14 +7,16 @@ import {
   watch,
   onMounted,
   onUpdated,
+  PropType,
 } from 'vue'
+import { useStore } from 'vuex'
 import { useAccount } from '@/store/pinia/account'
 import { useContract } from '@/store/pinia/contract'
 import { useProjectData } from '@/store/pinia/project_data'
 import { usePayment } from '@/store/pinia/payment'
 import { useProCash } from '@/store/pinia/proCash'
 import { PayOrder } from '@/store/types/payment'
-import { Payment } from '@/store/types/contract'
+import { Payment, Contractor } from '@/store/types/contract'
 import { isValidate } from '@/utils/helper'
 import { numFormat, dateFormat, diffDate } from '@/utils/baseMixins'
 import { write_contract } from '@/utils/pageAuth'
@@ -31,7 +33,7 @@ import DatePicker from '@/components/DatePicker/index.vue'
 const props = defineProps({
   project: { type: Number, default: null },
   contract: { type: Object, default: null },
-  contractor: { type: Object, default: null },
+  contractor: { type: Object as PropType<Contractor>, default: null },
   unitSet: { type: Boolean, default: false },
   isUnion: { type: Boolean, default: false },
 })
@@ -44,6 +46,7 @@ const emit = defineEmits([
   'resume-form',
 ])
 
+const postCode = ref()
 const address21 = ref()
 const address22 = ref()
 const delModal = ref()
@@ -121,6 +124,9 @@ const matchAddr = computed(() => {
 })
 
 watch(matchAddr, val => sameAddrBtnSet(val))
+
+const store = useStore()
+const isDark = computed(() => store.state.theme === 'dark')
 
 const sameAddrBtnSet = (chk: boolean) => (sameAddr.value = chk)
 
@@ -454,7 +460,7 @@ onUpdated(() => formDataSetup())
             :classes="{
               search: 'form-control multiselect-search',
             }"
-            :add-option-on="['enter' | 'tab']"
+            :add-option-on="['enter', 'tab']"
             searchable
             :disabled="!project"
             @change="unitReset"
@@ -532,7 +538,7 @@ onUpdated(() => formDataSetup())
             :classes="{
               search: 'form-control multiselect-search',
             }"
-            :add-option-on="['enter' | 'tab']"
+            :add-option-on="['enter', 'tab']"
             searchable
             :disabled="form.keyunit === null && !contract"
           />
@@ -695,10 +701,7 @@ onUpdated(() => formDataSetup())
       </CRow>
 
       <CRow class="mb-0">
-        <CAlert
-          :color="$store.state.theme === 'dark' ? 'default' : 'secondary'"
-          class="pb-0"
-        >
+        <CAlert :color="isDark ? 'default' : 'secondary'" class="pb-0">
           <CRow v-if="downPayments.length" class="mb-3">
             <CCol>
               <CRow
@@ -797,7 +800,7 @@ onUpdated(() => formDataSetup())
                 <option value="">납부계좌 선택</option>
                 <option
                   v-for="pb in allProBankAccountList"
-                  :key="pb.pk"
+                  :key="pb.pk as number"
                   :value="pb.pk"
                 >
                   {{ pb.alias_name }}
@@ -825,7 +828,11 @@ onUpdated(() => formDataSetup())
                 :disabled="noStatus"
               >
                 <option value="">납부회차 선택</option>
-                <option v-for="po in downPayOrder" :key="po.pk" :value="po.pk">
+                <option
+                  v-for="po in downPayOrder"
+                  :key="po.pk as number"
+                  :value="po.pk"
+                >
                   {{ po.__str__ }}
                 </option>
               </CFormSelect>
@@ -847,7 +854,7 @@ onUpdated(() => formDataSetup())
         </CFormLabel>
         <CCol md="3" lg="2" class="mb-3 mb-lg-0">
           <CInputGroup>
-            <CInputGroupText @click="$refs.postCode.initiate(2)">
+            <CInputGroupText @click="postCode.initiate(2)">
               우편번호
             </CInputGroupText>
             <CFormInput
@@ -858,7 +865,7 @@ onUpdated(() => formDataSetup())
               placeholder="우편번호"
               :required="isContract"
               :disabled="!isContract"
-              @focus="$refs.postCode.initiate(2)"
+              @focus="postCode.initiate(2)"
             />
             <CFormFeedback invalid>우편번호를 입력하세요.</CFormFeedback>
           </CInputGroup>
@@ -871,7 +878,7 @@ onUpdated(() => formDataSetup())
             placeholder="주민등록 주소를 입력하세요"
             :required="isContract"
             :disabled="!isContract"
-            @focus="$refs.postCode.initiate(2)"
+            @focus="postCode.initiate(2)"
           />
           <CFormFeedback invalid>주민등록 주소를 입력하세요.</CFormFeedback>
         </CCol>
@@ -904,7 +911,7 @@ onUpdated(() => formDataSetup())
         </CFormLabel>
         <CCol md="3" lg="2" class="mb-3 mb-lg-0">
           <CInputGroup>
-            <CInputGroupText @click="$refs.postCode.initiate(3)">
+            <CInputGroupText @click="postCode.initiate(3)">
               우편번호
             </CInputGroupText>
             <CFormInput
@@ -915,7 +922,7 @@ onUpdated(() => formDataSetup())
               placeholder="우편번호"
               :required="isContract"
               :disabled="!isContract"
-              @focus="$refs.postCode.initiate(3)"
+              @focus="postCode.initiate(3)"
             />
             <CFormFeedback invalid>우편번호를 입력하세요.</CFormFeedback>
           </CInputGroup>
@@ -928,7 +935,7 @@ onUpdated(() => formDataSetup())
             placeholder="우편물 수령 주소를 입력하세요"
             :required="isContract"
             :disabled="!isContract"
-            @focus="$refs.postCode.initiate(3)"
+            @focus="postCode.initiate(3)"
           />
           <CFormFeedback invalid>
             우편물 수령 주소를 입력하세요.
@@ -1006,13 +1013,13 @@ onUpdated(() => formDataSetup())
     </CCardFooter>
   </CForm>
 
-  <DaumPostcode ref="postCode" @addressCallback="addressCallback" />
+  <DaumPostcode ref="postCode" @address-callback="addressCallback" />
 
   <ConfirmModal ref="delModal">
     <template #header>프로젝트정보 삭제</template>
     <template #default>현재 삭제 기능이 구현되지 않았습니다.</template>
     <template #footer>
-      <CButton color="danger" disabled="">삭제</CButton>
+      <CButton color="danger" disabled>삭제</CButton>
     </template>
   </ConfirmModal>
 
