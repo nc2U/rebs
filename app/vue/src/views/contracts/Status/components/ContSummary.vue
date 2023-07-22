@@ -23,10 +23,10 @@ const subsSum = computed(() =>
     <CCol lg="5">
       <CTable hover responsive bordered align="middle">
         <colgroup>
-          <col width="25%" />
-          <col width="25%" />
-          <col width="25%" />
-          <col width="25%" />
+          <col style="width: 25%" />
+          <col style="width: 25%" />
+          <col style="width: 25%" />
+          <col style="width: 25%" />
         </colgroup>
         <CTableBody>
           <CTableRow>
@@ -89,17 +89,9 @@ const subsSum = computed(() =>
     </CCol>
     <CCol lg="7">
       <span v-for="type in simpleTypes" :key="type.pk" class="mr-3">
-        <div class="cube mr-1" :style="`background-color: ${type.color};`" />
+        <v-icon icon="mdi mdi-square" size="small" :color="type.color" />
         {{ type.name }}
       </span>
     </CCol>
   </CRow>
 </template>
-
-<style lang="scss" scoped>
-.cube {
-  width: 12px;
-  height: 12px;
-  display: inline-block;
-}
-</style>

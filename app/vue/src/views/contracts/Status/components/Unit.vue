@@ -1,9 +1,10 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { computed, PropType } from 'vue'
+import { SimpleUnit } from './ContractBoard.vue'
 
 const props = defineProps({
-  units: { type: Object, default: null },
-  unit: { type: Object, default: null },
+  units: { type: Object as PropType<SimpleUnit[]>, default: null },
+  unit: { type: Object as PropType<SimpleUnit>, default: null },
   floor: { type: Number, default: 1 },
   line: { type: Number, default: 1 },
   maxPiloti: { type: Number, default: 1 },
@@ -12,14 +13,14 @@ const props = defineProps({
 
 const isPiloti = computed(() => !props.unit && props.floor < props.maxPiloti)
 const isContract = computed(() => !!props.unit.key_unit?.contract)
-const contractor = computed(() =>
-  isContract.value ? props.unit.key_unit.contract.contractor.name : '',
+const contorName = computed(() =>
+  isContract.value ? props.unit.key_unit.contract?.contractor.name : '',
 )
-const contractorPk = computed(() =>
-  isContract.value ? props.unit.key_unit.contract.contractor.pk : '',
+const contorPk = computed(() =>
+  isContract.value ? props.unit.key_unit.contract?.contractor.pk : '',
 )
 const status = computed(() =>
-  isContract.value ? props.unit.key_unit.contract.contractor.status : '',
+  isContract.value ? props.unit.key_unit.contract?.contractor.status : '',
 )
 const isHold = computed(() => (isContract.value ? props.unit.is_hold : ''))
 const statusColor = computed(() => {
@@ -65,10 +66,10 @@ const statusColor = computed(() => {
         <router-link
           :to="{
             name: '계약 등록 수정',
-            query: { contractor: contractorPk },
+            query: { contractor: contorPk },
           }"
         >
-          {{ contractor }}
+          {{ contorName }}
         </router-link>
       </span>
     </div>

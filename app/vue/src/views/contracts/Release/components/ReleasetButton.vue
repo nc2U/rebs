@@ -1,14 +1,16 @@
 <script lang="ts" setup>
-import { ref, computed } from 'vue'
+import { ref, computed, PropType } from 'vue'
 import { useContract } from '@/store/pinia/contract'
-import { ContractRelease } from '@/store/types/contract'
+import { Contractor, ContractRelease } from '@/store/types/contract'
 import { AlertLight } from '@/utils/cssMixins'
 import { write_contract } from '@/utils/pageAuth'
 import FormModal from '@/components/Modals/FormModal.vue'
 import ReleaseForm from '@/views/contracts/Release/components/ReleaseForm.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-const props = defineProps({ contractor: { type: Object, default: null } })
+const props = defineProps({
+  contractor: { type: Object as PropType<Contractor>, default: null },
+})
 const emit = defineEmits(['on-submit'])
 
 const releaseFormModal = ref()
@@ -52,7 +54,7 @@ const onSubmit = (payload: ContractRelease) => {
     <template #default>
       <ReleaseForm
         :contractor="contractor"
-        :release="contRelease"
+        :release="contRelease as ContractRelease"
         @on-submit="onSubmit"
         @close="releaseFormModal.close()"
       />

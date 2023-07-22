@@ -1,26 +1,27 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, watch, onBeforeMount } from 'vue'
+import { ref, reactive, computed, watch, onBeforeMount, PropType } from 'vue'
 import { write_contract } from '@/utils/pageAuth'
 import { isValidate } from '@/utils/helper'
 import { dateFormat } from '@/utils/baseMixins'
+import { Contractor, ContractRelease } from '@/store/types/contract'
 import DatePicker from '@/components/DatePicker/index.vue'
-import AlertModal from '@/components/Modals/AlertModal.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
+import AlertModal from '@/components/Modals/AlertModal.vue'
 
 const props = defineProps({
-  release: { type: Object, default: null },
-  contractor: { type: Object, default: null },
+  release: { type: Object as PropType<ContractRelease>, default: null },
+  contractor: { type: Object as PropType<Contractor>, default: null },
 })
 
 const emit = defineEmits(['on-submit', 'close'])
 
-const alertModal = ref()
-const confirmModal = ref()
+const refConfirmModal = ref()
+const refAlertModal = ref()
 
 const validated = ref(false)
 const form = reactive({
   pk: null as number | null,
-  contractor: '',
+  contractor: null as number | null,
   status: '',
   refund_amount: null as number | null,
   refund_account_bank: '',
@@ -58,12 +59,12 @@ const onSubmit = (event: Event) => {
     if (isValidate(event)) {
       validated.value = true
     } else emit('on-submit', { ...form })
-  } else alertModal.value.callModal()
+  } else refAlertModal.value.callModal()
 }
 
 const deleteConfirm = () => {
-  if (write_contract.value) confirmModal.value.callModal()
-  else alertModal.value.callModal()
+  if (write_contract.value) refConfirmModal.value.callModal()
+  else refAlertModal.value.callModal()
 }
 
 const modalAction = () => alert('this is ready!')
@@ -270,7 +271,7 @@ onBeforeMount(() => formDataSet())
     </CModalFooter>
   </CForm>
 
-  <ConfirmModal ref="confirmModal">
+  <ConfirmModal ref="refConfirmModal">
     <template #header> 계약 해지 정보 - [삭제]</template>
     <template #default>
       삭제 후 복구할 수 없습니다. 해당 건별 수납 정보 삭제를 진행하시겠습니까?
@@ -280,5 +281,5 @@ onBeforeMount(() => formDataSet())
     </template>
   </ConfirmModal>
 
-  <AlertModal ref="alertModal" />
+  <AlertModal ref="refAlertModal" />
 </template>

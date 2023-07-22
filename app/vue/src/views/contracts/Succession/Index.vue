@@ -126,9 +126,11 @@ onBeforeMount(() => {
 
   <ContentBody>
     <CCardBody class="pb-5">
-      <ContNavigation :cont-on="contractor?.status < '3'" />
+      <ContNavigation
+        :cont-on="!!contractor?.status && contractor.status < '3'"
+      />
       <ContController
-        :project="project"
+        :project="project || undefined"
         @search-contractor="searchContractor"
       />
       <ContractorAlert v-if="contractor" :contractor="contractor" />

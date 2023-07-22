@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
+import { TableSecondary } from '@/utils/cssMixins'
 import { useContract } from '@/store/pinia/contract'
 import { ContractRelease } from '@/store/types/contract'
 import Pagination from '@/components/Pagination'
 import Release from '@/views/contracts/Release/components/Release.vue'
-import { TableSecondary } from '@/utils/cssMixins'
 
 const emit = defineEmits(['page-select', 'get-release', 'on-submit'])
 
@@ -20,15 +20,15 @@ const onSubmit = (payload: ContractRelease) => emit('on-submit', payload)
 <template>
   <CTable hover responsive align="middle">
     <colgroup>
-      <col width="25%" />
-      <col width="10%" />
-      <col width="12%" />
-      <col width="10%" />
-      <col width="12%" />
-      <col width="9%" />
-      <col width="9%" />
-      <col width="9%" />
-      <col width="5%" />
+      <col style="width: 25%" />
+      <col style="width: 10%" />
+      <col style="width: 12%" />
+      <col style="width: 10%" />
+      <col style="width: 12%" />
+      <col style="width: 9%" />
+      <col style="width: 9%" />
+      <col style="width: 9%" />
+      <col style="width: 5%" />
     </colgroup>
 
     <CTableHead :color="TableSecondary" class="text-center">

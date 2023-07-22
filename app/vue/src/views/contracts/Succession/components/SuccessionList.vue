@@ -19,14 +19,14 @@ const onSubmit = (payload: SuccessType) => emit('on-submit', payload)
 <template>
   <CTable hover responsive align="middle">
     <colgroup>
-      <col width="12%" />
-      <col width="12%" />
-      <col width="12%" />
-      <col width="15%" />
-      <col width="15%" />
-      <col width="15%" />
-      <col width="11%" />
-      <col width="8%" />
+      <col style="width: 12%" />
+      <col style="width: 12%" />
+      <col style="width: 12%" />
+      <col style="width: 15%" />
+      <col style="width: 15%" />
+      <col style="width: 15%" />
+      <col style="width: 11%" />
+      <col style="width: 8%" />
     </colgroup>
 
     <CTableHead :color="TableSecondary" class="text-center">

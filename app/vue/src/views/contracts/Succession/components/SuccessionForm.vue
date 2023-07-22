@@ -15,13 +15,15 @@ const props = defineProps({ succession: { type: Object, default: null } })
 
 const emit = defineEmits(['on-submit', 'close'])
 
-const sameAddr = ref(false)
+const postCode = ref()
+const refAlertModal = ref()
+const refConfirmModal = ref()
+
 const address21 = ref()
 const address22 = ref()
-const alertModal = ref()
-const confirmModal = ref()
-
+const sameAddr = ref(false)
 const validated = ref(false)
+
 const form = reactive<Succession>({
   pk: undefined,
   contract: null,
@@ -129,12 +131,12 @@ const onSubmit = (event: Event) => {
       const b_data = { ...buyer_data }
       emit('on-submit', { ...{ s_data }, ...{ b_data } })
     }
-  } else alertModal.value.callModal()
+  } else refAlertModal.value.callModal()
 }
 
 const deleteConfirm = () => {
-  if (write_contract.value) confirmModal.value.callModal()
-  else alertModal.value.callModal()
+  if (write_contract.value) refConfirmModal.value.callModal()
+  else refAlertModal.value.callModal()
 }
 
 const modalAction = () => alert('this is ready!')
@@ -425,7 +427,7 @@ onBeforeMount(() => formDataSet())
             </CFormLabel>
             <CCol xs="4">
               <CInputGroup>
-                <CInputGroupText @click="$refs.postCode.initiate(2)">
+                <CInputGroupText @click="postCode.initiate(2)">
                   우편번호
                 </CInputGroupText>
                 <CFormInput
@@ -436,7 +438,7 @@ onBeforeMount(() => formDataSet())
                   placeholder="우편번호"
                   required
                   :disabled="done"
-                  @focus="$refs.postCode.initiate(2)"
+                  @focus="postCode.initiate(2)"
                 />
               </CInputGroup>
             </CCol>
@@ -447,7 +449,7 @@ onBeforeMount(() => formDataSet())
                 placeholder="주민등록 메인 주소"
                 required
                 :disabled="done"
-                @focus="$refs.postCode.initiate(2)"
+                @focus="postCode.initiate(2)"
               />
             </CCol>
           </CRow>
@@ -482,7 +484,7 @@ onBeforeMount(() => formDataSet())
             </CFormLabel>
             <CCol xs="4">
               <CInputGroup>
-                <CInputGroupText @click="$refs.postCode.initiate(3)">
+                <CInputGroupText @click="postCode.initiate(3)">
                   우편번호
                 </CInputGroupText>
                 <CFormInput
@@ -493,7 +495,7 @@ onBeforeMount(() => formDataSet())
                   placeholder="우편번호"
                   required
                   :disabled="done"
-                  @focus="$refs.postCode.initiate(3)"
+                  @focus="postCode.initiate(3)"
                 />
               </CInputGroup>
             </CCol>
@@ -504,7 +506,7 @@ onBeforeMount(() => formDataSet())
                 placeholder="우편송달 메인 주소"
                 required
                 :disabled="done"
-                @focus="$refs.postCode.initiate(3)"
+                @focus="postCode.initiate(3)"
               />
             </CCol>
           </CRow>
@@ -615,9 +617,9 @@ onBeforeMount(() => formDataSet())
     </CModalFooter>
   </CForm>
 
-  <DaumPostcode ref="postCode" @addressCallback="addressCallback" />
+  <DaumPostcode ref="postCode" @address-callback="addressCallback" />
 
-  <ConfirmModal ref="confirmModal">
+  <ConfirmModal ref="refConfirmModal">
     <template #header> 계약 해지 정보 - [삭제]</template>
     <template #default>
       삭제 후 복구할 수 없습니다. 해당 건별 수납 정보 삭제를 진행하시겠습니까?
@@ -627,5 +629,5 @@ onBeforeMount(() => formDataSet())
     </template>
   </ConfirmModal>
 
-  <AlertModal ref="alertModal" />
+  <AlertModal ref="refAlertModal" />
 </template>
