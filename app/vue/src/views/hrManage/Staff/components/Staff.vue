@@ -1,14 +1,11 @@
 <script lang="ts" setup="">
-import { ref } from 'vue'
+import { PropType, ref } from 'vue'
 import { Staff } from '@/store/types/company'
 import FormModal from '@/components/Modals/FormModal.vue'
 import StaffForm from './StaffForm.vue'
 
 defineProps({
-  staff: {
-    type: Object,
-    required: true,
-  },
+  staff: { type: Object as PropType<Staff>, required: true },
 })
 
 const emit = defineEmits(['multi-submit', 'on-delete'])

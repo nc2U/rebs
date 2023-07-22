@@ -89,7 +89,7 @@ defineExpose({ listFiltering })
               :options="getSorts"
               autocomplete="label"
               :classes="{ search: 'form-control multiselect-search' }"
-              :add-option-on="['enter' | 'tab']"
+              :add-option-on="['enter', 'tab']"
               searchable
               placeholder="임직원 전체"
               @change="listFiltering(1)"
@@ -101,7 +101,7 @@ defineExpose({ listFiltering })
               :options="getPkDeparts"
               autocomplete="label"
               :classes="{ search: 'form-control multiselect-search' }"
-              :add-option-on="['enter' | 'tab']"
+              :add-option-on="['enter', 'tab']"
               searchable
               placeholder="부서 전체"
               @change="listFiltering(1)"
@@ -113,7 +113,7 @@ defineExpose({ listFiltering })
               :options="getPkGrades"
               autocomplete="label"
               :classes="{ search: 'form-control multiselect-search' }"
-              :add-option-on="['enter' | 'tab']"
+              :add-option-on="['enter', 'tab']"
               searchable
               placeholder="직급 전체"
               @change="listFiltering(1)"
@@ -125,7 +125,7 @@ defineExpose({ listFiltering })
               :options="getPkPositions"
               autocomplete="label"
               :classes="{ search: 'form-control multiselect-search' }"
-              :add-option-on="['enter' | 'tab']"
+              :add-option-on="['enter', 'tab']"
               searchable
               placeholder="직위 전체"
               @change="listFiltering(1)"
@@ -137,7 +137,7 @@ defineExpose({ listFiltering })
               :options="getPkDutys"
               autocomplete="label"
               :classes="{ search: 'form-control multiselect-search' }"
-              :add-option-on="['enter' | 'tab']"
+              :add-option-on="['enter', 'tab']"
               searchable
               placeholder="직책 전체"
               @change="listFiltering(1)"
@@ -149,7 +149,7 @@ defineExpose({ listFiltering })
               :options="getStatus"
               autocomplete="label"
               :classes="{ search: 'form-control multiselect-search' }"
-              :add-option-on="['enter' | 'tab']"
+              :add-option-on="['enter', 'tab']"
               searchable
               placeholder="상태 전체"
               @change="listFiltering(1)"

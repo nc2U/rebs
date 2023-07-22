@@ -3,23 +3,19 @@ import { ref } from 'vue'
 import { AlertSecondary } from '@/utils/cssMixins'
 import { write_human_resource } from '@/utils/pageAuth'
 import { Staff } from '@/store/types/company'
-import FormModal from '@/components/Modals/FormModal.vue'
 import StaffForm from './StaffForm.vue'
+import FormModal from '@/components/Modals/FormModal.vue'
+import AlertModal from '@/components/Modals/AlertModal.vue'
 
-defineProps({
-  company: {
-    type: String,
-    default: null,
-  },
-})
+defineProps({ company: { type: String, default: null } })
 const emit = defineEmits(['multi-submit'])
 
-const formModal = ref()
-const alertModal = ref()
+const refFormModal = ref()
+const refAlertModal = ref()
 
 const createConfirm = () => {
-  if (write_human_resource.value) formModal.value.callModal()
-  else alertModal.value.callModal()
+  if (write_human_resource.value) refFormModal.value.callModal()
+  else refAlertModal.value.callModal()
 }
 const multiSubmit = (payload: Staff) => emit('multi-submit', payload)
 </script>
@@ -31,16 +27,16 @@ const multiSubmit = (payload: Staff) => emit('multi-submit', payload)
     </CButton>
   </CAlert>
 
-  <FormModal ref="formModal" size="lg">
+  <FormModal ref="refFormModal" size="lg">
     <template #header>직원 정보 등록</template>
     <template #default>
       <StaffForm
         :company="company"
         @multi-submit="multiSubmit"
-        @close="formModal.close()"
+        @close="refFormModal.close()"
       />
     </template>
   </FormModal>
 
-  <AlertModal ref="alertModal" />
+  <AlertModal ref="refAlertModal" />
 </template>

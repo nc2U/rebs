@@ -6,9 +6,7 @@ import { bgLight } from '@/utils/cssMixins'
 
 const emit = defineEmits(['list-filtering'])
 
-const form = reactive({
-  q: '',
-})
+const form = reactive({ q: '' })
 
 const formsCheck = computed(() => form.q.trim() === '')
 

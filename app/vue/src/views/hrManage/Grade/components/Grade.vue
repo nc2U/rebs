@@ -1,15 +1,12 @@
 <script lang="ts" setup="">
-import { computed, ref } from 'vue'
+import { computed, PropType, ref } from 'vue'
 import { useCompany } from '@/store/pinia/company'
 import { Grade } from '@/store/types/company'
 import FormModal from '@/components/Modals/FormModal.vue'
 import StaffForm from './GradeForm.vue'
 
 const props = defineProps({
-  grade: {
-    type: Object,
-    required: true,
-  },
+  grade: { type: Object as PropType<Grade>, required: true },
 })
 
 const emit = defineEmits(['multi-submit', 'on-delete'])
@@ -20,9 +17,9 @@ const comStore = useCompany()
 const pkPositions = computed(() => comStore.getPkPositions)
 
 const positions = computed(() => {
-  const ids = props.grade.positions
+  const ids = props.grade.positions || []
   return pkPositions.value
-    .filter(p => ids.includes(p.value))
+    .filter(p => ids.includes(p.value as number))
     .map(p => p.label)
     .join(', ')
 })

@@ -101,8 +101,8 @@ export const useCompany = defineStore('company', () => {
       .then(() => message('warning', '', '해당 오브젝트가 삭제되었습니다.'))
       .catch(err => errorHandle(err.response.data))
 
-  const staffList = ref<Grade[]>([])
-  const staff = ref<Grade | null>(null)
+  const staffList = ref<Staff[]>([])
+  const staff = ref<Staff | null>(null)
   const staffsCount = ref<number>(0)
 
   // actions
