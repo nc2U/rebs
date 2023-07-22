@@ -1,15 +1,10 @@
 <script lang="ts" setup="">
-import { ref } from 'vue'
+import { PropType, ref } from 'vue'
 import { Duty } from '@/store/types/company'
 import FormModal from '@/components/Modals/FormModal.vue'
 import StaffForm from './DutyForm.vue'
 
-defineProps({
-  duty: {
-    type: Object,
-    required: true,
-  },
-})
+defineProps({ duty: { type: Object as PropType<Duty>, required: true } })
 
 const emit = defineEmits(['multi-submit', 'on-delete'])
 
@@ -24,7 +19,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
   <CTableRow v-if="duty" class="text-center">
     <CTableDataCell>{{ duty.pk }}</CTableDataCell>
     <CTableDataCell>{{ duty.name }}</CTableDataCell>
-    <CTableDataCell class="text-left">{{ duty.title }}</CTableDataCell>
+    <CTableDataCell class="text-left">{{ duty.desc }}</CTableDataCell>
     <CTableDataCell>
       <CButton color="info" size="sm" @click="showDetail">확인</CButton>
     </CTableDataCell>
