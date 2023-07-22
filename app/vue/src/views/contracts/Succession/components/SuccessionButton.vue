@@ -47,7 +47,7 @@ const onSubmit = (payload: Succession) => {
     </template>
     <template #default>
       <SuccessionForm
-        :succession="isSuccession ? succession : null"
+        :succession="isSuccession ? (succession as Succession) : undefined"
         @on-submit="onSubmit"
         @close="successionFormModal.close()"
       />

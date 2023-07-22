@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed } from 'vue'
+import { ref, computed, PropType } from 'vue'
 import { Succession } from '@/store/types/contract'
 import { useRouter } from 'vue-router'
 import { write_contract } from '@/utils/pageAuth'
@@ -7,7 +7,9 @@ import FormModal from '@/components/Modals/FormModal.vue'
 import SuccessionForm from '@/views/contracts/Succession/components/SuccessionForm.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-const props = defineProps({ succession: { type: Object, required: true } })
+const props = defineProps({
+  succession: { type: Object as PropType<Succession>, required: true },
+})
 const emit = defineEmits(['on-submit'])
 
 const successionFormModal = ref()

@@ -158,9 +158,15 @@ export type ContSummary = SubsSummary
 
 export interface Succession {
   pk?: number
-  contract: number | null
-  seller: number | null
-  buyer: number | null
+  contract: {
+    pk: number
+    serial_number: string
+  }
+  seller: {
+    pk: number
+    name: string
+  }
+  buyer: Buyer
   apply_date: string
   trading_date: string
   is_approval: boolean
