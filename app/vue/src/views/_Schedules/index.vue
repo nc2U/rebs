@@ -31,8 +31,8 @@ const updateSchedule = (payload: { pk: string; data: Event }) =>
 
 const mode = ref<'create' | 'update'>('create')
 
-const formModal = ref()
-const alertModal = ref()
+const refFormModal = ref()
+const refAlertModal = ref()
 const eventId = ref<string>('')
 const eventTitle = ref('')
 
@@ -53,14 +53,14 @@ const handleDateSelect = (selectInfo: DateSelectArg) => {
   if (accountStore.staffAuth) {
     mode.value = 'create'
     eventTitle.value = ''
-    formModal.value.callModal()
+    refFormModal.value.callModal()
     const calendarApi = selectInfo.view.calendar
     calendarApi.unselect() // clear date selection
     newEvent.start = selectInfo.startStr
     newEvent.end = selectInfo.endStr
     newEvent.allDay = selectInfo.allDay
   } else
-    alertModal.value.callModal(
+    refAlertModal.value.callModal(
       '',
       '스태프(일정 등록) 권한이 없습니다. 관리자에게 문의하여 주십시요.',
     )
@@ -74,7 +74,7 @@ const eventManagement = () => {
       pk: eventId.value,
       ...{ data: eventData },
     })
-  formModal.value.close()
+  refFormModal.value.close()
 }
 
 type CurrEvent = EventApi & { _instance: { range: { start: Date; end: Date } } }
@@ -97,7 +97,7 @@ const handleChange = (el: EventClickArg & { event: CurrEvent }) => {
   scheduleStore.updateSchedule({ pk, data: eventDate })
 }
 
-const confirmModal = ref()
+const refConfirmModal = ref()
 const handleEventClick = (clickInfo: EventClickArg) => {
   if (accountStore.staffAuth) {
     mode.value = 'update'
@@ -106,23 +106,23 @@ const handleEventClick = (clickInfo: EventClickArg) => {
     newEvent.start = clickInfo.event.startStr
     newEvent.end = clickInfo.event.endStr
     newEvent.allDay = clickInfo.event.allDay
-    formModal.value.callModal()
+    refFormModal.value.callModal()
   } else
-    alertModal.value.callModal(
+    refAlertModal.value.callModal(
       '',
       '스태프(일정 수정) 권한이 없습니다. 관리자에게 문의하여 주십시요.',
     )
 }
 
 const removeConfirm = () => {
-  formModal.value.close()
-  confirmModal.value.callModal()
+  refFormModal.value.close()
+  refConfirmModal.value.callModal()
 }
 
 const eventRemove = () => {
   const mon = newEvent.start.substring(0, 7)
   scheduleStore.deleteSchedule(eventId.value, mon)
-  confirmModal.value.close()
+  refConfirmModal.value.close()
 }
 
 const handleMonthChange = (payload: CalEvent) => {
@@ -210,7 +210,7 @@ onBeforeMount(() => {
     </CRow>
   </div>
 
-  <FormModal ref="formModal">
+  <FormModal ref="refFormModal">
     <template #icon>
       <v-icon
         icon="mdi-calendar-clock-outline"
@@ -237,7 +237,7 @@ onBeforeMount(() => {
         </CRow>
       </CModalBody>
       <CModalFooter>
-        <CButton color="light" @click="formModal.close"> 닫기</CButton>
+        <CButton color="light" @click="refFormModal.close"> 닫기</CButton>
         <CButton
           v-if="mode === 'create'"
           color="primary"
@@ -259,7 +259,7 @@ onBeforeMount(() => {
     </template>
   </FormModal>
 
-  <ConfirmModal ref="confirmModal">
+  <ConfirmModal ref="refConfirmModal">
     <template #icon>
       <v-icon
         icon="mdi-trash-can-outline"
@@ -276,5 +276,5 @@ onBeforeMount(() => {
     </template>
   </ConfirmModal>
 
-  <AlertModal ref="alertModal" />
+  <AlertModal ref="refAlertModal" />
 </template>
