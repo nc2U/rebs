@@ -1,5 +1,13 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, nextTick, onBeforeMount, watch } from 'vue'
+import {
+  ref,
+  reactive,
+  computed,
+  nextTick,
+  onBeforeMount,
+  watch,
+  PropType,
+} from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { useComCash } from '@/store/pinia/comCash'
 import { CashBook, CompanyBank, SepItems } from '@/store/types/comCash'
@@ -12,7 +20,12 @@ import AlertModal from '@/components/Modals/AlertModal.vue'
 import AccDepth from './AccDepth.vue'
 import BankAcc from './BankAcc.vue'
 
-const props = defineProps({ cash: { type: Object, default: null } })
+const props = defineProps({
+  cash: {
+    type: Object as PropType<CashBook & { sepItems: SepItems[] }>,
+    default: null,
+  },
+})
 const emit = defineEmits([
   'multi-submit',
   'on-delete',
@@ -129,21 +142,23 @@ const sepDisabled = computed(() => {
 })
 
 const sepSummary = computed(() => {
-  const inc = props.cash.sepItems.length
-    ? props.cash.sepItems
-        .map((s: CashBook) => s.income)
-        .reduce((res: number, el: number) => res + el)
-    : 0
+  const inc =
+    props.cash?.sepItems && !!props.cash.sepItems.length
+      ? props.cash.sepItems
+          .map((s: CashBook) => s.income)
+          .reduce((prev: number, curr: number) => prev + curr)
+      : 0
+
   const out =
-    props.cash.sepItems.length !== 0
+    props.cash?.sepItems && !!props.cash.sepItems.length
       ? props.cash.sepItems
           .map((s: CashBook) => s.outlay)
-          .reduce((res: number, el: number) => res + el)
+          .reduce((prev: number, curr: number) => prev + curr)
       : 0
   return [inc, out]
 })
 
-const sepUpdate = (sep: CashBook) => {
+const sepUpdate = (sep: SepItems) => {
   sepItem.pk = sep.pk
   sepItem.account_d1 = sep.account_d1
   sepItem.account_d2 = sep.account_d2
@@ -270,7 +285,9 @@ const sepD2_change = () => {
 
 const accountStore = useAccount()
 const allowedPeriod = computed(
-  () => accountStore.superAuth || diffDate(props.cash.deal_date) <= 30,
+  () =>
+    accountStore.superAuth ||
+    (props.cash?.deal_date && diffDate(props.cash.deal_date) <= 30),
 )
 
 const onSubmit = (event: Event) => {
@@ -308,8 +325,8 @@ const deleteConfirm = () => {
 
 const deleteObject = () => {
   emit('on-delete', {
-    project: props.cash.project,
-    pk: props.cash.pk,
+    company: props.cash?.company,
+    pk: props.cash?.pk,
   })
   delModal.value.close()
   emit('close')
@@ -827,11 +844,6 @@ onBeforeMount(() => dataSetup())
                   <CCol sm="8">
                     <CFormInput
                       v-model="sepItem.trader"
-                      v-c-tooltip="{
-                        content:
-                          '분양대금(분담금) 수납 건인 경우 반드시 해당 계좌에 기재된 입금자를 기재',
-                        placement: 'top',
-                      }"
                       maxlength="20"
                       placeholder="거래처 (수납자)"
                       required
@@ -994,7 +1006,7 @@ onBeforeMount(() => dataSetup())
 
   <AlertModal ref="alertModal" />
 
-  <AccDepth ref="accDepth" @patchD3Hide="patchD3Hide" />
+  <AccDepth ref="accDepth" @patch-d3-hide="patchD3Hide" />
 
-  <BankAcc ref="bankAcc" @onBankUpdate="onBankUpdate" />
+  <BankAcc ref="bankAcc" @on-bank-update="onBankUpdate" />
 </template>

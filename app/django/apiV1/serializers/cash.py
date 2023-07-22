@@ -40,15 +40,41 @@ class SepItemsInCashBookSerializer(serializers.ModelSerializer):
 
 
 class CashBookSerializer(serializers.ModelSerializer):
-    evidence_desc = serializers.CharField(source='get_evidence_display', read_only=True)
+    sort_desc = serializers.SerializerMethodField(read_only=True)
+    account_d1_desc = serializers.SerializerMethodField(read_only=True)
+    account_d2_desc = serializers.SerializerMethodField(read_only=True)
+    account_d3_desc = serializers.SerializerMethodField(read_only=True)
     sepItems = SepItemsInCashBookSerializer(many=True, read_only=True)
+    bank_account_desc = serializers.SerializerMethodField(read_only=True)
+    evidence_desc = serializers.CharField(source='get_evidence_display', read_only=True)
 
     class Meta:
         model = CashBook
         fields = (
-            'pk', 'company', 'sort', 'account_d1', 'account_d2', 'account_d3',
-            'is_separate', 'separated', 'sepItems', 'content', 'trader', 'bank_account',
+            'pk', 'company', 'sort', 'sort_desc', 'account_d1', 'account_d1_desc',
+            'account_d2', 'account_d2_desc', 'account_d3', 'account_d3_desc', 'is_separate',
+            'separated', 'sepItems', 'content', 'trader', 'bank_account', 'bank_account_desc',
             'income', 'outlay', 'evidence', 'evidence_desc', 'note', 'deal_date')
+
+    @staticmethod
+    def get_sort_desc(obj):
+        return obj.sort.name
+
+    @staticmethod
+    def get_account_d1_desc(obj):
+        return obj.account_d1.name
+
+    @staticmethod
+    def get_account_d2_desc(obj):
+        return obj.account_d2.name
+
+    @staticmethod
+    def get_account_d3_desc(obj):
+        return obj.account_d3.name
+
+    @staticmethod
+    def get_bank_account_desc(obj):
+        return obj.bank_account.alias_name
 
     @transaction.atomic
     def create(self, validated_data):

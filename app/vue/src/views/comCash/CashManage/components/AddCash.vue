@@ -35,8 +35,8 @@ const onBankUpdate = (payload: CompanyBank) => emit('on-bank-update', payload)
     <template #default>
       <CashForm
         @multi-submit="multiSubmit"
-        @patchD3Hide="patchD3Hide"
-        @onBankUpdate="onBankUpdate"
+        @patch-d3-hide="patchD3Hide"
+        @on-bank-update="onBankUpdate"
         @close="createFormModal.close()"
       />
     </template>

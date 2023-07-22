@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, onBeforeMount, watch } from 'vue'
+import { ref, reactive, computed, onBeforeMount, watch, PropType } from 'vue'
 import { useCompany } from '@/store/pinia/company'
 import { useComCash } from '@/store/pinia/comCash'
 import { CompanyBank } from '@/store/types/comCash'
@@ -10,11 +10,13 @@ import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-const props = defineProps({ bankAcc: { type: Object, required: true } })
+const props = defineProps({
+  bankAcc: { type: Object as PropType<CompanyBank>, required: true },
+})
 const emit = defineEmits(['on-bank-update'])
 
-const confirmModal = ref()
-const alertModal = ref()
+const refConfirmModal = ref()
+const refAlertModal = ref()
 
 const validated = ref(false)
 
@@ -62,14 +64,14 @@ const onSubmit = (event: Event) => {
     validated.value = true
   } else {
     if (write_company_cash.value) {
-      confirmModal.value.callModal()
-    } else alertModal.value.callModal()
+      refConfirmModal.value.callModal()
+    } else refAlertModal.value.callModal()
   }
 }
 
 const onBankUpdate = () => {
   emit('on-bank-update', { ...form })
-  confirmModal.value.close()
+  refConfirmModal.value.close()
 }
 
 const dataSetup = () => {
@@ -278,7 +280,7 @@ onBeforeMount(() => dataSetup())
     </CModalBody>
   </CForm>
 
-  <ConfirmModal ref="confirmModal">
+  <ConfirmModal ref="refConfirmModal">
     <template #header>거래계좌 정보 업데이트</template>
     <template #default> 거래계좌 정보를 업데이트하시겠습니까?</template>
     <template #footer>
@@ -286,5 +288,5 @@ onBeforeMount(() => dataSetup())
     </template>
   </ConfirmModal>
 
-  <AlertModal ref="alertModal" />
+  <AlertModal ref="refAlertModal" />
 </template>

@@ -208,50 +208,6 @@ export const useComCash = defineStore('comCash', () => {
   }
 
   const cashBookList = ref<CashBook[]>([])
-  const getCashLogs = computed(() =>
-    cashBookList.value
-      ? cashBookList.value.map((c: CashBook) => ({
-          pk: c.pk,
-          company: c.company,
-          deal_date: c.deal_date,
-          sort: c.sort,
-          sort_desc: c.sort
-            ? sortList.value
-                .filter(sort => sort.pk === c.sort)
-                .map(sort => sort.name)[0]
-            : '',
-          account_d1: c.account_d1,
-          account_d1_desc: c.account_d1
-            ? listAccD1List.value
-                .filter(d1 => d1.pk === c.account_d1)
-                .map(d1 => d1.name)[0]
-            : '',
-          account_d2: c.account_d2,
-          account_d3: c.account_d3,
-          account_d3_desc: c.account_d3
-            ? listAccD3List.value
-                .filter(d3 => d3.pk === c.account_d3)
-                .map(d3 => d3.name)[0]
-            : '',
-          is_separate: c.is_separate,
-          separated: c.separated,
-          sepItems: c.sepItems,
-          content: c.content,
-          trader: c.trader,
-          bank_account: c.bank_account,
-          bank_account_desc: allComBankList.value
-            ? allComBankList.value
-                .filter((b: CompanyBank) => b.pk === c.bank_account)
-                .map((b: CompanyBank) => b.alias_name)[0]
-            : [],
-          income: c.income,
-          outlay: c.outlay,
-          evidence: c.evidence,
-          evidence_desc: c.evidence_desc,
-          note: c.note,
-        }))
-      : [],
-  )
   const cashBookCount = ref<number>(0)
 
   const cashesPages = (itemsPerPage: number) =>
@@ -354,7 +310,6 @@ export const useComCash = defineStore('comCash', () => {
     fetchDateCashBookList,
 
     cashBookList,
-    getCashLogs,
     cashBookCount,
     cashesPages,
     fetchCashBookList,
