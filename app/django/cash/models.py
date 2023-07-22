@@ -62,7 +62,7 @@ class CashBook(models.Model):
     updated_at = models.DateTimeField('수정일시', auto_now=True)
 
     def __str__(self):
-        return f'{self.id}. {self.sort}'
+        return f'{self.pk}. {self.sort}'
 
     class Meta:
         ordering = ['-deal_date', '-id']
@@ -131,7 +131,7 @@ class ProjectCashBook(models.Model):
     updated_at = models.DateTimeField('수정일시', auto_now=True)
 
     def __str__(self):
-        return f'{self.id}. {self.sort}'
+        return f'{self.pk}. {self.sort}'
 
     class Meta:
         ordering = ['-deal_date', '-id']
