@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import { ref, computed, onBeforeMount, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/comDocs/_menu/headermixin1'
-import { useRoute, useRouter } from 'vue-router'
+import {
+  RouteLocationNormalizedLoaded as Loaded,
+  useRoute,
+  useRouter,
+} from 'vue-router'
 import { useCompany } from '@/store/pinia/company'
 import { useDocument, PostFilter } from '@/store/pinia/document'
 import { AFile, Attatches, Link, Post, PatchPost } from '@/store/types/document'
@@ -63,7 +67,7 @@ const patchPost = (payload: PatchPost) => docStore.patchPost(payload)
 const patchLink = (payload: Link) => docStore.patchLink(payload)
 const patchFile = (payload: AFile) => docStore.patchFile(payload)
 
-const [route, router] = [useRoute(), useRouter()]
+const [route, router] = [useRoute() as Loaded & { name: string }, useRouter()]
 
 watch(route, val => {
   if (val.params.postId) fetchPost(Number(val.params.postId))
@@ -73,7 +77,14 @@ watch(route, val => {
 const onSubmit = (payload: Post & Attatches) => {
   const { pk, ...formData } = payload
   formData.company = company.value || null
-  const form = formUtility.getFormData(formData)
+  const form = formUtility.getFormData(
+    formData as
+      | Date
+      | Array<{ [key: string]: string }>
+      | { [key: string]: string }
+      | File
+      | string,
+  )
 
   console.log(formData)
   console.log(...form)
@@ -147,13 +158,13 @@ onBeforeMount(() => {
         <ListController ref="fController" @docs-filter="docsFilter" />
 
         <CategoryTabs
-          :category="postFilter.category"
+          :category="postFilter.category as number"
           :category-list="categoryList"
           @select-cate="selectCate"
         />
 
         <DocsList
-          :company="company"
+          :company="company as number"
           :page="postFilter.page"
           :post-list="postList"
           @page-select="pageSelect"
@@ -163,7 +174,7 @@ onBeforeMount(() => {
 
       <div v-else-if="route.name.includes('보기')">
         <DocsView
-          :category="postFilter.category"
+          :category="postFilter.category as number"
           :post="post"
           @post-hit="postHit"
           @link-hit="linkHit"

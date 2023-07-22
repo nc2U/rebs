@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useDocument } from '@/store/pinia/document'
+import { TableSecondary } from '@/utils/cssMixins'
 import Docs from './Docs.vue'
 import Pagination from '@/components/Pagination'
 
@@ -21,17 +22,17 @@ const sortFilter = (project: number | null) => emit('sort-filter', project)
 <template>
   <CTable hover responsive align="middle">
     <colgroup>
-      <col width="8%" />
-      <col width="10%" />
-      <col width="11%" />
-      <col width="34%" />
-      <col width="12%" />
-      <col width="15%" />
-      <col width="10%" />
+      <col style="width: 8%" />
+      <col style="width: 10%" />
+      <col style="width: 11%" />
+      <col style="width: 34%" />
+      <col style="width: 12%" />
+      <col style="width: 15%" />
+      <col style="width: 10%" />
     </colgroup>
 
     <CTableHead>
-      <CTableRow :color="headerSecondary" class="text-center border-top-1">
+      <CTableRow :color="TableSecondary" class="text-center border-top-1">
         <CTableHeaderCell scope="col">번호</CTableHeaderCell>
         <CTableHeaderCell scope="col">구분</CTableHeaderCell>
         <CTableHeaderCell scope="col">문서 시행일자</CTableHeaderCell>

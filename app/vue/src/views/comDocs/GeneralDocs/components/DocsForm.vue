@@ -1,7 +1,15 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, onMounted, onUpdated, watch } from 'vue'
+import {
+  ref,
+  reactive,
+  computed,
+  onMounted,
+  onUpdated,
+  watch,
+  PropType,
+} from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { Post, Attatches } from '@/store/types/document'
+import { Post, Attatches, AFile } from '@/store/types/document'
 import { write_company_docs } from '@/utils/pageAuth'
 import { dateFormat } from '@/utils/baseMixins'
 import { AlertSecondary } from '@/utils/cssMixins'
@@ -13,14 +21,14 @@ import AlertModal from '@/components/Modals/AlertModal.vue'
 
 const props = defineProps({
   categoryList: { type: Object, default: null },
-  post: { type: Object, default: null },
+  post: { type: Object as PropType<Post>, default: null },
 })
 
 const emit = defineEmits(['on-submit', 'close'])
 
-const delModal = ref()
-const alertModal = ref()
-const confirmModal = ref()
+const refDelModal = ref()
+const refAlertModal = ref()
+const refConfirmModal = ref()
 
 const attach = ref(true)
 const validated = ref(false)
@@ -110,14 +118,14 @@ const onSubmit = (event: Event) => {
       event.stopPropagation()
 
       validated.value = true
-    } else confirmModal.value.callModal()
-  } else alertModal.value.callModal()
+    } else refConfirmModal.value.callModal()
+  } else refAlertModal.value.callModal()
 }
 
 const modalAction = () => {
   emit('on-submit', { ...form })
   validated.value = false
-  confirmModal.value.close()
+  refConfirmModal.value.close()
 }
 
 const devideUri = (uri: string) => {
@@ -146,7 +154,7 @@ const dataSetup = () => {
     form.password = props.post.password
     if (props.post.links) form.oldLinks = props.post.links
     if (props.post.files) {
-      form.oldFiles = props.post.files.map((file: any) => ({
+      form.oldFiles = props.post.files.map((file: AFile) => ({
         pk: file.pk,
         file: file.file,
         newFile: '',
@@ -313,7 +321,7 @@ onUpdated(() => dataSetup())
                         <CFormCheck
                           :id="`del-file-${file.pk}`"
                           v-model="form.oldFiles[i].del"
-                          :value="false"
+                          value="false"
                           label="삭제"
                           :disabled="!!form.oldFiles[i].newFile"
                           @input="enableStore"
@@ -373,15 +381,15 @@ onUpdated(() => dataSetup())
     </CRow>
   </CForm>
 
-  <ConfirmModal ref="delModal">
+  <ConfirmModal ref="refDelModal">
     <template #header> 본사 일반 문서</template>
     <template #default>현재 삭제 기능이 구현되지 않았습니다.</template>
     <template #footer>
-      <CButton color="danger" disabled="">삭제</CButton>
+      <CButton color="danger" disabled>삭제</CButton>
     </template>
   </ConfirmModal>
 
-  <ConfirmModal ref="confirmModal">
+  <ConfirmModal ref="refConfirmModal">
     <template #header> 본사 일반 문서</template>
     <template #default> 본사 일반 문서 저장을 진행하시겠습니까?</template>
     <template #footer>
@@ -389,5 +397,5 @@ onUpdated(() => dataSetup())
     </template>
   </ConfirmModal>
 
-  <AlertModal ref="alertModal" />
+  <AlertModal ref="refAlertModal" />
 </template>

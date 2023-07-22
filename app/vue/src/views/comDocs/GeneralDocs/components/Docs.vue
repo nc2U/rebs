@@ -9,10 +9,10 @@ const props = defineProps({
 
 const emit = defineEmits(['sort-filter'])
 
-const sortName = computed(() => props.post.proj_name || '본사')
-const sortColor = computed(() => (props.post.project ? 'success' : 'info'))
+const sortName = computed(() => props.post?.proj_name || '본사')
+const sortColor = computed(() => (props.post?.project ? 'success' : 'info'))
 
-const sortFunc = () => emit('sort-filter', props.post.project)
+const sortFunc = () => emit('sort-filter', props.post?.project)
 </script>
 
 <template>
