@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useDocument } from '@/store/pinia/document'
+import { TableSecondary } from '@/utils/cssMixins'
 import Case from './Case.vue'
 import Pagination from '@/components/Pagination'
 
@@ -31,19 +32,19 @@ const pageSelect = (page: number) => emit('page-select', page)
 <template>
   <CTable hover responsive align="middle" class="mt-5">
     <colgroup>
-      <col width="9%" />
-      <col width="7%" />
-      <col width="7%" />
-      <col width="9%" />
-      <col width="10%" />
-      <col width="19%" />
-      <col width="13%" />
-      <col width="13%" />
-      <col width="13%" />
+      <col style="width: 9%" />
+      <col style="width: 7%" />
+      <col style="width: 7%" />
+      <col style="width: 9%" />
+      <col style="width: 10%" />
+      <col style="width: 19%" />
+      <col style="width: 13%" />
+      <col style="width: 13%" />
+      <col style="width: 13%" />
     </colgroup>
 
     <CTableHead>
-      <CTableRow :color="headerSecondary" class="text-center border-top-1">
+      <CTableRow :color="TableSecondary" class="text-center border-top-1">
         <CTableHeaderCell scope="col">구분</CTableHeaderCell>
         <CTableHeaderCell scope="col">종류</CTableHeaderCell>
         <CTableHeaderCell scope="col">심급</CTableHeaderCell>

@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import { ref, computed, onBeforeMount, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/comDocs/_menu/headermixin2'
-import { useRoute, useRouter } from 'vue-router'
+import {
+  RouteLocationNormalizedLoaded as LoadedRoute,
+  useRoute,
+  useRouter,
+} from 'vue-router'
 import { useCompany } from '@/store/pinia/company'
 import { SuitCaseFilter as cFilter, useDocument } from '@/store/pinia/document'
 import { SuitCase } from '@/store/types/document'
@@ -54,7 +58,10 @@ const createSuitCase = (payload: SuitCase) => docStore.createSuitCase(payload)
 const updateSuitCase = (payload: SuitCase) => docStore.updateSuitCase(payload)
 const deleteSuitCase = (pk: number) => docStore.deleteSuitCase(pk)
 
-const [route, router] = [useRoute(), useRouter()]
+const [route, router] = [
+  useRoute() as LoadedRoute & { name: string },
+  useRouter(),
+]
 
 watch(route, val => {
   if (val.params.caseId) fetchSuitCase(Number(val.params.caseId))
@@ -70,7 +77,7 @@ const onSubmit = (payload: SuitCase) => {
         params: { caseId: payload.pk },
       })
     } else {
-      payload.company = company.value
+      payload.company = company.value || null
       createSuitCase(payload)
       router.replace({ name: '본사 소송 사건' })
     }
@@ -143,7 +150,7 @@ onBeforeMount(() => {
         <ListController ref="fController" @list-filter="listFiltering" />
 
         <CaseList
-          :company="company"
+          :company="company || undefined"
           :page="caseFilter.page"
           :case-list="suitcaseList"
           @page-select="pageSelect"
