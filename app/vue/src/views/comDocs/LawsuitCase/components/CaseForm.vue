@@ -1,5 +1,13 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, onMounted, onUpdated, watch } from 'vue'
+import {
+  ref,
+  reactive,
+  computed,
+  onMounted,
+  onUpdated,
+  watch,
+  PropType,
+} from 'vue'
 import { useRoute } from 'vue-router'
 import { SuitCase } from '@/store/types/document'
 import { write_company_docs } from '@/utils/pageAuth'
@@ -12,13 +20,13 @@ import AlertModal from '@/components/Modals/AlertModal.vue'
 
 const props = defineProps({
   getSuitCase: { type: Object, required: true },
-  suitcase: { type: Object, default: null },
+  suitcase: { type: Object as PropType<SuitCase>, default: null },
 })
 const emit = defineEmits(['on-submit', 'close'])
 
-const delModal = ref()
-const alertModal = ref()
-const confirmModal = ref()
+const refDelModal = ref()
+const refConfirmModal = ref()
+const refAlertModal = ref()
 
 const validated = ref(false)
 const form = reactive<SuitCase>({
@@ -83,14 +91,14 @@ const onSubmit = (event: Event) => {
       event.stopPropagation()
 
       validated.value = true
-    } else confirmModal.value.callModal()
-  } else alertModal.value.callModal()
+    } else refConfirmModal.value.callModal()
+  } else refAlertModal.value.callModal()
 }
 
 const modalAction = () => {
   emit('on-submit', { ...form })
   validated.value = false
-  confirmModal.value.close()
+  refConfirmModal.value.close()
 }
 
 const dataSetup = () => {
@@ -327,15 +335,15 @@ onUpdated(() => dataSetup())
     </CRow>
   </CForm>
 
-  <ConfirmModal ref="delModal">
+  <ConfirmModal ref="refDelModal">
     <template #header> 본사 소송 사건</template>
     <template #default>현재 삭제 기능이 구현되지 않았습니다.</template>
     <template #footer>
-      <CButton color="danger" disabled="">삭제</CButton>
+      <CButton color="danger" disabled>삭제</CButton>
     </template>
   </ConfirmModal>
 
-  <ConfirmModal ref="confirmModal">
+  <ConfirmModal ref="refConfirmModal">
     <template #header> 본사 소송 사건</template>
     <template #default> 본사 소송 사건 저장을 진행하시겠습니까?</template>
     <template #footer>
@@ -343,5 +351,5 @@ onUpdated(() => dataSetup())
     </template>
   </ConfirmModal>
 
-  <AlertModal ref="alertModal" />
+  <AlertModal ref="refAlertModal" />
 </template>

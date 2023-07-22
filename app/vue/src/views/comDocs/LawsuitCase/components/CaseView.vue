@@ -1,8 +1,12 @@
 <script lang="ts" setup>
 import { timeFormat } from '@/utils/baseMixins'
 import { TableSecondary } from '@/utils/cssMixins'
+import { PropType } from 'vue'
+import { SuitCase } from '@/store/types/document'
 
-defineProps({ suitcase: { type: Object, required: true } })
+defineProps({
+  suitcase: { type: Object as PropType<SuitCase>, required: true },
+})
 </script>
 
 <template>

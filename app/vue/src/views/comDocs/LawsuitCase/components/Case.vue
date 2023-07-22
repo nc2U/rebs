@@ -17,36 +17,36 @@ const emit = defineEmits([
 
 const suitCaseName = computed(() => {
   const sCase = props.suitCase
-  return `${getCourt(sCase.court_desc as string)} ${sCase.case_number} ${
-    sCase.case_name
-  }`
+  return `${getCourt(
+    sCase?.court_desc,
+  )} ${sCase?.case_number} ${sCase?.case_name}`
 })
 
 const store = useStore()
-const sortName = computed(() => props.suitCase.proj_name || '본사')
-const sortColor = computed(() => (props.suitCase.project ? 'success' : 'info'))
+const sortName = computed(() => props.suitCase?.proj_name || '본사')
+const sortColor = computed(() => (props.suitCase?.project ? 'success' : 'info'))
 const courtColor = computed(() =>
   store.state.theme !== 'dark' ? 'dark' : 'default',
 )
 const agencyName = computed(() => {
-  const agency = props.suitCase.court_desc || props.suitCase.other_agency
+  const agency = props.suitCase?.court_desc || props.suitCase?.other_agency
   return agency ? getCourt(agency) : ''
 })
 const relatedCaseName = computed(() =>
-  props.suitCase.related_case_name
-    ? props.suitCase.related_case_name.split(' ')[1]
+  props.suitCase?.related_case_name
+    ? props.suitCase?.related_case_name.split(' ')[1]
     : '',
 )
 
 const agencyFunc = computed(() =>
-  props.suitCase.court_desc !== ''
-    ? emit('agency-filter', props.suitCase.court)
+  props.suitCase?.court_desc !== ''
+    ? emit('agency-filter', props.suitCase?.court)
     : emit('agency-search', props.suitCase.other_agency),
 )
 
-const sortFunc = () => emit('sort-filter', props.suitCase.project)
-const relatedFilter = () => emit('related-filter', props.suitCase.related_case)
-const getCourt = (court: string) =>
+const sortFunc = () => emit('sort-filter', props.suitCase?.project)
+const relatedFilter = () => emit('related-filter', props.suitCase?.related_case)
+const getCourt = (court: string | undefined) =>
   court
     ? court
         .replace('지방법원', '지법')
