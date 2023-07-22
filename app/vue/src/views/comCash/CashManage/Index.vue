@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed, onBeforeMount, watch } from 'vue'
+import { ref, computed, onBeforeMount } from 'vue'
 import { navMenu, pageTitle } from '@/views/comCash/_menu/headermixin'
 import { cutString } from '@/utils/baseMixins'
 import { useCompany } from '@/store/pinia/company'
@@ -45,7 +45,7 @@ const excelUrl = computed(() => {
 })
 
 const comStore = useCompany()
-const company = computed(() => comStore.company?.pk)
+const company = computed(() => comStore.company?.pk || undefined)
 
 const fetchCompany = (pk: number) => comStore.fetchCompany(pk)
 const fetchAllDepartList = (com: number) => comStore.fetchAllDepartList(com)
@@ -236,8 +236,8 @@ onBeforeMount(() => {
       <AddCash
         :company="company"
         @multi-submit="multiSubmit"
-        @patchD3Hide="patchD3Hide"
-        @onBankUpdate="onBankUpdate"
+        @patch-d3-hide="patchD3Hide"
+        @on-bank-update="onBankUpdate"
       />
       <TableTitleRow
         title="본사 입출금 관리"
@@ -251,8 +251,8 @@ onBeforeMount(() => {
         @page-select="pageSelect"
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
-        @patchD3Hide="patchD3Hide"
-        @onBankUpdate="onBankUpdate"
+        @patch-d3-hide="patchD3Hide"
+        @on-bank-update="onBankUpdate"
       />
     </CCardBody>
 

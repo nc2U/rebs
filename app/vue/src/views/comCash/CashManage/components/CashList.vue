@@ -19,9 +19,9 @@ const emit = defineEmits([
   'on-bank-update',
 ])
 
-const useComCashStore = useComCash()
-const cashesPages = computed(() => useComCashStore.cashesPages)
-const getCashLogs = computed(() => useComCashStore.getCashLogs)
+const comCashStore = useComCash()
+const cashesPages = computed(() => comCashStore.cashesPages)
+const cashBookList = computed(() => comCashStore.cashBookList)
 
 const pageSelect = (page: number) => emit('page-select', page)
 
@@ -41,17 +41,17 @@ const onBankUpdate = (payload: CompanyBank) => emit('on-bank-update', payload)
 <template>
   <CTable hover responsive align="middle">
     <colgroup>
-      <col width="8%" />
-      <col width="5%" />
-      <col width="5%" />
-      <col width="9%" />
-      <col width="15%" />
-      <col width="11%" />
-      <col width="10%" />
-      <col width="10%" />
-      <col width="10%" />
-      <col width="11%" />
-      <col width="6%" />
+      <col style="width: 8%" />
+      <col style="width: 5%" />
+      <col style="width: 5%" />
+      <col style="width: 9%" />
+      <col style="width: 15%" />
+      <col style="width: 11%" />
+      <col style="width: 10%" />
+      <col style="width: 10%" />
+      <col style="width: 10%" />
+      <col style="width: 11%" />
+      <col style="width: 6%" />
     </colgroup>
 
     <CTableHead>
@@ -82,13 +82,13 @@ const onBankUpdate = (payload: CompanyBank) => emit('on-bank-update', payload)
 
     <CTableBody>
       <Cash
-        v-for="cash in getCashLogs"
+        v-for="cash in cashBookList"
         :key="cash.pk"
         :cash="cash"
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
-        @patchD3Hide="patchD3Hide"
-        @onBankUpdate="onBankUpdate"
+        @patch-d3-hide="patchD3Hide"
+        @on-bank-update="onBankUpdate"
       />
     </CTableBody>
   </CTable>
@@ -101,7 +101,7 @@ const onBankUpdate = (payload: CompanyBank) => emit('on-bank-update', payload)
     @active-page-change="pageSelect"
   />
 
-  <AccDepth ref="accDepth" @patchD3Hide="patchD3Hide" />
+  <AccDepth ref="accDepth" @patch-d3-hide="patchD3Hide" />
 
-  <BankAcc ref="bankAcc" @onBankUpdate="onBankUpdate" />
+  <BankAcc ref="bankAcc" @on-bank-update="onBankUpdate" />
 </template>

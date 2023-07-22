@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue'
+import { ref, computed, PropType } from 'vue'
 import { useStore } from 'vuex'
 import { useAccount } from '@/store/pinia/account'
 import { CompanyBank, CashBook } from '@/store/types/comCash'
@@ -11,10 +11,7 @@ import AlertModal from '@/components/Modals/AlertModal.vue'
 import CashForm from '@/views/comCash/CashManage/components/CashForm.vue'
 
 const props = defineProps({
-  cash: {
-    type: Object,
-    required: true,
-  },
+  cash: { type: Object as PropType<CashBook>, required: true },
 })
 
 const emit = defineEmits([
@@ -25,26 +22,28 @@ const emit = defineEmits([
 ])
 
 const delModal = ref()
-const alertModal = ref()
+const refAlertModal = ref()
 const updateFormModal = ref()
 
 const cls = ref(['text-primary', 'text-danger', 'text-info'])
-const sortClass = computed(() => cls.value[props.cash.sort - 1])
-const d1Class = computed(() => cls.value[props.cash.account_d1 - 1])
+const sortClass = computed(() => cls.value[props.cash?.sort - 1])
+const d1Class = computed(() => cls.value[props.cash?.account_d1 - 1])
 
 const store = useStore()
 const dark = computed(() => store.state.theme === 'dark')
 const rowColor = computed(() => {
   let color = ''
   color = dark.value ? '' : color
-  color = props.cash.is_separate ? 'primary' : color
-  color = props.cash.separated ? 'secondary' : color
+  color = props.cash?.is_separate ? 'primary' : color
+  color = props.cash?.separated ? 'secondary' : color
   return color
 })
 
 const accountStore = useAccount()
 const allowedPeriod = computed(
-  () => accountStore.superAuth || diffDate(props.cash.deal_date) <= 30,
+  () =>
+    accountStore.superAuth ||
+    (props.cash?.deal_date && diffDate(props.cash.deal_date) <= 30),
 )
 
 const showDetail = () => updateFormModal.value.callModal()
@@ -58,15 +57,15 @@ const deleteConfirm = () => {
   if (write_company_cash.value)
     if (allowedPeriod.value) delModal.value.callModal()
     else
-      alertModal.value.callModal(
+      refAlertModal.value.callModal(
         null,
         '거래일로부터 30일이 경과한 건은 삭제할 수 없습니다. 관리자에게 문의바랍니다.',
       )
-  else alertModal.value.callModal()
+  else refAlertModal.value.callModal()
 }
 
 const deleteObject = () => {
-  emit('on-delete', { company: props.cash.company, pk: props.cash.pk })
+  emit('on-delete', { company: props.cash?.company, pk: props.cash?.pk })
   delModal.value.close()
 }
 
@@ -127,8 +126,8 @@ const onBankUpdate = (payload: CompanyBank) => emit('on-bank-update', payload)
         :cash="cash"
         @multi-submit="multiSubmit"
         @on-delete="deleteConfirm"
-        @patchD3Hide="patchD3Hide"
-        @onBankUpdate="onBankUpdate"
+        @patch-d3-hide="patchD3Hide"
+        @on-bank-update="onBankUpdate"
         @close="updateFormModal.close()"
       />
     </template>
@@ -145,5 +144,5 @@ const onBankUpdate = (payload: CompanyBank) => emit('on-bank-update', payload)
     </template>
   </ConfirmModal>
 
-  <AlertModal ref="alertModal" />
+  <AlertModal ref="refAlertModal" />
 </template>
