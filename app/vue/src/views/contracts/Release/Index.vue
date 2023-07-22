@@ -106,9 +106,9 @@ onBeforeMount(() => {
 
   <ContentBody>
     <CCardBody class="pb-5">
-      <ContNavigation :cont-on="contOn" />
+      <ContNavigation :cont-on="!!contOn" />
       <ContController
-        :project="project"
+        :project="project || undefined"
         @search-contractor="searchContractor"
         @get-release="getRelease"
       />

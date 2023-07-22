@@ -191,6 +191,7 @@ export interface ContractRelease {
   pk: number
   project: number
   contractor: number
+  __str__?: string
   status: string
   refund_amount: number
   refund_account_bank: string
