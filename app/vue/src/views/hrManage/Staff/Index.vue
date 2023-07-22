@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, onMounted, computed, watch } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { pageTitle, navMenu } from '@/views/hrManage/_menu/headermixin1'
 import { useAccount } from '@/store/pinia/account'
 import { useCompany } from '@/store/pinia/company'
@@ -11,7 +11,7 @@ import AddStaff from './components/AddStaff.vue'
 import TableTitleRow from '@/components/TableTitleRow.vue'
 import StaffList from './components/StaffList.vue'
 
-const listControl = ref()
+const refListControl = ref()
 
 const dataFilter = ref<StaffFilter>({
   page: 1,
@@ -130,7 +130,7 @@ onMounted(() => {
   />
   <ContentBody>
     <CCardBody>
-      <ListController ref="listControl" @list-filtering="listFiltering" />
+      <ListController ref="refListControl" @list-filtering="listFiltering" />
       <AddStaff :company="comName" @multi-submit="multiSubmit" />
       <TableTitleRow
         title="직원 목록"

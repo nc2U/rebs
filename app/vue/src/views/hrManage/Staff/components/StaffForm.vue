@@ -1,5 +1,5 @@
 <script lang="ts" setup="">
-import { ref, computed, onBeforeMount, watch } from 'vue'
+import { ref, computed, onBeforeMount, watch, PropType } from 'vue'
 import { useStore } from 'vuex'
 import { useCompany } from '@/store/pinia/company'
 import { useAccount } from '@/store/pinia/account'
@@ -13,20 +13,14 @@ import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
 const props = defineProps({
-  company: {
-    type: String,
-    default: null,
-  },
-  staff: {
-    type: Object,
-    default: null,
-  },
+  company: { type: String, default: null },
+  staff: { type: Object as PropType<Staff>, default: null },
 })
 
 const emit = defineEmits(['multi-submit', 'on-delete', 'close'])
 
-const delModal = ref()
-const alertModal = ref()
+const refDelModal = ref()
+const refAlertModal = ref()
 
 const validated = ref(false)
 
@@ -105,7 +99,7 @@ const onSubmit = (event: Event) => {
     validated.value = true
   } else {
     if (write_human_resource.value) multiSubmit({ ...form.value })
-    else alertModal.value.callModal()
+    else refAlertModal.value.callModal()
   }
 }
 
@@ -116,13 +110,13 @@ const multiSubmit = (payload: Staff) => {
 
 const deleteObject = (pk: number) => {
   emit('on-delete', pk)
-  delModal.value.close()
+  refDelModal.value.close()
   emit('close')
 }
 
 const deleteConfirm = () => {
-  if (write_human_resource.value) delModal.value.callModal()
-  else alertModal.value.callModal()
+  if (write_human_resource.value) refDelModal.value.callModal()
+  else refAlertModal.value.callModal()
 }
 
 const formDataSetup = () => {
@@ -177,7 +171,7 @@ watch(
                   :options="sorts"
                   autocomplete="label"
                   :classes="{ search: 'form-control multiselect-search' }"
-                  :add-option-on="['enter' | 'tab']"
+                  :add-option-on="['enter', 'tab']"
                   searchable
                   placeholder="구분"
                 />
@@ -283,7 +277,7 @@ watch(
                   :options="getSlugDeparts"
                   autocomplete="label"
                   :classes="{ search: 'form-control multiselect-search' }"
-                  :add-option-on="['enter' | 'tab']"
+                  :add-option-on="['enter', 'tab']"
                   searchable
                   placeholder="부서"
                 />
@@ -302,7 +296,7 @@ watch(
                   :options="getGrades"
                   autocomplete="label"
                   :classes="{ search: 'form-control multiselect-search' }"
-                  :add-option-on="['enter' | 'tab']"
+                  :add-option-on="['enter', 'tab']"
                   searchable
                   placeholder="직급"
                 />
@@ -323,7 +317,7 @@ watch(
                   :options="getPositions"
                   autocomplete="label"
                   :classes="{ search: 'form-control multiselect-search' }"
-                  :add-option-on="['enter' | 'tab']"
+                  :add-option-on="['enter', 'tab']"
                   searchable
                   placeholder="직위"
                 />
@@ -342,7 +336,7 @@ watch(
                   :options="getDutys"
                   autocomplete="label"
                   :classes="{ search: 'form-control multiselect-search' }"
-                  :add-option-on="['enter' | 'tab']"
+                  :add-option-on="['enter', 'tab']"
                   searchable
                   placeholder="직책"
                 />
@@ -363,7 +357,7 @@ watch(
                   :options="statuses"
                   autocomplete="label"
                   :classes="{ search: 'form-control multiselect-search' }"
-                  :add-option-on="['enter' | 'tab']"
+                  :add-option-on="['enter', 'tab']"
                   searchable
                   placeholder="상태"
                 />
@@ -403,7 +397,7 @@ watch(
                   :options="getUsers"
                   autocomplete="label"
                   :classes="{ search: 'form-control multiselect-search' }"
-                  :add-option-on="['enter' | 'tab']"
+                  :add-option-on="['enter', 'tab']"
                   searchable
                   placeholder="유저 정보"
                 />
@@ -438,7 +432,7 @@ watch(
     </CModalFooter>
   </CForm>
 
-  <ConfirmModal ref="delModal">
+  <ConfirmModal ref="refDelModal">
     <template #header>직원 정보 삭제</template>
     <template #default>
       삭제한 데이터는 복구할 수 없습니다. 해당 정보를 삭제하시겠습니까?
@@ -448,5 +442,5 @@ watch(
     </template>
   </ConfirmModal>
 
-  <AlertModal ref="alertModal" />
+  <AlertModal ref="refAlertModal" />
 </template>
