@@ -89,3 +89,36 @@ export type CashBookFilter = {
   ordering?: string
   search?: string
 }
+
+export interface PaymentPaid {
+  pk: number
+  deal_date: string
+  contract: ContractInPayment
+  order_group: string
+  type_color: string
+  type_name: string
+  serial_number: string
+  contractor: string
+  income: number
+  installment_order: string
+  bank_account: string
+  trader: string
+  // note: string
+}
+
+interface ContractInPayment {
+  pk: number
+  order_group: {
+    pk: number
+    sort: '1' | '2'
+    order_group_name: string
+  }
+  unit_type: {
+    pk: number
+    name: string
+    color: string
+    average_price: number
+  }
+  serial_number: string
+  contractor: string
+}

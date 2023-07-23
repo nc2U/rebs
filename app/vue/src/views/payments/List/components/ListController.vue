@@ -162,7 +162,11 @@ defineExpose({ listFiltering })
               @change="listFiltering(1)"
             >
               <option value="">납부회차 선택</option>
-              <option v-for="po in payOrderList" :key="po.pk" :value="po.pk">
+              <option
+                v-for="po in payOrderList"
+                :key="po.pk as number"
+                :value="po.pk"
+              >
                 {{ po.__str__ }}
               </option>
             </CFormSelect>
@@ -177,7 +181,7 @@ defineExpose({ listFiltering })
               <option value="">납부계좌 선택</option>
               <option
                 v-for="ba in allProBankAccountList"
-                :key="ba.pk"
+                :key="ba.pk as number"
                 :value="ba.pk"
               >
                 {{ ba.alias_name }}

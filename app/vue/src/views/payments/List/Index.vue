@@ -149,7 +149,7 @@ onBeforeRouteLeave(() => {
     :nav-menu="navMenu"
     @proj-select="projSelect"
   >
-    <PaymentSummary :project="project" />
+    <PaymentSummary :project="project as number" />
   </ContentHeader>
 
   <ContentBody>
@@ -174,8 +174,8 @@ onBeforeRouteLeave(() => {
         </v-radio-group>
       </TableTitleRow>
       <PaymentList
-        :page="filterItems.page"
-        :project="project"
+        :page="filterItems.page as number"
+        :project="project as number"
         @pay-match="payMatch"
         @page-select="pageSelect"
       />

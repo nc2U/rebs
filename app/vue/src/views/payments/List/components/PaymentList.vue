@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { usePayment } from '@/store/pinia/payment'
-import { ProjectCashBook } from '@/store/types/proCash'
+import { ProjectCashBook, PaymentPaid } from '@/store/types/proCash'
 import { TableSecondary } from '@/utils/cssMixins'
 import Payment from '@/views/payments/List/components/Payment.vue'
 import Pagination from '@/components/Pagination'
@@ -24,16 +24,16 @@ const pageSelect = (page: number) => emit('page-select', page)
 <template>
   <CTable hover responsive align="middle">
     <colgroup>
-      <col width="10%" />
-      <col width="10%" />
-      <col width="8%" />
-      <col width="9%" />
-      <col width="8%" />
-      <col width="9%" />
-      <col width="14%" />
-      <col width="13%" />
-      <col width="13%" />
-      <col width="6%" />
+      <col style="width: 10%" />
+      <col style="width: 10%" />
+      <col style="width: 8%" />
+      <col style="width: 9%" />
+      <col style="width: 8%" />
+      <col style="width: 9%" />
+      <col style="width: 14%" />
+      <col style="width: 13%" />
+      <col style="width: 13%" />
+      <col style="width: 6%" />
     </colgroup>
 
     <CTableHead>
@@ -53,10 +53,10 @@ const pageSelect = (page: number) => emit('page-select', page)
 
     <CTableBody>
       <Payment
-        v-for="(payment, i) in getPayments"
-        :key="i"
+        v-for="payment in getPayments"
+        :key="payment.pk"
         :project="project"
-        :payment="payment"
+        :payment="payment as PaymentPaid"
         @pay-match="payMatch"
       />
     </CTableBody>

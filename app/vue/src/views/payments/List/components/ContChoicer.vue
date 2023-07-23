@@ -1,6 +1,8 @@
 <script lang="ts" setup>
-import { ref, onMounted, computed, nextTick } from 'vue'
+import { ref, onMounted, computed, nextTick, PropType } from 'vue'
 import { ContFilter, useContract } from '@/store/pinia/contract'
+import { Contract } from '@/store/types/contract'
+import { PaymentPaid } from '@/store/types/proCash'
 import { write_payment } from '@/utils/pageAuth'
 import { numFormat } from '@/utils/baseMixins'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
@@ -8,19 +10,19 @@ import AlertModal from '@/components/Modals/AlertModal.vue'
 
 const props = defineProps({
   project: { type: Number, required: true },
-  payment: { type: Object, required: true },
+  payment: { type: Object as PropType<PaymentPaid>, required: true },
 })
 
 const emit = defineEmits(['pay-match', 'close'])
 
-const alertModal = ref()
-const confirmModal = ref()
+const refAlertModal = ref()
+const refConfirmModal = ref()
 
 const form = ref({
   search: '',
 })
 
-const cont = ref()
+const cont = ref<Contract | null>(null)
 const msg = ref('')
 const textClass = ref('')
 
@@ -50,17 +52,17 @@ const searchCont = () => {
     textClass.value = 'text-danger'
   }
 }
-const contMatching = (contract: number) => {
+const contMatching = (contract: Contract) => {
   if (write_payment) {
     cont.value = contract
-    confirmModal.value.callModal()
-  } else alertModal.value.callModal()
+    refConfirmModal.value.callModal()
+  } else refAlertModal.value.callModal()
 }
 
 const modalAction = () => {
   const pk = props.payment.pk
-  const contract = cont.value.pk
-  const content = `${cont.value.contractor.name}[${cont.value.serial_number}] 대금납부`
+  const contract = cont.value?.pk
+  const content = `${cont.value?.contractor?.name}[${cont.value?.serial_number}] 대금납부`
   emit('pay-match', { pk, contract, content })
   pageInit()
   emit('close')
@@ -106,7 +108,7 @@ const modalAction = () => {
               size="sm"
               @click="contMatching(c)"
             >
-              {{ `${c.contractor.name}(${c.serial_number})` }}
+              {{ `${c.contractor?.name}(${c.serial_number})` }}
             </CButton>
           </CCol>
           <CCol v-else class="mt-3 m-2" :class="textClass">
@@ -138,11 +140,11 @@ const modalAction = () => {
     </CCol>
   </CRow>
 
-  <ConfirmModal ref="confirmModal">
+  <ConfirmModal ref="refConfirmModal">
     <template #header>건별 수납 매칭</template>
     <template #default>
       해당 수납 항목을 &lt;<span class="text-primary" style="font-weight: bold">
-        {{ `${cont.contractor.name} [${cont.serial_number}]` }} </span
+        {{ `${cont?.contractor?.name} [${cont?.serial_number}]` }} </span
       >&gt; 계약 건의 납부대금으로 등록합니다.
     </template>
     <template #footer>
@@ -150,5 +152,5 @@ const modalAction = () => {
     </template>
   </ConfirmModal>
 
-  <AlertModal ref="alertModal" />
+  <AlertModal ref="refAlertModal" />
 </template>
