@@ -9,6 +9,7 @@ import {
   RouteRecordRaw,
   RouteLocationMatched,
 } from 'vue-router'
+import { vi } from 'vuetify/locale'
 
 const store = useStore()
 const dark = computed(() => store.state.theme === 'dark')
@@ -92,7 +93,7 @@ const toLastView = (visitedViews: VisitedView[]) => {
 
 const closeSelectedTag = (view: VisitedView) =>
   tagsViewStore.delView(view).then(({ visitedViews }) => {
-    if (isActive(view)) toLastView({ ...visitedViews })
+    if (isActive(view)) toLastView([...visitedViews])
   })
 
 const closeMenu = () => (visible.value = false)
