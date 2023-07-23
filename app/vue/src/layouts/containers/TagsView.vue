@@ -36,9 +36,8 @@ const scrollPane = ref()
 const tagsViewStore = useTagsView()
 const visitedViews = computed(() => tagsViewStore.visitedViews)
 
-const isActive = (currentRoute: VisitedView) =>
-  currentRoute.name === route.name ||
-  currentRoute.meta.title === route.meta.title
+const isActive = (currView: VisitedView) =>
+  currView.name === route.name || currView.meta.title === route.meta.title
 
 const isAffix = (view: VisitedView) => view.meta && view.meta.affix
 
@@ -99,14 +98,14 @@ const moveToCurrentTag = () =>
     }
   })
 
-const toLastView = (visitedViews: VisitedView[]) => {
-  const latestView = visitedViews.slice(-1)[0]
+const toLastView = () => {
+  const latestView = visitedViews.value.slice(-1)[0]
   router.push({ path: latestView.fullPath })
 }
 
 const closeSelectedTag = (view: VisitedView) =>
-  tagsViewStore.delView(view).then(({ visitedViews }) => {
-    if (isActive(view)) toLastView([...visitedViews])
+  tagsViewStore.delView(view).then(() => {
+    if (isActive(view)) toLastView() // 현재 페이지를 닫았다면 이전 페이지로 이동
   })
 
 const closeMenu = () => (visible.value = false)
