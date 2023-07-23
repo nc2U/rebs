@@ -3,7 +3,6 @@ import { ref, reactive, computed, onBeforeMount } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { usePayment } from '@/store/pinia/payment'
 import { useProCash } from '@/store/pinia/proCash'
-import { ProjectCashBook } from '@/store/types/proCash'
 import { dateFormat, diffDate } from '@/utils/baseMixins'
 import { isValidate } from '@/utils/helper'
 import { write_payment } from '@/utils/pageAuth'
@@ -18,18 +17,18 @@ const props = defineProps({
 
 const emit = defineEmits(['on-submit', 'on-delete', 'close'])
 
-const alertModal = ref()
+const refAlertModal = ref()
 const delConfirmModal = ref()
 const cngConfirmModal = ref()
 
 const validated = ref(false)
 
 const removeCont = ref(false)
-const form = reactive<ProjectCashBook>({
-  project: null, // hidden -> index에서 처리
+const form = reactive({
+  project: null, // hidden -> index 에서 처리
   sort: 1, // hidden -> always
-  project_account_d2: null, // hidden
-  project_account_d3: null, // hidden
+  project_account_d2: null as null | number, // hidden
+  project_account_d3: null as null | number, // hidden
   contract: null, //  hidden -> 예외 및 신규 매칭 시 코드 확인
   content: '', // hidden
   installment_order: null,
@@ -86,11 +85,11 @@ const onSubmit = (event: Event) => {
         }
       }
     } else
-      alertModal.value.callModal(
+      refAlertModal.value.callModal(
         null,
         '수납일로부터 90일이 경과한 건은 수정할 수 없습니다. 관리자에게 문의바랍니다.',
       )
-  } else alertModal.value.callModal()
+  } else refAlertModal.value.callModal()
 }
 
 const modalAction = () =>
@@ -101,11 +100,11 @@ const deleteConfirm = () => {
     if (allowedPeriod.value) {
       delConfirmModal.value.callModal()
     } else
-      alertModal.value.callModal(
+      refAlertModal.value.callModal(
         null,
         '수납일로부터 90일이 경과한 건은 삭제할 수 없습니다. 관리자에게 문의바랍니다.',
       )
-  } else alertModal.value.callModal()
+  } else refAlertModal.value.callModal()
 }
 
 const onDelete = () => {
@@ -163,7 +162,11 @@ onBeforeMount(() => formDataSet())
             <CCol sm="8">
               <CFormSelect v-model="form.installment_order" required>
                 <option value="">---------</option>
-                <option v-for="po in payOrderList" :key="po.pk" :value="po.pk">
+                <option
+                  v-for="po in payOrderList"
+                  :key="po.pk as number"
+                  :value="po.pk"
+                >
                   {{ po.__str__ }}
                 </option>
               </CFormSelect>
@@ -178,7 +181,7 @@ onBeforeMount(() => formDataSet())
                 <option value="">---------</option>
                 <option
                   v-for="pb in allProBankAccountList"
-                  :key="pb.pk"
+                  :key="pb.pk as number"
                   :value="pb.pk"
                 >
                   {{ pb.alias_name }}
@@ -198,6 +201,7 @@ onBeforeMount(() => formDataSet())
                 v-model.number="form.income"
                 type="number"
                 min="0"
+                placeholder="수납금액"
                 required
               />
             </CCol>
@@ -210,14 +214,9 @@ onBeforeMount(() => formDataSet())
             <CCol sm="8">
               <CFormInput
                 v-model="form.trader"
-                v-c-tooltip="{
-                  content:
-                    '이 란은 반드시 해당 계좌에 기재된 입금자명과 일치하도록 기재하세요.',
-                  placement: 'top',
-                }"
                 maxlength="20"
                 required
-                placeholder="입금자명"
+                placeholder="입금자명 (필히 계좌 입금자 기재)"
               />
             </CCol>
           </CRow>
@@ -296,5 +295,5 @@ onBeforeMount(() => formDataSet())
     </template>
   </ConfirmModal>
 
-  <AlertModal ref="alertModal" />
+  <AlertModal ref="refAlertModal" />
 </template>

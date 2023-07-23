@@ -1,12 +1,13 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, nextTick, onMounted } from 'vue'
+import { ref, reactive, computed, nextTick, onMounted, PropType } from 'vue'
+import { Contract } from '@/store/types/contract'
 import { useContract } from '@/store/pinia/contract'
 import { usePayment } from '@/store/pinia/payment'
 import TableTitleRow from '@/components/TableTitleRow.vue'
 
 const props = defineProps({
-  project: { type: Object, default: null },
-  contract: { type: Object, default: null },
+  project: { type: Number, default: null },
+  contract: { type: Object as PropType<Contract>, default: null },
 })
 
 const emit = defineEmits(['list-filtering', 'get-contract'])
@@ -91,7 +92,7 @@ onMounted(() => pageInit())
           size="sm"
           @click="getContract(cont.pk)"
         >
-          {{ `${cont.contractor.name}(${cont.serial_number})` }}
+          {{ `${cont.contractor?.name}(${cont.serial_number})` }}
         </CButton>
       </CCol>
       <CCol v-else class="mt-3 m-2" :class="textClass">
@@ -114,7 +115,7 @@ onMounted(() => pageInit())
           ] (타입 :
           {{ contract.unit_type_desc.name }}
           {{
-            contract.keyunit.houseunit
+            contract.keyunit?.houseunit
               ? contract.keyunit.houseunit.__str__
               : '--- 동호수 현재 미정 ---'
           }}
@@ -123,7 +124,7 @@ onMounted(() => pageInit())
             v-c-tooltip="'계약 등록 수정'"
             :to="{ name: '계약 등록 수정', query: { contract: contract.pk } }"
           >
-            계약자 : {{ contract.contractor.name }})
+            계약자 : {{ contract.contractor?.name }})
           </router-link>
           (
           <a :href="paymentUrl"> 납부내역서 출력</a>

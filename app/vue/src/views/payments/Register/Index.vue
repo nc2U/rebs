@@ -3,6 +3,7 @@ import { ref, computed, onBeforeMount, onMounted, onUpdated, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/payments/_menu/headermixin'
 import { useProject } from '@/store/pinia/project'
 import { useProjectData } from '@/store/pinia/project_data'
+import { Contract } from '@/store/types/contract'
 import { ContFilter, useContract } from '@/store/pinia/contract'
 import { useProCash } from '@/store/pinia/proCash'
 import { ProjectCashBook, CashBookFilter } from '@/store/types/proCash'
@@ -190,25 +191,31 @@ onBeforeRouteLeave(() => {
     <CCardBody class="pb-5">
       <ContChoicer
         ref="listControl"
-        :project="project"
-        :contract="contract"
+        :project="project || undefined"
+        :contract="contract as Contract"
         @list-filtering="onContFiltering"
         @get-contract="getContract"
       />
       <CRow>
         <CCol lg="7">
           <PaymentListAll
-            :contract="contract"
+            :contract="contract as Contract"
             :payment-id="paymentId"
             :payment-list="AllPaymentList"
             @on-update="onUpdate"
             @on-delete="onDelete"
           />
 
-          <CreateButton :contract="contract" @on-create="onCreate" />
+          <CreateButton
+            :contract="contract as Contract"
+            @on-create="onCreate"
+          />
         </CCol>
         <CCol lg="5">
-          <OrdersBoard :contract="contract" :payment-list="AllPaymentList" />
+          <OrdersBoard
+            :contract="contract as Contract"
+            :payment-list="AllPaymentList"
+          />
         </CCol>
       </CRow>
     </CCardBody>
