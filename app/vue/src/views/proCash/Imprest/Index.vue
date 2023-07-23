@@ -249,7 +249,7 @@ onBeforeMount(() => {
     <CCardBody class="pb-5">
       <ListController ref="listControl" @list-filtering="listFiltering" />
       <AddProImprest
-        :project="project"
+        :project="project || undefined"
         @multi-submit="multiSubmit"
         @on-bank-update="onBankUpdate"
       />
