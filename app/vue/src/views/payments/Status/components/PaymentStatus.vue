@@ -81,16 +81,16 @@ const totalBudget = computed(
 <template>
   <CTable hover responsive bordered align="middle">
     <colgroup>
-      <col width="8%" />
-      <col width="8%" />
-      <col width="10%" />
-      <col width="7%" />
-      <col width="7%" />
-      <col width="12%" />
-      <col width="12%" />
-      <col width="12%" />
-      <col width="12%" />
-      <col width="12%" />
+      <col style="width: 8%" />
+      <col style="width: 8%" />
+      <col style="width: 10%" />
+      <col style="width: 7%" />
+      <col style="width: 7%" />
+      <col style="width: 12%" />
+      <col style="width: 12%" />
+      <col style="width: 12%" />
+      <col style="width: 12%" />
+      <col style="width: 12%" />
     </colgroup>
     <CTableHead>
       <CTableRow>
@@ -127,41 +127,41 @@ const totalBudget = computed(
     <CTableBody v-if="budgetList.length">
       <CTableRow v-for="bg in budgetList" :key="bg.pk" class="text-right">
         <CTableDataCell
-          v-if="bg.unit_type === getFirstType(bg.order_group)"
-          :rowspan="getUTbyOGNum(bg.order_group)"
+          v-if="bg.unit_type === getFirstType(bg.order_group || 0)"
+          :rowspan="getUTbyOGNum(bg.order_group || 0)"
           class="text-center"
           :color="TableSecondary"
         >
           <!-- 차수명 -->
-          {{ getOGName(bg.order_group).order_group_name }}
+          {{ getOGName(bg.order_group || 0).order_group_name }}
         </CTableDataCell>
         <CTableDataCell class="text-left pl-4">
           <v-icon
             icon="mdi mdi-square"
-            :color="getUTName(bg.unit_type).color"
+            :color="getUTName(bg.unit_type || 0).color"
             size="sm"
           />
           <!-- 타입명 -->
-          {{ getUTName(bg.unit_type).name }}
+          {{ getUTName(bg.unit_type || 0).name }}
         </CTableDataCell>
         <!-- 단가(평균) -->
-        <CTableDataCell>{{ numFormat(bg.average_price) }}</CTableDataCell>
+        <CTableDataCell>{{ numFormat(bg.average_price || 0) }}</CTableDataCell>
         <!-- 계획세대수 -->
         <CTableDataCell>{{ numFormat(bg.quantity) }}</CTableDataCell>
         <CTableDataCell>
           <!-- 계약세대수 -->
-          {{ numFormat(getContNum(bg.order_group, bg.unit_type)) }}
+          {{ numFormat(getContNum(bg.order_group || 0, bg.unit_type || 0)) }}
         </CTableDataCell>
         <CTableDataCell>
           <!-- 계약금액 -->
-          {{ numFormat(getContSum(bg.order_group, bg.unit_type)) }}
+          {{ numFormat(getContSum(bg.order_group || 0, bg.unit_type || 0)) }}
         </CTableDataCell>
         <CTableDataCell>
           <!-- 실수납금액 -->
           {{
             numFormat(
-              paidSum(bg.order_group, bg.unit_type)
-                ? paidSum(bg.order_group, bg.unit_type).paid_sum
+              paidSum(bg.order_group || 0, bg.unit_type || 0)
+                ? paidSum(bg.order_group || 0, bg.unit_type || 0).paid_sum
                 : 0,
             )
           }}
@@ -170,9 +170,9 @@ const totalBudget = computed(
           <!-- 미수금액 -->
           {{
             numFormat(
-              getContSum(bg.order_group, bg.unit_type) -
-                (paidSum(bg.order_group, bg.unit_type)
-                  ? paidSum(bg.order_group, bg.unit_type).paid_sum
+              getContSum(bg.order_group || 0, bg.unit_type || 0) -
+                (paidSum(bg.order_group || 0, bg.unit_type || 0)
+                  ? paidSum(bg.order_group || 0, bg.unit_type || 0).paid_sum
                   : 0),
             )
           }}
@@ -181,15 +181,17 @@ const totalBudget = computed(
           :class="{
             'text-danger':
               0 >
-              bg.average_price *
-                (bg.quantity - (getContNum(bg.order_group, bg.unit_type) || 0)),
+              (bg.average_price || 0) *
+                (bg.quantity -
+                  (getContNum(bg.order_group || 0, bg.unit_type || 0) || 0)),
           }"
         >
           <!-- 미계약 금액 -->
           {{
             numFormat(
-              bg.average_price *
-                (bg.quantity - (getContNum(bg.order_group, bg.unit_type) || 0)),
+              (bg.average_price || 0) *
+                (bg.quantity -
+                  (getContNum(bg.order_group || 0, bg.unit_type || 0) || 0)),
             )
           }}
         </CTableDataCell>
