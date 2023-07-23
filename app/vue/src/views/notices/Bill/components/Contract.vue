@@ -1,9 +1,10 @@
 <script lang="ts" setup>
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, PropType } from 'vue'
 import { numFormat } from '@/utils/baseMixins'
+import { Contract } from '@/store/types/contract'
 
 const props = defineProps({
-  contract: { type: Object, required: true },
+  contract: { type: Object as PropType<Contract>, required: true },
   page: { type: Number, default: 1 },
   nowOrder: { type: Number, default: null },
   allChecked: { type: Boolean, default: false },
@@ -28,12 +29,12 @@ const get_paid_name = computed(() => {
 watch(props, (n, o) => {
   if (!paidCompleted.value) {
     checked.value = !n.allChecked
-    ctorChk(n.contract.contractor.pk)
+    ctorChk(n.contract.contractor?.pk as number)
   }
   if (n.page !== o.page) checked.value = false
 })
 
-const ctorChk = (ctorPk: string) => {
+const ctorChk = (ctorPk: number) => {
   checked.value = !checked.value
   emit('on-ctor-chk', { chk: checked.value, pk: ctorPk })
 }
@@ -47,12 +48,12 @@ const ctorChk = (ctorPk: string) => {
   >
     <CTableDataCell>
       <CFormCheck
-        :id="'check_' + contract.contractor.pk"
+        :id="'check_' + contract.contractor?.pk"
         v-model="checked"
-        :value="contract.contractor.pk"
+        :value="contract.contractor?.pk"
         :disabled="paidCompleted"
         label="선택"
-        @change="ctorChk(contract.contractor.pk)"
+        @change="ctorChk(contract.contractor?.pk as number)"
       />
     </CTableDataCell>
 
@@ -73,21 +74,23 @@ const ctorChk = (ctorPk: string) => {
       {{ contract.serial_number }}
     </CTableDataCell>
     <CTableDataCell
-      :class="contract.keyunit.houseunit ? '' : 'text-danger'"
+      :class="contract.keyunit?.houseunit ? '' : 'text-danger'"
       class="text-left"
     >
       {{
-        contract.keyunit.houseunit ? contract.keyunit.houseunit.__str__ : '미정'
+        contract.keyunit?.houseunit
+          ? contract.keyunit.houseunit.__str__
+          : '미정'
       }}
     </CTableDataCell>
     <CTableDataCell>
       <router-link
         :to="{
           name: '계약 등록 수정',
-          query: { contractor: contract.contractor.pk },
+          query: { contractor: contract.contractor?.pk },
         }"
       >
-        {{ contract.contractor.name }}
+        {{ contract.contractor?.name }}
       </router-link>
     </CTableDataCell>
     <CTableDataCell class="text-right">
@@ -102,6 +105,6 @@ const ctorChk = (ctorPk: string) => {
       <span v-else class="text-danger">미납중</span>
       ({{ get_paid_name }})
     </CTableDataCell>
-    <CTableDataCell>{{ contract.contractor.contract_date }}</CTableDataCell>
+    <CTableDataCell>{{ contract.contractor?.contract_date }}</CTableDataCell>
   </CTableRow>
 </template>

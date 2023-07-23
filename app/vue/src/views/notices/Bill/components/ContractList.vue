@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, ref, nextTick } from 'vue'
+import { ref, computed } from 'vue'
 import { useContract } from '@/store/pinia/contract'
 import { TableSecondary } from '@/utils/cssMixins'
 import Contract from '@/views/notices/Bill/components/Contract.vue'
@@ -32,15 +32,15 @@ const onCtorChk = (payload: { chk: boolean; pk: number }) =>
 <template>
   <CTable hover responsive align="middle">
     <colgroup>
-      <col width="8%" />
-      <col width="10%" />
-      <col width="7%" />
-      <col width="12%" />
-      <col width="11%" />
-      <col width="8%" />
-      <col width="12%" />
-      <col width="20%" />
-      <col width="12%" />
+      <col style="width: 8%" />
+      <col style="width: 10%" />
+      <col style="width: 7%" />
+      <col style="width: 12%" />
+      <col style="width: 11%" />
+      <col style="width: 8%" />
+      <col style="width: 12%" />
+      <col style="width: 20%" />
+      <col style="width: 12%" />
     </colgroup>
 
     <CTableHead :color="TableSecondary">
@@ -82,7 +82,7 @@ const onCtorChk = (payload: { chk: boolean; pk: number }) =>
     :limit="8"
     :pages="contractPages(10)"
     class="mt-3"
-    @on-ctor-pk="ctorChk"
+    @on-ctor-pk="onCtorChk"
     @active-page-change="pageSelect"
   />
 </template>

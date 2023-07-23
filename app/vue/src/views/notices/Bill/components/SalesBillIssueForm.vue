@@ -1,5 +1,13 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, watch, onMounted, onUpdated } from 'vue'
+import {
+  ref,
+  reactive,
+  computed,
+  watch,
+  onMounted,
+  onUpdated,
+  PropType,
+} from 'vue'
 import { usePayment } from '@/store/pinia/payment'
 import { SalesBillIssue } from '@/store/types/notice'
 import { write_notice } from '@/utils/pageAuth'
@@ -13,14 +21,16 @@ import AlertModal from '@/components/Modals/AlertModal.vue'
 
 const props = defineProps({
   project: { type: Number, default: null },
-  billIssue: { type: Object, default: null },
+  billIssue: { type: Object as PropType<SalesBillIssue>, default: null },
 })
 
 const emit = defineEmits(['on-submit', 'get-now-order', 'set-pub-date'])
 
 const address2 = ref()
-const alertModal = ref()
-const confirmModal = ref()
+const postCode = ref()
+const refConfirmModal = ref()
+const refAlertModal = ref()
+
 const visible = ref(false)
 const validated = ref(false)
 
@@ -97,10 +107,10 @@ const onSubmit = (event: Event) => {
     if (isValidate(event)) {
       validated.value = true
     } else {
-      confirmModal.value.callModal()
+      refConfirmModal.value.callModal()
     }
   } else {
-    alertModal.value.callModal()
+    refAlertModal.value.callModal()
   }
 }
 
@@ -108,7 +118,7 @@ const modalAction = () => {
   emit('on-submit', { ...form })
 
   validated.value = false
-  confirmModal.value.close()
+  refConfirmModal.value.close()
 }
 
 const addressCallback = (data: AddressData) => {
@@ -224,7 +234,11 @@ onUpdated(() => formDataSetup())
             required
           >
             <option value="">--------</option>
-            <option v-for="po in payOrderList" :key="po.pk" :value="po.pk">
+            <option
+              v-for="po in payOrderList"
+              :key="po.pk as number"
+              :value="po.pk"
+            >
               {{ po.__str__ }}
             </option>
           </CFormSelect>
@@ -379,7 +393,7 @@ onUpdated(() => formDataSetup())
 
         <CCol xs="12" sm="8" md="4" xl="2" class="mb-1">
           <CInputGroup>
-            <CInputGroupText @click="$refs.postCode.initiate()">
+            <CInputGroupText @click="postCode.initiate()">
               우편번호
             </CInputGroupText>
             <CFormInput
@@ -390,7 +404,7 @@ onUpdated(() => formDataSetup())
               placeholder="우편번호"
               maxlength="5"
               required
-              @focus="$refs.postCode.initiate()"
+              @focus="postCode.initiate()"
             />
             <!--            <CFormFeedback invalid>우편번호를 입력하세요.</CFormFeedback>-->
           </CInputGroup>
@@ -404,7 +418,7 @@ onUpdated(() => formDataSetup())
             placeholder="메인 주소"
             maxlength="35"
             required
-            @click="$refs.postCode.initiate()"
+            @click="postCode.initiate()"
           />
         </CCol>
 
@@ -474,9 +488,9 @@ onUpdated(() => formDataSetup())
     </CCollapse>
   </CForm>
 
-  <DaumPostcode ref="postCode" @addressCallback="addressCallback" />
+  <DaumPostcode ref="postCode" @address-callback="addressCallback" />
 
-  <ConfirmModal ref="confirmModal">
+  <ConfirmModal ref="refConfirmModal">
     <template #header> 수납 고지서 발행 정보</template>
     <template #default>
       수납 고지서 발행 정보 {{ confirmText }}을(를) 진행하시겠습니까?
@@ -486,5 +500,5 @@ onUpdated(() => formDataSetup())
     </template>
   </ConfirmModal>
 
-  <AlertModal ref="alertModal" />
+  <AlertModal ref="refAlertModal" />
 </template>
