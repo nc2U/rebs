@@ -1,15 +1,15 @@
-export interface Meta {
-  title: string
-  affix: boolean
-  noCache: boolean
-}
-
-export interface VisitedViews {
+export interface VisitedView {
   name: string
   path: string
   fullPath: string
-  query?: { [key: string]: string }
   meta: Meta
+}
+
+export interface Meta {
+  title?: string
+  auth?: boolean
+  affix?: boolean
+  noCache?: boolean
 }
 
 export type CachedViews = {

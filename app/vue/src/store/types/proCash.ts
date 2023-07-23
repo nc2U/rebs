@@ -51,6 +51,7 @@ export interface ProSepItems {
   income?: number | null
   outlay?: number | null
   evidence?: '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | ''
+  evidence_desc?: string
   note: string
 }
 
@@ -66,7 +67,6 @@ export interface ProjectCashBook extends ProSepItems {
   refund_contractor?: number | null
   bank_account: number | null
   bank_account_desc?: string
-  evidence_desc?: string
   deal_date: string
 }
 

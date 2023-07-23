@@ -2,31 +2,33 @@
 import { ref, computed, onMounted, nextTick, watch } from 'vue'
 import { useStore } from 'vuex'
 import { useTagsView } from '@/store/pinia/tagsView'
-import { Meta, VisitedViews } from '@/store/types/tagsView'
+import { VisitedView } from '@/store/types/tagsView'
 import {
-  RouteLocationNormalizedLoaded as RouteNormal,
-  RouteRecordRaw,
   useRoute,
   useRouter,
+  RouteRecordRaw,
+  RouteLocationMatched,
 } from 'vue-router'
-
-const [route, router] = [
-  useRoute() as RouteNormal & {
-    matched: RouteNormal[]
-    fullPath: string
-    meta: Meta
-  },
-  useRouter(),
-]
-
-const routes = route.matched
+import { vi } from 'vuetify/locale'
 
 const store = useStore()
 const dark = computed(() => store.state.theme === 'dark')
 const btnColor = computed(() => (dark.value ? 'blue-grey' : ''))
 
+const [route, router] = [useRoute(), useRouter()]
+watch(route, () => {
+  addTags()
+  moveToCurrentTag()
+})
+
 const visible = ref(false)
-const affixTags = ref<VisitedViews[]>([])
+watch(visible, value =>
+  value
+    ? document.body.addEventListener('click', closeMenu)
+    : document.body.removeEventListener('click', closeMenu),
+)
+
+const affixTags = ref<VisitedView[]>([]) // 고정 태그
 
 const currentTag = ref()
 const scrollPane = ref()
@@ -34,48 +36,55 @@ const scrollPane = ref()
 const tagsViewStore = useTagsView()
 const visitedViews = computed(() => tagsViewStore.visitedViews)
 
-const isActive = (currentRoute: VisitedViews) =>
-  currentRoute.name === route.name ||
-  currentRoute.meta.title === route.meta.title
+const isActive = (currView: VisitedView) =>
+  currView.name === route.name || currView.meta.title === route.meta.title
 
-const isAffix = (tag: { meta: { affix: boolean } }) =>
-  tag.meta && tag.meta.affix
+const isAffix = (view: VisitedView) => view.meta && view.meta.affix
 
-const filterAffixTags = (routes: RouteRecordRaw[]) => {
-  let tags: Array<VisitedViews> = []
-  routes.forEach((r: RouteRecordRaw & { meta: { affix: boolean } }) => {
-    if (r.meta && r.meta.affix) {
-      tags.push({
-        fullPath: r.path,
-        path: r.path,
-        name: r.name as string,
-        meta: { ...r.meta } as {
-          title: string
-          affix: boolean
-          noCache: boolean
-        },
+const slashPath = (p: string) => (p.charAt(0) !== '/' ? '/' + p : p)
+
+const filterAffixTags = (
+  regRoutes: RouteLocationMatched[] | RouteRecordRaw[],
+) => {
+  let affixedViews: VisitedView[] = []
+  regRoutes.forEach((view: RouteLocationMatched | RouteRecordRaw) => {
+    if (view.meta && view.meta.affix) {
+      const path = slashPath(view.path)
+      affixedViews.push({
+        name: view.name as string,
+        path,
+        fullPath: path,
+        meta: { ...view.meta },
       })
     }
 
-    if (r.children) {
-      const tempTags = filterAffixTags(r.children)
-      if (tempTags.length >= 1) {
-        tags = [...tags, ...tempTags]
+    if (view.children) {
+      const tempViews = filterAffixTags(view.children)
+      if (tempViews.length >= 1) {
+        affixedViews = [...affixedViews, ...tempViews]
       }
     }
   })
-  return tags
+  return affixedViews
 }
 
 const initTags = () => {
-  affixTags.value = filterAffixTags(routes)
-  affixTags.value.forEach((tag: VisitedViews) =>
-    tag.meta.title ? tagsViewStore.addVisitedView(tag) : undefined,
+  affixTags.value = filterAffixTags(route.matched)
+  console.log(affixTags.value)
+  affixTags.value.forEach((tag: VisitedView) =>
+    tag.meta.title ? tagsViewStore.addView(tag) : undefined,
   )
 }
 
 const addTags = () =>
-  route.meta.title && !route.meta.except ? tagsViewStore.addView(route) : false
+  route.meta.title && !route.meta.except
+    ? tagsViewStore.addView({
+        name: route.name,
+        path: route.path,
+        fullPath: route.fullPath,
+        meta: route.meta,
+      } as VisitedView)
+    : false
 
 const moveToCurrentTag = () =>
   nextTick(() => {
@@ -89,29 +98,17 @@ const moveToCurrentTag = () =>
     }
   })
 
-const toLastView = (visitedViews: VisitedViews[]) => {
-  const latestView = visitedViews.slice(-1)[0]
-  if (visitedViews.length > 2) router.push({ path: latestView.fullPath })
-  else router.push({ name: '일 정 관 리' })
+const toLastView = () => {
+  const latestView = visitedViews.value.slice(-1)[0]
+  router.push({ path: latestView.fullPath })
 }
 
-const closeSelectedTag = (view: VisitedViews) =>
-  tagsViewStore.delView(view).then(({ visitedViews }: VisitedViews[]) => {
-    if (isActive(view)) toLastView(visitedViews)
+const closeSelectedTag = (view: VisitedView) =>
+  tagsViewStore.delView(view).then(() => {
+    if (isActive(view)) toLastView() // 현재 페이지를 닫았다면 이전 페이지로 이동
   })
 
 const closeMenu = () => (visible.value = false)
-
-watch(route, () => {
-  addTags()
-  moveToCurrentTag()
-})
-
-watch(visible, value =>
-  value
-    ? document.body.addEventListener('click', closeMenu)
-    : document.body.removeEventListener('click', closeMenu),
-)
 
 onMounted(() => {
   initTags()
@@ -123,11 +120,11 @@ onMounted(() => {
   <v-sheet max-width="100%" class="my-1" :class="{ dark }">
     <v-slide-group show-arrows>
       <v-slide-group-item
-        v-for="tag in visitedViews"
-        :key="tag.path"
+        v-for="view in visitedViews"
+        :key="view.path"
         ref="scrollPane"
         class="tags-view-item"
-        @click.middle="!isAffix(tag) ? closeSelectedTag(tag) : ''"
+        @click.middle="!isAffix(view) ? closeSelectedTag(view) : ''"
       >
         <v-btn
           ref="currentTag"
@@ -137,22 +134,22 @@ onMounted(() => {
           size="small"
           :border="true"
           :rounded="0"
-          :color="isActive(tag) ? 'success' : btnColor"
-          :to="{ path: tag.fullPath, query: tag.query }"
+          :color="isActive(view) ? 'success' : btnColor"
+          :to="{ path: view.fullPath }"
         >
           <v-icon
-            v-if="isActive(tag)"
+            v-if="isActive(view)"
             icon="mdi-circle"
             size="x-small"
             class="mr-2"
           />
-          {{ tag.meta.title }}
+          {{ view.meta.title }}
           <v-icon
-            v-if="!isAffix(tag)"
+            v-if="!isAffix(view)"
             icon="mdi-close"
             size="x-small"
             class="pa-2 ml-1 close"
-            @click.prevent.stop="closeSelectedTag(tag)"
+            @click.prevent.stop="closeSelectedTag(view)"
           />
         </v-btn>
       </v-slide-group-item>

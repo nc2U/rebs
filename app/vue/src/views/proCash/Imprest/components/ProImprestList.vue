@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
 import { useProCash } from '@/store/pinia/proCash'
 import { ProBankAcc, ProjectCashBook } from '@/store/types/proCash'
 import { TableSecondary } from '@/utils/cssMixins'
@@ -14,6 +14,9 @@ const emit = defineEmits([
   'on-delete',
   'on-bank-update',
 ])
+
+const refAccDepth = ref()
+const refBankAcc = ref()
 
 const proCashStore = useProCash()
 const proImprestList = computed(() => proCashStore.proImprestList)
@@ -35,17 +38,17 @@ const onBankUpdate = (payload: ProBankAcc) => emit('on-bank-update', payload)
 <template>
   <CTable hover responsive align="middle">
     <colgroup>
-      <col width="8%" />
-      <col width="6%" />
-      <col width="7%" />
-      <col width="10%" />
-      <col width="12%" />
-      <col width="11%" />
-      <col width="11%" />
-      <col width="10%" />
-      <col width="10%" />
-      <col width="9%" />
-      <col width="6%" />
+      <col style="width: 8%" />
+      <col style="width: 6%" />
+      <col style="width: 7%" />
+      <col style="width: 10%" />
+      <col style="width: 12%" />
+      <col style="width: 11%" />
+      <col style="width: 11%" />
+      <col style="width: 10%" />
+      <col style="width: 10%" />
+      <col style="width: 9%" />
+      <col style="width: 6%" />
     </colgroup>
 
     <CTableHead>
@@ -56,7 +59,7 @@ const onBankUpdate = (payload: ProBankAcc) => emit('on-bank-update', payload)
         <CTableHeaderCell scope="col">
           세부계정
           <a href="javascript:void(0)">
-            <CIcon name="cilCog" @click="$refs.accDepth.callModal()" />
+            <CIcon name="cilCog" @click="refAccDepth.callModal()" />
           </a>
         </CTableHeaderCell>
         <CTableHeaderCell scope="col">적요</CTableHeaderCell>
@@ -64,7 +67,7 @@ const onBankUpdate = (payload: ProBankAcc) => emit('on-bank-update', payload)
         <CTableHeaderCell scope="col">
           거래계좌
           <a href="javascript:void(0)">
-            <CIcon name="cilCog" @click="$refs.bankAcc.callModal()" />
+            <CIcon name="cilCog" @click="refBankAcc.callModal()" />
           </a>
         </CTableHeaderCell>
         <CTableHeaderCell scope="col">입금액</CTableHeaderCell>
@@ -77,7 +80,7 @@ const onBankUpdate = (payload: ProBankAcc) => emit('on-bank-update', payload)
     <CTableBody>
       <ProImprest
         v-for="imprest in proImprestList"
-        :key="imprest.pk"
+        :key="imprest.pk as number"
         :imprest="imprest"
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
@@ -94,7 +97,7 @@ const onBankUpdate = (payload: ProBankAcc) => emit('on-bank-update', payload)
     @active-page-change="pageSelect"
   />
 
-  <AccDepth ref="accDepth" />
+  <AccDepth ref="refAccDepth" />
 
-  <BankAcc ref="bankAcc" @on-bank-update="onBankUpdate" />
+  <BankAcc ref="refBankAcc" @on-bank-update="onBankUpdate" />
 </template>

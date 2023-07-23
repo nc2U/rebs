@@ -20,10 +20,7 @@ import AlertModal from '@/components/Modals/AlertModal.vue'
 import BankAcc from '../../Manage/components/BankAcc.vue'
 
 const props = defineProps({
-  imprest: {
-    type: Object as PropType<ProjectCashBook>,
-    default: null,
-  },
+  imprest: { type: Object as PropType<ProjectCashBook>, default: null },
 })
 
 const emit = defineEmits([
@@ -33,6 +30,7 @@ const emit = defineEmits([
   'on-bank-update',
 ])
 
+const refBankAcc = ref()
 const delModal = ref()
 const alertModal = ref()
 
@@ -63,9 +61,9 @@ const form = reactive<
   sort: null,
   project_account_d2: null,
   project_account_d3: null,
-
+  sepItems: [],
   is_separate: false,
-  separated: null as null | number,
+  separated: null,
   is_imprest: true,
 
   content: '',
@@ -119,7 +117,7 @@ const proImpBankAccs = computed(() => {
   return !ba || isExist
     ? getImpBankAccs.value
     : [...getImpBankAccs.value, ...[{ value: ba, label: getAccName(ba) }]].sort(
-        (a, b) => a.value - b.value,
+        (prev, curr) => (prev.value || 0) - (curr.value || 0),
       )
 })
 
@@ -151,7 +149,7 @@ const sepSummary = computed(() => {
   const inc =
     props.imprest?.sepItems.length !== 0
       ? props.imprest?.sepItems
-          .map((s: ProjectCashBook) => s.income || 0)
+          .map((s: ProSepItems) => s.income || 0)
           .reduce((res: number, el: number) => res + el, 0)
       : 0
   const out =
@@ -469,7 +467,7 @@ onBeforeMount(() => formDataSetup())
               <CFormLabel class="col-sm-4 col-form-label">
                 {{ !imprest && form.sort === 3 ? '출금' : '거래' }}계좌
                 <a href="javascript:void(0)">
-                  <CIcon name="cilCog" @click="$refs.bankAcc.callModal()" />
+                  <CIcon name="cilCog" @click="refBankAcc.callModal()" />
                 </a>
               </CFormLabel>
               <CCol sm="8">
@@ -481,7 +479,7 @@ onBeforeMount(() => formDataSetup())
                   <option value="">---------</option>
                   <option
                     v-for="ba in proImpBankAccs"
-                    :key="ba.value"
+                    :key="ba.value as number"
                     :value="ba.value"
                   >
                     {{ ba.label }}
@@ -525,7 +523,7 @@ onBeforeMount(() => formDataSetup())
                   <option value="">---------</option>
                   <option
                     v-for="ba in allProBankAccList"
-                    :key="ba.pk"
+                    :key="ba.pk as number"
                     :value="ba.pk"
                   >
                     {{ ba.alias_name }}
@@ -650,14 +648,18 @@ onBeforeMount(() => formDataSetup())
             <CCol sm="2">{{ sep.trader }}</CCol>
             <CCol sm="5">{{ cutString(sep.content, 20) }}</CCol>
             <CCol sm="2" class="text-right">
-              {{ sep.income ? numFormat(sep.income) : numFormat(sep.outlay) }}
+              {{
+                sep.income
+                  ? numFormat(sep.income)
+                  : numFormat(sep.outlay as number)
+              }}
             </CCol>
             <CCol sm="2" class="text-right">
               <CButton
                 type="button"
                 color="success"
                 size="sm"
-                @click="sepUpdate(sep)"
+                @click="sepUpdate(sep as ProjectCashBook)"
               >
                 수정
               </CButton>
@@ -775,7 +777,7 @@ onBeforeMount(() => formDataSetup())
                       <option value="">---------</option>
                       <option
                         v-for="ba in proImpBankAccs"
-                        :key="ba.value"
+                        :key="ba.value as number"
                         :value="ba.value"
                       >
                         {{ ba.label }}
@@ -912,5 +914,5 @@ onBeforeMount(() => formDataSetup())
 
   <AlertModal ref="alertModal" />
 
-  <BankAcc ref="bankAcc" @onBankUpdate="onBankUpdate" />
+  <BankAcc ref="refBankAcc" @on-bank-update="onBankUpdate" />
 </template>

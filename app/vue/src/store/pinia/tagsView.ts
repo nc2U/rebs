@@ -1,30 +1,30 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import { CachedViews, VisitedViews } from '@/store/types/tagsView'
+import { CachedViews, VisitedView } from '@/store/types/tagsView'
 import { RouteLocationNormalizedLoaded as RouteNormal } from 'vue-router'
 
 export const useTagsView = defineStore('tags-view', () => {
   // state & getters
-  const visitedViews = ref<VisitedViews[]>([])
+  const visitedViews = ref<VisitedView[]>([])
   const cachedViews = ref<CachedViews[]>([])
 
   // actions
-  const addView = (view: VisitedViews) => {
+  const addView = (view: VisitedView) => {
     addVisitedView(view)
     addCachedView(view)
   }
 
-  const addVisitedView = (view: VisitedViews) => {
+  const addVisitedView = (view: VisitedView) => {
     if (visitedViews.value.some(v => v.meta.title === view.meta.title)) return
     visitedViews.value.push(Object.assign({}, view))
   }
 
-  const addCachedView = (view: VisitedViews) => {
+  const addCachedView = (view: VisitedView) => {
     if (cachedViews.value.includes(view.name)) return
     if (!view.meta.noCache) cachedViews.value.push(view.name)
   }
 
-  const delView = (view: VisitedViews) =>
+  const delView = (view: VisitedView) =>
     new Promise(resolve => {
       delVisitedView(view).then(() => delCachedView(view))
       resolve({
@@ -33,7 +33,7 @@ export const useTagsView = defineStore('tags-view', () => {
       })
     })
 
-  const delVisitedView = (view: VisitedViews) =>
+  const delVisitedView = (view: VisitedView) =>
     new Promise(resolve => {
       for (const [i, v] of visitedViews.value.entries()) {
         if (v.path === view.path) {
@@ -44,14 +44,14 @@ export const useTagsView = defineStore('tags-view', () => {
       resolve([...visitedViews.value])
     })
 
-  const delCachedView = (view: VisitedViews) =>
+  const delCachedView = (view: VisitedView) =>
     new Promise(resolve => {
       const index = cachedViews.value.indexOf(view.name)
       index > -1 && cachedViews.value.splice(index, 1)
       resolve([...cachedViews.value])
     })
 
-  const delOthersViews = (view: VisitedViews) =>
+  const delOthersViews = (view: VisitedView) =>
     new Promise(resolve => {
       delOthersVisitedViews(view).then(() => delOthersCachedViews(view))
       resolve({
@@ -60,7 +60,7 @@ export const useTagsView = defineStore('tags-view', () => {
       })
     })
 
-  const delOthersVisitedViews = (view: VisitedViews) =>
+  const delOthersVisitedViews = (view: VisitedView) =>
     new Promise(resolve => {
       visitedViews.value = visitedViews.value.filter(
         v => v.meta.affix || v.path === view.path,
@@ -68,7 +68,7 @@ export const useTagsView = defineStore('tags-view', () => {
       resolve([...visitedViews.value])
     })
 
-  const delOthersCachedViews = (view: VisitedViews) =>
+  const delOthersCachedViews = (view: VisitedView) =>
     new Promise(resolve => {
       const index = cachedViews.value.indexOf(view.name)
       if (index > -1)

@@ -7,10 +7,7 @@ import FormModal from '@/components/Modals/FormModal.vue'
 import ProImprestForm from '@/views/proCash/Imprest/components/ProImprestForm.vue'
 
 const props = defineProps({
-  imprest: {
-    type: Object as PropType<ProjectCashBook>,
-    required: true,
-  },
+  imprest: { type: Object as PropType<ProjectCashBook>, required: true },
 })
 
 const emit = defineEmits(['multi-submit', 'on-delete', 'on-bank-update'])
@@ -18,7 +15,8 @@ const emit = defineEmits(['multi-submit', 'on-delete', 'on-bank-update'])
 const updateFormModal = ref()
 
 const sortClass = computed(
-  () => ['', 'text-primary', 'text-danger', 'text-info'][props.imprest?.sort],
+  () =>
+    ['', 'text-primary', 'text-danger', 'text-info'][props.imprest?.sort || 0],
 )
 
 const store = useStore()
@@ -26,7 +24,7 @@ const dark = computed(() => store.state.theme === 'dark')
 const rowColor = computed(() => {
   let color = ''
   color =
-    props.imprest?.contract && props.imprest.project_account_d3 <= '2'
+    props.imprest?.contract && (props.imprest.project_account_d3 as number) <= 2
       ? 'info'
       : color
   color = dark.value ? '' : color
