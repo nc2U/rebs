@@ -1,14 +1,15 @@
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, PropType } from 'vue'
 import { ProjectCashBook } from '@/store/types/proCash'
 import { useRouter } from 'vue-router'
 import { numFormat } from '@/utils/baseMixins'
 import { TableSecondary } from '@/utils/cssMixins'
 import FormModal from '@/components/Modals/FormModal.vue'
 import PaymentForm from '@/views/payments/Register/components/PaymentForm.vue'
+import { AllPayment } from '@/store/types/payment'
 
 const props = defineProps({
-  payment: { type: Object, default: null },
+  payment: { type: Object as PropType<AllPayment>, default: null },
   paymentId: { type: String, default: '' },
   contract: { type: Object, default: null },
 })

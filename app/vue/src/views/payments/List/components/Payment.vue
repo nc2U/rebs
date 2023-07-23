@@ -1,14 +1,14 @@
 <script lang="ts" setup>
-import { ref, computed } from 'vue'
+import { ref, computed, PropType } from 'vue'
 import { useRouter } from 'vue-router'
 import { numFormat } from '@/utils/baseMixins'
-import { ProjectCashBook } from '@/store/types/proCash'
+import { PaymentPaid, ProjectCashBook } from '@/store/types/proCash'
 import FormModal from '@/components/Modals/FormModal.vue'
 import ContChoicer from './ContChoicer.vue'
 
 const props = defineProps({
   project: { type: Number, required: true },
-  payment: { type: Object, required: true },
+  payment: { type: Object as PropType<PaymentPaid>, required: true },
 })
 
 const emit = defineEmits(['pay-match'])
@@ -91,10 +91,11 @@ const payMatch = (payload: ProjectCashBook) => emit('pay-match', payload)
 
   <FormModal ref="contMatchingModal" size="lg">
     <template #header> 수납 건별 계약 건 매칭</template>
-    <template #default class="p-5">
+    <template #default>
       <ContChoicer
         :project="project"
         :payment="payment"
+        class="p-5"
         @pay-match="payMatch"
         @close="contMatchingModal.close()"
       />

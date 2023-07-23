@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { computed, PropType } from 'vue'
-import { AllPayment } from '@/store/types/payment'
+import { AllPayment, PayOrder } from '@/store/types/payment'
 import { numFormat, dateFormat } from '@/utils/baseMixins'
 
 const props = defineProps({
   contract: { type: Object, default: null },
-  order: { type: Object, default: null },
+  order: { type: Object as PropType<PayOrder>, default: null },
   commit: { type: Number, default: 0 },
   price: { type: Number, default: 0 },
   numDown: { type: Number, default: 0 },

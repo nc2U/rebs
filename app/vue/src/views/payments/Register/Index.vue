@@ -3,6 +3,7 @@ import { ref, computed, onBeforeMount, onMounted, onUpdated, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/payments/_menu/headermixin'
 import { useProject } from '@/store/pinia/project'
 import { useProjectData } from '@/store/pinia/project_data'
+import { Contract } from '@/store/types/contract'
 import { ContFilter, useContract } from '@/store/pinia/contract'
 import { useProCash } from '@/store/pinia/proCash'
 import { ProjectCashBook, CashBookFilter } from '@/store/types/proCash'
@@ -30,37 +31,37 @@ const projectDataStore = useProjectData()
 const fetchTypeList = (projId: number) => projectDataStore.fetchTypeList(projId)
 
 const fetchAllPaymentList = (payload: CashBookFilter) =>
-  paymentStore.fetchAllPaymentList(payload)
+    paymentStore.fetchAllPaymentList(payload)
 const fetchPayOrderList = (projId: number) =>
-  paymentStore.fetchPayOrderList(projId)
+    paymentStore.fetchPayOrderList(projId)
 const fetchDownPayList = (payload: DownPayFilter) =>
-  paymentStore.fetchDownPayList(payload)
+    paymentStore.fetchDownPayList(payload)
 const fetchPriceList = (payload: PriceFilter) =>
-  paymentStore.fetchPriceList(payload)
+    paymentStore.fetchPriceList(payload)
 
 const proCashStore = useProCash()
 const fetchAllProBankAccList = (projId: number) =>
-  proCashStore.fetchAllProBankAccList(projId)
+    proCashStore.fetchAllProBankAccList(projId)
 const createPrCashBook = (
-  payload: ProjectCashBook & { sepData: ProjectCashBook | null } & {
-    filters: CashBookFilter
-  },
+    payload: ProjectCashBook & { sepData: ProjectCashBook | null } & {
+      filters: CashBookFilter
+    },
 ) => proCashStore.createPrCashBook(payload)
 const updatePrCashBook = (
-  payload: ProjectCashBook & {
-    sepData: ProjectCashBook | null
-  } & { isPayment?: boolean } & {
-    filters: CashBookFilter
-  },
+    payload: ProjectCashBook & {
+      sepData: ProjectCashBook | null
+    } & { isPayment?: boolean } & {
+      filters: CashBookFilter
+    },
 ) => proCashStore.updatePrCashBook(payload)
 const deletePrCashBook = (
-  payload: { pk: number; project: number; contract: number } & {
-    filters: CashBookFilter
-  },
+    payload: { pk: number; project: number; contract: number } & {
+      filters: CashBookFilter
+    },
 ) => proCashStore.deletePrCashBook(payload)
 
 const fetchContractList = (payload: ContFilter) =>
-  contractStore.fetchContractList(payload)
+    contractStore.fetchContractList(payload)
 const fetchContract = (pk: number) => contractStore.fetchContract(pk)
 
 const [route, router] = [useRoute(), useRouter()]
@@ -96,18 +97,18 @@ const getContract = (cont: number) => {
 }
 
 const onCreate = (
-  payload: ProjectCashBook & { sepData: ProjectCashBook | null } & {
-    filters: CashBookFilter
-  },
+    payload: ProjectCashBook & { sepData: ProjectCashBook | null } & {
+      filters: CashBookFilter
+    },
 ) => {
   if (project.value) payload.project = project.value
   createPrCashBook(payload)
 }
 
 const onUpdate = (
-  payload: ProjectCashBook & { sepData: ProjectCashBook | null } & {
-    filters: CashBookFilter
-  },
+    payload: ProjectCashBook & { sepData: ProjectCashBook | null } & {
+      filters: CashBookFilter
+    },
 ) => {
   if (project.value) payload.project = project.value
   updatePrCashBook({ ...payload, isPayment: true })
@@ -181,34 +182,40 @@ onBeforeRouteLeave(() => {
 
 <template>
   <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    @proj-select="projSelect"
+      :page-title="pageTitle"
+      :nav-menu="navMenu"
+      @proj-select="projSelect"
   />
 
   <ContentBody>
     <CCardBody class="pb-5">
       <ContChoicer
-        ref="listControl"
-        :project="project"
-        :contract="contract"
-        @list-filtering="onContFiltering"
-        @get-contract="getContract"
+          ref="listControl"
+          :project="project || undefined"
+          :contract="contract as Contract"
+          @list-filtering="onContFiltering"
+          @get-contract="getContract"
       />
       <CRow>
         <CCol lg="7">
           <PaymentListAll
-            :contract="contract"
-            :payment-id="paymentId"
-            :payment-list="AllPaymentList"
-            @on-update="onUpdate"
-            @on-delete="onDelete"
+              :contract="contract as Contract"
+              :payment-id="paymentId"
+              :payment-list="AllPaymentList"
+              @on-update="onUpdate"
+              @on-delete="onDelete"
           />
 
-          <CreateButton :contract="contract" @on-create="onCreate" />
+          <CreateButton
+              :contract="contract as Contract"
+              @on-create="onCreate"
+          />
         </CCol>
         <CCol lg="5">
-          <OrdersBoard :contract="contract" :payment-list="AllPaymentList" />
+          <OrdersBoard
+              :contract="contract as Contract"
+              :payment-list="AllPaymentList"
+          />
         </CCol>
       </CRow>
     </CCardBody>

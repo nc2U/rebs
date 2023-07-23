@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { computed, PropType } from 'vue'
+import { Contract } from '@/store/types/contract'
 import { AllPayment } from '@/store/types/payment'
 import { ProjectCashBook } from '@/store/types/proCash'
 import { numFormat } from '@/utils/baseMixins'
@@ -7,7 +8,7 @@ import { TableSecondary } from '@/utils/cssMixins'
 import Payment from '@/views/payments/Register/components/Payment.vue'
 
 const props = defineProps({
-  contract: { type: Object, default: null },
+  contract: { type: Object as PropType<Contract>, default: null },
   paymentList: { type: Array as PropType<AllPayment[]>, default: () => [] },
   paymentId: { type: String, default: '' },
 })
@@ -29,12 +30,12 @@ const onDelete = (pk: number) => emit('on-delete', pk)
 <template>
   <CTable hover responsive align="middle">
     <colgroup>
-      <col width="16%" />
-      <col width="18%" />
-      <col width="16%" />
-      <col width="22%" />
-      <col width="18%" />
-      <col width="10%" />
+      <col style="width: 16%" />
+      <col style="width: 18%" />
+      <col style="width: 16%" />
+      <col style="width: 22%" />
+      <col style="width: 18%" />
+      <col style="width: 10%" />
     </colgroup>
 
     <CTableHead :color="TableSecondary">

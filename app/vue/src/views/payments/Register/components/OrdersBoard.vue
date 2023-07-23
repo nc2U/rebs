@@ -93,11 +93,11 @@ const getCommits = (el: number | undefined) => {
 <template>
   <CTable hover responsive>
     <colgroup>
-      <col width="20%" />
-      <col width="20%" />
-      <col width="20%" />
-      <col width="20%" />
-      <col width="20%" />
+      <col style="width: 20%" />
+      <col style="width: 20%" />
+      <col style="width: 20%" />
+      <col style="width: 20%" />
+      <col style="width: 20%" />
     </colgroup>
 
     <CTableHead :color="TableSecondary" class="text-center">
@@ -116,7 +116,7 @@ const getCommits = (el: number | undefined) => {
           :contract="contract"
           :price="thisPrice"
           :order="po"
-          :commit="commit(po.pay_time)"
+          :commit="commit(po.pay_time as number)"
           :num-down="numDown"
           :num-mid="numMid"
           :payment-list="paymentList"
