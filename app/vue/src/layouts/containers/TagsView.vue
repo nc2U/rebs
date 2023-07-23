@@ -16,9 +16,19 @@ const dark = computed(() => store.state.theme === 'dark')
 const btnColor = computed(() => (dark.value ? 'blue-grey' : ''))
 
 const [route, router] = [useRoute(), useRouter()]
+watch(route, () => {
+  addTags()
+  moveToCurrentTag()
+})
 
 const visible = ref(false)
-const affixTags = ref<VisitedView[]>([])
+watch(visible, value =>
+  value
+    ? document.body.addEventListener('click', closeMenu)
+    : document.body.removeEventListener('click', closeMenu),
+)
+
+const affixTags = ref<VisitedView[]>([]) // 고정 태그
 
 const currentTag = ref()
 const scrollPane = ref()
@@ -32,34 +42,38 @@ const isActive = (currentRoute: VisitedView) =>
 
 const isAffix = (view: VisitedView) => view.meta && view.meta.affix
 
+const slashPath = (p: string) => (p.charAt(0) !== '/' ? '/' + p : p)
+
 const filterAffixTags = (
-  matched: RouteLocationMatched[] | RouteRecordRaw[],
+  regRoutes: RouteLocationMatched[] | RouteRecordRaw[],
 ) => {
-  let visited: VisitedView[] = []
-  matched.forEach((view: RouteLocationMatched | RouteRecordRaw) => {
+  let affixedViews: VisitedView[] = []
+  regRoutes.forEach((view: RouteLocationMatched | RouteRecordRaw) => {
     if (view.meta && view.meta.affix) {
-      visited.push({
+      const path = slashPath(view.path)
+      affixedViews.push({
         name: view.name as string,
-        path: view.path,
-        fullPath: view.path || '',
+        path,
+        fullPath: path,
         meta: { ...view.meta },
       })
     }
 
     if (view.children) {
-      const tempTags = filterAffixTags(view.children)
-      if (tempTags.length >= 1) {
-        visited = [...visited, ...tempTags]
+      const tempViews = filterAffixTags(view.children)
+      if (tempViews.length >= 1) {
+        affixedViews = [...affixedViews, ...tempViews]
       }
     }
   })
-  return visited
+  return affixedViews
 }
 
 const initTags = () => {
   affixTags.value = filterAffixTags(route.matched)
+  console.log(affixTags.value)
   affixTags.value.forEach((tag: VisitedView) =>
-    tag.meta.title ? tagsViewStore.addVisitedView(tag) : undefined,
+    tag.meta.title ? tagsViewStore.addView(tag) : undefined,
   )
 }
 
@@ -87,8 +101,7 @@ const moveToCurrentTag = () =>
 
 const toLastView = (visitedViews: VisitedView[]) => {
   const latestView = visitedViews.slice(-1)[0]
-  if (visitedViews.length > 2) router.push({ path: latestView.fullPath })
-  else router.push({ name: '일 정 관 리' })
+  router.push({ path: latestView.fullPath })
 }
 
 const closeSelectedTag = (view: VisitedView) =>
@@ -97,17 +110,6 @@ const closeSelectedTag = (view: VisitedView) =>
   })
 
 const closeMenu = () => (visible.value = false)
-
-watch(visible, value =>
-  value
-    ? document.body.addEventListener('click', closeMenu)
-    : document.body.removeEventListener('click', closeMenu),
-)
-
-watch(route, () => {
-  addTags()
-  moveToCurrentTag()
-})
 
 onMounted(() => {
   initTags()
