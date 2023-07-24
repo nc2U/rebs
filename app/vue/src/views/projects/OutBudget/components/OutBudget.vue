@@ -2,11 +2,12 @@
 import { ref, reactive, computed, onBeforeMount, inject } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { write_project } from '@/utils/pageAuth'
+import { ProjectAccountD2, ProjectAccountD3 } from '@/store/types/proCash'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-const d2List = inject('d2List')
-const d3List = inject('d3List')
+const d2List = inject<ProjectAccountD2[]>('d2List')
+const d3List = inject<ProjectAccountD3[]>('d3List')
 
 const props = defineProps({ budget: { type: Object, required: true } })
 const emit = defineEmits(['on-update', 'on-delete'])
@@ -20,8 +21,8 @@ const form = reactive({
   budget: null,
 })
 
-const alertModal = ref()
-const confirmModal = ref()
+const refAlertModal = ref()
+const refConfirmModal = ref()
 
 const formsCheck = computed(() => {
   const a = form.pk === props.budget.pk
@@ -37,23 +38,23 @@ const onUpdateBudget = () => {
   if (write_project.value) {
     emit('on-update', { ...form })
   } else {
-    alertModal.value.callModal()
+    refAlertModal.value.callModal()
     dataSetup()
   }
 }
 
 const accStore = useAccount()
 const onDeleteBudget = () => {
-  if (accStore.superAuth) confirmModal.value.callModal()
+  if (accStore.superAuth) refConfirmModal.value.callModal()
   else {
-    alertModal.value.callModal()
+    refAlertModal.value.callModal()
     dataSetup()
   }
 }
 
 const modalAction = () => {
   emit('on-delete', props.budget.pk)
-  confirmModal.value.close()
+  refConfirmModal.value.close()
 }
 
 const dataSetup = () => {
@@ -122,7 +123,7 @@ onBeforeMount(() => dataSetup())
     </CTableDataCell>
   </CTableRow>
 
-  <ConfirmModal ref="confirmModal">
+  <ConfirmModal ref="refConfirmModal">
     <template #header> 지출 예산 삭제</template>
     <template #default> 해당 지출 예산 항목을 삭제 하시겠습니까?</template>
     <template #footer>
@@ -130,5 +131,5 @@ onBeforeMount(() => dataSetup())
     </template>
   </ConfirmModal>
 
-  <AlertModal ref="alertModal" />
+  <AlertModal ref="refAlertModal" />
 </template>

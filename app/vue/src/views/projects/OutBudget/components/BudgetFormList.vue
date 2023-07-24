@@ -17,12 +17,12 @@ const onDeleteOrder = (pk: number) => emit('on-delete', pk)
 <template>
   <CTable hover responsive>
     <colgroup>
-      <col width="15%" />
-      <col width="15%" />
-      <col width="20%" />
-      <col width="25%" />
-      <col width="15%" />
-      <col width="10%" />
+      <col style="width: 15%" />
+      <col style="width: 15%" />
+      <col style="width: 20%" />
+      <col style="width: 25%" />
+      <col style="width: 15%" />
+      <col style="width: 10%" />
     </colgroup>
     <CTableHead :color="TableSecondary" class="text-center">
       <CTableRow>
