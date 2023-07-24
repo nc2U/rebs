@@ -14,8 +14,8 @@ const form = reactive({
   order_group_name: '',
 })
 
-const alertModal = ref()
-const confirmModal = ref()
+const refAlertModal = ref()
+const refConfirmModal = ref()
 
 const formsCheck = computed(() => {
   const a = form.order_number === props.order.order_number
@@ -34,23 +34,23 @@ const onUpdateOrder = () => {
     const pk = props.order.pk
     emit('on-update', { ...{ pk }, ...form })
   } else {
-    alertModal.value.callModal()
+    refAlertModal.value.callModal()
     dataSetup()
   }
 }
 
 const accStore = useAccount()
 const onDeleteOrder = () => {
-  if (accStore.superAuth) confirmModal.value.callModal()
+  if (accStore.superAuth) refConfirmModal.value.callModal()
   else {
-    alertModal.value.callModal()
+    refAlertModal.value.callModal()
     dataSetup()
   }
 }
 
 const modalAction = () => {
   emit('on-delete', props.order.pk)
-  confirmModal.value.close()
+  refConfirmModal.value.close()
 }
 
 const dataSetup = () => {
@@ -104,7 +104,7 @@ onBeforeMount(() => dataSetup())
     </CTableDataCell>
   </CTableRow>
 
-  <ConfirmModal ref="confirmModal">
+  <ConfirmModal ref="refConfirmModal">
     <template #header> 차수그룹 삭제</template>
     <template #default>
       이 그룹에 종속 데이터가 있는 경우 해당 데이터를 모두 제거한 후 삭제가능
@@ -115,5 +115,5 @@ onBeforeMount(() => dataSetup())
     </template>
   </ConfirmModal>
 
-  <AlertModal ref="alertModal" />
+  <AlertModal ref="refAlertModal" />
 </template>
