@@ -1,31 +1,27 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { PropType, ref } from 'vue'
+import { Company } from '@/store/types/settings'
 import { useAccount } from '@/store/pinia/account'
 import { write_company_settings } from '@/utils/pageAuth'
 import { TableSecondary } from '@/utils/cssMixins'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-defineProps({
-  company: {
-    type: Object,
-    default: null,
-  },
-})
+defineProps({ company: { type: Object as PropType<Company>, default: null } })
 
 const emit = defineEmits(['create-form', 'update-form'])
 
-const alertModal = ref()
+const refAlertModal = ref()
 
 const toEdit = () => {
   if (write_company_settings.value) emit('update-form')
-  else alertModal.value.callModal()
+  else refAlertModal.value.callModal()
 }
 
 const account = useAccount()
 
 const toCreate = () => {
   if (account.superAuth) emit('create-form')
-  else alertModal.value.callModal()
+  else refAlertModal.value.callModal()
 }
 </script>
 
@@ -35,8 +31,8 @@ const toCreate = () => {
       <CCol class="pt-2">
         <CTable hover responsive>
           <colgroup>
-            <col width="25%" />
-            <col width="75%" />
+            <col style="width: 25%" />
+            <col style="width: 75%" />
           </colgroup>
           <CTableHead>
             <CTableRow>
@@ -150,5 +146,5 @@ const toCreate = () => {
     </CRow>
   </CCardFooter>
 
-  <AlertModal ref="alertModal" />
+  <AlertModal ref="refAlertModal" />
 </template>

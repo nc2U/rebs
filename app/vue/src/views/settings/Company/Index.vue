@@ -39,7 +39,7 @@ comLength
   <ContentBody>
     <CompanyDetail
       v-if="compName === 'CompanyDetail'"
-      :company="company"
+      :company="company as Company"
       @create-form="createForm"
       @update-form="updateForm"
     />
@@ -52,7 +52,7 @@ comLength
 
     <CompanyForm
       v-if="compName === 'UpdateForm'"
-      :company="company"
+      :company="company as Company"
       @on-submit="onSubmit"
       @reset-form="resetForm"
     />
