@@ -17,15 +17,15 @@ const onDeletePayOrder = (pk: number) => emit('on-delete', pk)
 <template>
   <CTable hover responsive>
     <colgroup>
-      <col width="11%" />
-      <col width="11%" />
-      <col width="11%" />
-      <col width="11%" />
-      <col width="11%" />
-      <col width="11%" />
-      <col width="11%" />
-      <col width="11%" />
-      <col width="12%" />
+      <col style="width: 11%" />
+      <col style="width: 11%" />
+      <col style="width: 11%" />
+      <col style="width: 11%" />
+      <col style="width: 11%" />
+      <col style="width: 11%" />
+      <col style="width: 11%" />
+      <col style="width: 11%" />
+      <col style="width: 12%" />
     </colgroup>
     <CTableHead :color="TableSecondary" class="text-center">
       <CTableRow>
@@ -43,7 +43,7 @@ const onDeletePayOrder = (pk: number) => emit('on-delete', pk)
     <CTableBody v-if="payOrderList.length > 0">
       <PayOrder
         v-for="payOrder in payOrderList"
-        :key="payOrder.pk"
+        :key="payOrder.pk as number"
         :pay-order="payOrder"
         @on-update="onUpdatePayOrder"
         @on-delete="onDeletePayOrder"

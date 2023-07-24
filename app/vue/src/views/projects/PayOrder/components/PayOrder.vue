@@ -26,8 +26,8 @@ watch(form, val => {
   if (!!val.extra_due_date) form.extra_due_date = dateFormat(val.extra_due_date)
 })
 
-const alertModal = ref()
-const confirmModal = ref()
+const refAlertModal = ref()
+const refConfirmModal = ref()
 
 const formsCheck = computed(() => {
   const a = form.pay_sort === props.payOrder.pay_sort
@@ -50,20 +50,20 @@ const onUpdatePayOrder = () => {
     const pk = props.payOrder.pk
     emit('on-update', { ...{ pk }, ...form })
   } else {
-    alertModal.value.callModal()
+    refAlertModal.value.callModal()
     dataSetup()
   }
 }
 const onDeletePayOrder = () => {
-  if (useAccount().superAuth) confirmModal.value.callModal()
+  if (useAccount().superAuth) refConfirmModal.value.callModal()
   else {
-    alertModal.value.callModal()
+    refAlertModal.value.callModal()
     dataSetup()
   }
 }
 const modalAction = () => {
   emit('on-delete', props.payOrder.pk)
-  confirmModal.value.close()
+  refConfirmModal.value.close()
 }
 
 const dataSetup = () => {
@@ -175,7 +175,7 @@ onBeforeMount(() => dataSetup())
     </CTableDataCell>
   </CTableRow>
 
-  <ConfirmModal ref="confirmModal">
+  <ConfirmModal ref="refConfirmModal">
     <template #header> 납부 회차 삭제</template>
     <template #default>
       프로젝트 입출금 데이터에 이 납부 회차 정보가 등록되어 있는 경우 해당
@@ -187,5 +187,5 @@ onBeforeMount(() => dataSetup())
     </template>
   </ConfirmModal>
 
-  <AlertModal ref="alertModal" />
+  <AlertModal ref="refAlertModal" />
 </template>
