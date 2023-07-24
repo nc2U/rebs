@@ -17,8 +17,8 @@ const onDeleteBuilding = (pk: number) => emit('on-delete', pk)
 <template>
   <CTable hover responsive>
     <colgroup>
-      <col width="50%" />
-      <col width="50%" />
+      <col style="width: 50%" />
+      <col style="width: 50%" />
     </colgroup>
     <CTableHead :color="TableSecondary" class="text-center">
       <CTableRow>

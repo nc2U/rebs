@@ -1,19 +1,22 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, onBeforeMount } from 'vue'
+import { ref, reactive, computed, onBeforeMount, PropType } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { write_project } from '@/utils/pageAuth'
+import { BuildingUnit } from '@/store/types/project'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-const props = defineProps({ building: { type: Object, required: true } })
+const props = defineProps({
+  building: { type: Object as PropType<BuildingUnit>, required: true },
+})
 const emit = defineEmits(['on-update', 'on-delete'])
 
-const alertModal = ref()
-const confirmModal = ref()
+const refAlertModal = ref()
+const refConfirmModal = ref()
 
 const form = reactive({ name: '' })
 
-const formsCheck = computed(() => form.name === props.building.name)
+const formsCheck = computed(() => form.name === props.building?.name)
 
 const formCheck = (bool: boolean) => {
   if (bool) onUpdateBuilding()
@@ -22,28 +25,28 @@ const formCheck = (bool: boolean) => {
 
 const onUpdateBuilding = () => {
   if (write_project.value) {
-    const pk = props.building.pk
+    const pk = props.building?.pk
     emit('on-update', { ...{ pk }, ...form })
   } else {
-    alertModal.value.callModal()
+    refAlertModal.value.callModal()
     dataSetup()
   }
 }
 
 const onDeleteBuilding = () => {
-  if (useAccount().superAuth) confirmModal.value.callModal()
+  if (useAccount().superAuth) refConfirmModal.value.callModal()
   else {
-    alertModal.value.callModal()
+    refAlertModal.value.callModal()
     dataSetup()
   }
 }
 
 const modalAction = () => {
-  emit('on-delete', props.building.pk)
-  confirmModal.value.close()
+  emit('on-delete', props.building?.pk)
+  refConfirmModal.value.close()
 }
 
-const dataSetup = () => (form.name = props.building.name)
+const dataSetup = () => (form.name = props.building?.name as string)
 
 onBeforeMount(() => dataSetup())
 </script>
@@ -71,7 +74,7 @@ onBeforeMount(() => dataSetup())
     </CTableDataCell>
   </CTableRow>
 
-  <ConfirmModal ref="confirmModal">
+  <ConfirmModal ref="refConfirmModal">
     <template #header> 동(건물) 삭제</template>
     <template #default>
       이 동(건물)에 종속된 유니트(호수) 데이터가 있는 경우 해당 데이터를 모두
@@ -82,5 +85,5 @@ onBeforeMount(() => dataSetup())
     </template>
   </ConfirmModal>
 
-  <AlertModal ref="alertModal" />
+  <AlertModal ref="refAlertModal" />
 </template>
