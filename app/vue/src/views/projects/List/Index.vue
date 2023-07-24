@@ -34,7 +34,7 @@ const toSubmit = (payload: Project) => {
   <ContentBody>
     <IndexDetail
       v-if="compName === 'IndexDetail'"
-      :project="project"
+      :project="project as Project"
       @reset-form="resetForm"
       @create-form="createForm"
       @update-form="updateForm"
@@ -48,7 +48,7 @@ const toSubmit = (payload: Project) => {
 
     <IndexForm
       v-if="compName === 'UpdateForm'"
-      :project="project"
+      :project="project as Project"
       @to-submit="toSubmit"
       @reset-form="resetForm"
     />
