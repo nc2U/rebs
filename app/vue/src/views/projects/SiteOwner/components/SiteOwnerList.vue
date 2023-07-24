@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { useSite } from '@/store/pinia/project_site'
-import { Relation, SiteOwner as owner } from '@/store/types/project'
+import { Relation, SiteOwner as Owner } from '@/store/types/project'
 import { TableInfo, TableSuccess, TableSecondary } from '@/utils/cssMixins'
 import SiteOwner from '@/views/projects/SiteOwner/components/SiteOwner.vue'
 import Pagination from '@/components/Pagination'
@@ -21,24 +21,24 @@ const siteOwnerCount = computed(() => siteStore.siteOwnerCount)
 const ownerPages = (num: number) => Math.ceil(siteOwnerCount.value / num)
 const pageSelect = (page: number) => emit('page-select', page)
 const relationPatch = (payload: Relation) => emit('relation-patch', payload)
-const multiSubmit = (payload: owner) => emit('multi-submit', payload)
+const multiSubmit = (payload: Owner) => emit('multi-submit', payload)
 const onDelete = (pk: number) => emit('on-delete', pk)
 </script>
 
 <template>
   <CTable hover responsive bordered align="middle">
     <colgroup>
-      <col width="5%" />
-      <col width="10%" />
-      <col width="11%" />
-      <col width="13%" />
-      <col width="10%" />
-      <col width="11%" />
-      <col width="11%" />
-      <col width="10%" />
-      <col width="11%" />
-      <col width="4%" />
-      <col width="4%" />
+      <col style="width: 5%" />
+      <col style="width: 10%" />
+      <col style="width: 11%" />
+      <col style="width: 13%" />
+      <col style="width: 10%" />
+      <col style="width: 11%" />
+      <col style="width: 11%" />
+      <col style="width: 10%" />
+      <col style="width: 11%" />
+      <col style="width: 4%" />
+      <col style="width: 4%" />
     </colgroup>
 
     <CTableHead :color="TableSecondary">
@@ -75,9 +75,9 @@ const onDelete = (pk: number) => emit('on-delete', pk)
 
     <CTableBody>
       <SiteOwner
-        v-for="onr in siteOwnerList"
-        :key="onr.pk"
-        :owner="onr"
+        v-for="sOwner in siteOwnerList"
+        :key="sOwner.pk as number"
+        :owner="sOwner"
         :is-returned="isReturned"
         @relation-patch="relationPatch"
         @multi-submit="multiSubmit"
