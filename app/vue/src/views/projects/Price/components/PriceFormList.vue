@@ -8,7 +8,6 @@ import Price from '@/views/projects/Price/components/Price.vue'
 
 defineProps({
   msg: { type: String, default: '' },
-  condTexts: { type: Object, default: null },
   pFilters: { type: Object, default: null },
 })
 const emit = defineEmits(['on-create', 'on-update', 'on-delete'])
@@ -30,14 +29,14 @@ const onDelete = (pk: number) => emit('on-delete', pk)
 <template>
   <CTable hover responsive>
     <colgroup>
-      <col width="13%" />
-      <col width="12%" />
-      <col width="12%" />
-      <col width="12%" />
-      <col width="12%" />
-      <col width="12%" />
-      <col width="13%" />
-      <col width="13" />
+      <col style="width: 13%" />
+      <col style="width: 12%" />
+      <col style="width: 12%" />
+      <col style="width: 12%" />
+      <col style="width: 12%" />
+      <col style="width: 12%" />
+      <col style="width: 13%" />
+      <col style="width: 13%" />
     </colgroup>
     <CTableHead :color="TableSecondary" class="text-center">
       <CTableRow>
@@ -55,7 +54,6 @@ const onDelete = (pk: number) => emit('on-delete', pk)
       <Price
         v-for="floor in floorTypeList"
         :key="floor.pk"
-        :cond-texts="condTexts"
         :p-filters="pFilters"
         :floor="floor"
         :price="getPrice(floor.pk)"
