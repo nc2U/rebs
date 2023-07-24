@@ -14,8 +14,8 @@ const props = defineProps({
 
 const emit = defineEmits(['file-upload', 'on-submit', 'reset-form'])
 
-const alertModal = ref()
-const confirmModal = ref()
+const refAlertModal = ref()
+const refConfirmModal = ref()
 
 const form = reactive<Profile>({
   pk: null,
@@ -23,9 +23,9 @@ const form = reactive<Profile>({
   name: '',
   birth_date: '',
   cell_phone: '',
+  image: '',
 })
 
-const image = ref('')
 const validated = ref(false)
 
 const accountStore = useAccount()
@@ -36,7 +36,7 @@ const formsCheck = computed(() => {
     const a = form.name === props.profile.name
     const b = form.birth_date === props.profile.birth_date
     const c = form.cell_phone === props.profile.cell_phone
-    const d = !image.value || image.value === props.profile.image
+    const d = !form.image || form.image === props.profile.image
     return a && b && c && d
   } else return false
 })
@@ -49,7 +49,7 @@ watch(form, val => {
 })
 
 const fileUpload = (img: File) => {
-  image.value = img.name
+  form.image = img.name
   emit('file-upload', img)
 }
 
@@ -62,17 +62,17 @@ const onSubmit = (event: Event) => {
 
       validated.value = true
     } else {
-      confirmModal.value.callModal()
+      refConfirmModal.value.callModal()
     }
   } else {
-    alertModal.value.callModal()
+    refAlertModal.value.callModal()
   }
 }
 
 const modalAction = () => {
   emit('on-submit', form)
   validated.value = false
-  confirmModal.value.close()
+  refConfirmModal.value.close()
 }
 
 const formDataReset = () => {
@@ -81,7 +81,7 @@ const formDataReset = () => {
   form.name = ''
   form.birth_date = ''
   form.cell_phone = ''
-  image.value = ''
+  form.image = ''
 }
 
 const formDataSetup = () => {
@@ -91,7 +91,7 @@ const formDataSetup = () => {
     form.name = props.profile.name
     form.birth_date = props.profile.birth_date
     form.cell_phone = props.profile.cell_phone
-    image.value = props.profile.image
+    form.image = props.profile.image
   }
 }
 
@@ -180,7 +180,11 @@ onMounted(() => formDataSetup())
           </CRow>
         </CCol>
         <CCol md="6">
-          <AvatarInput ref="avatar" :image="image" @file-upload="fileUpload" />
+          <AvatarInput
+            ref="avatar"
+            :image="form.image as string"
+            @file-upload="fileUpload"
+          />
         </CCol>
       </CRow>
     </CCardBody>
@@ -196,7 +200,7 @@ onMounted(() => formDataSetup())
     </CCardFooter>
   </CForm>
 
-  <ConfirmModal ref="confirmModal">
+  <ConfirmModal ref="refConfirmModal">
     <template #header>프로필 정보</template>
     <template #default>
       프로필 정보 {{ confirmText }}을 진행하시겠습니까?
@@ -208,5 +212,5 @@ onMounted(() => formDataSetup())
     </template>
   </ConfirmModal>
 
-  <AlertModal ref="alertModal" />
+  <AlertModal ref="refAlertModal" />
 </template>

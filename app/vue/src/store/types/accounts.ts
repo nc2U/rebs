@@ -32,13 +32,13 @@ export interface StaffAuth {
 }
 
 export type Profile = {
-  [key: string]: undefined | number | null | string
+  [key: string]: undefined | number | null | string | File
   pk?: number | null
   user?: number | null
   name: string
   birth_date: string
   cell_phone: string
-  image: string | null
+  image: File | string | null
 }
 
 export interface Todo {

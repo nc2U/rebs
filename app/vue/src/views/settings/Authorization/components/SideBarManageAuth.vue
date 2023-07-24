@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, nextTick, onMounted, onUpdated } from 'vue'
+import { UserAuth } from '@/views/settings/Authorization/Index.vue'
 import { useStore } from 'vuex'
-import { UserAuth } from '../index.vue'
 
 const props = defineProps({
   user: { type: Object, default: null },

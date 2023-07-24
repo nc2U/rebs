@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onMounted, ref, watch } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import CropperModal from './CropperModal.vue'
 
 const props = defineProps({
@@ -18,15 +18,18 @@ const browse = () => {
   if (!!fu) fu.click()
 }
 
-const loadFile = (event: { target: { files: File[] } }) => {
-  const img = event.target.files[0]
-  emit('file-upload', img)
-  const reader = new FileReader()
-  reader.readAsDataURL(img)
-  reader.onload = e => {
-    modalImg.value = e.target?.result
-    if (!!modalImg.value) {
-      cropModal.value.visible = true
+const loadFile = (payload: Event) => {
+  const inputEl = payload.target as HTMLInputElement
+  if (inputEl.files) {
+    const img = inputEl.files[0]
+    emit('file-upload', img)
+    const reader = new FileReader()
+    reader.readAsDataURL(img)
+    reader.onload = e => {
+      modalImg.value = e.target?.result
+      if (!!modalImg.value) {
+        cropModal.value.visible = true
+      }
     }
   }
 }

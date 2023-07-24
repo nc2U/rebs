@@ -18,10 +18,11 @@ const props = defineProps({
   company: { type: Object, default: null },
 })
 
-const delModal = ref()
-const alertModal = ref()
-const confirmModal = ref()
-const postCode = ref()
+const refDelModal = ref()
+const refAlertModal = ref()
+const refConfirmModal = ref()
+const refPostCode = ref()
+
 const address2 = ref()
 
 const validated = ref(false)
@@ -62,10 +63,10 @@ const onSubmit = (event: Event) => {
 
       validated.value = true
     } else {
-      confirmModal.value.callModal()
+      refConfirmModal.value.callModal()
     }
   } else {
-    alertModal.value.callModal()
+    refAlertModal.value.callModal()
   }
 }
 
@@ -77,12 +78,12 @@ watch(form, val => {
 const modalAction = () => {
   emit('on-submit', { ...form })
   validated.value = false
-  confirmModal.value.close()
+  refConfirmModal.value.close()
 }
 
 const deleteCompany = () => {
-  if (account.superAuth) delModal.value.callModal()
-  else alertModal.value.callModal()
+  if (account.superAuth) refDelModal.value.callModal()
+  else refAlertModal.value.callModal()
 }
 
 const confirmText = computed(() => (props.company ? '변경' : '등록'))
@@ -277,9 +278,9 @@ onBeforeMount(() => formDataSetup())
               placeholder="우편번호"
               maxlength="5"
               required
-              @focus="postCode.initiate()"
+              @focus="refPostCode.initiate()"
             />
-            <CInputGroupText @click="postCode.initiate()">
+            <CInputGroupText @click="refPostCode.initiate()">
               우편번호
             </CInputGroupText>
             <CFormFeedback invalid>우편번호를 입력하세요.</CFormFeedback>
@@ -295,7 +296,7 @@ onBeforeMount(() => formDataSetup())
             placeholder="회사주소를 입력하세요"
             maxlength="35"
             required
-            @focus="postCode.initiate()"
+            @focus="refPostCode.initiate()"
           />
           <CFormFeedback invalid>회사주소를 입력하세요.</CFormFeedback>
         </CCol>
@@ -328,7 +329,7 @@ onBeforeMount(() => formDataSetup())
         취소
       </CButton>
       <CButton
-        v-if="update"
+        v-if="company"
         type="button"
         color="danger"
         @click="deleteCompany"
@@ -342,9 +343,9 @@ onBeforeMount(() => formDataSetup())
     </CCardFooter>
   </CForm>
 
-  <DaumPostcode ref="postCode" @address-callback="addressCallback" />
+  <DaumPostcode ref="refPostCode" @address-callback="addressCallback" />
 
-  <ConfirmModal ref="delModal">
+  <ConfirmModal ref="refDelModal">
     <template #header> 회사정보</template>
     <template #default>현재 삭제 기능이 구현되지 않았습니다.</template>
     <template #footer>
@@ -352,7 +353,7 @@ onBeforeMount(() => formDataSetup())
     </template>
   </ConfirmModal>
 
-  <ConfirmModal ref="confirmModal">
+  <ConfirmModal ref="refConfirmModal">
     <template #header>회사정보</template>
     <template #default>
       회사정보 {{ confirmText }}을 진행하시겠습니까?
@@ -362,5 +363,5 @@ onBeforeMount(() => formDataSetup())
     </template>
   </ConfirmModal>
 
-  <AlertModal ref="alertModal" />
+  <AlertModal ref="refAlertModal" />
 </template>
