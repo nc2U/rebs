@@ -1,22 +1,19 @@
 <script lang="ts" setup>
-import { onBeforeMount, reactive, ref } from 'vue'
-import { SiteOwner, Relation } from '@/store/types/project'
+import { onBeforeMount, PropType, reactive, ref } from 'vue'
+import { SiteOwner, Relation, SimpleSite } from '@/store/types/project'
 import Site from '@/views/projects/SiteOwner/components/Site.vue'
 import FormModal from '@/components/Modals/FormModal.vue'
 import SiteOwnerForm from '@/views/projects/SiteOwner/components/SiteOwnerForm.vue'
 
 const props = defineProps({
-  owner: {
-    type: Object,
-    required: true,
-  },
+  owner: { type: Object as PropType<SiteOwner>, required: true },
 })
 
 const emit = defineEmits(['relation-patch', 'multi-submit', 'on-delete'])
 
 const form = reactive({
-  pk: null,
-  project: null,
+  pk: null as number | null,
+  project: null as number | null,
   owner: '',
   date_of_birth: null as string | null,
   phone1: '',
@@ -27,7 +24,7 @@ const form = reactive({
   address3: '',
   own_sort: '',
   own_sort_desc: '',
-  sites: [],
+  sites: [] as SimpleSite[],
   counsel_record: '',
 })
 
@@ -40,7 +37,7 @@ const onDelete = (payload: { pk: number; project: number }) =>
 
 onBeforeMount(() => {
   if (props.owner) {
-    form.pk = props.owner.pk
+    form.pk = props.owner.pk as number
     form.project = props.owner.project
     form.owner = props.owner.owner
     form.date_of_birth = props.owner.date_of_birth
@@ -66,7 +63,7 @@ onBeforeMount(() => {
   >
     <Site
       :owner="owner"
-      :site="site"
+      :site="site as SimpleSite"
       :index="index"
       @show-detail="showDetail"
       @relation-patch="relationPatch"

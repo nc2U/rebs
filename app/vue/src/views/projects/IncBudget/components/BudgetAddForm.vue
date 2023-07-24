@@ -1,19 +1,31 @@
 <script lang="ts" setup>
 import { ref, reactive, inject, watch } from 'vue'
 import { write_project } from '@/utils/pageAuth'
+import { ProjectAccountD2, ProjectAccountD3 } from '@/store/types/proCash'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-const d2List = inject('d2List')
-const d3List = inject('d3List')
-const orderGroups = inject('orderGroups')
-const unitTypes = inject('unitTypes')
+export interface OGroup {
+  value: number
+  label: string
+  sort: '1' | '2'
+}
+
+export interface UType {
+  value: number
+  label: string
+}
+
+const d2List = inject<ProjectAccountD2[]>('d2List')
+const d3List = inject<ProjectAccountD3[]>('d3List')
+const orderGroups = inject<OGroup[]>('orderGroups')
+const unitTypes = inject<UType[]>('unitTypes')
 
 const props = defineProps({ disabled: Boolean })
 const emit = defineEmits(['on-submit'])
 
-const alertModal = ref()
-const confirmModal = ref()
+const refAlertModal = ref()
+const refConfirmModal = ref()
 
 const validated = ref(false)
 const form = reactive({
@@ -39,9 +51,9 @@ const onSubmit = (event: Event) => {
       event.stopPropagation()
 
       validated.value = true
-    } else confirmModal.value.callModal()
+    } else refConfirmModal.value.callModal()
   } else {
-    alertModal.value.callModal()
+    refAlertModal.value.callModal()
     resetForm()
   }
 }
@@ -49,12 +61,11 @@ const onSubmit = (event: Event) => {
 const modalAction = () => {
   emit('on-submit', form)
   validated.value = false
-  confirmModal.value.close()
+  refConfirmModal.value.close()
   resetForm()
 }
 
 const resetForm = () => {
-  form.account_d1 = null
   form.account_d2 = null
   form.order_group = null
   form.unit_type = null
@@ -180,7 +191,7 @@ const resetForm = () => {
     </CRow>
   </CForm>
 
-  <ConfirmModal ref="confirmModal">
+  <ConfirmModal ref="refConfirmModal">
     <template #header> 수입 예산 등록</template>
     <template #default>
       프로젝트의 수입 예산 정보 등록을 진행하시겠습니까?
@@ -190,5 +201,5 @@ const resetForm = () => {
     </template>
   </ConfirmModal>
 
-  <AlertModal ref="alertModal" />
+  <AlertModal ref="refAlertModal" />
 </template>

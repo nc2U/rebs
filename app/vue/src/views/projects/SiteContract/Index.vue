@@ -100,10 +100,13 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId))
     <CCardBody class="pb-5">
       <ListController
         ref="listControl"
-        :project="project"
+        :project="project as number"
         @list-filtering="listFiltering"
       />
-      <AddSiteContract :project="project" @multi-submit="multiSubmit" />
+      <AddSiteContract
+        :project="project as number"
+        @multi-submit="multiSubmit"
+      />
       <TableTitleRow
         title="부지 매입계약 목록"
         excel
@@ -111,9 +114,9 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId))
         :disabled="!project"
       >
         <span v-if="project" class="pt-1 text-success">
-          총 계약 면적 : {{ numFormat(getContsTotal, 2) }}m<sup>2</sup> ({{
-            numFormat(getContsTotal * 0.3025, 2)
-          }}
+          총 계약 면적 :
+          {{ numFormat(getContsTotal as number, 2) }}
+          m<sup>2</sup> ({{ numFormat((getContsTotal as number) * 0.3025, 2) }}
           평) 등록
         </span>
       </TableTitleRow>

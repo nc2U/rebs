@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { computed, onBeforeMount, reactive, ref, watch } from 'vue'
+import { computed, onBeforeMount, PropType, reactive, ref, watch } from 'vue'
 import { numFormat, dateFormat } from '@/utils/baseMixins'
+import { SiteOwner, SimpleSite } from '@/store/types/project'
 import DatePicker from '@/components/DatePicker/index.vue'
 
 const props = defineProps({
-  owner: { type: Object, required: true },
-  site: { type: Object, required: true },
+  owner: { type: Object as PropType<SiteOwner>, required: true },
+  site: { type: Object as PropType<SimpleSite>, required: true },
   index: { type: Number, default: 0 },
 })
 
@@ -60,7 +61,7 @@ onBeforeMount(() => {
     form.ownership_ratio = props.site.ownership_ratio
     form.owned_area = props.site.owned_area
     form.acquisition_date = props.site.acquisition_date
-    calcArea.value = props.site.owned_area * 0.3025
+    calcArea.value = (Number(props.site.owned_area) || 0) * 0.3025
   }
 })
 </script>

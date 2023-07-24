@@ -29,7 +29,7 @@ const onUpdateBuilding = (payload: BuildingUnit) =>
   updateBuilding({ ...{ project: project.value }, ...payload })
 
 const onDeleteBuilding = (pk: number) => {
-  if (project.value) deleteBuilding(pk, project.value)
+  if (project.value) deleteBuilding(pk, project.value as number)
 }
 
 const projSelect = (target: number | null) => {

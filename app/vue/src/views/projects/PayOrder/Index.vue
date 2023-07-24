@@ -20,10 +20,10 @@ const deletePayOrder = (pk: number, projId: number) =>
   payStore.deletePayOrder(pk, projId)
 
 const onSubmit = (payload: PayOrder) =>
-  createPayOrder({ ...{ project: project.value }, ...payload })
+  createPayOrder({ ...{ project: project.value as number }, ...payload })
 
 const onUpdatePayOrder = (payload: PayOrder) =>
-  updatePayOrder({ ...{ project: project.value }, ...payload })
+  updatePayOrder({ ...{ project: project.value as number }, ...payload })
 
 const onDeletePayOrder = (pk: number) => {
   if (project.value) deletePayOrder(pk, project.value)

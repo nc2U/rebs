@@ -11,10 +11,7 @@ import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
 const props = defineProps({
-  project: {
-    type: Object as PropType<Project>,
-    default: null,
-  },
+  project: { type: Object as PropType<Project>, default: null },
 })
 
 const emit = defineEmits(['to-submit', 'reset-form', 'close'])
@@ -101,9 +98,11 @@ const formsCheck = computed(() => {
   } else return false
 })
 
-const delModal = ref()
-const alertModal = ref()
-const confirmModal = ref()
+const refDelModal = ref()
+const refAlertModal = ref()
+const refConfirmModal = ref()
+const refPostCode = ref()
+
 const address2 = ref()
 
 const store = useStore()
@@ -117,21 +116,21 @@ const onSubmit = (event: Event) => {
       event.stopPropagation()
       validated.value = true
     } else {
-      confirmModal.value.callModal()
+      refConfirmModal.value.callModal()
     }
-  } else alertModal.value.callModal()
+  } else refAlertModal.value.callModal()
 }
 
 const modalAction = () => {
   if (!form.order) form.order = 100
   emit('to-submit', { ...form })
   validated.value = false
-  confirmModal.value.close()
+  refConfirmModal.value.close()
 }
 
 const deleteProject = () => {
-  if (write_project.value) delModal.value.callModal()
-  else alertModal.value.callModal()
+  if (write_project.value) refDelModal.value.callModal()
+  else refAlertModal.value.callModal()
 }
 
 const addressCallback = (data: AddressData) => {
@@ -298,7 +297,7 @@ onBeforeMount(() => formDataSetup())
           <CFormLabel class="col-md-2 col-form-label"> 우편번호</CFormLabel>
           <CCol md="3" lg="2" class="mb-3 mb-lg-0">
             <CInputGroup>
-              <CInputGroupText @click="$refs.postCode.initiate()">
+              <CInputGroupText @click="refPostCode.initiate()">
                 우편번호
               </CInputGroupText>
               <CFormInput
@@ -306,7 +305,7 @@ onBeforeMount(() => formDataSetup())
                 type="text"
                 maxlength="5"
                 placeholder="우편번호"
-                @focus="$refs.postCode.initiate()"
+                @focus="refPostCode.initiate()"
               />
               <CFormFeedback invalid>우편번호를 입력하세요.</CFormFeedback>
             </CInputGroup>
@@ -318,7 +317,7 @@ onBeforeMount(() => formDataSetup())
               type="text"
               maxlength="35"
               placeholder="대표지번 주소를 입력하세요"
-              @focus="$refs.postCode.initiate()"
+              @focus="refPostCode.initiate()"
             />
             <CFormFeedback invalid>대표지번 주소를 입력하세요.</CFormFeedback>
           </CCol>
@@ -566,15 +565,15 @@ onBeforeMount(() => formDataSetup())
 
   <DaumPostcode ref="postCode" @address-callback="addressCallback" />
 
-  <ConfirmModal ref="delModal">
+  <ConfirmModal ref="refDelModal">
     <template #header> 프로젝트정보 삭제</template>
     <template #default>현재 삭제 기능이 구현되지 않았습니다.</template>
     <template #footer>
-      <CButton color="danger" disabled="">삭제</CButton>
+      <CButton color="danger" disabled>삭제</CButton>
     </template>
   </ConfirmModal>
 
-  <ConfirmModal ref="confirmModal">
+  <ConfirmModal ref="refConfirmModal">
     <template #header> 프로젝트정보 {{ confirmText }}</template>
     <template #default>
       프로젝트정보 {{ confirmText }}을 진행하시겠습니까?
@@ -584,5 +583,5 @@ onBeforeMount(() => formDataSetup())
     </template>
   </ConfirmModal>
 
-  <AlertModal ref="alertModal" />
+  <AlertModal ref="refAlertModal" />
 </template>

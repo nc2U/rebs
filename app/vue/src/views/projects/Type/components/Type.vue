@@ -2,10 +2,11 @@
 import { ref, reactive, computed, onBeforeMount, inject } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { write_project } from '@/utils/pageAuth'
+import { typeSortType } from './TypeAddForm.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-const typeSort = inject('typeSort')
+const typeSort = inject<typeSortType[]>('typeSort')
 const props = defineProps({ type: { type: Object, required: true } })
 const emit = defineEmits(['on-update', 'on-delete'])
 
@@ -20,8 +21,8 @@ const form = reactive({
   num_unit: null,
 })
 
-const alertModal = ref()
-const confirmModal = ref()
+const refAlertModal = ref()
+const refConfirmModal = ref()
 
 const formsCheck = computed(() => {
   const a = form.sort === props.type.sort
@@ -44,20 +45,20 @@ const onUpdateType = () => {
     const pk = props.type.pk
     emit('on-update', { ...{ pk }, ...form })
   } else {
-    alertModal.value.callModal()
+    refAlertModal.value.callModal()
     dataSetup()
   }
 }
 const onDeleteType = () => {
-  if (useAccount().superAuth) confirmModal.value.callModal()
+  if (useAccount().superAuth) refConfirmModal.value.callModal()
   else {
-    alertModal.value.callModal()
+    refAlertModal.value.callModal()
     dataSetup()
   }
 }
 const modalAction = () => {
   emit('on-delete', props.type.pk)
-  confirmModal.value.close()
+  refConfirmModal.value.close()
 }
 const dataSetup = () => {
   form.sort = props.type.sort
@@ -162,7 +163,7 @@ onBeforeMount(() => dataSetup())
     </CTableDataCell>
   </CTableRow>
 
-  <ConfirmModal ref="confirmModal">
+  <ConfirmModal ref="refConfirmModal">
     <template #header> 타입 정보 삭제</template>
     <template #default>
       이 타입에 종속 데이터가 있는 경우 해당 데이터를 모두 제거한 후 삭제가능
@@ -173,5 +174,5 @@ onBeforeMount(() => dataSetup())
     </template>
   </ConfirmModal>
 
-  <AlertModal ref="alertModal" />
+  <AlertModal ref="refAlertModal" />
 </template>

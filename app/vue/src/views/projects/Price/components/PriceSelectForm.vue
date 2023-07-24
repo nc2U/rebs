@@ -1,11 +1,12 @@
 <script lang="ts" setup>
-import { ref, computed } from 'vue'
+import { ref, computed, PropType } from 'vue'
 import { useAccount } from '@/store/pinia/account'
+import { OrderGroup } from '@/store/types/contract'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
 defineProps({
   project: { type: Number, default: null },
-  orders: { type: Object, default: null },
+  orders: { type: Object as PropType<OrderGroup[]>, default: null },
   types: { type: Object, default: null },
 })
 
@@ -55,7 +56,7 @@ const modalAction = () => {
           <CCol sm="9">
             <CFormSelect
               id="sel1"
-              v-model="order"
+              v-model.number="order"
               :disabled="!project"
               @change="onOrderSelect"
             >
@@ -99,7 +100,7 @@ const modalAction = () => {
               :disabled="!project"
               @click="contPriceSet"
             >
-              전체 계약건 공급가격 재설정
+              전체 계약건 공급가 재설정
             </CButton>
           </CCol>
         </CRow>
@@ -111,7 +112,7 @@ const modalAction = () => {
     <template #icon>
       <v-icon icon="mdi mdi-sync-alert" color="danger" class="mr-2" />
     </template>
-    <template #header> 전체 계약건 공급가격 / 계약금액 재설정</template>
+    <template #header> 전체 계약건 공급가 / 계약금 재설정</template>
     <template #default>
       <p>
         이 작업은 현재 등록된 전체 계약 건의 공급 가격 및 계약 금액 정보를 현재

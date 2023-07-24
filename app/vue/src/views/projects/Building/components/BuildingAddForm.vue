@@ -7,8 +7,8 @@ import AlertModal from '@/components/Modals/AlertModal.vue'
 defineProps({ disabled: Boolean })
 const emit = defineEmits(['on-submit'])
 
-const alertModal = ref()
-const confirmModal = ref()
+const refAlertModal = ref()
+const refConfirmModal = ref()
 
 const form = reactive({ name: '' })
 const validated = ref(false)
@@ -22,17 +22,17 @@ const onSubmit = (event: Event) => {
 
       validated.value = true
     } else {
-      confirmModal.value.callModal()
+      refConfirmModal.value.callModal()
     }
   } else {
-    alertModal.value.callModal()
+    refAlertModal.value.callModal()
     resetForm()
   }
 }
 const modalAction = () => {
   emit('on-submit', form)
   validated.value = false
-  confirmModal.value.close()
+  refConfirmModal.value.close()
   resetForm()
 }
 const resetForm = () => (form.name = '')
@@ -64,8 +64,8 @@ const resetForm = () => (form.name = '')
     </CRow>
   </CForm>
 
-  <ConfirmModal ref="confirmModal">
-    <template #header> 동(건물) 등록 </template>
+  <ConfirmModal ref="refConfirmModal">
+    <template #header> 동(건물) 등록</template>
     <template #default>
       프로젝트의 동(건물) 정보 등록을 진행하시겠습니까?
     </template>
@@ -74,5 +74,5 @@ const resetForm = () => (form.name = '')
     </template>
   </ConfirmModal>
 
-  <AlertModal ref="alertModal" />
+  <AlertModal ref="refAlertModal" />
 </template>

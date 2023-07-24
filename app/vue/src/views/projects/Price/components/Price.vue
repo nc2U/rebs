@@ -1,21 +1,32 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, watch, onMounted, onUpdated } from 'vue'
+import {
+  ref,
+  reactive,
+  computed,
+  watch,
+  onMounted,
+  onUpdated,
+  inject,
+  PropType,
+} from 'vue'
 import { useAccount } from '@/store/pinia/account'
+import { UnitFloorType } from '@/store/types/project'
 import { write_project } from '@/utils/pageAuth'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
+const condTexts = inject<{ orderText: string; typeText: string }>('condTexts')
+
 const props = defineProps({
-  floor: { type: Object, required: true },
-  condTexts: { type: Object, default: null },
+  floor: { type: Object as PropType<UnitFloorType>, required: true },
   pFilters: { type: Object, default: null },
   price: { type: Object, default: null },
 })
 
 const emit = defineEmits(['on-create', 'on-update', 'on-delete'])
 
-const alertModal = ref()
-const confirmModal = ref()
+const refAlertModal = ref()
+const refConfirmModal = ref()
 
 const form = reactive({
   price_build: null as number | null,
@@ -64,16 +75,16 @@ const onStorePrice = () => {
       const updatePayload = { ...{ pk: props.price.pk }, ...payload }
       emit('on-update', updatePayload)
     }
-  } else alertModal.value.callModal()
+  } else refAlertModal.value.callModal()
 }
 
 const deletePrice = () => {
-  if (useAccount().superAuth) confirmModal.value.callModal()
-  else alertModal.value.callModal()
+  if (useAccount().superAuth) refConfirmModal.value.callModal()
+  else refAlertModal.value.callModal()
 }
 const modalAction = () => {
   emit('on-delete', props.price.pk)
-  confirmModal.value.close()
+  refConfirmModal.value.close()
   dataReset()
 }
 
@@ -103,10 +114,10 @@ onUpdated(() => {
 <template>
   <CTableRow>
     <CTableDataCell class="text-center">
-      {{ condTexts.orderText }}
+      {{ condTexts?.orderText }}
     </CTableDataCell>
     <CTableDataCell class="text-center">
-      {{ condTexts.typeText }}
+      {{ condTexts?.typeText }}
     </CTableDataCell>
     <CTableDataCell>
       {{ floor.alias_name }}
@@ -163,7 +174,7 @@ onUpdated(() => {
     </CTableDataCell>
   </CTableRow>
 
-  <ConfirmModal ref="confirmModal">
+  <ConfirmModal ref="refConfirmModal">
     <template #header> 공급가격 삭제</template>
     <template #default>
       해당 데이터를 삭제하면 이후 복구할 수 없습니다. 이 공급가격 정보를 삭제
@@ -174,5 +185,5 @@ onUpdated(() => {
     </template>
   </ConfirmModal>
 
-  <AlertModal ref="alertModal" />
+  <AlertModal ref="refAlertModal" />
 </template>

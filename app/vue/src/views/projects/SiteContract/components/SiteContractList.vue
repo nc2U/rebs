@@ -21,19 +21,19 @@ const onDelete = (pk: number) => emit('on-delete', pk)
 <template>
   <CTable hover responsive bordered align="middle">
     <colgroup>
-      <col width="5%" />
-      <col width="9%" />
-      <col width="9%" />
-      <col width="7%" />
-      <col width="7%" />
-      <col width="10%" />
-      <col width="9%" />
-      <col width="5%" />
-      <col width="9%" />
-      <col width="9%" />
-      <col width="10%" />
-      <col width="5%" />
-      <col width="6%" />
+      <col style="width: 5%" />
+      <col style="width: 9%" />
+      <col style="width: 9%" />
+      <col style="width: 7%" />
+      <col style="width: 7%" />
+      <col style="width: 10%" />
+      <col style="width: 9%" />
+      <col style="width: 5%" />
+      <col style="width: 9%" />
+      <col style="width: 9%" />
+      <col style="width: 10%" />
+      <col style="width: 5%" />
+      <col style="width: 6%" />
     </colgroup>
 
     <CTableHead :color="TableSecondary">
@@ -70,7 +70,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
     <CTableBody>
       <SiteContract
         v-for="cont in siteContList"
-        :key="cont.pk"
+        :key="cont.pk as number"
         :contract="cont"
         @multi-submit="multiSubmit"
         @on-delete="onDelete"

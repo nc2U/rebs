@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, onBeforeMount } from 'vue'
+import { ref, reactive, computed, onBeforeMount, provide } from 'vue'
 import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin2'
 import { useProject } from '@/store/pinia/project'
 import { useContract } from '@/store/pinia/contract'
@@ -44,6 +44,8 @@ const condTexts = computed(() => {
     .map((t: UnitType) => t.name)[0]
   return { orderText, typeText }
 })
+
+provide('condTexts', condTexts)
 
 const fetchContList = (projId: number) => contStore.fetchContList(projId)
 const fetchOrderGroupList = (projId: number) =>
@@ -144,7 +146,7 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId))
     <CCardBody class="pb-5">
       <PriceSelectForm
         ref="selectForm"
-        :project="project"
+        :project="project as number"
         :orders="orderGroupList"
         :types="unitTypeList"
         @on-order-select="orderSelect"
@@ -153,7 +155,6 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId))
       />
       <PriceFormList
         :msg="priceMessage"
-        :cond-texts="condTexts"
         :p-filters="pFilters"
         @on-create="onCreatePrice"
         @on-update="onUpdatePrice"

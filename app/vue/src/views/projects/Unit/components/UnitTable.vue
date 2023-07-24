@@ -65,15 +65,15 @@ const onDelete = (payload: { pk: number; type: number }) =>
       <CCol :lg="formCol">
         <CTable hover responsive align="middle">
           <colgroup>
-            <col width="11%" />
-            <col width="15%" />
-            <col width="10%" />
-            <col width="11%" />
-            <col width="9%" />
-            <col width="10%" />
-            <col width="6%" />
-            <col width="18%" />
-            <col width="10%" />
+            <col style="width: 11%" />
+            <col style="width: 15%" />
+            <col style="width: 10%" />
+            <col style="width: 11%" />
+            <col style="width: 9%" />
+            <col style="width: 10%" />
+            <col style="width: 6%" />
+            <col style="width: 18%" />
+            <col style="width: 10%" />
           </colgroup>
           <CTableHead>
             <CTableRow class="text-center">

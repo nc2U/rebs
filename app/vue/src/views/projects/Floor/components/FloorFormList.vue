@@ -17,12 +17,12 @@ const onDeleteFloor = (pk: number) => emit('on-delete', pk)
 <template>
   <CTable hover responsive>
     <colgroup>
-      <col width="18%" />
-      <col width="18%" />
-      <col width="18%" />
-      <col width="18%" />
-      <col width="18%" />
-      <col width="10%" />
+      <col style="width: 18%" />
+      <col style="width: 18%" />
+      <col style="width: 18%" />
+      <col style="width: 18%" />
+      <col style="width: 18%" />
+      <col style="width: 10%" />
     </colgroup>
     <CTableHead :color="TableSecondary" class="text-center">
       <CTableRow>

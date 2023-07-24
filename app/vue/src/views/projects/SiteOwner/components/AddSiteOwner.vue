@@ -9,12 +9,12 @@ import SiteOwnerForm from '@/views/projects/SiteOwner/components/SiteOwnerForm.v
 defineProps({ project: { type: Number, default: null } })
 const emit = defineEmits(['multi-submit'])
 
-const formModal = ref()
-const alertModal = ref()
+const refFormModal = ref()
+const refAlertModal = ref()
 
 const createConfirm = () => {
-  if (write_project.value) formModal.value.callModal()
-  else alertModal.value.callModal()
+  if (write_project.value) refFormModal.value.callModal()
+  else refAlertModal.value.callModal()
 }
 
 const multiSubmit = (payload: SiteOwner) => emit('multi-submit', payload)
@@ -27,12 +27,15 @@ const multiSubmit = (payload: SiteOwner) => emit('multi-submit', payload)
     </CButton>
   </CAlert>
 
-  <FormModal ref="formModal" size="lg">
+  <FormModal ref="refFormModal" size="lg">
     <template #header>부지 소유자 정보 등록</template>
     <template #default>
-      <SiteOwnerForm @multi-submit="multiSubmit" @close="formModal.close()" />
+      <SiteOwnerForm
+        @multi-submit="multiSubmit"
+        @close="refFormModal.close()"
+      />
     </template>
   </FormModal>
 
-  <AlertModal ref="alertModal" />
+  <AlertModal ref="refAlertModal" />
 </template>

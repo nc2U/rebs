@@ -1,19 +1,20 @@
 <script lang="ts" setup>
-import { ref, reactive, watch } from 'vue'
+import { ref, reactive, inject, watch } from 'vue'
 import { write_project } from '@/utils/pageAuth'
 import { isValidate } from '@/utils/helper'
+import { OrderGroup } from '@/store/types/contract'
+import { UnitType } from '@/store/types/project'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-const props = defineProps({
-  disabled: Boolean,
-  orders: { type: Array, default: () => [] },
-  types: { type: Array, default: () => [] },
-})
+const orders = inject<OrderGroup[]>('orders')
+const types = inject<UnitType[]>('types')
+
+const props = defineProps({ disabled: Boolean })
 const emit = defineEmits(['on-submit'])
 
-const alertModal = ref()
-const confirmModal = ref()
+const refAlertModal = ref()
+const refConfirmModal = ref()
 
 const form = reactive({
   order_group: '',
@@ -32,16 +33,16 @@ const onSubmit = (event: Event) => {
   if (write_project.value) {
     isValidate(event)
       ? (validated.value = true)
-      : confirmModal.value.callModal()
+      : refConfirmModal.value.callModal()
   } else {
-    alertModal.value.callModal()
+    refAlertModal.value.callModal()
     resetForm()
   }
 }
 const modalAction = () => {
   emit('on-submit', form)
   validated.value = false
-  confirmModal.value.close()
+  refConfirmModal.value.close()
   resetForm()
 }
 const resetForm = () => {
@@ -62,7 +63,11 @@ const resetForm = () => {
       <CCol md="3" class="mb-2">
         <CFormSelect v-model="form.order_group" :disabled="disabled" required>
           <option value="">차수선택</option>
-          <option v-for="order in orders" :key="order.pk" :value="order.pk">
+          <option
+            v-for="order in orders"
+            :key="order.pk as number"
+            :value="order.pk as number"
+          >
             {{ order.order_group_name }}
           </option>
         </CFormSelect>
@@ -101,7 +106,7 @@ const resetForm = () => {
     </CRow>
   </CForm>
 
-  <ConfirmModal ref="confirmModal">
+  <ConfirmModal ref="refConfirmModal">
     <template #header> 타입별 계약금</template>
     <template #default>
       프로젝트의 타입별 계약금 정보 등록을 진행하시겠습니까?
@@ -111,5 +116,5 @@ const resetForm = () => {
     </template>
   </ConfirmModal>
 
-  <AlertModal ref="alertModal" />
+  <AlertModal ref="refAlertModal" />
 </template>

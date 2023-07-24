@@ -7,8 +7,8 @@ import AlertModal from '@/components/Modals/AlertModal.vue'
 defineProps({ disabled: Boolean })
 const emit = defineEmits(['on-submit'])
 
-const alertModal = ref()
-const confirmModal = ref()
+const refAlertModal = ref()
+const refConfirmModal = ref()
 
 const validated = ref(false)
 const form = reactive({
@@ -25,9 +25,9 @@ const onSubmit = (event: Event) => {
       event.stopPropagation()
 
       validated.value = true
-    } else confirmModal.value.callModal()
+    } else refConfirmModal.value.callModal()
   } else {
-    alertModal.value.callModal()
+    refAlertModal.value.callModal()
     resetForm()
   }
 }
@@ -35,7 +35,7 @@ const onSubmit = (event: Event) => {
 const modalAction = () => {
   emit('on-submit', form)
   validated.value = false
-  confirmModal.value.close()
+  refConfirmModal.value.close()
   resetForm()
 }
 
@@ -91,7 +91,7 @@ const resetForm = () => {
     </CRow>
   </CForm>
 
-  <ConfirmModal ref="confirmModal">
+  <ConfirmModal ref="refConfirmModal">
     <template #header> 차수그룹 등록</template>
     <template #default>
       프로젝트의 차수그룹 정보 등록을 진행하시겠습니까?
@@ -101,5 +101,5 @@ const resetForm = () => {
     </template>
   </ConfirmModal>
 
-  <AlertModal ref="alertModal" />
+  <AlertModal ref="refAlertModal" />
 </template>
