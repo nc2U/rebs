@@ -4,12 +4,17 @@ import { write_project } from '@/utils/pageAuth'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-const typeSort = inject('typeSort')
+export type typeSortType = {
+  value: '1' | '2' | '3' | '4' | '5' | '6'
+  label: string
+}
+
+const typeSort = inject<typeSortType[]>('typeSort')
 defineProps({ disabled: Boolean })
 const emit = defineEmits(['on-submit'])
 
-const alertModal = ref()
-const confirmModal = ref()
+const refAlertModal = ref()
+const refConfirmModal = ref()
 
 const validated = ref(false)
 const form = reactive({
@@ -32,10 +37,10 @@ const onSubmit = (event: Event) => {
 
       validated.value = true
     } else {
-      confirmModal.value.callModal()
+      refConfirmModal.value.callModal()
     }
   } else {
-    alertModal.value.callModal()
+    refAlertModal.value.callModal()
     resetForm()
   }
 }
@@ -43,7 +48,7 @@ const onSubmit = (event: Event) => {
 const modalAction = () => {
   emit('on-submit', form)
   validated.value = false
-  confirmModal.value.close()
+  refConfirmModal.value.close()
   resetForm()
 }
 
@@ -177,7 +182,7 @@ const resetForm = () => {
     </CRow>
   </CForm>
 
-  <ConfirmModal ref="confirmModal">
+  <ConfirmModal ref="refConfirmModal">
     <template #header> 타입 정보 등록</template>
     <template #default>
       프로젝트의 타입 정보 등록을 진행하시겠습니까?
@@ -187,5 +192,5 @@ const resetForm = () => {
     </template>
   </ConfirmModal>
 
-  <AlertModal ref="alertModal" />
+  <AlertModal ref="refAlertModal" />
 </template>
