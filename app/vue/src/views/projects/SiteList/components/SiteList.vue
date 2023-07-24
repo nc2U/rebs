@@ -22,16 +22,16 @@ const onDelete = (pk: number) => emit('on-delete', pk)
 <template>
   <CTable hover responsive bordered align="middle">
     <colgroup>
-      <col width="6%" />
-      <col width="7%" />
-      <col width="8%" />
-      <col width="8%" />
-      <col width="8%" />
-      <col width="8%" />
-      <col v-if="isReturned" width="8%" />
-      <col v-if="isReturned" width="8%" />
-      <col width="33%" />
-      <col width="6%" />
+      <col style="width: 6%" />
+      <col style="width: 7%" />
+      <col style="width: 8%" />
+      <col style="width: 8%" />
+      <col style="width: 8%" />
+      <col style="width: 8%" />
+      <col v-if="isReturned" style="width: 8%" />
+      <col v-if="isReturned" style="width: 8%" />
+      <col style="width: 33%" />
+      <col style="width: 6%" />
     </colgroup>
 
     <CTableHead :color="TableSecondary">
@@ -60,7 +60,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
     <CTableBody>
       <Site
         v-for="site in siteList"
-        :key="site.pk"
+        :key="site.pk as number"
         :site="site"
         :is-returned="isReturned"
         @multi-submit="multiSubmit"

@@ -1,15 +1,12 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { PropType, ref } from 'vue'
 import { Site } from '@/store/types/project'
 import { numFormat } from '@/utils/baseMixins'
 import FormModal from '@/components/Modals/FormModal.vue'
 import SiteForm from './SiteForm.vue'
 
 defineProps({
-  site: {
-    type: Object,
-    required: true,
-  },
+  site: { type: Object as PropType<Site>, required: true },
   isReturned: { type: Boolean },
 })
 
@@ -24,11 +21,7 @@ const onDelete = (payload: { pk: number; project: number }) =>
 </script>
 
 <template>
-  <CTableRow
-    v-if="site"
-    class="text-center"
-    :style="site.is_separate ? 'font-weight: bold;' : ''"
-  >
+  <CTableRow class="text-center">
     <CTableDataCell>{{ site.order }}</CTableDataCell>
     <CTableDataCell>
       {{ site.district }}
@@ -43,16 +36,16 @@ const onDelete = (payload: { pk: number; project: number }) =>
       {{ numFormat(site.official_area, 2) }}
     </CTableDataCell>
     <CTableDataCell class="text-right" color="warning">
-      {{ numFormat(site.official_area * 0.3025, 2) }}
+      {{ numFormat((Number(site.official_area) || 0) * 0.3025, 2) }}
     </CTableDataCell>
     <CTableDataCell v-if="isReturned" class="text-right">
-      {{ numFormat(site.returned_area, 2) }}
+      {{ numFormat(site.returned_area as number, 2) }}
     </CTableDataCell>
     <CTableDataCell v-if="isReturned" class="text-right" color="warning">
-      {{ numFormat(site.returned_area * 0.3025, 2) }}
+      {{ numFormat((site.returned_area as number) * 0.3025, 2) }}
     </CTableDataCell>
     <CTableDataCell class="text-left">
-      {{ site.owners.join(', ') }}
+      {{ site.owners ? site.owners.join(', ') : '' }}
     </CTableDataCell>
     <CTableDataCell>
       <CButton color="info" size="sm" @click="showDetail">확인</CButton>

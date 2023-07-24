@@ -7,9 +7,7 @@ import { bgLight } from '@/utils/cssMixins'
 defineProps({ project: { type: Number, default: null } })
 const emit = defineEmits(['list-filtering'])
 
-const form = reactive({
-  search: '',
-})
+const form = reactive({ search: '' })
 
 const siteStore = useSite()
 

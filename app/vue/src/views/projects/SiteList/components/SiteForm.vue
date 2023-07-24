@@ -10,17 +10,12 @@ import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-const props = defineProps({
-  site: {
-    type: Object,
-    default: null,
-  },
-})
+const props = defineProps({ site: { type: Object, default: null } })
 
 const emit = defineEmits(['multi-submit', 'on-delete', 'close'])
 
-const delModal = ref()
-const alertModal = ref()
+const refDelModal = ref()
+const refAlertModal = ref()
 
 const validated = ref(false)
 
@@ -68,7 +63,7 @@ const onSubmit = (event: Event) => {
     validated.value = true
   } else {
     if (write_project.value) multiSubmit({ ...form })
-    else alertModal.value.callModal()
+    else refAlertModal.value.callModal()
   }
 }
 
@@ -79,13 +74,13 @@ const multiSubmit = (payload: Site) => {
 
 const deleteObject = () => {
   emit('on-delete', { pk: props.site.pk, project: props.site.project })
-  delModal.value.close()
+  refDelModal.value.close()
   emit('close')
 }
 
 const deleteConfirm = () => {
-  if (write_project.value) delModal.value.callModal()
-  else alertModal.value.callModal()
+  if (write_project.value) refDelModal.value.callModal()
+  else refAlertModal.value.callModal()
 }
 
 const dataSetup = () => {
@@ -293,7 +288,7 @@ onBeforeMount(() => dataSetup())
     </CModalFooter>
   </CForm>
 
-  <ConfirmModal ref="delModal">
+  <ConfirmModal ref="refDelModal">
     <template #header> 사업 부지 정보 삭제</template>
     <template #default>
       삭제한 데이터는 복구할 수 없습니다. 해당 사업 부지 정보를
@@ -304,5 +299,5 @@ onBeforeMount(() => dataSetup())
     </template>
   </ConfirmModal>
 
-  <AlertModal ref="alertModal" />
+  <AlertModal ref="refAlertModal" />
 </template>
