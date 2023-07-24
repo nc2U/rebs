@@ -9,8 +9,8 @@ import AlertModal from '@/components/Modals/AlertModal.vue'
 const props = defineProps({ unit: { type: Object, required: true } })
 const emit = defineEmits(['on-update', 'on-delete'])
 
-const alertModal = ref()
-const confirmModal = ref()
+const refAlertModal = ref()
+const refConfirmModal = ref()
 
 const form = ref({
   unit_type: null,
@@ -44,17 +44,17 @@ const onUpdateUnit = () => {
   if (write_project) {
     const pk = props.unit.pk
     emit('on-update', { ...{ pk }, ...form.value })
-  } else alertModal.value.callModal()
+  } else refAlertModal.value.callModal()
 }
 
 const onDeleteUnit = () => {
-  if (useAccount().superAuth) confirmModal.value.callModal()
-  else alertModal.value.callModal()
+  if (useAccount().superAuth) refConfirmModal.value.callModal()
+  else refAlertModal.value.callModal()
 }
 
 const delConfirm = () => {
   emit('on-delete', { pk: props.unit.pk, type: props.unit.unit_type.pk })
-  confirmModal.value.close()
+  refConfirmModal.value.close()
 }
 
 const dataSetup = () => {
@@ -150,7 +150,7 @@ onMounted(() => dataSetup())
     </CTableDataCell>
   </CTableRow>
 
-  <ConfirmModal ref="confirmModal">
+  <ConfirmModal ref="refConfirmModal">
     <template #header> 호수 유닛 삭제</template>
     <template #default>
       이 호수에 등록된 계약 건 데이터가 있는 경우 해당 계약 데이터의 동호수
@@ -161,5 +161,5 @@ onMounted(() => dataSetup())
     </template>
   </ConfirmModal>
 
-  <AlertModal ref="alertModal" />
+  <AlertModal ref="refAlertModal" />
 </template>

@@ -172,7 +172,7 @@ onBeforeMount(() => {
     <CCardBody class="pb-5">
       <UnitController
         ref="unitController"
-        :project="project"
+        :project="project as number"
         @bldg-select="bldgSelect"
         @unit-register="unitRegister"
       />

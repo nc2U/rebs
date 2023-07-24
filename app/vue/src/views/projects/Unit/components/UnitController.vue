@@ -7,12 +7,8 @@ import { write_project } from '@/utils/pageAuth'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-const props = defineProps({
-  project: {
-    type: Number,
-    default: null,
-  },
-})
+const props = defineProps({ project: { type: Number, default: null } })
+const emit = defineEmits(['bldg-select', 'unit-register'])
 
 const projReset = () => {
   form.building = null
@@ -21,10 +17,8 @@ const projReset = () => {
 
 defineExpose({ projReset })
 
-const emit = defineEmits(['bldg-select', 'unit-register'])
-
-const confirmModal = ref()
-const alertModal = ref()
+const refConfirmModal = ref()
+const refAlertModal = ref()
 
 const bldgName = ref('')
 const typeName = ref('')
@@ -116,9 +110,9 @@ const typeSelect = (event: Event) => {
 }
 
 const unitRegister = () => {
-  if (write_project.value) confirmModal.value.callModal()
+  if (write_project.value) refConfirmModal.value.callModal()
   else {
-    alertModal.value.callModal()
+    refAlertModal.value.callModal()
     reset(1)
   }
 }
@@ -134,7 +128,7 @@ const modalAction = () => {
     },
     ...{ floors: simpleFloors.value },
   })
-  confirmModal.value.close()
+  refConfirmModal.value.close()
   reset(1)
 }
 </script>
@@ -258,7 +252,7 @@ const modalAction = () => {
     </CButton>
   </CAlert>
 
-  <ConfirmModal ref="confirmModal">
+  <ConfirmModal ref="refConfirmModal">
     <template #header> 호수(유니트) 정보</template>
     <template #default>
       <p class="text-primary">
@@ -275,5 +269,5 @@ const modalAction = () => {
     </template>
   </ConfirmModal>
 
-  <AlertModal ref="alertModal" />
+  <AlertModal ref="refAlertModal" />
 </template>

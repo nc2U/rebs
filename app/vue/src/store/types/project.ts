@@ -111,6 +111,18 @@ export interface KeyUnit {
   contract: Contract | null
 }
 
+interface KUnit {
+  pk: number
+  contract: {
+    pk: number
+    contractor: {
+      pk: number
+      name: string
+      status: '1' | '2' | '3' | '4' | '5'
+    }
+  }
+}
+
 interface Contract {
   pk: number
   contractor: {
@@ -144,21 +156,21 @@ export interface AllHouseUnit {
   floor_type: number
   building_unit: number
   name: string
-  key_unit: {
-    pk: number
-    contract: {
-      pk: number
-      contractor: {
-        pk: number
-        name: string
-        status: '1' | '2' | '3' | '4' | '5'
-      }
-    }
-  }
+  key_unit: KUnit
   bldg_line: number
   floor_no: number
   is_hold: boolean
   hold_reason: string
+}
+
+export interface SimpleUnit {
+  bldg: number
+  color: string
+  name: string
+  key_unit: KUnit
+  line: number
+  floor: number
+  is_hold: boolean
 }
 
 export interface AllSite {
