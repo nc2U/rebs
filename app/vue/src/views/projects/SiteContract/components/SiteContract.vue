@@ -1,15 +1,12 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { PropType, ref } from 'vue'
 import { SiteContract } from '@/store/types/project'
 import { numFormat } from '@/utils/baseMixins'
 import FormModal from '@/components/Modals/FormModal.vue'
 import SiteContractForm from './SiteContractForm.vue'
 
 defineProps({
-  contract: {
-    type: Object,
-    required: true,
-  },
+  contract: { type: Object as PropType<SiteContract>, required: true },
 })
 
 const emit = defineEmits(['multi-submit', 'on-delete'])
@@ -26,32 +23,32 @@ const isDoneClass = (bool: boolean) => (bool ? 'bg-success' : '')
 
 <template>
   <CTableRow v-if="contract" class="text-center">
-    <CTableDataCell>{{ contract.owner_desc.own_sort_desc }}</CTableDataCell>
-    <CTableDataCell>{{ contract.owner_desc.owner }}</CTableDataCell>
+    <CTableDataCell>{{ contract.owner_desc?.own_sort_desc }}</CTableDataCell>
+    <CTableDataCell>{{ contract.owner_desc?.owner }}</CTableDataCell>
     <CTableDataCell>{{ contract.contract_date }}</CTableDataCell>
     <CTableDataCell class="text-right">
-      {{ numFormat(contract.contract_area, 2) }}
+      {{ numFormat(contract.contract_area as number, 2) }}
     </CTableDataCell>
     <CTableDataCell class="text-right" color="warning">
-      {{ numFormat(contract.contract_area * 0.3025, 2) }}
+      {{ numFormat((contract.contract_area as number) * 0.3025, 2) }}
     </CTableDataCell>
     <CTableDataCell class="text-right">
-      {{ numFormat(contract.total_price) }}
+      {{ numFormat(contract.total_price as number) }}
     </CTableDataCell>
     <CTableDataCell class="text-right">
-      {{ numFormat(contract.down_pay1) }}
+      {{ numFormat(contract.down_pay1 as number) }}
     </CTableDataCell>
     <CTableDataCell :class="isDoneClass(contract.down_pay1_is_paid)">
       {{ isDoneText(contract.down_pay1_is_paid) }}
     </CTableDataCell>
     <CTableDataCell class="text-right">
-      {{ numFormat(contract.down_pay2) }}
+      {{ numFormat(contract.down_pay2 as number) }}
     </CTableDataCell>
     <CTableDataCell class="text-right">
-      {{ numFormat(contract.inter_pay1) }}
+      {{ numFormat(contract.inter_pay1 as number) }}
     </CTableDataCell>
     <CTableDataCell class="text-right">
-      {{ numFormat(contract.remain_pay) }}
+      {{ numFormat(contract.remain_pay as number) }}
     </CTableDataCell>
     <CTableDataCell :class="isDoneClass(contract.remain_pay_is_paid)">
       {{ isDoneText(contract.remain_pay_is_paid) }}

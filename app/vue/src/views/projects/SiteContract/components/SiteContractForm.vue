@@ -12,16 +12,13 @@ import AlertModal from '@/components/Modals/AlertModal.vue'
 
 const props = defineProps({
   project: { type: Number, default: null },
-  contract: {
-    type: Object,
-    default: null,
-  },
+  contract: { type: Object, default: null },
 })
 
 const emit = defineEmits(['multi-submit', 'on-delete', 'close'])
 
-const delModal = ref()
-const alertModal = ref()
+const refDelModal = ref()
+const refAlertModal = ref()
 
 const validated = ref(false)
 
@@ -114,7 +111,7 @@ const onSubmit = (event: Event) => {
     validated.value = true
   } else {
     if (write_project.value) multiSubmit({ ...form })
-    else alertModal.value.callModal()
+    else refAlertModal.value.callModal()
   }
 }
 
@@ -125,13 +122,13 @@ const multiSubmit = (multiPayload: SiteContract) => {
 
 const deleteObject = () => {
   emit('on-delete', { pk: props.contract.pk, project: props.contract.project })
-  delModal.value.close()
+  refDelModal.value.close()
   emit('close')
 }
 
 const deleteConfirm = () => {
-  if (write_project.value) delModal.value.callModal()
-  else alertModal.value.callModal()
+  if (write_project.value) refDelModal.value.callModal()
+  else refAlertModal.value.callModal()
 }
 
 const dataSetup = () => {
@@ -187,7 +184,7 @@ onBeforeMount(() => dataSetup())
                   autocomplete="label"
                   :attrs="form.owner ? {} : { required: true }"
                   :classes="{ search: 'form-control multiselect-search' }"
-                  :add-option-on="['enter' | 'tab']"
+                  :add-option-on="['enter', 'tab']"
                   searchable
                 />
               </CCol>
@@ -515,7 +512,7 @@ onBeforeMount(() => dataSetup())
     </CModalFooter>
   </CForm>
 
-  <ConfirmModal ref="delModal">
+  <ConfirmModal ref="refDelModal">
     <template #header> 부지 매입 계약 정보 삭제</template>
     <template #default>
       삭제한 데이터는 복구할 수 없습니다. 해당 부지 매입 계약 정보를
@@ -526,5 +523,5 @@ onBeforeMount(() => dataSetup())
     </template>
   </ConfirmModal>
 
-  <AlertModal ref="alertModal" />
+  <AlertModal ref="refAlertModal" />
 </template>
