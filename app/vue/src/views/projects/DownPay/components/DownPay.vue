@@ -1,15 +1,17 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, onBeforeMount } from 'vue'
+import { ref, reactive, computed, inject, onBeforeMount } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { write_project } from '@/utils/pageAuth'
+import { OrderGroup } from '@/store/types/contract'
+import { UnitType } from '@/store/types/project'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-const props = defineProps({
-  downPay: { type: Object, required: true },
-  orders: { type: Array, default: () => [] },
-  types: { type: Array, default: () => [] },
-})
+const orders = inject<OrderGroup[]>('orders')
+const types = inject<UnitType[]>('types')
+
+const props = defineProps({ downPay: { type: Object, required: true } })
+
 const emit = defineEmits(['on-update', 'on-delete'])
 
 const form = reactive({
@@ -18,8 +20,8 @@ const form = reactive({
   payment_amount: null,
 })
 
-const alertModal = ref()
-const confirmModal = ref()
+const refAlertModal = ref()
+const refConfirmModal = ref()
 
 const formsCheck = computed(() => {
   const a = form.order_group === props.downPay.order_group
@@ -37,20 +39,20 @@ const onUpdateDownPay = () => {
     const pk = props.downPay.pk
     emit('on-update', { ...{ pk }, ...form })
   } else {
-    alertModal.value.callModal()
+    refAlertModal.value.callModal()
     dataSetup()
   }
 }
 const onDeleteDownPay = () => {
-  if (useAccount().superAuth) confirmModal.value.callModal()
+  if (useAccount().superAuth) refConfirmModal.value.callModal()
   else {
-    alertModal.value.callModal()
+    refAlertModal.value.callModal()
     dataSetup()
   }
 }
 const modalAction = () => {
   emit('on-delete', props.downPay.pk)
-  confirmModal.value.close()
+  refConfirmModal.value.close()
 }
 
 const dataSetup = () => {
@@ -106,7 +108,7 @@ onBeforeMount(() => dataSetup())
     </CTableDataCell>
   </CTableRow>
 
-  <ConfirmModal ref="confirmModal">
+  <ConfirmModal ref="refConfirmModal">
     <template #header> 계약 조건 삭제</template>
     <template #default>
       해당 데이터를 삭제하면 이후 복구할 수 없습니다. 이 계약 조건 정보를 삭제
@@ -117,5 +119,5 @@ onBeforeMount(() => dataSetup())
     </template>
   </ConfirmModal>
 
-  <AlertModal ref="alertModal" />
+  <AlertModal ref="refAlertModal" />
 </template>

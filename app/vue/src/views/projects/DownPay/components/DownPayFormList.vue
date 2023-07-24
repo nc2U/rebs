@@ -5,10 +5,6 @@ import { DownPay as dp } from '@/store/types/payment'
 import { TableSecondary } from '@/utils/cssMixins'
 import DownPay from '@/views/projects/DownPay/components/DownPay.vue'
 
-defineProps({
-  orders: { type: Object, default: null },
-  types: { type: Object, default: null },
-})
 const emit = defineEmits(['on-update', 'on-delete'])
 
 const paymentStore = usePayment()
@@ -21,10 +17,10 @@ const onDeleteDownPay = (pk: number) => emit('on-delete', pk)
 <template>
   <CTable hover responsive>
     <colgroup>
-      <col width="25%" />
-      <col width="25%" />
-      <col width="35%" />
-      <col width="15%" />
+      <col style="width: 25%" />
+      <col style="width: 25%" />
+      <col style="width: 35%" />
+      <col style="width: 15%" />
     </colgroup>
     <CTableHead :color="TableSecondary" class="text-center">
       <CTableRow>
@@ -39,8 +35,6 @@ const onDeleteDownPay = (pk: number) => emit('on-delete', pk)
         v-for="downPay in downPayList"
         :key="downPay.pk"
         :down-pay="downPay"
-        :orders="orders"
-        :types="types"
         @on-update="onUpdateDownPay"
         @on-delete="onDeleteDownPay"
       />

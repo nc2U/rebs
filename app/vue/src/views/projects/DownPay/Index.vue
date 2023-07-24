@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount } from 'vue'
+import { computed, provide, onBeforeMount } from 'vue'
 import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin2'
 import { useProject } from '@/store/pinia/project'
 import { useProjectData } from '@/store/pinia/project_data'
@@ -16,9 +16,11 @@ const project = computed(() => projStore.project?.pk)
 
 const contStore = useContract()
 const orderGroupList = computed(() => contStore.orderGroupList)
+provide('orders', orderGroupList)
 
 const pDataStore = useProjectData()
 const unitTypeList = computed(() => pDataStore.unitTypeList)
+provide('types', unitTypeList)
 
 const fetchOrderGroupList = (projId: number) =>
   contStore.fetchOrderGroupList(projId)
@@ -74,15 +76,8 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId))
 
   <ContentBody>
     <CCardBody class="pb-5">
-      <DownPayAddForm
-        :disabled="!project"
-        :orders="orderGroupList"
-        :types="unitTypeList"
-        @on-submit="onCreateDownPay"
-      />
+      <DownPayAddForm :disabled="!project" @on-submit="onCreateDownPay" />
       <DownPayFormList
-        :orders="orderGroupList"
-        :types="unitTypeList"
         @on-update="onUpdateDownPay"
         @on-delete="onDeleteDownPay"
       />
