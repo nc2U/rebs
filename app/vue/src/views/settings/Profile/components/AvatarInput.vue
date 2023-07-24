@@ -65,7 +65,7 @@ onMounted(() => {
         class="form-control"
         accept="image/*"
         style="display: none"
-        @change="loadFile"
+        @change="loadFile as any"
       />
       <CRow class="relative inline-block">
         <CCol>

@@ -60,7 +60,7 @@ export default defineComponent({
       <cropper
         ref="cropper"
         class="cropper"
-        :stencil-component="$options.components.CircleStencil"
+        :stencil-component="$options.components?.CircleStencil"
         :default-size="{
           width: 1000,
           height: 1000,
