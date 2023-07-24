@@ -8,8 +8,8 @@ import AlertModal from '@/components/Modals/AlertModal.vue'
 const props = defineProps({ floor: { type: Object, required: true } })
 const emit = defineEmits(['on-update', 'on-delete'])
 
-const alertModal = ref()
-const confirmModal = ref()
+const refAlertModal = ref()
+const refConfirmModal = ref()
 
 const form = reactive({
   sort: '',
@@ -38,21 +38,21 @@ const onUpdateFloor = () => {
     const pk = props.floor.pk
     emit('on-update', { ...{ pk }, ...form })
   } else {
-    alertModal.value.callModal()
+    refAlertModal.value.callModal()
     dataSetup()
   }
 }
 
 const onDeleteFloor = () => {
-  if (useAccount().superAuth) confirmModal.value.callModal()
+  if (useAccount().superAuth) refConfirmModal.value.callModal()
   else {
-    alertModal.value.callModal()
+    refAlertModal.value.callModal()
     dataSetup()
   }
 }
 const modalAction = () => {
   emit('on-delete', props.floor.pk)
-  confirmModal.value.close()
+  refConfirmModal.value.close()
 }
 const dataSetup = () => {
   form.sort = props.floor.sort
@@ -130,7 +130,7 @@ onBeforeMount(() => dataSetup())
     </CTableDataCell>
   </CTableRow>
 
-  <ConfirmModal ref="confirmModal">
+  <ConfirmModal ref="refConfirmModal">
     <template #header> 층별 타입 삭제</template>
     <template #default>
       이 타입에 종속된 분양가 데이터가 있는 경우 해당 데이터를 모두 제거한 후
@@ -141,5 +141,5 @@ onBeforeMount(() => dataSetup())
     </template>
   </ConfirmModal>
 
-  <AlertModal ref="alertModal" />
+  <AlertModal ref="refAlertModal" />
 </template>
