@@ -47,7 +47,7 @@ watch(
               placeholder="사용자"
               autocomplete="label"
               :classes="{ search: 'form-control multiselect-search' }"
-              :add-option-on="['enter' | 'tab']"
+              :add-option-on="['enter', 'tab']"
               searchable
               @change="selectUser"
             />

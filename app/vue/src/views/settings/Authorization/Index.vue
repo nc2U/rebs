@@ -2,6 +2,7 @@
 import { ref, computed, onBeforeMount, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/settings/_menu/headermixin'
 import { useCompany } from '@/store/pinia/company'
+import { User } from '@/store/types/accounts'
 import { useAccount } from '@/store/pinia/account'
 import { write_auth_manage } from '@/utils/pageAuth'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
@@ -12,8 +13,8 @@ import SideBarManageAuth from './components/SideBarManageAuth.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-const alertModal = ref()
-const confirmModal = ref()
+const refAlertModal = ref()
+const refConfirmModal = ref()
 
 const comInfo = ref<{ company: number | null; is_staff: boolean }>({
   company: null,
@@ -142,8 +143,8 @@ const authReset = () => {
 }
 
 const onSubmit = () => {
-  if (write_auth_manage.value) confirmModal.value.callModal()
-  else alertModal.value.callModal()
+  if (write_auth_manage.value) refConfirmModal.value.callModal()
+  else refAlertModal.value.callModal()
 }
 
 const modalAction = () => {
@@ -152,9 +153,9 @@ const modalAction = () => {
     if (!!authData.pk)
       accStore.patchAuth(authData, user.value.pk) // staffauth patch
     else accStore.createAuth(authData, user.value.pk) // staffauth create
-    confirmModal.value.close()
+    refConfirmModal.value.close()
   } else {
-    alertModal.value.callModal()
+    refAlertModal.value.callModal()
   }
 }
 
@@ -210,12 +211,12 @@ onBeforeMount(() => {
     <CCardBody>
       <UserSelect :sel-user="user?.pk" @select-user="selectUser" />
       <ProjectManageAuth
-        :user="user"
+        :user="user as User"
         @get-allowed="getAllowed"
         @get-assigned="getAssigned"
       />
       <SideBarManageAuth
-        :user="user"
+        :user="user as User"
         :allowed="projectAuth.allowed_projects"
         @select-auth="selectAuth"
       />
@@ -233,7 +234,7 @@ onBeforeMount(() => {
       </CButton>
     </CCardFooter>
 
-    <ConfirmModal ref="confirmModal">
+    <ConfirmModal ref="refConfirmModal">
       <template #header>사용자 권한설정</template>
       <template #default>사용자 권한설정 저장을 진행하시겠습니까?</template>
       <template #footer>
@@ -246,6 +247,6 @@ onBeforeMount(() => {
       </template>
     </ConfirmModal>
 
-    <AlertModal ref="alertModal" />
+    <AlertModal ref="refAlertModal" />
   </ContentBody>
 </template>

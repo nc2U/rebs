@@ -4,9 +4,7 @@ import { useProject } from '@/store/pinia/project'
 import { bgLight } from '@/utils/cssMixins'
 import Multiselect from '@vueform/multiselect'
 
-const props = defineProps({
-  user: { type: Object, default: null },
-})
+const props = defineProps({ user: { type: Object, default: null } })
 
 const emit = defineEmits(['get-allowed', 'get-assigned'])
 
@@ -58,7 +56,7 @@ onBeforeMount(() => project.fetchProjectList())
               mode="tags"
               autocomplete="label"
               :classes="{ search: 'form-control multiselect-search' }"
-              :add-option-on="['enter' | 'tab']"
+              :add-option-on="['enter', 'tab']"
               searchable
               :disabled="isInActive"
               @change="getAllowed"
@@ -82,7 +80,7 @@ onBeforeMount(() => project.fetchProjectList())
               placeholder="프로젝트"
               autocomplete="label"
               :classes="{ search: 'form-control multiselect-search' }"
-              :add-option-on="['enter' | 'tab']"
+              :add-option-on="['enter', 'tab']"
               searchable
               :disabled="isInActive || allowedProjects.length === 0"
               @change="getAssigned"
