@@ -898,5 +898,5 @@ onBeforeMount(() => formDataSetup())
 
   <AlertModal ref="alertModal" />
 
-  <BankAcc ref="bankAcc" @onBankUpdate="onBankUpdate" />
+  <BankAcc ref="bankAcc" @on-bank-update="onBankUpdate" />
 </template>
