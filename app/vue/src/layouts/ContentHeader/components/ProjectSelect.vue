@@ -28,9 +28,9 @@ onBeforeMount(() => {
         placeholder="프로젝트선택"
         autocomplete="label"
         :classes="{ search: 'form-control multiselect-search' }"
-        :add-option-on="['enter' | 'tab']"
+        :add-option-on="['enter', 'tab']"
         searchable
-        @select="projSelect as (p: number) => void"
+        @select="projSelect"
         @clear="projClear"
       />
     </CCol>
