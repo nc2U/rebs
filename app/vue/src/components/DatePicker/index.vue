@@ -1,37 +1,29 @@
 <script lang="ts" setup>
-import { ref, reactive, computed } from 'vue'
+import { ref, computed } from 'vue'
 import { useStore } from 'vuex'
 import Datepicker from '@vuepic/vue-datepicker'
 
 const store = useStore()
 const isDark = computed(() => store.state.theme === 'dark')
 
-const textInputOptions = ref({
-  enterSubmit: true,
-  tabSubmit: true,
-  openMenu: true,
-  format: 'yyyy-MM-dd',
-})
-
-const options = reactive({
-  mask: '####-##-##',
-  eager: true,
-})
+const options = ref({ format: 'yyyy-MM-dd' })
 </script>
 
 <template>
   <Datepicker
-    v-maska:[options]
-    text-input
-    auto-apply
-    format="yyyy-MM-dd"
-    position="left"
-    :text-input-options="textInputOptions"
-    input-class-name="form-control"
-    :enable-time-picker="false"
-    :teleport="true"
-    :dark="isDark"
     locale="ko"
+    auto-apply
+    text-input
+    :text-input-options="options"
+    :dark="isDark"
+    position="left"
+    :teleport="true"
+    close-on-scroll
+    format="yyyy-MM-dd"
+    model-type="format"
+    placeholder="날짜선택"
     allow-prevent-default
+    :enable-time-picker="false"
+    input-class-name="form-control"
   />
 </template>

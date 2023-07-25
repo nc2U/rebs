@@ -213,7 +213,11 @@ export const useContract = defineStore('contract', () => {
       .then(res => (keyUnitList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
   }
-  const fetchHouseUnitList = (payload: any) => {
+  const fetchHouseUnitList = (payload: {
+    project: number
+    unit_type?: number
+    contract?: number
+  }) => {
     const { project } = payload
     let url = `/available-house-unit/?project=${project}`
     if (payload.unit_type) url += `&unit_type=${payload.unit_type}`
@@ -224,7 +228,11 @@ export const useContract = defineStore('contract', () => {
       .then(res => (houseUnitList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
   }
-  const fetchSalePriceList = (payload: any) => {
+  const fetchSalePriceList = (payload: {
+    project: number
+    order_group?: number
+    unit_type?: number
+  }) => {
     const { project } = payload
     let url = `/price/?project=${project}`
     if (payload.order_group) url += `&order_group=${payload.order_group}`
@@ -235,7 +243,11 @@ export const useContract = defineStore('contract', () => {
       .then(res => (salesPriceList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
   }
-  const fetchDownPayList = (payload: any) => {
+  const fetchDownPayList = (payload: {
+    project: number
+    order_group?: number
+    unit_type?: number
+  }) => {
     const { project } = payload
     let url = `/down-payment/?project=${project}`
     if (payload.order_group) url += `&order_group=${payload.order_group}`

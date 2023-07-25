@@ -32,7 +32,7 @@ const onBankUpdate = (payload: ProBankAcc) => emit('on-bank-update', payload)
     <template #default>
       <ProCashForm
         @multi-submit="multiSubmit"
-        @onBankUpdate="onBankUpdate"
+        @on-bank-update="onBankUpdate"
         @close="createFormModal.close()"
       />
     </template>

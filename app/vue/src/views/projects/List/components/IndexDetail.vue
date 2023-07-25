@@ -28,7 +28,7 @@ const toUpdate = () => {
     <CCardBody>
       <CRow>
         <CCol class="pt-2">
-          <CTable hover responsive>
+          <CTable v-if="project" hover responsive>
             <colgroup>
               <col style="width: 15%" />
               <col style="width: 30%" />
@@ -49,7 +49,7 @@ const toUpdate = () => {
                   프로젝트명
                 </CTableHeaderCell>
                 <CTableDataCell>
-                  <span v-if="project">
+                  <span>
                     {{ project.name }}
                     <span v-if="project.start_year">
                       ({{ project.start_year }}년도)

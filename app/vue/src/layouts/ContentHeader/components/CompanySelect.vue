@@ -28,9 +28,9 @@ onBeforeMount(() => {
         placeholder="회사선택"
         autocomplete="label"
         :classes="{ search: 'form-control multiselect-search' }"
-        :add-option-on="['enter' | 'tab']"
+        :add-option-on="['enter', 'tab']"
         searchable
-        @select="comSelect as (c: number) => void"
+        @select="comSelect"
         @clear="comClear"
       />
     </CCol>

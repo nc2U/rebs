@@ -9,7 +9,6 @@ import {
   RouteRecordRaw,
   RouteLocationMatched,
 } from 'vue-router'
-import { vi } from 'vuetify/locale'
 
 const store = useStore()
 const dark = computed(() => store.state.theme === 'dark')
@@ -70,7 +69,6 @@ const filterAffixTags = (
 
 const initTags = () => {
   affixTags.value = filterAffixTags(route.matched)
-  console.log(affixTags.value)
   affixTags.value.forEach((tag: VisitedView) =>
     tag.meta.title ? tagsViewStore.addView(tag) : undefined,
   )
