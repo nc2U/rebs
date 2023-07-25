@@ -13,7 +13,7 @@ import StatusByAccount from '@/views/proCash/Status/components/StatusByAccount.v
 import CashListByDate from '@/views/proCash/Status/components/CashListByDate.vue'
 import SummaryForBudget from '@/views/proCash/Status/components/SummaryForBudget.vue'
 
-const date = ref(new Date())
+const date = ref(dateFormat(new Date()))
 const direct = ref('0')
 const compName = ref('StatusByAccount')
 
@@ -45,7 +45,7 @@ const excelUrl = computed(() => {
   const comp = compName.value
   const pj = project.value
   const dr = direct.value
-  const dt = dateFormat(date.value)
+  const dt = date.value
   let url = ''
   if (comp === 'StatusByAccount')
     url = `/excel/p-balance/?project=${pj}&date=${dt}&bank_account__directpay=${dr}`
@@ -65,19 +65,18 @@ const showTab = (num: number) => {
   compName.value = comp[num]
 }
 
-const setDate = (d: Date) => {
-  const dt = new Date(d)
+const setDate = (dt: string) => {
   date.value = dt
   if (project.value) {
     fetchStatusOutBudgetList(project.value as number)
-    fetchExecAmountList(project.value as number, dateFormat(dt))
+    fetchExecAmountList(project.value as number, dt)
     fetchBalanceByAccList({
       project: project.value as number,
-      date: dateFormat(dt),
+      date: dt,
     })
     fetchDateCashBookList({
       project: project.value as number,
-      date: dateFormat(dt),
+      date: dt,
     })
   }
 }
@@ -93,18 +92,18 @@ const directBalance = (val: boolean) => {
     fetchBalanceByAccList({
       project: project.value as number,
       direct: direct.value,
-      date: dateFormat(date.value),
+      date: date.value,
     })
 }
 
 const dataSetup = (pk: number) => {
   fetchStatusOutBudgetList(pk)
-  fetchExecAmountList(pk, dateFormat(date.value))
+  fetchExecAmountList(pk, date.value)
   fetchProBankAccList(pk)
-  fetchBalanceByAccList({ project: pk, date: dateFormat(date.value) })
+  fetchBalanceByAccList({ project: pk, date: date.value })
   fetchDateCashBookList({
     project: pk,
-    date: dateFormat(date.value),
+    date: date.value,
   })
 }
 
@@ -145,16 +144,13 @@ onBeforeMount(() => {
 
       <StatusByAccount
         v-if="compName === 'StatusByAccount'"
-        :date="date as string | undefined"
+        :date="date"
         @direct-balance="directBalance"
       />
-      <CashListByDate
-        v-if="compName === 'CashListByDate'"
-        :date="date as string | undefined"
-      />
+      <CashListByDate v-if="compName === 'CashListByDate'" :date="date" />
       <SummaryForBudget
         v-if="compName === 'SummaryForBudget'"
-        :date="date as string | undefined"
+        :date="date"
         @patch-budget="patchBudget"
       />
     </CCardBody>
