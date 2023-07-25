@@ -5,12 +5,12 @@ import DatePicker from '@/components/DatePicker/index.vue'
 
 const emit = defineEmits(['set-date'])
 
-const date = ref(new Date())
+const date = ref(dateFormat(new Date()))
 watch(date, val => {
-  if (!val) date.value = new Date()
+  if (!val) date.value = dateFormat(new Date())
   setDate()
 })
-const setDate = () => emit('set-date', dateFormat(date.value))
+const setDate = () => emit('set-date', date.value)
 </script>
 
 <template>

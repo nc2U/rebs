@@ -70,14 +70,8 @@ const setDate = (dt: string) => {
   if (project.value) {
     fetchStatusOutBudgetList(project.value as number)
     fetchExecAmountList(project.value as number, dt)
-    fetchBalanceByAccList({
-      project: project.value as number,
-      date: dt,
-    })
-    fetchDateCashBookList({
-      project: project.value as number,
-      date: dt,
-    })
+    fetchBalanceByAccList({ project: project.value as number, date: dt })
+    fetchDateCashBookList({ project: project.value as number, date: dt })
   }
 }
 
@@ -101,10 +95,7 @@ const dataSetup = (pk: number) => {
   fetchExecAmountList(pk, date.value)
   fetchProBankAccList(pk)
   fetchBalanceByAccList({ project: pk, date: date.value })
-  fetchDateCashBookList({
-    project: pk,
-    date: date.value,
-  })
+  fetchDateCashBookList({ project: pk, date: date.value })
 }
 
 const dataReset = () => {

@@ -12,7 +12,7 @@ import TableTitleRow from '@/components/TableTitleRow.vue'
 import StatusByAccount from '@/views/comCash/Status/components/StatusByAccount.vue'
 import CashListByDate from '@/views/comCash/Status/components/CashListByDate.vue'
 
-const date = ref(new Date())
+const date = ref(dateFormat(new Date()))
 const compName = ref('StatusByAccount')
 
 const comStore = useCompany()
@@ -37,7 +37,7 @@ const excelUrl = computed(() => {
     url = `/excel/balance/?company=${company.value}`
   else if (comp === 'CashListByDate')
     url = `/excel/daily-cash/?company=${company.value}`
-  return `${url}&date=${dateFormat(date.value)}`
+  return `${url}&date=${date.value}`
 })
 
 const showTab = (num: number) => {
@@ -48,31 +48,18 @@ const showTab = (num: number) => {
   compName.value = comp[num]
 }
 
-const setDate = (d: string) => {
-  const dt = new Date(d)
-  date.value = new Date(dt)
+const setDate = (dt: string) => {
+  date.value = dt
   if (company.value) {
-    fetchComBalanceByAccList({
-      company: company.value,
-      date: dateFormat(dt),
-    })
-    fetchDateCashBookList({
-      company: company.value,
-      date: dateFormat(dt),
-    })
+    fetchComBalanceByAccList({ company: company.value, date: dt })
+    fetchDateCashBookList({ company: company.value, date: dt })
   }
 }
 
 const dataSetup = (pk: number) => {
   fetchComBankAccList(pk)
-  fetchComBalanceByAccList({
-    company: pk,
-    date: dateFormat(date.value),
-  })
-  fetchDateCashBookList({
-    company: pk,
-    date: dateFormat(date.value),
-  })
+  fetchComBalanceByAccList({ company: pk, date: date.value })
+  fetchDateCashBookList({ company: pk, date: date.value })
 }
 
 const dataReset = () => {
