@@ -70,7 +70,6 @@ const filterAffixTags = (
 
 const initTags = () => {
   affixTags.value = filterAffixTags(route.matched)
-  console.log(affixTags.value)
   affixTags.value.forEach((tag: VisitedView) =>
     tag.meta.title ? tagsViewStore.addView(tag) : undefined,
   )
