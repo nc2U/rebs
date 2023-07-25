@@ -57,7 +57,7 @@
         <td style="padding: 3px 0px; border:1px solid black; text-align:center; ">{{ data.cont_content.cont_date }}</td>
         <td style="padding: 3px 0px; border:1px solid black; text-align:center; ">{{ data.cont_content.cont_no }}</td>
         <td style="padding: 3px 0px; border:1px solid black; text-align:center; ">{{ data.cont_content.cont_type }}</td>
-        <td style="padding: 3px 10px; border:1px solid black; text-align:{% if data.unit %}right{% else %}center{% endif %}; ">{% if not data.no_price %}{{ data.price|intcomma }}{% else %}-{% endif %}</td>
+        <td style="padding: 3px 10px; border:1px solid black; text-align: {% if not data.no_price %}right{% else %}center{% endif %};">{% if not data.no_price %}{{ data.price|intcomma }}{% else %}-{% endif %}</td>
     </tr>
 </table>
 
