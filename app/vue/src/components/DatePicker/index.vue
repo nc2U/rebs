@@ -25,6 +25,7 @@ const options = reactive({
     text-input
     auto-apply
     format="yyyy-MM-dd"
+    model-type="yyyy-MM-dd"
     position="left"
     :text-input-options="textInputOptions"
     input-class-name="form-control"
