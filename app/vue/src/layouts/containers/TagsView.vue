@@ -9,7 +9,6 @@ import {
   RouteRecordRaw,
   RouteLocationMatched,
 } from 'vue-router'
-import { vi } from 'vuetify/locale'
 
 const store = useStore()
 const dark = computed(() => store.state.theme === 'dark')
