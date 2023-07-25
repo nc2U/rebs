@@ -28,8 +28,11 @@ export const dateFormat = (date: Date | string) => {
     : date.toISOString().replace(/T.*$/, '')
 }
 
+export const getToday = () =>
+  dateFormat(new Date(new Date().getTime() + 32400000))
+
 export const timeFormat = (date: string) =>
-  new Date(+new Date(date) + 3240 * 10000)
+  new Date(+new Date(date) + 32400000)
     .toISOString()
     .replace('T', ' ')
     .replace(/\..*/, '')
