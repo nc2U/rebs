@@ -57,7 +57,9 @@
         <td style="padding: 3px 0; border:1px solid black; text-align:center; ">{{ data.cont_content.cont_date }}</td>
         <td style="padding: 3px 0; border:1px solid black; text-align:center; ">{{ data.cont_content.cont_no }}</td>
         <td style="padding: 3px 0; border:1px solid black; text-align:center; ">{{ data.cont_content.cont_type }}</td>
-        <td style="padding: 3px 10px; border:1px solid black; text-align: right;">{% if not data.no_price %}{{ data.price|default:"-"|intcomma }}{% endif %}</td>
+        <td style="padding: 3px 10px; border:1px solid black; text-align: {% if not data.no_price %}right{% else %}center{% endif %};">
+            {% if not data.no_price %}{{ data.price|intcomma }}{% else %}추후 지정 고지{% endif %}
+        </td>
     </tr>
 </table>
 
