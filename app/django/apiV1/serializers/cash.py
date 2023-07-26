@@ -58,23 +58,23 @@ class CashBookSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_sort_desc(obj):
-        return obj.sort.name if obj else None
+        return obj.sort.name if obj.sort else None
 
     @staticmethod
     def get_account_d1_desc(obj):
-        return obj.account_d1.name if obj else None
+        return obj.account_d1.name if obj.account_d1 else None
 
     @staticmethod
     def get_account_d2_desc(obj):
-        return obj.account_d2.name if obj else None
+        return obj.account_d2.name if obj.account_d2 else None
 
     @staticmethod
     def get_account_d3_desc(obj):
-        return obj.account_d3.name if obj else None
+        return obj.account_d3.name if obj.account_d3 else None
 
     @staticmethod
     def get_bank_account_desc(obj):
-        return obj.bank_account.alias_name if obj else None
+        return obj.bank_account.alias_name if obj.bank_account else None
 
     @transaction.atomic
     def create(self, validated_data):
