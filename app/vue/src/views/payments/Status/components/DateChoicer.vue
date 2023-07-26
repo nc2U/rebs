@@ -1,17 +1,14 @@
 <script lang="ts" setup>
 import { ref, watch } from 'vue'
-import { dateFormat } from '@/utils/baseMixins'
+import { getToday } from '@/utils/baseMixins'
 import DatePicker from '@/components/DatePicker/index.vue'
 
 const emit = defineEmits(['set-date'])
 
-const date = ref(new Date())
+const date = ref(getToday())
 
-watch(date, val => {
-  if (!val) date.value = new Date()
-  setDate()
-})
-const setDate = () => emit('set-date', dateFormat(date.value))
+watch(date, () => setDate())
+const setDate = () => emit('set-date', date.value)
 </script>
 
 <template>
