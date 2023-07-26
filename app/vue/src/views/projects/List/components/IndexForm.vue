@@ -237,14 +237,13 @@ onBeforeMount(() => formDataSetup())
               v-model.number="form.start_year"
               placeholder="사업개시년도를 입력하세요"
               input-class-name="form-control"
+              position="left"
               year-picker
               auto-apply
               :dark="store.state.theme === 'dark'"
               required
             />
-            <CFormFeedback invalid>
-              사업개시년도를 입력하세요(1990년도 이후).
-            </CFormFeedback>
+            <CFormFeedback invalid> 사업개시년도를 입력하세요</CFormFeedback>
           </CCol>
         </CRow>
 
@@ -563,7 +562,7 @@ onBeforeMount(() => formDataSetup())
     </CForm>
   </CCard>
 
-  <DaumPostcode ref="postCode" @address-callback="addressCallback" />
+  <DaumPostcode ref="refPostCode" @address-callback="addressCallback" />
 
   <ConfirmModal ref="refDelModal">
     <template #header> 프로젝트정보 삭제</template>

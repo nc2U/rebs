@@ -18,7 +18,6 @@ const options = ref({ format: 'yyyy-MM-dd' })
     :dark="isDark"
     position="left"
     :teleport="true"
-    close-on-scroll
     format="yyyy-MM-dd"
     model-type="format"
     placeholder="날짜선택"
