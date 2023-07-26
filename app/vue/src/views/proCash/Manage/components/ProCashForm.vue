@@ -10,7 +10,7 @@ import {
 } from 'vue'
 import { useProCash } from '@/store/pinia/proCash'
 import { useAccount } from '@/store/pinia/account'
-import { diffDate, dateFormat, cutString, numFormat } from '@/utils/baseMixins'
+import { diffDate, getToday, cutString, numFormat } from '@/utils/baseMixins'
 import { write_project_cash } from '@/utils/pageAuth'
 import { ProBankAcc, ProjectCashBook, ProSepItems } from '@/store/types/proCash'
 import { isValidate } from '@/utils/helper'
@@ -74,11 +74,7 @@ const form = reactive<
   charge: null,
   evidence: '',
   note: '',
-  deal_date: dateFormat(new Date()),
-})
-
-watch(form, val => {
-  if (val.deal_date) form.deal_date = dateFormat(val.deal_date)
+  deal_date: getToday(),
 })
 
 const formsCheck = computed(() => {
