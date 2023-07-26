@@ -3,7 +3,7 @@ import { ref, computed, onBeforeMount } from 'vue'
 import { pageTitle, navMenu } from '@/views/comCash/_menu/headermixin'
 import { useCompany } from '@/store/pinia/company'
 import { useComCash } from '@/store/pinia/comCash'
-import { dateFormat } from '@/utils/baseMixins'
+import { getToday } from '@/utils/baseMixins'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import DateChoicer from '@/views/comCash/Status/components/DateChoicer.vue'
@@ -12,7 +12,7 @@ import TableTitleRow from '@/components/TableTitleRow.vue'
 import StatusByAccount from '@/views/comCash/Status/components/StatusByAccount.vue'
 import CashListByDate from '@/views/comCash/Status/components/CashListByDate.vue'
 
-const date = ref(dateFormat(new Date()))
+const date = ref(getToday())
 const compName = ref('StatusByAccount')
 
 const comStore = useCompany()

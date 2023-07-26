@@ -1,8 +1,16 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, watch, onBeforeMount, nextTick } from 'vue'
+import {
+  PropType,
+  ref,
+  reactive,
+  computed,
+  watch,
+  onBeforeMount,
+  nextTick,
+} from 'vue'
 import { useProCash } from '@/store/pinia/proCash'
 import { useAccount } from '@/store/pinia/account'
-import { diffDate, dateFormat, cutString, numFormat } from '@/utils/baseMixins'
+import { diffDate, getToday, cutString, numFormat } from '@/utils/baseMixins'
 import { write_project_cash } from '@/utils/pageAuth'
 import { ProBankAcc, ProjectCashBook, ProSepItems } from '@/store/types/proCash'
 import { isValidate } from '@/utils/helper'
@@ -12,10 +20,7 @@ import AlertModal from '@/components/Modals/AlertModal.vue'
 import BankAcc from './BankAcc.vue'
 
 const props = defineProps({
-  proCash: {
-    type: Object,
-    default: null,
-  },
+  proCash: { type: Object as PropType<ProjectCashBook>, default: null },
 })
 
 const emit = defineEmits([
@@ -25,8 +30,9 @@ const emit = defineEmits([
   'on-bank-update',
 ])
 
-const delModal = ref()
-const alertModal = ref()
+const refBankAcc = ref()
+const refDelModal = ref()
+const refAlertModal = ref()
 
 const sepItem = reactive<ProSepItems>({
   pk: null,
@@ -44,7 +50,10 @@ const sepItem = reactive<ProSepItems>({
 const validated = ref(false)
 
 const form = reactive<
-  ProjectCashBook & { bank_account_to: null | number; charge: null | number }
+  Omit<ProjectCashBook, 'sepItems'> & {
+    bank_account_to: null | number
+    charge: null | number
+  }
 >({
   pk: null,
   project: null,
@@ -53,7 +62,7 @@ const form = reactive<
   project_account_d3: null,
 
   is_separate: false,
-  separated: null as null | number,
+  separated: null,
   is_imprest: false,
 
   content: '',
@@ -65,11 +74,7 @@ const form = reactive<
   charge: null,
   evidence: '',
   note: '',
-  deal_date: dateFormat(new Date()),
-})
-
-watch(form, val => {
-  if (val.deal_date) form.deal_date = dateFormat(val.deal_date)
+  deal_date: getToday(),
 })
 
 const formsCheck = computed(() => {
@@ -105,14 +110,14 @@ const proBankAccs = computed(() => {
   return !ba || isExist
     ? getProBanks.value
     : [...getProBanks.value, ...[{ value: ba, label: getAccName(ba) }]].sort(
-        (a, b) => a.value - b.value,
+        (prev, curr) => (prev.value || 0) - (curr.value || 0),
       )
 })
 
 const getAccName = (pk: number) =>
   allProBankAccList.value.filter(b => b.pk === pk).map(b => b.alias_name)[0]
 
-const fetchProformAccD2List = (sort: number | null) =>
+const fetchProFormAccD2List = (sort: number | null) =>
   proCashStore.fetchProFormAccD2List(sort)
 const fetchProFormAccD3List = (d1: number | null, sort: number | null) =>
   proCashStore.fetchProFormAccD3List(d1, sort)
@@ -130,19 +135,19 @@ const sepSummary = computed(() => {
   const inc =
     props.proCash.sepItems.length !== 0
       ? props.proCash.sepItems
-          .map((s: ProjectCashBook) => s.income)
-          .reduce((res: number, el: number) => res + el)
+          .map((s: ProSepItems) => s.income)
+          .reduce((prev, curr) => (prev || 0) + (curr || 0))
       : 0
   const out =
     props.proCash.sepItems.length !== 0
       ? props.proCash.sepItems
           .map((s: ProSepItems) => s.outlay)
-          .reduce((res: number, el: number) => res + el)
+          .reduce((prev, curr) => (prev || 0) + (curr || 0))
       : 0
   return [inc, out]
 })
 
-const sepUpdate = (sep: ProjectCashBook) => {
+const sepUpdate = (sep: ProSepItems) => {
   sepItem.pk = sep.pk
   sepItem.project_account_d2 = sep.project_account_d2
   sepItem.project_account_d3 = sep.project_account_d3
@@ -175,7 +180,7 @@ const callAccount = () => {
   nextTick(() => {
     const sort = form.sort === 1 || form.sort === 2 ? form.sort : null
     const d1 = form.project_account_d2 || null
-    fetchProformAccD2List(sort)
+    fetchProFormAccD2List(sort)
     fetchProFormAccD3List(d1, sort)
   })
 }
@@ -219,14 +224,13 @@ const sepD1_change = () => {
   nextTick(() => {
     const sort = form.sort
     const d1 = sepItem.project_account_d2
-    fetchProformAccD2List(sort)
+    fetchProFormAccD2List(sort)
     fetchProFormAccD3List(d1, sort)
   })
 }
 
 watch(form, val => {
-  if (val.project_account_d3 === 63) form.is_imprest = true
-  else form.is_imprest = false
+  form.is_imprest = val.project_account_d3 === 63
 })
 
 const accountStore = useAccount()
@@ -246,25 +250,25 @@ const onSubmit = (event: Event) => {
       if (props.proCash) {
         if (allowedPeriod.value) emit('multi-submit', payload)
         else
-          alertModal.value.callModal(
+          refAlertModal.value.callModal(
             null,
             '거래일로부터 30일이 경과한 건은 수정할 수 없습니다. 관리자에게 문의바랍니다.',
           )
       } else emit('multi-submit', payload)
-    } else alertModal.value.callModal()
+    } else refAlertModal.value.callModal()
     emit('close')
   }
 }
 
 const deleteConfirm = () => {
   if (write_project_cash.value)
-    if (allowedPeriod.value) delModal.value.callModal()
+    if (allowedPeriod.value) refDelModal.value.callModal()
     else
-      alertModal.value.callModal(
+      refAlertModal.value.callModal(
         null,
         '거래일로부터 30일이 경과한 건은 삭제할 수 없습니다. 관리자에게 문의바랍니다.',
       )
-  else alertModal.value.callModal()
+  else refAlertModal.value.callModal()
 }
 
 const deleteObject = () => {
@@ -272,7 +276,7 @@ const deleteObject = () => {
     project: props.proCash.project,
     pk: props.proCash.pk,
   })
-  delModal.value.close()
+  refDelModal.value.close()
   emit('close')
 }
 
@@ -452,7 +456,7 @@ onBeforeMount(() => formDataSetup())
               <CFormLabel class="col-sm-4 col-form-label">
                 {{ !proCash && form.sort === 3 ? '출금' : '거래' }}계좌
                 <a href="javascript:void(0)">
-                  <CIcon name="cilCog" @click="$refs.bankAcc.callModal()" />
+                  <CIcon name="cilCog" @click="refBankAcc.callModal()" />
                 </a>
               </CFormLabel>
               <CCol sm="8">
@@ -464,7 +468,7 @@ onBeforeMount(() => formDataSetup())
                   <option value="">---------</option>
                   <option
                     v-for="ba in proBankAccs"
-                    :key="ba.value"
+                    :key="ba.value as number"
                     :value="ba.value"
                   >
                     {{ ba.label }}
@@ -507,7 +511,7 @@ onBeforeMount(() => formDataSetup())
                   <option value="">---------</option>
                   <option
                     v-for="ba in proBankAccs"
-                    :key="ba.value"
+                    :key="ba.value as number"
                     :value="ba.value"
                   >
                     {{ ba.label }}
@@ -632,7 +636,9 @@ onBeforeMount(() => formDataSetup())
             <CCol sm="2">{{ sep.trader }}</CCol>
             <CCol sm="5">{{ cutString(sep.content, 20) }}</CCol>
             <CCol sm="2" class="text-right">
-              {{ sep.income ? numFormat(sep.income) : numFormat(sep.outlay) }}
+              {{
+                sep.income ? numFormat(sep.income) : numFormat(sep.outlay || 0)
+              }}
             </CCol>
             <CCol sm="2" class="text-right">
               <CButton
@@ -758,7 +764,7 @@ onBeforeMount(() => formDataSetup())
                       <option value="">---------</option>
                       <option
                         v-for="ba in proBankAccs"
-                        :key="ba.value"
+                        :key="ba.value as number"
                         :value="ba.value"
                       >
                         {{ ba.label }}
@@ -882,7 +888,7 @@ onBeforeMount(() => formDataSetup())
     </CModalFooter>
   </CForm>
 
-  <ConfirmModal ref="delModal">
+  <ConfirmModal ref="refDelModal">
     <template #icon>
       <v-icon icon="mdi mdi-alert-box" color="warning" class="mr-2" />
     </template>
@@ -896,7 +902,7 @@ onBeforeMount(() => formDataSetup())
     </template>
   </ConfirmModal>
 
-  <AlertModal ref="alertModal" />
+  <AlertModal ref="refAlertModal" />
 
-  <BankAcc ref="bankAcc" @on-bank-update="onBankUpdate" />
+  <BankAcc ref="refBankAcc" @on-bank-update="onBankUpdate" />
 </template>

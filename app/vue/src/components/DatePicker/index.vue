@@ -14,7 +14,6 @@ const options = ref({ format: 'yyyy-MM-dd' })
     locale="ko"
     auto-apply
     text-input
-    :text-input-options="options"
     :dark="isDark"
     position="left"
     :teleport="true"
@@ -23,6 +22,7 @@ const options = ref({ format: 'yyyy-MM-dd' })
     placeholder="날짜선택"
     allow-prevent-default
     :enable-time-picker="false"
+    :text-input-options="options"
     input-class-name="form-control"
   />
 </template>

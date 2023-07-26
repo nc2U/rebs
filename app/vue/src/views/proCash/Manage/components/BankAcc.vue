@@ -7,20 +7,20 @@ import AlertModal from '@/components/Modals/AlertModal.vue'
 
 const emit = defineEmits(['on-bank-update'])
 
-const comBankAcc = ref()
+const refComBankAcc = ref()
 
 const proCashStore = useProCash()
 const allProBankAccList = computed(() => proCashStore.allProBankAccountList)
 
 const onBankUpdate = (payload: ProBankAcc) => emit('on-bank-update', payload)
 
-const callModal = () => comBankAcc.value.callModal()
+const callModal = () => refComBankAcc.value.callModal()
 
 defineExpose({ callModal })
 </script>
 
 <template>
-  <AlertModal ref="comBankAcc" size="lg">
+  <AlertModal ref="refComBankAcc" size="lg">
     <template #header> 프로젝트 거래 계좌 관리</template>
     <template #default>
       <CAccordion>

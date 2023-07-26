@@ -2,7 +2,7 @@
 import { ref, computed, onBeforeMount } from 'vue'
 import { useProject } from '@/store/pinia/project'
 import { useProCash } from '@/store/pinia/proCash'
-import { dateFormat } from '@/utils/baseMixins'
+import { getToday } from '@/utils/baseMixins'
 import { pageTitle, navMenu } from '@/views/proCash/_menu/headermixin'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
@@ -13,7 +13,7 @@ import StatusByAccount from '@/views/proCash/Status/components/StatusByAccount.v
 import CashListByDate from '@/views/proCash/Status/components/CashListByDate.vue'
 import SummaryForBudget from '@/views/proCash/Status/components/SummaryForBudget.vue'
 
-const date = ref(dateFormat(new Date()))
+const date = ref(getToday())
 const direct = ref('0')
 const compName = ref('StatusByAccount')
 

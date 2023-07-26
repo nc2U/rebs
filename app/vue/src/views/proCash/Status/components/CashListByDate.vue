@@ -61,12 +61,12 @@ const setData = () => {
 <template>
   <CTable hover responsive bordered align="middle">
     <colgroup>
-      <col width="15%" />
-      <col width="15%" />
-      <col width="15%" />
-      <col width="15%" />
-      <col width="15%" />
-      <col width="25%" />
+      <col style="width: 15%" />
+      <col style="width: 15%" />
+      <col style="width: 15%" />
+      <col style="width: 15%" />
+      <col style="width: 15%" />
+      <col style="width: 25%" />
     </colgroup>
     <CTableHead>
       <CTableRow>
@@ -93,12 +93,18 @@ const setData = () => {
 
     <CTableBody>
       <CTableRow v-for="inc in dateIncSet" :key="inc.pk" class="text-center">
-        <CTableDataCell>{{ getD1Text(inc.project_account_d2) }}</CTableDataCell>
-        <CTableDataCell>{{ getD3Text(inc.project_account_d3) }}</CTableDataCell>
-        <CTableDataCell class="text-right" color="success">
-          {{ numFormat(inc.income) }}
+        <CTableDataCell
+          >{{ getD1Text(inc.project_account_d2 as number) }}
         </CTableDataCell>
-        <CTableDataCell>{{ getBankAcc(inc.bank_account) }}</CTableDataCell>
+        <CTableDataCell
+          >{{ getD3Text(inc.project_account_d3 as number) }}
+        </CTableDataCell>
+        <CTableDataCell class="text-right" color="success">
+          {{ numFormat(inc.income || 0) }}
+        </CTableDataCell>
+        <CTableDataCell
+          >{{ getBankAcc(inc.bank_account as number) }}
+        </CTableDataCell>
         <CTableDataCell class="text-left">{{ inc.trader }}</CTableDataCell>
         <CTableDataCell class="text-left">{{ inc.content }}</CTableDataCell>
       </CTableRow>
@@ -126,12 +132,12 @@ const setData = () => {
 
   <CTable hover responsive bordered align="middle">
     <colgroup>
-      <col width="15%" />
-      <col width="15%" />
-      <col width="15%" />
-      <col width="15%" />
-      <col width="15%" />
-      <col width="25%" />
+      <col style="width: 15%" />
+      <col style="width: 15%" />
+      <col style="width: 15%" />
+      <col style="width: 15%" />
+      <col style="width: 15%" />
+      <col style="width: 25%" />
     </colgroup>
     <CTableHead>
       <CTableRow>
@@ -158,12 +164,18 @@ const setData = () => {
 
     <CTableBody>
       <CTableRow v-for="out in dateOutSet" :key="out.pk" class="text-center">
-        <CTableDataCell>{{ getD1Text(out.project_account_d2) }}</CTableDataCell>
-        <CTableDataCell>{{ getD3Text(out.project_account_d3) }}</CTableDataCell>
-        <CTableDataCell class="text-right" color="danger">
-          {{ numFormat(out.outlay) }}
+        <CTableDataCell>
+          {{ getD1Text(out.project_account_d2 as number) }}
         </CTableDataCell>
-        <CTableDataCell>{{ getBankAcc(out.bank_account) }}</CTableDataCell>
+        <CTableDataCell>
+          {{ getD3Text(out.project_account_d3 as number) }}
+        </CTableDataCell>
+        <CTableDataCell class="text-right" color="danger">
+          {{ numFormat(out.outlay || 0) }}
+        </CTableDataCell>
+        <CTableDataCell>
+          {{ getBankAcc(out.bank_account as number) }}
+        </CTableDataCell>
         <CTableDataCell class="text-left">{{ out.trader }}</CTableDataCell>
         <CTableDataCell class="text-left">{{ out.content }}</CTableDataCell>
       </CTableRow>

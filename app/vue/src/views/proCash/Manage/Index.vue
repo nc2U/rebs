@@ -238,7 +238,7 @@ onBeforeMount(() => {
     <CCardBody class="pb-5">
       <ListController ref="listControl" @list-filtering="listFiltering" />
       <AddProCash
-        :project="project"
+        :project="project as number"
         @multi-submit="multiSubmit"
         @on-bank-update="onBankUpdate"
       />

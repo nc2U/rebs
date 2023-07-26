@@ -87,15 +87,15 @@ const patchBudget = (pk: number, budget: string, oldBudget: number) => {
 <template>
   <CTable hover responsive bordered align="middle">
     <colgroup>
-      <col width="5%" />
-      <col width="5%" />
-      <col width="10%" />
-      <col width="10%" />
-      <col width="14%" />
-      <col width="14%" />
-      <col width="14%" />
-      <col width="14%" />
-      <col width="14%" />
+      <col style="width: 5%" />
+      <col style="width: 5%" />
+      <col style="width: 10%" />
+      <col style="width: 10%" />
+      <col style="width: 14%" />
+      <col style="width: 14%" />
+      <col style="width: 14%" />
+      <col style="width: 14%" />
+      <col style="width: 14%" />
     </colgroup>
     <CTableHead>
       <CTableRow>
@@ -167,9 +167,11 @@ const patchBudget = (pk: number, budget: string, oldBudget: number) => {
               type="text"
               class="form-control text-right"
               :value="obj.budget"
-              @blur="patchBudget(obj.pk, $event.target.value, obj.budget)"
+              @blur="
+                patchBudget(obj.pk as number, $event.target.value, obj.budget)
+              "
               @keydown.enter="
-                patchBudget(obj.pk, $event.target.value, obj.budget)
+                patchBudget(obj.pk as number, $event.target.value, obj.budget)
               "
             />
           </span>
