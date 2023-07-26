@@ -7,10 +7,7 @@ import FormModal from '@/components/Modals/FormModal.vue'
 import ProCashForm from '@/views/proCash/Manage/components/ProCashForm.vue'
 
 const props = defineProps({
-  proCash: {
-    type: Object as PropType<ProjectCashBook>,
-    required: true,
-  },
+  proCash: { type: Object as PropType<ProjectCashBook>, required: true },
 })
 
 const emit = defineEmits(['multi-submit', 'on-delete', 'on-bank-update'])
@@ -18,7 +15,8 @@ const emit = defineEmits(['multi-submit', 'on-delete', 'on-bank-update'])
 const updateFormModal = ref()
 
 const sortClass = computed(
-  () => ['', 'text-primary', 'text-danger', 'text-info'][props.proCash?.sort],
+  () =>
+    ['', 'text-primary', 'text-danger', 'text-info'][props.proCash?.sort || 0],
 )
 
 const store = useStore()

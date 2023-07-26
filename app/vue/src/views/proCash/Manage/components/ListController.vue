@@ -134,7 +134,7 @@ const resetForm = () => {
               <option value="">거래계좌</option>
               <option
                 v-for="acc in allProBankAccs"
-                :key="acc.pk"
+                :key="acc.pk as number"
                 :value="acc.pk"
               >
                 {{ acc.alias_name }}

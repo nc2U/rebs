@@ -12,13 +12,13 @@ import AlertModal from '@/components/Modals/AlertModal.vue'
 const props = defineProps({ bankAcc: { type: Object, required: true } })
 const emit = defineEmits(['on-bank-update'])
 
-const confirmModal = ref()
-const alertModal = ref()
+const refConfirmModal = ref()
+const refAlertModal = ref()
 
 const validated = ref(false)
 
 const form = reactive<ProBankAcc>({
-  pk: undefined,
+  pk: null,
   project: null,
   bankcode: null,
   alias_name: '',
@@ -61,14 +61,14 @@ const onSubmit = (event: Event) => {
     validated.value = true
   } else {
     if (write_project_cash.value) {
-      confirmModal.value.callModal()
-    } else alertModal.value.callModal()
+      refConfirmModal.value.callModal()
+    } else refAlertModal.value.callModal()
   }
 }
 
 const onBankUpdate = () => {
   emit('on-bank-update', { ...form })
-  confirmModal.value.close()
+  refConfirmModal.value.close()
 }
 
 const formDataSetup = () => {
@@ -278,7 +278,7 @@ onUpdated(() => formDataSetup())
     </CModalBody>
   </CForm>
 
-  <ConfirmModal ref="confirmModal">
+  <ConfirmModal ref="refConfirmModal">
     <template #header>거래계좌 정보 업데이트</template>
     <template #default> 거래계좌 정보를 업데이트하시겠습니까?</template>
     <template #footer>
@@ -286,5 +286,5 @@ onUpdated(() => formDataSetup())
     </template>
   </ConfirmModal>
 
-  <AlertModal ref="alertModal" />
+  <AlertModal ref="refAlertModal" />
 </template>
