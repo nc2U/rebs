@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
 import { useComCash } from '@/store/pinia/comCash'
 import { CompanyBank, CashBook } from '@/store/types/comCash'
 import { TableSecondary } from '@/utils/cssMixins'
@@ -7,8 +7,6 @@ import Cash from '@/views/comCash/CashManage/components/Cash.vue'
 import Pagination from '@/components/Pagination'
 import AccDepth from './AccDepth.vue'
 import BankAcc from './BankAcc.vue'
-
-defineProps({ company: { type: Object, default: null } })
 
 const emit = defineEmits([
   'page-select',
@@ -18,6 +16,9 @@ const emit = defineEmits([
   'patch-bank-hide',
   'on-bank-update',
 ])
+
+const refAccDepth = ref()
+const refBankAcc = ref()
 
 const comCashStore = useComCash()
 const cashesPages = computed(() => comCashStore.cashesPages)
@@ -62,7 +63,7 @@ const onBankUpdate = (payload: CompanyBank) => emit('on-bank-update', payload)
         <CTableHeaderCell scope="col">
           세부계정
           <a href="javascript:void(0)">
-            <CIcon name="cilCog" @click="$refs.accDepth.callModal()" />
+            <CIcon name="cilCog" @click="refAccDepth.callModal()" />
           </a>
         </CTableHeaderCell>
         <CTableHeaderCell scope="col">적요</CTableHeaderCell>
@@ -70,7 +71,7 @@ const onBankUpdate = (payload: CompanyBank) => emit('on-bank-update', payload)
         <CTableHeaderCell scope="col">
           거래계좌
           <a href="javascript:void(0)">
-            <CIcon name="cilCog" @click="$refs.bankAcc.callModal()" />
+            <CIcon name="cilCog" @click="refBankAcc.callModal()" />
           </a>
         </CTableHeaderCell>
         <CTableHeaderCell scope="col">입금액</CTableHeaderCell>
@@ -83,7 +84,7 @@ const onBankUpdate = (payload: CompanyBank) => emit('on-bank-update', payload)
     <CTableBody>
       <Cash
         v-for="cash in cashBookList"
-        :key="cash.pk"
+        :key="cash.pk as number"
         :cash="cash"
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
@@ -101,7 +102,7 @@ const onBankUpdate = (payload: CompanyBank) => emit('on-bank-update', payload)
     @active-page-change="pageSelect"
   />
 
-  <AccDepth ref="accDepth" @patch-d3-hide="patchD3Hide" />
+  <AccDepth ref="refAccDepth" @patch-d3-hide="patchD3Hide" />
 
-  <BankAcc ref="bankAcc" @on-bank-update="onBankUpdate" />
+  <BankAcc ref="refBankAcc" @on-bank-update="onBankUpdate" />
 </template>

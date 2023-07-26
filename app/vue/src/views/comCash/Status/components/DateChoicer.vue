@@ -6,6 +6,7 @@ import DatePicker from '@/components/DatePicker/index.vue'
 const emit = defineEmits(['set-date'])
 
 const date = ref(getToday())
+
 watch(date, val => {
   if (!val) date.value = getToday()
   setDate()

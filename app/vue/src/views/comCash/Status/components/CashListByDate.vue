@@ -21,9 +21,9 @@ const comBankList = computed(() => comCashStore.comBankList)
 const dateCashBook = computed(() => comCashStore.dateCashBook)
 
 const getDAccText = <T extends { pk: number; name: string }>(
-  num: number,
+  num: number | null,
   acc: T[],
-) => acc.filter((d: T) => d.pk === num).map((d: T) => d.name)[0]
+) => (num ? acc.filter((d: T) => d.pk === num).map((d: T) => d.name)[0] : '')
 
 const getBankAcc = (num: number) => {
   return comBankList.value
@@ -52,13 +52,13 @@ onBeforeMount(() => setData())
 <template>
   <CTable hover responsive bordered align="middle">
     <colgroup>
-      <col width="12%" />
-      <col width="12%" />
-      <col width="12%" />
-      <col width="14%" />
-      <col width="15%" />
-      <col width="15%" />
-      <col width="20%" />
+      <col style="width: 12%" />
+      <col style="width: 12%" />
+      <col style="width: 12%" />
+      <col style="width: 14%" />
+      <col style="width: 15%" />
+      <col style="width: 15%" />
+      <col style="width: 20%" />
     </colgroup>
     <CTableHead>
       <CTableRow>
@@ -96,9 +96,11 @@ onBeforeMount(() => setData())
           {{ getDAccText(inc.account_d3, listAccD3List) }}
         </CTableDataCell>
         <CTableDataCell class="text-right" color="success">
-          {{ numFormat(inc.income) }}
+          {{ numFormat(inc.income || 0) }}
         </CTableDataCell>
-        <CTableDataCell>{{ getBankAcc(inc.bank_account) }}</CTableDataCell>
+        <CTableDataCell>
+          {{ getBankAcc(inc.bank_account as number) }}
+        </CTableDataCell>
         <CTableDataCell class="text-left">{{ inc.trader }}</CTableDataCell>
         <CTableDataCell class="text-left">{{ inc.content }}</CTableDataCell>
       </CTableRow>
@@ -127,13 +129,13 @@ onBeforeMount(() => setData())
 
   <CTable hover responsive bordered align="middle">
     <colgroup>
-      <col width="12%" />
-      <col width="12%" />
-      <col width="12%" />
-      <col width="14%" />
-      <col width="15%" />
-      <col width="15%" />
-      <col width="20%" />
+      <col style="width: 12%" />
+      <col style="width: 12%" />
+      <col style="width: 12%" />
+      <col style="width: 14%" />
+      <col style="width: 15%" />
+      <col style="width: 15%" />
+      <col style="width: 20%" />
     </colgroup>
     <CTableHead>
       <CTableRow>
@@ -171,9 +173,11 @@ onBeforeMount(() => setData())
           {{ getDAccText(out.account_d3, listAccD3List) }}
         </CTableDataCell>
         <CTableDataCell class="text-right" color="danger">
-          {{ numFormat(out.outlay) }}
+          {{ numFormat(out.outlay || 0) }}
         </CTableDataCell>
-        <CTableDataCell>{{ getBankAcc(out.bank_account) }}</CTableDataCell>
+        <CTableDataCell>
+          {{ getBankAcc(out.bank_account as number) }}
+        </CTableDataCell>
         <CTableDataCell class="text-left">{{ out.trader }}</CTableDataCell>
         <CTableDataCell class="text-left">{{ out.content }}</CTableDataCell>
       </CTableRow>

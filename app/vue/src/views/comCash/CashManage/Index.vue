@@ -45,7 +45,7 @@ const excelUrl = computed(() => {
 })
 
 const comStore = useCompany()
-const company = computed(() => comStore.company?.pk || undefined)
+const company = computed(() => comStore.company?.pk)
 
 const fetchCompany = (pk: number) => comStore.fetchCompany(pk)
 const fetchAllDepartList = (com: number) => comStore.fetchAllDepartList(com)
@@ -234,7 +234,7 @@ onBeforeMount(() => {
     <CCardBody class="pb-5">
       <ListController ref="listControl" @list-filtering="listFiltering" />
       <AddCash
-        :company="company"
+        :company="company as number"
         @multi-submit="multiSubmit"
         @patch-d3-hide="patchD3Hide"
         @on-bank-update="onBankUpdate"
@@ -247,7 +247,6 @@ onBeforeMount(() => {
         :disabled="!company"
       />
       <CashList
-        :company="company"
         @page-select="pageSelect"
         @multi-submit="multiSubmit"
         @on-delete="onDelete"

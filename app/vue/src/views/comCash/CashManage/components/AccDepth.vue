@@ -6,7 +6,7 @@ import AlertModal from '@/components/Modals/AlertModal.vue'
 
 const emit = defineEmits(['patch-d3-hide'])
 
-const dAccount = ref()
+const refDAccount = ref()
 
 const useComCashStore = useComCash()
 const listAccD1List = computed(() => useComCashStore.listAccD1List)
@@ -16,13 +16,13 @@ const listAccD3List = computed(() => useComCashStore.listAccD3List)
 const patchD3Hide = (pk: number, is_hide: boolean) =>
   emit('patch-d3-hide', { pk, is_hide })
 
-const callModal = () => dAccount.value.callModal()
+const callModal = () => refDAccount.value.callModal()
 
 defineExpose({ callModal })
 </script>
 
 <template>
-  <AlertModal ref="dAccount" size="lg">
+  <AlertModal ref="refDAccount" size="lg">
     <template #header> 계정 분류 보기</template>
     <template #default>
       <CAccordion>

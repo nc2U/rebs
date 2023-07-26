@@ -1,11 +1,10 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, onBeforeMount, watch, PropType } from 'vue'
+import { ref, reactive, computed, onBeforeMount, PropType } from 'vue'
 import { useCompany } from '@/store/pinia/company'
 import { useComCash } from '@/store/pinia/comCash'
 import { CompanyBank } from '@/store/types/comCash'
 import { write_company_cash } from '@/utils/pageAuth'
 import { isValidate } from '@/utils/helper'
-import { dateFormat } from '@/utils/baseMixins'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
@@ -31,10 +30,6 @@ const form = reactive<CompanyBank>({
   note: '',
   is_hide: false,
   inactive: false,
-})
-
-watch(form, val => {
-  if (val.open_date) form.open_date = dateFormat(val.open_date)
 })
 
 const formsCheck = computed(() => {

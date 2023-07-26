@@ -21,13 +21,15 @@ const emit = defineEmits([
   'on-bank-update',
 ])
 
-const delModal = ref()
+const refDelModal = ref()
 const refAlertModal = ref()
 const updateFormModal = ref()
 
 const cls = ref(['text-primary', 'text-danger', 'text-info'])
-const sortClass = computed(() => cls.value[props.cash?.sort - 1])
-const d1Class = computed(() => cls.value[props.cash?.account_d1 - 1])
+const sortClass = computed(() => cls.value[(props.cash?.sort as number) - 1])
+const d1Class = computed(
+  () => cls.value[((props.cash?.account_d1 as number) % 3) - 1],
+)
 
 const store = useStore()
 const dark = computed(() => store.state.theme === 'dark')
@@ -55,7 +57,7 @@ const multiSubmit = (payload: {
 
 const deleteConfirm = () => {
   if (write_company_cash.value)
-    if (allowedPeriod.value) delModal.value.callModal()
+    if (allowedPeriod.value) refDelModal.value.callModal()
     else
       refAlertModal.value.callModal(
         null,
@@ -66,7 +68,7 @@ const deleteConfirm = () => {
 
 const deleteObject = () => {
   emit('on-delete', { company: props.cash?.company, pk: props.cash?.pk })
-  delModal.value.close()
+  refDelModal.value.close()
 }
 
 const patchD3Hide = (payload: { pk: number; is_hide: boolean }) =>
@@ -133,7 +135,7 @@ const onBankUpdate = (payload: CompanyBank) => emit('on-bank-update', payload)
     </template>
   </FormModal>
 
-  <ConfirmModal ref="delModal">
+  <ConfirmModal ref="refDelModal">
     <template #header> 입출금 거래 정보 삭제</template>
     <template #default>
       삭제한 데이터는 복구할 수 없습니다. 해당 입출금 거래 정보를

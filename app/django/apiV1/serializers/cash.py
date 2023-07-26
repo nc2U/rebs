@@ -62,15 +62,15 @@ class CashBookSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_account_d1_desc(obj):
-        return obj.account_d1.name
+        return obj.account_d1.name if obj.account_d1 else None
 
     @staticmethod
     def get_account_d2_desc(obj):
-        return obj.account_d2.name
+        return obj.account_d2.name if obj.account_d2 else None
 
     @staticmethod
     def get_account_d3_desc(obj):
-        return obj.account_d3.name
+        return obj.account_d3.name if obj.account_d3 else None
 
     @staticmethod
     def get_bank_account_desc(obj):
