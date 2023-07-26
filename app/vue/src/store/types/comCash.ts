@@ -12,6 +12,7 @@ export interface AccountSort {
 
 export interface AccountD1 {
   pk: number
+  sorts: number[]
   code: string
   name: string
   description: string
