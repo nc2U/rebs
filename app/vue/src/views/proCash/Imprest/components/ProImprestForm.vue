@@ -31,8 +31,8 @@ const emit = defineEmits([
 ])
 
 const refBankAcc = ref()
-const delModal = ref()
-const alertModal = ref()
+const refDelModal = ref()
+const refAlertModal = ref()
 
 const sepItem = reactive<ProSepItems>({
   pk: null,
@@ -263,25 +263,25 @@ const onSubmit = (event: Event) => {
       if (props.imprest) {
         if (allowedPeriod.value) emit('multi-submit', payload)
         else
-          alertModal.value.callModal(
+          refAlertModal.value.callModal(
             null,
             '거래일로부터 30일이 경과한 건은 수정할 수 없습니다. 관리자에게 문의바랍니다.',
           )
       } else emit('multi-submit', payload)
-    } else alertModal.value.callModal()
+    } else refAlertModal.value.callModal()
     emit('close')
   }
 }
 
 const deleteConfirm = () => {
   if (write_project_cash.value)
-    if (allowedPeriod.value) delModal.value.callModal()
+    if (allowedPeriod.value) refDelModal.value.callModal()
     else
-      alertModal.value.callModal(
+      refAlertModal.value.callModal(
         null,
         '거래일로부터 30일이 경과한 건은 삭제할 수 없습니다. 관리자에게 문의바랍니다.',
       )
-  else alertModal.value.callModal()
+  else refAlertModal.value.callModal()
 }
 
 const deleteObject = () => {
@@ -289,7 +289,7 @@ const deleteObject = () => {
     project: props.imprest?.project,
     pk: props.imprest?.pk,
   })
-  delModal.value.close()
+  refDelModal.value.close()
   emit('close')
 }
 
@@ -901,7 +901,7 @@ onBeforeMount(() => formDataSetup())
     </CModalFooter>
   </CForm>
 
-  <ConfirmModal ref="delModal">
+  <ConfirmModal ref="refDelModal">
     <template #header> 운영비(전도금) 거래 정보 삭제</template>
     <template #default>
       삭제한 데이터는 복구할 수 없습니다. 해당 입출금 거래 정보를
@@ -912,7 +912,7 @@ onBeforeMount(() => formDataSetup())
     </template>
   </ConfirmModal>
 
-  <AlertModal ref="alertModal" />
+  <AlertModal ref="refAlertModal" />
 
   <BankAcc ref="refBankAcc" @on-bank-update="onBankUpdate" />
 </template>
