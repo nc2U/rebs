@@ -8,7 +8,7 @@ import { SalesBillIssue } from '@/store/types/notice'
 import { usePayment } from '@/store/pinia/payment'
 import { PayOrder } from '@/store/types/payment'
 import { ContFilter, useContract } from '@/store/pinia/contract'
-import { dateFormat } from '@/utils/baseMixins'
+import { getToday } from '@/utils/baseMixins'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import SalesBillIssueForm from '@/views/notices/Bill/components/SalesBillIssueForm.vue'
@@ -22,7 +22,7 @@ const ctor_ids = ref([])
 const printData = reactive({
   is_bill_issue: false,
   project: null as null | number,
-  pub_date: dateFormat(new Date()),
+  pub_date: getToday(),
 })
 
 const projStore = useProject()

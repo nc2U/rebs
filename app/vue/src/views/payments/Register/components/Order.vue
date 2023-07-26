@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, PropType } from 'vue'
 import { AllPayment, PayOrder } from '@/store/types/payment'
-import { numFormat, dateFormat } from '@/utils/baseMixins'
+import { numFormat, getToday } from '@/utils/baseMixins'
 
 const props = defineProps({
   contract: { type: Object, default: null },
@@ -27,9 +27,8 @@ const paidByOrder = computed(() => {
 })
 
 const calculated = computed(() => {
-  const today = dateFormat(new Date())
   const duePay = paidByOrder.value - props.commit
-  return dueDate.value !== '-' && dueDate.value <= today ? duePay : 0
+  return dueDate.value !== '-' && dueDate.value <= getToday() ? duePay : 0
 })
 const calcClass = () => {
   const calc = calculated.value > 0 ? 'text-primary' : 'text-danger'

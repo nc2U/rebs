@@ -1,17 +1,8 @@
 <script lang="ts" setup>
-import {
-  ref,
-  reactive,
-  computed,
-  onMounted,
-  onUpdated,
-  watch,
-  PropType,
-} from 'vue'
+import { ref, reactive, computed, onMounted, onUpdated, PropType } from 'vue'
 import { useRoute } from 'vue-router'
 import { SuitCase } from '@/store/types/document'
 import { write_company_docs } from '@/utils/pageAuth'
-import { dateFormat } from '@/utils/baseMixins'
 import { courtChoices } from '@/views/comDocs/LawsuitCase/components/court'
 import Multiselect from '@vueform/multiselect'
 import DatePicker from '@/components/DatePicker/index.vue'
@@ -45,12 +36,6 @@ const form = reactive<SuitCase>({
   related_debtor: '',
   case_start_date: '',
   summary: '',
-})
-
-watch(form, val => {
-  if (val.case_start_date)
-    form.case_start_date = dateFormat(val.case_start_date)
-  else form.case_start_date = null
 })
 
 const formsCheck = computed(() => {
