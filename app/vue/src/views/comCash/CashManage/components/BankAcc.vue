@@ -27,7 +27,7 @@ defineExpose({ callModal })
         <CAccordionItem
           v-for="bank in allComBankList"
           :key="bank.pk"
-          :item-key="bank.pk as string"
+          :item-key="bank.pk as number"
         >
           <CAccordionHeader>
             {{ `${bank.alias_name}  :: ${bank.number}` }}

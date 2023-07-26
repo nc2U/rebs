@@ -1,19 +1,11 @@
 <script lang="ts" setup>
-import {
-  ref,
-  reactive,
-  computed,
-  nextTick,
-  onBeforeMount,
-  watch,
-  PropType,
-} from 'vue'
+import { ref, reactive, computed, nextTick, onBeforeMount, PropType } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { useComCash } from '@/store/pinia/comCash'
 import { CashBook, CompanyBank, SepItems } from '@/store/types/comCash'
 import { write_company_cash } from '@/utils/pageAuth'
 import { isValidate } from '@/utils/helper'
-import { dateFormat, diffDate, cutString, numFormat } from '@/utils/baseMixins'
+import { getToday, diffDate, cutString, numFormat } from '@/utils/baseMixins'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
@@ -21,11 +13,9 @@ import AccDepth from './AccDepth.vue'
 import BankAcc from './BankAcc.vue'
 
 const props = defineProps({
-  cash: {
-    type: Object as PropType<CashBook & { sepItems: SepItems[] }>,
-    default: null,
-  },
+  cash: { type: Object as PropType<CashBook>, default: null },
 })
+
 const emit = defineEmits([
   'multi-submit',
   'on-delete',
@@ -34,8 +24,10 @@ const emit = defineEmits([
   'on-bank-update',
 ])
 
-const delModal = ref()
-const alertModal = ref()
+const refDelModal = ref()
+const refAlertModal = ref()
+const refAccDepth = ref()
+const refBankAcc = ref()
 
 const sepItem = reactive<SepItems>({
   pk: null,
@@ -74,11 +66,7 @@ const form = reactive<
   charge: null,
   evidence: '',
   note: '',
-  deal_date: dateFormat(new Date()),
-})
-
-watch(form, val => {
-  if (val.deal_date) form.deal_date = dateFormat(val.deal_date)
+  deal_date: getToday(),
 })
 
 const formsCheck = computed(() => {
@@ -115,7 +103,7 @@ const comBankAccs = computed(() => {
   return !ba || isExist
     ? getComBanks.value
     : [...getComBanks.value, ...[{ value: ba, label: getAccName(ba) }]].sort(
-        (a, b) => a.value - b.value,
+        (a, b) => (a.value || 0) - (b.value || 0),
       )
 })
 
@@ -138,22 +126,24 @@ const requireItem = computed(
 
 const sepDisabled = computed(() => {
   const disabled = !!form.account_d1 || !!form.account_d2 || !!form.account_d3
-  return props.cash ? disabled && props.cash.sepItems.length === 0 : disabled
+  return props.cash?.sepItems
+    ? disabled && props.cash.sepItems.length === 0
+    : disabled
 })
 
 const sepSummary = computed(() => {
   const inc =
     props.cash?.sepItems && !!props.cash.sepItems.length
       ? props.cash.sepItems
-          .map((s: CashBook) => s.income)
-          .reduce((prev: number, curr: number) => prev + curr)
+          .map((s: SepItems) => s.income)
+          .reduce((prev, curr) => (prev || 0) + (curr || 0))
       : 0
 
   const out =
     props.cash?.sepItems && !!props.cash.sepItems.length
       ? props.cash.sepItems
-          .map((s: CashBook) => s.outlay)
-          .reduce((prev: number, curr: number) => prev + curr)
+          .map((s: SepItems) => s.outlay)
+          .reduce((prev, curr) => (prev || 0) + (curr || 0))
       : 0
   return [inc, out]
 })
@@ -302,25 +292,25 @@ const onSubmit = (event: Event) => {
       if (props.cash) {
         if (allowedPeriod.value) emit('multi-submit', payload)
         else
-          alertModal.value.callModal(
+          refAlertModal.value.callModal(
             null,
             '거래일로부터 30일이 경과한 건은 수정할 수 없습니다. 관리자에게 문의바랍니다.',
           )
       } else emit('multi-submit', payload)
-    } else alertModal.value.callModal()
+    } else refAlertModal.value.callModal()
     emit('close')
   }
 }
 
 const deleteConfirm = () => {
   if (write_company_cash.value)
-    if (allowedPeriod.value) delModal.value.callModal()
+    if (allowedPeriod.value) refDelModal.value.callModal()
     else
-      alertModal.value.callModal(
+      refAlertModal.value.callModal(
         null,
         '거래일로부터 30일이 경과한 건은 삭제할 수 없습니다. 관리자에게 문의바랍니다.',
       )
-  else alertModal.value.callModal()
+  else refAlertModal.value.callModal()
 }
 
 const deleteObject = () => {
@@ -328,7 +318,7 @@ const deleteObject = () => {
     company: props.cash?.company,
     pk: props.cash?.pk,
   })
-  delModal.value.close()
+  refDelModal.value.close()
   emit('close')
 }
 
@@ -468,7 +458,7 @@ onBeforeMount(() => dataSetup())
               <CFormLabel class="col-sm-4 col-form-label">
                 계정[소분류]
                 <a href="javascript:void(0)">
-                  <CIcon name="cilCog" @click="$refs.accDepth.callModal()" />
+                  <CIcon name="cilCog" @click="refAccDepth.callModal()" />
                 </a>
               </CFormLabel>
               <CCol sm="8">
@@ -527,7 +517,7 @@ onBeforeMount(() => dataSetup())
               <CFormLabel class="col-sm-4 col-form-label">
                 {{ !cash && form.sort === 3 ? '출금' : '거래' }}계좌
                 <a href="javascript:void(0)">
-                  <CIcon name="cilCog" @click="$refs.bankAcc.callModal()" />
+                  <CIcon name="cilCog" @click="refBankAcc.callModal()" />
                 </a>
               </CFormLabel>
               <CCol sm="8">
@@ -672,8 +662,8 @@ onBeforeMount(() => dataSetup())
       </div>
 
       <div v-if="form.is_separate">
-        <hr v-if="cash && cash.sepItems.length" />
-        <CRow v-if="cash && cash.sepItems.length" class="mb-3">
+        <hr v-if="cash.sepItems && cash.sepItems.length" />
+        <CRow v-if="cash.sepItems && cash.sepItems.length" class="mb-3">
           <CCol>
             <strong>
               <CIcon name="cilDescription" class="mr-2" />
@@ -702,7 +692,9 @@ onBeforeMount(() => dataSetup())
             <CCol sm="2">{{ sep.trader }}</CCol>
             <CCol sm="5">{{ cutString(sep.content, 20) }}</CCol>
             <CCol sm="2" class="text-right">
-              {{ sep.income ? numFormat(sep.income) : numFormat(sep.outlay) }}
+              {{
+                sep.income ? numFormat(sep.income) : numFormat(sep.outlay || 0)
+              }}
             </CCol>
             <CCol sm="2" class="text-right">
               <CButton
@@ -993,7 +985,7 @@ onBeforeMount(() => dataSetup())
     </CModalFooter>
   </CForm>
 
-  <ConfirmModal ref="delModal">
+  <ConfirmModal ref="refDelModal">
     <template #header> 프로젝트 입출금 거래 정보 삭제</template>
     <template #default>
       삭제한 데이터는 복구할 수 없습니다. 해당 입출금 거래 정보를
@@ -1004,9 +996,9 @@ onBeforeMount(() => dataSetup())
     </template>
   </ConfirmModal>
 
-  <AlertModal ref="alertModal" />
+  <AlertModal ref="refAlertModal" />
 
-  <AccDepth ref="accDepth" @patch-d3-hide="patchD3Hide" />
+  <AccDepth ref="refAccDepth" @patch-d3-hide="patchD3Hide" />
 
-  <BankAcc ref="bankAcc" @on-bank-update="onBankUpdate" />
+  <BankAcc ref="refBankAcc" @on-bank-update="onBankUpdate" />
 </template>
