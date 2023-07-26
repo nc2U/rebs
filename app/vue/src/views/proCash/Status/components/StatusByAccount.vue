@@ -61,13 +61,13 @@ const directBalance = (val: boolean) => emit('direct-balance', val)
 <template>
   <CTable hover responsive bordered align="middle">
     <colgroup>
-      <col width="8%" />
-      <col width="16%" />
-      <col width="16%" />
-      <col width="15%" />
-      <col width="15%" />
-      <col width="15%" />
-      <col width="15%" />
+      <col style="width: 8%" />
+      <col style="width: 16%" />
+      <col style="width: 16%" />
+      <col style="width: 15%" />
+      <col style="width: 15%" />
+      <col style="width: 15%" />
+      <col style="width: 15%" />
     </colgroup>
     <CTableHead>
       <CTableRow>
@@ -115,13 +115,17 @@ const directBalance = (val: boolean) => emit('direct-balance', val)
         <CTableDataCell class="text-left">{{ bal.bank_num }}</CTableDataCell>
         <CTableDataCell>
           {{
-            numFormat(bal.inc_sum - bal.out_sum - (bal.date_inc - bal.date_out))
+            numFormat(
+              (bal.inc_sum || 0) -
+                (bal.out_sum || 0) -
+                (bal.date_inc - bal.date_out),
+            )
           }}
         </CTableDataCell>
         <CTableDataCell>{{ numFormat(bal.date_inc) }}</CTableDataCell>
         <CTableDataCell>{{ numFormat(bal.date_out) }}</CTableDataCell>
         <CTableDataCell>
-          {{ numFormat(bal.inc_sum - bal.out_sum) }}
+          {{ numFormat((bal.inc_sum || 0) - (bal.out_sum || 0)) }}
         </CTableDataCell>
       </CTableRow>
 
