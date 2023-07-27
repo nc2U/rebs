@@ -12,7 +12,7 @@ import { usePayment } from '@/store/pinia/payment'
 import { SalesBillIssue } from '@/store/types/notice'
 import { write_notice } from '@/utils/pageAuth'
 import { isValidate } from '@/utils/helper'
-import { dateFormat } from '@/utils/baseMixins'
+import { getToday } from '@/utils/baseMixins'
 import { AddressData, callAddress } from '@/components/DaumPostcode/address'
 import DaumPostcode from '@/components/DaumPostcode/index.vue'
 import DatePicker from '@/components/DatePicker/index.vue'
@@ -34,8 +34,8 @@ const refAlertModal = ref()
 const visible = ref(false)
 const validated = ref(false)
 
-const published_date = ref(dateFormat(new Date())) // 발행일자
-watch(published_date, val => emit('set-pub-date', dateFormat(val)))
+const published_date = ref(getToday()) // 발행일자
+watch(published_date, val => emit('set-pub-date', val))
 
 const form = reactive<SalesBillIssue & { now_due_date: string | null }>({
   pk: null,
@@ -58,10 +58,6 @@ const form = reactive<SalesBillIssue & { now_due_date: string | null }>({
   address3: '',
   title: '',
   content: '',
-})
-
-watch(form, val => {
-  if (val.now_due_date) form.now_due_date = dateFormat(val.now_due_date)
 })
 
 const paymentStore = usePayment()

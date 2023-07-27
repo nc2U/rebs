@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, reactive, ref, watch, nextTick } from 'vue'
 import { useProCash } from '@/store/pinia/proCash'
-import { numFormat, dateFormat } from '@/utils/baseMixins'
+import { numFormat } from '@/utils/baseMixins'
 import { bgLight } from '@/utils/cssMixins'
 import DatePicker from '@/components/DatePicker/index.vue'
 
@@ -36,14 +36,8 @@ const formsCheck = computed(() => {
   return a && b && c && d && e && f && g
 })
 
-watch(from_date, val => {
-  if (val) from_date.value = dateFormat(val)
-  listFiltering(1)
-})
-watch(to_date, val => {
-  if (val) to_date.value = dateFormat(val)
-  listFiltering(1)
-})
+watch(from_date, () => listFiltering(1))
+watch(to_date, () => listFiltering(1))
 
 const sortSelect = () => {
   listFiltering(1)

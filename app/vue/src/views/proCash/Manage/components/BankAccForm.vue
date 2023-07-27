@@ -1,10 +1,9 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, watch, onMounted, onUpdated } from 'vue'
+import { ref, reactive, computed, onMounted, onUpdated } from 'vue'
 import { useComCash } from '@/store/pinia/comCash'
 import { ProBankAcc } from '@/store/types/proCash'
 import { write_project_cash } from '@/utils/pageAuth'
 import { isValidate } from '@/utils/helper'
-import { dateFormat } from '@/utils/baseMixins'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
@@ -30,10 +29,6 @@ const form = reactive<ProBankAcc>({
   inactive: false,
   directpay: false,
   is_imprest: false,
-})
-
-watch(form, val => {
-  if (val.open_date) form.open_date = dateFormat(val.open_date)
 })
 
 const formsCheck = computed(() => {

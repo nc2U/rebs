@@ -2,9 +2,8 @@
 import { ref, reactive, computed, watch, onBeforeMount, nextTick } from 'vue'
 import { write_contract } from '@/utils/pageAuth'
 import { isValidate } from '@/utils/helper'
-import { dateFormat } from '@/utils/baseMixins'
 import { useContract } from '@/store/pinia/contract'
-import { Succession, Buyer } from '@/store/types/contract'
+import { Buyer } from '@/store/types/contract'
 import { AddressData, callAddress } from '@/components/DaumPostcode/address'
 import DaumPostcode from '@/components/DaumPostcode/index.vue'
 import DatePicker from '@/components/DatePicker/index.vue'
@@ -24,15 +23,15 @@ const address22 = ref()
 const sameAddr = ref(false)
 const validated = ref(false)
 
-const form = reactive<Succession>({
-  pk: undefined,
-  contract: null,
-  seller: null,
-  buyer: null,
+const form = reactive({
+  pk: undefined as undefined | number,
+  contract: null as number | null,
+  seller: null as number | null,
+  buyer: null as number | null,
   apply_date: '',
   trading_date: '',
   is_approval: false,
-  approval_date: null,
+  approval_date: null as string | null,
   note: '',
 })
 
@@ -91,12 +90,6 @@ const buyer = computed(() => contStore.buyer)
 const contractor = computed(() => contStore.contractor)
 const fetchBuyer = (pk: number) => contStore.fetchBuyer(pk)
 
-watch(form, val => {
-  if (val.apply_date) form.apply_date = dateFormat(val.apply_date)
-  if (val.trading_date) form.trading_date = dateFormat(val.trading_date)
-  if (val.approval_date) form.approval_date = dateFormat(val.approval_date)
-})
-
 watch(buyer, val => {
   if (val) {
     buyer_data.id = val.id
@@ -116,10 +109,6 @@ watch(buyer, val => {
     buyer_data.other_phone = val.other_phone
     buyer_data.email = val.email
   }
-})
-
-watch(buyer_data, val => {
-  if (val.birth_date) buyer_data.birth_date = dateFormat(val.birth_date)
 })
 
 const onSubmit = (event: Event) => {

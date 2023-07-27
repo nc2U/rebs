@@ -1,8 +1,7 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, watch, onBeforeMount } from 'vue'
+import { ref, reactive, computed, onBeforeMount } from 'vue'
 import { useProject } from '@/store/pinia/project'
 import { useSite } from '@/store/pinia/project_site'
-import { dateFormat } from '@/utils/baseMixins'
 import { isValidate } from '@/utils/helper'
 import { Site } from '@/store/types/project'
 import { write_project } from '@/utils/pageAuth'
@@ -52,10 +51,6 @@ const formsCheck = computed(() => {
 
     return a && b && c && d && e && f && g && h && i
   } else return false
-})
-
-watch(form, val => {
-  if (val.dup_issue_date) form.dup_issue_date = dateFormat(val.dup_issue_date)
 })
 
 const onSubmit = (event: Event) => {

@@ -2,7 +2,7 @@
 import { computed, onBeforeMount, ref, watch } from 'vue'
 import { useProCash } from '@/store/pinia/proCash'
 import { BalanceByAccount } from '@/store/types/proCash'
-import { numFormat, dateFormat } from '@/utils/baseMixins'
+import { numFormat } from '@/utils/baseMixins'
 import { TableSecondary } from '@/utils/cssMixins'
 
 defineProps({ date: { type: String, default: '' } })
@@ -76,9 +76,7 @@ const directBalance = (val: boolean) => emit('direct-balance', val)
             <CIcon name="cilFolderOpen" />
             프로젝트 계좌별 자금현황
           </strong>
-          <small class="text-medium-emphasis">
-            ({{ dateFormat(date) }}) 현재
-          </small>
+          <small class="text-medium-emphasis"> ({{ date }}) 현재 </small>
         </CTableDataCell>
         <CTableDataCell colspan="4">
           <CFormSwitch

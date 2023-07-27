@@ -4,7 +4,6 @@ import { usePayment } from '@/store/pinia/payment'
 import { useProCash } from '@/store/pinia/proCash'
 import { useContract } from '@/store/pinia/contract'
 import { useProjectData } from '@/store/pinia/project_data'
-import { dateFormat } from '@/utils/baseMixins'
 import { bgLight } from '@/utils/cssMixins'
 import Multiselect from '@vueform/multiselect'
 import DatePicker from '@/components/DatePicker/index.vue'
@@ -65,14 +64,8 @@ watch(props, nVal => {
   }
 })
 
-watch(from_date, val => {
-  if (val) from_date.value = dateFormat(val)
-  listFiltering(1)
-})
-watch(to_date, val => {
-  if (val) to_date.value = dateFormat(val)
-  listFiltering(1)
-})
+watch(from_date, () => listFiltering(1))
+watch(to_date, () => listFiltering(1))
 
 const listFiltering = (page = 1) => {
   nextTick(() => {

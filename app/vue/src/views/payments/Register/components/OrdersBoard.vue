@@ -2,7 +2,7 @@
 import { computed, PropType } from 'vue'
 import { usePayment } from '@/store/pinia/payment'
 import { AllPayment, DownPay, PayOrder, Price } from '@/store/types/payment'
-import { numFormat, dateFormat } from '@/utils/baseMixins'
+import { numFormat, getToday } from '@/utils/baseMixins'
 import { TableSecondary } from '@/utils/cssMixins'
 import Order from '@/views/payments/Register/components/Order.vue'
 
@@ -46,7 +46,7 @@ const paidTotal = computed(() => {
 // 납부해야할 총액
 const dueTotal = computed(() => {
   const commitment: number[] = []
-  const today = dateFormat(new Date())
+  const today = getToday()
   const dueOrder = payOrderList.value
     .filter(
       (o: PayOrder) =>

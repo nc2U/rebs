@@ -181,386 +181,404 @@ onBeforeMount(() => formDataSetup())
 </script>
 
 <template>
-  <CCard>
-    <CForm
-      class="needs-validation"
-      novalidate
-      :validated="validated"
-      @submit.prevent="onSubmit"
-    >
-      <CCardBody>
-        <CRow class="mb-3">
-          <CFormLabel class="col-md-2 col-form-label"> 프로젝트명</CFormLabel>
-          <CCol md="10" lg="4" class="mb-md-3 mb-lg-0">
-            <CFormInput
-              v-model="form.name"
-              type="text"
-              maxlength="30"
-              placeholder="프로젝트명을 입력하세요"
-              required
-            />
-            <CFormFeedback invalid>프로젝트명을 입력하세요.</CFormFeedback>
-          </CCol>
-
-          <CFormLabel class="col-md-2 col-form-label"> 정렬순서</CFormLabel>
-          <CCol md="10" lg="4">
-            <CFormInput
-              v-model.number="form.order"
-              type="number"
-              min="0"
-              placeholder="프로젝트 정력순서를 입력하세요"
-            />
-            <CFormFeedback invalid>정렬순서를 입력하세요.</CFormFeedback>
-          </CCol>
-        </CRow>
-
-        <CRow class="mb-3">
-          <CFormLabel class="col-md-2 col-form-label"> 프로젝트종류</CFormLabel>
-          <CCol md="10" lg="4" class="mb-md-3 mb-lg-0">
-            <CFormSelect v-model="form.kind" required>
-              <option value="">프로젝트 종류</option>
-              <option
-                v-for="sort in sortOptins"
-                :key="sort.value"
-                :value="sort.value"
-                :selected="project && sort.value === project.kind"
-              >
-                {{ sort.label }}
-              </option>
-            </CFormSelect>
-            <CFormFeedback invalid>프로젝트종류를 선택하세요.</CFormFeedback>
-          </CCol>
-
-          <CFormLabel class="col-md-2 col-form-label"> 사업개시년도</CFormLabel>
-          <CCol md="10" lg="4">
-            <Datepicker
-              v-model.number="form.start_year"
-              placeholder="사업개시년도를 입력하세요"
-              input-class-name="form-control"
-              position="left"
-              year-picker
-              auto-apply
-              :dark="store.state.theme === 'dark'"
-              required
-            />
-            <CFormFeedback invalid> 사업개시년도를 입력하세요</CFormFeedback>
-          </CCol>
-        </CRow>
-
-        <CRow class="mb-3">
-          <CFormLabel class="col-md-2 col-form-label"></CFormLabel>
-          <CCol md="8" lg="5">
-            <CFormSwitch
-              id="is_direct_manage"
-              v-model="form.is_direct_manage"
-              label="직영운영여부"
-              :checked="project && project.is_direct_manage"
-            />
-            <CFormText class="text-grey">
-              본사 직접 운영하는 프로젝트인 경우 체크, 즉 시행대행이나
-              업무대행이 아닌 경우
-            </CFormText>
-          </CCol>
-        </CRow>
-
-        <CRow class="mb-3">
-          <CFormLabel class="col-md-2 col-form-label"></CFormLabel>
-          <CCol md="8" lg="5">
-            <CFormSwitch
-              id="is_returned_area"
-              v-model="form.is_returned_area"
-              label="토지환지여부"
-              :checked="project && project.is_returned_area"
-            />
-            <CFormText class="text-grey">
-              해당 사업부지가 환지방식 도시개발사업구역인 경우 체크
-            </CFormText>
-          </CCol>
-        </CRow>
-
-        <CRow class="mb-3">
-          <CFormLabel class="col-md-2 col-form-label"></CFormLabel>
-          <CCol md="8" lg="5">
-            <CFormSwitch
-              id="is_unit_set"
-              v-model="form.is_unit_set"
-              label="동호지정여부"
-              :checked="project && project.is_unit_set"
-            />
-            <CFormText class="text-grey">
-              현재 동호수를 지정하지 않는 경우 체크하지 않음
-            </CFormText>
-          </CCol>
-        </CRow>
-        <CRow class="mb-3">
-          <CFormLabel class="col-md-2 col-form-label"> 우편번호</CFormLabel>
-          <CCol md="3" lg="2" class="mb-3 mb-lg-0">
-            <CInputGroup>
-              <CInputGroupText @click="refPostCode.initiate()">
-                우편번호
-              </CInputGroupText>
+  <CForm
+    class="needs-validation"
+    novalidate
+    :validated="validated"
+    @submit.prevent="onSubmit"
+  >
+    <CCardBody>
+      <CRow>
+        <CCol xl="11" class="pt-3">
+          <CRow>
+            <CFormLabel class="col-md-2 col-form-label"> 프로젝트명</CFormLabel>
+            <CCol md="10" lg="4" class="mb-md-3">
               <CFormInput
-                v-model="form.local_zipcode"
+                v-model="form.name"
                 type="text"
-                maxlength="5"
-                placeholder="우편번호"
+                maxlength="30"
+                placeholder="프로젝트명을 입력하세요"
+                required
+              />
+              <CFormFeedback invalid>프로젝트명을 입력하세요.</CFormFeedback>
+            </CCol>
+
+            <CFormLabel class="col-md-2 col-form-label"> 정렬순서</CFormLabel>
+            <CCol md="10" lg="4" class="mb-md-3">
+              <CFormInput
+                v-model.number="form.order"
+                type="number"
+                min="0"
+                placeholder="프로젝트 정력순서를 입력하세요"
+              />
+              <CFormFeedback invalid>정렬순서를 입력하세요.</CFormFeedback>
+            </CCol>
+          </CRow>
+
+          <CRow>
+            <CFormLabel class="col-md-2 col-form-label">
+              프로젝트종류
+            </CFormLabel>
+            <CCol md="10" lg="4" class="mb-md-3">
+              <CFormSelect v-model="form.kind" required>
+                <option value="">프로젝트 종류</option>
+                <option
+                  v-for="sort in sortOptins"
+                  :key="sort.value"
+                  :value="sort.value"
+                  :selected="project && sort.value === project.kind"
+                >
+                  {{ sort.label }}
+                </option>
+              </CFormSelect>
+              <CFormFeedback invalid>프로젝트종류를 선택하세요.</CFormFeedback>
+            </CCol>
+
+            <CFormLabel class="col-md-2 col-form-label">
+              사업개시년도
+            </CFormLabel>
+            <CCol md="10" lg="4" class="mb-md-3">
+              <Datepicker
+                v-model.number="form.start_year"
+                placeholder="사업개시년도를 입력하세요"
+                input-class-name="form-control"
+                position="left"
+                year-picker
+                auto-apply
+                :dark="store.state.theme === 'dark'"
+                required
+              />
+              <CFormFeedback invalid> 사업개시년도를 입력하세요</CFormFeedback>
+            </CCol>
+          </CRow>
+
+          <CRow>
+            <CFormLabel class="col-md-2 col-form-label"></CFormLabel>
+            <CCol class="mb-md-3">
+              <CFormSwitch
+                id="is_direct_manage"
+                v-model="form.is_direct_manage"
+                label="직영운영여부"
+                :checked="project && project.is_direct_manage"
+              />
+              <CFormText class="text-grey">
+                본사 직접 운영하는 프로젝트인 경우 체크, 즉 시행대행이나
+                업무대행이 아닌 경우
+              </CFormText>
+            </CCol>
+          </CRow>
+
+          <CRow>
+            <CFormLabel class="col-md-2 col-form-label"></CFormLabel>
+            <CCol class="mb-md-3">
+              <CFormSwitch
+                id="is_returned_area"
+                v-model="form.is_returned_area"
+                label="토지환지여부"
+                :checked="project && project.is_returned_area"
+              />
+              <CFormText class="text-grey">
+                해당 사업부지가 환지방식 도시개발사업구역인 경우 체크
+              </CFormText>
+            </CCol>
+          </CRow>
+
+          <CRow>
+            <CFormLabel class="col-md-2 col-form-label"></CFormLabel>
+            <CCol class="mb-md-3">
+              <CFormSwitch
+                id="is_unit_set"
+                v-model="form.is_unit_set"
+                label="동호지정여부"
+                :checked="project && project.is_unit_set"
+              />
+              <CFormText class="text-grey">
+                현재 동호수를 지정하지 않는 경우 체크하지 않음
+              </CFormText>
+            </CCol>
+          </CRow>
+          <CRow>
+            <CFormLabel class="col-md-2 col-form-label"> 우편번호</CFormLabel>
+            <CCol md="3" lg="2" class="mb-3">
+              <CInputGroup>
+                <CInputGroupText @click="refPostCode.initiate()">
+                  우편번호
+                </CInputGroupText>
+                <CFormInput
+                  v-model="form.local_zipcode"
+                  type="text"
+                  maxlength="5"
+                  placeholder="우편번호"
+                  @focus="refPostCode.initiate()"
+                />
+                <CFormFeedback invalid>우편번호를 입력하세요.</CFormFeedback>
+              </CInputGroup>
+            </CCol>
+
+            <CCol md="7" lg="4" class="mb-3">
+              <CFormInput
+                v-model="form.local_address1"
+                type="text"
+                maxlength="35"
+                placeholder="대표지번 주소를 입력하세요"
                 @focus="refPostCode.initiate()"
               />
-              <CFormFeedback invalid>우편번호를 입력하세요.</CFormFeedback>
-            </CInputGroup>
-          </CCol>
+              <CFormFeedback invalid>대표지번 주소를 입력하세요.</CFormFeedback>
+            </CCol>
 
-          <CCol md="7" lg="4" class="mb-3 mb-lg-0">
-            <CFormInput
-              v-model="form.local_address1"
-              type="text"
-              maxlength="35"
-              placeholder="대표지번 주소를 입력하세요"
-              @focus="refPostCode.initiate()"
-            />
-            <CFormFeedback invalid>대표지번 주소를 입력하세요.</CFormFeedback>
-          </CCol>
+            <CCol md="2" class="d-none d-md-block d-lg-none"></CCol>
 
-          <CCol md="2" class="d-none d-md-block d-lg-none"></CCol>
+            <CCol md="5" lg="2" class="mb-3">
+              <CFormInput
+                ref="address2"
+                v-model="form.local_address2"
+                type="text"
+                maxlength="20"
+                placeholder="상세주소를 입력하세요"
+              />
+              <CFormFeedback invalid>상세주소를 입력하세요.</CFormFeedback>
+            </CCol>
+            <CCol md="5" lg="2" class="mb-md-3">
+              <CFormInput
+                v-model="form.local_address3"
+                type="text"
+                maxlength="20"
+                placeholder="참고항목을 입력하세요"
+              />
+              <CFormFeedback invalid>참고항목을 입력하세요.</CFormFeedback>
+            </CCol>
+          </CRow>
 
-          <CCol md="5" lg="2" class="mb-3 mb-lg-0">
-            <CFormInput
-              ref="address2"
-              v-model="form.local_address2"
-              type="text"
-              maxlength="20"
-              placeholder="상세주소를 입력하세요"
-            />
-            <CFormFeedback invalid>상세주소를 입력하세요.</CFormFeedback>
-          </CCol>
-          <CCol md="5" lg="2">
-            <CFormInput
-              v-model="form.local_address3"
-              type="text"
-              maxlength="20"
-              placeholder="참고항목을 입력하세요"
-            />
-            <CFormFeedback invalid>참고항목을 입력하세요.</CFormFeedback>
-          </CCol>
-        </CRow>
+          <CRow>
+            <CFormLabel class="col-md-2 col-form-label">
+              용도지역지구
+            </CFormLabel>
+            <CCol md="10" lg="4" class="mb-md-3">
+              <CFormInput
+                v-model="form.area_usage"
+                type="text"
+                maxlength="50"
+                placeholder="용도지역지구를 입력하세요"
+                required
+              />
+              <CFormFeedback invalid>용도지역지구를 입력하세요.</CFormFeedback>
+            </CCol>
 
-        <CRow class="mb-3">
-          <CFormLabel class="col-md-2 col-form-label"> 용도지역지구</CFormLabel>
-          <CCol md="10" lg="4" class="mb-md-3 mb-lg-0">
-            <CFormInput
-              v-model="form.area_usage"
-              type="text"
-              maxlength="50"
-              placeholder="용도지역지구를 입력하세요"
-              required
-            />
-            <CFormFeedback invalid>용도지역지구를 입력하세요.</CFormFeedback>
-          </CCol>
+            <CFormLabel class="col-md-2 col-form-label"> 건축규모</CFormLabel>
+            <CCol md="10" lg="4" class="mb-md-3">
+              <CFormInput
+                v-model="form.build_size"
+                type="text"
+                maxlength="50"
+                placeholder="건축규모를 입력하세요"
+                required
+              />
+              <CFormFeedback invalid>건축규모를 입력하세요.</CFormFeedback>
+            </CCol>
+          </CRow>
 
-          <CFormLabel class="col-md-2 col-form-label"> 건축규모</CFormLabel>
-          <CCol md="10" lg="4">
-            <CFormInput
-              v-model="form.build_size"
-              type="text"
-              maxlength="50"
-              placeholder="건축규모를 입력하세요"
-              required
-            />
-            <CFormFeedback invalid>건축규모를 입력하세요.</CFormFeedback>
-          </CCol>
-        </CRow>
+          <CRow>
+            <CFormLabel class="col-md-2 col-form-label">
+              세대(호/실)수
+            </CFormLabel>
+            <CCol md="10" lg="4" class="mb-md-3">
+              <CFormInput
+                v-model.number="form.num_unit"
+                type="number"
+                min="0"
+                placeholder="세대(호/실)수를 입력하세요"
+              />
+              <CFormFeedback invalid>세대(호/실)수를 입력하세요.</CFormFeedback>
+            </CCol>
+            <CFormLabel class="col-md-2 col-form-label">
+              대지매입면적
+            </CFormLabel>
+            <CCol md="10" lg="4" class="mb-md-3">
+              <CFormInput
+                v-model.number="form.buy_land_extent"
+                type="number"
+                min="0"
+                step="0.0001"
+                placeholder="대지매입면적을 입력하세요"
+              />
+              <CFormFeedback invalid>
+                대지매입면적을 소소점4자리 이하로 입력하세요.
+              </CFormFeedback>
+            </CCol>
+          </CRow>
 
-        <CRow class="mb-3">
-          <CFormLabel class="col-md-2 col-form-label">
-            세대(호/실)수
-          </CFormLabel>
-          <CCol md="10" lg="4" class="mb-md-3 mb-lg-0">
-            <CFormInput
-              v-model.number="form.num_unit"
-              type="number"
-              min="0"
-              placeholder="세대(호/실)수를 입력하세요"
-            />
-            <CFormFeedback invalid>세대(호/실)수를 입력하세요.</CFormFeedback>
-          </CCol>
-          <CFormLabel class="col-md-2 col-form-label"> 대지매입면적</CFormLabel>
-          <CCol md="10" lg="4">
-            <CFormInput
-              v-model.number="form.buy_land_extent"
-              type="number"
-              min="0"
-              step="0.0001"
-              placeholder="대지매입면적을 입력하세요"
-            />
-            <CFormFeedback invalid>
-              대지매입면적을 소소점4자리 이하로 입력하세요.
-            </CFormFeedback>
-          </CCol>
-        </CRow>
+          <CRow>
+            <CFormLabel class="col-md-2 col-form-label">
+              계획대지면적
+            </CFormLabel>
+            <CCol md="10" lg="4" class="mb-md-3">
+              <CFormInput
+                v-model.number="form.scheme_land_extent"
+                type="number"
+                min="0"
+                step="0.0001"
+                placeholder="계획대지면적을 입력하세요"
+              />
+              <CFormFeedback invalid>
+                계획대지면적을 소소점4자리 이하로 입력하세요.
+              </CFormFeedback>
+            </CCol>
 
-        <CRow class="mb-3">
-          <CFormLabel class="col-md-2 col-form-label"> 계획대지면적</CFormLabel>
-          <CCol md="10" lg="4" class="mb-md-3 mb-lg-0">
-            <CFormInput
-              v-model.number="form.scheme_land_extent"
-              type="number"
-              min="0"
-              step="0.0001"
-              placeholder="계획대지면적을 입력하세요"
-            />
-            <CFormFeedback invalid>
-              계획대지면적을 소소점4자리 이하로 입력하세요.
-            </CFormFeedback>
-          </CCol>
+            <CFormLabel class="col-md-2 col-form-label">
+              기부채납면적
+            </CFormLabel>
+            <CCol md="10" lg="4" class="mb-md-3">
+              <CFormInput
+                v-model.number="form.donation_land_extent"
+                type="number"
+                min="0"
+                step="0.0001"
+                placeholder="기부채납면적을 입력하세요"
+              />
+              <CFormFeedback invalid>
+                기부채납면적을 소소점4자리 이하로 입력하세요.
+              </CFormFeedback>
+            </CCol>
+          </CRow>
 
-          <CFormLabel class="col-md-2 col-form-label"> 기부채납면적</CFormLabel>
-          <CCol md="10" lg="4">
-            <CFormInput
-              v-model.number="form.donation_land_extent"
-              type="number"
-              min="0"
-              step="0.0001"
-              placeholder="기부채납면적을 입력하세요"
-            />
-            <CFormFeedback invalid>
-              기부채납면적을 소소점4자리 이하로 입력하세요.
-            </CFormFeedback>
-          </CCol>
-        </CRow>
+          <CRow>
+            <CFormLabel class="col-md-2 col-form-label"> 지상연면적</CFormLabel>
+            <CCol md="10" lg="4" class="mb-md-3">
+              <CFormInput
+                v-model.number="form.on_floor_area"
+                type="number"
+                min="0"
+                step="0.0001"
+                placeholder="지상연면적을 입력하세요"
+              />
+              <CFormFeedback invalid>
+                지상연면적을 소소점4자리 이하로 입력하세요.
+              </CFormFeedback>
+            </CCol>
 
-        <CRow class="mb-3">
-          <CFormLabel class="col-md-2 col-form-label"> 지상연면적</CFormLabel>
-          <CCol md="10" lg="4" class="mb-md-3 mb-lg-0">
-            <CFormInput
-              v-model.number="form.on_floor_area"
-              type="number"
-              min="0"
-              step="0.0001"
-              placeholder="지상연면적을 입력하세요"
-            />
-            <CFormFeedback invalid>
-              지상연면적을 소소점4자리 이하로 입력하세요.
-            </CFormFeedback>
-          </CCol>
+            <CFormLabel class="col-md-2 col-form-label"> 지하연면적</CFormLabel>
+            <CCol md="10" lg="4" class="mb-md-3">
+              <CFormInput
+                v-model.number="form.under_floor_area"
+                type="number"
+                min="0"
+                step="0.0001"
+                placeholder="지하연면적을 입력하세요"
+              />
+              <CFormFeedback invalid>
+                지하연면적을 소소점4자리 이하로 입력하세요.
+              </CFormFeedback>
+            </CCol>
+          </CRow>
 
-          <CFormLabel class="col-md-2 col-form-label"> 지하연면적</CFormLabel>
-          <CCol md="10" lg="4">
-            <CFormInput
-              v-model.number="form.under_floor_area"
-              type="number"
-              min="0"
-              step="0.0001"
-              placeholder="지하연면적을 입력하세요"
-            />
-            <CFormFeedback invalid>
-              지하연면적을 소소점4자리 이하로 입력하세요.
-            </CFormFeedback>
-          </CCol>
-        </CRow>
+          <CRow>
+            <CFormLabel class="col-md-2 col-form-label"> 총 연면적</CFormLabel>
+            <CCol md="10" lg="4" class="mb-md-3">
+              <CFormInput
+                v-model.number="form.total_floor_area"
+                type="number"
+                min="0"
+                step="0.0001"
+                placeholder="총 연면적을 입력하세요"
+              />
+              <CFormFeedback invalid>
+                총 연면적을 소소점4자리 이하로 입력하세요.
+              </CFormFeedback>
+            </CCol>
 
-        <CRow class="mb-3">
-          <CFormLabel class="col-md-2 col-form-label"> 총 연면적</CFormLabel>
-          <CCol md="10" lg="4" class="mb-md-3 mb-lg-0">
-            <CFormInput
-              v-model.number="form.total_floor_area"
-              type="number"
-              min="0"
-              step="0.0001"
-              placeholder="총 연면적을 입력하세요"
-            />
-            <CFormFeedback invalid>
-              총 연면적을 소소점4자리 이하로 입력하세요.
-            </CFormFeedback>
-          </CCol>
+            <CFormLabel class="col-md-2 col-form-label"> 건축면적</CFormLabel>
+            <CCol md="10" lg="4" class="mb-md-3">
+              <CFormInput
+                v-model.number="form.build_area"
+                type="number"
+                min="0"
+                step="0.0001"
+                placeholder="건축면적을 입력하세요"
+              />
+              <CFormFeedback invalid>
+                총 연면적을 소소점4자리 이하로 입력하세요.
+              </CFormFeedback>
+            </CCol>
+          </CRow>
 
-          <CFormLabel class="col-md-2 col-form-label"> 건축면적</CFormLabel>
-          <CCol md="10" lg="4">
-            <CFormInput
-              v-model.number="form.build_area"
-              type="number"
-              min="0"
-              step="0.0001"
-              placeholder="건축면적을 입력하세요"
-            />
-            <CFormFeedback invalid>
-              총 연면적을 소소점4자리 이하로 입력하세요.
-            </CFormFeedback>
-          </CCol>
-        </CRow>
+          <CRow>
+            <CFormLabel class="col-md-2 col-form-label"> 용적율(%)</CFormLabel>
+            <CCol md="10" lg="4" class="mb-md-3">
+              <CFormInput
+                v-model.number="form.floor_area_ratio"
+                type="number"
+                min="0"
+                step="0.0001"
+                placeholder="용적율(%)을 입력하세요"
+              />
+              <CFormFeedback invalid>
+                용적율(%)을 소소점4자리 이하로 입력하세요.
+              </CFormFeedback>
+            </CCol>
+            <CFormLabel class="col-md-2 col-form-label"> 건폐율(%)</CFormLabel>
+            <CCol md="10" lg="4" class="mb-md-3">
+              <CFormInput
+                v-model.number="form.build_to_land_ratio"
+                type="number"
+                min="0"
+                step="0.0001"
+                placeholder="건폐율(%)을 입력하세요"
+              />
+              <CFormFeedback invalid>
+                건폐율(%)을 소소점4자리 이하로 입력하세요.
+              </CFormFeedback>
+            </CCol>
+          </CRow>
 
-        <CRow class="mb-3">
-          <CFormLabel class="col-md-2 col-form-label"> 용적율(%)</CFormLabel>
-          <CCol md="10" lg="4" class="mb-md-3 mb-lg-0">
-            <CFormInput
-              v-model.number="form.floor_area_ratio"
-              type="number"
-              min="0"
-              step="0.0001"
-              placeholder="용적율(%)을 입력하세요"
-            />
-            <CFormFeedback invalid>
-              용적율(%)을 소소점4자리 이하로 입력하세요.
-            </CFormFeedback>
-          </CCol>
-          <CFormLabel class="col-md-2 col-form-label"> 건폐율(%)</CFormLabel>
-          <CCol md="10" lg="4">
-            <CFormInput
-              v-model.number="form.build_to_land_ratio"
-              type="number"
-              min="0"
-              step="0.0001"
-              placeholder="건폐율(%)을 입력하세요"
-            />
-            <CFormFeedback invalid>
-              건폐율(%)을 소소점4자리 이하로 입력하세요.
-            </CFormFeedback>
-          </CCol>
-        </CRow>
+          <CRow>
+            <CFormLabel class="col-md-2 col-form-label">
+              법정주차대수
+            </CFormLabel>
+            <CCol md="10" lg="4" class="mb-md-3">
+              <CFormInput
+                v-model.number="form.num_legal_parking"
+                type="number"
+                min="0"
+                placeholder="법정주차대수를 입력하세요"
+              />
+              <CFormFeedback invalid>법정주차대수를 입력하세요.</CFormFeedback>
+            </CCol>
 
-        <CRow class="mb-3">
-          <CFormLabel class="col-md-2 col-form-label"> 법정주차대수</CFormLabel>
-          <CCol md="10" lg="4" class="mb-md-3 mb-lg-0">
-            <CFormInput
-              v-model.number="form.num_legal_parking"
-              type="number"
-              min="0"
-              placeholder="법정주차대수를 입력하세요"
-            />
-            <CFormFeedback invalid>법정주차대수를 입력하세요.</CFormFeedback>
-          </CCol>
+            <CFormLabel class="col-md-2 col-form-label">
+              계획주차대수
+            </CFormLabel>
+            <CCol md="10" lg="4" class="mb-3">
+              <CFormInput
+                v-model.number="form.num_planed_parking"
+                type="number"
+                min="0"
+                placeholder="계획주차대수를 입력하세요"
+              />
+              <CFormFeedback invalid>계획주차대수를 입력하세요.</CFormFeedback>
+            </CCol>
+          </CRow>
+        </CCol>
+      </CRow>
+    </CCardBody>
 
-          <CFormLabel class="col-md-2 col-form-label"> 계획주차대수</CFormLabel>
-          <CCol md="10" lg="4">
-            <CFormInput
-              v-model.number="form.num_planed_parking"
-              type="number"
-              min="0"
-              placeholder="계획주차대수를 입력하세요"
-            />
-            <CFormFeedback invalid>계획주차대수를 입력하세요.</CFormFeedback>
-          </CCol>
-        </CRow>
-      </CCardBody>
-
-      <CCardFooter class="text-right">
-        <CButton type="button" color="light" @click="emit('reset-form')">
-          취소
-        </CButton>
-        <CButton
-          v-if="project"
-          type="button"
-          color="danger"
-          @click="deleteProject"
-        >
-          삭제
-        </CButton>
-        <CButton type="submit" :color="btnClass" :disabled="formsCheck">
-          <CIcon name="cil-check-circle" />
-          저장
-        </CButton>
-      </CCardFooter>
-    </CForm>
-  </CCard>
+    <CCardFooter class="text-right">
+      <CButton type="button" color="light" @click="emit('reset-form')">
+        취소
+      </CButton>
+      <CButton
+        v-if="project"
+        type="button"
+        color="danger"
+        @click="deleteProject"
+      >
+        삭제
+      </CButton>
+      <CButton type="submit" :color="btnClass" :disabled="formsCheck">
+        <CIcon name="cil-check-circle" />
+        저장
+      </CButton>
+    </CCardFooter>
+  </CForm>
 
   <DaumPostcode ref="refPostCode" @address-callback="addressCallback" />
 

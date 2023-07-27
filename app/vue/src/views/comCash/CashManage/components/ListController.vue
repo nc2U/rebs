@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, watch, nextTick } from 'vue'
 import { useComCash, DataFilter } from '@/store/pinia/comCash'
-import { numFormat, dateFormat } from '@/utils/baseMixins'
+import { numFormat } from '@/utils/baseMixins'
 import { bgLight } from '@/utils/cssMixins'
 import DatePicker from '@/components/DatePicker/index.vue'
 
@@ -40,14 +40,8 @@ const formAccD3List = computed(() => useComCashStore.formAccD3List)
 const allComBankList = computed(() => useComCashStore.allComBankList)
 const cashBookCount = computed(() => useComCashStore.cashBookCount)
 
-watch(from_date, val => {
-  if (val) from_date.value = dateFormat(val)
-  listFiltering(1)
-})
-watch(to_date, val => {
-  if (val) to_date.value = dateFormat(val)
-  listFiltering(1)
-})
+watch(from_date, () => listFiltering(1))
+watch(to_date, () => listFiltering(1))
 
 //   methods: {
 const sortSelect = () => {

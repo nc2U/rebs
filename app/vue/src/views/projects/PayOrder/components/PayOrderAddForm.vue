@@ -1,7 +1,6 @@
 <script lang="ts" setup>
-import { ref, reactive, watch } from 'vue'
+import { ref, reactive } from 'vue'
 import { write_project } from '@/utils/pageAuth'
-import { dateFormat } from '@/utils/baseMixins'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
@@ -41,13 +40,6 @@ const onSubmit = (event: Event) => {
     resetForm()
   }
 }
-
-watch(form, val => {
-  if (val.pay_due_date !== null)
-    form.pay_due_date = dateFormat(val.pay_due_date)
-  if (val.extra_due_date !== null)
-    form.extra_due_date = dateFormat(val.extra_due_date)
-})
 
 const modalAction = () => {
   emit('on-submit', form)

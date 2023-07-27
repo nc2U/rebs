@@ -2,7 +2,7 @@
 import { ref, reactive, computed, watch, nextTick, onMounted } from 'vue'
 import { useProjectData } from '@/store/pinia/project_data'
 import { useContract, ContFilter } from '@/store/pinia/contract'
-import { numFormat, dateFormat } from '@/utils/baseMixins'
+import { numFormat } from '@/utils/baseMixins'
 import { bgLight } from '@/utils/cssMixins'
 import DatePicker from '@/components/DatePicker/index.vue'
 
@@ -47,15 +47,9 @@ const contractsCount = computed(() => contractStore.contractsCount)
 const buildingList = computed(() => projectDataStore.buildingList)
 const simpleTypes = computed(() => projectDataStore.simpleTypes)
 
-watch(from_date, val => {
-  if (val) from_date.value = dateFormat(val)
-  listFiltering(1)
-})
+watch(from_date, () => listFiltering(1))
 
-watch(to_date, val => {
-  if (val) to_date.value = dateFormat(val)
-  listFiltering(1)
-})
+watch(to_date, () => listFiltering(1))
 
 const listFiltering = (page = 1) => {
   form.search = form.search?.trim()

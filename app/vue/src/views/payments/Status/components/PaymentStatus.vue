@@ -5,7 +5,7 @@ import { useContract } from '@/store/pinia/contract'
 import { useProjectData } from '@/store/pinia/project_data'
 import { usePayment } from '@/store/pinia/payment'
 import { TableSecondary } from '@/utils/cssMixins'
-import { numFormat, dateFormat } from '@/utils/baseMixins'
+import { numFormat } from '@/utils/baseMixins'
 
 defineProps({
   date: { type: String, default: '' },
@@ -99,9 +99,7 @@ const totalBudget = computed(
             <CIcon name="cilFolderOpen" />
             차수 및 타입별 수납 현황
           </strong>
-          <small class="text-medium-emphasis">
-            ({{ dateFormat(date) }}) 현재
-          </small>
+          <small class="text-medium-emphasis"> ({{ date }}) 현재 </small>
         </CTableDataCell>
         <CTableDataCell class="text-right">(단위: 원)</CTableDataCell>
       </CTableRow>

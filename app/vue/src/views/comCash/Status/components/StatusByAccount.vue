@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, computed, onMounted, watch } from 'vue'
 import { useComCash } from '@/store/pinia/comCash'
-import { numFormat, dateFormat } from '@/utils/baseMixins'
+import { numFormat } from '@/utils/baseMixins'
 import { TableSecondary } from '@/utils/cssMixins'
 
 defineProps({ date: { type: String, default: '' } })
@@ -69,9 +69,7 @@ watch(comBalanceByAccList, () => getSumTotal())
             <CIcon name="cilFolderOpen" />
             본사 계좌별 자금현황
           </strong>
-          <small class="text-medium-emphasis">
-            ({{ dateFormat(date) }}) 현재
-          </small>
+          <small class="text-medium-emphasis"> ({{ date }}) 현재 </small>
         </CTableDataCell>
         <CTableDataCell class="text-right">(단위: 원)</CTableDataCell>
       </CTableRow>

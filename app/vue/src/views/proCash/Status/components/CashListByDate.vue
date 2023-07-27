@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount, ref, watch } from 'vue'
 import { useProCash } from '@/store/pinia/proCash'
-import { numFormat, dateFormat } from '@/utils/baseMixins'
+import { numFormat } from '@/utils/baseMixins'
 import { TableSecondary } from '@/utils/cssMixins'
 import {
   ProBankAcc,
@@ -75,9 +75,7 @@ const setData = () => {
             <CIcon name="cilFolderOpen" />
             프로젝트 당일 입금내역
           </strong>
-          <small class="text-medium-emphasis">
-            ({{ dateFormat(date) }}) 기준
-          </small>
+          <small class="text-medium-emphasis"> ({{ date }}) 기준 </small>
         </CTableDataCell>
         <CTableDataCell class="text-right">(단위: 원)</CTableDataCell>
       </CTableRow>
@@ -146,9 +144,7 @@ const setData = () => {
             <CIcon name="cilFolderOpen" />
             프로젝트 당일 출금내역
           </strong>
-          <small class="text-medium-emphasis">
-            ({{ dateFormat(date) }}) 기준
-          </small>
+          <small class="text-medium-emphasis"> ({{ date }}) 기준 </small>
         </CTableDataCell>
         <CTableDataCell class="text-right">(단위: 원)</CTableDataCell>
       </CTableRow>

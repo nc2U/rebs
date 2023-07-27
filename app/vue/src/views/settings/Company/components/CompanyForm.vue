@@ -1,9 +1,8 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount, reactive, ref, watch } from 'vue'
+import { computed, onBeforeMount, reactive, ref } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { Company } from '@/store/types/settings'
 import { write_company_settings } from '@/utils/pageAuth'
-import { dateFormat } from '@/utils/baseMixins'
 import { callAddress, AddressData } from '@/components/DaumPostcode/address'
 import DaumPostcode from '@/components/DaumPostcode/index.vue'
 import DatePicker from '@/components/DatePicker/index.vue'
@@ -69,12 +68,6 @@ const onSubmit = (event: Event) => {
     refAlertModal.value.callModal()
   }
 }
-
-watch(form, val => {
-  if (val.es_date) form.es_date = dateFormat(val.es_date)
-  if (val.op_date) form.op_date = dateFormat(val.op_date)
-})
-
 const modalAction = () => {
   emit('on-submit', { ...form })
   validated.value = false

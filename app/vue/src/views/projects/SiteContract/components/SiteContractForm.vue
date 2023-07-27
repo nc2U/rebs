@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, watch, onBeforeMount } from 'vue'
 import { useSite } from '@/store/pinia/project_site'
-import { dateFormat } from '@/utils/baseMixins'
 import { isValidate } from '@/utils/helper'
 import { SiteContract } from '@/store/types/project'
 import { write_project } from '@/utils/pageAuth'
@@ -94,13 +93,6 @@ const getAreaByOwner = computed(() =>
 )
 
 watch(form, val => {
-  if (val.contract_date) form.contract_date = dateFormat(val.contract_date)
-  if (val.inter_pay1_date)
-    form.inter_pay1_date = dateFormat(val.inter_pay1_date)
-  if (val.inter_pay2_date)
-    form.inter_pay2_date = dateFormat(val.inter_pay2_date)
-  if (val.remain_pay_date)
-    form.remain_pay_date = dateFormat(val.remain_pay_date)
   if (!props.contract && val.owner) siteStore.fetchSiteOwner(val.owner)
 })
 

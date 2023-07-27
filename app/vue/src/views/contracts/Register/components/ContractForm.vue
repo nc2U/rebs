@@ -18,7 +18,7 @@ import { useProCash } from '@/store/pinia/proCash'
 import { PayOrder } from '@/store/types/payment'
 import { Payment, Contractor } from '@/store/types/contract'
 import { isValidate } from '@/utils/helper'
-import { numFormat, dateFormat, diffDate } from '@/utils/baseMixins'
+import { numFormat, diffDate } from '@/utils/baseMixins'
 import { write_contract } from '@/utils/pageAuth'
 import { AddressData, callAddress } from '@/components/DaumPostcode/address'
 import Multiselect from '@vueform/multiselect'
@@ -46,12 +46,12 @@ const emit = defineEmits([
   'resume-form',
 ])
 
-const postCode = ref()
+const refPostCode = ref()
 const address21 = ref()
 const address22 = ref()
-const delModal = ref()
-const alertModal = ref()
-const confirmModal = ref()
+const refDelModal = ref()
+const refAlertModal = ref()
+const refConfirmModal = ref()
 
 const sameAddr = ref(false)
 const validated = ref(false)
@@ -105,14 +105,6 @@ const form = reactive({
   bank_account: null as number | null, // 17
   trader: '', // 18
   installment_order: null as number | null, // 19
-})
-
-watch(form, val => {
-  if (val.birth_date) form.birth_date = dateFormat(val.birth_date)
-  if (val.reservation_date)
-    form.reservation_date = dateFormat(val.reservation_date)
-  if (val.contract_date) form.contract_date = dateFormat(val.contract_date)
-  if (val.deal_date) form.deal_date = dateFormat(val.deal_date)
 })
 
 const matchAddr = computed(() => {
@@ -188,7 +180,7 @@ const payUpdate = (payment: Payment) => {
     form.trader = payment.trader
     form.installment_order = payment.installment_order.pk
   } else {
-    alertModal.value.callModal(
+    refAlertModal.value.callModal(
       null,
       '거래일로부터 90일이 경과한 입력 데이터는 수정할 수 없습니다. 관리자에게 문의바랍니다.',
     )
@@ -250,8 +242,8 @@ const onSubmit = (event: Event) => {
   if (isValidate(event)) {
     validated.value = true
   } else {
-    if (write_contract.value) confirmModal.value.callModal()
-    else alertModal.value.callModal()
+    if (write_contract.value) refConfirmModal.value.callModal()
+    else refAlertModal.value.callModal()
   }
 }
 
@@ -259,12 +251,12 @@ const modalAction = () => {
   if (!props.contract) emit('on-create', form)
   else emit('on-update', form)
   validated.value = false
-  confirmModal.value.close()
+  refConfirmModal.value.close()
 }
 
 const deleteContract = () => {
-  if (useAccount().superAuth) delModal.value.callModal()
-  else alertModal.value.callModal()
+  if (useAccount().superAuth) refDelModal.value.callModal()
+  else refAlertModal.value.callModal()
 }
 
 const addressCallback = (data: AddressData) => {
@@ -705,7 +697,7 @@ onUpdated(() => formDataSetup())
           <CRow v-if="downPayments.length" class="mb-3">
             <CCol>
               <CRow
-                v-for="(payment, i) in downPayments"
+                v-for="(payment, i) in downPayments as Payment[]"
                 :key="payment.pk"
                 class="text-center mb-1"
                 :class="
@@ -854,7 +846,7 @@ onUpdated(() => formDataSetup())
         </CFormLabel>
         <CCol md="3" lg="2" class="mb-3 mb-lg-0">
           <CInputGroup>
-            <CInputGroupText @click="postCode.initiate(2)">
+            <CInputGroupText @click="refPostCode.initiate(2)">
               우편번호
             </CInputGroupText>
             <CFormInput
@@ -865,7 +857,7 @@ onUpdated(() => formDataSetup())
               placeholder="우편번호"
               :required="isContract"
               :disabled="!isContract"
-              @focus="postCode.initiate(2)"
+              @focus="refPostCode.initiate(2)"
             />
             <CFormFeedback invalid>우편번호를 입력하세요.</CFormFeedback>
           </CInputGroup>
@@ -878,7 +870,7 @@ onUpdated(() => formDataSetup())
             placeholder="주민등록 주소를 입력하세요"
             :required="isContract"
             :disabled="!isContract"
-            @focus="postCode.initiate(2)"
+            @focus="refPostCode.initiate(2)"
           />
           <CFormFeedback invalid>주민등록 주소를 입력하세요.</CFormFeedback>
         </CCol>
@@ -911,7 +903,7 @@ onUpdated(() => formDataSetup())
         </CFormLabel>
         <CCol md="3" lg="2" class="mb-3 mb-lg-0">
           <CInputGroup>
-            <CInputGroupText @click="postCode.initiate(3)">
+            <CInputGroupText @click="refPostCode.initiate(3)">
               우편번호
             </CInputGroupText>
             <CFormInput
@@ -922,7 +914,7 @@ onUpdated(() => formDataSetup())
               placeholder="우편번호"
               :required="isContract"
               :disabled="!isContract"
-              @focus="postCode.initiate(3)"
+              @focus="refPostCode.initiate(3)"
             />
             <CFormFeedback invalid>우편번호를 입력하세요.</CFormFeedback>
           </CInputGroup>
@@ -935,7 +927,7 @@ onUpdated(() => formDataSetup())
             placeholder="우편물 수령 주소를 입력하세요"
             :required="isContract"
             :disabled="!isContract"
-            @focus="postCode.initiate(3)"
+            @focus="refPostCode.initiate(3)"
           />
           <CFormFeedback invalid>
             우편물 수령 주소를 입력하세요.
@@ -1013,9 +1005,9 @@ onUpdated(() => formDataSetup())
     </CCardFooter>
   </CForm>
 
-  <DaumPostcode ref="postCode" @address-callback="addressCallback" />
+  <DaumPostcode ref="refPosCode" @address-callback="addressCallback" />
 
-  <ConfirmModal ref="delModal">
+  <ConfirmModal ref="refDelModal">
     <template #header>프로젝트정보 삭제</template>
     <template #default>현재 삭제 기능이 구현되지 않았습니다.</template>
     <template #footer>
@@ -1023,7 +1015,7 @@ onUpdated(() => formDataSetup())
     </template>
   </ConfirmModal>
 
-  <ConfirmModal ref="confirmModal">
+  <ConfirmModal ref="refConfirmModal">
     <template #header> {{ contLabel }} 정보 등록</template>
     <template #default>
       {{ contLabel }} 정보 {{ contract ? '수정등록' : '신규등록' }}을
@@ -1036,5 +1028,5 @@ onUpdated(() => formDataSetup())
     </template>
   </ConfirmModal>
 
-  <AlertModal ref="alertModal" />
+  <AlertModal ref="refAlertModal" />
 </template>

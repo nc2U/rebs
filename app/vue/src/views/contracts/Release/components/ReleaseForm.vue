@@ -1,8 +1,7 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, watch, onBeforeMount, PropType } from 'vue'
+import { ref, reactive, computed, onBeforeMount, PropType } from 'vue'
 import { write_contract } from '@/utils/pageAuth'
 import { isValidate } from '@/utils/helper'
-import { dateFormat } from '@/utils/baseMixins'
 import { Contractor, ContractRelease } from '@/store/types/contract'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
@@ -46,12 +45,6 @@ const formsCheck = computed(() => {
     const h = form.note === props.release.note
     return a && b && c && d && e && f && g && h
   } else return false
-})
-
-watch(form, val => {
-  if (val.request_date) form.request_date = dateFormat(val.request_date)
-  if (val.completion_date)
-    form.completion_date = dateFormat(val.completion_date)
 })
 
 const onSubmit = (event: Event) => {

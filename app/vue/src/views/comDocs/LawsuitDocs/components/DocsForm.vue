@@ -1,17 +1,8 @@
 <script lang="ts" setup>
-import {
-  ref,
-  reactive,
-  computed,
-  onMounted,
-  onUpdated,
-  watch,
-  PropType,
-} from 'vue'
+import { ref, reactive, computed, onMounted, onUpdated, PropType } from 'vue'
 import { useRoute } from 'vue-router'
 import { Post, Attatches, AFile } from '@/store/types/document'
 import { write_company_docs } from '@/utils/pageAuth'
-import { dateFormat } from '@/utils/baseMixins'
 import { AlertSecondary } from '@/utils/cssMixins'
 import ToastEditor from '@/components/ToastEditor/index.vue'
 import FileUpload from '@/components/FileUpload.vue'
@@ -56,10 +47,6 @@ const form = reactive<Post & Attatches>({
   oldFiles: [],
   newLinks: [],
   newFiles: [],
-})
-
-watch(form, val => {
-  if (val.execution_date) form.execution_date = dateFormat(val.execution_date)
 })
 
 const formsCheck = computed(() => {

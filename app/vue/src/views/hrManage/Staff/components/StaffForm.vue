@@ -5,7 +5,6 @@ import { useCompany } from '@/store/pinia/company'
 import { useAccount } from '@/store/pinia/account'
 import { Staff } from '@/store/types/company'
 import { isValidate } from '@/utils/helper'
-import { dateFormat } from '@/utils/baseMixins'
 import { write_human_resource } from '@/utils/pageAuth'
 import Multiselect from '@vueform/multiselect'
 import DatePicker from '@/components/DatePicker/index.vue'
@@ -40,11 +39,6 @@ const form = ref<Staff>({
   date_leave: null,
   status: '1',
   user: null,
-})
-
-watch(form.value, val => {
-  if (val.date_join) form.value.date_join = dateFormat(val.date_join)
-  if (val.date_leave) form.value.date_leave = dateFormat(val.date_leave)
 })
 
 const formsCheck = computed(() => {
