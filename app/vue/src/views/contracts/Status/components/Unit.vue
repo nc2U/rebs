@@ -140,10 +140,6 @@ $hold: #999;
 }
 
 .dark-theme {
-  .back {
-    background: darken($back, 5%);
-  }
-
   .app {
     background: darken($app, 20%);
   }
