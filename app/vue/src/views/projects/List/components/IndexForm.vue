@@ -190,9 +190,9 @@ onBeforeMount(() => formDataSetup())
     <CCardBody>
       <CRow>
         <CCol xl="11" class="pt-3">
-          <CRow class="mb-3">
+          <CRow>
             <CFormLabel class="col-md-2 col-form-label"> 프로젝트명</CFormLabel>
-            <CCol md="10" lg="4" class="mb-md-3 mb-lg-0">
+            <CCol md="10" lg="4" class="mb-md-3">
               <CFormInput
                 v-model="form.name"
                 type="text"
@@ -204,7 +204,7 @@ onBeforeMount(() => formDataSetup())
             </CCol>
 
             <CFormLabel class="col-md-2 col-form-label"> 정렬순서</CFormLabel>
-            <CCol md="10" lg="4">
+            <CCol md="10" lg="4" class="mb-md-3">
               <CFormInput
                 v-model.number="form.order"
                 type="number"
@@ -215,11 +215,11 @@ onBeforeMount(() => formDataSetup())
             </CCol>
           </CRow>
 
-          <CRow class="mb-3">
+          <CRow>
             <CFormLabel class="col-md-2 col-form-label">
               프로젝트종류
             </CFormLabel>
-            <CCol md="10" lg="4" class="mb-md-3 mb-lg-0">
+            <CCol md="10" lg="4" class="mb-md-3">
               <CFormSelect v-model="form.kind" required>
                 <option value="">프로젝트 종류</option>
                 <option
@@ -237,7 +237,7 @@ onBeforeMount(() => formDataSetup())
             <CFormLabel class="col-md-2 col-form-label">
               사업개시년도
             </CFormLabel>
-            <CCol md="10" lg="4">
+            <CCol md="10" lg="4" class="mb-md-3">
               <Datepicker
                 v-model.number="form.start_year"
                 placeholder="사업개시년도를 입력하세요"
@@ -252,9 +252,9 @@ onBeforeMount(() => formDataSetup())
             </CCol>
           </CRow>
 
-          <CRow class="mb-3">
+          <CRow>
             <CFormLabel class="col-md-2 col-form-label"></CFormLabel>
-            <CCol md="8" lg="5">
+            <CCol class="mb-md-3">
               <CFormSwitch
                 id="is_direct_manage"
                 v-model="form.is_direct_manage"
@@ -268,9 +268,9 @@ onBeforeMount(() => formDataSetup())
             </CCol>
           </CRow>
 
-          <CRow class="mb-3">
+          <CRow>
             <CFormLabel class="col-md-2 col-form-label"></CFormLabel>
-            <CCol md="8" lg="5">
+            <CCol class="mb-md-3">
               <CFormSwitch
                 id="is_returned_area"
                 v-model="form.is_returned_area"
@@ -283,9 +283,9 @@ onBeforeMount(() => formDataSetup())
             </CCol>
           </CRow>
 
-          <CRow class="mb-3">
+          <CRow>
             <CFormLabel class="col-md-2 col-form-label"></CFormLabel>
-            <CCol md="8" lg="5">
+            <CCol class="mb-md-3">
               <CFormSwitch
                 id="is_unit_set"
                 v-model="form.is_unit_set"
@@ -297,9 +297,9 @@ onBeforeMount(() => formDataSetup())
               </CFormText>
             </CCol>
           </CRow>
-          <CRow class="mb-3">
+          <CRow>
             <CFormLabel class="col-md-2 col-form-label"> 우편번호</CFormLabel>
-            <CCol md="3" lg="2" class="mb-3 mb-lg-0">
+            <CCol md="3" lg="2" class="mb-3">
               <CInputGroup>
                 <CInputGroupText @click="refPostCode.initiate()">
                   우편번호
@@ -315,7 +315,7 @@ onBeforeMount(() => formDataSetup())
               </CInputGroup>
             </CCol>
 
-            <CCol md="7" lg="4" class="mb-3 mb-lg-0">
+            <CCol md="7" lg="4" class="mb-3">
               <CFormInput
                 v-model="form.local_address1"
                 type="text"
@@ -328,7 +328,7 @@ onBeforeMount(() => formDataSetup())
 
             <CCol md="2" class="d-none d-md-block d-lg-none"></CCol>
 
-            <CCol md="5" lg="2" class="mb-3 mb-lg-0">
+            <CCol md="5" lg="2" class="mb-3">
               <CFormInput
                 ref="address2"
                 v-model="form.local_address2"
@@ -338,7 +338,7 @@ onBeforeMount(() => formDataSetup())
               />
               <CFormFeedback invalid>상세주소를 입력하세요.</CFormFeedback>
             </CCol>
-            <CCol md="5" lg="2">
+            <CCol md="5" lg="2" class="mb-md-3">
               <CFormInput
                 v-model="form.local_address3"
                 type="text"
@@ -349,11 +349,11 @@ onBeforeMount(() => formDataSetup())
             </CCol>
           </CRow>
 
-          <CRow class="mb-3">
+          <CRow>
             <CFormLabel class="col-md-2 col-form-label">
               용도지역지구
             </CFormLabel>
-            <CCol md="10" lg="4" class="mb-md-3 mb-lg-0">
+            <CCol md="10" lg="4" class="mb-md-3">
               <CFormInput
                 v-model="form.area_usage"
                 type="text"
@@ -365,7 +365,7 @@ onBeforeMount(() => formDataSetup())
             </CCol>
 
             <CFormLabel class="col-md-2 col-form-label"> 건축규모</CFormLabel>
-            <CCol md="10" lg="4">
+            <CCol md="10" lg="4" class="mb-md-3">
               <CFormInput
                 v-model="form.build_size"
                 type="text"
@@ -377,11 +377,11 @@ onBeforeMount(() => formDataSetup())
             </CCol>
           </CRow>
 
-          <CRow class="mb-3">
+          <CRow>
             <CFormLabel class="col-md-2 col-form-label">
               세대(호/실)수
             </CFormLabel>
-            <CCol md="10" lg="4" class="mb-md-3 mb-lg-0">
+            <CCol md="10" lg="4" class="mb-md-3">
               <CFormInput
                 v-model.number="form.num_unit"
                 type="number"
@@ -393,7 +393,7 @@ onBeforeMount(() => formDataSetup())
             <CFormLabel class="col-md-2 col-form-label">
               대지매입면적
             </CFormLabel>
-            <CCol md="10" lg="4">
+            <CCol md="10" lg="4" class="mb-md-3">
               <CFormInput
                 v-model.number="form.buy_land_extent"
                 type="number"
@@ -407,11 +407,11 @@ onBeforeMount(() => formDataSetup())
             </CCol>
           </CRow>
 
-          <CRow class="mb-3">
+          <CRow>
             <CFormLabel class="col-md-2 col-form-label">
               계획대지면적
             </CFormLabel>
-            <CCol md="10" lg="4" class="mb-md-3 mb-lg-0">
+            <CCol md="10" lg="4" class="mb-md-3">
               <CFormInput
                 v-model.number="form.scheme_land_extent"
                 type="number"
@@ -427,7 +427,7 @@ onBeforeMount(() => formDataSetup())
             <CFormLabel class="col-md-2 col-form-label">
               기부채납면적
             </CFormLabel>
-            <CCol md="10" lg="4">
+            <CCol md="10" lg="4" class="mb-md-3">
               <CFormInput
                 v-model.number="form.donation_land_extent"
                 type="number"
@@ -441,9 +441,9 @@ onBeforeMount(() => formDataSetup())
             </CCol>
           </CRow>
 
-          <CRow class="mb-3">
+          <CRow>
             <CFormLabel class="col-md-2 col-form-label"> 지상연면적</CFormLabel>
-            <CCol md="10" lg="4" class="mb-md-3 mb-lg-0">
+            <CCol md="10" lg="4" class="mb-md-3">
               <CFormInput
                 v-model.number="form.on_floor_area"
                 type="number"
@@ -457,7 +457,7 @@ onBeforeMount(() => formDataSetup())
             </CCol>
 
             <CFormLabel class="col-md-2 col-form-label"> 지하연면적</CFormLabel>
-            <CCol md="10" lg="4">
+            <CCol md="10" lg="4" class="mb-md-3">
               <CFormInput
                 v-model.number="form.under_floor_area"
                 type="number"
@@ -471,9 +471,9 @@ onBeforeMount(() => formDataSetup())
             </CCol>
           </CRow>
 
-          <CRow class="mb-3">
+          <CRow>
             <CFormLabel class="col-md-2 col-form-label"> 총 연면적</CFormLabel>
-            <CCol md="10" lg="4" class="mb-md-3 mb-lg-0">
+            <CCol md="10" lg="4" class="mb-md-3">
               <CFormInput
                 v-model.number="form.total_floor_area"
                 type="number"
@@ -487,7 +487,7 @@ onBeforeMount(() => formDataSetup())
             </CCol>
 
             <CFormLabel class="col-md-2 col-form-label"> 건축면적</CFormLabel>
-            <CCol md="10" lg="4">
+            <CCol md="10" lg="4" class="mb-md-3">
               <CFormInput
                 v-model.number="form.build_area"
                 type="number"
@@ -501,9 +501,9 @@ onBeforeMount(() => formDataSetup())
             </CCol>
           </CRow>
 
-          <CRow class="mb-3">
+          <CRow>
             <CFormLabel class="col-md-2 col-form-label"> 용적율(%)</CFormLabel>
-            <CCol md="10" lg="4" class="mb-md-3 mb-lg-0">
+            <CCol md="10" lg="4" class="mb-md-3">
               <CFormInput
                 v-model.number="form.floor_area_ratio"
                 type="number"
@@ -516,7 +516,7 @@ onBeforeMount(() => formDataSetup())
               </CFormFeedback>
             </CCol>
             <CFormLabel class="col-md-2 col-form-label"> 건폐율(%)</CFormLabel>
-            <CCol md="10" lg="4">
+            <CCol md="10" lg="4" class="mb-md-3">
               <CFormInput
                 v-model.number="form.build_to_land_ratio"
                 type="number"
@@ -530,11 +530,11 @@ onBeforeMount(() => formDataSetup())
             </CCol>
           </CRow>
 
-          <CRow class="mb-3">
+          <CRow>
             <CFormLabel class="col-md-2 col-form-label">
               법정주차대수
             </CFormLabel>
-            <CCol md="10" lg="4" class="mb-md-3 mb-lg-0">
+            <CCol md="10" lg="4" class="mb-md-3">
               <CFormInput
                 v-model.number="form.num_legal_parking"
                 type="number"
@@ -547,7 +547,7 @@ onBeforeMount(() => formDataSetup())
             <CFormLabel class="col-md-2 col-form-label">
               계획주차대수
             </CFormLabel>
-            <CCol md="10" lg="4">
+            <CCol md="10" lg="4" class="mb-3">
               <CFormInput
                 v-model.number="form.num_planed_parking"
                 type="number"
