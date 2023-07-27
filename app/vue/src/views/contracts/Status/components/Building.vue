@@ -1,12 +1,13 @@
 <script lang="ts" setup>
-import { ref, computed } from 'vue'
+import { ref, computed, PropType } from 'vue'
 import { useProjectData } from '@/store/pinia/project_data'
+import { SimpleUnit } from './ContractBoard.vue'
 import Unit from '@/views/contracts/Status/components/Unit.vue'
 
 const props = defineProps({
   bldg: { type: Number, default: null },
   maxFloor: { type: Number, default: null },
-  units: { type: Object, default: null },
+  units: { type: Object as PropType<SimpleUnit[]>, default: null },
 })
 
 const maxPiloti = ref(3) // 맥스 피로티 층
@@ -32,7 +33,7 @@ const getUnit = (line: number, floor: number) =>
     .filter((u: { line: number }) => u.line === line)
     .filter((u: { floor: number }) => u.floor === floor)[0]
 
-const getFirst = (line: number, floor: number) =>
+const getFirst = (floor: number) =>
   floor > maxPiloti.value
     ? props.units
         .filter((u: { floor: number }) => u.floor == floor)
@@ -61,7 +62,7 @@ const bldgName = (bldg: number) =>
         :floor="i"
         :line="line"
         :max-piloti="maxPiloti"
-        :first-line="getFirst(line, i)"
+        :first-line="getFirst(i)"
       />
     </CRow>
     <CRow :style="{ width: `${bldgWidth}px` }">
@@ -75,10 +76,16 @@ const bldgName = (bldg: number) =>
 <style lang="scss" scoped>
 .build-base {
   height: 36px;
-  background: #777;
+  background: #666;
   color: white;
   line-height: 36px;
   vertical-align: middle;
   border: solid #555 1px;
+}
+
+.dark-theme {
+  .build-base {
+    background: #333;
+  }
 }
 </style>

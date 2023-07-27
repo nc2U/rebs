@@ -4,7 +4,7 @@ import { SimpleUnit } from './ContractBoard.vue'
 
 const props = defineProps({
   units: { type: Object as PropType<SimpleUnit[]>, default: null },
-  unit: { type: Object as PropType<SimpleUnit>, default: null },
+  unit: { type: Object as PropType<SimpleUnit>, required: true },
   floor: { type: Number, default: 1 },
   line: { type: Number, default: 1 },
   maxPiloti: { type: Number, default: 1 },
@@ -12,7 +12,7 @@ const props = defineProps({
 })
 
 const isPiloti = computed(() => !props.unit && props.floor < props.maxPiloti)
-const isContract = computed(() => !!props.unit.key_unit?.contract)
+const isContract = computed(() => !!props.unit?.key_unit?.contract)
 const contorName = computed(() =>
   isContract.value ? props.unit.key_unit.contract?.contractor.name : '',
 )
@@ -23,18 +23,6 @@ const status = computed(() =>
   isContract.value ? props.unit.key_unit.contract?.contractor.status : '',
 )
 const isHold = computed(() => (isContract.value ? props.unit.is_hold : ''))
-const statusColor = computed(() => {
-  let color = ''
-  if (props.unit) {
-    color = '#FFF'
-    if (isContract.value) {
-      if (status.value === '1') color = '#FFFF99'
-      if (status.value === '2') color = '#DDD'
-      if (isHold.value) color = '#999'
-    }
-  }
-  return color
-})
 </script>
 
 <template>
@@ -59,8 +47,11 @@ const statusColor = computed(() => {
         firstPiloti: isPiloti && line === 1,
         restPiloti: isPiloti && line !== 1,
         piloti: isPiloti,
+        back: unit && !status,
+        app: status === '1',
+        cont: status === '2',
+        hold: isHold,
       }"
-      :style="`background-color: ${statusColor};`"
     >
       <span v-if="unit && unit.key_unit && unit.key_unit.contract">
         <router-link
@@ -125,5 +116,61 @@ const statusColor = computed(() => {
 .piloti {
   background-color: #bbb;
   border-color: #999;
+}
+
+$back: white;
+$app: #ffff99;
+$cont: #ddd;
+$hold: #999;
+
+.back {
+  background: $back;
+}
+
+.app {
+  background: $app;
+}
+
+.cont {
+  background: $cont;
+}
+
+.hold {
+  background: $hold;
+}
+
+.dark-theme {
+  .app {
+    background: darken($app, 20%);
+  }
+
+  .cont {
+    background: darken($cont, 20%);
+  }
+
+  .hold {
+    background: darken($hold, 20%);
+  }
+
+  .firstClass {
+    border-color: #666;
+  }
+
+  .firstPiloti {
+    border-color: #666;
+  }
+
+  .restClass {
+    border-color: #666;
+  }
+
+  .restPiloti {
+    border-color: #666;
+  }
+
+  .piloti {
+    background-color: #777;
+    border-color: #666;
+  }
 }
 </style>

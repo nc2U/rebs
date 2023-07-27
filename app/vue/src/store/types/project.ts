@@ -113,14 +113,7 @@ export interface KeyUnit {
 
 interface KUnit {
   pk: number
-  contract: {
-    pk: number
-    contractor: {
-      pk: number
-      name: string
-      status: '1' | '2' | '3' | '4' | '5'
-    }
-  }
+  contract: Contract
 }
 
 interface Contract {
@@ -128,7 +121,7 @@ interface Contract {
   contractor: {
     pk: number
     name: string
-    status: string
+    status: '1' | '2' | '3' | '4' | '5'
   }
 }
 
