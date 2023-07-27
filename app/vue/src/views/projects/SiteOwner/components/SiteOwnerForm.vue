@@ -1,9 +1,8 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, watch, onBeforeMount } from 'vue'
+import { ref, reactive, computed, onBeforeMount } from 'vue'
 import { useProject } from '@/store/pinia/project'
 import { useSite } from '@/store/pinia/project_site'
 import { SimpleSite, SiteOwner } from '@/store/types/project'
-import { dateFormat } from '@/utils/baseMixins'
 import { write_project } from '@/utils/pageAuth'
 import { isValidate } from '@/utils/helper'
 import { AddressData, callAddress } from '@/components/DaumPostcode/address'
@@ -71,10 +70,6 @@ const formsCheck = computed(() => {
 
     return a && b && c && d && e && f && g && h && i && j && k
   } else return false
-})
-
-watch(form, val => {
-  if (val.date_of_birth) form.date_of_birth = dateFormat(val.date_of_birth)
 })
 
 const addressCallback = (data: AddressData) => {

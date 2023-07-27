@@ -2,7 +2,7 @@
 import { ref, computed } from 'vue'
 import { useProject } from '@/store/pinia/project'
 import { write_project_cash } from '@/utils/pageAuth'
-import { dateFormat, numFormat } from '@/utils/baseMixins'
+import { numFormat } from '@/utils/baseMixins'
 import { TableInfo, TableSecondary } from '@/utils/cssMixins'
 import {
   StatusOutBudget,
@@ -104,9 +104,7 @@ const patchBudget = (pk: number, budget: string, oldBudget: number) => {
             <CIcon name="cilFolderOpen" />
             사업예산 및 집행현황
           </strong>
-          <small class="text-medium-emphasis">
-            ({{ dateFormat(date) }}) 기준
-          </small>
+          <small class="text-medium-emphasis"> ({{ date }}) 기준 </small>
         </CTableDataCell>
         <CTableDataCell class="text-right">(단위: 원)</CTableDataCell>
       </CTableRow>

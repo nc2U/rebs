@@ -5,20 +5,17 @@ import { useProject } from '@/store/pinia/project'
 import { useContract } from '@/store/pinia/contract'
 import { useProjectData } from '@/store/pinia/project_data'
 import { usePayment } from '@/store/pinia/payment'
-import { dateFormat } from '@/utils/baseMixins'
+import { getToday } from '@/utils/baseMixins'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import DateChoicer from '@/views/payments/Status/components/DateChoicer.vue'
 import TableTitleRow from '@/components/TableTitleRow.vue'
 import PaymentStatus from './components/PaymentStatus.vue'
 
-const date = ref(new Date())
+const date = ref(getToday())
 
 const excelUrl = computed(
-  () =>
-    `/excel/paid-status/?project=${project.value}&date=${dateFormat(
-      date.value,
-    )}`,
+  () => `/excel/paid-status/?project=${project.value}&date=${date.value}`,
 )
 
 const projStore = useProject()
@@ -39,11 +36,11 @@ const payStore = usePayment()
 const fetchPaySumList = (proj: number, date?: string) =>
   payStore.fetchPaySumList(proj, date)
 
-const setDate = (d: Date) => {
-  date.value = new Date(d)
+const setDate = (d: string) => {
+  date.value = d
   if (project.value) {
-    fetchPaySumList(project.value, dateFormat(date.value))
-    fetchContSummaryList(project.value, dateFormat(date.value))
+    fetchPaySumList(project.value, date.value)
+    fetchContSummaryList(project.value, date.value)
   }
 }
 
@@ -83,7 +80,7 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId))
       <DateChoicer @set-date="setDate" />
 
       <TableTitleRow excel :url="excelUrl" :disabled="!project" />
-      <PaymentStatus :date="dateFormat(date)" />
+      <PaymentStatus :date="date" />
     </CCardBody>
 
     <CCardFooter>&nbsp;</CCardFooter>

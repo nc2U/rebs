@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onBeforeMount, PropType, reactive, ref, watch } from 'vue'
-import { numFormat, dateFormat } from '@/utils/baseMixins'
+import { numFormat } from '@/utils/baseMixins'
 import { SiteOwner, SimpleSite } from '@/store/types/project'
 import DatePicker from '@/components/DatePicker/index.vue'
 
@@ -33,9 +33,6 @@ const calcArea = ref(0)
 watch(form, val => {
   if (val.owned_area) calcArea.value = parseInt(val.owned_area) * 0.3025
   else calcArea.value = 0
-
-  if (val.acquisition_date)
-    form.acquisition_date = dateFormat(val.acquisition_date)
 })
 
 const formsCheck = computed(() => {

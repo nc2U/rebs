@@ -1,7 +1,6 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, onBeforeMount, watch } from 'vue'
+import { ref, reactive, computed, onBeforeMount } from 'vue'
 import { useAccount } from '@/store/pinia/account'
-import { dateFormat } from '@/utils/baseMixins'
 import { write_project } from '@/utils/pageAuth'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
@@ -19,11 +18,6 @@ const form = reactive({
   is_pm_cost: false,
   pay_due_date: null as string | null,
   extra_due_date: null as string | null,
-})
-
-watch(form, val => {
-  if (!!val.pay_due_date) form.pay_due_date = dateFormat(val.pay_due_date)
-  if (!!val.extra_due_date) form.extra_due_date = dateFormat(val.extra_due_date)
 })
 
 const refAlertModal = ref()

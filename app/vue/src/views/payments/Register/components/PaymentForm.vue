@@ -3,7 +3,7 @@ import { ref, reactive, computed, onBeforeMount } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { usePayment } from '@/store/pinia/payment'
 import { useProCash } from '@/store/pinia/proCash'
-import { dateFormat, diffDate } from '@/utils/baseMixins'
+import { getToday, diffDate } from '@/utils/baseMixins'
 import { isValidate } from '@/utils/helper'
 import { write_payment } from '@/utils/pageAuth'
 import DatePicker from '@/components/DatePicker/index.vue'
@@ -36,7 +36,7 @@ const form = reactive({
   bank_account: null,
   income: null,
   note: '',
-  deal_date: dateFormat(new Date()),
+  deal_date: getToday(),
 })
 
 const formsCheck = computed(() => {
@@ -75,8 +75,6 @@ const onSubmit = (event: Event) => {
       if (isValidate(event)) {
         validated.value = true
       } else {
-        form.deal_date = dateFormat(form.deal_date)
-
         if (!props.payment) modalAction()
         else {
           if (removeCont.value) {
