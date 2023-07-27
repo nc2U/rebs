@@ -1,7 +1,6 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, onMounted, watch } from 'vue'
+import { ref, reactive, computed, onMounted } from 'vue'
 import { useAccount } from '@/store/pinia/account'
-import { dateFormat } from '@/utils/baseMixins'
 import { Profile } from '@/store/types/accounts'
 import DatePicker from '@/components/DatePicker/index.vue'
 import AvatarInput from './AvatarInput.vue'
@@ -43,10 +42,6 @@ const formsCheck = computed(() => {
 
 const confirmText = computed(() => (props.profile?.pk ? '변경' : '등록'))
 const btnClass = computed(() => (props.profile?.pk ? 'success' : 'primary'))
-
-watch(form, val => {
-  if (val.birth_date) form.birth_date = dateFormat(val.birth_date)
-})
 
 const fileUpload = (img: File) => {
   form.image = img.name
