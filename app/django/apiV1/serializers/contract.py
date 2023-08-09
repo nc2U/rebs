@@ -64,9 +64,9 @@ class ContractorInContractSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Contractor
-        fields = (
-            'pk', 'name', 'birth_date', 'gender', 'is_registed', 'contractoraddress',
-            'contractorcontact', 'status', 'reservation_date', 'contract_date', 'is_active', 'note')
+        fields = ('pk', 'name', 'birth_date', 'gender', 'is_registed',
+                  'contractoraddress', 'contractorcontact', 'status',
+                  'reservation_date', 'contract_date', 'is_active', 'note')
 
 
 def get_cont_price(instance, houseunit=None):
@@ -209,9 +209,9 @@ class ContractSetSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Contract
-        fields = ('pk', 'project', 'order_group', 'unit_type', 'serial_number', 'activation',
-                  'keyunit', 'contractprice', 'contractor', 'payments', 'last_paid_order',
-                  'total_paid', 'order_group_desc', 'unit_type_desc')
+        fields = ('pk', 'project', 'order_group', 'unit_type', 'serial_number',
+                  'activation', 'keyunit', 'contractprice', 'contractor', 'payments',
+                  'last_paid_order', 'total_paid', 'order_group_desc', 'unit_type_desc')
 
     @staticmethod
     def get_payment_list(instance):
