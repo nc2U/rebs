@@ -1,12 +1,10 @@
-import { shallowMount } from '@vue/test-utils'
-import HelloWorld from '@/components/HelloWorld.vue'
+import { mount } from '@vue/test-utils'
+import NotFound from '@/components/NotFound.vue'
 
-describe('HelloWorld.vue', () => {
+describe('NotFound.vue', () => {
   it('renders props.msg when passed', () => {
-    const msg = 'new message'
-    const wrapper = shallowMount(HelloWorld, {
-      props: { msg },
-    })
+    const msg = "But if you don't change your direction"
+    const wrapper = mount(NotFound)
     expect(wrapper.text()).toMatch(msg)
   })
 })
