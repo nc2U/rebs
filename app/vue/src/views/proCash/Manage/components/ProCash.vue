@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, computed, PropType } from 'vue'
-import { useStore } from 'vuex'
+import { useStore } from '@/store'
 import { numFormat, cutString } from '@/utils/baseMixins'
 import { ProBankAcc, ProjectCashBook } from '@/store/types/proCash'
 import FormModal from '@/components/Modals/FormModal.vue'
@@ -20,7 +20,7 @@ const sortClass = computed(
 )
 
 const store = useStore()
-const dark = computed(() => store.state.theme === 'dark')
+const dark = computed(() => store.theme === 'dark')
 const rowColor = computed(() => {
   let color = ''
   color =

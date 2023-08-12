@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, computed, onMounted, nextTick, watch } from 'vue'
-import { useStore } from 'vuex'
+import { useStore } from '@/store'
 import { useTagsView } from '@/store/pinia/tagsView'
 import { VisitedView } from '@/store/types/tagsView'
 import {
@@ -11,7 +11,7 @@ import {
 } from 'vue-router'
 
 const store = useStore()
-const dark = computed(() => store.state.theme === 'dark')
+const dark = computed(() => store.theme === 'dark')
 const btnColor = computed(() => (dark.value ? 'blue-grey' : ''))
 
 const [route, router] = [useRoute(), useRouter()]

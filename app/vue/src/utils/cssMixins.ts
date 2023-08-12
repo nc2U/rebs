@@ -1,7 +1,9 @@
-import store from '@/store'
 import { computed } from 'vue'
+import { useStore } from '@/store'
 
-const isDark = computed(() => store.state.theme === 'dark')
+const store = useStore()
+
+const isDark = computed(() => store.theme === 'dark')
 
 // -----------------------------------------------------------------------
 export const TableSecondary = computed(() =>

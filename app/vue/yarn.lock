@@ -4246,7 +4246,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vue/devtools-api@npm:^6.0.0-beta.11, @vue/devtools-api@npm:^6.5.0":
+"@vue/devtools-api@npm:^6.5.0":
   version: 6.5.0
   resolution: "@vue/devtools-api@npm:6.5.0"
   checksum: ec819ef3a426e91d09e9cfefd2827e9ed8ec9d62bb3b3e0674f3da8c7e92a4b879c3b777dc7329172ca6fe2670b62dd5580d23160339208f0f5ae038f2e504ad
@@ -12565,7 +12565,6 @@ __metadata:
     vue-fullscreen: ^2.6.1
     vue-router: ^4.2.4
     vuetify: ^3.3.12
-    vuex: ^4.1.0
     webfontloader: ^1.6.28
   languageName: unknown
   linkType: soft
@@ -14609,17 +14608,6 @@ __metadata:
     webpack-plugin-vuetify:
       optional: true
   checksum: ac237cdb12ded5f4797cc547cbfd273aa95f77ab199558ea4f5abcc82fd91015e4c74cf743a93d61116e6961409ccc6a533332ae7317ef4b3d126e6f1dc41d3d
-  languageName: node
-  linkType: hard
-
-"vuex@npm:^4.1.0":
-  version: 4.1.0
-  resolution: "vuex@npm:4.1.0"
-  dependencies:
-    "@vue/devtools-api": "npm:^6.0.0-beta.11"
-  peerDependencies:
-    vue: ^3.2.0
-  checksum: f5e375a9c19ea3bbf4b9bc4c2adc033c37d2583e59b2d79da42bde2ab0771a086c419d62323fb354b6d421a8ddb4fd4e14f3abe5d49e9862311bc4847732b608
   languageName: node
   linkType: hard
 

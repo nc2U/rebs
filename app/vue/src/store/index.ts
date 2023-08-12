@@ -1,61 +1,55 @@
-import { createPinia } from 'pinia'
-import { createStore } from 'vuex'
+import { ref } from 'vue'
+import { defineStore } from 'pinia'
 import Cookies from 'js-cookie'
 
-export const pinia = createPinia()
+type Type = 'default' | 'dark'
 
-declare interface RootState {
-  asideVisible: boolean
-  sidebarVisible: boolean
-  sidebarUnfoldable: boolean
-  theme: string
-  LoadingStatus: boolean
-  registerCode: string
-}
-
-const state: RootState = {
-  asideVisible: false,
-  sidebarVisible:
+export const useStore = defineStore('store', () => {
+  const asideVisible = ref(false)
+  const sidebarVisible = ref(
     !Cookies.get('sidebarVisible') || Cookies.get('sidebarVisible') === 'true',
-  sidebarUnfoldable: Cookies.get('sidebarUnfoldable') === 'true',
-  theme: Cookies.get('theme') || 'default',
-  LoadingStatus: false,
-  registerCode: 'brdnc00',
-}
+  )
+  const sidebarUnfoldable = ref(Cookies.get('sidebarUnfoldable') === 'true')
+  const theme = ref<Type>((Cookies.get('theme') as Type) || 'default')
+  const LoadingStatus = ref(false)
+  const registerCode = ref('brdnc00')
 
-const mutations = {
-  toggleAside(state: RootState) {
-    state.asideVisible = !state.asideVisible
-  },
-  toggleSidebar(state: RootState) {
-    const sidebarVisible = !state.sidebarVisible
-    state.sidebarVisible = sidebarVisible
-    Cookies.set('sidebarVisible', String(sidebarVisible))
-  },
-  toggleTheme(state: RootState, payload: { value: 'default' | 'dark' }) {
-    state.theme = payload.value
-    Cookies.set('theme', payload.value)
-  },
-  toggleUnfoldable(state: RootState) {
-    const sidebarUnfoldable = !state.sidebarUnfoldable
-    state.sidebarUnfoldable = sidebarUnfoldable
-    Cookies.set('sidebarUnfoldable', String(sidebarUnfoldable))
-  },
-  updateSidebarVisible(state: RootState, payload: { value: boolean }) {
-    state.sidebarVisible = payload.value
-    Cookies.set('sidebarVisible', String(payload.value))
-  },
-  startSpinner(state: RootState) {
-    state.LoadingStatus = true
-  },
-  endSpinner(state: RootState) {
-    state.LoadingStatus = false
-  },
-}
+  const toggleAside = () => (asideVisible.value = !asideVisible.value)
 
-const store = createStore({
-  state,
-  mutations,
+  const toggleSidebar = () => {
+    sidebarVisible.value = !sidebarVisible.value
+    Cookies.set('sidebarVisible', String(sidebarVisible.value))
+  }
+  const toggleTheme = (payload: Type) => {
+    theme.value = payload
+    Cookies.set('theme', payload)
+  }
+  const toggleUnfoldable = () => {
+    sidebarUnfoldable.value = !sidebarUnfoldable.value
+    Cookies.set('sidebarUnfoldable', String(sidebarUnfoldable.value))
+  }
+  const updateSidebarVisible = (payload: boolean) => {
+    sidebarVisible.value = payload
+    Cookies.set('sidebarVisible', String(payload))
+  }
+  const startSpinner = () => (LoadingStatus.value = true)
+
+  const endSpinner = () => (LoadingStatus.value = false)
+
+  return {
+    asideVisible,
+    sidebarVisible,
+    sidebarUnfoldable,
+    theme,
+    LoadingStatus,
+    registerCode,
+
+    toggleAside,
+    toggleSidebar,
+    toggleTheme,
+    toggleUnfoldable,
+    updateSidebarVisible,
+    startSpinner,
+    endSpinner,
+  }
 })
-
-export default store

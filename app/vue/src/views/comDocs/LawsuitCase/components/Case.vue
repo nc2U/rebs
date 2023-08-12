@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, PropType } from 'vue'
-import { useStore } from 'vuex'
+import { useStore } from '@/store'
 import { SuitCase } from '@/store/types/document'
 import { cutString } from '@/utils/baseMixins'
 
@@ -25,9 +25,7 @@ const suitCaseName = computed(() => {
 const store = useStore()
 const sortName = computed(() => props.suitCase?.proj_name || '본사')
 const sortColor = computed(() => (props.suitCase?.project ? 'success' : 'info'))
-const courtColor = computed(() =>
-  store.state.theme !== 'dark' ? 'dark' : 'default',
-)
+const courtColor = computed(() => (store.theme !== 'dark' ? 'dark' : 'default'))
 const agencyName = computed(() => {
   const agency = props.suitCase?.court_desc || props.suitCase?.other_agency
   return agency ? getCourt(agency) : ''

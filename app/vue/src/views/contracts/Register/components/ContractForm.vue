@@ -9,7 +9,7 @@ import {
   onUpdated,
   PropType,
 } from 'vue'
-import { useStore } from 'vuex'
+import { useStore } from '@/store'
 import { useAccount } from '@/store/pinia/account'
 import { useContract } from '@/store/pinia/contract'
 import { useProjectData } from '@/store/pinia/project_data'
@@ -118,7 +118,7 @@ const matchAddr = computed(() => {
 watch(matchAddr, val => sameAddrBtnSet(val))
 
 const store = useStore()
-const isDark = computed(() => store.state.theme === 'dark')
+const isDark = computed(() => store.theme === 'dark')
 
 const sameAddrBtnSet = (chk: boolean) => (sameAddr.value = chk)
 

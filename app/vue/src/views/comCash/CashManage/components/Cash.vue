@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, computed, PropType } from 'vue'
-import { useStore } from 'vuex'
+import { useStore } from '@/store'
 import { useAccount } from '@/store/pinia/account'
 import { CompanyBank, CashBook } from '@/store/types/comCash'
 import { write_company_cash } from '@/utils/pageAuth'
@@ -32,7 +32,7 @@ const d1Class = computed(
 )
 
 const store = useStore()
-const dark = computed(() => store.state.theme === 'dark')
+const dark = computed(() => store.theme === 'dark')
 const rowColor = computed(() => {
   let color = ''
   color = dark.value ? '' : color
