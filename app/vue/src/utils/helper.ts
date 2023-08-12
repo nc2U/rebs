@@ -1,5 +1,9 @@
-import { createToast, ToastType } from 'mosha-vue-toastify'
-import { Position, TransitionType } from 'mosha-vue-toastify/dist/types'
+import {
+  createToast,
+  ToastType,
+  Position,
+  TransitionType,
+} from 'mosha-vue-toastify'
 
 export const message = (
   type: ToastType = 'success',
