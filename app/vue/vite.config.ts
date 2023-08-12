@@ -9,7 +9,7 @@ export default defineConfig({
   base:
     process.env.NODE_ENV === 'production'
       ? '/static/dist/'
-      : 'http://localhost:3000',
+      : 'http://localhost:5173',
   build: {
     outDir: '../django/static/dist',
     emptyOutDir: true,
