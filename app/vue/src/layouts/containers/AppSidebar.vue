@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { useStore } from 'vuex'
+import { useStore } from '@/store'
 import { AppSidebarNav } from './AppSidebarNav'
 import { logoNegative, sygnet } from '@/assets/brand/current-logo'
 
 const store = useStore()
 
-const sidebarUnfoldable = computed(() => store.state.sidebarUnfoldable)
-const sidebarVisible = computed(() => store.state.sidebarVisible)
+const sidebarUnfoldable = computed(() => store.sidebarUnfoldable)
+const sidebarVisible = computed(() => store.sidebarVisible)
 </script>
 
 <template>
@@ -16,13 +16,7 @@ const sidebarVisible = computed(() => store.state.sidebarVisible)
     self-hiding="md"
     :unfoldable="sidebarUnfoldable"
     :visible="sidebarVisible"
-    @visible-change="
-      event =>
-        store.commit({
-          type: 'updateSidebarVisible',
-          value: event,
-        })
-    "
+    @visible-change="(event: any) => store.updateSidebarVisible(event)"
   >
     <CSidebarBrand>
       <CIcon
@@ -37,9 +31,6 @@ const sidebarVisible = computed(() => store.state.sidebarVisible)
       />
     </CSidebarBrand>
     <AppSidebarNav />
-    <CSidebarToggler
-      class="d-none d-lg-flex"
-      @click="store.commit('toggleUnfoldable')"
-    />
+    <CSidebarToggler class="d-none d-lg-flex" @click="store.toggleUnfoldable" />
   </CSidebar>
 </template>

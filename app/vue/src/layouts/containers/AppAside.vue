@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
-import { useStore } from 'vuex'
+import { useStore } from '@/store'
 import avatar2 from '@/assets/images/avatars/2.jpg'
 import avatar3 from '@/assets/images/avatars/3.jpg'
 import avatar4 from '@/assets/images/avatars/4.jpg'
@@ -17,13 +17,13 @@ const updateActiveKey = (key: number) => {
 
 const store = useStore()
 
-const isDark = computed(() => store.state.theme === 'dark')
+const isDark = computed(() => store.theme === 'dark')
 
 const white = computed(() => (isDark.value ? 'dark-theme' : 'bg-white'))
 
 const light = computed(() => (isDark.value ? 'dark-theme' : 'bg-light'))
 
-const asideVisible = computed(() => store.state.asideVisible)
+const asideVisible = computed(() => store.asideVisible)
 
 const active = (key: number) => key === activeKey.value
 </script>
@@ -56,7 +56,7 @@ const active = (key: number) => key === activeKey.value
           </CNavLink>
         </CNavItem>
         <CNavItem class="ms-auto me-2 d-flex align-items-center">
-          <CCloseButton @click="store.commit('toggleAside')" />
+          <CCloseButton @click="store.toggleAside" />
         </CNavItem>
       </CNav>
     </CSidebarHeader>

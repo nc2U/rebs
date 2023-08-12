@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
-import { useStore } from 'vuex'
+import { useStore } from '@/store'
 import { useAccount } from '@/store/pinia/account'
 import { directive as vFullscreen } from 'vue-fullscreen'
 import { logo } from '@/assets/brand/current-logo'
@@ -30,7 +30,7 @@ const isAuthorized = computed(() => accountStore.isAuthorized)
 <template>
   <CHeader position="sticky" class="mb-4 pb-0">
     <CContainer fluid>
-      <CHeaderToggler class="ps-1" @click="store.commit('toggleSidebar')">
+      <CHeaderToggler class="ps-1" @click="store.toggleSidebar">
         <CIcon icon="cil-menu" size="lg" />
       </CHeaderToggler>
       <CHeaderBrand class="mx-auto d-lg-none" to="/">
@@ -56,14 +56,8 @@ const isAuthorized = computed(() => accountStore.isAuthorized)
             :button="{ color: 'primary' }"
             name="theme-switch"
             auto-complete="off"
-            :checked="store.state.theme === 'default'"
-            @change="
-              () =>
-                store.commit({
-                  type: 'toggleTheme',
-                  value: 'default',
-                })
-            "
+            :checked="store.theme === 'default'"
+            @change="() => store.toggleTheme('default')"
           >
             <template #label>
               <CIcon icon="cil-sun" />
@@ -75,14 +69,8 @@ const isAuthorized = computed(() => accountStore.isAuthorized)
             :button="{ color: 'primary' }"
             name="theme-switch"
             auto-complete="off"
-            :checked="store.state.theme === 'dark'"
-            @change="
-              () =>
-                store.commit({
-                  type: 'toggleTheme',
-                  value: 'dark',
-                })
-            "
+            :checked="store.theme === 'dark'"
+            @change="() => store.toggleTheme('dark')"
           >
             <template #label>
               <CIcon icon="cil-moon" />
@@ -108,7 +96,7 @@ const isAuthorized = computed(() => accountStore.isAuthorized)
         <CIcon
           icon="cil-applications-settings"
           size="lg"
-          @click="store.commit('toggleAside')"
+          @click="store.toggleAside"
         />
       </CHeaderToggler>
     </CContainer>

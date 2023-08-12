@@ -1,4 +1,4 @@
-import store from '@/store'
+import { useStore } from '@/store'
 import { hashCode } from '@/utils/helper'
 import { RouteRecordRaw } from 'vue-router'
 
@@ -75,9 +75,10 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('@/views/_Accounts/Register.vue'),
     meta: { title: '회원가입', except: true },
     beforeEnter: (to, from, next) => {
+      const store = useStore()
       if (
         from.name === 'RegisterCode' &&
-        to.query.id == hashCode(store.state.registerCode).toString()
+        to.query.id == hashCode(store.registerCode).toString()
       ) {
         next()
       } else {

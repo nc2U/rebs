@@ -1,6 +1,6 @@
 <script lang="ts" setup="">
 import { ref, computed, onBeforeMount, watch, PropType } from 'vue'
-import { useStore } from 'vuex'
+import { useStore } from '@/store'
 import { useCompany } from '@/store/pinia/company'
 import { useAccount } from '@/store/pinia/account'
 import { Staff } from '@/store/types/company'
@@ -63,7 +63,7 @@ const formsCheck = computed(() => {
 })
 
 const store = useStore()
-const isDark = computed(() => store.state.theme === 'dark')
+const isDark = computed(() => store.theme === 'dark')
 const bgLight = computed(() =>
   !isDark.value ? 'bg-light' : 'bg-grey-darken-2',
 )

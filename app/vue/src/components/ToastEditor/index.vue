@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, computed, watch } from 'vue'
-import { useStore } from 'vuex'
+import { useStore } from '@/store'
 import Editor from '@toast-ui/editor'
 import colorSyntax from '@toast-ui/editor-plugin-color-syntax'
 import codeSyntaxHighlight from '@toast-ui/editor-plugin-code-syntax-highlight'
@@ -27,7 +27,7 @@ const emit = defineEmits(['update:modelValue'])
 const editor = ref()
 
 const store = useStore()
-const theme = computed(() => store.state.theme)
+const theme = computed(() => store.theme)
 
 const chartOptions = {
   minWidth: 100,

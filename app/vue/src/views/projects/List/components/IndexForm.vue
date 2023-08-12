@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, reactive, computed, onBeforeMount, PropType } from 'vue'
 import { useAccount } from '@/store/pinia/account'
-import { useStore } from 'vuex'
+import { useStore } from '@/store'
 import { Project } from '@/store/types/project'
 import { callAddress, AddressData } from '@/components/DaumPostcode/address'
 import { write_project } from '@/utils/pageAuth'
@@ -245,7 +245,7 @@ onBeforeMount(() => formDataSetup())
                 position="left"
                 year-picker
                 auto-apply
-                :dark="store.state.theme === 'dark'"
+                :dark="store.theme === 'dark'"
                 required
               />
               <CFormFeedback invalid> 사업개시년도를 입력하세요</CFormFeedback>

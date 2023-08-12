@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useStore } from 'vuex'
+import { useStore } from '@/store'
 import { useRouter } from 'vue-router'
 import { hashCode } from '@/utils/helper'
 
@@ -20,7 +20,7 @@ const onSubmit = (event: Event) => {
 
     validated.value = true
   } else {
-    if (registerCode.value === store.state.registerCode) {
+    if (registerCode.value === store.registerCode) {
       router.push({
         name: 'Register',
         query: { id: hashCode(registerCode.value).toString() },

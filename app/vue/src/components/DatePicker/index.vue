@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
-import { useStore } from 'vuex'
+import { useStore } from '@/store'
 import Datepicker from '@vuepic/vue-datepicker'
 
 const store = useStore()
-const isDark = computed(() => store.state.theme === 'dark')
+const isDark = computed(() => store.theme === 'dark')
 
 const options = ref({ format: 'yyyy-MM-dd' })
 </script>

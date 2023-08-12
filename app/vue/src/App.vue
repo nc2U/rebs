@@ -1,17 +1,17 @@
 <script lang="ts" setup>
 import { onMounted, watch } from 'vue'
-import { useStore } from 'vuex'
+import { useStore } from '@/store'
 
 const store = useStore()
 
-watch(store.state, () => {
-  store.state.theme === 'dark'
+watch(store, () => {
+  store.theme === 'dark'
     ? document.body.classList.add('dark-theme')
     : document.body.classList.remove('dark-theme')
 })
 
 onMounted(() =>
-  store.state.theme === 'dark'
+  store.theme === 'dark'
     ? document.body.classList.add('dark-theme')
     : document.body.classList.remove('dark-theme'),
 )

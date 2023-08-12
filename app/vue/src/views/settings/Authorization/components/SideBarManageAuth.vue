@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, nextTick, onMounted, onUpdated } from 'vue'
 import { UserAuth } from '@/views/settings/Authorization/Index.vue'
-import { useStore } from 'vuex'
+import { useStore } from '@/store'
 
 const props = defineProps({
   user: { type: Object, default: null },
@@ -11,7 +11,7 @@ const props = defineProps({
 const emit = defineEmits(['select-auth'])
 
 const store = useStore()
-const isDark = computed(() => store.state.theme === 'dark')
+const isDark = computed(() => store.theme === 'dark')
 
 const authData = ref<UserAuth>({
   pk: undefined,

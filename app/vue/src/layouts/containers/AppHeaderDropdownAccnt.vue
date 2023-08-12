@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { computed, PropType } from 'vue'
-import { useStore } from 'vuex'
+import { ref, computed, PropType } from 'vue'
+import { useStore } from '@/store'
 import { useRouter } from 'vue-router'
 import { User, Profile } from '@/store/types/accounts'
 import { useAccount } from '@/store/pinia/account'
@@ -10,6 +10,8 @@ const props = defineProps({
   userInfo: { type: Object as PropType<User>, required: true },
   profile: { type: Object as PropType<Profile>, default: null },
 })
+
+const todoModal = ref()
 
 const router = useRouter()
 
@@ -23,7 +25,7 @@ const avatarText = computed(() =>
 
 const store = useStore()
 const headerClass = computed(() =>
-  store.state.theme === 'dark' ? 'bg-secondary' : 'bg-light',
+  store.theme === 'dark' ? 'bg-secondary' : 'bg-light',
 )
 
 const locationBlank = (url: string) => window.open(url, '_blank')
@@ -58,7 +60,7 @@ const logout = () => {
       >
         {{ profile && profile.name ? profile.name : userInfo.username }}님
       </CDropdownHeader>
-      <CDropdownItem @click="$refs.todoModal.callModal()">
+      <CDropdownItem @click="todoModal.callModal()">
         <CIcon icon="cil-task" />
         할일 관리
         <CBadge color="danger" size="sm" class="ms-auto">

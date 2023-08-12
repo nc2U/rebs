@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { AddressData } from '@/components/DaumPostcode/address'
-import { useStore } from 'vuex'
+import { useStore } from '@/store'
 
 const store = useStore()
 
@@ -56,7 +56,7 @@ const topVal = computed(
     'px',
 )
 const theme = computed(() => {
-  if (store.state.theme === 'dark') {
+  if (store.theme === 'dark') {
     return {
       searchBgColor: '#2A2B36', //검색창 배경색
       queryTextColor: '#FFFFFF', //검색창 글자색
